@@ -2,96 +2,429 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4656227A547
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 03:47:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56D2027A538
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 03:31:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726566AbgI1Brj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 21:47:39 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:28086 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726421AbgI1Brh (ORCPT
+        id S1726477AbgI1Bbh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 21:31:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33148 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726328AbgI1Bbh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Sep 2020 21:47:37 -0400
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08S12KoN006319;
-        Sun, 27 Sep 2020 21:24:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=Fy7m+n0cLBe11ThU78e88Sj/JHLtIk33Xv7/ARl4IaM=;
- b=r3OxVG1fwkpTShmtDbnM4HCPSfAuLo5r5mnyNqzyqvidLVG4biKHOKuduuYpjJYhgyWn
- 4A/p/88V4rLCSZFYKp9OJwUenOH35MkxCykUh5oaxW5aaowaNq5eTRYmsaZzDGmij17S
- QUxodEpH2DtJaublat/0hlDM732ZhwEmKo/OLaA8cIlcnpSNAHw3HIf4CaFijoVUE+Uz
- jk/wnmKdar/lwWarTkvXY7EkAwsvdFuNHF0qZTBLWhP9Z0nZJ1Eb6TxtmUcu1O57CgUR
- B2WP89DojwBw5zq5teQjf0ssufPYioIsCHGCb99S6pQn9SUjYrn2dKyabq9theQHl0zO hg== 
-Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33u539s77e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 27 Sep 2020 21:24:49 -0400
-Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
-        by ppma04fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08S1Mx2G020931;
-        Mon, 28 Sep 2020 01:24:47 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma04fra.de.ibm.com with ESMTP id 33t16k0qsv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 28 Sep 2020 01:24:47 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08S1OjZK18809222
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 28 Sep 2020 01:24:45 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 536F5A4053;
-        Mon, 28 Sep 2020 01:24:45 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 091FCA405B;
-        Mon, 28 Sep 2020 01:24:45 +0000 (GMT)
-Received: from ozlabs.au.ibm.com (unknown [9.192.253.14])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon, 28 Sep 2020 01:24:44 +0000 (GMT)
-Received: from [9.81.194.207] (unknown [9.81.194.207])
-        (using TLSv1.2 with cipher DHE-RSA-AES128-SHA (128/128 bits))
+        Sun, 27 Sep 2020 21:31:37 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84BF0C0613CE;
+        Sun, 27 Sep 2020 18:31:51 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by ozlabs.au.ibm.com (Postfix) with ESMTPSA id A85E5A0183;
-        Mon, 28 Sep 2020 11:24:43 +1000 (AEST)
-Subject: Re: [PATCH -next] ocxl: simplify the return expression of
- free_function_dev()
-To:     Qinglang Miao <miaoqinglang@huawei.com>,
-        Frederic Barrat <fbarrat@linux.ibm.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-References: <20200921131047.92526-1-miaoqinglang@huawei.com>
-From:   Andrew Donnellan <ajd@linux.ibm.com>
-Message-ID: <0bf42871-9cf3-cc37-08f9-6c193af8e75b@linux.ibm.com>
-Date:   Mon, 28 Sep 2020 11:24:22 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C04kB4NN4z9sSG;
+        Mon, 28 Sep 2020 11:31:46 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1601256706;
+        bh=nXvmOhQ6bKJ67BWsNvPj5hQv02XA1HY0pCCgQotsPtA=;
+        h=Date:From:To:Cc:Subject:From;
+        b=aTiOu0gQ96qUaB/1DdyTMBrUBUVg9ovSBD9IcEQOFRlbVyzol8Ymy2mvaqggJGxCy
+         VZgXzSgGIbNGrovFLbEYAA8tIbLrjY7tN8Gg9PZqoEXGohGxSijTvthr/lLh8rn0SE
+         KsIUfg1sjDWeWJ8pHIEXn99ZXQ8xHs2lDRNVBXKbh6lRd6DzvdUV95uyOXMPouSUl4
+         YE1Kq+ElsF9TYsKU0rL20cCWXiN5ptRLRG9GH74ZQ4gbyCsTcchRBr4EWAVE69Z012
+         4wHeWZDlUMvghpQehnfbKVYXyIvqre5P/3Vtdol2CjtE0hirrupqvpG2pPWB1/y/pW
+         PkV91qkxdVylg==
+Date:   Mon, 28 Sep 2020 11:31:42 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Al Viro <viro@ZenIV.linux.org.uk>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: linux-next: build failure after merge of the vfs tree
+Message-ID: <20200928113142.0e38a8e8@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <20200921131047.92526-1-miaoqinglang@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-27_18:2020-09-24,2020-09-27 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=0
- impostorscore=0 mlxlogscore=932 adultscore=0 phishscore=0 bulkscore=0
- malwarescore=0 priorityscore=1501 lowpriorityscore=0 spamscore=0
- clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009280000
+Content-Type: multipart/signed; boundary="Sig_/qheVJ7xcKeWdDoC54_An1fZ";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/9/20 11:10 pm, Qinglang Miao wrote:
-> Simplify the return expression.
-> 
-> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+--Sig_/qheVJ7xcKeWdDoC54_An1fZ
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Looks good
+Hi all,
 
-Acked-by: Andrew Donnellan <ajd@linux.ibm.com>
+After merging the vfs tree, today's linux-next build (arm
+multi_v7_defconfig) failed like this:
 
--- 
-Andrew Donnellan              OzLabs, ADL Canberra
-ajd@linux.ibm.com             IBM Australia Limited
+In file included from arch/arm/include/asm/atomic.h:11,
+                 from include/linux/atomic.h:7,
+                 from include/linux/crypto.h:15,
+                 from include/crypto/hash.h:11,
+                 from lib/iov_iter.c:2:
+lib/iov_iter.c: In function 'copy_compat_iovec_from_user':
+lib/iov_iter.c:1665:29: error: invalid use of undefined type 'struct compat=
+_iovec'
+ 1665 |   unsafe_get_user(len, &uiov[i].iov_len, uaccess_end);
+      |                             ^
+include/linux/compiler.h:78:42: note: in definition of macro 'unlikely'
+   78 | # define unlikely(x) __builtin_expect(!!(x), 0)
+      |                                          ^
+include/linux/uaccess.h:370:32: note: in expansion of macro 'unsafe_op_wrap'
+  370 | #define unsafe_get_user(x,p,e) unsafe_op_wrap(__get_user(x,p),e)
+      |                                ^~~~~~~~~~~~~~
+arch/arm/include/asm/uaccess.h:238:3: note: in expansion of macro '__get_us=
+er_check'
+  238 |   __get_user_check(x, p);     \
+      |   ^~~~~~~~~~~~~~~~
+arch/arm/include/asm/uaccess.h:296:28: note: in expansion of macro 'get_use=
+r'
+  296 | #define __get_user(x, ptr) get_user(x, ptr)
+      |                            ^~~~~~~~
+include/linux/uaccess.h:370:47: note: in expansion of macro '__get_user'
+  370 | #define unsafe_get_user(x,p,e) unsafe_op_wrap(__get_user(x,p),e)
+      |                                               ^~~~~~~~~~
+lib/iov_iter.c:1665:3: note: in expansion of macro 'unsafe_get_user'
+ 1665 |   unsafe_get_user(len, &uiov[i].iov_len, uaccess_end);
+      |   ^~~~~~~~~~~~~~~
+lib/iov_iter.c:1665:32: error: invalid use of undefined type 'const struct =
+compat_iovec'
+ 1665 |   unsafe_get_user(len, &uiov[i].iov_len, uaccess_end);
+      |                                ^
+include/linux/compiler.h:78:42: note: in definition of macro 'unlikely'
+   78 | # define unlikely(x) __builtin_expect(!!(x), 0)
+      |                                          ^
+include/linux/uaccess.h:370:32: note: in expansion of macro 'unsafe_op_wrap'
+  370 | #define unsafe_get_user(x,p,e) unsafe_op_wrap(__get_user(x,p),e)
+      |                                ^~~~~~~~~~~~~~
+arch/arm/include/asm/uaccess.h:238:3: note: in expansion of macro '__get_us=
+er_check'
+  238 |   __get_user_check(x, p);     \
+      |   ^~~~~~~~~~~~~~~~
+arch/arm/include/asm/uaccess.h:296:28: note: in expansion of macro 'get_use=
+r'
+  296 | #define __get_user(x, ptr) get_user(x, ptr)
+      |                            ^~~~~~~~
+include/linux/uaccess.h:370:47: note: in expansion of macro '__get_user'
+  370 | #define unsafe_get_user(x,p,e) unsafe_op_wrap(__get_user(x,p),e)
+      |                                               ^~~~~~~~~~
+lib/iov_iter.c:1665:3: note: in expansion of macro 'unsafe_get_user'
+ 1665 |   unsafe_get_user(len, &uiov[i].iov_len, uaccess_end);
+      |   ^~~~~~~~~~~~~~~
+lib/iov_iter.c:1665:29: error: invalid use of undefined type 'struct compat=
+_iovec'
+ 1665 |   unsafe_get_user(len, &uiov[i].iov_len, uaccess_end);
+      |                             ^
+include/linux/compiler.h:78:42: note: in definition of macro 'unlikely'
+   78 | # define unlikely(x) __builtin_expect(!!(x), 0)
+      |                                          ^
+include/linux/uaccess.h:370:32: note: in expansion of macro 'unsafe_op_wrap'
+  370 | #define unsafe_get_user(x,p,e) unsafe_op_wrap(__get_user(x,p),e)
+      |                                ^~~~~~~~~~~~~~
+arch/arm/include/asm/uaccess.h:238:3: note: in expansion of macro '__get_us=
+er_check'
+  238 |   __get_user_check(x, p);     \
+      |   ^~~~~~~~~~~~~~~~
+arch/arm/include/asm/uaccess.h:296:28: note: in expansion of macro 'get_use=
+r'
+  296 | #define __get_user(x, ptr) get_user(x, ptr)
+      |                            ^~~~~~~~
+include/linux/uaccess.h:370:47: note: in expansion of macro '__get_user'
+  370 | #define unsafe_get_user(x,p,e) unsafe_op_wrap(__get_user(x,p),e)
+      |                                               ^~~~~~~~~~
+lib/iov_iter.c:1665:3: note: in expansion of macro 'unsafe_get_user'
+ 1665 |   unsafe_get_user(len, &uiov[i].iov_len, uaccess_end);
+      |   ^~~~~~~~~~~~~~~
+lib/iov_iter.c:1665:32: error: invalid use of undefined type 'const struct =
+compat_iovec'
+ 1665 |   unsafe_get_user(len, &uiov[i].iov_len, uaccess_end);
+      |                                ^
+include/linux/compiler.h:78:42: note: in definition of macro 'unlikely'
+   78 | # define unlikely(x) __builtin_expect(!!(x), 0)
+      |                                          ^
+include/linux/uaccess.h:370:32: note: in expansion of macro 'unsafe_op_wrap'
+  370 | #define unsafe_get_user(x,p,e) unsafe_op_wrap(__get_user(x,p),e)
+      |                                ^~~~~~~~~~~~~~
+arch/arm/include/asm/uaccess.h:238:3: note: in expansion of macro '__get_us=
+er_check'
+  238 |   __get_user_check(x, p);     \
+      |   ^~~~~~~~~~~~~~~~
+arch/arm/include/asm/uaccess.h:296:28: note: in expansion of macro 'get_use=
+r'
+  296 | #define __get_user(x, ptr) get_user(x, ptr)
+      |                            ^~~~~~~~
+include/linux/uaccess.h:370:47: note: in expansion of macro '__get_user'
+  370 | #define unsafe_get_user(x,p,e) unsafe_op_wrap(__get_user(x,p),e)
+      |                                               ^~~~~~~~~~
+lib/iov_iter.c:1665:3: note: in expansion of macro 'unsafe_get_user'
+ 1665 |   unsafe_get_user(len, &uiov[i].iov_len, uaccess_end);
+      |   ^~~~~~~~~~~~~~~
+lib/iov_iter.c:1665:29: error: invalid use of undefined type 'struct compat=
+_iovec'
+ 1665 |   unsafe_get_user(len, &uiov[i].iov_len, uaccess_end);
+      |                             ^
+include/linux/compiler.h:78:42: note: in definition of macro 'unlikely'
+   78 | # define unlikely(x) __builtin_expect(!!(x), 0)
+      |                                          ^
+include/linux/uaccess.h:370:32: note: in expansion of macro 'unsafe_op_wrap'
+  370 | #define unsafe_get_user(x,p,e) unsafe_op_wrap(__get_user(x,p),e)
+      |                                ^~~~~~~~~~~~~~
+arch/arm/include/asm/uaccess.h:238:3: note: in expansion of macro '__get_us=
+er_check'
+  238 |   __get_user_check(x, p);     \
+      |   ^~~~~~~~~~~~~~~~
+arch/arm/include/asm/uaccess.h:296:28: note: in expansion of macro 'get_use=
+r'
+  296 | #define __get_user(x, ptr) get_user(x, ptr)
+      |                            ^~~~~~~~
+include/linux/uaccess.h:370:47: note: in expansion of macro '__get_user'
+  370 | #define unsafe_get_user(x,p,e) unsafe_op_wrap(__get_user(x,p),e)
+      |                                               ^~~~~~~~~~
+lib/iov_iter.c:1665:3: note: in expansion of macro 'unsafe_get_user'
+ 1665 |   unsafe_get_user(len, &uiov[i].iov_len, uaccess_end);
+      |   ^~~~~~~~~~~~~~~
+lib/iov_iter.c:1665:32: error: invalid use of undefined type 'const struct =
+compat_iovec'
+ 1665 |   unsafe_get_user(len, &uiov[i].iov_len, uaccess_end);
+      |                                ^
+include/linux/compiler.h:78:42: note: in definition of macro 'unlikely'
+   78 | # define unlikely(x) __builtin_expect(!!(x), 0)
+      |                                          ^
+include/linux/uaccess.h:370:32: note: in expansion of macro 'unsafe_op_wrap'
+  370 | #define unsafe_get_user(x,p,e) unsafe_op_wrap(__get_user(x,p),e)
+      |                                ^~~~~~~~~~~~~~
+arch/arm/include/asm/uaccess.h:238:3: note: in expansion of macro '__get_us=
+er_check'
+  238 |   __get_user_check(x, p);     \
+      |   ^~~~~~~~~~~~~~~~
+arch/arm/include/asm/uaccess.h:296:28: note: in expansion of macro 'get_use=
+r'
+  296 | #define __get_user(x, ptr) get_user(x, ptr)
+      |                            ^~~~~~~~
+include/linux/uaccess.h:370:47: note: in expansion of macro '__get_user'
+  370 | #define unsafe_get_user(x,p,e) unsafe_op_wrap(__get_user(x,p),e)
+      |                                               ^~~~~~~~~~
+lib/iov_iter.c:1665:3: note: in expansion of macro 'unsafe_get_user'
+ 1665 |   unsafe_get_user(len, &uiov[i].iov_len, uaccess_end);
+      |   ^~~~~~~~~~~~~~~
+lib/iov_iter.c:1666:29: error: invalid use of undefined type 'struct compat=
+_iovec'
+ 1666 |   unsafe_get_user(buf, &uiov[i].iov_base, uaccess_end);
+      |                             ^
+include/linux/compiler.h:78:42: note: in definition of macro 'unlikely'
+   78 | # define unlikely(x) __builtin_expect(!!(x), 0)
+      |                                          ^
+include/linux/uaccess.h:370:32: note: in expansion of macro 'unsafe_op_wrap'
+  370 | #define unsafe_get_user(x,p,e) unsafe_op_wrap(__get_user(x,p),e)
+      |                                ^~~~~~~~~~~~~~
+arch/arm/include/asm/uaccess.h:238:3: note: in expansion of macro '__get_us=
+er_check'
+  238 |   __get_user_check(x, p);     \
+      |   ^~~~~~~~~~~~~~~~
+arch/arm/include/asm/uaccess.h:296:28: note: in expansion of macro 'get_use=
+r'
+  296 | #define __get_user(x, ptr) get_user(x, ptr)
+      |                            ^~~~~~~~
+include/linux/uaccess.h:370:47: note: in expansion of macro '__get_user'
+  370 | #define unsafe_get_user(x,p,e) unsafe_op_wrap(__get_user(x,p),e)
+      |                                               ^~~~~~~~~~
+lib/iov_iter.c:1666:3: note: in expansion of macro 'unsafe_get_user'
+ 1666 |   unsafe_get_user(buf, &uiov[i].iov_base, uaccess_end);
+      |   ^~~~~~~~~~~~~~~
+lib/iov_iter.c:1666:32: error: invalid use of undefined type 'const struct =
+compat_iovec'
+ 1666 |   unsafe_get_user(buf, &uiov[i].iov_base, uaccess_end);
+      |                                ^
+include/linux/compiler.h:78:42: note: in definition of macro 'unlikely'
+   78 | # define unlikely(x) __builtin_expect(!!(x), 0)
+      |                                          ^
+include/linux/uaccess.h:370:32: note: in expansion of macro 'unsafe_op_wrap'
+  370 | #define unsafe_get_user(x,p,e) unsafe_op_wrap(__get_user(x,p),e)
+      |                                ^~~~~~~~~~~~~~
+arch/arm/include/asm/uaccess.h:238:3: note: in expansion of macro '__get_us=
+er_check'
+  238 |   __get_user_check(x, p);     \
+      |   ^~~~~~~~~~~~~~~~
+arch/arm/include/asm/uaccess.h:296:28: note: in expansion of macro 'get_use=
+r'
+  296 | #define __get_user(x, ptr) get_user(x, ptr)
+      |                            ^~~~~~~~
+include/linux/uaccess.h:370:47: note: in expansion of macro '__get_user'
+  370 | #define unsafe_get_user(x,p,e) unsafe_op_wrap(__get_user(x,p),e)
+      |                                               ^~~~~~~~~~
+lib/iov_iter.c:1666:3: note: in expansion of macro 'unsafe_get_user'
+ 1666 |   unsafe_get_user(buf, &uiov[i].iov_base, uaccess_end);
+      |   ^~~~~~~~~~~~~~~
+lib/iov_iter.c:1666:29: error: invalid use of undefined type 'struct compat=
+_iovec'
+ 1666 |   unsafe_get_user(buf, &uiov[i].iov_base, uaccess_end);
+      |                             ^
+include/linux/compiler.h:78:42: note: in definition of macro 'unlikely'
+   78 | # define unlikely(x) __builtin_expect(!!(x), 0)
+      |                                          ^
+include/linux/uaccess.h:370:32: note: in expansion of macro 'unsafe_op_wrap'
+  370 | #define unsafe_get_user(x,p,e) unsafe_op_wrap(__get_user(x,p),e)
+      |                                ^~~~~~~~~~~~~~
+arch/arm/include/asm/uaccess.h:238:3: note: in expansion of macro '__get_us=
+er_check'
+  238 |   __get_user_check(x, p);     \
+      |   ^~~~~~~~~~~~~~~~
+arch/arm/include/asm/uaccess.h:296:28: note: in expansion of macro 'get_use=
+r'
+  296 | #define __get_user(x, ptr) get_user(x, ptr)
+      |                            ^~~~~~~~
+include/linux/uaccess.h:370:47: note: in expansion of macro '__get_user'
+  370 | #define unsafe_get_user(x,p,e) unsafe_op_wrap(__get_user(x,p),e)
+      |                                               ^~~~~~~~~~
+lib/iov_iter.c:1666:3: note: in expansion of macro 'unsafe_get_user'
+ 1666 |   unsafe_get_user(buf, &uiov[i].iov_base, uaccess_end);
+      |   ^~~~~~~~~~~~~~~
+lib/iov_iter.c:1666:32: error: invalid use of undefined type 'const struct =
+compat_iovec'
+ 1666 |   unsafe_get_user(buf, &uiov[i].iov_base, uaccess_end);
+      |                                ^
+include/linux/compiler.h:78:42: note: in definition of macro 'unlikely'
+   78 | # define unlikely(x) __builtin_expect(!!(x), 0)
+      |                                          ^
+include/linux/uaccess.h:370:32: note: in expansion of macro 'unsafe_op_wrap'
+  370 | #define unsafe_get_user(x,p,e) unsafe_op_wrap(__get_user(x,p),e)
+      |                                ^~~~~~~~~~~~~~
+arch/arm/include/asm/uaccess.h:238:3: note: in expansion of macro '__get_us=
+er_check'
+  238 |   __get_user_check(x, p);     \
+      |   ^~~~~~~~~~~~~~~~
+arch/arm/include/asm/uaccess.h:296:28: note: in expansion of macro 'get_use=
+r'
+  296 | #define __get_user(x, ptr) get_user(x, ptr)
+      |                            ^~~~~~~~
+include/linux/uaccess.h:370:47: note: in expansion of macro '__get_user'
+  370 | #define unsafe_get_user(x,p,e) unsafe_op_wrap(__get_user(x,p),e)
+      |                                               ^~~~~~~~~~
+lib/iov_iter.c:1666:3: note: in expansion of macro 'unsafe_get_user'
+ 1666 |   unsafe_get_user(buf, &uiov[i].iov_base, uaccess_end);
+      |   ^~~~~~~~~~~~~~~
+lib/iov_iter.c:1666:29: error: invalid use of undefined type 'struct compat=
+_iovec'
+ 1666 |   unsafe_get_user(buf, &uiov[i].iov_base, uaccess_end);
+      |                             ^
+include/linux/compiler.h:78:42: note: in definition of macro 'unlikely'
+   78 | # define unlikely(x) __builtin_expect(!!(x), 0)
+      |                                          ^
+include/linux/uaccess.h:370:32: note: in expansion of macro 'unsafe_op_wrap'
+  370 | #define unsafe_get_user(x,p,e) unsafe_op_wrap(__get_user(x,p),e)
+      |                                ^~~~~~~~~~~~~~
+arch/arm/include/asm/uaccess.h:238:3: note: in expansion of macro '__get_us=
+er_check'
+  238 |   __get_user_check(x, p);     \
+      |   ^~~~~~~~~~~~~~~~
+arch/arm/include/asm/uaccess.h:296:28: note: in expansion of macro 'get_use=
+r'
+  296 | #define __get_user(x, ptr) get_user(x, ptr)
+      |                            ^~~~~~~~
+include/linux/uaccess.h:370:47: note: in expansion of macro '__get_user'
+  370 | #define unsafe_get_user(x,p,e) unsafe_op_wrap(__get_user(x,p),e)
+      |                                               ^~~~~~~~~~
+lib/iov_iter.c:1666:3: note: in expansion of macro 'unsafe_get_user'
+ 1666 |   unsafe_get_user(buf, &uiov[i].iov_base, uaccess_end);
+      |   ^~~~~~~~~~~~~~~
+lib/iov_iter.c:1666:32: error: invalid use of undefined type 'const struct =
+compat_iovec'
+ 1666 |   unsafe_get_user(buf, &uiov[i].iov_base, uaccess_end);
+      |                                ^
+include/linux/compiler.h:78:42: note: in definition of macro 'unlikely'
+   78 | # define unlikely(x) __builtin_expect(!!(x), 0)
+      |                                          ^
+include/linux/uaccess.h:370:32: note: in expansion of macro 'unsafe_op_wrap'
+  370 | #define unsafe_get_user(x,p,e) unsafe_op_wrap(__get_user(x,p),e)
+      |                                ^~~~~~~~~~~~~~
+arch/arm/include/asm/uaccess.h:238:3: note: in expansion of macro '__get_us=
+er_check'
+  238 |   __get_user_check(x, p);     \
+      |   ^~~~~~~~~~~~~~~~
+arch/arm/include/asm/uaccess.h:296:28: note: in expansion of macro 'get_use=
+r'
+  296 | #define __get_user(x, ptr) get_user(x, ptr)
+      |                            ^~~~~~~~
+include/linux/uaccess.h:370:47: note: in expansion of macro '__get_user'
+  370 | #define unsafe_get_user(x,p,e) unsafe_op_wrap(__get_user(x,p),e)
+      |                                               ^~~~~~~~~~
+lib/iov_iter.c:1666:3: note: in expansion of macro 'unsafe_get_user'
+ 1666 |   unsafe_get_user(buf, &uiov[i].iov_base, uaccess_end);
+      |   ^~~~~~~~~~~~~~~
+
+Caused by commit
+
+  99dc3a9dd6ca ("iov_iter: refactor rw_copy_check_uvector and import_iovec")
+
+CONFIG_COMAPT is not set for this build ...
+
+I have added the following hack patch for today.
+
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Date: Mon, 28 Sep 2020 11:25:57 +1000
+Subject: [PATCH] iov_iter: fix build when CONFIG_COMPAT is not set
+
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+---
+ lib/iov_iter.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/lib/iov_iter.c b/lib/iov_iter.c
+index 8a8e25f8e3e8..5892f4c40291 100644
+--- a/lib/iov_iter.c
++++ b/lib/iov_iter.c
+@@ -1648,6 +1648,7 @@ const void *dup_iter(struct iov_iter *new, struct iov=
+_iter *old, gfp_t flags)
+ }
+ EXPORT_SYMBOL(dup_iter);
+=20
++#ifdef CONFIG_COMPAT
+ static int copy_compat_iovec_from_user(struct iovec *iov,
+ 		const struct iovec __user *uvec, unsigned long nr_segs)
+ {
+@@ -1679,7 +1680,8 @@ static int copy_compat_iovec_from_user(struct iovec *=
+iov,
+ 	user_access_end();
+ 	return ret;
+ }
+-	=09
++#endif /* CONFIG_COMPAT */
++
+ static int copy_iovec_from_user(struct iovec *iov,
+ 		const struct iovec __user *uvec, unsigned long nr_segs)
+ {
+@@ -1717,9 +1719,11 @@ struct iovec *iovec_from_user(const struct iovec __u=
+ser *uvec,
+ 			return ERR_PTR(-ENOMEM);
+ 	}
+=20
++#ifdef CONFIG_COMPAT
+ 	if (compat)
+ 		ret =3D copy_compat_iovec_from_user(iov, uvec, nr_segs);
+ 	else
++#endif
+ 		ret =3D copy_iovec_from_user(iov, uvec, nr_segs);
+ 	if (ret) {
+ 		if (iov !=3D fast_iov)
+--=20
+2.28.0
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/qheVJ7xcKeWdDoC54_An1fZ
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9xPP4ACgkQAVBC80lX
+0GzDeAf/azPMUS6TKIx8m9cDbPLiiZXrU0ZaoOBdG0FGVISoxUjPpt7PygnLOgsr
+AA/sQ8cSWIaqhjRIItcAuRHKDrfd+wDw4uqPJEfCdnF+kS3dBtXU26QHfIjtqUAg
+16s+ZhL3KZVbjPQqIKv8k4wd14pAACPGjjZrJUBlvibKBdbcP9PHNfFlf6TvE3rT
+/571otfW/rtZ9d7lx2Aqf5Pa1WgdI4ZxdweFBFOfWMWsu1zFxv1OS9OrGokR+JyH
+afu9bNqFQ8rJ6q3WBKq+9x/TR4OJhKopEhVGFGQontt+5+L1hne7Chwl0i97k1WG
+KUz01iEqohKwIO5hmA4kID2Bqm+JXg==
+=6uo4
+-----END PGP SIGNATURE-----
+
+--Sig_/qheVJ7xcKeWdDoC54_An1fZ--
