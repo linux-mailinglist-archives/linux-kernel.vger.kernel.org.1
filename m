@@ -2,129 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BD8227B6EA
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 23:17:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B4FE27B6F4
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 23:20:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726844AbgI1VRL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 17:17:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46592 "EHLO
+        id S1726917AbgI1VUE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 17:20:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726565AbgI1VRL (ORCPT
+        with ESMTP id S1726656AbgI1VUD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 17:17:11 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BE5EC061755
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 14:17:11 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id o21so1974852qtp.2
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 14:17:11 -0700 (PDT)
+        Mon, 28 Sep 2020 17:20:03 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E24E3C061755
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 14:20:01 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id f18so2327729pfa.10
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 14:20:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=TsieN2AyZd+fHurZfoVnAsK/371QDPaE9PSaaOsF10M=;
-        b=E/E+O1Kdz8L/LgV+e3noNHmCUepRX8tYRdZmhvH1oqH1ALQLGP9YZ/dETKdHtGk05j
-         wpvbZI+tcv1EpJog3kH/xRzfufYZLAbq6RvYEyNhs/6/SDQpmj5TkCNNlF085WCvLpfS
-         QF38VkMXId3KqzhLsBF8KxCGWUfAw8jaSZCwY=
+        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
+        h=content-transfer-encoding:from:mime-version:subject:date:message-id
+         :references:cc:in-reply-to:to;
+        bh=2+2An9KGoSP6S51iGyhlVQStV5BSsILsLY/d1IF6Z40=;
+        b=ow7Yhe7Kf0k5AkDnGt3SMaKY52oPWuvOYXCgPixiZJhdBtyEs4ajDZ+lVZ2HK5V9um
+         /CYJpV5jcUJmFfsyFkk/6/uRPkZERlWO1ugGWNGPbE+Ri+UTEuc8btLpBb/v/n635Z6c
+         ForooQ9Hl6NWPmky+tr4k1swC6ycDacdl2W5LrRRc64Pxn8fow168e8AD0IiNo13i3z7
+         BW2SMZbt89zG7U3c0+C2W/V+/Vx+As4Vwo/Bd11GtEx2eT5xM5VJp5uI3hsbfYgFA09a
+         exwBgdbKqBtA1JWbT/dNnrgAjR9RSIMpEozOo8PY67L8MdL8J2XYOVbdfMDuy3DoRjet
+         eYGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=TsieN2AyZd+fHurZfoVnAsK/371QDPaE9PSaaOsF10M=;
-        b=RSCyNWu/Uv+fDexjGoCT9iDLFHiy+cPqOuwtNnA5tpzRISjiyXRJCpVwdAaLtCUI6j
-         vbQwyx8auxdshJm51KRePDE5q4YAXdblKmyfnMbKr5CHxoovfJqSCk8T2h9KjUYJ/xKP
-         W6m/dRK3JeNHGb3GMmyctTn0GdCyWkLvQBKso58380owCGcz1BwTV7qLd6w3flpRRtTj
-         FKytKXY1c6sA3r9FHk8ePGsrY4pGEwMbt/q0coLpNsMhqU/3uh6Ix+cA4wIlzaAvi2ZV
-         RcqRUOB6kjdiAbNQu9GQPidfi5P2MWvA4UGsJ5rtitsy7LX+MGUfoFH0+an0Km6nBnkh
-         j0PA==
-X-Gm-Message-State: AOAM530TLLVWQCV+cZxGYQNPYXiU9zue7HsHWH4OHSJ53Iox5sDo3hB7
-        PlzOyGkMrupdHESrb6+0E0DXOQ==
-X-Google-Smtp-Source: ABdhPJzchTLFzFK6iluf3Jf7o3/ZyyOrcF3IVJNDVf1TIaEdhxhcd/ElF3y6FMMqh5p80QFSd1shxA==
-X-Received: by 2002:aed:25d1:: with SMTP id y17mr11236qtc.375.1601327830218;
-        Mon, 28 Sep 2020 14:17:10 -0700 (PDT)
-Received: from localhost ([2620:15c:6:12:cad3:ffff:feb3:bd59])
-        by smtp.gmail.com with ESMTPSA id x26sm2483053qtr.78.2020.09.28.14.17.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Sep 2020 14:17:09 -0700 (PDT)
-Date:   Mon, 28 Sep 2020 17:17:09 -0400
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Shuah Khan <skhan@linuxfoundation.org>, corbet@lwn.net,
-        gregkh@linuxfoundation.org, shuah@kernel.org, rafael@kernel.org,
-        johannes@sipsolutions.net, lenb@kernel.org, james.morse@arm.com,
-        tony.luck@intel.com, bp@alien8.de, arve@android.com,
-        tkjos@android.com, maco@android.com, christian@brauner.io,
-        hridya@google.com, surenb@google.com, minyard@acm.org,
-        arnd@arndb.de, mchehab@kernel.org, rric@kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-acpi@vger.kernel.org,
-        devel@driverdev.osuosl.org,
-        openipmi-developer@lists.sourceforge.net,
-        linux-edac@vger.kernel.org
-Subject: Re: [PATCH 00/11] Introduce Simple atomic and non-atomic counters
-Message-ID: <20200928211709.GA2641213@google.com>
-References: <cover.1601073127.git.skhan@linuxfoundation.org>
- <20200927233526.GA500818@google.com>
- <202009281331.444F36A7B@keescook>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202009281331.444F36A7B@keescook>
+        h=x-gm-message-state:content-transfer-encoding:from:mime-version
+         :subject:date:message-id:references:cc:in-reply-to:to;
+        bh=2+2An9KGoSP6S51iGyhlVQStV5BSsILsLY/d1IF6Z40=;
+        b=RqcDKOdKAgpOxvVt+lMANCzhCNwOsiVHiSRySHbL7O+RMa+Q7lrsmWFBEUXRlJJQSG
+         wtXBuIpVmEP1KCuv4Gk4Zj5xL9ColSJVdpkGc19xVOw11hNFiAoXfUpb+7wRz8GDV4H4
+         0V8LGXB0FqYy1fD/M+BeR2DcIvfJcKKWzVef9tpQdkloTqfjjY7F3oDmJjDQ19v2EVyM
+         jGHrO2099ucRcD5PDEJxz4cxsl/Q2QUupaDMlPaQtYcjkTexwrZ8th4rwuTflwDcZ0y8
+         3CWrQnWvNJjfC9uk33VCme9c19qvBLyVF0frUBoIeM8hAJT7qwGJalqhJ/VjPuStzxvs
+         beWA==
+X-Gm-Message-State: AOAM531QZKkJ/kL7pjAzjKMmVOMZ2AA+A2yuwMKXJHU8p5W+5Bbj1BBi
+        2msF7PRi1uJudHQhMBmYisQ8qw==
+X-Google-Smtp-Source: ABdhPJzzZ29f+TNLY8J/8+49h2cFrjiLAWe/6D4b9LMUN1e94ZG/nh5HwikFLAMYARN+ciAZku1SNw==
+X-Received: by 2002:a17:902:be0c:b029:d2:8ceb:f39c with SMTP id r12-20020a170902be0cb02900d28cebf39cmr1242485pls.71.1601328001370;
+        Mon, 28 Sep 2020 14:20:01 -0700 (PDT)
+Received: from ?IPv6:2600:1010:b00b:15a5:2004:5f47:98e:6069? ([2600:1010:b00b:15a5:2004:5f47:98e:6069])
+        by smtp.gmail.com with ESMTPSA id j12sm261750pjs.21.2020.09.28.14.19.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 28 Sep 2020 14:20:00 -0700 (PDT)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   Andy Lutomirski <luto@amacapital.net>
+Mime-Version: 1.0 (1.0)
+Subject: Re: general protection fault in perf_misc_flags
+Date:   Mon, 28 Sep 2020 14:19:57 -0700
+Message-Id: <15CE600C-3006-4C4D-A65E-9B608D55DD35@amacapital.net>
+References: <CAKwvOdmTm2rVdc2JTSVVadKP3DONRcPXSE-s3tFPqHgCSieH7Q@mail.gmail.com>
+Cc:     Dmitry Vyukov <dvyukov@google.com>, Borislav Petkov <bp@alien8.de>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        syzbot <syzbot+ce179bc99e64377c24bc@syzkaller.appspotmail.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Jiri Olsa <jolsa@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+In-Reply-To: <CAKwvOdmTm2rVdc2JTSVVadKP3DONRcPXSE-s3tFPqHgCSieH7Q@mail.gmail.com>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+X-Mailer: iPhone Mail (18A393)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 01:34:31PM -0700, Kees Cook wrote:
-> On Sun, Sep 27, 2020 at 07:35:26PM -0400, Joel Fernandes wrote:
-> > On Fri, Sep 25, 2020 at 05:47:14PM -0600, Shuah Khan wrote:
-> > > This patch series is a result of discussion at the refcount_t BOF
-> > > the Linux Plumbers Conference. In this discussion, we identified
-> > > a need for looking closely and investigating atomic_t usages in
-> > > the kernel when it is used strictly as a counter without it
-> > > controlling object lifetimes and state changes.
-> > > 
-> > > There are a number of atomic_t usages in the kernel where atomic_t api
-> > > is used strictly for counting and not for managing object lifetime. In
-> > > some cases, atomic_t might not even be needed.
-> > >     
-> > > The purpose of these counters is twofold: 1. clearly differentiate
-> > > atomic_t counters from atomic_t usages that guard object lifetimes,
-> > > hence prone to overflow and underflow errors. It allows tools that scan
-> > > for underflow and overflow on atomic_t usages to detect overflow and
-> > > underflows to scan just the cases that are prone to errors. 2. provides
-> > > non-atomic counters for cases where atomic isn't necessary.
-> > 
-> > Nice series :)
-> > 
-> > It appears there is no user of counter_simple in this series other than the
-> > selftest. Would you be planning to add any conversions in the series itself,
-> > for illustration of use? Sorry if I missed a usage.
-> > 
-> > Also how do we guard against atomicity of counter_simple RMW operations? Is
-> > the implication that it should be guarded using other synchronization to
-> > prevent lost-update problem?
-> > 
-> > Some more comments:
-> > 
-> > 1.  atomic RMW operations that have a return value are fully ordered. Would
-> >     you be adding support to counter_simple for such ordering as well, for
-> >     consistency?
-> 
-> No -- there is no atomicity guarantee for counter_simple. I would prefer
-> counter_simple not exist at all, specifically for this reason.
 
-Yeah I am ok with it not existing, especially also as there are no examples
-of its conversion/usage in the series.
+> On Sep 28, 2020, at 1:52 PM, Nick Desaulniers <ndesaulniers@google.com> wr=
+ote:
+>=20
+> =EF=BB=BFOn Mon, Sep 28, 2020 at 3:34 AM 'Dmitry Vyukov' via Clang Built L=
+inux
+> <clang-built-linux@googlegroups.com> wrote:
+>>=20
+>>> On Mon, Sep 28, 2020 at 10:54 AM Borislav Petkov <bp@alien8.de> wrote:
+>>>=20
+>>> On Mon, Sep 28, 2020 at 10:40:19AM +0200, Dmitry Vyukov wrote:
+>>>> I meant the kernel self-corrupts itself, that just wasn't detected by
+>>>> KASAN, page protections, etc.
+>>>=20
+>>> Well, Nick already asked this but we're marking all kernel text RO early=
 
-> > 2. I felt counter_atomic and counter_atomic64 would be nice equivalents to
-> >    the atomic and atomic64 naming currently used (i.e. dropping the '32').
-> >    However that is just my opinion and I am ok with either naming.
-> 
-> I had asked that they be size-named to avoid any confusion (i.e. we're
-> making a new API).
+>>> during boot. So it either is happening before that or something else
+>>> altogether is going on.
+>=20
+>> On Sun, Sep 27, 2020 at 11:06 PM 'Dmitry Vyukov' via Clang Built Linux
+>> <clang-built-linux@googlegroups.com> wrote:
+>>=20
+>> Interestingly there is a new crash, which looks similar:
+>>=20
+>> general protection fault in map_vdso
+>> https://syzkaller.appspot.com/bug?extid=3Dc2ae01c2b1b385384a06
+>>=20
+>> The code is also with 4 0's:
+>> Code: 00 00 00 48 b8 00 00 00 00 00 fc ff df 41 57 49 89 ff 41 56 41
+>> 55 41 54 55 65 48 8b 2c 25 c0 fe 01 00 48 8d bd 28 04 00 00 53 <48> 00
+>> 00 00 00 fa 48 83 ec 10 48 c1 ea 03 80 3c 02 00 0f 85 51 02
+>>=20
+>> But it happened with gcc.
+>>=20
+>> Also I found this older one:
+>> general protection fault in map_vdso_randomized
+>> https://syzkaller.appspot.com/bug?id=3D8366fd024559946137b9db23b26fd2235d=
+43b383
+>>=20
+>> which also has code smashed and happened with gcc:
+>> Code: 00 fc ff df 48 89 f9 48 c1 e9 03 80 3c 01 00 0f 85 eb 00 00 00
+>> 65 48 8b 1c 25 c0 fe 01 00 48 8d bb 28 04 00 00 41 2b 54 24 20 <00> 00
+>> 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>=20
+> If this is related to vdso's, they seem mapped as `r-xp` (not `w):
+> $ sudo cat /proc/1/maps | grep vdso
+> 7ffc667f5000-7ffc667f7000 r-xp 00000000 00:00 0                          [=
+vdso]
+>=20
+> map_vdso() in arch/x86/entry/vdso/vma.c doesn't map the VMA as
+> writable, but it uses VM_MAYWRITE with a comment about GDB setting
+> breakpoints.
+>=20
+> So it sounds like the page protections on the vdso can be changed at
+> runtime (via mprotect).  Maybe syzkaller is tickling that first?
+>=20
+> map_vdso_randomized() does call map_vdso().  Maybe if we mprotect the
+> vdso to be writable, it may be easier to spot the write.
+>=20
+>=20
 
-Works for me.
+The kernel shouldn=E2=80=99t be executing the vDSO code.  Unless I=E2=80=99v=
+e misread it, Te crash is that the map_vdso() text itself was corrupted.  Th=
+is isn=E2=80=99t the same thing.
 
-Cheers,
-
- - Joel
-
+The VM_MAYWRITE means that a program may CoW the page and write to the copy,=
+ which still won=E2=80=99t allow changing the vDSO text or executing it insi=
+de the kernel.=
