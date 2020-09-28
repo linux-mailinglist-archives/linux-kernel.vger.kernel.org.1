@@ -2,73 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A677127AA27
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 11:02:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E38CE27AA31
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 11:04:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726769AbgI1JCB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 05:02:01 -0400
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:43440 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726328AbgI1JCA (ORCPT
+        id S1726601AbgI1JEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 05:04:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46154 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726465AbgI1JE2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 05:02:00 -0400
-Received: by mail-wr1-f67.google.com with SMTP id k15so312562wrn.10;
-        Mon, 28 Sep 2020 02:01:59 -0700 (PDT)
+        Mon, 28 Sep 2020 05:04:28 -0400
+Received: from mail-vk1-xa43.google.com (mail-vk1-xa43.google.com [IPv6:2607:f8b0:4864:20::a43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AF76C0613CE
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 02:04:28 -0700 (PDT)
+Received: by mail-vk1-xa43.google.com with SMTP id c63so1374631vkb.7
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 02:04:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=S7pENcmmNgOoqlL1+ZG5YXU2ecSXuvsW0dZ6tL5rYFY=;
+        b=iqd29t5mDGOgpna+dqL33C997s6TDn5QnSW5JQ985xPlvVqWhqjJ3+MsFOzijTtu6n
+         2oXQ0eov4XdPLwRGfZDm+5jkLPNiYkJhccH0RmK7ZdLMV8cophAkURcQutBN5v8VLgNj
+         t6lxjxwGkr4iQSEyVhfTIU+sM2FRd008Xy8uapCYwAapPl7ph5Pt3X1P+yHe2WJDz/G2
+         fnCP2PVWQZvU0UJzQSahopKJGCPQXFmeI2i8Pr0/9tNjrTzllqGCiAEQ8OqrO7rjILSP
+         9RRvUloZ3yo/feovRLhHw3bxDTOGfsEfFHRiOmy4S4ascfWtajKpCUQpl4DtZa0kru4k
+         PK5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=61Wao93dAT3m4CWN1ASDh+Q66ZqTfMpU2Ii242ntq0Q=;
-        b=HSGE8kUZgpXqDKtQ5BJqJxv8ooXa8rTBRSjHQZjTdvsZ7xQjynfAPR+YbDVr6LczGr
-         /5J1szQwomKC4ggY5I6WFRcQkpUY+tuE/Epnt0q8twiiepgMkP0Y4bxeSnuh6Xzu9jYQ
-         rvf7hYxBWuzeZCVYFGZDZxYES3zPzsMU/zFbN2k3u9E+k9X4Pu03nn1DdLvaafxDtQ0c
-         WRdlI8POn5m/SvMRpN6Xxze7VPCAphSnSD58eTmTHbdQImpGKzk7A9WR7QNO10JAf8F/
-         iJjmk8hL6RScvw2p8lrzC6EUkyUXCsbu3r55hOYWvqjK+8qIkhCZC/OEZrITB7hILG4E
-         eAlg==
-X-Gm-Message-State: AOAM531oXiPE05UvX2bLeziTyMTqn7ORrmRvPqcAXNiaNsW/j9hMadhZ
-        bSN4xTptUSjryFxPMDWsY8w=
-X-Google-Smtp-Source: ABdhPJyGYOW0j9vRcAgJG8TPDP6El2ZizX6OIckpwOlKn4tNmxJu/SiNqJmSgKaBHedAe96MYiF3FA==
-X-Received: by 2002:a5d:5404:: with SMTP id g4mr513614wrv.134.1601283718760;
-        Mon, 28 Sep 2020 02:01:58 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id y1sm350748wma.36.2020.09.28.02.01.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Sep 2020 02:01:58 -0700 (PDT)
-Date:   Mon, 28 Sep 2020 09:01:56 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     joseph.salisbury@microsoft.com
-Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        wei.liu@kernel.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, hpa@zytor.com, mikelley@microsoft.com,
-        pbonzini@redhat.com, sean.j.christopherson@intel.com,
-        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
-        joro@8bytes.org, x86@kernel.org, linux-hyperv@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Subject: Re: [PATCH] x86/hyperv: Remove aliases with X64 in their name
-Message-ID: <20200928090156.bgg5x54whhvxwnwr@liuwe-devbox-debian-v2>
-References: <1601130386-11111-1-git-send-email-jsalisbury@linux.microsoft.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=S7pENcmmNgOoqlL1+ZG5YXU2ecSXuvsW0dZ6tL5rYFY=;
+        b=Rv4gyL0FNBQVluaMQEo0cp4YnwjiaMles+yPTYnDdWzb7mi4bbYhWtrdkXcmhVKQkX
+         DoXQlXsfT+EETzVppGd6tb8ZOINmxoAvPax3jpZchwje0ZgHoyahk8QU+HcUFPn7KzA/
+         YXehAIhMeqx5LiWQs/GufPa8B2Hb2rCxhDHjxoXJqbaUYnXliw85iU2QOJtVT/RNEGPC
+         iP7ChBDp5aEr5QcZRksDuXih6Ow84VYpn1U4D6hk1MiYrdGQuLtcGlcp3fdNuTiz3hB9
+         f+MV15t7usT63g7Ua1OhGqBmDg5ki0SMUAAbOkfqMdCOeBliQ0hjRbBT/5Lt1NE6i4eF
+         hhPg==
+X-Gm-Message-State: AOAM531n3NegEkUV4rCnYVPSR5X8NDg/UqR1spgSDyWDqnb+RpqpKX5i
+        FPqA2Z2oiz/7Z1LA/eq6yDnvVseJR+4/wHGMGuXq/g==
+X-Google-Smtp-Source: ABdhPJxHK8RbAlpRwlzO6tBh7XUOKN1wlZhR3fkmpMHAJ9DGs5PSbq3MYA1AOvuE9l+LIbKbS8k0TJrL/PCnHO7DnDg=
+X-Received: by 2002:a1f:6ec4:: with SMTP id j187mr4294515vkc.15.1601283867298;
+ Mon, 28 Sep 2020 02:04:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1601130386-11111-1-git-send-email-jsalisbury@linux.microsoft.com>
-User-Agent: NeoMutt/20180716
+References: <20200924110449.329523-1-ulf.hansson@linaro.org>
+ <20200924110449.329523-4-ulf.hansson@linaro.org> <DB6PR0402MB2760BD51916BEA5DB80A268188360@DB6PR0402MB2760.eurprd04.prod.outlook.com>
+ <CAPDyKFrrLq6mPCsSoRBBmgMxSvC4xeiSedi1c5CsEWF=+f73mw@mail.gmail.com> <DB6PR0402MB2760B91DB92A5307E12D59BB88360@DB6PR0402MB2760.eurprd04.prod.outlook.com>
+In-Reply-To: <DB6PR0402MB2760B91DB92A5307E12D59BB88360@DB6PR0402MB2760.eurprd04.prod.outlook.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Mon, 28 Sep 2020 11:03:51 +0200
+Message-ID: <CAPDyKFrb7pv__AOpDRtf-psr9x_pseSCnPG1xe7pxs88m42JFQ@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] PM / Domains: Add support for PM domain on/off
+ notifiers for genpd
+To:     Peng Fan <peng.fan@nxp.com>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Kevin Hilman <khilman@kernel.org>,
+        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Lorenzo Pieralisi <Lorenzo.Pieralisi@arm.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Lina Iyer <ilina@codeaurora.org>,
+        Lukasz Luba <lukasz.luba@arm.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 26, 2020 at 07:26:26AM -0700, Joseph Salisbury wrote:
-> From: Joseph Salisbury <joseph.salisbury@microsoft.com>
-> 
-> In the architecture independent version of hyperv-tlfs.h, commit c55a844f46f958b
-> removed the "X64" in the symbol names so they would make sense for both x86 and
-> ARM64.  That commit added aliases with the "X64" in the x86 version of hyperv-tlfs.h 
-> so that existing x86 code would continue to compile.
-> 
-> As a cleanup, update the x86 code to use the symbols without the "X64", then remove 
-> the aliases.  There's no functional change.
-> 
-> Signed-off-by: Joseph Salisbury <joseph.salisbury@microsoft.com>
+On Fri, 25 Sep 2020 at 16:30, Peng Fan <peng.fan@nxp.com> wrote:
+>
+> > Subject: Re: [PATCH v2 3/3] PM / Domains: Add support for PM domain on/off
+> > notifiers for genpd
+> >
+> > On Fri, 25 Sep 2020 at 08:08, Peng Fan <peng.fan@nxp.com> wrote:
+> > >
+> > > Hi Ulf,
+> > >
+> > > > Subject: [PATCH v2 3/3] PM / Domains: Add support for PM domain
+> > > > on/off notifiers for genpd
+> > > >
+> > > > A device may have specific HW constraints that must be obeyed to,
+> > > > before its corresponding PM domain (genpd) can be powered off - and
+> > > > vice verse at power on. These constraints can't be managed through
+> > > > the regular runtime PM based deployment for a device, because the
+> > > > access pattern for it, isn't always request based. In other words,
+> > > > using the runtime PM callbacks to deal with the constraints doesn't work
+> > for these cases.
+> > >
+> > > Could the notification be added before/after power on, and
+> > > before/after power off? not just after power on and before power off?
+> > >
+> > > Our SoC has a requirement that before power on/off the specific
+> > > module, the corresponding clk needs to be on to make sure the hardware
+> > > async bridge could finish handshake.
+> >
+> > Thanks for your comments!
+> >
+> > May I ask, to be sure - does the clock correspond to the genpd provider or is it
+> > a clock for the genpd consumer device?
+>
+> It is the clock for the genpd consumer device.
+>
+> >
+> > If the former, couldn't the clock be managed from the ->power_on|off()
+> > callbacks for the genpd provider?
+>
+> Sadly not former.
+>
+> Our current solution is to add a clock property to the power domain node(NXP ARM SIP
+> based power domain driver), and when power_on/off, we enable/disable the clocks.
+>
+> But we are moving to use SCMI power domain, and leave the clock in Linux,
+> Scmi power domain driver is a generic driver, and we are not able to mix clock
+> parts in the driver which is bad.
+>
+> Your patch gives me a light that if we could use notification to let consumer
+> device driver do the clock enable/disable for each power on and power off.
+> That would be great.
 
-Applied to hyperv-next. Thanks.
+Thanks for clarifying. Let me re-spin the patch to address your points.
 
-Wei.
+[...]
+
+Kind regards
+Uffe
