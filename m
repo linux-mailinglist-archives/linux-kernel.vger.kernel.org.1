@@ -2,89 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F358727A4EF
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 02:45:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A07B627A4F3
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 02:52:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726476AbgI1Ao4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 20:44:56 -0400
-Received: from mga05.intel.com ([192.55.52.43]:37588 "EHLO mga05.intel.com"
+        id S1726461AbgI1Awu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 20:52:50 -0400
+Received: from crapouillou.net ([89.234.176.41]:41284 "EHLO crapouillou.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726440AbgI1Aoz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Sep 2020 20:44:55 -0400
-IronPort-SDR: j3U0gIa+fDtmKObWADo8VGRBgeUg+roRewPRo7WGRxVnGR9/N7oOmp4+mvHNh0OBcmlvzXVCBq
- MzducvvSUkHg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9757"; a="246663602"
-X-IronPort-AV: E=Sophos;i="5.77,312,1596524400"; 
-   d="scan'208";a="246663602"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2020 17:44:55 -0700
-IronPort-SDR: jCuOEo1H37AGRm5VTOBT/P0142AXFxLfU9ZTBX0RgJMQ/NoSrMy/M+h173kEVZywHEwb0igdXI
- P/of59sdy9YA==
-X-IronPort-AV: E=Sophos;i="5.77,312,1596524400"; 
-   d="scan'208";a="488350016"
-Received: from memara-mobl.ger.corp.intel.com (HELO localhost) ([10.252.49.157])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2020 17:44:49 -0700
-Date:   Mon, 28 Sep 2020 03:44:50 +0300
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, akpm@linux-foundation.org,
-        andriy.shevchenko@linux.intel.com, asapek@google.com,
-        cedric.xing@intel.com, chenalexchen@google.com,
-        conradparker@google.com, cyhanish@google.com,
-        dave.hansen@intel.com, haitao.huang@intel.com,
-        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
-        kmoy@google.com, ludloff@google.com, luto@kernel.org,
-        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
-        rientjes@google.com, yaozhangx@google.com
-Subject: Re: [PATCH v38 24/24] x86/sgx: Update MAINTAINERS
-Message-ID: <20200928004450.GA6704@linux.intel.com>
-References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
- <20200915112842.897265-25-jarkko.sakkinen@linux.intel.com>
- <20200925223753.GA9998@linux.intel.com>
+        id S1726396AbgI1Awt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Sep 2020 20:52:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
+        s=mail; t=1601254367; h=from:from:sender:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=uU9mEhp+bofOdqwM+UmLX04vTcdRLkBuJKUG0hs8TDk=;
+        b=kb0XHpdJ2nM/+kdvGWkHKWf79KrlAV78MrWa/VnHxVCIAQ4Qe/7LynhiYK4J0I8JoKiTtQ
+        G2uqVi2BK39a5Etx0Q2xkkFIIgtscjAwjGYPheZr5meefwYjiF41gS99cNr9x80EoMb6Tc
+        3HJgFVz3JjYqdMuZVEx3+UySHVSwv7U=
+Date:   Mon, 28 Sep 2020 02:52:35 +0200
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH] usb: musb: Fix runtime PM race in musb_queue_resume_work
+To:     Bin Liu <b-liu@ti.com>
+Cc:     Tony Lindgren <tony@atomide.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Johan Hovold <johan@kernel.org>, od@zcrc.me,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Message-Id: <NRFCHQ.NJA64RB57HU9@crapouillou.net>
+In-Reply-To: <20200817105926.GF2994@atomide.com>
+References: <20200809125359.31025-1-paul@crapouillou.net>
+        <20200817105926.GF2994@atomide.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200925223753.GA9998@linux.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 03:37:54PM -0700, Sean Christopherson wrote:
-> On Tue, Sep 15, 2020 at 02:28:42PM +0300, Jarkko Sakkinen wrote:
-> > Add the maintainer information for the SGX subsystem.
-> > 
-> > Cc: Thomas Gleixner <tglx@linutronix.de>
-> > Cc: Borislav Petkov <bp@alien8.de>
-> > Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-> > ---
-> >  MAINTAINERS | 11 +++++++++++
-> >  1 file changed, 11 insertions(+)
-> > 
-> > diff --git a/MAINTAINERS b/MAINTAINERS
-> > index 3b186ade3597..1d4daeb12d0a 100644
-> > --- a/MAINTAINERS
-> > +++ b/MAINTAINERS
-> > @@ -9051,6 +9051,17 @@ F:	Documentation/x86/intel_txt.rst
-> >  F:	arch/x86/kernel/tboot.c
-> >  F:	include/linux/tboot.h
-> >  
-> > +INTEL SGX
-> > +M:	Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-> > +M:	Sean Christopherson <sean.j.christopherson@intel.com>
-> > +L:	linux-sgx@vger.kernel.org
-> > +S:	Maintained
-> > +Q:	https://patchwork.kernel.org/project/intel-sgx/list/
-> > +T:	git https://github.com/jsakkine-intel/linux-sgx.git
-> 
-> This is stale, you moved your tree to kernel.org.
+Hi,
 
-That's correct. It is already updated in my GIT tree:
+Le lun. 17 ao=FBt 2020 =E0 13:59, Tony Lindgren <tony@atomide.com> a=20
+=E9crit :
+> * Paul Cercueil <paul@crapouillou.net> [200809 12:54]:
+>>  musb_queue_resume_work() would call the provided callback if the=20
+>> runtime
+>>  PM status was 'active'. Otherwise, it would enqueue the request if=20
+>> the
+>>  hardware was still suspended (musb->is_runtime_suspended is true).
+>>=20
+>>  This causes a race with the runtime PM handlers, as it is possible=20
+>> to be
+>>  in the case where the runtime PM status is not yet 'active', but the
+>>  hardware has been awaken (PM resume function has been called).
+>>=20
+>>  When hitting the race, the resume work was not enqueued, which=20
+>> probably
+>>  triggered other bugs further down the stack. For instance, a telnet
+>>  connection on Ingenic SoCs would result in a 50/50 chance of a
+>>  segmentation fault somewhere in the musb code.
+>>=20
+>>  Rework the code so that either we call the callback directly if
+>>  (musb->is_runtime_suspended =3D=3D 0), or enqueue the query otherwise.
+>=20
+> Yes we should use is_runtime_suspended, thanks for fixing it.
+> Things still work for me so:
+>=20
+> Reviewed-by: Tony Lindgren <tony@atomide.com>
+> Tested-by: Tony Lindgren <tony@atomide.com>
 
-https://git.kernel.org/pub/scm/linux/kernel/git/jarkko/linux-sgx.git/tree/MAINTAINERS
+Bin, can you take this patch?
 
-/Jarkko
+Thanks,
+-Paul
+
+
