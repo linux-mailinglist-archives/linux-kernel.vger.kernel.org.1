@@ -2,95 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16F9127ADA0
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 14:16:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76F4727ADA4
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 14:17:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726566AbgI1MQx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 08:16:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53610 "EHLO mail.kernel.org"
+        id S1726596AbgI1MRX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 08:17:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53924 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726281AbgI1MQw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 08:16:52 -0400
-Received: from [192.168.0.112] (75-58-59-55.lightspeed.rlghnc.sbcglobal.net [75.58.59.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1726409AbgI1MRX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 08:17:23 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A98702083B;
-        Mon, 28 Sep 2020 12:16:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 20A762083B;
+        Mon, 28 Sep 2020 12:17:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601295412;
-        bh=1IDcn/q9rvVLSbuuWRAYiXlIVFFdblHW6YdWWqmHXvc=;
-        h=Subject:From:To:Cc:References:Date:In-Reply-To:From;
-        b=B4QW4EmqoIcJJ8a6Msqln+1qNhbPBAe2XhFYFOn0A49E5T21PqKc+bANPZaIwQ8h5
-         mVvQCRvaXc3asZ0o2n5NAQ4lrIModMq1WCslu3xp9QahRcA1iRs1mwTjuhELVr9c7z
-         XiEQDkNLfnUsFqTyqj9CaEl21uHUT5UmWFiauAiQ=
-Subject: Re: [PATCH v3 1/1] PCI/ERR: Fix reset logic in pcie_do_recovery()
- call
-From:   Sinan Kaya <okaya@kernel.org>
-To:     "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>
-Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ashok.raj@intel.com,
-        Jay Vosburgh <jay.vosburgh@canonical.com>
-References: <20200922233333.GA2239404@bjorn-Precision-5520>
- <704c39bf-6f0c-bba3-70b8-91de6a445e43@linux.intel.com>
- <3d27d0a4-2115-fa72-8990-a84910e4215f@kernel.org>
- <d5aa53dc-0c94-e57a-689a-1c1f89787af1@linux.intel.com>
- <526dc846-b12b-3523-4995-966eb972ceb7@kernel.org>
- <1fdcc4a6-53b7-2b5f-8496-f0f09405f561@linux.intel.com>
- <aef0b9aa-59f5-9ec3-adac-5bc366b362e0@kernel.org>
- <a647f485-8db4-db45-f404-940b55117b53@linux.intel.com>
- <aefd8842-90c4-836a-b43a-f21c5428d2ba@kernel.org>
- <95e23cb5-f6e1-b121-0de8-a2066d507d9c@linux.intel.com>
- <65238d0b-0a39-400a-3a18-4f68eb554538@kernel.org>
- <4ae86061-2182-bcf1-ebd7-485acf2d47b9@linux.intel.com>
- <f360165e-5f73-057c-efd1-557b5e5027eb@kernel.org>
- <8beca800-ffb5-c535-6d43-7e750cbf06d0@linux.intel.com>
- <44f0cac5-8deb-1169-eb6d-93ac4889fe7e@kernel.org>
- <3bc0fd23-8ddd-32c5-1dd9-4d5209ea68c3@linux.intel.com>
- <a2bbdfed-fb17-51dc-8ae4-55d924c13211@kernel.org>
-Autocrypt: addr=okaya@kernel.org; keydata=
- mQENBFrnOrUBCADGOL0kF21B6ogpOkuYvz6bUjO7NU99PKhXx1MfK/AzK+SFgxJF7dMluoF6
- uT47bU7zb7HqACH6itTgSSiJeSoq86jYoq5s4JOyaj0/18Hf3/YBah7AOuwk6LtV3EftQIhw
- 9vXqCnBwP/nID6PQ685zl3vH68yzF6FVNwbDagxUz/gMiQh7scHvVCjiqkJ+qu/36JgtTYYw
- 8lGWRcto6gr0eTF8Wd8f81wspmUHGsFdN/xPsZPKMw6/on9oOj3AidcR3P9EdLY4qQyjvcNC
- V9cL9b5I/Ud9ghPwW4QkM7uhYqQDyh3SwgEFudc+/RsDuxjVlg9CFnGhS0nPXR89SaQZABEB
- AAG0HVNpbmFuIEtheWEgPG9rYXlhQGtlcm5lbC5vcmc+iQFOBBMBCAA4FiEEYdOlMSE+a7/c
- ckrQvGF4I+4LAFcFAlztcAoCGwMFCwkIBwIGFQoJCAsCBBYCAwECHgECF4AACgkQvGF4I+4L
- AFfidAf/VKHInxep0Z96iYkIq42432HTZUrxNzG9IWk4HN7c3vTJKv2W+b9pgvBF1SmkyQSy
- 8SJ3Zd98CO6FOHA1FigFyZahVsme+T0GsS3/OF1kjrtMktoREr8t0rK0yKpCTYVdlkHadxmR
- Qs5xLzW1RqKlrNigKHI2yhgpMwrpzS+67F1biT41227sqFzW9urEl/jqGJXaB6GV+SRKSHN+
- ubWXgE1NkmfAMeyJPKojNT7ReL6eh3BNB/Xh1vQJew+AE50EP7o36UXghoUktnx6cTkge0ZS
- qgxuhN33cCOU36pWQhPqVSlLTZQJVxuCmlaHbYWvye7bBOhmiuNKhOzb3FcgT7kBDQRa5zq1
- AQgAyRq/7JZKOyB8wRx6fHE0nb31P75kCnL3oE+smKW/sOcIQDV3C7mZKLf472MWB1xdr4Tm
- eXeL/wT0QHapLn5M5wWghC80YvjjdolHnlq9QlYVtvl1ocAC28y43tKJfklhHiwMNDJfdZbw
- 9lQ2h+7nccFWASNUu9cqZOABLvJcgLnfdDpnSzOye09VVlKr3NHgRyRZa7me/oFJCxrJlKAl
- 2hllRLt0yV08o7i14+qmvxI2EKLX9zJfJ2rGWLTVe3EJBnCsQPDzAUVYSnTtqELu2AGzvDiM
- gatRaosnzhvvEK+kCuXuCuZlRWP7pWSHqFFuYq596RRG5hNGLbmVFZrCxQARAQABiQEfBBgB
- CAAJBQJa5zq1AhsMAAoJELxheCPuCwBX2UYH/2kkMC4mImvoClrmcMsNGijcZHdDlz8NFfCI
- gSb3NHkarnA7uAg8KJuaHUwBMk3kBhv2BGPLcmAknzBIehbZ284W7u3DT9o1Y5g+LDyx8RIi
- e7pnMcC+bE2IJExCVf2p3PB1tDBBdLEYJoyFz/XpdDjZ8aVls/pIyrq+mqo5LuuhWfZzPPec
- 9EiM2eXpJw+Rz+vKjSt1YIhg46YbdZrDM2FGrt9ve3YaM5H0lzJgq/JQPKFdbd5MB0X37Qc+
- 2m/A9u9SFnOovA42DgXUyC2cSbIJdPWOK9PnzfXqF3sX9Aol2eLUmQuLpThJtq5EHu6FzJ7Y
- L+s0nPaNMKwv/Xhhm6Y=
-Message-ID: <1200962b-824c-bc38-36b1-d35a3208f948@kernel.org>
-Date:   Mon, 28 Sep 2020 08:16:50 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        s=default; t=1601295442;
+        bh=dBmPwjXMITa6gYn63Dk0BO4f8iE4EkQ09/cGjU/9nM4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=T706bGfADXUPSJiVmZgarIiwqgurAF9VmF711JAjYYZ41GZWVnBhm97INxa0Geevq
+         O8A/P6LcRd+pbv5cveKhk0XmBifPGLpTF2gavOLmloh6vY42vbVOC2tRgglC1xyUYm
+         rYnsZqC+Bgt7Dqvei+TWNPuFYawybsVLyyQ3C7yY=
+Date:   Mon, 28 Sep 2020 14:17:29 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Ajay Kaher <akaher@vmware.com>
+Cc:     b.zolnierkie@samsung.com, daniel.vetter@ffwll.ch,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        torvalds@linux-foundation.org, w@1wt.eu, yuanmingbuaa@gmail.com,
+        srivatsab@vmware.com, srivatsa@csail.mit.edu
+Subject: Re: [PATCH 4.4 20/46] fbcon: remove soft scrollback code
+Message-ID: <20200928121729.GA661457@kroah.com>
+References: <20200921162034.253730633@linuxfoundation.org>
+ <1601273217-47349-1-git-send-email-akaher@vmware.com>
 MIME-Version: 1.0
-In-Reply-To: <a2bbdfed-fb17-51dc-8ae4-55d924c13211@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1601273217-47349-1-git-send-email-akaher@vmware.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/28/2020 7:17 AM, Sinan Kaya wrote:
-> This should remove/rescan logic should be inside DPC's slot_reset()
-> function BTW. Not here.
+On Mon, Sep 28, 2020 at 11:36:57AM +0530, Ajay Kaher wrote:
+> > @@ -3378,7 +3054,6 @@ static const struct consw fb_con = {
+> >  	.con_font_default	= fbcon_set_def_font,
+> >  	.con_font_copy 		= fbcon_copy_font,
+> >  	.con_set_palette 	= fbcon_set_palette,
+> > -	.con_scrolldelta 	= fbcon_scrolldelta,
+> >  	.con_set_origin 	= fbcon_set_origin,
+> >  	.con_invert_region 	= fbcon_invert_region,
+> >  	.con_screen_pos 	= fbcon_screen_pos,
+> 
+> If I am not wrong, this change creates crash in v4.4.y.
+> As before calling con_scrolldelta, NULL check is missing inside
+> console_callback() for v4.4.y, refer:
+> https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/drivers/tty/vt/vt.c?h=linux-4.4.y#n2487
+> 
+> This NULL check was added in commit 97293de977365fe672daec2523e66ef457104921,
+> and this is not merged to v4.4.y
 
-Correct function name is dpc_handler().
+Good catch, will go queue up that portion of that commit to 4.4.y now,
+thanks!
 
-I hope I did not create confusion with slot_reset() that gets called for
-each driver post recovery.
+greg k-h
