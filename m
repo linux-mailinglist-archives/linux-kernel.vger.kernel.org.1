@@ -2,94 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A86727B189
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 18:13:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49CA027B18D
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 18:14:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726460AbgI1QNp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 12:13:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56186 "EHLO
+        id S1726650AbgI1QOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 12:14:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726281AbgI1QNp (ORCPT
+        with ESMTP id S1726424AbgI1QOS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 12:13:45 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9B71C061755;
-        Mon, 28 Sep 2020 09:13:44 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1601309622;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=fgursmpxb2O5tZTENK3QKNcBPtJOFO4D16e2e18XLWI=;
-        b=PXCpzIO2y+d7baDTO2lerLR1Zg5n8DxenaTvnh3W+iij2F3wPnCcmIfnNnCG44pXW4YJ1t
-        Hc+zBZ6W3bv4XgZ5QZjVa7SYP4Fo82SkQHl9UYU0aglc3Lw7cEBNS+K1qvkF5lv8k7PjNm
-        o+bXKxBWIfxA85bDmcbeHzNX0645TaH0dc+Blxoy0WOwCba+TjpjezgU+qCZRBoo8Oc01M
-        AGMtmBI2QH/PXHT5ewze9sTEe4/+T5ULwWKjEiIPyTnryGOOQeSp0F23hzfNYPwy7Dg1zm
-        1Vs+lk/xTxgL1PDJCcB0okhUr/6/70TR8zE8Mo7dwwUtM0hQkRK1rS7hG6/Xyg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1601309622;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=fgursmpxb2O5tZTENK3QKNcBPtJOFO4D16e2e18XLWI=;
-        b=i1MLe1ztX4w4kIdRrY03/b5cyV5KiZ/2UZ+FERHut/eIc7Bq/k+HmqyxnNGkMDH4/s1WWr
-        aRV6Ehox/Vqvl2Cw==
-To:     syzbot <syzbot+ca740b95a16399ceb9a5@syzkaller.appspotmail.com>,
-        davem@davemloft.net, hchunhui@mail.ustc.edu.cn, hdanton@sina.com,
-        ja@ssi.bg, jmorris@namei.org, kuznet@ms2.inr.ac.ru,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, yoshfuji@linux-ipv6.org,
-        Johannes Berg <johannes.berg@intel.com>
-Subject: Re: WARNING in hrtimer_forward
-In-Reply-To: <0000000000007d5ec805b04c5fc8@google.com>
-References: <0000000000007d5ec805b04c5fc8@google.com>
-Date:   Mon, 28 Sep 2020 18:13:42 +0200
-Message-ID: <87pn65khft.fsf@nanos.tec.linutronix.de>
+        Mon, 28 Sep 2020 12:14:18 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18EEEC061755
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 09:14:17 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id k10so1997938wru.6
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 09:14:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wsE+wZCsr2B/rt2qhMck0fAx7tH1ws4WpV99o/rd8Tk=;
+        b=y1jJilgwAgmeqerMgEz8OJHYLWjQjVYFOPPkCe1p0KnOHmXNM30LFtALalFHyzhq8z
+         2z4rTgv8Ek2pxpWUPSCOdjMR0PknTYhDhI5e1q67miaKw63w3wgVg3+q2wdnXeym5gsx
+         h/whuq5wWG1dxEISjJrXDPTN56jYWPZZp1d+9EGJY5udZff7GxrT7wUpBtd1JtxCeaeo
+         32X/WCcb6/nGn9d8CC07bviNCYVxzjthrWnC7XP6/GJpUsa1DFuG26/H0kQ9Y1Dq28fc
+         e/hbvj3BpPKMVrZMEw9bXH830fUTlFdM3cMZfClC6r5HvJdcNJadfmHPFiE05vzfgB6I
+         LM+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wsE+wZCsr2B/rt2qhMck0fAx7tH1ws4WpV99o/rd8Tk=;
+        b=KmtRIrj/wOti0pWvvcUuwTNz5E+wkqCg1wJla4/AawKSBKIvATSVjbyte6pUV1umHh
+         vPN02TeBJYXHRZ19H/kRVCnFJQA2/G0ywMa7BNkSgZNigNJE+5chGwvhHIEAL36Cncyj
+         bsl2c/kjJ5Lgs5O32CJAYJdzFq/t76QomMDlNAZg4u68ui2bQwhEjseUxA+RT27Rq0HE
+         lPsgJlpPzwvNCO2dZ0PtldYMNXT1TnVZ3Y6AH2ApkqfsHK2miS6QLnvIbSzJ23vJDir/
+         Z3VySFjuurAACGCGT47ygfzxj/FotMQALe6GvOgOUsC5eXiGHiFALaX/3inKjZjkd4gV
+         ke7Q==
+X-Gm-Message-State: AOAM5324X4D6B7+BNE4CwqS7VcMGQR9Xqg/fgzsywPEw3yCRWXFPqIH3
+        QyG+TTq8GZvV7MHnWgfnuDh4XQ==
+X-Google-Smtp-Source: ABdhPJySt0XxOeoAws8/fINDoVLFSuY4/CCM/h3xQYpD9Or1Xos/k2VPWmESS4+8lHlfxnWA7gdneQ==
+X-Received: by 2002:adf:91a4:: with SMTP id 33mr2724673wri.170.1601309655588;
+        Mon, 28 Sep 2020 09:14:15 -0700 (PDT)
+Received: from localhost.localdomain ([2a01:e35:2ec0:82b0:19c2:a71d:5af8:dbf6])
+        by smtp.gmail.com with ESMTPSA id n4sm2004867wrp.61.2020.09.28.09.14.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Sep 2020 09:14:14 -0700 (PDT)
+From:   Neil Armstrong <narmstrong@baylibre.com>
+To:     hverkuil-cisco@xs4all.nl
+Cc:     Neil Armstrong <narmstrong@baylibre.com>,
+        linux-media@vger.kernel.org, linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/4] media: meson: Add support for the Amlogic GE2D Accelerator Unit
+Date:   Mon, 28 Sep 2020 18:14:07 +0200
+Message-Id: <20200928161411.323581-1-narmstrong@baylibre.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 27 2020 at 07:29, syzbot wrote:
-> syzbot has bisected this issue to:
->
-> commit 0e7bbcc104baaade4f64205e9706b7d43c46db7d
-> Author: Julian Anastasov <ja@ssi.bg>
-> Date:   Wed Jul 27 06:56:50 2016 +0000
->
->     neigh: allow admin to set NUD_STALE
->
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1661d187900000
-> start commit:   ba5f4cfe bpf: Add comment to document BTF type PTR_TO_BTF_..
-> git tree:       bpf-next
-> final oops:     https://syzkaller.appspot.com/x/report.txt?x=1561d187900000
-> console output: https://syzkaller.appspot.com/x/log.txt?x=1161d187900000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=d44e1360b76d34dc
-> dashboard link: https://syzkaller.appspot.com/bug?extid=ca740b95a16399ceb9a5
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1148fe4b900000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12f5218d900000
->
-> Reported-by: syzbot+ca740b95a16399ceb9a5@syzkaller.appspotmail.com
-> Fixes: 0e7bbcc104ba ("neigh: allow admin to set NUD_STALE")
+The GE2D is a 2D accelerator with various features like configurable blitter
+with alpha blending, frame rotation, scaling, format conversion and colorspace
+conversion.
 
-That bisect does not make any sense and reverting the commit on top of
-next does not help either.
+The driver implements a Memory2Memory VB2 V4L2 streaming device permitting:
+- 0, 90, 180, 270deg rotation
+- horizontal/vertical flipping
+- source cropping
+- destination compositing
+- 32bit/24bit/16bit format conversion
 
-What happens is:
+This adds the support for the GE2D version found in the AXG SoCs Family.
 
-            fail-16132   [029] ....   933.714866: sys_enter: NR 16 (3, 8b28, 20000000, 0, 0, 0)
-          <idle>-0       [001] d.s2   933.715768: hrtimer_cancel: hrtimer=00000000fe9fe1b9
-          <idle>-0       [001] ..s1   933.715771: hrtimer_expire_entry: hrtimer=00000000fe9fe1b9 function=mac80211_hwsim_beacon now=933716506319
-            fail-16132   [029] d..1   933.715794: hrtimer_start: hrtimer=00000000fe9fe1b9 function=mac80211_hwsim_beacon expires=933818720770 softexpires=933818720770 mode=REL|SOFT
-          <idle>-0       [001] ..s1   933.715812: hrtimer_forward: hrtimer=00000000fe9fe1b9
+The missing features are:
+- Source scaling
+- Colorspace conversion
+- Advanced alpha blending & blitting options
 
-So the timer was armed at some point and then the expiry which does the
-forward races with the ioctl which starts the timer. Lack of
-serialization or such ...
+Dependencies:
+- Patches 1-3: None
+- Patch 4: https://lkml.kernel.org/r/20200915124553.8056-1-narmstrong@baylibre.com
 
-Thanks,
+/ # v4l2-compliance -s
+v4l2-compliance SHA: ea16a7ef13a902793a5c2626b0cefc4d956147f3, 64 bits, 64-bit time_t
 
-        tglx
+Compliance test for meson-ge2d device /dev/video0:
+
+Driver Info:
+	Driver name      : meson-ge2d
+	Card type        : meson-ge2d
+	Bus info         : platform:meson-ge2d
+	Driver version   : 5.9.0
+	Capabilities     : 0x84208000
+		Video Memory-to-Memory
+		Streaming
+		Extended Pix Format
+		Device Capabilities
+	Device Caps      : 0x04208000
+		Video Memory-to-Memory
+		Streaming
+		Extended Pix Format
+
+Required ioctls:
+	test VIDIOC_QUERYCAP: OK
+
+Allow for multiple opens:
+	test second /dev/video0 open: OK
+	test VIDIOC_QUERYCAP: OK
+	test VIDIOC_G/S_PRIORITY: OK
+	test for unlimited opens: OK
+
+	test invalid ioctls: OK
+Debug ioctls:
+	test VIDIOC_DBG_G/S_REGISTER: OK
+	test VIDIOC_LOG_STATUS: OK (Not Supported)
+
+Input ioctls:
+	test VIDIOC_G/S_TUNER/ENUM_FREQ_BANDS: OK (Not Supported)
+	test VIDIOC_G/S_FREQUENCY: OK (Not Supported)
+	test VIDIOC_S_HW_FREQ_SEEK: OK (Not Supported)
+	test VIDIOC_ENUMAUDIO: OK (Not Supported)
+	test VIDIOC_G/S/ENUMINPUT: OK (Not Supported)
+	test VIDIOC_G/S_AUDIO: OK (Not Supported)
+	Inputs: 0 Audio Inputs: 0 Tuners: 0
+
+Output ioctls:
+	test VIDIOC_G/S_MODULATOR: OK (Not Supported)
+	test VIDIOC_G/S_FREQUENCY: OK (Not Supported)
+	test VIDIOC_ENUMAUDOUT: OK (Not Supported)
+	test VIDIOC_G/S/ENUMOUTPUT: OK (Not Supported)
+	test VIDIOC_G/S_AUDOUT: OK (Not Supported)
+	Outputs: 0 Audio Outputs: 0 Modulators: 0
+
+Input/Output configuration ioctls:
+	test VIDIOC_ENUM/G/S/QUERY_STD: OK (Not Supported)
+	test VIDIOC_ENUM/G/S/QUERY_DV_TIMINGS: OK (Not Supported)
+	test VIDIOC_DV_TIMINGS_CAP: OK (Not Supported)
+	test VIDIOC_G/S_EDID: OK (Not Supported)
+
+Control ioctls:
+	test VIDIOC_QUERY_EXT_CTRL/QUERYMENU: OK
+	test VIDIOC_QUERYCTRL: OK
+	test VIDIOC_G/S_CTRL: OK
+	test VIDIOC_G/S/TRY_EXT_CTRLS: OK
+	test VIDIOC_(UN)SUBSCRIBE_EVENT/DQEVENT: OK
+	test VIDIOC_G/S_JPEGCOMP: OK (Not Supported)
+	Standard Controls: 4 Private Controls: 0
+
+Format ioctls:
+	test VIDIOC_ENUM_FMT/FRAMESIZES/FRAMEINTERVALS: OK
+	test VIDIOC_G/S_PARM: OK (Not Supported)
+	test VIDIOC_G_FBUF: OK (Not Supported)
+	test VIDIOC_G_FMT: OK
+	test VIDIOC_TRY_FMT: OK
+	test VIDIOC_S_FMT: OK
+	test VIDIOC_G_SLICED_VBI_CAP: OK (Not Supported)
+	test Cropping: OK
+	test Composing: OK
+	test Scaling: OK (Not Supported)
+
+Codec ioctls:
+	test VIDIOC_(TRY_)ENCODER_CMD: OK (Not Supported)
+	test VIDIOC_G_ENC_INDEX: OK (Not Supported)
+	test VIDIOC_(TRY_)DECODER_CMD: OK (Not Supported)
+
+Buffer ioctls:
+	test VIDIOC_REQBUFS/CREATE_BUFS/QUERYBUF: OK
+	test VIDIOC_EXPBUF: OK
+	test Requests: OK (Not Supported)
+
+Test input 0:
+
+Streaming ioctls:
+	test read/write: OK (Not Supported)
+	test blocking wait: OK
+	Video Capture: Captured 58 buffers                
+	test MMAP (no poll): OK
+	Video Capture: Captured 58 buffers                
+	test MMAP (select): OK
+	Video Capture: Captured 58 buffers                
+	test MMAP (epoll): OK
+	test USERPTR (no poll): OK (Not Supported)
+	test USERPTR (select): OK (Not Supported)
+	test DMABUF: Cannot test, specify --expbuf-device
+
+Total for meson-ge2d device /dev/video0: 52, Succeeded: 52, Failed: 0, Warnings: 0
+
+Neil Armstrong (4):
+  dt-bindings: media: Add bindings for the Amlogic GE2D Accelerator Unit
+  media: meson: Add M2M driver for the Amlogic GE2D Accelerator Unit
+  MAINTAINERS: Add myself as maintainer of the Amlogic GE2D driver
+  arm64: dts: meson-axg: add GE2D node
+
+ .../bindings/media/amlogic,axg-ge2d.yaml      |   47 +
+ MAINTAINERS                                   |    9 +
+ arch/arm64/boot/dts/amlogic/meson-axg.dtsi    |    9 +
+ drivers/media/platform/Kconfig                |   13 +
+ drivers/media/platform/Makefile               |    2 +
+ drivers/media/platform/meson/ge2d/Makefile    |    3 +
+ drivers/media/platform/meson/ge2d/ge2d-regs.h |  360 ++++++
+ drivers/media/platform/meson/ge2d/ge2d.c      | 1105 +++++++++++++++++
+ 8 files changed, 1548 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/media/amlogic,axg-ge2d.yaml
+ create mode 100644 drivers/media/platform/meson/ge2d/Makefile
+ create mode 100644 drivers/media/platform/meson/ge2d/ge2d-regs.h
+ create mode 100644 drivers/media/platform/meson/ge2d/ge2d.c
+
+-- 
+2.25.1
 
