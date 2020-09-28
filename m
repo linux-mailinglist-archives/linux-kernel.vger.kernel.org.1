@@ -2,125 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F07E127B629
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 22:24:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F0E927B628
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 22:24:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726801AbgI1UYF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 16:24:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38422 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726393AbgI1UYE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 16:24:04 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DFA5C061755;
-        Mon, 28 Sep 2020 13:24:03 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id r7so10866457ejs.11;
-        Mon, 28 Sep 2020 13:24:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1J3xfX6mi+yH7vokRWfQjm7Vu2SF03BqzqPZ3nviNoE=;
-        b=qcxx8srT7SomaH8XuJ4Kl7Kwksp5hSYaB/IYqbbZl8eINeqiD5PSu86lQ5BkdDBNkS
-         8rG4BTru6BYE8xCZRH0+lUWWPvgLjyvhz6Ng+xGjnEZpL1lAyQu/SLmWIpRWII4PcE7Q
-         M303xrS51KomeLbXTDGh+T6C8Vbng/sqUQZX1lmKFF5pBfbUgoNOrik3dqzCht+45X+e
-         b+6wfsIaz6xd/b5DzpvzmrwOBD8Hko/AArruIRiVs5NyPEzqhXa380+HR3B3F8YlRvNP
-         bBF8gm1/IVLUTW/lB9erkPt4Wkg9qTxPSAnzgQvcCT7GvU0zJp8VW06yyrtwhu98VoBT
-         E25Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1J3xfX6mi+yH7vokRWfQjm7Vu2SF03BqzqPZ3nviNoE=;
-        b=FC4hkkJztw5jbx0eyV/91uBeSfRDqgS0VYiWhA/+yiOs/i9e1YB1cShC+JvVK12yUj
-         9A7AfEk77ftgMLq4ShNW5Mi59LePYAQ9M6600ldrurI/XK+vnpq9A8oyQkLLdjP0EKBC
-         8o1QJMn1AuzZJy07hTRS0mPY9/3YFcn7mJejvUtFaiidH0TcbfMatC8pfYie/I9K1vTz
-         QsEjPRvgWcE62Qox1aQ3IGz+EWYgn10UF79re31WobBGm3Qj5QP5mpIXiAwxeq7bNEj5
-         IhZSuMow0tKvhd4zQsu6xSWCMsbLoy6h6Pjaa2JXRiu/Qo4/b8CoKrKovuOBOozfQfJS
-         SwAw==
-X-Gm-Message-State: AOAM532wBNecXit65SEkaJBrRptuIBEhfyqcP72eVYQEuab3iZHPvr8i
-        8pJVnwK1yt08J8/WNejSXx78h93y9Uwx1UnMqaVjWg0bVVs=
-X-Google-Smtp-Source: ABdhPJyNwJznKhbkYlvL5tC9TERwX8tgB5MOPOWV37ylEdBY0oUGQGsaTist/nbW+GeLLVJypFukRI5bQks82mNJJuA=
-X-Received: by 2002:a17:906:e216:: with SMTP id gf22mr529801ejb.2.1601324641833;
- Mon, 28 Sep 2020 13:24:01 -0700 (PDT)
+        id S1726596AbgI1UYD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 16:24:03 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:51118 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726393AbgI1UYD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 16:24:03 -0400
+Received: from zn.tnic (p200300ec2f0722007a3ac295e7df05a2.dip0.t-ipconnect.de [IPv6:2003:ec:2f07:2200:7a3a:c295:e7df:5a2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 4CCF71EC0409;
+        Mon, 28 Sep 2020 22:24:00 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1601324640;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=/Vc/EOWpwj9Re8MBl2KQeXE6/D+XkoCsL9dg0BIB/+M=;
+        b=LJzByyTuouI26OvCqH9CQiy1LAqR9Ph0oyLxC3Cd7SFaYOnSrETykMBU3/0A1zIbxWEMhD
+        518+V9wZQkoBaA1x86oe5f80kUZTp2gwaStEuB4FI6shvVMFcospChGJR3o6OZmib+8N6E
+        9b3zWcFap9KNEw5op4D9lwd3ph92eZo=
+Date:   Mon, 28 Sep 2020 22:23:53 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        syzbot <syzbot+ce179bc99e64377c24bc@syzkaller.appspotmail.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Jiri Olsa <jolsa@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Subject: Re: general protection fault in perf_misc_flags
+Message-ID: <20200928202353.GI1685@zn.tnic>
+References: <00000000000052569205afa67426@google.com>
+ <20200927145737.GA4746@zn.tnic>
+ <CACT4Y+Zxt3-Dj6r53mEkwv24PazPzTxQ7usV1O+RB0bk2FzO8g@mail.gmail.com>
+ <CACT4Y+ZZH76qg810RzGp6FDLTxJWVqZgkrXSxqgq7AjpPYG9XQ@mail.gmail.com>
+ <20200928083819.GD1685@zn.tnic>
+ <CACT4Y+bPFASnmFRKpQ=KY1z+RnTbGmkPU3aikzdXZpKkV03D9A@mail.gmail.com>
+ <20200928085401.GE1685@zn.tnic>
+ <CACT4Y+Z4Y6SJJ6iYBhVRiknrWBAD6gGhQXiXLhxPniDNBFJGsA@mail.gmail.com>
 MIME-Version: 1.0
-References: <CAFBinCATt4Hi9rigj52nMf3oygyFbnopZcsakGL=KyWnsjY3JA@mail.gmail.com>
- <20200925221403.GE3856392@lunn.ch> <CAFBinCC4VuLJDLqQb+m+h+qnh6fAK2aBLVtQaE15Tc-zQq=KSg@mail.gmail.com>
- <20200926004129.GC3850848@lunn.ch> <CAFBinCAc2-QV3E8P4gk+7Lq0ushH08UoZ0tQ8ACEoda-D8oaWg@mail.gmail.com>
- <20200926144513.GD3850848@lunn.ch>
-In-Reply-To: <20200926144513.GD3850848@lunn.ch>
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date:   Mon, 28 Sep 2020 22:23:50 +0200
-Message-ID: <CAFBinCD8PWB52qD1X4jsSbkGw2C+x14QUPcQ8R-fUugOOPx-DQ@mail.gmail.com>
-Subject: Re: RGMII timing calibration (on 12nm Amlogic SoCs) - integration
- into dwmac-meson8b
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     netdev@vger.kernel.org, linux-amlogic@lists.infradead.org,
-        alexandre.torgue@st.com, linux-kernel@vger.kernel.org,
-        linux@armlinux.org.uk, joabreu@synopsys.com, kuba@kernel.org,
-        peppe.cavallaro@st.com, davem@davemloft.net,
-        linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CACT4Y+Z4Y6SJJ6iYBhVRiknrWBAD6gGhQXiXLhxPniDNBFJGsA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andrew,
+On Mon, Sep 28, 2020 at 12:33:57PM +0200, Dmitry Vyukov wrote:
+> It may be related to VMs, but also may well not be related to VMs.
 
-On Sat, Sep 26, 2020 at 4:45 PM Andrew Lunn <andrew@lunn.ch> wrote:
->
-> > I checked this again for the vendor u-boot (where Ethernet is NOT
-> > working) as well as the Android kernel which this board was shipped
-> > with (where Ethernet is working)
-> > - in u-boot the MAC side adds a 2ns TX delay and the PHY side adds a
-> > 2ns RX delay
->
-> So that suggest there is nothing on the PCB. It is all down to MAC and
-> PHY adding delays.
-u-boot with it's 2ns RX delay is the non-working case
-only if I manually turn off the 2ns RX delay generated by the PHY in
-u-boot (phyreg w 0x1f 0xd08; phyreg w 0x11 0x9; phyreg w 0x15 0x11;
-phyreg w 0x1f 0x0; phyreg w 0x0 0x9200) I can get ping/tftpboot to
-work
+Right, and so I tried to set it up on a test box here, it looks like
+it worked, see below. I'll let it fuzz in the coming days and see what
+explodes...
 
-the Android kernel disables the 2ns RX delay on the PHY side (and as
-far as I can tell does NOT enable it on the MAC side). with that
-Ethernet is working
-
-> > yes, there's only one calibration value
-> > the reference code is calculating the calibration setting for four
-> > configuration variants:
-> > - 2ns TX delay on the MAC side, no RX or TX delay on the PHY side, RGMII RX_CLK not inverted
-> > - 2ns TX delay on the MAC side, no RX or TX delay on the PHY side, RGMII RX_CLK inverted
-> > - 2ns TX delay on the MAC side, 2ns RX delay on the PHY side, RGMII RX_CLK not inverted
-> > - 2ns TX delay on the MAC side, 2ns RX delay on the PHY side, RGMII RX_CLK inverted
-> >
-> > now that I'm writing this, could it be a calibration of the RX_CLK
-> > signal?
->
-> Yes, seems like it. Which of these four does it end up using? I'm
-> guessing the 3rd?
-I need to double-check but if I remember correctly was close between
-the first and last one (and I think the first case won)
-
-> So i would forget about configuration clock inversion. Hard code it to
-> whatever works. It is not something you see other MAC/PHY combinations
-> allow to configure.
-we have inversion hard-coded to "off". I'm not planning to take this
-into consideration unless there's a good reason to do so
-
-> I think you said a value of 0x2 works. I wonder if that corresponds to
-> something slightly larger than 0ns if option 3 is being used?
-I have tested 0x0, 0x3, 0x4 and 0xf
-the first three values are working, but 0xf isn't.
-
-I'll try to reach someone at Amlogic to clarify the meaning of these
-new register bits.
-I guess Florian's patch is a good starting point for what I need -
-thanks again for the suggestion Vladimir.
+2020/09/28 22:19:51 booting test machines...
+2020/09/28 22:19:51 wait for the connection from test machine...
+2020/09/28 22:20:27 machine check:
+2020/09/28 22:20:27 syscalls                : 3389/3739
+2020/09/28 22:20:27 code coverage           : enabled
+2020/09/28 22:20:27 comparison tracing      : enabled
+2020/09/28 22:20:27 extra coverage          : enabled
+2020/09/28 22:20:27 setuid sandbox          : enabled
+2020/09/28 22:20:27 namespace sandbox       : enabled
+2020/09/28 22:20:27 Android sandbox         : enabled
+2020/09/28 22:20:27 fault injection         : enabled
+2020/09/28 22:20:27 leak checking           : CONFIG_DEBUG_KMEMLEAK is not enabled
+2020/09/28 22:20:27 net packet injection    : enabled
+2020/09/28 22:20:27 net device setup        : enabled
+2020/09/28 22:20:27 concurrency sanitizer   : /sys/kernel/debug/kcsan does not exist
+2020/09/28 22:20:27 devlink PCI setup       : PCI device 0000:00:10.0 is not available
+2020/09/28 22:20:27 USB emulation           : enabled
+2020/09/28 22:20:27 hci packet injection    : enabled
+2020/09/28 22:20:27 wifi device emulation   : enabled
+2020/09/28 22:20:29 corpus                  : 458 (deleted 0 broken)
+2020/09/28 22:20:31 seeds                   : 620/667
+2020/09/28 22:20:31 VMs 1, executed 0, corpus cover 0, corpus signal 0, max signal 0, crashes 0, repro 0
+2020/09/28 22:20:41 VMs 2, executed 12, corpus cover 0, corpus signal 0, max signal 0, crashes 0, repro 0
+2020/09/28 22:20:51 VMs 2, executed 28, corpus cover 5578, corpus signal 5925, max signal 10155, crashes 0, repro 0
+2020/09/28 22:21:01 VMs 3, executed 179, corpus cover 11792, corpus signal 10881, max signal 19337, crashes 0, repro 0
+...
 
 
-Thank you all!
-Best regards,
-Martin
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
