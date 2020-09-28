@@ -2,78 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99E8C27A933
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 10:00:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A971227A935
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 10:01:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726567AbgI1IAt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 04:00:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36256 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726440AbgI1IAs (ORCPT
+        id S1726625AbgI1IBf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 04:01:35 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38951 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726461AbgI1IBe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 04:00:48 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 769C8C0613CE
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 01:00:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=cyiEBShF0+Den6Bat12B0wofEVTLd28sMsIoC8rXhVU=; b=Wn1/p+6dBt1I8+sPUEp4wfX2jV
-        82cDd2WB2SGyRCCisedLd5e9WVw/i325tuOE0bYmSeirLu7c14fnAGwD4nmz5jAwe6F88ZpYPhAQ1
-        nRAip7w99gP+wSuz8egplc5vBLJm+yy1tk0QyS9twm1HC5I6yRY1iQc7uDtCQ7z+x+UY+FyjVj8Il
-        pGBulI/ri1AG9O7B2G43bjK+7FgzW5vT1B/kgCO6tFkkZlrXlr7s8T96Bn0foGq6HxPHxTj9GDLxF
-        j0UEqIA6LjKgNM4E/uYFIuStFAHRXe8npMlnu/jjV/q8ul3P3SkbcTaHNMp80viQ1KNDTDqLIw0U/
-        GVvpBzmA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kMo5C-0001kK-2L; Mon, 28 Sep 2020 08:00:26 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 1E358300DB4;
-        Mon, 28 Sep 2020 10:00:22 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id CBA21200DCAB1; Mon, 28 Sep 2020 10:00:22 +0200 (CEST)
-Date:   Mon, 28 Sep 2020 10:00:22 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Joe Perches <joe@perches.com>
-Cc:     Chengming Zhou <zhouchengming@bytedance.com>,
-        linux-kernel@vger.kernel.org, pmladek@suse.com,
-        sergey.senozhatsky@gmail.com, rostedt@goodmis.org,
-        mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        bsegall@google.com, mgorman@suse.de, songmuchun@bytedance.com
-Subject: Re: [PATCH 2/2] sched: mark PRINTK_DEFERRED_CONTEXT_MASK in
- __schedule()
-Message-ID: <20200928080022.GD2611@hirez.programming.kicks-ass.net>
-References: <20200927161130.33172-1-zhouchengming@bytedance.com>
- <20200927161130.33172-2-zhouchengming@bytedance.com>
- <20200928073202.GA2611@hirez.programming.kicks-ass.net>
- <0e8e87e25c90339fe790252626855cbb47bc2c08.camel@perches.com>
+        Mon, 28 Sep 2020 04:01:34 -0400
+Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601280093;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=T7R9m9FhJdi6KLm4nsGm74cvSvwdnrQBjKd7fzOBDVM=;
+        b=L+CypgwxCAYnKtAgsffsZAhxzSNad7zu8nTtYOuUEm5+SFzgLHRDVcMtJCuUPOUtAUF0oP
+        OGcK79Dvip6gDPbhqdD3+Bm7xKRs5oag71+MCMFX+pNnCU3EXQ19ys/cloMwAaFx+xU4uj
+        KALeSIhJfu4yn4ceG1CnJ0lBXbVqyzE=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-505-C-W4VjEpOZS4584GuEjSUg-1; Mon, 28 Sep 2020 04:01:31 -0400
+X-MC-Unique: C-W4VjEpOZS4584GuEjSUg-1
+Received: by mail-wr1-f69.google.com with SMTP id v5so81388wrr.0
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 01:01:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=T7R9m9FhJdi6KLm4nsGm74cvSvwdnrQBjKd7fzOBDVM=;
+        b=FqxBSLs43OhooO3di1vgL1J1eRAcLH3QZgr4prYFwEP9o2iqJRdHt4//AVD2Yba3jp
+         C/nRAxKAQ6Zjp86Fza3tvui83hcRksRJbotqHvBLfF0/eVYiNLwUofEY679EHHj6fi4D
+         PKqF6RQIXFB8As60gP9QeHbHLkgZz9FTcuETyDlO+epoMBq555ssga+MGXnWwF9M59c/
+         4nOr9mXh1vCzPwIcPF30yAGxFPv3Vz0QiINTZRabWaHwmEKOcYMrWBOppDfaBisZaZYm
+         AGeJQR4CRhxm/w3S3Pmnj9/qbjoS24QvzZoJJYRXtBqtGhWFXqrYB2XxgU7UVTzOXzoR
+         Fcow==
+X-Gm-Message-State: AOAM5332SJWS58csJGm/oc6XdUsQRaYpp3eR0FZBerVqu440x+EA3ms6
+        sQ29QNgzkwYx6un6oIgTVjDokU+8qi9RCiyrw3B3xE1ZPD6FCQkWtaFTi1W0eR5hILve+YsoErP
+        PmNSR2e5mqz5kOP9T951rCXP9
+X-Received: by 2002:a1c:9ad0:: with SMTP id c199mr320692wme.54.1601280089807;
+        Mon, 28 Sep 2020 01:01:29 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwP7b6XUT7QVZLutTp3aUJBUofOOz7c2L1LlPUU8NuHqEv78dhfLvgZQfFAp+/Mvmp18QizUQ==
+X-Received: by 2002:a1c:9ad0:: with SMTP id c199mr320667wme.54.1601280089566;
+        Mon, 28 Sep 2020 01:01:29 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:18a0:e78d:6703:1066? ([2001:b07:6468:f312:18a0:e78d:6703:1066])
+        by smtp.gmail.com with ESMTPSA id f12sm145381wmf.26.2020.09.28.01.01.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 28 Sep 2020 01:01:28 -0700 (PDT)
+Subject: Re: [PATCH] KVM: SVM: Initialize ir_list and ir_list_lock regardless
+ of AVIC enablement
+To:     Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     joro@8bytes.org
+References: <20200922084446.7218-1-suravee.suthikulpanit@amd.com>
+ <1b8ff096-85a4-3dda-61d3-9a44ca6bb360@amd.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <dafba8d1-8e1b-a3d3-d95f-e5581b26066d@redhat.com>
+Date:   Mon, 28 Sep 2020 10:01:27 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0e8e87e25c90339fe790252626855cbb47bc2c08.camel@perches.com>
+In-Reply-To: <1b8ff096-85a4-3dda-61d3-9a44ca6bb360@amd.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 12:52:44AM -0700, Joe Perches wrote:
-> On Mon, 2020-09-28 at 09:32 +0200, Peter Zijlstra wrote:
-> > On Mon, Sep 28, 2020 at 12:11:30AM +0800, Chengming Zhou wrote:
-> > > The WARN_ON/WARN_ON_ONCE with rq lock held in __schedule() should be
-> > > deferred by marking the PRINTK_DEFERRED_CONTEXT_MASK, or will cause
-> > > deadlock on rq lock in the printk path.
-> []
-> > NAK printk_deferred is an abomination, kill that.
+On 28/09/20 07:53, Suravee Suthikulpanit wrote:
+> Hi,
 > 
-> Didn't you introduce it?
-> Should you be complaining to yourself?
+> Are there any issues or concerns about this patch?
 
-Yeah. I should've hacked around it then I suppose. Still, no reason to
-proliferate that crap. Afaik the new printk should be able to deal with
-this at some point.
+Yes, sorry I haven't replied yet.  Looks like Linus is doing an -rc8 so
+there's plenty of time to have it in 5.9.
 
-The thing we're not going to do it add a cache-miss to schedule just
-because.
+The thing I'm wondering is, why is svm_update_pi_irte doing anything if
+you don't have AVIC enabled?  In other word, this might not be the root
+cause of the bug.  You always get to the "else" branch of the loop of
+course, and I'm not sure how irq_set_vcpu_affinity returns something
+with pi.prev_ga_tag set.
+
+Thanks,
+
+Paolo
+
+> Thank you,
+> Suravee
+> 
+> On 9/22/20 3:44 PM, Suravee Suthikulpanit wrote:
+>> The struct vcpu_svm.ir_list and ir_list_lock are being accessed even when
+>> AVIC is not enabled, while current code only initialize the list and
+>> the lock only when AVIC is enabled. This ended up trigger NULL pointer
+>> dereference bug in the function vm_ir_list_del with the following
+>> call trace:
+>>
+>>      svm_update_pi_irte+0x3c2/0x550 [kvm_amd]
+>>      ? proc_create_single_data+0x41/0x50
+>>      kvm_arch_irq_bypass_add_producer+0x40/0x60 [kvm]
+>>      __connect+0x5f/0xb0 [irqbypass]
+>>      irq_bypass_register_producer+0xf8/0x120 [irqbypass]
+>>      vfio_msi_set_vector_signal+0x1de/0x2d0 [vfio_pci]
+>>      vfio_msi_set_block+0x77/0xe0 [vfio_pci]
+>>      vfio_pci_set_msi_trigger+0x25c/0x2f0 [vfio_pci]
+>>      vfio_pci_set_irqs_ioctl+0x88/0xb0 [vfio_pci]
+>>      vfio_pci_ioctl+0x2ea/0xed0 [vfio_pci]
+>>      ? alloc_file_pseudo+0xa5/0x100
+>>      vfio_device_fops_unl_ioctl+0x26/0x30 [vfio]
+>>      ? vfio_device_fops_unl_ioctl+0x26/0x30 [vfio]
+>>      __x64_sys_ioctl+0x96/0xd0
+>>      do_syscall_64+0x37/0x80
+>>      entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>>
+>> Therefore, move the initialziation code before checking for AVIC enabled
+>> so that it is always excuted.
+>>
+>> Fixes: dfa20099e26e ("KVM: SVM: Refactor AVIC vcpu initialization into
+>> avic_init_vcpu()")
+>> Signed-off-by: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+>> ---
+>>   arch/x86/kvm/svm/avic.c | 2 --
+>>   arch/x86/kvm/svm/svm.c  | 3 +++
+>>   2 files changed, 3 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/arch/x86/kvm/svm/avic.c b/arch/x86/kvm/svm/avic.c
+>> index ac830cd50830..1ccf13783785 100644
+>> --- a/arch/x86/kvm/svm/avic.c
+>> +++ b/arch/x86/kvm/svm/avic.c
+>> @@ -572,8 +572,6 @@ int avic_init_vcpu(struct vcpu_svm *svm)
+>>       if (ret)
+>>           return ret;
+>>   -    INIT_LIST_HEAD(&svm->ir_list);
+>> -    spin_lock_init(&svm->ir_list_lock);
+>>       svm->dfr_reg = APIC_DFR_FLAT;
+>>         return ret;
+>> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+>> index c44f3e9140d5..714d791fe5a5 100644
+>> --- a/arch/x86/kvm/svm/svm.c
+>> +++ b/arch/x86/kvm/svm/svm.c
+>> @@ -1225,6 +1225,9 @@ static int svm_create_vcpu(struct kvm_vcpu *vcpu)
+>>       svm_init_osvw(vcpu);
+>>       vcpu->arch.microcode_version = 0x01000065;
+>>   +    INIT_LIST_HEAD(&svm->ir_list);
+>> +    spin_lock_init(&svm->ir_list_lock);
+>> +
+>>       return 0;
+>>     free_page4:
+>>
+> 
+
