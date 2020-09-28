@@ -2,106 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16F6227B45C
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 20:22:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 172ED27B445
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 20:19:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726793AbgI1SV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 14:21:57 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54547 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726567AbgI1SV4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 14:21:56 -0400
-Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601317315;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=85B0mZRKs5mkl5E8BDbfnUinjf/rtUnPl3Qk/CJCPXg=;
-        b=WYqzVoKXMO6IkcRYCJzkXQK+t3xvqBx/aWKw7ixKoDOMWsiOLa9ZhRII5CLYaBV0HcebzI
-        hsvs9eO5vIL3mKMCn8aKcpJ+ukLx6j/4H5qAO9eryadQjgJ7BJUom/C5NfZz9ESox6V1Uj
-        Bb/hpl7okH5/DlT34ql84kO/JNftqYI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-137-NY6l3ukFNlmJxz48QH7ihg-1; Mon, 28 Sep 2020 14:21:51 -0400
-X-MC-Unique: NY6l3ukFNlmJxz48QH7ihg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1726661AbgI1STA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 14:19:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54606 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726513AbgI1STA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 14:19:00 -0400
+Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F39EC8015AA;
-        Mon, 28 Sep 2020 18:21:48 +0000 (UTC)
-Received: from t480s.redhat.com (ovpn-112-106.ams2.redhat.com [10.36.112.106])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 6B58827CD4;
-        Mon, 28 Sep 2020 18:21:39 +0000 (UTC)
-From:   David Hildenbrand <david@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, linux-hyperv@vger.kernel.org,
-        xen-devel@lists.xenproject.org, linux-acpi@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Michal Hocko <mhocko@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Mike Rapoport <rppt@kernel.org>
-Subject: [PATCH v1 5/5] mm/memory_hotplug: update comment regarding zone shuffling
-Date:   Mon, 28 Sep 2020 20:21:10 +0200
-Message-Id: <20200928182110.7050-6-david@redhat.com>
-In-Reply-To: <20200928182110.7050-1-david@redhat.com>
-References: <20200928182110.7050-1-david@redhat.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id 1A0A9206C3;
+        Mon, 28 Sep 2020 18:18:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601317139;
+        bh=E7RNuUSPfvtE7jpiObwtzpwal66tOS7GFaUg8Gd3Wz4=;
+        h=Date:From:To:Cc:Subject:From;
+        b=CKw/MGF9lt9qb8i6Q7X9U3pUvYwLyqJeAjzgIhZoAOzE1bv+ayHHjFhKCVTyJTtC5
+         IxPBqtVxzTI07nnrCKMqpFiOkXxqoJnUc7XtP3fn/nJnPVju7+ZN2YIg4hwjmsjXz2
+         kMjXwPeXd/qwp4YlFg439RpDVi2GhMjnaLpWh+gE=
+Date:   Mon, 28 Sep 2020 13:24:38 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
+        Xufeng Zhang <yunbo.xufeng@linux.alibaba.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Subject: Reporting bug in mpi_ec_mul_point()
+Message-ID: <20200928182438.GA11739@embeddedor>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As we no longer shuffle via generic_online_page() and when undoing
-isolation, we can simplify the comment.
+Hi all,
 
-We now effectively shuffle only once (properly) when onlining new
-memory.
+I'm reporting the following bug detected by Coverity:
 
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Alexander Duyck <alexander.h.duyck@linux.intel.com>
-Cc: Mel Gorman <mgorman@techsingularity.net>
-Cc: Michal Hocko <mhocko@kernel.org>
-Cc: Dave Hansen <dave.hansen@intel.com>
-Cc: Vlastimil Babka <vbabka@suse.cz>
-Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
-Cc: Oscar Salvador <osalvador@suse.de>
-Cc: Mike Rapoport <rppt@kernel.org>
-Signed-off-by: David Hildenbrand <david@redhat.com>
----
- mm/memory_hotplug.c | 11 ++++-------
- 1 file changed, 4 insertions(+), 7 deletions(-)
+The _scalar_copied_ variable is set to 0 at
 
-diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
-index 9db80ee29caa..c589bd8801bb 100644
---- a/mm/memory_hotplug.c
-+++ b/mm/memory_hotplug.c
-@@ -859,13 +859,10 @@ int __ref online_pages(unsigned long pfn, unsigned long nr_pages,
- 	undo_isolate_page_range(pfn, pfn + nr_pages, MIGRATE_MOVABLE);
- 
- 	/*
--	 * When exposing larger, physically contiguous memory areas to the
--	 * buddy, shuffling in the buddy (when freeing onlined pages, putting
--	 * them either to the head or the tail of the freelist) is only helpful
--	 * for maintaining the shuffle, but not for creating the initial
--	 * shuffle. Shuffle the whole zone to make sure the just onlined pages
--	 * are properly distributed across the whole freelist. Make sure to
--	 * shuffle once pageblocks are no longer isolated.
-+	 * Freshly onlined pages aren't shuffled (e.g., all pages are placed to
-+	 * the tail of the freelist when undoing isolation). Shuffle the whole
-+	 * zone to make sure the just onlined pages are properly distributed
-+	 * across the whole freelist - to create an initial shuffle.
- 	 */
- 	shuffle_zone(zone);
- 
--- 
-2.26.2
+lib/mpi/ec.c:1255:
+1255                 int scalar_copied = 0;
 
+and it is never updated before reaching the code below:
+
+lib/mpi/ec.c:1317
+1317                 if (scalar_copied)                                                         
+1318                         mpi_free(scalar);
+
+This code was introduced by commit d58bb7e55a8a ("lib/mpi: Introduce ec
+implementation to MPI library")
+
+Any ideas on what's the right solution for this?
+
+Thanks
+--
+Gustavo
