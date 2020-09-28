@@ -2,220 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F8E527B5BA
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 21:51:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3251B27B5C0
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 21:54:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726863AbgI1TvU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 15:51:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33332 "EHLO
+        id S1726566AbgI1Typ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 15:54:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726841AbgI1TvS (ORCPT
+        with ESMTP id S1726325AbgI1Typ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 15:51:18 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D9C7C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 12:51:18 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id s31so1800672pga.7
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 12:51:18 -0700 (PDT)
+        Mon, 28 Sep 2020 15:54:45 -0400
+Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39685C061755
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 12:54:44 -0700 (PDT)
+Received: by mail-vs1-xe42.google.com with SMTP id j185so1541681vsc.3
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 12:54:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=pensando.io; s=google;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=BqQM2i0VFoVIUWIR0YuEpa6Ai1/97mzRDr35j7tf8L4=;
-        b=C9EUv+2wwyyFn6FJiu/VVbLVblSjg9av85L/szVbIz0Rpy3mJiykJyAX94048whYfv
-         xgNsRhYsRnuF4WvxMHmC9mBSXCorfrwc5rM6jE7aNlWsJU5zF/D9ezZV/MKvR4Kgxn6c
-         hGEIm89YQAmjo7R5FqdFlWCeu3xCILdpu1ABFzulST9FvrmJr9AM3bKwkoul2jbE2Un7
-         e3TukRt5VX493lR24AiqxiiLA1dpjeS95yta+Vm7vPIS2bjbuAUl5C/urY6sQbqC8ysH
-         Cu3NWy/mFVXd6hnN7gFAnlpYSxpFbhWjRgd6e+vMhcaM1GIbrcFd+iyfRje2wvH3zLz7
-         YP7w==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=iNpDShrVH0G/yhVSSFMZRjI6zLZIrWDL5WcnPUrYGzk=;
+        b=GyPa84B2gDRjXkfCs6NUDZmJEyPJ4/aOBxxs5SluRxk+xDHeeMdBdYam31QWJvC7U1
+         L9JYguE062Ayx4K6/mqBIzcFcUIyZ7fdcr5PTF3vFUzX81ZxHjjButBuMRTYjMcD/JWM
+         +0/du/7KsYoDnJ3945FToisyazVuA5fS0RSRo9veeBudFhqKsml63C9W4od0s5qEMqE7
+         BnCcSOSIB8yUBs/UAHphk7LO6Ny4AN5wMlktb6d2YvSJf9E2sbYeXJ7jdG2GIR1+JhBq
+         0e9+5xbp2gPt3qIQ+sWYpcF3ken54zKdkbq0znlvpiFPA7DbMClVE+7NhFXTrnWpQIRu
+         0Ygg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=BqQM2i0VFoVIUWIR0YuEpa6Ai1/97mzRDr35j7tf8L4=;
-        b=O4wsKa6Wd/v+LYMYgsa3gZceDDO4w1T0QvIo82BuJ6ay5TN7T2k6kkP+r7mos6knG3
-         1mSRvSBKakM05Iy7krj7zkl5r/BcwFarS5lcl16sSdLQLOjbyw9J9/dpPLpTlFr3+9JA
-         qQ4AUlXZoas0UPMD83zBN6XmeIfnlVJJPUatMfDobKikvOhOx7KmbaWoV36weX6rL7mC
-         QNhU4RXWn2jKR+1yvWIjIkQ1KXZCr1JVryoxT91P5H+Chfnkxn/e+5GOapojOZLzbz/n
-         U0oKHRFfeMJ9jY0G1W89ipO/XBCPA5jauBfZwdYykN6sOJYYW4E7zFexu5DPrVFHk57D
-         ghig==
-X-Gm-Message-State: AOAM531SJroQ2t9WpCSp+BCa0Gp57rn6l/NgyOosXoeS0eyYADSv/Tod
-        X/9W4nZJYywhb+Fwi6CdWjRzjQ==
-X-Google-Smtp-Source: ABdhPJzckG5HDk1GrXpcpaQSCKZRP7ZefiC9sUCSVPJwppJZTnuH436/cYjoi7KCfletdPnr9Qi8DQ==
-X-Received: by 2002:aa7:9427:0:b029:142:2501:35df with SMTP id y7-20020aa794270000b0290142250135dfmr818795pfo.63.1601322677478;
-        Mon, 28 Sep 2020 12:51:17 -0700 (PDT)
-Received: from Shannons-MacBook-Pro.local (static-50-53-47-17.bvtn.or.frontiernet.net. [50.53.47.17])
-        by smtp.gmail.com with ESMTPSA id j26sm2608117pfa.160.2020.09.28.12.51.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Sep 2020 12:51:16 -0700 (PDT)
-Subject: Re: [patch 11/35] net: ionic: Replace in_interrupt() usage.
-From:   Shannon Nelson <snelson@pensando.io>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Linus Torvalds <torvalds@linuxfoundation.org>,
-        Paul McKenney <paulmck@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Pensando Drivers <drivers@pensando.io>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        Christian Benvenuti <benve@cisco.com>,
-        Govindarajulu Varadarajan <_govind@gmx.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-doc@vger.kernel.org,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Jay Cliburn <jcliburn@gmail.com>,
-        Chris Snook <chris.snook@gmail.com>,
-        Vishal Kulkarni <vishal@chelsio.com>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        intel-wired-lan@lists.osuosl.org, Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Solarflare linux maintainers <linux-net-drivers@solarflare.com>,
-        Edward Cree <ecree@solarflare.com>,
-        Martin Habets <mhabets@solarflare.com>,
-        Jon Mason <jdmason@kudzu.us>, Daniel Drake <dsd@gentoo.org>,
-        Ulrich Kunitz <kune@deine-taler.de>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        linux-wireless@vger.kernel.org, linux-usb@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arend van Spriel <arend.vanspriel@broadcom.com>,
-        Franky Lin <franky.lin@broadcom.com>,
-        Hante Meuleman <hante.meuleman@broadcom.com>,
-        Chi-Hsien Lin <chi-hsien.lin@cypress.com>,
-        Wright Feng <wright.feng@cypress.com>,
-        brcm80211-dev-list.pdl@broadcom.com,
-        brcm80211-dev-list@cypress.com,
-        Stanislav Yakovlev <stas.yakovlev@gmail.com>,
-        Stanislaw Gruszka <stf_xl@wp.pl>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
-        Luca Coelho <luciano.coelho@intel.com>,
-        Intel Linux Wireless <linuxwifi@intel.com>,
-        Jouni Malinen <j@w1.fi>,
-        Amitkumar Karwar <amitkarwar@gmail.com>,
-        Ganapathi Bhat <ganapathi.bhat@nxp.com>,
-        Xinming Hu <huxinming820@gmail.com>,
-        libertas-dev@lists.infradead.org,
-        Pascal Terjan <pterjan@google.com>,
-        Ping-Ke Shih <pkshih@realtek.com>
-References: <20200927194846.045411263@linutronix.de>
- <20200927194920.918550822@linutronix.de>
- <5e4c3201-9d90-65b1-5c13-e2381445be1d@pensando.io>
-Message-ID: <1d0950f8-cab4-9ef2-6cf7-73b71b750a8d@pensando.io>
-Date:   Mon, 28 Sep 2020 12:51:14 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iNpDShrVH0G/yhVSSFMZRjI6zLZIrWDL5WcnPUrYGzk=;
+        b=HqWDk2kGuXXW5fKMSL8rsXl0zZ9lSfBVUtPGhLoneu4dT4vvRaM90MjFb4QNloN1D0
+         q4YweSArqS+KiDqXrTj3gNLXMI038T1fcHhvLkveX+qycarCbiySl3Uy5KxpUgU+ujCK
+         H2IiqYwRD1JKfF/n9bRXK/w7zSpWExn5NMaLcWg7lRtoSUvcXodVBf++iFkVKXMs+wU7
+         1DZhPPyOuVOhGVTIwekGc6GndcD4RF2d06ewOOQYpBk9ppyp1ZSkKD0gGf3ppIq0vfaC
+         ZpKtsL7jbwac2ku6paxaa4zfPHJEqr8TQjOhbBABax6aCGckBtEEmRh3xPbdJQJ6bu26
+         xowA==
+X-Gm-Message-State: AOAM532ZY6nsxw+ww+MEo/7j35D7CWiQN9BPJrwr7u+G6ROlVuP3lg/g
+        PAFtd3gkJ25FVXjSGugSdxDXQ1N5N+4+diRz0CCldA==
+X-Google-Smtp-Source: ABdhPJyKWBQujyJVRHGrieRaSMsZmWbNB9hyqNqokl7AeUU5BIFXRGbNbptSBgg8A0uaH6NdaRJx7pPfbvsJBwoZZPc=
+X-Received: by 2002:a67:bd12:: with SMTP id y18mr893885vsq.45.1601322883397;
+ Mon, 28 Sep 2020 12:54:43 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <5e4c3201-9d90-65b1-5c13-e2381445be1d@pensando.io>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <20200918021220.2066485-1-sashal@kernel.org> <20200918021220.2066485-112-sashal@kernel.org>
+In-Reply-To: <20200918021220.2066485-112-sashal@kernel.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 29 Sep 2020 01:24:32 +0530
+Message-ID: <CA+G9fYteKZxdLVtQzXyh36hhaj6W5e17U_emsXwZdjPoeyj+OQ@mail.gmail.com>
+Subject: Re: [PATCH AUTOSEL 4.14 112/127] perf parse-events: Fix incorrect
+ conversion of 'if () free()' to 'zfree()'
+To:     Sasha Levin <sashal@kernel.org>,
+        linux- stable <stable@vger.kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        clang-built-linux@googlegroups.com, Jiri Olsa <jolsa@kernel.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Stephane Eranian <eranian@google.com>,
+        lkft-triage@lists.linaro.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/28/20 10:24 AM, Shannon Nelson wrote:
-> On 9/27/20 12:48 PM, Thomas Gleixner wrote:
->> From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
->>
->> The in_interrupt() usage in this driver tries to figure out which 
->> context
->> may sleep and which context may not sleep. in_interrupt() is not really
->> suitable as it misses both preemption disabled and interrupt disabled
->> invocations from task context.
->>
->> Conditionals like that in driver code are frowned upon in general 
->> because
->> invocations of functions from invalid contexts might not be detected
->> as the conditional papers over it.
->>
->> ionic_lif_addr() can be called from:
->>
->>   1) ->ndo_set_rx_mode() which is under netif_addr_lock_bh()) so it 
->> must not
->>      sleep.
->>
->>   2) Init and setup functions which are in fully preemptible task 
->> context.
->>
->> _ionic_lif_rx_mode() has only one call path with BH disabled.
+On Fri, 18 Sep 2020 at 08:00, Sasha Levin <sashal@kernel.org> wrote:
+>
+> From: Arnaldo Carvalho de Melo <acme@redhat.com>
+>
+> [ Upstream commit 7fcdccd4237724931d9773d1e3039bfe053a6f52 ]
+>
+> When applying a patch by Ian I incorrectly converted to zfree() an
+> expression that involved testing some other struct member, not the one
+> being freed, which lead to bugs reproduceable by:
+>
+>   $ perf stat -e i/bs,tsc,L2/o sleep 1
+>   WARNING: multiple event parsing errors
+>   Segmentation fault (core dumped)
+>   $
+>
+> Fix it by restoring the test for pos->free_str before freeing
+> pos->val.str, but continue using zfree(&pos->val.str) to set that member
+> to NULL after freeing it.
+>
+> Reported-by: Ian Rogers <irogers@google.com>
+> Fixes: e8dfb81838b1 ("perf parse-events: Fix memory leaks found on parse_events")
+> Cc: Adrian Hunter <adrian.hunter@intel.com>
+> Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+> Cc: Andi Kleen <ak@linux.intel.com>
+> Cc: clang-built-linux@googlegroups.com
+> Cc: Jiri Olsa <jolsa@kernel.org>
+> Cc: Leo Yan <leo.yan@linaro.org>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: Namhyung Kim <namhyung@kernel.org>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Stephane Eranian <eranian@google.com>
+> Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
 
-Now that I've had my coffee, let's look at this again - there are 
-multiple paths that get us to _ionic_lif_rx_mode():
+stable rc 4.14 perf build broken.
 
-.ndo_set_rx_mode
-   ionic_set_rx_mode,
-     _ionic_lif_rx_mode
+> ---
+>  tools/perf/util/parse-events.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
+> index 2733cdfdf04c6..ba973bdfaa657 100644
+> --- a/tools/perf/util/parse-events.c
+> +++ b/tools/perf/util/parse-events.c
+> @@ -1258,7 +1258,8 @@ static int __parse_events_add_pmu(struct parse_events_state *parse_state,
+>
+>                 list_for_each_entry_safe(pos, tmp, &config_terms, list) {
+>                         list_del_init(&pos->list);
+> -                       zfree(&pos->val.str);
+> +                       if (pos->free_str)
+> +                               zfree(&pos->val.str);
+>                         free(pos);
+>                 }
+>                 return -EINVAL;
 
-{ ionic_open, ionic_lif_handle_fw_up, ionic_start_queues_reconfig }
-     ionic_txrx_init
-       ionic_set_rx_mode
-         _ionic_lif_rx_mode
 
-We may not want to change this one.
+util/parse-events.c: In function '__parse_events_add_pmu':
+util/parse-events.c:1261:11: error: 'struct perf_evsel_config_term'
+has no member named 'free_str'
+    if (pos->free_str)
+           ^~
+In file included from util/evlist.h:14:0,
+                 from util/parse-events.c:10:
+util/parse-events.c:1262:20: error: 'union <anonymous>' has no member
+named 'str'
+     zfree(&pos->val.str);
+                    ^
+util/util.h:27:29: note: in definition of macro 'zfree'
+ #define zfree(ptr) ({ free(*ptr); *ptr = NULL; })
+                             ^~~
+util/parse-events.c:1262:20: error: 'union <anonymous>' has no member
+named 'str'
+     zfree(&pos->val.str);
+                    ^
+util/util.h:27:36: note: in definition of macro 'zfree'
+ #define zfree(ptr) ({ free(*ptr); *ptr = NULL; })
+                                    ^~~
 
-sln
+Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+
+full build link,
+https://ci.linaro.org/view/lkft/job/openembedded-lkft-linux-stable-rc-4.14/DISTRO=lkft,MACHINE=intel-corei7-64,label=docker-lkft/938/consoleText
 
 
+-- 
+Linaro LKFT
+https://lkft.linaro.org
 
->>
->> ionic_link_status_check_request() has two call paths:
->>
->>   1) NAPI which obviously cannot sleep
->>
->>   2) Setup which is again fully preemptible task context
->>
->> Add 'can_sleep' arguments to the affected functions and let the callers
->> provide the context instead of letting the functions deduce it.
->>
->> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
->> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
->> Cc: Shannon Nelson <snelson@pensando.io>
->> Cc: Pensando Drivers <drivers@pensando.io>
->> Cc: "David S. Miller" <davem@davemloft.net>
->> Cc: Jakub Kicinski <kuba@kernel.org>
->> Cc: netdev@vger.kernel.org
+> --
+> 2.25.1
 >
-> Acked-by: Shannon Nelson <snelson@pensando.io>
->
->> ---
->>
->> While reviewing the callpaths, a couple of things were observed which 
->> could
->> be improved:
->>
->> - ionic_lif_deferred_work() can iterate over the list. There is no need
->>    to schedule the work item after each iteration
->
-> I think the original writer's intent was to avoid monopolizing the 
-> work thread for very long on any one cycle, with the thought that we'd 
-> be making more use of this than we currently are.  I'll address this.
->
->>
->> - ionic_link_status_check_request() could have ionic_deferred_work 
->> within
->>    ionic_lif(). This would avoid memory allocation from NAPI. More
->>    important, once IONIC_LIF_F_LINK_CHECK_REQUESTED is set and that 
->> alloc
->>    fails, the link check never happens.
->
-> Thanks, I'll fix up that error condition.
->
->>
->> - ionic_lif_handle_fw_down() sets IONIC_LIF_F_FW_RESET. Invokes then
->>    ionic_lif_deinit() which only invokes cancel_work_sync() if
->>    IONIC_LIF_F_FW_RESET is not set. I think the logic is wrong here as
->>    the work must always be cancled. Also the list with ionic_deferred
->>    work items needs a clean up.
->
-> I'll look at that, thanks.
->
-> sln
->
->
-
