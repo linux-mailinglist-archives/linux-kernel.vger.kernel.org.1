@@ -2,102 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23ACF27A540
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 03:42:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D42FE27A544
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 03:47:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726497AbgI1Bm2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 21:42:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34802 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726409AbgI1Bm2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Sep 2020 21:42:28 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19038C0613CE;
-        Sun, 27 Sep 2020 18:42:43 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id b17so2638410pji.1;
-        Sun, 27 Sep 2020 18:42:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=8dvvyKbSOAlgek5cc8aTLapz1pd13ZzkOFYmkcPpkd4=;
-        b=h3emFgsM6piZBSbVf/atrjx/QFGhrpigxWKDnEpPikiSAGfjadQfqVz7D8L3eS1dIC
-         Ey2CLiD8B6GZ5sHxpEL1WSHrTIxbPE6FF+kihoC4bFXe9pD0c7/xb81xoNcFQ7JWW43m
-         k4RA027NJeoR4FN/o9aerkgGpOgzFUgLkpZsW9TWOqe/Er/dIfsJ/Bi0fzCzV0u6ITqj
-         oGJGU8CGwncW7ZDruv3kVi7hd1P0n3LnyhvSO2SE2pJnBFgeo/InooYzPva5S7l0HDDU
-         vI2xqbKA7vHhl00a6SHlCBComY5Ra+G2i8Dp4J8xPyo37v/2lOfdzwuqXUi+lbHMmCp/
-         hpdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=8dvvyKbSOAlgek5cc8aTLapz1pd13ZzkOFYmkcPpkd4=;
-        b=hBA37+ddGtNqTJGd6nctGw0M+vtUl/GcjUOzIGV5DfqyPKYBDXKcJrN4ag1Tleoikl
-         X5RfJA52Qh56b0xo1btNQZL6lDJjvQty98cXFe41haPcbHytnsQxHD44Qi9pjpIkeVVq
-         O1WtIethlTa7rJvVYKS8xw9DS4fMuGSh4D2dA/Kj8iSrhEr86agGrztvX19j/vd8y45b
-         sqrqveyI9QL2XmvK9fyDhfzh4KLOLaYBiHuFtMnOILUy4dTBvgJDHLd+TL00QkG3bKlF
-         zaznQ6yDhukI/CJ4+simNSBFbe9z/o6dTe/fg526UsfeNr0WguZQ/DsbqxHt0Few+Oix
-         fVCA==
-X-Gm-Message-State: AOAM533kvl66oVTb3ZBKuuHYk8wigcVC1pGuW5tow/bROrCL6e/yyJGs
-        ipdA7yDElUQSO0FDu8vuj6IealVg7NAFKA==
-X-Google-Smtp-Source: ABdhPJzygoBiYd6Buh+m4UHKonvhgMi2Rfn3a5kRAQQZ789YxIOvdyRD484gZNpKzOR92zhQM9IpKA==
-X-Received: by 2002:a17:90a:ca03:: with SMTP id x3mr7366766pjt.92.1601257362214;
-        Sun, 27 Sep 2020 18:42:42 -0700 (PDT)
-Received: from [192.168.1.3] (ip68-111-84-250.oc.oc.cox.net. [68.111.84.250])
-        by smtp.gmail.com with ESMTPSA id ev19sm4932293pjb.42.2020.09.27.18.42.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 27 Sep 2020 18:42:41 -0700 (PDT)
-Subject: Re: [PATCH 06/18] hwrng: iproc-rng200 - use semicolons rather than
- commas to separate statements
-To:     Julia Lawall <Julia.Lawall@inria.fr>,
-        Matt Mackall <mpm@selenic.com>
-Cc:     =?UTF-8?Q?Valdis_Kl=c4=93tnieks?= <valdis.kletnieks@vt.edu>,
-        Joe Perches <joe@perches.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        kernel-janitors@vger.kernel.org,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-References: <1601233948-11629-1-git-send-email-Julia.Lawall@inria.fr>
- <1601233948-11629-7-git-send-email-Julia.Lawall@inria.fr>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <793939ba-520a-8041-b3c7-20900a21f308@gmail.com>
-Date:   Sun, 27 Sep 2020 18:42:40 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.2.2
+        id S1726476AbgI1BrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 21:47:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53786 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726421AbgI1BrP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Sep 2020 21:47:15 -0400
+Received: from localhost (52.sub-72-107-123.myvzw.com [72.107.123.52])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 00F2D23A33;
+        Mon, 28 Sep 2020 01:47:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601257634;
+        bh=wl9uadR/O5hDseMDXPYnhwPCJojmECIbpMp6D1e2udM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=2lh1duhWFfmHf4NlNWF5s1sBothSPDiDnXOIV05ed6sS2F4L1+EV9Z1bw/fotNr03
+         /Kqsip5Z0Ud9FPrO+RpeSA9OQoyLEt8awlo40L4Hau3C32yoaRtNVTdAHoBl59f4ku
+         N7ULaS+CMARBTW9dBIQLiIJ5dLAvGqEP5uA720cM=
+Date:   Sun, 27 Sep 2020 20:47:11 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Sean V Kelley <seanvk.dev@oregontracks.org>
+Cc:     bhelgaas@google.com, Jonathan.Cameron@huawei.com,
+        rafael.j.wysocki@intel.com, ashok.raj@intel.com,
+        tony.luck@intel.com, sathyanarayanan.kuppuswamy@intel.com,
+        qiuxu.zhuo@intel.com, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Sean V Kelley <sean.v.kelley@intel.com>
+Subject: Re: [PATCH v6 07/10] PCI/RCEC: Add RCiEP's linked RCEC to AER/ERR
+Message-ID: <20200928014711.GA2475864@bjorn-Precision-5520>
 MIME-Version: 1.0
-In-Reply-To: <1601233948-11629-7-git-send-email-Julia.Lawall@inria.fr>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200927234545.GA2470139@bjorn-Precision-5520>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Sep 27, 2020 at 06:45:45PM -0500, Bjorn Helgaas wrote:
+> On Tue, Sep 22, 2020 at 02:38:56PM -0700, Sean V Kelley wrote:
+> > From: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
 
-
-On 9/27/2020 12:12 PM, Julia Lawall wrote:
-> Replace commas with semicolons.  What is done is essentially described by
-> the following Coccinelle semantic patch (http://coccinelle.lip6.fr/):
+> >  	pci_dbg(dev, "broadcast error_detected message\n");
+> >  	if (state == pci_channel_io_frozen) {
+> > -		pci_bridge_walk(bridge, report_frozen_detected, &status);
+> > +		pci_bridge_walk(bridge, dev, report_frozen_detected, &status);
+> >  		if (type == PCI_EXP_TYPE_RC_END) {
+> > +			/*
+> > +			 * The callback only clears the Root Error Status
+> > +			 * of the RCEC (see aer.c).
+> > +			 */
+> > +			if (bridge)
+> > +				reset_subordinate_devices(bridge);
 > 
-> // <smpl>
-> @@ expression e1,e2; @@
-> e1
-> -,
-> +;
-> e2
-> ... when any
-> // </smpl>
-> 
-> Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
+> It's unfortunate to add yet another special case in this code, and I'm
+> not thrilled about the one in aer_root_reset() either.  It's just not
+> obvious why they should be there.  I'm sure if I spent 30 minutes
+> decoding things, it would all make sense.  Guess I'm just griping
+> because I don't have a better suggestion.
 
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+I'm sorry, this was unkind of me.  If I don't have a constructive
+idea, there's no reason for me to complain about this.  I apologize.
+
+Bjorn
