@@ -2,91 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 396AE27B327
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 19:26:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E47527B32A
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 19:27:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726765AbgI1R0e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 13:26:34 -0400
-Received: from mail-oi1-f193.google.com ([209.85.167.193]:44212 "EHLO
-        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726551AbgI1R0d (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 13:26:33 -0400
-Received: by mail-oi1-f193.google.com with SMTP id 185so2170358oie.11;
-        Mon, 28 Sep 2020 10:26:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=2Bg8Mb9Gv2pIoiwK87TIqBreNFfJwQnzcH+LXnQL+4E=;
-        b=DKnyfgXTAWzRQeaW3JaGxzzoiSP0dqnknMWsftAehv4tdc2OeHIJAbqoFraSdjqOu4
-         QuC11py4w0cv3dl0kggtBOb5tWsdVhQfz+ktlbeZyItsUIjVObT9XgV5cI5MdKB7/0oz
-         Crv0RtmZHjWcVbRnEWu+xY2GJ7+GgoOjT+CGXB6qc4ph/VAnXxJXQXm0SyHkaUrSYZgU
-         E90My/BaNRR9Bcv9CF/Ba5nLiD4l1Mi/c3JlRNSAGlNf1jfxNR4aimdTRqmp/442AWNl
-         n4KraUiMG/4TfDG2L7Egf+xCusXknSn2yFfT3aFgjTW9F5p4oMa5vXkdbbHscnxt1ORg
-         4ZHw==
-X-Gm-Message-State: AOAM532e/W+wCx/kKtwVgbyD32AwJBMAaeDb5yxdP2jIAvbbI51zo/gt
-        yh6rc92gCcVeDiVylXIw3w==
-X-Google-Smtp-Source: ABdhPJwXO9pq9TJEGuCXdjVBWwl4RWh6eeuKeJMcErJlWKZi0dMMVwHrqzNAx4K4wDL4I9iZT4xUhA==
-X-Received: by 2002:a05:6808:914:: with SMTP id w20mr1614438oih.72.1601313992499;
-        Mon, 28 Sep 2020 10:26:32 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id y23sm2207192ooj.34.2020.09.28.10.26.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Sep 2020 10:26:31 -0700 (PDT)
-Received: (nullmailer pid 2933713 invoked by uid 1000);
-        Mon, 28 Sep 2020 17:26:31 -0000
-Date:   Mon, 28 Sep 2020 12:26:31 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     kholk11@gmail.com
-Cc:     linux-pm@vger.kernel.org, konradybcio@gmail.com,
-        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        marijns95@gmail.com, martin.botka1@gmail.com, agross@kernel.org,
-        bjorn.andersson@linaro.org, phone-devel@vger.kernel.org,
-        georgi.djakov@linaro.org, linux-kernel@vger.kernel.org,
-        robh+dt@kernel.org
-Subject: Re: [PATCH 2/2] dt-bindings: interconnect: Add bindings for Qualcomm
- SDM660 NoC
-Message-ID: <20200928172631.GA2933280@bogus>
-References: <20200926125101.12712-1-kholk11@gmail.com>
- <20200926125101.12712-3-kholk11@gmail.com>
+        id S1726590AbgI1R1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 13:27:20 -0400
+Received: from mail-bn8nam11on2119.outbound.protection.outlook.com ([40.107.236.119]:54241
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726281AbgI1R1U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 13:27:20 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CSOm2vZLzQMck3FGzXITrSE/DybxYZYf3GSatYfSwnswvq3q9u/pjXpvTd8KqU8PkRSy8r5QFE9H/P3+H0lHqxTBNwoZALQZ3/S05J4hKXbRdlnE3ml71uOmVuoONjS5VVgmJz5e4BiGvg/QSvoAG4f4N0MqMk37rZjWNNxJu5o0BGQK0nKQ/+DcU/cGNACChjN1SoFafOayqDKh4qhdnv8Sm5LNGEyUeiWMqhvVjkQ0PJ7hZ4slR0WKnc91tP1itrqsFZMVVuqsJVAzZFa/d8XL7Hy1Hq+2pwIwzlIQEPcax8Mex/yEAC4AiKZSe+2ExR1oAWk89WVPzHaWv+Nr9w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=obKvPQYQV8QBhYqKJosYIDVefS+y2r3SOzFNSH5f2rg=;
+ b=LfcpF1dreKgoFaC4dXN9EGOZIrDSZuC0tLJjkBotTzRrmRSTzwJJDfvfbgnFP1O3m/L3Jx7pvIp/0JtUb77JYxhRWewlmdri7IoWO7CzLJfFT9moFm6wrUDmsjWs1NOW1s7lfTUFMySu5gMGVMmKBIi2uDJkNaN1BZPbuvU3wR4Wy0jIcxJQMbHUa16KEHSvw2EvDOVyQ7oNGmwEMCkWd76rMshEXwv44aN0T8uhibpz0ZfgfSj07ao1h3wgGjNKXhBdYkTQYIECObJVndzW3x1jA+KsJnU7u6Tx4loNH81P5XxBDrjM/OSQLwmgMFItKX4qOKDkHIquUaPiTdDJ8A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=hammerspace.com; dmarc=pass action=none
+ header.from=hammerspace.com; dkim=pass header.d=hammerspace.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hammerspace.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=obKvPQYQV8QBhYqKJosYIDVefS+y2r3SOzFNSH5f2rg=;
+ b=Upap9GP3d41yX6RMxbKfQePR963Sbo55HU9f3O+Z6AV+2v/BXruN1J6VkSJwE6J1C+C/jRmauozRpWJezwU9gB1llpfn2w9yE2CWqz+3T/uzhR3EnxjMvrqo1t05N65co4Bkd9gkEF/aHVbxxqsxQrsVn/iU5KFmxx3xr4EAcds=
+Received: from MN2PR13MB3957.namprd13.prod.outlook.com (2603:10b6:208:263::11)
+ by MN2PR13MB3696.namprd13.prod.outlook.com (2603:10b6:208:1e0::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.18; Mon, 28 Sep
+ 2020 17:27:15 +0000
+Received: from MN2PR13MB3957.namprd13.prod.outlook.com
+ ([fe80::e8a1:6acc:70f0:ef39]) by MN2PR13MB3957.namprd13.prod.outlook.com
+ ([fe80::e8a1:6acc:70f0:ef39%6]) with mapi id 15.20.3433.030; Mon, 28 Sep 2020
+ 17:27:15 +0000
+From:   Trond Myklebust <trondmy@hammerspace.com>
+To:     "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>
+CC:     "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] Please pull NFS client bugfixes
+Thread-Topic: [GIT PULL] Please pull NFS client bugfixes
+Thread-Index: AQHWlbyb7Abp3rPZ80efHk7uJAcVYw==
+Date:   Mon, 28 Sep 2020 17:27:14 +0000
+Message-ID: <93a6b36e466a389330945f8c515ad7fd86e8b714.camel@hammerspace.com>
+Accept-Language: en-US, en-GB
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: linux-foundation.org; dkim=none (message not signed)
+ header.d=none;linux-foundation.org; dmarc=none action=none
+ header.from=hammerspace.com;
+x-originating-ip: [68.36.133.222]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 76459e92-d25e-4eb5-6cef-08d863d3be15
+x-ms-traffictypediagnostic: MN2PR13MB3696:
+x-microsoft-antispam-prvs: <MN2PR13MB3696E67DB78161A5A87264FBB8350@MN2PR13MB3696.namprd13.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:913;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 9eOdc02iu42a2Q6Vl4HFOZOk1MJMlsd+Ec9ZHseLErmm3R7ziycdu5loLi+kIfHs4DiY4MKu7GYrQ4yi/vBniPl3wUQXs9x5A0CbUhQp77dkfPTYO7jqo9MkBNtfYw3WjKbCoJn+tjssXQmQfaCyyiBrzbC+0+8BRs14zNMHsMiTKoMFtaTZtrqx03pgvsAiL1C4/XbODhFyt3YKRlgJv/zFz+JicgblhPDuF/+wTrxsDUwtMiegror1SpSKpCZxAm1B3HDkjwHfBEF8O7qLSK4mx8iCZzQw/YTM0ILzduUI7ce1KUsnsyqL43K1ENnTDe9QCgFd+qyrOwrBJaJB0w==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR13MB3957.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(39830400003)(396003)(346002)(376002)(136003)(366004)(478600001)(26005)(54906003)(36756003)(2616005)(6506007)(186003)(316002)(8936002)(2906002)(6916009)(6512007)(8676002)(86362001)(66476007)(64756008)(66556008)(66446008)(83380400001)(5660300002)(71200400001)(6486002)(76116006)(91956017)(4326008)(66946007);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: rBxeWNAeOyn85CFINKQjCyZqCW536WTskLOTLUDEavzvzky2WuWVue5e+cySMiAkRNXZ7PBADPpADo+xNifsfOxBQV4WgGE4qP8uIaGIw1Gfnr5cjEnrJPcyJ7/hBy0N1YTPNhua98nj30rKIgshjI9KFMgRyd9M7MicEBVQeFKhVvI7sRG/D8zAm2GDEINk4/bMKP/NrHMNWjI3DgST0r3eutWAoE85c56ZV51vo+2NPZX5Pr5xGHyZfqHFQeqcZVRb4o0lrOSIbSL+HbynKCaC6fRRyhogF88mnQAEp3c1q2vi7g/tx7nrMzFbjIsnZkjNwHY49OLXRaDc4x2xdTYwvEbkUbsEo55qEbBaBx/ltthmggFaRgIwQptcwUsTwh2a9Ep324gh2EDrJulyaevh1lJCmkpS10mE3hUOOuqKI4ZqKEZJYXT9rZ8NnjdxEmHZrccNNR9Upvm7nI7J3gJuPxSGL/azvLn32YrB2uzBflNla1JSDVOpn3B1f0FhXC5lLL303Dj9UJRhi2vXfME7EVIboMdTmkfbgsMzWWa61OnEXReo+iMvu8werzGgqBb6pbG9VcKUvAasBPh7LDH2e/QBhYbr7O0dfdsxnSX8/o6qCZoZHEk/EWcWcYLnMebIUCpz+TdLVddj/WS9pQ==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <C970E3A53B69824683840492C9890F7F@namprd13.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200926125101.12712-3-kholk11@gmail.com>
+X-OriginatorOrg: hammerspace.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR13MB3957.namprd13.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 76459e92-d25e-4eb5-6cef-08d863d3be15
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Sep 2020 17:27:14.9128
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 0d4fed5c-3a70-46fe-9430-ece41741f59e
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: dDqHGUWznzM/9ip1llAQD21YmehYMf8ALNNK1wnVchueVZaOjYDbW3nDrU3hl3XAyJZyNWoeuo1khuUlGpO9Xg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR13MB3696
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 26 Sep 2020 14:51:01 +0200, kholk11@gmail.com wrote:
-> From: AngeloGioacchino Del Regno <kholk11@gmail.com>
-> 
-> Add the bindings for the Qualcomm SDM660-class NoC, valid for
-> SDM630, SDM636, SDM660 and SDA variants.
-> 
-> Signed-off-by: AngeloGioacchino Del Regno <kholk11@gmail.com>
-> ---
->  .../bindings/interconnect/qcom,sdm660.yaml    | 146 ++++++++++++++++++
->  1 file changed, 146 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/interconnect/qcom,sdm660.yaml
-> 
-
-
-My bot found errors running 'make dt_binding_check' on your patch:
-
-Error: Documentation/devicetree/bindings/interconnect/qcom,sdm660.example.dts:64.33-34 syntax error
-FATAL ERROR: Unable to parse input tree
-make[1]: *** [scripts/Makefile.lib:342: Documentation/devicetree/bindings/interconnect/qcom,sdm660.example.dt.yaml] Error 1
-make[1]: *** Waiting for unfinished jobs....
-make: *** [Makefile:1366: dt_binding_check] Error 2
-
-
-See https://patchwork.ozlabs.org/patch/1371756
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure dt-schema is up to date:
-
-pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
-
-Please check and re-submit.
-
+SGkgTGludXMsDQoNClRoZSBmb2xsb3dpbmcgY2hhbmdlcyBzaW5jZSBjb21taXQgODU2ZGViODY2
+ZDE2ZTI5YmQ2NTk1MmUwMjg5MDY2ZjYwNzhhZjc3MzoNCg0KICBMaW51eCA1LjktcmM1ICgyMDIw
+LTA5LTEzIDE2OjA2OjAwIC0wNzAwKQ0KDQphcmUgYXZhaWxhYmxlIGluIHRoZSBHaXQgcmVwb3Np
+dG9yeSBhdDoNCg0KICBnaXQ6Ly9naXQubGludXgtbmZzLm9yZy9wcm9qZWN0cy90cm9uZG15L2xp
+bnV4LW5mcy5naXQgdGFncy9uZnMtZm9yLTUuOS0zDQoNCmZvciB5b3UgdG8gZmV0Y2ggY2hhbmdl
+cyB1cCB0byBiOWRmNDZkMDhhOGQwOThlYTIxMjRjYjllM2I4NDQ1OGE0NzRiNGQ0Og0KDQogIHBO
+RlMvZmxleGZpbGVzOiBCZSBjb25zaXN0ZW50IGFib3V0IG1pcnJvciBpbmRleCB0eXBlcyAoMjAy
+MC0wOS0xOCAwOToyNTozMyAtMDQwMCkNCg0KQ2hlZXJzLA0KICBUcm9uZA0KLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0KTkZT
+IGNsaWVudCBidWdmaXhlcyBmb3IgTGludXggNS45DQoNCkhpZ2hsaWdodHMgaW5jbHVkZToNCg0K
+QnVnZml4ZXM6DQotIE5GU3Y0LjI6IGNvcHlfZmlsZV9yYW5nZSBuZWVkcyB0byBpbnZhbGlkYXRl
+IGNhY2hlcyBvbiBzdWNjZXNzDQotIE5GU3Y0LjI6IEZpeCBzZWN1cml0eSBsYWJlbCBsZW5ndGgg
+bm90IGJlaW5nIHJlc2V0DQotIHBORlMvZmxleGZpbGVzOiBFbnN1cmUgd2UgaW5pdGlhbGlzZSB0
+aGUgbWlycm9yIGJzaXplcyBjb3JyZWN0bHkgb24gcmVhZA0KLSBwTkZTL2ZsZXhmaWxlczogRml4
+IHNpZ25lZC91bnNpZ25lZCB0eXBlIGlzc3VlcyB3aXRoIG1pcnJvciBpbmRpY2VzDQoNCi0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0NCkplZmZyZXkgTWl0Y2hlbGwgKDEpOg0KICAgICAgbmZzOiBGaXggc2VjdXJpdHkgbGFiZWwg
+bGVuZ3RoIG5vdCBiZWluZyByZXNldA0KDQpPbGdhIEtvcm5pZXZza2FpYSAoMSk6DQogICAgICBO
+RlN2NC4yOiBmaXggY2xpZW50J3MgYXR0cmlidXRlIGNhY2hlIG1hbmFnZW1lbnQgZm9yIGNvcHlf
+ZmlsZV9yYW5nZQ0KDQpUcm9uZCBNeWtsZWJ1c3QgKDIpOg0KICAgICAgcE5GUy9mbGV4ZmlsZXM6
+IEVuc3VyZSB3ZSBpbml0aWFsaXNlIHRoZSBtaXJyb3IgYnNpemVzIGNvcnJlY3RseSBvbiByZWFk
+DQogICAgICBwTkZTL2ZsZXhmaWxlczogQmUgY29uc2lzdGVudCBhYm91dCBtaXJyb3IgaW5kZXgg
+dHlwZXMNCg0KIGZzL25mcy9kaXIuYyAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgIDMgKysr
+DQogZnMvbmZzL2ZsZXhmaWxlbGF5b3V0L2ZsZXhmaWxlbGF5b3V0LmMgfCA0MyArKysrKysrKysr
+KysrKysrKy0tLS0tLS0tLS0tLS0tLS0tDQogZnMvbmZzL25mczQycHJvYy5jICAgICAgICAgICAg
+ICAgICAgICAgfCAxMCArKysrKysrLQ0KIGluY2x1ZGUvbGludXgvbmZzX3hkci5oICAgICAgICAg
+ICAgICAgIHwgIDQgKystLQ0KIDQgZmlsZXMgY2hhbmdlZCwgMzYgaW5zZXJ0aW9ucygrKSwgMjQg
+ZGVsZXRpb25zKC0pDQotLSANClRyb25kIE15a2xlYnVzdA0KTGludXggTkZTIGNsaWVudCBtYWlu
+dGFpbmVyLCBIYW1tZXJzcGFjZQ0KdHJvbmQubXlrbGVidXN0QGhhbW1lcnNwYWNlLmNvbQ0KDQoN
+Cg==
