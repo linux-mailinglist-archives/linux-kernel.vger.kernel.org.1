@@ -2,67 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75E4227AD8A
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 14:11:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45B6527AD8C
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 14:11:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726583AbgI1MLa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 08:11:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52290 "EHLO mail.kernel.org"
+        id S1726605AbgI1MLk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 08:11:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52386 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726350AbgI1MLa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 08:11:30 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726350AbgI1MLk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 08:11:40 -0400
+Received: from [192.168.0.112] (75-58-59-55.lightspeed.rlghnc.sbcglobal.net [75.58.59.55])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 312D62083B;
-        Mon, 28 Sep 2020 12:11:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BDDA52083B;
+        Mon, 28 Sep 2020 12:11:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601295089;
-        bh=tB9hfGPjvJwP/CgUTzf9UD+Q6oFlInFk9oxc9qyVBlQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dO+CZraVjmjBjQtPPvVKGsBLrifLH9LkWTOnQaaoiOUq/t527NS0VGbQi0EAxcqms
-         KgSjfwdQlkE1Sm8Xmw0qhe38UOnvQmp0XsTAcGApF1VPzwjcscO87UMEQtiaQFJmtP
-         +9SzUW7C8VvjKSKPiPOF76afF0HlHMq6w8g0Bj+s=
-Date:   Mon, 28 Sep 2020 14:11:36 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Kanchan Joshi <joshi.k@samsung.com>
-Cc:     axboe@kernel.dk, Damien.LeMoal@wdc.com,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        stable@vger.kernel.org, selvakuma.s1@samsung.com,
-        nj.shetty@samsung.com, javier.gonz@samsung.com
-Subject: Re: [PATCH v2 0/1] concurrency handling for zoned null-blk
-Message-ID: <20200928121136.GA661041@kroah.com>
-References: <CGME20200928095910epcas5p2226ab95a8e4fbd3cfe3f48afb1a58c40@epcas5p2.samsung.com>
- <20200928095549.184510-1-joshi.k@samsung.com>
+        s=default; t=1601295099;
+        bh=NK7+H/Aeb5qTM2CC+Dotq0cvh0sf74ZwVYE2Z4WjsRQ=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=Qbv/4iT98v3fufYZRVwMVbg01QTkaf635XRL7rtSN9sp2LSfeplmr6ZNwXsSWEe+4
+         voeOVqjaJDotsxrl7+lX2H/Q3sorqUt3ZjzqIeAHNdH6t5bKFoypvUtki5XNI0xV50
+         qwUihFFy3e3dZuYRw9XTg6pA3KxUU36tND05JKuc=
+Subject: Re: [PATCH v3 1/1] PCI/ERR: Fix reset logic in pcie_do_recovery()
+ call
+To:     "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Bjorn Helgaas <helgaas@kernel.org>
+Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ashok.raj@intel.com,
+        Jay Vosburgh <jay.vosburgh@canonical.com>
+References: <20200922233333.GA2239404@bjorn-Precision-5520>
+ <704c39bf-6f0c-bba3-70b8-91de6a445e43@linux.intel.com>
+ <3d27d0a4-2115-fa72-8990-a84910e4215f@kernel.org>
+ <d5aa53dc-0c94-e57a-689a-1c1f89787af1@linux.intel.com>
+ <526dc846-b12b-3523-4995-966eb972ceb7@kernel.org>
+ <1fdcc4a6-53b7-2b5f-8496-f0f09405f561@linux.intel.com>
+ <aef0b9aa-59f5-9ec3-adac-5bc366b362e0@kernel.org>
+ <a647f485-8db4-db45-f404-940b55117b53@linux.intel.com>
+ <aefd8842-90c4-836a-b43a-f21c5428d2ba@kernel.org>
+ <95e23cb5-f6e1-b121-0de8-a2066d507d9c@linux.intel.com>
+ <65238d0b-0a39-400a-3a18-4f68eb554538@kernel.org>
+ <4ae86061-2182-bcf1-ebd7-485acf2d47b9@linux.intel.com>
+ <f360165e-5f73-057c-efd1-557b5e5027eb@kernel.org>
+ <8beca800-ffb5-c535-6d43-7e750cbf06d0@linux.intel.com>
+ <44f0cac5-8deb-1169-eb6d-93ac4889fe7e@kernel.org>
+ <3bc0fd23-8ddd-32c5-1dd9-4d5209ea68c3@linux.intel.com>
+From:   Sinan Kaya <okaya@kernel.org>
+Autocrypt: addr=okaya@kernel.org; keydata=
+ mQENBFrnOrUBCADGOL0kF21B6ogpOkuYvz6bUjO7NU99PKhXx1MfK/AzK+SFgxJF7dMluoF6
+ uT47bU7zb7HqACH6itTgSSiJeSoq86jYoq5s4JOyaj0/18Hf3/YBah7AOuwk6LtV3EftQIhw
+ 9vXqCnBwP/nID6PQ685zl3vH68yzF6FVNwbDagxUz/gMiQh7scHvVCjiqkJ+qu/36JgtTYYw
+ 8lGWRcto6gr0eTF8Wd8f81wspmUHGsFdN/xPsZPKMw6/on9oOj3AidcR3P9EdLY4qQyjvcNC
+ V9cL9b5I/Ud9ghPwW4QkM7uhYqQDyh3SwgEFudc+/RsDuxjVlg9CFnGhS0nPXR89SaQZABEB
+ AAG0HVNpbmFuIEtheWEgPG9rYXlhQGtlcm5lbC5vcmc+iQFOBBMBCAA4FiEEYdOlMSE+a7/c
+ ckrQvGF4I+4LAFcFAlztcAoCGwMFCwkIBwIGFQoJCAsCBBYCAwECHgECF4AACgkQvGF4I+4L
+ AFfidAf/VKHInxep0Z96iYkIq42432HTZUrxNzG9IWk4HN7c3vTJKv2W+b9pgvBF1SmkyQSy
+ 8SJ3Zd98CO6FOHA1FigFyZahVsme+T0GsS3/OF1kjrtMktoREr8t0rK0yKpCTYVdlkHadxmR
+ Qs5xLzW1RqKlrNigKHI2yhgpMwrpzS+67F1biT41227sqFzW9urEl/jqGJXaB6GV+SRKSHN+
+ ubWXgE1NkmfAMeyJPKojNT7ReL6eh3BNB/Xh1vQJew+AE50EP7o36UXghoUktnx6cTkge0ZS
+ qgxuhN33cCOU36pWQhPqVSlLTZQJVxuCmlaHbYWvye7bBOhmiuNKhOzb3FcgT7kBDQRa5zq1
+ AQgAyRq/7JZKOyB8wRx6fHE0nb31P75kCnL3oE+smKW/sOcIQDV3C7mZKLf472MWB1xdr4Tm
+ eXeL/wT0QHapLn5M5wWghC80YvjjdolHnlq9QlYVtvl1ocAC28y43tKJfklhHiwMNDJfdZbw
+ 9lQ2h+7nccFWASNUu9cqZOABLvJcgLnfdDpnSzOye09VVlKr3NHgRyRZa7me/oFJCxrJlKAl
+ 2hllRLt0yV08o7i14+qmvxI2EKLX9zJfJ2rGWLTVe3EJBnCsQPDzAUVYSnTtqELu2AGzvDiM
+ gatRaosnzhvvEK+kCuXuCuZlRWP7pWSHqFFuYq596RRG5hNGLbmVFZrCxQARAQABiQEfBBgB
+ CAAJBQJa5zq1AhsMAAoJELxheCPuCwBX2UYH/2kkMC4mImvoClrmcMsNGijcZHdDlz8NFfCI
+ gSb3NHkarnA7uAg8KJuaHUwBMk3kBhv2BGPLcmAknzBIehbZ284W7u3DT9o1Y5g+LDyx8RIi
+ e7pnMcC+bE2IJExCVf2p3PB1tDBBdLEYJoyFz/XpdDjZ8aVls/pIyrq+mqo5LuuhWfZzPPec
+ 9EiM2eXpJw+Rz+vKjSt1YIhg46YbdZrDM2FGrt9ve3YaM5H0lzJgq/JQPKFdbd5MB0X37Qc+
+ 2m/A9u9SFnOovA42DgXUyC2cSbIJdPWOK9PnzfXqF3sX9Aol2eLUmQuLpThJtq5EHu6FzJ7Y
+ L+s0nPaNMKwv/Xhhm6Y=
+Message-ID: <d508091f-a5a3-1127-6a42-e546532da7b2@kernel.org>
+Date:   Mon, 28 Sep 2020 08:11:37 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200928095549.184510-1-joshi.k@samsung.com>
+In-Reply-To: <3bc0fd23-8ddd-32c5-1dd9-4d5209ea68c3@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 03:25:48PM +0530, Kanchan Joshi wrote:
-> Changes since v1:
-> - applied the refactoring suggested by Damien
+On 9/27/2020 10:43 PM, Kuppuswamy, Sathyanarayanan wrote:
+>> 2. no bus reset on NON_FATAL error through AER driver path.
+>> This already tells me that you need to split your change into
+>> multiple patches.
+>>
+>> Let's talk about this too. bus reset should be triggered via
+>> AER driver before informing the recovery.
+> But as per error recovery documentation, any call to
+> ->error_detected() or ->mmio_enabled() can request
+> PCI_ERS_RESULT_NEED_RESET. So we need to add code
+> to do the actual reset before calling ->slot_reset()
+> callback. So call to pci_reset_bus() fixes this
+> issue.
 > 
-> Kanchan Joshi (1):
->   null_blk: synchronization fix for zoned device
-> 
->  drivers/block/null_blk.h       |  1 +
->  drivers/block/null_blk_zoned.c | 22 ++++++++++++++++++----
->  2 files changed, 19 insertions(+), 4 deletions(-)
-> 
-> -- 
-> 2.25.1
-> 
+>      if (status == PCI_ERS_RESULT_NEED_RESET) {
+> +        pci_reset_bus(dev);
 
+This part seems to make sense as you already highlighted there is
+a TO-DO in the code.
 
-<formletter>
-
-This is not the correct way to submit patches for inclusion in the
-stable kernel tree.  Please read:
-    https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
-for how to do this properly.
-
-</formletter>
+This is an independent change that deserves its own patch.
