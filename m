@@ -2,44 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D446627A743
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 08:14:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3062227A745
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 08:16:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726461AbgI1GOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 02:14:18 -0400
-Received: from verein.lst.de ([213.95.11.211]:34332 "EHLO verein.lst.de"
+        id S1726500AbgI1GQc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 02:16:32 -0400
+Received: from mga07.intel.com ([134.134.136.100]:44581 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725290AbgI1GOS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 02:14:18 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 8B21167373; Mon, 28 Sep 2020 08:14:15 +0200 (CEST)
-Date:   Mon, 28 Sep 2020 08:14:15 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Dave Airlie <airlied@gmail.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Dave Airlie <airlied@linux.ie>,
-        DRI <dri-devel@lists.freedesktop.org>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the drm tree
-Message-ID: <20200928061415.GA15226@lst.de>
-References: <20200928135405.73404219@canb.auug.org.au> <20200928060427.GA15041@lst.de> <CAPM=9txFX+M8O+-PCxAUnrSovXRHEZyRwOX2r3GUr7hP0A_o3A@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPM=9txFX+M8O+-PCxAUnrSovXRHEZyRwOX2r3GUr7hP0A_o3A@mail.gmail.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+        id S1725294AbgI1GQc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 02:16:32 -0400
+IronPort-SDR: LYyC1g5KUsX779YxSouGp9fE41i2tEIjxD1A+/DDU9XfVcypPwkdBQIjsAB/uqe8DpjS6MjPjn
+ zOgpA1A8DsfA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9757"; a="226095483"
+X-IronPort-AV: E=Sophos;i="5.77,312,1596524400"; 
+   d="scan'208";a="226095483"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2020 23:16:31 -0700
+IronPort-SDR: Rx20PZFH48rJveXPiKci9Q6J95MGFDH8Gb9lAXtZ+JFtsvGAfBxQp1u7SEx6aLD4tWSS26tVZo
+ +eX/ctamCiig==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,312,1596524400"; 
+   d="scan'208";a="293779574"
+Received: from sgsxdev001.isng.intel.com (HELO localhost) ([10.226.88.11])
+  by fmsmga008.fm.intel.com with ESMTP; 27 Sep 2020 23:16:27 -0700
+From:   Rahul Tanwar <rahul.tanwar@linux.intel.com>
+To:     u.kleine-koenig@pengutronix.de, linux-pwm@vger.kernel.org,
+        lee.jones@linaro.org
+Cc:     thierry.reding@gmail.com, p.zabel@pengutronix.de,
+        robh+dt@kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, andriy.shevchenko@intel.com,
+        songjun.Wu@intel.com, cheol.yong.kim@intel.com,
+        qi-ming.wu@intel.com, rahul.tanwar.linux@gmail.com,
+        rtanwar@maxlinear.com, Rahul Tanwar <rahul.tanwar@linux.intel.com>
+Subject: [PATCH v14 1/2] Add DT bindings YAML schema for PWM fan controller of LGM SoC
+Date:   Mon, 28 Sep 2020 14:15:57 +0800
+Message-Id: <a5b9fefb58a6fe16964219b0d443bf81c58f5445.1601273429.git.rahul.tanwar@linux.intel.com>
+X-Mailer: git-send-email 2.11.0
+In-Reply-To: <cover.1601273429.git.rahul.tanwar@linux.intel.com>
+References: <cover.1601273429.git.rahul.tanwar@linux.intel.com>
+In-Reply-To: <cover.1601273429.git.rahul.tanwar@linux.intel.com>
+References: <cover.1601273429.git.rahul.tanwar@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 04:08:36PM +1000, Dave Airlie wrote:
-> Is this possible in drm-next now (it's 5.9.0-rc5 based)?
-> 
-> or will I need to get a stable shared git tree that goes into drm-next
-> and you send to Linus early in the MR?
+Intel's LGM(Lightning Mountain) SoC contains a PWM fan controller
+which is only used to control the fan attached to the system. This
+PWM controller does not have any other consumer other than fan.
+Add DT bindings documentation for this PWM fan controller.
 
-I think we'll need a stable branch.   Let me help Paul with the
-conversion first, and once we are done I'll create a shared branch.
+Signed-off-by: Rahul Tanwar <rahul.tanwar@linux.intel.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
+---
+ .../devicetree/bindings/pwm/intel,lgm-pwm.yaml     | 44 ++++++++++++++++++++++
+ 1 file changed, 44 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/pwm/intel,lgm-pwm.yaml
+
+diff --git a/Documentation/devicetree/bindings/pwm/intel,lgm-pwm.yaml b/Documentation/devicetree/bindings/pwm/intel,lgm-pwm.yaml
+new file mode 100644
+index 000000000000..11a606536169
+--- /dev/null
++++ b/Documentation/devicetree/bindings/pwm/intel,lgm-pwm.yaml
+@@ -0,0 +1,44 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/pwm/intel,lgm-pwm.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: LGM SoC PWM fan controller
++
++maintainers:
++  - Rahul Tanwar <rtanwar@maxlinear.com>
++
++properties:
++  compatible:
++    const: intel,lgm-pwm
++
++  reg:
++    maxItems: 1
++
++  "#pwm-cells":
++    const: 2
++
++  clocks:
++    maxItems: 1
++
++  resets:
++    maxItems: 1
++
++required:
++  - compatible
++  - reg
++  - clocks
++  - resets
++
++additionalProperties: false
++
++examples:
++  - |
++    pwm: pwm@e0d00000 {
++        compatible = "intel,lgm-pwm";
++        reg = <0xe0d00000 0x30>;
++        #pwm-cells = <2>;
++        clocks = <&cgu0 126>;
++        resets = <&rcu0 0x30 21>;
++    };
+-- 
+2.11.0
+
