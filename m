@@ -2,122 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFD8F27B099
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 17:14:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6014C27B089
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 17:10:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726651AbgI1POc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 11:14:32 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45825 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726325AbgI1POc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 11:14:32 -0400
-Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601306070;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=GDx1d4uF52ufWWLZ4NH1bd4kYuWSE/VqVT2CjETd86o=;
-        b=Vr0/MIAQ8dVxURulNgo2t7TmtV7Q0otzoc03+JxlK7y4L7rvIcjI/9LFyD/VQm3osb2Z5h
-        2t4Za1rmZf0efNIezhZk2iAshhJolKY/KiTUVveJ/bNt66Kuc1s51YgyJc9+1D/gBR4/u9
-        nQSeA1CYngJbgLJz22mFC7aKgESt7EM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-193-mpnVVk3dNCGbX1d9LReang-1; Mon, 28 Sep 2020 11:14:25 -0400
-X-MC-Unique: mpnVVk3dNCGbX1d9LReang-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1726613AbgI1PKk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 11:10:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59914 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726409AbgI1PKk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 11:10:40 -0400
+Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F119C1891E98;
-        Mon, 28 Sep 2020 15:14:21 +0000 (UTC)
-Received: from oldenburg2.str.redhat.com (ovpn-114-84.ams2.redhat.com [10.36.114.84])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6188D6EE5C;
-        Mon, 28 Sep 2020 15:14:06 +0000 (UTC)
-From:   Florian Weimer <fweimer@redhat.com>
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        "H . Peter Anvin" <hpa@zytor.com>, Paul Turner <pjt@google.com>,
-        linux-api@vger.kernel.org,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        carlos@redhat.com, Vincenzo Frascino <vincenzo.frascino@arm.com>
-Subject: Re: [RFC PATCH 1/2] rseq: Implement KTLS prototype for x86-64
-References: <20200925181518.4141-1-mathieu.desnoyers@efficios.com>
-Date:   Mon, 28 Sep 2020 17:13:59 +0200
-In-Reply-To: <20200925181518.4141-1-mathieu.desnoyers@efficios.com> (Mathieu
-        Desnoyers's message of "Fri, 25 Sep 2020 14:15:17 -0400")
-Message-ID: <87r1qm2atk.fsf@oldenburg2.str.redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8DFEF2076D;
+        Mon, 28 Sep 2020 15:10:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601305839;
+        bh=mOYrcyMurLCIEVJc/RTuSXzbsVyUV5OUX+4/vlMC+bQ=;
+        h=Date:From:To:Cc:Subject:From;
+        b=nXWdkPIm/dNz3CbVxabf2t4P3UguURA2s3zyCky8VJxOc8ebwe3dDFEH2Rse381E8
+         sVK0jb9pO1AHue8n+hUFmgz9U40GUEpqMW3CB65eOURUNR17T6XX5A48U+gnjxmum9
+         iGk0ER07V8qAD2px31oBJHIvHyWeIYZNuOdhzp6g=
+Date:   Mon, 28 Sep 2020 10:16:17 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Ariel Elior <aelior@marvell.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     GR-everest-linux-l2@marvell.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Kees Cook <keescook@chromium.org>
+Subject: [PATCH][next] qed/qed_ll2: Replace one-element array with
+ flexible-array member
+Message-ID: <20200928151617.GA16912@embeddedor>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Mathieu Desnoyers:
+There is a regular need in the kernel to provide a way to declare having
+a dynamically sized set of trailing elements in a structure. Kernel code
+should always use “flexible array members”[1] for these cases. The older
+style of one-element or zero-length arrays should no longer be used[2].
 
-> Upstreaming efforts aiming to integrate rseq support into glibc led to
-> interesting discussions, where we identified a clear need to extend the
-> size of the per-thread structure shared between kernel and user-space
-> (struct rseq).  This is something that is not possible with the current
-> rseq ABI.  The fact that the current non-extensible rseq kernel ABI
-> would also prevent glibc's ABI to be extended prevents its integration
-> into glibc.
->
-> Discussions with glibc maintainers led to the following design, which we
-> are calling "Kernel Thread Local Storage" or KTLS:
->
-> - at glibc library init:
->   - glibc queries the size and alignment of the KTLS area supported by the
->     kernel,
->   - glibc reserves the memory area required by the kernel for main
->     thread,
->   - glibc registers the offset from thread pointer where the KTLS area
->     will be placed for all threads belonging to the threads group which
->     are created with clone3 CLONE_RSEQ_KTLS,
-> - at nptl thread creation:
->   - glibc reserves the memory area required by the kernel,
-> - application/libraries can query glibc for the offset/size of the
->   KTLS area, and offset from the thread pointer to access that area.
+Refactor the code according to the use of a flexible-array member in
+struct qed_ll2_tx_packet, instead of a one-element array and use the
+struct_size() helper to calculate the size for the allocations. Commit
+f5823fe6897c ("qed: Add ll2 option to limit the number of bds per packet")
+was used as a reference point for these changes.
 
-One remaining challenge see is that we want to use vDSO functions to
-abstract away the exact layout of the KTLS area.  For example, there are
-various implementation strategies for getuid optimizations, some of them
-exposing a shared struct cred in a thread group, and others not doing
-that.
+Also, it's important to notice that flexible-array members should occur
+last in any structure, and structures containing such arrays and that
+are members of other structures, must also occur last in the containing
+structure. That's why _cur_completing_packet_ is now moved to the bottom
+in struct qed_ll2_tx_queue. _descq_mem_ and _cur_send_packet_ are also
+moved for unification.
 
-The vDSO has access to the thread pointer because it's ABI (something
-that we recently (and quite conveniently) clarified for x86).  What it
-does not know is the offset of the KTLS area from the thread pointer.
-In the original rseq implementation, this offset could vary from thread
-to thread in a process, although the submitted glibc implementation did
-not use this level of flexibility and the offset is constant.  The vDSO
-is not relocated by the run-time dynamic loader, so it can't use ELF TLS
-data.
+[1] https://en.wikipedia.org/wiki/Flexible_array_member
+[2] https://www.kernel.org/doc/html/v5.9-rc1/process/deprecated.html#zero-length-and-one-element-arrays
 
-Furthermore, not all threads in a thread group may have an associated
-KTLS area.  In a potential glibc implementation, only the threads
-created by pthread_create would have it; threads created directly using
-clone would lack it (and would not even run with a correctly set up
-userspace TCB).
+Tested-by: kernel test robot <lkp@intel.com>
+Link: https://lore.kernel.org/lkml/5f707198.PA1UCZ8MYozYZYAR%25lkp@intel.com/
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ drivers/net/ethernet/qlogic/qed/qed_ll2.c | 18 ++++++++----------
+ drivers/net/ethernet/qlogic/qed/qed_ll2.h |  8 ++++----
+ 2 files changed, 12 insertions(+), 14 deletions(-)
 
-So we have a bootstrap issue here that needs to be solved, I think.
-
-In most cases, I would not be too eager to bypass the vDSO completely,
-and having the kernel expose a data-only interface.  I could perhaps
-make an exception for the current TID because that's so convenient to
-use in mutex implementations, and errno.  With the latter, we could
-directly expose the vDSO implementation to applications, assuming that
-we agree that the vDSO will not fail with ENOSYS to request fallback to
-the system call, but will itself perform the system call.
-
-Thanks,
-Florian
+diff --git a/drivers/net/ethernet/qlogic/qed/qed_ll2.c b/drivers/net/ethernet/qlogic/qed/qed_ll2.c
+index 0452b728c527..49783f365079 100644
+--- a/drivers/net/ethernet/qlogic/qed/qed_ll2.c
++++ b/drivers/net/ethernet/qlogic/qed/qed_ll2.c
+@@ -1185,7 +1185,7 @@ static int qed_ll2_acquire_connection_tx(struct qed_hwfn *p_hwfn,
+ 		.elem_size	= sizeof(struct core_tx_bd),
+ 	};
+ 	struct qed_ll2_tx_packet *p_descq;
+-	u32 desc_size;
++	size_t desc_size;
+ 	u32 capacity;
+ 	int rc = 0;
+ 
+@@ -1198,10 +1198,9 @@ static int qed_ll2_acquire_connection_tx(struct qed_hwfn *p_hwfn,
+ 		goto out;
+ 
+ 	capacity = qed_chain_get_capacity(&p_ll2_info->tx_queue.txq_chain);
+-	/* First element is part of the packet, rest are flexibly added */
+-	desc_size = (sizeof(*p_descq) +
+-		     (p_ll2_info->input.tx_max_bds_per_packet - 1) *
+-		     sizeof(p_descq->bds_set));
++	/* All bds_set elements are flexibily added. */
++	desc_size = struct_size(p_descq, bds_set,
++				p_ll2_info->input.tx_max_bds_per_packet);
+ 
+ 	p_descq = kcalloc(capacity, desc_size, GFP_KERNEL);
+ 	if (!p_descq) {
+@@ -1524,7 +1523,7 @@ int qed_ll2_establish_connection(void *cxt, u8 connection_handle)
+ 	struct qed_ptt *p_ptt;
+ 	int rc = -EINVAL;
+ 	u32 i, capacity;
+-	u32 desc_size;
++	size_t desc_size;
+ 	u8 qid;
+ 
+ 	p_ptt = qed_ptt_acquire(p_hwfn);
+@@ -1558,10 +1557,9 @@ int qed_ll2_establish_connection(void *cxt, u8 connection_handle)
+ 	INIT_LIST_HEAD(&p_tx->sending_descq);
+ 	spin_lock_init(&p_tx->lock);
+ 	capacity = qed_chain_get_capacity(&p_tx->txq_chain);
+-	/* First element is part of the packet, rest are flexibly added */
+-	desc_size = (sizeof(*p_pkt) +
+-		     (p_ll2_conn->input.tx_max_bds_per_packet - 1) *
+-		     sizeof(p_pkt->bds_set));
++	/* All bds_set elements are flexibily added. */
++	desc_size = struct_size(p_pkt, bds_set,
++				p_ll2_conn->input.tx_max_bds_per_packet);
+ 
+ 	for (i = 0; i < capacity; i++) {
+ 		p_pkt = p_tx->descq_mem + desc_size * i;
+diff --git a/drivers/net/ethernet/qlogic/qed/qed_ll2.h b/drivers/net/ethernet/qlogic/qed/qed_ll2.h
+index 500d0c4f8077..df88d00053a2 100644
+--- a/drivers/net/ethernet/qlogic/qed/qed_ll2.h
++++ b/drivers/net/ethernet/qlogic/qed/qed_ll2.h
+@@ -56,7 +56,7 @@ struct qed_ll2_tx_packet {
+ 		struct core_tx_bd *txq_bd;
+ 		dma_addr_t tx_frag;
+ 		u16 frag_len;
+-	} bds_set[1];
++	} bds_set[];
+ };
+ 
+ struct qed_ll2_rx_queue {
+@@ -86,9 +86,6 @@ struct qed_ll2_tx_queue {
+ 	struct list_head active_descq;
+ 	struct list_head free_descq;
+ 	struct list_head sending_descq;
+-	void *descq_mem; /* memory for variable sized qed_ll2_tx_packet*/
+-	struct qed_ll2_tx_packet *cur_send_packet;
+-	struct qed_ll2_tx_packet cur_completing_packet;
+ 	u16 cur_completing_bd_idx;
+ 	void __iomem *doorbell_addr;
+ 	struct core_db_data db_msg;
+@@ -96,6 +93,9 @@ struct qed_ll2_tx_queue {
+ 	u16 cur_send_frag_num;
+ 	u16 cur_completing_frag_num;
+ 	bool b_completing_packet;
++	void *descq_mem; /* memory for variable sized qed_ll2_tx_packet*/
++	struct qed_ll2_tx_packet *cur_send_packet;
++	struct qed_ll2_tx_packet cur_completing_packet;
+ };
+ 
+ struct qed_ll2_info {
 -- 
-Red Hat GmbH, https://de.redhat.com/ , Registered seat: Grasbrunn,
-Commercial register: Amtsgericht Muenchen, HRB 153243,
-Managing Directors: Charles Cachera, Brian Klemm, Laurie Krebs, Michael O'Neill
+2.27.0
 
