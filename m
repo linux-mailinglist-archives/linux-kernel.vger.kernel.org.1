@@ -2,235 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12A7727B17B
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 18:11:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53ABE27B17E
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 18:11:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726674AbgI1QLg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 12:11:36 -0400
-Received: from m42-4.mailgun.net ([69.72.42.4]:55934 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726497AbgI1QLd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 12:11:33 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1601309492; h=In-Reply-To: Content-Type: MIME-Version:
- References: Message-ID: Subject: Cc: To: From: Date: Sender;
- bh=s9fijHNheVDmzida4xj/2XoHPDhyh+OA4s/ikxlL/dU=; b=N//2t7v92zJLN0a9umv8xkkjHndvS0U7hpX7uTp1RY+8b4/jno1hq9HKse3390N5nm/hRmJs
- glVAs0v4lw4hOXqevgp5ilcYPwS2H7QvPTO5s7l1ikFdTZ90w7i47qQp1DSRMrhyUoNK3U3p
- kNA6GwGgdCPlqNCcD3tOlkHj9UM=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 5f720b349025c3a797504ae2 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 28 Sep 2020 16:11:32
- GMT
-Sender: jcrouse=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 34DD7C433CB; Mon, 28 Sep 2020 16:11:32 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from jcrouse1-lnx.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: jcrouse)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4F37BC433CA;
-        Mon, 28 Sep 2020 16:11:29 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 4F37BC433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jcrouse@codeaurora.org
-Date:   Mon, 28 Sep 2020 10:11:26 -0600
-From:   Jordan Crouse <jcrouse@codeaurora.org>
-To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Cc:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Rob Clark <robdclark@gmail.com>,
-        iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        freedreno@lists.freedesktop.org,
-        "Kristian H . Kristensen" <hoegsberg@google.com>,
-        dri-devel@lists.freedesktop.org,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        Jonathan Marek <jonathan@marek.ca>
-Subject: Re: [PATCHv5 4/6] drm/msm/a6xx: Add support for using system
- cache(LLC)
-Message-ID: <20200928161125.GA29832@jcrouse1-lnx.qualcomm.com>
-Mail-Followup-To: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>, Rob Clark <robdclark@gmail.com>,
-        iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        freedreno@lists.freedesktop.org,
-        "Kristian H . Kristensen" <hoegsberg@google.com>,
-        dri-devel@lists.freedesktop.org,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        Jonathan Marek <jonathan@marek.ca>
-References: <cover.1600754909.git.saiprakash.ranjan@codeaurora.org>
- <889a32458cec92ed110b94f393aa1c2f0d64dca5.1600754909.git.saiprakash.ranjan@codeaurora.org>
- <20200923150320.GD31425@jcrouse1-lnx.qualcomm.com>
- <800c2108606cb921fef1ffc27569ffb2@codeaurora.org>
+        id S1726697AbgI1QLl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 12:11:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55860 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726685AbgI1QLh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 12:11:37 -0400
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32468C0613CE
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 09:11:37 -0700 (PDT)
+Received: by mail-qk1-x735.google.com with SMTP id 16so1456763qkf.4
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 09:11:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=from:references:in-reply-to:mime-version:thread-index:date
+         :message-id:subject:to:cc;
+        bh=yXbvgfT3Q2VWRXtlMx7NdZENvqvuEPjqq+KoJuXxtJU=;
+        b=NMbC958Cp+LkuAHveC16F2beAUDkSro9hxLkvFpFN8A8CvJYudkJBEKmrbvArp7YcP
+         lZyvta/QSRlRFJmjKfv1V0XR+ngSzDpVa4N64vXMlqU4dXeTKBbsco8JEWE85t6gXkt3
+         +jPS8llyEtSNHz2MuquTQ9Qff4dYi8oqOSADY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:references:in-reply-to:mime-version
+         :thread-index:date:message-id:subject:to:cc;
+        bh=yXbvgfT3Q2VWRXtlMx7NdZENvqvuEPjqq+KoJuXxtJU=;
+        b=eofaNG3DdBx7ULG7HobbYBql1l4Ugq+uUtDitknmkIC78Mi7wsfBCFo0ZVL+T6DoIB
+         jyRVMcaHYXUFCm1t7qFtB8qCNY+PNNTFxIAiGMucQoTLTJgjLRfA/fMfX1ZC1ADAYsp1
+         NVq9tNnt5S0TnaHQS+OMMDCWOqwRgcX8Q9VkfU8R5TvoUw+Y2YTjP94eeLZwQ2KvVxdQ
+         bwjFNex77qI8WiASB0b7TMiDepuUaL0bjny48uOXQ3fXvxaBWgi+kqfWiHlF5+n/FjiR
+         Ar+AUi31aXEJYyBY0+XCa/TIOukKFpZvCPbnXDljtGoOHbOi9p3AhV3CQLQiqEQ7igmp
+         sftg==
+X-Gm-Message-State: AOAM532XsHc/W1YKYDmlV7GrCI5G2pWTCtjqp4kwofwhT6QEzcgKLnle
+        52nWx/HZOfndHk/o1ey/mII1KBWHngoIgCipU7QH0w==
+X-Google-Smtp-Source: ABdhPJyhTOt6mlkaH6eCtAf9ifBKpE+b/UjFdXmpfP+nLenl6yS3z9pSQ1NHBD3rtmrJHxJQxB+Zka1aWaJWbFs4yag=
+X-Received: by 2002:a37:68c7:: with SMTP id d190mr151524qkc.127.1601309496070;
+ Mon, 28 Sep 2020 09:11:36 -0700 (PDT)
+From:   Kashyap Desai <kashyap.desai@broadcom.com>
+References: <1597850436-116171-1-git-send-email-john.garry@huawei.com>
+ <df6a3bd3-a89e-5f2f-ece1-a12ada02b521@kernel.dk>       <379ef8a4-5042-926a-b8a0-2d0a684a0e01@huawei.com>
+ <yq1363xbtk7.fsf@ca-mkp.ca.oracle.com> <32def143-911f-e497-662e-a2a41572fe4f@huawei.com>
+ <yq1imcdw6ni.fsf@ca-mkp.ca.oracle.com>
+In-Reply-To: <yq1imcdw6ni.fsf@ca-mkp.ca.oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <800c2108606cb921fef1ffc27569ffb2@codeaurora.org>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Mailer: Microsoft Outlook 15.0
+Thread-Index: AQIEYzmMwLj9Hjt1oYRTL2F1ptHELAF941hsAQBmOwQB2gFb0gGSrJbvAc3Tg4Oo5NZRgA==
+Date:   Mon, 28 Sep 2020 21:41:33 +0530
+Message-ID: <32574da3d8de863ff38347ef6ead9b35@mail.gmail.com>
+Subject: RE: [PATCH v8 00/18] blk-mq/scsi: Provide hostwide shared tags for
+ SCSI HBAs
+To:     "Martin K. Petersen" <martin.petersen@oracle.com>,
+        John Garry <john.garry@huawei.com>,
+        Jens Axboe <axboe@kernel.dk>
+Cc:     jejb@linux.ibm.com, don.brace@microsemi.com, ming.lei@redhat.com,
+        bvanassche@acm.org, dgilbert@interlog.com,
+        paolo.valente@linaro.org, hare@suse.de, hch@lst.de,
+        Sumit Saxena <sumit.saxena@broadcom.com>,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-scsi@vger.kernel.org, esc.storagedev@microsemi.com,
+        "PDL,MEGARAIDLINUX" <megaraidlinux.pdl@broadcom.com>,
+        chenxiang66@hisilicon.com, luojiaxing@huawei.com
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="000000000000b89ea305b061eb4c"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 05:56:55PM +0530, Sai Prakash Ranjan wrote:
-> Hi Jordan,
-> 
-> On 2020-09-23 20:33, Jordan Crouse wrote:
-> >On Tue, Sep 22, 2020 at 11:48:17AM +0530, Sai Prakash Ranjan wrote:
-> >>From: Sharat Masetty <smasetty@codeaurora.org>
-> >>
-> >>The last level system cache can be partitioned to 32 different
-> >>slices of which GPU has two slices preallocated. One slice is
-> >>used for caching GPU buffers and the other slice is used for
-> >>caching the GPU SMMU pagetables. This talks to the core system
-> >>cache driver to acquire the slice handles, configure the SCID's
-> >>to those slices and activates and deactivates the slices upon
-> >>GPU power collapse and restore.
-> >>
-> >>Some support from the IOMMU driver is also needed to make use
-> >>of the system cache to set the right TCR attributes. GPU then
-> >>has the ability to override a few cacheability parameters which
-> >>it does to override write-allocate to write-no-allocate as the
-> >>GPU hardware does not benefit much from it.
-> >>
-> >>DOMAIN_ATTR_SYS_CACHE is another domain level attribute used by the
-> >>IOMMU driver to set the right attributes to cache the hardware
-> >>pagetables into the system cache.
-> >>
-> >>Signed-off-by: Sharat Masetty <smasetty@codeaurora.org>
-> >>[saiprakash.ranjan: fix to set attr before device attach to iommu and
-> >>rebase]
-> >>Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-> >>---
-> >> drivers/gpu/drm/msm/adreno/a6xx_gpu.c   | 83 +++++++++++++++++++++++++
-> >> drivers/gpu/drm/msm/adreno/a6xx_gpu.h   |  4 ++
-> >> drivers/gpu/drm/msm/adreno/adreno_gpu.c | 17 +++++
-> >> 3 files changed, 104 insertions(+)
-> >>
-> >>diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-> >>b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-> >>index 8915882e4444..151190ff62f7 100644
-> >>--- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-> >>+++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-> >>@@ -8,7 +8,9 @@
-> >> #include "a6xx_gpu.h"
-> >> #include "a6xx_gmu.xml.h"
-> >>
-> >>+#include <linux/bitfield.h>
-> >> #include <linux/devfreq.h>
-> >>+#include <linux/soc/qcom/llcc-qcom.h>
-> >>
-> >> #define GPU_PAS_ID 13
-> >>
-> >>@@ -1022,6 +1024,79 @@ static irqreturn_t a6xx_irq(struct msm_gpu *gpu)
-> >> 	return IRQ_HANDLED;
-> >> }
-> >>
-> >>+static void a6xx_llc_rmw(struct a6xx_gpu *a6xx_gpu, u32 reg, u32 mask,
-> >>u32 or)
-> >>+{
-> >>+	return msm_rmw(a6xx_gpu->llc_mmio + (reg << 2), mask, or);
-> >>+}
-> >>+
-> >>+static void a6xx_llc_write(struct a6xx_gpu *a6xx_gpu, u32 reg, u32
-> >>value)
-> >>+{
-> >>+	return msm_writel(value, a6xx_gpu->llc_mmio + (reg << 2));
-> >>+}
-> >>+
-> >>+static void a6xx_llc_deactivate(struct a6xx_gpu *a6xx_gpu)
-> >>+{
-> >>+	llcc_slice_deactivate(a6xx_gpu->llc_slice);
-> >>+	llcc_slice_deactivate(a6xx_gpu->htw_llc_slice);
-> >>+}
-> >>+
-> >>+static void a6xx_llc_activate(struct a6xx_gpu *a6xx_gpu)
-> >>+{
-> >>+	u32 cntl1_regval = 0;
-> >>+
-> >>+	if (IS_ERR(a6xx_gpu->llc_mmio))
-> >>+		return;
-> >>+
-> >>+	if (!llcc_slice_activate(a6xx_gpu->llc_slice)) {
-> >>+		u32 gpu_scid = llcc_get_slice_id(a6xx_gpu->llc_slice);
-> >>+
-> >>+		gpu_scid &= 0x1f;
-> >>+		cntl1_regval = (gpu_scid << 0) | (gpu_scid << 5) | (gpu_scid << 10) |
-> >>+			       (gpu_scid << 15) | (gpu_scid << 20);
-> >>+	}
-> >>+
-> >>+	if (!llcc_slice_activate(a6xx_gpu->htw_llc_slice)) {
-> >>+		u32 gpuhtw_scid = llcc_get_slice_id(a6xx_gpu->htw_llc_slice);
-> >>+
-> >>+		gpuhtw_scid &= 0x1f;
-> >>+		cntl1_regval |= FIELD_PREP(GENMASK(29, 25), gpuhtw_scid);
-> >>+	}
-> >>+
-> >>+	if (cntl1_regval) {
-> >>+		/*
-> >>+		 * Program the slice IDs for the various GPU blocks and GPU MMU
-> >>+		 * pagetables
-> >>+		 */
-> >>+		a6xx_llc_write(a6xx_gpu, REG_A6XX_CX_MISC_SYSTEM_CACHE_CNTL_1,
-> >>cntl1_regval);
-> >>+
-> >>+		/*
-> >>+		 * Program cacheability overrides to not allocate cache lines on
-> >>+		 * a write miss
-> >>+		 */
-> >>+		a6xx_llc_rmw(a6xx_gpu, REG_A6XX_CX_MISC_SYSTEM_CACHE_CNTL_0, 0xF,
-> >>0x03);
-> >>+	}
-> >>+}
+--000000000000b89ea305b061eb4c
+Content-Type: text/plain; charset="UTF-8"
+
+>
+> John,
+>
+> > Have you had a chance to check these outstanding SCSI patches?
 > >
-> >This code has been around long enough that it pre-dates a650. On a650 and
-> >other
-> >MMU-500 targets the htw_llc is configured by the firmware and the
-> >llc_slice is
-> >configured in a different register.
-> >
-> >I don't think we need to pause everything and add support for the MMU-500
-> >path,
-> >but we do need a way to disallow LLCC on affected targets until such time
-> >that
-> >we can get it fixed up.
-> >
-> 
-> Thanks for taking a close look, does something like below look ok or
-> something
-> else is needed here?
-> 
-> +         /* Till the time we get in LLCC support for A650 */
-> +         if (!(info && info->revn == 650))
-> +                 a6xx_llc_slices_init(pdev, a6xx_gpu);
+> > scsi: megaraid_sas: Added support for shared host tagset for
+cpuhotplug
+> > scsi: scsi_debug: Support host tagset
+> > scsi: hisi_sas: Switch v3 hw to MQ
+> > scsi: core: Show nr_hw_queues in sysfs
+> > scsi: Add host and host template flag 'host_tagset'
+>
+> These look good to me.
+>
+> Jens, feel free to merge.
 
-It doesn't look like Rob picked this up for 5.10, so we have some time to do it
-right.  Would you like me to give you an add-on patch for mmu-500 targets?
+Hi Jens, Gentle ping. I am not able to find commits for above listed scsi
+patches. I want to use your repo which has above mentioned patch for
+<scsi:io_uring iopoll> patch submission.  Martin has Acked the scsi
+patches.
 
-Jordan
+>
+> Acked-by: Martin K. Petersen <martin.petersen@oracle.com>
+>
+> --
+> Martin K. Petersen	Oracle Linux Engineering
 
-> Thanks,
-> Sai
-> 
-> -- 
-> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-> of Code Aurora Forum, hosted by The Linux Foundation
+--000000000000b89ea305b061eb4c
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
 
--- 
-The Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project
+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
+yfWKfxJx8FcWmsjkSlrwDu+oVuDUa2wqeKBU12HQ4JAVd+LOb5edsbbFQxgGHu+MPuc/1hl9kTkC
+AwEAAaOCAdEwggHNMA4GA1UdDwEB/wQEAwIFoDCBngYIKwYBBQUHAQEEgZEwgY4wTQYIKwYBBQUH
+MAKGQWh0dHA6Ly9zZWN1cmUuZ2xvYmFsc2lnbi5jb20vY2FjZXJ0L2dzcGVyc29uYWxzaWduMnNo
+YTJnM29jc3AuY3J0MD0GCCsGAQUFBzABhjFodHRwOi8vb2NzcDIuZ2xvYmFsc2lnbi5jb20vZ3Nw
+ZXJzb25hbHNpZ24yc2hhMmczME0GA1UdIARGMEQwQgYKKwYBBAGgMgEoCjA0MDIGCCsGAQUFBwIB
+FiZodHRwczovL3d3dy5nbG9iYWxzaWduLmNvbS9yZXBvc2l0b3J5LzAJBgNVHRMEAjAAMEQGA1Ud
+HwQ9MDswOaA3oDWGM2h0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20vZ3NwZXJzb25hbHNpZ24yc2hh
+MmczLmNybDAlBgNVHREEHjAcgRprYXNoeWFwLmRlc2FpQGJyb2FkY29tLmNvbTATBgNVHSUEDDAK
+BggrBgEFBQcDBDAfBgNVHSMEGDAWgBRpcoJiMWeVRIV3kYDEBDZJnXsLYTAdBgNVHQ4EFgQU4dX1
+Yg4eoWXbqyPW/N1ZD/LPIWcwDQYJKoZIhvcNAQELBQADggEBABBuHYKGUwHIhCjd3LieJwKVuJNr
+YohEnZzCoNaOj33/j5thiA4cZehCh6SgrIlFBIktLD7jW9Dwl88Gfcy+RrVa7XK5Hyqwr1JlCVsW
+pNj4hlSJMNNqxNSqrKaD1cR4/oZVPFVnJJYlB01cLVjGMzta9x27e6XEtseo2s7aoPS2l82koMr7
+8S/v9LyyP4X2aRTWOg9RG8D/13rLxFAApfYvCrf0quIUBWw2BXlq3+e3r7pU7j40d6P04VV3Zxws
+M+LbYxcXFT2gXvoYd2Ms8zsLrhO2M6pMzeNGWk2HWTof9s7EEHDjis/MRlbYSNaohV23IUzNlBw7
+1FmvvW5GKK0xggJvMIICawIBATBtMF0xCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
+IG52LXNhMTMwMQYDVQQDEypHbG9iYWxTaWduIFBlcnNvbmFsU2lnbiAyIENBIC0gU0hBMjU2IC0g
+RzMCDDSdoX7GqonhoE7TszANBglghkgBZQMEAgEFAKCB1DAvBgkqhkiG9w0BCQQxIgQgy08T8zb2
+3Ba6jERxRWtqDfLZKY8wOMjC4kiNDPKFq34wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkq
+hkiG9w0BCQUxDxcNMjAwOTI4MTYxMTM2WjBpBgkqhkiG9w0BCQ8xXDBaMAsGCWCGSAFlAwQBKjAL
+BglghkgBZQMEARYwCwYJYIZIAWUDBAECMAoGCCqGSIb3DQMHMAsGCSqGSIb3DQEBCjALBgkqhkiG
+9w0BAQcwCwYJYIZIAWUDBAIBMA0GCSqGSIb3DQEBAQUABIIBAFm0ioyFQTFLjJ0YIcb7wTZyY3JE
+5QXREwn1TJiMMLJ7CXXZpzRz4hd50AmftViwkkzedb2MxmqDscDJwJ8ieLu5wprOjbGc9m5pqgt1
+n+VQa1whhpS072EfmqdHE+DfvywHSbnYaOBLT04jTw+AeG3IwclhvGqtNFuCLp5wCukr3b/ykgmS
+x7wR8n1xNw2BEUpkEKxmnrJvyBKk3p5PapTuTwbpWE64dh0FbaKce0Jb2vMJ1Y4kAPeE88XbjGSY
+3sjJ6WJVctszVEwy9mQPZAHLGKpkanAkPVp6JQTSNfZJIO1JP82qnnKWe8jtcJoP3IUCppns27w1
+Qk/Soy0+0Lk=
+--000000000000b89ea305b061eb4c--
