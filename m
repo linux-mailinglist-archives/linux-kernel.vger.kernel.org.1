@@ -2,128 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1F2D27B46B
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 20:26:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F006E27B470
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 20:26:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726615AbgI1S0G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 14:26:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48452 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726500AbgI1S0F (ORCPT
+        id S1726739AbgI1S0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 14:26:48 -0400
+Received: from mail-ot1-f67.google.com ([209.85.210.67]:46956 "EHLO
+        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726497AbgI1S0s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 14:26:05 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BFDAC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 11:26:04 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id i1so2601537edv.2
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 11:26:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=TfPKxyw5a1PAEzMCx92gy5qeOP9PIfg38x5vIw4FqCc=;
-        b=VEGIOy4J4hxnebcx7q/gSDH9xV3y/3q5aNnqHiHtmMlZt6JqpzbRCRrTJShM2mKbcP
-         ykZonJNvnFrMSHbfbN9Cwlm+j4hfxpQX6lcc3tN9v4+h2bCw/7fO93r9EVTzirQR3nXY
-         VXzSXF+2bYITZpfS+5zGrt5ZxepC/C2hQSEVyuktA+tzfxJLajVUxG1PCJCreJ7VAFT4
-         jBk9Of3qz0pIcJ0+mAFuoQ5HadU3z1rMwQOOg15fRFjLrxWQNyZ/FRjmPwL9TnSAk7oU
-         +Lh+jsleO71AI1YRRLF0h1xQKlOd+x7T9CsLotZG9IB2uXmhz7MxZYUKPDxshxvL/wUc
-         Mcrw==
+        Mon, 28 Sep 2020 14:26:48 -0400
+Received: by mail-ot1-f67.google.com with SMTP id 95so1874909ota.13;
+        Mon, 28 Sep 2020 11:26:47 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=TfPKxyw5a1PAEzMCx92gy5qeOP9PIfg38x5vIw4FqCc=;
-        b=nfXJAj1FVONXK82eW7yipXdyKOEh/rj1WQsMckzIGRx+BlijSvq5e40kEkCMDcIS8i
-         cHv2LKifOIeNEIGT+D/n6ZsvFFFQxeQFwiAPLPDteApNyOa8i+3+1+6ZVRraNUXN7dLV
-         qN+BXOZQzLYqo71vtSAJ0c/Elsnyu3gpb20XoND958q7Vx469TKCSBeVAj7YE6tw332c
-         OTf98Wf7rHhSyPX2sDS87PntjBkWs2zVjp7ikK4VOM8qczX2pVexWpSL9dU/o8hOsxF6
-         B21F7We4MWWBKQpmbQl2wmb8aLKwswp10ZylvDsXDtnAqA1u0VNUZ5XOG965O6uwNNqR
-         Poog==
-X-Gm-Message-State: AOAM530VtMYrQwGJYuYH/AaI+xfGWKCiUEDuRY3zRfep06EH9JgdFefA
-        0mTE49H3ou++nAj4OzDh5KA+529vqhiiNvVTWp8=
-X-Google-Smtp-Source: ABdhPJxAVgn1gcWgxzMG8Hsn959zgmFmK3EJvMllupmpFL7/IuBGAE+jFUn0KhUTDVz+L6OfTA4BPNUaJeWoO/FG83U=
-X-Received: by 2002:a50:a694:: with SMTP id e20mr3227269edc.114.1601317563531;
- Mon, 28 Sep 2020 11:26:03 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=G1vwfsWv+nq29PSP/iaujHaq9i9b/1+o4mAfvtqnkwo=;
+        b=WVeVqhG6tJFzYnVdRbpB6KdWLYq33pn3aEHkJ4C00UZvTJWA9U/z0oCb421onfbaHO
+         kcKOUOlPgIUr5qODhwGmWoVUZxZDAQERaBQExk6YEgd8REwY8kZDWsTyWWXaDLej+z7k
+         ZxxUTPIUJ9zQUN7uxg38KJIVAEpLipe+iMoPms/eeY9Hm+Bed6SbMzNW4H/k0HUiMJpr
+         sH50ww/zTMEYj+xUgv94lFK4wdGYGNn9w5LO596kTLKTMUb50094g5xbxiG8uGlZzhbc
+         2cqa4Qi4nnL9+EXGpZI+uMHWEQXQD6PIm1SohROgypjo/EUFoXCIs8bqs6l4/zX+wyrm
+         uVgA==
+X-Gm-Message-State: AOAM530Fem9oLvyZC7iDJEXqDuCH/G1VDvhfOdBkdTJQOIA70Z5kNnJG
+        zY/7X/TonoZ8a9KVROtblfiDG85nJvS0
+X-Google-Smtp-Source: ABdhPJzYAL9LwZzfn2QuSt+o6WBf2CTQqamn+zjxWQUMfB3YNQVhCn8BpjzmmQF5xSIIjJ5DUgbCfw==
+X-Received: by 2002:a9d:4c0a:: with SMTP id l10mr208079otf.166.1601317606779;
+        Mon, 28 Sep 2020 11:26:46 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id s124sm382104oig.6.2020.09.28.11.26.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Sep 2020 11:26:46 -0700 (PDT)
+Received: (nullmailer pid 3035690 invoked by uid 1000);
+        Mon, 28 Sep 2020 18:26:45 -0000
+Date:   Mon, 28 Sep 2020 13:26:45 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Zhen Lei <thunder.leizhen@huawei.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>,
+        Alexey Brodkin <abrodkin@synopsys.com>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-snps-arc <linux-snps-arc@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Haoyu Lv <lvhaoyu@huawei.com>, Libin <huawei.libin@huawei.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>
+Subject: Re: [PATCH v6 5/6] dt-bindings: dw-apb-ictl: convert to json-schema
+Message-ID: <20200928182645.GA3030999@bogus>
+References: <20200924071754.4509-1-thunder.leizhen@huawei.com>
+ <20200924071754.4509-6-thunder.leizhen@huawei.com>
 MIME-Version: 1.0
-Received: by 2002:a17:907:408d:0:0:0:0 with HTTP; Mon, 28 Sep 2020 11:26:03
- -0700 (PDT)
-Reply-To: maab1@yahoo.com
-From:   XXXXXXXXXX 95758756658505 <barristeruchec@gmail.com>
-Date:   Mon, 28 Sep 2020 20:26:03 +0200
-Message-ID: <CAGwxU1K-VWz0PGrU11i2sQCVBM-QbgY9OqRU3KwN8nhO=jNFmQ@mail.gmail.com>
-Subject: THANK YOU
-To:     barristeruchec@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200924071754.4509-6-thunder.leizhen@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From Harvey Terence (Mr.)
+On Thu, Sep 24, 2020 at 03:17:53PM +0800, Zhen Lei wrote:
+> Convert the Synopsys DesignWare APB interrupt controller (dw_apb_ictl)
+> binding to DT schema format using json-schema.
+> 
+> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> ---
+>  .../interrupt-controller/snps,dw-apb-ictl.txt      | 43 -------------
+>  .../interrupt-controller/snps,dw-apb-ictl.yaml     | 74 ++++++++++++++++++++++
+>  2 files changed, 74 insertions(+), 43 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/interrupt-controller/snps,dw-apb-ictl.txt
+>  create mode 100644 Documentation/devicetree/bindings/interrupt-controller/snps,dw-apb-ictl.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/interrupt-controller/snps,dw-apb-ictl.txt b/Documentation/devicetree/bindings/interrupt-controller/snps,dw-apb-ictl.txt
+> deleted file mode 100644
+> index 2db59df9408f4c6..000000000000000
+> --- a/Documentation/devicetree/bindings/interrupt-controller/snps,dw-apb-ictl.txt
+> +++ /dev/null
+> @@ -1,43 +0,0 @@
+> -Synopsys DesignWare APB interrupt controller (dw_apb_ictl)
+> -
+> -Synopsys DesignWare provides interrupt controller IP for APB known as
+> -dw_apb_ictl. The IP is used as secondary interrupt controller in some SoCs with
+> -APB bus, e.g. Marvell Armada 1500. It can also be used as primary interrupt
+> -controller in some SoCs, e.g. Hisilicon SD5203.
+> -
+> -Required properties:
+> -- compatible: shall be "snps,dw-apb-ictl"
+> -- reg: physical base address of the controller and length of memory mapped
+> -  region starting with ENABLE_LOW register
+> -- interrupt-controller: identifies the node as an interrupt controller
+> -- #interrupt-cells: number of cells to encode an interrupt-specifier, shall be 1
+> -
+> -Additional required property when it's used as secondary interrupt controller:
+> -- interrupts: interrupt reference to primary interrupt controller
+> -
+> -The interrupt sources map to the corresponding bits in the interrupt
+> -registers, i.e.
+> -- 0 maps to bit 0 of low interrupts,
+> -- 1 maps to bit 1 of low interrupts,
+> -- 32 maps to bit 0 of high interrupts,
+> -- 33 maps to bit 1 of high interrupts,
+> -- (optional) fast interrupts start at 64.
+> -
+> -Example:
+> -	/* dw_apb_ictl is used as secondary interrupt controller */
+> -	aic: interrupt-controller@3000 {
+> -		compatible = "snps,dw-apb-ictl";
+> -		reg = <0x3000 0xc00>;
+> -		interrupt-controller;
+> -		#interrupt-cells = <1>;
+> -		interrupt-parent = <&gic>;
+> -		interrupts = <GIC_SPI 3 IRQ_TYPE_LEVEL_HIGH>;
+> -	};
+> -
+> -	/* dw_apb_ictl is used as primary interrupt controller */
+> -	vic: interrupt-controller@10130000 {
+> -		compatible = "snps,dw-apb-ictl";
+> -		reg = <0x10130000 0x1000>;
+> -		interrupt-controller;
+> -		#interrupt-cells = <1>;
+> -	};
+> diff --git a/Documentation/devicetree/bindings/interrupt-controller/snps,dw-apb-ictl.yaml b/Documentation/devicetree/bindings/interrupt-controller/snps,dw-apb-ictl.yaml
+> new file mode 100644
+> index 000000000000000..1b05d36b5f7b943
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/interrupt-controller/snps,dw-apb-ictl.yaml
+> @@ -0,0 +1,74 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/interrupt-controller/snps,dw-apb-ictl.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Synopsys DesignWare APB interrupt controller (dw_apb_ictl)
+> +
+> +maintainers:
+> +  - Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+> +
+> +description: |
+> +  Synopsys DesignWare provides interrupt controller IP for APB known as
+> +  dw_apb_ictl. The IP is used as secondary interrupt controller in some SoCs
+> +  with APB bus, e.g. Marvell Armada 1500. It can also be used as primary
+> +  interrupt controller in some SoCs, e.g. Hisilicon SD5203.
+> +
+> +  The interrupt sources map to the corresponding bits in the interrupt
+> +  registers, i.e.
+> +  - 0 maps to bit 0 of low interrupts,
+> +  - 1 maps to bit 1 of low interrupts,
+> +  - 32 maps to bit 0 of high interrupts,
+> +  - 33 maps to bit 1 of high interrupts,
+> +  - (optional) fast interrupts start at 64.
+> +
+> +allOf:
+> +  - $ref: /schemas/interrupt-controller.yaml#
 
-25 Canada Square, Canary Wharf, London E14 5LB,
+Don't need this. It's already selected based on node name.
 
-Good day
+> +
+> +properties:
+> +  compatible:
+> +    const: snps,dw-apb-ictl
+> +
+> +  interrupt-controller: true
+> +
+> +  reg:
+> +    description: |
+> +      Physical base address of the controller and length of memory mapped
+> +      region starting with ENABLE_LOW register.
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    description: Interrupt reference to primary interrupt controller.
 
-I am Mr. Harvey Terence, Operating Officer of this bank. I am assuring
-you that with your honest assistance and joint effort we can complete
-this life time transaction within 7/14 working days.
+May not be primary. Could be another level in the middle. In any case, 
+it's outside the scope of this binding, so just drop description.
 
-I need a reliable and honest person who will be able to handle this
-business opportunity with me because of the need to involve a
-foreigner. I am contacting you because of such demand, and I believe
-you will work with me to achieve this purpose and will never turn down
-my request.
+> +    maxItems: 1
+> +
+> +  "#interrupt-cells":
+> +    description: Number of cells to encode an interrupt-specifier.
 
-Before the United States of America and Iraqi war, our bank customer
-Mr.Hatem Kamil Abdul Fatah, who was the deputy governor of Baghdad in
-Iraq and also a business man made a deposit of (GBP10,750,000.00) Ten
-Million, Seven Hundred And Fifty Thousand
-Pounds Sterling Only in a Bank account number: ABP-LN-685
-00/52207712321 over here in our bank.
+Can drop this.
 
-But I later discovered that the Deputy Governor has been assassinated
-in Baghdad by unknown gun men.
+> +    const: 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupt-controller
+> +  - '#interrupt-cells'
 
-Below is the information about his death as a proof and verification
-of his assassination In Baghdad:
-http://news.bbc.co.uk/go/pr/fr/-/1/hi/world/middle_east/3970619.stm
+additionalProperties: false
 
-During my further investigation after hearing of his assassination in
-Baghdad, I also discovered that Mr.Hatem Kamil Abdul Fatah did not
-declare any next of kin in his official papers including the paper
-work of his funds with our bank which might be because he embezzled
-this funds while in office and was afraid of revealing his political
-dignity when opening the above account number in our bank until his
-dead.
+> +
+> +examples:
+> +  - |
+> +    /* dw_apb_ictl is used as secondary interrupt controller */
+> +    aic: interrupt-controller@3000 {
 
-My aim of contacting you is to assist me to receive this money in your
-bank account over there in your country and let me know how much
-commission you will receive out of the total fund when transferred
-into your oversea bank account?.
+Drop unused label (aic).
 
-You will diligently transfer the balance to me through another bank
-account number from another bank I will forward to you as soon as the
-fund is transferred into your over sea account after deducting your
-commission from the whole sum or I will come over to your country to
-meet with you one on one for sharing of the fund or shall invested the
-fund into any lucrative business out there in your country together..
+> +        compatible = "snps,dw-apb-ictl";
+> +        reg = <0x3000 0xc00>;
+> +        interrupt-controller;
+> +        #interrupt-cells = <1>;
+> +        interrupt-parent = <&gic>;
+> +        interrupts = <0 3 4>;
+> +    };
+> +
+> +    /* dw_apb_ictl is used as primary interrupt controller */
+> +    vic: interrupt-controller@10130000 {
 
-We are going to process and perfect the transaction legally as bank to
-bank procedure has been put in place.
+Same here.
 
-I need your urgent reply through my private E-mail address at:
-maab1@yahoo.com if you are interested to work with me.
-
-I provide more details on how to process the approval of the fund in
-your name to be release for instant bank to bank wire transfer into
-any designated bank account of your choice without delay.
-
-Please keep this transaction safe and confidential as exposing this
-transaction will jeopardize my reputation in this Bank.
-
-I would like to hear from you in no distant time as soon as you read
-this mail through the above stated E-mail address so that we can
-proceed accordingly.
-
-Best Regards,
-
-Mr. Harvey Terence
+> +        compatible = "snps,dw-apb-ictl";
+> +        reg = <0x10130000 0x1000>;
+> +        interrupt-controller;
+> +        #interrupt-cells = <1>;
+> +    };
+> +...
+> -- 
+> 1.8.3
+> 
+> 
