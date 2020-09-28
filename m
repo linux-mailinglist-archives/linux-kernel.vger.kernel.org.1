@@ -2,78 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AA7C27AAC6
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 11:31:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7901127AACA
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 11:32:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726657AbgI1JbP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 05:31:15 -0400
-Received: from foss.arm.com ([217.140.110.172]:48156 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726604AbgI1JbO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 05:31:14 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2F2AA101E;
-        Mon, 28 Sep 2020 02:31:14 -0700 (PDT)
-Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BA2A73F73B;
-        Mon, 28 Sep 2020 02:31:12 -0700 (PDT)
-Date:   Mon, 28 Sep 2020 10:31:07 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Arnd Bergmann <arnd@arndb.de>, Bjorn Helgaas <bhelgaas@google.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        George Cherian <george.cherian@marvell.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v2 0/3] Fix pci_iounmap() on !CONFIG_GENERIC_IOMAP
-Message-ID: <20200928093107.GA12010@e121166-lin.cambridge.arm.com>
-References: <20200915093203.16934-1-lorenzo.pieralisi@arm.com>
- <cover.1600254147.git.lorenzo.pieralisi@arm.com>
- <20200918114508.GA20110@e121166-lin.cambridge.arm.com>
- <CAK8P3a1f9Qj+yhMB4QaAu36ZUQ1p6oKHm2MZQ3zU31q6xmymGA@mail.gmail.com>
+        id S1726648AbgI1JcK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 05:32:10 -0400
+Received: from smtp2207-205.mail.aliyun.com ([121.197.207.205]:47816 "EHLO
+        smtp2207-205.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726559AbgI1JcJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 05:32:09 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.08003213|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.012899-0.00117961-0.985921;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047209;MF=fuyao@allwinnertech.com;NM=1;PH=DS;RN=13;RT=13;SR=0;TI=SMTPD_---.IdDp-2p_1601285523;
+Received: from localhost(mailfrom:fuyao@allwinnertech.com fp:SMTPD_---.IdDp-2p_1601285523)
+          by smtp.aliyun-inc.com(10.147.41.231);
+          Mon, 28 Sep 2020 17:32:04 +0800
+Date:   Mon, 28 Sep 2020 17:31:58 +0800
+From:   fuyao <fuyao@allwinnertech.com>
+To:     =?utf-8?B?5YiY6YK15Y2OQlRE?= <liush@allwinnertech.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        "paul.walmsley" <paul.walmsley@sifive.com>,
+        palmer <palmer@dabbelt.com>, aou <aou@eecs.berkeley.edu>,
+        akpm <akpm@linux-foundation.org>, peterx <peterx@redhat.com>,
+        walken <walken@google.com>,
+        "daniel.m.jordan" <daniel.m.jordan@oracle.com>,
+        vbabka <vbabka@suse.cz>, rppt <rppt@kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: =?utf-8?B?5Zue5aSN77yaW1BBVENI?= =?utf-8?Q?=5D?= riscv: fix
+ pfn_to_virt err in do_page_fault().
+Message-ID: <20200928093158.GC4756@g8Exdroid64>
+Mail-Followup-To: =?utf-8?B?5YiY6YK15Y2OQlRE?= <liush@allwinnertech.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        "paul.walmsley" <paul.walmsley@sifive.com>,
+        palmer <palmer@dabbelt.com>, aou <aou@eecs.berkeley.edu>,
+        akpm <akpm@linux-foundation.org>, peterx <peterx@redhat.com>,
+        walken <walken@google.com>,
+        "daniel.m.jordan" <daniel.m.jordan@oracle.com>,
+        vbabka <vbabka@suse.cz>, rppt <rppt@kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <1600327549-3995-1-git-send-email-liush@allwinnertech.com>
+ <20200917152518.GA8930@infradead.org>
+ <ca550ec0-73f2-485e-84fd-036eacd0bcd9.liush@allwinnertech.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAK8P3a1f9Qj+yhMB4QaAu36ZUQ1p6oKHm2MZQ3zU31q6xmymGA@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ca550ec0-73f2-485e-84fd-036eacd0bcd9.liush@allwinnertech.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 18, 2020 at 09:58:51PM +0200, Arnd Bergmann wrote:
-> On Fri, Sep 18, 2020 at 1:45 PM Lorenzo Pieralisi
-> <lorenzo.pieralisi@arm.com> wrote:
-> > >
-> > > Lorenzo Pieralisi (3):
-> > >   sparc32: Remove useless io_32.h __KERNEL__ preprocessor guard
-> > >   sparc32: Move ioremap/iounmap declaration before asm-generic/io.h
-> > >     include
-> > >   asm-generic/io.h: Fix !CONFIG_GENERIC_IOMAP pci_iounmap()
-> > >     implementation
-> > >
-> > >  arch/sparc/include/asm/io_32.h | 17 ++++++---------
-> > >  include/asm-generic/io.h       | 39 +++++++++++++++++++++++-----------
-> > >  2 files changed, 34 insertions(+), 22 deletions(-)
-> >
-> > Arnd, David, Bjorn,
-> >
-> > I have got review/test tags, is it OK if we merge this series please ?
-> >
-> > Can we pull it in the PCI tree or you want it to go via a different
-> > route upstream ?
-> >
-> > Please let me know.
+On Fri, Sep 18, 2020 at 03:43:39PM +0800, 刘邵华BTD wrote:
+> Hi Christoph,
+> > On Thu, Sep 17, 2020 at 03:25:49PM +0800, liush wrote:
+> > > The argument to pfn_to_virt() should be pfn not the value of CSR_SATP.
+> > > 
+> > > Signed-off-by: liush <liush@allwinnertech.com>
+> > > ---
+> > >  arch/riscv/mm/fault.c | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > 
+> > > diff --git a/arch/riscv/mm/fault.c b/arch/riscv/mm/fault.c
+> > > index 716d64e..9b4e088 100644
+> > > --- a/arch/riscv/mm/fault.c
+> > > +++ b/arch/riscv/mm/fault.c
+> > > @@ -212,7 +212,7 @@ asmlinkage void do_page_fault(struct pt_regs *regs)
+> > >     * of a task switch.
+> > >     */
+> > >    index = pgd_index(addr);
+> > > -  pgd = (pgd_t *)pfn_to_virt(csr_read(CSR_SATP)) + index;
+> > > +  pgd = (pgd_t *)pfn_to_virt(csr_read(CSR_SATP) & SATP_PPN) + index;
 > 
-> Going through the PCI tree sounds good to me, but I can
-> take it through the asm-generic tree if Bjorn doesn't want to
-> pick it up there.
+> > This adds a crazy long line.  One nice way to clean this up would be to
+> > add a local pfn variable, as it would also make the code more readable.
+> 
+> Thanks, i'll modify it in next revision
 
-Bjorn, can we pull this series into PCI tree please - if that's OK
-with you ?
+Tested-by: fuayo@allwinnertech.com
 
-Thanks,
-Lorenzo
+-- 
+<http://www.allwinnertech.com> Allwinnertech Technology
+
+
