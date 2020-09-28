@@ -2,155 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 104C927AE2A
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 14:50:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F7BC27AE31
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 14:51:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726566AbgI1Mub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 08:50:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40182 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726327AbgI1Mua (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 08:50:30 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5A02721974;
-        Mon, 28 Sep 2020 12:50:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601297429;
-        bh=vSqcP0mrbe2L8WpJdc6NrNWXS4Vn2KXk5nRMn8lrgno=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ITBZ71/NgZ1h+xb0un8m22k/zxMtWnd/2/U/Se+o4QHj2dYSBb36uZH0QhgIRPKhu
-         A8K/urinr3oiq6DXrYZe5VZRnUpdPdhL0zQsmVj6P02/FxOqWBEayS3AR8UwRNS8jR
-         a0POInjIWcV3H5lDsIvmAjkve/MHFnZ+Uhy8f0XE=
-Date:   Mon, 28 Sep 2020 14:50:37 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     psodagud@codeaurora.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>, rostedt@goodmis.org,
-        pmladek@suse.com, sergey.senozhatsky@gmail.com,
-        linux-kernel@vger.kernel.org, tkjos@google.com,
-        Mohammed Khajapasha <mkhaja@codeaurora.org>
-Subject: Re: [PATCH 2/2] printk: Make the console flush configurable in
- hotplug path
-Message-ID: <20200928125037.GA1661095@kroah.com>
-References: <1600906112-126722-1-git-send-email-psodagud@codeaurora.org>
- <1600906112-126722-2-git-send-email-psodagud@codeaurora.org>
- <20200924063352.GB592892@kroah.com>
- <87wo0j6nos.fsf@nanos.tec.linutronix.de>
- <4c4a2534824eb69d41753d2e3b2773de@codeaurora.org>
+        id S1726636AbgI1MvZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 08:51:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53112 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726504AbgI1MvV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 08:51:21 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6AD2C061755
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 05:51:21 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id x123so936463pfc.7
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 05:51:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QctrJGO1I1Zuq9UjMR9T/NENbwiqNJx5W8ogBL7RQ5k=;
+        b=Wdbs+kQhoDgB+n99eSez3KyAycIljc9Qj/GQ39BXZvD9xGiS9EynalYs0Q4br8vS12
+         drU4r1qnw04T/+k4hDdBJ6lu/ugHFPvQ59DawL4UGbaCznu28po0/vwp23JsmL6ajkU1
+         7+dL2mIBh/kofHf4TWgUnp63wdbkh2lK8w+K5UXkgLGA0XEBvGo9II52ooO2Bf6XPsfJ
+         L5iQws00GWLHkVNkL6qkJJZLkS3USdMpipUqDZZTbxkKZQshtpRw9B8cD/yIr0LSj3Lk
+         ONA23uHk80zPrU9hYVszOHe/Veleq9MpkYzzePz31Ywp24nsCK2jp3XDUBKlHeRYs2PY
+         821w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QctrJGO1I1Zuq9UjMR9T/NENbwiqNJx5W8ogBL7RQ5k=;
+        b=tIZLRg+NYqRqP4DEBXAUCJS3OO8N/k8TV8XMHnsZDnP5c5D4x8hUCP9YxbkxaN/ia5
+         5U2JN03qVVamygULMbaPWev75NWh39PXGPIs0DaKVVOVy3sQD3aj4NXVHGLZ7LRSegvV
+         irntMRGX80N3qqNvzfoeli+r+Qn6L8TqYzdApTUC75wUylsDllyrusATsP75ccPfVVy8
+         jPQMk9PIlxatzlyPLjVwdZfSMHVFQG0+wyaPHe4yej9KRbQcYqAgjwvl76UVLzql4i98
+         +mGLSECJiuDVGDMXJ1/Qu3Sv2mGfSnKzTHDXIc4yULy/4qI9aKYZ2psiasGP5zN36Jlk
+         ahag==
+X-Gm-Message-State: AOAM533tB/hMECAgg2tb30R9mtBXcS1m+xw/2hYGG7ET6h5kS/8dybAK
+        PihOnFvBHprnghOp8+V1+yOyE87OYJ2woArk7OqyUw==
+X-Google-Smtp-Source: ABdhPJz9AK/9Nb+6ZHbA6CAHV8fQ++VqMz+5ImOS6aqC3CdqZZQF7dyj+J1OJFyYnyhqbh7E1B/9cyjzPInPq4h19mk=
+X-Received: by 2002:a63:c112:: with SMTP id w18mr1007690pgf.31.1601297481123;
+ Mon, 28 Sep 2020 05:51:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4c4a2534824eb69d41753d2e3b2773de@codeaurora.org>
+References: <20200923114419.71218-1-songmuchun@bytedance.com>
+In-Reply-To: <20200923114419.71218-1-songmuchun@bytedance.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Mon, 28 Sep 2020 20:50:44 +0800
+Message-ID: <CAMZfGtUFacR9GFfmySEN6EfdxVi7ZKdwTs17HrJmOL9A38J8sg@mail.gmail.com>
+Subject: Re: [PATCH v2 0/5] io_uring: Fix async workqueue is not canceled on
+ some corner case
+To:     axboe@kernel.dk, viro@zeniv.linux.org.uk
+Cc:     linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Yinyin Zhu <zhuyinyin@bytedance.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 27, 2020 at 07:05:34PM -0700, psodagud@codeaurora.org wrote:
-> On 2020-09-24 11:21, Thomas Gleixner wrote:
-> > On Thu, Sep 24 2020 at 08:33, Greg KH wrote:
-> > > On Wed, Sep 23, 2020 at 05:08:32PM -0700, Prasad Sodagudi wrote:
-> > > > +config CONSOLE_FLUSH_ON_HOTPLUG
-> > > > +	bool "Enable console flush configurable in hot plug code path"
-> > > > +	depends on HOTPLUG_CPU
-> > > > +	def_bool n
-> > > 
-> > > n is the default, no need to list it.
-> > > 
-> > > > +	help
-> > > > +	In cpu hot plug path console lock acquire and release causes the
-> > > > +	console to flush. If console lock is not free hot plug latency
-> > > > +	increases. So make console flush configurable in hot plug path
-> > > > +	and default disabled to help in cpu hot plug latencies.
-> > > 
-> > > Why would you not want this option?
-> > > 
-> > > Why isn't this just a bugfix?
-> > 
-> > Because it's the normal behaviour of console lock and there are
-> > gazillion other ways to delay stuff in the hotplug path.
-> > 
-> > CPU hotplug is not meant to be a high speed operation and if people
-> > think they need it to be fast then its pretty much guaranteed that they
-> > want it for the completely wrong reasons.
-> > 
-> > This #ifdef tinkering is just digusting especially as it just tackles an
-> > obvious way how to delay timer migration, but does not address the
-> > underlying root cause.
-> > 
-> 
-> Hi tglx,
-> 
-> Yes. I agree with you that there are other conditions, which could delay the
-> hotplug operation. But this console
-> flushing is not needed in the hotplug path.  In the hotplug path, a core is
-> trying printing messages
-> from other core(by design of printk), delays the whole hotplug operation and
-> timers migration.  As timers
-> migration gets delayed, it would impact the systems stability in device
-> stability testing.
-> To avoid timers delay in the timer migration in  debug builds has to choose
-> this option.
-> 
-> I thought of changing the timers and irq migration as priority callbacks in
-> the hotplug out operation
-> but I observed some comments like shown below. I was under impression that,
-> it is hard to find all this
-> type of conditions, so started tinkering hotplug path by changing the log
-> levels.
-> These changes helped on Qualcomm platforms testing.
->         /*
->          * On the tear-down path, timers_dead_cpu() must be invoked
->          * before blk_mq_queue_reinit_notify() from notify_dead(),
->          * otherwise a RCU stall occurs.
->          */
->         [CPUHP_TIMERS_PREPARE] = {
->                 .name                   = "timers:prepare",
->                 .startup.single         = timers_prepare_cpu,
->                 .teardown.single        = timers_dead_cpu,
->         },
-> 
-> Another reason for adding #ifdef is that, I was not clear why console flush
-> is need cpuhp callback and thought
-> there might be some use cases and console flush use case might not be valid
-> for all the users of cpu hotplug.
-> I will try to explore the changing the callback order to complete the timers
-> and irq migration early in the hotplug operation.
-> 
-> Let me put some use cases of hotplug  and why hotplug and hotplug latency is
-> important from testing point of view.
-> 1)	Secondary cpus are hotplug out during the device suspend and hotplug in
-> during the resume.  So cpu hotplug operation is important production devices
-> point of view as user presses the power key many times.
+Ping guys. This is worth fixing.
 
-But what does suspend/resume have to do with this?  Why not do just an
-offline operation instead of unplugging the whole cpu?
+On Wed, Sep 23, 2020 at 7:44 PM Muchun Song <songmuchun@bytedance.com> wrote:
+>
+> We should make sure that async workqueue is canceled on exit, but on
+> some corner case, we found that the async workqueue is not canceled
+> on exit in the linux-5.4. So we started an in-depth investigation.
+> Fortunately, we finally found the problem. The commit:
+>
+>   1c4404efcf2c ("io_uring: make sure async workqueue is canceled on exit")
+>
+> did not completely solve this problem. This patch series to solve this
+> problem completely. And there's no upstream variant of this commit, so
+> this patch series is just fix the linux-5.4.y stable branch.
+>
+> changelog in v2:
+>   1. Fix missing save the current thread files
+>   2. Fix double list add in io_queue_async_work()
+>
+> Muchun Song (4):
+>   io_uring: Fix missing smp_mb() in io_cancel_async_work()
+>   io_uring: Fix remove irrelevant req from the task_list
+>   io_uring: Fix missing save the current thread files
+>   io_uring: Fix double list add in io_queue_async_work()
+>
+> Yinyin Zhu (1):
+>   io_uring: Fix resource leaking when kill the process
+>
+>  fs/io_uring.c | 59 +++++++++++++++++++++++++++++++++++++++--------------------
+>  1 file changed, 39 insertions(+), 20 deletions(-)
+>
+> --
+> 2.11.0
+>
 
-> 2)	sysfs nodes (/sys/devices/ststem/cpu/cpu4/oneline) are present from linux
-> kernel, so  test team wants to test cpu hotplug. There could be issues with
-> in generic kernel, device drivers or firmware(psci calls handling from
-> firmware).  There could be issues with device drivers or firmware and test
-> teams can not leave the hotplug untested in builds.
 
-Your change isn't for testing things, speed doesn't matter when writing
-to sysfs nodes, right?
-
-> 3)	Linux kernel also gave provision to register call backs with cpu hotplug
-> framework(CPUHP_AP_ONLINE_DYN) dynamic callbacks.
-> 3002         ret = cpuhp_setup_state_nocalls(CPUHP_AP_ONLINE_DYN,
-> "printk:online",
-> 3003                                         console_cpu_notify, NULL);
-> 	So test team wants to test if any in tree or out of tree modules have any
-> issues with registered call backs or not.
-
-Again, how is this a speed issue?
-
-> 4)	Tracing of the cpuhp operation is important to find whether upstream
-> changes or out of tree modules(or firmware changes) caused latency
-> regression or not.
-
-But cpu hotplug is not deterministic, so how does latency matter here?
-
-confused as to the real problem here...
-
-greg k-h
+-- 
+Yours,
+Muchun
