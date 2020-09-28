@@ -2,78 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D08727A9E0
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 10:45:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2EF827A9E3
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 10:46:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726617AbgI1Iph (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 04:45:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43246 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726328AbgI1Iph (ORCPT
+        id S1726625AbgI1IqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 04:46:22 -0400
+Received: from cmccmta1.chinamobile.com ([221.176.66.79]:22001 "EHLO
+        cmccmta1.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726328AbgI1IqW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 04:45:37 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E000C0613CE;
-        Mon, 28 Sep 2020 01:45:37 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id mn7so227625pjb.5;
-        Mon, 28 Sep 2020 01:45:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nS1+mZH+1q3Z1ieI+xXv6fDTo0VrdNwEG9Fe9x5ehDg=;
-        b=QKev1kYjofg9CeUcQo2fCgYI5XqAaZXltLyFsuFj2PxGkOygx42Bdaquz/2KUJ/uXw
-         YB44tgBbMn/iys8dLegdc8+HkveO+YAwMS2yTX9vcwycmuvizEX1jMrnyXaZKpmHubnu
-         z9Wp4ncdmuOSluTdNymJsCLYAt59p9+YEbNJ7yxNXAiXtmzeOtPCXbrhE3mZDvLoNjLb
-         gtnYLo/Bcg8SfJgtd9lUNFE8o6c+GUI8bYIsJKU7+ODQu5ogpisixQ097Se3jH3w8Gvv
-         JbKHuDtB+iRDO5JpKD5rtNy8XFaSjr10C4okZDAHQtIYJR2is/Vxmh6qGsoOlqWo0GKw
-         87iw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nS1+mZH+1q3Z1ieI+xXv6fDTo0VrdNwEG9Fe9x5ehDg=;
-        b=SbFuRG4XG2AuebG6B4pqlwUEcXwmY/dpVYlsNJ0eY+SwdbWOmRvgWYd/mIHVKixBaw
-         YDA4j9qhaQJfbF2XrX/Tavboz6k6s4mNySe4OfQr4TEfZqyCOtDdLbQU8aokDVA+UP/C
-         4OL2uIretTWaMXPALtoMmm/Gd1DeX2WTrMafgZmXwQXaEFcQ6qHQmkMu2XwbU2nLVVZC
-         GpkviSBlihwyaOwWTuQ1HffMijgIq68+E53FYRCb8uyhQmMLCcA0PvT9b8O9irWk90ps
-         ZNwiSwR6qDkCGDQOfPejAucy1g9TKLPQS4pAUu6FTolQ0A/W8nhJO1HVZTThzjOquMy9
-         bzFw==
-X-Gm-Message-State: AOAM5323k9yxlsrwVpD4cX0VbJCAkZ0pKcgC+qdyhDaAOFSzHiZZODzN
-        m5rFoIJBSWUeGb3XzdvAXqIMjRYFX+I/e/Zw4V0=
-X-Google-Smtp-Source: ABdhPJwV0A5NAianD0pR8zZxg3Y+JvzlYy1SYYiOvjoeNNRPhGwg1Ga8aTdSloWBeWeR2x/kqywA0tt5sMkq5PXj/9s=
-X-Received: by 2002:a17:90a:fd98:: with SMTP id cx24mr358002pjb.181.1601282737132;
- Mon, 28 Sep 2020 01:45:37 -0700 (PDT)
+        Mon, 28 Sep 2020 04:46:22 -0400
+Received: from spf.mail.chinamobile.com (unknown[172.16.121.17]) by rmmx-syy-dmz-app04-12004 (RichMail) with SMTP id 2ee45f71a2ae565-f1855; Mon, 28 Sep 2020 16:45:34 +0800 (CST)
+X-RM-TRANSID: 2ee45f71a2ae565-f1855
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG: 00000000
+Received: from [192.168.21.77] (unknown[10.42.68.12])
+        by rmsmtp-syy-appsvr09-12009 (RichMail) with SMTP id 2ee95f71a2ace47-a72e9;
+        Mon, 28 Sep 2020 16:45:33 +0800 (CST)
+X-RM-TRANSID: 2ee95f71a2ace47-a72e9
+Subject: Re: [PATCH] usb: bdc: Remove duplicate error message in bdc_probe()
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     balbi@kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Florian Fainelli <f.fainelli@gmail.com>
+References: <20200927134218.20028-1-tangbin@cmss.chinamobile.com>
+ <20200927134550.GA302849@kroah.com>
+From:   Tang Bin <tangbin@cmss.chinamobile.com>
+Message-ID: <e895f44b-2c53-a883-322b-e3768fdb6733@cmss.chinamobile.com>
+Date:   Mon, 28 Sep 2020 16:45:29 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-References: <20200928040651.24937-1-haifeng.zhao@intel.com> <20200928040651.24937-4-haifeng.zhao@intel.com>
-In-Reply-To: <20200928040651.24937-4-haifeng.zhao@intel.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 28 Sep 2020 11:45:18 +0300
-Message-ID: <CAHp75VdzceN-aVEDJN1Vz9vyBcBoJDb4D9K_SpPrwqWfGzrXfQ@mail.gmail.com>
-Subject: Re: [PATCH 3/5 V55555] PCI/ERR: get device before call device driver
- to avoid NULL pointer reference
-To:     Ethan Zhao <haifeng.zhao@intel.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>, Oliver <oohall@gmail.com>,
-        ruscur@russell.cc, Lukas Wunner <lukas@wunner.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Stuart Hayes <stuart.w.hayes@gmail.com>,
-        Alexandru Gagniuc <mr.nuke.me@gmail.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        pei.p.jia@intel.com, ashok.raj@linux.intel.com,
-        Sathyanarayanan Kuppuswamy <sathyanarayanan.kuppuswamy@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200927134550.GA302849@kroah.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 7:13 AM Ethan Zhao <haifeng.zhao@intel.com> wrote:
+Hi Greg KH:
 
-Same comments as per v4.
-Also you have an issue in versioning here. Use -v<n> parameter to `git
-format-patch`, it will do it for you nicely.
+在 2020/9/27 21:45, Greg KH 写道:
+> On Sun, Sep 27, 2020 at 09:42:18PM +0800, Tang Bin wrote:
+>> In this function, we don't need dev_err() message because
+>> when something goes wrong, devm_platform_ioremap_resource()
+>> can print an error message itself, so remove the redundant
+>> one.
+>>
+>> Signed-off-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
+>> Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
+>> ---
+>>   drivers/usb/gadget/udc/bdc/bdc_core.c | 4 +---
+>>   1 file changed, 1 insertion(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/usb/gadget/udc/bdc/bdc_core.c b/drivers/usb/gadget/udc/bdc/bdc_core.c
+>> index 02a3a7746..9454f179e 100644
+>> --- a/drivers/usb/gadget/udc/bdc/bdc_core.c
+>> +++ b/drivers/usb/gadget/udc/bdc/bdc_core.c
+>> @@ -508,10 +508,8 @@ static int bdc_probe(struct platform_device *pdev)
+>>   	bdc->clk = clk;
+>>   
+>>   	bdc->regs = devm_platform_ioremap_resource(pdev, 0);
+>> -	if (IS_ERR(bdc->regs)) {
+>> -		dev_err(dev, "ioremap error\n");
+>> +	if (IS_ERR(bdc->regs))
+>>   		return -ENOMEM;
+> Why not return the error given to us?
 
--- 
-With Best Regards,
-Andy Shevchenko
+Because when get ioremap failed, devm_platform_ioremap_resource() can 
+print error message
+
+"dev_err(dev, "ioremap failed for resource %pR\n", res)" in it's called 
+function. So I think this's place's
+
+dev_err(dev, "ioremap error\n") is redundant.
+
+
+Thanks
+
+Tang Bin
+
+
+>
+
+
