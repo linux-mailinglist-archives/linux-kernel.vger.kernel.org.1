@@ -2,97 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F90F27A56E
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 04:32:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 514A727A57A
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 04:42:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726547AbgI1CcN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 22:32:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42388 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726396AbgI1CcM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Sep 2020 22:32:12 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92638C0613CE;
-        Sun, 27 Sep 2020 19:32:12 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id x16so6205396pgj.3;
-        Sun, 27 Sep 2020 19:32:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=dOzo5/c2tdrgQiQGFz7WuFAha6P44jvsz6cVgcm8TcY=;
-        b=kW+Zgvk2DhFr4cMdk/FE/ggsX4G5knNefZ2eo0gUQim4RNqKjTZDBOdG4JaJr+t/dR
-         mcHASO2BW+hUrMJ1QCpPe8VxlFp9hXh4H2NG0ge9hLJMoAOy5kPcU9m6ObeKFtf0DQtl
-         KKJkDUVuJwWJXryHBjNzgvTrpDY+sEcsOI4oRaEHQ0dyihuFuJRrPd9aGEfHK6pZUWuI
-         X3svmF1Wb68kET+VLaWuXV/3VP9r5T3NF9fQ/Pl9s+EeSU506OAsJnkUJwUo97zu6nnI
-         Elclk5vhN0jVWUwUOGhK8k7Eka5abD1oC4oU2efz1qTYAfE9hcjq6xun05LGEKj69IMa
-         DUSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=dOzo5/c2tdrgQiQGFz7WuFAha6P44jvsz6cVgcm8TcY=;
-        b=hRCspbSUzI0gFtU1BnotmMOG2en964C4UZ1RcdkT8t74RtcogaUwUHwJZkLK9HWhwA
-         Msa8SHbLSPc6T4gQQkPZ7etrrGvOJz/JZe4FCm2o9GTBI1pHNvfbDtVsyPkRdzcMSGm6
-         3VUeKrdS0+uNipd+1sHO2QefddADWOrpuBXYTCirTWII9g01hdeQlPLK3UI3fuYBluP8
-         RGfG0hzNCt+Fd7vW9QN5WQxNWrgkVvvGU21ccv90wprfBzPoap0lid79uuF0jNtlspLx
-         uIJv5rtTuQVkG9QOGTMbn6Lej4pJdp7xrAvvD5LyXdKveFUBTypjfzxzlvP8CEdqX6iN
-         GUYg==
-X-Gm-Message-State: AOAM530iWKU9y0KMe9Ir1HYyClJ+Q6mZrtqki3AQoa6Jq8tq/J9fwKd6
-        6d4H5IBwvYEgxy+c2+fR7oL2s21hHPnNyw==
-X-Google-Smtp-Source: ABdhPJwdyItsf3llU8D2ReOXPVuFzN+E1b3zCpuRsyj3ra1guULJ59refqTesZBqpflx3jpd2JK/ew==
-X-Received: by 2002:aa7:8051:0:b029:13e:d13d:a0f7 with SMTP id y17-20020aa780510000b029013ed13da0f7mr8100970pfm.19.1601260331595;
-        Sun, 27 Sep 2020 19:32:11 -0700 (PDT)
-Received: from localhost.localdomain (ip68-111-84-250.oc.oc.cox.net. [68.111.84.250])
-        by smtp.gmail.com with ESMTPSA id q65sm7771306pga.88.2020.09.27.19.32.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 27 Sep 2020 19:32:10 -0700 (PDT)
-From:   Florian Fainelli <f.fainelli@gmail.com>
-To:     netdev@vger.kernel.org
-Cc:     olteanv@gmail.com, Florian Fainelli <f.fainelli@gmail.com>,
-        kernel test robot <lkp@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Taehee Yoo <ap420073@gmail.com>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH net-next] net: vlan: Fixed signedness in vlan_group_prealloc_vid()
-Date:   Sun, 27 Sep 2020 19:31:50 -0700
-Message-Id: <20200928023154.28031-1-f.fainelli@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S1726516AbgI1Cl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 22:41:59 -0400
+Received: from z5.mailgun.us ([104.130.96.5]:23387 "EHLO z5.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726380AbgI1Cl6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Sep 2020 22:41:58 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1601260918; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=FHvOBtS3hiLWcILb3F3d0F/UK1XcfgOMNZG/nkc4vlw=;
+ b=kyMMeimHiOBjWfTdUt6j9EWKl+VP9UMMQC9Y1gzWFqpzv7lfsm3na9NjjQD9kO7vkG4r3GrW
+ piJwf7L79n4TeOa5759fuwkny0bN1SKfuyw8+/hcpHlQ6ywqnxFHC2bESAXI0IB4WDkE1WQj
+ QG5cO8MrEZyHc1IU86+mqAt9xa0=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 5f714d6ba7eb63c698bd9df6 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 28 Sep 2020 02:41:47
+ GMT
+Sender: psodagud=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id E49E8C433CB; Mon, 28 Sep 2020 02:41:46 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: psodagud)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id EF197C433C8;
+        Mon, 28 Sep 2020 02:41:45 +0000 (UTC)
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
 Content-Transfer-Encoding: 8bit
+Date:   Sun, 27 Sep 2020 19:41:45 -0700
+From:   psodagud@codeaurora.org
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     peterz@infradead.org, tglx@linutronix.de, qais.yousef@arm.com,
+        mingo@kernel.org, cai@lca.pw, tyhicks@canonical.com, arnd@arndb.de,
+        rameezmustafa@codeaurora.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/2] measure latency of cpu hotplug path
+In-Reply-To: <20200924105823.0e11f2e4@oasis.local.home>
+References: <1600904266-102397-1-git-send-email-psodagud@codeaurora.org>
+ <20200924083414.GB1362448@hirez.programming.kicks-ass.net>
+ <20200924105823.0e11f2e4@oasis.local.home>
+Message-ID: <75eca1a41e49a199d7aa72be8c5221b3@codeaurora.org>
+X-Sender: psodagud@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After commit d0186842ec5f ("net: vlan: Avoid using BUG() in
-vlan_proto_idx()"), vlan_proto_idx() was changed to return a signed
-integer, however one of its called: vlan_group_prealloc_vid() was still
-using an unsigned integer for its return value, fix that.
+On 2020-09-24 07:58, Steven Rostedt wrote:
+> On Thu, 24 Sep 2020 10:34:14 +0200
+> peterz@infradead.org wrote:
+> 
+>> On Wed, Sep 23, 2020 at 04:37:44PM -0700, Prasad Sodagudi wrote:
+>> > There are all changes related to cpu hotplug path and would like to seek
+>> > upstream review. These are all patches in Qualcomm downstream kernel
+>> > for a quite long time. First patch sets the rt prioity to hotplug
+>> > task and second patch adds cpuhp trace events.
+>> >
+>> > 1) cpu-hotplug: Always use real time scheduling when hotplugging a CPU
+>> > 2) cpu/hotplug: Add cpuhp_latency trace event
+>> 
+>> Why? Hotplug is a known super slow path. If you care about hotplug
+>> latency you're doing it wrong.
+Hi Peter,
 
-Fixes: d0186842ec5f ("net: vlan: Avoid using BUG() in vlan_proto_idx()")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
----
- net/8021q/vlan.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+[PATCH 1/2] cpu/hotplug: Add cpuhp_latency trace event -
+1)	Tracing of the cpuhp operation is important to find whether upstream 
+changes or out of tree modules(or firmware changes) caused latency 
+regression or not.
+2)	Secondary cpus are hotplug out during the device suspend and hotplug 
+in during the resume.
+3)	firmware(psci calls handling from firmware) changes impact need to be 
+tested right?
+4)	cpu hotplug framework(CPUHP_AP_ONLINE_DYN) dynamic callbacks may 
+impact the hotplug latency.
 
-diff --git a/net/8021q/vlan.c b/net/8021q/vlan.c
-index 6c08de1116c1..f292e0267bb9 100644
---- a/net/8021q/vlan.c
-+++ b/net/8021q/vlan.c
-@@ -51,8 +51,9 @@ static int vlan_group_prealloc_vid(struct vlan_group *vg,
- 				   __be16 vlan_proto, u16 vlan_id)
- {
- 	struct net_device **array;
--	unsigned int pidx, vidx;
-+	unsigned int vidx;
- 	unsigned int size;
-+	int pidx;
- 
- 	ASSERT_RTNL();
- 
--- 
-2.25.1
 
+[PATCH 2/2] cpu-hotplug: Always use real time scheduling when  
+hotplugging a CPU –
+
+CPU hotplug operation is stressed and while stress testing with full 
+load on the system following problem is observed.
+CPU hotplug operations take place in preemptible context. This leaves 
+the hotplugging thread at the mercy of overall system load and CPU
+availability. If the hotplugging thread does not get an opportunity to 
+execute after it has already begun a hotplug operation, CPUs can
+end up being stuck in a quasi online state. In the worst case a CPU can 
+be stuck in a state where the migration thread is parked while
+another task is executing and changing affinity in a loop. This 
+combination can result in unbounded execution time for the running
+task until the hot plugging thread gets the chance to run to complete 
+the hotplug operation.
+
+-Thanks, Prasad
+
+> 
+> I'd like to know the answer to Peter's question too. Why?
+> 
+> -- Steve
