@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D252C27A916
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 09:53:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DBC227A917
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 09:53:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726812AbgI1HxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 03:53:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35100 "EHLO
+        id S1726823AbgI1Hx0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 03:53:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726552AbgI1HxT (ORCPT
+        with ESMTP id S1726552AbgI1HxX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 03:53:19 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74FE1C0613CE
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 00:53:19 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id k13so226855pfg.1
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 00:53:19 -0700 (PDT)
+        Mon, 28 Sep 2020 03:53:23 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3C66C0613CE
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 00:53:23 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id 5so154887pgf.5
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 00:53:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=7LH8yYegKYOJ5SIS5dlkWTTqhQljumI79x2/1iboWSM=;
-        b=DxxN6L/Dh3WLwWy4HlSCBGeggB8zVWvyOrfasCL2Q83HgGH4nNvFPsud40lVYvfuX4
-         Fi4JnQ9xVsoDjgptIIjYNQBbEUKEIUiyejbc4OMqP7E8jN6oLjjnH8mYtw2s52/+ufPA
-         8qeCTADKVPUnqJO2pQX13TBO8DK5M6sa8qIUZ3wb4bFpBOjOQsi6OqKB/bDPLokJfHrW
-         tbat5VE+nUIqiapE8yy5LyerPUEBrJ5bKy1wrFx7T/c16jLzNmyx7GSGCsitjBdM6Dhx
-         U7PIqcrCE+LhDBxcj6yLbBzK5pmSWBjrUlERSvNPFE0TWGVAZMbhfsH3X6/ThYsxnWol
-         mrIw==
+        bh=Z5Rf3jk2q/YuMBPVNHtFY1iN90x3sfokHfnghmckc+w=;
+        b=TzHXrhxW37kvEQ3eXFNB4s3IPdX79T9czkvJDyzoew14iZuXw6yEVzBBvOd2Lmf16+
+         YMLe8Ba7/BTcPOZRI0tHhUjFjKaQ6VbCVW7Ta5XPdvURQpZgv66ajMRBRDx8FqJPDYeV
+         a7uvrVIhIDAn5YZ1p9bJutFQgcomUUgqaz/gUj3cyaG9MB/fRL/dkOJIj9TVSfuQFgZK
+         sLv8r/JhA71Rtj25h8Kaa1SDj2hldd2hMg4PpxXTidaw7cZpOKB+IYfiQ5OqaqXrfafE
+         5HflsWHvtbB9qmN/lCh8yP/JBO97xpnIPkRESHypIB4AfVO9lMvQeQpMRJPvjWGTG/iR
+         TDWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
          :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=7LH8yYegKYOJ5SIS5dlkWTTqhQljumI79x2/1iboWSM=;
-        b=hUi9z6BNQwgEetpwk5U7l70aDBcwqs/1hwBXaLh6G4RFxyg5KHb9qOLIvBz4YCUFdX
-         YAsuZPoBvQyVydqvs3vL/9LqMt08nsyM8ELkWp0taO79BuHRG/bvW3JG9RmoK86f6LeB
-         AWiVT+0i11PEOevnnpoziVyGaDINM94RPXrAHWJcrXcD271ZXlX1SzZx8rQlPQ6Jjf4W
-         zdkGbSFV9rOC5YzteVnvT7BfXY0CK8Fdrfm/PRqQny5w61uvYMFfbXTgu2P85PRxPHgm
-         FKH232Hca07htlwfZNoummkr3jYWssEbAva4BXbpCFfmy62W9FZhZ8IOS3LMceczpRv4
-         pn7Q==
-X-Gm-Message-State: AOAM5313+5qnh7AFjR2aGJYTc2V50JPHJIuiX1/7zA8SAgaX7GCN12DZ
-        MWTYv+MI9OUQ77RT16K/NeA=
-X-Google-Smtp-Source: ABdhPJx/RR6+tLg5tPw79mqHAfV8uq1rQrNneHqBl6C3vY8rvP5rAuSH9+xb34ZSam4Uio2NwpkDxA==
-X-Received: by 2002:a62:16cd:0:b029:13e:d13d:a13f with SMTP id 196-20020a6216cd0000b029013ed13da13fmr394230pfw.39.1601279598953;
-        Mon, 28 Sep 2020 00:53:18 -0700 (PDT)
+        bh=Z5Rf3jk2q/YuMBPVNHtFY1iN90x3sfokHfnghmckc+w=;
+        b=ObJj5Uah3zslEoxTgrjJWMRqNSXM+NJWDG8GK6AX3yrVsW2xmhLIFQkJKDi4/oc2zQ
+         Wu72P1dWJO2hXkEBjSXqviRK1gLXRvCbSOXtaoxAcQjXvw5v8xh01swWjGt0OVQIAyOQ
+         ybDpTQd2Pc8ajokdXIDJOEESzMuHzkoeBNvKFe0kV3+q9tLWymYVorr1SV9iRebX1Rln
+         uUZDCiA760kgsj5KmT5/QlZScYaT2tzmP6Ru+U7UxqpEyyCaOTCQdl3CxBv32IxeiFhE
+         AlaCRf1R3hxvjD9DjPn3vIyDudOo/zPRrUHXJoRnqpQ0X9n8/JSIim+oShObA2NrbkZG
+         pVFA==
+X-Gm-Message-State: AOAM531FOZdXJcN3WKO5c/aQYemoCJtwwe4zf4qp/HSaLCidli6HtF3w
+        YwHPilNXXL1NO8dqFsJmSgs=
+X-Google-Smtp-Source: ABdhPJyPJBEPDUC0O8mKCTLD7tNxshtvEfQJeL1wlZrcPdQqq2YYrV56ih0DxFR8spxZQHbWNFXRbQ==
+X-Received: by 2002:a17:902:267:b029:d2:6180:4a46 with SMTP id 94-20020a1709020267b02900d261804a46mr471381plc.26.1601279603265;
+        Mon, 28 Sep 2020 00:53:23 -0700 (PDT)
 Received: from balhae.roam.corp.google.com ([101.235.31.111])
-        by smtp.gmail.com with ESMTPSA id 141sm520241pfb.50.2020.09.28.00.53.15
+        by smtp.gmail.com with ESMTPSA id 141sm520241pfb.50.2020.09.28.00.53.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Sep 2020 00:53:18 -0700 (PDT)
+        Mon, 28 Sep 2020 00:53:22 -0700 (PDT)
 Sender: Namhyung Kim <namhyung@gmail.com>
 From:   Namhyung Kim <namhyung@kernel.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
@@ -59,9 +59,9 @@ Cc:     Ingo Molnar <mingo@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>,
         Stephane Eranian <eranian@google.com>,
         Ian Rogers <irogers@google.com>
-Subject: [PATCH 5/6] perf inject: Add --buildid-all option
-Date:   Mon, 28 Sep 2020 16:52:45 +0900
-Message-Id: <20200928075246.853729-6-namhyung@kernel.org>
+Subject: [PATCH 6/6] perf bench: Run inject-build-id with --buildid-all option too
+Date:   Mon, 28 Sep 2020 16:52:46 +0900
+Message-Id: <20200928075246.853729-7-namhyung@kernel.org>
 X-Mailer: git-send-email 2.28.0.681.g6f77f65b4e-goog
 In-Reply-To: <20200928075246.853729-1-namhyung@kernel.org>
 References: <20200928075246.853729-1-namhyung@kernel.org>
@@ -71,232 +71,148 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Like perf record, we can even more speedup build-id processing by just
-using all DSOs.  Then we don't need to look at all the sample events
-anymore.  The following patch will update perf bench to show the
-result of the --buildid-all option too.
+For comparison, it now runs the benchmark twice - one if regular -b
+and another for --buildid-all.
 
-Original-patch-by: Stephane Eranian <eranian@google.com>
+  $ perf bench internals inject-build-id
+  # Running 'internals/inject-build-id' benchmark:
+    Average build-id injection took: 18.112 msec (+- 0.034 msec)
+    Average time per event: 1.776 usec (+- 0.003 usec)
+    Average memory usage: 7388 KB (+- 6 KB)
+    Average build-id-all injection took: 17.504 msec (+- 0.035 msec)
+    Average time per event: 1.716 usec (+- 0.003 usec)
+    Average memory usage: 7459 KB (+- 2 KB)
+
 Acked-by: Jiri Olsa <jolsa@redhat.com>
 Acked-by: Ian Rogers <irogers@google.com>
 Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 ---
- tools/perf/Documentation/perf-inject.txt |   6 +-
- tools/perf/builtin-inject.c              | 113 ++++++++++++++++++++++-
- 2 files changed, 113 insertions(+), 6 deletions(-)
+ tools/perf/bench/inject-buildid.c | 46 +++++++++++++++++++++----------
+ 1 file changed, 31 insertions(+), 15 deletions(-)
 
-diff --git a/tools/perf/Documentation/perf-inject.txt b/tools/perf/Documentation/perf-inject.txt
-index 70969ea73e01..a8eccff21281 100644
---- a/tools/perf/Documentation/perf-inject.txt
-+++ b/tools/perf/Documentation/perf-inject.txt
-@@ -24,8 +24,12 @@ information could make use of this facility.
- OPTIONS
- -------
- -b::
----build-ids=::
-+--build-ids::
-         Inject build-ids into the output stream
-+
-+--buildid-all:
-+	Inject build-ids of all DSOs into the output stream
-+
- -v::
- --verbose::
- 	Be more verbose.
-diff --git a/tools/perf/builtin-inject.c b/tools/perf/builtin-inject.c
-index 248cd9f3e5bb..f3f965157d69 100644
---- a/tools/perf/builtin-inject.c
-+++ b/tools/perf/builtin-inject.c
-@@ -10,6 +10,7 @@
+diff --git a/tools/perf/bench/inject-buildid.c b/tools/perf/bench/inject-buildid.c
+index b09f9126bb4f..02040eff6818 100644
+--- a/tools/perf/bench/inject-buildid.c
++++ b/tools/perf/bench/inject-buildid.c
+@@ -226,7 +226,7 @@ static void sigpipe_handler(int sig __maybe_unused)
+ 	/* child exited */
+ }
  
- #include "util/color.h"
- #include "util/dso.h"
-+#include "util/vdso.h"
- #include "util/evlist.h"
- #include "util/evsel.h"
- #include "util/map.h"
-@@ -37,6 +38,7 @@ struct perf_inject {
- 	struct perf_tool	tool;
- 	struct perf_session	*session;
- 	bool			build_ids;
-+	bool			build_id_all;
- 	bool			sched_stat;
- 	bool			have_auxtrace;
- 	bool			strip;
-@@ -56,6 +58,9 @@ struct event_entry {
- 	union perf_event event[];
- };
- 
-+static int dso__inject_build_id(struct dso *dso, struct perf_tool *tool,
-+				struct machine *machine, u8 cpumode, u32 flags);
-+
- static int output_bytes(struct perf_inject *inject, void *buf, size_t sz)
+-static int setup_injection(struct bench_data *data)
++static int setup_injection(struct bench_data *data, bool build_id_all)
  {
- 	ssize_t size;
-@@ -319,6 +324,68 @@ static int perf_event__jit_repipe_mmap(struct perf_tool *tool,
+ 	int ready_pipe[2];
+ 	int dev_null_fd;
+@@ -247,6 +247,7 @@ static int setup_injection(struct bench_data *data)
+ 
+ 	if (data->pid == 0) {
+ 		const char **inject_argv;
++		int inject_argc = 2;
+ 
+ 		close(data->input_pipe[1]);
+ 		close(data->output_pipe[0]);
+@@ -263,17 +264,22 @@ static int setup_injection(struct bench_data *data)
+ 
+ 		dup2(dev_null_fd, STDERR_FILENO);
+ 
+-		inject_argv = calloc(3, sizeof(*inject_argv));
++		if (build_id_all)
++			inject_argc++;
++
++		inject_argv = calloc(inject_argc + 1, sizeof(*inject_argv));
+ 		if (inject_argv == NULL)
+ 			exit(1);
+ 
+ 		inject_argv[0] = strdup("inject");
+ 		inject_argv[1] = strdup("-b");
++		if (build_id_all)
++			inject_argv[2] = strdup("--buildid-all");
+ 
+ 		/* signal that we're ready to go */
+ 		close(ready_pipe[1]);
+ 
+-		cmd_inject(2, inject_argv);
++		cmd_inject(inject_argc, inject_argv);
+ 
+ 		exit(0);
+ 	}
+@@ -364,23 +370,17 @@ static int inject_build_id(struct bench_data *data, u64 *max_rss)
+ 	return 0;
  }
- #endif
  
-+static struct dso *findnew_dso(int pid, int tid, const char *filename,
-+			       struct dso_id *id, struct machine *machine)
-+{
-+	struct thread *thread;
-+	struct nsinfo *nsi = NULL;
-+	struct nsinfo *nnsi;
-+	struct dso *dso;
-+	bool vdso;
-+
-+	thread = machine__findnew_thread(machine, pid, tid);
-+	if (thread == NULL) {
-+		pr_err("cannot find or create a task %d/%d.\n", tid, pid);
-+		return NULL;
-+	}
-+
-+	vdso = is_vdso_map(filename);
-+	nsi = nsinfo__get(thread->nsinfo);
-+
-+	if (vdso) {
-+		/* The vdso maps are always on the host and not the
-+		 * container.  Ensure that we don't use setns to look
-+		 * them up.
-+		 */
-+		nnsi = nsinfo__copy(nsi);
-+		if (nnsi) {
-+			nsinfo__put(nsi);
-+			nnsi->need_setns = false;
-+			nsi = nnsi;
-+		}
-+		dso = machine__findnew_vdso(machine, thread);
-+	} else {
-+		dso = machine__findnew_dso_id(machine, filename, id);
-+	}
-+
-+	if (dso)
-+		dso->nsinfo = nsi;
-+	else
-+		nsinfo__put(nsi);
-+
-+	thread__put(thread);
-+	return dso;
+-static int do_inject_loop(struct bench_data *data)
++static void do_inject_loop(struct bench_data *data, bool build_id_all)
+ {
+ 	unsigned int i;
+ 	struct stats time_stats, mem_stats;
+ 	double time_average, time_stddev;
+ 	double mem_average, mem_stddev;
+ 
+-	srand(time(NULL));
+ 	init_stats(&time_stats);
+ 	init_stats(&mem_stats);
+-	symbol__init(NULL);
+ 
+-	collect_dso();
+-	if (nr_dsos == 0) {
+-		printf("  Cannot collect DSOs for injection\n");
+-		return -1;
+-	}
++	pr_debug("  Build-id%s injection benchmark\n", build_id_all ? "-all" : "");
+ 
+ 	for (i = 0; i < iterations; i++) {
+ 		struct timeval start, end, diff;
+@@ -388,7 +388,7 @@ static int do_inject_loop(struct bench_data *data)
+ 
+ 		pr_debug("  Iteration #%d\n", i+1);
+ 
+-		if (setup_injection(data) < 0) {
++		if (setup_injection(data, build_id_all) < 0) {
+ 			printf("  Build-id injection setup failed\n");
+ 			break;
+ 		}
+@@ -408,8 +408,8 @@ static int do_inject_loop(struct bench_data *data)
+ 
+ 	time_average = avg_stats(&time_stats) / USEC_PER_MSEC;
+ 	time_stddev = stddev_stats(&time_stats) / USEC_PER_MSEC;
+-	printf("  Average build-id injection took: %.3f msec (+- %.3f msec)\n",
+-		time_average, time_stddev);
++	printf("  Average build-id%s injection took: %.3f msec (+- %.3f msec)\n",
++	       build_id_all ? "-all" : "", time_average, time_stddev);
+ 
+ 	/* each iteration, it processes MMAP2 + BUILD_ID + nr_samples * SAMPLE */
+ 	time_average = avg_stats(&time_stats) / (nr_mmaps * (nr_samples + 2));
+@@ -421,6 +421,22 @@ static int do_inject_loop(struct bench_data *data)
+ 	mem_stddev = stddev_stats(&mem_stats);
+ 	printf("  Average memory usage: %.0f KB (+- %.0f KB)\n",
+ 		mem_average, mem_stddev);
 +}
 +
-+static int perf_event__repipe_buildid_mmap(struct perf_tool *tool,
-+					   union perf_event *event,
-+					   struct perf_sample *sample,
-+					   struct machine *machine)
++static int do_inject_loops(struct bench_data *data)
 +{
-+	struct dso *dso;
 +
-+	dso = findnew_dso(event->mmap.pid, event->mmap.tid,
-+			  event->mmap.filename, NULL, machine);
++	srand(time(NULL));
++	symbol__init(NULL);
 +
-+	if (dso && !dso->hit) {
-+		dso->hit = 1;
-+		dso__inject_build_id(dso, tool, machine, sample->cpumode, 0);
-+		dso__put(dso);
++	collect_dso();
++	if (nr_dsos == 0) {
++		printf("  Cannot collect DSOs for injection\n");
++		return -1;
 +	}
 +
-+	return perf_event__repipe(tool, event, sample, machine);
-+}
-+
- static int perf_event__repipe_mmap2(struct perf_tool *tool,
- 				   union perf_event *event,
- 				   struct perf_sample *sample,
-@@ -357,6 +424,34 @@ static int perf_event__jit_repipe_mmap2(struct perf_tool *tool,
- }
- #endif
++	do_inject_loop(data, false);
++	do_inject_loop(data, true);
  
-+static int perf_event__repipe_buildid_mmap2(struct perf_tool *tool,
-+					    union perf_event *event,
-+					    struct perf_sample *sample,
-+					    struct machine *machine)
-+{
-+	struct dso_id dso_id = {
-+		.maj = event->mmap2.maj,
-+		.min = event->mmap2.min,
-+		.ino = event->mmap2.ino,
-+		.ino_generation = event->mmap2.ino_generation,
-+	};
-+	struct dso *dso;
-+
-+	dso = findnew_dso(event->mmap2.pid, event->mmap2.tid,
-+			  event->mmap2.filename, &dso_id, machine);
-+
-+	if (dso && !dso->hit) {
-+		dso->hit = 1;
-+		dso__inject_build_id(dso, tool, machine, sample->cpumode,
-+				     event->mmap2.flags);
-+		dso__put(dso);
-+	}
-+
-+	perf_event__repipe(tool, event, sample, machine);
-+
-+	return 0;
-+}
-+
- static int perf_event__repipe_fork(struct perf_tool *tool,
- 				   union perf_event *event,
- 				   struct perf_sample *sample,
-@@ -614,7 +709,7 @@ static int __cmd_inject(struct perf_inject *inject)
- 	signal(SIGINT, sig_handler);
- 
- 	if (inject->build_ids || inject->sched_stat ||
--	    inject->itrace_synth_opts.set) {
-+	    inject->itrace_synth_opts.set || inject->build_id_all) {
- 		inject->tool.mmap	  = perf_event__repipe_mmap;
- 		inject->tool.mmap2	  = perf_event__repipe_mmap2;
- 		inject->tool.fork	  = perf_event__repipe_fork;
-@@ -623,7 +718,10 @@ static int __cmd_inject(struct perf_inject *inject)
- 
- 	output_data_offset = session->header.data_offset;
- 
--	if (inject->build_ids) {
-+	if (inject->build_id_all) {
-+		inject->tool.mmap	  = perf_event__repipe_buildid_mmap;
-+		inject->tool.mmap2	  = perf_event__repipe_buildid_mmap2;
-+	} else if (inject->build_ids) {
- 		inject->tool.sample = perf_event__inject_buildid;
- 	} else if (inject->sched_stat) {
- 		struct evsel *evsel;
-@@ -767,6 +865,8 @@ int cmd_inject(int argc, const char **argv)
- 	struct option options[] = {
- 		OPT_BOOLEAN('b', "build-ids", &inject.build_ids,
- 			    "Inject build-ids into the output stream"),
-+		OPT_BOOLEAN(0, "buildid-all", &inject.build_id_all,
-+			    "Inject build-ids of all DSOs into the output stream"),
- 		OPT_STRING('i', "input", &inject.input_name, "file",
- 			   "input file name"),
- 		OPT_STRING('o', "output", &inject.output.path, "file",
-@@ -815,8 +915,6 @@ int cmd_inject(int argc, const char **argv)
- 		return -1;
+ 	release_dso();
+ 	return 0;
+@@ -436,6 +452,6 @@ int bench_inject_build_id(int argc, const char **argv)
+ 		exit(EXIT_FAILURE);
  	}
  
--	inject.tool.ordered_events = inject.sched_stat;
--
- 	data.path = inject.input_name;
- 	inject.session = perf_session__new(&data, true, &inject.tool);
- 	if (IS_ERR(inject.session))
-@@ -825,7 +923,7 @@ int cmd_inject(int argc, const char **argv)
- 	if (zstd_init(&(inject.session->zstd_data), 0) < 0)
- 		pr_warning("Decompression initialization failed.\n");
+-	return do_inject_loop(&data);
++	return do_inject_loops(&data);
+ }
  
--	if (inject.build_ids) {
-+	if (inject.build_ids && !inject.build_id_all) {
- 		/*
- 		 * to make sure the mmap records are ordered correctly
- 		 * and so that the correct especially due to jitted code
-@@ -835,6 +933,11 @@ int cmd_inject(int argc, const char **argv)
- 		inject.tool.ordered_events = true;
- 		inject.tool.ordering_requires_timestamps = true;
- 	}
-+
-+	if (inject.sched_stat) {
-+		inject.tool.ordered_events = true;
-+	}
-+
- #ifdef HAVE_JITDUMP
- 	if (inject.jit_mode) {
- 		inject.tool.mmap2	   = perf_event__jit_repipe_mmap2;
 -- 
 2.28.0.681.g6f77f65b4e-goog
 
