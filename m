@@ -2,118 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 471D327AE28
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 14:49:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 104C927AE2A
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 14:50:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726564AbgI1Mtk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 08:49:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52848 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726310AbgI1Mtj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 08:49:39 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9850AC061755
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 05:49:39 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id o21so591993qtp.2
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 05:49:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=C7pLuM6q9GITD003wal8FUvMqWiJb4o3xG/3xTeMIHw=;
-        b=f9lb2tgPovyEXgA0Z4FOMgi3I5WM4fBlC3HOpM70LPWDcNTyUIrsetkEgxSbET6gAK
-         3nKGSJc6Ub1KXYMckQVyXMumjmiBV4aEkPHu0vd33RSDrVhtFcOPjmx2R9RWDfoGSUF9
-         WoK4s1dUzp5TRfJcyPWmkbAPdi/wMVzJf4V+S4eRYobTP9huYHbVRPyBLVb5yD8wNMxx
-         Xz+rB/6VCcuNtjmYfQfJBfHnO7i0LEXvIwBrkzAc7KySYSwf4EgQ0JVLaTy/0P5QMCmX
-         JSO4/vjoDkbffgbtEEU5bc9jR3Y6HY8/zAEtSRvZ53rivyLk2Zm8zuyZIJQT6qlcFPlq
-         APsw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=C7pLuM6q9GITD003wal8FUvMqWiJb4o3xG/3xTeMIHw=;
-        b=OkSMg8f3AF63X7iSmHqnlMiQXOVPVGEPApMhrdJbUDGsM3V20i0sghbCnqDw1k/nn4
-         CWA67Of1Ff5AYkC0u6X+WovIb+DnNmKuvsljGX+J0xDUAC38tLFGmbGcTxAa3mS6sx5F
-         NJbT8rb43oooAk/u6CbcMbYZS4wwV+tEpSrK46mtNqMowQvjeHHnEtR5Qkl942rrQOM0
-         vf7FOH9RJQJaHk1XGfiqgPG6j0TAUz0EG4//v3QqkvwPY6f+Zt7WXDniKXT/1+mFwwgu
-         2M0/7pe/+4sZ1yptrLnOVorSkPGNwYaxDtDqnAVRMFpmuXHLydTbgA6NnlMy8oEeA90M
-         HTHg==
-X-Gm-Message-State: AOAM530yq1xmynh89XmBBywhwD541ByyAuEh04MgTIoxS9Yzu30EmP/Z
-        CJFJRO4gNwT/BeEPZBsEz5D46g==
-X-Google-Smtp-Source: ABdhPJyB+Vuryqx/W9VfWYdCvFbbTCxY1i7cOBauOwmzZPqPCJn7ocXQN/trIb1W22V1vrEwQ9qduQ==
-X-Received: by 2002:ac8:4d07:: with SMTP id w7mr1338294qtv.243.1601297378789;
-        Mon, 28 Sep 2020 05:49:38 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id e24sm826203qka.76.2020.09.28.05.49.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Sep 2020 05:49:37 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kMsb3-001ueb-Ap; Mon, 28 Sep 2020 09:49:37 -0300
-Date:   Mon, 28 Sep 2020 09:49:37 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Leon Romanovsky <leonro@nvidia.com>, Peter Xu <peterx@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jan Kara <jack@suse.cz>, Michal Hocko <mhocko@suse.com>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Kirill Shutemov <kirill@shutemov.name>,
-        Hugh Dickins <hughd@google.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>
-Subject: Re: [PATCH 1/5] mm: Introduce mm_struct.has_pinned
-Message-ID: <20200928124937.GN9916@ziepe.ca>
-References: <20200924183953.GG9916@ziepe.ca>
- <20200924213010.GL79898@xz-x1>
- <CAHk-=wgz5SXKA6-uZ_BimOP1C7pHJag0ndz=tnJDAZS_Z+FrGQ@mail.gmail.com>
- <CAHk-=whDSH_MRMt80JaSwoquzt=1nQ-0n3w0aVngoWPAc10BCw@mail.gmail.com>
- <20200926004136.GJ9916@ziepe.ca>
- <CAHk-=wiutA_J-OfvrD8Kp3SoYcfMHUwsU7ViOH48q7QN0AQ6eg@mail.gmail.com>
- <CAHk-=wi_gd+JWj-8t8tc8cy3WZ7NMj-_1hATfH3Rt0ytUxtMpQ@mail.gmail.com>
- <20200927062337.GE2280698@unreal>
- <CAHk-=winqSOFsdn1ntYL13s2UuhpQQ9+GRvjWth3sA5APY4Wwg@mail.gmail.com>
- <CAHk-=wj61s30pt8POVtKYVamYTh6h=7-_ser2Hx9sEjqeACkDA@mail.gmail.com>
+        id S1726566AbgI1Mub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 08:50:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40182 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726327AbgI1Mua (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 08:50:30 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5A02721974;
+        Mon, 28 Sep 2020 12:50:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601297429;
+        bh=vSqcP0mrbe2L8WpJdc6NrNWXS4Vn2KXk5nRMn8lrgno=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ITBZ71/NgZ1h+xb0un8m22k/zxMtWnd/2/U/Se+o4QHj2dYSBb36uZH0QhgIRPKhu
+         A8K/urinr3oiq6DXrYZe5VZRnUpdPdhL0zQsmVj6P02/FxOqWBEayS3AR8UwRNS8jR
+         a0POInjIWcV3H5lDsIvmAjkve/MHFnZ+Uhy8f0XE=
+Date:   Mon, 28 Sep 2020 14:50:37 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     psodagud@codeaurora.org
+Cc:     Thomas Gleixner <tglx@linutronix.de>, rostedt@goodmis.org,
+        pmladek@suse.com, sergey.senozhatsky@gmail.com,
+        linux-kernel@vger.kernel.org, tkjos@google.com,
+        Mohammed Khajapasha <mkhaja@codeaurora.org>
+Subject: Re: [PATCH 2/2] printk: Make the console flush configurable in
+ hotplug path
+Message-ID: <20200928125037.GA1661095@kroah.com>
+References: <1600906112-126722-1-git-send-email-psodagud@codeaurora.org>
+ <1600906112-126722-2-git-send-email-psodagud@codeaurora.org>
+ <20200924063352.GB592892@kroah.com>
+ <87wo0j6nos.fsf@nanos.tec.linutronix.de>
+ <4c4a2534824eb69d41753d2e3b2773de@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wj61s30pt8POVtKYVamYTh6h=7-_ser2Hx9sEjqeACkDA@mail.gmail.com>
+In-Reply-To: <4c4a2534824eb69d41753d2e3b2773de@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 27, 2020 at 11:45:30AM -0700, Linus Torvalds wrote:
-> On Sun, Sep 27, 2020 at 11:16 AM Linus Torvalds
-> <torvalds@linux-foundation.org> wrote:
-> >
-> > Btw, I'm not convinced about the whole "turn the pte read-only and
-> > then back". If the fork races with another thread doing a pinning
-> > fast-GUP on another CPU, there are memory ordering issues etc too.
-> > That's not necessarily visible on x86 (the "turn read-only being a
-> > locked op will force serialization), but it all looks dodgy as heck.
+On Sun, Sep 27, 2020 at 07:05:34PM -0700, psodagud@codeaurora.org wrote:
+> On 2020-09-24 11:21, Thomas Gleixner wrote:
+> > On Thu, Sep 24 2020 at 08:33, Greg KH wrote:
+> > > On Wed, Sep 23, 2020 at 05:08:32PM -0700, Prasad Sodagudi wrote:
+> > > > +config CONSOLE_FLUSH_ON_HOTPLUG
+> > > > +	bool "Enable console flush configurable in hot plug code path"
+> > > > +	depends on HOTPLUG_CPU
+> > > > +	def_bool n
+> > > 
+> > > n is the default, no need to list it.
+> > > 
+> > > > +	help
+> > > > +	In cpu hot plug path console lock acquire and release causes the
+> > > > +	console to flush. If console lock is not free hot plug latency
+> > > > +	increases. So make console flush configurable in hot plug path
+> > > > +	and default disabled to help in cpu hot plug latencies.
+> > > 
+> > > Why would you not want this option?
+> > > 
+> > > Why isn't this just a bugfix?
+> > 
+> > Because it's the normal behaviour of console lock and there are
+> > gazillion other ways to delay stuff in the hotplug path.
+> > 
+> > CPU hotplug is not meant to be a high speed operation and if people
+> > think they need it to be fast then its pretty much guaranteed that they
+> > want it for the completely wrong reasons.
+> > 
+> > This #ifdef tinkering is just digusting especially as it just tackles an
+> > obvious way how to delay timer migration, but does not address the
+> > underlying root cause.
+> > 
+> 
+> Hi tglx,
+> 
+> Yes. I agree with you that there are other conditions, which could delay the
+> hotplug operation. But this console
+> flushing is not needed in the hotplug path.  In the hotplug path, a core is
+> trying printing messages
+> from other core(by design of printk), delays the whole hotplug operation and
+> timers migration.  As timers
+> migration gets delayed, it would impact the systems stability in device
+> stability testing.
+> To avoid timers delay in the timer migration in  debug builds has to choose
+> this option.
+> 
+> I thought of changing the timers and irq migration as priority callbacks in
+> the hotplug out operation
+> but I observed some comments like shown below. I was under impression that,
+> it is hard to find all this
+> type of conditions, so started tinkering hotplug path by changing the log
+> levels.
+> These changes helped on Qualcomm platforms testing.
+>         /*
+>          * On the tear-down path, timers_dead_cpu() must be invoked
+>          * before blk_mq_queue_reinit_notify() from notify_dead(),
+>          * otherwise a RCU stall occurs.
+>          */
+>         [CPUHP_TIMERS_PREPARE] = {
+>                 .name                   = "timers:prepare",
+>                 .startup.single         = timers_prepare_cpu,
+>                 .teardown.single        = timers_dead_cpu,
+>         },
+> 
+> Another reason for adding #ifdef is that, I was not clear why console flush
+> is need cpuhp callback and thought
+> there might be some use cases and console flush use case might not be valid
+> for all the users of cpu hotplug.
+> I will try to explore the changing the callback order to complete the timers
+> and irq migration early in the hotplug operation.
+> 
+> Let me put some use cases of hotplug  and why hotplug and hotplug latency is
+> important from testing point of view.
+> 1)	Secondary cpus are hotplug out during the device suspend and hotplug in
+> during the resume.  So cpu hotplug operation is important production devices
+> point of view as user presses the power key many times.
 
-Oh. Yes, looking again the atomics in the final arrangement of
-copy_present_page() aren't going to be strong enough to order this.
+But what does suspend/resume have to do with this?  Why not do just an
+offline operation instead of unplugging the whole cpu?
 
-Sorry for missing, wasn't able to look very deeply during the weekend.
+> 2)	sysfs nodes (/sys/devices/ststem/cpu/cpu4/oneline) are present from linux
+> kernel, so  test team wants to test cpu hotplug. There could be issues with
+> in generic kernel, device drivers or firmware(psci calls handling from
+> firmware).  There could be issues with device drivers or firmware and test
+> teams can not leave the hotplug untested in builds.
 
-Not seeing an obvious option besides adding a smp_mb() before
-page_maybe_dma_pinned() as Peter once suggested.
+Your change isn't for testing things, speed doesn't matter when writing
+to sysfs nodes, right?
 
-> .. looking at it more, I also think it could possibly lose the dirty
-> bit for the case where another CPU did a HW dirty/accessed bit update
-> in between the original read of the pte, and then us writing back the
-> writable pte again.
+> 3)	Linux kernel also gave provision to register call backs with cpu hotplug
+> framework(CPUHP_AP_ONLINE_DYN) dynamic callbacks.
+> 3002         ret = cpuhp_setup_state_nocalls(CPUHP_AP_ONLINE_DYN,
+> "printk:online",
+> 3003                                         console_cpu_notify, NULL);
+> 	So test team wants to test if any in tree or out of tree modules have any
+> issues with registered call backs or not.
 
-Ah, I see:
+Again, how is this a speed issue?
 
-               set_pte_at(src_mm, addr, src_pte, pte);
+> 4)	Tracing of the cpuhp operation is important to find whether upstream
+> changes or out of tree modules(or firmware changes) caused latency
+> regression or not.
 
-wants to be some arch specific single bit ptep_clear_wrprotect()..
+But cpu hotplug is not deterministic, so how does latency matter here?
 
-Thanks,
-Jason
+confused as to the real problem here...
+
+greg k-h
