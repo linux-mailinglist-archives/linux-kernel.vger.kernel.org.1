@@ -2,439 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70A7B27AD1F
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 13:45:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01D3127AD24
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 13:46:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726737AbgI1LpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 07:45:09 -0400
-Received: from foss.arm.com ([217.140.110.172]:50044 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726721AbgI1LpB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 07:45:01 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 34B3031B;
-        Mon, 28 Sep 2020 04:45:00 -0700 (PDT)
-Received: from usa.arm.com (e103737-lin.cambridge.arm.com [10.1.197.49])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id A497E3F6CF;
-        Mon, 28 Sep 2020 04:44:58 -0700 (PDT)
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Jassi Brar <jassisinghbrar@gmail.com>,
-        Jassi Brar <jaswinder.singh@linaro.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        ALKML <linux-arm-kernel@lists.infradead.org>,
-        DTML <devicetree@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     Sudeep Holla <sudeep.holla@arm.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh@kernel.org>, Rob Herring <robh+dt@kernel.org>
-Subject: [PATCH 4/4] mailbox: arm_mhu: Add ARM MHU doorbell driver
-Date:   Mon, 28 Sep 2020 12:44:45 +0100
-Message-Id: <20200928114445.19689-5-sudeep.holla@arm.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200928114445.19689-1-sudeep.holla@arm.com>
-References: <20200928114445.19689-1-sudeep.holla@arm.com>
+        id S1726691AbgI1LqQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 07:46:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43058 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726420AbgI1LqP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 07:46:15 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFE55C061755;
+        Mon, 28 Sep 2020 04:46:15 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id b124so734348pfg.13;
+        Mon, 28 Sep 2020 04:46:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zwMUcY3XkwfnX4NVH144ezfRaJEZAmC6LlLKw8bGZ/0=;
+        b=qL0R40R1HA602EvKkHEmXf7m4tvAZFldTIc1GF5GjGaILZ9rOwkQ/I2iO8MnXWgx0I
+         yhiAYRaD040/rpIuPM8UOeQkWh7pzR0jtEP/eTDnMEcbaut/MA1MxVWPuSKP4UEx5f9+
+         dHRx+5nr77YrIx1s4z5YRXPz/8+VDYwNuXI+PQp02/c5vA5KhqkOnvQhJzNE4mBdEGPL
+         wGUm5UMzS7W22UOBoQy2mtU9lsPHwh5u96uR0aYW7HCYRCWqc3W1DzMuYit6q3rJ/SVi
+         Y9jB2M38jp3EkO61YysrX8v1Jy8THQe3KwBVk+qbIxiaNK10kF17IFWeL43+7Xa4Jhrd
+         xOzg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zwMUcY3XkwfnX4NVH144ezfRaJEZAmC6LlLKw8bGZ/0=;
+        b=PUekF+CkylkXUZh6MM/kM/1rfIrOT+TCylJZAAKCu2YH+hwuKaCOGzxzbbST++4pgI
+         ffgHJ57FvJviQa3ZcmuqWaEIYur1ChY4qv3bq7IOpfds0fdJcsDUaZoFd5vALbPE3s8e
+         XpPyC6IWPFr6kxZv8VHZcPPZNRKEcUMQ7zedouV/vJtldScDYlZK+5m+sJk82nNUUHcw
+         bVKy9iPYOiepuW207PYYfN2f9Ad67woVy4CtXV8StEIOQXIUUqKlPrfjlPlxHJ1aJJRA
+         9Ms0NJ0FS7LpodZx7bfaImEx8eHRg01+n/NAjGerrew4/pQtYKsiWioWfDwRAWZVKYSM
+         VnkA==
+X-Gm-Message-State: AOAM533hqagputjN49JzGSqPjou3WDO2p0Nl+Y1LoF8q0GYky3oM3rF0
+        hkgUZhn5CHYp1SVOajGHFR9xCBtI78nD0hSzzMI=
+X-Google-Smtp-Source: ABdhPJyUK9sQZdERJKWj0DrjCJzQEXyYhxrOw3onM62jepqc/OVjaSZ54eluYPtAuTIVOkjj9OpKTrmRm2nqMq0iQHk=
+X-Received: by 2002:a63:ec4c:: with SMTP id r12mr841807pgj.74.1601293575223;
+ Mon, 28 Sep 2020 04:46:15 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200920203207.25696-1-lists@wildgooses.com> <CAHp75Vd2uz-QrEFshUr=e719VBX2zYzvOhVC07BpHfvi0WDgOA@mail.gmail.com>
+ <deb07bad-2d84-723a-7237-2b625a3c4de8@wildgooses.com> <815ff3a6-8941-573d-36c0-36639f47dc04@wildgooses.com>
+In-Reply-To: <815ff3a6-8941-573d-36c0-36639f47dc04@wildgooses.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 28 Sep 2020 14:45:56 +0300
+Message-ID: <CAHp75Ve3APYLKzH9KvmTueEcTP-CZJS9MmLC+ZsHRT9brOxsEQ@mail.gmail.com>
+Subject: Re: [PATCH] gpio: gpio-amd-fch: Fix typo on define of AMD_FCH_GPIO_REG_GPIO55_DEVSLP0
+To:     Ed W <lists@wildgooses.com>
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Florian Eckert <fe@dev.tdt.de>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The MHU drives the signal using a 32-bit register, with all 32 bits
-logically ORed together. The MHU provides a set of registers to enable
-software to set, clear, and check the status of each of the bits of this
-register independently. The use of 32 bits for each interrupt line
-enables software to provide more information about the source of the
-interrupt. For example, each bit of the register can be associated with
-a type of event that can contribute to raising the interrupt.
+On Mon, Sep 28, 2020 at 1:33 PM Ed W <lists@wildgooses.com> wrote:
+>
+> Hi
+>
+> Could I get a final opinion (or signoff) on this patch please?
+>
+> The significant typo is the reference to "59", when the GPIO is actually 55
+>
+> According to the PCEngines schematic the names of two similar GPIOs are
+>     G59/DEVSLP1
+>     G55/DEVSLP
+>
+> The original developer named the second GPIO with a trailing 0, which doesn't seem unreasonable,
+> hence I just corrected the name to:
+>     AMD_FCH_GPIO_REG_GPIO55_DEVSLP0
+> However another acceptable name could be:
+>     AMD_FCH_GPIO_REG_GPIO55_DEVSLP
+>
+> If I could ask for some guidance and if necessary I will resubmit this patch? Enrico, do you have an
+> opinion?
+>
+> However, perhaps it's already acceptable as is?
 
-This patch adds a separate the MHU controller driver for doorbel mode
-of operation using the extended DT binding to add support the same.
+It's being accepted, and will be sent later to Linus.
 
-Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
----
- drivers/mailbox/Makefile     |   2 +-
- drivers/mailbox/arm_mhu_db.c | 359 +++++++++++++++++++++++++++++++++++
- 2 files changed, 360 insertions(+), 1 deletion(-)
- create mode 100644 drivers/mailbox/arm_mhu_db.c
+>
+> Kind regards
+>
+> Ed W
+>
+>
+> On 21/09/2020 09:40, Ed W wrote:
+> > On 21/09/2020 08:55, Andy Shevchenko wrote:
+> >> On Sun, Sep 20, 2020 at 11:33 PM Ed Wildgoose <lists@wildgooses.com> wrote:
+> >>> Schematics show that the GPIO number is 55 (not 59). Trivial typo.
+> >> Does it still DEVSLP0? Perhaps you need to drop that part as well.
+> >>
+> >> ...
+> >
+> >
+> > In the PCEngines schematic it's labelled as "G55/DEVSLP" (no 0)
+> >
+> > (In contrast G59 is labelled "G59/DEVSLP1")
+> >
+> > What is the quorum opinion on name?
+> >
+> > Thanks
+> >
+> > Ed W
+> >
+> >
+> >>
+> >>>   #define APU2_GPIO_REG_LED3             AMD_FCH_GPIO_REG_GPIO59_DEVSLP1
+> >>>   #define APU2_GPIO_REG_MODESW           AMD_FCH_GPIO_REG_GPIO32_GE1
+> >>>   #define APU2_GPIO_REG_SIMSWAP          AMD_FCH_GPIO_REG_GPIO33_GE2
+> >>> -#define APU2_GPIO_REG_MPCIE2           AMD_FCH_GPIO_REG_GPIO59_DEVSLP0
+> >>> +#define APU2_GPIO_REG_MPCIE2           AMD_FCH_GPIO_REG_GPIO55_DEVSLP0
+> >>>   #define APU2_GPIO_REG_MPCIE3           AMD_FCH_GPIO_REG_GPIO51
+> >>>
+> >>>   /* Order in which the GPIO lines are defined in the register list */
+> >>> diff --git a/include/linux/platform_data/gpio/gpio-amd-fch.h
+> >>> b/include/linux/platform_data/gpio/gpio-amd-fch.h
+> >>> index 9e46678ed..255d51c9d 100644
+> >>> --- a/include/linux/platform_data/gpio/gpio-amd-fch.h
+> >>> +++ b/include/linux/platform_data/gpio/gpio-amd-fch.h
+> >>> @@ -19,7 +19,7 @@
+> >>>   #define AMD_FCH_GPIO_REG_GPIO49                0x40
+> >>>   #define AMD_FCH_GPIO_REG_GPIO50                0x41
+> >>>   #define AMD_FCH_GPIO_REG_GPIO51                0x42
+> >>> -#define AMD_FCH_GPIO_REG_GPIO59_DEVSLP0        0x43
+> >>> +#define AMD_FCH_GPIO_REG_GPIO55_DEVSLP0        0x43
+> >>>   #define AMD_FCH_GPIO_REG_GPIO57                0x44
+> >>>   #define AMD_FCH_GPIO_REG_GPIO58                0x45
+> >>>   #define AMD_FCH_GPIO_REG_GPIO59_DEVSLP1        0x46
+> >>
+> >
+>
 
-diff --git a/drivers/mailbox/Makefile b/drivers/mailbox/Makefile
-index 60d224b723a1..2e06e02b2e03 100644
---- a/drivers/mailbox/Makefile
-+++ b/drivers/mailbox/Makefile
-@@ -5,7 +5,7 @@ obj-$(CONFIG_MAILBOX)		+= mailbox.o
- 
- obj-$(CONFIG_MAILBOX_TEST)	+= mailbox-test.o
- 
--obj-$(CONFIG_ARM_MHU)	+= arm_mhu.o
-+obj-$(CONFIG_ARM_MHU)	+= arm_mhu.o arm_mhu_db.o
- 
- obj-$(CONFIG_IMX_MBOX)	+= imx-mailbox.o
- 
-diff --git a/drivers/mailbox/arm_mhu_db.c b/drivers/mailbox/arm_mhu_db.c
-new file mode 100644
-index 000000000000..ef5fba4ed54c
---- /dev/null
-+++ b/drivers/mailbox/arm_mhu_db.c
-@@ -0,0 +1,359 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (C) 2013-2015 Fujitsu Semiconductor Ltd.
-+ * Copyright (C) 2015 Linaro Ltd.
-+ * Based on ARM MHU driver by Jassi Brar <jaswinder.singh@linaro.org>
-+ * Copyright (C) 2020 ARM Ltd.
-+ */
-+
-+#include <linux/amba/bus.h>
-+#include <linux/device.h>
-+#include <linux/err.h>
-+#include <linux/interrupt.h>
-+#include <linux/io.h>
-+#include <linux/kernel.h>
-+#include <linux/mailbox_controller.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/of_device.h>
-+
-+#define INTR_STAT_OFS	0x0
-+#define INTR_SET_OFS	0x8
-+#define INTR_CLR_OFS	0x10
-+
-+#define MHU_LP_OFFSET	0x0
-+#define MHU_HP_OFFSET	0x20
-+#define MHU_SEC_OFFSET	0x200
-+#define TX_REG_OFFSET	0x100
-+
-+#define MHU_CHANS	3	/* Secure, Non-Secure High and Low Priority */
-+#define MHU_CHAN_MAX	20	/* Max channels to save on unused RAM */
-+#define MHU_NUM_DOORBELLS	32
-+
-+struct mhu_db_link {
-+	unsigned int irq;
-+	void __iomem *tx_reg;
-+	void __iomem *rx_reg;
-+};
-+
-+struct arm_mhu {
-+	void __iomem *base;
-+	struct mhu_db_link mlink[MHU_CHANS];
-+	struct mbox_controller mbox;
-+	struct device *dev;
-+};
-+
-+/**
-+ * ARM MHU Mailbox allocated channel information
-+ *
-+ * @mhu: Pointer to parent mailbox device
-+ * @pchan: Physical channel within which this doorbell resides in
-+ * @doorbell: doorbell number pertaining to this channel
-+ */
-+struct mhu_db_channel {
-+	struct arm_mhu *mhu;
-+	unsigned int pchan;
-+	unsigned int doorbell;
-+};
-+
-+static inline struct mbox_chan *
-+mhu_db_mbox_to_channel(struct mbox_controller *mbox, unsigned int pchan,
-+		       unsigned int doorbell)
-+{
-+	int i;
-+	struct mhu_db_channel *chan_info;
-+
-+	for (i = 0; i < mbox->num_chans; i++) {
-+		chan_info = mbox->chans[i].con_priv;
-+		if (chan_info && chan_info->pchan == pchan &&
-+		    chan_info->doorbell == doorbell)
-+			return &mbox->chans[i];
-+	}
-+
-+	dev_err(mbox->dev,
-+		"Channel not registered: physical channel: %d doorbell: %d\n",
-+		pchan, doorbell);
-+
-+	return NULL;
-+}
-+
-+static void mhu_db_mbox_clear_irq(struct mbox_chan *chan)
-+{
-+	struct mhu_db_channel *chan_info = chan->con_priv;
-+	void __iomem *base = chan_info->mhu->mlink[chan_info->pchan].rx_reg;
-+
-+	writel_relaxed(BIT(chan_info->doorbell), base + INTR_CLR_OFS);
-+}
-+
-+static unsigned int mhu_db_mbox_irq_to_pchan_num(struct arm_mhu *mhu, int irq)
-+{
-+	unsigned int pchan;
-+
-+	for (pchan = 0; pchan < MHU_CHANS; pchan++)
-+		if (mhu->mlink[pchan].irq == irq)
-+			break;
-+	return pchan;
-+}
-+
-+static struct mbox_chan *
-+mhu_db_mbox_irq_to_channel(struct arm_mhu *mhu, unsigned int pchan)
-+{
-+	unsigned long bits;
-+	unsigned int doorbell;
-+	struct mbox_chan *chan = NULL;
-+	struct mbox_controller *mbox = &mhu->mbox;
-+	void __iomem *base = mhu->mlink[pchan].rx_reg;
-+
-+	bits = readl_relaxed(base + INTR_STAT_OFS);
-+	if (!bits)
-+		/* No IRQs fired in specified physical channel */
-+		return NULL;
-+
-+	/* An IRQ has fired, find the associated channel */
-+	for (doorbell = 0; bits; doorbell++) {
-+		if (!test_and_clear_bit(doorbell, &bits))
-+			continue;
-+
-+		chan = mhu_db_mbox_to_channel(mbox, pchan, doorbell);
-+		if (chan)
-+			break;
-+	}
-+
-+	return chan;
-+}
-+
-+static irqreturn_t mhu_db_mbox_rx_handler(int irq, void *data)
-+{
-+	struct mbox_chan *chan;
-+	struct arm_mhu *mhu = data;
-+	unsigned int pchan = mhu_db_mbox_irq_to_pchan_num(mhu, irq);
-+
-+	while (NULL != (chan = mhu_db_mbox_irq_to_channel(mhu, pchan))) {
-+		mbox_chan_received_data(chan, NULL);
-+		mhu_db_mbox_clear_irq(chan);
-+	}
-+
-+	return IRQ_HANDLED;
-+}
-+
-+static bool mhu_db_last_tx_done(struct mbox_chan *chan)
-+{
-+	struct mhu_db_channel *chan_info = chan->con_priv;
-+	void __iomem *base = chan_info->mhu->mlink[chan_info->pchan].tx_reg;
-+
-+	if (readl_relaxed(base + INTR_STAT_OFS) & BIT(chan_info->doorbell))
-+		return false;
-+
-+	return true;
-+}
-+
-+static int mhu_db_send_data(struct mbox_chan *chan, void *data)
-+{
-+	struct mhu_db_channel *chan_info = chan->con_priv;
-+	void __iomem *base = chan_info->mhu->mlink[chan_info->pchan].tx_reg;
-+
-+	/* Send event to co-processor */
-+	writel_relaxed(BIT(chan_info->doorbell), base + INTR_SET_OFS);
-+
-+	return 0;
-+}
-+
-+static int mhu_db_startup(struct mbox_chan *chan)
-+{
-+	mhu_db_mbox_clear_irq(chan);
-+	return 0;
-+}
-+
-+static void mhu_db_shutdown(struct mbox_chan *chan)
-+{
-+	struct mhu_db_channel *chan_info = chan->con_priv;
-+	struct mbox_controller *mbox = &chan_info->mhu->mbox;
-+	int i;
-+
-+	for (i = 0; i < mbox->num_chans; i++)
-+		if (chan == &mbox->chans[i])
-+			break;
-+
-+	if (mbox->num_chans == i) {
-+		dev_warn(mbox->dev, "Request to free non-existent channel\n");
-+		return;
-+	}
-+
-+	/* Reset channel */
-+	mhu_db_mbox_clear_irq(chan);
-+	chan->con_priv = NULL;
-+}
-+
-+static struct mbox_chan *mhu_db_mbox_xlate(struct mbox_controller *mbox,
-+					   const struct of_phandle_args *spec)
-+{
-+	struct arm_mhu *mhu = dev_get_drvdata(mbox->dev);
-+	struct mhu_db_channel *chan_info;
-+	struct mbox_chan *chan = NULL;
-+	unsigned int pchan = spec->args[0];
-+	unsigned int doorbell = spec->args[1];
-+	int i;
-+
-+	/* Bounds checking */
-+	if (pchan >= MHU_CHANS || doorbell >= MHU_NUM_DOORBELLS) {
-+		dev_err(mbox->dev,
-+			"Invalid channel requested pchan: %d doorbell: %d\n",
-+			pchan, doorbell);
-+		return ERR_PTR(-EINVAL);
-+	}
-+
-+	for (i = 0; i < mbox->num_chans; i++) {
-+		chan_info = mbox->chans[i].con_priv;
-+
-+		/* Is requested channel free? */
-+		if (chan_info &&
-+		    mbox->dev == chan_info->mhu->dev &&
-+		    pchan == chan_info->pchan &&
-+		    doorbell == chan_info->doorbell) {
-+			dev_err(mbox->dev, "Channel in use\n");
-+			return ERR_PTR(-EBUSY);
-+		}
-+
-+		/*
-+		 * Find the first free slot, then continue checking
-+		 * to see if requested channel is in use
-+		 */
-+		if (!chan && !chan_info)
-+			chan = &mbox->chans[i];
-+	}
-+
-+	if (!chan) {
-+		dev_err(mbox->dev, "No free channels left\n");
-+		return ERR_PTR(-EBUSY);
-+	}
-+
-+	chan_info = devm_kzalloc(mbox->dev, sizeof(*chan_info), GFP_KERNEL);
-+	if (!chan_info)
-+		return ERR_PTR(-ENOMEM);
-+
-+	chan_info->mhu = mhu;
-+	chan_info->pchan = pchan;
-+	chan_info->doorbell = doorbell;
-+
-+	chan->con_priv = chan_info;
-+
-+	dev_dbg(mbox->dev, "mbox: created channel phys: %d doorbell: %d\n",
-+		pchan, doorbell);
-+
-+	return chan;
-+}
-+
-+static const struct mbox_chan_ops mhu_db_ops = {
-+	.send_data = mhu_db_send_data,
-+	.startup = mhu_db_startup,
-+	.shutdown = mhu_db_shutdown,
-+	.last_tx_done = mhu_db_last_tx_done,
-+};
-+
-+static int mhu_db_probe(struct amba_device *adev, const struct amba_id *id)
-+{
-+	u32 cell_count;
-+	int i, err, max_chans;
-+	struct arm_mhu *mhu;
-+	struct mbox_chan *chans;
-+	struct device *dev = &adev->dev;
-+	struct device_node *np = dev->of_node;
-+	int mhu_reg[MHU_CHANS] = {
-+		MHU_LP_OFFSET, MHU_HP_OFFSET, MHU_SEC_OFFSET,
-+	};
-+
-+	if (!of_device_is_compatible(np, "arm,mhu-doorbell"))
-+		return -ENODEV;
-+
-+	err = of_property_read_u32(np, "#mbox-cells", &cell_count);
-+	if (err) {
-+		dev_err(dev, "failed to read #mbox-cells in '%pOF'\n", np);
-+		return err;
-+	}
-+
-+	if (cell_count == 2) {
-+		max_chans = MHU_CHAN_MAX;
-+	} else {
-+		dev_err(dev, "incorrect value of #mbox-cells in '%pOF'\n", np);
-+		return -EINVAL;
-+	}
-+
-+	mhu = devm_kzalloc(dev, sizeof(*mhu), GFP_KERNEL);
-+	if (!mhu)
-+		return -ENOMEM;
-+
-+	mhu->base = devm_ioremap_resource(dev, &adev->res);
-+	if (IS_ERR(mhu->base)) {
-+		dev_err(dev, "ioremap failed\n");
-+		return PTR_ERR(mhu->base);
-+	}
-+
-+	chans = devm_kcalloc(dev, max_chans, sizeof(*chans), GFP_KERNEL);
-+	if (!chans)
-+		return -ENOMEM;
-+
-+	mhu->dev = dev;
-+	mhu->mbox.dev = dev;
-+	mhu->mbox.chans = chans;
-+	mhu->mbox.num_chans = max_chans;
-+	mhu->mbox.txdone_irq = false;
-+	mhu->mbox.txdone_poll = true;
-+	mhu->mbox.txpoll_period = 1;
-+
-+	mhu->mbox.of_xlate = mhu_db_mbox_xlate;
-+	amba_set_drvdata(adev, mhu);
-+
-+	mhu->mbox.ops = &mhu_db_ops;
-+
-+	err = devm_mbox_controller_register(dev, &mhu->mbox);
-+	if (err) {
-+		dev_err(dev, "Failed to register mailboxes %d\n", err);
-+		return err;
-+	}
-+
-+	for (i = 0; i < MHU_CHANS; i++) {
-+		int irq = mhu->mlink[i].irq = adev->irq[i];
-+
-+		if (irq <= 0) {
-+			dev_dbg(dev, "No IRQ found for Channel %d\n", i);
-+			continue;
-+		}
-+
-+		mhu->mlink[i].rx_reg = mhu->base + mhu_reg[i];
-+		mhu->mlink[i].tx_reg = mhu->mlink[i].rx_reg + TX_REG_OFFSET;
-+
-+		err = devm_request_threaded_irq(dev, irq, NULL,
-+						mhu_db_mbox_rx_handler,
-+						IRQF_ONESHOT, "mhu_db_link", mhu);
-+		if (err) {
-+			dev_err(dev, "Can't claim IRQ %d\n", irq);
-+			mbox_controller_unregister(&mhu->mbox);
-+			return err;
-+		}
-+	}
-+
-+	dev_info(dev, "ARM MHU Doorbell mailbox registered\n");
-+	return 0;
-+}
-+
-+static struct amba_id mhu_ids[] = {
-+	{
-+		.id	= 0x1bb098,
-+		.mask	= 0xffffff,
-+	},
-+	{ 0, 0 },
-+};
-+MODULE_DEVICE_TABLE(amba, mhu_ids);
-+
-+static struct amba_driver arm_mhu_db_driver = {
-+	.drv = {
-+		.name	= "mhu-doorbell",
-+	},
-+	.id_table	= mhu_ids,
-+	.probe		= mhu_db_probe,
-+};
-+module_amba_driver(arm_mhu_db_driver);
-+
-+MODULE_LICENSE("GPL v2");
-+MODULE_DESCRIPTION("ARM MHU Doorbell Driver");
-+MODULE_AUTHOR("Sudeep Holla <sudeep.holla@arm.com>");
+
 -- 
-2.17.1
-
+With Best Regards,
+Andy Shevchenko
