@@ -2,160 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3D1027A5CC
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 05:38:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38F4727A5CE
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 05:41:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726522AbgI1Dix (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 23:38:53 -0400
-Received: from mga09.intel.com ([134.134.136.24]:2207 "EHLO mga09.intel.com"
+        id S1726547AbgI1DlR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 23:41:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53376 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726328AbgI1Diw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Sep 2020 23:38:52 -0400
-IronPort-SDR: CwQdDTtLZMSCIC5pEv7rHed8Hm4QCvYq3g8DMYEw6p7kWPNfYJZLX1zdNtdVi6Jo4XVgvAzLZ2
- +FSQqa105loA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9757"; a="162821908"
-X-IronPort-AV: E=Sophos;i="5.77,312,1596524400"; 
-   d="scan'208";a="162821908"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2020 20:38:52 -0700
-IronPort-SDR: NV693pBxXF8iAtTv683mtj4ZikTsIhoz1VcR8ga4XDN4ByAE5UIb7frihh+hBsAUEWuF1l7gCU
- xYGFXnpIIerg==
-X-IronPort-AV: E=Sophos;i="5.77,312,1596524400"; 
-   d="scan'208";a="488392698"
-Received: from shuo-intel.sh.intel.com (HELO localhost) ([10.239.154.30])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2020 20:38:48 -0700
-Date:   Mon, 28 Sep 2020 11:38:46 +0800
-From:   Shuo A Liu <shuo.a.liu@intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Yu Wang <yu1.wang@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Yakui Zhao <yakui.zhao@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Fengwei Yin <fengwei.yin@intel.com>,
-        Zhi Wang <zhi.a.wang@intel.com>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>
-Subject: Re: [PATCH v4 04/17] x86/acrn: Introduce hypercall interfaces
-Message-ID: <20200928033846.GB1057@shuo-intel.sh.intel.com>
-References: <20200922114311.38804-1-shuo.a.liu@intel.com>
- <20200922114311.38804-5-shuo.a.liu@intel.com>
- <20200927105152.GG88650@kroah.com>
- <20200927105314.GH88650@kroah.com>
+        id S1726328AbgI1DlQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Sep 2020 23:41:16 -0400
+Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3E09E20B80;
+        Mon, 28 Sep 2020 03:41:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601264476;
+        bh=QTlHXalHUZzzoBUIyhBOZL2ALMC9Qtv9NgtUk/coLoM=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=LxRNw1BgfbXuGoXBHDszN1IdgfoEaZLBcCyVSgbMMNTyS+bHQAVzktioJ/F92u7lW
+         iCvG20bR8S5wGK3Ktbe5b0iyRJCaLCF1RYzNkFWacOSPOvfcFPiYdlNiRrqG4pIMyn
+         pXGgxMiRtsZbtbbzIcihWn1vBAxPhzY4RqBd/VOI=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 0C9803520FBE; Sun, 27 Sep 2020 20:41:16 -0700 (PDT)
+Date:   Sun, 27 Sep 2020 20:41:16 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Neeraj Upadhyay <neeraju@codeaurora.org>, josh@joshtriplett.org,
+        rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
+        jiangshanlai@gmail.com, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rcu: Clarify nocb kthreads naming in RCU_NOCB_CPU config
+Message-ID: <20200928034116.GM29330@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <1600929250-20344-1-git-send-email-neeraju@codeaurora.org>
+ <20200928001342.GD500818@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200927105314.GH88650@kroah.com>
-User-Agent: Mutt/1.8.3 (2017-05-23)
+In-Reply-To: <20200928001342.GD500818@google.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun 27.Sep'20 at 12:53:14 +0200, Greg Kroah-Hartman wrote:
->On Sun, Sep 27, 2020 at 12:51:52PM +0200, Greg Kroah-Hartman wrote:
->> On Tue, Sep 22, 2020 at 07:42:58PM +0800, shuo.a.liu@intel.com wrote:
->> > From: Shuo Liu <shuo.a.liu@intel.com>
->> >
->> > The Service VM communicates with the hypervisor via conventional
->> > hypercalls. VMCALL instruction is used to make the hypercalls.
->> >
->> > ACRN hypercall ABI:
->> >   * Hypercall number is in R8 register.
->> >   * Up to 2 parameters are in RDI and RSI registers.
->> >   * Return value is in RAX register.
->> >
->> > Introduce the ACRN hypercall interfaces. Because GCC doesn't support R8
->> > register as direct register constraints, here are two ways to use R8 in
->> > extended asm:
->> >   1) use explicit register variable as input
->> >   2) use supported constraint as input with a explicit MOV to R8 in
->> >      beginning of asm
->> >
->> > The number of instructions of above two ways are same.
->> > Asm code from 1)
->> >   38:   41 b8 00 00 00 80       mov    $0x80000000,%r8d
->> >   3e:   48 89 c7                mov    %rax,%rdi
->> >   41:   0f 01 c1                vmcall
->> > Here, writes to the lower dword (%r8d) clear the upper dword of %r8 when
->> > the CPU is in 64-bit mode.
->> >
->> > Asm code from 2)
->> >   38:   48 89 c7                mov    %rax,%rdi
->> >   3b:   49 b8 00 00 00 80 00    movabs $0x80000000,%r8
->> >   42:   00 00 00
->> >   45:   0f 01 c1                vmcall
->> >
->> > Choose 1) for code simplicity and a little bit of code size
->> > optimization.
->> >
->> > Originally-by: Yakui Zhao <yakui.zhao@intel.com>
->> > Signed-off-by: Shuo Liu <shuo.a.liu@intel.com>
->> > Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
->> > Cc: Dave Hansen <dave.hansen@intel.com>
->> > Cc: Sean Christopherson <sean.j.christopherson@intel.com>
->> > Cc: Dan Williams <dan.j.williams@intel.com>
->> > Cc: Fengwei Yin <fengwei.yin@intel.com>
->> > Cc: Zhi Wang <zhi.a.wang@intel.com>
->> > Cc: Zhenyu Wang <zhenyuw@linux.intel.com>
->> > Cc: Yu Wang <yu1.wang@intel.com>
->> > Cc: Reinette Chatre <reinette.chatre@intel.com>
->> > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->> > ---
->> >  arch/x86/include/asm/acrn.h | 57 +++++++++++++++++++++++++++++++++++++
->> >  1 file changed, 57 insertions(+)
->> >
->> > diff --git a/arch/x86/include/asm/acrn.h b/arch/x86/include/asm/acrn.h
->> > index a2d4aea3a80d..23a93b87edeb 100644
->> > --- a/arch/x86/include/asm/acrn.h
->> > +++ b/arch/x86/include/asm/acrn.h
->> > @@ -14,4 +14,61 @@ void acrn_setup_intr_handler(void (*handler)(void));
->> >  void acrn_remove_intr_handler(void);
->> >  bool acrn_is_privileged_vm(void);
->> >
->> > +/*
->> > + * Hypercalls for ACRN
->> > + *
->> > + * - VMCALL instruction is used to implement ACRN hypercalls.
->> > + * - ACRN hypercall ABI:
->> > + *   - Hypercall number is passed in R8 register.
->> > + *   - Up to 2 arguments are passed in RDI, RSI.
->> > + *   - Return value will be placed in RAX.
->> > + */
->> > +static inline long acrn_hypercall0(unsigned long hcall_id)
->> > +{
->> > +	register long r8 asm("r8");
->> > +	long result;
->> > +
->> > +	/* Nothing can come between the r8 assignment and the asm: */
->> > +	r8 = hcall_id;
->> > +	asm volatile("vmcall\n\t"
->> > +		     : "=a" (result)
->> > +		     : "r" (r8)
->> > +		     : );
->>
->> What keeps an interrupt from happening between the r8 assignment and the
->> asm: ?
+On Sun, Sep 27, 2020 at 08:13:42PM -0400, Joel Fernandes wrote:
+> On Thu, Sep 24, 2020 at 12:04:10PM +0530, Neeraj Upadhyay wrote:
+> > Clarify the "x" in rcuox/N naming in RCU_NOCB_CPU config
+> > description.
+> > 
+> 
+> Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 
-Dave gave a good explanation in another email. I will apply his better
-comment that "No other C code can come between this r8 assignment and the
-inline asm".
+Thank you, I will apply your Reviewed-by on the next rebase.
 
->>
->> Is this something that most hypercalls need to handle?  I don't see
->> other ones needing this type of thing, is it just because of how these
->> are defined?
->
->Ah, the changelog above explains this.  You should put that in the code
->itself, as a comment, otherwise we will not know this at all in 5
->years, when gcc is changed to allow r8 access :)
+						Thanx, Paul
 
-OK. I will copy that into code as well.
-
-Thanks
-shuo
+> thanks,
+> 
+>  - Joel
+> 
+> > Signed-off-by: Neeraj Upadhyay <neeraju@codeaurora.org>
+> > ---
+> >  kernel/rcu/Kconfig | 11 ++++++-----
+> >  1 file changed, 6 insertions(+), 5 deletions(-)
+> > 
+> > diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
+> > index b71e21f..5b22747 100644
+> > --- a/kernel/rcu/Kconfig
+> > +++ b/kernel/rcu/Kconfig
+> > @@ -227,11 +227,12 @@ config RCU_NOCB_CPU
+> >  	  specified at boot time by the rcu_nocbs parameter.  For each
+> >  	  such CPU, a kthread ("rcuox/N") will be created to invoke
+> >  	  callbacks, where the "N" is the CPU being offloaded, and where
+> > -	  the "p" for RCU-preempt (PREEMPTION kernels) and "s" for RCU-sched
+> > -	  (!PREEMPTION kernels).  Nothing prevents this kthread from running
+> > -	  on the specified CPUs, but (1) the kthreads may be preempted
+> > -	  between each callback, and (2) affinity or cgroups can be used
+> > -	  to force the kthreads to run on whatever set of CPUs is desired.
+> > +	  the "x" is "p" for RCU-preempt (PREEMPTION kernels) and "s" for
+> > +	  RCU-sched (!PREEMPTION kernels).  Nothing prevents this kthread
+> > +	  from running on the specified CPUs, but (1) the kthreads may be
+> > +	  preempted between each callback, and (2) affinity or cgroups can
+> > +	  be used to force the kthreads to run on whatever set of CPUs is
+> > +	  desired.
+> >  
+> >  	  Say Y here if you want to help to debug reduced OS jitter.
+> >  	  Say N here if you are unsure.
+> > -- 
+> > The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> > a Linux Foundation Collaborative Project
+> > 
