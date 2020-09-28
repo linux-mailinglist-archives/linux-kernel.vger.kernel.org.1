@@ -2,109 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2241A27B73F
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 23:37:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5C8A27B747
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 23:41:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727127AbgI1VhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 17:37:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49656 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726944AbgI1VhF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 17:37:05 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 786F7C0613D8;
-        Mon, 28 Sep 2020 14:36:59 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id h23so337488pjv.5;
-        Mon, 28 Sep 2020 14:36:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=6l6hKSmY3TpoEATBMM/LapAftYRk779XqE24cBia0y0=;
-        b=bEPobjZ4DsVmnkD/yvBrB3YsKi8EBvuTvq5iOsiKzT502lySqurkXuu25fn5VcyGoz
-         Ifd2WQbnnkC6Zu+FBJkqjbAPbbsuJ8fFUFa+IoiBMivvM5SbKWIf0Y4r1tlc/MT8KrGy
-         K3VwL+G5aVYucyJbpQ9UcAf6d7nKYtCu8b4Fkrlal09swQj+YAAnM2Hp3JrtjO+Mv9/e
-         BSUxIReu8bTwYpv2lKARoRSspBAH/IblZTnEqIfiltFh6Zfx/keqXjylwcZDeCY67Hdb
-         PnvLFALyI5IfVhjtKt/14jApbcMV45GOyPu6CfV+AY3MHFgaZDonKokrWJueqN5J+i/y
-         sQIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=6l6hKSmY3TpoEATBMM/LapAftYRk779XqE24cBia0y0=;
-        b=jzP/RLNdlygm7SjZiygzc4Hr+12wL8j2i+UNRqP4AVdpDnHjk+GSB1b1Mn7a1m26/Q
-         wVc/5MzjZhx5BBE/3nkUEhETg+8WJFODiWJVSMW1JWrCDL7NHkZPC9ampfcpbxttGL5e
-         lLjtHkSFvBKjA5wSDrVPMfGP5bWuBLWk86EdCKELt1S9IrSbgrDaOFjhxTQeAQfVtAk4
-         PNMVrmH23oQbYaxIiLPWZrjCqhWJ54eh0uTICXEcnRdPbIF3xw1HIrwAPTf4KTgdI6sP
-         8RRp5C82b1WWzkueW/zdJpWvZbi19hRz2/yKhj4h0Ut7+FjCW7I4WEFqTBSKdyrCNRSQ
-         W+XA==
-X-Gm-Message-State: AOAM532BU30ffZcdIJjGX3XlklHsgld/lvYKj2kD00yOn1eZrvzt6e5S
-        7WTNljgNVYZRMPiKdGoOWSA=
-X-Google-Smtp-Source: ABdhPJz92L8+8E+kFywU9N5aOFhYEwv4F+POgIOP/ZuQa6bkCsajxBmrEBosufsPcnIY0lR4NLycpA==
-X-Received: by 2002:a17:90a:ed88:: with SMTP id k8mr1008318pjy.232.1601329019072;
-        Mon, 28 Sep 2020 14:36:59 -0700 (PDT)
-Received: from jacob-builder.jf.intel.com (jfdmzpr04-ext.jf.intel.com. [134.134.137.73])
-        by smtp.gmail.com with ESMTPSA id l11sm2220864pjf.17.2020.09.28.14.36.58
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 28 Sep 2020 14:36:58 -0700 (PDT)
-From:   Jacob Pan <jacob.pan.linux@gmail.com>
-X-Google-Original-From: Jacob Pan <jacob.jun.pan@linux.intel.com>
-To:     iommu@lists.linux-foundation.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        "Lu Baolu" <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     linux-api@vger.kernel.org,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Yi Liu <yi.l.liu@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>, Wu Hao <hao.wu@intel.com>,
-        Yi Sun <yi.y.sun@intel.com>, Dave Jiang <dave.jiang@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>
-Subject: [PATCH v3 14/14] iommu/vt-d: Store guest PASID during bind
-Date:   Mon, 28 Sep 2020 14:38:41 -0700
-Message-Id: <1601329121-36979-15-git-send-email-jacob.jun.pan@linux.intel.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1601329121-36979-1-git-send-email-jacob.jun.pan@linux.intel.com>
-References: <1601329121-36979-1-git-send-email-jacob.jun.pan@linux.intel.com>
+        id S1726959AbgI1VlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 17:41:15 -0400
+Received: from mga17.intel.com ([192.55.52.151]:35328 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726393AbgI1VlP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 17:41:15 -0400
+IronPort-SDR: oX4oF4+CrrUyFzG1ZyRmRKcGI8LLr1Z9uLtj0HLneRecYUJ4SD1ueIW7qbzXNpw9B6xOYa+DxD
+ JZUa5jyMygGQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9758"; a="142085671"
+X-IronPort-AV: E=Sophos;i="5.77,315,1596524400"; 
+   d="scan'208";a="142085671"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 14:41:14 -0700
+IronPort-SDR: OTd+iPriw87D2GLviynEY38Vem1m+YTu3mEbExIyscXq0e9DAgdajkULvqSVYb8toZqZ7/2PP5
+ 6NFWt47eW7gw==
+X-IronPort-AV: E=Sophos;i="5.77,315,1596524400"; 
+   d="scan'208";a="488772542"
+Received: from jlasecki-mobl2.ger.corp.intel.com (HELO localhost) ([10.252.49.78])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 14:41:07 -0700
+Date:   Tue, 29 Sep 2020 00:41:05 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     "H.J. Lu" <hjl.tools@gmail.com>
+Cc:     Andrew Cooper <andrew.cooper3@citrix.com>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        linux-sgx@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Cedric Xing <cedric.xing@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        andriy.shevchenko@linux.intel.com, asapek@google.com,
+        Borislav Petkov <bp@alien8.de>, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        Dave Hansen <dave.hansen@intel.com>,
+        "Huang, Haitao" <haitao.huang@intel.com>, josh@joshtriplett.org,
+        kai.huang@intel.com, kai.svahn@intel.com, kmoy@google.com,
+        Christian Ludloff <ludloff@google.com>,
+        Andy Lutomirski <luto@kernel.org>, nhorman@redhat.com,
+        npmccallum@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
+        Thomas Gleixner <tglx@linutronix.de>, yaozhangx@google.com,
+        Yu-cheng Yu <yu-cheng.yu@intel.com>
+Subject: Re: [PATCH v38 21/24] x86/vdso: Implement a vDSO for Intel SGX
+ enclave call
+Message-ID: <20200928214105.GD2705@linux.intel.com>
+References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
+ <20200915112842.897265-22-jarkko.sakkinen@linux.intel.com>
+ <721ca14e-21df-3df1-7bef-0b00d0ff90c3@citrix.com>
+ <20200928005842.GC6704@linux.intel.com>
+ <85bc15d5-93cd-e332-ae9a-1e1e66e1181d@citrix.com>
+ <CAMe9rOpzXW0cSD=9E7drGEHH=pcm_NqvPiaR0pBJzYLeAt0_3g@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMe9rOpzXW0cSD=9E7drGEHH=pcm_NqvPiaR0pBJzYLeAt0_3g@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-IOASID core maintains the guest-host mapping in the form of SPID and
-IOASID. This patch assigns the guest PASID (if valid) as SPID while
-binding guest page table with a host PASID. This mapping will be used
-for lookup and notifications.
+On Mon, Sep 28, 2020 at 11:07:47AM -0700, H.J. Lu wrote:
+> On Mon, Sep 28, 2020 at 9:44 AM Andrew Cooper <andrew.cooper3@citrix.com> wrote:
+> >
+> > On 28/09/2020 01:58, Jarkko Sakkinen wrote:
+> > > On Fri, Sep 25, 2020 at 07:23:59PM +0100, Andrew Cooper wrote:
+> > >> On 15/09/2020 12:28, Jarkko Sakkinen wrote:
+> > >>> diff --git a/arch/x86/entry/vdso/vsgx_enter_enclave.S b/arch/x86/entry/vdso/vsgx_enter_enclave.S
+> > >>> new file mode 100644
+> > >>> index 000000000000..adbd59d41517
+> > >>> --- /dev/null
+> > >>> +++ b/arch/x86/entry/vdso/vsgx_enter_enclave.S
+> > >>> @@ -0,0 +1,157 @@
+> > >>> +SYM_FUNC_START(__vdso_sgx_enter_enclave)
+> > >>> <snip>
+> > >>> +.Lretpoline:
+> > >>> +   call    2f
+> > >>> +1: pause
+> > >>> +   lfence
+> > >>> +   jmp     1b
+> > >>> +2: mov     %rax, (%rsp)
+> > >>> +   ret
+> > >> I hate to throw further spanners in the work, but this is not compatible
+> > >> with CET, and the user shadow stack work in progress.
+> > > CET goes beyond my expertise. Can you describe, at least rudimentary,
+> > > how this code is not compatible?
+> >
+> > CET Shadow Stacks detect attacks which modify the return address on the
+> > stack.
+> >
+> > Retpoline *is* a ROP gadget.  It really does modify the return address
+> > on the stack, even if its purpose is defensive (vs Spectre v2) rather
+> > than malicious.
+> >
+> > >> Whichever of these two large series lands first is going to inflict
+> > >> fixing this problem on the other.
+> > >>
+> > >> As the vdso text is global (to a first approximation), it must not be a
+> > >> retpoline if any other process is liable to want to use CET-SS.
+> > > Why is that?
+> >
+> > Because when CET-SS is enabled, the ret will suffer a #CP exception
+> > (return address on the stack not matching the one recorded in the shadow
+> > stack), which I presume/hope is wired into SIGSEGV.
+> >
+> 
+> Here is the CET compatible retpoline:
+> 
+> endbr64
+> /* Check if shadow stack is in use.  NB: R11 is the only usable
+>    scratch register for function calls.  */
+> xorl %r11d, %r11d
+> rdsspq %r11
+> testq %r11, %r11
+> jnz 3f
+> call 2f
+> 1:
+> pause
+> lfence
+> jmp 1b
+> 2:
+> mov %rax, (%rsp)
+> ret
+> 3:
+> /* Shadow stack is in use.  Make the indirect call.  */
+> call *%rax
+> ret
 
-Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
----
- drivers/iommu/intel/svm.c | 2 ++
- 1 file changed, 2 insertions(+)
+Right, so I have actually two alternatives: this and boot time patching:
 
-diff --git a/drivers/iommu/intel/svm.c b/drivers/iommu/intel/svm.c
-index 8f886718df83..e18f8b5af9ba 100644
---- a/drivers/iommu/intel/svm.c
-+++ b/drivers/iommu/intel/svm.c
-@@ -98,6 +98,7 @@ static inline bool intel_svm_capable(struct intel_iommu *iommu)
- static inline void intel_svm_drop_pasid(ioasid_t pasid)
- {
- 	ioasid_detach_data(pasid);
-+	ioasid_detach_spid(pasid);
- 	ioasid_put(NULL, pasid);
- }
- 
-@@ -425,6 +426,7 @@ int intel_svm_bind_gpasid(struct iommu_domain *domain, struct device *dev,
- 		if (data->flags & IOMMU_SVA_GPASID_VAL) {
- 			svm->gpasid = data->gpasid;
- 			svm->flags |= SVM_FLAG_GUEST_PASID;
-+			ioasid_attach_spid(data->hpasid, data->gpasid);
- 		}
- 		ioasid_attach_data(data->hpasid, svm);
- 		ioasid_get(NULL, svm->pasid);
--- 
-2.7.4
+https://lkml.org/lkml/2020/9/25/1122
 
+/Jarkko
