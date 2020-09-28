@@ -2,146 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBC8927A946
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 10:04:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 473C427A948
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 10:06:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726795AbgI1IEg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 04:04:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36862 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726461AbgI1IEg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 04:04:36 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E862C0613CE
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 01:04:36 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <sha@pengutronix.de>)
-        id 1kMo9B-0004KV-4N; Mon, 28 Sep 2020 10:04:33 +0200
-Received: from sha by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <sha@pengutronix.de>)
-        id 1kMo9A-0007bH-QZ; Mon, 28 Sep 2020 10:04:32 +0200
-Date:   Mon, 28 Sep 2020 10:04:32 +0200
-From:   Sascha Hauer <s.hauer@pengutronix.de>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Michael Walle <michael@walle.cc>, linux-spi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] spi: fsl-dspi: fix NULL pointer dereference
-Message-ID: <20200928080432.GC11648@pengutronix.de>
-References: <20200927224336.705-1-michael@walle.cc>
- <20200927232747.3jwr6mqql727etyz@skbuf>
+        id S1726573AbgI1IGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 04:06:14 -0400
+Received: from mail-am6eur05on2071.outbound.protection.outlook.com ([40.107.22.71]:30113
+        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725308AbgI1IGO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 04:06:14 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kA4GGf64Ogn6NsgdrXUo3zf1pseP0dWBJJ0iA8fgsPxk4+nwG7xWjDIadt30SIWUJWJ+WmOU/2XxaWrAbfIwVmPwpcyOxm/6YjqxcWnjZXHvqc/eEdykiFpe68ODJxbR0P4QnyEPLaBl17ankLka5CwYXws0JtXrsOKwP6hW8N9QgRxAZZHEddf//+LdVmZMl47YkqQB2tjyR4AubVFL2smFTEVL5C/ZOKFNCHETp8TERgJEqy5ORAnXCmr1czih0HqqN2/xnUhiNqAPNl672+UxsXO5eLs3CR76mNGnjxY2JMBHlj7ynBjcjA7jk+nWb6cqzVOCclrVwDMZRtsL6g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=cZ8jIIX11/Jy7Pob3cjz7SMIXiDxWR6zSmSZTQ3DfJI=;
+ b=gp6FCE+iTWuSmSZW9cteI8nS4ceVzZvXKMltOTjtrHhXqws4hncTgiwj6NKCcuuu8Z5w/++czgtm2qMIOmGALS1P+ii7R/i4++0yrG2KWG1eB+R4h5DiJUS7zRwB57Ia5r/WkXIklB79AXaCUZRBSmAsR0hvNnHT08HN2tr8/vKHDvRL0vvm24CPNuwxz+irn/igZW+UWMglxHMnX0Pbon7RYgyu2DXqOX0aXeeJPof2MLozVeCzDpGxBfotCDEIxchU+0Emdo8e+VkfR2MYEktcU2IOVSCrjSbHhJQ7IVlf++8w77zueFMR5Gwouy2a22k2QI55ddEDrW8IiblLYQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=cZ8jIIX11/Jy7Pob3cjz7SMIXiDxWR6zSmSZTQ3DfJI=;
+ b=pR5XbNr+ZfrzhNhDBID9jww9fHANtgO+8hGpxOGSYlqXMWFUZjvYxnHCNZ5p/piVUzMQ7CDYlR89mCKTaNHewf+00Zc7uzQLmW1wzny59sqYqDGLdmavoZclq1OmCkg1civVeyRI7LgfyLb5EmbyeXqa7w/KYOJBNQoZl+Jx0Sg=
+Received: from VE1PR04MB6638.eurprd04.prod.outlook.com (2603:10a6:803:119::15)
+ by VI1PR04MB4815.eurprd04.prod.outlook.com (2603:10a6:803:5d::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.21; Mon, 28 Sep
+ 2020 08:06:10 +0000
+Received: from VE1PR04MB6638.eurprd04.prod.outlook.com
+ ([fe80::ad7f:d95a:5413:a950]) by VE1PR04MB6638.eurprd04.prod.outlook.com
+ ([fe80::ad7f:d95a:5413:a950%3]) with mapi id 15.20.3412.029; Mon, 28 Sep 2020
+ 08:06:10 +0000
+From:   Robin Gong <yibin.gong@nxp.com>
+To:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        dl-linux-imx <linux-imx@nxp.com>, Adam Ford <aford173@gmail.com>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        Anson Huang <anson.huang@nxp.com>,
+        Peter Chen <peter.chen@nxp.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH 3/6] arm64: dts: imx8mm-evk: fix missing PMIC's interrupt
+ line pull-up
+Thread-Topic: [PATCH 3/6] arm64: dts: imx8mm-evk: fix missing PMIC's interrupt
+ line pull-up
+Thread-Index: AQHWlO+orzxSy6wcu0yvbSG+niNqx6l9sYXg
+Date:   Mon, 28 Sep 2020 08:06:10 +0000
+Message-ID: <VE1PR04MB6638D590D325B4CEABB4806B89350@VE1PR04MB6638.eurprd04.prod.outlook.com>
+References: <20200927165947.7317-1-krzk@kernel.org>
+ <20200927165947.7317-3-krzk@kernel.org>
+In-Reply-To: <20200927165947.7317-3-krzk@kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [119.31.174.67]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 74f8c27d-6807-4772-c4fd-08d863855c51
+x-ms-traffictypediagnostic: VI1PR04MB4815:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <VI1PR04MB4815FD12F25AA5488186059989350@VI1PR04MB4815.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:4303;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: pwoq93MEl1wSWGxcO2WhuBtBjSW1gMjXwkm4oiAaGdgUaeDNIGlvP+MFpCvTi04fw9BLvs4mO/wtHK1LByrHTVZbE0UxIsBFnz4pJ/XwYyBRPG0Ehvk5pd6QZtwXCZDZacdK0RNBzW21xF7bpZPKjWr0amRWg4CfrR7Qt4cbsxigbBUBg3V+eW5qb36k0+3wOvvb/qJnLTVXZ2/wLqU80OFqOnck7oO9o+TM1dAGdx0yLRYytACv8Ny1T5ZHkQIE6B1VV02xPx0q8B9rRkfIP0fmEZdZj/cPBz7Vvd4tvRbIeUtkZCYKcRb77VW3WwRDkKV9EuwTkpmzUNN7E9ujHTpwHH/mtPgTyjy5U2Yxfj8hGi3AYcAZtQufWDFr3OpQvy8E4V+20dJEk1m8H0/YFGTJCO85C54FCSBckePIu4AOROEFw/EmVGTNdIa3xlrN
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR04MB6638.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(396003)(346002)(376002)(136003)(366004)(6506007)(53546011)(478600001)(86362001)(110136005)(7696005)(186003)(33656002)(26005)(7416002)(8676002)(9686003)(2906002)(8936002)(66946007)(76116006)(71200400001)(316002)(66446008)(64756008)(66556008)(66476007)(5660300002)(55016002)(52536014)(32563001)(921003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: e9i6rTGWFvCvClMgkm4wC944TmD+60qCnf/krYddEdUVpUOOcvzKOnZ7FvFSIVKE7Tt1V3kFr3NEQEXgX01utP7WG3o82JawVJcsVAj7BwTH9LWXTM6BtmeU/zt92kQGMH6Jx9nNDVO9tfhz0KJCSR1qlQR84Wb21gGvwsVG0JTnm0hsuL570xBNa2b6rCy5B3Y+xcg2JYYXtVEwRnQgEo6rsRuONyudGXvVZx2tTWCWr6TK14WR6uhVI295gELSf06Q1PdK3PrYzjFXTtKTEaFvo6dXnA2Q1SaCMj2kXtOI+BJH+UffRI0NmkC1u7I6cMLXYS7T4ZcQitsCy0KPDldvawJV6nJnLbnjhRz4j70hsEPyeOzxslIYY85y2xA03iThnvRa5z+5qOykoOutIQwSRKO6My3zQFVKvqb05FKPgrFOpX8fZlTnOXpYl5hLcauwLISNoSbzQx3sw9MrtDUeYjzS8TOoQ5TtA83m2CCpiNN7RENxB83VugL8Pqp/1NWVj1wdfOvc79sx8YxCOULsMvTgMJzPp/kR26kS1AV/Ubh1uPVhOJmsABD3Hm3E9Vxq8JsvW7qH2Zd+2q9+C+G7sggHa3hEOmsMucH5zne9dzIMyDcJi7392iAOKtmVsQdgMQdi5GMaAhIS8GVygA==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200927232747.3jwr6mqql727etyz@skbuf>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 09:59:59 up 221 days, 15:30, 147 users,  load average: 0.00, 0.06,
- 0.10
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: sha@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: VE1PR04MB6638.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 74f8c27d-6807-4772-c4fd-08d863855c51
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Sep 2020 08:06:10.2388
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: GRK3uxwHEUALaLJAgrnG7Sd/ix8AYxV9bBzhQVC1Hg1X9jybwAyX3QKgTsQnAAWY0SDAMCekGMh7CgxQlHq9Cg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB4815
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 02:27:47AM +0300, Vladimir Oltean wrote:
-> On Mon, Sep 28, 2020 at 12:43:36AM +0200, Michael Walle wrote:
-> > Since commit 530b5affc675 ("spi: fsl-dspi: fix use-after-free in remove
-> > path") this driver causes a kernel oops:
-> > 
-> > [    1.891065] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000080
-> > [    1.899889] Mem abort info:
-> > [    1.902692]   ESR = 0x96000004
-> > [    1.905754]   EC = 0x25: DABT (current EL), IL = 32 bits
-> > [    1.911089]   SET = 0, FnV = 0
-> > [    1.914156]   EA = 0, S1PTW = 0
-> > [    1.917303] Data abort info:
-> > [    1.920193]   ISV = 0, ISS = 0x00000004
-> > [    1.924044]   CM = 0, WnR = 0
-> > [    1.927022] [0000000000000080] user address but active_mm is swapper
-> > [    1.933403] Internal error: Oops: 96000004 [#1] PREEMPT SMP
-> > [    1.938995] Modules linked in:
-> > [    1.942060] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.9.0-rc6-next-20200925-00026-gae556cc74e28-dirty #94
-> > [    1.951838] Hardware name: Kontron SMARC-sAL28 (Single PHY) on SMARC Eval 2.0 carrier (DT)
-> > [    1.960135] pstate: 40000005 (nZcv daif -PAN -UAO -TCO BTYPE=--)
-> > [    1.966168] pc : dspi_setup+0xc8/0x2e0
-> > [    1.969926] lr : dspi_setup+0xbc/0x2e0
-> > [    1.973684] sp : ffff80001139b930
-> > [    1.977005] x29: ffff80001139b930 x28: ffff00207a5d2000
-> > [    1.982338] x27: 0000000000000006 x26: ffff00207a44d410
-> > [    1.987669] x25: ffff002079c08100 x24: ffff00207a5d2400
-> > [    1.993000] x23: ffff00207a5d2600 x22: ffff800011169948
-> > [    1.998332] x21: ffff800010cbcd20 x20: ffff00207a58a800
-> > [    2.003663] x19: ffff00207a76b700 x18: 0000000000000010
-> > [    2.008994] x17: 0000000000000001 x16: 0000000000000019
-> > [    2.014326] x15: ffffffffffffffff x14: 0720072007200720
-> > [    2.019657] x13: 0720072007200720 x12: ffff8000111fc5e0
-> > [    2.024989] x11: 0000000000000003 x10: ffff8000111e45a0
-> > [    2.030320] x9 : 0000000000000000 x8 : ffff00207a76b780
-> > [    2.035651] x7 : 0000000000000000 x6 : 000000000000003f
-> > [    2.040982] x5 : 0000000000000040 x4 : ffff80001139b918
-> > [    2.046313] x3 : 0000000000000001 x2 : 64b62cc917af5100
-> > [    2.051643] x1 : 0000000000000000 x0 : 0000000000000000
-> > [    2.056973] Call trace:
-> > [    2.059425]  dspi_setup+0xc8/0x2e0
-> > [    2.062837]  spi_setup+0xcc/0x248
-> > [    2.066160]  spi_add_device+0xb4/0x198
-> > [    2.069918]  of_register_spi_device+0x250/0x370
-> > [    2.074462]  spi_register_controller+0x4f4/0x770
-> > [    2.079094]  dspi_probe+0x5bc/0x7b0
-> > [    2.082594]  platform_drv_probe+0x5c/0xb0
-> > [    2.086615]  really_probe+0xec/0x3c0
-> > [    2.090200]  driver_probe_device+0x60/0xc0
-> > [    2.094308]  device_driver_attach+0x7c/0x88
-> > [    2.098503]  __driver_attach+0x60/0xe8
-> > [    2.102263]  bus_for_each_dev+0x7c/0xd0
-> > [    2.106109]  driver_attach+0x2c/0x38
-> > [    2.109692]  bus_add_driver+0x194/0x1f8
-> > [    2.113538]  driver_register+0x6c/0x128
-> > [    2.117385]  __platform_driver_register+0x50/0x60
-> > [    2.122105]  fsl_dspi_driver_init+0x24/0x30
-> > [    2.126302]  do_one_initcall+0x54/0x2d0
-> > [    2.130149]  kernel_init_freeable+0x1ec/0x258
-> > [    2.134520]  kernel_init+0x1c/0x120
-> > [    2.138018]  ret_from_fork+0x10/0x34
-> > [    2.141606] Code: 97e0b11d aa0003f3 b4000680 f94006e0 (f9404000)
-> > [    2.147723] ---[ end trace 26cf63e6cbba33a8 ]---
-> > [    2.152374] Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
-> > [    2.160061] SMP: stopping secondary CPUs
-> > [    2.163999] Kernel Offset: disabled
-> > [    2.167496] CPU features: 0x0040022,20006008
-> > [    2.171777] Memory Limit: none
-> > [    2.174840] ---[ end Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b ]---
-> > 
-> > This is because since this commit, the allocation of the drivers private
-> > data is done explicitly and in this case spi_alloc_master() won't set the
-> > correct pointer.
-> > 
-> > Fixes: 530b5affc675 ("spi: fsl-dspi: fix use-after-free in remove path")
-> > Signed-off-by: Michael Walle <michael@walle.cc>
-> > ---
-> 
-> Sascha, how did you test commit 530b5affc675?
+On 2020/09/28 1:00 Krzysztof Kozlowski <krzk@kernel.org> wrote:
+> The PMIC's interrupt is level low and should be pulled up.  The PMIC's de=
+vice
+> node had pinctrl-0 property but it lacked pinctrl-names which is required=
+ to
+> apply the pin configuration.
+>=20
+> Fixes: 5f67317bd967 ("arm64: dts: imx8mm: correct interrupt flags")
+> Fixes: aa71d0648318 ("arm64: dts: imx8mm: Split the imx8mm evk board dts
+> to a common dtsi")
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-My intention was to test it, but it seems I somehow failed to copy the
-new kernel onto my target without noticing it, shame on me. Anyway, I
-get the same kernel panic with my patch appied now and this patch fixes
-it.
+Please tag me with the whole patch set, thanks.
+Reviewed-by: Robin Gong <yibin.gong@nxp.com>
 
-Tested-by: Sascha Hauer <s.hauer@pengutronix.de>
+> ---
+>  arch/arm64/boot/dts/freescale/imx8mm-evk.dtsi | 1 +
+>  1 file changed, 1 insertion(+)
+>=20
+> diff --git a/arch/arm64/boot/dts/freescale/imx8mm-evk.dtsi
+> b/arch/arm64/boot/dts/freescale/imx8mm-evk.dtsi
+> index f305a530ff6f..521eb3a5a12e 100644
+> --- a/arch/arm64/boot/dts/freescale/imx8mm-evk.dtsi
+> +++ b/arch/arm64/boot/dts/freescale/imx8mm-evk.dtsi
+> @@ -121,6 +121,7 @@
+>  	pmic@4b {
+>  		compatible =3D "rohm,bd71847";
+>  		reg =3D <0x4b>;
+> +		pinctrl-names =3D "default";
+>  		pinctrl-0 =3D <&pinctrl_pmic>;
+>  		interrupt-parent =3D <&gpio1>;
+>  		interrupts =3D <3 IRQ_TYPE_LEVEL_LOW>;
+> --
+> 2.17.1
 
-Sascha
-
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
