@@ -2,100 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD8A327B1CB
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 18:25:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14A0827B1D0
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 18:26:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726630AbgI1QZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 12:25:53 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:49516 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726344AbgI1QZw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 12:25:52 -0400
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 3F4AA29AD51;
-        Mon, 28 Sep 2020 17:25:49 +0100 (BST)
-Date:   Mon, 28 Sep 2020 18:25:45 +0200
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     Thirumalesha N <nthirumalesha7@gmail.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Shivamurthy Shastri <sshivamurthy@micron.com>,
-        Chuanhong Guo <gch981213@gmail.com>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 1/2] mtd: spinand: micron: Generalize the function
- and structure names
-Message-ID: <20200928182545.1e972f3b@collabora.com>
-In-Reply-To: <20200928182159.5a6cf46a@xps13>
-References: <20200913161533.10655-1-nthirumalesha7@gmail.com>
-        <20200913161533.10655-2-nthirumalesha7@gmail.com>
-        <20200915101321.1afa5033@xps13>
-        <CALKVOUomKLZ5GEHmXb+VfEq8UiNUpCN-Vqkx3N+yykEnCrHkDA@mail.gmail.com>
-        <20200928165528.54e5db6e@xps13>
-        <20200928174505.75fda272@collabora.com>
-        <20200928175005.48783b61@xps13>
-        <20200928180343.4c5302a5@collabora.com>
-        <20200928182159.5a6cf46a@xps13>
-Organization: Collabora
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        id S1726739AbgI1Q0D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 12:26:03 -0400
+Received: from mga02.intel.com ([134.134.136.20]:35109 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726504AbgI1Q0C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 12:26:02 -0400
+IronPort-SDR: Jmjlcl25lrALz2Iz2PDZE0DAaT3cw+XzY3IipqIx0p/Wqdd5yjoaOfLPKx8LIxOJuma3vEmfu1
+ EOZFf6FyGlCQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9758"; a="149687502"
+X-IronPort-AV: E=Sophos;i="5.77,313,1596524400"; 
+   d="scan'208";a="149687502"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 09:26:00 -0700
+IronPort-SDR: 7WUTEIOsBwl7Mtrc/EUhBU8IQiM/MDuMZzeOLzaftBUODxSD8SKkGFTA1LMpXHKsBIWQTfVIrQ
+ +rNf/ibAC4Vw==
+X-IronPort-AV: E=Sophos;i="5.77,313,1596524400"; 
+   d="scan'208";a="311845174"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 09:25:57 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1kMvyK-002c4D-G9; Mon, 28 Sep 2020 19:25:52 +0300
+Date:   Mon, 28 Sep 2020 19:25:52 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Joe Perches <joe@perches.com>
+Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kent Gibson <warthog618@gmail.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-doc <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: Re: [PATCH v2 1/9] lib: string_helpers: provide kfree_strarray()
+Message-ID: <20200928162552.GX3956970@smile.fi.intel.com>
+References: <20200928104155.7385-1-brgl@bgdev.pl>
+ <20200928104155.7385-2-brgl@bgdev.pl>
+ <2fcfd81f62ec87d9b75cca32468d8b9583faec47.camel@perches.com>
+ <CAMRc=Mds0ccYBhRJnCQ0NEPkUpWRGtyX4FKj4+4rxN27_gfobA@mail.gmail.com>
+ <12317bbc7712d96be8f52a3bf574e47628830191.camel@perches.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <12317bbc7712d96be8f52a3bf574e47628830191.camel@perches.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 28 Sep 2020 18:21:59 +0200
-Miquel Raynal <miquel.raynal@bootlin.com> wrote:
-
-> Hi Boris,
-> 
-> Boris Brezillon <boris.brezillon@collabora.com> wrote on Mon, 28 Sep
-> 2020 18:03:43 +0200:
-> 
-> > On Mon, 28 Sep 2020 17:50:05 +0200
-> > Miquel Raynal <miquel.raynal@bootlin.com> wrote:
-> >   
-> > > > > The way OOB
-> > > > > bytes are organized do not seem relevant to me, I think i prefer the
-> > > > > "_4_/_8_" naming,even if it's not very explicit.        
+On Mon, Sep 28, 2020 at 09:06:34AM -0700, Joe Perches wrote:
+> On Mon, 2020-09-28 at 18:02 +0200, Bartosz Golaszewski wrote:
+> > On Mon, Sep 28, 2020 at 5:59 PM Joe Perches <joe@perches.com> wrote:
+> > > On Mon, 2020-09-28 at 12:41 +0200, Bartosz Golaszewski wrote:
+> > > > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 > > > > 
-> > > > The ECC strength doesn't say anything about the scheme used for ECC
-> > > > bytes placement, and you might end up with 2 different schemes
-> > > > providing the same strength, or the same scheme used for 2 different
-> > > > strengths.      
+> > > > There's a common pattern of dynamically allocating an array of char
+> > > > pointers and then also dynamically allocating each string in this
+> > > > array. Provide a helper for freeing such a string array with one call.
 > > > 
-> > > So perhaps both should be present in the name?    
+> > > Isn't this also common for things like ring buffers?
+> > > Why limit this to char *[]?
+> > > 
 > > 
-> > No, the point was to re-use the same functions for various strengths if
-> > they use the same ECC placement scheme.  
+> > I don't want to add APIs nobody is using. What do you suggest?
 > 
-> I get the point, but is the current implementation generic enough? I
-> see hardcoded numbers, I have no idea if these numbers are common to
-> all strength given a specific layout, or if they only match for a given
-> strength?
+> Change the argument to void** and call it
 > 
-> +static int micron_4_ooblayout_ecc(struct mtd_info *mtd, int section,
-> +				  struct mtd_oob_region *region)
-> +{
-> +	struct spinand_device *spinand = mtd_to_spinand(mtd);
-> +
-> +	if (section >= spinand->base.memorg.pagesize /
-> +			mtd->ecc_step_size)
-> +		return -ERANGE;
-> +
-> +	region->offset = (section * 16) + 8;
-> +	region->length = 8;
-> +
-> +	return 0;
-> +}
-> 
-> If possible, I would like to avoid several successive renaming.
+> void kfree_array(void **array, int count);
 
-Right, I thought those functions were patched to be generic, but that
-doesn't seem to be the case, so I guess sticking to _<strength>_ makes
-sense for now.
+Bart, if you go for this, I'm fine. You may keep my tag.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
