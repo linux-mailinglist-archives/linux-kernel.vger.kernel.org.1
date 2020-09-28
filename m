@@ -2,158 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 606A527A98A
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 10:32:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92C7E27A98E
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 10:33:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726534AbgI1Ics (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 04:32:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41188 "EHLO
+        id S1726604AbgI1Ic7 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 28 Sep 2020 04:32:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726440AbgI1Ics (ORCPT
+        with ESMTP id S1726576AbgI1Ic7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 04:32:48 -0400
-Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBDE6C0613CE;
-        Mon, 28 Sep 2020 01:32:47 -0700 (PDT)
-Received: from mwalle01.sab.local. (unknown [213.135.10.150])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id A2B9723E40;
-        Mon, 28 Sep 2020 10:32:45 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1601281966;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=84nf58r4xfqTwvxmnC0LUvWYNLFQ3GSFYprQkKFhSqI=;
-        b=gluXADInXin5bmV70jihLsfY0tV16qLmrz3jGsppU9+j064Gk8CGdIADcdW8o6QamrE92B
-        lweLrYiOp3FPnPFZ2cwa40pkHRT7Tq24A1VGAmg0Ehd6jFF4dE/Ebl4d1YgstXPRlFFnbp
-        IQ6JmsbI96aVnDHNN/x8uZgr5ZmpGs0=
-From:   Michael Walle <michael@walle.cc>
-To:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Sascha Hauer <s.hauer@pengutronix.de>,
-        Mark Brown <broonie@kernel.org>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Michael Walle <michael@walle.cc>
-Subject: [PATCH v2] spi: fsl-dspi: fix NULL pointer dereference
-Date:   Mon, 28 Sep 2020 10:32:38 +0200
-Message-Id: <20200928083238.27137-1-michael@walle.cc>
-X-Mailer: git-send-email 2.20.1
+        Mon, 28 Sep 2020 04:32:59 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D1A4C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 01:32:59 -0700 (PDT)
+Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1kMoaY-00083X-Mf; Mon, 28 Sep 2020 10:32:50 +0200
+Received: from pza by lupine with local (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1kMoaQ-0004M0-Ts; Mon, 28 Sep 2020 10:32:42 +0200
+Message-ID: <aaccd827fa6de117d27319884f2d70a2ea91aa5e.camel@pengutronix.de>
+Subject: Re: [v3,2/3] PCI: mediatek: Add new generation controller support
+From:   Philipp Zabel <p.zabel@pengutronix.de>
+To:     Jianjun Wang <jianjun.wang@mediatek.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Ryder Lee <ryder.lee@mediatek.com>
+Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        davem@davemloft.net, linux-pci@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Sj Huang <sj.huang@mediatek.com>, youlin.pei@mediatek.com,
+        chuanjia.liu@mediatek.com, qizhong.cheng@mediatek.com,
+        sin_jieyang@mediatek.com
+Date:   Mon, 28 Sep 2020 10:32:42 +0200
+In-Reply-To: <20200927074555.4155-3-jianjun.wang@mediatek.com>
+References: <20200927074555.4155-1-jianjun.wang@mediatek.com>
+         <20200927074555.4155-3-jianjun.wang@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.30.5-1.1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
+X-SA-Exim-Mail-From: p.zabel@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since commit 530b5affc675 ("spi: fsl-dspi: fix use-after-free in remove
-path") this driver causes a kernel oops:
+Hi Jianjun,
 
-[    1.891065] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000080
-[    1.899889] Mem abort info:
-[    1.902692]   ESR = 0x96000004
-[    1.905754]   EC = 0x25: DABT (current EL), IL = 32 bits
-[    1.911089]   SET = 0, FnV = 0
-[    1.914156]   EA = 0, S1PTW = 0
-[    1.917303] Data abort info:
-[    1.920193]   ISV = 0, ISS = 0x00000004
-[    1.924044]   CM = 0, WnR = 0
-[    1.927022] [0000000000000080] user address but active_mm is swapper
-[    1.933403] Internal error: Oops: 96000004 [#1] PREEMPT SMP
-[    1.938995] Modules linked in:
-[    1.942060] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.9.0-rc6-next-20200925-00026-gae556cc74e28-dirty #94
-[    1.951838] Hardware name: Kontron SMARC-sAL28 (Single PHY) on SMARC Eval 2.0 carrier (DT)
-[    1.960135] pstate: 40000005 (nZcv daif -PAN -UAO -TCO BTYPE=--)
-[    1.966168] pc : dspi_setup+0xc8/0x2e0
-[    1.969926] lr : dspi_setup+0xbc/0x2e0
-[    1.973684] sp : ffff80001139b930
-[    1.977005] x29: ffff80001139b930 x28: ffff00207a5d2000
-[    1.982338] x27: 0000000000000006 x26: ffff00207a44d410
-[    1.987669] x25: ffff002079c08100 x24: ffff00207a5d2400
-[    1.993000] x23: ffff00207a5d2600 x22: ffff800011169948
-[    1.998332] x21: ffff800010cbcd20 x20: ffff00207a58a800
-[    2.003663] x19: ffff00207a76b700 x18: 0000000000000010
-[    2.008994] x17: 0000000000000001 x16: 0000000000000019
-[    2.014326] x15: ffffffffffffffff x14: 0720072007200720
-[    2.019657] x13: 0720072007200720 x12: ffff8000111fc5e0
-[    2.024989] x11: 0000000000000003 x10: ffff8000111e45a0
-[    2.030320] x9 : 0000000000000000 x8 : ffff00207a76b780
-[    2.035651] x7 : 0000000000000000 x6 : 000000000000003f
-[    2.040982] x5 : 0000000000000040 x4 : ffff80001139b918
-[    2.046313] x3 : 0000000000000001 x2 : 64b62cc917af5100
-[    2.051643] x1 : 0000000000000000 x0 : 0000000000000000
-[    2.056973] Call trace:
-[    2.059425]  dspi_setup+0xc8/0x2e0
-[    2.062837]  spi_setup+0xcc/0x248
-[    2.066160]  spi_add_device+0xb4/0x198
-[    2.069918]  of_register_spi_device+0x250/0x370
-[    2.074462]  spi_register_controller+0x4f4/0x770
-[    2.079094]  dspi_probe+0x5bc/0x7b0
-[    2.082594]  platform_drv_probe+0x5c/0xb0
-[    2.086615]  really_probe+0xec/0x3c0
-[    2.090200]  driver_probe_device+0x60/0xc0
-[    2.094308]  device_driver_attach+0x7c/0x88
-[    2.098503]  __driver_attach+0x60/0xe8
-[    2.102263]  bus_for_each_dev+0x7c/0xd0
-[    2.106109]  driver_attach+0x2c/0x38
-[    2.109692]  bus_add_driver+0x194/0x1f8
-[    2.113538]  driver_register+0x6c/0x128
-[    2.117385]  __platform_driver_register+0x50/0x60
-[    2.122105]  fsl_dspi_driver_init+0x24/0x30
-[    2.126302]  do_one_initcall+0x54/0x2d0
-[    2.130149]  kernel_init_freeable+0x1ec/0x258
-[    2.134520]  kernel_init+0x1c/0x120
-[    2.138018]  ret_from_fork+0x10/0x34
-[    2.141606] Code: 97e0b11d aa0003f3 b4000680 f94006e0 (f9404000)
-[    2.147723] ---[ end trace 26cf63e6cbba33a8 ]---
-[    2.152374] Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
-[    2.160061] SMP: stopping secondary CPUs
-[    2.163999] Kernel Offset: disabled
-[    2.167496] CPU features: 0x0040022,20006008
-[    2.171777] Memory Limit: none
-[    2.174840] ---[ end Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b ]---
+On Sun, 2020-09-27 at 15:45 +0800, Jianjun Wang wrote:
+> MediaTek's PCIe host controller has three generation HWs, the new
+> generation HW is an individual bridge, it supoorts Gen3 speed and
+> up to 256 MSI interrupt numbers for multi-function devices.
+> 
+> Add support for new Gen3 controller which can be found on MT8192.
+> 
+> Signed-off-by: Jianjun Wang <jianjun.wang@mediatek.com>
+> Acked-by: Ryder Lee <ryder.lee@mediatek.com>
+> ---
+>  drivers/pci/controller/Kconfig              |   14 +
+>  drivers/pci/controller/Makefile             |    1 +
+>  drivers/pci/controller/pcie-mediatek-gen3.c | 1024 +++++++++++++++++++
+>  3 files changed, 1039 insertions(+)
+>  create mode 100644 drivers/pci/controller/pcie-mediatek-gen3.c
+> 
+[...]
+> diff --git a/drivers/pci/controller/pcie-mediatek-gen3.c b/drivers/pci/controller/pcie-mediatek-gen3.c
+> new file mode 100644
+> index 000000000000..ad69c789b24d
+> --- /dev/null
+> +++ b/drivers/pci/controller/pcie-mediatek-gen3.c
+> @@ -0,0 +1,1024 @@
+[...]
+> +static int mtk_pcie_power_up(struct mtk_pcie_port *port)
+> +{
+> +	struct device *dev = port->dev;
+> +	int err;
+> +
+> +	port->phy_reset = devm_reset_control_get_optional_exclusive(dev,
+> +								    "phy-rst");
+> +	if (IS_ERR(port->phy_reset))
+> +		return PTR_ERR(port->phy_reset);
+> +
+> +	reset_control_deassert(port->phy_reset);
 
-This is because since this commit, the allocation of the drivers private
-data is done explicitly and in this case spi_alloc_master() won't set the
-correct pointer.
+In general, it is better to request all required resources before
+starting to activate the hardware.
 
-Also move the platform_set_drvdata() to have both next to each other.
+> +
+> +	/* PHY power on and enable pipe clock */
+> +	port->phy = devm_phy_optional_get(dev, "pcie-phy");
+> +	if (IS_ERR(port->phy))
+> +		return PTR_ERR(port->phy);
 
-Fixes: 530b5affc675 ("spi: fsl-dspi: fix use-after-free in remove path")
-Signed-off-by: Michael Walle <michael@walle.cc>
-Tested-by: Sascha Hauer <s.hauer@pengutronix.de>
----
+For example, if the PHY driver is not loaded yet and this returns
+-EPROBE_DEFER, it was not useful to take the PHY out of reset above.
+Also, phy-rst is kept deasserted if this fails.
 
-changes since v1:
- - moved platform_set_drvdata(), suggested by Krzysztof.
+> +
+> +	err = phy_init(port->phy);
+> +	if (err) {
+> +		dev_notice(dev, "failed to initialize pcie phy\n");
+> +		return err;
 
- drivers/spi/spi-fsl-dspi.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+phy-rst is kept deasserted if this fails.
 
-diff --git a/drivers/spi/spi-fsl-dspi.c b/drivers/spi/spi-fsl-dspi.c
-index a939618f5e47..3967afa465f0 100644
---- a/drivers/spi/spi-fsl-dspi.c
-+++ b/drivers/spi/spi-fsl-dspi.c
-@@ -1236,6 +1236,9 @@ static int dspi_probe(struct platform_device *pdev)
- 	if (!ctlr)
- 		return -ENOMEM;
- 
-+	spi_controller_set_devdata(ctlr, dspi);
-+	platform_set_drvdata(pdev, dspi);
-+
- 	dspi->pdev = pdev;
- 	dspi->ctlr = ctlr;
- 
-@@ -1371,8 +1374,6 @@ static int dspi_probe(struct platform_device *pdev)
- 	if (dspi->devtype_data->trans_mode != DSPI_DMA_MODE)
- 		ctlr->ptp_sts_supported = true;
- 
--	platform_set_drvdata(pdev, dspi);
--
- 	ret = spi_register_controller(ctlr);
- 	if (ret != 0) {
- 		dev_err(&pdev->dev, "Problem registering DSPI ctlr\n");
--- 
-2.20.1
+> +	}
+> +
+> +	err = phy_power_on(port->phy);
+> +	if (err) {
+> +		dev_notice(dev, "failed to power on pcie phy\n");
+> +		goto err_phy_on;
+> +	}
+> +
+> +	port->mac_reset = devm_reset_control_get_optional_exclusive(dev,
+> +								    "mac-rst");
+> +	if (IS_ERR(port->mac_reset))
+> +		return PTR_ERR(port->mac_reset);
 
+The PHY is not powered down if this fails.
+
+> +
+> +	reset_control_deassert(port->mac_reset);
+> +
+> +	/* MAC power on and enable transaction layer clocks */
+> +	pm_runtime_enable(dev);
+> +	pm_runtime_get_sync(dev);
+> +
+> +	err = mtk_pcie_clk_init(port);
+> +	if (err) {
+> +		dev_notice(dev, "clock init failed\n");
+> +		goto err_clk_init;
+> +	}
+> +
+> +	return 0;
+> +
+> +err_clk_init:
+> +	pm_runtime_put_sync(dev);
+> +	pm_runtime_disable(dev);
+> +	reset_control_assert(port->mac_reset);
+> +	phy_power_off(port->phy);
+> +err_phy_on:
+> +	phy_exit(port->phy);
+> +	reset_control_assert(port->phy_reset);
+> +
+> +	return -EBUSY;
+> +}
+> +
+> +static void mtk_pcie_power_down(struct mtk_pcie_port *port)
+> +{
+> +	phy_power_off(port->phy);
+> +	phy_exit(port->phy);
+> +
+> +	clk_bulk_disable_unprepare(port->num_clks, port->clks);
+
+In the power-up sequence clocks are enabled last, but here they are not
+disabled before the PHY is powered off. Is this on purpose?
+
+> +
+> +	pm_runtime_put_sync(port->dev);
+> +	pm_runtime_disable(port->dev);
+
+In the power-up error path, PHY and controller resets are asserted
+again, but here they are kept deasserted. Should they be asserted here
+as well?
+
+regards
+Philipp
