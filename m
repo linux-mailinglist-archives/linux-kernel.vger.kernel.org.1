@@ -2,61 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1829227B6FB
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 23:24:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AC8527B701
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 23:28:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726955AbgI1VYv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 17:24:51 -0400
-Received: from ms.lwn.net ([45.79.88.28]:48296 "EHLO ms.lwn.net"
+        id S1726950AbgI1V2k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 17:28:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39148 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726409AbgI1VYv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 17:24:51 -0400
-Received: from lwn.net (localhost [127.0.0.1])
+        id S1726409AbgI1V2k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 17:28:40 -0400
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.5])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 1B1D572D;
-        Mon, 28 Sep 2020 21:24:49 +0000 (UTC)
-Date:   Mon, 28 Sep 2020 15:24:48 -0600
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Bailu Lin <bailu.lin@vivo.com>
-Cc:     alex.shi@linux.alibaba.com, catalin.marinas@arm.com,
-        harryxiyou@gmail.com, kernel@vivo.com,
-        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, will@kernel.org
-Subject: Re: [PATCH v3] Documentation: Chinese translation of 
- Documentation/arm64/amu.rst
-Message-ID: <20200928152448.578034f3@lwn.net>
-In-Reply-To: <20200925151758.41818-1-bailu.lin@vivo.com>
-References: <20200924104141.7abc7271@lwn.net>
-        <20200925151758.41818-1-bailu.lin@vivo.com>
-Organization: LWN.net
+        by mail.kernel.org (Postfix) with ESMTPSA id 9658C2083B;
+        Mon, 28 Sep 2020 21:28:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601328520;
+        bh=IF9F3UM03r/iNyJXTi0t51mU5oj04cKMIfaNEbf7mmY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=BD88ckUyNUUGppnKl0WESwqc+MD4cW+2lFNSXRGuAqlWt8vZ+p4USWYtIKrUReeRs
+         dbqeDTs7DkuylPik+9E1PVXsjKDQzfGgMvqQo26DY5lAqz02jMe9rpQRtLPR48dMcg
+         /03tBWmyT/sZ5p0IoVXWCJJfvgtQcLRPqVSqBg/w=
+Date:   Mon, 28 Sep 2020 14:28:37 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Geetha sowjanya <gakula@marvell.com>
+Cc:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <sgoutham@marvell.com>, <lcherian@marvell.com>,
+        <jerinj@marvell.com>, <davem@davemloft.net>,
+        Subbaraya Sundeep <sbhatta@marvell.com>
+Subject: Re: [net PATCH] octeontx2-af: Fix enable/disable of default NPC
+ entries
+Message-ID: <20200928142837.0f529a24@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <1601103420-1591-1-git-send-email-gakula@marvell.com>
+References: <1601103420-1591-1-git-send-email-gakula@marvell.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 25 Sep 2020 08:17:58 -0700
-Bailu Lin <bailu.lin@vivo.com> wrote:
-
-> This is a Chinese translated version of Documentation/arm64/amu.rst
+On Sat, 26 Sep 2020 12:27:00 +0530 Geetha sowjanya wrote:
+> From: Subbaraya Sundeep <sbhatta@marvell.com>
 > 
-> Signed-off-by: Bailu Lin <bailu.lin@vivo.com>
-> ---
-> Changes in v3:
->  - Remove Documentation/arm64/amu.rst's inappropriate License claim.
-> Changes in v2:
->  - Add index to arm64 directoy.
->  - Fix a document format error.
->  - Correct email encoding format.
-> ---
->  Documentation/arm64/amu.rst                   |   2 +
->  .../translations/zh_CN/arm64/amu.rst          | 102 ++++++++++++++++++
->  .../translations/zh_CN/arm64/index.rst        |   2 +
->  3 files changed, 106 insertions(+)
->  create mode 100644 Documentation/translations/zh_CN/arm64/amu.rst
+> Packet replication feature present in Octeontx2
+> is a hardware linked list of PF and its VF
+> interfaces so that broadcast packets are sent
+> to all interfaces present in the list. It is
+> driver job to add and delete a PF/VF interface
+> to/from the list when the interface is brought
+> up and down. This patch fixes the
+> npc_enadis_default_entries function to handle
+> broadcast replication properly if packet replication
+> feature is present.
+> 
+> Fixes: 40df309e4166
+> ("octeontx2-af: Support to enable/disable default MCAM entries")
+> 
+> Signed-off-by: Subbaraya Sundeep <sbhatta@marvell.com>
+> Signed-off-by: Geetha sowjanya <gakula@marvell.com>
+> Signed-off-by: Sunil Goutham <sgoutham@marvell.com>
 
-Applied, thanks.
+The patches look good, but could you please resend them with fixed
+"Fixes" tags? The tag should be on one line with no empty line between
+the tag and the signoffs. So the above should have looked like:
 
-jon
+Fixes: 40df309e4166 ("octeontx2-af: Support to enable/disable default MCAM entries")
+Signed-off-by: Subbaraya Sundeep <sbhatta@marvell.com>
+Signed-off-by: Geetha sowjanya <gakula@marvell.com>
+Signed-off-by: Sunil Goutham <sgoutham@marvell.com>
