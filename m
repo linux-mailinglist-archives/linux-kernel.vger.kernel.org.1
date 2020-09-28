@@ -2,101 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21F4D27AD90
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 14:12:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B0F927AD99
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 14:14:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726640AbgI1MMc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 08:12:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47128 "EHLO
+        id S1726559AbgI1MOk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 08:14:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726393AbgI1MMc (ORCPT
+        with ESMTP id S1726396AbgI1MOj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 08:12:32 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20E4BC061755
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 05:12:32 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id z4so1067689wrr.4
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 05:12:32 -0700 (PDT)
+        Mon, 28 Sep 2020 08:14:39 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C236C0613CE
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 05:14:39 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id p9so8172339ejf.6
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 05:14:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=WkJ+JQz22FgKhunkX2Eys8prjPDVkhKGpB1odb9GP8s=;
-        b=V+A2geqfxmkMfY7Ozcf6qFWf8cwaKHC6uC2YbzNkKkg9K7etSOTIyRWxvmZ+4e4tSZ
-         QWoytvAI3ul8dm3Rby2HAddrBVew0ATO1vVz9mpNCe7vl9xAb/6YFufWH8YHoOgknpi5
-         PAv50iu9Y2eswRH8U54IlRstZnIO+T9w2IrGWiFeltxFio9ub/1DFIUROq/tVuQTJLqh
-         k5nzl4Ki9z9zFimkVFnHCFFdi78UrEyH39Ndom3QFPSVT2oRCbl82CmrmUU5nbud1GVo
-         +GLhONWnkRnXpfbIEdG2zcZjZis1cNlqbyslfzyiMk19KoqOvanxXiY3Tp0H88bvSGw8
-         x1AQ==
+        d=google.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=ULrSf82cVDYxU3BYbb7m6MDttIpV3C4Y47Llm1GUmmM=;
+        b=RYu5+Otf5FEX6f56j8YIX5wR0ismZYUj9KwUidK4Ky/3nHe91MMusAiJHvYtzUj3ZS
+         83Blo43RlqTcu00g7T/v2HJeD7FskeRP5dKU8uqUL7sROkb7zAD4jFpx05gofs/9FmK4
+         GoeBfl1scYDfuGddxFU7mhF22O8A3jiCEp7YBrBSkp3TcbfPQqdr+l7cOYHX/trJL9d7
+         6IT/QtfYLj3AvCfxnC/ss8B4FceydqW4DLBQ4NAL21+37tB3ZCs7UEJlFStEJHdBV+/m
+         oxxi0goCOQHHK6M68btJy2raPmpyXwT9kBNbXdVmrBk5lzSMmHeeFmAPZCk2jTh/f9Ft
+         H2jA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=WkJ+JQz22FgKhunkX2Eys8prjPDVkhKGpB1odb9GP8s=;
-        b=dBUwOFJs1hiDUzmo8bFYxhdwf9nxH/CIAGj3nwH6BC96nhcsoLyUg3ieGxFaQlWCst
-         JGe/EX6aIMDwPIGjm14P7OEpaSriH5CXPUzt9spHQEcntbpeEJKTiKSL0d6theLUU+5u
-         +edgXsnH0BaqzkzLS4L1C616Vdh0sbgXhLJViEypuMh84FhJWsHeNmmHGLUq+d7q4ouX
-         O+i00UZW+MKAlvVQTpjDSW2NaU8/lZeyUFp6SDpOtuCv1Bjoy7lRrU8Jx0y6ZFZ3l5q4
-         tY9xWSTIrPtaTEigT6XLzRodfUbQM4UIwBDix8ZLrVKHTgmk4LIvf09gT9HepGTvSF2V
-         X8vA==
-X-Gm-Message-State: AOAM533GMIscUvRCBr7LX1grkStmYhHQwPa7+oekvfYkmBD+LEwUL/rr
-        XLTRdzuPovO9c6F6hmnGF3h1Fw==
-X-Google-Smtp-Source: ABdhPJxfr1ds5iMTGjgHETAfl1Qew67RRVxQWW5Rmg5m3CN9CftRmIzMQbCdpyVjYzUGWOgofV47Dw==
-X-Received: by 2002:a5d:61c2:: with SMTP id q2mr1490265wrv.25.1601295150767;
-        Mon, 28 Sep 2020 05:12:30 -0700 (PDT)
-Received: from dell ([91.110.221.154])
-        by smtp.gmail.com with ESMTPSA id d19sm871991wmd.0.2020.09.28.05.12.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Sep 2020 05:12:30 -0700 (PDT)
-Date:   Mon, 28 Sep 2020 13:12:28 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Luca Ceresoli <luca@lucaceresoli.net>
-Cc:     Keerthy <j-keerthy@ti.com>, Axel Lin <axel.lin@ingics.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 3/3] mfd: lp87565: add LP87524-Q1 variant
-Message-ID: <20200928121228.GF4637@dell>
-References: <20200902142259.28349-1-luca@lucaceresoli.net>
- <20200902142259.28349-4-luca@lucaceresoli.net>
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=ULrSf82cVDYxU3BYbb7m6MDttIpV3C4Y47Llm1GUmmM=;
+        b=Ftn/iKXPi/rYU7nRNHdWg2QVL9YbPOG0s1+ufpVOaWMtbyxO+Abtw5gL3ufc5+GBA4
+         jNWKR3NSC6rq2quw7905GeWhRvBoDrp+4sV//kQkyTEfGMSU1zv5yFznX/qEyXEjwvBA
+         2TeSS2PPTD0N+chbZXJgFdRoOHN/cH2K3nY1N6FCQBzDlaHOsTX37G1Emuq3P1qHqfx0
+         6EYLetI88ouQT3mcrgb3UQGzYezp3gh7to9kNQhCBAbU+ZRcil9rJ1JPAYuurwxwRJTZ
+         PyI5iSer7sP8OAjbT5a6YdH/s0AUH2M3P/F8KR7qnCjwi+LXQ+qPGoPzr1v04rGR0pH0
+         QmPw==
+X-Gm-Message-State: AOAM530x1GF/wYg08VeOBHuCSLIJNBhe/QRLi0+05egSHWzaSDclisQZ
+        13WB7Az/nEMzfSHC78Zewqz12Q/7m7y6UR6L4BdwdQ==
+X-Google-Smtp-Source: ABdhPJzyXErbSkHAJICjNnqPWiqQnKU0mMtCMTF0AauvxqADR4UegaiDlNtrxhZJCdOOpXcvF6uv/dIltrwioMVI26E=
+X-Received: by 2002:a17:906:f6c9:: with SMTP id jo9mr1312638ejb.233.1601295277452;
+ Mon, 28 Sep 2020 05:14:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200902142259.28349-4-luca@lucaceresoli.net>
+From:   Jann Horn <jannh@google.com>
+Date:   Mon, 28 Sep 2020 14:14:11 +0200
+Message-ID: <CAG48ez3YsfTfOFKa-Po58e4PNp7FK54MFbkK3aUPSRt3LWtxQA@mail.gmail.com>
+Subject: SPARC version of arch_validate_prot() looks broken (UAF read)
+To:     "David S. Miller" <davem@davemloft.net>,
+        sparclinux@vger.kernel.org, Linux-MM <linux-mm@kvack.org>,
+        Khalid Aziz <khalid.aziz@oracle.com>,
+        Khalid Aziz <khalid@gonehiking.org>
+Cc:     kernel list <linux-kernel@vger.kernel.org>,
+        Anthony Yznaga <anthony.yznaga@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 02 Sep 2020, Luca Ceresoli wrote:
+From what I can tell from looking at the code:
 
-> Add support for the LP87524B/J/P-Q1 Four 4-MHz Buck Converter. This is a
-> variant of the LP87565 having 4 single-phase outputs and up to 10 A of
-> total output current.
-> 
-> Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
-> Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
-> 
-> ---
-> 
-> Changes in v5: none
-> 
-> Changes in v4: none
-> 
-> Changes in v3: none
-> 
-> Changes in v2:
->  - replace "regulator" -> "mfd" in subject line (Lee Jones)
->  - add Acked-for-MFD-by: from Lee Jones
-> ---
->  drivers/mfd/lp87565.c       | 4 ++++
->  include/linux/mfd/lp87565.h | 1 +
->  2 files changed, 5 insertions(+)
+SPARC's arch_validate_prot() looks up the VMA and peeks at it; that's
+not permitted though. do_mprotect_pkey() calls arch_validate_prot()
+before taking the mmap lock, so we can hit use-after-free reads if
+someone concurrently deletes a VMA we're looking at.
 
-Applied, thanks.
+Additionally, arch_validate_prot() currently only accepts the start
+address as a parameter, but the SPARC code probably should be checking
+the entire given range, which might consist of multiple VMAs?
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+I'm not sure what the best fix is here; it kinda seems like what SPARC
+really wants is a separate hook that is called from inside the loop in
+do_mprotect_pkey() that iterates over the VMAs? So maybe commit
+9035cf9a97e4 ("mm: Add address parameter to arch_validate_prot()")
+should be reverted, and a separate hook should be created?
+
+(Luckily the ordering of the vmacache operations works out such that
+AFAICS, despite calling find_vma() without holding the mmap_sem, we
+can never end up establishing a vmacache entry with a dangling pointer
+that might be considered valid on a subsequent call. So this should be
+limited to a rather boring UAF data read, and not be exploitable for a
+UAF write or UAF function pointer read.)
