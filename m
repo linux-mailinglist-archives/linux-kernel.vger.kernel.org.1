@@ -2,118 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB6BC27B28C
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 18:49:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2387B27B29B
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 18:54:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726935AbgI1Qtq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 12:49:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33550 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726578AbgI1Qtp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 12:49:45 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE509C0613CE
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 09:49:43 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id lo4so9492100ejb.8
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 09:49:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OjaO7kUDshEkXyX/sIanQwh9RsbMzawXkJFVu2Elacw=;
-        b=BOQKe+ZZ13ve03VzZj6TWYxlDnAhDhd6J4X/++n58Bn9kjGDh4BkGap7yChnaVQsFA
-         slKF5YRlSNSPx6F3iB4RICABtFrb/de4KEsnT4e1yDwXMOCtD/Tq4UN8tBXACn0pziet
-         ovkON6pPO40sy1O5XKRrymtshV1Lm12f3u4m0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OjaO7kUDshEkXyX/sIanQwh9RsbMzawXkJFVu2Elacw=;
-        b=ZkmHLCHtrLLiMWVMfUrPgVza2kA0QADda8LMmLMNVn4a4BG7WFql19CxY24rCY47Je
-         xDd4s16yVJPO1quaqAswOjvuPfckeaNrpD2QaCTRhdY6L9Bs6jBTmtYPyabAj4MEfIXV
-         rlp9ApyCuGgjg90SwceKpDdo+x+5UHyMyOx40Xi43cDg2Z4gU3eGBi0tJ3DBcH0/dheh
-         iDx+scOgS0v+ZOPAvzFbwevS8M+UiiHaszowIUDaWb2kOZfGR/mYytnoHodnGWqqJzHr
-         bb7mib1Xe1SJeySis5TObjmKEDfOY0uCZEsfnCDmUUxZNLz1srV0nPnE9mBfo3mhbY2/
-         4stA==
-X-Gm-Message-State: AOAM531rM3tnKauA3DxWEZwsdDyPdYgUDunnCiudERSGC12VD3Ci9v7F
-        K3A4kb+uNxcWn+sogMDTw80/ewqB9RHKVA==
-X-Google-Smtp-Source: ABdhPJyKJDbpEPDZo3wYkVdcHjCfHufCDLc73dhPjN+AIxBqP3y7FT+wZv4v3UxxBpE1nWGCAg2xsw==
-X-Received: by 2002:a17:906:1484:: with SMTP id x4mr2438014ejc.81.1601311782184;
-        Mon, 28 Sep 2020 09:49:42 -0700 (PDT)
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com. [209.85.221.44])
-        by smtp.gmail.com with ESMTPSA id dc22sm2059960ejb.112.2020.09.28.09.49.40
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Sep 2020 09:49:41 -0700 (PDT)
-Received: by mail-wr1-f44.google.com with SMTP id w5so2107540wrp.8
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 09:49:40 -0700 (PDT)
-X-Received: by 2002:a5d:660f:: with SMTP id n15mr2859213wru.103.1601311780342;
- Mon, 28 Sep 2020 09:49:40 -0700 (PDT)
+        id S1726630AbgI1Qyj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 12:54:39 -0400
+Received: from mail-eopbgr150082.outbound.protection.outlook.com ([40.107.15.82]:14161
+        "EHLO EUR01-DB5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726477AbgI1Qyj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 12:54:39 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=m/aQzX6WJ265Ab8HehXp9SQo8Z34wDSZy2Pb7S330rpLXL8LG26um9asFzlgOva9fF9rq17NoeE/WgdA842ledqNBve39N+uXVXhLXbiOA96FWNI43r3LOvIGUEW3z4PhVa7vxw6B3Zc3m2O7kRFcWHUcSMX7a+0pZ8YDPbBiG1m7VoAjOWsFSS+05w+eX1fzgFazHAn6V7kN5/ieYUdc9E+5+vnrBbqepg/j1cDP5IrPgh1gYf7VhhP7XvQ8WYW4tPhdYtHtB3yoeaQu3LPEf+p987C9ZUnRKQ/yJT3eX48NzqeLM9qo5jVzjmWRzVsfu9PgK53gJWz8g6zTQDtvg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qj0qWj+Y79e6Iy+lFmgp2VWfCTWHpxyJWNQ7TSqHuik=;
+ b=FSIQX0X6sNEMe5cPpFfdC25bGMlfQ4gBftcO/Hlu0E+olARNYYsBlLeeOyfVhHfEMaHvR1EV21M+LTpxKErVM7Oh2xUWeRlkwCNNEZTkQE/iCvSGF6qAHG3NM9RPwOeF6UXVX3+6nWskd40gMJl8fifeHef5pU3sD8G+/ZSgQXnS3YSFtrCKjaVWLNUKq8KirtX9iQlE0KTdJYWk40Y0ETe8MUcmxi2wbiCSuMgwsaDts4M1bjAdDKKKEMt7fubasSkNtxxPUowLKjmiCbUSxIBiHDWqBUDVn7qos6MrGQQFQvTUfZcOA+JZTeTkWjcn7N2f2ibqL5DW9znr6OM0rw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qj0qWj+Y79e6Iy+lFmgp2VWfCTWHpxyJWNQ7TSqHuik=;
+ b=cKubuqs+eq+8ipn78X0znGnt/GzIKV2YDbAcyBwXhqrAD1/UKgoVjbefaTrywMXUwJfyP+P1U9pxX2hBPhr7mNdmP6Eg5EnNe1Kvs5EBK70A4cCX5ujJuPydZylj5shq62KAgYXTBDzv7LMEjzGgWymVhzskEavccC0azZAD2r4=
+Received: from VE1PR04MB6687.eurprd04.prod.outlook.com (2603:10a6:803:121::30)
+ by VE1PR04MB7389.eurprd04.prod.outlook.com (2603:10a6:800:1b1::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.23; Mon, 28 Sep
+ 2020 16:54:35 +0000
+Received: from VE1PR04MB6687.eurprd04.prod.outlook.com
+ ([fe80::8db9:c62f:dac5:ee3d]) by VE1PR04MB6687.eurprd04.prod.outlook.com
+ ([fe80::8db9:c62f:dac5:ee3d%3]) with mapi id 15.20.3412.028; Mon, 28 Sep 2020
+ 16:54:35 +0000
+From:   Leo Li <leoyang.li@nxp.com>
+To:     Ran Wang <ran.wang_1@nxp.com>, Shawn Guo <shawnguo@kernel.org>
+CC:     "moderated list:ARM/FREESCALE LAYERSCAPE ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Biwen Li <biwen.li@nxp.com>
+Subject: RE: [PATCH] arm64: dts: fix endianness of rcpm
+Thread-Topic: [PATCH] arm64: dts: fix endianness of rcpm
+Thread-Index: AQHWlXeg5OEh8vaZ40O3/VsyacaGZal+RO5g
+Date:   Mon, 28 Sep 2020 16:54:35 +0000
+Message-ID: <VE1PR04MB6687E9A0F4E7E55E4ABFC1418F350@VE1PR04MB6687.eurprd04.prod.outlook.com>
+References: <20200928090455.34364-1-ran.wang_1@nxp.com>
+In-Reply-To: <20200928090455.34364-1-ran.wang_1@nxp.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: nxp.com; dkim=none (message not signed)
+ header.d=none;nxp.com; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [136.49.234.194]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 0cca13db-5f92-4cc9-7a53-08d863cf2e28
+x-ms-traffictypediagnostic: VE1PR04MB7389:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <VE1PR04MB7389F8B12B35394C795D2B8B8F350@VE1PR04MB7389.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:186;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: U45ZUNqj9VKQ46ReGTEPaXqrchvr3Nz8oAhjpwjglt31brKKfz+AuF7T8Y8GNvIFuKY8Wws3MPF6k8zcrqZLfz4GWCyWqiicutV5XUEnKFZNoKgq/vRKkjIOBOcRWa/s1cbIEuY9e+PkcpucZgO8nfyiq+qxhXsz3Jf7h+YsOknbogN9PkZfYRvPX+xOIu3sTvIpJL/aXLtEaaAmD/OnLMVXcMSJ7HbF0Isulgqz1+TJQDAQJohKVsl+AUWBg88PNtR5SfWuBmHUyqbp3fIUE2tDkxOxvuuH3n//r2GlxBGcdCDMWtAppiCwL1SxS0+tUWElCGaM3zKLuBI2JgphPRy1n12RxFTqUOuum9qpZU4M+sHvkp7I8zNNq9uZn7/E
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR04MB6687.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(366004)(39850400004)(136003)(396003)(53546011)(6506007)(2906002)(478600001)(186003)(26005)(9686003)(55016002)(8936002)(8676002)(5660300002)(4326008)(7696005)(33656002)(83380400001)(66446008)(66556008)(66946007)(66476007)(64756008)(76116006)(71200400001)(52536014)(54906003)(86362001)(316002)(110136005);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: aDtD8OyMv64SeKQ7OmXeTv/al9A4PW+nNJJhDLLL57OpNXVzHgNEym6i9X3ZW4PxWfKrNj6VmDPxp7TJsUMnogr1gVH9XtlthWGjtXRDKkIL5Z1oZn9FAEYjLABDaDKHboNZpngGoU2A0sNJ/yPeDJUawxBxOcaxCNsIple+C5m7Eo14f9nJsmI6xy3iP4W8Xqg9A2KsMeNPLzkt3bBPw7xcTx/nS55ZQbq9G7dAR6X81Pr6BCoxqPfnkkxDko5qM3pkw3+Y1LRxsEtK5eWsbRh6bmC6TLDK+57EW/4OjR8uQDkREXzMARRGp25lRswDvnJN5gzeZwmYKtVJ9Kv3OeYHCxUo9Boq4mOjGVyI1XRi/zgQzsuufiCM7VL/0RS+dgsR6IM7lvTqp7eLMWbCqZZC3NxMMFXt2dS1mrd+h1xYKLMTus5CKM/fKfG5fikFKYRgvvsOLJjz2VpkXc/ma7pO1TvL/9og+RVIN/gYn3jlln5UtKBBkbOCLBnza5hLj7lXMbBg4JlCJZC4GcUqx6yFiK+XbUdz6nbnvjAdnGNulkkP87yy0BHAvemApuoc4obgmprSG8Lv1CWn+Ats7IU+1s5pAkui0K36uCn3N2cNWWUFxpdBZU2Uj37Yj2vUiZ1vUch5YqEGbIlmUATeJg==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <20200903081550.6012-1-sakari.ailus@linux.intel.com>
- <f4b82baa-66b7-464e-fd39-66d2243a05ef@lucaceresoli.net> <20200911130104.GF26842@paasikivi.fi.intel.com>
- <6dea1206-cfaa-bfc5-d57e-4dcddadc03c7@lucaceresoli.net> <20200914094727.GM26842@paasikivi.fi.intel.com>
- <20200926123807.GA3781977@chromium.org> <20200927193900.GA30711@kunai>
- <CAAFQd5Be5sUQYtXapcSOu8CVffW2LuLog9qh71-+mxze9WYUVQ@mail.gmail.com> <CAJZ5v0hKQNv+qj-7EQ2Dmtk=UamtVKHBXDCjqo-48Qj13yY+cw@mail.gmail.com>
-In-Reply-To: <CAJZ5v0hKQNv+qj-7EQ2Dmtk=UamtVKHBXDCjqo-48Qj13yY+cw@mail.gmail.com>
-From:   Tomasz Figa <tfiga@chromium.org>
-Date:   Mon, 28 Sep 2020 18:49:22 +0200
-X-Gmail-Original-Message-ID: <CAAFQd5CP7bg+UQEp5uzuQY5a_xHLAB4ct81pkO0naAou=-QyKw@mail.gmail.com>
-Message-ID: <CAAFQd5CP7bg+UQEp5uzuQY5a_xHLAB4ct81pkO0naAou=-QyKw@mail.gmail.com>
-Subject: Re: [PATCH v8 0/6] Support running driver's probe for a device
- powered off
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Wolfram Sang <wsa@the-dreams.de>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Luca Ceresoli <luca@lucaceresoli.net>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Mani, Rajmohan" <rajmohan.mani@intel.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Bingbu Cao <bingbu.cao@intel.com>,
-        Chiranjeevi Rapolu <chiranjeevi.rapolu@intel.com>,
-        Hyungwoo Yang <hyungwoo.yang@intel.com>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: VE1PR04MB6687.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0cca13db-5f92-4cc9-7a53-08d863cf2e28
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Sep 2020 16:54:35.6330
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: F9RJ+Bgv5Ja/v03ja6yObhDluVzR0R0pTqC6HazIDxAKk2/sCrjMYGBR1FMk8hmY3iDnH1TQOClxY/LIw8azeA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB7389
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 4:18 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
->
-> On Sun, Sep 27, 2020 at 9:44 PM Tomasz Figa <tfiga@chromium.org> wrote:
-> >
-> > On Sun, Sep 27, 2020 at 9:39 PM Wolfram Sang <wsa@the-dreams.de> wrote:
-> > >
-> > >
-> > > > I think we might be overly complicating things. IMHO the series as is
-> > > > with the "i2c_" prefix removed from the flags introduced would be
-> > > > reusable as is for any other subsystem that needs it. Of course, for
-> > > > now, the handling of the flag would remain implemented only in the I2C
-> > > > subsystem.
-> > >
-> > > Just to be clear: you are suggesting to remove "i2c" from the DSD
-> > > binding "i2c-allow-low-power-probe". And you are not talking about
-> > > moving I2C_DRV_FL_ALLOW_LOW_POWER_PROBE to struct device_driver? I
-> > > recall the latter has been NACKed by gkh so far.
-> > >
-> >
-> > I'd also drop "I2C_" from "I2C_DRV_FL_ALLOW_LOW_POWER_PROBE", but all
-> > the implementation would remain where it is in the code. IOW, I'm just
-> > suggesting a naming change to avoid proliferating duplicate flags of
-> > the same meaning across subsystems.
->
-> But that would indicate that the property was recognized by other
-> subsystems which wouldn't be the case, so it would be confusing.
->
-> That's why it cannot be documented as a general property ATM too.
 
-I guess that's true. Well, this is kAPI in the end, so if we have more
-subsystems, it could be always renamed. So feel free to ignore my
-previous comment.
 
-Best regards,
-Tomasz
+> -----Original Message-----
+> From: Ran Wang <ran.wang_1@nxp.com>
+> Sent: Monday, September 28, 2020 4:05 AM
+> To: Shawn Guo <shawnguo@kernel.org>; Leo Li <leoyang.li@nxp.com>
+> Cc: moderated list:ARM/FREESCALE LAYERSCAPE ARM ARCHITECTURE <linux-
+> arm-kernel@lists.infradead.org>; open list:OPEN FIRMWARE AND
+> FLATTENED DEVICE TREE BINDINGS <devicetree@vger.kernel.org>; open list
+> <linux-kernel@vger.kernel.org>; Biwen Li <biwen.li@nxp.com>
+> Subject: [PATCH] arm64: dts: fix endianness of rcpm
+>=20
+> From: Biwen Li <biwen.li@nxp.com>
+>=20
+> Add little-endian property of rcpm for ls1028a,ls1088a,ls208xa
+>=20
+> Signed-off-by: Biwen Li <biwen.li@nxp.com>
+
+Acked-by: Li Yang <leoyang.li@nxp.com>
+
+> ---
+>  arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi | 1 +
+> arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi | 1 +
+> arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi | 1 +
+>  3 files changed, 3 insertions(+)
+>=20
+> diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
+> b/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
+> index 0efeb8f..651bfe1 100644
+> --- a/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
+> +++ b/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
+> @@ -1012,6 +1012,7 @@
+>  			compatible =3D "fsl,ls1028a-rcpm", "fsl,qoriq-rcpm-
+> 2.1+";
+>  			reg =3D <0x0 0x1e34040 0x0 0x1c>;
+>  			#fsl,rcpm-wakeup-cells =3D <7>;
+> +			little-endian;
+>  		};
+>=20
+>  		ftm_alarm0: timer@2800000 {
+> diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi
+> b/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi
+> index 169f474..2ef812d 100644
+> --- a/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi
+> +++ b/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi
+> @@ -787,6 +787,7 @@
+>  			compatible =3D "fsl,ls1088a-rcpm", "fsl,qoriq-rcpm-
+> 2.1+";
+>  			reg =3D <0x0 0x1e34040 0x0 0x18>;
+>  			#fsl,rcpm-wakeup-cells =3D <6>;
+> +			little-endian;
+>  		};
+>=20
+>  		ftm_alarm0: timer@2800000 {
+> diff --git a/arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi
+> b/arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi
+> index 41102da..141b3d2 100644
+> --- a/arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi
+> +++ b/arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi
+> @@ -769,6 +769,7 @@
+>  			compatible =3D "fsl,ls208xa-rcpm", "fsl,qoriq-rcpm-
+> 2.1+";
+>  			reg =3D <0x0 0x1e34040 0x0 0x18>;
+>  			#fsl,rcpm-wakeup-cells =3D <6>;
+> +			little-endian;
+>  		};
+>=20
+>  		ftm_alarm0: timer@2800000 {
+> --
+> 2.7.4
+
