@@ -2,134 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FBDD27B54E
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 21:30:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58B7627B551
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 21:33:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726776AbgI1TaR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 15:30:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58330 "EHLO
+        id S1726605AbgI1TdN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 15:33:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726565AbgI1TaR (ORCPT
+        with ESMTP id S1726424AbgI1TdM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 15:30:17 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0B59C061755
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 12:30:16 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id v23so1996830ljd.1
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 12:30:16 -0700 (PDT)
+        Mon, 28 Sep 2020 15:33:12 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDDD6C0613CE
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 12:33:11 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id n14so2020854pff.6
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 12:33:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wY4Gq79q0P/2bX+CuESc1n2E6IaS6wqp2Rm0+ZTB6Q0=;
-        b=de4GMA4QpsyK1q3+qSjbj6c/bLM77xIl2+5sVk0F/tdoa8BfjO8UHtRwPAqhaCHHUk
-         3uuZoHZ6nnGsdkuYJCmNPv8mLzeOXJVMpSpnADjB0rjFW0XGsiRnswMvG/RD1vL90qBW
-         9kJvFSyX6yVkV/XpEYZh26BJn07eZw9TlrY9s=
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=xGmHAT5QSIshHXwp7YID51MvJx+onGGMtyezVB0R6Ng=;
+        b=gM+1zEKGDWb8wTk5KkBYaUZpOp7ebv776xpvu0zHj9ly4WCEPlt1llMF+eb59a5jwK
+         8qBELP76Ay8flh1DeSBlj4oJqnNiNPrHBaEJJnJ2RFI0hLVuxEuYj1U/aTw9C6SRfm5B
+         AENBdyETa9hiqHeHMwNet1UOtTlnU8harBniFmHbhT1WAML8NW/kNr+qCZYMNqX/gR5L
+         fce7N+xKkxETMmXRPFGqy6slxFQi8mbfZJT9XtF9Zx800R19UV8l7HC3qU7H5xvxi3kX
+         wRtRUMIb1kCl0lQUey1rurC/tWUMn304dxtAOosGXicHKMQ5dRiMXAYvVx6KgDcSxEdB
+         Zg/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wY4Gq79q0P/2bX+CuESc1n2E6IaS6wqp2Rm0+ZTB6Q0=;
-        b=ScyKu90qFzke7cshu94RaxTkZ3Rq1YDaGEMbZe8sJtk4p7x9QKA8DR7gqEi294rXfh
-         1XBwyOI9MKB7HjHCS4SW8bdxXz3ji8g4iqcXnbVXx33bRNwhjPFHHpffeRCpQfOgaaQQ
-         /FzjQmsRQiuQyWCjwRanYmjZTpEhNhjhdQIeltpc/0dEKKoo6iCAgFFOYYHU6lbQfZe2
-         KWDkxh+DMnJB9E+yvsGH8epcZZTQDB02iLdekY2UjBPfToSP1cT6rARomtlNf+lWagZu
-         Y8VLZH7R01Eg/JUMslfbKtq8WlfcbGSpLwGIDdjO6k+bRINpw78StSBllk9DBDpBekMU
-         FePw==
-X-Gm-Message-State: AOAM532HeqTpYc9x6dJ+L+O4AeidhYdqOE0nD3S/Qm0+IWR6hGAuyBai
-        vcc2+ngqAN/cqa7Y1od5O70BCtfJQq0wgA==
-X-Google-Smtp-Source: ABdhPJzhHRDpJYRODQqxMRJs26plE99bxvzBLBxbm3NYKbadhIWb6AvUWAMjLYmzqHgBIwfpy/sLwA==
-X-Received: by 2002:a2e:2244:: with SMTP id i65mr34914lji.185.1601321414584;
-        Mon, 28 Sep 2020 12:30:14 -0700 (PDT)
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com. [209.85.167.41])
-        by smtp.gmail.com with ESMTPSA id g74sm2918715lfd.152.2020.09.28.12.30.12
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Sep 2020 12:30:13 -0700 (PDT)
-Received: by mail-lf1-f41.google.com with SMTP id m5so2662939lfp.7
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 12:30:12 -0700 (PDT)
-X-Received: by 2002:ac2:4a6a:: with SMTP id q10mr899873lfp.534.1601321412324;
- Mon, 28 Sep 2020 12:30:12 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xGmHAT5QSIshHXwp7YID51MvJx+onGGMtyezVB0R6Ng=;
+        b=TAxW8iuOc9G80/nf0rEaCBFNT1Ptozf91ycqIw0crxuwwNicntLVYGvLiQWroVxPp7
+         Q80/c0XQnsmi1L/bCdI5tNxD1XwVL5Y0ZaVXELXWDGMhnOzheFpIJc1VgsBs9tA3SDuP
+         xJG96yBqU2Lw2aFu32/UOQTleuMgPCXdHXVTUZB8lUbgLTVVXzGLfft02MiAJHHOA95R
+         TRF2pAP2Xi7XZ6713e0yPLweXIDOR5bHO19x8fs5/5sUFSERynAr5e1100uz3oo4x9Yn
+         PM8PjnOUI0XttBOInIJZ7YQXXWpbKKa4IqqMGEBnvYTDYRSO9j1wMhVahsSlJVzAdbRn
+         yJgw==
+X-Gm-Message-State: AOAM530PvvPDen6fvko0rAnz2gZxexTjK1nHEb0ksg4YNiNPszVn0cZ4
+        vqXYM5jZkyavhJNu3KL3Rjd+nA==
+X-Google-Smtp-Source: ABdhPJy4ybQGQxac1vDgAAYLrzMcGkVFJ9RWXgExQXY+uEuehtapWlxlAMRGYI2nHqneJ40dDXIM9w==
+X-Received: by 2002:a17:902:a987:b029:d2:8a38:5bbe with SMTP id bh7-20020a170902a987b02900d28a385bbemr957552plb.60.1601321591154;
+        Mon, 28 Sep 2020 12:33:11 -0700 (PDT)
+Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
+        by smtp.gmail.com with ESMTPSA id i17sm2488529pfa.29.2020.09.28.12.33.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Sep 2020 12:33:10 -0700 (PDT)
+Date:   Mon, 28 Sep 2020 13:33:08 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+Cc:     Ohad Ben-Cohen <ohad@wizery.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Loic PALLARDY <loic.pallardy@st.com>,
+        linux-remoteproc <linux-remoteproc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 00/10] rpmsg: Make RPMSG name service modular
+Message-ID: <20200928193308.GA85087@xps15>
+References: <20200928094941.GA4848@ubuntu>
 MIME-Version: 1.0
-References: <20200926004136.GJ9916@ziepe.ca> <CAHk-=wiutA_J-OfvrD8Kp3SoYcfMHUwsU7ViOH48q7QN0AQ6eg@mail.gmail.com>
- <CAHk-=wi_gd+JWj-8t8tc8cy3WZ7NMj-_1hATfH3Rt0ytUxtMpQ@mail.gmail.com>
- <20200927062337.GE2280698@unreal> <CAHk-=winqSOFsdn1ntYL13s2UuhpQQ9+GRvjWth3sA5APY4Wwg@mail.gmail.com>
- <CAHk-=wj61s30pt8POVtKYVamYTh6h=7-_ser2Hx9sEjqeACkDA@mail.gmail.com>
- <20200928124937.GN9916@ziepe.ca> <CAHk-=wj6aTsqq6BAUci-NYJ3b-EkDwVgz_NvW_kW8KBqGocouQ@mail.gmail.com>
- <20200928172256.GB59869@xz-x1> <CAHk-=wi=iCnYCARbPGjkVJu9eyYeZ13N64tZYLdOB8CP5Q_PLw@mail.gmail.com>
- <20200928183928.GR9916@ziepe.ca>
-In-Reply-To: <20200928183928.GR9916@ziepe.ca>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 28 Sep 2020 12:29:55 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wiRHLVK7Usrfdbh0MF7b86NLZ7gBWHV-Y89K_p3GU4KQg@mail.gmail.com>
-Message-ID: <CAHk-=wiRHLVK7Usrfdbh0MF7b86NLZ7gBWHV-Y89K_p3GU4KQg@mail.gmail.com>
-Subject: Re: [PATCH 1/5] mm: Introduce mm_struct.has_pinned
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Peter Xu <peterx@redhat.com>, Leon Romanovsky <leonro@nvidia.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jan Kara <jack@suse.cz>, Michal Hocko <mhocko@suse.com>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Kirill Shutemov <kirill@shutemov.name>,
-        Hugh Dickins <hughd@google.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200928094941.GA4848@ubuntu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 11:39 AM Jason Gunthorpe <jgg@ziepe.ca> wrote:
->
-> I prefer the version where read pin and write pin are symmetric. The
-> PTE in the MM should not change once pinned.
+Hey Guennadi,
 
-The thing is, I don't really see how to do that.
+On Mon, Sep 28, 2020 at 11:49:42AM +0200, Guennadi Liakhovetski wrote:
+> (re-sending, mailing list delivery attempts last Friday failed)
+> 
 
-Right now the write pin fastpath part depends on the PTE being
-writable. That implies "this VM has access to this page".
+I got your email on Friday but had to tend to other things.
 
-For a read pin there simply is no other way to do it.
+> Hi Mathieu,
+> 
+> On Thu, Sep 24, 2020 at 12:18:53PM -0600, Mathieu Poirier wrote:
+> > On Thu, Sep 24, 2020 at 08:53:56AM +0200, Guennadi Liakhovetski wrote:
+> 
+> [snip]
+> 
+> > > Yes, the current rpmsg-virtio code does create *one* rpmsg device when 
+> > > an NS announcement arrives.
+> > 
+> > Currently an rpmsg_device is created each time a NS announcement is received.  
+> 
+> Are there really cases when an NS announcement is sent multiple times by a 
+> remote? But not for the same name-space, at least in virtio_rpmsg_bus.c 
+> there's a check for a duplicate announcement in rpmsg_create_channel().
+> 
+> > > Whereas with this patch set the first rpmsg 
+> > > device would be created to probe the NS service driver and the next one 
+> > > would still be created following the code borrowed from rpmsg-virtio 
+> > > when an NS announcement arrives. And I don't see how those two devices 
+> > > now make sense, sorry. I understand one device per channel, but two, of 
+> > > which one is for a certain endpoing only, whereas other endpoints don't 
+> > > create their devices, don't seem very logical to me.
+> > 
+> > In the current implementation the NS service channel is created automatically
+> > when instantiating an rproc_vdev.
+> 
+> I think the terminology is slightly incorrect above. It isn't a channel, it's 
+> an endpoint. A channel is a synonym of a device in RPMsg (from rpmsg.txt):
+> 
+> "Every rpmsg device is a communication channel with a remote processor (thus
+> rpmsg devices are called channels)."
+> 
+> > An official rpmsg_device is not needed since
+> > it is implicit.
+> 
+> Agree.
+> 
+> > With this set (and as you noted above) an rpmsg_device to
+> > represent the NS service is registered, the same way other services such as
+> > rpmsg_chrdev are.
+> 
+> Oh, I think I'm getting it now. I think now I understand where the 
+> disagreement lies. If I understand correctly in your model each remote 
+> processor can provide multiple *devices* / *channels*. E.g. a remote
 
-So we'd basically say "fast read pin only works on writable pages",
-and then we'd have to go to the slow path if it isn't dirty and
-writable.
+That is correct
+ 
+> processor can provide a character device, a network device etc. Each of 
+> those devices / channels would send a namespace announcement to the 
+> main processor, which then would create a respective device and probe 
+> the respective driver - all with the same remote processor over the same 
+> RPMsg bus. I understand this concept and in fact I find it logical.
+> 
 
-And the slow path would then do whatever COW is required, but it
-wouldn't mark the result dirty (and in the case of a shared mapping,
-couldn't mark it writable).
+Ok
 
-So a read pin action would basically never work for the fast-path for
-a few cases, notably a shared read-only mapping - because we could
-never mark it in the page tables as "fast pin accessible"
+> However, since I have no experience with real life RPMsg implementations 
+> I am basing my understanding of RPMsg on the little and scarce and 
+> non-conclusive documentation that I can find online. E.g. on
+> 
+> https://github.com/OpenAMP/open-amp/wiki/RPMsg-Messaging-Protocol
+> 
+> which says:
+> 
+> "Every remote core in RPMsg component is represented by RPMsg device that 
+> provides a communication channel between master and remote, hence RPMsg 
+> devices are also known as channels"
+> 
+> So, according to that definition you cannot have a remote processor, 
+> doing both a character and a network devices. However, in kernel's 
+> rpmsg.txt an *almost exact* copy of that sentence is the quote, that 
+> I've already provided above, with a subtle but important difference:
+> 
+> "Every rpmsg device is a communication channel with a remote processor 
+> (thus rpmsg devices are called channels)."
 
-See the problem? A read-only pin is fundamentally different from a
-write one, because a write one has that fundamental mark of "I have
-private access to this page" in ways a read one simply does not.
+The documentation isn't easy to follow and personally got very confused when I
+started getting involved with the remoteproc/rpmsg subsystems.  I have the
+intention of doing a good revamp but there is never enough time. 
 
-So we could make the requirement be that a pinned page is either
+> 
+> It doesn't explicitly say, that there can be multiple devices per 
+> remote processor, but it doesn't specify, that there can be only one 
+> (TM) either, so, implicitly there can be many :-/ So, with this model, 
+> yes, I can understand, how a single instance of the RPMsg bus (in 
+> VirtIO case a pair of virtual queues) can have just *one* namespace 
+> service and serve *multiple* devices channels. In that case yes, the 
+> namespace service can be a separate device.
 
- (a) from a shared mapping (so the pinning depends on the page cache
-association). But we can't test this in the fast path.
+I will spin off a V2 of this set and we'll go from there.  I also want to get a
+look at Kishon's patchset that Arnaud and Vincent were referring to before
+making up my mind about how to move foward with your vhost RPMSG API patchset.
 
-or
+This is certainly taking longer than expected but I'd rather take the time to
+explore all aspects of the question rather than having to live with a solution
+that is not adequate.
 
- (b) for a private mapping we require page_mapcount() == 1 and that
-it's writable.
+Thanks for the patience,
+Mathieu
 
-but since (a) requires the mapping type, we can't check in the fast
-path - we only have the PTE and the page. So the fast-path can only
-"emulate" it by that "writable", which is a proper subset of (a) or
-(b), but it's not something that is in any way guaranteed.
-
-End result: FOLL_PIN would really only work on private pages, and only
-if you don't want to share with the page cache.
-
-And it would basically have no advantages over a writable FOLL_PIN. It
-would break the association with any backing store for private pages,
-because otherwise it can't follow future writes.
-
-                   Linus
+> 
+> Thanks
+> Guennadi
+> 
+> > After that nothing else changes and no other rpmgs_device
+> > are created until NS request come in.  When an NS request does come in an
+> > rpmsg_device is created, and that for each request that is received.
+> > 
+> > > 
+> > > Thanks
+> > > Guennadi
+> > > 
+> > > > To prove my theory I ran the rpmsg_client_sample.c and it just worked,
+> > > > no changes to client code needed.
+> > > > 
+> > > > Let's keep talking, it's the only way we'll get through this.
+> > > > 
+> > > > Mathieu
+> > > > 
+> > > > >
+> > > > > Thanks
+> > > > > Guennadi
+> > > > >
+> > > > > On Mon, Sep 21, 2020 at 06:09:50PM -0600, Mathieu Poirier wrote:
+> > > > > > Hi all,
+> > > > > >
+> > > > > > After looking at Guennadi[1] and Arnaud's patchsets[2] it became
+> > > > > > clear that we need to go back to a generic rpmsg_ns_msg structure
+> > > > > > if we wanted to make progress.  To do that some of the work from
+> > > > > > Arnaud had to be modified in a way that common name service
+> > > > > > functionality was transport agnostic.
+> > > > > >
+> > > > > > This patchset is based on Arnaud's work but also include a patch
+> > > > > > from Guennadi and some input from me.  It should serve as a
+> > > > > > foundation for the next revision of [1].
+> > > > > >
+> > > > > > Applies on rpmsg-next (4e3dda0bc603) and tested on stm32mp157. I
+> > > > > > did not test the modularisation.
+> > > > > >
+> > > > > > Comments and feedback would be greatly appreciated.
+> > > > > >
+> > > > > > Thanks,
+> > > > > > Mathieu
+> > > > > >
+> > > > > > [1]. https://patchwork.kernel.org/project/linux-remoteproc/list/?series=346593
+> > > > > > [2]. https://patchwork.kernel.org/project/linux-remoteproc/list/?series=338335
+> > > > > >
+> > > > > > Arnaud Pouliquen (5):
+> > > > > >   rpmsg: virtio: rename rpmsg_create_channel
+> > > > > >   rpmsg: core: Add channel creation internal API
+> > > > > >   rpmsg: virtio: Add rpmsg channel device ops
+> > > > > >   rpmsg: Turn name service into a stand alone driver
+> > > > > >   rpmsg: virtio: use rpmsg ns device for the ns announcement
+> > > > > >
+> > > > > > Guennadi Liakhovetski (1):
+> > > > > >   rpmsg: Move common structures and defines to headers
+> > > > > >
+> > > > > > Mathieu Poirier (4):
+> > > > > >   rpmsg: virtio: Move virtio RPMSG structures to private header
+> > > > > >   rpmsg: core: Add RPMSG byte conversion operations
+> > > > > >   rpmsg: virtio: Make endianness conversion virtIO specific
+> > > > > >   rpmsg: ns: Make Name service module transport agnostic
+> > > > > >
+> > > > > >  drivers/rpmsg/Kconfig            |   9 +
+> > > > > >  drivers/rpmsg/Makefile           |   1 +
+> > > > > >  drivers/rpmsg/rpmsg_core.c       |  96 +++++++++++
+> > > > > >  drivers/rpmsg/rpmsg_internal.h   | 102 +++++++++++
+> > > > > >  drivers/rpmsg/rpmsg_ns.c         | 108 ++++++++++++
+> > > > > >  drivers/rpmsg/virtio_rpmsg_bus.c | 284 +++++++++----------------------
+> > > > > >  include/linux/rpmsg_ns.h         |  83 +++++++++
+> > > > > >  include/uapi/linux/rpmsg.h       |   3 +
+> > > > > >  8 files changed, 487 insertions(+), 199 deletions(-)
+> > > > > >  create mode 100644 drivers/rpmsg/rpmsg_ns.c
+> > > > > >  create mode 100644 include/linux/rpmsg_ns.h
+> > > > > >
+> > > > > > --
+> > > > > > 2.25.1
+> > > > > >
+> 
+> ----- End forwarded message -----
