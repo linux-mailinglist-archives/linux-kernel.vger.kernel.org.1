@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C762127B799
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 01:14:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C90E027B7B6
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 01:15:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727116AbgI1XNo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 19:13:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36510 "EHLO
+        id S1726945AbgI1XPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 19:15:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727027AbgI1XNm (ORCPT
+        with ESMTP id S1726891AbgI1XNm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 28 Sep 2020 19:13:42 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9B05C05BD15
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 16:04:56 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id k6so653493ior.2
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 16:04:56 -0700 (PDT)
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB085C05BD18
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 16:04:57 -0700 (PDT)
+Received: by mail-il1-x142.google.com with SMTP id v13so826424ilc.7
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 16:04:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=MAvpS98+eTt3PNnsDgqV3HXwzJnvHmKZpA/Fx0C9NeU=;
-        b=nmnjKn7hIGhxVVl52AdTSSW+PI97BHwwxFLL2ocGbe0HTNrmxzsMxpY6dAOv4fQkAq
-         UcHLKgGsyPuvbeGxZ8gvSGJZxI7Fo8/98dgj2SOxBfsy4NBFu/gZkj3zjFzBBA7gyMD5
-         2QDzwVeVSk5s8N8qa4WmzcVQGox735h5qUG9N7CzO3RqAjJzH0IXARGi6ralYiEuCeCI
-         mlAbiPnPgMi9+ACgNyKv64bKfRy9FKtu4bllUGmJFm+2ddM/VRfs0DwhyVkBQzn48Kzd
-         G+oTNaim6lnx3YXOX37WqkWseCH51JY9N2LC4iWk9xTIj7/JHgmVg0cTtYHj+0luW2lw
-         OR8A==
+        bh=IejZ9HVKdCtJgxeP/Wkw81HQgdzY8PLcZSPCdSMKGqs=;
+        b=IuqZoPEAt8lZh+LH8stxOo7V1yhewO+HcnokthjTxP2EN0zz7cqBeSZ7AhPgfb2XEf
+         mkeRnkEVb568MfrMG/ECWGzFuYmG1fHXcF8g6V+1R+6R+u3PFxEIUSp7QNfxF5QTD3Sb
+         xevQc0awQWvpeNpdNOQ3uxKp+cjKlzZ89xclqi6aH90TGnmmweqhIlQtzodGKNuf/PVq
+         PiY996t/tY8Xk1l+onrHiA9zrm+LgH42de3Fn8ao5sq176vi+zRalM7g6QjCSloQa9gw
+         ZHWPHlZnpOyiPL2NGa6p4kJF1h99vkZj8hCj9pq5dUuidDqBh+BeCOlhmDryoPsVyjMF
+         yELA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=MAvpS98+eTt3PNnsDgqV3HXwzJnvHmKZpA/Fx0C9NeU=;
-        b=h/7CJoJR/hSpGPs/OydYUOnkmbIvYkd9uoilUnihOC8TRpOXtlWva3lkhN/lVsIymU
-         5FanSTL4B4s1wPSiqt6Gtcw9esIw3IYnSF7na3kN70teEWDoFHPifjOF5PE/+mQzAGxz
-         72jbtLMoBsPgg76CLA4+3h8gp9acHagCLtgnTqrTKpQF0pL3lZLIyT/pbi6xlYrZgPVI
-         ahQTA+H9tnfiqvD3q2FYTckfZYNSBzQQEQIBQQ2kWX26CDZQXX81JUq6qO56SPDeJ8gm
-         nbbEqkqw4ySZjVJ5XutFBVbrNsCJDu0yfIV+QcBxBpB68YqftqIFOGLVpepZ96KvjDtA
-         /95Q==
-X-Gm-Message-State: AOAM533fmYf6r0QxIXGgLiOp3isaH5eoSG4XV+HyMfbgQAMeEte0OpmT
-        pyLCqafNY+pWMiL7Xi8casYrpw==
-X-Google-Smtp-Source: ABdhPJyrhDF3QGHpPaZFLORNgTVk5P72ii6EsQAOByIv1qYBXFA3o5zQyW1/oZutWri77YsA2DMMLQ==
-X-Received: by 2002:a05:6638:22ba:: with SMTP id z26mr735160jas.55.1601334296154;
-        Mon, 28 Sep 2020 16:04:56 -0700 (PDT)
+        bh=IejZ9HVKdCtJgxeP/Wkw81HQgdzY8PLcZSPCdSMKGqs=;
+        b=X4BDRqkTSgqE6Va5FSloxuTlJz/nWiYecmD6pH/JbJSwpzdMsWO62iykXI3tj+nVch
+         ZcvxumyzfHIUsXvnbSBUFNUJdhPhGIQqci0FFAOj58zIUmzI/aTvC8Ej21HoFd/onLOu
+         V+7U3h5wr1QIP4DdQC7vYoGLSGLkOWpclvn1LKT79LAwSKRVtVjCQMej5lB2ZhZyMr4u
+         8mo5CtgjLN1PRoIPfJfuUMBjci9vRqNEn/S6zGtC1cleUAMweSuDo9FuSsHS2kVfnj57
+         R6/tyybHxLcNysF21BuYJDIuxoy8mw0wLpgCfquE9dBgSv2gppqRdZbmv8/nvxfeW/GW
+         /g3g==
+X-Gm-Message-State: AOAM530pXD5NFkn9rB6+YLeTM2bDRgq/GtbwScgTgfndjVEH0nbbIbCe
+        E66eCMMi2avBJMEab6HrHZwHoA==
+X-Google-Smtp-Source: ABdhPJzY21tQ1IcsTPzkr/fxeX1zf0OND1STpUfVwi49+pDQJN4uJScWAt4g3wYXTFEH3I6F9zCnlw==
+X-Received: by 2002:a92:1952:: with SMTP id e18mr539572ilm.189.1601334297118;
+        Mon, 28 Sep 2020 16:04:57 -0700 (PDT)
 Received: from beast.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id 137sm1009039ioc.20.2020.09.28.16.04.55
+        by smtp.gmail.com with ESMTPSA id 137sm1009039ioc.20.2020.09.28.16.04.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Sep 2020 16:04:55 -0700 (PDT)
+        Mon, 28 Sep 2020 16:04:56 -0700 (PDT)
 From:   Alex Elder <elder@linaro.org>
 To:     davem@davemloft.net, kuba@kernel.org
 Cc:     evgreen@chromium.org, subashab@codeaurora.org,
         cpratapa@codeaurora.org, bjorn.andersson@linaro.org,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 06/10] net: ipa: share field mask values for GSI global interrupt
-Date:   Mon, 28 Sep 2020 18:04:42 -0500
-Message-Id: <20200928230446.20561-7-elder@linaro.org>
+Subject: [PATCH net-next 07/10] net: ipa: share field mask values for GSI general interrupt
+Date:   Mon, 28 Sep 2020 18:04:43 -0500
+Message-Id: <20200928230446.20561-8-elder@linaro.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200928230446.20561-1-elder@linaro.org>
 References: <20200928230446.20561-1-elder@linaro.org>
@@ -65,72 +65,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The GSI global interrupt is managed by three registers: enable;
+The GSI general interrupt is managed by three registers: enable;
 status; and clear.  The three registers have same set of field bits
 at the same locations.  Use a common set of field masks for all
 three registers to avoid duplication.
 
 Signed-off-by: Alex Elder <elder@linaro.org>
 ---
- drivers/net/ipa/gsi.c     |  4 ++--
+ drivers/net/ipa/gsi.c     |  2 +-
  drivers/net/ipa/gsi_reg.h | 21 ++++++---------------
- 2 files changed, 8 insertions(+), 17 deletions(-)
+ 2 files changed, 7 insertions(+), 16 deletions(-)
 
 diff --git a/drivers/net/ipa/gsi.c b/drivers/net/ipa/gsi.c
-index 745717477cad3..203d079c481c4 100644
+index 203d079c481c4..cb676083dfa73 100644
 --- a/drivers/net/ipa/gsi.c
 +++ b/drivers/net/ipa/gsi.c
-@@ -1074,8 +1074,8 @@ static void gsi_isr_glob_ee(struct gsi *gsi)
+@@ -271,7 +271,7 @@ static void gsi_irq_enable(struct gsi *gsi)
+ 	iowrite32(val, gsi->virt + GSI_CNTXT_GLOB_IRQ_EN_OFFSET);
  
- 	val &= ~ERROR_INT_FMASK;
- 
--	if (val & EN_GP_INT1_FMASK) {
--		val ^= EN_GP_INT1_FMASK;
-+	if (val & GP_INT1_FMASK) {
-+		val ^= GP_INT1_FMASK;
- 		gsi_isr_gp_int1(gsi);
- 	}
+ 	/* Never enable GSI_BREAK_POINT */
+-	val = GSI_CNTXT_GSI_IRQ_ALL & ~EN_BREAK_POINT_FMASK;
++	val = GSI_CNTXT_GSI_IRQ_ALL & ~BREAK_POINT_FMASK;
+ 	iowrite32(val, gsi->virt + GSI_CNTXT_GSI_IRQ_EN_OFFSET);
+ }
  
 diff --git a/drivers/net/ipa/gsi_reg.h b/drivers/net/ipa/gsi_reg.h
-index 598db57a68dfb..b789e0f866fa0 100644
+index b789e0f866fa0..8e0e9350c3831 100644
 --- a/drivers/net/ipa/gsi_reg.h
 +++ b/drivers/net/ipa/gsi_reg.h
-@@ -321,29 +321,20 @@
- 			GSI_EE_N_CNTXT_GLOB_IRQ_STTS_OFFSET(GSI_EE_AP)
- #define GSI_EE_N_CNTXT_GLOB_IRQ_STTS_OFFSET(ee) \
- 			(0x0001f100 + 0x4000 * (ee))
--#define ERROR_INT_FMASK			GENMASK(0, 0)
--#define GP_INT1_FMASK			GENMASK(1, 1)
--#define GP_INT2_FMASK			GENMASK(2, 2)
--#define GP_INT3_FMASK			GENMASK(3, 3)
--
- #define GSI_CNTXT_GLOB_IRQ_EN_OFFSET \
- 			GSI_EE_N_CNTXT_GLOB_IRQ_EN_OFFSET(GSI_EE_AP)
- #define GSI_EE_N_CNTXT_GLOB_IRQ_EN_OFFSET(ee) \
- 			(0x0001f108 + 0x4000 * (ee))
--#define EN_ERROR_INT_FMASK		GENMASK(0, 0)
--#define EN_GP_INT1_FMASK		GENMASK(1, 1)
--#define EN_GP_INT2_FMASK		GENMASK(2, 2)
--#define EN_GP_INT3_FMASK		GENMASK(3, 3)
--#define GSI_CNTXT_GLOB_IRQ_ALL		GENMASK(3, 0)
--
- #define GSI_CNTXT_GLOB_IRQ_CLR_OFFSET \
- 			GSI_EE_N_CNTXT_GLOB_IRQ_CLR_OFFSET(GSI_EE_AP)
- #define GSI_EE_N_CNTXT_GLOB_IRQ_CLR_OFFSET(ee) \
- 			(0x0001f110 + 0x4000 * (ee))
--#define CLR_ERROR_INT_FMASK		GENMASK(0, 0)
--#define CLR_GP_INT1_FMASK		GENMASK(1, 1)
--#define CLR_GP_INT2_FMASK		GENMASK(2, 2)
--#define CLR_GP_INT3_FMASK		GENMASK(3, 3)
-+/* The masks below are used for the general IRQ STTS, EN, and CLR registers */
-+#define ERROR_INT_FMASK			GENMASK(0, 0)
-+#define GP_INT1_FMASK			GENMASK(1, 1)
-+#define GP_INT2_FMASK			GENMASK(2, 2)
-+#define GP_INT3_FMASK			GENMASK(3, 3)
-+#define GSI_CNTXT_GLOB_IRQ_ALL		GENMASK(3, 0)
- 
- #define GSI_CNTXT_GSI_IRQ_STTS_OFFSET \
+@@ -340,29 +340,20 @@
  			GSI_EE_N_CNTXT_GSI_IRQ_STTS_OFFSET(GSI_EE_AP)
+ #define GSI_EE_N_CNTXT_GSI_IRQ_STTS_OFFSET(ee) \
+ 			(0x0001f118 + 0x4000 * (ee))
+-#define BREAK_POINT_FMASK		GENMASK(0, 0)
+-#define BUS_ERROR_FMASK			GENMASK(1, 1)
+-#define CMD_FIFO_OVRFLOW_FMASK		GENMASK(2, 2)
+-#define MCS_STACK_OVRFLOW_FMASK		GENMASK(3, 3)
+-
+ #define GSI_CNTXT_GSI_IRQ_EN_OFFSET \
+ 			GSI_EE_N_CNTXT_GSI_IRQ_EN_OFFSET(GSI_EE_AP)
+ #define GSI_EE_N_CNTXT_GSI_IRQ_EN_OFFSET(ee) \
+ 			(0x0001f120 + 0x4000 * (ee))
+-#define EN_BREAK_POINT_FMASK		GENMASK(0, 0)
+-#define EN_BUS_ERROR_FMASK		GENMASK(1, 1)
+-#define EN_CMD_FIFO_OVRFLOW_FMASK	GENMASK(2, 2)
+-#define EN_MCS_STACK_OVRFLOW_FMASK	GENMASK(3, 3)
+-#define GSI_CNTXT_GSI_IRQ_ALL		GENMASK(3, 0)
+-
+ #define GSI_CNTXT_GSI_IRQ_CLR_OFFSET \
+ 			GSI_EE_N_CNTXT_GSI_IRQ_CLR_OFFSET(GSI_EE_AP)
+ #define GSI_EE_N_CNTXT_GSI_IRQ_CLR_OFFSET(ee) \
+ 			(0x0001f128 + 0x4000 * (ee))
+-#define CLR_BREAK_POINT_FMASK		GENMASK(0, 0)
+-#define CLR_BUS_ERROR_FMASK		GENMASK(1, 1)
+-#define CLR_CMD_FIFO_OVRFLOW_FMASK	GENMASK(2, 2)
+-#define CLR_MCS_STACK_OVRFLOW_FMASK	GENMASK(3, 3)
++/* The masks below are used for the general IRQ STTS, EN, and CLR registers */
++#define BREAK_POINT_FMASK		GENMASK(0, 0)
++#define BUS_ERROR_FMASK			GENMASK(1, 1)
++#define CMD_FIFO_OVRFLOW_FMASK		GENMASK(2, 2)
++#define MCS_STACK_OVRFLOW_FMASK		GENMASK(3, 3)
++#define GSI_CNTXT_GSI_IRQ_ALL		GENMASK(3, 0)
+ 
+ #define GSI_CNTXT_INTSET_OFFSET \
+ 			GSI_EE_N_CNTXT_INTSET_OFFSET(GSI_EE_AP)
 -- 
 2.20.1
 
