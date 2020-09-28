@@ -2,209 +2,705 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D08727B4FA
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 21:05:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D97127B4FC
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 21:05:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726635AbgI1TFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 15:05:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54524 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726281AbgI1TFa (ORCPT
+        id S1726672AbgI1TFg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 15:05:36 -0400
+Received: from mail-oi1-f194.google.com ([209.85.167.194]:37792 "EHLO
+        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726281AbgI1TFc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 15:05:30 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A4E7C061755;
-        Mon, 28 Sep 2020 12:05:28 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id ay8so2823294edb.8;
-        Mon, 28 Sep 2020 12:05:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:references:in-reply-to:subject:date:message-id
-         :mime-version:content-transfer-encoding:content-language
-         :thread-index;
-        bh=hRTBwQSNskyyWTt7HoaboYk425+EVn9mSaFvm7gVvzI=;
-        b=kFEqroD0yn0X0PdULijc1NU8Yf7u7hfECskpCWz8xWDN1nURcXG8azPKpLiY+2WNbi
-         FnIPi7cgFD53pS4rdmIzMlW+jPP+14zucxYTDmCn+kXI8hFN1dNK4vvLchiH59Q7gLYj
-         +fk+aFzFyspooNVybhD2qJhC2KPLrzw70qFkJv0na+dudpfjmZPr8zUVGX9eRa8/L9Fg
-         NBLAGehzqlzq7I0X6pRgMg4UkjER7e2fo2oN+73TvgYYgfNdG3V5my6yhsMD/mm4I7Wv
-         8ym7fzBwMghRp0GiNfc3B7ZRMfIFWpP6WyJCmvXbQPstb8DI2nuNnXDyxdRyoO9pbl06
-         6dLw==
+        Mon, 28 Sep 2020 15:05:32 -0400
+Received: by mail-oi1-f194.google.com with SMTP id a3so2559560oib.4;
+        Mon, 28 Sep 2020 12:05:31 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:references:in-reply-to:subject:date
-         :message-id:mime-version:content-transfer-encoding:content-language
-         :thread-index;
-        bh=hRTBwQSNskyyWTt7HoaboYk425+EVn9mSaFvm7gVvzI=;
-        b=XXnqN6LxcmDuOwvpBdvxogvbJ/1dbOkEuWho4mzHfpf03Kv1muC6lpI1K+b/2HvZIV
-         Gt64RW1fIZiYT1sZHJKmZlnnWB5hAuGDRk/booJ2ozCK+1t+5nK9G5THrVcbZj/aXYdK
-         K4lUFTHZYIRnos+D4+0hsuFqdEF8cbiuQSiAcWQqNiBbJvKE/QRjzVyuegse1XKVnPk2
-         r6u+cQXx4iEypzPL59uyz3idpiRtFe+vEjMFHD12QIgLMMo8kumA3rGEjF5tq8B1u98m
-         Su15pDbA2IFTpOW+bnWeZhrQtjgADjlUcdYQCaqXCSMc4uKolU1BYsQxouG1xRB2DDUs
-         9IqA==
-X-Gm-Message-State: AOAM532ICzpiepqbrbmVRy3zLwDgJM0/lZSqe21EcILgsfCo+MZ7t3np
-        O3Z3b4SeEYZQKEEFq/57Xx6/S1ELj/W6sc8K
-X-Google-Smtp-Source: ABdhPJyx1WFcLiVlf3JIRvX3dBSFpqSlvJxG8RGuzVpj4dxGjImJVhR7Jq4xn/oIqgvpaQK+KLO/MQ==
-X-Received: by 2002:a50:e3c4:: with SMTP id c4mr3550332edm.90.1601319926893;
-        Mon, 28 Sep 2020 12:05:26 -0700 (PDT)
-Received: from AnsuelXPS (93-39-149-95.ip76.fastwebnet.it. [93.39.149.95])
-        by smtp.gmail.com with ESMTPSA id x12sm2832585edq.77.2020.09.28.12.05.25
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 28 Sep 2020 12:05:26 -0700 (PDT)
-From:   <ansuelsmth@gmail.com>
-To:     "'Rob Herring'" <robh@kernel.org>
-Cc:     "'MyungJoo Ham'" <myungjoo.ham@samsung.com>,
-        "'Kyungmin Park'" <kyungmin.park@samsung.com>,
-        "'Chanwoo Choi'" <cw00.choi@samsung.com>,
-        <linux-pm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20200927160515.6480-1-ansuelsmth@gmail.com> <20200927160515.6480-2-ansuelsmth@gmail.com> <20200928180839.GB2999374@bogus>
-In-Reply-To: <20200928180839.GB2999374@bogus>
-Subject: RE: [PATCH 2/2] dt-bindings: devfreq: Document L2 Krait CPU Cache devfreq driver
-Date:   Mon, 28 Sep 2020 21:05:24 +0200
-Message-ID: <002401d695ca$52c2f850$f848e8f0$@gmail.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=XDu2k2l6eYaFtU/ZuyxSaqn6hMorOD2nCW+3Flv0l90=;
+        b=OfMNMIvVTPpVZ7oTvC75u6lW/i9N6BHSBM+Ie3P3Vn4ZWf+pAUUdEfKpgEiGa/Y0rJ
+         Z7JH3fIrfJ8bfOTTakh4hIOtuuJnDkxxfk2PvmBhhjVFuxYPeYPtEMvTqEvTmhU9mDIU
+         gpwgxp/XeeEGIQTMj7NVScZNbq30zwi65d98m+d/isD7LeUJ/8tuGDG6TyEdzq8psJG2
+         OT+Pp4BgoLoDO1YLCRTmjeESkzFK08ArNgP6TCD8YJ/r86wZp8Oq5DGf45L2IXy0J8jF
+         GIVPPEjkaMxrXR+4NhqwWirIK+wIAGmv1ydePyR8B65zV4XDskMt/Bc/KrrZiKGMOmUw
+         DU9g==
+X-Gm-Message-State: AOAM530nDbCbCWwAyPJ18AE9L7pgO/De7pxUhiT9vumnkusywq2YOLsu
+        /Ny8ETajUZxkP0FYeDbASw==
+X-Google-Smtp-Source: ABdhPJzSIhfuMLlGr7rmeHQ1zMkfF5B4ATyTNayvLRTSv847QcF8PXKecjGUO4TVsXOzNVnSq4asCw==
+X-Received: by 2002:aca:568d:: with SMTP id k135mr224087oib.136.1601319930279;
+        Mon, 28 Sep 2020 12:05:30 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id 71sm457506otm.81.2020.09.28.12.05.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Sep 2020 12:05:29 -0700 (PDT)
+Received: (nullmailer pid 3088450 invoked by uid 1000);
+        Mon, 28 Sep 2020 19:05:28 -0000
+Date:   Mon, 28 Sep 2020 14:05:28 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Zhen Lei <thunder.leizhen@huawei.com>
+Cc:     Wei Xu <xuwei5@hisilicon.com>,
+        Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Libin <huawei.libin@huawei.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>
+Subject: Re: [PATCH v4 01/20] dt-bindings: arm: hisilicon: split the
+ dt-bindings of each controller into a separate file
+Message-ID: <20200928190528.GA3082719@bogus>
+References: <20200928151324.2134-1-thunder.leizhen@huawei.com>
+ <20200928151324.2134-2-thunder.leizhen@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Content-Language: it
-Thread-Index: AQKHJ8vfj37MLqL4um7J+At48GMuxQIRgZ/YAlxGVsun+dZE4A==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200928151324.2134-2-thunder.leizhen@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Sep 28, 2020 at 11:13:05PM +0800, Zhen Lei wrote:
+> Split the devicetree bindings of each Hisilicon controller from
+> hisilicon.txt into a separate file, the file name is the compatible name
+> attach the .txt file name extension.
+> 
+> All Hi6220 dedicated controllers are grouped into subdirectory "hi3620".
+> All HiPxx  dedicated controllers are grouped into subdirectory "hipxx"
+> 
+> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> ---
+>  .../arm/hisilicon/controller/hisilicon,cpuctrl.txt |   8 +
+>  .../hisilicon/controller/hisilicon,dsa-subctrl.txt |  15 ++
+>  .../controller/hisilicon,hi3798cv200-perictrl.txt  |  21 ++
+>  .../controller/hisilicon,hi6220-aoctrl.txt         |  18 ++
+>  .../controller/hisilicon,hi6220-mediactrl.txt      |  18 ++
+>  .../controller/hisilicon,hi6220-pmctrl.txt         |  18 ++
+>  .../controller/hisilicon,hi6220-sramctrl.txt       |  16 ++
+>  .../controller/hisilicon,hi6220-sysctrl.txt        |  19 ++
+>  .../controller/hisilicon,hip01-sysctrl.txt         |  19 ++
+>  .../controller/hisilicon,hip04-bootwrapper.txt     |   9 +
+>  .../controller/hisilicon,hip04-fabric.txt          |   5 +
+>  .../controller/hisilicon,pcie-sas-subctrl.txt      |  15 ++
+>  .../arm/hisilicon/controller/hisilicon,pctrl.txt   |  13 +
+>  .../controller/hisilicon,peri-subctrl.txt          |  16 ++
+>  .../arm/hisilicon/controller/hisilicon,sysctrl.txt |  25 ++
+>  .../bindings/arm/hisilicon/hisilicon.txt           | 262 ---------------------
+>  16 files changed, 235 insertions(+), 262 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,cpuctrl.txt
+>  create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,dsa-subctrl.txt
+>  create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hi3798cv200-perictrl.txt
+>  create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hi6220-aoctrl.txt
+>  create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hi6220-mediactrl.txt
+>  create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hi6220-pmctrl.txt
+>  create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hi6220-sramctrl.txt
+>  create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hi6220-sysctrl.txt
+>  create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hip01-sysctrl.txt
+>  create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hip04-bootwrapper.txt
+>  create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hip04-fabric.txt
+>  create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,pcie-sas-subctrl.txt
+>  create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,pctrl.txt
+>  create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,peri-subctrl.txt
+>  create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,sysctrl.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,cpuctrl.txt b/Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,cpuctrl.txt
+> new file mode 100644
+> index 000000000000000..ceffac537671668
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,cpuctrl.txt
+> @@ -0,0 +1,8 @@
+> +Hisilicon CPU controller
+> +
+> +Required properties:
+> +- compatible : "hisilicon,cpuctrl"
+> +- reg : Register address and size
+> +
+> +The clock registers and power registers of secondary cores are defined
+> +in CPU controller, especially in HIX5HD2 SoC.
+> diff --git a/Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,dsa-subctrl.txt b/Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,dsa-subctrl.txt
+> new file mode 100644
+> index 000000000000000..4d1c6abf03f6f97
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,dsa-subctrl.txt
+> @@ -0,0 +1,15 @@
+> +Hisilicon HiP05/HiP06 DSA sub system controller
+> +
+> +Required properties:
+> +- compatible : "hisilicon,dsa-subctrl", "syscon";
 
+This and others with only 'reg' can just be moved to syscon.yaml.
 
-> -----Original Message-----
-> From: Rob Herring <robh@kernel.org>
-> Sent: Monday, September 28, 2020 8:09 PM
-> To: Ansuel Smith <ansuelsmth@gmail.com>
-> Cc: MyungJoo Ham <myungjoo.ham@samsung.com>; Kyungmin Park
-> <kyungmin.park@samsung.com>; Chanwoo Choi
-> <cw00.choi@samsung.com>; linux-pm@vger.kernel.org;
-> devicetree@vger.kernel.org; linux-kernel@vger.kernel.org
-> Subject: Re: [PATCH 2/2] dt-bindings: devfreq: Document L2 Krait CPU
-> Cache devfreq driver
+> +- reg : Register address and size
+> +
+> +The DSA sub system controller is shared by peripheral controllers in
+> +HiP05 or HiP06 Soc to implement some basic configurations.
+> +
+> +Example:
+> +	/* for HiP05 dsa sub system */
+> +	pcie_sas: system_controller@a0000000 {
+> +		compatible = "hisilicon,dsa-subctrl", "syscon";
+> +		reg = <0xa0000000 0x10000>;
+> +	};
+> diff --git a/Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hi3798cv200-perictrl.txt b/Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hi3798cv200-perictrl.txt
+> new file mode 100644
+> index 000000000000000..0d5282f4670658d
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hi3798cv200-perictrl.txt
+> @@ -0,0 +1,21 @@
+> +Hisilicon Hi3798CV200 Peripheral Controller
+> +
+> +The Hi3798CV200 Peripheral Controller controls peripherals, queries
+> +their status, and configures some functions of peripherals.
+> +
+> +Required properties:
+> +- compatible: Should contain "hisilicon,hi3798cv200-perictrl", "syscon"
+> +  and "simple-mfd".
+> +- reg: Register address and size of Peripheral Controller.
+> +- #address-cells: Should be 1.
+> +- #size-cells: Should be 1.
+> +
+> +Examples:
+> +
+> +	perictrl: peripheral-controller@8a20000 {
+> +		compatible = "hisilicon,hi3798cv200-perictrl", "syscon",
+> +			     "simple-mfd";
+> +		reg = <0x8a20000 0x1000>;
+> +		#address-cells = <1>;
+> +		#size-cells = <1>;
+> +	};
+> diff --git a/Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hi6220-aoctrl.txt b/Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hi6220-aoctrl.txt
+> new file mode 100644
+> index 000000000000000..5a723c1d45f4a17
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hi6220-aoctrl.txt
+> @@ -0,0 +1,18 @@
+> +Hisilicon Hi6220 Power Always ON domain controller
+> +
+> +Required properties:
+> +- compatible : "hisilicon,hi6220-aoctrl"
+> +- reg : Register address and size
+> +- #clock-cells: should be set to 1, many clock registers are defined
+> +  under this controller and this property must be present.
+> +
+> +Hisilicon designs this system controller to control the power always
+> +on domain for mobile platform.
+> +
+> +Example:
+> +	/*for Hi6220*/
+> +	ao_ctrl: ao_ctrl@f7800000 {
+> +		compatible = "hisilicon,hi6220-aoctrl", "syscon";
+> +		reg = <0x0 0xf7800000 0x0 0x2000>;
+> +		#clock-cells = <1>;
+> +	};
+> diff --git a/Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hi6220-mediactrl.txt b/Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hi6220-mediactrl.txt
+> new file mode 100644
+> index 000000000000000..dcfdcbcb6455771
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hi6220-mediactrl.txt
+> @@ -0,0 +1,18 @@
+> +Hisilicon Hi6220 Media domain controller
+> +
+> +Required properties:
+> +- compatible : "hisilicon,hi6220-mediactrl"
+> +- reg : Register address and size
+> +- #clock-cells: should be set to 1, many clock registers are defined
+> +  under this controller and this property must be present.
+> +
+> +Hisilicon designs this system controller to control the multimedia
+> +domain(e.g. codec, G3D ...) for mobile platform.
+> +
+> +Example:
+> +	/*for Hi6220*/
+> +	media_ctrl: media_ctrl@f4410000 {
+> +		compatible = "hisilicon,hi6220-mediactrl", "syscon";
+> +		reg = <0x0 0xf4410000 0x0 0x1000>;
+> +		#clock-cells = <1>;
+> +	};
+> diff --git a/Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hi6220-pmctrl.txt b/Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hi6220-pmctrl.txt
+> new file mode 100644
+> index 000000000000000..972842f07b5a2ce
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hi6220-pmctrl.txt
+> @@ -0,0 +1,18 @@
+> +Hisilicon Hi6220 Power Management domain controller
+> +
+> +Required properties:
+> +- compatible : "hisilicon,hi6220-pmctrl"
+> +- reg : Register address and size
+> +- #clock-cells: should be set to 1, some clock registers are define
+> +  under this controller and this property must be present.
+> +
+> +Hisilicon designs this system controller to control the power management
+> +domain for mobile platform.
+> +
+> +Example:
+> +	/*for Hi6220*/
+> +	pm_ctrl: pm_ctrl@f7032000 {
+> +		compatible = "hisilicon,hi6220-pmctrl", "syscon";
+> +		reg = <0x0 0xf7032000 0x0 0x1000>;
+> +		#clock-cells = <1>;
+> +	};
+> diff --git a/Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hi6220-sramctrl.txt b/Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hi6220-sramctrl.txt
+> new file mode 100644
+> index 000000000000000..086b7acccc5edc4
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hi6220-sramctrl.txt
+> @@ -0,0 +1,16 @@
+> +Hisilicon Hi6220 SRAM controller
+> +
+> +Required properties:
+> +- compatible : "hisilicon,hi6220-sramctrl", "syscon"
+> +- reg : Register address and size
+> +
+> +Hisilicon's SoCs use sram for multiple purpose; on Hi6220 there have several
+> +SRAM banks for power management, modem, security, etc. Further, use "syscon"
+> +managing the common sram which can be shared by multiple modules.
+> +
+> +Example:
+> +	/*for Hi6220*/
+> +	sram: sram@fff80000 {
+> +		compatible = "hisilicon,hi6220-sramctrl", "syscon";
+> +		reg = <0x0 0xfff80000 0x0 0x12000>;
+> +	};
+> diff --git a/Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hi6220-sysctrl.txt b/Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hi6220-sysctrl.txt
+> new file mode 100644
+> index 000000000000000..07e318eda254f52
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hi6220-sysctrl.txt
+> @@ -0,0 +1,19 @@
+> +Hisilicon Hi6220 system controller
+> +
+> +Required properties:
+> +- compatible : "hisilicon,hi6220-sysctrl"
+> +- reg : Register address and size
+> +- #clock-cells: should be set to 1, many clock registers are defined
+> +  under this controller and this property must be present.
+> +
+> +Hisilicon designs this controller as one of the system controllers,
+> +its main functions are the same as Hisilicon system controller, but
+> +the register offset of some core modules are different.
+> +
+> +Example:
+> +	/*for Hi6220*/
+> +	sys_ctrl: sys_ctrl@f7030000 {
+> +		compatible = "hisilicon,hi6220-sysctrl", "syscon";
+> +		reg = <0x0 0xf7030000 0x0 0x2000>;
+> +		#clock-cells = <1>;
+> +	};
+> diff --git a/Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hip01-sysctrl.txt b/Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hip01-sysctrl.txt
+> new file mode 100644
+> index 000000000000000..db2dfdce799db91
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hip01-sysctrl.txt
+> @@ -0,0 +1,19 @@
+> +Hisilicon HiP01 system controller
+> +
+> +Required properties:
+> +- compatible : "hisilicon,hip01-sysctrl"
+> +- reg : Register address and size
+> +
+> +The HiP01 system controller is mostly compatible with hisilicon
+> +system controller,but it has some specific control registers for
+> +HIP01 SoC family, such as slave core boot, and also some same
+> +registers located at different offset.
+> +
+> +Example:
+> +
+> +	/* for hip01-ca9x2 */
+> +	sysctrl: system-controller@10000000 {
+> +		compatible = "hisilicon,hip01-sysctrl", "hisilicon,sysctrl";
+> +		reg = <0x10000000 0x1000>;
+> +		reboot-offset = <0x4>;
+> +	};
+> diff --git a/Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hip04-bootwrapper.txt b/Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hip04-bootwrapper.txt
+> new file mode 100644
+> index 000000000000000..b0d53333f4fdae1
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hip04-bootwrapper.txt
+> @@ -0,0 +1,9 @@
+> +Bootwrapper boot method (software protocol on SMP):
+> +
+> +Required Properties:
+> +- compatible: "hisilicon,hip04-bootwrapper";
+> +- boot-method: Address and size of boot method.
+> +  [0]: bootwrapper physical address
+> +  [1]: bootwrapper size
+> +  [2]: relocation physical address
+> +  [3]: relocation size
+> diff --git a/Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hip04-fabric.txt b/Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hip04-fabric.txt
+> new file mode 100644
+> index 000000000000000..40453d02f2024bd
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hip04-fabric.txt
+> @@ -0,0 +1,5 @@
+> +Fabric:
+> +
+> +Required Properties:
+> +- compatible: "hisilicon,hip04-fabric";
+> +- reg: Address and size of Fabric
+> diff --git a/Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,pcie-sas-subctrl.txt b/Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,pcie-sas-subctrl.txt
+> new file mode 100644
+> index 000000000000000..1ef086bda81a3f5
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,pcie-sas-subctrl.txt
+> @@ -0,0 +1,15 @@
+> +Hisilicon HiP05/HiP06 PCIe-SAS sub system controller
+> +
+> +Required properties:
+> +- compatible : "hisilicon,pcie-sas-subctrl", "syscon";
+> +- reg : Register address and size
+> +
+> +The PCIe-SAS sub system controller is shared by PCIe and SAS controllers in
+> +HiP05 or HiP06 Soc to implement some basic configurations.
+> +
+> +Example:
+> +	/* for HiP05 PCIe-SAS sub system */
+> +	pcie_sas: system_controller@b0000000 {
+> +		compatible = "hisilicon,pcie-sas-subctrl", "syscon";
+> +		reg = <0xb0000000 0x10000>;
+> +	};
+> diff --git a/Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,pctrl.txt b/Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,pctrl.txt
+> new file mode 100644
+> index 000000000000000..deec777bc3a850a
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,pctrl.txt
+> @@ -0,0 +1,13 @@
+> +PCTRL: Peripheral misc control register
+> +
+> +Required Properties:
+> +- compatible: "hisilicon,pctrl"
+> +- reg: Address and size of pctrl.
+> +
+> +Example:
+> +
+> +	/* for Hi3620 */
+> +	pctrl: pctrl@fca09000 {
+> +		compatible = "hisilicon,pctrl";
+> +		reg = <0xfca09000 0x1000>;
+> +	};
+> diff --git a/Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,peri-subctrl.txt b/Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,peri-subctrl.txt
+> new file mode 100644
+> index 000000000000000..b96c2896078b914
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,peri-subctrl.txt
+> @@ -0,0 +1,16 @@
+> +Hisilicon HiP05/HiP06 PERI sub system controller
+> +
+> +Required properties:
+> +- compatible : "hisilicon,peri-subctrl", "syscon";
+> +- reg : Register address and size
+> +
+> +The PERI sub system controller is shared by peripheral controllers in
+> +HiP05 or HiP06 Soc to implement some basic configurations. The peripheral
+> +controllers include mdio, ddr, iic, uart, timer and so on.
+> +
+> +Example:
+> +	/* for HiP05 sub peri system */
+> +	peri_c_subctrl: syscon@80000000 {
+> +		compatible = "hisilicon,peri-subctrl", "syscon";
+> +		reg = <0x0 0x80000000 0x0 0x10000>;
+> +	};
+> diff --git a/Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,sysctrl.txt b/Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,sysctrl.txt
+> new file mode 100644
+> index 000000000000000..963f7f1ca7a2f0c
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,sysctrl.txt
+> @@ -0,0 +1,25 @@
+> +Hisilicon system controller
+> +
+> +Required properties:
+> +- compatible : "hisilicon,sysctrl"
+> +- reg : Register address and size
+> +
+> +Optional properties:
+> +- smp-offset : offset in sysctrl for notifying slave cpu booting
+> +		cpu 1, reg;
+> +		cpu 2, reg + 0x4;
+> +		cpu 3, reg + 0x8;
+> +		If reg value is not zero, cpun exit wfi and go
+> +- resume-offset : offset in sysctrl for notifying cpu0 when resume
+> +- reboot-offset : offset in sysctrl for system reboot
+> +
+> +Example:
+> +
+> +	/* for Hi3620 */
+> +	sysctrl: system-controller@fc802000 {
+> +		compatible = "hisilicon,sysctrl";
+> +		reg = <0xfc802000 0x1000>;
+> +		smp-offset = <0x31c>;
+> +		resume-offset = <0x308>;
+> +		reboot-offset = <0x4>;
+> +	};
+> diff --git a/Documentation/devicetree/bindings/arm/hisilicon/hisilicon.txt b/Documentation/devicetree/bindings/arm/hisilicon/hisilicon.txt
+> index a97f643e7d1c760..ffe760a636b5e7f 100644
+> --- a/Documentation/devicetree/bindings/arm/hisilicon/hisilicon.txt
+> +++ b/Documentation/devicetree/bindings/arm/hisilicon/hisilicon.txt
+> @@ -55,265 +55,3 @@ Required root node properties:
+>  HiP07 D05 Board
+>  Required root node properties:
+>  	- compatible = "hisilicon,hip07-d05";
+> -
+> -Hisilicon system controller
+> -
+> -Required properties:
+> -- compatible : "hisilicon,sysctrl"
+> -- reg : Register address and size
+> -
+> -Optional properties:
+> -- smp-offset : offset in sysctrl for notifying slave cpu booting
+> -		cpu 1, reg;
+> -		cpu 2, reg + 0x4;
+> -		cpu 3, reg + 0x8;
+> -		If reg value is not zero, cpun exit wfi and go
+> -- resume-offset : offset in sysctrl for notifying cpu0 when resume
+> -- reboot-offset : offset in sysctrl for system reboot
+> -
+> -Example:
+> -
+> -	/* for Hi3620 */
+> -	sysctrl: system-controller@fc802000 {
+> -		compatible = "hisilicon,sysctrl";
+> -		reg = <0xfc802000 0x1000>;
+> -		smp-offset = <0x31c>;
+> -		resume-offset = <0x308>;
+> -		reboot-offset = <0x4>;
+> -	};
+> -
+> ------------------------------------------------------------------------
+> -Hisilicon Hi3798CV200 Peripheral Controller
+> -
+> -The Hi3798CV200 Peripheral Controller controls peripherals, queries
+> -their status, and configures some functions of peripherals.
+> -
+> -Required properties:
+> -- compatible: Should contain "hisilicon,hi3798cv200-perictrl", "syscon"
+> -  and "simple-mfd".
+> -- reg: Register address and size of Peripheral Controller.
+> -- #address-cells: Should be 1.
+> -- #size-cells: Should be 1.
+> -
+> -Examples:
+> -
+> -	perictrl: peripheral-controller@8a20000 {
+> -		compatible = "hisilicon,hi3798cv200-perictrl", "syscon",
+> -			     "simple-mfd";
+> -		reg = <0x8a20000 0x1000>;
+> -		#address-cells = <1>;
+> -		#size-cells = <1>;
+> -	};
+> -
+> ------------------------------------------------------------------------
+> -Hisilicon Hi6220 system controller
+> -
+> -Required properties:
+> -- compatible : "hisilicon,hi6220-sysctrl"
+> -- reg : Register address and size
+> -- #clock-cells: should be set to 1, many clock registers are defined
+> -  under this controller and this property must be present.
+> -
+> -Hisilicon designs this controller as one of the system controllers,
+> -its main functions are the same as Hisilicon system controller, but
+> -the register offset of some core modules are different.
+> -
+> -Example:
+> -	/*for Hi6220*/
+> -	sys_ctrl: sys_ctrl@f7030000 {
+> -		compatible = "hisilicon,hi6220-sysctrl", "syscon";
+> -		reg = <0x0 0xf7030000 0x0 0x2000>;
+> -		#clock-cells = <1>;
+> -	};
+> -
+> -
+> -Hisilicon Hi6220 Power Always ON domain controller
+> -
+> -Required properties:
+> -- compatible : "hisilicon,hi6220-aoctrl"
+> -- reg : Register address and size
+> -- #clock-cells: should be set to 1, many clock registers are defined
+> -  under this controller and this property must be present.
+> -
+> -Hisilicon designs this system controller to control the power always
+> -on domain for mobile platform.
+> -
+> -Example:
+> -	/*for Hi6220*/
+> -	ao_ctrl: ao_ctrl@f7800000 {
+> -		compatible = "hisilicon,hi6220-aoctrl", "syscon";
+> -		reg = <0x0 0xf7800000 0x0 0x2000>;
+> -		#clock-cells = <1>;
+> -	};
+> -
+> -
+> -Hisilicon Hi6220 Media domain controller
+> -
+> -Required properties:
+> -- compatible : "hisilicon,hi6220-mediactrl"
+> -- reg : Register address and size
+> -- #clock-cells: should be set to 1, many clock registers are defined
+> -  under this controller and this property must be present.
+> -
+> -Hisilicon designs this system controller to control the multimedia
+> -domain(e.g. codec, G3D ...) for mobile platform.
+> -
+> -Example:
+> -	/*for Hi6220*/
+> -	media_ctrl: media_ctrl@f4410000 {
+> -		compatible = "hisilicon,hi6220-mediactrl", "syscon";
+> -		reg = <0x0 0xf4410000 0x0 0x1000>;
+> -		#clock-cells = <1>;
+> -	};
+> -
+> -
+> -Hisilicon Hi6220 Power Management domain controller
+> -
+> -Required properties:
+> -- compatible : "hisilicon,hi6220-pmctrl"
+> -- reg : Register address and size
+> -- #clock-cells: should be set to 1, some clock registers are define
+> -  under this controller and this property must be present.
+> -
+> -Hisilicon designs this system controller to control the power management
+> -domain for mobile platform.
+> -
+> -Example:
+> -	/*for Hi6220*/
+> -	pm_ctrl: pm_ctrl@f7032000 {
+> -		compatible = "hisilicon,hi6220-pmctrl", "syscon";
+> -		reg = <0x0 0xf7032000 0x0 0x1000>;
+> -		#clock-cells = <1>;
+> -	};
+> -
+> -
+> -Hisilicon Hi6220 SRAM controller
+> -
+> -Required properties:
+> -- compatible : "hisilicon,hi6220-sramctrl", "syscon"
+> -- reg : Register address and size
+> -
+> -Hisilicon's SoCs use sram for multiple purpose; on Hi6220 there have several
+> -SRAM banks for power management, modem, security, etc. Further, use "syscon"
+> -managing the common sram which can be shared by multiple modules.
+> -
+> -Example:
+> -	/*for Hi6220*/
+> -	sram: sram@fff80000 {
+> -		compatible = "hisilicon,hi6220-sramctrl", "syscon";
+> -		reg = <0x0 0xfff80000 0x0 0x12000>;
+> -	};
+> -
+> ------------------------------------------------------------------------
+> -Hisilicon HiP01 system controller
+> -
+> -Required properties:
+> -- compatible : "hisilicon,hip01-sysctrl"
+> -- reg : Register address and size
+> -
+> -The HiP01 system controller is mostly compatible with hisilicon
+> -system controller,but it has some specific control registers for
+> -HIP01 SoC family, such as slave core boot, and also some same
+> -registers located at different offset.
+> -
+> -Example:
+> -
+> -	/* for hip01-ca9x2 */
+> -	sysctrl: system-controller@10000000 {
+> -		compatible = "hisilicon,hip01-sysctrl", "hisilicon,sysctrl";
+> -		reg = <0x10000000 0x1000>;
+> -		reboot-offset = <0x4>;
+> -	};
+> -
+> ------------------------------------------------------------------------
+> -Hisilicon HiP05/HiP06 PCIe-SAS sub system controller
+> -
+> -Required properties:
+> -- compatible : "hisilicon,pcie-sas-subctrl", "syscon";
+> -- reg : Register address and size
+> -
+> -The PCIe-SAS sub system controller is shared by PCIe and SAS controllers in
+> -HiP05 or HiP06 Soc to implement some basic configurations.
+> -
+> -Example:
+> -	/* for HiP05 PCIe-SAS sub system */
+> -	pcie_sas: system_controller@b0000000 {
+> -		compatible = "hisilicon,pcie-sas-subctrl", "syscon";
+> -		reg = <0xb0000000 0x10000>;
+> -	};
+> -
+> -Hisilicon HiP05/HiP06 PERI sub system controller
+> -
+> -Required properties:
+> -- compatible : "hisilicon,peri-subctrl", "syscon";
+> -- reg : Register address and size
+> -
+> -The PERI sub system controller is shared by peripheral controllers in
+> -HiP05 or HiP06 Soc to implement some basic configurations. The peripheral
+> -controllers include mdio, ddr, iic, uart, timer and so on.
+> -
+> -Example:
+> -	/* for HiP05 sub peri system */
+> -	peri_c_subctrl: syscon@80000000 {
+> -		compatible = "hisilicon,peri-subctrl", "syscon";
+> -		reg = <0x0 0x80000000 0x0 0x10000>;
+> -	};
+> -
+> -Hisilicon HiP05/HiP06 DSA sub system controller
+> -
+> -Required properties:
+> -- compatible : "hisilicon,dsa-subctrl", "syscon";
+> -- reg : Register address and size
+> -
+> -The DSA sub system controller is shared by peripheral controllers in
+> -HiP05 or HiP06 Soc to implement some basic configurations.
+> -
+> -Example:
+> -	/* for HiP05 dsa sub system */
+> -	pcie_sas: system_controller@a0000000 {
+> -		compatible = "hisilicon,dsa-subctrl", "syscon";
+> -		reg = <0xa0000000 0x10000>;
+> -	};
+> -
+> ------------------------------------------------------------------------
+> -Hisilicon CPU controller
+> -
+> -Required properties:
+> -- compatible : "hisilicon,cpuctrl"
+> -- reg : Register address and size
+> -
+> -The clock registers and power registers of secondary cores are defined
+> -in CPU controller, especially in HIX5HD2 SoC.
+> -
+> ------------------------------------------------------------------------
+> -PCTRL: Peripheral misc control register
+> -
+> -Required Properties:
+> -- compatible: "hisilicon,pctrl"
+> -- reg: Address and size of pctrl.
+> -
+> -Example:
+> -
+> -	/* for Hi3620 */
+> -	pctrl: pctrl@fca09000 {
+> -		compatible = "hisilicon,pctrl";
+> -		reg = <0xfca09000 0x1000>;
+> -	};
+> -
+> ------------------------------------------------------------------------
+> -Fabric:
+> -
+> -Required Properties:
+> -- compatible: "hisilicon,hip04-fabric";
+> -- reg: Address and size of Fabric
+> -
+> ------------------------------------------------------------------------
+> -Bootwrapper boot method (software protocol on SMP):
+> -
+> -Required Properties:
+> -- compatible: "hisilicon,hip04-bootwrapper";
+> -- boot-method: Address and size of boot method.
+> -  [0]: bootwrapper physical address
+> -  [1]: bootwrapper size
+> -  [2]: relocation physical address
+> -  [3]: relocation size
+> -- 
+> 1.8.3
 > 
-> On Sun, Sep 27, 2020 at 06:05:13PM +0200, Ansuel Smith wrote:
-> > Document dedicated L2 Krait CPU Cache devfreq scaling driver.
-> >
-> > Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
-> > ---
-> >  .../bindings/devfreq/krait-cache-devfreq.yaml | 77
-> +++++++++++++++++++
-> >  1 file changed, 77 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/devfreq/krait-
-> cache-devfreq.yaml
-> >
-> > diff --git a/Documentation/devicetree/bindings/devfreq/krait-cache-
-> devfreq.yaml b/Documentation/devicetree/bindings/devfreq/krait-cache-
-> devfreq.yaml
-> > new file mode 100644
-> > index 000000000000..099ed978e022
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/devfreq/krait-cache-
-> devfreq.yaml
-> > @@ -0,0 +1,77 @@
-> > +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/cpufreq/krait-cache-devfreq.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: DEVFREQ driver for Krait L2 Cpu Cache Frequency Scaling
 > 
-> Bindings are for h/w devices, not collections of properties for some
-> driver. Define a binding for L2 cache and add on to it what you need.
-> 
-
-Should I still document it in the devfreq directory or somewhere else?
-
-> > +
-> > +maintainers:
-> > +  - Ansuel Smith <ansuelsmth@gmail.com>
-> > +
-> > +description: |
-> > +  This Scale the Krait CPU L2 Cache Frequency and optionally voltage
-> > +  when the Cpu Frequency is changed (using the cpufreq notifier).
-> > +
-> > +  Cache is scaled with the max frequency across all core and the cache
-> > +  frequency will scale based on the configured threshold in the dts.
-> > +
-> > +  The cache thresholds can be set to 3+ frequency bin, idle, nominal
-and
-> > +  high.
-> > +
-> > +properties:
-> > +  compatible:
-> > +    const: qcom,krait-cache
-> > +
-> > +  clocks:
-> > +    $ref: "/schemas/types.yaml#/definitions/phandle"
-> 
-> 'clocks' already has a type defined. You just need how many and what
-> each entry is.
-> 
-> > +    description: Phandle to the L2 CPU clock
-> > +
-> > +  clock-names:
-> > +    const: "l2"
-> > +
-> > +  voltage-tolerance:
-> > +    description: Same voltage tolerance of the Krait CPU
-> 
-> Needs a vendor prefix and unit suffix.
-> 
-> > +
-> > +  l2-cpufreq:
-> > +    description: |
-> > +      Threshold used by the driver to scale the L2 cache.
-> > +      If the max CPU Frequency is more than the set frequency,
-> > +      the driver will transition to the next frequency bin.
-> > +      Value is in kHz
-> > +    $ref: /schemas/types.yaml#/definitions/uint32-array
-> > +    minItems: 3
-> > +    items:
-> > +      - description: idle
-> > +      - description: nominal
-> > +      - description: high
-> > +
-> > +  l2-supply:
-> > +    $ref: "/schemas/types.yaml#/definitions/phandle"
-> > +    description: Phandle to the L2 regulator supply.
-> > +
-> > +  opp-table: true
-> > +
-> > +required:
-> > +  - compatible
-> > +  - clocks
-> > +  - clock-names
-> > +  - voltage-tolerance
-> > +  - l2-cpufreq
-> > +
-> > +examples:
-> > +  - |
-> > +    qcom-krait-cache {
-> > +      compatible = "qcom,krait-cache";
-> > +      clocks = <&kraitcc 4>;
-> > +      clock-names = "l2";
-> > +      l2-cpufreq = <384000 600000 1200000>;
-> > +      l2-supply = <&smb208_s1a>;
-> > +
-> > +      operating-points = <
-> 
-> Not documented and generally deprecated.
-> 
-
-Ok will change to v2.
-
-> > +        /* kHz    uV */
-> > +        384000  1100000
-> > +        1000000  1100000
-> > +        1200000  1150000
-> > +      >;
-> > +    };
-> > --
-> > 2.27.0
-> >
-
