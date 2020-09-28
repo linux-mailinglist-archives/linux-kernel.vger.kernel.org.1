@@ -2,196 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1833327A99F
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 10:35:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF76227A991
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 10:34:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726814AbgI1IfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 04:35:20 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:14252 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726440AbgI1IfU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 04:35:20 -0400
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 032E453F7FBAD8837765;
-        Mon, 28 Sep 2020 16:35:17 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 28 Sep 2020 16:35:14 +0800
-From:   Tian Tao <tiantao6@hisilicon.com>
-To:     <airlied@linux.ie>, <daniel@ffwll.ch>, <tzimmermann@suse.de>,
-        <kraxel@redhat.com>, <alexander.deucher@amd.com>,
-        <tglx@linutronix.de>, <dri-devel@lists.freedesktop.org>,
-        <xinliang.liu@linaro.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] drm/hisilicon: Using the to_hibmc_drm_private to convert
-Date:   Mon, 28 Sep 2020 16:32:43 +0800
-Message-ID: <1601281963-42133-1-git-send-email-tiantao6@hisilicon.com>
-X-Mailer: git-send-email 2.7.4
+        id S1726635AbgI1IeY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 04:34:24 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:41132 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726564AbgI1IeX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 04:34:23 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08S8YJKI079658;
+        Mon, 28 Sep 2020 03:34:19 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1601282059;
+        bh=fWqsfENT3V8ySGR52u4nqFw+xhnG6VUGz8rbAf/YYOE=;
+        h=From:To:CC:Subject:Date;
+        b=vZTUXFKvF76x0/hHZ6eE/9j/R7yQNpkgRFyA6zDZGLr7I1N8EElHjJfbk+Tj4bR21
+         N7mPgibVzvWH6JiXfP4sElJX9f0AhD4HsJmlbzJPBlPuLnj0vG5lNJZTD3GMXver5F
+         BPI0GFH7k0PDQ/xcCzmC2odOoPGQhM0hJ90e2Hpc=
+Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08S8YJlq101411;
+        Mon, 28 Sep 2020 03:34:19 -0500
+Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 28
+ Sep 2020 03:34:16 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 28 Sep 2020 03:34:16 -0500
+Received: from feketebors.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08S8YEaR065485;
+        Mon, 28 Sep 2020 03:34:14 -0500
+From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
+To:     <nm@ti.com>, <t-kristo@ti.com>, <ssantosh@kernel.org>,
+        <lokeshvutla@ti.com>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <grygorii.strashko@ti.com>
+Subject: [PATCH 00/11] firmware/soc: ti_sci, ringacc/inta: Preparation for AM64 DMA support
+Date:   Mon, 28 Sep 2020 11:34:18 +0300
+Message-ID: <20200928083429.17390-1-peter.ujfalusi@ti.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-CFilter-Loop: Reflected
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Using the to_hibmc_drm_private to convert over all uses of dev_private
-over to the function, and fix a little formatting issue.
+Hi,
 
-Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+The series prepares the ti_sci, ringacc, inta to support the new DMAs introduced
+with AM64.
+
+Separate series has been sent for the inta irqchip driver:
+https://lore.kernel.org/lkml/20200928063930.12012-1-peter.ujfalusi@ti.com/
+
+Patches for the DMA support will be based on this series due to build and
+feature dependencies.
+
+To support the new DMSS we need to change the ti_sci ring config API in order to
+be able to support the new parameters needed in the future.
+
+We also need to add support for the second range in RM as along with the AM64
+support, the resource allocation is going to change for existing SoC which used
+only the first range for resource allocation.
+
+The tx_tdtype support has been also missing from ti_sci for a long time and
+the AM64 specific extended_ch_type depends on the existence of it in the message
+struct.
+
+Santosh: if you plan to take this series for 5.11, then can you create an
+immutable branch which I can refer to Vinod for the DMA patches I'm going to
+send soon.
+
+Regards,
+Peter
 ---
- drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c   | 22 +++++++++++-----------
- drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c  |  5 ++---
- drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c |  4 ++--
- 3 files changed, 15 insertions(+), 16 deletions(-)
+Peter Ujfalusi (11):
+  firmware: ti_sci: rm: Add support for tx_tdtype parameter for tx
+    channel
+  firmware: ti_sci: Use struct ti_sci_resource_desc in get_range ops
+  firmware: ti_sci: rm: Add support for second resource range
+  soc: ti: ti_sci_inta_msi: Add support for second range in resource
+    ranges
+  firmware: ti_sci: rm: Add support for extended_ch_type for tx channel
+  firmware: ti_sci: rm: Remove ring_get_config support
+  firmware: ti_sci: rm: Add new ops for ring configuration
+  soc: ti: k3-ringacc: Use the ti_sci set_cfg callback for ring
+    configuration
+  firmware: ti_sci: rm: Remove unused config() from
+    ti_sci_rm_ringacc_ops
+  soc: ti: k3-ringacc: Use correct device for allocation in RING mode
+  soc: ti: k3-socinfo: Add entry for AM64 SoC family
 
-diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c
-index 4d57ec6..a98f993 100644
---- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c
-+++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c
-@@ -105,7 +105,7 @@ static void hibmc_plane_atomic_update(struct drm_plane *plane,
- 	u32 reg;
- 	s64 gpu_addr = 0;
- 	unsigned int line_l;
--	struct hibmc_drm_private *priv = plane->dev->dev_private;
-+	struct hibmc_drm_private *priv = to_hibmc_drm_private(plane->dev);
- 	struct drm_gem_vram_object *gbo;
- 
- 	if (!state->fb)
-@@ -159,7 +159,7 @@ static const struct drm_plane_helper_funcs hibmc_plane_helper_funcs = {
- 
- static void hibmc_crtc_dpms(struct drm_crtc *crtc, int dpms)
- {
--	struct hibmc_drm_private *priv = crtc->dev->dev_private;
-+	struct hibmc_drm_private *priv = to_hibmc_drm_private(crtc->dev);
- 	unsigned int reg;
- 
- 	reg = readl(priv->mmio + HIBMC_CRT_DISP_CTL);
-@@ -175,7 +175,7 @@ static void hibmc_crtc_atomic_enable(struct drm_crtc *crtc,
- 				     struct drm_crtc_state *old_state)
- {
- 	unsigned int reg;
--	struct hibmc_drm_private *priv = crtc->dev->dev_private;
-+	struct hibmc_drm_private *priv = to_hibmc_drm_private(crtc->dev);
- 
- 	hibmc_set_power_mode(priv, HIBMC_PW_MODE_CTL_MODE_MODE0);
- 
-@@ -194,7 +194,7 @@ static void hibmc_crtc_atomic_disable(struct drm_crtc *crtc,
- 				      struct drm_crtc_state *old_state)
- {
- 	unsigned int reg;
--	struct hibmc_drm_private *priv = crtc->dev->dev_private;
-+	struct hibmc_drm_private *priv = to_hibmc_drm_private(crtc->dev);
- 
- 	hibmc_crtc_dpms(crtc, HIBMC_CRT_DPMS_OFF);
- 	drm_crtc_vblank_off(crtc);
-@@ -254,7 +254,7 @@ static unsigned int format_pll_reg(void)
- static void set_vclock_hisilicon(struct drm_device *dev, unsigned long pll)
- {
- 	u32 val;
--	struct hibmc_drm_private *priv = dev->dev_private;
-+	struct hibmc_drm_private *priv = to_hibmc_drm_private(dev);
- 
- 	val = readl(priv->mmio + CRT_PLL1_HS);
- 	val &= ~(CRT_PLL1_HS_OUTER_BYPASS(1));
-@@ -315,7 +315,7 @@ static unsigned int display_ctrl_adjust(struct drm_device *dev,
- 	unsigned long x, y;
- 	u32 pll1; /* bit[31:0] of PLL */
- 	u32 pll2; /* bit[63:32] of PLL */
--	struct hibmc_drm_private *priv = dev->dev_private;
-+	struct hibmc_drm_private *priv = to_hibmc_drm_private(dev);
- 
- 	x = mode->hdisplay;
- 	y = mode->vdisplay;
-@@ -363,7 +363,7 @@ static void hibmc_crtc_mode_set_nofb(struct drm_crtc *crtc)
- 	unsigned int val;
- 	struct drm_display_mode *mode = &crtc->state->mode;
- 	struct drm_device *dev = crtc->dev;
--	struct hibmc_drm_private *priv = dev->dev_private;
-+	struct hibmc_drm_private *priv = to_hibmc_drm_private(dev);
- 	int width = mode->hsync_end - mode->hsync_start;
- 	int height = mode->vsync_end - mode->vsync_start;
- 
-@@ -397,7 +397,7 @@ static void hibmc_crtc_atomic_begin(struct drm_crtc *crtc,
- {
- 	unsigned int reg;
- 	struct drm_device *dev = crtc->dev;
--	struct hibmc_drm_private *priv = dev->dev_private;
-+	struct hibmc_drm_private *priv = to_hibmc_drm_private(dev);
- 
- 	hibmc_set_power_mode(priv, HIBMC_PW_MODE_CTL_MODE_MODE0);
- 
-@@ -427,7 +427,7 @@ static void hibmc_crtc_atomic_flush(struct drm_crtc *crtc,
- 
- static int hibmc_crtc_enable_vblank(struct drm_crtc *crtc)
- {
--	struct hibmc_drm_private *priv = crtc->dev->dev_private;
-+	struct hibmc_drm_private *priv = to_hibmc_drm_private(crtc->dev);
- 
- 	writel(HIBMC_RAW_INTERRUPT_EN_VBLANK(1),
- 	       priv->mmio + HIBMC_RAW_INTERRUPT_EN);
-@@ -437,7 +437,7 @@ static int hibmc_crtc_enable_vblank(struct drm_crtc *crtc)
- 
- static void hibmc_crtc_disable_vblank(struct drm_crtc *crtc)
- {
--	struct hibmc_drm_private *priv = crtc->dev->dev_private;
-+	struct hibmc_drm_private *priv = to_hibmc_drm_private(crtc->dev);
- 
- 	writel(HIBMC_RAW_INTERRUPT_EN_VBLANK(0),
- 	       priv->mmio + HIBMC_RAW_INTERRUPT_EN);
-@@ -445,7 +445,7 @@ static void hibmc_crtc_disable_vblank(struct drm_crtc *crtc)
- 
- static void hibmc_crtc_load_lut(struct drm_crtc *crtc)
- {
--	struct hibmc_drm_private *priv = crtc->dev->dev_private;
-+	struct hibmc_drm_private *priv = to_hibmc_drm_private(crtc->dev);
- 	void __iomem   *mmio = priv->mmio;
- 	u16 *r, *g, *b;
- 	unsigned int reg;
-diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
-index 085d1b2..5632bce 100644
---- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
-+++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
-@@ -29,8 +29,7 @@ DEFINE_DRM_GEM_FOPS(hibmc_fops);
- static irqreturn_t hibmc_drm_interrupt(int irq, void *arg)
- {
- 	struct drm_device *dev = (struct drm_device *)arg;
--	struct hibmc_drm_private *priv =
--		(struct hibmc_drm_private *)dev->dev_private;
-+	struct hibmc_drm_private *priv = to_hibmc_drm_private(dev);
- 	u32 status;
- 
- 	status = readl(priv->mmio + HIBMC_RAW_INTERRUPT);
-@@ -244,7 +243,7 @@ static int hibmc_hw_init(struct hibmc_drm_private *priv)
- 
- static int hibmc_unload(struct drm_device *dev)
- {
--	struct hibmc_drm_private *priv = dev->dev_private;
-+	struct hibmc_drm_private *priv = to_hibmc_drm_private(dev);
- 
- 	drm_atomic_helper_shutdown(dev);
- 
-diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c
-index c6999ed..74e26c2 100644
---- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c
-+++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c
-@@ -43,7 +43,7 @@ static int hibmc_connector_get_modes(struct drm_connector *connector)
- }
- 
- static enum drm_mode_status hibmc_connector_mode_valid(struct drm_connector *connector,
--				      struct drm_display_mode *mode)
-+						       struct drm_display_mode *mode)
- {
- 	return MODE_OK;
- }
-@@ -76,7 +76,7 @@ static void hibmc_encoder_mode_set(struct drm_encoder *encoder,
- {
- 	u32 reg;
- 	struct drm_device *dev = encoder->dev;
--	struct hibmc_drm_private *priv = dev->dev_private;
-+	struct hibmc_drm_private *priv = to_hibmc_drm_private(dev);
- 
- 	reg = readl(priv->mmio + HIBMC_DISPLAY_CONTROL_HISILE);
- 	reg |= HIBMC_DISPLAY_CONTROL_FPVDDEN(1);
+ drivers/firmware/ti_sci.c              | 213 ++++++++-----------------
+ drivers/firmware/ti_sci.h              |  72 +++------
+ drivers/soc/ti/k3-ringacc.c            |  93 +++++------
+ drivers/soc/ti/k3-socinfo.c            |   1 +
+ drivers/soc/ti/ti_sci_inta_msi.c       |  12 ++
+ include/linux/soc/ti/k3-ringacc.h      |   5 +
+ include/linux/soc/ti/ti_sci_protocol.h |  85 ++++++----
+ 7 files changed, 212 insertions(+), 269 deletions(-)
+
 -- 
-2.7.4
+Peter
+
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
 
