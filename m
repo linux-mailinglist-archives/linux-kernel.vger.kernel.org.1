@@ -2,114 +2,298 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07DFB27AB2E
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 11:49:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D53A27AB30
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 11:50:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726657AbgI1Jtf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 05:49:35 -0400
-Received: from z5.mailgun.us ([104.130.96.5]:17115 "EHLO z5.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726613AbgI1Jtd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 05:49:33 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1601286573; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=tDj5n6K8IeZnQ6btqEHXZBbw96aBXI7FnObmdzhi9PM=; b=xfZLvS9c0h0Vxu6h0CgYDZvnQhWJquhqSgE3K0atNKo8p29xdURqhyl0UtMrZMqbbFVhRXAi
- jz4eQHuoqOBaAj6z5NUNV0/ghxIq/zotzT0uOt0sSKSWisdQ/42BHiKs/xWFOBKIJaLjqDd5
- 7L75msA9SSgJOCSQgBl/MdKn+OY=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 5f71b1ad9cd44bf51a987bfe (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 28 Sep 2020 09:49:33
- GMT
-Sender: srivasam=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 79233C43385; Mon, 28 Sep 2020 09:49:32 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from hyd-lnxbld210.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: srivasam)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id D18D3C433C8;
-        Mon, 28 Sep 2020 09:49:28 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D18D3C433C8
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=srivasam@codeaurora.org
-From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, rohitkr@codeaurora.org,
-        srinivas.kandagatla@linaro.org
-Cc:     V Sujith Kumar Reddy <vsujithk@codeaurora.org>,
-        Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Subject: [PATCH v2 2/2] arm64: dts: qcom: sc7180-trogdor: Add lpass dai link for HDMI
-Date:   Mon, 28 Sep 2020 15:19:05 +0530
-Message-Id: <1601286545-25429-3-git-send-email-srivasam@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1601286545-25429-1-git-send-email-srivasam@codeaurora.org>
-References: <1601286545-25429-1-git-send-email-srivasam@codeaurora.org>
+        id S1726670AbgI1JuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 05:50:01 -0400
+Received: from mxout04.lancloud.ru ([89.108.124.63]:58232 "EHLO
+        mxout04.lancloud.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726610AbgI1JuB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 05:50:01 -0400
+Received: from LanCloud
+DKIM-Filter: OpenDKIM Filter v2.11.0 mxout04.lancloud.ru ACE43206FCE6
+Received: from LanCloud
+Received: from LanCloud
+Received: from LanCloud
+Date:   Mon, 28 Sep 2020 12:49:52 +0300
+From:   Elvira Khabirova <e.khabirova@omprussia.ru>
+To:     Elvira Khabirova via OP-TEE <op-tee@lists.trustedfirmware.org>
+CC:     Elvira Khabirova <e.khabirova@omprussia.ru>,
+        <k.karasev@omprussia.ru>, <s.shtylyov@omprussia.ru>,
+        <linux-kernel@vger.kernel.org>, <jens.wiklander@linaro.org>
+Subject: Re: [RFC PATCH] tee: add support for application-based session
+ login methods
+Message-ID: <20200928124952.38f09300@akathisia>
+In-Reply-To: <010001749cbe8c36-0330f6a3-10a0-4835-b799-570cb9bfa1e0-000000@email.amazonses.com>
+References: <010001749cbe8c36-0330f6a3-10a0-4835-b799-570cb9bfa1e0-000000@email.amazonses.com>
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [89.255.69.56]
+X-ClientProxiedBy: LFEXT02.lancloud.ru (fd00:f066::142) To
+ LFEX1903.lancloud.ru (fd00:f066::73)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
+Hello,
 
-Add dai link in sc7180-trogdor.dtsi for supporting audio over DP
+On Thu, 17 Sep 2020 15:46:07 +0000
+Elvira Khabirova via OP-TEE <op-tee@lists.trustedfirmware.org> wrote:
 
-Signed-off-by: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
-Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
----
- arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+> GP TEE Client API in addition to login methods already supported
+> in the kernel also defines several application-based methods:
+> TEEC_LOGIN_APPLICATION, TEEC_LOGIN_USER_APPLICATION, and
+> TEEC_LOGIN_GROUP_APPLICATION.
+> 
+> It specifies credentials generated for TEEC_LOGIN_APPLICATION as only
+> depending on the identity of the program, being persistent within one
+> implementation, across multiple invocations of the application
+> and across power cycles, enabling them to be used to disambiguate
+> persistent storage. The exact nature is REE-specific.
+> 
+> As the exact method of generating application identifier strings may
+> vary between vendors, setups and installations, add two suggested
+> methods and an exact framework for vendors to extend upon.
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-index 5724982..2fbcb4f 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-@@ -230,6 +230,7 @@
- 			"Headphone Jack", "HPOR";
- 
- 		audio-jack = <&alc5682>;
-+		hdmi-jack = <&msm_dp>;
- 
- 		#address-cells = <1>;
- 		#size-cells = <0>;
-@@ -257,6 +258,17 @@
- 				sound-dai = <&max98357a>;
- 			};
- 		};
-+		dai-link@2 {
-+			link-name = "MultiMedia2";
-+			reg = <2>;
-+			cpu {
-+				sound-dai = <&lpass_cpu 2>;
-+			};
-+
-+			codec {
-+				sound-dai = <&msm_dp>;
-+			};
-+		};
- 	};
- };
- 
-@@ -782,6 +794,9 @@ hp_i2c: &i2c9 {
- 		reg = <MI2S_SECONDARY>;
- 		qcom,playback-sd-lines = <0>;
- 	};
-+	hdmi-primary@0 {
-+		reg = <LPASS_DP_RX>;
-+	};
- };
- 
- &mdp {
--- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+If there are no comments on this, I will resend this and drop [RFC]
+from the subject.
+
+> Signed-off-by: Elvira Khabirova <e.khabirova@omprussia.ru>
+> ---
+>  drivers/tee/Kconfig    |  29 +++++++++
+>  drivers/tee/tee_core.c | 136 ++++++++++++++++++++++++++++++++++++++++-
+>  2 files changed, 164 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/tee/Kconfig b/drivers/tee/Kconfig
+> index e99d840c2511..4cd6e0d2aad5 100644
+> --- a/drivers/tee/Kconfig
+> +++ b/drivers/tee/Kconfig
+> @@ -11,6 +11,35 @@ config TEE
+>  	  This implements a generic interface towards a Trusted Execution
+>  	  Environment (TEE).
+>  
+> +choice
+> +	prompt "Application ID for client UUID"
+> +	depends on TEE
+> +	default TEE_APPID_PATH
+> +	help
+> +	  This option allows to choose which method will be used to generate
+> +	  application identifiers for client UUID generation when login methods
+> +	  TEE_LOGIN_APPLICATION, TEE_LOGIN_USER_APPLICATION
+> +	  and TEE_LOGIN_GROUP_APPLICATION are used.
+> +	  Please be mindful of the security of each method in your particular
+> +	  installation.
+> +
+> +	config TEE_APPID_PATH
+> +		bool "Path-based application ID"
+> +		help
+> +		  Use the executable's path as an application ID.
+> +
+> +	config TEE_APPID_SECURITY
+> +		bool "Security extended attribute based application ID"
+> +		help
+> +		  Use the executable's security extended attribute as an application ID.
+> +endchoice
+> +
+> +config TEE_APPID_SECURITY_XATTR
+> +	string "Security extended attribute to use for application ID"
+> +	depends on TEE_APPID_SECURITY
+> +	help
+> +	  Attribute to be used as an application ID (with the security prefix removed).
+> +
+>  if TEE
+>  
+>  menu "TEE drivers"
+> diff --git a/drivers/tee/tee_core.c b/drivers/tee/tee_core.c
+> index 64637e09a095..19c965dd212b 100644
+> --- a/drivers/tee/tee_core.c
+> +++ b/drivers/tee/tee_core.c
+> @@ -7,8 +7,10 @@
+>  
+>  #include <linux/cdev.h>
+>  #include <linux/cred.h>
+> +#include <linux/file.h>
+>  #include <linux/fs.h>
+>  #include <linux/idr.h>
+> +#include <linux/mm.h>
+>  #include <linux/module.h>
+>  #include <linux/slab.h>
+>  #include <linux/tee_drv.h>
+> @@ -17,11 +19,15 @@
+>  #include <crypto/sha.h>
+>  #include "tee_private.h"
+>  
+> +#ifdef CONFIG_TEE_APPID_SECURITY
+> +#include <linux/security.h>
+> +#endif
+> +
+>  #define TEE_NUM_DEVICES	32
+>  
+>  #define TEE_IOCTL_PARAM_SIZE(x) (sizeof(struct tee_param) * (x))
+>  
+> -#define TEE_UUID_NS_NAME_SIZE	128
+> +#define TEE_UUID_NS_NAME_SIZE	PATH_MAX
+>  
+>  /*
+>   * TEE Client UUID name space identifier (UUIDv4)
+> @@ -125,6 +131,67 @@ static int tee_release(struct inode *inode, struct file *filp)
+>  	return 0;
+>  }
+>  
+> +#ifdef CONFIG_TEE_APPID_SECURITY
+> +static const char *tee_session_get_application_id(void **data)
+> +{
+> +	struct file *exe_file;
+> +	const char *name = CONFIG_TEE_APPID_SECURITY_XATTR;
+> +	int len;
+> +
+> +	exe_file = get_mm_exe_file(current->mm);
+> +	if (!exe_file)
+> +		return ERR_PTR(-ENOENT);
+> +
+> +	if (!exe_file->f_inode) {
+> +		fput(exe_file);
+> +		return ERR_PTR(-ENOENT);
+> +	}
+> +
+> +	len = security_inode_getsecurity(exe_file->f_inode, name, data, true);
+> +	if (len < 0)
+> +		return ERR_PTR(len);
+> +
+> +	fput(exe_file);
+> +
+> +	return *data;
+> +}
+> +#endif /* CONFIG_TEE_APPID_SECURITY */
+> +
+> +#ifdef CONFIG_TEE_APPID_PATH
+> +static const char *tee_session_get_application_id(void **data)
+> +{
+> +	struct file *exe_file;
+> +	char *path;
+> +
+> +	*data = kzalloc(TEE_UUID_NS_NAME_SIZE, GFP_KERNEL);
+> +	if (!*data)
+> +		return ERR_PTR(-ENOMEM);
+> +
+> +	exe_file = get_mm_exe_file(current->mm);
+> +	if (!exe_file) {
+> +		kfree(*data);
+> +		return ERR_PTR(-ENOENT);
+> +	}
+> +
+> +	path = file_path(exe_file, *data, TEE_UUID_NS_NAME_SIZE);
+> +	if (IS_ERR(path)) {
+> +		kfree(*data);
+> +		return path;
+> +	}
+> +
+> +	fput(exe_file);
+> +
+> +	return path;
+> +}
+> +#endif /* CONFIG_TEE_APPID_PATH */
+> +
+> +#if defined(CONFIG_TEE_APPID_PATH) || defined(CONFIG_TEE_APPID_SECURITY)
+> +static void tee_session_free_application_id(void *data)
+> +{
+> +	kfree(data);
+> +}
+> +#endif /* CONFIG_TEE_APPID_PATH || CONFIG_TEE_APPID_SECURITY */
+> +
+>  /**
+>   * uuid_v5() - Calculate UUIDv5
+>   * @uuid: Resulting UUID
+> @@ -197,6 +264,8 @@ int tee_session_calc_client_uuid(uuid_t *uuid, u32 connection_method,
+>  	gid_t ns_grp = (gid_t)-1;
+>  	kgid_t grp = INVALID_GID;
+>  	char *name = NULL;
+> +	void *application_id_data = NULL;
+> +	const char *application_id = NULL;
+>  	int name_len;
+>  	int rc;
+>  
+> @@ -217,6 +286,14 @@ int tee_session_calc_client_uuid(uuid_t *uuid, u32 connection_method,
+>  	 * For TEEC_LOGIN_GROUP:
+>  	 * gid=<gid>
+>  	 *
+> +	 * For TEEC_LOGIN_APPLICATION:
+> +	 * app=<application id>
+> +	 *
+> +	 * For TEEC_LOGIN_USER_APPLICATION:
+> +	 * uid=<uid>:app=<application id>
+> +	 *
+> +	 * For TEEC_LOGIN_GROUP_APPLICATION:
+> +	 * gid=<gid>:app=<application id>
+>  	 */
+>  
+>  	name = kzalloc(TEE_UUID_NS_NAME_SIZE, GFP_KERNEL);
+> @@ -249,6 +326,63 @@ int tee_session_calc_client_uuid(uuid_t *uuid, u32 connection_method,
+>  		}
+>  		break;
+>  
+> +	case TEE_IOCTL_LOGIN_APPLICATION:
+> +		application_id = tee_session_get_application_id(&application_id_data);
+> +		if (IS_ERR(application_id)) {
+> +			rc = PTR_ERR(application_id);
+> +			goto out_free_name;
+> +		}
+> +
+> +		name_len = snprintf(name, TEE_UUID_NS_NAME_SIZE, "app=%s",
+> +				    application_id);
+> +		tee_session_free_application_id(application_id_data);
+> +
+> +		if (name_len >= TEE_UUID_NS_NAME_SIZE) {
+> +			rc = -E2BIG;
+> +			goto out_free_name;
+> +		}
+> +		break;
+> +
+> +	case TEE_IOCTL_LOGIN_USER_APPLICATION:
+> +		application_id = tee_session_get_application_id(&application_id_data);
+> +		if (IS_ERR(application_id)) {
+> +			rc = PTR_ERR(application_id);
+> +			goto out_free_name;
+> +		}
+> +
+> +		name_len = snprintf(name, TEE_UUID_NS_NAME_SIZE, "uid=%x:app=%s",
+> +				    current_euid().val, application_id);
+> +		tee_session_free_application_id(application_id_data);
+> +
+> +		if (name_len >= TEE_UUID_NS_NAME_SIZE) {
+> +			rc = -E2BIG;
+> +			goto out_free_name;
+> +		}
+> +		break;
+> +
+> +	case TEE_IOCTL_LOGIN_GROUP_APPLICATION:
+> +		memcpy(&ns_grp, connection_data, sizeof(gid_t));
+> +		grp = make_kgid(current_user_ns(), ns_grp);
+> +		if (!gid_valid(grp) || !in_egroup_p(grp)) {
+> +			rc = -EPERM;
+> +			goto out_free_name;
+> +		}
+> +
+> +		application_id = tee_session_get_application_id(&application_id_data);
+> +		if (IS_ERR(application_id)) {
+> +			rc = PTR_ERR(application_id);
+> +			goto out_free_name;
+> +		}
+> +		name_len = snprintf(name, TEE_UUID_NS_NAME_SIZE, "gid=%x:app=%s",
+> +				    grp.val, application_id);
+> +		tee_session_free_application_id(application_id_data);
+> +
+> +		if (name_len >= TEE_UUID_NS_NAME_SIZE) {
+> +			rc = -E2BIG;
+> +			goto out_free_name;
+> +		}
+> +		break;
+> +
+>  	default:
+>  		rc = -EINVAL;
+>  		goto out_free_name;
 
