@@ -2,55 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 828F127A9B7
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 10:39:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B88F27AA24
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 11:01:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726686AbgI1IjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 04:39:13 -0400
-Received: from king2.net ([89.108.124.41]:37507 "EHLO king2.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726420AbgI1IjM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 04:39:12 -0400
-X-Greylist: delayed 2376 seconds by postgrey-1.27 at vger.kernel.org; Mon, 28 Sep 2020 04:39:12 EDT
-Received: from [195.21.21.174] (helo=User)
-        by king2.net with esmtpa (Exim 4.94)
-        (envelope-from <noreply@king2.net>)
-        id 1kMo0K-00039z-E6; Mon, 28 Sep 2020 10:55:24 +0300
-Reply-To: <apexlotto@indamail.hu>
-From:   "APEX FOUNDATION" <orhi2@zaw.att.ne.jp>
-Subject: Your Email ID Information
-Date:   Mon, 28 Sep 2020 07:55:24 -0700
+        id S1726752AbgI1JBs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 05:01:48 -0400
+Received: from mail1.windriver.com ([147.11.146.13]:56448 "EHLO
+        mail1.windriver.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726328AbgI1JBs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 05:01:48 -0400
+Received: from ALA-HCB.corp.ad.wrs.com (ala-hcb.corp.ad.wrs.com [147.11.189.41])
+        by mail1.windriver.com (8.15.2/8.15.2) with ESMTPS id 08S91MsO013707
+        (version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL);
+        Mon, 28 Sep 2020 02:01:22 -0700 (PDT)
+Received: from pek-lpg-core2.corp.ad.wrs.com (128.224.153.41) by
+ ALA-HCB.corp.ad.wrs.com (147.11.189.41) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 28 Sep 2020 02:01:15 -0700
+From:   <zhe.he@windriver.com>
+To:     <gustavo@embeddedor.com>, <netdev@vger.kernel.org>,
+        <bpf@vger.kernel.org>, <linuxppc-dev@lists.ozlabs.org>,
+        <linux-kernel@vger.kernel.org>, <zhe.he@windriver.com>
+Subject: [PATCH] powerpc: net: bpf_jit_comp: Fix misuse of fallthrough
+Date:   Mon, 28 Sep 2020 17:00:23 +0800
+Message-ID: <20200928090023.38117-1-zhe.he@windriver.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="Windows-1251"
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-X-MSMail-Priority: Normal
-X-Mailer: Microsoft Outlook Express 6.00.2600.0000
-X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
-Message-Id: <E1kMo0K-00039z-E6@king2.net>
-Sender: noreply@king2.net
-X-Scanned-By: ClamAV 0.102.4; Mon, 28 Sep 2020 10:55:24 +0300
-To:     unlisted-recipients:; (no To-header on input)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: He Zhe <zhe.he@windriver.com>
 
-Ref Number: APLUK/9GM/3699
-Batch Number: APEX-ENGINE0337
+The user defined label following "fallthrough" is not considered by GCC
+and causes build failure.
 
-Dear Internet User,
+kernel-source/include/linux/compiler_attributes.h:208:41: error: attribute
+'fallthrough' not preceding a case label or default label [-Werror]
+ 208   define fallthrough _attribute((fallthrough_))
+                          ^~~~~~~~~~~~~
 
-Your email ID have won the total sum of GBP1, 000.000.00 (One Million Pounds Sterling) during the electronic E-mail online Powerball Draws For Internet Users. You are advised to contact the claims department immediately to redeem your prize.
+Signed-off-by: He Zhe <zhe.he@windriver.com>
+---
+ arch/powerpc/net/bpf_jit_comp.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-Mr. Robert Hans
-Claim Agent
-Tel:  +442080892137
-Email: info@apexpowerball.com
-International prize Department
+diff --git a/arch/powerpc/net/bpf_jit_comp.c b/arch/powerpc/net/bpf_jit_comp.c
+index 78d61f97371e..e809cb5a1631 100644
+--- a/arch/powerpc/net/bpf_jit_comp.c
++++ b/arch/powerpc/net/bpf_jit_comp.c
+@@ -475,7 +475,6 @@ static int bpf_jit_build_body(struct bpf_prog *fp, u32 *image,
+ 		case BPF_JMP | BPF_JSET | BPF_K:
+ 		case BPF_JMP | BPF_JSET | BPF_X:
+ 			true_cond = COND_NE;
+-			fallthrough;
+ 		cond_branch:
+ 			/* same targets, can avoid doing the test :) */
+ 			if (filter[i].jt == filter[i].jf) {
+-- 
+2.26.2
 
-The claim agent will attend to your claim upon the receipt of your response.
-
-CONGRATULATIONS!!!
-User Award Promotion Team
