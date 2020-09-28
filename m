@@ -2,152 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA32F27B214
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 18:39:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2104027B215
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 18:40:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726608AbgI1QjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 12:39:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60128 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726380AbgI1QjE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 12:39:04 -0400
-Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E556C061755;
-        Mon, 28 Sep 2020 09:39:04 -0700 (PDT)
-Received: by mail-oi1-x241.google.com with SMTP id a3so2023796oib.4;
-        Mon, 28 Sep 2020 09:39:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=qcxt6fZZMti5SbZnbeIFrcoJVPKr+jdSB80jUrubsi0=;
-        b=ZNFvfiFTvBLU6BZt7lhL6OodHgRKD/kiTr/ywAUMX467n2sNFz8huYNjmlrn7KOs58
-         yI9RLcCwZSd0MandklFoks4jaXfG//ZebuXL50JPHJ8IIC77KTSbidrEKmee+onNcUxF
-         hc/C5opocA7CzoDANXPQnj4XEAyjpMNf+c0WqCNcsDooDDKUBaBjltu9lnJHsV4gqqnO
-         oMWSNigqcp9+hwzuIcrK0HeHjLqASYfES22sH6f6eeaZx068k5ITLswhO7u/7Cj9vsIN
-         cr83jRNEpvZb49IoAlqs7xZb7emwWNqeoA2sdZ3Jkqnw50gpueX9MzG2EMz4BeNQgcOf
-         VE7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=qcxt6fZZMti5SbZnbeIFrcoJVPKr+jdSB80jUrubsi0=;
-        b=ADO5c4L9QCZvdtorjEo4jQrTsB7K33w2wQAn8WAOK4E8wESR1lPO42nzK6XjyntgoK
-         +9X4JlR9r/I6fsQv1uk7Q8HcPTIoZMvMZzNrBtae0DL3L8KkvuctNw7uS6mAUusTPI0H
-         rH3ZMKoC6ciW3UpkMb30EXytctqckqx+nss6bZ8wgrIXxU3Z00JVXkc2HIf4xojh77+s
-         57URwKsFRBiy5ZkhYicgkSRwECrbolAXZP8lw4XjwYNd33XZ5rC2I7p/bTvRM/j56fXK
-         pFTwzRh1PR3aLkBXV6VoXrreYfbqXRYz51iB8tmv/CA/agWGVbs7GIckFpjoaDBowHTp
-         KSZA==
-X-Gm-Message-State: AOAM530Mvbe0rIhZ4tbLqWITjSfkUlHtDBqmDxoApLaw8A1FQ4aKajFb
-        +3Gl8qUAQHdkb71a3eXdwRxPdK5pP0g=
-X-Google-Smtp-Source: ABdhPJwEaRXFV3Znjz2Xzv8R6nTqOwt6bDCtAecdNPX11xV4byw0XPPskGdHoP+5rc9Tu+lwCZDc7Q==
-X-Received: by 2002:aca:388:: with SMTP id 130mr1409984oid.145.1601311143774;
-        Mon, 28 Sep 2020 09:39:03 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id r20sm2187525ooh.5.2020.09.28.09.39.03
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 28 Sep 2020 09:39:03 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Mon, 28 Sep 2020 09:39:02 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Alban Bedel <alban.bedel@aerq.com>
-Cc:     linux-hwmon@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/3] hwmon: (lm75) Add regulator support
-Message-ID: <20200928163902.GE106276@roeck-us.net>
-References: <20200928153923.134151-1-alban.bedel@aerq.com>
- <20200928153923.134151-4-alban.bedel@aerq.com>
+        id S1726672AbgI1Qkv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 12:40:51 -0400
+Received: from mga07.intel.com ([134.134.136.100]:28047 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726497AbgI1Qku (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 12:40:50 -0400
+IronPort-SDR: s6ecdiPyRTYSfmUHRbdCCkyE6Z/27OR6/xSDdMVFDCSpbhPvFBwp4lzwtzXm++z8JVgLrDxXp0
+ VwtdMgBYsDlg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9758"; a="226172940"
+X-IronPort-AV: E=Sophos;i="5.77,313,1596524400"; 
+   d="scan'208";a="226172940"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 09:40:50 -0700
+IronPort-SDR: /LmDULZR2KYXKBkfire6UySF12ecP+6N3xV2CFAp4dbmBrfrXn608ArC1MNdwZWwlmSd3gYEvW
+ nyEyuM/xkz0Q==
+X-IronPort-AV: E=Sophos;i="5.77,313,1596524400"; 
+   d="scan'208";a="456892205"
+Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.212.93.46]) ([10.212.93.46])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 09:40:46 -0700
+Subject: Re: [PATCH v38 21/24] x86/vdso: Implement a vDSO for Intel SGX
+ enclave call
+To:     "H.J. Lu" <hjl.tools@gmail.com>
+Cc:     Andrew Cooper <andrew.cooper3@citrix.com>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        linux-sgx@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Cedric Xing <cedric.xing@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        andriy.shevchenko@linux.intel.com, asapek@google.com,
+        Borislav Petkov <bp@alien8.de>, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        Dave Hansen <dave.hansen@intel.com>,
+        "Huang, Haitao" <haitao.huang@intel.com>, josh@joshtriplett.org,
+        kai.huang@intel.com, kai.svahn@intel.com, kmoy@google.com,
+        Christian Ludloff <ludloff@google.com>,
+        Andy Lutomirski <luto@kernel.org>, nhorman@redhat.com,
+        npmccallum@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
+        Thomas Gleixner <tglx@linutronix.de>, yaozhangx@google.com
+References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
+ <20200915112842.897265-22-jarkko.sakkinen@linux.intel.com>
+ <721ca14e-21df-3df1-7bef-0b00d0ff90c3@citrix.com>
+ <c1b0019d-d3cb-cc62-f47f-90c2550c22a4@intel.com>
+ <CAMe9rOrVhQr9ad_4en2D5GTTqDsJGXqszBmscgenn_87mDxvUA@mail.gmail.com>
+From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+Message-ID: <a22e1e7f-d268-d336-3e5f-5e596b06eb36@intel.com>
+Date:   Mon, 28 Sep 2020 09:40:45 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200928153923.134151-4-alban.bedel@aerq.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <CAMe9rOrVhQr9ad_4en2D5GTTqDsJGXqszBmscgenn_87mDxvUA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 05:39:23PM +0200, Alban Bedel wrote:
-> Add regulator support for boards where the sensor first need to be
-> powered up before it can be used.
+On 9/28/2020 8:54 AM, H.J. Lu wrote:
+> On Mon, Sep 28, 2020 at 8:43 AM Yu, Yu-cheng <yu-cheng.yu@intel.com> wrote:
+>>
+>> On 9/25/2020 11:23 AM, Andrew Cooper wrote:
+>>> On 15/09/2020 12:28, Jarkko Sakkinen wrote:
+>>>> diff --git a/arch/x86/entry/vdso/vsgx_enter_enclave.S b/arch/x86/entry/vdso/vsgx_enter_enclave.S
+>>>> new file mode 100644
+>>>> index 000000000000..adbd59d41517
+>>>> --- /dev/null
+>>>> +++ b/arch/x86/entry/vdso/vsgx_enter_enclave.S
+>>>> @@ -0,0 +1,157 @@
+>>>> +SYM_FUNC_START(__vdso_sgx_enter_enclave)
+>>>> <snip>
+>>>> +.Lretpoline:
+>>>> +    call    2f
+>>>> +1:  pause
+>>>> +    lfence
+>>>> +    jmp     1b
+>>>> +2:  mov     %rax, (%rsp)
+>>>> +    ret
+>>>
+>>> I hate to throw further spanners in the work, but this is not compatible
+>>> with CET, and the user shadow stack work in progress.
+>>
+>> Hi Jarkko,
+>>
+>> These 1: and 2: targets are reached only from these few lines?  If they
+>> are direct call/jmp targets, I think it is OK in terms of CET.  If they
+>> are reached from an instruction like "jmp *%rax", then we need to put in
+>> an "endbr64".
+>>
 > 
-> Signed-off-by: Alban Bedel <alban.bedel@aerq.com>
-> ---
-> v2: Rely on dummy regulators instead of explicitly handling missing
->     regulator
-> ---
->  drivers/hwmon/lm75.c | 23 +++++++++++++++++++++--
->  1 file changed, 21 insertions(+), 2 deletions(-)
+> This also isn't compatible with shadow stack.
 > 
-> diff --git a/drivers/hwmon/lm75.c b/drivers/hwmon/lm75.c
-> index ba0be48aeadd..e394df648c26 100644
-> --- a/drivers/hwmon/lm75.c
-> +++ b/drivers/hwmon/lm75.c
-> @@ -17,6 +17,7 @@
->  #include <linux/of.h>
->  #include <linux/regmap.h>
->  #include <linux/util_macros.h>
-> +#include <linux/regulator/consumer.h>
->  #include "lm75.h"
->  
->  /*
-> @@ -101,6 +102,7 @@ static const unsigned short normal_i2c[] = { 0x48, 0x49, 0x4a, 0x4b, 0x4c,
->  struct lm75_data {
->  	struct i2c_client		*client;
->  	struct regmap			*regmap;
-> +	struct regulator		*vs;
->  	u8				orig_conf;
->  	u8				current_conf;
->  	u8				resolution;	/* In bits, 9 to 16 */
-> @@ -540,6 +542,7 @@ static void lm75_remove(void *data)
->  	struct i2c_client *client = lm75->client;
->  
->  	i2c_smbus_write_byte_data(client, LM75_REG_CONF, lm75->orig_conf);
-> +	regulator_disable(lm75->vs);
->  }
->  
->  static int
-> @@ -567,6 +570,10 @@ lm75_probe(struct i2c_client *client, const struct i2c_device_id *id)
->  	data->client = client;
->  	data->kind = kind;
->  
-> +	data->vs = devm_regulator_get(dev, "vs");
-> +	if (IS_ERR(data->vs))
-> +		return PTR_ERR(data->vs);
-> +
->  	data->regmap = devm_regmap_init_i2c(client, &lm75_regmap_config);
->  	if (IS_ERR(data->regmap))
->  		return PTR_ERR(data->regmap);
-> @@ -581,11 +588,19 @@ lm75_probe(struct i2c_client *client, const struct i2c_device_id *id)
->  	data->sample_time = data->params->default_sample_time;
->  	data->resolution = data->params->default_resolution;
->  
-> +	/* Enable the power */
-> +	err = regulator_enable(data->vs);
-> +	if (err) {
-> +		dev_err(dev, "failed to enable regulator: %d\n", err);
-> +		return err;
-> +	}
-> +
->  	/* Cache original configuration */
->  	status = i2c_smbus_read_byte_data(client, LM75_REG_CONF);
->  	if (status < 0) {
->  		dev_dbg(dev, "Can't read config? %d\n", status);
-> -		return status;
-> +		err = status;
-> +		goto disable_regulator;
 
-The point of using devm_add_action_or_reset() was specifically to avoid having
-to have the cleanup gotos. On top of that, the lm75_remove() function was
-specifically intended to clean up configuration data, not to do anything else.
-While hijacking lm75_remove() to also disable the regulator is technically
-correct, it makes the code more difficult to understand, and it creates a
-potential source for subsequently introduced bugs. Right now I am not inclined
-to accept this code as-is. Please provide arguments for handling the cleanup
-this way instead of using devm_add_action_or_reset().
+Then, when shadow stack is enabled, disable this?
 
-Thanks,
-Guenter
+Yu-cheng
