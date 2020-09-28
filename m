@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A117227A8AF
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 09:34:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9142F27A8AD
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 09:33:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726597AbgI1HeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 03:34:25 -0400
-Received: from mga12.intel.com ([192.55.52.136]:6667 "EHLO mga12.intel.com"
+        id S1726594AbgI1Hdv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 03:33:51 -0400
+Received: from mga11.intel.com ([192.55.52.93]:8645 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726421AbgI1HeZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 03:34:25 -0400
-IronPort-SDR: CSpcl5wz0ntfKZ7PUbJiE/9Ez5Kh/9nxyEzaPzrWIQ4zf4oltcnUnIMcJRxf4Arn7fSvpJxX1w
- MWj6GZGOXAbw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9757"; a="141344540"
+        id S1726540AbgI1Hdv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 03:33:51 -0400
+IronPort-SDR: kXvNdisruWxTgd3J0DTh7DPVrqUdv53JSSaMmNPdfJwH0lbriOxSXDxvzDOElmlikzEEu1j2QC
+ pT2YuvRyvgNQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9757"; a="159283378"
 X-IronPort-AV: E=Sophos;i="5.77,312,1596524400"; 
-   d="scan'208";a="141344540"
+   d="scan'208";a="159283378"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2020 20:43:40 -0700
-IronPort-SDR: pLSeS9KC0y29q+4R5/wwNNReQiLoWzQVzuLAY9dHJc6H+xJUNUMmgDbUede01DcLTWJ6I70P+a
- 6VVOcv0e/6+w==
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2020 20:50:35 -0700
+IronPort-SDR: Pt4eYQqVzK36ILROOozsCpl0Kne5mkJe8Zv3JBj9AjEJnVxFeCT745A1nU7pT0cwXFW7fggunz
+ Wog6DSx1anuQ==
 X-IronPort-AV: E=Sophos;i="5.77,312,1596524400"; 
-   d="scan'208";a="488393365"
+   d="scan'208";a="456671677"
 Received: from shuo-intel.sh.intel.com (HELO localhost) ([10.239.154.30])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2020 20:43:37 -0700
-Date:   Mon, 28 Sep 2020 11:43:35 +0800
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2020 20:50:32 -0700
+Date:   Mon, 28 Sep 2020 11:50:30 +0800
 From:   Shuo A Liu <shuo.a.liu@intel.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
@@ -39,14 +39,14 @@ Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
         Zhi Wang <zhi.a.wang@intel.com>,
         Zhenyu Wang <zhenyuw@linux.intel.com>
 Subject: Re: [PATCH v4 06/17] virt: acrn: Introduce VM management interfaces
-Message-ID: <20200928034335.GC1057@shuo-intel.sh.intel.com>
+Message-ID: <20200928035030.GD1057@shuo-intel.sh.intel.com>
 References: <20200922114311.38804-1-shuo.a.liu@intel.com>
  <20200922114311.38804-7-shuo.a.liu@intel.com>
- <20200927104538.GD88650@kroah.com>
+ <20200927104702.GE88650@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20200927104538.GD88650@kroah.com>
+In-Reply-To: <20200927104702.GE88650@kroah.com>
 User-Agent: Mutt/1.8.3 (2017-05-23)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -54,7 +54,7 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi Greg,
 
-On Sun 27.Sep'20 at 12:45:38 +0200, Greg Kroah-Hartman wrote:
+On Sun 27.Sep'20 at 12:47:02 +0200, Greg Kroah-Hartman wrote:
 >On Tue, Sep 22, 2020 at 07:43:00PM +0800, shuo.a.liu@intel.com wrote:
 >> From: Shuo Liu <shuo.a.liu@intel.com>
 >>
@@ -142,12 +142,6 @@ On Sun 27.Sep'20 at 12:45:38 +0200, Greg Kroah-Hartman wrote:
 >> +#include "hypercall.h"
 >> +
 >> +extern struct miscdevice acrn_dev;
->
->Who else needs to get to this structure in your driver?
-
-Other files of the driver need to use it for dev_*() log APIs.
-
->
 >> +
 >>  #define ACRN_INVALID_VMID (0xffffU)
 >>
@@ -253,11 +247,175 @@ Other files of the driver need to use it for dev_*() log APIs.
 >> +		break;
 >> +	default:
 >> +		dev_warn(acrn_dev.this_device, "Unknown IOCTL 0x%x!\n", cmd);
+>> +		ret = -ENOTTY;
+>> +	}
+>> +
+>> +	return ret;
+>> +}
+>> +
+>>  static int acrn_dev_release(struct inode *inode, struct file *filp)
+>>  {
+>>  	struct acrn_vm *vm = filp->private_data;
+>>
+>> +	acrn_vm_destroy(vm);
+>>  	kfree(vm);
+>>  	return 0;
+>>  }
+>> @@ -50,9 +118,10 @@ static const struct file_operations acrn_fops = {
+>>  	.owner		= THIS_MODULE,
+>>  	.open		= acrn_dev_open,
+>>  	.release	= acrn_dev_release,
+>> +	.unlocked_ioctl = acrn_dev_ioctl,
+>>  };
+>>
+>> -static struct miscdevice acrn_dev = {
+>> +struct miscdevice acrn_dev = {
+>>  	.minor	= MISC_DYNAMIC_MINOR,
+>>  	.name	= "acrn_hsm",
+>>  	.fops	= &acrn_fops,
+>> diff --git a/drivers/virt/acrn/hypercall.h b/drivers/virt/acrn/hypercall.h
+>> new file mode 100644
+>> index 000000000000..426b66cadb1f
+>> --- /dev/null
+>> +++ b/drivers/virt/acrn/hypercall.h
+>> @@ -0,0 +1,78 @@
+>> +/* SPDX-License-Identifier: GPL-2.0 */
+>> +/*
+>> + * ACRN HSM: hypercalls of ACRN Hypervisor
+>> + */
+>> +#ifndef __ACRN_HSM_HYPERCALL_H
+>> +#define __ACRN_HSM_HYPERCALL_H
+>> +#include <asm/acrn.h>
+>> +
+>> +/*
+>> + * Hypercall IDs of the ACRN Hypervisor
+>> + */
+>> +#define _HC_ID(x, y) (((x) << 24) | (y))
+>> +
+>> +#define HC_ID 0x80UL
+>> +
+>> +#define HC_ID_VM_BASE			0x10UL
+>> +#define HC_CREATE_VM			_HC_ID(HC_ID, HC_ID_VM_BASE + 0x00)
+>> +#define HC_DESTROY_VM			_HC_ID(HC_ID, HC_ID_VM_BASE + 0x01)
+>> +#define HC_START_VM			_HC_ID(HC_ID, HC_ID_VM_BASE + 0x02)
+>> +#define HC_PAUSE_VM			_HC_ID(HC_ID, HC_ID_VM_BASE + 0x03)
+>> +#define HC_RESET_VM			_HC_ID(HC_ID, HC_ID_VM_BASE + 0x05)
+>> +
+>> +/**
+>> + * hcall_create_vm() - Create a User VM
+>> + * @vminfo:	Service VM GPA of info of User VM creation
+>> + *
+>> + * Return: 0 on success, <0 on failure
+>> + */
+>> +static inline long hcall_create_vm(u64 vminfo)
+>> +{
+>> +	return acrn_hypercall1(HC_CREATE_VM, vminfo);
+>> +}
+>> +
+>> +/**
+>> + * hcall_start_vm() - Start a User VM
+>> + * @vmid:	User VM ID
+>> + *
+>> + * Return: 0 on success, <0 on failure
+>> + */
+>> +static inline long hcall_start_vm(u64 vmid)
+>> +{
+>> +	return acrn_hypercall1(HC_START_VM, vmid);
+>> +}
+>> +
+>> +/**
+>> + * hcall_pause_vm() - Pause a User VM
+>> + * @vmid:	User VM ID
+>> + *
+>> + * Return: 0 on success, <0 on failure
+>> + */
+>> +static inline long hcall_pause_vm(u64 vmid)
+>> +{
+>> +	return acrn_hypercall1(HC_PAUSE_VM, vmid);
+>> +}
+>> +
+>> +/**
+>> + * hcall_destroy_vm() - Destroy a User VM
+>> + * @vmid:	User VM ID
+>> + *
+>> + * Return: 0 on success, <0 on failure
+>> + */
+>> +static inline long hcall_destroy_vm(u64 vmid)
+>> +{
+>> +	return acrn_hypercall1(HC_DESTROY_VM, vmid);
+>> +}
+>> +
+>> +/**
+>> + * hcall_reset_vm() - Reset a User VM
+>> + * @vmid:	User VM ID
+>> + *
+>> + * Return: 0 on success, <0 on failure
+>> + */
+>> +static inline long hcall_reset_vm(u64 vmid)
+>> +{
+>> +	return acrn_hypercall1(HC_RESET_VM, vmid);
+>> +}
+>> +
+>> +#endif /* __ACRN_HSM_HYPERCALL_H */
+>> diff --git a/drivers/virt/acrn/vm.c b/drivers/virt/acrn/vm.c
+>> new file mode 100644
+>> index 000000000000..920ca48f4847
+>> --- /dev/null
+>> +++ b/drivers/virt/acrn/vm.c
+>> @@ -0,0 +1,71 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +/*
+>> + * ACRN_HSM: Virtual Machine management
+>> + *
+>> + * Copyright (C) 2020 Intel Corporation. All rights reserved.
+>> + *
+>> + * Authors:
+>> + *	Jason Chen CJ <jason.cj.chen@intel.com>
+>> + *	Yakui Zhao <yakui.zhao@intel.com>
+>> + */
+>> +#include <linux/io.h>
+>> +#include <linux/mm.h>
+>> +#include <linux/slab.h>
+>> +
+>> +#include "acrn_drv.h"
+>> +
+>> +/* List of VMs */
+>> +LIST_HEAD(acrn_vm_list);
+>> +/*
+>> + * acrn_vm_list is read in a tasklet which dispatch I/O requests and is wrote
+>> + * in VM creation ioctl. Use the rwlock mechanism to protect it.
+>> + */
+>> +DEFINE_RWLOCK(acrn_vm_list_lock);
+>> +
+>> +struct acrn_vm *acrn_vm_create(struct acrn_vm *vm,
+>> +			       struct acrn_vm_creation *vm_param)
+>> +{
+>> +	int ret;
+>> +
+>> +	ret = hcall_create_vm(virt_to_phys(vm_param));
+>> +	if (ret < 0 || vm_param->vmid == ACRN_INVALID_VMID) {
+>> +		dev_err(acrn_dev.this_device,
+>> +			"Failed to create VM! Error: %d\n", ret);
+>> +		return NULL;
+>> +	}
+>> +
+>> +	vm->vmid = vm_param->vmid;
+>> +	vm->vcpu_num = vm_param->vcpu_num;
+>> +
+>> +	write_lock_bh(&acrn_vm_list_lock);
+>> +	list_add(&vm->list, &acrn_vm_list);
+>> +	write_unlock_bh(&acrn_vm_list_lock);
 >
->Do not let userspace spam kernel logs with invalid stuff, that's a sure
->way to cause a DoS.
+>Why are the _bh() variants being used here?
+>
+>You are only accessing this list from userspace context in this patch.
+>
+>Heck, you aren't even reading from the list, only writing to it...
 
-OK. Got it. Will be dev_dbg().
+acrn_vm_list is read in a tasklet which dispatch I/O requests and is wrote
+in VM creation ioctl. Use the rwlock mechanism to protect it.
+The reading operation is introduced in the following patches of this
+series. So i keep the lock type at the moment of introduction.
 
 Thanks
 shuo
