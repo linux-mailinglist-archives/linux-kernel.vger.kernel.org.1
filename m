@@ -2,235 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53F2E27A785
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 08:23:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B363B27A788
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 08:27:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726547AbgI1GXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 02:23:15 -0400
-Received: from mailout2.w1.samsung.com ([210.118.77.12]:55307 "EHLO
-        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726420AbgI1GXO (ORCPT
+        id S1726497AbgI1G1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 02:27:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50110 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725290AbgI1G1t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 02:23:14 -0400
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20200928062313euoutp0209e66d4ffc15f161241cc25f743d9b71~43mUIYvFb2629426294euoutp02w
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 06:23:13 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20200928062313euoutp0209e66d4ffc15f161241cc25f743d9b71~43mUIYvFb2629426294euoutp02w
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1601274193;
-        bh=sMRoNvoNCckLetnkOEObE4iSvh+Cw4XnyVpKhTsB7Lg=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=NqHmLpPPFKOb2j07SnGZv4vmyEe8oBXrdeH+60a0QSZEpAIuEo4VGr6DjvUNIlDcl
-         SMh6EFCYRIMrzyD89ooefb7tsCo5AKijGNa03KfMsQI2dvRLqEcD931jPHhR6v+9jt
-         IacAVqllFyp83YtJzEqjacwj/dxfFNQNegwACXiw=
-Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20200928062312eucas1p17128f82f5140449e9f492f675affd150~43mT0G87a1648516485eucas1p1-;
-        Mon, 28 Sep 2020 06:23:12 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges2new.samsung.com (EUCPMTA) with SMTP id A4.57.05997.051817F5; Mon, 28
-        Sep 2020 07:23:12 +0100 (BST)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20200928062312eucas1p2dc96e9354d31296b107939b3533fbbfd~43mTixO8t2823328233eucas1p2j;
-        Mon, 28 Sep 2020 06:23:12 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20200928062312eusmtrp101ab089e07c9d0730273ff40b6d2f05f~43mTiGhAO1456014560eusmtrp17;
-        Mon, 28 Sep 2020 06:23:12 +0000 (GMT)
-X-AuditID: cbfec7f4-65dff7000000176d-42-5f7181507dda
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id 4F.DA.06314.051817F5; Mon, 28
-        Sep 2020 07:23:12 +0100 (BST)
-Received: from [106.210.88.143] (unknown [106.210.88.143]) by
-        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20200928062311eusmtip2cf8a2a6f4a2ae12e7295e551cd9bce52~43mTA-Huy2499424994eusmtip2A;
-        Mon, 28 Sep 2020 06:23:11 +0000 (GMT)
-Subject: Re: [PATCH next 1/2] printk: avoid and/or handle record truncation
-To:     John Ogness <john.ogness@linutronix.de>,
-        Petr Mladek <pmladek@suse.com>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org
-From:   Marek Szyprowski <m.szyprowski@samsung.com>
-Message-ID: <a27f6e69-90fc-c824-ee76-19a69a5bd1b0@samsung.com>
-Date:   Mon, 28 Sep 2020 08:23:11 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
-        Thunderbird/68.12.0
-MIME-Version: 1.0
-In-Reply-To: <20200926015526.8921-2-john.ogness@linutronix.de>
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrHKsWRmVeSWpSXmKPExsWy7djP87oBjYXxBrsfalg0L17PZrHtynxG
-        i8u75rBZ/H/8ldViX8cDJotHEyYxWaz9/JjdYvOmqcwWj/resjtweuycdZfdo2XfLXaPd+fO
-        sXucmPGbxWP/3DXsHuu3XGXx+LxJLoA9issmJTUnsyy1SN8ugSvj5vGVTAVLtCpmvVzJ1sD4
-        RbGLkZNDQsBEYvPxV2wgtpDACkaJZyeUuhi5gOwvjBJ/Zvxig3A+M0q8Pn+fHabjx9c+FojE
-        ckaJrU0LmCHa3zNKXPoJNkpYwFvix72dYA0iQPaq13vZQRqYBQ4wSZz8sosJJMEmYCjR9bYL
-        rIFXwE5ifdscsDiLgKpE8/ZlYM2iAnESx049YoGoEZQ4OfMJmM0JVH/sxVSwGmYBeYntb+cw
-        Q9jiEreezGcCWSYhcIpd4u+Wa0ANHECOi8TBXV4QHwhLvDq+BeobGYnTk3tYIOqbGSUenlvL
-        DuH0MEpcbprBCFFlLXHnHCgwOIA2aEqs36UPEXaUaHw3hRViPp/EjbeCEDfwSUzaNp0ZIswr
-        0dEmBFGtJjHr+Dq4tQcvXGKewKg0C8lns5B8MwvJN7MQ9i5gZFnFKJ5aWpybnlpslJdarlec
-        mFtcmpeul5yfu4kRmKpO/zv+ZQfjrj9JhxgFOBiVeHgjdhbEC7EmlhVX5h5ilOBgVhLhdTp7
-        Ok6INyWxsiq1KD++qDQntfgQozQHi5I4r/Gil7FCAumJJanZqakFqUUwWSYOTqkGRocVlmXi
-        M+dOzH770vnjHvU3rGk5DSrdN15PWHgm9hbnjfgqzXSmz/8OiyYkPZFeY11qanV8nvaCxAkZ
-        v44eS3l3uf2Rrq2al0vcot1PslPzIzmqnsgVVVuZN29yi1g471+E8+G9JxW2sD5KY4jrPNx2
-        aoFjXPN1qfMc6ytMVeyPbmIo6D3Lo8RSnJFoqMVcVJwIACwMoGNRAwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrEIsWRmVeSWpSXmKPExsVy+t/xe7oBjYXxBtMeilo0L17PZrHtynxG
-        i8u75rBZ/H/8ldViX8cDJotHEyYxWaz9/JjdYvOmqcwWj/resjtweuycdZfdo2XfLXaPd+fO
-        sXucmPGbxWP/3DXsHuu3XGXx+LxJLoA9Ss+mKL+0JFUhI7+4xFYp2tDCSM/Q0kLPyMRSz9DY
-        PNbKyFRJ384mJTUnsyy1SN8uQS/j5vGVTAVLtCpmvVzJ1sD4RbGLkZNDQsBE4sfXPhYQW0hg
-        KaPEqQ4XiLiMxMlpDawQtrDEn2tdbF2MXEA1bxklOq93gDUIC3hL/Li3kx3EFgGyV73eyw5S
-        xCxwiEni6r+tLBAdRxkl9r1dxwRSxSZgKNH1FmQUJwevgJ3E+rY5YHEWAVWJ5u3LwCaJCsRJ
-        nOl5AVUjKHFy5hOwbZxA9cdeTAWrYRYwk5i3+SEzhC0vsf3tHChbXOLWk/lMExiFZiFpn4Wk
-        ZRaSlllIWhYwsqxiFEktLc5Nzy021CtOzC0uzUvXS87P3cQIjM9tx35u3sF4aWPwIUYBDkYl
-        Ht6InQXxQqyJZcWVuYcYJTiYlUR4nc6ejhPiTUmsrEotyo8vKs1JLT7EaAr03ERmKdHkfGDq
-        yCuJNzQ1NLewNDQ3Njc2s1AS5+0QOBgjJJCeWJKanZpakFoE08fEwSnVwBhyyCZzbuPqKYxT
-        xeZust/wcfLk8kbHf3pFC666KjRtOOpruLuv1v4N2+1floY7GUOLeZ/c23M1/Vqq0IYWeTHX
-        dN0FUwzaeEL+HCr0sJHuFVT79XtBne96znNz5D1PmsRI/V5e/UppUeW16JZrGYdXixztS4uq
-        7WE92b/U+FVl9fXXTVKGDkosxRmJhlrMRcWJAM2Mi3jlAgAA
-X-CMS-MailID: 20200928062312eucas1p2dc96e9354d31296b107939b3533fbbfd
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20200926015533eucas1p2c3e5ccd1cfb70d82c33a2ee64b617710
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20200926015533eucas1p2c3e5ccd1cfb70d82c33a2ee64b617710
-References: <20200926015526.8921-1-john.ogness@linutronix.de>
-        <CGME20200926015533eucas1p2c3e5ccd1cfb70d82c33a2ee64b617710@eucas1p2.samsung.com>
-        <20200926015526.8921-2-john.ogness@linutronix.de>
+        Mon, 28 Sep 2020 02:27:49 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48C0CC0613CE
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Sep 2020 23:27:49 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id v14so22309pjd.4
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Sep 2020 23:27:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=G1XCap02BLqu2h42U/isRlPU6JhGouPh7A8Cyw/JWKQ=;
+        b=ZO6P/eNhvYPE6cwsvUntTdngmCHlY/B/gr9tqd/AZFvQmnrsr1xTfC7FgfvU88Zypi
+         dEqfaskzB/AiSdVsEe0drCLcpSurjw/Q3G5I7c83eADd4V5K+i0BrOuMtXzGV1xp64Er
+         rQcm4m/TKY3TOfEKWLo+gdnrGNsDxwPu88irxSPhGZeHiEkrznNcOIb+EvYfoTAeA9zm
+         +34psCwgX1KUNcAuTm6j58qzEMF+03rQGOWreUIIUhkpVAa7/uKyUdwGZceza+xVs20V
+         DX0UZUBZb/qfsy8D2T5VunWKxBpztcAleQYqWlBltsGLuUlxfXwBkEXseVp0OxXHFEcu
+         8jWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=G1XCap02BLqu2h42U/isRlPU6JhGouPh7A8Cyw/JWKQ=;
+        b=pvxXVaxy6G9BoYg7uFTqGYuAdKnfRjl4xdmNGT60IDnIi7E8ZobY3WD25fWS2WVy/U
+         fMnvpmxqLZL4444MiwefA0y5948IIIRXZqk/10XMY+Ic4EgNu5PXP22gpVsZUTwihrMB
+         zW4aob0us0ORcOPZN40f0vGoRWNYHY4VXOLBA5ALRk5pXZ/qnPSgZ2TkYCbQ7Tnedk2m
+         YTQ3gRNIbA71+OaKwfziasVXO6skorwCcIrbl8ciWd1RmBNpH6XmHrbhneTm364sudmr
+         zNtaZwtdEqJ2kt2vWkgm3OvlLSrxjQhkzAi4Z7SjJYofI2YzEuM/Xx/3sHJ25zLuul9u
+         Ps8w==
+X-Gm-Message-State: AOAM5309Y6gSrKiYn0+h6QC/TvTGqqLozTLspgTvkC6vv2pE2xQQFRbr
+        DRGE+mxrEey6ebrkzJicBo4=
+X-Google-Smtp-Source: ABdhPJwj/ZvOX29MNdvg7vVs2zdmBwg8lcRzhlDcreobFJUmyVAIW14dQTS5Q3cUEEz/93U5RiturA==
+X-Received: by 2002:a17:90a:6282:: with SMTP id d2mr24088pjj.86.1601274468836;
+        Sun, 27 Sep 2020 23:27:48 -0700 (PDT)
+Received: from nj08008nbu.spreadtrum.com ([117.18.48.82])
+        by smtp.gmail.com with ESMTPSA id il14sm5712509pjb.54.2020.09.27.23.27.45
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 27 Sep 2020 23:27:48 -0700 (PDT)
+From:   Kevin Tang <kevin3.tang@gmail.com>
+To:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        sean@poorly.run, airlied@linux.ie, daniel@ffwll.ch,
+        robh+dt@kernel.org, mark.rutland@arm.com, kevin3.tang@gmail.com
+Cc:     orsonzhai@gmail.com, zhang.lyra@gmail.com,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+Subject: [PATCH RFC v7 0/6] Add Unisoc's drm kms module
+Date:   Mon, 28 Sep 2020 14:27:34 +0800
+Message-Id: <1601274460-7866-1-git-send-email-kevin3.tang@gmail.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi John,
+ChangeList:
+v1:
+1. only upstream modeset and atomic at first commit. 
+2. remove some unused code;
+3. use alpha and blend_mode properties;
+3. add yaml support;
+4. remove auto-adaptive panel driver;
+5. bugfix
 
-On 26.09.2020 03:55, John Ogness wrote:
-> If a reader provides a buffer that is smaller than the message text,
-> the @text_len field of @info will have a value larger than the buffer
-> size. If readers blindly read @text_len bytes of data without
-> checking the size, they will read beyond their buffer.
->
-> Add this check to record_print_text() to properly recognize when such
-> truncation needs to occur.
->
-> Add a maximum size argument to the ringbuffer function to extend
-> records so that records can not be created that are larger than the
-> buffer size of readers.
->
-> When extending records (LOG_CONT), do not extend records beyond
-> LOG_LINE_MAX since that is the maximum size available in the buffers
-> used by consoles and syslog.
->
-> Fixes: f5f022e53b87 ("printk: reimplement log_cont using record extension")
-> Signed-off-by: John Ogness <john.ogness@linutronix.de>
-> Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
+v2:
+1. add sprd crtc and plane module for KMS, preparing for multi crtc&encoder
+2. remove gem drivers, use generic CMA handlers
+3. remove redundant "module_init", all the sub modules loading by KMS
 
-Thanks for fixing this issue!
+v3:
+1. multi crtc&encoder design have problem, so rollback to v1
 
-Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
+v4:
+1. update to gcc-linaro-7.5.0
+2. update to Linux 5.6-rc3
+3. remove pm_runtime support
+4. add COMPILE_TEST, remove unused kconfig
+5. "drm_dev_put" on drm_unbind
+6. fix some naming convention issue
+7. remove semaphore lock for crtc flip
+8. remove static variables
 
-> ---
->   kernel/printk/printk.c            |  7 ++++++-
->   kernel/printk/printk_ringbuffer.c | 12 ++++++++++--
->   kernel/printk/printk_ringbuffer.h |  2 +-
->   3 files changed, 17 insertions(+), 4 deletions(-)
->
-> diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-> index 78f68b4830dc..270f19b60e6f 100644
-> --- a/kernel/printk/printk.c
-> +++ b/kernel/printk/printk.c
-> @@ -1357,6 +1357,11 @@ static size_t record_print_text(struct printk_record *r, bool syslog,
->   	size_t len = 0;
->   	char *next;
->   
-> +	if (text_len > buf_size) {
-> +		text_len = buf_size;
-> +		truncated = true;
-> +	}
-> +
->   	prefix_len = info_print_prefix(r->info, syslog, time, prefix);
->   
->   	/*
-> @@ -1911,7 +1916,7 @@ static size_t log_output(int facility, int level, enum log_flags lflags,
->   		struct printk_record r;
->   
->   		prb_rec_init_wr(&r, text_len);
-> -		if (prb_reserve_in_last(&e, prb, &r, caller_id)) {
-> +		if (prb_reserve_in_last(&e, prb, &r, caller_id, LOG_LINE_MAX)) {
->   			memcpy(&r.text_buf[r.info->text_len], text, text_len);
->   			r.info->text_len += text_len;
->   			if (lflags & LOG_NEWLINE) {
-> diff --git a/kernel/printk/printk_ringbuffer.c b/kernel/printk/printk_ringbuffer.c
-> index 13b94b92342e..2493348a1631 100644
-> --- a/kernel/printk/printk_ringbuffer.c
-> +++ b/kernel/printk/printk_ringbuffer.c
-> @@ -202,7 +202,8 @@
->    *	// specify additional 5 bytes text space to extend
->    *	prb_rec_init_wr(&r, 5);
->    *
-> - *	if (prb_reserve_in_last(&e, &test_rb, &r, printk_caller_id())) {
-> + *	// try to extend, but only if it does not exceed 32 bytes
-> + *	if (prb_reserve_in_last(&e, &test_rb, &r, printk_caller_id()), 32) {
->    *		snprintf(&r.text_buf[r.info->text_len],
->    *			 r.text_buf_size - r.info->text_len, "hello");
->    *
-> @@ -1309,6 +1310,7 @@ static struct prb_desc *desc_reopen_last(struct prb_desc_ring *desc_ring,
->    * @rb:        The ringbuffer to re-reserve and extend data in.
->    * @r:         The record structure to allocate buffers for.
->    * @caller_id: The caller ID of the caller (reserving writer).
-> + * @max_size:  Fail if the extended size would be greater than this.
->    *
->    * This is the public function available to writers to re-reserve and extend
->    * data.
-> @@ -1343,7 +1345,7 @@ static struct prb_desc *desc_reopen_last(struct prb_desc_ring *desc_ring,
->    *            @r->info->text_len after concatenating.
->    */
->   bool prb_reserve_in_last(struct prb_reserved_entry *e, struct printk_ringbuffer *rb,
-> -			 struct printk_record *r, u32 caller_id)
-> +			 struct printk_record *r, u32 caller_id, unsigned int max_size)
->   {
->   	struct prb_desc_ring *desc_ring = &rb->desc_ring;
->   	struct printk_info *info;
-> @@ -1389,6 +1391,9 @@ bool prb_reserve_in_last(struct prb_reserved_entry *e, struct printk_ringbuffer
->   		if (!data_check_size(&rb->text_data_ring, r->text_buf_size))
->   			goto fail;
->   
-> +		if (r->text_buf_size > max_size)
-> +			goto fail;
-> +
->   		r->text_buf = data_alloc(rb, &rb->text_data_ring, r->text_buf_size,
->   					 &d->text_blk_lpos, id);
->   	} else {
-> @@ -1410,6 +1415,9 @@ bool prb_reserve_in_last(struct prb_reserved_entry *e, struct printk_ringbuffer
->   		if (!data_check_size(&rb->text_data_ring, r->text_buf_size))
->   			goto fail;
->   
-> +		if (r->text_buf_size > max_size)
-> +			goto fail;
-> +
->   		r->text_buf = data_realloc(rb, &rb->text_data_ring, r->text_buf_size,
->   					   &d->text_blk_lpos, id);
->   	}
-> diff --git a/kernel/printk/printk_ringbuffer.h b/kernel/printk/printk_ringbuffer.h
-> index 0adaa685d1ca..5dc9d022db07 100644
-> --- a/kernel/printk/printk_ringbuffer.h
-> +++ b/kernel/printk/printk_ringbuffer.h
-> @@ -303,7 +303,7 @@ static inline void prb_rec_init_wr(struct printk_record *r,
->   bool prb_reserve(struct prb_reserved_entry *e, struct printk_ringbuffer *rb,
->   		 struct printk_record *r);
->   bool prb_reserve_in_last(struct prb_reserved_entry *e, struct printk_ringbuffer *rb,
-> -			 struct printk_record *r, u32 caller_id);
-> +			 struct printk_record *r, u32 caller_id, unsigned int max_size);
->   void prb_commit(struct prb_reserved_entry *e);
->   void prb_final_commit(struct prb_reserved_entry *e);
->   
+v5:
+1. optimize encoder and connector code implementation
+2. use "platform_get_irq" and "platform_get_resource"
+3. drop useless function return type, drop unless debug log
+4. custom properties should be separate, so drop it
+5. use DRM_XXX replase pr_xxx
+6. drop dsi&dphy hal callback ops
+7. drop unless callback ops checking
+8. add comments for sprd dpu structure
 
-Best regards
+v6:
+1. Access registers via readl/writel
+2. Checking for unsupported KMS properties (format, rotation, blend_mode, etc) on plane_check ops
+3. Remove always true checks for dpu core ops
+
+v7:
+1. Fix DTC unit name warnings
+2. Fix the problem of maintainers
+3. Call drmm_mode_config_init to mode config init
+4. Embed drm_device in sprd_drm and use devm_drm_dev_alloc
+5. Replace DRM_XXX with drm_xxx on KMS module, but not suitable for other subsystems
+6. Remove plane_update stuff, dpu handles all the HW update in crtc->atomic_flush
+7. Dsi&Dphy Code structure adjustment, all move to "sprd/"
+
+Kevin Tang (6):
+  dt-bindings: display: add Unisoc's drm master bindings
+  drm/sprd: add Unisoc's drm kms master
+  dt-bindings: display: add Unisoc's dpu bindings
+  drm/sprd: add Unisoc's drm display controller driver
+  dt-bindings: display: add Unisoc's mipi dsi&dphy bindings
+  drm/sprd: add Unisoc's drm mipi dsi&dphy driver
+
+ .../display/sprd/sprd,display-subsystem.yaml       |   39 +
+ .../bindings/display/sprd/sprd,sharkl3-dpu.yaml    |   83 ++
+ .../display/sprd/sprd,sharkl3-dsi-host.yaml        |   98 ++
+ .../display/sprd/sprd,sharkl3-dsi-phy.yaml         |   75 +
+ drivers/gpu/drm/Kconfig                            |    2 +
+ drivers/gpu/drm/Makefile                           |    1 +
+ drivers/gpu/drm/sprd/Kconfig                       |   13 +
+ drivers/gpu/drm/sprd/Makefile                      |   12 +
+ drivers/gpu/drm/sprd/dpu_r2p0.c                    |  636 +++++++++
+ drivers/gpu/drm/sprd/dw_dsi_ctrl.c                 |  792 +++++++++++
+ drivers/gpu/drm/sprd/dw_dsi_ctrl.h                 | 1475 ++++++++++++++++++++
+ drivers/gpu/drm/sprd/dw_dsi_ctrl_ppi.c             |  276 ++++
+ drivers/gpu/drm/sprd/dw_dsi_ctrl_ppi.h             |   34 +
+ drivers/gpu/drm/sprd/megacores_pll.c               |  315 +++++
+ drivers/gpu/drm/sprd/megacores_pll.h               |  146 ++
+ drivers/gpu/drm/sprd/sprd_dphy.c                   |  335 +++++
+ drivers/gpu/drm/sprd/sprd_dphy.h                   |   39 +
+ drivers/gpu/drm/sprd/sprd_dpu.c                    |  501 +++++++
+ drivers/gpu/drm/sprd/sprd_dpu.h                    |  217 +++
+ drivers/gpu/drm/sprd/sprd_drm.c                    |  263 ++++
+ drivers/gpu/drm/sprd/sprd_drm.h                    |   20 +
+ drivers/gpu/drm/sprd/sprd_dsi.c                    | 1102 +++++++++++++++
+ drivers/gpu/drm/sprd/sprd_dsi.h                    |  105 ++
+ 23 files changed, 6579 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/display/sprd/sprd,display-subsystem.yaml
+ create mode 100644 Documentation/devicetree/bindings/display/sprd/sprd,sharkl3-dpu.yaml
+ create mode 100644 Documentation/devicetree/bindings/display/sprd/sprd,sharkl3-dsi-host.yaml
+ create mode 100644 Documentation/devicetree/bindings/display/sprd/sprd,sharkl3-dsi-phy.yaml
+ create mode 100644 drivers/gpu/drm/sprd/Kconfig
+ create mode 100644 drivers/gpu/drm/sprd/Makefile
+ create mode 100644 drivers/gpu/drm/sprd/dpu_r2p0.c
+ create mode 100644 drivers/gpu/drm/sprd/dw_dsi_ctrl.c
+ create mode 100644 drivers/gpu/drm/sprd/dw_dsi_ctrl.h
+ create mode 100644 drivers/gpu/drm/sprd/dw_dsi_ctrl_ppi.c
+ create mode 100644 drivers/gpu/drm/sprd/dw_dsi_ctrl_ppi.h
+ create mode 100644 drivers/gpu/drm/sprd/megacores_pll.c
+ create mode 100644 drivers/gpu/drm/sprd/megacores_pll.h
+ create mode 100644 drivers/gpu/drm/sprd/sprd_dphy.c
+ create mode 100644 drivers/gpu/drm/sprd/sprd_dphy.h
+ create mode 100644 drivers/gpu/drm/sprd/sprd_dpu.c
+ create mode 100644 drivers/gpu/drm/sprd/sprd_dpu.h
+ create mode 100644 drivers/gpu/drm/sprd/sprd_drm.c
+ create mode 100644 drivers/gpu/drm/sprd/sprd_drm.h
+ create mode 100644 drivers/gpu/drm/sprd/sprd_dsi.c
+ create mode 100644 drivers/gpu/drm/sprd/sprd_dsi.h
+
 -- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
+2.7.4
 
