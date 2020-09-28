@@ -2,233 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5331827B3D9
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 20:00:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D51D927B336
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 19:31:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726775AbgI1SAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 14:00:02 -0400
-Received: from mga17.intel.com ([192.55.52.151]:15831 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726573AbgI1SAB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 14:00:01 -0400
-IronPort-SDR: SCBAlElmh73DSCIbZc5CfHQvM8AvWGU0qjkoLghTbtYDVmlCI0qaQSErcGW0MVs+5JHOl+C833
- R3gt+lqehDTA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9758"; a="142048469"
-X-IronPort-AV: E=Sophos;i="5.77,313,1596524400"; 
-   d="scan'208";a="142048469"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 10:24:50 -0700
-IronPort-SDR: a2SfqAFgVRI8zXusOF2ox02uAN13ixHZSDCr+C9sl7ksriw+HslsDtZkcgmScJmvhXT/rvvSV8
- w1XgmVkA1T7g==
-X-IronPort-AV: E=Sophos;i="5.77,313,1596524400"; 
-   d="scan'208";a="488671222"
-Received: from mdroper-desk1.fm.intel.com (HELO mdroper-desk1.amr.corp.intel.com) ([10.1.27.168])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 10:24:49 -0700
-Date:   Mon, 28 Sep 2020 10:24:47 -0700
-From:   Matt Roper <matthew.d.roper@intel.com>
-To:     Jani Nikula <jani.nikula@linux.intel.com>
-Cc:     "Surendrakumar Upadhyay, TejaskumarX" 
-        <tejaskumarx.surendrakumar.upadhyay@intel.com>,
-        "Vivi, Rodrigo" <rodrigo.vivi@intel.com>,
-        "airlied@linux.ie" <airlied@linux.ie>,
-        "daniel@ffwll.ch" <daniel@ffwll.ch>,
-        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Ausmus, James" <james.ausmus@intel.com>,
-        "Souza, Jose" <jose.souza@intel.com>,
-        "ville.syrjala@linux.intel.com" <ville.syrjala@linux.intel.com>,
-        "De Marchi, Lucas" <lucas.demarchi@intel.com>,
-        "Pandey, Hariom" <hariom.pandey@intel.com>
-Subject: Re: [PATCH 1/2] drm/i915/jsl: Split EHL/JSL platform info and PCI ids
-Message-ID: <20200928172447.GA2157395@mdroper-desk1.amr.corp.intel.com>
-References: <20200928080931.246347-1-tejaskumarx.surendrakumar.upadhyay@intel.com>
- <20200928080931.246347-2-tejaskumarx.surendrakumar.upadhyay@intel.com>
- <87d026owdq.fsf@intel.com>
- <SN6PR11MB3421571FA9A490C67E0E9D82DF350@SN6PR11MB3421.namprd11.prod.outlook.com>
- <874knhq0x1.fsf@intel.com>
+        id S1726583AbgI1RbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 13:31:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39978 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726424AbgI1RbF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 13:31:05 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE746C061755;
+        Mon, 28 Sep 2020 10:31:05 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id g96so1696889otb.12;
+        Mon, 28 Sep 2020 10:31:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=Z9O7mA5D7c+JFa4r/JG3w4qFephERKS0m6X1DHUded8=;
+        b=WHMnVkAxMyPFWTIQbQLltT+fVWIrpiHBADBt822NXrX/eDAk9s75vYda2zOto5xSuc
+         dtWkBhgcOvHUyMUJtFYKgXwozc5rM0SrgZEH7PN/FosqEmsVolWqTv8YTGfs95Pcr8P/
+         QS2Y9j7gC4WxOPie1rv/UKEjPMavlgV03pmWgTvSf/zSWNBjpOvOXJNecJkXIQTtODIN
+         y6mhjTGKH4RkyOpczNvkfakPDCjZ3LQ3THbA47AZxon1PqAUw14ex1fc9HnGhHIrLWdh
+         swj7eEMuWsfs4P6H3bna5+ryGgljvpePEA62GXODfv73NiiCrZaEoWYrnNvz6Q2kyMZN
+         QHhg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Z9O7mA5D7c+JFa4r/JG3w4qFephERKS0m6X1DHUded8=;
+        b=oqnXa8yrOhM42nqJEuOFirKaZ2vRcdTN7k9dOGBMlqgE7TQwSPxOTRb5okypDFeL7N
+         YbOTUEPhjH4kdo3rLfIOT2LgO8hxnWnQuEYzz3A/vBHwM7MGrnP++UOmfhtWMCzshbVO
+         BQfRPOB1v0cNuIqQN3oVEBEWYIqWQstd48DjDVrXV+nLDxb+d4cLG1t+WB7EJAB6lzWQ
+         L98wPC1Tnax6eT1+Z/xUcR92+SJk5nSFoyTxyz1liovUYqh7gIcQHBKz8w7QEoMQy0YF
+         CAPuDSqpV7DSHLi9zBuROI8u4SU7sJBQlukk/kSefiWjstBC209Or347fwHsYfxvv1hp
+         gfyw==
+X-Gm-Message-State: AOAM531Sie2YnyMYFurpg590CyLIiTFOyFvhosytFMdUvbcIUtk/4V86
+        1Y1Qrgcc26XufK5ME5XxumF/QXcdWRA=
+X-Google-Smtp-Source: ABdhPJwzVfBPEjYgV08nL3dPU+C4ZfWoVQGO2PnCk2vQeWROCT5ejZauBS+aXEV4jBfN4SG3OGPK1A==
+X-Received: by 2002:a9d:7f0c:: with SMTP id j12mr44331otq.53.1601314264882;
+        Mon, 28 Sep 2020 10:31:04 -0700 (PDT)
+Received: from nuclearis2-1.lan (c-98-195-139-126.hsd1.tx.comcast.net. [98.195.139.126])
+        by smtp.gmail.com with ESMTPSA id g23sm2348484ooh.45.2020.09.28.10.31.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Sep 2020 10:31:04 -0700 (PDT)
+From:   Alexandru Gagniuc <mr.nuke.me@gmail.com>
+To:     devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org
+Cc:     Alexandru Gagniuc <mr.nuke.me@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Mark Brown <broonie@kernel.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v2 1/2] drm/bridge: sii902x: Enable I/O and core VCC supplies if present
+Date:   Mon, 28 Sep 2020 12:30:53 -0500
+Message-Id: <20200928173056.1674274-1-mr.nuke.me@gmail.com>
+X-Mailer: git-send-email 2.25.4
+In-Reply-To: <20200924200507.1175888-1-mr.nuke.me@gmail.com>
+References: <20200924200507.1175888-1-mr.nuke.me@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <874knhq0x1.fsf@intel.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 08:14:02PM +0300, Jani Nikula wrote:
-> On Mon, 28 Sep 2020, "Surendrakumar Upadhyay, TejaskumarX" <tejaskumarx.surendrakumar.upadhyay@intel.com> wrote:
-> > ________________________________
-> > From: Jani Nikula <jani.nikula@linux.intel.com>
-> > Sent: Monday, September 28, 2020 7:07 PM
-> > To: Surendrakumar Upadhyay, TejaskumarX <tejaskumarx.surendrakumar.upadhyay@intel.com>; Vivi, Rodrigo <rodrigo.vivi@intel.com>; airlied@linux.ie <airlied@linux.ie>; daniel@ffwll.ch <daniel@ffwll.ch>; intel-gfx@lists.freedesktop.org <intel-gfx@lists.freedesktop.org>; dri-devel@lists.freedesktop.org <dri-devel@lists.freedesktop.org>; linux-kernel@vger.kernel.org <linux-kernel@vger.kernel.org>; Ausmus, James <james.ausmus@intel.com>; Roper, Matthew D <matthew.d.roper@intel.com>; Souza, Jose <jose.souza@intel.com>; ville.syrjala@linux.intel.com <ville.syrjala@linux.intel.com>; De Marchi, Lucas <lucas.demarchi@intel.com>; Pandey, Hariom <hariom.pandey@intel.com>
-> > Subject: Re: [PATCH 1/2] drm/i915/jsl: Split EHL/JSL platform info and PCI ids
-> 
-> Please fix your email quoting when interacting on the public lists.
-> 
-> >
-> > On Mon, 28 Sep 2020, Tejas Upadhyay <tejaskumarx.surendrakumar.upadhyay@intel.com> wrote:
-> >> Split the basic platform definition, macros, and PCI IDs to
-> >> differentiate between EHL and JSL platforms.
-> >>
-> >> Signed-off-by: Tejas Upadhyay <tejaskumarx.surendrakumar.upadhyay@intel.com>
-> >> ---
-> >>  drivers/gpu/drm/i915/i915_drv.h          | 4 +++-
-> >>  drivers/gpu/drm/i915/i915_pci.c          | 9 +++++++++
-> >>  drivers/gpu/drm/i915/intel_device_info.c | 1 +
-> >>  drivers/gpu/drm/i915/intel_device_info.h | 1 +
-> >>  include/drm/i915_pciids.h                | 9 ++++++---
-> >>  5 files changed, 20 insertions(+), 4 deletions(-)
-> >>
-> >> diff --git a/drivers/gpu/drm/i915/i915_drv.h b/drivers/gpu/drm/i915/i915_drv.h
-> >> index 72a9449b674e..4f20acebb038 100644
-> >> --- a/drivers/gpu/drm/i915/i915_drv.h
-> >> +++ b/drivers/gpu/drm/i915/i915_drv.h
-> >> @@ -1417,7 +1417,9 @@ IS_SUBPLATFORM(const struct drm_i915_private *i915,
-> >>  #define IS_COMETLAKE(dev_priv)       IS_PLATFORM(dev_priv, INTEL_COMETLAKE)
-> >>  #define IS_CANNONLAKE(dev_priv)      IS_PLATFORM(dev_priv, INTEL_CANNONLAKE)
-> >>  #define IS_ICELAKE(dev_priv) IS_PLATFORM(dev_priv, INTEL_ICELAKE)
-> >> -#define IS_ELKHARTLAKE(dev_priv)     IS_PLATFORM(dev_priv, INTEL_ELKHARTLAKE)
-> >> +#define IS_ELKHARTLAKE(dev_priv) (IS_PLATFORM(dev_priv, INTEL_ELKHARTLAKE) || \
-> >> +                             IS_PLATFORM(dev_priv, INTEL_JASPERLAKE))
-> >> +#define IS_JASPERLAKE(dev_priv)      IS_PLATFORM(dev_priv, INTEL_JASPERLAKE)
-> >
-> > I think we've learned from history that we want the platform checks to
-> > be independent. I.e. if you need to split ELK and JSP, you need to make
-> > IS_ELKHARTLAKE() match *only* ELK, and you need to replace every current
-> > IS_ELKHARTLAKE() check with IS_ELKHARTLAKE() || IS_JASPERLAKE().
-> >
-> > We've been here before, and we've thought before that we can get by with
-> > the minimal change. It's just postponing the inevitable and generates
-> > confusion.
-> >
-> > BR,
-> > Jani.
-> >
-> > Tejas : Replacing IS_ELKHARTLAKE() || IS_JASPERLAKE() everywhere will
-> > make lot of changes at each place. To avoid huge change and to
-> > differentiate between platforms we have taken this way. Do you think
-> > we still change it everywhere? Do you have example where it can harm
-> > this change?
-> 
-> If you need to differentiate between the two platforms, IS_ELKHARTLAKE()
-> must mean only ELK and IS_JASPERLAKE() must mean only JSP.
-> 
-> It's non-negotiable. We've made the mistake before, we're not doing it
-> again.
-> 
-> There are 32 references to IS_ELKHARTLAKE(). It's slightly painful, but
-> the alternative is worse.
+On the SII9022, the IOVCC and CVCC12 supplies must reach the correct
+voltage before the reset sequence is initiated. On most boards, this
+assumption is true at boot-up, so initialization succeeds.
 
-Why are we adding IS_JASPERLAKE at all?  EHL/JSL are documented as the
-same graphics IP, but are paired with different PCHs in the final SoCs,
-which is what causes the minor differences in programming.  My
-understanding is that the voltage programming differences are ultimately
-due to that difference in PCH so we should just use HAS_PCH_MCC (EHL)
-and HAS_PCH_JSP (JSL) to distinguish which type of programming is needed
-rather than using a platform test.
+However, when we try to initialize the chip with incorrect supply
+voltages, it will not respond to I2C requests. sii902x_probe() fails
+with -ENXIO.
 
+To resolve this, look for the "iovcc" and "cvcc12" regulators, and
+make sure they are enabled before starting the reset sequence. If
+these supplies are not available in devicetree, then they will default
+to dummy-regulator. In that case everything will work like before.
 
-Matt
+This was observed on a STM32MP157C-DK2 booting in u-boot falcon mode.
+On this board, the supplies would be set by the second stage
+bootloader, which does not run in falcon mode.
 
-> 
-> 
-> BR,
-> Jani.
-> 
-> 
-> >
-> >>  #define IS_TIGERLAKE(dev_priv)       IS_PLATFORM(dev_priv, INTEL_TIGERLAKE)
-> >>  #define IS_ROCKETLAKE(dev_priv)      IS_PLATFORM(dev_priv, INTEL_ROCKETLAKE)
-> >>  #define IS_DG1(dev_priv)        IS_PLATFORM(dev_priv, INTEL_DG1)
-> >> diff --git a/drivers/gpu/drm/i915/i915_pci.c b/drivers/gpu/drm/i915/i915_pci.c
-> >> index 366ddfc8df6b..8690b69fcf33 100644
-> >> --- a/drivers/gpu/drm/i915/i915_pci.c
-> >> +++ b/drivers/gpu/drm/i915/i915_pci.c
-> >> @@ -846,6 +846,14 @@ static const struct intel_device_info ehl_info = {
-> >>        .ppgtt_size = 36,
-> >>  };
-> >>
-> >> +static const struct intel_device_info jsl_info = {
-> >> +     GEN11_FEATURES,
-> >> +     PLATFORM(INTEL_JASPERLAKE),
-> >> +     .require_force_probe = 1,
-> >> +     .platform_engine_mask = BIT(RCS0) | BIT(BCS0) | BIT(VCS0) | BIT(VECS0),
-> >> +     .ppgtt_size = 36,
-> >> +};
-> >> +
-> >>  #define GEN12_FEATURES \
-> >>        GEN11_FEATURES, \
-> >>        GEN(12), \
-> >> @@ -985,6 +993,7 @@ static const struct pci_device_id pciidlist[] = {
-> >>        INTEL_CNL_IDS(&cnl_info),
-> >>        INTEL_ICL_11_IDS(&icl_info),
-> >>        INTEL_EHL_IDS(&ehl_info),
-> >> +     INTEL_JSL_IDS(&jsl_info),
-> >>        INTEL_TGL_12_IDS(&tgl_info),
-> >>        INTEL_RKL_IDS(&rkl_info),
-> >>        {0, 0, 0}
-> >> diff --git a/drivers/gpu/drm/i915/intel_device_info.c b/drivers/gpu/drm/i915/intel_device_info.c
-> >> index adc836f15fde..e67cec8fa2aa 100644
-> >> --- a/drivers/gpu/drm/i915/intel_device_info.c
-> >> +++ b/drivers/gpu/drm/i915/intel_device_info.c
-> >> @@ -62,6 +62,7 @@ static const char * const platform_names[] = {
-> >>        PLATFORM_NAME(CANNONLAKE),
-> >>        PLATFORM_NAME(ICELAKE),
-> >>        PLATFORM_NAME(ELKHARTLAKE),
-> >> +     PLATFORM_NAME(JASPERLAKE),
-> >>        PLATFORM_NAME(TIGERLAKE),
-> >>        PLATFORM_NAME(ROCKETLAKE),
-> >>        PLATFORM_NAME(DG1),
-> >> diff --git a/drivers/gpu/drm/i915/intel_device_info.h b/drivers/gpu/drm/i915/intel_device_info.h
-> >> index 6a3d607218aa..d92fa041c700 100644
-> >> --- a/drivers/gpu/drm/i915/intel_device_info.h
-> >> +++ b/drivers/gpu/drm/i915/intel_device_info.h
-> >> @@ -79,6 +79,7 @@ enum intel_platform {
-> >>        /* gen11 */
-> >>        INTEL_ICELAKE,
-> >>        INTEL_ELKHARTLAKE,
-> >> +     INTEL_JASPERLAKE,
-> >>        /* gen12 */
-> >>        INTEL_TIGERLAKE,
-> >>        INTEL_ROCKETLAKE,
-> >> diff --git a/include/drm/i915_pciids.h b/include/drm/i915_pciids.h
-> >> index 7eeecb07c9a1..1b5e09cfa11e 100644
-> >> --- a/include/drm/i915_pciids.h
-> >> +++ b/include/drm/i915_pciids.h
-> >> @@ -579,15 +579,18 @@
-> >>        INTEL_VGA_DEVICE(0x8A51, info), \
-> >>        INTEL_VGA_DEVICE(0x8A5D, info)
-> >>
-> >> -/* EHL/JSL */
-> >> +/* EHL */
-> >>  #define INTEL_EHL_IDS(info) \
-> >>        INTEL_VGA_DEVICE(0x4500, info), \
-> >>        INTEL_VGA_DEVICE(0x4571, info), \
-> >>        INTEL_VGA_DEVICE(0x4551, info), \
-> >>        INTEL_VGA_DEVICE(0x4541, info), \
-> >> -     INTEL_VGA_DEVICE(0x4E71, info), \
-> >>        INTEL_VGA_DEVICE(0x4557, info), \
-> >> -     INTEL_VGA_DEVICE(0x4555, info), \
-> >> +     INTEL_VGA_DEVICE(0x4555, info)
-> >> +
-> >> +/* JSL */
-> >> +#define INTEL_JSL_IDS(info) \
-> >> +     INTEL_VGA_DEVICE(0x4E71, info), \
-> >>        INTEL_VGA_DEVICE(0x4E61, info), \
-> >>        INTEL_VGA_DEVICE(0x4E57, info), \
-> >>        INTEL_VGA_DEVICE(0x4E55, info), \
-> >
-> > --
-> > Jani Nikula, Intel Open Source Graphics Center
-> 
-> -- 
-> Jani Nikula, Intel Open Source Graphics Center
+Signed-off-by: Alexandru Gagniuc <mr.nuke.me@gmail.com>
+---
+Changes since v1:
+  * Fix return code after regulator_enable(sii902x->iovcc) fails (Fabio Estevam)
+  * Use dev_err_probe() instead of dev_err() where appropriate (Sam Ravnborg)
 
+ drivers/gpu/drm/bridge/sii902x.c | 54 ++++++++++++++++++++++++++++----
+ 1 file changed, 48 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/gpu/drm/bridge/sii902x.c b/drivers/gpu/drm/bridge/sii902x.c
+index 33fd33f953ec..d15e9f2c0d8a 100644
+--- a/drivers/gpu/drm/bridge/sii902x.c
++++ b/drivers/gpu/drm/bridge/sii902x.c
+@@ -17,6 +17,7 @@
+ #include <linux/i2c.h>
+ #include <linux/module.h>
+ #include <linux/regmap.h>
++#include <linux/regulator/consumer.h>
+ #include <linux/clk.h>
+ 
+ #include <drm/drm_atomic_helper.h>
+@@ -168,6 +169,8 @@ struct sii902x {
+ 	struct drm_connector connector;
+ 	struct gpio_desc *reset_gpio;
+ 	struct i2c_mux_core *i2cmux;
++	struct regulator *iovcc;
++	struct regulator *cvcc12;
+ 	/*
+ 	 * Mutex protects audio and video functions from interfering
+ 	 * each other, by keeping their i2c command sequences atomic.
+@@ -954,13 +957,13 @@ static const struct drm_bridge_timings default_sii902x_timings = {
+ 		 | DRM_BUS_FLAG_DE_HIGH,
+ };
+ 
++static int sii902x_init(struct sii902x *sii902x);
++
+ static int sii902x_probe(struct i2c_client *client,
+ 			 const struct i2c_device_id *id)
+ {
+ 	struct device *dev = &client->dev;
+-	unsigned int status = 0;
+ 	struct sii902x *sii902x;
+-	u8 chipid[4];
+ 	int ret;
+ 
+ 	ret = i2c_check_functionality(client->adapter,
+@@ -989,6 +992,43 @@ static int sii902x_probe(struct i2c_client *client,
+ 
+ 	mutex_init(&sii902x->mutex);
+ 
++	sii902x->iovcc = devm_regulator_get(dev, "iovcc");
++	if (IS_ERR(sii902x->iovcc))
++		return PTR_ERR(sii902x->iovcc);
++
++	sii902x->cvcc12 = devm_regulator_get(dev, "cvcc12");
++	if (IS_ERR(sii902x->cvcc12))
++		return PTR_ERR(sii902x->cvcc12);
++
++	ret = regulator_enable(sii902x->iovcc);
++	if (ret < 0) {
++		dev_err_probe(dev, ret, "Failed to enable iovcc supply");
++		return ret;
++	}
++
++	ret = regulator_enable(sii902x->cvcc12);
++	if (ret < 0) {
++		dev_err_probe(dev, ret, "Failed to enable cvcc12 supply");
++		regulator_disable(sii902x->iovcc);
++		return ret;
++	}
++
++	ret = sii902x_init(sii902x);
++	if (ret < 0) {
++		regulator_disable(sii902x->cvcc12);
++		regulator_disable(sii902x->iovcc);
++	}
++
++	return ret;
++}
++
++static int sii902x_init(struct sii902x *sii902x)
++{
++	struct device *dev = &sii902x->i2c->dev;
++	unsigned int status = 0;
++	u8 chipid[4];
++	int ret;
++
+ 	sii902x_reset(sii902x);
+ 
+ 	ret = regmap_write(sii902x->regmap, SII902X_REG_TPI_RQB, 0x0);
+@@ -1012,11 +1052,11 @@ static int sii902x_probe(struct i2c_client *client,
+ 	regmap_read(sii902x->regmap, SII902X_INT_STATUS, &status);
+ 	regmap_write(sii902x->regmap, SII902X_INT_STATUS, status);
+ 
+-	if (client->irq > 0) {
++	if (sii902x->i2c->irq > 0) {
+ 		regmap_write(sii902x->regmap, SII902X_INT_ENABLE,
+ 			     SII902X_HOTPLUG_EVENT);
+ 
+-		ret = devm_request_threaded_irq(dev, client->irq, NULL,
++		ret = devm_request_threaded_irq(dev, sii902x->i2c->irq, NULL,
+ 						sii902x_interrupt,
+ 						IRQF_ONESHOT, dev_name(dev),
+ 						sii902x);
+@@ -1031,9 +1071,9 @@ static int sii902x_probe(struct i2c_client *client,
+ 
+ 	sii902x_audio_codec_init(sii902x, dev);
+ 
+-	i2c_set_clientdata(client, sii902x);
++	i2c_set_clientdata(sii902x->i2c, sii902x);
+ 
+-	sii902x->i2cmux = i2c_mux_alloc(client->adapter, dev,
++	sii902x->i2cmux = i2c_mux_alloc(sii902x->i2c->adapter, dev,
+ 					1, 0, I2C_MUX_GATE,
+ 					sii902x_i2c_bypass_select,
+ 					sii902x_i2c_bypass_deselect);
+@@ -1051,6 +1091,8 @@ static int sii902x_remove(struct i2c_client *client)
+ 
+ 	i2c_mux_del_adapters(sii902x->i2cmux);
+ 	drm_bridge_remove(&sii902x->bridge);
++	regulator_disable(sii902x->cvcc12);
++	regulator_disable(sii902x->iovcc);
+ 
+ 	return 0;
+ }
 -- 
-Matt Roper
-Graphics Software Engineer
-VTT-OSGC Platform Enablement
-Intel Corporation
-(916) 356-2795
+2.25.4
+
