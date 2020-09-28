@@ -2,249 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D76027A556
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 04:11:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60A3227A55A
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 04:14:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726477AbgI1CLX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 22:11:23 -0400
-Received: from m42-4.mailgun.net ([69.72.42.4]:43166 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726380AbgI1CLX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Sep 2020 22:11:23 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1601259081; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=iWhc09D3uoAh+v6CjrqYMN1x/SDldMvdvgNKi1OpHDo=;
- b=X6/tplDVJ/6TboaUYa+pCaYUWNoAwfswF5YgDcZe5isN0dov4cD54OIoqehTcdCaPvKEaLtz
- t1xDXuH65Gp7ytuoZ0616t32J79lNcdR1Tc8jfoFnu6lMR/I7uyz12rstrLdKtA0iXqfLFKs
- OFv5o7BklhbVrsNmP+/M6X7ocho=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 5f714648d106659f82f4fc08 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 28 Sep 2020 02:11:20
- GMT
-Sender: rjliao=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id B1AE9C433FE; Mon, 28 Sep 2020 02:11:20 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: rjliao)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id B1CFEC433C8;
-        Mon, 28 Sep 2020 02:11:19 +0000 (UTC)
+        id S1726558AbgI1COW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 22:14:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39636 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726328AbgI1COW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Sep 2020 22:14:22 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FBE3C0613CE;
+        Sun, 27 Sep 2020 19:14:22 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id o25so6982742pgm.0;
+        Sun, 27 Sep 2020 19:14:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=FV8A+EywFsnOxUdutpQb62bbvJSvIf5l9P7xbyE+9No=;
+        b=Dj6ITJi9NyA7HBzdPuxoWu7vEDpzb0kAZWxsjI3xBTXGdGAEhxL9xUpQtUfbLhShbd
+         vwIielGoCVXEcyO5l+EsaXWkqGWd1n/h4LzWVwvNALELcxBWiEY1jRCxzWxvfw+GnAF9
+         iJA3JyDV7A08PuLHXvKRYljMc5Ur85ovvQdPNbuN+/hAmwGP1HxS/4Yc/ILDIeYuJchM
+         SsaOBbn6yWH44ZDfUGlHN+sYztbnYQozCnuuC9n5o0IaY0mcXQtGIeMm7ZdS+1IlR8tP
+         rFqVd4P/QLV7Z2GH4dZGGzcWAEC8Kbvf8X8gGXY2MXj7JCU/ElwLZey0H3B5Z06ttych
+         VFrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=FV8A+EywFsnOxUdutpQb62bbvJSvIf5l9P7xbyE+9No=;
+        b=Y5eryTK4hZteoBjKrs40nIu4tWDkFuLLmbrngwHcFQaqO+XIkRSDiK/cBmpW/UIf8u
+         JneeQ+tBoYASATuwOeD7F4qFfPOI7yvK7vCqEIy326GkDIb/HXdIIN4CdiGyl8AExI3x
+         GsbrklMu0+FgYaa3SDXaK/g/aUNG0ResmnABqZBeRKLHmLL/8qHUB3Obu28xojuiy9nb
+         ULlYZDVIyhRaPpRoNUgFzBEGFSt9xLL2feVNaWrU023C3PrHQiqll7n/79pyHeNCEexk
+         LYsxPEUHsTkEFURbFOfvulntNUh+HVspbJuP412n8CBalLeQxKmkgCKbA0hdtrcDhuRF
+         EiCw==
+X-Gm-Message-State: AOAM530rCjgZVd4zHejgU83hLiVNOq6w0PYyLdkKgL2SxszimbMLJZSH
+        wvzOZuAbGt3tzCARWhCgLDJKBKgOg2uaAQ==
+X-Google-Smtp-Source: ABdhPJyXeD8y806F63aNJkcxnfEZZp9JH70sOwZOCakVTgo01Kj38Wtwjj9YkMb218pnkU+wXwIZ8w==
+X-Received: by 2002:a17:902:b685:b029:d2:1e62:4cbe with SMTP id c5-20020a170902b685b02900d21e624cbemr9289994pls.58.1601259261194;
+        Sun, 27 Sep 2020 19:14:21 -0700 (PDT)
+Received: from [192.168.1.3] (ip68-111-84-250.oc.oc.cox.net. [68.111.84.250])
+        by smtp.gmail.com with ESMTPSA id y4sm7985924pgl.67.2020.09.27.19.14.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 27 Sep 2020 19:14:20 -0700 (PDT)
+Subject: Re: [PATCH net-next v2] net: vlan: Avoid using BUG() in
+ vlan_proto_idx()
+To:     Vladimir Oltean <vladimir.oltean@nxp.com>,
+        David Miller <davem@davemloft.net>
+Cc:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "olteanv@gmail.com" <olteanv@gmail.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "ap420073@gmail.com" <ap420073@gmail.com>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20200925002746.79571-1-f.fainelli@gmail.com>
+ <20200925.141234.274433220362171981.davem@davemloft.net>
+ <20200925212020.5cniszgzxfw3lq7r@skbuf>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <f9de6169-7a1c-bb9f-67a5-fc724756e354@gmail.com>
+Date:   Sun, 27 Sep 2020 19:14:19 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.2.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Mon, 28 Sep 2020 10:11:19 +0800
-From:   Rocky Liao <rjliao@codeaurora.org>
-To:     Marcel Holtmann <marcel@holtmann.org>
-Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH v3] Bluetooth: btusb: Add Qualcomm Bluetooth SoC WCN6855
- support
-In-Reply-To: <8296D361-B28F-46CA-86E1-6F7FCE62D97F@holtmann.org>
-References: <20200914092744.17464-1-rjliao@codeaurora.org>
- <20200925090829.3088-1-rjliao@codeaurora.org>
- <8296D361-B28F-46CA-86E1-6F7FCE62D97F@holtmann.org>
-Message-ID: <d986c0028f7d3c00bc19f7685f0ae81c@codeaurora.org>
-X-Sender: rjliao@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+In-Reply-To: <20200925212020.5cniszgzxfw3lq7r@skbuf>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marcel,
 
-在 2020-09-26 00:08，Marcel Holtmann 写道：
-> Hi Rocky,
-> 
->> This patch add support for WCN6855 i.e. patch and nvm download
->> support.
-> 
-> please always include the content of /sys/kernel/debug/usb/devices for
-> this hardware.
-> 
-OK.
 
->> 
->> Signed-off-by: Rocky Liao <rjliao@codeaurora.org>
->> ---
->> drivers/bluetooth/btusb.c | 66 +++++++++++++++++++++++++++++++--------
->> 1 file changed, 53 insertions(+), 13 deletions(-)
->> 
->> diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
->> index 9f294b941943..e888e4c02d69 100644
->> --- a/drivers/bluetooth/btusb.c
->> +++ b/drivers/bluetooth/btusb.c
->> @@ -59,6 +59,7 @@ static struct usb_driver btusb_driver;
->> #define BTUSB_MEDIATEK		0x200000
->> #define BTUSB_WIDEBAND_SPEECH	0x400000
->> #define BTUSB_VALID_LE_STATES   0x800000
->> +#define BTUSB_QCA_WCN6855	0x1000000
->> 
->> static const struct usb_device_id btusb_table[] = {
->> 	/* Generic Bluetooth USB device */
->> @@ -291,6 +292,10 @@ static const struct usb_device_id 
->> blacklist_table[] = {
->> 	{ USB_DEVICE(0x13d3, 0x3501), .driver_info = BTUSB_QCA_ROME |
->> 						     BTUSB_WIDEBAND_SPEECH },
->> 
->> +	/* QCA WCN6855 chipset */
->> +	{ USB_DEVICE(0x0cf3, 0xe600), .driver_info = BTUSB_QCA_WCN6855 |
->> +						     BTUSB_WIDEBAND_SPEECH },
->> +
->> 	/* Broadcom BCM2035 */
->> 	{ USB_DEVICE(0x0a5c, 0x2009), .driver_info = BTUSB_BCM92035 },
->> 	{ USB_DEVICE(0x0a5c, 0x200a), .driver_info = BTUSB_WRONG_SCO_MTU },
->> @@ -3409,6 +3414,27 @@ static int btusb_set_bdaddr_ath3012(struct 
->> hci_dev *hdev,
->> 	return 0;
->> }
->> 
->> +static int btusb_set_bdaddr_wcn6855(struct hci_dev *hdev,
->> +				const bdaddr_t *bdaddr)
->> +{
->> +	struct sk_buff *skb;
->> +	u8 buf[6];
->> +	long ret;
->> +
->> +	memcpy(buf, bdaddr, sizeof(bdaddr_t));
->> +
->> +	skb = __hci_cmd_sync_ev(hdev, 0xfc14, sizeof(buf), buf,
->> +				HCI_EV_CMD_COMPLETE, HCI_INIT_TIMEOUT);
->> +	if (IS_ERR(skb)) {
->> +		ret = PTR_ERR(skb);
->> +		bt_dev_err(hdev, "Change address command failed (%ld)", ret);
->> +		return ret;
->> +	}
->> +	kfree_skb(skb);
->> +
->> +	return 0;
->> +}
->> +
->> #define QCA_DFU_PACKET_LEN	4096
->> 
->> #define QCA_GET_TARGET_VERSION	0x09
->> @@ -3428,7 +3454,8 @@ struct qca_version {
->> } __packed;
->> 
->> struct qca_rampatch_version {
->> -	__le16	rom_version;
->> +	__le16	rom_version_high;
->> +	__le16  rom_version_low;
->> 	__le16	patch_version;
->> } __packed;
+On 9/25/2020 2:20 PM, Vladimir Oltean wrote:
+> On Fri, Sep 25, 2020 at 02:12:34PM -0700, David Miller wrote:
+>> From: Florian Fainelli <f.fainelli@gmail.com>
+>> Date: Thu, 24 Sep 2020 17:27:44 -0700
+>>
+>> Applied, thanks Florian.
 > 
-> How does this work. The struct now has an extra 16-bit in the middle.
-> Is this backwards compatible?
-> 
-It works with old HW by shift the offset byte in qca_devices_table, from 
-18 to 16.
-So for old HW only rom_version_low is being used and it still points to 
-the correct
-bytes.
+> Uh-oh, that 'negative value stored in unsigned variable' issue that the
+> build bot reported was on v2, wasn't it?
 
->> 
->> @@ -3440,12 +3467,14 @@ struct qca_device_info {
->> };
->> 
->> static const struct qca_device_info qca_devices_table[] = {
->> -	{ 0x00000100, 20, 4, 10 }, /* Rome 1.0 */
->> -	{ 0x00000101, 20, 4, 10 }, /* Rome 1.1 */
->> -	{ 0x00000200, 28, 4, 18 }, /* Rome 2.0 */
->> -	{ 0x00000201, 28, 4, 18 }, /* Rome 2.1 */
->> -	{ 0x00000300, 28, 4, 18 }, /* Rome 3.0 */
->> -	{ 0x00000302, 28, 4, 18 }, /* Rome 3.2 */
->> +	{ 0x00000100, 20, 4, 8 }, /* Rome 1.0 */
->> +	{ 0x00000101, 20, 4, 8 }, /* Rome 1.1 */
-> 
-> Align it with 8  }
-> 
-OK.
-
->> +	{ 0x00000200, 28, 4, 16 }, /* Rome 2.0 */
->> +	{ 0x00000201, 28, 4, 16 }, /* Rome 2.1 */
->> +	{ 0x00000300, 28, 4, 16 }, /* Rome 3.0 */
->> +	{ 0x00000302, 28, 4, 16 }, /* Rome 3.2 */
->> +	{ 0x00130100, 40, 4, 16 }, /* WCN6855 1.0 */
->> +	{ 0x00130200, 40, 4, 16 }  /* WCN6855 2.0 */
-> 
-> And the last one should also be },
-> 
-OK.
-
->> };
->> 
->> static int btusb_qca_send_vendor_req(struct usb_device *udev, u8 
->> request,
->> @@ -3547,8 +3576,8 @@ static int btusb_setup_qca_load_rampatch(struct 
->> hci_dev *hdev,
->> {
->> 	struct qca_rampatch_version *rver;
->> 	const struct firmware *fw;
->> -	u32 ver_rom, ver_patch;
->> -	u16 rver_rom, rver_patch;
->> +	u32 ver_rom, ver_patch, rver_rom;
->> +	u16 rver_rom_low, rver_rom_high, rver_patch;
->> 	char fwname[64];
->> 	int err;
->> 
->> @@ -3567,9 +3596,16 @@ static int btusb_setup_qca_load_rampatch(struct 
->> hci_dev *hdev,
->> 	bt_dev_info(hdev, "using rampatch file: %s", fwname);
->> 
->> 	rver = (struct qca_rampatch_version *)(fw->data + info->ver_offset);
->> -	rver_rom = le16_to_cpu(rver->rom_version);
->> +	rver_rom_low = le16_to_cpu(rver->rom_version_low);
->> 	rver_patch = le16_to_cpu(rver->patch_version);
->> 
->> +	if (ver_rom & ~0xffffU) {
->> +		rver_rom_high = le16_to_cpu(rver->rom_version_high);
->> +		rver_rom = le32_to_cpu(rver_rom_high << 16 | rver_rom_low);
->> +	} else {
->> +		rver_rom = rver_rom_low;
->> +	}
->> +
->> 	bt_dev_info(hdev, "QCA: patch rome 0x%x build 0x%x, "
->> 		    "firmware rome 0x%x build 0x%x",
->> 		    rver_rom, rver_patch, ver_rom, ver_patch);
->> @@ -3643,9 +3679,6 @@ static int btusb_setup_qca(struct hci_dev *hdev)
->> 		return err;
->> 
->> 	ver_rom = le32_to_cpu(ver.rom_version);
->> -	/* Don't care about high ROM versions */
->> -	if (ver_rom & ~0xffffU)
->> -		return 0;
->> 
->> 	for (i = 0; i < ARRAY_SIZE(qca_devices_table); i++) {
->> 		if (ver_rom == qca_devices_table[i].rom_version)
->> @@ -4081,6 +4114,13 @@ static int btusb_probe(struct usb_interface 
->> *intf,
->> 		btusb_check_needs_reset_resume(intf);
->> 	}
->> 
->> +	if (id->driver_info & BTUSB_QCA_WCN6855) {
->> +		data->setup_on_usb = btusb_setup_qca;
->> +		hdev->set_bdaddr = btusb_set_bdaddr_wcn6855;
->> +		hdev->cmd_timeout = btusb_qca_cmd_timeout;
->> +		set_bit(HCI_QUIRK_SIMULTANEOUS_DISCOVERY, &hdev->quirks);
->> +	}
->> +
->> 	if (id->driver_info & BTUSB_AMP) {
->> 		/* AMP controllers do not support SCO packets */
->> 		data->isoc = NULL;
-> 
-> Regards
-> 
-> Marcel
+Yes, I will be sending a fixup now.
+-- 
+Florian
