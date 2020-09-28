@@ -2,105 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0029B27B33C
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 19:31:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC5B027B343
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 19:31:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726668AbgI1RbW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 13:31:22 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47428 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726424AbgI1RbW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 13:31:22 -0400
-Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601314280;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=BmBUVhbY8uYL/9rFspjmnabiru47MygeGdBGbv0g4Ck=;
-        b=Gf1QhuG8VDc3j4fGSDk8VTVDb06zDu8NAbNuH2CNddpcFY/d4SmLrZsNsclHD+EJGfD8OU
-        Yfzuzv2YZJhM6LnUvaPFhir5aHNeGeHy93r7qPx2ZkSS+wMipv3GgT49dgqFo1f5+uCc+r
-        9kCDzAZ/bxDygZDCMO9VpYg8Y4R4sx4=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-166-Muptm3PpNK-M33ylwNMP2g-1; Mon, 28 Sep 2020 13:31:15 -0400
-X-MC-Unique: Muptm3PpNK-M33ylwNMP2g-1
-Received: by mail-wr1-f72.google.com with SMTP id a12so674752wrg.13
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 10:31:15 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=BmBUVhbY8uYL/9rFspjmnabiru47MygeGdBGbv0g4Ck=;
-        b=JRsxcKKkvFNEMjv9fRsmCiwgDFR2gjGMrtyHV5C3pg+3o588VtO4yi/bo0e5aAoDW7
-         eaufE3RgfMiSj8J0DxjhFp6FS3DufzJCHEqEzij0dgHjcYVVgCJ7ofkOo8lSCCY3iFLI
-         ytd7r4ooDaRo1FEAub/WIEM7zxex6XgkqneXcE6Fno8KDda+Sz43l9rhjj229hw9V7kT
-         oLd0Ycs1w6viBoecCNQFGnbmmDM7KBJuCG5KPK/XgagSFW07d0voplOuf4o0a72snZxU
-         rjaiuIJRHFzo/Sj/NigwGA7eDL53qL8ToNYdUcT0NZeFttEJ5vQIulLYJKtoa+uI61Ig
-         51yA==
-X-Gm-Message-State: AOAM531zY2HL3xvYYl6pRmjT+ds9QIwI1iUY0YgJpp4RLhHNCe05R5ec
-        x1SoX1FaRHNnBaJtN5ux5dZPOfVSdj7Iya9tT15AhqH+vmppGPW/bvHDfJV6p+AS79zXHUv62y8
-        EsEiFKxN3x+wFqjjoe3bDOWDy
-X-Received: by 2002:a7b:cb17:: with SMTP id u23mr262383wmj.166.1601314274218;
-        Mon, 28 Sep 2020 10:31:14 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwwaUnnk7NPkByA7LLdvtAfjRG19RKiw8pzMjMqzLNtVXmwZmZHbRHGM9re/YfcV595i17Rww==
-X-Received: by 2002:a7b:cb17:: with SMTP id u23mr262350wmj.166.1601314273923;
-        Mon, 28 Sep 2020 10:31:13 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:f4f8:dc3e:26e3:38c7? ([2001:b07:6468:f312:f4f8:dc3e:26e3:38c7])
-        by smtp.gmail.com with ESMTPSA id f6sm2225248wro.5.2020.09.28.10.31.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Sep 2020 10:31:12 -0700 (PDT)
-Subject: Re: [PATCH 00/22] Introduce the TDP MMU
-To:     Ben Gardon <bgardon@google.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     Cannon Matthews <cannonmatthews@google.com>,
-        Peter Xu <peterx@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Peter Shier <pshier@google.com>,
-        Peter Feiner <pfeiner@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
-References: <20200925212302.3979661-1-bgardon@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <425b098c-dbe0-d614-8e62-1f50b2f63272@redhat.com>
-Date:   Mon, 28 Sep 2020 19:31:10 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1726683AbgI1Rbk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 13:31:40 -0400
+Received: from mga06.intel.com ([134.134.136.31]:45297 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726566AbgI1Rbj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 13:31:39 -0400
+IronPort-SDR: oDskYaklAm6OZ0KeaQSvCxdob4IUfx40KJGKWBn2Hay8Otpe5bpv74qlTjYoiEHXNtsVhtXyaA
+ VgEwBdF4sNeQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9758"; a="223626486"
+X-IronPort-AV: E=Sophos;i="5.77,313,1596524400"; 
+   d="scan'208";a="223626486"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 10:31:23 -0700
+IronPort-SDR: nnegwXXoi7LbHlIk1Pd+tsGxn9JbuR27+0akBxZ4pcYrJQ9v0nROBkslvXlIyZUjL5r4NJhmqe
+ AOm2fw7NMmfw==
+X-IronPort-AV: E=Sophos;i="5.77,313,1596524400"; 
+   d="scan'208";a="324365155"
+Received: from kcaccard-mobl.amr.corp.intel.com (HELO kcaccard-mobl1.jf.intel.com) ([10.212.204.13])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 10:31:19 -0700
+Message-ID: <5d9b4b306b9cc9109286e2d8f7213be3296d6aa8.camel@linux.intel.com>
+Subject: Re: [PATCH v5 00/10] Function Granular KASLR
+From:   Kristen Carlson Accardi <kristen@linux.intel.com>
+To:     Miroslav Benes <mbenes@suse.cz>
+Cc:     keescook@chromium.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, arjan@linux.intel.com, x86@kernel.org,
+        linux-kernel@vger.kernel.org, kernel-hardening@lists.openwall.com,
+        rick.p.edgecombe@intel.com, live-patching@vger.kernel.org
+Date:   Mon, 28 Sep 2020 10:31:12 -0700
+In-Reply-To: <alpine.LSU.2.21.2009251450260.13615@pobox.suse.cz>
+References: <20200923173905.11219-1-kristen@linux.intel.com>
+         <alpine.LSU.2.21.2009251450260.13615@pobox.suse.cz>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.30.5 (3.30.5-1.fc29) 
 MIME-Version: 1.0
-In-Reply-To: <20200925212302.3979661-1-bgardon@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/09/20 23:22, Ben Gardon wrote:
-> This series is the first of two. In this series we add a basic
-> implementation of the TDP MMU. In the next series we will improve the
-> performance of the TDP MMU and allow it to execute MMU operations
-> in parallel.
+Hi,
 
-I have finished rebasing and adding a few cleanups on top, but I don't
-have time to test it today.  I think the changes shouldn't get too much
-in the way of the second series, but I've also pushed your v1 unmodified
-to kvm/tdp-mmu for future convenience.  I'll await for your feedback in
-the meanwhile!
+On Fri, 2020-09-25 at 15:06 +0200, Miroslav Benes wrote:
+> Hi Kristen,
+> 
+> On Wed, 23 Sep 2020, Kristen Carlson Accardi wrote:
+> 
+> > Function Granular Kernel Address Space Layout Randomization
+> > (fgkaslr)
+> > -----------------------------------------------------------------
+> > ----
+> > 
+> > This patch set is an implementation of finer grained kernel address
+> > space
+> > randomization. It rearranges your kernel code at load time 
+> > on a per-function level granularity, with only around a second
+> > added to
+> > boot time.
+> 
+> I ran live patching kernel selftests on the patch set and everything 
+> passed fine.
+> 
+> However, we also use not-yet-upstream set of tests at SUSE for
+> testing 
+> live patching [1] and one of them, klp_tc_12.sh, is failing. You
+> should be 
+> able to run the set on upstream as is.
+> 
+> The test uninterruptedly sleeps in a kretprobed function called by a 
+> patched one. The current master without fgkaslr patch set reports
+> the 
+> stack of the sleeping task as unreliable and live patching fails.
+> The 
+> situation is different with fgkaslr (even with nofgkaslr on the
+> command 
+> line). The stack is returned as reliable. It looks something like 
+> 
+> [<0>] __schedule+0x465/0xa40
+> [<0>] schedule+0x55/0xd0
+> [<0>] orig_do_sleep+0xb1/0x110 [klp_test_support_mod]
+> [<0>] swap_pages+0x7f/0x7f
+> 
+> where the last entry is not reliable. I've seen 
+> kretprobe_trampoline+0x0/0x4a and some other symbols there too. Since
+> the 
+> patched function (orig_sleep_uninterruptible_set) is not on the
+> stack, 
+> live patching succeeds, which is not intended.
+> 
+> With kprobe setting removed, all works as expected.
+> 
+> So I wonder if there is still some issue with ORC somewhere as you 
+> mentioned in v4 thread. I'll investigate more next week, but wanted
+> to 
+> report early.
+> 
+> Regards
+> Miroslav
+> 
+> [1] https://github.com/lpechacek/qa_test_klp
 
-One feature that I noticed is missing is the shrinker.  What are your
-plans (or opinions) around it?
+Thanks for testing and reporting. I will grab your test and see what I
+can find.
 
-Also, the code generally assume a 64-bit CPU (i.e. that writes to 64-bit
-PTEs are atomic).  That is not a big issue, it just needs a small change
-on top to make the TDP MMU conditional on CONFIG_X86_64.
-
-Thanks,
-
-Paolo
 
