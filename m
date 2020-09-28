@@ -2,150 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03C3627A9D3
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 10:44:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9973227A9D5
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 10:44:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726697AbgI1IoV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 04:44:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43044 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726461AbgI1IoV (ORCPT
+        id S1726720AbgI1Io0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 04:44:26 -0400
+Received: from mail-wm1-f68.google.com ([209.85.128.68]:32865 "EHLO
+        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726461AbgI1IoZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 04:44:21 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A58DC0613CE;
-        Mon, 28 Sep 2020 01:44:21 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id d9so348283pfd.3;
-        Mon, 28 Sep 2020 01:44:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gRrO3YUlgZCm6fEhcoL+qBG1AlRduPsFwHcrQgfhLF8=;
-        b=QzhT+TEahDmGSNhtO+dkesxGtWqxlVSTlJfY4llgKRIV/ECHHa3Z8kzndIXfZaHw3Z
-         LnOHzAcDh7X579AJDN6qdLG113mM+mUCAMq9mjhXOQKXoR0gWJbGDzCZmjEOtHoYBiZ1
-         v2eq/bM4pzYsK1gBKEjAkMbdyTyiOw8ZJ370ULBX4JN0jAUzilUABjwBq5PI4vD/6pXw
-         ZSd1tLdjHjeeezIklnkY+fhBW1EweYzFFqV/eXHieLQP0K7B9Q7njqp4uh5iSzdisk4Q
-         hgM9UNgVbhZ54LoXYPy1KVOlb7BsFGekPHBvdrYTrfTqZZI+096jp0ksbWE5z5qEGGS5
-         BSzA==
+        Mon, 28 Sep 2020 04:44:25 -0400
+Received: by mail-wm1-f68.google.com with SMTP id e11so3874917wme.0;
+        Mon, 28 Sep 2020 01:44:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gRrO3YUlgZCm6fEhcoL+qBG1AlRduPsFwHcrQgfhLF8=;
-        b=dZrTT3CGnP5aSbglVZMwXsLm8pjZjG6qqzfCEQ8b7M/+NIvZJbd49eL4FXzt7nqoDG
-         jmdciV6XLg6NKXLUaOXUBwcLacYRh/6TC1mlOz3enWpzFu5bfdEuH0liNM8xlWqvUBWY
-         ihT9dnBaiIJ+NV+rrR5FlkCB7D0llEkF7Q0nWn/acEnmI+mUQU2MvpLN7ck2Ysl8EWKP
-         E/35TgSaBKjBqNuRkkCfNWzV6Gsqgy5b8q1Y9OMVUNzI3tZcoeDSQ1+KvKt/LVesVgfe
-         PqGTp4K3V5xdaWelIJT41qiygHWC4/bG+Brs7YyFV4x2J/yGmRjlFRaNMDY5SFI7Gib3
-         dytA==
-X-Gm-Message-State: AOAM532/JkZXFb5WPNeuvZY1bO9ZnJnq9tcoFdyQ0ATJl4XlH/16Mz0g
-        UqazrV3AbMIOx/cGjanR6Y6Vpm2KfeXDPqAMOsA=
-X-Google-Smtp-Source: ABdhPJw7BQ/1b0Cp+vLZpa7oNBx9wJJkOl1cIlRA7iRpsDowgTj6xM07zJ0NQOZYboO22cYxirRXfnrMYoRu3+G2Mh4=
-X-Received: by 2002:a63:ec4c:: with SMTP id r12mr395552pgj.74.1601282660571;
- Mon, 28 Sep 2020 01:44:20 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=0mMFVfHkuFc+oREAqCSuRzqniaXnxrZGMqaf+ROp/CQ=;
+        b=c3z2dB52OWDAP3o8Pm7nMTsaXcXTliYRa/HcNKZKcHMpAonDO45VNZBjmC/gmtnGlG
+         W6BwPXMLLbtKjVNBOhoB+K9mgu+Yj/ux9vPfXuZm5YWRt05J79gs1hOyRdla0mmivboh
+         XzHUCETGb/k3XVJtvByvumsv7JxHP/U4mnKyrLTmihvcsN7CNEtIKqD3FxpcQqLDBMYe
+         WaSW3iUNsP0guYB2N7L5BfczCtKdhZ5sapMd1KgvX5XO5VxDwuRVW3OlndafZiXZ3jBo
+         r7wgRuEorB1UPHhzSK9nUa++8ydbVNdh95d7nsnSMfe1Ps001eKWJRQkBoXobdo8WB9d
+         Z/0A==
+X-Gm-Message-State: AOAM533U0ST+Hm9gtaC/PAU3Afqqvu2WUp10fMgPiPiSNmUngXc/dNyf
+        qz4mzaJ9XpXDYumuRpckda4=
+X-Google-Smtp-Source: ABdhPJxEDLF9GjchnJodWAWlW63fhjbkhRB7nvp4u1mlwWMprWN0sDPvavZLOdsWoG19e8pBGcVdhQ==
+X-Received: by 2002:a1c:9ecb:: with SMTP id h194mr479774wme.140.1601282663613;
+        Mon, 28 Sep 2020 01:44:23 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.132])
+        by smtp.googlemail.com with ESMTPSA id n21sm342046wmi.21.2020.09.28.01.44.22
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 28 Sep 2020 01:44:22 -0700 (PDT)
+Date:   Mon, 28 Sep 2020 10:44:20 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Michael Walle <michael@walle.cc>
+Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Mark Brown <broonie@kernel.org>,
+        Vladimir Oltean <olteanv@gmail.com>
+Subject: Re: [PATCH v2] spi: fsl-dspi: fix NULL pointer dereference
+Message-ID: <20200928084420.GA9807@kozik-lap>
+References: <20200928083238.27137-1-michael@walle.cc>
 MIME-Version: 1.0
-References: <20200928040651.24937-1-haifeng.zhao@intel.com> <20200928040651.24937-3-haifeng.zhao@intel.com>
-In-Reply-To: <20200928040651.24937-3-haifeng.zhao@intel.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 28 Sep 2020 11:44:02 +0300
-Message-ID: <CAHp75VfmWDHBv9kXugLN3c=Dj27EsJ43fB=WNDrjaLnGhvrz6Q@mail.gmail.com>
-Subject: Re: [PATCH 2/5 V5] PCI: pciehp: check and wait port status out of DPC
- before handling DLLSC and PDC
-To:     Ethan Zhao <haifeng.zhao@intel.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>, Oliver <oohall@gmail.com>,
-        ruscur@russell.cc, Lukas Wunner <lukas@wunner.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Stuart Hayes <stuart.w.hayes@gmail.com>,
-        Alexandru Gagniuc <mr.nuke.me@gmail.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        pei.p.jia@intel.com, ashok.raj@linux.intel.com,
-        Sathyanarayanan Kuppuswamy <sathyanarayanan.kuppuswamy@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200928083238.27137-1-michael@walle.cc>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 7:10 AM Ethan Zhao <haifeng.zhao@intel.com> wrote:
+On Mon, Sep 28, 2020 at 10:32:38AM +0200, Michael Walle wrote:
+> Since commit 530b5affc675 ("spi: fsl-dspi: fix use-after-free in remove
+> path") this driver causes a kernel oops:
+> 
+> [    1.891065] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000080
+> [    1.899889] Mem abort info:
+> [    1.902692]   ESR = 0x96000004
+> [    1.905754]   EC = 0x25: DABT (current EL), IL = 32 bits
+> [    1.911089]   SET = 0, FnV = 0
+> [    1.914156]   EA = 0, S1PTW = 0
+> [    1.917303] Data abort info:
+> [    1.920193]   ISV = 0, ISS = 0x00000004
+> [    1.924044]   CM = 0, WnR = 0
+> [    1.927022] [0000000000000080] user address but active_mm is swapper
+> [    1.933403] Internal error: Oops: 96000004 [#1] PREEMPT SMP
+> [    1.938995] Modules linked in:
+> [    1.942060] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.9.0-rc6-next-20200925-00026-gae556cc74e28-dirty #94
+> [    1.951838] Hardware name: Kontron SMARC-sAL28 (Single PHY) on SMARC Eval 2.0 carrier (DT)
+> [    1.960135] pstate: 40000005 (nZcv daif -PAN -UAO -TCO BTYPE=--)
+> [    1.966168] pc : dspi_setup+0xc8/0x2e0
+> [    1.969926] lr : dspi_setup+0xbc/0x2e0
+> [    1.973684] sp : ffff80001139b930
+> [    1.977005] x29: ffff80001139b930 x28: ffff00207a5d2000
+> [    1.982338] x27: 0000000000000006 x26: ffff00207a44d410
+> [    1.987669] x25: ffff002079c08100 x24: ffff00207a5d2400
+> [    1.993000] x23: ffff00207a5d2600 x22: ffff800011169948
+> [    1.998332] x21: ffff800010cbcd20 x20: ffff00207a58a800
+> [    2.003663] x19: ffff00207a76b700 x18: 0000000000000010
+> [    2.008994] x17: 0000000000000001 x16: 0000000000000019
+> [    2.014326] x15: ffffffffffffffff x14: 0720072007200720
+> [    2.019657] x13: 0720072007200720 x12: ffff8000111fc5e0
+> [    2.024989] x11: 0000000000000003 x10: ffff8000111e45a0
+> [    2.030320] x9 : 0000000000000000 x8 : ffff00207a76b780
+> [    2.035651] x7 : 0000000000000000 x6 : 000000000000003f
+> [    2.040982] x5 : 0000000000000040 x4 : ffff80001139b918
+> [    2.046313] x3 : 0000000000000001 x2 : 64b62cc917af5100
+> [    2.051643] x1 : 0000000000000000 x0 : 0000000000000000
 
-We didn't settle on the v4, why v5?
+You can skip all these addresses/registers, so only keep OOPS message
+and call trace.
 
-> When root port has DPC capability and it is enabled, then triggered by
-> errors, DPC DLLSC and PDC interrupts will be sent to DPC driver, pciehp
-> driver at the same time.
-> That will cause following result:
->
-> 1. Link and device are recovered by hardware DPC and software DPC driver,
->    device
->    isn't removed, but the pciehp might treat it as device was hot removed.
->
-> 2. Race condition happens bettween pciehp_unconfigure_device() called by
->    pciehp_ist() in pciehp driver and pci_do_recovery() called by
->    dpc_handler in DPC driver. no luck, there is no lock to protect
->    pci_stop_and_remove_bus_device()
->    against pci_walk_bus(), they hold different samphore and mutex,
->    pci_stop_and_remove_bus_device holds pci_rescan_remove_lock, and
->    pci_walk_bus() holds pci_bus_sem.
->
-> This race condition is not purely code analysis, it could be triggered by
-> following command series:
->
->   # setpci -s 64:02.0 0x196.w=000a // 64:02.0 rootport has DPC capability
->   # setpci -s 65:00.0 0x04.w=0544  // 65:00.0 NVMe SSD populated in port
->   # mount /dev/nvme0n1p1 nvme
->
-> One shot will cause system panic and NULL pointer reference happened.
-> (tested on stable 5.8 & ICS(Ice Lake SP platform, see
-> https://en.wikichip.org/wiki/intel/microarchitectures/ice_lake_(server))
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-...
-
->    Buffer I/O error on dev nvme0n1p1, logical block 3328, async page read
->    BUG: kernel NULL pointer dereference, address: 0000000000000050
->    #PF: supervisor read access in kernel mode
->    #PF: error_code(0x0000) - not-present page
->    PGD 0
->    Oops: 0000 [#1] SMP NOPTI
->    CPU: 12 PID: 513 Comm: irq/124-pcie-dp Not tainted 5.8.0 el8.x86_64+ #1
->    RIP: 0010:report_error_detected.cold.4+0x7d/0xe6
->    Code: b6 d0 e8 e8 fe 11 00 e8 16 c5 fb ff be 06 00 00 00 48 89 df e8 d3
->    65 ff ff b8 06 00 00 00 e9 75 fc ff ff 48 8b 43 68 45 31 c9 <48> 8b 50
->    50 48 83 3a 00 41 0f 94 c1 45 31 c0 48 85 d2 41 0f 94 c0
->    RSP: 0018:ff8e06cf8762fda8 EFLAGS: 00010246
->    RAX: 0000000000000000 RBX: ff4e3eaacf42a000 RCX: ff4e3eb31f223c01
->    RDX: ff4e3eaacf42a140 RSI: ff4e3eb31f223c00 RDI: ff4e3eaacf42a138
->    RBP: ff8e06cf8762fdd0 R08: 00000000000000bf R09: 0000000000000000
->    R10: 000000eb8ebeab53 R11: ffffffff93453258 R12: 0000000000000002
->    R13: ff4e3eaacf42a130 R14: ff8e06cf8762fe2c R15: ff4e3eab44733828
->    FS:  0000000000000000(0000) GS:ff4e3eab1fd00000(0000) knl
->    GS:0000000000000000
->    CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->    CR2: 0000000000000050 CR3: 0000000f8f80a004 CR4: 0000000000761ee0
->    DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
->    DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
->    PKRU: 55555554
->    Call Trace:
->    ? report_normal_detected+0x20/0x20
->    report_frozen_detected+0x16/0x20
->    pci_walk_bus+0x75/0x90
->    ? dpc_irq+0x90/0x90
->    pcie_do_recovery+0x157/0x201
->    ? irq_finalize_oneshot.part.47+0xe0/0xe0
->    dpc_handler+0x29/0x40
->    irq_thread_fn+0x24/0x60
->    irq_thread+0xea/0x170
->    ? irq_forced_thread_fn+0x80/0x80
->    ? irq_thread_check_affinity+0xf0/0xf0
->    kthread+0x124/0x140
->    ? kthread_park+0x90/0x90
->    ret_from_fork+0x1f/0x30
->    Modules linked in: nft_fib_inet.........
->    CR2: 0000000000000050
-
-Do not pollute the commit messages with irrelevant information.
-
--- 
-With Best Regards,
-Andy Shevchenko
+Best regards,
+Krzysztof
