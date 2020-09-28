@@ -2,67 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95B4527A4EC
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 02:42:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F358727A4EF
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 02:45:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726445AbgI1Amg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 20:42:36 -0400
-Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:59998 "EHLO
-        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726393AbgI1Amf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Sep 2020 20:42:35 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UAF1Lg1_1601253752;
-Received: from localhost(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0UAF1Lg1_1601253752)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 28 Sep 2020 08:42:33 +0800
-From:   Baolin Wang <baolin.wang@linux.alibaba.com>
-To:     tj@kernel.org, axboe@kernel.dk
-Cc:     baolin.wang@linux.alibaba.com, baolin.wang7@gmail.com,
-        linux-block@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] block: Remove redundant 'return' statement
-Date:   Mon, 28 Sep 2020 08:42:26 +0800
-Message-Id: <633f73addfc154700b2f983bee6230f82de4c984.1601253090.git.baolin.wang@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S1726476AbgI1Ao4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 20:44:56 -0400
+Received: from mga05.intel.com ([192.55.52.43]:37588 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726440AbgI1Aoz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Sep 2020 20:44:55 -0400
+IronPort-SDR: j3U0gIa+fDtmKObWADo8VGRBgeUg+roRewPRo7WGRxVnGR9/N7oOmp4+mvHNh0OBcmlvzXVCBq
+ MzducvvSUkHg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9757"; a="246663602"
+X-IronPort-AV: E=Sophos;i="5.77,312,1596524400"; 
+   d="scan'208";a="246663602"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2020 17:44:55 -0700
+IronPort-SDR: jCuOEo1H37AGRm5VTOBT/P0142AXFxLfU9ZTBX0RgJMQ/NoSrMy/M+h173kEVZywHEwb0igdXI
+ P/of59sdy9YA==
+X-IronPort-AV: E=Sophos;i="5.77,312,1596524400"; 
+   d="scan'208";a="488350016"
+Received: from memara-mobl.ger.corp.intel.com (HELO localhost) ([10.252.49.157])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2020 17:44:49 -0700
+Date:   Mon, 28 Sep 2020 03:44:50 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, akpm@linux-foundation.org,
+        andriy.shevchenko@linux.intel.com, asapek@google.com,
+        cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        dave.hansen@intel.com, haitao.huang@intel.com,
+        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, luto@kernel.org,
+        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
+        rientjes@google.com, yaozhangx@google.com
+Subject: Re: [PATCH v38 24/24] x86/sgx: Update MAINTAINERS
+Message-ID: <20200928004450.GA6704@linux.intel.com>
+References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
+ <20200915112842.897265-25-jarkko.sakkinen@linux.intel.com>
+ <20200925223753.GA9998@linux.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200925223753.GA9998@linux.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove redundant 'return' statement for 'void' functions.
+On Fri, Sep 25, 2020 at 03:37:54PM -0700, Sean Christopherson wrote:
+> On Tue, Sep 15, 2020 at 02:28:42PM +0300, Jarkko Sakkinen wrote:
+> > Add the maintainer information for the SGX subsystem.
+> > 
+> > Cc: Thomas Gleixner <tglx@linutronix.de>
+> > Cc: Borislav Petkov <bp@alien8.de>
+> > Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+> > ---
+> >  MAINTAINERS | 11 +++++++++++
+> >  1 file changed, 11 insertions(+)
+> > 
+> > diff --git a/MAINTAINERS b/MAINTAINERS
+> > index 3b186ade3597..1d4daeb12d0a 100644
+> > --- a/MAINTAINERS
+> > +++ b/MAINTAINERS
+> > @@ -9051,6 +9051,17 @@ F:	Documentation/x86/intel_txt.rst
+> >  F:	arch/x86/kernel/tboot.c
+> >  F:	include/linux/tboot.h
+> >  
+> > +INTEL SGX
+> > +M:	Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+> > +M:	Sean Christopherson <sean.j.christopherson@intel.com>
+> > +L:	linux-sgx@vger.kernel.org
+> > +S:	Maintained
+> > +Q:	https://patchwork.kernel.org/project/intel-sgx/list/
+> > +T:	git https://github.com/jsakkine-intel/linux-sgx.git
+> 
+> This is stale, you moved your tree to kernel.org.
 
-Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
----
- block/blk-iocost.c    | 2 +-
- block/blk-iolatency.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+That's correct. It is already updated in my GIT tree:
 
-diff --git a/block/blk-iocost.c b/block/blk-iocost.c
-index ef9476f..e38c406 100644
---- a/block/blk-iocost.c
-+++ b/block/blk-iocost.c
-@@ -3343,7 +3343,7 @@ static int __init ioc_init(void)
- 
- static void __exit ioc_exit(void)
- {
--	return blkcg_policy_unregister(&blkcg_policy_iocost);
-+	blkcg_policy_unregister(&blkcg_policy_iocost);
- }
- 
- module_init(ioc_init);
-diff --git a/block/blk-iolatency.c b/block/blk-iolatency.c
-index f90429c..81be009 100644
---- a/block/blk-iolatency.c
-+++ b/block/blk-iolatency.c
-@@ -1046,7 +1046,7 @@ static int __init iolatency_init(void)
- 
- static void __exit iolatency_exit(void)
- {
--	return blkcg_policy_unregister(&blkcg_policy_iolatency);
-+	blkcg_policy_unregister(&blkcg_policy_iolatency);
- }
- 
- module_init(iolatency_init);
--- 
-1.8.3.1
+https://git.kernel.org/pub/scm/linux/kernel/git/jarkko/linux-sgx.git/tree/MAINTAINERS
 
+/Jarkko
