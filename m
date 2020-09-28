@@ -2,92 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DC8C27B047
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 16:50:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 152D827B04E
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 16:51:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726594AbgI1OuJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 10:50:09 -0400
-Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:54060 "EHLO
-        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726477AbgI1OuI (ORCPT
+        id S1726607AbgI1Ovs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 10:51:48 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:46054 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726325AbgI1Ovr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 10:50:08 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UAN8ezQ_1601304597;
-Received: from localhost(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0UAN8ezQ_1601304597)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 28 Sep 2020 22:49:57 +0800
-Date:   Mon, 28 Sep 2020 22:49:57 +0800
-From:   Baolin Wang <baolin.wang@linux.alibaba.com>
-To:     Will Deacon <will@kernel.org>
-Cc:     lorenzo.pieralisi@arm.com, catalin.marinas@arm.com,
-        baolin.wang7@gmail.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: PCI: Validate the node before setting node id for
- root bus
-Message-ID: <20200928144957.GA90366@VM20190228-100.tbsite.net>
-Reply-To: Baolin Wang <baolin.wang@linux.alibaba.com>
-References: <1600770804-116365-1-git-send-email-baolin.wang@linux.alibaba.com>
- <20200928140054.GA11500@willie-the-truck>
+        Mon, 28 Sep 2020 10:51:47 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08SEpfcq056342;
+        Mon, 28 Sep 2020 09:51:41 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1601304701;
+        bh=FYsYgfdUfkCM21ZQGEi/GashHZ6P3nUYJMgbxNTRUJw=;
+        h=From:To:CC:Subject:Date;
+        b=tZD79WUlP/M79ETuLDZaEu8C3MugD1VImQI7PlyBIrwgntyf5HXqnyhAlchNwgTPo
+         MwNzdOF0xruHYxqI9Ff+Wb8IokcMFRFqgQesJ0cjALmYQ/56PWczP5SsCEnva9UWR7
+         UddSPiwZbuWgoFbpbjckWK7PFn5MH8f6lknrSfL0=
+Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08SEpfIB034827
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 28 Sep 2020 09:51:41 -0500
+Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 28
+ Sep 2020 09:51:41 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 28 Sep 2020 09:51:41 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08SEpfXe085712;
+        Mon, 28 Sep 2020 09:51:41 -0500
+From:   Dan Murphy <dmurphy@ti.com>
+To:     <davem@davemloft.net>, <andrew@lunn.ch>, <f.fainelli@gmail.com>,
+        <hkallweit1@gmail.com>
+CC:     <mkubecek@suse.cz>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Dan Murphy <dmurphy@ti.com>
+Subject: [RESEND PATCH net-next v5 0/2] DP83869 WoL and Speed optimization
+Date:   Mon, 28 Sep 2020 09:51:33 -0500
+Message-ID: <20200928145135.20847-1-dmurphy@ti.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200928140054.GA11500@willie-the-truck>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 03:00:55PM +0100, Will Deacon wrote:
-> [+ Lorenzo]
-> 
-> On Tue, Sep 22, 2020 at 06:33:24PM +0800, Baolin Wang wrote:
-> > If the BIOS disabled the NUMA configuration, but did not change the
-> > proximity domain description in the SRAT table, so the PCI root bus
-> > device may get a incorrect node id by acpi_get_node().
-> 
-> How "incorrect" are we talking here? What actually goes wrong? At some
-> point, we have to trust what the firmware is telling us.
+Hello
 
-What I mean is, if we disable the NUMA from BIOS, but we did not change
-the PXM for the PCI devices, so the PCI devices can still get a numa
-node id from acpi_get_node(). For example, we can still get the numa
-node id = 1 in this case from acpi_get_node(), but the numa_nodes_parsed
-is empty, which means the node id 1 is invalid. We should add a
-validation for the node id when setting the root bus node id.
+Add the WoL and Speed Optimization (aka downshift) support for the DP83869
+Ethernet PHY.
 
-> 
-> > Thus better to add a numa node validation before setting numa node
-> > for the PCI root bus, like pci_acpi_root_get_node() does for X86
-> > architecture.
-> > 
-> > Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
-> > ---
-> >  arch/arm64/kernel/pci.c | 6 +++++-
-> >  1 file changed, 5 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/arch/arm64/kernel/pci.c b/arch/arm64/kernel/pci.c
-> > index 1006ed2..24fe2bd 100644
-> > --- a/arch/arm64/kernel/pci.c
-> > +++ b/arch/arm64/kernel/pci.c
-> > @@ -86,9 +86,13 @@ int pcibios_root_bridge_prepare(struct pci_host_bridge *bridge)
-> >  		struct pci_config_window *cfg = bridge->bus->sysdata;
-> >  		struct acpi_device *adev = to_acpi_device(cfg->parent);
-> >  		struct device *bus_dev = &bridge->bus->dev;
-> > +		int node = acpi_get_node(acpi_device_handle(adev));
-> > +
-> > +		if (node != NUMA_NO_NODE && !node_online(node))
-> > +			node = NUMA_NO_NODE;
-> 
-> Hmm. afaict, acpi_get_node() tries quite hard to return a valid node when
-> it gets back NUMA_NO_NODE in acpi_map_pxm_to_node(). Seems like we're
-> undoing all of that here, which worries me because NUMA_NO_NODE is a bit
-> of a loaded gun if you interpret it as a valid node.
+Dan
 
-I did not treate NUMA_NO_NODE as a valid node, I just add a validation
-to validate if it is a valid node before setting. See my previous comments,
-hopes I make things clear. Thanks.
+Dan Murphy (2):
+  net: phy: dp83869: support Wake on LAN
+  net: phy: dp83869: Add speed optimization feature
 
-> 
-> Anyway, I defer to Lorenzo on this.
-> 
-> Will
+ drivers/net/phy/dp83869.c | 292 ++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 292 insertions(+)
+
+-- 
+2.28.0.585.ge1cfff676549
+
