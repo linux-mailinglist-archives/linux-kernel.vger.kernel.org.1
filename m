@@ -2,44 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC15D27A8B9
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 09:36:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E91D27A8BA
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 09:36:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726686AbgI1HgR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1726504AbgI1HgR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 28 Sep 2020 03:36:17 -0400
-Received: from mail-io1-f78.google.com ([209.85.166.78]:34279 "EHLO
-        mail-io1-f78.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726596AbgI1HgQ (ORCPT
+Received: from mail-il1-f206.google.com ([209.85.166.206]:55184 "EHLO
+        mail-il1-f206.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726564AbgI1HgQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 28 Sep 2020 03:36:16 -0400
-Received: by mail-io1-f78.google.com with SMTP id i1so131261iom.1
+Received: by mail-il1-f206.google.com with SMTP id f4so90728ilk.21
         for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 00:36:16 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=dQVM5rOfZiP72VmE11knrY/4zMQmueL+CPBBPaQD6Ls=;
-        b=qFE+SUjveKCzfH4IYanxgkstLlAvMfPP6CwhRbsHlqN+syjw99oEVNEuuJcAMk6Tdq
-         wWNVS6SI7FPu5I9TnSXITev8p5v8yGmlvFIJd5PF/rGmvl2rOmNuZXLdqwVVWcWiXJyU
-         uzpOtJFN+/qpvsfth9b/FXgxd6FoNXiiI3HWz2/R2EEVyp/CMKkGQ8aJYIKw1jw39oYj
-         BIXjvB4b3VRmyuSBaidZE/Vg07SybHBmGhLm0iVEMaEkBOF3Z3q24RgIAvrodnzjoN6C
-         f0rQxeQH4MNHzkgk7xqXt8hjoCbbKZZZ4EDOzsXRHmBBn703aDc7gP2S9ZXVlU49DVFj
-         u7Pg==
-X-Gm-Message-State: AOAM530rhtKB1IMJfbCI6qxkNEgqdfmJI/60ApJiPyzPV9+7nInu6bXt
-        c6omx1x4ujKsMcudj+U7O/fFb17Fv8k0zZGe2l27aBRrpSHP
-X-Google-Smtp-Source: ABdhPJzrFpPk1jt+c/26RXCvjoiLQ4V9RVYmzNivbXg59VgdKnkQSOgo0y7aB0EiQYwVohU8RlaLrbDpZ4wtdIyfQ/tJRkshTCct
+        bh=k3uruzQgSMTbGqxoGnXfxSAPhtqLRQc7ySzNeuwSBkg=;
+        b=q101k3OQDOjPWshAtCloB7WGnXyrq7WJY2+s5ck/sITyw+mOMgdB6JX7DO5ugMSaQI
+         uZ5UpzJPBSA02LC6M03nKEka2LyYabR59mmfmKY5oo+N2SYdc65Fvjc7t+tQWysUNa9e
+         4xIIEbRQCkG6ZMs7esXM0ZSQQasDEZFbcnUr7tiIHj0vOO8p7SyzqDmiZkwTARI/sFkZ
+         uxHhDOAVOU25TXxWWB6MaISDASJpUEATKfnbj2ZGF1fZW3a4YHQrLQ4AZwo/Vm7Ff2Av
+         xnVymU38REAGKBHaFVAJpVGVkoX3V4Vo5SBmX9AvpbLvTuMIakJC5k0fCcx1ttYzp9TK
+         BQIQ==
+X-Gm-Message-State: AOAM530yN5L2Ym0+uMhhd1llksTt1ca99t2asquE+ArShz+yQmvObX+i
+        2f5Q2ZmvepzuXy7UbIpzbs4/f01S6f/X970kS9mscT3AruY8
+X-Google-Smtp-Source: ABdhPJzt1CJmNQM9vQiFPXYsei9im+1gRXxqCm+/OUKU4USTyz8S7se4WeWppbUiBrCq4Foh7PiBYtnJIT1NX2omc04Syji+pxOT
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:925:: with SMTP id o5mr125335ilt.20.1601278575890;
+X-Received: by 2002:a92:7989:: with SMTP id u131mr101117ilc.93.1601278575686;
  Mon, 28 Sep 2020 00:36:15 -0700 (PDT)
 Date:   Mon, 28 Sep 2020 00:36:15 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000b3d57105b05ab856@google.com>
-Subject: BUG: unable to handle kernel paging request in tcf_action_dump_terse
-From:   syzbot <syzbot+5f66662adc70969940fd@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, jhs@mojatatu.com, jiri@resnulli.us,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        xiyou.wangcong@gmail.com
+Message-ID: <000000000000b0bbc905b05ab8d5@google.com>
+Subject: BUG: unable to handle kernel NULL pointer dereference in __lookup_slow
+From:   syzbot <syzbot+3db80bbf66b88d68af9d@syzkaller.appspotmail.com>
+To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -49,84 +47,78 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    307eea32 dt-bindings: net: renesas,ravb: Add support for r..
-git tree:       net
-console output: https://syzkaller.appspot.com/x/log.txt?x=13b7e29d900000
+HEAD commit:    7c7ec322 Merge tag 'for-linus' of git://git.kernel.org/pub..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=17289773900000
 kernel config:  https://syzkaller.appspot.com/x/.config?x=240e2ebab67245c7
-dashboard link: https://syzkaller.appspot.com/bug?extid=5f66662adc70969940fd
+dashboard link: https://syzkaller.appspot.com/bug?extid=3db80bbf66b88d68af9d
 compiler:       gcc (GCC) 10.1.0-syz 20200507
 
 Unfortunately, I don't have any reproducer for this issue yet.
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+5f66662adc70969940fd@syzkaller.appspotmail.com
+Reported-by: syzbot+3db80bbf66b88d68af9d@syzkaller.appspotmail.com
 
-netlink: 8 bytes leftover after parsing attributes in process `syz-executor.5'.
-BUG: unable to handle page fault for address: fffffffffffffff0
-#PF: supervisor read access in kernel mode
-#PF: error_code(0x0000) - not-present page
-PGD 9e90067 P4D 9e90067 PUD 9e92067 PMD 0 
-Oops: 0000 [#1] PREEMPT SMP KASAN
-CPU: 1 PID: 9876 Comm: syz-executor.5 Not tainted 5.9.0-rc6-syzkaller #0
+REISERFS (device loop1): Using r5 hash to sort names
+REISERFS (device loop1): using 3.5.x disk format
+BUG: kernel NULL pointer dereference, address: 0000000000000000
+#PF: supervisor instruction fetch in kernel mode
+#PF: error_code(0x0010) - not-present page
+PGD a7454067 P4D a7454067 PUD 93380067 PMD 0 
+Oops: 0010 [#1] PREEMPT SMP KASAN
+CPU: 0 PID: 9128 Comm: syz-executor.1 Not tainted 5.9.0-rc6-syzkaller #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:tcf_action_dump_terse+0x8c/0x4e0 net/sched/act_api.c:766
-Code: 3c 03 0f 8e 0a 03 00 00 48 89 da 44 8b ad b8 00 00 00 48 b8 00 00 00 00 00 fc ff df 48 c1 ea 03 80 3c 02 00 0f 85 10 04 00 00 <48> 8b 03 4c 8d 60 10 4c 89 e7 e8 d5 2b 4e fd 4c 89 e1 be 01 00 00
-RSP: 0018:ffffc9001604f170 EFLAGS: 00010246
-RAX: dffffc0000000000 RBX: fffffffffffffff0 RCX: ffffc900137c6000
-RDX: 1ffffffffffffffe RSI: ffffffff868ac439 RDI: ffff88808f9dfdf8
-RBP: ffff88808f9dfd40 R08: 0000000000000000 R09: ffff88805dd4a024
-R10: 0000000000000000 R11: 0000000000000000 R12: fffffffffffffff0
-R13: 0000000000000024 R14: ffff88805dd4a000 R15: ffff88808f9dfe00
-FS:  00007ffbf7f0d700(0000) GS:ffff8880ae500000(0000) knlGS:0000000000000000
+RIP: 0010:0x0
+Code: Bad RIP value.
+RSP: 0018:ffffc90008bbf910 EFLAGS: 00010246
+RAX: dffffc0000000000 RBX: 1ffff92001177f25 RCX: ffffc9000aad7000
+RDX: 0000000000000000 RSI: ffff888085c9f330 RDI: ffff88804358f7e0
+RBP: ffffffff889c4280 R08: 0000000000000001 R09: ffffffff8d461a7f
+R10: 0000000000000000 R11: 000000000005f088 R12: ffff888085c9f330
+R13: ffff88804358f7e0 R14: ffffc90008bbfaa0 R15: ffffc90008bbf948
+FS:  00007f6bb6cc7700(0000) GS:ffff8880ae400000(0000) knlGS:0000000000000000
 CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: fffffffffffffff0 CR3: 00000000a6cea000 CR4: 00000000001506e0
+CR2: ffffffffffffffd6 CR3: 00000000a75b9000 CR4: 00000000001526f0
 DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
 DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 Call Trace:
- tcf_action_dump_1+0xd2/0x5a0 net/sched/act_api.c:795
- tcf_dump_walker net/sched/act_api.c:249 [inline]
- tcf_generic_walker+0x207/0xba0 net/sched/act_api.c:343
- tc_dump_action+0x6d5/0xe60 net/sched/act_api.c:1623
- netlink_dump+0x4cd/0xf60 net/netlink/af_netlink.c:2246
- __netlink_dump_start+0x643/0x900 net/netlink/af_netlink.c:2354
- netlink_dump_start include/linux/netlink.h:246 [inline]
- rtnetlink_rcv_msg+0x70f/0xad0 net/core/rtnetlink.c:5526
- netlink_rcv_skb+0x15a/0x430 net/netlink/af_netlink.c:2470
- netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
- netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
- sock_sendmsg_nosec net/socket.c:651 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:671
- ____sys_sendmsg+0x331/0x810 net/socket.c:2353
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2407
- __sys_sendmmsg+0x195/0x480 net/socket.c:2497
- __do_sys_sendmmsg net/socket.c:2526 [inline]
- __se_sys_sendmmsg net/socket.c:2523 [inline]
- __x64_sys_sendmmsg+0x99/0x100 net/socket.c:2523
+ __lookup_slow+0x24c/0x480 fs/namei.c:1544
+ lookup_one_len+0x163/0x190 fs/namei.c:2562
+ reiserfs_lookup_privroot+0x92/0x280 fs/reiserfs/xattr.c:972
+ reiserfs_fill_super+0x211b/0x2df3 fs/reiserfs/super.c:2176
+ mount_bdev+0x32e/0x3f0 fs/super.c:1417
+ legacy_get_tree+0x105/0x220 fs/fs_context.c:592
+ vfs_get_tree+0x89/0x2f0 fs/super.c:1547
+ do_new_mount fs/namespace.c:2875 [inline]
+ path_mount+0x1387/0x20a0 fs/namespace.c:3192
+ do_mount fs/namespace.c:3205 [inline]
+ __do_sys_mount fs/namespace.c:3413 [inline]
+ __se_sys_mount fs/namespace.c:3390 [inline]
+ __x64_sys_mount+0x27f/0x300 fs/namespace.c:3390
  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x45e179
-Code: 3d b2 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 0b b2 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007ffbf7f0cc78 EFLAGS: 00000246 ORIG_RAX: 0000000000000133
-RAX: ffffffffffffffda RBX: 0000000000027f40 RCX: 000000000045e179
-RDX: 0492492492492805 RSI: 0000000020000140 RDI: 0000000000000003
-RBP: 000000000118cf88 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000118cf4c
-R13: 00007ffc4024440f R14: 00007ffbf7f0d9c0 R15: 000000000118cf4c
+RIP: 0033:0x460bca
+Code: b8 a6 00 00 00 0f 05 48 3d 01 f0 ff ff 0f 83 dd 87 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 0f 83 ba 87 fb ff c3 66 0f 1f 84 00 00 00 00 00
+RSP: 002b:00007f6bb6cc6a88 EFLAGS: 00000202 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007f6bb6cc6b20 RCX: 0000000000460bca
+RDX: 0000000020000000 RSI: 0000000020000100 RDI: 00007f6bb6cc6ae0
+RBP: 00007f6bb6cc6ae0 R08: 00007f6bb6cc6b20 R09: 0000000020000000
+R10: 0000000000a04850 R11: 0000000000000202 R12: 0000000020000000
+R13: 0000000020000100 R14: 0000000020000200 R15: 0000000020000040
 Modules linked in:
-CR2: fffffffffffffff0
----[ end trace 8426deb8202e61ba ]---
-RIP: 0010:tcf_action_dump_terse+0x8c/0x4e0 net/sched/act_api.c:766
-Code: 3c 03 0f 8e 0a 03 00 00 48 89 da 44 8b ad b8 00 00 00 48 b8 00 00 00 00 00 fc ff df 48 c1 ea 03 80 3c 02 00 0f 85 10 04 00 00 <48> 8b 03 4c 8d 60 10 4c 89 e7 e8 d5 2b 4e fd 4c 89 e1 be 01 00 00
-RSP: 0018:ffffc9001604f170 EFLAGS: 00010246
-RAX: dffffc0000000000 RBX: fffffffffffffff0 RCX: ffffc900137c6000
-RDX: 1ffffffffffffffe RSI: ffffffff868ac439 RDI: ffff88808f9dfdf8
-RBP: ffff88808f9dfd40 R08: 0000000000000000 R09: ffff88805dd4a024
-R10: 0000000000000000 R11: 0000000000000000 R12: fffffffffffffff0
-R13: 0000000000000024 R14: ffff88805dd4a000 R15: ffff88808f9dfe00
-FS:  00007ffbf7f0d700(0000) GS:ffff8880ae500000(0000) knlGS:0000000000000000
+CR2: 0000000000000000
+---[ end trace 79d7e2c3db21cbd3 ]---
+RIP: 0010:0x0
+Code: Bad RIP value.
+RSP: 0018:ffffc90008bbf910 EFLAGS: 00010246
+RAX: dffffc0000000000 RBX: 1ffff92001177f25 RCX: ffffc9000aad7000
+RDX: 0000000000000000 RSI: ffff888085c9f330 RDI: ffff88804358f7e0
+RBP: ffffffff889c4280 R08: 0000000000000001 R09: ffffffff8d461a7f
+R10: 0000000000000000 R11: 000000000005f088 R12: ffff888085c9f330
+R13: ffff88804358f7e0 R14: ffffc90008bbfaa0 R15: ffffc90008bbf948
+FS:  00007f6bb6cc7700(0000) GS:ffff8880ae500000(0000) knlGS:0000000000000000
 CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: fffffffffffffff0 CR3: 00000000a6cea000 CR4: 00000000001506e0
+CR2: 0000558411c291f8 CR3: 00000000a75b9000 CR4: 00000000001526e0
 DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
 DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
