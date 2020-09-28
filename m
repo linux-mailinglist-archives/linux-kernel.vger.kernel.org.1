@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AC8527B701
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 23:28:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D725227B70A
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 23:33:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726950AbgI1V2k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 17:28:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39148 "EHLO mail.kernel.org"
+        id S1726956AbgI1Vde (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 17:33:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44356 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726409AbgI1V2k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 17:28:40 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.5])
+        id S1726891AbgI1Vde (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 17:33:34 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9658C2083B;
-        Mon, 28 Sep 2020 21:28:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601328520;
-        bh=IF9F3UM03r/iNyJXTi0t51mU5oj04cKMIfaNEbf7mmY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=BD88ckUyNUUGppnKl0WESwqc+MD4cW+2lFNSXRGuAqlWt8vZ+p4USWYtIKrUReeRs
-         dbqeDTs7DkuylPik+9E1PVXsjKDQzfGgMvqQo26DY5lAqz02jMe9rpQRtLPR48dMcg
-         /03tBWmyT/sZ5p0IoVXWCJJfvgtQcLRPqVSqBg/w=
-Date:   Mon, 28 Sep 2020 14:28:37 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Geetha sowjanya <gakula@marvell.com>
-Cc:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <sgoutham@marvell.com>, <lcherian@marvell.com>,
-        <jerinj@marvell.com>, <davem@davemloft.net>,
-        Subbaraya Sundeep <sbhatta@marvell.com>
-Subject: Re: [net PATCH] octeontx2-af: Fix enable/disable of default NPC
- entries
-Message-ID: <20200928142837.0f529a24@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <1601103420-1591-1-git-send-email-gakula@marvell.com>
-References: <1601103420-1591-1-git-send-email-gakula@marvell.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id 21B262083B;
+        Mon, 28 Sep 2020 21:33:33 +0000 (UTC)
+Date:   Mon, 28 Sep 2020 17:33:31 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     quanyang.wang@windriver.com, linux-kernel@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Leo Yan <leo.yan@linaro.org>, Will Deacon <will@kernel.org>,
+        a.darwish@linutronix.de,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Randy Dunlap <rdunlap@infradead.org>, ben.dooks@codethink.co.uk
+Subject: Re: [PATCH] time/sched_clock: mark sched_clock_read_begin as
+ notrace
+Message-ID: <20200928173331.3ea3cfb7@oasis.local.home>
+In-Reply-To: <20200928105859.GF2628@hirez.programming.kicks-ass.net>
+References: <20200928104952.26892-1-quanyang.wang@windriver.com>
+        <20200928105859.GF2628@hirez.programming.kicks-ass.net>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -42,32 +40,22 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 26 Sep 2020 12:27:00 +0530 Geetha sowjanya wrote:
-> From: Subbaraya Sundeep <sbhatta@marvell.com>
-> 
-> Packet replication feature present in Octeontx2
-> is a hardware linked list of PF and its VF
-> interfaces so that broadcast packets are sent
-> to all interfaces present in the list. It is
-> driver job to add and delete a PF/VF interface
-> to/from the list when the interface is brought
-> up and down. This patch fixes the
-> npc_enadis_default_entries function to handle
-> broadcast replication properly if packet replication
-> feature is present.
-> 
-> Fixes: 40df309e4166
-> ("octeontx2-af: Support to enable/disable default MCAM entries")
-> 
-> Signed-off-by: Subbaraya Sundeep <sbhatta@marvell.com>
-> Signed-off-by: Geetha sowjanya <gakula@marvell.com>
-> Signed-off-by: Sunil Goutham <sgoutham@marvell.com>
+On Mon, 28 Sep 2020 12:58:59 +0200
+Peter Zijlstra <peterz@infradead.org> wrote:
 
-The patches look good, but could you please resend them with fixed
-"Fixes" tags? The tag should be on one line with no empty line between
-the tag and the signoffs. So the above should have looked like:
+> > -struct clock_read_data *sched_clock_read_begin(unsigned int *seq)
+> > +notrace struct clock_read_data *sched_clock_read_begin(unsigned int *seq)
+> >  {
+> >  	*seq = raw_read_seqcount_latch(&cd.seq);
+> >  	return cd.read_data + (*seq & 1);  
+> 
+> At the very least sched_clock_read_retry() should also be marked such.
+> 
+> But Steve, how come x86 works? Our sched_clock() doesn't have notrace on
+> at all.
 
-Fixes: 40df309e4166 ("octeontx2-af: Support to enable/disable default MCAM entries")
-Signed-off-by: Subbaraya Sundeep <sbhatta@marvell.com>
-Signed-off-by: Geetha sowjanya <gakula@marvell.com>
-Signed-off-by: Sunil Goutham <sgoutham@marvell.com>
+It's because of that magic in the Makefile that you love so much ;-)
+
+CFLAGS_REMOVE_tsc.o = -pg
+
+-- Steve
