@@ -2,52 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B251B27B84D
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 01:36:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DA5827B852
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 01:36:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727050AbgI1XgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 19:36:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59924 "EHLO mail.kernel.org"
+        id S1727187AbgI1Xgl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 19:36:41 -0400
+Received: from m42-4.mailgun.net ([69.72.42.4]:20534 "EHLO m42-4.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726338AbgI1XgF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 19:36:05 -0400
-Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726948AbgI1Xgk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 19:36:40 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1601336199; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=qm6e3gIk1HVjckjZWafdqcglqnXJMopOHykD9DbPjxU=; b=g0lwKKHDM4ydMcvilifbLIYvgoAzRwQI0HDwRnN+MhmfbZ/H3fIC67dMJe/mtR3uD+aZ+nkH
+ GvWvGhg2yB2FQ1uOxcXMpRYtEql9iPrTYMoUa+3ITpN14PEYutRL0fNkzFMS3SElTATpqSvy
+ vNQaNR7QuW7Wcoq2yWoakUdWKLk=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 5f72738270602555f5423d0c (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 28 Sep 2020 23:36:34
+ GMT
+Sender: cgoldswo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 72B02C43395; Mon, 28 Sep 2020 23:36:33 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from cgoldswo-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1026F2076A;
-        Mon, 28 Sep 2020 23:36:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601336165;
-        bh=K6+N90by/AN+fqbPOBNLj0Ir8XD++33D9Ge+XcBFjxE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=vb+1C4TAJWJoMTwcxTxYm9O4u+MeR0Gv6LouutJ3XHiiMJVZNoJjrI5zfTIZrfFv4
-         DjGKxiZqj/+Ua1vQOZbGF22AxUYkwi5iH0aI/wJ1bVxUADgbdllCFZrjHEZUsazkDX
-         6OE5I3NPWX7N7U9ctf8khnlswy+9CyjUEyowoP2Y=
-Date:   Mon, 28 Sep 2020 16:36:04 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Mike Rapoport <rppt@linux.ibm.com>
-Subject: Re: [PATCH] mm: remove unused early_pfn_valid()
-Message-Id: <20200928163604.a2c64a16bdc7e68985f53443@linux-foundation.org>
-In-Reply-To: <20200928144900.GA2142832@kernel.org>
-References: <20200923162915.26935-1-rppt@kernel.org>
-        <20200928144900.GA2142832@kernel.org>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        (Authenticated sender: cgoldswo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 06198C433C8;
+        Mon, 28 Sep 2020 23:36:26 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 06198C433C8
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=cgoldswo@codeaurora.org
+From:   Chris Goldsworthy <cgoldswo@codeaurora.org>
+To:     akpm@linux-foundation.org, linux-mm@kvack.org, minchan@kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pratikp@codeaurora.org, pdaly@codeaurora.org,
+        sudaraja@codeaurora.org, iamjoonsoo.kim@lge.com, david@redhat.com,
+        vinmenon@codeaurora.org, minchan.kim@gmail.com
+Cc:     Chris Goldsworthy <cgoldswo@codeaurora.org>
+Subject: [PATCH v5] mm: cma: indefinitely retry allocations in cma_alloc 
+Date:   Mon, 28 Sep 2020 16:36:21 -0700
+Message-Id: <cover.1601336054.git.cgoldswo@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 28 Sep 2020 17:49:00 +0300 Mike Rapoport <rppt@kernel.org> wrote:
+V1: Introduces a retry loop that attempts a CMA allocation a finite
+number of times before giving up:
+ 
+https://lkml.org/lkml/2020/8/5/1097
+https://lkml.org/lkml/2020/8/11/893
 
-> ping?
-> 
+V2: Introduces an indefinite retry for CMA allocations.  David Hildenbrand
+raised a page pinning example which precludes doing this infite-retrying
+for all CMA users:
 
-Merged Sep 24.
+https://lkml.org/lkml/2020/9/17/984
 
-https://www.ozlabs.org/~akpm/mmotm/broken-out/mm-remove-unused-early_pfn_valid.patch
+V3: Re-introduce a GFP mask argument for cma_alloc(), that can take in
+__GFP_NOFAIL as an argument to indicate that a CMA allocation should be
+retried indefinitely. This lets callers of cma_alloc() decide if they want
+to perform indefinite retires. Also introduces a config option for
+controlling the duration of the sleep between retries:
 
+https://www.spinics.net/lists/linux-mm/msg228778.html
+
+V4: In response to comments by Minchan Kim, we make the sleep interruptable
+and remove a defconfig option controlling how long the sleep lasts for (it
+is now a fixed 100 ms):
+
+https://lkml.org/lkml/2020/9/28/1144
+
+V5: Add missing fatal_signal_pending() check
+
+Chris Goldsworthy (1):
+  mm: cma: indefinitely retry allocations in cma_alloc
+
+ arch/powerpc/kvm/book3s_hv_builtin.c       |  2 +-
+ drivers/dma-buf/heaps/cma_heap.c           |  2 +-
+ drivers/s390/char/vmcp.c                   |  2 +-
+ drivers/staging/android/ion/ion_cma_heap.c |  2 +-
+ include/linux/cma.h                        |  2 +-
+ kernel/dma/contiguous.c                    |  4 +--
+ mm/cma.c                                   | 39 +++++++++++++++++++++++++-----
+ mm/cma_debug.c                             |  2 +-
+ mm/hugetlb.c                               |  4 +--
+ 9 files changed, 43 insertions(+), 16 deletions(-)
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
