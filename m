@@ -2,217 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DBC227A917
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 09:53:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7153227A91B
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 09:54:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726823AbgI1Hx0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 03:53:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35114 "EHLO
+        id S1726839AbgI1HyS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 03:54:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726552AbgI1HxX (ORCPT
+        with ESMTP id S1726558AbgI1HyR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 03:53:23 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3C66C0613CE
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 00:53:23 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id 5so154887pgf.5
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 00:53:23 -0700 (PDT)
+        Mon, 28 Sep 2020 03:54:17 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9D68C0613CE
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 00:54:16 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id z4so115684wrr.4
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 00:54:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Z5Rf3jk2q/YuMBPVNHtFY1iN90x3sfokHfnghmckc+w=;
-        b=TzHXrhxW37kvEQ3eXFNB4s3IPdX79T9czkvJDyzoew14iZuXw6yEVzBBvOd2Lmf16+
-         YMLe8Ba7/BTcPOZRI0tHhUjFjKaQ6VbCVW7Ta5XPdvURQpZgv66ajMRBRDx8FqJPDYeV
-         a7uvrVIhIDAn5YZ1p9bJutFQgcomUUgqaz/gUj3cyaG9MB/fRL/dkOJIj9TVSfuQFgZK
-         sLv8r/JhA71Rtj25h8Kaa1SDj2hldd2hMg4PpxXTidaw7cZpOKB+IYfiQ5OqaqXrfafE
-         5HflsWHvtbB9qmN/lCh8yP/JBO97xpnIPkRESHypIB4AfVO9lMvQeQpMRJPvjWGTG/iR
-         TDWA==
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:autocrypt:organization:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=In2sIrZUOdT6d9l0rp8/qe3T9EAaqtHwy60CydIPILU=;
+        b=XYqjoAGltZfPV9JzXD12eK5iPoanLNCCBxBeyJblwQN8AzOPM01z8m05KQQRQ5VZoN
+         eQXJV18DTxAPBaMCxFQ/wIXwgu7Xj7MIhMHnEkDQBystr7wC2CpguGAeImPXYoUjCaFP
+         9g8QAi3f89QLVU0218s25U394ModL+nN/vm4cpVPjxIID/I3GDAv9odnzSjXjq/7C9su
+         +5FzvMMR9rQtUKhZ27JlsZJlKSH/LMCfM0o6/eR8uYNEy5CJ21beggh6lEGq0GNs8YVV
+         FLinj1f32JnCj6T2x3C/0jbF60w2K4nJJ3ASw6szUdeV8SyfAadiB8FIelc0xo1ffHzw
+         Wvag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=Z5Rf3jk2q/YuMBPVNHtFY1iN90x3sfokHfnghmckc+w=;
-        b=ObJj5Uah3zslEoxTgrjJWMRqNSXM+NJWDG8GK6AX3yrVsW2xmhLIFQkJKDi4/oc2zQ
-         Wu72P1dWJO2hXkEBjSXqviRK1gLXRvCbSOXtaoxAcQjXvw5v8xh01swWjGt0OVQIAyOQ
-         ybDpTQd2Pc8ajokdXIDJOEESzMuHzkoeBNvKFe0kV3+q9tLWymYVorr1SV9iRebX1Rln
-         uUZDCiA760kgsj5KmT5/QlZScYaT2tzmP6Ru+U7UxqpEyyCaOTCQdl3CxBv32IxeiFhE
-         AlaCRf1R3hxvjD9DjPn3vIyDudOo/zPRrUHXJoRnqpQ0X9n8/JSIim+oShObA2NrbkZG
-         pVFA==
-X-Gm-Message-State: AOAM531FOZdXJcN3WKO5c/aQYemoCJtwwe4zf4qp/HSaLCidli6HtF3w
-        YwHPilNXXL1NO8dqFsJmSgs=
-X-Google-Smtp-Source: ABdhPJyPJBEPDUC0O8mKCTLD7tNxshtvEfQJeL1wlZrcPdQqq2YYrV56ih0DxFR8spxZQHbWNFXRbQ==
-X-Received: by 2002:a17:902:267:b029:d2:6180:4a46 with SMTP id 94-20020a1709020267b02900d261804a46mr471381plc.26.1601279603265;
-        Mon, 28 Sep 2020 00:53:23 -0700 (PDT)
-Received: from balhae.roam.corp.google.com ([101.235.31.111])
-        by smtp.gmail.com with ESMTPSA id 141sm520241pfb.50.2020.09.28.00.53.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Sep 2020 00:53:22 -0700 (PDT)
-Sender: Namhyung Kim <namhyung@gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>
-Subject: [PATCH 6/6] perf bench: Run inject-build-id with --buildid-all option too
-Date:   Mon, 28 Sep 2020 16:52:46 +0900
-Message-Id: <20200928075246.853729-7-namhyung@kernel.org>
-X-Mailer: git-send-email 2.28.0.681.g6f77f65b4e-goog
-In-Reply-To: <20200928075246.853729-1-namhyung@kernel.org>
-References: <20200928075246.853729-1-namhyung@kernel.org>
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :organization:message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=In2sIrZUOdT6d9l0rp8/qe3T9EAaqtHwy60CydIPILU=;
+        b=GgB2kXtRnwSMUFY5XCLMNTi9NhILtEvaJIIyckeqaU02ne4qUM4v/OxLzW3tgMIQb0
+         8I9AcKTQYhk2oIQX6XzGfMk/6USZ9/opwJcjmdi2q2fhPSsP/Qf2ruuvBL/ks0Lf8q8A
+         o2QOCVcoKlIKC1nV4GBsS7TaX5uW7jWCgqtKoRtwE0uw6fWS6n5VSx6p5rgMtr1Q26jI
+         a00wCcjQbSWld1pMCu4wciso+cB6XCpPn9rztcAQSzfjX/ABcU3l1lfHNPMYZH50zm9J
+         +f3sb7+3hQF5n4c/OjzV+1NSnzmZUpWytPxehr/j2AK57IlVvyOddymCnhE43zt7xCCZ
+         7CJw==
+X-Gm-Message-State: AOAM533BZrSTF89b9zVO2l4H0KTLwNbcxPk6uxvKfH6b4tePT/ZTzMAN
+        fZgFsTfPwQEYvGwUZm0pzjSIXg==
+X-Google-Smtp-Source: ABdhPJwdXX8oDTNaPKfmbRWZInxFYYCQxNiO7EoXj0JrI4vIJdgwsgTGIiNkqtXkExbAoQzdqAqNFw==
+X-Received: by 2002:a05:6000:104c:: with SMTP id c12mr166119wrx.133.1601279655332;
+        Mon, 28 Sep 2020 00:54:15 -0700 (PDT)
+Received: from ?IPv6:2a01:e35:2ec0:82b0:e0eb:3ca3:e2d3:fa75? ([2a01:e35:2ec0:82b0:e0eb:3ca3:e2d3:fa75])
+        by smtp.gmail.com with ESMTPSA id d9sm125368wmb.30.2020.09.28.00.54.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 28 Sep 2020 00:54:14 -0700 (PDT)
+Subject: Re: [PATCH 1/8] arm64: dts: meson: update spifc node on Khadas VIM2
+ meson-gxm-khadas-vim2
+To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Artem Lapkin <email2tema@gmail.com>
+Cc:     khilman@baylibre.com, robh+dt@kernel.org, jbrunet@baylibre.com,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
+        art@khadas.com, nick@khadas.com, gouwa@khadas.com
+References: <20200925033017.1790973-1-art@khadas.com>
+ <20200925033017.1790973-2-art@khadas.com>
+ <CAFBinCDcwHUJzK4HsvKxs1n4_jH9K47bNZcZobocLxKVj7+iNw@mail.gmail.com>
+From:   Neil Armstrong <narmstrong@baylibre.com>
+Autocrypt: addr=narmstrong@baylibre.com; prefer-encrypt=mutual; keydata=
+ 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
+ ZaTUOEkgIor5losDrePdPgE=
+Organization: Baylibre
+Message-ID: <10f7b5fd-a86c-c705-fb3e-5bc6c998ab2c@baylibre.com>
+Date:   Mon, 28 Sep 2020 09:54:12 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAFBinCDcwHUJzK4HsvKxs1n4_jH9K47bNZcZobocLxKVj7+iNw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For comparison, it now runs the benchmark twice - one if regular -b
-and another for --buildid-all.
+On 25/09/2020 09:51, Martin Blumenstingl wrote:
+> Hi Artem,
+> 
+> On Fri, Sep 25, 2020 at 5:30 AM Artem Lapkin <email2tema@gmail.com> wrote:
+>>
+>> 1) The VIM2 Boards use w25q128 spi chip only not w25q32 or w25q16
+>>    it's not really seriously becouse have 'jedec,spi-nor' which
+>>    have auto chips identifications
+> according to the "VIM2 - Transitioning From v1.2 to v1.4" document [0]
+> (page 7) both board revisions are using different SPI flash sizes
+> for which board revision are your changes?
 
-  $ perf bench internals inject-build-id
-  # Running 'internals/inject-build-id' benchmark:
-    Average build-id injection took: 18.112 msec (+- 0.034 msec)
-    Average time per event: 1.776 usec (+- 0.003 usec)
-    Average memory usage: 7388 KB (+- 6 KB)
-    Average build-id-all injection took: 17.504 msec (+- 0.035 msec)
-    Average time per event: 1.716 usec (+- 0.003 usec)
-    Average memory usage: 7459 KB (+- 2 KB)
+Indeed, if you changed the flash for the v14 VIM2 board, please:
+- move arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts into meson-gxm-khadas-vim2.dtsi leaving only the
+root compatible, model and the v12 spi flash model&size into the meson-gxm-khadas-vim2.dts file
+- add "khadas,vim2-v14" to amlogic board bindings
+- introduce a arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2-v14.dts file adding the
+changes (spi flash change, MCU) with a different root compatible & model
 
-Acked-by: Jiri Olsa <jolsa@redhat.com>
-Acked-by: Ian Rogers <irogers@google.com>
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
----
- tools/perf/bench/inject-buildid.c | 46 +++++++++++++++++++++----------
- 1 file changed, 31 insertions(+), 15 deletions(-)
+Neil
 
-diff --git a/tools/perf/bench/inject-buildid.c b/tools/perf/bench/inject-buildid.c
-index b09f9126bb4f..02040eff6818 100644
---- a/tools/perf/bench/inject-buildid.c
-+++ b/tools/perf/bench/inject-buildid.c
-@@ -226,7 +226,7 @@ static void sigpipe_handler(int sig __maybe_unused)
- 	/* child exited */
- }
- 
--static int setup_injection(struct bench_data *data)
-+static int setup_injection(struct bench_data *data, bool build_id_all)
- {
- 	int ready_pipe[2];
- 	int dev_null_fd;
-@@ -247,6 +247,7 @@ static int setup_injection(struct bench_data *data)
- 
- 	if (data->pid == 0) {
- 		const char **inject_argv;
-+		int inject_argc = 2;
- 
- 		close(data->input_pipe[1]);
- 		close(data->output_pipe[0]);
-@@ -263,17 +264,22 @@ static int setup_injection(struct bench_data *data)
- 
- 		dup2(dev_null_fd, STDERR_FILENO);
- 
--		inject_argv = calloc(3, sizeof(*inject_argv));
-+		if (build_id_all)
-+			inject_argc++;
-+
-+		inject_argv = calloc(inject_argc + 1, sizeof(*inject_argv));
- 		if (inject_argv == NULL)
- 			exit(1);
- 
- 		inject_argv[0] = strdup("inject");
- 		inject_argv[1] = strdup("-b");
-+		if (build_id_all)
-+			inject_argv[2] = strdup("--buildid-all");
- 
- 		/* signal that we're ready to go */
- 		close(ready_pipe[1]);
- 
--		cmd_inject(2, inject_argv);
-+		cmd_inject(inject_argc, inject_argv);
- 
- 		exit(0);
- 	}
-@@ -364,23 +370,17 @@ static int inject_build_id(struct bench_data *data, u64 *max_rss)
- 	return 0;
- }
- 
--static int do_inject_loop(struct bench_data *data)
-+static void do_inject_loop(struct bench_data *data, bool build_id_all)
- {
- 	unsigned int i;
- 	struct stats time_stats, mem_stats;
- 	double time_average, time_stddev;
- 	double mem_average, mem_stddev;
- 
--	srand(time(NULL));
- 	init_stats(&time_stats);
- 	init_stats(&mem_stats);
--	symbol__init(NULL);
- 
--	collect_dso();
--	if (nr_dsos == 0) {
--		printf("  Cannot collect DSOs for injection\n");
--		return -1;
--	}
-+	pr_debug("  Build-id%s injection benchmark\n", build_id_all ? "-all" : "");
- 
- 	for (i = 0; i < iterations; i++) {
- 		struct timeval start, end, diff;
-@@ -388,7 +388,7 @@ static int do_inject_loop(struct bench_data *data)
- 
- 		pr_debug("  Iteration #%d\n", i+1);
- 
--		if (setup_injection(data) < 0) {
-+		if (setup_injection(data, build_id_all) < 0) {
- 			printf("  Build-id injection setup failed\n");
- 			break;
- 		}
-@@ -408,8 +408,8 @@ static int do_inject_loop(struct bench_data *data)
- 
- 	time_average = avg_stats(&time_stats) / USEC_PER_MSEC;
- 	time_stddev = stddev_stats(&time_stats) / USEC_PER_MSEC;
--	printf("  Average build-id injection took: %.3f msec (+- %.3f msec)\n",
--		time_average, time_stddev);
-+	printf("  Average build-id%s injection took: %.3f msec (+- %.3f msec)\n",
-+	       build_id_all ? "-all" : "", time_average, time_stddev);
- 
- 	/* each iteration, it processes MMAP2 + BUILD_ID + nr_samples * SAMPLE */
- 	time_average = avg_stats(&time_stats) / (nr_mmaps * (nr_samples + 2));
-@@ -421,6 +421,22 @@ static int do_inject_loop(struct bench_data *data)
- 	mem_stddev = stddev_stats(&mem_stats);
- 	printf("  Average memory usage: %.0f KB (+- %.0f KB)\n",
- 		mem_average, mem_stddev);
-+}
-+
-+static int do_inject_loops(struct bench_data *data)
-+{
-+
-+	srand(time(NULL));
-+	symbol__init(NULL);
-+
-+	collect_dso();
-+	if (nr_dsos == 0) {
-+		printf("  Cannot collect DSOs for injection\n");
-+		return -1;
-+	}
-+
-+	do_inject_loop(data, false);
-+	do_inject_loop(data, true);
- 
- 	release_dso();
- 	return 0;
-@@ -436,6 +452,6 @@ int bench_inject_build_id(int argc, const char **argv)
- 		exit(EXIT_FAILURE);
- 	}
- 
--	return do_inject_loop(&data);
-+	return do_inject_loops(&data);
- }
- 
--- 
-2.28.0.681.g6f77f65b4e-goog
+> 
+>> 2) max-frequency is 104Mhz
+> (note to self: according to the w25q16 datasheet it supports a maximum
+> clock frequency of 104MHz, so this is fine)
+> 
+> 
+> Best regards,
+> Martin
+> 
 
