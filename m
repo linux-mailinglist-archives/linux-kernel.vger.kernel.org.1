@@ -2,128 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D62127A566
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 04:22:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90B4127A573
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 04:36:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726516AbgI1CWC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 22:22:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40848 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726458AbgI1CWC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Sep 2020 22:22:02 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16CB5C0613D3
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Sep 2020 19:22:02 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id a12so8368644eds.13
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Sep 2020 19:22:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vOX5Sd+xpTPA9/G3a3HyLwKA39unA0IaH2aJ/ahSQ48=;
-        b=qWrMSVm6zYmVaFJcTErsVXateVeWWiDTida+WlvUE+uTdTpqtnEDoAS5/Fab3urTai
-         zVC/L+EmWCWMmZZLXmcfTTewmXUlNJHZKMHMlOXI21wFMAIiCPKQBsVcXWBOuIWdkSJw
-         wRjVb0qNA/Wr0py5s32t6cT2qH4mMisal2HMbwAzd587SjYazqjs730xTKftVO/LuVh8
-         z5SqJGPe6Z6FkYdOzbDRlTuU8q6aT+KfFqcKMNC6Uq0DHawFoME2NoXJCWrpEwOSakwj
-         aqz4/eyirVDPTcjNHeg2KSOdgmBn2yafu/pWbZ8fXwYjpOa4lrAz9lroe+Wfwt0jlbYj
-         xUug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vOX5Sd+xpTPA9/G3a3HyLwKA39unA0IaH2aJ/ahSQ48=;
-        b=kVpIMAD2fjqz9WP/zuFdnjuvABDvueL918of0gXqE6dqGlWI3WTFZQGXSkzbylZ2ft
-         HLyMeZymsYrAP+b+CK5eBaP3xLtvd2XPwrTXvu9lpZMON28LZW1AYpakWQdLISgjZ0PO
-         /S7teDAZFDGL18fg/KYjT8XkI3VdMXmtudsEKozGux01auS3fU6NhtCajdZS+bLNUB/g
-         f2Y+tvsfJb3z56ZBSo5mBXckUhP7lHJVqn3U6tZGG9M/GnCHc/G0oDd29ClPy6Kbd++n
-         c1j+JrAutW/2ICp/hMaALcU4kcCuesyWZ07nb4t7CwLtYghkaH1MV/5tng9d4wrlfb9p
-         StBw==
-X-Gm-Message-State: AOAM533A+t7qfMpQ7aQ/dNG8QpEq8SdzLJv04TDVVGsynYEhWhyAQttg
-        U5xtl5V1swS6Vm3SC8PSekzZv+sSp0jIy8viJZi9
-X-Google-Smtp-Source: ABdhPJzsqAtfa9f1NG8hfvEATJbi9eEwRIg9uIFPEmWBfP9DD88yDxmZdKhWH6XK21EL7PJHsV83fl/LkgW6hEmDjDQ=
-X-Received: by 2002:a05:6402:1805:: with SMTP id g5mr13063002edy.135.1601259720569;
- Sun, 27 Sep 2020 19:22:00 -0700 (PDT)
+        id S1726565AbgI1CgM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 22:36:12 -0400
+Received: from mail-eopbgr40055.outbound.protection.outlook.com ([40.107.4.55]:63713
+        "EHLO EUR03-DB5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726409AbgI1CgL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Sep 2020 22:36:11 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SFfl2tVBIhfNldJMeLKzi6nBWaAfvAD5+XQ3ySeG7toB6AYAS1BggdU8inDhf+ru7+iXNilioisxIKiATm/MvyYgChOPB+twyc+QEK+wuZrsfVgg4tHui36TjzJjCXZYiXGtlhhriEn7mmWvAzjldb9IrBNa1SNHnin50ij5F0Hwc4UNZX/7hGiSYzZKnx1wCl0vMRtOCRuTFyluFqa2pDx8xaW5unD4IbvgrZ6Zg8MFdAa8kDj2XaPxe/Pz/sW0zqla4bfpf+BomEXpQiu6Aao2uCj1le4Px0UdWFvmvrfbOP0VqQNtJkiZENrOdbA03JR+apiYMbtGNJHNaDLqcg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5Bps/eBlf6S9kyQYOo1XoeeRYpyITWQ/q4HIboIwZNI=;
+ b=DfxOd536vXaOKruyyB9q1S7lgYc2XseqL5BgGuA1S1s66U4358vMOayhsbz/Y4FMHrlThbLpS8WEkrSUmBH/XfKOFkKx6ztM7h1M0A04LSsXbpMIeE0oEYzYE4yJ/lbAHJS2FM3KYXTwJTCP/o5o1nlGXxYLJ6p5FUfCdjyZoE23Ety6kMF4Lge31yc/PbHtjMAXfc5fa1zdQSR/QbTSfYzLCasiE4ypwPvEDw7tcGFduhsDDfk1l7RErBnVzHmLM3vRLW6T1Bt0U6A4SkWhY1MXQsdO2I/z/CsVRVCfR/xQlZhRtlA5fsnbZDlSrFrjzFbrWfoNkkhImtebOdjXLw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5Bps/eBlf6S9kyQYOo1XoeeRYpyITWQ/q4HIboIwZNI=;
+ b=QxdDOG+Gw1m69uqsNBrd/eWY68cRraHn6kIDR7mRiY56CiZtk0lV2yidHgoZK4LQOeuYZw5krCMMq5swC5tCZP3AHYOLb817FcXxb80c37VtUZU9rS0C5vieTyDmaslSIaBiQP3eJS4W1BnsmceSxieSvd7XPvAHvt0vQvCSX4c=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
+Received: from DB3PR0402MB3916.eurprd04.prod.outlook.com (2603:10a6:8:10::18)
+ by DB8PR04MB7051.eurprd04.prod.outlook.com (2603:10a6:10:fd::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.20; Mon, 28 Sep
+ 2020 02:36:07 +0000
+Received: from DB3PR0402MB3916.eurprd04.prod.outlook.com
+ ([fe80::9c75:8bb2:aff6:450d]) by DB3PR0402MB3916.eurprd04.prod.outlook.com
+ ([fe80::9c75:8bb2:aff6:450d%3]) with mapi id 15.20.3412.029; Mon, 28 Sep 2020
+ 02:36:07 +0000
+From:   Anson Huang <Anson.Huang@nxp.com>
+To:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        kernel@pengutronix.de, festevam@gmail.com, yibin.gong@nxp.com,
+        krzk@kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Linux-imx@nxp.com
+Subject: [PATCH] arm64: dts: imx8mn-evk: Add cpu-supply to enable cpufreq
+Date:   Mon, 28 Sep 2020 10:21:43 +0800
+Message-Id: <1601259703-28308-1-git-send-email-Anson.Huang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+Content-Type: text/plain
+X-ClientProxiedBy: SG2PR0401CA0024.apcprd04.prod.outlook.com
+ (2603:1096:3:1::34) To DB3PR0402MB3916.eurprd04.prod.outlook.com
+ (2603:10a6:8:10::18)
 MIME-Version: 1.0
-References: <0000000000009fc91605afd40d89@google.com> <20200925030759.GA17939@gondor.apana.org.au>
-In-Reply-To: <20200925030759.GA17939@gondor.apana.org.au>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Sun, 27 Sep 2020 22:21:48 -0400
-Message-ID: <CAHC9VhQjfqAaPnsT20T8zsT1kGHk3LRU1fqL8kNxiKsQ_E6TWQ@mail.gmail.com>
-Subject: Re: KASAN: stack-out-of-bounds Read in xfrm_selector_match (2)
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     syzbot <syzbot+577fbac3145a6eb2e7a5@syzkaller.appspotmail.com>,
-        davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, steffen.klassert@secunet.com,
-        syzkaller-bugs@googlegroups.com, James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        linux-security-module@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from anson-OptiPlex-790.ap.freescale.net (119.31.174.66) by SG2PR0401CA0024.apcprd04.prod.outlook.com (2603:1096:3:1::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3412.20 via Frontend Transport; Mon, 28 Sep 2020 02:36:04 +0000
+X-Mailer: git-send-email 2.7.4
+X-Originating-IP: [119.31.174.66]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 7817a4c0-c35d-48c8-2507-08d8635740a7
+X-MS-TrafficTypeDiagnostic: DB8PR04MB7051:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DB8PR04MB7051B07AA878FAC7AE891266F5350@DB8PR04MB7051.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2399;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: il8q9ubGpZEFTPTDPd/5qhkHoYl0/BNjlKdCUMPpXIo3cJWcGnZ+0yGtEYZpZ4GcrVtkwLtgRJ/NFIotL9iPOOFe46usM/I25cj1fq+P0dBOsKznFsrZH0VkI/wC3nTBuW4nU2+1ACtOyLI9uR8/92Yfcj3x1INQyF+7VO7ezIEXcIWIgbg/rEwDCdeQcj4G4Ubpi3Tuz4x/0dwSoHlqlKNsuQQTTXTonpPAGCbkDLC1Z3DTUIB1tZrPRGeVm4NQHgB9Vz8hmRCXi3BiauNTs1fHlTPrVoZrNOLZIoBk3oWpE3JbmdlE+YizVrIiVGoW9kX8Se24wmOSOITPTcmZQSkp/y4ndp05mcuxYo8LYTCkggga+NWc0I1Pv2+o9uVVFMyVXXZ9R87QW6vNYbKtu+kOk+SMTmRGRCXu8vn20A/Nn/FLQNvjkQ07ueFiFFCx
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB3PR0402MB3916.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39860400002)(396003)(366004)(376002)(346002)(6506007)(52116002)(2616005)(26005)(36756003)(86362001)(6666004)(16526019)(6486002)(186003)(8676002)(956004)(8936002)(4326008)(2906002)(316002)(478600001)(66556008)(66476007)(6512007)(83380400001)(66946007)(5660300002)(32563001)(921003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: bhLGviUsb3VBX/TaOVXncrY242XBWoDf+jJqWeZjfztyL6JL0wFhTGuwqxAUQOq20VfqUZm+VaZFOhFYUO6qK5+5zd6/SD1pRgqZW2Ux2be9V7qo0Hkm5VOEHToOI5V5UgtWPY9ZOyok4+9negNrVXMLqUkWFsTWPoQN3ajKnOGctLNzijpOVtuI//+ObO2+TMkxE1jwQhRwSS4jDr6RP2fbjKaxZfj6NGqp/qTOR3PEHRX5hwJdLklca+ZHFeoHAfd63/1l9tTlGpsVX9YMBsg6OrEN5/tuRm+ZOLdBnrX+G6EC5ZrxdM4zhQqqn8BvOxPj31cXwuDNVCIHeU4JkLrefa18WuSB0+Rd1i3cl5iO+iA9byAZw+K9B0phL83p9HnOs2U02XoMcl413+6z6IQaOSnTXGn8e1je5PMyiXlup46INtScPLGtipJhJBeVyGhq9T+E9p5gwUXuPsoki8/KM8+Zk53Et+tLnktGFT53V7G600jwLjTobHXTDQl4UmHKqEMCFj0vhhomwCZ3Ro1NLsGUX644zkDAkabSYOYLRhe16/s/JwR5rz6Sf8KKzeZXrEoueVc4RGG8mhz6dTZL6MzTZRbd3hWLvSuzuHq/eTvsjjxgYTWayqHPvO90apu18B9OqiaP2i1ZEblVzQ==
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7817a4c0-c35d-48c8-2507-08d8635740a7
+X-MS-Exchange-CrossTenant-AuthSource: DB3PR0402MB3916.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Sep 2020 02:36:07.4628
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: dGg205MjkIw4dVhzaxH8DAYkDvy5eiEymAYoTvQri2yrH+3PNqBJp60vhNHIQ6idW3DhAesVjOXaS3bxVA92Mg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR04MB7051
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 11:08 PM Herbert Xu <herbert@gondor.apana.org.au> wrote:
-> On Mon, Sep 21, 2020 at 07:56:20AM -0700, syzbot wrote:
-> > Hello,
-> >
-> > syzbot found the following issue on:
-> >
-> > HEAD commit:    eb5f95f1 Merge tag 's390-5.9-6' of git://git.kernel.org/pu..
-> > git tree:       upstream
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=13996ad5900000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=ffe85b197a57c180
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=577fbac3145a6eb2e7a5
-> > compiler:       gcc (GCC) 10.1.0-syz 20200507
-> >
-> > Unfortunately, I don't have any reproducer for this issue yet.
-> >
-> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > Reported-by: syzbot+577fbac3145a6eb2e7a5@syzkaller.appspotmail.com
-> >
-> > ==================================================================
-> > BUG: KASAN: stack-out-of-bounds in xfrm_flowi_dport include/net/xfrm.h:877 [inline]
-> > BUG: KASAN: stack-out-of-bounds in __xfrm6_selector_match net/xfrm/xfrm_policy.c:216 [inline]
-> > BUG: KASAN: stack-out-of-bounds in xfrm_selector_match+0xf36/0xf60 net/xfrm/xfrm_policy.c:229
-> > Read of size 2 at addr ffffc9001914f55c by task syz-executor.4/15633
-> >
-> > CPU: 0 PID: 15633 Comm: syz-executor.4 Not tainted 5.9.0-rc5-syzkaller #0
-> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> > Call Trace:
-> >  __dump_stack lib/dump_stack.c:77 [inline]
-> >  dump_stack+0x198/0x1fd lib/dump_stack.c:118
-> >  print_address_description.constprop.0.cold+0x5/0x497 mm/kasan/report.c:383
-> >  __kasan_report mm/kasan/report.c:513 [inline]
-> >  kasan_report.cold+0x1f/0x37 mm/kasan/report.c:530
-> >  xfrm_flowi_dport include/net/xfrm.h:877 [inline]
->
-> This one goes back more than ten years.  This patch should fix
-> it.
->
-> ---8<---
-> The struct flowi must never be interpreted by itself as its size
-> depends on the address family.  Therefore it must always be grouped
-> with its original family value.
->
-> In this particular instance, the original family value is lost in
-> the function xfrm_state_find.  Therefore we get a bogus read when
-> it's coupled with the wrong family which would occur with inter-
-> family xfrm states.
->
-> This patch fixes it by keeping the original family value.
->
-> Note that the same bug could potentially occur in LSM through
-> the xfrm_state_pol_flow_match hook.  I checked the current code
-> there and it seems to be safe for now as only secid is used which
-> is part of struct flowi_common.  But that API should be changed
-> so that so that we don't get new bugs in the future.  We could
-> do that by replacing fl with just secid or adding a family field.
+PMIC driver is ready on i.MX8MN EVK board, assign cpu-supply for
+each A53 and restore the operating points table to enable cpufreq.
 
-I'm thinking it might be better to pass the family along with the flow
-instead of passing just the secid (less worry of passing an incorrect
-secid that way).  Let me see if I can cobble together a quick patch
-for testing before bed ...
+Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
+---
+ arch/arm64/boot/dts/freescale/imx8mn-evk.dts | 32 ++++++++++++++--------------
+ 1 file changed, 16 insertions(+), 16 deletions(-)
 
+diff --git a/arch/arm64/boot/dts/freescale/imx8mn-evk.dts b/arch/arm64/boot/dts/freescale/imx8mn-evk.dts
+index 707d848..9e5c0af 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mn-evk.dts
++++ b/arch/arm64/boot/dts/freescale/imx8mn-evk.dts
+@@ -14,6 +14,22 @@
+ 	compatible = "fsl,imx8mn-evk", "fsl,imx8mn";
+ };
+ 
++&A53_0 {
++	cpu-supply = <&buck2>;
++};
++
++&A53_1 {
++	cpu-supply = <&buck2>;
++};
++
++&A53_2 {
++	cpu-supply = <&buck2>;
++};
++
++&A53_3 {
++	cpu-supply = <&buck2>;
++};
++
+ &i2c1 {
+ 	pmic: pmic@25 {
+ 		compatible = "nxp,pca9450b";
+@@ -109,19 +125,3 @@
+ 		};
+ 	};
+ };
+-
+-&A53_0 {
+-	/delete-property/operating-points-v2;
+-};
+-
+-&A53_1 {
+-	/delete-property/operating-points-v2;
+-};
+-
+-&A53_2 {
+-	/delete-property/operating-points-v2;
+-};
+-
+-&A53_3 {
+-	/delete-property/operating-points-v2;
+-};
 -- 
-paul moore
-www.paul-moore.com
+2.7.4
+
