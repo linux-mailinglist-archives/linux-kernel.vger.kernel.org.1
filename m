@@ -2,116 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96F1527A95C
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 10:16:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BF7827A97F
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 10:26:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726583AbgI1IQZ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 28 Sep 2020 04:16:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38676 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726458AbgI1IQZ (ORCPT
+        id S1726683AbgI1I0I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 04:26:08 -0400
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:49623 "EHLO
+        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726465AbgI1I0H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 04:16:25 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1017BC0613CE
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 01:16:25 -0700 (PDT)
-Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1kMoKU-0006Fo-Q8; Mon, 28 Sep 2020 10:16:14 +0200
-Received: from pza by lupine with local (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1kMoKQ-0002JO-M5; Mon, 28 Sep 2020 10:16:10 +0200
-Message-ID: <734649658811f5246ad48f95e848e1e5d86336f2.camel@pengutronix.de>
-Subject: Re: [v3,1/3] dt-bindings: PCI: mediatek: Add YAML schema
-From:   Philipp Zabel <p.zabel@pengutronix.de>
-To:     Jianjun Wang <jianjun.wang@mediatek.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Ryder Lee <ryder.lee@mediatek.com>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        davem@davemloft.net, linux-pci@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Sj Huang <sj.huang@mediatek.com>, youlin.pei@mediatek.com,
-        chuanjia.liu@mediatek.com, qizhong.cheng@mediatek.com,
-        sin_jieyang@mediatek.com
-Date:   Mon, 28 Sep 2020 10:16:10 +0200
-In-Reply-To: <20200927074555.4155-2-jianjun.wang@mediatek.com>
-References: <20200927074555.4155-1-jianjun.wang@mediatek.com>
-         <20200927074555.4155-2-jianjun.wang@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.30.5-1.1 
+        Mon, 28 Sep 2020 04:26:07 -0400
+X-Greylist: delayed 517 seconds by postgrey-1.27 at vger.kernel.org; Mon, 28 Sep 2020 04:26:07 EDT
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.nyi.internal (Postfix) with ESMTP id D568858032E;
+        Mon, 28 Sep 2020 04:17:29 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Mon, 28 Sep 2020 04:17:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=Aop0cG/3iAtpEfm2VM1319UI65t
+        /01Zx9Fr/lhAePig=; b=BkDfsRq9EYZqweDCrsP/WCUkdHgvk3sVc35MYGEXBXt
+        /3r2c8BtnYY/mshqdcBDRRmGYRTDdOfSpXmxxRd5ipdvO/8wFkB/e4PhnyRY32r/
+        bF8PFcTdQBOW79xsroCPJVPySsUniRi0cmSDa5a96GgYS72u3dD7Gc/C9B8CTskS
+        0vYOgou/UIBlYCvQw3dNBKoSEbX78mFeUlXB+kt1IxM3u1O1ABGIWYeTjxJRBngS
+        b/tMiRmEA4XYddpj8SkIAtTComLTedRY0exRSxJ5IGXaIpjMCrsg919a/EKYXsHs
+        /lDpGw9W69c+nQqni4VZ9wqLlwoV2fBuSaeJC39AQ2g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=Aop0cG
+        /3iAtpEfm2VM1319UI65t/01Zx9Fr/lhAePig=; b=Omo1jSgvT9Z3GWyo7yS362
+        z9EXcv5t8HCEqV42q3B9ijIA/q0+1UC/V8hNGycVQ5apNBXZQ8gxsdZbdfqIqCA+
+        2ul1vu45f80kzLd4XAQrqZ17bJdOgjZoaKpddJSpxno8jvmnzci09liE34ksJVAV
+        8qu7D2cGrR/ePtPmiXLGbuYiUIC/oeZu6wFRaLt3BilcVXMsFt+TCIJIhVRg+1BY
+        zgGQwazYciEiIihQV/ur1HnJyVSbApWF6PA/bczrAuANQBB1O2w7T9jwXqeS8xTv
+        gvV2nLbkENL+Xny7VmoZr2eeB6NM0DG2ZSZwhjxUfuIGazSV6FCDkeiaCykiSAkA
+        ==
+X-ME-Sender: <xms:GJxxXwPUa7uAjuy3M9TMLA-HoWK7j__7KZk2yE92a2xNhbaMwI6m7Q>
+    <xme:GJxxX28THgJeIWtAbNB6E4omoy2DFokOAma5x7wlnL-iD9SvaK5nRsoczZgu5rNLj
+    LsBs08F-8iA75JKs1M>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrvdeigddtfecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
+    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
+    gvrhhnpeffteetveeijeetuefhffegkeetgffhieelheehtdduudethffhjedtvddtudel
+    vdenucffohhmrghinhepuggvvhhitggvthhrvggvrdhorhhgnecukfhppeeltddrkeelrd
+    eikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhho
+    mhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:GJxxX3RY-A-_5Q_hJpRmceVN1h6iwTGFlULjvSzIDMNTcjIQ-HLlsA>
+    <xmx:GJxxX4tNCVTDgXVjz29VAahD55RZRRgoH5EG5Rg0TVVKrOAKqK4kmw>
+    <xmx:GJxxX4eqCGb_ORpSLQ3i04Us2D8nEAIChuQKkPOw4QIztCMKuk-tfQ>
+    <xmx:GZxxX_xF_spv8J_e406jw4EHnEm-msGLDLK1Bd5BHeEZogrJVAPUhA>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id AA8A7328005A;
+        Mon, 28 Sep 2020 04:17:28 -0400 (EDT)
+Date:   Mon, 28 Sep 2020 10:17:26 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Kevin Tang <kevin3.tang@gmail.com>
+Cc:     maarten.lankhorst@linux.intel.com, sean@poorly.run,
+        airlied@linux.ie, daniel@ffwll.ch, robh+dt@kernel.org,
+        mark.rutland@arm.com, orsonzhai@gmail.com, zhang.lyra@gmail.com,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH RFC v7 1/6] dt-bindings: display: add Unisoc's drm master
+ bindings
+Message-ID: <20200928081726.hkh3rzbfr6m7jszt@gilmour.lan>
+References: <1601274460-7866-1-git-send-email-kevin3.tang@gmail.com>
+ <1601274460-7866-2-git-send-email-kevin3.tang@gmail.com>
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
-X-SA-Exim-Mail-From: p.zabel@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="wsivn4n7yx76g6b5"
+Content-Disposition: inline
+In-Reply-To: <1601274460-7866-2-git-send-email-kevin3.tang@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 2020-09-27 at 15:45 +0800, Jianjun Wang wrote:
-> Add YAML schemas documentation for Gen3 PCIe controller on
-> MediaTek SoCs.
-> 
-> Signed-off-by: Jianjun Wang <jianjun.wang@mediatek.com>
-> Acked-by: Ryder Lee <ryder.lee@mediatek.com>
+
+--wsivn4n7yx76g6b5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi!
+
+On Mon, Sep 28, 2020 at 02:27:35PM +0800, Kevin Tang wrote:
+> From: Kevin Tang <kevin.tang@unisoc.com>
+>=20
+> The Unisoc DRM master device is a virtual device needed to list all
+> DPU devices or other display interface nodes that comprise the
+> graphics subsystem
+>=20
+> RFC v7:
+>   - Fix DTC unit name warnings
+>   - Fix the problem of maintainers
+>=20
+> Cc: Orson Zhai <orsonzhai@gmail.com>
+> Cc: Chunyan Zhang <zhang.lyra@gmail.com>
+> Signed-off-by: Kevin Tang <kevin.tang@unisoc.com>
 > ---
->  .../bindings/pci/mediatek-pcie-gen3.yaml      | 126 ++++++++++++++++++
->  1 file changed, 126 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/pci/mediatek-pcie-gen3.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/pci/mediatek-pcie-gen3.yaml b/Documentation/devicetree/bindings/pci/mediatek-pcie-gen3.yaml
+>  .../display/sprd/sprd,display-subsystem.yaml       | 39 ++++++++++++++++=
+++++++
+>  1 file changed, 39 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/display/sprd/sprd,d=
+isplay-subsystem.yaml
+>=20
+> diff --git a/Documentation/devicetree/bindings/display/sprd/sprd,display-=
+subsystem.yaml b/Documentation/devicetree/bindings/display/sprd/sprd,displa=
+y-subsystem.yaml
 > new file mode 100644
-> index 000000000000..c7b5dd132ebd
+> index 0000000..9487a39
 > --- /dev/null
-> +++ b/Documentation/devicetree/bindings/pci/mediatek-pcie-gen3.yaml
-> @@ -0,0 +1,126 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +++ b/Documentation/devicetree/bindings/display/sprd/sprd,display-subsyst=
+em.yaml
+> @@ -0,0 +1,39 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
 > +%YAML 1.2
 > +---
-> +$id: http://devicetree.org/schemas/pci/mediatek-pcie-gen3.yaml#
+> +$id: http://devicetree.org/schemas/display/sprd/sprd,display-subsystem.y=
+aml#
 > +$schema: http://devicetree.org/meta-schemas/core.yaml#
 > +
-> +title: Gen3 PCIe controller on MediaTek SoCs
+> +title: Unisoc DRM master device
 > +
 > +maintainers:
-> +  - Jianjun Wang <jianjun.wang@mediatek.com>
+> +  - Kevin Tang <kevin.tang@unisoc.com>
 > +
-> +allOf:
-> +  - $ref: /schemas/pci/pci-bus.yaml#
+> +description: |
+> +  The Unisoc DRM master device is a virtual device needed to list all
+> +  DPU devices or other display interface nodes that comprise the
+> +  graphics subsystem.
 > +
 > +properties:
 > +  compatible:
-> +    oneOf:
-> +      - const: mediatek,mt8192-pcie
+> +    const: sprd,display-subsystem
 > +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  ranges:
-> +    minItems: 1
-> +    maxItems: 8
-> +
-> +  resets:
-> +    minItems: 1
-> +    maxItems: 2
-> +
-> +  reset-names:
-> +    anyOf:
-> +      - const: mac-rst
-> +      - const: phy-rst
+> +  ports:
+> +    $ref: /schemas/types.yaml#/definitions/phandle-array
+> +    description:
+> +      Should contain a list of phandles pointing to display interface po=
+rt
+> +      of DPU devices.
 
-The "-rst" suffix seems redundant. Unless these are exactly the names
-used in the documentation, I'd just call them "mac" and "phy".
+Generally speaking, driver-specific properties should be prefixed by the
+vendor name to avoid any conflict with generic properties (like the
+OF-Graph ports subnode in this case)
 
-regards
-Philipp
+Maxime
+
+--wsivn4n7yx76g6b5
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX3GcFgAKCRDj7w1vZxhR
+xS+CAPsHd2tToWbot1PTKDityictfpR+g452/h0gzCk21CJWUwEA6mST9Nu/gRFs
+jq4u6HJkFAaCIllYK06QAD6PzFlFsg0=
+=jHyL
+-----END PGP SIGNATURE-----
+
+--wsivn4n7yx76g6b5--
