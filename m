@@ -2,117 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E95C427B53E
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 21:26:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2F8627B542
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 21:27:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726751AbgI1T0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 15:26:21 -0400
-Received: from mga04.intel.com ([192.55.52.120]:6527 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726701AbgI1T0U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 15:26:20 -0400
-IronPort-SDR: dz+3gIky+tAqHpSoOlqdLItkwdKY/wSz/ZLqy/jCRtIhQormb5Ft9HcUI0ytCpMiKeNkapXjyn
- 4Gu4HfyVCKow==
-X-IronPort-AV: E=McAfee;i="6000,8403,9758"; a="159428881"
-X-IronPort-AV: E=Sophos;i="5.77,315,1596524400"; 
-   d="scan'208";a="159428881"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 12:26:19 -0700
-IronPort-SDR: TzX6TFCO5L2u0GF5oYraSXfcLVFcpO2leA/f1u4+7rdsT6EVUjArJr5XKfm3TVjvL0vzo2UVHi
- in4R+0hBM8CA==
-X-IronPort-AV: E=Sophos;i="5.77,315,1596524400"; 
-   d="scan'208";a="456961657"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 12:26:19 -0700
-Date:   Mon, 28 Sep 2020 12:26:19 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        Shuah Khan <shuah@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-s390@vger.kernel.org
-Subject: Re: [PATCH 7/8] selftests/vm: run_vmtest.sh: update and clean up
- gup_test invocation
-Message-ID: <20200928192619.GF458519@iweiny-DESK2.sc.intel.com>
-References: <20200928062159.923212-1-jhubbard@nvidia.com>
- <20200928062159.923212-8-jhubbard@nvidia.com>
+        id S1726762AbgI1T1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 15:27:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57836 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726325AbgI1T1I (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 15:27:08 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06C8CC061755;
+        Mon, 28 Sep 2020 12:27:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=wvOiw2+3bAcRKK9sP6ssyc0QGj9+IdGfx8mVk/nIt+w=; b=Q7y/5cgmDerOTHDRh4oEv9UU//
+        E8wq/Q4/XuX538oWiXR/DXe1vpuxeaHGJWP92muVimbmfWaY6oD2LNjf3yoO75rNdPl5yBSSNkfYZ
+        TUZPmCaq4h0Ebgh07+l4ArZqy90lM0dqpBBRLlMnGiDTXmeIDM1+jkym7vjuyPt2PgawtGYGDKyuw
+        4UUe9JNcuR9bu2zJzh0M4xavAaxNGie+ArR2nI/cTTJ4En/LfdmAPTh8sQP+SaWO6cNlkhjsNIB9f
+        6d3WM3KYyg2Lww+7H/il1O4Btu3qPdBHDPkdJbQJL6FhPWhz1ETtlB2PnQ1/DYFzen7meTCvND6PL
+        XZnsT74A==;
+Received: from [2601:1c0:6280:3f0::19c2]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kMynZ-000560-K9; Mon, 28 Sep 2020 19:26:58 +0000
+Subject: Re: [PATCH v11 6/6] docs: mm: numaperf.rst Add brief description for
+ access class 1.
+To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>, linux-mm@kvack.org,
+        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        x86@kernel.org, Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        rafael@kernel.org, Ingo Molnar <mingo@redhat.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>, linux-kernel@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>, linuxarm@huawei.com,
+        Dan Williams <dan.j.williams@intel.com>,
+        Brice Goglin <Brice.Goglin@inria.fr>,
+        Sean V Kelley <sean.v.kelley@linux.intel.com>,
+        linux-api@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
+        Hanjun Guo <guohanjun@huawei.com>
+References: <20200928125235.446188-1-Jonathan.Cameron@huawei.com>
+ <20200928125235.446188-7-Jonathan.Cameron@huawei.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <15e6f95b-adac-97e5-5ea9-4dd28ecf560d@infradead.org>
+Date:   Mon, 28 Sep 2020 12:26:50 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200928062159.923212-8-jhubbard@nvidia.com>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+In-Reply-To: <20200928125235.446188-7-Jonathan.Cameron@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 27, 2020 at 11:21:58PM -0700, John Hubbard wrote:
-> Run benchmarks on the _fast variants of gup and pup, as originally
-> intended.
+Hi--
+
+On 9/28/20 5:52 AM, Jonathan Cameron wrote:
+> Try to make minimal changes to the document which already describes
+> access class 0 in a generic fashion (including IO initiatiors that
+> are not CPUs).
 > 
-> Run the new gup_test sub-test: dump pages. In addition to exercising the
-> dump_page() call, it also demonstrates the various options you can use
-> to specify which pages to dump, and how.
-> 
-> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
+> Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 > ---
->  tools/testing/selftests/vm/run_vmtest.sh | 24 ++++++++++++++++++------
->  1 file changed, 18 insertions(+), 6 deletions(-)
+>  v11: No change.
 > 
-> diff --git a/tools/testing/selftests/vm/run_vmtest.sh b/tools/testing/selftests/vm/run_vmtest.sh
-> index d1843d5f3c30..e3a8b14d9df6 100755
-> --- a/tools/testing/selftests/vm/run_vmtest.sh
-> +++ b/tools/testing/selftests/vm/run_vmtest.sh
-> @@ -124,9 +124,9 @@ else
->  fi
+>  Documentation/admin-guide/mm/numaperf.rst | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+> 
+> diff --git a/Documentation/admin-guide/mm/numaperf.rst b/Documentation/admin-guide/mm/numaperf.rst
+> index 4d69ef1de830..b89bb85eac75 100644
+> --- a/Documentation/admin-guide/mm/numaperf.rst
+> +++ b/Documentation/admin-guide/mm/numaperf.rst
+
+> @@ -88,6 +93,9 @@ The latency attributes are provided in nanoseconds.
+>  The values reported here correspond to the rated latency and bandwidth
+>  for the platform.
 >  
->  echo "--------------------------------------------"
-> -echo "running 'gup_test -U' (normal/slow gup)"
-> +echo "running 'gup_test -u' (fast gup benchmark)"
->  echo "--------------------------------------------"
-> -./gup_test -U
-> +./gup_test -u
->  if [ $? -ne 0 ]; then
->  	echo "[FAIL]"
->  	exitcode=1
-> @@ -134,10 +134,22 @@ else
->  	echo "[PASS]"
->  fi
->  
-> -echo "------------------------------------------"
-> -echo "running gup_test -b (pin_user_pages)"
-> -echo "------------------------------------------"
-> -./gup_test -b
-> +echo "---------------------------------------------------"
-> +echo "running gup_test -a (pin_user_pages_fast benchmark)"
-> +echo "---------------------------------------------------"
-> +./gup_test -a
-> +if [ $? -ne 0 ]; then
-> +	echo "[FAIL]"
-> +	exitcode=1
-> +else
-> +	echo "[PASS]"
-> +fi
+> +Access class 1, takes the same form, but only includes values for CPU to
+> +memory activity.
+
+-ETOOMANYCOMMAS.
+
+Drop the first comma for sure. Maybe even the second one.
+
 > +
-> +echo "--------------------------------------------------------------"
-> +echo "running gup_test -ct -F 0x1 0 19 0x1000"
-> +echo "   Dumps pages 0, 19, and 4096, using pin_user_pages (-F 0x1)"
-> +echo "--------------------------------------------------------------"
-> +./gup_test -ct -F 0x1 0 19 0x1000
-
-Ah here it is...  Maybe just remove that from the previous commit message.
-
-Ira
-
->  if [ $? -ne 0 ]; then
->  	echo "[FAIL]"
->  	exitcode=1
-> -- 
-> 2.28.0
+>  ==========
+>  NUMA Cache
+>  ==========
 > 
-> 
+
+thanks.
+-- 
+~Randy
+
