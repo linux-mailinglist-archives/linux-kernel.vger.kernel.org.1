@@ -2,121 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D404F27B2CE
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 19:11:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D30FF27B2D1
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 19:12:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726629AbgI1RLU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 13:11:20 -0400
-Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:53496
-        "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726393AbgI1RLU (ORCPT
+        id S1726596AbgI1RMP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 13:12:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37074 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726348AbgI1RMP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 13:11:20 -0400
-X-IronPort-AV: E=Sophos;i="5.77,313,1596492000"; 
-   d="scan'208";a="360266987"
-Received: from abo-173-121-68.mrs.modulonet.fr (HELO hadrien) ([85.68.121.173])
-  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 19:11:16 +0200
-Date:   Mon, 28 Sep 2020 19:11:16 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Joe Perches <joe@perches.com>
-cc:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        =?UTF-8?Q?Valdis_Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        kernel-janitors@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 03/18] [ARM] pata_icside: use semicolons rather than
- commas to separate statements
-In-Reply-To: <8cf2fad1659acd756703deb106d55483bd1e1eb9.camel@perches.com>
-Message-ID: <alpine.DEB.2.22.394.2009281909000.2650@hadrien>
-References: <1601233948-11629-1-git-send-email-Julia.Lawall@inria.fr>  <1601233948-11629-4-git-send-email-Julia.Lawall@inria.fr> <8cf2fad1659acd756703deb106d55483bd1e1eb9.camel@perches.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        Mon, 28 Sep 2020 13:12:15 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ACFAC061755;
+        Mon, 28 Sep 2020 10:12:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=qaQ/v6vKPGApGPWxgofd4F7eZEv7mlDZvTFdTHtBj3A=; b=FwIYLY13TDFDv7+LaMYnS0Oqnd
+        CuUKja+FafEjRhPdscPLsiVEwGJq1NzQgQQu7n+ojlYAVRPf4rm3IQpQn3bDWHxSYX4akRn79LBeO
+        icO/1R/2ngsSSOR9febaPYQZymjBIgTmEhU+KXyzMxOE40MFeq1wmPTL04rsSqYPCUvkkZb7TyMFI
+        7kBmdikNeKd8XeeNJVsfXRhwT7coW4nLOvemJl3dVm4v35UObIf8x/WWL7G1oJfYKemn8vxY1fntN
+        qqK0qapDdhQlpujmH04Vqq7Ypxu0zs/OknzQymjma+8uF4A6zu0ZUQXWByZeyi6voHz3XMfGiyLQl
+        fleiKocg==;
+Received: from [2601:1c0:6280:3f0::19c2]
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kMwh7-0006tt-FS; Mon, 28 Sep 2020 17:12:09 +0000
+Subject: Re: linux-next: Tree for Sep 28 (drivers/misc/hisi_hikey_usb.c )
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Yu Chen <chenyu56@huawei.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <20200928215551.2b882630@canb.auug.org.au>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <0fd4bbff-25e1-2799-4320-41be5adfc59e@infradead.org>
+Date:   Mon, 28 Sep 2020 10:12:04 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20200928215551.2b882630@canb.auug.org.au>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 9/28/20 4:55 AM, Stephen Rothwell wrote:
+> Hi all,
+> 
+> Changes since 20200925:
+> 
+
+on i386:
+
+ld: drivers/misc/hisi_hikey_usb.o: in function `hisi_hikey_usb_remove':
+hisi_hikey_usb.c:(.text+0x14): undefined reference to `usb_role_switch_unregister'
+ld: hisi_hikey_usb.c:(.text+0x20): undefined reference to `usb_role_switch_put'
+ld: drivers/misc/hisi_hikey_usb.o: in function `hub_usb_role_switch_set':
+hisi_hikey_usb.c:(.text+0x37): undefined reference to `usb_role_switch_get_drvdata'
+ld: drivers/misc/hisi_hikey_usb.o: in function `relay_set_role_switch':
+hisi_hikey_usb.c:(.text+0x1b2): undefined reference to `usb_role_switch_set_role'
+ld: drivers/misc/hisi_hikey_usb.o: in function `hisi_hikey_usb_probe':
+hisi_hikey_usb.c:(.text+0x2ca): undefined reference to `usb_role_switch_get'
+ld: hisi_hikey_usb.c:(.text+0x369): undefined reference to `usb_role_switch_register'
+ld: hisi_hikey_usb.c:(.text+0x380): undefined reference to `usb_role_switch_put'
+
+It looks like HISI_HIKEY_USB should at least depend on USB
+and probably on USB_ROLE_SWITCH.
 
 
-On Mon, 28 Sep 2020, Joe Perches wrote:
-
-> On Sun, 2020-09-27 at 21:12 +0200, Julia Lawall wrote:
-> > Replace commas with semicolons.  What is done is essentially described by
-> > the following Coccinelle semantic patch (http://coccinelle.lip6.fr/):
->
-> Hi Julia.
->
-> How did you decide on this patch subject header line?
->
-> It's certainly reasonable, but not what I would expect
-> from any automation.
-
-Most of the patches on this file touch other files as well.  There are
-four that only touch this file.  One has no subsystem.  One has dma as the
-subsystem.  Two have pata_icside, so that was chosen.
-
-I found that taking the most popular overall could give results that were
-too general.
-
-julia
-
->
-> A somewhat common method of finding the most commonly used
-> "git log" subject line doesn't easily provide a similar heading.
->
-> $ git log --no-merges --format='%s' drivers/ata/pata_icside.c
-> treewide: Add SPDX license identifier for more missed files
-> libata: remove ata_sff_data_xfer_noirq()
-> scsi: rename SCSI_MAX_{SG, SG_CHAIN}_SEGMENTS
-> Drivers: ata: remove __dev* attributes.
-> ata: Convert ata_<foo>_printk(KERN_<LEVEL> to ata_<foo>_<level>
-> libata-sff: separate out BMDMA irq handler
-> libata-sff: separate out BMDMA EH
-> libata-sff: clean up BMDMA initialization
-> libata-sff: clean up inheritance in several drivers
-> include cleanup: Update gfp.h and slab.h includes to prepare for breaking implicit slab.h inclusion from percpu.h
-> [libata] convert drivers to use ata.h mode mask defines
-> [ARM] dma: Use sensible DMA parameters for Acorn drivers
-> [ARM] dma: pata_icside's contiguous sg array is now redundant
-> libata-sff: Fix oops reported in kerneloops.org for pnp devices with no ctl
-> libata: rename SFF port ops
-> libata: rename SFF functions
-> libata: make reset related methods proper port operations
-> libata: implement and use ops inheritance
-> libata: implement and use SHT initializers
-> libata: implement and use ata_noop_irq_clear()
-> libata: eliminate the home grown dma padding in favour of
-> libata: convert to chained sg
-> Fix pata_icside build for recent libata API changes
-> libata: implement and use ata_port_desc() to report port configuration
-> [libata] Remove ->port_disable() hook
-> [libata] Remove ->irq_ack() hook, and ata_dummy_irq_on()
-> [ARM] pata_icside: fix the FIXMEs
-> [libata] PATA drivers: remove ATA_FLAG_SRST
-> [ARM] pata_icside: fix build errors
-> [ARM] ecard: add ecardm_iomap() / ecardm_iounmap()
-> [ARM] ecard: add helper function for setting ecard irq ops
-> [ARM] Add support for ICSIDE interface on RiscPC
->
-> $ git log --no-merges --format='%s' drivers/ata/pata_icside.c | \
->   cut -f1 -d":" | sort | uniq -c | sort -rn
->      10 libata
->       5 libata-sff
->       2 [ARM] pata_icside
->       2 [ARM] ecard
->       2 [ARM] dma
->       1 treewide
->       1 scsi
->       1 [libata] Remove ->port_disable() hook
->       1 [libata] Remove ->irq_ack() hook, and ata_dummy_irq_on()
->       1 [libata] PATA drivers
->       1 [libata] convert drivers to use ata.h mode mask defines
->       1 include cleanup
->       1 Fix pata_icside build for recent libata API changes
->       1 Drivers
->       1 ata
->       1 [ARM] Add support for ICSIDE interface on RiscPC
->
->
->
+-- 
+~Randy
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
