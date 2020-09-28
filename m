@@ -2,106 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0008027AD2D
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 13:49:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D823827AD3A
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 13:52:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726578AbgI1LtY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 07:49:24 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:40680 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726420AbgI1LtY (ORCPT
+        id S1726604AbgI1Lvu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 07:51:50 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:60855 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726566AbgI1Lvu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 07:49:24 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08SBk0Xe142655;
-        Mon, 28 Sep 2020 11:49:09 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=6EGfoGt5aE9CLOcfa3rEsfoAnJl0dVpVezF4zUT6fHU=;
- b=OqTobTOCqaInJY3FBaTd8qUAJ5lBO7P+J4Yoy04RM4pxXNNuNusyE9fTT8i/UAOulU6M
- uzIv9CCIaa90XJcMORsoEhLzwHt6j8aKYDmyYSnKbwqosYD+3EbPOle1qfnN/n3PDq90
- BE5ImlJEyqyyDz4OGlMIvWolfswBdnBOFIDqgS4Xa0YC853rrBFix+8JmBozJSN5cojr
- NTrTjuedOQgUluqQDQwSS+vETi9smjTiFWm3OggMhJXbHArls9JC5Gdyx2ITXscFdVWQ
- kZ5neXsoNE6mLn9cCPE7jjom3SvX/+yFkhMY143qQNep4lO3Zy7YfdYGUcqKjabgSbTk Vw== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2130.oracle.com with ESMTP id 33su5amk7j-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 28 Sep 2020 11:49:09 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08SBil6g148534;
-        Mon, 28 Sep 2020 11:49:08 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3030.oracle.com with ESMTP id 33tf7k7r05-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 28 Sep 2020 11:49:08 +0000
-Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 08SBn4vq004885;
-        Mon, 28 Sep 2020 11:49:05 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 28 Sep 2020 04:49:04 -0700
-Date:   Mon, 28 Sep 2020 14:48:57 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Jing Xiangfeng <jingxiangfeng@huawei.com>
-Cc:     gregkh@linuxfoundation.org, christian.gromm@microchip.com,
-        masahiroy@kernel.org, tglx@linutronix.de, keescook@chromium.org,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: most: don't access hdm_ch before checking it
- valid
-Message-ID: <20200928114857.GR4282@kadam>
-References: <20200928104838.189639-1-jingxiangfeng@huawei.com>
+        Mon, 28 Sep 2020 07:51:50 -0400
+Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601293909;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=vxB4Elj1Nndu0kAFuc8Y1iPA4beSknlsdeTyCEnHbQI=;
+        b=QgAbH5Xs4YMtXT2mAyr0cQ/2a28qYxZRwyZBI1DkczvUtqEOwJOQ7LeNihgqXABqOBiCBM
+        Kps/8jTqA5Atx4DCR/7FfivLQuJInkgL+7ALr1xQ6QrgdMINSZyaED2BWMTpG9pbtxn1h/
+        yfNkPud0u23QyoHjL5y94eI266QvU3o=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-264-EsuNcFYqNSepjckz9hM-LA-1; Mon, 28 Sep 2020 07:51:47 -0400
+X-MC-Unique: EsuNcFYqNSepjckz9hM-LA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 49CC7100559B;
+        Mon, 28 Sep 2020 11:51:45 +0000 (UTC)
+Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E910B19D7D;
+        Mon, 28 Sep 2020 11:51:44 +0000 (UTC)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     mlevitsk@redhat.com
+Subject: [PATCH 0/2] KVM: nSVM: do not access MSR permission bitmap before KVM_RUN
+Date:   Mon, 28 Sep 2020 07:51:42 -0400
+Message-Id: <20200928115144.2446240-1-pbonzini@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200928104838.189639-1-jingxiangfeng@huawei.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9757 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999
- suspectscore=0 adultscore=0 malwarescore=0 phishscore=0 bulkscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009280096
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9757 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=0
- lowpriorityscore=0 spamscore=0 clxscore=1011 mlxscore=0 impostorscore=0
- malwarescore=0 phishscore=0 adultscore=0 bulkscore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009280096
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 06:48:38PM +0800, Jing Xiangfeng wrote:
-> In try_start_dim_transfer(), pointer hdm_ch is accessed before checking.
-> This may lead to a potential null pointer dereference. Fix this by
-> dereferencing hdm_ch after calling BUG_ON().
-> 
-> Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
-> ---
->  drivers/staging/most/dim2/dim2.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/staging/most/dim2/dim2.c b/drivers/staging/most/dim2/dim2.c
-> index 509c8012d20b..ccd7cc7545e4 100644
-> --- a/drivers/staging/most/dim2/dim2.c
-> +++ b/drivers/staging/most/dim2/dim2.c
-> @@ -148,7 +148,7 @@ void dimcb_on_error(u8 error_id, const char *error_message)
->  static int try_start_dim_transfer(struct hdm_channel *hdm_ch)
->  {
->  	u16 buf_size;
-> -	struct list_head *head = &hdm_ch->pending_list;
+Similar to what we need to do for VMX, the MSR permission bitmap
+should not be accessed until the first KVM_RUN.  This is important
+because the memory map might not be up-to-date at the time of
+KVM_SET_NESTED_STATE.
 
-This is not a dereference, it's just pointer math.  In other words:
+Paolo Bonzini (2):
+  KVM: x86: rename KVM_REQ_GET_VMCS12_PAGES
+  KVM: nSVM: delay MSR permission processing to first nested VM run
 
-	struct list_head *head = hdm_ch + offsetof(struct hdm_channel, pending_list);
+ arch/x86/include/asm/kvm_host.h |  4 ++--
+ arch/x86/kvm/svm/nested.c       | 20 ++++++++++++++++++--
+ arch/x86/kvm/vmx/nested.c       |  8 ++++----
+ arch/x86/kvm/x86.c              |  4 ++--
+ 4 files changed, 26 insertions(+), 10 deletions(-)
 
-So the commit message is wrong because this cannot lead to a NULL
-dereference.  It's better to just delete the BUG_ON().  We don't really
-like BUG_ON().  Checkpatch will complain about them.  An Oops gives
-basically the same information as a BUG_ON() without completely killing
-the kernel so just dereferencing a NULL is preferable.  Finally, we can
-see from the callers that "hdm_ch" is never NULL.
-
-regards,
-dan carpenter
+-- 
+2.26.2
 
