@@ -2,125 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 486DB27B029
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 16:43:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D23DF27B033
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 16:46:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726578AbgI1OnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 10:43:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42138 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726466AbgI1OnA (ORCPT
+        id S1726621AbgI1OqU convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 28 Sep 2020 10:46:20 -0400
+Received: from mail-lf1-f68.google.com ([209.85.167.68]:42355 "EHLO
+        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726420AbgI1OqU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 10:43:00 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8043DC061755;
-        Mon, 28 Sep 2020 07:43:00 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id z4so1656500wrr.4;
-        Mon, 28 Sep 2020 07:43:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=jnKA/vDlfSusbSVLCuRZcuP/laLMcatuMX458O2dA9Q=;
-        b=ijYOVQV/lFzWrxeswWJAjkB9h7d6tjQKJ5rx1Csd1wnaSWu7zndbWeJBSJekxZNmtJ
-         o9qvutdYtlpqrSsS1+giWB62uv9VT5mI6PcciBG4yQZwiymN0hg4wbCx2ckDVqx5I+1S
-         j7m8X9UiDBilqhz/oAaxFSEwyrmeBQEm82VeKaqf06w1BbIz7U+27AjZiH4YsleE6kgI
-         Or5LAwpXvs0/mcjgWKoAmXUi54a9xiUMRurmuHNzTSGWz4WS/u+TBon3fs3efx7s8zgY
-         e97kCVC/nYSLAIKID9HvoBEOpK4Hx4AA0HqcZhl9rneao3FFpOdKVWhBRFn9eFfWV+G/
-         62Lw==
+        Mon, 28 Sep 2020 10:46:20 -0400
+Received: by mail-lf1-f68.google.com with SMTP id b12so1571146lfp.9;
+        Mon, 28 Sep 2020 07:46:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=jnKA/vDlfSusbSVLCuRZcuP/laLMcatuMX458O2dA9Q=;
-        b=aW8tocpWp+Lsmp+BUiAj6SQBMCPm2z4+g6/gUmLNSboXFXa/9iD8fm9F+l6/eD926V
-         QtazNTiB4/oboB4lHzZK2MnN7FwmEIWhelGKDzTDk1kuzvUSGvPdZUXL4LCmWgukrKGJ
-         9sAwBs/beP4Smlcw0Ihgcy5q+zKlthGT0O1ZNlayJwQ4x97f6lnFuYDfKdD8sX101rnm
-         qtTjSmLO8hC7QJEa92PuNRCK34b1DX6aTsQ51Vik/qPdSWqWUYm75D5FiLp04XGBV4fI
-         2KZ4FrS94azs40vgxm/AXm9RxG1NG0s/N8d6ji3o1L0psQ00J0nIk4RBL0JTH9b42uCx
-         coiQ==
-X-Gm-Message-State: AOAM533D3juxVxJ9kyIqNbKwuvbDlDLIgsTj/vLcTGieA6wIhSkjhGju
-        ELiN9fzSVRaDfrTJ6pXwnFM=
-X-Google-Smtp-Source: ABdhPJzoFdxUIZLqB95lvoeiktJfPFGr4ZAynAekTVztY9pzw6JhgS5GkJCMcTt72OCQ9JL85oK/hw==
-X-Received: by 2002:adf:e312:: with SMTP id b18mr2248675wrj.372.1601304179111;
-        Mon, 28 Sep 2020 07:42:59 -0700 (PDT)
-Received: from [192.168.1.143] ([170.253.60.68])
-        by smtp.gmail.com with ESMTPSA id q4sm1676352wru.65.2020.09.28.07.42.57
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=KCww78yTvjpE9tUq6aOXD0YyyC+MPNJogO8+ZVoVaG0=;
+        b=FQDJwyzBrIrRfW5PC6eBiIB808Vw4lD1hO+JOpTcg4XIe3iEaJ71HjQ8NHP5mKgZQE
+         AmBfb+1eA5CQM8ObWrx19Hb0KqmaTHzxBrWN1oFmFjdg9qIkhwlj9AV0x6Ke8OOW+zLx
+         4/FovrptPhNwSdkuh8yeZ/IoeA1mmlAP+uhG5B+Xh25VlzdiaoK3KPoFvy7aOpXDqtbM
+         H0MCvX/xTw1GKpcrWANbPSpNL+/n7x8sFgAmnl+UC7iqjTxLcKZ8jNbD8L+kTdijQ70C
+         j4hGPnAD85TFT6f3ZcKqYAHtEup8JTAuBfrpQtAA21Nm16AoWzg/eDODBhAQfoG1yD8k
+         d1IA==
+X-Gm-Message-State: AOAM53084ZkYmR0qg/CxTSBmSqIJ0D8S7rVjK7+tEdw+objsEW16aqRc
+        ZmJaQCGncSU3g6CcJiQsVFNOydAY+cwBmg==
+X-Google-Smtp-Source: ABdhPJx8WzDB8Zx00M634qLe440mqjA5KZazOo0NQVBFXPULVsdUGLildJ4trH6zyO6TWJbcEvlrpg==
+X-Received: by 2002:ac2:4116:: with SMTP id b22mr681596lfi.224.1601304377436;
+        Mon, 28 Sep 2020 07:46:17 -0700 (PDT)
+Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com. [209.85.208.175])
+        by smtp.gmail.com with ESMTPSA id h16sm2875171lfc.63.2020.09.28.07.46.16
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Sep 2020 07:42:58 -0700 (PDT)
-Subject: Re: [PATCH 22/24] membarrier.2: Note that glibc does not provide a
- wrapper
-To:     David Laight <David.Laight@ACULAB.COM>,
-        "G. Branden Robinson" <g.branden.robinson@gmail.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-man@vger.kernel.org" <linux-man@vger.kernel.org>,
-        "mtk.manpages@gmail.com" <mtk.manpages@gmail.com>
-References: <20200927054657.ea2zaiesle6hwjit@localhost.localdomain>
- <562859fd-6740-1068-d9d0-9562140cec33@gmail.com>
- <20200928125227.yr2ugl23ib6mid76@localhost.localdomain>
- <5d4f71a6-8a5e-c683-fcbd-b5453435d736@gmail.com>
- <ff3c585bcbb54393aeb91b974c50d1bb@AcuMS.aculab.com>
-From:   Alejandro Colomar <colomar.6.4.3@gmail.com>
-Message-ID: <cc00475c-47af-f9d9-fdb5-5a88d520e52a@gmail.com>
-Date:   Mon, 28 Sep 2020 16:42:57 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Mon, 28 Sep 2020 07:46:16 -0700 (PDT)
+Received: by mail-lj1-f175.google.com with SMTP id c2so1242385ljj.12;
+        Mon, 28 Sep 2020 07:46:16 -0700 (PDT)
+X-Received: by 2002:a2e:760e:: with SMTP id r14mr509853ljc.331.1601304376547;
+ Mon, 28 Sep 2020 07:46:16 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <ff3c585bcbb54393aeb91b974c50d1bb@AcuMS.aculab.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200927192912.46323-1-peron.clem@gmail.com> <20200927192912.46323-2-peron.clem@gmail.com>
+ <CAGb2v65AhnqD6ec20h9vtd2GjqVsf_yz5+7VSa8giJuFJnd5ag@mail.gmail.com> <CAJiuCcevtzX_+02r54q6tH0+bOF=BM=knnaxN+G3QW035F8gZQ@mail.gmail.com>
+In-Reply-To: <CAJiuCcevtzX_+02r54q6tH0+bOF=BM=knnaxN+G3QW035F8gZQ@mail.gmail.com>
+From:   Chen-Yu Tsai <wens@csie.org>
+Date:   Mon, 28 Sep 2020 22:46:04 +0800
+X-Gmail-Original-Message-ID: <CAGb2v64Ath4vm+QNky2Le6ickJJ68Q8DJs8k6kqW=xh7DxmnMg@mail.gmail.com>
+Message-ID: <CAGb2v64Ath4vm+QNky2Le6ickJJ68Q8DJs8k6kqW=xh7DxmnMg@mail.gmail.com>
+Subject: Re: [linux-sunxi] [PATCH v5 01/20] ASoC: sun4i-i2s: Add support for
+ H6 I2S
+To:     =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
+Cc:     Maxime Ripard <mripard@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Marcus Cooper <codekipper@gmail.com>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Linux-ALSA <alsa-devel@alsa-project.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-sunxi <linux-sunxi@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Sep 28, 2020 at 10:37 PM Clément Péron <peron.clem@gmail.com> wrote:
+>
+> Hi Chen-Yu,
+>
+> On Mon, 28 Sep 2020 at 06:40, Chen-Yu Tsai <wens@csie.org> wrote:
+> >
+> > On Mon, Sep 28, 2020 at 3:29 AM Clément Péron <peron.clem@gmail.com> wrote:
+> > >
+> > > From: Jernej Skrabec <jernej.skrabec@siol.net>
+> > >
+> > > H6 I2S is very similar to that in H3, except it supports up to 16
+> > > channels.
+> > >
+> > > Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
+> > > Signed-off-by: Marcus Cooper <codekipper@gmail.com>
+> > > Signed-off-by: Clément Péron <peron.clem@gmail.com>
+> > > ---
+> > >  sound/soc/sunxi/sun4i-i2s.c | 224 ++++++++++++++++++++++++++++++++++++
+> > >  1 file changed, 224 insertions(+)
+> > >
+> > > diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
+> > > index f23ff29e7c1d..2baf6c276280 100644
+> > > --- a/sound/soc/sunxi/sun4i-i2s.c
+> > > +++ b/sound/soc/sunxi/sun4i-i2s.c
+> > > @@ -124,6 +124,21 @@
+> > >  #define SUN8I_I2S_RX_CHAN_SEL_REG      0x54
+> > >  #define SUN8I_I2S_RX_CHAN_MAP_REG      0x58
+> > >
+> > > +/* Defines required for sun50i-h6 support */
+> > > +#define SUN50I_H6_I2S_TX_CHAN_SEL_OFFSET_MASK  GENMASK(21, 20)
+> > > +#define SUN50I_H6_I2S_TX_CHAN_SEL_OFFSET(offset)       ((offset) << 20)
+> > > +#define SUN50I_H6_I2S_TX_CHAN_SEL_MASK         GENMASK(19, 16)
+> > > +#define SUN50I_H6_I2S_TX_CHAN_SEL(chan)                ((chan - 1) << 16)
+> > > +#define SUN50I_H6_I2S_TX_CHAN_EN_MASK          GENMASK(15, 0)
+> > > +#define SUN50I_H6_I2S_TX_CHAN_EN(num_chan)     (((1 << num_chan) - 1))
+> > > +
+> > > +#define SUN50I_H6_I2S_TX_CHAN_MAP0_REG 0x44
+> > > +#define SUN50I_H6_I2S_TX_CHAN_MAP1_REG 0x48
+> > > +
+> > > +#define SUN50I_H6_I2S_RX_CHAN_SEL_REG  0x64
+> > > +#define SUN50I_H6_I2S_RX_CHAN_MAP0_REG 0x68
+> > > +#define SUN50I_H6_I2S_RX_CHAN_MAP1_REG 0x6C
+> > > +
+> > >  struct sun4i_i2s;
+> > >
+> > >  /**
+> > > @@ -474,6 +489,62 @@ static int sun8i_i2s_set_chan_cfg(const struct sun4i_i2s *i2s,
+> > >         return 0;
+> > >  }
+> > >
+> > > +static int sun50i_h6_i2s_set_chan_cfg(const struct sun4i_i2s *i2s,
+> > > +                                     const struct snd_pcm_hw_params *params)
+> > > +{
+> > > +       unsigned int channels = params_channels(params);
+> > > +       unsigned int slots = channels;
+> > > +       unsigned int lrck_period;
+> > > +
+> > > +       if (i2s->slots)
+> > > +               slots = i2s->slots;
+> > > +
+> > > +       /* Map the channels for playback and capture */
+> > > +       regmap_write(i2s->regmap, SUN50I_H6_I2S_TX_CHAN_MAP1_REG, 0x76543210);
+> > > +       regmap_write(i2s->regmap, SUN50I_H6_I2S_RX_CHAN_MAP1_REG, 0x76543210);
+> >
+> > Nit, since it supports up to 16 channels, you might want to map all 16 of them
+> > now, instead of having to come back and fix it later.
+>
+> Thanks for the review. Do you mean there is missing MAP0 for RX/TX ?
+>
+> + regmap_write(i2s->regmap, SUN50I_H6_I2S_TX_CHAN_MAP0_REG, 0xFEDCBA98);
+>   regmap_write(i2s->regmap, SUN50I_H6_I2S_TX_CHAN_MAP1_REG, 0x76543210);
+> + regmap_write(i2s->regmap, SUN50I_H6_I2S_RX_CHAN_MAP0_REG, 0xFEDCBA98);
+>   regmap_write(i2s->regmap, SUN50I_H6_I2S_RX_CHAN_MAP1_REG, 0x76543210);
 
+Correct.
 
-On 2020-09-28 15:48, G. Branden Robinson wrote:
- >> There are a few cases:  if I want to find declarations of type int,
- >> I'd start with:
- >>
- >> $ grep -rn "int\s"
- >>
- >> or something like that.  "int\~" would break the ability to do that.
- >
- > That would, among more obscure cases, miss the style of function
- > declaration used by people who get along without ctags:
- >
- > static int
- > my_little_function(int foo, char bar)
- >
- > So I would tend to use grep 'int\>' to match a word boundary instead of
- > a whitespace character.
- >
- > Regards,
- > Branden
- >
+ChenYu
 
-On 2020-09-28 16:31, David Laight wrote:
-> From: Alejandro Colomar
->> Sent: 28 September 2020 14:33
-> ...
->> There are a few cases:  if I want to find declarations of type int,
->> I'd start with:
->>
->> $ grep -rn "int\s"
->>
->> or something like that.  "int\~" would break the ability to do that.
-> 
-> The 'word markers' \< and \> are your friends; look for "\<int\>".
-> 
-> 	David
-> 
-> -
-> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-> Registration No: 1397386 (Wales)
-> 
-
-
-Thank you both, I didn't know about those.
-
-Regards,
-
-Alex
+> Regards,
+> Clement
+>
+> >
+> > Code wise, this patch is
+> >
+> > Reviewed-by: Chen-Yu Tsai <wens@csie.org>
+> >
+> > I don't have a scope nor logic analyzer, so I wasn't able to participate in the
+> > LRCK discussion.
+>
+> --
+> You received this message because you are subscribed to the Google Groups "linux-sunxi" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to linux-sunxi+unsubscribe@googlegroups.com.
+> To view this discussion on the web, visit https://groups.google.com/d/msgid/linux-sunxi/CAJiuCcevtzX_%2B02r54q6tH0%2BbOF%3DBM%3DknnaxN%2BG3QW035F8gZQ%40mail.gmail.com.
