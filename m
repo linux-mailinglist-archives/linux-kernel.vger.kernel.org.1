@@ -2,322 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D4A827A87E
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 09:23:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA7DC27A881
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 09:25:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726634AbgI1HX2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 03:23:28 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:24446 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726596AbgI1HX0 (ORCPT
+        id S1726564AbgI1HZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 03:25:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58962 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726328AbgI1HZP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 03:23:26 -0400
-Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601277804;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=dxFIAvdDhbvLlFuhNKwmYntlyEYl/Pf6inB3UZNC2qs=;
-        b=VjW/4tSIktIX2WjJW9h0wdmmf1EcgEZEtf0mKhLHzvBs12eOHp2q8e/twELxL3AyqxrwbR
-        2RGSMoG0RV9q/YtspBymkzZt9WkU9d7pvwjpjxM3H6UY7HCVkK1c2pJ4e3wHFwGMXlKGjb
-        zwxf+z06dYWmTIAkMGU1uurjTd18Hy8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-518-C6zXZHgHPZ6MbmStW_7GXw-1; Mon, 28 Sep 2020 03:23:20 -0400
-X-MC-Unique: C6zXZHgHPZ6MbmStW_7GXw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C90CB8030A4;
-        Mon, 28 Sep 2020 07:23:18 +0000 (UTC)
-Received: from gshan.redhat.com (vpn2-54-128.bne.redhat.com [10.64.54.128])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B6DC47838A;
-        Mon, 28 Sep 2020 07:23:16 +0000 (UTC)
-From:   Gavin Shan <gshan@redhat.com>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org, mark.rutland@arm.com,
-        anshuman.khandual@arm.com, robin.murphy@arm.com,
-        catalin.marinas@arm.com, will@kernel.org, shan.gavin@gmail.com
-Subject: [PATCH v3 2/2] arm64/mm: Enable color zero pages
-Date:   Mon, 28 Sep 2020 17:22:56 +1000
-Message-Id: <20200928072256.13098-3-gshan@redhat.com>
-In-Reply-To: <20200928072256.13098-1-gshan@redhat.com>
-References: <20200928072256.13098-1-gshan@redhat.com>
+        Mon, 28 Sep 2020 03:25:15 -0400
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35ADAC0613CE
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 00:25:15 -0700 (PDT)
+Received: by mail-ot1-x341.google.com with SMTP id 60so8765423otw.3
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 00:25:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jml2neKeP5LvDDGsfQfoMJWoSSFjKlccfEpIy6JbJzg=;
+        b=c9tNr+0Sf8lZSRvtQbSe9kz8QQjv+dseeGRXmj2HyERSbc4Qpgay2plrHZ/88sgP/k
+         YagyDPo9uMHOOUMb9j24ZOz0ygMCnywlnMKiPYfFKdXYHtTzKJqbfewERiW26eg+2IgB
+         JAJSppUt8I0/oyaDaUAGv9AeJYfahhpXuSatV0jjMukn4Su7NvLG1e6I5OH00+zTrSbM
+         RphdrkVsaEbAR30T0BCHX7e/ktEfr/Cg44FBtcNjnBw6S2qnbArhrEOfFnj3y/Af9/Y3
+         PITAb1TOl/4Uuhq0DB5SH1nyCWuLSYyktexiZfqhNXsSoXTRL1GUjNSGjWjC9fY/OVU/
+         EkLg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jml2neKeP5LvDDGsfQfoMJWoSSFjKlccfEpIy6JbJzg=;
+        b=Ml6bF9QXfsK/5iwX+Qx67AJ0an2H1sGiqMAYJn802+XX9qVwxVLyzkQIrmja8DE++H
+         H2a0ARrLVvfsToyoL9CG97Q52oA4dih4jgwd0HHCYyyseKwUovWjbwH+oB7jyYVq5DqO
+         eXkrmKLb8w7LlTdERxcioJ3HaigBAB4Y3nH/wfsHrjAAQkls7mKW6/DR/HZjbhGxZQDg
+         niFu07ymL8PEVRzhzBuwEVp8mzc/RwjTypV0wT/SgCRGelV/GRN/n8/DJE07fldpkTP8
+         isMSFYnjq1E7BrAWWLLouOJZYNftW4eUUKjqRDEdL0ppz9Sjbp/qT8Eeo7sOy73W1Vx2
+         NRwA==
+X-Gm-Message-State: AOAM5314ypm6e0vKn/Z8G/aotqSk4rD70EWDVnSoIlIGBfBKMLyBtxGl
+        5MM1aekxZyG1xt1f0xoi/7IbF5CDj0OoYe3tLV0wSg==
+X-Google-Smtp-Source: ABdhPJxOW6W4XCiLFCFv0Vpb67Sb416PTR6EILccVp+ZcRJczEvoAHSyG+Sc2DgGuRBVv24MDN/T1eZrnKTkq3I1hQg=
+X-Received: by 2002:a9d:66a:: with SMTP id 97mr94939otn.233.1601277914299;
+ Mon, 28 Sep 2020 00:25:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+References: <00000000000052569205afa67426@google.com> <20200927145737.GA4746@zn.tnic>
+ <CACT4Y+Zxt3-Dj6r53mEkwv24PazPzTxQ7usV1O+RB0bk2FzO8g@mail.gmail.com>
+In-Reply-To: <CACT4Y+Zxt3-Dj6r53mEkwv24PazPzTxQ7usV1O+RB0bk2FzO8g@mail.gmail.com>
+From:   Marco Elver <elver@google.com>
+Date:   Mon, 28 Sep 2020 09:25:03 +0200
+Message-ID: <CANpmjNN9o_OUbZozzcQMHD8ynBBVeFFgp-4wK4J_U1JH=OGVsg@mail.gmail.com>
+Subject: Re: general protection fault in perf_misc_flags
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     Borislav Petkov <bp@alien8.de>,
+        Alexander Potapenko <glider@google.com>,
+        syzbot <syzbot+ce179bc99e64377c24bc@syzkaller.appspotmail.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Jiri Olsa <jolsa@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This enables color zero pages by allocating contiguous page frames
-for it. The number of pages for this is determined by L1 dCache
-(or iCache) size, which is probbed from the hardware.
+On Mon, 28 Sep 2020 at 07:18, Dmitry Vyukov <dvyukov@google.com> wrote:
+>
+> On Sun, Sep 27, 2020 at 4:57 PM Borislav Petkov <bp@alien8.de> wrote:
+> >
+> > On Sat, Sep 19, 2020 at 01:32:14AM -0700, syzbot wrote:
+> > > Hello,
+> > >
+> > > syzbot found the following issue on:
+> > >
+> > > HEAD commit:    92ab97ad Merge tag 'sh-for-5.9-part2' of git://git.libc.or..
+> > > git tree:       upstream
+> > > console output: https://syzkaller.appspot.com/x/log.txt?x=1069669b900000
+> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=cd992d74d6c7e62
+> > > dashboard link: https://syzkaller.appspot.com/bug?extid=ce179bc99e64377c24bc
+> > > compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+> >
+> > All below is AFAICT:
+> >
+> > This compiler you're using is not some official release but some random
+> > commit before the v10 release:
+> >
+> > $ git show c2443155a0fb245c8f17f2c1c72b6ea391e86e81
+> > Author: Hans Wennborg <hans@chromium.org>
+> > Date:   Sat Nov 30 14:20:11 2019 +0100
+> >
+> >     Revert 651f07908a1 "[AArch64] Don't combine callee-save and local stack adjustment when optimizing for size"
+> > ...
+> >
+> > $ git describe c2443155a0fb245c8f17f2c1c72b6ea391e86e81
+> > llvmorg-10-init-10900-gc2443155a0fb
+> >
+> > The v10 release is:
+> >
+> > $ git show llvmorg-10.0.0
+> > tag llvmorg-10.0.0
+> > Tagger: Hans Wennborg <hans@chromium.org>
+> > Date:   Tue Mar 24 12:58:58 2020 +0100
+> >
+> > Tag 10.0.0
+> >
+> > and v10 has reached v10.0.1 in the meantime:
+> >
+> > $ git log --oneline c2443155a0fb245c8f17f2c1c72b6ea391e86e81~1..llvmorg-10.0.1 | wc -l
+> > 7051
+> >
+> > so can you please update your compiler and see if you can still
+> > reproduce with 10.0.1 so that we don't waste time chasing a bug which
+> > has been likely already fixed in one of those >7K commits.
+>
+> +Alex, Marco,
+>
+> There is suspicion that these may be caused by use of unreleased clang.
+> Do we use the same clang as we use for the KMSAN instance? But this is
+> not KMSAN machine, so I am not sure who/when/why updated it last to
+> this revision.
+> I even see we have some clang 11 version:
+> https://github.com/google/syzkaller/blob/master/docs/syzbot.md#crash-does-not-reproduce
 
-   * Export cache_setup_of_node() so that the cache topology could
-     be parsed from device-tree.
+Yeah, we should replace that one as well as it wasn't yet a release-candidate.
 
-   * Add cache_get_info() so that L1 dCache size can be retrieved.
+> Is it possible to switch to some released version for both KMSAN and KASAN now?
 
-   * Implement setup_zero_pages(), which is called after the page
-     allocator begins to work, to allocate the contiguous pages
-     needed by color zero page. With this, reading load on these
-     zero pages can be distributed in different L1/L2/L3 dCache
-     sets, to improve the overall performance. On other hand, it
-     isn't going to thrash same L1/L2/L3 dCache, which is beneficial
-     to overall load balance.
+We should probably just switch to Clang 11-rc3 or so. Then we can use
+the same compiler for KMSAN and KCSAN at least.
 
-   * Reworked ZERO_PAGE() and define __HAVE_COLOR_ZERO_PAGE.
+I can package up a newer Clang.
 
-Signed-off-by: Gavin Shan <gshan@redhat.com>
----
- arch/arm64/include/asm/cache.h   |  3 ++
- arch/arm64/include/asm/pgtable.h |  9 ++++-
- arch/arm64/kernel/cacheinfo.c    | 67 ++++++++++++++++++++++++++++++++
- arch/arm64/mm/init.c             | 37 ++++++++++++++++++
- arch/arm64/mm/mmu.c              |  7 ----
- drivers/base/cacheinfo.c         |  3 +-
- include/linux/cacheinfo.h        |  6 +++
- 7 files changed, 121 insertions(+), 11 deletions(-)
-
-diff --git a/arch/arm64/include/asm/cache.h b/arch/arm64/include/asm/cache.h
-index a4d1b5f771f6..a42dbcc6b484 100644
---- a/arch/arm64/include/asm/cache.h
-+++ b/arch/arm64/include/asm/cache.h
-@@ -89,6 +89,9 @@ static inline int cache_line_size_of_cpu(void)
- }
- 
- int cache_line_size(void);
-+unsigned int cache_get_info(unsigned int level, unsigned int type,
-+			    unsigned int *sets, unsigned int *ways,
-+			    unsigned int *cl_size);
- 
- /*
-  * Read the effective value of CTR_EL0.
-diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
-index 6953498f4d40..5cb5f8bb090d 100644
---- a/arch/arm64/include/asm/pgtable.h
-+++ b/arch/arm64/include/asm/pgtable.h
-@@ -54,8 +54,13 @@ extern void __pgd_error(const char *file, int line, unsigned long val);
-  * ZERO_PAGE is a global shared page that is always zero: used
-  * for zero-mapped memory areas etc..
-  */
--extern unsigned long empty_zero_page[PAGE_SIZE / sizeof(unsigned long)];
--#define ZERO_PAGE(vaddr)	phys_to_page(__pa_symbol(empty_zero_page))
-+extern unsigned long empty_zero_page;
-+extern unsigned long zero_page_mask;
-+
-+#define __HAVE_COLOR_ZERO_PAGE
-+#define ZERO_PAGE(vaddr)				\
-+	(virt_to_page((void *)(empty_zero_page +	\
-+	(((unsigned long)(vaddr)) & zero_page_mask))))
- 
- #define pte_ERROR(pte)		__pte_error(__FILE__, __LINE__, pte_val(pte))
- 
-diff --git a/arch/arm64/kernel/cacheinfo.c b/arch/arm64/kernel/cacheinfo.c
-index 7fa6828bb488..c13b8897323f 100644
---- a/arch/arm64/kernel/cacheinfo.c
-+++ b/arch/arm64/kernel/cacheinfo.c
-@@ -43,6 +43,73 @@ static void ci_leaf_init(struct cacheinfo *this_leaf,
- 	this_leaf->type = type;
- }
- 
-+unsigned int cache_get_info(unsigned int level, unsigned int type,
-+			    unsigned int *sets, unsigned int *ways,
-+			    unsigned int *cl_size)
-+{
-+	int ret, i, cpu = smp_processor_id();
-+	enum cache_type t;
-+	struct cpu_cacheinfo *this_cpu_ci = get_cpu_cacheinfo(cpu);
-+	struct cacheinfo ci, *p = NULL;
-+
-+	/* Sanity check */
-+	if (type != CACHE_TYPE_INST && type != CACHE_TYPE_DATA)
-+		return 0;
-+
-+	/* Fetch the cache information if it has been populated */
-+	if (this_cpu_ci->num_leaves) {
-+		for (i = 0; i < this_cpu_ci->num_leaves; i++) {
-+			p = &this_cpu_ci->info_list[i];
-+			if (p->level == level &&
-+			    (p->type == type || p->type == CACHE_TYPE_UNIFIED))
-+				break;
-+		}
-+
-+		ret = (i < this_cpu_ci->num_leaves) ? 0 : -ENOENT;
-+		goto out;
-+	}
-+
-+	/*
-+	 * The cache information isn't populated yet, we have to
-+	 * retrieve it from ACPI or device tree.
-+	 */
-+	t = get_cache_type(level);
-+	if (t == CACHE_TYPE_NOCACHE ||
-+	    (t != CACHE_TYPE_SEPARATE && t != type)) {
-+		ret = -EINVAL;
-+		goto out;
-+	}
-+
-+	p = &ci;
-+	p->type = type;
-+	p->level = level;
-+	this_cpu_ci->info_list = p;
-+	this_cpu_ci->num_levels = 1;
-+	this_cpu_ci->num_leaves = 1;
-+	if (!acpi_disabled)
-+		ret = cache_setup_acpi(cpu);
-+	else if (of_have_populated_dt())
-+		ret = cache_setup_of_node(cpu);
-+	else
-+		ret = -EPERM;
-+
-+	memset(this_cpu_ci, 0, sizeof(*this_cpu_ci));
-+
-+out:
-+	if (!ret) {
-+		if (sets)
-+			*sets = p->number_of_sets;
-+		if (ways)
-+			*ways = p->ways_of_associativity;
-+		if (cl_size)
-+			*cl_size = p->coherency_line_size;
-+
-+		return p->size;
-+	}
-+
-+	return 0;
-+}
-+
- static int __init_cache_level(unsigned int cpu)
- {
- 	unsigned int ctype, level, leaves, fw_level;
-diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
-index 481d22c32a2e..330a9f610f28 100644
---- a/arch/arm64/mm/init.c
-+++ b/arch/arm64/mm/init.c
-@@ -18,6 +18,7 @@
- #include <linux/gfp.h>
- #include <linux/memblock.h>
- #include <linux/sort.h>
-+#include <linux/cacheinfo.h>
- #include <linux/of.h>
- #include <linux/of_fdt.h>
- #include <linux/dma-direct.h>
-@@ -69,6 +70,11 @@ EXPORT_SYMBOL(vmemmap);
- phys_addr_t arm64_dma_phys_limit __ro_after_init;
- static phys_addr_t arm64_dma32_phys_limit __ro_after_init;
- 
-+unsigned long empty_zero_page;
-+EXPORT_SYMBOL(empty_zero_page);
-+unsigned long zero_page_mask;
-+EXPORT_SYMBOL(zero_page_mask);
-+
- #ifdef CONFIG_KEXEC_CORE
- /*
-  * reserve_crashkernel() - reserves memory for crash kernel
-@@ -507,6 +513,36 @@ static void __init free_unused_memmap(void)
- }
- #endif	/* !CONFIG_SPARSEMEM_VMEMMAP */
- 
-+static void __init setup_zero_pages(void)
-+{
-+	struct page *page;
-+	unsigned int size;
-+	int order, i;
-+
-+	size = cache_get_info(1, CACHE_TYPE_DATA, NULL, NULL, NULL);
-+	order = size > 0 ? get_order(PAGE_ALIGN(size)) : 0;
-+	order = min(order, MAX_ORDER - 1);
-+
-+	do {
-+		empty_zero_page = __get_free_pages(GFP_KERNEL | __GFP_ZERO,
-+						   order);
-+		if (empty_zero_page)
-+			break;
-+	} while (--order >= 0);
-+
-+	if (!empty_zero_page)
-+		panic("%s: out of memory\n", __func__);
-+
-+	page = virt_to_page((void *) empty_zero_page);
-+	split_page(page, order);
-+	for (i = 1 << order; i > 0; i--) {
-+		mark_page_reserved(page);
-+		page++;
-+	}
-+
-+	zero_page_mask = ((PAGE_SIZE << order) - 1) & PAGE_MASK;
-+}
-+
- /*
-  * mem_init() marks the free areas in the mem_map and tells us how much memory
-  * is free.  This is done after various parts of the system have claimed their
-@@ -527,6 +563,7 @@ void __init mem_init(void)
- #endif
- 	/* this will put all unused low memory onto the freelists */
- 	memblock_free_all();
-+	setup_zero_pages();
- 
- 	mem_init_print_info(NULL);
- 
-diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
-index 75df62fea1b6..736939ab3b4f 100644
---- a/arch/arm64/mm/mmu.c
-+++ b/arch/arm64/mm/mmu.c
-@@ -49,13 +49,6 @@ EXPORT_SYMBOL(vabits_actual);
- u64 kimage_voffset __ro_after_init;
- EXPORT_SYMBOL(kimage_voffset);
- 
--/*
-- * Empty_zero_page is a special page that is used for zero-initialized data
-- * and COW.
-- */
--unsigned long empty_zero_page[PAGE_SIZE / sizeof(unsigned long)] __page_aligned_bss;
--EXPORT_SYMBOL(empty_zero_page);
--
- static pte_t bm_pte[PTRS_PER_PTE] __page_aligned_bss;
- static pmd_t bm_pmd[PTRS_PER_PMD] __page_aligned_bss __maybe_unused;
- static pud_t bm_pud[PTRS_PER_PUD] __page_aligned_bss __maybe_unused;
-diff --git a/drivers/base/cacheinfo.c b/drivers/base/cacheinfo.c
-index 8d553c92cd32..f0dc66fc24f1 100644
---- a/drivers/base/cacheinfo.c
-+++ b/drivers/base/cacheinfo.c
-@@ -153,7 +153,7 @@ static void cache_of_set_props(struct cacheinfo *this_leaf,
- 	cache_associativity(this_leaf);
- }
- 
--static int cache_setup_of_node(unsigned int cpu)
-+int cache_setup_of_node(unsigned int cpu)
- {
- 	struct device_node *np;
- 	struct cacheinfo *this_leaf;
-@@ -195,7 +195,6 @@ static int cache_setup_of_node(unsigned int cpu)
- 	return 0;
- }
- #else
--static inline int cache_setup_of_node(unsigned int cpu) { return 0; }
- static inline bool cache_leaves_are_shared(struct cacheinfo *this_leaf,
- 					   struct cacheinfo *sib_leaf)
- {
-diff --git a/include/linux/cacheinfo.h b/include/linux/cacheinfo.h
-index 46b92cd61d0c..f13d625d3e76 100644
---- a/include/linux/cacheinfo.h
-+++ b/include/linux/cacheinfo.h
-@@ -100,6 +100,12 @@ struct cpu_cacheinfo *get_cpu_cacheinfo(unsigned int cpu);
- int init_cache_level(unsigned int cpu);
- int populate_cache_leaves(unsigned int cpu);
- int cache_setup_acpi(unsigned int cpu);
-+#ifdef CONFIG_OF
-+int cache_setup_of_node(unsigned int cpu);
-+#else
-+static inline int cache_setup_of_node(unsigned int cpu) { return 0; }
-+#endif
-+
- #ifndef CONFIG_ACPI_PPTT
- /*
-  * acpi_find_last_cache_level is only called on ACPI enabled
--- 
-2.23.0
-
+Thanks,
+-- Marco
