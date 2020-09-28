@@ -2,89 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC5C127B31D
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 19:26:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 441DC27B320
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 19:26:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726697AbgI1R0D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 13:26:03 -0400
-Received: from mail-oi1-f193.google.com ([209.85.167.193]:33916 "EHLO
-        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726281AbgI1R0C (ORCPT
+        id S1726744AbgI1R0R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 13:26:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39228 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726551AbgI1R0Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 13:26:02 -0400
-Received: by mail-oi1-f193.google.com with SMTP id n2so2201667oij.1;
-        Mon, 28 Sep 2020 10:26:02 -0700 (PDT)
+        Mon, 28 Sep 2020 13:26:16 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E0A2C0613D0
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 10:26:16 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id k8so1676912pfk.2
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 10:26:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=pensando.io; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=xu75CUkAEe8YKESDX+6RMXTyhfVPWONUsVk2klTLLIw=;
+        b=0/6i+LzwyathOMbvG6oG2ll/0evYhsEXpg9MB8BFBLC+1GFyqK6z7LlJJBxzxFdfbJ
+         05TEF7DdGGpuvCMyi2NZv1Q92KQL0cR+D9CHNZcApVdI271h571JbWXG7v8ceUFtVFtf
+         iwjyPFqYKOGDgEmB8LpvoaUN93/ZIPIYVvLAUawMj6Y4rR+hfMhita75OZvkqLyaAvUf
+         xvE+pK94Tr93FIKvvY4r5qpOHmvw3WITNJyYhNThNqO4q29c3wTZYVBQe7Tq8UTIL6k4
+         0ZHjkrbMpMyKmBmkJEdjYVDtZTHnR2/b6Pa/4fNUCUmKUcc1eo5AP/szp3Nr9ULAH1LL
+         Gszg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=HloElYYvYC1E1YQK+ED9h3Lv0ZR4LSLurL4goAyk4Hk=;
-        b=pLFYHDdASG/dPnhn2c8wt0o6qmlYSDcBbeF2f/EUCCE/LwlJwADL4ssbrkpwlZk8GL
-         mpKFbSG9NZUEemKr1teuVwnrquULr1IPXS/Ny8hlNzhl4fRzDM/aqCbZ4KGhLwjfwead
-         v1MACYwUB2ERLaUoK7qSockU9xkZaumXe0Ifo4MF3ruKfqqQQlk4OLjpG6/skTI2pCgH
-         6Flk58A4OIQO/HHfuNEQyn5S81Q9DxzAxCklxdQ/SOpbsY1gG6rOcQ7g3e9cYHkoT9GQ
-         eTLQ2Iq4gJkIs8lSOjkQ+Iq5cp/ufl4JBgb8QL36GiDj2g/QI42pbc6kjwnT+cI0RMxO
-         SVfg==
-X-Gm-Message-State: AOAM533tePkTZvV0hwu072WPonQNggo6M45deiQ4LOTsluduNkI6Ev3S
-        T/OwkHqLnVWywTxDFLsx9w==
-X-Google-Smtp-Source: ABdhPJySKUlY/EdH9Kz+XTJL/0MRpMu/N57VNY+hnl6b5Pp35NWL85Hf9qx/i6OfGKk8Avb/lUq9vA==
-X-Received: by 2002:aca:b4c4:: with SMTP id d187mr1582908oif.21.1601313961816;
-        Mon, 28 Sep 2020 10:26:01 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id j1sm347389oig.45.2020.09.28.10.26.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Sep 2020 10:26:01 -0700 (PDT)
-Received: (nullmailer pid 2932956 invoked by uid 1000);
-        Mon, 28 Sep 2020 17:26:00 -0000
-Date:   Mon, 28 Sep 2020 12:26:00 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     linux-arm-msm@vger.kernel.org, bjorn.andersson@linaro.org,
-        sboyd@kernel.org, robh+dt@kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mturquette@baylibre.com
-Subject: Re: [PATCH v2 2/4] dt-bindings: clock: Add support for LPASS Always
- ON Controller
-Message-ID: <20200928172600.GA2932700@bogus>
-References: <20200925103115.15191-1-srinivas.kandagatla@linaro.org>
- <20200925103115.15191-3-srinivas.kandagatla@linaro.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=xu75CUkAEe8YKESDX+6RMXTyhfVPWONUsVk2klTLLIw=;
+        b=kLBWc4W3blS8aA+8zM/oB2Z3hLo2PQXrKhgYhk2X3ZdSmiYN/LK0upXfH1YEKk+Bla
+         m+3lB1cKiEWQc5RaALHV3DL+l765JlrXcwLiGe3ARoddOTFpjC1+K/sUJlPj7Ca2WRkh
+         YKOwFJrSB5G9nLQFv8hw/4IAlqWPYx8x8uNBNUsbO3syqsjGRv1/Vj4gxIHxC7eJu0M8
+         PITqFQ/e2/VZyXH8XviwOFuRlKb3lIYqlBRLJoTfXSKSIGHSPLIA5rCqgMOGSoX4c15E
+         3tXDvotd8GBAe+mfuznYaCYJM9uXMMPEcM5PDFzv12AD1SwH1FWJrmozzPaiG2/+aCU/
+         e4qA==
+X-Gm-Message-State: AOAM533BEZLPUw6ttfIGE11pMoLzjehCk7T3y5sosAi3WDuZoVNiIDy5
+        8Y+uOLr6aZAi4+xy2NMRlWNlvQ==
+X-Google-Smtp-Source: ABdhPJzwfjXkCsxEu3XfK2aVP501w1BXp/1/rfPP3H13WpeMSgLae7v91sNjQ8w4DmdYg1Jo2bc1PA==
+X-Received: by 2002:a63:595a:: with SMTP id j26mr130244pgm.406.1601313975665;
+        Mon, 28 Sep 2020 10:26:15 -0700 (PDT)
+Received: from Shannons-MacBook-Pro.local (static-50-53-47-17.bvtn.or.frontiernet.net. [50.53.47.17])
+        by smtp.gmail.com with ESMTPSA id j18sm1986127pgm.30.2020.09.28.10.26.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 28 Sep 2020 10:26:15 -0700 (PDT)
+Subject: Re: [patch 12/35] net: ionic: Remove WARN_ON(in_interrupt()).
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Linus Torvalds <torvalds@linuxfoundation.org>,
+        Paul McKenney <paulmck@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Pensando Drivers <drivers@pensando.io>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        Christian Benvenuti <benve@cisco.com>,
+        Govindarajulu Varadarajan <_govind@gmx.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-doc@vger.kernel.org,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Jay Cliburn <jcliburn@gmail.com>,
+        Chris Snook <chris.snook@gmail.com>,
+        Vishal Kulkarni <vishal@chelsio.com>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        intel-wired-lan@lists.osuosl.org, Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Solarflare linux maintainers <linux-net-drivers@solarflare.com>,
+        Edward Cree <ecree@solarflare.com>,
+        Martin Habets <mhabets@solarflare.com>,
+        Jon Mason <jdmason@kudzu.us>, Daniel Drake <dsd@gentoo.org>,
+        Ulrich Kunitz <kune@deine-taler.de>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        linux-wireless@vger.kernel.org, linux-usb@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arend van Spriel <arend.vanspriel@broadcom.com>,
+        Franky Lin <franky.lin@broadcom.com>,
+        Hante Meuleman <hante.meuleman@broadcom.com>,
+        Chi-Hsien Lin <chi-hsien.lin@cypress.com>,
+        Wright Feng <wright.feng@cypress.com>,
+        brcm80211-dev-list.pdl@broadcom.com,
+        brcm80211-dev-list@cypress.com,
+        Stanislav Yakovlev <stas.yakovlev@gmail.com>,
+        Stanislaw Gruszka <stf_xl@wp.pl>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
+        Luca Coelho <luciano.coelho@intel.com>,
+        Intel Linux Wireless <linuxwifi@intel.com>,
+        Jouni Malinen <j@w1.fi>,
+        Amitkumar Karwar <amitkarwar@gmail.com>,
+        Ganapathi Bhat <ganapathi.bhat@nxp.com>,
+        Xinming Hu <huxinming820@gmail.com>,
+        libertas-dev@lists.infradead.org,
+        Pascal Terjan <pterjan@google.com>,
+        Ping-Ke Shih <pkshih@realtek.com>
+References: <20200927194846.045411263@linutronix.de>
+ <20200927194921.026798214@linutronix.de>
+From:   Shannon Nelson <snelson@pensando.io>
+Message-ID: <96baeba9-eb5f-1462-2dcc-ecb9793727a1@pensando.io>
+Date:   Mon, 28 Sep 2020 10:26:10 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200925103115.15191-3-srinivas.kandagatla@linaro.org>
+In-Reply-To: <20200927194921.026798214@linutronix.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 25 Sep 2020 11:31:13 +0100, Srinivas Kandagatla wrote:
-> Always ON Clock controller is a block inside LPASS which controls
-> 1 Glitch free muxes to LPASS codec Macros.
-> 
-> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+On 9/27/20 12:48 PM, Thomas Gleixner wrote:
+> From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+>
+> in_interrupt() is ill defined and does not provide what the name
+> suggests. The usage especially in driver code is deprecated and a tree wide
+> effort to clean up and consolidate the (ab)usage of in_interrupt() and
+> related checks is happening.
+>
+> In this case the check covers only parts of the contexts in which these
+> functions cannot be called. It fails to detect preemption or interrupt
+> disabled invocations.
+>
+> As the functions which are invoked from ionic_adminq_post() and
+> ionic_dev_cmd_wait() contain a broad variety of checks (always enabled or
+> debug option dependent) which cover all invalid conditions already, there
+> is no point in having inconsistent warnings in those drivers.
+>
+> Just remove them.
+>
+> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Shannon Nelson <snelson@pensando.io>
+> Cc: Pensando Drivers <drivers@pensando.io>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: netdev@vger.kernel.org
+Thanks.
+
+Acked-by: Shannon Nelson <snelson@pensando.io>
+
 > ---
->  .../bindings/clock/qcom,aoncc-sm8250.yaml     | 58 +++++++++++++++++++
->  .../clock/qcom,sm8250-lpass-aoncc.h           | 11 ++++
->  2 files changed, 69 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/clock/qcom,aoncc-sm8250.yaml
->  create mode 100644 include/dt-bindings/clock/qcom,sm8250-lpass-aoncc.h
-> 
-
-
-My bot found errors running 'make dt_binding_check' on your patch:
-
-Error: Documentation/devicetree/bindings/clock/qcom,aoncc-sm8250.example.dts:25.30-31 syntax error
-FATAL ERROR: Unable to parse input tree
-make[1]: *** [scripts/Makefile.lib:342: Documentation/devicetree/bindings/clock/qcom,aoncc-sm8250.example.dt.yaml] Error 1
-make[1]: *** Waiting for unfinished jobs....
-make: *** [Makefile:1366: dt_binding_check] Error 2
-
-
-See https://patchwork.ozlabs.org/patch/1371159
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure dt-schema is up to date:
-
-pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
-
-Please check and re-submit.
+>   drivers/net/ethernet/pensando/ionic/ionic_main.c |    4 ----
+>   1 file changed, 4 deletions(-)
+>
+> --- a/drivers/net/ethernet/pensando/ionic/ionic_main.c
+> +++ b/drivers/net/ethernet/pensando/ionic/ionic_main.c
+> @@ -248,8 +248,6 @@ static int ionic_adminq_post(struct ioni
+>   	struct ionic_queue *adminq;
+>   	int err = 0;
+>   
+> -	WARN_ON(in_interrupt());
+> -
+>   	if (!lif->adminqcq)
+>   		return -EIO;
+>   
+> @@ -346,8 +344,6 @@ int ionic_dev_cmd_wait(struct ionic *ion
+>   	int done;
+>   	int err;
+>   
+> -	WARN_ON(in_interrupt());
+> -
+>   	/* Wait for dev cmd to complete, retrying if we get EAGAIN,
+>   	 * but don't wait any longer than max_seconds.
+>   	 */
+>
 
