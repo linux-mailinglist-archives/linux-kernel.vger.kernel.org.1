@@ -2,250 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55F0227B862
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 01:41:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C558D27B827
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 01:30:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727145AbgI1Xk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 19:40:57 -0400
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:15788 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726477AbgI1Xk5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 19:40:57 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f7263960000>; Mon, 28 Sep 2020 15:28:38 -0700
-Received: from rcampbell-dev.nvidia.com (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 28 Sep
- 2020 22:29:24 +0000
-Subject: Re: [PATCH 2/2] mm: remove extra ZONE_DEVICE struct page refcount
-To:     Christoph Hellwig <hch@lst.de>
-CC:     <linux-mm@kvack.org>, <kvm-ppc@vger.kernel.org>,
-        <nouveau@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jerome Glisse <jglisse@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Bharata B Rao <bharata@linux.ibm.com>,
-        Zi Yan <ziy@nvidia.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <20200925204442.31348-1-rcampbell@nvidia.com>
- <20200925204442.31348-3-rcampbell@nvidia.com> <20200926064116.GB3540@lst.de>
-X-Nvconfidentiality: public
-From:   Ralph Campbell <rcampbell@nvidia.com>
-Message-ID: <78746c2f-4bbb-886f-6eb6-0daffab8be3f@nvidia.com>
-Date:   Mon, 28 Sep 2020 15:29:24 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        id S1727062AbgI1Xas (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 19:30:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53988 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726992AbgI1Xam (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 19:30:42 -0400
+Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C744820719;
+        Mon, 28 Sep 2020 23:30:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601335841;
+        bh=el6hcOux7y4CUYemcLLD723adYsECOKD0NgIM5zgJ5M=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=uYH+CedD3YAIcZg9MIVq3P/Yf9JoY3cNARjw4yPUThjeZtPjycIG441sjydxbkm53
+         2dnxxSRWXiLl6Lkq8Jt/pEIpNul7zea0PAWXYl18BUcl6Om6YFnmmMI3J6dv/q8qg9
+         srvogTTQv7WfcczNEOctrYS3vcfMX4nerTMgmEn4=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 8BF4F35227DB; Mon, 28 Sep 2020 16:30:41 -0700 (PDT)
+Date:   Mon, 28 Sep 2020 16:30:41 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
+        jiangshanlai@gmail.com, akpm@linux-foundation.org,
+        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
+        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
+        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
+        oleg@redhat.com, joel@joelfernandes.org, mhocko@kernel.org,
+        mgorman@techsingularity.net, torvalds@linux-foundation.org
+Subject: [PATCH tip/core/rcu 0/15]
+Message-ID: <20200928233041.GA23230@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
 MIME-Version: 1.0
-In-Reply-To: <20200926064116.GB3540@lst.de>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1601332118; bh=ntlK3Xi4LRi5JEwFdimDv+bjXFI0l+EMLXJlC3bQqIo=;
-        h=Subject:To:CC:References:X-Nvconfidentiality:From:Message-ID:Date:
-         User-Agent:MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=p+5vdv8JLToXbkMmRk7a4etC29I/vEqOTkTM+BP6PCvq8/5JBz/n6y5wSi+CIRqrL
-         vzauJc3enPL/CL5m/kIxahvUYZwNmqhnSze1+RAQvbPbZ5BcFErSe/vtmTl8Ju3roI
-         k6gj0REdmzH+87NjkeLyC9Tv1Mz89CcLz0CVd0PSQEUxFO+3CKMNR/sKmlqMOFXiim
-         0LxBkAntA2XFm4Kumm1ThCARsbAYSqekzue1TSj7Qn1RlBBurKZpBwo8DsqsNyTB/s
-         GpYRxmbyeILVoxewkJ/ODDzdDFagQVpK732chT36eASHb4Z7nRS/u/m1pfcRd+04WT
-         x2y64mfoCE0Ug==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello!
 
-On 9/25/20 11:41 PM, Christoph Hellwig wrote:
-> On Fri, Sep 25, 2020 at 01:44:42PM -0700, Ralph Campbell wrote:
->> ZONE_DEVICE struct pages have an extra reference count that complicates the
->> code for put_page() and several places in the kernel that need to check the
->> reference count to see that a page is not being used (gup, compaction,
->> migration, etc.). Clean up the code so the reference count doesn't need to
->> be treated specially for ZONE_DEVICE.
->>
->> Signed-off-by: Ralph Campbell <rcampbell@nvidia.com>
->> ---
->>   arch/powerpc/kvm/book3s_hv_uvmem.c     |  2 +-
->>   drivers/gpu/drm/nouveau/nouveau_dmem.c |  2 +-
->>   include/linux/dax.h                    |  2 +-
->>   include/linux/memremap.h               |  7 ++-
->>   include/linux/mm.h                     | 44 --------------
->>   lib/test_hmm.c                         |  2 +-
->>   mm/gup.c                               | 44 --------------
->>   mm/internal.h                          |  8 +++
->>   mm/memremap.c                          | 82 ++++++--------------------
->>   mm/migrate.c                           |  5 --
->>   mm/page_alloc.c                        |  3 +
->>   mm/swap.c                              | 46 +++------------
->>   12 files changed, 44 insertions(+), 203 deletions(-)
->>
->> diff --git a/arch/powerpc/kvm/book3s_hv_uvmem.c b/arch/powerpc/kvm/book3s_hv_uvmem.c
->> index 7705d5557239..e6ec98325fab 100644
->> --- a/arch/powerpc/kvm/book3s_hv_uvmem.c
->> +++ b/arch/powerpc/kvm/book3s_hv_uvmem.c
->> @@ -711,7 +711,7 @@ static struct page *kvmppc_uvmem_get_page(unsigned long gpa, struct kvm *kvm)
->>   
->>   	dpage = pfn_to_page(uvmem_pfn);
->>   	dpage->zone_device_data = pvt;
->> -	get_page(dpage);
->> +	init_page_count(dpage);
->>   	lock_page(dpage);
->>   	return dpage;
->>   out_clear:
->> diff --git a/drivers/gpu/drm/nouveau/nouveau_dmem.c b/drivers/gpu/drm/nouveau/nouveau_dmem.c
->> index 4e8112fde3e6..ca2e3c3edc36 100644
->> --- a/drivers/gpu/drm/nouveau/nouveau_dmem.c
->> +++ b/drivers/gpu/drm/nouveau/nouveau_dmem.c
->> @@ -323,7 +323,7 @@ nouveau_dmem_page_alloc_locked(struct nouveau_drm *drm)
->>   			return NULL;
->>   	}
->>   
->> -	get_page(page);
->> +	init_page_count(page);
->>   	lock_page(page);
->>   	return page;
->>   }
->> diff --git a/include/linux/dax.h b/include/linux/dax.h
->> index 3f78ed78d1d6..8d29f38645aa 100644
->> --- a/include/linux/dax.h
->> +++ b/include/linux/dax.h
->> @@ -240,7 +240,7 @@ static inline bool dax_mapping(struct address_space *mapping)
->>   
->>   static inline bool dax_layout_is_idle_page(struct page *page)
->>   {
->> -	return page_ref_count(page) <= 1;
->> +	return page_ref_count(page) == 0;
->>   }
->>   
->>   #endif
->> diff --git a/include/linux/memremap.h b/include/linux/memremap.h
->> index e5862746751b..f9224f88e4cd 100644
->> --- a/include/linux/memremap.h
->> +++ b/include/linux/memremap.h
->> @@ -65,9 +65,10 @@ enum memory_type {
->>   
->>   struct dev_pagemap_ops {
->>   	/*
->> -	 * Called once the page refcount reaches 1.  (ZONE_DEVICE pages never
->> -	 * reach 0 refcount unless there is a refcount bug. This allows the
->> -	 * device driver to implement its own memory management.)
->> +	 * Called once the page refcount reaches 0. The reference count
->> +	 * should be reset to one with init_page_count(page) before reusing
->> +	 * the page. This allows the device driver to implement its own
->> +	 * memory management.
->>   	 */
->>   	void (*page_free)(struct page *page);
->>   
->> diff --git a/include/linux/mm.h b/include/linux/mm.h
->> index b2f370f0b420..2159c2477aa3 100644
->> --- a/include/linux/mm.h
->> +++ b/include/linux/mm.h
->> @@ -1092,39 +1092,6 @@ static inline bool is_zone_device_page(const struct page *page)
->>   }
->>   #endif
->>   
->> -#ifdef CONFIG_DEV_PAGEMAP_OPS
->> -void free_devmap_managed_page(struct page *page);
->> -DECLARE_STATIC_KEY_FALSE(devmap_managed_key);
->> -
->> -static inline bool page_is_devmap_managed(struct page *page)
->> -{
->> -	if (!static_branch_unlikely(&devmap_managed_key))
->> -		return false;
->> -	if (!is_zone_device_page(page))
->> -		return false;
->> -	switch (page->pgmap->type) {
->> -	case MEMORY_DEVICE_PRIVATE:
->> -	case MEMORY_DEVICE_FS_DAX:
->> -		return true;
->> -	default:
->> -		break;
->> -	}
->> -	return false;
->> -}
->> -
->> -void put_devmap_managed_page(struct page *page);
->> -
->> -#else /* CONFIG_DEV_PAGEMAP_OPS */
->> -static inline bool page_is_devmap_managed(struct page *page)
->> -{
->> -	return false;
->> -}
->> -
->> -static inline void put_devmap_managed_page(struct page *page)
->> -{
->> -}
->> -#endif /* CONFIG_DEV_PAGEMAP_OPS */
->> -
->>   static inline bool is_device_private_page(const struct page *page)
->>   {
->>   	return IS_ENABLED(CONFIG_DEV_PAGEMAP_OPS) &&
->> @@ -1171,17 +1138,6 @@ static inline void put_page(struct page *page)
->>   {
->>   	page = compound_head(page);
->>   
->> -	/*
->> -	 * For devmap managed pages we need to catch refcount transition from
->> -	 * 2 to 1, when refcount reach one it means the page is free and we
->> -	 * need to inform the device driver through callback. See
->> -	 * include/linux/memremap.h and HMM for details.
->> -	 */
->> -	if (page_is_devmap_managed(page)) {
->> -		put_devmap_managed_page(page);
->> -		return;
->> -	}
->> -
->>   	if (put_page_testzero(page))
->>   		__put_page(page);
->>   }
->> diff --git a/lib/test_hmm.c b/lib/test_hmm.c
->> index e7dc3de355b7..1033b19c9c52 100644
->> --- a/lib/test_hmm.c
->> +++ b/lib/test_hmm.c
->> @@ -561,7 +561,7 @@ static struct page *dmirror_devmem_alloc_page(struct dmirror_device *mdevice)
->>   	}
->>   
->>   	dpage->zone_device_data = rpage;
->> -	get_page(dpage);
->> +	init_page_count(dpage);
->>   	lock_page(dpage);
->>   	return dpage;
->>   
-> 
-> Doesn't test_hmm also need to reinitialize the refcount before freeing
-> the page in hmm_dmirror_exit?
+This is a repost of Thomas Gleixner's "Make preempt count unconditional"
+series [1], but with the addition of a kvfree_rcu() bug-fix patch making
+use of this PREEMPT_COUNT addition.  This series is intended for the
+upcoming v5.10 merge window.
 
-The dmirror_zero_page is dead code, it isn't used. There is a patch queued in
-linux-mm which removes it. Besides, it was allocated with alloc_page() so it
-isn't a device private struct page.
+This addition fixes the -rt bug reported by Sebastian Andrzej Siewior
+[2].  Please note that with the advent of the new lockdep Kconfig
+option CONFIG_PROVE_RAW_LOCK_NESTING, this is now also a mainline bug.
+In happy contrast to the surprisingly large number of earlier versions
+of this fix, this version uses only pre-existing kernel interfaces,
+and furthermore uses them in conventional ways.
 
->>   	int error, is_ram;
->> -	bool need_devmap_managed = true;
->>   
->>   	switch (pgmap->type) {
->>   	case MEMORY_DEVICE_PRIVATE:
->> @@ -217,11 +171,9 @@ void *memremap_pages(struct dev_pagemap *pgmap, int nid)
->>   		}
->>   		break;
->>   	case MEMORY_DEVICE_GENERIC:
-> 
-> The MEMORY_DEVICE_PRIVATE cases loses the sanity check that the
-> page_free method is set.
+1-13.	Thomas's series [1].
 
-I'll add that back into memremap_pages() with other sanity checks in v3.
+14.	Use the newly accurate preemptible() macro to cause kvfree_rcu()
+	to do its allocations only when it is safe to do so, even in
+	CONFIG_PREEMPT_NONE=y kernels, courtesy of Uladzislau Rezki.
+	Again, this fixes the bug reported by Sebastian [2].
 
-> Otherwise this looks good.
+15.	Checkpatch fix removing NULL check guarding kfree(), courtesy
+	of kernel test robot and Julia Lawall.
 
-Thanks!
+In addition, this series reduces the size of the kernel by 100 lines
+of code, about two thirds of which is from Thomas's original series and
+the remaining one third from the bug fix.
+
+Changes from v1 [1]:
+
+o	Fix trivial !SMP build failure.
+o	Apply checkpatch spelling suggestions.
+
+							Thanx, Paul
+
+[1]	https://lore.kernel.org/linux-mm/20200914204209.256266093@linutronix.de/
+[2]	https://lore.kernel.org/lkml/20200630164543.4mdcf6zb4zfclhln@linutronix.de/
+
+------------------------------------------------------------------------
+
+ arch/arm/include/asm/assembler.h                                 |   11 -
+ arch/arm/kernel/iwmmxt.S                                         |    2 
+ arch/arm/mach-ep93xx/crunch-bits.S                               |    2 
+ arch/xtensa/kernel/entry.S                                       |    2 
+ drivers/gpu/drm/i915/Kconfig.debug                               |    1 
+ drivers/gpu/drm/i915/i915_utils.h                                |    3 
+ include/linux/bit_spinlock.h                                     |    4 
+ include/linux/lockdep.h                                          |    6 
+ include/linux/pagemap.h                                          |    4 
+ include/linux/preempt.h                                          |   37 -----
+ include/linux/uaccess.h                                          |    6 
+ kernel/Kconfig.preempt                                           |    6 
+ kernel/rcu/tree.c                                                |   73 ++--------
+ kernel/sched/core.c                                              |    6 
+ lib/Kconfig.debug                                                |    5 
+ tools/testing/selftests/rcutorture/configs/rcu/SRCU-t            |    1 
+ tools/testing/selftests/rcutorture/configs/rcu/SRCU-u            |    1 
+ tools/testing/selftests/rcutorture/configs/rcu/TINY01            |    1 
+ tools/testing/selftests/rcutorture/doc/TINY_RCU.txt              |    5 
+ tools/testing/selftests/rcutorture/doc/TREE_RCU-kconfig.txt      |    1 
+ tools/testing/selftests/rcutorture/formal/srcu-cbmc/src/config.h |    1 
+ 21 files changed, 39 insertions(+), 139 deletions(-)
