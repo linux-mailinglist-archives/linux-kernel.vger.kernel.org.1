@@ -2,89 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5327B27B15D
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 18:06:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B9C227B162
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 18:06:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726605AbgI1QGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 12:06:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54992 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726409AbgI1QGL (ORCPT
+        id S1726651AbgI1QGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 12:06:40 -0400
+Received: from smtprelay0062.hostedemail.com ([216.40.44.62]:41254 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726551AbgI1QGk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 12:06:11 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6399C061755
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 09:06:10 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id gr14so9349771ejb.1
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 09:06:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=o71LzbqX367JaJH9ttdwJUvGzrnJxktn3m8pbVRAwzw=;
-        b=fvsDnXfKUBOAXccBDwFSPn5D6Csgk0G1mHyAUd74eUxAq5zR8163TbnodrFpDHFksK
-         q2UiyDX8dhCNVWDabaAhGk6xzfG4SXk1cjcB+qzfJ7yDn1xhigkN52Szo+wj1QDppJZy
-         SQIg1zSkc4EsBC+GeqRxR6kysSFmHW8aanRGoDDPzu+9MkTBuf1hXhNNXN+d3nIR/hOU
-         1p+7sGA15/ttgAVlsAnYSh8fZUQuiNAtvq8tEXBc7wT+Dzt+eNRle4hU6ePzLCSiumPP
-         94zV7qksW3cZEgcTnZWteH9J53JSPSP4z9MrIiYAh1NbGG9saHFBAmXyiozR7L2/MR6P
-         ARaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=o71LzbqX367JaJH9ttdwJUvGzrnJxktn3m8pbVRAwzw=;
-        b=qGWcJXeHWMj9cr2XecBUdtvdVBIcYVPzteHsjS3EfdPsY1gH4GuQj9vuf8cO6IrZ5j
-         A4wklaAjh0bivklmNIgvOaM8Xie0VItHAQgWt9HAkkLl7BPLucRaZFnBhxEY3RN5O4MV
-         CsuV5g6nNywm6v/cJ9FQqaG90OeMM4RGp35vFZ4fizZNGrh5ih5CGZztLBvJdE1ZeqEw
-         1GZqA140iJ0/t9r779mtUg3yILUewKLYYTvqaGQAVuwx5MUsd6E6UN1pysV01LABSVJw
-         Oi+dzUh38/8bwuZE0BH6ltcSrg91DkFniMUDKTtM+cKfnixIn5tqAHnoUymzUhKfFtlQ
-         qJcA==
-X-Gm-Message-State: AOAM531KbkvfhtO7v2muqJdgsbpRlq4eAFQHaxdKBeADII0h9c0yfwp0
-        USB3mgCwuWESmmezULP8AWEm5VVAbRVwUByfAB9/Cw==
-X-Google-Smtp-Source: ABdhPJwqh8E0xHjHa+dXhoJEb6VW08INWmr1q9wGgTppwWtMYPE+FmoLDTQjTf5DzUZYK4TAiqHPx/WYKmjPD/totDw=
-X-Received: by 2002:a17:906:3e08:: with SMTP id k8mr2297800eji.480.1601309169232;
- Mon, 28 Sep 2020 09:06:09 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200925143422.21718-1-graf@amazon.com> <20200925143422.21718-3-graf@amazon.com>
-In-Reply-To: <20200925143422.21718-3-graf@amazon.com>
-From:   Aaron Lewis <aaronlewis@google.com>
-Date:   Mon, 28 Sep 2020 09:05:58 -0700
-Message-ID: <CAAAPnDGVKDvVRdDK8yUzqXHzWzFK_9tnbwdmHkwbgcVb2wU5aA@mail.gmail.com>
-Subject: Re: [PATCH v8 2/8] KVM: x86: Deflect unknown MSR accesses to user space
-To:     Alexander Graf <graf@amazon.com>
-Cc:     kvm list <kvm@vger.kernel.org>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
+        Mon, 28 Sep 2020 12:06:40 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay03.hostedemail.com (Postfix) with ESMTP id EA4BF8383102;
+        Mon, 28 Sep 2020 16:06:38 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:965:966:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1539:1593:1594:1711:1730:1747:1777:1792:2196:2199:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3870:3871:3872:3873:4321:4385:4390:4395:5007:6119:7576:8660:10004:10400:10848:11232:11658:11914:12297:12740:12760:12895:13018:13019:13069:13148:13230:13311:13357:13439:14181:14659:14721:21080:21220:21451:21611:21627:21939:30054:30060:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: coast39_3a00add27182
+X-Filterd-Recvd-Size: 2060
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf12.hostedemail.com (Postfix) with ESMTPA;
+        Mon, 28 Sep 2020 16:06:37 +0000 (UTC)
+Message-ID: <12317bbc7712d96be8f52a3bf574e47628830191.camel@perches.com>
+Subject: Re: [PATCH v2 1/9] lib: string_helpers: provide kfree_strarray()
+From:   Joe Perches <joe@perches.com>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
         Jonathan Corbet <corbet@lwn.net>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        KarimAllah Raslan <karahmed@amazon.de>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Kent Gibson <warthog618@gmail.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-doc <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Mon, 28 Sep 2020 09:06:34 -0700
+In-Reply-To: <CAMRc=Mds0ccYBhRJnCQ0NEPkUpWRGtyX4FKj4+4rxN27_gfobA@mail.gmail.com>
+References: <20200928104155.7385-1-brgl@bgdev.pl>
+         <20200928104155.7385-2-brgl@bgdev.pl>
+         <2fcfd81f62ec87d9b75cca32468d8b9583faec47.camel@perches.com>
+         <CAMRc=Mds0ccYBhRJnCQ0NEPkUpWRGtyX4FKj4+4rxN27_gfobA@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->
-> This patch adds a generic interface to handle WRMSR and RDMSR from user
-> space. With this, any future MSR that is part of the latter categories can
-> be handled in user space.
->
-> Furthermore, it allows us to replace the existing "ignore_msrs" logic with
-> something that applies per-VM rather than on the full system. That way you
-> can run productive VMs in parallel to experimental ones where you don't care
-> about proper MSR handling.
->
-> Signed-off-by: Alexander Graf <graf@amazon.com>
-> Reviewed-by: Jim Mattson <jmattson@google.com>
+On Mon, 2020-09-28 at 18:02 +0200, Bartosz Golaszewski wrote:
+> On Mon, Sep 28, 2020 at 5:59 PM Joe Perches <joe@perches.com> wrote:
+> > On Mon, 2020-09-28 at 12:41 +0200, Bartosz Golaszewski wrote:
+> > > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> > > 
+> > > There's a common pattern of dynamically allocating an array of char
+> > > pointers and then also dynamically allocating each string in this
+> > > array. Provide a helper for freeing such a string array with one call.
+> > 
+> > Isn't this also common for things like ring buffers?
+> > Why limit this to char *[]?
+> > 
+> 
+> I don't want to add APIs nobody is using. What do you suggest?
 
-Reviewed-by: Aaron Lewis <aaronlewis@google.com>
+Change the argument to void** and call it
 
->
-> ---
->
-> v1 -> v2:
+void kfree_array(void **array, int count);
+
+
+
+
