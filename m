@@ -2,169 +2,282 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C764F27A938
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 10:02:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B488C27A93A
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 10:03:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726689AbgI1IC2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 04:02:28 -0400
-Received: from mga06.intel.com ([134.134.136.31]:62175 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726328AbgI1IC2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 04:02:28 -0400
-IronPort-SDR: 8oT1rlVCEaB5rWOMjtjkvhIF395mIl5WMXr5k2/+H7eABOsYHVmA9LPYxXOQe3wKJ9j/s0vEqa
- P3abfm/5Qg2A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9757"; a="223549583"
-X-IronPort-AV: E=Sophos;i="5.77,313,1596524400"; 
-   d="scan'208";a="223549583"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 01:02:27 -0700
-IronPort-SDR: FKsiql2F5ddV4v4u8Sj5NjKk3OgMb+Uo9f/4Jpg9VWd8L1hTtLHnZP7+X31C6pezn8GZPScKcM
- 0kue9zyqgBIg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,313,1596524400"; 
-   d="scan'208";a="293171515"
-Received: from lkp-server01.sh.intel.com (HELO 0e0978ea3297) ([10.239.97.150])
-  by fmsmga007.fm.intel.com with ESMTP; 28 Sep 2020 01:02:26 -0700
-Received: from kbuild by 0e0978ea3297 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kMo77-0000DT-EE; Mon, 28 Sep 2020 08:02:25 +0000
-Date:   Mon, 28 Sep 2020 16:01:31 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/irq] BUILD SUCCESS
- d27e623ace6af259075b6e0437380ee8d6268c5d
-Message-ID: <5f71985b.AzjwRcgeVrxnBSc0%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1726711AbgI1IDb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 04:03:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36674 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726573AbgI1IDb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 04:03:31 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01B09C0613CE
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 01:03:31 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id g72so171485qke.8
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 01:03:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=C3DFpfIEEZN+W1r2DsDXO4wVYoGzrbvhdsREqUSvfHQ=;
+        b=aIE2xi4GmoU0XwL8f75eowStvVooTX5PHm2KEqABe/AXF3cj+aqMMC9leyEvzwpz21
+         +vF6uhXucBUF9fmD/mPTEXcBLmVVhxZLB2d+7dLumlJ68j9MBddiNXhz1n/6Pz/huN4G
+         y6zMyGIoO6UegTbQEbLdf2pZrbDiSOp+VYSJ4RGeZoMPA3z7fHFBe/wPkI16W6tNJuw/
+         hZiAtNzCrPX0pibD2ES6/7r/iicuc/W3vKJBIrp3r4PUtWCajjy/FFLQ6B3PeQlNngji
+         AAROroTU2Zw9Ht42J/qxr2aLhRi8tn4q7J2fnqDgP8RCJzwr9VPzgG6QFLby9C6t7QH7
+         T1xg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=C3DFpfIEEZN+W1r2DsDXO4wVYoGzrbvhdsREqUSvfHQ=;
+        b=HRVuRf+1qmUSlYsrKW1HF8J8yPUtHZhK+qHf20Q2uHUlX9/4W8V7IvPattZRHUbhgq
+         b6FTdUdowt1+QSdYJ1YdifVs9oMMDRwEcjlFWB+tJZXhv1Mm3nR32wCFZte/1nvuD0gF
+         ZO/JTRWIiEHcETKmLOBMQbceG9zdKDbAmjBK33eRy2a7Wg5BrawEl5D+J66tvOhUQYQw
+         QhvPIrOoqP4crdobbnk1PSviaC+aDVjVy+RE9drSuMmZrbjUpfuxWOGgosSFfxS6jI4m
+         n7rHx5lhCMguUXCObY9tBXKwnGs0M/rbuH/YE3JirbzCJR6KWFswNH07+ToZ2ZAZINN7
+         xh7g==
+X-Gm-Message-State: AOAM531meaakB8Lq5mMhpx1rRd3nuYofFIq/xWY/YU39giw/S5jngl9J
+        LzcM9M+sziF50nHf+5ZPV7lQWtuP93ocXs3t2AiMFQ==
+X-Google-Smtp-Source: ABdhPJxI+2w2XPaevFBAZCwbvSkMHPulmRy/XYd/5E9Iajok2nAkHx/dS2NUUANmDWR4t6uXTXDAb93gPZhXcJqC74s=
+X-Received: by 2002:a37:a4c5:: with SMTP id n188mr334346qke.8.1601280209890;
+ Mon, 28 Sep 2020 01:03:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+References: <20200917080210.108095-1-boqun.feng@gmail.com> <20200924151226.GA56799@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net>
+In-Reply-To: <20200924151226.GA56799@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Mon, 28 Sep 2020 10:03:19 +0200
+Message-ID: <CACT4Y+YxQ-v4Ym7QOwsa_Rm+iE-eauLq_W-rq6g=jsQCBYPdrQ@mail.gmail.com>
+Subject: Re: [PATCH] lockdep: Optimize the memory usage of circular queue
+To:     Boqun Feng <boqun.feng@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Waiman Long <longman@redhat.com>, Qian Cai <cai@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/irq
-branch HEAD: d27e623ace6af259075b6e0437380ee8d6268c5d  x86/apic/msi: Unbreak DMAR and HPET MSI
+On Thu, Sep 24, 2020 at 5:13 PM Boqun Feng <boqun.feng@gmail.com> wrote:
+>
+> Ping ;-)
+>
+> Regards,
+> Boqun
 
-elapsed time: 723m
+Hi Boqun,
 
-configs tested: 105
-configs skipped: 2
+Peter says this may also fix this issue:
+https://syzkaller.appspot.com/bug?extid=62ebe501c1ce9a91f68c
+please add the following tag to the patch so that the bug report will
+be closed on merge:
+Reported-by: syzbot+62ebe501c1ce9a91f68c@syzkaller.appspotmail.com
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-mips                         rt305x_defconfig
-mips                      fuloong2e_defconfig
-arm                       versatile_defconfig
-mips                        nlm_xlp_defconfig
-sh                        edosk7705_defconfig
-powerpc                    amigaone_defconfig
-sh                          kfr2r09_defconfig
-mips                         cobalt_defconfig
-nios2                         3c120_defconfig
-powerpc                     rainier_defconfig
-powerpc                     mpc512x_defconfig
-mips                       lemote2f_defconfig
-riscv                          rv32_defconfig
-sh                        edosk7760_defconfig
-mips                      bmips_stb_defconfig
-sh                        apsh4ad0a_defconfig
-arm                        magician_defconfig
-mips                           ip22_defconfig
-arm                       aspeed_g4_defconfig
-arc                 nsimosci_hs_smp_defconfig
-arm                        mvebu_v5_defconfig
-mips                    maltaup_xpa_defconfig
-powerpc                          allmodconfig
-arm                          simpad_defconfig
-powerpc                    adder875_defconfig
-powerpc                    socrates_defconfig
-arm                              zx_defconfig
-sh                             espt_defconfig
-arc                           tb10x_defconfig
-arm                          ep93xx_defconfig
-powerpc                     mpc83xx_defconfig
-ia64                             alldefconfig
-sh                   rts7751r2dplus_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                           allnoconfig
-i386                 randconfig-a002-20200927
-i386                 randconfig-a006-20200927
-i386                 randconfig-a003-20200927
-i386                 randconfig-a004-20200927
-i386                 randconfig-a005-20200927
-i386                 randconfig-a001-20200927
-x86_64               randconfig-a011-20200927
-x86_64               randconfig-a013-20200927
-x86_64               randconfig-a014-20200927
-x86_64               randconfig-a015-20200927
-x86_64               randconfig-a012-20200927
-x86_64               randconfig-a016-20200927
-i386                 randconfig-a012-20200928
-i386                 randconfig-a016-20200928
-i386                 randconfig-a014-20200928
-i386                 randconfig-a013-20200928
-i386                 randconfig-a015-20200928
-i386                 randconfig-a011-20200928
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a005-20200927
-x86_64               randconfig-a003-20200927
-x86_64               randconfig-a004-20200927
-x86_64               randconfig-a002-20200927
-x86_64               randconfig-a006-20200927
-x86_64               randconfig-a001-20200927
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> On Thu, Sep 17, 2020 at 04:01:50PM +0800, Boqun Feng wrote:
+> > Qian Cai reported a BFS_EQUEUEFULL warning [1] after read recursive
+> > deadlock detection merged into tip tree recently. Unlike the previous
+> > lockep graph searching, which iterate every lock class (every node in
+> > the graph) exactly once, the graph searching for read recurisve deadlock
+> > detection needs to iterate every lock dependency (every edge in the
+> > graph) once, as a result, the maximum memory cost of the circular queue
+> > changes from O(V), where V is the number of lock classes (nodes or
+> > vertices) in the graph, to O(E), where E is the number of lock
+> > dependencies (edges), because every lock class or dependency gets
+> > enqueued once in the BFS. Therefore we hit the BFS_EQUEUEFULL case.
+> >
+> > However, actually we don't need to enqueue all dependencies for the BFS,
+> > because every time we enqueue a dependency, we almostly enqueue all
+> > other dependencies in the same dependency list ("almostly" is because
+> > we currently check before enqueue, so if a dependency doesn't pass the
+> > check stage we won't enqueue it, however, we can always do in reverse
+> > ordering), based on this, we can only enqueue the first dependency from
+> > a dependency list and every time we want to fetch a new dependency to
+> > work, we can either:
+> >
+> > 1)    fetch the dependency next to the current dependency in the
+> >       dependency list
+> > or
+> > 2)    if the dependency in 1) doesn't exist, fetch the dependency from
+> >       the queue.
+> >
+> > With this approach, the "max bfs queue depth" for a x86_64_defconfig +
+> > lockdep and selftest config kernel can get descreased from:
+> >
+> >         max bfs queue depth:                   201
+> >
+> > to (after apply this patch)
+> >
+> >         max bfs queue depth:                   61
+> >
+> > While I'm at it, clean up the code logic a little (e.g. directly return
+> > other than set a "ret" value and goto the "exit" label).
+> >
+> > [1]: https://lore.kernel.org/lkml/17343f6f7f2438fc376125384133c5ba70c2a681.camel@redhat.com/
+> >
+> > Reported-by: Qian Cai <cai@redhat.com>
+> > Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
+> > ---
+> >  kernel/locking/lockdep.c | 108 ++++++++++++++++++++++++---------------
+> >  1 file changed, 67 insertions(+), 41 deletions(-)
+> >
+> > diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
+> > index cccf4bc759c6..761c2327e9cf 100644
+> > --- a/kernel/locking/lockdep.c
+> > +++ b/kernel/locking/lockdep.c
+> > @@ -1640,35 +1640,22 @@ static enum bfs_result __bfs(struct lock_list *source_entry,
+> >                            int offset)
+> >  {
+> >       struct lock_list *entry;
+> > -     struct lock_list *lock;
+> > +     struct lock_list *lock = NULL;
+> >       struct list_head *head;
+> >       struct circular_queue *cq = &lock_cq;
+> > -     enum bfs_result ret = BFS_RNOMATCH;
+> >
+> >       lockdep_assert_locked();
+> >
+> > -     if (match(source_entry, data)) {
+> > -             *target_entry = source_entry;
+> > -             ret = BFS_RMATCH;
+> > -             goto exit;
+> > -     }
+> > -
+> > -     head = get_dep_list(source_entry, offset);
+> > -     if (list_empty(head))
+> > -             goto exit;
+> > -
+> >       __cq_init(cq);
+> >       __cq_enqueue(cq, source_entry);
+> >
+> > -     while ((lock = __cq_dequeue(cq))) {
+> > -             bool prev_only_xr;
+> > -
+> > -             if (!lock->class) {
+> > -                     ret = BFS_EINVALIDNODE;
+> > -                     goto exit;
+> > -             }
+> > +     while (lock || (lock = __cq_dequeue(cq))) {
+> > +             if (!lock->class)
+> > +                     return BFS_EINVALIDNODE;
+> >
+> >               /*
+> > +              * Step 1: check whether we already finish on this one.
+> > +              *
+> >                * If we have visited all the dependencies from this @lock to
+> >                * others (iow, if we have visited all lock_list entries in
+> >                * @lock->class->locks_{after,before}) we skip, otherwise go
+> > @@ -1676,17 +1663,17 @@ static enum bfs_result __bfs(struct lock_list *source_entry,
+> >                * list accessed.
+> >                */
+> >               if (lock_accessed(lock))
+> > -                     continue;
+> > +                     goto next;
+> >               else
+> >                       mark_lock_accessed(lock);
+> >
+> > -             head = get_dep_list(lock, offset);
+> > -
+> > -             prev_only_xr = lock->only_xr;
+> > -
+> > -             list_for_each_entry_rcu(entry, head, entry) {
+> > -                     unsigned int cq_depth;
+> > -                     u8 dep = entry->dep;
+> > +             /*
+> > +              * Step 2: check whether prev dependency and this form a strong
+> > +              *         dependency path.
+> > +              */
+> > +             if (lock->parent) { /* Parent exists, check prev dependency */
+> > +                     u8 dep = lock->dep;
+> > +                     bool prev_only_xr = lock->parent->only_xr;
+> >
+> >                       /*
+> >                        * Mask out all -(S*)-> if we only have *R in previous
+> > @@ -1698,29 +1685,68 @@ static enum bfs_result __bfs(struct lock_list *source_entry,
+> >
+> >                       /* If nothing left, we skip */
+> >                       if (!dep)
+> > -                             continue;
+> > +                             goto next;
+> >
+> >                       /* If there are only -(*R)-> left, set that for the next step */
+> > -                     entry->only_xr = !(dep & (DEP_SN_MASK | DEP_EN_MASK));
+> > +                     lock->only_xr = !(dep & (DEP_SN_MASK | DEP_EN_MASK));
+> > +             }
+> >
+> > -                     visit_lock_entry(entry, lock);
+> > -                     if (match(entry, data)) {
+> > -                             *target_entry = entry;
+> > -                             ret = BFS_RMATCH;
+> > -                             goto exit;
+> > -                     }
+> > +             /*
+> > +              * Step 3: we haven't visited this and there is a strong
+> > +              *         dependency path to this, so check with @match.
+> > +              */
+> > +             if (match(lock, data)) {
+> > +                     *target_entry = lock;
+> > +                     return BFS_RMATCH;
+> > +             }
+> > +
+> > +             /*
+> > +              * Step 4: if not match, expand the path by adding the
+> > +              *         afterwards or backwards dependencis in the search
+> > +              *
+> > +              * Note we only enqueue the first of the list into the queue,
+> > +              * because we can always find a sibling dependency from one
+> > +              * (see label 'next'), as a result the space of queue is saved.
+> > +              */
+> > +             head = get_dep_list(lock, offset);
+> > +             entry = list_first_or_null_rcu(head, struct lock_list, entry);
+> > +             if (entry) {
+> > +                     unsigned int cq_depth;
+> > +
+> > +                     if (__cq_enqueue(cq, entry))
+> > +                             return BFS_EQUEUEFULL;
+> >
+> > -                     if (__cq_enqueue(cq, entry)) {
+> > -                             ret = BFS_EQUEUEFULL;
+> > -                             goto exit;
+> > -                     }
+> >                       cq_depth = __cq_get_elem_count(cq);
+> >                       if (max_bfs_queue_depth < cq_depth)
+> >                               max_bfs_queue_depth = cq_depth;
+> >               }
+> > +
+> > +             /*
+> > +              * Update the ->parent, so when @entry is iterated, we know the
+> > +              * previous dependency.
+> > +              */
+> > +             list_for_each_entry_rcu(entry, head, entry)
+> > +                     visit_lock_entry(entry, lock);
+> > +next:
+> > +             /*
+> > +              * Step 5: fetch the next dependency to process.
+> > +              *
+> > +              * If there is a previous dependency, we fetch the sibling
+> > +              * dependency in the dep list of previous dependency.
+> > +              *
+> > +              * Otherwise set @lock to NULL to fetch the next entry from
+> > +              * queue.
+> > +              */
+> > +             if (lock->parent) {
+> > +                     head = get_dep_list(lock->parent, offset);
+> > +                     lock = list_next_or_null_rcu(head, &lock->entry,
+> > +                                                  struct lock_list, entry);
+> > +             } else {
+> > +                     lock = NULL;
+> > +             }
+> >       }
+> > -exit:
+> > -     return ret;
+> > +
+> > +     return BFS_RNOMATCH;
+> >  }
+> >
+> >  static inline enum bfs_result
+> > --
+> > 2.28.0
+> >
