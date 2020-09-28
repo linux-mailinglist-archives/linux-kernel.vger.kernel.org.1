@@ -2,142 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 067B427B7FD
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 01:21:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E29F27B794
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 01:13:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727028AbgI1XV1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 19:21:27 -0400
-Received: from mga09.intel.com ([134.134.136.24]:56722 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726369AbgI1XV0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 19:21:26 -0400
-IronPort-SDR: R6ZyytEYsP6S6/akTX2Y4y0SBJFCfXukB8H7SA6wu5m50R3ERIct5kTLqJLm/4gZvEuX6ZWUdY
- Pk/aUycKZAug==
-X-IronPort-AV: E=McAfee;i="6000,8403,9758"; a="162952863"
-X-IronPort-AV: E=Sophos;i="5.77,315,1596524400"; 
-   d="scan'208";a="162952863"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 15:18:12 -0700
-IronPort-SDR: qMOj+X5nKrspAh+/14/4wV7RfusnOHDvdembNrqsSWtTGVzM7UeswoCSugYKDxCHxuboFyF4Nv
- oVkt6Z2CdjpA==
-X-IronPort-AV: E=Sophos;i="5.77,315,1596524400"; 
-   d="scan'208";a="514437969"
-Received: from romeroro-mobl.amr.corp.intel.com (HELO [10.209.119.91]) ([10.209.119.91])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 15:18:10 -0700
-Subject: Re: [PATCH v38 21/24] x86/vdso: Implement a vDSO for Intel SGX
- enclave call
-To:     "H.J. Lu" <hjl.tools@gmail.com>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        linux-sgx@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Cedric Xing <cedric.xing@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        asapek@google.com, Borislav Petkov <bp@alien8.de>,
-        chenalexchen@google.com, Conrad Parker <conradparker@google.com>,
-        cyhanish@google.com, "Huang, Haitao" <haitao.huang@intel.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        "Huang, Kai" <kai.huang@intel.com>,
-        "Svahn, Kai" <kai.svahn@intel.com>, Keith Moyer <kmoy@google.com>,
-        Christian Ludloff <ludloff@google.com>,
-        Neil Horman <nhorman@redhat.com>,
-        Nathaniel McCallum <npmccallum@redhat.com>,
-        Patrick Uiterwijk <puiterwijk@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>, yaozhangx@google.com,
-        Yu-cheng Yu <yu-cheng.yu@intel.com>
-References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
- <20200915112842.897265-22-jarkko.sakkinen@linux.intel.com>
- <721ca14e-21df-3df1-7bef-0b00d0ff90c3@citrix.com>
- <20200928005842.GC6704@linux.intel.com>
- <85bc15d5-93cd-e332-ae9a-1e1e66e1181d@citrix.com>
- <CAMe9rOpzXW0cSD=9E7drGEHH=pcm_NqvPiaR0pBJzYLeAt0_3g@mail.gmail.com>
- <CALCETrU4Rhc0fwzzKLSUgan2YmSovxVFYOZEmFnBHC4DbZ5RfQ@mail.gmail.com>
- <20200928215635.GF2705@linux.intel.com>
- <CAMe9rOoyxtf_kUCdb-TN+NmZsQNmFY8NLMObSdCB5bBVq1x+cQ@mail.gmail.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <24b9f250-0f75-1a7d-688d-787ca53b388c@intel.com>
-Date:   Mon, 28 Sep 2020 15:18:15 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1727126AbgI1XNo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 19:13:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36512 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727041AbgI1XNm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 19:13:42 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60A94C0613A9;
+        Mon, 28 Sep 2020 15:36:34 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id h23so411212pjv.5;
+        Mon, 28 Sep 2020 15:36:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=6VTtpf0GOcmVXtgSMfPaTRHueLjXIvDxPhjzc/PdAkg=;
+        b=gw/yuW8w3S9Bqz49rkSLpd0r4ay4B+eMFsWiZ0IzmbaF2ogdNKuuLcfrwmIFtSVhLq
+         wmwfRBMhw3z8Mp26zzmLnxUjimNAPhX8fuWMP8PtwVjXn3kfZCftZ+GJACFvoYhzzq8E
+         Vd0xIKfdYrwaN/Jv+ff0fyxmY8dWR0z7YxK2lnXMeUbuSMnXi2EHUeCEXj01fmrnXi3H
+         giucjV1rCRiwXqXcKgTbYlz3UiQOB4CuUBUpaDH4SjGALymaCOmvUSnrohA9iKykv93e
+         eylBH/03Cxp0DRKm0+l8yuTZlcKbUNwgLt0ySvqvt9o5J7Sh4gQg3fZ/p9/Bi3neatyf
+         U4FA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=6VTtpf0GOcmVXtgSMfPaTRHueLjXIvDxPhjzc/PdAkg=;
+        b=lK4jxyZU8WShzTpHWjiJdFp9VBRUFx56tDWv6/h2rUFMo4Sxy5kEEGyoZhOif0lYQ0
+         Hpl4Qu7K5zDKe7u9YNLeE5bev8b6/1QD/qvBlQZ0HeetqPGVhj3137ENjH/uHW0auD4p
+         ult/bDfiMpW8cfoi7KVZc4z4QD8vFYylzOyDgNy8rN7+xGr7PRLR0J4fzsW1gSAGsNIX
+         IQAlkQmiRGk0t0ZnrzcRC0oE2Yc3113OpVT0DjlNCLXQEmtTS3BAFlK9MzzxmRVPQI6J
+         yuRavqnY78hIhWKUFgpRtPmvq5X4+6/6TbT4Zk7XqjmZfqPGMriU6KmozCxD9eqFgCIi
+         Qpng==
+X-Gm-Message-State: AOAM531Ur/R5w+b9jMFhsec9LHOUQV0IcQ2fwA2t8hNu9UO1uR1YOjks
+        5ZPInjKCT3s0cHy7Gbmsezc=
+X-Google-Smtp-Source: ABdhPJxEB21pc/IzM51H1ZIwi+20mLY4wZP51SX9dQ3cfquh4GSqAy3OjkJt5SXGb/l2OBcOb/h61w==
+X-Received: by 2002:a17:90b:2345:: with SMTP id ms5mr1164167pjb.202.1601332593920;
+        Mon, 28 Sep 2020 15:36:33 -0700 (PDT)
+Received: from Asurada-Nvidia (thunderhill.nvidia.com. [216.228.112.22])
+        by smtp.gmail.com with ESMTPSA id a2sm2583492pfk.201.2020.09.28.15.36.33
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 28 Sep 2020 15:36:33 -0700 (PDT)
+Date:   Mon, 28 Sep 2020 15:31:15 -0700
+From:   Nicolin Chen <nicoleotsuka@gmail.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     thierry.reding@gmail.com, joro@8bytes.org, krzk@kernel.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
+        iommu@lists.linux-foundation.org, jonathanh@nvidia.com
+Subject: Re: [PATCH 4/5] iommu/tegra-smmu: Add PCI support
+Message-ID: <20200928223114.GA4816@Asurada-Nvidia>
+References: <20200926080719.6822-1-nicoleotsuka@gmail.com>
+ <20200926080719.6822-5-nicoleotsuka@gmail.com>
+ <b95b69fb-8570-f5dc-c486-b94958f2a791@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAMe9rOoyxtf_kUCdb-TN+NmZsQNmFY8NLMObSdCB5bBVq1x+cQ@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <b95b69fb-8570-f5dc-c486-b94958f2a791@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/28/20 3:06 PM, H.J. Lu wrote:
->> I'm open to do either solution. My thinking was to initially do things
->> vsgx.S local (i.e. consider ALTERNATIVE post upstreaming) and use the
->> above solution but I'm also fine doing ALTERNATIVE. Dave kindly briefed
->> on details how that thing works and it should be perfectly usable for
->> our use case.
->>
-> Since SHSTK and IBT are enabled per process, not the whole machine,
-> are you going to patch vDSO on a per-process basis?
+On Sun, Sep 27, 2020 at 01:18:15AM +0300, Dmitry Osipenko wrote:
+> 26.09.2020 11:07, Nicolin Chen пишет:
+> ...
+> > +#ifdef CONFIG_PCI
+> > +	if (!iommu_present(&pci_bus_type)) {
+> 
+> Is this iommu_present() check really needed?
+> 
+> > +		pci_request_acs();
+> 
+> Shouldn't pci_request_acs() be invoked *after* bus_set_iommu() succeeds?
 
-No.
-
-Retpolines mitigate Spectre v2 attacks.  If you're not vulnerable to
-Spectre v2, you don't need retpolines.
-
-All processors which support CET *also* have hardware mitigations
-against Spectre v2 and don't need retpolines.  Here's all of the
-possibilities:
-
-CET=y, BUG_SPECTRE_V2=y: does not exist
-CET=n, BUG_SPECTRE_V2=y: vulnerable, use retpoline
-CET=y, BUG_SPECTRE_V2=n: no retpoline, not vulnerable
-CET=n, BUG_SPECTRE_V2=n: no retpoline, not vulnerable
+Will move it after that. Thanks!
