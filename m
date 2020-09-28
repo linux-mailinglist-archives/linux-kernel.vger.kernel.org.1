@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 940F027B82A
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 01:31:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A758827B82C
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 01:31:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727237AbgI1XbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 19:31:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54254 "EHLO mail.kernel.org"
+        id S1727254AbgI1XbL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 19:31:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54292 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727000AbgI1XbF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1727210AbgI1XbF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 28 Sep 2020 19:31:05 -0400
 Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 84651216C4;
+        by mail.kernel.org (Postfix) with ESMTPSA id BB0BD21D43;
         Mon, 28 Sep 2020 23:31:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1601335864;
-        bh=1uk2ydITKCZXPh14bJoTz3qsavwW7DyPhAI3heHlzN4=;
+        bh=AuTy7tGMkG8gJzgNl9lfYfB9FwNBH9eZew6Rscmgudw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GWHC7E+us4aSzvA+LnNsw6pnIOCtCdZ351J38ylg7PONZ7bbtknnV7nEk97sTIo9Z
-         wmPN9PL7V3neyYB+gyBlK7XoMvZL/oaTrDan6P3Y9J3vPYM4yE9Wlg43NinpWUJt8i
-         ql8U1eIaF4E0CTzpb65MQ9xuprYVBNfMq9MUqjdw=
+        b=St7E+3398t135547ZTAV7d9yGDqXB/LD/PIAHTT5Aly7GP7S5puG+FntxYT7/JitX
+         sdy+Qq2x5f2b/VKgoF2Tw3DXrzjpB8eiYrl2UHnj8nfMAj1j1oWxWm3+MmahwI28AZ
+         GrjM8kUy5fzhE9AtWisvUFcbevpCMdVf2p1npAYA=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -32,10 +32,15 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org, mhocko@kernel.org,
         mgorman@techsingularity.net, torvalds@linux-foundation.org,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
         "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 02/15] preempt: Make preempt count unconditional
-Date:   Mon, 28 Sep 2020 16:30:49 -0700
-Message-Id: <20200928233102.24265-2-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 03/15] preempt: Cleanup PREEMPT_COUNT leftovers
+Date:   Mon, 28 Sep 2020 16:30:50 -0700
+Message-Id: <20200928233102.24265-3-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200928233041.GA23230@paulmck-ThinkPad-P72>
 References: <20200928233041.GA23230@paulmck-ThinkPad-P72>
@@ -45,67 +50,107 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Thomas Gleixner <tglx@linutronix.de>
 
-The handling of preempt_count() is inconsistent across kernel
-configurations. On kernels which have PREEMPT_COUNT=n
-preempt_disable/enable() and the lock/unlock functions are not affecting
-the preempt count, only local_bh_disable/enable() and _bh variants of
-locking, soft interrupt delivery, hard interrupt and NMI context affect it.
-
-It's therefore impossible to have a consistent set of checks which provide
-information about the context in which a function is called. In many cases
-it makes sense to have separate functions for separate contexts, but there
-are valid reasons to avoid that and handle different calling contexts
-conditionally.
-
-The lack of such indicators which work on all kernel configuratios is a
-constant source of trouble because developers either do not understand the
-implications or try to work around this inconsistency in weird
-ways. Neither seem these issues be catched by reviewers and testing.
-
-Recently merged code does:
-
-	 gfp = preemptible() ? GFP_KERNEL : GFP_ATOMIC;
-
-Looks obviously correct, except for the fact that preemptible() is
-unconditionally false for CONFIF_PREEMPT_COUNT=n, i.e. all allocations in
-that code use GFP_ATOMIC on such kernels.
-
-Attempts to make preempt count unconditional and consistent have been
-rejected in the past with handwaving performance arguments.
-
-Freshly conducted benchmarks did not reveal any measurable impact from
-enabling preempt count unconditionally. On kernels with CONFIG_PREEMPT_NONE
-or CONFIG_PREEMPT_VOLUNTARY the preempt count is only incremented and
-decremented but the result of the decrement is not tested. Contrary to that
-enabling CONFIG_PREEMPT which tests the result has a small but measurable
-impact due to the conditional branch/call.
-
-It's about time to make essential functionality of the kernel consistent
-across the various preemption models.
-
-Enable CONFIG_PREEMPT_COUNT unconditionally. Follow up changes will remove
-the #ifdeffery and remove the config option at the end.
+CONFIG_PREEMPT_COUNT is now unconditionally enabled and will be
+removed. Cleanup the leftovers before doing so.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Juri Lelli <juri.lelli@redhat.com>
+Cc: Vincent Guittot <vincent.guittot@linaro.org>
+Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Ben Segall <bsegall@google.com>
+Cc: Mel Gorman <mgorman@suse.de>
+Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/Kconfig.preempt | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ include/linux/preempt.h | 37 ++++---------------------------------
+ 1 file changed, 4 insertions(+), 33 deletions(-)
 
-diff --git a/kernel/Kconfig.preempt b/kernel/Kconfig.preempt
-index bf82259..3f4712f 100644
---- a/kernel/Kconfig.preempt
-+++ b/kernel/Kconfig.preempt
-@@ -75,8 +75,7 @@ config PREEMPT_RT
- endchoice
+diff --git a/include/linux/preempt.h b/include/linux/preempt.h
+index 7d9c1c0..513769b 100644
+--- a/include/linux/preempt.h
++++ b/include/linux/preempt.h
+@@ -56,8 +56,7 @@
+ #define PREEMPT_DISABLED	(PREEMPT_DISABLE_OFFSET + PREEMPT_ENABLED)
  
- config PREEMPT_COUNT
--       bool
-+       def_bool y
+ /*
+- * Disable preemption until the scheduler is running -- use an unconditional
+- * value so that it also works on !PREEMPT_COUNT kernels.
++ * Disable preemption until the scheduler is running.
+  *
+  * Reset by start_kernel()->sched_init()->init_idle()->init_idle_preempt_count().
+  */
+@@ -69,7 +68,6 @@
+  *
+  *    preempt_count() == 2*PREEMPT_DISABLE_OFFSET
+  *
+- * Note: PREEMPT_DISABLE_OFFSET is 0 for !PREEMPT_COUNT kernels.
+  * Note: See finish_task_switch().
+  */
+ #define FORK_PREEMPT_COUNT	(2*PREEMPT_DISABLE_OFFSET + PREEMPT_ENABLED)
+@@ -106,11 +104,7 @@
+ /*
+  * The preempt_count offset after preempt_disable();
+  */
+-#if defined(CONFIG_PREEMPT_COUNT)
+-# define PREEMPT_DISABLE_OFFSET	PREEMPT_OFFSET
+-#else
+-# define PREEMPT_DISABLE_OFFSET	0
+-#endif
++#define PREEMPT_DISABLE_OFFSET	PREEMPT_OFFSET
  
- config PREEMPTION
-        bool
--       select PREEMPT_COUNT
+ /*
+  * The preempt_count offset after spin_lock()
+@@ -122,8 +116,8 @@
+  *
+  *  spin_lock_bh()
+  *
+- * Which need to disable both preemption (CONFIG_PREEMPT_COUNT) and
+- * softirqs, such that unlock sequences of:
++ * Which need to disable both preemption and softirqs, such that unlock
++ * sequences of:
+  *
+  *  spin_unlock();
+  *  local_bh_enable();
+@@ -164,8 +158,6 @@ extern void preempt_count_sub(int val);
+ #define preempt_count_inc() preempt_count_add(1)
+ #define preempt_count_dec() preempt_count_sub(1)
+ 
+-#ifdef CONFIG_PREEMPT_COUNT
+-
+ #define preempt_disable() \
+ do { \
+ 	preempt_count_inc(); \
+@@ -231,27 +223,6 @@ do { \
+ 	__preempt_count_dec(); \
+ } while (0)
+ 
+-#else /* !CONFIG_PREEMPT_COUNT */
+-
+-/*
+- * Even if we don't have any preemption, we need preempt disable/enable
+- * to be barriers, so that we don't have things like get_user/put_user
+- * that can cause faults and scheduling migrate into our preempt-protected
+- * region.
+- */
+-#define preempt_disable()			barrier()
+-#define sched_preempt_enable_no_resched()	barrier()
+-#define preempt_enable_no_resched()		barrier()
+-#define preempt_enable()			barrier()
+-#define preempt_check_resched()			do { } while (0)
+-
+-#define preempt_disable_notrace()		barrier()
+-#define preempt_enable_no_resched_notrace()	barrier()
+-#define preempt_enable_notrace()		barrier()
+-#define preemptible()				0
+-
+-#endif /* CONFIG_PREEMPT_COUNT */
+-
+ #ifdef MODULE
+ /*
+  * Modules have no business playing preemption tricks.
 -- 
 2.9.5
 
