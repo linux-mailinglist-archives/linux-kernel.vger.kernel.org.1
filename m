@@ -2,234 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1912C27AD9D
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 14:15:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2E8A27AD9E
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 14:15:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726597AbgI1MPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 08:15:03 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:14310 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726396AbgI1MPC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 08:15:02 -0400
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 6BE3ABD90DD0D1F2CE01;
-        Mon, 28 Sep 2020 20:15:00 +0800 (CST)
-Received: from [127.0.0.1] (10.174.177.253) by DGGEMS402-HUB.china.huawei.com
- (10.3.19.202) with Microsoft SMTP Server id 14.3.487.0; Mon, 28 Sep 2020
- 20:14:51 +0800
-Subject: Re: [PATCH v3 03/21] dt-bindings: arm: hisilicon: convert Hisilicon
- board/soc bindings to json-schema
-To:     Wei Xu <xuwei5@hisilicon.com>, Rob Herring <robh+dt@kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Libin <huawei.libin@huawei.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>
-References: <20200927062129.4573-1-thunder.leizhen@huawei.com>
- <20200927062129.4573-4-thunder.leizhen@huawei.com>
- <5F71D192.8070105@hisilicon.com>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <4f743027-9495-9ac7-af85-f5e084ae8fca@huawei.com>
-Date:   Mon, 28 Sep 2020 20:14:51 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        id S1726477AbgI1MPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 08:15:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53230 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726281AbgI1MPy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 08:15:54 -0400
+Received: from mail-oo1-f44.google.com (mail-oo1-f44.google.com [209.85.161.44])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CAAC221531
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 12:15:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601295353;
+        bh=VzE5JnSqbWbSjqt1XZOKvxLhpPp01vzIUE5bLK2KBGw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=wWXeY/okl0iT74hT2/it3uy9M4LrKvjeaYovhf4wW2CVVgdbbUJDMoQezUnoDU6m/
+         iALSmCVv7Qz5UzbbPvJzVCno8xPT988GV2/D+z2O5P6b6VcFhKypMLunwVjvUOBLna
+         l8sde7Js1xU2hZUMlYLZEy3si575DxRqUlhDd7l8=
+Received: by mail-oo1-f44.google.com with SMTP id t3so237257ook.8
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 05:15:53 -0700 (PDT)
+X-Gm-Message-State: AOAM532ULsyobRCcoscwJwwByC9LLSgrT0YRcNxhiOVE3ui/zbqKlYws
+        Cx/beF3Cd+yO8+LonNKdol4nX4YtzWZPj/1tuDY=
+X-Google-Smtp-Source: ABdhPJxJ9X0j2i9aipMDD622TMXIK4KJvvyre4/xitAq7fB8wQ8A2zpZSJK+fOWTyYIB/ev7M7zwAeZw/2vm/fmpGtE=
+X-Received: by 2002:a4a:4910:: with SMTP id z16mr612115ooa.41.1601295353098;
+ Mon, 28 Sep 2020 05:15:53 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <5F71D192.8070105@hisilicon.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.253]
-X-CFilter-Loop: Reflected
+References: <20200928092641.2070-1-thunder.leizhen@huawei.com>
+ <20200928092641.2070-3-thunder.leizhen@huawei.com> <CAMj1kXGK8x4eBL55mLMWVQWpFZKa+FSCaQj9_gieWCQSgG=xAQ@mail.gmail.com>
+ <e2d45592-ffc3-395e-0657-dcff0e094c1f@huawei.com>
+In-Reply-To: <e2d45592-ffc3-395e-0657-dcff0e094c1f@huawei.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Mon, 28 Sep 2020 14:15:42 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXEXziNDWxKNmD9nPWCmhpAPO--vWvJvr2nioQL+QJBfBQ@mail.gmail.com>
+Message-ID: <CAMj1kXEXziNDWxKNmD9nPWCmhpAPO--vWvJvr2nioQL+QJBfBQ@mail.gmail.com>
+Subject: Re: [PATCH 2/2] ARM: decompressor: relax the loading restriction of
+ the decompressed kernel
+To:     "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Russell King <linux@armlinux.org.uk>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Libin <huawei.libin@huawei.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 28 Sep 2020 at 13:57, Leizhen (ThunderTown)
+<thunder.leizhen@huawei.com> wrote:
+>
+>
+>
+> On 2020/9/28 18:14, Ard Biesheuvel wrote:
+> > On Mon, 28 Sep 2020 at 11:27, Zhen Lei <thunder.leizhen@huawei.com> wrote:
+> >>
+> >> mov     r4, pc
+> >> and     r4, r4, #0xf8000000     //truncated to 128MiB boundary
+> >> add     r4, r4, #TEXT_OFFSET    //PA(_start)
+> >>
+> >> Currently, the decompressed kernel must be placed at the position: 128MiB
+> >> boundary + TEXT_OFFSET. This limitation is just because we masked PC with
+> >> 0xf80000000. Actually, we can directly obtain PA(_start) by using formula
+> >> : VA(_start) + (PHYS_OFFSET - PAGE_OFFSET).
+> >>
+> >> So the "PA(_start) - TEXT_OFFSET" can be 2MiB boundary, 1MiB boundary,
+> >> and so on.
+> >>
+> >> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> >
+> > No, this won't work.
+>
+> But it works well on my board.
+>
 
+That is because you load zImage at the base of DRAM.
 
-On 2020/9/28 20:05, Wei Xu wrote:
-> Hi Zhen Lei,
-> 
-> Thanks!
-> 
-> On 2020/9/27 14:21, Zhen Lei wrote:
->> Convert Hisilicon SoC bindings to DT schema format using json-schema.
->>
->> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
->> ---
->>  .../bindings/arm/hisilicon/hisilicon.txt           | 57 ----------------
->>  .../bindings/arm/hisilicon/hisilicon.yaml          | 77 ++++++++++++++++++++++
->>  2 files changed, 77 insertions(+), 57 deletions(-)
->>  delete mode 100644 Documentation/devicetree/bindings/arm/hisilicon/hisilicon.txt
->>  create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/hisilicon.yaml
->>
->> diff --git a/Documentation/devicetree/bindings/arm/hisilicon/hisilicon.txt b/Documentation/devicetree/bindings/arm/hisilicon/hisilicon.txt
->> deleted file mode 100644
->> index f7e52476f5f2f3c..000000000000000
->> --- a/Documentation/devicetree/bindings/arm/hisilicon/hisilicon.txt
->> +++ /dev/null
->> @@ -1,57 +0,0 @@
->> -Hisilicon Platforms Device Tree Bindings
->> -----------------------------------------------------
->> -Hi3660 SoC
->> -Required root node properties:
->> -	- compatible = "hisilicon,hi3660";
->> -
->> -HiKey960 Board
->> -Required root node properties:
->> -	- compatible = "hisilicon,hi3660-hikey960", "hisilicon,hi3660";
->> -
->> -Hi3670 SoC
->> -Required root node properties:
->> -	- compatible = "hisilicon,hi3670";
->> -
->> -HiKey970 Board
->> -Required root node properties:
->> -	- compatible = "hisilicon,hi3670-hikey970", "hisilicon,hi3670";
->> -
->> -Hi3798cv200 SoC
->> -Required root node properties:
->> -	- compatible = "hisilicon,hi3798cv200";
->> -
->> -Hi3798cv200 Poplar Board
->> -Required root node properties:
->> -	- compatible = "hisilicon,hi3798cv200-poplar", "hisilicon,hi3798cv200";
->> -
->> -Hi4511 Board
->> -Required root node properties:
->> -	- compatible = "hisilicon,hi3620-hi4511";
->> -
->> -Hi6220 SoC
->> -Required root node properties:
->> -	- compatible = "hisilicon,hi6220";
->> -
->> -HiKey Board
->> -Required root node properties:
->> -	- compatible = "hisilicon,hi6220-hikey", "hisilicon,hi6220";
->> -
->> -HiP01 ca9x2 Board
->> -Required root node properties:
->> -	- compatible = "hisilicon,hip01-ca9x2";
->> -
->> -HiP04 D01 Board
->> -Required root node properties:
->> -	- compatible = "hisilicon,hip04-d01";
->> -
->> -HiP05 D02 Board
->> -Required root node properties:
->> -	- compatible = "hisilicon,hip05-d02";
->> -
->> -HiP06 D03 Board
->> -Required root node properties:
->> -	- compatible = "hisilicon,hip06-d03";
->> -
->> -HiP07 D05 Board
->> -Required root node properties:
->> -	- compatible = "hisilicon,hip07-d05";
->> \ No newline at end of file
->> diff --git a/Documentation/devicetree/bindings/arm/hisilicon/hisilicon.yaml b/Documentation/devicetree/bindings/arm/hisilicon/hisilicon.yaml
->> new file mode 100644
->> index 000000000000000..362decf3b85c6fb
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/arm/hisilicon/hisilicon.yaml
->> @@ -0,0 +1,77 @@
->> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/arm/hisilicon/hisilicon.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: Hisilicon Platforms Device Tree Bindings
->> +
->> +maintainers:
->> +  - Wei Xu <xuwei5@hisilicon.com>
->> +
->> +properties:
->> +  $nodename:
->> +    const: '/'
->> +
->> +  compatible:
->> +    oneOf:
->> +      - description: Hi3660 SoC
->> +        items:
->> +          - const: hisilicon,hi3660
->> +
->> +      - description: HiKey960 Board
->> +        items:
->> +          - const: hisilicon,hi3660-hikey960
->> +          - const: hisilicon,hi3660
-> 
-> How about to use the boards with SoC to reduce some duplication like following?
-> 
->          - description: Boards with the Hisilicon hi3660 SoC
->            items:
->              - enum:
->                  - hisilicon,hi3660-hikey960
->              - const: hisilicon,hi3660
-> 
-Looks like a good idea. I will do it.
+> >
+> > The whole reason for rounding to a multiple of 128 MB is that we
+> > cannot infer the start of DRAM from the placement of the zImage (which
+> > provides _start).
+>
+> Maybe this is further guaranteed by the following code:
+>         /*
+>          * Set up a page table only if it won't overwrite ourself.
+>          * That means r4 < pc || r4 - 16k page directory > &_end.
+>          * Given that r4 > &_end is most unfrequent, we add a rough
+>          * additional 1MB of room for a possible appended DTB.
+>          */
+>
+> In addition, the Image has already been loaded when this position is reached.
+>
+> ----------- <--128MiB boundary
+> |          |
+> ----------- <--TEXT_OFFSET <--
+> | (1)Image |                 |
+> ------------                 |
+> |          |                 |
+> -----------  (2)--copyto-----
+> | (2)Image |
+> -----------
+>
+> I don't think it's the case of (2), but (1). Because no code modification is
+> required for the case (2).
+>
+> By the way, I'm not familiar with the arm32 code, so I'm just speculating.
+>
 
-> And in this case, there is no need to remove the "hisilicon,hip01" as the first patch.
+The zImage code that runs has not received *any* information from the
+platform on where DRAM starts, so the only info it has is the current
+placement of zImage.
 
-OK, I will add "hisilicon,hip01" into yaml, and discard patch 1.
+So when zImage is loaded at the intended base of DRAM, things work fine.
 
-> 
-> Best Regards,
-> Wei
-> 
->> +
->> +      - description: Hi3670 SoC
->> +        items:
->> +          - const: hisilicon,hi3670
->> +
->> +      - description: HiKey970 Board
->> +        items:
->> +          - const: hisilicon,hi3670-hikey970
->> +          - const: hisilicon,hi3670
->> +
->> +      - description: Hi3798cv200 SoC
->> +        items:
->> +          - const: hisilicon,hi3798cv200
->> +
->> +      - description: Hi3798cv200 Poplar Board
->> +        items:
->> +          - const: hisilicon,hi3798cv200-poplar
->> +          - const: hisilicon,hi3798cv200
->> +
->> +      - description: Hi4511 Board
->> +        items:
->> +          - const: hisilicon,hi3620-hi4511
->> +
->> +      - description: Hi6220 SoC
->> +        items:
->> +          - const: hisilicon,hi6220
->> +
->> +      - description: HiKey Board
->> +        items:
->> +          - const: hisilicon,hi6220-hikey
->> +          - const: hisilicon,hi6220
->> +
->> +      - description: HiP01 ca9x2 Board
->> +        items:
->> +          - const: hisilicon,hip01-ca9x2
->> +
->> +      - description: HiP04 D01 Board
->> +        items:
->> +          - const: hisilicon,hip04-d01
->> +
->> +      - description: HiP05 D02 Board
->> +        items:
->> +          - const: hisilicon,hip05-d02
->> +
->> +      - description: HiP06 D03 Board
->> +        items:
->> +          - const: hisilicon,hip06-d03
->> +
->> +      - description: HiP07 D05 Board
->> +        items:
->> +          - const: hisilicon,hip07-d05
->> +...
->> 	
-> 
-> .
-> 
-
+If the zImage is loaded close to the end of a 128 MB region, the
+rounding would pick the start of that 128 MB region. However, the
+_start symbol you are using will point to an address that is close to
+the end of the 128 MB [given that it is inside zImage] so your logic
+will pick an address that is much higher in memory.
