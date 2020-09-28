@@ -2,83 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C80227A6B6
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 07:03:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03D6827A6BB
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 07:07:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726552AbgI1FDQ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 28 Sep 2020 01:03:16 -0400
-Received: from mail-lf1-f66.google.com ([209.85.167.66]:40844 "EHLO
-        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725287AbgI1FDP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 01:03:15 -0400
-Received: by mail-lf1-f66.google.com with SMTP id m5so9557313lfp.7;
-        Sun, 27 Sep 2020 22:03:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=iH4BCtKHYZco8jOSQGiNPWj56rYDuIQ1wb3Pt3Sr0IY=;
-        b=uDvaSqf8bfnboSEG3hwab3oZ6hCWJthvFPo3L1YL0lERt4UwfVo7BiouO+L/aJZzTS
-         b77KGJ3YQ5B4pmsSgDgl/V3QoJGEjZM/78TAt4W1TyK3pjA21//7wTI/aJ/WI98SmqQW
-         vrZm0pOvzNQBEEmQwhc6DlgB8lePgYbIg0We0Q8FD++4kjEM+SQHu0zW0Xm5Cw+2040g
-         zVdDJ/L8tIeu/n3UTNy9j2JPNDF9ZFqlt8fuI3b8HlOWJghrA0GwVeW/HNhAoL6e/26V
-         UTxboVJzm/BAiBWN6icB1KkPtCAUeOgWIgOfAYRvN5oYWLO5Em8HRfjCJUzu3ympi6Xu
-         jmnw==
-X-Gm-Message-State: AOAM532S/UmNxSnRyMZbMISslbEc+MVQNRIuG1GaZGTqizwCFsMFlvD4
-        F/XkQK0ed/7lqZNghWsBYff9eWcKCRxgew==
-X-Google-Smtp-Source: ABdhPJxnrUe8nnM0nR21ySm4qPGGXou4cRc2sKlYSFVtDH2dltvxZHhKmW3ACizel3bikGqty+kUsw==
-X-Received: by 2002:a19:cc43:: with SMTP id c64mr3282963lfg.123.1601269392924;
-        Sun, 27 Sep 2020 22:03:12 -0700 (PDT)
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com. [209.85.167.46])
-        by smtp.gmail.com with ESMTPSA id n18sm2732733lfe.7.2020.09.27.22.03.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 27 Sep 2020 22:03:12 -0700 (PDT)
-Received: by mail-lf1-f46.google.com with SMTP id z19so9564224lfr.4;
-        Sun, 27 Sep 2020 22:03:12 -0700 (PDT)
-X-Received: by 2002:ac2:5f63:: with SMTP id c3mr3034221lfc.283.1601269392234;
- Sun, 27 Sep 2020 22:03:12 -0700 (PDT)
+        id S1726540AbgI1FHb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 01:07:31 -0400
+Received: from a.mx.secunet.com ([62.96.220.36]:39482 "EHLO a.mx.secunet.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725287AbgI1FHb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 01:07:31 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by a.mx.secunet.com (Postfix) with ESMTP id 2371E2049A;
+        Mon, 28 Sep 2020 07:07:29 +0200 (CEST)
+X-Virus-Scanned: by secunet
+Received: from a.mx.secunet.com ([127.0.0.1])
+        by localhost (a.mx.secunet.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id RtOjFdq8NlJC; Mon, 28 Sep 2020 07:07:28 +0200 (CEST)
+Received: from mail-essen-02.secunet.de (unknown [10.53.40.205])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by a.mx.secunet.com (Postfix) with ESMTPS id 98897200AA;
+        Mon, 28 Sep 2020 07:07:28 +0200 (CEST)
+Received: from mbx-essen-01.secunet.de (10.53.40.197) by
+ mail-essen-02.secunet.de (10.53.40.205) with Microsoft SMTP Server (TLS) id
+ 14.3.487.0; Mon, 28 Sep 2020 07:07:28 +0200
+Received: from gauss2.secunet.de (10.182.7.193) by mbx-essen-01.secunet.de
+ (10.53.40.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2044.4; Mon, 28 Sep
+ 2020 07:07:28 +0200
+Received: by gauss2.secunet.de (Postfix, from userid 1000)      id 82E3D318470F;
+ Mon, 28 Sep 2020 07:07:27 +0200 (CEST)
+Date:   Mon, 28 Sep 2020 07:07:27 +0200
+From:   Steffen Klassert <steffen.klassert@secunet.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+CC:     syzbot <syzbot+577fbac3145a6eb2e7a5@syzkaller.appspotmail.com>,
+        <davem@davemloft.net>, <kuba@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <syzkaller-bugs@googlegroups.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        <linux-security-module@vger.kernel.org>
+Subject: Re: [PATCH] xfrm: Use correct address family in xfrm_state_find
+Message-ID: <20200928050727.GE20687@gauss3.secunet.de>
+References: <0000000000009fc91605afd40d89@google.com>
+ <20200925030759.GA17939@gondor.apana.org.au>
+ <20200925044256.GA18246@gondor.apana.org.au>
 MIME-Version: 1.0
-References: <20200927192912.46323-1-peron.clem@gmail.com> <20200927192912.46323-5-peron.clem@gmail.com>
-In-Reply-To: <20200927192912.46323-5-peron.clem@gmail.com>
-From:   Chen-Yu Tsai <wens@csie.org>
-Date:   Mon, 28 Sep 2020 13:03:00 +0800
-X-Gmail-Original-Message-ID: <CAGb2v65noEYaHa=d4s1E+1+bcUFjtojvjK_DmEAyJkGU_T9cTw@mail.gmail.com>
-Message-ID: <CAGb2v65noEYaHa=d4s1E+1+bcUFjtojvjK_DmEAyJkGU_T9cTw@mail.gmail.com>
-Subject: Re: [linux-sunxi] [PATCH v5 04/20] dt-bindings: ASoC: sun4i-i2s: Add
- H6 compatible
-To:     =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
-Cc:     Maxime Ripard <mripard@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Marcus Cooper <codekipper@gmail.com>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Linux-ALSA <alsa-devel@alsa-project.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-sunxi <linux-sunxi@googlegroups.com>,
-        Rob Herring <robh@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20200925044256.GA18246@gondor.apana.org.au>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-ClientProxiedBy: cas-essen-01.secunet.de (10.53.40.201) To
+ mbx-essen-01.secunet.de (10.53.40.197)
+X-EXCLAIMER-MD-CONFIG: 2c86f778-e09b-4440-8b15-867914633a10
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 3:29 AM Clément Péron <peron.clem@gmail.com> wrote:
->
-> From: Jernej Skrabec <jernej.skrabec@siol.net>
->
-> H6 I2S is very similar to H3, except that it supports up to 16 channels
-> and thus few registers have fields on different position.
->
-> Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
-> Signed-off-by: Marcus Cooper <codekipper@gmail.com>
-> Signed-off-by: Clément Péron <peron.clem@gmail.com>
-> Acked-by: Maxime Ripard <mripard@kernel.org>
-> Acked-by: Rob Herring <robh@kernel.org>
+On Fri, Sep 25, 2020 at 02:42:56PM +1000, Herbert Xu wrote:
+> Resend with proper subject.
+>  
+> ---8<---
+> The struct flowi must never be interpreted by itself as its size
+> depends on the address family.  Therefore it must always be grouped
+> with its original family value.
+> 
+> In this particular instance, the original family value is lost in
+> the function xfrm_state_find.  Therefore we get a bogus read when
+> it's coupled with the wrong family which would occur with inter-
+> family xfrm states.
+> 
+> This patch fixes it by keeping the original family value.
+> 
+> Note that the same bug could potentially occur in LSM through
+> the xfrm_state_pol_flow_match hook.  I checked the current code
+> there and it seems to be safe for now as only secid is used which
+> is part of struct flowi_common.  But that API should be changed
+> so that so that we don't get new bugs in the future.  We could
+> do that by replacing fl with just secid or adding a family field.
+> 
+> Reported-by: syzbot+577fbac3145a6eb2e7a5@syzkaller.appspotmail.com
+> Fixes: 48b8d78315bf ("[XFRM]: State selection update to use inner...")
+> Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 
-Acked-by: Chen-Yu Tsai <wens@csie.org>
+Applied, thanks a lot Herbert!
