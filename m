@@ -2,124 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DF8527ABDA
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 12:34:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE77627ABD6
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 12:33:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726632AbgI1KeX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 06:34:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60088 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726380AbgI1KeX (ORCPT
+        id S1726597AbgI1Kd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 06:33:56 -0400
+Received: from mail1.nippynetworks.com ([91.220.24.129]:44424 "EHLO
+        mail1.nippynetworks.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726380AbgI1Kdz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 06:34:23 -0400
-Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 436A9C061755
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 03:34:23 -0700 (PDT)
-Received: by mail-vs1-xe44.google.com with SMTP id w25so440368vsk.9
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 03:34:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xjY5fl6HDUc2l2AlN3kkW97cFvPBmXB5YCuUUeD53nc=;
-        b=dwxgsAPacWj3Zit0Jujndz7E4Df0ipLAkZz/tcbg9k5eGQTht5hufz6yk0diRTvxvb
-         lZ8KElcdi6kMTNq0CjpUnjaq4PhxXJr/9OTAFbwTrVjJ5ALLe2q5DybPo0EKN4JZzY3o
-         H3qdGoIxtuLpyHrZ7/b/mgL79+jtxo4t2UjEzLwK5S7Dcnb2npoKHR5D/hkRyEMzpnNC
-         IqUiW4KTf5mxsScegxgKFyUPFkA/VI1BLgsR7sZURdfySkLe1e4O9E9FXcpW3PZd3Ldy
-         TcoIlzVUhm58zR8KJ0O8bp5i/vinc1kA/o1YGBXZ5gduFfRFCDQlKnpEXdhedTW3RXOY
-         Dl+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xjY5fl6HDUc2l2AlN3kkW97cFvPBmXB5YCuUUeD53nc=;
-        b=iQjgArbniVj7ZUmC6So49LEri0cBoWQSuNHvn9VvQFSeSML43eeXlsCmaZdHPfTZah
-         R3TB6dLONeKR9zcsMH5vU5kIEWn72V+846463tScmuHfBfLk+zkRQ1nbtoYfcqJTNXpf
-         3aGzgl64B26k8YmKL9rO0lMl9da1SoHReCFEiqeWSKtEazrP6plDmj3ZNHgR59jlk0Ss
-         3fHcSm3080mzR5p7tsrCehQfhsuU/PsYh1YHZLGhAfa24scmM0r865C0k3ytlliyk7Vi
-         L1oSLTywPSZS8/FdmAIOso2wJRAtMKsuxV7BfSHxH/clFavzlzMZxikTbZpABqTUkBud
-         3+CQ==
-X-Gm-Message-State: AOAM5337OOiOF1vtapDF7bBjdr6DiMb1a+DOOUKo2RrBH3psGpfE54RI
-        t9lIv2Q/JNNO5PjkJxHQS7javhI/xuzXUuqcMIJL4w==
-X-Google-Smtp-Source: ABdhPJwgHSw05IQH/Ec+pjLgUHnUYITQ5+QWCFsMcaLoHkMxNOjsErxsHQw3gDiApRWk/zhYp3IVUl4BPWGQM7owzww=
-X-Received: by 2002:a67:ec9a:: with SMTP id h26mr5011637vsp.34.1601289262461;
- Mon, 28 Sep 2020 03:34:22 -0700 (PDT)
+        Mon, 28 Sep 2020 06:33:55 -0400
+Received: from macbookpro-ed.wildgooses.lan (unknown [212.69.38.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256))
+        (No client certificate requested)
+        (Authenticated sender: ed@wildgooses.com)
+        by mail1.nippynetworks.com (Postfix) with ESMTPSA id 4C0Jlb4LrLzTgQY;
+        Mon, 28 Sep 2020 11:33:47 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wildgooses.com;
+        s=dkim; t=1601289233;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=eNzyi2kqeWuXtwvd5AimJlA3bj0sWl7vjhB/3D/gIKo=;
+        b=RIKHkhT3D9qx4osy+CySyCw+3zhmtmttduL6812je63zt2v6BjT8WCTDaJPjw0gIqCvnqk
+        33ojl8f9NT9QpVrr1oft6vVARSgdF4CcfXQH41Go8J6K8/VY8fP0Co2M6zWo+a4AMsOLx0
+        Ueh6CFOIPwMS2I+GnSjfcINAUcmacBo=
+Subject: Re: [PATCH] gpio: gpio-amd-fch: Fix typo on define of
+ AMD_FCH_GPIO_REG_GPIO55_DEVSLP0
+From:   Ed W <lists@wildgooses.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Florian Eckert <fe@dev.tdt.de>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+References: <20200920203207.25696-1-lists@wildgooses.com>
+ <CAHp75Vd2uz-QrEFshUr=e719VBX2zYzvOhVC07BpHfvi0WDgOA@mail.gmail.com>
+ <deb07bad-2d84-723a-7237-2b625a3c4de8@wildgooses.com>
+Message-ID: <815ff3a6-8941-573d-36c0-36639f47dc04@wildgooses.com>
+Date:   Mon, 28 Sep 2020 11:33:46 +0100
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:78.0)
+ Gecko/20100101 Thunderbird/78.3.0
 MIME-Version: 1.0
-References: <20200925084952.13220-1-kai.heng.feng@canonical.com>
-In-Reply-To: <20200925084952.13220-1-kai.heng.feng@canonical.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Mon, 28 Sep 2020 12:33:45 +0200
-Message-ID: <CAPDyKFpRs1xSMj5UmV1PW_9sQBVNUABySxg-e4y+m7Sn4fYsPQ@mail.gmail.com>
-Subject: Re: [PATCH] memstick: Skip allocating card when removing host
-To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc:     Maxim Levitsky <maximlevitsky@gmail.com>,
-        Alex Dubov <oakad@yahoo.com>,
-        "open list:SONY MEMORYSTICK SUBSYSTEM" <linux-mmc@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <deb07bad-2d84-723a-7237-2b625a3c4de8@wildgooses.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: base64
+Content-Language: en-GB
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 25 Sep 2020 at 10:49, Kai-Heng Feng <kai.heng.feng@canonical.com> wrote:
->
-> After commit 6827ca573c03 ("memstick: rtsx_usb_ms: Support runtime power
-> management"), removing module rtsx_usb_ms will be stuck.
->
-> The deadlock is caused by powering on and powering off at the same time,
-> the former one is when memstick_check() is flushed, and the later is called
-> by memstick_remove_host().
->
-> Soe let's skip allocating card to prevent this issue.
->
-> Fixes: 6827ca573c03 ("memstick: rtsx_usb_ms: Support runtime power management")
-> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-
-Applied for fixes and by adding a stable tag, thanks!
-
-Kind regards
-Uffe
-
-
-> ---
->  drivers/memstick/core/memstick.c | 4 ++++
->  include/linux/memstick.h         | 1 +
->  2 files changed, 5 insertions(+)
->
-> diff --git a/drivers/memstick/core/memstick.c b/drivers/memstick/core/memstick.c
-> index 693ee73eb291..ef03d6fafc5c 100644
-> --- a/drivers/memstick/core/memstick.c
-> +++ b/drivers/memstick/core/memstick.c
-> @@ -441,6 +441,9 @@ static void memstick_check(struct work_struct *work)
->         } else if (host->card->stop)
->                 host->card->stop(host->card);
->
-> +       if (host->removing)
-> +               goto out_power_off;
-> +
->         card = memstick_alloc_card(host);
->
->         if (!card) {
-> @@ -545,6 +548,7 @@ EXPORT_SYMBOL(memstick_add_host);
->   */
->  void memstick_remove_host(struct memstick_host *host)
->  {
-> +       host->removing = 1;
->         flush_workqueue(workqueue);
->         mutex_lock(&host->lock);
->         if (host->card)
-> diff --git a/include/linux/memstick.h b/include/linux/memstick.h
-> index da4c65f9435f..ebf73d4ee969 100644
-> --- a/include/linux/memstick.h
-> +++ b/include/linux/memstick.h
-> @@ -281,6 +281,7 @@ struct memstick_host {
->
->         struct memstick_dev *card;
->         unsigned int        retries;
-> +       bool removing;
->
->         /* Notify the host that some requests are pending. */
->         void                (*request)(struct memstick_host *host);
-> --
-> 2.17.1
->
+SGkKCkNvdWxkIEkgZ2V0IGEgZmluYWwgb3BpbmlvbiAob3Igc2lnbm9mZikgb24gdGhpcyBw
+YXRjaCBwbGVhc2U/CgpUaGUgc2lnbmlmaWNhbnQgdHlwbyBpcyB0aGUgcmVmZXJlbmNlIHRv
+ICI1OSIsIHdoZW4gdGhlIEdQSU8gaXMgYWN0dWFsbHkgNTUKCkFjY29yZGluZyB0byB0aGUg
+UENFbmdpbmVzIHNjaGVtYXRpYyB0aGUgbmFtZXMgb2YgdHdvIHNpbWlsYXIgR1BJT3MgYXJl
+CsKgwqDCoCBHNTkvREVWU0xQMQrCoMKgwqAgRzU1L0RFVlNMUAoKVGhlIG9yaWdpbmFsIGRl
+dmVsb3BlciBuYW1lZCB0aGUgc2Vjb25kIEdQSU8gd2l0aCBhIHRyYWlsaW5nIDAsIHdoaWNo
+IGRvZXNuJ3Qgc2VlbSB1bnJlYXNvbmFibGUsCmhlbmNlIEkganVzdCBjb3JyZWN0ZWQgdGhl
+IG5hbWUgdG86CsKgwqDCoCBBTURfRkNIX0dQSU9fUkVHX0dQSU81NV9ERVZTTFAwCkhvd2V2
+ZXIgYW5vdGhlciBhY2NlcHRhYmxlIG5hbWUgY291bGQgYmU6CsKgwqDCoCBBTURfRkNIX0dQ
+SU9fUkVHX0dQSU81NV9ERVZTTFAKCklmIEkgY291bGQgYXNrIGZvciBzb21lIGd1aWRhbmNl
+IGFuZCBpZiBuZWNlc3NhcnkgSSB3aWxsIHJlc3VibWl0IHRoaXMgcGF0Y2g/IEVucmljbywg
+ZG8geW91IGhhdmUgYW4Kb3Bpbmlvbj8KCkhvd2V2ZXIsIHBlcmhhcHMgaXQncyBhbHJlYWR5
+IGFjY2VwdGFibGUgYXMgaXM/CgpLaW5kIHJlZ2FyZHMKCkVkIFcKCgpPbiAyMS8wOS8yMDIw
+IDA5OjQwLCBFZCBXIHdyb3RlOgo+IE9uIDIxLzA5LzIwMjAgMDg6NTUsIEFuZHkgU2hldmNo
+ZW5rbyB3cm90ZToKPj4gT24gU3VuLCBTZXAgMjAsIDIwMjAgYXQgMTE6MzMgUE0gRWQgV2ls
+ZGdvb3NlIDxsaXN0c0B3aWxkZ29vc2VzLmNvbT4gd3JvdGU6Cj4+PiBTY2hlbWF0aWNzIHNo
+b3cgdGhhdCB0aGUgR1BJTyBudW1iZXIgaXMgNTUgKG5vdCA1OSkuIFRyaXZpYWwgdHlwby4K
+Pj4gRG9lcyBpdCBzdGlsbCBERVZTTFAwPyBQZXJoYXBzIHlvdSBuZWVkIHRvIGRyb3AgdGhh
+dCBwYXJ0IGFzIHdlbGwuCj4+Cj4+IC4uLgo+Cj4KPiBJbiB0aGUgUENFbmdpbmVzIHNjaGVt
+YXRpYyBpdCdzIGxhYmVsbGVkIGFzICJHNTUvREVWU0xQIiAobm8gMCkKPgo+IChJbiBjb250
+cmFzdCBHNTkgaXMgbGFiZWxsZWQgIkc1OS9ERVZTTFAxIikKPgo+IFdoYXQgaXMgdGhlIHF1
+b3J1bSBvcGluaW9uIG9uIG5hbWU/Cj4KPiBUaGFua3MKPgo+IEVkIFcKPgo+Cj4+Cj4+PiDC
+oCAjZGVmaW5lIEFQVTJfR1BJT19SRUdfTEVEM8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBB
+TURfRkNIX0dQSU9fUkVHX0dQSU81OV9ERVZTTFAxCj4+PiDCoCAjZGVmaW5lIEFQVTJfR1BJ
+T19SRUdfTU9ERVNXwqDCoMKgwqDCoMKgwqDCoMKgwqAgQU1EX0ZDSF9HUElPX1JFR19HUElP
+MzJfR0UxCj4+PiDCoCAjZGVmaW5lIEFQVTJfR1BJT19SRUdfU0lNU1dBUMKgwqDCoMKgwqDC
+oMKgwqDCoCBBTURfRkNIX0dQSU9fUkVHX0dQSU8zM19HRTIKPj4+IC0jZGVmaW5lIEFQVTJf
+R1BJT19SRUdfTVBDSUUywqDCoMKgwqDCoMKgwqDCoMKgwqAgQU1EX0ZDSF9HUElPX1JFR19H
+UElPNTlfREVWU0xQMAo+Pj4gKyNkZWZpbmUgQVBVMl9HUElPX1JFR19NUENJRTLCoMKgwqDC
+oMKgwqDCoMKgwqDCoCBBTURfRkNIX0dQSU9fUkVHX0dQSU81NV9ERVZTTFAwCj4+PiDCoCAj
+ZGVmaW5lIEFQVTJfR1BJT19SRUdfTVBDSUUzwqDCoMKgwqDCoMKgwqDCoMKgwqAgQU1EX0ZD
+SF9HUElPX1JFR19HUElPNTEKPj4+Cj4+PiDCoCAvKiBPcmRlciBpbiB3aGljaCB0aGUgR1BJ
+TyBsaW5lcyBhcmUgZGVmaW5lZCBpbiB0aGUgcmVnaXN0ZXIgbGlzdCAqLwo+Pj4gZGlmZiAt
+LWdpdCBhL2luY2x1ZGUvbGludXgvcGxhdGZvcm1fZGF0YS9ncGlvL2dwaW8tYW1kLWZjaC5o
+Cj4+PiBiL2luY2x1ZGUvbGludXgvcGxhdGZvcm1fZGF0YS9ncGlvL2dwaW8tYW1kLWZjaC5o
+Cj4+PiBpbmRleCA5ZTQ2Njc4ZWQuLjI1NWQ1MWM5ZCAxMDA2NDQKPj4+IC0tLSBhL2luY2x1
+ZGUvbGludXgvcGxhdGZvcm1fZGF0YS9ncGlvL2dwaW8tYW1kLWZjaC5oCj4+PiArKysgYi9p
+bmNsdWRlL2xpbnV4L3BsYXRmb3JtX2RhdGEvZ3Bpby9ncGlvLWFtZC1mY2guaAo+Pj4gQEAg
+LTE5LDcgKzE5LDcgQEAKPj4+IMKgICNkZWZpbmUgQU1EX0ZDSF9HUElPX1JFR19HUElPNDnC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgMHg0MAo+Pj4gwqAgI2RlZmluZSBBTURf
+RkNIX0dQSU9fUkVHX0dQSU81MMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAweDQx
+Cj4+PiDCoCAjZGVmaW5lIEFNRF9GQ0hfR1BJT19SRUdfR1BJTzUxwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgIDB4NDIKPj4+IC0jZGVmaW5lIEFNRF9GQ0hfR1BJT19SRUdfR1BJ
+TzU5X0RFVlNMUDDCoMKgwqDCoMKgwqDCoCAweDQzCj4+PiArI2RlZmluZSBBTURfRkNIX0dQ
+SU9fUkVHX0dQSU81NV9ERVZTTFAwwqDCoMKgwqDCoMKgwqAgMHg0Mwo+Pj4gwqAgI2RlZmlu
+ZSBBTURfRkNIX0dQSU9fUkVHX0dQSU81N8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oCAweDQ0Cj4+PiDCoCAjZGVmaW5lIEFNRF9GQ0hfR1BJT19SRUdfR1BJTzU4wqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgIDB4NDUKPj4+IMKgICNkZWZpbmUgQU1EX0ZDSF9HUElP
+X1JFR19HUElPNTlfREVWU0xQMcKgwqDCoMKgwqDCoMKgIDB4NDYKPj4KPgoK
