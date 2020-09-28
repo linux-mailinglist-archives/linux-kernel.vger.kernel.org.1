@@ -2,200 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C76CA27B3B9
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 19:54:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AA5227B3BF
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 19:57:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726617AbgI1Ryt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 13:54:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43684 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726506AbgI1Rys (ORCPT
+        id S1726565AbgI1R51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 13:57:27 -0400
+Received: from smtprelay0134.hostedemail.com ([216.40.44.134]:48790 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726327AbgI1R50 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 13:54:48 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E0E5C061755
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 10:54:48 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id b12so2312114lfp.9
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 10:54:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nVQLqfhAMue9WFpIvdR+SPVZ27tvqqW+KhexMPe51Eg=;
-        b=JESamvpCr7P6D1koJK+bYfaWc/gIRk+gxvqsb639smqknsgpUtq8ybZgdz3KmpdwSm
-         BOGvMs13i1hIOhbXZ0kGX29MC4GwdbFoVGM2scepvfxdiRoWcX0JUlgsoAwS9IECgBin
-         SZ2Psk9nWs4dIJn0dtt/AdBJw4kExf40QIIsI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nVQLqfhAMue9WFpIvdR+SPVZ27tvqqW+KhexMPe51Eg=;
-        b=dit+RsPI4e+zFwGnmmSqiIa0o10me6reBUpxoyImBjYJ3U4L8NJheDFGwx+63d66G+
-         +fSg1Ts9f1ic0bwiznWVsuezusboKvp/2hrIRiYufRMdYFifqj8Gct6eTWmjZtwYyvMf
-         FAcW7G7tX4/RK2wjUAV9aIlpnll7zVhpd0TD8Om3AW03Q3G9WP90sGYt/cDaZ//q/Ewv
-         uNmKuE8KITI0RdOypvqs1F1OX1yTPFVFTVBUUhK3IOiVvPIxaOxXtIukWPWDNAfCy/ic
-         RYJJil7eFKzV4/I8jAG6mLO7cNy7tw0mHzp/VxqMstb6HKki8yrZ9KycyARIDEKUbKdb
-         fzkA==
-X-Gm-Message-State: AOAM531SqPB8gsyL8sqjvyAnP3kJztJMg3xy3LhWhXi7W0r8zo28U8Ko
-        EbaUz16NUMrMOqkzDeOsV+c19bJoG3xDSQ==
-X-Google-Smtp-Source: ABdhPJxSPjXihbu+dGQqyY/DaaC2l4JDn6iMDloXhPCVIQJ4l7BbwRTviW1AqKeqy3AoSlMXm3Xbyg==
-X-Received: by 2002:a19:cb12:: with SMTP id b18mr958901lfg.417.1601315686219;
-        Mon, 28 Sep 2020 10:54:46 -0700 (PDT)
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com. [209.85.167.46])
-        by smtp.gmail.com with ESMTPSA id y196sm2977904lfa.0.2020.09.28.10.54.45
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Sep 2020 10:54:46 -0700 (PDT)
-Received: by mail-lf1-f46.google.com with SMTP id b22so2285149lfs.13
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 10:54:45 -0700 (PDT)
-X-Received: by 2002:ac2:4a6a:: with SMTP id q10mr786502lfp.534.1601315685097;
- Mon, 28 Sep 2020 10:54:45 -0700 (PDT)
+        Mon, 28 Sep 2020 13:57:26 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 387CF182CF665;
+        Mon, 28 Sep 2020 17:57:25 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:421:599:967:973:982:988:989:1260:1263:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:2194:2197:2199:2200:2393:2525:2553:2560:2563:2682:2685:2689:2828:2859:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3354:3622:3653:3865:3866:3867:3868:3870:3871:3872:3873:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:4384:4605:5007:6119:6121:7903:9025:9388:10004:10400:10848:11026:11232:11658:11914:12295:12296:12297:12740:12760:12895:13255:13439:14180:14181:14659:14721:21060:21080:21221:21324:21451:21627:30054:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: smell94_24172cc27183
+X-Filterd-Recvd-Size: 3389
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf06.hostedemail.com (Postfix) with ESMTPA;
+        Mon, 28 Sep 2020 17:57:23 +0000 (UTC)
+Message-ID: <25aa56e1f7943f9ac535fa184465a752aa00a4b4.camel@perches.com>
+Subject: Re: [PATCH 03/18] [ARM] pata_icside: use semicolons rather than
+ commas to separate statements
+From:   Joe Perches <joe@perches.com>
+To:     Julia Lawall <julia.lawall@inria.fr>
+Cc:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Valdis =?UTF-8?Q?Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        kernel-janitors@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Mon, 28 Sep 2020 10:57:22 -0700
+In-Reply-To: <alpine.DEB.2.22.394.2009281909000.2650@hadrien>
+References: <1601233948-11629-1-git-send-email-Julia.Lawall@inria.fr>
+         <1601233948-11629-4-git-send-email-Julia.Lawall@inria.fr>
+         <8cf2fad1659acd756703deb106d55483bd1e1eb9.camel@perches.com>
+         <alpine.DEB.2.22.394.2009281909000.2650@hadrien>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-References: <CAHk-=wgz5SXKA6-uZ_BimOP1C7pHJag0ndz=tnJDAZS_Z+FrGQ@mail.gmail.com>
- <CAHk-=whDSH_MRMt80JaSwoquzt=1nQ-0n3w0aVngoWPAc10BCw@mail.gmail.com>
- <20200926004136.GJ9916@ziepe.ca> <CAHk-=wiutA_J-OfvrD8Kp3SoYcfMHUwsU7ViOH48q7QN0AQ6eg@mail.gmail.com>
- <CAHk-=wi_gd+JWj-8t8tc8cy3WZ7NMj-_1hATfH3Rt0ytUxtMpQ@mail.gmail.com>
- <20200927062337.GE2280698@unreal> <CAHk-=winqSOFsdn1ntYL13s2UuhpQQ9+GRvjWth3sA5APY4Wwg@mail.gmail.com>
- <CAHk-=wj61s30pt8POVtKYVamYTh6h=7-_ser2Hx9sEjqeACkDA@mail.gmail.com>
- <20200928124937.GN9916@ziepe.ca> <CAHk-=wj6aTsqq6BAUci-NYJ3b-EkDwVgz_NvW_kW8KBqGocouQ@mail.gmail.com>
- <20200928172256.GB59869@xz-x1>
-In-Reply-To: <20200928172256.GB59869@xz-x1>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 28 Sep 2020 10:54:28 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wi=iCnYCARbPGjkVJu9eyYeZ13N64tZYLdOB8CP5Q_PLw@mail.gmail.com>
-Message-ID: <CAHk-=wi=iCnYCARbPGjkVJu9eyYeZ13N64tZYLdOB8CP5Q_PLw@mail.gmail.com>
-Subject: Re: [PATCH 1/5] mm: Introduce mm_struct.has_pinned
-To:     Peter Xu <peterx@redhat.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jan Kara <jack@suse.cz>, Michal Hocko <mhocko@suse.com>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Kirill Shutemov <kirill@shutemov.name>,
-        Hugh Dickins <hughd@google.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 10:23 AM Peter Xu <peterx@redhat.com> wrote:
->
-> Yes...  Actually I am also thinking about the complete solution to cover
-> read-only fast-gups too, but now I start to doubt this, at least for the fork()
-> path.  E.g. if we'd finally like to use pte_protnone() to replace the current
-> pte_wrprotect(), we'll be able to also block the read gups, but we'll suffer
-> the same degradation on normal fork()s, or even more.  Seems unacceptable.
+On Mon, 2020-09-28 at 19:11 +0200, Julia Lawall wrote:
+> 
+> On Mon, 28 Sep 2020, Joe Perches wrote:
+> 
+> > On Sun, 2020-09-27 at 21:12 +0200, Julia Lawall wrote:
+> > > Replace commas with semicolons.  What is done is essentially described by
+> > > the following Coccinelle semantic patch (http://coccinelle.lip6.fr/):
+> > 
+> > Hi Julia.
+> > 
+> > How did you decide on this patch subject header line?
+> > 
+> > It's certainly reasonable, but not what I would expect
+> > from any automation.
+> 
+> Most of the patches on this file touch other files as well.  There are
+> four that only touch this file.  One has no subsystem.  One has dma as the
+> subsystem.  Two have pata_icside, so that was chosen.
 
-So I think the real question about pinned read gups is what semantics
-they should have.
+So did you select the patch subject without any automation
+or did you create a tool that looks only at commits for
+individual files?
 
-Because honestly, I think we have two options:
+> > $ git log --no-merges --format='%s' drivers/ata/pata_icside.c | \
+> >   cut -f1 -d":" | sort | uniq -c | sort -rn
+> >      10 libata
+> >       5 libata-sff
+> >       2 [ARM] pata_icside
+> >       2 [ARM] ecard
+> >       2 [ARM] dma
 
- - the current "it gets a shared copy from the page tables"
+Yeah...
 
- - the "this is an exclusive pin, and it _will_ follow the source VM
-changes, and never break"
+Something like the script below and some examples of its use?
 
-because honestly, if we get a shared copy at the time of the pinning
-(like we do now), then "fork()" is entirely immaterial. The fork() can
-have happened ages ago, that page is shared with other processes, and
-anybody process writing to it - including very much the pinning one -
-will cause a copy-on-write and get a copy of the page.
+$ cat find_best_header.sh
+#!/bin/bash
 
-IOW, the current - and past - semantics for read pinning is that you
-get a copy of the page, but any changes made by the pinning process
-may OR MAY NOT show up in your pinned copy.
+# Show possible patch subject prefixes for a file in git
 
-Again: doing a concurrent fork() is entirely immaterial, because the
-page can have been made a read-only COW page by _previous_ fork()
-calls (or KSM logic or whatever).
+# use commits that modify only the single file argument and
+# emit up to the 5 most common commit prefixes
 
-In other words: read pinning gets a page efficiently, but there is
-zero guarantee of any future coherence with the process doing
-subsequent writes.
+git log --no-merges --format='%h' -- $1 |
+    while read commit ; do
+	if [[ $(git log --format='%h' --name-only -1 $commit | wc -l) == 3 ]] ; then
+	    git log --format='%s' -1 $commit
+	fi
+    done |
+    cut -f1 -d":" | cut -f1-3 -d" " | sort | uniq -c | sort -rn | head -5
 
-That has always been the semantics, and FOLL_PIN didn't change that at
-all. You may have had things that worked almost by accident (ie you
-had made the page private by writing to it after the fork, so the read
-pinning _effectively_ gave you a page that was coherent), but even
-that was always accidental rather than anything else. Afaik it could
-easily be broken by KSM, for example.
+$ ./find_best_header.sh drivers/ata/pata_icside.c
+      2 [ARM] pata_icside
+      1 Fix pata_icside build
+      1 [ARM] dma
 
-In other words, a read pin isn't really any different from a read GUP.
-You get a reference to a page that is valid at the time of the page
-lookup, and absolutely nothing more.
+$ ./find_best_header.sh kernel/fork.c
+     36 fork
+     14 kernel/fork.c
+      6 mm
+      4 pidns
+      4 [PATCH] unshare system
 
-Now, the alternative is to make a read pin have the same guarantees as
-a write pin, and say "this will stay attached to this MM until unmap
-or unpin".
+$ ./find_best_header.sh kernel/sched/core.c
+    150 sched
+    110 sched/core
+     12 sched/uclamp
+     12 sched/debug
+     10 sched/deadline
 
-But honestly, that is largely going to _be_ the same as a write pin,
-because it absolutely needs to do a page COW at the time of the
-pinning to get that initial exclusive guarantee in the first place.
-Without that initial exclusivity, you cannot avoid future COW events
-breaking the wrong way.
+$ ./find_best_header.sh drivers/iio/pressure/mpl115.c
+      3 iio
 
-So I think the "you get a reference to the page at the time of the
-pin, and the page _may_ or may not change under you if the original
-process writes to it" are really the only relevant semantics. Because
-if you need those exclusive semantics, you might as well just use a
-write pin.
 
-The downside of a write pin is that it not only makes that page
-exclusive, it also (a) marks it dirty and (b) requires write access.
-That can matter particularly for shared mappings. So if you know
-you're doing the pin on a shared mmap, then a read pin is the right
-thing, because the page will stay around - not because of the VM it
-happens in, but because of the underlying file mapping!
-
-See the difference?
-
-> The other question is, whether we should emphasize and document somewhere that
-> MADV_DONTFORK is still (and should always be) the preferred way, because
-> changes like this series can potentially encourage the other way.
-
-I really suspect that the concurrent fork() case is fundamentally hard
-to handle.
-
-Is it impossible? No. Even without any real locking, we could change
-the code to do a seqcount_t, for example. The fastgup code wouldn't
-take a lock, but it would just fail and fall back to the slow code if
-the sequence count fails.
-
-So the copy_page_range() code would do a write count around the copy:
-
-    write_seqcount_begin(&mm->seq);
-    .. do the copy ..
-    write_seqcount_end(&mm->seq);
-
-and the fast-gup code would do a
-
-    seq = raw_read_seqcount(&mm->seq);
-    if (seq & 1)
-        return -EAGAIN;
-
-at the top, and do a
-
-    if (__read_seqcount_t_retry(&mm->seq, seq) {
-       .. Uhhuh, that failed, drop the ref to the page again ..
-        return -EAGAIN;
-    }
-
-after getting the pin reference.
-
-We could make this conditional on FOLL_PIN, or maybe even a new flag
-("FOLL_FORK_CONSISTENT").
-
-So I think we can serialize with fork() without serializing each and every PTE.
-
-If we want to and really need to.
-
-Hmm?
-
-               Linus
