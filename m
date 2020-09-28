@@ -2,125 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C09527AA70
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 11:13:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67D3027AA83
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 11:17:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726696AbgI1JNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 05:13:16 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:47812 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726640AbgI1JNP (ORCPT
+        id S1726601AbgI1JRu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 05:17:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48248 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726497AbgI1JRt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 05:13:15 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08S98xjn021122;
-        Mon, 28 Sep 2020 09:13:10 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=onqFxvuNgmSWxb5TyttFFh60aQyyoipjjSNj0YfQXFk=;
- b=yfIqhgkDTFTf+awz5zS7P76xGfYWPpWuEvoSzoKf4BTDGR+JRR5e2DrXvSPVmJyvJn5f
- flj8gl2lBcthRxySyQLW6edl37FyZ9IBK5N9QFlaMp+aSoM8XeLS7IrD/o2x2enKp2oU
- 2SOepugO+XxQVA5sTO0C4tXFnE1F2zr+SvW/pHgVKxPAF/R1PegCK5J1bQhNAJtP3qbQ
- mFcqFFmBNZ3sOxi3Um/nqpBj1xNEKjvkvFTzB7vUXmKutGsLHndmf93mSReZLrRdXZa9
- lm6aw7dXnQRhDNlCtWD60ZQFcZ+wA7/k67YANPJPCGFYIJx/jqix41fx1IwQuju+TfWL vA== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2120.oracle.com with ESMTP id 33sx9muvuv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 28 Sep 2020 09:13:10 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08S9AekY176903;
-        Mon, 28 Sep 2020 09:13:09 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3020.oracle.com with ESMTP id 33tfdprgmb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 28 Sep 2020 09:13:09 +0000
-Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 08S9D8n4030911;
-        Mon, 28 Sep 2020 09:13:08 GMT
-Received: from mwanda (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 28 Sep 2020 02:13:07 -0700
-Date:   Mon, 28 Sep 2020 12:13:00 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Subbu Seetharaman <subbu.seetharaman@broadcom.com>
-Cc:     Ketan Mukadam <ketan.mukadam@broadcom.com>,
-        Jitendra Bhivare <jitendra.bhivare@broadcom.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        James Bottomley <James.Bottomley@suse.de>,
-        Jayamohan Kallickal 
-        <jayamohank@HDRedirect-LB5-1afb6e2973825a56.elb.us-east-1.amazonaws.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: [PATCH] scsi: be2iscsi: Fix a theoretical leak in
- beiscsi_create_eqs()
-Message-ID: <20200928091300.GD377727@mwanda>
+        Mon, 28 Sep 2020 05:17:49 -0400
+Received: from mout-p-102.mailbox.org (mout-p-102.mailbox.org [IPv6:2001:67c:2050::465:102])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 795C5C061755;
+        Mon, 28 Sep 2020 02:17:49 -0700 (PDT)
+Received: from smtp2.mailbox.org (smtp2.mailbox.org [80.241.60.241])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mout-p-102.mailbox.org (Postfix) with ESMTPS id 4C0H3s5BsYzKmhQ;
+        Mon, 28 Sep 2020 11:17:45 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mailbox.org; h=
+        content-disposition:content-type:content-type:mime-version
+        :message-id:subject:subject:from:from:date:date:received; s=
+        mail20150812; t=1601284662; bh=DaQNedV6DLtdwBn+je055grMSGGeN+eKd
+        aMluY5HgPA=; b=uCazI0O4zQ8/9ThymAdpvM2q41ag/kVMcICuj/HWLZ7kgSvcw
+        Jvowar61N8lKciKHvuiYNsNwi3KbnkWwHO44BAOuBFBceRIndhm2bPSOz1KnD8iS
+        OK3F9geN2kBcxsfXHhJLIsZZQsu5UQWwfY7EsaR3oXGpmS4nxUS+vNB3jDS33zAB
+        jk8F8LtCkmHO3rwZQe1GziomavNxlgI0S2Ub5F3wvLm9IFRocoNKWaJpFVaGWGlk
+        HMF9FJf2q6/5tTh304PgDahROtfEXbLTTB1sHCq9z2xKhOzYbMnjJAGHEMn8zZyN
+        9liIwlAuDQZcEx4gijvO4pGSrVsvb8Pxw+gwQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
+        t=1601284663;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=MXZaoCL3jvL4JTPmpwCWyRFRJ4/ouJjr9l+t03/UAe0=;
+        b=GAh4hikUZdp5D/mRG/aWUovRD+5BAdGEvxqjKVcVLyIbMD+jA92H0FIL/9W1Xc0oykiAyi
+        WUgYQ5XpyhlkvDX0MBJtJrYnQtl+doCimzcWPRQLH2k2WJJzsaHUzsZGRhrcyRSqeX8S0f
+        9t6Nfk3E5PXBw+X8M3ike/WHIuMsWdSBZn0epYAkObc5s80ygtFRDOUVZ/m+diGlRob07V
+        VpIjgsGN9CVj6aagReSrnQ21g6xJiWlNVC3P3RcN1hdzaCjN8Rmn9G1WozZF3D8szb4xFh
+        ah8RzC1bLkNDMbX/DhUOygY4XNrWHNZkcRo2Vs5FAKJRkb7dfihr6JtiENTehA==
+X-Virus-Scanned: amavisd-new at heinlein-support.de
+Received: from smtp2.mailbox.org ([80.241.60.241])
+        by spamfilter01.heinlein-hosting.de (spamfilter01.heinlein-hosting.de [80.241.56.115]) (amavisd-new, port 10030)
+        with ESMTP id aI_hhMDNdxGq; Mon, 28 Sep 2020 11:17:42 +0200 (CEST)
+Date:   Mon, 28 Sep 2020 11:17:40 +0200
+From:   Wilken Gottwalt <wilken.gottwalt@mailbox.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
+Subject: [PATCH] net: usb: ax88179_178a: add MCT usb 3.0 adapter
+Message-ID: <20200928091740.GA27844@monster.powergraphx.local>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9757 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 phishscore=0
- adultscore=0 malwarescore=0 spamscore=0 mlxscore=0 bulkscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009280077
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9757 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=0
- phishscore=0 mlxscore=0 lowpriorityscore=0 adultscore=0 clxscore=1011
- spamscore=0 impostorscore=0 malwarescore=0 bulkscore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009280077
+X-MBO-SPAM-Probability: 
+X-Rspamd-Score: -4.56 / 15.00 / 15.00
+X-Rspamd-Queue-Id: B56B01714
+X-Rspamd-UID: ab3207
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The be_fill_queue() function can only fail when "eq_vaddress" is NULL
-and since it's non-NULL here that means the function call can't fail.
-But imagine if it could, then in that situation we would want to store
-the "paddr" so that dma memory can be released.
+Adds the driver_info and usb ids of the AX88179 based MCT U3-A9003 USB
+3.0 ethernet adapter.
 
-Fixes: bfead3b2cb46 ("[SCSI] be2iscsi: Adding msix and mcc_rings V3")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Wilken Gottwalt <wilken.gottwalt@mailbox.org>
 ---
- drivers/scsi/be2iscsi/be_main.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/usb/ax88179_178a.c | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
 
-diff --git a/drivers/scsi/be2iscsi/be_main.c b/drivers/scsi/be2iscsi/be_main.c
-index 5c3513a4b450..202ba925c494 100644
---- a/drivers/scsi/be2iscsi/be_main.c
-+++ b/drivers/scsi/be2iscsi/be_main.c
-@@ -3020,6 +3020,7 @@ static int beiscsi_create_eqs(struct beiscsi_hba *phba,
- 			goto create_eq_error;
- 		}
+diff --git a/drivers/net/usb/ax88179_178a.c b/drivers/net/usb/ax88179_178a.c
+index 8f1798b95a02..5541f3faedbc 100644
+--- a/drivers/net/usb/ax88179_178a.c
++++ b/drivers/net/usb/ax88179_178a.c
+@@ -1842,6 +1842,19 @@ static const struct driver_info toshiba_info = {
+ 	.tx_fixup = ax88179_tx_fixup,
+ };
  
-+		mem->dma = paddr;
- 		mem->va = eq_vaddress;
- 		ret = be_fill_queue(eq, phba->params.num_eq_entries,
- 				    sizeof(struct be_eq_entry), eq_vaddress);
-@@ -3029,7 +3030,6 @@ static int beiscsi_create_eqs(struct beiscsi_hba *phba,
- 			goto create_eq_error;
- 		}
- 
--		mem->dma = paddr;
- 		ret = beiscsi_cmd_eq_create(&phba->ctrl, eq,
- 					    BEISCSI_EQ_DELAY_DEF);
- 		if (ret) {
-@@ -3086,6 +3086,7 @@ static int beiscsi_create_cqs(struct beiscsi_hba *phba,
- 			goto create_cq_error;
- 		}
- 
-+		mem->dma = paddr;
- 		ret = be_fill_queue(cq, phba->params.num_cq_entries,
- 				    sizeof(struct sol_cqe), cq_vaddress);
- 		if (ret) {
-@@ -3095,7 +3096,6 @@ static int beiscsi_create_cqs(struct beiscsi_hba *phba,
- 			goto create_cq_error;
- 		}
- 
--		mem->dma = paddr;
- 		ret = beiscsi_cmd_cq_create(&phba->ctrl, cq, eq, false,
- 					    false, 0);
- 		if (ret) {
++static const struct driver_info mct_info = {
++	.description = "MCT USB 3.0 Gigabit Ethernet Adapter",
++	.bind	= ax88179_bind,
++	.unbind	= ax88179_unbind,
++	.status	= ax88179_status,
++	.link_reset = ax88179_link_reset,
++	.reset	= ax88179_reset,
++	.stop	= ax88179_stop,
++	.flags	= FLAG_ETHER | FLAG_FRAMING_AX,
++	.rx_fixup = ax88179_rx_fixup,
++	.tx_fixup = ax88179_tx_fixup,
++};
++
+ static const struct usb_device_id products[] = {
+ {
+ 	/* ASIX AX88179 10/100/1000 */
+@@ -1879,6 +1892,10 @@ static const struct usb_device_id products[] = {
+ 	/* Toshiba USB 3.0 GBit Ethernet Adapter */
+ 	USB_DEVICE(0x0930, 0x0a13),
+ 	.driver_info = (unsigned long)&toshiba_info,
++}, {
++	/* Magic Control Technology U3-A9003 USB 3.0 Gigabit Ethernet Adapter */
++	USB_DEVICE(0x0711, 0x0179),
++	.driver_info = (unsigned long)&mct_info,
+ },
+ 	{ },
+ };
 -- 
 2.28.0
 
