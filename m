@@ -2,137 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B5A827B3F7
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 20:02:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBAF927B407
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 20:04:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726683AbgI1SCj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 14:02:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40404 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726500AbgI1SCR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 14:02:17 -0400
-Received: from [192.168.0.112] (75-58-59-55.lightspeed.rlghnc.sbcglobal.net [75.58.59.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F263C20BED;
-        Mon, 28 Sep 2020 18:02:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601316136;
-        bh=ecZXyWDxzaXZoqVvnUfNYLoG/DJ+B7euoHgszVXCivc=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=fHwtX++CygUGfmenlMSqel4CBIYAF3jMJOK04h5tYPQJ2/L+ZA1mbAubxue4rIqzO
-         tkpDg2eviLKjAotH+X3lZ/K9JCwEaSsWz7MSByERF43brhWlWmFILAlgLkzUSevMMp
-         zWOdT5u34THPsDBWy5iiKueaLbmH53sbh2mNpdfM=
-Subject: Re: [PATCH v3 1/1] PCI/ERR: Fix reset logic in pcie_do_recovery()
- call
-To:     "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>
-Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ashok.raj@intel.com,
-        Jay Vosburgh <jay.vosburgh@canonical.com>
-References: <20200922233333.GA2239404@bjorn-Precision-5520>
- <704c39bf-6f0c-bba3-70b8-91de6a445e43@linux.intel.com>
- <3d27d0a4-2115-fa72-8990-a84910e4215f@kernel.org>
- <d5aa53dc-0c94-e57a-689a-1c1f89787af1@linux.intel.com>
- <526dc846-b12b-3523-4995-966eb972ceb7@kernel.org>
- <1fdcc4a6-53b7-2b5f-8496-f0f09405f561@linux.intel.com>
- <aef0b9aa-59f5-9ec3-adac-5bc366b362e0@kernel.org>
- <a647f485-8db4-db45-f404-940b55117b53@linux.intel.com>
- <aefd8842-90c4-836a-b43a-f21c5428d2ba@kernel.org>
- <95e23cb5-f6e1-b121-0de8-a2066d507d9c@linux.intel.com>
- <65238d0b-0a39-400a-3a18-4f68eb554538@kernel.org>
- <4ae86061-2182-bcf1-ebd7-485acf2d47b9@linux.intel.com>
- <f360165e-5f73-057c-efd1-557b5e5027eb@kernel.org>
- <8beca800-ffb5-c535-6d43-7e750cbf06d0@linux.intel.com>
- <44f0cac5-8deb-1169-eb6d-93ac4889fe7e@kernel.org>
- <3bc0fd23-8ddd-32c5-1dd9-4d5209ea68c3@linux.intel.com>
- <a2bbdfed-fb17-51dc-8ae4-55d924c13211@kernel.org>
- <8a3aeb3c-83c4-8626-601d-360946d55dd8@linux.intel.com>
-From:   Sinan Kaya <okaya@kernel.org>
-Autocrypt: addr=okaya@kernel.org; keydata=
- mQENBFrnOrUBCADGOL0kF21B6ogpOkuYvz6bUjO7NU99PKhXx1MfK/AzK+SFgxJF7dMluoF6
- uT47bU7zb7HqACH6itTgSSiJeSoq86jYoq5s4JOyaj0/18Hf3/YBah7AOuwk6LtV3EftQIhw
- 9vXqCnBwP/nID6PQ685zl3vH68yzF6FVNwbDagxUz/gMiQh7scHvVCjiqkJ+qu/36JgtTYYw
- 8lGWRcto6gr0eTF8Wd8f81wspmUHGsFdN/xPsZPKMw6/on9oOj3AidcR3P9EdLY4qQyjvcNC
- V9cL9b5I/Ud9ghPwW4QkM7uhYqQDyh3SwgEFudc+/RsDuxjVlg9CFnGhS0nPXR89SaQZABEB
- AAG0HVNpbmFuIEtheWEgPG9rYXlhQGtlcm5lbC5vcmc+iQFOBBMBCAA4FiEEYdOlMSE+a7/c
- ckrQvGF4I+4LAFcFAlztcAoCGwMFCwkIBwIGFQoJCAsCBBYCAwECHgECF4AACgkQvGF4I+4L
- AFfidAf/VKHInxep0Z96iYkIq42432HTZUrxNzG9IWk4HN7c3vTJKv2W+b9pgvBF1SmkyQSy
- 8SJ3Zd98CO6FOHA1FigFyZahVsme+T0GsS3/OF1kjrtMktoREr8t0rK0yKpCTYVdlkHadxmR
- Qs5xLzW1RqKlrNigKHI2yhgpMwrpzS+67F1biT41227sqFzW9urEl/jqGJXaB6GV+SRKSHN+
- ubWXgE1NkmfAMeyJPKojNT7ReL6eh3BNB/Xh1vQJew+AE50EP7o36UXghoUktnx6cTkge0ZS
- qgxuhN33cCOU36pWQhPqVSlLTZQJVxuCmlaHbYWvye7bBOhmiuNKhOzb3FcgT7kBDQRa5zq1
- AQgAyRq/7JZKOyB8wRx6fHE0nb31P75kCnL3oE+smKW/sOcIQDV3C7mZKLf472MWB1xdr4Tm
- eXeL/wT0QHapLn5M5wWghC80YvjjdolHnlq9QlYVtvl1ocAC28y43tKJfklhHiwMNDJfdZbw
- 9lQ2h+7nccFWASNUu9cqZOABLvJcgLnfdDpnSzOye09VVlKr3NHgRyRZa7me/oFJCxrJlKAl
- 2hllRLt0yV08o7i14+qmvxI2EKLX9zJfJ2rGWLTVe3EJBnCsQPDzAUVYSnTtqELu2AGzvDiM
- gatRaosnzhvvEK+kCuXuCuZlRWP7pWSHqFFuYq596RRG5hNGLbmVFZrCxQARAQABiQEfBBgB
- CAAJBQJa5zq1AhsMAAoJELxheCPuCwBX2UYH/2kkMC4mImvoClrmcMsNGijcZHdDlz8NFfCI
- gSb3NHkarnA7uAg8KJuaHUwBMk3kBhv2BGPLcmAknzBIehbZ284W7u3DT9o1Y5g+LDyx8RIi
- e7pnMcC+bE2IJExCVf2p3PB1tDBBdLEYJoyFz/XpdDjZ8aVls/pIyrq+mqo5LuuhWfZzPPec
- 9EiM2eXpJw+Rz+vKjSt1YIhg46YbdZrDM2FGrt9ve3YaM5H0lzJgq/JQPKFdbd5MB0X37Qc+
- 2m/A9u9SFnOovA42DgXUyC2cSbIJdPWOK9PnzfXqF3sX9Aol2eLUmQuLpThJtq5EHu6FzJ7Y
- L+s0nPaNMKwv/Xhhm6Y=
-Message-ID: <9b295cad-7302-cf2c-d19d-d27fabcb48be@kernel.org>
-Date:   Mon, 28 Sep 2020 14:02:14 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1726716AbgI1SD6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 14:03:58 -0400
+Received: from mail-oi1-f194.google.com ([209.85.167.194]:46992 "EHLO
+        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726562AbgI1SD6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 14:03:58 -0400
+Received: by mail-oi1-f194.google.com with SMTP id u126so2298015oif.13;
+        Mon, 28 Sep 2020 11:03:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=b47m6kGoNWc4/uwIrttlIVNkgPngBrRz1iBKHy3w57s=;
+        b=WpPAkT0iFvpxkxu0DV3jrp8TxkNZa71Pb53f92w6BXBnxH85Fm81PWIo8smqBHOkNq
+         0o6lWNyuZGRlgyqEPwOKVk95Rt/wYbvVa6XoDDrCo/ZyhKOMJnPJfbsHq5LDOXrONgv0
+         xA+Ni70wmsh6DCSVULxFjPi9K3w1WMqFREie5qNLoagU2S/AgF8D4J1ZKqYShl5dxC9T
+         fy1USMQmDNBQaww5Pj2Oe60NF7jGclRK/Q1AFA9AcbS2OsJriyrwrVhlmFE6Gzx/KeuV
+         EzRZ+sMhQuY/l80vX+yDjvQuoP1W/KemkQ2kJeWtsIvpjYkrfYZLuYCHMtBQpR7s/6yI
+         JrGQ==
+X-Gm-Message-State: AOAM532yXfmK+NWwtKGbPVmPTzbyjDMhBDLwjqmEnLByCFkH8EsKdrP3
+        wiPFpaCe8/IbMPdQFYnfhQ==
+X-Google-Smtp-Source: ABdhPJwUlNfZsjTADK9YsUbvwa2mVcVcPNzQHs7Phaize49QJOgmDZPGHTv6z/TvTWN15QcvW4twOQ==
+X-Received: by 2002:aca:4fd5:: with SMTP id d204mr83530oib.58.1601316236901;
+        Mon, 28 Sep 2020 11:03:56 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id p8sm2261067oot.29.2020.09.28.11.03.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Sep 2020 11:03:56 -0700 (PDT)
+Received: (nullmailer pid 2999675 invoked by uid 1000);
+        Mon, 28 Sep 2020 18:03:55 -0000
+Date:   Mon, 28 Sep 2020 13:03:55 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Ansuel Smith <ansuelsmth@gmail.com>
+Cc:     linux-pm@vger.kernel.org, MyungJoo Ham <myungjoo.ham@samsung.com>,
+        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        linux-kernel@vger.kernel.org, Chanwoo Choi <cw00.choi@samsung.com>
+Subject: Re: [PATCH 2/2] dt-bindings: devfreq: Document L2 Krait CPU Cache
+ devfreq driver
+Message-ID: <20200928180355.GA2999374@bogus>
+References: <20200927160515.6480-1-ansuelsmth@gmail.com>
+ <20200927160515.6480-2-ansuelsmth@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <8a3aeb3c-83c4-8626-601d-360946d55dd8@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200927160515.6480-2-ansuelsmth@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/28/2020 1:15 PM, Kuppuswamy, Sathyanarayanan wrote:
-> Since there is no state restoration for FATAL errors, I am wondering
-> whether
-> calls to ->error_detected(), ->mmio_enabled() and ->slot_reset() are
-> required?
-
-Good question,
-
-Initially when we started, we were trying to handle both NON_FATAL and
-FATAL errors in DPC.
-
-We have seen value in unifying AER's callback mechanism with DPC.
-It looks like this no longer applies for DPC.
-
-Some drivers want these indication to stop outgoing DMA/timers so that
-system can recover quickly.
-
-There is value in calling them with existing AER based design.
-
-I agree it doesn't apply here anymore if we are going to remove the
-device driver. Maybe, you should stop calling pcie_do_recovery() in DPC
-as well.
-
+On Sun, 27 Sep 2020 18:05:13 +0200, Ansuel Smith wrote:
+> Document dedicated L2 Krait CPU Cache devfreq scaling driver.
 > 
-> Let me know your comments about following pseudo code.
+> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+> ---
+>  .../bindings/devfreq/krait-cache-devfreq.yaml | 77 +++++++++++++++++++
+>  1 file changed, 77 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/devfreq/krait-cache-devfreq.yaml
 > 
-> if (fatal error & hotplug_supported)
->    do nothing // if fatal triggered by DPC, clear DPC state.
-> 
-> if (fatal error & no-hotplug)
->   perform slot_reset and renumerate affected devices.
 
-LGTM,
 
-I apologize for calling this slot_reset but slot_reset in err.c code is
-for post recovery callback to endpoint drivers. Let's not use this term
-here anymore to not confuse ourselves.
+My bot found errors running 'make dt_binding_check' on your patch:
 
-remove device + rescan similar to how hotplug remove + hotplug insertion
-notifications does eventually.
+./Documentation/devicetree/bindings/devfreq/krait-cache-devfreq.yaml: $id: relative path/filename doesn't match actual path or filename
+	expected: http://devicetree.org/schemas/devfreq/krait-cache-devfreq.yaml#
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/devfreq/krait-cache-devfreq.example.dt.yaml: qcom-krait-cache: clocks:0:1: missing phandle tag in 4
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/devfreq/krait-cache-devfreq.yaml
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/devfreq/krait-cache-devfreq.example.dt.yaml: qcom-krait-cache: clocks:0: [4294967295, 4] is too long
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/devfreq/krait-cache-devfreq.yaml
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/devfreq/krait-cache-devfreq.example.dt.yaml: qcom-krait-cache: 'voltage-tolerance' is a required property
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/devfreq/krait-cache-devfreq.yaml
 
-All of this to be done in DPC driver without any err.c involvement.
 
-Bjorn,
+See https://patchwork.ozlabs.org/patch/1372099
 
-What do you think? Is this a good direction?
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure dt-schema is up to date:
 
-Sinan
+pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
+
+Please check and re-submit.
 
