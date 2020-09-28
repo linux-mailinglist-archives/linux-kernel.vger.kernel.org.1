@@ -2,87 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03D6827A6BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 07:07:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A11E27A6BD
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 07:12:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726540AbgI1FHb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 01:07:31 -0400
-Received: from a.mx.secunet.com ([62.96.220.36]:39482 "EHLO a.mx.secunet.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725287AbgI1FHb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 01:07:31 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by a.mx.secunet.com (Postfix) with ESMTP id 2371E2049A;
-        Mon, 28 Sep 2020 07:07:29 +0200 (CEST)
-X-Virus-Scanned: by secunet
-Received: from a.mx.secunet.com ([127.0.0.1])
-        by localhost (a.mx.secunet.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id RtOjFdq8NlJC; Mon, 28 Sep 2020 07:07:28 +0200 (CEST)
-Received: from mail-essen-02.secunet.de (unknown [10.53.40.205])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by a.mx.secunet.com (Postfix) with ESMTPS id 98897200AA;
-        Mon, 28 Sep 2020 07:07:28 +0200 (CEST)
-Received: from mbx-essen-01.secunet.de (10.53.40.197) by
- mail-essen-02.secunet.de (10.53.40.205) with Microsoft SMTP Server (TLS) id
- 14.3.487.0; Mon, 28 Sep 2020 07:07:28 +0200
-Received: from gauss2.secunet.de (10.182.7.193) by mbx-essen-01.secunet.de
- (10.53.40.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2044.4; Mon, 28 Sep
- 2020 07:07:28 +0200
-Received: by gauss2.secunet.de (Postfix, from userid 1000)      id 82E3D318470F;
- Mon, 28 Sep 2020 07:07:27 +0200 (CEST)
-Date:   Mon, 28 Sep 2020 07:07:27 +0200
-From:   Steffen Klassert <steffen.klassert@secunet.com>
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-CC:     syzbot <syzbot+577fbac3145a6eb2e7a5@syzkaller.appspotmail.com>,
-        <davem@davemloft.net>, <kuba@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <syzkaller-bugs@googlegroups.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        <linux-security-module@vger.kernel.org>
-Subject: Re: [PATCH] xfrm: Use correct address family in xfrm_state_find
-Message-ID: <20200928050727.GE20687@gauss3.secunet.de>
-References: <0000000000009fc91605afd40d89@google.com>
- <20200925030759.GA17939@gondor.apana.org.au>
- <20200925044256.GA18246@gondor.apana.org.au>
+        id S1726393AbgI1FMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 01:12:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38586 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725287AbgI1FMN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 01:12:13 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44AD9C0613CE
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Sep 2020 22:12:13 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id r8so7202484qtp.13
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Sep 2020 22:12:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VlMjWdTSP4HviN0so4jvAwCqJvrMDP53UXwYxfndYEI=;
+        b=Dn/d+8GlDku+z+Zg/e84kp9PvTrhxJpf8eqvrZ+AUb/OotOcg11WcaGmRwn1I6zDTu
+         QAvvS4GIuJ5SkBHKgfiAGpCHL9LSsxd9PsTOOITZtvo26UfRf2RuuLdb2bGRt4+rUi1o
+         f0FQFOQ0EowmS0Tvy0SlWe/3ql5U+hVBK2Pprl6psYxi7gzonC0KDWSxLib/a8xDFu43
+         6L5ppe19G8hAsPQWY/o30smk9F/F6h6zEvyfoqvaVbu6JFR0LoAtn2X7+zqr3AJeZL9u
+         PTG8y9g1UsybnkyWy+zl/QdPXVYugrM+xTlRySkvlCzJm91bCzIUwT9Oe5MzvRWBm/JU
+         Lu1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VlMjWdTSP4HviN0so4jvAwCqJvrMDP53UXwYxfndYEI=;
+        b=kxtpe7YWJFbPj5qyQ+MBEIBg2WhHJ+gWEFcu4UmgK0NsQTadjHA7ln+aHULx4mJaJz
+         lal9NL3UL03U0hcSrJ/IFGHplFzOm5YiHTkvB05ep1A1gXePvQ2UvNfHS77UaDC1HnGZ
+         Msj/d3gr7QceOWEXJYg0eAUxNrVyk01LKpqK083UYTGtbDDSPbuU5CYv5LIIGZBTjZ8c
+         YywtoGeq9Or9zWFANlvYajLviABbaqU2RUL0D6gsfSzBf74a+Ic0Bx2gqIolKKwGoLFj
+         zvtUhD+od/1pBlvaS0KGL65IL0wxCXtvEhb1Oh57NE6lXRutGyJ0rEAtZSiYCjcUS9SG
+         yzoA==
+X-Gm-Message-State: AOAM532iSl5ejkoskGHBhB2QmFlDDsyPiX4KVdz9aQdy49dppnLdEpOO
+        Fgkny8E3MczuvaBkmiNwkmRgtjEhe7qULWweTTdL/A==
+X-Google-Smtp-Source: ABdhPJzgaTRHtuA591lCaAVpxUJ3+RXwvTK+CvoSkkFjsdfPabjYSNBc8LkQ9J/VJOzqJMtueuEMe8c71f4bwoaYTsQ=
+X-Received: by 2002:ac8:5215:: with SMTP id r21mr10885089qtn.257.1601269931666;
+ Sun, 27 Sep 2020 22:12:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20200925044256.GA18246@gondor.apana.org.au>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-ClientProxiedBy: cas-essen-01.secunet.de (10.53.40.201) To
- mbx-essen-01.secunet.de (10.53.40.197)
-X-EXCLAIMER-MD-CONFIG: 2c86f778-e09b-4440-8b15-867914633a10
+References: <1595640639-9310-1-git-send-email-penguin-kernel@I-love.SAKURA.ne.jp>
+ <384ce711-25c5-553b-8d22-965847132fbd@i-love.sakura.ne.jp>
+ <0f7233f7-a04a-e9c9-7920-3a170cc97e4b@i-love.sakura.ne.jp>
+ <CACT4Y+bjPr=64Lq1-ARD6T=K9LmC_Aor4BRXPcZVtUU8vF0oGg@mail.gmail.com>
+ <20200916115057.GO2674@hirez.programming.kicks-ass.net> <CACT4Y+agTiEF-1i9LbAgp-q_02oYF0kAPZGAAJ==-wx2Xh7xzQ@mail.gmail.com>
+ <72b034b7-f9ff-c744-5307-6fd84f38ae26@i-love.sakura.ne.jp>
+In-Reply-To: <72b034b7-f9ff-c744-5307-6fd84f38ae26@i-love.sakura.ne.jp>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Mon, 28 Sep 2020 07:12:00 +0200
+Message-ID: <CACT4Y+YNXqvNhuyL7WNvQz_YZNuzm=msFpf0540=Hd9VMgNqEg@mail.gmail.com>
+Subject: Re: [PATCH v2] lockdep: Allow tuning tracing capacity constants.
+To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        syzkaller <syzkaller@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 02:42:56PM +1000, Herbert Xu wrote:
-> Resend with proper subject.
->  
-> ---8<---
-> The struct flowi must never be interpreted by itself as its size
-> depends on the address family.  Therefore it must always be grouped
-> with its original family value.
-> 
-> In this particular instance, the original family value is lost in
-> the function xfrm_state_find.  Therefore we get a bogus read when
-> it's coupled with the wrong family which would occur with inter-
-> family xfrm states.
-> 
-> This patch fixes it by keeping the original family value.
-> 
-> Note that the same bug could potentially occur in LSM through
-> the xfrm_state_pol_flow_match hook.  I checked the current code
-> there and it seems to be safe for now as only secid is used which
-> is part of struct flowi_common.  But that API should be changed
-> so that so that we don't get new bugs in the future.  We could
-> do that by replacing fl with just secid or adding a family field.
-> 
-> Reported-by: syzbot+577fbac3145a6eb2e7a5@syzkaller.appspotmail.com
-> Fixes: 48b8d78315bf ("[XFRM]: State selection update to use inner...")
-> Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+On Mon, Sep 28, 2020 at 2:24 AM Tetsuo Handa
+<penguin-kernel@i-love.sakura.ne.jp> wrote:
+>
+> On 2020/09/16 21:14, Dmitry Vyukov wrote:
+> > On Wed, Sep 16, 2020 at 1:51 PM <peterz@infradead.org> wrote:
+> >>
+> >> On Wed, Sep 16, 2020 at 01:28:19PM +0200, Dmitry Vyukov wrote:
+> >>> On Fri, Sep 4, 2020 at 6:05 PM Tetsuo Handa
+> >>> <penguin-kernel@i-love.sakura.ne.jp> wrote:
+> >>>>
+> >>>> Hello. Can we apply this patch?
+> >>>>
+> >>>> This patch addresses top crashers for syzbot, and applying this patch
+> >>>> will help utilizing syzbot's resource for finding other bugs.
+> >>>
+> >>> Acked-by: Dmitry Vyukov <dvyukov@google.com>
+> >>>
+> >>> Peter, do you still have concerns with this?
+> >>
+> >> Yeah, I still hate it with a passion; it discourages thinking. A bad
+> >> annotation that blows up the lockdep storage, no worries, we'll just
+> >> increase this :/
+> >>
+> >> IIRC the issue with syzbot is that the current sysfs annotation is
+> >> pretty terrible and generates a gazillion classes, and syzbot likes
+> >> poking at /sys a lot and thus floods the system.
+> >>
+> >> I don't know enough about sysfs to suggest an alternative, and haven't
+> >> exactly had spare time to look into it either :/
+> >>
+> >> Examples of bad annotations is getting every CPU a separate class, that
+> >> leads to nr_cpus! chains if CPUs arbitrarily nest (nr_cpus^2 if there's
+> >> only a single nesting level).
+> >
+> > Maybe on "BUG: MAX_LOCKDEP_CHAINS too low!" we should then aggregate,
+> > sort and show existing chains so that it's possible to identify if
+> > there are any worst offenders and who they are.
+> >
+> > Currently we only have a hypothesis that there are some worst
+> > offenders vs lots of normal load. And we can't point fingers which
+> > means that, say, sysfs, or other maintainers won't be too inclined to
+> > fix anything.
+> >
+> > If we would know for sure that lock class X is guilty. That would make
+> > the situation much more actionable.
+> >
+>
+> Dmitry is thinking that we need to use CONFIG_LOCKDEP=n temporary until lockdep
+> problems are resolved. ( https://github.com/google/syzkaller/issues/2140 )
+>
+> But I think it is better to apply this patch (and revert this patch when it became
+> possible to identify if there are any worst offenders and who they are) than using
+> CONFIG_LOCKDEP=n.
+>
+> CONFIG_LOCKDEP=n causes "#syz test" request to cause false response regarding locking
+> related issues, for we are not ready to enforce "retest without proposed patch
+> when test with proposed patch did not reproduce the crash".
 
-Applied, thanks a lot Herbert!
+FWIW patch testing for previously reported bugs should still work
+because it uses the kernel config associated with the bug report.
+
+> I think that "not detecting lock related problems introduced by new patches" costs
+> more than "postpone fixing lock related problems in existing code".
