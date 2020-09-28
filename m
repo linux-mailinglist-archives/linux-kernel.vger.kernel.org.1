@@ -2,80 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56AF327B62D
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 22:25:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 216CF27B63F
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 22:27:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726851AbgI1UZB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 16:25:01 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:41050 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726692AbgI1UZA (ORCPT
+        id S1726918AbgI1U1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 16:27:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38872 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726590AbgI1U0z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 16:25:00 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1601324697;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=bFCfMeJz3k7KgJV/g5+JO0vuUvcWHhiaBBsDnTpUBlY=;
-        b=TP+PHTQylOshKfHId3EGDSY+kpXmrrQb8H3PwNUb84fyOn4v5ZeeI8H0JxN/b8gF8adktB
-        W7OG2fyaY3Sih3/menetx7cVg5D3lteYcAucOb6MbOoeyyuCW47eANUHyiPTvul0+No5wz
-        vtqtHjO+0efFNqmBef7hEjs9QzEFBcXj97JYGvKomBDBDXFghK+TvTeZQurFKynWXlEDYT
-        +h1dti1KMXdySYSTvj448S1p/9MD+aU3UXWBmsRYm5DQSLkEufICQL1A3mrIYQBvEQubGF
-        QgHfc4AeIYB44xI9JHCSwintZ0/I92YCAZ+XxvoSz55bsYFHMkubqvEbk+aFTw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1601324697;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=bFCfMeJz3k7KgJV/g5+JO0vuUvcWHhiaBBsDnTpUBlY=;
-        b=nIpAK+TLxTnYokpLYa33bQYSZ6zKFYxNxEexVmJUR3hXUJBCTfLAqtcMtiFO92LiSBBuJY
-        dGDq3BCWHqF3KDBw==
-To:     Edward Cree <ecree@solarflare.com>,
-        linux-net-drivers@solarflare.com
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [RFC PATCH net-next] sfc: replace in_interrupt() usage
-In-Reply-To: <e45d9556-2759-6f33-01a0-d1739ce5760d@solarflare.com>
-References: <168a1f9e-cba4-69a8-9b29-5c121295e960@solarflare.com> <e45d9556-2759-6f33-01a0-d1739ce5760d@solarflare.com>
-Date:   Mon, 28 Sep 2020 22:24:57 +0200
-Message-ID: <87k0wdk5t2.fsf@nanos.tec.linutronix.de>
+        Mon, 28 Sep 2020 16:26:55 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0217C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 13:26:54 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id y14so1869016pgf.12
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 13:26:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lJ5ZdKcP2oAkwJGbJu7+t9DxeD4UPnPYjzHySuJB9PE=;
+        b=MlFab++6Ip3miUqv0VUcTTNeUxVV45WuF5PFiNzVNk1Ih0DWAMRo93baww8sIoZcuL
+         Cva6K7F9j2ZeLMDPnoJunPlqO7v4JnzhXtJIVt+mbmxZjzYIy/ZTeUA5TsNyRtLBpmWe
+         jArZUszX6PfOEgwGFNEEE6ZGNMbxfVeBhqs64=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lJ5ZdKcP2oAkwJGbJu7+t9DxeD4UPnPYjzHySuJB9PE=;
+        b=HUf567T1fAhN2LgxNI/NVL+LLBHYejnE85i+VUbPaZ51M5SHou3BoYnv5rdkWPob/N
+         2v0Io6nTXPdqRUi3Cb7yGHP3xVAnSeEaXne2uw1/kjlB8rGgJZnoF+C0+kCb9QKEqJKh
+         jAuACskZLkf1unm5TQXLKVSTqqbyb78QXHE380F/vhtxf8CZ/37sc0rVICUE1MAD+yVs
+         CKCjHF5hv1WpZN2uzrq8TsCEXURAY7g87FXvJlogm/Vtq/UNgC+HrmtmPsRTLB33X0rh
+         E65g+Cp20o4EFsYMHLqJq/YTKg8ICJGhZK6liKY1jXH4KiyofzPPaMKG7A4OyY1rYffA
+         l8yQ==
+X-Gm-Message-State: AOAM530X5SbcyvDMpN6FCUa2o6G/K3KWH7TPGqXFxXlMa19MvU8QHuuZ
+        YBBJpAtRZW4wMOUuFMC2G1FKGg==
+X-Google-Smtp-Source: ABdhPJxH5K44N+9tEm104267VEbgaRdZeWLDO/ScilChvQxDBLD7mNFmT4KCtmzLAvGg2fUSgu8YNA==
+X-Received: by 2002:a17:902:14f:b029:d2:562d:e84 with SMTP id 73-20020a170902014fb02900d2562d0e84mr1027485plb.64.1601324814455;
+        Mon, 28 Sep 2020 13:26:54 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id q4sm2484432pjl.28.2020.09.28.13.26.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Sep 2020 13:26:53 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Shuah Khan <shuah@kernel.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Hangbin Liu <liuhangbin@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        Tim.Bird@sony.com, lkft-triage@lists.linaro.org,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Justin Cook <justin.cook@linaro.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: [PATCH v2 0/3] Extract run_kselftest.sh and generate stand-alone test list
+Date:   Mon, 28 Sep 2020 13:26:47 -0700
+Message-Id: <20200928202650.2530280-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 28 2020 at 21:05, Edward Cree wrote:
-> efx_ef10_try_update_nic_stats_vf() used in_interrupt() to figure out
->  whether it is safe to sleep (for MCDI) or not.
-> The only caller from which it was not is efx_net_stats(), which can be
->  invoked under dev_base_lock from net-sysfs::netstat_show().
-> So add a new update_stats_atomic() method to struct efx_nic_type, and
->  call it from efx_net_stats(), removing the need for
->  efx_ef10_try_update_nic_stats_vf() to behave differently for this case
->  (which it wasn't doing correctly anyway).
-> For all nic_types other than EF10 VF, this method is NULL and so we
->  call the regular update_stats() methods, which are happy with being
->  called from atomic contexts.
->
-> Fixes: f00bf2305cab ("sfc: don't update stats on VF when called in atomic context")
-> Reported-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> Signed-off-by: Edward Cree <ecree@solarflare.com>
+v2:
+- update documentation
+- include SPDX line in extracted script
+v1: https://lore.kernel.org/linux-kselftest/20200925234527.1885234-1-keescook@chromium.org/
 
-That's much nicer.
 
-> ---
-> Only compile-tested so far, because I'm waiting for my kernel to
->  finish rebuilding with CONFIG_DEBUG_ATOMIC_SLEEP which I'm hoping
->  is the right thing to detect the bug in the existing code.
-> I also wasn't quite sure how to give credit to the thorough analysis
->  in the commit message of Sebastian's patch.  I don't think we have
->  a Whatever-by: tag to cover that, do we?
+Hi!
 
-Sebastian did the analysis and I did some word polishing, but the credit
-surely goes to him.
+I really like Hangbin Liu's intent[1] but I think we need to be a little
+more clean about the implementation. This extracts run_kselftest.sh from
+the Makefile so it can actually be changed without embeds, etc. Instead,
+generate the test list into a text file. Everything gets much simpler.
+:)
 
-Thanks,
+And in patch 2, I add back Hangbin Liu's new options (with some extra
+added) with knowledge of "collections" (i.e. Makefile TARGETS) and
+subtests. This should work really well with LAVA too, which needs to
+manipulate the lists of tests being run.
 
-        tglx
+Thoughts?
+
+-Kees
+
+[1] https://lore.kernel.org/lkml/20200914022227.437143-1-liuhangbin@gmail.com/
+
+Kees Cook (3):
+  selftests: Extract run_kselftest.sh and generate stand-alone test list
+  selftests/run_kselftest.sh: Make each test individually selectable
+  doc: dev-tools: kselftest.rst: Update examples and paths
+
+ Documentation/dev-tools/kselftest.rst    | 35 +++++----
+ tools/testing/selftests/Makefile         | 26 ++-----
+ tools/testing/selftests/lib.mk           |  5 +-
+ tools/testing/selftests/run_kselftest.sh | 93 ++++++++++++++++++++++++
+ 4 files changed, 124 insertions(+), 35 deletions(-)
+ create mode 100755 tools/testing/selftests/run_kselftest.sh
+
+-- 
+2.25.1
+
