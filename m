@@ -2,104 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A809027B68A
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 22:46:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47D6927B68D
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 22:47:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726869AbgI1Up7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 16:45:59 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:6258 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726281AbgI1Up6 (ORCPT
+        id S1726873AbgI1UrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 16:47:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41992 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726409AbgI1UrN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 16:45:58 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f724b220000>; Mon, 28 Sep 2020 13:44:18 -0700
-Received: from [10.2.53.30] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 28 Sep
- 2020 20:45:57 +0000
-Subject: Re: [PATCH 8/8] selftests/vm: hmm-tests: remove the libhugetlbfs
- dependency
-From:   John Hubbard <jhubbard@nvidia.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        Shuah Khan <shuah@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        <linux-kselftest@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <linux-s390@vger.kernel.org>
-References: <20200928062159.923212-1-jhubbard@nvidia.com>
- <20200928062159.923212-9-jhubbard@nvidia.com>
- <20200928130245.GQ9916@ziepe.ca>
- <982fd9bf-64cb-00e9-f092-13849c7cf7d9@nvidia.com>
-Message-ID: <de7ddfb6-e0f8-f70c-f38b-127ec6b54591@nvidia.com>
-Date:   Mon, 28 Sep 2020 13:45:57 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Mon, 28 Sep 2020 16:47:13 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00662C061755;
+        Mon, 28 Sep 2020 13:47:12 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id d4so2427583wmd.5;
+        Mon, 28 Sep 2020 13:47:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nb9J0IHiYZyiiI0yNoQU8kntPHSf2s+jSr0KCIhtaEk=;
+        b=nY5cddHKnN1vrtLRd+xPWeQFOAhMkKwC1OMapCOhg225IIFY/tTqfcwiU4lY9Yd5sJ
+         vTV7RZmDN8mGB8523uI9NVE+BQIeebJNEtk9t1+kZmqwqSVMDY0abaQFwUBaDXb4jLh5
+         EtF+8OnAZMbvCXPPnebXaAPG3oZllQc29vmiIZrnmb0wMbFThR/42N+spfTWPJcZafhv
+         iFyIGHA+zNFE1d3ADms6kfFLlT9lv/Qc1DL0pA+SD3ELdysfM6o76we2gZ+KQfqd8NuB
+         kYhFxwasSDQX0XZYFq8rTSyM7mTVRI8cgyhcELpe+7CW/w2MO+wK0pNYrdZi335EfvOW
+         ucVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nb9J0IHiYZyiiI0yNoQU8kntPHSf2s+jSr0KCIhtaEk=;
+        b=Tp4qzNBMeea5AnOnVZajsTe13GZMbnOYNBOR1Cum4H59OTWbZR/luCzG5mzVpM18Hl
+         hWCB5q2THApCn1fzFkcXbx2MijRLG+mgdTi+4XxR+FdX1dZ3dCxMxptePS/95YVjpy41
+         RHsokZnN18ayaMuicgFBmU5GlqJdhCwI0gvj4DPNVXPuScjdmU+ir3IX8MuqOiQlqvhI
+         p1MbaTxuF0V+fNi1s2w0K5jW1wp898RTtkREHwKIHiDr4hwYxrkejequf2WpvU1pVlFW
+         OCtCJ1nJv6QS8D1Q1l1WxCtSnJd+0jjItDTHIfczrQn3Bx4wIgjBDJDIe/332miIwpLu
+         e/Bg==
+X-Gm-Message-State: AOAM532PbpYeGiRmTmugLoOaBa0ik2L4f0VsTe7XmotEUjoFtf4po060
+        CAOVvwtFNH0GhjhaXAx5PGc=
+X-Google-Smtp-Source: ABdhPJxZGUUQLn23xBCKNF6y5ZS2rKRzE/3ozQLK02zrD2dYVMAoHtRujiS6Qsc/HjpHQLZejmN13w==
+X-Received: by 2002:a05:600c:22d2:: with SMTP id 18mr882422wmg.145.1601326031552;
+        Mon, 28 Sep 2020 13:47:11 -0700 (PDT)
+Received: from IcarusMOD.eternityproject.eu ([2.237.20.237])
+        by smtp.gmail.com with ESMTPSA id r206sm2677878wma.47.2020.09.28.13.47.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Sep 2020 13:47:11 -0700 (PDT)
+From:   kholk11@gmail.com
+To:     robdclark@gmail.com
+Cc:     sean@poorly.run, airlied@linux.ie, daniel@ffwll.ch,
+        jcrouse@codeaurora.org, konradybcio@gmail.com, kholk11@gmail.com,
+        marijns95@gmail.com, martin.botka1@gmail.com,
+        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
+        phone-devel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/7] Add support for Adreno 508/509/512
+Date:   Mon, 28 Sep 2020 22:47:02 +0200
+Message-Id: <20200928204709.45746-1-kholk11@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <982fd9bf-64cb-00e9-f092-13849c7cf7d9@nvidia.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1601325858; bh=ZNzUuJga0yAMPUYJp+Mbsk5gWocHn8PGlFF35AeQU6M=;
-        h=Subject:From:To:CC:References:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=m5IQA3iWGf+mZlD+saPKKaP+GSN4PkecL44skN/WMfHCWeNk37hDn5PMtercS3tK6
-         Lp2QQuHA9Xj/xMMew2SGfA2kmICe2T0+C2xOut+GVKNp7iBo9QVJ+B6ZTiCBWwct88
-         T8nBnsGvpfQ0Tv2rc+csXV/eiQOABg6g4J0ThvAIFFQIAE/Gs9RyB7niQarYyAe+HZ
-         QUn0TG+3k8nyf5xQHK59lujZJH/Y3S5qtFqWhA6+9CnsqRq0d9y3dntQbiaKDZ7p1n
-         uq8HRKBsBnaiNvulGdhSjuQVJLSLijDk44AC0NT7oB/9lsTgiZ52taQi/N8J9UtfH5
-         WACzwgevzothA==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/28/20 1:18 PM, John Hubbard wrote:
-> On 9/28/20 6:02 AM, Jason Gunthorpe wrote:
->> On Sun, Sep 27, 2020 at 11:21:59PM -0700, John Hubbard wrote:
-> ...
->>> +gcc -c $tmpfile_c -o $tmpfile_o >/dev/null 2>&1
->>
->> This gcc has to come from some makefile variable
-  I plan on posting a v2 with this additional change, to fix the above point:
+From: AngeloGioacchino Del Regno <kholk11@gmail.com>
 
-diff --git a/tools/testing/selftests/vm/Makefile b/tools/testing/selftests/vm/Makefile
-index 986a90fa9653..019cbb7f3cf8 100644
---- a/tools/testing/selftests/vm/Makefile
-+++ b/tools/testing/selftests/vm/Makefile
-@@ -138,7 +138,7 @@ $(OUTPUT)/hmm-tests: local_config.h
-  $(OUTPUT)/hmm-tests: LDLIBS += $(HMM_EXTRA_LIBS)
+In this patch series, we are adding support for lower end Adreno 5
+series GPUs, such as A508, A509 and A512 that we have found in the
+Qualcomm SDM630, SDM636 and SDM660 SoCs.
 
-  local_config.mk local_config.h: check_config.sh
--	./check_config.sh
-+	./check_config.sh $(CC)
+On a note, adding support for these three units, also adds 99% of
+the required "things" for another two GPUs, A505 and A506 but, even
+if adding them requires literally two lines of code, noone of us has
+got any SoC equipped with these ones hence we wouldn't be able to
+test. Even though there is basically no reason for them to not work
+correctly, kernel side, I chose to avoid adding the two "magic" lines.
 
-  EXTRA_CLEAN += local_config.mk local_config.h
+Anyway, this patchset also addresses some issues that we've found in
+the A5XX part of the Adreno driver, regarding a logic mistake in one
+of the VPC protect values and a forced overwrite of the register named
+A5XX_PC_DBG_ECO_CNTL, forcing the setting of vtxFifo and primFifo
+thresholds that was valid only for higher end GPUs.
 
-diff --git a/tools/testing/selftests/vm/check_config.sh b/tools/testing/selftests/vm/check_config.sh
-index 651a4b192479..079c8a40b85d 100755
---- a/tools/testing/selftests/vm/check_config.sh
-+++ b/tools/testing/selftests/vm/check_config.sh
-@@ -16,7 +16,8 @@ echo "#include <sys/types.h>"        > $tmpfile_c
-  echo "#include <hugetlbfs.h>"       >> $tmpfile_c
-  echo "int func(void) { return 0; }" >> $tmpfile_c
+This patch series has been tested on the following devices:
+ - Sony Xperia XA2 Ultra (SDM630 Nile Discovery)
+ - Sony Xperia 10        (SDM630 Ganges Kirin)
+ - Sony Xperia 10 Plus   (SDM636 Ganges Mermaid)
 
--gcc -c $tmpfile_c -o $tmpfile_o >/dev/null 2>&1
-+CC=${1:?"Usage: $0 <compiler> # example compiler: gcc"}
-+$CC -c $tmpfile_c -o $tmpfile_o >/dev/null 2>&1
+Changes in v2:
+ - Define REG_A5XX_UCHE_MODE_CNTL and fix open-coded
+   REG_A5XX_VPC_DBG_ECO_CNTL in the all flat shading optimization
+   disablement commit, as requested by Rob Clark.
 
-  if [ -f $tmpfile_o ]; then
-      echo "#define LOCAL_CONFIG_HAVE_LIBHUGETLBFS 1" > $OUTPUT_H_FILE
+AngeloGioacchino Del Regno (4):
+  drm/msm/a5xx: Remove overwriting A5XX_PC_DBG_ECO_CNTL register
+  drm/msm/a5xx: Separate A5XX_PC_DBG_ECO_CNTL write from main branch
+  drm/msm/a5xx: Add support for Adreno 508, 509, 512 GPUs
+  drm/msm/a5xx: Reset VBIF before PC only on A510 and A530
 
+Konrad Dybcio (3):
+  drm/msm/a5xx: Fix VPC protect value in gpu_write()
+  drm/msm/a5xx: Disable flat shading optimization
+  drm/msm/a5xx: Disable UCHE global filter
 
+ drivers/gpu/drm/msm/adreno/a5xx.xml.h      |   2 +
+ drivers/gpu/drm/msm/adreno/a5xx_gpu.c      | 195 ++++++++++++++++++---
+ drivers/gpu/drm/msm/adreno/a5xx_power.c    |   4 +-
+ drivers/gpu/drm/msm/adreno/adreno_device.c |  60 +++++++
+ drivers/gpu/drm/msm/adreno/adreno_gpu.h    |  15 ++
+ 5 files changed, 249 insertions(+), 27 deletions(-)
 
-thanks,
 -- 
-John Hubbard
-NVIDIA
+2.28.0
+
