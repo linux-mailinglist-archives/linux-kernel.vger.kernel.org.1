@@ -2,138 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 402B527AB94
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 12:12:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5589B27AB9A
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 12:13:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726688AbgI1KMT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 06:12:19 -0400
-Received: from mga09.intel.com ([134.134.136.24]:54519 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726461AbgI1KMS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 06:12:18 -0400
-IronPort-SDR: r1iBsign+/aMU1hcAbRI+HFjYCxU+XvTFx1pF2ZuADE/JG12+pcPo1B9tLMQ9PDMEkS+VN4epZ
- ANaVsMri/9DQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9757"; a="162854842"
-X-IronPort-AV: E=Sophos;i="5.77,313,1596524400"; 
-   d="scan'208";a="162854842"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 03:12:16 -0700
-IronPort-SDR: 4/5R8Z+uJ6S8nnQ01H23JPefZtrf3oqoGNaJwBGJ/sU/nbwup0LCSALwLyYFweNcD7i3z6Xx6g
- LJbEFcEP671A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,313,1596524400"; 
-   d="scan'208";a="311725475"
-Received: from climb.png.intel.com ([10.221.118.165])
-  by orsmga006.jf.intel.com with ESMTP; 28 Sep 2020 03:12:13 -0700
-From:   Voon Weifeng <weifeng.voon@intel.com>
-To:     "David S . Miller" <davem@davemloft.net>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jose Abreu <joabreu@synopsys.com>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Ong Boon Leong <boon.leong.ong@intel.com>,
-        Voon Weifeng <weifeng.voon@intel.com>,
-        Seow Chen Yong <chen.yong.seow@intel.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Wong Vee Khee <vee.khee.wong@intel.com>
-Subject: [PATCH v1 net-next] stmmac: intel: Adding ref clock 1us tic for LPI cntr
-Date:   Mon, 28 Sep 2020 18:12:12 +0800
-Message-Id: <20200928101212.12274-1-weifeng.voon@intel.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726658AbgI1KNm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 06:13:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56904 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726564AbgI1KNl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 06:13:41 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7E55C061755
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 03:13:41 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id u3so362468pjr.3
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 03:13:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=7sgTeVLvLeSQvkNniwe9wr5TNxpCRtDL+X32iGc1MCc=;
+        b=iPfwpp3kKMvGkz1xjGNkMSNsdE7T70NThsV5YNMEgCWNTgv/RZLxCwl194fLWz3k/u
+         HrYQceGM04KbL+JAnVEkr0TVjUj6WqNHNxdWUr8cmijiAvcasz34qBc4LI2mAenBG6DN
+         cRRHw6qC0/dAAM/atDPXU99roc77OJKCn1t1UW5MQoGbjEWSVRyn1x0FCKU/LgUYyfzv
+         h1xsJakekPBhgWgt/rDUw8Yd2l4NeJY0q85c6YBS5cijM9QRw0DYbKyzVLDdBM/aC7BB
+         xtBAtkrdE950JcKyu3q36Uu4BOwg9xt/3PiecxGECuIwgyicRDJzRdds0Uh3pW1tYuET
+         HqSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=7sgTeVLvLeSQvkNniwe9wr5TNxpCRtDL+X32iGc1MCc=;
+        b=s8r4RheAqxdE0tKwnZoXFlkIDLc7Q/sHklqXHWhUokjvbcWuidslu4lXRsySx2G8rA
+         DARvSTHCSMq+Nns5+cLtDQU2M9zQ5XAAm2tdsEWKTTXhVdKqFlu0ztKNTyJ8+ZejZaUd
+         18TUiqz2EMjOgrn1E3u01iHhWo97J5xOSnjEnB42/wa2wstu5KvvjKZP8W2wqc/WlIaz
+         ufvsx5N9KfAxM1AHmmeBcv5mtf/TVmne7g3xYiUyJi2kgdUVJziF0vepRn2Fs8X1ejlf
+         /ywf1Z1ji7JcsnixTXi+GTM8NNQYs+AodtlHMp5dHpZZywI4UVPPhdlw6ZTq2Hrwi26O
+         8rPw==
+X-Gm-Message-State: AOAM533hADK6ofJS6itUhBjNFVi628qVmWH0CuA0Ar8xiuqi+MghiPFS
+        bbdngeVPKGokx8W4Zu0bqw==
+X-Google-Smtp-Source: ABdhPJw39qHbP1i8jrTbQZ7zdnWe081pF0uB5JBd/ZAcxUPOcxDPn2osBmbWmPZpfudPeStQdYopaA==
+X-Received: by 2002:a17:90a:8c83:: with SMTP id b3mr672760pjo.206.1601288021409;
+        Mon, 28 Sep 2020 03:13:41 -0700 (PDT)
+Received: from localhost.localdomain ([47.242.140.181])
+        by smtp.gmail.com with ESMTPSA id 1sm865539pgm.4.2020.09.28.03.13.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Sep 2020 03:13:40 -0700 (PDT)
+From:   Pujin Shi <shipujin.t@gmail.com>
+To:     Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Lina Iyer <ilina@codeaurora.org>,
+        Maulik Shah <mkshah@codeaurora.org>,
+        afzal mohammed <afzal.mohd.ma@gmail.com>,
+        "Gustavo A . R . Silva" <gustavo@embeddedor.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Dominik Brodowski <linux@dominikbrodowski.net>,
+        Arvind Sankar <nivedita@alum.mit.edu>
+Cc:     linux-kernel@vger.kernel.org, shipujin.t@gmail.com
+Subject: [PATCH v2] MIPS: irq: Add missing prototypes for init_IRQ()
+Date:   Mon, 28 Sep 2020 18:12:41 +0800
+Message-Id: <20200928101241.1240-1-shipujin.t@gmail.com>
+X-Mailer: git-send-email 2.18.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rusaimi Amira Ruslan <rusaimi.amira.rusaimi@intel.com>
+init_IRQ() have no prototype, add one in linux/irq.h
 
-Adding reference clock (1us tic) for all LPI timer on Intel platforms.
-The reference clock is derived from ptp clk. This also enables all LPI
-counter.
+Fix the following warnings (treated as error in W=1):
+arch/mips/kernel/irq.c:52:13: error: no previous prototype for 'init_IRQ' [-Werror=missing-prototypes]
 
-Signed-off-by: Rusaimi Amira Ruslan <rusaimi.amira.rusaimi@intel.com>
-Signed-off-by: Voon Weifeng <weifeng.voon@intel.com>
+Signed-off-by: Pujin Shi <shipujin.t@gmail.com>
 ---
- drivers/net/ethernet/stmicro/stmmac/dwmac-intel-plat.c | 9 +++++++++
- drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c      | 9 +++++++++
- include/linux/stmmac.h                                 | 1 +
- 3 files changed, 19 insertions(+)
+ include/linux/irq.h | 2 ++
+ init/main.c         | 1 -
+ 2 files changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel-plat.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel-plat.c
-index b1323d5c95b5..f61cb997a8f6 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel-plat.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel-plat.c
-@@ -11,6 +11,7 @@
- #include <linux/platform_device.h>
- #include <linux/stmmac.h>
- 
-+#include "dwmac4.h"
- #include "stmmac.h"
- #include "stmmac_platform.h"
- 
-@@ -146,6 +147,14 @@ static int intel_eth_plat_probe(struct platform_device *pdev)
- 	}
- 
- 	plat_dat->bsp_priv = dwmac;
-+	plat_dat->eee_usecs_rate = plat_dat->clk_ptp_rate;
-+
-+	if (plat_dat->eee_usecs_rate > 0) {
-+		u32 tx_lpi_usec;
-+
-+		tx_lpi_usec = (plat_dat->eee_usecs_rate / 1000000) - 1;
-+		writel(tx_lpi_usec, stmmac_res.addr + GMAC_1US_TIC_COUNTER);
-+	}
- 
- 	ret = stmmac_dvr_probe(&pdev->dev, plat_dat, &stmmac_res);
- 	if (ret) {
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
-index ab0a81e0fea1..2af9458be95f 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
-@@ -6,6 +6,7 @@
- #include <linux/pci.h>
- #include <linux/dmi.h>
- #include "dwmac-intel.h"
-+#include "dwmac4.h"
- #include "stmmac.h"
- 
- struct intel_priv_data {
-@@ -295,6 +296,7 @@ static int intel_mgbe_common_data(struct pci_dev *pdev,
- 	plat->axi->axi_blen[2] = 16;
- 
- 	plat->ptp_max_adj = plat->clk_ptp_rate;
-+	plat->eee_usecs_rate = plat->clk_ptp_rate;
- 
- 	/* Set system clock */
- 	plat->stmmac_clk = clk_register_fixed_rate(&pdev->dev,
-@@ -623,6 +625,13 @@ static int intel_eth_pci_probe(struct pci_dev *pdev,
- 	if (ret)
- 		return ret;
- 
-+	if (plat->eee_usecs_rate > 0) {
-+		u32 tx_lpi_usec;
-+
-+		tx_lpi_usec = (plat->eee_usecs_rate / 1000000) - 1;
-+		writel(tx_lpi_usec, res.addr + GMAC_1US_TIC_COUNTER);
-+	}
-+
- 	ret = pci_alloc_irq_vectors(pdev, 1, 1, PCI_IRQ_ALL_TYPES);
- 	if (ret < 0)
- 		return ret;
-diff --git a/include/linux/stmmac.h b/include/linux/stmmac.h
-index 00e83c877496..628e28903b8b 100644
---- a/include/linux/stmmac.h
-+++ b/include/linux/stmmac.h
-@@ -200,5 +200,6 @@ struct plat_stmmacenet_data {
- 	int has_xgmac;
- 	bool vlan_fail_q_en;
- 	u8 vlan_fail_q;
-+	unsigned int eee_usecs_rate;
- };
+diff --git a/include/linux/irq.h b/include/linux/irq.h
+index 63b9d962ee67..4e8c462e00fc 100644
+--- a/include/linux/irq.h
++++ b/include/linux/irq.h
+@@ -585,6 +585,8 @@ enum {
+ # define ARCH_IRQ_INIT_FLAGS	0
  #endif
+ 
++extern void init_IRQ(void);
++
+ #define IRQ_DEFAULT_INIT_FLAGS	ARCH_IRQ_INIT_FLAGS
+ 
+ struct irqaction;
+diff --git a/init/main.c b/init/main.c
+index 1af84337cb18..63c7cd1f2131 100644
+--- a/init/main.c
++++ b/init/main.c
+@@ -110,7 +110,6 @@
+ 
+ static int kernel_init(void *);
+ 
+-extern void init_IRQ(void);
+ extern void radix_tree_init(void);
+ 
+ /*
 -- 
-2.17.1
+2.18.1
 
