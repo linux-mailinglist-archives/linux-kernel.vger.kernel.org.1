@@ -2,144 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD0F227ACAF
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 13:25:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A78127ACB3
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 13:29:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726615AbgI1LZt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 07:25:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39892 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726461AbgI1LZs (ORCPT
+        id S1726604AbgI1L3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 07:29:36 -0400
+Received: from conssluserg-02.nifty.com ([210.131.2.81]:26180 "EHLO
+        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726328AbgI1L3f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 07:25:48 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20E64C061755;
-        Mon, 28 Sep 2020 04:25:48 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C0KvW16dBz9sPB;
-        Mon, 28 Sep 2020 21:25:43 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1601292344;
-        bh=l8e4jZR4SEyL+s/383v75aH6KaBDi8VXqfnr3gJWTng=;
-        h=Date:From:To:Cc:Subject:From;
-        b=nvxZStAOmwH3JedQ17Q6tPtrgAYwuHE9J320H74ZjjPC+PEVnhjDnsv+px3PNZX0c
-         yUQxY4mxPflmYD64pIgqmschcKr285aK1GS3NNJN/VIMi+kITCFL/uzlnagxzKLDxk
-         AJ7EeF4IY8ZjZ0w3ed9GB0UigJGs+Kjp54lNRkiAYhckORMc3qogR007/xbxL55nxk
-         8id2F2Z9GmwiZG7DvQUd1jTm+mt1b5qnXX+8qe0GjwxXexuaFMUNZEobwP26c0ngDD
-         Ud6y3GS1RMp1iccYjLiLD0QrFCnUWdPUY2nPCRevSuiiiln8XpLOtL7iTVBSNwl5J6
-         jiLVVUOLXcvNA==
-Date:   Mon, 28 Sep 2020 21:25:42 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Al Viro <viro@ZenIV.linux.org.uk>
-Cc:     Minchan Kim <minchan@kernel.org>, Christoph Hellwig <hch@lst.de>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: linux-next: build failure after merge of the akpm tree
-Message-ID: <20200928212542.468e1fef@canb.auug.org.au>
+        Mon, 28 Sep 2020 07:29:35 -0400
+Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48]) (authenticated)
+        by conssluserg-02.nifty.com with ESMTP id 08SBTIZo006002;
+        Mon, 28 Sep 2020 20:29:18 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 08SBTIZo006002
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1601292558;
+        bh=dAHDBKnRo5H4VGCubh2JayTblFUcU7x9zWqqFA0TefA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=2EtzaCpQrm1yeFzUFwHnLucZZxcz645G+8YEnqQefxrjPkswsiBZwGiJdLjpC7DXW
+         BU/GlUyc0zpFaQRKXKXd4cVkGpChF36vvwjMlGB4pWYlinLacBwvhJce5RJNI5EqFq
+         SDKKr/A56jAz47X7YCBKp35hMJ4h3ivsLokkgDGE7lfy2IlhoZ8EYYB4NfwuMrYE7s
+         XdrT0DRG2C1VM+vglc+L4blA45K6iAXjJNRcmDkbw/aFfxnc3OQ5dNpIjRIqIPudtB
+         djv6wjf7F1nMEvwZU5hbSRRzALRp8dMSIiAEkuSvFVcVibjJbEx1hCBlLCrxTtdgx2
+         zExuVYr/sccHw==
+X-Nifty-SrcIP: [209.85.216.48]
+Received: by mail-pj1-f48.google.com with SMTP id s14so2097185pju.1;
+        Mon, 28 Sep 2020 04:29:18 -0700 (PDT)
+X-Gm-Message-State: AOAM531TCrhi5dP06evEdwueDpRQtb3V/pKszeIXTOpxSsaXrqZhh4GN
+        EFh4qwPAMie+otk4jjNXqN9M/6pKvlurTv9rfJk=
+X-Google-Smtp-Source: ABdhPJzWqDhdIsNJPkJ596mhZG9tc0uVp7T+xNkSujcLvuLMJSbxUCJxqXGZMVSxYGaXZ4YTc0g3cZsfccjUKkTS1b4=
+X-Received: by 2002:a17:90b:1211:: with SMTP id gl17mr947942pjb.87.1601292557471;
+ Mon, 28 Sep 2020 04:29:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/y4Vn+BEnjCX8DmGQlnMY.1p";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20200928064244.29206-1-lukas.bulwahn@gmail.com>
+In-Reply-To: <20200928064244.29206-1-lukas.bulwahn@gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Mon, 28 Sep 2020 20:28:40 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQdrvMkDA6ApDJCGr+5db8SiPo=G+p8EiOvnnGvEN80gA@mail.gmail.com>
+Message-ID: <CAK7LNAQdrvMkDA6ApDJCGr+5db8SiPo=G+p8EiOvnnGvEN80gA@mail.gmail.com>
+Subject: Re: [PATCH RFC] kbuild: doc: describe proper script invocation
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Ujjwal Kumar <ujjwalkumar0501@gmail.com>,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/y4Vn+BEnjCX8DmGQlnMY.1p
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Mon, Sep 28, 2020 at 3:42 PM Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
+>
+> During an investigation to fix up the execute bits of scripts in the kernel
+> repository, Andrew Morton and Kees Cook pointed out that the execute bit
+> should not matter, and that build scripts cannot rely on that. Kees could
+> not point to any documentation, though.
+>
+> Provide some basic documentation how the build shall invoke scripts, such
+> that the execute bits do not matter.
+>
+> This serves as reference for further clean-up patches in the future.
 
-Hi all,
 
-After merging the akpm tree, today's linux-next build (powerpc
-ppc64_defconfig) failed like this:
+For scripts run by users directly, the executable bit
+should be set. (e.g. scripts/checkpatch.pl)
 
-mm/madvise.c: In function '__do_sys_process_madvise':
-mm/madvise.c:1194:9: error: implicit declaration of function 'compat_import=
-_iovec'; did you mean 'import_iovec'? [-Werror=3Dimplicit-function-declarat=
-ion]
- 1194 |   ret =3D compat_import_iovec(READ,
-      |         ^~~~~~~~~~~~~~~~~~~
-      |         import_iovec
 
-Caused by commits
+For scripts invoked from the build system, the
+convention is to use interpreters such as
+$(CONFIG_SHELL), and we do not need to set
+the executable bit. But, we often set the executable bit
+for this case, too.
 
-  b50ef3fed31c ("mm/madvise: introduce process_madvise() syscall: an extern=
-al memory hinting API")
-  84b51d510a77 ("mm: do not use helper functions for process_madvise")
 
-interacting with commit
+This convention started from the following commit, which
+was made by the previous kbuild maintainer.
 
-  e42ff3fae0a2 ("iov_iter: transparently handle compat iovecs in import_iov=
-ec")
 
-from the vfs tree.
 
-I have applied the folloing patch for today:
+commit 06ed5c2bfacaf67039e87a213fa5d1cdde34246a
+Author: Michal Marek <mmarek@suse.cz>
+Date:   Wed Aug 20 16:02:59 2014 +0200
 
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Date: Mon, 28 Sep 2020 21:14:11 +1000
-Subject: [PATCH] fix up for "iov_iter: transparently handle compat iovecs in
- import_iovec"
+    kbuild: Make scripts executable
 
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
----
- mm/madvise.c | 11 +----------
- 1 file changed, 1 insertion(+), 10 deletions(-)
+    The Makefiles call the respective interpreter explicitly, but this makes
+    it easier to use the scripts manually.
 
-diff --git a/mm/madvise.c b/mm/madvise.c
-index 935dbc92e626..416a56b8e757 100644
---- a/mm/madvise.c
-+++ b/mm/madvise.c
-@@ -7,7 +7,6 @@
-  */
-=20
- #include <linux/mman.h>
--#include <linux/compat.h>
- #include <linux/pagemap.h>
- #include <linux/syscalls.h>
- #include <linux/mempolicy.h>
-@@ -1189,15 +1188,7 @@ SYSCALL_DEFINE5(process_madvise, int, pidfd, const s=
-truct iovec __user *, vec,
- 		goto out;
- 	}
-=20
--#ifdef CONFIG_COMPAT
--	if (in_compat_syscall())
--		ret =3D compat_import_iovec(READ,
--				(struct compat_iovec __user *)vec, vlen,
--				ARRAY_SIZE(iovstack), &iov, &iter);
--	else
--#endif
--		ret =3D import_iovec(READ, vec, vlen, ARRAY_SIZE(iovstack),
--				&iov, &iter);
-+	ret =3D import_iovec(READ, vec, vlen, ARRAY_SIZE(iovstack), &iov, &iter);
- 	if (ret < 0)
- 		goto out;
-=20
---=20
-2.28.0
+    Signed-off-by: Michal Marek <mmarek@suse.cz>
 
---=20
-Cheers,
-Stephen Rothwell
 
---Sig_/y4Vn+BEnjCX8DmGQlnMY.1p
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
 
------BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9xyDYACgkQAVBC80lX
-0Gy3Igf/a5zgubF4JKDJarzJ4aHOHzwaK8azUK3q4AAKOsbtleYEym0zX0KC/5oQ
-FqF87fu/LzwnK7Cd804dxYGIVNkj6aaZ5KGXiJgR1Wd/l9jg+pOrncquDIPFnyyA
-kNjQmDJWwuGx6LH9j9T0egBLY6CeZuIXIWWzgIT3xDQAEsOU4c/EJLQ9OpXNTzUU
-sv+cJXKGbxUCJSEZbvsb1ZQj2m0PTjO7yMG8pdsPVJqVWMEnuvILXO/CJ34zal3t
-NJk53OjoZCS/HE6getmo3VrmAO7e+nOmL3SaAiTl8pZmhUg0MyrnqvSvWGmjPOv7
-0wrulU8VgGEqhp5l5TdbD1UXkdpvIg==
-=GWOw
------END PGP SIGNATURE-----
 
---Sig_/y4Vn+BEnjCX8DmGQlnMY.1p--
+
+
+
+> Link: https://lore.kernel.org/lkml/20200830174409.c24c3f67addcce0cea9a9d4c@linux-foundation.org/
+> Link: https://lore.kernel.org/lkml/202008271102.FEB906C88@keescook/
+>
+> Suggested-by: Andrew Morton <akpm@linux-foundation.org>
+> Suggested-by: Kees Cook <keescook@chromium.org>
+> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+> ---
+> applies cleanly on next-20200925 and v5.9-rc7
+>
+> Kees, Andrew, please ack.
+>
+> Masahiro-san, please pick this small documentation update into your kbuild tree.
+>
+> Ujjwal Kumar, a potential future mentee, will follow up with further fixes to
+> the build scripts.
+>
+>  Documentation/kbuild/makefiles.rst | 18 ++++++++++++++++++
+>  1 file changed, 18 insertions(+)
+>
+> diff --git a/Documentation/kbuild/makefiles.rst b/Documentation/kbuild/makefiles.rst
+> index 58d513a0fa95..9d0d198adb7e 100644
+> --- a/Documentation/kbuild/makefiles.rst
+> +++ b/Documentation/kbuild/makefiles.rst
+> @@ -21,6 +21,7 @@ This document describes the Linux kernel Makefiles.
+>            --- 3.10 Special Rules
+>            --- 3.11 $(CC) support functions
+>            --- 3.12 $(LD) support functions
+> +          --- 3.13 Script Invocation
+>
+>         === 4 Host Program support
+>            --- 4.1 Simple Host Program
+> @@ -605,6 +606,23 @@ more details, with real examples.
+>                 #Makefile
+>                 LDFLAGS_vmlinux += $(call ld-option, -X)
+>
+> +3.13 Script invocation
+> +----------------------
+> +
+> +       Make rules may invoke scripts to build the kernel. The rules shall
+> +       always provide the appropriate interpreter to execute the script. They
+> +       shall not rely on the execute bits being set, and shall not invoke the
+> +       script directly.
+> +
+> +       Kbuild provides variables $(CONFIG_SHELL), $(AWK), $(PERL),
+> +       $(PYTHON) and $(PYTHON3) to refer to interpreters for the respective
+> +       scripts.
+> +
+> +       Example::
+> +
+> +               #Makefile
+> +               cmd_depmod = $(CONFIG_SHELL) $(srctree)/scripts/depmod.sh $(DEPMOD) \
+> +                            $(KERNELRELEASE)
+>
+>  4 Host Program support
+>  ======================
+> --
+> 2.17.1
+>
+
+
+-- 
+Best Regards
+Masahiro Yamada
