@@ -2,120 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7856927B65D
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 22:34:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1884327B665
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 22:35:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726890AbgI1Uee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 16:34:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40056 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726607AbgI1Uee (ORCPT
+        id S1726904AbgI1UfB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 16:35:01 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:5031 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726607AbgI1UfB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 16:34:34 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D958C061755
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 13:34:34 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id z19so2212885pfn.8
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 13:34:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=fSqGGre3K5gDxqZQhBBAgkB/XW4ArHnxdL9/PVe8UEw=;
-        b=NhEgCMqvIk+RvaHqH61RFdho/oyavhy1mnawXx73Z32KtMmWrdQ3TF3Wdl5xGJWAF4
-         HJ7MvCec9xWmOfe2vmH4pRHVPw4F2RLEFJS+4IHA6SOXqWq1vixOup+3/VsF76zS/3fH
-         NNK2l+sjcwTbNoDengDe+AnKeGhAQtj5ceh68=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fSqGGre3K5gDxqZQhBBAgkB/XW4ArHnxdL9/PVe8UEw=;
-        b=EnhDGc3zFdut3pXghCtY8vqRdtMgYeP98HDGJOQQ5fQy1qO7x1DvSuPJl7Cy6xnmYU
-         gnsG4DV3snV6nOQnGQOS2TSpkHl7oXSprHkXHLIxX5UU4Ldt6juz+kRpUORAZkk0UnRq
-         347sqzw9hIBZELxPZsns5p7FplRN6IiqdWZKqbVpVq++JtKuTegqDA93J8j1CJ5EZpH7
-         U95mzazhW73mBnldsVqeX4LqUsQ7fMeEaTG24BLDDpFHDS1cUMym7Z2rhsL0xlVqok1v
-         hieCgqZ1c8OuxsDQN42P5kwHvGPCcy+FkJ6tp/UG0fhit7N5FtzrU8jSIxscwfOIqLCs
-         jNsw==
-X-Gm-Message-State: AOAM530JMoJtIL1OsWwqkNgDrWs/ZXm/OEn3LjoLNuPx9cB2aE6G7Whs
-        FkMkyo7+qaLuLjomSnwx7emwEA==
-X-Google-Smtp-Source: ABdhPJyzYBgjXDVfi/ERFQgeS7WYZoqBnC+zZTP9Vn+PQLPLjF+pMQ37sNjCiSdOAaPnfO95UdERzg==
-X-Received: by 2002:a17:902:7589:b029:d2:686a:4ede with SMTP id j9-20020a1709027589b02900d2686a4edemr1142882pll.45.1601325273788;
-        Mon, 28 Sep 2020 13:34:33 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id t14sm2209702pgm.42.2020.09.28.13.34.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Sep 2020 13:34:32 -0700 (PDT)
-Date:   Mon, 28 Sep 2020 13:34:31 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Shuah Khan <skhan@linuxfoundation.org>, corbet@lwn.net,
-        gregkh@linuxfoundation.org, shuah@kernel.org, rafael@kernel.org,
-        johannes@sipsolutions.net, lenb@kernel.org, james.morse@arm.com,
-        tony.luck@intel.com, bp@alien8.de, arve@android.com,
-        tkjos@android.com, maco@android.com, christian@brauner.io,
-        hridya@google.com, surenb@google.com, minyard@acm.org,
-        arnd@arndb.de, mchehab@kernel.org, rric@kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-acpi@vger.kernel.org,
-        devel@driverdev.osuosl.org,
-        openipmi-developer@lists.sourceforge.net,
-        linux-edac@vger.kernel.org
-Subject: Re: [PATCH 00/11] Introduce Simple atomic and non-atomic counters
-Message-ID: <202009281331.444F36A7B@keescook>
-References: <cover.1601073127.git.skhan@linuxfoundation.org>
- <20200927233526.GA500818@google.com>
+        Mon, 28 Sep 2020 16:35:01 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f7248900000>; Mon, 28 Sep 2020 13:33:20 -0700
+Received: from [10.2.161.19] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 28 Sep
+ 2020 20:34:57 +0000
+From:   Zi Yan <ziy@nvidia.com>
+To:     Matthew Wilcox <willy@infradead.org>
+CC:     <linux-mm@kvack.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Michal Hocko <mhocko@suse.com>,
+        David Hildenbrand <david@redhat.com>,
+        William Kucharski <william.kucharski@oracle.com>,
+        "Andrea Arcangeli" <aarcange@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        "David Nellans" <dnellans@nvidia.com>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH v2 03/30] mm: thp: use single linked list for THP page
+ table page deposit.
+Date:   Mon, 28 Sep 2020 16:34:55 -0400
+X-Mailer: MailMate (1.13.2r5673)
+Message-ID: <13ABC58F-F1FD-45CF-A1D4-132BEE120CED@nvidia.com>
+In-Reply-To: <20200928193428.GB30994@casper.infradead.org>
+References: <20200928175428.4110504-1-zi.yan@sent.com>
+ <20200928175428.4110504-4-zi.yan@sent.com>
+ <20200928193428.GB30994@casper.infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200927233526.GA500818@google.com>
+Content-Type: multipart/signed;
+        boundary="=_MailMate_83ECF82A-1505-4C55-ABCA-DBCDD06046C5_=";
+        micalg=pgp-sha512; protocol="application/pgp-signature"
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1601325200; bh=D2V6H3YxgUz1ManjZAWAmwkYbEARtMvgkOEk16ytmJg=;
+        h=From:To:CC:Subject:Date:X-Mailer:Message-ID:In-Reply-To:
+         References:MIME-Version:Content-Type:X-Originating-IP:
+         X-ClientProxiedBy;
+        b=gYV3+K0uvAs5wgpZFmhWIDm1LAkrsgg6oLLJJ6wnnKn7a4Szpdv1FJk29mid7/DDk
+         TOGA5L5xGWQbHqNGT6uY4NOy/Xe0IScYNK1G6NqRPvWsD6NMtzXPQ4s3DyRNJ+xxxp
+         3ynVfeH/gTtDRM9rsaLxmtCg+wbb98EV7Y6EE8BtdZ8vAaGxkE97w+R63JPXKD4Q8n
+         2+sDYpGbJBAOtIADp3D+INJUuylF4XnMLMJa2qONkHBiEb3PkxH0LF8sIG1IrZlrZI
+         hqpp1mZb+igcjqQ2Qy6PWfgvtkzgTUc7iOgalkPX17o5/KtqWrDf/HcrgfKzSkna/U
+         K7wIB7BVgyrtA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 27, 2020 at 07:35:26PM -0400, Joel Fernandes wrote:
-> On Fri, Sep 25, 2020 at 05:47:14PM -0600, Shuah Khan wrote:
-> > This patch series is a result of discussion at the refcount_t BOF
-> > the Linux Plumbers Conference. In this discussion, we identified
-> > a need for looking closely and investigating atomic_t usages in
-> > the kernel when it is used strictly as a counter without it
-> > controlling object lifetimes and state changes.
-> > 
-> > There are a number of atomic_t usages in the kernel where atomic_t api
-> > is used strictly for counting and not for managing object lifetime. In
-> > some cases, atomic_t might not even be needed.
-> >     
-> > The purpose of these counters is twofold: 1. clearly differentiate
-> > atomic_t counters from atomic_t usages that guard object lifetimes,
-> > hence prone to overflow and underflow errors. It allows tools that scan
-> > for underflow and overflow on atomic_t usages to detect overflow and
-> > underflows to scan just the cases that are prone to errors. 2. provides
-> > non-atomic counters for cases where atomic isn't necessary.
-> 
-> Nice series :)
-> 
-> It appears there is no user of counter_simple in this series other than the
-> selftest. Would you be planning to add any conversions in the series itself,
-> for illustration of use? Sorry if I missed a usage.
-> 
-> Also how do we guard against atomicity of counter_simple RMW operations? Is
-> the implication that it should be guarded using other synchronization to
-> prevent lost-update problem?
-> 
-> Some more comments:
-> 
-> 1.  atomic RMW operations that have a return value are fully ordered. Would
->     you be adding support to counter_simple for such ordering as well, for
->     consistency?
+--=_MailMate_83ECF82A-1505-4C55-ABCA-DBCDD06046C5_=
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-No -- there is no atomicity guarantee for counter_simple. I would prefer
-counter_simple not exist at all, specifically for this reason.
+On 28 Sep 2020, at 15:34, Matthew Wilcox wrote:
 
-> 2. I felt counter_atomic and counter_atomic64 would be nice equivalents to
->    the atomic and atomic64 naming currently used (i.e. dropping the '32').
->    However that is just my opinion and I am ok with either naming.
+> On Mon, Sep 28, 2020 at 01:54:01PM -0400, Zi Yan wrote:
+>>  		struct {	/* Page table pages */
+>> -			unsigned long _pt_pad_1;	/* compound_head */
+>> -			pgtable_t pmd_huge_pte; /* protected by page->ptl */
+>> +			struct llist_head deposit_head; /* pgtable deposit list head */
+>> +			struct llist_node deposit_node; /* pgtable deposit list node */
+>
+> If you're going to use two pointers anyway, you might as well use a
+> list_head.  But I don't think you need to; you could either use a union=
 
-I had asked that they be size-named to avoid any confusion (i.e. we're
-making a new API).
+> of these or you could use the page_address() of the page to store as
+> much information as you like!
 
--- 
-Kees Cook
+This is intended for depositing pgtable pages hierarchically. PUD THP
+pgtable page deposit uses it. For a PUD THP, we need to deposit 1 PMD
+pgtable page and 512 PTE pgtable pages, totally 513 pages.
+
+One way is to deposit all of them on a list, but when we split the PUD
+THP, we need to pull them all out and use one for PMD pgtable page
+and deposit the rest 512 PTE pgtable pages to PMD page=E2=80=99s pmd_huge=
+_pte.
+But this mixes PMD pgtable pages and PTE pgtable pages in one list,
+which can be error prone and also requires extra pgtable page deposit
+operations during page split.
+
+This approach, at the high level, makes a pgtable page=E2=80=99s deposit_=
+head
+point to a list of lower level pgtable pages, which are linked using
+deposit_node. For example, we link all 512 PTE pgtable pages using
+deposit_node and use PMD pgtable page=E2=80=99s deposit_head to point to =
+the
+PTE page list. In addition, when we deposit the PMD pgtable page,
+we just point a struct_llist_head to the PMD pgtable page=E2=80=99s depos=
+it_node.
+When it comes to PUD THP split, we can simply withdraw and use the PMD
+pgtable page without additional operations, since PTE pgtable pages
+have already been deposited at the beginning.
+
+Let me know if it makes sense to you. I will add the paragraphs above
+to the commit message. Swapping patch 4 and 5 might also make the change
+easier to understand since patch 5 use this patch.
+
+
+=E2=80=94
+Best Regards,
+Yan Zi
+
+--=_MailMate_83ECF82A-1505-4C55-ABCA-DBCDD06046C5_=
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQJDBAEBCgAtFiEEh7yFAW3gwjwQ4C9anbJR82th+ooFAl9ySO8PHHppeUBudmlk
+aWEuY29tAAoJEJ2yUfNrYfqKoGkQAKV82OEF77appH1OFz2MqoDmHo6e199Rh095
+hRkKAt0xYOrrFTBgGfMXZAkLhGwvZzb97FMSU2kyt7uNF+T2TraDn+KCMnEinIQq
+h+bVxoSww3grUsyadTnJuTLuug95/Uv0zvIaTuAeZSPTIYvh3C5B91KRoStuL5c8
+BNBzaMUjZfvCWMTOizgf4rihSn5y1f1jMaw5nWSkt24eXlV4nE5Tk2xnynwKAWOW
+V2EcJkiL+DTLjgbcP037XuB79Fe7kyHKkV2JEiDa7xSbJSG9Vw0agKXETvJkKExJ
+K7wRUqKMOt9NQFnQJX0gSHVhhdYVR+GiVHtgCxHttz/ZpmBfOfdPgGirOg+8fC/h
+AtWeGQOA1Gfe0E6Lo4o4ovqAZFBzuWl/8fXbkuZSd94ZBaGD5A0SC/rH48h6JSpP
+FKGK2tuIg6RRp2IZxz3Qph0U6q/orwV+xOqioZMRhtPpe5OTLXCsicmd40BVu5hI
+M2pgupc2GJitBZ2iWtCGvjYv+wjvMp42Vy9b4pgYfMOE8eu5V9D6HIjg8YfZQC0U
+FmaJOTbhFXqjSSC4whxSQ6WdvoEHqKxbSn3jiRuI8NLqy5jMF6u3UN5rmVQeUuo1
+AyEaGfhYuV/gw8q3OUCNuTVmQXHKfnYBSp+K5dThyKTQwwIPqDxbLwH+kUBmgEgf
+UMJ4/Frr
+=VR4d
+-----END PGP SIGNATURE-----
+
+--=_MailMate_83ECF82A-1505-4C55-ABCA-DBCDD06046C5_=--
