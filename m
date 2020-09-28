@@ -2,522 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7DE827A890
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 09:27:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B87027A895
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 09:28:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726640AbgI1H1e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 03:27:34 -0400
-Received: from mail-il1-f206.google.com ([209.85.166.206]:40355 "EHLO
-        mail-il1-f206.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726513AbgI1H10 (ORCPT
+        id S1726682AbgI1H1z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 03:27:55 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:34080 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726465AbgI1H1z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 03:27:26 -0400
-Received: by mail-il1-f206.google.com with SMTP id e9so90681ils.7
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 00:27:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=42TzkvZOLT3xsj9ZC1LQK/AGTghqAWoZLCZD62TJOFE=;
-        b=a/1fTGlSh9mxrukUsKWz5X1WqZnjyLcTcAbkmAu2fouifXJAiNjbyaBeTncq97Yh6T
-         ZjV6NEIrnA3XceB/2WPZCql2NN6G4gFEJQeFQ31jtvJ47unMmQr2EeloB3R3P9xC9L7/
-         WykjkwoQPoaXsJyDj1Hg3xnrhAMKUD4eWogOZON7sZx3ih5WcgQ8UnwhfcvyD5Mef7oJ
-         +pv9OqiHVeqD9CvpRpcd7AGyBeyE92/49px60tl7SFJPmcfzvQlwyxzmsSS04ySsSRYQ
-         g+kqzcHNiv7Xwt7d2WD8hyXIO988i/wKzXXtg2k1zUEGzjkpKMQ/G069L4TJdJ8oXFcm
-         WSTg==
-X-Gm-Message-State: AOAM531sD9jS6bHdnpIfc7HOz8Yep7EW6/WkpQNcmb1jEwvbJGr5wQA0
-        oDqgqp1nQbGzK+GvmFsz0x3gJslAB14Iy0s1fmzvp4byQLIW
-X-Google-Smtp-Source: ABdhPJxJJESvFAHrd0q9wqPMXMActIEiTojv1v76VJOCCJZ9r4X3kpvQCtcGuxi3tWtGBEWuQrp8gBZC6uv0GcI3kltRjdwoR/1I
+        Mon, 28 Sep 2020 03:27:55 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08S7RiZ9025024;
+        Mon, 28 Sep 2020 02:27:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1601278064;
+        bh=t2xZIzE5nCl075Nnf08l0R3sMqtDPH99mtG1NhcRZU8=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=e1qAVQdpkpGOCqfVQa2ZE7k6Pv7EKRfPSEuvjnNdxoVo4vWjR9+AnuHxVk2yihqWq
+         keG7eFjp53E8bIdRYjH6JqdUOApCUul9AzIgvWfy3QovGZWMdgIQ75Zl0i8EUzQB9B
+         JbcqTC6XTUGSCfiow92oYz7NiWsUxOodUACprh+0=
+Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08S7Rimn098755
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 28 Sep 2020 02:27:44 -0500
+Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 28
+ Sep 2020 02:27:44 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 28 Sep 2020 02:27:44 -0500
+Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08S7RgSg036259;
+        Mon, 28 Sep 2020 02:27:43 -0500
+Subject: Re: sound/soc/ti/j721e-evm.c:528:34: warning: unused variable
+ 'j721e_audio_of_match'
+To:     kernel test robot <lkp@intel.com>
+CC:     <kbuild-all@lists.01.org>, <clang-built-linux@googlegroups.com>,
+        <linux-kernel@vger.kernel.org>, Mark Brown <broonie@kernel.org>
+References: <202009271553.4OjMpGkX%lkp@intel.com>
+From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
+X-Pep-Version: 2.0
+Message-ID: <76cae106-b643-57a9-e82e-48e46ebf1b70@ti.com>
+Date:   Mon, 28 Sep 2020 10:27:57 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-X-Received: by 2002:a02:780e:: with SMTP id p14mr143047jac.144.1601278044428;
- Mon, 28 Sep 2020 00:27:24 -0700 (PDT)
-Date:   Mon, 28 Sep 2020 00:27:24 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000065deb05b05a99a5@google.com>
-Subject: INFO: task hung in tcf_action_init_1
-From:   syzbot <syzbot+82752bc5331601cf4899@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, jhs@mojatatu.com, jiri@resnulli.us,
-        kuba@kernel.org, kuznet@ms2.inr.ac.ru,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, xiyou.wangcong@gmail.com,
-        yoshfuji@linux-ipv6.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <202009271553.4OjMpGkX%lkp@intel.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    5e46e43c MAINTAINERS: Add Vladimir as a maintainer for DSA
-git tree:       net
-console output: https://syzkaller.appspot.com/x/log.txt?x=168d5a87900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=240e2ebab67245c7
-dashboard link: https://syzkaller.appspot.com/bug?extid=82752bc5331601cf4899
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=115d8ebb900000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17a9fa87900000
-
-The issue was bisected to:
-
-commit 0fedc63fadf0404a729e73a35349481c8009c02f
-Author: Cong Wang <xiyou.wangcong@gmail.com>
-Date:   Wed Sep 23 03:56:24 2020 +0000
-
-    net_sched: commit action insertions together
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=123311d3900000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=113311d3900000
-console output: https://syzkaller.appspot.com/x/log.txt?x=163311d3900000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+82752bc5331601cf4899@syzkaller.appspotmail.com
-Fixes: 0fedc63fadf0 ("net_sched: commit action insertions together")
-
-INFO: task syz-executor923:6868 blocked for more than 143 seconds.
-      Not tainted 5.9.0-rc6-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor923 state:D stack:25784 pid: 6868 ppid:  6862 flags:0x00004004
-Call Trace:
- context_switch kernel/sched/core.c:3778 [inline]
- __schedule+0xec9/0x2280 kernel/sched/core.c:4527
- schedule+0xd0/0x2a0 kernel/sched/core.c:4602
- schedule_preempt_disabled+0xf/0x20 kernel/sched/core.c:4661
- __mutex_lock_common kernel/locking/mutex.c:1033 [inline]
- __mutex_lock+0x3e2/0x10e0 kernel/locking/mutex.c:1103
- tcf_action_init_1+0x85f/0xac0 net/sched/act_api.c:973
- tcf_action_init+0x265/0x4b0 net/sched/act_api.c:1054
- tcf_action_add+0xd9/0x360 net/sched/act_api.c:1467
- tc_ctl_action+0x33a/0x439 net/sched/act_api.c:1520
- rtnetlink_rcv_msg+0x44e/0xad0 net/core/rtnetlink.c:5563
- netlink_rcv_skb+0x15a/0x430 net/netlink/af_netlink.c:2470
- netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
- netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
- sock_sendmsg_nosec net/socket.c:651 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:671
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2353
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2407
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2440
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x446c19
-Code: Bad RIP value.
-RSP: 002b:00007f7e9c86dd98 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00000000006dbc28 RCX: 0000000000446c19
-RDX: 0000000000000000 RSI: 0000000020002980 RDI: 0000000000000003
-RBP: 00000000006dbc20 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006dbc2c
-R13: 0001008400000000 R14: 0000000000e60000 R15: 053b003000000098
-INFO: task syz-executor923:6881 blocked for more than 143 seconds.
-      Not tainted 5.9.0-rc6-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor923 state:D stack:28880 pid: 6881 ppid:  6862 flags:0x00004004
-Call Trace:
- context_switch kernel/sched/core.c:3778 [inline]
- __schedule+0xec9/0x2280 kernel/sched/core.c:4527
- schedule+0xd0/0x2a0 kernel/sched/core.c:4602
- schedule_preempt_disabled+0xf/0x20 kernel/sched/core.c:4661
- __mutex_lock_common kernel/locking/mutex.c:1033 [inline]
- __mutex_lock+0x3e2/0x10e0 kernel/locking/mutex.c:1103
- rtnl_lock net/core/rtnetlink.c:72 [inline]
- rtnetlink_rcv_msg+0x3f9/0xad0 net/core/rtnetlink.c:5560
- netlink_rcv_skb+0x15a/0x430 net/netlink/af_netlink.c:2470
- netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
- netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
- sock_sendmsg_nosec net/socket.c:651 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:671
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2353
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2407
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2440
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x446c19
-Code: Bad RIP value.
-RSP: 002b:00007f7e9c84cd98 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00000000006dbc38 RCX: 0000000000446c19
-RDX: 0000000000000000 RSI: 0000000020002980 RDI: 0000000000000004
-RBP: 00000000006dbc30 R08: 000000000000000d R09: 0000000000000000
-R10: 0000000000000050 R11: 0000000000000246 R12: 00000000006dbc3c
-R13: 0001008400000000 R14: 0000000000e60000 R15: 053b003000000098
-INFO: task syz-executor923:6877 blocked for more than 144 seconds.
-      Not tainted 5.9.0-rc6-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor923 state:D stack:28656 pid: 6877 ppid:  6865 flags:0x00004004
-Call Trace:
- context_switch kernel/sched/core.c:3778 [inline]
- __schedule+0xec9/0x2280 kernel/sched/core.c:4527
- schedule+0xd0/0x2a0 kernel/sched/core.c:4602
- schedule_preempt_disabled+0xf/0x20 kernel/sched/core.c:4661
- __mutex_lock_common kernel/locking/mutex.c:1033 [inline]
- __mutex_lock+0x3e2/0x10e0 kernel/locking/mutex.c:1103
- rtnl_lock net/core/rtnetlink.c:72 [inline]
- rtnetlink_rcv_msg+0x3f9/0xad0 net/core/rtnetlink.c:5560
- netlink_rcv_skb+0x15a/0x430 net/netlink/af_netlink.c:2470
- netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
- netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
- sock_sendmsg_nosec net/socket.c:651 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:671
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2353
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2407
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2440
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x446c19
-Code: Bad RIP value.
-RSP: 002b:00007f7e9c86dd98 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00000000006dbc28 RCX: 0000000000446c19
-RDX: 0000000000000000 RSI: 0000000020002980 RDI: 0000000000000003
-RBP: 00000000006dbc20 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006dbc2c
-R13: 0001008400000000 R14: 0000000000e60000 R15: 053b003000000098
-INFO: task syz-executor923:6883 blocked for more than 144 seconds.
-      Not tainted 5.9.0-rc6-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor923 state:D stack:28904 pid: 6883 ppid:  6865 flags:0x00000004
-Call Trace:
- context_switch kernel/sched/core.c:3778 [inline]
- __schedule+0xec9/0x2280 kernel/sched/core.c:4527
- schedule+0xd0/0x2a0 kernel/sched/core.c:4602
- schedule_preempt_disabled+0xf/0x20 kernel/sched/core.c:4661
- __mutex_lock_common kernel/locking/mutex.c:1033 [inline]
- __mutex_lock+0x3e2/0x10e0 kernel/locking/mutex.c:1103
- rtnl_lock net/core/rtnetlink.c:72 [inline]
- rtnetlink_rcv_msg+0x3f9/0xad0 net/core/rtnetlink.c:5560
- netlink_rcv_skb+0x15a/0x430 net/netlink/af_netlink.c:2470
- netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
- netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
- sock_sendmsg_nosec net/socket.c:651 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:671
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2353
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2407
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2440
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x446c19
-Code: Bad RIP value.
-RSP: 002b:00007f7e9c84cd98 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00000000006dbc38 RCX: 0000000000446c19
-RDX: 0000000000000000 RSI: 0000000020002980 RDI: 0000000000000004
-RBP: 00000000006dbc30 R08: 000000000000000d R09: 0000000000000000
-R10: 0000000000000050 R11: 0000000000000246 R12: 00000000006dbc3c
-R13: 0001008400000000 R14: 0000000000e60000 R15: 053b003000000098
-INFO: task syz-executor923:6882 blocked for more than 144 seconds.
-      Not tainted 5.9.0-rc6-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor923 state:D stack:28904 pid: 6882 ppid:  6867 flags:0x00000004
-Call Trace:
- context_switch kernel/sched/core.c:3778 [inline]
- __schedule+0xec9/0x2280 kernel/sched/core.c:4527
- schedule+0xd0/0x2a0 kernel/sched/core.c:4602
- schedule_preempt_disabled+0xf/0x20 kernel/sched/core.c:4661
- __mutex_lock_common kernel/locking/mutex.c:1033 [inline]
- __mutex_lock+0x3e2/0x10e0 kernel/locking/mutex.c:1103
- rtnl_lock net/core/rtnetlink.c:72 [inline]
- rtnetlink_rcv_msg+0x3f9/0xad0 net/core/rtnetlink.c:5560
- netlink_rcv_skb+0x15a/0x430 net/netlink/af_netlink.c:2470
- netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
- netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
- sock_sendmsg_nosec net/socket.c:651 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:671
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2353
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2407
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2440
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x446c19
-Code: Bad RIP value.
-RSP: 002b:00007f7e9c84cd98 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00000000006dbc38 RCX: 0000000000446c19
-RDX: 0000000000000000 RSI: 0000000020002980 RDI: 0000000000000004
-RBP: 00000000006dbc30 R08: 000000000000000d R09: 0000000000000000
-R10: 0000000000000050 R11: 0000000000000246 R12: 00000000006dbc3c
-R13: 0001008400000000 R14: 0000000000e60000 R15: 053b003000000098
-INFO: task syz-executor923:6878 blocked for more than 145 seconds.
-      Not tainted 5.9.0-rc6-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor923 state:D stack:28904 pid: 6878 ppid:  6869 flags:0x00004004
-Call Trace:
- context_switch kernel/sched/core.c:3778 [inline]
- __schedule+0xec9/0x2280 kernel/sched/core.c:4527
- schedule+0xd0/0x2a0 kernel/sched/core.c:4602
- schedule_preempt_disabled+0xf/0x20 kernel/sched/core.c:4661
- __mutex_lock_common kernel/locking/mutex.c:1033 [inline]
- __mutex_lock+0x3e2/0x10e0 kernel/locking/mutex.c:1103
- rtnl_lock net/core/rtnetlink.c:72 [inline]
- rtnetlink_rcv_msg+0x3f9/0xad0 net/core/rtnetlink.c:5560
- netlink_rcv_skb+0x15a/0x430 net/netlink/af_netlink.c:2470
- netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
- netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
- sock_sendmsg_nosec net/socket.c:651 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:671
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2353
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2407
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2440
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x446c19
-Code: Bad RIP value.
-RSP: 002b:00007f7e9c86dd98 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00000000006dbc28 RCX: 0000000000446c19
-RDX: 0000000000000000 RSI: 0000000020002980 RDI: 0000000000000003
-RBP: 00000000006dbc20 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006dbc2c
-R13: 0001008400000000 R14: 0000000000e60000 R15: 053b003000000098
-INFO: task syz-executor923:6884 blocked for more than 145 seconds.
-      Not tainted 5.9.0-rc6-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor923 state:D stack:28904 pid: 6884 ppid:  6869 flags:0x00000004
-Call Trace:
- context_switch kernel/sched/core.c:3778 [inline]
- __schedule+0xec9/0x2280 kernel/sched/core.c:4527
- schedule+0xd0/0x2a0 kernel/sched/core.c:4602
- schedule_preempt_disabled+0xf/0x20 kernel/sched/core.c:4661
- __mutex_lock_common kernel/locking/mutex.c:1033 [inline]
- __mutex_lock+0x3e2/0x10e0 kernel/locking/mutex.c:1103
- rtnl_lock net/core/rtnetlink.c:72 [inline]
- rtnetlink_rcv_msg+0x3f9/0xad0 net/core/rtnetlink.c:5560
- netlink_rcv_skb+0x15a/0x430 net/netlink/af_netlink.c:2470
- netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
- netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
- sock_sendmsg_nosec net/socket.c:651 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:671
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2353
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2407
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2440
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x446c19
-Code: Bad RIP value.
-RSP: 002b:00007f7e9c84cd98 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00000000006dbc38 RCX: 0000000000446c19
-RDX: 0000000000000000 RSI: 0000000020002980 RDI: 0000000000000004
-RBP: 00000000006dbc30 R08: 000000000000000d R09: 0000000000000000
-R10: 0000000000000050 R11: 0000000000000246 R12: 00000000006dbc3c
-R13: 0001008400000000 R14: 0000000000e60000 R15: 053b003000000098
-INFO: task syz-executor923:6876 blocked for more than 145 seconds.
-      Not tainted 5.9.0-rc6-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor923 state:D stack:28904 pid: 6876 ppid:  6866 flags:0x00004004
-Call Trace:
- context_switch kernel/sched/core.c:3778 [inline]
- __schedule+0xec9/0x2280 kernel/sched/core.c:4527
- schedule+0xd0/0x2a0 kernel/sched/core.c:4602
- schedule_preempt_disabled+0xf/0x20 kernel/sched/core.c:4661
- __mutex_lock_common kernel/locking/mutex.c:1033 [inline]
- __mutex_lock+0x3e2/0x10e0 kernel/locking/mutex.c:1103
- rtnl_lock net/core/rtnetlink.c:72 [inline]
- rtnetlink_rcv_msg+0x3f9/0xad0 net/core/rtnetlink.c:5560
- netlink_rcv_skb+0x15a/0x430 net/netlink/af_netlink.c:2470
- netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
- netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
- sock_sendmsg_nosec net/socket.c:651 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:671
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2353
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2407
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2440
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x446c19
-Code: Bad RIP value.
-RSP: 002b:00007f7e9c86dd98 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00000000006dbc28 RCX: 0000000000446c19
-RDX: 0000000000000000 RSI: 0000000020002980 RDI: 0000000000000003
-RBP: 00000000006dbc20 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006dbc2c
-R13: 0001008400000000 R14: 0000000000e60000 R15: 053b003000000098
-INFO: task syz-executor923:6885 blocked for more than 146 seconds.
-      Not tainted 5.9.0-rc6-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor923 state:D stack:28904 pid: 6885 ppid:  6866 flags:0x00000004
-Call Trace:
- context_switch kernel/sched/core.c:3778 [inline]
- __schedule+0xec9/0x2280 kernel/sched/core.c:4527
- schedule+0xd0/0x2a0 kernel/sched/core.c:4602
- schedule_preempt_disabled+0xf/0x20 kernel/sched/core.c:4661
- __mutex_lock_common kernel/locking/mutex.c:1033 [inline]
- __mutex_lock+0x3e2/0x10e0 kernel/locking/mutex.c:1103
- rtnl_lock net/core/rtnetlink.c:72 [inline]
- rtnetlink_rcv_msg+0x3f9/0xad0 net/core/rtnetlink.c:5560
- netlink_rcv_skb+0x15a/0x430 net/netlink/af_netlink.c:2470
- netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
- netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
- sock_sendmsg_nosec net/socket.c:651 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:671
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2353
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2407
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2440
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x446c19
-Code: Bad RIP value.
-RSP: 002b:00007f7e9c84cd98 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00000000006dbc38 RCX: 0000000000446c19
-RDX: 0000000000000000 RSI: 0000000020002980 RDI: 0000000000000004
-RBP: 00000000006dbc30 R08: 000000000000000d R09: 0000000000000000
-R10: 0000000000000050 R11: 0000000000000246 R12: 00000000006dbc3c
-R13: 0001008400000000 R14: 0000000000e60000 R15: 053b003000000098
-INFO: task syz-executor923:6879 blocked for more than 146 seconds.
-      Not tainted 5.9.0-rc6-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor923 state:D stack:28904 pid: 6879 ppid:  6863 flags:0x00004004
-Call Trace:
- context_switch kernel/sched/core.c:3778 [inline]
- __schedule+0xec9/0x2280 kernel/sched/core.c:4527
- schedule+0xd0/0x2a0 kernel/sched/core.c:4602
- schedule_preempt_disabled+0xf/0x20 kernel/sched/core.c:4661
- __mutex_lock_common kernel/locking/mutex.c:1033 [inline]
- __mutex_lock+0x3e2/0x10e0 kernel/locking/mutex.c:1103
- rtnl_lock net/core/rtnetlink.c:72 [inline]
- rtnetlink_rcv_msg+0x3f9/0xad0 net/core/rtnetlink.c:5560
- netlink_rcv_skb+0x15a/0x430 net/netlink/af_netlink.c:2470
- netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
- netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
- sock_sendmsg_nosec net/socket.c:651 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:671
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2353
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2407
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2440
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x446c19
-Code: Bad RIP value.
-RSP: 002b:00007f7e9c86dd98 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00000000006dbc28 RCX: 0000000000446c19
-RDX: 0000000000000000 RSI: 0000000020002980 RDI: 0000000000000003
-RBP: 00000000006dbc20 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006dbc2c
-R13: 0001008400000000 R14: 0000000000e60000 R15: 053b003000000098
-
-Showing all locks held in the system:
-1 lock held by khungtaskd/1176:
- #0: ffffffff8a067f00 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x260 kernel/locking/lockdep.c:5852
-1 lock held by in:imklog/6548:
- #0: ffff8880962a9870 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0xe9/0x100 fs/file.c:930
-3 locks held by kworker/1:1/6854:
- #0: ffff888099b59538 ((wq_completion)ipv6_addrconf){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
- #0: ffff888099b59538 ((wq_completion)ipv6_addrconf){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
- #0: ffff888099b59538 ((wq_completion)ipv6_addrconf){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
- #0: ffff888099b59538 ((wq_completion)ipv6_addrconf){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
- #0: ffff888099b59538 ((wq_completion)ipv6_addrconf){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
- #0: ffff888099b59538 ((wq_completion)ipv6_addrconf){+.+.}-{0:0}, at: process_one_work+0x82b/0x1670 kernel/workqueue.c:2240
- #1: ffffc90005507da8 ((addr_chk_work).work){+.+.}-{0:0}, at: process_one_work+0x85f/0x1670 kernel/workqueue.c:2244
- #2: ffffffff8b14d828 (rtnl_mutex){+.+.}-{3:3}, at: addrconf_verify_work+0xa/0x20 net/ipv6/addrconf.c:4568
-1 lock held by syz-executor923/6868:
- #0: ffffffff8b14d828 (rtnl_mutex){+.+.}-{3:3}, at: tcf_action_init_1+0x85f/0xac0 net/sched/act_api.c:973
-1 lock held by syz-executor923/6881:
- #0: ffffffff8b14d828 (rtnl_mutex){+.+.}-{3:3}, at: rtnl_lock net/core/rtnetlink.c:72 [inline]
- #0: ffffffff8b14d828 (rtnl_mutex){+.+.}-{3:3}, at: rtnetlink_rcv_msg+0x3f9/0xad0 net/core/rtnetlink.c:5560
-1 lock held by syz-executor923/6877:
- #0: ffffffff8b14d828 (rtnl_mutex){+.+.}-{3:3}, at: rtnl_lock net/core/rtnetlink.c:72 [inline]
- #0: ffffffff8b14d828 (rtnl_mutex){+.+.}-{3:3}, at: rtnetlink_rcv_msg+0x3f9/0xad0 net/core/rtnetlink.c:5560
-1 lock held by syz-executor923/6883:
- #0: ffffffff8b14d828 (rtnl_mutex){+.+.}-{3:3}, at: rtnl_lock net/core/rtnetlink.c:72 [inline]
- #0: ffffffff8b14d828 (rtnl_mutex){+.+.}-{3:3}, at: rtnetlink_rcv_msg+0x3f9/0xad0 net/core/rtnetlink.c:5560
-1 lock held by syz-executor923/6875:
-1 lock held by syz-executor923/6882:
- #0: ffffffff8b14d828 (rtnl_mutex){+.+.}-{3:3}, at: rtnl_lock net/core/rtnetlink.c:72 [inline]
- #0: ffffffff8b14d828 (rtnl_mutex){+.+.}-{3:3}, at: rtnetlink_rcv_msg+0x3f9/0xad0 net/core/rtnetlink.c:5560
-1 lock held by syz-executor923/6878:
- #0: ffffffff8b14d828 (rtnl_mutex){+.+.}-{3:3}, at: rtnl_lock net/core/rtnetlink.c:72 [inline]
- #0: ffffffff8b14d828 (rtnl_mutex){+.+.}-{3:3}, at: rtnetlink_rcv_msg+0x3f9/0xad0 net/core/rtnetlink.c:5560
-1 lock held by syz-executor923/6884:
- #0: ffffffff8b14d828 (rtnl_mutex){+.+.}-{3:3}, at: rtnl_lock net/core/rtnetlink.c:72 [inline]
- #0: ffffffff8b14d828 (rtnl_mutex){+.+.}-{3:3}, at: rtnetlink_rcv_msg+0x3f9/0xad0 net/core/rtnetlink.c:5560
-1 lock held by syz-executor923/6876:
- #0: ffffffff8b14d828 (rtnl_mutex){+.+.}-{3:3}, at: rtnl_lock net/core/rtnetlink.c:72 [inline]
- #0: ffffffff8b14d828 (rtnl_mutex){+.+.}-{3:3}, at: rtnetlink_rcv_msg+0x3f9/0xad0 net/core/rtnetlink.c:5560
-1 lock held by syz-executor923/6885:
- #0: ffffffff8b14d828 (rtnl_mutex){+.+.}-{3:3}, at: rtnl_lock net/core/rtnetlink.c:72 [inline]
- #0: ffffffff8b14d828 (rtnl_mutex){+.+.}-{3:3}, at: rtnetlink_rcv_msg+0x3f9/0xad0 net/core/rtnetlink.c:5560
-1 lock held by syz-executor923/6879:
- #0: ffffffff8b14d828 (rtnl_mutex){+.+.}-{3:3}, at: rtnl_lock net/core/rtnetlink.c:72 [inline]
- #0: ffffffff8b14d828 (rtnl_mutex){+.+.}-{3:3}, at: rtnetlink_rcv_msg+0x3f9/0xad0 net/core/rtnetlink.c:5560
-1 lock held by syz-executor923/6886:
- #0: ffffffff8b14d828 (rtnl_mutex){+.+.}-{3:3}, at: rtnl_lock net/core/rtnetlink.c:72 [inline]
- #0: ffffffff8b14d828 (rtnl_mutex){+.+.}-{3:3}, at: rtnetlink_rcv_msg+0x3f9/0xad0 net/core/rtnetlink.c:5560
-
-=============================================
-
-NMI backtrace for cpu 0
-CPU: 0 PID: 1176 Comm: khungtaskd Not tainted 5.9.0-rc6-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x198/0x1fd lib/dump_stack.c:118
- nmi_cpu_backtrace.cold+0x70/0xb1 lib/nmi_backtrace.c:101
- nmi_trigger_cpumask_backtrace+0x1b3/0x223 lib/nmi_backtrace.c:62
- trigger_all_cpu_backtrace include/linux/nmi.h:146 [inline]
- check_hung_uninterruptible_tasks kernel/hung_task.c:209 [inline]
- watchdog+0xd7d/0x1000 kernel/hung_task.c:295
- kthread+0x3b5/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-Sending NMI from CPU 0 to CPUs 1:
-NMI backtrace for cpu 1
-CPU: 1 PID: 6875 Comm: syz-executor923 Not tainted 5.9.0-rc6-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:__lock_acquire+0x18a/0x5780 kernel/locking/lockdep.c:4344
-Code: 48 c7 c0 60 e1 43 8d 83 e0 07 83 c0 03 38 c8 7c 08 84 c9 0f 85 c9 12 00 00 44 8b 25 50 45 e8 0b 45 85 e4 75 0b 83 7c 24 10 2f <0f> 87 c6 10 00 00 48 8d b5 e8 08 00 00 48 81 ea 00 0e 0c 8d 48 b9
-RSP: 0018:ffffc90005526b40 EFLAGS: 00000097
-RAX: 0000000000000003 RBX: 0000000000000001 RCX: 0000000000000004
-RDX: ffffffff8d1054a8 RSI: 0000000000000000 RDI: ffff888214df8670
-RBP: ffff8880a17da380 R08: 0000000000000001 R09: 0000000000000000
-R10: 0000000000000001 R11: 0000000000000000 R12: 0000000000000000
-R13: 0000000000000000 R14: ffff888214df8668 R15: 0000000000000000
-FS:  00007f7e9c86e700(0000) GS:ffff8880ae500000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f4e31e0041c CR3: 0000000096863000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- lock_acquire+0x1f3/0xaf0 kernel/locking/lockdep.c:5029
- __mutex_lock_common kernel/locking/mutex.c:956 [inline]
- __mutex_lock+0x134/0x10e0 kernel/locking/mutex.c:1103
- tcf_idr_check_alloc+0x78/0x3b0 net/sched/act_api.c:499
- tcf_connmark_init+0x2de/0x910 net/sched/act_connmark.c:124
- tcf_action_init_1+0x6e8/0xac0 net/sched/act_api.c:995
- tcf_action_init+0x265/0x4b0 net/sched/act_api.c:1054
- tcf_action_add+0xd9/0x360 net/sched/act_api.c:1467
- tc_ctl_action+0x33a/0x439 net/sched/act_api.c:1520
- rtnetlink_rcv_msg+0x44e/0xad0 net/core/rtnetlink.c:5563
- netlink_rcv_skb+0x15a/0x430 net/netlink/af_netlink.c:2470
- netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
- netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
- sock_sendmsg_nosec net/socket.c:651 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:671
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2353
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2407
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2440
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x446c19
-Code: e8 0c e8 ff ff 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db 06 fc ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007f7e9c86dd98 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00000000006dbc28 RCX: 0000000000446c19
-RDX: 0000000000000000 RSI: 0000000020002980 RDI: 0000000000000003
-RBP: 00000000006dbc20 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006dbc2c
-R13: 0001008400000000 R14: 0000000000e60000 R15: 053b003000000098
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+On 27/09/2020 10.27, kernel test robot wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.=
+git master
+> head:   a1bffa48745afbb54cb4f873bba783b2ae8be042
+> commit: 6748d05590594837e42dfa975879fb275099f0b2 ASoC: ti: Add custom m=
+achine driver for j721e EVM (CPB and IVI)
+> date:   3 months ago
+> config: x86_64-randconfig-r033-20200927 (attached as .config)
+> compiler: clang version 12.0.0 (https://github.com/llvm/llvm-project a8=
+3eb048cb9a75da7a07a9d5318bbdbf54885c87)
+> reproduce (this is a W=3D1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/s=
+bin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # install x86_64 cross compiling tool for clang build
+>         # apt-get install binutils-x86-64-linux-gnu
+>         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linu=
+x.git/commit/?id=3D6748d05590594837e42dfa975879fb275099f0b2
+>         git remote add linus https://git.kernel.org/pub/scm/linux/kerne=
+l/git/torvalds/linux.git
+>         git fetch --no-tags linus master
+>         git checkout 6748d05590594837e42dfa975879fb275099f0b2
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=3D$HOME/0day COMPILER=3Dclang make.cross =
+ARCH=3Dx86_64=20
+>=20
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+>=20
+> All warnings (new ones prefixed by >>):
+>=20
+>>> sound/soc/ti/j721e-evm.c:528:34: warning: unused variable 'j721e_audi=
+o_of_match' [-Wunused-const-variable]
+>    static const struct of_device_id j721e_audio_of_match[] =3D {
+>                                     ^
+>    1 warning generated.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+Right, in the attached .config:
+# CONFIG_OF is not set
+
+There must be a clean way to handle this without extensive ifedfery...
+
+> vim +/j721e_audio_of_match +528 sound/soc/ti/j721e-evm.c
+>=20
+>    527=09
+>  > 528	static const struct of_device_id j721e_audio_of_match[] =3D {
+>    529		{
+>    530			.compatible =3D "ti,j721e-cpb-audio",
+>    531			.data =3D &j721e_cpb_data,
+>    532		}, {
+>    533			.compatible =3D "ti,j721e-cpb-ivi-audio",
+>    534			.data =3D &j721e_cpb_ivi_data,
+>    535		},
+>    536		{ },
+>    537	};
+>    538	MODULE_DEVICE_TABLE(of, j721e_audio_of_match);
+>    539=09
+>=20
+> ---
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+>=20
+
+- P=E9ter
+
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+
