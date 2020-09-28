@@ -2,71 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BF7227B044
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 16:48:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4D4927B045
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 16:49:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726691AbgI1Oso (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 10:48:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54040 "EHLO mail.kernel.org"
+        id S1726667AbgI1OtH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 10:49:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54158 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726424AbgI1Oso (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 10:48:44 -0400
+        id S1726420AbgI1OtG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 10:49:06 -0400
 Received: from kernel.org (unknown [87.71.73.56])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5326A2083B;
-        Mon, 28 Sep 2020 14:48:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B634D2083B;
+        Mon, 28 Sep 2020 14:49:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601304523;
-        bh=2RWukztD0ih+c2TxkNWDIpTZVxHWr1lB3uCiNAwqMJQ=;
+        s=default; t=1601304546;
+        bh=9LRxtxjyRy0Tw9U1jNadFJt67c+Ahhm98hMYDQDjTTg=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=z/1As4JdXTICmJeyR8FoS09xr1mgXXkwJPPTl2NZ/+IwXQ43cF4/lW0wPMELXt8m3
-         84BV8bPxc2Uz9pO0IuqNPVCWf2YOI10VbcDabbolTdEuP7ffIzi3jwMmHoIqoFJkfW
-         DRbKbiTmKUwGlC1qz+LIT7j0tT0tlLoANwLHZXws=
-Date:   Mon, 28 Sep 2020 17:48:36 +0300
+        b=ba2fg2veNGOE4aRm0TVbk4dvqABZ5SimbcXc93q824WJMZ/DcSnVw+Xbbdimi9OyV
+         38jQWoqDTCsufOg/e1f0Y3D3cX9MGnrdl9Kq54QmCoEtRUbLrtm/hAtcPy1Ub0Urv4
+         o7vjAiSM1O5us9js/ynQ9P7xECoEUeXRE94K+HUA=
+Date:   Mon, 28 Sep 2020 17:49:00 +0300
 From:   Mike Rapoport <rppt@kernel.org>
 To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
         Mike Rapoport <rppt@linux.ibm.com>
-Subject: Re: [PATCH] mm: __do_fault: fix pte_alloc_one spelling
-Message-ID: <20200928144836.GZ2142832@kernel.org>
-References: <20200914115833.2571188-1-rppt@kernel.org>
+Subject: Re: [PATCH] mm: remove unused early_pfn_valid()
+Message-ID: <20200928144900.GA2142832@kernel.org>
+References: <20200923162915.26935-1-rppt@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200914115833.2571188-1-rppt@kernel.org>
+In-Reply-To: <20200923162915.26935-1-rppt@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 ping?
 
->On Mon, Sep 14, 2020 at 02:58:33PM +0300, Mike Rapoport wrote:
+On Wed, Sep 23, 2020 at 07:29:15PM +0300, Mike Rapoport wrote:
 > From: Mike Rapoport <rppt@linux.ibm.com>
 > 
-> Fix spelling of pte_alloc_one() in a comment in __do_fault().
+> The early_pfn_valid() macro is defined by it is never used.
+> Remove it.
 > 
 > Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
 > ---
->  mm/memory.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  include/linux/mmzone.h | 5 -----
+>  1 file changed, 5 deletions(-)
 > 
-> diff --git a/mm/memory.c b/mm/memory.c
-> index 469af373ae76..d582ac79cb7d 100644
-> --- a/mm/memory.c
-> +++ b/mm/memory.c
-> @@ -3433,7 +3433,7 @@ static vm_fault_t __do_fault(struct vm_fault *vmf)
->  	 *				unlock_page(A)
->  	 * lock_page(B)
->  	 *				lock_page(B)
-> -	 * pte_alloc_pne
-> +	 * pte_alloc_one
->  	 *   shrink_page_list
->  	 *     wait_on_page_writeback(A)
->  	 *				SetPageWriteback(B)
+> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+> index 8379432f4f2f..38264363b0d4 100644
+> --- a/include/linux/mmzone.h
+> +++ b/include/linux/mmzone.h
+> @@ -1376,7 +1376,6 @@ static inline unsigned long next_present_section_nr(unsigned long section_nr)
+>  #define pfn_to_nid(pfn)		(0)
+>  #endif
+>  
+> -#define early_pfn_valid(pfn)	pfn_valid(pfn)
+>  void sparse_init(void);
+>  #else
+>  #define sparse_init()	do {} while (0)
+> @@ -1396,10 +1395,6 @@ struct mminit_pfnnid_cache {
+>  	int last_nid;
+>  };
+>  
+> -#ifndef early_pfn_valid
+> -#define early_pfn_valid(pfn)	(1)
+> -#endif
+> -
+>  /*
+>   * If it is possible to have holes within a MAX_ORDER_NR_PAGES, then we
+>   * need to check pfn validity within that MAX_ORDER_NR_PAGES block.
 > -- 
-> 2.25.4
-> 
+> 2.28.0
 > 
 
 -- 
