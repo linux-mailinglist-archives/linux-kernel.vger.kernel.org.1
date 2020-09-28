@@ -2,48 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3712C27B8A1
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 02:05:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E93727B8CF
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 02:18:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727150AbgI2AFc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 20:05:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60744 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726698AbgI2AFb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 20:05:31 -0400
-Received: from sol.localdomain (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5B9EF207F7;
-        Mon, 28 Sep 2020 21:49:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601329768;
-        bh=jnDF4UHlxQoCvPVJnbDA/TG60C4qyLgWp/wbtLXGwEk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BbsRqdDGqXYX5Y4oP3LAjd7J6XF2TOj/cDIcCDrxxkHP/dS8eh0ax2zGyoN2g1FPJ
-         hSaUc7xsneh+qQEeALopJZfPSbYEnc4tLQjVLFjCsoLwKxSbp2R69bk7ZWhxIILaa6
-         bZgvrIwr+ChLLQQ7C4Y3vgOdrLKtioq98VbaKO0M=
-Date:   Mon, 28 Sep 2020 14:49:26 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Chao Yu <chao@kernel.org>
-Cc:     jaegeuk@kernel.org, linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-Subject: Re: [f2fs-dev] [PATCH v2] f2fs: fix uninit-value in f2fs_lookup
-Message-ID: <20200928214926.GB1340@sol.localdomain>
-References: <20200925233819.5359-1-chao@kernel.org>
+        id S1727180AbgI2ASn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 20:18:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46614 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726379AbgI2ASm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 20:18:42 -0400
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB4AFC0613CE;
+        Mon, 28 Sep 2020 14:50:57 -0700 (PDT)
+Received: by mail-il1-x142.google.com with SMTP id s88so2848877ilb.6;
+        Mon, 28 Sep 2020 14:50:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fKP0iCW5C41AVuyVgy4H4iCpIWkNbhmKoGGaIw+FRPw=;
+        b=txxrKViSulx5nWg0jtDkzjfDTpBwfo0AEStIUXIx3QHK1HCmFE8x4JEv8jzMIQ0VMy
+         HghahSBICquGrNLxO7fyA6HR4GVMM4Rl5av5KH4D5HjmHcOs61027JJ6+89uF+APN2uh
+         BN5hR29lcMhmOyrTIGQgLyuhM0RZbcLiM2oONLO+xGJ7Pvw9Q5+LIOLIGEoN9XOgnSnm
+         cjcK2Nw4um/650TxfHCJ/mRHVYLpDoBVl8sbZeXELWaCrsoXs1zgIh9t4MOz62uTrUkT
+         wifctUHQ0XztsVxuN7niWW4MoQCqWbtXpzlc8R7uqqaTCA09mNimTS840oPEmyBYk722
+         PcqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fKP0iCW5C41AVuyVgy4H4iCpIWkNbhmKoGGaIw+FRPw=;
+        b=Itk3MQDwbH50hFJ9aJpsBHagqzjFehArlr0l8Sz4AHL5tVkqFtPfeCfrldkKUgfA0i
+         iRtCJ8+euWFUUKSob0szxpwIXMX6b2i1BsEPWl8ash+6N35nmldkxHqOJomkbBxeso6M
+         jFV+7Z5vJJbbNhMwMjLth4j1ABE9mL+DeEBOsGJ91xNk+Xah12uhCOJW0oOLJbcirzCy
+         yHvQ/dZnIqo1IdHNZaqhJ1bFRPSFlgnJBb8MupcDbqTMbIEsSpDfQ3jA+21reVDzWzuQ
+         too3qw+b6EbXkZHUgVbQQ4kPBKJqIqm2iPndtY0itBDHulNMGP3rZAwjwTj0eOkK3rO7
+         rN6A==
+X-Gm-Message-State: AOAM530CMvu1q+NPPi344udasnWdWhuZxbAnvTJhyEBmxi12vGW1DEp7
+        iOnrQBtPME50FoZKhQAm0bHtiGBxyBikcYtulcQ=
+X-Google-Smtp-Source: ABdhPJwcIzK8LFFyJn81id6zB83vyHuZH7bJQhMEXxa2VQMxxrs7pEGmiSSMyNFguEMIPBLO+YYTOW4tnrNUnMXSDqY=
+X-Received: by 2002:a92:4a0c:: with SMTP id m12mr392985ilf.238.1601329857041;
+ Mon, 28 Sep 2020 14:50:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200925233819.5359-1-chao@kernel.org>
+References: <000000000000095d3605b05a9909@google.com>
+In-Reply-To: <000000000000095d3605b05a9909@google.com>
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+Date:   Mon, 28 Sep 2020 14:50:45 -0700
+Message-ID: <CAM_iQpWotD4ZE0QBYMzB0_sEtxo0yLzeVfo-_6rXPwW9o9wwYQ@mail.gmail.com>
+Subject: Re: KASAN: use-after-free Read in tcf_action_init
+To:     syzbot <syzbot+9f43bb6a66ff96a21931@syzkaller.appspotmail.com>
+Cc:     coreteam@netfilter.org, David Miller <davem@davemloft.net>,
+        enric.balletbo@collabora.com, groeck@chromium.org,
+        gwendal@chromium.org, Jamal Hadi Salim <jhs@mojatatu.com>,
+        jic23@kernel.org, Jiri Pirko <jiri@resnulli.us>,
+        Patrick McHardy <kaber@trash.net>,
+        Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>,
+        Jakub Kicinski <kuba@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        NetFilter <netfilter-devel@vger.kernel.org>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 26, 2020 at 07:38:19AM +0800, Chao Yu wrote:
-> From: Chao Yu <yuchao0@huawei.com>
-> 
-> As syzbot reported:
-
-Please include the Reported-by line that the syzbot report said to include.
-
-- Eric
+#syz fix: net_sched: commit action insertions together
