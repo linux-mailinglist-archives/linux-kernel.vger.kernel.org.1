@@ -2,43 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C502427A85B
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 09:17:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 445D927A865
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 09:17:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726572AbgI1HR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 03:17:26 -0400
-Received: from mail-io1-f78.google.com ([209.85.166.78]:50314 "EHLO
-        mail-io1-f78.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726500AbgI1HRZ (ORCPT
+        id S1726640AbgI1HRi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 03:17:38 -0400
+Received: from mail-il1-f207.google.com ([209.85.166.207]:47001 "EHLO
+        mail-il1-f207.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726420AbgI1HR0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 03:17:25 -0400
-Received: by mail-io1-f78.google.com with SMTP id b16so93471iod.17
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 00:17:25 -0700 (PDT)
+        Mon, 28 Sep 2020 03:17:26 -0400
+Received: by mail-il1-f207.google.com with SMTP id z8so73308ilh.13
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 00:17:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=GHGGR4Zfn1U2MwoQAnVbHF7lefhURprcgm/RtnFwDRQ=;
-        b=MpSbeIjAamcaOzvZmk5MzQe+2YQABYa+lfHH6BIfwpAl4IEsXcAB7y9fYcwzLpzNsP
-         9+dDn8UdoXn43xZmiyA88xZqN5SoXV0cEKbO6jZj1SjAXf6e0BLviCpfuql98nZAdixw
-         LqUIhafv95Yzf4yAB9kk3raD/2TIFUHDPpdaoxmBLbFS967Zt0Hdp6WcLYJNfgTvdJjV
-         McsHXpU+CTm2VT4yf6o6AB9vKi/Vd8qGC6FAOFlnAD9J88nBiIdu5B671sQfFU+DlFxL
-         A96oOhwyk05RuNw1vKvW4DPH/DW9Lnv7RISzwgRTavaUZIMYhgBJJ4Rc3yDV3ztFQNGL
-         Xe+g==
-X-Gm-Message-State: AOAM532Z4Vi0e3JpMstMb2qFYdF8/+KOhpgJa0l0A1Q+Fc5QrL7lewlY
-        ksPRDbn7OzpOeR+22GPcMSxSkjkotXHo5kliC8QOWHTGGaEo
-X-Google-Smtp-Source: ABdhPJwkfJxPhyjGtwfnoYbPxJx2Gypp/5FpZVK82XXdI5Exe87xWNsfIU11of/7hMYigERZk0exFULdXDuusHWvcR5e3moApY3X
+        bh=2sEnEYxyNwpEgsimSPXtqWMnn7vsrC2lM97M08ZDK+I=;
+        b=Y9E7G1/kFbCbrZThAM+sh3iPeQyU8S5+xeyaX+rV7eZrBXAEBHvC0Aay24ehN6K+JQ
+         6XPB0+g9+cGAmkfBCPDfChuM2yquYpLvNuSfUhu622E6+jUDZTf4HrcfxgK4K500033+
+         5KSjAUp3N9tMy1aE/DhS8go2RZBwX9CdB1lBILvTrUTG6UEJ3XtEPeILb2BLhlBsaWak
+         ETHBqGQJaPIuT4KbARej11MbsmY+4yr0Cw3eQQ8aZCCJBWbdDhZrkdRQujBUQvwqAwIw
+         n8CPU5BaAG9shBVaNiCdoIT4ldfEvlNMBMrZCnUKSNZZzAd1WdW5EJT8taopUTCt7ri0
+         QFxA==
+X-Gm-Message-State: AOAM530MNkKVo6IpyqMT+c9CC2gy9zeh/BkxCdi5d4UeyrgU6C/H0ZFj
+        s6qMmDtchBgf9LS0mmDxkhyjQq5GxXrxeMYo9tgPyrqqkBFJ
+X-Google-Smtp-Source: ABdhPJyMwyH/Mnql2TYZjy3b2buFlRc5CNsFNJxThykpholY53eE5GJuoQLTv7S3EjjVxbKs9rr/TraruyAeYSKnNuIgkVbO01jL
 MIME-Version: 1.0
-X-Received: by 2002:a6b:da19:: with SMTP id x25mr6111900iob.12.1601277444720;
+X-Received: by 2002:a92:c083:: with SMTP id h3mr85009ile.30.1601277444526;
  Mon, 28 Sep 2020 00:17:24 -0700 (PDT)
 Date:   Mon, 28 Sep 2020 00:17:24 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000478f3a05b05a7539@google.com>
-Subject: general protection fault in io_poll_double_wake (2)
-From:   syzbot <syzbot+81b3883093f772addf6d@syzkaller.appspotmail.com>
-To:     axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Message-ID: <00000000000044a00505b05a7576@google.com>
+Subject: INFO: task hung in tcindex_partial_destroy_work
+From:   syzbot <syzbot+e3c2598c1486366a941b@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, gregkh@linuxfoundation.org, hauke@hauke-m.de,
+        jhs@mojatatu.com, jiri@resnulli.us, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        rafael@kernel.org, syzkaller-bugs@googlegroups.com,
+        xiyou.wangcong@gmail.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -48,77 +50,141 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    d1d2220c Add linux-next specific files for 20200924
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=1550b609900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=254e028a642027c
-dashboard link: https://syzkaller.appspot.com/bug?extid=81b3883093f772addf6d
+HEAD commit:    05943249 net: atlantic: fix build when object tree is sepa..
+git tree:       net
+console output: https://syzkaller.appspot.com/x/log.txt?x=1343b909900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=240e2ebab67245c7
+dashboard link: https://syzkaller.appspot.com/bug?extid=e3c2598c1486366a941b
 compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15946317900000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1266c5ad900000
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14a890a7900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16713f03900000
+
+The issue was bisected to:
+
+commit f9317ae5523f99999fb54c513ebabbb2bc887ddf
+Author: Hauke Mehrtens <hauke@hauke-m.de>
+Date:   Tue Sep 22 21:41:12 2020 +0000
+
+    net: lantiq: Add locking for TX DMA channel
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=164c9773900000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=154c9773900000
+console output: https://syzkaller.appspot.com/x/log.txt?x=114c9773900000
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+81b3883093f772addf6d@syzkaller.appspotmail.com
+Reported-by: syzbot+e3c2598c1486366a941b@syzkaller.appspotmail.com
+Fixes: f9317ae5523f ("net: lantiq: Add locking for TX DMA channel")
 
-IPVS: ftp: loaded support on port[0] = 21
-general protection fault, probably for non-canonical address 0xdffffc0000000009: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000048-0x000000000000004f]
-CPU: 0 PID: 6874 Comm: syz-executor749 Not tainted 5.9.0-rc6-next-20200924-syzkaller #0
+INFO: task kworker/u4:6:247 blocked for more than 143 seconds.
+      Not tainted 5.9.0-rc6-syzkaller #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:kworker/u4:6    state:D stack:23816 pid:  247 ppid:     2 flags:0x00004000
+Workqueue: tc_filter_workqueue tcindex_partial_destroy_work
+Call Trace:
+ context_switch kernel/sched/core.c:3778 [inline]
+ __schedule+0xec9/0x2280 kernel/sched/core.c:4527
+ schedule+0xd0/0x2a0 kernel/sched/core.c:4602
+ schedule_preempt_disabled+0xf/0x20 kernel/sched/core.c:4661
+ __mutex_lock_common kernel/locking/mutex.c:1033 [inline]
+ __mutex_lock+0x3e2/0x10e0 kernel/locking/mutex.c:1103
+ tcindex_partial_destroy_work+0x13/0x50 net/sched/cls_tcindex.c:287
+ process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
+ worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
+ kthread+0x3b5/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+
+Showing all locks held in the system:
+3 locks held by kworker/u4:6/247:
+ #0: ffff8880a639c138 ((wq_completion)tc_filter_workqueue){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff8880a639c138 ((wq_completion)tc_filter_workqueue){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
+ #0: ffff8880a639c138 ((wq_completion)tc_filter_workqueue){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
+ #0: ffff8880a639c138 ((wq_completion)tc_filter_workqueue){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
+ #0: ffff8880a639c138 ((wq_completion)tc_filter_workqueue){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
+ #0: ffff8880a639c138 ((wq_completion)tc_filter_workqueue){+.+.}-{0:0}, at: process_one_work+0x82b/0x1670 kernel/workqueue.c:2240
+ #1: ffffc90001af7da8 ((work_completion)(&(rwork)->work)){+.+.}-{0:0}, at: process_one_work+0x85f/0x1670 kernel/workqueue.c:2244
+ #2: ffffffff8b14d828 (rtnl_mutex){+.+.}-{3:3}, at: tcindex_partial_destroy_work+0x13/0x50 net/sched/cls_tcindex.c:287
+1 lock held by khungtaskd/1171:
+ #0: ffffffff8a067f00 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x260 kernel/locking/lockdep.c:5852
+1 lock held by in:imklog/6564:
+ #0: ffff8880a9106670 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0xe9/0x100 fs/file.c:930
+3 locks held by kworker/0:0/6861:
+ #0: ffff888214cf6938 ((wq_completion)ipv6_addrconf){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff888214cf6938 ((wq_completion)ipv6_addrconf){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
+ #0: ffff888214cf6938 ((wq_completion)ipv6_addrconf){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
+ #0: ffff888214cf6938 ((wq_completion)ipv6_addrconf){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
+ #0: ffff888214cf6938 ((wq_completion)ipv6_addrconf){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
+ #0: ffff888214cf6938 ((wq_completion)ipv6_addrconf){+.+.}-{0:0}, at: process_one_work+0x82b/0x1670 kernel/workqueue.c:2240
+ #1: ffffc90001687da8 ((addr_chk_work).work){+.+.}-{0:0}, at: process_one_work+0x85f/0x1670 kernel/workqueue.c:2244
+ #2: ffffffff8b14d828 (rtnl_mutex){+.+.}-{3:3}, at: addrconf_verify_work+0xa/0x20 net/ipv6/addrconf.c:4568
+1 lock held by syz-executor028/6890:
+
+=============================================
+
+NMI backtrace for cpu 0
+CPU: 0 PID: 1171 Comm: khungtaskd Not tainted 5.9.0-rc6-syzkaller #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:io_poll_get_single fs/io_uring.c:4778 [inline]
-RIP: 0010:io_poll_double_wake+0x51/0x510 fs/io_uring.c:4845
-Code: fc ff df 48 c1 ea 03 80 3c 02 00 0f 85 9e 03 00 00 48 b8 00 00 00 00 00 fc ff df 49 8b 5d 08 48 8d 7b 48 48 89 fa 48 c1 ea 03 <0f> b6 04 02 84 c0 74 06 0f 8e 63 03 00 00 0f b6 6b 48 bf 06 00 00
-RSP: 0018:ffffc90001c1fb70 EFLAGS: 00010006
-RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000004
-RDX: 0000000000000009 RSI: ffffffff81d9b3ad RDI: 0000000000000048
-RBP: dffffc0000000000 R08: ffff8880a3cac798 R09: ffffc90001c1fc60
-R10: fffff52000383f73 R11: 0000000000000000 R12: 0000000000000004
-R13: ffff8880a3cac798 R14: ffff8880a3cac7a0 R15: 0000000000000004
-FS:  0000000001f98880(0000) GS:ffff8880ae400000(0000) knlGS:0000000000000000
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x198/0x1fd lib/dump_stack.c:118
+ nmi_cpu_backtrace.cold+0x70/0xb1 lib/nmi_backtrace.c:101
+ nmi_trigger_cpumask_backtrace+0x1b3/0x223 lib/nmi_backtrace.c:62
+ trigger_all_cpu_backtrace include/linux/nmi.h:146 [inline]
+ check_hung_uninterruptible_tasks kernel/hung_task.c:209 [inline]
+ watchdog+0xd7d/0x1000 kernel/hung_task.c:295
+ kthread+0x3b5/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+Sending NMI from CPU 0 to CPUs 1:
+NMI backtrace for cpu 1
+CPU: 1 PID: 6890 Comm: syz-executor028 Not tainted 5.9.0-rc6-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:check_kcov_mode kernel/kcov.c:165 [inline]
+RIP: 0010:__sanitizer_cov_trace_pc+0x2a/0x60 kernel/kcov.c:197
+Code: 65 48 8b 14 25 c0 fe 01 00 65 8b 05 30 c0 8b 7e a9 00 01 ff 00 48 8b 34 24 74 0f f6 c4 01 74 35 8b 82 2c 14 00 00 85 c0 74 2b <8b> 82 08 14 00 00 83 f8 02 75 20 48 8b 8a 10 14 00 00 8b 92 0c 14
+RSP: 0018:ffffc90002cdeb68 EFLAGS: 00000246
+RAX: 0000000080000000 RBX: dffffc0000000000 RCX: ffffffff83d84523
+RDX: ffff8880a92d2200 RSI: ffffffff83d8452e RDI: 0000000000000007
+RBP: 0000000000000001 R08: 0000000000000000 R09: ffff8880a8b0e407
+R10: 0000000000000002 R11: 0000000000000000 R12: ffff8880a4b8ccc2
+R13: ffff8880a8b0e4d8 R14: 0000000000000002 R15: 0000000000000000
+FS:  00000000025b9880(0000) GS:ffff8880ae500000(0000) knlGS:0000000000000000
 CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f18886916c0 CR3: 0000000094c5a000 CR4: 00000000001506f0
+CR2: 00007f75ac76d6c0 CR3: 00000000a1c3e000 CR4: 00000000001506e0
 DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
 DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 Call Trace:
- __wake_up_common+0x147/0x650 kernel/sched/wait.c:93
- __wake_up_common_lock+0xd0/0x130 kernel/sched/wait.c:123
- tty_ldisc_hangup+0x1cf/0x680 drivers/tty/tty_ldisc.c:735
- __tty_hangup.part.0+0x403/0x870 drivers/tty/tty_io.c:625
- __tty_hangup drivers/tty/tty_io.c:575 [inline]
- tty_vhangup+0x1d/0x30 drivers/tty/tty_io.c:698
- pty_close+0x3f5/0x550 drivers/tty/pty.c:79
- tty_release+0x455/0xf60 drivers/tty/tty_io.c:1679
- __fput+0x285/0x920 fs/file_table.c:281
- task_work_run+0xdd/0x190 kernel/task_work.c:141
- tracehook_notify_resume include/linux/tracehook.h:188 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:165 [inline]
- exit_to_user_mode_prepare+0x1e2/0x1f0 kernel/entry/common.c:192
- syscall_exit_to_user_mode+0x7a/0x2c0 kernel/entry/common.c:267
+ entry_to_node lib/radix-tree.c:68 [inline]
+ __radix_tree_lookup+0x10e/0x290 lib/radix-tree.c:764
+ tcf_idr_check_alloc+0xb0/0x3b0 net/sched/act_api.c:501
+ tcf_police_init+0x347/0x13a0 net/sched/act_police.c:81
+ tcf_action_init_1+0x1ab/0xac0 net/sched/act_api.c:998
+ tcf_exts_validate+0x138/0x420 net/sched/cls_api.c:3058
+ tcindex_set_parms+0x189/0x20d0 net/sched/cls_tcindex.c:342
+ tcindex_change+0x203/0x2e0 net/sched/cls_tcindex.c:546
+ tc_new_tfilter+0x1398/0x2130 net/sched/cls_api.c:2129
+ rtnetlink_rcv_msg+0x80f/0xad0 net/core/rtnetlink.c:5554
+ netlink_rcv_skb+0x15a/0x430 net/netlink/af_netlink.c:2470
+ netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
+ netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
+ sock_sendmsg_nosec net/socket.c:651 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:671
+ ____sys_sendmsg+0x331/0x810 net/socket.c:2353
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2407
+ __sys_sendmmsg+0x195/0x480 net/socket.c:2497
+ __do_sys_sendmmsg net/socket.c:2526 [inline]
+ __se_sys_sendmmsg net/socket.c:2523 [inline]
+ __x64_sys_sendmmsg+0x99/0x100 net/socket.c:2523
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x401210
-Code: 01 f0 ff ff 0f 83 20 0c 00 00 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 83 3d dd 24 2d 00 00 75 14 b8 03 00 00 00 0f 05 <48> 3d 01 f0 ff ff 0f 83 f4 0b 00 00 c3 48 83 ec 08 e8 5a 01 00 00
-RSP: 002b:00007ffcdc2c7408 EFLAGS: 00000246 ORIG_RAX: 0000000000000003
-RAX: 0000000000000000 RBX: 0000000000000004 RCX: 0000000000401210
-RDX: 0000000000000000 RSI: 000000000000450c RDI: 0000000000000003
-RBP: 00007ffcdc2c7410 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000402290
-R13: 0000000000402320 R14: 0000000000000000 R15: 0000000000000000
-Modules linked in:
----[ end trace b71b955b40cc85b6 ]---
-RIP: 0010:io_poll_get_single fs/io_uring.c:4778 [inline]
-RIP: 0010:io_poll_double_wake+0x51/0x510 fs/io_uring.c:4845
-Code: fc ff df 48 c1 ea 03 80 3c 02 00 0f 85 9e 03 00 00 48 b8 00 00 00 00 00 fc ff df 49 8b 5d 08 48 8d 7b 48 48 89 fa 48 c1 ea 03 <0f> b6 04 02 84 c0 74 06 0f 8e 63 03 00 00 0f b6 6b 48 bf 06 00 00
-RSP: 0018:ffffc90001c1fb70 EFLAGS: 00010006
-RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000004
-RDX: 0000000000000009 RSI: ffffffff81d9b3ad RDI: 0000000000000048
-RBP: dffffc0000000000 R08: ffff8880a3cac798 R09: ffffc90001c1fc60
-R10: fffff52000383f73 R11: 0000000000000000 R12: 0000000000000004
-R13: ffff8880a3cac798 R14: ffff8880a3cac7a0 R15: 0000000000000004
-FS:  0000000001f98880(0000) GS:ffff8880ae400000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f18886916c0 CR3: 0000000094c5a000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+RIP: 0033:0x441719
+Code: e8 5c ad 02 00 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 bb 09 fc ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007fffc27a5578 EFLAGS: 00000246 ORIG_RAX: 0000000000000133
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 0000000000441719
+RDX: 010efe10675dec16 RSI: 0000000020000200 RDI: 0000000000000003
+RBP: 00007fffc27a5580 R08: 0000000120080522 R09: 0000000120080522
+R10: 0000000000000000 R11: 0000000000000246 R12: 00000000004a2a50
+R13: 00000000004025f0 R14: 0000000000000000 R15: 0000000000000000
+INFO: NMI handler (nmi_cpu_backtrace_handler) took too long to run: 0.000 msecs
 
 
 ---
@@ -128,5 +194,6 @@ syzbot engineers can be reached at syzkaller@googlegroups.com.
 
 syzbot will keep track of this issue. See:
 https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 syzbot can test patches for this issue, for details see:
 https://goo.gl/tpsmEJ#testing-patches
