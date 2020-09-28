@@ -2,108 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9BCF27A856
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 09:15:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C502427A85B
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 09:17:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726522AbgI1HPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 03:15:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57386 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726328AbgI1HPE (ORCPT
+        id S1726572AbgI1HR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 03:17:26 -0400
+Received: from mail-io1-f78.google.com ([209.85.166.78]:50314 "EHLO
+        mail-io1-f78.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726500AbgI1HRZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 03:15:04 -0400
-Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD0DFC0613CE
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 00:15:03 -0700 (PDT)
-Received: by mail-vs1-xe44.google.com with SMTP id y194so146643vsc.4
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 00:15:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kCXdMKNDB4m8MlwDrPmz+XV4KwYnVdM/qHc8DcVYWww=;
-        b=ARNv/b4yV78actnJ0SE5pQEsF9qbZjb0qiYFZyLvAAi7wtsltM+289weq9fVgYDHZ2
-         pUAdIXSWvcnjVZFJ9LX5QxfoGp+JVEitm4WwFE2AH5XJDk4NUM2XKYMDKqvG36nDGfjM
-         yz7UcuT73+t78gooBxyXTqxo6hFnVWwhhLgQ4=
+        Mon, 28 Sep 2020 03:17:25 -0400
+Received: by mail-io1-f78.google.com with SMTP id b16so93471iod.17
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 00:17:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kCXdMKNDB4m8MlwDrPmz+XV4KwYnVdM/qHc8DcVYWww=;
-        b=Cb6IYeyrDmYZf9BVU8RYgs9Yv5PtqJ0Ze3pHRxEDAS9wJlhKxZZx6N5IEaFfN/Djzo
-         fPD+vp3sJd6F0h14ssBl68woMu3b+g/tNdbZTJyVpPuYPk/napAVURWH31WnZuyjYRX0
-         76+6cghozR5J2tXzv8txjWp8dTig/AhCk85YeG9h48A4hbUcWvZscc6AW1XIsl+91qJb
-         lSPWiHSeb8FKfN2yVgq0CJT01g/BFJhj8gOUQcuYmAN/b+fQ835XF6c+HQAUDv8xy9Qi
-         8n/8VtisRn0Qz6NOcKHdjMCpgybdcPcR8TdYnqchM35gKzi/04lOT174EXkeE1SFig+Q
-         6Bpg==
-X-Gm-Message-State: AOAM532W56Q5SEFSrOvyFOxk/JXCRMBhJRbjGSbf02lglsouQefwLoih
-        Xmewd4/wKkMJuGE4qjnce2GQsfwC/ngsRIVd0m9dCA==
-X-Google-Smtp-Source: ABdhPJzgpnpkOxCGPLSVYGGd+XgZUifTyoBe8zmUJ1pjig3VfddPP2GwmgKduNv1AMm7rusj7VWmXWs6Kk031JOtkXw=
-X-Received: by 2002:a67:fe07:: with SMTP id l7mr4701508vsr.21.1601277302935;
- Mon, 28 Sep 2020 00:15:02 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=GHGGR4Zfn1U2MwoQAnVbHF7lefhURprcgm/RtnFwDRQ=;
+        b=MpSbeIjAamcaOzvZmk5MzQe+2YQABYa+lfHH6BIfwpAl4IEsXcAB7y9fYcwzLpzNsP
+         9+dDn8UdoXn43xZmiyA88xZqN5SoXV0cEKbO6jZj1SjAXf6e0BLviCpfuql98nZAdixw
+         LqUIhafv95Yzf4yAB9kk3raD/2TIFUHDPpdaoxmBLbFS967Zt0Hdp6WcLYJNfgTvdJjV
+         McsHXpU+CTm2VT4yf6o6AB9vKi/Vd8qGC6FAOFlnAD9J88nBiIdu5B671sQfFU+DlFxL
+         A96oOhwyk05RuNw1vKvW4DPH/DW9Lnv7RISzwgRTavaUZIMYhgBJJ4Rc3yDV3ztFQNGL
+         Xe+g==
+X-Gm-Message-State: AOAM532Z4Vi0e3JpMstMb2qFYdF8/+KOhpgJa0l0A1Q+Fc5QrL7lewlY
+        ksPRDbn7OzpOeR+22GPcMSxSkjkotXHo5kliC8QOWHTGGaEo
+X-Google-Smtp-Source: ABdhPJwkfJxPhyjGtwfnoYbPxJx2Gypp/5FpZVK82XXdI5Exe87xWNsfIU11of/7hMYigERZk0exFULdXDuusHWvcR5e3moApY3X
 MIME-Version: 1.0
-References: <1596705715-15320-1-git-send-email-weiyi.lu@mediatek.com> <1596705715-15320-7-git-send-email-weiyi.lu@mediatek.com>
-In-Reply-To: <1596705715-15320-7-git-send-email-weiyi.lu@mediatek.com>
-From:   Nicolas Boichat <drinkcat@chromium.org>
-Date:   Mon, 28 Sep 2020 15:14:52 +0800
-Message-ID: <CANMq1KByYjeD0D81sPzDxx5SzrPvpGxPgm+xvLWcFsmfUJDWBQ@mail.gmail.com>
-Subject: Re: [PATCH v17 06/12] soc: mediatek: Add support for hierarchical
- scpsys device node
-To:     Weiyi Lu <weiyi.lu@mediatek.com>
-Cc:     Enric Balletbo Serra <eballetbo@gmail.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Herring <robh@kernel.org>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        James Liao <jamesjj.liao@mediatek.com>,
-        Fan Chen <fan.chen@mediatek.com>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Devicetree List <devicetree@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        srv_heupstream <srv_heupstream@mediatek.com>
+X-Received: by 2002:a6b:da19:: with SMTP id x25mr6111900iob.12.1601277444720;
+ Mon, 28 Sep 2020 00:17:24 -0700 (PDT)
+Date:   Mon, 28 Sep 2020 00:17:24 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000478f3a05b05a7539@google.com>
+Subject: general protection fault in io_poll_double_wake (2)
+From:   syzbot <syzbot+81b3883093f772addf6d@syzkaller.appspotmail.com>
+To:     axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 6, 2020 at 5:22 PM Weiyi Lu <weiyi.lu@mediatek.com> wrote:
->
-> Try to list all the power domains of under power controller
-> node to show the dependency between each power domain directly
-> instead of filling the dependency in scp_soc_data.
-> And could be more clearly to group subsys clocks into power domain
-> sub node to introduce subsys clocks of bus protection in next patch.
->
-> Signed-off-by: Weiyi Lu <weiyi.lu@mediatek.com>
-> ---
-[snip]
-> +static int traverse_scp(struct platform_device *pdev, struct scp *scp,
-> +                       const struct scp_domain_data *scp_domain_data)
-> +{
-> +       struct device *dev = &pdev->dev;
-> +       struct device_node *np = dev->of_node;
-> +       struct device_node *sub;
-> +       int ret;
-> +
-> +       INIT_LIST_HEAD(&scp->dep_links);
-> +
-> +       for_each_available_child_of_node(np, sub) {
-> +               ret = scpsys_get_domain(pdev, scp, sub, scp_domain_data);
-> +               if (ret) {
-> +                       dev_err(&pdev->dev, "failed to handle node %pOFn: %d\n", sub, ret);
+Hello,
 
-minor comment: this error should not be printed if ret ==
--EPROBE_DEFER (use the new dev_err_probe?)
+syzbot found the following issue on:
 
-> +                       goto err;
-> +               }
-> +       }
-> +
-> +       return 0;
-> +
-> +err:
-> +       of_node_put(sub);
-> +       return ret;
-> +}
-[snip]
+HEAD commit:    d1d2220c Add linux-next specific files for 20200924
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=1550b609900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=254e028a642027c
+dashboard link: https://syzkaller.appspot.com/bug?extid=81b3883093f772addf6d
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15946317900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1266c5ad900000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+81b3883093f772addf6d@syzkaller.appspotmail.com
+
+IPVS: ftp: loaded support on port[0] = 21
+general protection fault, probably for non-canonical address 0xdffffc0000000009: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000048-0x000000000000004f]
+CPU: 0 PID: 6874 Comm: syz-executor749 Not tainted 5.9.0-rc6-next-20200924-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:io_poll_get_single fs/io_uring.c:4778 [inline]
+RIP: 0010:io_poll_double_wake+0x51/0x510 fs/io_uring.c:4845
+Code: fc ff df 48 c1 ea 03 80 3c 02 00 0f 85 9e 03 00 00 48 b8 00 00 00 00 00 fc ff df 49 8b 5d 08 48 8d 7b 48 48 89 fa 48 c1 ea 03 <0f> b6 04 02 84 c0 74 06 0f 8e 63 03 00 00 0f b6 6b 48 bf 06 00 00
+RSP: 0018:ffffc90001c1fb70 EFLAGS: 00010006
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000004
+RDX: 0000000000000009 RSI: ffffffff81d9b3ad RDI: 0000000000000048
+RBP: dffffc0000000000 R08: ffff8880a3cac798 R09: ffffc90001c1fc60
+R10: fffff52000383f73 R11: 0000000000000000 R12: 0000000000000004
+R13: ffff8880a3cac798 R14: ffff8880a3cac7a0 R15: 0000000000000004
+FS:  0000000001f98880(0000) GS:ffff8880ae400000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f18886916c0 CR3: 0000000094c5a000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ __wake_up_common+0x147/0x650 kernel/sched/wait.c:93
+ __wake_up_common_lock+0xd0/0x130 kernel/sched/wait.c:123
+ tty_ldisc_hangup+0x1cf/0x680 drivers/tty/tty_ldisc.c:735
+ __tty_hangup.part.0+0x403/0x870 drivers/tty/tty_io.c:625
+ __tty_hangup drivers/tty/tty_io.c:575 [inline]
+ tty_vhangup+0x1d/0x30 drivers/tty/tty_io.c:698
+ pty_close+0x3f5/0x550 drivers/tty/pty.c:79
+ tty_release+0x455/0xf60 drivers/tty/tty_io.c:1679
+ __fput+0x285/0x920 fs/file_table.c:281
+ task_work_run+0xdd/0x190 kernel/task_work.c:141
+ tracehook_notify_resume include/linux/tracehook.h:188 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:165 [inline]
+ exit_to_user_mode_prepare+0x1e2/0x1f0 kernel/entry/common.c:192
+ syscall_exit_to_user_mode+0x7a/0x2c0 kernel/entry/common.c:267
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x401210
+Code: 01 f0 ff ff 0f 83 20 0c 00 00 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 83 3d dd 24 2d 00 00 75 14 b8 03 00 00 00 0f 05 <48> 3d 01 f0 ff ff 0f 83 f4 0b 00 00 c3 48 83 ec 08 e8 5a 01 00 00
+RSP: 002b:00007ffcdc2c7408 EFLAGS: 00000246 ORIG_RAX: 0000000000000003
+RAX: 0000000000000000 RBX: 0000000000000004 RCX: 0000000000401210
+RDX: 0000000000000000 RSI: 000000000000450c RDI: 0000000000000003
+RBP: 00007ffcdc2c7410 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000402290
+R13: 0000000000402320 R14: 0000000000000000 R15: 0000000000000000
+Modules linked in:
+---[ end trace b71b955b40cc85b6 ]---
+RIP: 0010:io_poll_get_single fs/io_uring.c:4778 [inline]
+RIP: 0010:io_poll_double_wake+0x51/0x510 fs/io_uring.c:4845
+Code: fc ff df 48 c1 ea 03 80 3c 02 00 0f 85 9e 03 00 00 48 b8 00 00 00 00 00 fc ff df 49 8b 5d 08 48 8d 7b 48 48 89 fa 48 c1 ea 03 <0f> b6 04 02 84 c0 74 06 0f 8e 63 03 00 00 0f b6 6b 48 bf 06 00 00
+RSP: 0018:ffffc90001c1fb70 EFLAGS: 00010006
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000004
+RDX: 0000000000000009 RSI: ffffffff81d9b3ad RDI: 0000000000000048
+RBP: dffffc0000000000 R08: ffff8880a3cac798 R09: ffffc90001c1fc60
+R10: fffff52000383f73 R11: 0000000000000000 R12: 0000000000000004
+R13: ffff8880a3cac798 R14: ffff8880a3cac7a0 R15: 0000000000000004
+FS:  0000000001f98880(0000) GS:ffff8880ae400000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f18886916c0 CR3: 0000000094c5a000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
