@@ -2,139 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2BBE27AFE4
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 16:23:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9B5627AFB7
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 16:10:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726420AbgI1OXG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 10:23:06 -0400
-Received: from mga04.intel.com ([192.55.52.120]:42270 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726325AbgI1OXF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 10:23:05 -0400
-IronPort-SDR: wGEzRi1fMh39GIt3WIW6Pr7Z4lzVW7ypVEINpU9r/GXZhG9M6jsm2xcabLP9pRKpiDCykZ/8kb
- fnYileett1qA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9757"; a="159380168"
-X-IronPort-AV: E=Sophos;i="5.77,313,1596524400"; 
-   d="scan'208";a="159380168"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 07:09:57 -0700
-IronPort-SDR: YHKFCeCMdY+V43id/m9w5v+iLoHJB+6rsO9/fuI+9KrFSlgtL8srMAz2VH3zvDGshvmrjsrV+h
- IF8kcM28ZpTw==
-X-IronPort-AV: E=Sophos;i="5.77,313,1596524400"; 
-   d="scan'208";a="514269821"
-Received: from schuethe-mobl1.ger.corp.intel.com (HELO localhost) ([10.249.34.214])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 07:09:54 -0700
-Date:   Mon, 28 Sep 2020 17:09:55 +0300
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linux-integrity <linux-integrity@vger.kernel.org>,
-        "open list:LINUX FOR POWERPC (32-BIT AND 64-BIT)" 
-        <linuxppc-dev@lists.ozlabs.org>, Peter Huewe <peterhuewe@gmx.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] tpm: of: avoid __va() translation for event log address
-Message-ID: <20200928140955.GA70098@linux.intel.com>
-References: <20200922094128.26245-1-ardb@kernel.org>
- <20200925055626.GC165011@linux.intel.com>
- <CAMj1kXFLWsFz7HV4sHLbwBkuiEu0gT4esSH8umVrvDDrJaOLrQ@mail.gmail.com>
- <20200925102920.GA180915@linux.intel.com>
- <20200925120018.GH9916@ziepe.ca>
- <20200927234434.GA5283@linux.intel.com>
- <9be9c7e7-c424-d241-2255-ad854221bd2e@csgroup.eu>
- <CAMj1kXGxNgixUEocma-9F3fYgdJJJADh=bvyrCziXkuArErWdA@mail.gmail.com>
+        id S1726552AbgI1OKx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 10:10:53 -0400
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:40970 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726460AbgI1OKw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 10:10:52 -0400
+Received: by mail-ot1-f65.google.com with SMTP id q21so1017284ota.8;
+        Mon, 28 Sep 2020 07:10:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2sM12ZeK0z1tSNxQRVSSWCLi5jDZGPNS8m7K+6sRVao=;
+        b=OWD79MGyqIOE5fHO53MPeWlK4vPkk4Sde63QKpjGUi5buaCLiK3o4ADnWoLfbCcGI1
+         nTV5Y6P28Dokqh+zsl6pzna8PWT9omN6xW4+cN6ITInWUq9wkSA3Nx9gqrUjAJZTiHbq
+         tT7qhPqzPoM/AOMZtueM4wV/13e9fZewU1w8Nr/Kf4sBAzrHaNbeI+PxOex69xg8h6cU
+         wMrhCXwX9HzkxyaAMzmnkgBWbkTHT3490jBDVh6D0z8aSsEYTgqzffeAyfN1Wt04sLTM
+         MwNgB8vZNzsBJqmekw3+JZWsjiTTYmjGfIBxKRWG9CcNs2hBooJag2/Pj/FAkEcd9vyE
+         //2Q==
+X-Gm-Message-State: AOAM532xhvlTNYMebyj/BEoFqJqzthMjBkDz7NHp5K37KeaI7NsBqJf9
+        JuPgTKCxVRVVbmaGew0OnAKul9LR/l03wN0ogUo=
+X-Google-Smtp-Source: ABdhPJzoRcZtx0KR+JiVPrhbYB+WXxT604oAjCIQ0JUATh9EyZHxwpAfE2Rm0/6BIsROa8t6jNpV1RiZbkd6WDpqdb8=
+X-Received: by 2002:a9d:718a:: with SMTP id o10mr1097527otj.262.1601302251909;
+ Mon, 28 Sep 2020 07:10:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMj1kXGxNgixUEocma-9F3fYgdJJJADh=bvyrCziXkuArErWdA@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <00d901d693a4$93195980$b94c0c80$@gmail.com>
+In-Reply-To: <00d901d693a4$93195980$b94c0c80$@gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 28 Sep 2020 16:10:36 +0200
+Message-ID: <CAJZ5v0ivZnvVbY4WyM1SQO1TY=G8yb4=C0kWkVQPas5=NX1Sog@mail.gmail.com>
+Subject: Re: [PATCH] cpuidle: change #ifdef for the declaration of cpuidle_enter_s2idle()
+To:     zhuguangqing83 <zhuguangqing83@gmail.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        zhuguangqing <zhuguangqing@xiaomi.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 08:20:18AM +0200, Ard Biesheuvel wrote:
-> On Mon, 28 Sep 2020 at 07:56, Christophe Leroy
-> <christophe.leroy@csgroup.eu> wrote:
-> >
-> >
-> >
-> > Le 28/09/2020 à 01:44, Jarkko Sakkinen a écrit :
-> > > On Fri, Sep 25, 2020 at 09:00:18AM -0300, Jason Gunthorpe wrote:
-> > >> On Fri, Sep 25, 2020 at 01:29:20PM +0300, Jarkko Sakkinen wrote:
-> > >>> On Fri, Sep 25, 2020 at 09:00:56AM +0200, Ard Biesheuvel wrote:
-> > >>>> On Fri, 25 Sep 2020 at 07:56, Jarkko Sakkinen
-> > >>>> <jarkko.sakkinen@linux.intel.com> wrote:
-> > >>>>>
-> > >>>>> On Tue, Sep 22, 2020 at 11:41:28AM +0200, Ard Biesheuvel wrote:
-> > >>>>>> The TPM event log is provided to the OS by the firmware, by loading
-> > >>>>>> it into an area in memory and passing the physical address via a node
-> > >>>>>> in the device tree.
-> > >>>>>>
-> > >>>>>> Currently, we use __va() to access the memory via the kernel's linear
-> > >>>>>> map: however, it is not guaranteed that the linear map covers this
-> > >>>>>> particular address, as we may be running under HIGHMEM on a 32-bit
-> > >>>>>> architecture, or running firmware that uses a memory type for the
-> > >>>>>> event log that is omitted from the linear map (such as EfiReserved).
-> > >>>>>
-> > >>>>> Makes perfect sense to the level that I wonder if this should have a
-> > >>>>> fixes tag and/or needs to be backported to the stable kernels?
-> > >>>>>
-> > >>>>
-> > >>>> AIUI, the code was written specifically for ppc64, which is a
-> > >>>> non-highmem, non-EFI architecture. However, when we start reusing this
-> > >>>> driver for ARM, this issue could pop up.
-> > >>>>
-> > >>>> The code itself has been refactored a couple of times, so I think it
-> > >>>> will require different versions of the patch for different generations
-> > >>>> of stable kernels.
-> > >>>>
-> > >>>> So perhaps just add Cc: <stable@vger.kernel.org>, and wait and see how
-> > >>>> far back it applies cleanly?
-> > >>>
-> > >>> Yeah, I think I'll cc it with some note before the diffstat.
-> > >>>
-> > >>> I'm thinking to cap it to only 5.x kernels (at least first) unless it is
-> > >>> dead easy to backport below that.
-> > >>
-> > >> I have this vauge recollection of pointing at this before and being
-> > >> told that it had to be __va for some PPC reason?
-> > >>
-> > >> Do check with the PPC people first, I see none on the CC list.
-> > >>
-> > >> Jason
+On Sat, Sep 26, 2020 at 3:30 AM zhuguangqing83 <zhuguangqing83@gmail.com> wrote:
+>
+>
+> > On Thu, Sep 24, 2020 at 10:01 AM <zhuguangqing83@gmail.com> wrote:
 > > >
-> > > Thanks, added arch/powerpc maintainers.
+> > > From: zhuguangqing <zhuguangqing@xiaomi.com>
 > > >
+> > > Currently, if CONFIG_SUSPEND=n and CONFIG_CPU_IDLE=y, the function
+> > > cpuidle_enter_s2idle() is declared but not defined, it may cause error
+> > > when cpuidle_enter_s2idle() is called.
+> > >
+> > > If CONFIG_SUSPEND=y and CONFIG_CPU_IDLE=n, the function
+> > > cpuidle_enter_s2idle() is defined as "return -ENODEV;" which is not
+> > > supposed to be.
+> > >
+> > > Change #ifdef CONFIG_CPU_IDLE to #ifdef CONFIG_SUSPEND for
+> > > cpuidle_enter_s2idle() in cpuidle.h, which is consistent with its
+> > > defination in cpuidle.c.
 > >
-> > As far as I can see, memremap() won't work on PPC32 at least:
+> > Well, what about the case when CONFIG_SUSPEND is set, but CONFIG_CPU_IDLE
+> > isn't?
 > >
-> > IIUC, memremap() calls arch_memremap_wb()
-> > arch_memremap_wb() calls ioremap_cache()
-> > In case of failure, then ioremap_wt() and ioremap_wc() are tried.
-> >
-> > All ioremap calls end up in __ioremap_caller() which will return NULL in case you try to ioremap RAM.
-> >
-> > So the statement "So instead, use memremap(), which will reuse the linear mapping if
-> > it is valid, or create another mapping otherwise." seems to be wrong, at least for PPC32.
-> >
-> > Even for PPC64 which doesn't seem to have the RAM check, I can't see that it will "reuse the linear
-> > mapping".
-> >
-> 
-> It is there, please look again. Before any of the above happens,
-> memremap() will call try_ram_remap() for regions that are covered by a
-> IORESOURCE_SYSTEM_RAM, and map it using __va() if its PFN is valid and
-> it is not highmem.
-> 
-> So as far as I can tell, this change has no effect on PPC at all
-> unless its RAM is not described as IORESOURCE_SYSTEM_RAM.
+>
+> When CONFIG_SUSPEND is set, but CONFIG_CPU_IDLE isn't, the function
+> cpuidle_enter_s2idle() is defined in cpuidle.c, but the defination in
+> cpuidle.c is not used actually because CONFIG_CPU_IDLE isn't set, we
+> only use its defination as "return -ENODEV;" in cpuidle.h.
 
-Any chance for someone to test this on PPC32?
+Actually, if CONFIG_CPU_IDLE is not set, cpuidle.c is not compiled at
+all AFAICS, but after the $subject patch the compiler will be looking
+for cpuidle_enter_s2idle() in that case, won't it? [The static inline
+stub is only present for CONFIG_SUSPEND unset.]
 
-/Jarkko
+> > > Signed-off-by: zhuguangqing <zhuguangqing@xiaomi.com>
+> > > ---
+> > >  include/linux/cpuidle.h | 14 +++++++++-----
+> > >  1 file changed, 9 insertions(+), 5 deletions(-)
+> > >
+> > > diff --git a/include/linux/cpuidle.h b/include/linux/cpuidle.h
+> > > index 6175c77bf25e..2aa8cead1727 100644
+> > > --- a/include/linux/cpuidle.h
+> > > +++ b/include/linux/cpuidle.h
+> > > @@ -216,22 +216,26 @@ static inline struct cpuidle_device
+> > *cpuidle_get_device(void) {return NULL; }
+> > >  extern int cpuidle_find_deepest_state(struct cpuidle_driver *drv,
+> > >                                       struct cpuidle_device *dev,
+> > >                                       u64 latency_limit_ns);
+> > > -extern int cpuidle_enter_s2idle(struct cpuidle_driver *drv,
+> > > -                               struct cpuidle_device *dev);
+> > >  extern void cpuidle_use_deepest_state(u64 latency_limit_ns);
+> > >  #else
+> > >  static inline int cpuidle_find_deepest_state(struct cpuidle_driver *drv,
+> > >                                              struct cpuidle_device *dev,
+> > >                                              u64 latency_limit_ns)
+> > >  {return -ENODEV; }
+> > > -static inline int cpuidle_enter_s2idle(struct cpuidle_driver *drv,
+> > > -                                      struct cpuidle_device *dev)
+> > > -{return -ENODEV; }
+> > >  static inline void cpuidle_use_deepest_state(u64 latency_limit_ns)
+> > >  {
+> > >  }
+> > >  #endif
+> > >
+> > > +#ifdef CONFIG_SUSPEND
+> > > +extern int cpuidle_enter_s2idle(struct cpuidle_driver *drv,
+> > > +                               struct cpuidle_device *dev);
+> > > +#else
+> > > +static inline int cpuidle_enter_s2idle(struct cpuidle_driver *drv,
+> > > +                                      struct cpuidle_device *dev)
+> > > +{return -ENODEV; }
+> > > +#endif
+> > > +
+> > >  /* kernel/sched/idle.c */
+> > >  extern void sched_idle_set_state(struct cpuidle_state *idle_state);
+> > >  extern void default_idle_call(void);
+> > > --
+> > > 2.17.1
+> > >
+>
