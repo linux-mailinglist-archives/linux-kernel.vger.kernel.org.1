@@ -2,123 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D63E27B5E9
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 22:06:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8CFC27B5EC
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 22:06:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726773AbgI1UGR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 16:06:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35664 "EHLO
+        id S1726798AbgI1UGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 16:06:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726325AbgI1UGR (ORCPT
+        with ESMTP id S1726325AbgI1UGg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 16:06:17 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3390EC061755
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 13:06:17 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id h23so179208pjv.5
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 13:06:17 -0700 (PDT)
+        Mon, 28 Sep 2020 16:06:36 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92815C061755
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 13:06:36 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id c8so3232454edv.5
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 13:06:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=GB2ojgWNqZXvqEdj/VV8371C+BmRndozba/z5/3tWGk=;
-        b=OdImwqSK9MfonoLopWLPhPPwNfbz9gexbud4kQh5dYPi1aYXnLcNS7Fs0Q3VUr6DX9
-         BdxPS2tdTenGb/kWVbJUd1ffR67EUMaxyDwRwHKdqhSf7ppcYTPrh1NLn7aBTb2UhTq+
-         9zy0WTzkdLpMaQzEfSiw/9c0XIPc62gte6O6I=
+        d=vanguardiasur-com-ar.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=l3/RthoWOUwuzTyUqMkIutkczyzvaZtdBdBX3vl2kfw=;
+        b=igdhPiI8ZUTi0qzKtluflwazu/79pMgWhtOpYJflLX7J3wteUplQRRSQYloDJ+bW/M
+         R4pBThWClqAq755nEHri1H8DfGiKcvYa2Q0LrQuq1ajyHt/NEEkJq9GtlBce3quiVkQ9
+         TLhetOGldD3WyIqrfGXg7KoNdTSXLElpu2bT+hqwaTehSFB5wLEdEubI23LplSO4LeGe
+         vDyBScBIam9awD3FvMKG3EeKF/rVPgknRLnOugV2BYOt+1BSo4v5DnghWyV9KyANG7Ox
+         MIKl68F8gC1vhgDnuN6HZFZ0SHuwRuNwOZ/DMOafHvDBcutY8A58V5UAPiToJCYgiLjT
+         Q1+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=GB2ojgWNqZXvqEdj/VV8371C+BmRndozba/z5/3tWGk=;
-        b=ATjPohAfE1D8b0OGHqwax1Ct2Z4A98bsZESQBBso0EO6UZXSlHL9/6XcrA7jLoBBqv
-         aDz5V06dkp0f2a28Vk7TNstP0svzq+CUwAHbfx45jVrUBMifjSkvcMjM4gJ21pdeV+x1
-         XBQk9Qw83rG/xV7xR1toBAJawGBWWf2FqbdsXwU6nMQhKFFBI1dYapoKpgc3aC9/AedQ
-         HbjdY/GRBshcU9kr6hXROIPcXWtTtQULtwgWL0PyOF+UPNJycm6co4BrbNNHw9MinKnl
-         DlqMf6t4xfkk2N1litqv1jQpGNU1bvBV7HfaRhWMCH6ge4HYt/oRAugAoIFPFrfhe929
-         yjrg==
-X-Gm-Message-State: AOAM531s9iaER4oimPqPN3M5fr1FMLbLYqjd74d5gFhLrxTGPqQShHLg
-        QSdB5on5NWIVpNqSXv3RS6124g==
-X-Google-Smtp-Source: ABdhPJxO+MI0WUHrgxRNZjH1ImCCvDkrrvTbzJHKtH0SHCAC/3OKSHmbyqvGL0KgC2NSJyvv4QR9pg==
-X-Received: by 2002:a17:90a:b88c:: with SMTP id o12mr768525pjr.43.1601323576799;
-        Mon, 28 Sep 2020 13:06:16 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id a24sm2148981pju.25.2020.09.28.13.06.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Sep 2020 13:06:16 -0700 (PDT)
-Date:   Mon, 28 Sep 2020 13:06:15 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Hangbin Liu <liuhangbin@gmail.com>
-Cc:     Shuah Khan <shuah@kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        linux-doc@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>, Tim.Bird@sony.com,
-        lkft-triage@lists.linaro.org,
-        Anders Roxell <anders.roxell@linaro.org>,
-        Justin Cook <justin.cook@linaro.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: [PATCHv5 kselftest next] selftests/run_kselftest.sh: make each
- test individually selectable
-Message-ID: <202009281305.E6F9595@keescook>
-References: <20200914021758.420874-1-liuhangbin@gmail.com/>
- <20200914022227.437143-1-liuhangbin@gmail.com>
- <CA+G9fYvT6Mw2BamoiVyw=wLUqD-3LB2oaDqcuabOyWfFxEN1qg@mail.gmail.com>
- <202009251414.15274C0@keescook>
- <20200927015334.GC2531@dhcp-12-153.nay.redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=l3/RthoWOUwuzTyUqMkIutkczyzvaZtdBdBX3vl2kfw=;
+        b=ASyLQQazgcmhBo45PQf9ZC032ITb9sRDdt0wmlOpLNgNMKa7qTk5HRkerCdJ+24GB8
+         1CoOG7gae6KBovPXnKDorrWnx/B9ict+1qgYZdrWeso6TTKU/MJDFYzlcYmuArCcYDxb
+         GUzrJT7A9fZej5wDbfF6yb0uyrUy8oBUvyFCkxjI1FKDe96Jc2HTfFN8kChpN7ZnYlX2
+         +6eF1+s3TcZzlzNOhTTmSwgmx4X3adh0g/CvBX4Cb+H0nveENGYbVVzPFp9v5MDKNKjz
+         chQ8AGQCiwSebbz0OBJPlYSo520AC8m/uW4njggzGjXtML47AhTG295pXKdffWZiZ2n2
+         0IkA==
+X-Gm-Message-State: AOAM532O7JHwD8haNpcrCUEnykvS1AOQBDzQ35kfx2HYMsDRhcgkWIM8
+        ie6V7+T2Mi46vRYvbAgZ05kMjI9ywnmWeaDRhg5wSA==
+X-Google-Smtp-Source: ABdhPJzkd8lOyD117kZmTAJd38Vp62XqajHUVqn2ZnHvEp5iveEQG9dxwKfDUY7OAmwthEgQguzSjt5wjgFa96SGTNc=
+X-Received: by 2002:a05:6402:2c3:: with SMTP id b3mr3718802edx.213.1601323595273;
+ Mon, 28 Sep 2020 13:06:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200927015334.GC2531@dhcp-12-153.nay.redhat.com>
+References: <3b140eaf883b4666985c0be0db8d53e8@skidata.com> <9444c9375f58436b9e6a0fa3a4088e17@skidata.com>
+ <AM6PR01MB55741EE09532A7C60CD05B71E23F0@AM6PR01MB5574.eurprd01.prod.exchangelabs.com>
+In-Reply-To: <AM6PR01MB55741EE09532A7C60CD05B71E23F0@AM6PR01MB5574.eurprd01.prod.exchangelabs.com>
+From:   Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Date:   Mon, 28 Sep 2020 17:06:24 -0300
+Message-ID: <CAAEAJfDnC5=iomoNivrwKt5th866qMKPY0Tw9i_PfKqsFTm69Q@mail.gmail.com>
+Subject: Re: [PATCH] media: coda: avoid starvation on well-compressed data
+To:     Benjamin Bara - SKIDATA <Benjamin.Bara@skidata.com>
+Cc:     "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
+        "mchehab@kernel.org" <mchehab@kernel.org>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Richard Leitner - SKIDATA <Richard.Leitner@skidata.com>,
+        "l.stach@pengutronix.de" <l.stach@pengutronix.de>,
+        Chris Healy <cphealy@gmail.com>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 27, 2020 at 09:53:34AM +0800, Hangbin Liu wrote:
-> On Fri, Sep 25, 2020 at 02:16:14PM -0700, Kees Cook wrote:
-> > On Fri, Sep 25, 2020 at 01:51:53PM +0530, Naresh Kamboju wrote:
-> > > On Mon, 14 Sep 2020 at 07:53, Hangbin Liu <liuhangbin@gmail.com> wrote:
-> > > >
-> > > > Currently, after generating run_kselftest.sh, there is no way to choose
-> > > > which test we could run. All the tests are listed together and we have
-> > > > to run all every time. This patch enhanced the run_kselftest.sh to make
-> > > > the tests individually selectable. e.g.
-> > > >
-> > > >   $ ./run_kselftest.sh -t "bpf size timers"
-> > > 
-> > > My test run break on linux next
-> > > 
-> > > ./run_kselftest.sh: line 1331: syntax error near unexpected token `)'
-> > > ./run_kselftest.sh: line 1331: `-e -s | --summary )
-> > > logfile=$BASE_DIR/output.log; cat /dev/null > $logfile; shift ;;'
-> > 
-> > Yes, please revert this patch. The resulting script is completely
-> > trashed:
-> > 
-> > BASE_DIR=$(realpath $(dirname $0))
-> > . ./kselftest/runner.sh
-> > TESTS="seccomp"
-> > 
-> > run_seccomp()
-> > {
-> > -e      [ -w /dev/kmsg ] && echo "kselftest: Running tests in seccomp" >> /dev/kmsg
-> > -e      cd seccomp
-> > -en     run_many
-> >         \
-> > -ne             "seccomp_bpf"
-> >         \
-> > -ne             "seccomp_benchmark"
-> > 
-> > -e      cd $ROOT
-> > }
-> 
-> I'm really sorry to make this trouble. And I'm OK to revert the patch.
-> I just a little wondering how do you generate this script.
+Hi Benjamin,
 
-This issue is with which shell is used. I suspect your /bin/sh is full
-/bin/bash, where as Naresh's, the CI's, and mine are /bin/dash (which
-lacks "-e" support for the built-in "echo").
+On Fri, 18 Sep 2020 at 05:35, Benjamin Bara - SKIDATA
+<Benjamin.Bara@skidata.com> wrote:
+>
+> Hi all,
+>
+> there are still cases where the decoder starves.
+> Also, the failure log at the bottom contradicts with the 2x256 bytes assumption.
+> When I increase the threshold to 512 bytes, the respective video (and all my other tests) work.
+>
+> Is it possible that the limitation is 2x512 bytes or is there another "limitation",
+> beside the "two window" one, which is "accidentally fulfilled" with this approach?
+>
+> What do you think about the approach in the patch; is it possible to get it mainline?
+> Any help, feedback, hints or suggestions would be really appreciated!
+>
+> I will do some additional testing to see if the 2x512 threshold finally catches the problem.
+> When I'm done, I will provide a second version of the patch.
+>
 
--- 
-Kees Cook
+Thanks for the report. I'm seeing a similar behavior and have been doing
+some experiments with your patch, and trying different solutions as well.
+
+My colleague Nicolas pointed out to me that crafting a video
+with serie of black frames in QCIF resolution, would trigger the timeout:
+
+gst-launch-1.0 videotestsrc pattern=black num-buffers=300 !
+video/x-raw,format=I420,width=176,height=120 ! avenc_mpeg2video !
+mpegvideoparse ! mpegtsmux ! filesink location=black-qcif-10s.ts
+
+We are still doing some tests to see if we can come up with a proper
+solution. I will keep you posted.
+
+If you have some (public) bitstream that are known to timeout,
+and that you could share with me, that would be nice, so I could
+have a more complete set of samples.
+
+Thanks,
+Ezequiel
+
+> Many thanks & best regards
+> Benjamin
+>
+> *Failure Log:*
+> [  108.108711] coda 2040000.vpu: 0: active metas:
+> [  108.108716] coda 2040000.vpu: 0: - payload: 4240
+> [  108.108721] coda 2040000.vpu: 0: - payload: 900
+> [  108.108726] coda 2040000.vpu: 0: - payload: 170
+> [  108.108730] coda 2040000.vpu: 0: - payload: 403
+> [  108.108734] coda 2040000.vpu: 0: want to queue: payload: 405
+> [  109.057738] coda 2040000.vpu: CODA PIC_RUN timeout
+>
