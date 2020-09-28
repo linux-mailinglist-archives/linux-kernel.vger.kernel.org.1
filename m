@@ -2,191 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DD7427A9C2
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 10:41:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E75C27A9C7
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 10:42:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726635AbgI1IlN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 04:41:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42534 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726328AbgI1IlN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 04:41:13 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDE93C0613CE;
-        Mon, 28 Sep 2020 01:41:12 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id r7so7316967ejs.11;
-        Mon, 28 Sep 2020 01:41:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mF3TdtdfTqdhXO/Zs1AU32YnshdL+mbU+4GCV/pjrmM=;
-        b=t4DZf5kqFq3rSeItFWLtpI7+uQEHgSZfjnYeqOJFHR20GdxJOcyK/6oXWamCnH+SRI
-         /BspyhsOGse9XL9pl8JQPMDi6kZFqWIaXLq4kIp6kHXaL1VNU2SA3wXxuakKFiSBN6Nn
-         vcACQT/8FnNAq+bAHue3v2nt0AqRqpHwp2KWMuplp+vWfRZVbBfKnGVgKCfjZD0qV1s9
-         1BgA/pTXwKisJJK6GuToTDBSDbrRQNUnAIMPbRDp51sjrOGP/we+74/KyeQxflpr2zuv
-         9NCG714uvjOwew2m4xSdnhOQiKwNASqhq8qaxOZlyijJwrscG0EThay5pHCsDS7dcxU5
-         Lmng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mF3TdtdfTqdhXO/Zs1AU32YnshdL+mbU+4GCV/pjrmM=;
-        b=UdGUwfEA+2msjkCEsCV0JNUQqdZ6CPpaJGF2ljbMgW50cwMqeSYEMhnFkS1lJrS44t
-         a4QG2S+lqsbz7RoQmGQtjRk7gZgVcVeVOLQnlQvzb6+2LHXZfoBfw+i1ZyGVug9HbQs4
-         oCidehJfTVEwIqyY25/HxIlNu3wUispcE/kuyCqgZn/iiQSwvWZyFJ33mjsgx7k6AEno
-         UQpzbSy7xX7TBid1gQFtSecuZc2GTx05KgUy3qlNU/ATiUQbUlDBiTzWSAhwcZRkFC8v
-         FxkSYt9+4of4GwPlKTC+YdBE64/wy+v/8LCgjKnehv+5SqoCSyoWb/PaZacoRBKMOYMn
-         HcEg==
-X-Gm-Message-State: AOAM533gMFcKeE1DZyL0EGKNnWsErSZFT1GtxxePQ28Eq17VmZMLup3n
-        ay4qiJOD2KAJvkWshLogaHIna7hrJhoryESPv64=
-X-Google-Smtp-Source: ABdhPJyS6AEr1N1XwWtqPRGGbMSw6iqdbXjwwcgRPHr6yzv482Y9EqN0WIU5XJqEYRN7go8iB6FPpD4drdlg/yADczQ=
-X-Received: by 2002:a17:906:4cd6:: with SMTP id q22mr576780ejt.139.1601282471610;
- Mon, 28 Sep 2020 01:41:11 -0700 (PDT)
+        id S1726650AbgI1Imh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 04:42:37 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:49243 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726328AbgI1Img (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 04:42:36 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C0GHF5fTzz9sSn;
+        Mon, 28 Sep 2020 18:42:33 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1601282554;
+        bh=oI89Ok1pseC6DVJOwSzBhIBoDATWkXUIOB5Dgi05l6E=;
+        h=Date:From:To:Cc:Subject:From;
+        b=TPWRamYioOmIiF2O7SuBLVjQ/uj1oOwAD0vtRXE5lU6yYuCMrwgLEp5/rcSC2HpMQ
+         TS4k6Mucm4mNdQLuOE1+OY8mIvzBL7Nxy3V3nWO5A6EOCPo5UneRc0iiHqgnOa9yrp
+         rJ/5MC65agUws46+DMAL+nIxVFjvDH+MIYwgBFgsB2NHZ2NlH7gAUOMSLP/4nX0CON
+         Yu9KX49u9ALq7Hgnk1pHLeMKKzHgegBeHlaJwY72i/aDWdKVH5loOZ2t1Qp8/Y3y6O
+         6VNB6ObSHIZh2CZur0DkNBms+3s4XDnv5Nrn6kCad1+OtpcSf2b/C4dY8sm13Pnb/h
+         vV/AdlPrgeXwQ==
+Date:   Mon, 28 Sep 2020 18:42:30 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>
+Cc:     Govind Singh <govinds@codeaurora.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Loic Poulain <loic.poulain@linaro.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: linux-next: build failure after merge of the mhi tree
+Message-ID: <20200928184230.2d973291@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20200922233333.GA2239404@bjorn-Precision-5520>
- <704c39bf-6f0c-bba3-70b8-91de6a445e43@linux.intel.com> <3d27d0a4-2115-fa72-8990-a84910e4215f@kernel.org>
- <d5aa53dc-0c94-e57a-689a-1c1f89787af1@linux.intel.com> <526dc846-b12b-3523-4995-966eb972ceb7@kernel.org>
- <1fdcc4a6-53b7-2b5f-8496-f0f09405f561@linux.intel.com> <aef0b9aa-59f5-9ec3-adac-5bc366b362e0@kernel.org>
- <a647f485-8db4-db45-f404-940b55117b53@linux.intel.com> <aefd8842-90c4-836a-b43a-f21c5428d2ba@kernel.org>
- <95e23cb5-f6e1-b121-0de8-a2066d507d9c@linux.intel.com> <65238d0b-0a39-400a-3a18-4f68eb554538@kernel.org>
- <4ae86061-2182-bcf1-ebd7-485acf2d47b9@linux.intel.com> <f360165e-5f73-057c-efd1-557b5e5027eb@kernel.org>
- <8beca800-ffb5-c535-6d43-7e750cbf06d0@linux.intel.com> <44f0cac5-8deb-1169-eb6d-93ac4889fe7e@kernel.org>
- <3bc0fd23-8ddd-32c5-1dd9-4d5209ea68c3@linux.intel.com>
-In-Reply-To: <3bc0fd23-8ddd-32c5-1dd9-4d5209ea68c3@linux.intel.com>
-From:   Ethan Zhao <xerces.zhao@gmail.com>
-Date:   Mon, 28 Sep 2020 16:41:00 +0800
-Message-ID: <CAKF3qh18ts53GQswbvQbcMApkR9ZpCtqyWffaRw4DvMrBMUE5Q@mail.gmail.com>
-Subject: Re: [PATCH v3 1/1] PCI/ERR: Fix reset logic in pcie_do_recovery() call
-To:     "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc:     Sinan Kaya <okaya@kernel.org>, Bjorn Helgaas <helgaas@kernel.org>,
-        bhelgaas@google.com, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ashok.raj@intel.com,
-        Jay Vosburgh <jay.vosburgh@canonical.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/i6Wf7hQDPy.T5c6zB_97gG0";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sathyanarayanan,
+--Sig_/i6Wf7hQDPy.T5c6zB_97gG0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Sep 28, 2020 at 10:44 AM Kuppuswamy, Sathyanarayanan
-<sathyanarayanan.kuppuswamy@linux.intel.com> wrote:
->
-> Hi,
->
-> On 9/25/20 11:30 AM, Sinan Kaya wrote:
-> > On 9/25/2020 2:16 PM, Kuppuswamy, Sathyanarayanan wrote:
-> >>>
-> >>> If this is a too involved change, DPC driver should restore state
-> >>> when hotplug is not supported.
-> >> Yes. we can add a condition for hotplug capability check.
-> >>>
-> >>> DPC driver should be self-sufficient by itself.
-> >>>
-> >
-> > Sounds good.
-> >
-> >>>> Also for non-fatal errors, if reset is requested then we still need
-> >>>> some kind of bus reset call here
-> >>>
-> >>> DPC should handle both fatal and non-fatal cases
-> >> Currently DPC is only triggered for FATAL errors.
-> >>   and cause a bus reset
-> >
-> > Thanks for the heads up.
-> > This seems to have changed since I looked at the DPC code.
-> >
-> >>> in hardware already before triggering an interrupt.
-> >> Error recovery is not triggered only DPC driver. AER also uses the
-> >> same error recovery code. If DPC is not supported, then we still need
-> >> reset logic.
-> >
-> > It sounds like we are cross-talking two issues.
-> >
-> > 1. no state restore on DPC after FATAL error.
-> > Let's fix this.
-> Agree. Few more detail about the above issue is,
->
-> There are two cases under FATAL error.
->
-> FATAL + hotplug - In this case, link will be reseted. And hotplug handler
-> will remove the driver state. This case works well with current code.
->
-> FATAL + no-hotplug - In this case, link will still be reseted. But
-> currently driver state is not properly restored. So I attempted
-> to restore it using pci_reset_bus().
+Hi all,
 
-Seems you should fix something at device driver side, not do double-reset in
-DPC driver, one reset is done by hardware, and you want to do another by
-DPC driver ?
+After merging the mhi tree, today's linux-next build (x86_64 allmodconfig)
+failed like this:
 
-Why hardware initiated reset is not enough for you ?
+drivers/net/wireless/ath/ath11k/mhi.c:27:4: error: 'struct mhi_channel_conf=
+ig' has no member named 'auto_start'
+   27 |   .auto_start =3D false,
+      |    ^~~~~~~~~~
+drivers/net/wireless/ath/ath11k/mhi.c:42:4: error: 'struct mhi_channel_conf=
+ig' has no member named 'auto_start'
+   42 |   .auto_start =3D false,
+      |    ^~~~~~~~~~
+drivers/net/wireless/ath/ath11k/mhi.c:57:4: error: 'struct mhi_channel_conf=
+ig' has no member named 'auto_start'
+   57 |   .auto_start =3D true,
+      |    ^~~~~~~~~~
+drivers/net/wireless/ath/ath11k/mhi.c:72:4: error: 'struct mhi_channel_conf=
+ig' has no member named 'auto_start'
+   72 |   .auto_start =3D true,
+      |    ^~~~~~~~~~
 
-Thanks,
-Ethan
+Caused by commit
 
->                 status = reset_link(dev);
-> -               if (status != PCI_ERS_RESULT_RECOVERED) {
-> +               if (status == PCI_ERS_RESULT_RECOVERED) {
-> +                       status = PCI_ERS_RESULT_NEED_RESET;
->
-> ...
->
->         if (status == PCI_ERS_RESULT_NEED_RESET) {
->                 /*
-> -                * TODO: Should call platform-specific
-> -                * functions to reset slot before calling
-> -                * drivers' slot_reset callbacks?
-> +                * TODO: Optimize the call to pci_reset_bus()
-> +                *
-> +                * There are two components to pci_reset_bus().
-> +                *
-> +                * 1. Do platform specific slot/bus reset.
-> +                * 2. Save/Restore all devices in the bus.
-> +                *
-> +                * For hotplug capable devices and fatal errors,
-> +                * device is already in reset state due to link
-> +                * reset. So repeating platform specific slot/bus
-> +                * reset via pci_reset_bus() call is redundant. So
-> +                * can optimize this logic and conditionally call
-> +                * pci_reset_bus().
->                  */
-> +               pci_reset_bus(dev);
->
-> >
-> > 2. no bus reset on NON_FATAL error through AER driver path.
-> > This already tells me that you need to split your change into
-> > multiple patches.
-> >
-> > Let's talk about this too. bus reset should be triggered via
-> > AER driver before informing the recovery.
-> But as per error recovery documentation, any call to
-> ->error_detected() or ->mmio_enabled() can request
-> PCI_ERS_RESULT_NEED_RESET. So we need to add code
-> to do the actual reset before calling ->slot_reset()
-> callback. So call to pci_reset_bus() fixes this
-> issue.
->
->         if (status == PCI_ERS_RESULT_NEED_RESET) {
-> +               pci_reset_bus(dev);
->
->
-> >
-> >       if (status == PCI_ERS_RESULT_NEED_RESET) {
-> >               /*
-> >                * TODO: Should call platform-specific
-> >                * functions to reset slot before calling
-> >                * drivers' slot_reset callbacks?
-> >                */
-> >               status = PCI_ERS_RESULT_RECOVERED;
-> >               pci_dbg(dev, "broadcast slot_reset message\n");
-> >               pci_walk_bus(bus, report_slot_reset, &status);
-> >       }
-> >
->
-> --
-> Sathyanarayanan Kuppuswamy
-> Linux Kernel Developer
+  ed39d7816885 ("bus: mhi: Remove auto-start option")
+
+interacting with commit
+
+  1399fb87ea3e ("ath11k: register MHI controller device for QCA6390")
+
+from the net-next tree.
+
+I applied the following merge fix patch, but maybe more is required.
+Even if so, this could be fixed now in the net-next tree.
+
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Date: Mon, 28 Sep 2020 18:39:41 +1000
+Subject: [PATCH] fix up for "ath11k: register MHI controller device for QCA=
+6390"
+
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+---
+ drivers/net/wireless/ath/ath11k/mhi.c | 4 ----
+ 1 file changed, 4 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath11k/mhi.c b/drivers/net/wireless/a=
+th/ath11k/mhi.c
+index aded9a719d51..47a1ce1bee4f 100644
+--- a/drivers/net/wireless/ath/ath11k/mhi.c
++++ b/drivers/net/wireless/ath/ath11k/mhi.c
+@@ -24,7 +24,6 @@ static struct mhi_channel_config ath11k_mhi_channels[] =
+=3D {
+ 		.offload_channel =3D false,
+ 		.doorbell_mode_switch =3D false,
+ 		.auto_queue =3D false,
+-		.auto_start =3D false,
+ 	},
+ 	{
+ 		.num =3D 1,
+@@ -39,7 +38,6 @@ static struct mhi_channel_config ath11k_mhi_channels[] =
+=3D {
+ 		.offload_channel =3D false,
+ 		.doorbell_mode_switch =3D false,
+ 		.auto_queue =3D false,
+-		.auto_start =3D false,
+ 	},
+ 	{
+ 		.num =3D 20,
+@@ -54,7 +52,6 @@ static struct mhi_channel_config ath11k_mhi_channels[] =
+=3D {
+ 		.offload_channel =3D false,
+ 		.doorbell_mode_switch =3D false,
+ 		.auto_queue =3D false,
+-		.auto_start =3D true,
+ 	},
+ 	{
+ 		.num =3D 21,
+@@ -69,7 +66,6 @@ static struct mhi_channel_config ath11k_mhi_channels[] =
+=3D {
+ 		.offload_channel =3D false,
+ 		.doorbell_mode_switch =3D false,
+ 		.auto_queue =3D true,
+-		.auto_start =3D true,
+ 	},
+ };
+=20
+--=20
+2.28.0
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/i6Wf7hQDPy.T5c6zB_97gG0
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9xofYACgkQAVBC80lX
+0GwTHAf/SY2NVQB4kwhkZTJT4WfGpnwjWkM4e51tclPXvdpvKwXsC/PXjAl/LLC+
+r3EK0rO8c0Nb0ayekvdoFGSaBB5R4vkLollsUGi8NswJIvI0Dd/dit52zDpy7HZm
+u1aa619f81+UHOTQv2F8PoBFCP2++ukZzEPfZlxOQjyz6D6tqCimg+5Mn1bX4XHY
+7rjX5tqwVcx4P/EsuL66xso5gjT98umL1m5/YEgOqc6sIk+ol/asvUiYs2ii75eP
+3UZfSOPlcVj6CznNssOiKKHUP0w8rf9xrvNCd04mXNJVUlEn96CaKjbe8B/G25e4
+V6myiieVWgaOws74+8Xqazs19UkhZQ==
+=aHba
+-----END PGP SIGNATURE-----
+
+--Sig_/i6Wf7hQDPy.T5c6zB_97gG0--
