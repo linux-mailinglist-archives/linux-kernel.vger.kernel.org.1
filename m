@@ -2,58 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BACA627B14B
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 17:59:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32F4427B14E
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 17:59:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726497AbgI1P7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 11:59:07 -0400
-Received: from smtprelay0219.hostedemail.com ([216.40.44.219]:51130 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726513AbgI1P7H (ORCPT
+        id S1726654AbgI1P74 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 11:59:56 -0400
+Received: from mail-oi1-f196.google.com ([209.85.167.196]:32903 "EHLO
+        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726477AbgI1P74 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 11:59:07 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 31E7945A3;
-        Mon, 28 Sep 2020 15:59:06 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:965:966:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1538:1567:1593:1594:1711:1714:1730:1747:1777:1792:2196:2199:2393:2559:2562:2828:3138:3139:3140:3141:3142:3622:3866:3867:3868:3870:4321:4385:4390:4395:5007:6119:7576:8660:10004:10400:10848:11232:11658:11914:12048:12297:12740:12760:12895:13069:13148:13230:13311:13357:13439:14181:14659:14721:21080:21451:21627:21939:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
-X-HE-Tag: base25_4208bb927182
-X-Filterd-Recvd-Size: 1482
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf13.hostedemail.com (Postfix) with ESMTPA;
-        Mon, 28 Sep 2020 15:59:04 +0000 (UTC)
-Message-ID: <2fcfd81f62ec87d9b75cca32468d8b9583faec47.camel@perches.com>
-Subject: Re: [PATCH v2 1/9] lib: string_helpers: provide kfree_strarray()
-From:   Joe Perches <joe@perches.com>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Kent Gibson <warthog618@gmail.com>
-Cc:     linux-gpio@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Mon, 28 Sep 2020 08:59:03 -0700
-In-Reply-To: <20200928104155.7385-2-brgl@bgdev.pl>
-References: <20200928104155.7385-1-brgl@bgdev.pl>
-         <20200928104155.7385-2-brgl@bgdev.pl>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Mon, 28 Sep 2020 11:59:56 -0400
+Received: by mail-oi1-f196.google.com with SMTP id m7so1881529oie.0;
+        Mon, 28 Sep 2020 08:59:55 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pDZaQ21Usp87w25mzRYuT8tC9E3ltWzHrXuhQk5quZo=;
+        b=h5dL8fJazHsTqNx/FGB2LX92fJaF0nofaWX8aKKjDOItT+TIpXJnlh2L2yW4ljS3ks
+         4p370+JcT3MamqrIn5gKkfBE8sdbmaGc7TMrkT6gnzoQTztDx9+/740tjjldpfJ43YXy
+         JITDzm5dy9UUoK4hbrVZXMw5Mf7IxSjMNco4Z0r4k95PJAwB92yghhlA4Af3sK+PFpSh
+         Ph70Aqdd3OkbzLHrcaukXD3Sy3xaD/UeIef2Lb8/z/oQIz9EF5trulet8ioPAr1xqvb/
+         hTJIQqfEUjdVXEO69WrEACtYZmST+17/u5kSR98YWdE4bB2b/fhtkhzg2axb5NcgMTw6
+         g/4w==
+X-Gm-Message-State: AOAM5339dJcN4tRlu5P55YnabrUyqZLtpq+bhwbFQs/EGqU6O5c7WEJq
+        X7CfC3H6XkDvYV6ldFrUnbfNgm/CHos2
+X-Google-Smtp-Source: ABdhPJzx+t1SOL3gjMvBl7qVDgfaG2ctw26l0RciW4e4fNOhVNui+5TwEJ9WxZinHySz68G0w5+aZg==
+X-Received: by 2002:aca:f203:: with SMTP id q3mr1238105oih.148.1601308794852;
+        Mon, 28 Sep 2020 08:59:54 -0700 (PDT)
+Received: from xps15.herring.priv (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.googlemail.com with ESMTPSA id u2sm2170497oot.39.2020.09.28.08.59.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Sep 2020 08:59:54 -0700 (PDT)
+From:   Rob Herring <robh@kernel.org>
+To:     devicetree@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Hyun Kwon <hyun.kwon@xilinx.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Vinod Koul <vkoul@kernel.org>, dri-devel@lists.freedesktop.org,
+        dmaengine@vger.kernel.org
+Subject: [PATCH] dt-bindings: Fix 'reg' size issues in zynqmp examples
+Date:   Mon, 28 Sep 2020 10:59:53 -0500
+Message-Id: <20200928155953.2819930-1-robh@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-09-28 at 12:41 +0200, Bartosz Golaszewski wrote:
-> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> 
-> There's a common pattern of dynamically allocating an array of char
-> pointers and then also dynamically allocating each string in this
-> array. Provide a helper for freeing such a string array with one call.
+The default sizes in examples for 'reg' are 1 cell each. Fix the
+incorrect sizes in zynqmp examples:
 
-Isn't this also common for things like ring buffers?
-Why limit this to char *[]?
+Documentation/devicetree/bindings/dma/xilinx/xlnx,zynqmp-dpdma.example.dt.yaml: example-0: dma-controller@fd4c0000:reg:0: [0, 4249616384, 0, 4096] is too long
+	From schema: /usr/local/lib/python3.8/dist-packages/dtschema/schemas/reg.yaml
+Documentation/devicetree/bindings/display/xlnx/xlnx,zynqmp-dpsub.example.dt.yaml: example-0: display@fd4a0000:reg:0: [0, 4249485312, 0, 4096] is too long
+	From schema: /usr/local/lib/python3.8/dist-packages/dtschema/schemas/reg.yaml
+Documentation/devicetree/bindings/display/xlnx/xlnx,zynqmp-dpsub.example.dt.yaml: example-0: display@fd4a0000:reg:1: [0, 4249526272, 0, 4096] is too long
+	From schema: /usr/local/lib/python3.8/dist-packages/dtschema/schemas/reg.yaml
+Documentation/devicetree/bindings/display/xlnx/xlnx,zynqmp-dpsub.example.dt.yaml: example-0: display@fd4a0000:reg:2: [0, 4249530368, 0, 4096] is too long
+	From schema: /usr/local/lib/python3.8/dist-packages/dtschema/schemas/reg.yaml
+Documentation/devicetree/bindings/display/xlnx/xlnx,zynqmp-dpsub.example.dt.yaml: example-0: display@fd4a0000:reg:3: [0, 4249534464, 0, 4096] is too long
+	From schema: /usr/local/lib/python3.8/dist-packages/dtschema/schemas/reg.yaml
 
+Cc: Hyun Kwon <hyun.kwon@xilinx.com>
+Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc: Michal Simek <michal.simek@xilinx.com>
+Cc: Vinod Koul <vkoul@kernel.org>
+Cc: dri-devel@lists.freedesktop.org
+Cc: dmaengine@vger.kernel.org
+Signed-off-by: Rob Herring <robh@kernel.org>
+---
+ .../bindings/display/xlnx/xlnx,zynqmp-dpsub.yaml          | 8 ++++----
+ .../devicetree/bindings/dma/xilinx/xlnx,zynqmp-dpdma.yaml | 2 +-
+ 2 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/display/xlnx/xlnx,zynqmp-dpsub.yaml b/Documentation/devicetree/bindings/display/xlnx/xlnx,zynqmp-dpsub.yaml
+index 52a939cade3b..7b9d468c3e52 100644
+--- a/Documentation/devicetree/bindings/display/xlnx/xlnx,zynqmp-dpsub.yaml
++++ b/Documentation/devicetree/bindings/display/xlnx/xlnx,zynqmp-dpsub.yaml
+@@ -145,10 +145,10 @@ examples:
+ 
+     display@fd4a0000 {
+         compatible = "xlnx,zynqmp-dpsub-1.7";
+-        reg = <0x0 0xfd4a0000 0x0 0x1000>,
+-              <0x0 0xfd4aa000 0x0 0x1000>,
+-              <0x0 0xfd4ab000 0x0 0x1000>,
+-              <0x0 0xfd4ac000 0x0 0x1000>;
++        reg = <0xfd4a0000 0x1000>,
++              <0xfd4aa000 0x1000>,
++              <0xfd4ab000 0x1000>,
++              <0xfd4ac000 0x1000>;
+         reg-names = "dp", "blend", "av_buf", "aud";
+         interrupts = <0 119 4>;
+         interrupt-parent = <&gic>;
+diff --git a/Documentation/devicetree/bindings/dma/xilinx/xlnx,zynqmp-dpdma.yaml b/Documentation/devicetree/bindings/dma/xilinx/xlnx,zynqmp-dpdma.yaml
+index 5de510f8c88c..2a595b18ff6c 100644
+--- a/Documentation/devicetree/bindings/dma/xilinx/xlnx,zynqmp-dpdma.yaml
++++ b/Documentation/devicetree/bindings/dma/xilinx/xlnx,zynqmp-dpdma.yaml
+@@ -57,7 +57,7 @@ examples:
+ 
+     dma: dma-controller@fd4c0000 {
+       compatible = "xlnx,zynqmp-dpdma";
+-      reg = <0x0 0xfd4c0000 0x0 0x1000>;
++      reg = <0xfd4c0000 0x1000>;
+       interrupts = <GIC_SPI 122 IRQ_TYPE_LEVEL_HIGH>;
+       interrupt-parent = <&gic>;
+       clocks = <&dpdma_clk>;
+-- 
+2.25.1
 
