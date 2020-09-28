@@ -2,131 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0545A27AA06
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 10:56:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2451927AA09
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 10:56:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726693AbgI1Izz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 04:55:55 -0400
-Received: from wnew1-smtp.messagingengine.com ([64.147.123.26]:48547 "EHLO
-        wnew1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726440AbgI1Izy (ORCPT
+        id S1726732AbgI1I40 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 04:56:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44900 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726440AbgI1I4Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 04:55:54 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.west.internal (Postfix) with ESMTP id 58758B74;
-        Mon, 28 Sep 2020 04:55:53 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Mon, 28 Sep 2020 04:55:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=wUSUu2G3aVIryWaeA7vOSq4b5nt
-        Z2lJ4mb84/YsXOuI=; b=WZM48iBF91gdKnDjQ7uhJ0/RIFRw5RhXsOOeZlZJCKo
-        ysOwTqjBtlBCZj08M9nF22EmaxFAVEoLPCI8HL/0jdPlzcH2YFICniXpCoLiPtqH
-        VpOBH47bt+ui/2YfhU/yW5VfSsau0KQrKRpIe0o0c/LA7MH8NR/XbJViG+pkL2jD
-        B/g/l2T60cdiT268BZyz1XUMfVw55IQig/jerb/vptjxlA1X6M9x6a83g0v0CBK5
-        Bmmq1FDcnqounb0O4rwjBb8ol1ZrgQbcaIJowXG8EgIrm6mkVObuBjZaEx3BtVfa
-        XrLcZKvTOl2wgSLOTL7PgfwIArfBy2SMIZW7HfyAtbQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=wUSUu2
-        G3aVIryWaeA7vOSq4b5ntZ2lJ4mb84/YsXOuI=; b=A4aQVk9qURplYZemoSbP0T
-        EUoSZyu6BP+ZXw6FNbxPs0GVkLXlfle+zceapwfhWF20BfQ34PdGbXpWpcwdus8w
-        T8ByrOAMTp9PAVFOq7Dw8hBc+2GLY+/0ycOmDjNEUvrO37DrvgPHjPIMrlXu/3SH
-        5q8/uU/TxEl/IcgFyNTAaaq99scwACFHzeUlUBgrJI8c5BAIL7QKXasqfwACLnP3
-        OKdCTsL3Z0OzDIGDuPBTeNGz7iGRXdtW0uJDyfeK4dvfUEvLgEi//GS+qrpG9FgJ
-        z2gTBIwFOb2DHf8rlSu69xN17a5yR33Xj3A8eP4bkmOVhqRwYRi/uXVd98IT2DcQ
-        ==
-X-ME-Sender: <xms:F6VxX9h8l3bdAdhKV7_ZeWNJSwUX_O1_FpWJwZe1u_C2JnuMPQGRKQ>
-    <xme:F6VxXyBUwEdfOyLmpzIxGe9WCsxP_0R9KFUgHeaQKe4QIaeVg9mSAC_s3igP0_uM7
-    w1WHRnZF_vmQISJkGk>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrvdeigddutdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesghdtreertddtudenucfhrhhomhepofgrgihimhgv
-    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
-    gvrhhnpeduvdduhfekkeehgffftefflefgffdtheffudffgeevteffheeuiedvvdejvdfg
-    veenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurf
-    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:F6VxX9HpWJ2SssBbPsr8cR0GdgkIsAFIl4TChPshZo0Qsl62OBNPrA>
-    <xmx:F6VxXyTAfPBcPd-lFgiNOUKT-Dk05hFMJ2dwQsw_6WiFT0kUbPlw0Q>
-    <xmx:F6VxX6zrMQ_V4GpMBxdfOcUtIBmmlvBxqky092uEANXubuudMIwvkA>
-    <xmx:GKVxX1qlyUa-jOEbIeG-OVdzvi-kstcBwRc9s__r2vQLN4KC_S3NA-TUoVc>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 50723328005E;
-        Mon, 28 Sep 2020 04:55:51 -0400 (EDT)
-Date:   Mon, 28 Sep 2020 10:55:49 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     =?utf-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
-Cc:     Chen-Yu Tsai <wens@csie.org>, Rob Herring <robh+dt@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Marcus Cooper <codekipper@gmail.com>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Linux-ALSA <alsa-devel@alsa-project.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-sunxi <linux-sunxi@googlegroups.com>,
-        Samuel Holland <samuel@sholland.org>
-Subject: Re: [PATCH v4 02/22] ASoC: sun4i-i2s: Change set_chan_cfg() params
-Message-ID: <20200928085549.izpgwdtkq5cwa4ut@gilmour.lan>
-References: <20200921102731.747736-1-peron.clem@gmail.com>
- <20200921102731.747736-3-peron.clem@gmail.com>
- <20200921122918.kzzu623wui277nwr@gilmour.lan>
- <CAJiuCce0thGcH19vMtDX0X8-9S32Y7kC2bnWo_6-SHozF8uDAA@mail.gmail.com>
+        Mon, 28 Sep 2020 04:56:25 -0400
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 295B7C0613CE
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 01:56:25 -0700 (PDT)
+Received: by mail-yb1-xb43.google.com with SMTP id c17so388117ybe.0
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 01:56:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=46vRaMYPBU3dvpIwWVgHGI5jLEk1k73wk/uoLNFc00Q=;
+        b=NJJYTmTB4bJiqStemOiKFerfB6Uj3JszF5xGU1PfeGg5QiPCw2ig/D0BBFORJp95Pg
+         AYTWsd1Xs5bznqztH4yxV6U2H5riiDxVbqJ7YmvSL2cJiGd8eI87RZ41GBwpXsGdqkxy
+         GYmFMWIYUdC92amueDpq3Zbaa4N9q/SK532VVnrVatxxE/3nUtCQI2BXJF7dQgkK5s2w
+         c1zel7+akT8CEs3fvD6UL49nfMSZ2sbPZT+E1ZqK7zRKRDk//WNuL5vGRYUZvebjqzB8
+         7WKJk14ezVmETGCZEuyAcrdoHaGIWPt57Iw/KXsTaGG36LrXeZ/akj7nIMwtWaAMp5qX
+         jmww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=46vRaMYPBU3dvpIwWVgHGI5jLEk1k73wk/uoLNFc00Q=;
+        b=Odl2DqxTCZkiiFvDdXlu5IKoI5GDgTlYhCVAGmAyQ9cz+iigc19xdbeauu+nSWGCt7
+         cW9mVOu4ypjpC5ukVzlG9c0tSGDhgUz8bIdzQfQlqeeBXGhmj4+0g5JpdH4myjOAyZyt
+         dLl537uC5Ra4C2g+xsZrMWYaQaAjj2ofi1kQIWkNaJP7HXPOCkMKHSQkMxeMgmlGOcP6
+         Xtb6bZIzT9rYt8gt4bMejDNHFFjOjk9NyD2j7CjSo7COB5BooYudOGlMmY0sgymYBZ+z
+         FUOF2NCCHngXLJ78VcMSgCd7qPgV9aqWK2WaHN9iZc9haw8sSDKpxSp5+lAk8+kxSZ1Y
+         F/VA==
+X-Gm-Message-State: AOAM533vPbyAAEmAAQvaKhdzO0CtLOKIb6JeQlb1zmroBCpbqUY9XzWU
+        NepB5ZFXRgj+4Ka3LQs1U4irHJQybqZgJObcFw==
+X-Google-Smtp-Source: ABdhPJxfz8nLcRpDiDP1J4XGdQ/fm3t7oYa19szPql8+pjv6K/wRImBqoRvylK0fkUJPjt/sqhpHeTrfXVxnJ6TKmaI=
+X-Received: by 2002:a25:d795:: with SMTP id o143mr669781ybg.440.1601283384435;
+ Mon, 28 Sep 2020 01:56:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="z5fpfx6vrqwdiuav"
-Content-Disposition: inline
-In-Reply-To: <CAJiuCce0thGcH19vMtDX0X8-9S32Y7kC2bnWo_6-SHozF8uDAA@mail.gmail.com>
+Received: by 2002:a25:b8f:0:0:0:0:0 with HTTP; Mon, 28 Sep 2020 01:56:24 -0700 (PDT)
+From:   Eri Dan <bidagencyghana03@gmail.com>
+Date:   Mon, 28 Sep 2020 09:56:24 +0100
+Message-ID: <CAL1GekkAhxbM2iKiTa4zBN7j07QpQNKJQtmK505+Jz8Hwc7gzg@mail.gmail.com>
+Subject: BID
+To:     bidagencyghana03@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+ Dear Sir & Mam,
 
---z5fpfx6vrqwdiuav
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Are you interested for a Bid?
 
-On Mon, Sep 21, 2020 at 07:15:13PM +0200, Cl=E9ment P=E9ron wrote:
-> Hi Maxime,
->=20
-> On Mon, 21 Sep 2020 at 14:29, Maxime Ripard <maxime@cerno.tech> wrote:
-> >
-> > On Mon, Sep 21, 2020 at 12:27:11PM +0200, Cl=E9ment P=E9ron wrote:
-> > > As slots and slot_width can be overwritter in case set_tdm() is
-> > > called. Avoid to have this logic in set_chan_cfg().
-> > >
-> > > Instead pass the required values as params to set_chan_cfg().
-> >
-> > It's not really clear here what the issue is, and how passing the slots
-> > and slot_width as arguments addresses it
-> >
-> > > This also fix a bug when i2s->slot_width is set for TDM but not
-> > > properly used in set_chan_cfg().
-> >
-> > Which bug?
->=20
-> Do you mean my commit log is too short or is it a real question to unders=
-tand ?
+There is an on going bid if you are interested,then,i will furnish you
+details asp.
 
-Both, actually :)
+I look forward to your reply.
 
-Maxime
-
---z5fpfx6vrqwdiuav
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX3GlFQAKCRDj7w1vZxhR
-xYJzAP90E3Ebs8ekSnakjeM+AFop/3Kt5use/kVDKsSr/V2JlwD6A8+jug6YBRDY
-7kZEe3Y1iUyb4oLqEpjNxunahn+yfQA=
-=0O29
------END PGP SIGNATURE-----
-
---z5fpfx6vrqwdiuav--
+Thank you
+Korley Dan
