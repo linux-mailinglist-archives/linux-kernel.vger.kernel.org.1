@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C181327B1FA
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 18:35:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7911A27B1FC
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 18:35:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726799AbgI1Qfd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 12:35:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59550 "EHLO
+        id S1726815AbgI1Qfi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 12:35:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726759AbgI1Qf1 (ORCPT
+        with ESMTP id S1726742AbgI1Qf0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 12:35:27 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DE7CC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 09:35:25 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id x22so1494646pfo.12
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 09:35:25 -0700 (PDT)
+        Mon, 28 Sep 2020 12:35:26 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D1BFC0613D0
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 09:35:26 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id l126so1522216pfd.5
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 09:35:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=4QN691BXao3PnqcNAUhINxRttOXk+OwnyXq6jctViII=;
-        b=srvl1dUuIyNeF9lSxf7h8DgWXz3vjSS9TIQPSbmIWzW2KZes294tXMwgvCtmgPXZM2
-         IOtKwDNM2AeX2Vj1ZSS7Yzy9NR+7adH7K2rLuGLh2+gEOjfWk3pNOzoNJkwMadPWAXR4
-         HoNmTk5pg6oCICD/yTlsc0Q3TM5tyAv9g+PMlCqt4e9JyPcDAAnjn3E26wItt0zVevpY
-         L2e0evrOi3mixMYF5jLDzSkzxraLUUYOO9DyMhFACqbFsOVfDr6nZfO7PRQuUtRC52Ip
-         bVGVnXkTbvM1x03K7M75h9+S8kmsm+G3GVFLASQHwz3aftbBCvaCOQfTBM7jRFEGmtAK
-         OELQ==
+        bh=bZtzAoPbhcMJY41y/E57CaSilqkeyDxkF3e/HxapUoY=;
+        b=CJtW7N5wojqdEzR6yH1IKjkVusNP++v4rfjscbesN5Q8gwOYxWyERVeJGeT9LLx7Lu
+         Sy5G/mSkEzAZZPvE2w5fEaAOKOCd64by6tRpDX3nR2FI9pL8yF2Ot/LOWrUir45WayM9
+         jMoHEl19QZpFEmcrMsz+qOQGHGK8glJBKP8q2Z919C/s0c+eAnqZRCNJTYihH3pnQNQT
+         mg0pkqS3R0sqH2FktJJV2knvB7Ky/5glIem4BEgob0N/xjFd27/XQxZyExdCi1rlV3x5
+         qL4AcxylZsrFFcDxexmwFavlU6WiIDNk3UKpqw1Lxf6Q5oXBItpmeJD+6g1WdkpUOEiU
+         6aVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=4QN691BXao3PnqcNAUhINxRttOXk+OwnyXq6jctViII=;
-        b=IPafUYl8avFKeO7WKstcNU1znY3vD8PwDBbDDTpkUSDaHj74nJiNnSYR5HTufGQVW4
-         SGpq82LhTHgh1ZEQHC7dbQ3e/QwvEVLfEH8dwB65UjCVl2wNlY8EuZkgkcSu4V0FLUZo
-         RxNS2dZb2v1k1fhOKCQJTJRpCwVBHBVphOQSBOK3Pe1E+nP+OERHLtP39SpEFipbPeEU
-         QEjN8INVZpo01nCuu2qCOy0N4z4YF8tgIAcm9ADNX6Malrni6DxXPt6wnxy+Ie8Hhte0
-         SqMp/bldgIKlZFQPU3C0IkXBwpNkmgJcW+RgHI0hF/vpMNxio2ITGczppR/6cshdQ5gn
-         l40A==
-X-Gm-Message-State: AOAM532CRwN7OSgryeHsEn++aERQcBfFLe5liIp2eqLiGZ6FjjWaddpM
-        x92CfmJgK0Ombp1dIFBmuPdp+QfhFvgDcg==
-X-Google-Smtp-Source: ABdhPJyy2hBUA0XfPWRwLYXR6S3zVE5i2+XVuZPlltHyS51ngnfJF8pX+uJWzKLrFhQ8NyvGspSoxQ==
-X-Received: by 2002:a17:902:a982:b029:d2:8cba:921b with SMTP id bh2-20020a170902a982b02900d28cba921bmr264678plb.50.1601310924619;
-        Mon, 28 Sep 2020 09:35:24 -0700 (PDT)
+        bh=bZtzAoPbhcMJY41y/E57CaSilqkeyDxkF3e/HxapUoY=;
+        b=Ir9tMhL4ct620tpbB29VgsQaS30jcNbQZhyqhp/Ysk60JhVlNhxHPfyPGGxCUlUsZO
+         zO8xSZuLaSG001QDMNHISCkQeOXYrKigrabBxAg1RnHjGwRiqvoOruk8DJ336ZfgIiqp
+         vQ+i2GwUMTO3K1jE8OnIDApDvrJLytIWyfDivv29VqflwFO/WdO3fcX5JO2J2+PCqKAr
+         /FEh/PGy1Vm9HWLfUL1Or5FpYosiq2qAKo7r8o28nybEEvSwL3+6Tk0xwo8bEsVVM8Kx
+         oHT8Y7qzcyr0bjXU1bMeBMLimaTpL0mJlrV9ld5Kxu67JBnLFhE9bk5sc7xovJY3gI8l
+         uERQ==
+X-Gm-Message-State: AOAM533w0+HnpMjy5X3NMPeSnil87P1D5sBc5t5PaUZrY+6i5Rwl8kFZ
+        a6sVK8yLOpevanJP1Lhg8THNeA==
+X-Google-Smtp-Source: ABdhPJxHZNeEmhFCGRYjsZU6E0X39hzL6gpcD0779Xe5/IV4IZmWiOLxegHmlk1aqbpoWyceCh3Rew==
+X-Received: by 2002:a17:902:ec02:b029:d1:fc2b:fe95 with SMTP id l2-20020a170902ec02b02900d1fc2bfe95mr318906pld.79.1601310925613;
+        Mon, 28 Sep 2020 09:35:25 -0700 (PDT)
 Received: from xps15.cg.shawcable.net (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
-        by smtp.gmail.com with ESMTPSA id f19sm2345640pfd.45.2020.09.28.09.35.23
+        by smtp.gmail.com with ESMTPSA id f19sm2345640pfd.45.2020.09.28.09.35.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Sep 2020 09:35:24 -0700 (PDT)
+        Mon, 28 Sep 2020 09:35:25 -0700 (PDT)
 From:   Mathieu Poirier <mathieu.poirier@linaro.org>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 09/25] coresight: etm3x: Allow etm3x to be built as a module
-Date:   Mon, 28 Sep 2020 10:34:57 -0600
-Message-Id: <20200928163513.70169-10-mathieu.poirier@linaro.org>
+Subject: [PATCH 10/25] coresight: etm4x: Allow etm4x to be built as a module
+Date:   Mon, 28 Sep 2020 10:34:58 -0600
+Message-Id: <20200928163513.70169-11-mathieu.poirier@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200928163513.70169-1-mathieu.poirier@linaro.org>
 References: <20200928163513.70169-1-mathieu.poirier@linaro.org>
@@ -65,12 +65,12 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Kim Phillips <kim.phillips@arm.com>
 
-Allow to build coresight-etm3x as a module, for ease of development.
+Allow to build coresight-etm4x as a module, for ease of development.
 
 - Kconfig becomes a tristate, to allow =m
 - append -core to source file name to allow module to
-  be called coresight-etm3x by the Makefile
-- add an etm_remove function, for module unload
+  be called coresight-etm4x by the Makefile
+- add an etm4_remove function, for module unload
 - add a MODULE_DEVICE_TABLE for autoloading on boot
 - delay advertising the per-cpu etmdrvdata
 - protect etmdrvdata[] by modifying it on relevant CPU
@@ -84,146 +84,89 @@ Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc: Russell King <linux@armlinux.org.uk>
 Signed-off-by: Kim Phillips <kim.phillips@arm.com>
 Signed-off-by: Tingwei Zhang <tingwei@codeaurora.org>
-Reviewed-by: Mike Leach <mike.leach@linaro.org>
+Tested-by: Mike Leach <mike.leach@linaro.org>
+Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
 Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 ---
- drivers/hwtracing/coresight/Kconfig           |   5 +-
- drivers/hwtracing/coresight/Makefile          |   5 +-
- ...resight-etm3x.c => coresight-etm3x-core.c} | 154 +++++++++++++-----
- 3 files changed, 122 insertions(+), 42 deletions(-)
- rename drivers/hwtracing/coresight/{coresight-etm3x.c => coresight-etm3x-core.c} (90%)
+ drivers/hwtracing/coresight/Kconfig           |  5 +-
+ drivers/hwtracing/coresight/Makefile          |  4 +-
+ ...resight-etm4x.c => coresight-etm4x-core.c} | 84 ++++++++++++++-----
+ 3 files changed, 69 insertions(+), 24 deletions(-)
+ rename drivers/hwtracing/coresight/{coresight-etm4x.c => coresight-etm4x-core.c} (96%)
 
 diff --git a/drivers/hwtracing/coresight/Kconfig b/drivers/hwtracing/coresight/Kconfig
-index 6433f835fc97..8fd9fd139cf3 100644
+index 8fd9fd139cf3..d6e107bbd30b 100644
 --- a/drivers/hwtracing/coresight/Kconfig
 +++ b/drivers/hwtracing/coresight/Kconfig
-@@ -65,7 +65,7 @@ config CORESIGHT_SINK_ETBV10
- 	  special enhancement or added features.
+@@ -78,7 +78,7 @@ config CORESIGHT_SOURCE_ETM3X
+ 	  module will be called coresight-etm3x.
  
- config CORESIGHT_SOURCE_ETM3X
--	bool "CoreSight Embedded Trace Macrocell 3.x driver"
-+	tristate "CoreSight Embedded Trace Macrocell 3.x driver"
- 	depends on !ARM64
+ config CORESIGHT_SOURCE_ETM4X
+-	bool "CoreSight Embedded Trace Macrocell 4.x driver"
++	tristate "CoreSight Embedded Trace Macrocell 4.x driver"
+ 	depends on ARM64
  	select CORESIGHT_LINKS_AND_SINKS
- 	help
-@@ -74,6 +74,9 @@ config CORESIGHT_SOURCE_ETM3X
- 	  This is primarily useful for instruction level tracing.  Depending
- 	  the ETM version data tracing may also be available.
+ 	select PID_IN_CONTEXTIDR
+@@ -88,6 +88,9 @@ config CORESIGHT_SOURCE_ETM4X
+ 	  for instruction level tracing. Depending on the implemented version
+ 	  data tracing may also be available.
  
 +	  To compile this driver as a module, choose M here: the
-+	  module will be called coresight-etm3x.
++	  module will be called coresight-etm4x.
 +
- config CORESIGHT_SOURCE_ETM4X
- 	bool "CoreSight Embedded Trace Macrocell 4.x driver"
- 	depends on ARM64
+ config CORESIGHT_STM
+ 	tristate "CoreSight System Trace Macrocell driver"
+ 	depends on (ARM && !(CPU_32v3 || CPU_32v4 || CPU_32v4T)) || ARM64
 diff --git a/drivers/hwtracing/coresight/Makefile b/drivers/hwtracing/coresight/Makefile
-index 19497d1d92bf..86b4648844b4 100644
+index 86b4648844b4..3f2b057443fb 100644
 --- a/drivers/hwtracing/coresight/Makefile
 +++ b/drivers/hwtracing/coresight/Makefile
-@@ -11,8 +11,9 @@ obj-$(CONFIG_CORESIGHT_SINK_TPIU) += coresight-tpiu.o
- obj-$(CONFIG_CORESIGHT_SINK_ETBV10) += coresight-etb10.o
- obj-$(CONFIG_CORESIGHT_LINKS_AND_SINKS) += coresight-funnel.o \
- 					   coresight-replicator.o
--obj-$(CONFIG_CORESIGHT_SOURCE_ETM3X) += coresight-etm3x.o coresight-etm-cp14.o \
--					coresight-etm3x-sysfs.o
-+obj-$(CONFIG_CORESIGHT_SOURCE_ETM3X) += coresight-etm3x.o
-+coresight-etm3x-y := coresight-etm3x-core.o coresight-etm-cp14.o \
-+		     coresight-etm3x-sysfs.o
- obj-$(CONFIG_CORESIGHT_SOURCE_ETM4X) += coresight-etm4x.o \
- 					coresight-etm4x-sysfs.o
+@@ -14,8 +14,8 @@ obj-$(CONFIG_CORESIGHT_LINKS_AND_SINKS) += coresight-funnel.o \
+ obj-$(CONFIG_CORESIGHT_SOURCE_ETM3X) += coresight-etm3x.o
+ coresight-etm3x-y := coresight-etm3x-core.o coresight-etm-cp14.o \
+ 		     coresight-etm3x-sysfs.o
+-obj-$(CONFIG_CORESIGHT_SOURCE_ETM4X) += coresight-etm4x.o \
+-					coresight-etm4x-sysfs.o
++obj-$(CONFIG_CORESIGHT_SOURCE_ETM4X) += coresight-etm4x.o
++coresight-etm4x-y := coresight-etm4x-core.o coresight-etm4x-sysfs.o
  obj-$(CONFIG_CORESIGHT_STM) += coresight-stm.o
-diff --git a/drivers/hwtracing/coresight/coresight-etm3x.c b/drivers/hwtracing/coresight/coresight-etm3x-core.c
-similarity index 90%
-rename from drivers/hwtracing/coresight/coresight-etm3x.c
-rename to drivers/hwtracing/coresight/coresight-etm3x-core.c
-index bf22dcfd3327..47f610b1c2b1 100644
---- a/drivers/hwtracing/coresight/coresight-etm3x.c
-+++ b/drivers/hwtracing/coresight/coresight-etm3x-core.c
-@@ -40,8 +40,6 @@
- static int boot_enable;
- module_param_named(boot_enable, boot_enable, int, S_IRUGO);
- 
--/* The number of ETM/PTM currently registered */
--static int etm_count;
- static struct etm_drvdata *etmdrvdata[NR_CPUS];
- 
- static enum cpuhp_state hp_online;
-@@ -782,6 +780,42 @@ static void etm_init_trace_id(struct etm_drvdata *drvdata)
- 	drvdata->traceid = coresight_get_trace_id(drvdata->cpu);
+ obj-$(CONFIG_CORESIGHT_CPU_DEBUG) += coresight-cpu-debug.o
+ obj-$(CONFIG_CORESIGHT_CATU) += coresight-catu.o
+diff --git a/drivers/hwtracing/coresight/coresight-etm4x.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+similarity index 96%
+rename from drivers/hwtracing/coresight/coresight-etm4x.c
+rename to drivers/hwtracing/coresight/coresight-etm4x-core.c
+index f5ab13aaecea..de76d57850bc 100644
+--- a/drivers/hwtracing/coresight/coresight-etm4x.c
++++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+@@ -1447,7 +1447,7 @@ static int __init etm4_pm_setup(void)
+ 	return ret;
  }
  
-+static int __init etm_hp_setup(void)
-+{
-+	int ret;
-+
-+	ret = cpuhp_setup_state_nocalls_cpuslocked(CPUHP_AP_ARM_CORESIGHT_STARTING,
-+						   "arm/coresight:starting",
-+						   etm_starting_cpu, etm_dying_cpu);
-+
-+	if (ret)
-+		return ret;
-+
-+	ret = cpuhp_setup_state_nocalls_cpuslocked(CPUHP_AP_ONLINE_DYN,
-+						   "arm/coresight:online",
-+						   etm_online_cpu, NULL);
-+
-+	/* HP dyn state ID returned in ret on success */
-+	if (ret > 0) {
-+		hp_online = ret;
-+		return 0;
-+	}
-+
-+	/* failed dyn state - remove others */
-+	cpuhp_remove_state_nocalls(CPUHP_AP_ARM_CORESIGHT_STARTING);
-+
-+	return ret;
-+}
-+
-+static void etm_hp_clear(void)
-+{
-+	cpuhp_remove_state_nocalls(CPUHP_AP_ARM_CORESIGHT_STARTING);
-+	if (hp_online) {
-+		cpuhp_remove_state_nocalls(hp_online);
-+		hp_online = 0;
-+	}
-+}
-+
- static int etm_probe(struct amba_device *adev, const struct amba_id *id)
+-static void __init etm4_pm_clear(void)
++static void etm4_pm_clear(void)
  {
- 	int ret;
-@@ -823,39 +857,20 @@ static int etm_probe(struct amba_device *adev, const struct amba_id *id)
+ 	cpu_pm_unregister_notifier(&etm4_cpu_pm_nb);
+ 	cpuhp_remove_state_nocalls(CPUHP_AP_ARM_CORESIGHT_STARTING);
+@@ -1504,25 +1504,20 @@ static int etm4_probe(struct amba_device *adev, const struct amba_id *id)
  	if (!desc.name)
  		return -ENOMEM;
  
--	cpus_read_lock();
 -	etmdrvdata[drvdata->cpu] = drvdata;
 -
  	if (smp_call_function_single(drvdata->cpu,
- 				     etm_init_arch_data,  drvdata, 1))
+ 				etm4_init_arch_data,  drvdata, 1))
  		dev_err(dev, "ETM arch init failed\n");
  
--	if (!etm_count++) {
--		cpuhp_setup_state_nocalls_cpuslocked(CPUHP_AP_ARM_CORESIGHT_STARTING,
--						     "arm/coresight:starting",
--						     etm_starting_cpu, etm_dying_cpu);
--		ret = cpuhp_setup_state_nocalls_cpuslocked(CPUHP_AP_ONLINE_DYN,
--							   "arm/coresight:online",
--							   etm_online_cpu, NULL);
--		if (ret < 0)
--			goto err_arch_supported;
--		hp_online = ret;
--	}
--	cpus_read_unlock();
--
--	if (etm_arch_supported(drvdata->arch) == false) {
+-	if (etm4_arch_supported(drvdata->arch) == false) {
 -		ret = -EINVAL;
 -		goto err_arch_supported;
 -	}
-+	if (etm_arch_supported(drvdata->arch) == false)
++	if (etm4_arch_supported(drvdata->arch) == false)
 +		return -EINVAL;
  
- 	etm_init_trace_id(drvdata);
- 	etm_set_default(&drvdata->config);
+ 	etm4_init_trace_id(drvdata);
+ 	etm4_set_default(&drvdata->config);
  
  	pdata = coresight_get_platform_data(dev);
 -	if (IS_ERR(pdata)) {
@@ -236,9 +179,9 @@ index bf22dcfd3327..47f610b1c2b1 100644
  	adev->dev.platform_data = pdata;
  
  	desc.type = CORESIGHT_DEV_TYPE_SOURCE;
-@@ -865,17 +880,17 @@ static int etm_probe(struct amba_device *adev, const struct amba_id *id)
+@@ -1532,17 +1527,17 @@ static int etm4_probe(struct amba_device *adev, const struct amba_id *id)
  	desc.dev = dev;
- 	desc.groups = coresight_etm_groups;
+ 	desc.groups = coresight_etmv4_groups;
  	drvdata->csdev = coresight_register(&desc);
 -	if (IS_ERR(drvdata->csdev)) {
 -		ret = PTR_ERR(drvdata->csdev);
@@ -257,21 +200,23 @@ index bf22dcfd3327..47f610b1c2b1 100644
 +	etmdrvdata[drvdata->cpu] = drvdata;
 +
  	pm_runtime_put(&adev->dev);
- 	dev_info(&drvdata->csdev->dev,
- 		 "%s initialized\n", (char *)coresight_get_uci_data(id));
-@@ -885,14 +900,40 @@ static int etm_probe(struct amba_device *adev, const struct amba_id *id)
+ 	dev_info(&drvdata->csdev->dev, "CPU%d: ETM v%d.%d initialized\n",
+ 		 drvdata->cpu, drvdata->arch >> 4, drvdata->arch & 0xf);
+@@ -1553,10 +1548,6 @@ static int etm4_probe(struct amba_device *adev, const struct amba_id *id)
  	}
  
  	return 0;
-+}
- 
+-
 -err_arch_supported:
--	if (--etm_count == 0) {
--		cpuhp_remove_state_nocalls(CPUHP_AP_ARM_CORESIGHT_STARTING);
--		if (hp_online)
--			cpuhp_remove_state_nocalls(hp_online);
--	}
+-	etmdrvdata[drvdata->cpu] = NULL;
 -	return ret;
+ }
+ 
+ static struct amba_cs_uci_id uci_id_etm4[] = {
+@@ -1568,6 +1559,40 @@ static struct amba_cs_uci_id uci_id_etm4[] = {
+ 	}
+ };
+ 
 +static void __exit clear_etmdrvdata(void *info)
 +{
 +	int cpu = *(int *)info;
@@ -279,14 +224,14 @@ index bf22dcfd3327..47f610b1c2b1 100644
 +	etmdrvdata[cpu] = NULL;
 +}
 +
-+static int __exit etm_remove(struct amba_device *adev)
++static int __exit etm4_remove(struct amba_device *adev)
 +{
-+	struct etm_drvdata *drvdata = dev_get_drvdata(&adev->dev);
++	struct etmv4_drvdata *drvdata = dev_get_drvdata(&adev->dev);
 +
 +	etm_perf_symlink(drvdata->csdev, false);
 +
 +	/*
-+	 * Taking hotplug lock here to avoid racing between etm_remove and
++	 * Taking hotplug lock here to avoid racing between etm4_remove and
 +	 * CPU hotplug call backs.
 +	 */
 +	cpus_read_lock();
@@ -304,58 +249,46 @@ index bf22dcfd3327..47f610b1c2b1 100644
 +	coresight_unregister(drvdata->csdev);
 +
 +	return 0;
- }
- 
- #ifdef CONFIG_PM
-@@ -937,6 +978,8 @@ static const struct amba_id etm_ids[] = {
- 	{ 0, 0},
++}
++
+ static const struct amba_id etm4_ids[] = {
+ 	CS_AMBA_ID(0x000bb95d),			/* Cortex-A53 */
+ 	CS_AMBA_ID(0x000bb95e),			/* Cortex-A57 */
+@@ -1587,12 +1612,16 @@ static const struct amba_id etm4_ids[] = {
+ 	{},
  };
  
-+MODULE_DEVICE_TABLE(amba, etm_ids);
++MODULE_DEVICE_TABLE(amba, etm4_ids);
 +
- static struct amba_driver etm_driver = {
+ static struct amba_driver etm4x_driver = {
  	.drv = {
- 		.name	= "coresight-etm3x",
-@@ -945,6 +988,39 @@ static struct amba_driver etm_driver = {
+ 		.name   = "coresight-etm4x",
++		.owner  = THIS_MODULE,
  		.suppress_bind_attrs = true,
  	},
- 	.probe		= etm_probe,
-+	.remove         = etm_remove,
- 	.id_table	= etm_ids,
+ 	.probe		= etm4_probe,
++	.remove         = etm4_remove,
+ 	.id_table	= etm4_ids,
  };
--builtin_amba_driver(etm_driver);
+ 
+@@ -1614,4 +1643,17 @@ static int __init etm4x_init(void)
+ 
+ 	return ret;
+ }
+-device_initcall(etm4x_init);
 +
-+static int __init etm_init(void)
++static void __exit etm4x_exit(void)
 +{
-+	int ret;
-+
-+	ret = etm_hp_setup();
-+
-+	/* etm_hp_setup() does its own cleanup - exit on error */
-+	if (ret)
-+		return ret;
-+
-+	ret = amba_driver_register(&etm_driver);
-+	if (ret) {
-+		pr_err("Error registering etm3x driver\n");
-+		etm_hp_clear();
-+	}
-+
-+	return ret;
++	amba_driver_unregister(&etm4x_driver);
++	etm4_pm_clear();
 +}
 +
-+static void __exit etm_exit(void)
-+{
-+	amba_driver_unregister(&etm_driver);
-+	etm_hp_clear();
-+}
-+
-+module_init(etm_init);
-+module_exit(etm_exit);
++module_init(etm4x_init);
++module_exit(etm4x_exit);
 +
 +MODULE_AUTHOR("Pratik Patel <pratikp@codeaurora.org>");
 +MODULE_AUTHOR("Mathieu Poirier <mathieu.poirier@linaro.org>");
-+MODULE_DESCRIPTION("Arm CoreSight Program Flow Trace driver");
++MODULE_DESCRIPTION("Arm CoreSight Program Flow Trace v4.x driver");
 +MODULE_LICENSE("GPL v2");
 -- 
 2.25.1
