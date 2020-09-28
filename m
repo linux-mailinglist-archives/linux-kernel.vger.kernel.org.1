@@ -2,101 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D86827B624
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 22:20:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F07E127B629
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 22:24:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726812AbgI1UUM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 16:20:12 -0400
-Received: from mga07.intel.com ([134.134.136.100]:47510 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726328AbgI1UUL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 16:20:11 -0400
-IronPort-SDR: 0cN3NIEu/paUbSOLJru4vx1lOM+XRo4HUs85BRj56ttqzn0yJz5OKRovOFU5HtCP6833VAsk9/
- i01jg5GUscvQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9758"; a="226203888"
-X-IronPort-AV: E=Sophos;i="5.77,315,1596524400"; 
-   d="scan'208";a="226203888"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 13:20:08 -0700
-IronPort-SDR: BvDsIZdE3iBML0ZvAwcDcXMxeydLNkS68wXKT03yd8xS2rdKFolnSf4DhvYeRrOPyxh5N5bM09
- 5Tes3yv5l/6Q==
-X-IronPort-AV: E=Sophos;i="5.77,315,1596524400"; 
-   d="scan'208";a="488746118"
-Received: from jlasecki-mobl2.ger.corp.intel.com (HELO localhost) ([10.252.49.78])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 13:20:01 -0700
-Date:   Mon, 28 Sep 2020 23:19:59 +0300
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Haitao Huang <haitao.huang@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>, X86 ML <x86@kernel.org>,
-        linux-sgx@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Darren Kenny <darren.kenny@oracle.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        asapek@google.com, Borislav Petkov <bp@alien8.de>,
-        "Xing, Cedric" <cedric.xing@intel.com>, chenalexchen@google.com,
-        Conrad Parker <conradparker@google.com>, cyhanish@google.com,
-        "Huang, Haitao" <haitao.huang@intel.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        "Huang, Kai" <kai.huang@intel.com>,
-        "Svahn, Kai" <kai.svahn@intel.com>, Keith Moyer <kmoy@google.com>,
-        Christian Ludloff <ludloff@google.com>,
-        Neil Horman <nhorman@redhat.com>,
-        Nathaniel McCallum <npmccallum@redhat.com>,
-        Patrick Uiterwijk <puiterwijk@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>, yaozhangx@google.com
-Subject: Re: [PATCH v38 10/24] mm: Add vm_ops->mprotect()
-Message-ID: <20200928201959.GA3856@linux.intel.com>
-References: <20200925000052.GA20333@linux.intel.com>
- <32fc9df4-d4aa-6768-aa06-0035427b7535@intel.com>
- <20200925194304.GE31528@linux.intel.com>
- <230ce6da-7820-976f-f036-a261841d626f@intel.com>
- <20200928005347.GB6704@linux.intel.com>
- <6eca8490-d27d-25b8-da7c-df4f9a802e87@intel.com>
- <20200928161954.GB92669@linux.intel.com>
- <c29a662e-90ff-4862-8c82-06b43b81fb4d@intel.com>
- <20200928193229.GA125819@linux.intel.com>
- <283800a0-8f97-e21e-2ff1-253ae621747e@intel.com>
+        id S1726801AbgI1UYF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 16:24:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38422 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726393AbgI1UYE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 16:24:04 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DFA5C061755;
+        Mon, 28 Sep 2020 13:24:03 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id r7so10866457ejs.11;
+        Mon, 28 Sep 2020 13:24:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1J3xfX6mi+yH7vokRWfQjm7Vu2SF03BqzqPZ3nviNoE=;
+        b=qcxx8srT7SomaH8XuJ4Kl7Kwksp5hSYaB/IYqbbZl8eINeqiD5PSu86lQ5BkdDBNkS
+         8rG4BTru6BYE8xCZRH0+lUWWPvgLjyvhz6Ng+xGjnEZpL1lAyQu/SLmWIpRWII4PcE7Q
+         M303xrS51KomeLbXTDGh+T6C8Vbng/sqUQZX1lmKFF5pBfbUgoNOrik3dqzCht+45X+e
+         b+6wfsIaz6xd/b5DzpvzmrwOBD8Hko/AArruIRiVs5NyPEzqhXa380+HR3B3F8YlRvNP
+         bBF8gm1/IVLUTW/lB9erkPt4Wkg9qTxPSAnzgQvcCT7GvU0zJp8VW06yyrtwhu98VoBT
+         E25Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1J3xfX6mi+yH7vokRWfQjm7Vu2SF03BqzqPZ3nviNoE=;
+        b=FC4hkkJztw5jbx0eyV/91uBeSfRDqgS0VYiWhA/+yiOs/i9e1YB1cShC+JvVK12yUj
+         9A7AfEk77ftgMLq4ShNW5Mi59LePYAQ9M6600ldrurI/XK+vnpq9A8oyQkLLdjP0EKBC
+         8o1QJMn1AuzZJy07hTRS0mPY9/3YFcn7mJejvUtFaiidH0TcbfMatC8pfYie/I9K1vTz
+         QsEjPRvgWcE62Qox1aQ3IGz+EWYgn10UF79re31WobBGm3Qj5QP5mpIXiAwxeq7bNEj5
+         IhZSuMow0tKvhd4zQsu6xSWCMsbLoy6h6Pjaa2JXRiu/Qo4/b8CoKrKovuOBOozfQfJS
+         SwAw==
+X-Gm-Message-State: AOAM532wBNecXit65SEkaJBrRptuIBEhfyqcP72eVYQEuab3iZHPvr8i
+        8pJVnwK1yt08J8/WNejSXx78h93y9Uwx1UnMqaVjWg0bVVs=
+X-Google-Smtp-Source: ABdhPJyNwJznKhbkYlvL5tC9TERwX8tgB5MOPOWV37ylEdBY0oUGQGsaTist/nbW+GeLLVJypFukRI5bQks82mNJJuA=
+X-Received: by 2002:a17:906:e216:: with SMTP id gf22mr529801ejb.2.1601324641833;
+ Mon, 28 Sep 2020 13:24:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <283800a0-8f97-e21e-2ff1-253ae621747e@intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <CAFBinCATt4Hi9rigj52nMf3oygyFbnopZcsakGL=KyWnsjY3JA@mail.gmail.com>
+ <20200925221403.GE3856392@lunn.ch> <CAFBinCC4VuLJDLqQb+m+h+qnh6fAK2aBLVtQaE15Tc-zQq=KSg@mail.gmail.com>
+ <20200926004129.GC3850848@lunn.ch> <CAFBinCAc2-QV3E8P4gk+7Lq0ushH08UoZ0tQ8ACEoda-D8oaWg@mail.gmail.com>
+ <20200926144513.GD3850848@lunn.ch>
+In-Reply-To: <20200926144513.GD3850848@lunn.ch>
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date:   Mon, 28 Sep 2020 22:23:50 +0200
+Message-ID: <CAFBinCD8PWB52qD1X4jsSbkGw2C+x14QUPcQ8R-fUugOOPx-DQ@mail.gmail.com>
+Subject: Re: RGMII timing calibration (on 12nm Amlogic SoCs) - integration
+ into dwmac-meson8b
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     netdev@vger.kernel.org, linux-amlogic@lists.infradead.org,
+        alexandre.torgue@st.com, linux-kernel@vger.kernel.org,
+        linux@armlinux.org.uk, joabreu@synopsys.com, kuba@kernel.org,
+        peppe.cavallaro@st.com, davem@davemloft.net,
+        linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 12:45:27PM -0700, Dave Hansen wrote:
-> On 9/28/20 12:32 PM, Jarkko Sakkinen wrote:
-> > My problem is that I fully agree what you say in your description but
-> > disagree on that EMODPE should not be mentioned.
-> 
-> I'll just be very clear: I'm not willing to ack any patch with a
-> changelog that has more than a passing mention of EMODPE.
-> 
-> Do what you think is best, but if sticking to your guns may deplete the
-> pool of folks willing to ack your patch.
+Hi Andrew,
 
-I do see it mentioned in other responses too in this thread, and not
-just mine.
+On Sat, Sep 26, 2020 at 4:45 PM Andrew Lunn <andrew@lunn.ch> wrote:
+>
+> > I checked this again for the vendor u-boot (where Ethernet is NOT
+> > working) as well as the Android kernel which this board was shipped
+> > with (where Ethernet is working)
+> > - in u-boot the MAC side adds a 2ns TX delay and the PHY side adds a
+> > 2ns RX delay
+>
+> So that suggest there is nothing on the PCB. It is all down to MAC and
+> PHY adding delays.
+u-boot with it's 2ns RX delay is the non-working case
+only if I manually turn off the 2ns RX delay generated by the PHY in
+u-boot (phyreg w 0x1f 0xd08; phyreg w 0x11 0x9; phyreg w 0x15 0x11;
+phyreg w 0x1f 0x0; phyreg w 0x0 0x9200) I can get ping/tftpboot to
+work
 
-And here is even a request to get it to the changelog:
+the Android kernel disables the 2ns RX delay on the PHY side (and as
+far as I can tell does NOT enable it on the MAC side). with that
+Ethernet is working
 
-https://lore.kernel.org/linux-sgx/1B23E216-0229-4BDD-8B09-807256A54AF5@amacapital.net/
+> > yes, there's only one calibration value
+> > the reference code is calculating the calibration setting for four
+> > configuration variants:
+> > - 2ns TX delay on the MAC side, no RX or TX delay on the PHY side, RGMII RX_CLK not inverted
+> > - 2ns TX delay on the MAC side, no RX or TX delay on the PHY side, RGMII RX_CLK inverted
+> > - 2ns TX delay on the MAC side, 2ns RX delay on the PHY side, RGMII RX_CLK not inverted
+> > - 2ns TX delay on the MAC side, 2ns RX delay on the PHY side, RGMII RX_CLK inverted
+> >
+> > now that I'm writing this, could it be a calibration of the RX_CLK
+> > signal?
+>
+> Yes, seems like it. Which of these four does it end up using? I'm
+> guessing the 3rd?
+I need to double-check but if I remember correctly was close between
+the first and last one (and I think the first case won)
 
-I'm absolutely fine not to mention EMODPE but after re-reading the
-thread, it is not like there is one voice on it. I don't really
-care all that much whether it is mentioned or not but there should
-be some reasonable logic behind the decision.
+> So i would forget about configuration clock inversion. Hard code it to
+> whatever works. It is not something you see other MAC/PHY combinations
+> allow to configure.
+we have inversion hard-coded to "off". I'm not planning to take this
+into consideration unless there's a good reason to do so
 
-PS. I just noticed that my previous response did not reach lore so
-I bounced it again.
+> I think you said a value of 0x2 works. I wonder if that corresponds to
+> something slightly larger than 0ns if option 3 is being used?
+I have tested 0x0, 0x3, 0x4 and 0xf
+the first three values are working, but 0xf isn't.
 
-/Jarkko
+I'll try to reach someone at Amlogic to clarify the meaning of these
+new register bits.
+I guess Florian's patch is a good starting point for what I need -
+thanks again for the suggestion Vladimir.
+
+
+Thank you all!
+Best regards,
+Martin
