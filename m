@@ -2,161 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0407D27A706
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 07:42:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 599C527A709
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 07:46:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726420AbgI1FmZ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 28 Sep 2020 01:42:25 -0400
-Received: from mail-lf1-f65.google.com ([209.85.167.65]:47076 "EHLO
-        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725294AbgI1FmZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 01:42:25 -0400
-Received: by mail-lf1-f65.google.com with SMTP id b22so9602478lfs.13;
-        Sun, 27 Sep 2020 22:42:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=62VVtrR40xPsUderogAnod9rxvj1xY9G9jJZfGS80Yo=;
-        b=ZBCRU0+7mxx5MpYw+evPJ1sUBAJtJyT49zS0OHcaDdGT2BfWm/muyrzPfZeHqjvivy
-         p9lIYG/n7NdzLwq/DAXdqn0qeZavNDwJsfo+od7oyFxsrZFcoMrWMkfErdM50vSYde12
-         Rz1mRJ+MlsMx0ZJqldn0W2J4xQR2n+A075Htz+pZ/WAuGvNK0+fp5KGlSngUwbMUx7Fs
-         w9qvuy+gKwoPQsFilIQaYYsj4xecDzX2Hoz6x9rz+B4P7XiKFTqvz59xjerH6GywUaQ0
-         i4U8D1TLVzv+MoDrs9qgD5AGtUzE8IH6WJ1hbeJWvsC17W/nMDPzG3AJI0yd+80vQhRi
-         hxWQ==
-X-Gm-Message-State: AOAM531N9ZQ+TLkBgYYzkx8P5hdQ7+856vVmFuX7z2fBlu/WThcdruPE
-        crGf96YrmlG23dw2LqZX5lLONzR8Jprb2g==
-X-Google-Smtp-Source: ABdhPJy08ACqDfnW6h0e/3ef69nBBtJqj9BTQ5YlbPwcOZ8f6+EcB/YhqXG5HKSSWU20+PUcWVEGhA==
-X-Received: by 2002:ac2:5f77:: with SMTP id c23mr3651600lfc.568.1601271742726;
-        Sun, 27 Sep 2020 22:42:22 -0700 (PDT)
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com. [209.85.167.45])
-        by smtp.gmail.com with ESMTPSA id k3sm2745115lfg.300.2020.09.27.22.42.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 27 Sep 2020 22:42:22 -0700 (PDT)
-Received: by mail-lf1-f45.google.com with SMTP id z17so9593602lfi.12;
-        Sun, 27 Sep 2020 22:42:22 -0700 (PDT)
-X-Received: by 2002:a19:c6c8:: with SMTP id w191mr2928439lff.348.1601271742080;
- Sun, 27 Sep 2020 22:42:22 -0700 (PDT)
+        id S1726485AbgI1FqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 01:46:03 -0400
+Received: from z5.mailgun.us ([104.130.96.5]:59219 "EHLO z5.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725308AbgI1FqC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 01:46:02 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1601271961; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=Ie5rUDiiovTLKTOWZjkrtVsETmI7mVXRVE6tZnlDGJk=;
+ b=A/neGERpgQqYyzxYZXyalbJNbRfywclmsl8K7qYhc0nIcUamz4mmnrdCwhugq9VYl28F+Tkp
+ kI/GKyEURRBnSCPljI9f3/NfLKJ/bgaRScgD1ET66NAQ7NG8WUL+VCxVOzpMbo1PPsLr/3eo
+ my+3bVfQ542vX9Yz3Z2enhz83hk=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 5f717899c00ccaf02881b520 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 28 Sep 2020 05:46:01
+ GMT
+Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 0405CC433CB; Mon, 28 Sep 2020 05:46:01 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id DB659C433CA;
+        Mon, 28 Sep 2020 05:45:58 +0000 (UTC)
 MIME-Version: 1.0
-References: <20200927192912.46323-1-peron.clem@gmail.com> <20200927192912.46323-10-peron.clem@gmail.com>
- <CAGb2v64uAHUd=Ag2pQDqH=gjtPVso5dnKKdCn3ihyiVh8V8L=g@mail.gmail.com>
-In-Reply-To: <CAGb2v64uAHUd=Ag2pQDqH=gjtPVso5dnKKdCn3ihyiVh8V8L=g@mail.gmail.com>
-From:   Chen-Yu Tsai <wens@csie.org>
-Date:   Mon, 28 Sep 2020 13:42:10 +0800
-X-Gmail-Original-Message-ID: <CAGb2v64U9b1Ayq-XNCHb3z6spsds6eDaz3C4EsV9xFOquHrB7w@mail.gmail.com>
-Message-ID: <CAGb2v64U9b1Ayq-XNCHb3z6spsds6eDaz3C4EsV9xFOquHrB7w@mail.gmail.com>
-Subject: Re: [linux-sunxi] [PATCH v5 09/20] arm64: dts: allwinner: h6: Add DAI
- node and soundcard for HDMI
-To:     =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
-Cc:     Maxime Ripard <mripard@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Marcus Cooper <codekipper@gmail.com>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Linux-ALSA <alsa-devel@alsa-project.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-sunxi <linux-sunxi@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 28 Sep 2020 11:15:58 +0530
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Prasad Sodagudi <psodagud@codeaurora.org>
+Cc:     rostedt@goodmis.org, mingo@redhat.com, keescook@chromium.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, gregkh@linuxfoundation.org,
+        anton@enomsg.org, arnd@arndb.de, catalin.marinas@arm.com,
+        ccross@android.com, jbaron@akamai.com, jim.cromie@gmail.com,
+        joe@perches.com, joel@joelfernandes.org,
+        Will Deacon <will@kernel.org>
+Subject: Re: [PATCH] Register read and writes tracing
+In-Reply-To: <1601253290-400618-1-git-send-email-psodagud@codeaurora.org>
+References: <1601253290-400618-1-git-send-email-psodagud@codeaurora.org>
+Message-ID: <ecc13f64210678c99cfcf7285f80c0c0@codeaurora.org>
+X-Sender: saiprakash.ranjan@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 1:32 PM Chen-Yu Tsai <wens@csie.org> wrote:
->
-> On Mon, Sep 28, 2020 at 3:29 AM Clément Péron <peron.clem@gmail.com> wrote:
-> >
-> > From: Jernej Skrabec <jernej.skrabec@siol.net>
-> >
-> > Add the I2S node used by the HDMI and a simple-soundcard to
-> > link audio between HDMI and I2S.
-> >
-> > Note that the HDMI codec requires an inverted frame clock and
-> > a fixed I2S width. As there is no such option for I2S we use
-> > TDM property of the simple-soundcard to do that.
-> >
-> > Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
-> > Signed-off-by: Marcus Cooper <codekipper@gmail.com>
-> > Signed-off-by: Clément Péron <peron.clem@gmail.com>
-> > ---
-> >  arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi | 33 ++++++++++++++++++++
-> >  1 file changed, 33 insertions(+)
-> >
-> > diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
-> > index 28c77d6872f6..a8853ee7885a 100644
-> > --- a/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
-> > +++ b/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
-> > @@ -67,6 +67,25 @@ de: display-engine {
-> >                 status = "disabled";
-> >         };
-> >
-> > +       hdmi_sound: hdmi-sound {
-> > +               compatible = "simple-audio-card";
-> > +               simple-audio-card,format = "i2s";
-> > +               simple-audio-card,name = "sun50i-h6-hdmi";
-> > +               simple-audio-card,mclk-fs = <128>;
-> > +               simple-audio-card,frame-inversion;
-> > +               status = "disabled";
-> > +
-> > +               simple-audio-card,codec {
-> > +                       sound-dai = <&hdmi>;
-> > +               };
-> > +
-> > +               simple-audio-card,cpu {
-> > +                       sound-dai = <&i2s1>;
-> > +                       dai-tdm-slot-num = <2>;
->
-> Doesn't this end up limiting the number of audio channels HDMI can carry?
-> AFAICT the TDM properties are all optional, so just leave it out.
->
-> Same goes for the other two patches.
->
-> > +                       dai-tdm-slot-width = <32>;
-> > +               };
-> > +       };
-> > +
-> >         osc24M: osc24M_clk {
-> >                 #clock-cells = <0>;
-> >                 compatible = "fixed-clock";
-> > @@ -609,6 +628,19 @@ mdio: mdio {
-> >                         };
-> >                 };
-> >
-> > +               i2s1: i2s@5091000 {
-> > +                       #sound-dai-cells = <0>;
-> > +                       compatible = "allwinner,sun50i-h6-i2s";
-> > +                       reg = <0x05091000 0x1000>;
-> > +                       interrupts = <GIC_SPI 19 IRQ_TYPE_LEVEL_HIGH>;
-> > +                       clocks = <&ccu CLK_BUS_I2S1>, <&ccu CLK_I2S1>;
-> > +                       clock-names = "apb", "mod";
-> > +                       dmas = <&dma 4>, <&dma 4>;
-> > +                       resets = <&ccu RST_BUS_I2S1>;
-> > +                       dma-names = "rx", "tx";
+Hi Prasad,
 
-Sorry, missed this one.
+On 2020-09-28 06:04, Prasad Sodagudi wrote:
+> Qualcomm team have tried to upstreaming the register trace buffer(RTB)
+> use case earlier - [1]
+> with pstore approach. In that discussion, there was suggestion to use
+> the ftrace events for
+> tracking the register reads and writes. In this patch, added register
+> read/write operations
+> tracing support and also add _no_log variants(for example -
+> readl_relaxed_no_log  to readl_relaxed)
+> functions, which will help to avoid excessive logging for certain
+> register operations
+> (continuous writes from a loop).  These tracepoints can be used by 
+> modules
+> to register probes and log the data convenient  for silicon vendor 
+> format.
+> 
+> [1] -
+> https://lore.kernel.org/lkml/cover.1535119710.git.saiprakash.ranjan@codeaurora.org/
+> 
 
-Given that usage for this interface is transmit only, and there is no
-RX DRQ number assigned to it, you should drop the RX DMA number and name.
+Thanks for picking this up again. This kind of looks like going back to
+downstream implementation of having log and nolog variants which was
+exactly the thing we wanted to avoid.
 
-> > +                       status = "disabled";
-> > +               };
-> > +
-> >                 spdif: spdif@5093000 {
-> >                         #sound-dai-cells = <0>;
-> >                         compatible = "allwinner,sun50i-h6-spdif";
-> > @@ -739,6 +771,7 @@ ohci3: usb@5311400 {
-> >                 };
-> >
-> >                 hdmi: hdmi@6000000 {
-> > +                       #sound-dai-cells = <0>;
-> >                         compatible = "allwinner,sun50i-h6-dw-hdmi";
-> >                         reg = <0x06000000 0x10000>;
-> >                         reg-io-width = <1>;
->
-> The rest of the patch looks OK.
+I believe the reason for this nolog variants is not just to avoid 
+excessive
+logging but also to provide filtering i.e, selectively trace the 
+register
+reads/writes from required drivers or subsystems like for example we
+wouldn't want to trace register reads/writes from serial drivers, now if
+you use these nolog variants  then it will need to be sprinkled all over
+the kernel in various drivers to provide this kind of filtering. That 
+was
+the reason I did not want to introduce these nolog and log variants, 
+instead
+introduced a way to use dynamic debug [2] to provide this kind of 
+filtering.
+Dynamic debug provides an array of filtering capacity such as filter by 
+files,
+folders and even is applicable for modules making it a prime candidate 
+for
+these kind of scenarios.
+
+So why not use it instead of all these new variants? Then you don't have 
+to
+export things like you do in this patch and just have to add 
+tracepoints.
+Also the patch series[1][2] was almost OK'ed(they didn't give a formal 
+review)
+by arm folks at the time and even acked by Steve[3] except for the 
+pstore part.
+We have ways to extract trace events from ramdumps via crash utility or 
+STM,
+so pstore support is not mandatory and can be done later(it is currently 
+being
+worked on). Plus the link you mentioned was an RFC and there was a new 
+version
+posted after that[4]. Please take at the series[4] look once and see if 
+you
+can use that, only thing required I suppose is decouple the pstore 
+patches
+and you should be good to go.
+
+[1] https://patchwork.kernel.org/patch/10593175/
+[2] https://patchwork.kernel.org/patch/10593175/
+[3] https://patchwork.kernel.org/patch/10593173/
+[4] https://patchwork.kernel.org/cover/10593159/
+
+> Qualcomm teams uses these logs for debugging various issues in the
+> product life cycle and
+> hopping that this logging would help other silicon vendors as this is
+> generic approach.
+> Please provide your suggestion/comments to bring this patch upstream 
+> quality.
+> 
+> Prasad Sodagudi (1):
+>   tracing: Add register read and write tracing support
+> 
+>  arch/arm64/include/asm/io.h    | 117 
+> ++++++++++++++++++++++++++++++++++++++---
+>  include/linux/iorw.h           |  20 +++++++
+>  include/trace/events/rwio.h    |  51 ++++++++++++++++++
+>  kernel/trace/Kconfig           |  11 ++++
+>  kernel/trace/Makefile          |   1 +
+>  kernel/trace/trace_readwrite.c |  30 +++++++++++
+>  6 files changed, 222 insertions(+), 8 deletions(-)
+>  create mode 100644 include/linux/iorw.h
+>  create mode 100644 include/trace/events/rwio.h
+>  create mode 100644 kernel/trace/trace_readwrite.c
+
+Thanks,
+Sai
+
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member
+of Code Aurora Forum, hosted by The Linux Foundation
