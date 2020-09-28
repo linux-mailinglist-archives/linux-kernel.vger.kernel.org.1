@@ -2,66 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2451927AA09
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 10:56:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0E2327AA0A
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 10:56:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726732AbgI1I40 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 04:56:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44900 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726440AbgI1I4Z (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 04:56:25 -0400
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 295B7C0613CE
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 01:56:25 -0700 (PDT)
-Received: by mail-yb1-xb43.google.com with SMTP id c17so388117ybe.0
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 01:56:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=46vRaMYPBU3dvpIwWVgHGI5jLEk1k73wk/uoLNFc00Q=;
-        b=NJJYTmTB4bJiqStemOiKFerfB6Uj3JszF5xGU1PfeGg5QiPCw2ig/D0BBFORJp95Pg
-         AYTWsd1Xs5bznqztH4yxV6U2H5riiDxVbqJ7YmvSL2cJiGd8eI87RZ41GBwpXsGdqkxy
-         GYmFMWIYUdC92amueDpq3Zbaa4N9q/SK532VVnrVatxxE/3nUtCQI2BXJF7dQgkK5s2w
-         c1zel7+akT8CEs3fvD6UL49nfMSZ2sbPZT+E1ZqK7zRKRDk//WNuL5vGRYUZvebjqzB8
-         7WKJk14ezVmETGCZEuyAcrdoHaGIWPt57Iw/KXsTaGG36LrXeZ/akj7nIMwtWaAMp5qX
-         jmww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=46vRaMYPBU3dvpIwWVgHGI5jLEk1k73wk/uoLNFc00Q=;
-        b=Odl2DqxTCZkiiFvDdXlu5IKoI5GDgTlYhCVAGmAyQ9cz+iigc19xdbeauu+nSWGCt7
-         cW9mVOu4ypjpC5ukVzlG9c0tSGDhgUz8bIdzQfQlqeeBXGhmj4+0g5JpdH4myjOAyZyt
-         dLl537uC5Ra4C2g+xsZrMWYaQaAjj2ofi1kQIWkNaJP7HXPOCkMKHSQkMxeMgmlGOcP6
-         Xtb6bZIzT9rYt8gt4bMejDNHFFjOjk9NyD2j7CjSo7COB5BooYudOGlMmY0sgymYBZ+z
-         FUOF2NCCHngXLJ78VcMSgCd7qPgV9aqWK2WaHN9iZc9haw8sSDKpxSp5+lAk8+kxSZ1Y
-         F/VA==
-X-Gm-Message-State: AOAM533vPbyAAEmAAQvaKhdzO0CtLOKIb6JeQlb1zmroBCpbqUY9XzWU
-        NepB5ZFXRgj+4Ka3LQs1U4irHJQybqZgJObcFw==
-X-Google-Smtp-Source: ABdhPJxfz8nLcRpDiDP1J4XGdQ/fm3t7oYa19szPql8+pjv6K/wRImBqoRvylK0fkUJPjt/sqhpHeTrfXVxnJ6TKmaI=
-X-Received: by 2002:a25:d795:: with SMTP id o143mr669781ybg.440.1601283384435;
- Mon, 28 Sep 2020 01:56:24 -0700 (PDT)
+        id S1726743AbgI1I4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 04:56:46 -0400
+Received: from mga17.intel.com ([192.55.52.151]:33517 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726440AbgI1I4p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 04:56:45 -0400
+IronPort-SDR: ZEMMiTcGXgKB1lsDRvq/UyUAMePDtY3hOFFwi/ws/P/Rfs7PZMPZcikdS971EQ7X9ZneHqekwY
+ MZugMsvKhH8g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9757"; a="141977267"
+X-IronPort-AV: E=Sophos;i="5.77,313,1596524400"; 
+   d="scan'208";a="141977267"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 01:56:44 -0700
+IronPort-SDR: 06b65tFj8TWhDah8Ly+MQNX0OFW8Y1qqFAGhbyEIkXX+pO/DmKzOvlxOpZ/wecjJIoOYgKSS/s
+ J0Jw1w/nsCcA==
+X-IronPort-AV: E=Sophos;i="5.77,313,1596524400"; 
+   d="scan'208";a="456744432"
+Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.146.107])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 01:56:42 -0700
+Date:   Mon, 28 Sep 2020 16:56:40 +0800
+From:   Feng Tang <feng.tang@intel.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Dave Hansen <dave.hansen@intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v2] tools/x86: add kcpuid tool to show raw CPU
+ features
+Message-ID: <20200928085640.GB22244@shbuild999.sh.intel.com>
+References: <1600752470-43179-1-git-send-email-feng.tang@intel.com>
+ <20200925172437.GM16872@zn.tnic>
+ <20200928070723.GA25109@shbuild999.sh.intel.com>
+ <20200928083420.GC1685@zn.tnic>
 MIME-Version: 1.0
-Received: by 2002:a25:b8f:0:0:0:0:0 with HTTP; Mon, 28 Sep 2020 01:56:24 -0700 (PDT)
-From:   Eri Dan <bidagencyghana03@gmail.com>
-Date:   Mon, 28 Sep 2020 09:56:24 +0100
-Message-ID: <CAL1GekkAhxbM2iKiTa4zBN7j07QpQNKJQtmK505+Jz8Hwc7gzg@mail.gmail.com>
-Subject: BID
-To:     bidagencyghana03@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200928083420.GC1685@zn.tnic>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
- Dear Sir & Mam,
+On Mon, Sep 28, 2020 at 10:34:20AM +0200, Borislav Petkov wrote:
+> On Mon, Sep 28, 2020 at 03:07:23PM +0800, Feng Tang wrote:
+> > Thanks, it looks good to me. One thing is in v2 we supported ',' in the
+> > long name field, but that's minor as we could avoid using it in .csv
+> 
+> We can always use ';' or some other symbol as divider if we wanna use
+> ',' in the long name field but I can live with either solutions.
+ 
+Ok, will check both the them in implementation, and sent the v3 RFC
 
-Are you interested for a Bid?
+Thanks,
+Feng
 
-There is an on going bid if you are interested,then,i will furnish you
-details asp.
-
-I look forward to your reply.
-
-Thank you
-Korley Dan
+> -- 
+> Regards/Gruss,
+>     Boris.
+> 
+> https://people.kernel.org/tglx/notes-about-netiquette
