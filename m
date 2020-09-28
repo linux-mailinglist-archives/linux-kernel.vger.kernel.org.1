@@ -2,84 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00DA227AA32
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 11:06:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BFF727AA39
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 11:07:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726615AbgI1JGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 05:06:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46430 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726497AbgI1JGO (ORCPT
+        id S1726654AbgI1JHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 05:07:46 -0400
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:34694 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726500AbgI1JHq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 05:06:14 -0400
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 935AAC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 02:06:14 -0700 (PDT)
-Received: by mail-ot1-x333.google.com with SMTP id a2so175477otr.11
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 02:06:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=aLMEwo1GTL8rxXudG0GEtZJfPOiss5JdOgm8YTgj2ew=;
-        b=CuyOduRhEkNZODuCVzegsNXw2bIgsJ/2DykzPHgIqv0B1FArA+4Lxc3NeipV062q/H
-         GIoxRScktP5IDFGaNlu/6riiJ2zJ4MlUQqqTYVUx8OhazSEjtFnbLowDUf54dXhw8C7/
-         6R+tL7c1tsD/hykM3Bo5VCGy61woKjidXTSMo=
+        Mon, 28 Sep 2020 05:07:46 -0400
+Received: by mail-wr1-f67.google.com with SMTP id t10so391283wrv.1;
+        Mon, 28 Sep 2020 02:07:45 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aLMEwo1GTL8rxXudG0GEtZJfPOiss5JdOgm8YTgj2ew=;
-        b=jn/K6xzz6FMY56xjcNT2QB7Shp944kkeRr6UrbCscLNhmTn5qUvGqhY+ZKzjrpVtMx
-         nSXbyltg3sirGP6SRu/c2POpKXpFUIVzqTletQGHFIsAlb3SWupCGbK8k6MtAIN1snwk
-         KwodG/kxKKDqdIyq7zJqRO+zt6sFvchFMqEUH/nlbx+6xWvk5ZEeBjz6/5+7vddj0CRW
-         lwRydSTBUBbweYD/8262usHBpsipBP3SwL2PhH6T9NQF8ocMiscW6ZqZ1uzIC+MZEGaC
-         9toOXd5eKLL7SU68pTCgCaDU7LccbjksFAHj8UkUoeg1nn1UlN0fjii72E31QcrPgdkT
-         b4Yw==
-X-Gm-Message-State: AOAM5335t7jjD/AVay631IVJ4SyC5rOPwS1MYcpFaDlBz5szNJganxoX
-        83DNXVP4aiPLlhIVnvSF6R4WecbzHJuUOAP4cwUFSA==
-X-Google-Smtp-Source: ABdhPJxs/FZB02Ft8ZmDTuS0bYLgBEPkG0xHeAkww2lbFRxtnPCC8MW6Nr++yZFeBJr/uUIJk4Ekbp6bKiCXxI/Gyrs=
-X-Received: by 2002:a05:6830:12c7:: with SMTP id a7mr308019otq.334.1601283973942;
- Mon, 28 Sep 2020 02:06:13 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=qzvbdMgwoVoLCV4C+38jPCHClAMjCEBSggnue6sORug=;
+        b=CXoWIYXJCUGgRGvc61My65MN40cDDV65ZJ8NWyJKvFiZln7U4QyMv3RBmTG8aYMQpA
+         U8QANLTQPqcNtZfNQjUdMGJW7SMjoMnszWRM1iQgT0IfV/tl2RiyJTcyq90pPhhKoAjl
+         jRv6qZyYOvaM8DlRaF2oGsHo3IQylPXflxRgUbxTpOQaVQ4PYDndb/8HL+I6UvR/eNOl
+         M24yJm/o1M/9KqYqL+eo6o5gM/yLx+RoLob6snHhv3b3hfGwDaErwufLvqDRJc0FUTUm
+         7RdZv/82/95wjToClTwfpq/TE3ZO4rkynfSJP4PoN8+EP8lW4Py4ih+6c3E3fo0LsjOR
+         zCTw==
+X-Gm-Message-State: AOAM532X2F3YLLd9/6VXomEhExCHTez/kGp/8HElsv2LBKkw7KobpiJi
+        ef9cBS6Vs97d/57CRHZcH64=
+X-Google-Smtp-Source: ABdhPJwuE5MWb+vye6CbihbqmpOf7xcESu4nA0YyqVV2RIVNqBiUHLXruYiTrkKZ106KtoFELoxoVA==
+X-Received: by 2002:adf:fa02:: with SMTP id m2mr505869wrr.273.1601284064447;
+        Mon, 28 Sep 2020 02:07:44 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id a5sm603877wrp.37.2020.09.28.02.07.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Sep 2020 02:07:44 -0700 (PDT)
+Date:   Mon, 28 Sep 2020 09:07:42 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     Mohammed Gamal <mgamal@redhat.com>, linux-hyperv@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mikelley@microsoft.com,
+        Tianyu.Lan@microsoft.com, kys@microsoft.com,
+        haiyangz@microsoft.com, wei.liu@kernel.org
+Subject: Re: [PATCH] hv: clocksource: Add notrace attribute to
+ read_hv_sched_clock_*() functions
+Message-ID: <20200928090742.6qrpon2cbb5dz7rc@liuwe-devbox-debian-v2>
+References: <20200924151117.767442-1-mgamal@redhat.com>
+ <87pn6bchkc.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-References: <20200925095630.49207-1-lmb@cloudflare.com> <20200925095630.49207-2-lmb@cloudflare.com>
- <20200925215359.l5lbicqdyx44spoc@kafai-mbp>
-In-Reply-To: <20200925215359.l5lbicqdyx44spoc@kafai-mbp>
-From:   Lorenz Bauer <lmb@cloudflare.com>
-Date:   Mon, 28 Sep 2020 10:06:02 +0100
-Message-ID: <CACAyw9-iXY5GqpLOOHkkDMvhPnES_1HMR8PMz0K2PR8wfbHqew@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/4] bpf: sockmap: enable map_update_elem from bpf_iter
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        kernel-team <kernel-team@cloudflare.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87pn6bchkc.fsf@vitty.brq.redhat.com>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 25 Sep 2020 at 22:54, Martin KaFai Lau <kafai@fb.com> wrote:
->
-> > +     if (unlikely(!sk))
-> sk_fullsock(sk) test is also needed.
->
-> > +             return -EINVAL;
->
-> > +
-> >       if (!sock_map_sk_is_suitable(sk))
-> sk->sk_type is used in sock_map_sk_is_suitable().
-> sk_type is not in sock_common.
+On Thu, Sep 24, 2020 at 05:36:51PM +0200, Vitaly Kuznetsov wrote:
+> Mohammed Gamal <mgamal@redhat.com> writes:
+> 
+[...]
+> 
+> Obviously we're seeing a recursion, we can trim this log a bit.
 
-Oh my, thanks!
+I've trimmed the stack trace a bit.
 
--- 
-Lorenz Bauer  |  Systems Engineer
-6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
+> 
+> >
+> > Setting the notrace attribute for read_hv_sched_clock_msr() and
+> > read_hv_sched_clock_tsc() fixes it
 
-www.cloudflare.com
+Also added a period at the end.
+
+> >
+> > Fixes: bd00cd52d5be ("clocksource/drivers/hyperv: Add Hyper-V specific
+> > sched clock function")
+> > Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+> 
+> Rather 'Suggested-by:' but not a big deal.
+> 
+
+And changed this too.
+
+This patch is now in hyperv-next. Thanks.
+
+Wei.
