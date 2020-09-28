@@ -2,191 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94D3F27B315
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 19:24:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEFA427B317
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 19:25:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726705AbgI1RY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 13:24:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39002 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726672AbgI1RYx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 13:24:53 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21913C0613CE
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 10:24:52 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id l126so1660873pfd.5
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 10:24:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=pensando.io; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=dXB5sy6RuZTJPqx7JJLXNWe1a908CXA07ElMJ2w7R68=;
-        b=sJXRxO3VX4I/D6OKhoVkZO/piViwl1rsupkYazfFzknNozgI8OsHjhRNoJktdix5sL
-         XUePafekvxNj5dX2ZMNgPcxdgvjKnkbGxEJHb5M7MD6jsXR24Z16f7Q8EMF5gSrpcqV3
-         6mdJsMem+f4C7b9Iy8bk9humZkeCkuU0VDUAFi3VrIZ1AvBJykcO3j/m813G3+0PUELA
-         8jig6g1XAuBTfOqXNacgr0soT1uIdlZZ/QhywRu6HBMy1Ncr+lfoiCUVKIuNsV2E8yzC
-         6Etpltkq/5EZsG8x+m98hzY644sBlZD9g9rlktFFEXZxJkhYAnrqwKkSvnbtDB8ytbwH
-         WhHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=dXB5sy6RuZTJPqx7JJLXNWe1a908CXA07ElMJ2w7R68=;
-        b=fZvBYV4m8H2CzYEzTGNGloDX2Sbd5rajOyi/lbetXUd2P50BKtHDRMkeRh5CAzKH6o
-         bTj6n2xsoTYwi44QaRudfJqeGgh+S3WB8B/+esGKHrCmSTFFnnrmBwUysYM18Tzdz+c9
-         pMbgYhj40ttiNxhJ0RqMgDUy7O3H14gvyNgknxYZTPoJikxc5F0bXnqtckOArXRFkRZj
-         qjMnTgm717dAsxQJFmxjteWcg+xTo225lvwo+gnVAJVJisONt4sKxQqvINJsEUM0uHHm
-         mG7ORXdey2ld8J9zfd0s0Ia15LMRh6zKsMGQK/n7+nOEwsEpJanc/N9KAl/fSQgVQQHc
-         kWrQ==
-X-Gm-Message-State: AOAM533AU0iET3U0mE4xSo3LKgNs4Ak2xTJXrUJUBzH92AGAwd9bwcfm
-        K+h45jH7I7b2aOicszu9ESNFjw==
-X-Google-Smtp-Source: ABdhPJyoyl1fomYslG+xBdkpZIhAHLVX6EHj3huo2N9gQMS+dYAudkP3ZT0Owaa2qZhTwb+CGqQqNA==
-X-Received: by 2002:a63:784:: with SMTP id 126mr121408pgh.428.1601313891289;
-        Mon, 28 Sep 2020 10:24:51 -0700 (PDT)
-Received: from Shannons-MacBook-Pro.local (static-50-53-47-17.bvtn.or.frontiernet.net. [50.53.47.17])
-        by smtp.gmail.com with ESMTPSA id u71sm2511314pfc.43.2020.09.28.10.24.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Sep 2020 10:24:50 -0700 (PDT)
-Subject: Re: [patch 11/35] net: ionic: Replace in_interrupt() usage.
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Linus Torvalds <torvalds@linuxfoundation.org>,
-        Paul McKenney <paulmck@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Pensando Drivers <drivers@pensando.io>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        Christian Benvenuti <benve@cisco.com>,
-        Govindarajulu Varadarajan <_govind@gmx.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-doc@vger.kernel.org,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Jay Cliburn <jcliburn@gmail.com>,
-        Chris Snook <chris.snook@gmail.com>,
-        Vishal Kulkarni <vishal@chelsio.com>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        intel-wired-lan@lists.osuosl.org, Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Solarflare linux maintainers <linux-net-drivers@solarflare.com>,
-        Edward Cree <ecree@solarflare.com>,
-        Martin Habets <mhabets@solarflare.com>,
-        Jon Mason <jdmason@kudzu.us>, Daniel Drake <dsd@gentoo.org>,
-        Ulrich Kunitz <kune@deine-taler.de>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        linux-wireless@vger.kernel.org, linux-usb@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arend van Spriel <arend.vanspriel@broadcom.com>,
-        Franky Lin <franky.lin@broadcom.com>,
-        Hante Meuleman <hante.meuleman@broadcom.com>,
-        Chi-Hsien Lin <chi-hsien.lin@cypress.com>,
-        Wright Feng <wright.feng@cypress.com>,
-        brcm80211-dev-list.pdl@broadcom.com,
-        brcm80211-dev-list@cypress.com,
-        Stanislav Yakovlev <stas.yakovlev@gmail.com>,
-        Stanislaw Gruszka <stf_xl@wp.pl>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
-        Luca Coelho <luciano.coelho@intel.com>,
-        Intel Linux Wireless <linuxwifi@intel.com>,
-        Jouni Malinen <j@w1.fi>,
-        Amitkumar Karwar <amitkarwar@gmail.com>,
-        Ganapathi Bhat <ganapathi.bhat@nxp.com>,
-        Xinming Hu <huxinming820@gmail.com>,
-        libertas-dev@lists.infradead.org,
-        Pascal Terjan <pterjan@google.com>,
-        Ping-Ke Shih <pkshih@realtek.com>
-References: <20200927194846.045411263@linutronix.de>
- <20200927194920.918550822@linutronix.de>
-From:   Shannon Nelson <snelson@pensando.io>
-Message-ID: <5e4c3201-9d90-65b1-5c13-e2381445be1d@pensando.io>
-Date:   Mon, 28 Sep 2020 10:24:47 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.0
+        id S1726720AbgI1RZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 13:25:04 -0400
+Received: from mga06.intel.com ([134.134.136.31]:44713 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726567AbgI1RZE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 13:25:04 -0400
+IronPort-SDR: KwEmQUc+k9KFDDlmgOTc/CFurkt+EglV8esopPD9ejrSCJJdez2BvOxPW8C2dHrXcoLfIiaen2
+ 5D2EwfGq0Yjw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9758"; a="223625767"
+X-IronPort-AV: E=Sophos;i="5.77,313,1596524400"; 
+   d="scan'208";a="223625767"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 10:25:03 -0700
+IronPort-SDR: 4WIJbj5K0sIe+bmBUpyIDeZm5z/xcEN5g6l7fpRJYcuQZ78GihJee+w7OCJd4oDLuUv6jARImD
+ ocGBp05s50bg==
+X-IronPort-AV: E=Sophos;i="5.77,313,1596524400"; 
+   d="scan'208";a="349916054"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 10:25:02 -0700
+Date:   Mon, 28 Sep 2020 10:25:02 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Wang Qing <wangqing@vivo.com>
+Cc:     Dan Williams <dan.j.williams@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>, linux-nvdimm@lists.01.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] nvdimm: Use kobj_to_dev() API
+Message-ID: <20200928172502.GC458519@iweiny-DESK2.sc.intel.com>
+References: <1601103260-10249-1-git-send-email-wangqing@vivo.com>
 MIME-Version: 1.0
-In-Reply-To: <20200927194920.918550822@linutronix.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1601103260-10249-1-git-send-email-wangqing@vivo.com>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/27/20 12:48 PM, Thomas Gleixner wrote:
-> From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
->
-> The in_interrupt() usage in this driver tries to figure out which context
-> may sleep and which context may not sleep. in_interrupt() is not really
-> suitable as it misses both preemption disabled and interrupt disabled
-> invocations from task context.
->
-> Conditionals like that in driver code are frowned upon in general because
-> invocations of functions from invalid contexts might not be detected
-> as the conditional papers over it.
->
-> ionic_lif_addr() can be called from:
->
->   1) ->ndo_set_rx_mode() which is under netif_addr_lock_bh()) so it must not
->      sleep.
->
->   2) Init and setup functions which are in fully preemptible task context.
->
-> _ionic_lif_rx_mode() has only one call path with BH disabled.
->
-> ionic_link_status_check_request() has two call paths:
->
->   1) NAPI which obviously cannot sleep
->
->   2) Setup which is again fully preemptible task context
->
-> Add 'can_sleep' arguments to the affected functions and let the callers
-> provide the context instead of letting the functions deduce it.
->
-> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Shannon Nelson <snelson@pensando.io>
-> Cc: Pensando Drivers <drivers@pensando.io>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: netdev@vger.kernel.org
+On Sat, Sep 26, 2020 at 02:54:17PM +0800, Wang Qing wrote:
+> Use kobj_to_dev() instead of container_of().
+> 
+> Signed-off-by: Wang Qing <wangqing@vivo.com>
 
-Acked-by: Shannon Nelson <snelson@pensando.io>
+Reviewed-by: Ira Weiny <ira.weiny@intel.com>
 
 > ---
->
-> While reviewing the callpaths, a couple of things were observed which could
-> be improved:
->
-> - ionic_lif_deferred_work() can iterate over the list. There is no need
->    to schedule the work item after each iteration
-
-I think the original writer's intent was to avoid monopolizing the work 
-thread for very long on any one cycle, with the thought that we'd be 
-making more use of this than we currently are.  I'll address this.
-
->
-> - ionic_link_status_check_request() could have ionic_deferred_work within
->    ionic_lif(). This would avoid memory allocation from NAPI. More
->    important, once IONIC_LIF_F_LINK_CHECK_REQUESTED is set and that alloc
->    fails, the link check never happens.
-
-Thanks, I'll fix up that error condition.
-
->
-> - ionic_lif_handle_fw_down() sets IONIC_LIF_F_FW_RESET. Invokes then
->    ionic_lif_deinit() which only invokes cancel_work_sync() if
->    IONIC_LIF_F_FW_RESET is not set. I think the logic is wrong here as
->    the work must always be cancled. Also the list with ionic_deferred
->    work items needs a clean up.
-
-I'll look at that, thanks.
-
-sln
-
-
+>  drivers/nvdimm/namespace_devs.c | 2 +-
+>  drivers/nvdimm/region_devs.c    | 4 ++--
+>  2 files changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/nvdimm/namespace_devs.c b/drivers/nvdimm/namespace_devs.c
+> index 6da67f4..1d11ca7
+> --- a/drivers/nvdimm/namespace_devs.c
+> +++ b/drivers/nvdimm/namespace_devs.c
+> @@ -1623,7 +1623,7 @@ static struct attribute *nd_namespace_attributes[] = {
+>  static umode_t namespace_visible(struct kobject *kobj,
+>  		struct attribute *a, int n)
+>  {
+> -	struct device *dev = container_of(kobj, struct device, kobj);
+> +	struct device *dev = kobj_to_dev(kobj);
+>  
+>  	if (a == &dev_attr_resource.attr && is_namespace_blk(dev))
+>  		return 0;
+> diff --git a/drivers/nvdimm/region_devs.c b/drivers/nvdimm/region_devs.c
+> index ef23119..92adfaf
+> --- a/drivers/nvdimm/region_devs.c
+> +++ b/drivers/nvdimm/region_devs.c
+> @@ -644,7 +644,7 @@ static struct attribute *nd_region_attributes[] = {
+>  
+>  static umode_t region_visible(struct kobject *kobj, struct attribute *a, int n)
+>  {
+> -	struct device *dev = container_of(kobj, typeof(*dev), kobj);
+> +	struct device *dev = kobj_to_dev(kobj);
+>  	struct nd_region *nd_region = to_nd_region(dev);
+>  	struct nd_interleave_set *nd_set = nd_region->nd_set;
+>  	int type = nd_region_to_nstype(nd_region);
+> @@ -759,7 +759,7 @@ REGION_MAPPING(31);
+>  
+>  static umode_t mapping_visible(struct kobject *kobj, struct attribute *a, int n)
+>  {
+> -	struct device *dev = container_of(kobj, struct device, kobj);
+> +	struct device *dev = kobj_to_dev(kobj);
+>  	struct nd_region *nd_region = to_nd_region(dev);
+>  
+>  	if (n < nd_region->ndr_mappings)
+> -- 
+> 2.7.4
+> 
