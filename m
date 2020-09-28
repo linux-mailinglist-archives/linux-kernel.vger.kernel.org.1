@@ -2,182 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90B1B27B333
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 19:29:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5331827B3D9
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 20:00:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726635AbgI1R3y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 13:29:54 -0400
-Received: from mail.efficios.com ([167.114.26.124]:53480 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726567AbgI1R3y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 13:29:54 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 0A6602E8BDA;
-        Mon, 28 Sep 2020 13:29:53 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id yFNY_omDYOTz; Mon, 28 Sep 2020 13:29:52 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 86DAD2E8F04;
-        Mon, 28 Sep 2020 13:29:52 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 86DAD2E8F04
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1601314192;
-        bh=AeJ9hA06ovRwyG6auHjZ8QjPn+h6FMAAV/yFhO56FUA=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=YX2IYlT9W1OMvZ8cHPBKP6J9B1UlejlGlJAoXcJJW7bnivYsUNVqrdYo4p/vUISeL
-         bYgGlhRdB3QtJKRsN2/r1Tx9P+wpa2LmtYxQ/eTul2tERFvXrLOtPh0I2ZJMWeKsno
-         lt4nYjoTfCae1fdXUIef/WAthhkP1FA5KAIRpEoWdQghidT/8fGOXuBAGzsdvRdvyA
-         Xur1ziaeYKriufnJRprP8Ez2vfGKpicKGcrZU/4r5x701l+HvmPNFLsQKh9p/6vP3A
-         NtdytkAbmFukqkVmDNDou0LRd1oG1FV7ci/cOgRKU1d4oBBM4+heN+Ah0gbsGdJeAZ
-         ENmS9hRgYBlNA==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 1slh_VvKXk4l; Mon, 28 Sep 2020 13:29:52 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id 754A32E8F01;
-        Mon, 28 Sep 2020 13:29:52 -0400 (EDT)
-Date:   Mon, 28 Sep 2020 13:29:52 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Florian Weimer <fweimer@redhat.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        paulmck <paulmck@kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Paul Turner <pjt@google.com>,
-        linux-api <linux-api@vger.kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        carlos <carlos@redhat.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>
-Message-ID: <905713397.71512.1601314192367.JavaMail.zimbra@efficios.com>
-In-Reply-To: <87r1qm2atk.fsf@oldenburg2.str.redhat.com>
-References: <20200925181518.4141-1-mathieu.desnoyers@efficios.com> <87r1qm2atk.fsf@oldenburg2.str.redhat.com>
-Subject: Re: [RFC PATCH 1/2] rseq: Implement KTLS prototype for x86-64
+        id S1726775AbgI1SAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 14:00:02 -0400
+Received: from mga17.intel.com ([192.55.52.151]:15831 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726573AbgI1SAB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 14:00:01 -0400
+IronPort-SDR: SCBAlElmh73DSCIbZc5CfHQvM8AvWGU0qjkoLghTbtYDVmlCI0qaQSErcGW0MVs+5JHOl+C833
+ R3gt+lqehDTA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9758"; a="142048469"
+X-IronPort-AV: E=Sophos;i="5.77,313,1596524400"; 
+   d="scan'208";a="142048469"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 10:24:50 -0700
+IronPort-SDR: a2SfqAFgVRI8zXusOF2ox02uAN13ixHZSDCr+C9sl7ksriw+HslsDtZkcgmScJmvhXT/rvvSV8
+ w1XgmVkA1T7g==
+X-IronPort-AV: E=Sophos;i="5.77,313,1596524400"; 
+   d="scan'208";a="488671222"
+Received: from mdroper-desk1.fm.intel.com (HELO mdroper-desk1.amr.corp.intel.com) ([10.1.27.168])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 10:24:49 -0700
+Date:   Mon, 28 Sep 2020 10:24:47 -0700
+From:   Matt Roper <matthew.d.roper@intel.com>
+To:     Jani Nikula <jani.nikula@linux.intel.com>
+Cc:     "Surendrakumar Upadhyay, TejaskumarX" 
+        <tejaskumarx.surendrakumar.upadhyay@intel.com>,
+        "Vivi, Rodrigo" <rodrigo.vivi@intel.com>,
+        "airlied@linux.ie" <airlied@linux.ie>,
+        "daniel@ffwll.ch" <daniel@ffwll.ch>,
+        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Ausmus, James" <james.ausmus@intel.com>,
+        "Souza, Jose" <jose.souza@intel.com>,
+        "ville.syrjala@linux.intel.com" <ville.syrjala@linux.intel.com>,
+        "De Marchi, Lucas" <lucas.demarchi@intel.com>,
+        "Pandey, Hariom" <hariom.pandey@intel.com>
+Subject: Re: [PATCH 1/2] drm/i915/jsl: Split EHL/JSL platform info and PCI ids
+Message-ID: <20200928172447.GA2157395@mdroper-desk1.amr.corp.intel.com>
+References: <20200928080931.246347-1-tejaskumarx.surendrakumar.upadhyay@intel.com>
+ <20200928080931.246347-2-tejaskumarx.surendrakumar.upadhyay@intel.com>
+ <87d026owdq.fsf@intel.com>
+ <SN6PR11MB3421571FA9A490C67E0E9D82DF350@SN6PR11MB3421.namprd11.prod.outlook.com>
+ <874knhq0x1.fsf@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_3965 (ZimbraWebClient - FF80 (Linux)/8.8.15_GA_3963)
-Thread-Topic: rseq: Implement KTLS prototype for x86-64
-Thread-Index: kkGWs2bJIvZZIFVzADW4JHcbF8Z8JQ==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <874knhq0x1.fsf@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On Sep 28, 2020, at 11:13 AM, Florian Weimer fweimer@redhat.com wrote:
-
-> * Mathieu Desnoyers:
+On Mon, Sep 28, 2020 at 08:14:02PM +0300, Jani Nikula wrote:
+> On Mon, 28 Sep 2020, "Surendrakumar Upadhyay, TejaskumarX" <tejaskumarx.surendrakumar.upadhyay@intel.com> wrote:
+> > ________________________________
+> > From: Jani Nikula <jani.nikula@linux.intel.com>
+> > Sent: Monday, September 28, 2020 7:07 PM
+> > To: Surendrakumar Upadhyay, TejaskumarX <tejaskumarx.surendrakumar.upadhyay@intel.com>; Vivi, Rodrigo <rodrigo.vivi@intel.com>; airlied@linux.ie <airlied@linux.ie>; daniel@ffwll.ch <daniel@ffwll.ch>; intel-gfx@lists.freedesktop.org <intel-gfx@lists.freedesktop.org>; dri-devel@lists.freedesktop.org <dri-devel@lists.freedesktop.org>; linux-kernel@vger.kernel.org <linux-kernel@vger.kernel.org>; Ausmus, James <james.ausmus@intel.com>; Roper, Matthew D <matthew.d.roper@intel.com>; Souza, Jose <jose.souza@intel.com>; ville.syrjala@linux.intel.com <ville.syrjala@linux.intel.com>; De Marchi, Lucas <lucas.demarchi@intel.com>; Pandey, Hariom <hariom.pandey@intel.com>
+> > Subject: Re: [PATCH 1/2] drm/i915/jsl: Split EHL/JSL platform info and PCI ids
 > 
->> Upstreaming efforts aiming to integrate rseq support into glibc led to
->> interesting discussions, where we identified a clear need to extend the
->> size of the per-thread structure shared between kernel and user-space
->> (struct rseq).  This is something that is not possible with the current
->> rseq ABI.  The fact that the current non-extensible rseq kernel ABI
->> would also prevent glibc's ABI to be extended prevents its integration
->> into glibc.
->>
->> Discussions with glibc maintainers led to the following design, which we
->> are calling "Kernel Thread Local Storage" or KTLS:
->>
->> - at glibc library init:
->>   - glibc queries the size and alignment of the KTLS area supported by the
->>     kernel,
->>   - glibc reserves the memory area required by the kernel for main
->>     thread,
->>   - glibc registers the offset from thread pointer where the KTLS area
->>     will be placed for all threads belonging to the threads group which
->>     are created with clone3 CLONE_RSEQ_KTLS,
->> - at nptl thread creation:
->>   - glibc reserves the memory area required by the kernel,
->> - application/libraries can query glibc for the offset/size of the
->>   KTLS area, and offset from the thread pointer to access that area.
+> Please fix your email quoting when interacting on the public lists.
 > 
-> One remaining challenge see is that we want to use vDSO functions to
-> abstract away the exact layout of the KTLS area.  For example, there are
-> various implementation strategies for getuid optimizations, some of them
-> exposing a shared struct cred in a thread group, and others not doing
-> that.
+> >
+> > On Mon, 28 Sep 2020, Tejas Upadhyay <tejaskumarx.surendrakumar.upadhyay@intel.com> wrote:
+> >> Split the basic platform definition, macros, and PCI IDs to
+> >> differentiate between EHL and JSL platforms.
+> >>
+> >> Signed-off-by: Tejas Upadhyay <tejaskumarx.surendrakumar.upadhyay@intel.com>
+> >> ---
+> >>  drivers/gpu/drm/i915/i915_drv.h          | 4 +++-
+> >>  drivers/gpu/drm/i915/i915_pci.c          | 9 +++++++++
+> >>  drivers/gpu/drm/i915/intel_device_info.c | 1 +
+> >>  drivers/gpu/drm/i915/intel_device_info.h | 1 +
+> >>  include/drm/i915_pciids.h                | 9 ++++++---
+> >>  5 files changed, 20 insertions(+), 4 deletions(-)
+> >>
+> >> diff --git a/drivers/gpu/drm/i915/i915_drv.h b/drivers/gpu/drm/i915/i915_drv.h
+> >> index 72a9449b674e..4f20acebb038 100644
+> >> --- a/drivers/gpu/drm/i915/i915_drv.h
+> >> +++ b/drivers/gpu/drm/i915/i915_drv.h
+> >> @@ -1417,7 +1417,9 @@ IS_SUBPLATFORM(const struct drm_i915_private *i915,
+> >>  #define IS_COMETLAKE(dev_priv)       IS_PLATFORM(dev_priv, INTEL_COMETLAKE)
+> >>  #define IS_CANNONLAKE(dev_priv)      IS_PLATFORM(dev_priv, INTEL_CANNONLAKE)
+> >>  #define IS_ICELAKE(dev_priv) IS_PLATFORM(dev_priv, INTEL_ICELAKE)
+> >> -#define IS_ELKHARTLAKE(dev_priv)     IS_PLATFORM(dev_priv, INTEL_ELKHARTLAKE)
+> >> +#define IS_ELKHARTLAKE(dev_priv) (IS_PLATFORM(dev_priv, INTEL_ELKHARTLAKE) || \
+> >> +                             IS_PLATFORM(dev_priv, INTEL_JASPERLAKE))
+> >> +#define IS_JASPERLAKE(dev_priv)      IS_PLATFORM(dev_priv, INTEL_JASPERLAKE)
+> >
+> > I think we've learned from history that we want the platform checks to
+> > be independent. I.e. if you need to split ELK and JSP, you need to make
+> > IS_ELKHARTLAKE() match *only* ELK, and you need to replace every current
+> > IS_ELKHARTLAKE() check with IS_ELKHARTLAKE() || IS_JASPERLAKE().
+> >
+> > We've been here before, and we've thought before that we can get by with
+> > the minimal change. It's just postponing the inevitable and generates
+> > confusion.
+> >
+> > BR,
+> > Jani.
+> >
+> > Tejas : Replacing IS_ELKHARTLAKE() || IS_JASPERLAKE() everywhere will
+> > make lot of changes at each place. To avoid huge change and to
+> > differentiate between platforms we have taken this way. Do you think
+> > we still change it everywhere? Do you have example where it can harm
+> > this change?
 > 
-> The vDSO has access to the thread pointer because it's ABI (something
-> that we recently (and quite conveniently) clarified for x86).  What it
-> does not know is the offset of the KTLS area from the thread pointer.
-> In the original rseq implementation, this offset could vary from thread
-> to thread in a process, although the submitted glibc implementation did
-> not use this level of flexibility and the offset is constant.  The vDSO
-> is not relocated by the run-time dynamic loader, so it can't use ELF TLS
-> data.
-
-In the context of this prototype, the KTLS offset is the same for all threads
-belonging to a thread group.
-
+> If you need to differentiate between the two platforms, IS_ELKHARTLAKE()
+> must mean only ELK and IS_JASPERLAKE() must mean only JSP.
 > 
-> Furthermore, not all threads in a thread group may have an associated
-> KTLS area.  In a potential glibc implementation, only the threads
-> created by pthread_create would have it; threads created directly using
-> clone would lack it (and would not even run with a correctly set up
-> userspace TCB).
-
-Right.
-
+> It's non-negotiable. We've made the mistake before, we're not doing it
+> again.
 > 
-> So we have a bootstrap issue here that needs to be solved, I think.
+> There are 32 references to IS_ELKHARTLAKE(). It's slightly painful, but
+> the alternative is worse.
 
-The one thing I'm not sure about is whether the vDSO interface is indeed
-superior to KTLS, or if it is just the model we are used to.
+Why are we adding IS_JASPERLAKE at all?  EHL/JSL are documented as the
+same graphics IP, but are paired with different PCHs in the final SoCs,
+which is what causes the minor differences in programming.  My
+understanding is that the voltage programming differences are ultimately
+due to that difference in PCH so we should just use HAS_PCH_MCC (EHL)
+and HAS_PCH_JSP (JSL) to distinguish which type of programming is needed
+rather than using a platform test.
 
-AFAIU, the current use-cases for vDSO is that an application calls into
-glibc, which then calls the vDSO function exposed by the kernel. I wonder
-whether the vDSO indirection is really needed if we typically have a glibc
-function used as indirection ? For an end user, what is the benefit of vDSO
-over accessing KTLS data directly from glibc ?
 
-If we decide that using KTLS from a vDSO function is indeed a requirement,
-then, as you point out, the thread_pointer is available as ABI, but we miss
-the KTLS offset.
-
-Some ideas on how we could solve this: we could either make the KTLS
-offset part of the ABI (fixed offset), or save the offset near the thread pointer
-at a location that would become ABI. It would have to be already populated with
-something which can help detect the case where a vDSO is called from a thread
-which does not populate KTLS though. Is that even remotely doable ?
+Matt
 
 > 
-> In most cases, I would not be too eager to bypass the vDSO completely,
-> and having the kernel expose a data-only interface.  I could perhaps
-> make an exception for the current TID because that's so convenient to
-> use in mutex implementations, and errno.
-
-Indeed, using a KTLS field to store errno is another use-case I forgot to
-mention. That would make life easier for errno handling in vDSO as well.
-
-> With the latter, we could
-> directly expose the vDSO implementation to applications, assuming that
-> we agree that the vDSO will not fail with ENOSYS to request fallback to
-> the system call, but will itself perform the system call.
-
-We should not forget the fields needed by rseq as well: the rseq_cs pointer and
-the cpu_id fields need to be accessed directly from the rseq critical section,
-without function call. Those use-cases require that applications and library can
-know the KTLS offset and size and use those fields directly. That being said,
-there are certainly plenty of use-cases where it makes sense to use the KTLS
-data through a vDSO, and only expose the vDSO interface, if the cost of the
-extra vDSO call indirection is not prohibitive.
-
-Thanks,
-
-Mathieu
-
 > 
-> Thanks,
-> Florian
-> --
-> Red Hat GmbH, https://de.redhat.com/ , Registered seat: Grasbrunn,
-> Commercial register: Amtsgericht Muenchen, HRB 153243,
-> Managing Directors: Charles Cachera, Brian Klemm, Laurie Krebs, Michael O'Neill
+> BR,
+> Jani.
+> 
+> 
+> >
+> >>  #define IS_TIGERLAKE(dev_priv)       IS_PLATFORM(dev_priv, INTEL_TIGERLAKE)
+> >>  #define IS_ROCKETLAKE(dev_priv)      IS_PLATFORM(dev_priv, INTEL_ROCKETLAKE)
+> >>  #define IS_DG1(dev_priv)        IS_PLATFORM(dev_priv, INTEL_DG1)
+> >> diff --git a/drivers/gpu/drm/i915/i915_pci.c b/drivers/gpu/drm/i915/i915_pci.c
+> >> index 366ddfc8df6b..8690b69fcf33 100644
+> >> --- a/drivers/gpu/drm/i915/i915_pci.c
+> >> +++ b/drivers/gpu/drm/i915/i915_pci.c
+> >> @@ -846,6 +846,14 @@ static const struct intel_device_info ehl_info = {
+> >>        .ppgtt_size = 36,
+> >>  };
+> >>
+> >> +static const struct intel_device_info jsl_info = {
+> >> +     GEN11_FEATURES,
+> >> +     PLATFORM(INTEL_JASPERLAKE),
+> >> +     .require_force_probe = 1,
+> >> +     .platform_engine_mask = BIT(RCS0) | BIT(BCS0) | BIT(VCS0) | BIT(VECS0),
+> >> +     .ppgtt_size = 36,
+> >> +};
+> >> +
+> >>  #define GEN12_FEATURES \
+> >>        GEN11_FEATURES, \
+> >>        GEN(12), \
+> >> @@ -985,6 +993,7 @@ static const struct pci_device_id pciidlist[] = {
+> >>        INTEL_CNL_IDS(&cnl_info),
+> >>        INTEL_ICL_11_IDS(&icl_info),
+> >>        INTEL_EHL_IDS(&ehl_info),
+> >> +     INTEL_JSL_IDS(&jsl_info),
+> >>        INTEL_TGL_12_IDS(&tgl_info),
+> >>        INTEL_RKL_IDS(&rkl_info),
+> >>        {0, 0, 0}
+> >> diff --git a/drivers/gpu/drm/i915/intel_device_info.c b/drivers/gpu/drm/i915/intel_device_info.c
+> >> index adc836f15fde..e67cec8fa2aa 100644
+> >> --- a/drivers/gpu/drm/i915/intel_device_info.c
+> >> +++ b/drivers/gpu/drm/i915/intel_device_info.c
+> >> @@ -62,6 +62,7 @@ static const char * const platform_names[] = {
+> >>        PLATFORM_NAME(CANNONLAKE),
+> >>        PLATFORM_NAME(ICELAKE),
+> >>        PLATFORM_NAME(ELKHARTLAKE),
+> >> +     PLATFORM_NAME(JASPERLAKE),
+> >>        PLATFORM_NAME(TIGERLAKE),
+> >>        PLATFORM_NAME(ROCKETLAKE),
+> >>        PLATFORM_NAME(DG1),
+> >> diff --git a/drivers/gpu/drm/i915/intel_device_info.h b/drivers/gpu/drm/i915/intel_device_info.h
+> >> index 6a3d607218aa..d92fa041c700 100644
+> >> --- a/drivers/gpu/drm/i915/intel_device_info.h
+> >> +++ b/drivers/gpu/drm/i915/intel_device_info.h
+> >> @@ -79,6 +79,7 @@ enum intel_platform {
+> >>        /* gen11 */
+> >>        INTEL_ICELAKE,
+> >>        INTEL_ELKHARTLAKE,
+> >> +     INTEL_JASPERLAKE,
+> >>        /* gen12 */
+> >>        INTEL_TIGERLAKE,
+> >>        INTEL_ROCKETLAKE,
+> >> diff --git a/include/drm/i915_pciids.h b/include/drm/i915_pciids.h
+> >> index 7eeecb07c9a1..1b5e09cfa11e 100644
+> >> --- a/include/drm/i915_pciids.h
+> >> +++ b/include/drm/i915_pciids.h
+> >> @@ -579,15 +579,18 @@
+> >>        INTEL_VGA_DEVICE(0x8A51, info), \
+> >>        INTEL_VGA_DEVICE(0x8A5D, info)
+> >>
+> >> -/* EHL/JSL */
+> >> +/* EHL */
+> >>  #define INTEL_EHL_IDS(info) \
+> >>        INTEL_VGA_DEVICE(0x4500, info), \
+> >>        INTEL_VGA_DEVICE(0x4571, info), \
+> >>        INTEL_VGA_DEVICE(0x4551, info), \
+> >>        INTEL_VGA_DEVICE(0x4541, info), \
+> >> -     INTEL_VGA_DEVICE(0x4E71, info), \
+> >>        INTEL_VGA_DEVICE(0x4557, info), \
+> >> -     INTEL_VGA_DEVICE(0x4555, info), \
+> >> +     INTEL_VGA_DEVICE(0x4555, info)
+> >> +
+> >> +/* JSL */
+> >> +#define INTEL_JSL_IDS(info) \
+> >> +     INTEL_VGA_DEVICE(0x4E71, info), \
+> >>        INTEL_VGA_DEVICE(0x4E61, info), \
+> >>        INTEL_VGA_DEVICE(0x4E57, info), \
+> >>        INTEL_VGA_DEVICE(0x4E55, info), \
+> >
+> > --
+> > Jani Nikula, Intel Open Source Graphics Center
+> 
+> -- 
+> Jani Nikula, Intel Open Source Graphics Center
 
 -- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+Matt Roper
+Graphics Software Engineer
+VTT-OSGC Platform Enablement
+Intel Corporation
+(916) 356-2795
