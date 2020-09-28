@@ -2,136 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 170EB27A942
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 10:04:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBC8927A946
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 10:04:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726788AbgI1IDp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 04:03:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36712 "EHLO
+        id S1726795AbgI1IEg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 04:04:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726779AbgI1IDl (ORCPT
+        with ESMTP id S1726461AbgI1IEg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 04:03:41 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4DFAC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 01:03:40 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id s12so100373wrw.11
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 01:03:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=5c8rGgT34CWyrrefDHjKaJQ7725a47R5T6yl0/KLFHg=;
-        b=fU0HlbH+nbIGIOjrcnRQVUlq9lbF4G31CCW0J9WPKlPTQg0NhBfiHMqx4TkhPksRcA
-         LTE6UAFUxEG1dKIVrpBWsNpNq4bX1QoihUFRvwRRM/d308rZG5GGaztuRKwR8K2UXSvL
-         ORGURPz8UXzksxYLSY3ed5c6U+lvCLJ46h5IqnHkZGD6Rj6IQQznXe3CPaaAeBk+D0Ld
-         YAvH267wpjAwZQP9WaEJnMCV3P1ccVxv0lPLEIT1InJi9zWUAjKiGgH1SIAQ4spBsy80
-         nuZYehv89mt7o+ZSAaEdtwIsrAsEWs+pwfnW51OZGyRrSljdDkwzrqVAcH7R2yhLirA2
-         6iRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=5c8rGgT34CWyrrefDHjKaJQ7725a47R5T6yl0/KLFHg=;
-        b=e8KUX4PpHBpA7o4kn6aDp3j6bs648qAwqoAIDvp86iDFdI65Cgt7keXYbjI3uF1u2R
-         HOQaW217nFnATtCf2Q7CTgkV1mSbuOX9HruXguLQu2SLng66VGclZWN7DSFXBBzE0Vvk
-         9HR4hw2uonnboh0ynSaUDvTdoBQeyhuh51l7BGzxlcMTXKDVAFG/1gpP1f3lkuXq3MIH
-         fxiyFdM1BchakIoUtOKSOwX3vt170+bLOwPc4VFh1uD62Ei+ratct0zw2sIq6qRvuE+3
-         3BWasVvHd439ZU3A+VgAFye5I2D5ucRRcU7USTTjyr6A33O3G8M7+SPlp4femWTuh4ed
-         NXBQ==
-X-Gm-Message-State: AOAM533U5FQ1iKfhJkL2+JNr5djsieY6zcUzOlGVZF2R/fqaFJD33IrM
-        shXK/Sfkhk2pLMvLb3U5ENLoTyDVtg5ENA==
-X-Google-Smtp-Source: ABdhPJzsjgZytiFI1ScdwSKUycH1MXJBoSICwLH5dRRY6GyOMI2AG7qvjd8CxzvjehVNec6TMp7Gbw==
-X-Received: by 2002:adf:a418:: with SMTP id d24mr279994wra.80.1601280219307;
-        Mon, 28 Sep 2020 01:03:39 -0700 (PDT)
-Received: from dell ([91.110.221.154])
-        by smtp.gmail.com with ESMTPSA id 11sm189813wmi.14.2020.09.28.01.03.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Sep 2020 01:03:38 -0700 (PDT)
-Date:   Mon, 28 Sep 2020 09:03:36 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc:     Marek Behun <marek.behun@nic.cz>, linux-leds@vger.kernel.org,
-        Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
-        =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        devicetree@vger.kernel.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH leds v2 05/50] leds: various: guard of_match_table member
- value with of_match_ptr
-Message-ID: <20200928080336.GA4637@dell>
-References: <20200917223338.14164-1-marek.behun@nic.cz>
- <20200917223338.14164-6-marek.behun@nic.cz>
- <20200918061500.GD26842@paasikivi.fi.intel.com>
- <20200918112058.6d3b0d5d@nic.cz>
- <20200918095759.GG26842@paasikivi.fi.intel.com>
+        Mon, 28 Sep 2020 04:04:36 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E862C0613CE
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 01:04:36 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <sha@pengutronix.de>)
+        id 1kMo9B-0004KV-4N; Mon, 28 Sep 2020 10:04:33 +0200
+Received: from sha by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <sha@pengutronix.de>)
+        id 1kMo9A-0007bH-QZ; Mon, 28 Sep 2020 10:04:32 +0200
+Date:   Mon, 28 Sep 2020 10:04:32 +0200
+From:   Sascha Hauer <s.hauer@pengutronix.de>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Michael Walle <michael@walle.cc>, linux-spi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] spi: fsl-dspi: fix NULL pointer dereference
+Message-ID: <20200928080432.GC11648@pengutronix.de>
+References: <20200927224336.705-1-michael@walle.cc>
+ <20200927232747.3jwr6mqql727etyz@skbuf>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200918095759.GG26842@paasikivi.fi.intel.com>
+In-Reply-To: <20200927232747.3jwr6mqql727etyz@skbuf>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 09:59:59 up 221 days, 15:30, 147 users,  load average: 0.00, 0.06,
+ 0.10
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: sha@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 18 Sep 2020, Sakari Ailus wrote:
-
-> On Fri, Sep 18, 2020 at 11:20:58AM +0200, Marek Behun wrote:
-> > On Fri, 18 Sep 2020 09:15:00 +0300
-> > Sakari Ailus <sakari.ailus@linux.intel.com> wrote:
+On Mon, Sep 28, 2020 at 02:27:47AM +0300, Vladimir Oltean wrote:
+> On Mon, Sep 28, 2020 at 12:43:36AM +0200, Michael Walle wrote:
+> > Since commit 530b5affc675 ("spi: fsl-dspi: fix use-after-free in remove
+> > path") this driver causes a kernel oops:
 > > 
-> > > Hi Marek,
-> > > 
-> > > On Fri, Sep 18, 2020 at 12:32:53AM +0200, Marek Behún wrote:
-> > > > Change
-> > > >   .of_match_table = xxx,
-> > > > to
-> > > >   .of_match_table = of_match_ptr(xxx),
-> > > > in various drivers.
-> > > > 
-> > > > This should be standard even for drivers that depend on OF.  
-> > > 
-> > > After this patch, none of these drivers will work on ACPI systems anymore.
-> 
-> ^
-> 
-> If CONFIG_OF is disabled, that is.
-
-What?  of_match_ptr() is designed to change depending on OF or !OF.
-
-Are you confusing this with acpi_match_table()?
-
-> > Hi Sakari,
+> > [    1.891065] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000080
+> > [    1.899889] Mem abort info:
+> > [    1.902692]   ESR = 0x96000004
+> > [    1.905754]   EC = 0x25: DABT (current EL), IL = 32 bits
+> > [    1.911089]   SET = 0, FnV = 0
+> > [    1.914156]   EA = 0, S1PTW = 0
+> > [    1.917303] Data abort info:
+> > [    1.920193]   ISV = 0, ISS = 0x00000004
+> > [    1.924044]   CM = 0, WnR = 0
+> > [    1.927022] [0000000000000080] user address but active_mm is swapper
+> > [    1.933403] Internal error: Oops: 96000004 [#1] PREEMPT SMP
+> > [    1.938995] Modules linked in:
+> > [    1.942060] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.9.0-rc6-next-20200925-00026-gae556cc74e28-dirty #94
+> > [    1.951838] Hardware name: Kontron SMARC-sAL28 (Single PHY) on SMARC Eval 2.0 carrier (DT)
+> > [    1.960135] pstate: 40000005 (nZcv daif -PAN -UAO -TCO BTYPE=--)
+> > [    1.966168] pc : dspi_setup+0xc8/0x2e0
+> > [    1.969926] lr : dspi_setup+0xbc/0x2e0
+> > [    1.973684] sp : ffff80001139b930
+> > [    1.977005] x29: ffff80001139b930 x28: ffff00207a5d2000
+> > [    1.982338] x27: 0000000000000006 x26: ffff00207a44d410
+> > [    1.987669] x25: ffff002079c08100 x24: ffff00207a5d2400
+> > [    1.993000] x23: ffff00207a5d2600 x22: ffff800011169948
+> > [    1.998332] x21: ffff800010cbcd20 x20: ffff00207a58a800
+> > [    2.003663] x19: ffff00207a76b700 x18: 0000000000000010
+> > [    2.008994] x17: 0000000000000001 x16: 0000000000000019
+> > [    2.014326] x15: ffffffffffffffff x14: 0720072007200720
+> > [    2.019657] x13: 0720072007200720 x12: ffff8000111fc5e0
+> > [    2.024989] x11: 0000000000000003 x10: ffff8000111e45a0
+> > [    2.030320] x9 : 0000000000000000 x8 : ffff00207a76b780
+> > [    2.035651] x7 : 0000000000000000 x6 : 000000000000003f
+> > [    2.040982] x5 : 0000000000000040 x4 : ffff80001139b918
+> > [    2.046313] x3 : 0000000000000001 x2 : 64b62cc917af5100
+> > [    2.051643] x1 : 0000000000000000 x0 : 0000000000000000
+> > [    2.056973] Call trace:
+> > [    2.059425]  dspi_setup+0xc8/0x2e0
+> > [    2.062837]  spi_setup+0xcc/0x248
+> > [    2.066160]  spi_add_device+0xb4/0x198
+> > [    2.069918]  of_register_spi_device+0x250/0x370
+> > [    2.074462]  spi_register_controller+0x4f4/0x770
+> > [    2.079094]  dspi_probe+0x5bc/0x7b0
+> > [    2.082594]  platform_drv_probe+0x5c/0xb0
+> > [    2.086615]  really_probe+0xec/0x3c0
+> > [    2.090200]  driver_probe_device+0x60/0xc0
+> > [    2.094308]  device_driver_attach+0x7c/0x88
+> > [    2.098503]  __driver_attach+0x60/0xe8
+> > [    2.102263]  bus_for_each_dev+0x7c/0xd0
+> > [    2.106109]  driver_attach+0x2c/0x38
+> > [    2.109692]  bus_add_driver+0x194/0x1f8
+> > [    2.113538]  driver_register+0x6c/0x128
+> > [    2.117385]  __platform_driver_register+0x50/0x60
+> > [    2.122105]  fsl_dspi_driver_init+0x24/0x30
+> > [    2.126302]  do_one_initcall+0x54/0x2d0
+> > [    2.130149]  kernel_init_freeable+0x1ec/0x258
+> > [    2.134520]  kernel_init+0x1c/0x120
+> > [    2.138018]  ret_from_fork+0x10/0x34
+> > [    2.141606] Code: 97e0b11d aa0003f3 b4000680 f94006e0 (f9404000)
+> > [    2.147723] ---[ end trace 26cf63e6cbba33a8 ]---
+> > [    2.152374] Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
+> > [    2.160061] SMP: stopping secondary CPUs
+> > [    2.163999] Kernel Offset: disabled
+> > [    2.167496] CPU features: 0x0040022,20006008
+> > [    2.171777] Memory Limit: none
+> > [    2.174840] ---[ end Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b ]---
 > > 
-> > I don't understand. Why not? Does ACPI subsystem parse of_match_table
-> > as well?
+> > This is because since this commit, the allocation of the drivers private
+> > data is done explicitly and in this case spi_alloc_master() won't set the
+> > correct pointer.
+> > 
+> > Fixes: 530b5affc675 ("spi: fsl-dspi: fix use-after-free in remove path")
+> > Signed-off-by: Michael Walle <michael@walle.cc>
+> > ---
 > 
-> It does. The compatible string is used the same way as in DT for matching
-> devices with "PRP0001" _HID or _CID.
-> 
-> Please read Documentation/firmware-guide/acpi/enumeration.rst .
+> Sascha, how did you test commit 530b5affc675?
 
-Could you allude to the specific line you are referencing please?
+My intention was to test it, but it seems I somehow failed to copy the
+new kernel onto my target without noticing it, shame on me. Anyway, I
+get the same kernel panic with my patch appied now and this patch fixes
+it.
 
-> IOW, you can safely do the above only for drivers that depend on OF in
-> Kconfig. Otherwise you'll probably break something.
+Tested-by: Sascha Hauer <s.hauer@pengutronix.de>
+
+Sascha
 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
