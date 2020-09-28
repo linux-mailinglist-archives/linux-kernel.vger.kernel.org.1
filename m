@@ -2,107 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6577B27B204
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 18:36:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA32F27B214
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 18:39:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726880AbgI1Qfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 12:35:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59568 "EHLO
+        id S1726608AbgI1QjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 12:39:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726839AbgI1Qft (ORCPT
+        with ESMTP id S1726380AbgI1QjE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 12:35:49 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57ADAC0613DC
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 09:35:42 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id 5so1331791pgf.5
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 09:35:42 -0700 (PDT)
+        Mon, 28 Sep 2020 12:39:04 -0400
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E556C061755;
+        Mon, 28 Sep 2020 09:39:04 -0700 (PDT)
+Received: by mail-oi1-x241.google.com with SMTP id a3so2023796oib.4;
+        Mon, 28 Sep 2020 09:39:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=TBPXQODSosAA+MQnNKR7oefcB4hNA176v8zrJGqKyUw=;
-        b=Wd/VIwRVSx+9sHI+Ujp5RSkIne7iWqEu8pQJ2s9PA5c/Q28fOHPKGkGKiF1Dnxp6Kk
-         J0e9guXqYtMuDvOeOckVpHjL17VDFfKdTO+WEDeDUh9e/UT1QoUewgD1fCThdrITyAw9
-         DcKhukZ9KLPUKvDcVDJAA00stRVKvzQDHuRk2ETUxB7BEE4GF2BFPaQFM4kD4K8vYk8d
-         T3q0uk8y5g/QndncVIZXTUbsDKWNZiE4CH8xTupAlHCLmZI33tjAws+WsbSScsv4m1Mv
-         L8ECYGHkMxhcXaNtHlHkQX8HqcecLE64voBVgC8ZVjNWHgnH9SZhIAtSnOtZYwlbJ67i
-         E0qQ==
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=qcxt6fZZMti5SbZnbeIFrcoJVPKr+jdSB80jUrubsi0=;
+        b=ZNFvfiFTvBLU6BZt7lhL6OodHgRKD/kiTr/ywAUMX467n2sNFz8huYNjmlrn7KOs58
+         yI9RLcCwZSd0MandklFoks4jaXfG//ZebuXL50JPHJ8IIC77KTSbidrEKmee+onNcUxF
+         hc/C5opocA7CzoDANXPQnj4XEAyjpMNf+c0WqCNcsDooDDKUBaBjltu9lnJHsV4gqqnO
+         oMWSNigqcp9+hwzuIcrK0HeHjLqASYfES22sH6f6eeaZx068k5ITLswhO7u/7Cj9vsIN
+         cr83jRNEpvZb49IoAlqs7xZb7emwWNqeoA2sdZ3Jkqnw50gpueX9MzG2EMz4BeNQgcOf
+         VE7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=TBPXQODSosAA+MQnNKR7oefcB4hNA176v8zrJGqKyUw=;
-        b=ti5Vwi0opnceAD5/kOKAyzMoq+Z51xKAz+p8vRZphBY9/U+puAQkG9ClRgAWRB+bQF
-         PFcDan7FmwSwBewt08PJKeYT/9xkXKAgZoq12+3wJ3rBaKGAG9q1u8hmnz9rjapQL8di
-         GuBXmsy1YaLU0Bpw0ElyPMiYMN+11iro6kLq2VTy3+8XUsIBm/XYf4jwIzCGvnGsmRRx
-         EHgEJ18jQxqebgwIvtWfy6PAN55NN1hOzZcKcT8y/oHq2cGQSjtxM61FKGvr2PS13DXm
-         H53DbMwklqcfnZPQbCVtDQl0w3TJ3gnWInAjBwN8OWF30x5TGr6uT/u5SQjp84CMC4S+
-         urOw==
-X-Gm-Message-State: AOAM532xHFVQA51MA7upxyuy+6YwARSmG4K6AfyazYvVtNcQ/Oe5LLGo
-        M+kPaXFvo29T6F+ao8YaR67s8Q==
-X-Google-Smtp-Source: ABdhPJxNoF7c/7JPLSrL8Y9rewdCqbxcmCrsMYIS63nGaLriVkjjzWUx2gnt5y2Mx+6aG+ujqJwSEw==
-X-Received: by 2002:a62:1542:0:b029:150:e3f5:d8fc with SMTP id 63-20020a6215420000b0290150e3f5d8fcmr250068pfv.66.1601310941899;
-        Mon, 28 Sep 2020 09:35:41 -0700 (PDT)
-Received: from xps15.cg.shawcable.net (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
-        by smtp.gmail.com with ESMTPSA id f19sm2345640pfd.45.2020.09.28.09.35.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Sep 2020 09:35:41 -0700 (PDT)
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 25/25] coresight: etm4x: Fix save and restore of TRCVMIDCCTLR1 register
-Date:   Mon, 28 Sep 2020 10:35:13 -0600
-Message-Id: <20200928163513.70169-26-mathieu.poirier@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200928163513.70169-1-mathieu.poirier@linaro.org>
-References: <20200928163513.70169-1-mathieu.poirier@linaro.org>
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=qcxt6fZZMti5SbZnbeIFrcoJVPKr+jdSB80jUrubsi0=;
+        b=ADO5c4L9QCZvdtorjEo4jQrTsB7K33w2wQAn8WAOK4E8wESR1lPO42nzK6XjyntgoK
+         +9X4JlR9r/I6fsQv1uk7Q8HcPTIoZMvMZzNrBtae0DL3L8KkvuctNw7uS6mAUusTPI0H
+         rH3ZMKoC6ciW3UpkMb30EXytctqckqx+nss6bZ8wgrIXxU3Z00JVXkc2HIf4xojh77+s
+         57URwKsFRBiy5ZkhYicgkSRwECrbolAXZP8lw4XjwYNd33XZ5rC2I7p/bTvRM/j56fXK
+         pFTwzRh1PR3aLkBXV6VoXrreYfbqXRYz51iB8tmv/CA/agWGVbs7GIckFpjoaDBowHTp
+         KSZA==
+X-Gm-Message-State: AOAM530Mvbe0rIhZ4tbLqWITjSfkUlHtDBqmDxoApLaw8A1FQ4aKajFb
+        +3Gl8qUAQHdkb71a3eXdwRxPdK5pP0g=
+X-Google-Smtp-Source: ABdhPJwEaRXFV3Znjz2Xzv8R6nTqOwt6bDCtAecdNPX11xV4byw0XPPskGdHoP+5rc9Tu+lwCZDc7Q==
+X-Received: by 2002:aca:388:: with SMTP id 130mr1409984oid.145.1601311143774;
+        Mon, 28 Sep 2020 09:39:03 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id r20sm2187525ooh.5.2020.09.28.09.39.03
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 28 Sep 2020 09:39:03 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Mon, 28 Sep 2020 09:39:02 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Alban Bedel <alban.bedel@aerq.com>
+Cc:     linux-hwmon@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/3] hwmon: (lm75) Add regulator support
+Message-ID: <20200928163902.GE106276@roeck-us.net>
+References: <20200928153923.134151-1-alban.bedel@aerq.com>
+ <20200928153923.134151-4-alban.bedel@aerq.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200928153923.134151-4-alban.bedel@aerq.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+On Mon, Sep 28, 2020 at 05:39:23PM +0200, Alban Bedel wrote:
+> Add regulator support for boards where the sensor first need to be
+> powered up before it can be used.
+> 
+> Signed-off-by: Alban Bedel <alban.bedel@aerq.com>
+> ---
+> v2: Rely on dummy regulators instead of explicitly handling missing
+>     regulator
+> ---
+>  drivers/hwmon/lm75.c | 23 +++++++++++++++++++++--
+>  1 file changed, 21 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/hwmon/lm75.c b/drivers/hwmon/lm75.c
+> index ba0be48aeadd..e394df648c26 100644
+> --- a/drivers/hwmon/lm75.c
+> +++ b/drivers/hwmon/lm75.c
+> @@ -17,6 +17,7 @@
+>  #include <linux/of.h>
+>  #include <linux/regmap.h>
+>  #include <linux/util_macros.h>
+> +#include <linux/regulator/consumer.h>
+>  #include "lm75.h"
+>  
+>  /*
+> @@ -101,6 +102,7 @@ static const unsigned short normal_i2c[] = { 0x48, 0x49, 0x4a, 0x4b, 0x4c,
+>  struct lm75_data {
+>  	struct i2c_client		*client;
+>  	struct regmap			*regmap;
+> +	struct regulator		*vs;
+>  	u8				orig_conf;
+>  	u8				current_conf;
+>  	u8				resolution;	/* In bits, 9 to 16 */
+> @@ -540,6 +542,7 @@ static void lm75_remove(void *data)
+>  	struct i2c_client *client = lm75->client;
+>  
+>  	i2c_smbus_write_byte_data(client, LM75_REG_CONF, lm75->orig_conf);
+> +	regulator_disable(lm75->vs);
+>  }
+>  
+>  static int
+> @@ -567,6 +570,10 @@ lm75_probe(struct i2c_client *client, const struct i2c_device_id *id)
+>  	data->client = client;
+>  	data->kind = kind;
+>  
+> +	data->vs = devm_regulator_get(dev, "vs");
+> +	if (IS_ERR(data->vs))
+> +		return PTR_ERR(data->vs);
+> +
+>  	data->regmap = devm_regmap_init_i2c(client, &lm75_regmap_config);
+>  	if (IS_ERR(data->regmap))
+>  		return PTR_ERR(data->regmap);
+> @@ -581,11 +588,19 @@ lm75_probe(struct i2c_client *client, const struct i2c_device_id *id)
+>  	data->sample_time = data->params->default_sample_time;
+>  	data->resolution = data->params->default_resolution;
+>  
+> +	/* Enable the power */
+> +	err = regulator_enable(data->vs);
+> +	if (err) {
+> +		dev_err(dev, "failed to enable regulator: %d\n", err);
+> +		return err;
+> +	}
+> +
+>  	/* Cache original configuration */
+>  	status = i2c_smbus_read_byte_data(client, LM75_REG_CONF);
+>  	if (status < 0) {
+>  		dev_dbg(dev, "Can't read config? %d\n", status);
+> -		return status;
+> +		err = status;
+> +		goto disable_regulator;
 
-In commit f188b5e76aae ("coresight: etm4x: Save/restore state
-across CPU low power states"), mistakenly TRCVMIDCCTLR1 register
-value was saved in trcvmidcctlr0 state variable which is used to
-store TRCVMIDCCTLR0 register value in etm4x_cpu_save() and then
-same value is written back to both TRCVMIDCCTLR0 and TRCVMIDCCTLR1
-in etm4x_cpu_restore(). There is already a trcvmidcctlr1 state
-variable available for TRCVMIDCCTLR1, so use it.
+The point of using devm_add_action_or_reset() was specifically to avoid having
+to have the cleanup gotos. On top of that, the lm75_remove() function was
+specifically intended to clean up configuration data, not to do anything else.
+While hijacking lm75_remove() to also disable the regulator is technically
+correct, it makes the code more difficult to understand, and it creates a
+potential source for subsequently introduced bugs. Right now I am not inclined
+to accept this code as-is. Please provide arguments for handling the cleanup
+this way instead of using devm_add_action_or_reset().
 
-Fixes: f188b5e76aae ("coresight: etm4x: Save/restore state across CPU low power states")
-Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
----
- drivers/hwtracing/coresight/coresight-etm4x-core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-index de76d57850bc..abd706b216ac 100644
---- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
-+++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-@@ -1243,7 +1243,7 @@ static int etm4_cpu_save(struct etmv4_drvdata *drvdata)
- 	state->trccidcctlr1 = readl(drvdata->base + TRCCIDCCTLR1);
- 
- 	state->trcvmidcctlr0 = readl(drvdata->base + TRCVMIDCCTLR0);
--	state->trcvmidcctlr0 = readl(drvdata->base + TRCVMIDCCTLR1);
-+	state->trcvmidcctlr1 = readl(drvdata->base + TRCVMIDCCTLR1);
- 
- 	state->trcclaimset = readl(drvdata->base + TRCCLAIMCLR);
- 
-@@ -1353,7 +1353,7 @@ static void etm4_cpu_restore(struct etmv4_drvdata *drvdata)
- 	writel_relaxed(state->trccidcctlr1, drvdata->base + TRCCIDCCTLR1);
- 
- 	writel_relaxed(state->trcvmidcctlr0, drvdata->base + TRCVMIDCCTLR0);
--	writel_relaxed(state->trcvmidcctlr0, drvdata->base + TRCVMIDCCTLR1);
-+	writel_relaxed(state->trcvmidcctlr1, drvdata->base + TRCVMIDCCTLR1);
- 
- 	writel_relaxed(state->trcclaimset, drvdata->base + TRCCLAIMSET);
- 
--- 
-2.25.1
-
+Thanks,
+Guenter
