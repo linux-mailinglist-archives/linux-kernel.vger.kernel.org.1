@@ -2,147 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B200827A854
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 09:14:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9BCF27A856
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 09:15:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726465AbgI1HOB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 03:14:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57228 "EHLO
+        id S1726522AbgI1HPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 03:15:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726328AbgI1HOB (ORCPT
+        with ESMTP id S1726328AbgI1HPE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 03:14:01 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02293C0613CE;
-        Mon, 28 Sep 2020 00:14:00 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id o5so10946447wrn.13;
-        Mon, 28 Sep 2020 00:14:00 -0700 (PDT)
+        Mon, 28 Sep 2020 03:15:04 -0400
+Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD0DFC0613CE
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 00:15:03 -0700 (PDT)
+Received: by mail-vs1-xe44.google.com with SMTP id y194so146643vsc.4
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 00:15:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=dKVXsIoVUAuhSPTXKz6orVntDM81DbNac5gyHMzAPn0=;
-        b=QVueCi8XQiMhkjOzIKmaTIysaN6WlOZE2WfLd9SNZ5wlmdtIVcuNGiYUTgd5NPAOo9
-         hi0/5KDd4YUjJbJT8RWlpYw//5248xsoPdhCkIxJ/yCMVJnV4EZpXw045OWTrPehnP7D
-         WYgFexBGVJN5OKD/8rFXsmQYtJIpanOjg0myKVLKFLmGWxe/L9Aa9pEE6C+ocaeut3sh
-         V4+qB1XJuh/JcJy49H9yyECjtXLR+Ik0M6DGifAVousD2WiH7oQNK84LM8DYvwZMI9vG
-         pfvYmgeCxdkt3UV6URosdCh3QNZ8m9hiwSIWfiGZ+7fTX4hD1q7mSZQdN+HcRD4b58Qi
-         isyA==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kCXdMKNDB4m8MlwDrPmz+XV4KwYnVdM/qHc8DcVYWww=;
+        b=ARNv/b4yV78actnJ0SE5pQEsF9qbZjb0qiYFZyLvAAi7wtsltM+289weq9fVgYDHZ2
+         pUAdIXSWvcnjVZFJ9LX5QxfoGp+JVEitm4WwFE2AH5XJDk4NUM2XKYMDKqvG36nDGfjM
+         yz7UcuT73+t78gooBxyXTqxo6hFnVWwhhLgQ4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=dKVXsIoVUAuhSPTXKz6orVntDM81DbNac5gyHMzAPn0=;
-        b=TMBK4Zf3wP0omxvDLu8rQkBGju7+JwoUEzN2vB2FKtaw0Jr9EW1onh/vZc1OGi3yLc
-         gXNf6dVYlQmBTsUTESKP5gFr9vb6tX1F6sLn+6YQ02nPIcB2FjeBwezmdoM1a6lpFSci
-         xDnnYlKsq/Lposvmlklnf0hyzE5YKM7IjET8oUugOr/DIv3SGBFS2cMYUCZjmOPMQAJQ
-         9qCYldnzbkAXoXEt3Tn8v0j6/eAahEGL2J6YR/E3eLQ4AZR72qdImM9PuQ/RKIH7Tr1D
-         hGGpt7yXGH+zrhO/KiCzwOxxP/Z64Ow3AkG/KGAyvhLN80VGEMiSA6XJxqDg0FewDSrS
-         e99A==
-X-Gm-Message-State: AOAM530osRDUvx5mGnIMiSBJE8+q3BpMJXliTCiKiqsPltJ3pLLj49rS
-        i5c1cjSXQKKtLwuJol6JzVnD2D5fzWA=
-X-Google-Smtp-Source: ABdhPJy63S7ozLyrXRI/kPxuSL7jEKLDY06CuO93Ngie1sFy4hxUh9/wyXJfm5BoikfaZt0zwSFrag==
-X-Received: by 2002:adf:d0cb:: with SMTP id z11mr31038wrh.192.1601277239454;
-        Mon, 28 Sep 2020 00:13:59 -0700 (PDT)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id n10sm27928wmk.7.2020.09.28.00.13.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Sep 2020 00:13:57 -0700 (PDT)
-Date:   Mon, 28 Sep 2020 09:13:56 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Nicolin Chen <nicoleotsuka@gmail.com>
-Cc:     joro@8bytes.org, krzk@kernel.org, vdumpa@nvidia.com,
-        jonathanh@nvidia.com, linux-tegra@vger.kernel.org,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/5] iommu/tegra-smmu: Unwrap tegra_smmu_group_get
-Message-ID: <20200928071356.GD2837573@ulmo>
-References: <20200926080719.6822-1-nicoleotsuka@gmail.com>
- <20200926080719.6822-2-nicoleotsuka@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kCXdMKNDB4m8MlwDrPmz+XV4KwYnVdM/qHc8DcVYWww=;
+        b=Cb6IYeyrDmYZf9BVU8RYgs9Yv5PtqJ0Ze3pHRxEDAS9wJlhKxZZx6N5IEaFfN/Djzo
+         fPD+vp3sJd6F0h14ssBl68woMu3b+g/tNdbZTJyVpPuYPk/napAVURWH31WnZuyjYRX0
+         76+6cghozR5J2tXzv8txjWp8dTig/AhCk85YeG9h48A4hbUcWvZscc6AW1XIsl+91qJb
+         lSPWiHSeb8FKfN2yVgq0CJT01g/BFJhj8gOUQcuYmAN/b+fQ835XF6c+HQAUDv8xy9Qi
+         8n/8VtisRn0Qz6NOcKHdjMCpgybdcPcR8TdYnqchM35gKzi/04lOT174EXkeE1SFig+Q
+         6Bpg==
+X-Gm-Message-State: AOAM532W56Q5SEFSrOvyFOxk/JXCRMBhJRbjGSbf02lglsouQefwLoih
+        Xmewd4/wKkMJuGE4qjnce2GQsfwC/ngsRIVd0m9dCA==
+X-Google-Smtp-Source: ABdhPJzgpnpkOxCGPLSVYGGd+XgZUifTyoBe8zmUJ1pjig3VfddPP2GwmgKduNv1AMm7rusj7VWmXWs6Kk031JOtkXw=
+X-Received: by 2002:a67:fe07:: with SMTP id l7mr4701508vsr.21.1601277302935;
+ Mon, 28 Sep 2020 00:15:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="eqp4TxRxnD4KrmFZ"
-Content-Disposition: inline
-In-Reply-To: <20200926080719.6822-2-nicoleotsuka@gmail.com>
-User-Agent: Mutt/1.14.7 (2020-08-29)
+References: <1596705715-15320-1-git-send-email-weiyi.lu@mediatek.com> <1596705715-15320-7-git-send-email-weiyi.lu@mediatek.com>
+In-Reply-To: <1596705715-15320-7-git-send-email-weiyi.lu@mediatek.com>
+From:   Nicolas Boichat <drinkcat@chromium.org>
+Date:   Mon, 28 Sep 2020 15:14:52 +0800
+Message-ID: <CANMq1KByYjeD0D81sPzDxx5SzrPvpGxPgm+xvLWcFsmfUJDWBQ@mail.gmail.com>
+Subject: Re: [PATCH v17 06/12] soc: mediatek: Add support for hierarchical
+ scpsys device node
+To:     Weiyi Lu <weiyi.lu@mediatek.com>
+Cc:     Enric Balletbo Serra <eballetbo@gmail.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Herring <robh@kernel.org>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        James Liao <jamesjj.liao@mediatek.com>,
+        Fan Chen <fan.chen@mediatek.com>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        srv_heupstream <srv_heupstream@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---eqp4TxRxnD4KrmFZ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Sat, Sep 26, 2020 at 01:07:15AM -0700, Nicolin Chen wrote:
-> The tegra_smmu_group_get was added to group devices in different
-> SWGROUPs and it'd return a NULL group pointer upon a mismatch at
-> tegra_smmu_find_group(), so for most of clients/devices, it very
-> likely would mismatch and need a fallback generic_device_group().
->=20
-> But now tegra_smmu_group_get handles devices in same SWGROUP too,
-> which means that it would allocate a group for every new SWGROUP
-> or would directly return an existing one upon matching a SWGROUP,
-> i.e. any device will go through this function.
->=20
-> So possibility of having a NULL group pointer in device_group()
-> is upon failure of either devm_kzalloc() or iommu_group_alloc().
-> In either case, calling generic_device_group() no longer makes a
-> sense. Especially for devm_kzalloc() failing case, it'd cause a
-> problem if it fails at devm_kzalloc() yet succeeds at a fallback
-> generic_device_group(), because it does not create a group->list
-> for other devices to match.
->=20
-> This patch simply unwraps the function to clean it up.
->=20
-> Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
+On Thu, Aug 6, 2020 at 5:22 PM Weiyi Lu <weiyi.lu@mediatek.com> wrote:
+>
+> Try to list all the power domains of under power controller
+> node to show the dependency between each power domain directly
+> instead of filling the dependency in scp_soc_data.
+> And could be more clearly to group subsys clocks into power domain
+> sub node to introduce subsys clocks of bus protection in next patch.
+>
+> Signed-off-by: Weiyi Lu <weiyi.lu@mediatek.com>
 > ---
->  drivers/iommu/tegra-smmu.c | 19 ++++---------------
->  1 file changed, 4 insertions(+), 15 deletions(-)
->=20
-> diff --git a/drivers/iommu/tegra-smmu.c b/drivers/iommu/tegra-smmu.c
-> index 0becdbfea306..6335285dc373 100644
-> --- a/drivers/iommu/tegra-smmu.c
-> +++ b/drivers/iommu/tegra-smmu.c
-> @@ -903,11 +903,13 @@ static void tegra_smmu_group_release(void *iommu_da=
-ta)
->  	mutex_unlock(&smmu->lock);
->  }
-> =20
-> -static struct iommu_group *tegra_smmu_group_get(struct tegra_smmu *smmu,
-> -						unsigned int swgroup)
-> +static struct iommu_group *tegra_smmu_device_group(struct device *dev)
->  {
-> +	struct iommu_fwspec *fwspec =3D dev_iommu_fwspec_get(dev);
-> +	struct tegra_smmu *smmu =3D dev_iommu_priv_get(dev);
->  	const struct tegra_smmu_group_soc *soc;
->  	struct tegra_smmu_group *group;
-> +	int swgroup =3D fwspec->ids[0];
+[snip]
+> +static int traverse_scp(struct platform_device *pdev, struct scp *scp,
+> +                       const struct scp_domain_data *scp_domain_data)
+> +{
+> +       struct device *dev = &pdev->dev;
+> +       struct device_node *np = dev->of_node;
+> +       struct device_node *sub;
+> +       int ret;
+> +
+> +       INIT_LIST_HEAD(&scp->dep_links);
+> +
+> +       for_each_available_child_of_node(np, sub) {
+> +               ret = scpsys_get_domain(pdev, scp, sub, scp_domain_data);
+> +               if (ret) {
+> +                       dev_err(&pdev->dev, "failed to handle node %pOFn: %d\n", sub, ret);
 
-This should be unsigned int to match the type of swgroup elsewhere.
-Also, it might not be worth having an extra local variable for this
-since it's only used once.
+minor comment: this error should not be printed if ret ==
+-EPROBE_DEFER (use the new dev_err_probe?)
 
-Thierry
-
---eqp4TxRxnD4KrmFZ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl9xjTEACgkQ3SOs138+
-s6Hb3BAAmlSBf17eRIqR2c2OKS3u6J4Gm8+F2mKHd+5sC0MgnQVSzME9EJCuuiMb
-oPvGwcxTnuabt/CvTD+s7O9dRsDP9vfmYADkWhpvfF5fY+QEbaRdmy7H8dECi7Wp
-0UqfdEY99sE5Tj2z+mtywlTFrcHPzHuKPrOEYyjorIY2Fi569yRERhB8Bbs9Rkgc
-QRrB2R3rel+1aL7gYauQvkEJOoBFAT2i6Ebg6qaVFl4yPtHmRwALHgyEmV6SRT7D
-3CUIaW8g8pEulOoM1YzKyAThO1NKH2GTp/+3/+cjFl7qK654a0J5inAQrYp0fF7+
-L/GcJbflazVj766H4nQYdE6PbwEBfNt8BDUDDeIAAasBgiJ+I9/97DnJodt0Q5Kq
-Jkdg0OO+q050bjutL5+QYLpHQPaykZzIIGQhIqXw/VKum26Zj4ETzT6u4sqO0PVG
-gHPiUmN3ioC3UEfvzHd/xJz1a+nBN6LgHXH4rQEsuu7ZfbWmVIiWY/aEB13jUj3l
-i4IrXLTt05GnspNSeoVkeXpMaJfovn/ocESIXmxL3Yz4yf09rNzBxZlypFhCbq7q
-GUk7WKpXG2i0gtvCMXIzPTGcC0ewhAfI/bzz2FsfYX20e7a2ao7Qg9DqvO4QmXR1
-loq35HGpMRSodtzvSeuEQJMV1uwebJgHq1EnitQvP3X9JVKwLJs=
-=UiGV
------END PGP SIGNATURE-----
-
---eqp4TxRxnD4KrmFZ--
+> +                       goto err;
+> +               }
+> +       }
+> +
+> +       return 0;
+> +
+> +err:
+> +       of_node_put(sub);
+> +       return ret;
+> +}
+[snip]
