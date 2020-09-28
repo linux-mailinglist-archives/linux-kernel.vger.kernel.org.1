@@ -2,80 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B181927B4BE
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 20:47:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80D3927B4C7
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 20:48:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726659AbgI1Srs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 14:47:48 -0400
-Received: from mail-ot1-f67.google.com ([209.85.210.67]:43192 "EHLO
-        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726424AbgI1Srs (ORCPT
+        id S1726722AbgI1SsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 14:48:01 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:54975 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S1726697AbgI1SsA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 14:47:48 -0400
-Received: by mail-ot1-f67.google.com with SMTP id n61so1952621ota.10;
-        Mon, 28 Sep 2020 11:47:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/ceCsarVOwip01r20h2NbRA2yfWJhyTjG+hv4ywi1tA=;
-        b=fxTL5cflyuj7HroWJFH9su3bfRiJ+tc4iOj+q1HpwSzSUqmVQ8lckG0N90ey+r46no
-         xwcJRmCA6oIft8tcwpV6K82dBXRpLfNMqDjDGhEXA2HKmnbwevesheaECdo+DqToILth
-         EZKlQD8/8oQDO0TuHtVjF+55scbMib3N2PMf2p498+a6X5g9aZ5FVxlgX1t1ZK35vG/A
-         5fpVtULCOxFd9nX1iApH1c9uZ6iWxTinZ5xKOs9UnsdKKY/f/zJuiwqxFObRy2GMKPuK
-         mYyvOzpHvSTJhGBd/L+8dlkc96oBNxyw7HvHeRF7f0p3i9hHiimKfswGKPPoMu56ZxrG
-         w6Xg==
-X-Gm-Message-State: AOAM532fXvsdNk8YEnbDHnboHInx3oIy/qbOdcWlkEQuyqmPfSWHDn0a
-        DVctswVa6MWsOqHUNxIyVw==
-X-Google-Smtp-Source: ABdhPJxkyxlSVtjur50ZDPinR+4AM9QhETbNIL0l48ojZuecdey3UuesRBe25BG5ek0bW57rxHErJw==
-X-Received: by 2002:a05:6830:1db5:: with SMTP id z21mr277121oti.144.1601318866869;
-        Mon, 28 Sep 2020 11:47:46 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id i6sm393029oib.17.2020.09.28.11.47.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Sep 2020 11:47:46 -0700 (PDT)
-Received: (nullmailer pid 3064388 invoked by uid 1000);
-        Mon, 28 Sep 2020 18:47:45 -0000
-Date:   Mon, 28 Sep 2020 13:47:45 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Ricardo Rivera-Matos <r-rivera-matos@ti.com>
-Cc:     dmurphy@ti.com, linux-kernel@vger.kernel.org, robh+dt@kernel.org,
-        sre@kernel.org, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v4 1/2] dt-bindings: power: Add the bq256xx dt bindings
-Message-ID: <20200928184745.GA3064331@bogus>
-References: <20200923152416.24822-1-r-rivera-matos@ti.com>
- <20200923152416.24822-2-r-rivera-matos@ti.com>
+        Mon, 28 Sep 2020 14:48:00 -0400
+Received: (qmail 145380 invoked by uid 1000); 28 Sep 2020 14:47:59 -0400
+Date:   Mon, 28 Sep 2020 14:47:59 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Matthias Kaehlcke <mka@chromium.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        Bastien Nocera <hadess@hadess.net>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        devicetree@vger.kernel.org, Peter Chen <peter.chen@nxp.com>,
+        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Johan Hovold <johan@kernel.org>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH v4 2/2] USB: misc: Add onboard_usb_hub driver
+Message-ID: <20200928184759.GB142254@rowland.harvard.edu>
+References: <20200928101326.v4.1.I248292623d3d0f6a4f0c5bc58478ca3c0062b49a@changeid>
+ <20200928101326.v4.2.I7c9a1f1d6ced41dd8310e8a03da666a32364e790@changeid>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200923152416.24822-2-r-rivera-matos@ti.com>
+In-Reply-To: <20200928101326.v4.2.I7c9a1f1d6ced41dd8310e8a03da666a32364e790@changeid>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 23 Sep 2020 10:24:15 -0500, Ricardo Rivera-Matos wrote:
-> Add the bindings for the bq256xx series of battery charging ICs.
+On Mon, Sep 28, 2020 at 10:13:55AM -0700, Matthias Kaehlcke wrote:
+> The main issue this driver addresses is that a USB hub needs to be
+> powered before it can be discovered. For discrete onboard hubs (an
+> example for such a hub is the Realtek RTS5411) this is often solved
+> by supplying the hub with an 'always-on' regulator, which is kind
+> of a hack. Some onboard hubs may require further initialization
+> steps, like changing the state of a GPIO or enabling a clock, which
+> requires even more hacks. This driver creates a platform device
+> representing the hub which performs the necessary initialization.
+> Currently it only supports switching on a single regulator, support
+> for multiple regulators or other actions can be added as needed.
+> Different initialization sequences can be supported based on the
+> compatible string.
 > 
-> Datasheets:
-> - https://www.ti.com/lit/ds/symlink/bq25600.pdf
-> - https://www.ti.com/lit/ds/symlink/bq25601.pdf
-> - https://www.ti.com/lit/ds/symlink/bq25600d.pdf
-> - https://www.ti.com/lit/ds/symlink/bq25601d.pdf
-> - https://www.ti.com/lit/ds/symlink/bq25611d.pdf
-> - https://www.ti.com/lit/ds/symlink/bq25618.pdf
-> - https://www.ti.com/lit/ds/symlink/bq25619.pdf
+> Besides performing the initialization the driver can be configured
+> to power the hub off during system suspend. This can help to extend
+> battery life on battery powered devices which have no requirements
+> to keep the hub powered during suspend. The driver can also be
+> configured to leave the hub powered when a wakeup capable USB device
+> is connected when suspending, and power it off otherwise.
 > 
-> Signed-off-by: Ricardo Rivera-Matos <r-rivera-matos@ti.com>
+> Technically the driver consists of two drivers, the platform driver
+> described above and a very thin USB driver that subclasses the
+> generic driver. The purpose of this driver is to provide the platform
+> driver with the USB devices corresponding to the hub(s) (a hub
+> controller may provide multiple 'logical' hubs, e.g. one to support
+> USB 2.0 and another for USB 3.x).
 > 
+> Co-developed-by: Ravi Chandra Sadineni <ravisadineni@chromium.org>
+> Signed-off-by: Ravi Chandra Sadineni <ravisadineni@chromium.org>
+> Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
 > ---
-> 
-> v4 - documents monitored-battery and interrupts, fixes example for
-> ti,watchdog-timeout-ms
-> 
->  .../bindings/power/supply/bq256xx.yaml        | 110 ++++++++++++++++++
->  1 file changed, 110 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/power/supply/bq256xx.yaml
-> 
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Minor cut & paste error:
+
+> +static int onboard_hub_power_off(struct onboard_hub *hub)
+> +{
+> +	int err;
+> +
+> +	err = regulator_disable(hub->vdd);
+> +	if (err) {
+> +		dev_err(hub->dev, "failed to enable regulator: %d\n", err);
+
+s/enable/disable/
+
+Have you tried manually unbinding and rebinding the two drivers a few 
+times to make sure they will still work?  I'm a little concerned about 
+all the devm_* stuff in here; does that get released when the driver is 
+unbound from the device or when the device is unregistered?  And if the 
+latter, what happens if you have multiple sysfs attribute groups going 
+at the same time?
+
+Apart from those worries and the typo, this looks pretty good to me.
+
+Acked-by: Alan Stern <stern@rowland.harvard.edu>
+
+Alan Stern
