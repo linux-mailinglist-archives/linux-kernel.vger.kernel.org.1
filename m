@@ -2,80 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C43CE27A7D3
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 08:49:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C789727A7D6
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 08:50:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726504AbgI1Gtz convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 28 Sep 2020 02:49:55 -0400
-Received: from mail-lf1-f68.google.com ([209.85.167.68]:43582 "EHLO
-        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725308AbgI1Gtz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 02:49:55 -0400
-Received: by mail-lf1-f68.google.com with SMTP id y2so9781374lfy.10;
-        Sun, 27 Sep 2020 23:49:53 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=0sGL25OAFSU0NyKSRPgNVNAwmqv5+p5DkVqXN1iipGQ=;
-        b=gx9pt8PIqOctv0xrkT0a3bsf2hIF7LeZcAdGExSU0l+EHQddMdM4Lu3PaW5bUD+AFh
-         IDGTRbpB8MFVzgXceMq3HxgEVOGW1cD4MD7c0AEuIDRVedT6alwrcDP/XHvPi+W2ZPGi
-         O+OOqZhLkafaJ0PI5nkLsHTH4kCKExrzzmyLaZ1Z/zbzkCaqFEPjnmpEOpIJTl15E3C+
-         LeOtJZuMgjMGGPxUhx+NwPOUGYOFDjVHq6vK0WqZIwq/QC9S0VWMAvSHqsb3BxM8g/tx
-         yLVfRXR4ZUPZ1zJsHnK8mTJN+e6Zxbu41DfLCf8IGm/kCkNMkyHIKxT7NMqxVE73dHBw
-         hgpg==
-X-Gm-Message-State: AOAM532bjOvJjRhwdoQmGFoXn8DRGscFU3jfxm7J8Qby3v4Qac8EPPbj
-        uvggfRyd6U92WN6BVdq13E4KTKLcefna6Q==
-X-Google-Smtp-Source: ABdhPJxr2KdcevdyBWBZg5qfoPKpPLappMl8Gt5cnBjrpGRpo9h80VCTMYV70kbWMLFb2I6E7jQXvg==
-X-Received: by 2002:a19:ac49:: with SMTP id r9mr3081451lfc.582.1601275792800;
-        Sun, 27 Sep 2020 23:49:52 -0700 (PDT)
-Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com. [209.85.208.170])
-        by smtp.gmail.com with ESMTPSA id r15sm2710211lfn.259.2020.09.27.23.49.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 27 Sep 2020 23:49:52 -0700 (PDT)
-Received: by mail-lj1-f170.google.com with SMTP id u21so104178ljl.6;
-        Sun, 27 Sep 2020 23:49:52 -0700 (PDT)
-X-Received: by 2002:a2e:a550:: with SMTP id e16mr4737780ljn.125.1601275792241;
- Sun, 27 Sep 2020 23:49:52 -0700 (PDT)
+        id S1726583AbgI1GuF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 02:50:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40480 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725308AbgI1GuE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 02:50:04 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B6B5F23119;
+        Mon, 28 Sep 2020 06:50:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601275803;
+        bh=9RLOX5t9/gxEad4ACFbvcDY/LFaF2xfXrQ+4kIuB910=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=og/c53pjfRJcUKFeQP/+XI4TOYNopKOah3CJmIRZAuZ+nrH0Uy20x6XZnt3Z/X1dh
+         JeK8r/a3UKPHoivUomFM2K1bM9dcKwGFsDHijBQ1CCRza4shtATy1PrMIsKBAhOnw2
+         rdb1pWc6X3HzXQVcC44b8MBTu/96Qe9iId0hF4pE=
+Date:   Mon, 28 Sep 2020 08:50:11 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linus Torvalds <torvalds@linuxfoundation.org>,
+        Paul McKenney <paulmck@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-usb@vger.kernel.org,
+        netdev@vger.kernel.org, Christian Benvenuti <benve@cisco.com>,
+        Govindarajulu Varadarajan <_govind@gmx.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-doc@vger.kernel.org,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Jay Cliburn <jcliburn@gmail.com>,
+        Chris Snook <chris.snook@gmail.com>,
+        Vishal Kulkarni <vishal@chelsio.com>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        intel-wired-lan@lists.osuosl.org,
+        Shannon Nelson <snelson@pensando.io>,
+        Pensando Drivers <drivers@pensando.io>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Solarflare linux maintainers <linux-net-drivers@solarflare.com>,
+        Edward Cree <ecree@solarflare.com>,
+        Martin Habets <mhabets@solarflare.com>,
+        Jon Mason <jdmason@kudzu.us>, Daniel Drake <dsd@gentoo.org>,
+        Ulrich Kunitz <kune@deine-taler.de>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        linux-wireless@vger.kernel.org,
+        Arend van Spriel <arend.vanspriel@broadcom.com>,
+        Franky Lin <franky.lin@broadcom.com>,
+        Hante Meuleman <hante.meuleman@broadcom.com>,
+        Chi-Hsien Lin <chi-hsien.lin@cypress.com>,
+        Wright Feng <wright.feng@cypress.com>,
+        brcm80211-dev-list.pdl@broadcom.com,
+        brcm80211-dev-list@cypress.com,
+        Stanislav Yakovlev <stas.yakovlev@gmail.com>,
+        Stanislaw Gruszka <stf_xl@wp.pl>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
+        Luca Coelho <luciano.coelho@intel.com>,
+        Intel Linux Wireless <linuxwifi@intel.com>,
+        Jouni Malinen <j@w1.fi>,
+        Amitkumar Karwar <amitkarwar@gmail.com>,
+        Ganapathi Bhat <ganapathi.bhat@nxp.com>,
+        Xinming Hu <huxinming820@gmail.com>,
+        libertas-dev@lists.infradead.org,
+        Pascal Terjan <pterjan@google.com>,
+        Ping-Ke Shih <pkshih@realtek.com>
+Subject: Re: [patch 21/35] net: usb: kaweth: Remove last user of
+ kaweth_control()
+Message-ID: <20200928065011.GB381927@kroah.com>
+References: <20200927194846.045411263@linutronix.de>
+ <20200927194921.948595516@linutronix.de>
 MIME-Version: 1.0
-References: <20200927192912.46323-1-peron.clem@gmail.com> <20200927192912.46323-8-peron.clem@gmail.com>
-In-Reply-To: <20200927192912.46323-8-peron.clem@gmail.com>
-From:   Chen-Yu Tsai <wens@csie.org>
-Date:   Mon, 28 Sep 2020 14:49:40 +0800
-X-Gmail-Original-Message-ID: <CAGb2v65FOois4RXZWZBu1x1TGy4Kb6Orw_FyHBu=yz_dXJ7HWw@mail.gmail.com>
-Message-ID: <CAGb2v65FOois4RXZWZBu1x1TGy4Kb6Orw_FyHBu=yz_dXJ7HWw@mail.gmail.com>
-Subject: Re: [linux-sunxi] [PATCH v5 07/20] ASoC: sun4i-i2s: Fix sun8i
- volatile regs
-To:     =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
-Cc:     Maxime Ripard <mripard@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Marcus Cooper <codekipper@gmail.com>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Linux-ALSA <alsa-devel@alsa-project.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-sunxi <linux-sunxi@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200927194921.948595516@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 3:29 AM Clément Péron <peron.clem@gmail.com> wrote:
->
-> The FIFO TX reg is volatile and sun8i i2s register
-> mapping is different from sun4i.
->
-> Even if in this case it's doesn't create an issue,
-> Avoid setting some regs that are undefined in sun8i.
->
-> Signed-off-by: Clément Péron <peron.clem@gmail.com>
-> Acked-by: Maxime Ripard <mripard@kernel.org>
+On Sun, Sep 27, 2020 at 09:49:07PM +0200, Thomas Gleixner wrote:
+> From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> 
+> kaweth_async_set_rx_mode() invokes kaweth_contol() and has two callers:
+> 
+> - kaweth_open() which is invoked from preemptible context
+> .
+> - kaweth_start_xmit() which holds a spinlock and has bottom halfs disabled.
+> 
+> If called from kaweth_start_xmit() kaweth_async_set_rx_mode() obviously
+> cannot block, which means it can't call kaweth_control(). This is detected
+> with an in_interrupt() check.
+> 
+> Replace the in_interrupt() check in kaweth_async_set_rx_mode() with an
+> argument which is set true by the caller if the context is safe to sleep,
+> otherwise false.
+> 
+> Now kaweth_control() is only called from preemptible context which means
+> there is no need for GFP_ATOMIC allocations anymore. Replace it with
+> usb_control_msg(). Cleanup the code a bit while at it.
+> 
+> Finally remove kaweth_control() since the last user is gone.
+> 
+> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: linux-usb@vger.kernel.org
+> Cc: netdev@vger.kernel.org
 
-Reviewed-by: Chen-Yu Tsai <wens@csie.org>
+Thanks for the cleanup, that driver really needed it!
+
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
