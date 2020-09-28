@@ -2,104 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06A5527B920
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 02:55:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4BD627B93D
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 03:18:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727195AbgI2AzX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 20:55:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52174 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727007AbgI2AzX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 20:55:23 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18D32C061755;
-        Mon, 28 Sep 2020 17:55:23 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id z25so3095314iol.10;
-        Mon, 28 Sep 2020 17:55:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QGTY5JlYWG9z0D7/RuLNr1T5K1KEPAuumqJ9jOnxLyw=;
-        b=fqfX70p6n23/qMu34NxN9mlOSgogomSvdKf6fhh0zrS/y3WgqeKSOW7/unUCQhgsRK
-         5vUjqKJeV/P70GeLH0wEXCqLyJH4PhJAT9kL83lGffQsKp/+EsSi1OMcAfmKByUKyVAb
-         DTZ9ClinCQeMew1q726Fo7S8MIqdGXCiL9mtVqy/w05ENkImu6DgaOrYDNpXCHtWixFK
-         NeU8xTwygywPahfeHfFiwRTWeWQmPUBi/FBEPtYruIjq3kXd7dXmvbNp+y2juxqp85K9
-         KjxdaZIEfJW2g6fAg3Byrr2TdLFTxjD08vKI7rKPFSKeKDPKr/fH3edzBaEbrRdi4Jx2
-         Eybw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QGTY5JlYWG9z0D7/RuLNr1T5K1KEPAuumqJ9jOnxLyw=;
-        b=DqN3jzzfDK7o2SS5W4c/yjT/O8TOyA+pF3SskO0cAmSJmyHCCytWwyx9AZHEChB7ZZ
-         CMQuYrzJUhUoY2Zd6m7FarOp5AJe/R0+KC+Dd5SOCIBVSHUKIpqQOfMsJyS6u4fMzDqv
-         VVGKWJkKa2moPx6Cs9DbT9pLLy4xmX1FM7kZ04w7LF3U6Ufy0V6Y6KUgcVUIvDXAIuX7
-         fxCElokw7VuFjp2mJ/sxkffH0Wb8bkN/QGzbclQ3PIQCY1FdQfbh7yRqfCwgay7ayC3p
-         7jzoDoprNc3DQ9VwoZvRypnJOVueBirLcasrGD2X9QpnOI9EQ3ZZqR8+HyCOSLcvaTW/
-         wfLg==
-X-Gm-Message-State: AOAM5329x7NsE/BymVIkTBz7DA2Bf6VaxtKZ21I4lW1CSCcb+DqSuFPW
-        2d0QH9qqv6gTp07lj6JNaV8xCdtEKnWhU3kGIQ4=
-X-Google-Smtp-Source: ABdhPJzksqe6Wln9YBjx1ZvlFsWD4eV85ZoBEjjk7OOVTIcOb7Mo4sErIAc3CG+izUMAzwtHugSF7aZoX1oy2aKg89E=
-X-Received: by 2002:a02:6623:: with SMTP id k35mr1004403jac.105.1601340922396;
- Mon, 28 Sep 2020 17:55:22 -0700 (PDT)
+        id S1727201AbgI2BSd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 21:18:33 -0400
+Received: from mga12.intel.com ([192.55.52.136]:35482 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726961AbgI2BSd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 21:18:33 -0400
+IronPort-SDR: iFNby29po1uDWdFmL5AOwkFICJfoq/W/fdd2ALkX//pWWc3TW4pMCPq08/nnv/xy1lf3vo0yIH
+ wxb2mq985A+g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9758"; a="141475111"
+X-IronPort-AV: E=Sophos;i="5.77,315,1596524400"; 
+   d="scan'208";a="141475111"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 15:07:49 -0700
+IronPort-SDR: QlGRTqEN4d8qtBxrb2skgkdPLBIZM2kFqgtNC1yKwoS0Zp6q+/PfjONCBSwsAQL+HfayEcCDz5
+ SNVLTsJ6l8EQ==
+X-IronPort-AV: E=Sophos;i="5.77,315,1596524400"; 
+   d="scan'208";a="488780374"
+Received: from jlasecki-mobl2.ger.corp.intel.com (HELO localhost) ([10.252.49.78])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 15:07:42 -0700
+Date:   Tue, 29 Sep 2020 01:07:40 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Andy Lutomirski <luto@kernel.org>, "H.J. Lu" <hjl.tools@gmail.com>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        linux-sgx@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Cedric Xing <cedric.xing@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        asapek@google.com, Borislav Petkov <bp@alien8.de>,
+        chenalexchen@google.com, Conrad Parker <conradparker@google.com>,
+        cyhanish@google.com, "Huang, Haitao" <haitao.huang@intel.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        "Huang, Kai" <kai.huang@intel.com>,
+        "Svahn, Kai" <kai.svahn@intel.com>, Keith Moyer <kmoy@google.com>,
+        Christian Ludloff <ludloff@google.com>,
+        Neil Horman <nhorman@redhat.com>,
+        Nathaniel McCallum <npmccallum@redhat.com>,
+        Patrick Uiterwijk <puiterwijk@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>, yaozhangx@google.com,
+        Yu-cheng Yu <yu-cheng.yu@intel.com>
+Subject: Re: [PATCH v38 21/24] x86/vdso: Implement a vDSO for Intel SGX
+ enclave call
+Message-ID: <20200928220740.GG2705@linux.intel.com>
+References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
+ <20200915112842.897265-22-jarkko.sakkinen@linux.intel.com>
+ <721ca14e-21df-3df1-7bef-0b00d0ff90c3@citrix.com>
+ <20200928005842.GC6704@linux.intel.com>
+ <85bc15d5-93cd-e332-ae9a-1e1e66e1181d@citrix.com>
+ <CAMe9rOpzXW0cSD=9E7drGEHH=pcm_NqvPiaR0pBJzYLeAt0_3g@mail.gmail.com>
+ <CALCETrU4Rhc0fwzzKLSUgan2YmSovxVFYOZEmFnBHC4DbZ5RfQ@mail.gmail.com>
+ <0edfbf96-32db-3565-0d07-7d4a4118dbe6@intel.com>
 MIME-Version: 1.0
-References: <20200924051343.16052.9571.stgit@localhost.localdomain>
- <CAOSf1CEv3v940FR_we70qCBME0qFXPizPT8EFbf3XyK2-fPDrw@mail.gmail.com> <ff6a8c97-4a6a-c82b-bd35-e09fa44f8e20@linux.ibm.com>
-In-Reply-To: <ff6a8c97-4a6a-c82b-bd35-e09fa44f8e20@linux.ibm.com>
-From:   "Oliver O'Halloran" <oohall@gmail.com>
-Date:   Tue, 29 Sep 2020 10:55:11 +1000
-Message-ID: <CAOSf1CHdOk1guuST8T5t1A9O=xkbeFiJ9uZXgHeBBjeLKZ5O4g@mail.gmail.com>
-Subject: Re: [PATCH] rpadlpar_io:Add MODULE_DESCRIPTION entries to kernel modules
-To:     Tyrel Datwyler <tyreld@linux.ibm.com>
-Cc:     Mamatha Inamdar <mamatha4@linux.vnet.ibm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0edfbf96-32db-3565-0d07-7d4a4118dbe6@intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 6:50 AM Tyrel Datwyler <tyreld@linux.ibm.com> wrote:
->
-> On 9/23/20 11:41 PM, Oliver O'Halloran wrote:
-> > On Thu, Sep 24, 2020 at 3:15 PM Mamatha Inamdar
-> > <mamatha4@linux.vnet.ibm.com> wrote:
-> >>
-> >> This patch adds a brief MODULE_DESCRIPTION to rpadlpar_io kernel modules
-> >> (descriptions taken from Kconfig file)
-> >>
-> >> Signed-off-by: Mamatha Inamdar <mamatha4@linux.vnet.ibm.com>
-> >> ---
-> >>  drivers/pci/hotplug/rpadlpar_core.c |    1 +
-> >>  1 file changed, 1 insertion(+)
-> >>
-> >> diff --git a/drivers/pci/hotplug/rpadlpar_core.c b/drivers/pci/hotplug/rpadlpar_core.c
-> >> index f979b70..bac65ed 100644
-> >> --- a/drivers/pci/hotplug/rpadlpar_core.c
-> >> +++ b/drivers/pci/hotplug/rpadlpar_core.c
-> >> @@ -478,3 +478,4 @@ static void __exit rpadlpar_io_exit(void)
-> >>  module_init(rpadlpar_io_init);
-> >>  module_exit(rpadlpar_io_exit);
-> >>  MODULE_LICENSE("GPL");
-> >> +MODULE_DESCRIPTION("RPA Dynamic Logical Partitioning driver for I/O slots");
-> >
-> > RPA as a spec was superseded by PAPR in the early 2000s. Can we rename
-> > this already?
->
-> I seem to recall Michael and I discussed the naming briefly when I added the
-> maintainer entries for the drivers and that the PAPR acronym is almost as
-> meaningless to most as the original RPA. While, IBM no longer uses the term
-> pseries for Power hardware marketing it is the defacto platform identifier in
-> the Linux kernel tree for what we would call PAPR compliant. All in all I have
-> no problem with renaming, but maybe we should consider pseries_dlpar or even
-> simpler ibmdlpar.
+On Mon, Sep 28, 2020 at 11:17:42AM -0700, Dave Hansen wrote:
+> On 9/28/20 11:12 AM, Andy Lutomirski wrote:
+> >> endbr64
+> >> /* Check if shadow stack is in use.  NB: R11 is the only usable
+> >>    scratch register for function calls.  */
+> >> xorl %r11d, %r11d
+> >> rdsspq %r11
+> >> testq %r11, %r11
+> >> jnz 3f
+> >> call 2f
+> >> 1:
+> >> pause
+> >> lfence
+> >> jmp 1b
+> >> 2:
+> >> mov %rax, (%rsp)
+> >> ret
+> >> 3:
+> >> /* Shadow stack is in use.  Make the indirect call.  */
+> >> call *%rax
+> >> ret
+> > What do we expect user programs to do on CET systems?  It would be
+> > nice if we could instead ALTERNATIVE this out if X86_FEATURE_SHSTK.
+> 
+> Shouldn't we just be able to use X86_FEATURE_RETPOLINE?
+> 
+> We probably need a mechanism to force X86_FEATURE_SHSTK and
+> X86_FEATURE_RETPOLINE to be mutually exclusive if we don't have one already.
 
-I'm not too bothered by what we call it so long as it's consistent
-with *something* else in the tree. Using pseries rather than ibm as a
-prefix would probably be better since the legacy ibmphp driver is in
-the same directory.
+First of all: lets go with boot time patching instead of dynamic
+detection. It's both easier to implement and by all other merits makes a
+lot more sense. It was just a thing that I've not used before.
+
+That sorted out, does it matter which direction I look it at? I could
+use either feature flag as basis (and I do not have a personal
+preference here).
+
+/Jarkko
