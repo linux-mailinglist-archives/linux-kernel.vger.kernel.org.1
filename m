@@ -2,82 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D37627ACBE
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 13:32:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAC1A27ACBF
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 13:32:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726641AbgI1Lca (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 07:32:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40900 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726380AbgI1Lc0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 07:32:26 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F609C061755;
-        Mon, 28 Sep 2020 04:32:26 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1601292744;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=3tT8GIht0pqlC3XdLLIRoOvHpL/MYONBAnnoKe8BbB0=;
-        b=LXXbqOT1YgvA5tzHKFXBQLL4ReUjnBD4aB1eMxPsbYDGZyiqWgV23Bq2BlyRx1buzRXgec
-        5qytwhPVx8rnGYHTykl6SEN1PD3SRnY2V+tXlvyooWzKU2nFBsXChQC+t7pK2MsIuOVtQJ
-        gmT+YmotRF1Iq/KpYsKi0FattscIZeJE9HZiIJQ0ARwUv7boyROQbFdbi07BVSncIwyIp4
-        /LLjBZnYFklz1IWRfe9j2QD9tlchu8XOnMSyfkPpM5d8v4P3pQlS93JwNji4DbM5uIgDbl
-        +oWQHpCZB8tNjFHYiEBt3TmEb8WIFNtY4C7cBiWBAfMe59FnJco+5zfoOc06gw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1601292744;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=3tT8GIht0pqlC3XdLLIRoOvHpL/MYONBAnnoKe8BbB0=;
-        b=IaLC29w1ViYuMkvTqlia7KFa1b4c3Q5+ZZn5gpwdVyZX3qgwsW78qU1NTwGUWw/jss8anD
-        MN5ZdzhxhAwaY6BQ==
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Jon Derrick <jonathan.derrick@intel.com>
-Cc:     linux-pci@vger.kernel.org, Bjorn Helgaas <helgaas@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Andrzej Jakowski <andrzej.jakowski@linux.intel.com>,
-        Sushma Kalakota <sushmax.kalakota@intel.com>,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        Andy Shevchenko <andriy.shevchenko@intel.com>
-Subject: Re: [PATCH 5/6] x86/apic/msi: Use Real PCI DMA device when configuring IRTE
-In-Reply-To: <20200907143207.GC9474@e121166-lin.cambridge.arm.com>
-References: <20200728194945.14126-1-jonathan.derrick@intel.com> <20200728194945.14126-6-jonathan.derrick@intel.com> <20200907143207.GC9474@e121166-lin.cambridge.arm.com>
-Date:   Mon, 28 Sep 2020 13:32:24 +0200
-Message-ID: <877dsekugn.fsf@nanos.tec.linutronix.de>
+        id S1726655AbgI1Lcq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 07:32:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42746 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726380AbgI1Lcp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 07:32:45 -0400
+Received: from mail-ua1-f52.google.com (mail-ua1-f52.google.com [209.85.222.52])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 57A5D23119
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 11:32:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601292765;
+        bh=xZudESZoNWrMKl+EPdcNAvEcHmI/YsJEVNHFPvHdvRw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=fV426os9TKYhIvZkBaY+TYvgHU6OJYQsGQk4Tpul2CZ51ZaWRTiWuf9w364bwBhsR
+         IRlU4mW7otJHIm8U5T4YViul/+q9/OqJW6QFuB+dSbHTpNwoe3p4S/mFEmGPbVYlX+
+         2UjkzTjLMvUPEj1WO6INrt3u6khip8A+xsxfpGpE=
+Received: by mail-ua1-f52.google.com with SMTP id h15so2064743uab.3
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 04:32:45 -0700 (PDT)
+X-Gm-Message-State: AOAM530SoUJA/ra+5vEFeiZxaQtN1/oIKibHueplOE8mt2aQr22Dkggr
+        OvAH7IhhLtLl6wQ/dP0p9Uhgt7Pt+FQXEDnaQz2IKg==
+X-Google-Smtp-Source: ABdhPJwi7Kf1/TO4y4q7aWBNfNZi/GSTHY4iSAWGo4xUBrHZWc5IjjiWge++TaqlAxtqOzKiEm24pDFMZvhTRGzNq1g=
+X-Received: by 2002:ab0:35e9:: with SMTP id w9mr303137uau.48.1601292764466;
+ Mon, 28 Sep 2020 04:32:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20200814134123.14566-1-ansuelsmth@gmail.com>
+In-Reply-To: <20200814134123.14566-1-ansuelsmth@gmail.com>
+From:   Amit Kucheria <amitk@kernel.org>
+Date:   Mon, 28 Sep 2020 17:02:33 +0530
+X-Gmail-Original-Message-ID: <CAHLCerM666W9ijLu529NNPNz_NuyO0QPKws8spWrR4bWNo0A-A@mail.gmail.com>
+Message-ID: <CAHLCerM666W9ijLu529NNPNz_NuyO0QPKws8spWrR4bWNo0A-A@mail.gmail.com>
+Subject: Re: [RFC PATCH v6 0/8] Add support for ipq8064 tsens
+To:     Ansuel Smith <ansuelsmth@gmail.com>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Linux PM list <linux-pm@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 07 2020 at 15:32, Lorenzo Pieralisi wrote:
+Hi Ansuel,
 
-> On Tue, Jul 28, 2020 at 01:49:44PM -0600, Jon Derrick wrote:
->> VMD retransmits child device MSI/X with the VMD endpoint's requester-id.
->> In order to support direct interrupt remapping of VMD child devices,
->> ensure that the IRTE is programmed with the VMD endpoint's requester-id
->> using pci_real_dma_dev().
->> 
->> Reviewed-by: Andy Shevchenko <andriy.shevchenko@intel.com>
->> Signed-off-by: Jon Derrick <jonathan.derrick@intel.com>
->> ---
->>  arch/x86/kernel/apic/msi.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
+Just a quick note to say that I'm not ignoring this, just on
+vacations. I'll be back to review this in a few days.
+
+Regards,
+Amit
+
+On Fri, Aug 14, 2020 at 7:12 PM Ansuel Smith <ansuelsmth@gmail.com> wrote:
 >
-> I'd need an x86 maintainer ACK on this patch.
-
-That conflicts with the big PCI/MSI overhaul which is pending in
-
-  git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/irq
-
-native_setup_msi_irqs() does not exist anymore.
-
-patch 3 has conflicts as well.
-
-Thanks,
-
-        tglx
+> This patchset convert msm8960 to reg_filed, use int_common instead
+> of a custom function and fix wrong tsens get_temp function for msm8960.
+> Ipq8064 SoCs tsens driver is based on 8960 tsens driver. Ipq8064 needs
+> to be registered as a gcc child as the tsens regs on this platform are
+> shared with the controller.
+> This is based on work and code here
+> https://git.linaro.org/people/amit.kucheria/kernel.git/log/?h=wrk3/tsens-8960-breakage
+>
+> v6:
+> * Fix spelling error (can't find the problem with variable misallignment)
+> * Rework big if-else
+> * Remove extra comments
+> * Add description about different interrupts
+> v5:
+> * Conver driver to use reg_fiedl
+> * Use init_common
+> * Drop custom set_trip and set_interrupt
+> * Use common set_trip and set_interrupt
+> * Fix bad get_temp function
+> * Add missing hardcoded slope
+> v4:
+> * Fix compilation error and warning reported by the bot
+> v3:
+> * Change driver to register as child instead of use phandle
+> v2:
+> * Fix dt-bindings problems
+>
+> Ansuel Smith (8):
+>   drivers: thermal: tsens: use get_temp for tsens_valid
+>   drivers: thermal: tsens: Add VER_0 tsens version
+>   drivers: thermal: tsens: Convert msm8960 to reg_field
+>   drivers: thermal: tsens: Use init_common for msm8960
+>   drivers: thermal: tsens: Fix wrong get_temp for msm8960
+>   drivers: thermal: tsens: Change calib_backup name for msm8960
+>   drivers: thermal: tsens: Add support for ipq8064-tsens
+>   dt-bindings: thermal: tsens: Document ipq8064 bindings
+>
+>  .../bindings/thermal/qcom-tsens.yaml          |  50 ++++-
+>  drivers/thermal/qcom/tsens-8960.c             | 172 +++++++++++-------
+>  drivers/thermal/qcom/tsens.c                  | 130 +++++++++++--
+>  drivers/thermal/qcom/tsens.h                  |   7 +-
+>  4 files changed, 270 insertions(+), 89 deletions(-)
+>
+> --
+> 2.27.0
+>
