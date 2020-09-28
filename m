@@ -2,276 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD5E527B5C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 21:55:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 095A927B5CC
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 21:59:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726772AbgI1TzY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 15:55:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:29652 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726442AbgI1TzV (ORCPT
+        id S1726749AbgI1T7C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 15:59:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34510 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726590AbgI1T7A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 15:55:21 -0400
-Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601322918;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1qD/bYiwXaDqvMUHTGUqMaHkNigUfku0s1G1pgifknA=;
-        b=Vcodsduej2/u385HKMhQzefiBZKnP4rRfnexsY2G/V05Fe4miT9mTycR4/ipq0KIW85Cif
-        D3m8CcFbpTBi3+2YsSNJM3YxRkP77dXtvidgaiaWZupqTQhZKigr1hB45elH5XDlMdsUyR
-        L9i6ciyAGmUgFWPWI8KuDgh5QzUNS8M=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-574-UPsTZ0I8OfyKfTGVYbfZBQ-1; Mon, 28 Sep 2020 15:55:16 -0400
-X-MC-Unique: UPsTZ0I8OfyKfTGVYbfZBQ-1
-Received: by mail-wm1-f71.google.com with SMTP id x6so804152wmi.1
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 12:55:15 -0700 (PDT)
+        Mon, 28 Sep 2020 15:59:00 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 092B9C061755;
+        Mon, 28 Sep 2020 12:59:00 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id y15so2383044wmi.0;
+        Mon, 28 Sep 2020 12:58:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=R40nrCDfhihDaBak/buX8nywTFdAEmU4Ja2xlgkMpqk=;
+        b=qrDsEFA0vYMYm2cs78HiC7HnifY6UfEh5tE99eHZRifsMoXiOe8pimSaKCxFpIyss+
+         Xn2F4HfK6ESIgX81k0Li/LIO0d5y1O5Z5a+8RZ6gxr7bh1Et1i/PliJidTKZ9f1LHbxU
+         9yxCM04Gnfs+5ZGev8a8CZzw+JpV7nBB7YzEaEFnOwNVVUjnevqDDI6E0KJCsz/xlD7p
+         humPbko98hUZ4ENqkQo18eQdlJWOXtb0R0ui+ltQxTx35IAiNkagqqE0SB1YodXJXbwM
+         4EkSdpYwf9nvecNfUWkb/XmXyhNgkLaIPGsn9vlOvNPgjPtjDDwio53YSAxpqsuJr+PK
+         YxQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1qD/bYiwXaDqvMUHTGUqMaHkNigUfku0s1G1pgifknA=;
-        b=SIOQ9fofEnY5o/3+MutumH+pk47UA3kXT57edObXDDVhDXj7PzOLwm79O0J8I0iq25
-         grS1FPCl12pQhbdyPBBz1cajuMrgHUeRBCvOcywotA09/LVudSQbq/JXSUdag+xrbedI
-         cvHYA1/KwwS1i6EAh//HaKsGuhZrQlWBbAt5RccExh5EFFLi49fSSP2BYFpD4oHin37H
-         gtjPqGhy36RvxiyDziMsgehRGJQKNc5OO4E5I+QmmvZg5t57TI9363AaMchpZ2pfUVzn
-         XnwlDEkVqW4actICntOQXcrZP+fgfgU5shoJQFU/CYGdC4WfrQfhV8hFdkJZI/JaMMpE
-         9F1A==
-X-Gm-Message-State: AOAM533jEiCqRulhpdl1y+SUE4DAE/EruWwwBVTVdqqVepKuUJBLHBUZ
-        pUTapOq3D1SeVt4AzrtXLuHIfJllNv3j6b/fl5pOjz+KDifc6mkwj4mKTgm5ICPyMkX1zu4R6lG
-        0Gz/duhM4FpJ0MsBEN35h5M+A
-X-Received: by 2002:a7b:c151:: with SMTP id z17mr806548wmi.53.1601322913403;
-        Mon, 28 Sep 2020 12:55:13 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxHJc0NzkL6UIF4Usztiftaij8e1WIEJYDq5hNYrhp+v+0ltPTCNUWn4xJ0d+jBa6m27TyepA==
-X-Received: by 2002:a7b:c151:: with SMTP id z17mr806531wmi.53.1601322913098;
-        Mon, 28 Sep 2020 12:55:13 -0700 (PDT)
-Received: from redhat.com (bzq-79-179-71-128.red.bezeqint.net. [79.179.71.128])
-        by smtp.gmail.com with ESMTPSA id v9sm3010804wrv.35.2020.09.28.12.55.11
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=R40nrCDfhihDaBak/buX8nywTFdAEmU4Ja2xlgkMpqk=;
+        b=Iof8fhXwJzP8jwIeWvfTL2zCnAr9FjzSolH/w2HWtUTZ+IzSjD/BY9osTCqyHSTc9+
+         0jzF5f018upDeN/SJK0HU+fFZzUnfto4kUNHU8UI4c7mXxjF7I2I8o/kSp9Ze1uN8twj
+         gCCPB0UfThvAG0aCgpNzX6neBkK2oT5G0QiEg0j7GLBC8XHqZRTNz6Ux5RCbnTaVyIrt
+         a/aB2MXqcyHIcHsYJIch1RIXX3jmxnNYca0mv5SKWBk0YGOu97wEN8o7y51c9CVRfsQs
+         HwlWqwriLzX7MLXqmYjyb52BAMoq0ycLPYwhMxM5U78o9ZgIAbzYEwRYkD4tWjJov+o+
+         UTyA==
+X-Gm-Message-State: AOAM531y/bU5CCPx7jEgb5B8JqmryTIUe1CKvLTnLwFXlRJ97Hzisql9
+        B0USWquri6RRejLeKPYBBds=
+X-Google-Smtp-Source: ABdhPJwku5+xhjSNPN+gwulBq1wbSl0jOpoz06nnz0x0xvjXyMrJzi6pLqvi6Ba61eMBP2aBpLE8gg==
+X-Received: by 2002:a05:600c:220f:: with SMTP id z15mr751487wml.87.1601323138479;
+        Mon, 28 Sep 2020 12:58:58 -0700 (PDT)
+Received: from IcarusMOD.eternityproject.eu ([2.237.20.237])
+        by smtp.gmail.com with ESMTPSA id q4sm2607434wru.65.2020.09.28.12.58.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Sep 2020 12:55:12 -0700 (PDT)
-Date:   Mon, 28 Sep 2020 15:55:09 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Eli Cohen <elic@nvidia.com>
-Cc:     jasowang@redhat.com, virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        eli@nvidia.com
-Subject: Re: [PATCH V1 vhost-next] vdpa/mlx5: Make vdpa core driver a
- distinct module
-Message-ID: <20200928155448-mutt-send-email-mst@kernel.org>
-References: <20200924143231.GA186492@mtl-vdi-166.wap.labs.mlnx>
+        Mon, 28 Sep 2020 12:58:57 -0700 (PDT)
+From:   kholk11@gmail.com
+To:     bjorn.andersson@linaro.org
+Cc:     robh+dt@kernel.org, agross@kernel.org, georgi.djakov@linaro.org,
+        kholk11@gmail.com, marijns95@gmail.com, konradybcio@gmail.com,
+        martin.botka1@gmail.com, linux-arm-msm@vger.kernel.org,
+        phone-devel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/2] Add SDM630/636/660 interconnect driver
+Date:   Mon, 28 Sep 2020 21:58:51 +0200
+Message-Id: <20200928195853.40084-1-kholk11@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200924143231.GA186492@mtl-vdi-166.wap.labs.mlnx>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 05:32:31PM +0300, Eli Cohen wrote:
-> Change core vdpa functionality into a loadbale module such that upcoming
-> block implementation will be able to use it.
-> 
-> Signed-off-by: Eli Cohen <elic@nvidia.com>
+From: AngeloGioacchino Del Regno <kholk11@gmail.com>
 
-Why don't we merge this patch together with the block module?
+This patch series adds the SDM660 interconnect provider driver in
+order to stop some timeouts and achieve some decent performance by
+avoiding to be NoC limited.
+It's also providing some power consumption improvement, but I have
+only measured that as less heat, which is quite important when
+working on thermally constrained devices like smartphones.
 
-> ---
-> V0 --> V1:
-> Removed "default n" for configu options as 'n' is the default
-> 
->  drivers/vdpa/Kconfig               |  8 +++-----
->  drivers/vdpa/Makefile              |  2 +-
->  drivers/vdpa/mlx5/Makefile         |  7 +++++--
->  drivers/vdpa/mlx5/core/core_main.c | 20 ++++++++++++++++++++
->  drivers/vdpa/mlx5/core/mr.c        |  3 +++
->  drivers/vdpa/mlx5/core/resources.c | 10 ++++++++++
->  6 files changed, 42 insertions(+), 8 deletions(-)
->  create mode 100644 drivers/vdpa/mlx5/core/core_main.c
-> 
-> diff --git a/drivers/vdpa/Kconfig b/drivers/vdpa/Kconfig
-> index 4271c408103e..57ff6a7f7401 100644
-> --- a/drivers/vdpa/Kconfig
-> +++ b/drivers/vdpa/Kconfig
-> @@ -29,10 +29,9 @@ config IFCVF
->  	  To compile this driver as a module, choose M here: the module will
->  	  be called ifcvf.
->  
-> -config MLX5_VDPA
-> -	bool "MLX5 VDPA support library for ConnectX devices"
-> +config MLX5_VDPA_CORE
-> +	tristate "MLX5 VDPA support library for ConnectX devices"
->  	depends on MLX5_CORE
-> -	default n
->  	help
->  	  Support library for Mellanox VDPA drivers. Provides code that is
->  	  common for all types of VDPA drivers. The following drivers are planned:
-> @@ -40,8 +39,7 @@ config MLX5_VDPA
->  
->  config MLX5_VDPA_NET
->  	tristate "vDPA driver for ConnectX devices"
-> -	depends on MLX5_VDPA
-> -	default n
-> +	depends on MLX5_VDPA_CORE
->  	help
->  	  VDPA network driver for ConnectX6 and newer. Provides offloading
->  	  of virtio net datapath such that descriptors put on the ring will
-> diff --git a/drivers/vdpa/Makefile b/drivers/vdpa/Makefile
-> index d160e9b63a66..07353bbb9f8b 100644
-> --- a/drivers/vdpa/Makefile
-> +++ b/drivers/vdpa/Makefile
-> @@ -2,4 +2,4 @@
->  obj-$(CONFIG_VDPA) += vdpa.o
->  obj-$(CONFIG_VDPA_SIM) += vdpa_sim/
->  obj-$(CONFIG_IFCVF)    += ifcvf/
-> -obj-$(CONFIG_MLX5_VDPA) += mlx5/
-> +obj-$(CONFIG_MLX5_VDPA_CORE) += mlx5/
-> diff --git a/drivers/vdpa/mlx5/Makefile b/drivers/vdpa/mlx5/Makefile
-> index 89a5bededc9f..9f50f7e8d889 100644
-> --- a/drivers/vdpa/mlx5/Makefile
-> +++ b/drivers/vdpa/mlx5/Makefile
-> @@ -1,4 +1,7 @@
->  subdir-ccflags-y += -I$(srctree)/drivers/vdpa/mlx5/core
->  
-> -obj-$(CONFIG_MLX5_VDPA_NET) += mlx5_vdpa.o
-> -mlx5_vdpa-$(CONFIG_MLX5_VDPA_NET) += net/main.o net/mlx5_vnet.o core/resources.o core/mr.o
-> +obj-$(CONFIG_MLX5_VDPA_CORE) += mlx5_vdpa_core.o
-> +mlx5_vdpa_core-$(CONFIG_MLX5_VDPA_CORE) += core/resources.o core/mr.o core/core_main.o
-> +
-> +obj-$(CONFIG_MLX5_VDPA_NET) += mlx5_vdpa_net.o
-> +mlx5_vdpa_net-$(CONFIG_MLX5_VDPA_NET) += net/main.o net/mlx5_vnet.o
-> diff --git a/drivers/vdpa/mlx5/core/core_main.c b/drivers/vdpa/mlx5/core/core_main.c
-> new file mode 100644
-> index 000000000000..4b39b55f57ab
-> --- /dev/null
-> +++ b/drivers/vdpa/mlx5/core/core_main.c
-> @@ -0,0 +1,20 @@
-> +// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
-> +/* Copyright (c) 2020 Mellanox Technologies Ltd. */
-> +
-> +#include <linux/module.h>
-> +
-> +MODULE_AUTHOR("Eli Cohen <elic@nvidia.com>");
-> +MODULE_DESCRIPTION("Mellanox VDPA core driver");
-> +MODULE_LICENSE("Dual BSD/GPL");
-> +
-> +static int __init mlx5_vdpa_core_init(void)
-> +{
-> +	return 0;
-> +}
-> +
-> +static void __exit mlx5_vdpa_core_exit(void)
-> +{
-> +}
-> +
-> +module_init(mlx5_vdpa_core_init);
-> +module_exit(mlx5_vdpa_core_exit);
-> diff --git a/drivers/vdpa/mlx5/core/mr.c b/drivers/vdpa/mlx5/core/mr.c
-> index ef1c550f8266..c093eab6c714 100644
-> --- a/drivers/vdpa/mlx5/core/mr.c
-> +++ b/drivers/vdpa/mlx5/core/mr.c
-> @@ -434,6 +434,7 @@ int mlx5_vdpa_create_mr(struct mlx5_vdpa_dev *mvdev, struct vhost_iotlb *iotlb)
->  	mutex_unlock(&mr->mkey_mtx);
->  	return err;
->  }
-> +EXPORT_SYMBOL(mlx5_vdpa_create_mr);
->  
->  void mlx5_vdpa_destroy_mr(struct mlx5_vdpa_dev *mvdev)
->  {
-> @@ -456,6 +457,7 @@ void mlx5_vdpa_destroy_mr(struct mlx5_vdpa_dev *mvdev)
->  out:
->  	mutex_unlock(&mr->mkey_mtx);
->  }
-> +EXPORT_SYMBOL(mlx5_vdpa_destroy_mr);
->  
->  static bool map_empty(struct vhost_iotlb *iotlb)
->  {
-> @@ -484,3 +486,4 @@ int mlx5_vdpa_handle_set_map(struct mlx5_vdpa_dev *mvdev, struct vhost_iotlb *io
->  
->  	return err;
->  }
-> +EXPORT_SYMBOL(mlx5_vdpa_handle_set_map);
-> diff --git a/drivers/vdpa/mlx5/core/resources.c b/drivers/vdpa/mlx5/core/resources.c
-> index 96e6421c5d1c..89606a18e286 100644
-> --- a/drivers/vdpa/mlx5/core/resources.c
-> +++ b/drivers/vdpa/mlx5/core/resources.c
-> @@ -98,6 +98,7 @@ int mlx5_vdpa_create_tis(struct mlx5_vdpa_dev *mvdev, void *in, u32 *tisn)
->  
->  	return err;
->  }
-> +EXPORT_SYMBOL(mlx5_vdpa_create_tis);
->  
->  void mlx5_vdpa_destroy_tis(struct mlx5_vdpa_dev *mvdev, u32 tisn)
->  {
-> @@ -108,6 +109,7 @@ void mlx5_vdpa_destroy_tis(struct mlx5_vdpa_dev *mvdev, u32 tisn)
->  	MLX5_SET(destroy_tis_in, in, tisn, tisn);
->  	mlx5_cmd_exec_in(mvdev->mdev, destroy_tis, in);
->  }
-> +EXPORT_SYMBOL(mlx5_vdpa_destroy_tis);
->  
->  int mlx5_vdpa_create_rqt(struct mlx5_vdpa_dev *mvdev, void *in, int inlen, u32 *rqtn)
->  {
-> @@ -121,6 +123,7 @@ int mlx5_vdpa_create_rqt(struct mlx5_vdpa_dev *mvdev, void *in, int inlen, u32 *
->  
->  	return err;
->  }
-> +EXPORT_SYMBOL(mlx5_vdpa_create_rqt);
->  
->  void mlx5_vdpa_destroy_rqt(struct mlx5_vdpa_dev *mvdev, u32 rqtn)
->  {
-> @@ -131,6 +134,7 @@ void mlx5_vdpa_destroy_rqt(struct mlx5_vdpa_dev *mvdev, u32 rqtn)
->  	MLX5_SET(destroy_rqt_in, in, rqtn, rqtn);
->  	mlx5_cmd_exec_in(mvdev->mdev, destroy_rqt, in);
->  }
-> +EXPORT_SYMBOL(mlx5_vdpa_destroy_rqt);
->  
->  int mlx5_vdpa_create_tir(struct mlx5_vdpa_dev *mvdev, void *in, u32 *tirn)
->  {
-> @@ -144,6 +148,7 @@ int mlx5_vdpa_create_tir(struct mlx5_vdpa_dev *mvdev, void *in, u32 *tirn)
->  
->  	return err;
->  }
-> +EXPORT_SYMBOL(mlx5_vdpa_create_tir);
->  
->  void mlx5_vdpa_destroy_tir(struct mlx5_vdpa_dev *mvdev, u32 tirn)
->  {
-> @@ -154,6 +159,7 @@ void mlx5_vdpa_destroy_tir(struct mlx5_vdpa_dev *mvdev, u32 tirn)
->  	MLX5_SET(destroy_tir_in, in, tirn, tirn);
->  	mlx5_cmd_exec_in(mvdev->mdev, destroy_tir, in);
->  }
-> +EXPORT_SYMBOL(mlx5_vdpa_destroy_tir);
->  
->  int mlx5_vdpa_alloc_transport_domain(struct mlx5_vdpa_dev *mvdev, u32 *tdn)
->  {
-> @@ -170,6 +176,7 @@ int mlx5_vdpa_alloc_transport_domain(struct mlx5_vdpa_dev *mvdev, u32 *tdn)
->  
->  	return err;
->  }
-> +EXPORT_SYMBOL(mlx5_vdpa_alloc_transport_domain);
->  
->  void mlx5_vdpa_dealloc_transport_domain(struct mlx5_vdpa_dev *mvdev, u32 tdn)
->  {
-> @@ -180,6 +187,7 @@ void mlx5_vdpa_dealloc_transport_domain(struct mlx5_vdpa_dev *mvdev, u32 tdn)
->  	MLX5_SET(dealloc_transport_domain_in, in, transport_domain, tdn);
->  	mlx5_cmd_exec_in(mvdev->mdev, dealloc_transport_domain, in);
->  }
-> +EXPORT_SYMBOL(mlx5_vdpa_dealloc_transport_domain);
->  
->  int mlx5_vdpa_create_mkey(struct mlx5_vdpa_dev *mvdev, struct mlx5_core_mkey *mkey, u32 *in,
->  			  int inlen)
-> @@ -266,6 +274,7 @@ int mlx5_vdpa_alloc_resources(struct mlx5_vdpa_dev *mvdev)
->  	mutex_destroy(&mvdev->mr.mkey_mtx);
->  	return err;
->  }
-> +EXPORT_SYMBOL(mlx5_vdpa_alloc_resources);
->  
->  void mlx5_vdpa_free_resources(struct mlx5_vdpa_dev *mvdev)
->  {
-> @@ -282,3 +291,4 @@ void mlx5_vdpa_free_resources(struct mlx5_vdpa_dev *mvdev)
->  	mutex_destroy(&mvdev->mr.mkey_mtx);
->  	res->valid = false;
->  }
-> +EXPORT_SYMBOL(mlx5_vdpa_free_resources);
-> -- 
-> 2.27.0
+Please note that this driver's yaml binding is referring to a MMCC
+clock, so this series does depend on the SDM660 MMCC driver that I
+have sent separately.
+The multimedia clock is required only for the Multimedia NoC (mnoc).
+
+This patch series has been tested against the following devices:
+ - Sony Xperia XA2 Ultra (SDM630 Nile Discovery)
+ - Sony Xperia 10        (SDM630 Ganges Kirin)
+ - Sony Xperia 10 Plus   (SDM636 Ganges Mermaid)
+
+Changes in v2:
+ - Added missing qcom,mmcc-sdm660.h dt-binding include in the
+   interconnect/qcom,sdm660.yaml binding, as pointed out by
+   Rob Herring
+
+AngeloGioacchino Del Regno (2):
+  interconnect: qcom: Add SDM660 interconnect provider driver
+  dt-bindings: interconnect: Add bindings for Qualcomm SDM660 NoC
+
+AngeloGioacchino Del Regno (2):
+  interconnect: qcom: Add SDM660 interconnect provider driver
+  dt-bindings: interconnect: Add bindings for Qualcomm SDM660 NoC
+
+ .../bindings/interconnect/qcom,sdm660.yaml    | 147 +++
+ drivers/interconnect/qcom/Kconfig             |   9 +
+ drivers/interconnect/qcom/Makefile            |   2 +
+ drivers/interconnect/qcom/sdm660.c            | 919 ++++++++++++++++++
+ .../dt-bindings/interconnect/qcom,sdm660.h    | 116 +++
+ 5 files changed, 1193 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/interconnect/qcom,sdm660.yaml
+ create mode 100644 drivers/interconnect/qcom/sdm660.c
+ create mode 100644 include/dt-bindings/interconnect/qcom,sdm660.h
+
+-- 
+2.28.0
 
