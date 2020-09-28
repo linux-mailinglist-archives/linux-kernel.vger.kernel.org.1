@@ -2,92 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6888E27B357
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 19:35:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81AC427B359
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 19:35:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726630AbgI1RfY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 13:35:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40644 "EHLO
+        id S1726672AbgI1Rfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 13:35:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726310AbgI1RfX (ORCPT
+        with ESMTP id S1726551AbgI1Rfa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 13:35:23 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2E26C061755;
-        Mon, 28 Sep 2020 10:35:23 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f072200163fab7f7d674efc.dip0.t-ipconnect.de [IPv6:2003:ec:2f07:2200:163f:ab7f:7d67:4efc])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 9B0441EC02E6;
-        Mon, 28 Sep 2020 19:35:20 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1601314520;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=WbkRGMcHOzgWAfzMvo2jeQ+oAxhJlxu+eHh38TdzE4E=;
-        b=jR8n4DIGYDB0pG2ql/9oa/0Q4IsPzkQ2N0750m+hiVJDkofk7IkYDHDLrzcZh6/1y5voJM
-        B9v+bNGym/IdAzjPw5jxOXvK1w3biDCCXbQdLBGoxk1Douctth3BsO6ZC93k+SuXBQ9vqb
-        H4blBMdIrfYxSC8D+drDKN80zXuLSfw=
-Date:   Mon, 28 Sep 2020 19:35:13 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc:     linux-mm@kvack.org, linux-acpi@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, x86@kernel.org,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        rafael@kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        linuxarm@huawei.com, Dan Williams <dan.j.williams@intel.com>,
-        Brice Goglin <Brice.Goglin@inria.fr>,
-        Sean V Kelley <sean.v.kelley@linux.intel.com>,
-        linux-api@vger.kernel.org, Hanjun Guo <guohanjun@huawei.com>
-Subject: Re: [PATCH v11 2/6] x86: Support Generic Initiator only proximity
- domains
-Message-ID: <20200928173513.GG1685@zn.tnic>
-References: <20200928125235.446188-1-Jonathan.Cameron@huawei.com>
- <20200928125235.446188-3-Jonathan.Cameron@huawei.com>
+        Mon, 28 Sep 2020 13:35:30 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A2F3C0613CE;
+        Mon, 28 Sep 2020 10:35:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=q3VaPCdAslCCR/jQf884F8evN4sPOMU3hyuwN0qXmZs=; b=tHy0kY+BbMefAS9lAdwGUon8gS
+        iIsSZiaAECDsBhcXUY9zMAiri42fgTkxr7zxW2FRImGN6MHm+1fkPKH+jljNrPQZh2DYMFI5synUO
+        qLp1dODoYc8CEoz3Oe68GwvXexASAgHAXVM07CG7N6HhTvutRf9cehKcnbCFuUMJ0hurIHGi5/wVF
+        /urhXuRGqxnH6PLRgVLjtQ0vAG1zqrvbcmaMA7P9SoKkEEgUSl/3xODlhx+e1aT56lp209/6qFVCn
+        8owCWu+twhkX5e0KCYaKv5DSccX6ct5rP7QO6jukAPDhG8p/ORtYJemv9Dzyz7UWBj5ftz7RB2urs
+        HBnUw67Q==;
+Received: from [2601:1c0:6280:3f0::19c2]
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kMx3d-00007B-2S; Mon, 28 Sep 2020 17:35:25 +0000
+Subject: Re: linux-next: Tree for Sep 28 (kernel/bpf/verifier.c)
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+References: <20200928215551.2b882630@canb.auug.org.au>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <1762ab05-e8ba-8380-5c68-31642bb96ab4@infradead.org>
+Date:   Mon, 28 Sep 2020 10:35:21 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200928125235.446188-3-Jonathan.Cameron@huawei.com>
+In-Reply-To: <20200928215551.2b882630@canb.auug.org.au>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 08:52:31PM +0800, Jonathan Cameron wrote:
-> In common with memoryless domains we only register GI domains
-				   ^^^^
+On 9/28/20 4:55 AM, Stephen Rothwell wrote:
+> Hi all,
+> 
+> Changes since 20200925:
+> 
 
-> if the proximity node is not online. If a domain is already
-> a memory containing domain, or a memoryless domain there is
-> nothing to do just because it also contains a Generic Initiator.
 
-...
 
-> +/*
-> + * A node may exist which has one or more Generic Initiators but no CPUs and no
-> + * memory.
-> + *
-> + * This function must be called after init_cpu_to_node() to ensure that we have
-									  ^^^
+when CONFIG_NET is not set/enabled:
 
-You love that "we". :)
+../kernel/bpf/verifier.c:3990:13: error: ‘btf_sock_ids’ undeclared here (not in a function); did you mean ‘bpf_sock_ops’?
+  .btf_id = &btf_sock_ids[BTF_SOCK_TYPE_SOCK_COMMON],
+             ^~~~~~~~~~~~
+             bpf_sock_ops
+  CC      kernel/time/tick-oneshot.o
+../kernel/bpf/verifier.c:3990:26: error: ‘BTF_SOCK_TYPE_SOCK_COMMON’ undeclared here (not in a function); did you mean ‘PTR_TO_SOCK_COMMON’?
+  .btf_id = &btf_sock_ids[BTF_SOCK_TYPE_SOCK_COMMON],
+                          ^~~~~~~~~~~~~~~~~~~~~~~~~
+                          PTR_TO_SOCK_COMMON
 
-Pls use passive voice in your commit message: no "we" or "I", etc, and
-describe your changes in imperative mood.
-
-Also, pls read section "2) Describe your changes" in
-Documentation/process/submitting-patches.rst for more details.
-
-Bottom line is: personal pronouns are ambiguous in text, especially with
-so many parties/companies/etc developing the kernel so let's avoid them
-please.
-
-Thx.
 
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+~Randy
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
