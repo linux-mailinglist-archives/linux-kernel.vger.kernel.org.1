@@ -2,75 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFFBE27B29E
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 18:57:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E91FE27B2A2
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 18:59:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726684AbgI1Q5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 12:57:19 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:34257 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726534AbgI1Q5S (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 12:57:18 -0400
-Received: from 61-220-137-37.hinet-ip.hinet.net ([61.220.137.37] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1kMwQj-00068h-K9; Mon, 28 Sep 2020 16:55:14 +0000
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-To:     yhchuang@realtek.com, kvalo@codeaurora.org
-Cc:     briannorris@chromium.org,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless@vger.kernel.org (open list:REALTEK WIRELESS DRIVER
-        (rtw88)), netdev@vger.kernel.org (open list:NETWORKING DRIVERS),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v2] rtw88: pci: Power cycle device during shutdown
-Date:   Tue, 29 Sep 2020 00:55:08 +0800
-Message-Id: <20200928165508.20775-1-kai.heng.feng@canonical.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200824093225.13689-1-kai.heng.feng@canonical.com>
-References: <20200824093225.13689-1-kai.heng.feng@canonical.com>
+        id S1726594AbgI1Q7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 12:59:35 -0400
+Received: from mga09.intel.com ([134.134.136.24]:24851 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726526AbgI1Q7e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 12:59:34 -0400
+IronPort-SDR: z/JT+AsoGyvvd6hBVjcQV+E/6qCmZQxF7hLpBBT3NodUSqBt8H4kl4TCpaWbdHTqfbOo2FYD+P
+ GHf7gBKgzPoQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9758"; a="162909776"
+X-IronPort-AV: E=Sophos;i="5.77,313,1596524400"; 
+   d="scan'208";a="162909776"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 09:59:32 -0700
+IronPort-SDR: v4S0BhB4JOt8w8+C6wAYJOzwxm6jJAdzApLEgaZKt1x4jjzcU6zXSSjhd5qg7rFNwc4DRjcrvM
+ f41hiv4yqHjw==
+X-IronPort-AV: E=Sophos;i="5.77,313,1596524400"; 
+   d="scan'208";a="349910113"
+Received: from yyu32-desk.sc.intel.com ([143.183.136.146])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 09:59:32 -0700
+Message-ID: <d9099183dadde8fe675e1b10e589d13b0d46831f.camel@intel.com>
+Subject: Re: [PATCH v13 8/8] x86/vsyscall/64: Fixup Shadow Stack and
+ Indirect Branch Tracking for vsyscall emulation
+From:   Yu-cheng Yu <yu-cheng.yu@intel.com>
+To:     Andy Lutomirski <luto@amacapital.net>
+Cc:     Andy Lutomirski <luto@kernel.org>, X86 ML <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>
+Date:   Mon, 28 Sep 2020 09:59:24 -0700
+In-Reply-To: <99B32E59-CFF2-4756-89BD-AEA0021F355F@amacapital.net>
+References: <d0e4077e-129f-6823-dcea-a101ef626e8c@intel.com>
+         <99B32E59-CFF2-4756-89BD-AEA0021F355F@amacapital.net>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.32.5 (3.32.5-1.fc30) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are reports that 8822CE fails to work rtw88 with "failed to read DBI
-register" error. Also I have a system with 8723DE which freezes the whole
-system when the rtw88 is probing the device.
+On Fri, 2020-09-25 at 09:51 -0700, Andy Lutomirski wrote:
+> > On Sep 25, 2020, at 9:48 AM, Yu, Yu-cheng <yu-cheng.yu@intel.com> wrote:
+> > 
+> > ﻿On 9/25/2020 9:31 AM, Andy Lutomirski wrote:
+> > > > On Fri, Sep 25, 2020 at 7:58 AM Yu-cheng Yu <yu-cheng.yu@intel.com> wrote:
+> > > > 
+> > 
+> > [...]
+> > 
+> > > > @@ -286,6 +289,37 @@ bool emulate_vsyscall(unsigned long error_code,
+> > > >         /* Emulate a ret instruction. */
+> > > >         regs->ip = caller;
+> > > >         regs->sp += 8;
+> > > > +
+> > > > +#ifdef CONFIG_X86_CET
+> > > > +       if (tsk->thread.cet.shstk_size || tsk->thread.cet.ibt_enabled) {
+> > > > +               struct cet_user_state *cet;
+> > > > +               struct fpu *fpu;
+> > > > +
+> > > > +               fpu = &tsk->thread.fpu;
+> > > > +               fpregs_lock();
+> > > > +
+> > > > +               if (!test_thread_flag(TIF_NEED_FPU_LOAD)) {
+> > > > +                       copy_fpregs_to_fpstate(fpu);
+> > > > +                       set_thread_flag(TIF_NEED_FPU_LOAD);
+> > > > +               }
+> > > > +
+> > > > +               cet = get_xsave_addr(&fpu->state.xsave, XFEATURE_CET_USER);
+> > > > +               if (!cet) {
+> > > > +                       fpregs_unlock();
+> > > > +                       goto sigsegv;
+> > > I *think* your patchset tries to keep cet.shstk_size and
+> > > cet.ibt_enabled in sync with the MSR, in which case it should be
+> > > impossible to get here, but a comment and a warning would be much
+> > > better than a random sigsegv.
+> > 
+> > Yes, it should be impossible to get here.  I will add a comment and a warning, but still do sigsegv.  Should this happen, and the function return, the app gets a control-protection fault.  Why not let it fail early?
+> 
+> I’m okay with either approach as long as we get a comment and warning.
+> 
 
-According to [1], platform firmware may not properly power manage the
-device during shutdown. I did some expirements and putting the device to
-D3 can workaround the issue.
+Here is the updated patch.  I can also re-send the whole series as v14.  Thanks!
 
-So let's power cycle the device by putting the device to D3 at shutdown
-to prevent the issue from happening.
+======
 
-[1] https://bugzilla.kernel.org/show_bug.cgi?id=206411#c9
+From 09803e66dca38d7784e32687d0693550948199ed Mon Sep 17 00:00:00 2001
+From: Yu-cheng Yu <yu-cheng.yu@intel.com>
+Date: Thu, 29 Nov 2018 14:15:38 -0800
+Subject: [PATCH v13 8/8] x86/vsyscall/64: Fixup Shadow Stack and Indirect Branch
+ Tracking for vsyscall emulation
 
-BugLink: https://bugs.launchpad.net/bugs/1872984
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Vsyscall entry points are effectively branch targets.  Mark them with
+ENDBR64 opcodes.  When emulating the RET instruction, unwind shadow stack
+and reset IBT state machine.
+
+Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
 ---
-v2:
- - Add more detail in commit log.
+v13:
+- Check shadow stack address is canonical.
+- Change from writing to MSRs to
+writing to CET xstate.
 
- drivers/net/wireless/realtek/rtw88/pci.c | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/x86/entry/vsyscall/vsyscall_64.c     | 34 +++++++++++++++++++++++
+ arch/x86/entry/vsyscall/vsyscall_emu_64.S |  9 ++++++
+ arch/x86/entry/vsyscall/vsyscall_trace.h  |  1 +
+ 3 files changed, 44 insertions(+)
 
-diff --git a/drivers/net/wireless/realtek/rtw88/pci.c b/drivers/net/wireless/realtek/rtw88/pci.c
-index 3413973bc475..7f1f5073b9f4 100644
---- a/drivers/net/wireless/realtek/rtw88/pci.c
-+++ b/drivers/net/wireless/realtek/rtw88/pci.c
-@@ -1599,6 +1599,8 @@ void rtw_pci_shutdown(struct pci_dev *pdev)
+diff --git a/arch/x86/entry/vsyscall/vsyscall_64.c
+b/arch/x86/entry/vsyscall/vsyscall_64.c
+index 44c33103a955..30b166091d46 100644
+--- a/arch/x86/entry/vsyscall/vsyscall_64.c
++++ b/arch/x86/entry/vsyscall/vsyscall_64.c
+@@ -38,6 +38,9 @@
+ #include <asm/fixmap.h>
+ #include <asm/traps.h>
+ #include <asm/paravirt.h>
++#include <asm/fpu/xstate.h>
++#include <asm/fpu/types.h>
++#include <asm/fpu/internal.h>
  
- 	if (chip->ops->shutdown)
- 		chip->ops->shutdown(rtwdev);
+ #define CREATE_TRACE_POINTS
+ #include "vsyscall_trace.h"
+@@ -286,6 +289,42 @@ bool emulate_vsyscall(unsigned long error_code,
+ 	/* Emulate a ret instruction. */
+ 	regs->ip = caller;
+ 	regs->sp += 8;
 +
-+	pci_set_power_state(pdev, PCI_D3hot);
- }
- EXPORT_SYMBOL(rtw_pci_shutdown);
++#ifdef CONFIG_X86_CET
++	if (tsk->thread.cet.shstk_size || tsk->thread.cet.ibt_enabled) {
++		struct cet_user_state *cet;
++		struct fpu *fpu;
++
++		fpu = &tsk->thread.fpu;
++		fpregs_lock();
++
++		if (!test_thread_flag(TIF_NEED_FPU_LOAD)) {
++			copy_fpregs_to_fpstate(fpu);
++			set_thread_flag(TIF_NEED_FPU_LOAD);
++		}
++
++		cet = get_xsave_addr(&fpu->state.xsave, XFEATURE_CET_USER);
++		if (!cet) {
++			/*
++			 * This is an unlikely case where the task is
++			 * CET-enabled, but CET xstate is in INIT.
++			 */
++			WARN_ONCE(1, "CET is enabled, but no xstates");
++			fpregs_unlock();
++			goto sigsegv;
++		}
++
++		if (cet->user_ssp && ((cet->user_ssp + 8) < TASK_SIZE_MAX))
++			cet->user_ssp += 8;
++
++		if (cet->user_cet & CET_ENDBR_EN)
++			cet->user_cet &= ~CET_WAIT_ENDBR;
++
++		__fpu_invalidate_fpregs_state(fpu);
++		fpregs_unlock();
++	}
++#endif
++
+ 	return true;
  
+ sigsegv:
+diff --git a/arch/x86/entry/vsyscall/vsyscall_emu_64.S
+b/arch/x86/entry/vsyscall/vsyscall_emu_64.S
+index 2e203f3a25a7..b2fa92104cdb 100644
+--- a/arch/x86/entry/vsyscall/vsyscall_emu_64.S
++++ b/arch/x86/entry/vsyscall/vsyscall_emu_64.S
+@@ -17,16 +17,25 @@ __PAGE_ALIGNED_DATA
+ 	.type __vsyscall_page, @object
+ __vsyscall_page:
+ 
++#ifdef CONFIG_X86_BRANCH_TRACKING_USER
++	endbr64
++#endif
+ 	mov $__NR_gettimeofday, %rax
+ 	syscall
+ 	ret
+ 
+ 	.balign 1024, 0xcc
++#ifdef CONFIG_X86_BRANCH_TRACKING_USER
++	endbr64
++#endif
+ 	mov $__NR_time, %rax
+ 	syscall
+ 	ret
+ 
+ 	.balign 1024, 0xcc
++#ifdef CONFIG_X86_BRANCH_TRACKING_USER
++	endbr64
++#endif
+ 	mov $__NR_getcpu, %rax
+ 	syscall
+ 	ret
+diff --git a/arch/x86/entry/vsyscall/vsyscall_trace.h
+b/arch/x86/entry/vsyscall/vsyscall_trace.h
+index 3c3f9765a85c..7aa2101ada44 100644
+--- a/arch/x86/entry/vsyscall/vsyscall_trace.h
++++ b/arch/x86/entry/vsyscall/vsyscall_trace.h
+@@ -25,6 +25,7 @@ TRACE_EVENT(emulate_vsyscall,
+ #endif
+ 
+ #undef TRACE_INCLUDE_PATH
++#undef TRACE_INCLUDE_FILE
+ #define TRACE_INCLUDE_PATH ../../arch/x86/entry/vsyscall/
+ #define TRACE_INCLUDE_FILE vsyscall_trace
+ #include <trace/define_trace.h>
 -- 
-2.17.1
+2.21.0
+
+
 
