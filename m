@@ -2,127 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 114A327AEF6
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 15:19:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACD5E27AEFC
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 15:21:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726600AbgI1NTF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 09:19:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57470 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726325AbgI1NTF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 09:19:05 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 858ADC061755;
-        Mon, 28 Sep 2020 06:19:04 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id k18so1115471wmj.5;
-        Mon, 28 Sep 2020 06:19:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=/fPjYpUSpJbkMbYXsGEGtLI/1DxIVKDjwp2KDfXe47U=;
-        b=HJdRZ7E+IHuW7zTD64WNC1hBCdwTCsBxE4qlY7DuwUoY+j3Op4Y7XTwijdErW0E/Pz
-         ZWxg4RMQpTzuA031ClXQPe6dLNk7fMxeNUqZYY8G348QPEg0wmLZvjHnP2B5+zxBf8i8
-         HukElwjXEycszX3pC54B3R3rZ2TKsVA+joMUm8xx93XiTd4skav04DlwQHcO+ptZ9bB4
-         uAM62Yka+Vg40hVhhU1mDFpE5U6bmWk2jx08LWD4lO+zRh+1uk/IW/sFjupnY5jI1nuX
-         wDpHkNS9zWOWIyURopqoMnS43flgIGjjArT9c+zU8Qzct6It1L8tGgVZXnMbSZcTNe2F
-         JDMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=/fPjYpUSpJbkMbYXsGEGtLI/1DxIVKDjwp2KDfXe47U=;
-        b=f46blrcLQWTQYPWMjbdPfBo77k8eiLJsMnLU6fPhN7FxxV8G9xhzDdb81uEKykugO+
-         SUBai8Qu1hhyhqFD7FpK+Yg5pT6CvY4mQHa+WKa8nrKUbVxnTbTnm2V/R+huLPZJW4QR
-         PPg4qkxMBX7jDC+S2rhHmeYSB07ywhJxdDewM7q0oOkLXd1WuDJNCfTkMJcGoZzTJEuB
-         NrvUw3ttBES/xUmwfQ0x7BA8T2wPNvUW3zjatS5FV9nMNZHrtIIzzg3iT1OFP59FTVFO
-         9flFDtrpvJwSgHdGFz7X8i4M689jq/o2gpX8C2OInRCh96i/ht7xc+GglHi0gZW8+2P6
-         4Kug==
-X-Gm-Message-State: AOAM53292bWnwp0C1sH1XW8i04U3QjSaM1802E0qosiQjX4blcczMHyx
-        JAJmI9O+k6htE/MrUT62/yQ=
-X-Google-Smtp-Source: ABdhPJyREY0CoxSrnbqNFVZ1NBWQC3OO0lSgZl79gWDg8d7KgLs6O8BlJsQptCHI+UezQKh9vrtRBw==
-X-Received: by 2002:a1c:7207:: with SMTP id n7mr1599344wmc.134.1601299143213;
-        Mon, 28 Sep 2020 06:19:03 -0700 (PDT)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id v17sm1700776wrc.23.2020.09.28.06.19.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Sep 2020 06:19:01 -0700 (PDT)
-Date:   Mon, 28 Sep 2020 15:18:59 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     JC Kuo <jckuo@nvidia.com>
-Cc:     gregkh@linuxfoundation.org, robh@kernel.org, jonathanh@nvidia.com,
-        kishon@ti.com, linux-tegra@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, nkristam@nvidia.com
-Subject: Re: [PATCH v3 09/15] arm64: tegra210: XUSB PADCTL add "nvidia,pmc"
- prop
-Message-ID: <20200928131859.GJ3065790@ulmo>
-References: <20200909081041.3190157-1-jckuo@nvidia.com>
- <20200909081041.3190157-10-jckuo@nvidia.com>
+        id S1726465AbgI1NVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 09:21:23 -0400
+Received: from foss.arm.com ([217.140.110.172]:51584 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726281AbgI1NVX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 09:21:23 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6CA581063;
+        Mon, 28 Sep 2020 06:21:22 -0700 (PDT)
+Received: from arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6F6F73F73B;
+        Mon, 28 Sep 2020 06:21:20 -0700 (PDT)
+Date:   Mon, 28 Sep 2020 14:21:17 +0100
+From:   Dave Martin <Dave.Martin@arm.com>
+To:     Andre Przywara <andre.przywara@arm.com>
+Cc:     Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        linux-kernel@vger.kernel.org, James Clark <james.clark@arm.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Tan Xiaojun <tanxiaojun@huawei.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 5/5] perf: arm_spe: Decode SVE events
+Message-ID: <20200928132114.GF6642@arm.com>
+References: <20200922101225.183554-1-andre.przywara@arm.com>
+ <20200922101225.183554-6-andre.przywara@arm.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="W13SgbpmD6bhZUTM"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200909081041.3190157-10-jckuo@nvidia.com>
-User-Agent: Mutt/1.14.7 (2020-08-29)
+In-Reply-To: <20200922101225.183554-6-andre.przywara@arm.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Sep 22, 2020 at 11:12:25AM +0100, Andre Przywara wrote:
+> The Scalable Vector Extension (SVE) is an ARMv8 architecture extension
+> that introduces very long vector operations (up to 2048 bits).
 
---W13SgbpmD6bhZUTM
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+(8192, in fact, though don't expect to see that on real hardware any
+time soon...  qemu and the Arm fast model can do it, though.)
 
-On Wed, Sep 09, 2020 at 04:10:35PM +0800, JC Kuo wrote:
-> PMC driver provides USB sleepwalk registers access to XUSB PADCTL
-> driver. This commit adds a "nvidia,pmc" property which points to
-> PMC node to XUSB PADCTL device node.
->=20
-> Signed-off-by: JC Kuo <jckuo@nvidia.com>
+> The SPE profiling feature can tag SVE instructions with additional
+> properties like predication or the effective vector length.
+> 
+> Decode the new operation type bits in the SPE decoder to allow the perf
+> tool to correctly report about SVE instructions.
+
+
+I don't know anything about SPE, so just commenting on a few minor
+things that catch my eye here.
+
+> Signed-off-by: Andre Przywara <andre.przywara@arm.com>
 > ---
-> v3:
->    no change
->=20
->  arch/arm64/boot/dts/nvidia/tegra210.dtsi | 1 +
->  1 file changed, 1 insertion(+)
->=20
-> diff --git a/arch/arm64/boot/dts/nvidia/tegra210.dtsi b/arch/arm64/boot/d=
-ts/nvidia/tegra210.dtsi
-> index 829f786af133..67c90a0ea32e 100644
-> --- a/arch/arm64/boot/dts/nvidia/tegra210.dtsi
-> +++ b/arch/arm64/boot/dts/nvidia/tegra210.dtsi
-> @@ -1040,6 +1040,7 @@ padctl: padctl@7009f000 {
->  		reg =3D <0x0 0x7009f000 0x0 0x1000>;
->  		resets =3D <&tegra_car 142>;
->  		reset-names =3D "padctl";
-> +		nvidia,pmc =3D  <&tegra_pmc>;
+>  .../arm-spe-decoder/arm-spe-pkt-decoder.c     | 48 ++++++++++++++++++-
+>  1 file changed, 47 insertions(+), 1 deletion(-)
+> 
+> diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
+> index a033f34846a6..f0c369259554 100644
+> --- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
+> +++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
+> @@ -372,8 +372,35 @@ int arm_spe_pkt_desc(const struct arm_spe_pkt *packet, char *buf,
+>  	}
+>  	case ARM_SPE_OP_TYPE:
+>  		switch (idx) {
+> -		case 0:	return snprintf(buf, buf_len, "%s", payload & 0x1 ?
+> +		case 0: {
+> +			size_t blen = buf_len;
+> +
+> +			if ((payload & 0x89) == 0x08) {
+> +				ret = snprintf(buf, buf_len, "SVE");
+> +				buf += ret;
+> +				blen -= ret;
 
-I hadn't noticed before but it looks like the DT bindings haven't been
-updated with this new property.
+(Nit: can ret be < 0 ?  I've never been 100% clear on this myself for
+the s*printf() family -- if this assumption is widespread in perf tool
+a lready that I guess just go with the flow.)
 
-Thierry
+I wonder if this snprintf+increment+decrement sequence could be wrapped
+up as a helper, rather than having to be repeated all over the place.
 
---W13SgbpmD6bhZUTM
-Content-Type: application/pgp-signature; name="signature.asc"
+> +				if (payload & 0x2)
+> +					ret = snprintf(buf, buf_len, " FP");
+> +				else
+> +					ret = snprintf(buf, buf_len, " INT");
+> +				buf += ret;
+> +				blen -= ret;
+> +				if (payload & 0x4) {
+> +					ret = snprintf(buf, buf_len, " PRED");
+> +					buf += ret;
+> +					blen -= ret;
+> +				}
+> +				/* Bits [7..4] encode the vector length */
+> +				ret = snprintf(buf, buf_len, " EVLEN%d",
+> +					       32 << ((payload >> 4) & 0x7));
 
------BEGIN PGP SIGNATURE-----
+Isn't this just extracting 3 bits (0x7)?  And what unit are we aiming
+for here: is it the number of bytes per vector, or something else?  I'm
+confused by the fact that this will go up in steps of 32, which doesn't
+seem to match up to the architecure.
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl9x4sIACgkQ3SOs138+
-s6HWqg/8DMiLknpahQo13U3TFzvtXjlf/yVXUEReLgWrewX9W9a2ib8WRVvMYlCx
-cHJu0tKxedFdq/kn0mAz/k01k9g/UIpHFHAkUlx6qASr1N5e9PPPRdijhnqMY8wY
-guCIo1aRPIK+IH6U19pUojHz8LTk9pNUADJ/6rFP+Rbp1gwn7wEOvas8McrzgB3B
-dPXYLg38wAWIVMDMMQvnap/JgMlacB08KukY1xZiIuEe2gz10ZZvDw8xQxbcWfWj
-KGUAsW0lqBJ8Jk0KSs0geCrrTQ7fI6tCD07mtzIh4mrE/2Y6llj+R5JLxV+hu7l3
-13qIRTlMWmtvzDEaD+KX04ddS02XMWp7W+Dk/HwvvaLYENhagBOVM394yK2Yqhkn
-L+nTJGrgcGxyX0f2XIQaa1ZeOg0hVIyi2mu7xtsf4j8KpO+gh35W9CdBR7rp0EFi
-D3i40FrPZKvoeGCpe3G80b3ukcfE2ptiozLpgjhWH+RlQgUNFBXjf3UzjAnclOBV
-wAHcceynIKHCs2TWqB+0hm0dNwF7yoe9qWGuopC3JlWldQOfb3hQzxkSZgAtWraG
-alkROifp2RzY7lfgz39QgLIgPu5C1baFsUPNEJCTpoxxJrLOGaBicWGfMGtqDH5B
-+zm8gB0/d1sDrq7jY+ZzQ5AYVhithkqyaDsm1gC6kNjBrpLKND8=
-=cN4A
------END PGP SIGNATURE-----
+I notice that bit 7 has to be zero to get into this if() though.
 
---W13SgbpmD6bhZUTM--
+> +				buf += ret;
+> +				blen -= ret;
+> +				return buf_len - blen;
+> +			}
+> +
+> +			return snprintf(buf, buf_len, "%s", payload & 0x1 ?
+>  					"COND-SELECT" : "INSN-OTHER");
+> +			}
+>  		case 1:	{
+>  			size_t blen = buf_len;
+>  
+> @@ -403,6 +430,25 @@ int arm_spe_pkt_desc(const struct arm_spe_pkt *packet, char *buf,
+>  				ret = snprintf(buf, buf_len, " NV-SYSREG");
+>  				buf += ret;
+>  				blen -= ret;
+> +			} else if ((payload & 0x0a) == 0x08) {
+> +				ret = snprintf(buf, buf_len, " SVE");
+> +				buf += ret;
+> +				blen -= ret;
+> +				if (payload & 0x4) {
+> +					ret = snprintf(buf, buf_len, " PRED");
+> +					buf += ret;
+> +					blen -= ret;
+> +				}
+> +				if (payload & 0x80) {
+> +					ret = snprintf(buf, buf_len, " SG");
+> +					buf += ret;
+> +					blen -= ret;
+> +				}
+> +				/* Bits [7..4] encode the vector length */
+> +				ret = snprintf(buf, buf_len, " EVLEN%d",
+> +					       32 << ((payload >> 4) & 0x7));
+
+Same comment as above.  Maybe have a common helper for decoding the
+vector length bits so it can be fixed in a single place?
+
+> +				buf += ret;
+> +				blen -= ret;
+>  			} else if (payload & 0x4) {
+>  				ret = snprintf(buf, buf_len, " SIMD-FP");
+>  				buf += ret;
+
+Cheers
+---Dave
