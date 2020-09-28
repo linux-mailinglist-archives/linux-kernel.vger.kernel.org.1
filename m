@@ -2,257 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58B7627B551
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 21:33:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06BE627B579
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 21:38:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726605AbgI1TdN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 15:33:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58778 "EHLO
+        id S1726815AbgI1Tit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 15:38:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726424AbgI1TdM (ORCPT
+        with ESMTP id S1726590AbgI1Tis (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 15:33:12 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDDD6C0613CE
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 12:33:11 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id n14so2020854pff.6
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 12:33:11 -0700 (PDT)
+        Mon, 28 Sep 2020 15:38:48 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A2B3C061755;
+        Mon, 28 Sep 2020 12:38:47 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id q4so1269595pjh.5;
+        Mon, 28 Sep 2020 12:38:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=xGmHAT5QSIshHXwp7YID51MvJx+onGGMtyezVB0R6Ng=;
-        b=gM+1zEKGDWb8wTk5KkBYaUZpOp7ebv776xpvu0zHj9ly4WCEPlt1llMF+eb59a5jwK
-         8qBELP76Ay8flh1DeSBlj4oJqnNiNPrHBaEJJnJ2RFI0hLVuxEuYj1U/aTw9C6SRfm5B
-         AENBdyETa9hiqHeHMwNet1UOtTlnU8harBniFmHbhT1WAML8NW/kNr+qCZYMNqX/gR5L
-         fce7N+xKkxETMmXRPFGqy6slxFQi8mbfZJT9XtF9Zx800R19UV8l7HC3qU7H5xvxi3kX
-         wRtRUMIb1kCl0lQUey1rurC/tWUMn304dxtAOosGXicHKMQ5dRiMXAYvVx6KgDcSxEdB
-         Zg/w==
+         :content-disposition:in-reply-to:user-agent;
+        bh=PvTQsN4lpGwG4bNurmMUhGfYEfi6y08HRQbRjBGRPr4=;
+        b=AJNKn7JTkfaZWtYcKjnLpI83Sh4ohhpITVcw5SKfptBltLlJ8F1Q7Rxw1/Ch3Nmklr
+         4ItvKqn/0VTCFRoP9m8+jQHchDQdnY4n1HvUnaqxq/zKFtHq2CMlziEGwZ3E8yaDfXsu
+         vgiQE6l0m6TLpXKl4vqzfTG0UETd0OiQHvbGlbUcaBwFc1AL9gpVvCEa9LH2dMstyrZB
+         lPxD294GyKHV0gpy1lx0gulhZMLcN1tn8skrdpIYb7jrhbafFj1qvalvpsZGBfP7omAv
+         j3K7yxyM3Bb/4ZupYNrWTUITOjHh10ON5WDvlerBpRtJ57lcEVoURlcNLoSCCXQZ0QKL
+         t7Lw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xGmHAT5QSIshHXwp7YID51MvJx+onGGMtyezVB0R6Ng=;
-        b=TAxW8iuOc9G80/nf0rEaCBFNT1Ptozf91ycqIw0crxuwwNicntLVYGvLiQWroVxPp7
-         Q80/c0XQnsmi1L/bCdI5tNxD1XwVL5Y0ZaVXELXWDGMhnOzheFpIJc1VgsBs9tA3SDuP
-         xJG96yBqU2Lw2aFu32/UOQTleuMgPCXdHXVTUZB8lUbgLTVVXzGLfft02MiAJHHOA95R
-         TRF2pAP2Xi7XZ6713e0yPLweXIDOR5bHO19x8fs5/5sUFSERynAr5e1100uz3oo4x9Yn
-         PM8PjnOUI0XttBOInIJZ7YQXXWpbKKa4IqqMGEBnvYTDYRSO9j1wMhVahsSlJVzAdbRn
-         yJgw==
-X-Gm-Message-State: AOAM530PvvPDen6fvko0rAnz2gZxexTjK1nHEb0ksg4YNiNPszVn0cZ4
-        vqXYM5jZkyavhJNu3KL3Rjd+nA==
-X-Google-Smtp-Source: ABdhPJy4ybQGQxac1vDgAAYLrzMcGkVFJ9RWXgExQXY+uEuehtapWlxlAMRGYI2nHqneJ40dDXIM9w==
-X-Received: by 2002:a17:902:a987:b029:d2:8a38:5bbe with SMTP id bh7-20020a170902a987b02900d28a385bbemr957552plb.60.1601321591154;
-        Mon, 28 Sep 2020 12:33:11 -0700 (PDT)
-Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
-        by smtp.gmail.com with ESMTPSA id i17sm2488529pfa.29.2020.09.28.12.33.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Sep 2020 12:33:10 -0700 (PDT)
-Date:   Mon, 28 Sep 2020 13:33:08 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-Cc:     Ohad Ben-Cohen <ohad@wizery.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Loic PALLARDY <loic.pallardy@st.com>,
-        linux-remoteproc <linux-remoteproc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 00/10] rpmsg: Make RPMSG name service modular
-Message-ID: <20200928193308.GA85087@xps15>
-References: <20200928094941.GA4848@ubuntu>
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=PvTQsN4lpGwG4bNurmMUhGfYEfi6y08HRQbRjBGRPr4=;
+        b=Q0l6xGZMts7RwXBcuLRUxmhXv/OaFsD+X2CqT6cDB4pk4wPxsPjNOid7JxzN9y307i
+         P2TZaaU0TGsZz2YJn3dGaWXSVDU+XHecE9cbcwChD9Bt6HXaHWOUhwAGwdBBmO/KBbVF
+         0PgFR+9QwpUZOAFSahjELndIf/5EVV4fZYju68MEsIlA4hmtsb1ctr7dFlaTUg5k64hZ
+         zuiB50E/0WvTeHjzHMqKrLEK++tAG+fzcwAlbNnFAP/jYBURqdjCmiwWfp9D5Zy+DSyo
+         yPFSqkh/c+qSHGz8iEXVbsHO1NnbWRsb4xlVe+GZypMIxMkzCgVmDbU9xSrF0OOdYz3C
+         IxTQ==
+X-Gm-Message-State: AOAM533k21p+JpSVabuJvlxEjENXQCiEyg3AwkpQpzEAVqZ1QjZaHSps
+        o3xLL+Uyhb+HfsIWWiF9bTY=
+X-Google-Smtp-Source: ABdhPJyF7ovAy2Q8BmAUiZrG9WO75KHcCu3kDg52GYU/f+Na8ljFsJelKts82PPVgVv3EihaUWaHaA==
+X-Received: by 2002:a17:90a:1188:: with SMTP id e8mr691936pja.185.1601321926605;
+        Mon, 28 Sep 2020 12:38:46 -0700 (PDT)
+Received: from Asurada-Nvidia (thunderhill.nvidia.com. [216.228.112.22])
+        by smtp.gmail.com with ESMTPSA id gb19sm2111133pjb.38.2020.09.28.12.38.46
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 28 Sep 2020 12:38:46 -0700 (PDT)
+Date:   Mon, 28 Sep 2020 12:33:28 -0700
+From:   Nicolin Chen <nicoleotsuka@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     joro@8bytes.org, krzk@kernel.org, vdumpa@nvidia.com,
+        jonathanh@nvidia.com, linux-tegra@vger.kernel.org,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/5] iommu/tegra-smmu: Unwrap tegra_smmu_group_get
+Message-ID: <20200928193328.GA15720@Asurada-Nvidia>
+References: <20200926080719.6822-1-nicoleotsuka@gmail.com>
+ <20200926080719.6822-2-nicoleotsuka@gmail.com>
+ <20200928071356.GD2837573@ulmo>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200928094941.GA4848@ubuntu>
+In-Reply-To: <20200928071356.GD2837573@ulmo>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Guennadi,
+Hi Thierry,
 
-On Mon, Sep 28, 2020 at 11:49:42AM +0200, Guennadi Liakhovetski wrote:
-> (re-sending, mailing list delivery attempts last Friday failed)
-> 
+Thanks for the review.
 
-I got your email on Friday but had to tend to other things.
+On Mon, Sep 28, 2020 at 09:13:56AM +0200, Thierry Reding wrote:
+> > -static struct iommu_group *tegra_smmu_group_get(struct tegra_smmu *smmu,
+> > -						unsigned int swgroup)
+> > +static struct iommu_group *tegra_smmu_device_group(struct device *dev)
+> >  {
+> > +	struct iommu_fwspec *fwspec = dev_iommu_fwspec_get(dev);
+> > +	struct tegra_smmu *smmu = dev_iommu_priv_get(dev);
+> >  	const struct tegra_smmu_group_soc *soc;
+> >  	struct tegra_smmu_group *group;
+> > +	int swgroup = fwspec->ids[0];
+> 
+> This should be unsigned int to match the type of swgroup elsewhere.
+> Also, it might not be worth having an extra local variable for this
+> since it's only used once.
 
-> Hi Mathieu,
-> 
-> On Thu, Sep 24, 2020 at 12:18:53PM -0600, Mathieu Poirier wrote:
-> > On Thu, Sep 24, 2020 at 08:53:56AM +0200, Guennadi Liakhovetski wrote:
-> 
-> [snip]
-> 
-> > > Yes, the current rpmsg-virtio code does create *one* rpmsg device when 
-> > > an NS announcement arrives.
-> > 
-> > Currently an rpmsg_device is created each time a NS announcement is received.  
-> 
-> Are there really cases when an NS announcement is sent multiple times by a 
-> remote? But not for the same name-space, at least in virtio_rpmsg_bus.c 
-> there's a check for a duplicate announcement in rpmsg_create_channel().
-> 
-> > > Whereas with this patch set the first rpmsg 
-> > > device would be created to probe the NS service driver and the next one 
-> > > would still be created following the code borrowed from rpmsg-virtio 
-> > > when an NS announcement arrives. And I don't see how those two devices 
-> > > now make sense, sorry. I understand one device per channel, but two, of 
-> > > which one is for a certain endpoing only, whereas other endpoints don't 
-> > > create their devices, don't seem very logical to me.
-> > 
-> > In the current implementation the NS service channel is created automatically
-> > when instantiating an rproc_vdev.
-> 
-> I think the terminology is slightly incorrect above. It isn't a channel, it's 
-> an endpoint. A channel is a synonym of a device in RPMsg (from rpmsg.txt):
-> 
-> "Every rpmsg device is a communication channel with a remote processor (thus
-> rpmsg devices are called channels)."
-> 
-> > An official rpmsg_device is not needed since
-> > it is implicit.
-> 
-> Agree.
-> 
-> > With this set (and as you noted above) an rpmsg_device to
-> > represent the NS service is registered, the same way other services such as
-> > rpmsg_chrdev are.
-> 
-> Oh, I think I'm getting it now. I think now I understand where the 
-> disagreement lies. If I understand correctly in your model each remote 
-> processor can provide multiple *devices* / *channels*. E.g. a remote
-
-That is correct
- 
-> processor can provide a character device, a network device etc. Each of 
-> those devices / channels would send a namespace announcement to the 
-> main processor, which then would create a respective device and probe 
-> the respective driver - all with the same remote processor over the same 
-> RPMsg bus. I understand this concept and in fact I find it logical.
-> 
-
-Ok
-
-> However, since I have no experience with real life RPMsg implementations 
-> I am basing my understanding of RPMsg on the little and scarce and 
-> non-conclusive documentation that I can find online. E.g. on
-> 
-> https://github.com/OpenAMP/open-amp/wiki/RPMsg-Messaging-Protocol
-> 
-> which says:
-> 
-> "Every remote core in RPMsg component is represented by RPMsg device that 
-> provides a communication channel between master and remote, hence RPMsg 
-> devices are also known as channels"
-> 
-> So, according to that definition you cannot have a remote processor, 
-> doing both a character and a network devices. However, in kernel's 
-> rpmsg.txt an *almost exact* copy of that sentence is the quote, that 
-> I've already provided above, with a subtle but important difference:
-> 
-> "Every rpmsg device is a communication channel with a remote processor 
-> (thus rpmsg devices are called channels)."
-
-The documentation isn't easy to follow and personally got very confused when I
-started getting involved with the remoteproc/rpmsg subsystems.  I have the
-intention of doing a good revamp but there is never enough time. 
-
-> 
-> It doesn't explicitly say, that there can be multiple devices per 
-> remote processor, but it doesn't specify, that there can be only one 
-> (TM) either, so, implicitly there can be many :-/ So, with this model, 
-> yes, I can understand, how a single instance of the RPMsg bus (in 
-> VirtIO case a pair of virtual queues) can have just *one* namespace 
-> service and serve *multiple* devices channels. In that case yes, the 
-> namespace service can be a separate device.
-
-I will spin off a V2 of this set and we'll go from there.  I also want to get a
-look at Kishon's patchset that Arnaud and Vincent were referring to before
-making up my mind about how to move foward with your vhost RPMSG API patchset.
-
-This is certainly taking longer than expected but I'd rather take the time to
-explore all aspects of the question rather than having to live with a solution
-that is not adequate.
-
-Thanks for the patience,
-Mathieu
-
-> 
-> Thanks
-> Guennadi
-> 
-> > After that nothing else changes and no other rpmgs_device
-> > are created until NS request come in.  When an NS request does come in an
-> > rpmsg_device is created, and that for each request that is received.
-> > 
-> > > 
-> > > Thanks
-> > > Guennadi
-> > > 
-> > > > To prove my theory I ran the rpmsg_client_sample.c and it just worked,
-> > > > no changes to client code needed.
-> > > > 
-> > > > Let's keep talking, it's the only way we'll get through this.
-> > > > 
-> > > > Mathieu
-> > > > 
-> > > > >
-> > > > > Thanks
-> > > > > Guennadi
-> > > > >
-> > > > > On Mon, Sep 21, 2020 at 06:09:50PM -0600, Mathieu Poirier wrote:
-> > > > > > Hi all,
-> > > > > >
-> > > > > > After looking at Guennadi[1] and Arnaud's patchsets[2] it became
-> > > > > > clear that we need to go back to a generic rpmsg_ns_msg structure
-> > > > > > if we wanted to make progress.  To do that some of the work from
-> > > > > > Arnaud had to be modified in a way that common name service
-> > > > > > functionality was transport agnostic.
-> > > > > >
-> > > > > > This patchset is based on Arnaud's work but also include a patch
-> > > > > > from Guennadi and some input from me.  It should serve as a
-> > > > > > foundation for the next revision of [1].
-> > > > > >
-> > > > > > Applies on rpmsg-next (4e3dda0bc603) and tested on stm32mp157. I
-> > > > > > did not test the modularisation.
-> > > > > >
-> > > > > > Comments and feedback would be greatly appreciated.
-> > > > > >
-> > > > > > Thanks,
-> > > > > > Mathieu
-> > > > > >
-> > > > > > [1]. https://patchwork.kernel.org/project/linux-remoteproc/list/?series=346593
-> > > > > > [2]. https://patchwork.kernel.org/project/linux-remoteproc/list/?series=338335
-> > > > > >
-> > > > > > Arnaud Pouliquen (5):
-> > > > > >   rpmsg: virtio: rename rpmsg_create_channel
-> > > > > >   rpmsg: core: Add channel creation internal API
-> > > > > >   rpmsg: virtio: Add rpmsg channel device ops
-> > > > > >   rpmsg: Turn name service into a stand alone driver
-> > > > > >   rpmsg: virtio: use rpmsg ns device for the ns announcement
-> > > > > >
-> > > > > > Guennadi Liakhovetski (1):
-> > > > > >   rpmsg: Move common structures and defines to headers
-> > > > > >
-> > > > > > Mathieu Poirier (4):
-> > > > > >   rpmsg: virtio: Move virtio RPMSG structures to private header
-> > > > > >   rpmsg: core: Add RPMSG byte conversion operations
-> > > > > >   rpmsg: virtio: Make endianness conversion virtIO specific
-> > > > > >   rpmsg: ns: Make Name service module transport agnostic
-> > > > > >
-> > > > > >  drivers/rpmsg/Kconfig            |   9 +
-> > > > > >  drivers/rpmsg/Makefile           |   1 +
-> > > > > >  drivers/rpmsg/rpmsg_core.c       |  96 +++++++++++
-> > > > > >  drivers/rpmsg/rpmsg_internal.h   | 102 +++++++++++
-> > > > > >  drivers/rpmsg/rpmsg_ns.c         | 108 ++++++++++++
-> > > > > >  drivers/rpmsg/virtio_rpmsg_bus.c | 284 +++++++++----------------------
-> > > > > >  include/linux/rpmsg_ns.h         |  83 +++++++++
-> > > > > >  include/uapi/linux/rpmsg.h       |   3 +
-> > > > > >  8 files changed, 487 insertions(+), 199 deletions(-)
-> > > > > >  create mode 100644 drivers/rpmsg/rpmsg_ns.c
-> > > > > >  create mode 100644 include/linux/rpmsg_ns.h
-> > > > > >
-> > > > > > --
-> > > > > > 2.25.1
-> > > > > >
-> 
-> ----- End forwarded message -----
+Will change to unsigned int. There are actually a few places using
+it in this function, previously tegra_smmu_group_get().
