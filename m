@@ -2,282 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B488C27A93A
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 10:03:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A63227A93E
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 10:03:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726711AbgI1IDb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 04:03:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36674 "EHLO
+        id S1726773AbgI1IDj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 04:03:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726573AbgI1IDb (ORCPT
+        with ESMTP id S1726732AbgI1IDd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 04:03:31 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01B09C0613CE
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 01:03:31 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id g72so171485qke.8
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 01:03:30 -0700 (PDT)
+        Mon, 28 Sep 2020 04:03:33 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56304C0613CE
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 01:03:33 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id i26so7158132ejb.12
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 01:03:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=C3DFpfIEEZN+W1r2DsDXO4wVYoGzrbvhdsREqUSvfHQ=;
-        b=aIE2xi4GmoU0XwL8f75eowStvVooTX5PHm2KEqABe/AXF3cj+aqMMC9leyEvzwpz21
-         +vF6uhXucBUF9fmD/mPTEXcBLmVVhxZLB2d+7dLumlJ68j9MBddiNXhz1n/6Pz/huN4G
-         y6zMyGIoO6UegTbQEbLdf2pZrbDiSOp+VYSJ4RGeZoMPA3z7fHFBe/wPkI16W6tNJuw/
-         hZiAtNzCrPX0pibD2ES6/7r/iicuc/W3vKJBIrp3r4PUtWCajjy/FFLQ6B3PeQlNngji
-         AAROroTU2Zw9Ht42J/qxr2aLhRi8tn4q7J2fnqDgP8RCJzwr9VPzgG6QFLby9C6t7QH7
-         T1xg==
+        d=broadcom.com; s=google;
+        h=from:to:cc:date:message-id:in-reply-to:references:user-agent
+         :subject:mime-version;
+        bh=C2QAAi2+ZIitEwnDzFxwDfDISDPSJAzhXvlafId6Pc8=;
+        b=INqhrc/5dpG1YEZLR9CWYJ9qhh/z10flCHtiT0RUQi3ECI5twmDI90dA5vRlfo+QFQ
+         XpUaAbkMhdympksmb3+qNYbkT0pIM5CEbiJ3pMLOQDO4wTMVgjMb1F4AHqxfFmUOeceY
+         W3GcfqWX/dStSkDQAwx1QaZvN3SfmJxmDnW6I=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=C3DFpfIEEZN+W1r2DsDXO4wVYoGzrbvhdsREqUSvfHQ=;
-        b=HRVuRf+1qmUSlYsrKW1HF8J8yPUtHZhK+qHf20Q2uHUlX9/4W8V7IvPattZRHUbhgq
-         b6FTdUdowt1+QSdYJ1YdifVs9oMMDRwEcjlFWB+tJZXhv1Mm3nR32wCFZte/1nvuD0gF
-         ZO/JTRWIiEHcETKmLOBMQbceG9zdKDbAmjBK33eRy2a7Wg5BrawEl5D+J66tvOhUQYQw
-         QhvPIrOoqP4crdobbnk1PSviaC+aDVjVy+RE9drSuMmZrbjUpfuxWOGgosSFfxS6jI4m
-         n7rHx5lhCMguUXCObY9tBXKwnGs0M/rbuH/YE3JirbzCJR6KWFswNH07+ToZ2ZAZINN7
-         xh7g==
-X-Gm-Message-State: AOAM531meaakB8Lq5mMhpx1rRd3nuYofFIq/xWY/YU39giw/S5jngl9J
-        LzcM9M+sziF50nHf+5ZPV7lQWtuP93ocXs3t2AiMFQ==
-X-Google-Smtp-Source: ABdhPJxI+2w2XPaevFBAZCwbvSkMHPulmRy/XYd/5E9Iajok2nAkHx/dS2NUUANmDWR4t6uXTXDAb93gPZhXcJqC74s=
-X-Received: by 2002:a37:a4c5:: with SMTP id n188mr334346qke.8.1601280209890;
- Mon, 28 Sep 2020 01:03:29 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:date:message-id:in-reply-to
+         :references:user-agent:subject:mime-version;
+        bh=C2QAAi2+ZIitEwnDzFxwDfDISDPSJAzhXvlafId6Pc8=;
+        b=rBuITbhPx32cHG3DFHac+lRcJrnCNN5yEtUNxdLEKzFyPCFexKeB4xDxPXDb+6P9lq
+         WN7ehT75RtY6wwqbzhlSONtxZC1S6cIgjQ5BIUjhHXgTPe2Pp8o5zY4WnbcARBSxHVB+
+         AtoxSmy0t4sjJs23tVtoKegrADrgTjrmf6ukaOHEYE0HIGEP4kRFeIMakT0OHoEI3pht
+         lKFM8P0OcyH9WySLCA0apX2P2yp0IjhdBHDz7TncrUAnJDy83SWkPHAudg+FgRBzdHMi
+         uZgXTtmysdibKh+vvNEV8cAHtVJ9SHq72uNuNMsojFccbZkl8oOeYHWwHz9wocJqB4bk
+         bT6g==
+X-Gm-Message-State: AOAM5317hf2kahEqCi+odDrrt22QwS2BzDZdWOkx8k98PnLqgr9rCRE6
+        v4wmWVBMToVQIRO1jy2mVw1IfA==
+X-Google-Smtp-Source: ABdhPJxr0fGyEDRBYLN/uNjPkpmcZqDJXbdicXb4UjzIQb1ia6XjW9lnJK6GCzYxH7dMsAK83DWbfA==
+X-Received: by 2002:a17:906:fb8f:: with SMTP id lr15mr466285ejb.25.1601280210653;
+        Mon, 28 Sep 2020 01:03:30 -0700 (PDT)
+Received: from [100.126.98.202] ([109.37.129.13])
+        by smtp.gmail.com with ESMTPSA id s30sm385235edc.8.2020.09.28.01.03.27
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 28 Sep 2020 01:03:29 -0700 (PDT)
+From:   Arend Van Spriel <arend.vanspriel@broadcom.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+CC:     Peter Zijlstra <peterz@infradead.org>,
+        Linus Torvalds <torvalds@linuxfoundation.org>,
+        Paul McKenney <paulmck@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Franky Lin <franky.lin@broadcom.com>,
+        Hante Meuleman <hante.meuleman@broadcom.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        <linux-wireless@vger.kernel.org>,
+        <brcm80211-dev-list.pdl@broadcom.com>,
+        <brcm80211-dev-list@cypress.com>, <netdev@vger.kernel.org>,
+        Christian Benvenuti <benve@cisco.com>,
+        Govindarajulu Varadarajan <_govind@gmx.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        <linux-doc@vger.kernel.org>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Jay Cliburn <jcliburn@gmail.com>,
+        Chris Snook <chris.snook@gmail.com>,
+        Vishal Kulkarni <vishal@chelsio.com>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        <intel-wired-lan@lists.osuosl.org>,
+        Shannon Nelson <snelson@pensando.io>,
+        Pensando Drivers <drivers@pensando.io>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Solarflare linux maintainers <linux-net-drivers@solarflare.com>,
+        Edward Cree <ecree@solarflare.com>,
+        Martin Habets <mhabets@solarflare.com>,
+        Jon Mason <jdmason@kudzu.us>, Daniel Drake <dsd@gentoo.org>,
+        Ulrich Kunitz <kune@deine-taler.de>,
+        <linux-usb@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Chi-Hsien Lin <chi-hsien.lin@cypress.com>,
+        Wright Feng <wright.feng@cypress.com>,
+        Stanislav Yakovlev <stas.yakovlev@gmail.com>,
+        Stanislaw Gruszka <stf_xl@wp.pl>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
+        Luca Coelho <luciano.coelho@intel.com>,
+        Intel Linux Wireless <linuxwifi@intel.com>,
+        Jouni Malinen <j@w1.fi>,
+        Amitkumar Karwar <amitkarwar@gmail.com>,
+        Ganapathi Bhat <ganapathi.bhat@nxp.com>,
+        Xinming Hu <huxinming820@gmail.com>,
+        <libertas-dev@lists.infradead.org>,
+        Pascal Terjan <pterjan@google.com>,
+        Ping-Ke Shih <pkshih@realtek.com>
+Date:   Mon, 28 Sep 2020 10:03:25 +0200
+Message-ID: <174d3bce0c8.279b.9b12b7fc0a3841636cfb5e919b41b954@broadcom.com>
+In-Reply-To: <20200927194922.339094192@linutronix.de>
+References: <20200927194846.045411263@linutronix.de>
+ <20200927194922.339094192@linutronix.de>
+User-Agent: AquaMail/1.26.0-1689 (build: 102600004)
+Subject: Re: [patch 25/35] net: brcmfmac: Use netif_rx_any_context().
 MIME-Version: 1.0
-References: <20200917080210.108095-1-boqun.feng@gmail.com> <20200924151226.GA56799@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net>
-In-Reply-To: <20200924151226.GA56799@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Mon, 28 Sep 2020 10:03:19 +0200
-Message-ID: <CACT4Y+YxQ-v4Ym7QOwsa_Rm+iE-eauLq_W-rq6g=jsQCBYPdrQ@mail.gmail.com>
-Subject: Re: [PATCH] lockdep: Optimize the memory usage of circular queue
-To:     Boqun Feng <boqun.feng@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Waiman Long <longman@redhat.com>, Qian Cai <cai@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="0000000000002a6fa605b05b1a33"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 5:13 PM Boqun Feng <boqun.feng@gmail.com> wrote:
+--0000000000002a6fa605b05b1a33
+Content-Type: text/plain; format=flowed; charset="us-ascii"
+Content-Transfer-Encoding: 8bit
+
+On 9/27/2020 9:49 PM, Thomas Gleixner wrote:
+> From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 >
-> Ping ;-)
+> The usage of in_interrupt() in non-core code is phased out. Ideally the
+> information of the calling context should be passed by the callers or the
+> functions be split as appropriate.
 >
-> Regards,
-> Boqun
+> brcmfmac uses in_interupt() to select the netif_rx*() variant which matches
+> the calling context. The attempt to consolidate the code by passing an
+> arguemnt or by distangling it failed due lack of knowledge about this
+> driver and because the call chains are convoluted and hard to follow.
 
-Hi Boqun,
+I think it is only for USB devices that the function can be called in
+"interrupt" context. PCIe devices call it from thread context for sure.
+The function brcmf_netif_rx() is (in)directly called by brcmf_rx_frame(), 
+which is used by SDIO and USB. Anyway, it will be a bit more work, but 
+doable. Let me see what I can come up with.
 
-Peter says this may also fix this issue:
-https://syzkaller.appspot.com/bug?extid=62ebe501c1ce9a91f68c
-please add the following tag to the patch so that the bug report will
-be closed on merge:
-Reported-by: syzbot+62ebe501c1ce9a91f68c@syzkaller.appspotmail.com
+Regards,
+Arend
 
-> On Thu, Sep 17, 2020 at 04:01:50PM +0800, Boqun Feng wrote:
-> > Qian Cai reported a BFS_EQUEUEFULL warning [1] after read recursive
-> > deadlock detection merged into tip tree recently. Unlike the previous
-> > lockep graph searching, which iterate every lock class (every node in
-> > the graph) exactly once, the graph searching for read recurisve deadlock
-> > detection needs to iterate every lock dependency (every edge in the
-> > graph) once, as a result, the maximum memory cost of the circular queue
-> > changes from O(V), where V is the number of lock classes (nodes or
-> > vertices) in the graph, to O(E), where E is the number of lock
-> > dependencies (edges), because every lock class or dependency gets
-> > enqueued once in the BFS. Therefore we hit the BFS_EQUEUEFULL case.
-> >
-> > However, actually we don't need to enqueue all dependencies for the BFS,
-> > because every time we enqueue a dependency, we almostly enqueue all
-> > other dependencies in the same dependency list ("almostly" is because
-> > we currently check before enqueue, so if a dependency doesn't pass the
-> > check stage we won't enqueue it, however, we can always do in reverse
-> > ordering), based on this, we can only enqueue the first dependency from
-> > a dependency list and every time we want to fetch a new dependency to
-> > work, we can either:
-> >
-> > 1)    fetch the dependency next to the current dependency in the
-> >       dependency list
-> > or
-> > 2)    if the dependency in 1) doesn't exist, fetch the dependency from
-> >       the queue.
-> >
-> > With this approach, the "max bfs queue depth" for a x86_64_defconfig +
-> > lockdep and selftest config kernel can get descreased from:
-> >
-> >         max bfs queue depth:                   201
-> >
-> > to (after apply this patch)
-> >
-> >         max bfs queue depth:                   61
-> >
-> > While I'm at it, clean up the code logic a little (e.g. directly return
-> > other than set a "ret" value and goto the "exit" label).
-> >
-> > [1]: https://lore.kernel.org/lkml/17343f6f7f2438fc376125384133c5ba70c2a681.camel@redhat.com/
-> >
-> > Reported-by: Qian Cai <cai@redhat.com>
-> > Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
-> > ---
-> >  kernel/locking/lockdep.c | 108 ++++++++++++++++++++++++---------------
-> >  1 file changed, 67 insertions(+), 41 deletions(-)
-> >
-> > diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
-> > index cccf4bc759c6..761c2327e9cf 100644
-> > --- a/kernel/locking/lockdep.c
-> > +++ b/kernel/locking/lockdep.c
-> > @@ -1640,35 +1640,22 @@ static enum bfs_result __bfs(struct lock_list *source_entry,
-> >                            int offset)
-> >  {
-> >       struct lock_list *entry;
-> > -     struct lock_list *lock;
-> > +     struct lock_list *lock = NULL;
-> >       struct list_head *head;
-> >       struct circular_queue *cq = &lock_cq;
-> > -     enum bfs_result ret = BFS_RNOMATCH;
-> >
-> >       lockdep_assert_locked();
-> >
-> > -     if (match(source_entry, data)) {
-> > -             *target_entry = source_entry;
-> > -             ret = BFS_RMATCH;
-> > -             goto exit;
-> > -     }
-> > -
-> > -     head = get_dep_list(source_entry, offset);
-> > -     if (list_empty(head))
-> > -             goto exit;
-> > -
-> >       __cq_init(cq);
-> >       __cq_enqueue(cq, source_entry);
-> >
-> > -     while ((lock = __cq_dequeue(cq))) {
-> > -             bool prev_only_xr;
-> > -
-> > -             if (!lock->class) {
-> > -                     ret = BFS_EINVALIDNODE;
-> > -                     goto exit;
-> > -             }
-> > +     while (lock || (lock = __cq_dequeue(cq))) {
-> > +             if (!lock->class)
-> > +                     return BFS_EINVALIDNODE;
-> >
-> >               /*
-> > +              * Step 1: check whether we already finish on this one.
-> > +              *
-> >                * If we have visited all the dependencies from this @lock to
-> >                * others (iow, if we have visited all lock_list entries in
-> >                * @lock->class->locks_{after,before}) we skip, otherwise go
-> > @@ -1676,17 +1663,17 @@ static enum bfs_result __bfs(struct lock_list *source_entry,
-> >                * list accessed.
-> >                */
-> >               if (lock_accessed(lock))
-> > -                     continue;
-> > +                     goto next;
-> >               else
-> >                       mark_lock_accessed(lock);
-> >
-> > -             head = get_dep_list(lock, offset);
-> > -
-> > -             prev_only_xr = lock->only_xr;
-> > -
-> > -             list_for_each_entry_rcu(entry, head, entry) {
-> > -                     unsigned int cq_depth;
-> > -                     u8 dep = entry->dep;
-> > +             /*
-> > +              * Step 2: check whether prev dependency and this form a strong
-> > +              *         dependency path.
-> > +              */
-> > +             if (lock->parent) { /* Parent exists, check prev dependency */
-> > +                     u8 dep = lock->dep;
-> > +                     bool prev_only_xr = lock->parent->only_xr;
-> >
-> >                       /*
-> >                        * Mask out all -(S*)-> if we only have *R in previous
-> > @@ -1698,29 +1685,68 @@ static enum bfs_result __bfs(struct lock_list *source_entry,
-> >
-> >                       /* If nothing left, we skip */
-> >                       if (!dep)
-> > -                             continue;
-> > +                             goto next;
-> >
-> >                       /* If there are only -(*R)-> left, set that for the next step */
-> > -                     entry->only_xr = !(dep & (DEP_SN_MASK | DEP_EN_MASK));
-> > +                     lock->only_xr = !(dep & (DEP_SN_MASK | DEP_EN_MASK));
-> > +             }
-> >
-> > -                     visit_lock_entry(entry, lock);
-> > -                     if (match(entry, data)) {
-> > -                             *target_entry = entry;
-> > -                             ret = BFS_RMATCH;
-> > -                             goto exit;
-> > -                     }
-> > +             /*
-> > +              * Step 3: we haven't visited this and there is a strong
-> > +              *         dependency path to this, so check with @match.
-> > +              */
-> > +             if (match(lock, data)) {
-> > +                     *target_entry = lock;
-> > +                     return BFS_RMATCH;
-> > +             }
-> > +
-> > +             /*
-> > +              * Step 4: if not match, expand the path by adding the
-> > +              *         afterwards or backwards dependencis in the search
-> > +              *
-> > +              * Note we only enqueue the first of the list into the queue,
-> > +              * because we can always find a sibling dependency from one
-> > +              * (see label 'next'), as a result the space of queue is saved.
-> > +              */
-> > +             head = get_dep_list(lock, offset);
-> > +             entry = list_first_or_null_rcu(head, struct lock_list, entry);
-> > +             if (entry) {
-> > +                     unsigned int cq_depth;
-> > +
-> > +                     if (__cq_enqueue(cq, entry))
-> > +                             return BFS_EQUEUEFULL;
-> >
-> > -                     if (__cq_enqueue(cq, entry)) {
-> > -                             ret = BFS_EQUEUEFULL;
-> > -                             goto exit;
-> > -                     }
-> >                       cq_depth = __cq_get_elem_count(cq);
-> >                       if (max_bfs_queue_depth < cq_depth)
-> >                               max_bfs_queue_depth = cq_depth;
-> >               }
-> > +
-> > +             /*
-> > +              * Update the ->parent, so when @entry is iterated, we know the
-> > +              * previous dependency.
-> > +              */
-> > +             list_for_each_entry_rcu(entry, head, entry)
-> > +                     visit_lock_entry(entry, lock);
-> > +next:
-> > +             /*
-> > +              * Step 5: fetch the next dependency to process.
-> > +              *
-> > +              * If there is a previous dependency, we fetch the sibling
-> > +              * dependency in the dep list of previous dependency.
-> > +              *
-> > +              * Otherwise set @lock to NULL to fetch the next entry from
-> > +              * queue.
-> > +              */
-> > +             if (lock->parent) {
-> > +                     head = get_dep_list(lock->parent, offset);
-> > +                     lock = list_next_or_null_rcu(head, &lock->entry,
-> > +                                                  struct lock_list, entry);
-> > +             } else {
-> > +                     lock = NULL;
-> > +             }
-> >       }
-> > -exit:
-> > -     return ret;
-> > +
-> > +     return BFS_RNOMATCH;
-> >  }
-> >
-> >  static inline enum bfs_result
-> > --
-> > 2.28.0
-> >
+
+
+--0000000000002a6fa605b05b1a33
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+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
+pra5sIx/TR6gNtLG9MpND9zQt5j42hInkP81vqu9DG8lovoPMuR0JVpFRbPjHZ07cLqqbFMVS/8z
+53iSewIDAQABo4IB0zCCAc8wDgYDVR0PAQH/BAQDAgWgMIGeBggrBgEFBQcBAQSBkTCBjjBNBggr
+BgEFBQcwAoZBaHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NwZXJzb25hbHNp
+Z24yc2hhMmczb2NzcC5jcnQwPQYIKwYBBQUHMAGGMWh0dHA6Ly9vY3NwMi5nbG9iYWxzaWduLmNv
+bS9nc3BlcnNvbmFsc2lnbjJzaGEyZzMwTQYDVR0gBEYwRDBCBgorBgEEAaAyASgKMDQwMgYIKwYB
+BQUHAgEWJmh0dHBzOi8vd3d3Lmdsb2JhbHNpZ24uY29tL3JlcG9zaXRvcnkvMAkGA1UdEwQCMAAw
+RAYDVR0fBD0wOzA5oDegNYYzaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9nc3BlcnNvbmFsc2ln
+bjJzaGEyZzMuY3JsMCcGA1UdEQQgMB6BHGFyZW5kLnZhbnNwcmllbEBicm9hZGNvbS5jb20wEwYD
+VR0lBAwwCgYIKwYBBQUHAwQwHwYDVR0jBBgwFoAUaXKCYjFnlUSFd5GAxAQ2SZ17C2EwHQYDVR0O
+BBYEFHAaaA+cRo3vYiA6aKVu1bOs4YAYMA0GCSqGSIb3DQEBCwUAA4IBAQCYLdyC8SuyQV6oa5uH
+kGtqz9FCJC/9gSclQLM8dZLHF3FYX8LlcQg/3Ct5I29YLK3T/r35B2zGljtXqVOIeSEz7sDXfGNy
+3dnLIafB1y04e7aR+thVn5Rp1YTF01FUWYbZrixlVuKvjn8vtKC+HhAoDCxvqnqEuA/8Usn7B0/N
+uOA46oQTLe3kjdIgXWJ29JWVqFUavYdcK0+0zyfeMBCTO6heYABeMP3wzYHfcuFDhqldTCpumqhZ
+WwHVQUbAn+xLMIQpycIQFoJIGJX4MeaTSMfLNP2w7nP2uLNgIeleF284vS0XVkBXSCgIGylP4SN+
+HQYrv7fVCbtp+c7nFvP7MYICbzCCAmsCAQEwbTBdMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQR2xv
+YmFsU2lnbiBudi1zYTEzMDEGA1UEAxMqR2xvYmFsU2lnbiBQZXJzb25hbFNpZ24gMiBDQSAtIFNI
+QTI1NiAtIEczAgxR3m7Pj6LvQiWjJy0wDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIE
+IKt51SX3MjMlMOZba/txDVs5Q9vR9gK+hGOoOKuHe9zVMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0B
+BwEwHAYJKoZIhvcNAQkFMQ8XDTIwMDkyODA4MDMzMVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgB
+ZQMEASowCwYJYIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQow
+CwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQBbXqSnrNUAxZNJu8Yr
+luOCzO6103dUfnUbFTWqbHggMj4yXzP4CHlfkMfl6eJOY3P79XKyornqveMh+07Z+qMNEClEylxR
+gM6JK+Y0WEgh6CdmIBZhp0pUvjI7xhQout83CXqgzpAK9G9tZsEBfX/hGgV66n+WtHsECI6eUNVz
+YJplwHDfrq2Tuh0ZpRh5bF3TpExlNQQwT5VvVUmZYpOsE/ajBug69H21UqpmY8JXSmkNcFkfnYYg
+Ojbd9l5oUDN9JTK2jKZSgAE77YyBOZM8m+Cj9LTx3RoupV6x+nDvXcU3RezbVG/NTye2jVk3bHDp
+hJOA+cSAQw3PR2dqGOMb
+--0000000000002a6fa605b05b1a33--
