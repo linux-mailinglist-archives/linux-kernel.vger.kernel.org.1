@@ -2,136 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6033927B814
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 01:28:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4183A27B7F8
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 01:20:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727109AbgI1X2q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 19:28:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38884 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726064AbgI1X2m (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 19:28:42 -0400
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8573BC0610D0
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 15:52:44 -0700 (PDT)
-Received: by mail-ot1-x343.google.com with SMTP id o8so2657939otl.4
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 15:52:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=/zjWGaKaB98mjjh0ZLrJCSXNEtOUo09qmy6NjayUDvk=;
-        b=SE0OYfnZMo5uyZPc6mgIG21MkoqGNIbmK0jm0vy2aZv5VKA6ku7jwSWs6b1NGUoty/
-         wn4UKOoXxTXy903PvYRPnkC+er2m5Wrf3iavraHJxa+QAxqpaiJN2b04VaT2qF2SzrVa
-         Hk27i3iLwkmTdLboVB3hrjT8YMf/YNUT+GaDk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=/zjWGaKaB98mjjh0ZLrJCSXNEtOUo09qmy6NjayUDvk=;
-        b=W4t3bKIACP8mUvftmDisOgRyhR4igmI8tvoF2K8aIDsg3CIAgSItKXHJSo+P8GV92G
-         dP2oU0HWs5djGGHo19fA7xLtb8cms9ZZ221h8fg9dIFECHmoWbCMtZM+Crcj+dl6727w
-         IGTcY3lGV31F2aq66BImHj3Yvdkdu361JNjVp6AMMmGcWymuLCOvthEMUby32oQ+rEOW
-         oIOaBL5rOB1bnTALtKut4xhhtoOAzTabQ25acOBcWWWkfO3RuOcAvSvgp++0P8Qn/VUV
-         JhuJImtGYOqldU+wUv0KmWBRoGQ+0zaBcWdPcP0yXl2VYWFyEi7LEiTfRO4JtmgHaGbq
-         qqcg==
-X-Gm-Message-State: AOAM533HtBfCOTNTi7Xj0S/d/7sNJYydNsfMhE5J80WsGtlF8yVVStfE
-        hN1BhxWHrd8oRQCwYApxt+aFnw==
-X-Google-Smtp-Source: ABdhPJxIHmX1phtewwAqu5CcHxH1zl2JXO7LDJyED8CkXQgctT2koxk9D4O4EqsfNA/ONHttUfK08A==
-X-Received: by 2002:a05:6830:1e56:: with SMTP id e22mr785307otj.303.1601333563685;
-        Mon, 28 Sep 2020 15:52:43 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id g23sm2586552ooh.45.2020.09.28.15.52.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Sep 2020 15:52:43 -0700 (PDT)
-Subject: Re: [PATCH 00/11] Introduce Simple atomic and non-atomic counters
-To:     Kees Cook <keescook@chromium.org>
-Cc:     corbet@lwn.net, gregkh@linuxfoundation.org, shuah@kernel.org,
-        rafael@kernel.org, johannes@sipsolutions.net, lenb@kernel.org,
-        james.morse@arm.com, tony.luck@intel.com, bp@alien8.de,
-        arve@android.com, tkjos@android.com, maco@android.com,
-        joel@joelfernandes.org, christian@brauner.io, hridya@google.com,
-        surenb@google.com, minyard@acm.org, arnd@arndb.de,
-        mchehab@kernel.org, rric@kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-acpi@vger.kernel.org, devel@driverdev.osuosl.org,
-        openipmi-developer@lists.sourceforge.net,
-        linux-edac@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>
-References: <cover.1601073127.git.skhan@linuxfoundation.org>
- <202009251650.193E2AD@keescook>
- <7d8f86ab-4333-afa1-6523-e42ae5c7d9b2@linuxfoundation.org>
- <202009260930.9252966D@keescook>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <31f28240-a3f1-e730-0b10-024125b1d2ab@linuxfoundation.org>
-Date:   Mon, 28 Sep 2020 16:52:41 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726458AbgI1XUi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 19:20:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42854 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726369AbgI1XUc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 19:20:32 -0400
+Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 05DD823A52;
+        Mon, 28 Sep 2020 22:55:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601333727;
+        bh=nVv5eFMhZxzuUjz/hzt1MJOVFmdQT3QVpGthmSQf4Tg=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=na+DVtNqqzotWjIjIDUhDtGn4eiWCgc7gW9oZFsQJx1nI/IB9WSmHnqpJPLYWSuWy
+         u7FScVx5yydPbLyz4zv8VDlRks/l75WDA0dUQB9SFckbpcdY8keaFkCyePUdrgloql
+         TpRbxMDidOiQIP1/FWVt3+roJeQci+NOzn2Wx3kQ=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id B051035227DB; Mon, 28 Sep 2020 15:55:26 -0700 (PDT)
+Date:   Mon, 28 Sep 2020 15:55:26 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Kim Phillips <kim.phillips@amd.com>
+Cc:     linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Peter Zijlstra <peterz@infradead.org>, x86 <x86@kernel.org>,
+        rostedt@goodmis.org
+Subject: Re: [tip: core/rcu] rcu/tree: Mark the idle relevant functions
+ noinstr
+Message-ID: <20200928225526.GR29330@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200505134100.575356107@linutronix.de>
+ <158991795300.17951.11897222265664137612.tip-bot2@tip-bot2>
+ <b94de56b-1b37-07a0-f0de-12471ee5fc3d@amd.com>
 MIME-Version: 1.0
-In-Reply-To: <202009260930.9252966D@keescook>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b94de56b-1b37-07a0-f0de-12471ee5fc3d@amd.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/26/20 10:33 AM, Kees Cook wrote:
-> On Fri, Sep 25, 2020 at 06:13:37PM -0600, Shuah Khan wrote:
->> On 9/25/20 5:52 PM, Kees Cook wrote:
->>> On Fri, Sep 25, 2020 at 05:47:14PM -0600, Shuah Khan wrote:
->>>> -- Addressed Kees's comments:
->>>>      1. Non-atomic counters renamed to counter_simple32 and counter_simple64
->>>>         to clearly indicate size.
->>>>      2. Added warning for counter_simple* usage and it should be used only
->>>>         when there is no need for atomicity.
->>>>      3. Renamed counter_atomic to counter_atomic32 to clearly indicate size.
->>>>      4. Renamed counter_atomic_long to counter_atomic64 and it now uses
->>>>         atomic64_t ops and indicates size.
->>>>      5. Test updated for the API renames.
->>>>      6. Added helper functions for test results printing
->>>>      7. Verified that the test module compiles in kunit env. and test
->>>>         module can be loaded to run the test.
->>>
->>> Thanks for all of this!
->>>
->>>>      8. Updated Documentation to reflect the intent to make the API
->>>>         restricted so it can never be used to guard object lifetimes
->>>>         and state management. I left _return ops for now, inc_return
->>>>         is necessary for now as per the discussion we had on this topic.
->>>
->>> I still *really* do not want dec_return() to exist. That is asking for
->>> trouble. I'd prefer inc_return() not exist either, but I can live with
->>> it. ;)
->>>
->>
-
-I didn't read this correctly the first time around.
-
->> Thanks. I am equally concerned about adding anything that can be used to
->> guard object lifetimes. So I will make sure this set won't expand and
->> plan to remove dec_return() if we don't find any usages.
+On Mon, Sep 28, 2020 at 05:22:33PM -0500, Kim Phillips wrote:
+> Hi,
 > 
-> I would like it much stronger than "if". dec_return() needs to be just
-> dec() and read(). It will not be less efficient (since they're both
-> inlines), but it _will_ create a case where the atomicity cannot be used
-> for ref counting. My point is that anything that _requires_ dec_return()
-> (or, frankly, inc_return()) is _not_ "just" a statistical counter. It
-> may not be a refcounter, but it relies on the inc/dec atomicity for some
-> reason beyond counting in once place and reporting it in another.
+> On 5/19/20 2:52 PM, tip-bot2 for Thomas Gleixner wrote:
+> > The following commit has been merged into the core/rcu branch of tip:
+> > 
+> > Commit-ID:     ff5c4f5cad33061b07c3fb9187506783c0f3cb66
+> > Gitweb:        https://git.kernel.org/tip/ff5c4f5cad33061b07c3fb9187506783c0f3cb66
+> > Author:        Thomas Gleixner <tglx@linutronix.de>
+> > AuthorDate:    Fri, 13 Mar 2020 17:32:17 +01:00
+> > Committer:     Thomas Gleixner <tglx@linutronix.de>
+> > CommitterDate: Tue, 19 May 2020 15:51:20 +02:00
+> > 
+> > rcu/tree: Mark the idle relevant functions noinstr
+> > 
+> > These functions are invoked from context tracking and other places in the
+> > low level entry code. Move them into the .noinstr.text section to exclude
+> > them from instrumentation.
+> > 
+> > Mark the places which are safe to invoke traceable functions with
+> > instrumentation_begin/end() so objtool won't complain.
+> > 
+> > Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> > Reviewed-by: Alexandre Chartre <alexandre.chartre@oracle.com>
+> > Acked-by: Peter Zijlstra <peterz@infradead.org>
+> > Acked-by: Paul E. McKenney <paulmck@kernel.org>
+> > Link: https://lkml.kernel.org/r/20200505134100.575356107@linutronix.de
+> > 
+> > 
+> > ---
 > 
+> I bisected a system hang condition down to this commit.
+> 
+> To reproduce the hang, compile the below code and execute it as root
+> on an x86_64 server (AMD or Intel).  The code is opening a 
+> PERF_TYPE_TRACEPOINT event with a non-zero pe.config.
+> 
+> If I revert the commit from Linus' ToT, the system stays up.
 
-I am not thinking about efficiency rather two calls instead of one if
-an decrement needs to followed by return. In any case, I agree with you
-that there is no need to add dec_return now without any use-cases.
+"Linus' ToT" is current mainline?  If so, what does your revert look like?
+Over here that revert wants to be hand applied for current mainline.
 
-I will update the patch series to remove it.
+							Thanx, Paul
 
-thanks,
--- Shuah
-
-
-
+> .config attached.
+> 
+> Thanks,
+> 
+> Kim
+> 
+> #include <stdlib.h>
+> #include <stdio.h>
+> #include <unistd.h>
+> #include <string.h>
+> #include <sys/ioctl.h>
+> #include <linux/perf_event.h>
+> #include <asm/unistd.h>
+> 
+> static long
+> perf_event_open(struct perf_event_attr *hw_event, pid_t pid,
+> 	       int cpu, int group_fd, unsigned long flags)
+> {
+>    int ret;
+> 
+>    ret = syscall(__NR_perf_event_open, hw_event, pid, cpu,
+> 		  group_fd, flags);
+>    return ret;
+> }
+> 
+> int
+> main(int argc, char **argv)
+> {
+>    struct perf_event_attr pe;
+>    long long count;
+>    int fd;
+> 
+>    memset(&pe, 0, sizeof(struct perf_event_attr));
+>    pe.type = PERF_TYPE_TRACEPOINT;
+>    pe.size = sizeof(struct perf_event_attr);
+>    pe.config = PERF_COUNT_HW_INSTRUCTIONS;
+>    pe.disabled = 1;
+>    pe.exclude_kernel = 1;
+>    pe.exclude_hv = 1;
+> 
+>    fd = perf_event_open(&pe, 0, -1, -1, 0);
+>    if (fd == -1) {
+>       fprintf(stderr, "Error opening leader %llx\n", pe.config);
+>       exit(EXIT_FAILURE);
+>    }
+> }
 
 
