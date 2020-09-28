@@ -2,127 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 673EC27AECD
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 15:12:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 743DC27AEB6
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 15:10:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726730AbgI1NMT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 09:12:19 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:42437 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726442AbgI1NMI (ORCPT
+        id S1726500AbgI1NKQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 09:10:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56104 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726327AbgI1NKQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 09:12:08 -0400
-X-UUID: 4dc5b46fa54a469c9b2dbc40d5451ce9-20200928
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=ua3qzbbELhDUqHL6B2hkJ3+GoeysnJWSTXOlUV9J9SY=;
-        b=VD5J220JdtKLL5f1yyu+I2+A7KTPP32G54xpreMnNxR5lmnWa0FxcE6gWmm/RIRRyzdgwuwKel2RtFReXZ8BGfrRrME1M2VCUqMtiiiov6ax48PgOMJAg+k+c4XuNcW/Qx/rMP8EbvcCgREbzX15Bk9OZMC4Gg7TvPOf+9pnA3I=;
-X-UUID: 4dc5b46fa54a469c9b2dbc40d5451ce9-20200928
-Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw02.mediatek.com
-        (envelope-from <wenbin.mei@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 745945591; Mon, 28 Sep 2020 21:12:02 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 28 Sep 2020 21:12:01 +0800
-Received: from localhost.localdomain (10.17.3.153) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 28 Sep 2020 21:12:00 +0800
-From:   Wenbin Mei <wenbin.mei@mediatek.com>
-To:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>
-CC:     Chaotian Jing <chaotian.jing@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        <linux-mmc@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <srv_heupstream@mediatek.com>,
-        Wenbin Mei <wenbin.mei@mediatek.com>
-Subject: [PATCH v2 4/4] mmc: mediatek: Add subsys clock control for MT8192 msdc
-Date:   Mon, 28 Sep 2020 21:09:18 +0800
-Message-ID: <20200928130918.32326-5-wenbin.mei@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20200928130918.32326-1-wenbin.mei@mediatek.com>
-References: <20200928130918.32326-1-wenbin.mei@mediatek.com>
+        Mon, 28 Sep 2020 09:10:16 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFC33C061755;
+        Mon, 28 Sep 2020 06:10:15 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id t10so1303324wrv.1;
+        Mon, 28 Sep 2020 06:10:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=JtJ50J+uZX/OvZSAOJ1o6x79ryX8z+0JqEU167BNi6k=;
+        b=d0ZUvXwoOO8XOPK8RRMqMQKfPkIg2je6ZIyjq3Zr0znMm2R0coT+QtYqJu49NghEjt
+         /L/HRPKyj5sR6PLT3ZgnN+QVzzeRywHCgbsqpGvBHkcNZa6qWPosssB/2HWr/lyHxPpP
+         Tb/u93tB0z/111/kyHS7ARqQbgwR3rjAoGUb32QNkK3fNriluk+3PWDuA/g0g79l/D0F
+         3Hi5EUjwqPjhAiRUst+Y4MDgRGsKEAjtAgkwz9Y2pM3ykn/xUbTVwFTIhk+H0X2Um9CT
+         dHKKwIyzBk4jdVpcvnXwcLz2OqWpSZidYXqGBgzrbwx5fID+5emMsCmbNbFcB5TRknz6
+         qw2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=JtJ50J+uZX/OvZSAOJ1o6x79ryX8z+0JqEU167BNi6k=;
+        b=t8ei2sigBm93RDCb0a/MW5Z4dm50Nfevpq26iKVpKcdtvSb0myYslQFWTLPDJ6uQWW
+         qpLKPElcxq+CB/8Ezn4x/11SGmiFhLcVnUyBMCMZJfEMzS+JSu8n4Jxr9QGrx0nta20B
+         UdecwLK3XhOad8e0TyYQ+tkGOmgLhHg+7hW2LbcxDh6QGB47Aa4CKHUhjYzBNe8oeyKb
+         2BcPkFuA/nDh5WxYbEm2E9f6l4yclca1KdezKG3+udCOIenbVmzu/pr3uTSSrJ3F7WKJ
+         OzQMfNMj6qdXT+uJw0PTUs0s13xfH37wJ1SMMb2a5a6T3SXsNSu63hw8P9PvSFb8ZZ7p
+         X2ZQ==
+X-Gm-Message-State: AOAM532ZXmIe3vl+oNetCwRnAwKcENWB4GPxNd18758ZUTac1uUKk9MX
+        64ZbiJlZqsruKBMIZ6lJoI0=
+X-Google-Smtp-Source: ABdhPJzeM915RwDK4gln2RndHdA+LIcxyJe39PJD/kWRg26KUzaq3gWMMflH4Iejf/Fbj14yySBCdA==
+X-Received: by 2002:a5d:5261:: with SMTP id l1mr1618785wrc.193.1601298614474;
+        Mon, 28 Sep 2020 06:10:14 -0700 (PDT)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id m4sm1660351wro.18.2020.09.28.06.10.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Sep 2020 06:10:12 -0700 (PDT)
+Date:   Mon, 28 Sep 2020 15:10:10 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     JC Kuo <jckuo@nvidia.com>
+Cc:     gregkh@linuxfoundation.org, robh@kernel.org, jonathanh@nvidia.com,
+        kishon@ti.com, linux-tegra@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, nkristam@nvidia.com
+Subject: Re: [PATCH v3 06/15] phy: tegra: xusb: Add Tegra210 lane_iddq
+ operation
+Message-ID: <20200928131010.GG3065790@ulmo>
+References: <20200909081041.3190157-1-jckuo@nvidia.com>
+ <20200909081041.3190157-7-jckuo@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="PpAOPzA3dXsRhoo+"
+Content-Disposition: inline
+In-Reply-To: <20200909081041.3190157-7-jckuo@nvidia.com>
+User-Agent: Mutt/1.14.7 (2020-08-29)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-TVQ4MTkyIG1zZGMgaXMgYW4gaW5kZXBlbmRlbnQgc3ViIHN5c3RlbSwgd2UgbmVlZCBjb250cm9s
-IG1vcmUgYnVzDQpjbG9ja3MgZm9yIGl0Lg0KQWRkIHN1cHBvcnQgZm9yIHRoZSBhZGRpdGlvbmFs
-IHN1YnN5cyBjbG9ja3MgdG8gYWxsb3cgaXQgdG8gYmUNCmNvbmZpZ3VyZWQgYXBwcm9wcmlhdGVs
-eS4NCg0KU2lnbmVkLW9mZi1ieTogV2VuYmluIE1laSA8d2VuYmluLm1laUBtZWRpYXRlay5jb20+
-DQotLS0NCiBkcml2ZXJzL21tYy9ob3N0L210ay1zZC5jIHwgNzcgKysrKysrKysrKysrKysrKysr
-KysrKysrKysrKysrLS0tLS0tLS0tDQogMSBmaWxlIGNoYW5nZWQsIDU5IGluc2VydGlvbnMoKyks
-IDE4IGRlbGV0aW9ucygtKQ0KDQpkaWZmIC0tZ2l0IGEvZHJpdmVycy9tbWMvaG9zdC9tdGstc2Qu
-YyBiL2RyaXZlcnMvbW1jL2hvc3QvbXRrLXNkLmMNCmluZGV4IGE3MDQ3NDVlNTg4Mi4uOWExNDIy
-OTU1NTkzIDEwMDY0NA0KLS0tIGEvZHJpdmVycy9tbWMvaG9zdC9tdGstc2QuYw0KKysrIGIvZHJp
-dmVycy9tbWMvaG9zdC9tdGstc2QuYw0KQEAgLTQyNSw2ICs0MjUsOCBAQCBzdHJ1Y3QgbXNkY19o
-b3N0IHsNCiAJc3RydWN0IGNsayAqaF9jbGs7ICAgICAgLyogbXNkYyBoX2NsayAqLw0KIAlzdHJ1
-Y3QgY2xrICpidXNfY2xrOwkvKiBidXMgY2xvY2sgd2hpY2ggdXNlZCB0byBhY2Nlc3MgcmVnaXN0
-ZXIgKi8NCiAJc3RydWN0IGNsayAqc3JjX2Nsa19jZzsgLyogbXNkYyBzb3VyY2UgY2xvY2sgY29u
-dHJvbCBnYXRlICovDQorCXN0cnVjdCBjbGsgKnN5c19jbGtfY2c7CS8qIG1zZGMgc3Vic3lzIGNs
-b2NrIGNvbnRyb2wgZ2F0ZSAqLw0KKwlzdHJ1Y3QgY2xrX2J1bGtfZGF0YSBidWxrX2Nsa3NbM107
-CS8qIHBjbGssIGF4aSwgYWhiIGNsb2NrIGNvbnRyb2wgZ2F0ZSAqLw0KIAl1MzIgbWNsazsJCS8q
-IG1tYyBzdWJzeXN0ZW0gY2xvY2sgZnJlcXVlbmN5ICovDQogCXUzMiBzcmNfY2xrX2ZyZXE7CS8q
-IHNvdXJjZSBjbG9jayBmcmVxdWVuY3kgKi8NCiAJdW5zaWduZWQgY2hhciB0aW1pbmc7DQpAQCAt
-Nzg0LDYgKzc4Niw4IEBAIHN0YXRpYyB2b2lkIG1zZGNfc2V0X2J1c3lfdGltZW91dChzdHJ1Y3Qg
-bXNkY19ob3N0ICpob3N0LCB1NjQgbnMsIHU2NCBjbGtzKQ0KIA0KIHN0YXRpYyB2b2lkIG1zZGNf
-Z2F0ZV9jbG9jayhzdHJ1Y3QgbXNkY19ob3N0ICpob3N0KQ0KIHsNCisJY2xrX2J1bGtfZGlzYWJs
-ZV91bnByZXBhcmUoQVJSQVlfU0laRShob3N0LT5idWxrX2Nsa3MpLA0KKwkJCQkgICBob3N0LT5i
-dWxrX2Nsa3MpOw0KIAljbGtfZGlzYWJsZV91bnByZXBhcmUoaG9zdC0+c3JjX2Nsa19jZyk7DQog
-CWNsa19kaXNhYmxlX3VucHJlcGFyZShob3N0LT5zcmNfY2xrKTsNCiAJY2xrX2Rpc2FibGVfdW5w
-cmVwYXJlKGhvc3QtPmJ1c19jbGspOw0KQEAgLTc5MiwxMCArNzk2LDE3IEBAIHN0YXRpYyB2b2lk
-IG1zZGNfZ2F0ZV9jbG9jayhzdHJ1Y3QgbXNkY19ob3N0ICpob3N0KQ0KIA0KIHN0YXRpYyB2b2lk
-IG1zZGNfdW5nYXRlX2Nsb2NrKHN0cnVjdCBtc2RjX2hvc3QgKmhvc3QpDQogew0KKwlpbnQgcmV0
-Ow0KKw0KIAljbGtfcHJlcGFyZV9lbmFibGUoaG9zdC0+aF9jbGspOw0KIAljbGtfcHJlcGFyZV9l
-bmFibGUoaG9zdC0+YnVzX2Nsayk7DQogCWNsa19wcmVwYXJlX2VuYWJsZShob3N0LT5zcmNfY2xr
-KTsNCiAJY2xrX3ByZXBhcmVfZW5hYmxlKGhvc3QtPnNyY19jbGtfY2cpOw0KKwlyZXQgPSBjbGtf
-YnVsa19wcmVwYXJlX2VuYWJsZShBUlJBWV9TSVpFKGhvc3QtPmJ1bGtfY2xrcyksDQorCQkJCSAg
-ICAgIGhvc3QtPmJ1bGtfY2xrcyk7DQorCWlmIChyZXQpDQorCQlkZXZfZGJnKGhvc3QtPmRldiwg
-ImVuYWJsZSBjbGtzIGZhaWxlZCFcbiIpOw0KKw0KIAl3aGlsZSAoIShyZWFkbChob3N0LT5iYXNl
-ICsgTVNEQ19DRkcpICYgTVNEQ19DRkdfQ0tTVEIpKQ0KIAkJY3B1X3JlbGF4KCk7DQogfQ0KQEAg
-LTIzNjYsNiArMjM3Nyw1MiBAQCBzdGF0aWMgdm9pZCBtc2RjX29mX3Byb3BlcnR5X3BhcnNlKHN0
-cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYsDQogCQlob3N0LT5jcWhjaSA9IGZhbHNlOw0KIH0N
-CiANCitzdGF0aWMgaW50IG1zZGNfb2ZfY2xvY2tfcGFyc2Uoc3RydWN0IHBsYXRmb3JtX2Rldmlj
-ZSAqcGRldiwNCisJCQkgICAgICAgc3RydWN0IG1zZGNfaG9zdCAqaG9zdCkNCit7DQorCXN0cnVj
-dCBjbGsgKmNsazsNCisNCisJaG9zdC0+c3JjX2NsayA9IGRldm1fY2xrX2dldCgmcGRldi0+ZGV2
-LCAic291cmNlIik7DQorCWlmIChJU19FUlIoaG9zdC0+c3JjX2NsaykpDQorCQlyZXR1cm4gUFRS
-X0VSUihob3N0LT5zcmNfY2xrKTsNCisNCisJaG9zdC0+aF9jbGsgPSBkZXZtX2Nsa19nZXQoJnBk
-ZXYtPmRldiwgImhjbGsiKTsNCisJaWYgKElTX0VSUihob3N0LT5oX2NsaykpDQorCQlyZXR1cm4g
-UFRSX0VSUihob3N0LT5oX2Nsayk7DQorDQorCWhvc3QtPmJ1c19jbGsgPSBkZXZtX2Nsa19nZXQo
-JnBkZXYtPmRldiwgImJ1c19jbGsiKTsNCisJaWYgKElTX0VSUihob3N0LT5idXNfY2xrKSkNCisJ
-CWhvc3QtPmJ1c19jbGsgPSBOVUxMOw0KKw0KKwkvKnNvdXJjZSBjbG9jayBjb250cm9sIGdhdGUg
-aXMgb3B0aW9uYWwgY2xvY2sqLw0KKwlob3N0LT5zcmNfY2xrX2NnID0gZGV2bV9jbGtfZ2V0KCZw
-ZGV2LT5kZXYsICJzb3VyY2VfY2ciKTsNCisJaWYgKElTX0VSUihob3N0LT5zcmNfY2xrX2NnKSkN
-CisJCWhvc3QtPnNyY19jbGtfY2cgPSBOVUxMOw0KKw0KKwlob3N0LT5zeXNfY2xrX2NnID0gZGV2
-bV9jbGtfZ2V0KCZwZGV2LT5kZXYsICJzeXNfY2ciKTsNCisJaWYgKElTX0VSUihob3N0LT5zeXNf
-Y2xrX2NnKSkNCisJCWhvc3QtPnN5c19jbGtfY2cgPSBOVUxMOw0KKwllbHNlDQorCQljbGtfcHJl
-cGFyZV9lbmFibGUoaG9zdC0+c3lzX2Nsa19jZyk7DQorDQorCWNsayA9IGRldm1fY2xrX2dldCgm
-cGRldi0+ZGV2LCAicGNsa19jZyIpOw0KKwlpZiAoSVNfRVJSKGNsaykpDQorCQljbGsgPSBOVUxM
-Ow0KKwlob3N0LT5idWxrX2Nsa3NbMF0uY2xrID0gY2xrOw0KKw0KKwljbGsgPSBkZXZtX2Nsa19n
-ZXQoJnBkZXYtPmRldiwgImF4aV9jZyIpOw0KKwlpZiAoSVNfRVJSKGNsaykpDQorCQljbGsgPSBO
-VUxMOw0KKwlob3N0LT5idWxrX2Nsa3NbMV0uY2xrID0gY2xrOw0KKw0KKwljbGsgPSBkZXZtX2Ns
-a19nZXQoJnBkZXYtPmRldiwgImFoYl9jZyIpOw0KKwlpZiAoSVNfRVJSKGNsaykpDQorCQljbGsg
-PSBOVUxMOw0KKwlob3N0LT5idWxrX2Nsa3NbMl0uY2xrID0gY2xrOw0KKw0KKwlyZXR1cm4gMDsN
-Cit9DQorDQogc3RhdGljIGludCBtc2RjX2Rydl9wcm9iZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNl
-ICpwZGV2KQ0KIHsNCiAJc3RydWN0IG1tY19ob3N0ICptbWM7DQpAQCAtMjQwNSwyNSArMjQ2Miw5
-IEBAIHN0YXRpYyBpbnQgbXNkY19kcnZfcHJvYmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRl
-dikNCiAJaWYgKHJldCkNCiAJCWdvdG8gaG9zdF9mcmVlOw0KIA0KLQlob3N0LT5zcmNfY2xrID0g
-ZGV2bV9jbGtfZ2V0KCZwZGV2LT5kZXYsICJzb3VyY2UiKTsNCi0JaWYgKElTX0VSUihob3N0LT5z
-cmNfY2xrKSkgew0KLQkJcmV0ID0gUFRSX0VSUihob3N0LT5zcmNfY2xrKTsNCi0JCWdvdG8gaG9z
-dF9mcmVlOw0KLQl9DQotDQotCWhvc3QtPmhfY2xrID0gZGV2bV9jbGtfZ2V0KCZwZGV2LT5kZXYs
-ICJoY2xrIik7DQotCWlmIChJU19FUlIoaG9zdC0+aF9jbGspKSB7DQotCQlyZXQgPSBQVFJfRVJS
-KGhvc3QtPmhfY2xrKTsNCisJcmV0ID0gbXNkY19vZl9jbG9ja19wYXJzZShwZGV2LCBob3N0KTsN
-CisJaWYgKHJldCkNCiAJCWdvdG8gaG9zdF9mcmVlOw0KLQl9DQotDQotCWhvc3QtPmJ1c19jbGsg
-PSBkZXZtX2Nsa19nZXQoJnBkZXYtPmRldiwgImJ1c19jbGsiKTsNCi0JaWYgKElTX0VSUihob3N0
-LT5idXNfY2xrKSkNCi0JCWhvc3QtPmJ1c19jbGsgPSBOVUxMOw0KLQkvKnNvdXJjZSBjbG9jayBj
-b250cm9sIGdhdGUgaXMgb3B0aW9uYWwgY2xvY2sqLw0KLQlob3N0LT5zcmNfY2xrX2NnID0gZGV2
-bV9jbGtfZ2V0KCZwZGV2LT5kZXYsICJzb3VyY2VfY2ciKTsNCi0JaWYgKElTX0VSUihob3N0LT5z
-cmNfY2xrX2NnKSkNCi0JCWhvc3QtPnNyY19jbGtfY2cgPSBOVUxMOw0KIA0KIAlob3N0LT5yZXNl
-dCA9IGRldm1fcmVzZXRfY29udHJvbF9nZXRfb3B0aW9uYWxfZXhjbHVzaXZlKCZwZGV2LT5kZXYs
-DQogCQkJCQkJCQkiaHJzdCIpOw0KLS0gDQoyLjE4LjANCg==
 
+--PpAOPzA3dXsRhoo+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, Sep 09, 2020 at 04:10:32PM +0800, JC Kuo wrote:
+> As per Tegra210 TRM, before changing lane assignments, driver should
+> keep lanes in IDDQ and sleep state; after changing lane assignments,
+> driver should bring lanes out of IDDQ.
+> This commit implements the required operations.
+>=20
+> Signed-off-by: JC Kuo <jckuo@nvidia.com>
+> ---
+> v3:
+>    add 'misc_ctl2' data member to UPHY lane for carrying MISC_PAD_PX_CTL2=
+ offset
+>    tegra210_uphy_lane_iddq_[enable/disable]() to access 'misc_ctl2' data =
+member
+>   =20
+>  drivers/phy/tegra/xusb-tegra210.c | 82 ++++++++++++++++++++++++++++---
+>  drivers/phy/tegra/xusb.c          |  6 +++
+>  drivers/phy/tegra/xusb.h          |  6 +++
+>  3 files changed, 86 insertions(+), 8 deletions(-)
+
+Acked-by: Thierry Reding <treding@nvidia.com>
+
+--PpAOPzA3dXsRhoo+
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl9x4LIACgkQ3SOs138+
+s6EWnxAAqg2nc6Gb5VPf9jkmreIxzXLFLr8D7F0j8EqfeMHwwQyAC+DiPrs5/Yke
+4o58t1xz4d6eLORhGZi+l2rW6bKA9wp0ODjwrTtajzWMik2yqm1GQ7r9S24+yyWB
+L7CjqvLJPqXjoWSJEHFdTm5YqAYdkYKKz2235Y4HO5Rh1GbbrMmA3YVWA+Ta03h3
+rmEyq68UFi56+ESEt3qyTPt+ygydCxY9I3Gpek4GqNXUTJuBChYDEUtToeyhWA78
+nnMd5ay8IkJiiTbiCU7YFF0hruExZs37twH60SzhZRT+8ADtcvc9dzXccgDOa37u
+n0HJhy4uVbubHGbCIuDZ7cuUB3cmgbZ5XUcc+Qt13GbGtD2mB9fb0hceD8dmBOu/
+sI9VsSjBV5t6g5ETigzIaLerqRwax7kIoQRSQER4YdveJWKCj9o4roQVTwPDclNm
+v55LwmZ5ciDuJoqGDDlu23ZUkDtM6zsBLwmUG2tgT1WldU8aVlL1T5IBEEnFP/fI
+u7bvX88aoCqoosn5JkgRcgxY0pOHf/BtD2FKis0sCM5hstNzKpvmbmzXlyu0LVRq
+Nw73QhZS2fG8qq/y17Yl/CQyZ8YYxjddXO7VlbN+MNVB9ucPsqrWULgVBa9d9Yp6
+1EqQwbhu8KJ1LXA9YTKQv8JMUQsi1Yg6hqEEjZV1ivWoy4x1AVw=
+=M5t/
+-----END PGP SIGNATURE-----
+
+--PpAOPzA3dXsRhoo+--
