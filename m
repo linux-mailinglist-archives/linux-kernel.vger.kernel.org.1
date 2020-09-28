@@ -2,132 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D71E127B058
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 16:52:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BE8627B05C
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 16:55:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726692AbgI1Owj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 10:52:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43634 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726534AbgI1Owi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 10:52:38 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74727C0613CE
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 07:52:38 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id z23so8878474ejr.13
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 07:52:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pb2hEgRaRZDX0+sB29ngdH9rbWg1o3VgDq0s7JnHNBs=;
-        b=FntVd3CAlGxvIH4D+noS3jlMmsCTpRkC5DCHq1JxdpEAXzkRTzYq261oz+W7Lof3vk
-         hGokbGShQ01LM1tmcsHu+Hx//aZCwNyAU+V6nWjgmSn9sdxDcInd2Aue35dQbaKmZ9TZ
-         NTJuZ8wCzV+W83TR6rvT+PfxVsyjAMsy6N8y8yiDtV9N6oKKLUgNwuYQXAQVY3eGFLh4
-         NZ2BmJpg3yCZmeiMWUKJaN3uVcpI5+sBo+b0pNvWOFGFcOuDNh5ayN9eyEI2LEXmhRa/
-         WZqvMztMmjoFxeg2m6w4QFLfng09t25Iv+k+WZG074s9e/uTZHlwMfK4p11mv8htlXZo
-         tXNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pb2hEgRaRZDX0+sB29ngdH9rbWg1o3VgDq0s7JnHNBs=;
-        b=Ruec/KUuiQM7hxY/W27NET78ibjv5xP4PzJ7/oUqDt9eytqNmO3ChBNM9rry//Ydxt
-         zwQd6Md1dd22nyqLPN1DuBAMzmUYopvqrOZIRvelufu8DOyJpsjwXZR4UgNaL/ULlkAG
-         bIwlLSwd4r8WzBA2HzM6eImx9dt7AIQWfkJVB0vK7EBH5TUnkSZhRGkAoD6lOeqQeQ6w
-         SFQ1/wb74s2DjjM/xuF3qFaySXmOH6NNGCAH3IdGLiLm0tgO2J9isIq4zT6f8884CBke
-         BBv8Xf2DwffqMQNA31/yHUzAkotfxyC8/4tbQ5nMbLL8sZxwJ16WT2ir+v0zy4Izv/AQ
-         wEoA==
-X-Gm-Message-State: AOAM532ZLE5/1VYlRVH4fXy5WtM+kcrZbnv93DwhL03QkUxv0aw43jH3
-        Z69s/W32MZ4tBPW+D3aRnvDjhCMh88ZaxUFmHE4wZlLXGqs=
-X-Google-Smtp-Source: ABdhPJxAVB9xurPA1BXZAPcuQbV34dpBJ02LnYYlhE5yglFppCdXdT/R38mm7JohT1o0mbbC7O6T5vKvHG2sRQ3ukPE=
-X-Received: by 2002:a17:906:fccb:: with SMTP id qx11mr2049874ejb.429.1601304756574;
- Mon, 28 Sep 2020 07:52:36 -0700 (PDT)
+        id S1726573AbgI1OzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 10:55:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55462 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726500AbgI1OzE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 10:55:04 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id F03392083B;
+        Mon, 28 Sep 2020 14:55:02 +0000 (UTC)
+Date:   Mon, 28 Sep 2020 10:55:01 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Prasad Sodagudi <psodagud@codeaurora.org>
+Cc:     mingo@redhat.com, keescook@chromium.org,
+        saiprakash.ranjan@codeaurora.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, gregkh@linuxfoundation.org,
+        anton@enomsg.org, arnd@arndb.de, catalin.marinas@arm.com,
+        ccross@android.com, jbaron@akamai.com, jim.cromie@gmail.com,
+        joe@perches.com, joel@joelfernandes.org
+Subject: Re: [PATCH] tracing: Add register read and write tracing support
+Message-ID: <20200928105501.7e29df65@oasis.local.home>
+In-Reply-To: <1601253290-400618-2-git-send-email-psodagud@codeaurora.org>
+References: <1601253290-400618-1-git-send-email-psodagud@codeaurora.org>
+        <1601253290-400618-2-git-send-email-psodagud@codeaurora.org>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20200928104155.7385-1-brgl@bgdev.pl> <20200928104155.7385-8-brgl@bgdev.pl>
- <20200928130023.GJ3956970@smile.fi.intel.com> <CAMpxmJVGAe224JaXL4EmeEFV4Qv7ohjgn_W_CwPjC4MHgP4gTA@mail.gmail.com>
- <20200928140028.GO3956970@smile.fi.intel.com>
-In-Reply-To: <20200928140028.GO3956970@smile.fi.intel.com>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Mon, 28 Sep 2020 16:52:25 +0200
-Message-ID: <CAMpxmJUMMia+b6DQ1KoZ70XPUzhutg1tnWF5PCvfaRF5-XQnVg@mail.gmail.com>
-Subject: Re: [PATCH v2 7/9] gpio: mockup: pass the chip label as device property
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kent Gibson <warthog618@gmail.com>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        linux-doc <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 4:00 PM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> On Mon, Sep 28, 2020 at 03:13:53PM +0200, Bartosz Golaszewski wrote:
-> > On Mon, Sep 28, 2020 at 3:00 PM Andy Shevchenko
-> > <andriy.shevchenko@linux.intel.com> wrote:
-> > >
-> > > On Mon, Sep 28, 2020 at 12:41:53PM +0200, Bartosz Golaszewski wrote:
-> > > > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> > > >
-> > > > While we do check the "chip-name" property in probe(), we never actually
-> > > > use it. Let's pass the chip label to the driver using device properties
-> > > > as we'll want to allow users to define their own once dynamically
-> > > > created chips are supported.
-> > > >
-> > > > The property is renamed to "chip-label" to not cause any confusion with
-> > > > the actual chip name which is of the form: "gpiochipX".
-> > > >
-> >
-> > ^^^ here, see below
-> >
-> > > > If the "chip-label" property is missing, let's do what most devices in
-> > > > drivers/gpio/ do and use dev_name().
-> > >
-> > > ...
-> > >
-> > > > +             snprintf(chip_label, sizeof(chip_label),
-> > > > +                      "gpio-mockup-%c", i + 'A');
-> > > > +             properties[prop++] = PROPERTY_ENTRY_STRING("chip-label",
-> > > > +                                                        chip_label);
-> > >
-> > > You added new property, now count is up to 4. But at the same time
-> > >
-> > >         #define GPIO_MOCKUP_MAX_PROP  4
-> > >
-> > > how do you avoid overflow?
-> > >
-> >
-> > I renamed the property, the previous "chip-name" is no longer used. In
-> > fact it was never used but was accounted for in GPIO_MOCKUP_MAX_PROP.
->
-> Either I'm missing something or...
->
-> Current code in linux-next has 3 properties to be possible
->
-> PROPERTY_ENTRY_U32("gpio-base", base);
-> PROPERTY_ENTRY_U16("nr-gpios", ngpio);
-> PROPERTY_ENTRY_BOOL("named-gpio-lines");
->
-> You adding here
-> PROPERTY_ENTRY_STRING("chip-label", chip_label);
->
-> Altogether after this patch is 4 which is maximum, but since array is passed by
-> a solely pointer, the terminator is a must.
->
+On Sun, 27 Sep 2020 17:34:50 -0700
+Prasad Sodagudi <psodagud@codeaurora.org> wrote:
 
-Thanks for explaining my code to me. Yes you're right and I'm not sure
-why I missed this. :)
+> Add register read/write operations tracing support.
+> ftrace events helps trace register read and write
+> location details of memory mapped IO registers. Also
+> add _no_log variants the writel_relaxed/readl_relaed
+> APIs to avoid excessive logging for certain register
+> operations.
 
-I'll fix this in v3.
+As mentioned elsewhere, I don't see a reason for "nolog" variants if it
+is just to avoid logging too much. You can easily filter on the
+recording side.
 
-Actually this means the code is wrong even before this series - it's
-just that we don't use the "chip-name" property.
 
-Bartosz
+> --- /dev/null
+> +++ b/include/linux/iorw.h
+> @@ -0,0 +1,20 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + *
+> + */
+> +#ifndef __LOG_IORW_H__
+> +#define __LOG_IORW_H__
+> +
+> +#include <linux/types.h>
+> +
+> +#if IS_ENABLED(CONFIG_TRACE_RW)
+> +void log_write_io(volatile void __iomem *addr);
+> +void log_read_io(const volatile void __iomem *addr);
+
+So basically, this is always doing a function call, even when tracing
+is not enabled. You may want to turn this into a macro, and use the new
+interface I'm about to push:
+
+ See https://lore.kernel.org/r/20200925211206.423598568@goodmis.org
+
+Although I'm about to push a v3 (found a config that breaks msr.h)
+
+#if IS_ENABLED(CONFIG_TRACE_RW)
+#include <linux/atomic.h>
+#include <linux/tracepoint-defs.h>
+
+DECLARE_TRACEPOINT(rwio_write);
+DECLARE_TRACEPOINT(rwio_read);
+
+void __log_write_io(volatile void __iomem *addr);
+void __log_read_io(const volatile void __iomem *addr);
+
+#define log_write_io(addr) \
+	if (tracepoint_enabled(rwio_write)
+		__log_write_io(addr)
+
+#define log_read_io(addr) \
+	if (tracepoint_enabled(rwio_read)
+		__log_read_io(addr)
+
+
+> +#else
+> +static inline void log_write_io(volatile void __iomem *addr)
+> +{ }
+> +static inline void log_read_io(const volatile void __iomem *addr)
+> +{ }
+> +#endif /* CONFIG_TRACE_RW */
+> +
+> +#endif /* __LOG_IORW_H__  */
+> diff --git a/include/trace/events/rwio.h b/include/trace/events/rwio.h
+> new file mode 100644
+> index 0000000..b829629
+> --- /dev/null
+> +++ b/include/trace/events/rwio.h
+> @@ -0,0 +1,51 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +
+> +#undef TRACE_SYSTEM
+> +#define TRACE_SYSTEM rwio
+> +
+> +#if !defined(_TRACE_RWIO_H) || defined(TRACE_HEADER_MULTI_READ)
+> +#define _TRACE_RWIO_H
+> +
+> +#include <linux/tracepoint.h>
+> +
+> +TRACE_EVENT(raw_write,
+
+"raw" is too generic. Call this rwio_write.
+
+> +
+> +	TP_PROTO(unsigned long fn, volatile void __iomem *addr),
+> +
+> +	TP_ARGS(fn, addr),
+> +
+> +	TP_STRUCT__entry(
+> +		__field(u64, fn)
+> +		__field(u64, addr)
+> +	),
+> +
+> +	TP_fast_assign(
+> +		__entry->fn = fn;
+> +		__entry->addr = (u64)addr;
+> +	),
+> +
+> +	TP_printk("%pS write addr=%p\n", __entry->fn, __entry->addr)
+> +);
+> +
+> +TRACE_EVENT(raw_read,
+
+And this "rwio_read"
+
+-- Steve
+
+> +
+> +	TP_PROTO(unsigned long fn, const volatile void __iomem *addr),
+> +
+> +	TP_ARGS(fn, addr),
+> +
+> +	TP_STRUCT__entry(
+> +		__field(u64, fn)
+> +		__field(u64, addr)
+> +	),
+> +
+> +	TP_fast_assign(
+> +		__entry->fn = fn;
+> +		__entry->addr = (u64)addr;
+> +	),
+> +
+> +	TP_printk("%pS read addr=%p\n", __entry->fn, __entry->addr)
+> +);
+> +
+> +#endif /* _TRACE_PREEMPTIRQ_H */
+> +
