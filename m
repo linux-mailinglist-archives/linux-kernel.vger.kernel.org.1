@@ -2,129 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9B5627AFB7
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 16:10:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8AE327AFBB
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 16:11:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726552AbgI1OKx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 10:10:53 -0400
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:40970 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726460AbgI1OKw (ORCPT
+        id S1726604AbgI1OL1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 10:11:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37290 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725290AbgI1OL0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 10:10:52 -0400
-Received: by mail-ot1-f65.google.com with SMTP id q21so1017284ota.8;
-        Mon, 28 Sep 2020 07:10:52 -0700 (PDT)
+        Mon, 28 Sep 2020 10:11:26 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80E45C061755
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 07:11:26 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id gx22so8743772ejb.5
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 07:11:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Tefr7BiFg39dwwsMVzHhoZjOTiYyT1GtzIbXqdzA3RQ=;
+        b=cXl8XE2U4M1Uq5WJZJO+7kQtPfIkT7190lUQPtIRikXcIVUCIifzMHW932m5pjfAaW
+         0Tb49s8LXw6flO8kvaqPRkA/68nTljoblmBx87fY2t+GKGsAJUuKE29SNGbc/E0eomfN
+         GP44GTROn2cLLqVB2CTbgR6PTIW4aIfK46QKSuQ9BUDmrDjgIlS3TLD25IpWqvyibf0s
+         aDIGop+wujTvC8qBgG+gIcia3TMfAxM1IMG5CvVPfkbmILuuHqMjjDarHTWmumyRToW/
+         gc0NVTasRm3wnPL2oBdiB5shLfc/qm/Bq/tT8enqX0rtIFnnDvDrcisZq40p6nYb8SP+
+         kpfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=2sM12ZeK0z1tSNxQRVSSWCLi5jDZGPNS8m7K+6sRVao=;
-        b=OWD79MGyqIOE5fHO53MPeWlK4vPkk4Sde63QKpjGUi5buaCLiK3o4ADnWoLfbCcGI1
-         nTV5Y6P28Dokqh+zsl6pzna8PWT9omN6xW4+cN6ITInWUq9wkSA3Nx9gqrUjAJZTiHbq
-         tT7qhPqzPoM/AOMZtueM4wV/13e9fZewU1w8Nr/Kf4sBAzrHaNbeI+PxOex69xg8h6cU
-         wMrhCXwX9HzkxyaAMzmnkgBWbkTHT3490jBDVh6D0z8aSsEYTgqzffeAyfN1Wt04sLTM
-         MwNgB8vZNzsBJqmekw3+JZWsjiTTYmjGfIBxKRWG9CcNs2hBooJag2/Pj/FAkEcd9vyE
-         //2Q==
-X-Gm-Message-State: AOAM532xhvlTNYMebyj/BEoFqJqzthMjBkDz7NHp5K37KeaI7NsBqJf9
-        JuPgTKCxVRVVbmaGew0OnAKul9LR/l03wN0ogUo=
-X-Google-Smtp-Source: ABdhPJzoRcZtx0KR+JiVPrhbYB+WXxT604oAjCIQ0JUATh9EyZHxwpAfE2Rm0/6BIsROa8t6jNpV1RiZbkd6WDpqdb8=
-X-Received: by 2002:a9d:718a:: with SMTP id o10mr1097527otj.262.1601302251909;
- Mon, 28 Sep 2020 07:10:51 -0700 (PDT)
+        bh=Tefr7BiFg39dwwsMVzHhoZjOTiYyT1GtzIbXqdzA3RQ=;
+        b=eSPL6yQJgACFzZ+ZQ1hHdP0wU1ace2YFi0PbNUaz1Wu/GwSKStHGLH9cNlYK7HAarv
+         B/Dcft5y9ut9/uNTiux8vyCwP3RIlt9FQKkxQkHC27ZZYYOq92T7ytFhGkVoWIbTaglC
+         xrxarG51cA0zH0c0DIRKiIz1pz6R3IvUuTd8oq1Ug8EIOAR0o0uSWwwTrlZa4S6p7GB/
+         zTyN3Oz7zITX3EQHwLDnglSoVRAoSi2rAzXU7DIB6BeCCjeVPDaMDyi1Xoa+crYpqC1D
+         ZnRtT6+NEaezaivnZ2coDhBsrNinTiJfb7s2pzZZ1hHmEtLXs1Plxwdft9WOqDqJTlVU
+         EvIA==
+X-Gm-Message-State: AOAM531mBDAVPEIvIJysp73loIvOOtSdTB+lFybyWYOhFP5SliffGxPz
+        ZpS2HSk1Id1nXMe2enAmsCgWSIhC7tjRQRnNSXI=
+X-Google-Smtp-Source: ABdhPJwRJJpw0/VWqUdH/OPHzpw/+li0Sr+sfPnK0ny3I4lyCpu0qLK2vlTmQKvyJOoIJrNZrOL4b8SI0FBQTEppbi0=
+X-Received: by 2002:a17:906:e24d:: with SMTP id gq13mr1789288ejb.152.1601302285000;
+ Mon, 28 Sep 2020 07:11:25 -0700 (PDT)
 MIME-Version: 1.0
-References: <00d901d693a4$93195980$b94c0c80$@gmail.com>
-In-Reply-To: <00d901d693a4$93195980$b94c0c80$@gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 28 Sep 2020 16:10:36 +0200
-Message-ID: <CAJZ5v0ivZnvVbY4WyM1SQO1TY=G8yb4=C0kWkVQPas5=NX1Sog@mail.gmail.com>
-Subject: Re: [PATCH] cpuidle: change #ifdef for the declaration of cpuidle_enter_s2idle()
-To:     zhuguangqing83 <zhuguangqing83@gmail.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        zhuguangqing <zhuguangqing@xiaomi.com>
+References: <CAOuPNLjtG_VHL1M8-=pKNNRmWQg_8oC0YG7C8H3gQcbJ+0B3=A@mail.gmail.com>
+ <202009251301.A1FD183582@keescook> <CAMj1kXGtv84JHQfKoqOYyq=3m2w0Yuj_n4_Teo83zvdZ9kpZhw@mail.gmail.com>
+ <202009251338.D17FB071@keescook> <CAMj1kXEWutwE-fP9bc=tsyPoTuV6J7bLzLpkZ213P9y9JszkTw@mail.gmail.com>
+ <202009251647.FD8CECD4@keescook> <CAOuPNLif93a1uHhqsKFwhd35nfCnmRu_uxpB62shOEKyQ96hNw@mail.gmail.com>
+ <202009260933.C603CD8@keescook> <CAOuPNLiM+ghH_7eNkAfA=jDgHrc+2_jB_n3FvYG-JMN0EiNfGA@mail.gmail.com>
+In-Reply-To: <CAOuPNLiM+ghH_7eNkAfA=jDgHrc+2_jB_n3FvYG-JMN0EiNfGA@mail.gmail.com>
+From:   Pintu Agarwal <pintu.ping@gmail.com>
+Date:   Mon, 28 Sep 2020 19:41:13 +0530
+Message-ID: <CAOuPNLiw1FyzHq2DykRFwgG0BeaWaNymiV8_DmD=ump7P8W_ow@mail.gmail.com>
+Subject: Re: KASLR support on ARM with Kernel 4.9 and 4.14
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Ard Biesheuvel <ardb@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        Marc Zyngier <marc.zyngier@arm.com>,
+        Dave Martin <dave.martin@arm.com>,
+        Kernelnewbies <kernelnewbies@kernelnewbies.org>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        open list <linux-kernel@vger.kernel.org>,
+        Tony Lindgren <tony@atomide.com>, matt@codeblueprint.co.uk,
+        nico@linaro.org, Thomas Garnier <thgarnie@google.com>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 26, 2020 at 3:30 AM zhuguangqing83 <zhuguangqing83@gmail.com> wrote:
+On Mon, 28 Sep 2020 at 19:15, Pintu Agarwal <pintu.ping@gmail.com> wrote:
 >
+> On Sat, 26 Sep 2020 at 22:10, Kees Cook <keescook@chromium.org> wrote:
 >
-> > On Thu, Sep 24, 2020 at 10:01 AM <zhuguangqing83@gmail.com> wrote:
-> > >
-> > > From: zhuguangqing <zhuguangqing@xiaomi.com>
-> > >
-> > > Currently, if CONFIG_SUSPEND=n and CONFIG_CPU_IDLE=y, the function
-> > > cpuidle_enter_s2idle() is declared but not defined, it may cause error
-> > > when cpuidle_enter_s2idle() is called.
-> > >
-> > > If CONFIG_SUSPEND=y and CONFIG_CPU_IDLE=n, the function
-> > > cpuidle_enter_s2idle() is defined as "return -ENODEV;" which is not
-> > > supposed to be.
-> > >
-> > > Change #ifdef CONFIG_CPU_IDLE to #ifdef CONFIG_SUSPEND for
-> > > cpuidle_enter_s2idle() in cpuidle.h, which is consistent with its
-> > > defination in cpuidle.c.
+> > > >> I wonder if this is an Android Common kernel?
+> > > It uses the below kernel for 4.14:
+> > > https://gitlab.com/quicla/kernel/msm-4.14/-/tree/LE.UM.3.4.2.r1.5  (or
+> > > similar branch).
 > >
-> > Well, what about the case when CONFIG_SUSPEND is set, but CONFIG_CPU_IDLE
-> > isn't?
+> > Okay, so yes. And this appears to have the hashing of %p backported. I
+> > cannot, however, explain why it's showing hashed pointers instead of
+> > just NULL, though.
+> >
+> > It might be related to these commits but they're not in that kernel:
+> > 3e5903eb9cff ("vsprintf: Prevent crash when dereferencing invalid pointers")
+> > 7bd57fbc4a4d ("vsprintf: don't obfuscate NULL and error pointers")
+> >
+> > > ==> The case where symbol addresses are changing.
+> > >
+> > > kptr_restrict is set to 2 by default:
+> > > / # cat /proc/sys/kernel/kptr_restrict
+> > > 2
+> > >
+> > > Basically, the goal is:
+> > > * To understand how addresses are changing in 4.14 Kernel (without
+> > > KASLR support)?
+> > > * Is it possible to support the same in 4.9 Kernel ?
+> >
+> > Try setting kptr_restrict to 0 and see if the symbol addresses change? I
+> > suspect Ard is correct: there's no KASLR here, just hashed pointers
+> > behaving weird on an old non-stock kernel. :)
 > >
 >
-> When CONFIG_SUSPEND is set, but CONFIG_CPU_IDLE isn't, the function
-> cpuidle_enter_s2idle() is defined in cpuidle.c, but the defination in
-> cpuidle.c is not used actually because CONFIG_CPU_IDLE isn't set, we
-> only use its defination as "return -ENODEV;" in cpuidle.h.
-
-Actually, if CONFIG_CPU_IDLE is not set, cpuidle.c is not compiled at
-all AFAICS, but after the $subject patch the compiler will be looking
-for cpuidle_enter_s2idle() in that case, won't it? [The static inline
-stub is only present for CONFIG_SUSPEND unset.]
-
-> > > Signed-off-by: zhuguangqing <zhuguangqing@xiaomi.com>
-> > > ---
-> > >  include/linux/cpuidle.h | 14 +++++++++-----
-> > >  1 file changed, 9 insertions(+), 5 deletions(-)
-> > >
-> > > diff --git a/include/linux/cpuidle.h b/include/linux/cpuidle.h
-> > > index 6175c77bf25e..2aa8cead1727 100644
-> > > --- a/include/linux/cpuidle.h
-> > > +++ b/include/linux/cpuidle.h
-> > > @@ -216,22 +216,26 @@ static inline struct cpuidle_device
-> > *cpuidle_get_device(void) {return NULL; }
-> > >  extern int cpuidle_find_deepest_state(struct cpuidle_driver *drv,
-> > >                                       struct cpuidle_device *dev,
-> > >                                       u64 latency_limit_ns);
-> > > -extern int cpuidle_enter_s2idle(struct cpuidle_driver *drv,
-> > > -                               struct cpuidle_device *dev);
-> > >  extern void cpuidle_use_deepest_state(u64 latency_limit_ns);
-> > >  #else
-> > >  static inline int cpuidle_find_deepest_state(struct cpuidle_driver *drv,
-> > >                                              struct cpuidle_device *dev,
-> > >                                              u64 latency_limit_ns)
-> > >  {return -ENODEV; }
-> > > -static inline int cpuidle_enter_s2idle(struct cpuidle_driver *drv,
-> > > -                                      struct cpuidle_device *dev)
-> > > -{return -ENODEV; }
-> > >  static inline void cpuidle_use_deepest_state(u64 latency_limit_ns)
-> > >  {
-> > >  }
-> > >  #endif
-> > >
-> > > +#ifdef CONFIG_SUSPEND
-> > > +extern int cpuidle_enter_s2idle(struct cpuidle_driver *drv,
-> > > +                               struct cpuidle_device *dev);
-> > > +#else
-> > > +static inline int cpuidle_enter_s2idle(struct cpuidle_driver *drv,
-> > > +                                      struct cpuidle_device *dev)
-> > > +{return -ENODEV; }
-> > > +#endif
-> > > +
-> > >  /* kernel/sched/idle.c */
-> > >  extern void sched_idle_set_state(struct cpuidle_state *idle_state);
-> > >  extern void default_idle_call(void);
-> > > --
-> > > 2.17.1
-> > >
+> Okay. Thank you so much for your comments and suggestions.
+> You mean to say, setting kptr_restrict to 0 may avoid changing symbol
+> addresses in 4.14 ?
+> And, sorry, I could not understand the thing about this "hashed pointers".
+> How can I check this behavior in source code to understand better?
+> Is it possible to give some reference ?
+> I wanted to disable this hash pointer on 4.14 kernel and check the behavior.
+> Also if possible, we would like to make this similar change on 4.9
+> kernel as well.
 >
+
+Okay, I found these changes in 4.14 kernel:
+https://gitlab.com/quicla/kernel/msm-4.14/-/commit/e63732dbfe017aa0dbabac9d096b5fde8afbd395
+
+Are we talking about this?
+I cound not find this in 4.9 kernel.
+
+I will disable kptr_restrict and check or, I will enable
+CONFIG_DEBUG_CONSOLE_UNHASHED_POINTERS and check.
+
+
+Thanks,
+Pintu
