@@ -2,61 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F99C27B3F0
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 20:02:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8534627B3F4
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 20:02:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726991AbgI1SCO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 14:02:14 -0400
-Received: from wnew3-smtp.messagingengine.com ([64.147.123.17]:42421 "EHLO
+        id S1726583AbgI1SCS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 14:02:18 -0400
+Received: from wnew3-smtp.messagingengine.com ([64.147.123.17]:43279 "EHLO
         wnew3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726808AbgI1SBU (ORCPT
+        by vger.kernel.org with ESMTP id S1726803AbgI1SBT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 14:01:20 -0400
+        Mon, 28 Sep 2020 14:01:19 -0400
 Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.west.internal (Postfix) with ESMTP id 5F59EC18;
+        by mailnew.west.internal (Postfix) with ESMTP id 5FB36E14;
         Mon, 28 Sep 2020 13:55:20 -0400 (EDT)
 Received: from mailfrontend2 ([10.202.2.163])
   by compute4.internal (MEProxy); Mon, 28 Sep 2020 13:55:21 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sent.com; h=from
-        :to:cc:subject:date:message-id:reply-to:mime-version
-        :content-type:content-transfer-encoding; s=fm1; bh=fmncist0AzJYx
-        p6GLtq+mhjYGrSXjZlMGdyR6GzoHFE=; b=JePfCtZZ3VjR0kUkXWq2LPpwtPIYW
-        lNEE93ErV2Ufd1HrdZAgMOGtN6KDRmwBKj9kSHkPFambHhGYjEwHjNAI4RAdPJLM
-        tTz2xmZ6LbJ1GULmgkF04E28WDiLsSP0lYJW2qgzy2gM/6/ZGA9UgWdnlei+2IVJ
-        ihJ8nLtcFcvW/WdEDnwBZ2EF3SH3vRKYKX09r/fX5T6xh8gwIy+aRqkneaTPyvED
-        Kr3jJ659x4KM8+QoIFvZF8RC7HBb5A+yY73OZd+uJkANQHiRyKuHoPry9uqJdY6N
-        ixktF7cj+NrD2WO6yq2v450r9ezE5SRZjRzjwfdrAI/1BRc8O1EHrTviw==
+        :to:cc:subject:date:message-id:in-reply-to:references:reply-to
+        :mime-version:content-transfer-encoding; s=fm1; bh=1JXkwDp9KLCIB
+        rx6jYPsY+s0zDNvLwvprwELtbcH1wI=; b=PcWM1IW1xAk/OXpjNFCoGNof1Y3rq
+        vs5b7fBue3B0+BME4GUysIJ+S4WYQhjEqBOBEvc1+6dH6PvAFp0p+bxR6nC3UwCL
+        QWmDIKhhu2th6TIrHogQ4Y4qHpBLJ7oV7DVpW2Dm/yZ+Q4P+1dHyKuZ8KesHQHQ0
+        LP2eUwZ+i/hBcZf2JpnSDL7kfPCTVQFC1+IghVLLzc82/z6zbAF1T0Y2LYti2tcy
+        nrmBKO4x7ozhh4p0KCbJCHGRD8gWsd/XZy+XDzMbIOySNdsmSq1HJSW8mj+1Iai6
+        zE5F6qkIbUh/dUkjrIyA1N4h85KJxLOue0BhTAj/7Acik0nVqJrakDbiA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:message-id:mime-version:reply-to:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=fmncist0AzJYxp6GLtq+mhjYGrSXjZlMGdyR6GzoHFE=; b=RowmZrDE
-        Jx8V8BtJ7p+fDPPRmcIVRA78cLpzbqcNHERRl3ZvWa/A8CSXiOmz/l5MTfciQEey
-        v7Hekt8Exw0J0oQlwsT4rlyzHB+Nc3Xv31sfJhaXrAAbLUCPfDUB9nrjiSuSp63c
-        GhV9DsApldHK8o4TNch8Q/4f5SxUAsucdHAMq05cBthI099jAvUojqzGY53isDFh
-        XG78QVeWjrQfdb3KxLQxBrhKhp1/2MwK9BxwfyD9W/t77UsRuc9EhBsR9/CXgUlH
-        it7SKFHQLpDuIVnQ3uxs2uVsuuJPSjSpu4+ZwXw8bYIdWEfF8Dm4y7DSrAt7rQ9l
-        z6z7m1fRenUcpg==
-X-ME-Sender: <xms:hiNyX_UUWpo2T_awWKlpkD4nPXWTFLaoq2ODbD3y0DaGXEwHsz5Ppg>
-    <xme:hiNyX3kmAbckZmFSgMfjopoSv2VDiG9cvWhOrIJkmeC96YQ6nC-_GxZcextFr0rcL
-    U6CLB0hrWlUXaVr3g>
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :in-reply-to:message-id:mime-version:references:reply-to:subject
+        :to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm3; bh=1JXkwDp9KLCIBrx6jYPsY+s0zDNvLwvprwELtbcH1wI=; b=AeRz+mXg
+        aPkenou0K+dBeH6HEtt5xx6xyDf+KqVHVruB4ad0OKP4ypm+UQoakVzPiEa8aqtF
+        Ovn79QSuMZJVe59fBWuEE5WH4HfL76eJONMhsi4hhxjhLaNlMgJ7qEnaCVcSd9cp
+        mIwwa71J1CgjBELP5af1xR7lZBU2OsbnByryr/HhgWTRHvzCTNu4GqU1FIsRZy1F
+        Po0k1s+qL9oLO2f9if4hs5z2lq1Cj+RYZD+apZiA4+aU/cb/K8SLwoFFalv59Jk7
+        qusbYcaJyF0Qp/y0afYhMQ49LW1tcq5PkfYbvm88mGBpPhnF9TwrX1ZtfPmkYGQu
+        9jvvS5b15y3CSQ==
+X-ME-Sender: <xms:hiNyX0NAmd5f5cmZ2DHJZ3_zCebnDmWiW4OF9TSCbw8YTjjEXsm_Qg>
+    <xme:hiNyX6-qthaNpPrYuo9Czh0ozLFyhBVY-EXzlzInfwsA3nb4X8IlzcE1Z-NuOzVBq
+    KbS2cNjV5IT-xMYfw>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrvdeigdeliecutefuodetggdotefrodftvf
     curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
     uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefhvffufffkofhrgggtgfesthekredtredtjeenucfhrhhomhepkghiucgjrghn
-    uceoiihirdihrghnsehsvghnthdrtghomheqnecuggftrfgrthhtvghrnhepkeehvdevje
-    elvdffueevtddviedvgeevveelhfffjeeitedtkeeikeffveffgeetnecuffhomhgrihhn
-    peelqdhrtgehqdhmmhhothhsqddvtddvtddqtdelqddukedqvdduqddvfedrihhtpdhgih
-    hthhhusgdrtghomhdpkhgvrhhnvghlrdhorhhgnecukfhppeduvddrgeeirddutdeirddu
-    ieegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepii
-    hirdihrghnsehsvghnthdrtghomh
-X-ME-Proxy: <xmx:hiNyX7Zv-lDxw2uvy4yFTNQEU_6Cpy0-z-9D6Lq3PkLieAokk2gMwQ>
-    <xmx:hiNyX6WAqo8hiqIw-GJpAhP9e7hpwY8Lg_P4yjFSjJB_5OPIEekjLw>
-    <xmx:hiNyX5nIjEXoYEYvCtiCQipxxRo0tTXCxuJjpKYtf1Mh22TrAzGALQ>
-    <xmx:iCNyX-8BGNfLEZyCbgKDww-ZDYDgi78OXQpF3eRV8wxHtfEhOIhBTSsic3w>
+    fjughrpefhvffufffkofgjfhhrggfgsedtkeertdertddtnecuhfhrohhmpegkihcujggr
+    nhcuoeiiihdrhigrnhesshgvnhhtrdgtohhmqeenucggtffrrghtthgvrhhnpeduhfffve
+    ektdduhfdutdfgtdekkedvhfetuedufedtgffgvdevleehheevjefgtdenucfkphepuddv
+    rdegiedruddtiedrudeigeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmh
+    grihhlfhhrohhmpeiiihdrhigrnhesshgvnhhtrdgtohhm
+X-ME-Proxy: <xmx:hiNyX7Q-1NsjfFaqw2MLoI8paLU8fSunPOVf54vSh48s-yFzO2_hKw>
+    <xmx:hiNyX8vWh3SY4pJnBS4JADw9dSSR9gvTo4vUIXW_fjNzSIUV0M_nvQ>
+    <xmx:hiNyX8eaOPKgGeqFwTgpzVp0Tm6FKGOZgR8CF0cxL44dky_9LlFafw>
+    <xmx:iCNyX7_sGjXA9Z-wtPcG17HQLchBGY6eR9j_nr0EwEzFYtTGmL_r1ZPjwNo>
 Received: from nvrsysarch6.NVidia.COM (unknown [12.46.106.164])
-        by mail.messagingengine.com (Postfix) with ESMTPA id DBA873064610;
-        Mon, 28 Sep 2020 13:55:17 -0400 (EDT)
+        by mail.messagingengine.com (Postfix) with ESMTPA id 40EF8306467D;
+        Mon, 28 Sep 2020 13:55:18 -0400 (EDT)
 From:   Zi Yan <zi.yan@sent.com>
 To:     linux-mm@kvack.org
 Cc:     "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
@@ -72,237 +70,232 @@ Cc:     "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
         Andrea Arcangeli <aarcange@redhat.com>,
         John Hubbard <jhubbard@nvidia.com>,
         David Nellans <dnellans@nvidia.com>,
-        linux-kernel@vger.kernel.org, Zi Yan <ziy@nvidia.com>
-Subject: [RFC PATCH v2 00/30] 1GB PUD THP support on x86_64
-Date:   Mon, 28 Sep 2020 13:53:58 -0400
-Message-Id: <20200928175428.4110504-1-zi.yan@sent.com>
+        linux-kernel@vger.kernel.org
+Subject: [RFC PATCH v2 01/30] mm/pagewalk: use READ_ONCE when reading the PUD entry unlocked
+Date:   Mon, 28 Sep 2020 13:53:59 -0400
+Message-Id: <20200928175428.4110504-2-zi.yan@sent.com>
 X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200928175428.4110504-1-zi.yan@sent.com>
+References: <20200928175428.4110504-1-zi.yan@sent.com>
 Reply-To: Zi Yan <ziy@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zi Yan <ziy@nvidia.com>
+From: Jason Gunthorpe <jgg@nvidia.com>
 
-Hi all,
+The pagewalker runs while only holding the mmap_sem for read. The pud can
+be set asynchronously, while also holding the mmap_sem for read
 
-This patchset adds support for 1GB PUD THP on x86_64. It is on top of
-v5.9-rc5-mmots-2020-09-18-21-23. It is also available at:
-https://github.com/x-y-z/linux-1gb-thp/tree/1gb_thp_v5.9-rc5-mmots-2020-09-18-21-23
+eg from:
 
-Other than PUD THP, we had some discussion on generating THPs and contiguous
-physical memory via a synchronous system call [0]. I am planning to send out a
-separate patchset on it later, since I feel that it can be done independently of
-PUD THP support.
+ handle_mm_fault()
+  __handle_mm_fault()
+   create_huge_pmd()
+    dev_dax_huge_fault()
+     __dev_dax_pud_fault()
+      vmf_insert_pfn_pud()
+       insert_pfn_pud()
+        pud_lock()
+        set_pud_at()
 
-Any comment or suggestion is welcome. Thanks.
+At least x86 sets the PUD using WRITE_ONCE(), so an unlocked read of
+unstable data should be paired to use READ_ONCE().
 
-Motiation
-====
-The patchset is trying to provide a more transparent way of boosting virtual
-memory performance by leveraging gigantic TLB entries compared to hugetlbfs
-pages [1,2]. Roman also said he would provide performance numbers of using 1GB
-PUD THP once the patchset is a relatively good shape [1].
+For the pagewalker to work locklessly the PUD must work similarly to the
+PMD: once the PUD entry becomes a pointer to a PMD, it must be stable, and
+safe to pass to pmd_offset()
 
+Passing the value from READ_ONCE into the callbacks prevents the callers
+from seeing inconsistencies after they re-read, such as seeing pud_none().
 
-Patchset organization:
-====
+If a callback does obtain the pud_lock then it should trigger ACTION_AGAIN
+if a data race caused the original value to change.
 
-1. Patch 1 and 2: Jason's PUD entry READ_ONCE patch to walk_page_range to give
-   a consistent read of PUD entries during lockless page table walks.
-   I also add PMD entry READ_ONCE patch, since PMD level walk_page_range has
-   the same lockless behavior as PUD level.
+Use the same pattern as gup_pmd_range() and pass in the address of the
+local READ_ONCE stack variable to pmd_offset() to avoid reading it again.
 
-2. Patch 3: THP page table deposit now use single linked list to enable
-   hierarchical page table deposit, i.e., deposit a PMD page where 512 PTE pages
-   are deposited to.  Every page table page has a deposit_head and a deposit_node.
-   For example, when storing 512 PTE pages to a PMD page, PMD page's deposit_head
-   links to a PTE page's deposit_node, which links to another PTE page's
-   deposit_node.
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+---
+ include/linux/pagewalk.h   |  2 +-
+ mm/hmm.c                   | 16 +++++++---------
+ mm/mapping_dirty_helpers.c |  6 ++----
+ mm/pagewalk.c              | 28 ++++++++++++++++------------
+ mm/ptdump.c                |  3 +--
+ 5 files changed, 27 insertions(+), 28 deletions(-)
 
-3. Patch 4,5,6: helper functions for allocating page table pages for PUD THPs
-   and change thp_order and thp_nr.
-
-4. Patch 7 to 23: PUD THP implementation. It is broken into small patches for
-   easy review.
-
-5. Patch 24, 25: new page size encoding for MADV_HUGEPAGE and MADV_NOHUGEPAGE in
-   madvise. User can specify THP size. Only MADV_HUGEPAGE_1GB is used accepted.
-   VM_HUGEPAGE_PUD is added to vm_flags to store the information at big 37.
-   You are welcome to suggest any other approach.
-
-6. Patch 26, 27: enable_pud_thp and hpage_pud_size are added to
-   /sys/kernel/mm/transparent_hugepage/. enable_pud_thp is set to never by
-   default.
-
-7. Patch 28, 29: PUD THPs are allocated only from boot-time reserved CMA regions.
-   The CMA regions can be used for other moveable page allocations.
-
-
-Design for PUD-, PMD-, and PTE-mapped PUD THP
-====
-
-One additional design compared to PMD THP is the support for PMD-mapped PUD THP,
-since original THP design supports PUD-mapped and PTE-mapped PUD THP
-automatically.
-
-PMD mapcounts are stored at (512*N + 3) subpages (N = 0 to 511) and 512*N
-subpages are called PMDPageInPUD. A PUDDoubleMap bit is stored at third
-subpage of a PUD THP, using the same page flag position as DoubleMap (stored
-at second subpage of a PMD THP), to indicate a PUD THP with both PUD and
-PMD mappings.
-
-
-A PUD THP looks like:
-
-┌───┬───┬───┬───┬─────┬───┬───┬───┬───┬────────┬──────┐
-│ H │ T │ T │ T │ ... │ T │ T │ T │ T │  ...   │  T   │
-│ 0 │ 1 │ 2 │ 3 │     │512│513│514│515│        │262143│
-└───┴───┴───┴───┴─────┴───┴───┴───┴───┴────────┴──────┘
-
-PMDPageInPUD pages in a PUD THP (only show first two PMDPageInPUD pages below).
-Note that PMDPageInPUD pages are identified by their relative position to the
-head page of the PUD THP and are still tail pages except the first one,
-so H_0, T_512, T_1024, ... T_512x511 are all PMDPageInPUD pages:
-
- ┌────────────┬──────────────┬────────────┬──────────────┬───────────────────┐
- │PMDPageInPUD│     ...      │PMDPageInPUD│     ...      │  the remaining    │
- │    page    │ 511 subpages │    page    │ 511 subpages │ 510x512 subpages  │
- └────────────┴──────────────┴────────────┴──────────────┴───────────────────┘
-
-
-Mapcount positions:
-
-* For each subpage, its PTE mapcount is _mapcount, the same as PMD THP.
-* For PUD THP, its PUD-mapping uses compound_mapcount at T_1 the same as PMD THP.
-* For PMD-mapped PUD THP, its PMD-mapping uses compound_mapcount at T_3, T_515,
-  ..., T_512x511+3. It is called sub_compound_mapcount.
-
-PUDDoubleMap and DoubleMap in PUD THP:
-
-* PUDDoubleMap is stored at the page flag of T_2 (third subpage), reusing the
-  DoubleMap's position.
-* DoubleMap is stored at the page flags of T_1 (second subpage), T_513, ...,
-  T_512x511+1.
-
-[0] https://lore.kernel.org/linux-mm/20200907072014.GD30144@dhcp22.suse.cz/
-[1] https://lore.kernel.org/linux-mm/20200903162527.GF60440@carbon.dhcp.thefacebook.com/
-[2] https://lore.kernel.org/linux-mm/20200903165051.GN24045@ziepe.ca/
-
-
-Changelog from RFC v1
-====
-1. Add Jason's PUD entry READ_ONCE patch and my PMD entry READ_ONCE patch to
-   get consistent page table entry reading in lockless page table walks.
-2. Use single linked list for page table page deposit instead of pagechain
-   data structure from RFC v1.
-3. Address Kirill's comments.
-4. Remove PUD page allocation via alloc_contig_pages(), using cma_alloc only.
-5. Add madvise flag MADV_HUGEPAGE_1GB to explicitly enable PUD THP on specific
-   VMAs instead of reusing MADV_HUGEPAGE. A new vm_flags VM_HUGEPAGE_PUD is
-   added to achieve this.
-6. Break large patches in v1 into small ones for easy review.
-
-Jason Gunthorpe (1):
-  mm/pagewalk: use READ_ONCE when reading the PUD entry unlocked
-
-Zi Yan (29):
-  mm: pagewalk: use READ_ONCE when reading the PMD entry unlocked
-  mm: thp: use single linked list for THP page table page deposit.
-  mm: add new helper functions to allocate one PMD page with 512 PTE
-    pages.
-  mm: thp: add page table deposit/withdraw functions for PUD THP.
-  mm: change thp_order and thp_nr as we will have not just PMD THPs.
-  mm: thp: add anonymous PUD THP page fault support without enabling it.
-  mm: thp: add PUD THP support for copy_huge_pud.
-  mm: thp: add PUD THP support to zap_huge_pud.
-  fs: proc: add PUD THP kpageflag.
-  mm: thp: handling PUD THP reference bit.
-  mm: rmap: add mappped/unmapped page order to anonymous page rmap
-    functions.
-  mm: rmap: add map_order to page_remove_anon_compound_rmap.
-  mm: thp: add PUD THP split_huge_pud_page() function.
-  mm: thp: add PUD THP to deferred split list when PUD mapping is gone.
-  mm: debug: adapt dump_page to PUD THP.
-  mm: thp: PUD THP COW splits PUD page and falls back to PMD page.
-  mm: thp: PUD THP follow_p*d_page() support.
-  mm: stats: make smap stats understand PUD THPs.
-  mm: page_vma_walk: teach it about PMD-mapped PUD THP.
-  mm: thp: PUD THP support in try_to_unmap().
-  mm: thp: split PUD THPs at page reclaim.
-  mm: support PUD THP pagemap support.
-  mm: madvise: add page size options to MADV_HUGEPAGE and
-    MADV_NOHUGEPAGE.
-  mm: vma: add VM_HUGEPAGE_PUD to vm_flags at bit 37.
-  mm: thp: add a global knob to enable/disable PUD THPs.
-  mm: thp: make PUD THP size public.
-  hugetlb: cma: move cma reserve function to cma.c.
-  mm: thp: use cma reservation for pud thp allocation.
-  mm: thp: enable anonymous PUD THP at page fault path.
-
- .../admin-guide/kernel-parameters.txt         |   2 +-
- Documentation/admin-guide/mm/transhuge.rst    |   1 +
- arch/arm64/mm/hugetlbpage.c                   |   2 +-
- arch/powerpc/mm/hugetlbpage.c                 |   2 +-
- arch/x86/include/asm/pgalloc.h                |  69 ++
- arch/x86/include/asm/pgtable.h                |  26 +
- arch/x86/kernel/setup.c                       |   8 +-
- arch/x86/mm/pgtable.c                         |  38 +
- drivers/base/node.c                           |   3 +
- fs/proc/meminfo.c                             |   2 +
- fs/proc/page.c                                |   2 +
- fs/proc/task_mmu.c                            | 200 +++-
- include/linux/cma.h                           |  18 +
- include/linux/huge_mm.h                       |  84 +-
- include/linux/hugetlb.h                       |  12 -
- include/linux/memcontrol.h                    |   5 +
- include/linux/mm.h                            |  42 +-
- include/linux/mm_types.h                      |  11 +-
- include/linux/mmu_notifier.h                  |  13 +
- include/linux/mmzone.h                        |   1 +
- include/linux/page-flags.h                    |  48 +
- include/linux/pagewalk.h                      |   4 +-
- include/linux/pgtable.h                       |  34 +
- include/linux/rmap.h                          |  10 +-
- include/linux/swap.h                          |   2 +
- include/linux/vm_event_item.h                 |   7 +
- include/uapi/asm-generic/mman-common.h        |  23 +
- include/uapi/linux/kernel-page-flags.h        |   1 +
- kernel/events/uprobes.c                       |   4 +-
- kernel/fork.c                                 |  10 +-
- mm/cma.c                                      | 119 +++
- mm/debug.c                                    |   6 +-
- mm/gup.c                                      |  60 +-
- mm/hmm.c                                      |  16 +-
- mm/huge_memory.c                              | 899 +++++++++++++++++-
- mm/hugetlb.c                                  | 117 +--
- mm/khugepaged.c                               |  16 +-
- mm/ksm.c                                      |   4 +-
- mm/madvise.c                                  |  76 +-
- mm/mapping_dirty_helpers.c                    |   6 +-
- mm/memcontrol.c                               |  43 +-
- mm/memory.c                                   |  28 +-
- mm/mempolicy.c                                |  29 +-
- mm/migrate.c                                  |  12 +-
- mm/mincore.c                                  |  10 +-
- mm/page_alloc.c                               |  53 +-
- mm/page_vma_mapped.c                          | 171 +++-
- mm/pagewalk.c                                 |  47 +-
- mm/pgtable-generic.c                          |  49 +-
- mm/ptdump.c                                   |   3 +-
- mm/rmap.c                                     | 300 ++++--
- mm/swap.c                                     |  30 +
- mm/swap_slots.c                               |   2 +
- mm/swapfile.c                                 |  11 +-
- mm/userfaultfd.c                              |   2 +-
- mm/util.c                                     |  22 +-
- mm/vmscan.c                                   |  33 +-
- mm/vmstat.c                                   |   8 +
- 58 files changed, 2396 insertions(+), 460 deletions(-)
-
---
+diff --git a/include/linux/pagewalk.h b/include/linux/pagewalk.h
+index b1cb6b753abb..6caf28aadafb 100644
+--- a/include/linux/pagewalk.h
++++ b/include/linux/pagewalk.h
+@@ -39,7 +39,7 @@ struct mm_walk_ops {
+ 			 unsigned long next, struct mm_walk *walk);
+ 	int (*p4d_entry)(p4d_t *p4d, unsigned long addr,
+ 			 unsigned long next, struct mm_walk *walk);
+-	int (*pud_entry)(pud_t *pud, unsigned long addr,
++	int (*pud_entry)(pud_t pud, pud_t *pudp, unsigned long addr,
+ 			 unsigned long next, struct mm_walk *walk);
+ 	int (*pmd_entry)(pmd_t *pmd, unsigned long addr,
+ 			 unsigned long next, struct mm_walk *walk);
+diff --git a/mm/hmm.c b/mm/hmm.c
+index 943cb2ba4442..419e9e50fd51 100644
+--- a/mm/hmm.c
++++ b/mm/hmm.c
+@@ -402,28 +402,26 @@ static inline unsigned long pud_to_hmm_pfn_flags(struct hmm_range *range,
+ 	       hmm_pfn_flags_order(PUD_SHIFT - PAGE_SHIFT);
+ }
+ 
+-static int hmm_vma_walk_pud(pud_t *pudp, unsigned long start, unsigned long end,
+-		struct mm_walk *walk)
++static int hmm_vma_walk_pud(pud_t pud, pud_t *pudp, unsigned long start,
++			    unsigned long end, struct mm_walk *walk)
+ {
+ 	struct hmm_vma_walk *hmm_vma_walk = walk->private;
+ 	struct hmm_range *range = hmm_vma_walk->range;
+ 	unsigned long addr = start;
+-	pud_t pud;
+ 	int ret = 0;
+ 	spinlock_t *ptl = pud_trans_huge_lock(pudp, walk->vma);
+ 
+ 	if (!ptl)
+ 		return 0;
++	if (memcmp(pudp, &pud, sizeof(pud)) != 0) {
++		walk->action = ACTION_AGAIN;
++		spin_unlock(ptl);
++		return 0;
++	}
+ 
+ 	/* Normally we don't want to split the huge page */
+ 	walk->action = ACTION_CONTINUE;
+ 
+-	pud = READ_ONCE(*pudp);
+-	if (pud_none(pud)) {
+-		spin_unlock(ptl);
+-		return hmm_vma_walk_hole(start, end, -1, walk);
+-	}
+-
+ 	if (pud_huge(pud) && pud_devmap(pud)) {
+ 		unsigned long i, npages, pfn;
+ 		unsigned int required_fault;
+diff --git a/mm/mapping_dirty_helpers.c b/mm/mapping_dirty_helpers.c
+index 2c7d03675903..9fc46ebef497 100644
+--- a/mm/mapping_dirty_helpers.c
++++ b/mm/mapping_dirty_helpers.c
+@@ -150,11 +150,9 @@ static int wp_clean_pmd_entry(pmd_t *pmd, unsigned long addr, unsigned long end,
+  * causes dirty info loss. The pagefault handler should do
+  * that if needed.
+  */
+-static int wp_clean_pud_entry(pud_t *pud, unsigned long addr, unsigned long end,
+-			      struct mm_walk *walk)
++static int wp_clean_pud_entry(pud_t pudval, pud_t *pudp, unsigned long addr,
++			      unsigned long end, struct mm_walk *walk)
+ {
+-	pud_t pudval = READ_ONCE(*pud);
+-
+ 	if (!pud_trans_unstable(&pudval))
+ 		return 0;
+ 
+diff --git a/mm/pagewalk.c b/mm/pagewalk.c
+index e81640d9f177..15d1e423b4a3 100644
+--- a/mm/pagewalk.c
++++ b/mm/pagewalk.c
+@@ -58,7 +58,7 @@ static int walk_pte_range(pmd_t *pmd, unsigned long addr, unsigned long end,
+ 	return err;
+ }
+ 
+-static int walk_pmd_range(pud_t *pud, unsigned long addr, unsigned long end,
++static int walk_pmd_range(pud_t pud, unsigned long addr, unsigned long end,
+ 			  struct mm_walk *walk)
+ {
+ 	pmd_t *pmd;
+@@ -67,7 +67,7 @@ static int walk_pmd_range(pud_t *pud, unsigned long addr, unsigned long end,
+ 	int err = 0;
+ 	int depth = real_depth(3);
+ 
+-	pmd = pmd_offset(pud, addr);
++	pmd = pmd_offset(&pud, addr);
+ 	do {
+ again:
+ 		next = pmd_addr_end(addr, end);
+@@ -119,17 +119,19 @@ static int walk_pmd_range(pud_t *pud, unsigned long addr, unsigned long end,
+ static int walk_pud_range(p4d_t *p4d, unsigned long addr, unsigned long end,
+ 			  struct mm_walk *walk)
+ {
+-	pud_t *pud;
++	pud_t *pudp;
++	pud_t pud;
+ 	unsigned long next;
+ 	const struct mm_walk_ops *ops = walk->ops;
+ 	int err = 0;
+ 	int depth = real_depth(2);
+ 
+-	pud = pud_offset(p4d, addr);
++	pudp = pud_offset(p4d, addr);
+ 	do {
+  again:
++		pud = READ_ONCE(*pudp);
+ 		next = pud_addr_end(addr, end);
+-		if (pud_none(*pud) || (!walk->vma && !walk->no_vma)) {
++		if (pud_none(pud) || (!walk->vma && !walk->no_vma)) {
+ 			if (ops->pte_hole)
+ 				err = ops->pte_hole(addr, next, depth, walk);
+ 			if (err)
+@@ -140,27 +142,29 @@ static int walk_pud_range(p4d_t *p4d, unsigned long addr, unsigned long end,
+ 		walk->action = ACTION_SUBTREE;
+ 
+ 		if (ops->pud_entry)
+-			err = ops->pud_entry(pud, addr, next, walk);
++			err = ops->pud_entry(pud, pudp, addr, next, walk);
+ 		if (err)
+ 			break;
+ 
+ 		if (walk->action == ACTION_AGAIN)
+ 			goto again;
+ 
+-		if ((!walk->vma && (pud_leaf(*pud) || !pud_present(*pud))) ||
++		if ((!walk->vma && (pud_leaf(pud) || !pud_present(pud))) ||
+ 		    walk->action == ACTION_CONTINUE ||
+ 		    !(ops->pmd_entry || ops->pte_entry))
+ 			continue;
+ 
+-		if (walk->vma)
+-			split_huge_pud(walk->vma, pud, addr);
+-		if (pud_none(*pud))
+-			goto again;
++		if (walk->vma) {
++			split_huge_pud(walk->vma, pudp, addr);
++			pud = READ_ONCE(*pudp);
++			if (pud_none(pud))
++				goto again;
++		}
+ 
+ 		err = walk_pmd_range(pud, addr, next, walk);
+ 		if (err)
+ 			break;
+-	} while (pud++, addr = next, addr != end);
++	} while (pudp++, addr = next, addr != end);
+ 
+ 	return err;
+ }
+diff --git a/mm/ptdump.c b/mm/ptdump.c
+index ba88ec43ff21..2055b940408e 100644
+--- a/mm/ptdump.c
++++ b/mm/ptdump.c
+@@ -65,11 +65,10 @@ static int ptdump_p4d_entry(p4d_t *p4d, unsigned long addr,
+ 	return 0;
+ }
+ 
+-static int ptdump_pud_entry(pud_t *pud, unsigned long addr,
++static int ptdump_pud_entry(pud_t val, pud_t *pudp, unsigned long addr,
+ 			    unsigned long next, struct mm_walk *walk)
+ {
+ 	struct ptdump_state *st = walk->private;
+-	pud_t val = READ_ONCE(*pud);
+ 
+ #if CONFIG_PGTABLE_LEVELS > 2 && defined(CONFIG_KASAN)
+ 	if (pud_page(val) == virt_to_page(lm_alias(kasan_early_shadow_pmd)))
+-- 
 2.28.0
 
