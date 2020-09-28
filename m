@@ -2,157 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8559F27AFF9
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 16:27:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FE4A27B006
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 16:36:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726504AbgI1O15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 10:27:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39822 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726281AbgI1O15 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 10:27:57 -0400
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48166C061755;
-        Mon, 28 Sep 2020 07:27:55 -0700 (PDT)
-Received: by mail-il1-x144.google.com with SMTP id c5so1408470ilk.11;
-        Mon, 28 Sep 2020 07:27:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=swpXeTWHWCNF6KXrz68zf9yRkpoPYhiTjW+lMQcubDQ=;
-        b=BOKMig27yWnniwJh3B4l/zCp7mHNUCUubmP8fwzAFvtftEdZrq/J5g9GHUBm8+rBuS
-         7amT5mIVNrvgC4h1nJVlIySswEDjj9KrXY7EYQiVaVvuH7TBrJ6dfBuiWOfpA6V2IDOx
-         x9LC2kOWZB0ps5+Cyr6Xg+yjE8OMl6kIbLSj/ATKUBG5HsSlyCEdJfEQK70juLfljq5j
-         1dQF4HWNgPah2G3fS8Xd50ag91nSTfdiRRC+sj1wUizOwipypUqx7Pk3IoeV7D/SwCNf
-         U3/X/j+AwtDaXBvH5eeOcRi5yscC+RRR6tBZQYohGmJfwYktf4JYiFAbARckHIswggK1
-         P8ww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=swpXeTWHWCNF6KXrz68zf9yRkpoPYhiTjW+lMQcubDQ=;
-        b=XqnHFZ3uvkcqowE7uKd/Z6+T170wtVrpGSdFX4jLiDeMon/384P64F+o26q+WMX3mG
-         zBxSY/8MCXt+OG7IMR39RG1yEolquHzTon4/isKYodh2+tcH9TVYbsmVrRuSFPvfzJrX
-         vNyTE6tTznyN40PEdH+sfZnOB8KCFn5+q+MANj6Dz7vk3LXzlP8EFYTdsyuHbbA7piKy
-         FiqdDm3fs5IYXZ5OJxbFeFhYeeloxUwf4YzqflfW005vS3+wEgjEV+tJawB8mlodJc+C
-         LI4THRlkghdSJ/53RbPaYHfA+zxquNuewqgep5m/rKcPmD5ekIYMWdFRhLu1t/hzNB23
-         f7mw==
-X-Gm-Message-State: AOAM533VwD6duyU0YYOT5B1DEXgxAZbw99VKTjdcs9aWHXlwfwfzCY6i
-        W9n/TIXiPuG8KH8MrTam/dWrrl7UUmDi+q4JC48=
-X-Google-Smtp-Source: ABdhPJzOveX0je2bblXhCXBXIiaCyUUc4S3JAXPSmt4lEfMi8iabOV8HZOiVHqjpmvDzsFtEhoueN56owxsQKZojPH0=
-X-Received: by 2002:a92:d68b:: with SMTP id p11mr1294955iln.59.1601303274202;
- Mon, 28 Sep 2020 07:27:54 -0700 (PDT)
+        id S1726551AbgI1OgJ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 28 Sep 2020 10:36:09 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:57624 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726461AbgI1OgJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 10:36:09 -0400
+X-Greylist: delayed 1649 seconds by postgrey-1.27 at vger.kernel.org; Mon, 28 Sep 2020 10:36:08 EDT
+Received: from DGGEML403-HUB.china.huawei.com (unknown [172.30.72.54])
+        by Forcepoint Email with ESMTP id DE89442FCA1814698BE7;
+        Mon, 28 Sep 2020 22:08:36 +0800 (CST)
+Received: from DGGEML529-MBS.china.huawei.com ([169.254.5.156]) by
+ DGGEML403-HUB.china.huawei.com ([fe80::74d9:c659:fbec:21fa%31]) with mapi id
+ 14.03.0487.000; Mon, 28 Sep 2020 22:08:29 +0800
+From:   "chenjun (AM)" <chenjun102@huawei.com>
+To:     Catalin Marinas <catalin.marinas@arm.com>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "Xiangrui (Euler)" <rui.xiang@huawei.com>,
+        "weiyongjun (A)" <weiyongjun1@huawei.com>
+Subject: Re: [PATCH -next 3/5] mm/kmemleak: Add support for percpu memory
+ leak detect
+Thread-Topic: [PATCH -next 3/5] mm/kmemleak: Add support for percpu memory
+ leak detect
+Thread-Index: AQHWkMbbj+H4aShTD0uutUryxnjBNQ==
+Date:   Mon, 28 Sep 2020 14:08:29 +0000
+Message-ID: <CE1E7D7EFA066443B6454A6A5063B502209EB04F@DGGEML529-MBS.china.huawei.com>
+References: <20200921020007.35803-1-chenjun102@huawei.com>
+ <20200921020007.35803-4-chenjun102@huawei.com> <20200922095736.GB15643@gaia>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.174.179.194]
+Content-Type: text/plain; charset="iso-2022-jp"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-References: <20200921102731.747736-1-peron.clem@gmail.com> <20200921135925.q7mde2cnt5jtzkb5@gilmour.lan>
- <CAJiuCcfz9A_Vmzq=s3LK2kGB_1tZPkC9Ux+Brdocp9py0fovAg@mail.gmail.com>
- <59286578.E0qSRroNqr@kista> <20200928084308.eipnvlfqe3c5lfmg@gilmour.lan>
-In-Reply-To: <20200928084308.eipnvlfqe3c5lfmg@gilmour.lan>
-From:   =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
-Date:   Mon, 28 Sep 2020 16:27:42 +0200
-Message-ID: <CAJiuCceHXr_5PvG-FW+hRNV7Q33hGrp8kLbO0EgfqqBxF7wbqQ@mail.gmail.com>
-Subject: Re: [PATCH v4 09/22] arm64: dts: allwinner: h6: Add HDMI audio node
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     =?UTF-8?Q?Jernej_=C5=A0krabec?= <jernej.skrabec@siol.net>,
-        Chen-Yu Tsai <wens@csie.org>, Rob Herring <robh+dt@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Marcus Cooper <codekipper@gmail.com>,
-        Linux-ALSA <alsa-devel@alsa-project.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-sunxi <linux-sunxi@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Maxime,
+Hi Catalin
 
-On Mon, 28 Sep 2020 at 10:43, Maxime Ripard <maxime@cerno.tech> wrote:
->
-> On Mon, Sep 21, 2020 at 08:37:09PM +0200, Jernej =C5=A0krabec wrote:
-> > Dne ponedeljek, 21. september 2020 ob 19:23:49 CEST je Cl=C3=A9ment P=
-=C3=A9ron
-> > napisal(a):
-> > > Hi Maxime,
-> > >
-> > > On Mon, 21 Sep 2020 at 15:59, Maxime Ripard <maxime@cerno.tech> wrote=
-:
-> > > >
-> > > > On Mon, Sep 21, 2020 at 12:27:18PM +0200, Cl=C3=A9ment P=C3=A9ron w=
-rote:
-> > > > > From: Jernej Skrabec <jernej.skrabec@siol.net>
-> > > > >
-> > > > > Add a simple-soundcard to link audio between HDMI and I2S.
-> > > > >
-> > > > > Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
-> > > > > Signed-off-by: Marcus Cooper <codekipper@gmail.com>
-> > > > > Signed-off-by: Cl=C3=A9ment P=C3=A9ron <peron.clem@gmail.com>
-> > > > > ---
-> > > > >  arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi | 33 ++++++++++++++=
-++++++
-> > > > >  1 file changed, 33 insertions(+)
-> > > > >
-> > > > > diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi b/arch/=
-arm64/
-> > boot/dts/allwinner/sun50i-h6.dtsi
-> > > > > index 28c77d6872f6..a8853ee7885a 100644
-> > > > > --- a/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
-> > > > > +++ b/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
-> > > > > @@ -67,6 +67,25 @@ de: display-engine {
-> > > > >               status =3D "disabled";
-> > > > >       };
-> > > > >
-> > > > > +     hdmi_sound: hdmi-sound {
-> > > > > +             compatible =3D "simple-audio-card";
-> > > > > +             simple-audio-card,format =3D "i2s";
-> > > > > +             simple-audio-card,name =3D "sun50i-h6-hdmi";
-> > > > > +             simple-audio-card,mclk-fs =3D <128>;
-> > > > > +             simple-audio-card,frame-inversion;
-> > > > > +             status =3D "disabled";
-> > > > > +
-> > > > > +             simple-audio-card,codec {
-> > > > > +                     sound-dai =3D <&hdmi>;
-> > > > > +             };
-> > > > > +
-> > > > > +             simple-audio-card,cpu {
-> > > > > +                     sound-dai =3D <&i2s1>;
-> > > > > +                     dai-tdm-slot-num =3D <2>;
-> > > > > +                     dai-tdm-slot-width =3D <32>;
-> > > >
-> > > > It looks weird to have both some TDM setup here, and yet the format=
- in
-> > > > i2s?
-> > >
-> > > Yes, I agree I will check if it's really needed.
-> >
-> > I think this was explained before.
->
-> Possibly, but this should be in a comment or at least the commit log
->
-> > Anyway, this is needed to force width to 32, no matter actual sample
-> > width. That's a requirement of HDMI codec. I believe Marcus Cooper
-> > have another codec which also needs fixed width.
-> >
-> > There is no similar property for I2S, so TDM one is used here.
->
-> Except it's really dedicated to the TDM mode and doesn't really make
-> much sense here.
->
-> If we have special requirements like this on the codec setup, that
-> sounds like a good justification for creating a custom codec instead of
-> shoehorning it into simple-card
+Thanks for your opinions.
 
-When all the remarks are fixed would it be possible to merge the rest
-of the series without the dts changes ?
-
-I will propose another series to introduce a dedicated codec for that.
-
+在 2020/9/22 17:58, Catalin Marinas 写道:
+> On Mon, Sep 21, 2020 at 02:00:05AM +0000, Chen Jun wrote:
+>> From: Wei Yongjun <weiyongjun1@huawei.com>
+>>
+>> Currently the reporting of the percpu chunks leaking problem
+>> are not supported. This patch introduces this function.
+>>
+>> Since __percpu pointer is not pointing directly to the actual chunks,
+>> this patch creates an object for __percpu pointer, but marks it as no
+>> scan block, only check whether this pointer is referenced by other
+>> blocks.
+> 
+> OK, so you wanted NO_SCAN to not touch the block at all, not even update
+> the checksum. Maybe better add a new flag, NO_ACCESS (and we could use
+> it to track ioremap leaks, it's been on my wishlist for years).
 >
-> Maxime
+
+I will add a new OBJECT_NO_ACCESS.
+The checksum of the object will not be updated and its memory block will 
+not be scanned if the object marked with OBJECT_NO_ACCESS.
+
+>> diff --git a/mm/kmemleak.c b/mm/kmemleak.c
+>> index c09c6b59eda6..feedb72f06f2 100644
+>> --- a/mm/kmemleak.c
+>> +++ b/mm/kmemleak.c
+>> @@ -283,6 +288,9 @@ static void hex_dump_object(struct seq_file *seq,
+>>   	const u8 *ptr = (const u8 *)object->pointer;
+>>   	size_t len;
+>>   
+>> +	if (object->flags & OBJECT_PERCPU)
+>> +		ptr = this_cpu_ptr((void __percpu *)object->pointer);
+> 
+> You may want to print the CPU number as well since the information is
+> likely different on another CPU. Also, I think this context is
+> preemptable, so it's better with a get_cpu/put_cpu().
+> 
+
+I will print cpu number when dump the percpu object.
+
+>> @@ -651,6 +672,19 @@ static void create_object(unsigned long ptr, size_t size, int min_count,
+>>   	raw_spin_unlock_irqrestore(&kmemleak_lock, flags);
+>>   }
+>>   
+>> +static void create_object(unsigned long ptr, size_t size, int min_count,
+>> +			  gfp_t gfp)
+>> +{
+>> +	__create_object(ptr, size, min_count, 0, gfp);
+>> +}
+>> +
+>> +static void create_object_percpu(unsigned long ptr, size_t size, int min_count,
+>> +				 gfp_t gfp)
+>> +{
+>> +	__create_object(ptr, size, min_count, OBJECT_PERCPU | OBJECT_NO_SCAN,
+>> +			gfp);
+>> +}
+>> +
+>>   /*
+>>    * Mark the object as not allocated and schedule RCU freeing via put_object().
+>>    */
+>> @@ -912,10 +946,12 @@ void __ref kmemleak_alloc_percpu(const void __percpu *ptr, size_t size,
+>>   	 * Percpu allocations are only scanned and not reported as leaks
+>>   	 * (min_count is set to 0).
+>>   	 */
+>> -	if (kmemleak_enabled && ptr && !IS_ERR(ptr))
+>> +	if (kmemleak_enabled && ptr && !IS_ERR(ptr)) {
+>>   		for_each_possible_cpu(cpu)
+>>   			create_object((unsigned long)per_cpu_ptr(ptr, cpu),
+>>   				      size, 0, gfp);
+>> +		create_object_percpu((unsigned long)ptr, size, 1, gfp);
+>> +	}
+>>   }
+> 
+> A concern I have here is that ptr may overlap with an existing object
+> and the insertion in the rb tree will fail. For example, with !SMP,
+> ptr == per_cpu_ptr(ptr, 0), so create_object() will fail and kmemleak
+> gets disabled.
+> 
+> An option would to figure out how to allow overlapping ranges with rb
+> tree (or find a replacement for it if not possible).
+> 
+> Another option would be to have an additional structure to track the
+> __percpu pointers since they have their own range. If size is not
+> relevant, maybe go for an xarray, otherwise another rb tree (do we have
+> any instance of pointers referring some inner member of a __percpu
+> object?). The scan_object() function will have to search two trees.
+> 
+
+I would like to use CONFIG_SMP to seprate code:
+if SMP, we will create some objects for per_cpu_ptr(ptr, cpu) and an 
+object with OBJECT_NO_ACCESS for ptr.
+if !SMP, we will not create object for per_cpu_ptr(ptr,cpu), but an 
+object without OBJECT_NO_ACCESS for ptr will be created.
+What do you think about this opinion.
+
+Waiting for your reply
+
+Best wishes
+Jun
+
