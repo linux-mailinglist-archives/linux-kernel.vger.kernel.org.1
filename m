@@ -2,136 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F99727ACA5
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 13:23:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8554327ACA2
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 13:22:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726621AbgI1LXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 07:23:11 -0400
-Received: from m42-4.mailgun.net ([69.72.42.4]:32619 "EHLO m42-4.mailgun.net"
+        id S1726613AbgI1LWy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 07:22:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36746 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726578AbgI1LXL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 07:23:11 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1601292190; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=us7P7ojJim1W+0abmFda2xNmj06J8S8jN+J76iJNAj8=;
- b=d073Cv92dEADYBXB7sHQcz7hworXPKFfLQTre/k3e6rVHJMkdVuwOFU1cOc/zF3hib+urAUM
- RDkTPsuyZHHBNfqRiEdQSb6SjPwfu52l05tkiY3DZZE2j+WZWHYJCv2zDuluKwCYci5zqVfu
- 1Wyp0rT4B6XrFMcCe3DsikcPZxc=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 5f71c791356bcc21fb2dc1de (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 28 Sep 2020 11:22:57
- GMT
-Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 37F1FC433CB; Mon, 28 Sep 2020 11:22:57 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        id S1726461AbgI1LWy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 07:22:54 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 48196C433CA;
-        Mon, 28 Sep 2020 11:22:55 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DA63921D46;
+        Mon, 28 Sep 2020 11:22:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601292173;
+        bh=QpuIWtVRDqnN1mOJ385Sw7sX9WvQInDfIiJyGTbG4ok=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WOjuH0j4EkfKRqTC8tjLKNwm/BzOIvEEbG5/gU4mhuR1bfv6ZtyLLGVmlT1IdsOqQ
+         znPOw2MD5Cz0QkQz3PXH4VFN+pQBSwfwo2R+pv61iaKwjr4vsWVCd707y8oNy3WD89
+         NwEw/0Oo8hG05MWwV1BCGDRV50Tpv1wWcDMpdUUk=
+Date:   Mon, 28 Sep 2020 13:23:01 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Tang Bin <tangbin@cmss.chinamobile.com>
+Cc:     Felipe Balbi <balbi@kernel.org>, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Florian Fainelli <f.fainelli@gmail.com>
+Subject: Re: [PATCH] usb: bdc: Remove duplicate error message in bdc_probe()
+Message-ID: <20200928112301.GA415117@kroah.com>
+References: <20200927134218.20028-1-tangbin@cmss.chinamobile.com>
+ <20200927134550.GA302849@kroah.com>
+ <e895f44b-2c53-a883-322b-e3768fdb6733@cmss.chinamobile.com>
+ <87sgb29r3g.fsf@kernel.org>
+ <02162cfc-cbe3-4747-e518-7f3b3d7a0e7f@cmss.chinamobile.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 28 Sep 2020 16:52:55 +0530
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     mathieu.poirier@linaro.org, mike.leach@linaro.org,
-        leo.yan@linaro.org, alexander.shishkin@linux.intel.com,
-        peterz@infradead.org, coresight@lists.linaro.org,
-        swboyd@chromium.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        denik@google.com
-Subject: Re: [PATCH 2/2] coresight: etm4x: Fix save and restore of
- TRCVMIDCCTLR1 register
-In-Reply-To: <0e0bc2fd-0449-35bc-882a-3b942a55fda4@arm.com>
-References: <cover.1601222348.git.saiprakash.ranjan@codeaurora.org>
- <19e06f26c1e4b0bf48d3971e2f1fb1af27da159a.1601222348.git.saiprakash.ranjan@codeaurora.org>
- <0e0bc2fd-0449-35bc-882a-3b942a55fda4@arm.com>
-Message-ID: <388adccec089823fcd6d009892ad95a1@codeaurora.org>
-X-Sender: saiprakash.ranjan@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <02162cfc-cbe3-4747-e518-7f3b3d7a0e7f@cmss.chinamobile.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Suzuki,
-
-On 2020-09-28 16:35, Suzuki K Poulose wrote:
-> Hi Sai,
+On Mon, Sep 28, 2020 at 06:55:26PM +0800, Tang Bin wrote:
+> Hi Balbi：
 > 
-> On 09/27/2020 05:20 PM, Sai Prakash Ranjan wrote:
->> In commit f188b5e76aae ("coresight: etm4x: Save/restore state
->> across CPU low power states"), mistakenly TRCVMIDCCTLR1 register
->> value was saved in trcvmidcctlr0 state variable which is used to
->> store TRCVMIDCCTLR0 register value in etm4x_cpu_save() and then
->> same value is written back to both TRCVMIDCCTLR0 and TRCVMIDCCTLR1
->> in etm4x_cpu_restore(). There is already a trcvmidcctlr1 state
->> variable available for TRCVMIDCCTLR1, so use it.
->> 
->> Fixes: 8b44fdfef6a2 ("coresight: etm4x: Allow etm4x to be built as a 
->> module")
+> 在 2020/9/28 17:40, Felipe Balbi 写道:
+> > Hi,
+> > 
+> > Tang Bin <tangbin@cmss.chinamobile.com> writes:
+> > > Hi Greg KH:
+> > > 
+> > > 在 2020/9/27 21:45, Greg KH 写道:
+> > > > On Sun, Sep 27, 2020 at 09:42:18PM +0800, Tang Bin wrote:
+> > > > > In this function, we don't need dev_err() message because
+> > > > > when something goes wrong, devm_platform_ioremap_resource()
+> > > > > can print an error message itself, so remove the redundant
+> > > > > one.
+> > > > > 
+> > > > > Signed-off-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
+> > > > > Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
+> > > > > ---
+> > > > >    drivers/usb/gadget/udc/bdc/bdc_core.c | 4 +---
+> > > > >    1 file changed, 1 insertion(+), 3 deletions(-)
+> > > > > 
+> > > > > diff --git a/drivers/usb/gadget/udc/bdc/bdc_core.c b/drivers/usb/gadget/udc/bdc/bdc_core.c
+> > > > > index 02a3a7746..9454f179e 100644
+> > > > > --- a/drivers/usb/gadget/udc/bdc/bdc_core.c
+> > > > > +++ b/drivers/usb/gadget/udc/bdc/bdc_core.c
+> > > > > @@ -508,10 +508,8 @@ static int bdc_probe(struct platform_device *pdev)
+> > > > >    	bdc->clk = clk;
+> > > > >    	bdc->regs = devm_platform_ioremap_resource(pdev, 0);
+> > > > > -	if (IS_ERR(bdc->regs)) {
+> > > > > -		dev_err(dev, "ioremap error\n");
+> > > > > +	if (IS_ERR(bdc->regs))
+> > > > >    		return -ENOMEM;
+> > > > Why not return the error given to us?
+> > > Because when get ioremap failed, devm_platform_ioremap_resource() can
+> > > print error message
+> > > 
+> > > "dev_err(dev, "ioremap failed for resource %pR\n", res)" in it's called
+> > > function. So I think this's place's
+> > > 
+> > > dev_err(dev, "ioremap error\n") is redundant.
+> > that's not what Greg point you at, though. Greg's concern is valid in
+> > that instead of passing along the error within bdc->regs, you always
+> > return -ENOMEM. OTW, your code should read like so:
+> > 
+> > 	if (IS_ERR(bdc->regs))
+> >          	return PTR_ERR(bdc->regs);
 > 
-> Why is this commit in question ?
-
-My bad sorry, I thought there are two commits which touch this hunk of 
-code,
-but I see now that the module code just renamed the file, so this fixes 
-tag
-is not required.
-
+> Thanks for your explain，when I send the patch yesterday, my point is at
+> dev_err(), and not aimed at IS_ERR() & PTR_ERR(),
 > 
->> Fixes: f188b5e76aae ("coresight: etm4x: Save/restore state across CPU 
->> low power states")
-> 
-> I believe this is the right fixes tag.
-> 
+> if it's Greg's point, I will change this patch after his reply.
 
-Yes, I will resend with only this fixes tag.
+Felipe is correct, and also, you should listen to him over me as he is
+the maintainer of this part of the kernel :)
 
->> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
->> ---
->>   drivers/hwtracing/coresight/coresight-etm4x-core.c | 4 ++--
->>   1 file changed, 2 insertions(+), 2 deletions(-)
->> 
->> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c 
->> b/drivers/hwtracing/coresight/coresight-etm4x-core.c
->> index de76d57850bc..abd706b216ac 100644
->> --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
->> +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
->> @@ -1243,7 +1243,7 @@ static int etm4_cpu_save(struct etmv4_drvdata 
->> *drvdata)
->>   	state->trccidcctlr1 = readl(drvdata->base + TRCCIDCCTLR1);
->>     	state->trcvmidcctlr0 = readl(drvdata->base + TRCVMIDCCTLR0);
->> -	state->trcvmidcctlr0 = readl(drvdata->base + TRCVMIDCCTLR1);
->> +	state->trcvmidcctlr1 = readl(drvdata->base + TRCVMIDCCTLR1);
->>     	state->trcclaimset = readl(drvdata->base + TRCCLAIMCLR);
->>   @@ -1353,7 +1353,7 @@ static void etm4_cpu_restore(struct 
->> etmv4_drvdata *drvdata)
->>   	writel_relaxed(state->trccidcctlr1, drvdata->base + TRCCIDCCTLR1);
->>     	writel_relaxed(state->trcvmidcctlr0, drvdata->base + 
->> TRCVMIDCCTLR0);
->> -	writel_relaxed(state->trcvmidcctlr0, drvdata->base + TRCVMIDCCTLR1);
->> +	writel_relaxed(state->trcvmidcctlr1, drvdata->base + TRCVMIDCCTLR1);
->> 
-> 
-> Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-
-Thanks,
-Sai
-
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member
-of Code Aurora Forum, hosted by The Linux Foundation
+greg k-h
