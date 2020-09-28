@@ -2,228 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D9B427B040
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 16:48:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62CE927B043
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 16:48:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726636AbgI1OsC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 10:48:02 -0400
-Received: from foss.arm.com ([217.140.110.172]:52748 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726466AbgI1OsB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 10:48:01 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BE3041063;
-        Mon, 28 Sep 2020 07:48:00 -0700 (PDT)
-Received: from arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A7B633F73B;
-        Mon, 28 Sep 2020 07:47:58 -0700 (PDT)
-Date:   Mon, 28 Sep 2020 15:47:56 +0100
-From:   Dave Martin <Dave.Martin@arm.com>
-To:     =?iso-8859-1?Q?Andr=E9?= Przywara <andre.przywara@arm.com>
-Cc:     Mark Rutland <mark.rutland@arm.com>, Wei Li <liwei391@huawei.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        James Clark <james.clark@arm.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Tan Xiaojun <tanxiaojun@huawei.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 5/5] perf: arm_spe: Decode SVE events
-Message-ID: <20200928144755.GI6642@arm.com>
-References: <20200922101225.183554-1-andre.przywara@arm.com>
- <20200922101225.183554-6-andre.przywara@arm.com>
- <20200928132114.GF6642@arm.com>
- <8efd63eb-5ae7-0f9a-6c37-ef5e68af4e6c@arm.com>
+        id S1726655AbgI1Osd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 10:48:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42994 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726424AbgI1Osd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 10:48:33 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56CB4C061755;
+        Mon, 28 Sep 2020 07:48:33 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id e5so1494837ilr.8;
+        Mon, 28 Sep 2020 07:48:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=vQtXU3enAOb8a0F7LbFZw7wLpO431aR2A2CY3HJMkgQ=;
+        b=OZaF2CtEYFnNkMyOeRvFckPCRRkEvcgqI67p4VJ2nRQ+vdrZBAapya5VQMhVGqa0Pc
+         xM1jN+mltbWDKKk8popL015Sl6sfWqKh+D66ChLMhLuVJu8V5hAQbzLrwIwlkOHBrsAU
+         hCeIuDm/Baedvbmnv5KQQfsTPj+vjenjt6PX1yPbszShovNQ8uAPEDS5tGTRhk6A5GXA
+         dGsUTLxW9XdXjuLFzEnYTHoCDKph1NapO6746XVw6TL/NCQDzntdVyRLLYVZRdbyf3JA
+         QbYIb0ekb+W3b7D/H1r1wCOfVvs2HAQiNWqq1npY7QSVhPe8ILYg21nWzt7uf+PO2zMs
+         q1Bg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=vQtXU3enAOb8a0F7LbFZw7wLpO431aR2A2CY3HJMkgQ=;
+        b=Bnmk54xQNba9qFZBAQ9eLiU54ao+8CZ0PZvN8+64tvKh1iSKy3wqppw0qNmwywDXQp
+         j3FbDH+TAGr6QMEdDjZxqe9nSRpiNal9wt5TbdRrUVgYrys2I+0a1WEC7Gl+vsMGlf94
+         orLDvW8v1u2BfdAN8i0vTU1lo9jE8krd/Gng3pElfUEjk9+Zxm096kFSZn77dyImMK2v
+         TQE9VAZEx0/bWGBI0Bj8qE/78UFKgEpY8bP4B8nR4pNwxChD4IVSbkYYZTzvxZF9H+TO
+         z3GRUoWuABNNsBkcUuHcN79ZFAkSEa8YrdAITu5wCQGoufBzTr07AyKSGGyT6Mm9n7c4
+         hjww==
+X-Gm-Message-State: AOAM533LwKd19SiCiD3XFWAFic7oZznJlzZYHXEeFQIojW6TrcE+Y20f
+        rK6gG3pidcYujM+dsh0uskshl7sYTgcAn+7Va1o=
+X-Google-Smtp-Source: ABdhPJyzQtJ4Wq6iMS79WrUFhP9745qmyzAStclm/SXxrx+gsno8hRzUha9nYwTBHlnwHYeP91NhtWzAzwbYb+tVqNc=
+X-Received: by 2002:a92:217:: with SMTP id 23mr1544245ilc.118.1601304512241;
+ Mon, 28 Sep 2020 07:48:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <8efd63eb-5ae7-0f9a-6c37-ef5e68af4e6c@arm.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+References: <20200927192912.46323-1-peron.clem@gmail.com> <20200927192912.46323-3-peron.clem@gmail.com>
+ <CAGb2v669XXerfrgK9WzAoMHwArn765yS9Db4_xwwQSXpnm2zqQ@mail.gmail.com>
+In-Reply-To: <CAGb2v669XXerfrgK9WzAoMHwArn765yS9Db4_xwwQSXpnm2zqQ@mail.gmail.com>
+From:   =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
+Date:   Mon, 28 Sep 2020 16:48:21 +0200
+Message-ID: <CAJiuCcfWCSqfq6-DP_SKBgLm63U7oKWJOSLUme1Wf0yXoR=8_g@mail.gmail.com>
+Subject: Re: [linux-sunxi] [PATCH v5 02/20] ASoC: sun4i-i2s: Change
+ set_chan_cfg() params
+To:     Chen-Yu Tsai <wens@csie.org>
+Cc:     Maxime Ripard <mripard@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Marcus Cooper <codekipper@gmail.com>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Linux-ALSA <alsa-devel@alsa-project.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-sunxi <linux-sunxi@googlegroups.com>,
+        Samuel Holland <samuel@sholland.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 02:59:34PM +0100, André Przywara wrote:
-> On 28/09/2020 14:21, Dave Martin wrote:
-> 
-> Hi Dave,
-> 
-> > On Tue, Sep 22, 2020 at 11:12:25AM +0100, Andre Przywara wrote:
-> >> The Scalable Vector Extension (SVE) is an ARMv8 architecture extension
-> >> that introduces very long vector operations (up to 2048 bits).
-> > 
-> > (8192, in fact, though don't expect to see that on real hardware any
-> > time soon...  qemu and the Arm fast model can do it, though.)
-> > 
-> >> The SPE profiling feature can tag SVE instructions with additional
-> >> properties like predication or the effective vector length.
-> >>
-> >> Decode the new operation type bits in the SPE decoder to allow the perf
-> >> tool to correctly report about SVE instructions.
-> > 
-> > 
-> > I don't know anything about SPE, so just commenting on a few minor
-> > things that catch my eye here.
-> 
-> Many thanks for taking a look!
-> Please note that I actually missed a prior submission by Wei, so the
-> code changes here will end up in:
-> https://lore.kernel.org/patchwork/patch/1288413/
-> 
-> But your two points below magically apply to his patch as well, so....
-> 
-> > 
-> >> Signed-off-by: Andre Przywara <andre.przywara@arm.com>
-> >> ---
-> >>  .../arm-spe-decoder/arm-spe-pkt-decoder.c     | 48 ++++++++++++++++++-
-> >>  1 file changed, 47 insertions(+), 1 deletion(-)
-> >>
-> >> diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-> >> index a033f34846a6..f0c369259554 100644
-> >> --- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-> >> +++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-> >> @@ -372,8 +372,35 @@ int arm_spe_pkt_desc(const struct arm_spe_pkt *packet, char *buf,
-> >>  	}
-> >>  	case ARM_SPE_OP_TYPE:
-> >>  		switch (idx) {
-> >> -		case 0:	return snprintf(buf, buf_len, "%s", payload & 0x1 ?
-> >> +		case 0: {
-> >> +			size_t blen = buf_len;
-> >> +
-> >> +			if ((payload & 0x89) == 0x08) {
-> >> +				ret = snprintf(buf, buf_len, "SVE");
-> >> +				buf += ret;
-> >> +				blen -= ret;
-> > 
-> > (Nit: can ret be < 0 ?  I've never been 100% clear on this myself for
-> > the s*printf() family -- if this assumption is widespread in perf tool
-> > a lready that I guess just go with the flow.)
-> 
-> Yeah, some parts of the code in here check for -1, actually, but doing
-> this on every call to snprintf would push this current code over the
-> edge - and I cowardly avoided a refactoring ;-)
-> 
-> Please note that his is perf userland, and also we are printing constant
-> strings here.
-> Although admittedly this starts to sounds like an excuse now ...
-> 
-> > I wonder if this snprintf+increment+decrement sequence could be wrapped
-> > up as a helper, rather than having to be repeated all over the place.
-> 
-> Yes, I was hoping nobody would notice ;-)
+Hi Chen-Yu,
 
-It's probably not worth losing sleep over.
+On Mon, 28 Sep 2020 at 07:00, Chen-Yu Tsai <wens@csie.org> wrote:
+>
+> On Mon, Sep 28, 2020 at 3:29 AM Cl=C3=A9ment P=C3=A9ron <peron.clem@gmail=
+.com> wrote:
+> >
+> > As slots and slot_width can be overwritter in case set_tdm() is
+> > called. Avoid to have this logic in set_chan_cfg().
+>
+> It doesn't seem that set_tdm_slot() would get called concurrently
+> with hw_params(), at least not for the simple-card family. If so
+> then we'd have more problems like mismatched slots/slot-width
+> due to no serialization when interacting with those values.
 
-snprintf(3) says, under NOTES:
+Sorry maybe the commit log is not clear.
+I was not talking about a concurrent effect but more if the slot_width is s=
+etted
+then we don't properly use it later.
 
-	Until glibc 2.0.6, they would return -1 when the output was
-	truncated.
+>
+> > Instead pass the required values as params to set_chan_cfg().
+> >
+> > This will also avoid a bug when we will enable 20/24bits support,
+> > i2s->slot_width is not actually used in the lrck_period computation.
+> >
+> > Suggested-by: Samuel Holland <samuel@sholland.org>
+> > Signed-off-by: Cl=C3=A9ment P=C3=A9ron <peron.clem@gmail.com>
+> > ---
+> >  sound/soc/sunxi/sun4i-i2s.c | 36 ++++++++++++++----------------------
+> >  1 file changed, 14 insertions(+), 22 deletions(-)
+> >
+> > diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
+> > index 2baf6c276280..0633b9fba3d7 100644
+> > --- a/sound/soc/sunxi/sun4i-i2s.c
+> > +++ b/sound/soc/sunxi/sun4i-i2s.c
+> > @@ -177,8 +177,9 @@ struct sun4i_i2s_quirks {
+> >         unsigned long (*get_bclk_parent_rate)(const struct sun4i_i2s *)=
+;
+> >         s8      (*get_sr)(const struct sun4i_i2s *, int);
+> >         s8      (*get_wss)(const struct sun4i_i2s *, int);
+> > -       int     (*set_chan_cfg)(const struct sun4i_i2s *,
+> > -                               const struct snd_pcm_hw_params *);
+> > +       int     (*set_chan_cfg)(const struct sun4i_i2s *i2s,
+> > +                               unsigned int channels,  unsigned int sl=
+ots,
+> > +                               unsigned int slot_width);
+> >         int     (*set_fmt)(const struct sun4i_i2s *, unsigned int);
+> >  };
+> >
+> > @@ -414,10 +415,9 @@ static s8 sun8i_i2s_get_sr_wss(const struct sun4i_=
+i2s *i2s, int width)
+> >  }
+> >
+> >  static int sun4i_i2s_set_chan_cfg(const struct sun4i_i2s *i2s,
+> > -                                 const struct snd_pcm_hw_params *param=
+s)
+> > +                                 unsigned int channels, unsigned int s=
+lots,
+> > +                                 unsigned int slot_width)
+> >  {
+> > -       unsigned int channels =3D params_channels(params);
+> > -
+> >         /* Map the channels for playback and capture */
+> >         regmap_write(i2s->regmap, SUN4I_I2S_TX_CHAN_MAP_REG, 0x76543210=
+);
+> >         regmap_write(i2s->regmap, SUN4I_I2S_RX_CHAN_MAP_REG, 0x00003210=
+);
+> > @@ -434,15 +434,11 @@ static int sun4i_i2s_set_chan_cfg(const struct su=
+n4i_i2s *i2s,
+> >  }
+> >
+> >  static int sun8i_i2s_set_chan_cfg(const struct sun4i_i2s *i2s,
+> > -                                 const struct snd_pcm_hw_params *param=
+s)
+> > +                                 unsigned int channels, unsigned int s=
+lots,
+> > +                                 unsigned int slot_width)
+> >  {
+> > -       unsigned int channels =3D params_channels(params);
+> > -       unsigned int slots =3D channels;
+> >         unsigned int lrck_period;
+> >
+> > -       if (i2s->slots)
+> > -               slots =3D i2s->slots;
+> > -
+>
+> Based on the bug you highlighted in your expanded commit log, the simpler=
+ fix
+> would be to look at i2s->slot_width in addition to i2s->slots, and replac=
+e
+> params_physical_width(params) accordingly.
 
-which is probably ancient enough history that we don't care.  C11 does
-say that a negative return value can happen "if an encoding error
-occurred".  _Probably_ not a problem if perf tool never calls
-setlocale(), but ...
+That's what I did in the first version but was pointed out by Samuel
+that the same logic
+was done several times. As I can avoid it by passing the correct
+params it's simpler.
+
+>
+> Also, I would put fixes (even preparatory ones) before patches that intro=
+duce
+> support for new features and hardware. That makes them easier to backport=
+ if
+> needed.
+
+I will wait for Maxime to comment on this. Regarding the doc fixes tag
+should only be used
+to fix a previous commit. This will make the fixes commit a bit more
+complicated for stable kernel team.
+
+Thanks for your review :)
+
+Regards
+Clement
 
 
-> >> +				if (payload & 0x2)
-> >> +					ret = snprintf(buf, buf_len, " FP");
-> >> +				else
-> >> +					ret = snprintf(buf, buf_len, " INT");
-> >> +				buf += ret;
-> >> +				blen -= ret;
-> >> +				if (payload & 0x4) {
-> >> +					ret = snprintf(buf, buf_len, " PRED");
-> >> +					buf += ret;
-> >> +					blen -= ret;
-> >> +				}
-> >> +				/* Bits [7..4] encode the vector length */
-> >> +				ret = snprintf(buf, buf_len, " EVLEN%d",
-> >> +					       32 << ((payload >> 4) & 0x7));
-> > 
-> > Isn't this just extracting 3 bits (0x7)? 
-> 
-> Ah, right, the comment is wrong. It's actually bits [6:4].
-> 
-> > And what unit are we aiming
-> > for here: is it the number of bytes per vector, or something else?  I'm
-> > confused by the fact that this will go up in steps of 32, which doesn't
-> > seem to match up to the architecure.
-> 
-> So this is how SPE encodes the effective vector length in its payload:
-> the format is described in section "D10.2.7 Operation Type packet" in a
-> (recent) ARMv8 ARM. I put the above statement in a C file and ran all
-> input values through it, it produced the exact *bit* length values as in
-> the spec.
-> 
-> Is there any particular pattern you are concerned about?
-> I admit this is somewhat hackish, I can do an extra function to put some
-> comments in there.
-
-Mostly I'm curious because the encoding doesn't match the SVE
-architecture: SVE requires 4 bits to specify the vector length, not 3.
-This might have been a deliberate limitation in the SPE spec., but it
-raises questions about what should happen when 3 bits is not enough.
-
-For SVE, valid vector lengths are 16 bytes * n
-or equivalently 128 bits * n), where 1 <= n <= 16.
-
-The code here though cannot print EVLEN16 or EVLEN48 etc.  This might
-not be a bug, but I'd like to understand where it comes from...
-
-> 
-> > 
-> > I notice that bit 7 has to be zero to get into this if() though.
-> > 
-> >> +				buf += ret;
-> >> +				blen -= ret;
-> >> +				return buf_len - blen;
-> >> +			}
-> >> +
-> >> +			return snprintf(buf, buf_len, "%s", payload & 0x1 ?
-> >>  					"COND-SELECT" : "INSN-OTHER");
-> >> +			}
-> >>  		case 1:	{
-> >>  			size_t blen = buf_len;
-> >>  
-> >> @@ -403,6 +430,25 @@ int arm_spe_pkt_desc(const struct arm_spe_pkt *packet, char *buf,
-> >>  				ret = snprintf(buf, buf_len, " NV-SYSREG");
-> >>  				buf += ret;
-> >>  				blen -= ret;
-> >> +			} else if ((payload & 0x0a) == 0x08) {
-> >> +				ret = snprintf(buf, buf_len, " SVE");
-> >> +				buf += ret;
-> >> +				blen -= ret;
-> >> +				if (payload & 0x4) {
-> >> +					ret = snprintf(buf, buf_len, " PRED");
-> >> +					buf += ret;
-> >> +					blen -= ret;
-> >> +				}
-> >> +				if (payload & 0x80) {
-> >> +					ret = snprintf(buf, buf_len, " SG");
-> >> +					buf += ret;
-> >> +					blen -= ret;
-> >> +				}
-> >> +				/* Bits [7..4] encode the vector length */
-> >> +				ret = snprintf(buf, buf_len, " EVLEN%d",
-> >> +					       32 << ((payload >> 4) & 0x7));
-> > 
-> > Same comment as above.  Maybe have a common helper for decoding the
-> > vector length bits so it can be fixed in a single place?
-> 
-> Yup. Although I wonder if this is the smallest of the problems with this
-> function going forward.
-> 
-> Cheers,
-> Andre
-
-Fair enough.
-
-Cheers
----Dave
+>
+>
+> ChenYu
+>
+>
+> >         /* Map the channels for playback and capture */
+> >         regmap_write(i2s->regmap, SUN8I_I2S_TX_CHAN_MAP_REG, 0x76543210=
+);
+> >         regmap_write(i2s->regmap, SUN8I_I2S_RX_CHAN_MAP_REG, 0x76543210=
+);
+> > @@ -467,11 +463,11 @@ static int sun8i_i2s_set_chan_cfg(const struct su=
+n4i_i2s *i2s,
+> >         case SND_SOC_DAIFMT_DSP_B:
+> >         case SND_SOC_DAIFMT_LEFT_J:
+> >         case SND_SOC_DAIFMT_RIGHT_J:
+> > -               lrck_period =3D params_physical_width(params) * slots;
+> > +               lrck_period =3D slot_width * slots;
+> >                 break;
+> >
+> >         case SND_SOC_DAIFMT_I2S:
+> > -               lrck_period =3D params_physical_width(params);
+> > +               lrck_period =3D slot_width;
+> >                 break;
+> >
+> >         default:
