@@ -2,129 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D05527AC86
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 13:17:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFCE227AC87
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 13:17:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726615AbgI1LRa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 07:17:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33864 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726596AbgI1LR0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 07:17:26 -0400
-Received: from [192.168.0.112] (75-58-59-55.lightspeed.rlghnc.sbcglobal.net [75.58.59.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 40BAF2080C;
-        Mon, 28 Sep 2020 11:17:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601291845;
-        bh=QAiNUtDSzv70JRMgjyCRJGXby7QSyIY+k+YJXFYx29s=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=pNl7ohwWu7ZBclQNbT59uh9P2dlQRGUroR0WQP/ijAlgaQmItzCeZJJm/J6XtKxhk
-         U/8v7jhsdyHH6b2oUjvtmlRgcK007TH5Nees9BhaUyyBLTg7Dg1F0cVqsgGpnUfTcw
-         5UtO1/F/Zsn4pTYfktoM3XHaQ1VdzNM1ydXDJ1tk=
-Subject: Re: [PATCH v3 1/1] PCI/ERR: Fix reset logic in pcie_do_recovery()
- call
-To:     "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>
-Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ashok.raj@intel.com,
-        Jay Vosburgh <jay.vosburgh@canonical.com>
-References: <20200922233333.GA2239404@bjorn-Precision-5520>
- <704c39bf-6f0c-bba3-70b8-91de6a445e43@linux.intel.com>
- <3d27d0a4-2115-fa72-8990-a84910e4215f@kernel.org>
- <d5aa53dc-0c94-e57a-689a-1c1f89787af1@linux.intel.com>
- <526dc846-b12b-3523-4995-966eb972ceb7@kernel.org>
- <1fdcc4a6-53b7-2b5f-8496-f0f09405f561@linux.intel.com>
- <aef0b9aa-59f5-9ec3-adac-5bc366b362e0@kernel.org>
- <a647f485-8db4-db45-f404-940b55117b53@linux.intel.com>
- <aefd8842-90c4-836a-b43a-f21c5428d2ba@kernel.org>
- <95e23cb5-f6e1-b121-0de8-a2066d507d9c@linux.intel.com>
- <65238d0b-0a39-400a-3a18-4f68eb554538@kernel.org>
- <4ae86061-2182-bcf1-ebd7-485acf2d47b9@linux.intel.com>
- <f360165e-5f73-057c-efd1-557b5e5027eb@kernel.org>
- <8beca800-ffb5-c535-6d43-7e750cbf06d0@linux.intel.com>
- <44f0cac5-8deb-1169-eb6d-93ac4889fe7e@kernel.org>
- <3bc0fd23-8ddd-32c5-1dd9-4d5209ea68c3@linux.intel.com>
-From:   Sinan Kaya <okaya@kernel.org>
-Autocrypt: addr=okaya@kernel.org; keydata=
- mQENBFrnOrUBCADGOL0kF21B6ogpOkuYvz6bUjO7NU99PKhXx1MfK/AzK+SFgxJF7dMluoF6
- uT47bU7zb7HqACH6itTgSSiJeSoq86jYoq5s4JOyaj0/18Hf3/YBah7AOuwk6LtV3EftQIhw
- 9vXqCnBwP/nID6PQ685zl3vH68yzF6FVNwbDagxUz/gMiQh7scHvVCjiqkJ+qu/36JgtTYYw
- 8lGWRcto6gr0eTF8Wd8f81wspmUHGsFdN/xPsZPKMw6/on9oOj3AidcR3P9EdLY4qQyjvcNC
- V9cL9b5I/Ud9ghPwW4QkM7uhYqQDyh3SwgEFudc+/RsDuxjVlg9CFnGhS0nPXR89SaQZABEB
- AAG0HVNpbmFuIEtheWEgPG9rYXlhQGtlcm5lbC5vcmc+iQFOBBMBCAA4FiEEYdOlMSE+a7/c
- ckrQvGF4I+4LAFcFAlztcAoCGwMFCwkIBwIGFQoJCAsCBBYCAwECHgECF4AACgkQvGF4I+4L
- AFfidAf/VKHInxep0Z96iYkIq42432HTZUrxNzG9IWk4HN7c3vTJKv2W+b9pgvBF1SmkyQSy
- 8SJ3Zd98CO6FOHA1FigFyZahVsme+T0GsS3/OF1kjrtMktoREr8t0rK0yKpCTYVdlkHadxmR
- Qs5xLzW1RqKlrNigKHI2yhgpMwrpzS+67F1biT41227sqFzW9urEl/jqGJXaB6GV+SRKSHN+
- ubWXgE1NkmfAMeyJPKojNT7ReL6eh3BNB/Xh1vQJew+AE50EP7o36UXghoUktnx6cTkge0ZS
- qgxuhN33cCOU36pWQhPqVSlLTZQJVxuCmlaHbYWvye7bBOhmiuNKhOzb3FcgT7kBDQRa5zq1
- AQgAyRq/7JZKOyB8wRx6fHE0nb31P75kCnL3oE+smKW/sOcIQDV3C7mZKLf472MWB1xdr4Tm
- eXeL/wT0QHapLn5M5wWghC80YvjjdolHnlq9QlYVtvl1ocAC28y43tKJfklhHiwMNDJfdZbw
- 9lQ2h+7nccFWASNUu9cqZOABLvJcgLnfdDpnSzOye09VVlKr3NHgRyRZa7me/oFJCxrJlKAl
- 2hllRLt0yV08o7i14+qmvxI2EKLX9zJfJ2rGWLTVe3EJBnCsQPDzAUVYSnTtqELu2AGzvDiM
- gatRaosnzhvvEK+kCuXuCuZlRWP7pWSHqFFuYq596RRG5hNGLbmVFZrCxQARAQABiQEfBBgB
- CAAJBQJa5zq1AhsMAAoJELxheCPuCwBX2UYH/2kkMC4mImvoClrmcMsNGijcZHdDlz8NFfCI
- gSb3NHkarnA7uAg8KJuaHUwBMk3kBhv2BGPLcmAknzBIehbZ284W7u3DT9o1Y5g+LDyx8RIi
- e7pnMcC+bE2IJExCVf2p3PB1tDBBdLEYJoyFz/XpdDjZ8aVls/pIyrq+mqo5LuuhWfZzPPec
- 9EiM2eXpJw+Rz+vKjSt1YIhg46YbdZrDM2FGrt9ve3YaM5H0lzJgq/JQPKFdbd5MB0X37Qc+
- 2m/A9u9SFnOovA42DgXUyC2cSbIJdPWOK9PnzfXqF3sX9Aol2eLUmQuLpThJtq5EHu6FzJ7Y
- L+s0nPaNMKwv/Xhhm6Y=
-Message-ID: <a2bbdfed-fb17-51dc-8ae4-55d924c13211@kernel.org>
-Date:   Mon, 28 Sep 2020 07:17:24 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1726630AbgI1LRi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 07:17:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38620 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726380AbgI1LRf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 07:17:35 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11F43C061755
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 04:17:35 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id o5so821711wrn.13
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 04:17:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=eF74ZFK17+xMyvZFbbKNSS8MJbDDGd1/oidFI6dtPeQ=;
+        b=gg1JP4uRsjVTO5ysoyRinZfbru3qcVXq+xS5cIWbUwGxr1C6syaVT1NLFv8sEaKsR3
+         bAGqWW8dIq6OUE1cv7esaoDR7pE1Xq1sUQRrk76BH0vh7ktEvuAm4oWTc1ggqcNz1NL2
+         BNRtwjBVZHKHzY0gOT9Kju106JXPdHoD/Qd+Rz2Ig5xPXZYyIHUXFw4oqIjNb/P3uA46
+         xZeaUTicg/SFRfXDdYEnrL4vgn5EGZV8xh7Aa1ClYnXRHANrth/n10+sqbzpW/MtXlmN
+         7UEgMMFgYtXrS+6ogHOmMjx/WiCkgeb02EFYwHfyHPgnsp6oMXmlVxRH77+bQzSUaxET
+         UrwQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=eF74ZFK17+xMyvZFbbKNSS8MJbDDGd1/oidFI6dtPeQ=;
+        b=ExA0WCYdoP6LCoQgEYXsrPMOvg0FAEQ+Mmx3Kr4y5KvwIvRCoTFFo4y9dMkAO8CeAt
+         ghKZz/KEpOSaBB1nVpyT3Wm5mIbu56vfucu196a0fR87DqbvxOv0GXNizUAKB13jVEzC
+         Ii77jnX81JL6+i6tn1KNfMGE0a/fB2L3w2abB2AW9pUjLLML5ioaoDuq4yruVzIa9W/x
+         Mo9ZxHwWTjOWUsqte91BRRBbxeSLF6VnvAZ8WKm/IfdmiBj6ogtgmHpKlflvV+Y0C9Qw
+         1OP6FEQvu6K0lSSrSDx1nya2sLhK2Nc/MLosmVdaO2fgwbDnwyzelSw4X8HFj2JHzz9R
+         OKZA==
+X-Gm-Message-State: AOAM530Bwbh8dS/pDjEgpNKN1GuKTnhVB46eZVFzIh75B++40rYfopoD
+        mpu0qRF4vvpeXNubvajpNs166Q==
+X-Google-Smtp-Source: ABdhPJxYnMFBR4He86ej0AcG8HKyVAP+FtnsRyYUT8aR0hp7Rx18E0FIW1v8bd3rqv9adlovXDN4Gw==
+X-Received: by 2002:adf:cf01:: with SMTP id o1mr1128621wrj.421.1601291853709;
+        Mon, 28 Sep 2020 04:17:33 -0700 (PDT)
+Received: from holly.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
+        by smtp.gmail.com with ESMTPSA id d23sm860748wmb.6.2020.09.28.04.17.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Sep 2020 04:17:33 -0700 (PDT)
+Date:   Mon, 28 Sep 2020 12:17:31 +0100
+From:   Daniel Thompson <daniel.thompson@linaro.org>
+To:     Jason Wessel <jason.wessel@windriver.com>,
+        Douglas Anderson <dianders@chromium.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>, sumit.garg@linaro.org,
+        pmladek@suse.com, sergey.senozhatsky@gmail.com, will@kernel.org,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        kgdb-bugreport@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+        patches@linaro.org
+Subject: Re: [PATCH v3 0/3] kgdb: Honour the kprobe blocklist when setting
+ breakpoints
+Message-ID: <20200928111731.koa7am62uxxaezcz@holly.lan>
+References: <20200927211531.1380577-1-daniel.thompson@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <3bc0fd23-8ddd-32c5-1dd9-4d5209ea68c3@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200927211531.1380577-1-daniel.thompson@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/27/2020 10:43 PM, Kuppuswamy, Sathyanarayanan wrote:
-> FATAL + no-hotplug - In this case, link will still be reseted. But
-> currently driver state is not properly restored. So I attempted
-> to restore it using pci_reset_bus().
+On Sun, Sep 27, 2020 at 10:15:28PM +0100, Daniel Thompson wrote:
+> kgdb has traditionally adopted a no safety rails approach to breakpoint
+> placement. If the debugger is commanded to place a breakpoint at an
+> address then it will do so even if that breakpoint results in kgdb
+> becoming inoperable.
 > 
->          status = reset_link(dev);
-> -        if (status != PCI_ERS_RESULT_RECOVERED) {
-> +        if (status == PCI_ERS_RESULT_RECOVERED) {
-> +            status = PCI_ERS_RESULT_NEED_RESET;
+> A stop-the-world debugger with memory peek/poke intrinsically provides
+> its operator with the means to hose their system in all manner of
+> exciting ways (not least because stopping-the-world is already a DoS
+> attack ;-) ). Nevertheless the current no safety rail approach is
+> difficult to defend, especially given kprobes can provide us with plenty
+> of machinery to mark the parts of the kernel where breakpointing is
+> discouraged.
 > 
-> ...
+> This patchset introduces some safety rails by using the existing kprobes
+> infrastructure and ensures this will be enabled by default on
+> architectures that implement kprobes. At present it does not cover
+> absolutely all locations where breakpoints can cause trouble but it will
+> block off several avenues, including the architecture specific parts
+> that are handled by arch_within_kprobe_blacklist().
 > 
->      if (status == PCI_ERS_RESULT_NEED_RESET) {
->          /*
-> -         * TODO: Should call platform-specific
-> -         * functions to reset slot before calling
-> -         * drivers' slot_reset callbacks?
-> +         * TODO: Optimize the call to pci_reset_bus()
-> +         *
-> +         * There are two components to pci_reset_bus().
-> +         *
-> +         * 1. Do platform specific slot/bus reset.
-> +         * 2. Save/Restore all devices in the bus.
-> +         *
-> +         * For hotplug capable devices and fatal errors,
-> +         * device is already in reset state due to link
-> +         * reset. So repeating platform specific slot/bus
-> +         * reset via pci_reset_bus() call is redundant. So
-> +         * can optimize this logic and conditionally call
-> +         * pci_reset_bus().
->           */
-> +        pci_reset_bus(dev);
+> v4:
+> * Fixed KConfig dependencies for HONOUR_KPROBE_BLOCKLIST on kernels
+>   where MODULES=n
+> * Add additional debug_core.c functions to the blocklist (thanks Doug)
+> * Collected a few tags
 
-I think we have to go to remove/rescan for this case as you also
-mentioned above. There is no state to save. All BAR assignments
-are gone. Entire device programming is also lost.
+Looks like I neglected to bump the version number in the subject.
+For the avoidance of doubt, this comment is correct and the subject
+line is broken.
 
-I don't think pci_reset_bus() can recover from this situation safely.
-It will make things worse by saving/restoring the hardware default
-state.
+Sorry!
 
-This should remove/rescan logic should be inside DPC's slot_reset()
-function BTW. Not here.
+
+Daniel.
+
+
+> 
+> v3:
+> * Dropped the single step blocklist checks. It is not proven that the
+>   code was actually reachable without triggering the catastrophic
+>   failure flag (which inhibits resume already).
+> * Update patch description for ("kgdb: Add NOKPROBE labels...") and
+>   added symbols that are called during trap exit
+> * Added a new patch to push the breakpoint activation later in the
+>   flow and ensure the I/O functions are not called with breakpoints
+>   activated.
+> 
+> v2:
+> * Reworked after initial RFC to make honouring the blocklist require
+>   CONFIG_KPROBES. It is now optional but the blocklist will be enabled
+>   by default for architectures that CONFIG_HAVE_KPROBES
+> 
+> Daniel Thompson (3):
+>   kgdb: Honour the kprobe blocklist when setting breakpoints
+>   kgdb: Add NOKPROBE labels on the trap handler functions
+>   kernel: debug: Centralize dbg_[de]activate_sw_breakpoints
+> 
+>  include/linux/kgdb.h            | 18 ++++++++++++++++++
+>  kernel/debug/debug_core.c       | 22 ++++++++++++++++++++++
+>  kernel/debug/gdbstub.c          |  1 -
+>  kernel/debug/kdb/kdb_bp.c       |  9 +++++++++
+>  kernel/debug/kdb/kdb_debugger.c |  2 --
+>  lib/Kconfig.kgdb                | 15 +++++++++++++++
+>  6 files changed, 64 insertions(+), 3 deletions(-)
+> 
+> --
+> 2.25.4
+> 
