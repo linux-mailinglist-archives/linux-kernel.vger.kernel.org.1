@@ -2,103 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5385F27AFD4
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 16:16:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DB2F27AFDB
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 16:18:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726578AbgI1OQx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 10:16:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45950 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726281AbgI1OQw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 10:16:52 -0400
-Received: from gaia (unknown [31.124.44.166])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 51DDC2075A;
-        Mon, 28 Sep 2020 14:16:51 +0000 (UTC)
-Date:   Mon, 28 Sep 2020 15:16:48 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     "chenjun (AM)" <chenjun102@huawei.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "Xiangrui (Euler)" <rui.xiang@huawei.com>,
-        "weiyongjun (A)" <weiyongjun1@huawei.com>
-Subject: Re: [PATCH -next 3/5] mm/kmemleak: Add support for percpu memory
- leak detect
-Message-ID: <20200928141643.GB27500@gaia>
-References: <20200921020007.35803-1-chenjun102@huawei.com>
- <20200921020007.35803-4-chenjun102@huawei.com>
- <20200922095736.GB15643@gaia>
- <CE1E7D7EFA066443B6454A6A5063B502209EB04F@DGGEML529-MBS.china.huawei.com>
+        id S1726608AbgI1OSC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 10:18:02 -0400
+Received: from mail-ot1-f67.google.com ([209.85.210.67]:38329 "EHLO
+        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726327AbgI1OSB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 10:18:01 -0400
+Received: by mail-ot1-f67.google.com with SMTP id y5so1053038otg.5;
+        Mon, 28 Sep 2020 07:18:01 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=n0SDEJiGHKBMiTQJpDhH++PpVZUE8wCtPQdFHZ2pW3Y=;
+        b=Ka81PzCmBX2fVD7A+82y+0iF4vTzQeEq6t3TycROq/IlHxeD8GqaExZb623uDgA+jT
+         hR9cVsF7rwuJ64i+FfEXMir+MPJKRPuAi/5CNBeAAlPkNJ7sDggQZVzIbOhPX8TNNGyo
+         rAZ416tqqAk80v5ZlrYcEqiAPWs8/OHJMNOg/3mPiXv5xkXhssoHCfTXJC6gVoaVRWGb
+         GnDkXsKwru3004DtcKQ7kWHDl87z1o68OOMXVW4TnXtaUYb77nxrg7KKUYkKrPDduY6V
+         vRjmpkWEH8t0UewNlILHHkeMshqZsBO95L+7BL9JrK+AOdW73Hlr05E0nDiXoxZk+Dc2
+         eBZw==
+X-Gm-Message-State: AOAM532dP78vhbbdYRz1U/4mxx4wugI1Y/9ugc4RmtVcUn3QhdFC/EGj
+        HJjdA1lC3NDfIntJtqlYI6yT9+TkZaRunl0kEPQ=
+X-Google-Smtp-Source: ABdhPJz6eV4I4wC0CrXWH8jkFLr1VayvxIEzXRxTuz0YVtl3qOlZAg+2X0ohUMDuRUAmdp8Am59xUkdBoyfLCAAEtBM=
+X-Received: by 2002:a05:6830:1f16:: with SMTP id u22mr1078670otg.118.1601302680861;
+ Mon, 28 Sep 2020 07:18:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CE1E7D7EFA066443B6454A6A5063B502209EB04F@DGGEML529-MBS.china.huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200903081550.6012-1-sakari.ailus@linux.intel.com>
+ <f4b82baa-66b7-464e-fd39-66d2243a05ef@lucaceresoli.net> <20200911130104.GF26842@paasikivi.fi.intel.com>
+ <6dea1206-cfaa-bfc5-d57e-4dcddadc03c7@lucaceresoli.net> <20200914094727.GM26842@paasikivi.fi.intel.com>
+ <20200926123807.GA3781977@chromium.org> <20200927193900.GA30711@kunai> <CAAFQd5Be5sUQYtXapcSOu8CVffW2LuLog9qh71-+mxze9WYUVQ@mail.gmail.com>
+In-Reply-To: <CAAFQd5Be5sUQYtXapcSOu8CVffW2LuLog9qh71-+mxze9WYUVQ@mail.gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 28 Sep 2020 16:17:44 +0200
+Message-ID: <CAJZ5v0hKQNv+qj-7EQ2Dmtk=UamtVKHBXDCjqo-48Qj13yY+cw@mail.gmail.com>
+Subject: Re: [PATCH v8 0/6] Support running driver's probe for a device
+ powered off
+To:     Tomasz Figa <tfiga@chromium.org>
+Cc:     Wolfram Sang <wsa@the-dreams.de>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Luca Ceresoli <luca@lucaceresoli.net>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Mani, Rajmohan" <rajmohan.mani@intel.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Bingbu Cao <bingbu.cao@intel.com>,
+        Chiranjeevi Rapolu <chiranjeevi.rapolu@intel.com>,
+        Hyungwoo Yang <hyungwoo.yang@intel.com>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 02:08:29PM +0000, chenjun (AM) wrote:
-> On Mon, Sep 21, 2020 at 02:00:05AM +0000, Chen Jun wrote:
-> > From: Wei Yongjun <weiyongjun1@huawei.com>
-> >> @@ -651,6 +672,19 @@ static void create_object(unsigned long ptr, size_t size, int min_count,
-> >>   	raw_spin_unlock_irqrestore(&kmemleak_lock, flags);
-> >>   }
-> >>   
-> >> +static void create_object(unsigned long ptr, size_t size, int min_count,
-> >> +			  gfp_t gfp)
-> >> +{
-> >> +	__create_object(ptr, size, min_count, 0, gfp);
-> >> +}
-> >> +
-> >> +static void create_object_percpu(unsigned long ptr, size_t size, int min_count,
-> >> +				 gfp_t gfp)
-> >> +{
-> >> +	__create_object(ptr, size, min_count, OBJECT_PERCPU | OBJECT_NO_SCAN,
-> >> +			gfp);
-> >> +}
-> >> +
-> >>   /*
-> >>    * Mark the object as not allocated and schedule RCU freeing via put_object().
-> >>    */
-> >> @@ -912,10 +946,12 @@ void __ref kmemleak_alloc_percpu(const void __percpu *ptr, size_t size,
-> >>   	 * Percpu allocations are only scanned and not reported as leaks
-> >>   	 * (min_count is set to 0).
-> >>   	 */
-> >> -	if (kmemleak_enabled && ptr && !IS_ERR(ptr))
-> >> +	if (kmemleak_enabled && ptr && !IS_ERR(ptr)) {
-> >>   		for_each_possible_cpu(cpu)
-> >>   			create_object((unsigned long)per_cpu_ptr(ptr, cpu),
-> >>   				      size, 0, gfp);
-> >> +		create_object_percpu((unsigned long)ptr, size, 1, gfp);
-> >> +	}
-> >>   }
-> > 
-> > A concern I have here is that ptr may overlap with an existing object
-> > and the insertion in the rb tree will fail. For example, with !SMP,
-> > ptr == per_cpu_ptr(ptr, 0), so create_object() will fail and kmemleak
-> > gets disabled.
-> > 
-> > An option would to figure out how to allow overlapping ranges with rb
-> > tree (or find a replacement for it if not possible).
-> > 
-> > Another option would be to have an additional structure to track the
-> > __percpu pointers since they have their own range. If size is not
-> > relevant, maybe go for an xarray, otherwise another rb tree (do we have
-> > any instance of pointers referring some inner member of a __percpu
-> > object?). The scan_object() function will have to search two trees.
-> 
-> I would like to use CONFIG_SMP to seprate code:
-> if SMP, we will create some objects for per_cpu_ptr(ptr, cpu) and an 
-> object with OBJECT_NO_ACCESS for ptr.
-> if !SMP, we will not create object for per_cpu_ptr(ptr,cpu), but an 
-> object without OBJECT_NO_ACCESS for ptr will be created.
-> What do you think about this opinion.
+On Sun, Sep 27, 2020 at 9:44 PM Tomasz Figa <tfiga@chromium.org> wrote:
+>
+> On Sun, Sep 27, 2020 at 9:39 PM Wolfram Sang <wsa@the-dreams.de> wrote:
+> >
+> >
+> > > I think we might be overly complicating things. IMHO the series as is
+> > > with the "i2c_" prefix removed from the flags introduced would be
+> > > reusable as is for any other subsystem that needs it. Of course, for
+> > > now, the handling of the flag would remain implemented only in the I2C
+> > > subsystem.
+> >
+> > Just to be clear: you are suggesting to remove "i2c" from the DSD
+> > binding "i2c-allow-low-power-probe". And you are not talking about
+> > moving I2C_DRV_FL_ALLOW_LOW_POWER_PROBE to struct device_driver? I
+> > recall the latter has been NACKed by gkh so far.
+> >
+>
+> I'd also drop "I2C_" from "I2C_DRV_FL_ALLOW_LOW_POWER_PROBE", but all
+> the implementation would remain where it is in the code. IOW, I'm just
+> suggesting a naming change to avoid proliferating duplicate flags of
+> the same meaning across subsystems.
 
-The !SMP case was just an example. Do you have a guarantee that the
-value of the __percpu ptr doesn't clash with a linear map address?
+But that would indicate that the property was recognized by other
+subsystems which wouldn't be the case, so it would be confusing.
 
--- 
-Catalin
+That's why it cannot be documented as a general property ATM too.
