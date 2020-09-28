@@ -2,43 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F39C027A888
+	by mail.lfdr.de (Postfix) with ESMTP id 55ED827A887
 	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 09:27:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726625AbgI1H10 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 03:27:26 -0400
-Received: from mail-il1-f207.google.com ([209.85.166.207]:55342 "EHLO
+        id S1726605AbgI1H1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 03:27:25 -0400
+Received: from mail-il1-f207.google.com ([209.85.166.207]:55341 "EHLO
         mail-il1-f207.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726590AbgI1H1Z (ORCPT
+        with ESMTP id S1726421AbgI1H1Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 28 Sep 2020 03:27:25 -0400
-Received: by mail-il1-f207.google.com with SMTP id i12so75457ill.22
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 00:27:25 -0700 (PDT)
+Received: by mail-il1-f207.google.com with SMTP id i12so75440ill.22
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 00:27:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=rtPwNtURyv9M8v1JEvmJ42g5GKgu7iY0IwuKVxXGZsU=;
-        b=WULPyfkyrMKsRpPNqTS7fF4T/xw6+qmC2N0UDI7lnmPWFufcM48lpdOQAiB92vWdAu
-         9/UrhN41x5juROb1Dp0GR7RN29dxsUurxfXLHgHyZPr7++esEa6HBNipCc4H42v6WK+O
-         O08M0CrHmYql/lf2XZvnqDIZDGay+KQ6SYh7bjkTcCYl975cvxkAlwQfJDUBJgSbe8QR
-         avwl23n8SLPVwvVhIW/wv4OVSZs6Sf6DgonYbyOxCkWUExT0q7tf9Nje5s6VDgRBak49
-         abZ7mhvvrMwFtF1cMmJi2nxSY5vLrkztFE9ktpL2lortpBHZ+sRJcp0LpfIRJylPsv8A
-         K6WA==
-X-Gm-Message-State: AOAM533WoSqDN6Mt6W8ZlZSS5/4FA3ZQE9CC+hda0oVMvOvSQYLjqW2t
-        dxGFtNbpDrtIg53YJiATvJB4zyy/i8TTurnFzr2Afx9i3pKg
-X-Google-Smtp-Source: ABdhPJxv6NMMK03JuJ/6TCFwYrp5WtsAA0Rc/OoAN3s68mo6U+Sp65Wt3OxKCsEi1tIDc++JsewmaWGfXItwLxRbOeoiippP7VEx
+        bh=/AfpEA6FiFsXUoAejyXfq5OLQ9SrlGOHQTfJuzst7xw=;
+        b=OjyWzEjRCxxZZG3OcED5qYCoJX7hQRtPG4eCyC3EsQxPBeROPD4d3hLtN8UFTSmwIj
+         vrGnLDsdovazahN3K5O8yMBbq9xGB4fUI7tGAMoS/tOv9gbse+BTJWGjO3cATM4CWgJC
+         y2M0z9O8pVj0laz5ENQv2ju3NtGC9LDMNpHKNhCEdWQR1KRVuhN6v0kTxHCwPy3iYtfR
+         7/2vUFJbobA7jlr+C78qAM/sllTavxVYIP1X+7zEE6kbyDywWNH7n5sImyaS24VYYZ+p
+         2Ja2/Xn1TZmA5g+LnFAcXONPpKnUsWW7rwrq2l0QdXTCBmj/IeXwmD8UkuRBDvj/cLBR
+         EbpQ==
+X-Gm-Message-State: AOAM53113ejG3BveT6z8MFzEdem13Z1yfoc0pgdzp4GakcaSRxT841rV
+        Y4zpqyWuTLhxWhDpqH9H+NVEdw5EX8Kvl0heA9BvWaYKKm3M
+X-Google-Smtp-Source: ABdhPJxosxXWJt2K90H0pAaytudDmwmJ7O/X0setgYmcz6l+pZbRXoZZLwL8IBIEZmrEg0DW5g8EpHPAmnAgl2TzjnWtIkGO75fX
 MIME-Version: 1.0
-X-Received: by 2002:a02:1a83:: with SMTP id 125mr164279jai.48.1601278044864;
+X-Received: by 2002:a05:6638:24d1:: with SMTP id y17mr142416jat.3.1601278044027;
  Mon, 28 Sep 2020 00:27:24 -0700 (PDT)
 Date:   Mon, 28 Sep 2020 00:27:24 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000000d060805b05a9940@google.com>
-Subject: general protection fault in io_uring_flush
-From:   syzbot <syzbot+b64c3e0ed576fc1d70e5@syzkaller.appspotmail.com>
-To:     axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Message-ID: <0000000000000044ba05b05a9961@google.com>
+Subject: kernel BUG at fs/erofs/inode.c:LINE!
+From:   syzbot <syzbot+8afc256dce324523609d@syzkaller.appspotmail.com>
+To:     chao@kernel.org, devel@driverdev.osuosl.org, gaoxiang25@huawei.com,
+        gregkh@linuxfoundation.org, linux-erofs@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        xiang@kernel.org, yuchao0@huawei.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -50,63 +51,84 @@ syzbot found the following issue on:
 
 HEAD commit:    d1d2220c Add linux-next specific files for 20200924
 git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=150e718d900000
+console output: https://syzkaller.appspot.com/x/log.txt?x=166cb7d9900000
 kernel config:  https://syzkaller.appspot.com/x/.config?x=254e028a642027c
-dashboard link: https://syzkaller.appspot.com/bug?extid=b64c3e0ed576fc1d70e5
+dashboard link: https://syzkaller.appspot.com/bug?extid=8afc256dce324523609d
 compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11f0fe4b900000
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=127762c3900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=124ccf3b900000
+
+The issue was bisected to:
+
+commit 382329a9d8553a98418a6f6e3425f0c288837897
+Author: Gao Xiang <gaoxiang25@huawei.com>
+Date:   Wed Aug 14 10:37:04 2019 +0000
+
+    staging: erofs: differentiate unsupported on-disk format
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=149889e3900000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=169889e3900000
+console output: https://syzkaller.appspot.com/x/log.txt?x=129889e3900000
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+b64c3e0ed576fc1d70e5@syzkaller.appspotmail.com
+Reported-by: syzbot+8afc256dce324523609d@syzkaller.appspotmail.com
+Fixes: 382329a9d855 ("staging: erofs: differentiate unsupported on-disk format")
 
-general protection fault, probably for non-canonical address 0xdffffc0000000029: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000148-0x000000000000014f]
-CPU: 0 PID: 8508 Comm: syz-executor.2 Not tainted 5.9.0-rc6-next-20200924-syzkaller #0
+erofs: (device loop0): erofs_read_inode: bogus i_mode (0) @ nid 36
+------------[ cut here ]------------
+kernel BUG at fs/erofs/inode.c:182!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+CPU: 1 PID: 6895 Comm: syz-executor894 Not tainted 5.9.0-rc6-next-20200924-syzkaller #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:io_sq_thread_park fs/io_uring.c:7142 [inline]
-RIP: 0010:io_uring_flush+0x105b/0x1640 fs/io_uring.c:8596
-Code: 0f 85 f4 04 00 00 48 8b 44 24 20 48 8b 98 a8 01 00 00 48 b8 00 00 00 00 00 fc ff df 48 8d ab 48 01 00 00 48 89 ea 48 c1 ea 03 <80> 3c 02 00 0f 85 b9 04 00 00 48 83 bb 48 01 00 00 00 74 37 e8 1c
-RSP: 0018:ffffc9000a66fd70 EFLAGS: 00010202
-RAX: dffffc0000000000 RBX: 0000000000000000 RCX: ffffffff81dad5e8
-RDX: 0000000000000029 RSI: ffffffff81dad5f5 RDI: ffff888099c7f1a8
-RBP: 0000000000000148 R08: 0000000000000000 R09: ffff88809d6443c7
-R10: 0000000000000000 R11: 0000000000000000 R12: ffff88809ad1fbc0
-R13: 0000000000000000 R14: ffff888099c7f000 R15: 0000000000000000
-FS:  00000000020a7940(0000) GS:ffff8880ae400000(0000) knlGS:0000000000000000
+RIP: 0010:erofs_read_inode fs/erofs/inode.c:182 [inline]
+RIP: 0010:erofs_fill_inode fs/erofs/inode.c:235 [inline]
+RIP: 0010:erofs_iget+0xfd8/0x2390 fs/erofs/inode.c:322
+Code: 00 0f 85 aa 10 00 00 49 8b 7c 24 28 49 89 d8 44 89 e9 48 c7 c2 a0 9c ef 88 48 c7 c6 40 9f ef 88 e8 b5 df b0 04 e8 88 5a 07 fe <0f> 0b e8 81 5a 07 fe 4c 89 e7 4c 63 e3 e8 b6 61 5b fe e9 ed f0 ff
+RSP: 0018:ffffc90001017c10 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 0000000000000024 RCX: 0000000000000000
+RDX: ffff8880a172e480 RSI: ffffffff836dd6e8 RDI: fffff52000202f72
+RBP: ffff8880a8ca4480 R08: 0000000000000042 R09: ffff8880ae5319a7
+R10: 0000000000000000 R11: 0000000000000000 R12: ffff8880854fd9b8
+R13: 0000000000000000 R14: ffffea0002a32900 R15: 0000000000000000
+FS:  000000000108e880(0000) GS:ffff8880ae500000(0000) knlGS:0000000000000000
 CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000768000 CR3: 000000009c90d000 CR4: 00000000001506f0
+CR2: 000000000043eb80 CR3: 00000000a7edb000 CR4: 00000000001506e0
 DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
 DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 Call Trace:
- filp_close+0xb4/0x170 fs/open.c:1276
- __close_fd+0x2f/0x50 fs/file.c:671
- __do_sys_close fs/open.c:1295 [inline]
- __se_sys_close fs/open.c:1293 [inline]
- __x64_sys_close+0x69/0x100 fs/open.c:1293
+ erofs_fc_fill_super+0xaa3/0x1010 fs/erofs/super.c:382
+ get_tree_bdev+0x421/0x740 fs/super.c:1342
+ vfs_get_tree+0x89/0x2f0 fs/super.c:1547
+ do_new_mount fs/namespace.c:2896 [inline]
+ path_mount+0x12ae/0x1e70 fs/namespace.c:3227
+ __do_sys_mount fs/namespace.c:3438 [inline]
+ __se_sys_mount fs/namespace.c:3411 [inline]
+ __x64_sys_mount+0x278/0x2f0 fs/namespace.c:3411
  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x417901
-Code: 75 14 b8 03 00 00 00 0f 05 48 3d 01 f0 ff ff 0f 83 a4 1a 00 00 c3 48 83 ec 08 e8 0a fc ff ff 48 89 04 24 b8 03 00 00 00 0f 05 <48> 8b 3c 24 48 89 c2 e8 53 fc ff ff 48 89 d0 48 83 c4 08 48 3d 01
-RSP: 002b:00007ffca0939140 EFLAGS: 00000293 ORIG_RAX: 0000000000000003
-RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 0000000000417901
-RDX: 0000001b31f20000 RSI: 0000000000000001 RDI: 0000000000000003
-RBP: 0000000000000001 R08: 0000000000000000 R09: 0000000000000000
-R10: 00007ffca0939230 R11: 0000000000000293 R12: 000000000118d9c0
-R13: 000000000118d9c0 R14: ffffffffffffffff R15: 000000000118cf4c
+RIP: 0033:0x446d6a
+Code: b8 08 00 00 00 0f 05 48 3d 01 f0 ff ff 0f 83 fd ad fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 0f 83 da ad fb ff c3 66 0f 1f 84 00 00 00 00 00
+RSP: 002b:00007fffa8ef9ef8 EFLAGS: 00000297 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007fffa8ef9f50 RCX: 0000000000446d6a
+RDX: 0000000020000000 RSI: 0000000020000100 RDI: 00007fffa8ef9f10
+RBP: 00007fffa8ef9f10 R08: 00007fffa8ef9f50 R09: 00007fff00000015
+R10: 0000000000000000 R11: 0000000000000297 R12: 0000000000000001
+R13: 0000000000000004 R14: 0000000000000003 R15: 0000000000000003
 Modules linked in:
----[ end trace 188a1c353995f688 ]---
-RIP: 0010:io_sq_thread_park fs/io_uring.c:7142 [inline]
-RIP: 0010:io_uring_flush+0x105b/0x1640 fs/io_uring.c:8596
-Code: 0f 85 f4 04 00 00 48 8b 44 24 20 48 8b 98 a8 01 00 00 48 b8 00 00 00 00 00 fc ff df 48 8d ab 48 01 00 00 48 89 ea 48 c1 ea 03 <80> 3c 02 00 0f 85 b9 04 00 00 48 83 bb 48 01 00 00 00 74 37 e8 1c
-RSP: 0018:ffffc9000a66fd70 EFLAGS: 00010202
-RAX: dffffc0000000000 RBX: 0000000000000000 RCX: ffffffff81dad5e8
-RDX: 0000000000000029 RSI: ffffffff81dad5f5 RDI: ffff888099c7f1a8
-RBP: 0000000000000148 R08: 0000000000000000 R09: ffff88809d6443c7
-R10: 0000000000000000 R11: 0000000000000000 R12: ffff88809ad1fbc0
-R13: 0000000000000000 R14: ffff888099c7f000 R15: 0000000000000000
-FS:  00000000020a7940(0000) GS:ffff8880ae400000(0000) knlGS:0000000000000000
+---[ end trace 66a5371a9bd8a3b2 ]---
+RIP: 0010:erofs_read_inode fs/erofs/inode.c:182 [inline]
+RIP: 0010:erofs_fill_inode fs/erofs/inode.c:235 [inline]
+RIP: 0010:erofs_iget+0xfd8/0x2390 fs/erofs/inode.c:322
+Code: 00 0f 85 aa 10 00 00 49 8b 7c 24 28 49 89 d8 44 89 e9 48 c7 c2 a0 9c ef 88 48 c7 c6 40 9f ef 88 e8 b5 df b0 04 e8 88 5a 07 fe <0f> 0b e8 81 5a 07 fe 4c 89 e7 4c 63 e3 e8 b6 61 5b fe e9 ed f0 ff
+RSP: 0018:ffffc90001017c10 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 0000000000000024 RCX: 0000000000000000
+RDX: ffff8880a172e480 RSI: ffffffff836dd6e8 RDI: fffff52000202f72
+RBP: ffff8880a8ca4480 R08: 0000000000000042 R09: ffff8880ae5319a7
+R10: 0000000000000000 R11: 0000000000000000 R12: ffff8880854fd9b8
+R13: 0000000000000000 R14: ffffea0002a32900 R15: 0000000000000000
+FS:  000000000108e880(0000) GS:ffff8880ae500000(0000) knlGS:0000000000000000
 CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000000004 CR3: 000000009c90d000 CR4: 00000000001506f0
+CR2: 000000000043eb80 CR3: 00000000a7edb000 CR4: 00000000001506e0
 DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
 DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
@@ -118,5 +140,6 @@ syzbot engineers can be reached at syzkaller@googlegroups.com.
 
 syzbot will keep track of this issue. See:
 https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 syzbot can test patches for this issue, for details see:
 https://goo.gl/tpsmEJ#testing-patches
