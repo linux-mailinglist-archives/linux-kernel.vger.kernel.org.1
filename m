@@ -2,113 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9425627AF8A
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 16:00:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62E2127AFBA
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 16:11:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726504AbgI1OAh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 10:00:37 -0400
-Received: from mga06.intel.com ([134.134.136.31]:24872 "EHLO mga06.intel.com"
+        id S1726576AbgI1OLC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 10:11:02 -0400
+Received: from mga17.intel.com ([192.55.52.151]:58042 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725290AbgI1OAg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 10:00:36 -0400
-IronPort-SDR: jSeUvsbFEYcAhIO1tNRw3IdWScXeUnzd+zuEDF1fBcJxErukwvB5ya46rchtiqOHeuzp6V4G9f
- vNoMSp2UXTHw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9757"; a="223590527"
+        id S1725290AbgI1OLB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 10:11:01 -0400
+IronPort-SDR: xNHtA9DeooBbOf9+MfKdaXZcH56/O5w9pTzbnc2wutQmL4lnVfctScgI9mITTIUknZN/Q83KML
+ k2S1zkUfkQVA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9757"; a="142011881"
 X-IronPort-AV: E=Sophos;i="5.77,313,1596524400"; 
-   d="scan'208";a="223590527"
+   d="scan'208";a="142011881"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 07:00:35 -0700
-IronPort-SDR: 5jLQCLLh3KcK8aGFbbCzqv3iW/C+MB5YBdG/iR3D1c6+5eZbnDiuDhyTO3Vkhz9rR/d4V2RYPY
- BavmS1IsEnfA==
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 06:48:55 -0700
+IronPort-SDR: ae4nM+oY40MpkgYNvhgSpAdehPh3FZ5xBRUiOfd0mcDMea1OcqdeU2jh/h1Es4x28maZfdq4kZ
+ /KogavtkaM6g==
+X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.77,313,1596524400"; 
-   d="scan'208";a="338193646"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 07:00:33 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1kMthc-002ZfX-De; Mon, 28 Sep 2020 17:00:28 +0300
-Date:   Mon, 28 Sep 2020 17:00:28 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kent Gibson <warthog618@gmail.com>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        linux-doc <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 7/9] gpio: mockup: pass the chip label as device
- property
-Message-ID: <20200928140028.GO3956970@smile.fi.intel.com>
-References: <20200928104155.7385-1-brgl@bgdev.pl>
- <20200928104155.7385-8-brgl@bgdev.pl>
- <20200928130023.GJ3956970@smile.fi.intel.com>
- <CAMpxmJVGAe224JaXL4EmeEFV4Qv7ohjgn_W_CwPjC4MHgP4gTA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMpxmJVGAe224JaXL4EmeEFV4Qv7ohjgn_W_CwPjC4MHgP4gTA@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+   d="scan'208";a="488586381"
+Received: from unknown (HELO labuser-Ice-Lake-Client-Platform.jf.intel.com) ([10.54.55.65])
+  by orsmga005.jf.intel.com with ESMTP; 28 Sep 2020 06:48:55 -0700
+From:   kan.liang@linux.intel.com
+To:     peterz@infradead.org, mingo@redhat.com,
+        linux-kernel@vger.kernel.org
+Cc:     ak@linux.intel.com, Kan Liang <kan.liang@linux.intel.com>,
+        stable@vger.kernel.org
+Subject: [PATCH] perf/x86/intel: Fix Ice Lake event constraint table
+Date:   Mon, 28 Sep 2020 06:47:26 -0700
+Message-Id: <20200928134726.13090-1-kan.liang@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 03:13:53PM +0200, Bartosz Golaszewski wrote:
-> On Mon, Sep 28, 2020 at 3:00 PM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
-> >
-> > On Mon, Sep 28, 2020 at 12:41:53PM +0200, Bartosz Golaszewski wrote:
-> > > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> > >
-> > > While we do check the "chip-name" property in probe(), we never actually
-> > > use it. Let's pass the chip label to the driver using device properties
-> > > as we'll want to allow users to define their own once dynamically
-> > > created chips are supported.
-> > >
-> > > The property is renamed to "chip-label" to not cause any confusion with
-> > > the actual chip name which is of the form: "gpiochipX".
-> > >
-> 
-> ^^^ here, see below
-> 
-> > > If the "chip-label" property is missing, let's do what most devices in
-> > > drivers/gpio/ do and use dev_name().
-> >
-> > ...
-> >
-> > > +             snprintf(chip_label, sizeof(chip_label),
-> > > +                      "gpio-mockup-%c", i + 'A');
-> > > +             properties[prop++] = PROPERTY_ENTRY_STRING("chip-label",
-> > > +                                                        chip_label);
-> >
-> > You added new property, now count is up to 4. But at the same time
-> >
-> >         #define GPIO_MOCKUP_MAX_PROP  4
-> >
-> > how do you avoid overflow?
-> >
-> 
-> I renamed the property, the previous "chip-name" is no longer used. In
-> fact it was never used but was accounted for in GPIO_MOCKUP_MAX_PROP.
+From: Kan Liang <kan.liang@linux.intel.com>
 
-Either I'm missing something or...
+An error occues when sampling non-PEBS INST_RETIRED.PREC_DIST(0x01c0)
+event.
 
-Current code in linux-next has 3 properties to be possible
+  perf record -e cpu/event=0xc0,umask=0x01/ -- sleep 1
+  Error:
+  The sys_perf_event_open() syscall returned with 22 (Invalid argument)
+  for event (cpu/event=0xc0,umask=0x01/).
+  /bin/dmesg | grep -i perf may provide additional information.
 
-PROPERTY_ENTRY_U32("gpio-base", base);
-PROPERTY_ENTRY_U16("nr-gpios", ngpio);
-PROPERTY_ENTRY_BOOL("named-gpio-lines");
+The idxmsk64 of the event is set to 0. The event never be successfully
+scheduled.
 
-You adding here
-PROPERTY_ENTRY_STRING("chip-label", chip_label);
+The event should be limit to the fixed counter 0.
 
-Altogether after this patch is 4 which is maximum, but since array is passed by
-a solely pointer, the terminator is a must.
+Fixes: 6017608936c1 ("perf/x86/intel: Add Icelake support")
+Reported-by: Yi, Ammy <ammy.yi@intel.com>
+Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+Cc: stable@vger.kernel.org
+---
+ arch/x86/events/intel/core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
+index c72e4904e056..93d6d5eadb6d 100644
+--- a/arch/x86/events/intel/core.c
++++ b/arch/x86/events/intel/core.c
+@@ -243,7 +243,7 @@ static struct extra_reg intel_skl_extra_regs[] __read_mostly = {
+ 
+ static struct event_constraint intel_icl_event_constraints[] = {
+ 	FIXED_EVENT_CONSTRAINT(0x00c0, 0),	/* INST_RETIRED.ANY */
+-	INTEL_UEVENT_CONSTRAINT(0x1c0, 0),	/* INST_RETIRED.PREC_DIST */
++	FIXED_EVENT_CONSTRAINT(0x01c0, 0),	/* INST_RETIRED.PREC_DIST */
+ 	FIXED_EVENT_CONSTRAINT(0x003c, 1),	/* CPU_CLK_UNHALTED.CORE */
+ 	FIXED_EVENT_CONSTRAINT(0x0300, 2),	/* CPU_CLK_UNHALTED.REF */
+ 	FIXED_EVENT_CONSTRAINT(0x0400, 3),	/* SLOTS */
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.17.1
 
