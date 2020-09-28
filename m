@@ -2,131 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E91D27A8BA
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 09:36:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8BE727A8C0
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 09:36:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726504AbgI1HgR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 03:36:17 -0400
-Received: from mail-il1-f206.google.com ([209.85.166.206]:55184 "EHLO
-        mail-il1-f206.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726564AbgI1HgQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 03:36:16 -0400
-Received: by mail-il1-f206.google.com with SMTP id f4so90728ilk.21
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 00:36:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=k3uruzQgSMTbGqxoGnXfxSAPhtqLRQc7ySzNeuwSBkg=;
-        b=q101k3OQDOjPWshAtCloB7WGnXyrq7WJY2+s5ck/sITyw+mOMgdB6JX7DO5ugMSaQI
-         uZ5UpzJPBSA02LC6M03nKEka2LyYabR59mmfmKY5oo+N2SYdc65Fvjc7t+tQWysUNa9e
-         4xIIEbRQCkG6ZMs7esXM0ZSQQasDEZFbcnUr7tiIHj0vOO8p7SyzqDmiZkwTARI/sFkZ
-         uxHhDOAVOU25TXxWWB6MaISDASJpUEATKfnbj2ZGF1fZW3a4YHQrLQ4AZwo/Vm7Ff2Av
-         xnVymU38REAGKBHaFVAJpVGVkoX3V4Vo5SBmX9AvpbLvTuMIakJC5k0fCcx1ttYzp9TK
-         BQIQ==
-X-Gm-Message-State: AOAM530yN5L2Ym0+uMhhd1llksTt1ca99t2asquE+ArShz+yQmvObX+i
-        2f5Q2ZmvepzuXy7UbIpzbs4/f01S6f/X970kS9mscT3AruY8
-X-Google-Smtp-Source: ABdhPJzt1CJmNQM9vQiFPXYsei9im+1gRXxqCm+/OUKU4USTyz8S7se4WeWppbUiBrCq4Foh7PiBYtnJIT1NX2omc04Syji+pxOT
+        id S1726721AbgI1Hga (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 03:36:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50308 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726625AbgI1Hga (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 03:36:30 -0400
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 19750208FE;
+        Mon, 28 Sep 2020 07:36:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601278589;
+        bh=EZsgizha+4vidtJcdQsnLl7s03GVBSE6qX8QQvIuSwQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=DjtdV5U6pmfdzytym0Ljq7Q18u2uZwGbIps+15wRsVBSeGNnYp9i+WlBdWVHT2Rwc
+         GEpMdgp4nxV9CfxypU58PgMpqWUeiM6PuwcrJY5txEotuMOtWj+wrKrN+eTB1+WVK6
+         5g9y9jqXlHjpnp4DlA988t32sKD6Qadr1Am9lQWg=
+Received: by mail-ed1-f45.google.com with SMTP id e22so205315edq.6;
+        Mon, 28 Sep 2020 00:36:29 -0700 (PDT)
+X-Gm-Message-State: AOAM530B77b7KPCR/RllHCr5jCQFds7F2SP28+UmN0FzyKLuGD8w2GPH
+        zpvcO2eDKO+GxdNKTVVLWd1pkihJ4yAMQPXEkRg=
+X-Google-Smtp-Source: ABdhPJyIDlL6FJVIJiEe0/i3txpPYMMV6w7U9VT6MR4Bs/jJkfgvAudqi+FMUebgQrRhDc2cuYI0vhM47hYZ+tcof8U=
+X-Received: by 2002:aa7:da16:: with SMTP id r22mr335430eds.132.1601278587625;
+ Mon, 28 Sep 2020 00:36:27 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a92:7989:: with SMTP id u131mr101117ilc.93.1601278575686;
- Mon, 28 Sep 2020 00:36:15 -0700 (PDT)
-Date:   Mon, 28 Sep 2020 00:36:15 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000b0bbc905b05ab8d5@google.com>
-Subject: BUG: unable to handle kernel NULL pointer dereference in __lookup_slow
-From:   syzbot <syzbot+3db80bbf66b88d68af9d@syzkaller.appspotmail.com>
-To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+References: <20200927224336.705-1-michael@walle.cc> <20200927232747.3jwr6mqql727etyz@skbuf>
+ <CAJKOXPeeKyPzx4pnuXT=o7p8hE0SeCuyt9d8uj+Dc9fjjXULMA@mail.gmail.com>
+In-Reply-To: <CAJKOXPeeKyPzx4pnuXT=o7p8hE0SeCuyt9d8uj+Dc9fjjXULMA@mail.gmail.com>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Date:   Mon, 28 Sep 2020 09:36:15 +0200
+X-Gmail-Original-Message-ID: <CAJKOXPcVJqjOn6gn+SYXtDbmi2kG2j=KFocagD7Lpe0YHwxbLA@mail.gmail.com>
+Message-ID: <CAJKOXPcVJqjOn6gn+SYXtDbmi2kG2j=KFocagD7Lpe0YHwxbLA@mail.gmail.com>
+Subject: Re: [PATCH] spi: fsl-dspi: fix NULL pointer dereference
+To:     Vladimir Oltean <olteanv@gmail.com>,
+        Michael Walle <michael@walle.cc>
+Cc:     linux-spi@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Mon, 28 Sep 2020 at 09:29, Krzysztof Kozlowski <krzk@kernel.org> wrote:
+> > >
+> > > This is because since this commit, the allocation of the drivers private
+> > > data is done explicitly and in this case spi_alloc_master() won't set the
+> > > correct pointer.
+> > >
+> > > Fixes: 530b5affc675 ("spi: fsl-dspi: fix use-after-free in remove path")
+> > > Signed-off-by: Michael Walle <michael@walle.cc>
+> > > ---
+> >
+> > Sascha, how did you test commit 530b5affc675?
+>
+> Hi,
+>
+> I just hit it on my Vybrid systems as well. It fails on every boot, so
+> I have doubts that it was actually tested. The fix was posted on 23rd
+> and applied within a few hours... also no time for anyone else to test
+> it.
 
-syzbot found the following issue on:
+The flow of this patch to mainline/RC reminds me what Sasha Levin was
+saying here:
+https://lwn.net/Articles/753329/
+" - This means that -rc commits mostly end up replacing obvious bugs
+with less obvious ones.
+ - A merge window commit spent 50% more days, on average, in -next
+than a -rc commit."
 
-HEAD commit:    7c7ec322 Merge tag 'for-linus' of git://git.kernel.org/pub..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=17289773900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=240e2ebab67245c7
-dashboard link: https://syzkaller.appspot.com/bug?extid=3db80bbf66b88d68af9d
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+3db80bbf66b88d68af9d@syzkaller.appspotmail.com
-
-REISERFS (device loop1): Using r5 hash to sort names
-REISERFS (device loop1): using 3.5.x disk format
-BUG: kernel NULL pointer dereference, address: 0000000000000000
-#PF: supervisor instruction fetch in kernel mode
-#PF: error_code(0x0010) - not-present page
-PGD a7454067 P4D a7454067 PUD 93380067 PMD 0 
-Oops: 0010 [#1] PREEMPT SMP KASAN
-CPU: 0 PID: 9128 Comm: syz-executor.1 Not tainted 5.9.0-rc6-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:0x0
-Code: Bad RIP value.
-RSP: 0018:ffffc90008bbf910 EFLAGS: 00010246
-RAX: dffffc0000000000 RBX: 1ffff92001177f25 RCX: ffffc9000aad7000
-RDX: 0000000000000000 RSI: ffff888085c9f330 RDI: ffff88804358f7e0
-RBP: ffffffff889c4280 R08: 0000000000000001 R09: ffffffff8d461a7f
-R10: 0000000000000000 R11: 000000000005f088 R12: ffff888085c9f330
-R13: ffff88804358f7e0 R14: ffffc90008bbfaa0 R15: ffffc90008bbf948
-FS:  00007f6bb6cc7700(0000) GS:ffff8880ae400000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffffffffffffffd6 CR3: 00000000a75b9000 CR4: 00000000001526f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- __lookup_slow+0x24c/0x480 fs/namei.c:1544
- lookup_one_len+0x163/0x190 fs/namei.c:2562
- reiserfs_lookup_privroot+0x92/0x280 fs/reiserfs/xattr.c:972
- reiserfs_fill_super+0x211b/0x2df3 fs/reiserfs/super.c:2176
- mount_bdev+0x32e/0x3f0 fs/super.c:1417
- legacy_get_tree+0x105/0x220 fs/fs_context.c:592
- vfs_get_tree+0x89/0x2f0 fs/super.c:1547
- do_new_mount fs/namespace.c:2875 [inline]
- path_mount+0x1387/0x20a0 fs/namespace.c:3192
- do_mount fs/namespace.c:3205 [inline]
- __do_sys_mount fs/namespace.c:3413 [inline]
- __se_sys_mount fs/namespace.c:3390 [inline]
- __x64_sys_mount+0x27f/0x300 fs/namespace.c:3390
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x460bca
-Code: b8 a6 00 00 00 0f 05 48 3d 01 f0 ff ff 0f 83 dd 87 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 0f 83 ba 87 fb ff c3 66 0f 1f 84 00 00 00 00 00
-RSP: 002b:00007f6bb6cc6a88 EFLAGS: 00000202 ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 00007f6bb6cc6b20 RCX: 0000000000460bca
-RDX: 0000000020000000 RSI: 0000000020000100 RDI: 00007f6bb6cc6ae0
-RBP: 00007f6bb6cc6ae0 R08: 00007f6bb6cc6b20 R09: 0000000020000000
-R10: 0000000000a04850 R11: 0000000000000202 R12: 0000000020000000
-R13: 0000000020000100 R14: 0000000020000200 R15: 0000000020000040
-Modules linked in:
-CR2: 0000000000000000
----[ end trace 79d7e2c3db21cbd3 ]---
-RIP: 0010:0x0
-Code: Bad RIP value.
-RSP: 0018:ffffc90008bbf910 EFLAGS: 00010246
-RAX: dffffc0000000000 RBX: 1ffff92001177f25 RCX: ffffc9000aad7000
-RDX: 0000000000000000 RSI: ffff888085c9f330 RDI: ffff88804358f7e0
-RBP: ffffffff889c4280 R08: 0000000000000001 R09: ffffffff8d461a7f
-R10: 0000000000000000 R11: 000000000005f088 R12: ffff888085c9f330
-R13: ffff88804358f7e0 R14: ffffc90008bbfaa0 R15: ffffc90008bbf948
-FS:  00007f6bb6cc7700(0000) GS:ffff8880ae500000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000558411c291f8 CR3: 00000000a75b9000 CR4: 00000000001526e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Best regards,
+Krzysztof
