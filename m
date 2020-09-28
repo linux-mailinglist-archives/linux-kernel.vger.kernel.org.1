@@ -2,182 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 197C227B5E1
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 22:03:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11ABF27B5E5
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 22:04:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726682AbgI1UDN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 16:03:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35166 "EHLO
+        id S1726755AbgI1UEx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 16:04:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726389AbgI1UDM (ORCPT
+        with ESMTP id S1726325AbgI1UEx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 16:03:12 -0400
-Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61558C061755
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 13:03:12 -0700 (PDT)
-Received: by mail-vs1-xe41.google.com with SMTP id a16so1535083vsp.12
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 13:03:12 -0700 (PDT)
+        Mon, 28 Sep 2020 16:04:53 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 039A8C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 13:04:53 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id 5so1841198pgf.5
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 13:04:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=FVHTFluSha0AQSzv2ABK4QAsCYCIc/yOgt1qRmrDx08=;
-        b=nyw7bxf2RbT5J8k9zhdN9+g+3Iv4qFFqgw1efDnrOIi8mC91T0Is7QJTXwOXidhk44
-         g6nVa6SH2apB5kOnIFmUu6OmOsaE/f4gIuyG4JrmIsVPwYRRSSWSErb1mXfBuAuRckN7
-         du9gmAmAk8lVUZnkt+vPAv6M5TF4DGVU6zCY97Ofiyj7HqQ+fnnnHkA0LUDW9dG/LbY5
-         t4TI7UksGTKtkxxJc3IyDXohgVRZt7TuqrsEO/chh9VkhfVoDNShWbf93XuB6N/wgLYD
-         eYtLLvkZeVxrIo6zvj/LcvsF9sAxTWUDAqbOhIcK2IHBQFjggBBXq8OfVwWjN8sN0pnD
-         yUwg==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=DrORwxFSTGYgq7rDpyN+PgrRRMbvRryObis6SlzlegQ=;
+        b=E4DiKgHZ8+3lgXItSKuRg/Zp0KCE480TlXTghysXO3BoLDWSNo77w7adL5ZNKFzaJt
+         JrIB8dlPqKMbNAPQuhOffpeY5lxUoDQaCkYU7Gb2rde/d/IV3kPzLjUCB6bh4IovYwuN
+         dW8ea1YKN4Z7HbEGJI1W39qM7Swg4rgPmsp04=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=FVHTFluSha0AQSzv2ABK4QAsCYCIc/yOgt1qRmrDx08=;
-        b=d0whvz2538dfe1/EGUhRawvcKvMAjCEYLfo3SRVxJdPgwLIGHpwfFlXwyw2NZpJOLm
-         Smv4Gql+alUo7aqEQDOORt5E0F9KH6zil+P29PuCHRwI10HF23PT24sR0BZPhgp37Woy
-         zkm9ms66WOKsiC7viKPm8m1YfCy1chs3oKNjjkiZlEXgr9Ejj7GHq+F0NqDQfQO3Hz2+
-         Tk9NtPsPSKmWUfaum6cdjw/N6UvlyMwrgkLD7hLW4DogiQiI+IehHPBdA3IwloIlpk9c
-         UPKCHQIzRk7MDOpHFDULHffLwgniXu0WIW7SOPiGr6/ggCfQiatbUpguHxsKDEf2FE1t
-         NhAQ==
-X-Gm-Message-State: AOAM532HdBFUEZcgWnO2cJcFY5mF/v/FSJlGRxAitASe1ClGULkPSNh1
-        AxuHOJZzycYu1xEjLOUE3YCiRaE0i9ExBUEm1Vs7ZA==
-X-Google-Smtp-Source: ABdhPJyhVKKQ+Fppzvc+SS78vjuSCBubD1w7Tj2vi82ixcsJJQDzxsDxEweCOrjZBFvODM67LmKw+G4SFRo8oVCj2Eg=
-X-Received: by 2002:a67:80d2:: with SMTP id b201mr1027352vsd.12.1601323391431;
- Mon, 28 Sep 2020 13:03:11 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=DrORwxFSTGYgq7rDpyN+PgrRRMbvRryObis6SlzlegQ=;
+        b=godXhxx6I3fOo065mhZNJq2AH8Kn9n3S4BRK47VxayYP3O1S4ChnVDkrQ1r/unYIL0
+         oP2MIkkx59hgouN+2fGFhHY6lvtWULviB7qW/t1z7bZ56wp2DobjFmE1I/S5BXRFOSNL
+         7kZuFeFOPg80TmFeHYtYCLri7yvL2ovcGTZxnr+k747WmEGkASNxGOJRgy6UZuR1aHzT
+         jbMYgrhd/0E94KpQg6/LVBqg3ROwhUGx7znuJl832Rhl68oFr8SLjDh+of7SaSKmS2Aj
+         HWIufjlQDG746SOVLvazLA936om1M2TscEur1Q4W3CKsNxVRAPIZDyv+Fh4jhEOQAqoM
+         E3fA==
+X-Gm-Message-State: AOAM531pbX9wJK8ywMxnrLKS6Ytwbn1yzqkgLuuwAUVrDvdRqOXF7J0N
+        +Kii35yjBaAdtLDCAoaLFe+bfw==
+X-Google-Smtp-Source: ABdhPJxeNwqKkdDur1frnecEaZEFzGE9kbnLnamH2R59vj03CRfItMAxTnbIVtTMyXXwLb+Jai9NWg==
+X-Received: by 2002:aa7:99c2:0:b029:142:440b:fa28 with SMTP id v2-20020aa799c20000b0290142440bfa28mr961093pfi.30.1601323492379;
+        Mon, 28 Sep 2020 13:04:52 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id w203sm2928796pff.0.2020.09.28.13.04.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Sep 2020 13:04:51 -0700 (PDT)
+Date:   Mon, 28 Sep 2020 13:04:50 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     YiFei Zhu <zhuyifei1999@gmail.com>
+Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        YiFei Zhu <yifeifz2@illinois.edu>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Will Drewry <wad@chromium.org>, bpf <bpf@vger.kernel.org>,
+        Jann Horn <jannh@google.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        kernel list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v1 0/6] seccomp: Implement constant action bitmaps
+Message-ID: <202009281259.D7D18AE95@keescook>
+References: <20200923232923.3142503-1-keescook@chromium.org>
+ <43039bb6-9d9f-b347-fa92-ea34ccc21d3d@rasmusvillemoes.dk>
+ <CABqSeAQKksqM1SdsQMoR52AJ5CY0VE2tk8-TJaMuOrkCprQ0MQ@mail.gmail.com>
+ <27b4ef86-fee5-fc35-993b-3352ce504c73@rasmusvillemoes.dk>
+ <CABqSeATHtvA7qm7j_kxBsbxRCd5B=MHtxGdsYsXEJ-TRRYKTgA@mail.gmail.com>
+ <CABqSeASMObs7HtwfM=ua9Tbx1mfHZaxCMWD6AP6-6hR4-Xcn=Q@mail.gmail.com>
 MIME-Version: 1.0
-References: <20200820091537.490965042@linuxfoundation.org> <20200820091539.592290034@linuxfoundation.org>
-In-Reply-To: <20200820091539.592290034@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 29 Sep 2020 01:32:59 +0530
-Message-ID: <CA+G9fYvdQv2Ukvs-UKiEgYaDdBthsWsY=35cQ4YpvMhA0hU5Gg@mail.gmail.com>
-Subject: Re: [PATCH 4.19 38/92] kprobes: Fix NULL pointer dereference at kprobe_ftrace_handler
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        linux- stable <stable@vger.kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Chengming Zhou <zhouchengming@bytedance.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CABqSeASMObs7HtwfM=ua9Tbx1mfHZaxCMWD6AP6-6hR4-Xcn=Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 20 Aug 2020 at 15:23, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> From: Muchun Song <songmuchun@bytedance.com>
->
-> commit 0cb2f1372baa60af8456388a574af6133edd7d80 upstream.
->
-> We found a case of kernel panic on our server. The stack trace is as
-> follows(omit some irrelevant information):
->
->   BUG: kernel NULL pointer dereference, address: 0000000000000080
->   RIP: 0010:kprobe_ftrace_handler+0x5e/0xe0
->   RSP: 0018:ffffb512c6550998 EFLAGS: 00010282
->   RAX: 0000000000000000 RBX: ffff8e9d16eea018 RCX: 0000000000000000
->   RDX: ffffffffbe1179c0 RSI: ffffffffc0535564 RDI: ffffffffc0534ec0
->   RBP: ffffffffc0534ec1 R08: ffff8e9d1bbb0f00 R09: 0000000000000004
->   R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
->   R13: ffff8e9d1f797060 R14: 000000000000bacc R15: ffff8e9ce13eca00
->   CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->   CR2: 0000000000000080 CR3: 00000008453d0005 CR4: 00000000003606e0
->   DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
->   DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
->   Call Trace:
->    <IRQ>
->    ftrace_ops_assist_func+0x56/0xe0
->    ftrace_call+0x5/0x34
->    tcpa_statistic_send+0x5/0x130 [ttcp_engine]
->
-> The tcpa_statistic_send is the function being kprobed. After analysis,
-> the root cause is that the fourth parameter regs of kprobe_ftrace_handler
-> is NULL. Why regs is NULL? We use the crash tool to analyze the kdump.
->
->   crash> dis tcpa_statistic_send -r
->          <tcpa_statistic_send>: callq 0xffffffffbd8018c0 <ftrace_caller>
->
-> The tcpa_statistic_send calls ftrace_caller instead of ftrace_regs_caller=
-.
-> So it is reasonable that the fourth parameter regs of kprobe_ftrace_handl=
-er
-> is NULL. In theory, we should call the ftrace_regs_caller instead of the
-> ftrace_caller. After in-depth analysis, we found a reproducible path.
->
->   Writing a simple kernel module which starts a periodic timer. The
->   timer's handler is named 'kprobe_test_timer_handler'. The module
->   name is kprobe_test.ko.
->
->   1) insmod kprobe_test.ko
->   2) bpftrace -e 'kretprobe:kprobe_test_timer_handler {}'
->   3) echo 0 > /proc/sys/kernel/ftrace_enabled
->   4) rmmod kprobe_test
->   5) stop step 2) kprobe
->   6) insmod kprobe_test.ko
->   7) bpftrace -e 'kretprobe:kprobe_test_timer_handler {}'
->
-> We mark the kprobe as GONE but not disarm the kprobe in the step 4).
-> The step 5) also do not disarm the kprobe when unregister kprobe. So
-> we do not remove the ip from the filter. In this case, when the module
-> loads again in the step 6), we will replace the code to ftrace_caller
-> via the ftrace_module_enable(). When we register kprobe again, we will
-> not replace ftrace_caller to ftrace_regs_caller because the ftrace is
-> disabled in the step 3). So the step 7) will trigger kernel panic. Fix
-> this problem by disarming the kprobe when the module is going away.
->
-> Link: https://lkml.kernel.org/r/20200728064536.24405-1-songmuchun@bytedan=
-ce.com
->
-> Cc: stable@vger.kernel.org
-> Fixes: ae6aa16fdc16 ("kprobes: introduce ftrace based optimization")
-> Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> Co-developed-by: Chengming Zhou <zhouchengming@bytedance.com>
-> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
-> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+On Sat, Sep 26, 2020 at 01:11:50PM -0500, YiFei Zhu wrote:
+> On Fri, Sep 25, 2020 at 2:07 AM YiFei Zhu <zhuyifei1999@gmail.com> wrote:
+> > I'll try to profile the latter later on my qemu-kvm, with a recent
+> > libsecomp with binary tree and docker's profile, probably both direct
+> > filter attaches and filter attaches with fork(). I'm guessing if I
+> > have fork() the cost of fork() will overshadow seccomp() though.
+> 
+> I'm surprised. That is not the case as far as I can tell.
+> 
+> I wrote a benchmark [1] that would fork() and in the child attach a
+> seccomp filter, look at the CLOCK_MONOTONIC difference, then add it to
+> a struct timespec shared with the parent. It checks the difference
+> with the timespec before prctl and before fork. CLOCK_MONOTONIC
+> instead of CLOCK_PROCESS_CPUTIME_ID because of fork.
+> 
+> I ran `./seccomp_emu_bench 100000` in my qemu-kvm and here are the results:
+> without emulator:
+> Benchmarking 100000 syscalls...
+> 19799663603 (19.8s)
+> seecomp attach without fork: 197996 ns
+> 33911173847 (33.9s)
+> seecomp attach with fork: 339111 ns
+> 
+> with emulator:
+> Benchmarking 100000 syscalls...
+> 54428289147 (54.4s)
+> seecomp attach without fork: 544282 ns
+> 69494235408 (69.5s)
+> seecomp attach with fork: 694942 ns
+> 
+> fork seems to take around 150us, seccomp attach takes around 200us,
+> and the filter emulation overhead is around 350us. I had no idea that
+> fork was this fast. If I wrote my benchmark badly please criticise.
 
+You're calling clock_gettime() inside your loop. That might change the
+numbers. Why not just measure outside the loop, or better yet, use
+"perf" to measure the time in prctl().
 
-stable rc branch 4.19 build warning on arm64.
+> Given that we are doubling the time to fork() + seccomp attach filter,
+> I think yeah running the emulator on the first instance of a syscall,
+> holding a lock, is a much better idea. If I naively divide 350us by
+> the number of syscall + arch pairs emulated the overhead is less than
+> 1 us and that should be okay since it only happens for the first
+> invocation of the particular syscall.
+> 
+> [1] https://gist.github.com/zhuyifei1999/d7bee62bea14187e150fef59db8e30b1
 
-../kernel/kprobes.c: In function =E2=80=98kill_kprobe=E2=80=99:
-../kernel/kprobes.c:1070:33: warning: statement with no effect [-Wunused-va=
-lue]
- 1070 | #define disarm_kprobe_ftrace(p) (-ENODEV)
-      |                                 ^
-../kernel/kprobes.c:2090:3: note: in expansion of macro =E2=80=98disarm_kpr=
-obe_ftrace=E2=80=99
- 2090 |   disarm_kprobe_ftrace(p);
-      |   ^~~~~~~~~~~~~~~~~~~~
+Regardless, let's take things one step at a time. First, let's do
+the simplest version of the feature, and then let's look at further
+optimizations.
 
+Can you send a v3 and we can continue from there?
 
->
-> ---
->  kernel/kprobes.c |    7 +++++++
->  1 file changed, 7 insertions(+)
->
-> --- a/kernel/kprobes.c
-> +++ b/kernel/kprobes.c
-> @@ -2077,6 +2077,13 @@ static void kill_kprobe(struct kprobe *p
->          * the original probed function (which will be freed soon) any mo=
-re.
->          */
->         arch_remove_kprobe(p);
-> +
-> +       /*
-> +        * The module is going away. We should disarm the kprobe which
-> +        * is using ftrace.
-> +        */
-> +       if (kprobe_ftrace(p))
-> +               disarm_kprobe_ftrace(p);
->  }
->
->  /* Disable one kprobe */
->
-
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
+-- 
+Kees Cook
