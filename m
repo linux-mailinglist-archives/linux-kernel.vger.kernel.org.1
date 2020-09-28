@@ -2,52 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB7D627B43D
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 20:16:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BC4527B440
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 20:17:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726640AbgI1SQC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 14:16:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51726 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726513AbgI1SQC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 14:16:02 -0400
-Subject: Re: [GIT PULL] Please pull NFS client bugfixes
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601316961;
-        bh=4J0QdD/J9oSZzfS+t/0iVnpJnoYdUEfRIR/3vRFfChg=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=fHgxLriQVx5WfWuYtVdKHsbaUF+luvVrGOyCe59MM0spcDGKiqa2rvtNFaoDkxmaA
-         h7Koq/SkaQwyW7NsE5WIrJ7uoVJkQadMV/T4F23DsJBDYiDEhh6FhRO4zoK5KfbQZ2
-         E7jI1CDVb/OvTA8sQlEmIp2S9A6op7bw7JFrVPpY=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <93a6b36e466a389330945f8c515ad7fd86e8b714.camel@hammerspace.com>
-References: <93a6b36e466a389330945f8c515ad7fd86e8b714.camel@hammerspace.com>
-X-PR-Tracked-List-Id: <linux-nfs.vger.kernel.org>
-X-PR-Tracked-Message-Id: <93a6b36e466a389330945f8c515ad7fd86e8b714.camel@hammerspace.com>
-X-PR-Tracked-Remote: git://git.linux-nfs.org/projects/trondmy/linux-nfs.git tags/nfs-for-5.9-3
-X-PR-Tracked-Commit-Id: b9df46d08a8d098ea2124cb9e3b84458a474b4d4
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: fb0155a09b0224a7147cb07a4ce6034c8d29667f
-Message-Id: <160131696161.3008.5503515051957934053.pr-tracker-bot@kernel.org>
-Date:   Mon, 28 Sep 2020 18:16:01 +0000
-To:     Trond Myklebust <trondmy@hammerspace.com>
-Cc:     "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>,
-        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
+        id S1726608AbgI1SRj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 14:17:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47168 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726465AbgI1SRi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 14:17:38 -0400
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 986CDC061755;
+        Mon, 28 Sep 2020 11:17:38 -0700 (PDT)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kMxiP-0088R7-38; Mon, 28 Sep 2020 18:17:33 +0000
+Date:   Mon, 28 Sep 2020 19:17:33 +0100
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Dmitry Kasatkin <dmitry.kasatkin@gmail.com>
+Cc:     David Laight <David.Laight@aculab.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        linux-security-module <linux-security-module@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: Mount options may be silently discarded
+Message-ID: <20200928181733.GC3421308@ZenIV.linux.org.uk>
+References: <CACE9dm_eypZ4wn8PpYYCYNuM501_M-8pH7by=U-6hOmJCwuxig@mail.gmail.com>
+ <87bb66c2a7f94bd1ab768a8160e48e39@AcuMS.aculab.com>
+ <CACE9dm8CPAFSY53Bm+vJvmh2m=Nm0FDe1mCtrwFAQnDE1p-XVw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACE9dm8CPAFSY53Bm+vJvmh2m=Nm0FDe1mCtrwFAQnDE1p-XVw@mail.gmail.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Mon, 28 Sep 2020 17:27:14 +0000:
+On Mon, Sep 28, 2020 at 09:00:54PM +0300, Dmitry Kasatkin wrote:
 
-> git://git.linux-nfs.org/projects/trondmy/linux-nfs.git tags/nfs-for-5.9-3
+> But why "we" should allow "discarding" failed part instead of failing
+> with EFAULT as a whole?
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/fb0155a09b0224a7147cb07a4ce6034c8d29667f
+Because there might very well be absolutely legitimate users of mount(2)
+passing it something smaller than 4Kb immediately followed by an unmapped
+area.
 
-Thank you!
+What can mount(2) do?  It can't go up to the first \0 and stop there,
+thanks to filesystems (NFS) that want to get struct some_shite filled
+by userland.  It can't require the entire 4Kb from the pointer passed
+to mount(2) to be mapped and readable, simply because passing it
+a string literal for e.g. ext4 mount can violate that requirement,
+not to mention the result of strdup(3)/asprintf(3)/etc.
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+And it can't even tell which semantics to use by looking at the
+filesystem type - NFS allows both the string and binary structure for
+options.
