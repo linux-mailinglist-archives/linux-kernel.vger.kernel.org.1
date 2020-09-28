@@ -2,113 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAD7327B5DE
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 22:02:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 197C227B5E1
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 22:03:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726562AbgI1UCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 16:02:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35068 "EHLO
+        id S1726682AbgI1UDN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 16:03:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726389AbgI1UCe (ORCPT
+        with ESMTP id S1726389AbgI1UDM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 16:02:34 -0400
-Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32645C0613CE
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 13:02:34 -0700 (PDT)
-Received: by mail-qt1-x84a.google.com with SMTP id y53so1456862qth.2
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 13:02:34 -0700 (PDT)
+        Mon, 28 Sep 2020 16:03:12 -0400
+Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61558C061755
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 13:03:12 -0700 (PDT)
+Received: by mail-vs1-xe41.google.com with SMTP id a16so1535083vsp.12
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 13:03:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=qL5Syy8+3ttyyqiRvm5VTzTd/DUJS6pVMwN6er+/rg8=;
-        b=kgMsNRR490LnADrp/cWDm0iw+yCuETRFvp/AyXuKQSSg/OVqUS+1S1+2pydIg3pAqZ
-         v7ufhfqBqg1TC9YxQSh1Q7OVeyv5zVFTD3sox/lVUT5tAav9mqlM7uaUxkY8ySpKC6l2
-         VGqHVCLeC72E2IpgGJHpavVEg1yPzu0mKXLJoSADzEBEIYnFXsWa1guYrAGbMWps+xnx
-         2tEjBogTAp16uNh+rQazS/BA+NfQ3qyCsneXHFdeC9lMhy7eis2E13P/vypBK/2YJA4L
-         Nvqfa/8elV0uvfG1+9Z1geOLOf+S7Yzh3DZn+BwX9MQJ01Vq15C6eehSKvjFVs3gtJjH
-         JJ5Q==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=FVHTFluSha0AQSzv2ABK4QAsCYCIc/yOgt1qRmrDx08=;
+        b=nyw7bxf2RbT5J8k9zhdN9+g+3Iv4qFFqgw1efDnrOIi8mC91T0Is7QJTXwOXidhk44
+         g6nVa6SH2apB5kOnIFmUu6OmOsaE/f4gIuyG4JrmIsVPwYRRSSWSErb1mXfBuAuRckN7
+         du9gmAmAk8lVUZnkt+vPAv6M5TF4DGVU6zCY97Ofiyj7HqQ+fnnnHkA0LUDW9dG/LbY5
+         t4TI7UksGTKtkxxJc3IyDXohgVRZt7TuqrsEO/chh9VkhfVoDNShWbf93XuB6N/wgLYD
+         eYtLLvkZeVxrIo6zvj/LcvsF9sAxTWUDAqbOhIcK2IHBQFjggBBXq8OfVwWjN8sN0pnD
+         yUwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=qL5Syy8+3ttyyqiRvm5VTzTd/DUJS6pVMwN6er+/rg8=;
-        b=Cpjj0I856Hb8dnZDhcPLhzF9PWVvFMwHLUkFJkgqXUl3zN5yCmKayWVF5/pTKh8aIo
-         b1vdpbZQRdjmWLhdfvFhBG4ZVkDB4oGhq9ZqvHU2eiTKj8/Yg+VjeCsTt/Uu0DZkSJUb
-         L14/8qI2sjcPaF0FGGdcleMUMDJwncHhNYak/9rBZ2TMCMDBOExtKCAzemxdny8la3wL
-         t8HjtoKvIk/fOLDv+JXea9sSGbK4YkNCCBanMTxUdvN4Aj9gG0tL3QJvww2ap+AUcR88
-         /fFUBZCuZr2Xq97IgcSDqFKf+mywIdP4T18O/UP3IikE81U54bjZr6fqZKu+XCQdncPD
-         orcw==
-X-Gm-Message-State: AOAM530PPBOmuV/SZYzH+3PaOUsK3TLL1pzbhmcB/VfWbj1g+07GZ61w
-        SykNPLkBBiwcxysuel0zvwxAC4xgjhzfhZbE/+PwkA==
-X-Google-Smtp-Source: ABdhPJwlpAgc49EHBQLGLvlfofCp56Etax44tKciebXkaioeGhdT0vhAr76RDGb4uh3NVGQltEf/a3Xpyxr4gf0hdYwV1w==
-Sender: "brendanhiggins via sendgmr" 
-        <brendanhiggins@mactruck.svl.corp.google.com>
-X-Received: from mactruck.svl.corp.google.com ([2620:15c:2cb:201:c634:6bff:fe71:d8d1])
- (user=brendanhiggins job=sendgmr) by 2002:a0c:9d03:: with SMTP id
- m3mr1127139qvf.54.1601323353193; Mon, 28 Sep 2020 13:02:33 -0700 (PDT)
-Date:   Mon, 28 Sep 2020 13:02:27 -0700
-Message-Id: <20200928200227.835600-1-brendanhiggins@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.28.0.681.g6f77f65b4e-goog
-Subject: [PATCH v1] kunit: tool: handle when .kunit exists but .kunitconfig
- does not
-From:   Brendan Higgins <brendanhiggins@google.com>
-To:     shuah@kernel.org, davidgow@google.com
-Cc:     linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
-        linux-kernel@vger.kernel.org,
-        Brendan Higgins <brendanhiggins@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=FVHTFluSha0AQSzv2ABK4QAsCYCIc/yOgt1qRmrDx08=;
+        b=d0whvz2538dfe1/EGUhRawvcKvMAjCEYLfo3SRVxJdPgwLIGHpwfFlXwyw2NZpJOLm
+         Smv4Gql+alUo7aqEQDOORt5E0F9KH6zil+P29PuCHRwI10HF23PT24sR0BZPhgp37Woy
+         zkm9ms66WOKsiC7viKPm8m1YfCy1chs3oKNjjkiZlEXgr9Ejj7GHq+F0NqDQfQO3Hz2+
+         Tk9NtPsPSKmWUfaum6cdjw/N6UvlyMwrgkLD7hLW4DogiQiI+IehHPBdA3IwloIlpk9c
+         UPKCHQIzRk7MDOpHFDULHffLwgniXu0WIW7SOPiGr6/ggCfQiatbUpguHxsKDEf2FE1t
+         NhAQ==
+X-Gm-Message-State: AOAM532HdBFUEZcgWnO2cJcFY5mF/v/FSJlGRxAitASe1ClGULkPSNh1
+        AxuHOJZzycYu1xEjLOUE3YCiRaE0i9ExBUEm1Vs7ZA==
+X-Google-Smtp-Source: ABdhPJyhVKKQ+Fppzvc+SS78vjuSCBubD1w7Tj2vi82ixcsJJQDzxsDxEweCOrjZBFvODM67LmKw+G4SFRo8oVCj2Eg=
+X-Received: by 2002:a67:80d2:: with SMTP id b201mr1027352vsd.12.1601323391431;
+ Mon, 28 Sep 2020 13:03:11 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200820091537.490965042@linuxfoundation.org> <20200820091539.592290034@linuxfoundation.org>
+In-Reply-To: <20200820091539.592290034@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 29 Sep 2020 01:32:59 +0530
+Message-ID: <CA+G9fYvdQv2Ukvs-UKiEgYaDdBthsWsY=35cQ4YpvMhA0hU5Gg@mail.gmail.com>
+Subject: Re: [PATCH 4.19 38/92] kprobes: Fix NULL pointer dereference at kprobe_ftrace_handler
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        linux- stable <stable@vger.kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Chengming Zhou <zhouchengming@bytedance.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Right now .kunitconfig and the build dir are automatically created if
-the build dir does not exists; however, if the build dir is present and
-.kunitconfig is not, kunit_tool will crash.
+On Thu, 20 Aug 2020 at 15:23, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> From: Muchun Song <songmuchun@bytedance.com>
+>
+> commit 0cb2f1372baa60af8456388a574af6133edd7d80 upstream.
+>
+> We found a case of kernel panic on our server. The stack trace is as
+> follows(omit some irrelevant information):
+>
+>   BUG: kernel NULL pointer dereference, address: 0000000000000080
+>   RIP: 0010:kprobe_ftrace_handler+0x5e/0xe0
+>   RSP: 0018:ffffb512c6550998 EFLAGS: 00010282
+>   RAX: 0000000000000000 RBX: ffff8e9d16eea018 RCX: 0000000000000000
+>   RDX: ffffffffbe1179c0 RSI: ffffffffc0535564 RDI: ffffffffc0534ec0
+>   RBP: ffffffffc0534ec1 R08: ffff8e9d1bbb0f00 R09: 0000000000000004
+>   R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+>   R13: ffff8e9d1f797060 R14: 000000000000bacc R15: ffff8e9ce13eca00
+>   CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>   CR2: 0000000000000080 CR3: 00000008453d0005 CR4: 00000000003606e0
+>   DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+>   DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+>   Call Trace:
+>    <IRQ>
+>    ftrace_ops_assist_func+0x56/0xe0
+>    ftrace_call+0x5/0x34
+>    tcpa_statistic_send+0x5/0x130 [ttcp_engine]
+>
+> The tcpa_statistic_send is the function being kprobed. After analysis,
+> the root cause is that the fourth parameter regs of kprobe_ftrace_handler
+> is NULL. Why regs is NULL? We use the crash tool to analyze the kdump.
+>
+>   crash> dis tcpa_statistic_send -r
+>          <tcpa_statistic_send>: callq 0xffffffffbd8018c0 <ftrace_caller>
+>
+> The tcpa_statistic_send calls ftrace_caller instead of ftrace_regs_caller=
+.
+> So it is reasonable that the fourth parameter regs of kprobe_ftrace_handl=
+er
+> is NULL. In theory, we should call the ftrace_regs_caller instead of the
+> ftrace_caller. After in-depth analysis, we found a reproducible path.
+>
+>   Writing a simple kernel module which starts a periodic timer. The
+>   timer's handler is named 'kprobe_test_timer_handler'. The module
+>   name is kprobe_test.ko.
+>
+>   1) insmod kprobe_test.ko
+>   2) bpftrace -e 'kretprobe:kprobe_test_timer_handler {}'
+>   3) echo 0 > /proc/sys/kernel/ftrace_enabled
+>   4) rmmod kprobe_test
+>   5) stop step 2) kprobe
+>   6) insmod kprobe_test.ko
+>   7) bpftrace -e 'kretprobe:kprobe_test_timer_handler {}'
+>
+> We mark the kprobe as GONE but not disarm the kprobe in the step 4).
+> The step 5) also do not disarm the kprobe when unregister kprobe. So
+> we do not remove the ip from the filter. In this case, when the module
+> loads again in the step 6), we will replace the code to ftrace_caller
+> via the ftrace_module_enable(). When we register kprobe again, we will
+> not replace ftrace_caller to ftrace_regs_caller because the ftrace is
+> disabled in the step 3). So the step 7) will trigger kernel panic. Fix
+> this problem by disarming the kprobe when the module is going away.
+>
+> Link: https://lkml.kernel.org/r/20200728064536.24405-1-songmuchun@bytedan=
+ce.com
+>
+> Cc: stable@vger.kernel.org
+> Fixes: ae6aa16fdc16 ("kprobes: introduce ftrace based optimization")
+> Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> Co-developed-by: Chengming Zhou <zhouchengming@bytedance.com>
+> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Fix this by checking for both the build dir as well as the .kunitconfig.
 
-NOTE: This depends on commit 5578d008d9e0 ("kunit: tool: fix running
-kunit_tool from outside kernel tree")
+stable rc branch 4.19 build warning on arm64.
 
-Link: https://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest.git/commit/?id=5578d008d9e06bb531fb3e62dd17096d9fd9c853
-Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
----
- tools/testing/kunit/kunit.py | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+../kernel/kprobes.c: In function =E2=80=98kill_kprobe=E2=80=99:
+../kernel/kprobes.c:1070:33: warning: statement with no effect [-Wunused-va=
+lue]
+ 1070 | #define disarm_kprobe_ftrace(p) (-ENODEV)
+      |                                 ^
+../kernel/kprobes.c:2090:3: note: in expansion of macro =E2=80=98disarm_kpr=
+obe_ftrace=E2=80=99
+ 2090 |   disarm_kprobe_ftrace(p);
+      |   ^~~~~~~~~~~~~~~~~~~~
 
-diff --git a/tools/testing/kunit/kunit.py b/tools/testing/kunit/kunit.py
-index e2caf4e24ecb2..8ab17e21a3578 100755
---- a/tools/testing/kunit/kunit.py
-+++ b/tools/testing/kunit/kunit.py
-@@ -243,6 +243,8 @@ def main(argv, linux=None):
- 	if cli_args.subcommand == 'run':
- 		if not os.path.exists(cli_args.build_dir):
- 			os.mkdir(cli_args.build_dir)
-+
-+		if not os.path.exists(kunit_kernel.kunitconfig_path):
- 			create_default_kunitconfig()
- 
- 		if not linux:
-@@ -258,10 +260,12 @@ def main(argv, linux=None):
- 		if result.status != KunitStatus.SUCCESS:
- 			sys.exit(1)
- 	elif cli_args.subcommand == 'config':
--		if cli_args.build_dir:
--			if not os.path.exists(cli_args.build_dir):
--				os.mkdir(cli_args.build_dir)
--				create_default_kunitconfig()
-+		if cli_args.build_dir and (
-+				not os.path.exists(cli_args.build_dir)):
-+			os.mkdir(cli_args.build_dir)
-+
-+		if not os.path.exists(kunit_kernel.kunitconfig_path):
-+			create_default_kunitconfig()
- 
- 		if not linux:
- 			linux = kunit_kernel.LinuxSourceTree()
 
-base-commit: d96fe1a5485fa978a6e3690adc4dbe4d20b5baa4
--- 
-2.28.0.681.g6f77f65b4e-goog
+>
+> ---
+>  kernel/kprobes.c |    7 +++++++
+>  1 file changed, 7 insertions(+)
+>
+> --- a/kernel/kprobes.c
+> +++ b/kernel/kprobes.c
+> @@ -2077,6 +2077,13 @@ static void kill_kprobe(struct kprobe *p
+>          * the original probed function (which will be freed soon) any mo=
+re.
+>          */
+>         arch_remove_kprobe(p);
+> +
+> +       /*
+> +        * The module is going away. We should disarm the kprobe which
+> +        * is using ftrace.
+> +        */
+> +       if (kprobe_ftrace(p))
+> +               disarm_kprobe_ftrace(p);
+>  }
+>
+>  /* Disable one kprobe */
+>
 
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
