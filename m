@@ -2,110 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB67F27AB5C
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 11:58:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 145FB27AB6C
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 12:00:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726634AbgI1J62 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 05:58:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54562 "EHLO
+        id S1726655AbgI1KAP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 06:00:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726552AbgI1J62 (ORCPT
+        with ESMTP id S1726540AbgI1KAP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 05:58:28 -0400
-Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F3C1C061755
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 02:58:28 -0700 (PDT)
-Received: by mail-il1-x141.google.com with SMTP id q4so590640ils.4
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 02:58:28 -0700 (PDT)
+        Mon, 28 Sep 2020 06:00:15 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2863EC061755;
+        Mon, 28 Sep 2020 03:00:15 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id e22so623345edq.6;
+        Mon, 28 Sep 2020 03:00:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Bynqe8oqfLSmRS8jPy3IQGtOrQle4bDHlhly7glDXtE=;
-        b=E6pi/58he3Bw+tuVCJbgXrJPbzgzvilKEDqpPwZ6gDn4Y3NLB9WHKZVomKAoHyYgyw
-         Pf/fvJFUPbY1TAJTKewr93xn76mzrr0DHIylwkGiejOR6rA2kT/dIa9u8PngfJphK8UO
-         y3uA3ABoePxwD06j8F3cSTq+fNqADptlbwN11t1cQp3lPAzxj3wZoKopB8Glto4cM8f9
-         EvkBygwREatGM2BurfQ7g/KzI/mYn2WQDh0UCxm3aFIb+aenjVZqx0sj5vHYrsUY/z9o
-         SCHhYORqNAzwkDMCk+kzQkkN2h73nJbgRCh9SEG8VwXIPJa254vcVoCtD8hsPaXp7cE4
-         qDPA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=SDDq2C7QLWNFyYFepbxAMacpxOBVCHMbzny/kHBr8TA=;
+        b=R+pfU0Towmle8RJu/D2uVB6nF3nenvlxVFjiSEvSkMiG2Jlx3yvjSATbQ8+uGNBHHC
+         /hxaVJSDGW/iXOGt0AzwAPlvP3FQWFp7uRePLRzNFXLrjI0cUmxzmB/Yo4f7rU2w/PgF
+         QZZNVcmw/iC5SfxzSz2omZ3VEyF9P6mf8kLWBPl9DmsXVXIn00jKeEf2rX03yd0uCEhx
+         cbYV3TC7vuKlE6QYK63WE8mIThW1ugvgD3GoYFnmga8LP66ybx8Bj4VvIj9Td0U8GFtB
+         Lo3a8nFWXq4UkVdkgbsrgexuhXTY65G8VOE+r0bL/pwSau4c2qfKMF3pZa37/VqccADC
+         1MIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Bynqe8oqfLSmRS8jPy3IQGtOrQle4bDHlhly7glDXtE=;
-        b=SIsR9KSUtf2ZUJdZ6njwOCW0yeWT2uhdRASlyUTiiBII5/OYIaGDwlcSJKTo/PqWb7
-         59RrdAOy0PpHm1YcsuJO17s4AcNkBabSOY1hSjF53X96z3dZT2LOwyj7ygcL6j/x57jj
-         B0max/ZuEDVf7f36AenmIZT1F881hpq6mPn+x2444MTvIIfg2f8ctReIo5rRV0+mfqj8
-         LJ3reyxn2VwPFbOPHLyzVyEMpeLL89XtID0tyq7iLqN4hJwHwjLeEglKWPm/MgvD4Zsy
-         slIv6JMAwFlEY8PL6pGFhndUhWy3e0iXLz7XrTSXdUzLDa7LgVg35D06lVHIr4L7arrv
-         R/JA==
-X-Gm-Message-State: AOAM530E/KFH87KogKwYAc8tudcgeELsbR0f30FuJ2KUv0EXQkguYp6/
-        zpLpFNvZd9f/iKMgI8VA6/IMnI11ZGyHervluw26rQ==
-X-Google-Smtp-Source: ABdhPJzsnbR4X2gtOKMUOyny3SQ3EJ35XjKu1q3fJ+jImDN/PZpQkDGibLVlL4P3ysT+VeTtQfzSLC34OxMezTb95us=
-X-Received: by 2002:a05:6e02:f10:: with SMTP id x16mr444999ilj.220.1601287107416;
- Mon, 28 Sep 2020 02:58:27 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200924113842.11670-1-brgl@bgdev.pl> <20200924113842.11670-9-brgl@bgdev.pl>
- <20200925090329.GZ3956970@smile.fi.intel.com> <CAMpxmJWBSwofFy94mHZWB2mdvHGStYp5oLDZp2M+wO57t40HSQ@mail.gmail.com>
- <20200925123000.GD3956970@smile.fi.intel.com> <CAMRc=McfBLaE=N12z29JjTDJ0ABzC8OW4rPWeeSU82kag+9pgQ@mail.gmail.com>
- <CAHp75Vd9N+OWCq_M3U3RfTEwx+xCyJHzSpZOXWiXQRRdv3tSDQ@mail.gmail.com>
-In-Reply-To: <CAHp75Vd9N+OWCq_M3U3RfTEwx+xCyJHzSpZOXWiXQRRdv3tSDQ@mail.gmail.com>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Mon, 28 Sep 2020 11:58:16 +0200
-Message-ID: <CAMRc=MecMWopShuSSiGTFpwdHKLf7DCsm-vADZ6gokKnnrepNA@mail.gmail.com>
-Subject: Re: [PATCH 8/9] gpio: mockup: use the generic 'gpio-line-names' property
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kent Gibson <warthog618@gmail.com>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        linux-doc <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=SDDq2C7QLWNFyYFepbxAMacpxOBVCHMbzny/kHBr8TA=;
+        b=dJSzkyNBWRcTnfFiVDEbtvAQdQfpTaPueibQ03JLXJbV5SPo592vnkF5K/RONPLUS7
+         MQ2fikQYB4X93JzmOt9NI+KNLwQOLt9rqyA/s6GWvLbWdKFKko56uJVrtwPqI5zRtw7r
+         qQ2sqnvEsU9NHsWXyvVgn8MCijSmy+LlHlOLmJ9fbqISNyi6hoOHdeFTcSVGXqionyT3
+         PJj1yU2dTvliGSvEwqo+VaHyNJCZ8W1I8X/FlZjdZqjqqS9e5oQOWcRvQQpfrwt4etqn
+         zAwrgQafwogYfdb83Seq9lxAVMTCxFzNlqcGdlvmwCP4/1BYg4szY8ucKl+7LQf/5ob6
+         WNsg==
+X-Gm-Message-State: AOAM530JMy8DwAjBAn+ry+JRfAmzu7VmHxteMehHg+m5wNyg0H9H0GZM
+        IskSu4cl8AtZJSX9BCmS7yI=
+X-Google-Smtp-Source: ABdhPJzlWRLg1EMg817RKK+Ds6y/qvJKdNZ7zwAaJGbykb2KswiX5HBOGUqqOfFCatcJ6+iB3eFoOQ==
+X-Received: by 2002:a05:6402:1d93:: with SMTP id dk19mr800943edb.198.1601287213821;
+        Mon, 28 Sep 2020 03:00:13 -0700 (PDT)
+Received: from felia.fritz.box ([2001:16b8:2d9d:5000:7872:7299:adfa:b749])
+        by smtp.gmail.com with ESMTPSA id m10sm921048edf.11.2020.09.28.03.00.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Sep 2020 03:00:13 -0700 (PDT)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        kernel-janitors@vger.kernel.org, linux-safety@lists.elisa.tech,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH] x86/mm: drop superfluous initialization
+Date:   Mon, 28 Sep 2020 12:00:04 +0200
+Message-Id: <20200928100004.25674-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 11:11 AM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
->
-> On Mon, Sep 28, 2020 at 11:45 AM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
-> > On Fri, Sep 25, 2020 at 6:41 PM Andy Shevchenko
-> > <andriy.shevchenko@linux.intel.com> wrote:
-> > > On Fri, Sep 25, 2020 at 01:40:10PM +0200, Bartosz Golaszewski wrote:
-> > > > On Fri, Sep 25, 2020 at 11:03 AM Andy Shevchenko
-> > > > <andriy.shevchenko@linux.intel.com> wrote:
-> > > > > On Thu, Sep 24, 2020 at 01:38:41PM +0200, Bartosz Golaszewski wrote:
->
-> ...
->
-> > > > > > +             kfree_strarray(line_names, line_names ? ngpio : 0);
-> > > > >
-> > > > > Perhaps you may check for NULL pointer in the kfree_strarray() and drop ternary
-> > > > > here?
-> > > > >
-> > > >
-> > > > I did in the previous series and you told me to not to. :)
-> > >
-> > > Hmm... What was my argument? What was wrong with me? free() should be NULL-aware.
-> >
-> > Well, it is - your just need to make sure ngpio is 0 too. :)
->
-> Do you really need that? If you have NULL as a first parameter, the
-> second one can be anything.
->
-> > I'll revert back to having the NULL check.
->
+It is not required to initialize the local variable start in
+memory_map_top_down(), as the variable will be initialized in any path
+before it is used.
 
-Yes that's what I'm saying but under patch 1/9 you previously said:
+make clang-analyzer on x86_64 tinyconfig reports:
 
---
-Shouldn't we expect that caller will supply NULL, 0 and above check is not
-needed?
---
+  arch/x86/mm/init.c:612:15: warning: Although the value stored to 'start' \
+  is used in the enclosing expression, the value is never actually read \
+  from 'start' [clang-analyzer-deadcode.DeadStores]
 
-this is why it works like this in v1.
+Compilers will detect this superfluous assignment and optimize that
+expression anyway. So, the resulting binary is identical before and after
+the change.
 
-Bartosz
+Drop this superfluous assignment to make clang-analyzer happy.
+
+No functional change.
+
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+---
+applies cleanly on v5.9-rc7 and next-20200925
+
+Dave, Andy, Peter, please pick this minor non-urgent clean-up patch.
+
+I quickly confirmed that the binary did not change with this change to the
+source code; the hash of init.o remained the same before and after the change.
+
+So, in my setup:
+  md5sum arch/x86/mm/init.o
+  b26f6380760f32d2ef2c7525301eebd3  init.o
+
+linux-safety, please verify and validate this change.
+
+ arch/x86/mm/init.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/x86/mm/init.c b/arch/x86/mm/init.c
+index c7a47603537f..5632f02146ca 100644
+--- a/arch/x86/mm/init.c
++++ b/arch/x86/mm/init.c
+@@ -609,7 +609,7 @@ static void __init memory_map_top_down(unsigned long map_start,
+ 	step_size = PMD_SIZE;
+ 	max_pfn_mapped = 0; /* will get exact value next */
+ 	min_pfn_mapped = real_end >> PAGE_SHIFT;
+-	last_start = start = real_end;
++	last_start = real_end;
+ 
+ 	/*
+ 	 * We start from the top (end of memory) and go to the bottom.
+-- 
+2.17.1
+
