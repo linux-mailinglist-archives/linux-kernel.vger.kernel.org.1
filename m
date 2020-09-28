@@ -2,107 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06A3227AAE2
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 11:37:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88C2327AAE9
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 11:37:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726657AbgI1Jhb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 05:37:31 -0400
-Received: from mx2.suse.de ([195.135.220.15]:58132 "EHLO mx2.suse.de"
+        id S1726685AbgI1Jhr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 05:37:47 -0400
+Received: from mga07.intel.com ([134.134.136.100]:57449 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726477AbgI1Jhb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 05:37:31 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1601285849;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=CTtZ1phuHtb72mm3U9LrSkAvfGeY6LYM9Ml1QgHswWg=;
-        b=Gd/H3SyouSeWfHMU8z5UGLOKxql2Q+D6ZvdvXcHHmyLGtTjtXN8NLGhKUzp7vq7HIAZg1i
-        Q9j00gCqS6+xtaBCfB9fE27fAd0BUfiR509HwMqo5UuzeyAzAungRuuaHzHpLkUszKn2lR
-        hntxAC9eaQ23tl2cqmHO5usILcvRuqM=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 31F71AC1D;
-        Mon, 28 Sep 2020 09:37:29 +0000 (UTC)
-Message-ID: <652a910c864bcd70fa3eb9a114afba2165f5122c.camel@suse.com>
-Subject: Re: [PATCH] Bluetooth: btusb: Avoid unnecessary reset upon system
- resume
-From:   Oliver Neukum <oneukum@suse.com>
-To:     Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Alex Lu <alex_lu@realsil.com.cn>
-Cc:     Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        "open list:BLUETOOTH DRIVERS" <linux-bluetooth@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:USB XHCI DRIVER" <linux-usb@vger.kernel.org>
-Date:   Mon, 28 Sep 2020 11:37:20 +0200
-In-Reply-To: <CANFp7mVJZTizHJDss5BJmdm5ydrfrVy4sBhXRX4vLBmK2sRGSA@mail.gmail.com>
-References: <20200923175602.9523-1-kai.heng.feng@canonical.com>
-         <CANFp7mV7fC9_EZHd7B0Cu-owgCVdA6CNd2bb7XwFf5+6b7FVpg@mail.gmail.com>
-         <A6F728DB-A07B-4323-83A5-3DABA8FDC156@canonical.com>
-         <CANFp7mVJZTizHJDss5BJmdm5ydrfrVy4sBhXRX4vLBmK2sRGSA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        id S1726573AbgI1Jhq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 05:37:46 -0400
+IronPort-SDR: RzH+KJLeFLsHzISHZ8XxRJrO+YuhijVXafDEa6n2HbJ7ziecep3xqJYvX2oIo/fxm13xXJ/xNH
+ BJZwRIbSssHA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9757"; a="226115560"
+X-IronPort-AV: E=Sophos;i="5.77,313,1596524400"; 
+   d="scan'208";a="226115560"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 02:37:45 -0700
+IronPort-SDR: FmBYh7J3ODuTzBO2WMNYSdVb2e1r18oVHokD32Z5WGhv4Bwoxs9B/oeb5l+FwVbZmjfzdwLSus
+ A2Yq2G+KIpzA==
+X-IronPort-AV: E=Sophos;i="5.77,313,1596524400"; 
+   d="scan'208";a="456755403"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 02:37:40 -0700
+Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
+        id 40DFA207A0; Mon, 28 Sep 2020 12:37:38 +0300 (EEST)
+Date:   Mon, 28 Sep 2020 12:37:38 +0300
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Marek Behun <marek.behun@nic.cz>, linux-leds@vger.kernel.org,
+        Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
+        =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        devicetree@vger.kernel.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-acpi@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Subject: Re: [PATCH leds v2 05/50] leds: various: guard of_match_table member
+ value with of_match_ptr
+Message-ID: <20200928093738.GA26842@paasikivi.fi.intel.com>
+References: <20200917223338.14164-1-marek.behun@nic.cz>
+ <20200917223338.14164-6-marek.behun@nic.cz>
+ <20200918061500.GD26842@paasikivi.fi.intel.com>
+ <20200918112058.6d3b0d5d@nic.cz>
+ <20200918095759.GG26842@paasikivi.fi.intel.com>
+ <20200928080336.GA4637@dell>
+ <20200928081114.GB4637@dell>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200928081114.GB4637@dell>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Donnerstag, den 24.09.2020, 20:33 -0700 schrieb Abhishek Pandit-
-Subedi:
+Hi Lee,
 
-> Runtime suspend always requires remote wakeup to be set
-
-No, not entirely. Btusb requires remote wakeup between open()
-and close(). On a closed device it is not set to save more power.
- 
->  and reset
-> resume isn't used there.
-
-reset_resume() is basically incompatible with remote wakeup.
-Remote wakeup implies that you will ask the device to perform
-some action after wakeup. A reset destroys that capability.
-
-> During system suspend, when remote wakeup is not set, RTL8822CE loses
-> the FW loaded by the driver and any state currently in the controller.
-
-That is true after every suspend, whether runtime or system.
-The device throws away its firmware when it does not need it.
-You have control over this feature.
-Hence the quirk enables remote
-wakeup upon close().
-That is the most important part of the original patch.
-
-> This causes the kernel and the controller state to go out of sync.
-> One of the issues we observed on the Realtek controller without the
-> reset resume quirk was that paired or connected devices would just
-> stop working after resume.
-
-The logic on whether reset_resume() should be used is imperfect.
-
-> > In general, laptops will cut off the USB power during S3.
-> > When AC is plugged, some laptops cuts USB power off and some don't. This also applies to many desktops. Not to mention there can be BIOS options to control USB power under S3/S4/S5...
+On Mon, Sep 28, 2020 at 09:11:14AM +0100, Lee Jones wrote:
+> On Mon, 28 Sep 2020, Lee Jones wrote:
+> 
+> > On Fri, 18 Sep 2020, Sakari Ailus wrote:
 > > 
-> > So we don't know beforehand.
+> > > On Fri, Sep 18, 2020 at 11:20:58AM +0200, Marek Behun wrote:
+> > > > On Fri, 18 Sep 2020 09:15:00 +0300
+> > > > Sakari Ailus <sakari.ailus@linux.intel.com> wrote:
+> > > > 
+> > > > > Hi Marek,
+> > > > > 
+> > > > > On Fri, Sep 18, 2020 at 12:32:53AM +0200, Marek Behún wrote:
+> > > > > > Change
+> > > > > >   .of_match_table = xxx,
+> > > > > > to
+> > > > > >   .of_match_table = of_match_ptr(xxx),
+> > > > > > in various drivers.
+> > > > > > 
+> > > > > > This should be standard even for drivers that depend on OF.  
+> > > > > 
+> > > > > After this patch, none of these drivers will work on ACPI systems anymore.
+> > > 
+> > > ^
+> > > 
+> > > If CONFIG_OF is disabled, that is.
+> > 
+> > What?  of_match_ptr() is designed to change depending on OF or !OF.
+> > 
+> > Are you confusing this with acpi_match_table()?
+> 
+> Okay, I just grepped the kernel and found some OF matching in the ACPI
+> bus code.  This seems odd to be (at first sight at least).  I'm not
+> entirely sure how this is supposed to work, but when you disable OF,
+> one could reasonably expect any matching utilising OF based tables to
+> be disabled too.
 
-Technically we tell the BIOS before suspend the system whether
-a device should wake up the system during sleep and hope that
-the BIOS is clever enough not to cut power to them.
-Compliance is mixed.
+There's really no reason having to enable the entire OF framework just to
+allow compatible string matching.
 
-> In your case, since you don't need to enforce the 'Remote Wakeup' bit,
-> if you unset the BTUSB_WAKEUP_DISABLE for that VID:PID, you should get
-> the desirable behavior (which is actually the default behavior; remote
-> wake will always be asserted instead of only during Runtime Suspend).
+> 
+> Not using of_match_ptr() on ACPI enabled platforms sounds batty to
+> me.  If this is valid, perhaps the of_match_ptr()semantics should be
+> changed to include ACPI.
 
-Well, no. Only between open() and close()
-Please always test the case of Bluetooth not being used. I know
-it is not sexy, but surprisingly common.
+That'd be one option, yes. But not all drivers that work on both OF and
+ACPI rely on the compatible strings on ACPI.
 
-	Regards
-		Oliver
+Another option could be adding a new macro, to set that table on both OF
+and ACPI when needed? It could be called e.g. of_acpi_match_ptr(), for
+instance.
 
+Cc also linux-acpi list and Rafael.
 
+-- 
+Regards,
+
+Sakari Ailus
