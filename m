@@ -2,206 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CA5727AE8C
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 15:02:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9479227AE8E
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 15:02:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726604AbgI1NCU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 09:02:20 -0400
-Received: from mga05.intel.com ([192.55.52.43]:47478 "EHLO mga05.intel.com"
+        id S1726621AbgI1NCg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 09:02:36 -0400
+Received: from mga17.intel.com ([192.55.52.151]:51376 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725290AbgI1NCT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 09:02:19 -0400
-IronPort-SDR: QShKUJRrYzSbRtoQEooO6I/KJ/VQ1tL27Mv1jnuONYwNCu8h+OJI0f/u5gL2LcgMsKtPqHjm1M
- TQUmhLei2gGg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9757"; a="246728898"
+        id S1725290AbgI1NCf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 09:02:35 -0400
+IronPort-SDR: 2ty10jP2zj3eFybKQHP4h7FvBVc+u0e9oX+M/5fEU0HPlMGm8PyK08c8olpbMWp1tFjCiisE/N
+ OWcMj//V7XAA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9757"; a="142004019"
 X-IronPort-AV: E=Sophos;i="5.77,313,1596524400"; 
-   d="scan'208";a="246728898"
+   d="scan'208";a="142004019"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 06:01:49 -0700
-IronPort-SDR: zDeHxpc53tVzmjlt8pB3g+nWBQHagM2/zOsbPoOViv1T2QWj/v/OVeclZwqQeZGuS8bx+NaUwb
- His/+7TmLY3g==
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 06:01:45 -0700
+IronPort-SDR: 2PYb7chxyfjfrLHr1gMCoPXK20Doql8Ipysr3XEkekNBhef/3QikprX/1U1qDPFgKsaDmmqgcW
+ UeaWQB1ewDJg==
+X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.77,313,1596524400"; 
-   d="scan'208";a="307328259"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 06:01:46 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1kMsmi-002Z7q-6n; Mon, 28 Sep 2020 16:01:40 +0300
-Date:   Mon, 28 Sep 2020 16:01:40 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kent Gibson <warthog618@gmail.com>, linux-gpio@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: Re: [PATCH v2 8/9] gpio: mockup: use the generic 'gpio-line-names'
- property
-Message-ID: <20200928130140.GK3956970@smile.fi.intel.com>
-References: <20200928104155.7385-1-brgl@bgdev.pl>
- <20200928104155.7385-9-brgl@bgdev.pl>
+   d="scan'208";a="340409775"
+Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.174])
+  by orsmga008.jf.intel.com with SMTP; 28 Sep 2020 06:01:42 -0700
+Received: by stinkbox (sSMTP sendmail emulation); Mon, 28 Sep 2020 16:01:41 +0300
+Date:   Mon, 28 Sep 2020 16:01:41 +0300
+From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+To:     Lyude Paul <lyude@redhat.com>
+Cc:     nouveau@lists.freedesktop.org, Ben Skeggs <bskeggs@redhat.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        "open list:DRM DRIVER FOR NVIDIA GEFORCE/QUADRO GPUS" 
+        <dri-devel@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] drm/nouveau/kms/nv50-: Fix clock checking algorithm in
+ nv50_dp_mode_valid()
+Message-ID: <20200928130141.GV6112@intel.com>
+References: <20200922210510.156220-1-lyude@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20200928104155.7385-9-brgl@bgdev.pl>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200922210510.156220-1-lyude@redhat.com>
+X-Patchwork-Hint: comment
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 12:41:54PM +0200, Bartosz Golaszewski wrote:
-> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+On Tue, Sep 22, 2020 at 05:05:10PM -0400, Lyude Paul wrote:
+> While I thought I had this correct (since it actually did reject modes
+> like I expected during testing), Ville Syrjala from Intel pointed out
+> that the logic here isn't correct. max_clock refers to the max symbol
+> rate supported by the encoder, so limiting clock to ds_clock using max()
+> doesn't make sense. Additionally, we want to check against 6bpc for the
+> time being since that's the minimum possible bpc here, not the reported
+> bpc from the connector. See:
 > 
-> GPIO line names are currently created by the driver from the chip label.
-> We'll want to support custom formats for line names (for instance: to
-> name all lines the same) for user-space tests so create them in the
-> module init function and pass them to the driver using the standard
-> 'gpio-line-names' property.
-
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-
-> Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> https://lists.freedesktop.org/archives/dri-devel/2020-September/280276.html
+> 
+> For more info.
+> 
+> So, let's rewrite this using Ville's advice.
+> 
+> Signed-off-by: Lyude Paul <lyude@redhat.com>
+> Fixes: 409d38139b42 ("drm/nouveau/kms/nv50-: Use downstream DP clock limits for mode validation")
+> Cc: Ville Syrjälä <ville.syrjala@linux.intel.com>
+> Cc: Lyude Paul <lyude@redhat.com>
+> Cc: Ben Skeggs <bskeggs@redhat.com>
 > ---
->  drivers/gpio/gpio-mockup.c | 70 +++++++++++++++++++++-----------------
->  1 file changed, 38 insertions(+), 32 deletions(-)
+>  drivers/gpu/drm/nouveau/nouveau_dp.c | 23 +++++++++++++----------
+>  1 file changed, 13 insertions(+), 10 deletions(-)
 > 
-> diff --git a/drivers/gpio/gpio-mockup.c b/drivers/gpio/gpio-mockup.c
-> index 5b2686f9e07d..47b7de6d5ab1 100644
-> --- a/drivers/gpio/gpio-mockup.c
-> +++ b/drivers/gpio/gpio-mockup.c
-> @@ -19,6 +19,7 @@
->  #include <linux/platform_device.h>
->  #include <linux/property.h>
->  #include <linux/slab.h>
-> +#include <linux/string_helpers.h>
->  #include <linux/uaccess.h>
->  
->  #include "gpiolib.h"
-> @@ -374,29 +375,6 @@ static void gpio_mockup_debugfs_setup(struct device *dev,
->  	}
->  }
->  
-> -static int gpio_mockup_name_lines(struct device *dev,
-> -				  struct gpio_mockup_chip *chip)
-> -{
-> -	struct gpio_chip *gc = &chip->gc;
-> -	char **names;
-> -	int i;
-> -
-> -	names = devm_kcalloc(dev, gc->ngpio, sizeof(char *), GFP_KERNEL);
-> -	if (!names)
-> -		return -ENOMEM;
-> -
-> -	for (i = 0; i < gc->ngpio; i++) {
-> -		names[i] = devm_kasprintf(dev, GFP_KERNEL,
-> -					  "%s-%d", gc->label, i);
-> -		if (!names[i])
-> -			return -ENOMEM;
-> -	}
-> -
-> -	gc->names = (const char *const *)names;
-> -
-> -	return 0;
-> -}
-> -
->  static void gpio_mockup_dispose_mappings(void *data)
+> diff --git a/drivers/gpu/drm/nouveau/nouveau_dp.c b/drivers/gpu/drm/nouveau/nouveau_dp.c
+> index 7b640e05bd4cd..24c81e423d349 100644
+> --- a/drivers/gpu/drm/nouveau/nouveau_dp.c
+> +++ b/drivers/gpu/drm/nouveau/nouveau_dp.c
+> @@ -231,23 +231,26 @@ nv50_dp_mode_valid(struct drm_connector *connector,
+>  		   const struct drm_display_mode *mode,
+>  		   unsigned *out_clock)
 >  {
->  	struct gpio_mockup_chip *chip = data;
-> @@ -464,12 +442,6 @@ static int gpio_mockup_probe(struct platform_device *pdev)
->  	for (i = 0; i < gc->ngpio; i++)
->  		chip->lines[i].dir = GPIO_LINE_DIRECTION_IN;
+> -	const unsigned min_clock = 25000;
+> -	unsigned max_clock, ds_clock, clock;
+> +	const unsigned int min_clock = 25000;
+> +	unsigned int max_clock, ds_clock, clock;
+> +	const u8 bpp = 18; /* 6 bpc */
+
+AFAICS nv50_outp_atomic_check() and nv50_msto_atomic_check()
+just blindly use connector->display_info.bpc without any fallback
+logic to lower the bpc. So Ilia's concerns seem well founded.
+Without that logic I guess you should just use
+connector->display_info.bpc here as well.
+
+>  	enum drm_mode_status ret;
 >  
-> -	if (device_property_read_bool(dev, "named-gpio-lines")) {
-> -		rv = gpio_mockup_name_lines(dev, chip);
-> -		if (rv)
-> -			return rv;
-> -	}
+>  	if (mode->flags & DRM_MODE_FLAG_INTERLACE && !outp->caps.dp_interlace)
+>  		return MODE_NO_INTERLACE;
+>  
+>  	max_clock = outp->dp.link_nr * outp->dp.link_bw;
+> -	ds_clock = drm_dp_downstream_max_dotclock(outp->dp.dpcd,
+> -						  outp->dp.downstream_ports);
+> -	if (ds_clock)
+> -		max_clock = min(max_clock, ds_clock);
 > -
->  	chip->irq_sim_domain = devm_irq_domain_create_sim(dev, NULL,
->  							  gc->ngpio);
->  	if (IS_ERR(chip->irq_sim_domain))
-> @@ -510,6 +482,27 @@ static void gpio_mockup_unregister_pdevs(void)
->  	}
+> -	clock = mode->clock * (connector->display_info.bpc * 3) / 10;
+> -	ret = nouveau_conn_mode_clock_valid(mode, min_clock, max_clock,
+> -					    &clock);
+> +	clock = mode->clock * bpp / 8;
+> +	if (clock > max_clock)
+> +		return MODE_CLOCK_HIGH;
+
+This stuff vs. nouveau_conn_mode_clock_valid() still seems a bit messy.
+The max_clock you pass to nouveau_conn_mode_clock_valid() is the max
+symbol clock, but nouveau_conn_mode_clock_valid() checks it against the
+dotclock. Also only nouveau_conn_mode_clock_valid() has any kind of
+stereo 3D handling, but AFAICS stereo_allowed is also set for DP?
+
+> +
+> +	ds_clock = drm_dp_downstream_max_dotclock(outp->dp.dpcd, outp->dp.downstream_ports);
+> +	if (ds_clock && mode->clock > ds_clock)
+> +		return MODE_CLOCK_HIGH;
+> +
+> +	ret = nouveau_conn_mode_clock_valid(mode, min_clock, max_clock, &clock);
+>  	if (out_clock)
+>  		*out_clock = clock;
+> +
+>  	return ret;
 >  }
->  
-> +static __init char **gpio_mockup_make_line_names(const char *label,
-> +						 unsigned int num_lines)
-> +{
-> +	unsigned int i;
-> +	char **names;
-> +
-> +	names = kcalloc(num_lines + 1, sizeof(char *), GFP_KERNEL);
-> +	if (!names)
-> +		return NULL;
-> +
-> +	for (i = 0; i < num_lines; i++) {
-> +		names[i] = kasprintf(GFP_KERNEL, "%s-%u", label, i);
-> +		if (!names[i]) {
-> +			kfree_strarray(names, i);
-> +			return NULL;
-> +		}
-> +	}
-> +
-> +	return names;
-> +}
-> +
->  static int __init gpio_mockup_init(void)
->  {
->  	struct property_entry properties[GPIO_MOCKUP_MAX_PROP];
-> @@ -517,6 +510,7 @@ static int __init gpio_mockup_init(void)
->  	struct platform_device_info pdevinfo;
->  	struct platform_device *pdev;
->  	char chip_label[32];
-> +	char **line_names;
->  	u16 ngpio;
->  
->  	if ((gpio_mockup_num_ranges < 2) ||
-> @@ -549,6 +543,7 @@ static int __init gpio_mockup_init(void)
->  		memset(properties, 0, sizeof(properties));
->  		memset(&pdevinfo, 0, sizeof(pdevinfo));
->  		prop = 0;
-> +		line_names = NULL;
->  
->  		snprintf(chip_label, sizeof(chip_label),
->  			 "gpio-mockup-%c", i + 'A');
-> @@ -564,15 +559,26 @@ static int __init gpio_mockup_init(void)
->  				 : gpio_mockup_range_ngpio(i) - base;
->  		properties[prop++] = PROPERTY_ENTRY_U16("nr-gpios", ngpio);
->  
-> -		if (gpio_mockup_named_lines)
-> -			properties[prop++] = PROPERTY_ENTRY_BOOL(
-> -						"named-gpio-lines");
-> +		if (gpio_mockup_named_lines) {
-> +			line_names = gpio_mockup_make_line_names(chip_label,
-> +								 ngpio);
-> +			if (!line_names) {
-> +				platform_driver_unregister(&gpio_mockup_driver);
-> +				gpio_mockup_unregister_pdevs();
-> +				return -ENOMEM;
-> +			}
-> +
-> +			properties[prop++] = PROPERTY_ENTRY_STRING_ARRAY_LEN(
-> +						"gpio-line-names",
-> +						line_names, ngpio);
-> +		}
->  
->  		pdevinfo.name = "gpio-mockup";
->  		pdevinfo.id = i;
->  		pdevinfo.properties = properties;
->  
->  		pdev = platform_device_register_full(&pdevinfo);
-> +		kfree_strarray(line_names, ngpio);
->  		if (IS_ERR(pdev)) {
->  			pr_err("error registering device");
->  			platform_driver_unregister(&gpio_mockup_driver);
 > -- 
-> 2.26.1
-> 
+> 2.26.2
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+Ville Syrjälä
+Intel
