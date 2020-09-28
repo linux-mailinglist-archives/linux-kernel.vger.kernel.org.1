@@ -2,116 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 659B827B865
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 01:43:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0C4027B826
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 01:30:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727010AbgI1Xnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 19:43:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41210 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726064AbgI1Xnm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 19:43:42 -0400
-Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 824C4C0613DF
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 15:13:41 -0700 (PDT)
-Received: by mail-vs1-xe43.google.com with SMTP id x203so1737756vsc.11
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 15:13:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=m8BYx0WkoWgdHVH2dPVlZsYwU7RwXyK6H4QoTRAqX6c=;
-        b=TSmFxQCggv2HBOhytrDlGhImhekd6aLI0sbFHWM4gaZ7w70MENTGQer0SSKJHDwy/d
-         KY5kZ5LVy0ZiLckrZ9i3mENPAVAayYpYUzSfJt4ti0sQhySay3VPyd68nSxUtevR0TLS
-         sf8vs50LVtxk9CkoXLDOoxbcYzL50yRaveDLg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=m8BYx0WkoWgdHVH2dPVlZsYwU7RwXyK6H4QoTRAqX6c=;
-        b=tcjmHSApTMwIg0EZIwZiP6mamJvYBo/RyN9VoGGzHAAliE8osuzNon69JvW3mmzWUh
-         N7k99MmS+y7lzQMDi2I/Le3Rhx1SQUlses9oEbDFt3lTrRZJBP7R0/vx76viRPC++usJ
-         48yP0i7ua5LEnFiijyXHdEk6JeHf4frvEtrADziayWRY35fVsm6fgCZUwAglO6iiSfA/
-         evFfauY9UZnc/RIJWGCnbh6GLuhn9UI3a8ootACN64EZI2l/e0LtfzcDJmEAV1efenVv
-         ypo+taQkjND9p5Jo1NDlzVBux7SOwM8HleVM4GWJfB15+erJ84zgE3tIQy0WbY1pvYdu
-         535w==
-X-Gm-Message-State: AOAM532k5AMlWkThMCCFy5ZS24CAp9fNXxzdCp9yQRvRPWAhlysfTt6d
-        OMXvu7f+3Ayr1hPg29gRrOz3gCte7JtSeQ==
-X-Google-Smtp-Source: ABdhPJyuZO3FxGimziiYkOavT+08TPJjKHH1uHpQ6PE7tFSoWGc+6FiND8c/X9NY+Kbb8KG6+RrYiQ==
-X-Received: by 2002:a67:7cc6:: with SMTP id x189mr1404306vsc.20.1601331219379;
-        Mon, 28 Sep 2020 15:13:39 -0700 (PDT)
-Received: from mail-vs1-f53.google.com (mail-vs1-f53.google.com. [209.85.217.53])
-        by smtp.gmail.com with ESMTPSA id w186sm314499vsw.1.2020.09.28.15.13.38
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Sep 2020 15:13:38 -0700 (PDT)
-Received: by mail-vs1-f53.google.com with SMTP id j3so1755318vsm.0
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 15:13:38 -0700 (PDT)
-X-Received: by 2002:a67:ec9a:: with SMTP id h26mr1297894vsp.34.1601331217905;
- Mon, 28 Sep 2020 15:13:37 -0700 (PDT)
+        id S1727192AbgI1Xaj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 19:30:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53612 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727125AbgI1Xac (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 19:30:32 -0400
+Received: from sol.localdomain (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 49BCC22262;
+        Mon, 28 Sep 2020 22:14:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601331283;
+        bh=USpniiZPSjX9PvCc27mG/IIV3bgaeRYXivPfC1sKaCs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=1JPJAa2M8r1+Kmgu2TUoUpoIUzu0X8/iCW/FXrJ+a3Jd9Id4x5d0wHUS5KczOFfSG
+         QGLKMegDqCV2jarOmBu7voR1a+2TJpmbBMMDVHhg1BiqwC5DXIDA8GEGrd08lKzHli
+         Ydn4a/Qdlc/puyb39pAQ58QzsjRekS18hTo6EzSA=
+Date:   Mon, 28 Sep 2020 15:14:41 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     David Laight <David.Laight@aculab.com>,
+        syzbot+51177e4144d764827c45@syzkaller.appspotmail.com,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Subject: Re: WARNING in __kernel_read (2)
+Message-ID: <20200928221441.GF1340@sol.localdomain>
+References: <000000000000da992305b02e9a51@google.com>
+ <3b3de066852d4e30bd9d85bd28023100@AcuMS.aculab.com>
+ <642ed0b4810d44ab97a7832ccb8b3e44@AcuMS.aculab.com>
 MIME-Version: 1.0
-References: <20200928101326.v4.1.I248292623d3d0f6a4f0c5bc58478ca3c0062b49a@changeid>
-In-Reply-To: <20200928101326.v4.1.I248292623d3d0f6a4f0c5bc58478ca3c0062b49a@changeid>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Mon, 28 Sep 2020 15:13:26 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=XWphkhFmEk6dzGn7h2mY5xBHY554rOfn+bSi5Nci27gA@mail.gmail.com>
-Message-ID: <CAD=FV=XWphkhFmEk6dzGn7h2mY5xBHY554rOfn+bSi5Nci27gA@mail.gmail.com>
-Subject: Re: [PATCH v4 1/2] dt-bindings: usb: Add binding for discrete onboard
- USB hubs
-To:     Matthias Kaehlcke <mka@chromium.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, linux-usb@vger.kernel.org,
-        Bastien Nocera <hadess@hadess.net>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Peter Chen <peter.chen@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <642ed0b4810d44ab97a7832ccb8b3e44@AcuMS.aculab.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Sat, Sep 26, 2020 at 01:17:04PM +0000, David Laight wrote:
+> From: David Laight
+> > Sent: 26 September 2020 12:16
+> > To: 'syzbot' <syzbot+51177e4144d764827c45@syzkaller.appspotmail.com>; linux-fsdevel@vger.kernel.org;
+> > linux-kernel@vger.kernel.org; syzkaller-bugs@googlegroups.com; viro@zeniv.linux.org.uk
+> > Subject: RE: WARNING in __kernel_read (2)
+> > 
+> > > From: syzbot <syzbot+51177e4144d764827c45@syzkaller.appspotmail.com>
+> > > Sent: 26 September 2020 03:58
+> > > To: linux-fsdevel@vger.kernel.org; linux-kernel@vger.kernel.org; syzkaller-bugs@googlegroups.com;
+> > > viro@zeniv.linux.org.uk
+> > > Subject: WARNING in __kernel_read (2)
+> > 
+> > I suspect this is calling finit_module() on an fd
+> > that doesn't have read permissions.
+> 
+> Code inspection also seems to imply that the check means
+> the exec() also requires read permissions on the file.
+> 
+> This isn't traditionally true.
+> suid #! scripts are particularly odd without 'owner read'
+> (everyone except the owner can run them!).
 
-On Mon, Sep 28, 2020 at 10:14 AM Matthias Kaehlcke <mka@chromium.org> wrote:
->
-> +examples:
-> +  - |
-> +    usb_hub: usb-hub {
-> +        compatible = "realtek,rts5411", "onboard-usb-hub";
-> +        vdd-supply = <&pp3300_hub>;
-> +    };
-> +
-> +    usb_controller {
+Christoph, any thoughts here?  You added this WARN_ON_ONCE in:
 
-Super nitty nit: prefer dashes for node names.
+	commit 61a707c543e2afe3aa7e88f87267c5dafa4b5afa
+	Author: Christoph Hellwig <hch@lst.de>
+	Date:   Fri May 8 08:54:16 2020 +0200
 
-
-> +        dr_mode = "host";
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +
-> +        /* 2.0 hub on port 1 */
-> +        hub@1 {
-> +            compatible = "usbbda,5411";
-
-Presumably we need something in the bindings for "usbbda,5411" ?
-
-
-> +            reg = <1>;
-> +            hub = <&usb_hub>;
-> +        };
-> +
-> +        /* 3.0 hub on port 2 */
-> +        hub@2 {
-> +            compatible = "usbbda,411";
-
-Presumably we need something in the bindings for "usbbda,411" ?
-
-
--Doug
+	    fs: add a __kernel_read helper
