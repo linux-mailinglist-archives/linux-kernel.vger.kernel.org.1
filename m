@@ -2,82 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C5F527AF91
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 16:02:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2239327AF9F
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 16:04:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726613AbgI1OCN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 10:02:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35878 "EHLO
+        id S1726461AbgI1OEK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 10:04:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726348AbgI1OCN (ORCPT
+        with ESMTP id S1726325AbgI1OEJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 10:02:13 -0400
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4543C061755;
-        Mon, 28 Sep 2020 07:02:12 -0700 (PDT)
-Received: by mail-yb1-xb30.google.com with SMTP id h9so1007571ybm.4;
-        Mon, 28 Sep 2020 07:02:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=dkyo8YCHgnrpbLgoEtVwNnrBxmfXSOu3Lqhnq9hqnlU=;
-        b=kGyWZIIp5KWHAGEvNGD57Jds877X3K30zUvrXMhCc2uGut7+7RFaiCu90WSaeaNwOM
-         d8wtBroD9M2FLfLJdOrX/buE+n96izF0nKrSYXOuIg6OD30rVF14YzFKy8rpxvtT5Fjk
-         wVE53d3XHzGKunmib6ALKFy3VbutjolaGRb0Kr0zY3Pf4JPGuXQ1QOxRKshk7MeOoQzt
-         FJBVuUd8GPQW3kWzHpxa5R4FccXnumytkjL2sU2AujF1pG1E3jQlVH8EBYl4WZS1yVm3
-         MWf0+CX7hQrPHpucd/4SyLLvlbXEAyiM7lMJ7MtJNCfTiUoMCauZpOEnhTELypeC8B8M
-         WI/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=dkyo8YCHgnrpbLgoEtVwNnrBxmfXSOu3Lqhnq9hqnlU=;
-        b=Y9xd0z5iRnCVBASnEcvxv4+cpNclNjb0SNnhmhdz8vmLYAxrwBnVkA2CPD2JAtPn0X
-         nVrb9SoTfkU1+BBl8MrmvdO/oEUh9YUaXM4l0seiAcKgZ6dhc7jJnPzsnx4b+qFjNTVE
-         GaBUabEp3/nfVaoXMUmHuyE7ZFvhvVHQmmH2FSh3CY+K7S/7fauWrvjJI5xiX+DKogTt
-         5nB7VGjXsqnJ7ZeTPopMW0dlM8X1DmLch7VIwL1V84cLiUkvya3zZFFcNA+rtUsvT6Tx
-         It6RYmpv6JPyEdzoGam2Ar8X4Hq7SBR5KpPTiqHRySzbpBdRQIPMSKp5TvMKb651ePNj
-         UNqw==
-X-Gm-Message-State: AOAM530CoWOE6Gl9utvh8n8OPsT9yHxnPIylQ3pU/Rmqc1oeBShkFNef
-        45NklKyLABj99KTDjqHCi1UcHwrxoEqDRCvPoKNKeqAi4t1xaw==
-X-Google-Smtp-Source: ABdhPJzjyxAmAQJq3yUMV41ZaU6Jib4Hra0UERJdaARNie1e5vycnV4dot72wEdcHL/iFF2THt+3kbIbKOzP/jul6kE=
-X-Received: by 2002:a25:b219:: with SMTP id i25mr2027503ybj.52.1601301731841;
- Mon, 28 Sep 2020 07:02:11 -0700 (PDT)
+        Mon, 28 Sep 2020 10:04:09 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A188C061755;
+        Mon, 28 Sep 2020 07:04:09 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: ezequiel)
+        with ESMTPSA id 5E07E2949CA
+From:   Ezequiel Garcia <ezequiel@collabora.com>
+To:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Tomasz Figa <tfiga@chromium.org>, kernel@collabora.com,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Adrian Ratiu <adrian.ratiu@collabora.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>
+Subject: [PATCH] media: v4l2-mem2mem: Fix spurious v4l2_m2m_buf_done
+Date:   Mon, 28 Sep 2020 11:03:34 -0300
+Message-Id: <20200928140334.19070-1-ezequiel@collabora.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20200814071202.25067-9-xia.jiang@mediatek.com>
+References: <20200814071202.25067-9-xia.jiang@mediatek.com>
 MIME-Version: 1.0
-From:   Dmitry Kasatkin <dmitry.kasatkin@gmail.com>
-Date:   Mon, 28 Sep 2020 17:02:50 +0300
-Message-ID: <CACE9dm_eypZ4wn8PpYYCYNuM501_M-8pH7by=U-6hOmJCwuxig@mail.gmail.com>
-Subject: Mount options may be silently discarded
-To:     linux-fsdevel@vger.kernel.org
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+A seemingly bad rebase introduced a spurious v4l2_m2m_buf_done,
+which releases a buffer twice and therefore triggers a
+noisy warning on each job:
 
-"copy_mount_options" function came to my eyes.
-It splits copy into 2 pieces - over page boundaries.
-I wonder what is the real reason for doing this?
-Original comment was that we need exact bytes and some user memcpy
-functions  do not return correct number on page fault.
+WARNING: CPU: 0 PID: 0 at drivers/media/common/videobuf2/videobuf2-core.c:986 vb2_buffer_done+0x208/0x2a0
 
-But how would all other cases work?
+Fix it by removing the spurious v4l2_m2m_buf_done.
 
-https://elixir.bootlin.com/linux/latest/source/fs/namespace.c#L3075
+Reported-by: Adrian Ratiu <adrian.ratiu@collabora.com>
+Fixes: 911ea8ec42dea ("media: v4l2-mem2mem: add v4l2_m2m_suspend, v4l2_m2m_resume")
+Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
+---
+ drivers/media/v4l2-core/v4l2-mem2mem.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-if (size != PAGE_SIZE) {
-       if (copy_from_user(copy + size, data + size, PAGE_SIZE - size))
-            memset(copy + size, 0, PAGE_SIZE - size);
-}
-
-This looks like some options may be just discarded?
-What if it is an important security option?
-
-Why it does not return EFAULT, but just memset?
-
+diff --git a/drivers/media/v4l2-core/v4l2-mem2mem.c b/drivers/media/v4l2-core/v4l2-mem2mem.c
+index f626ba5ee3d9..b221b4e438a1 100644
+--- a/drivers/media/v4l2-core/v4l2-mem2mem.c
++++ b/drivers/media/v4l2-core/v4l2-mem2mem.c
+@@ -516,7 +516,6 @@ void v4l2_m2m_buf_done_and_job_finish(struct v4l2_m2m_dev *m2m_dev,
+ 
+ 	if (WARN_ON(!src_buf || !dst_buf))
+ 		goto unlock;
+-	v4l2_m2m_buf_done(src_buf, state);
+ 	dst_buf->is_held = src_buf->flags & V4L2_BUF_FLAG_M2M_HOLD_CAPTURE_BUF;
+ 	if (!dst_buf->is_held) {
+ 		v4l2_m2m_dst_buf_remove(m2m_ctx);
 -- 
-Thanks,
-Dmitry
+2.27.0
+
