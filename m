@@ -2,127 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9085D27B1BF
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 18:22:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D794927B1C3
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 18:24:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726683AbgI1QWm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 12:22:42 -0400
-Received: from z5.mailgun.us ([104.130.96.5]:27351 "EHLO z5.mailgun.us"
+        id S1726688AbgI1QYO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 12:24:14 -0400
+Received: from mga07.intel.com ([134.134.136.100]:26427 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726393AbgI1QWl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 12:22:41 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1601310161; h=In-Reply-To: Content-Type: MIME-Version:
- References: Message-ID: Subject: Cc: To: From: Date: Sender;
- bh=7wc+udAnlObk7sQtgo19cUIvXMdE8f3c8WFWBuqci+A=; b=ILxaqEeAJb/PtaBnRVE7pk63fijXKtqbKqEHcq+FE+KDZpBmVdSCnXDvi+3fTziLui0dLSBM
- +eBxu833WLweMbqIbGiSQB09/zNdnEVM5pWRcwalCS6M6QAsUhlhlnTLz355nRdjZQiy9GF+
- 7nNebGTeGMJ6gGx5rCKuEdttZs8=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 5f720dbcbebf546dbb734984 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 28 Sep 2020 16:22:20
- GMT
-Sender: jcrouse=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 9404FC433CA; Mon, 28 Sep 2020 16:22:20 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from jcrouse1-lnx.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: jcrouse)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id C3552C433C8;
-        Mon, 28 Sep 2020 16:22:18 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org C3552C433C8
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jcrouse@codeaurora.org
-Date:   Mon, 28 Sep 2020 10:22:15 -0600
-From:   Jordan Crouse <jcrouse@codeaurora.org>
-To:     kholk11@gmail.com
-Cc:     robdclark@gmail.com, sean@poorly.run, airlied@linux.ie,
-        daniel@ffwll.ch, konradybcio@gmail.com, marijns95@gmail.com,
-        martin.botka1@gmail.com, linux-arm-msm@vger.kernel.org,
-        freedreno@lists.freedesktop.org, phone-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/7] drm/msm/a5xx: Separate A5XX_PC_DBG_ECO_CNTL write
- from main branch
-Message-ID: <20200928162215.GD29832@jcrouse1-lnx.qualcomm.com>
-Mail-Followup-To: kholk11@gmail.com, robdclark@gmail.com, sean@poorly.run,
-        airlied@linux.ie, daniel@ffwll.ch, konradybcio@gmail.com,
-        marijns95@gmail.com, martin.botka1@gmail.com,
-        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
-        phone-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200926125146.12859-1-kholk11@gmail.com>
- <20200926125146.12859-3-kholk11@gmail.com>
+        id S1726380AbgI1QYO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 12:24:14 -0400
+IronPort-SDR: /b3EE+MJB2UD3+d2b0O0V4p0F1iuMN/+fsSfhW6I77tJVJXVusuj5t45FB8HzLCBSnc+IS754t
+ Wsbh99yzlQjg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9758"; a="226169915"
+X-IronPort-AV: E=Sophos;i="5.77,313,1596524400"; 
+   d="scan'208";a="226169915"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 09:24:12 -0700
+IronPort-SDR: UWC5swLRYcwvyNE1x5Xtq9sjY7ApeNZwKb/hsWRS8RjEuhcJnIwGJ+g+46QPLJwaKD6NGt5N03
+ +ENZvI0CzxYQ==
+X-IronPort-AV: E=Sophos;i="5.77,313,1596524400"; 
+   d="scan'208";a="513499506"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 09:24:09 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1kMvwa-002c2q-H4; Mon, 28 Sep 2020 19:24:04 +0300
+Date:   Mon, 28 Sep 2020 19:24:04 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kent Gibson <warthog618@gmail.com>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        linux-doc <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 7/9] gpio: mockup: pass the chip label as device
+ property
+Message-ID: <20200928162404.GW3956970@smile.fi.intel.com>
+References: <20200928104155.7385-1-brgl@bgdev.pl>
+ <20200928104155.7385-8-brgl@bgdev.pl>
+ <20200928130023.GJ3956970@smile.fi.intel.com>
+ <CAMpxmJVGAe224JaXL4EmeEFV4Qv7ohjgn_W_CwPjC4MHgP4gTA@mail.gmail.com>
+ <20200928140028.GO3956970@smile.fi.intel.com>
+ <CAMpxmJUMMia+b6DQ1KoZ70XPUzhutg1tnWF5PCvfaRF5-XQnVg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200926125146.12859-3-kholk11@gmail.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <CAMpxmJUMMia+b6DQ1KoZ70XPUzhutg1tnWF5PCvfaRF5-XQnVg@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 26, 2020 at 02:51:41PM +0200, kholk11@gmail.com wrote:
-> From: AngeloGioacchino Del Regno <kholk11@gmail.com>
-> 
-> The "main" if branch where we program the other regsiters for the
+On Mon, Sep 28, 2020 at 04:52:25PM +0200, Bartosz Golaszewski wrote:
+> On Mon, Sep 28, 2020 at 4:00 PM Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> wrote:
+> > On Mon, Sep 28, 2020 at 03:13:53PM +0200, Bartosz Golaszewski wrote:
+> > > On Mon, Sep 28, 2020 at 3:00 PM Andy Shevchenko
+> > > <andriy.shevchenko@linux.intel.com> wrote:
+> > > > On Mon, Sep 28, 2020 at 12:41:53PM +0200, Bartosz Golaszewski wrote:
 
-Nit - regsiters -> registers
+...
 
-> Adreno 5xx family of GPUs should not contain the PC_DBG_ECO_CNTL
-> register programming because this has logical similarity
-> differences from all the others.
+> > > > how do you avoid overflow?
+> > >
+> > > I renamed the property, the previous "chip-name" is no longer used. In
+> > > fact it was never used but was accounted for in GPIO_MOCKUP_MAX_PROP.
+> >
+> > Either I'm missing something or...
+> >
+> > Current code in linux-next has 3 properties to be possible
+> >
+> > PROPERTY_ENTRY_U32("gpio-base", base);
+> > PROPERTY_ENTRY_U16("nr-gpios", ngpio);
+> > PROPERTY_ENTRY_BOOL("named-gpio-lines");
+> >
+> > You adding here
+> > PROPERTY_ENTRY_STRING("chip-label", chip_label);
+> >
+> > Altogether after this patch is 4 which is maximum, but since array is passed by
+> > a solely pointer, the terminator is a must.
+> >
 > 
-> A later commit will show the entire sense of this.
+> Thanks for explaining my code to me. Yes you're right and I'm not sure
+> why I missed this. :)
+> 
+> I'll fix this in v3.
+> 
+> Actually this means the code is wrong even before this series - it's
+> just that we don't use the "chip-name" property.
 
-With that
-Reviewed-by: Jordan Crouse <jcrouse@codeaurora.org>
-
-> Signed-off-by: AngeloGioacchino Del Regno <kholk11@gmail.com>
-> ---
->  drivers/gpu/drm/msm/adreno/a5xx_gpu.c | 9 ++++++---
->  1 file changed, 6 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c b/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
-> index 6262603e6e2e..f98f0844838c 100644
-> --- a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
-> +++ b/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
-> @@ -577,8 +577,6 @@ static int a5xx_hw_init(struct msm_gpu *gpu)
->  		gpu_write(gpu, REG_A5XX_CP_MERCIU_SIZE, 0x20);
->  		gpu_write(gpu, REG_A5XX_CP_ROQ_THRESHOLDS_2, 0x40000030);
->  		gpu_write(gpu, REG_A5XX_CP_ROQ_THRESHOLDS_1, 0x20100D0A);
-> -		gpu_write(gpu, REG_A5XX_PC_DBG_ECO_CNTL,
-> -			  (0x200 << 11 | 0x200 << 22));
->  	} else {
->  		gpu_write(gpu, REG_A5XX_CP_MEQ_THRESHOLDS, 0x40);
->  		if (adreno_is_a530(adreno_gpu))
-> @@ -587,9 +585,14 @@ static int a5xx_hw_init(struct msm_gpu *gpu)
->  			gpu_write(gpu, REG_A5XX_CP_MERCIU_SIZE, 0x400);
->  		gpu_write(gpu, REG_A5XX_CP_ROQ_THRESHOLDS_2, 0x80000060);
->  		gpu_write(gpu, REG_A5XX_CP_ROQ_THRESHOLDS_1, 0x40201B16);
-> +	}
-> +
-> +	if (adreno_is_a510(adreno_gpu))
-> +		gpu_write(gpu, REG_A5XX_PC_DBG_ECO_CNTL,
-> +			  (0x200 << 11 | 0x200 << 22));
-> +	else
->  		gpu_write(gpu, REG_A5XX_PC_DBG_ECO_CNTL,
->  			  (0x400 << 11 | 0x300 << 22));
-> -	}
->  
->  	if (adreno_gpu->info->quirks & ADRENO_QUIRK_TWO_PASS_USE_WFI)
->  		gpu_rmw(gpu, REG_A5XX_PC_DBG_ECO_CNTL, 0, (1 << 8));
-> -- 
-> 2.28.0
-> 
+Right, you patch just exposed it.
 
 -- 
-The Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project
+With Best Regards,
+Andy Shevchenko
+
+
