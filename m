@@ -2,150 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 083A127A954
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 10:11:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24A4D27A956
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 10:12:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726613AbgI1ILT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 04:11:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37890 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726421AbgI1ILS (ORCPT
+        id S1726635AbgI1IMU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 04:12:20 -0400
+Received: from mail-ed1-f66.google.com ([209.85.208.66]:33926 "EHLO
+        mail-ed1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726380AbgI1IMT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 04:11:18 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 379E4C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 01:11:18 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id w5so143198wrp.8
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 01:11:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=3Om8AM0og3VSpQeTBf6KDEd6fTvU4EBwksk93Od+7XE=;
-        b=zP8NYXRey8PZiMa7RFwghBPT2Dc4+Ur8JaLQI+2+KYxtrdBbqWKx48YjuRKHPPWSOU
-         5xt7FKRwGDHAE6z93txxJTSUOg+C2tezWbuztJ4rhH/vOdkhrzQcCqXphX+RhSOKcgTG
-         6QAWX0bDLdtsqTxL1B7NLqf/8PGxGoiO3IQNcVmQ9q5AQ2iK8KRW2lTNC0snqyRBKmg5
-         PPVCceUSJ9eW3Yp8Dvf7mcmYfSuGALqaTJ/TSog6tXvL8mhKsuLKzytTgabdr1S0kWZh
-         DSyectg7UHR8he9nZWUernPUsT+eUWdd3KIxmED2ynqZouc6//KO7mas53rIuEziLJmg
-         FteA==
+        Mon, 28 Sep 2020 04:12:19 -0400
+Received: by mail-ed1-f66.google.com with SMTP id k14so319318edo.1;
+        Mon, 28 Sep 2020 01:12:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=3Om8AM0og3VSpQeTBf6KDEd6fTvU4EBwksk93Od+7XE=;
-        b=N+Ap86WpLSkgtL6IX8wyH0tqmmtCPUtqG2Q0ODBLEoFLlYE5z1gn/n3yhz6H65Kq7+
-         7o03tzjuP8hkbRAtr5UYfU8+6dJnMsjEH8b8HB2/zqysKpdb9Hj/qEVbdYGNt36FFbvq
-         reQHPJPs1BO4ALreQTRCE7LQe4UIH/vT38iyCH2s1ElnbfAVRtu/ksveDqDtTAJGK1dL
-         vndhyk2dZhfC8xfixf+wUU93KWjzc75iW2JhllH78XHMljV/9Nkreq7slARtANECQ5Yj
-         nWzk3fsJOixKUxA/o0iZlXydBD13poPPrnPLKCHroq23eZffcdtNrkqtrf4/6rXI3BfH
-         +VoQ==
-X-Gm-Message-State: AOAM53045kJ92XmS/GHCW1MohLNUP50OmdwfeFd5YSYXuSTshIG7SSwH
-        x06upbv4vjxrpqDBgoV0v7hdxw==
-X-Google-Smtp-Source: ABdhPJx4wZkzF3Cjm+E8FPeYtfeDpEEWLUCh5tL5TcU4QxwFiQSUEj89+dCLi1uscJNz2vM2DABLlg==
-X-Received: by 2002:adf:fa02:: with SMTP id m2mr240193wrr.273.1601280676803;
-        Mon, 28 Sep 2020 01:11:16 -0700 (PDT)
-Received: from dell ([91.110.221.154])
-        by smtp.gmail.com with ESMTPSA id c4sm222217wme.27.2020.09.28.01.11.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Sep 2020 01:11:16 -0700 (PDT)
-Date:   Mon, 28 Sep 2020 09:11:14 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc:     Marek Behun <marek.behun@nic.cz>, linux-leds@vger.kernel.org,
-        Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
-        =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        devicetree@vger.kernel.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH leds v2 05/50] leds: various: guard of_match_table member
- value with of_match_ptr
-Message-ID: <20200928081114.GB4637@dell>
-References: <20200917223338.14164-1-marek.behun@nic.cz>
- <20200917223338.14164-6-marek.behun@nic.cz>
- <20200918061500.GD26842@paasikivi.fi.intel.com>
- <20200918112058.6d3b0d5d@nic.cz>
- <20200918095759.GG26842@paasikivi.fi.intel.com>
- <20200928080336.GA4637@dell>
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Xx7cBeBSnqgNURtI8CCgmBSjlFrVR7o1YPHWBKQU1Sk=;
+        b=FeDmYvAv9+VqbOLh3ArNOimG7MSzeIlnQwBld4wLC5uPTp6WqhOTDkSAi9bvpm02Z9
+         3eyu4NzwPsXxuVbZExZZ2b49hCh5g88imYgXLmcnzhK8GxRbSIVGQYJS7jNeYsM68Auk
+         EAOWch+7ERJJ1pyv1MBe2h7d1OCVtYgnRCmHfCBfss7ddSrWVb+SAllvshwUlZGIHT9K
+         MH3ZYHNG7anaIGsESbjtNPBdwlTrME2G/yHn9MsQSckZ1bk/ucsGxkNRkGwZVnG438hf
+         53zExK5kuXoNwcVeXq3rQMLJHMlxfn7B1sS0eRlEhtAOlf8EebNbCahtH2iBizfIvD1y
+         8mgA==
+X-Gm-Message-State: AOAM531r7HOG5bD9AQsZs+3W4M6g55dZPImkYUJtw0nPhQMFV9bgxjuo
+        OrgDuGLd0BolYnQmNycntIowDwHiwoo=
+X-Google-Smtp-Source: ABdhPJwmPxRJxpTal8JyOEgMqa6ksvE0FuoG4r6C88YAYYR6pVDShCZHF1giPTfz1eAiz2aQcDod9A==
+X-Received: by 2002:a05:6402:c15:: with SMTP id co21mr408056edb.268.1601280737470;
+        Mon, 28 Sep 2020 01:12:17 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.132])
+        by smtp.googlemail.com with ESMTPSA id g24sm400197edy.51.2020.09.28.01.12.16
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 28 Sep 2020 01:12:16 -0700 (PDT)
+Date:   Mon, 28 Sep 2020 10:12:14 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Michael Walle <michael@walle.cc>
+Cc:     Vladimir Oltean <olteanv@gmail.com>, linux-spi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>
+Subject: Re: [PATCH] spi: fsl-dspi: fix NULL pointer dereference
+Message-ID: <20200928081214.GA7389@kozik-lap>
+References: <20200927224336.705-1-michael@walle.cc>
+ <20200927232747.3jwr6mqql727etyz@skbuf>
+ <CAJKOXPeeKyPzx4pnuXT=o7p8hE0SeCuyt9d8uj+Dc9fjjXULMA@mail.gmail.com>
+ <d3d29b7c154dcee1d63093ffef5362b0@walle.cc>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200928080336.GA4637@dell>
+In-Reply-To: <d3d29b7c154dcee1d63093ffef5362b0@walle.cc>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 28 Sep 2020, Lee Jones wrote:
-
-> On Fri, 18 Sep 2020, Sakari Ailus wrote:
-> 
-> > On Fri, Sep 18, 2020 at 11:20:58AM +0200, Marek Behun wrote:
-> > > On Fri, 18 Sep 2020 09:15:00 +0300
-> > > Sakari Ailus <sakari.ailus@linux.intel.com> wrote:
+On Mon, Sep 28, 2020 at 09:46:22AM +0200, Michael Walle wrote:
+> Am 2020-09-28 09:29, schrieb Krzysztof Kozlowski:
+> > On Mon, 28 Sep 2020 at 01:28, Vladimir Oltean <olteanv@gmail.com> wrote:
 > > > 
-> > > > Hi Marek,
-> > > > 
-> > > > On Fri, Sep 18, 2020 at 12:32:53AM +0200, Marek Behún wrote:
-> > > > > Change
-> > > > >   .of_match_table = xxx,
-> > > > > to
-> > > > >   .of_match_table = of_match_ptr(xxx),
-> > > > > in various drivers.
-> > > > > 
-> > > > > This should be standard even for drivers that depend on OF.  
-> > > > 
-> > > > After this patch, none of these drivers will work on ACPI systems anymore.
-> > 
-> > ^
-> > 
-> > If CONFIG_OF is disabled, that is.
-> 
-> What?  of_match_ptr() is designed to change depending on OF or !OF.
-> 
-> Are you confusing this with acpi_match_table()?
-
-Okay, I just grepped the kernel and found some OF matching in the ACPI
-bus code.  This seems odd to be (at first sight at least).  I'm not
-entirely sure how this is supposed to work, but when you disable OF,
-one could reasonably expect any matching utilising OF based tables to
-be disabled too.
-
-Not using of_match_ptr() on ACPI enabled platforms sounds batty to
-me.  If this is valid, perhaps the of_match_ptr()semantics should be
-changed to include ACPI.
-
-> > > Hi Sakari,
+> > > On Mon, Sep 28, 2020 at 12:43:36AM +0200, Michael Walle wrote:
+> > > > Since commit 530b5affc675 ("spi: fsl-dspi: fix use-after-free in remove
+> > > > path") this driver causes a kernel oops:
+> > > >
+> > > > [    1.891065] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000080
+> > > > [    1.899889] Mem abort info:
+> > > > [    1.902692]   ESR = 0x96000004
+> > > > [    1.905754]   EC = 0x25: DABT (current EL), IL = 32 bits
+> > > > [    1.911089]   SET = 0, FnV = 0
+> > > > [    1.914156]   EA = 0, S1PTW = 0
+> > > > [    1.917303] Data abort info:
+> > > > [    1.920193]   ISV = 0, ISS = 0x00000004
+> > > > [    1.924044]   CM = 0, WnR = 0
+> > > > [    1.927022] [0000000000000080] user address but active_mm is swapper
+> > > > [    1.933403] Internal error: Oops: 96000004 [#1] PREEMPT SMP
+> > > > [    1.938995] Modules linked in:
+> > > > [    1.942060] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.9.0-rc6-next-20200925-00026-gae556cc74e28-dirty #94
+> > > > [    1.951838] Hardware name: Kontron SMARC-sAL28 (Single PHY) on SMARC Eval 2.0 carrier (DT)
+> > > > [    1.960135] pstate: 40000005 (nZcv daif -PAN -UAO -TCO BTYPE=--)
+> > > > [    1.966168] pc : dspi_setup+0xc8/0x2e0
+> > > > [    1.969926] lr : dspi_setup+0xbc/0x2e0
+> > > > [    1.973684] sp : ffff80001139b930
+> > > > [    1.977005] x29: ffff80001139b930 x28: ffff00207a5d2000
+> > > > [    1.982338] x27: 0000000000000006 x26: ffff00207a44d410
+> > > > [    1.987669] x25: ffff002079c08100 x24: ffff00207a5d2400
+> > > > [    1.993000] x23: ffff00207a5d2600 x22: ffff800011169948
+> > > > [    1.998332] x21: ffff800010cbcd20 x20: ffff00207a58a800
+> > > > [    2.003663] x19: ffff00207a76b700 x18: 0000000000000010
+> > > > [    2.008994] x17: 0000000000000001 x16: 0000000000000019
+> > > > [    2.014326] x15: ffffffffffffffff x14: 0720072007200720
+> > > > [    2.019657] x13: 0720072007200720 x12: ffff8000111fc5e0
+> > > > [    2.024989] x11: 0000000000000003 x10: ffff8000111e45a0
+> > > > [    2.030320] x9 : 0000000000000000 x8 : ffff00207a76b780
+> > > > [    2.035651] x7 : 0000000000000000 x6 : 000000000000003f
+> > > > [    2.040982] x5 : 0000000000000040 x4 : ffff80001139b918
+> > > > [    2.046313] x3 : 0000000000000001 x2 : 64b62cc917af5100
+> > > > [    2.051643] x1 : 0000000000000000 x0 : 0000000000000000
+> > > > [    2.056973] Call trace:
+> > > > [    2.059425]  dspi_setup+0xc8/0x2e0
+> > > > [    2.062837]  spi_setup+0xcc/0x248
+> > > > [    2.066160]  spi_add_device+0xb4/0x198
+> > > > [    2.069918]  of_register_spi_device+0x250/0x370
+> > > > [    2.074462]  spi_register_controller+0x4f4/0x770
+> > > > [    2.079094]  dspi_probe+0x5bc/0x7b0
+> > > > [    2.082594]  platform_drv_probe+0x5c/0xb0
+> > > > [    2.086615]  really_probe+0xec/0x3c0
+> > > > [    2.090200]  driver_probe_device+0x60/0xc0
+> > > > [    2.094308]  device_driver_attach+0x7c/0x88
+> > > > [    2.098503]  __driver_attach+0x60/0xe8
+> > > > [    2.102263]  bus_for_each_dev+0x7c/0xd0
+> > > > [    2.106109]  driver_attach+0x2c/0x38
+> > > > [    2.109692]  bus_add_driver+0x194/0x1f8
+> > > > [    2.113538]  driver_register+0x6c/0x128
+> > > > [    2.117385]  __platform_driver_register+0x50/0x60
+> > > > [    2.122105]  fsl_dspi_driver_init+0x24/0x30
+> > > > [    2.126302]  do_one_initcall+0x54/0x2d0
+> > > > [    2.130149]  kernel_init_freeable+0x1ec/0x258
+> > > > [    2.134520]  kernel_init+0x1c/0x120
+> > > > [    2.138018]  ret_from_fork+0x10/0x34
+> > > > [    2.141606] Code: 97e0b11d aa0003f3 b4000680 f94006e0 (f9404000)
+> > > > [    2.147723] ---[ end trace 26cf63e6cbba33a8 ]---
+> > > > [    2.152374] Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
+> > > > [    2.160061] SMP: stopping secondary CPUs
+> > > > [    2.163999] Kernel Offset: disabled
+> > > > [    2.167496] CPU features: 0x0040022,20006008
+> > > > [    2.171777] Memory Limit: none
+> > > > [    2.174840] ---[ end Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b ]---
+> > > >
+> > > > This is because since this commit, the allocation of the drivers private
+> > > > data is done explicitly and in this case spi_alloc_master() won't set the
+> > > > correct pointer.
+> > > >
+> > > > Fixes: 530b5affc675 ("spi: fsl-dspi: fix use-after-free in remove path")
+> > > > Signed-off-by: Michael Walle <michael@walle.cc>
+> > > > ---
 > > > 
-> > > I don't understand. Why not? Does ACPI subsystem parse of_match_table
-> > > as well?
+> > > Sascha, how did you test commit 530b5affc675?
 > > 
-> > It does. The compatible string is used the same way as in DT for matching
-> > devices with "PRP0001" _HID or _CID.
+> > Hi,
 > > 
-> > Please read Documentation/firmware-guide/acpi/enumeration.rst .
+> > I just hit it on my Vybrid systems as well. It fails on every boot, so
+> > I have doubts that it was actually tested. The fix was posted on 23rd
+> > and applied within a few hours... also no time for anyone else to test
+> > it.
 > 
-> Could you allude to the specific line you are referencing please?
-> 
-> > IOW, you can safely do the above only for drivers that depend on OF in
-> > Kconfig. Otherwise you'll probably break something.
-> 
+> Mhh, given the benefit of the doubt, I could imagine that the allocs align
+> up in a way, that the pointer is valid afterwards, no?
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Or Sasha used generic evalkit board, where SPI by default might not have
+any devices attached.
+
+> > > 
+> > > >  drivers/spi/spi-fsl-dspi.c | 2 ++
+> > > >  1 file changed, 2 insertions(+)
+> > > >
+> > > > diff --git a/drivers/spi/spi-fsl-dspi.c b/drivers/spi/spi-fsl-dspi.c
+> > > > index a939618f5e47..dd80be987bf9 100644
+> > > > --- a/drivers/spi/spi-fsl-dspi.c
+> > > > +++ b/drivers/spi/spi-fsl-dspi.c
+> > > > @@ -1236,6 +1236,8 @@ static int dspi_probe(struct platform_device *pdev)
+> > > >       if (!ctlr)
+> > > >               return -ENOMEM;
+> > > >
+> > > > +     spi_controller_set_devdata(ctlr, dspi);
+> > 
+> > Michael,
+> > 
+> > How about moving here platform_set_drvdata(pdev, dspi) from the end of
+> > the probe to keep them close to each other?
+> 
+> Given that this patch has a fixes tag, I'd rather keep the changes to a
+> minimum to avoid future conflicts.
+> 
+> OTOH I don't know if its better if the "move platform_set_drvdata()" is in a
+> seperate patch, conflict-wise.
+
+Just looking at these two patches there are no worries:
+1. The original patch does not target stable,
+2. The fix is only for this cycle.
+
+However it is likely that autosel will pick up these patches so your
+questions are good. If I understand code correctly, these two calls
+(spi_controller_set_devdata and platform_set_drvdata) can be reordered
+freely between allocation and spi_register_controller(). Therefore
+moving these calls around should not affect backporting to stable.
+
+I would propose to keep these calls together, either at beginning or
+just before spi_register_controller().
+
+Best regards,
+Krzysztof
+
+
+> 
+> Any suggestions?
+> 
+> -michael
