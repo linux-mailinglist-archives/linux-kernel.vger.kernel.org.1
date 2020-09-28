@@ -2,103 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D794927B1C3
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 18:24:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3259D27B1C5
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 18:24:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726688AbgI1QYO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 12:24:14 -0400
-Received: from mga07.intel.com ([134.134.136.100]:26427 "EHLO mga07.intel.com"
+        id S1726714AbgI1QYV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 12:24:21 -0400
+Received: from mga06.intel.com ([134.134.136.31]:39065 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726380AbgI1QYO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 12:24:14 -0400
-IronPort-SDR: /b3EE+MJB2UD3+d2b0O0V4p0F1iuMN/+fsSfhW6I77tJVJXVusuj5t45FB8HzLCBSnc+IS754t
- Wsbh99yzlQjg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9758"; a="226169915"
+        id S1726380AbgI1QYV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 12:24:21 -0400
+IronPort-SDR: tsYigJ/F0UdptpI9nXmnkp652Sx6/furKMmeTq6+4GdZhIf4O289BHlQtqEb+v2QyjRqCCxTBQ
+ YPI/TVb0adLQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9758"; a="223616540"
 X-IronPort-AV: E=Sophos;i="5.77,313,1596524400"; 
-   d="scan'208";a="226169915"
+   d="scan'208";a="223616540"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 09:24:12 -0700
-IronPort-SDR: UWC5swLRYcwvyNE1x5Xtq9sjY7ApeNZwKb/hsWRS8RjEuhcJnIwGJ+g+46QPLJwaKD6NGt5N03
- +ENZvI0CzxYQ==
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 09:24:19 -0700
+IronPort-SDR: 1B3FE5vxGxHDeo79fUzTdH701ulI1W71N0yQ7ZH2M/l8Jtp3tvjTy0+zzrcY/tULOJ84elq+9I
+ 8cig0uxH6gsQ==
 X-IronPort-AV: E=Sophos;i="5.77,313,1596524400"; 
-   d="scan'208";a="513499506"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 09:24:09 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1kMvwa-002c2q-H4; Mon, 28 Sep 2020 19:24:04 +0300
-Date:   Mon, 28 Sep 2020 19:24:04 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kent Gibson <warthog618@gmail.com>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        linux-doc <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 7/9] gpio: mockup: pass the chip label as device
- property
-Message-ID: <20200928162404.GW3956970@smile.fi.intel.com>
-References: <20200928104155.7385-1-brgl@bgdev.pl>
- <20200928104155.7385-8-brgl@bgdev.pl>
- <20200928130023.GJ3956970@smile.fi.intel.com>
- <CAMpxmJVGAe224JaXL4EmeEFV4Qv7ohjgn_W_CwPjC4MHgP4gTA@mail.gmail.com>
- <20200928140028.GO3956970@smile.fi.intel.com>
- <CAMpxmJUMMia+b6DQ1KoZ70XPUzhutg1tnWF5PCvfaRF5-XQnVg@mail.gmail.com>
+   d="scan'208";a="350781290"
+Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 09:24:18 -0700
+Date:   Mon, 28 Sep 2020 09:24:17 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Lai Jiangshan <jiangshanlai@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Lai Jiangshan <laijs@linux.alibaba.com>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: [RFC PATCH 1/2] kvm/x86: intercept guest changes to X86_CR4_LA57
+Message-ID: <20200928162417.GA28825@linux.intel.com>
+References: <20200928083047.3349-1-jiangshanlai@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAMpxmJUMMia+b6DQ1KoZ70XPUzhutg1tnWF5PCvfaRF5-XQnVg@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20200928083047.3349-1-jiangshanlai@gmail.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 04:52:25PM +0200, Bartosz Golaszewski wrote:
-> On Mon, Sep 28, 2020 at 4:00 PM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
-> > On Mon, Sep 28, 2020 at 03:13:53PM +0200, Bartosz Golaszewski wrote:
-> > > On Mon, Sep 28, 2020 at 3:00 PM Andy Shevchenko
-> > > <andriy.shevchenko@linux.intel.com> wrote:
-> > > > On Mon, Sep 28, 2020 at 12:41:53PM +0200, Bartosz Golaszewski wrote:
-
-...
-
-> > > > how do you avoid overflow?
-> > >
-> > > I renamed the property, the previous "chip-name" is no longer used. In
-> > > fact it was never used but was accounted for in GPIO_MOCKUP_MAX_PROP.
-> >
-> > Either I'm missing something or...
-> >
-> > Current code in linux-next has 3 properties to be possible
-> >
-> > PROPERTY_ENTRY_U32("gpio-base", base);
-> > PROPERTY_ENTRY_U16("nr-gpios", ngpio);
-> > PROPERTY_ENTRY_BOOL("named-gpio-lines");
-> >
-> > You adding here
-> > PROPERTY_ENTRY_STRING("chip-label", chip_label);
-> >
-> > Altogether after this patch is 4 which is maximum, but since array is passed by
-> > a solely pointer, the terminator is a must.
-> >
+On Mon, Sep 28, 2020 at 04:30:46PM +0800, Lai Jiangshan wrote:
+> From: Lai Jiangshan <laijs@linux.alibaba.com>
 > 
-> Thanks for explaining my code to me. Yes you're right and I'm not sure
-> why I missed this. :)
+> When shadowpaping is enabled, guest should not be allowed
+> to toggle X86_CR4_LA57. And X86_CR4_LA57 is a rarely changed
+> bit, so we can just intercept all the attempts to toggle it
+> no matter shadowpaping is in used or not.
 > 
-> I'll fix this in v3.
+> Fixes: fd8cb433734ee ("KVM: MMU: Expose the LA57 feature to VM.")
+> Cc: Sean Christopherson <sean.j.christopherson@intel.com>
+> Cc: Yu Zhang <yu.c.zhang@linux.intel.com>
+> Cc: Paolo Bonzini <pbonzini@redhat.com>
+> Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
+> ---
+>   No test to toggle X86_CR4_LA57 in guest since I can't access to
+>   any CPU supports it. Maybe it is not a real problem.
+
+LA57 doesn't need to be intercepted.  It can't be toggled in 64-bit mode
+(causes a #GP), and it's ignored in 32-bit mode.  That means LA57 can only
+take effect when 64-bit mode is enabled, at which time KVM will update its
+MMU context accordingly.
+
+>  arch/x86/kvm/kvm_cache_regs.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> Actually this means the code is wrong even before this series - it's
-> just that we don't use the "chip-name" property.
-
-Right, you patch just exposed it.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+> diff --git a/arch/x86/kvm/kvm_cache_regs.h b/arch/x86/kvm/kvm_cache_regs.h
+> index cfe83d4ae625..ca0781b41df9 100644
+> --- a/arch/x86/kvm/kvm_cache_regs.h
+> +++ b/arch/x86/kvm/kvm_cache_regs.h
+> @@ -7,7 +7,7 @@
+>  #define KVM_POSSIBLE_CR0_GUEST_BITS X86_CR0_TS
+>  #define KVM_POSSIBLE_CR4_GUEST_BITS				  \
+>  	(X86_CR4_PVI | X86_CR4_DE | X86_CR4_PCE | X86_CR4_OSFXSR  \
+> -	 | X86_CR4_OSXMMEXCPT | X86_CR4_LA57 | X86_CR4_PGE | X86_CR4_TSD)
+> +	 | X86_CR4_OSXMMEXCPT | X86_CR4_PGE | X86_CR4_TSD)
+>  
+>  #define BUILD_KVM_GPR_ACCESSORS(lname, uname)				      \
+>  static __always_inline unsigned long kvm_##lname##_read(struct kvm_vcpu *vcpu)\
+> -- 
+> 2.19.1.6.gb485710b
+> 
