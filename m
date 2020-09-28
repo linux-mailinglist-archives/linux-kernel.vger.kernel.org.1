@@ -2,95 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 265C127A985
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 10:29:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66AF827A987
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 10:30:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726552AbgI1I3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 04:29:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40656 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726328AbgI1I3W (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 04:29:22 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E1C0C0613CE
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 01:29:22 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id o21so136612qtp.2
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 01:29:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=s4/SD7sDkhkzjSmNCqnhnzxoSGKZx4XDrWdqdQe3XZ4=;
-        b=FuiT47fmOQx6DCBlqkiTikuEAjM+gEeegjVBcLz9fChgT+Vqev1yjRHhl+fxLrs8Y1
-         DQ+9/cWC/kMR5b3Vo6+g+5TY/tOwJLb/2yiQxHLzw94JxofxKRwoeYRTFBrphQKF+ZE4
-         oBto8rP0m3U92NUQBarcpKHRJCUztbR/Nx0ngvkPUewmdNbEFb27FJl5wiBwdhZVPH4A
-         egvrMy8phOfMO9JUPEqwb2MaiB0jSCgoXkK+pJSbzX1QSmPKdoV/6c/kkOFPE4SuS7fv
-         TFGTrMWYHUPcW5z81C9wIYBILvrpU0oayb8sTfpJg5Vtrq592+1+e0iu3QYJQfoNnNlI
-         /fJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=s4/SD7sDkhkzjSmNCqnhnzxoSGKZx4XDrWdqdQe3XZ4=;
-        b=MdwU1SifGx/yISI9S8Dt2nwf3Ypd12ayI8fsX6dS1Pj815b4gU0dFlUonWqTgN7hJO
-         ZRTIp+OYSmOrK9FmdfkReHKfE1zaYGZ752Juyq18IomNkbn5VG/+w9VYbs3ec+kOAjYH
-         0tJkVWn+Phtp90LLlXKY52kO6UvkxyfDTsT0mqBW8/2Mswoa686dkuzYiifz19O6q/UI
-         9SO8AqGsv6oqyEXB2+rGgeke8kslyKDr15QR3TXr1inBjiQlfGBs5wn65DjOtd+f/GSi
-         YjSiUwr28hjjsDHYyayZAJZRzNSEWHXLbE1KPUEWbW0DUU6+nY0SdUrEKEExD3dAAsOU
-         zL2g==
-X-Gm-Message-State: AOAM530/UlDjmbg1mZNOhvsJD3WO8UzeB32C9OzNX8s3AqIcbfLlM+GS
-        fw0U3Py167aCmo5RoNC4TBh2QYKeEOvXGQrZcuGZIQ==
-X-Google-Smtp-Source: ABdhPJzaa/1aeT7Sp8XzYrn+XtACxFlI58A4KZZtsp4tdU4fhXceB8gr1c4Jy/+RD5bcyV2Lk+xfWT4wo6lww4Xo2Lk=
-X-Received: by 2002:ac8:4658:: with SMTP id f24mr444266qto.158.1601281761299;
- Mon, 28 Sep 2020 01:29:21 -0700 (PDT)
+        id S1726590AbgI1Iag (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 04:30:36 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:52466 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726497AbgI1Iag (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 04:30:36 -0400
+Received: from zn.tnic (p200300ec2f072200afd3fa405d8d6d26.dip0.t-ipconnect.de [IPv6:2003:ec:2f07:2200:afd3:fa40:5d8d:6d26])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 9B6B01EC00F4;
+        Mon, 28 Sep 2020 10:30:34 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1601281834;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=uLC0XytYkYBfgCQafARNCH0W8cLI9VHZHzj2cBk/nxU=;
+        b=EH6+hSM6KX1xs0QVpsygklaSgP2dkBFX0Z2Ezx0UoVYH1uviN5YxEZ102Jq9Wa0opOsn3d
+        k38oN/xuo0RpO4q2w4+dCwvGg00ZbVROiq8tHm8u4QOodi5cg85R8C86AewGWpODCXuyLv
+        wWITmnjPNvqGVuyBjIxJCZ9E3cljGZE=
+Date:   Mon, 28 Sep 2020 10:30:32 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Cedric Xing <cedric.xing@intel.com>, akpm@linux-foundation.org,
+        andriy.shevchenko@linux.intel.com, asapek@google.com,
+        chenalexchen@google.com, conradparker@google.com,
+        cyhanish@google.com, dave.hansen@intel.com, haitao.huang@intel.com,
+        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, luto@kernel.org,
+        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
+        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com
+Subject: Re: [PATCH v38 21/24] x86/vdso: Implement a vDSO for Intel SGX
+ enclave call
+Message-ID: <20200928083032.GB1685@zn.tnic>
+References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
+ <20200915112842.897265-22-jarkko.sakkinen@linux.intel.com>
+ <20200924180407.GO5030@zn.tnic>
+ <20200925010031.GH119995@linux.intel.com>
+ <20200925082807.GG16872@zn.tnic>
+ <20200927233700.GA4450@linux.intel.com>
 MIME-Version: 1.0
-References: <000000000000b7551005b05ae3b8@google.com> <CACT4Y+Zc5W9kGUqjVkkuUTBEsLk-1k3eKF5F78-LioWF6XTR0w@mail.gmail.com>
- <CAK+_RLmGVr=ngG+Tqum==sDLEeEEz11su92EnoQVG6Zgm2gxzg@mail.gmail.com>
-In-Reply-To: <CAK+_RLmGVr=ngG+Tqum==sDLEeEEz11su92EnoQVG6Zgm2gxzg@mail.gmail.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Mon, 28 Sep 2020 10:29:10 +0200
-Message-ID: <CACT4Y+Yb9UcpO6g+FMZ+4R1PiadcDqKXj7Em4h8+VMrzCdS=9g@mail.gmail.com>
-Subject: Re: WARNING: filesystem loop0 was created with 512 inodes, the real
- maximum is 511, mounting anyway
-To:     Tigran Aivazian <aivazian.tigran@gmail.com>
-Cc:     syzbot <syzbot+54b10a5da9e59f1ed979@syzkaller.appspotmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200927233700.GA4450@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 10:23 AM Tigran Aivazian
-<aivazian.tigran@gmail.com> wrote:
->
-> Hello Dmitry,
->
-> On Mon, 28 Sep 2020 at 08:51, Dmitry Vyukov <dvyukov@google.com> wrote:
-> > On Mon, Sep 28, 2020 at 9:48 AM syzbot
-> > <syzbot+54b10a5da9e59f1ed979@syzkaller.appspotmail.com> wrote:
-> > > BFS-fs: bfs_fill_super(): WARNING: filesystem loop0 was created with 512 inodes, the real maximum is 511, mounting anyway
-> >
-> > This looks like a BFS issue. +BFS maintainers.
->
-> No, this is not an issue. In the latest change to BFS I added the
-> following comment to the header fs/bfs/bfs.h, which explains it:
->
-> /* In theory BFS supports up to 512 inodes, numbered from 2 (for /) up
-> to 513 inclusive.
->    In actual fact, attempting to create the 512th inode (i.e. inode
-> No. 513 or file No. 511)
->    will fail with ENOSPC in bfs_add_entry(): the root directory cannot
-> contain so many entries, counting '..'.
->    So, mkfs.bfs(8) should really limit its -N option to 511 and not
-> 512. For now, we just print a warning
->    if a filesystem is mounted with such "impossible to fill up" number
-> of inodes */
+On Mon, Sep 28, 2020 at 02:37:00AM +0300, Jarkko Sakkinen wrote:
+> I did not get Sean's reply, and neither can find it from lore:
+> 
+> https://lore.kernel.org/linux-sgx/20200915112842.897265-1-jarkko.sakkinen@linux.intel.com/T/#t
 
-Hi Tigran,
+Yah, your mail server upgrade broke a lot of stuff. And lore even says
+it is not there:
 
-There are rules for use of "WARNING" in output required to support
-kernel testing:
-https://github.com/torvalds/linux/blob/master/include/asm-generic/bug.h#L67-L80
-This seems to be triggerable by exteranal inputs and breaks these rules.
+2020-09-25 11:43           ` Jethro Beekman
+     [not found]     ` <20200925003808.GB20333@linux.intel.com>		<---
+2020-09-25  1:04       ` Jarkko Sakkinen
+
+Lemme bounce it to you.
+
+> I'd make that a description and take away individual parameter
+> descriptions. Is that fine?
+
+Sure.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
