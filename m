@@ -2,90 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5DDD27A805
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 09:01:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66D4827A840
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 09:07:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726600AbgI1HBT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 03:01:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43276 "EHLO mail.kernel.org"
+        id S1726534AbgI1HHj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 03:07:39 -0400
+Received: from mga11.intel.com ([192.55.52.93]:6365 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726440AbgI1HBS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 03:01:18 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 89AF523119;
-        Mon, 28 Sep 2020 07:01:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601276478;
-        bh=yHTdIKsXesYbs8KqXwTP+zn7aoguUYPySkWcMSV8c58=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dsCzZczCKNzzoZm15gsW8+GzdX/Cq3TSNUOtgTsHtjLDLbHFR5ushTouAMEmpUAiO
-         Z0xlnmBJkR/QVvS95zHlJ+svDsYcBiAr/i3HWrYkwO8Hst4k5PdOI3Hrr8XNeTCzlc
-         CeV/7Dn1LTdGTcBS1FwsyXewRq7EPv1x0BDOx9FE=
-Date:   Mon, 28 Sep 2020 09:01:26 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Paras Sharma <parashar@codeaurora.org>
-Cc:     Jiri Slaby <jslaby@suse.com>, linux-arm-msm@vger.kernel.org,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        akashast@codeaurora.org
-Subject: Re: [PATCH V5] serial: qcom_geni_serial: To correct QUP Version
- detection logic
-Message-ID: <20200928070126.GA391632@kroah.com>
-References: <1601276378-4325-1-git-send-email-parashar@codeaurora.org>
+        id S1725308AbgI1HHj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 03:07:39 -0400
+IronPort-SDR: D0N9pGVTQhF6KaycFVd8tbGxZypXzb+uuSy22fKoST4cwR/eq5yE7ZxTml6UHlEVzF4CjvdpV8
+ dQgZuGSAZ8vw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9757"; a="159296060"
+X-IronPort-AV: E=Sophos;i="5.77,313,1596524400"; 
+   d="scan'208";a="159296060"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 00:07:34 -0700
+IronPort-SDR: Qo7TQYM3g4SpETW39J5RkSSUvIcO8OSVY7xpvDFnp9/enQCqwwWV0HVcJ7TT1zCKNt27kkeHPS
+ hfahxlNcm/8w==
+X-IronPort-AV: E=Sophos;i="5.77,313,1596524400"; 
+   d="scan'208";a="488455940"
+Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.146.107])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 00:07:29 -0700
+Date:   Mon, 28 Sep 2020 15:07:23 +0800
+From:   Feng Tang <feng.tang@intel.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Dave Hansen <dave.hansen@intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v2] tools/x86: add kcpuid tool to show raw CPU
+ features
+Message-ID: <20200928070723.GA25109@shbuild999.sh.intel.com>
+References: <1600752470-43179-1-git-send-email-feng.tang@intel.com>
+ <20200925172437.GM16872@zn.tnic>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1601276378-4325-1-git-send-email-parashar@codeaurora.org>
+In-Reply-To: <20200925172437.GM16872@zn.tnic>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 12:29:38PM +0530, Paras Sharma wrote:
-> For QUP IP versions 2.5 and above the oversampling rate is
-> halved from 32 to 16.
-> Commit ce734600545f ("tty: serial: qcom_geni_serial: Update
-> the oversampling rate") is pushed to handle this scenario.But
-> the existing logic is failing to classify QUP Version 3.0 into
-> the correct group ( 2.5 and above).
+On Fri, Sep 25, 2020 at 07:24:37PM +0200, Borislav Petkov wrote:
+> On Tue, Sep 22, 2020 at 01:27:50PM +0800, Feng Tang wrote:
+> > +++ b/tools/arch/x86/kcpuid/cpuid.txt
+> > @@ -0,0 +1,58 @@
+> > +# Leaf 00H
+> > +
+> > +LEAF[00000000],SUBLEAF[00],EAX[ 31:0],max_basic_leafs, Max input value for supported subleafs
+> > +
+> > +
+> > +# Leaf 01H
+> > +
+> > +LEAF[00000001],SUBLEAF[00],EAX[  3:0],stepping, Stepping ID
+> > +LEAF[00000001],SUBLEAF[00],EAX[  7:4],model, Model
+> > +LEAF[00000001],SUBLEAF[00],EAX[ 11:8],family, Family ID
+> > +LEAF[00000001],SUBLEAF[00],EAX[13:12],processor, Processor Type
+> > +LEAF[00000001],SUBLEAF[00],EAX[19:16],model_ext, Extended Model ID
+> > +LEAF[00000001],SUBLEAF[00],EAX[27:20],family_ext, Extended Family ID
 > 
-> As result Serial Engine clocks are not configured properly for
-> baud rate and garbage data is sampled to FIFOs from the line.
+> Yeah, this looks good but how about we simplify and ease the parsing
+> even more? I.e., make it a real csv:
 > 
-> So, fix the logic to detect QUP with versions 2.5 and above.
+> # Table row names:
+> # LEAF,SUBLEAF,register_name,bits,short name, long name
 > 
-> Fixes: ce734600545f ("tty: serial: qcom_geni_serial: Update the oversampling rate")
-> Signed-off-by: Paras Sharma <parashar@codeaurora.org>
-> ---
-> Changes in V5:
-> Moved QUP_SE_VERSION_2_5 to common header file qcom-geni-se.h
+> 0x1,0,EBX,7:0,brand,Brand Index
+> 0x1,0,EBX,15:8,clflush_size,CLFLUSH line size (value * 8) in bytes
+> 0x1,0,EBX,23:16,max_cpu_id,Maxim number of addressable logic cpu ID in this package
+> ...
 > 
-> Changes in V4:
-> Created a new #define QUP_SE_VERSION_2_5 for Qup serial engine having version 2.5
+> Yeah, this way it might not be as readable but the format is pretty simple and
+> everybody knows .csv so....
 > 
-> Changes in V3:
-> Replaced the condition for detecting Qup version(2.5 or greater) with value 0x20050000
+> We can even do vertical alignment for better readability:
 > 
-> Changes in V2:
-> Changed subject line and logic for checking Qup version
+> #     LEAF,SUBLEAF,register,  bits,short name, long name
+>          1,	 0,	EBX,   7:0,brand,Brand Index
+>          1,	 0,	EBX,  15:8,clflush_size,CLFLUSH line size (value * 8) in bytes
+>      	 1,	 0,	EBX, 23:16,max_cpu_id,Maxim number of addressable logic cpu ID in this package
+> 0x80000000,	12,	EAX,     3,eee, EEE
 > 
->  drivers/tty/serial/qcom_geni_serial.c | 3 ++-
->  include/linux/qcom-geni-se.h          | 3 +++
->  2 files changed, 5 insertions(+), 1 deletion(-)
+> and can keep it in tabellary form this way. The parsing code should
+> asimply split on ',' and ignore whitespace.
 > 
-> diff --git a/drivers/tty/serial/qcom_geni_serial.c b/drivers/tty/serial/qcom_geni_serial.c
-> index f0b1b47..198ecdd7 100644
-> --- a/drivers/tty/serial/qcom_geni_serial.c
-> +++ b/drivers/tty/serial/qcom_geni_serial.c
-> @@ -106,6 +106,7 @@
->  /* We always configure 4 bytes per FIFO word */
->  #define BYTES_PER_FIFO_WORD		4
->  
-> +
->  struct qcom_geni_private_data {
->  	/* NOTE: earlycon port will have NULL here */
->  	struct uart_driver *drv;
+> Thoughts?
+ 
+Thanks, it looks good to me. One thing is in v2 we supported ',' in the
+long name field, but that's minor as we could avoid using it in .csv 
 
-Unneeded change :(
+- Feng
 
-
+> -- 
+> Regards/Gruss,
+>     Boris.
+> 
+> https://people.kernel.org/tglx/notes-about-netiquette
