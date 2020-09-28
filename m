@@ -2,160 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE77927B866
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 01:43:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F96027B863
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 01:41:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727068AbgI1Xnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 19:43:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41214 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727030AbgI1Xno (ORCPT
+        id S1727115AbgI1Xk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 19:40:57 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:15787 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726064AbgI1Xk5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 19:43:44 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F44DC0613E8;
-        Mon, 28 Sep 2020 15:23:47 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id e18so2160833pgd.4;
-        Mon, 28 Sep 2020 15:23:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=tSPHkz2Us2cBVrXsw7CUcaG7reiU6MJM3Q+fVPb4/V4=;
-        b=DIyYvXda4Y/TU2MXpd1ebaArX3qhiMfcRdRNbSkXa5hQslxaMnK4ic55ZdFZUN44k4
-         /AOhYWUIwwQ/S0VOSzS+Q/bn6r/x2jMDXV9nVs7J7Daboi4EcAhQr9/fj61F7BA5+e2o
-         030EuPuiUEf3ouHFfk53YFkZQPJ4GH9icqIJ+Cb/20CDZsCcK1bqjpse11G/Ze0PkWNg
-         aE1oJG82zuADToC8R71oOO7l8E86eAUD1ZNWU+36AsNbEqzhYJWLYALX8P1DR41ojYT+
-         7aBdX76Bmdu2eWuRywwB7khwNBTK2pw7lPcsaqzTH77pkfsceyKLC3b7Qw9iIq4Ns8dv
-         LAkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=tSPHkz2Us2cBVrXsw7CUcaG7reiU6MJM3Q+fVPb4/V4=;
-        b=YxeE5QCG5fdmXiZ4jSCSdd8NzlYyxrXCMChd4O6muZqCbD9azpPD9csRvpgJDGMsOx
-         Ft712FlD+82VLaENvao1/J/O8gmeYNlXRfHFn+UwqrQ8mMshhsSoLcIfTIyRdVSX7XbA
-         tpT8z+7LyJfisC2NzgEGod24SRK3KQHqCBx7BfAV8wcBJCbbNBzPPe26Moy2H9BnVM+A
-         uhqZ+EyBlcoZBTmt6Ky43X0Wt3zvsnXMq/B8L8v5iysfQmJ1ZZxm+VB0aoTAg1SsayA5
-         //lafcdimFzQPDXTq/IZkH/LmVDLPeRBmn2UjN0lrtpRSeBzuRJPs1y3gOteZeP9PfSU
-         Jr2w==
-X-Gm-Message-State: AOAM531BcRRmvb8C6ylzlz9dP5L6ib8d9ySXGqFoessSLd6oXXsS+fnI
-        BoWm4y1sYTmaf0hBXzQnf/CSkbKJL/c=
-X-Google-Smtp-Source: ABdhPJxIJMbt3uGyV6MRNLX4bn9gZegg0TMjxu5SzarjjqRjk+cvpxgMfgQd3kyo9zPsMvEoUw6Cmw==
-X-Received: by 2002:a63:e61:: with SMTP id 33mr857877pgo.394.1601331826526;
-        Mon, 28 Sep 2020 15:23:46 -0700 (PDT)
-Received: from Asurada-Nvidia (thunderhill.nvidia.com. [216.228.112.22])
-        by smtp.gmail.com with ESMTPSA id n72sm3129174pfd.27.2020.09.28.15.23.45
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 28 Sep 2020 15:23:46 -0700 (PDT)
-Date:   Mon, 28 Sep 2020 15:18:29 -0700
-From:   Nicolin Chen <nicoleotsuka@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     joro@8bytes.org, krzk@kernel.org, vdumpa@nvidia.com,
-        jonathanh@nvidia.com, linux-tegra@vger.kernel.org,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/5] iommu/tegra-smmu: Use iommu_fwspec in
- .probe_/.attach_device()
-Message-ID: <20200928221829.GB15720@Asurada-Nvidia>
-References: <20200926080719.6822-1-nicoleotsuka@gmail.com>
- <20200926080719.6822-4-nicoleotsuka@gmail.com>
- <20200928075212.GF2837573@ulmo>
+        Mon, 28 Sep 2020 19:40:57 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f7261930000>; Mon, 28 Sep 2020 15:20:03 -0700
+Received: from rcampbell-dev.nvidia.com (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 28 Sep
+ 2020 22:20:48 +0000
+Subject: Re: [PATCH 1/2] ext4/xfs: add page refcount helper
+To:     Christoph Hellwig <hch@lst.de>
+CC:     <linux-mm@kvack.org>, <kvm-ppc@vger.kernel.org>,
+        <nouveau@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jerome Glisse <jglisse@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Alistair Popple <apopple@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Bharata B Rao <bharata@linux.ibm.com>,
+        Zi Yan <ziy@nvidia.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <20200925204442.31348-1-rcampbell@nvidia.com>
+ <20200925204442.31348-2-rcampbell@nvidia.com> <20200926063539.GA3540@lst.de>
+X-Nvconfidentiality: public
+From:   Ralph Campbell <rcampbell@nvidia.com>
+Message-ID: <e56a1de5-6bd7-9f18-60ce-0493bcdc6413@nvidia.com>
+Date:   Mon, 28 Sep 2020 15:20:48 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200928075212.GF2837573@ulmo>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200926063539.GA3540@lst.de>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1601331603; bh=kXgGmngSFGVJLCne8DZRhWZR5kT4/vprhys6/EFUF2M=;
+        h=Subject:To:CC:References:X-Nvconfidentiality:From:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=aUo++/WBuUmLpUNBybZqcSQddWcOAIgf4CiMoG8F4r7DyK/3GkcxcNtxtJXcGJ8PN
+         JvprWJRK7sbeM2NyReaAn7I987qhfn6ckD/XANP2zADXzuiDLD7eThOUjsYwuwDpiz
+         hu+TdV/9fyzLHRNHLAwtjvkg9n/0Jjl45ksOv1QRU8V/kTmdTC+mkEPHuWxe+ZOXOP
+         oR+WkNXbdUlIq5pJYjS8ZZWazDqy3KwPhj/PeS/z9SwtdEHg89HObrdt49PKUMNTYG
+         hhw6ehtOqBCJhT/J/reqmp+th5ms5Og27Zpku+FrIqrVNTP/Ay/M9FYJfcwGpEl6Qw
+         HTya2AGEgwLcQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 09:52:12AM +0200, Thierry Reding wrote:
-> On Sat, Sep 26, 2020 at 01:07:17AM -0700, Nicolin Chen wrote:
-> > @@ -13,6 +13,7 @@
-> >  #include <linux/platform_device.h>
-> >  #include <linux/slab.h>
-> >  #include <linux/spinlock.h>
-> > +#include <linux/dma-iommu.h>
+
+On 9/25/20 11:35 PM, Christoph Hellwig wrote:
+> On Fri, Sep 25, 2020 at 01:44:41PM -0700, Ralph Campbell wrote:
+>>   		error = ___wait_var_event(&page->_refcount,
+>> -				atomic_read(&page->_refcount) == 1,
+>> +				dax_layout_is_idle_page(page),
+>>   				TASK_INTERRUPTIBLE, 0, 0,
+>>   				ext4_wait_dax_page(ei));
 > 
-> Why is this needed? I don't see any of the symbols declared in that file
-> used here.
-
-Hmm..I think I mixed with some other change that needs this header
-file. Removing it....
-
-> >  #include <linux/dma-mapping.h>
-> >  
-> >  #include <soc/tegra/ahb.h>
-> > @@ -61,6 +62,8 @@ struct tegra_smmu_as {
-> >  	u32 attr;
-> >  };
-> >  
-> > +static const struct iommu_ops tegra_smmu_ops;
-> > +
-> >  static struct tegra_smmu_as *to_smmu_as(struct iommu_domain *dom)
-> >  {
-> >  	return container_of(dom, struct tegra_smmu_as, domain);
-> > @@ -484,60 +487,49 @@ static void tegra_smmu_as_unprepare(struct tegra_smmu *smmu,
-> >  static int tegra_smmu_attach_dev(struct iommu_domain *domain,
-> >  				 struct device *dev)
-> >  {
-> > +	struct iommu_fwspec *fwspec = dev_iommu_fwspec_get(dev);
-> >  	struct tegra_smmu *smmu = dev_iommu_priv_get(dev);
-> >  	struct tegra_smmu_as *as = to_smmu_as(domain);
-> > -	struct device_node *np = dev->of_node;
-> > -	struct of_phandle_args args;
-> > -	unsigned int index = 0;
-> > -	int err = 0;
-> > -
-> > -	while (!of_parse_phandle_with_args(np, "iommus", "#iommu-cells", index,
-> > -					   &args)) {
-> > -		unsigned int swgroup = args.args[0];
-> > -
-> > -		if (args.np != smmu->dev->of_node) {
-> > -			of_node_put(args.np);
-> > -			continue;
-> > -		}
-> > +	int index, err = 0;
-> >  
-> > -		of_node_put(args.np);
-> > +	if (!fwspec || fwspec->ops != &tegra_smmu_ops)
-> > +		return -ENOENT;
-> >  
-> > +	for (index = 0; index < fwspec->num_ids; index++) {
-> >  		err = tegra_smmu_as_prepare(smmu, as);
-> > -		if (err < 0)
-> > -			return err;
-> > +		if (err)
-> > +			goto err_disable;
+>> +++ b/fs/xfs/xfs_file.c
+>> @@ -750,7 +750,7 @@ xfs_break_dax_layouts(
+>>   
+>>   	*retry = true;
+>>   	return ___wait_var_event(&page->_refcount,
+>> -			atomic_read(&page->_refcount) == 1, TASK_INTERRUPTIBLE,
+>> +			dax_layout_is_idle_page(page), TASK_INTERRUPTIBLE,
+>>   			0, 0, xfs_wait_dax_page(inode));
+>>   }
 > 
-> I'd personally drop the err_ prefix here because it's pretty obvious
-> that we're going to do this as a result of an error happening.
-
-Changing to "goto disable".
-
-> > @@ -845,10 +837,25 @@ static int tegra_smmu_configure(struct tegra_smmu *smmu, struct device *dev,
-> >  	return 0;
-> >  }
-> >  
-> > +static struct tegra_smmu *tegra_smmu_get_by_fwnode(struct fwnode_handle *fwnode)
-> > +{
-> > +	struct device *dev = driver_find_device_by_fwnode(&tegra_mc_driver.driver, fwnode);
-> > +	struct tegra_mc *mc;
-> > +
-> > +	if (!dev)
-> > +		return NULL;
-> > +
-> > +	put_device(dev);
-> > +	mc = dev_get_drvdata(dev);
-> > +
-> > +	return mc->smmu;
-> > +}
-> > +
+> I still think a litte helper macro would be nice here:
 > 
-> As I mentioned in another reply, I think tegra_smmu_find() should be all
-> you need in this case.
+> #define dax_wait_page(_inode, _page, _wait_cb)				\
+>    	___wait_var_event(&(_page)->_refcount,				\
+> 		atomic_read(&(_page)->_refcount) == 1,			\
+> 		TASK_INTERRUPTIBLE, dax_layout_is_idle_page(_page),	\
+> 		TASK_INTERRUPTIBLE, 0, 0, _wait_cb(_inode));
 
-This function is used by .probe_device() where its dev pointer is
-an SMMU client. IIUC, tegra_smmu_find() needs np pointer of "mc".
-For a PCI device that doesn't have a DT node with iommus property,
-not sure how we can use tegra_smmu_find().
+OK, I'll add it in v3.
