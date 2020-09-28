@@ -2,119 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40E2527ACB9
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 13:31:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3CD727ACBA
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 13:32:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726328AbgI1Lbp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 07:31:45 -0400
-Received: from cmccmta1.chinamobile.com ([221.176.66.79]:59587 "EHLO
-        cmccmta1.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726526AbgI1Lbp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 07:31:45 -0400
-Received: from spf.mail.chinamobile.com (unknown[172.16.121.5]) by rmmx-syy-dmz-app03-12003 (RichMail) with SMTP id 2ee35f71c9871e4-f33dc; Mon, 28 Sep 2020 19:31:19 +0800 (CST)
-X-RM-TRANSID: 2ee35f71c9871e4-f33dc
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG: 00000000
-Received: from [192.168.21.77] (unknown[10.42.68.12])
-        by rmsmtp-syy-appsvr03-12003 (RichMail) with SMTP id 2ee35f71c9858a0-40163;
-        Mon, 28 Sep 2020 19:31:19 +0800 (CST)
-X-RM-TRANSID: 2ee35f71c9858a0-40163
-Subject: Re: [PATCH] usb: bdc: Remove duplicate error message in bdc_probe()
-To:     Greg KH <gregkh@linuxfoundation.org>,
-        Felipe Balbi <balbi@kernel.org>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Florian Fainelli <f.fainelli@gmail.com>
-References: <20200927134218.20028-1-tangbin@cmss.chinamobile.com>
- <20200927134550.GA302849@kroah.com>
- <e895f44b-2c53-a883-322b-e3768fdb6733@cmss.chinamobile.com>
- <87sgb29r3g.fsf@kernel.org>
- <02162cfc-cbe3-4747-e518-7f3b3d7a0e7f@cmss.chinamobile.com>
- <20200928112301.GA415117@kroah.com>
-From:   Tang Bin <tangbin@cmss.chinamobile.com>
-Message-ID: <f1e0051e-30a2-beea-0459-c392d0c4104e@cmss.chinamobile.com>
-Date:   Mon, 28 Sep 2020 19:31:14 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S1726621AbgI1LcZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 07:32:25 -0400
+Received: from mga18.intel.com ([134.134.136.126]:62254 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726380AbgI1LcZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 07:32:25 -0400
+IronPort-SDR: jhDOPDNa/y56Zvd+kMP860Io9j1XjHIwriLNHSoXK+skiCwIswz1BbatAvN6WnWDrtWzR+2xC2
+ AIaVLHvo4R3g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9757"; a="149750857"
+X-IronPort-AV: E=Sophos;i="5.77,313,1596524400"; 
+   d="scan'208";a="149750857"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 04:32:23 -0700
+IronPort-SDR: wmwjLpx0vZ4fe9wPGrkgmvd3yCF9t5adWQZYclHblL03grnn1EqDHcYvjQZGOiceRKPDkOqwX1
+ lbA4zn0exFFA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,313,1596524400"; 
+   d="scan'208";a="414950724"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 28 Sep 2020 04:32:21 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Mon, 28 Sep 2020 14:32:20 +0300
+Date:   Mon, 28 Sep 2020 14:32:20 +0300
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Felipe Balbi <balbi@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:ULTRA-WIDEBAND (UWB) SUBSYSTEM:" 
+        <linux-usb@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>
+Subject: Re: [PATCH 1/3] software node: Power management operations for
+ software nodes
+Message-ID: <20200928113220.GA3987353@kuha.fi.intel.com>
+References: <20200825135951.53340-1-heikki.krogerus@linux.intel.com>
+ <20200825135951.53340-2-heikki.krogerus@linux.intel.com>
+ <CAJZ5v0jT7Xdcm1WVvAV9okkoicnEsFEvnLSLLNx6eJHMNxwX+Q@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200928112301.GA415117@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJZ5v0jT7Xdcm1WVvAV9okkoicnEsFEvnLSLLNx6eJHMNxwX+Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+On Fri, Sep 25, 2020 at 05:54:37PM +0200, Rafael J. Wysocki wrote:
+> On Tue, Aug 25, 2020 at 3:59 PM Heikki Krogerus
+> <heikki.krogerus@linux.intel.com> wrote:
+> >
+> > Adding separate PM operations vector for the software nodes.
+> > The software node specific PM operations make it possible to
+> > handle most PM related quirks separately in their own
+> > functions instead of conditionally in the device driver's
+> > generic PM functions (and in some cases all over the
+> > driver). The software node specific PM operations will also
+> > reduce the need to pass platform data in some cases, for
+> > example from a core MFD driver to the child device drivers,
+> > as from now on the core MFD driver will be able to implement
+> > the PM quirks directly for the child devices without the
+> > need to touch the drivers of those child devices.
+> >
+> > If a software node includes the PM operations, those PM
+> > operations are always executed separately on top of the
+> > other PM operations of the device, so the software node will
+> > never replace any of the "normal" PM operations of the
+> > device (including the PM domain's operations, class's or
+> > bus's PM operations, the device drivers own operations, or
+> > any other).
+> 
+> This isn't consistent with the code changes AFAICS.
+> 
+> The swnode PM operations are implemented as a PM domain ops, which
+> means that they will be executed instead of any other existing ops
+> rather than in addition to those.
+> 
+> For example, software_node_prepare() will skip bus type ops if they
+> are present and there is no "primary" PM domain which seems not
+> intended.
 
-在 2020/9/28 19:23, Greg KH 写道:
-> On Mon, Sep 28, 2020 at 06:55:26PM +0800, Tang Bin wrote:
->> Hi Balbi：
->>
->> 在 2020/9/28 17:40, Felipe Balbi 写道:
->>> Hi,
->>>
->>> Tang Bin <tangbin@cmss.chinamobile.com> writes:
->>>> Hi Greg KH:
->>>>
->>>> 在 2020/9/27 21:45, Greg KH 写道:
->>>>> On Sun, Sep 27, 2020 at 09:42:18PM +0800, Tang Bin wrote:
->>>>>> In this function, we don't need dev_err() message because
->>>>>> when something goes wrong, devm_platform_ioremap_resource()
->>>>>> can print an error message itself, so remove the redundant
->>>>>> one.
->>>>>>
->>>>>> Signed-off-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
->>>>>> Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
->>>>>> ---
->>>>>>     drivers/usb/gadget/udc/bdc/bdc_core.c | 4 +---
->>>>>>     1 file changed, 1 insertion(+), 3 deletions(-)
->>>>>>
->>>>>> diff --git a/drivers/usb/gadget/udc/bdc/bdc_core.c b/drivers/usb/gadget/udc/bdc/bdc_core.c
->>>>>> index 02a3a7746..9454f179e 100644
->>>>>> --- a/drivers/usb/gadget/udc/bdc/bdc_core.c
->>>>>> +++ b/drivers/usb/gadget/udc/bdc/bdc_core.c
->>>>>> @@ -508,10 +508,8 @@ static int bdc_probe(struct platform_device *pdev)
->>>>>>     	bdc->clk = clk;
->>>>>>     	bdc->regs = devm_platform_ioremap_resource(pdev, 0);
->>>>>> -	if (IS_ERR(bdc->regs)) {
->>>>>> -		dev_err(dev, "ioremap error\n");
->>>>>> +	if (IS_ERR(bdc->regs))
->>>>>>     		return -ENOMEM;
->>>>> Why not return the error given to us?
->>>> Because when get ioremap failed, devm_platform_ioremap_resource() can
->>>> print error message
->>>>
->>>> "dev_err(dev, "ioremap failed for resource %pR\n", res)" in it's called
->>>> function. So I think this's place's
->>>>
->>>> dev_err(dev, "ioremap error\n") is redundant.
->>> that's not what Greg point you at, though. Greg's concern is valid in
->>> that instead of passing along the error within bdc->regs, you always
->>> return -ENOMEM. OTW, your code should read like so:
->>>
->>> 	if (IS_ERR(bdc->regs))
->>>           	return PTR_ERR(bdc->regs);
->> Thanks for your explain，when I send the patch yesterday, my point is at
->> dev_err(), and not aimed at IS_ERR() & PTR_ERR(),
->>
->> if it's Greg's point, I will change this patch after his reply.
-> Felipe is correct, and also, you should listen to him over me as he is
-> the maintainer of this part of the kernel :)
->
-Thanks for your reply, I will send v2 for all of you.
+True. I thought the pm_generic_*() functions will take care of also
+the bus ops, but of course they don't do that.
 
+> Also some comments might help to understand the design.
 
-For me, all of you are the teachers, I am glad to learn from you. I 
-respect every teacher,
+OK.
 
-I think Felipe should be able to feel.  Because the premise of the patch,
+thanks,
 
-Felipe is also teaching me the question. So I feel I am lucky.
-
-
-Thanks for all of you. Thanks
-
-Tang Bin
-
-
-
+-- 
+heikki
