@@ -2,202 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6529627AE4C
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 14:54:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 821B027AE3E
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 14:52:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726594AbgI1MyS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 08:54:18 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:14312 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726328AbgI1MyS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 08:54:18 -0400
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 80ABAA965C981C98CB52;
-        Mon, 28 Sep 2020 20:54:14 +0800 (CST)
-Received: from lhrphicprd00229.huawei.com (10.123.41.22) by
- DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 28 Sep 2020 20:54:07 +0800
-From:   Jonathan Cameron <Jonathan.Cameron@huawei.com>
-To:     <linux-mm@kvack.org>, <linux-acpi@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <x86@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        <rafael@kernel.org>, Ingo Molnar <mingo@redhat.com>
-CC:     Bjorn Helgaas <bhelgaas@google.com>,
-        <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>, <linuxarm@huawei.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Brice Goglin <Brice.Goglin@inria.fr>,
-        "Sean V Kelley" <sean.v.kelley@linux.intel.com>,
-        <linux-api@vger.kernel.org>, "Borislav Petkov" <bp@alien8.de>,
-        Hanjun Guo <guohanjun@huawei.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH v11 1/6] ACPI: Support Generic Initiator only domains
-Date:   Mon, 28 Sep 2020 20:52:30 +0800
-Message-ID: <20200928125235.446188-2-Jonathan.Cameron@huawei.com>
-X-Mailer: git-send-email 2.19.1
-In-Reply-To: <20200928125235.446188-1-Jonathan.Cameron@huawei.com>
-References: <20200928125235.446188-1-Jonathan.Cameron@huawei.com>
+        id S1726670AbgI1Mwj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 08:52:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53342 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726547AbgI1Mwi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 08:52:38 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCFFEC061755;
+        Mon, 28 Sep 2020 05:52:35 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id m6so1237037wrn.0;
+        Mon, 28 Sep 2020 05:52:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=WhsdZacySdHmhYo66BvVLzv/GBpIKfZV61Gk8RkbUdY=;
+        b=lzX0am67ZGVlsQoQ2kbF8vGo4KhrKHhSDPBuqsFxCYgC4MCZw73ajGQvluiQxvwL4n
+         QWbNvFJL02cDelcLIh33ImNmabslsGgtra8ROBtQ4wDuVqEHgmppWTn5s2z4nXKUeNKP
+         Rnxj4oc9pz7skqddCVA2Xj58LTLxtuquQFw5QHGMmfeBh22j/m169pCUZLADynPwVmMw
+         O0X7dhWl1NQ5i58BuzfTvrKLioAttVE5bWDvtNzfgS0NbIwaHLrZbG0ywW385uMYxzT5
+         QHTjWY1Coh3CBMTwl3hwsrGbGiRWASGuCoDuNsQY8LuhyN6lxbNBiIUZh8pCiaViiuUV
+         8SkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=WhsdZacySdHmhYo66BvVLzv/GBpIKfZV61Gk8RkbUdY=;
+        b=P0mfYyA9vvp7pKTMigwVkBi4rP1PFQLpSh/BNetoHXvFRJsKKo2bQ5Cvkaraf1g0Qi
+         dq/CR+OGnve82N5dQ+1zm14LFOYjMevO0yfkA+lOFCQeY5Okt38aodNksM95+FgpOlvZ
+         nFDgJYNJ7M7Eea4JUFIv3igeBaB10Ry+zLNzwrKBO0pmqQima9VNLGUPPTRdV41BkB0c
+         Q8rKAW7ui230sXvLGMx3Xp+7uH0HFZudRjt+NVHzLXsIRuauCT/ybCcB9acJLcxUCDt/
+         plgx94SNMXYx9EboAWeRILml7FX0fHLKhA9nc0GdEbdkle39VPDEQ6Cka8bEbmzyFsQj
+         XTMQ==
+X-Gm-Message-State: AOAM531bi9Jk6kTxcxxVby4fBNDye8tXH+x0R6r1lCciVnQnQ2kVY/L+
+        4EqBrLm1uuPvvAEUmxEdMjA=
+X-Google-Smtp-Source: ABdhPJyzbqE1S8hnXDtNXfxjwww9r7z4nj/5EZ1jJxjScBfwGXGDRoFQUqvGAoJuZ9m+Jda3RdSE6w==
+X-Received: by 2002:a5d:4d48:: with SMTP id a8mr1559082wru.318.1601297554533;
+        Mon, 28 Sep 2020 05:52:34 -0700 (PDT)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id o4sm1263689wru.55.2020.09.28.05.52.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Sep 2020 05:52:33 -0700 (PDT)
+Date:   Mon, 28 Sep 2020 14:52:30 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     JC Kuo <jckuo@nvidia.com>
+Cc:     gregkh@linuxfoundation.org, robh@kernel.org, jonathanh@nvidia.com,
+        kishon@ti.com, linux-tegra@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, nkristam@nvidia.com
+Subject: Re: [PATCH v3 02/15] clk: tegra: Don't enable PLLE HW sequencer at
+ init
+Message-ID: <20200928125230.GB3065790@ulmo>
+References: <20200909081041.3190157-1-jckuo@nvidia.com>
+ <20200909081041.3190157-3-jckuo@nvidia.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.123.41.22]
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="Fba/0zbH8Xs+Fj9o"
+Content-Disposition: inline
+In-Reply-To: <20200909081041.3190157-3-jckuo@nvidia.com>
+User-Agent: Mutt/1.14.7 (2020-08-29)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Generic Initiators are a new ACPI concept that allows for the
-description of proximity domains that contain a device which
-performs memory access (such as a network card) but neither
-host CPU nor Memory.
 
-This patch has the parsing code and provides the infrastructure
-for an architecture to associate these new domains with their
-nearest memory processing node.
+--Fba/0zbH8Xs+Fj9o
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
----
-v11: No change
+On Wed, Sep 09, 2020 at 04:10:28PM +0800, JC Kuo wrote:
+> PLLE hardware power sequencer references PEX/SATA UPHY PLL hardware
+> power sequencers' output to enable/disable PLLE. PLLE hardware power
+> sequencer has to be enabled only after PEX/SATA UPHY PLL's sequencers
+> are enabled.
+>=20
+> Signed-off-by: JC Kuo <jckuo@nvidia.com>
+> ---
+> v3:
+>    no change
+>=20
+>  drivers/clk/tegra/clk-pll.c | 12 ------------
+>  1 file changed, 12 deletions(-)
 
- drivers/acpi/numa/srat.c | 69 +++++++++++++++++++++++++++++++++++++++-
- drivers/base/node.c      |  3 ++
- include/linux/nodemask.h |  1 +
- 3 files changed, 72 insertions(+), 1 deletion(-)
+Acked-by: Thierry Reding <treding@nvidia.com>
 
-diff --git a/drivers/acpi/numa/srat.c b/drivers/acpi/numa/srat.c
-index 15bbaab8500b..d27e8585132d 100644
---- a/drivers/acpi/numa/srat.c
-+++ b/drivers/acpi/numa/srat.c
-@@ -130,6 +130,36 @@ acpi_table_print_srat_entry(struct acpi_subtable_header *header)
- 		}
- 		break;
- 
-+	case ACPI_SRAT_TYPE_GENERIC_AFFINITY:
-+	{
-+		struct acpi_srat_generic_affinity *p =
-+			(struct acpi_srat_generic_affinity *)header;
-+
-+		if (p->device_handle_type == 0) {
-+			/*
-+			 * For pci devices this may be the only place they
-+			 * are assigned a proximity domain
-+			 */
-+			pr_debug("SRAT Generic Initiator(Seg:%u BDF:%u) in proximity domain %d %s\n",
-+				 *(u16 *)(&p->device_handle[0]),
-+				 *(u16 *)(&p->device_handle[2]),
-+				 p->proximity_domain,
-+				 (p->flags & ACPI_SRAT_GENERIC_AFFINITY_ENABLED) ?
-+				"enabled" : "disabled");
-+		} else {
-+			/*
-+			 * In this case we can rely on the device having a
-+			 * proximity domain reference
-+			 */
-+			pr_debug("SRAT Generic Initiator(HID=%.8s UID=%.4s) in proximity domain %d %s\n",
-+				(char *)(&p->device_handle[0]),
-+				(char *)(&p->device_handle[8]),
-+				p->proximity_domain,
-+				(p->flags & ACPI_SRAT_GENERIC_AFFINITY_ENABLED) ?
-+				"enabled" : "disabled");
-+		}
-+	}
-+	break;
- 	default:
- 		pr_warn("Found unsupported SRAT entry (type = 0x%x)\n",
- 			header->type);
-@@ -332,6 +362,41 @@ acpi_parse_gicc_affinity(union acpi_subtable_headers *header,
- 	return 0;
- }
- 
-+#if defined(CONFIG_X86) || defined(CONFIG_ARM64)
-+static int __init
-+acpi_parse_gi_affinity(union acpi_subtable_headers *header,
-+		       const unsigned long end)
-+{
-+	struct acpi_srat_generic_affinity *gi_affinity;
-+	int node;
-+
-+	gi_affinity = (struct acpi_srat_generic_affinity *)header;
-+	if (!gi_affinity)
-+		return -EINVAL;
-+	acpi_table_print_srat_entry(&header->common);
-+
-+	if (!(gi_affinity->flags & ACPI_SRAT_GENERIC_AFFINITY_ENABLED))
-+		return -EINVAL;
-+
-+	node = acpi_map_pxm_to_node(gi_affinity->proximity_domain);
-+	if (node == NUMA_NO_NODE || node >= MAX_NUMNODES) {
-+		pr_err("SRAT: Too many proximity domains.\n");
-+		return -EINVAL;
-+	}
-+	node_set(node, numa_nodes_parsed);
-+	node_set_state(node, N_GENERIC_INITIATOR);
-+
-+	return 0;
-+}
-+#else
-+static int __init
-+acpi_parse_gi_affinity(union acpi_subtable_headers *header,
-+		       const unsigned long end)
-+{
-+	return 0;
-+}
-+#endif /* defined(CONFIG_X86) || defined (CONFIG_ARM64) */
-+
- static int __initdata parsed_numa_memblks;
- 
- static int __init
-@@ -385,7 +450,7 @@ int __init acpi_numa_init(void)
- 
- 	/* SRAT: System Resource Affinity Table */
- 	if (!acpi_table_parse(ACPI_SIG_SRAT, acpi_parse_srat)) {
--		struct acpi_subtable_proc srat_proc[3];
-+		struct acpi_subtable_proc srat_proc[4];
- 
- 		memset(srat_proc, 0, sizeof(srat_proc));
- 		srat_proc[0].id = ACPI_SRAT_TYPE_CPU_AFFINITY;
-@@ -394,6 +459,8 @@ int __init acpi_numa_init(void)
- 		srat_proc[1].handler = acpi_parse_x2apic_affinity;
- 		srat_proc[2].id = ACPI_SRAT_TYPE_GICC_AFFINITY;
- 		srat_proc[2].handler = acpi_parse_gicc_affinity;
-+		srat_proc[3].id = ACPI_SRAT_TYPE_GENERIC_AFFINITY;
-+		srat_proc[3].handler = acpi_parse_gi_affinity;
- 
- 		acpi_table_parse_entries_array(ACPI_SIG_SRAT,
- 					sizeof(struct acpi_table_srat),
-diff --git a/drivers/base/node.c b/drivers/base/node.c
-index 508b80f6329b..53383f1f683c 100644
---- a/drivers/base/node.c
-+++ b/drivers/base/node.c
-@@ -980,6 +980,8 @@ static struct node_attr node_state_attr[] = {
- #endif
- 	[N_MEMORY] = _NODE_ATTR(has_memory, N_MEMORY),
- 	[N_CPU] = _NODE_ATTR(has_cpu, N_CPU),
-+	[N_GENERIC_INITIATOR] = _NODE_ATTR(has_generic_initiator,
-+					   N_GENERIC_INITIATOR),
- };
- 
- static struct attribute *node_state_attrs[] = {
-@@ -991,6 +993,7 @@ static struct attribute *node_state_attrs[] = {
- #endif
- 	&node_state_attr[N_MEMORY].attr.attr,
- 	&node_state_attr[N_CPU].attr.attr,
-+	&node_state_attr[N_GENERIC_INITIATOR].attr.attr,
- 	NULL
- };
- 
-diff --git a/include/linux/nodemask.h b/include/linux/nodemask.h
-index 27e7fa36f707..3334ce056335 100644
---- a/include/linux/nodemask.h
-+++ b/include/linux/nodemask.h
-@@ -399,6 +399,7 @@ enum node_states {
- #endif
- 	N_MEMORY,		/* The node has memory(regular, high, movable) */
- 	N_CPU,		/* The node has one or more cpus */
-+	N_GENERIC_INITIATOR,	/* The node has one or more Generic Initiators */
- 	NR_NODE_STATES
- };
- 
--- 
-2.19.1
+--Fba/0zbH8Xs+Fj9o
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl9x3I4ACgkQ3SOs138+
+s6EEmBAAuuvM/hY2DJvUpUjDsO0NA03byh0ZvnpmbiPAS93YVx96WfjbP1pMhKxQ
+1zeO8P1gXC0rf3o7B3th4zL9PJsLOc1mcoqLGIjo4jFvuOrc6yTHIJ7xSN0oVG+H
+1XQ8GWWoU3ErDW+TTgbnbjuwX1/cEJZLA9Ip1jsd+ANxo3oeknPvnKu2/WVLUYdB
+pBOg+lTnPR0CtgtRdMWkUSjtHAMruF0oGGP7tTQnRnM5cOgpinzy3N6KWUe5KlHV
+6UY2CUeACuAL2EqxmLjcK1HjusOJa19mbgdc4bhMCuvJdSRTtR/Ca4IL1Omk4+Pc
+aXEgCy+uhC9S4rHXCC6SkeuAUSPhNCS71/oL+EKVeXY8+G4Hrh+KPjE5bi1XkPOZ
++m4KqXfYZKv+gSnV+4/Cf7Wfxju7EbM9nybyKpOZg93ys0xmcB5spk7+Q5M0LfnM
+wW+dBwz9UeTPz+sLxJ7zx12ZOKpis/ZEJUSSkxVSxvnsHb+ZdAzoQhxM4wLP2lgo
+9BX2a4F5eF3IKpED0WxjaC4/czGI3Tvrv6RtYRIbAMngMw9e+8nHaYGgwmeIHR6g
+q78eUf/Q2CrZpymOerGGIUs0/nB0XzbsMFJTPDEfC4bYgg3HHo8tUfOshJGYf3Bz
+sr1hwQu6xUP8wGYtI5MBfrwHPfysa9LfNcca41bnzK1lrCaavuI=
+=QKJI
+-----END PGP SIGNATURE-----
+
+--Fba/0zbH8Xs+Fj9o--
