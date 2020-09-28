@@ -2,124 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E62DD27AE58
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 14:55:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73ABA27AE51
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 14:54:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726743AbgI1MzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 08:55:13 -0400
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:17038 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726350AbgI1MzL (ORCPT
+        id S1726714AbgI1Myp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 08:54:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53672 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726424AbgI1Myo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 08:55:11 -0400
-Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08SCt5Lr003527;
-        Mon, 28 Sep 2020 08:55:05 -0400
-Received: from nwd2mta4.analog.com ([137.71.173.58])
-        by mx0a-00128a01.pphosted.com with ESMTP id 33syg5y9s3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 28 Sep 2020 08:55:05 -0400
-Received: from SCSQMBX11.ad.analog.com (scsqmbx11.ad.analog.com [10.77.17.10])
-        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 08SCt0kS056643
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
-        Mon, 28 Sep 2020 08:55:01 -0400
-Received: from SCSQCASHYB7.ad.analog.com (10.77.17.133) by
- SCSQMBX11.ad.analog.com (10.77.17.10) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Mon, 28 Sep 2020 05:54:54 -0700
-Received: from SCSQMBX11.ad.analog.com (10.77.17.10) by
- SCSQCASHYB7.ad.analog.com (10.77.17.133) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Mon, 28 Sep 2020 05:54:54 -0700
-Received: from zeus.spd.analog.com (10.66.68.11) by SCSQMBX11.ad.analog.com
- (10.77.17.10) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
- Transport; Mon, 28 Sep 2020 05:54:54 -0700
-Received: from localhost.localdomain ([10.48.65.12])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 08SCsrdi029765;
-        Mon, 28 Sep 2020 08:54:56 -0400
-From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
-To:     <linux-iio@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>
-CC:     <linux-kernel@vger.kernel.org>, <jic23@kernel.org>,
-        <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
-        <ludovic.desroches@microchip.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>
-Subject: [PATCH 2/2] iio: adc: at91_adc: const-ify some driver data
-Date:   Mon, 28 Sep 2020 15:54:24 +0300
-Message-ID: <20200928125424.35921-2-alexandru.ardelean@analog.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200928125424.35921-1-alexandru.ardelean@analog.com>
-References: <20200928125424.35921-1-alexandru.ardelean@analog.com>
+        Mon, 28 Sep 2020 08:54:44 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12DBEC061755;
+        Mon, 28 Sep 2020 05:54:44 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id d4so983285wmd.5;
+        Mon, 28 Sep 2020 05:54:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=rYxYmSPSlKHJNuyTnVmBf92AIgqLsIDS6+bNfIKzBOI=;
+        b=f/uiZ9J2wDYbxzP4nCnLDSCb/JeCxxtL/tewdvYGpcaY1AhOz0TNDO2ya69nfewfbK
+         4QWnnDa4EIozAwsOnOwzAdX6rewBlqYp5HsdmuP+Yv2MZFix37LxfTnJJYkM/QGlUiwe
+         jeTUiIJV/FJj+n6KNMy6t2xv/BACw9bzhcdtcyz7xHETTHOLX0kNjR31a46lM0pm95uB
+         eca9KBxUHA+y/OJELpA0G+XxzcLzDAVuTSLtHf09UfzHYsXJvfgFIPDUgmmQn3czGVHa
+         mKO2H87kwZyGXdDKxj+pTaxCV9+JXyK1l6gazdQP++Vb6mYqBPUsK9Bi1n5WfXdIFhPi
+         32MQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=rYxYmSPSlKHJNuyTnVmBf92AIgqLsIDS6+bNfIKzBOI=;
+        b=FmsV1D7OPWSyYFSwkCLIJAC7ncPjKufz7mR5tZYiXZVvnRIXteDvADJirp9PioM8km
+         UqL0KA8aJHThPbFrUpiFkmFALYtM7r4ewaAIvtcCfuao/ptUFfrWei9EaivpKDGBUTp5
+         mWSHDHjqhwxKXGrlgazn+KFzftrYCer3oZK1bbtInlWxvelmXsnsnfQYkbYWegdC4VPF
+         kG7BugMNbHZv5S7zasibRnxFiC+RHrpangsfrNMCErJuBrO3kHn9zC2ZvRHBGBVODRcy
+         xudmmypb6nHWU3Il5J312ypS3z2BUgsfY9SpBj9WEICfKGcy2DaHGnnO371W1X1seHhh
+         S8XA==
+X-Gm-Message-State: AOAM531OzW1iR/C+acfTlb7TLvVZyChkUjSxr65bqJOs4t+86Jo3VaXr
+        K1+QnSipp2ByE+P+bDRM3NoCXzbUkxA=
+X-Google-Smtp-Source: ABdhPJxPfYvwg2Qa2IcRtFo+t1RnFC+hG2dUggvFdJnTsza1RTXfZ4gcrYniucd8YeTTD2HP9vMFcg==
+X-Received: by 2002:a7b:ce89:: with SMTP id q9mr1481722wmj.65.1601297682561;
+        Mon, 28 Sep 2020 05:54:42 -0700 (PDT)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id z8sm1415537wrl.11.2020.09.28.05.54.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Sep 2020 05:54:41 -0700 (PDT)
+Date:   Mon, 28 Sep 2020 14:54:38 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     JC Kuo <jckuo@nvidia.com>
+Cc:     gregkh@linuxfoundation.org, robh@kernel.org, jonathanh@nvidia.com,
+        kishon@ti.com, linux-tegra@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, nkristam@nvidia.com
+Subject: Re: [PATCH v3 00/15] Tegra XHCI controller ELPG support
+Message-ID: <20200928125438.GC3065790@ulmo>
+References: <20200909081041.3190157-1-jckuo@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ADIRoutedOnPrem: True
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-28_11:2020-09-28,2020-09-28 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 malwarescore=0
- priorityscore=1501 impostorscore=0 suspectscore=0 lowpriorityscore=0
- spamscore=0 bulkscore=0 mlxscore=0 clxscore=1015 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009280103
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="96YOpH+ONegL0A3E"
+Content-Disposition: inline
+In-Reply-To: <20200909081041.3190157-1-jckuo@nvidia.com>
+User-Agent: Mutt/1.14.7 (2020-08-29)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The main intent is to get rid of the cast for the void-pointer returned by
-of_device_get_match_data().
 
-This requires const-ifying the 'caps' and 'registers' references on the
-at91_adc_state struct.
+--96YOpH+ONegL0A3E
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-The caps can be obtained also from the old platform_data (in the
-at91_adc_probe_pdata() function), but that cast is not touched in this
-patch, since the old platform_data should be removed/cleaned-away.
-Also, that cast deals with converting a kernel_ulong_t type to a pointer.
-So, updating that cast doesn't yield any benefit.
+On Wed, Sep 09, 2020 at 04:10:26PM +0800, JC Kuo wrote:
+> Tegra XHCI controler can be placed in ELPG (Engine Level PowerGated)
+> state for power saving when all of the connected USB devices are in
+> suspended state. This patch series includes clk, phy and pmc changes
+> that are required for properly place controller in ELPG and bring
+> controller out of ELPG.
+>=20
+> JC Kuo (15):
+>   clk: tegra: Add PLLE HW power sequencer control
+>   clk: tegra: Don't enable PLLE HW sequencer at init
 
-Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
----
- drivers/iio/adc/at91_adc.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+Is it safe to apply this second patch before the others have applied?
+Since we now need to explicitly enable the HW sequencer, it won't be
+enabled before the corresponding patch does that. So applying patch 2
+before the others sounds like it would break existing users of the HW
+sequencer.
 
-diff --git a/drivers/iio/adc/at91_adc.c b/drivers/iio/adc/at91_adc.c
-index c9ec0a4a357e..7d846a2852a5 100644
---- a/drivers/iio/adc/at91_adc.c
-+++ b/drivers/iio/adc/at91_adc.c
-@@ -202,7 +202,7 @@ struct at91_adc_state {
- 	struct mutex		lock;
- 	u8			num_channels;
- 	void __iomem		*reg_base;
--	struct at91_adc_reg_desc *registers;
-+	const struct at91_adc_reg_desc *registers;
- 	u32			startup_time;
- 	u8			sample_hold_time;
- 	bool			sleep_mode;
-@@ -214,7 +214,7 @@ struct at91_adc_state {
- 	u32			res;		/* resolution used for convertions */
- 	bool			low_res;	/* the resolution corresponds to the lowest one */
- 	wait_queue_head_t	wq_data_avail;
--	struct at91_adc_caps	*caps;
-+	const struct at91_adc_caps	*caps;
- 
- 	/*
- 	 * Following ADC channels are shared by touchscreen:
-@@ -550,7 +550,7 @@ static int at91_adc_configure_trigger(struct iio_trigger *trig, bool state)
- {
- 	struct iio_dev *idev = iio_trigger_get_drvdata(trig);
- 	struct at91_adc_state *st = iio_priv(idev);
--	struct at91_adc_reg_desc *reg = st->registers;
-+	const struct at91_adc_reg_desc *reg = st->registers;
- 	u32 status = at91_adc_readl(st, reg->trigger_register);
- 	int value;
- 	u8 bit;
-@@ -876,7 +876,7 @@ static int at91_adc_probe_dt(struct iio_dev *idev,
- 	if (!node)
- 		return -EINVAL;
- 
--	st->caps = (struct at91_adc_caps *)of_device_get_match_data(&pdev->dev);
-+	st->caps = of_device_get_match_data(&pdev->dev);
- 
- 	st->use_external = of_property_read_bool(node, "atmel,adc-use-external-triggers");
- 
--- 
-2.17.1
+Thierry
 
+--96YOpH+ONegL0A3E
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl9x3Q4ACgkQ3SOs138+
+s6G+Ug//R/fLvXqIt1mer+0OLbF1HvLSpph1Uzb1i9yiyzJaXGzgYzOpQByhqtr9
+V4iplc1w03WbTKIxv1Rg+S7MHCz7Y5nPfz/5bceODM49/y48soHgYD1Se/c3d1HP
+3ixAHNP4/uHlILzQdT10pN6xNvCiQOWqxxmCxZ0/WDMV8MvMZbcYcGBkduwa37tp
+RDxbCaL6o7hTuPi8IKAyqbYbMgneofhUmOju+ea3Hu1QGTT+B7wDbPwJ4/Jl4PEr
+iWZGbrdUUX6EQzkNX4U9fQ68Gzx69B6YRj9hv5gbC6l/31G3C1srtUcYJjKfP9gp
+jSCFDo6pTzQl6Itgf2h0OHgVviUtgw8REKrrrCw6I5kn/sWm5tEf2vLbufzlnuSw
+qdaA5BJgpGn+ASodbthVTHdfJCfGFe4Jk8n2O/0bn9NxHDAzBZ+eCGAcsotfQcwd
+o/d3Cdl0JME7bh3IDpU68Ngjqy6XgGivcdrot/lcRrUf9cAH9VNEOZLBvJ+u7GnO
+MH7BUQgOXqei/EZCiak7KwIhfFtpPH7iRlqbQSAu9HCx4sfw6BawmWUlBL4q6Wmm
+7adpmRA+TJOaY0JD5YrwyRgmvV7/TLHIGi/mGqwZWUJpVgIMqmLYA5NJmpo0yz/I
+2CC52aFd5iJnVYJvxmBbYfJpMKDDiyXf+ttnZKCHskVEt+JaI9M=
+=aVne
+-----END PGP SIGNATURE-----
+
+--96YOpH+ONegL0A3E--
