@@ -2,117 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64F8927B1CD
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 18:26:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DEFD27B1D5
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 18:26:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726721AbgI1Q0C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 12:26:02 -0400
-Received: from z5.mailgun.us ([104.130.96.5]:58942 "EHLO z5.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726504AbgI1Q0B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 12:26:01 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1601310361; h=In-Reply-To: Content-Type: MIME-Version:
- References: Message-ID: Subject: Cc: To: From: Date: Sender;
- bh=oUdEYLO/LBcwhMGcfeLJRSq6/QgcQ4bl42FimYBDM60=; b=BGY8LyqQczGkiF/yZO4Phf8JAGJMzqoobdl02DaFQgS29J9kZGzmk58cTCcnswAGFl76hO1A
- XD3JY8TSCtXVfBwEZu0UlfnvZcKqDmhGRpbki9Hpr/VrXvFj6nC1T3Vt60msSGQhH+T2nPGz
- MFyHsynTi7aGz2qErf3Maiiif+8=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 5f720e987e9d6827ec7cf120 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 28 Sep 2020 16:26:00
- GMT
-Sender: jcrouse=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 9AF86C433F1; Mon, 28 Sep 2020 16:26:00 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from jcrouse1-lnx.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: jcrouse)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 22B0FC433CA;
-        Mon, 28 Sep 2020 16:25:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 22B0FC433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jcrouse@codeaurora.org
-Date:   Mon, 28 Sep 2020 10:25:56 -0600
-From:   Jordan Crouse <jcrouse@codeaurora.org>
-To:     kholk11@gmail.com
-Cc:     robdclark@gmail.com, sean@poorly.run, airlied@linux.ie,
-        daniel@ffwll.ch, konradybcio@gmail.com, marijns95@gmail.com,
-        martin.botka1@gmail.com, linux-arm-msm@vger.kernel.org,
-        freedreno@lists.freedesktop.org, phone-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/7] drm/msm/a5xx: Reset VBIF before PC only on A510 and
- A530
-Message-ID: <20200928162555.GF29832@jcrouse1-lnx.qualcomm.com>
-Mail-Followup-To: kholk11@gmail.com, robdclark@gmail.com, sean@poorly.run,
-        airlied@linux.ie, daniel@ffwll.ch, konradybcio@gmail.com,
-        marijns95@gmail.com, martin.botka1@gmail.com,
-        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
-        phone-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200926125146.12859-1-kholk11@gmail.com>
- <20200926125146.12859-5-kholk11@gmail.com>
+        id S1726760AbgI1Q0L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 12:26:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58104 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726730AbgI1Q0K (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 12:26:10 -0400
+Received: from mail-oo1-xc44.google.com (mail-oo1-xc44.google.com [IPv6:2607:f8b0:4864:20::c44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDB0CC061755;
+        Mon, 28 Sep 2020 09:26:09 -0700 (PDT)
+Received: by mail-oo1-xc44.google.com with SMTP id k13so464766oor.2;
+        Mon, 28 Sep 2020 09:26:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=gaa0esapDG6wsuM6H+8aLVbUZepUNh74NuiYxnC9nQc=;
+        b=XK7oKUWGIzEm5Td2eEYrcUpoN3v42O2pTgpQnx9ne6eiiD+O0Hl3tpToUimbFAvND4
+         UcxoBaI+ZOG7vYGhf2lFtZn7hm51DXEqYCn1GYjDsz/6LIKTn5F11LYXe0ouA24cL+B3
+         Egz+jktaYlEpXvsINaJPj0sHY+qA8YPgi85v7kztMUFKy89ZJjd5vv0M17wmwpJ7kcIZ
+         35XO0RmrutfJIcYI5v4aM96m34a+u8DxkcSpWRSP7eEoxlbGLtpqdIbU/ANt1BSCvWns
+         cnXZWWzC3t2x96a7IAH/d+6mw2Gl6Zs1SG9xgx4a3wSZAQRG5iJLqOg3vrqmbFcKdACg
+         Hnzw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to:user-agent;
+        bh=gaa0esapDG6wsuM6H+8aLVbUZepUNh74NuiYxnC9nQc=;
+        b=cYL8i4veSLNjpE9hK7+MxaD4Rkk7xWNbo5Epl6pKAc6TkHAjaTp6mQ6jAfN4JfmhPs
+         2jBGv3jylZK/UY2Ca8nDRZzJIBqmXsu1m6ry9B06I1BZLXAv3YxczxqK9Al+k2tKNJGs
+         KlemcKBcak47Q2pILsWzKEoOa8INEl3q7XoFG3llxkwnoB4vxzkYwDOFYB24FDrOs0C3
+         380K+Ok4YRMW3gddObIKOSMHWJMMFy0obJterUOaGrmKQzQc40fO1FhMadPc0INzCVQ+
+         yp7sTMBl9gETOjLeaLd0OF2JhIUWgIFmCgbCi/jIQ7UNZa6cWou2oVDjJ52hwfNUDRv9
+         K+Jg==
+X-Gm-Message-State: AOAM531Lf7q0vkj5B1hzbUsvDgw5zPD2y/n8d3iEMLAVvMJ+eKJlPIzY
+        oudtmqT72dlbdmhvSdsjRNzNNX1ivHU=
+X-Google-Smtp-Source: ABdhPJx7hjLir8z15uvrpf6rsWDk7pFU7o8egW1/fKlQNlIH6H3U33mvnicdHfTx0B7T1cvtZ4pTNQ==
+X-Received: by 2002:a4a:81:: with SMTP id 123mr1419478ooh.80.1601310369270;
+        Mon, 28 Sep 2020 09:26:09 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id x198sm296092oix.33.2020.09.28.09.26.07
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 28 Sep 2020 09:26:08 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Mon, 28 Sep 2020 09:26:06 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     Bruno Thomsen <bruno.thomsen@gmail.com>, linux-rtc@vger.kernel.org,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        linux-watchdog@vger.kernel.org,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Qiang Zhao <qiang.zhao@nxp.com>
+Subject: Re: [PATCH 2/2] [RFC] rtc: pcf2127: only use watchdog when
+ explicitly available
+Message-ID: <20200928162606.GA106276@roeck-us.net>
+References: <20200924074715.GT9675@piout.net>
+ <20200924105256.18162-1-u.kleine-koenig@pengutronix.de>
+ <20200924105256.18162-3-u.kleine-koenig@pengutronix.de>
+ <CAH+2xPAVvMpTgT3W=0AsKy=9jkS8qd6eB65Qebw51YKRQshaGQ@mail.gmail.com>
+ <8f88f2a2-4a6d-021f-4404-f05518b0477d@roeck-us.net>
+ <20200928084343.cl42lxsiionvq7tg@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20200926125146.12859-5-kholk11@gmail.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200928084343.cl42lxsiionvq7tg@pengutronix.de>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 26, 2020 at 02:51:43PM +0200, kholk11@gmail.com wrote:
-> From: AngeloGioacchino Del Regno <kholk11@gmail.com>
+On Mon, Sep 28, 2020 at 10:43:43AM +0200, Uwe Kleine-König wrote:
+> On Sun, Sep 27, 2020 at 08:54:47AM -0700, Guenter Roeck wrote:
+> > On 9/27/20 1:09 AM, Bruno Thomsen wrote:
+> > > Den tor. 24. sep. 2020 kl. 12.53 skrev Uwe Kleine-König
+> > > <u.kleine-koenig@pengutronix.de>:
+> > >>
+> > >> Most boards using the pcf2127 chip (in my bubble) don't make use of the
+> > >> watchdog functionality and the respective output is not connected. The
+> > >> effect on such a board is that there is a watchdog device provided that
+> > >> doesn't work.
+> > >>
+> > >> So only register the watchdog if the device tree has a "has-watchdog"
+> > >> property.
+> > >>
+> > >> Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+> > >> ---
+> > >>  drivers/rtc/rtc-pcf2127.c | 3 ++-
+> > >>  1 file changed, 2 insertions(+), 1 deletion(-)
+> > >>
+> > >> diff --git a/drivers/rtc/rtc-pcf2127.c b/drivers/rtc/rtc-pcf2127.c
+> > >> index 5b1f1949b5e5..8bd89d641578 100644
+> > >> --- a/drivers/rtc/rtc-pcf2127.c
+> > >> +++ b/drivers/rtc/rtc-pcf2127.c
+> > >> @@ -340,7 +340,8 @@ static int pcf2127_watchdog_init(struct device *dev, struct pcf2127 *pcf2127)
+> > >>         u32 wdd_timeout;
+> > >>         int ret;
+> > >>
+> > >> -       if (!IS_ENABLED(CONFIG_WATCHDOG))
+> > >> +       if (!IS_ENABLED(CONFIG_WATCHDOG) ||
+> > >> +           !device_property_read_bool(dev, "has-watchdog"))
+> > >>                 return 0;
+> > > 
+> > > I don't think the compiler can remove the function if
+> > > CONFIG_WATCHDOG is disabled due to the device tree
+> > > value check. Maybe it can if split into 2 conditions.
+> > > 
+> > 
+> > If the first part of the expression is always false, the second
+> > part should not even be evaluated.
 > 
-> Resetting the VBIF before power collapse is done to avoid getting
-> bogus FIFO entries during the suspend sequence or subsequent resume,
-> but this is doable only on Adreno 510 and Adreno 530, as the other
-> units will tendentially lock up.
-> Especially on Adreno 508, the GPU will show lockups and very bad
-> slownesses after processing the first frame.
+> This is wrong. For || the second expression isn't evaluated if the first
+> evaluates to true (and the whole expression becomes true). This is the
+> intended behaviour: If CONFIG_WATCHDOG is off, we don't need to check
+> for the dt property and just skip the watchdog part.
 > 
-> Avoiding to execute the RBBM SW Reset before suspend will stop the
-> lockup issue from happening on at least Adreno 508/509/512.
+Sorry, I meant to say "If the first part of the expression is always true".
 
-Reviewed-by: Jordan Crouse <jcrouse@codeaurora.org>
+Guenter
 
-> Signed-off-by: AngeloGioacchino Del Regno <kholk11@gmail.com>
-> ---
->  drivers/gpu/drm/msm/adreno/a5xx_gpu.c | 8 +++++---
->  1 file changed, 5 insertions(+), 3 deletions(-)
+> > Either case, the code now hard depends on the compiler optimizing the
+> > code away.
+> > 
+> > It calls devm_watchdog_register_device() which doesn't exist
+> > if CONFIG_WATCHDOG is not enabled. I didn't know that this is safe,
+> > and I would personally not want to rely on it, but we live and
+> > learn.
 > 
-> diff --git a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c b/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
-> index 9bcbf6cd5a28..00df5de3c8e3 100644
-> --- a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
-> +++ b/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
-> @@ -1306,10 +1306,12 @@ static int a5xx_pm_suspend(struct msm_gpu *gpu)
->  
->  	/*
->  	 * Reset the VBIF before power collapse to avoid issue with FIFO
-> -	 * entries
-> +	 * entries on Adreno A510 and A530 (the others will tend to lock up)
->  	 */
-> -	gpu_write(gpu, REG_A5XX_RBBM_BLOCK_SW_RESET_CMD, 0x003C0000);
-> -	gpu_write(gpu, REG_A5XX_RBBM_BLOCK_SW_RESET_CMD, 0x00000000);
-> +	if (adreno_is_a510(adreno_gpu) || adreno_is_a530(adreno_gpu)) {
-> +		gpu_write(gpu, REG_A5XX_RBBM_BLOCK_SW_RESET_CMD, 0x003C0000);
-> +		gpu_write(gpu, REG_A5XX_RBBM_BLOCK_SW_RESET_CMD, 0x00000000);
-> +	}
->  
->  	return msm_gpu_pm_suspend(gpu);
->  }
+> AFAICT this is save and used in other places in the kernel, too.  This
+> is one of the reasons why you cannot compile the kernel with -O0.
+> 
+> Best regards
+> Uwe
+> 
 > -- 
-> 2.28.0
-> 
+> Pengutronix e.K.                           | Uwe Kleine-König            |
+> Industrial Linux Solutions                 | https://www.pengutronix.de/ |
 
--- 
-The Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project
+
