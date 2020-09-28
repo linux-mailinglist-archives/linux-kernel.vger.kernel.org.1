@@ -2,82 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 600C427B3B5
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 19:54:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8666127B3DC
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 20:00:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726597AbgI1RyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 13:54:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58422 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726552AbgI1RyH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 13:54:07 -0400
-Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E980920739;
-        Mon, 28 Sep 2020 17:54:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601315646;
-        bh=eRK9s/qdp7HfBAgb/9dXe02+7LZBsL6ffyU2erZwEFM=;
-        h=Date:From:To:Cc:Subject:From;
-        b=0dLGNWA5IX9gZnjYZAzBKptuiEXVyZdwEyKIeEyvpzCYz9dSe+7O9FbXIwADMA+PU
-         /tTbj3P+yG+3V0zYKqLB1/FHjW+NId+zvcnAkAab12fRCEBLKwcWynNGQXYpR2gsj2
-         MHFIhbhI2ew71U2OAButRmh8e2575TGGd9LIKqlM=
-Date:   Mon, 28 Sep 2020 12:59:45 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Corentin Labbe <clabbe.montjoie@gmail.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>
-Cc:     linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Subject: [PATCH][next] crypto: sun8i-ss - Fix memory leak in
- sun8i_ss_prng_generate()
-Message-ID: <20200928175945.GA11320@embeddedor>
+        id S1726785AbgI1SAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 14:00:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44522 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726348AbgI1SAQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 14:00:16 -0400
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A36F8C061755;
+        Mon, 28 Sep 2020 11:00:16 -0700 (PDT)
+Received: by mail-yb1-xb31.google.com with SMTP id 133so1554949ybg.11;
+        Mon, 28 Sep 2020 11:00:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=omNyM76XmDgvZI+KFxBjmJZIpbDw6eudETNMcRJNaF4=;
+        b=PwwBtybD8u7cc2QuGRUBVe+E6rm2zwriwnzjCwSK5KpwuQ+zb90p+U+BiY3Vexv+i/
+         LD2oEBC/Oyctv3/yDEdyopDnQ2WgHvsm7Ib52lRldRYyCMYaApx+q5dBERupkkTM/N0L
+         betOAyChddISzg3/oBEDmb4ne28X63YzPkhN3uu9BEpHH24DSQVRQTydxViXyKncwJnj
+         96pnR1d3QPa7627H6mqB9jN93HsBW/jgZQmOD+vVNPzj8kIzsNKSCsfWWt1Ihsl8nW47
+         aQLumJpvtN70zdNC04aNdYFeVYtewC44VrkLoB0mJMsGZtNVnrCIF2wawLCn4uz3uGcq
+         M8Zg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=omNyM76XmDgvZI+KFxBjmJZIpbDw6eudETNMcRJNaF4=;
+        b=BRwl6SquhbzgIUBXYDaFSgVRrS4o3iVu+uwgNpmrP0cMIe1jm3VF27B39yDqa3b02O
+         D7I9huCqPjgJfyeiaTciEzZOTIRuO7k3+3vZlgRBy7ZkPqC0mnpwp65lFFr0g4jbQT+3
+         N/geGiNYQ77OGQmKQ9d0UF0I9Cxp/ohknH95fwj6aN8x0DQ9wsruBJPDmKIrezLR8ff6
+         EekF1IhSRj7lUaotcI4lMkn8Z03bZ7zocQL/2vXS1+25aaq7e/bbo46MoZ3WCb9u3uMp
+         2VTnwszLzPmaI3+fSNyfbQYQyoyRJyIbkq13XcEif0/X+4jiQePlyFXOxYU7DT1/ROh4
+         0u6g==
+X-Gm-Message-State: AOAM531HxLsEHo5NrkauaYL3KeWSF6+1kxrogH3qYftaOnpQmK9dOeiA
+        PJP/JX2+CISztHJPg4VnZpoL/rgd7D1jwG9F41Y=
+X-Google-Smtp-Source: ABdhPJzOzXBoYu4VzeV9BpEDZjaRR8f8pTg/OWvKh7sMINKkbWrnzr3Ks1gkqJTIdeTPEXXJv5KxhMrcUc9Ukhda9T4=
+X-Received: by 2002:a25:5088:: with SMTP id e130mr1189164ybb.234.1601316015701;
+ Mon, 28 Sep 2020 11:00:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <CACE9dm_eypZ4wn8PpYYCYNuM501_M-8pH7by=U-6hOmJCwuxig@mail.gmail.com>
+ <87bb66c2a7f94bd1ab768a8160e48e39@AcuMS.aculab.com>
+In-Reply-To: <87bb66c2a7f94bd1ab768a8160e48e39@AcuMS.aculab.com>
+From:   Dmitry Kasatkin <dmitry.kasatkin@gmail.com>
+Date:   Mon, 28 Sep 2020 21:00:54 +0300
+Message-ID: <CACE9dm8CPAFSY53Bm+vJvmh2m=Nm0FDe1mCtrwFAQnDE1p-XVw@mail.gmail.com>
+Subject: Re: Mount options may be silently discarded
+To:     David Laight <David.Laight@aculab.com>
+Cc:     "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        linux-security-module <linux-security-module@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Set _err_ to the return error code -EFAULT before jumping to the new
-label err_d, so resources for _d_ can be released before returning
-from function sun8i_ss_prng_generate().
+On Mon, Sep 28, 2020 at 5:36 PM David Laight <David.Laight@aculab.com> wrote:
+>
+> From: Dmitry Kasatkin
+> > Sent: 28 September 2020 15:03
+> >
+> > "copy_mount_options" function came to my eyes.
+> > It splits copy into 2 pieces - over page boundaries.
+> > I wonder what is the real reason for doing this?
+> > Original comment was that we need exact bytes and some user memcpy
+> > functions  do not return correct number on page fault.
+> >
+> > But how would all other cases work?
+> >
+> > https://elixir.bootlin.com/linux/latest/source/fs/namespace.c#L3075
+> >
+> > if (size != PAGE_SIZE) {
+> >        if (copy_from_user(copy + size, data + size, PAGE_SIZE - size))
+> >             memset(copy + size, 0, PAGE_SIZE - size);
+> > }
+> >
+> > This looks like some options may be just discarded?
+> > What if it is an important security option?
+> >
+> > Why it does not return EFAULT, but just memset?
+>
 
-Addresses-Coverity-ID: 1497459 ("Resource leak")
-Fixes: ac2614d721de ("crypto: sun8i-ss - Add support for the PRNG")
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- drivers/crypto/allwinner/sun8i-ss/sun8i-ss-prng.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+> The user doesn't supply the transfer length, the max size
+> is a page.
+> Since the copy can only start to fail on a page boundary
+> reading in two pieces is exactly the same as knowing the
+> address at which the transfer started to fail.
+>
+> Since the actual mount options can be much smaller than
+> a page (and usually are) zero-filling is best.
+>
 
-diff --git a/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-prng.c b/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-prng.c
-index 08a1473b2145..0573f6289e8b 100644
---- a/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-prng.c
-+++ b/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-prng.c
-@@ -103,7 +103,8 @@ int sun8i_ss_prng_generate(struct crypto_rng *tfm, const u8 *src,
- 	dma_iv = dma_map_single(ss->dev, ctx->seed, ctx->slen, DMA_TO_DEVICE);
- 	if (dma_mapping_error(ss->dev, dma_iv)) {
- 		dev_err(ss->dev, "Cannot DMA MAP IV\n");
--		return -EFAULT;
-+		err = -EFAULT;
-+		goto err_d;
- 	}
- 
- 	dma_dst = dma_map_single(ss->dev, d, todo, DMA_FROM_DEVICE);
-@@ -160,7 +161,7 @@ int sun8i_ss_prng_generate(struct crypto_rng *tfm, const u8 *src,
- 	dma_unmap_single(ss->dev, dma_dst, todo, DMA_FROM_DEVICE);
- err_iv:
- 	dma_unmap_single(ss->dev, dma_iv, ctx->slen, DMA_TO_DEVICE);
--
-+err_d:
- 	if (!err) {
- 		memcpy(dst, d, dlen);
- 		/* Update seed */
+Hi David,
+
+Ok. This is now obvious that it is done for "proper" memseting...
+
+But why "we" should allow "discarding" failed part instead of failing
+with EFAULT as a whole?
+
+Thanks,
+
+>         David
+>
+> -
+> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+> Registration No: 1397386 (Wales)
+
+
+
 -- 
-2.27.0
-
+Thanks,
+Dmitry
