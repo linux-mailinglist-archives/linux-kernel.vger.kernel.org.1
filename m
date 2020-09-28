@@ -2,151 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8668827B607
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 22:13:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DF6527B60A
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 22:13:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726655AbgI1UNg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 16:13:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36810 "EHLO
+        id S1726826AbgI1UNp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 16:13:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726325AbgI1UNf (ORCPT
+        with ESMTP id S1726325AbgI1UNp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 16:13:35 -0400
-Received: from mail-ua1-x941.google.com (mail-ua1-x941.google.com [IPv6:2607:f8b0:4864:20::941])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91C51C061755
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 13:13:35 -0700 (PDT)
-Received: by mail-ua1-x941.google.com with SMTP id g16so2645755uan.5
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 13:13:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KKmy3/ej2CG/v3dkID5ukRA7UHlXu83nJYoCeRGRTRo=;
-        b=NhgBjcSWcCYK10M+tDx1DDwEk6saRHYtvQn59YqnUfvnHVEsjdmilUF+vAUFKNYLGO
-         6+TNQntYCawfDFXwINjvm7om9UoL6Dss7U+J8Wwrdl4WU1uaCyNFG+L49KJKgtwvgH0A
-         b8mMxxbeh2QZFZ6eshOWl+iaLY/zchPMuZ2WxSUDreGjobMd8CsEKUteNwBT6+DdYy8W
-         3Wyxor8traemXBLiIwZvoRZa+QCN+WnOdYuWqqIXTPIr/CkDkgntnH+TghUuPLJ567s1
-         2eTQV1lxJ/my3nOSTTVCrDyL/XNFD40eUW5dvgdPCm1HhAewyYKL9qfPO7NHNxMItAXh
-         YBGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KKmy3/ej2CG/v3dkID5ukRA7UHlXu83nJYoCeRGRTRo=;
-        b=OL3D/M+b8w0alJWAZlELu/lR8uSoWF8ZG3CiJdqIE/vyX3hHG3UdW0p5GCDGONCdGY
-         BWhGelrqIzVChZaLwl65glzIsa5CQ9Q8MI1Vl3iZ3wxFfnDDB6qYkycsUbo/2YKIVzLU
-         W0nTH5GqkEnCehPdKUFRo6OuW0fjcz5suv7zYiYC39lcImbKVsog1al1K8zd0pZXDX0q
-         xaCojBzexqa2//8m0HQuBPjNbpH8fpVuaMjNipelUkVyMbGVCJ0I6AMYmv+qV9XhUvGl
-         ybKWFqphD1P0JPiWLw2Byivwqgpwd1d+xhizqlMLVrYMbYD06kABPt9/09GVFedzU9x2
-         gaRQ==
-X-Gm-Message-State: AOAM533m3wYlsxG49NzLQhlMjtI0zveuOLU7i4MSXPIqPO0k88D5pNI8
-        0ugCwKgH/cph2lgLcRpQ+S6tvohbghmaKcutiV7RDA==
-X-Google-Smtp-Source: ABdhPJxoN7JeEsyIWinDK9sxwN7udNdcRoxDqo1yKP9DEzwbZRsWc/07ONbm7vtaFGb6e9hVfjF1e42n93qfAZbczt0=
-X-Received: by 2002:ab0:2c1a:: with SMTP id l26mr2140518uar.6.1601324014711;
- Mon, 28 Sep 2020 13:13:34 -0700 (PDT)
+        Mon, 28 Sep 2020 16:13:45 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6464DC0613CE
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 13:13:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=t2Q0uIBZ/RzOgL5GzysOkr7fCQhRlmEFsQdJ/RR5oT0=; b=Hh0jWyOLmF2ubwBcGSJg9VHd0c
+        00enI/j0nkFWm9hZNU3/FCYw7ZgJ0g8eCVenH3BCTKdaYtaTQFNYEveagYc51mzw+FQiUPpLgkWJH
+        FZARv2Fb0LOfTartGA6NV2F1P5kRnIAR3ZfizO1mWvGGG8jN+HcuFWhwYvBY8yxXon7TJzLXirxGJ
+        KxkwaeI7DYNuwgI6LOEsAURn4Z7d8PZmnBMiLrm4AFjuhl5NdBeL/NQm41JtJrJ0ENMIIsWFFZyEv
+        EltP7D0BscL07X6zUliaCskgs24B2vaeSADDRMdPyBKk01rEH9lZ2BuxT+y1JwRYg8rVw2Oc7neIW
+        32u1/wOQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kMzWg-00022X-DV; Mon, 28 Sep 2020 20:13:34 +0000
+Date:   Mon, 28 Sep 2020 21:13:34 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     linux-mm@kvack.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        William Kucharski <william.kucharski@oracle.com>,
+        Johannes Weiner <hannes@cmpxchg.org>, Jan Kara <jack@suse.cz>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Dave Chinner <dchinner@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 00/12] Overhaul multi-page lookups for THP
+Message-ID: <20200928201334.GC30994@casper.infradead.org>
+References: <20200914130042.11442-1-willy@infradead.org>
 MIME-Version: 1.0
-References: <20200918021455.2067301-1-sashal@kernel.org> <20200918021455.2067301-64-sashal@kernel.org>
- <CA+G9fYuT_qF2sbmCV76C3B=KS7tSjo9XDkCLwm0A4ZBLJ_eBtw@mail.gmail.com>
-In-Reply-To: <CA+G9fYuT_qF2sbmCV76C3B=KS7tSjo9XDkCLwm0A4ZBLJ_eBtw@mail.gmail.com>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 29 Sep 2020 01:43:22 +0530
-Message-ID: <CA+G9fYtRj=+KM0CJZjPnfCn6OHcW7iFAkE=ECKiz4uOOyq=B2Q@mail.gmail.com>
-Subject: Re: [PATCH AUTOSEL 4.9 64/90] serial: uartps: Wait for tx_empty in
- console setup
-To:     Sasha Levin <sashal@kernel.org>,
-        Raviteja Narayanam <raviteja.narayanam@xilinx.com>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        linux- stable <stable@vger.kernel.org>,
-        Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-serial@vger.kernel.org,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        lkft-triage@lists.linaro.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200914130042.11442-1-willy@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 29 Sep 2020 at 01:41, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
->
-> On Fri, 18 Sep 2020 at 07:55, Sasha Levin <sashal@kernel.org> wrote:
-> >
-> > From: Raviteja Narayanam <raviteja.narayanam@xilinx.com>
-> >
-> > [ Upstream commit 42e11948ddf68b9f799cad8c0ddeab0a39da33e8 ]
-> >
-> > On some platforms, the log is corrupted while console is being
-> > registered. It is observed that when set_termios is called, there
-> > are still some bytes in the FIFO to be transmitted.
-> >
-> > So, wait for tx_empty inside cdns_uart_console_setup before calling
-> > set_termios.
-> >
-> > Signed-off-by: Raviteja Narayanam <raviteja.narayanam@xilinx.com>
-> > Reviewed-by: Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>
-> > Link: https://lore.kernel.org/r/1586413563-29125-2-git-send-email-raviteja.narayanam@xilinx.com
-> > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > Signed-off-by: Sasha Levin <sashal@kernel.org>
->
-> stable rc 4.9 arm64 build broken.
 
-and stable rc 4.9 arm build broken.
+ping
 
->
-> drivers/tty/serial/xilinx_uartps.c: In function 'cdns_uart_console_setup':
-> drivers/tty/serial/xilinx_uartps.c:1286:40: error: 'TX_TIMEOUT'
-> undeclared (first use in this function); did you mean 'ETIMEDOUT'?
->   time_out = jiffies + usecs_to_jiffies(TX_TIMEOUT);
->                                         ^~~~~~~~~~
->                                         ETIMEDOUT
-> drivers/tty/serial/xilinx_uartps.c:1286:40: note: each undeclared
-> identifier is reported only once for each function it appears in
->   CC      drivers/usb/core/port.o
-> scripts/Makefile.build:304: recipe for target
-> 'drivers/tty/serial/xilinx_uartps.o' failed
-> make[5]: *** [drivers/tty/serial/xilinx_uartps.o] Error 1
->
-> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
->
-> full test log link,
-> https://ci.linaro.org/view/lkft/job/openembedded-lkft-linux-stable-rc-4.9/DISTRO=lkft,MACHINE=hikey,label=docker-lkft/996/consoleText
->
->
-> > ---
-> >  drivers/tty/serial/xilinx_uartps.c | 8 ++++++++
-> >  1 file changed, 8 insertions(+)
-> >
-> > diff --git a/drivers/tty/serial/xilinx_uartps.c b/drivers/tty/serial/xilinx_uartps.c
-> > index eb61a07fcbbc3..07ea71a611678 100644
-> > --- a/drivers/tty/serial/xilinx_uartps.c
-> > +++ b/drivers/tty/serial/xilinx_uartps.c
-> > @@ -1268,6 +1268,7 @@ static int cdns_uart_console_setup(struct console *co, char *options)
-> >         int bits = 8;
-> >         int parity = 'n';
-> >         int flow = 'n';
-> > +       unsigned long time_out;
-> >
-> >         if (co->index < 0 || co->index >= CDNS_UART_NR_PORTS)
-> >                 return -EINVAL;
-> > @@ -1281,6 +1282,13 @@ static int cdns_uart_console_setup(struct console *co, char *options)
-> >         if (options)
-> >                 uart_parse_options(options, &baud, &parity, &bits, &flow);
-> >
-> > +       /* Wait for tx_empty before setting up the console */
-> > +       time_out = jiffies + usecs_to_jiffies(TX_TIMEOUT);
-> > +
-> > +       while (time_before(jiffies, time_out) &&
-> > +              cdns_uart_tx_empty(port) != TIOCSER_TEMT)
-> > +               cpu_relax();
-> > +
-> >         return uart_set_options(port, co, baud, parity, bits, flow);
-> >  }
-> >
-> > --
-> > 2.25.1
-> >
->
->
-> --
-> Linaro LKFT
-> https://lkft.linaro.org
+On Mon, Sep 14, 2020 at 02:00:30PM +0100, Matthew Wilcox (Oracle) wrote:
+> The critical patch to review here is patch 11, "Handle truncates that
+> split THPs".  This code is shared with shmem, and while xfstests passes
+> (both with the tmpfs filesystem and with THPs enabled for XFS), it is
+> terribly subtle.
+> 
+> I posted a similar patch series a few weeks ago [1], but this goes a few
+> steps further than that one did.  In addition to the unification of
+> find_get_entries() and pagevec_lookup_entries(), this patch series
+> includes:
+> 
+>  - Only return the head pages from tagged lookups
+>  - Factor a lot of common code out of the various batch lookup routines
+>  - Add mapping_seek_hole_data()
+>  - Only return head pages from find_get_entries
+> 
+> I also have a patch to iomap to use mapping_seek_hole_data(), but I'm
+> not including that as part of this batch of patches -- I'll send it
+> through the iomap tree once mapping_seek_hole_data() lands upstream.
+> 
+> [1] https://lore.kernel.org/linux-mm/20200819184850.24779-1-willy@infradead.org/
+> 
+> Matthew Wilcox (Oracle) (12):
+>   mm: Make pagecache tagged lookups return only head pages
+>   mm/shmem: Use pagevec_lookup in shmem_unlock_mapping
+>   mm/filemap: Add helper for finding pages
+>   mm/filemap: Add mapping_seek_hole_data
+>   mm: Add and use find_lock_entries
+>   mm: Add an 'end' parameter to find_get_entries
+>   mm: Add an 'end' parameter to pagevec_lookup_entries
+>   mm: Remove nr_entries parameter from pagevec_lookup_entries
+>   mm: Pass pvec directly to find_get_entries
+>   mm: Remove pagevec_lookup_entries
+>   mm/truncate,shmem: Handle truncates that split THPs
+>   mm/filemap: Return only head pages from find_get_entries
+> 
+>  include/linux/pagemap.h |   5 +-
+>  include/linux/pagevec.h |   4 -
+>  mm/filemap.c            | 267 +++++++++++++++++++++++++++-------------
+>  mm/internal.h           |   5 +
+>  mm/shmem.c              | 214 +++++++-------------------------
+>  mm/swap.c               |  38 +-----
+>  mm/truncate.c           | 249 ++++++++++++++-----------------------
+>  7 files changed, 329 insertions(+), 453 deletions(-)
+> 
+> -- 
+> 2.28.0
+> 
