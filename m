@@ -2,177 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6159627A9CC
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 10:43:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDF3427A9D1
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 10:44:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726674AbgI1InP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 04:43:15 -0400
-Received: from wnew1-smtp.messagingengine.com ([64.147.123.26]:60025 "EHLO
-        wnew1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726461AbgI1InP (ORCPT
+        id S1726685AbgI1IoA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 04:44:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42988 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726461AbgI1In7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 04:43:15 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.west.internal (Postfix) with ESMTP id 943AB2BD;
-        Mon, 28 Sep 2020 04:43:13 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Mon, 28 Sep 2020 04:43:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=oxCK4wZOYpID0KZNTWauBK7/zlc
-        BHvmxDD57Zu4cEmY=; b=pnNGbA6Rd0/uCTZbqMkjs3TBsnmQi5Dr0UcDALXDm5A
-        h9MmxQojzlLgXVXeANvDCI30nfhO35jBHrOwgz0nYENDOTyUdlmkLGZllQkZXOhi
-        LxjJRXxEuNq/rYKan5TQl76mBLlhi/kCRXh8T59OyuYd5IV5FQLxjAr3UPAL9NFP
-        FvCscbTea0418vZMpBhAVHxkMXvL9KybOtc+iSPz50uYqLpMvQIfx9d21+f7GgBR
-        thvZGJ25fvimeG/NSVoAjlegEbbeTuDRJEMPGxsPiv0Mlw2yY8vJvK9vS+MpgYaN
-        v+kFDUqfriqimfYfHmiArCUaV0l5S6tATF5wmkyZ2FQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=oxCK4w
-        ZOYpID0KZNTWauBK7/zlcBHvmxDD57Zu4cEmY=; b=t2qgWJinD9T7l3X1sihDHk
-        ulEywM7SzPKT+6dU8eLtTG4gAK1VU+fyn/LlTwR1uvvi65awadNnc1p3QwCd/mb5
-        r8kXyzFHd5m+XiQZvHOmpm4+tmaZiI18rmWVV1D/hz89cl/y1bUNQGTPXPKfd4uH
-        xO+emcKI7P8Amep8W6PaFRN701o5Z/F4mQZN2iAraCsadLA1THXn0XbRcFw1OpsD
-        JSsXgEahaltzX5N6UbwiIUmFWLN4TB4DzwLQKcELnqr4mEnBguKPmgeaDuGxYBsO
-        nmfLBxYD7kqR7Lg7VhpPsIq/iXeMIaoHXGfmYxDtIFBZL7RlpPRMgNM6xHH//ATQ
-        ==
-X-ME-Sender: <xms:HaJxX7PuJ-nF_htxSNLayG2wkIE5Qy_vig5bKDSNsWgtdp3VfC0LGw>
-    <xme:HaJxX1-Qb7UWydyGCoMUet2DaSL5wdpTkxMMQ5gAVueEtwgeH1MSLR1A4B-aFdKxj
-    wBQa3CLZUwZaFE0ogA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrvdeigddtkecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesghdtreertddtjeenucfhrhhomhepofgrgihimhgv
-    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
-    gvrhhnpeeutdfgjeeuudehvefgvedvtedtudelfffgffekledtffekgedukeejueevieeg
-    udenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurf
-    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:HaJxX6QqKu1sbBcrM3Vqdd_7DNaDHWOjRvtX_KDOhJsFuKgj090E0Q>
-    <xmx:HaJxX_vrVqnABFSrYRI87_AIF_PDvRw1R-TuwIM3YwaFnms2YtiVPA>
-    <xmx:HaJxXzfAraMPGmSyjPDsA70wfrC2Fkq3jApl5luJmmbRsi6I_w8kwA>
-    <xmx:IaJxX73Z86hGDsfvbP3ciDw-4ks039rpkwkLEJsUiubSwNMk546t2d9GOzc>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id A310C328005A;
-        Mon, 28 Sep 2020 04:43:09 -0400 (EDT)
-Date:   Mon, 28 Sep 2020 10:43:08 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Jernej =?utf-8?Q?=C5=A0krabec?= <jernej.skrabec@siol.net>
-Cc:     =?utf-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>,
-        Chen-Yu Tsai <wens@csie.org>, Rob Herring <robh+dt@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Marcus Cooper <codekipper@gmail.com>,
-        Linux-ALSA <alsa-devel@alsa-project.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-sunxi <linux-sunxi@googlegroups.com>
-Subject: Re: [PATCH v4 09/22] arm64: dts: allwinner: h6: Add HDMI audio node
-Message-ID: <20200928084308.eipnvlfqe3c5lfmg@gilmour.lan>
-References: <20200921102731.747736-1-peron.clem@gmail.com>
- <20200921135925.q7mde2cnt5jtzkb5@gilmour.lan>
- <CAJiuCcfz9A_Vmzq=s3LK2kGB_1tZPkC9Ux+Brdocp9py0fovAg@mail.gmail.com>
- <59286578.E0qSRroNqr@kista>
+        Mon, 28 Sep 2020 04:43:59 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2784C0613CE
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 01:43:59 -0700 (PDT)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1kMol7-0001Mn-GS; Mon, 28 Sep 2020 10:43:45 +0200
+Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1kMol5-0006Ul-T2; Mon, 28 Sep 2020 10:43:43 +0200
+Date:   Mon, 28 Sep 2020 10:43:43 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Bruno Thomsen <bruno.thomsen@gmail.com>, linux-rtc@vger.kernel.org,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        linux-watchdog@vger.kernel.org,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Qiang Zhao <qiang.zhao@nxp.com>
+Subject: Re: [PATCH 2/2] [RFC] rtc: pcf2127: only use watchdog when
+ explicitly available
+Message-ID: <20200928084343.cl42lxsiionvq7tg@pengutronix.de>
+References: <20200924074715.GT9675@piout.net>
+ <20200924105256.18162-1-u.kleine-koenig@pengutronix.de>
+ <20200924105256.18162-3-u.kleine-koenig@pengutronix.de>
+ <CAH+2xPAVvMpTgT3W=0AsKy=9jkS8qd6eB65Qebw51YKRQshaGQ@mail.gmail.com>
+ <8f88f2a2-4a6d-021f-4404-f05518b0477d@roeck-us.net>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="nywbcxkwq6lidb2p"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="374kthn377ofw35y"
 Content-Disposition: inline
-In-Reply-To: <59286578.E0qSRroNqr@kista>
+In-Reply-To: <8f88f2a2-4a6d-021f-4404-f05518b0477d@roeck-us.net>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---nywbcxkwq6lidb2p
-Content-Type: text/plain; charset=utf-8
+--374kthn377ofw35y
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Sep 21, 2020 at 08:37:09PM +0200, Jernej =C5=A0krabec wrote:
-> Dne ponedeljek, 21. september 2020 ob 19:23:49 CEST je Cl=C3=A9ment P=C3=
-=A9ron=20
-> napisal(a):
-> > Hi Maxime,
+On Sun, Sep 27, 2020 at 08:54:47AM -0700, Guenter Roeck wrote:
+> On 9/27/20 1:09 AM, Bruno Thomsen wrote:
+> > Den tor. 24. sep. 2020 kl. 12.53 skrev Uwe Kleine-K=F6nig
+> > <u.kleine-koenig@pengutronix.de>:
+> >>
+> >> Most boards using the pcf2127 chip (in my bubble) don't make use of the
+> >> watchdog functionality and the respective output is not connected. The
+> >> effect on such a board is that there is a watchdog device provided that
+> >> doesn't work.
+> >>
+> >> So only register the watchdog if the device tree has a "has-watchdog"
+> >> property.
+> >>
+> >> Signed-off-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+> >> ---
+> >>  drivers/rtc/rtc-pcf2127.c | 3 ++-
+> >>  1 file changed, 2 insertions(+), 1 deletion(-)
+> >>
+> >> diff --git a/drivers/rtc/rtc-pcf2127.c b/drivers/rtc/rtc-pcf2127.c
+> >> index 5b1f1949b5e5..8bd89d641578 100644
+> >> --- a/drivers/rtc/rtc-pcf2127.c
+> >> +++ b/drivers/rtc/rtc-pcf2127.c
+> >> @@ -340,7 +340,8 @@ static int pcf2127_watchdog_init(struct device *de=
+v, struct pcf2127 *pcf2127)
+> >>         u32 wdd_timeout;
+> >>         int ret;
+> >>
+> >> -       if (!IS_ENABLED(CONFIG_WATCHDOG))
+> >> +       if (!IS_ENABLED(CONFIG_WATCHDOG) ||
+> >> +           !device_property_read_bool(dev, "has-watchdog"))
+> >>                 return 0;
 > >=20
-> > On Mon, 21 Sep 2020 at 15:59, Maxime Ripard <maxime@cerno.tech> wrote:
-> > >
-> > > On Mon, Sep 21, 2020 at 12:27:18PM +0200, Cl=C3=A9ment P=C3=A9ron wro=
-te:
-> > > > From: Jernej Skrabec <jernej.skrabec@siol.net>
-> > > >
-> > > > Add a simple-soundcard to link audio between HDMI and I2S.
-> > > >
-> > > > Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
-> > > > Signed-off-by: Marcus Cooper <codekipper@gmail.com>
-> > > > Signed-off-by: Cl=C3=A9ment P=C3=A9ron <peron.clem@gmail.com>
-> > > > ---
-> > > >  arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi | 33 ++++++++++++++++=
-++++
-> > > >  1 file changed, 33 insertions(+)
-> > > >
-> > > > diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi b/arch/ar=
-m64/
-> boot/dts/allwinner/sun50i-h6.dtsi
-> > > > index 28c77d6872f6..a8853ee7885a 100644
-> > > > --- a/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
-> > > > +++ b/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
-> > > > @@ -67,6 +67,25 @@ de: display-engine {
-> > > >               status =3D "disabled";
-> > > >       };
-> > > >
-> > > > +     hdmi_sound: hdmi-sound {
-> > > > +             compatible =3D "simple-audio-card";
-> > > > +             simple-audio-card,format =3D "i2s";
-> > > > +             simple-audio-card,name =3D "sun50i-h6-hdmi";
-> > > > +             simple-audio-card,mclk-fs =3D <128>;
-> > > > +             simple-audio-card,frame-inversion;
-> > > > +             status =3D "disabled";
-> > > > +
-> > > > +             simple-audio-card,codec {
-> > > > +                     sound-dai =3D <&hdmi>;
-> > > > +             };
-> > > > +
-> > > > +             simple-audio-card,cpu {
-> > > > +                     sound-dai =3D <&i2s1>;
-> > > > +                     dai-tdm-slot-num =3D <2>;
-> > > > +                     dai-tdm-slot-width =3D <32>;
-> > >
-> > > It looks weird to have both some TDM setup here, and yet the format in
-> > > i2s?
+> > I don't think the compiler can remove the function if
+> > CONFIG_WATCHDOG is disabled due to the device tree
+> > value check. Maybe it can if split into 2 conditions.
 > >=20
-> > Yes, I agree I will check if it's really needed.
 >=20
-> I think this was explained before.
+> If the first part of the expression is always false, the second
+> part should not even be evaluated.
 
-Possibly, but this should be in a comment or at least the commit log
+This is wrong. For || the second expression isn't evaluated if the first
+evaluates to true (and the whole expression becomes true). This is the
+intended behaviour: If CONFIG_WATCHDOG is off, we don't need to check
+for the dt property and just skip the watchdog part.
 
-> Anyway, this is needed to force width to 32, no matter actual sample
-> width. That's a requirement of HDMI codec. I believe Marcus Cooper
-> have another codec which also needs fixed width.
+> Either case, the code now hard depends on the compiler optimizing the
+> code away.
 >=20
-> There is no similar property for I2S, so TDM one is used here.
+> It calls devm_watchdog_register_device() which doesn't exist
+> if CONFIG_WATCHDOG is not enabled. I didn't know that this is safe,
+> and I would personally not want to rely on it, but we live and
+> learn.
 
-Except it's really dedicated to the TDM mode and doesn't really make
-much sense here.
+AFAICT this is save and used in other places in the kernel, too.  This
+is one of the reasons why you cannot compile the kernel with -O0.
 
-If we have special requirements like this on the codec setup, that
-sounds like a good justification for creating a custom codec instead of
-shoehorning it into simple-card
+Best regards
+Uwe
 
-Maxime
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
 
---nywbcxkwq6lidb2p
+--374kthn377ofw35y
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX3GiHAAKCRDj7w1vZxhR
-xWJJAP0VYV8qr8oRUJQXa1gO/KEHRiAM2KN5mADU4A/LD48/EwEA0ZjSWx11FGHU
-uKbSn9mGmvKiACaWrHELDAqBdx6ooA0=
-=GeNy
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl9xoj0ACgkQwfwUeK3K
+7AloGQgAmT9jAsBE55nkCiQIvfTONeRIQHfU/NnP8IE+OO7uaKe+rs00xj0rIerX
+vLQyiWvIbRKkYDNvb/sbsp6OdhBh0o8C7d9wXPe7gzIgdU0VUI6aUfPv+SrpuArL
+75ye2ADjrI7fOAtdEI3FLgQPUvqlEmGBtqNqP2D6ub4KFSvKJr29X2+8QMO4aHpJ
+KZI/3e/3CSmg0C7a3mnPu0ghHUZUBFd7eOuiZbNrlVuaOc2cBMEdwQrtLm/dTZto
+IhWtwplF4GWZaDo84GsEA7MU8v38tN2g3KnEdzlOwqdU+/pqGYv4uNm1vrRq2NMG
+68zaImE+9OUEnlS364NiBvRoV8zeLQ==
+=x1uh
 -----END PGP SIGNATURE-----
 
---nywbcxkwq6lidb2p--
+--374kthn377ofw35y--
