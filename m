@@ -2,132 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 957D327ADB1
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 14:26:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0316027ADB7
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 14:27:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726566AbgI1MZ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 08:25:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57264 "EHLO mail.kernel.org"
+        id S1726596AbgI1M1G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 08:27:06 -0400
+Received: from z5.mailgun.us ([104.130.96.5]:29930 "EHLO z5.mailgun.us"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726442AbgI1MZ4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 08:25:56 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726477AbgI1M1F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 08:27:05 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1601296024; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=KkChGI+YeqZAg3DuMRg/VqX+l3pGX1T0VLK9izTxs/U=;
+ b=nDuOb1SWZjmIPCLSGQQYhk7kjajaZgpJkNL5V2LlH4tX1yJfv0QG78ZxDne2e3LXWRoYDLtI
+ 2n/nulzcmPPWZVcjm5PZEpl5mFaUmAjEyJjSJdXqtzHifGwmQvdR892WCTECcO4Ti8N84Kba
+ r47puH0FGpYFBu5RU3QFW1XtL8c=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 5f71d691be59ebabf32bc52d (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 28 Sep 2020 12:26:57
+ GMT
+Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 2C2E9C433FF; Mon, 28 Sep 2020 12:26:57 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8638C207E8;
-        Mon, 28 Sep 2020 12:25:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601295955;
-        bh=wVrs+3kytjBZohn7BTL2U88iwkha6UbOsn4DCBgdtK0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EB+Oa95iV1npMb0/iwRazczbrwezIYljsx+rtwNmKiGkdgkovVWks8EaIIA4E47NT
-         3SUEdo7tmd/utx0m3zdlztaHKbGlZvBBK9H/iWj/5Q9Ev08hGMAnpkZ0o/FAsTVgpw
-         IHXoBZtGXWQkv6l0/Kv12svaLSlasuMxnuPH5dq8=
-Date:   Mon, 28 Sep 2020 14:26:02 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Shuo A Liu <shuo.a.liu@intel.com>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Yu Wang <yu1.wang@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Zhi Wang <zhi.a.wang@intel.com>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>
-Subject: Re: [PATCH v4 06/17] virt: acrn: Introduce VM management interfaces
-Message-ID: <20200928122602.GB682772@kroah.com>
-References: <20200922114311.38804-1-shuo.a.liu@intel.com>
- <20200922114311.38804-7-shuo.a.liu@intel.com>
- <20200927104702.GE88650@kroah.com>
- <20200928035030.GD1057@shuo-intel.sh.intel.com>
- <20200928052516.GD767987@kroah.com>
- <20200928062934.GF1057@shuo-intel.sh.intel.com>
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id DAD27C433CA;
+        Mon, 28 Sep 2020 12:26:55 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200928062934.GF1057@shuo-intel.sh.intel.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 28 Sep 2020 17:56:55 +0530
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Jordan Crouse <jcrouse@codeaurora.org>
+Cc:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Rob Clark <robdclark@gmail.com>,
+        iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        freedreno@lists.freedesktop.org,
+        "Kristian H . Kristensen" <hoegsberg@google.com>,
+        dri-devel@lists.freedesktop.org,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        Jonathan Marek <jonathan@marek.ca>
+Subject: Re: [PATCHv5 4/6] drm/msm/a6xx: Add support for using system
+ cache(LLC)
+In-Reply-To: <20200923150320.GD31425@jcrouse1-lnx.qualcomm.com>
+References: <cover.1600754909.git.saiprakash.ranjan@codeaurora.org>
+ <889a32458cec92ed110b94f393aa1c2f0d64dca5.1600754909.git.saiprakash.ranjan@codeaurora.org>
+ <20200923150320.GD31425@jcrouse1-lnx.qualcomm.com>
+Message-ID: <800c2108606cb921fef1ffc27569ffb2@codeaurora.org>
+X-Sender: saiprakash.ranjan@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 02:29:34PM +0800, Shuo A Liu wrote:
-> On Mon 28.Sep'20 at  7:25:16 +0200, Greg Kroah-Hartman wrote:
-> > On Mon, Sep 28, 2020 at 11:50:30AM +0800, Shuo A Liu wrote:
-> > > > > +	write_lock_bh(&acrn_vm_list_lock);
-> > > > > +	list_add(&vm->list, &acrn_vm_list);
-> > > > > +	write_unlock_bh(&acrn_vm_list_lock);
-> > > >
-> > > > Why are the _bh() variants being used here?
-> > > >
-> > > > You are only accessing this list from userspace context in this patch.
-> > > >
-> > > > Heck, you aren't even reading from the list, only writing to it...
-> > > 
-> > > acrn_vm_list is read in a tasklet which dispatch I/O requests and is wrote
-> > > in VM creation ioctl. Use the rwlock mechanism to protect it.
-> > > The reading operation is introduced in the following patches of this
-> > > series. So i keep the lock type at the moment of introduction.
-> > 
-> > Ok, but think about someone trying to review this code.  Does this lock
-> > actually make sense here?  No, it does not.  How am I supposed to know
-> > to look at future patches to determine that it changes location and
-> > usage to require this?
+Hi Jordan,
+
+On 2020-09-23 20:33, Jordan Crouse wrote:
+> On Tue, Sep 22, 2020 at 11:48:17AM +0530, Sai Prakash Ranjan wrote:
+>> From: Sharat Masetty <smasetty@codeaurora.org>
+>> 
+>> The last level system cache can be partitioned to 32 different
+>> slices of which GPU has two slices preallocated. One slice is
+>> used for caching GPU buffers and the other slice is used for
+>> caching the GPU SMMU pagetables. This talks to the core system
+>> cache driver to acquire the slice handles, configure the SCID's
+>> to those slices and activates and deactivates the slices upon
+>> GPU power collapse and restore.
+>> 
+>> Some support from the IOMMU driver is also needed to make use
+>> of the system cache to set the right TCR attributes. GPU then
+>> has the ability to override a few cacheability parameters which
+>> it does to override write-allocate to write-no-allocate as the
+>> GPU hardware does not benefit much from it.
+>> 
+>> DOMAIN_ATTR_SYS_CACHE is another domain level attribute used by the
+>> IOMMU driver to set the right attributes to cache the hardware
+>> pagetables into the system cache.
+>> 
+>> Signed-off-by: Sharat Masetty <smasetty@codeaurora.org>
+>> [saiprakash.ranjan: fix to set attr before device attach to iommu and 
+>> rebase]
+>> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+>> ---
+>>  drivers/gpu/drm/msm/adreno/a6xx_gpu.c   | 83 
+>> +++++++++++++++++++++++++
+>>  drivers/gpu/drm/msm/adreno/a6xx_gpu.h   |  4 ++
+>>  drivers/gpu/drm/msm/adreno/adreno_gpu.c | 17 +++++
+>>  3 files changed, 104 insertions(+)
+>> 
+>> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c 
+>> b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+>> index 8915882e4444..151190ff62f7 100644
+>> --- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+>> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+>> @@ -8,7 +8,9 @@
+>>  #include "a6xx_gpu.h"
+>>  #include "a6xx_gmu.xml.h"
+>> 
+>> +#include <linux/bitfield.h>
+>>  #include <linux/devfreq.h>
+>> +#include <linux/soc/qcom/llcc-qcom.h>
+>> 
+>>  #define GPU_PAS_ID 13
+>> 
+>> @@ -1022,6 +1024,79 @@ static irqreturn_t a6xx_irq(struct msm_gpu 
+>> *gpu)
+>>  	return IRQ_HANDLED;
+>>  }
+>> 
+>> +static void a6xx_llc_rmw(struct a6xx_gpu *a6xx_gpu, u32 reg, u32 
+>> mask, u32 or)
+>> +{
+>> +	return msm_rmw(a6xx_gpu->llc_mmio + (reg << 2), mask, or);
+>> +}
+>> +
+>> +static void a6xx_llc_write(struct a6xx_gpu *a6xx_gpu, u32 reg, u32 
+>> value)
+>> +{
+>> +	return msm_writel(value, a6xx_gpu->llc_mmio + (reg << 2));
+>> +}
+>> +
+>> +static void a6xx_llc_deactivate(struct a6xx_gpu *a6xx_gpu)
+>> +{
+>> +	llcc_slice_deactivate(a6xx_gpu->llc_slice);
+>> +	llcc_slice_deactivate(a6xx_gpu->htw_llc_slice);
+>> +}
+>> +
+>> +static void a6xx_llc_activate(struct a6xx_gpu *a6xx_gpu)
+>> +{
+>> +	u32 cntl1_regval = 0;
+>> +
+>> +	if (IS_ERR(a6xx_gpu->llc_mmio))
+>> +		return;
+>> +
+>> +	if (!llcc_slice_activate(a6xx_gpu->llc_slice)) {
+>> +		u32 gpu_scid = llcc_get_slice_id(a6xx_gpu->llc_slice);
+>> +
+>> +		gpu_scid &= 0x1f;
+>> +		cntl1_regval = (gpu_scid << 0) | (gpu_scid << 5) | (gpu_scid << 10) 
+>> |
+>> +			       (gpu_scid << 15) | (gpu_scid << 20);
+>> +	}
+>> +
+>> +	if (!llcc_slice_activate(a6xx_gpu->htw_llc_slice)) {
+>> +		u32 gpuhtw_scid = llcc_get_slice_id(a6xx_gpu->htw_llc_slice);
+>> +
+>> +		gpuhtw_scid &= 0x1f;
+>> +		cntl1_regval |= FIELD_PREP(GENMASK(29, 25), gpuhtw_scid);
+>> +	}
+>> +
+>> +	if (cntl1_regval) {
+>> +		/*
+>> +		 * Program the slice IDs for the various GPU blocks and GPU MMU
+>> +		 * pagetables
+>> +		 */
+>> +		a6xx_llc_write(a6xx_gpu, REG_A6XX_CX_MISC_SYSTEM_CACHE_CNTL_1, 
+>> cntl1_regval);
+>> +
+>> +		/*
+>> +		 * Program cacheability overrides to not allocate cache lines on
+>> +		 * a write miss
+>> +		 */
+>> +		a6xx_llc_rmw(a6xx_gpu, REG_A6XX_CX_MISC_SYSTEM_CACHE_CNTL_0, 0xF, 
+>> 0x03);
+>> +	}
+>> +}
 > 
-> OK. May i know how to handle such kind of code submission? Or which way
-> following do you prefer?
->  1) Use a mutex lock here, then change it to rwlock in a later patch
->     of this series.
-
-Wouldn't this make more sense if you had to read these one after
-another?
-
->  2) Add more comments in changelog about the lock. (Now, there is
->     comment around the acrn_vm_list_lock)
-
-It's hard to verify a comment's statement without digging through other
-patches in the series, right?  You want the reviewer to just trust you?
-:)
-
-Again, what would _YOU_ want to see if you had to review this?
-
-> > That's just not fair, would you want to review something like this?
-> > 
-> > And a HUGE meta-comment, again, why am I the only one reviewing this
-> > stuff?  Why do you have a ton of Intel people on the Cc: yet it is, once
-> > again, my job to do this?
+> This code has been around long enough that it pre-dates a650. On a650 
+> and other
+> MMU-500 targets the htw_llc is configured by the firmware and the 
+> llc_slice is
+> configured in a different register.
 > 
-> The patchset has been reviewed in Intel's internal mailist several
-> rounds and got Reviewed-by: before send out. That's why i Cced many
-> Intel people as well.
+> I don't think we need to pause everything and add support for the 
+> MMU-500 path,
+> but we do need a way to disallow LLCC on affected targets until such 
+> time that
+> we can get it fixed up.
+> 
 
-Then why didn't any of those intel people on the cc: actually review it
-after you have sent it out?  Why is it only me?  Do I need to wait
-longer for them to get to this?  I'll gladly do so next time...
+Thanks for taking a close look, does something like below look ok or 
+something
+else is needed here?
 
-> This patchset is all about a common driver for the ACRN hypervisor
-> support. I put the code in drivers/virt/ and found you are one of the
-> maintainer of vboxguest driver which is in the same subdirectory. I
-> thought you should be the right person to be Cced when i submitted this
-> series.
++         /* Till the time we get in LLCC support for A650 */
++         if (!(info && info->revn == 650))
++                 a6xx_llc_slices_init(pdev, a6xx_gpu);
 
-I am, I'm not complaining about that.  I'm complaining that it seems to
-be _only_ me reviewing this here, and not any of the people you are cc:ing
-from intel.  Most of those people should be giving you this same type of
-review comments and not forcing an external person to do so, right?
+Thanks,
+Sai
 
-> Certainly, any comments are welcome. And really appreciate your review
-> and help. I have little experience to submit a new driver to the
-> community, my apologies if thing goes wrong.
-
-You didn't do anything wrong, I'm arguing about the larger meta-issue I
-have right now with Intel and the lack of reviews that seems to happen
-from other Intel people on their co-workers patches.
-
-Anyway, you are doing fine, it's an iterative process, hopefully you can
-also review other people's patches in this area that are being posted as
-well.
-
-thanks,
-
-greg k-h
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member
+of Code Aurora Forum, hosted by The Linux Foundation
