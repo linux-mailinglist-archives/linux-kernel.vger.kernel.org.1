@@ -2,84 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F9AC27B088
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 17:08:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B03C127B08B
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 17:11:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726589AbgI1PI5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 11:08:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46138 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726409AbgI1PI4 (ORCPT
+        id S1726617AbgI1PLc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 11:11:32 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40822 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726409AbgI1PLb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 11:08:56 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 626D3C061755;
-        Mon, 28 Sep 2020 08:08:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=aXHFqZ/iIOl43JouJBSLzJCCTkwZFEF5WcEtiJ8pWb8=; b=X8DOi0UPNDcRsS5RSWaxdhuXP
-        5gTeWi+Nlet8LvJngBT8VHH5pxraI92zDVEfZebt0AogrHsTLx1eSDJ4uOkpyz3cDGQv3BsN8h0f7
-        AdIvPVXuccNLR7KD7rZOCEH1xhcomS0FKW1jLd20yVrFQbvLdP/weqaCDKxVrPvGqqoWETzUNMLBQ
-        cpElFlfiAQXBkxGHvnbpN3jajz8aZjWLEqNs96OSflJa6/HoV4vs7Abvutx5nVNp6eOJ+rJQYW9uq
-        3mEQg0ErWo0WndcTBOQblYxdsfNfl4GfAvS5OE0QJYcuzzvtRa5l5TUfwTuRgmuT5fnRV2TuByS0C
-        uJ+jbMU6w==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:39410)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1kMulh-00006I-UJ; Mon, 28 Sep 2020 16:08:46 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1kMulf-0000Bj-BN; Mon, 28 Sep 2020 16:08:43 +0100
-Date:   Mon, 28 Sep 2020 16:08:43 +0100
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "linux-kernel@vger.kernel.org" <kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 4/9] ARM: syscall: always store thread_info->syscall
-Message-ID: <20200928150843.GB1551@shell.armlinux.org.uk>
-References: <20200907153701.2981205-1-arnd@arndb.de>
- <20200907153701.2981205-5-arnd@arndb.de>
- <CACRpkdYkL2=gkBvbHO514rnppLdHgsXwi0==6Ovq43kSZqEvUQ@mail.gmail.com>
- <CAK8P3a0BZ-zdk+RB5ODcVs2z-Y6xmLCp57uzivUGWRcoeH2fQQ@mail.gmail.com>
+        Mon, 28 Sep 2020 11:11:31 -0400
+Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601305890;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qlwOFkZa79dswmCrZ/uMRqRS1jmqGoMfOKy6A9Hyy7M=;
+        b=bJSxrKI9I4fIZKC5BtbUbnXEJEOsy6hAT3bqOvKcrWQpruv106kXvdGpnTiRalSSShUxl0
+        XZf1kH2q2zaAS9i1WZ/dnncr5W8e9EcWulclSdS0iPOOX+1N7w5OqrPXQ0+/lhOMpzTNQG
+        Q49hBBzz7zRB4IqXJBqH6mTJU8D4PTo=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-135-kHwmu4CaP5yhf54iE9Ru9g-1; Mon, 28 Sep 2020 11:11:28 -0400
+X-MC-Unique: kHwmu4CaP5yhf54iE9Ru9g-1
+Received: by mail-wr1-f70.google.com with SMTP id d13so515640wrr.23
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 08:11:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=qlwOFkZa79dswmCrZ/uMRqRS1jmqGoMfOKy6A9Hyy7M=;
+        b=SsfQlzWWMx7IAD0GvPRIkcwGyXiYvSeJe2Z6KlSQHxm7AyU/JPG7lVZaAPCc2TBPtB
+         XorHpuSG8faSnyPxRtK7EeWBtd0PCbxVjhYNIdIn6mkGcO/w/lvuvWvvpNMJGgLj4yk8
+         uaAsgyeD9P6oyUkhJ3l8Df4KqrY8rrX2OAVDILHDAvQzrwq3KwbaXP4oJDYFn3zbS063
+         wE0ObYBTm5xbwTbK0ZqXj1+JmXIGiBBtwGGu+6I4zy1U5IyZR6zYhByjFPzinNsFMQDX
+         1silhG90hqHgdZP9W+novwFGudIdlyvFePnrONC/E7wz/Ty71dvPyz+W8iOd+bYWTNiZ
+         jDQQ==
+X-Gm-Message-State: AOAM5323TR9/UUFUAB1o0i9rC69O7Eq2aJxNVkd5tVc8k/G6TFhk21Zy
+        O7g3Wd+1U+PPMuqugf+p6qd+dAuux/cWzo6uHvU6jd+dD/n4tTJ11dupOYh36d9lqH4rYHPyqcq
+        gIJ7AGYbN2q2OcZr4qq9Y6jtb
+X-Received: by 2002:a7b:c453:: with SMTP id l19mr1994831wmi.163.1601305887285;
+        Mon, 28 Sep 2020 08:11:27 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxgH0fT+EfPSAu5naON5BaV2Jj5VdZVepiW0koYQfjuo8C9SZFrH2qlZO6pNrjHwWe3U9fRrg==
+X-Received: by 2002:a7b:c453:: with SMTP id l19mr1994807wmi.163.1601305887080;
+        Mon, 28 Sep 2020 08:11:27 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:f4f8:dc3e:26e3:38c7? ([2001:b07:6468:f312:f4f8:dc3e:26e3:38c7])
+        by smtp.gmail.com with ESMTPSA id y5sm1636990wmg.21.2020.09.28.08.11.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 28 Sep 2020 08:11:26 -0700 (PDT)
+Subject: Re: [PATCH 15/22] kvm: mmu: Support changed pte notifier in tdp MMU
+To:     Ben Gardon <bgardon@google.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     Cannon Matthews <cannonmatthews@google.com>,
+        Peter Xu <peterx@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Peter Shier <pshier@google.com>,
+        Peter Feiner <pfeiner@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
+References: <20200925212302.3979661-1-bgardon@google.com>
+ <20200925212302.3979661-16-bgardon@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <622ffc59-d914-c718-3f2f-952f714ac63c@redhat.com>
+Date:   Mon, 28 Sep 2020 17:11:24 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK8P3a0BZ-zdk+RB5ODcVs2z-Y6xmLCp57uzivUGWRcoeH2fQQ@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+In-Reply-To: <20200925212302.3979661-16-bgardon@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 02:42:43PM +0200, Arnd Bergmann wrote:
-> > I need some idea how this numberspace is managed in order to
-> > understand the code so I can review it, I guess it all makes perfect
-> > sense but I need some background here.
-> 
-> I also had never understood this part before, and I'm still not
-> sure where the 0x900000 actually comes from, though my best
-> guess is that this was intended as a an OS specific number space,
-> with '9' being assigned to Linux (similar to the way Itanium and
-> MIPS do with their respective offsets). By the time EABI got added,
-> this was apparently no longer considered helpful.
+On 25/09/20 23:22, Ben Gardon wrote:
+> +		*iter.sptep = 0;
+> +		handle_changed_spte(kvm, as_id, iter.gfn, iter.old_spte,
+> +				    new_spte, iter.level);
+> +
 
-It is an OS specific number space, originally designed to allow
-RISC OS programs to be run under Linux.  There was indeed such a
-project, but that died and the code ripped out. EABI, by using
-SWI 0 - or more accurately, not reading the SWI opcode, trampled
-over the ability for RISC OS programs to be run under Linux.
+Can you explain why new_spte is passed here instead of 0?
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+All calls to handle_changed_spte are preceded by "*something = 
+new_spte" except this one, so I'm thinking of having a change_spte 
+function like
+
+static void change_spte(struct kvm *kvm, int as_id, gfn_t gfn,
+                        u64 *sptep, u64 new_spte, int level)
+{
+        u64 old_spte = *sptep;
+        *sptep = new_spte;
+
+        __handle_changed_spte(kvm, as_id, gfn, old_spte, new_spte, level);
+        handle_changed_spte_acc_track(old_spte, new_spte, level);
+        handle_changed_spte_dirty_log(kvm, as_id, gfn, old_spte, new_spte, level);
+}
+
+in addition to the previously-mentioned cleanup of always calling
+handle_changed_spte instead of special-casing calls to two of the
+three functions.  It would be a nice place to add the
+trace_kvm_mmu_set_spte tracepoint, too.
+
+Paolo
+
