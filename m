@@ -2,156 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1DF827AB40
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 11:54:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E69327AB56
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 11:56:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726696AbgI1JyJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 05:54:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53888 "EHLO
+        id S1726751AbgI1JzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 05:55:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726656AbgI1JyH (ORCPT
+        with ESMTP id S1726534AbgI1JzI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 05:54:07 -0400
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 196F0C061755;
-        Mon, 28 Sep 2020 02:54:07 -0700 (PDT)
-Received: by mail-ot1-x344.google.com with SMTP id u25so313009otq.6;
-        Mon, 28 Sep 2020 02:54:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=XrekDJ8/Kn4liZXu7G8whetkgOzyeeLWcjBGPZVdnBc=;
-        b=PTIDYztEvAXGUq+l2r9F7MMpiFiawKjmDr3Nd5T/NqihOWWz33ZD49IPcTpPaOsn8n
-         B79Beh17TkYx8od2qPKWs9tr1spr1CgAySBG1TmgomzoAbQhU4FqM2C6qWPU6UDjoDZe
-         hbWccRKVm0ocHDuhnIFwK/M+rgHOS+IaUcsBWeEPOAXAaG8P4SdXNX1qNA+oq8Y30LwZ
-         qd3D03fu0o7Z1hqseSNkXUJV/BLvUWIS+YPayorYi4EItRZwX7Fjao4mw3PEU4UIGIvr
-         3jAaoeU5xgE8WK2kQe58D5UTnR0/0tRKksu0/HF1uLElDYABqeN5HkwT3MKsQuvRMs5O
-         kdfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=XrekDJ8/Kn4liZXu7G8whetkgOzyeeLWcjBGPZVdnBc=;
-        b=LlVrugIRPZyG5unbh/AJNRNWwA8lywYPgHCsYnL0SwN/zUSn8+mhA6xdvAy1CnXG2y
-         sLWvl+ePENQt0286XGApgq9IIivS3Ut+NDwn3hPo8zZCNcgtm6ttH2yeRrWs+TQtyeVi
-         28FMmk7Q+utLh95q+5Lm3iZ2rxJAmWwRPjpvfloNT0Ul5l+t+2/zrDT8wG499G16QkNw
-         I6diOOdmZYGZjdh1DsDCxgmYZ6GFPctCSyXL83U9YBSR42Qe9td1PuEzSHquAKQjV6qo
-         yCubv3PG51q9gJR4ohSJdqIbGIOCfoV5UJplTMzLzirHTGmMdLAikspu1Zg1hqDppefX
-         OncA==
-X-Gm-Message-State: AOAM5305t2Bq/FDVRSLattsidJsPjKIgStv8gmiWzONhh6rJVzjxoI9V
-        HmgYxzLzH4o9ZZG7P6Sqzvl1kaKrV8MTmHK0ZJY=
-X-Google-Smtp-Source: ABdhPJy2k1qsenOpWYSTD92r+jTDynh5HVDLWCCESCjkL0O44siJno5Cosq9Ii+SuYqrp2lVdLdrDkzAjQkXjqYMwAA=
-X-Received: by 2002:a05:6830:13da:: with SMTP id e26mr431811otq.28.1601286846444;
- Mon, 28 Sep 2020 02:54:06 -0700 (PDT)
+        Mon, 28 Sep 2020 05:55:08 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B038C061755
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 02:55:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=PM46qSr+CLum3oDKTc1ULm4mOWg7/XgMpKPnYlsacb4=; b=H6/bdWtE/U3hERkCao635LUQr9
+        e5d9MUbk3dL83/J41RBnMmXgYmGuOtsabpq9fY1SVC3jTAeAgmyzdXwlYRKe1mqdHurJK4o1VkjAU
+        phqk1g/LG0gLDKvRR2wsHD6JEQG8CqwXYZLU4QCqfNbuGzeyo1Z54LHz1YjUqZ/qxWxtNvC5pXNCt
+        lvG5mC/9s3EQ+oKJPb0e6zcF+x/SeACE7Ua5zK6sTOi1xUV5Rd7IwHD/+VAPuJnVKoM0uoC5M1cDv
+        EN7wnjp08OX/wRROeZ49KRi8V6cO/Hq7QSIeHTypDdXG0h9ADNH2QmkqVA/bMug6SigSta0QJxCs/
+        k4IyJMQw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kMps8-0002cZ-Ua; Mon, 28 Sep 2020 09:55:05 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id DDB7B305C16;
+        Mon, 28 Sep 2020 11:55:01 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id C2F202B85DB06; Mon, 28 Sep 2020 11:55:01 +0200 (CEST)
+Date:   Mon, 28 Sep 2020 11:55:01 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Boqun Feng <boqun.feng@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, Waiman Long <longman@redhat.com>,
+        Qian Cai <cai@redhat.com>, Ingo Molnar <mingo@redhat.com>,
+        Will Deacon <will@kernel.org>
+Subject: Re: [PATCH] lockdep: Optimize the memory usage of circular queue
+Message-ID: <20200928095501.GE2628@hirez.programming.kicks-ass.net>
+References: <20200917080210.108095-1-boqun.feng@gmail.com>
+ <20200928085104.GE2611@hirez.programming.kicks-ass.net>
+ <20200928094738.GB17810@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net>
 MIME-Version: 1.0
-References: <20200928085505.GA22244@shbuild999.sh.intel.com>
-In-Reply-To: <20200928085505.GA22244@shbuild999.sh.intel.com>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Mon, 28 Sep 2020 11:53:54 +0200
-Message-ID: <CA+icZUWvVB_D2USqUivohvywjtxe5jfW1phcA84Rfz9Cwy9jfQ@mail.gmail.com>
-Subject: Re: PROBLEM: zstd bzImage decompression fails for some x86_32 config
- on 5.9-rc1
-To:     Feng Tang <feng.tang@intel.com>
-Cc:     Nick Terrell <terrelln@fb.com>, linux-kernel@vger.kernel.org,
-        x86@kernel.org, Ingo Molnar <mingo@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kbuild@vger.kernel.org, rong.a.chen@intel.com,
-        philip.li@intel.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200928094738.GB17810@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 10:55 AM Feng Tang <feng.tang@intel.com> wrote:
->
-> Hi Nick,
->
-> 0day has found some kernel decomprssion failure case since 5.9-rc1 (X86_32
-> build), and it could be related with ZSTD code, though initially we bisected
-> to some other commits.
->
-> The error messages are:
->
->         early console in setup code
->         Wrong EFI loader signature.
->         early console in extract_kernel
->         input_data: 0x046f50b4
->         input_len: 0x01ebbeb6
->         output: 0x01000000
->         output_len: 0x04fc535c
->         kernel_total_size: 0x055f5000
->         needed_size: 0x055f5000
->
->         Decompressing Linux...
->
->         ZSTD-compressed data is corrupt
->
-> This could be reproduced by compiling the kernel with attached config,
-> and use QEMU to boot it.
->
-> We suspect it could be related with the kernel size, as we only see
-> it on big kernel, and some more info are:
->
-> * If we remove a lot of kernel config to build a much smaller kernel,
->   it will boot fine
->
-> * If we change the zstd algorithm from zstd22 to zstd19, the kernel will
->   boot fine with below patch
->
+On Mon, Sep 28, 2020 at 05:47:38PM +0800, Boqun Feng wrote:
+> I think your version is better and should be functionally identical to
+> mine, also FWIW, I tested with a lockdep boot selftests, everything
+> worked fine.
 
-Hi,
-
-Recently, Debian has updated initramfs-tools/initramfs-tools-core packages
-with ZSTD support:
-
-[ /usr/sbin/mkinitramfs ]
-
-case "${compress}" in
-gzip)   # If we're doing a reproducible build, use gzip -n
-       if [ -n "${SOURCE_DATE_EPOCH}" ]; then
-               compress="gzip -n"
-       # Otherwise, substitute pigz if it's available
-       elif command -v pigz >/dev/null; then
-               compress=pigz
-       fi
-       ;;
-lz4)    compress="lz4 -9 -l" ;;
-zstd)   compress="zstd -q -19 -T0" ;;
-xz)     compress="xz --check=crc32"
-       # If we're not doing a reproducible build, enable multithreading
-       test -z "${SOURCE_DATE_EPOCH}" && compress="$compress --threads=0"
-       ;;
-bzip2|lzma|lzop)
-       # no parameters needed
-       ;;
-*)      echo "W: Unknown compression command ${compress}" >&2 ;;
-esac
-
-As you can see it uses compression-level 19 for ZSTD.
-Maybe it is good to change from 22 to 19 in the Linux-kernel sources?
-
-Thanks.
-
-Regards,
-- Sedat -
-
->         diff --git a/arch/x86/boot/compressed/Makefile b/arch/x86/boot/compressed/Makefile
->         index 3962f59..8fe71ba 100644
->         --- a/arch/x86/boot/compressed/Makefile
->         +++ b/arch/x86/boot/compressed/Makefile
->         @@ -147,7 +147,7 @@ $(obj)/vmlinux.bin.lzo: $(vmlinux.bin.all-y) FORCE
->          $(obj)/vmlinux.bin.zst: $(vmlinux.bin.all-y) FORCE
->         -       $(call if_changed,zstd22)
->         +       $(call if_changed,zstd)
->
->
-> Please let me know if you need more info, and sorry for the late report
-> as we just tracked down to this point.
->
-> Thanks,
-> Feng
->
->
->
+Excellent, thanks! I'll go feed it to the robots.
