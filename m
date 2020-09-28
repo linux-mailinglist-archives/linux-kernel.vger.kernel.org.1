@@ -2,85 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BD4427B67E
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 22:41:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C35C27B680
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 22:43:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726880AbgI1Uly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 16:41:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41174 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726500AbgI1Ulx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 16:41:53 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16B63C061755;
-        Mon, 28 Sep 2020 13:41:52 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id a22so2130464ljp.13;
-        Mon, 28 Sep 2020 13:41:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zx0CfU3J1VJLQIPqhr3Tt9PxwDIrKT2oBCuJthUB07o=;
-        b=MwEitxkMtu7a4LKCmc7FOTgRmpbIRPxCON2NnbgPAFnQQEqbMbB+XPd0FWK0nc0yKw
-         FYYNEbiHHsJxrVjZnYWbp4LsmWvle/+Net4bLJ4IBtK1j85PZGtFSEjqDkQAa887AJ5S
-         3hPYFtUXoqGi7YVlItiIRYXMzKpsr74N4pcaw3waF+Zz4eZm4YHIegmg7YJNqy9Os704
-         5NaI2RPw3U7tHDX0libVtJHw+VZmqTPTLm4zoYnAGwcwcC7NhJ0dLcqRNvj36mUFF3at
-         FrSUyVvIfma2dLx9FIMhgUiEqCpgbxeDC1fz/zSJLF7iyEzZEjH9XDV7PiQSodrJGZwS
-         pzJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zx0CfU3J1VJLQIPqhr3Tt9PxwDIrKT2oBCuJthUB07o=;
-        b=bTUG5kYAbtxsbb45x1G5H2Kc/ObCosfkZwBJoQhZ5anh6ouGIYuRPUeruBjiAzQ5Pc
-         NiwD6EkeMKGCofS/S4vxF1k405VQHipqc7qVZpbnx/V9xiGqNoyDOFxhDLkdCuXQTgqK
-         ZcJ3ZBtm2R5Q7HpsALmMFYiof1TWABEhy9RHbtINFg4WtBk3SdKPR//eVedRs5yWiulI
-         PQiTUDm6p5b4b9QgL0gbP1IrraMyO9WMbaCu7Wuy0zesaP2BCXe8gngp7DjKwZax2BST
-         32l13Szc3iEEVb7yPqKjs6+9cEq6RY7bFnYcwM3jBqoLHEZCid36Oy86oKU90TyWBhQo
-         a91A==
-X-Gm-Message-State: AOAM5334LRSvSzzO1HNJalFB9CUkGK28SRr1SiPvzth8cAVldN3/JFeo
-        KoY75/S5HLjlyEqr7RZSHfpt3ueFihPQYahQ6oQ=
-X-Google-Smtp-Source: ABdhPJxMJ5nOOOYxuicR17q4pCezl1xZMe2K4xB5mxX0ik/kdZii5diCzfauXchgWdRQMoQMPuYNvIQ/9O4BIOjMeYM=
-X-Received: by 2002:a2e:99d6:: with SMTP id l22mr100831ljj.195.1601325710449;
- Mon, 28 Sep 2020 13:41:50 -0700 (PDT)
+        id S1726900AbgI1UnI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 16:43:08 -0400
+Received: from mga05.intel.com ([192.55.52.43]:25730 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726328AbgI1UnH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 16:43:07 -0400
+IronPort-SDR: lBRFckoc5tXzYSaaaYb3tsVvRqH41vQZIytqCOHYRsC+mNEWd280BRhgJL+UCbGWUGV0qCoMiP
+ fJQh2PsqrsNw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9758"; a="246800758"
+X-IronPort-AV: E=Sophos;i="5.77,315,1596524400"; 
+   d="scan'208";a="246800758"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 13:43:07 -0700
+IronPort-SDR: Sn2YZ2oNxMSD99dlfbKPM/ePJK6RmI0Ws9dcTkEPnnts1QdwTwgrU64fbSmOcjquRy6PK6US1f
+ TSTwK74M+sUg==
+X-IronPort-AV: E=Sophos;i="5.77,315,1596524400"; 
+   d="scan'208";a="456987367"
+Received: from jlasecki-mobl2.ger.corp.intel.com (HELO localhost) ([10.252.49.78])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 13:43:00 -0700
+Date:   Mon, 28 Sep 2020 23:42:58 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Andrew Cooper <andrew.cooper3@citrix.com>
+Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Cedric Xing <cedric.xing@intel.com>, akpm@linux-foundation.org,
+        andriy.shevchenko@linux.intel.com, asapek@google.com, bp@alien8.de,
+        chenalexchen@google.com, conradparker@google.com,
+        cyhanish@google.com, dave.hansen@intel.com, haitao.huang@intel.com,
+        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, luto@kernel.org,
+        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
+        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com,
+        "H.J. Lu" <hjl.tools@gmail.com>,
+        Yu-cheng Yu <yu-cheng.yu@intel.com>
+Subject: Re: [PATCH v38 21/24] x86/vdso: Implement a vDSO for Intel SGX
+ enclave call
+Message-ID: <20200928204258.GA2705@linux.intel.com>
+References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
+ <20200915112842.897265-22-jarkko.sakkinen@linux.intel.com>
+ <721ca14e-21df-3df1-7bef-0b00d0ff90c3@citrix.com>
+ <20200928005842.GC6704@linux.intel.com>
+ <85bc15d5-93cd-e332-ae9a-1e1e66e1181d@citrix.com>
 MIME-Version: 1.0
-References: <20200925033017.1790973-1-art@khadas.com> <20200925033017.1790973-6-art@khadas.com>
- <CAFBinCAJ6svwiv9OM6EHz7468D9h+jW_ULiGrorgLetcODsAKQ@mail.gmail.com>
- <CAKaHn9+CWLJYN1Tt46VxBGNBEbVVJZWeL6ZJSf9w-5DmoxrvgQ@mail.gmail.com>
- <CAFBinCD0_QgKKcH+Kb2QbMWnx_csoXMEhSFYzmDscdTVB2TUJw@mail.gmail.com>
- <CAKaHn9K6O8u6Br84S63V0PDFBhiRbMdd4-bvC5FxFe6izj_Dvg@mail.gmail.com>
- <CAFBinCAb91M5Zyn8yM1Ww4KKPANM2uqvJB11=QGjMJ2fdU836w@mail.gmail.com> <CAKaHn9JxKBKW5AYvUNBAA+sNcHfNQNrx95NtLMnrfd0ypOaAoA@mail.gmail.com>
-In-Reply-To: <CAKaHn9JxKBKW5AYvUNBAA+sNcHfNQNrx95NtLMnrfd0ypOaAoA@mail.gmail.com>
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date:   Mon, 28 Sep 2020 22:41:39 +0200
-Message-ID: <CAFBinCDHbV2dT1KsXA6PukhsQXj+48Pes=gUeLGD9DFw7xJdYw@mail.gmail.com>
-Subject: Re: [PATCH 5/8] arm64: dts: meson: remove reset-gpios from ethernet
- node for VIM2 meson-gxm-khadas-vim2
-To:     Art Nikpal <email2tema@gmail.com>
-Cc:     Neil Armstrong <narmstrong@baylibre.com>, khilman@baylibre.com,
-        robh+dt@kernel.org, jbrunet@baylibre.com,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Artem Lapkin <art@khadas.com>, nick@khadas.com,
-        Gouwa Wang <gouwa@khadas.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <85bc15d5-93cd-e332-ae9a-1e1e66e1181d@citrix.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Artem,
+On Mon, Sep 28, 2020 at 05:44:35PM +0100, Andrew Cooper wrote:
+> On 28/09/2020 01:58, Jarkko Sakkinen wrote:
+> > On Fri, Sep 25, 2020 at 07:23:59PM +0100, Andrew Cooper wrote:
+> >> On 15/09/2020 12:28, Jarkko Sakkinen wrote:
+> >>> diff --git a/arch/x86/entry/vdso/vsgx_enter_enclave.S b/arch/x86/entry/vdso/vsgx_enter_enclave.S
+> >>> new file mode 100644
+> >>> index 000000000000..adbd59d41517
+> >>> --- /dev/null
+> >>> +++ b/arch/x86/entry/vdso/vsgx_enter_enclave.S
+> >>> @@ -0,0 +1,157 @@
+> >>> +SYM_FUNC_START(__vdso_sgx_enter_enclave)
+> >>> <snip>
+> >>> +.Lretpoline:
+> >>> +	call	2f
+> >>> +1:	pause
+> >>> +	lfence
+> >>> +	jmp	1b
+> >>> +2:	mov	%rax, (%rsp)
+> >>> +	ret
+> >> I hate to throw further spanners in the work, but this is not compatible
+> >> with CET, and the user shadow stack work in progress.
+> > CET goes beyond my expertise. Can you describe, at least rudimentary,
+> > how this code is not compatible?
+> 
+> CET Shadow Stacks detect attacks which modify the return address on the
+> stack.
+> 
+> Retpoline *is* a ROP gadget.  It really does modify the return address
+> on the stack, even if its purpose is defensive (vs Spectre v2) rather
+> than malicious.
 
-On Mon, Sep 28, 2020 at 10:42 AM Art Nikpal <email2tema@gmail.com> wrote:
->
-> OK today i can't reproduce it again on my new equipments ;-)
->
-> may be its some specific problem we can try forget about this
-uh, this is weird
-please let me know if you can reproduce it on your new hardware
+Aah. I get that, yes.
 
-thanks for the update :-)
+Kernel is full of retpoline but I presume that ring-0 does not use CET.
 
+The situation with callback is follows: for a run-time the user_handler
+by all practical means is always the same. There is ever only one user
+handler that gets executed. I.e. the indirect callback will always lead
+to the same thing. I wonder how much assets an adversary would get if
+we just remove retpoline bits (not much thinking done yet on that).
 
-Best regards,
-Martin
+/Jarkko
