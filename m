@@ -2,88 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 252C527AC60
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 13:01:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 494D227AC71
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 13:09:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726615AbgI1LBM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 07:01:12 -0400
-Received: from foss.arm.com ([217.140.110.172]:49382 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726504AbgI1LBM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 07:01:12 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 85DFF31B;
-        Mon, 28 Sep 2020 04:01:11 -0700 (PDT)
-Received: from [10.57.49.135] (unknown [10.57.49.135])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A89883F6CF;
-        Mon, 28 Sep 2020 04:01:09 -0700 (PDT)
-Subject: Re: [PATCH 2/2] coresight: etm4x: Fix save and restore of
- TRCVMIDCCTLR1 register
-To:     saiprakash.ranjan@codeaurora.org, mathieu.poirier@linaro.org,
-        mike.leach@linaro.org, leo.yan@linaro.org
-Cc:     alexander.shishkin@linux.intel.com, peterz@infradead.org,
-        coresight@lists.linaro.org, swboyd@chromium.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, denik@google.com
-References: <cover.1601222348.git.saiprakash.ranjan@codeaurora.org>
- <19e06f26c1e4b0bf48d3971e2f1fb1af27da159a.1601222348.git.saiprakash.ranjan@codeaurora.org>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <0e0bc2fd-0449-35bc-882a-3b942a55fda4@arm.com>
-Date:   Mon, 28 Sep 2020 12:05:57 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.7.0
+        id S1726595AbgI1LJB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 07:09:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37288 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726465AbgI1LJA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 07:09:00 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2BFDC061755
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 04:09:00 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id mm21so444135pjb.4
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 04:09:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=D7hFPD/UIncBaTjn81NRYz8OqFIdTpnrdS3XNJeL41o=;
+        b=zFeV4c4e5TAEDJF9Inbklt5a96uAUIj1MudWQRyBQuNi1G2qbtm+GTdl2VbeWt2Dt0
+         1qotaK0pmFxCg7hzhgf66RTwMq6cVa/t71hkKrQD8l/ZQ/ipErol1UmitK80kD7cc/Fj
+         cbzf44BjE9AYuwRoMnIZ1P8je9bTqSTJ+CXFRM1R4sFnaxGU6XgWXQ08mGhk1Y6XueXx
+         uCwr6xqAO11EhGohsVJ78k8oSX0cCvamA+RkQlmLk0d4p174AkzbUXR5VBqBoxYF3q/l
+         Zj5R6XN0Q37fp0Lk3BrpxjT6PSfQy01wEzm0f8yv2oRhuKCjmzysWKhAp48PV4XoJHy4
+         1FUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=D7hFPD/UIncBaTjn81NRYz8OqFIdTpnrdS3XNJeL41o=;
+        b=ZN4B9BSEbBxNotoDKvFfkC5Hci7xD7tttBC/mTSyXPhAlBukbPwQJGcEZjjPha0fKo
+         Hke+suRipFI4XgqFcPh9lbhi/A5oCbgyc0sHC3Pt5jMOxWkapJli/OdVo6rB8LB/UuKo
+         NlXQ2FBhQOTGOsOnkG80lyjS0aFAL98SkHBkFjkPuStusaOCPvcV4TTcDiLx7ERV6CMH
+         NkAJ65TIIx7RD8NcaTPluLcWGGfzwOl5hWnO/i+47eMb23VcbccjhuSj2BPR6qxxHxyE
+         OzASWLmq95IviIsBRpDLe/QEeRlJCGpMLQGpblo1v+Uph7YwpI+r6ZM1dSK87dQF4QDy
+         VCWQ==
+X-Gm-Message-State: AOAM531AzDBQ808xLL3GZofqUqyfze3ed7P66UhEgMCOQLePGqYYr7A+
+        xroW85alqxbqf0q0F4+/xqChNw==
+X-Google-Smtp-Source: ABdhPJydRrDSzhwdzqFBtUaEyIaVhdiWZEHi3Kv3wTqHLVyACu4Y3hCysSNOgwnCCPsZtOustRQWHA==
+X-Received: by 2002:a17:90b:4b11:: with SMTP id lx17mr865803pjb.22.1601291339969;
+        Mon, 28 Sep 2020 04:08:59 -0700 (PDT)
+Received: from leoy-ThinkPad-X240s ([2600:3c01::f03c:91ff:fe8a:bb03])
+        by smtp.gmail.com with ESMTPSA id g23sm1252943pfh.133.2020.09.28.04.08.55
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 28 Sep 2020 04:08:59 -0700 (PDT)
+Date:   Mon, 28 Sep 2020 19:08:51 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     =?iso-8859-1?Q?Andr=E9?= Przywara <andre.przywara@arm.com>
+Cc:     Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Tan Xiaojun <tanxiaojun@huawei.com>,
+        James Clark <james.clark@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Wei Li <liwei391@huawei.com>
+Subject: Re: [PATCH 5/5] perf: arm_spe: Decode SVE events
+Message-ID: <20200928110851.GC11043@leoy-ThinkPad-X240s>
+References: <20200922101225.183554-1-andre.przywara@arm.com>
+ <20200922101225.183554-6-andre.przywara@arm.com>
+ <20200927033035.GE9677@leoy-ThinkPad-X240s>
+ <2a301585-1930-17e4-f9a1-d47ca5264734@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <19e06f26c1e4b0bf48d3971e2f1fb1af27da159a.1601222348.git.saiprakash.ranjan@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <2a301585-1930-17e4-f9a1-d47ca5264734@arm.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sai,
+Hi Andre,
 
-On 09/27/2020 05:20 PM, Sai Prakash Ranjan wrote:
-> In commit f188b5e76aae ("coresight: etm4x: Save/restore state
-> across CPU low power states"), mistakenly TRCVMIDCCTLR1 register
-> value was saved in trcvmidcctlr0 state variable which is used to
-> store TRCVMIDCCTLR0 register value in etm4x_cpu_save() and then
-> same value is written back to both TRCVMIDCCTLR0 and TRCVMIDCCTLR1
-> in etm4x_cpu_restore(). There is already a trcvmidcctlr1 state
-> variable available for TRCVMIDCCTLR1, so use it.
+On Mon, Sep 28, 2020 at 11:15:53AM +0100, André Przywara wrote:
+
+[...]
+
+> > So my summary for patches 02 ~ 05, except patch 04, other changes has
+> > been included in the patch set "perf arm-spe: Refactor decoding &
+> > dumping flow".
 > 
-> Fixes: 8b44fdfef6a2 ("coresight: etm4x: Allow etm4x to be built as a module")
+> Ah, my sincere apologies, I totally missed Wei's and your series on this
+> (although I did some research on "prior art").
 
-Why is this commit in question ?
+No worries!
 
-> Fixes: f188b5e76aae ("coresight: etm4x: Save/restore state across CPU low power states")
-
-I believe this is the right fixes tag.
-
-> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-> ---
->   drivers/hwtracing/coresight/coresight-etm4x-core.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
+> > I'd like to add your patch 04 into the patch set "perf arm-spe:
+> > Refactor decoding & dumping flow" and I will respin the patch set v2 on
+> > the latest perf/core branch and send out to review.
+> > 
+> > For patch 01, you could continue to try to land it in the kernel.
+> > (Maybe consolidate a bit with Wei?).
+> > 
+> > Do you think this is okay for you?
 > 
-> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> index de76d57850bc..abd706b216ac 100644
-> --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> @@ -1243,7 +1243,7 @@ static int etm4_cpu_save(struct etmv4_drvdata *drvdata)
->   	state->trccidcctlr1 = readl(drvdata->base + TRCCIDCCTLR1);
->   
->   	state->trcvmidcctlr0 = readl(drvdata->base + TRCVMIDCCTLR0);
-> -	state->trcvmidcctlr0 = readl(drvdata->base + TRCVMIDCCTLR1);
-> +	state->trcvmidcctlr1 = readl(drvdata->base + TRCVMIDCCTLR1);
->   
->   	state->trcclaimset = readl(drvdata->base + TRCCLAIMCLR);
->   
-> @@ -1353,7 +1353,7 @@ static void etm4_cpu_restore(struct etmv4_drvdata *drvdata)
->   	writel_relaxed(state->trccidcctlr1, drvdata->base + TRCCIDCCTLR1);
->   
->   	writel_relaxed(state->trcvmidcctlr0, drvdata->base + TRCVMIDCCTLR0);
-> -	writel_relaxed(state->trcvmidcctlr0, drvdata->base + TRCVMIDCCTLR1);
-> +	writel_relaxed(state->trcvmidcctlr1, drvdata->base + TRCVMIDCCTLR1);
->   
+> Yes, sounds like a plan. So Wei's original series is now fully
+> integrated into your 13-patch rework, right?
 
-Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+Thanks for confirmation.
+
+You could see Wei's patch set has 4 patches [1].  I only picked the
+patch 02 [2] from Wei's patch set into my refactoring patch set; the
+patch 01 is for enabling driver for SVE events, the patches 03/04
+introduced new synthesized events.
+
+Patches 03 / 04 should be considered carefully and it's good to prove
+these synthesized events will be useful for user cases before upstream
+them.  The reason is AFAIK a good direction to generate SPE trace data
+for memory events [3], and for SVE, I think we should firstly consider
+if can reuse the memory event for profiling rather than adding new
+synthesized events.
+
+So I prefer to give priority for patches 01 / 02.
+
+> Is "[RESEND,v1,xx/13] ..." the latest revision of your series?
+
+Yes.
+
+> Do you plan on sending a v2 anytime soon? Or shall I do review on the
+> existing one?
+
+For saving time, let me respin patch set v2 and send to LKML (hope in
+next 1~2 days).  Then you could review patch set v2.
+
+Thanks,
+Leo
+
+[1] https://lore.kernel.org/patchwork/cover/1278778/
+[2] https://lore.kernel.org/patchwork/patch/1278780/
+[3] https://lore.kernel.org/patchwork/cover/1298085/
