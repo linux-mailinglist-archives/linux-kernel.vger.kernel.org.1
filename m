@@ -2,91 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73C0527A8AC
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 09:32:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C400227A8DD
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 09:40:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726617AbgI1HcW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 03:32:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60084 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726440AbgI1HcV (ORCPT
+        id S1726705AbgI1HkE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 03:40:04 -0400
+Received: from atl4mhfb02.myregisteredsite.com ([209.17.115.118]:60612 "EHLO
+        atl4mhfb02.myregisteredsite.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726689AbgI1HkD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 03:32:21 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1339CC0613CE
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 00:32:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=9a4RQ/cVE8L9jRWNlJ9jl2x1mUr9n344j0WMZjuDA5s=; b=aZUJAjjmdP/OsenQWBHc6mHLmD
-        wUWPfx0OuGGuItQ8dnzsPdhenqd0uKm2ziu731VRm3PGPK1Ajck7Rod1Xag7kANv3RJrg+TDQrR7q
-        4uXD2+FaPtg9dqtPeeqnLlIdUMY8hncZygc8hy8284KxTntU8ImrhrmCoXG1LGpW8qDsWOm0vhfMt
-        /oXesj5Rf2hfbjpWIkfAv/72ZyuCoaH7nicXiY2A7O9dyeUQftM50dzmttUpdmqruGs2MyF6fNdV8
-        RmT8/tiGtY4sYeGyXRHSMcaKoolyZTKnWr+vL2v6UmB9Qj/JUOB3YNgdIVh4v6LHS14yfBP4SzSOz
-        jSedQIeQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kMndm-0007Qh-PS; Mon, 28 Sep 2020 07:32:07 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5CDE9300F7A;
-        Mon, 28 Sep 2020 09:32:03 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 0AB142019499B; Mon, 28 Sep 2020 09:32:03 +0200 (CEST)
-Date:   Mon, 28 Sep 2020 09:32:02 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Chengming Zhou <zhouchengming@bytedance.com>
-Cc:     linux-kernel@vger.kernel.org, pmladek@suse.com,
-        sergey.senozhatsky@gmail.com, rostedt@goodmis.org,
-        mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        bsegall@google.com, mgorman@suse.de, songmuchun@bytedance.com
-Subject: Re: [PATCH 2/2] sched: mark PRINTK_DEFERRED_CONTEXT_MASK in
- __schedule()
-Message-ID: <20200928073202.GA2611@hirez.programming.kicks-ass.net>
-References: <20200927161130.33172-1-zhouchengming@bytedance.com>
- <20200927161130.33172-2-zhouchengming@bytedance.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200927161130.33172-2-zhouchengming@bytedance.com>
+        Mon, 28 Sep 2020 03:40:03 -0400
+Received: from jax4mhob07.registeredsite.com (jax4mhob07.myregisteredsite.com [64.69.218.87])
+        by atl4mhfb02.myregisteredsite.com (8.14.4/8.14.4) with ESMTP id 08S7XxPX010802
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 03:34:03 -0400
+Received: from mailpod.hostingplatform.com (atl4qobmail02pod0.registeredsite.com [10.30.71.204])
+        by jax4mhob07.registeredsite.com (8.14.4/8.14.4) with ESMTP id 08S7Xd1F018316
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL)
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 03:33:39 -0400
+Received: (qmail 16121 invoked by uid 0); 28 Sep 2020 07:33:30 -0000
+X-TCPREMOTEIP: 83.128.90.119
+X-Authenticated-UID: mike@milosoftware.com
+Received: from unknown (HELO phenom.domain?not?set.invalid) (mike@milosoftware.com@83.128.90.119)
+  by 0 with ESMTPA; 28 Sep 2020 07:33:30 -0000
+From:   Mike Looijmans <mike.looijmans@topic.nl>
+To:     linus.walleij@linaro.org, bgolaszewski@baylibre.com,
+        linux-gpio@vger.kernel.org
+Cc:     robh+dt@kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Mike Looijmans <mike.looijmans@topic.nl>
+Subject: [PATCH] gpio: pca953x: Add support for the NXP PCAL9554B/C
+Date:   Mon, 28 Sep 2020 09:33:17 +0200
+Message-Id: <20200928073317.7240-1-mike.looijmans@topic.nl>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 12:11:30AM +0800, Chengming Zhou wrote:
-> The WARN_ON/WARN_ON_ONCE with rq lock held in __schedule() should be
-> deferred by marking the PRINTK_DEFERRED_CONTEXT_MASK, or will cause
-> deadlock on rq lock in the printk path.
+The NXP PCAL9554B is a variant of the PCA953x GPIO expander,
+with 8 GPIOs, latched interrupts and some advanced configuration
+options. The "C" version only differs in I2C address.
 
-It also shouldn't happen in the first place, so who bloody cares.
+Signed-off-by: Mike Looijmans <mike.looijmans@topic.nl>
+---
+ Documentation/devicetree/bindings/gpio/gpio-pca953x.txt | 1 +
+ drivers/gpio/gpio-pca953x.c                             | 2 ++
+ 2 files changed, 3 insertions(+)
 
-> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> ---
->  kernel/sched/core.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index 2d95dc3f4644..81d8bf614225 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -4444,6 +4444,7 @@ static void __sched notrace __schedule(bool preempt)
->  	 */
->  	rq_lock(rq, &rf);
->  	smp_mb__after_spinlock();
-> +	printk_deferred_enter();
->  
->  	/* Promote REQ to ACT */
->  	rq->clock_update_flags <<= 1;
-> @@ -4530,6 +4531,7 @@ static void __sched notrace __schedule(bool preempt)
->  		rq_unlock_irq(rq, &rf);
->  	}
->  
-> +	printk_deferred_exit();
->  	balance_callback(rq);
->  }
+diff --git a/Documentation/devicetree/bindings/gpio/gpio-pca953x.txt b/Documentation/devicetree/bindings/gpio/gpio-pca953x.txt
+index 3126c3817e2a..99dc1936f633 100644
+--- a/Documentation/devicetree/bindings/gpio/gpio-pca953x.txt
++++ b/Documentation/devicetree/bindings/gpio/gpio-pca953x.txt
+@@ -20,6 +20,7 @@ Required properties:
+ 	nxp,pcal6416
+ 	nxp,pcal6524
+ 	nxp,pcal9535
++	nxp,pcal9554b
+ 	nxp,pcal9555a
+ 	maxim,max7310
+ 	maxim,max7312
+diff --git a/drivers/gpio/gpio-pca953x.c b/drivers/gpio/gpio-pca953x.c
+index bd2e96c34f82..fb946b01512d 100644
+--- a/drivers/gpio/gpio-pca953x.c
++++ b/drivers/gpio/gpio-pca953x.c
+@@ -90,6 +90,7 @@ static const struct i2c_device_id pca953x_id[] = {
+ 	{ "pcal6416", 16 | PCA953X_TYPE | PCA_LATCH_INT, },
+ 	{ "pcal6524", 24 | PCA953X_TYPE | PCA_LATCH_INT, },
+ 	{ "pcal9535", 16 | PCA953X_TYPE | PCA_LATCH_INT, },
++	{ "pcal9554b", 8  | PCA953X_TYPE | PCA_LATCH_INT, },
+ 	{ "pcal9555a", 16 | PCA953X_TYPE | PCA_LATCH_INT, },
+ 
+ 	{ "max7310", 8  | PCA953X_TYPE, },
+@@ -1237,6 +1238,7 @@ static const struct of_device_id pca953x_dt_ids[] = {
+ 	{ .compatible = "nxp,pcal6416", .data = OF_953X(16, PCA_LATCH_INT), },
+ 	{ .compatible = "nxp,pcal6524", .data = OF_953X(24, PCA_LATCH_INT), },
+ 	{ .compatible = "nxp,pcal9535", .data = OF_953X(16, PCA_LATCH_INT), },
++	{ .compatible = "nxp,pcal9554b", .data = OF_953X( 8, PCA_LATCH_INT), },
+ 	{ .compatible = "nxp,pcal9555a", .data = OF_953X(16, PCA_LATCH_INT), },
+ 
+ 	{ .compatible = "maxim,max7310", .data = OF_953X( 8, 0), },
+-- 
+2.17.1
 
-NAK printk_deferred is an abomination, kill that.
