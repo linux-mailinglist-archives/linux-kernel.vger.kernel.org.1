@@ -2,394 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD77027B7EB
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 01:19:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70F4727B807
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 01:23:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727216AbgI1XTV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 19:19:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37304 "EHLO
+        id S1727064AbgI1XXn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 19:23:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726958AbgI1XSm (ORCPT
+        with ESMTP id S1726338AbgI1XXm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 19:18:42 -0400
-Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 665C5C0613B7
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 15:43:20 -0700 (PDT)
-Received: by mail-qv1-xf44.google.com with SMTP id cy2so1361263qvb.0
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 15:43:20 -0700 (PDT)
+        Mon, 28 Sep 2020 19:23:42 -0400
+Received: from mail-ua1-x942.google.com (mail-ua1-x942.google.com [IPv6:2607:f8b0:4864:20::942])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B48EBC0613B8
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 15:44:27 -0700 (PDT)
+Received: by mail-ua1-x942.google.com with SMTP id j12so2757869ual.7
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 15:44:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=vfXGidpgXKx1s2YVf1uVRaonvKWXG3GBSc8n1cT0/+E=;
-        b=g3UHy52pfWCRXZ94EoiK+BN3YdRKfghlKl9buhE/uYYes0XiaJkYcYwca7ex3ziPiq
-         LSo6hlBiZUY4mT5g9mxR4be3BDdLNN6CAOuazaRrsZ2luoGxY78HbGUrDxELTylxHDJZ
-         MU41EE2YAht/nN9QAapmLl/BP1eLG7YBm8BIc=
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kwjW9aVhaH3Akzu5Far0IJ9TvL77Wnb7vo0nK8ZII38=;
+        b=Hsrfj84emk5bg/vkeMeiJqZFbpfVVaUk3h76uCV1XQ6lC7+s63GLenwoiLxRmGJztj
+         b0Cnn/lq5zkeN4AvGNMc2h7u3bG4QqQsKRCnwKojhTM7nZHN1nT+u6rhjKS5nzsrKLw4
+         5xf1rq6O6v1YuUJDvN6mBxgRRxEAeFb1yRlcw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=vfXGidpgXKx1s2YVf1uVRaonvKWXG3GBSc8n1cT0/+E=;
-        b=kpndpOsDEHzzmLFIEWxu70lsn6vSltcvopnPNQfQbCcDydkMfKMvgdIlrF7/NJBpWC
-         d8PIPYy6cQzZ9+re9hmZQAQ0M3RVEmDJKL5IoJO5YSUJ0nsFI+MiwJiChxDHe4d4bpH6
-         EyJx3wcsxa2Rk/nSfvU6kcyNeINotUnLVYC8btr1IXfKMu0sKcPB/Z6lXQxrNcoy9P1L
-         2uZerj44gnuUVWGp/ZLPgOlOHnluVVcyvTCxSLAda90ddi7Sm479Lb1OouTAszeMF3Nt
-         CHQb/qO4OBT9bN110aiDQ/5Lskcrn4KEoMdyxjq401tDg5q0fBCxKK4wYqYrj6mqjZsc
-         X6iA==
-X-Gm-Message-State: AOAM531W7+olIwVB2q08ZrZ/OdwtSll6A4hFkqs1ic61aGAn68bHwEhB
-        pDcjuGJv6t+xzzYTVc38MM5CiA==
-X-Google-Smtp-Source: ABdhPJw6AEf89l09FXlWzGbZKPYmGscpMVfLWn8XSCjEvM4H18rUrYeFkJkbD0Ll3fqP5ptctcVetg==
-X-Received: by 2002:a05:6214:1852:: with SMTP id d18mr1922123qvy.32.1601332999028;
-        Mon, 28 Sep 2020 15:43:19 -0700 (PDT)
-Received: from localhost ([2620:15c:6:12:cad3:ffff:feb3:bd59])
-        by smtp.gmail.com with ESMTPSA id l11sm2490024qkk.35.2020.09.28.15.43.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Sep 2020 15:43:18 -0700 (PDT)
-Date:   Mon, 28 Sep 2020 18:43:18 -0400
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Neeraj Upadhyay <neeraju@codeaurora.org>
-Cc:     paulmck@kernel.org, josh@joshtriplett.org, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rcu/tree: Correctly handle single cpu check in
- rcu_blocking_is_gp
-Message-ID: <20200928224318.GC2641213@google.com>
-References: <1600717557-19880-1-git-send-email-neeraju@codeaurora.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kwjW9aVhaH3Akzu5Far0IJ9TvL77Wnb7vo0nK8ZII38=;
+        b=BSJk9EM5Pg6qRfjBcFyZGNCaEaIlCScuGLuCg0SOVH/Cee0SLOhLQ4CdrS6onVu8nh
+         WItDyLxa1kHbuk4rxte+rSIv1iYbX8jJbYQ5+Vk0rWqsZ7CX4CHqnZL3hJ6AdMpDNlrR
+         VY4DE+rYgIYHmiPi4voCnCSLXBGjMSJdZJSFkqer3/8cXWXvkU3/j1MVIjll3lz1F4qO
+         emThYJbPwBb2CufZUq12p/LQ7W+wMSQ7eWR+AgQZFCtYhkDvAg51nUQBxzKfXyFVmE4F
+         ncjOEf31OWDPF6Mq7ZtXjqsmqZh81lSCbKUuiAQLKVCGODmCwBVUXo9Bu8EI/w3UBlkO
+         IObg==
+X-Gm-Message-State: AOAM533MZYjJaKX7oIcC/tkGpEekXRjdwtKiyTRBJc9bhapIs3glARNi
+        WYOj/4aXljjSmSOL4G7hAtM7aWE92sbz4Q==
+X-Google-Smtp-Source: ABdhPJxIZG2ZKVzrPM21vM6P/CSQDbQlfgFEH8YxPEr3xR4Q0i+9eSlWCx+o/4MKEgUc6pR3PQiAJg==
+X-Received: by 2002:a9f:36ca:: with SMTP id p68mr2206151uap.96.1601333066083;
+        Mon, 28 Sep 2020 15:44:26 -0700 (PDT)
+Received: from mail-vs1-f46.google.com (mail-vs1-f46.google.com. [209.85.217.46])
+        by smtp.gmail.com with ESMTPSA id q74sm1342669vka.45.2020.09.28.15.44.24
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 28 Sep 2020 15:44:24 -0700 (PDT)
+Received: by mail-vs1-f46.google.com with SMTP id 5so1793198vsu.5
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 15:44:24 -0700 (PDT)
+X-Received: by 2002:a67:ad0e:: with SMTP id t14mr1333581vsl.34.1601333064104;
+ Mon, 28 Sep 2020 15:44:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1600717557-19880-1-git-send-email-neeraju@codeaurora.org>
+References: <20200927211531.1380577-1-daniel.thompson@linaro.org> <20200927211531.1380577-3-daniel.thompson@linaro.org>
+In-Reply-To: <20200927211531.1380577-3-daniel.thompson@linaro.org>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Mon, 28 Sep 2020 15:44:12 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=X5Ro_MtGMJDCCjnB1_CPzRPHbZx5ovQ6L8JbpNNdyngA@mail.gmail.com>
+Message-ID: <CAD=FV=X5Ro_MtGMJDCCjnB1_CPzRPHbZx5ovQ6L8JbpNNdyngA@mail.gmail.com>
+Subject: Re: [PATCH v3 2/3] kgdb: Add NOKPROBE labels on the trap handler functions
+To:     Daniel Thompson <daniel.thompson@linaro.org>
+Cc:     Jason Wessel <jason.wessel@windriver.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Will Deacon <will@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        kgdb-bugreport@lists.sourceforge.net,
+        LKML <linux-kernel@vger.kernel.org>,
+        Patch Tracking <patches@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 01:15:57AM +0530, Neeraj Upadhyay wrote:
-> Currently, for non-preempt kernels (with CONFIG_PREEMPTION=n),
-> rcu_blocking_is_gp() checks (with preemption disabled), whether
-> there is only one cpu online. It uses num_online_cpus() to
-> decide whether only one cpu is online. If there is only single
-> cpu online, synchronize_rcu() is optimized to return without
-> doing all the work to wait for grace period. However, there are
-> few issues with the num_online_cpus() check used:
-> 
-> 1. num_online_cpus() does a atomic_read(&__num_online_cpus). As
->    hotplug locks are not held, this does not ensure that
->    new incoming cpus update of the count is visible. This can
->    result in read side section on new incoming cpu, observe
->    updates which should not be visible beyond the grace period
->    corresponding to synchronize_rcu().
-> 
->    For e.g. below litmus test, where P0 process corresponds to
->    synchronize_rcu() and P1 corresponds to new online cpu,  has
->    positive witnesses; confirming the possibility of read side
->    section to extend before and after the grace period, thereby
->    breaking guarantees provided by synchronize_rcu().
-> 
->    {
->      int x = 0;
->      atomic_t numonline = ATOMIC_INIT(1);
->    }
-> 
->    P0(int *x, atomic_t *numonline)
->    {
->      int r0;
->      WRITE_ONCE(*x, 1);
->      r0 = atomic_read(numonline);
->      if (r0 == 1) {
->        smp_mb();
->      } else {
->        synchronize_rcu();
->      }
->      WRITE_ONCE(*x, 2);
->    }
-> 
->    P1(int *x, atomic_t *numonline)
->    {
->      int r0; int r1;
-> 
->      atomic_inc(numonline);
->      smp_mb();
->      rcu_read_lock();
->      r0 = READ_ONCE(*x);
->      smp_rmb();
->      r1 = READ_ONCE(*x);
->      rcu_read_unlock();
->    }
-> 
->    locations [x;numonline;]
-> 
->    exists (1:r0=0 /\ 1:r1=2)
+Hi,
 
-<self rambling>
-Right so basically:
-    P1(int *x, atomic_t *numonline)
-    {
-      int r0; int r1;
- 
-      atomic_inc(numonline);
-      smp_mb();
-      rcu_read_lock();
-      r0 = READ_ONCE(*x);
-
-Happened before:
-    P0(int *x, atomic_t *numonline)
-    {
-      int r0;
-      WRITE_ONCE(*x, 1);
-      r0 = atomic_read(numonline);
-      if (r0 == 1) {
-	smp_mb();
-	...
-      }
-
-However, P0 did not see P1's update of numonline because the atomic_read()
-does not provide any ordering.
-</self rambling>
-
-Btw, its cool how Paul/you removed the need for memory-barriers for the
-single-CPU case at all, by making the update to num_online_cpus in rcu_state,
-from the CPU doing the onlining and offlining.
-
-Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-(For the version in -rcu :)).
-
-thanks,
-
- - Joel
-
-
-> 2. Second problem is, the same early exit, from synchronize_rcu()
->    does not provide full ordering, memory barrier, w.r.t. memory
->    accesses after synchronize_rcu() call.
-> 
-> 3. Third, more important issue is related to outgoing cpu. Checking
->    only for __num_online_cpus with preemotion disabled isn't sufficient
->    for RCU, as, on completion of CPUHP_TEARDOWN_CPU stop machine (which
->    clears outgoing cpu from __num_online_cpus, the CPU switches to idle
->    task. So, checking only for __num_online_cpus does not consider
->    RCU read side sections in scheduler code (before switching to idle
->    task) and any potential read side sections in idle task, before final
->    RCU-quiesce entry into cpuhp_report_idle_dead() -> rcu_report_dead().
-> 
-> To handle these issues, add a new rcu_state member n_online_cpus, to
-> keep account of the current number of online cpus. The atomic updates
-> to this counter from rcu_report_dead() and rcu_cpu_starting() and
-> the added read/write memory ordering semantics ensure that
-> synchronize_rcu() fast path waits for all read side sections, where
-> incoming/outgoing cpus are considered online, for RCU i.e. after
-> rcu_cpu_starting() and before rcu_report_dead().
+On Sun, Sep 27, 2020 at 2:16 PM Daniel Thompson
+<daniel.thompson@linaro.org> wrote:
 >
-> Signed-off-by: Neeraj Upadhyay <neeraju@codeaurora.org>
+> Currently kgdb honours the kprobe blocklist but doesn't place its own
+> trap handling code on the list. Add labels to discourage attempting to
+> use kgdb to debug itself.
+>
+> Not every functions that executes from the trap handler needs to be
+> marked up: relatively early in the trap handler execution (just after
+> we bring the other CPUs to a halt) all breakpoints are replaced with
+> the original opcodes. This patch marks up code in the debug_core that
+> executes between trap entry and the breakpoints being deactivated
+> and, also, code that executes between breakpoint activation and trap
+> exit.
+>
+> To be clear these changes are not sufficient to make recursive trapping
+> impossible since cover all the library calls made during kgdb's
+> entry/exit logic. However going much further whilst we are sharing the
+> kprobe blocklist risks reducing the capabilities of kprobe and this
+> would be a bad trade off (especially so given kgdb's users are currently
+> conditioned to avoid recursive traps).
+>
+> Signed-off-by: Daniel Thompson <daniel.thompson@linaro.org>
 > ---
-> 
-> Below is the reproducer for issue described in point 3; this snippet
-> is based on klitmus generated test, which is modified to sample reads
-> from idle thread:
-> 
-> static void code0(int* x) {
-> WRITE_ONCE(*x, 1);
->   idle_ctr = 0;
->   smp_mb();
->   mdelay(10);
->   WRITE_ONCE(*x, 1);
->   idle_ctr = 1;
->   synchronize_rcu();
->   WRITE_ONCE(*x, 2);
->   idle_ctr = 2;
-> 
-> }
-> 
-> static int thread0(void *_p) {
->   int _j, _i;
->   ctx_t *_a = (ctx_t *)_p;
-> 
->   smp_mb();
->   for (_j = 0 ; _j < stride ; _j++) {
->     for (_i = _j ; _i < size ; _i += stride) {
->       while (idle_wait1) {
->           cpu_relax();
->           cond_resched();
->         }
->       code0(&_a->x[_i]);
->       smp_mb();
->       get_online_cpus();
->       idle_wait1 = true;
->       put_online_cpus();
->     }
->   }
->   atomic_inc(&done);
->   smp_mb();
->   wake_up(wq);
->   smp_mb();
->   do_exit(0);
-> }
-> 
-> 
-> static void code1(int* x,int* out_1_r1,int* out_1_r0) {
-> 
->   int r0; int r1;
-> 
->   r0 = READ_ONCE(idle_ctr_snap1);
->   r1 = READ_ONCE(idle_ctr_snap2);
-> 
->   *out_1_r1 = (int)r1;
->   *out_1_r0 = (int)r0;
-> }
-> 
-> static int thread1(void *_p) {
->   ctx_t *_a = (ctx_t *)_p;
->   int _j, _i;
-> 
->   smp_mb();
->   for (_j = 0 ; _j < stride ; _j++) {
->     for (_i = _j ; _i < size ; _i += stride) {
->       while (idle_wait2) {
->           cpu_relax();
->           cond_resched();
->       }
->       get_online_cpus();
->       code1(&_a->x[_i],&_a->out_1_r1[_i],&_a->out_1_r0[_i]);
->       smp_mb();
->       idle_wait2 = true;
->       put_online_cpus();
->     }
->   }
->   atomic_inc(&done);
->   smp_mb();
->   wake_up(wq);
->   smp_mb();
->   do_exit(0);
-> }
-> 
-> Idle thread snippet:
-> 
-> if (cpu_is_offline(cpu)) {
->         smp_mb();
->         idle_wait1 = false;
->         mdelay(8);
->         smp_mb();
->         rcu_read_lock();
->         idle_ctr_snap1 = idle_ctr;
->         mdelay(40);
->         smp_rmb();
->         idle_ctr_snap2 = idle_ctr;
->         rcu_read_unlock();
->         smp_mb();
->         idle_wait2 = false;
->         tick_nohz_idle_stop_tick();
->         cpuhp_report_idle_dead();
->         arch_cpu_idle_dead();
-> 
->  kernel/rcu/tree.c | 65 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
->  kernel/rcu/tree.h |  1 +
->  2 files changed, 66 insertions(+)
-> 
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 2424e2a..33493f0 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -3609,9 +3609,59 @@ static int rcu_blocking_is_gp(void)
->  	if (IS_ENABLED(CONFIG_PREEMPTION))
->  		return rcu_scheduler_active == RCU_SCHEDULER_INACTIVE;
->  	might_sleep();  /* Check for RCU read-side critical section. */
-> +	/*
-> +	 * a = p
-> +	 * a = NULL
-> +	 * synchronize_rcu()
-> +	 *   rcu_blocking_is_gp()
-> +	 *     num_online_cpus()
-> +	 *       atomic_read(&__num_online_cpus)
-> +	 * kfree(p);
-> +	 *
-> +	 *      - VS -
-> +	 *
-> +	 *              __cpu_up()
-> +	 *                set_cpu_online(cpu)
-> +	 *                  atomic_inc(&__num_online_cpus)
-> +	 *              rcu_read_lock()
-> +	 *              rcu_dereference(a) (a == p)
-> +	 *              rcu_read_unlock()
-> +	 *
-> +	 * rcu_blocking_is_gp() must observe atomic_inc(&__num_online_cpus),
-> +	 * in order to ensure that, RCU read side critical section on new
-> +	 * online cpu, either start after synchronize_rcu()'s GP starts or
-> +	 * it completes before synchronize_rcu() returns.
-> +	 *
-> +	 * However, atomic_read(&__num_online_cpus) does not ensure that.
-> +	 *
-> +	 * Essentially, below condition exist:
-> +	 *
-> +	 * {
-> +	 *   int x = 0;
-> +	 *   atomic_t numonline = ATOMIC_INIT(1);
-> +	 * }
-> +	 *
-> +	 * P0(int *x, atomic_t *numonline)     P1(int *x, atomic_t *numonline)
-> +	 * {                                   {
-> +	 *   int r0;                             int r0; int r1;
-> +	 *   WRITE_ONCE(*x, 1);                  atomic_inc(numonline);
-> +	 *   r0 = atomic_read(numonline);        rcu_read_lock();
-> +	 *   if (r0 == 2) {                      r0 = READ_ONCE(*x);
-> +	 *     synchronize_rcu();                smp_rmb();
-> +	 *   }                                   r1 = READ_ONCE(*x);
-> +	 *   WRITE_ONCE(*x, 2);                  rcu_read_unlock();
-> +	 * }                                   }
-> +	 *
-> +	 * exists (1:r0=0 /\ 1:r1=2)
-> +	 *
-> +	 * atomic_add_return(0, &rcu_state.n_online_cpus) and corresponding
-> +	 * atomic_inc(&rcu_state.n_online_cpus) in rcu_cpu_starting() corrects
-> +	 * this ordering issue.
-> +	 */
->  	preempt_disable();
->  	ret = num_online_cpus() <= 1;
->  	preempt_enable();
-> +	ret = ret && (atomic_add_return(0, &rcu_state.n_online_cpus) <= 1);
->  	return ret;
->  }
->  
-> @@ -3655,6 +3705,11 @@ void synchronize_rcu(void)
->  			 lock_is_held(&rcu_sched_lock_map),
->  			 "Illegal synchronize_rcu() in RCU read-side critical section");
->  	if (rcu_blocking_is_gp())
-> +		/*
-> +		 * atomic_add_return() in rcu_blocking_is_gp () provides
-> +		 * full memory barrier ordering with any rcu section after
-> +		 * synchronize_rcu() call.
-> +		 */
->  		return;
->  	if (rcu_gp_is_expedited())
->  		synchronize_rcu_expedited();
-> @@ -4086,6 +4141,10 @@ void rcu_cpu_starting(unsigned int cpu)
->  	mask = rdp->grpmask;
->  	raw_spin_lock_irqsave_rcu_node(rnp, flags);
->  	WRITE_ONCE(rnp->qsmaskinitnext, rnp->qsmaskinitnext | mask);
-> +	/* Order with access of n_online_cpus in rcu_blocking_is_gp */
-> +	atomic_inc(&rcu_state.n_online_cpus);
-> +	/* Order with rcu-side usages after this */
-> +	smp_mb__after_atomic();
->  	newcpu = !(rnp->expmaskinitnext & mask);
->  	rnp->expmaskinitnext |= mask;
->  	/* Allow lockless access for expedited grace periods. */
-> @@ -4138,6 +4197,12 @@ void rcu_report_dead(unsigned int cpu)
->  		raw_spin_lock_irqsave_rcu_node(rnp, flags);
->  	}
->  	WRITE_ONCE(rnp->qsmaskinitnext, rnp->qsmaskinitnext & ~mask);
-> +	/*
-> +	 * Order with access of n_online_cpus in rcu_blocking_is_gp().
-> +	 * Release semantics ensures that RCU read sections before it
-> +	 * are observed by rcu_blocking_is_gp().
-> +	 */
-> +	atomic_dec_return_release(&rcu_state.n_online_cpus);
->  	raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
->  	raw_spin_unlock(&rcu_state.ofl_lock);
->  
-> diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
-> index e4f66b8..4d9a9c0 100644
-> --- a/kernel/rcu/tree.h
-> +++ b/kernel/rcu/tree.h
-> @@ -298,6 +298,7 @@ struct rcu_state {
->  						/* Hierarchy levels (+1 to */
->  						/*  shut bogus gcc warning) */
->  	int ncpus;				/* # CPUs seen so far. */
-> +	atomic_t n_online_cpus;			/* # CPUs online for RCU. */
+>  kernel/debug/debug_core.c | 16 ++++++++++++++++
+>  1 file changed, 16 insertions(+)
+
+I didn't go on any more hunts for missing functions since this seems
+fine to me.  It's mostly just trying to make it a little harder for
+someone to shoot themselves in the foot, after all.  ;-)
+
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
+
+-Doug
