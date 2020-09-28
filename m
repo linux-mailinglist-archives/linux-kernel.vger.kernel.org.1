@@ -2,351 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E23527AF4B
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 15:43:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D64DB27AF52
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 15:45:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726526AbgI1Nnw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 09:43:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33040 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726409AbgI1Nnw (ORCPT
+        id S1726566AbgI1NpL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 09:45:11 -0400
+Received: from lb1-smtp-cloud7.xs4all.net ([194.109.24.24]:57097 "EHLO
+        lb1-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726409AbgI1NpK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 09:43:52 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A15B5C061755
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 06:43:51 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id a22so1058491ljp.13
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 06:43:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Qh0yK92s/b9iAlyp4ipnt9oqc15IVBpnV3UpvHl7dlI=;
-        b=AYTXCpE8419HNtq8w60fJz2r9wxiCncsanG4tClLYQ10G/zLXqRr9PR8jNsQX5Fqm9
-         VaV8dTDIUlirLAR762Tt8peHyjj+0IqJZIulvVIrbSng+0F2xUrCqTHzdrysjRT3PILG
-         n0q/SdVWYw3Ivvo/4qntsJzCBG0yzzbUsciiXFlqr3GPLfIXc6HajLkCLhshwq6j7MwO
-         8Q1lovX/F8MV4Dijaj3EBTQ8x1tt9kkvJnFy34806o76JlOB5MHjsDoMQvhfG6scKUCe
-         HML4d0/k+isnUDV37WZBC1yk0eJXWnJnE2urg8U33nc8SmKyyukaXPMKF7HgFU/HLQO7
-         /9ww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Qh0yK92s/b9iAlyp4ipnt9oqc15IVBpnV3UpvHl7dlI=;
-        b=Q44++y/1EQZpn4UA858GNMy2uJ4ZkmRTZm8dmECKNkjKIArxvkRXywjYvwOZVS1DNH
-         ejnS/2VqTDsZFzp9uC4aU1Z3QRDjdKxkYcNFKP31vgdud8q7rAaNDkYy5Osv4GBjEDNI
-         s25kzM5PMw3PsQQiFB39ZEUTrNaNkFFX2KHVipu5C3imedZ6KnU15uiQt7f9sbKZ5T2h
-         P/Mh+e4tPuC67HMQRN1tHm4dZf01/rWw6m6eyiHRRQi1pzAmbaNeXARh3BYMHfM8gEFY
-         kjpL8dRh88iT8CrX6BXECj5q8gw0LtNCP9TRt6Cx6eKgEavnNlwo156MViEjMuAzgI19
-         0pUA==
-X-Gm-Message-State: AOAM5316g8i7OWkvdJtsN5HyqvmggMsgDJ+CULXGf4PcSOiOFzHQhTgp
-        ZNySclrNpqE+KrEzaX+l0b+u3w==
-X-Google-Smtp-Source: ABdhPJzowR8qhsDF/cpr0ij+6/SQ4cEPYhv7H9uWbyM2koBT8GNpYMeB42qqeCMU95g9tXnV7x1Frg==
-X-Received: by 2002:a2e:8758:: with SMTP id q24mr451218ljj.162.1601300630015;
-        Mon, 28 Sep 2020 06:43:50 -0700 (PDT)
-Received: from jade (h-249-223.A175.priv.bahnhof.se. [98.128.249.223])
-        by smtp.gmail.com with ESMTPSA id b134sm2832258lfg.147.2020.09.28.06.43.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Sep 2020 06:43:49 -0700 (PDT)
-Date:   Mon, 28 Sep 2020 15:43:47 +0200
-From:   Jens Wiklander <jens.wiklander@linaro.org>
-To:     Elvira Khabirova <e.khabirova@omprussia.ru>
-Cc:     op-tee@lists.trustedfirmware.org, linux-kernel@vger.kernel.org,
-        vesa.jaaskelainen@vaisala.com, s.shtylyov@omprussia.ru,
-        k.karasev@omprussia.ru
-Subject: Re: [RFC PATCH] tee: add support for application-based session login
- methods
-Message-ID: <20200928134347.GA76106@jade>
-References: <20200917183803.4a0c5263@akathisia>
+        Mon, 28 Sep 2020 09:45:10 -0400
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud7.xs4all.net with ESMTPA
+        id MtShk6Xmzv4gEMtSkkRD0r; Mon, 28 Sep 2020 15:45:07 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s1;
+        t=1601300707; bh=OB302w6vKZ6uavQCRPx5TLqqDKXunsgCubaCk5DARMc=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=GvwADxaTQQS8XWJkY6WdtdhNEGCch26vkfAjwlk4IP5ZwJk+qaCmz0bGEOc9vTrds
+         WTQ8xUcoOdgMCrHkefsgJjC1jldYBJTgZrKLFVeL4sVRaOvcj1xqTvOFjxqIP5YsHZ
+         4ZrTdP7bphTBckjm0oRV45rWTDAFvr3h/BV2lHBQQ/3K+lTB3bpHR2s9N/l51HbGfK
+         Q7nxOpLW75o70LyG0ARhh+gKgGZzh0G9xKIXAUM0DP/JqmDqIPHHdMl5SYxyY6xwqM
+         dlIe/fFDECEkXiI2/hqk6ShpkHB6IoL0hzhbYUGUOaUl6y2mxIhOQ2wPTBeVirU2gE
+         ZuqkIfycj6QiQ==
+Subject: Re: [PATCH RFT/RFC v2 00/47] staging: media: bring back zoran driver
+To:     Corentin Labbe <clabbe@baylibre.com>, gregkh@linuxfoundation.org,
+        mchehab@kernel.org, laurent.pinchart@ideasonboard.com
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org
+References: <1601058657-14042-1-git-send-email-clabbe@baylibre.com>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Message-ID: <34662073-bbf3-8eaf-47b4-c715337f4021@xs4all.nl>
+Date:   Mon, 28 Sep 2020 15:45:03 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
+In-Reply-To: <1601058657-14042-1-git-send-email-clabbe@baylibre.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200917183803.4a0c5263@akathisia>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4wfA6RDnaLaKpGkN7m8rTw8J0KzeWjvXoSwvOQK3i2MH+XrtEuZAtQ+mzbE/4D9ANG2OhB2flSOncYRmhhsllyPM5NaBriVjbKCnaQZC8puh+9yTwHmxVI
+ oRcVZnWPctqZMin0/UH1akXW+NYB+uI50P0cZo2i9wZIedV0bO8f+J52Q1parA2wmu2kWwRPVoa/qqmVS8RIRIful18uUPZSYtguY+PI9AELH+ERRz0A/1Ac
+ wN0E53GWb0rSdh0YeFAy9PVmnNwAXpCG33cIrldsR5Jen4mdAKaJdz3beY8SV261FkrLmh38VIql09gIp+D/V5gGuayxEBOSmozjhPWT2mqEr8AvtseM/9Xp
+ GSAOcOl2dvk5ZvTGCC8rsSVuxGs/voxL7zDccuDqM7TJSpEuTN6MZ3RNwLuXCsbY7S87T3zX
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Elvira,
+Hi Corentin,
 
-On Thu, Sep 17, 2020 at 06:38:03PM +0300, Elvira Khabirova wrote:
-> GP TEE Client API in addition to login methods already supported
-> in the kernel also defines several application-based methods:
-> TEEC_LOGIN_APPLICATION, TEEC_LOGIN_USER_APPLICATION, and
-> TEEC_LOGIN_GROUP_APPLICATION.
+On 25/09/2020 20:30, Corentin Labbe wrote:
+> Hello
 > 
-> It specifies credentials generated for TEEC_LOGIN_APPLICATION as only
-> depending on the identity of the program, being persistent within one
-> implementation, across multiple invocations of the application
-> and across power cycles, enabling them to be used to disambiguate
-> persistent storage. The exact nature is REE-specific.
+> The zoran driver was removed in 5.3
+> The main reason of the removing was lack of motivation to convert it to
+> VB2
+> Since I need it, I worked on bringing it back.
 > 
-> As the exact method of generating application identifier strings may
-> vary between vendors, setups and installations, add two suggested
-> methods and an exact framework for vendors to extend upon.
+> So the plan to achieve it was:
+> - clean up the coding style.
+> - convert old usage/API
+> - clean unused code
+> - convert to VB2
 > 
-> Signed-off-by: Elvira Khabirova <e.khabirova@omprussia.ru>
-> ---
->  drivers/tee/Kconfig    |  29 +++++++++
->  drivers/tee/tee_core.c | 136 ++++++++++++++++++++++++++++++++++++++++-
->  2 files changed, 164 insertions(+), 1 deletion(-)
+> I have tried to split a bit the VB2 patch (by adding/removing code in
+> another patch), but the result is unfortunately still a big patch.
 > 
-> diff --git a/drivers/tee/Kconfig b/drivers/tee/Kconfig
-> index e99d840c2511..4cd6e0d2aad5 100644
-> --- a/drivers/tee/Kconfig
-> +++ b/drivers/tee/Kconfig
-> @@ -11,6 +11,35 @@ config TEE
->  	  This implements a generic interface towards a Trusted Execution
->  	  Environment (TEE).
->  
-> +choice
-> +	prompt "Application ID for client UUID"
-> +	depends on TEE
-> +	default TEE_APPID_PATH
-> +	help
-> +	  This option allows to choose which method will be used to generate
-> +	  application identifiers for client UUID generation when login methods
-> +	  TEE_LOGIN_APPLICATION, TEE_LOGIN_USER_APPLICATION
-> +	  and TEE_LOGIN_GROUP_APPLICATION are used.
-> +	  Please be mindful of the security of each method in your particular
-> +	  installation.
-> +
-> +	config TEE_APPID_PATH
-> +		bool "Path-based application ID"
-> +		help
-> +		  Use the executable's path as an application ID.
-> +
-> +	config TEE_APPID_SECURITY
-> +		bool "Security extended attribute based application ID"
-> +		help
-> +		  Use the executable's security extended attribute as an application ID.
-> +endchoice
-> +
-> +config TEE_APPID_SECURITY_XATTR
-> +	string "Security extended attribute to use for application ID"
-> +	depends on TEE_APPID_SECURITY
-> +	help
-> +	  Attribute to be used as an application ID (with the security prefix removed).
-> +
->  if TEE
->  
->  menu "TEE drivers"
-> diff --git a/drivers/tee/tee_core.c b/drivers/tee/tee_core.c
-> index 64637e09a095..19c965dd212b 100644
-> --- a/drivers/tee/tee_core.c
-> +++ b/drivers/tee/tee_core.c
-> @@ -7,8 +7,10 @@
->  
->  #include <linux/cdev.h>
->  #include <linux/cred.h>
-> +#include <linux/file.h>
->  #include <linux/fs.h>
->  #include <linux/idr.h>
-> +#include <linux/mm.h>
->  #include <linux/module.h>
->  #include <linux/slab.h>
->  #include <linux/tee_drv.h>
-> @@ -17,11 +19,15 @@
->  #include <crypto/sha.h>
->  #include "tee_private.h"
->  
-> +#ifdef CONFIG_TEE_APPID_SECURITY
-No need for the ifdef, just inlude the file unconditionally above.
-
-> +#include <linux/security.h>
-> +#endif
-> +
->  #define TEE_NUM_DEVICES	32
->  
->  #define TEE_IOCTL_PARAM_SIZE(x) (sizeof(struct tee_param) * (x))
->  
-> -#define TEE_UUID_NS_NAME_SIZE	128
-> +#define TEE_UUID_NS_NAME_SIZE	PATH_MAX
->  
->  /*
->   * TEE Client UUID name space identifier (UUIDv4)
-> @@ -125,6 +131,67 @@ static int tee_release(struct inode *inode, struct file *filp)
->  	return 0;
->  }
->  
-> +#ifdef CONFIG_TEE_APPID_SECURITY
-> +static const char *tee_session_get_application_id(void **data)
-static char *get_app_id(void) should be enough.
-
-> +{
-> +	struct file *exe_file;
-> +	const char *name = CONFIG_TEE_APPID_SECURITY_XATTR;
-> +	int len;
-> +
-> +	exe_file = get_mm_exe_file(current->mm);
-> +	if (!exe_file)
-> +		return ERR_PTR(-ENOENT);
-> +
-> +	if (!exe_file->f_inode) {
-> +		fput(exe_file);
-> +		return ERR_PTR(-ENOENT);
-> +	}
-> +
-
-You could perhaps add a comment here on the expected properties of this
-data. Something along (don't know if I'm even close) "string
-representation of the the hash of the binary and time stamp".
-
-> +	len = security_inode_getsecurity(exe_file->f_inode, name, data, true);
-> +	if (len < 0)
-> +		return ERR_PTR(len);
-> +
-> +	fput(exe_file);
-> +
-> +	return *data;
-> +}
-> +#endif /* CONFIG_TEE_APPID_SECURITY */
-> +
-> +#ifdef CONFIG_TEE_APPID_PATH
-> +static const char *tee_session_get_application_id(void **data)
-> +{
-> +	struct file *exe_file;
-> +	char *path;
-> +
-> +	*data = kzalloc(TEE_UUID_NS_NAME_SIZE, GFP_KERNEL);
-> +	if (!*data)
-> +		return ERR_PTR(-ENOMEM);
-> +
-> +	exe_file = get_mm_exe_file(current->mm);
-> +	if (!exe_file) {
-> +		kfree(*data);
-> +		return ERR_PTR(-ENOENT);
-> +	}
-> +
-> +	path = file_path(exe_file, *data, TEE_UUID_NS_NAME_SIZE);
-> +	if (IS_ERR(path)) {
-> +		kfree(*data);
-> +		return path;
-> +	}
-> +
-> +	fput(exe_file);
-> +
-> +	return path;
-> +}
-> +#endif /* CONFIG_TEE_APPID_PATH */
-> +
-> +#if defined(CONFIG_TEE_APPID_PATH) || defined(CONFIG_TEE_APPID_SECURITY)
-> +static void tee_session_free_application_id(void *data)
-> +{
-> +	kfree(data);
-> +}
-This function isn't needed, we can call kfree() directly.
-
-> +#endif /* CONFIG_TEE_APPID_PATH || CONFIG_TEE_APPID_SECURITY */
-> +
->  /**
->   * uuid_v5() - Calculate UUIDv5
->   * @uuid: Resulting UUID
-> @@ -197,6 +264,8 @@ int tee_session_calc_client_uuid(uuid_t *uuid, u32 connection_method,
->  	gid_t ns_grp = (gid_t)-1;
->  	kgid_t grp = INVALID_GID;
->  	char *name = NULL;
-> +	void *application_id_data = NULL;
-This isn't needed
-
-> +	const char *application_id = NULL;
-char *app_id = NULL;
-
->  	int name_len;
->  	int rc;
->  
-> @@ -217,6 +286,14 @@ int tee_session_calc_client_uuid(uuid_t *uuid, u32 connection_method,
->  	 * For TEEC_LOGIN_GROUP:
->  	 * gid=<gid>
->  	 *
-> +	 * For TEEC_LOGIN_APPLICATION:
-> +	 * app=<application id>
-> +	 *
-> +	 * For TEEC_LOGIN_USER_APPLICATION:
-> +	 * uid=<uid>:app=<application id>
-> +	 *
-> +	 * For TEEC_LOGIN_GROUP_APPLICATION:
-> +	 * gid=<gid>:app=<application id>
->  	 */
->  
->  	name = kzalloc(TEE_UUID_NS_NAME_SIZE, GFP_KERNEL);
-> @@ -249,6 +326,63 @@ int tee_session_calc_client_uuid(uuid_t *uuid, u32 connection_method,
->  		}
->  		break;
->  
-> +	case TEE_IOCTL_LOGIN_APPLICATION:
-> +		application_id = tee_session_get_application_id(&application_id_data);
-> +		if (IS_ERR(application_id)) {
-> +			rc = PTR_ERR(application_id);
-> +			goto out_free_name;
-> +		}
-> +
-> +		name_len = snprintf(name, TEE_UUID_NS_NAME_SIZE, "app=%s",
-> +				    application_id);
-> +		tee_session_free_application_id(application_id_data);
-> +
-> +		if (name_len >= TEE_UUID_NS_NAME_SIZE) {
-> +			rc = -E2BIG;
-> +			goto out_free_name;
-> +		}
-It looks like we remove these tests and replace them with
-if (name_len < TEE_UUID_NS_NAME_SIZE)
-        rc = uuid_v5(uuid, &tee_client_uuid_ns, name, name_len);
-else
-        rc = -E2BIG
-
-below, just above the "out_free_name:" label.
-
-This function is small and simple enough that it should be easy to see
-what's going on any way.
-
-Thanks,
-Jens
-
-> +		break;
-> +
-> +	case TEE_IOCTL_LOGIN_USER_APPLICATION:
-> +		application_id = tee_session_get_application_id(&application_id_data);
-> +		if (IS_ERR(application_id)) {
-> +			rc = PTR_ERR(application_id);
-> +			goto out_free_name;
-> +		}
-> +
-> +		name_len = snprintf(name, TEE_UUID_NS_NAME_SIZE, "uid=%x:app=%s",
-> +				    current_euid().val, application_id);
-> +		tee_session_free_application_id(application_id_data);
-> +
-> +		if (name_len >= TEE_UUID_NS_NAME_SIZE) {
-> +			rc = -E2BIG;
-> +			goto out_free_name;
-> +		}
-> +		break;
-> +
-> +	case TEE_IOCTL_LOGIN_GROUP_APPLICATION:
-> +		memcpy(&ns_grp, connection_data, sizeof(gid_t));
-> +		grp = make_kgid(current_user_ns(), ns_grp);
-> +		if (!gid_valid(grp) || !in_egroup_p(grp)) {
-> +			rc = -EPERM;
-> +			goto out_free_name;
-> +		}
-> +
-> +		application_id = tee_session_get_application_id(&application_id_data);
-> +		if (IS_ERR(application_id)) {
-> +			rc = PTR_ERR(application_id);
-> +			goto out_free_name;
-> +		}
-> +		name_len = snprintf(name, TEE_UUID_NS_NAME_SIZE, "gid=%x:app=%s",
-> +				    grp.val, application_id);
-> +		tee_session_free_application_id(application_id_data);
-> +
-> +		if (name_len >= TEE_UUID_NS_NAME_SIZE) {
-> +			rc = -E2BIG;
-> +			goto out_free_name;
-> +		}
-> +		break;
-> +
->  	default:
->  		rc = -EINVAL;
->  		goto out_free_name;
-> -- 
-> 2.28.0
+> The result of this serie is a working zoran driver.
+> Furthermore it is now compliant to v4l-compliance.
 > 
+> In the process some old (useless) feature (fbuf, overlay) was removed
+> for simplifying maintenance.
+> 
+> The zoran hardware support MJPEG decompression, but this feature is
+> temporarily disabled by this serie.
+> But basically, this feature was unusable, since the only tool which
+> permitted to use it was a mplayer option.
+> But this mplayer option no longer compile (probably since a long time)
+> and is such a hack (a copy of some private ffmpeg structure) that it is
+> unfixable.
+> Happily, when I started to work on zoran, a patch was posted on ffmpeg
+> ML which permit it to output non-raw video stream (and so MJPEG for
+> zoran case).
+> But the zoran hw does not like some part of JPEG header it receives, so
+> a filter need to be written.
+> Anyway, this disabling is not a regression, since this feature was not
+> usable since a long time.
+> 
+> Since the driver was in staging, I targeted staging, but probably the
+> driver is in a sufficient good shape to target media and bypass staging.
+> 
+> This driver is tested on a DC10+ (on x86). Tests on different hardware
+> are welcome.
+> 
+> I would like to thanks all people that helped me to achieve this (mostly
+> #v4l)
+> 
+> Regards
+> 
+> PS: this serie is resent a bit soon since linux-media didnt get some patch
+> and cover letter
+
+Thank you very much for your hard work!
+
+I've just posted a PR for this driver since it is in good enough shape to
+resurrect in staging.
+
+This means that starting with 5.10 this driver will once again be available.
+
+There are some things that I would like to see fixed before moving it out
+of staging:
+
+1) Check the driver with checkpatch --strict: I noticed various warnings
+that would be good to fix. Let's have this cleaned up before moving it
+out of staging.
+
+2) I would like to see the output support fixed.
+
+3) I want to test with my zoran hardware before moving it out of staging.
+That said, it will be a few months before I can do that since I don't
+have access to the HW at the moment. It depends on when I travel to the
+Netherlands, and with the COVID-19 situation I have no idea when that
+will be. I hope December, but there is no guarantee.
+
+Since 3) will take 1-2 kernel cycles anyway, that will hopefully allow
+for enough time to tackle 1 and 2 while it is still in staging.
+
+Regards,
+
+	Hans
+
+> 
+> Changes since RFC1
+> - removed fallthough patch
+> - removed unsplit lines patch
+> - fixed line size in "Use DMA coherent for stat_com" patch
+> 
+> Corentin Labbe (47):
+>   staging: media: Revert "media: zoran: remove deprecated driver"
+>   MAINTAINERS: change maintainer of the zoran driver
+>   staging: media: zoran: datasheet is no longer available from zoran.com
+>   staging: media: zoran: Documentation: fix typo
+>   staging: media: zoran: fix checkpatch issue
+>   staging: media: zoran: do not forward declare zr36057_init_vfe
+>   staging: media: zoran: convert all error dprintk to pci_err/pr_err
+>   staging: media: zoran: convert dprintk warn
+>   staging: media: zoran: convert dprintk info to pci_info
+>   staging: media: zoran: convert dprintk debug
+>   staging: media: zoran: zoran_device.c: convert pr_x to pci_x
+>   staging: media: zoran: remove proc_fs
+>   staging: media: zoran: use VFL_TYPE_VIDEO
+>   staging: media: zoran: use v4l2_buffer_set_timestamp
+>   staging: media: zoran: do not print random guest 0
+>   staging: media: zoran: move buffer_size out of zoran_fh
+>   staging: media: zoran: move v4l_settings out of zoran_fh
+>   staging: media: zoran: move jpg_settings out of zoran_fh
+>   staging: media: zoran: move overlay_settings out of zoran_fh
+>   staging: media: zoran: Use video_drvdata to get struct zoran
+>   staging: media: zoran: Change zoran_v4l_set_format parameter from
+>     zoran_fh to zoran
+>   staging: media: zoran: remove overlay
+>   staging: media: zoran: Use DMA coherent for stat_com
+>   staging: media: zoran: use ZR_NORM
+>   staging: media: zoran: zoran does not support STD_ALL
+>   staging: media: zoran: convert irq to pci irq
+>   staging: media: zoran: convert zoran alloc to devm
+>   staging: media: zoran: convert mdelay to udelay
+>   staging: media: zoran: use devm for videocodec_master alloc
+>   staging: media: zoran: use pci_request_regions
+>   staging: media: zoran: use devm_ioremap
+>   staging: media: zoran: add stat_com buffer
+>   staging: media: zoran: constify struct tvnorm
+>   staging: media: zoran: constify codec_name
+>   staging: media: zoran: Add more check for compliance
+>   staging: media: zoran: Add vb_queue
+>   staging: media: zoran: disable output
+>   staging: media: zoran: device support only 32bit DMA address
+>   staging: media: zoran: enable makefile
+>   staging: media: zoran: remove framebuffer support
+>   staging: media: zoran: add vidioc_g_parm
+>   staging: media: zoran: remove test_interrupts
+>   staging: media: zoran: fix use of buffer_size and sizeimage
+>   staging: media: zoran: fix some compliance test
+>   staging: media: zoran: remove deprecated .vidioc_g_jpegcomp
+>   staging: media: zoran: convert to vb2
+>   staging: media: zoran: update TODO
+> 
+>  Documentation/media/v4l-drivers/zoran.rst  |  575 +++++++++
+>  MAINTAINERS                                |   10 +
+>  drivers/staging/media/Kconfig              |    2 +
+>  drivers/staging/media/Makefile             |    1 +
+>  drivers/staging/media/zoran/Kconfig        |   76 ++
+>  drivers/staging/media/zoran/Makefile       |    7 +
+>  drivers/staging/media/zoran/TODO           |   19 +
+>  drivers/staging/media/zoran/videocodec.c   |  330 +++++
+>  drivers/staging/media/zoran/videocodec.h   |  308 +++++
+>  drivers/staging/media/zoran/zoran.h        |  320 +++++
+>  drivers/staging/media/zoran/zoran_card.c   | 1333 ++++++++++++++++++++
+>  drivers/staging/media/zoran/zoran_card.h   |   30 +
+>  drivers/staging/media/zoran/zoran_device.c | 1013 +++++++++++++++
+>  drivers/staging/media/zoran/zoran_device.h |   64 +
+>  drivers/staging/media/zoran/zoran_driver.c | 1038 +++++++++++++++
+>  drivers/staging/media/zoran/zr36016.c      |  433 +++++++
+>  drivers/staging/media/zoran/zr36016.h      |   92 ++
+>  drivers/staging/media/zoran/zr36050.c      |  842 +++++++++++++
+>  drivers/staging/media/zoran/zr36050.h      |  163 +++
+>  drivers/staging/media/zoran/zr36057.h      |  154 +++
+>  drivers/staging/media/zoran/zr36060.c      |  872 +++++++++++++
+>  drivers/staging/media/zoran/zr36060.h      |  201 +++
+>  22 files changed, 7883 insertions(+)
+>  create mode 100644 Documentation/media/v4l-drivers/zoran.rst
+>  create mode 100644 drivers/staging/media/zoran/Kconfig
+>  create mode 100644 drivers/staging/media/zoran/Makefile
+>  create mode 100644 drivers/staging/media/zoran/TODO
+>  create mode 100644 drivers/staging/media/zoran/videocodec.c
+>  create mode 100644 drivers/staging/media/zoran/videocodec.h
+>  create mode 100644 drivers/staging/media/zoran/zoran.h
+>  create mode 100644 drivers/staging/media/zoran/zoran_card.c
+>  create mode 100644 drivers/staging/media/zoran/zoran_card.h
+>  create mode 100644 drivers/staging/media/zoran/zoran_device.c
+>  create mode 100644 drivers/staging/media/zoran/zoran_device.h
+>  create mode 100644 drivers/staging/media/zoran/zoran_driver.c
+>  create mode 100644 drivers/staging/media/zoran/zr36016.c
+>  create mode 100644 drivers/staging/media/zoran/zr36016.h
+>  create mode 100644 drivers/staging/media/zoran/zr36050.c
+>  create mode 100644 drivers/staging/media/zoran/zr36050.h
+>  create mode 100644 drivers/staging/media/zoran/zr36057.h
+>  create mode 100644 drivers/staging/media/zoran/zr36060.c
+>  create mode 100644 drivers/staging/media/zoran/zr36060.h
+> 
+
