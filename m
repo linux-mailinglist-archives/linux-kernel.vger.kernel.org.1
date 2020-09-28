@@ -2,78 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC54227B4EA
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 21:01:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D50327B507
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 21:12:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726651AbgI1TBH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 15:01:07 -0400
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:40522 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726228AbgI1TBH (ORCPT
+        id S1726625AbgI1TMP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 15:12:15 -0400
+Received: from dispatch1-us1.ppe-hosted.com ([67.231.154.164]:37650 "EHLO
+        dispatch1-us1.ppe-hosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726228AbgI1TMO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 15:01:07 -0400
-Received: by mail-ot1-f65.google.com with SMTP id c2so2013547otp.7;
-        Mon, 28 Sep 2020 12:01:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=WgnCQKTMXx7N/UN6VH5x1OiQeugabXar2vJySfL7Bm8=;
-        b=ZOqIhQeZSjn/lnZfbm3cKeUSE6UF8LRwNgelz+knQ28rnGvFuBPjrCZR5PODhzdeTr
-         nJjxJBfAL/hRaMwQWRngoI2B71x3yCgIZFeopO1uBNkCtdL0sVQav8YrSD7heV0ku7Tn
-         ZfoMJlAbHmy1zCu/i+m/Hrfvdtwo3Q6rxq5JS2d92XjJr4lfbkShrQc09vTvho419p2T
-         Odio4cxJEUXL5Bu7smYSddxzUlfQLXcRXw2EOe9SZaXe/O2HVm+DzfU3WpKVaTZK1+uo
-         hkhRHSlBmwhXhzXJXijzDchxpJlOzCHwItoY8taBp/es9cCotwfhrrAHX2jDYghch/Vm
-         gMKg==
-X-Gm-Message-State: AOAM530tvPW3h9MICCRN6UYo4kyzUQf4GUfh/vDAKGLJ19EgbeLs41t5
-        lnzJOWChTandSWuFT8iPyg==
-X-Google-Smtp-Source: ABdhPJzZ/EaAcIsv4NBpGeCoeK3Os0/QZX6oIoH1ZPejwWHDSFI2XdZkY8EraHXV2uULn7xgsTxkIQ==
-X-Received: by 2002:a9d:77d3:: with SMTP id w19mr313113otl.44.1601319666093;
-        Mon, 28 Sep 2020 12:01:06 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id o9sm2269765oop.1.2020.09.28.12.01.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Sep 2020 12:01:05 -0700 (PDT)
-Received: (nullmailer pid 3082393 invoked by uid 1000);
-        Mon, 28 Sep 2020 19:01:04 -0000
-Date:   Mon, 28 Sep 2020 14:01:04 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Jonathan Marek <jonathan@marek.ca>
-Cc:     Rob Herring <robh+dt@kernel.org>, Andy Gross <agross@kernel.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-clk@vger.kernel.org,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>
-Subject: Re: [PATCH v4 1/2] dt-bindings: clock: add QCOM SM8150 and SM8250
- display clock bindings
-Message-ID: <20200928190104.GA3082359@bogus>
-References: <20200927190653.13876-1-jonathan@marek.ca>
- <20200927190653.13876-2-jonathan@marek.ca>
+        Mon, 28 Sep 2020 15:12:14 -0400
+X-Greylist: delayed 498 seconds by postgrey-1.27 at vger.kernel.org; Mon, 28 Sep 2020 15:12:13 EDT
+Received: from dispatch1-us1.ppe-hosted.com (localhost.localdomain [127.0.0.1])
+        by dispatch1-us1.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTP id 2BF94515BF;
+        Mon, 28 Sep 2020 19:03:56 +0000 (UTC)
+Received: from mx1-us1.ppe-hosted.com (unknown [10.110.50.137])
+        by dispatch1-us1.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTP id 77B5C200BF;
+        Mon, 28 Sep 2020 19:03:55 +0000 (UTC)
+Received: from us4-mdac16-58.at1.mdlocal (unknown [10.110.50.151])
+        by mx1-us1.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTP id 710D26009B;
+        Mon, 28 Sep 2020 19:03:55 +0000 (UTC)
+X-Virus-Scanned: Proofpoint Essentials engine
+Received: from mx1-us1.ppe-hosted.com (unknown [10.110.49.32])
+        by mx1-us1.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTPS id BDC04220086;
+        Mon, 28 Sep 2020 19:03:54 +0000 (UTC)
+Received: from webmail.solarflare.com (uk.solarflare.com [193.34.186.16])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx1-us1.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTPS id 46E2E28007B;
+        Mon, 28 Sep 2020 19:03:53 +0000 (UTC)
+Received: from [10.17.20.203] (10.17.20.203) by ukex01.SolarFlarecom.com
+ (10.17.10.4) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 28 Sep
+ 2020 20:03:31 +0100
+Subject: Re: [patch 15/35] net: sfc: Replace in_interrupt() usage.
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+CC:     Peter Zijlstra <peterz@infradead.org>,
+        Linus Torvalds <torvalds@linuxfoundation.org>,
+        Paul McKenney <paulmck@kernel.org>,
+        "Matthew Wilcox" <willy@infradead.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Solarflare linux maintainers <linux-net-drivers@solarflare.com>,
+        Martin Habets <mhabets@solarflare.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, <netdev@vger.kernel.org>,
+        Christian Benvenuti <benve@cisco.com>,
+        Govindarajulu Varadarajan <_govind@gmx.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        <linux-doc@vger.kernel.org>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Jay Cliburn <jcliburn@gmail.com>,
+        Chris Snook <chris.snook@gmail.com>,
+        Vishal Kulkarni <vishal@chelsio.com>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        <intel-wired-lan@lists.osuosl.org>,
+        "Shannon Nelson" <snelson@pensando.io>,
+        Pensando Drivers <drivers@pensando.io>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Jon Mason <jdmason@kudzu.us>, Daniel Drake <dsd@gentoo.org>,
+        Ulrich Kunitz <kune@deine-taler.de>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        <linux-wireless@vger.kernel.org>, <linux-usb@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arend van Spriel <arend.vanspriel@broadcom.com>,
+        Franky Lin <franky.lin@broadcom.com>,
+        "Hante Meuleman" <hante.meuleman@broadcom.com>,
+        Chi-Hsien Lin <chi-hsien.lin@cypress.com>,
+        Wright Feng <wright.feng@cypress.com>,
+        <brcm80211-dev-list.pdl@broadcom.com>,
+        <brcm80211-dev-list@cypress.com>,
+        Stanislav Yakovlev <stas.yakovlev@gmail.com>,
+        Stanislaw Gruszka <stf_xl@wp.pl>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
+        Luca Coelho <luciano.coelho@intel.com>,
+        "Intel Linux Wireless" <linuxwifi@intel.com>,
+        Jouni Malinen <j@w1.fi>,
+        "Amitkumar Karwar" <amitkarwar@gmail.com>,
+        Ganapathi Bhat <ganapathi.bhat@nxp.com>,
+        Xinming Hu <huxinming820@gmail.com>,
+        <libertas-dev@lists.infradead.org>,
+        Pascal Terjan <pterjan@google.com>,
+        Ping-Ke Shih <pkshih@realtek.com>
+References: <20200927194846.045411263@linutronix.de>
+ <20200927194921.344476620@linutronix.de>
+From:   Edward Cree <ecree@solarflare.com>
+Message-ID: <168a1f9e-cba4-69a8-9b29-5c121295e960@solarflare.com>
+Date:   Mon, 28 Sep 2020 20:03:26 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200927190653.13876-2-jonathan@marek.ca>
+In-Reply-To: <20200927194921.344476620@linutronix.de>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Content-Language: en-GB
+X-Originating-IP: [10.17.20.203]
+X-ClientProxiedBy: ocex03.SolarFlarecom.com (10.20.40.36) To
+ ukex01.SolarFlarecom.com (10.17.10.4)
+X-TM-AS-Product-Ver: SMEX-12.5.0.1300-8.6.1012-25674.003
+X-TM-AS-Result: No-3.392600-8.000000-10
+X-TMASE-MatchedRID: scwq2vQP8OHoSitJVour/fZvT2zYoYOwC/ExpXrHizwZwGrh4y4izL88
+        DvjRvF4AxVy/bbd+rAzlMoALbl7BxnAe/yBs2gz+SJA7ysb1rf4KJM4okvH5XoVCSVIDsC6o8FS
+        rkmy6/FJuCEgimCyJQyMYmr0rrl/pgl5Rdh8uTQGz5GTUpcs/m3Fa/hQHt1A1+S5C/08hWc0UBy
+        nKnmzE5ngVNbMoKNzVH0rosakDCyyvvxILmKK/HIMbH85DUZXyYxU/PH+vZxv6C0ePs7A07Y6HM
+        5rqDwqtN237Af2aNF37I73RKjILsWlTLDIPbPGsLoghHcIpC2/UZWTGDxA33ihvJVwuK5sjeBCY
+        ZbP6cf5T86emsjutggfap7ehBz6Q4vn0zMfSmjYrbLOj1GuP3A+hgLflG6KEo9QjuF9BKnnfMd6
+        s6DDccQ==
+X-TM-AS-User-Approved-Sender: Yes
+X-TM-AS-User-Blocked-Sender: No
+X-TMASE-Result: 10--3.392600-8.000000
+X-TMASE-Version: SMEX-12.5.0.1300-8.6.1012-25674.003
+X-MDID: 1601319835-pcw6fPKCBDdo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 27 Sep 2020 15:06:50 -0400, Jonathan Marek wrote:
-> Add device tree bindings for display clock controller for
-> Qualcomm Technology Inc's SM8150 and SM8250 SoCs.
-> 
-> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
-> Tested-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org> (SM8250)
-> ---
->  .../bindings/clock/qcom,dispcc-sm8x50.yaml    | 93 +++++++++++++++++++
->  .../dt-bindings/clock/qcom,dispcc-sm8150.h    |  1 +
->  .../dt-bindings/clock/qcom,dispcc-sm8250.h    | 66 +++++++++++++
->  3 files changed, 160 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/clock/qcom,dispcc-sm8x50.yaml
->  create mode 120000 include/dt-bindings/clock/qcom,dispcc-sm8150.h
->  create mode 100644 include/dt-bindings/clock/qcom,dispcc-sm8250.h
-> 
+On 27/09/2020 20:49, Thomas Gleixner wrote:
+> Note, that the fixes tag is empty as it is unclear which of the commits to
+> blame.
+Seems like it should be
+Fixes: f00bf2305cab("sfc: don't update stats on VF when called in atomic context")
+ since that adds the in_interrupt() check and the code concerned
+ doesn't seemto have changed a great deal since.
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Anyway, this fix looks correct, and you can have my
+Acked-by: Edward Cree <ecree@solarflare.com>
+ but I thinkit might be cleaner to avoid having to have this unused
+ can_sleep argument on all the NICs that don't need it, by instead
+ adding an update_stats_atomic() member to struct efx_nic_type, which
+ could be set to the same as update_stats() for everything except
+ EF10 VFs which would just do the call to efx_update_sw_stats().
+I'll send an rfc patch embodying the above shortly...
+
+-ed
