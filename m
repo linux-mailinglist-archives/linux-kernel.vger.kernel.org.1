@@ -2,164 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F09D727AB87
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 12:10:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F4E627AB79
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 12:04:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726589AbgI1KKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 06:10:30 -0400
-Received: from mga04.intel.com ([192.55.52.120]:21525 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726328AbgI1KK3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 06:10:29 -0400
-IronPort-SDR: T5cK2VPuqzNFZveSd9t5OI3RZSdznkDyKX0U69w+axLkqvl53ru7J7sPRYxESe5WkRtTAk9kqQ
- 26a11ofDKzaQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9757"; a="159349353"
-X-IronPort-AV: E=Sophos;i="5.77,313,1596524400"; 
-   d="scan'208";a="159349353"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 03:04:26 -0700
-IronPort-SDR: iDv/EAoafqTqQ0ch0b4gwAibLpK030DyMEBcVjrnySzcaxOqiWeb23TUJ13vco0amVA7MnLxzF
- 82nB3mXgc9Tg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,313,1596524400"; 
-   d="scan'208";a="338122231"
-Received: from lkp-server01.sh.intel.com (HELO 0e0978ea3297) ([10.239.97.150])
-  by fmsmga004.fm.intel.com with ESMTP; 28 Sep 2020 03:04:24 -0700
-Received: from kbuild by 0e0978ea3297 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kMq1A-0000F5-0r; Mon, 28 Sep 2020 10:04:24 +0000
-Date:   Mon, 28 Sep 2020 18:03:27 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [rcu:urezki-pcount.2020.09.26a] BUILD SUCCESS WITH WARNING
- 517442b71402169151e9dad8380cba3a9f295bc9
-Message-ID: <5f71b4ef.fCruHQycg8yWsV2w%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1726736AbgI1KE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 06:04:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55490 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726650AbgI1KE0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 06:04:26 -0400
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A76AEC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 03:04:26 -0700 (PDT)
+Received: by mail-qt1-x842.google.com with SMTP id 19so274097qtp.1
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 03:04:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Z6NjSA1gIEDmxIgCpUkqguL9Uf/5tWF3Zhr4Hk7uEPo=;
+        b=tRdJJuwiw6Gw+ME8Aq2hzmLKpVwEnzFZhVLD/Ez2G6wmKf8fe4ZNve7eIR35CeN/rR
+         qG2A+EQXrOc2y8hhkmDgjhV2495Ppn4QM4Zr8352ze8JeUXhHEia8PXLFKCUW1TBMr+F
+         JMmAfsZgy9ZL0mhp7KUdeBzcN0qZ0MbwC3Sv5leX1twwTn3TyRQPEDpahMERpqy4yMBV
+         jxZMMExQHCdWdOyXAvutcwEWDJCfIz0PaG32f6B4dyJCJnxrND9h9rfaFyIkxUq7PUX3
+         ppfTDrQBSZdDqBKk7gFgN3dAiTvPKeiPVPQ0+I9rD2gk4wOdFFICdun8IMgbPHAS91sc
+         ajEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Z6NjSA1gIEDmxIgCpUkqguL9Uf/5tWF3Zhr4Hk7uEPo=;
+        b=cm7F1XFX8IlB0dG7WN9wNQHt8Tgj1Yex34e7K0vnvzgGzHFQZT4RtlVNCQBDG/ek94
+         Cn29061pQ9VdzSIzNgumCxwFanbyNHKxOcOv+3kep02Rv10sFq1HM8OK9QVgtWoJIzwd
+         chqjaUKXR1qt/NP0u8Jj6aYs/y1+p8o0Sb1Ak4K+szJYh6MQb332wxrYEi/xUWkMccKB
+         PYypbE1MEGLy5MSLNozhjVgGYtsmwQNZOEf1+Mw6unfOX1N7T7x4zAjQxfKECP/yItEw
+         KMY1F8VM7YwyJEglQaOPvClHrU2AXY78ROiHwDTowCyEugTq6+MATUjXY5qAqxRsEb2t
+         vy7Q==
+X-Gm-Message-State: AOAM531liz6kazkEpmmk1IxEU7qYubfGNwXWZbzeNsaYMC13OBAn/GSY
+        6pTfZEl5uwDigFHBwBKzixyY+9BzHK9enN2Kq5iGVtbeLDyYbA==
+X-Google-Smtp-Source: ABdhPJxiOHUfuQzBoKpc2ts209SMUYzXw42K2v2Kc21FGaCAQrUgIXWU8SsGArPdO6xFBUPFtDMUzWmwmOmG8Pkqiws=
+X-Received: by 2002:ac8:bc9:: with SMTP id p9mr723270qti.50.1601287465489;
+ Mon, 28 Sep 2020 03:04:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+References: <000000000000bbdb3b05b0477890@google.com> <CACT4Y+arc_qxVnb1+FZUzEM32eDBe7zYgZhcSCgyMUMwKkkeDw@mail.gmail.com>
+ <a63808e2-3e76-596c-c0be-64922620820a@broadcom.com>
+In-Reply-To: <a63808e2-3e76-596c-c0be-64922620820a@broadcom.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Mon, 28 Sep 2020 12:04:14 +0200
+Message-ID: <CACT4Y+ZkwMZ3Bu77WGtmOGihNbgspdicEq5d_LA1hDVL=KkZyA@mail.gmail.com>
+Subject: Re: WARNING: CPU: 1
+To:     Arend Van Spriel <arend.vanspriel@broadcom.com>
+Cc:     syzbot <syzbot+3640e696903873858f7e@syzkaller.appspotmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        linux-wireless <linux-wireless@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  urezki-pcount.2020.09.26a
-branch HEAD: 517442b71402169151e9dad8380cba3a9f295bc9  Revert "KVM: Check the allocation of pv cpu mask"
+On Mon, Sep 28, 2020 at 11:31 AM Arend Van Spriel
+<arend.vanspriel@broadcom.com> wrote:
+>
+> On 9/27/2020 10:47 AM, Dmitry Vyukov wrote:
+> > On Sun, Sep 27, 2020 at 10:38 AM syzbot
+> > <syzbot+3640e696903873858f7e@syzkaller.appspotmail.com> wrote:
+> >>
+> >> Hello,
+> >>
+> >> syzbot found the following issue on:
+> >>
+> >> HEAD commit:    748d1c8a Merge branch 'devlink-Use-nla_policy-to-validate-..
+> >> git tree:       net-next
+> >> console output: https://syzkaller.appspot.com/x/log.txt?x=13ac3ec3900000
+> >> kernel config:  https://syzkaller.appspot.com/x/.config?x=51fb40e67d1e3dec
+> >> dashboard link: https://syzkaller.appspot.com/bug?extid=3640e696903873858f7e
+> >> compiler:       gcc (GCC) 10.1.0-syz 20200507
+> >> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1599be03900000
+> >> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=149fd44b900000
+> >
+> > Based on the reproducer, this looks like some wireless bug.
+> > +net/wireless maintainers.
+>
+> I don't think so looking at this part of the stacktrace:
+>
+> [   51.814941]  [<ffffffff8465cc95>] macvlan_common_newlink+0xa15/0x1720
+> [   51.833542]  [<ffffffff84662548>] macvtap_newlink+0x128/0x230
+> [   51.858008]  [<ffffffff85b68bfe>] rtnl_newlink+0xe5e/0x1780
+> [   51.925885]  [<ffffffff85b5d32b>] rtnetlink_rcv_msg+0x22b/0xc20
+>
+> Regards,
+> Arend
 
-Warning in current branch:
+That's the trace on the oldest release and the bisection was diverged
+somewhere midway.
+You may see this in the bisection log:
+https://syzkaller.appspot.com/text?tag=Log&x=1474aaad900000
 
-kernel/rcu/tree.c:3169:4-9: WARNING: NULL check before some freeing functions is not needed.
+Initially it crashed with this warning:
+all runs: crashed: WARNING in sta_info_insert_rcu
 
-Warning ids grouped by kconfigs:
-
-gcc_recent_errors
-`-- x86_64-randconfig-c002-20200928
-    `-- kernel-rcu-tree.c:WARNING:NULL-check-before-some-freeing-functions-is-not-needed.
-
-elapsed time: 720m
-
-configs tested: 93
-configs skipped: 2
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-powerpc                      obs600_defconfig
-sh                        apsh4ad0a_defconfig
-sh                            shmin_defconfig
-arm                        neponset_defconfig
-arm                          collie_defconfig
-powerpc                     akebono_defconfig
-arc                          axs101_defconfig
-arm                          prima2_defconfig
-sh                        sh7763rdp_defconfig
-sh                           se7619_defconfig
-ia64                      gensparse_defconfig
-powerpc                    adder875_defconfig
-powerpc                    socrates_defconfig
-arm                              zx_defconfig
-sh                             espt_defconfig
-riscv                          rv32_defconfig
-mips                     loongson1b_defconfig
-xtensa                    smp_lx200_defconfig
-mips                 decstation_r4k_defconfig
-powerpc                 mpc837x_rdb_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a006-20200928
-i386                 randconfig-a002-20200928
-i386                 randconfig-a003-20200928
-i386                 randconfig-a004-20200928
-i386                 randconfig-a005-20200928
-i386                 randconfig-a001-20200928
-x86_64               randconfig-a005-20200928
-x86_64               randconfig-a003-20200928
-x86_64               randconfig-a004-20200928
-x86_64               randconfig-a002-20200928
-x86_64               randconfig-a006-20200928
-x86_64               randconfig-a001-20200928
-i386                 randconfig-a012-20200928
-i386                 randconfig-a016-20200928
-i386                 randconfig-a014-20200928
-i386                 randconfig-a013-20200928
-i386                 randconfig-a015-20200928
-i386                 randconfig-a011-20200928
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a011-20200928
-x86_64               randconfig-a013-20200928
-x86_64               randconfig-a015-20200928
-x86_64               randconfig-a014-20200928
-x86_64               randconfig-a016-20200928
-x86_64               randconfig-a012-20200928
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+This function is in net/mac80211/sta_info.c.
