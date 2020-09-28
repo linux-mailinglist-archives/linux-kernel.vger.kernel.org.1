@@ -2,172 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 949FB27AE0E
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 14:42:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ADFC27AE0F
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 14:42:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726558AbgI1MmL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 08:42:11 -0400
-Received: from z5.mailgun.us ([104.130.96.5]:11451 "EHLO z5.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726348AbgI1MmL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 08:42:11 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1601296930; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=oWltz7hycQksUaxhpl7WV0Rt0J+p0DnC6Q3UxfGwchE=; b=k82kkIz7T5dWrDyyQ6aNl2XxOU+Pea/JG/RcGBYlGjGVRDI3r7XYUb0o6ugRF5WP+81fZtd8
- JXQJRoyzn/pS1YTJ1utE3eTh1Sjz2/Wd4XPS9UqiSHY8/ESxO6UAx/T1gOH610Id1Sjudo6E
- K0/bKGRbM8QGtdMbCjGU3vpCWr8=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 5f71da2283f5ac99db0175d3 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 28 Sep 2020 12:42:10
- GMT
-Sender: vjitta=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 68B79C433F1; Mon, 28 Sep 2020 12:42:10 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.43.216] (unknown [157.44.92.199])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: vjitta)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id A8413C433CA;
-        Mon, 28 Sep 2020 12:42:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A8413C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=vjitta@codeaurora.org
-Subject: Re: [PATCH v2 2/2] iommu/iova: Free global iova rcache on iova alloc
- failure
-To:     Robin Murphy <robin.murphy@arm.com>, joro@8bytes.org,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-Cc:     vinmenon@codeaurora.org, kernel-team@android.com
-References: <1597927761-24441-1-git-send-email-vjitta@codeaurora.org>
- <1597927761-24441-2-git-send-email-vjitta@codeaurora.org>
- <2f20160a-b9da-4fa3-3796-ed90c6175ebe@arm.com>
-From:   Vijayanand Jitta <vjitta@codeaurora.org>
-Message-ID: <9dac89a4-553a-efe2-08a1-6a3a5fbc97a8@codeaurora.org>
-Date:   Mon, 28 Sep 2020 18:11:41 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
-MIME-Version: 1.0
-In-Reply-To: <2f20160a-b9da-4fa3-3796-ed90c6175ebe@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
+        id S1726601AbgI1MmP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 08:42:15 -0400
+Received: from mail-dm6nam11on2082.outbound.protection.outlook.com ([40.107.223.82]:22935
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726393AbgI1MmM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 08:42:12 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FzaNqS9sa4S07Wq+AZ41UGhM+EH/E9yBk7O+kXUUyxbqaP8+nFN/WnOkwQrjpx5X3+C85rFyugJtI/4n3Uh8WKf7bl9UsfjQ0j9U4zssVdWZeeuVXXJdwmqyM1d7nYlcrQMOzqe3qTh63TxMa60zam9C5/IjSSzjSPuJ/4m4aN7JWX8nMiPhMxXx8DrD79Gf57opCIKYu1FLs7CmwjK9kHbzFp55qCWkcrxgoVeREbMrDARQnGncrMbh0wb7WwMRA1Ptu5hRJUdqEhOCYcdj3ljxbuUSnLWWb+s+JX43EOiEGNS9MZswv61v0XsreuDL0uGvKLYAXgNpKD3Ewj/lGw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VJgXfRgbwBCAbdKWID5BO50XbJFRbXBcly79efT7PDc=;
+ b=mUBU7Tp0LdsNo4dWxio5LyLBERuSEZUpdE8Rjb2G0c700Th72B2SDJrbz6/hsqkw8nG5whtchgHXyGf1T88wxuMeKWkLpbC5gL8qU9RxLO9gcWFZxA9MFNwB11gd7ByBehc21djxSWfA4qGoSAPxdaEyoMJ23v//qtzr07lFcUNKNFFo7334TZfie6ZMFnOqVImaiKBlD0D5uwfP+zaBvTZeI0o/SAJyDUgahZRbsi309QZDIzWLsy2rqqhnZvrJFtmz7GefX1AWGVx1a4D3OxBn5RARUyifRb+Szcm08bHq3adJM9JpvLDEtMiIrVNPX3fe0fyhpVp9bN9a78znCA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=windriver.com; dmarc=pass action=none
+ header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=windriversystems.onmicrosoft.com;
+ s=selector2-windriversystems-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VJgXfRgbwBCAbdKWID5BO50XbJFRbXBcly79efT7PDc=;
+ b=SUG1iLl+Og7shKvflxQRh9BU4vRWDretKKHWC9VLufrz0Z+LCKOnJTYhsPq4aNYQkePwah8XzfcYQPfJULXTObHEtCUuAsc5xkqOYuc3UQxUTXi10GEBO9xreKEbRpuSBQE+iV7+sxi4T8KE13O6pqdtxsMlo+3tTOSTYOuk74o=
+Authentication-Results: goodmis.org; dkim=none (message not signed)
+ header.d=none;goodmis.org; dmarc=none action=none header.from=windriver.com;
+Received: from CY4PR11MB0071.namprd11.prod.outlook.com (2603:10b6:910:7a::30)
+ by CY4PR11MB1941.namprd11.prod.outlook.com (2603:10b6:903:120::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.28; Mon, 28 Sep
+ 2020 12:42:09 +0000
+Received: from CY4PR11MB0071.namprd11.prod.outlook.com
+ ([fe80::2d47:2e9c:cfbe:6fb2]) by CY4PR11MB0071.namprd11.prod.outlook.com
+ ([fe80::2d47:2e9c:cfbe:6fb2%6]) with mapi id 15.20.3370.033; Mon, 28 Sep 2020
+ 12:42:09 +0000
+Subject: Re: [PATCH] time/sched_clock: mark sched_clock_read_begin as notrace
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Leo Yan <leo.yan@linaro.org>, Will Deacon <will@kernel.org>,
+        a.darwish@linutronix.de,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        ben.dooks@codethink.co.uk, Steven Rostedt <rostedt@goodmis.org>
+References: <20200928104952.26892-1-quanyang.wang@windriver.com>
+ <20200928105859.GF2628@hirez.programming.kicks-ass.net>
+From:   Quanyang Wang <quanyang.wang@windriver.com>
+Message-ID: <22a5d255-7a9f-3139-1e8a-4263fea690c0@windriver.com>
+Date:   Mon, 28 Sep 2020 20:41:59 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <20200928105859.GF2628@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-ClientProxiedBy: HK2PR04CA0047.apcprd04.prod.outlook.com
+ (2603:1096:202:14::15) To CY4PR11MB0071.namprd11.prod.outlook.com
+ (2603:10b6:910:7a::30)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [128.224.162.199] (60.247.85.82) by HK2PR04CA0047.apcprd04.prod.outlook.com (2603:1096:202:14::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.22 via Frontend Transport; Mon, 28 Sep 2020 12:42:06 +0000
+X-Originating-IP: [60.247.85.82]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: fdac5aa7-dba2-45d4-b248-08d863abea06
+X-MS-TrafficTypeDiagnostic: CY4PR11MB1941:
+X-Microsoft-Antispam-PRVS: <CY4PR11MB194140BF44850366F4F6115EF0350@CY4PR11MB1941.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: TjzvZEPy9ErttPht9BozXTZX1D+p5CeAqyJw6uNkl8rtmpPQ9zImXczGOd5XLza+v1T3wRHyACVibRM3B9CXjlnUm/SKi9hzoWz6ICZ/mGuAj10NUgewX5VcW+ZqVG5cCn4Im56hCNf4RBSq4bdzA57hjc/0+/XvpZAM6kDkeCFavxL2+dqHdDyCjmFYRhfb9QjAAgYuHuLLCXathQX41jeicrISbHONqGkjuQDscdSkyulnGQ1yWVRRrEAFSMllV5G536TrAWVjqN0RXFvPlLN2cNH5Xmv3U0IC2IVsfLZUt1UHuBbttrynjWgrWRHVpZM4cNrtqZ9CYXrD8GXRoTjOX+S3IPuMQM8lsJs7S0i3//hsEB8UIwJP3uz83GrGn+92a5nmaZNO07cv0xCLwGgkXiQr3DAEgqio5w2e4ponrMz0ugkLjvolp9t+ik5xBmu0P7nKBTKFiIz75sRCvw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR11MB0071.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(136003)(396003)(376002)(39850400004)(366004)(6666004)(31686004)(66946007)(478600001)(2616005)(956004)(44832011)(6486002)(8936002)(52116002)(7416002)(2906002)(6916009)(8676002)(6706004)(16576012)(54906003)(53546011)(316002)(36756003)(26005)(4326008)(186003)(16526019)(66476007)(66556008)(83380400001)(5660300002)(31696002)(86362001)(78286007)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: Ax387dZi+Jv9XxLNHDmb1tVTIZ4Rq9l98AqKkVaOLzDYb7/KrOOPv1dmw/xUAx4L8ipXGTQkXIHW31rA8EnHZO8uF1hpRelqjlNeSX3v26pw1SRzzma4ZjKEcDsNUL8de38tfgtKiQrjMAnjmE4fH1dciEb/WWdIiqqRCHoZ6ajsnaw1zdDfq787wZ69VuJ/MNbFzBIxfx23zlPcXQGTs4OE/N0IZmGJc252lqKIZl4w7WS4r3I3Rl93ZJBaLwLzhTUJO7ZlP0lC2DyYujOYmFua8CHVlIgMQ3ZIn5Bc8meCBDxr4Y1ILsXeoveQmQesvzvmaTNCICRfkeP6zv+YMisHLB4WGVps7gMYLwJ8pbQxjA3oV/rV34x0ITji0gHAGSP1Z/RJK/+uoK03rHRngAgPdgyWvl5BAXPNNvM/VtfX1QbZOOjfqUZPonkdjV1EQE2dd0F40ZWvtlMhRzq9AZvJk5NBRQzwb/1FBuJxgqGfC0mRB2ebOhneVSXb4P9ebP+X6tXrEYTrQZ+Ig8zpkYWpt1SNPJVs0gyUm0MKYXMMjt0gV2FrlOKFKOrpcGX52hYGKiUMGg/CvuJdblz9hi7VNR+4rYrCOe5OI4O7WjUaO4yTEs3jPCF4L9+8s/rmr4kZUV4FQDMWvGUZYOVTFg==
+X-OriginatorOrg: windriver.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fdac5aa7-dba2-45d4-b248-08d863abea06
+X-MS-Exchange-CrossTenant-AuthSource: CY4PR11MB0071.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Sep 2020 12:42:09.2518
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: J491FmWsee4xmHY/8NcVCgSo/lDkQ66RO6lfm/A7k5A/equLe4OM8wj5ThPpEEqx5cNmvc8D77rMKgqKcCuFa7MyVy9oFHNz9kwXJYaQJwo=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR11MB1941
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Peter,
 
-
-On 9/18/2020 8:11 PM, Robin Murphy wrote:
-> On 2020-08-20 13:49, vjitta@codeaurora.org wrote:
->> From: Vijayanand Jitta <vjitta@codeaurora.org>
+On 9/28/20 6:58 PM, Peter Zijlstra wrote:
+> On Mon, Sep 28, 2020 at 06:49:52PM +0800, quanyang.wang@windriver.com wrote:
+>> From: Quanyang Wang <quanyang.wang@windriver.com>
 >>
->> When ever an iova alloc request fails we free the iova
->> ranges present in the percpu iova rcaches and then retry
->> but the global iova rcache is not freed as a result we could
->> still see iova alloc failure even after retry as global
->> rcache is holding the iova's which can cause fragmentation.
->> So, free the global iova rcache as well and then go for the
->> retry.
+>> Since sched_clock_read_begin is called by notrace function sched_clock,
+>> it shouldn't be traceable either, or else __ftrace_graph_caller will
+>> run into a dead loop on the path (arm for instance):
 >>
->> Signed-off-by: Vijayanand Jitta <vjitta@codeaurora.org>
+>>    ftrace_graph_caller
+>>      prepare_ftrace_return
+>>        function_graph_enter
+>>          ftrace_push_return_trace
+>>            trace_clock_local
+>>              sched_clock
+>>                sched_clock_read_begin
+>>
+>> Fixes: 1b86abc1c645 ("sched_clock: Expose struct clock_read_data")
+>> Signed-off-by: Quanyang Wang <quanyang.wang@windriver.com>
 >> ---
->>   drivers/iommu/iova.c | 23 +++++++++++++++++++++++
->>   include/linux/iova.h |  6 ++++++
->>   2 files changed, 29 insertions(+)
+>>   kernel/time/sched_clock.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
 >>
->> diff --git a/drivers/iommu/iova.c b/drivers/iommu/iova.c
->> index 4e77116..5836c87 100644
->> --- a/drivers/iommu/iova.c
->> +++ b/drivers/iommu/iova.c
->> @@ -442,6 +442,7 @@ struct iova *find_iova(struct iova_domain *iovad,
->> unsigned long pfn)
->>           flush_rcache = false;
->>           for_each_online_cpu(cpu)
->>               free_cpu_cached_iovas(cpu, iovad);
->> +        free_global_cached_iovas(iovad);
->>           goto retry;
->>       }
->>   @@ -1055,5 +1056,27 @@ void free_cpu_cached_iovas(unsigned int cpu,
->> struct iova_domain *iovad)
->>       }
->>   }
->>   +/*
->> + * free all the IOVA ranges of global cache
->> + */
->> +void free_global_cached_iovas(struct iova_domain *iovad)
-> 
-> As John pointed out last time, this should be static and the header
-> changes dropped.
-> 
-> (TBH we should probably register our own hotplug notifier instance for a
-> flush queue, so that external code has no need to poke at the per-CPU
-> caches either)
-> 
-> Robin.
-> 
+>> diff --git a/kernel/time/sched_clock.c b/kernel/time/sched_clock.c
+>> index 1c03eec6ca9b..58459e1359d7 100644
+>> --- a/kernel/time/sched_clock.c
+>> +++ b/kernel/time/sched_clock.c
+>> @@ -68,7 +68,7 @@ static inline u64 notrace cyc_to_ns(u64 cyc, u32 mult, u32 shift)
+>>   	return (cyc * mult) >> shift;
+>>   }
+>>   
+>> -struct clock_read_data *sched_clock_read_begin(unsigned int *seq)
+>> +notrace struct clock_read_data *sched_clock_read_begin(unsigned int *seq)
+>>   {
+>>   	*seq = raw_read_seqcount_latch(&cd.seq);
+>>   	return cd.read_data + (*seq & 1);
+> At the very least sched_clock_read_retry() should also be marked such.
 
-Right, I have made it static and dropped header changes in v3.
-can you please review that.
+In fact, the sched_clock_read_retry is treated as a "inline" function, so
+
+it doesn't trigger the  dead loop. But for safe, add notrace to it is 
+better.
+
+I will send a V2 patch.
 
 Thanks,
-Vijay
->> +{
->> +    struct iova_rcache *rcache;
->> +    unsigned long flags;
->> +    int i, j;
->> +
->> +    for (i = 0; i < IOVA_RANGE_CACHE_MAX_SIZE; ++i) {
->> +        rcache = &iovad->rcaches[i];
->> +        spin_lock_irqsave(&rcache->lock, flags);
->> +        for (j = 0; j < rcache->depot_size; ++j) {
->> +            iova_magazine_free_pfns(rcache->depot[j], iovad);
->> +            iova_magazine_free(rcache->depot[j]);
->> +            rcache->depot[j] = NULL;
->> +        }
->> +        rcache->depot_size = 0;
->> +        spin_unlock_irqrestore(&rcache->lock, flags);
->> +    }
->> +}
->> +
->>   MODULE_AUTHOR("Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>");
->>   MODULE_LICENSE("GPL");
->> diff --git a/include/linux/iova.h b/include/linux/iova.h
->> index a0637ab..a905726 100644
->> --- a/include/linux/iova.h
->> +++ b/include/linux/iova.h
->> @@ -163,6 +163,7 @@ int init_iova_flush_queue(struct iova_domain *iovad,
->>   struct iova *split_and_remove_iova(struct iova_domain *iovad,
->>       struct iova *iova, unsigned long pfn_lo, unsigned long pfn_hi);
->>   void free_cpu_cached_iovas(unsigned int cpu, struct iova_domain
->> *iovad);
->> +void free_global_cached_iovas(struct iova_domain *iovad);
->>   #else
->>   static inline int iova_cache_get(void)
->>   {
->> @@ -270,6 +271,11 @@ static inline void free_cpu_cached_iovas(unsigned
->> int cpu,
->>                        struct iova_domain *iovad)
->>   {
->>   }
->> +
->> +static inline void free_global_cached_iovas(struct iova_domain *iovad)
->> +{
->> +}
->> +
->>   #endif
->>     #endif
->>
 
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
-member of Code Aurora Forum, hosted by The Linux Foundation
+Quanyang
+
+
+>
+> But Steve, how come x86 works? Our sched_clock() doesn't have notrace on
+> at all.
