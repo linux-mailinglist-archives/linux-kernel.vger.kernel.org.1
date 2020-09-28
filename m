@@ -2,129 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A4F127B598
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 21:45:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BD9627B5A7
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 21:48:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726805AbgI1Tpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 15:45:30 -0400
-Received: from mga06.intel.com ([134.134.136.31]:57156 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726409AbgI1Tpa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 15:45:30 -0400
-IronPort-SDR: gvTKsE+X3uAsC2KF1fGEHk+kCbAogkDJLV+KGA923G+5wQkHilwSMSw4SomOUd9+W21ReOXjmq
- /yCRbEEBKjoA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9758"; a="223644153"
-X-IronPort-AV: E=Sophos;i="5.77,315,1596524400"; 
-   d="scan'208";a="223644153"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 12:45:29 -0700
-IronPort-SDR: GCjS53FKxMzlLhO+tCmpcyzhz5I6+f1dn1lKXSxL5/YkyjkpqxXdMxGRj4Ctt5pNremjilfvwz
- glxNcrKuFgxQ==
-X-IronPort-AV: E=Sophos;i="5.77,315,1596524400"; 
-   d="scan'208";a="514392347"
-Received: from romeroro-mobl.amr.corp.intel.com (HELO [10.209.119.91]) ([10.209.119.91])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 12:45:27 -0700
-Subject: Re: [PATCH v38 10/24] mm: Add vm_ops->mprotect()
-To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Haitao Huang <haitao.huang@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>, X86 ML <x86@kernel.org>,
-        linux-sgx@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Darren Kenny <darren.kenny@oracle.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        asapek@google.com, Borislav Petkov <bp@alien8.de>,
-        "Xing, Cedric" <cedric.xing@intel.com>, chenalexchen@google.com,
-        Conrad Parker <conradparker@google.com>, cyhanish@google.com,
-        "Huang, Haitao" <haitao.huang@intel.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        "Huang, Kai" <kai.huang@intel.com>,
-        "Svahn, Kai" <kai.svahn@intel.com>, Keith Moyer <kmoy@google.com>,
-        Christian Ludloff <ludloff@google.com>,
-        Neil Horman <nhorman@redhat.com>,
-        Nathaniel McCallum <npmccallum@redhat.com>,
-        Patrick Uiterwijk <puiterwijk@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>, yaozhangx@google.com
-References: <20200924230501.GA20095@linux.intel.com>
- <b737fcab-bfde-90e1-1101-82d646a6f5b7@intel.com>
- <20200925000052.GA20333@linux.intel.com>
- <32fc9df4-d4aa-6768-aa06-0035427b7535@intel.com>
- <20200925194304.GE31528@linux.intel.com>
- <230ce6da-7820-976f-f036-a261841d626f@intel.com>
- <20200928005347.GB6704@linux.intel.com>
- <6eca8490-d27d-25b8-da7c-df4f9a802e87@intel.com>
- <20200928161954.GB92669@linux.intel.com>
- <c29a662e-90ff-4862-8c82-06b43b81fb4d@intel.com>
- <20200928193229.GA125819@linux.intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <283800a0-8f97-e21e-2ff1-253ae621747e@intel.com>
-Date:   Mon, 28 Sep 2020 12:45:27 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726768AbgI1Tsh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 15:48:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32912 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726500AbgI1Tsh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 15:48:37 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85223C061755;
+        Mon, 28 Sep 2020 12:48:36 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id g72so2170245qke.8;
+        Mon, 28 Sep 2020 12:48:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BTNL+zfDw2eRPjMS84+hCnl/S955qQfanNkcVv5LTEs=;
+        b=KAiFp8uIfuZP/3hcoex4XODf0/IP3AvxyHpXOE0q682IXBgwTRvCsAvfSaqrp8n0Ik
+         4LQNkz8dlKZ7RC/dNuLoqIRkeAm3mDCr+ZxPiLL+4xERbQTaepq1Kl9DYThWZhd2xtuw
+         1zj27tMcXGDY4XaxZgtHrQO9x772Ojqw+bKNEud17m/szWM2WNTmojyBlXVFY1pY424t
+         alBPdz8oPy99hisWPuGIvIP+cv38ok0gFwVw55fWHNoKQLxxUMRfoANtZoIuEIwmQ3RO
+         IGDTtqLy+Bt2ljF+NhQV9zURcHBc7AdW7pddtF4z5QzeouznVreaxjBji1kQW9J4P1Es
+         b+sQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BTNL+zfDw2eRPjMS84+hCnl/S955qQfanNkcVv5LTEs=;
+        b=KlJnP/DfvCgns1ARfHvgujiG0OjGDVerpxGrKBj6r3BOdOimVeT6w8BBDc2dS8mXc9
+         efU/EqRfqgsPTaLnEZficYD8lwBwaX3rZXoZrNPrLXQ1ZrEDY6NzJWsNn/P92dfrhJWt
+         PI2YPYt6crcjhtnvluISnfRCcFhyxHf8Xqrh7aFoK13HKZYWWz3BJDrBUmD5oKnV9E9V
+         f9iKBz8SrG6ytiCSYD9zQ4iuH+c2elBAsGJ5L8eu1hkW0G0u1zCAHYl6jhk7T3C5ZiAp
+         f8j3ZTYGuiS/buFicOWAgzu5769eQVe6zu9wrYAGllmjbUDF2yaJMZV+OwQ9F6nTIaGD
+         Bl/Q==
+X-Gm-Message-State: AOAM533d0KOi4ImB3MGDTfZkTLS8PfMCyvLA3mCoOqoqj6jQ18pu1VjJ
+        avUTNkEujLpx/qmf1eLXwf8=
+X-Google-Smtp-Source: ABdhPJyii5BQnxtJrkXUVz9aLcPGlGbnaZWbGwgiB6mGwzVqqDYzkO0gWDJxDVlOAWxqBpG28Pa48w==
+X-Received: by 2002:a37:a187:: with SMTP id k129mr1075526qke.147.1601322515586;
+        Mon, 28 Sep 2020 12:48:35 -0700 (PDT)
+Received: from localhost.localdomain ([2604:1380:45d1:2600::1])
+        by smtp.gmail.com with ESMTPSA id w59sm2473353qtd.1.2020.09.28.12.48.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Sep 2020 12:48:34 -0700 (PDT)
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Len Brown <lenb@kernel.org>
+Cc:     Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        linux-acpi@vger.kernel.org, devel@acpica.org,
+        linux-kernel@vger.kernel.org,
+        Nathan Chancellor <natechancellor@gmail.com>
+Subject: [PATCH] ACPI / NUMA: Add stub function for pxm_to_node
+Date:   Mon, 28 Sep 2020 12:45:55 -0700
+Message-Id: <20200928194554.3423466-1-natechancellor@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <20200928193229.GA125819@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+X-Patchwork-Bot: notify
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/28/20 12:32 PM, Jarkko Sakkinen wrote:
-> My problem is that I fully agree what you say in your description but
-> disagree on that EMODPE should not be mentioned.
+After commit 01feba590cd6 ("ACPI: Do not create new NUMA domains from
+ACPI static tables that are not SRAT"):
 
-I'll just be very clear: I'm not willing to ack any patch with a
-changelog that has more than a passing mention of EMODPE.
+$ scripts/config --file arch/x86/configs/x86_64_defconfig -d NUMA -e ACPI_NFIT
 
-Do what you think is best, but if sticking to your guns may deplete the
-pool of folks willing to ack your patch.
+$ make -skj"$(nproc)" distclean defconfig drivers/acpi/nfit/
+drivers/acpi/nfit/core.c: In function ‘acpi_nfit_register_region’:
+drivers/acpi/nfit/core.c:3010:27: error: implicit declaration of
+function ‘pxm_to_node’; did you mean ‘xa_to_node’?
+[-Werror=implicit-function-declaration]
+ 3010 |   ndr_desc->target_node = pxm_to_node(spa->proximity_domain);
+      |                           ^~~~~~~~~~~
+      |                           xa_to_node
+cc1: some warnings being treated as errors
+...
+
+Add a stub function like acpi_map_pxm_to_node had so that the build
+continues to work.
+
+Fixes: 01feba590cd6 ("ACPI: Do not create new NUMA domains from ACPI static tables that are not SRAT")
+Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+---
+
+I am not sure if this is the right place or value for this. It looks
+like there is going to be another stub function added here, which is
+going through -mm:
+
+https://lkml.kernel.org/r/159643094925.4062302.14979872973043772305.stgit@dwillia2-desk3.amr.corp.intel.com
+
+ include/acpi/acpi_numa.h | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/include/acpi/acpi_numa.h b/include/acpi/acpi_numa.h
+index fdebcfc6c8df..09eb3bc20ff5 100644
+--- a/include/acpi/acpi_numa.h
++++ b/include/acpi/acpi_numa.h
+@@ -22,5 +22,10 @@ extern int acpi_numa __initdata;
+ extern void bad_srat(void);
+ extern int srat_disabled(void);
+ 
++#else				/* CONFIG_ACPI_NUMA */
++static inline int pxm_to_node(int pxm)
++{
++	return 0;
++}
+ #endif				/* CONFIG_ACPI_NUMA */
+ #endif				/* __ACP_NUMA_H */
+
+base-commit: eb6335b68ce3fc85a93c4c6cd3bb6bc5ac490efe
+-- 
+2.28.0
+
