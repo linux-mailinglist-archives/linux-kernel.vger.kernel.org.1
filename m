@@ -2,209 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 445EA27B2D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 19:13:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C161727B2DF
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 19:14:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726658AbgI1RNw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 13:13:52 -0400
-Received: from mga06.intel.com ([134.134.136.31]:43706 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726504AbgI1RNw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 13:13:52 -0400
-IronPort-SDR: h+Q4pW67NS4GhUg+A/sn+bDgMtxKAbpmgMf2knu8cSJ46Kx5KPSe3JeccW5BGadQKxpaGMmzc2
- +Fr+DG2kffDQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9758"; a="223624234"
-X-IronPort-AV: E=Sophos;i="5.77,313,1596524400"; 
-   d="scan'208";a="223624234"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 10:13:50 -0700
-IronPort-SDR: RgT6PVG/mrKNG0UWJKclspgMmLQsBCPYUaHQW0Zl431vLcx2fkuRZxvDWsp+OSloIZ97vSklIN
- LlZrZzkwaxZA==
-X-IronPort-AV: E=Sophos;i="5.77,313,1596524400"; 
-   d="scan'208";a="456914961"
-Received: from lizwalsh-mobl3.ger.corp.intel.com (HELO localhost) ([10.251.86.12])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 10:13:45 -0700
-From:   Jani Nikula <jani.nikula@linux.intel.com>
-To:     "Surendrakumar Upadhyay\, TejaskumarX" 
-        <tejaskumarx.surendrakumar.upadhyay@intel.com>,
-        "Vivi\, Rodrigo" <rodrigo.vivi@intel.com>,
-        "airlied\@linux.ie" <airlied@linux.ie>,
-        "daniel\@ffwll.ch" <daniel@ffwll.ch>,
-        "intel-gfx\@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
-        "dri-devel\@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Ausmus\, James" <james.ausmus@intel.com>,
-        "Roper\, Matthew D" <matthew.d.roper@intel.com>,
-        "Souza\, Jose" <jose.souza@intel.com>,
-        "ville.syrjala\@linux.intel.com" <ville.syrjala@linux.intel.com>,
-        "De Marchi\, Lucas" <lucas.demarchi@intel.com>,
-        "Pandey\, Hariom" <hariom.pandey@intel.com>
-Subject: Re: [PATCH 1/2] drm/i915/jsl: Split EHL/JSL platform info and PCI ids
-In-Reply-To: <SN6PR11MB3421571FA9A490C67E0E9D82DF350@SN6PR11MB3421.namprd11.prod.outlook.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20200928080931.246347-1-tejaskumarx.surendrakumar.upadhyay@intel.com> <20200928080931.246347-2-tejaskumarx.surendrakumar.upadhyay@intel.com> <87d026owdq.fsf@intel.com> <SN6PR11MB3421571FA9A490C67E0E9D82DF350@SN6PR11MB3421.namprd11.prod.outlook.com>
-Date:   Mon, 28 Sep 2020 20:14:02 +0300
-Message-ID: <874knhq0x1.fsf@intel.com>
+        id S1726705AbgI1ROZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 13:14:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37408 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726424AbgI1ROZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 13:14:25 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DA8FC061755;
+        Mon, 28 Sep 2020 10:14:23 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id t10so2229891wrv.1;
+        Mon, 28 Sep 2020 10:14:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=ZAW6dcCoUbddPaYdr5/lbjgYoSVn9vUyYWWh66IQR2M=;
+        b=nkFN+z9v1kUNrol7AqK7Z6xx6MoDko4TE7Cw30iHBx68So86SMFHvxbK9rNAYyLh8O
+         kJomHCfJB+poR3gVVUrh7734yNNn0CCyVz2lwjDs7LVEoYYFIpH0xHXz0moihZ2JcOQ1
+         uacch0SprOmJexYeiwRvnwkhF2iEnvEWLeUdzbGpTH8wbfBzCT75o9+WyEP07HT5bXsA
+         Y5M5XGLcKMIOcnWaX+0e5Mfx00oZZpVMok6cBnqY/UPWM1Gh6Xtz65EGxMygG/Sbg7MI
+         hGd8wOBw5MEXXEojX9/J/IiOQYUiisVOwVtlc/nUmfEdqNG0OWcw5pUQHx3vEc7GbAhp
+         m6xg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=ZAW6dcCoUbddPaYdr5/lbjgYoSVn9vUyYWWh66IQR2M=;
+        b=ZCme+hfs+YZ/yqnFw3yMfTcLX9Mm4E71dIl3k05nbzpHh/bjCG3h2nq2J9uK6XOn5/
+         Ju2W7v3GrLDY3HrlHbyszjAIBHqXlIDzV5cDaKMUxXJ84B+NRJ/LqBNaPzQMI9DDckLt
+         DaGPT3pqh5RFeypEviaieL+uCl65JrD669NB00F7Eh3/NFBsMzQo7LbtEjA8iBD0tgEY
+         6SbWK2KI14KxushmbqTyXvBZV4RBphrMtKRp+bP6tzoVW1o0Pw+uB4guC4ImNbraafJk
+         TITrnqg4GHRU4Ixp3W+RqxdhNqXWZreEtpNgIzMftbJEOB7s21lJk4cXVP1cHAWlJCnh
+         gUzg==
+X-Gm-Message-State: AOAM532qwPuREJhs8l3bFVW+x0rqIm8zv6kTDoGkXXb6q8pxdgl3GIIt
+        edJyuqs2VkvfdPwPjs7jWyU=
+X-Google-Smtp-Source: ABdhPJxzDWkSo4Db8lLVYiLe3RVkBDu7Qbr3OCQEll/PrffgJ7nvwrBvb7FsZx00rdn33neO2ikp2g==
+X-Received: by 2002:adf:ef48:: with SMTP id c8mr2818976wrp.370.1601313261840;
+        Mon, 28 Sep 2020 10:14:21 -0700 (PDT)
+Received: from a-VirtualBox ([103.120.71.253])
+        by smtp.gmail.com with ESMTPSA id q20sm2010984wmj.5.2020.09.28.10.14.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Sep 2020 10:14:21 -0700 (PDT)
+Date:   Mon, 28 Sep 2020 22:14:14 +0500
+From:   Bilal Wasim <bilalwasim676@gmail.com>
+To:     Jitao Shi <jitao.shi@mediatek.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
+        devicetree@vger.kernel.org, srv_heupstream@mediatek.com,
+        huijuan.xie@mediatek.com, stonea168@163.com,
+        cawa.cheng@mediatek.com, linux-mediatek@lists.infradead.org,
+        bibby.hsieh@mediatek.com, ck.hu@mediatek.com,
+        yingjoe.chen@mediatek.com, eddie.huang@mediatek.com,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [v3 PATCH] drm/mediatek: dsi: fix scrolling of panel with small
+ hfp or hbp
+Message-ID: <20200928221414.5cb079a9@a-VirtualBox>
+In-Reply-To: <20200917033009.24799-1-jitao.shi@mediatek.com>
+References: <20200917033009.24799-1-jitao.shi@mediatek.com>
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 28 Sep 2020, "Surendrakumar Upadhyay, TejaskumarX" <tejaskumarx.surendrakumar.upadhyay@intel.com> wrote:
-> ________________________________
-> From: Jani Nikula <jani.nikula@linux.intel.com>
-> Sent: Monday, September 28, 2020 7:07 PM
-> To: Surendrakumar Upadhyay, TejaskumarX <tejaskumarx.surendrakumar.upadhyay@intel.com>; Vivi, Rodrigo <rodrigo.vivi@intel.com>; airlied@linux.ie <airlied@linux.ie>; daniel@ffwll.ch <daniel@ffwll.ch>; intel-gfx@lists.freedesktop.org <intel-gfx@lists.freedesktop.org>; dri-devel@lists.freedesktop.org <dri-devel@lists.freedesktop.org>; linux-kernel@vger.kernel.org <linux-kernel@vger.kernel.org>; Ausmus, James <james.ausmus@intel.com>; Roper, Matthew D <matthew.d.roper@intel.com>; Souza, Jose <jose.souza@intel.com>; ville.syrjala@linux.intel.com <ville.syrjala@linux.intel.com>; De Marchi, Lucas <lucas.demarchi@intel.com>; Pandey, Hariom <hariom.pandey@intel.com>
-> Subject: Re: [PATCH 1/2] drm/i915/jsl: Split EHL/JSL platform info and PCI ids
+Hi Jitao, 
 
-Please fix your email quoting when interacting on the public lists.
+On Thu, 17 Sep 2020 11:30:09 +0800
+Jitao Shi <jitao.shi@mediatek.com> wrote:
 
->
-> On Mon, 28 Sep 2020, Tejas Upadhyay <tejaskumarx.surendrakumar.upadhyay@intel.com> wrote:
->> Split the basic platform definition, macros, and PCI IDs to
->> differentiate between EHL and JSL platforms.
->>
->> Signed-off-by: Tejas Upadhyay <tejaskumarx.surendrakumar.upadhyay@intel.com>
->> ---
->>  drivers/gpu/drm/i915/i915_drv.h          | 4 +++-
->>  drivers/gpu/drm/i915/i915_pci.c          | 9 +++++++++
->>  drivers/gpu/drm/i915/intel_device_info.c | 1 +
->>  drivers/gpu/drm/i915/intel_device_info.h | 1 +
->>  include/drm/i915_pciids.h                | 9 ++++++---
->>  5 files changed, 20 insertions(+), 4 deletions(-)
->>
->> diff --git a/drivers/gpu/drm/i915/i915_drv.h b/drivers/gpu/drm/i915/i915_drv.h
->> index 72a9449b674e..4f20acebb038 100644
->> --- a/drivers/gpu/drm/i915/i915_drv.h
->> +++ b/drivers/gpu/drm/i915/i915_drv.h
->> @@ -1417,7 +1417,9 @@ IS_SUBPLATFORM(const struct drm_i915_private *i915,
->>  #define IS_COMETLAKE(dev_priv)       IS_PLATFORM(dev_priv, INTEL_COMETLAKE)
->>  #define IS_CANNONLAKE(dev_priv)      IS_PLATFORM(dev_priv, INTEL_CANNONLAKE)
->>  #define IS_ICELAKE(dev_priv) IS_PLATFORM(dev_priv, INTEL_ICELAKE)
->> -#define IS_ELKHARTLAKE(dev_priv)     IS_PLATFORM(dev_priv, INTEL_ELKHARTLAKE)
->> +#define IS_ELKHARTLAKE(dev_priv) (IS_PLATFORM(dev_priv, INTEL_ELKHARTLAKE) || \
->> +                             IS_PLATFORM(dev_priv, INTEL_JASPERLAKE))
->> +#define IS_JASPERLAKE(dev_priv)      IS_PLATFORM(dev_priv, INTEL_JASPERLAKE)
->
-> I think we've learned from history that we want the platform checks to
-> be independent. I.e. if you need to split ELK and JSP, you need to make
-> IS_ELKHARTLAKE() match *only* ELK, and you need to replace every current
-> IS_ELKHARTLAKE() check with IS_ELKHARTLAKE() || IS_JASPERLAKE().
->
-> We've been here before, and we've thought before that we can get by with
-> the minimal change. It's just postponing the inevitable and generates
-> confusion.
->
-> BR,
-> Jani.
->
-> Tejas : Replacing IS_ELKHARTLAKE() || IS_JASPERLAKE() everywhere will
-> make lot of changes at each place. To avoid huge change and to
-> differentiate between platforms we have taken this way. Do you think
-> we still change it everywhere? Do you have example where it can harm
-> this change?
+> Replace horizontal_backporch_byte with vm->hback_porch * bpp to aovid
+> flowing judgement negative number.
+> 
+> if ((vm->hfront_porch * dsi_tmp_buf_bpp + horizontal_backporch_byte) >
+> 	data_phy_cycles * dsi->lanes + delta)
+> 
+> Signed-off-by: Jitao Shi <jitao.shi@mediatek.com>
+> ---
+>  drivers/gpu/drm/mediatek/mtk_dsi.c | 54
+> ++++++++++++++------------------------ 1 file changed, 19
+> insertions(+), 35 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/mediatek/mtk_dsi.c
+> b/drivers/gpu/drm/mediatek/mtk_dsi.c index 16fd99dcdacf..ddddf69ebeaf
+> 100644 --- a/drivers/gpu/drm/mediatek/mtk_dsi.c
+> +++ b/drivers/gpu/drm/mediatek/mtk_dsi.c
+> @@ -445,6 +445,7 @@ static void mtk_dsi_config_vdo_timing(struct
+> mtk_dsi *dsi) u32 horizontal_backporch_byte;
+>  	u32 horizontal_frontporch_byte;
+>  	u32 dsi_tmp_buf_bpp, data_phy_cycles;
+> +	u32 delta;
+>  	struct mtk_phy_timing *timing = &dsi->phy_timing;
+>  
+>  	struct videomode *vm = &dsi->vm;
+> @@ -475,42 +476,25 @@ static void mtk_dsi_config_vdo_timing(struct
+> mtk_dsi *dsi) data_phy_cycles = timing->lpx + timing->da_hs_prepare +
+>  			  timing->da_hs_zero + timing->da_hs_exit +
+> 3; 
+> -	if (dsi->mode_flags & MIPI_DSI_MODE_VIDEO_BURST) {
+> -		if ((vm->hfront_porch + vm->hback_porch) *
+> dsi_tmp_buf_bpp >
+> -		    data_phy_cycles * dsi->lanes + 18) {
+> -			horizontal_frontporch_byte =
+> -				vm->hfront_porch * dsi_tmp_buf_bpp -
+> -				(data_phy_cycles * dsi->lanes + 18) *
+> -				vm->hfront_porch /
+> -				(vm->hfront_porch + vm->hback_porch);
+> -
+> -			horizontal_backporch_byte =
+> -				horizontal_backporch_byte -
+> -				(data_phy_cycles * dsi->lanes + 18) *
+> -				vm->hback_porch /
+> -				(vm->hfront_porch + vm->hback_porch);
+> -		} else {
+> -			DRM_WARN("HFP less than d-phy, FPS will
+> under 60Hz\n");
+> -			horizontal_frontporch_byte =
+> vm->hfront_porch *
+> -						     dsi_tmp_buf_bpp;
+> -		}
+> +	delta = (dsi->mode_flags & MIPI_DSI_MODE_VIDEO_BURST) ? 18 :
+> 12; +
+> +	if ((vm->hfront_porch * dsi_tmp_buf_bpp +
+> horizontal_backporch_byte) >
+> +	    data_phy_cycles * dsi->lanes + delta) {
+> +		horizontal_frontporch_byte =
+> +			vm->hfront_porch * dsi_tmp_buf_bpp -
+> +			(data_phy_cycles * dsi->lanes + delta) *
+> +			vm->hfront_porch /
+> +			(vm->hfront_porch + vm->hback_porch);
+> +
+> +		horizontal_backporch_byte =
+> +			horizontal_backporch_byte -
+> +			(data_phy_cycles * dsi->lanes + delta) *
+> +			vm->hback_porch /
+> +			(vm->hfront_porch + vm->hback_porch);
+>  	} else {
+> -		if ((vm->hfront_porch + vm->hback_porch) *
+> dsi_tmp_buf_bpp >
+> -		    data_phy_cycles * dsi->lanes + 12) {
+> -			horizontal_frontporch_byte =
+> -				vm->hfront_porch * dsi_tmp_buf_bpp -
+> -				(data_phy_cycles * dsi->lanes + 12) *
+> -				vm->hfront_porch /
+> -				(vm->hfront_porch + vm->hback_porch);
+> -			horizontal_backporch_byte =
+> horizontal_backporch_byte -
+> -				(data_phy_cycles * dsi->lanes + 12) *
+> -				vm->hback_porch /
+> -				(vm->hfront_porch + vm->hback_porch);
+> -		} else {
+> -			DRM_WARN("HFP less than d-phy, FPS will
+> under 60Hz\n");
+> -			horizontal_frontporch_byte =
+> vm->hfront_porch *
+> -						     dsi_tmp_buf_bpp;
+> -		}
+> +		DRM_WARN("HFP + HBP less than d-phy, FPS will under
+> 60Hz\n");
+> +		horizontal_frontporch_byte = vm->hfront_porch *
+> +					     dsi_tmp_buf_bpp;
+>  	}
+>  
+>  	writel(horizontal_sync_active_byte, dsi->regs + DSI_HSA_WC);
 
-If you need to differentiate between the two platforms, IS_ELKHARTLAKE()
-must mean only ELK and IS_JASPERLAKE() must mean only JSP.
+Can you explain how this patch is relevant to
+https://patchwork.kernel.org/patch/11718191/? It was sent out on
+17/Sept while the v2 was merged before that. 
 
-It's non-negotiable. We've made the mistake before, we're not doing it
-again.
+As the v2 patch (https://patchwork.kernel.org/patch/11718191/) breaks
+HDMI (eDP) on my Chromebook Elm (starting from 5.9-rc6), I'm guessing
+that that was a bad patch, and should be reverted? Instead, this v3
+should be applied? Is this correct? 
 
-There are 32 references to IS_ELKHARTLAKE(). It's slightly painful, but
-the alternative is worse.
+If so, can you kindly send a new patch which reverts v2 and applies
+this one, as application of this patch on rc7 fails.
 
+Thanks,
+Bilal
 
-BR,
-Jani.
-
-
->
->>  #define IS_TIGERLAKE(dev_priv)       IS_PLATFORM(dev_priv, INTEL_TIGERLAKE)
->>  #define IS_ROCKETLAKE(dev_priv)      IS_PLATFORM(dev_priv, INTEL_ROCKETLAKE)
->>  #define IS_DG1(dev_priv)        IS_PLATFORM(dev_priv, INTEL_DG1)
->> diff --git a/drivers/gpu/drm/i915/i915_pci.c b/drivers/gpu/drm/i915/i915_pci.c
->> index 366ddfc8df6b..8690b69fcf33 100644
->> --- a/drivers/gpu/drm/i915/i915_pci.c
->> +++ b/drivers/gpu/drm/i915/i915_pci.c
->> @@ -846,6 +846,14 @@ static const struct intel_device_info ehl_info = {
->>        .ppgtt_size = 36,
->>  };
->>
->> +static const struct intel_device_info jsl_info = {
->> +     GEN11_FEATURES,
->> +     PLATFORM(INTEL_JASPERLAKE),
->> +     .require_force_probe = 1,
->> +     .platform_engine_mask = BIT(RCS0) | BIT(BCS0) | BIT(VCS0) | BIT(VECS0),
->> +     .ppgtt_size = 36,
->> +};
->> +
->>  #define GEN12_FEATURES \
->>        GEN11_FEATURES, \
->>        GEN(12), \
->> @@ -985,6 +993,7 @@ static const struct pci_device_id pciidlist[] = {
->>        INTEL_CNL_IDS(&cnl_info),
->>        INTEL_ICL_11_IDS(&icl_info),
->>        INTEL_EHL_IDS(&ehl_info),
->> +     INTEL_JSL_IDS(&jsl_info),
->>        INTEL_TGL_12_IDS(&tgl_info),
->>        INTEL_RKL_IDS(&rkl_info),
->>        {0, 0, 0}
->> diff --git a/drivers/gpu/drm/i915/intel_device_info.c b/drivers/gpu/drm/i915/intel_device_info.c
->> index adc836f15fde..e67cec8fa2aa 100644
->> --- a/drivers/gpu/drm/i915/intel_device_info.c
->> +++ b/drivers/gpu/drm/i915/intel_device_info.c
->> @@ -62,6 +62,7 @@ static const char * const platform_names[] = {
->>        PLATFORM_NAME(CANNONLAKE),
->>        PLATFORM_NAME(ICELAKE),
->>        PLATFORM_NAME(ELKHARTLAKE),
->> +     PLATFORM_NAME(JASPERLAKE),
->>        PLATFORM_NAME(TIGERLAKE),
->>        PLATFORM_NAME(ROCKETLAKE),
->>        PLATFORM_NAME(DG1),
->> diff --git a/drivers/gpu/drm/i915/intel_device_info.h b/drivers/gpu/drm/i915/intel_device_info.h
->> index 6a3d607218aa..d92fa041c700 100644
->> --- a/drivers/gpu/drm/i915/intel_device_info.h
->> +++ b/drivers/gpu/drm/i915/intel_device_info.h
->> @@ -79,6 +79,7 @@ enum intel_platform {
->>        /* gen11 */
->>        INTEL_ICELAKE,
->>        INTEL_ELKHARTLAKE,
->> +     INTEL_JASPERLAKE,
->>        /* gen12 */
->>        INTEL_TIGERLAKE,
->>        INTEL_ROCKETLAKE,
->> diff --git a/include/drm/i915_pciids.h b/include/drm/i915_pciids.h
->> index 7eeecb07c9a1..1b5e09cfa11e 100644
->> --- a/include/drm/i915_pciids.h
->> +++ b/include/drm/i915_pciids.h
->> @@ -579,15 +579,18 @@
->>        INTEL_VGA_DEVICE(0x8A51, info), \
->>        INTEL_VGA_DEVICE(0x8A5D, info)
->>
->> -/* EHL/JSL */
->> +/* EHL */
->>  #define INTEL_EHL_IDS(info) \
->>        INTEL_VGA_DEVICE(0x4500, info), \
->>        INTEL_VGA_DEVICE(0x4571, info), \
->>        INTEL_VGA_DEVICE(0x4551, info), \
->>        INTEL_VGA_DEVICE(0x4541, info), \
->> -     INTEL_VGA_DEVICE(0x4E71, info), \
->>        INTEL_VGA_DEVICE(0x4557, info), \
->> -     INTEL_VGA_DEVICE(0x4555, info), \
->> +     INTEL_VGA_DEVICE(0x4555, info)
->> +
->> +/* JSL */
->> +#define INTEL_JSL_IDS(info) \
->> +     INTEL_VGA_DEVICE(0x4E71, info), \
->>        INTEL_VGA_DEVICE(0x4E61, info), \
->>        INTEL_VGA_DEVICE(0x4E57, info), \
->>        INTEL_VGA_DEVICE(0x4E55, info), \
->
-> --
-> Jani Nikula, Intel Open Source Graphics Center
-
--- 
-Jani Nikula, Intel Open Source Graphics Center
