@@ -2,62 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 596EC27B4AD
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 20:42:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B76027B4C1
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 20:47:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726629AbgI1SmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 14:42:12 -0400
-Received: from mail-io1-f71.google.com ([209.85.166.71]:57256 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726325AbgI1SmL (ORCPT
+        id S1726693AbgI1Sry (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 14:47:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51808 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726590AbgI1Srw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 14:42:11 -0400
-Received: by mail-io1-f71.google.com with SMTP id d21so1254718iow.23
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 11:42:10 -0700 (PDT)
+        Mon, 28 Sep 2020 14:47:52 -0400
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF274C0613CE
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 11:47:52 -0700 (PDT)
+Received: by mail-oi1-x241.google.com with SMTP id 26so2482596ois.5
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 11:47:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Uy1ZmYHkl5eezp3nevvQWT2UA23xSL/opYDEOBgpQN4=;
+        b=eebkfwy/dDOX0Rlv25j+42kAS2Fi3j9bnitcRWet2Q5aW4J0uPRStucw8vUZ+l1zhW
+         qtAYTHeCR2WWqA8W0R2mxMH8YdD0flqCTWeIb7TbB3tyqGCFhshVpcAnbhnpkGii+VSK
+         NK17NmX1ISzNHNyv/6PG2sbJIz47qtgeIuFtOHIKaCxfMYL9ZEYu+h4+rCepY6ZtWFJh
+         K6mzA2mJdTEZ+sdOYYU+kg4/mwJRtCEJCnw3VLOpR4qkl7sjRJGgHBh/fRQvijcIfxao
+         asCPBVfSI6WIr6WMl+AJlnuV7tsmhO0gb4QYg81SHgzjR5VYsVVayvLziizLAXUpFOql
+         Iyyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=USTitjBt7BhgpNWZwLXk38Ti/vZU2Kr0xZT/wNOO+pU=;
-        b=LAk9+mcHLoAGoV795EBSTwvYnJAaQZluZ5zc1utfOuOF5MYBiW3XYuqhpIuxJiPzdA
-         gyCgEHFroiaaqSf2VwJj7q3GqDubdki3+z4k0b7vLRpHBzO9ZRen2awyCFJOuz/bXUv+
-         08eU1MYxvbPGREf52OfhHCn05b+uxVstpa02939rX3MK//h9JZstxprGClDnI8jxUK+h
-         09pMKeQJ/p4GbbPipAqDYp4xo43HGH8JhEX0EHKW9t8uANSlSMQcXwle3Yjzc4xvx/jm
-         vNZqApa7svk4zMtukvYIJPlSJSaGY5zSt9rtCIj7FngCBqfYsnhI3M9OFQuKz0NLw3si
-         hEZQ==
-X-Gm-Message-State: AOAM531KEz82ema1mKbGBEkwB4uBWBGfcP4nmUvb7f690zDWukx0RgMo
-        M5HMu5agJH/Yb6ZuP/6Q0wGL0Izwkc/8A7Jx7NaF18ZZVVhS
-X-Google-Smtp-Source: ABdhPJy+jPyOc19HWBq/6EBaZVHRqolvxOK1YlgdhD/ZPfoMxbwmw1fYgbCWxrcCJUEULrfUE4QjhVhXDmX54Bs+w5gJIXnEGp3l
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Uy1ZmYHkl5eezp3nevvQWT2UA23xSL/opYDEOBgpQN4=;
+        b=PY/ppCyAGzKsGVqIo6xuBaNQmqH80zd8NnJDGXp6Nzn1t0ai1ahf2VA/gCYnxVHiQZ
+         l9ZRScq5BUwZyPJOurqUYiiRal80bb4/Zm9vFJPwVeJpPASbP/Sh4SmU6HWillyk0VV+
+         xZ2AwMXg0xab+ljujeg8KyS+hgvMrhUx29zUjzkcoBgbWFjY8dhBMiNKE95iuSn1HoiN
+         PmreoEKSwwh9VtVnkBMMsD4PmA9Kkat5Wly5Pf/JcMNFVeS/zFbpq02XMiGzRP36qGlK
+         2oivlidvjzUADMs5OoOvs7eP2Vh3DHwPKjaBStJrOGS9DBZbOOHAX73hBqJgIlO52o7w
+         8OVw==
+X-Gm-Message-State: AOAM53272TJpzYI0PeEQ+rQEHPePfmd+xwIT4329i/iVeVkKMdKcsW71
+        hrd42eG8PhGNN/xkc7J3uD5U6FVR9aXY9A==
+X-Google-Smtp-Source: ABdhPJwS2D9oyta/Wy8WhjS8IjtuM1KLnjkUekELwNKURqSpX6PjLMnZB91s0nj853RAVk6BSh+ghA==
+X-Received: by 2002:aca:ac8e:: with SMTP id v136mr151341oie.113.1601318871887;
+        Mon, 28 Sep 2020 11:47:51 -0700 (PDT)
+Received: from builder.lan (99-135-181-32.lightspeed.austtx.sbcglobal.net. [99.135.181.32])
+        by smtp.gmail.com with ESMTPSA id a2sm2270797ooo.26.2020.09.28.11.47.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Sep 2020 11:47:51 -0700 (PDT)
+Date:   Mon, 28 Sep 2020 13:43:22 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Varadarajan Narayanan <varada@codeaurora.org>
+Cc:     agross@kernel.org, robh+dt@kernel.org, mturquette@baylibre.com,
+        sboyd@kernel.org, linus.walleij@linaro.org,
+        catalin.marinas@arm.com, will@kernel.org, p.zabel@pengutronix.de,
+        nsekar@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, sricharan@codeaurora.org
+Subject: Re: [PATCH 5/7] pinctrl: qcom: Add IPQ5018 pinctrl driver
+Message-ID: <20200928184322.GB71055@builder.lan>
+References: <1601270140-4306-1-git-send-email-varada@codeaurora.org>
+ <1601270140-4306-6-git-send-email-varada@codeaurora.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:e0a:: with SMTP id a10mr2461640ilk.113.1601318530184;
- Mon, 28 Sep 2020 11:42:10 -0700 (PDT)
-Date:   Mon, 28 Sep 2020 11:42:10 -0700
-In-Reply-To: <835b294f-2d2b-082b-04dd-819e12095698@kernel.dk>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000029fbe305b06406d0@google.com>
-Subject: Re: general protection fault in io_poll_double_wake (2)
-From:   syzbot <syzbot+81b3883093f772addf6d@syzkaller.appspotmail.com>
-To:     axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1601270140-4306-6-git-send-email-varada@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Mon 28 Sep 00:15 CDT 2020, Varadarajan Narayanan wrote:
+> diff --git a/drivers/pinctrl/qcom/pinctrl-ipq5018.c b/drivers/pinctrl/qcom/pinctrl-ipq5018.c
+[..]
+> +static const struct msm_function ipq5018_functions[] = {
+[..]
+> +	FUNCTION(qspi_clk),
+> +	FUNCTION(qspi_cs),
+> +	FUNCTION(qspi0),
+> +	FUNCTION(qspi1),
+> +	FUNCTION(qspi2),
+> +	FUNCTION(qspi3),
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+Instead of having one function name per pin it typically leads to
+cleaner DT if you group these under the same name (i.e. "qspi")
 
-Reported-and-tested-by: syzbot+81b3883093f772addf6d@syzkaller.appspotmail.com
+Same seems to apply to sdc, wci, xfem at least.
 
-Tested on:
+> +	FUNCTION(reset_out),
+> +	FUNCTION(sdc1_clk),
+> +	FUNCTION(sdc1_cmd),
+> +	FUNCTION(sdc10),
+> +	FUNCTION(sdc11),
+> +	FUNCTION(sdc12),
+> +	FUNCTION(sdc13),
+> +	FUNCTION(wci0),
+> +	FUNCTION(wci1),
+> +	FUNCTION(wci2),
+> +	FUNCTION(wci3),
+> +	FUNCTION(wci4),
+> +	FUNCTION(wci5),
+> +	FUNCTION(wci6),
+> +	FUNCTION(wci7),
+> +	FUNCTION(wsa_swrm),
+> +	FUNCTION(wsi_clk3),
+> +	FUNCTION(wsi_data3),
+> +	FUNCTION(wsis_reset),
+> +	FUNCTION(xfem0),
+> +	FUNCTION(xfem1),
+> +	FUNCTION(xfem2),
+> +	FUNCTION(xfem3),
+> +	FUNCTION(xfem4),
+> +	FUNCTION(xfem5),
+> +	FUNCTION(xfem6),
+> +	FUNCTION(xfem7),
+> +};
+> +static const struct msm_pingroup ipq5018_groups[] = {
+> +	PINGROUP(0, atest_char0, _, qdss_cti_trig_out_a0, wci0, wci0, xfem0,
 
-commit:         fad8e0de io_uring: fix potential ABBA deadlock in ->show_f..
-git tree:       git://git.kernel.dk/linux-block io_uring-5.9
-kernel config:  https://syzkaller.appspot.com/x/.config?x=2daac53dfbd493d7
-dashboard link: https://syzkaller.appspot.com/bug?extid=81b3883093f772addf6d
-compiler:       gcc (GCC) 10.1.0-syz 20200507
+What's up with wci0 being both function 4 and 5?
 
-Note: testing is done by a robot and is best-effort only.
+> +		 _, _, _),
+> +	PINGROUP(1, atest_char1, _, qdss_cti_trig_in_a0, wci1, wci1, xfem1,
+> +		 _, _, _),
+
+Please don't like break these, better blow the line length limit in
+favor or readability.
+
+> +	PINGROUP(2, atest_char2, _, qdss_cti_trig_out_a1, wci2, wci2, xfem2,
+> +		 _, _, _),
+> +	PINGROUP(3, atest_char3, _, qdss_cti_trig_in_a1, wci3, wci3, xfem3,
+> +		 _, _, _),
+
+Regards,
+Bjorn
