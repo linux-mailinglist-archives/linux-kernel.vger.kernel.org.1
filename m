@@ -2,130 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F9A127ADAF
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 14:24:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 957D327ADB1
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 14:26:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726506AbgI1MYf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 08:24:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56462 "EHLO mail.kernel.org"
+        id S1726566AbgI1MZ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 08:25:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57264 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726393AbgI1MYf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 08:24:35 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        id S1726442AbgI1MZ4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 08:25:56 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 299FD2083B;
-        Mon, 28 Sep 2020 12:24:34 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8638C207E8;
+        Mon, 28 Sep 2020 12:25:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601295874;
-        bh=OrXbJTapS7yR5pyQlnzNt+q7HGyOAbUUOE+BlMZaoHY=;
+        s=default; t=1601295955;
+        bh=wVrs+3kytjBZohn7BTL2U88iwkha6UbOsn4DCBgdtK0=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tW6aT/rOuY8uZbX8yCp4mnprPAOrGhqfHQIKXUkIemft/FZYcAFdOyvjnkZlLI3H2
-         jY9U9qGs1PKrD8Q/H75ClDgpuwhA6w2WvAgmcmmk0b/FxHYEozyITu18vXTKPPHuh6
-         Wrd0xxMQvQTrxR+icN7VcqZitBos5D9nGe0ds1ec=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 0E39C400E9; Mon, 28 Sep 2020 09:24:32 -0300 (-03)
-Date:   Mon, 28 Sep 2020 09:24:31 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Ian Rogers <irogers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Stephane Eranian <eranian@google.com>
-Subject: Re: [PATCH] perf test: Fix msan uninitialized use.
-Message-ID: <20200928122431.GD3087422@kernel.org>
-References: <20200923210655.4143682-1-irogers@google.com>
- <CAKwvOd=V6QFoAmYEVNjHKuOyWG8agjzxwan2EmkuZcQjv6qJ0g@mail.gmail.com>
+        b=EB+Oa95iV1npMb0/iwRazczbrwezIYljsx+rtwNmKiGkdgkovVWks8EaIIA4E47NT
+         3SUEdo7tmd/utx0m3zdlztaHKbGlZvBBK9H/iWj/5Q9Ev08hGMAnpkZ0o/FAsTVgpw
+         IHXoBZtGXWQkv6l0/Kv12svaLSlasuMxnuPH5dq8=
+Date:   Mon, 28 Sep 2020 14:26:02 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Shuo A Liu <shuo.a.liu@intel.com>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Yu Wang <yu1.wang@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Zhi Wang <zhi.a.wang@intel.com>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>
+Subject: Re: [PATCH v4 06/17] virt: acrn: Introduce VM management interfaces
+Message-ID: <20200928122602.GB682772@kroah.com>
+References: <20200922114311.38804-1-shuo.a.liu@intel.com>
+ <20200922114311.38804-7-shuo.a.liu@intel.com>
+ <20200927104702.GE88650@kroah.com>
+ <20200928035030.GD1057@shuo-intel.sh.intel.com>
+ <20200928052516.GD767987@kroah.com>
+ <20200928062934.GF1057@shuo-intel.sh.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAKwvOd=V6QFoAmYEVNjHKuOyWG8agjzxwan2EmkuZcQjv6qJ0g@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <20200928062934.GF1057@shuo-intel.sh.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Sep 23, 2020 at 04:37:08PM -0700, Nick Desaulniers escreveu:
-> On Wed, Sep 23, 2020 at 2:07 PM 'Ian Rogers' via Clang Built Linux
-> <clang-built-linux@googlegroups.com> wrote:
-> >
-> > Ensure 'st' is initialized before an error branch is taken.
-> > Fixes test "67: Parse and process metrics" with LLVM msan:
-> > ==6757==WARNING: MemorySanitizer: use-of-uninitialized-value
-> >     #0 0x5570edae947d in rblist__exit tools/perf/util/rblist.c:114:2
-> >     #1 0x5570edb1c6e8 in runtime_stat__exit tools/perf/util/stat-shadow.c:141:2
-> >     #2 0x5570ed92cfae in __compute_metric tools/perf/tests/parse-metric.c:187:2
-> >     #3 0x5570ed92cb74 in compute_metric tools/perf/tests/parse-metric.c:196:9
-> >     #4 0x5570ed92c6d8 in test_recursion_fail tools/perf/tests/parse-metric.c:318:2
-> >     #5 0x5570ed92b8c8 in test__parse_metric tools/perf/tests/parse-metric.c:356:2
-> >     #6 0x5570ed8de8c1 in run_test tools/perf/tests/builtin-test.c:410:9
-> >     #7 0x5570ed8ddadf in test_and_print tools/perf/tests/builtin-test.c:440:9
-> >     #8 0x5570ed8dca04 in __cmd_test tools/perf/tests/builtin-test.c:661:4
-> >     #9 0x5570ed8dbc07 in cmd_test tools/perf/tests/builtin-test.c:807:9
-> >     #10 0x5570ed7326cc in run_builtin tools/perf/perf.c:313:11
-> >     #11 0x5570ed731639 in handle_internal_command tools/perf/perf.c:365:8
-> >     #12 0x5570ed7323cd in run_argv tools/perf/perf.c:409:2
-> >     #13 0x5570ed731076 in main tools/perf/perf.c:539:3
-> >
-> > Fixes: commit f5a56570a3f2 ("perf test: Fix memory leaks in parse-metric test")
-> > Signed-off-by: Ian Rogers <irogers@google.com>
+On Mon, Sep 28, 2020 at 02:29:34PM +0800, Shuo A Liu wrote:
+> On Mon 28.Sep'20 at  7:25:16 +0200, Greg Kroah-Hartman wrote:
+> > On Mon, Sep 28, 2020 at 11:50:30AM +0800, Shuo A Liu wrote:
+> > > > > +	write_lock_bh(&acrn_vm_list_lock);
+> > > > > +	list_add(&vm->list, &acrn_vm_list);
+> > > > > +	write_unlock_bh(&acrn_vm_list_lock);
+> > > >
+> > > > Why are the _bh() variants being used here?
+> > > >
+> > > > You are only accessing this list from userspace context in this patch.
+> > > >
+> > > > Heck, you aren't even reading from the list, only writing to it...
+> > > 
+> > > acrn_vm_list is read in a tasklet which dispatch I/O requests and is wrote
+> > > in VM creation ioctl. Use the rwlock mechanism to protect it.
+> > > The reading operation is introduced in the following patches of this
+> > > series. So i keep the lock type at the moment of introduction.
+> > 
+> > Ok, but think about someone trying to review this code.  Does this lock
+> > actually make sense here?  No, it does not.  How am I supposed to know
+> > to look at future patches to determine that it changes location and
+> > usage to require this?
 > 
-> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+> OK. May i know how to handle such kind of code submission? Or which way
+> following do you prefer?
+>  1) Use a mutex lock here, then change it to rwlock in a later patch
+>     of this series.
 
-Thanks, applied.
+Wouldn't this make more sense if you had to read these one after
+another?
 
-- Arnaldo
+>  2) Add more comments in changelog about the lock. (Now, there is
+>     comment around the acrn_vm_list_lock)
 
- 
-> Orthogonal:
-> The case where metricgroup__parse_groups_test() can fail in
-> __compute_metric() also looks curious. Should &metric_events be passed
-> to metricgroup__rblist_exit() in that case?
+It's hard to verify a comment's statement without digging through other
+patches in the series, right?  You want the reviewer to just trust you?
+:)
+
+Again, what would _YOU_ want to see if you had to review this?
+
+> > That's just not fair, would you want to review something like this?
+> > 
+> > And a HUGE meta-comment, again, why am I the only one reviewing this
+> > stuff?  Why do you have a ton of Intel people on the Cc: yet it is, once
+> > again, my job to do this?
 > 
-> > ---
-> >  tools/perf/tests/parse-metric.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/tools/perf/tests/parse-metric.c b/tools/perf/tests/parse-metric.c
-> > index aea4f970fccc..7c1bde01cb50 100644
-> > --- a/tools/perf/tests/parse-metric.c
-> > +++ b/tools/perf/tests/parse-metric.c
-> > @@ -157,6 +157,7 @@ static int __compute_metric(const char *name, struct value *vals,
-> >         }
-> >
-> >         perf_evlist__set_maps(&evlist->core, cpus, NULL);
-> > +       runtime_stat__init(&st);
-> >
-> >         /* Parse the metric into metric_events list. */
-> >         err = metricgroup__parse_groups_test(evlist, &map, name,
-> > @@ -170,7 +171,6 @@ static int __compute_metric(const char *name, struct value *vals,
-> >                 goto out;
-> >
-> >         /* Load the runtime stats with given numbers for events. */
-> > -       runtime_stat__init(&st);
-> >         load_runtime_stat(&st, evlist, vals);
-> >
-> >         /* And execute the metric */
-> > --
-> > 2.28.0.681.g6f77f65b4e-goog
-> >
-> > --
-> > You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
-> > To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
-> > To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/20200923210655.4143682-1-irogers%40google.com.
-> 
-> 
-> 
-> -- 
-> Thanks,
-> ~Nick Desaulniers
+> The patchset has been reviewed in Intel's internal mailist several
+> rounds and got Reviewed-by: before send out. That's why i Cced many
+> Intel people as well.
 
--- 
+Then why didn't any of those intel people on the cc: actually review it
+after you have sent it out?  Why is it only me?  Do I need to wait
+longer for them to get to this?  I'll gladly do so next time...
 
-- Arnaldo
+> This patchset is all about a common driver for the ACRN hypervisor
+> support. I put the code in drivers/virt/ and found you are one of the
+> maintainer of vboxguest driver which is in the same subdirectory. I
+> thought you should be the right person to be Cced when i submitted this
+> series.
+
+I am, I'm not complaining about that.  I'm complaining that it seems to
+be _only_ me reviewing this here, and not any of the people you are cc:ing
+from intel.  Most of those people should be giving you this same type of
+review comments and not forcing an external person to do so, right?
+
+> Certainly, any comments are welcome. And really appreciate your review
+> and help. I have little experience to submit a new driver to the
+> community, my apologies if thing goes wrong.
+
+You didn't do anything wrong, I'm arguing about the larger meta-issue I
+have right now with Intel and the lack of reviews that seems to happen
+from other Intel people on their co-workers patches.
+
+Anyway, you are doing fine, it's an iterative process, hopefully you can
+also review other people's patches in this area that are being posted as
+well.
+
+thanks,
+
+greg k-h
