@@ -2,114 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 280FF27B714
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 23:36:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCBB627B716
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 23:36:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726979AbgI1Vgf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 17:36:35 -0400
-Received: from mga02.intel.com ([134.134.136.20]:62822 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726959AbgI1Vge (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 17:36:34 -0400
-IronPort-SDR: qQqHZTuE+Mh8J5CZiLIolE1apfst99fEJvZYTHcRNoZ9Fg7OknZritWrmZ1r9pB4BsydVdCELQ
- 69FWBiJTjEGA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9758"; a="149726779"
-X-IronPort-AV: E=Sophos;i="5.77,315,1596524400"; 
-   d="scan'208";a="149726779"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 14:36:34 -0700
-IronPort-SDR: QixY2KCI8RuTaNZ15Zir8oirwhfamYYRxgCHUV/j7rw7sixYiquZlnGAPyr/EaVxinU2Cw6/Aq
- eMx/bicyDm6w==
-X-IronPort-AV: E=Sophos;i="5.77,315,1596524400"; 
-   d="scan'208";a="457000991"
-Received: from jlasecki-mobl2.ger.corp.intel.com (HELO localhost) ([10.252.49.78])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 14:36:27 -0700
-Date:   Tue, 29 Sep 2020 00:36:25 +0300
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     "H.J. Lu" <hjl.tools@gmail.com>
-Cc:     "Yu, Yu-cheng" <yu-cheng.yu@intel.com>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        linux-sgx@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Cedric Xing <cedric.xing@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        andriy.shevchenko@linux.intel.com, asapek@google.com,
-        Borislav Petkov <bp@alien8.de>, chenalexchen@google.com,
-        conradparker@google.com, cyhanish@google.com,
-        Dave Hansen <dave.hansen@intel.com>,
-        "Huang, Haitao" <haitao.huang@intel.com>, josh@joshtriplett.org,
-        kai.huang@intel.com, kai.svahn@intel.com, kmoy@google.com,
-        Christian Ludloff <ludloff@google.com>,
-        Andy Lutomirski <luto@kernel.org>, nhorman@redhat.com,
-        npmccallum@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
-        Thomas Gleixner <tglx@linutronix.de>, yaozhangx@google.com
-Subject: Re: [PATCH v38 21/24] x86/vdso: Implement a vDSO for Intel SGX
- enclave call
-Message-ID: <20200928213625.GC2705@linux.intel.com>
-References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
- <20200915112842.897265-22-jarkko.sakkinen@linux.intel.com>
- <721ca14e-21df-3df1-7bef-0b00d0ff90c3@citrix.com>
- <c1b0019d-d3cb-cc62-f47f-90c2550c22a4@intel.com>
- <CAMe9rOrVhQr9ad_4en2D5GTTqDsJGXqszBmscgenn_87mDxvUA@mail.gmail.com>
+        id S1726997AbgI1Vgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 17:36:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49576 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726959AbgI1Vgn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 17:36:43 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 175BCC061755;
+        Mon, 28 Sep 2020 14:36:43 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id d6so2389139pfn.9;
+        Mon, 28 Sep 2020 14:36:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WHiQmkkK2NJuMpdF84U1p8BgO8doyJ+ubIf1vtzVkMU=;
+        b=ZvCZ0nRk+mPGK3HxzkDtiCXgRQS+HZ9mDv5od0kf5cW4cXXEytUF1TNSDrg/0qiHAJ
+         gOaBO0Z9f3ZFMTVaSttSCv3jRpYCdU8sEwjJH+RAKI1I0UXWNDTLi21rlGwsHqWmQqPP
+         GUDLXrexJhPthsBZaKjZ1WcemJMT6g1a0NgL4hZcmzU0pJvxh4V0G08LiAziz1mlXip7
+         zJnzSeVeHCBA3a5pa2TzbkAivXN6I08OvquXGR3ApOa5qV2BIGHFuN3d78DDG0hih5ZY
+         m6kDJWVMn77C6PXj84Qd0ij2w5Mm/cwtVQ54gVsUa3C/IwqbsMLOigqSXkfoT2AQTll2
+         RXtA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WHiQmkkK2NJuMpdF84U1p8BgO8doyJ+ubIf1vtzVkMU=;
+        b=cB+qxVtrnq+u7CgDJkoMvZf67nsK/fa3obtzVxCnXy6N6tWIuA9VDAAVi/j69Q+fdq
+         d0X8oAo5erHEqRidXU2q5gszrqNp5EBV73UNgTiGOT3RxzCJCVDuCmlS/t457E45qzkk
+         WPIfda0i0FcUa6t8Dfm8FwJygLSfhZ+4f9XYZEdp5MfZRLWdJQU6I/ZYyC0gL83enB9L
+         WKHydRBRxsTHATYmzKam1B/ASwNcX6qZdMNpcjGmpEWAzIcRi6jin2kZRhnUdHFtNR8a
+         yVq1iVL97N8Lzj0O7Sc1RsWpiWxWsyV0NRVyJv8MzqAF5iUilEsllsD585FEVvk4rR3/
+         Aj7w==
+X-Gm-Message-State: AOAM532aMBJ0PYdIt0aR2LbKN7nC3BpyRz061KjbaymHj1vAJT9QU9Jc
+        ac6YnZL0yRRiGDHIr3G1NFA=
+X-Google-Smtp-Source: ABdhPJxdu2bPX+w7b00QUlcN/F3zpKQph9sX+X/W3d3IiEF5PpxH0ceFbZOkwxqhCiSFkNFLgbC4fA==
+X-Received: by 2002:a63:f74a:: with SMTP id f10mr792980pgk.263.1601329002652;
+        Mon, 28 Sep 2020 14:36:42 -0700 (PDT)
+Received: from jacob-builder.jf.intel.com (jfdmzpr04-ext.jf.intel.com. [134.134.137.73])
+        by smtp.gmail.com with ESMTPSA id l11sm2220864pjf.17.2020.09.28.14.36.41
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 28 Sep 2020 14:36:41 -0700 (PDT)
+From:   Jacob Pan <jacob.pan.linux@gmail.com>
+X-Google-Original-From: Jacob Pan <jacob.jun.pan@linux.intel.com>
+To:     iommu@lists.linux-foundation.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        "Lu Baolu" <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Jonathan Corbet <corbet@lwn.net>
+Cc:     linux-api@vger.kernel.org,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Yi Liu <yi.l.liu@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>, Wu Hao <hao.wu@intel.com>,
+        Yi Sun <yi.y.sun@intel.com>, Dave Jiang <dave.jiang@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>
+Subject: [PATCH v3 00/14] IOASID extensions for guest SVA
+Date:   Mon, 28 Sep 2020 14:38:27 -0700
+Message-Id: <1601329121-36979-1-git-send-email-jacob.jun.pan@linux.intel.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMe9rOrVhQr9ad_4en2D5GTTqDsJGXqszBmscgenn_87mDxvUA@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 08:54:01AM -0700, H.J. Lu wrote:
-> On Mon, Sep 28, 2020 at 8:43 AM Yu, Yu-cheng <yu-cheng.yu@intel.com> wrote:
-> >
-> > On 9/25/2020 11:23 AM, Andrew Cooper wrote:
-> > > On 15/09/2020 12:28, Jarkko Sakkinen wrote:
-> > >> diff --git a/arch/x86/entry/vdso/vsgx_enter_enclave.S b/arch/x86/entry/vdso/vsgx_enter_enclave.S
-> > >> new file mode 100644
-> > >> index 000000000000..adbd59d41517
-> > >> --- /dev/null
-> > >> +++ b/arch/x86/entry/vdso/vsgx_enter_enclave.S
-> > >> @@ -0,0 +1,157 @@
-> > >> +SYM_FUNC_START(__vdso_sgx_enter_enclave)
-> > >> <snip>
-> > >> +.Lretpoline:
-> > >> +    call    2f
-> > >> +1:  pause
-> > >> +    lfence
-> > >> +    jmp     1b
-> > >> +2:  mov     %rax, (%rsp)
-> > >> +    ret
-> > >
-> > > I hate to throw further spanners in the work, but this is not compatible
-> > > with CET, and the user shadow stack work in progress.
-> >
-> > Hi Jarkko,
-> >
-> > These 1: and 2: targets are reached only from these few lines?  If they
-> > are direct call/jmp targets, I think it is OK in terms of CET.  If they
-> > are reached from an instruction like "jmp *%rax", then we need to put in
-> > an "endbr64".
-> >
-> 
-> This also isn't compatible with shadow stack.
-> 
-> -- 
-> H.J.
+IOASID was introduced in v5.5 as a generic kernel allocator service for
+both PCIe Process Address Space ID (PASID) and ARM SMMU's Sub Stream
+ID. In addition to basic ID allocation, ioasid_set was defined as a
+token that is shared by a group of IOASIDs. This set token can be used
+for permission checking, but lack of some features to address the
+following needs by guest Shared Virtual Address (SVA).
+- Manage IOASIDs by group, group ownership, quota, etc.
+- State synchronization among IOASID users
+- Non-identity guest-host IOASID mapping
+- Lifecycle management across many users
 
-I have the now full picture of the problem thanks to Andrew's response
-[1]. And Dave Hansen just explained me in detail the context and
-background with [2]. So I'd guess this will get sorted out soon.
+This patchset introduces the following extensions as solutions to the
+problems above.
+- Redefine and extend IOASID set such that IOASIDs can be managed by groups.
+- Add notifications for IOASID state synchronization
+- Add reference counting for life cycle alignment among users
+- Support ioasid_set private IDs, which can be used as guest IOASIDs
+Please refer to Documentation/ioasid.rst in enclosed patch 1/9 for more
+details.
 
-If you don't mind I'll CC you to this commit when I send the next
-version?
+This patchset only included VT-d driver as users of some of the new APIs.
+VFIO and KVM patches are coming up to fully utilize the APIs introduced
+here.
 
-[1] https://lkml.org/lkml/2020/9/28/1153
-[2] https://lkml.org/lkml/2020/9/25/1122
+You can find this series at:
+https://github.com/jacobpan/linux.git ioasid_v3
+(VFIO and KVM patches will be available at this branch when published.)
 
-/Jarkko
+This work is a result of collaboration with many people:
+Liu, Yi L <yi.l.liu@intel.com>
+Wu Hao <hao.wu@intel.com>
+Ashok Raj <ashok.raj@intel.com>
+Kevin Tian <kevin.tian@intel.com>
+
+Thanks,
+
+Jacob
+
+Changelog:
+
+V3:
+- Use consistent ioasid_set_ prefix for ioasid_set level APIs
+- Make SPID and private detach/attach APIs symmetric
+- Use the same ioasid_put semantics as Jean-Phillippe IOASID reference patch
+- Take away the public ioasid_notify() function, notifications are now emitted
+  by IOASID core as a result of certain IOASID APIs
+- Partition into finer incremental patches
+- Miscellaneous cleanup, locking, exception handling fixes based on v2 reviews
+
+V2:
+- Redesigned ioasid_set APIs, removed set ID
+- Added set private ID (SPID) for guest PASID usage.
+- Add per ioasid_set notification and priority support.
+- Back to use spinlocks and atomic notifications.
+- Added async work in VT-d driver to perform teardown outside atomic context
+
+Jacob Pan (14):
+  docs: Document IO Address Space ID (IOASID) APIs
+  iommu/ioasid: Rename ioasid_set_data()
+  iommu/ioasid: Add a separate function for detach data
+  iommu/ioasid: Support setting system-wide capacity
+  iommu/ioasid: Redefine IOASID set and allocation APIs
+  iommu/ioasid: Introduce API to adjust the quota of an ioasid_set
+  iommu/ioasid: Add an iterator API for ioasid_set
+  iommu/ioasid: Add reference couting functions
+  iommu/ioasid: Introduce ioasid_set private ID
+  iommu/ioasid: Introduce notification APIs
+  iommu/ioasid: Support mm type ioasid_set notifications
+  iommu/vt-d: Remove mm reference for guest SVA
+  iommu/vt-d: Listen to IOASID notifications
+  iommu/vt-d: Store guest PASID during bind
+
+ Documentation/driver-api/ioasid.rst | 648 ++++++++++++++++++++++++++
+ drivers/iommu/intel/iommu.c         |  29 +-
+ drivers/iommu/intel/pasid.h         |   1 +
+ drivers/iommu/intel/svm.c           | 132 +++++-
+ drivers/iommu/ioasid.c              | 890 ++++++++++++++++++++++++++++++++++--
+ include/linux/intel-iommu.h         |   2 +
+ include/linux/ioasid.h              | 197 +++++++-
+ 7 files changed, 1830 insertions(+), 69 deletions(-)
+ create mode 100644 Documentation/driver-api/ioasid.rst
+
+-- 
+2.7.4
+
