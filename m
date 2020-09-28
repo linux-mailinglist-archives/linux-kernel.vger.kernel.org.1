@@ -2,150 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDFB927AC22
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 12:43:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C571827AC26
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 12:43:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726762AbgI1KnR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 06:43:17 -0400
-Received: from foss.arm.com ([217.140.110.172]:49148 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726667AbgI1KnR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 06:43:17 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7427C1063;
-        Mon, 28 Sep 2020 03:43:16 -0700 (PDT)
-Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E33693F6CF;
-        Mon, 28 Sep 2020 03:43:14 -0700 (PDT)
-Date:   Mon, 28 Sep 2020 11:43:09 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Dexuan Cui <decui@microsoft.com>
-Cc:     wei.liu@kernel.org, kys@microsoft.com, haiyangz@microsoft.com,
-        sthemmin@microsoft.com, bhelgaas@google.com,
-        linux-hyperv@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mikelley@microsoft.com,
-        jakeo@microsoft.com, maz@kernel.org
-Subject: Re: [PATCH v2] PCI: hv: Fix hibernation in case interrupts are not
- re-created
-Message-ID: <20200928104309.GA12565@e121166-lin.cambridge.arm.com>
-References: <20200908231759.13336-1-decui@microsoft.com>
+        id S1726793AbgI1KnW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 06:43:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33304 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726667AbgI1KnT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 06:43:19 -0400
+Received: from mout-p-201.mailbox.org (mout-p-201.mailbox.org [IPv6:2001:67c:2050::465:201])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6366AC061755
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 03:43:19 -0700 (PDT)
+Received: from smtp2.mailbox.org (smtp2.mailbox.org [80.241.60.241])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mout-p-201.mailbox.org (Postfix) with ESMTPS id 4C0JyX4lcYzQlLc;
+        Mon, 28 Sep 2020 12:43:16 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at heinlein-support.de
+Received: from smtp2.mailbox.org ([80.241.60.241])
+        by spamfilter01.heinlein-hosting.de (spamfilter01.heinlein-hosting.de [80.241.56.115]) (amavisd-new, port 10030)
+        with ESMTP id 3Z61HEDtY_hU; Mon, 28 Sep 2020 12:43:13 +0200 (CEST)
+Date:   Mon, 28 Sep 2020 12:43:11 +0200
+From:   Hagen Paul Pfeifer <hagen@jauu.net>
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>
+Subject: Re: perf script, libperf: python binding bug (bytearrays vs. strings)
+Message-ID: <20200928104311.GA412466@laniakea>
+References: <20200927074312.GA3664097@laniakea>
+ <20200928100808.GA3517742@krava>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200908231759.13336-1-decui@microsoft.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200928100808.GA3517742@krava>
+X-Key-Id: 98350C22
+X-Key-Fingerprint: 490F 557B 6C48 6D7E 5706 2EA2 4A22 8D45 9835 0C22
+X-GPG-Key: gpg --recv-keys --keyserver wwwkeys.eu.pgp.net 98350C22
+X-MBO-SPAM-Probability: 
+X-Rspamd-Score: -2.82 / 15.00 / 15.00
+X-Rspamd-Queue-Id: 88079170E
+X-Rspamd-UID: c898f5
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[+MarcZ - this patch needs IRQ maintainers vetting]
+* Jiri Olsa | 2020-09-28 12:08:08 [+0200]:
 
-On Tue, Sep 08, 2020 at 04:17:59PM -0700, Dexuan Cui wrote:
-> Hyper-V doesn't trap and emulate the accesses to the MSI/MSI-X registers,
-> and we must use hv_compose_msi_msg() to ask Hyper-V to create the IOMMU
-> Interrupt Remapping Table Entries. This is not an issue for a lot of
-> PCI device drivers (e.g. NVMe driver, Mellanox NIC drivers), which
-> destroy and re-create the interrupts across hibernation, so
-> hv_compose_msi_msg() is called automatically. However, some other PCI
-> device drivers (e.g. the Nvidia driver) may not destroy and re-create
-> the interrupts across hibernation, so hv_pci_resume() has to call
-> hv_compose_msi_msg(), otherwise the PCI device drivers can no longer
-> receive MSI/MSI-X interrupts after hibernation.
+>patch below fixes it for me, but seems strange this was
+>working till now.. maybe you're the only one using this
+>with python3 ;-)
 
-This looks like drivers bugs and I don't think the HV controller
-driver is where you should fix them. Regardless, this commit log
-does not provide the information that it should.
+and I thought python2 is obsolete and not maintained anymore ... ;-)
+Anyway, the patch fixed everything: no more garbage for Python2 and Python3
+as well as no bytearray type Python3!
 
-> Fixes: ac82fc832708 ("PCI: hv: Add hibernation support")
-> Signed-off-by: Dexuan Cui <decui@microsoft.com>
-> Reviewed-by: Jake Oshins <jakeo@microsoft.com>
+Tested-by: Hagen Paul Pfeifer <hagen@jauu.net>
+
+Thank you Jiri!
+
+Probably this patch should be applied on stable too!? Not sure when the 
+problem was introduced.
+
+Hagen
+
+>jirka
+>
+>
+>---
+>diff --git a/tools/perf/util/print_binary.c b/tools/perf/util/print_binary.c
+>index 599a1543871d..13fdc51c61d9 100644
+>--- a/tools/perf/util/print_binary.c
+>+++ b/tools/perf/util/print_binary.c
+>@@ -50,7 +50,7 @@ int is_printable_array(char *p, unsigned int len)
 > 
-> ---
+> 	len--;
 > 
-> Changes in v2:
->     Fixed a typo in the comment in hv_irq_unmask. Thanks to Michael!
->     Added Jake's Reviewed-by.
-> 
->  drivers/pci/controller/pci-hyperv.c | 44 +++++++++++++++++++++++++++++
->  1 file changed, 44 insertions(+)
-> 
-> diff --git a/drivers/pci/controller/pci-hyperv.c b/drivers/pci/controller/pci-hyperv.c
-> index fc4c3a15e570..dd21afb5d62b 100644
-> --- a/drivers/pci/controller/pci-hyperv.c
-> +++ b/drivers/pci/controller/pci-hyperv.c
-> @@ -1211,6 +1211,21 @@ static void hv_irq_unmask(struct irq_data *data)
->  	pbus = pdev->bus;
->  	hbus = container_of(pbus->sysdata, struct hv_pcibus_device, sysdata);
->  
-> +	if (hbus->state == hv_pcibus_removing) {
-> +		/*
-> +		 * During hibernation, when a CPU is offlined, the kernel tries
-> +		 * to move the interrupt to the remaining CPUs that haven't
-> +		 * been offlined yet. In this case, the below hv_do_hypercall()
-> +		 * always fails since the vmbus channel has been closed, so we
-> +		 * should not call the hypercall, but we still need
-> +		 * pci_msi_unmask_irq() to reset the mask bit in desc->masked:
-> +		 * see cpu_disable_common() -> fixup_irqs() ->
-> +		 * irq_migrate_all_off_this_cpu() -> migrate_one_irq().
-> +		 */
-> +		pci_msi_unmask_irq(data);
-
-This is not appropriate - it looks like a plaster to paper over an
-issue with hyper-V hibernation code sequence. Fix that issue instead
-of papering over it here.
-
-Thanks,
-Lorenzo
-
-> +		return;
-> +	}
-> +
->  	spin_lock_irqsave(&hbus->retarget_msi_interrupt_lock, flags);
->  
->  	params = &hbus->retarget_msi_interrupt_params;
-> @@ -3372,6 +3387,33 @@ static int hv_pci_suspend(struct hv_device *hdev)
->  	return 0;
->  }
->  
-> +static int hv_pci_restore_msi_msg(struct pci_dev *pdev, void *arg)
-> +{
-> +	struct msi_desc *entry;
-> +	struct irq_data *irq_data;
-> +
-> +	for_each_pci_msi_entry(entry, pdev) {
-> +		irq_data = irq_get_irq_data(entry->irq);
-> +		if (WARN_ON_ONCE(!irq_data))
-> +			return -EINVAL;
-> +
-> +		hv_compose_msi_msg(irq_data, &entry->msg);
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +/*
-> + * Upon resume, pci_restore_msi_state() -> ... ->  __pci_write_msi_msg()
-> + * re-writes the MSI/MSI-X registers, but since Hyper-V doesn't trap and
-> + * emulate the accesses, we have to call hv_compose_msi_msg() to ask
-> + * Hyper-V to re-create the IOMMU Interrupt Remapping Table Entries.
-> + */
-> +static void hv_pci_restore_msi_state(struct hv_pcibus_device *hbus)
-> +{
-> +	pci_walk_bus(hbus->pci_bus, hv_pci_restore_msi_msg, NULL);
-> +}
-> +
->  static int hv_pci_resume(struct hv_device *hdev)
->  {
->  	struct hv_pcibus_device *hbus = hv_get_drvdata(hdev);
-> @@ -3405,6 +3447,8 @@ static int hv_pci_resume(struct hv_device *hdev)
->  
->  	prepopulate_bars(hbus);
->  
-> +	hv_pci_restore_msi_state(hbus);
-> +
->  	hbus->state = hv_pcibus_installed;
->  	return 0;
->  out:
-> -- 
-> 2.19.1
-> 
+>-	for (i = 0; i < len; i++) {
+>+	for (i = 0; i < len && p[i]; i++) {
+> 		if (!isprint(p[i]) && !isspace(p[i]))
+> 			return 0;
+> 	}
+>
