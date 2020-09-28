@@ -2,192 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62A6227B785
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 01:13:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 067B427B7FD
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 01:21:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726444AbgI1XM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 19:12:57 -0400
-Received: from m42-4.mailgun.net ([69.72.42.4]:57722 "EHLO m42-4.mailgun.net"
+        id S1727028AbgI1XV1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 19:21:27 -0400
+Received: from mga09.intel.com ([134.134.136.24]:56722 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725272AbgI1XM5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 19:12:57 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1601334775; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=Jp2gsWi6s/o74F0XHkp2qi6LFuommnCdwk87KdIJ9Kw=; b=rqPpHxG04tmOsCehzwxEdUxN2yMn22jl2QArWFi1CQaS6B8dizeAu7aPHGxTRWb9HJyoeFQ2
- VHrSC4DVJzCsAAcKbH84wHylLkPZPzbi6OLaCYZodVyoQAMlEkleiUG03R6/G590W59AOPT/
- P3jzEaegSxFkwY535jaeWkuTaSo=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 5f7261122892e2043e87ad50 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 28 Sep 2020 22:17:54
- GMT
-Sender: rishabhb=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id BB24AC433F1; Mon, 28 Sep 2020 22:17:53 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from rishabhb-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: rishabhb)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id DA85BC433C8;
-        Mon, 28 Sep 2020 22:17:52 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org DA85BC433C8
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=rishabhb@codeaurora.org
-From:   Rishabh Bhatnagar <rishabhb@codeaurora.org>
-To:     linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bjorn.andersson@linaro.org
-Cc:     tsoni@codeaurora.org, psodagud@codeaurora.org,
-        sidgup@codeaurora.org, Rishabh Bhatnagar <rishabhb@codeaurora.org>
-Subject: [PATCH v6 3/3] remoteproc: Change default dump configuration to "disabled"
-Date:   Mon, 28 Sep 2020 15:17:36 -0700
-Message-Id: <1601331456-20432-4-git-send-email-rishabhb@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1601331456-20432-1-git-send-email-rishabhb@codeaurora.org>
-References: <1601331456-20432-1-git-send-email-rishabhb@codeaurora.org>
+        id S1726369AbgI1XV0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 19:21:26 -0400
+IronPort-SDR: R6ZyytEYsP6S6/akTX2Y4y0SBJFCfXukB8H7SA6wu5m50R3ERIct5kTLqJLm/4gZvEuX6ZWUdY
+ Pk/aUycKZAug==
+X-IronPort-AV: E=McAfee;i="6000,8403,9758"; a="162952863"
+X-IronPort-AV: E=Sophos;i="5.77,315,1596524400"; 
+   d="scan'208";a="162952863"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 15:18:12 -0700
+IronPort-SDR: qMOj+X5nKrspAh+/14/4wV7RfusnOHDvdembNrqsSWtTGVzM7UeswoCSugYKDxCHxuboFyF4Nv
+ oVkt6Z2CdjpA==
+X-IronPort-AV: E=Sophos;i="5.77,315,1596524400"; 
+   d="scan'208";a="514437969"
+Received: from romeroro-mobl.amr.corp.intel.com (HELO [10.209.119.91]) ([10.209.119.91])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 15:18:10 -0700
+Subject: Re: [PATCH v38 21/24] x86/vdso: Implement a vDSO for Intel SGX
+ enclave call
+To:     "H.J. Lu" <hjl.tools@gmail.com>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        linux-sgx@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Cedric Xing <cedric.xing@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        asapek@google.com, Borislav Petkov <bp@alien8.de>,
+        chenalexchen@google.com, Conrad Parker <conradparker@google.com>,
+        cyhanish@google.com, "Huang, Haitao" <haitao.huang@intel.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        "Huang, Kai" <kai.huang@intel.com>,
+        "Svahn, Kai" <kai.svahn@intel.com>, Keith Moyer <kmoy@google.com>,
+        Christian Ludloff <ludloff@google.com>,
+        Neil Horman <nhorman@redhat.com>,
+        Nathaniel McCallum <npmccallum@redhat.com>,
+        Patrick Uiterwijk <puiterwijk@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>, yaozhangx@google.com,
+        Yu-cheng Yu <yu-cheng.yu@intel.com>
+References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
+ <20200915112842.897265-22-jarkko.sakkinen@linux.intel.com>
+ <721ca14e-21df-3df1-7bef-0b00d0ff90c3@citrix.com>
+ <20200928005842.GC6704@linux.intel.com>
+ <85bc15d5-93cd-e332-ae9a-1e1e66e1181d@citrix.com>
+ <CAMe9rOpzXW0cSD=9E7drGEHH=pcm_NqvPiaR0pBJzYLeAt0_3g@mail.gmail.com>
+ <CALCETrU4Rhc0fwzzKLSUgan2YmSovxVFYOZEmFnBHC4DbZ5RfQ@mail.gmail.com>
+ <20200928215635.GF2705@linux.intel.com>
+ <CAMe9rOoyxtf_kUCdb-TN+NmZsQNmFY8NLMObSdCB5bBVq1x+cQ@mail.gmail.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <24b9f250-0f75-1a7d-688d-787ca53b388c@intel.com>
+Date:   Mon, 28 Sep 2020 15:18:15 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <CAMe9rOoyxtf_kUCdb-TN+NmZsQNmFY8NLMObSdCB5bBVq1x+cQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Disable the coredump collection by default as doing so makes sense
-for production devices. Also rename the "default" configuration
-option to "enabled" to avoid confusion.
+On 9/28/20 3:06 PM, H.J. Lu wrote:
+>> I'm open to do either solution. My thinking was to initially do things
+>> vsgx.S local (i.e. consider ALTERNATIVE post upstreaming) and use the
+>> above solution but I'm also fine doing ALTERNATIVE. Dave kindly briefed
+>> on details how that thing works and it should be perfectly usable for
+>> our use case.
+>>
+> Since SHSTK and IBT are enabled per process, not the whole machine,
+> are you going to patch vDSO on a per-process basis?
 
-Signed-off-by: Rishabh Bhatnagar <rishabhb@codeaurora.org>
----
- Documentation/ABI/testing/sysfs-class-remoteproc | 10 ++++++----
- drivers/remoteproc/remoteproc_coredump.c         |  6 +++---
- drivers/remoteproc/remoteproc_sysfs.c            | 10 +++++-----
- include/linux/remoteproc.h                       |  8 ++++----
- 4 files changed, 18 insertions(+), 16 deletions(-)
+No.
 
-diff --git a/Documentation/ABI/testing/sysfs-class-remoteproc b/Documentation/ABI/testing/sysfs-class-remoteproc
-index 7368b50..dec1686 100644
---- a/Documentation/ABI/testing/sysfs-class-remoteproc
-+++ b/Documentation/ABI/testing/sysfs-class-remoteproc
-@@ -67,11 +67,14 @@ Description:	Remote processor coredump configuration
- 		Reports the coredump configuration of the remote processor,
- 		which will be one of:
- 
--		"default"
--		"inline"
- 		"disabled"
-+		"enabled"
-+		"inline"
-+
-+		"disabled" means no dump will be collected. This is the
-+		default remoteproc coredump configuration.
- 
--		"default" means when the remote processor's coredump is
-+		"enabled" means when the remote processor's coredump is
- 		collected it will be copied to a separate buffer and that
- 		buffer is exposed to userspace.
- 
-@@ -81,7 +84,6 @@ Description:	Remote processor coredump configuration
- 		copy the dump. Also recovery process will not proceed until
- 		all data is read by usersapce.
- 
--		"disabled" means no dump will be collected.
- 
- What:		/sys/class/remoteproc/.../recovery
- Date:		July 2020
-diff --git a/drivers/remoteproc/remoteproc_coredump.c b/drivers/remoteproc/remoteproc_coredump.c
-index bb15a29..34530dc 100644
---- a/drivers/remoteproc/remoteproc_coredump.c
-+++ b/drivers/remoteproc/remoteproc_coredump.c
-@@ -257,7 +257,7 @@ void rproc_coredump(struct rproc *rproc)
- 		 * directly read from device memory.
- 		 */
- 		data_size += elf_size_of_phdr(class);
--		if (dump_conf == RPROC_COREDUMP_DEFAULT)
-+		if (dump_conf == RPROC_COREDUMP_ENABLED)
- 			data_size += segment->size;
- 
- 		phnum++;
-@@ -297,14 +297,14 @@ void rproc_coredump(struct rproc *rproc)
- 		elf_phdr_set_p_flags(class, phdr, PF_R | PF_W | PF_X);
- 		elf_phdr_set_p_align(class, phdr, 0);
- 
--		if (dump_conf == RPROC_COREDUMP_DEFAULT)
-+		if (dump_conf == RPROC_COREDUMP_ENABLED)
- 			rproc_copy_segment(rproc, data + offset, segment, 0,
- 					   segment->size);
- 
- 		offset += elf_phdr_get_p_filesz(class, phdr);
- 		phdr += elf_size_of_phdr(class);
- 	}
--	if (dump_conf == RPROC_COREDUMP_DEFAULT) {
-+	if (dump_conf == RPROC_COREDUMP_ENABLED) {
- 		dev_coredumpv(&rproc->dev, data, data_size, GFP_KERNEL);
- 		return;
- 	}
-diff --git a/drivers/remoteproc/remoteproc_sysfs.c b/drivers/remoteproc/remoteproc_sysfs.c
-index e60a014..eb98ed2 100644
---- a/drivers/remoteproc/remoteproc_sysfs.c
-+++ b/drivers/remoteproc/remoteproc_sysfs.c
-@@ -68,12 +68,12 @@ static DEVICE_ATTR_RW(recovery);
- /*
-  * A coredump-configuration-to-string lookup table, for exposing a
-  * human readable configuration via sysfs. Always keep in sync with
-- * enum rproc_coredump_mechanism
-+ * enum rproc_dump_mechanism
-  */
- static const char * const rproc_coredump_str[] = {
--	[RPROC_COREDUMP_DEFAULT]	= "default",
--	[RPROC_COREDUMP_INLINE]		= "inline",
- 	[RPROC_COREDUMP_DISABLED]	= "disabled",
-+	[RPROC_COREDUMP_ENABLED]	= "enabled",
-+	[RPROC_COREDUMP_INLINE]		= "inline",
- };
- 
- /* Expose the current coredump configuration via debugfs */
-@@ -115,10 +115,10 @@ static ssize_t coredump_store(struct device *dev,
- 
- 	if (sysfs_streq(buf, "disabled")) {
- 		rproc->dump_conf = RPROC_COREDUMP_DISABLED;
-+	} else if (sysfs_streq(buf, "enabled")) {
-+		rproc->dump_conf = RPROC_COREDUMP_ENABLED;
- 	} else if (sysfs_streq(buf, "inline")) {
- 		rproc->dump_conf = RPROC_COREDUMP_INLINE;
--	} else if (sysfs_streq(buf, "default")) {
--		rproc->dump_conf = RPROC_COREDUMP_DEFAULT;
- 	} else {
- 		dev_err(&rproc->dev, "Invalid coredump configuration\n");
- 		return -EINVAL;
-diff --git a/include/linux/remoteproc.h b/include/linux/remoteproc.h
-index 2fa68bf..3fa3ba6 100644
---- a/include/linux/remoteproc.h
-+++ b/include/linux/remoteproc.h
-@@ -442,16 +442,16 @@ enum rproc_crash_type {
- 
- /**
-  * enum rproc_dump_mechanism - Coredump options for core
-- * @RPROC_COREDUMP_DEFAULT:	Copy dump to separate buffer and carry on with
-+ * @RPROC_COREDUMP_DISABLED:	Don't perform any dump
-+ * @RPROC_COREDUMP_ENABLED:	Copy dump to separate buffer and carry on with
- 				recovery
-  * @RPROC_COREDUMP_INLINE:	Read segments directly from device memory. Stall
- 				recovery until all segments are read
-- * @RPROC_COREDUMP_DISABLED:	Don't perform any dump
-  */
- enum rproc_dump_mechanism {
--	RPROC_COREDUMP_DEFAULT,
--	RPROC_COREDUMP_INLINE,
- 	RPROC_COREDUMP_DISABLED,
-+	RPROC_COREDUMP_ENABLED,
-+	RPROC_COREDUMP_INLINE,
- };
- 
- /**
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+Retpolines mitigate Spectre v2 attacks.  If you're not vulnerable to
+Spectre v2, you don't need retpolines.
 
+All processors which support CET *also* have hardware mitigations
+against Spectre v2 and don't need retpolines.  Here's all of the
+possibilities:
+
+CET=y, BUG_SPECTRE_V2=y: does not exist
+CET=n, BUG_SPECTRE_V2=y: vulnerable, use retpoline
+CET=y, BUG_SPECTRE_V2=n: no retpoline, not vulnerable
+CET=n, BUG_SPECTRE_V2=n: no retpoline, not vulnerable
