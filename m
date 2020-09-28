@@ -2,103 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2155427B70F
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 23:36:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 280FF27B714
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 23:36:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726954AbgI1VgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 17:36:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49480 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726668AbgI1VgG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 17:36:06 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47471C061755
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 14:36:06 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id 7so2041263pgm.11
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 14:36:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version;
-        bh=9CeopZp8WY9RSvM4Dc5FY/xYVy88bbr1SqV3oic9qQA=;
-        b=v51yHcg3rrbkOLHvDLP9ouUMsXf2KuP7FFSjqT+4AgwsxzYcIHJD5gmGrem3vz7s/V
-         fOOZiCdjAjDdW+c5RSL5TuhE4kFl9lIrFcRJJnaM9dACSpDD77eFqxFUtfhe/tFunr+3
-         jiXKN9H9w/zrvuP1iT/OaEvb9ELPJhwJ5JddGeZJ0zkekFwqUJ1mw2bsZfONZpyUiFCw
-         hdBdcPeTPzCr1QBhjT+pF8TItWq8t7qJFVFPAXSFlVK6VYv5m+4JWvzEecxs8JhMMafc
-         1ZF74dyj2CXLM1J5u2fcLiNRREzTHd/fuQLBxxR11xyTzZNTv+uzYiKDudPx+Phqmw7W
-         KtiA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version;
-        bh=9CeopZp8WY9RSvM4Dc5FY/xYVy88bbr1SqV3oic9qQA=;
-        b=LASUL7WBzYSbJXpXEmzCNl8fmWCxOXDlqqAQ4iIO0GjMdIXlYUFKytJ13gSHk1dMuX
-         +5I10rqfxxu+3S/6VCZJKO3s60tY9UIABIhGGBMIK+h5gevA6oGFoA5wedyoWPt/mRFo
-         7he6rlgEgp9Njf7lrlKmSUstNBZZbUUBt5gW59OF7+93XyaEkGr+BCw1pSBi0wM4dw+r
-         00L7p0ymEV6O4ePy7SvllHFEJbFe/1LMAlpcV3Y8oZpH6NQvx8vRQXdxEWsGlGEl/KWu
-         wMkdk3axODmbC6KdJu+XhfzZ6l+lxNp/mu2fdn7r1aMDfpA94/wUL2SMaW4qUr7BvBS/
-         pc9A==
-X-Gm-Message-State: AOAM531HvcBv9Hj0QwRH5amp3B0NwU92Y3gRlESjgzYdj8/iiG1Coi+3
-        rCDgMqDvAcaIB3U5bnr4LNBmHQ==
-X-Google-Smtp-Source: ABdhPJw28AorJK6x/SMLDvlhDyx8HInlpiwTMaNwmhH7iD/ET6ohf55xsQzWW/a1KDHOohXFAGjIaA==
-X-Received: by 2002:a17:902:b789:b029:d2:63a5:d3f0 with SMTP id e9-20020a170902b789b02900d263a5d3f0mr1273387pls.81.1601328965826;
-        Mon, 28 Sep 2020 14:36:05 -0700 (PDT)
-Received: from [10.251.155.156] ([192.55.55.45])
-        by smtp.gmail.com with ESMTPSA id s24sm2263457pjp.53.2020.09.28.14.36.02
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 28 Sep 2020 14:36:05 -0700 (PDT)
-From:   "Sean V Kelley" <sean.v.kelley@intel.com>
-To:     "Bjorn Helgaas" <helgaas@kernel.org>
-Cc:     "Sean V Kelley" <seanvk.dev@oregontracks.org>, bhelgaas@google.com,
-        Jonathan.Cameron@huawei.com, rafael.j.wysocki@intel.com,
-        ashok.raj@intel.com, tony.luck@intel.com,
-        sathyanarayanan.kuppuswamy@intel.com, qiuxu.zhuo@intel.com,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 07/10] PCI/RCEC: Add RCiEP's linked RCEC to AER/ERR
-Date:   Mon, 28 Sep 2020 14:36:00 -0700
-X-Mailer: MailMate (1.13.2r5673)
-Message-ID: <93B0C872-C440-484A-9908-2D5B974595CD@intel.com>
-In-Reply-To: <20200928014711.GA2475864@bjorn-Precision-5520>
-References: <20200928014711.GA2475864@bjorn-Precision-5520>
+        id S1726979AbgI1Vgf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 17:36:35 -0400
+Received: from mga02.intel.com ([134.134.136.20]:62822 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726959AbgI1Vge (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 17:36:34 -0400
+IronPort-SDR: qQqHZTuE+Mh8J5CZiLIolE1apfst99fEJvZYTHcRNoZ9Fg7OknZritWrmZ1r9pB4BsydVdCELQ
+ 69FWBiJTjEGA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9758"; a="149726779"
+X-IronPort-AV: E=Sophos;i="5.77,315,1596524400"; 
+   d="scan'208";a="149726779"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 14:36:34 -0700
+IronPort-SDR: QixY2KCI8RuTaNZ15Zir8oirwhfamYYRxgCHUV/j7rw7sixYiquZlnGAPyr/EaVxinU2Cw6/Aq
+ eMx/bicyDm6w==
+X-IronPort-AV: E=Sophos;i="5.77,315,1596524400"; 
+   d="scan'208";a="457000991"
+Received: from jlasecki-mobl2.ger.corp.intel.com (HELO localhost) ([10.252.49.78])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 14:36:27 -0700
+Date:   Tue, 29 Sep 2020 00:36:25 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     "H.J. Lu" <hjl.tools@gmail.com>
+Cc:     "Yu, Yu-cheng" <yu-cheng.yu@intel.com>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        linux-sgx@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Cedric Xing <cedric.xing@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        andriy.shevchenko@linux.intel.com, asapek@google.com,
+        Borislav Petkov <bp@alien8.de>, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        Dave Hansen <dave.hansen@intel.com>,
+        "Huang, Haitao" <haitao.huang@intel.com>, josh@joshtriplett.org,
+        kai.huang@intel.com, kai.svahn@intel.com, kmoy@google.com,
+        Christian Ludloff <ludloff@google.com>,
+        Andy Lutomirski <luto@kernel.org>, nhorman@redhat.com,
+        npmccallum@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
+        Thomas Gleixner <tglx@linutronix.de>, yaozhangx@google.com
+Subject: Re: [PATCH v38 21/24] x86/vdso: Implement a vDSO for Intel SGX
+ enclave call
+Message-ID: <20200928213625.GC2705@linux.intel.com>
+References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
+ <20200915112842.897265-22-jarkko.sakkinen@linux.intel.com>
+ <721ca14e-21df-3df1-7bef-0b00d0ff90c3@citrix.com>
+ <c1b0019d-d3cb-cc62-f47f-90c2550c22a4@intel.com>
+ <CAMe9rOrVhQr9ad_4en2D5GTTqDsJGXqszBmscgenn_87mDxvUA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMe9rOrVhQr9ad_4en2D5GTTqDsJGXqszBmscgenn_87mDxvUA@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27 Sep 2020, at 18:47, Bjorn Helgaas wrote:
+On Mon, Sep 28, 2020 at 08:54:01AM -0700, H.J. Lu wrote:
+> On Mon, Sep 28, 2020 at 8:43 AM Yu, Yu-cheng <yu-cheng.yu@intel.com> wrote:
+> >
+> > On 9/25/2020 11:23 AM, Andrew Cooper wrote:
+> > > On 15/09/2020 12:28, Jarkko Sakkinen wrote:
+> > >> diff --git a/arch/x86/entry/vdso/vsgx_enter_enclave.S b/arch/x86/entry/vdso/vsgx_enter_enclave.S
+> > >> new file mode 100644
+> > >> index 000000000000..adbd59d41517
+> > >> --- /dev/null
+> > >> +++ b/arch/x86/entry/vdso/vsgx_enter_enclave.S
+> > >> @@ -0,0 +1,157 @@
+> > >> +SYM_FUNC_START(__vdso_sgx_enter_enclave)
+> > >> <snip>
+> > >> +.Lretpoline:
+> > >> +    call    2f
+> > >> +1:  pause
+> > >> +    lfence
+> > >> +    jmp     1b
+> > >> +2:  mov     %rax, (%rsp)
+> > >> +    ret
+> > >
+> > > I hate to throw further spanners in the work, but this is not compatible
+> > > with CET, and the user shadow stack work in progress.
+> >
+> > Hi Jarkko,
+> >
+> > These 1: and 2: targets are reached only from these few lines?  If they
+> > are direct call/jmp targets, I think it is OK in terms of CET.  If they
+> > are reached from an instruction like "jmp *%rax", then we need to put in
+> > an "endbr64".
+> >
+> 
+> This also isn't compatible with shadow stack.
+> 
+> -- 
+> H.J.
 
-> On Sun, Sep 27, 2020 at 06:45:45PM -0500, Bjorn Helgaas wrote:
->> On Tue, Sep 22, 2020 at 02:38:56PM -0700, Sean V Kelley wrote:
->>> From: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
->
->>>  	pci_dbg(dev, "broadcast error_detected message\n");
->>>  	if (state == pci_channel_io_frozen) {
->>> -		pci_bridge_walk(bridge, report_frozen_detected, &status);
->>> +		pci_bridge_walk(bridge, dev, report_frozen_detected, &status);
->>>  		if (type == PCI_EXP_TYPE_RC_END) {
->>> +			/*
->>> +			 * The callback only clears the Root Error Status
->>> +			 * of the RCEC (see aer.c).
->>> +			 */
->>> +			if (bridge)
->>> +				reset_subordinate_devices(bridge);
->>
->> It's unfortunate to add yet another special case in this code, and 
->> I'm
->> not thrilled about the one in aer_root_reset() either.  It's just not
->> obvious why they should be there.  I'm sure if I spent 30 minutes
->> decoding things, it would all make sense.  Guess I'm just griping
->> because I don't have a better suggestion.
->
-> I'm sorry, this was unkind of me.  If I don't have a constructive
-> idea, there's no reason for me to complain about this.  I apologize.
->
-> Bjorn
+I have the now full picture of the problem thanks to Andrew's response
+[1]. And Dave Hansen just explained me in detail the context and
+background with [2]. So I'd guess this will get sorted out soon.
 
-No worries at all. The unfortunate handling of the Spec for RCEC/RCiEP 
-associations and the added needs for native versus non-native is 
-frustrating.
+If you don't mind I'll CC you to this commit when I send the next
+version?
 
-Sean
+[1] https://lkml.org/lkml/2020/9/28/1153
+[2] https://lkml.org/lkml/2020/9/25/1122
+
+/Jarkko
