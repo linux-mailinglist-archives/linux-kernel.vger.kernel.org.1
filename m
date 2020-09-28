@@ -2,185 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C31B27A8C1
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 09:36:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76AF727A8C7
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 09:37:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726742AbgI1Hgf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 03:36:35 -0400
-Received: from mailout2.samsung.com ([203.254.224.25]:20484 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726625AbgI1Hge (ORCPT
+        id S1726559AbgI1HhU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 03:37:20 -0400
+Received: from mail-io1-f78.google.com ([209.85.166.78]:45246 "EHLO
+        mail-io1-f78.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726604AbgI1HhS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 03:36:34 -0400
-Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20200928073630epoutp020dd4fbb874b812d40405f08cfde757d4~44mT7vp3b0562805628epoutp02D
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 07:36:30 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20200928073630epoutp020dd4fbb874b812d40405f08cfde757d4~44mT7vp3b0562805628epoutp02D
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1601278590;
-        bh=/eNg35GSx+5wKcMvCxYpylGbCIBkVaA6FzkgrihSYWE=;
-        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
-        b=VEYznmnJlRN2nOzZIEl4JecZVnQ8Z+jqIgYL0bh7Vm1PZTsaTcTAFYgH2SIN2kwzW
-         UbcIY/MrJXWKG3JFa8QsJht1WqQtM53tiJavz+/shNFnLUbYOHa1HI598Bl9VIUdSh
-         byYtKks52FtXv2K/d4HwoNctRbvHW9BOnljxmzKY=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20200928073630epcas1p188bcd59a492f0225edf3698d260da55f~44mTawYbQ0605706057epcas1p1l;
-        Mon, 28 Sep 2020 07:36:30 +0000 (GMT)
-Received: from epsmges1p2.samsung.com (unknown [182.195.40.162]) by
-        epsnrtp2.localdomain (Postfix) with ESMTP id 4C0Dq11nRQzMqYkW; Mon, 28 Sep
-        2020 07:36:29 +0000 (GMT)
-Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
-        epsmges1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        6E.EC.09918.D72917F5; Mon, 28 Sep 2020 16:36:29 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
-        20200928073628epcas1p370edee44b209aa1a652492e04ead4b98~44mSDqt6v1994219942epcas1p3A;
-        Mon, 28 Sep 2020 07:36:28 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20200928073628epsmtrp1b76ab81dd7a5844ac21b75b1920ffa8d~44mSDAxZa0720907209epsmtrp1T;
-        Mon, 28 Sep 2020 07:36:28 +0000 (GMT)
-X-AuditID: b6c32a36-713ff700000026be-58-5f71927d6122
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        BD.49.08604.C72917F5; Mon, 28 Sep 2020 16:36:28 +0900 (KST)
-Received: from W10PB11329 (unknown [10.253.152.129]) by epsmtip1.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20200928073628epsmtip1b726d12d45b234b77eb964550f0c3aa2~44mR0kwuf2573825738epsmtip1F;
-        Mon, 28 Sep 2020 07:36:28 +0000 (GMT)
-From:   "Sungjong Seo" <sj1557.seo@samsung.com>
-To:     "'Tetsuhiro Kohada'" <kohada.t2@gmail.com>
-Cc:     <kohada.tetsuhiro@dc.mitsubishielectric.co.jp>,
-        <mori.takahiro@ab.mitsubishielectric.co.jp>,
-        <motai.hirotaka@aj.mitsubishielectric.co.jp>,
-        "'Namjae Jeon'" <namjae.jeon@samsung.com>,
-        <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-In-Reply-To: <8a430d18-39ac-135f-d522-90d44276faf8@gmail.com>
-Subject: RE: [PATCH 2/3] exfat: remove useless check in exfat_move_file()
-Date:   Mon, 28 Sep 2020 16:36:28 +0900
-Message-ID: <8c9701d6956a$13898560$3a9c9020$@samsung.com>
+        Mon, 28 Sep 2020 03:37:18 -0400
+Received: by mail-io1-f78.google.com with SMTP id h21so117840iof.12
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 00:37:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=04SWKSSMPO5wiPUAGW/9pHu3f+KlpomAZBHkybrJOqk=;
+        b=iae2NFzKmCr62SOboztFYFujE2NVPHus4ytSEtH1O159vWPZY1T5NmoL8OyVIBz8J9
+         YKIMR7dVf3KbW4hSXazaEIygcO79/riWF3CaHAgJRjprZABsPBuN6KX7znh5gE85iq19
+         gHCaDcFjZSOxwFWFq78H90dLF7cfR+GhQMUopin0tSzJf8DgxgLzEKAgz8gDJODbm87z
+         6msREmciftQ+LjlAmNZl45xhOnyX1nntoMr53pZoSRTceq1Rq3PdF6FNxcJN5Kouq0pl
+         DCZ/1s5F0xcLtlrWv4aHzcJxDcNZerpg7VP2o2yh2r7BIoCy6bbAJOdrLiWO7peHC7bF
+         4FGg==
+X-Gm-Message-State: AOAM532KyZSjef2lloETJqlS+yPUc9RVygKzu1NeHBBkLOY5mrtXQlZJ
+        ueSCKVTpvlbq9sGvs/I7xRoWYw4RtP6yE7WfJHE2IvjvAn8P
+X-Google-Smtp-Source: ABdhPJzvRHP+j1PB4wus3aYitS2UDMRTL51vrngDEalOsgPFVzQBnvE7WncmG+K1fEi6zIPaamYL1i9N0XBWPtaSysf/4DEALoK8
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: Microsoft Outlook 15.0
-Thread-Index: AQGgZsB+KXs97exselB5tzyGrN5ddgLZy8s5AfgkmQwBsa3Piam1eW8Q
-Content-Language: ko
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprFJsWRmVeSWpSXmKPExsWy7bCmgW7tpMJ4g/O/uCx+zL3NYvHm5FQW
-        iz17T7JYXN41h83i8v9PLBbLvkxmsfgxvd6B3ePLnOPsHm2T/7F7NB9byeaxc9Zddo++LasY
-        PT5vkgtgi8qxyUhNTEktUkjNS85PycxLt1XyDo53jjc1MzDUNbS0MFdSyEvMTbVVcvEJ0HXL
-        zAE6RUmhLDGnFCgUkFhcrKRvZ1OUX1qSqpCRX1xiq5RakJJTYGhQoFecmFtcmpeul5yfa2Vo
-        YGBkClSZkJNx7fVRpoKvAhWz/0k0MC7j7WLk5JAQMJE4OvEcexcjF4eQwA5GiSvzvzFCOJ8Y
-        Jb6f+cYM4XxjlDiw6wWQwwHWMnG1OUR8L6PEkb27WUFGCQm8ZJT48zoTxGYT0JV4cuMnM4gt
-        IqAncfLkdTYQm1mgkUnixMtsEJtTwFZiwYazjCC2sICnROOXNSwgNouAqsSW/h6wmbwClhI/
-        Z8xngbAFJU7OfMICMUdbYtnC18wQLyhI7P50lBVil5vEzZ4uZogaEYnZnW1gD0gITOWQ+NM9
-        iRGiwUWibdkkqGZhiVfHt7BD2FISL/vboOx6if/z17JDNLcwSjz8tI0J4nt7ifeXLEBMZgFN
-        ifW79CHKFSV2/p7LCLGXT+LdV5D7Qap5JTrahCBKVCS+f9jJArPpyo+rTBMYlWYh+WwWks9m
-        IflgFsKyBYwsqxjFUguKc9NTiw0LjJCjehMjOJFqme1gnPT2g94hRiYOxkOMEhzMSiK8vjkF
-        8UK8KYmVValF+fFFpTmpxYcYTYFhPZFZSjQ5H5jK80riDU2NjI2NLUzMzM1MjZXEeR/eUogX
-        EkhPLEnNTk0tSC2C6WPi4JRqYAqqTV9x59ZGbi/XCwtFf9798E7ou0iKZtSW98fL5pzM3N25
-        +8mpWau+ZDG4snIli7mcvOpy+tXq84tYc/kevjfecfQO166SdB+uQ/k8H+fvlTU4MnUS956N
-        hvN+/GhMKvb2Tih/fTm2hythv7F3rVB7y5eer+lZ/BsrzN/x+P/wKBcoCN4ecU6mhylYNk/8
-        zLq/m9uz2KTFGxu0rvvKHDy2dp6t25N3L164P1X/syfx5sRju6ZNsymeZeG/vMc+cbtAwrqy
-        fQcVE/7pb5U1NIrYuGqXptq0Unf9b4e/RUy91rVq/7P7WyVVSnYeZ/vCxzhfSmbm1KTmdYvf
-        cE901HocfORsUeCztese/ZsQy/FMiaU4I9FQi7moOBEAf2ECmy0EAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmplkeLIzCtJLcpLzFFi42LZdlhJTrdmUmG8wZe12hY/5t5msXhzciqL
-        xZ69J1ksLu+aw2Zx+f8nFotlXyazWPyYXu/A7vFlznF2j7bJ/9g9mo+tZPPYOesuu0ffllWM
-        Hp83yQWwRXHZpKTmZJalFunbJXBlNB73KXgkULFixjy2BsaJvF2MHBwSAiYSE1ebdzFycQgJ
-        7GaU6Fvezw4Rl5I4uE8TwhSWOHy4GKLkOaNE9+JHjF2MnBxsAroST278ZAaxRQT0JE6evM4G
-        UsQs0Mwk0fqlmQmi4yWjxLqvfWBVnAK2Egs2nAXrFhbwlGj8soYFxGYRUJXY0t/DCmLzClhK
-        /JwxnwXCFpQ4OfMJmM0soC3R+7CVEcZetvA12EwJAQWJ3Z+OskJc4SZxs6eLGaJGRGJ2Zxvz
-        BEbhWUhGzUIyahaSUbOQtCxgZFnFKJlaUJybnltsWGCYl1quV5yYW1yal66XnJ+7iREcU1qa
-        Oxi3r/qgd4iRiYPxEKMEB7OSCK9vTkG8EG9KYmVValF+fFFpTmrxIUZpDhYlcd4bhQvjhATS
-        E0tSs1NTC1KLYLJMHJxSDUxbg1u93n41vOejpl/D0T35rpxGCk/1nPeLl0w5x67ya8qCU+mu
-        iROi3zNOEJcKvTl7J0/ipiJ1t96oqfwciwo3BXlbbg58N9HNkps55thhppmy3tr857w0+xk7
-        ln6cduC9mGtu772LGamzPxgpBB++9Gxv4yL9ppN/3U71rNmXK3/tZ+KtiRF/koskirU/9WZZ
-        lWvXd+rcqNKVWC/vYHNB22fD9oqMYzM1pwXG7JXR/TV/ieqVqkMa3oXV8Z3ysxS3t6r6bmva
-        unzVkcXx4vEmDNUzXXetrnjW4Mp+qvRlzGvJj8lLo12cmXRrwwP9JS/npfy93fhb/PnlaAbZ
-        jOs/GGcof4h82rhizv3HlkosxRmJhlrMRcWJABAJKLQYAwAA
-X-CMS-MailID: 20200928073628epcas1p370edee44b209aa1a652492e04ead4b98
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20200911044511epcas1p4d62863352e65c534cd6080dd38d54b26
-References: <CGME20200911044511epcas1p4d62863352e65c534cd6080dd38d54b26@epcas1p4.samsung.com>
-        <20200911044506.13912-1-kohada.t2@gmail.com>
-        <015f01d68bd1$95ace4d0$c106ae70$@samsung.com>
-        <8a430d18-39ac-135f-d522-90d44276faf8@gmail.com>
+X-Received: by 2002:a92:4a0c:: with SMTP id m12mr122549ilf.238.1601278636781;
+ Mon, 28 Sep 2020 00:37:16 -0700 (PDT)
+Date:   Mon, 28 Sep 2020 00:37:16 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000054f46105b05abcd5@google.com>
+Subject: general protection fault in mac80211_hwsim_tx_frame_no_nl
+From:   syzbot <syzbot+84f7d08012d5c1f0f59e@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, johannes@sipsolutions.net, kuba@kernel.org,
+        kvalo@codeaurora.org, linux-kernel@vger.kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> >> --- a/fs/exfat/namei.c
-> >> +++ b/fs/exfat/namei.c
-> >> =40=40 -1095,11 +1095,6 =40=40 static int exfat_move_file(struct inode
-> >> *inode, struct exfat_chain *p_olddir,
-> >>   	if (=21epmov)
-> >>   		return -EIO;
-> >>
-> >> -	/* check if the source and target directory is the same */
-> >> -	if (exfat_get_entry_type(epmov) =3D=3D TYPE_DIR &&
-> >> -	    le32_to_cpu(epmov->dentry.stream.start_clu) =3D=3D p_newdir->dir=
-)
-> >> -		return -EINVAL;
-> >> -
-> >
-> > It might check if the cluster numbers are same between source entry
-> > and target directory.
->=20
-> This checks if newdir is the move target itself.
-> Example:
->    mv /mnt/dir0 /mnt/dir0/foo
->=20
-> However, this check is not enough.
-> We need to check newdir and all ancestors.
-> Example:
->    mv /mnt/dir0 /mnt/dir0/dir1/foo
->    mv /mnt/dir0 /mnt/dir0/dir1/dir2/foo
->    ...
->=20
-> This is probably a taboo for all layered filesystems.
->=20
->=20
-> > Could you let me know what code you mentioned?
-> > Or do you mean the codes on vfs?
->=20
-> You can find in do_renameat2(). --- around 'fs/namei.c:4440'
-> If the destination ancestors are itself, our driver will not be called.
+Hello,
 
-I think, of course, vfs has been doing that.
-So that code is unnecessary in normal situations.
+syzbot found the following issue on:
 
-That code comes from the old exfat implementation.
-And as far as I understand, it seems to check once more =22the cluster numb=
-er=22
-even though it comes through vfs so that it tries detecting abnormal of on-=
-disk.
+HEAD commit:    171d4ff7 Merge tag 'mmc-v5.9-rc4-2' of git://git.kernel.or..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=15d1a809900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=240e2ebab67245c7
+dashboard link: https://syzkaller.appspot.com/bug?extid=84f7d08012d5c1f0f59e
+compiler:       gcc (GCC) 10.1.0-syz 20200507
 
-Anyway, I agonized if it is really needed.
-In conclusion, old code could be eliminated and your patch looks reasonable=
-.
-Thanks
+Unfortunately, I don't have any reproducer for this issue yet.
 
-Acked-by: Sungjong Seo <sj1557.seo=40samsung.com>
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+84f7d08012d5c1f0f59e@syzkaller.appspotmail.com
 
->=20
->=20
-> BTW
-> Are you busy now?
-I'm sorry, I'm so busy for my full time work :(
-Anyway, I'm trying to review serious bug patches or bug reports first.
-Other patches, such as clean-up or code refactoring, may take some time to =
-review.
+general protection fault, probably for non-canonical address 0xdffffc0000000338: 0000 [#1] PREEMPT SMP KASAN
+KASAN: probably user-memory-access in range [0x00000000000019c0-0x00000000000019c7]
+CPU: 1 PID: 27410 Comm: syz-executor.4 Not tainted 5.9.0-rc6-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:mac80211_hwsim_tx_frame_no_nl.isra.0+0x728/0x12d0 drivers/net/wireless/mac80211_hwsim.c:1408
+Code: 89 b4 24 90 00 00 00 c6 84 24 98 00 00 00 00 74 bb e8 6c 5f 50 fc 48 8d bb c4 19 00 00 48 89 f8 48 89 fa 48 c1 e8 03 83 e2 07 <0f> b6 04 28 38 d0 7f 08 84 c0 0f 85 39 09 00 00 44 0f b6 bb c4 19
+RSP: 0018:ffffc90000da8b68 EFLAGS: 00010202
+RAX: 0000000000000338 RBX: 0000000000000000 RCX: ffffffff8525df4e
+RDX: 0000000000000004 RSI: ffffffff8525ded4 RDI: 00000000000019c4
+RBP: dffffc0000000000 R08: 0000000000000001 R09: ffffffff8d0c0a3f
+R10: 0000000000000000 R11: 0000000000000000 R12: ffff888047738500
+R13: ffff888051ca3120 R14: ffff888051ca3350 R15: 0000000000000077
+FS:  0000000000000000(0000) GS:ffff8880ae500000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000055783cad52c8 CR3: 000000005a64a000 CR4: 00000000001526e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <IRQ>
+ mac80211_hwsim_tx_frame+0x14f/0x1e0 drivers/net/wireless/mac80211_hwsim.c:1654
+ mac80211_hwsim_beacon_tx+0x439/0x810 drivers/net/wireless/mac80211_hwsim.c:1694
+ __iterate_interfaces+0x124/0x4d0 net/mac80211/util.c:737
+ ieee80211_iterate_active_interfaces_atomic+0x8d/0x170 net/mac80211/util.c:773
+ mac80211_hwsim_beacon+0xd5/0x1a0 drivers/net/wireless/mac80211_hwsim.c:1717
+ __run_hrtimer kernel/time/hrtimer.c:1524 [inline]
+ __hrtimer_run_queues+0x6a9/0xfc0 kernel/time/hrtimer.c:1588
+ hrtimer_run_softirq+0x17b/0x360 kernel/time/hrtimer.c:1605
+ __do_softirq+0x1f8/0xb23 kernel/softirq.c:298
+ asm_call_on_stack+0xf/0x20 arch/x86/entry/entry_64.S:706
+ </IRQ>
+ __run_on_irqstack arch/x86/include/asm/irq_stack.h:22 [inline]
+ run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:48 [inline]
+ do_softirq_own_stack+0x9d/0xd0 arch/x86/kernel/irq_64.c:77
+ invoke_softirq kernel/softirq.c:393 [inline]
+ __irq_exit_rcu kernel/softirq.c:423 [inline]
+ irq_exit_rcu+0x235/0x280 kernel/softirq.c:435
+ sysvec_apic_timer_interrupt+0x51/0xf0 arch/x86/kernel/apic/apic.c:1091
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:581
+RIP: 0010:__raw_write_unlock_irq include/linux/rwlock_api_smp.h:268 [inline]
+RIP: 0010:_raw_write_unlock_irq+0x4b/0x80 kernel/locking/spinlock.c:343
+Code: c0 b8 6b fc 89 48 ba 00 00 00 00 00 fc ff df 48 c1 e8 03 80 3c 10 00 75 31 48 83 3d 56 9f d3 01 00 74 25 fb 66 0f 1f 44 00 00 <bf> 01 00 00 00 e8 6b 28 28 f9 65 8b 05 04 32 d9 77 85 c0 74 02 5d
+RSP: 0018:ffffc900074a7ae8 EFLAGS: 00000282
+RAX: 1ffffffff13f8d77 RBX: ffff888037acc480 RCX: 1ffffffff16b2531
+RDX: dffffc0000000000 RSI: 0000000000000001 RDI: 0000000000000000
+RBP: ffffffff89e09080 R08: 0000000000000001 R09: 0000000000000001
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+R13: ffff888048116340 R14: dffffc0000000000 R15: 00000000ffffffff
+ release_task+0xc4e/0x14d0 kernel/exit.c:219
+ exit_notify kernel/exit.c:681 [inline]
+ do_exit+0x14db/0x29f0 kernel/exit.c:826
+ do_group_exit+0x125/0x310 kernel/exit.c:903
+ get_signal+0x428/0x1f00 kernel/signal.c:2757
+ arch_do_signal+0x82/0x2520 arch/x86/kernel/signal.c:811
+ exit_to_user_mode_loop kernel/entry/common.c:161 [inline]
+ exit_to_user_mode_prepare+0x1ae/0x200 kernel/entry/common.c:192
+ syscall_exit_to_user_mode+0x7e/0x2e0 kernel/entry/common.c:267
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x45e179
+Code: Bad RIP value.
+RSP: 002b:00007f248bdfacf8 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
+RAX: fffffffffffffe00 RBX: 000000000118cf48 RCX: 000000000045e179
+RDX: 0000000000000000 RSI: 0000000000000080 RDI: 000000000118cf48
+RBP: 000000000118cf40 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000118cf4c
+R13: 00007ffec4bea0bf R14: 00007f248bdfb9c0 R15: 000000000118cf4c
+Modules linked in:
+---[ end trace fba95d8d60d8e645 ]---
+RIP: 0010:mac80211_hwsim_tx_frame_no_nl.isra.0+0x728/0x12d0 drivers/net/wireless/mac80211_hwsim.c:1408
+Code: 89 b4 24 90 00 00 00 c6 84 24 98 00 00 00 00 74 bb e8 6c 5f 50 fc 48 8d bb c4 19 00 00 48 89 f8 48 89 fa 48 c1 e8 03 83 e2 07 <0f> b6 04 28 38 d0 7f 08 84 c0 0f 85 39 09 00 00 44 0f b6 bb c4 19
+RSP: 0018:ffffc90000da8b68 EFLAGS: 00010202
+RAX: 0000000000000338 RBX: 0000000000000000 RCX: ffffffff8525df4e
+RDX: 0000000000000004 RSI: ffffffff8525ded4 RDI: 00000000000019c4
+RBP: dffffc0000000000 R08: 0000000000000001 R09: ffffffff8d0c0a3f
+R10: 0000000000000000 R11: 0000000000000000 R12: ffff888047738500
+R13: ffff888051ca3120 R14: ffff888051ca3350 R15: 0000000000000077
+FS:  0000000000000000(0000) GS:ffff8880ae500000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000055783cad52c8 CR3: 000000005a64a000 CR4: 00000000001526e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
-> I am waiting for your reply about =22integrates dir-entry getting and
-> validation=22 patch.
-As I know, your patch is being under review by Namjae.
 
->=20
-> BR
-> ---
-> Tetsuhiro Kohada <kohada.t2=40gmail.com>
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
