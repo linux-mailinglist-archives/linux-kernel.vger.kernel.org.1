@@ -2,99 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C3B327A906
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 09:52:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 627D227A91D
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 09:54:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726573AbgI1Hv7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 03:51:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34884 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726465AbgI1Hv6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 03:51:58 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF1B1C0613CE
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 00:51:58 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id s131so174046qke.0
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 00:51:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=czzOW/rdOUtHo9xotrLivcvVorPQQBFAkO8Fcg565hc=;
-        b=JHZgaFeXmzOwdxIHmAhh9Lokd3J6xPh6ewzwnGfTF3YJEzkI8xhrRpy7Vza9zA0nvo
-         M1KLMFZvWd0EGscZpW17k4VqW+M4kk/kwnCo6pahFI57+e+01A6YXT3LTilb1f8zKLi3
-         jpdA8ik9VEGdx2Leg/29+kWop/VMdVGAXMFnH/A8myQn8IU+/xhx2Rf5KMEkjtsNcLc6
-         NRQWP+Tm8DrIN8Ar8daNgF81sfxFX/tuNpU7xg0xunpR2rboHB+am26ggdpwS/xmCXHB
-         CJ02ucuiA+ZysyxJOOIXea0l0YVfuW0W1gr9B10NUKx4YFfbz43oRs0494O46oRDpH1r
-         ro9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=czzOW/rdOUtHo9xotrLivcvVorPQQBFAkO8Fcg565hc=;
-        b=WJ6VQfaOIwlKFXjWHX2H5sQFD6dc2yad7+QkG68BKe2eM6tDMfjTTICVX4kiV0gryo
-         bePVGYyHtyN4Thv7WXAdFq7cJjt9+eAIBmpDqw2mkqZVerKDw2YdRTXBYO26jsnEkm93
-         BVUcTkOzdL9CUQXgz/9YdHEPWJlhXSEK4Jfvf1uuOOhMVvScqXCFM0WvldfKzPJO0OwV
-         iYOOc/VRTM6EhPVBLR99TIzt9d84gPqLTMJ5lw7cEs19MV5aGeV1WLj6m0lAKQSGKM8N
-         8bJRV07pny1eC6wsdnFKNjCiNIQoJxmspPmkG6Xt7tzTaHQDz3bjuecFxZZ4C5hqK7pA
-         mG+g==
-X-Gm-Message-State: AOAM5309PeyBFJorDJV6B/oC2yhBkb/m3q0rDqSJ1CUmWT6jrfRobgjn
-        N8XVJdHGSpwXdPNuf4uoxg48bvXDIXPqfDYmBvICIP7I+yVeQA==
-X-Google-Smtp-Source: ABdhPJzz6VaWO4W3NowzPBy/Ni2XfYcnk+NbWS85P90TiT3c51ZmpNUeK+bS2AW/NKp8oq/L0hVo3PYtwN6kvEro9Kc=
-X-Received: by 2002:a37:9c4f:: with SMTP id f76mr300300qke.250.1601279517591;
- Mon, 28 Sep 2020 00:51:57 -0700 (PDT)
+        id S1726840AbgI1Hya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 03:54:30 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:56790 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726572AbgI1Hy3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 03:54:29 -0400
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 2D18E9A527407815492E;
+        Mon, 28 Sep 2020 15:54:26 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 28 Sep 2020 15:54:19 +0800
+From:   Tian Tao <tiantao6@hisilicon.com>
+To:     <airlied@linux.ie>, <daniel@ffwll.ch>, <tzimmermann@suse.de>,
+        <kraxel@redhat.com>, <alexander.deucher@amd.com>,
+        <tglx@linutronix.de>, <dri-devel@lists.freedesktop.org>,
+        <xinliang.liu@linaro.org>, <linux-kernel@vger.kernel.org>
+CC:     <linuxarm@huawei.com>
+Subject: [PATCH v3] drm/hisilicon: Deleted the drm_device declaration
+Date:   Mon, 28 Sep 2020 15:51:50 +0800
+Message-ID: <1601279510-12798-1-git-send-email-tiantao6@hisilicon.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-References: <000000000000b7551005b05ae3b8@google.com>
-In-Reply-To: <000000000000b7551005b05ae3b8@google.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Mon, 28 Sep 2020 09:51:46 +0200
-Message-ID: <CACT4Y+Zc5W9kGUqjVkkuUTBEsLk-1k3eKF5F78-LioWF6XTR0w@mail.gmail.com>
-Subject: Re: WARNING: filesystem loop0 was created with 512 inodes, the real
- maximum is 511, mounting anyway
-To:     syzbot <syzbot+54b10a5da9e59f1ed979@syzkaller.appspotmail.com>,
-        Tigran Aivazian <aivazian.tigran@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 9:48 AM syzbot
-<syzbot+54b10a5da9e59f1ed979@syzkaller.appspotmail.com> wrote:
->
-> Hello,
->
-> syzbot found the following issue on:
->
-> HEAD commit:    c9c9e6a4 Merge tag 'trace-v5.9-rc5-2' of git://git.kernel...
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=12e98c8d900000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=5f4c828c9e3cef97
-> dashboard link: https://syzkaller.appspot.com/bug?extid=54b10a5da9e59f1ed979
-> compiler:       gcc (GCC) 10.1.0-syz 20200507
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=150881c3900000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1605b927900000
->
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+54b10a5da9e59f1ed979@syzkaller.appspotmail.com
->
-> BFS-fs: bfs_fill_super(): WARNING: filesystem loop0 was created with 512 inodes, the real maximum is 511, mounting anyway
+drm_framebuffer.h already declares struct drm_device, so there's no
+need to declare it in hibm_drm_drv.h
 
-This looks like a BFS issue. +BFS maintainers.
+v2:
+fixed spelling errors in commit message.
 
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
->
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> syzbot can test patches for this issue, for details see:
-> https://goo.gl/tpsmEJ#testing-patches
->
-> --
-> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/000000000000b7551005b05ae3b8%40google.com.
+v3:
+rewrite the commit message.
+
+Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
+---
+ drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
+index 87d2aad..6a63502 100644
+--- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
++++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
+@@ -22,8 +22,6 @@
+ #include <drm/drm_fb_helper.h>
+ #include <drm/drm_framebuffer.h>
+ 
+-struct drm_device;
+-
+ struct hibmc_connector {
+ 	struct drm_connector base;
+ 
+-- 
+2.7.4
+
