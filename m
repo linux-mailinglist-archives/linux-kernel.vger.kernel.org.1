@@ -2,190 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87C1D27A61E
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 06:10:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CAAD27A67D
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 06:32:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726477AbgI1EKN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 00:10:13 -0400
-Received: from mga17.intel.com ([192.55.52.151]:11284 "EHLO mga17.intel.com"
+        id S1726477AbgI1EcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 00:32:24 -0400
+Received: from m42-4.mailgun.net ([69.72.42.4]:50853 "EHLO m42-4.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725287AbgI1EKN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 00:10:13 -0400
-IronPort-SDR: 39O/Q2Hh1/3r+eDKq6EUgDHtOxA02A7OaSBYhhcsy9iEhv3Z/6/SzZ9okSNnlW/soPsUj4Qjhf
- Yd2KqxXtHHBg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9757"; a="141953080"
-X-IronPort-AV: E=Sophos;i="5.77,312,1596524400"; 
-   d="scan'208";a="141953080"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2020 21:10:12 -0700
-IronPort-SDR: yXPXqBj5ErjSsiOLOwSN8E7noqdlfJn8LnTrAnEihpwqAeyFI9/X48kJ2sXxDm8tR6fiEdRTSR
- RmlJ+ew78VVg==
-X-IronPort-AV: E=Sophos;i="5.77,312,1596524400"; 
-   d="scan'208";a="488401054"
-Received: from shuo-intel.sh.intel.com (HELO localhost) ([10.239.154.30])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2020 21:10:09 -0700
-Date:   Mon, 28 Sep 2020 12:10:07 +0800
-From:   Shuo A Liu <shuo.a.liu@intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Yu Wang <yu1.wang@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Zhi Wang <zhi.a.wang@intel.com>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>
-Subject: Re: [PATCH v4 17/17] virt: acrn: Introduce an interface for Service
- VM to control vCPU
-Message-ID: <20200928041006.GE1057@shuo-intel.sh.intel.com>
-References: <20200922114311.38804-1-shuo.a.liu@intel.com>
- <20200922114311.38804-18-shuo.a.liu@intel.com>
- <20200927104414.GC88650@kroah.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20200927104414.GC88650@kroah.com>
-User-Agent: Mutt/1.8.3 (2017-05-23)
+        id S1726396AbgI1EcY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 00:32:24 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1601267542; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=iUP+9KAtVUdbqvkexYHbHi5BMbdndfT+RF8uBYA3JJY=; b=oJjjKtKelxF8ha+oD1KAwIGLbHEp7WL+g7gzzt9wx1ML5XCXufjyiz0NqvNC88FYvxmrU9g4
+ ykOr/AVGh7LRiqzNN/uXhNmtZ6kBfGQyafdDebbZysKuwpdKW5eY1m6GCSROlSW0zARemosw
+ BwcCfevEZG75Hlz8r/dxWoSvsN4=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 5f716756e064df29c678f61a (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 28 Sep 2020 04:32:22
+ GMT
+Sender: mkshah=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 08E2EC433F1; Mon, 28 Sep 2020 04:32:22 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from mkshah-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: mkshah)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id B2897C433CA;
+        Mon, 28 Sep 2020 04:32:16 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B2897C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=mkshah@codeaurora.org
+From:   Maulik Shah <mkshah@codeaurora.org>
+To:     bjorn.andersson@linaro.org, maz@kernel.org,
+        linus.walleij@linaro.org, swboyd@chromium.org,
+        evgreen@chromium.org, mka@chromium.org
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-gpio@vger.kernel.org, agross@kernel.org, tglx@linutronix.de,
+        jason@lakedaemon.net, dianders@chromium.org, rnayak@codeaurora.org,
+        ilina@codeaurora.org, lsrao@codeaurora.org,
+        Maulik Shah <mkshah@codeaurora.org>
+Subject: [PATCH v6 0/6] irqchip: qcom: pdc: Introduce irq_set_wake call
+Date:   Mon, 28 Sep 2020 10:01:58 +0530
+Message-Id: <1601267524-20199-1-git-send-email-mkshah@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+Changes in v6:
+- Update commit message more descriptive in v5 patch 1
+- Symmetrically enable/disable wakeirqs during suspend/resume in v5 patch 3
+- Include Acked-by and Reviewed-by tags from v5 series
 
-On Sun 27.Sep'20 at 12:44:14 +0200, Greg Kroah-Hartman wrote:
->On Tue, Sep 22, 2020 at 07:43:11PM +0800, shuo.a.liu@intel.com wrote:
->> From: Shuo Liu <shuo.a.liu@intel.com>
->>
->> ACRN supports partition mode to achieve real-time requirements. In
->> partition mode, a CPU core can be dedicated to a vCPU of User VM. The
->> local APIC of the dedicated CPU core can be passthrough to the User VM.
->> The Service VM controls the assignment of the CPU cores.
->>
->> Introduce an interface for the Service VM to remove the control of CPU
->> core from hypervisor perspective so that the CPU core can be a dedicated
->> CPU core of User VM.
->>
->> Signed-off-by: Shuo Liu <shuo.a.liu@intel.com>
->> Reviewed-by: Zhi Wang <zhi.a.wang@intel.com>
->> Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
->> Cc: Zhi Wang <zhi.a.wang@intel.com>
->> Cc: Zhenyu Wang <zhenyuw@linux.intel.com>
->> Cc: Yu Wang <yu1.wang@intel.com>
->> Cc: Reinette Chatre <reinette.chatre@intel.com>
->> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->> ---
->>  drivers/virt/acrn/hsm.c       | 50 +++++++++++++++++++++++++++++++++++
->>  drivers/virt/acrn/hypercall.h | 14 ++++++++++
->>  2 files changed, 64 insertions(+)
->>
->> diff --git a/drivers/virt/acrn/hsm.c b/drivers/virt/acrn/hsm.c
->> index aaf4e76d27b4..ef5f77a38d1f 100644
->> --- a/drivers/virt/acrn/hsm.c
->> +++ b/drivers/virt/acrn/hsm.c
->> @@ -9,6 +9,7 @@
->>   *	Yakui Zhao <yakui.zhao@intel.com>
->>   */
->>
->> +#include <linux/cpu.h>
->>  #include <linux/io.h>
->>  #include <linux/mm.h>
->>  #include <linux/module.h>
->> @@ -354,6 +355,47 @@ struct miscdevice acrn_dev = {
->>  	.fops	= &acrn_fops,
->>  };
->>
->> +static ssize_t remove_cpu_store(struct device *dev,
->> +				struct device_attribute *attr,
->> +				const char *buf, size_t count)
->> +{
->> +	u64 cpu, lapicid;
->> +	int ret;
->> +
->> +	if (kstrtoull(buf, 0, &cpu) < 0)
->> +		return -EINVAL;
->> +
->> +	if (cpu >= num_possible_cpus() || cpu == 0 || !cpu_is_hotpluggable(cpu))
->> +		return -EINVAL;
->> +
->> +	if (cpu_online(cpu))
->> +		remove_cpu(cpu);
->> +
->> +	lapicid = cpu_data(cpu).apicid;
->> +	dev_dbg(dev, "Try to remove cpu %lld with lapicid %lld\n", cpu, lapicid);
->> +	ret = hcall_sos_remove_cpu(lapicid);
->> +	if (ret < 0) {
->> +		dev_err(dev, "Failed to remove cpu %lld!\n", cpu);
->> +		goto fail_remove;
->> +	}
->> +
->> +	return count;
->> +
->> +fail_remove:
->> +	add_cpu(cpu);
->> +	return ret;
->> +}
->> +static DEVICE_ATTR_WO(remove_cpu);
->> +
->> +static struct attribute *acrn_attrs[] = {
->> +	&dev_attr_remove_cpu.attr,
->> +	NULL
->> +};
->> +
->> +static struct attribute_group acrn_attr_group = {
->> +	.attrs = acrn_attrs,
->> +};
->
->You create a sysfs attribute without any Documentation/ABI/ update as
->well?  That's not good.
+Changes in v5:
+- Update commit subject in v4 patch 1
+- Add more details to commit message in v4 patch 2
+- Add change to enable wake irqs during suspend using new flag in irqchip
+- Use this in PDC and qcom pinctrl driver to enable wakeirqs on suspend
+- Make for loop more readable and add more details in commit in v4 patch 7
 
-Sorry, i will add it in the ABI/testing.
+Changes in v4:
+- Drop "Remove irq_disable callback from msmgpio irqchip" patch from v3
+- Introduce irq_suspend_one() and irq_resume_one() callbacks
+- Use the new callbacks to unmask wake interrupts during suspend
+- Reset only pdc interrupts that are mapped in DTSI
 
->
->And why are you trying to emulate CPU hotplug here and not using the
->existing CPU hotplug mechanism?
+Changes in v3:
+- Drop gpiolib change (v2 patch 1) since its already in linux-next
+- Add Acked-by Linus Walleij for v2 patch 2 and v2 patch 3.
+- Address Stephen's comment to on v2 patch 3
+- Address Stephen's comment to change variable to static on v2 patch 4.
+- Add a new change to use return value from .irq_set_wake callback
+- Add a new change to reset PDC irq enable bank during init time
 
-The interface introduced here includes:
-  1) The Service VM virtual CPU hotplug
-  2) hypercall to the hypervisor to remove one virtual CPU from the
-    Service VM
-The 1) just do the CPU hotplug with kernel API remove_cpu(), and can be
-resume back (by CPU online interface) if only 1) is done.
-If 2) is done, then the physical CPU will be removed from the Service
-VM's CPU pool. The ACRN hypervisor supports passthrough a physical CPU
-to a VM. The precondition is that the physical CPU cannot be occupied by
-any other VM. This interface intends to do that.
+Changes in v2:
+- Fix compiler error on gpiolib patch
 
+This series adds support to lazy disable pdc interrupt.
 
->
->> +
->>  static int __init hsm_init(void)
->>  {
->>  	int ret;
->> @@ -370,13 +412,21 @@ static int __init hsm_init(void)
->>  		return ret;
->>  	}
->>
->> +	ret = sysfs_create_group(&acrn_dev.this_device->kobj, &acrn_attr_group);
->> +	if (ret) {
->> +		dev_warn(acrn_dev.this_device, "sysfs create failed\n");
->> +		misc_deregister(&acrn_dev);
->> +		return ret;
->> +	}
->
->You just raced with userspace and lost.  If you want to add attribute
->files to a device, use the default attribute group list, and it will be
->managed properly for you by the driver core.
->
->Huge hint, if a driver every has to touch a kobject, or call sysfs_*,
->then it is probably doing something wrong.
+Some drivers using gpio interrupts want to configure gpio for wakeup using
+enable_irq_wake() but during suspend entry disables irq and expects system
+to resume when interrupt occurs. In the driver resume call interrupt is
+re-enabled and removes wakeup capability using disable_irq_wake() one such
+example is cros ec driver.
 
-Do you mean use .groups of struct miscdevice directly ?
+With [1] in documentation saying "An irq can be disabled with disable_irq()
+and still wake the system as long as the irq has wake enabled".
 
-If yes, let me follow drivers/char/hw_random/s390-trng.c to do this.
-BTW, few driver use the .groups directly. :)
+The PDC IRQs are currently "unlazy disabled" (disable here means that it
+will be masked in PDC & GIC HW GICD_ISENABLER, the moment driver invokes
+disable_irq()) such IRQs can not wakeup from low power modes like suspend
+to RAM since the driver chosen to disable this.
 
-Thanks
-shuo
+During suspend entry, no one re-enable/unmask in HW, even if its marked for
+wakeup.
+
+One solutions thought to address this problem was...During suspend entry at
+last point, irq chip driver re-enable/unmask IRQs in HW that are marked for
+wakeup. This was attemped in [2].
+
+This series adds alternate solution to [2] by "lazy disable" IRQs in HW.
+The genirq takes care of lazy disable in case if irqchip did not implement
+irq_disable callback. Below is high level steps on how this works out..
+
+a. During driver's disable_irq() call, IRQ will be marked disabled in SW
+b. IRQ will still be enabled(read unmasked in HW)
+c. The device then enters low power mode like suspend to RAM
+d. The HW detects unmasked IRQs and wakesup the CPU
+e. During resume after local_irq_enable() CPU goes to handle the wake IRQ
+f. Generic handler comes to know that IRQ is disabled in SW
+g. Generic handler marks IRQ as pending and now invokes mask callback
+h. IRQ gets disabled/masked in HW now
+i. When driver invokes enable_irq() the SW pending IRQ leads IRQ's handler
+j. enable_irq() will again enable/unmask in HW
+
+[1] https://www.spinics.net/lists/kernel/msg3398294.html
+[2] https://patchwork.kernel.org/patch/11466021/
+
+Maulik Shah (6):
+  pinctrl: qcom: Set IRQCHIP_SET_TYPE_MASKED and IRQCHIP_MASK_ON_SUSPEND
+    flags
+  pinctrl: qcom: Use return value from irq_set_wake() call
+  genirq/PM: Introduce IRQCHIP_ENABLE_WAKEUP_ON_SUSPEND flag
+  pinctrl: qcom: Set IRQCHIP_ENABLE_WAKEUP_ON_SUSPEND flag
+  irqchip: qcom-pdc: Set IRQCHIP_ENABLE_WAKEUP_ON_SUSPEND flag
+  irqchip: qcom-pdc: Reset PDC interrupts during init
+
+ drivers/irqchip/qcom-pdc.c         | 14 +++++++++--
+ drivers/pinctrl/qcom/pinctrl-msm.c | 11 +++++----
+ include/linux/irq.h                | 49 +++++++++++++++++++++++---------------
+ kernel/irq/debugfs.c               |  3 +++
+ kernel/irq/pm.c                    | 34 ++++++++++++++++++++++----
+ 5 files changed, 81 insertions(+), 30 deletions(-)
+
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
+
