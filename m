@@ -2,150 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28AEC27AB17
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 11:47:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29EE827AB19
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 11:47:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726753AbgI1JrM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 05:47:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52792 "EHLO
+        id S1726768AbgI1Jr2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 05:47:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726654AbgI1JrL (ORCPT
+        with ESMTP id S1726743AbgI1Jr1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 05:47:11 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B85D0C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 02:47:11 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id g29so403209pgl.2
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 02:47:11 -0700 (PDT)
+        Mon, 28 Sep 2020 05:47:27 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61BDCC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 02:47:27 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id w5so531451wrp.8
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 02:47:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=sByFvzANNavXstWIngm0BaCccoxXcpgpgCM5Oz7ddDc=;
-        b=QSvKozpy4dwqhQ3rm2KwqwK/O8nSux1S09jdTfHI1J273nxM5rEIfPP1WJXCY/fPu4
-         dbrSOz51lPZZSOe4akRbLX74WJlrqNHqGi0lSz6gR5R+512/PBm+n9/QFRDYRBwKeYBZ
-         Nvmm9Rv9GwdsvYRvfKiQvhRdSDnzhPi7OccY7poPFhiTND0z+0H4s2UtyuFwQTeRggLi
-         pJZUSEWKf9j+x4CqBZZ5+Sfi8Rc1QMN4/31RS3j5+mb1V4bh9wCEuXkJfCWE07vpixqZ
-         HsmulRCsj5e5M2pIUO4y0aelzRVfCQor/CBXf6f/P6qQ/Zd/KLlkJhc483NeLJsOiDl1
-         UVxw==
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=aBaJ7/GSUfwYoA9TO9qsxTcOvSw2SWgHX/gC4K79Bt4=;
+        b=dVIQN+f+DCKVNjTLbL7o7s6+EZqkCS0G96fLUO9iTFd9PXBVjqxXiHnouor1t8Mlf2
+         yMOMb9HmqQSXMrsWoFSUVZTnP6M6CXNFuLJR1EjLtVfp8dMnaX07gDimkOMEGDL2rdtv
+         Fo67JbRt2cXalKZajjrYmDZiopA30ERhpObv7m3lu/PQ1Rkitodi0Rzk8ya22Xn5tjAj
+         Ku+KbFkDY2DmHQ+O5ggUF0NWJhxIwQDXSgV2KSHyrymQNeOX22Mzt2nRShQtZjLoFWVf
+         wfIm0hHAWKMTWVtGgrO82cvWCTXJv5qZfRORzqkrq/NLCS6vxqvuzVHqXot67aopvpjI
+         YlNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=sByFvzANNavXstWIngm0BaCccoxXcpgpgCM5Oz7ddDc=;
-        b=jbgtMFlP6A+RnNjOYRttpu3vmSyqMHFTjv7ArVis/tooZZh6NrNaXbjHMJrGUyOkGE
-         DjNkWiDw5EPHoYRYemTxUvcHpp20akFjYDHRSBImZN9vRU1yp0ikrH5eGV+P8mwTSl9q
-         M74wWKBUO6OOz4l4wFhX+vA9DzJY6UXLp+M4+BsRa/bz3m8mU1G/VKuKpt8FcPxRmdh/
-         u4keM886eudjm9Ctm3BAyZViaKS2njxXC1GXYAYHjQmJwXPcwKhUyYS8Nuz9sdF65pgk
-         j2PmyCHzh9aLb/5pDCvhdNVaYVbbqFPC5qQIGhXMNrp2hVm/7uZCJninTwr/eBqzxIIP
-         NvkA==
-X-Gm-Message-State: AOAM531e4E/qo11Q8p5zu/1gA7mzcqQVlge4wi7lhGu+HvmtuoRB4YSy
-        KGybCIxNqWEbcjzGYBFBTHJx
-X-Google-Smtp-Source: ABdhPJyEqUCMQ5YQbSuGTIK/wFn0PQfjKFE1yYJVltrnkh9bccuAL1DaU3x6A/Y/8EkftfiR7/YNEQ==
-X-Received: by 2002:a62:6dc3:0:b029:13c:1611:658d with SMTP id i186-20020a626dc30000b029013c1611658dmr9450782pfc.10.1601286431063;
-        Mon, 28 Sep 2020 02:47:11 -0700 (PDT)
-Received: from linux ([103.59.133.81])
-        by smtp.gmail.com with ESMTPSA id z7sm761284pgc.35.2020.09.28.02.47.08
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 28 Sep 2020 02:47:10 -0700 (PDT)
-Date:   Mon, 28 Sep 2020 15:17:04 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Kalle Valo <kvalo@codeaurora.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>,
-        Govind Singh <govinds@codeaurora.org>,
-        Loic Poulain <loic.poulain@linaro.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ath11k@lists.infradead.org
-Subject: Re: linux-next: build failure after merge of the mhi tree
-Message-ID: <20200928094704.GB11515@linux>
-References: <20200928184230.2d973291@canb.auug.org.au>
- <20200928091035.GA11515@linux>
- <87eemmfdn3.fsf@codeaurora.org>
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=aBaJ7/GSUfwYoA9TO9qsxTcOvSw2SWgHX/gC4K79Bt4=;
+        b=Zmx1Xcq14Q2wBJY3tVES09I+sEbMINd4PhyyNjfE8PSoP8tdcVbjr+FfvurV+/br9Y
+         eTsdpj3rKfopvr7K3NwW3JEZrTG4kfX5tXKBHJ46gcvzW8QSsKe1ASm3MIY8Buhe+kFC
+         gwnZN/MkWmSZ5aj7euxVB+LicI5gorDGRTAAFnHQQp1f/wodlcMCRikBJD9/tUcwcp0R
+         5/P8DOTQ9+D+fh/Q8B6oTr0TSPMnQz/cBc0qgLLhWrOaq3NzJIuAa+0R7ziZrHMaG/12
+         Tc9rzPFg/B7QeTe4a5KmEG/ubTmoo100Npe+IzGnCkUeZmduzkIVcXtQ0uy0g9N9CiqL
+         nwCA==
+X-Gm-Message-State: AOAM5311KkXiBe+LE48oJjUdNVWeCQMPjh3aE/n2HZe7bKtRQVCzmwmR
+        xgxS5v4NF3XfobPcFKBfPHGLQA==
+X-Google-Smtp-Source: ABdhPJw5raJ0t+x3PQZ3zFLLcp8nFJ3FIYCEkjcE9P11x12LwaPsW8P5ucUS+pbqywKxXyInI/nWEg==
+X-Received: by 2002:adf:c64e:: with SMTP id u14mr672332wrg.373.1601286446068;
+        Mon, 28 Sep 2020 02:47:26 -0700 (PDT)
+Received: from localhost (cag06-3-82-243-161-21.fbx.proxad.net. [82.243.161.21])
+        by smtp.gmail.com with ESMTPSA id t1sm515386wmi.16.2020.09.28.02.47.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Sep 2020 02:47:25 -0700 (PDT)
+References: <1601233948-11629-1-git-send-email-Julia.Lawall@inria.fr> <1601233948-11629-11-git-send-email-Julia.Lawall@inria.fr>
+User-agent: mu4e 1.3.3; emacs 26.3
+From:   Jerome Brunet <jbrunet@baylibre.com>
+To:     Julia Lawall <Julia.Lawall@inria.fr>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>
+Cc:     Valdis =?utf-8?Q?Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>,
+        Joe Perches <joe@perches.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        kernel-janitors@vger.kernel.org,
+        Michael Turquette <mturquette@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        linux-amlogic@lists.infradead.org, linux-clk@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 10/18] clk: meson: use semicolons rather than commas to separate statements
+In-reply-to: <1601233948-11629-11-git-send-email-Julia.Lawall@inria.fr>
+Date:   Mon, 28 Sep 2020 11:47:24 +0200
+Message-ID: <1j1rimjkr7.fsf@starbuckisacylon.baylibre.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87eemmfdn3.fsf@codeaurora.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 12:34:40PM +0300, Kalle Valo wrote:
-> Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org> writes:
-> 
-> > On Mon, Sep 28, 2020 at 06:42:30PM +1000, Stephen Rothwell wrote:
-> >> Hi all,
-> >> 
-> >> After merging the mhi tree, today's linux-next build (x86_64 allmodconfig)
-> >> failed like this:
-> >> 
-> >> drivers/net/wireless/ath/ath11k/mhi.c:27:4: error: 'struct
-> >> mhi_channel_config' has no member named 'auto_start'
-> >>    27 |   .auto_start = false,
-> >>       |    ^~~~~~~~~~
-> >> drivers/net/wireless/ath/ath11k/mhi.c:42:4: error: 'struct
-> >> mhi_channel_config' has no member named 'auto_start'
-> >>    42 |   .auto_start = false,
-> >>       |    ^~~~~~~~~~
-> >> drivers/net/wireless/ath/ath11k/mhi.c:57:4: error: 'struct
-> >> mhi_channel_config' has no member named 'auto_start'
-> >>    57 |   .auto_start = true,
-> >>       |    ^~~~~~~~~~
-> >> drivers/net/wireless/ath/ath11k/mhi.c:72:4: error: 'struct
-> >> mhi_channel_config' has no member named 'auto_start'
-> >>    72 |   .auto_start = true,
-> >>       |    ^~~~~~~~~~
-> >> 
-> >> Caused by commit
-> >> 
-> >>   ed39d7816885 ("bus: mhi: Remove auto-start option")
-> >> 
-> >> interacting with commit
-> >> 
-> >>   1399fb87ea3e ("ath11k: register MHI controller device for QCA6390")
-> >> 
-> >> from the net-next tree.
-> >> 
-> >> I applied the following merge fix patch, but maybe more is required.
-> >> Even if so, this could be fixed now in the net-next tree.
-> >> 
-> >> From: Stephen Rothwell <sfr@canb.auug.org.au>
-> >> Date: Mon, 28 Sep 2020 18:39:41 +1000
-> >> Subject: [PATCH] fix up for "ath11k: register MHI controller device for QCA6390"
-> >> 
-> >> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> >
-> > Sorry, I forgot to submit a patch against net-next for fixing this while merging
-> > the MHI change.
-> 
-> Try to notify the ath11k list (CCed) whenever changing MHI API so that
-> we (ath11k folks) can be prepared for any major changes.
-> 
 
-Okay sure, will do!
+On Sun 27 Sep 2020 at 21:12, Julia Lawall <Julia.Lawall@inria.fr> wrote:
 
-> > But your change looks good and I can just modify the subject/description and
-> > resubmit. Or if Dave prefers to fix the original commit itself in net-next,
-> > I'm fine!
-> 
-> Actually I prefer to apply the fix to my ath.git tree, less conflicts
-> that way (I have still quite a lot of ath11k patches pending for -next).
-> I'll then send a pull request to Dave end of this week.
-> 
-> So please submit the patch like a normal ath11k patch documented here:
-> 
+Hi Stephen,
 
-Okay.
+Do you want to take all the clock related patches directly ?
 
-Thanks,
-Mani
 
-> https://wireless.wiki.kernel.org/en/users/drivers/ath11k/submittingpatches
-> 
-> -- 
-> https://patchwork.kernel.org/project/linux-wireless/list/
-> 
-> https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+> Replace commas with semicolons.  What is done is essentially described by
+> the following Coccinelle semantic patch (http://coccinelle.lip6.fr/):
+>
+> // <smpl>
+> @@ expression e1,e2; @@
+> e1
+> -,
+> +;
+> e2
+> ... when any
+> // </smpl>
+>
+> Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
+>
+> ---
+>  drivers/clk/meson/meson-aoclk.c |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/clk/meson/meson-aoclk.c b/drivers/clk/meson/meson-aoclk.c
+> index bf8bea675d24..3a6d84cd6601 100644
+> --- a/drivers/clk/meson/meson-aoclk.c
+> +++ b/drivers/clk/meson/meson-aoclk.c
+> @@ -57,7 +57,7 @@ int meson_aoclkc_probe(struct platform_device *pdev)
+>  	rstc->data = data;
+>  	rstc->regmap = regmap;
+>  	rstc->reset.ops = &meson_aoclk_reset_ops;
+> -	rstc->reset.nr_resets = data->num_reset,
+> +	rstc->reset.nr_resets = data->num_reset;
+>  	rstc->reset.of_node = dev->of_node;
+>  	ret = devm_reset_controller_register(dev, &rstc->reset);
+>  	if (ret) {
+
