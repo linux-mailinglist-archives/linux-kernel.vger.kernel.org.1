@@ -2,107 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E99B527A984
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 10:27:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 265C127A985
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 10:29:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726572AbgI1I1N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 04:27:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40326 "EHLO
+        id S1726552AbgI1I3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 04:29:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726458AbgI1I1N (ORCPT
+        with ESMTP id S1726328AbgI1I3W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 04:27:13 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65780C0613CE
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 01:27:13 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id bw23so218262pjb.2
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 01:27:13 -0700 (PDT)
+        Mon, 28 Sep 2020 04:29:22 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E1C0C0613CE
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 01:29:22 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id o21so136612qtp.2
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 01:29:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=82LGwDgQ4uOMZZxIFGmOXiLDSf9v/yoQATb6JKDH2IA=;
-        b=eAVhvtJQaiwxzVErGlTfbLcGWM4yu12I4WBkLQGeGwH8woCQm5ybORFQgL/ItoP+Ow
-         U1sv/DNsbULlvP/qQKTymtMWkXxemiN39+DtldYZo7Om7Bm01dswm4wyQd1IpPvcPb2z
-         HXjjxMrNhO5qSTrc5yySyRvxDnQ+H14+VoCPM5FDOkplsgjFyuaAijT75lXEhgS/Ol4J
-         2lVqKJ/LKRtcfXjbZ4oPo/g22YhXxUgY57K4T9syw/GmHFAV5S7xpTHeXDqgwQkpYa9z
-         kxYyMSFySBKDDImWBSmSXEvr73Z874rYFIZ6ZSuP56buM0ujqdbW/93zvr1BSlyDRmZf
-         vP6w==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=s4/SD7sDkhkzjSmNCqnhnzxoSGKZx4XDrWdqdQe3XZ4=;
+        b=FuiT47fmOQx6DCBlqkiTikuEAjM+gEeegjVBcLz9fChgT+Vqev1yjRHhl+fxLrs8Y1
+         DQ+9/cWC/kMR5b3Vo6+g+5TY/tOwJLb/2yiQxHLzw94JxofxKRwoeYRTFBrphQKF+ZE4
+         oBto8rP0m3U92NUQBarcpKHRJCUztbR/Nx0ngvkPUewmdNbEFb27FJl5wiBwdhZVPH4A
+         egvrMy8phOfMO9JUPEqwb2MaiB0jSCgoXkK+pJSbzX1QSmPKdoV/6c/kkOFPE4SuS7fv
+         TFGTrMWYHUPcW5z81C9wIYBILvrpU0oayb8sTfpJg5Vtrq592+1+e0iu3QYJQfoNnNlI
+         /fJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=82LGwDgQ4uOMZZxIFGmOXiLDSf9v/yoQATb6JKDH2IA=;
-        b=c6x3FGCYMf1Y+6Azs4yAJHOJtsEYphUljUTScNq5aG64ruo4cw0NaJ7gdWQPeWyAgR
-         9sZVR8MXy/5VssTSq3SshgZ2vXCOV4KCEx6/gg3xjMMXnoyH8sID1SItxNSwmIX6be/3
-         FA+OAxZya1TBTT/BRW7dpfav/X5ESi/5kRFdHNGguIXSj719iP0rL/78wVA60trORpvN
-         zZmU1VVE7k+Kt+usOPXev/sQVlTFn+2pPe+r9MXKuQkOfRJMeLOdsMAjp6xaQ2Ru6M4/
-         wYfhGMdppUIqSEJx9rTR0UhqrO2KDHr2sE4Z9A2mnsxDRc6Bl3MsZWjGmt9HQCl/8z5f
-         4IkQ==
-X-Gm-Message-State: AOAM5335oRq+NKCYoIyqqAREtvEjMYLw39Z4p5xETzjsp6KH36AukjWc
-        00D5cm0mCqU/NmkRyjvj56g=
-X-Google-Smtp-Source: ABdhPJzWoqkGOAGW9JKqB5rB1EZ50WJbVpduo3qXuGHWirnOzfDjYtrXYyZlWlZbY2hJXq08VNKDlA==
-X-Received: by 2002:a17:90a:104f:: with SMTP id y15mr308789pjd.45.1601281632827;
-        Mon, 28 Sep 2020 01:27:12 -0700 (PDT)
-Received: from localhost.localdomain (114-137-252-94.emome-ip.hinet.net. [114.137.252.94])
-        by smtp.gmail.com with ESMTPSA id a5sm367426pjd.57.2020.09.28.01.27.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Sep 2020 01:27:11 -0700 (PDT)
-From:   Yun Hsiang <hsiang023167@gmail.com>
-To:     dietmar.eggemann@arm.com, peterz@infradead.org
-Cc:     linux-kernel@vger.kernel.org, Yun Hsiang <hsiang023167@gmail.com>
-Subject: [PATCH 1/1] sched/uclamp: release per-task uclamp control if user set to default value
-Date:   Mon, 28 Sep 2020 16:26:43 +0800
-Message-Id: <20200928082643.133257-1-hsiang023167@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=s4/SD7sDkhkzjSmNCqnhnzxoSGKZx4XDrWdqdQe3XZ4=;
+        b=MdwU1SifGx/yISI9S8Dt2nwf3Ypd12ayI8fsX6dS1Pj815b4gU0dFlUonWqTgN7hJO
+         ZRTIp+OYSmOrK9FmdfkReHKfE1zaYGZ752Juyq18IomNkbn5VG/+w9VYbs3ec+kOAjYH
+         0tJkVWn+Phtp90LLlXKY52kO6UvkxyfDTsT0mqBW8/2Mswoa686dkuzYiifz19O6q/UI
+         9SO8AqGsv6oqyEXB2+rGgeke8kslyKDr15QR3TXr1inBjiQlfGBs5wn65DjOtd+f/GSi
+         YjSiUwr28hjjsDHYyayZAJZRzNSEWHXLbE1KPUEWbW0DUU6+nY0SdUrEKEExD3dAAsOU
+         zL2g==
+X-Gm-Message-State: AOAM530/UlDjmbg1mZNOhvsJD3WO8UzeB32C9OzNX8s3AqIcbfLlM+GS
+        fw0U3Py167aCmo5RoNC4TBh2QYKeEOvXGQrZcuGZIQ==
+X-Google-Smtp-Source: ABdhPJzaa/1aeT7Sp8XzYrn+XtACxFlI58A4KZZtsp4tdU4fhXceB8gr1c4Jy/+RD5bcyV2Lk+xfWT4wo6lww4Xo2Lk=
+X-Received: by 2002:ac8:4658:: with SMTP id f24mr444266qto.158.1601281761299;
+ Mon, 28 Sep 2020 01:29:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <000000000000b7551005b05ae3b8@google.com> <CACT4Y+Zc5W9kGUqjVkkuUTBEsLk-1k3eKF5F78-LioWF6XTR0w@mail.gmail.com>
+ <CAK+_RLmGVr=ngG+Tqum==sDLEeEEz11su92EnoQVG6Zgm2gxzg@mail.gmail.com>
+In-Reply-To: <CAK+_RLmGVr=ngG+Tqum==sDLEeEEz11su92EnoQVG6Zgm2gxzg@mail.gmail.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Mon, 28 Sep 2020 10:29:10 +0200
+Message-ID: <CACT4Y+Yb9UcpO6g+FMZ+4R1PiadcDqKXj7Em4h8+VMrzCdS=9g@mail.gmail.com>
+Subject: Re: WARNING: filesystem loop0 was created with 512 inodes, the real
+ maximum is 511, mounting anyway
+To:     Tigran Aivazian <aivazian.tigran@gmail.com>
+Cc:     syzbot <syzbot+54b10a5da9e59f1ed979@syzkaller.appspotmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the user wants to release the util clamp and let cgroup to control it,
-we need a method to reset.
+On Mon, Sep 28, 2020 at 10:23 AM Tigran Aivazian
+<aivazian.tigran@gmail.com> wrote:
+>
+> Hello Dmitry,
+>
+> On Mon, 28 Sep 2020 at 08:51, Dmitry Vyukov <dvyukov@google.com> wrote:
+> > On Mon, Sep 28, 2020 at 9:48 AM syzbot
+> > <syzbot+54b10a5da9e59f1ed979@syzkaller.appspotmail.com> wrote:
+> > > BFS-fs: bfs_fill_super(): WARNING: filesystem loop0 was created with 512 inodes, the real maximum is 511, mounting anyway
+> >
+> > This looks like a BFS issue. +BFS maintainers.
+>
+> No, this is not an issue. In the latest change to BFS I added the
+> following comment to the header fs/bfs/bfs.h, which explains it:
+>
+> /* In theory BFS supports up to 512 inodes, numbered from 2 (for /) up
+> to 513 inclusive.
+>    In actual fact, attempting to create the 512th inode (i.e. inode
+> No. 513 or file No. 511)
+>    will fail with ENOSPC in bfs_add_entry(): the root directory cannot
+> contain so many entries, counting '..'.
+>    So, mkfs.bfs(8) should really limit its -N option to 511 and not
+> 512. For now, we just print a warning
+>    if a filesystem is mounted with such "impossible to fill up" number
+> of inodes */
 
-So if the user set the task uclamp to the default value (0 for UCLAMP_MIN
-and 1024 for UCLAMP_MAX), reset the user_defined flag to release control.
+Hi Tigran,
 
-Signed-off-by: Yun Hsiang <hsiang023167@gmail.com>
----
- kernel/sched/core.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
-
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 9a2fbf98fd6f..fa63d70d783a 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -1187,6 +1187,7 @@ static void __setscheduler_uclamp(struct task_struct *p,
- 				  const struct sched_attr *attr)
- {
- 	enum uclamp_id clamp_id;
-+	bool user_defined;
- 
- 	/*
- 	 * On scheduling class change, reset to default clamps for tasks
-@@ -1210,14 +1211,16 @@ static void __setscheduler_uclamp(struct task_struct *p,
- 	if (likely(!(attr->sched_flags & SCHED_FLAG_UTIL_CLAMP)))
- 		return;
- 
-+	user_defined = attr->sched_util_min == 0 ? false : true;
- 	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MIN) {
- 		uclamp_se_set(&p->uclamp_req[UCLAMP_MIN],
--			      attr->sched_util_min, true);
-+			      attr->sched_util_min, user_defined);
- 	}
- 
-+	user_defined = attr->sched_util_max == 1024 ? false : true;
- 	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MAX) {
- 		uclamp_se_set(&p->uclamp_req[UCLAMP_MAX],
--			      attr->sched_util_max, true);
-+			      attr->sched_util_max, user_defined);
- 	}
- }
- 
--- 
-2.25.1
-
+There are rules for use of "WARNING" in output required to support
+kernel testing:
+https://github.com/torvalds/linux/blob/master/include/asm-generic/bug.h#L67-L80
+This seems to be triggerable by exteranal inputs and breaks these rules.
