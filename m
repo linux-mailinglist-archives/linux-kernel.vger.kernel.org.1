@@ -2,83 +2,273 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7426327A9DD
+	by mail.lfdr.de (Postfix) with ESMTP id EBBC727A9DE
 	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 10:45:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726734AbgI1IpA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 04:45:00 -0400
-Received: from mail-ot1-f67.google.com ([209.85.210.67]:33891 "EHLO
-        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726461AbgI1Io7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 04:44:59 -0400
-Received: by mail-ot1-f67.google.com with SMTP id h17so173766otr.1;
-        Mon, 28 Sep 2020 01:44:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+DcW7q0H0ZVFIUEi3RFzHxCg7FFHcjF7fHnrcfvM4IU=;
-        b=q2II+y7eJnnKG7wQa6jQz4uKjayn+Az5/8T+nWygerrZFWV+6u6Vvzh5bXS+68NebE
-         LsIF8o1yIDwfoHSvQvwVeaDvury4sY6Sflx0bftRW1Ue+FLy0DVFntB8D8F9H+IV2pqb
-         uQdQcO4aj4eb0DUr1r6SaUuTzXD6XWVeCRM7luiOwUQ5CKJXa5hnKFQH8UsJ6nHtox71
-         0BVqZLTjwx+YgZSHH2g82kj2p9aMEAevbecDSc8VnDl2aw7RpYC6/urj5HA3+DEr0zZu
-         34rxw0OilhEJ12m6/dY3kSdn7LMJnYaBFiz6+3FS2fJeS9eVfbdSSDVFxooLz1mmEQ+B
-         z3qQ==
-X-Gm-Message-State: AOAM5334j+ncvXsgdqUZe+8+ktS/FNxWS0Hu4do4/FzYYqdanr0HnV3x
-        ulmiO92NsnZFMsZkYeZ0/8ZI5cxVwzgegiaBMwmct8pxgRI=
-X-Google-Smtp-Source: ABdhPJxCSaOfqDvuSMKME3O5ddPQeiuqY9m+SHu/ZcFSQWMXe+d4dM+9hWcBJ5qlUCeu4diZdc0ID6SitEV89BYovdI=
-X-Received: by 2002:a05:6830:1008:: with SMTP id a8mr229588otp.107.1601282698078;
- Mon, 28 Sep 2020 01:44:58 -0700 (PDT)
+        id S1726744AbgI1IpI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 04:45:08 -0400
+Received: from mx2.suse.de ([195.135.220.15]:40652 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726461AbgI1IpI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 04:45:08 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id C1424B2B2;
+        Mon, 28 Sep 2020 08:45:05 +0000 (UTC)
+Subject: Re: [PATCH] drm/hisilicon: Using the to_hibmc_drm_private to convert
+To:     Tian Tao <tiantao6@hisilicon.com>, airlied@linux.ie,
+        daniel@ffwll.ch, kraxel@redhat.com, alexander.deucher@amd.com,
+        tglx@linutronix.de, dri-devel@lists.freedesktop.org,
+        xinliang.liu@linaro.org, linux-kernel@vger.kernel.org
+References: <1601281963-42133-1-git-send-email-tiantao6@hisilicon.com>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Message-ID: <9bd2d033-38a8-94e2-6cd7-10c390e13d14@suse.de>
+Date:   Mon, 28 Sep 2020 10:45:04 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-References: <20200928063603.22564-1-geert@linux-m68k.org>
-In-Reply-To: <20200928063603.22564-1-geert@linux-m68k.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 28 Sep 2020 10:44:47 +0200
-Message-ID: <CAMuHMdW-k05Czd4C9mq1ny9BhJUBt_=MW+digqE0ycTgWm2q4w@mail.gmail.com>
-Subject: Re: Build regressions/improvements in v5.9-rc7
-To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Cc:     "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        sparclinux <sparclinux@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1601281963-42133-1-git-send-email-tiantao6@hisilicon.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="wTn6GGTVBKU6IzTTFNi0ZXIHZwK1bBgzl"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 8:59 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> JFYI, when comparing v5.9-rc7[1] to v5.9-rc6[3], the summaries are:
->   - build errors: +5/-3
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--wTn6GGTVBKU6IzTTFNi0ZXIHZwK1bBgzl
+Content-Type: multipart/mixed; boundary="KMLskTlUdxUtDbcFS7YaOnAaaDtMnh38H";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Tian Tao <tiantao6@hisilicon.com>, airlied@linux.ie, daniel@ffwll.ch,
+ kraxel@redhat.com, alexander.deucher@amd.com, tglx@linutronix.de,
+ dri-devel@lists.freedesktop.org, xinliang.liu@linaro.org,
+ linux-kernel@vger.kernel.org
+Message-ID: <9bd2d033-38a8-94e2-6cd7-10c390e13d14@suse.de>
+Subject: Re: [PATCH] drm/hisilicon: Using the to_hibmc_drm_private to convert
+References: <1601281963-42133-1-git-send-email-tiantao6@hisilicon.com>
+In-Reply-To: <1601281963-42133-1-git-send-email-tiantao6@hisilicon.com>
 
-  + error: modpost: "fw_arg3" [drivers/mtd/parsers/bcm63xxpart.ko]
-undefined!:  => N/A
+--KMLskTlUdxUtDbcFS7YaOnAaaDtMnh38H
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-mips-allmodconfig (It's back, first seen in v5.9-rc1)
+Hi
 
-  + error: arch/sparc/kernel/head_32.o: relocation truncated to fit:
-R_SPARC_WDISP22 against `.init.text':  => (.head.text+0x5040),
-(.head.text+0x5100)
-  + error: arch/sparc/kernel/head_32.o: relocation truncated to fit:
-R_SPARC_WDISP22 against symbol `leon_smp_cpu_startup' defined in .text
-section in arch/sparc/kernel/trampoline_32.o:  => (.init.text+0xa4)
-  + error: arch/sparc/kernel/process_32.o: relocation truncated to
-fit: R_SPARC_WDISP22 against `.text':  => (.fixup+0xc), (.fixup+0x4)
-  + error: arch/sparc/kernel/signal_32.o: relocation truncated to fit:
-R_SPARC_WDISP22 against `.text':  => (.fixup+0x28), (.fixup+0x4),
-(.fixup+0x10), (.fixup+0x1c), (.fixup+0x34)
+Am 28.09.20 um 10:32 schrieb Tian Tao:
+> Using the to_hibmc_drm_private to convert over all uses of dev_private
+> over to the function, and fix a little formatting issue.
 
-Probably nothing we can do?
+Sounds strange to me. Maybe remove "over to the function" and it should
+be better.
 
-> [1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/a1b8638ba1320e6684aa98233c15255eb803fac7/ (all 192 configs)
+>=20
+> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
 
-> [3] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/ba4f184e126b751d1bffad5897f263108befc780/ (all 192 configs)
+Reviewed-by: Thomas Zimmermann <tzimmermann@suse.de>
 
-Gr{oetje,eeting}s,
+> ---
+>  drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c   | 22 +++++++++++-----=
+------
+>  drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c  |  5 ++---
+>  drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c |  4 ++--
+>  3 files changed, 15 insertions(+), 16 deletions(-)
+>=20
+> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c b/drivers/g=
+pu/drm/hisilicon/hibmc/hibmc_drm_de.c
+> index 4d57ec6..a98f993 100644
+> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c
+> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c
+> @@ -105,7 +105,7 @@ static void hibmc_plane_atomic_update(struct drm_pl=
+ane *plane,
+>  	u32 reg;
+>  	s64 gpu_addr =3D 0;
+>  	unsigned int line_l;
+> -	struct hibmc_drm_private *priv =3D plane->dev->dev_private;
+> +	struct hibmc_drm_private *priv =3D to_hibmc_drm_private(plane->dev);
+>  	struct drm_gem_vram_object *gbo;
+> =20
+>  	if (!state->fb)
+> @@ -159,7 +159,7 @@ static const struct drm_plane_helper_funcs hibmc_pl=
+ane_helper_funcs =3D {
+> =20
+>  static void hibmc_crtc_dpms(struct drm_crtc *crtc, int dpms)
+>  {
+> -	struct hibmc_drm_private *priv =3D crtc->dev->dev_private;
+> +	struct hibmc_drm_private *priv =3D to_hibmc_drm_private(crtc->dev);
+>  	unsigned int reg;
+> =20
+>  	reg =3D readl(priv->mmio + HIBMC_CRT_DISP_CTL);
+> @@ -175,7 +175,7 @@ static void hibmc_crtc_atomic_enable(struct drm_crt=
+c *crtc,
+>  				     struct drm_crtc_state *old_state)
+>  {
+>  	unsigned int reg;
+> -	struct hibmc_drm_private *priv =3D crtc->dev->dev_private;
+> +	struct hibmc_drm_private *priv =3D to_hibmc_drm_private(crtc->dev);
+> =20
+>  	hibmc_set_power_mode(priv, HIBMC_PW_MODE_CTL_MODE_MODE0);
+> =20
+> @@ -194,7 +194,7 @@ static void hibmc_crtc_atomic_disable(struct drm_cr=
+tc *crtc,
+>  				      struct drm_crtc_state *old_state)
+>  {
+>  	unsigned int reg;
+> -	struct hibmc_drm_private *priv =3D crtc->dev->dev_private;
+> +	struct hibmc_drm_private *priv =3D to_hibmc_drm_private(crtc->dev);
+> =20
+>  	hibmc_crtc_dpms(crtc, HIBMC_CRT_DPMS_OFF);
+>  	drm_crtc_vblank_off(crtc);
+> @@ -254,7 +254,7 @@ static unsigned int format_pll_reg(void)
+>  static void set_vclock_hisilicon(struct drm_device *dev, unsigned long=
+ pll)
+>  {
+>  	u32 val;
+> -	struct hibmc_drm_private *priv =3D dev->dev_private;
+> +	struct hibmc_drm_private *priv =3D to_hibmc_drm_private(dev);
+> =20
+>  	val =3D readl(priv->mmio + CRT_PLL1_HS);
+>  	val &=3D ~(CRT_PLL1_HS_OUTER_BYPASS(1));
+> @@ -315,7 +315,7 @@ static unsigned int display_ctrl_adjust(struct drm_=
+device *dev,
+>  	unsigned long x, y;
+>  	u32 pll1; /* bit[31:0] of PLL */
+>  	u32 pll2; /* bit[63:32] of PLL */
+> -	struct hibmc_drm_private *priv =3D dev->dev_private;
+> +	struct hibmc_drm_private *priv =3D to_hibmc_drm_private(dev);
+> =20
+>  	x =3D mode->hdisplay;
+>  	y =3D mode->vdisplay;
+> @@ -363,7 +363,7 @@ static void hibmc_crtc_mode_set_nofb(struct drm_crt=
+c *crtc)
+>  	unsigned int val;
+>  	struct drm_display_mode *mode =3D &crtc->state->mode;
+>  	struct drm_device *dev =3D crtc->dev;
+> -	struct hibmc_drm_private *priv =3D dev->dev_private;
+> +	struct hibmc_drm_private *priv =3D to_hibmc_drm_private(dev);
+>  	int width =3D mode->hsync_end - mode->hsync_start;
+>  	int height =3D mode->vsync_end - mode->vsync_start;
+> =20
+> @@ -397,7 +397,7 @@ static void hibmc_crtc_atomic_begin(struct drm_crtc=
+ *crtc,
+>  {
+>  	unsigned int reg;
+>  	struct drm_device *dev =3D crtc->dev;
+> -	struct hibmc_drm_private *priv =3D dev->dev_private;
+> +	struct hibmc_drm_private *priv =3D to_hibmc_drm_private(dev);
+> =20
+>  	hibmc_set_power_mode(priv, HIBMC_PW_MODE_CTL_MODE_MODE0);
+> =20
+> @@ -427,7 +427,7 @@ static void hibmc_crtc_atomic_flush(struct drm_crtc=
+ *crtc,
+> =20
+>  static int hibmc_crtc_enable_vblank(struct drm_crtc *crtc)
+>  {
+> -	struct hibmc_drm_private *priv =3D crtc->dev->dev_private;
+> +	struct hibmc_drm_private *priv =3D to_hibmc_drm_private(crtc->dev);
+> =20
+>  	writel(HIBMC_RAW_INTERRUPT_EN_VBLANK(1),
+>  	       priv->mmio + HIBMC_RAW_INTERRUPT_EN);
+> @@ -437,7 +437,7 @@ static int hibmc_crtc_enable_vblank(struct drm_crtc=
+ *crtc)
+> =20
+>  static void hibmc_crtc_disable_vblank(struct drm_crtc *crtc)
+>  {
+> -	struct hibmc_drm_private *priv =3D crtc->dev->dev_private;
+> +	struct hibmc_drm_private *priv =3D to_hibmc_drm_private(crtc->dev);
+> =20
+>  	writel(HIBMC_RAW_INTERRUPT_EN_VBLANK(0),
+>  	       priv->mmio + HIBMC_RAW_INTERRUPT_EN);
+> @@ -445,7 +445,7 @@ static void hibmc_crtc_disable_vblank(struct drm_cr=
+tc *crtc)
+> =20
+>  static void hibmc_crtc_load_lut(struct drm_crtc *crtc)
+>  {
+> -	struct hibmc_drm_private *priv =3D crtc->dev->dev_private;
+> +	struct hibmc_drm_private *priv =3D to_hibmc_drm_private(crtc->dev);
+>  	void __iomem   *mmio =3D priv->mmio;
+>  	u16 *r, *g, *b;
+>  	unsigned int reg;
+> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c b/drivers/=
+gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
+> index 085d1b2..5632bce 100644
+> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
+> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
+> @@ -29,8 +29,7 @@ DEFINE_DRM_GEM_FOPS(hibmc_fops);
+>  static irqreturn_t hibmc_drm_interrupt(int irq, void *arg)
+>  {
+>  	struct drm_device *dev =3D (struct drm_device *)arg;
+> -	struct hibmc_drm_private *priv =3D
+> -		(struct hibmc_drm_private *)dev->dev_private;
+> +	struct hibmc_drm_private *priv =3D to_hibmc_drm_private(dev);
+>  	u32 status;
+> =20
+>  	status =3D readl(priv->mmio + HIBMC_RAW_INTERRUPT);
+> @@ -244,7 +243,7 @@ static int hibmc_hw_init(struct hibmc_drm_private *=
+priv)
+> =20
+>  static int hibmc_unload(struct drm_device *dev)
+>  {
+> -	struct hibmc_drm_private *priv =3D dev->dev_private;
+> +	struct hibmc_drm_private *priv =3D to_hibmc_drm_private(dev);
+> =20
+>  	drm_atomic_helper_shutdown(dev);
+> =20
+> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c b/drivers=
+/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c
+> index c6999ed..74e26c2 100644
+> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c
+> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c
+> @@ -43,7 +43,7 @@ static int hibmc_connector_get_modes(struct drm_conne=
+ctor *connector)
+>  }
+> =20
+>  static enum drm_mode_status hibmc_connector_mode_valid(struct drm_conn=
+ector *connector,
+> -				      struct drm_display_mode *mode)
+> +						       struct drm_display_mode *mode)
+>  {
+>  	return MODE_OK;
+>  }
+> @@ -76,7 +76,7 @@ static void hibmc_encoder_mode_set(struct drm_encoder=
+ *encoder,
+>  {
+>  	u32 reg;
+>  	struct drm_device *dev =3D encoder->dev;
+> -	struct hibmc_drm_private *priv =3D dev->dev_private;
+> +	struct hibmc_drm_private *priv =3D to_hibmc_drm_private(dev);
+> =20
+>  	reg =3D readl(priv->mmio + HIBMC_DISPLAY_CONTROL_HISILE);
+>  	reg |=3D HIBMC_DISPLAY_CONTROL_FPVDDEN(1);
+>=20
 
-                        Geert
+--=20
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
+(HRB 36809, AG N=C3=BCrnberg)
+Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+--KMLskTlUdxUtDbcFS7YaOnAaaDtMnh38H--
+
+--wTn6GGTVBKU6IzTTFNi0ZXIHZwK1bBgzl
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQFIBAEBCAAyFiEEchf7rIzpz2NEoWjlaA3BHVMLeiMFAl9xopAUHHR6aW1tZXJt
+YW5uQHN1c2UuZGUACgkQaA3BHVMLeiMD8wgAnDprcrIDTUNQCBybfkiwEUcAbtpv
+PnbY39fS0Tx5wj60nnaobi6SCvp8Yjbo6HO3zRnpA8xn5ecvRt/BGnwhcL3TYmBj
+950utMNAuUPlBUeDiHDEARdBXXVHqwxaMbBZkXBmdMV+ngZOD6symGRkEhiHF+tD
+2iPQQcae8bDDFy1OkJblPUtiEkFoYjAWrr/7phQp34g3dMnx2xxPzvPQ/ge7oec2
+mUpdxGg7nDUer3+hNVXpUYlgZYNU2reqDKo+DSISJWlsFqsrCGX1aO8EXNWo64Oh
+ocHtsK1oF73gE9kDEDbEsA6yE5+et/uRLUdH5kNy/3GeDiZZuUy6UHxzvA==
+=i5WF
+-----END PGP SIGNATURE-----
+
+--wTn6GGTVBKU6IzTTFNi0ZXIHZwK1bBgzl--
