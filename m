@@ -2,136 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17A8D27B6AD
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 22:51:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A864F27B6B2
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 22:52:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726811AbgI1UvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 16:51:07 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:41378 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726393AbgI1UvG (ORCPT
+        id S1726839AbgI1UwL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 16:52:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42766 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726393AbgI1UwL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 16:51:06 -0400
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08SKWhJ6057792;
-        Mon, 28 Sep 2020 16:50:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=6nvkd4IYaV6CN/DpdVRxB7tAXyADtIgoHebrk1fBt80=;
- b=iIb6HO+7dhFLIkDCU3NwRXfNkSojgauFG6ylwIRlGBnuLBc8qWIUJB/LlG8FlyfiP7m7
- iwe11jUXTFyoMD4VCLDglKkkbcHBW5G9ghOQd2JVEvFWTB/2HR6gbIEB4vQm5Ls5iFUh
- 2KbrQcs3eG8bM9Ey8tbJ7H94sosMCEy+vzWxCW4Ciz3Xh8j2vHQIYp4T1MwolmCmdIg5
- 9Ox6rpAkIdZc0Ap1jUrO16KCEDG87/j0FdLu3ohYTVbHBS02SaEH37yRgNeCIDgLsBGN
- hXcSdH/vFnmJ1FJRacKTmEgAX/xYYaSRFJiEnWmQd+CP+Wp5iBbQROFVNuYxJSTRnviR fQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33umwwm3d9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 28 Sep 2020 16:50:57 -0400
-Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08SKbaH6073636;
-        Mon, 28 Sep 2020 16:50:57 -0400
-Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33umwwm3d1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 28 Sep 2020 16:50:57 -0400
-Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
-        by ppma04dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08SKm0vs026261;
-        Mon, 28 Sep 2020 20:50:56 GMT
-Received: from b01cxnp23033.gho.pok.ibm.com (b01cxnp23033.gho.pok.ibm.com [9.57.198.28])
-        by ppma04dal.us.ibm.com with ESMTP id 33sw98uu3s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 28 Sep 2020 20:50:56 +0000
-Received: from b01ledav006.gho.pok.ibm.com (b01ledav006.gho.pok.ibm.com [9.57.199.111])
-        by b01cxnp23033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08SKotwl52691406
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 28 Sep 2020 20:50:55 GMT
-Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6859AAC05F;
-        Mon, 28 Sep 2020 20:50:55 +0000 (GMT)
-Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8CD0FAC064;
-        Mon, 28 Sep 2020 20:50:53 +0000 (GMT)
-Received: from oc6857751186.ibm.com (unknown [9.160.36.142])
-        by b01ledav006.gho.pok.ibm.com (Postfix) with ESMTP;
-        Mon, 28 Sep 2020 20:50:53 +0000 (GMT)
-Subject: Re: [PATCH] rpadlpar_io:Add MODULE_DESCRIPTION entries to kernel
- modules
-To:     "Oliver O'Halloran" <oohall@gmail.com>,
-        Mamatha Inamdar <mamatha4@linux.vnet.ibm.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
-References: <20200924051343.16052.9571.stgit@localhost.localdomain>
- <CAOSf1CEv3v940FR_we70qCBME0qFXPizPT8EFbf3XyK2-fPDrw@mail.gmail.com>
-From:   Tyrel Datwyler <tyreld@linux.ibm.com>
-Message-ID: <ff6a8c97-4a6a-c82b-bd35-e09fa44f8e20@linux.ibm.com>
-Date:   Mon, 28 Sep 2020 13:50:52 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Mon, 28 Sep 2020 16:52:11 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79E34C061755
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 13:52:11 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id 197so1951613pge.8
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 13:52:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=E18yvgxr+dgDZ8P7S30cmV0usuEJVg+uMENH9hDolXk=;
+        b=qhphk1yOGvZaci0uNcdLhvAY0Nm4YjlOFSTTt4DS11k5JYA/2/MuGen08tFXeptLsI
+         zei1FfvI8M9uRJHfOApRsa4DQDWJxY9UqrTt0Q2l8+rdkA+4U6XFeEieR2QuTYbFMzJv
+         0Ro8v9FHLQ/cjsnzphEYpQcTDZLz9INdl9XSCklILr/gBpXqcJle7v2XeX7tGVIMZaZ/
+         BOub9/HvIlNuffP65vMlKGXzS6NrmzQcCGj6KoFRqwfui3iZ30MYxt+QMF6FKFy1WKlK
+         AHcWz5DhYs7KDcu8QoVB0IYVSkXtgFrqmwEAQWr9oW8oz8tRv/LmgUPpVjHx5GK6oCAI
+         EE6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=E18yvgxr+dgDZ8P7S30cmV0usuEJVg+uMENH9hDolXk=;
+        b=tw/dcdunFlN9GC54b6yinrlbmh35rkseDRDgJRTXq4o9bZiZNVLavyht/3iBRnISam
+         3Zfxx1NBs4xW4Tct5375Q7P+WhY5YC1vUnr98QXNsnaxu7i8KjzimHkoeKKUTy/VmOu2
+         zWy6JqF1Caw9E6VxcFtzFxVLx3h1DUP4HF/5/sxPhN6WIZ/0vaf2aO6c2MQuP5FL66dN
+         BPhvwaaJ5tVbNiQRigW4eUo58OVIQjO+RPxkt0zQC19kPAA1ZADQlHUG2BjwUXZ/AnSo
+         LU/VxrSsIkij/509K97+6f2Ksx1GnAj3vtIkLQVEdDb/LAJK6zeIgaBNMy/wsO7QF2pC
+         QXAQ==
+X-Gm-Message-State: AOAM530Hse/q7riFSluHM3AVU+23oalWClMfCTPGtZJfbJUqIRF4mxLN
+        CeBlWnKlhQh/4TTZeG3EuPs4xhY9u/233T2IMiPJnA==
+X-Google-Smtp-Source: ABdhPJyOpOvP3F8ukyvf3cS1yn54mNQ9MQiMewRhlNJLvUfcEzV4xnS29EQ/UovZfNYpkCNzjcH5Ab//ZMvyhkV3gs8=
+X-Received: by 2002:a63:28c9:: with SMTP id o192mr617964pgo.381.1601326330804;
+ Mon, 28 Sep 2020 13:52:10 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAOSf1CEv3v940FR_we70qCBME0qFXPizPT8EFbf3XyK2-fPDrw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-28_22:2020-09-28,2020-09-28 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- suspectscore=0 spamscore=0 phishscore=0 mlxscore=0 adultscore=0
- clxscore=1011 bulkscore=0 priorityscore=1501 mlxlogscore=999
- malwarescore=0 lowpriorityscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2006250000 definitions=main-2009280158
+References: <00000000000052569205afa67426@google.com> <20200927145737.GA4746@zn.tnic>
+ <CACT4Y+Zxt3-Dj6r53mEkwv24PazPzTxQ7usV1O+RB0bk2FzO8g@mail.gmail.com>
+ <CACT4Y+ZZH76qg810RzGp6FDLTxJWVqZgkrXSxqgq7AjpPYG9XQ@mail.gmail.com>
+ <20200928083819.GD1685@zn.tnic> <CACT4Y+bPFASnmFRKpQ=KY1z+RnTbGmkPU3aikzdXZpKkV03D9A@mail.gmail.com>
+ <20200928085401.GE1685@zn.tnic> <CACT4Y+Z4Y6SJJ6iYBhVRiknrWBAD6gGhQXiXLhxPniDNBFJGsA@mail.gmail.com>
+In-Reply-To: <CACT4Y+Z4Y6SJJ6iYBhVRiknrWBAD6gGhQXiXLhxPniDNBFJGsA@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Mon, 28 Sep 2020 13:51:58 -0700
+Message-ID: <CAKwvOdmTm2rVdc2JTSVVadKP3DONRcPXSE-s3tFPqHgCSieH7Q@mail.gmail.com>
+Subject: Re: general protection fault in perf_misc_flags
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     Borislav Petkov <bp@alien8.de>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        syzbot <syzbot+ce179bc99e64377c24bc@syzkaller.appspotmail.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Jiri Olsa <jolsa@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/23/20 11:41 PM, Oliver O'Halloran wrote:
-> On Thu, Sep 24, 2020 at 3:15 PM Mamatha Inamdar
-> <mamatha4@linux.vnet.ibm.com> wrote:
->>
->> This patch adds a brief MODULE_DESCRIPTION to rpadlpar_io kernel modules
->> (descriptions taken from Kconfig file)
->>
->> Signed-off-by: Mamatha Inamdar <mamatha4@linux.vnet.ibm.com>
->> ---
->>  drivers/pci/hotplug/rpadlpar_core.c |    1 +
->>  1 file changed, 1 insertion(+)
->>
->> diff --git a/drivers/pci/hotplug/rpadlpar_core.c b/drivers/pci/hotplug/rpadlpar_core.c
->> index f979b70..bac65ed 100644
->> --- a/drivers/pci/hotplug/rpadlpar_core.c
->> +++ b/drivers/pci/hotplug/rpadlpar_core.c
->> @@ -478,3 +478,4 @@ static void __exit rpadlpar_io_exit(void)
->>  module_init(rpadlpar_io_init);
->>  module_exit(rpadlpar_io_exit);
->>  MODULE_LICENSE("GPL");
->> +MODULE_DESCRIPTION("RPA Dynamic Logical Partitioning driver for I/O slots");
-> 
-> RPA as a spec was superseded by PAPR in the early 2000s. Can we rename
-> this already?
+On Mon, Sep 28, 2020 at 3:34 AM 'Dmitry Vyukov' via Clang Built Linux
+<clang-built-linux@googlegroups.com> wrote:
+>
+> On Mon, Sep 28, 2020 at 10:54 AM Borislav Petkov <bp@alien8.de> wrote:
+> >
+> > On Mon, Sep 28, 2020 at 10:40:19AM +0200, Dmitry Vyukov wrote:
+> > > I meant the kernel self-corrupts itself, that just wasn't detected by
+> > > KASAN, page protections, etc.
+> >
+> > Well, Nick already asked this but we're marking all kernel text RO early
+> > during boot. So it either is happening before that or something else
+> > altogether is going on.
 
-I seem to recall Michael and I discussed the naming briefly when I added the
-maintainer entries for the drivers and that the PAPR acronym is almost as
-meaningless to most as the original RPA. While, IBM no longer uses the term
-pseries for Power hardware marketing it is the defacto platform identifier in
-the Linux kernel tree for what we would call PAPR compliant. All in all I have
-no problem with renaming, but maybe we should consider pseries_dlpar or even
-simpler ibmdlpar.
+On Sun, Sep 27, 2020 at 11:06 PM 'Dmitry Vyukov' via Clang Built Linux
+<clang-built-linux@googlegroups.com> wrote:
+>
+> Interestingly there is a new crash, which looks similar:
+>
+> general protection fault in map_vdso
+> https://syzkaller.appspot.com/bug?extid=c2ae01c2b1b385384a06
+>
+> The code is also with 4 0's:
+> Code: 00 00 00 48 b8 00 00 00 00 00 fc ff df 41 57 49 89 ff 41 56 41
+> 55 41 54 55 65 48 8b 2c 25 c0 fe 01 00 48 8d bd 28 04 00 00 53 <48> 00
+> 00 00 00 fa 48 83 ec 10 48 c1 ea 03 80 3c 02 00 0f 85 51 02
+>
+> But it happened with gcc.
+>
+> Also I found this older one:
+> general protection fault in map_vdso_randomized
+> https://syzkaller.appspot.com/bug?id=8366fd024559946137b9db23b26fd2235d43b383
+>
+> which also has code smashed and happened with gcc:
+> Code: 00 fc ff df 48 89 f9 48 c1 e9 03 80 3c 01 00 0f 85 eb 00 00 00
+> 65 48 8b 1c 25 c0 fe 01 00 48 8d bb 28 04 00 00 41 2b 54 24 20 <00> 00
+> 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
 
-> 
-> The only potential problem I can see is scripts doing: modprobe
-> rpadlpar_io or similar
-> 
-> However, we should be able to fix that with a module alias.
+If this is related to vdso's, they seem mapped as `r-xp` (not `w):
+$ sudo cat /proc/1/maps | grep vdso
+7ffc667f5000-7ffc667f7000 r-xp 00000000 00:00 0                          [vdso]
 
-Agreed.
+map_vdso() in arch/x86/entry/vdso/vma.c doesn't map the VMA as
+writable, but it uses VM_MAYWRITE with a comment about GDB setting
+breakpoints.
 
--Tyrel
+So it sounds like the page protections on the vdso can be changed at
+runtime (via mprotect).  Maybe syzkaller is tickling that first?
 
-> 
-> Oliver
-> 
+map_vdso_randomized() does call map_vdso().  Maybe if we mprotect the
+vdso to be writable, it may be easier to spot the write.
 
+-- 
+Thanks,
+~Nick Desaulniers
