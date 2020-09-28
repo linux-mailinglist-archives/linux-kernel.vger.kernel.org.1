@@ -2,101 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1242627A601
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 05:49:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A40D327A603
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 05:54:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726589AbgI1Ds6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 23:48:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54082 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726547AbgI1Ds6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Sep 2020 23:48:58 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58D8EC0613CF
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Sep 2020 20:48:58 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id k13so8127871pfg.1
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Sep 2020 20:48:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=ZV6EaZka+YS38XpEGu1E1E1iX6vM8ZuAlooQUItDZRo=;
-        b=HBHUhXR7ZqoG2yX3ZC7TJhyejEavXYSPVxrPnZuRY80LuKNI2PY9obUsgEwi2Q1ovk
-         Y7C/NWUnVraBe58M+MdOEAwoK8jYUBfBqSZJQQxIYFduUnTcou/ArToAruPTnC8DGy25
-         0Uf90AC4JMtwPeevzzW108wYgG1mNvuwaHIab0O7xB/eo301XCLNrjHcp03GiVCQD4Gn
-         64rh6R+v1s3e9JIrwc+l8ggNy/5IxaiKNxlHIhVxBIfEj3pjN84C7xD/BhPOtaRZ4fbe
-         GzqRZEEHMqID2/SMolQi4sY64yfw5IblpVUjVNlRTYFABhPx7aZTDkut9m6dO5B7W2IW
-         lfTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ZV6EaZka+YS38XpEGu1E1E1iX6vM8ZuAlooQUItDZRo=;
-        b=X0wy+lipv8aM2jyVSKMpjMfMWmwTOnBOnHXsmzl5sZbBQ9+/8nAjSW6nkB4cTzheAu
-         U5BdLe5w9eWaD/0pANMkAzsLh+T7HwPg96nCkPPvrhzZ3ByERtlYmx1ZD0+2aTXbEjtZ
-         sRjthRN2yFKGKOsvd0btW7o4EPTJaML+/pF/DE5Hb9cjl1/Pm0yOLv8tivQCaNxwCNO9
-         R0jSJGvBvP2ZUD5hOt5Ey6rBQE6y5aah098nVUse02G59SqFBTIpkDlh97dxGjDQe5cM
-         l/yY3VwbO156u9VwNv6KGH1Em3PYAkhDSpuL59jkz3tAFQjLJhcMV7dYV5f8lRZRIjBl
-         5mrQ==
-X-Gm-Message-State: AOAM531MejISKxkxcSSj6sce6HnFlecHpHdaRbkOgTEQ5lSYC72gOgfK
-        LlUZBEOBkW8YxzrqhpgMOe3g
-X-Google-Smtp-Source: ABdhPJxr04SzUUBxi2QhB/l2mv24dNYBRg9YDRrGEkfxaPtcWX1bXsbxuYYxZ4T49N9w/YyraZvkpg==
-X-Received: by 2002:a17:902:8b81:b029:d2:42a6:ba2 with SMTP id ay1-20020a1709028b81b02900d242a60ba2mr9281844plb.24.1601264937888;
-        Sun, 27 Sep 2020 20:48:57 -0700 (PDT)
-Received: from Mani-XPS-13-9360 ([2409:4072:6003:40df:7c40:5a87:eb86:87b0])
-        by smtp.gmail.com with ESMTPSA id w192sm9597176pfd.156.2020.09.27.20.48.54
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sun, 27 Sep 2020 20:48:57 -0700 (PDT)
-Date:   Mon, 28 Sep 2020 09:18:52 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     hemantk@codeaurora.org, bbhatt@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, jhugo@codeaurora.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 5/5] bus: mhi: core: Move MHI_MAX_MTU to external header
- file
-Message-ID: <20200928034852.GD3605@Mani-XPS-13-9360>
-References: <20200927033652.11789-1-manivannan.sadhasivam@linaro.org>
- <20200927033652.11789-6-manivannan.sadhasivam@linaro.org>
- <20200927101734.GA85724@kroah.com>
+        id S1726513AbgI1DyM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 23:54:12 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:37977 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726380AbgI1DyM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Sep 2020 23:54:12 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C07tS6Dtrz9sSC;
+        Mon, 28 Sep 2020 13:54:07 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1601265250;
+        bh=zJZbAuZVkx42FoKhUXPLJIvzQCvkeCOXLrWnMARQTLM=;
+        h=Date:From:To:Cc:Subject:From;
+        b=InBSiV7PACLpqSfam1oCU3GUsUkYDYzaH9tnw8L20pgNLTrNDbrjAYPORCvV/IEKH
+         RzeeVX3zGBfbgsbQAwYvdE8BuW1ALkEwwfzq5dbvQbzEokt4CEKhNJzgD/LI2yxyQY
+         kUZFcQAHTs3GuTj+hojmRgly0bM3n58YFOkqGlWbt9Igzyz3yrJ85+JFKRXxzShMm6
+         gez+DbcZtmLFBRbsvi1fZTRjqAbQ8HotvHVtsnGZ5NeC26K5DaKLBkKz/JYuZjh3Hl
+         AQ6v0PGQQO0Rxnq756hL4Q1UGpT/7vsYY+yGKE5iGqYKaay9ZHGSp6POkS2BZbLWrC
+         q3wObpwmu3k8g==
+Date:   Mon, 28 Sep 2020 13:54:05 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Dave Airlie <airlied@linux.ie>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        Christoph Hellwig <hch@lst.de>
+Cc:     Paul Cercueil <paul@crapouillou.net>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: linux-next: build failure after merge of the drm tree
+Message-ID: <20200928135405.73404219@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200927101734.GA85724@kroah.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: multipart/signed; boundary="Sig_/TtqDvJSRZxzN_9i5h=CBwVG";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 27, 2020 at 12:17:34PM +0200, Greg KH wrote:
-> On Sun, Sep 27, 2020 at 09:06:52AM +0530, Manivannan Sadhasivam wrote:
-> > From: Hemant Kumar <hemantk@codeaurora.org>
-> > 
-> > Currently this macro is defined in internal MHI header as
-> > a TRE length mask. Moving it to external header allows MHI
-> > client drivers to set this upper bound for the transmit
-> > buffer size.
-> > 
-> > Signed-off-by: Hemant Kumar <hemantk@codeaurora.org>
-> > Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> > ---
-> >  drivers/bus/mhi/core/internal.h | 1 -
-> >  include/linux/mhi.h             | 3 +++
-> >  2 files changed, 3 insertions(+), 1 deletion(-)
-> 
-> If no one is using this change, then please don't make it until someone
-> needs it.
-> 
-> So submit it when you have a user please.
-> 
+--Sig_/TtqDvJSRZxzN_9i5h=CBwVG
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Okay, will drop it.
+Hi all,
 
-Thanks,
-Mani
+After merging the drm tree, today's linux-next build (x86_64 allmodconfig)
+failed like this:
 
-> thanks,
-> 
-> greg k-h
+drivers/gpu/drm/ingenic/ingenic-drm-drv.c: In function 'ingenic_drm_sync_da=
+ta':
+drivers/gpu/drm/ingenic/ingenic-drm-drv.c:478:4: error: implicit declaratio=
+n of function 'dma_cache_sync'; did you mean 'regcache_sync'? [-Werror=3Dim=
+plicit-function-declaration]
+  478 |    dma_cache_sync(priv->dev, addr + offset,
+      |    ^~~~~~~~~~~~~~
+      |    regcache_sync
+drivers/gpu/drm/ingenic/ingenic-drm-drv.c: In function 'ingenic_drm_gem_mma=
+p':
+drivers/gpu/drm/ingenic/ingenic-drm-drv.c:671:11: error: 'DMA_ATTR_NON_CONS=
+ISTENT' undeclared (first use in this function)
+  671 |   attrs =3D DMA_ATTR_NON_CONSISTENT;
+      |           ^~~~~~~~~~~~~~~~~~~~~~~
+drivers/gpu/drm/ingenic/ingenic-drm-drv.c:671:11: note: each undeclared ide=
+ntifier is reported only once for each function it appears in
+
+Caused by commit
+
+  37054fc81443 ("gpu/drm: ingenic: Add option to mmap GEM buffers cached")
+
+interacting with commits
+
+  5a8429227140 ("dma-mapping: remove dma_cache_sync")
+  efa70f2fdc84 ("dma-mapping: add a new dma_alloc_pages API")
+
+from the dma-mapping tree.
+
+Its not immediately obvious how to fix this up, so I have just marked
+CONFIG_DRM_INGENIC as BROKEN until a fix up is provided.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/TtqDvJSRZxzN_9i5h=CBwVG
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9xXl0ACgkQAVBC80lX
+0GwLMwf9HC4vQnyBXp4F+rGioMw5maEobTmfFn1IC5QL/ahSKbDX1Sv0pYo2WCfR
+afvxdZbG1SFC9U5jF9n/gnBxyq3DIdPK+/3TScFbMGKWq23BpyA+50oVl1joZq7l
+ThZ31182NgnYUgiGnDPpSuNF2olCo0ot4c9tCuu9wHau47tqxsWm2ijp1SuzMdT8
+0rDEShd5HHDG4a9WwRpJUCsIVslKT9tfcFwjYwXGz3R+nWyIxkICLjCXQ0ze39zD
+iGJN0IVEWnzt3Ix8acp+R0OHJVEqcZwA5xmSkv8O3nOAMvm8UoU0lN2b6aOxQRYi
+o4N4nqROvaXI1VM9nzW1CA+I9WAJhw==
+=/EiK
+-----END PGP SIGNATURE-----
+
+--Sig_/TtqDvJSRZxzN_9i5h=CBwVG--
