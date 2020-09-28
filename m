@@ -2,221 +2,267 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E23D527B6D1
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 23:05:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93A0427B6CC
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 23:03:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726928AbgI1VFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 17:05:51 -0400
-Received: from mga01.intel.com ([192.55.52.88]:20919 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726590AbgI1VFu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 17:05:50 -0400
-IronPort-SDR: HUFdE00GNG59CZhOC7R1j6KIb4zawP3ydrVe+yS6Y0kf+0UarC8zR+zjN5Jjns8OR7sPc0O4nD
- K6sPAKaPfjXg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9758"; a="180207818"
-X-IronPort-AV: E=Sophos;i="5.77,315,1596524400"; 
-   d="scan'208";a="180207818"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 12:32:39 -0700
-IronPort-SDR: QO4Rtate0tOS4QYb8pyV9B9wp7jmnfuLKnnOw2M8uhgRxp6Pd+w95M3w6y4oENJjFcP4DRjrUw
- bM2M/sWsA0Vw==
-X-IronPort-AV: E=Sophos;i="5.77,315,1596524400"; 
-   d="scan'208";a="488732277"
-Received: from evinhugx-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.44.118])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 12:32:32 -0700
-Date:   Mon, 28 Sep 2020 22:32:29 +0300
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Haitao Huang <haitao.huang@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>, X86 ML <x86@kernel.org>,
-        linux-sgx@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Darren Kenny <darren.kenny@oracle.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        asapek@google.com, Borislav Petkov <bp@alien8.de>,
-        "Xing, Cedric" <cedric.xing@intel.com>, chenalexchen@google.com,
-        Conrad Parker <conradparker@google.com>, cyhanish@google.com,
-        "Huang, Haitao" <haitao.huang@intel.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        "Huang, Kai" <kai.huang@intel.com>,
-        "Svahn, Kai" <kai.svahn@intel.com>, Keith Moyer <kmoy@google.com>,
-        Christian Ludloff <ludloff@google.com>,
-        Neil Horman <nhorman@redhat.com>,
-        Nathaniel McCallum <npmccallum@redhat.com>,
-        Patrick Uiterwijk <puiterwijk@redhat.com>,
+        id S1726875AbgI1VD4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 17:03:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44560 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726590AbgI1VDz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 17:03:55 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90972C0613CE
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 14:03:55 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id s131so2431158qke.0
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 14:03:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=SGBe8MpSknH0qUb+TQ90a6ftrB2Ede16bHQ7TXX42Tw=;
+        b=Vtkaz3mp9a/NY/motnU4x+MiinMLrHa+BomCSZqvd/94lUeghj9zTyK0isXJQDPNcZ
+         tIYJgFj8bxYSYVfrutfK7NslWH0FKdNxyQM2TUh7RbX/+k5Aq68v2co3gbvLBbnA+Y9b
+         Q0tM24OtlAKlE2lkaxPXRaXVYKLiz/2HCaYmRDwKYzf1jL7irKZtZV9hEkmR8C6OyFBt
+         tED7c83d22hWrtTlz3MY07Co8qUTaNZB9zUYrG+EE1nW8I1KqoxJQ15erhYZbNPmCJuO
+         0nVk/EQMhSqQksp50gMeUB2JNwP5iWRpAmi+E5fNP3Fn70jG1HKW6OdaSlS4CwxiJu6W
+         Kmzg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=SGBe8MpSknH0qUb+TQ90a6ftrB2Ede16bHQ7TXX42Tw=;
+        b=tZ0jOUIhKBtCTcIk+rlH8Pt9YwvB0hWollgS7y9xxDa/GISQyj8STlRZr6YC4tF7qA
+         calMAqQkcKlVMQ99icB573z/1YjB1sDTUK28Lm+QZ4eUqxtMewEVB0KpvhkgInMedoVS
+         WIjmwQtibD55fZIodiuPqFRVNdG8jSfPJ+n6wmvT+Q7bViPHJQCIz/FIyF0JC5IC2Yi2
+         ooU+r5YB1q47S2F8su91dg/sWn/DNreBTzIhhqmX7bWpi4y171kxXIqpO7Co8EC9mP14
+         /UkmBAHsREOJ5hcHTfeNT1+ENndFCMG2vegs0PuSQlFKQrqHzj4icKDGH8dDFsAmst0k
+         ZP7A==
+X-Gm-Message-State: AOAM5335ZM6o+vY/PVFB2OeOHilHKpTdwZZSrBvoI+yWaWd90sv8LJw3
+        3qIxxYLH84cQr3uuSc/lAr5SqQ==
+X-Google-Smtp-Source: ABdhPJy9DN7eukM57oH76vW7yWC/hkgBmIqLB2xSOGXpfF8h03OXKgaYAK8Ds39zw0xS7+3LjVvUYQ==
+X-Received: by 2002:a05:620a:1583:: with SMTP id d3mr1317180qkk.495.1601327034521;
+        Mon, 28 Sep 2020 14:03:54 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:3928])
+        by smtp.gmail.com with ESMTPSA id y46sm2665377qtc.30.2020.09.28.14.03.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Sep 2020 14:03:53 -0700 (PDT)
+Date:   Mon, 28 Sep 2020 17:02:16 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@kernel.org>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Greg Thelen <gthelen@google.com>,
         David Rientjes <rientjes@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>, yaozhangx@google.com
-Subject: Re: [PATCH v38 10/24] mm: Add vm_ops->mprotect()
-Message-ID: <20200928193229.GA125819@linux.intel.com>
-References: <20200924230501.GA20095@linux.intel.com>
- <b737fcab-bfde-90e1-1101-82d646a6f5b7@intel.com>
- <20200925000052.GA20333@linux.intel.com>
- <32fc9df4-d4aa-6768-aa06-0035427b7535@intel.com>
- <20200925194304.GE31528@linux.intel.com>
- <230ce6da-7820-976f-f036-a261841d626f@intel.com>
- <20200928005347.GB6704@linux.intel.com>
- <6eca8490-d27d-25b8-da7c-df4f9a802e87@intel.com>
- <20200928161954.GB92669@linux.intel.com>
- <c29a662e-90ff-4862-8c82-06b43b81fb4d@intel.com>
+        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] memcg: introduce per-memcg reclaim interface
+Message-ID: <20200928210216.GA378894@cmpxchg.org>
+References: <20200909215752.1725525-1-shakeelb@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <c29a662e-90ff-4862-8c82-06b43b81fb4d@intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20200909215752.1725525-1-shakeelb@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 09:48:10AM -0700, Dave Hansen wrote:
-> On 9/28/20 9:19 AM, Jarkko Sakkinen wrote:
-> > On Mon, Sep 28, 2020 at 07:04:38AM -0700, Dave Hansen wrote:
-> >> EMODPE is virtually irrelevant for this whole thing.  The x86 PTE
-> >> permissions still specify the most restrictive permissions, which is
-> >> what matters the most.
-> >>
-> >> We care about the _worst_ the enclave can do, not what it imposes on
-> >> itself on top of that.
-> > 
-> > AFAIK it is not, or what we are protecting against with this anyway
-> > then?
-> > 
-> > Let say an LSM makes decision for the permissions based on origin. If we
-> > do not have this you can:
-> > 
-> > 1. EMODPE
-> > 2. mprotect
+Hello,
+
+I apologize for the late reply. The proposed interface has been an
+ongoing topic and area of experimentation within Facebook as well,
+which makes it a bit difficult to respond with certainty here.
+
+I agree with both your usecases. They apply to us as well. We
+currently make two small changes to our kernel to solve them. They
+work okay-ish in our production environment, but they aren't quite
+there yet, and not ready for upstream.
+
+Some thoughts and comments below.
+
+On Wed, Sep 09, 2020 at 02:57:52PM -0700, Shakeel Butt wrote:
+> Introduce an memcg interface to trigger memory reclaim on a memory cgroup.
 > 
-> The thing that matters is that the enclave needs relaxed permissions
-> from the kernel.  What it *ALSO* needs to do to *ITSELF* to get those
-> permissions is entirely irrelevant to the kernel.
-
-Lets try to find the root of misunderstanding, shall we?
-
-I'm assuming that your statement is encapsulated to:
-
-https://lore.kernel.org/linux-sgx/32fc9df4-d4aa-6768-aa06-0035427b7535@intel.com/
-
-I do agree with this.
-
-And here is a direct quote:
-
-"It is also stashed off and then later compared with enclave PTEs to
-ensure that any future mmap()/mprotect() operations performed by the
-enclave creator or the enclave itself are consistent with the earlier
-declared permissions."
-
-Without the mprotect callback in place, by using EMODPE and mprotect,
-one could surpass the permisssions that we declared earlier.
-
-With the callback in place this is not possible. EMODPE can be freely
-used but mprotect() always caps the permissions. It enables us to *not
-care* about EMODPE.
-
-My problem is that I fully agree what you say in your description but
-disagree on that EMODPE should not be mentioned.
-
-> >     There is no standard file format for enclaves. They are dynamically built
-> >     and the ways how enclaves are deployed differ greatly. For an app you might
-> >     want to have a simple static binary, but on the other hand for a container
-> >     you might want to dynamically create the whole thing at run-time. Also, the
-> >     existing ecosystem for SGX is already large, which would make the task very
-> >     hard.
+> Use cases:
+> ----------
 > 
-> I'm sorry I ever mentioned the file format.  Please remove any mention
-> of it.  It's irrelevant.  This entire paragraph is irrelevant.
-
-Not sure if it is or not. It is merely to state that execve() path is
-possible. Perhaps should be toned down in some way. Should be like the
-a small remark at most.
-
-> >     Finally, even if there was a standard format, one would still want a
-> >     dynamic way to add pages to the enclave. One big reason for this is that
-> >     enclaves have load time defined pages that represent entry points to the
-> >     enclave. Each entry point can service one hardware thread at a time and
-> >     you might want to run-time parametrize this depending on your environment.
+> 1) Per-memcg uswapd:
 > 
-> I also don't know what this paragraph has to do with the mprotect()
-> hook.  Please remove it.
+> Usually applications consists of combination of latency sensitive and
+> latency tolerant tasks. For example, tasks serving user requests vs
+> tasks doing data backup for a database application. At the moment the
+> kernel does not differentiate between such tasks when the application
+> hits the memcg limits. So, potentially a latency sensitive user facing
+> task can get stuck in high reclaim and be throttled by the kernel.
+> 
+> Similarly there are cases of single process applications having two set
+> of thread pools where threads from one pool have high scheduling
+> priority and low latency requirement. One concrete example from our
+> production is the VMM which have high priority low latency thread pool
+> for the VCPUs while separate thread pool for stats reporting, I/O
+> emulation, health checks and other managerial operations. The kernel
+> memory reclaim does not differentiate between VCPU thread or a
+> non-latency sensitive thread and a VCPU thread can get stuck in high
+> reclaim.
+> 
+> One way to resolve this issue is to preemptively trigger the memory
+> reclaim from a latency tolerant task (uswapd) when the application is
+> near the limits. Finding 'near the limits' situation is an orthogonal
+> problem.
+
+I don't think a userspace implementation is suitable for this purpose.
+
+Kswapd-style background reclaim is beneficial to probably 99% of all
+workloads. Because doing reclaim inside the execution stream of the
+workload itself is so unnecessary in a multi-CPU environment, whether
+the workload is particularly latency sensitive or only cares about
+overall throughput. In most cases, spare cores are available to do
+this work concurrently, and the buffer memory required between the
+workload and the async reclaimer tends to be negligible.
+
+Requiring non-trivial userspace participation for such a basic
+optimization does not seem like a good idea to me. We'd probably end
+up with four or five hyperscalers having four or five different
+implementations, and not much user coverage beyond that.
+
+I floated this patch before:
+https://lore.kernel.org/linux-mm/20200219181219.54356-1-hannes@cmpxchg.org/
+
+It's blocked on infrastructure work in the CPU controller that allows
+accounting CPU cycles spent on behalf of other cgroups. But we need
+this functionality in other places as well - network, async filesystem
+encryption, various other stuff bounced to workers.
+
+> 2) Proactive reclaim:
+> 
+> This is a similar to the previous use-case, the difference is instead of
+> waiting for the application to be near its limit to trigger memory
+> reclaim, continuously pressuring the memcg to reclaim a small amount of
+> memory. This gives more accurate and uptodate workingset estimation as
+> the LRUs are continuously sorted and can potentially provide more
+> deterministic memory overcommit behavior. The memory overcommit
+> controller can provide more proactive response to the changing behavior
+> of the running applications instead of being reactive.
+
+This is an important usecase for us as well. And we use it not just to
+keep the LRUs warm, but to actively sample the workingset size - the
+true amount of memory required, trimmed of all its unused cache and
+cold pages that can be read back from disk on demand.
+
+For this purpose, we're essentially using memory.high right now.
+
+The only modification we make here is adding a memory.high.tmp variant
+that takes a timeout argument in addition to the limit. This ensures
+we don't leave an unsafe limit behind if the userspace daemon crashes.
+
+We have experienced some of the problems you describe below with it.
+
+> Benefit of user space solution:
+> -------------------------------
+> 
+> 1) More flexible on who should be charged for the cpu of the memory
+> reclaim. For proactive reclaim, it makes more sense to centralized the
+> overhead while for uswapd, it makes more sense for the application to
+> pay for the cpu of the memory reclaim.
+
+Agreed on both counts.
+
+> 2) More flexible on dedicating the resources (like cpu). The memory
+> overcommit controller can balance the cost between the cpu usage and
+> the memory reclaimed.
+
+This could use some elaboration, I think.
+
+> 3) Provides a way to the applications to keep their LRUs sorted, so,
+> under memory pressure better reclaim candidates are selected. This also
+> gives more accurate and uptodate notion of working set for an
+> application.
+
+That's a valid argument for proactive reclaim, and I agree with
+it. But not necessarily an argument for which part of the proactive
+reclaim logic should be in-kernel and which should be in userspace.
+
+> Questions:
+> ----------
+> 
+> 1) Why memory.high is not enough?
+> 
+> memory.high can be used to trigger reclaim in a memcg and can
+> potentially be used for proactive reclaim as well as uswapd use cases.
+> However there is a big negative in using memory.high. It can potentially
+> introduce high reclaim stalls in the target application as the
+> allocations from the processes or the threads of the application can hit
+> the temporary memory.high limit.
+
+That's something we have run into as well. Async memory.high reclaim
+helps, but when proactive reclaim does bigger steps and lowers the
+limit below the async reclaim buffer, the workload can still enter
+direct reclaim. This is undesirable.
+
+> Another issue with memory.high is that it is not delegatable. To
+> actually use this interface for uswapd, the application has to introduce
+> another layer of cgroup on whose memory.high it has write access.
+
+Fair enough.
+
+I would generalize that and say that limiting the maximum container
+size and driving proactive reclaim are separate jobs, with separate
+goals, happening at different layers of the system. Sharing a single
+control knob for that can be a coordination nightmare.
+
+> 2) Why uswapd safe from self induced reclaim?
+> 
+> This is very similar to the scenario of oomd under global memory
+> pressure. We can use the similar mechanisms to protect uswapd from self
+> induced reclaim i.e. memory.min and mlock.
 
 Agreed.
 
-> >     The consequence is that enclaves are best created with an ioctl API and the
-> >     access control can be based only to the origin of the source file for the
-> >     enclave data, i.e. on VMA file pointer and page permissions. For example,
+> Interface options:
+> ------------------
 > 
-> It's not strictly page permissions, though.  It's actually VMA
-> permissions.  The thing you copy from might be the zero page, and even
-> though it has Write=0 page permissions, apps are completely OK to write
-> to the address.  This is the WRITE vs. MAY_WRITE semantic in the VMA flags.
-> 
-> It's also not just about *files*.  Anonymous memory might or might not
-> be a valid source for enclave data based on LSM hooks.
+> Introducing a very simple memcg interface 'echo 10M > memory.reclaim' to
+> trigger reclaim in the target memory cgroup.
 
-Yes, this should be refined, agreed. Source can be either anonymous page
-or a file, I do of course understand that.
+This gets the assigning and attribution of targeted reclaim work right
+(although it doesn't solve kswapd cycle attribution yet).
 
-> >     this could be done with LSM hooks that are triggered in the appropriate
-> >     ioctl's and they could make the access control decision based on this
-> >     information.
-> 
-> This "appropriate ioctl's" is not good changelog material.  Please use
-> those bytes to convey actual information.
-> 
-> 	... this could be done with LSM hooks which restrict the source
-> 	of enclave page data
-> 
-> I don't care that it's an ioctl(), really.  What matters is what the
-> ioctl() does: copy data into enclave pages.
+However, it also ditches the limit semantics, which themselves aren't
+actually a problem. And indeed I would argue have some upsides.
 
-Agreed.
+As per above, the kernel knows best when and how much to reclaim to
+match the allocation rate, since it's in control of the allocation
+path. To do proactive reclaim with the memory.reclaim interface, you
+would need to monitor memory consumption closely. Workloads may not
+allocate anything for hours, and then suddenly allocate gigabytes
+within seconds. A sudden onset of streaming reads through the
+filesystem could destroy the workingset measurements, whereas a limit
+would catch it and do drop-behind (and thus workingset sampling) at
+the exact rate of allocations.
 
-> >     Unfortunately, there is ENCLS[EMODPE] that a running enclave can use to
-> >     upgrade its permissions. If we do not limit mmap() and mprotect(), enclave
-> >     could upgrade its permissions by using EMODPE followed by an appropriate
-> >     mprotect() call. This would be completely hidden from the kernel.
-> 
-> There's too much irrelevant info.
-> 
-> I'll say it again: all that matters is that enclaves can legitimately,
-> safely, and securely have a need for the kernel to change page
-> permissions.  That's *IT*.  EMODPE just happens to be part of the
-> mechanism that makes these permission changes safe for enclaves.  It's a
-> side show.
+Again I believe something that may be doable as a hyperscale operator,
+but likely too fragile to get wider applications beyond that.
 
-Disagree on this. I wrote my statement about. Maybe it should not be
-driving argument but should be definitely part of the description.
+My take is that a proactive reclaim feature, whose goal is never to
+thrash or punish but to keep the LRUs warm and the workingset trimmed,
+would ideally have:
 
-> >     Add 'mprotect' hook to vm_ops, so that a callback can be implemeted for SGX
-> >     that will ensure that {mmap, mprotect}() permissions do not surpass any of
-> >     the original page permissions. This feature allows to maintain and refine
-> >     sane access control for enclaves.
-> 
-> Instead of "original", I'd stick to the "source" page nomenclature.
-> There are also "original" permissions with mprotect().
-> 
-> Also, it's literally OK for the enclave page permissions to surpass the
-> original (source) page permissions.  That sentence is incorrect, or at
-> least misleadingly imprecise.
+- a pressure or size target specified by userspace but with
+  enforcement driven inside the kernel from the allocation path
 
-Yes it is. It's fine to use EMODPE to upgrade the perms, and by having
-this hook, doing anything nasty with it is impossible.
+- the enforcement work NOT be done synchronously by the workload
+  (something I'd argue we want for *all* memory limits)
 
-> > I'm mostly happy with this but am open for change suggestions.
-> 
-> I wrote a pretty nice description of this.  It was about 90% correct,
-> shorter, and conveyed more information.  I'd suggest starting with that.
+- the enforcement work ACCOUNTED to the cgroup, though, since it's the
+  cgroup's memory allocations causing the work (again something I'd
+  argue we want in general)
 
-I should have added a disclaimer that my description is not up to date.
-Just do not want to make anything final before this EMODPE discussion
-has some conclusion.
+- a delegatable knob that is independent of setting the maximum size
+  of a container, as that expresses a different type of policy
 
-I'm fine using your description as basis for the commit message if as long
-as these few details are settled.
+- if size target, self-limiting (ha) enforcement on a pressure
+  threshold or stop enforcement when the userspace component dies
 
-/Jarkko
+Thoughts?
