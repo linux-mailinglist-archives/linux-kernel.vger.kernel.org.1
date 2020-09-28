@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A38727B3DE
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 20:01:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F13E27B3F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 20:02:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726839AbgI1SBT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 14:01:19 -0400
-Received: from wnew3-smtp.messagingengine.com ([64.147.123.17]:57835 "EHLO
+        id S1726650AbgI1SC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 14:02:27 -0400
+Received: from wnew3-smtp.messagingengine.com ([64.147.123.17]:50441 "EHLO
         wnew3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726589AbgI1SBS (ORCPT
+        by vger.kernel.org with ESMTP id S1726794AbgI1SBT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 14:01:18 -0400
+        Mon, 28 Sep 2020 14:01:19 -0400
 Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.west.internal (Postfix) with ESMTP id CD665E95;
-        Mon, 28 Sep 2020 13:55:27 -0400 (EDT)
+        by mailnew.west.internal (Postfix) with ESMTP id 1C73EEB0;
+        Mon, 28 Sep 2020 13:55:28 -0400 (EDT)
 Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Mon, 28 Sep 2020 13:55:28 -0400
+  by compute4.internal (MEProxy); Mon, 28 Sep 2020 13:55:29 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sent.com; h=from
         :to:cc:subject:date:message-id:in-reply-to:references:reply-to
-        :mime-version:content-transfer-encoding; s=fm1; bh=rCrx+wAdGZ4Zl
-        ehY5QUiHxqrgmnxiUlf7t6hp6icemY=; b=C59hXIN3yDOINTV4MVhsGhLRUzwbb
-        UPYycdysWR66pa3JrnWmafuw+ydviMmjuub/cZjzkxcTSrwEf1egf7K15FUE21p9
-        VX5G/HvxQfQf1mUglYVirkX8aqYpUeIjAkh9WTA/NR7zQXZ796GWOeBNOwUHfWBM
-        4aeHzyUYchfYdwTavalwYz9rk4Drjb2J++j9zqE8QlqtOZ22ldVNH2Z44tnVtDg7
-        I9BLU8RaYOjrP2/8X1A3EonlKFzgNuiTHDdqIJjyuK5kMFpsC8uleqFfTdtp2A1R
-        LYBLJc3pAJL1D5Y9zlkGE/3sCPaj+3sqEu5kkJ0Htf07i8Dq+jS7yUtJA==
+        :mime-version:content-transfer-encoding; s=fm1; bh=fKNGPn4b5sGwL
+        Rh+ItgDgX7lMBGsorph0sms9B238k0=; b=XEu86+j+e7gcMHEv92P5s4xJp20rp
+        zMFVKS65FnuMSKgAA77Gtj5Ut+FUrecE44+tUeEk6LFeW9NtYgTpYMm120lIOWGx
+        HKht3fcFgqTYoq5eaVGgHK5PK8AhelDj/mEBUuq3cgVpjZ/OUSU++DpMZI8K84LG
+        YIjEjqIXnkDi3RUfoY0XSLSIu8G2ETQ2XsEyId1umd5KLN01DJxt3rkbIv7rr1tm
+        +KOna1sKXCp+cZEAZPGdRN+hzk+oS+y6HttZbrD3q2+llWNhzOpswf1GxRE0V73e
+        SjuI2T4VXRU3LOUm/1Wvi0b8EELHFNSaY2bSuHMRsFt7//jDROOkxq96Q==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:date:from
         :in-reply-to:message-id:mime-version:references:reply-to:subject
         :to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=rCrx+wAdGZ4ZlehY5QUiHxqrgmnxiUlf7t6hp6icemY=; b=j0FrHWS4
-        1N0CXibOSAMghD1zLIu+sQukT6SNTW/kSB6KK/HftENN6LSVEp/CD4PoV0gUvMF6
-        jwjV3nFr2HFXDeDXzIMhgat1bW1MrHJO4uEyTl1BER304W5U62M6tvUvxzQWiXmN
-        HLVoP0EPK9z1AYu1BPVdvzrAVXe36zHuq2YRXzuvuqHe7OlhcjF+RsSGsJSyFzdb
-        9NzU2wcTfNu4+BXfOxjOg/VJouNM4wyXbnZRu8a2+Dw24k4x9qvhcKdrDcucy1zs
-        QCHA31YxWEW9DB5ArwgoAy5uhggRmeaYWku+9J30YS+Hi7DR81RrNrcXLVlOwf0c
-        qF/eh0+d4rS/Cw==
-X-ME-Sender: <xms:jyNyX5UjrFXCzZlrXJINZxj9ckdetSlm3ZXVZK5z0HVAcNcdGTioZg>
-    <xme:jyNyX5kglW3r2lbs9fmt_Qf5kfTYMo-dpGSmSqthfafH7vULXC-pCJNNtzSvjyND2
-    cLQ2Ob1Ydw1vtcLmA>
+        fm3; bh=fKNGPn4b5sGwLRh+ItgDgX7lMBGsorph0sms9B238k0=; b=lsRyCnmS
+        nAcktrPPtkfFAhB7BBGBbHqNo/gPpg3cChaqKww8YC0T6Y+zAygHI2S+g8Z4bVjX
+        QRR7zu1tFpCbO4aHf6IPZAAd5fF2hhY/x+P0wHq3Kh/6KQDOZCpvOGuMFZ98KziJ
+        Ex+CzzF4D+kBV6HuNyknRSav09t+z9bSTYrRziX7HxBtd9kOVQ7dxnLFhVXHSAwl
+        HuN9o7AsduqJLdKQCbPw6wlAdkrTCqJki99q1sUS5+CN8FYdGRBspor/Y9zn7UZc
+        wP7XsClW4DokSWczCjfxpj78fTugYYgGOlTD2TEFkL+BZ427ytqKodqCX7ZSEiE5
+        +9DfsXEmWWATMQ==
+X-ME-Sender: <xms:jyNyXzw97N3Autf9BzgcqiJZX788T6Yj5tTFmKGu6yknk5WmMeUBqQ>
+    <xme:jyNyX7QW4H90Bap9JNeENDWriuvUtdfjk2MNUcw6W85DcPhsmUCRDdVq1zjKSwoe3
+    OPXjKmxF4utoUvEpg>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrvdeigdeliecutefuodetggdotefrodftvf
     curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
     uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
@@ -48,13 +48,13 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrvdeigdeliecutefuodetggdote
     ektdduhfdutdfgtdekkedvhfetuedufedtgffgvdevleehheevjefgtdenucfkphepuddv
     rdegiedruddtiedrudeigeenucevlhhushhtvghrufhiiigvpeduvdenucfrrghrrghmpe
     hmrghilhhfrhhomhepiihirdihrghnsehsvghnthdrtghomh
-X-ME-Proxy: <xmx:jyNyX1avNFYFVVfEzYVU0pXCXSR3orX6ymCdsPPPP_csMd3SfaETmw>
-    <xmx:jyNyX8VXIYahs7JBxUHbE2nCcGNXzR_DUFYRy6gc5Q5ByGwu8h4S-A>
-    <xmx:jyNyXzkh7QwN4Xkgcb9zr0qJQ3uVVnuuAjGucZRVwZFkpTs39UzG2w>
-    <xmx:jyNyX48sN6b5Pc7tzSQH8Oly851go1vuPwwc2YklGZBJJ_bQ-Y5fQFZcTEY>
+X-ME-Proxy: <xmx:jyNyX9W6H8R-8fdGjnT8-MHmqP_r-votdahNnx4Ca8VYFyMS7PG02g>
+    <xmx:jyNyX9hWnTrQY7bUREvYW1Gc5uAwnH5-wEZsRQ8bBjNsvtB3YaV3Aw>
+    <xmx:jyNyX1DOZ-wOyXBmL5u3CvZY3JWX6YYKjbKrHuGjZhFNKSIwnTOHaA>
+    <xmx:jyNyX9YjCb3kjFXAgTX-TGmxo4ylxjBy7zGCwcs-JDmftoiQOZ8InqmnPNs>
 Received: from nvrsysarch6.NVidia.COM (unknown [12.46.106.164])
-        by mail.messagingengine.com (Postfix) with ESMTPA id E98073064674;
-        Mon, 28 Sep 2020 13:55:26 -0400 (EDT)
+        by mail.messagingengine.com (Postfix) with ESMTPA id 4C6BB3064686;
+        Mon, 28 Sep 2020 13:55:27 -0400 (EDT)
 From:   Zi Yan <zi.yan@sent.com>
 To:     linux-mm@kvack.org
 Cc:     "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
@@ -71,9 +71,9 @@ Cc:     "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
         John Hubbard <jhubbard@nvidia.com>,
         David Nellans <dnellans@nvidia.com>,
         linux-kernel@vger.kernel.org, Zi Yan <ziy@nvidia.com>
-Subject: [RFC PATCH v2 25/30] mm: vma: add VM_HUGEPAGE_PUD to vm_flags at bit 37.
-Date:   Mon, 28 Sep 2020 13:54:23 -0400
-Message-Id: <20200928175428.4110504-26-zi.yan@sent.com>
+Subject: [RFC PATCH v2 26/30] mm: thp: add a global knob to enable/disable PUD THPs.
+Date:   Mon, 28 Sep 2020 13:54:24 -0400
+Message-Id: <20200928175428.4110504-27-zi.yan@sent.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200928175428.4110504-1-zi.yan@sent.com>
 References: <20200928175428.4110504-1-zi.yan@sent.com>
@@ -86,80 +86,126 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Zi Yan <ziy@nvidia.com>
 
-madvise can set this bit via MADV_HUGEPAGE | MADV_HUGEPAGE_1GB and unset
-it via MADV_NOHUGEPAGE | MADV_HUGEPAGE_1GB. Later, kernel will check
-this bit to decide whether to allocate PUD THPs or not on a VMA when the
-global PUD THP is set to madvise.
+Like the existing global PMD THP knob, it allows user to enable/disable
+PUD THPs. PUD THP is disabled by default unless user knows the
+performance tradeoff of using it, like longer first time page fault
+due to larger page zeroing and longer page allocation time when memory
+is fragmented. Experienced user can enable it and take advantage of its
+benefit of suffering fewer page faults and TLB misses.
+
+* always means PUD THPs will be allocated on all VMAs if possible.
+* madvise means PUD THPs will be allocated if vm_flags has VM_HUGEPAGE_PUD
+  set via madvise syscall using MADV_HUGEPAGE | MADV_HUGEPAGE_PUD.
+* none means PUD THPs will not be allocated on any VMA.
 
 Signed-off-by: Zi Yan <ziy@nvidia.com>
 ---
- include/linux/mm.h | 6 ++++++
- mm/khugepaged.c    | 9 +++++++++
- 2 files changed, 15 insertions(+)
+ include/linux/huge_mm.h | 14 ++++++++++++++
+ mm/huge_memory.c        | 38 ++++++++++++++++++++++++++++++++++++++
+ mm/memory.c             |  2 +-
+ 3 files changed, 53 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 51b75ffa6a6c..78bee63c64da 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -305,11 +305,13 @@ extern unsigned int kobjsize(const void *objp);
- #define VM_HIGH_ARCH_BIT_2	34	/* bit only usable on 64-bit architectures */
- #define VM_HIGH_ARCH_BIT_3	35	/* bit only usable on 64-bit architectures */
- #define VM_HIGH_ARCH_BIT_4	36	/* bit only usable on 64-bit architectures */
-+#define VM_HIGH_ARCH_BIT_5	37	/* bit only usable on 64-bit architectures */
- #define VM_HIGH_ARCH_0	BIT(VM_HIGH_ARCH_BIT_0)
- #define VM_HIGH_ARCH_1	BIT(VM_HIGH_ARCH_BIT_1)
- #define VM_HIGH_ARCH_2	BIT(VM_HIGH_ARCH_BIT_2)
- #define VM_HIGH_ARCH_3	BIT(VM_HIGH_ARCH_BIT_3)
- #define VM_HIGH_ARCH_4	BIT(VM_HIGH_ARCH_BIT_4)
-+#define VM_HIGH_ARCH_5	BIT(VM_HIGH_ARCH_BIT_5)
- #endif /* CONFIG_ARCH_USES_HIGH_VMA_FLAGS */
- 
- #ifdef CONFIG_ARCH_HAS_PKEYS
-@@ -325,6 +327,10 @@ extern unsigned int kobjsize(const void *objp);
+diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
+index c7bc40c4a5e2..0d0f9cf25aeb 100644
+--- a/include/linux/huge_mm.h
++++ b/include/linux/huge_mm.h
+@@ -119,6 +119,8 @@ enum transparent_hugepage_flag {
+ #ifdef CONFIG_DEBUG_VM
+ 	TRANSPARENT_HUGEPAGE_DEBUG_COW_FLAG,
  #endif
- #endif /* CONFIG_ARCH_HAS_PKEYS */
++	TRANSPARENT_PUD_HUGEPAGE_FLAG,
++	TRANSPARENT_PUD_HUGEPAGE_REQ_MADV_FLAG,
+ };
  
-+#ifdef CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD
-+#define VM_HUGEPAGE_PUD VM_HIGH_ARCH_5
-+#endif /* CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD */
+ struct kobject;
+@@ -184,6 +186,18 @@ static inline bool __transparent_hugepage_enabled(struct vm_area_struct *vma)
+ }
+ 
+ bool transparent_hugepage_enabled(struct vm_area_struct *vma);
++static inline bool transparent_pud_hugepage_enabled(struct vm_area_struct *vma)
++{
++	if (transparent_hugepage_enabled(vma)) {
++		if (transparent_hugepage_flags & (1 << TRANSPARENT_PUD_HUGEPAGE_FLAG))
++			return true;
++		if (transparent_hugepage_flags &
++					(1 << TRANSPARENT_PUD_HUGEPAGE_REQ_MADV_FLAG))
++			return !!(vma->vm_flags & VM_HUGEPAGE_PUD);
++	}
 +
- #if defined(CONFIG_X86)
- # define VM_PAT		VM_ARCH_1	/* PAT reserves whole VMA at once (x86) */
- #elif defined(CONFIG_PPC)
-diff --git a/mm/khugepaged.c b/mm/khugepaged.c
-index b34c78085017..f085c218ea84 100644
---- a/mm/khugepaged.c
-+++ b/mm/khugepaged.c
-@@ -345,6 +345,9 @@ struct attribute_group khugepaged_attr_group = {
- int hugepage_madvise(struct vm_area_struct *vma,
- 		     unsigned long *vm_flags, int advice)
- {
-+	/* only support 1GB PUD THP on x86 now */
-+	bool use_pud_page = advice & MADV_HUGEPAGE_1GB;
++	return false;
++}
+ 
+ #define HPAGE_CACHE_INDEX_MASK (HPAGE_PMD_NR - 1)
+ 
+diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+index 61ae7a0ded84..1965753b31a2 100644
+--- a/mm/huge_memory.c
++++ b/mm/huge_memory.c
+@@ -199,6 +199,43 @@ static ssize_t enabled_store(struct kobject *kobj,
+ static struct kobj_attribute enabled_attr =
+ 	__ATTR(enabled, 0644, enabled_show, enabled_store);
+ 
++static ssize_t enabled_pud_thp_show(struct kobject *kobj,
++			    struct kobj_attribute *attr, char *buf)
++{
++	if (test_bit(TRANSPARENT_PUD_HUGEPAGE_FLAG, &transparent_hugepage_flags))
++		return sprintf(buf, "[always] madvise never\n");
++	else if (test_bit(TRANSPARENT_PUD_HUGEPAGE_REQ_MADV_FLAG, &transparent_hugepage_flags))
++		return sprintf(buf, "always [madvise] never\n");
++	else
++		return sprintf(buf, "always madvise [never]\n");
++}
 +
- 	advice = advice & MADV_BEHAVIOR_MASK;
- 	switch (advice) {
- 	case MADV_HUGEPAGE:
-@@ -359,6 +362,9 @@ int hugepage_madvise(struct vm_area_struct *vma,
- #endif
- 		*vm_flags &= ~VM_NOHUGEPAGE;
- 		*vm_flags |= VM_HUGEPAGE;
++static ssize_t enabled_pud_thp_store(struct kobject *kobj,
++			     struct kobj_attribute *attr,
++			     const char *buf, size_t count)
++{
++	ssize_t ret = count;
 +
-+		if (use_pud_page)
-+			*vm_flags |= VM_HUGEPAGE_PUD;
- 		/*
- 		 * If the vma become good for khugepaged to scan,
- 		 * register it here without waiting a page fault that
-@@ -371,6 +377,9 @@ int hugepage_madvise(struct vm_area_struct *vma,
- 	case MADV_NOHUGEPAGE:
- 		*vm_flags &= ~VM_HUGEPAGE;
- 		*vm_flags |= VM_NOHUGEPAGE;
++	if (!memcmp("always", buf,
++		    min(sizeof("always")-1, count))) {
++		clear_bit(TRANSPARENT_PUD_HUGEPAGE_REQ_MADV_FLAG, &transparent_hugepage_flags);
++		set_bit(TRANSPARENT_PUD_HUGEPAGE_FLAG, &transparent_hugepage_flags);
++	} else if (!memcmp("madvise", buf,
++			   min(sizeof("madvise")-1, count))) {
++		clear_bit(TRANSPARENT_PUD_HUGEPAGE_FLAG, &transparent_hugepage_flags);
++		set_bit(TRANSPARENT_PUD_HUGEPAGE_REQ_MADV_FLAG, &transparent_hugepage_flags);
++	} else if (!memcmp("never", buf,
++			   min(sizeof("never")-1, count))) {
++		clear_bit(TRANSPARENT_PUD_HUGEPAGE_FLAG, &transparent_hugepage_flags);
++		clear_bit(TRANSPARENT_PUD_HUGEPAGE_REQ_MADV_FLAG, &transparent_hugepage_flags);
++	} else
++		ret = -EINVAL;
 +
-+		if (use_pud_page)
-+			*vm_flags &= ~VM_HUGEPAGE_PUD;
- 		/*
- 		 * Setting VM_NOHUGEPAGE will prevent khugepaged from scanning
- 		 * this vma even if we leave the mm registered in khugepaged if
++	return ret;
++}
++static struct kobj_attribute enabled_pud_thp_attr =
++	__ATTR(enabled_pud_thp, 0644, enabled_pud_thp_show, enabled_pud_thp_store);
++
+ ssize_t single_hugepage_flag_show(struct kobject *kobj,
+ 				struct kobj_attribute *attr, char *buf,
+ 				enum transparent_hugepage_flag flag)
+@@ -305,6 +342,7 @@ static struct kobj_attribute hpage_pmd_size_attr =
+ 
+ static struct attribute *hugepage_attr[] = {
+ 	&enabled_attr.attr,
++	&enabled_pud_thp_attr.attr,
+ 	&defrag_attr.attr,
+ 	&use_zero_page_attr.attr,
+ 	&hpage_pmd_size_attr.attr,
+diff --git a/mm/memory.c b/mm/memory.c
+index ab80d13807aa..9f7b509a3aa7 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -4282,7 +4282,7 @@ static vm_fault_t __handle_mm_fault(struct vm_area_struct *vma,
+ 	if (!vmf.pud)
+ 		return VM_FAULT_OOM;
+ retry_pud:
+-	if (pud_none(*vmf.pud) && __transparent_hugepage_enabled(vma)) {
++	if (pud_none(*vmf.pud) && transparent_pud_hugepage_enabled(vma)) {
+ 		ret = create_huge_pud(&vmf);
+ 		if (!(ret & VM_FAULT_FALLBACK))
+ 			return ret;
 -- 
 2.28.0
 
