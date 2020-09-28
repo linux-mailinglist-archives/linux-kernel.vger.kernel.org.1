@@ -2,209 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A57F27AC0D
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 12:42:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDFB927AC22
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 12:43:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726697AbgI1KmV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 06:42:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33120 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726651AbgI1KmM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 06:42:12 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73824C0613CE
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 03:42:11 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id j2so742392wrx.7
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 03:42:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=WjvGzyO62y8+TE10NX89uaVC3jyOwciikUlJLtdxrSc=;
-        b=UP6FbU97hiLI3MWndLsukFiAqWATwepolyDq9C2sft9a4uW61HXqHHdlmryW5fOeGk
-         AvFbXjzWssoioAlwHVB3m5lWEYWDLceWZl0e58Vm5AQGKqTIvcUPq/VD42dMRUDleFXJ
-         rbWSwvwmEFUQ+1NWBfpmnNzrNh5aJfp9m8GjGfTqhtBJrigyA/oFNUJo9kM5zZXt3IVA
-         n84qcoYzzop6WqR2np2o1mJ0liJiPJFKTNFnmuykYCp+5qpnhRV4e7F87pD7fLqgzMYs
-         rxq4OxP+5BO29PuQHj1fKaMi41SisX7vk9ByFuBsfwPV6Ia/fSHrzTnfen6IWxajQS1+
-         v/sA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=WjvGzyO62y8+TE10NX89uaVC3jyOwciikUlJLtdxrSc=;
-        b=djNjImTvLYt5edVmIBKxaIu+G8gP+uXOPOAm4gKnTXvYZUBiWoSON0Bxkkab5nzRhS
-         jAmXFreJ0pHlvvvixsY0dfL6LtFVfwAWFsjMGqfEObwpWxPDgfsphUjF0Yi/fT4ZLNgn
-         4TiY09G+q/ovGbpb5dwLzNg3Xzkwj6L57nbzwGVoXIwD8rqtxDsAF9exhcuk1APrGtqa
-         qkvL48iweCWs1B4qOWElzZ7Gp6SNEFaZswSITYBWae3KE6Stct2hGZfyec3u+grZ8m60
-         ldGYAqV1IkrC9Fh4eQC/wdSIn+CbrVyWq73MuOfsgUsYUz9EzvPIfgiLq69qknRXgXFl
-         2fCg==
-X-Gm-Message-State: AOAM530jA4gqMOqZn5N2k27FVUUJxS9FshhexYQtQdi7b6hSqXJeiANQ
-        rTtD2OX+lbeGt6IEMXG3P39SUkXw69zQaw==
-X-Google-Smtp-Source: ABdhPJxPHM6y/EAjEjcY3fXmak9oChruhF6beTZp/+Z1PorBJ+2DWmZynuhGzwunOEQGzof6DeRUsA==
-X-Received: by 2002:a5d:43cb:: with SMTP id v11mr1044613wrr.188.1601289730189;
-        Mon, 28 Sep 2020 03:42:10 -0700 (PDT)
-Received: from debian-brgl.home (lfbn-nic-1-68-20.w2-15.abo.wanadoo.fr. [2.15.159.20])
-        by smtp.gmail.com with ESMTPSA id f14sm939258wrt.53.2020.09.28.03.42.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Sep 2020 03:42:09 -0700 (PDT)
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Kent Gibson <warthog618@gmail.com>
-Cc:     linux-gpio@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH v2 9/9] gpio: mockup: refactor the module init function
-Date:   Mon, 28 Sep 2020 12:41:55 +0200
-Message-Id: <20200928104155.7385-10-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200928104155.7385-1-brgl@bgdev.pl>
-References: <20200928104155.7385-1-brgl@bgdev.pl>
+        id S1726762AbgI1KnR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 06:43:17 -0400
+Received: from foss.arm.com ([217.140.110.172]:49148 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726667AbgI1KnR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 06:43:17 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7427C1063;
+        Mon, 28 Sep 2020 03:43:16 -0700 (PDT)
+Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E33693F6CF;
+        Mon, 28 Sep 2020 03:43:14 -0700 (PDT)
+Date:   Mon, 28 Sep 2020 11:43:09 +0100
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Dexuan Cui <decui@microsoft.com>
+Cc:     wei.liu@kernel.org, kys@microsoft.com, haiyangz@microsoft.com,
+        sthemmin@microsoft.com, bhelgaas@google.com,
+        linux-hyperv@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mikelley@microsoft.com,
+        jakeo@microsoft.com, maz@kernel.org
+Subject: Re: [PATCH v2] PCI: hv: Fix hibernation in case interrupts are not
+ re-created
+Message-ID: <20200928104309.GA12565@e121166-lin.cambridge.arm.com>
+References: <20200908231759.13336-1-decui@microsoft.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200908231759.13336-1-decui@microsoft.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+[+MarcZ - this patch needs IRQ maintainers vetting]
 
-Let's move the code preparing the device properties into a separate
-routine. This has the advantage of simplifying the error handling and
-makes the indentation less deep.
+On Tue, Sep 08, 2020 at 04:17:59PM -0700, Dexuan Cui wrote:
+> Hyper-V doesn't trap and emulate the accesses to the MSI/MSI-X registers,
+> and we must use hv_compose_msi_msg() to ask Hyper-V to create the IOMMU
+> Interrupt Remapping Table Entries. This is not an issue for a lot of
+> PCI device drivers (e.g. NVMe driver, Mellanox NIC drivers), which
+> destroy and re-create the interrupts across hibernation, so
+> hv_compose_msi_msg() is called automatically. However, some other PCI
+> device drivers (e.g. the Nvidia driver) may not destroy and re-create
+> the interrupts across hibernation, so hv_pci_resume() has to call
+> hv_compose_msi_msg(), otherwise the PCI device drivers can no longer
+> receive MSI/MSI-X interrupts after hibernation.
 
-Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/gpio/gpio-mockup.c | 96 +++++++++++++++++++-------------------
- 1 file changed, 49 insertions(+), 47 deletions(-)
+This looks like drivers bugs and I don't think the HV controller
+driver is where you should fix them. Regardless, this commit log
+does not provide the information that it should.
 
-diff --git a/drivers/gpio/gpio-mockup.c b/drivers/gpio/gpio-mockup.c
-index 47b7de6d5ab1..02eea05a09dd 100644
---- a/drivers/gpio/gpio-mockup.c
-+++ b/drivers/gpio/gpio-mockup.c
-@@ -503,16 +503,59 @@ static __init char **gpio_mockup_make_line_names(const char *label,
- 	return names;
- }
- 
--static int __init gpio_mockup_init(void)
-+static int __init gpio_mockup_register_chip(int idx)
- {
- 	struct property_entry properties[GPIO_MOCKUP_MAX_PROP];
--	int i, prop, num_chips, err = 0, base;
- 	struct platform_device_info pdevinfo;
- 	struct platform_device *pdev;
-+	char **line_names = NULL;
- 	char chip_label[32];
--	char **line_names;
-+	int prop = 0, base;
- 	u16 ngpio;
- 
-+	memset(properties, 0, sizeof(properties));
-+	memset(&pdevinfo, 0, sizeof(pdevinfo));
-+
-+	snprintf(chip_label, sizeof(chip_label), "gpio-mockup-%c", idx + 'A');
-+	properties[prop++] = PROPERTY_ENTRY_STRING("chip-label", chip_label);
-+
-+	base = gpio_mockup_range_base(idx);
-+	if (base >= 0)
-+		properties[prop++] = PROPERTY_ENTRY_U32("gpio-base", base);
-+
-+	ngpio = base < 0 ? gpio_mockup_range_ngpio(idx)
-+			 : gpio_mockup_range_ngpio(idx) - base;
-+	properties[prop++] = PROPERTY_ENTRY_U16("nr-gpios", ngpio);
-+
-+	if (gpio_mockup_named_lines) {
-+		line_names = gpio_mockup_make_line_names(chip_label, ngpio);
-+		if (!line_names)
-+			return -ENOMEM;
-+
-+		properties[prop++] = PROPERTY_ENTRY_STRING_ARRAY_LEN(
-+					"gpio-line-names", line_names, ngpio);
-+	}
-+
-+	pdevinfo.name = "gpio-mockup";
-+	pdevinfo.id = idx;
-+	pdevinfo.properties = properties;
-+
-+	pdev = platform_device_register_full(&pdevinfo);
-+	kfree_strarray(line_names, ngpio);
-+	if (IS_ERR(pdev)) {
-+		pr_err("error registering device");
-+		return PTR_ERR(pdev);
-+	}
-+
-+	gpio_mockup_pdevs[idx] = pdev;
-+
-+	return 0;
-+}
-+
-+static int __init gpio_mockup_init(void)
-+{
-+	int i, num_chips, err;
-+
- 	if ((gpio_mockup_num_ranges < 2) ||
- 	    (gpio_mockup_num_ranges % 2) ||
- 	    (gpio_mockup_num_ranges > GPIO_MOCKUP_MAX_RANGES))
-@@ -540,54 +583,13 @@ static int __init gpio_mockup_init(void)
- 	}
- 
- 	for (i = 0; i < num_chips; i++) {
--		memset(properties, 0, sizeof(properties));
--		memset(&pdevinfo, 0, sizeof(pdevinfo));
--		prop = 0;
--		line_names = NULL;
--
--		snprintf(chip_label, sizeof(chip_label),
--			 "gpio-mockup-%c", i + 'A');
--		properties[prop++] = PROPERTY_ENTRY_STRING("chip-label",
--							   chip_label);
--
--		base = gpio_mockup_range_base(i);
--		if (base >= 0)
--			properties[prop++] = PROPERTY_ENTRY_U32("gpio-base",
--								base);
--
--		ngpio = base < 0 ? gpio_mockup_range_ngpio(i)
--				 : gpio_mockup_range_ngpio(i) - base;
--		properties[prop++] = PROPERTY_ENTRY_U16("nr-gpios", ngpio);
--
--		if (gpio_mockup_named_lines) {
--			line_names = gpio_mockup_make_line_names(chip_label,
--								 ngpio);
--			if (!line_names) {
--				platform_driver_unregister(&gpio_mockup_driver);
--				gpio_mockup_unregister_pdevs();
--				return -ENOMEM;
--			}
--
--			properties[prop++] = PROPERTY_ENTRY_STRING_ARRAY_LEN(
--						"gpio-line-names",
--						line_names, ngpio);
--		}
--
--		pdevinfo.name = "gpio-mockup";
--		pdevinfo.id = i;
--		pdevinfo.properties = properties;
--
--		pdev = platform_device_register_full(&pdevinfo);
--		kfree_strarray(line_names, ngpio);
--		if (IS_ERR(pdev)) {
--			pr_err("error registering device");
-+		err = gpio_mockup_register_chip(i);
-+		if (err) {
- 			platform_driver_unregister(&gpio_mockup_driver);
- 			gpio_mockup_unregister_pdevs();
- 			debugfs_remove_recursive(gpio_mockup_dbg_dir);
--			return PTR_ERR(pdev);
-+			return err;
- 		}
--
--		gpio_mockup_pdevs[i] = pdev;
- 	}
- 
- 	return 0;
--- 
-2.26.1
+> Fixes: ac82fc832708 ("PCI: hv: Add hibernation support")
+> Signed-off-by: Dexuan Cui <decui@microsoft.com>
+> Reviewed-by: Jake Oshins <jakeo@microsoft.com>
+> 
+> ---
+> 
+> Changes in v2:
+>     Fixed a typo in the comment in hv_irq_unmask. Thanks to Michael!
+>     Added Jake's Reviewed-by.
+> 
+>  drivers/pci/controller/pci-hyperv.c | 44 +++++++++++++++++++++++++++++
+>  1 file changed, 44 insertions(+)
+> 
+> diff --git a/drivers/pci/controller/pci-hyperv.c b/drivers/pci/controller/pci-hyperv.c
+> index fc4c3a15e570..dd21afb5d62b 100644
+> --- a/drivers/pci/controller/pci-hyperv.c
+> +++ b/drivers/pci/controller/pci-hyperv.c
+> @@ -1211,6 +1211,21 @@ static void hv_irq_unmask(struct irq_data *data)
+>  	pbus = pdev->bus;
+>  	hbus = container_of(pbus->sysdata, struct hv_pcibus_device, sysdata);
+>  
+> +	if (hbus->state == hv_pcibus_removing) {
+> +		/*
+> +		 * During hibernation, when a CPU is offlined, the kernel tries
+> +		 * to move the interrupt to the remaining CPUs that haven't
+> +		 * been offlined yet. In this case, the below hv_do_hypercall()
+> +		 * always fails since the vmbus channel has been closed, so we
+> +		 * should not call the hypercall, but we still need
+> +		 * pci_msi_unmask_irq() to reset the mask bit in desc->masked:
+> +		 * see cpu_disable_common() -> fixup_irqs() ->
+> +		 * irq_migrate_all_off_this_cpu() -> migrate_one_irq().
+> +		 */
+> +		pci_msi_unmask_irq(data);
 
+This is not appropriate - it looks like a plaster to paper over an
+issue with hyper-V hibernation code sequence. Fix that issue instead
+of papering over it here.
+
+Thanks,
+Lorenzo
+
+> +		return;
+> +	}
+> +
+>  	spin_lock_irqsave(&hbus->retarget_msi_interrupt_lock, flags);
+>  
+>  	params = &hbus->retarget_msi_interrupt_params;
+> @@ -3372,6 +3387,33 @@ static int hv_pci_suspend(struct hv_device *hdev)
+>  	return 0;
+>  }
+>  
+> +static int hv_pci_restore_msi_msg(struct pci_dev *pdev, void *arg)
+> +{
+> +	struct msi_desc *entry;
+> +	struct irq_data *irq_data;
+> +
+> +	for_each_pci_msi_entry(entry, pdev) {
+> +		irq_data = irq_get_irq_data(entry->irq);
+> +		if (WARN_ON_ONCE(!irq_data))
+> +			return -EINVAL;
+> +
+> +		hv_compose_msi_msg(irq_data, &entry->msg);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +/*
+> + * Upon resume, pci_restore_msi_state() -> ... ->  __pci_write_msi_msg()
+> + * re-writes the MSI/MSI-X registers, but since Hyper-V doesn't trap and
+> + * emulate the accesses, we have to call hv_compose_msi_msg() to ask
+> + * Hyper-V to re-create the IOMMU Interrupt Remapping Table Entries.
+> + */
+> +static void hv_pci_restore_msi_state(struct hv_pcibus_device *hbus)
+> +{
+> +	pci_walk_bus(hbus->pci_bus, hv_pci_restore_msi_msg, NULL);
+> +}
+> +
+>  static int hv_pci_resume(struct hv_device *hdev)
+>  {
+>  	struct hv_pcibus_device *hbus = hv_get_drvdata(hdev);
+> @@ -3405,6 +3447,8 @@ static int hv_pci_resume(struct hv_device *hdev)
+>  
+>  	prepopulate_bars(hbus);
+>  
+> +	hv_pci_restore_msi_state(hbus);
+> +
+>  	hbus->state = hv_pcibus_installed;
+>  	return 0;
+>  out:
+> -- 
+> 2.19.1
+> 
