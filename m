@@ -2,273 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBBC727A9DE
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 10:45:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D08727A9E0
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 10:45:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726744AbgI1IpI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 04:45:08 -0400
-Received: from mx2.suse.de ([195.135.220.15]:40652 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726461AbgI1IpI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 04:45:08 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C1424B2B2;
-        Mon, 28 Sep 2020 08:45:05 +0000 (UTC)
-Subject: Re: [PATCH] drm/hisilicon: Using the to_hibmc_drm_private to convert
-To:     Tian Tao <tiantao6@hisilicon.com>, airlied@linux.ie,
-        daniel@ffwll.ch, kraxel@redhat.com, alexander.deucher@amd.com,
-        tglx@linutronix.de, dri-devel@lists.freedesktop.org,
-        xinliang.liu@linaro.org, linux-kernel@vger.kernel.org
-References: <1601281963-42133-1-git-send-email-tiantao6@hisilicon.com>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-Message-ID: <9bd2d033-38a8-94e2-6cd7-10c390e13d14@suse.de>
-Date:   Mon, 28 Sep 2020 10:45:04 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1726617AbgI1Iph (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 04:45:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43246 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726328AbgI1Iph (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 04:45:37 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E000C0613CE;
+        Mon, 28 Sep 2020 01:45:37 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id mn7so227625pjb.5;
+        Mon, 28 Sep 2020 01:45:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nS1+mZH+1q3Z1ieI+xXv6fDTo0VrdNwEG9Fe9x5ehDg=;
+        b=QKev1kYjofg9CeUcQo2fCgYI5XqAaZXltLyFsuFj2PxGkOygx42Bdaquz/2KUJ/uXw
+         YB44tgBbMn/iys8dLegdc8+HkveO+YAwMS2yTX9vcwycmuvizEX1jMrnyXaZKpmHubnu
+         z9Wp4ncdmuOSluTdNymJsCLYAt59p9+YEbNJ7yxNXAiXtmzeOtPCXbrhE3mZDvLoNjLb
+         gtnYLo/Bcg8SfJgtd9lUNFE8o6c+GUI8bYIsJKU7+ODQu5ogpisixQ097Se3jH3w8Gvv
+         JbKHuDtB+iRDO5JpKD5rtNy8XFaSjr10C4okZDAHQtIYJR2is/Vxmh6qGsoOlqWo0GKw
+         87iw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nS1+mZH+1q3Z1ieI+xXv6fDTo0VrdNwEG9Fe9x5ehDg=;
+        b=SbFuRG4XG2AuebG6B4pqlwUEcXwmY/dpVYlsNJ0eY+SwdbWOmRvgWYd/mIHVKixBaw
+         YDA4j9qhaQJfbF2XrX/Tavboz6k6s4mNySe4OfQr4TEfZqyCOtDdLbQU8aokDVA+UP/C
+         4OL2uIretTWaMXPALtoMmm/Gd1DeX2WTrMafgZmXwQXaEFcQ6qHQmkMu2XwbU2nLVVZC
+         GpkviSBlihwyaOwWTuQ1HffMijgIq68+E53FYRCb8uyhQmMLCcA0PvT9b8O9irWk90ps
+         ZNwiSwR6qDkCGDQOfPejAucy1g9TKLPQS4pAUu6FTolQ0A/W8nhJO1HVZTThzjOquMy9
+         bzFw==
+X-Gm-Message-State: AOAM5323k9yxlsrwVpD4cX0VbJCAkZ0pKcgC+qdyhDaAOFSzHiZZODzN
+        m5rFoIJBSWUeGb3XzdvAXqIMjRYFX+I/e/Zw4V0=
+X-Google-Smtp-Source: ABdhPJwV0A5NAianD0pR8zZxg3Y+JvzlYy1SYYiOvjoeNNRPhGwg1Ga8aTdSloWBeWeR2x/kqywA0tt5sMkq5PXj/9s=
+X-Received: by 2002:a17:90a:fd98:: with SMTP id cx24mr358002pjb.181.1601282737132;
+ Mon, 28 Sep 2020 01:45:37 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1601281963-42133-1-git-send-email-tiantao6@hisilicon.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="wTn6GGTVBKU6IzTTFNi0ZXIHZwK1bBgzl"
+References: <20200928040651.24937-1-haifeng.zhao@intel.com> <20200928040651.24937-4-haifeng.zhao@intel.com>
+In-Reply-To: <20200928040651.24937-4-haifeng.zhao@intel.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 28 Sep 2020 11:45:18 +0300
+Message-ID: <CAHp75VdzceN-aVEDJN1Vz9vyBcBoJDb4D9K_SpPrwqWfGzrXfQ@mail.gmail.com>
+Subject: Re: [PATCH 3/5 V55555] PCI/ERR: get device before call device driver
+ to avoid NULL pointer reference
+To:     Ethan Zhao <haifeng.zhao@intel.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>, Oliver <oohall@gmail.com>,
+        ruscur@russell.cc, Lukas Wunner <lukas@wunner.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Stuart Hayes <stuart.w.hayes@gmail.com>,
+        Alexandru Gagniuc <mr.nuke.me@gmail.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        pei.p.jia@intel.com, ashok.raj@linux.intel.com,
+        Sathyanarayanan Kuppuswamy <sathyanarayanan.kuppuswamy@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---wTn6GGTVBKU6IzTTFNi0ZXIHZwK1bBgzl
-Content-Type: multipart/mixed; boundary="KMLskTlUdxUtDbcFS7YaOnAaaDtMnh38H";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Tian Tao <tiantao6@hisilicon.com>, airlied@linux.ie, daniel@ffwll.ch,
- kraxel@redhat.com, alexander.deucher@amd.com, tglx@linutronix.de,
- dri-devel@lists.freedesktop.org, xinliang.liu@linaro.org,
- linux-kernel@vger.kernel.org
-Message-ID: <9bd2d033-38a8-94e2-6cd7-10c390e13d14@suse.de>
-Subject: Re: [PATCH] drm/hisilicon: Using the to_hibmc_drm_private to convert
-References: <1601281963-42133-1-git-send-email-tiantao6@hisilicon.com>
-In-Reply-To: <1601281963-42133-1-git-send-email-tiantao6@hisilicon.com>
+On Mon, Sep 28, 2020 at 7:13 AM Ethan Zhao <haifeng.zhao@intel.com> wrote:
 
---KMLskTlUdxUtDbcFS7YaOnAaaDtMnh38H
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+Same comments as per v4.
+Also you have an issue in versioning here. Use -v<n> parameter to `git
+format-patch`, it will do it for you nicely.
 
-Hi
-
-Am 28.09.20 um 10:32 schrieb Tian Tao:
-> Using the to_hibmc_drm_private to convert over all uses of dev_private
-> over to the function, and fix a little formatting issue.
-
-Sounds strange to me. Maybe remove "over to the function" and it should
-be better.
-
->=20
-> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
-
-Reviewed-by: Thomas Zimmermann <tzimmermann@suse.de>
-
-> ---
->  drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c   | 22 +++++++++++-----=
-------
->  drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c  |  5 ++---
->  drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c |  4 ++--
->  3 files changed, 15 insertions(+), 16 deletions(-)
->=20
-> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c b/drivers/g=
-pu/drm/hisilicon/hibmc/hibmc_drm_de.c
-> index 4d57ec6..a98f993 100644
-> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c
-> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c
-> @@ -105,7 +105,7 @@ static void hibmc_plane_atomic_update(struct drm_pl=
-ane *plane,
->  	u32 reg;
->  	s64 gpu_addr =3D 0;
->  	unsigned int line_l;
-> -	struct hibmc_drm_private *priv =3D plane->dev->dev_private;
-> +	struct hibmc_drm_private *priv =3D to_hibmc_drm_private(plane->dev);
->  	struct drm_gem_vram_object *gbo;
-> =20
->  	if (!state->fb)
-> @@ -159,7 +159,7 @@ static const struct drm_plane_helper_funcs hibmc_pl=
-ane_helper_funcs =3D {
-> =20
->  static void hibmc_crtc_dpms(struct drm_crtc *crtc, int dpms)
->  {
-> -	struct hibmc_drm_private *priv =3D crtc->dev->dev_private;
-> +	struct hibmc_drm_private *priv =3D to_hibmc_drm_private(crtc->dev);
->  	unsigned int reg;
-> =20
->  	reg =3D readl(priv->mmio + HIBMC_CRT_DISP_CTL);
-> @@ -175,7 +175,7 @@ static void hibmc_crtc_atomic_enable(struct drm_crt=
-c *crtc,
->  				     struct drm_crtc_state *old_state)
->  {
->  	unsigned int reg;
-> -	struct hibmc_drm_private *priv =3D crtc->dev->dev_private;
-> +	struct hibmc_drm_private *priv =3D to_hibmc_drm_private(crtc->dev);
-> =20
->  	hibmc_set_power_mode(priv, HIBMC_PW_MODE_CTL_MODE_MODE0);
-> =20
-> @@ -194,7 +194,7 @@ static void hibmc_crtc_atomic_disable(struct drm_cr=
-tc *crtc,
->  				      struct drm_crtc_state *old_state)
->  {
->  	unsigned int reg;
-> -	struct hibmc_drm_private *priv =3D crtc->dev->dev_private;
-> +	struct hibmc_drm_private *priv =3D to_hibmc_drm_private(crtc->dev);
-> =20
->  	hibmc_crtc_dpms(crtc, HIBMC_CRT_DPMS_OFF);
->  	drm_crtc_vblank_off(crtc);
-> @@ -254,7 +254,7 @@ static unsigned int format_pll_reg(void)
->  static void set_vclock_hisilicon(struct drm_device *dev, unsigned long=
- pll)
->  {
->  	u32 val;
-> -	struct hibmc_drm_private *priv =3D dev->dev_private;
-> +	struct hibmc_drm_private *priv =3D to_hibmc_drm_private(dev);
-> =20
->  	val =3D readl(priv->mmio + CRT_PLL1_HS);
->  	val &=3D ~(CRT_PLL1_HS_OUTER_BYPASS(1));
-> @@ -315,7 +315,7 @@ static unsigned int display_ctrl_adjust(struct drm_=
-device *dev,
->  	unsigned long x, y;
->  	u32 pll1; /* bit[31:0] of PLL */
->  	u32 pll2; /* bit[63:32] of PLL */
-> -	struct hibmc_drm_private *priv =3D dev->dev_private;
-> +	struct hibmc_drm_private *priv =3D to_hibmc_drm_private(dev);
-> =20
->  	x =3D mode->hdisplay;
->  	y =3D mode->vdisplay;
-> @@ -363,7 +363,7 @@ static void hibmc_crtc_mode_set_nofb(struct drm_crt=
-c *crtc)
->  	unsigned int val;
->  	struct drm_display_mode *mode =3D &crtc->state->mode;
->  	struct drm_device *dev =3D crtc->dev;
-> -	struct hibmc_drm_private *priv =3D dev->dev_private;
-> +	struct hibmc_drm_private *priv =3D to_hibmc_drm_private(dev);
->  	int width =3D mode->hsync_end - mode->hsync_start;
->  	int height =3D mode->vsync_end - mode->vsync_start;
-> =20
-> @@ -397,7 +397,7 @@ static void hibmc_crtc_atomic_begin(struct drm_crtc=
- *crtc,
->  {
->  	unsigned int reg;
->  	struct drm_device *dev =3D crtc->dev;
-> -	struct hibmc_drm_private *priv =3D dev->dev_private;
-> +	struct hibmc_drm_private *priv =3D to_hibmc_drm_private(dev);
-> =20
->  	hibmc_set_power_mode(priv, HIBMC_PW_MODE_CTL_MODE_MODE0);
-> =20
-> @@ -427,7 +427,7 @@ static void hibmc_crtc_atomic_flush(struct drm_crtc=
- *crtc,
-> =20
->  static int hibmc_crtc_enable_vblank(struct drm_crtc *crtc)
->  {
-> -	struct hibmc_drm_private *priv =3D crtc->dev->dev_private;
-> +	struct hibmc_drm_private *priv =3D to_hibmc_drm_private(crtc->dev);
-> =20
->  	writel(HIBMC_RAW_INTERRUPT_EN_VBLANK(1),
->  	       priv->mmio + HIBMC_RAW_INTERRUPT_EN);
-> @@ -437,7 +437,7 @@ static int hibmc_crtc_enable_vblank(struct drm_crtc=
- *crtc)
-> =20
->  static void hibmc_crtc_disable_vblank(struct drm_crtc *crtc)
->  {
-> -	struct hibmc_drm_private *priv =3D crtc->dev->dev_private;
-> +	struct hibmc_drm_private *priv =3D to_hibmc_drm_private(crtc->dev);
-> =20
->  	writel(HIBMC_RAW_INTERRUPT_EN_VBLANK(0),
->  	       priv->mmio + HIBMC_RAW_INTERRUPT_EN);
-> @@ -445,7 +445,7 @@ static void hibmc_crtc_disable_vblank(struct drm_cr=
-tc *crtc)
-> =20
->  static void hibmc_crtc_load_lut(struct drm_crtc *crtc)
->  {
-> -	struct hibmc_drm_private *priv =3D crtc->dev->dev_private;
-> +	struct hibmc_drm_private *priv =3D to_hibmc_drm_private(crtc->dev);
->  	void __iomem   *mmio =3D priv->mmio;
->  	u16 *r, *g, *b;
->  	unsigned int reg;
-> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c b/drivers/=
-gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
-> index 085d1b2..5632bce 100644
-> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
-> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
-> @@ -29,8 +29,7 @@ DEFINE_DRM_GEM_FOPS(hibmc_fops);
->  static irqreturn_t hibmc_drm_interrupt(int irq, void *arg)
->  {
->  	struct drm_device *dev =3D (struct drm_device *)arg;
-> -	struct hibmc_drm_private *priv =3D
-> -		(struct hibmc_drm_private *)dev->dev_private;
-> +	struct hibmc_drm_private *priv =3D to_hibmc_drm_private(dev);
->  	u32 status;
-> =20
->  	status =3D readl(priv->mmio + HIBMC_RAW_INTERRUPT);
-> @@ -244,7 +243,7 @@ static int hibmc_hw_init(struct hibmc_drm_private *=
-priv)
-> =20
->  static int hibmc_unload(struct drm_device *dev)
->  {
-> -	struct hibmc_drm_private *priv =3D dev->dev_private;
-> +	struct hibmc_drm_private *priv =3D to_hibmc_drm_private(dev);
-> =20
->  	drm_atomic_helper_shutdown(dev);
-> =20
-> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c b/drivers=
-/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c
-> index c6999ed..74e26c2 100644
-> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c
-> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c
-> @@ -43,7 +43,7 @@ static int hibmc_connector_get_modes(struct drm_conne=
-ctor *connector)
->  }
-> =20
->  static enum drm_mode_status hibmc_connector_mode_valid(struct drm_conn=
-ector *connector,
-> -				      struct drm_display_mode *mode)
-> +						       struct drm_display_mode *mode)
->  {
->  	return MODE_OK;
->  }
-> @@ -76,7 +76,7 @@ static void hibmc_encoder_mode_set(struct drm_encoder=
- *encoder,
->  {
->  	u32 reg;
->  	struct drm_device *dev =3D encoder->dev;
-> -	struct hibmc_drm_private *priv =3D dev->dev_private;
-> +	struct hibmc_drm_private *priv =3D to_hibmc_drm_private(dev);
-> =20
->  	reg =3D readl(priv->mmio + HIBMC_DISPLAY_CONTROL_HISILE);
->  	reg |=3D HIBMC_DISPLAY_CONTROL_FPVDDEN(1);
->=20
-
---=20
-Thomas Zimmermann
-Graphics Driver Developer
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
-(HRB 36809, AG N=C3=BCrnberg)
-Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
-
-
---KMLskTlUdxUtDbcFS7YaOnAaaDtMnh38H--
-
---wTn6GGTVBKU6IzTTFNi0ZXIHZwK1bBgzl
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQFIBAEBCAAyFiEEchf7rIzpz2NEoWjlaA3BHVMLeiMFAl9xopAUHHR6aW1tZXJt
-YW5uQHN1c2UuZGUACgkQaA3BHVMLeiMD8wgAnDprcrIDTUNQCBybfkiwEUcAbtpv
-PnbY39fS0Tx5wj60nnaobi6SCvp8Yjbo6HO3zRnpA8xn5ecvRt/BGnwhcL3TYmBj
-950utMNAuUPlBUeDiHDEARdBXXVHqwxaMbBZkXBmdMV+ngZOD6symGRkEhiHF+tD
-2iPQQcae8bDDFy1OkJblPUtiEkFoYjAWrr/7phQp34g3dMnx2xxPzvPQ/ge7oec2
-mUpdxGg7nDUer3+hNVXpUYlgZYNU2reqDKo+DSISJWlsFqsrCGX1aO8EXNWo64Oh
-ocHtsK1oF73gE9kDEDbEsA6yE5+et/uRLUdH5kNy/3GeDiZZuUy6UHxzvA==
-=i5WF
------END PGP SIGNATURE-----
-
---wTn6GGTVBKU6IzTTFNi0ZXIHZwK1bBgzl--
+-- 
+With Best Regards,
+Andy Shevchenko
