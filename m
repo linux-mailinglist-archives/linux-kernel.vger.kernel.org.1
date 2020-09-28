@@ -2,80 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 179E227B594
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 21:45:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A4F127B598
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 21:45:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726785AbgI1TpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 15:45:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41066 "EHLO mail.kernel.org"
+        id S1726805AbgI1Tpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 15:45:30 -0400
+Received: from mga06.intel.com ([134.134.136.31]:57156 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726281AbgI1TpH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 15:45:07 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.5])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D60972076A;
-        Mon, 28 Sep 2020 19:45:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601322306;
-        bh=MswvOek1LM+HkGpz4nTDDYzvgfCkDvIwe1J+Nrq/Mq4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=TGcxC8SY6nQsGC+d1XCaaW+LqGCw1qF/RCtbJVib9rPc/HR2YL+9FIc0rHf6EP5px
-         sOgtobaGA5VBIZmIiYsRLr+bjO7jioi0xcbEXDcinIweVUe7SCkjIAFCttYwwC2ec9
-         1/FQA4AzdDgrWZZpKC6F4zpz7VcX1ZsUcjNp5iZ0=
-Date:   Mon, 28 Sep 2020 12:45:04 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Howard Chung <howardchung@google.com>
-Cc:     linux-bluetooth@vger.kernel.org, marcel@holtmann.org,
-        luiz.dentz@gmail.com, alainm@chromium.org, mcchou@chromium.org,
-        mmandlik@chromium.orgi, "David S. Miller" <davem@davemloft.net>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH v6 4/4] Bluetooth: Add toggle to switch off interleave
- scan
-Message-ID: <20200928124504.617d92da@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20200928154107.v6.4.I756c1fecc03bcc0cd94400b4992cd7e743f4b3e2@changeid>
-References: <20200928154107.v6.1.Ib75f58e90c477f9b82c5598f00c59f0e95a1a352@changeid>
-        <20200928154107.v6.4.I756c1fecc03bcc0cd94400b4992cd7e743f4b3e2@changeid>
+        id S1726409AbgI1Tpa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 15:45:30 -0400
+IronPort-SDR: gvTKsE+X3uAsC2KF1fGEHk+kCbAogkDJLV+KGA923G+5wQkHilwSMSw4SomOUd9+W21ReOXjmq
+ /yCRbEEBKjoA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9758"; a="223644153"
+X-IronPort-AV: E=Sophos;i="5.77,315,1596524400"; 
+   d="scan'208";a="223644153"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 12:45:29 -0700
+IronPort-SDR: GCjS53FKxMzlLhO+tCmpcyzhz5I6+f1dn1lKXSxL5/YkyjkpqxXdMxGRj4Ctt5pNremjilfvwz
+ glxNcrKuFgxQ==
+X-IronPort-AV: E=Sophos;i="5.77,315,1596524400"; 
+   d="scan'208";a="514392347"
+Received: from romeroro-mobl.amr.corp.intel.com (HELO [10.209.119.91]) ([10.209.119.91])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 12:45:27 -0700
+Subject: Re: [PATCH v38 10/24] mm: Add vm_ops->mprotect()
+To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Haitao Huang <haitao.huang@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>, X86 ML <x86@kernel.org>,
+        linux-sgx@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Darren Kenny <darren.kenny@oracle.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        asapek@google.com, Borislav Petkov <bp@alien8.de>,
+        "Xing, Cedric" <cedric.xing@intel.com>, chenalexchen@google.com,
+        Conrad Parker <conradparker@google.com>, cyhanish@google.com,
+        "Huang, Haitao" <haitao.huang@intel.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        "Huang, Kai" <kai.huang@intel.com>,
+        "Svahn, Kai" <kai.svahn@intel.com>, Keith Moyer <kmoy@google.com>,
+        Christian Ludloff <ludloff@google.com>,
+        Neil Horman <nhorman@redhat.com>,
+        Nathaniel McCallum <npmccallum@redhat.com>,
+        Patrick Uiterwijk <puiterwijk@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>, yaozhangx@google.com
+References: <20200924230501.GA20095@linux.intel.com>
+ <b737fcab-bfde-90e1-1101-82d646a6f5b7@intel.com>
+ <20200925000052.GA20333@linux.intel.com>
+ <32fc9df4-d4aa-6768-aa06-0035427b7535@intel.com>
+ <20200925194304.GE31528@linux.intel.com>
+ <230ce6da-7820-976f-f036-a261841d626f@intel.com>
+ <20200928005347.GB6704@linux.intel.com>
+ <6eca8490-d27d-25b8-da7c-df4f9a802e87@intel.com>
+ <20200928161954.GB92669@linux.intel.com>
+ <c29a662e-90ff-4862-8c82-06b43b81fb4d@intel.com>
+ <20200928193229.GA125819@linux.intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <283800a0-8f97-e21e-2ff1-253ae621747e@intel.com>
+Date:   Mon, 28 Sep 2020 12:45:27 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200928193229.GA125819@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 28 Sep 2020 15:41:21 +0800 Howard Chung wrote:
-> This patch add a configurable parameter to switch off the interleave
-> scan feature.
->=20
-> Signed-off-by: Howard Chung <howardchung@google.com>
-> Reviewed-by: Alain Michaud <alainm@chromium.org>
+On 9/28/20 12:32 PM, Jarkko Sakkinen wrote:
+> My problem is that I fully agree what you say in your description but
+> disagree on that EMODPE should not be mentioned.
 
-This seems to cause new warnings on W=3D1 C=3D1 builds:
+I'll just be very clear: I'm not willing to ack any patch with a
+changelog that has more than a passing mention of EMODPE.
 
-In file included from ../net/bluetooth/mgmt_config.c:7:
-net/bluetooth/mgmt_config.c: In function =E2=80=98set_def_system_config=E2=
-=80=99:
-include/net/bluetooth/bluetooth.h:186:10: warning: format =E2=80=98%zu=E2=
-=80=99 expects argument of type =E2=80=98size_t=E2=80=99, but argument 4 ha=
-s type =E2=80=98int=E2=80=99 [-Wformat=3D]
-  186 |  BT_WARN("%s: " fmt, (hdev)->name, ##__VA_ARGS__)
-      |          ^~~~~~
-include/net/bluetooth/bluetooth.h:174:35: note: in definition of macro =E2=
-=80=98BT_WARN=E2=80=99
-  174 | #define BT_WARN(fmt, ...) bt_warn(fmt "\n", ##__VA_ARGS__)
-      |                                   ^~~
-net/bluetooth/mgmt_config.c:165:4: note: in expansion of macro =E2=80=98bt_=
-dev_warn=E2=80=99
-  165 |    bt_dev_warn(hdev, "invalid length %d, exp %zu for type %d",
-      |    ^~~~~~~~~~~
-net/bluetooth/mgmt_config.c:79:17: warning: incorrect type in initializer (=
-different base types)
-net/bluetooth/mgmt_config.c:79:17:    expected restricted __le16 [usertype]=
- type
-net/bluetooth/mgmt_config.c:79:17:    got int
-net/bluetooth/mgmt_config.c:79:17: warning: incorrect type in initializer (=
-different base types)
-net/bluetooth/mgmt_config.c:79:17:    expected restricted __le16 [usertype]=
- value_le16
-net/bluetooth/mgmt_config.c:79:17:    got unsigned char [usertype]=20
+Do what you think is best, but if sticking to your guns may deplete the
+pool of folks willing to ack your patch.
