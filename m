@@ -2,131 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8AE327AFBB
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 16:11:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82F1F27AFC5
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 16:13:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726604AbgI1OL1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 10:11:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37290 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725290AbgI1OL0 (ORCPT
+        id S1726651AbgI1ONQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 10:13:16 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:49800 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726310AbgI1ONQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 10:11:26 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80E45C061755
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 07:11:26 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id gx22so8743772ejb.5
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 07:11:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Tefr7BiFg39dwwsMVzHhoZjOTiYyT1GtzIbXqdzA3RQ=;
-        b=cXl8XE2U4M1Uq5WJZJO+7kQtPfIkT7190lUQPtIRikXcIVUCIifzMHW932m5pjfAaW
-         0Tb49s8LXw6flO8kvaqPRkA/68nTljoblmBx87fY2t+GKGsAJUuKE29SNGbc/E0eomfN
-         GP44GTROn2cLLqVB2CTbgR6PTIW4aIfK46QKSuQ9BUDmrDjgIlS3TLD25IpWqvyibf0s
-         aDIGop+wujTvC8qBgG+gIcia3TMfAxM1IMG5CvVPfkbmILuuHqMjjDarHTWmumyRToW/
-         gc0NVTasRm3wnPL2oBdiB5shLfc/qm/Bq/tT8enqX0rtIFnnDvDrcisZq40p6nYb8SP+
-         kpfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Tefr7BiFg39dwwsMVzHhoZjOTiYyT1GtzIbXqdzA3RQ=;
-        b=eSPL6yQJgACFzZ+ZQ1hHdP0wU1ace2YFi0PbNUaz1Wu/GwSKStHGLH9cNlYK7HAarv
-         B/Dcft5y9ut9/uNTiux8vyCwP3RIlt9FQKkxQkHC27ZZYYOq92T7ytFhGkVoWIbTaglC
-         xrxarG51cA0zH0c0DIRKiIz1pz6R3IvUuTd8oq1Ug8EIOAR0o0uSWwwTrlZa4S6p7GB/
-         zTyN3Oz7zITX3EQHwLDnglSoVRAoSi2rAzXU7DIB6BeCCjeVPDaMDyi1Xoa+crYpqC1D
-         ZnRtT6+NEaezaivnZ2coDhBsrNinTiJfb7s2pzZZ1hHmEtLXs1Plxwdft9WOqDqJTlVU
-         EvIA==
-X-Gm-Message-State: AOAM531mBDAVPEIvIJysp73loIvOOtSdTB+lFybyWYOhFP5SliffGxPz
-        ZpS2HSk1Id1nXMe2enAmsCgWSIhC7tjRQRnNSXI=
-X-Google-Smtp-Source: ABdhPJwRJJpw0/VWqUdH/OPHzpw/+li0Sr+sfPnK0ny3I4lyCpu0qLK2vlTmQKvyJOoIJrNZrOL4b8SI0FBQTEppbi0=
-X-Received: by 2002:a17:906:e24d:: with SMTP id gq13mr1789288ejb.152.1601302285000;
- Mon, 28 Sep 2020 07:11:25 -0700 (PDT)
+        Mon, 28 Sep 2020 10:13:16 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08SE9Vn5065420;
+        Mon, 28 Sep 2020 14:12:24 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : in-reply-to : message-id : references : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=iQLxmJxSvSJscFRlyFmzx7cDJf4NvJfEUoYeUUEmSq0=;
+ b=0Q8eHlmTxUZwNR4uBoJ/jRA6CQrm4V75pLJYhNynu/mQZ7SGs4IhFb5URe85IyR6NQmn
+ 35FuToHscKSC/Wrpy+Cjtfn2qErrGK9aS1tGZVFCxgz1kIuI/URfiCdcjziZDMx4cPvs
+ bWtFzR8OACZIAELD+dvm8zwZv8E9Tae6R6gW9qPgrI7GZetbXgt7R/ZsudIm+WJov0e3
+ d1+bfs4LXwuaDTCuRpu8JqHUFdKPhp3spBQSdKHT3vLSn03QLYzTG63fLL8D1+pGITz5
+ 64PayZfxn+8mvMsFXTW8ihexhiU35xJ9/oixDix5TdSPsI8KCeRydXcqiGFt+LXwBPqd lg== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 33swkkn9pk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 28 Sep 2020 14:12:24 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08SEAOmu181612;
+        Mon, 28 Sep 2020 14:12:24 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3020.oracle.com with ESMTP id 33tfhwax0j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 28 Sep 2020 14:12:24 +0000
+Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 08SECIhV022371;
+        Mon, 28 Sep 2020 14:12:18 GMT
+Received: from dhcp-10-175-172-184.vpn.oracle.com (/10.175.172.184)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 28 Sep 2020 07:12:18 -0700
+Date:   Mon, 28 Sep 2020 15:12:04 +0100 (IST)
+From:   Alan Maguire <alan.maguire@oracle.com>
+X-X-Sender: alan@localhost
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+cc:     Alan Maguire <alan.maguire@oracle.com>, ast@kernel.org,
+        daniel@iogearbox.net, andriin@fb.com, yhs@fb.com,
+        linux@rasmusvillemoes.dk, andriy.shevchenko@linux.intel.com,
+        pmladek@suse.com, kafai@fb.com, songliubraving@fb.com,
+        john.fastabend@gmail.com, kpsingh@chromium.org, shuah@kernel.org,
+        rdna@fb.com, scott.branden@broadcom.com, quentin@isovalent.com,
+        cneirabustos@gmail.com, jakub@cloudflare.com, mingo@redhat.com,
+        rostedt@goodmis.org, bpf@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        acme@kernel.org
+Subject: Re: [PATCH v6 bpf-next 6/6] selftests/bpf: add test for bpf_seq_printf_btf
+ helper
+In-Reply-To: <20200925012611.jebtlvcttusk3hbx@ast-mbp.dhcp.thefacebook.com>
+Message-ID: <alpine.LRH.2.21.2009281500220.13299@localhost>
+References: <1600883188-4831-1-git-send-email-alan.maguire@oracle.com> <1600883188-4831-7-git-send-email-alan.maguire@oracle.com> <20200925012611.jebtlvcttusk3hbx@ast-mbp.dhcp.thefacebook.com>
+User-Agent: Alpine 2.21 (LRH 202 2017-01-01)
 MIME-Version: 1.0
-References: <CAOuPNLjtG_VHL1M8-=pKNNRmWQg_8oC0YG7C8H3gQcbJ+0B3=A@mail.gmail.com>
- <202009251301.A1FD183582@keescook> <CAMj1kXGtv84JHQfKoqOYyq=3m2w0Yuj_n4_Teo83zvdZ9kpZhw@mail.gmail.com>
- <202009251338.D17FB071@keescook> <CAMj1kXEWutwE-fP9bc=tsyPoTuV6J7bLzLpkZ213P9y9JszkTw@mail.gmail.com>
- <202009251647.FD8CECD4@keescook> <CAOuPNLif93a1uHhqsKFwhd35nfCnmRu_uxpB62shOEKyQ96hNw@mail.gmail.com>
- <202009260933.C603CD8@keescook> <CAOuPNLiM+ghH_7eNkAfA=jDgHrc+2_jB_n3FvYG-JMN0EiNfGA@mail.gmail.com>
-In-Reply-To: <CAOuPNLiM+ghH_7eNkAfA=jDgHrc+2_jB_n3FvYG-JMN0EiNfGA@mail.gmail.com>
-From:   Pintu Agarwal <pintu.ping@gmail.com>
-Date:   Mon, 28 Sep 2020 19:41:13 +0530
-Message-ID: <CAOuPNLiw1FyzHq2DykRFwgG0BeaWaNymiV8_DmD=ump7P8W_ow@mail.gmail.com>
-Subject: Re: KASLR support on ARM with Kernel 4.9 and 4.14
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Ard Biesheuvel <ardb@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Marc Zyngier <marc.zyngier@arm.com>,
-        Dave Martin <dave.martin@arm.com>,
-        Kernelnewbies <kernelnewbies@kernelnewbies.org>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        open list <linux-kernel@vger.kernel.org>,
-        Tony Lindgren <tony@atomide.com>, matt@codeblueprint.co.uk,
-        nico@linaro.org, Thomas Garnier <thgarnie@google.com>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9757 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999 bulkscore=0
+ phishscore=0 malwarescore=0 adultscore=0 suspectscore=3 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009280114
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9757 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0 phishscore=0
+ suspectscore=3 mlxlogscore=999 clxscore=1015 priorityscore=1501
+ impostorscore=0 lowpriorityscore=0 bulkscore=0 spamscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009280114
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 28 Sep 2020 at 19:15, Pintu Agarwal <pintu.ping@gmail.com> wrote:
->
-> On Sat, 26 Sep 2020 at 22:10, Kees Cook <keescook@chromium.org> wrote:
->
-> > > >> I wonder if this is an Android Common kernel?
-> > > It uses the below kernel for 4.14:
-> > > https://gitlab.com/quicla/kernel/msm-4.14/-/tree/LE.UM.3.4.2.r1.5  (or
-> > > similar branch).
-> >
-> > Okay, so yes. And this appears to have the hashing of %p backported. I
-> > cannot, however, explain why it's showing hashed pointers instead of
-> > just NULL, though.
-> >
-> > It might be related to these commits but they're not in that kernel:
-> > 3e5903eb9cff ("vsprintf: Prevent crash when dereferencing invalid pointers")
-> > 7bd57fbc4a4d ("vsprintf: don't obfuscate NULL and error pointers")
-> >
-> > > ==> The case where symbol addresses are changing.
-> > >
-> > > kptr_restrict is set to 2 by default:
-> > > / # cat /proc/sys/kernel/kptr_restrict
-> > > 2
-> > >
-> > > Basically, the goal is:
-> > > * To understand how addresses are changing in 4.14 Kernel (without
-> > > KASLR support)?
-> > > * Is it possible to support the same in 4.9 Kernel ?
-> >
-> > Try setting kptr_restrict to 0 and see if the symbol addresses change? I
-> > suspect Ard is correct: there's no KASLR here, just hashed pointers
-> > behaving weird on an old non-stock kernel. :)
-> >
->
-> Okay. Thank you so much for your comments and suggestions.
-> You mean to say, setting kptr_restrict to 0 may avoid changing symbol
-> addresses in 4.14 ?
-> And, sorry, I could not understand the thing about this "hashed pointers".
-> How can I check this behavior in source code to understand better?
-> Is it possible to give some reference ?
-> I wanted to disable this hash pointer on 4.14 kernel and check the behavior.
-> Also if possible, we would like to make this similar change on 4.9
-> kernel as well.
+
+
+On Thu, 24 Sep 2020, Alexei Starovoitov wrote:
+
+> to whatever number, but printing single task_struct needs ~800 lines and
+> ~18kbytes. Humans can scroll through that much spam, but can we make it less
+> verbose by default somehow?
+> May be not in this patch set, but in the follow up?
 >
 
-Okay, I found these changes in 4.14 kernel:
-https://gitlab.com/quicla/kernel/msm-4.14/-/commit/e63732dbfe017aa0dbabac9d096b5fde8afbd395
+One approach that might work would be to devote 4 bits or so of
+flag space to a "maximum depth" specifier; i.e. at depth 1,
+only base types are displayed, no aggregate types like arrays,
+structs and unions.  We've already got depth processing in the
+code to figure out if possibly zeroed nested data needs to be
+displayed, so it should hopefully be a simple follow-up.
 
-Are we talking about this?
-I cound not find this in 4.9 kernel.
+One way to express it would be to use "..." to denote field(s)
+were omitted. We could even use the number of "."s to denote
+cases where multiple fields were omitted, giving a visual sense
+of how much data was omitted.  So for example with 
+BTF_F_MAX_DEPTH(1), task_struct looks like this:
 
-I will disable kptr_restrict and check or, I will enable
-CONFIG_DEBUG_CONSOLE_UNHASHED_POINTERS and check.
+(struct task_struct){
+ .state = ()1,
+ .stack = ( *)0x00000000029d1e6f,
+ ...
+ .flags = (unsigned int)4194560,
+ ...
+ .cpu = (unsigned int)36,
+ .wakee_flips = (unsigned int)11,
+ .wakee_flip_decay_ts = (long unsigned int)4294914874,
+ .last_wakee = (struct task_struct *)0x000000006c7dfe6d,
+ .recent_used_cpu = (int)19,
+ .wake_cpu = (int)36,
+ .prio = (int)120,
+ .static_prio = (int)120,
+ .normal_prio = (int)120,
+ .sched_class = (struct sched_class *)0x00000000ad1561e6,
+ ...
+ .exec_start = (u64)674402577156,
+ .sum_exec_runtime = (u64)5009664110,
+ .vruntime = (u64)167038057,
+ .prev_sum_exec_runtime = (u64)5009578167,
+ .nr_migrations = (u64)54,
+ .depth = (int)1,
+ .parent = (struct sched_entity *)0x00000000cba60e7d,
+ .cfs_rq = (struct cfs_rq *)0x0000000014f353ed,
+ ...
+ 
+...etc. What do you think?
 
+> > +SEC("iter/task")
+> > +int dump_task_fs_struct(struct bpf_iter__task *ctx)
+> > +{
+> > +	static const char fs_type[] = "struct fs_struct";
+> > +	struct seq_file *seq = ctx->meta->seq;
+> > +	struct task_struct *task = ctx->task;
+> > +	struct fs_struct *fs = (void *)0;
+> > +	static struct btf_ptr ptr = { };
+> > +	long ret;
+> > +
+> > +	if (task)
+> > +		fs = task->fs;
+> > +
+> > +	ptr.type = fs_type;
+> > +	ptr.ptr = fs;
+> 
+> imo the following is better:
+>        ptr.type_id = __builtin_btf_type_id(*fs, 1);
+>        ptr.ptr = fs;
+> 
 
-Thanks,
-Pintu
+I'm still seeing lookup failures using __builtin_btf_type_id(,1) -
+whereas both __builtin_btf_type_id(,0) and Andrii's
+suggestion of bpf_core_type_id_kernel() work. Not sure what's
+going on - pahole is v1.17, clang is
+
+clang version 12.0.0 (/mnt/src/llvm-project/clang 
+7ab7b979d29e1e43701cf690f5cf1903740f50e3)
+
+> > +
+> > +	if (ctx->meta->seq_num == 0)
+> > +		BPF_SEQ_PRINTF(seq, "Raw BTF fs_struct per task\n");
+> > +
+> > +	ret = bpf_seq_printf_btf(seq, &ptr, sizeof(ptr), 0);
+> > +	switch (ret) {
+> > +	case 0:
+> > +		tasks++;
+> > +		break;
+> > +	case -ERANGE:
+> > +		/* NULL task or task->fs, don't count it as an error. */
+> > +		break;
+> > +	default:
+> > +		seq_err = ret;
+> > +		break;
+> > +	}
+> 
+> Please add handling of E2BIG to this switch. Otherwise
+> printing large amount of tiny structs will overflow PAGE_SIZE and E2BIG
+> will be send to user space.
+> Like this:
+> @@ -40,6 +40,8 @@ int dump_task_fs_struct(struct bpf_iter__task *ctx)
+>         case -ERANGE:
+>                 /* NULL task or task->fs, don't count it as an error. */
+>                 break;
+> +       case -E2BIG:
+> +               return 1;
+> 
+
+Done.
+
+> Also please change bpf_seq_read() like this:
+> diff --git a/kernel/bpf/bpf_iter.c b/kernel/bpf/bpf_iter.c
+> index 30833bbf3019..8f10e30ea0b0 100644
+> --- a/kernel/bpf/bpf_iter.c
+> +++ b/kernel/bpf/bpf_iter.c
+> @@ -88,8 +88,8 @@ static ssize_t bpf_seq_read(struct file *file, char __user *buf, size_t size,
+>         mutex_lock(&seq->lock);
+> 
+>         if (!seq->buf) {
+> -               seq->size = PAGE_SIZE;
+> -               seq->buf = kmalloc(seq->size, GFP_KERNEL);
+> +               seq->size = PAGE_SIZE << 3;
+> +               seq->buf = kvmalloc(seq->size, GFP_KERNEL);
+> 
+> So users can print task_struct by default.
+> Hopefully we will figure out how to deal with spam later.
+> 
+
+Thanks for all the help and suggestions! I didn't want to
+attribute the patch bumping seq size in v7 to you without your 
+permission, but it's all your work so if I need to respin let me
+know if you'd like me to fix that. Thanks again!
+
+Alan
