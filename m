@@ -2,175 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F53B27A9F2
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 10:49:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7423A27A9F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 10:51:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726547AbgI1It5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 04:49:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43912 "EHLO
+        id S1726589AbgI1Iu7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 04:50:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726328AbgI1It5 (ORCPT
+        with ESMTP id S1726526AbgI1Iu7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 04:49:57 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B56FC0613CE;
-        Mon, 28 Sep 2020 01:49:57 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id k14so428939edo.1;
-        Mon, 28 Sep 2020 01:49:56 -0700 (PDT)
+        Mon, 28 Sep 2020 04:50:59 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 271D7C0613CE
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 01:50:59 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id n14so350923pff.6
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 01:50:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=AsYHr74E0NgGElTzAxxwUemct7DC1VG78DhrKID3Ql0=;
-        b=UcUkZnsd1sdb7pd1KBi24U3Tc4oCEsEFjk9G9Xzzbez+Ge+ei8aShr+QYUEzorbm6D
-         Dlu7GXeVm28q+e0u+uLxx3SH9uOVBUaJKXCnFla1r/iAduL5iTgi900PrQDZpnFkq9hA
-         8qYwM1nuK3MDwguG14cEbaH/HK4QQ5SYwEZIM2f76t1jx/6OUPKrrLvrS2GVqTKU6O+0
-         lbfd4SOqzgoZ4sTrQAco4tsyLSiyRMDPoMifLUqTVEpXTg5KP3J3NXir2b2ZG/B/gO10
-         oFaVPlBdGxmTYiU77JWwJtbHQFSdA6tuNKaIRM4l5qZIOzY/Wf4xb49m8x32HFGlSjwZ
-         CmwQ==
+        h=from:to:cc:subject:date:message-id;
+        bh=ZDjTmD8WXSKHMRbSqfZC1xkl/k+jJPbBPKscEUWmXVo=;
+        b=e7SpeOXcZjEd+0h/T9A5Kh+HBS8aO8yWGksPOS+HWKr8Z0FYdq6kbJX84iBnUuhiew
+         WJuWvYcmBSLsdNz5tydO4YuXjLZQ6b6DBVu/GD/REKE9aJrogSALKEvo9999IwtaWq7F
+         Kd7qQoK12VhqhxHGog2JwChpo7jvDjM3pVB23IVl9rVOTS7eYZ0ZmASboAZKe5bOAQjh
+         V/BIfo6LCdI2fCpwo88VkMlk0oDD4nvlBmqsRvHD0+L+9WutRkkcr8KRpND6WFzQyDn/
+         7OPTOmCj6TyuY4OFnm/ucUtsz24f4jwxVNS49VQB8L5jXD1ZV0Ds01hqp8w0/hBvtbus
+         vnKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=AsYHr74E0NgGElTzAxxwUemct7DC1VG78DhrKID3Ql0=;
-        b=PorZuncIK9OTUNLjPkTEFDf/g2pWRFoLT8VVtAkNdGB0ihS7t3VIRsT57Z5fY49/6s
-         /GDP04XPT+A2GM20fX1yj7B5bYYQNEMwRc/mWMyzQy7TbAWkvt3gRYh9HczRv0CK65/2
-         syyTW5ueSQLV9nK+bsDsYlbrgQOmanQ8jIjFhErp16P3etuCqhErp9yUsDcWuVroYsHc
-         kvuHu58KTpnfQrRi2EWK9c4kvnsENkVt36nGCcyy7jG5sDJCXNSMIeSjvrb//nkNv+On
-         g/wUnx3wTAqiGZ7cgDsG5sDVhrLhi4QS2bmx3/YV5PdKLiJIovHjQ3XQ9e33Ndw/ZfHX
-         CiAQ==
-X-Gm-Message-State: AOAM533hyfvOxisFzXnyZ4QYwtLsappN5H83FnZ3kNWcEjHYMPimOSMH
-        F8IgZKLSu6TduEF/X+ge5zYzObzEDNct8SPsrso=
-X-Google-Smtp-Source: ABdhPJz0ERO+zCga4UcOUgBs1/DPDya3Tm/1nxbLmxoadAVAlY9LSFRbMfRZ+6Qk3hTAzbgrjlrJQpOd5iSii/3tsSk=
-X-Received: by 2002:a50:cfc5:: with SMTP id i5mr522153edk.151.1601282995700;
- Mon, 28 Sep 2020 01:49:55 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200928040651.24937-1-haifeng.zhao@intel.com>
- <20200928040651.24937-3-haifeng.zhao@intel.com> <CAHp75VfmWDHBv9kXugLN3c=Dj27EsJ43fB=WNDrjaLnGhvrz6Q@mail.gmail.com>
-In-Reply-To: <CAHp75VfmWDHBv9kXugLN3c=Dj27EsJ43fB=WNDrjaLnGhvrz6Q@mail.gmail.com>
-From:   Ethan Zhao <xerces.zhao@gmail.com>
-Date:   Mon, 28 Sep 2020 16:49:44 +0800
-Message-ID: <CAKF3qh2a+1E9yahNT9DuTmOkW-Fn+k=kakXkk_VKxZmrUcqPqA@mail.gmail.com>
-Subject: Re: [PATCH 2/5 V5] PCI: pciehp: check and wait port status out of DPC
- before handling DLLSC and PDC
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Ethan Zhao <haifeng.zhao@intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>, Oliver <oohall@gmail.com>,
-        ruscur@russell.cc, Lukas Wunner <lukas@wunner.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Stuart Hayes <stuart.w.hayes@gmail.com>,
-        Alexandru Gagniuc <mr.nuke.me@gmail.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        pei.p.jia@intel.com, ashok.raj@linux.intel.com,
-        Sathyanarayanan Kuppuswamy <sathyanarayanan.kuppuswamy@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=ZDjTmD8WXSKHMRbSqfZC1xkl/k+jJPbBPKscEUWmXVo=;
+        b=UsKERWmDfm37Y5Tr9Xwd0nih6TTpJ6E8JO4RgKpM+Ij/aP9hBwIDocjFM4kYrP/OdR
+         398jDVcYN24Gcg1AE62K/pFDkWtqfGjT/ASv9Kys58AQj2JQKujnsS21KJ7gx3YmG0JL
+         OLUog385BtzZXtSMTjV3Nh/T6LOynbAJI8EgY3e75Y5z/8KRVFZlf60ebbqbF8Qs+hKN
+         OgS/cgHgdxKF2DpQrwXeeSDDqnDv/dWBpbbdXCRWoIVlc/JTa+YaJv26SXMXbLqI8KIA
+         lymqcxMcxAXfnYHy1TnByHywhyw42M9SFBGwMMOkvUwcr3BFBD6oc6DQ4IShZuOVViqu
+         IXSQ==
+X-Gm-Message-State: AOAM532O9zws4x2o7VZaYSCqnpjBB2RC2YnrbKNc5jcJJ6gVoQ0Gd09i
+        2Q0uw1HICfW3v72j9qgoUnw=
+X-Google-Smtp-Source: ABdhPJxQRM/bGZin9MRaO9UEh3gXWshfNO2JplvTsuCJwiLvJlWhunRZvrH4MjisGe9C6cDgaeE6Eg==
+X-Received: by 2002:a62:1d51:0:b029:13e:d13d:a0fc with SMTP id d78-20020a621d510000b029013ed13da0fcmr9674568pfd.24.1601283058629;
+        Mon, 28 Sep 2020 01:50:58 -0700 (PDT)
+Received: from localhost.localdomain ([114.206.198.176])
+        by smtp.gmail.com with ESMTPSA id g26sm765251pfr.105.2020.09.28.01.50.55
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 28 Sep 2020 01:50:57 -0700 (PDT)
+From:   js1304@gmail.com
+X-Google-Original-From: iamjoonsoo.kim@lge.com
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Michal Hocko <mhocko@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Mel Gorman <mgorman@techsingularity.net>, kernel-team@lge.com,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Subject: [PATCH v2 for v5.9] mm/page_alloc: handle a missing case for memalloc_nocma_{save/restore} APIs
+Date:   Mon, 28 Sep 2020 17:50:46 +0900
+Message-Id: <1601283046-15329-1-git-send-email-iamjoonsoo.kim@lge.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 4:45 PM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
->
-> On Mon, Sep 28, 2020 at 7:10 AM Ethan Zhao <haifeng.zhao@intel.com> wrote=
-:
->
-> We didn't settle on the v4, why v5?
+From: Joonsoo Kim <iamjoonsoo.kim@lge.com>
 
-We could fix it with v6, v5 is used to fix other things.
+memalloc_nocma_{save/restore} APIs can be used to skip page allocation
+on CMA area, but, there is a missing case and the page on CMA area could
+be allocated even if APIs are used. This patch handles this case to fix
+the potential issue.
 
->
-> > When root port has DPC capability and it is enabled, then triggered by
-> > errors, DPC DLLSC and PDC interrupts will be sent to DPC driver, pciehp
-> > driver at the same time.
-> > That will cause following result:
-> >
-> > 1. Link and device are recovered by hardware DPC and software DPC drive=
-r,
-> >    device
-> >    isn't removed, but the pciehp might treat it as device was hot remov=
-ed.
-> >
-> > 2. Race condition happens bettween pciehp_unconfigure_device() called b=
-y
-> >    pciehp_ist() in pciehp driver and pci_do_recovery() called by
-> >    dpc_handler in DPC driver. no luck, there is no lock to protect
-> >    pci_stop_and_remove_bus_device()
-> >    against pci_walk_bus(), they hold different samphore and mutex,
-> >    pci_stop_and_remove_bus_device holds pci_rescan_remove_lock, and
-> >    pci_walk_bus() holds pci_bus_sem.
-> >
-> > This race condition is not purely code analysis, it could be triggered =
-by
-> > following command series:
-> >
-> >   # setpci -s 64:02.0 0x196.w=3D000a // 64:02.0 rootport has DPC capabi=
-lity
-> >   # setpci -s 65:00.0 0x04.w=3D0544  // 65:00.0 NVMe SSD populated in p=
-ort
-> >   # mount /dev/nvme0n1p1 nvme
-> >
-> > One shot will cause system panic and NULL pointer reference happened.
-> > (tested on stable 5.8 & ICS(Ice Lake SP platform, see
-> > https://en.wikichip.org/wiki/intel/microarchitectures/ice_lake_(server)=
-)
->
-> ...
->
-> >    Buffer I/O error on dev nvme0n1p1, logical block 3328, async page re=
-ad
-> >    BUG: kernel NULL pointer dereference, address: 0000000000000050
-> >    #PF: supervisor read access in kernel mode
-> >    #PF: error_code(0x0000) - not-present page
-> >    PGD 0
-> >    Oops: 0000 [#1] SMP NOPTI
-> >    CPU: 12 PID: 513 Comm: irq/124-pcie-dp Not tainted 5.8.0 el8.x86_64+=
- #1
-> >    RIP: 0010:report_error_detected.cold.4+0x7d/0xe6
-> >    Code: b6 d0 e8 e8 fe 11 00 e8 16 c5 fb ff be 06 00 00 00 48 89 df e8=
- d3
-> >    65 ff ff b8 06 00 00 00 e9 75 fc ff ff 48 8b 43 68 45 31 c9 <48> 8b =
-50
-> >    50 48 83 3a 00 41 0f 94 c1 45 31 c0 48 85 d2 41 0f 94 c0
-> >    RSP: 0018:ff8e06cf8762fda8 EFLAGS: 00010246
-> >    RAX: 0000000000000000 RBX: ff4e3eaacf42a000 RCX: ff4e3eb31f223c01
-> >    RDX: ff4e3eaacf42a140 RSI: ff4e3eb31f223c00 RDI: ff4e3eaacf42a138
-> >    RBP: ff8e06cf8762fdd0 R08: 00000000000000bf R09: 0000000000000000
-> >    R10: 000000eb8ebeab53 R11: ffffffff93453258 R12: 0000000000000002
-> >    R13: ff4e3eaacf42a130 R14: ff8e06cf8762fe2c R15: ff4e3eab44733828
-> >    FS:  0000000000000000(0000) GS:ff4e3eab1fd00000(0000) knl
-> >    GS:0000000000000000
-> >    CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> >    CR2: 0000000000000050 CR3: 0000000f8f80a004 CR4: 0000000000761ee0
-> >    DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> >    DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> >    PKRU: 55555554
-> >    Call Trace:
-> >    ? report_normal_detected+0x20/0x20
-> >    report_frozen_detected+0x16/0x20
-> >    pci_walk_bus+0x75/0x90
-> >    ? dpc_irq+0x90/0x90
-> >    pcie_do_recovery+0x157/0x201
-> >    ? irq_finalize_oneshot.part.47+0xe0/0xe0
-> >    dpc_handler+0x29/0x40
-> >    irq_thread_fn+0x24/0x60
-> >    irq_thread+0xea/0x170
-> >    ? irq_forced_thread_fn+0x80/0x80
-> >    ? irq_thread_check_affinity+0xf0/0xf0
-> >    kthread+0x124/0x140
-> >    ? kthread_park+0x90/0x90
-> >    ret_from_fork+0x1f/0x30
-> >    Modules linked in: nft_fib_inet.........
-> >    CR2: 0000000000000050
->
-> Do not pollute the commit messages with irrelevant information.
+Missing case is an allocation from the pcplist. MIGRATE_MOVABLE pcplist
+could have the pages on CMA area so we need to skip it if ALLOC_CMA isn't
+specified.
 
-That is whole panic, Andy, someone like the whole Oops, If I removed someth=
-ing,
-Will someone say 'why not integral=EF=BC=8Cwhy removed somehting  =E2=80=98
->
-> --
-> With Best Regards,
-> Andy Shevchenko
+Fixes: 8510e69c8efe (mm/page_alloc: fix memalloc_nocma_{save/restore} APIs)
+Signed-off-by: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+---
+ mm/page_alloc.c | 13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
+
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index fab5e97..104d2e1 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -3367,9 +3367,16 @@ struct page *rmqueue(struct zone *preferred_zone,
+ 	struct page *page;
+ 
+ 	if (likely(order == 0)) {
+-		page = rmqueue_pcplist(preferred_zone, zone, gfp_flags,
++		/*
++		 * MIGRATE_MOVABLE pcplist could have the pages on CMA area and
++		 * we need to skip it when CMA area isn't allowed.
++		 */
++		if (!IS_ENABLED(CONFIG_CMA) || alloc_flags & ALLOC_CMA ||
++				migratetype != MIGRATE_MOVABLE) {
++			page = rmqueue_pcplist(preferred_zone, zone, gfp_flags,
+ 					migratetype, alloc_flags);
+-		goto out;
++			goto out;
++		}
+ 	}
+ 
+ 	/*
+@@ -3381,7 +3388,7 @@ struct page *rmqueue(struct zone *preferred_zone,
+ 
+ 	do {
+ 		page = NULL;
+-		if (alloc_flags & ALLOC_HARDER) {
++		if (order > 0 && alloc_flags & ALLOC_HARDER) {
+ 			page = __rmqueue_smallest(zone, order, MIGRATE_HIGHATOMIC);
+ 			if (page)
+ 				trace_mm_page_alloc_zone_locked(page, order, migratetype);
+-- 
+2.7.4
+
