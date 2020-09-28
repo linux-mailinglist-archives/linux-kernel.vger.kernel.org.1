@@ -2,304 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EE7227AB99
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 12:13:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 072E827AB9D
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 12:13:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726566AbgI1KN1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 06:13:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56864 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726461AbgI1KN1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 06:13:27 -0400
-Received: from mail-oo1-xc43.google.com (mail-oo1-xc43.google.com [IPv6:2607:f8b0:4864:20::c43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39BD0C061755;
-        Mon, 28 Sep 2020 03:13:27 -0700 (PDT)
-Received: by mail-oo1-xc43.google.com with SMTP id r4so158476ooq.7;
-        Mon, 28 Sep 2020 03:13:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Q0Ri26+TboK+SYnmvQSNtooxazphnKEFy9cak2G5kgY=;
-        b=gPxUgYP3gm1R9YoVCfp1zQ/oWpTmQFR2A4w6xdtR4CyDHg7dzO43fp8MHva4zwPLJr
-         xWCrZYDB/MANPPrNIoxUVueJ7PuT17R5wvyxdiuDG2rylLSH8JjiJXGmxCbTDHdW7mJ3
-         hFu9Ppj3IYvgekzgBY5HEpcH52B6hXFmBZQp1MUJ3nzVOWczoYgI8QZuTovnReXoQvk5
-         rqsLMi5RaTggEbHrGIQalQXNGI+tWW7PgqwDJyAGk6sQ5rC1b1NcaLskCZ3UMtupEHX+
-         XK6rgbJiDbvPMILnDpIx1JveUNLkWTaxRTthu1TMlnlueCYear222kcZmjgCIA34Oij3
-         59Ng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Q0Ri26+TboK+SYnmvQSNtooxazphnKEFy9cak2G5kgY=;
-        b=Ylw70Di8KklZB/JFevRxc4fkE0j44EnJUSZ/+tTfBBogPxXcjQn6tqp0F4QamTqcHL
-         RGeO1kpZJgUU8Zi3hfzP+LkDpAUvJkhC2Yfh/U9QtKtOLzRyOtIxgnM1g0HN+A3K94yE
-         rFCUEbPZLSWVHNkvlsfm0OHIzHRo2kewgMmooxpL2WTCFjMY2thJiG5y+eRPklf80EqV
-         dSsRS6qJjVADfegBhOwxi482t83Yt3zwqJ28jkC0jbhoynR6HTbs2oSJWXROFvDI2d15
-         kEZNFKEXRYyww8nvonXXbU9PeTyVSFeDGEi6D79qptrWZ85LwL++VKxSy7BFGrc15BpW
-         0BqA==
-X-Gm-Message-State: AOAM532nrkvb+PMF4RMia+4rbOmTzJW3mlsnEIHBsY60fJ7y3FEjDyQU
-        qVz0+AE+eglzoknsSm/fRewTtO7CnNGySakzG8Zj/mE2xOkDXbTf
-X-Google-Smtp-Source: ABdhPJy2SC5gECGfCpzPLfIc4nb2Ro9m/xrp67AI3mxD2JtfMsKKI+vCwijea4YvrYkBOETHdCU49ktQ/JPhUXCJysk=
-X-Received: by 2002:a4a:96a3:: with SMTP id s32mr288211ooi.17.1601288006444;
- Mon, 28 Sep 2020 03:13:26 -0700 (PDT)
+        id S1726701AbgI1KNt convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 28 Sep 2020 06:13:49 -0400
+Received: from mga01.intel.com ([192.55.52.88]:28447 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726564AbgI1KNs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 06:13:48 -0400
+IronPort-SDR: vJxDrUcG9dz3BuJFcj+XCdvjunMZqD0Kcde9x3VEfzkcViNDFxqRAyILjETuJAKFkr0Ut+acA5
+ r4f7UdNiab2Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9757"; a="180124701"
+X-IronPort-AV: E=Sophos;i="5.77,313,1596524400"; 
+   d="scan'208";a="180124701"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 03:13:47 -0700
+IronPort-SDR: oynyLpLaEo8E2hmYKjUK2eLejsF9h1nd7bvB1+8YkaeLPVcxKUTeXs7JzHnC+u3AXBq2RQNnIu
+ AssYzP9UKYBw==
+X-IronPort-AV: E=Sophos;i="5.77,313,1596524400"; 
+   d="scan'208";a="456766108"
+Received: from jrcarrol-mobl.ger.corp.intel.com (HELO localhost) ([10.252.31.240])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 03:13:41 -0700
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20200925083743.46469-1-alexandru.ardelean@analog.com> <20200926172011.7356eb2d@archlinux>
-In-Reply-To: <20200926172011.7356eb2d@archlinux>
-From:   Alexandru Ardelean <ardeleanalex@gmail.com>
-Date:   Mon, 28 Sep 2020 13:13:15 +0300
-Message-ID: <CA+U=DspTbh2Jp+51yDjeL23FE0LRocPS26+nFqQdSyVNCnB2mQ@mail.gmail.com>
-Subject: Re: [RFC PATCH 0/5] iio: remove iio_buffer_set_attrs() and assign
- buffer attrs during alloc
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20200926062959.GA3427@lst.de>
+References: <20200924135853.875294-1-hch@lst.de> <20200925194349.d0ee9dbedb2ec48f0bfcd2ec@linux-foundation.org> <20200926062959.GA3427@lst.de>
+Subject: Re: remove alloc_vm_area v2
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Hellwig <hch@lst.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+From:   Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Matthew Auld <matthew.auld@intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Nitin Gupta <ngupta@vflare.org>, x86@kernel.org,
+        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-mm@kvack.org
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Message-ID: <160128801808.6464.1013594053120198786@jlahtine-mobl.ger.corp.intel.com>
+User-Agent: alot/0.8.1
+Date:   Mon, 28 Sep 2020 13:13:38 +0300
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 26, 2020 at 7:20 PM Jonathan Cameron <jic23@kernel.org> wrote:
->
-> On Fri, 25 Sep 2020 11:37:38 +0300
-> Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
->
-> > I've been mulling this over for a while, and I am still not 100% convinced
-> > that this is the best approach, but this feels closer to something
-> > correct.
->
-> I'd not worry too much.  It might not be perfect but it's also not hideous
-> - though that won't stop me suggesting an alternative :)
->
-> >
-> > A few things about this patchset:
-> > 1. it hasn't been tested; it just compiles
-> > 2. there are some patches that have went out [from my side] in the last
-> >    few days that deal with trying to organize iio_buffer_set_attrs()
-> >    in order to get to this point [as-in: this patch-set]
-> > 2a. the only reason patch [1] is in this set, is so that [5] applies
-> > 2b. the main reason patch [2] is in this set, is so that [5] compiles
-> > 3. This patch is only meant as RFC, as I'd like that some cleanup
-> >    patches go in before this set; this RFC is meant to provide an idea
-> >    of where I want to get at.
-> >
-> > This tries to address the issue with iio_buffer_set_attrs(), where a
-> > driver needs to provide a reference to a buffer to assign extra sysfs
-> > attributes.
-> > Something like 'iio_buffer_set_attrs(indio_dev->buffer, <buffer_attrs>)'
-> >
-> > This works well for the 1 IIO buffer == 1 IIO device case.
-> > The driver access the 'buffer' reference attached to the IIO device.
-> >
-> > But for a multiple IIO buffers per 1 IIO device, this is cumbersome, as
-> > a driver would need to:
-> > 1. allocate a set of buffers
-> > 2. dig out of IIO the buffers to which it wants to assign extra sysfs
-> >    attributes
-> >
-> > The main change here is to move the attributes [usually HW FIFO
-> > attributes] to become arguments of the devm_}iio_triggered_buffer_setup()
-> > functions.
-> > Other buffer allocation functions would need to do the same, but right
-> > now, it's only these functions that assign extra buffer attributes.
->
-> Probably worth stating here that we have a confusing mess of where
-> these attributes are and will probably look long term to move them
-> or at least think about doing so.
->
-> The buffer directory in modern IIO isn't strictly matched to a hwfifo
-> any more (it used to be - see sca3000 for the history - the model
-> was not a nice solution, but it took a few years to figure that out).
-> buffer/* represent a software buffer fed by the hardware fifo. There
-> are potentially other software buffers being fed in the form of
-> other consumers.
->
-> The hardware fifo is a separate entity.  However as Alex adds
-> support for multiple streams of data (that may come from mulitple hardware
-> fifos) we are going to still need a mapping of hardware buffer X
-> to software buffer X.  So separate entities, but with a one to one
-> (technically many of the consumer side, but only one in the IIO
-> userspace interface) mapping.
->
-> Anyhow, Alex and others know this from previous discussions but perhaps others
-> reading this don't hence I thought I'd mention it :)
->
-> >
-> > Some alternative ideas to doing this change [as-is]:
-> > * move the attributes to 'struct iio_buffer_setup_ops' ; this has a
-> >   minimal patch/change-impact, but it doesn't feel correct
-> > * introduce a new type called 'struct iio_trigerred_buffer_args' that
-> >   wrap all the triggered-buffer arguments into a single object; this is
-> >   still a big patch [like this], but future-wise, we would just be
-> >   extending that object [if more args are needed]; the main point
-> >   here is that right now 'devm_iio_triggered_buffer_setup()' has 6
-> >   arguments, which feels a bit much
->
-> So here is another one:
-> * Let us assume that we actually don't want to use this interface in new
->   drivers because we decide to deprecate putting the hardware fifo stuff
->   where it currently is. (big assumption - dependent on what userspace
->   code is using this and it will take a while).
-> * With that assumption, we could add a new function that takes the attrs
->   e.g. iio_setup_triggered_buffer_ext()
->   and only replace the instances where we need to provide the attrs.
->
++ Dave and Daniel
++ Stephen
 
-Fine by me as well, to do a iio_setup_triggered_buffer_ext() that
-holds the attrs as an extra arg.
-I guess the thought [of doing it like that] didn't cross my mind, but
-maybe also because I keep forgetting about the full context of the
-buffer attributes.
+Quoting Christoph Hellwig (2020-09-26 09:29:59)
+> On Fri, Sep 25, 2020 at 07:43:49PM -0700, Andrew Morton wrote:
+> > On Thu, 24 Sep 2020 15:58:42 +0200 Christoph Hellwig <hch@lst.de> wrote:
+> > 
+> > > this series removes alloc_vm_area, which was left over from the big
+> > > vmalloc interface rework.  It is a rather arkane interface, basicaly
+> > > the equivalent of get_vm_area + actually faulting in all PTEs in
+> > > the allocated area.  It was originally addeds for Xen (which isn't
+> > > modular to start with), and then grew users in zsmalloc and i915
+> > > which seems to mostly qualify as abuses of the interface, especially
+> > > for i915 as a random driver should not set up PTE bits directly.
+> > > 
+> > > Note that the i915 patches apply to the drm-tip branch of the drm-tip
+> > > tree, as that tree has recent conflicting commits in the same area.
+> > 
+> > Is the drm-tip material in linux-next yet?  I'm still seeing a non-trivial
+> > reject in there at present.
+> 
+> I assumed it was, but the reject imply that they aren't.  Tvrtko, do you
+> know the details?
 
-That would convert "iio_setup_triggered_buffer()" into a wrapper for
-iio_setup_triggered_buffer_ext() with NULL in place.
-And is indeed a smaller patchset.
+I think we have a gap that after splitting the drm-intel-next pull requests into
+two the drm-intel/for-linux-next branch is now missing material from
+drm-intel/drm-intel-gt-next.
 
-I'll send a V2 for this.
-Maybe I'll wait until the at91-sama5d2_adc patch [1] is applied, or V2
-will include a copy of that patch.
-The cross_ec one was applied, so one less hurdle for this.
-These cleanup patches [in various drivers] do help with making some of
-the IIO core changes easier to grasp [for me particularly].
+I think a simple course of action might be to start including drm-intel-gt-next
+in linux-next, which would mean that we should update DIM tooling to add
+extra branch "drm-intel/gt-for-linux-next" or so.
 
-On a side-note, I was super happy when "scan_el_attrs" was dropped [2].
-It's one less worry for this whole IIO buffer work.
+Which specific patches are missing in this case?
 
-[1] https://lore.kernel.org/linux-iio/20200926165549.23dc420b@archlinux/T/#t
-[2] https://lore.kernel.org/linux-iio/20200412110253.52d93e71@archlinux/
-
-> To be honest, as I said above, I'm not that bothered which route is
-> taken.
->
-> Jonathan
->
-> >
-> >
-> > Alexandru Ardelean (5):
-> >   [1] iio: cros_ec: unify hw fifo attributes into the core file
-> >   [2] iio: buffer: dmaengine: unwrap the use of iio_buffer_set_attrs()
-> >   [3] iio: triggered-buffer: add sysfs buffer attributes as args for setup
-> >   [4] iio: buffer: extend arg list for {devm_}iio_triggered_buffer_setup()
-> >   [5] iio: remove iio_buffer_set_attrs() and assign buffer attrs during
-> >     alloc
-> >
-> >  drivers/iio/accel/adxl372.c                   |  5 ++--
-> >  drivers/iio/accel/bma180.c                    |  2 +-
-> >  drivers/iio/accel/bma220_spi.c                |  2 +-
-> >  drivers/iio/accel/bmc150-accel-core.c         | 19 ++++++++------
-> >  drivers/iio/accel/cros_ec_accel_legacy.c      |  2 +-
-> >  drivers/iio/accel/kxcjk-1013.c                |  2 +-
-> >  drivers/iio/accel/kxsd9.c                     |  2 +-
-> >  drivers/iio/accel/mma7455_core.c              |  2 +-
-> >  drivers/iio/accel/mma8452.c                   |  2 +-
-> >  drivers/iio/accel/mxc4005.c                   |  2 +-
-> >  drivers/iio/accel/st_accel_buffer.c           |  2 +-
-> >  drivers/iio/accel/stk8312.c                   |  2 +-
-> >  drivers/iio/accel/stk8ba50.c                  |  2 +-
-> >  drivers/iio/adc/ad7266.c                      |  3 ++-
-> >  drivers/iio/adc/ad7298.c                      |  2 +-
-> >  drivers/iio/adc/ad7476.c                      |  2 +-
-> >  drivers/iio/adc/ad7606.c                      |  2 +-
-> >  drivers/iio/adc/ad7766.c                      |  2 +-
-> >  drivers/iio/adc/ad7768-1.c                    |  2 +-
-> >  drivers/iio/adc/ad7887.c                      |  2 +-
-> >  drivers/iio/adc/ad7923.c                      |  2 +-
-> >  drivers/iio/adc/ad799x.c                      |  2 +-
-> >  drivers/iio/adc/ad_sigma_delta.c              |  2 +-
-> >  drivers/iio/adc/at91-sama5d2_adc.c            | 25 +++++++++++--------
-> >  drivers/iio/adc/at91_adc.c                    |  2 +-
-> >  drivers/iio/adc/cc10001_adc.c                 |  2 +-
-> >  drivers/iio/adc/dln2-adc.c                    |  3 ++-
-> >  drivers/iio/adc/hx711.c                       |  3 ++-
-> >  drivers/iio/adc/max1027.c                     |  2 +-
-> >  drivers/iio/adc/max1118.c                     |  2 +-
-> >  drivers/iio/adc/max1363.c                     |  2 +-
-> >  drivers/iio/adc/mxs-lradc-adc.c               |  2 +-
-> >  drivers/iio/adc/rockchip_saradc.c             |  2 +-
-> >  drivers/iio/adc/stm32-adc.c                   |  2 +-
-> >  drivers/iio/adc/stm32-dfsdm-adc.c             |  2 +-
-> >  drivers/iio/adc/ti-adc081c.c                  |  3 ++-
-> >  drivers/iio/adc/ti-adc0832.c                  |  2 +-
-> >  drivers/iio/adc/ti-adc084s021.c               |  3 ++-
-> >  drivers/iio/adc/ti-adc108s102.c               |  3 ++-
-> >  drivers/iio/adc/ti-adc12138.c                 |  2 +-
-> >  drivers/iio/adc/ti-adc161s626.c               |  2 +-
-> >  drivers/iio/adc/ti-ads1015.c                  |  2 +-
-> >  drivers/iio/adc/ti-ads124s08.c                |  3 ++-
-> >  drivers/iio/adc/ti-ads7950.c                  |  3 ++-
-> >  drivers/iio/adc/ti-ads8688.c                  |  3 ++-
-> >  drivers/iio/adc/ti-tlc4541.c                  |  2 +-
-> >  drivers/iio/adc/vf610_adc.c                   |  3 ++-
-> >  drivers/iio/adc/xilinx-xadc-core.c            |  2 +-
-> >  .../buffer/industrialio-buffer-dmaengine.c    |  3 +--
-> >  .../buffer/industrialio-triggered-buffer.c    | 13 +++++++---
-> >  drivers/iio/chemical/atlas-sensor.c           |  2 +-
-> >  drivers/iio/chemical/ccs811.c                 |  2 +-
-> >  drivers/iio/chemical/pms7003.c                |  3 ++-
-> >  drivers/iio/chemical/scd30_core.c             |  3 ++-
-> >  drivers/iio/chemical/sps30.c                  |  3 ++-
-> >  .../cros_ec_sensors/cros_ec_lid_angle.c       |  5 ++--
-> >  .../common/cros_ec_sensors/cros_ec_sensors.c  |  5 ++--
-> >  .../cros_ec_sensors/cros_ec_sensors_core.c    | 16 +++++++++---
-> >  .../common/hid-sensors/hid-sensor-trigger.c   | 19 ++++++--------
-> >  drivers/iio/gyro/adxrs290.c                   |  3 ++-
-> >  drivers/iio/gyro/bmg160_core.c                |  2 +-
-> >  drivers/iio/gyro/fxas21002c_core.c            |  3 ++-
-> >  drivers/iio/gyro/itg3200_buffer.c             |  2 +-
-> >  drivers/iio/gyro/mpu3050-core.c               |  2 +-
-> >  drivers/iio/gyro/st_gyro_buffer.c             |  2 +-
-> >  drivers/iio/health/afe4403.c                  |  2 +-
-> >  drivers/iio/health/afe4404.c                  |  2 +-
-> >  drivers/iio/humidity/am2315.c                 |  2 +-
-> >  drivers/iio/humidity/hdc100x.c                |  2 +-
-> >  drivers/iio/humidity/hts221_buffer.c          |  2 +-
-> >  drivers/iio/imu/adis_buffer.c                 |  2 +-
-> >  drivers/iio/imu/bmi160/bmi160_core.c          |  3 ++-
-> >  drivers/iio/imu/inv_mpu6050/inv_mpu_core.c    |  2 +-
-> >  drivers/iio/imu/kmx61.c                       |  4 +--
-> >  drivers/iio/industrialio-buffer.c             | 12 ---------
-> >  drivers/iio/light/adjd_s311.c                 |  2 +-
-> >  drivers/iio/light/as73211.c                   |  3 ++-
-> >  drivers/iio/light/cros_ec_light_prox.c        |  5 ++--
-> >  drivers/iio/light/gp2ap020a00f.c              |  3 ++-
-> >  drivers/iio/light/isl29125.c                  |  2 +-
-> >  drivers/iio/light/ltr501.c                    |  2 +-
-> >  drivers/iio/light/max44000.c                  |  3 ++-
-> >  drivers/iio/light/rpr0521.c                   |  2 +-
-> >  drivers/iio/light/si1145.c                    |  2 +-
-> >  drivers/iio/light/st_uvis25_core.c            |  2 +-
-> >  drivers/iio/light/tcs3414.c                   |  2 +-
-> >  drivers/iio/light/tcs3472.c                   |  2 +-
-> >  drivers/iio/light/vcnl4000.c                  |  3 ++-
-> >  drivers/iio/light/vcnl4035.c                  |  2 +-
-> >  drivers/iio/magnetometer/ak8974.c             |  2 +-
-> >  drivers/iio/magnetometer/ak8975.c             |  2 +-
-> >  drivers/iio/magnetometer/bmc150_magn.c        |  2 +-
-> >  drivers/iio/magnetometer/hmc5843_core.c       |  2 +-
-> >  drivers/iio/magnetometer/mag3110.c            |  2 +-
-> >  drivers/iio/magnetometer/rm3100-core.c        |  2 +-
-> >  drivers/iio/magnetometer/st_magn_buffer.c     |  2 +-
-> >  drivers/iio/potentiostat/lmp91000.c           |  2 +-
-> >  drivers/iio/pressure/cros_ec_baro.c           |  5 ++--
-> >  drivers/iio/pressure/dlhl60d.c                |  2 +-
-> >  drivers/iio/pressure/mpl3115.c                |  2 +-
-> >  drivers/iio/pressure/ms5611_core.c            |  2 +-
-> >  drivers/iio/pressure/st_pressure_buffer.c     |  2 +-
-> >  drivers/iio/pressure/zpa2326.c                |  2 +-
-> >  drivers/iio/proximity/as3935.c                |  3 ++-
-> >  drivers/iio/proximity/isl29501.c              |  2 +-
-> >  drivers/iio/proximity/mb1232.c                |  3 ++-
-> >  .../iio/proximity/pulsedlight-lidar-lite-v2.c |  2 +-
-> >  drivers/iio/proximity/srf08.c                 |  3 ++-
-> >  drivers/iio/proximity/sx9310.c                |  2 +-
-> >  drivers/iio/proximity/sx9500.c                |  2 +-
-> >  drivers/iio/temperature/maxim_thermocouple.c  |  3 ++-
-> >  include/linux/iio/buffer.h                    |  3 ---
-> >  .../linux/iio/common/cros_ec_sensors_core.h   |  4 +--
-> >  include/linux/iio/triggered_buffer.h          |  7 ++++--
-> >  114 files changed, 198 insertions(+), 172 deletions(-)
-> >
->
+Regards, Joonas
