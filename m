@@ -2,69 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17A5527B47B
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 20:31:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ED6627B483
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 20:32:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726567AbgI1SbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 14:31:07 -0400
-Received: from mail-ot1-f67.google.com ([209.85.210.67]:40433 "EHLO
-        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726465AbgI1SbG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 14:31:06 -0400
-Received: by mail-ot1-f67.google.com with SMTP id c2so1917412otp.7;
-        Mon, 28 Sep 2020 11:31:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=NA1YCFDDdCEsWjv2AATed3eNSDGAzCWeWGSA5r8BwCI=;
-        b=KsPQisKn5ipgIJVSeZvm1fZv6M5235/k9OsL28RxelEWpVeVshWjHnM9ZqI5LR5azz
-         ROYJvdj30DTQUUkHZQhx/4iecwkdjdnqijsJjOEF4d+BbVCYPYjSxAxGbrL5HNc7L7dy
-         OfUKGXeidcUkNYNlHbduNypThWW9U+mrWA5h5I1lKLQpgKZE0O7zZNlznJpFl6999vun
-         aJ5d8xZSqj30pHNumHZ8dVeSjOwSGq60qA1+9orA2S4qpU6rq+EzS6ssomxLt84olKC7
-         cJm6+GezLXJYUofiXHO4ESxdDtJ7BQi4fGBgmU2wjBp5X7+wV11JvTrk5mJ4bLsSd3vk
-         qljQ==
-X-Gm-Message-State: AOAM5318ghqLISMKMBhqSgJPQ9qeKTaLxeI4ORhGpE34E+q+hqVybXXq
-        QghuuRC7y8YWZ4MOStULfw==
-X-Google-Smtp-Source: ABdhPJwb0KzKT4QL5i7Qie7W0c22WdIaqMe6nNmjMvl99SvsAi3tfddwsso8nJz4ehynnJHXvdKwLw==
-X-Received: by 2002:a9d:4c01:: with SMTP id l1mr183689otf.341.1601317866243;
-        Mon, 28 Sep 2020 11:31:06 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id m3sm431594otc.72.2020.09.28.11.31.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Sep 2020 11:31:05 -0700 (PDT)
-Received: (nullmailer pid 3041867 invoked by uid 1000);
-        Mon, 28 Sep 2020 18:31:04 -0000
-Date:   Mon, 28 Sep 2020 13:31:04 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Roger Quadros <rogerq@ti.com>
-Cc:     peda@axentia.se, devicetree@vger.kernel.org, nm@ti.com,
-        kishon@ti.com, t-kristo@ti.com, robh+dt@kernel.org,
-        linux-arm-kernel@lists.infradead.org, nsekhar@ti.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 1/6] dt-bindings: ti-serdes-mux: Add defines for J7200
- SoC
-Message-ID: <20200928183104.GA3041813@bogus>
-References: <20200921143941.13905-1-rogerq@ti.com>
- <20200921143941.13905-2-rogerq@ti.com>
+        id S1726652AbgI1Sc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 14:32:27 -0400
+Received: from mga07.intel.com ([134.134.136.100]:38347 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726526AbgI1Sc1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 14:32:27 -0400
+IronPort-SDR: pK85NiHMkZZG4p8WDEekTGojWQwBTmatiZdmBFktxsLIA+eAsgBfHMJwovAfvrBhKVXFFoTgni
+ C0i+68hDO3JQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9758"; a="226189212"
+X-IronPort-AV: E=Sophos;i="5.77,313,1596524400"; 
+   d="scan'208";a="226189212"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 11:32:21 -0700
+IronPort-SDR: pfPxQndJaC+NinPZjzS2oRzK9EMqP5WQzue6VzOlfZIfyMKMPXzzPwN/zJ7Kw8QT8vOkUlJtE9
+ 5jX6UhFMMm0Q==
+X-IronPort-AV: E=Sophos;i="5.77,313,1596524400"; 
+   d="scan'208";a="307430935"
+Received: from sethura1-mobl2.amr.corp.intel.com (HELO [10.254.88.203]) ([10.254.88.203])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 11:32:21 -0700
+Subject: Re: [PATCH v3 1/1] PCI/ERR: Fix reset logic in pcie_do_recovery()
+ call
+To:     Sinan Kaya <okaya@kernel.org>, Bjorn Helgaas <helgaas@kernel.org>
+Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ashok.raj@intel.com,
+        Jay Vosburgh <jay.vosburgh@canonical.com>
+References: <20200922233333.GA2239404@bjorn-Precision-5520>
+ <d5aa53dc-0c94-e57a-689a-1c1f89787af1@linux.intel.com>
+ <526dc846-b12b-3523-4995-966eb972ceb7@kernel.org>
+ <1fdcc4a6-53b7-2b5f-8496-f0f09405f561@linux.intel.com>
+ <aef0b9aa-59f5-9ec3-adac-5bc366b362e0@kernel.org>
+ <a647f485-8db4-db45-f404-940b55117b53@linux.intel.com>
+ <aefd8842-90c4-836a-b43a-f21c5428d2ba@kernel.org>
+ <95e23cb5-f6e1-b121-0de8-a2066d507d9c@linux.intel.com>
+ <65238d0b-0a39-400a-3a18-4f68eb554538@kernel.org>
+ <4ae86061-2182-bcf1-ebd7-485acf2d47b9@linux.intel.com>
+ <f360165e-5f73-057c-efd1-557b5e5027eb@kernel.org>
+ <8beca800-ffb5-c535-6d43-7e750cbf06d0@linux.intel.com>
+ <44f0cac5-8deb-1169-eb6d-93ac4889fe7e@kernel.org>
+ <3bc0fd23-8ddd-32c5-1dd9-4d5209ea68c3@linux.intel.com>
+ <a2bbdfed-fb17-51dc-8ae4-55d924c13211@kernel.org>
+ <8a3aeb3c-83c4-8626-601d-360946d55dd8@linux.intel.com>
+ <9b295cad-7302-cf2c-d19d-d27fabcb48be@kernel.org>
+ <93b4015f-df2b-728b-3ef7-ac5aa10f03ed@kernel.org>
+From:   "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Message-ID: <d6da2246-cf82-315e-c716-62ab9ec13a22@linux.intel.com>
+Date:   Mon, 28 Sep 2020 11:32:19 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200921143941.13905-2-rogerq@ti.com>
+In-Reply-To: <93b4015f-df2b-728b-3ef7-ac5aa10f03ed@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 21 Sep 2020 17:39:36 +0300, Roger Quadros wrote:
-> There are 4 lanes in each J7200 SERDES. Each SERDES lane mux can
-> select upto 4 different IPs. Define all the possible functions.
+
+
+On 9/28/20 11:25 AM, Sinan Kaya wrote:
+> On 9/28/2020 2:02 PM, Sinan Kaya wrote:
+>> Since there is no state restoration for FATAL errors, I am wondering
+>> whether
+>> calls to ->error_detected(), ->mmio_enabled() and ->slot_reset() are
+>> required?
 > 
-> Cc: Peter Rosin <peda@axentia.se>
-> Signed-off-by: Roger Quadros <rogerq@ti.com>
-> ---
->  include/dt-bindings/mux/ti-serdes.h | 22 ++++++++++++++++++++++
->  1 file changed, 22 insertions(+)
+> I also would like to ask someone closer to the spec language double
+> check this.
+> 
+> When we recover the link at the end of the DPC handler, what is the
+> expected state of the endpoint?
+> 
+> Is it a some kind of a reset like secondary bus reset? (I assumed this
+>   one)
+I think it will be in reset state.
+> 
+> Undefined?
+> 
+> or just plain link recovery with everything else as intact as it used
+> to be?
 > 
 
-Acked-by: Rob Herring <robh@kernel.org>
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
