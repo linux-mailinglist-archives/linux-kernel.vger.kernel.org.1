@@ -2,184 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE49427AB51
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 11:54:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8750927AB47
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 11:54:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726789AbgI1Jym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 05:54:42 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2925 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726751AbgI1Jyl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 05:54:41 -0400
-Received: from lhreml710-chm.china.huawei.com (unknown [172.18.7.107])
-        by Forcepoint Email with ESMTP id 08BBB9CD84D67E7F116E;
-        Mon, 28 Sep 2020 10:54:40 +0100 (IST)
-Received: from localhost (10.52.126.2) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1913.5; Mon, 28 Sep
- 2020 10:54:39 +0100
-Date:   Mon, 28 Sep 2020 10:52:58 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Zhen Lei <thunder.leizhen@huawei.com>
-CC:     Wei Xu <xuwei5@hisilicon.com>, Rob Herring <robh+dt@kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Libin <huawei.libin@huawei.com>
-Subject: Re: [PATCH v3 21/21] dt-bindings: arm: hisilicon: convert LPC
- controller bindings to json-schema
-Message-ID: <20200928105258.000016c5@Huawei.com>
-In-Reply-To: <20200927062129.4573-22-thunder.leizhen@huawei.com>
-References: <20200927062129.4573-1-thunder.leizhen@huawei.com>
-        <20200927062129.4573-22-thunder.leizhen@huawei.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
-MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.52.126.2]
-X-ClientProxiedBy: lhreml707-chm.china.huawei.com (10.201.108.56) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+        id S1726742AbgI1JyW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 05:54:22 -0400
+Received: from z5.mailgun.us ([104.130.96.5]:24226 "EHLO z5.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726665AbgI1JyU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 05:54:20 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1601286860; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=xaLCY4XeSpW2yZ4NBQ2ZM0m/9NK4BoTEVJtCzdYUC0w=; b=MOwZKmmswnfMnRmiV7wk2JAFjiIUvfkcX+HC2Uesp1Yb11IF9ovChns1dZN3Ayzb7Wj988fL
+ vIQ3TWOncZaWnTCfVasmuSytQbXTQP356DwhEBvpanGOsbP09sAWTq71pFDBbRnAqchye+VH
+ UugEhTE/8gohvxk8JQx/oHgnSr0=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 5f71b2acd106659f82730688 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 28 Sep 2020 09:53:48
+ GMT
+Sender: srivasam=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id A4F08C433CA; Mon, 28 Sep 2020 09:53:48 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from hyd-lnxbld210.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: srivasam)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7ADA8C433C8;
+        Mon, 28 Sep 2020 09:53:43 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 7ADA8C433C8
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=srivasam@codeaurora.org
+From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
+        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
+        srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+Subject: [PATCH v7 0/6]  Qualcomm's lpass-hdmi ASoC driver to support audio over dp port
+Date:   Mon, 28 Sep 2020 15:23:25 +0530
+Message-Id: <1601286811-25962-1-git-send-email-srivasam@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 27 Sep 2020 14:21:29 +0800
-Zhen Lei <thunder.leizhen@huawei.com> wrote:
+These patches are to support audio over DP port on Qualcomm's SC7180 LPASS
+Asoc. It includes machine driver, cpu driver, platform driver updates for 
+HDMI path support, device tree documention, lpass variant structure 
+optimization and configuration changes.
+These patches depends on the DP patch series
+https://patchwork.kernel.org/project/dri-devel/list/?series=332029
+https://lore.kernel.org/patchwork/project/lkml/list/?series=464856
+changes since V6:
+    -- Removed compile time define flag, which used for enabling
+     HDMI code, based on corresponding config param is included.
+    -- Updated reg map alloc API with reg map bulk API.
+    -- Removed unnecessary line splits
+changes since V5:
+    -- Removed unused struct regmap *map in lpass_platform_alloc_hdmidmactl_fields.
+    -- DMA alloc and free API signature change in lpass-apq8016.c, lpass-ipq806x.c 
+    -- Keeping API "irqreturn_t lpass_platform_hdmiif_irq" under ifdef macro
+Changes Since v4:
+    -- Updated with single compatible node for both I2S and HDMI.
+Changes Since v3:
+    -- Removed id in lpass variant structure and used snd_soc_dai_driver id.
+Changes Since v2:
+    -- Audio buffer size(i.e. LPASS_PLATFORM_BUFFER_SIZE) in lpass-platform.c increased.
+Changes Since v1:
+    -- Commit messages are updated
+    -- Addressed Rob Herring review comments
 
-> Convert the Hisilicon Hip06 SoCs implement a Low Pin Count (LPC)
-> controller binding to DT schema format using json-schema.
-> 
-> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+V Sujith Kumar Reddy (6):
+  ASoC: Add sc7180-lpass binding header hdmi define
+  ASoC: dt-bindings: Add dt binding for lpass hdmi
+  Asoc:qcom:lpass-cpu:Update dts property read API
+  Asoc: qcom: lpass:Update lpaif_dmactl members order
+  ASoC: qcom: Add support for lpass hdmi driver
+  ASoC: qcom: sc7180: Add support for audio over DP
 
-As only single entries in the oneOf, can just use an enum.
+ .../devicetree/bindings/sound/qcom,lpass-cpu.yaml  |  74 +++-
+ include/dt-bindings/sound/sc7180-lpass.h           |   1 +
+ sound/soc/qcom/Kconfig                             |  17 +
+ sound/soc/qcom/Makefile                            |   2 +
+ sound/soc/qcom/lpass-apq8016.c                     |   4 +-
+ sound/soc/qcom/lpass-cpu.c                         |  55 ++-
+ sound/soc/qcom/lpass-hdmi.c                        | 470 +++++++++++++++++++++
+ sound/soc/qcom/lpass-hdmi.h                        | 122 ++++++
+ sound/soc/qcom/lpass-ipq806x.c                     |   4 +-
+ sound/soc/qcom/lpass-lpaif-reg.h                   |  52 ++-
+ sound/soc/qcom/lpass-platform.c                    | 421 ++++++++++++++----
+ sound/soc/qcom/lpass-sc7180.c                      | 116 ++++-
+ sound/soc/qcom/lpass.h                             | 119 +++++-
+ 13 files changed, 1301 insertions(+), 156 deletions(-)
+ create mode 100644 sound/soc/qcom/lpass-hdmi.c
+ create mode 100644 sound/soc/qcom/lpass-hdmi.h
 
-Thanks,
-
-Jonathan
-
-> ---
->  .../arm/hisilicon/hisilicon-low-pin-count.txt      | 33 ------------
->  .../arm/hisilicon/hisilicon-low-pin-count.yaml     | 63 ++++++++++++++++++++++
->  2 files changed, 63 insertions(+), 33 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/arm/hisilicon/hisilicon-low-pin-count.txt
->  create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/hisilicon-low-pin-count.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/arm/hisilicon/hisilicon-low-pin-count.txt b/Documentation/devicetree/bindings/arm/hisilicon/hisilicon-low-pin-count.txt
-> deleted file mode 100644
-> index 10bd35f9207f2ee..000000000000000
-> --- a/Documentation/devicetree/bindings/arm/hisilicon/hisilicon-low-pin-count.txt
-> +++ /dev/null
-> @@ -1,33 +0,0 @@
-> -Hisilicon Hip06 Low Pin Count device
-> -  Hisilicon Hip06 SoCs implement a Low Pin Count (LPC) controller, which
-> -  provides I/O access to some legacy ISA devices.
-> -  Hip06 is based on arm64 architecture where there is no I/O space. So, the
-> -  I/O ports here are not CPU addresses, and there is no 'ranges' property in
-> -  LPC device node.
-> -
-> -Required properties:
-> -- compatible:  value should be as follows:
-> -	(a) "hisilicon,hip06-lpc"
-> -	(b) "hisilicon,hip07-lpc"
-> -- #address-cells: must be 2 which stick to the ISA/EISA binding doc.
-> -- #size-cells: must be 1 which stick to the ISA/EISA binding doc.
-> -- reg: base memory range where the LPC register set is mapped.
-> -
-> -Note:
-> -  The node name before '@' must be "isa" to represent the binding stick to the
-> -  ISA/EISA binding specification.
-> -
-> -Example:
-> -
-> -isa@a01b0000 {
-> -	compatible = "hisilicon,hip06-lpc";
-> -	#address-cells = <2>;
-> -	#size-cells = <1>;
-> -	reg = <0x0 0xa01b0000 0x0 0x1000>;
-> -
-> -	ipmi0: bt@e4 {
-> -		compatible = "ipmi-bt";
-> -		device_type = "ipmi";
-> -		reg = <0x01 0xe4 0x04>;
-> -	};
-> -};
-> diff --git a/Documentation/devicetree/bindings/arm/hisilicon/hisilicon-low-pin-count.yaml b/Documentation/devicetree/bindings/arm/hisilicon/hisilicon-low-pin-count.yaml
-> new file mode 100644
-> index 000000000000000..a43f8b65547c10f
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/arm/hisilicon/hisilicon-low-pin-count.yaml
-> @@ -0,0 +1,63 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/arm/hisilicon/hisilicon-low-pin-count.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Hisilicon Hip06 Low Pin Count device
-> +
-> +maintainers:
-> +  - Wei Xu <xuwei5@hisilicon.com>
-> +
-> +description: |
-> +  Hisilicon Hip06 SoCs implement a Low Pin Count (LPC) controller, which
-> +  provides I/O access to some legacy ISA devices.
-> +  Hip06 is based on arm64 architecture where there is no I/O space. So, the
-> +  I/O ports here are not CPU addresses, and there is no 'ranges' property in
-> +  LPC device node.
-> +
-> +properties:
-> +  $nodename:
-> +    pattern: '^isa@[0-9a-f]+$'
-> +    description: |
-> +      The node name before '@' must be "isa" to represent the binding stick
-> +      to the ISA/EISA binding specification.
-> +
-> +  compatible:
-> +    oneOf:
-> +      - items:
-> +        - const: hisilicon,hip06-lpc
-> +      - items:
-> +        - const: hisilicon,hip07-lpc
-
-       enum:
-         - hisilicon,hip06-lpc
-         - hisilicon,hip07-lpc
-
-> +
-> +  reg:
-> +    description: base memory range where the LPC register set is mapped.
-> +    maxItems: 1
-> +
-> +  '#address-cells':
-> +    description: must be 2 which stick to the ISA/EISA binding doc.
-> +    const: 2
-> +
-> +  '#size-cells':
-> +    description: must be 1 which stick to the ISA/EISA binding doc.
-> +    const: 1
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +
-> +examples:
-> +  - |
-> +    isa@a01b0000 {
-> +        compatible = "hisilicon,hip06-lpc";
-> +        #address-cells = <2>;
-> +        #size-cells = <1>;
-> +        reg = <0xa01b0000 0x1000>;
-> +
-> +        ipmi0: bt@e4 {
-> +            compatible = "ipmi-bt";
-> +            device_type = "ipmi";
-> +            reg = <0x01 0xe4 0x04>;
-> +        };
-> +    };
-> +...
-> \ No newline at end of file
-
+-- 
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
 
