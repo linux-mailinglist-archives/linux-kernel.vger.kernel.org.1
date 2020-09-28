@@ -2,149 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B68227B637
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 22:27:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DCFE27B646
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 22:29:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726896AbgI1U1B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 16:27:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38876 "EHLO
+        id S1726732AbgI1U3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 16:29:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726742AbgI1U05 (ORCPT
+        with ESMTP id S1726500AbgI1U3N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 16:26:57 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D299C0613D6
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 13:26:56 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id fa1so1382281pjb.0
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 13:26:56 -0700 (PDT)
+        Mon, 28 Sep 2020 16:29:13 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED840C061755;
+        Mon, 28 Sep 2020 13:29:12 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id s13so2381688wmh.4;
+        Mon, 28 Sep 2020 13:29:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=84Wkm7II+zR8a1S1XbEc0SAaLAitSu9by2LK3K8LLZY=;
-        b=jzjFbeQC0BOwC59BlIVN2ZD9Bjg+kpxXoCamP3rbFMeNXlT5A44rhrBi1/hP2VR/2N
-         Yz4xMvTvF/IVCMTawSARPCrWJFAyxjqHWONLjXci0pBwHhpp+qK7flV9anmFW0vYRW97
-         kRVlk0d7tppB+g7b5R7BN30fkEEi2ATsg6ztU=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=Q0lp3rLeok0/LIdGZMtUWTk4DBwvlYpBiYMCH4mTDmo=;
+        b=Fhf3QkDEZWbN0+nOjdtpyln7D1G4Eg0gOZ0V85gztOZtw3D4HokakiOvkEHSt2DMQ9
+         J4imFtjqxjsawJ/oK8B0CHI391+yBig73WrUDicb1lskeeQBw+AzTAvKZ3QM4G5hs8ks
+         PfD5Y7VpmAqKVcxEGGMJxSxyjwXIDcAkxfR1RixzNXhz5ksJkWGPAzILXJTIuK8ikvV6
+         Lm30bFHamzfANT8UXmgF1hAax5msCyr1et6izPYswrgqZt9loWONpYuiZBn1EtysnitB
+         6cR4cwNeXksQcZfqIsrHdAA5ZKpBVJgty5VnsbOhGggfMPg+7wNt50dapZtA6I0F6diC
+         fagQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=84Wkm7II+zR8a1S1XbEc0SAaLAitSu9by2LK3K8LLZY=;
-        b=jtgW2dmVZNTBA8qhpkaq2Y3oIy1SuV2F4oLTABZ3nu/RU274u89sJdtFl3wxeeku68
-         bf78IR8ZTC2o5E7Zc5L7vzc2o6mLKgcw1hEWrdxs3BCJIOUSMrNYQyz+RRTHaFJk0SjE
-         BU3UX+uWrTUQSCDrvuGmk/ScJ4Tm3XN6YR67hA4ICyRemjCyUgYK43Vgpz2iHh2O6ZpK
-         ug28QO4zGBrAUQmI6KjkrCpe0a20cD40JxRiqjKBkd98sNVcuCsWuSQTwappZ7M2UilB
-         sGnfmXBaflSJrPtfSTH3lBob69lfCxnIuSavIDNlfW6BAKOeYEHiE8ibZIUSTqFHkCYu
-         B0Qg==
-X-Gm-Message-State: AOAM530YA6ifUmVUPZaBPWZV0xj2HPDplj8ZvtZeYWdJLI2al69Bs4OC
-        f/hyXkQNIp+n3y9ESNnTXptsKBbw7AZN5yb6
-X-Google-Smtp-Source: ABdhPJzunOfjF8LprL3XY61w3FvvpSkqtHIqXlVfnXXgRC88QVU+My/W354njw01Dr7RLCEJWbZv+Q==
-X-Received: by 2002:a17:90a:e38a:: with SMTP id b10mr817027pjz.17.1601324815742;
-        Mon, 28 Sep 2020 13:26:55 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id s16sm2107828pgl.78.2020.09.28.13.26.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Sep 2020 13:26:53 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     Shuah Khan <shuah@kernel.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Hangbin Liu <liuhangbin@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        Tim.Bird@sony.com, lkft-triage@lists.linaro.org,
-        Anders Roxell <anders.roxell@linaro.org>,
-        Justin Cook <justin.cook@linaro.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: [PATCH v2 3/3] doc: dev-tools: kselftest.rst: Update examples and paths
-Date:   Mon, 28 Sep 2020 13:26:50 -0700
-Message-Id: <20200928202650.2530280-4-keescook@chromium.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200928202650.2530280-1-keescook@chromium.org>
-References: <20200928202650.2530280-1-keescook@chromium.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=Q0lp3rLeok0/LIdGZMtUWTk4DBwvlYpBiYMCH4mTDmo=;
+        b=K64YMXTIYNCAC885+wXeHll+0UrJ16ImneIyZtSHde3OzgzBTT9pglKAbkOSKoIJXj
+         G0m3mDVQNW1BsFt3NPwJxM9u1n3c58mJ8eUZKeJduTwrz/ZI4t3jD9iBO4+Ro/xeYeR3
+         +f77qsXmA8nFuNS3qrN+W6JDIMoHi5b6Xo5dao/6BqgXK3lt5YYo7LLtE/c1/+bYuvOh
+         z64nJ6n7T0DS/qm6tIs8wITSUUpT/x9otwm7fU+XVMepjm6wdDHlzhlMsdTdFBd84RWy
+         kVKRMMHh33SKctK4Hay6fbgPgePSjhYINC4JiH1HUJ5MX9nlkUqO5Sg/JrtMtHN5bYsb
+         CWXg==
+X-Gm-Message-State: AOAM530B/gPK7PTkIIAlWBYY2r2w15L+yaR+gFIsMxdnNGV3Lenk8Eds
+        0cUTvhfTUJIv72i3ZyQhhQHapw7rVlI1N3ohTI8=
+X-Google-Smtp-Source: ABdhPJyksvtNI+Mg0NDn1Hk0jA3e3slOwaUrbYwi4zR1ZbqKf/he+sN9D9+vk5PIDwTYGc5l0l2sKw9NOq2Iwl1J0xk=
+X-Received: by 2002:a1c:5988:: with SMTP id n130mr910267wmb.95.1601324951481;
+ Mon, 28 Sep 2020 13:29:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200926125146.12859-1-kholk11@gmail.com> <20200926125146.12859-6-kholk11@gmail.com>
+ <20200928161546.GB29832@jcrouse1-lnx.qualcomm.com>
+In-Reply-To: <20200928161546.GB29832@jcrouse1-lnx.qualcomm.com>
+From:   AngeloGioacchino Del Regno <kholk11@gmail.com>
+Date:   Mon, 28 Sep 2020 22:29:00 +0200
+Message-ID: <CAK7fi1Z8uVRE+HRUSTz8bdDS5hYXaH8=D8KDUz+7mGs-H-TGpw@mail.gmail.com>
+Subject: Re: [PATCH 5/7] drm/msm/a5xx: Fix VPC protect value in gpu_write()
+To:     AngeloGioacchino Del Regno <kholk11@gmail.com>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        Dave Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, konradybcio@gmail.com,
+        marijns95@gmail.com, martin.botka1@gmail.com,
+        MSM <linux-arm-msm@vger.kernel.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        phone-devel@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update the installation commands and path details, detail the new
-options available in the run_kselftests.sh script.
+Il giorno lun 28 set 2020 alle ore 18:16 Jordan Crouse
+<jcrouse@codeaurora.org> ha scritto:
+>
+> On Sat, Sep 26, 2020 at 02:51:44PM +0200, kholk11@gmail.com wrote:
+> > From: Konrad Dybcio <konradybcio@gmail.com>
+> >
+> > The upstream API for some reason uses logbase2 instead of
+> > just passing the argument as-is, whereas downstream CAF
+> > kernel does the latter.
+> >
+> > Hence, a mistake has been made when porting:
+> > 4 is the value that's supposed to be passed, but
+> > log2(4) = 2. Changing the value to 16 (= 2^4) fixes
+> > the issue.
+>
+> FWIW I think downstream is wrong. Its a lot more intuitive to pass the number of
+> registers that should be protected than to force a human to do math.
+>
+> Jordan
+>
+Uhm, actually, it's upstream the one forcing to do math... :P
+In any case, downstream you have some calls with an explicit log2 and
+some others with the "real" number of registers.
 
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- Documentation/dev-tools/kselftest.rst | 35 +++++++++++++++++----------
- 1 file changed, 22 insertions(+), 13 deletions(-)
+Hardware magic register layouts, maybe.... :)))
 
-diff --git a/Documentation/dev-tools/kselftest.rst b/Documentation/dev-tools/kselftest.rst
-index 469d115a95f1..a901def730d9 100644
---- a/Documentation/dev-tools/kselftest.rst
-+++ b/Documentation/dev-tools/kselftest.rst
-@@ -125,32 +125,41 @@ Note that some tests will require root privileges.
- Install selftests
- =================
- 
--You can use the kselftest_install.sh tool to install selftests in the
--default location, which is tools/testing/selftests/kselftest, or in a
--user specified location.
-+You can use the "install" target of "make" (which calls the `kselftest_install.sh`
-+tool) to install selftests in the default location (`tools/testing/selftests/kselftest_install`),
-+or in a user specified location via the `INSTALL_PATH` "make" variable.
- 
- To install selftests in default location::
- 
--   $ cd tools/testing/selftests
--   $ ./kselftest_install.sh
-+   $ make -C tools/testing/selftests install
- 
- To install selftests in a user specified location::
- 
--   $ cd tools/testing/selftests
--   $ ./kselftest_install.sh install_dir
-+   $ make -C tools/testing/selftests install INSTALL_PATH=/some/other/path
- 
- Running installed selftests
- ===========================
- 
--Kselftest install as well as the Kselftest tarball provide a script
--named "run_kselftest.sh" to run the tests.
-+Found in the install directory, as well as in the Kselftest tarball,
-+is a script named `run_kselftest.sh` to run the tests.
- 
- You can simply do the following to run the installed Kselftests. Please
- note some tests will require root privileges::
- 
--   $ cd kselftest
-+   $ cd kselftest_install
-    $ ./run_kselftest.sh
- 
-+To see the list of available tests, the `-l` option can be used::
-+
-+   $ ./run_kselftest.sh -l
-+
-+The `-c` option can be used to run all the tests from a test collection, or
-+the `-t` option for specific single tests. Either can be used multiple times::
-+
-+   $ ./run_kselftest.sh -c bpf -c seccomp -t timers:posix_timers -t timer:nanosleep
-+
-+For other features see the script usage output, seen with the `-h` option.
-+
- Packaging selftests
- ===================
- 
-@@ -160,9 +169,9 @@ different system. To package selftests, run::
-    $ make -C tools/testing/selftests gen_tar
- 
- This generates a tarball in the `INSTALL_PATH/kselftest-packages` directory. By
--default, `.gz` format is used. The tar format can be overridden by specifying
--a `FORMAT` make variable. Any value recognized by `tar's auto-compress`_ option
--is supported, such as::
-+default, `.gz` format is used. The tar compression format can be overridden by
-+specifying a `FORMAT` make variable. Any value recognized by `tar's auto-compress`_
-+option is supported, such as::
- 
-     $ make -C tools/testing/selftests gen_tar FORMAT=.xz
- 
--- 
-2.25.1
+-- Angelo
 
+> > Signed-off-by: Konrad Dybcio <konradybcio@gmail.com>
+> > Signed-off-by: AngeloGioacchino Del Regno <kholk11@gmail.com>
+> > ---
+> >  drivers/gpu/drm/msm/adreno/a5xx_gpu.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c b/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
+> > index 00df5de3c8e3..b2670af638a3 100644
+> > --- a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
+> > +++ b/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
+> > @@ -789,7 +789,7 @@ static int a5xx_hw_init(struct msm_gpu *gpu)
+> >
+> >       /* VPC */
+> >       gpu_write(gpu, REG_A5XX_CP_PROTECT(14), ADRENO_PROTECT_RW(0xE68, 8));
+> > -     gpu_write(gpu, REG_A5XX_CP_PROTECT(15), ADRENO_PROTECT_RW(0xE70, 4));
+> > +     gpu_write(gpu, REG_A5XX_CP_PROTECT(15), ADRENO_PROTECT_RW(0xE70, 16));
+> >
+> >       /* UCHE */
+> >       gpu_write(gpu, REG_A5XX_CP_PROTECT(16), ADRENO_PROTECT_RW(0xE80, 16));
+> > --
+> > 2.28.0
+> >
+>
+> --
+> The Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+> a Linux Foundation Collaborative Project
