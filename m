@@ -2,188 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C0E027B02D
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 16:44:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 523C727AFFF
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 16:31:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726614AbgI1Ooj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 10:44:39 -0400
-Received: from mga01.intel.com ([192.55.52.88]:49802 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726380AbgI1Ooj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 10:44:39 -0400
-IronPort-SDR: OcW52e/mxlSpEnawSgE7z4vh74aPtbTn9J211PIXUGGNdfZ85tVD5M9bL14iUEEA7+sCGKfBkb
- nK0Wo9i2jT6g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9757"; a="180159305"
-X-IronPort-AV: E=Sophos;i="5.77,313,1596524400"; 
-   d="scan'208";a="180159305"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 07:17:35 -0700
-IronPort-SDR: cLDVyLbdQfKfBKjP7K00a0MFqckXhTpS5t+J1Ixr91Qwyn2tT0f77bKAXvx5c2CrhB+AFq1Sv6
- hohZkyEuj37w==
-X-IronPort-AV: E=Sophos;i="5.77,313,1596524400"; 
-   d="scan'208";a="488597872"
-Received: from unknown (HELO jausmus-gentoo-dev6) ([10.165.21.157])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 28 Sep 2020 07:17:34 -0700
-Date:   Mon, 28 Sep 2020 07:15:43 -0700
-From:   James Ausmus <james.ausmus@intel.com>
-To:     Jani Nikula <jani.nikula@linux.intel.com>
-Cc:     Tejas Upadhyay <tejaskumarx.surendrakumar.upadhyay@intel.com>,
-        rodrigo.vivi@intel.com, airlied@linux.ie, daniel@ffwll.ch,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, matthew.d.roper@intel.com,
-        jose.souza@intel.com, ville.syrjala@linux.intel.com,
-        lucas.demarchi@intel.com, hariom.pandey@intel.com
-Subject: Re: [Intel-gfx] [PATCH 2/2] drm/i915/edp/jsl: Update vswing table
- for HBR and HBR2
-Message-ID: <20200928141543.GG5197@jausmus-gentoo-dev6>
-References: <20200928080931.246347-1-tejaskumarx.surendrakumar.upadhyay@intel.com>
- <20200928080931.246347-3-tejaskumarx.surendrakumar.upadhyay@intel.com>
- <87a6xaow40.fsf@intel.com>
+        id S1726558AbgI1Oa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 10:30:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40294 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726348AbgI1Oa7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 10:30:59 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1620BC061755
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 07:30:59 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id u3so763853pjr.3
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 07:30:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=tkVRzGgszHQV7eGse09dB4I+IO6Y4Orz5Jc7w6yFI10=;
+        b=IhAwEaThErLoT5e5otiJDtSSjarndyelOAhDvcL4EGtGojhkadyyZpFsywywUahC5l
+         T0wsJ2pbLIr5+np9BZKZUDUqmsPjhJQAwfs3eZD7yjexwfLPazAknPg5t2CXI/NudpGN
+         WQc5klQw0RGhPyDwzz9ZQmvZ5+0c/z+ikzzWmk+MDNUyYzBMiZSvLn5N9OJjXq3M+yPG
+         CFi/tgs0lNiLwlhBfarF5lcVhSUTJRQACpkWQBRc5Vmx4zGk6s7k0/h3Iw4lodHG42J8
+         QZlIMO6IRT4fyrMGHGhxPWnpKsqP68nLwdvyeCw54WljVFbjbFqz3kq+fktbjucIIGHj
+         9alQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=tkVRzGgszHQV7eGse09dB4I+IO6Y4Orz5Jc7w6yFI10=;
+        b=Rvs+z1hkNB66WVfFFQ2Zt7aXNmW+my8EmDcNqepyIXHHLzzwQ9VggyL13C/zs9ZWiK
+         rWJVjaWg8Rm2xD/Rmg1+Lolakdy8JY+5ZoIcxCFcKEtJQ74rEme07j/8JbZkukXfaDSP
+         +EKeda2FY5gy6k9OT0wFgBmbYVc8NqjNDWUhYzsW6BefydCCEIbYoBlVXUN032IKAIIU
+         H/W+CVqfYYokklIwXZ4QXgL4cENDrU444lcO6uRprXz9EoAfjrJfyWKvVTJqUY1qAp42
+         JP2yXuJdmiUG9WC/kiL2jYQxRvSHK5YfYI9ARLH2v+B0vE/fPqGGyPHXb3LP6Z+Knhj7
+         Nbdw==
+X-Gm-Message-State: AOAM533W/GMwJH1uvA9EFxA8Ll7eE2cBdk6HjuB7wxEz/F8s9F1dHUsT
+        TAXo6njjjOIOaQ+a9pGQcMo=
+X-Google-Smtp-Source: ABdhPJwuMK9EqG3Cw7tmLqWdmhq8wBPklPnsNL+x8Hw+OyGrly4gy4XH7gz7hHJq0+N8e3GxMLbT5g==
+X-Received: by 2002:a17:90a:e549:: with SMTP id ei9mr1586450pjb.52.1601303458680;
+        Mon, 28 Sep 2020 07:30:58 -0700 (PDT)
+Received: from haolee.github.io ([2600:3c01::f03c:91ff:fe02:b162])
+        by smtp.gmail.com with ESMTPSA id c3sm1947236pfo.120.2020.09.28.07.30.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Sep 2020 07:30:58 -0700 (PDT)
+Date:   Mon, 28 Sep 2020 14:30:56 +0000
+From:   Hao Lee <haolee.swjtu@gmail.com>
+To:     npiggin@gmail.com
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Message-ID: <20200928143056.GA2162@haolee.github.io>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87a6xaow40.fsf@intel.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 04:43:11PM +0300, Jani Nikula wrote:
-> On Mon, 28 Sep 2020, Tejas Upadhyay <tejaskumarx.surendrakumar.upadhyay@intel.com> wrote:
-> > JSL has update in vswing table for eDP
-> 
-> I've thought the TLA for Jasper Lake is JSP, not JSL. At least we have
-> PCH_JSP for Jasper Lake PCH.
+dan.j.wiilliams@intel.com
+Bcc: 
+Subject: Can we remove the checking of CONFIG_ARCH_HAS_PTE_SPECIAL in
+ __vm_insert_mixed?
+Reply-To: 
 
-JSP == Point (the PCH), JSL == Lake
+In the current code, if the architecture supports PTE_SPECIAL,
+__vm_insert_mixed() becomes a simple encapsulation of insert_pfn()
+because it always calls insert_pfn() and never calls insert_page(). This
+behavior is inconsistent with the function's name. As described in
+commit 423bad600443 ("mm: add vm_insert_mixed"), this function is
+designed to supports _both_ raw pfns and pfns with struct page, but in
+architecture with PTE_SPECIAL, it treats the latter as the former. So, I
+think we'd better remove the checking of CONFIG_ARCH_HAS_PTE_SPECIAL to
+make the behavior consistent for all architectures. If my understanding
+is right, I can submit a patch to fix this. Thanks.
 
--James
-
-> 
-> >
-> > BSpec: 21257
-> > Signed-off-by: Tejas Upadhyay <tejaskumarx.surendrakumar.upadhyay@intel.com>
-> > ---
-> >  drivers/gpu/drm/i915/display/intel_ddi.c | 67 ++++++++++++++++++++++--
-> >  1 file changed, 64 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/drivers/gpu/drm/i915/display/intel_ddi.c b/drivers/gpu/drm/i915/display/intel_ddi.c
-> > index 4d06178cd76c..fa08463bcf2e 100644
-> > --- a/drivers/gpu/drm/i915/display/intel_ddi.c
-> > +++ b/drivers/gpu/drm/i915/display/intel_ddi.c
-> > @@ -582,6 +582,34 @@ static const struct cnl_ddi_buf_trans ehl_combo_phy_ddi_translations_dp[] = {
-> >  	{ 0x6, 0x7F, 0x3F, 0x00, 0x00 },	/* 900   900      0.0   */
-> >  };
-> >  
-> > +static const struct cnl_ddi_buf_trans jsl_combo_phy_ddi_translations_edp_hbr[] = {
-> > +						/* NT mV Trans mV db    */
-> > +	{ 0x8, 0x7F, 0x3F, 0x00, 0x00 },	/* 200   200      0.0   */
-> > +	{ 0x8, 0x7F, 0x38, 0x00, 0x07 },	/* 200   250      1.9   */
-> > +	{ 0x1, 0x7F, 0x33, 0x00, 0x0C },	/* 200   300      3.5   */
-> > +	{ 0xA, 0x35, 0x36, 0x00, 0x09 },	/* 200   350      4.9   */
-> > +	{ 0x8, 0x7F, 0x3F, 0x00, 0x00 },	/* 250   250      0.0   */
-> > +	{ 0x1, 0x7F, 0x38, 0x00, 0x07 },	/* 250   300      1.6   */
-> > +	{ 0xA, 0x35, 0x35, 0x00, 0x0A },	/* 250   350      2.9   */
-> > +	{ 0x1, 0x7F, 0x3F, 0x00, 0x00 },	/* 300   300      0.0   */
-> > +	{ 0xA, 0x35, 0x38, 0x00, 0x07 },	/* 300   350      1.3   */
-> > +	{ 0xA, 0x35, 0x3F, 0x00, 0x00 },	/* 350   350      0.0   */
-> > +};
-> > +
-> > +static const struct cnl_ddi_buf_trans jsl_combo_phy_ddi_translations_edp_hbr2[] = {
-> > +						/* NT mV Trans mV db    */
-> > +	{ 0x8, 0x7F, 0x3F, 0x00, 0x00 },	/* 200   200      0.0   */
-> > +	{ 0x8, 0x7F, 0x3F, 0x00, 0x00 },	/* 200   250      1.9   */
-> > +	{ 0x1, 0x7F, 0x3D, 0x00, 0x02 },	/* 200   300      3.5   */
-> > +	{ 0xA, 0x35, 0x38, 0x00, 0x07 },	/* 200   350      4.9   */
-> > +	{ 0x8, 0x7F, 0x3F, 0x00, 0x00 },	/* 250   250      0.0   */
-> > +	{ 0x1, 0x7F, 0x3F, 0x00, 0x00 },	/* 250   300      1.6   */
-> > +	{ 0xA, 0x35, 0x3A, 0x00, 0x05 },	/* 250   350      2.9   */
-> > +	{ 0x1, 0x7F, 0x3F, 0x00, 0x00 },	/* 300   300      0.0   */
-> > +	{ 0xA, 0x35, 0x38, 0x00, 0x07 },	/* 300   350      1.3   */
-> > +	{ 0xA, 0x35, 0x3F, 0x00, 0x00 },	/* 350   350      0.0   */
-> > +};
-> > +
-> >  struct icl_mg_phy_ddi_buf_trans {
-> >  	u32 cri_txdeemph_override_11_6;
-> >  	u32 cri_txdeemph_override_5_0;
-> > @@ -1069,7 +1097,6 @@ icl_get_mg_buf_trans(struct intel_encoder *encoder, int type, int rate,
-> >  	*n_entries = ARRAY_SIZE(icl_mg_phy_ddi_translations_rbr_hbr);
-> >  	return icl_mg_phy_ddi_translations_rbr_hbr;
-> >  }
-> > -
-> >  static const struct cnl_ddi_buf_trans *
-> >  ehl_get_combo_buf_trans(struct intel_encoder *encoder, int type, int rate,
-> >  			int *n_entries)
-> > @@ -1098,6 +1125,34 @@ ehl_get_combo_buf_trans(struct intel_encoder *encoder, int type, int rate,
-> >  	}
-> >  }
-> >  
-> > +static const struct cnl_ddi_buf_trans *
-> > +jsl_get_combo_buf_trans(struct intel_encoder *encoder, int type, int rate,
-> > +			int *n_entries)
-> > +{
-> > +	struct drm_i915_private *dev_priv = to_i915(encoder->base.dev);
-> > +
-> > +	switch (type) {
-> > +	case INTEL_OUTPUT_HDMI:
-> > +		*n_entries = ARRAY_SIZE(icl_combo_phy_ddi_translations_hdmi);
-> > +		return icl_combo_phy_ddi_translations_hdmi;
-> > +	case INTEL_OUTPUT_EDP:
-> > +		if (dev_priv->vbt.edp.low_vswing) {
-> > +			if (rate > 270000) {
-> > +				*n_entries = ARRAY_SIZE(jsl_combo_phy_ddi_translations_edp_hbr2);
-> > +				return jsl_combo_phy_ddi_translations_edp_hbr2;
-> > +			} else {
-> > +				*n_entries = ARRAY_SIZE(jsl_combo_phy_ddi_translations_edp_hbr);
-> > +				return jsl_combo_phy_ddi_translations_edp_hbr;
-> > +			}
-> > +		}
-> > +		/* fall through */
-> > +	default:
-> > +		/* All combo DP and eDP ports that do not support low_vswing */
-> > +		*n_entries = ARRAY_SIZE(icl_combo_phy_ddi_translations_dp_hbr2);
-> > +		return icl_combo_phy_ddi_translations_dp_hbr2;
-> > +	}
-> > +}
-> > +
-> >  static const struct cnl_ddi_buf_trans *
-> >  tgl_get_combo_buf_trans(struct intel_encoder *encoder, int type, int rate,
-> >  			int *n_entries)
-> > @@ -2265,9 +2320,12 @@ static u8 intel_ddi_dp_voltage_max(struct intel_dp *intel_dp)
-> >  			tgl_get_dkl_buf_trans(encoder, encoder->type,
-> >  					      intel_dp->link_rate, &n_entries);
-> >  	} else if (INTEL_GEN(dev_priv) == 11) {
-> > -		if (IS_ELKHARTLAKE(dev_priv))
-> > +		if (IS_JASPERLAKE(dev_priv))
-> > +			jsl_get_combo_buf_trans(encoder, encoder->type,
-> > +					intel_dp->link_rate, &n_entries);
-> > +		else if (IS_ELKHARTLAKE(dev_priv))
-> >  			ehl_get_combo_buf_trans(encoder, encoder->type,
-> > -						intel_dp->link_rate, &n_entries);
-> > +					intel_dp->link_rate, &n_entries);
-> 
-> This is a good example of a potential trap that having IS_ELKHARTLAKE()
-> cover both ELK and JSP creates. An unsuspecting coder might change the
-> if ladder to have IS_ELKHARTLAKE() first, and the subsequent
-> IS_JASPERLAKE() branch would never be taken.
-> 
-> BR,
-> Jani.
-> 
-> >  		else if (intel_phy_is_combo(dev_priv, phy))
-> >  			icl_get_combo_buf_trans(encoder, encoder->type,
-> >  						intel_dp->link_rate, &n_entries);
-> > @@ -2454,6 +2512,9 @@ static void icl_ddi_combo_vswing_program(struct intel_encoder *encoder,
-> >  	if (INTEL_GEN(dev_priv) >= 12)
-> >  		ddi_translations = tgl_get_combo_buf_trans(encoder, type, rate,
-> >  							   &n_entries);
-> > +	else if (IS_JASPERLAKE(dev_priv))
-> > +		ddi_translations = jsl_get_combo_buf_trans(encoder, type, rate,
-> > +							   &n_entries);
-> >  	else if (IS_ELKHARTLAKE(dev_priv))
-> >  		ddi_translations = ehl_get_combo_buf_trans(encoder, type, rate,
-> >  							   &n_entries);
-> 
-> -- 
-> Jani Nikula, Intel Open Source Graphics Center
+Regards,
+Hao Lee
