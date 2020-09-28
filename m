@@ -2,159 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD45927A922
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 09:56:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF44527A925
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 09:56:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726688AbgI1Hzu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 03:55:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35488 "EHLO
+        id S1726734AbgI1H4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 03:56:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726558AbgI1Hzt (ORCPT
+        with ESMTP id S1726547AbgI1H4t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 03:55:49 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C29AC0613CE;
-        Mon, 28 Sep 2020 00:55:49 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id k15so78660wrn.10;
-        Mon, 28 Sep 2020 00:55:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=BVbwN/81blpncprCv+IQkG3sKzMlIpUh26oS8WcgK8I=;
-        b=qRujn+aHOdYZcvhWNaNFfmvq+59z5zN/g2Fh/iOS9naiOmJIprb6+8FsHaN3yqhR9T
-         SoAU+PMlakBl+lBe97YnRYnM/OB/19efDFQ8ktrGQX3N07B6EJCB/Kir+biySDR863SJ
-         dTbZ2BQ0H34vyZ/DXDCQyApKxVbzMUBGGXLqB5TUCmYh0AAAPCM+R7NtbjM6R4touMcO
-         e4L2xhzhAQE73/+uJl4zakcF8QIsLu5NGpUNNm/pYMJikHjYye1HfW4b9JV3tIXtVWDH
-         i66gptHNIvs+jPlVPC43JE6/ymJ5yogiuKMnm3oMgbwuEsyibTm7IapjvfpZxZ/l5JcL
-         2ntg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=BVbwN/81blpncprCv+IQkG3sKzMlIpUh26oS8WcgK8I=;
-        b=LZ6ydtIYHz8hO4tQUrwnpZULzQYfWA1VYcmMMuq9oAB/vT5vY9dXz+TjYgLI/j0eYy
-         rrVXm4CFHo8PbCLr4XLHbKXhoMCutX+AGh03hEYBpTq+F6g0NkLe4+Rtb66zmlsdlOzG
-         W+yHV/rRpeUl1ZuyL6spQ9hA5g3XuV3Ei24tX4LgItPjjpQiWqEoI1p5e7rIsIlDpwhR
-         HOj8BFSDuv5er4yA9tspRWQ+zJVz2HPOlfkOA9LVpe73ZWVRRqwUJ/O7zTytT1QC6vM+
-         pUsd/sk5x3Z1yby+7FHTB+eBLFYN4N7UJpi4y6mRUiKTpRZg36eheQ5WOIbzAPYETkEi
-         jSpw==
-X-Gm-Message-State: AOAM5327DqpENe2CGB/bSybBlRvRX3Xj5G6r+2Zy6kEGNzFFVwH/PShU
-        z/nVofWR+MSXGo0EMRHvugg=
-X-Google-Smtp-Source: ABdhPJy6kBIrePaHTqKmGmBsQEtVR0qF/zVySEmGZbhinj1US60HRDWY2xrvuJPy9tDSyZv8oXAWqA==
-X-Received: by 2002:a5d:444b:: with SMTP id x11mr197900wrr.402.1601279747992;
-        Mon, 28 Sep 2020 00:55:47 -0700 (PDT)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id m10sm182221wmi.9.2020.09.28.00.55.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Sep 2020 00:55:46 -0700 (PDT)
-Date:   Mon, 28 Sep 2020 09:55:45 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Nicolin Chen <nicoleotsuka@gmail.com>
-Cc:     joro@8bytes.org, krzk@kernel.org, vdumpa@nvidia.com,
-        jonathanh@nvidia.com, linux-tegra@vger.kernel.org,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/5] iommu/tegra-smmu: Add PCI support
-Message-ID: <20200928075545.GG2837573@ulmo>
-References: <20200926080719.6822-1-nicoleotsuka@gmail.com>
- <20200926080719.6822-5-nicoleotsuka@gmail.com>
+        Mon, 28 Sep 2020 03:56:49 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B717C0613CE;
+        Mon, 28 Sep 2020 00:56:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=DPKsOe4ba3eqRNFOJkwafyOb5NNcsVGyhf7wFCh0JJw=; b=crzRZ5WE98TMTp3swk6K9/gew2
+        eWzYPuFqMWumU2/LErko7uRcEiknFwK7OYsi/Gt/XY7BdqDoC4AFLoFtR+zV5EukB9GMm0Z8HmTLd
+        jDWdTSKcNee3YEyx2Ojiu3xEUCmSiTpCxmG9hbXydK94ZsXL/OK+grfCw1mTpttMxSg1DfaT4xKy/
+        qIXuO6Cl445qklZk1tO6FLfkb0IKz5oGeI/KMOmQSh+EKLKsTeH4++YfYiYO2soPWeWt4w3MZjjex
+        ZMg5Y4I8p24h/fu+ZTCVfdeFTIFL+BySja4xStflWqWAzrC3X3v0C04LeV5TPK6CFJU7WblHKK9Ky
+        QfJOXdeg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kMo18-00042K-K7; Mon, 28 Sep 2020 07:56:15 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 64C04303F45;
+        Mon, 28 Sep 2020 09:56:12 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 206F720BCC934; Mon, 28 Sep 2020 09:56:12 +0200 (CEST)
+Date:   Mon, 28 Sep 2020 09:56:12 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     syzbot <syzbot+62ebe501c1ce9a91f68c@syzkaller.appspotmail.com>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        David Miller <davem@davemloft.net>,
+        David Ahern <dsahern@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>, hawk@kernel.org,
+        Ido Schimmel <idosch@mellanox.com>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Jiri Pirko <jiri@mellanox.com>,
+        Johannes Berg <johannes.berg@intel.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Michal Kubecek <mkubecek@suse.cz>,
+        netdev <netdev@vger.kernel.org>, petrm@mellanox.com,
+        Roopa Prabhu <roopa@cumulusnetworks.com>,
+        Song Liu <songliubraving@fb.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Yonghong Song <yhs@fb.com>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Boqun Feng <boqun.feng@gmail.com>
+Subject: Re: WARNING in print_bfs_bug
+Message-ID: <20200928075612.GB2594@hirez.programming.kicks-ass.net>
+References: <000000000000d73b12059608812b@google.com>
+ <000000000000568a9105963ad7ac@google.com>
+ <CACT4Y+YBi=5Q0tpND7FKU1j1YNy1Pe+Xkgc+c_Xtf_L_pyAcqg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="QWpDgw58+k1mSFBj"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200926080719.6822-5-nicoleotsuka@gmail.com>
-User-Agent: Mutt/1.14.7 (2020-08-29)
+In-Reply-To: <CACT4Y+YBi=5Q0tpND7FKU1j1YNy1Pe+Xkgc+c_Xtf_L_pyAcqg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Sep 27, 2020 at 10:57:24AM +0200, Dmitry Vyukov wrote:
+> On Thu, Oct 31, 2019 at 9:39 PM syzbot
+> <syzbot+62ebe501c1ce9a91f68c@syzkaller.appspotmail.com> wrote:
+> >
+> > syzbot has found a reproducer for the following crash on:
+> >
+> > HEAD commit:    49afce6d Add linux-next specific files for 20191031
+> > git tree:       linux-next
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=11eea36ce00000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=3c5f119b33031056
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=62ebe501c1ce9a91f68c
+> > compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14c162f4e00000
+> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=131b5eb8e00000
+> >
+> > IMPORTANT: if you fix the bug, please add the following tag to the commit:
+> > Reported-by: syzbot+62ebe501c1ce9a91f68c@syzkaller.appspotmail.com
+> 
+> This is another LOCKDEP-related top crasher. syzkaller finds just this
+> one (see below).
+> I think we need to disable LOCKDEP temporary until this and other
+> LOCKDEP issues are resolved. I've filed
+> https://github.com/google/syzkaller/issues/2140 to track
+> disabling/enabling.
 
---QWpDgw58+k1mSFBj
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+There is a potential patch for it:
 
-On Sat, Sep 26, 2020 at 01:07:18AM -0700, Nicolin Chen wrote:
-> This patch simply adds support for PCI devices.
->=20
-> Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
-> ---
->  drivers/iommu/tegra-smmu.c | 17 ++++++++++++++++-
->  1 file changed, 16 insertions(+), 1 deletion(-)
->=20
-> diff --git a/drivers/iommu/tegra-smmu.c b/drivers/iommu/tegra-smmu.c
-> index 97a7185b4578..9dbc5d7183cc 100644
-> --- a/drivers/iommu/tegra-smmu.c
-> +++ b/drivers/iommu/tegra-smmu.c
-> @@ -15,6 +15,7 @@
->  #include <linux/spinlock.h>
->  #include <linux/dma-iommu.h>
->  #include <linux/dma-mapping.h>
-> +#include <linux/pci.h>
-> =20
->  #include <soc/tegra/ahb.h>
->  #include <soc/tegra/mc.h>
-> @@ -935,6 +936,7 @@ static struct iommu_group *tegra_smmu_device_group(st=
-ruct device *dev)
->  	const struct tegra_smmu_group_soc *soc;
->  	struct tegra_smmu_group *group;
->  	int swgroup =3D fwspec->ids[0];
-> +	bool pci =3D dev_is_pci(dev);
->  	struct iommu_group *grp;
-> =20
->  	/* Find group_soc associating with swgroup */
-> @@ -961,7 +963,7 @@ static struct iommu_group *tegra_smmu_device_group(st=
-ruct device *dev)
->  	group->smmu =3D smmu;
->  	group->soc =3D soc;
-> =20
-> -	group->group =3D iommu_group_alloc();
-> +	group->group =3D pci ? pci_device_group(dev) : iommu_group_alloc();
->  	if (IS_ERR(group->group)) {
->  		devm_kfree(smmu->dev, group);
->  		mutex_unlock(&smmu->lock);
-> @@ -1180,6 +1182,19 @@ struct tegra_smmu *tegra_smmu_probe(struct device =
-*dev,
->  		return ERR_PTR(err);
->  	}
-> =20
-> +#ifdef CONFIG_PCI
-> +	if (!iommu_present(&pci_bus_type)) {
-> +		pci_request_acs();
-> +		err =3D bus_set_iommu(&pci_bus_type, &tegra_smmu_ops);
-> +		if (err < 0) {
-> +			bus_set_iommu(&platform_bus_type, NULL);
-> +			iommu_device_unregister(&smmu->iommu);
-> +			iommu_device_sysfs_remove(&smmu->iommu);
-> +			return ERR_PTR(err);
+  https://lkml.kernel.org/r/20200917080210.108095-1-boqun.feng@gmail.com
 
-It might be worth factoring out the cleanup code now that there are
-multiple failures from which we may need to clean up.
-
-Also, it'd be great if somehow we could do this without the #ifdef,
-but I guess since we're using the pci_bus_type global variable directly,
-there isn't much we can do here?
-
-Thierry
-
---QWpDgw58+k1mSFBj
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl9xlwEACgkQ3SOs138+
-s6HuvQ/+KWpcgdZCbKXXhl1yRvr0vAWBpqSaSn2kW0gf5hn9sHoalZ9dqV3sKXYy
-ECgw+sJS/AxESl7W6nUW6yvmcB4XPZSArF5kohfzNo1EKjTO22zqdB/QCWv6k+Yv
-ilWSOnpbLf93QAzkeYXgPYdC0iMMRZaREWktp4Qys/cx8CvuwHWuVGaXJwuo/7yx
-5hfxPUI4GCtYpNllg+QhNJuaLr9GsG49g8HQjpzex5hIC5Q0Io6R6ExQaE0Cdr+o
-op5oiJwx/Mb4DTvo58T79Y+yCdMDC6z0AscXMtRjtevSXEsD9m+04LMG2qYGwhwv
-f4raAIOp/0iJ8izvdN3U7TuuJY6tIypySz30tgwQ5ekxEY/3uWJyTf+foCN3xoMt
-s5lrAdS2/1EELM5YXqNjHZEBHSFCgjD4TvVtrWv1XZdtObaxmquBjoRlDfUhqHGN
-2oHhVcPvGGolbgDqwIJZqnxr13GXfIcthhwUxh+FWWqKtBVsWwGgf2nPQ4tMeWla
-9mMKMSKRDKF1TRoMlYW7iucqEmWETRTJY2bUBOrzK2llKYUdJMXrfIrTw29jyDJP
-v/XNMXjUJzzlLAMnz7Oup7PQyzZWPzWmEUK3y5Sx5JIj00PIbVsLwPpFs25D2V67
-kDwMOwzFrXmIKb606G0PUobcjid45leY99xzDN6QFH/RsUYrb60=
-=8eZB
------END PGP SIGNATURE-----
-
---QWpDgw58+k1mSFBj--
+Let me try and digest it.
