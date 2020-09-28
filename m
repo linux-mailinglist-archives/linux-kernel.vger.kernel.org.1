@@ -2,130 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B87027A895
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 09:28:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47FB227A899
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 09:29:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726682AbgI1H1z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 03:27:55 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:34080 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726465AbgI1H1z (ORCPT
+        id S1726583AbgI1H3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 03:29:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59644 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726421AbgI1H3g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 03:27:55 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08S7RiZ9025024;
-        Mon, 28 Sep 2020 02:27:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1601278064;
-        bh=t2xZIzE5nCl075Nnf08l0R3sMqtDPH99mtG1NhcRZU8=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=e1qAVQdpkpGOCqfVQa2ZE7k6Pv7EKRfPSEuvjnNdxoVo4vWjR9+AnuHxVk2yihqWq
-         keG7eFjp53E8bIdRYjH6JqdUOApCUul9AzIgvWfy3QovGZWMdgIQ75Zl0i8EUzQB9B
-         JbcqTC6XTUGSCfiow92oYz7NiWsUxOodUACprh+0=
-Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08S7Rimn098755
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 28 Sep 2020 02:27:44 -0500
-Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE107.ent.ti.com
- (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 28
- Sep 2020 02:27:44 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 28 Sep 2020 02:27:44 -0500
-Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08S7RgSg036259;
-        Mon, 28 Sep 2020 02:27:43 -0500
-Subject: Re: sound/soc/ti/j721e-evm.c:528:34: warning: unused variable
- 'j721e_audio_of_match'
-To:     kernel test robot <lkp@intel.com>
-CC:     <kbuild-all@lists.01.org>, <clang-built-linux@googlegroups.com>,
-        <linux-kernel@vger.kernel.org>, Mark Brown <broonie@kernel.org>
-References: <202009271553.4OjMpGkX%lkp@intel.com>
-From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
-X-Pep-Version: 2.0
-Message-ID: <76cae106-b643-57a9-e82e-48e46ebf1b70@ti.com>
-Date:   Mon, 28 Sep 2020 10:27:57 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Mon, 28 Sep 2020 03:29:36 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77EDDC0613CE
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 00:29:36 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id fa1so132233pjb.0
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 00:29:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=duHFIQKp8r+w+eGjsvtXP5iTN9kEvFoVdHgd9+rC2Rc=;
+        b=lbyEBJGDvqCtyAUz8DenaCxlXwvSCT0kbhnKXe5rZyqFd193yTtQlE/w2nIvyN3BCE
+         KnQ137snDVmY+ie2CTxHBHLZokGmDi3VBTZ+0ldyeLnJu77fhBV2oGEglcDyd7E/xvkU
+         F8yl6W6xXcmqUHQ6Tu+1e3MIxRo1hIsXsHB2o=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=duHFIQKp8r+w+eGjsvtXP5iTN9kEvFoVdHgd9+rC2Rc=;
+        b=BmEA8gMNHJGyx2uw4V8P+mf68lqyysJENYco1geFyN12ssDPq8uWjw3btfd7AxdtVo
+         +2EAq7MrJ4Wf/ZaY5oeFziGDpWFXv/8RXx4vu12VTC1bsXrB62DTl4zJA0zlICWeCKm+
+         6tjt8BKGx+M/Isj3TcGsuOKaurhPplkTPsu+7tdDGEBzSxC/CZAkkgO1OJdWGalkzKGx
+         9sYdIs/g3ROp1Xs7X5YCGlmeBtPpx25rUZ6pXhawFSpgmZer78DA/Zx2GUnaKSHjWyuB
+         4GTMYSY+vpurVAI1YG/fHo+a42oQHjqaPrWyblOCk+0ejjV5Db1DSrHHjCmoLNWkOKeG
+         74iA==
+X-Gm-Message-State: AOAM531C8TqDcw8d5Si4t5S6BLhDMcCYWCydMPVYiyIwQXMepBCBRQHX
+        cavtVv8AaGb88Bn17v4Hx4MuDQ==
+X-Google-Smtp-Source: ABdhPJxl1U03NJrmhLqsAFdC3VEgAUanMlZRqMxTOgm9YuC1u35zGfTxsUlr/1DMZbvRbRv6PP2nWg==
+X-Received: by 2002:a17:90a:e015:: with SMTP id u21mr171945pjy.33.1601278175944;
+        Mon, 28 Sep 2020 00:29:35 -0700 (PDT)
+Received: from drinkcat2.tpe.corp.google.com ([2401:fa00:1:b:7220:84ff:fe09:41dc])
+        by smtp.gmail.com with ESMTPSA id i9sm386593pfo.138.2020.09.28.00.29.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Sep 2020 00:29:35 -0700 (PDT)
+From:   Nicolas Boichat <drinkcat@chromium.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     groeck@chromium.org, dianders@chromium.org,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
+        Kars Mulder <kerneldev@karsmulder.nl>,
+        Kees Cook <keescook@chromium.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Rafael Aquini <aquini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>, linux-kbuild@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v6] kernel/trace: Add DISALLOW_TRACE_PRINTK make option
+Date:   Mon, 28 Sep 2020 15:29:29 +0800
+Message-Id: <20200928152840.v6.1.I4feb11d34ce7a0dd5ee2c3327fb5a1a9a646be30@changeid>
+X-Mailer: git-send-email 2.28.0.681.g6f77f65b4e-goog
 MIME-Version: 1.0
-In-Reply-To: <202009271553.4OjMpGkX%lkp@intel.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+trace_printk is meant as a debugging tool, and should not be
+compiled into production code without specific debug Kconfig
+options enabled, or source code changes, as indicated by the
+warning that shows up on boot if any trace_printk is called:
+ **   NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE   **
+ **                                                      **
+ ** trace_printk() being used. Allocating extra memory.  **
+ **                                                      **
+ ** This means that this is a DEBUG kernel and it is     **
+ ** unsafe for production use.                           **
 
+If DISALLOW_TRACE_PRINTK=1 is passed on the make command
+line, the kernel will generate a build-time error if
+trace_printk is used. We expect distributors to set this
+option for their production kernels.
 
-On 27/09/2020 10.27, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.=
-git master
-> head:   a1bffa48745afbb54cb4f873bba783b2ae8be042
-> commit: 6748d05590594837e42dfa975879fb275099f0b2 ASoC: ti: Add custom m=
-achine driver for j721e EVM (CPB and IVI)
-> date:   3 months ago
-> config: x86_64-randconfig-r033-20200927 (attached as .config)
-> compiler: clang version 12.0.0 (https://github.com/llvm/llvm-project a8=
-3eb048cb9a75da7a07a9d5318bbdbf54885c87)
-> reproduce (this is a W=3D1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/s=
-bin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # install x86_64 cross compiling tool for clang build
->         # apt-get install binutils-x86-64-linux-gnu
->         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linu=
-x.git/commit/?id=3D6748d05590594837e42dfa975879fb275099f0b2
->         git remote add linus https://git.kernel.org/pub/scm/linux/kerne=
-l/git/torvalds/linux.git
->         git fetch --no-tags linus master
->         git checkout 6748d05590594837e42dfa975879fb275099f0b2
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=3D$HOME/0day COMPILER=3Dclang make.cross =
-ARCH=3Dx86_64=20
->=20
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
->=20
-> All warnings (new ones prefixed by >>):
->=20
->>> sound/soc/ti/j721e-evm.c:528:34: warning: unused variable 'j721e_audi=
-o_of_match' [-Wunused-const-variable]
->    static const struct of_device_id j721e_audio_of_match[] =3D {
->                                     ^
->    1 warning generated.
+Note that the code to handle trace_printk is still present,
+so this does not prevent people from compiling out-of-tree
+kernel modules, or BPF programs.
 
-Right, in the attached .config:
-# CONFIG_OF is not set
+Also, we are not making this a kernel config option as we
+want the developer convenience of being able to reuse a
+production kernel config, add trace_printk for debugging,
+and rebuild, without any config changes.
 
-There must be a clean way to handle this without extensive ifedfery...
+Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
+---
 
-> vim +/j721e_audio_of_match +528 sound/soc/ti/j721e-evm.c
->=20
->    527=09
->  > 528	static const struct of_device_id j721e_audio_of_match[] =3D {
->    529		{
->    530			.compatible =3D "ti,j721e-cpb-audio",
->    531			.data =3D &j721e_cpb_data,
->    532		}, {
->    533			.compatible =3D "ti,j721e-cpb-ivi-audio",
->    534			.data =3D &j721e_cpb_ivi_data,
->    535		},
->    536		{ },
->    537	};
->    538	MODULE_DEVICE_TABLE(of, j721e_audio_of_match);
->    539=09
->=20
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
->=20
+Changes since v5:
+ - Rebased, no functional change (moved the Makefile change a
+   little lower to keep all the DEBUG stuff together).
 
-- P=E9ter
+Changes since v4:
+ - Turns this into a make option, instead of a config
+   option, as suggested by Steven Rostedt <rostedt@goodmis.org>.
 
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+Changes since v2/v3:
+ - Rebase only, v3 didn't exist as I just split out the other
+   necessary patches.
+ - Added patch 3/3 to fix atomisp_compat_css20.c
+
+Changes since v1:
+ - Use static_assert instead of __static_assert (Jason Gunthorpe)
+ - Fix issues that can be detected by this patch (running some
+   randconfig in a loop, kernel test robot, or manual inspection),
+   by:
+   - Making some debug config options that use trace_printk depend
+     on the new config option.
+   - Adding 3 patches before this one.
+
+There is a question from Alexei whether the warning is warranted,
+and it's possibly too strongly worded, but the fact is, we do
+not want trace_printk to be sprinkled in kernel code by default,
+unless a very specific Kconfig command is enabled (or preprocessor
+macro).
+
+There's at least 3 reasons that I can come up with:
+ 1. trace_printk introduces some overhead.
+ 2. If the kernel keeps adding always-enabled trace_printk, it will
+    be much harder for developers to make use of trace_printk for
+    debugging.
+ 3. People may assume that trace_printk is for debugging only, and
+    may accidentally output sensitive data (theoritical at this
+    stage).
+
+ Makefile               | 14 ++++++++++++++
+ include/linux/kernel.h | 17 ++++++++++++++++-
+ 2 files changed, 30 insertions(+), 1 deletion(-)
+
+diff --git a/Makefile b/Makefile
+index 8763a17d6aa4..6630a0e577ff 100644
+--- a/Makefile
++++ b/Makefile
+@@ -100,6 +100,16 @@ endif
+ 
+ export quiet Q KBUILD_VERBOSE
+ 
++# Disallow use of trace_printk. Can be used by production kernels.
++ifeq ("$(origin DISALLOW_TRACE_PRINTK)", "command line")
++  KBUILD_DISALLOW_TRACE_PRINTK = $(DISALLOW_TRACE_PRINTK)
++endif
++ifndef KBUILD_DISALLOW_TRACE_PRINTK
++  KBUILD_DISALLOW_TRACE_PRINTK = 0
++endif
++
++export KBUILD_DISALLOW_TRACE_PRINTK
++
+ # Kbuild will save output files in the current working directory.
+ # This does not need to match to the root of the kernel source tree.
+ #
+@@ -846,6 +856,10 @@ endif # CONFIG_DEBUG_INFO
+ KBUILD_CFLAGS += $(DEBUG_CFLAGS)
+ export DEBUG_CFLAGS
+ 
++ifeq ($(KBUILD_DISALLOW_TRACE_PRINTK),1)
++KBUILD_CFLAGS += -DDISALLOW_TRACE_PRINTK
++endif
++
+ ifdef CONFIG_FUNCTION_TRACER
+ ifdef CONFIG_FTRACE_MCOUNT_RECORD
+   # gcc 5 supports generating the mcount tables directly
+diff --git a/include/linux/kernel.h b/include/linux/kernel.h
+index 73a4834d53a9..6737d0a8a9b4 100644
+--- a/include/linux/kernel.h
++++ b/include/linux/kernel.h
+@@ -688,6 +688,12 @@ do {									\
+ 		____trace_printk_check_format(fmt, ##args);		\
+ } while (0)
+ 
++#ifdef DISALLOW_TRACE_PRINTK
++#define ALLOW_TRACE_PRINTK 0
++#else
++#define ALLOW_TRACE_PRINTK 1
++#endif
++
+ /**
+  * trace_printk - printf formatting in the ftrace buffer
+  * @fmt: the printf format for printing
+@@ -721,10 +727,13 @@ do {									\
+ #define trace_printk(fmt, ...)				\
+ do {							\
+ 	char _______STR[] = __stringify((__VA_ARGS__));	\
++							\
++	static_assert(ALLOW_TRACE_PRINTK, "trace_printk called.");	\
++							\
+ 	if (sizeof(_______STR) > 3)			\
+ 		do_trace_printk(fmt, ##__VA_ARGS__);	\
+ 	else						\
+-		trace_puts(fmt);			\
++		do_trace_puts(fmt);			\
+ } while (0)
+ 
+ #define do_trace_printk(fmt, args...)					\
+@@ -773,6 +782,11 @@ int __trace_printk(unsigned long ip, const char *fmt, ...);
+  */
+ 
+ #define trace_puts(str) ({						\
++	static_assert(ALLOW_TRACE_PRINTK, "trace_puts called.");	\
++	do_trace_puts(str);						\
++})
++
++#define do_trace_puts(str) ({						\
+ 	static const char *trace_printk_fmt __used			\
+ 		__attribute__((section("__trace_printk_fmt"))) =	\
+ 		__builtin_constant_p(str) ? str : NULL;			\
+@@ -794,6 +808,7 @@ extern void trace_dump_stack(int skip);
+  */
+ #define ftrace_vprintk(fmt, vargs)					\
+ do {									\
++	static_assert(ALLOW_TRACE_PRINTK, "ftrace_vprintk called.");	\
+ 	if (__builtin_constant_p(fmt)) {				\
+ 		static const char *trace_printk_fmt __used		\
+ 		  __attribute__((section("__trace_printk_fmt"))) =	\
+-- 
+2.28.0.681.g6f77f65b4e-goog
 
