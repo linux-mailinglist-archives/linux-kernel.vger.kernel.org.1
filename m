@@ -2,64 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8819127ABAA
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 12:16:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF47227ABAE
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 12:18:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726613AbgI1KQK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 06:16:10 -0400
-Received: from crapouillou.net ([89.234.176.41]:45896 "EHLO crapouillou.net"
+        id S1726589AbgI1KSM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 06:18:12 -0400
+Received: from mail.zx2c4.com ([192.95.5.64]:54339 "EHLO mail.zx2c4.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726540AbgI1KQK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 06:16:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
-        s=mail; t=1601288167; h=from:from:sender:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=eaezfrc/4eiOR0LrVt+JJpCAEUdt+IaeF8unx2pm0xI=;
-        b=ehzyN1qDWZTP83bJZcoPKfxN4GLfTJP7C7io1/Emz9nxPArsA9zFA3/UXMFqLh7cnRHTY9
-        CIw6MCvQFWJBCvuTP3bHtn3qjbo5foPRCbbgCu3Q/XGgJG5Okf1CtvYQYzlxOS87KB5QL+
-        8LhTVU4lqOp6jtu8yEN+M90m7ixPgnU=
-Date:   Mon, 28 Sep 2020 12:15:56 +0200
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: linux-next: build failure after merge of the drm tree
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Dave Airlie <airlied@linux.ie>,
-        DRI <dri-devel@lists.freedesktop.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Message-Id: <KU5DHQ.C9RVOLP69UO81@crapouillou.net>
-In-Reply-To: <20200928060427.GA15041@lst.de>
-References: <20200928135405.73404219@canb.auug.org.au>
-        <20200928060427.GA15041@lst.de>
+        id S1726526AbgI1KSM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 06:18:12 -0400
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTP id d4bd6608
+        for <linux-kernel@vger.kernel.org>;
+        Mon, 28 Sep 2020 09:46:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=zx2c4.com; h=mime-version
+        :references:in-reply-to:from:date:message-id:subject:to:cc
+        :content-type; s=mail; bh=/cDJPA+uVkTExsxg1g0sjxHghPU=; b=cQtCvm
+        ir5ZdM6+FYUD9nu/iMN6JHl039WOp3CjGv97mkA7B//1xGoUo4LHceBe20quyhiZ
+        j6facUcGMe5ThikkqrYcju3xmNxkztLPV0MurUjojmkRXp1nDm4JSpTDk42JXVfO
+        mRBTvCXFOY2qokfBcWkaPpPJEcmDu06CsYxKzeygL/3aUfM13p+4K9+39gqtqjtq
+        zsByCtOp2INQztRuHZVM6U7uNF8y+Zh1iqB4Jmm0OASQIAfgJ0ozJzv3WyshT4Zb
+        sQmNL/2jT1KwzN5nIkAM6XgU0ksKqBn2AHygvGTOFB6OdGs4ELzDh72A7lQZ765R
+        X1FPBPzIyGEcR8Nw==
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id ff185978 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO)
+        for <linux-kernel@vger.kernel.org>;
+        Mon, 28 Sep 2020 09:46:43 +0000 (UTC)
+Received: by mail-il1-f170.google.com with SMTP id e5so632227ilr.8
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 03:18:10 -0700 (PDT)
+X-Gm-Message-State: AOAM533G/xm5WbFHf7UMDBJjiKo1w+oOyqBDgQXlIaqBzavyAcGSaZt0
+        tenUyakeVhERLsNuCM3YiyjEXqBYXrd87XvBmUI=
+X-Google-Smtp-Source: ABdhPJxwCebYVRZYRiOo5Ycu/i+iis87iyV5mmfF9PYcRsC9zNKzgWrCiZDzI1BqWrOozXl//DLKVSXT/VozZAmU2m0=
+X-Received: by 2002:a05:6e02:6d0:: with SMTP id p16mr491957ils.64.1601288289457;
+ Mon, 28 Sep 2020 03:18:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: quoted-printable
+References: <CAHmME9odvKzyAG7HgzSE-1gLOfiU=HL1MB5w4z=AwOsjz9WJPA@mail.gmail.com>
+ <CAHmME9qPo_MNrVioY=qgOVNxYBVY1_i_eep5wzP-7Akq5fH1Xg@mail.gmail.com>
+In-Reply-To: <CAHmME9qPo_MNrVioY=qgOVNxYBVY1_i_eep5wzP-7Akq5fH1Xg@mail.gmail.com>
+From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
+Date:   Mon, 28 Sep 2020 12:17:58 +0200
+X-Gmail-Original-Message-ID: <CAHmME9qBtUuOSEU3Cb9rL7SHaBAwk862VEPdmYcisnSHDERtvQ@mail.gmail.com>
+Message-ID: <CAHmME9qBtUuOSEU3Cb9rL7SHaBAwk862VEPdmYcisnSHDERtvQ@mail.gmail.com>
+Subject: Re: 5.9-rc7 null ptr deref in __i915_gem_userptr_get_pages_worker
+To:     Jason Gunthorpe <jgg@ziepe.ca>, Peter Xu <peterx@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     intel-gfx@lists.freedesktop.org,
+        "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Linux-MM <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christoph,
+Alright, the failing code seems to be in mm:
 
-Le lun. 28 sept. 2020 =E0 8:04, Christoph Hellwig <hch@lst.de> a =E9crit :
-> On Mon, Sep 28, 2020 at 01:54:05PM +1000, Stephen Rothwell wrote:
->>  Hi all,
->>=20
->>  After merging the drm tree, today's linux-next build (x86_64=20
->> allmodconfig)
->>  failed like this:
->=20
-> The driver needs to switch do dma_alloc_noncoherent + dma_sync_single*
-> like the other drivers converted in the dma tree.  Paul, let me know=20
-> if
-> you have any questions.
+        if (flags & FOLL_PIN)
+                atomic_set(&current->mm->has_pinned, 1);
 
-I don't dma_alloc* anything, DRM core does. I use the=20
-DMA_ATTR_NON_CONSISTENT attr with dma_mmap_attrs(). Is there a=20
-replacement for that?
+Apparently you can't rely on current->mm being valid in this context;
+it's null here, hence the +0x64 for has_pinned's offset.
 
--Paul
+This was added by 008cfe4418b3 ("mm: Introduce mm_struct.has_pinned"),
+which is new for rc7 indeed.
 
+The crash goes away when changing that to:
 
+        if ((flags & FOLL_PIN) && current->mm)
+                atomic_set(&current->mm->has_pinned, 1);
+
+But I haven't really evaluated whether or not that's racy or if I need
+to take locks to do such a thing.
