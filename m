@@ -2,83 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B0F927AD99
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 14:14:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1912C27AD9D
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 14:15:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726559AbgI1MOk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 08:14:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47454 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726396AbgI1MOj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 08:14:39 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C236C0613CE
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 05:14:39 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id p9so8172339ejf.6
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 05:14:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=ULrSf82cVDYxU3BYbb7m6MDttIpV3C4Y47Llm1GUmmM=;
-        b=RYu5+Otf5FEX6f56j8YIX5wR0ismZYUj9KwUidK4Ky/3nHe91MMusAiJHvYtzUj3ZS
-         83Blo43RlqTcu00g7T/v2HJeD7FskeRP5dKU8uqUL7sROkb7zAD4jFpx05gofs/9FmK4
-         GoeBfl1scYDfuGddxFU7mhF22O8A3jiCEp7YBrBSkp3TcbfPQqdr+l7cOYHX/trJL9d7
-         6IT/QtfYLj3AvCfxnC/ss8B4FceydqW4DLBQ4NAL21+37tB3ZCs7UEJlFStEJHdBV+/m
-         oxxi0goCOQHHK6M68btJy2raPmpyXwT9kBNbXdVmrBk5lzSMmHeeFmAPZCk2jTh/f9Ft
-         H2jA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=ULrSf82cVDYxU3BYbb7m6MDttIpV3C4Y47Llm1GUmmM=;
-        b=Ftn/iKXPi/rYU7nRNHdWg2QVL9YbPOG0s1+ufpVOaWMtbyxO+Abtw5gL3ufc5+GBA4
-         jNWKR3NSC6rq2quw7905GeWhRvBoDrp+4sV//kQkyTEfGMSU1zv5yFznX/qEyXEjwvBA
-         2TeSS2PPTD0N+chbZXJgFdRoOHN/cH2K3nY1N6FCQBzDlaHOsTX37G1Emuq3P1qHqfx0
-         6EYLetI88ouQT3mcrgb3UQGzYezp3gh7to9kNQhCBAbU+ZRcil9rJ1JPAYuurwxwRJTZ
-         PyI5iSer7sP8OAjbT5a6YdH/s0AUH2M3P/F8KR7qnCjwi+LXQ+qPGoPzr1v04rGR0pH0
-         QmPw==
-X-Gm-Message-State: AOAM530x1GF/wYg08VeOBHuCSLIJNBhe/QRLi0+05egSHWzaSDclisQZ
-        13WB7Az/nEMzfSHC78Zewqz12Q/7m7y6UR6L4BdwdQ==
-X-Google-Smtp-Source: ABdhPJzyXErbSkHAJICjNnqPWiqQnKU0mMtCMTF0AauvxqADR4UegaiDlNtrxhZJCdOOpXcvF6uv/dIltrwioMVI26E=
-X-Received: by 2002:a17:906:f6c9:: with SMTP id jo9mr1312638ejb.233.1601295277452;
- Mon, 28 Sep 2020 05:14:37 -0700 (PDT)
+        id S1726597AbgI1MPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 08:15:03 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:14310 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726396AbgI1MPC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 08:15:02 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 6BE3ABD90DD0D1F2CE01;
+        Mon, 28 Sep 2020 20:15:00 +0800 (CST)
+Received: from [127.0.0.1] (10.174.177.253) by DGGEMS402-HUB.china.huawei.com
+ (10.3.19.202) with Microsoft SMTP Server id 14.3.487.0; Mon, 28 Sep 2020
+ 20:14:51 +0800
+Subject: Re: [PATCH v3 03/21] dt-bindings: arm: hisilicon: convert Hisilicon
+ board/soc bindings to json-schema
+To:     Wei Xu <xuwei5@hisilicon.com>, Rob Herring <robh+dt@kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+CC:     Libin <huawei.libin@huawei.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>
+References: <20200927062129.4573-1-thunder.leizhen@huawei.com>
+ <20200927062129.4573-4-thunder.leizhen@huawei.com>
+ <5F71D192.8070105@hisilicon.com>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Message-ID: <4f743027-9495-9ac7-af85-f5e084ae8fca@huawei.com>
+Date:   Mon, 28 Sep 2020 20:14:51 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-From:   Jann Horn <jannh@google.com>
-Date:   Mon, 28 Sep 2020 14:14:11 +0200
-Message-ID: <CAG48ez3YsfTfOFKa-Po58e4PNp7FK54MFbkK3aUPSRt3LWtxQA@mail.gmail.com>
-Subject: SPARC version of arch_validate_prot() looks broken (UAF read)
-To:     "David S. Miller" <davem@davemloft.net>,
-        sparclinux@vger.kernel.org, Linux-MM <linux-mm@kvack.org>,
-        Khalid Aziz <khalid.aziz@oracle.com>,
-        Khalid Aziz <khalid@gonehiking.org>
-Cc:     kernel list <linux-kernel@vger.kernel.org>,
-        Anthony Yznaga <anthony.yznaga@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <5F71D192.8070105@hisilicon.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.177.253]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From what I can tell from looking at the code:
 
-SPARC's arch_validate_prot() looks up the VMA and peeks at it; that's
-not permitted though. do_mprotect_pkey() calls arch_validate_prot()
-before taking the mmap lock, so we can hit use-after-free reads if
-someone concurrently deletes a VMA we're looking at.
 
-Additionally, arch_validate_prot() currently only accepts the start
-address as a parameter, but the SPARC code probably should be checking
-the entire given range, which might consist of multiple VMAs?
+On 2020/9/28 20:05, Wei Xu wrote:
+> Hi Zhen Lei,
+> 
+> Thanks!
+> 
+> On 2020/9/27 14:21, Zhen Lei wrote:
+>> Convert Hisilicon SoC bindings to DT schema format using json-schema.
+>>
+>> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+>> ---
+>>  .../bindings/arm/hisilicon/hisilicon.txt           | 57 ----------------
+>>  .../bindings/arm/hisilicon/hisilicon.yaml          | 77 ++++++++++++++++++++++
+>>  2 files changed, 77 insertions(+), 57 deletions(-)
+>>  delete mode 100644 Documentation/devicetree/bindings/arm/hisilicon/hisilicon.txt
+>>  create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/hisilicon.yaml
+>>
+>> diff --git a/Documentation/devicetree/bindings/arm/hisilicon/hisilicon.txt b/Documentation/devicetree/bindings/arm/hisilicon/hisilicon.txt
+>> deleted file mode 100644
+>> index f7e52476f5f2f3c..000000000000000
+>> --- a/Documentation/devicetree/bindings/arm/hisilicon/hisilicon.txt
+>> +++ /dev/null
+>> @@ -1,57 +0,0 @@
+>> -Hisilicon Platforms Device Tree Bindings
+>> -----------------------------------------------------
+>> -Hi3660 SoC
+>> -Required root node properties:
+>> -	- compatible = "hisilicon,hi3660";
+>> -
+>> -HiKey960 Board
+>> -Required root node properties:
+>> -	- compatible = "hisilicon,hi3660-hikey960", "hisilicon,hi3660";
+>> -
+>> -Hi3670 SoC
+>> -Required root node properties:
+>> -	- compatible = "hisilicon,hi3670";
+>> -
+>> -HiKey970 Board
+>> -Required root node properties:
+>> -	- compatible = "hisilicon,hi3670-hikey970", "hisilicon,hi3670";
+>> -
+>> -Hi3798cv200 SoC
+>> -Required root node properties:
+>> -	- compatible = "hisilicon,hi3798cv200";
+>> -
+>> -Hi3798cv200 Poplar Board
+>> -Required root node properties:
+>> -	- compatible = "hisilicon,hi3798cv200-poplar", "hisilicon,hi3798cv200";
+>> -
+>> -Hi4511 Board
+>> -Required root node properties:
+>> -	- compatible = "hisilicon,hi3620-hi4511";
+>> -
+>> -Hi6220 SoC
+>> -Required root node properties:
+>> -	- compatible = "hisilicon,hi6220";
+>> -
+>> -HiKey Board
+>> -Required root node properties:
+>> -	- compatible = "hisilicon,hi6220-hikey", "hisilicon,hi6220";
+>> -
+>> -HiP01 ca9x2 Board
+>> -Required root node properties:
+>> -	- compatible = "hisilicon,hip01-ca9x2";
+>> -
+>> -HiP04 D01 Board
+>> -Required root node properties:
+>> -	- compatible = "hisilicon,hip04-d01";
+>> -
+>> -HiP05 D02 Board
+>> -Required root node properties:
+>> -	- compatible = "hisilicon,hip05-d02";
+>> -
+>> -HiP06 D03 Board
+>> -Required root node properties:
+>> -	- compatible = "hisilicon,hip06-d03";
+>> -
+>> -HiP07 D05 Board
+>> -Required root node properties:
+>> -	- compatible = "hisilicon,hip07-d05";
+>> \ No newline at end of file
+>> diff --git a/Documentation/devicetree/bindings/arm/hisilicon/hisilicon.yaml b/Documentation/devicetree/bindings/arm/hisilicon/hisilicon.yaml
+>> new file mode 100644
+>> index 000000000000000..362decf3b85c6fb
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/arm/hisilicon/hisilicon.yaml
+>> @@ -0,0 +1,77 @@
+>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>> +%YAML 1.2
+>> +---
+>> +$id: http://devicetree.org/schemas/arm/hisilicon/hisilicon.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: Hisilicon Platforms Device Tree Bindings
+>> +
+>> +maintainers:
+>> +  - Wei Xu <xuwei5@hisilicon.com>
+>> +
+>> +properties:
+>> +  $nodename:
+>> +    const: '/'
+>> +
+>> +  compatible:
+>> +    oneOf:
+>> +      - description: Hi3660 SoC
+>> +        items:
+>> +          - const: hisilicon,hi3660
+>> +
+>> +      - description: HiKey960 Board
+>> +        items:
+>> +          - const: hisilicon,hi3660-hikey960
+>> +          - const: hisilicon,hi3660
+> 
+> How about to use the boards with SoC to reduce some duplication like following?
+> 
+>          - description: Boards with the Hisilicon hi3660 SoC
+>            items:
+>              - enum:
+>                  - hisilicon,hi3660-hikey960
+>              - const: hisilicon,hi3660
+> 
+Looks like a good idea. I will do it.
 
-I'm not sure what the best fix is here; it kinda seems like what SPARC
-really wants is a separate hook that is called from inside the loop in
-do_mprotect_pkey() that iterates over the VMAs? So maybe commit
-9035cf9a97e4 ("mm: Add address parameter to arch_validate_prot()")
-should be reverted, and a separate hook should be created?
+> And in this case, there is no need to remove the "hisilicon,hip01" as the first patch.
 
-(Luckily the ordering of the vmacache operations works out such that
-AFAICS, despite calling find_vma() without holding the mmap_sem, we
-can never end up establishing a vmacache entry with a dangling pointer
-that might be considered valid on a subsequent call. So this should be
-limited to a rather boring UAF data read, and not be exploitable for a
-UAF write or UAF function pointer read.)
+OK, I will add "hisilicon,hip01" into yaml, and discard patch 1.
+
+> 
+> Best Regards,
+> Wei
+> 
+>> +
+>> +      - description: Hi3670 SoC
+>> +        items:
+>> +          - const: hisilicon,hi3670
+>> +
+>> +      - description: HiKey970 Board
+>> +        items:
+>> +          - const: hisilicon,hi3670-hikey970
+>> +          - const: hisilicon,hi3670
+>> +
+>> +      - description: Hi3798cv200 SoC
+>> +        items:
+>> +          - const: hisilicon,hi3798cv200
+>> +
+>> +      - description: Hi3798cv200 Poplar Board
+>> +        items:
+>> +          - const: hisilicon,hi3798cv200-poplar
+>> +          - const: hisilicon,hi3798cv200
+>> +
+>> +      - description: Hi4511 Board
+>> +        items:
+>> +          - const: hisilicon,hi3620-hi4511
+>> +
+>> +      - description: Hi6220 SoC
+>> +        items:
+>> +          - const: hisilicon,hi6220
+>> +
+>> +      - description: HiKey Board
+>> +        items:
+>> +          - const: hisilicon,hi6220-hikey
+>> +          - const: hisilicon,hi6220
+>> +
+>> +      - description: HiP01 ca9x2 Board
+>> +        items:
+>> +          - const: hisilicon,hip01-ca9x2
+>> +
+>> +      - description: HiP04 D01 Board
+>> +        items:
+>> +          - const: hisilicon,hip04-d01
+>> +
+>> +      - description: HiP05 D02 Board
+>> +        items:
+>> +          - const: hisilicon,hip05-d02
+>> +
+>> +      - description: HiP06 D03 Board
+>> +        items:
+>> +          - const: hisilicon,hip06-d03
+>> +
+>> +      - description: HiP07 D05 Board
+>> +        items:
+>> +          - const: hisilicon,hip07-d05
+>> +...
+>> 	
+> 
+> .
+> 
+
