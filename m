@@ -2,98 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C21527B1A3
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 18:17:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA50127B1A9
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 18:18:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726578AbgI1QRa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 12:17:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56780 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726348AbgI1QRa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 12:17:30 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FAEDC061755
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 09:17:30 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id 77so1999076lfj.0
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 09:17:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=e5eBmJYMQxsPiYEHTP+N8WE8e6PJy08LxGgxCCqvCfE=;
-        b=euu6Fg5dxp3F/Hmc0ddCIZLWIH1whfjy65nYv8nVV1rquMCIwXYMajlID9wTtFxHK8
-         Cbo31Xb/E1jD+y+fwC/r6bEh2Pcqn3AUPrCoY7pk9cqeYknrMe9RPns+LXDkxVQyg9vE
-         0YpqeOnguRpHbqeC+u2A5oifieeXZWi4iQqs0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=e5eBmJYMQxsPiYEHTP+N8WE8e6PJy08LxGgxCCqvCfE=;
-        b=ptQxol5I6L1hQpMYDfRd57aTlA+MRp6Sg9Cu9hnG/mdGRhrN8+gB+/iGQdzq3W33Ng
-         eQIdiFpkGmVCjQUsXheeGmqGRJ6MfhnmHdYtbUJzR+4bQsnpRvrIrPOOWEGKUm9OlDzJ
-         S6m94Z//PUKtfJksPfy29DyvncsSwjr4PR962vJ3yxpDXyCzYX0IMQV2/4ergr8Ab/QJ
-         icQiHf5wpxO9D8iXNercv74w+UEcoV+UtMRYC4mETxWwMbBn9kKUVPj2xlcnEwfjLwls
-         RddHnGD9xThFJFAhE+/z3UEf9a2Lkypb7T/ub0VvGlh/ERFXXjhKs9g86rpD/BY9HrXT
-         9G+A==
-X-Gm-Message-State: AOAM533IwyIv3tTuwCZ8S06w/HwtrVZztCRpzsBnv1DIsWZ1tULwKAEf
-        4DZlUbIDljAlyAbgIqsgETZG/WBR1U7IpQ==
-X-Google-Smtp-Source: ABdhPJxOCnnOVytUd9bHI6K2fa//uw941IUthaxL6qn02VgrEWPYsPiursBky4HEbUEbMAXxNV3wgQ==
-X-Received: by 2002:ac2:538c:: with SMTP id g12mr689581lfh.326.1601309848278;
-        Mon, 28 Sep 2020 09:17:28 -0700 (PDT)
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com. [209.85.167.43])
-        by smtp.gmail.com with ESMTPSA id x12sm130607ljd.130.2020.09.28.09.17.26
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Sep 2020 09:17:26 -0700 (PDT)
-Received: by mail-lf1-f43.google.com with SMTP id 77so1998924lfj.0
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 09:17:26 -0700 (PDT)
-X-Received: by 2002:a19:4186:: with SMTP id o128mr687690lfa.148.1601309846019;
- Mon, 28 Sep 2020 09:17:26 -0700 (PDT)
+        id S1726625AbgI1QSc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 12:18:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43228 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726461AbgI1QSc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 12:18:32 -0400
+Received: from mail-oi1-f171.google.com (mail-oi1-f171.google.com [209.85.167.171])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 99B472100A;
+        Mon, 28 Sep 2020 16:18:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601309911;
+        bh=i7GYhiMn+37Sq008RrjJLJyTufrJOfeBNI1GsXR2zJ4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=cDB1NvRv8ftd3jw3VSzwiLxClczdQcwc933hNUbKQKbuA0i7RwHVsMbYer8wGiJbE
+         nz/GzmgM/H/9g5U/83J9veVyEydouto60UZQ4CKK5aQGn6DUirQliV80SBXbXbo0g9
+         vluvwLxstfjt7ObGBbV8XUmpAp/iBjt0/9V8y8u4=
+Received: by mail-oi1-f171.google.com with SMTP id 185so1907264oie.11;
+        Mon, 28 Sep 2020 09:18:31 -0700 (PDT)
+X-Gm-Message-State: AOAM532/RevpsmTox0vAdTf3OK7QIeo7MMtPc2Q7wC8HdoUbJp/lW9Uu
+        yxcHNiaxZuQO3Yj3bHukTpZid5wHUwk/GoeouA==
+X-Google-Smtp-Source: ABdhPJzRQdtyqEKP3Qh3o/zvZRAaQrco0KiM29T4UPOfYZCCdDGe409GlfC+XPFgpg5kaVPax12E7YcDlEyteuK52PQ=
+X-Received: by 2002:aca:7543:: with SMTP id q64mr1393731oic.147.1601309910803;
+ Mon, 28 Sep 2020 09:18:30 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200924183953.GG9916@ziepe.ca> <20200924213010.GL79898@xz-x1>
- <CAHk-=wgz5SXKA6-uZ_BimOP1C7pHJag0ndz=tnJDAZS_Z+FrGQ@mail.gmail.com>
- <CAHk-=whDSH_MRMt80JaSwoquzt=1nQ-0n3w0aVngoWPAc10BCw@mail.gmail.com>
- <20200926004136.GJ9916@ziepe.ca> <CAHk-=wiutA_J-OfvrD8Kp3SoYcfMHUwsU7ViOH48q7QN0AQ6eg@mail.gmail.com>
- <CAHk-=wi_gd+JWj-8t8tc8cy3WZ7NMj-_1hATfH3Rt0ytUxtMpQ@mail.gmail.com>
- <20200927062337.GE2280698@unreal> <CAHk-=winqSOFsdn1ntYL13s2UuhpQQ9+GRvjWth3sA5APY4Wwg@mail.gmail.com>
- <CAHk-=wj61s30pt8POVtKYVamYTh6h=7-_ser2Hx9sEjqeACkDA@mail.gmail.com> <20200928124937.GN9916@ziepe.ca>
-In-Reply-To: <20200928124937.GN9916@ziepe.ca>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 28 Sep 2020 09:17:09 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wj6aTsqq6BAUci-NYJ3b-EkDwVgz_NvW_kW8KBqGocouQ@mail.gmail.com>
-Message-ID: <CAHk-=wj6aTsqq6BAUci-NYJ3b-EkDwVgz_NvW_kW8KBqGocouQ@mail.gmail.com>
-Subject: Re: [PATCH 1/5] mm: Introduce mm_struct.has_pinned
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Leon Romanovsky <leonro@nvidia.com>, Peter Xu <peterx@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jan Kara <jack@suse.cz>, Michal Hocko <mhocko@suse.com>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Kirill Shutemov <kirill@shutemov.name>,
-        Hugh Dickins <hughd@google.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>
+References: <20200812193248.11325-1-dmurphy@ti.com>
+In-Reply-To: <20200812193248.11325-1-dmurphy@ti.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Mon, 28 Sep 2020 11:18:19 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqK1HDQOBRpiEVnHJ59RV+2XpcHfQaafvX1m2HfDs=kagg@mail.gmail.com>
+Message-ID: <CAL_JsqK1HDQOBRpiEVnHJ59RV+2XpcHfQaafvX1m2HfDs=kagg@mail.gmail.com>
+Subject: Re: [PATCH] dt: bindings: lp55xx: Updte yaml examples with new color ID
+To:     Dan Murphy <dmurphy@ti.com>
+Cc:     Pavel Machek <pavel@ucw.cz>, devicetree@vger.kernel.org,
+        Linux LED Subsystem <linux-leds@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 5:49 AM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+On Wed, Aug 12, 2020 at 2:32 PM Dan Murphy <dmurphy@ti.com> wrote:
 >
-> Not seeing an obvious option besides adding a smp_mb() before
-> page_maybe_dma_pinned() as Peter once suggested.
+> Update the binding examples for the color ID to LED_COLOR_ID_RGB
+>
+> Signed-off-by: Dan Murphy <dmurphy@ti.com>
+> ---
+>  Documentation/devicetree/bindings/leds/leds-lp55xx.yaml | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/Documentation/devicetree/bindings/leds/leds-lp55xx.yaml b/Documentation/devicetree/bindings/leds/leds-lp55xx.yaml
+> index b1bb3feb0f4d..89f69d62493e 100644
+> --- a/Documentation/devicetree/bindings/leds/leds-lp55xx.yaml
+> +++ b/Documentation/devicetree/bindings/leds/leds-lp55xx.yaml
+> @@ -189,7 +189,7 @@ examples:
+>                 #address-cells = <1>;
+>                 #size-cells = <0>;
+>                 reg = <0x2>;
+> -               color = <LED_COLOR_ID_MULTI>;
+> +               color = <LED_COLOR_ID_RGB>;
 
-That is going to be prohibitively expensive - needing it for each pte
-whether it's pinned or not.
+Looks like common.yaml needs updating too:
 
-I really think the better option is a "don't do that then". This has
-_never_ worked before either except by pure luck.
+Documentation/devicetree/bindings/leds/leds-lp55xx.example.dt.yaml:
+led-controller@33: multi-led@2:color:0:0: 9 is greater than the
+maximum of 8
+From schema: /builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/leds/leds-lp55xx.yaml
 
-I also doubt anybody does it. forking with threads is a bad idea to
-begin with. Doing so while pinning pages even more so.
-
-               Linus
+Rob
