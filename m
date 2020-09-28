@@ -2,76 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F100627A92E
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 09:58:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0581427A8A5
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 09:30:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726629AbgI1H6b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 03:58:31 -0400
-Received: from mx2.suse.de ([195.135.220.15]:47686 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726518AbgI1H63 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 03:58:29 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id DBD45B038;
-        Mon, 28 Sep 2020 07:58:27 +0000 (UTC)
-Date:   Mon, 28 Sep 2020 09:58:24 +0200
-From:   Oscar Salvador <osalvador@suse.de>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-hyperv@vger.kernel.org, xen-devel@lists.xenproject.org,
-        linux-acpi@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Michal Hocko <mhocko@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>
-Subject: Re: [PATCH RFC 4/4] mm/page_alloc: place pages to tail in
- __free_pages_core()
-Message-ID: <20200928075820.GA4082@linux>
-References: <20200916183411.64756-1-david@redhat.com>
- <20200916183411.64756-5-david@redhat.com>
+        id S1726702AbgI1Hac (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 03:30:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59784 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726686AbgI1Ha3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 03:30:29 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2240FC0613CE;
+        Mon, 28 Sep 2020 00:30:29 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id s31so96919pga.7;
+        Mon, 28 Sep 2020 00:30:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=hlUXKNgJlmFS9LcdYBGGvIRXhDW1V51nJ7N32WE7Hns=;
+        b=uU0aG6tZl03pavnDsfsz9AGoXD0qBwegzcxQsET0gXBcWMOCTOdlRafnaiW9DE08/r
+         fnl1WYBR687CFhB8TuKZSk6ezmmMcxKOtGvQXubjVRo4vO2GrrCS6ATiXsJYNp8yPV7t
+         fxXFouKmEW6q1HAhzoG43GF2oVwNrS1uS6n+wkvC3ugMLvMzRfZPVPMb24QaHsdjhWU8
+         OsIIPr0Q3TstSTX9roHFZAxLALq4/6aYeNd7CypYDkw0MAhsyD41TNJftiZenuhfIhK/
+         JA8AIvJYbhkP5KsB1TxAiItytzwBD5FVDg6eIKOD/8z8/ArEMn5/SOn3H1dbXEfgBYGx
+         REmw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=hlUXKNgJlmFS9LcdYBGGvIRXhDW1V51nJ7N32WE7Hns=;
+        b=phvK6wCNxUwpVZbyOxa4AtLma4b+0/ins9Fg6XrTBLpJlDwV26TnM0kFAqxRdxisfZ
+         41Sa4TzGtz3c97HRoH3dFYKV1qU+6Dz8HLsSsORaUXRNG/Z9R37qmXY5ZeTYH2RXFoWN
+         3UN3neI8gvCnGALsFg7cpYavhshzH83KAAycDzP18Z87l8Ox1vkc+RGrfYHCoBdh/FBw
+         29Bai+CoeP2HvmO1VtMGY8JHJrIPKhanqqlUyDbS3uTWd6qDhvh0hwsm/snK1084VNIu
+         0bQzskqIzj58Shoh4xHERFLqxP7L2ob0d2TYwi9eTB204YmQbvnY06BpY5j2RDbAIzfV
+         kOqQ==
+X-Gm-Message-State: AOAM531gpW6JM9Oa6p/MeBm5VtFHDKxz+l1bzkemWkbKHrrlIfDfckr3
+        bgII1Y3GnZC77cljAKKaaj166y8t2vg=
+X-Google-Smtp-Source: ABdhPJxafmjcVScUQe1VHQdDZYlnHWwefJg3QusPt34Rq2D0SX7ZjiF/PO7sKgpDQ413pPEqyVXb8Q==
+X-Received: by 2002:a17:902:a501:b029:d2:8ce6:f589 with SMTP id s1-20020a170902a501b02900d28ce6f589mr397225plq.11.1601278228612;
+        Mon, 28 Sep 2020 00:30:28 -0700 (PDT)
+Received: from localhost ([47.251.3.230])
+        by smtp.gmail.com with ESMTPSA id 22sm469920pfw.17.2020.09.28.00.30.27
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 28 Sep 2020 00:30:28 -0700 (PDT)
+From:   Lai Jiangshan <jiangshanlai@gmail.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
+Subject: [RFC PATCH 2/2] kvm/x86: allow guest to toggle X86_CR4_FSGSBASE
+Date:   Mon, 28 Sep 2020 16:30:47 +0800
+Message-Id: <20200928083047.3349-2-jiangshanlai@gmail.com>
+X-Mailer: git-send-email 2.19.1.6.gb485710b
+In-Reply-To: <20200928083047.3349-1-jiangshanlai@gmail.com>
+References: <20200928083047.3349-1-jiangshanlai@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200916183411.64756-5-david@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 08:34:11PM +0200, David Hildenbrand wrote:
-> @@ -1523,7 +1524,13 @@ void __free_pages_core(struct page *page, unsigned int order)
->  
->  	atomic_long_add(nr_pages, &page_zone(page)->managed_pages);
->  	set_page_refcounted(page);
-> -	__free_pages(page, order);
-> +
-> +	/*
-> +	 * Bypass PCP and place fresh pages right to the tail, primarily
-> +	 * relevant for memory onlining.
-> +	 */
-> +	page_ref_dec(page);
-> +	__free_pages_ok(page, order, FOP_TO_TAIL);
+From: Lai Jiangshan <laijs@linux.alibaba.com>
 
-Sorry, I must be missing something obvious here, but I am a bit confused here.
-I get the part of placing them at the tail so rmqueue_bulk() won't
-find them, but I do not get why we decrement page's refcount.
-IIUC, its refcount will be 0, but why do we want to do that?
+There is no reason to force VM-Exit on toggling
+X86_CR4_FSGSBASE.
 
-Another thing a bit unrelated... we mess three times with page's refcount
-(two before this patch).
-Why do we have this dance in place?
+Cc: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
+---
+ arch/x86/kvm/kvm_cache_regs.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks
-
+diff --git a/arch/x86/kvm/kvm_cache_regs.h b/arch/x86/kvm/kvm_cache_regs.h
+index ca0781b41df9..a889563ad02d 100644
+--- a/arch/x86/kvm/kvm_cache_regs.h
++++ b/arch/x86/kvm/kvm_cache_regs.h
+@@ -7,7 +7,7 @@
+ #define KVM_POSSIBLE_CR0_GUEST_BITS X86_CR0_TS
+ #define KVM_POSSIBLE_CR4_GUEST_BITS				  \
+ 	(X86_CR4_PVI | X86_CR4_DE | X86_CR4_PCE | X86_CR4_OSFXSR  \
+-	 | X86_CR4_OSXMMEXCPT | X86_CR4_PGE | X86_CR4_TSD)
++	 | X86_CR4_OSXMMEXCPT | X86_CR4_PGE | X86_CR4_TSD | X86_CR4_FSGSBASE)
+ 
+ #define BUILD_KVM_GPR_ACCESSORS(lname, uname)				      \
+ static __always_inline unsigned long kvm_##lname##_read(struct kvm_vcpu *vcpu)\
 -- 
-Oscar Salvador
-SUSE L3
+2.19.1.6.gb485710b
+
