@@ -2,114 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 875D827A68F
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 06:33:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72E1627A693
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 06:37:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726654AbgI1Ec5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 00:32:57 -0400
-Received: from m42-4.mailgun.net ([69.72.42.4]:42529 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726638AbgI1Ecz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 00:32:55 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1601267575; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=4BnMQDZQ/7CM0fb8kxd7piyz8sTUmxgCM86hjgX4qtY=; b=lpKw4Y2HY4FCXEWDOgfVqLIDt7NyzEKw3v1bHSdv01Y4YVnD2u4kYYBFt0PPnGdPwnjHx0xJ
- pQUyyc8g4+H+MfxkDqvHeM9pMTpUwdUx66rvhk18Agl1elNeKhtgvMp87oS7LV4NKT01h+KL
- ClnqD67Qze+0byoXqOlWKFLk+qg=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 5f716777d106659f82125c48 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 28 Sep 2020 04:32:55
- GMT
-Sender: mkshah=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id DD379C433B6; Mon, 28 Sep 2020 04:32:54 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from mkshah-linux.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: mkshah)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id A868EC433A1;
-        Mon, 28 Sep 2020 04:32:47 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A868EC433A1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=mkshah@codeaurora.org
-From:   Maulik Shah <mkshah@codeaurora.org>
-To:     bjorn.andersson@linaro.org, maz@kernel.org,
-        linus.walleij@linaro.org, swboyd@chromium.org,
-        evgreen@chromium.org, mka@chromium.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-gpio@vger.kernel.org, agross@kernel.org, tglx@linutronix.de,
-        jason@lakedaemon.net, dianders@chromium.org, rnayak@codeaurora.org,
-        ilina@codeaurora.org, lsrao@codeaurora.org,
-        Maulik Shah <mkshah@codeaurora.org>
-Subject: [PATCH v6 6/6] irqchip: qcom-pdc: Reset PDC interrupts during init
-Date:   Mon, 28 Sep 2020 10:02:04 +0530
-Message-Id: <1601267524-20199-7-git-send-email-mkshah@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1601267524-20199-1-git-send-email-mkshah@codeaurora.org>
-References: <1601267524-20199-1-git-send-email-mkshah@codeaurora.org>
+        id S1726440AbgI1Ehu convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 28 Sep 2020 00:37:50 -0400
+Received: from mail-lf1-f66.google.com ([209.85.167.66]:38511 "EHLO
+        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725294AbgI1Ehu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 00:37:50 -0400
+Received: by mail-lf1-f66.google.com with SMTP id y11so9514279lfl.5;
+        Sun, 27 Sep 2020 21:37:48 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=PmQd7B2UV3XNWq1r+fcYwXvafyTylCt2+L6Qyv0W31k=;
+        b=FO5aZmNBk+cQ1mGYNq/3guE0HdnXaiCEXbQb2eUH9KJ0i5JNwFJZYNy6TtR9ShcB2H
+         XErXACZ1AVBTagobY8sd0WR4aTcgWPJeqtrJOlPmpVkHQt0IpsA2ALJFZMJGHUFefHWg
+         /rkCyDLBs5qt6UDFBjsTcGJmX6jC9SddOqZOSD26yN/WMihR8k/QIhyA3k6iYzpfQI5n
+         e326fcd2PhTpUfKa+t5Kaok21EwgZ/i5CMQEtRJhFusQeMWtAPkelIEvhp91RsY0Zp74
+         s0XQsOTr9QkQy/PRK3EU6iGMelRuGcxBMO40eCn0KUomjbG+cWPxO3t3UsaZckWLdegN
+         LX/g==
+X-Gm-Message-State: AOAM532jSEXdXIUVD4XaMeJbfxJ9a/HLajomxQZVc8iP7UJqeeV5GNp0
+        pzq+kUOygj/C5q6S//LiCF26jD1ZLokrQw==
+X-Google-Smtp-Source: ABdhPJxsLcHNSGciOvIzLRl3ERq/ZW8D/V72dTOa0WLNO6ijKJNtqp3iDfGBoKx8WwqLjPY2HM9lOQ==
+X-Received: by 2002:a19:942:: with SMTP id 63mr3493556lfj.23.1601267867358;
+        Sun, 27 Sep 2020 21:37:47 -0700 (PDT)
+Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com. [209.85.167.50])
+        by smtp.gmail.com with ESMTPSA id y5sm2713160lff.60.2020.09.27.21.37.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 27 Sep 2020 21:37:46 -0700 (PDT)
+Received: by mail-lf1-f50.google.com with SMTP id q8so9504709lfb.6;
+        Sun, 27 Sep 2020 21:37:46 -0700 (PDT)
+X-Received: by 2002:a19:c6c8:: with SMTP id w191mr2875289lff.348.1601267866731;
+ Sun, 27 Sep 2020 21:37:46 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200927192912.46323-1-peron.clem@gmail.com> <20200927192912.46323-4-peron.clem@gmail.com>
+In-Reply-To: <20200927192912.46323-4-peron.clem@gmail.com>
+From:   Chen-Yu Tsai <wens@csie.org>
+Date:   Mon, 28 Sep 2020 12:37:35 +0800
+X-Gmail-Original-Message-ID: <CAGb2v67gFTrGVs3pw5ospdSoogaA15cbuWjPQK=-Z2f4nMd9Rw@mail.gmail.com>
+Message-ID: <CAGb2v67gFTrGVs3pw5ospdSoogaA15cbuWjPQK=-Z2f4nMd9Rw@mail.gmail.com>
+Subject: Re: [linux-sunxi] [PATCH v5 03/20] ASoC: sun4i-i2s: Change get_sr()
+ and get_wss() to be more explicit
+To:     =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
+Cc:     Maxime Ripard <mripard@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Marcus Cooper <codekipper@gmail.com>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Linux-ALSA <alsa-devel@alsa-project.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-sunxi <linux-sunxi@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kexec can directly boot into a new kernel without going to complete
-reboot. This can leave the previous kernel's configuration for PDC
-interrupts as is.
+On Mon, Sep 28, 2020 at 3:29 AM Clément Péron <peron.clem@gmail.com> wrote:
+>
+> We are actually using a complex formula to just return a bunch of
+> simple values. Also this formula is wrong for sun4i when calling
+> get_wss() the function return 4 instead of 3.
+>
+> Replace this with a simpler switch case.
+>
+> Also drop the i2s params which is unused and return a simple int as
+> returning an error code could be out of range for an s8 and there is
+> no optim to return a s8 here.
+>
+> Signed-off-by: Clément Péron <peron.clem@gmail.com>
 
-Clear previous kernel's configuration during init by setting interrupts
-in enable bank to zero. The IRQs specified in qcom,pdc-ranges property
-are the only ones that can be used by the new kernel so clear only those
-IRQs. The remaining ones may be in use by a different kernel and should
-not be set by new kernel.
+Fixes: 619c15f7fac9 ("ASoC: sun4i-i2s: Change SR and WSS computation")
 
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
-Suggested-by: Stephen Boyd <swboyd@chromium.org>
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
-Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
----
- drivers/irqchip/qcom-pdc.c | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/irqchip/qcom-pdc.c b/drivers/irqchip/qcom-pdc.c
-index acc0620..bd39e9d 100644
---- a/drivers/irqchip/qcom-pdc.c
-+++ b/drivers/irqchip/qcom-pdc.c
-@@ -341,7 +341,8 @@ static const struct irq_domain_ops qcom_pdc_gpio_ops = {
- 
- static int pdc_setup_pin_mapping(struct device_node *np)
- {
--	int ret, n;
-+	int ret, n, i;
-+	u32 irq_index, reg_index, val;
- 
- 	n = of_property_count_elems_of_size(np, "qcom,pdc-ranges", sizeof(u32));
- 	if (n <= 0 || n % 3)
-@@ -370,6 +371,14 @@ static int pdc_setup_pin_mapping(struct device_node *np)
- 						 &pdc_region[n].cnt);
- 		if (ret)
- 			return ret;
-+
-+		for (i = 0; i < pdc_region[n].cnt; i++) {
-+			reg_index = (i + pdc_region[n].pin_base) >> 5;
-+			irq_index = (i + pdc_region[n].pin_base) & 0x1f;
-+			val = pdc_reg_read(IRQ_ENABLE_BANK, reg_index);
-+			val &= ~BIT(irq_index);
-+			pdc_reg_write(IRQ_ENABLE_BANK, reg_index, val);
-+		}
- 	}
- 
- 	return 0;
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
-
+Reviewed-by: Chen-Yu Tsai <wens@csie.org>
