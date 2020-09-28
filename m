@@ -2,68 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCF2127A7FD
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 08:59:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E659727A800
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 08:59:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726572AbgI1G73 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 02:59:29 -0400
-Received: from mail-ed1-f66.google.com ([209.85.208.66]:41535 "EHLO
-        mail-ed1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725290AbgI1G73 (ORCPT
+        id S1726594AbgI1G76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 02:59:58 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:19494 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725290AbgI1G75 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 02:59:29 -0400
-Received: by mail-ed1-f66.google.com with SMTP id ay8so98067edb.8;
-        Sun, 27 Sep 2020 23:59:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ZPnuWUa+cjabnIx7ZIzBMUW05EELypIQJprVD0ZMD/4=;
-        b=fGOSou/SE48LjdAPrI/dgzwWK9Sski7ie3UX2lRzKmF3HT7bE9zOQyvjgSqtoO15W9
-         ltLeseajfnfDJqJZzvxqb55qlp8hCQfWqS+tOF2Llet4EchHljjp3UPcPMudarQ9WEmQ
-         tK3H6gyqX3WMgAcbFlMxLLzARURbFp/kD7yaBlDwf7Hw9XBNFF3mbRW5xwFm3c2tBBQy
-         7ny+ZPA0vlYOH2XFC7fZ+lJUWbo5YuOGDZHAEGd8dwdVSzNTbHx+UsvcfLVjNzPjbyyr
-         82U/LPl4lIrxI+NMoN/XNavraX09Czm8QOHeDO1q6pFS32nRz+d+RDr0qY+W0doa/AJw
-         JDcw==
-X-Gm-Message-State: AOAM532S/78u8ExeFm5lp+FiVP2pSKShiezDavLnicV+wCmfDsKd+YhO
-        /ovGLL3a91ODyccI+IrhZ1E=
-X-Google-Smtp-Source: ABdhPJxexhXlWADOk8fZK2dRr1B3lFoBDsTxk/K+HW84++SAJntrOjkjzQntNpULX18gXz6ZimDb5g==
-X-Received: by 2002:aa7:dc0e:: with SMTP id b14mr186696edu.17.1601276367572;
-        Sun, 27 Sep 2020 23:59:27 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.132])
-        by smtp.googlemail.com with ESMTPSA id ce14sm169110edb.25.2020.09.27.23.59.25
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sun, 27 Sep 2020 23:59:26 -0700 (PDT)
-Date:   Mon, 28 Sep 2020 08:59:24 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Anson Huang <Anson.Huang@nxp.com>
-Cc:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        kernel@pengutronix.de, festevam@gmail.com, yibin.gong@nxp.com,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Linux-imx@nxp.com
-Subject: Re: [PATCH] arm64: dts: imx8mn-evk: Add cpu-supply to enable cpufreq
-Message-ID: <20200928065924.GA4676@kozik-lap>
-References: <1601259703-28308-1-git-send-email-Anson.Huang@nxp.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1601259703-28308-1-git-send-email-Anson.Huang@nxp.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        Mon, 28 Sep 2020 02:59:57 -0400
+Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
+  by alexa-out.qualcomm.com with ESMTP; 27 Sep 2020 23:59:57 -0700
+X-QCInternal: smtphost
+Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
+  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 27 Sep 2020 23:59:55 -0700
+X-QCInternal: smtphost
+Received: from parashar-linux.qualcomm.com ([10.206.13.63])
+  by ironmsg01-blr.qualcomm.com with ESMTP; 28 Sep 2020 12:29:42 +0530
+Received: by parashar-linux.qualcomm.com (Postfix, from userid 2363307)
+        id 5CC332162F; Mon, 28 Sep 2020 12:29:41 +0530 (IST)
+From:   Paras Sharma <parashar@codeaurora.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Jiri Slaby <jslaby@suse.com>, linux-arm-msm@vger.kernel.org,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        akashast@codeaurora.org, Paras Sharma <parashar@codeaurora.org>
+Subject: [PATCH V5] serial: qcom_geni_serial: To correct QUP Version detection logic
+Date:   Mon, 28 Sep 2020 12:29:38 +0530
+Message-Id: <1601276378-4325-1-git-send-email-parashar@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 10:21:43AM +0800, Anson Huang wrote:
-> PMIC driver is ready on i.MX8MN EVK board, assign cpu-supply for
-> each A53 and restore the operating points table to enable cpufreq.
-> 
-> Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
-> ---
->  arch/arm64/boot/dts/freescale/imx8mn-evk.dts | 32 ++++++++++++++--------------
->  1 file changed, 16 insertions(+), 16 deletions(-)
-> 
+For QUP IP versions 2.5 and above the oversampling rate is
+halved from 32 to 16.
+Commit ce734600545f ("tty: serial: qcom_geni_serial: Update
+the oversampling rate") is pushed to handle this scenario.But
+the existing logic is failing to classify QUP Version 3.0 into
+the correct group ( 2.5 and above).
 
-Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+As result Serial Engine clocks are not configured properly for
+baud rate and garbage data is sampled to FIFOs from the line.
 
-Best regards,
-Krzysztof
+So, fix the logic to detect QUP with versions 2.5 and above.
+
+Fixes: ce734600545f ("tty: serial: qcom_geni_serial: Update the oversampling rate")
+Signed-off-by: Paras Sharma <parashar@codeaurora.org>
+---
+Changes in V5:
+Moved QUP_SE_VERSION_2_5 to common header file qcom-geni-se.h
+
+Changes in V4:
+Created a new #define QUP_SE_VERSION_2_5 for Qup serial engine having version 2.5
+
+Changes in V3:
+Replaced the condition for detecting Qup version(2.5 or greater) with value 0x20050000
+
+Changes in V2:
+Changed subject line and logic for checking Qup version
+
+ drivers/tty/serial/qcom_geni_serial.c | 3 ++-
+ include/linux/qcom-geni-se.h          | 3 +++
+ 2 files changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/tty/serial/qcom_geni_serial.c b/drivers/tty/serial/qcom_geni_serial.c
+index f0b1b47..198ecdd7 100644
+--- a/drivers/tty/serial/qcom_geni_serial.c
++++ b/drivers/tty/serial/qcom_geni_serial.c
+@@ -106,6 +106,7 @@
+ /* We always configure 4 bytes per FIFO word */
+ #define BYTES_PER_FIFO_WORD		4
+ 
++
+ struct qcom_geni_private_data {
+ 	/* NOTE: earlycon port will have NULL here */
+ 	struct uart_driver *drv;
+@@ -1000,7 +1001,7 @@ static void qcom_geni_serial_set_termios(struct uart_port *uport,
+ 	sampling_rate = UART_OVERSAMPLING;
+ 	/* Sampling rate is halved for IP versions >= 2.5 */
+ 	ver = geni_se_get_qup_hw_version(&port->se);
+-	if (GENI_SE_VERSION_MAJOR(ver) >= 2 && GENI_SE_VERSION_MINOR(ver) >= 5)
++	if (ver >= QUP_SE_VERSION_2_5)
+ 		sampling_rate /= 2;
+ 
+ 	clk_rate = get_clk_div_rate(baud, sampling_rate, &clk_div);
+diff --git a/include/linux/qcom-geni-se.h b/include/linux/qcom-geni-se.h
+index 8f385fb..1c31f26 100644
+--- a/include/linux/qcom-geni-se.h
++++ b/include/linux/qcom-geni-se.h
+@@ -248,6 +248,9 @@ struct geni_se {
+ #define GENI_SE_VERSION_MINOR(ver) ((ver & HW_VER_MINOR_MASK) >> HW_VER_MINOR_SHFT)
+ #define GENI_SE_VERSION_STEP(ver) (ver & HW_VER_STEP_MASK)
+ 
++/* QUP SE VERSION value for major number 2 and minor number 5 */
++#define QUP_SE_VERSION_2_5                  0x20050000
++
+ /*
+  * Define bandwidth thresholds that cause the underlying Core 2X interconnect
+  * clock to run at the named frequency. These baseline values are recommended
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
+of Code Aurora Forum, hosted by The Linux Foundation
+
