@@ -2,147 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48C7827B4F6
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 21:04:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D08727B4FA
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 21:05:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726601AbgI1TEc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 15:04:32 -0400
-Received: from mga03.intel.com ([134.134.136.65]:27306 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726310AbgI1TEc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 15:04:32 -0400
-IronPort-SDR: Db4LpqT5s5y8ANUINDsZFMGI8JsRKk2jHRGBHJHMD7qgLQeXcX/LgJ3Kv6VTmwxi8FKAS30X+B
- wmKEtlMnT87g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9758"; a="162104913"
-X-IronPort-AV: E=Sophos;i="5.77,315,1596524400"; 
-   d="scan'208";a="162104913"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 12:04:27 -0700
-IronPort-SDR: XmEAeOL/Im4mDpKC+6Gmdg8kzbb4nmZMIW/ZRA58CEKjr+/4kaCzRdQbwBHUEtZbZVXRnSYZiQ
- S9D+NDksRl4Q==
-X-IronPort-AV: E=Sophos;i="5.77,315,1596524400"; 
-   d="scan'208";a="338299546"
-Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.212.43.157]) ([10.212.43.157])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 12:04:25 -0700
-Subject: Re: [PATCH v13 8/8] x86/vsyscall/64: Fixup Shadow Stack and Indirect
- Branch Tracking for vsyscall emulation
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>
-References: <d0e4077e-129f-6823-dcea-a101ef626e8c@intel.com>
- <99B32E59-CFF2-4756-89BD-AEA0021F355F@amacapital.net>
- <d9099183dadde8fe675e1b10e589d13b0d46831f.camel@intel.com>
- <CALCETrWuhPE3A7eWC=ERJa7i7jLtsXnfu04PKUFJ-Gybro+p=Q@mail.gmail.com>
-From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Message-ID: <054bd574-1566-2be4-b542-884500b7319d@intel.com>
-Date:   Mon, 28 Sep 2020 12:04:24 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1726635AbgI1TFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 15:05:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54524 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726281AbgI1TFa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 15:05:30 -0400
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A4E7C061755;
+        Mon, 28 Sep 2020 12:05:28 -0700 (PDT)
+Received: by mail-ed1-x542.google.com with SMTP id ay8so2823294edb.8;
+        Mon, 28 Sep 2020 12:05:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:references:in-reply-to:subject:date:message-id
+         :mime-version:content-transfer-encoding:content-language
+         :thread-index;
+        bh=hRTBwQSNskyyWTt7HoaboYk425+EVn9mSaFvm7gVvzI=;
+        b=kFEqroD0yn0X0PdULijc1NU8Yf7u7hfECskpCWz8xWDN1nURcXG8azPKpLiY+2WNbi
+         FnIPi7cgFD53pS4rdmIzMlW+jPP+14zucxYTDmCn+kXI8hFN1dNK4vvLchiH59Q7gLYj
+         +fk+aFzFyspooNVybhD2qJhC2KPLrzw70qFkJv0na+dudpfjmZPr8zUVGX9eRa8/L9Fg
+         NBLAGehzqlzq7I0X6pRgMg4UkjER7e2fo2oN+73TvgYYgfNdG3V5my6yhsMD/mm4I7Wv
+         8ym7fzBwMghRp0GiNfc3B7ZRMfIFWpP6WyJCmvXbQPstb8DI2nuNnXDyxdRyoO9pbl06
+         6dLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:references:in-reply-to:subject:date
+         :message-id:mime-version:content-transfer-encoding:content-language
+         :thread-index;
+        bh=hRTBwQSNskyyWTt7HoaboYk425+EVn9mSaFvm7gVvzI=;
+        b=XXnqN6LxcmDuOwvpBdvxogvbJ/1dbOkEuWho4mzHfpf03Kv1muC6lpI1K+b/2HvZIV
+         Gt64RW1fIZiYT1sZHJKmZlnnWB5hAuGDRk/booJ2ozCK+1t+5nK9G5THrVcbZj/aXYdK
+         K4lUFTHZYIRnos+D4+0hsuFqdEF8cbiuQSiAcWQqNiBbJvKE/QRjzVyuegse1XKVnPk2
+         r6u+cQXx4iEypzPL59uyz3idpiRtFe+vEjMFHD12QIgLMMo8kumA3rGEjF5tq8B1u98m
+         Su15pDbA2IFTpOW+bnWeZhrQtjgADjlUcdYQCaqXCSMc4uKolU1BYsQxouG1xRB2DDUs
+         9IqA==
+X-Gm-Message-State: AOAM532ICzpiepqbrbmVRy3zLwDgJM0/lZSqe21EcILgsfCo+MZ7t3np
+        O3Z3b4SeEYZQKEEFq/57Xx6/S1ELj/W6sc8K
+X-Google-Smtp-Source: ABdhPJyx1WFcLiVlf3JIRvX3dBSFpqSlvJxG8RGuzVpj4dxGjImJVhR7Jq4xn/oIqgvpaQK+KLO/MQ==
+X-Received: by 2002:a50:e3c4:: with SMTP id c4mr3550332edm.90.1601319926893;
+        Mon, 28 Sep 2020 12:05:26 -0700 (PDT)
+Received: from AnsuelXPS (93-39-149-95.ip76.fastwebnet.it. [93.39.149.95])
+        by smtp.gmail.com with ESMTPSA id x12sm2832585edq.77.2020.09.28.12.05.25
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 28 Sep 2020 12:05:26 -0700 (PDT)
+From:   <ansuelsmth@gmail.com>
+To:     "'Rob Herring'" <robh@kernel.org>
+Cc:     "'MyungJoo Ham'" <myungjoo.ham@samsung.com>,
+        "'Kyungmin Park'" <kyungmin.park@samsung.com>,
+        "'Chanwoo Choi'" <cw00.choi@samsung.com>,
+        <linux-pm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20200927160515.6480-1-ansuelsmth@gmail.com> <20200927160515.6480-2-ansuelsmth@gmail.com> <20200928180839.GB2999374@bogus>
+In-Reply-To: <20200928180839.GB2999374@bogus>
+Subject: RE: [PATCH 2/2] dt-bindings: devfreq: Document L2 Krait CPU Cache devfreq driver
+Date:   Mon, 28 Sep 2020 21:05:24 +0200
+Message-ID: <002401d695ca$52c2f850$f848e8f0$@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CALCETrWuhPE3A7eWC=ERJa7i7jLtsXnfu04PKUFJ-Gybro+p=Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain;
+        charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Content-Language: it
+Thread-Index: AQKHJ8vfj37MLqL4um7J+At48GMuxQIRgZ/YAlxGVsun+dZE4A==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/28/2020 10:37 AM, Andy Lutomirski wrote:
-> On Mon, Sep 28, 2020 at 9:59 AM Yu-cheng Yu <yu-cheng.yu@intel.com> wrote:
->>
->> On Fri, 2020-09-25 at 09:51 -0700, Andy Lutomirski wrote:
->>>> On Sep 25, 2020, at 9:48 AM, Yu, Yu-cheng <yu-cheng.yu@intel.com> wrote:
->> +
->> +               cet = get_xsave_addr(&fpu->state.xsave, XFEATURE_CET_USER);
->> +               if (!cet) {
->> +                       /*
->> +                        * This is an unlikely case where the task is
->> +                        * CET-enabled, but CET xstate is in INIT.
->> +                        */
->> +                       WARN_ONCE(1, "CET is enabled, but no xstates");
-> 
-> "unlikely" doesn't really cover this.
-> 
->> +                       fpregs_unlock();
->> +                       goto sigsegv;
->> +               }
->> +
->> +               if (cet->user_ssp && ((cet->user_ssp + 8) < TASK_SIZE_MAX))
->> +                       cet->user_ssp += 8;
-> 
-> This looks buggy.  The condition should be "if SHSTK is on, then add 8
-> to user_ssp".  If the result is noncanonical, then some appropriate
-> exception should be generated, probably by the FPU restore code -- see
-> below.  You should be checking the SHSTK_EN bit, not SSP.
 
-The code now checks if shadow stack is on (yes, it should check SHSTK_EN 
-bit, I will fix it.), then adds 8 to user_ssp.  If the result is 
-canonical, then it sets the corresponding xstate.
 
-If the resulting address is not canonical, the kernel does not know what 
-the address should be either.  I think the best action to take is doing 
-nothing about the shadow stack pointer, and let the application return 
-and get a control protection fault.  The application should have not got 
-into such situation in the first place; if it does, it should fault.
-
+> -----Original Message-----
+> From: Rob Herring <robh@kernel.org>
+> Sent: Monday, September 28, 2020 8:09 PM
+> To: Ansuel Smith <ansuelsmth@gmail.com>
+> Cc: MyungJoo Ham <myungjoo.ham@samsung.com>; Kyungmin Park
+> <kyungmin.park@samsung.com>; Chanwoo Choi
+> <cw00.choi@samsung.com>; linux-pm@vger.kernel.org;
+> devicetree@vger.kernel.org; linux-kernel@vger.kernel.org
+> Subject: Re: [PATCH 2/2] dt-bindings: devfreq: Document L2 Krait CPU
+> Cache devfreq driver
 > 
-> Also, can you point me to where any of these canonicality rules are
-> documented in the SDM?  I looked and I can't find them.
-
-The SDM is not very explicit.  It should have been.
-
+> On Sun, Sep 27, 2020 at 06:05:13PM +0200, Ansuel Smith wrote:
+> > Document dedicated L2 Krait CPU Cache devfreq scaling driver.
+> >
+> > Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+> > ---
+> >  .../bindings/devfreq/krait-cache-devfreq.yaml | 77
+> +++++++++++++++++++
+> >  1 file changed, 77 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/devfreq/krait-
+> cache-devfreq.yaml
+> >
+> > diff --git a/Documentation/devicetree/bindings/devfreq/krait-cache-
+> devfreq.yaml b/Documentation/devicetree/bindings/devfreq/krait-cache-
+> devfreq.yaml
+> > new file mode 100644
+> > index 000000000000..099ed978e022
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/devfreq/krait-cache-
+> devfreq.yaml
+> > @@ -0,0 +1,77 @@
+> > +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/cpufreq/krait-cache-devfreq.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: DEVFREQ driver for Krait L2 Cpu Cache Frequency Scaling
 > 
-> This reminds me: this code in extable.c needs to change.
-> 
-> __visible bool ex_handler_fprestore(const struct exception_table_entry *fixup,
->                                      struct pt_regs *regs, int trapnr,
->                                      unsigned long error_code,
->                                      unsigned long fault_addr)
-> {
->          regs->ip = ex_fixup_addr(fixup);
-> 
->          WARN_ONCE(1, "Bad FPU state detected at %pB, reinitializing
-> FPU registers.",
->                    (void *)instruction_pointer(regs));
-> 
->          __copy_kernel_to_fpregs(&init_fpstate, -1);
-> 
-> Now that we have supervisor states like CET, this is buggy.  This
-> should do something intelligent like initializing all the *user* state
-> and trying again.  If that succeeds, a signal should be sent rather
-> than just corrupting the task.  And if it fails, then perhaps some
-> actual intelligence is needed.  We certainly should not just disable
-> CET because something is wrong with the CET MSRs.
+> Bindings are for h/w devices, not collections of properties for some
+> driver. Define a binding for L2 cache and add on to it what you need.
 > 
 
-Yes, but it needs more thought.  Maybe a separate patch and more discussion?
+Should I still document it in the devfreq directory or somewhere else?
 
-Yu-cheng
+> > +
+> > +maintainers:
+> > +  - Ansuel Smith <ansuelsmth@gmail.com>
+> > +
+> > +description: |
+> > +  This Scale the Krait CPU L2 Cache Frequency and optionally voltage
+> > +  when the Cpu Frequency is changed (using the cpufreq notifier).
+> > +
+> > +  Cache is scaled with the max frequency across all core and the cache
+> > +  frequency will scale based on the configured threshold in the dts.
+> > +
+> > +  The cache thresholds can be set to 3+ frequency bin, idle, nominal
+and
+> > +  high.
+> > +
+> > +properties:
+> > +  compatible:
+> > +    const: qcom,krait-cache
+> > +
+> > +  clocks:
+> > +    $ref: "/schemas/types.yaml#/definitions/phandle"
+> 
+> 'clocks' already has a type defined. You just need how many and what
+> each entry is.
+> 
+> > +    description: Phandle to the L2 CPU clock
+> > +
+> > +  clock-names:
+> > +    const: "l2"
+> > +
+> > +  voltage-tolerance:
+> > +    description: Same voltage tolerance of the Krait CPU
+> 
+> Needs a vendor prefix and unit suffix.
+> 
+> > +
+> > +  l2-cpufreq:
+> > +    description: |
+> > +      Threshold used by the driver to scale the L2 cache.
+> > +      If the max CPU Frequency is more than the set frequency,
+> > +      the driver will transition to the next frequency bin.
+> > +      Value is in kHz
+> > +    $ref: /schemas/types.yaml#/definitions/uint32-array
+> > +    minItems: 3
+> > +    items:
+> > +      - description: idle
+> > +      - description: nominal
+> > +      - description: high
+> > +
+> > +  l2-supply:
+> > +    $ref: "/schemas/types.yaml#/definitions/phandle"
+> > +    description: Phandle to the L2 regulator supply.
+> > +
+> > +  opp-table: true
+> > +
+> > +required:
+> > +  - compatible
+> > +  - clocks
+> > +  - clock-names
+> > +  - voltage-tolerance
+> > +  - l2-cpufreq
+> > +
+> > +examples:
+> > +  - |
+> > +    qcom-krait-cache {
+> > +      compatible = "qcom,krait-cache";
+> > +      clocks = <&kraitcc 4>;
+> > +      clock-names = "l2";
+> > +      l2-cpufreq = <384000 600000 1200000>;
+> > +      l2-supply = <&smb208_s1a>;
+> > +
+> > +      operating-points = <
+> 
+> Not documented and generally deprecated.
+> 
+
+Ok will change to v2.
+
+> > +        /* kHz    uV */
+> > +        384000  1100000
+> > +        1000000  1100000
+> > +        1200000  1150000
+> > +      >;
+> > +    };
+> > --
+> > 2.27.0
+> >
+
