@@ -2,144 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18BB627A951
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 10:10:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 083A127A954
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 10:11:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726578AbgI1IKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 04:10:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37764 "EHLO
+        id S1726613AbgI1ILT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 04:11:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726421AbgI1IKa (ORCPT
+        with ESMTP id S1726421AbgI1ILS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 04:10:30 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECF03C0613CE;
-        Mon, 28 Sep 2020 01:10:29 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id x23so95065wmi.3;
-        Mon, 28 Sep 2020 01:10:29 -0700 (PDT)
+        Mon, 28 Sep 2020 04:11:18 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 379E4C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 01:11:18 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id w5so143198wrp.8
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 01:11:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=31AqBMRSXqhYTQQr8QkJaNcT3VWyt1DfR1wcfaGbJtY=;
-        b=PQeOiCWWh5CYSpErnhIwtEUcaxq6IJE4FgWMDgnMJTdkBXfSB8gMVA7HNwkcAThxHM
-         G6hVuXMKh7arr4dsk++A0CROg4x+3tCeAt3caK9vfd6UOM7sz26SIxPo7pcItQDScMx3
-         hq7E6nUI0ckCL1McIx0G0+AwCZiuQCxh3LPBt0Tc2QND5FO19X4B/DKCfoQF2i0d2eji
-         cRbpDRevPrXf9kORDjftSGj4UEXx2a5a5LhDqIqtmcBIY1IWO+0R747pPmouKg+Be/PS
-         zO1jfRN8IInGlrvpKscRSbKPt8P2zibNHll57ULnnYngG+wD+P+P7hgRSID7wX1vq1Pm
-         cGOQ==
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=3Om8AM0og3VSpQeTBf6KDEd6fTvU4EBwksk93Od+7XE=;
+        b=zP8NYXRey8PZiMa7RFwghBPT2Dc4+Ur8JaLQI+2+KYxtrdBbqWKx48YjuRKHPPWSOU
+         5xt7FKRwGDHAE6z93txxJTSUOg+C2tezWbuztJ4rhH/vOdkhrzQcCqXphX+RhSOKcgTG
+         6QAWX0bDLdtsqTxL1B7NLqf/8PGxGoiO3IQNcVmQ9q5AQ2iK8KRW2lTNC0snqyRBKmg5
+         PPVCceUSJ9eW3Yp8Dvf7mcmYfSuGALqaTJ/TSog6tXvL8mhKsuLKzytTgabdr1S0kWZh
+         DSyectg7UHR8he9nZWUernPUsT+eUWdd3KIxmED2ynqZouc6//KO7mas53rIuEziLJmg
+         FteA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=31AqBMRSXqhYTQQr8QkJaNcT3VWyt1DfR1wcfaGbJtY=;
-        b=YzWGBALmuutk6SnOEpzkLMGK0O36aM6NXkSnv6X1fRflSqCMqlsA+EsofO/bTo4hkP
-         s9ZZJUyUbj5KMAnWVwC0wOQKy0Kyo2swKFrSoLlfx0flhrHT4lOcrZdFeInA/aH8LtJE
-         mZ/ODTEU+EJxP1ugx7L+QfupQZnmLLDUyk5gkE5pFqaF4wYjhpcremu97PCHnykr6NTu
-         shgZxJOGEz4Oee0F2pllW11lo7TzBVBI2gB8QB57OcmMtRrEcw8KNrk08x8YcCeQefzS
-         gMm1BI4wcmQzqEzHrTa7xp9LmwkyOQfSzqvBWEff5oLE9aSPJ9qcbuiu6DSru06Grz7A
-         UsSg==
-X-Gm-Message-State: AOAM532lPl0HkRJOf61Zgil51hSj3PbGsgX9Sf0H6h3u2Uyaipttn4ZZ
-        +D6aRfo2Xtc3sucXDH9odbo=
-X-Google-Smtp-Source: ABdhPJzIGf+sM0Jx6w17pqYx3HRomoZAcOHNEnPqDg5mojC4p8yVRDu79/lEm46i8sqcgLQFk4MGOQ==
-X-Received: by 2002:a1c:6555:: with SMTP id z82mr315524wmb.101.1601280628586;
-        Mon, 28 Sep 2020 01:10:28 -0700 (PDT)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id k8sm331939wrl.42.2020.09.28.01.10.27
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=3Om8AM0og3VSpQeTBf6KDEd6fTvU4EBwksk93Od+7XE=;
+        b=N+Ap86WpLSkgtL6IX8wyH0tqmmtCPUtqG2Q0ODBLEoFLlYE5z1gn/n3yhz6H65Kq7+
+         7o03tzjuP8hkbRAtr5UYfU8+6dJnMsjEH8b8HB2/zqysKpdb9Hj/qEVbdYGNt36FFbvq
+         reQHPJPs1BO4ALreQTRCE7LQe4UIH/vT38iyCH2s1ElnbfAVRtu/ksveDqDtTAJGK1dL
+         vndhyk2dZhfC8xfixf+wUU93KWjzc75iW2JhllH78XHMljV/9Nkreq7slARtANECQ5Yj
+         nWzk3fsJOixKUxA/o0iZlXydBD13poPPrnPLKCHroq23eZffcdtNrkqtrf4/6rXI3BfH
+         +VoQ==
+X-Gm-Message-State: AOAM53045kJ92XmS/GHCW1MohLNUP50OmdwfeFd5YSYXuSTshIG7SSwH
+        x06upbv4vjxrpqDBgoV0v7hdxw==
+X-Google-Smtp-Source: ABdhPJx4wZkzF3Cjm+E8FPeYtfeDpEEWLUCh5tL5TcU4QxwFiQSUEj89+dCLi1uscJNz2vM2DABLlg==
+X-Received: by 2002:adf:fa02:: with SMTP id m2mr240193wrr.273.1601280676803;
+        Mon, 28 Sep 2020 01:11:16 -0700 (PDT)
+Received: from dell ([91.110.221.154])
+        by smtp.gmail.com with ESMTPSA id c4sm222217wme.27.2020.09.28.01.11.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Sep 2020 01:10:27 -0700 (PDT)
-Date:   Mon, 28 Sep 2020 10:10:26 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
-Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Stephen Warren <swarren@nvidia.com>,
-        alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ASoC: tegra20-spdif: remove "default m"
-Message-ID: <20200928081026.GH2837573@ulmo>
-References: <ede103cf7f6914054a73cf8f1d9725ee13a7cf5d.1601149261.git.mirq-linux@rere.qmqm.pl>
+        Mon, 28 Sep 2020 01:11:16 -0700 (PDT)
+Date:   Mon, 28 Sep 2020 09:11:14 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc:     Marek Behun <marek.behun@nic.cz>, linux-leds@vger.kernel.org,
+        Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
+        =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        devicetree@vger.kernel.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH leds v2 05/50] leds: various: guard of_match_table member
+ value with of_match_ptr
+Message-ID: <20200928081114.GB4637@dell>
+References: <20200917223338.14164-1-marek.behun@nic.cz>
+ <20200917223338.14164-6-marek.behun@nic.cz>
+ <20200918061500.GD26842@paasikivi.fi.intel.com>
+ <20200918112058.6d3b0d5d@nic.cz>
+ <20200918095759.GG26842@paasikivi.fi.intel.com>
+ <20200928080336.GA4637@dell>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="SUk9VBj82R8Xhb8H"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <ede103cf7f6914054a73cf8f1d9725ee13a7cf5d.1601149261.git.mirq-linux@rere.qmqm.pl>
-User-Agent: Mutt/1.14.7 (2020-08-29)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200928080336.GA4637@dell>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 28 Sep 2020, Lee Jones wrote:
 
---SUk9VBj82R8Xhb8H
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> On Fri, 18 Sep 2020, Sakari Ailus wrote:
+> 
+> > On Fri, Sep 18, 2020 at 11:20:58AM +0200, Marek Behun wrote:
+> > > On Fri, 18 Sep 2020 09:15:00 +0300
+> > > Sakari Ailus <sakari.ailus@linux.intel.com> wrote:
+> > > 
+> > > > Hi Marek,
+> > > > 
+> > > > On Fri, Sep 18, 2020 at 12:32:53AM +0200, Marek Behún wrote:
+> > > > > Change
+> > > > >   .of_match_table = xxx,
+> > > > > to
+> > > > >   .of_match_table = of_match_ptr(xxx),
+> > > > > in various drivers.
+> > > > > 
+> > > > > This should be standard even for drivers that depend on OF.  
+> > > > 
+> > > > After this patch, none of these drivers will work on ACPI systems anymore.
+> > 
+> > ^
+> > 
+> > If CONFIG_OF is disabled, that is.
+> 
+> What?  of_match_ptr() is designed to change depending on OF or !OF.
+> 
+> Are you confusing this with acpi_match_table()?
 
-On Sat, Sep 26, 2020 at 09:42:40PM +0200, Micha=C5=82 Miros=C5=82aw wrote:
-> Make tegra20-spdif default to N as all other drivers do.
->=20
-> Signed-off-by: Micha=C5=82 Miros=C5=82aw <mirq-linux@rere.qmqm.pl>
-> Fixes: 774fec338bfc ("ASoC: Tegra: Implement SPDIF CPU DAI")
+Okay, I just grepped the kernel and found some OF matching in the ACPI
+bus code.  This seems odd to be (at first sight at least).  I'm not
+entirely sure how this is supposed to work, but when you disable OF,
+one could reasonably expect any matching utilising OF based tables to
+be disabled too.
 
-I don't think this is warranted. This doesn't fix a bug or anything.
-It's merely a change in the default configuration. The presence of a
-Fixes: tag is typically used as a hint for people to pick this up into
-stable releases, but I don't think this qualifies.
+Not using of_match_ptr() on ACPI enabled platforms sounds batty to
+me.  If this is valid, perhaps the of_match_ptr()semantics should be
+changed to include ACPI.
 
-> ---
->  sound/soc/tegra/Kconfig | 1 -
->  1 file changed, 1 deletion(-)
->=20
-> diff --git a/sound/soc/tegra/Kconfig b/sound/soc/tegra/Kconfig
-> index 3d91bd3e59cd..a62cc87551ac 100644
-> --- a/sound/soc/tegra/Kconfig
-> +++ b/sound/soc/tegra/Kconfig
-> @@ -39,7 +39,6 @@ config SND_SOC_TEGRA20_I2S
->  config SND_SOC_TEGRA20_SPDIF
->  	tristate "Tegra20 SPDIF interface"
->  	depends on SND_SOC_TEGRA
-> -	default m
->  	help
->  	  Say Y or M if you want to add support for the Tegra20 SPDIF interface.
->  	  You will also need to select the individual machine drivers to support
+> > > Hi Sakari,
+> > > 
+> > > I don't understand. Why not? Does ACPI subsystem parse of_match_table
+> > > as well?
+> > 
+> > It does. The compatible string is used the same way as in DT for matching
+> > devices with "PRP0001" _HID or _CID.
+> > 
+> > Please read Documentation/firmware-guide/acpi/enumeration.rst .
+> 
+> Could you allude to the specific line you are referencing please?
+> 
+> > IOW, you can safely do the above only for drivers that depend on OF in
+> > Kconfig. Otherwise you'll probably break something.
+> 
 
-So now by default this driver will be disabled, which means that Linux
-is going to regress for people that rely on this driver.
-
-You need to at least follow this up with a patch that makes the
-corresponding change in both tegra_defconfig and multi_v7_defconfig to
-ensure that this driver is going to get built by default.
-
-Given the above it's probably also a good idea to explain a bit more in
-the commit message about what you're trying to achieve. Yes, "default n"
-is usually the right thing to do and I'm honestly not sure why Stephen
-chose to make this "default m" back in the day. Given that it depends on
-SND_SOC_TEGRA, which itself is "default n", I think this makes some
-sense, even if in retrospect it ended up being a bit inconsistent (you
-could probably argue that all patches after this are the ones that were
-inconsistent instead). This was merged over 9 years ago and a lot of
-common practices have changed over that period of time.
-
-Thierry
-
---SUk9VBj82R8Xhb8H
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl9xmm8ACgkQ3SOs138+
-s6EzAw//csXks9215vvcBCKjXwZz3HXXMNsnJveUZK0fzDUjSr5oQeILZbN+gfxa
-6pVNIU0ePDvtIh3814xSwzhSli5OlRq4Vo+y+zI2rer0L3BB6HpM80ekckhtKMJV
-J8gKAxWtjmnzxizchU7LX+Lds/aeYS9xrqxEsninWvGZ7slMPbb7fxfGUyHvyG0n
-ypjLyBsFyzDRfAo5ptW3LVW9W++aMoObYgcubxpdZ4EVThkf+/GUvUdWry69ZTYE
-XmjwM2uq0B5edVuBYN9ezQflcoeDGIrD+ZR6yOtTeXViKxXqwZZuHir4dJ1i/upV
-58cg3rYjAaAPyjxhMilJ35iOan0pGnVQJtjS64p9k9cCJBnADJs2fUcczzdXnP/O
-tze1XSeQXbqr9XZKnODmNHwOajUoHVwLM6RN4bNwYdtMkpETN0afqQ9pX4X3WMD5
-QJWXFSPc13LXeQwhOQNC+u5vfPaWYhne7/7WbLmd82IWiPABXeMwKINyzbv5ddUA
-PWJo5TMOSpEopNzvDoWa8VYMN+QmPujxpiclBMK1aNkcWIa+hGGqWe+tyYun88e5
-z7m9FSDqm0o2eizPl6zfNzUf35ihah/Q86k8eiULWQUR7kLNImS0n8fQGOR1s4dO
-NLs6phyiJyLZOjYJ6GcCm0Vk/vCt2ifr+7DnT/okpWxlO9hDmAY=
-=/ZoJ
------END PGP SIGNATURE-----
-
---SUk9VBj82R8Xhb8H--
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
