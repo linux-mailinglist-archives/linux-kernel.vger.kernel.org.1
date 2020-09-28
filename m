@@ -2,217 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E11A027A536
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 03:30:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4656227A547
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 03:47:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726445AbgI1BaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 21:30:09 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:14305 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726328AbgI1BaJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Sep 2020 21:30:09 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id D396556E722F403AD9F1;
-        Mon, 28 Sep 2020 09:30:19 +0800 (CST)
-Received: from [127.0.0.1] (10.174.177.253) by DGGEMS412-HUB.china.huawei.com
- (10.3.19.212) with Microsoft SMTP Server id 14.3.487.0; Mon, 28 Sep 2020
- 09:30:09 +0800
-Subject: Re: [PATCH v2 2/2] ARM: support PHYS_OFFSET minimum aligned at 64KiB
- boundary
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-To:     Ard Biesheuvel <ardb@kernel.org>
-CC:     Jianguo Chen <chenjianguo3@huawei.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Libin <huawei.libin@huawei.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Andrew Morton" <akpm@linux-foundation.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        patches-armlinux <patches@armlinux.org.uk>
-References: <20200915131615.3138-1-thunder.leizhen@huawei.com>
- <20200915131615.3138-3-thunder.leizhen@huawei.com>
- <20200915190143.GP1551@shell.armlinux.org.uk>
- <CAMj1kXHdX5cCZKvbBO+hCkkt46aOgf4NjK2jba2Gb2tziZm2DQ@mail.gmail.com>
- <a196451d-fbef-bab6-e042-00a817db611c@huawei.com>
- <CAMj1kXGdFj8KxqJB8WMOdKYWPChkHbM7+nLaAWBZ29o=q7N0Aw@mail.gmail.com>
- <5180c217-a9d3-18d1-c4ad-9cad33247e96@huawei.com>
- <de14b500-6485-d542-b65b-ddb60b2042d2@huawei.com>
-Message-ID: <b6a777af-51f4-07b4-3036-b81e3008b0e8@huawei.com>
-Date:   Mon, 28 Sep 2020 09:30:08 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        id S1726566AbgI1Brj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 21:47:39 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:28086 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726421AbgI1Brh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Sep 2020 21:47:37 -0400
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08S12KoN006319;
+        Sun, 27 Sep 2020 21:24:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=Fy7m+n0cLBe11ThU78e88Sj/JHLtIk33Xv7/ARl4IaM=;
+ b=r3OxVG1fwkpTShmtDbnM4HCPSfAuLo5r5mnyNqzyqvidLVG4biKHOKuduuYpjJYhgyWn
+ 4A/p/88V4rLCSZFYKp9OJwUenOH35MkxCykUh5oaxW5aaowaNq5eTRYmsaZzDGmij17S
+ QUxodEpH2DtJaublat/0hlDM732ZhwEmKo/OLaA8cIlcnpSNAHw3HIf4CaFijoVUE+Uz
+ jk/wnmKdar/lwWarTkvXY7EkAwsvdFuNHF0qZTBLWhP9Z0nZJ1Eb6TxtmUcu1O57CgUR
+ B2WP89DojwBw5zq5teQjf0ssufPYioIsCHGCb99S6pQn9SUjYrn2dKyabq9theQHl0zO hg== 
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33u539s77e-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 27 Sep 2020 21:24:49 -0400
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08S1Mx2G020931;
+        Mon, 28 Sep 2020 01:24:47 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma04fra.de.ibm.com with ESMTP id 33t16k0qsv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 28 Sep 2020 01:24:47 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08S1OjZK18809222
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 28 Sep 2020 01:24:45 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 536F5A4053;
+        Mon, 28 Sep 2020 01:24:45 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 091FCA405B;
+        Mon, 28 Sep 2020 01:24:45 +0000 (GMT)
+Received: from ozlabs.au.ibm.com (unknown [9.192.253.14])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 28 Sep 2020 01:24:44 +0000 (GMT)
+Received: from [9.81.194.207] (unknown [9.81.194.207])
+        (using TLSv1.2 with cipher DHE-RSA-AES128-SHA (128/128 bits))
+        (No client certificate requested)
+        by ozlabs.au.ibm.com (Postfix) with ESMTPSA id A85E5A0183;
+        Mon, 28 Sep 2020 11:24:43 +1000 (AEST)
+Subject: Re: [PATCH -next] ocxl: simplify the return expression of
+ free_function_dev()
+To:     Qinglang Miao <miaoqinglang@huawei.com>,
+        Frederic Barrat <fbarrat@linux.ibm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+References: <20200921131047.92526-1-miaoqinglang@huawei.com>
+From:   Andrew Donnellan <ajd@linux.ibm.com>
+Message-ID: <0bf42871-9cf3-cc37-08f9-6c193af8e75b@linux.ibm.com>
+Date:   Mon, 28 Sep 2020 11:24:22 +1000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <de14b500-6485-d542-b65b-ddb60b2042d2@huawei.com>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20200921131047.92526-1-miaoqinglang@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.253]
-X-CFilter-Loop: Reflected
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-27_18:2020-09-24,2020-09-27 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=0
+ impostorscore=0 mlxlogscore=932 adultscore=0 phishscore=0 bulkscore=0
+ malwarescore=0 priorityscore=1501 lowpriorityscore=0 spamscore=0
+ clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009280000
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2020/9/22 20:30, Leizhen (ThunderTown) wrote:
+On 21/9/20 11:10 pm, Qinglang Miao wrote:
+> Simplify the return expression.
 > 
-> 
-> On 2020/9/21 16:53, Leizhen (ThunderTown) wrote:
->>
->>
->> On 2020/9/21 14:47, Ard Biesheuvel wrote:
->>> On Mon, 21 Sep 2020 at 05:35, Leizhen (ThunderTown)
->>> <thunder.leizhen@huawei.com> wrote:
->>>>
->>>>
->>>>
->>>> On 2020/9/17 22:00, Ard Biesheuvel wrote:
->>>>> On Tue, 15 Sep 2020 at 22:06, Russell King - ARM Linux admin
->>>>> <linux@armlinux.org.uk> wrote:
->>>>>>
->>>>>> On Tue, Sep 15, 2020 at 09:16:15PM +0800, Zhen Lei wrote:
->>>>>>> Currently, only support the kernels where the base of physical memory is
->>>>>>> at a 16MiB boundary. Because the add/sub instructions only contains 8bits
->>>>>>> unrotated value. But we can use one more "add/sub" instructions to handle
->>>>>>> bits 23-16. The performance will be slightly affected.
->>>>>>>
->>>>>>> Since most boards meet 16 MiB alignment, so add a new configuration
->>>>>>> option ARM_PATCH_PHYS_VIRT_RADICAL (default n) to control it. Say Y if
->>>>>>> anyone really needs it.
->>>>>>>
->>>>>>> All r0-r7 (r1 = machine no, r2 = atags or dtb, in the start-up phase) are
->>>>>>> used in __fixup_a_pv_table() now, but the callee saved r11 is not used in
->>>>>>> the whole head.S file. So choose it.
->>>>>>>
->>>>>>> Because the calculation of "y = x + __pv_offset[63:24]" have been done,
->>>>>>> so we only need to calculate "y = y + __pv_offset[23:16]", that's why
->>>>>>> the parameters "to" and "from" of __pv_stub() and __pv_add_carry_stub()
->>>>>>> in the scope of CONFIG_ARM_PATCH_PHYS_VIRT_RADICAL are all passed "t"
->>>>>>> (above y).
->>>>>>>
->>>>>>> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
->>>>>>> ---
->>>>>>>  arch/arm/Kconfig              | 18 +++++++++++++++++-
->>>>>>>  arch/arm/include/asm/memory.h | 16 +++++++++++++---
->>>>>>>  arch/arm/kernel/head.S        | 25 +++++++++++++++++++------
->>>>>>>  3 files changed, 49 insertions(+), 10 deletions(-)
->>>>>>>
->>>>>>> diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
->>>>>>> index e00d94b16658765..19fc2c746e2ce29 100644
->>>>>>> --- a/arch/arm/Kconfig
->>>>>>> +++ b/arch/arm/Kconfig
->>>>>>> @@ -240,12 +240,28 @@ config ARM_PATCH_PHYS_VIRT
->>>>>>>         kernel in system memory.
->>>>>>>
->>>>>>>         This can only be used with non-XIP MMU kernels where the base
->>>>>>> -       of physical memory is at a 16MB boundary.
->>>>>>> +       of physical memory is at a 16MiB boundary.
->>>>>>>
->>>>>>>         Only disable this option if you know that you do not require
->>>>>>>         this feature (eg, building a kernel for a single machine) and
->>>>>>>         you need to shrink the kernel to the minimal size.
->>>>>>>
->>>>>>> +config ARM_PATCH_PHYS_VIRT_RADICAL
->>>>>>> +     bool "Support PHYS_OFFSET minimum aligned at 64KiB boundary"
->>>>>>> +     default n
->>>>>>
->>>>>> Please drop the "default n" - this is the default anyway.
->>>>>>
->>>>>>> @@ -236,6 +243,9 @@ static inline unsigned long __phys_to_virt(phys_addr_t x)
->>>>>>>        * in place where 'r' 32 bit operand is expected.
->>>>>>>        */
->>>>>>>       __pv_stub((unsigned long) x, t, "sub", __PV_BITS_31_24);
->>>>>>> +#ifdef CONFIG_ARM_PATCH_PHYS_VIRT_RADICAL
->>>>>>> +     __pv_stub((unsigned long) t, t, "sub", __PV_BITS_23_16);
->>>>>>
->>>>>> t is already unsigned long, so this cast is not necessary.
->>>>>>
->>>>>> I've been debating whether it would be better to use "movw" for this
->>>>>> for ARMv7.  In other words:
->>>>>>
->>>>>>         movw    tmp, #16-bit
->>>>>>         adds    %Q0, %1, tmp, lsl #16
->>>>>>         adc     %R0, %R0, #0
->>>>>>
->>>>>> It would certainly be less instructions, but at the cost of an
->>>>>> additional register - and we'd have to change the fixup code to
->>>>>> know about movw.
->>>>>>
->>>>>> Thoughts?
->>>>>>
->>>>>
->>>>> Since LPAE implies v7, we can use movw unconditionally, which is nice.
->>>>>
->>>>> There is no need to use an additional temp register, as we can use the
->>>>> register holding the high word. (There is no need for the mov_hi macro
->>>>> to be separate)
->>>>>
->>>>> 0:     movw    %R0, #low offset >> 16
->>>>>        adds    %Q0, %1, %R0, lsl #16
->>>>> 1:     mov     %R0, #high offset
->>>>>        adc     %R0, %R0, #0
->>>>>        .pushsection .pv_table,"a"
->>>>>        .long 0b, 1b
->>>>>        .popsection
->>>>>
->>>>> The only problem is distinguishing the two mov instructions from each
->>>>
->>>> The #high offset can also consider use movw, it just save two bytes in
->>>> the thumb2 scenario. We can store different imm16 value for high_offset
->>>> and low_offset, so that we can distinguish them in __fixup_a_pv_table().
->>>>
->>>> This will make the final implementation of the code look more clear and
->>>> consistent, especially THUMB2.
->>>>
->>>> Let me try it.
->>>>
->>>
->>> Hello Zhen Lei,
->>>
->>> I am looking into this as well:
->>>
->>> https://git.kernel.org/pub/scm/linux/kernel/git/ardb/linux.git/log/?h=arm-p2v-v2
->>>
->>> Could you please test this version on your hardware?
->>
->> OK, I will test it on my boards.
-> Hi Ard Biesheuvel:
->   I have tested it on 16MiB aligned + LE board, it works well. I've asked my colleagues
-> from other departments to run it on 2MiB aligned + BE board. He will do it tomorrow.
+> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
 
-Hi, Ard Biesheuvel:
-  I'm sorry to keep you waiting so long. You patch series works well on 2MiB aligned + BE board
-also. I spent a lot of time, because our 2MiB aligned + BE board loads zImage. Therefore, special
-processing is required for the following code:
+Looks good
 
-arch/arm/boot/compressed/head.S:
-#ifdef CONFIG_AUTO_ZRELADDR
-                mov     r4, pc
-                and     r4, r4, #0xf8000000		//currently only support 128MiB alignment
-                add     r4, r4, #TEXT_OFFSET
-#else
+Acked-by: Andrew Donnellan <ajd@linux.ibm.com>
 
-This is a special scenario that does not conflict with your code framework. So I'm trying to fix it.
-
-Tested-by: Zhen Lei <thunder.leizhen@huawei.com>
-
-
-> 
-> 
->>
->>>
->>> .
->>>
->>
->>
->> _______________________________________________
->> linux-arm-kernel mailing list
->> linux-arm-kernel@lists.infradead.org
->> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
->>
->> .
->>
-
+-- 
+Andrew Donnellan              OzLabs, ADL Canberra
+ajd@linux.ibm.com             IBM Australia Limited
