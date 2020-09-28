@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE0C127B206
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 18:36:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA8FD27B200
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 18:35:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726920AbgI1QgI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 12:36:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59590 "EHLO
+        id S1726852AbgI1Qfu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 12:35:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726759AbgI1Qfe (ORCPT
+        with ESMTP id S1726803AbgI1Qfh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 12:35:34 -0400
+        Mon, 28 Sep 2020 12:35:37 -0400
 Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FAFCC0613D5
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 09:35:34 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id k13so1537970pfg.1
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 09:35:34 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA196C0613D6
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 09:35:35 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id l126so1522751pfd.5
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 09:35:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=LbFpq0wd5+hxz3XH6XRLouzUqxCeQhgca4mXu1de8J8=;
-        b=w2aEywjxp9dMgipUoJ9iL8g/12berH/b8sx9NjaH5ufVmIakaWTqAR7la8pcEAG/BZ
-         CNtY3YTMyLhvZGoeaREXAi9j9EmxQMPZyYfpsq5GyZMZ7T2k1F8J4qK2dQiWMarPPb/r
-         SF3Apbu35eZ5srGjlVDKE1C+aZfayp8FE3AVwdkH3uo5apOsO5EMZ9UBHAKDmx812GF6
-         8Mw69mvUuu9iqPWg0NZHha54Mu8vtOjaANYclXJdjK0tlnWe5deeXTbGHMekNSvKqtRN
-         RPV7ssadgFHgNP1d8omQtHD4ao6+imEOcu/wxsUiUAVnb4+UMsLJxS88/s/YAho72c5w
-         skIg==
+        bh=PFNZXtI95g0K6EiyKzxVVKdekKnnD7HXNlnqY5psBQg=;
+        b=os6AcU2wpUMO0LwxaiVbIb+NVpIgu3Edd4DRyzo+QSz8Z+xB5gnAuvQ0ZYVGUOmNUP
+         ltE8DtXJ/t27XSxIO+hc3HEpKKOa89eikipbsSo91ZMAOzMup4JZU3F71V7lbVdKvcKM
+         XjTbDZ9nBjNHkuZJ6ciMWZDef32e+jz/IQY6ZE96KPTY5zQSd45c1H+EU2VajYEigK7H
+         xpwZCclXk6QTkNulj6B4s9MMeQ3vMbB+9I0xwsAJy1kW7xet4+JjxwTjpwYjpzFqlNgk
+         QrdhNyso5S1rJhNKVhwMqexKu5BZqTpwNaj9k98l1bgA2mq+V0zWdgDXUJaYh+Z7bA7Z
+         ktag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=LbFpq0wd5+hxz3XH6XRLouzUqxCeQhgca4mXu1de8J8=;
-        b=fYpJOWBjEmUgDZOMfKcMDO/dt0J/JpGS5PI7oZmJYb+AWChqAWmohCvwvW4w7PGcFY
-         oUpbxaN5AGLy+526bIrVJ3qxxonTdtEbcJV/omJvls1ah/VMfB+gg8jnWn2boEvFI7KA
-         FhNR+BNqYDJjBBQd9y2InLpBK6JUd/C1+OazopAjlGogO3/BQYLKAM1y6219LEogIdBV
-         F1xlUOHkODfDJOEgQVFChY3VrpNP+1vv4pSuBGHh+Sk3drGW4Voaf91oreRSebxfPx17
-         +cQITeam4FclPvfCmwKqjlllHAge1u6lL7MnC0KNVWW4zIxLiqBhUZd6DlySwxFIEa+A
-         wlmg==
-X-Gm-Message-State: AOAM532ptdmwRuI/X3W92Nx5MVbEZwAcbL8qPLxYOEsDhHL2IUj4jUoF
-        B5L776ailw3t6App5VZVX1aljQ==
-X-Google-Smtp-Source: ABdhPJyZB5vjT7d/JfEtTBZ44fpfjE6idaPbl/mLkqGjBv2OCTPwzokn0FcFyvA3SLKHoBoTJf/VMA==
-X-Received: by 2002:a62:6147:0:b029:142:2501:34e8 with SMTP id v68-20020a6261470000b0290142250134e8mr209057pfb.65.1601310934053;
-        Mon, 28 Sep 2020 09:35:34 -0700 (PDT)
+        bh=PFNZXtI95g0K6EiyKzxVVKdekKnnD7HXNlnqY5psBQg=;
+        b=EHQG5Uwws9r4tf0j4C6HzQzjcpO0IK5qa5hNyiqLk0WKCxvbTz6TrWszpYoqp2wbsn
+         epX90D5lM73rswrjQxt4STs58gmMac3yjiQG/4Ff2a+8C5N9Q88Gx4Nr28gJNVJ2O9eC
+         8H/OSbrDfZEuIQWnVPoYdZQby7KlR/ZxchXk3NtdVl18ZlqMWiw49Y5tBche60Uf4FXb
+         OBWCviGSP/Afg8SJBx6oilwPNGYRDGDUJSDvNxsYXZD7/2ntJXnOnqrRNnfLbrzWsvl3
+         McSK4aS0YqTUR69qa77jU+hp6l5zeMDXFIAmEQq5B8GmWoya/+DbeDfIgpdifPwwuDrq
+         46ug==
+X-Gm-Message-State: AOAM530II+ZQbUPEZjmk9+g7G9A/7vPeaeUlYWYaTumQZw8zRTArLLAh
+        cxbjvABejsUBwf4AycCXDU9zNQ==
+X-Google-Smtp-Source: ABdhPJzxzKRXw7hgSldaGRbgnB6lTm4etRUB+E3moLb2conlDyuo1tUJTqJZ5ymj2fdq+XbugsKEyA==
+X-Received: by 2002:a65:5902:: with SMTP id f2mr1714479pgu.379.1601310935258;
+        Mon, 28 Sep 2020 09:35:35 -0700 (PDT)
 Received: from xps15.cg.shawcable.net (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
-        by smtp.gmail.com with ESMTPSA id f19sm2345640pfd.45.2020.09.28.09.35.33
+        by smtp.gmail.com with ESMTPSA id f19sm2345640pfd.45.2020.09.28.09.35.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Sep 2020 09:35:33 -0700 (PDT)
+        Mon, 28 Sep 2020 09:35:34 -0700 (PDT)
 From:   Mathieu Poirier <mathieu.poirier@linaro.org>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 18/25] coresight: cti: Fix bug clearing sysfs links on callback
-Date:   Mon, 28 Sep 2020 10:35:06 -0600
-Message-Id: <20200928163513.70169-19-mathieu.poirier@linaro.org>
+Subject: [PATCH 19/25] coresight: cti: Don't disable ect device if it's not enabled
+Date:   Mon, 28 Sep 2020 10:35:07 -0600
+Message-Id: <20200928163513.70169-20-mathieu.poirier@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200928163513.70169-1-mathieu.poirier@linaro.org>
 References: <20200928163513.70169-1-mathieu.poirier@linaro.org>
@@ -63,65 +63,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Leach <mike.leach@linaro.org>
+From: Tingwei Zhang <tingwei@codeaurora.org>
 
-During module unload, a coresight driver module will call back into
-the CTI driver to remove any links between the two devices.
+If associated ect device is not enabled at first place, disable
+routine should not be called. Add ect_enabled flag to check whether
+ect device is enabled. Fix the issue in below case.  Ect device is
+not available when associated coresight device enabled and the
+association is established after coresight device is enabled.
 
-The current code has 2 issues:-
-1) in the CTI driver the matching code is matching to the wrong device
-so misses all the links.
-2) The callback is called too late in the unload process resulting in a
-crash.
-
-This fixes both the issues.
-
-Fixes: 177af8285b59 ("coresight: cti: Enable CTI associated with devices")
-Reported-by: Tingwei Zhang <tingwei@codeaurora.org>
 Signed-off-by: Mike Leach <mike.leach@linaro.org>
 Signed-off-by: Tingwei Zhang <tingwei@codeaurora.org>
-Acked-by: Suzuki K Poulose <suzuki.poulose@arm.com>
 Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 ---
- drivers/hwtracing/coresight/coresight-cti.c | 2 +-
- drivers/hwtracing/coresight/coresight.c     | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ drivers/hwtracing/coresight/coresight.c | 11 ++++++++---
+ include/linux/coresight.h               |  1 +
+ 2 files changed, 9 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/hwtracing/coresight/coresight-cti.c b/drivers/hwtracing/coresight/coresight-cti.c
-index abc8b32e79b3..38e785d913b0 100644
---- a/drivers/hwtracing/coresight/coresight-cti.c
-+++ b/drivers/hwtracing/coresight/coresight-cti.c
-@@ -591,7 +591,7 @@ static void cti_remove_assoc_from_csdev(struct coresight_device *csdev)
- 		ctidrv = csdev_to_cti_drvdata(csdev->ect_dev);
- 		ctidev = &ctidrv->ctidev;
- 		list_for_each_entry(tc, &ctidev->trig_cons, node) {
--			if (tc->con_dev == csdev->ect_dev) {
-+			if (tc->con_dev == csdev) {
- 				cti_remove_sysfs_link(ctidrv, tc);
- 				tc->con_dev = NULL;
- 				break;
 diff --git a/drivers/hwtracing/coresight/coresight.c b/drivers/hwtracing/coresight/coresight.c
-index 4f4485b17458..b8b0a20e93c9 100644
+index b8b0a20e93c9..711beb92166a 100644
 --- a/drivers/hwtracing/coresight/coresight.c
 +++ b/drivers/hwtracing/coresight/coresight.c
-@@ -1246,8 +1246,6 @@ static void coresight_device_release(struct device *dev)
- {
- 	struct coresight_device *csdev = to_coresight_device(dev);
+@@ -244,13 +244,18 @@ coresight_control_assoc_ectdev(struct coresight_device *csdev, bool enable)
  
--	if (cti_assoc_ops && cti_assoc_ops->remove)
--		cti_assoc_ops->remove(csdev);
- 	fwnode_handle_put(csdev->dev.fwnode);
- 	kfree(csdev->refcnt);
- 	kfree(csdev);
-@@ -1582,6 +1580,8 @@ void coresight_unregister(struct coresight_device *csdev)
- {
- 	etm_perf_del_symlink_sink(csdev);
- 	/* Remove references of that device in the topology */
-+	if (cti_assoc_ops && cti_assoc_ops->remove)
-+		cti_assoc_ops->remove(csdev);
- 	coresight_remove_conns(csdev);
- 	coresight_clear_default_sink(csdev);
- 	coresight_release_platform_data(csdev, csdev->pdata);
+ 	if (!ect_csdev)
+ 		return 0;
++	if ((!ect_ops(ect_csdev)->enable) || (!ect_ops(ect_csdev)->disable))
++		return 0;
+ 
+ 	if (enable) {
+-		if (ect_ops(ect_csdev)->enable)
+-			ect_ret = ect_ops(ect_csdev)->enable(ect_csdev);
++		ect_ret = ect_ops(ect_csdev)->enable(ect_csdev);
++		if (!ect_ret)
++			csdev->ect_enabled = true;
+ 	} else {
+-		if (ect_ops(ect_csdev)->disable)
++		if (csdev->ect_enabled) {
+ 			ect_ret = ect_ops(ect_csdev)->disable(ect_csdev);
++			csdev->ect_enabled = false;
++		}
+ 	}
+ 
+ 	/* output warning if ECT enable is preventing trace operation */
+diff --git a/include/linux/coresight.h b/include/linux/coresight.h
+index 3bb738f9a326..7d3c87e5b97c 100644
+--- a/include/linux/coresight.h
++++ b/include/linux/coresight.h
+@@ -208,6 +208,7 @@ struct coresight_device {
+ 	/* sysfs links between components */
+ 	int nr_links;
+ 	bool has_conns_grp;
++	bool ect_enabled; /* true only if associated ect device is enabled */
+ };
+ 
+ /*
 -- 
 2.25.1
 
