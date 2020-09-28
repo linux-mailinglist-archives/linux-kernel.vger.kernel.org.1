@@ -2,97 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A5EE27A8ED
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 09:43:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFBAC27A8EF
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 09:43:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726610AbgI1HnG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 03:43:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51906 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726440AbgI1HnF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 03:43:05 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 600122100A;
-        Mon, 28 Sep 2020 07:43:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601278985;
-        bh=qEiBrfNJfo3j3guhrzPxyPtqthA1XxTL+21RNCztAmk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eB2WTXQVs4jt4p9BSTF7D/b7ouPEOUWfddSU8u9DKfDzceoLwj81z9U77eLd+X96S
-         QssGSS5VdGJGgGOaB2W2Bc8px9X1Cgroo8joTvvbQH+U03Bg0zax82FKLZPi+skVsr
-         /k6kVfCQonSpYR7G1YwSYjhoMC71ruWXWRkDy1m0=
-Date:   Mon, 28 Sep 2020 10:43:01 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Alex Dewar <alex.dewar90@gmail.com>
-Cc:     Saeed Mahameed <saeedm@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Roi Dayan <roid@mellanox.com>, Oz Shlomo <ozsh@mellanox.com>,
-        Paul Blakey <paulb@mellanox.com>,
-        Ariel Levkovich <lariel@nvidia.com>,
-        Eli Britstein <elibr@mellanox.com>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] net/mlx5e: Fix use of freed pointer
-Message-ID: <20200928074301.GC3094@unreal>
-References: <20200927113254.362480-1-alex.dewar90@gmail.com>
- <20200927113254.362480-3-alex.dewar90@gmail.com>
+        id S1726672AbgI1Hnb convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 28 Sep 2020 03:43:31 -0400
+Received: from mail-eopbgr1320125.outbound.protection.outlook.com ([40.107.132.125]:20464
+        "EHLO APC01-PU1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726440AbgI1Hnb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 03:43:31 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fqGYZN4ieVlUCwxLxGiEFVM7I3m+WXFwL7/K2kDFeUb0ymfalG9m7zullhSx0/y7COI9CMB+G+5TV9OjFQiPvBvDRw/ST7nXUuZyCZJn/Eh+uxg/G9AdW0Jo7t8aOxZleOemloNNHtMtze3X6YO1YOtpAhG8QhXcXNkY9CGnAnR62idA+HEO3X8bNNvcDiAA/Z/unxEjDk28pn9zteqzpr5pUX4s0rhTARx/0raK50GJyTsNLZffTt8aY5Tp5xOTMViMCQQ5h6Rn8UsgfFEbJWtHB3ORzEmBnsw5c0dg/wUkSdOeGIskCbd25kInPJ3dOJWcKoXLhKsbnpUfcTreAg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=x/UeYEfPPrRPjrXSUKJh/fnAh2yKjR2jcBazb+N4KJs=;
+ b=kk9i+MOY2woagNkq6auHfTqq+HaIHePkWfYDW1RVg0ekZOysgprFYbEfeoYKPw1FFxy+jf+3+V3Uabhb0Pr8OC5L5B8QxbJyVk6NAoRZ7dSBr6ZmMu3wjvGKl3b6kQLXl0rqqXTI+i4c3J8zWWZUqG4VpZVNFMcaagr7ncHpPI3mzjbrVxwLVDPKtH62pV2LOI4UWIWWQEr00V6vD+BwJ1pQ3aX4aS8X+aZA62fZhETMZ1sO/oeaksoFgb56tHFkktgkJq1WiRb0kP+PJwihD5T2u8l9fh5nPX7XsMEKQEAGI1/CDcvAlxlTlr2NN6VDo6cOemED+SKhQLlVmdO9GA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=aspeedtech.com; dmarc=pass action=none
+ header.from=aspeedtech.com; dkim=pass header.d=aspeedtech.com; arc=none
+Received: from HK0PR06MB3380.apcprd06.prod.outlook.com (2603:1096:203:82::18)
+ by HK0PR06MB2180.apcprd06.prod.outlook.com (2603:1096:203:4e::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.25; Mon, 28 Sep
+ 2020 07:43:25 +0000
+Received: from HK0PR06MB3380.apcprd06.prod.outlook.com
+ ([fe80::6def:b61:3beb:f3d5]) by HK0PR06MB3380.apcprd06.prod.outlook.com
+ ([fe80::6def:b61:3beb:f3d5%6]) with mapi id 15.20.3412.029; Mon, 28 Sep 2020
+ 07:43:25 +0000
+From:   Ryan Chen <ryan_chen@aspeedtech.com>
+To:     ChiaWei Wang <chiawei_wang@aspeedtech.com>,
+        Andrew Jeffery <andrew@aj.id.au>, Joel Stanley <joel@jms.id.au>
+CC:     Rob Herring <robh+dt@kernel.org>, Corey Minyard <minyard@acm.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Haiyue Wang <haiyue.wang@linux.intel.com>,
+        Cyril Bur <cyrilbur@gmail.com>,
+        Robert Lippert <rlippert@google.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>
+Subject: RE: [PATCH 0/4] Remove LPC register partitioning
+Thread-Topic: [PATCH 0/4] Remove LPC register partitioning
+Thread-Index: AQHWh+4lSaHeVstvYU+XSydm48sqEKli0RGAgAAL8gCAADwrgIAaq96g
+Date:   Mon, 28 Sep 2020 07:43:25 +0000
+Message-ID: <HK0PR06MB33800F282095AA96884B2FC0F2350@HK0PR06MB3380.apcprd06.prod.outlook.com>
+References: <20200911034631.8473-1-chiawei_wang@aspeedtech.com>
+ <CACPK8XcYvUj3W-CPzXKugp3wx7rcLEJ_8f2-Bi6V7QHZpopBbA@mail.gmail.com>
+ <551926fc-7bd4-4a0e-8fcf-4675dcdba22b@www.fastmail.com>
+ <HK0PR06MB37796D91EC7290A69F2655E491240@HK0PR06MB3779.apcprd06.prod.outlook.com>
+In-Reply-To: <HK0PR06MB37796D91EC7290A69F2655E491240@HK0PR06MB3779.apcprd06.prod.outlook.com>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: aspeedtech.com; dkim=none (message not signed)
+ header.d=none;aspeedtech.com; dmarc=none action=none
+ header.from=aspeedtech.com;
+x-originating-ip: [211.20.114.70]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 2cb96266-5e6a-4252-29ca-08d863822ea6
+x-ms-traffictypediagnostic: HK0PR06MB2180:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <HK0PR06MB21806E66C3F965DCCA88E9C5F2350@HK0PR06MB2180.apcprd06.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: I60dYe13OE1gNt0saLDUt3fNL4ehBu0x/3HSHMGH6Qp91dCnpCjomzA1AAmzMfa0Qf9FsHQMOt9ryK+hGxx/UVP4tka3q6q6Iwohx0HVsuH1uhOOXypynWldw/KOSzuCm7WVVC3/CLdoCKxIVMrRqrtEM+9dZeptC8Yus3ZuQH1siU8YqfTzdTbF/rXgmM+mmlVsN2EDcVpAFAYToO99vJLF0V8HL2hH0fjHXgVe/+ibbaX+5dsaMfumH51Gn5ka/Th/93B1Gt9Tafbl9UAOMpCH41w5sjeYnAfwm2xJySg3+p0qjUNDV34jxr4EhnvWiS/UB2Dzf6hbr6KFFu0WHOoXVqM5dzKtyhd7rIcUe+n/LVF4OTK8PfdgOfK0K63DrHM195ZN89yXM8PBcVowhkQeB25hs7teHznxWcJF5rxaRC5yhqnEr8NxqDk7vSs72z3Bv5oK3YNDo9ghBgqMWg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HK0PR06MB3380.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(136003)(376002)(39840400004)(396003)(366004)(66556008)(316002)(66446008)(55236004)(7416002)(55016002)(71200400001)(76116006)(54906003)(4326008)(83380400001)(2906002)(9686003)(66946007)(7696005)(110136005)(8936002)(86362001)(966005)(52536014)(478600001)(66476007)(64756008)(8676002)(26005)(186003)(5660300002)(6506007)(33656002)(53546011);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: ZhBiR4MABgOziXMbltQCWz4s7KwokOEuA6PM2gFs4rOizQq75a1NpMzOf9pqMuCt469KOmkF4vZ7aIQJRrVdWWemf6dLJa5d7k8FK+jtQBthatvL8ukkUh1GKVY08MYxZx2P7ioh/kZ6OwiC7l3xWhS4bgxLZckPMMER4cs6wnt2w4ZkrDOc2rVanzANOTkzsdneSGsFQd2yJkCvCafQPUw7vrF+ItEIzFP/62vKzVdHgwuH0RoXAShufgfAEAxXH+SeMI2hWUwK+doofiDBB5EDdLhibc+40zDbfSdCOEHzIe7g1E8fCOBHNgvYerjEqGwnvswY2z2YDri/oJyD+OYbqsGMslbFChP65UCW16B5gvVkvXnAtNoafcQom8z5ySj5WYMErka7KgA8bS4PnZaeqFSwxVdCeh1cwZBvm3SppWnFIFLbiWOvJngkap1OSTmGaVh1nhkAsBQb//iuCnsCDYeOysOCH8pwJ21wIyKf7CO0HbUpSnQ7V85yHI4cq8LzKgb7rQOpUVu/v8ebBHiBh0S3qaEmPkQWOdcDQAXIw4JOIGq0Pil9wndaGWCldnIpRl3IUtw8RnNe7Q2tYh/RLUh08B8yl36FgGTO64fT022SshtmtveCAkGdak9uPt60k9aQpH+HtCp+ph8zPA==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200927113254.362480-3-alex.dewar90@gmail.com>
+X-OriginatorOrg: aspeedtech.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: HK0PR06MB3380.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2cb96266-5e6a-4252-29ca-08d863822ea6
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Sep 2020 07:43:25.1035
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 43d4aa98-e35b-4575-8939-080e90d5a249
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: zNXIL8j9uQ41f/8fiuQ8kNTHjxpdFBz36ggFpaFceIbgOWal+RGxJasAgzraxsWpKwTdrNLAGMQTEe4SpC9YSv1tO9y4ZP2jYDXa5RSOHNw=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: HK0PR06MB2180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 27, 2020 at 12:32:53PM +0100, Alex Dewar wrote:
-> If the call to mlx5_fc_create() fails, then shared_counter will be freed
-> before its member, shared_counter->counter, is accessed to retrieve the
-> error code. Fix by using an intermediate variable.
->
-> Addresses-Coverity: CID 1497153: Memory - illegal accesses (USE_AFTER_FREE)
-> Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
-> ---
+Hello Joel & Andrew,
+	Those patches are more organize for ASPEED SOC LPC register layout. 
+	Does those patches have any feedback?
+	
+Ryan
 
-Please add Fixes line.
-
->  drivers/net/ethernet/mellanox/mlx5/core/en/tc_ct.c | 8 +++++---
->  1 file changed, 5 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/tc_ct.c b/drivers/net/ethernet/mellanox/mlx5/core/en/tc_ct.c
-> index b5f8ed30047b..5851a1dfe6e4 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/en/tc_ct.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en/tc_ct.c
-> @@ -738,6 +738,7 @@ mlx5_tc_ct_shared_counter_get(struct mlx5_tc_ct_priv *ct_priv,
->  	struct mlx5_ct_shared_counter *shared_counter;
->  	struct mlx5_core_dev *dev = ct_priv->dev;
->  	struct mlx5_ct_entry *rev_entry;
-> +	struct mlx5_fc *counter;
->  	__be16 tmp_port;
->
->  	/* get the reversed tuple */
-> @@ -775,12 +776,13 @@ mlx5_tc_ct_shared_counter_get(struct mlx5_tc_ct_priv *ct_priv,
->  	if (!shared_counter)
->  		return ERR_PTR(-ENOMEM);
->
-> -	shared_counter->counter = mlx5_fc_create(dev, true);
-> -	if (IS_ERR(shared_counter->counter)) {
-> +	counter = mlx5_fc_create(dev, true);
-> +	if (IS_ERR(counter)) {
->  		ct_dbg("Failed to create counter for ct entry");
->  		kfree(shared_counter);
-> -		return ERR_PTR(PTR_ERR(shared_counter->counter));
-> +		return (struct mlx5_ct_shared_counter *)counter;
-
-return ERR_CAST(counter);
-
-
->  	}
-> +	shared_counter->counter = counter;
->
->  	refcount_set(&shared_counter->refcount, 1);
->  	return shared_counter;
-> --
-> 2.28.0
->
+> -----Original Message-----
+> From: ChiaWei Wang <chiawei_wang@aspeedtech.com>
+> Sent: Friday, September 11, 2020 4:21 PM
+> To: Andrew Jeffery <andrew@aj.id.au>; Joel Stanley <joel@jms.id.au>
+> Cc: Rob Herring <robh+dt@kernel.org>; Corey Minyard <minyard@acm.org>;
+> Linus Walleij <linus.walleij@linaro.org>; Haiyue Wang
+> <haiyue.wang@linux.intel.com>; Cyril Bur <cyrilbur@gmail.com>; Robert
+> Lippert <rlippert@google.com>; Linux ARM
+> <linux-arm-kernel@lists.infradead.org>; linux-aspeed
+> <linux-aspeed@lists.ozlabs.org>; Linux Kernel Mailing List
+> <linux-kernel@vger.kernel.org>; OpenBMC Maillist
+> <openbmc@lists.ozlabs.org>; Ryan Chen <ryan_chen@aspeedtech.com>
+> Subject: RE: [PATCH 0/4] Remove LPC register partitioning
+> 
+> Hello,
+> 
+> Thanks for your prompt feedback.
+> 
+> > -----Original Message-----
+> > From: Andrew Jeffery <andrew@aj.id.au>
+> > Sent: Friday, September 11, 2020 12:46 PM
+> > To: Joel Stanley <joel@jms.id.au>; ChiaWei Wang
+> > <chiawei_wang@aspeedtech.com>
+> > Subject: Re: [PATCH 0/4] Remove LPC register partitioning
+> >
+> >
+> > On Fri, 11 Sep 2020, at 13:33, Joel Stanley wrote:
+> > > Hello,
+> > >
+> > > On Fri, 11 Sep 2020 at 03:46, Chia-Wei, Wang
+> > > <chiawei_wang@aspeedtech.com> wrote:
+> > > >
+> > > > The LPC controller has no concept of the BMC and the Host partitions.
+> > > > The incorrect partitioning can impose unnecessary range
+> > > > restrictions on register access through the syscon regmap interface.
+> > > >
+> > > > For instance, HICRB contains the I/O port address configuration of
+> > > > KCS channel 1/2. However, the KCS#1/#2 drivers cannot access HICRB
+> > > > as it is located at the other LPC partition.
+> >
+> > Thanks for addressing this, I've regretted that choice for a while now.
+> >
+> > The split was rooted in trying to support pinmux while not being
+> > across every detail of the LPC controller, and so I made some poor decisions.
+> >
+> > > >
+> > > > In addition, to be backward compatible, the newly added HW control
+> > > > bits could be added at any reserved bits over the LPC addressing space.
+> > > >
+> > > > Thereby, this patch series aims to remove the LPC partitioning for
+> > > > better driver development and maintenance.
+> > >
+> > > I support this cleanup. The only consideration is to be careful with
+> > > breaking the driver/device-tree relationship. We either need to
+> > > ensure the drivers remain compatible with  both device trees.
+> > >
+> > > Another solution is to get agreement from all parties that for the
+> > > LPC device the device tree is always the one shipped with the
+> > > kernel, so it is okay to make incompatible changes.
+> If it is possible, I would prefer this solution to avoid adding additional if-logic
+> for the compatibility support in the driver implementation.
+> As the patch can be less change made to register offset definitions and leave
+> the core logic untouched.
+> > >
+> > > While we are doing a cleanup, Andrew suggested we remove the
+> > > detailed description of LPC out of the device tree. We would have
+> > > the one LPC node, and create a LPC driver that creates all of the
+> > > sub devices (snoop, FW cycles, kcs, bt, vuart). Andrew, can  you
+> > > elaborate on this plan?
+> >
+> > I dug up the conversation I had with Rob over a year ago about being
+> > unhappy with what I'd cooked up.
+> >
+> > https://lore.kernel.org/linux-arm-kernel/CAL_JsqJ+sFDG8eKbV3gvmqVHx+ot
+> > W
+> > bki4dY213apzXgfhbXXEw@mail.gmail.com/
+> >
+> > But I think you covered most of the idea there: We have the LPC driver
+> > create the subdevices and that moves the details out of the devicetree.
+> > However, I haven't thought about it more than that, and I think there
+> > are still problems with that idea. For instance, how we manage
+> > configuration of those devices, and how to enable only the devices a
+> > given platform actually cares about (i.e. the problems that devicetree solves
+> for us).
+> Another concern to make centralized LPC driver implementation more
+> complicated is the relationship with eSPI driver.
+> AST2500 binds the reset control of LPC and eSPI together. If eSPI is used for the
+> Host communication, the behavior in current "lpc-ctrl" should be skipped but
+> not for KCS, BT, Snoop, etc.
+> And this will be much easier to achieve by devicetree if LPC sub devices are
+> individually described.
+> >
+> > It may be that the only way to do that is with platform code, and
+> > that's not really a direction we should be going either.
+> >
