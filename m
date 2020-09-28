@@ -2,113 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32F4427B14E
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 17:59:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6AF927B156
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 18:02:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726654AbgI1P74 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 11:59:56 -0400
-Received: from mail-oi1-f196.google.com ([209.85.167.196]:32903 "EHLO
-        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726477AbgI1P74 (ORCPT
+        id S1726615AbgI1QCX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 12:02:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54400 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726500AbgI1QCX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 11:59:56 -0400
-Received: by mail-oi1-f196.google.com with SMTP id m7so1881529oie.0;
-        Mon, 28 Sep 2020 08:59:55 -0700 (PDT)
+        Mon, 28 Sep 2020 12:02:23 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FE3EC0613CE
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 09:02:21 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id g7so1630696iov.13
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 09:02:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Beb7AHySGsyjEGIYpYtOQgRUOc+Ox7Lq09Bf6qtNab8=;
+        b=XLChYpb+lNHEqVKvw3ag/ZHYaGZefR52QZetHcKGbGil1brBqQgdflZhVGCCq9c7g0
+         xyEdBIyB8Hox+di1BXVXMW72/IUG6L9D+rFPyyvTEaWxI6BeRTfD1qqVBIFH6M4E+WG/
+         IBKdLMDXZSy6aYMFefJtcrSdSCORUwDgGNjCh+feqiEiVAzW4+v6/WTrZio8ukhIzxz7
+         gSB4P6mgH2IdJG8D8qzJtqCW4+dIch0jva42HuIVmaZc++NSBD4jFvEwCwYPMDgXu++W
+         b9Lp9UmODqOaf70oOpyYrD7OXooaNhwzHuAACkfILlxO3/+uzQghf7LkRFKiDbyuzs1k
+         /TxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=pDZaQ21Usp87w25mzRYuT8tC9E3ltWzHrXuhQk5quZo=;
-        b=h5dL8fJazHsTqNx/FGB2LX92fJaF0nofaWX8aKKjDOItT+TIpXJnlh2L2yW4ljS3ks
-         4p370+JcT3MamqrIn5gKkfBE8sdbmaGc7TMrkT6gnzoQTztDx9+/740tjjldpfJ43YXy
-         JITDzm5dy9UUoK4hbrVZXMw5Mf7IxSjMNco4Z0r4k95PJAwB92yghhlA4Af3sK+PFpSh
-         Ph70Aqdd3OkbzLHrcaukXD3Sy3xaD/UeIef2Lb8/z/oQIz9EF5trulet8ioPAr1xqvb/
-         hTJIQqfEUjdVXEO69WrEACtYZmST+17/u5kSR98YWdE4bB2b/fhtkhzg2axb5NcgMTw6
-         g/4w==
-X-Gm-Message-State: AOAM5339dJcN4tRlu5P55YnabrUyqZLtpq+bhwbFQs/EGqU6O5c7WEJq
-        X7CfC3H6XkDvYV6ldFrUnbfNgm/CHos2
-X-Google-Smtp-Source: ABdhPJzx+t1SOL3gjMvBl7qVDgfaG2ctw26l0RciW4e4fNOhVNui+5TwEJ9WxZinHySz68G0w5+aZg==
-X-Received: by 2002:aca:f203:: with SMTP id q3mr1238105oih.148.1601308794852;
-        Mon, 28 Sep 2020 08:59:54 -0700 (PDT)
-Received: from xps15.herring.priv (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.googlemail.com with ESMTPSA id u2sm2170497oot.39.2020.09.28.08.59.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Sep 2020 08:59:54 -0700 (PDT)
-From:   Rob Herring <robh@kernel.org>
-To:     devicetree@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Hyun Kwon <hyun.kwon@xilinx.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Vinod Koul <vkoul@kernel.org>, dri-devel@lists.freedesktop.org,
-        dmaengine@vger.kernel.org
-Subject: [PATCH] dt-bindings: Fix 'reg' size issues in zynqmp examples
-Date:   Mon, 28 Sep 2020 10:59:53 -0500
-Message-Id: <20200928155953.2819930-1-robh@kernel.org>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Beb7AHySGsyjEGIYpYtOQgRUOc+Ox7Lq09Bf6qtNab8=;
+        b=RAPUR5KBAZKsubKzfpZBrIOhJs2dsu6jDJLxl+3HnaWRB38tv2+KL5hEqROdv4bs/m
+         NHwQPYrf6jnmWiuAbaTrS+NYcDUxI1NGFnMomKpXfOu+8NNCsQI3iAm529TQth15ZoY4
+         lxIlyZQpMXu9TCt9afbzPsjdBGjKzGQsli8NvxcVBfgmuab1OCIbVRKOe87JbgBQYS+F
+         ga/ATdUDrTQGS9UPtz9Iq9L2yWz3nlu7zpiUhnqaUFv2WO2C107fUNAT8PjYjwIru5nd
+         M90pUn1moQGZJYS8/Hsr5XdouhDfmC93dYMwMVM40iggU8NCdJkG/0uRXc62R1EwDU66
+         uS4A==
+X-Gm-Message-State: AOAM532gCLSjHLNSCsnGb/IuRPSkDCYopxpEA4BPv4M3Rxif25OaEw/Y
+        TqeDG4beVnjf0CZ6l++cebXJ9cGmQlYBichxwE/zow==
+X-Google-Smtp-Source: ABdhPJzz42UKmX7awjxssAkSLiT+5SlH+O8wg4+gU/7bnE+JeDuRKky5DhDRqTCNpn1oF8PeVHiq6cdnbOCCwQl0tU8=
+X-Received: by 2002:a05:6638:dc8:: with SMTP id m8mr336154jaj.102.1601308940843;
+ Mon, 28 Sep 2020 09:02:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200928104155.7385-1-brgl@bgdev.pl> <20200928104155.7385-2-brgl@bgdev.pl>
+ <2fcfd81f62ec87d9b75cca32468d8b9583faec47.camel@perches.com>
+In-Reply-To: <2fcfd81f62ec87d9b75cca32468d8b9583faec47.camel@perches.com>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Mon, 28 Sep 2020 18:02:09 +0200
+Message-ID: <CAMRc=Mds0ccYBhRJnCQ0NEPkUpWRGtyX4FKj4+4rxN27_gfobA@mail.gmail.com>
+Subject: Re: [PATCH v2 1/9] lib: string_helpers: provide kfree_strarray()
+To:     Joe Perches <joe@perches.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Kent Gibson <warthog618@gmail.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-doc <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The default sizes in examples for 'reg' are 1 cell each. Fix the
-incorrect sizes in zynqmp examples:
+On Mon, Sep 28, 2020 at 5:59 PM Joe Perches <joe@perches.com> wrote:
+>
+> On Mon, 2020-09-28 at 12:41 +0200, Bartosz Golaszewski wrote:
+> > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> >
+> > There's a common pattern of dynamically allocating an array of char
+> > pointers and then also dynamically allocating each string in this
+> > array. Provide a helper for freeing such a string array with one call.
+>
+> Isn't this also common for things like ring buffers?
+> Why limit this to char *[]?
+>
 
-Documentation/devicetree/bindings/dma/xilinx/xlnx,zynqmp-dpdma.example.dt.yaml: example-0: dma-controller@fd4c0000:reg:0: [0, 4249616384, 0, 4096] is too long
-	From schema: /usr/local/lib/python3.8/dist-packages/dtschema/schemas/reg.yaml
-Documentation/devicetree/bindings/display/xlnx/xlnx,zynqmp-dpsub.example.dt.yaml: example-0: display@fd4a0000:reg:0: [0, 4249485312, 0, 4096] is too long
-	From schema: /usr/local/lib/python3.8/dist-packages/dtschema/schemas/reg.yaml
-Documentation/devicetree/bindings/display/xlnx/xlnx,zynqmp-dpsub.example.dt.yaml: example-0: display@fd4a0000:reg:1: [0, 4249526272, 0, 4096] is too long
-	From schema: /usr/local/lib/python3.8/dist-packages/dtschema/schemas/reg.yaml
-Documentation/devicetree/bindings/display/xlnx/xlnx,zynqmp-dpsub.example.dt.yaml: example-0: display@fd4a0000:reg:2: [0, 4249530368, 0, 4096] is too long
-	From schema: /usr/local/lib/python3.8/dist-packages/dtschema/schemas/reg.yaml
-Documentation/devicetree/bindings/display/xlnx/xlnx,zynqmp-dpsub.example.dt.yaml: example-0: display@fd4a0000:reg:3: [0, 4249534464, 0, 4096] is too long
-	From schema: /usr/local/lib/python3.8/dist-packages/dtschema/schemas/reg.yaml
+I don't want to add APIs nobody is using. What do you suggest?
 
-Cc: Hyun Kwon <hyun.kwon@xilinx.com>
-Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc: Michal Simek <michal.simek@xilinx.com>
-Cc: Vinod Koul <vkoul@kernel.org>
-Cc: dri-devel@lists.freedesktop.org
-Cc: dmaengine@vger.kernel.org
-Signed-off-by: Rob Herring <robh@kernel.org>
----
- .../bindings/display/xlnx/xlnx,zynqmp-dpsub.yaml          | 8 ++++----
- .../devicetree/bindings/dma/xilinx/xlnx,zynqmp-dpdma.yaml | 2 +-
- 2 files changed, 5 insertions(+), 5 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/display/xlnx/xlnx,zynqmp-dpsub.yaml b/Documentation/devicetree/bindings/display/xlnx/xlnx,zynqmp-dpsub.yaml
-index 52a939cade3b..7b9d468c3e52 100644
---- a/Documentation/devicetree/bindings/display/xlnx/xlnx,zynqmp-dpsub.yaml
-+++ b/Documentation/devicetree/bindings/display/xlnx/xlnx,zynqmp-dpsub.yaml
-@@ -145,10 +145,10 @@ examples:
- 
-     display@fd4a0000 {
-         compatible = "xlnx,zynqmp-dpsub-1.7";
--        reg = <0x0 0xfd4a0000 0x0 0x1000>,
--              <0x0 0xfd4aa000 0x0 0x1000>,
--              <0x0 0xfd4ab000 0x0 0x1000>,
--              <0x0 0xfd4ac000 0x0 0x1000>;
-+        reg = <0xfd4a0000 0x1000>,
-+              <0xfd4aa000 0x1000>,
-+              <0xfd4ab000 0x1000>,
-+              <0xfd4ac000 0x1000>;
-         reg-names = "dp", "blend", "av_buf", "aud";
-         interrupts = <0 119 4>;
-         interrupt-parent = <&gic>;
-diff --git a/Documentation/devicetree/bindings/dma/xilinx/xlnx,zynqmp-dpdma.yaml b/Documentation/devicetree/bindings/dma/xilinx/xlnx,zynqmp-dpdma.yaml
-index 5de510f8c88c..2a595b18ff6c 100644
---- a/Documentation/devicetree/bindings/dma/xilinx/xlnx,zynqmp-dpdma.yaml
-+++ b/Documentation/devicetree/bindings/dma/xilinx/xlnx,zynqmp-dpdma.yaml
-@@ -57,7 +57,7 @@ examples:
- 
-     dma: dma-controller@fd4c0000 {
-       compatible = "xlnx,zynqmp-dpdma";
--      reg = <0x0 0xfd4c0000 0x0 0x1000>;
-+      reg = <0xfd4c0000 0x1000>;
-       interrupts = <GIC_SPI 122 IRQ_TYPE_LEVEL_HIGH>;
-       interrupt-parent = <&gic>;
-       clocks = <&dpdma_clk>;
--- 
-2.25.1
-
+Bartosz
