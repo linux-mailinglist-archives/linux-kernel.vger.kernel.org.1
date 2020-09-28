@@ -2,143 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50E1E27B1F5
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 18:35:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 700ED27B1F6
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 18:35:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726636AbgI1QfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 12:35:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59506 "EHLO
+        id S1726681AbgI1QfR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 12:35:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726466AbgI1QfP (ORCPT
+        with ESMTP id S1726466AbgI1QfQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 12:35:15 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B543C061755
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 09:35:15 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id k13so1537034pfg.1
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 09:35:15 -0700 (PDT)
+        Mon, 28 Sep 2020 12:35:16 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13355C061755
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 09:35:16 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id 5so1330698pgf.5
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 09:35:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=PrvttkunEoO9fIi9mHq/ppahufjhXG5TFJ21mEg/pKA=;
-        b=YhwHAbX1pUfXUZHZ0f8PFeSsWmL+V3RYm/lHIDeXo6OaMYP+UAi5HVKP+rQbGSMnfA
-         bWweHKLOKwJKDJDanxAd7AtVRlupUCNpDS2c4T+GiPL9ez8ND/IX0vVvQlq+Gi/kPkih
-         RM9umXQ/Uxw9niCd5kbKknxS6P920pXANna+tg6Pdu9o+InyENkagHUXRYow0J18OOQ3
-         +FhogWZo9vnE852nR2rwhX5zuEbOOeEWSEsqWbhI+eaLrHyKlgqxV/JiLXAxun8eHQYo
-         hdGaD9xC3bWqxF6PoSj8wq68iCjZ269/agu6TfcKfFobp8kQ/ZOEccWROpNCNX5wFbb7
-         byUg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=mhPB3SD/cztsuX6qmnMAjYP7h5Xc/N3TOgnRL69WxQw=;
+        b=kr5Oqg5rgbz+BE0HjhxRGQ0QNlBinYZaTbP54+Sd6w6eBPbj26puveFA1Cthla3RqE
+         Uf7rYMAcA2u+JKZMg5NYq8vhnEAP+76BIp+1+rqocckJmFbQ6+loEK2mcOsXK7Vod4Cx
+         1NunEZTKPcasUe/7hOPTXIIxSGotv9nV1iui9r1KdkXjJpaOOMfr8p/Ny1mw8adO+YtA
+         8vpl+pcXGZQbJjUXkRP6b4a3RCOgi543JumvbiKQsevxqbvZUNb05CtJnFytwrN+DbpX
+         UpCRwn6XB6Ee6Y4s3GOEzItYjPWjYBnzrrJOBV3X+Fq4mP9s5UpSXKX4amscgCK59eVf
+         Z/FA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=PrvttkunEoO9fIi9mHq/ppahufjhXG5TFJ21mEg/pKA=;
-        b=Yxqk2d6yQ9hMX2ekGbqzUfG3Dn6VzkS4fu9QMY9H/UL3PL7Wgw4VJ9yRVXRa97TkbL
-         WMGGCJdZMFzSiXOQVyqrg6fIRqg8ePRhbk65zMPsl0iRQZou8GA/UZpOU5amF4p/FtaZ
-         tcw1xmSrCfOdfAMrx1O7FE+hvxrdfckN20H9c8OBHw0o3efZ0ogzGAw1n1iiipRr5ERq
-         PHQcOBKpDh8Uu3TkpzUgky1MuD3dNByxf8JP9TwB2G4CDjYe/+uCL5o1rub+YLn/X6VN
-         bLAttCTQu/Y3aBwIaISX39Y6SzUb2g8KM71/uBTcE0FmBbNtj79qU4Gz3bpuAV9nI8Ug
-         SGpg==
-X-Gm-Message-State: AOAM5313GGrrZ9e8HUF81gHpaELSjBtWO7Erm48jZglX38ZhoFTIrsl7
-        h+/nrn5WqM06VAI9WYsBHbgbKg==
-X-Google-Smtp-Source: ABdhPJyLxnQ3bu81o+/qsJR7CxTUdldNai6Dt5V1e75ZNa79IuhkE5dizZmRNXGEukNmsrUHsXuJUg==
-X-Received: by 2002:a65:47c4:: with SMTP id f4mr1755344pgs.329.1601310914605;
-        Mon, 28 Sep 2020 09:35:14 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=mhPB3SD/cztsuX6qmnMAjYP7h5Xc/N3TOgnRL69WxQw=;
+        b=pbi2S44x8+HJJeRB1kQdjqAdGBLIwHNtmRAjWj6uSDIFh3I/6RMFyQwoNhEC8zchMD
+         VmOmYax0q3nvj6+66InaksecpHa2ETBbjw96nLXtIAlMQTtDlex9kvKTYUOyP3FZJ17u
+         ef9T7NOdzicqqvBEvYftg058V7QoKfwwZkn3LMdotj3xcmkYPSkiPG8YtrzrzaaeFwTU
+         9fniUJyQnk+swUKq5trUn7dPBECaXZ63UmlFQT9ULbO/d50KrUBhWrbYbxOsoF9/jrFE
+         LHIUeCvFBlZsAmkGbxkXfi6oAz/H7GSRpFZTV1GwyvxVQPL7p6JoLG2A2d5918sRmUK3
+         b3Kw==
+X-Gm-Message-State: AOAM532IgmxdmssaA064cghhqbf0DbBSgaKApvIHVxO+LDKvydlCeL4t
+        Uy/9QENd1pp9Cb89oJqRx2x63oJNo/ACmA==
+X-Google-Smtp-Source: ABdhPJx7cmBJ7mcYC0d9P9oJ7xWnnGRLozhDMrgPge4N7B9k8b8V7InFSl4AG8SbcGN1tN38cR3jjA==
+X-Received: by 2002:a63:7d8:: with SMTP id 207mr1794517pgh.173.1601310915642;
+        Mon, 28 Sep 2020 09:35:15 -0700 (PDT)
 Received: from xps15.cg.shawcable.net (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
-        by smtp.gmail.com with ESMTPSA id f19sm2345640pfd.45.2020.09.28.09.35.13
+        by smtp.gmail.com with ESMTPSA id f19sm2345640pfd.45.2020.09.28.09.35.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Sep 2020 09:35:14 -0700 (PDT)
+        Mon, 28 Sep 2020 09:35:15 -0700 (PDT)
 From:   Mathieu Poirier <mathieu.poirier@linaro.org>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 00/25] coresight: Next v5.9-rc7
-Date:   Mon, 28 Sep 2020 10:34:48 -0600
-Message-Id: <20200928163513.70169-1-mathieu.poirier@linaro.org>
+Subject: [PATCH 01/25] coresight: cpu_debug: Add module name in Kconfig
+Date:   Mon, 28 Sep 2020 10:34:49 -0600
+Message-Id: <20200928163513.70169-2-mathieu.poirier@linaro.org>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200928163513.70169-1-mathieu.poirier@linaro.org>
+References: <20200928163513.70169-1-mathieu.poirier@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Good day,
+From: Tingwei Zhang <tingwei@codeaurora.org>
 
-This is the second part we were hoping for, i.e CoreSight modularisation,
-and a fix for a copy/paste error in the context save/restore process.
-Please consider for the next merge window.
+Provide name of cpu_debug module in Kconfig help section.
 
-Applies on top of your "char-misc-next" branch.
+Signed-off-by: Tingwei Zhang <tingwei@codeaurora.org>
+Tested-by: Mike Leach <mike.leach@linaro.org>
+Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+---
+ drivers/hwtracing/coresight/Kconfig | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Thanks,
-Mathieu
-
-Kim Phillips (8):
-  coresight: Use IS_ENABLED for CONFIGs that may be modules
-  coresight: etm3x: Allow etm3x to be built as a module
-  coresight: etm4x: Allow etm4x to be built as a module
-  coresight: etb: Allow etb to be built as a module
-  coresight: tpiu: Allow tpiu to be built as a module
-  coresight: tmc: Allow tmc to be built as a module
-  coresight: funnel: Allow funnel driver to be built as module
-  coresight: replicator: Allow replicator driver to be built as module
-
-Mian Yousaf Kaukab (2):
-  coresight: Export global symbols
-  coresight: tmc-etr: Add function to register catu ops
-
-Mike Leach (2):
-  coresight: cti: Fix remove sysfs link error
-  coresight: cti: Fix bug clearing sysfs links on callback
-
-Sai Prakash Ranjan (1):
-  coresight: etm4x: Fix save and restore of TRCVMIDCCTLR1 register
-
-Tingwei Zhang (12):
-  coresight: cpu_debug: Add module name in Kconfig
-  coresight: cpu_debug: Define MODULE_DEVICE_TABLE
-  coresight: Add coresight prefix to barrier_pkt
-  coresight: Add try_get_module() in coresight_grab_device()
-  coresight: stm: Allow to build coresight-stm as a module
-  coresight: etm: perf: Fix warning caused by etm_setup_aux failure
-  coresight: cti: Add function to register cti associate ops
-  coresight: cti: Don't disable ect device if it's not enabled
-  coresight: cti: Increase reference count when enabling cti
-  coresight: cti: Allow cti to be built as a module
-  coresight: catu: Allow catu drivers to be built as modules
-  coresight: core: Allow the coresight core driver to be built as a
-    module
-
- drivers/hwtracing/coresight/Kconfig           |  54 ++++--
- drivers/hwtracing/coresight/Makefile          |  26 +--
- drivers/hwtracing/coresight/coresight-catu.c  |  37 ++++-
- drivers/hwtracing/coresight/coresight-catu.h  |   2 -
- .../{coresight.c => coresight-core.c}         | 154 +++++++++++++++---
- .../hwtracing/coresight/coresight-cpu-debug.c |   2 +
- .../{coresight-cti.c => coresight-cti-core.c} |  67 ++++++--
- drivers/hwtracing/coresight/coresight-etb10.c |  28 +++-
- .../hwtracing/coresight/coresight-etm-perf.c  |  13 +-
- .../hwtracing/coresight/coresight-etm-perf.h  |   5 +-
- ...resight-etm3x.c => coresight-etm3x-core.c} | 154 +++++++++++++-----
- ...resight-etm4x.c => coresight-etm4x-core.c} |  88 +++++++---
- .../hwtracing/coresight/coresight-funnel.c    |  65 +++++++-
- .../hwtracing/coresight/coresight-platform.c  |   1 +
- drivers/hwtracing/coresight/coresight-priv.h  |  23 ++-
- .../coresight/coresight-replicator.c          |  65 +++++++-
- drivers/hwtracing/coresight/coresight-stm.c   |  20 ++-
- drivers/hwtracing/coresight/coresight-sysfs.c |   2 +
- .../{coresight-tmc.c => coresight-tmc-core.c} |  25 ++-
- .../hwtracing/coresight/coresight-tmc-etf.c   |   2 +-
- .../hwtracing/coresight/coresight-tmc-etr.c   |  21 ++-
- drivers/hwtracing/coresight/coresight-tmc.h   |   3 +
- drivers/hwtracing/coresight/coresight-tpiu.c  |  20 ++-
- include/linux/coresight.h                     |   3 +-
- 24 files changed, 728 insertions(+), 152 deletions(-)
- rename drivers/hwtracing/coresight/{coresight.c => coresight-core.c} (92%)
- rename drivers/hwtracing/coresight/{coresight-cti.c => coresight-cti-core.c} (94%)
- rename drivers/hwtracing/coresight/{coresight-etm3x.c => coresight-etm3x-core.c} (90%)
- rename drivers/hwtracing/coresight/{coresight-etm4x.c => coresight-etm4x-core.c} (96%)
- rename drivers/hwtracing/coresight/{coresight-tmc.c => coresight-tmc-core.c} (95%)
-
+diff --git a/drivers/hwtracing/coresight/Kconfig b/drivers/hwtracing/coresight/Kconfig
+index 02dbb5ca3bcf..4663fd1bbffc 100644
+--- a/drivers/hwtracing/coresight/Kconfig
++++ b/drivers/hwtracing/coresight/Kconfig
+@@ -110,6 +110,9 @@ config CORESIGHT_CPU_DEBUG
+ 	  properly, please refer Documentation/trace/coresight/coresight-cpu-debug.rst
+ 	  for detailed description and the example for usage.
+ 
++	  To compile this driver as a module, choose M here: the
++	  module will be called coresight-cpu-debug.
++
+ config CORESIGHT_CTI
+ 	bool "CoreSight Cross Trigger Interface (CTI) driver"
+ 	depends on ARM || ARM64
 -- 
 2.25.1
 
