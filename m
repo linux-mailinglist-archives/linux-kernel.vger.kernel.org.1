@@ -2,102 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5531927AD8E
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 14:12:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21F4D27AD90
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 14:12:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726635AbgI1ML6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 08:11:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47042 "EHLO
+        id S1726640AbgI1MMc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 08:12:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726350AbgI1ML5 (ORCPT
+        with ESMTP id S1726393AbgI1MMc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 08:11:57 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 898AFC0613CE
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 05:11:57 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id e17so861505wme.0
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 05:11:57 -0700 (PDT)
+        Mon, 28 Sep 2020 08:12:32 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20E4BC061755
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 05:12:32 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id z4so1067689wrr.4
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 05:12:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=7j2hMlME7tc0tEQkSSS8xb1F+KuYkA6Veri3DVF15q4=;
-        b=E+zJZI097lrmY3nCoxu4sDiwT3FNXKkjxBIaywF3Lc07KL1z66isdCFxW0xTSa111L
-         sCYDHY0mJSJMOMQ0Uz/xhyMItQ5mDfejVfOYLuli9qQbgAQy3PRVLwgZLppGctm7ipuY
-         Sn6JBAVLlkAkgdWBqVtU0QHXqvyvEVabweu95ePoPY5CyQvbt6F+IEmg9HAuuKQE2tH0
-         VJG/b7iXyYgLlJ3LM6QMzwr68G6H0UJFhv8pUiVXpXA2DLfyuU7NM4MOWHsEJx1KHNEX
-         qNblPhsWvXXaQOIVYhCG3S7iNPsyPWuNfNjhJ1OCNdde4NgzJj6fPv4s801o6fr8n1+q
-         M0+A==
+        bh=WkJ+JQz22FgKhunkX2Eys8prjPDVkhKGpB1odb9GP8s=;
+        b=V+A2geqfxmkMfY7Ozcf6qFWf8cwaKHC6uC2YbzNkKkg9K7etSOTIyRWxvmZ+4e4tSZ
+         QWoytvAI3ul8dm3Rby2HAddrBVew0ATO1vVz9mpNCe7vl9xAb/6YFufWH8YHoOgknpi5
+         PAv50iu9Y2eswRH8U54IlRstZnIO+T9w2IrGWiFeltxFio9ub/1DFIUROq/tVuQTJLqh
+         k5nzl4Ki9z9zFimkVFnHCFFdi78UrEyH39Ndom3QFPSVT2oRCbl82CmrmUU5nbud1GVo
+         +GLhONWnkRnXpfbIEdG2zcZjZis1cNlqbyslfzyiMk19KoqOvanxXiY3Tp0H88bvSGw8
+         x1AQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:content-transfer-encoding
          :in-reply-to;
-        bh=7j2hMlME7tc0tEQkSSS8xb1F+KuYkA6Veri3DVF15q4=;
-        b=WnkjC11ANKjMspb/UByWrucK3Ohd7DOICmKd0IiIlCVAVz0rbZPfJtpUvl9Jc7iu7O
-         mtGv+cqf1aDUYypA7VW07xMsNJmWb9PnE/gKhTk5jbEcj91jU4HInJg3izyzI8eUBM7w
-         LtV7CdjZQwBDHVVxj+rKIwiBEsHww7PjZcoCfI8ipB0NWo6wzcf6TmNaDBkyO8oxDOth
-         hNgJ88gIcrzZ0I1JuQoncIEkHukNnl6ZxYfl56/+L4r7X+N2ylM1vu3S4j/7cccxo1XX
-         vN4DkDZrqzdkz2VW/2PnZasfEw2nZUo7lJMRaUlB4nosUZ9cZI7s9zpmT+CLMIdnzBrv
-         RDbA==
-X-Gm-Message-State: AOAM531yZ7ip8Ka0dNlqTQhQR2rngc0RTHm904MNbH2ueVkfxkDuR7kq
-        SY1ySsRVkMwBRaJXochlQUsVrYpoDWQ5xg==
-X-Google-Smtp-Source: ABdhPJxFfqR3eEqXbi3H+U8ljl91xjX3UcTfZVavU0Hq94Z1nqVnr59NRTgNIM1pflmJKosPdWlTMg==
-X-Received: by 2002:a7b:c215:: with SMTP id x21mr1299532wmi.138.1601295116194;
-        Mon, 28 Sep 2020 05:11:56 -0700 (PDT)
+        bh=WkJ+JQz22FgKhunkX2Eys8prjPDVkhKGpB1odb9GP8s=;
+        b=dBUwOFJs1hiDUzmo8bFYxhdwf9nxH/CIAGj3nwH6BC96nhcsoLyUg3ieGxFaQlWCst
+         JGe/EX6aIMDwPIGjm14P7OEpaSriH5CXPUzt9spHQEcntbpeEJKTiKSL0d6theLUU+5u
+         +edgXsnH0BaqzkzLS4L1C616Vdh0sbgXhLJViEypuMh84FhJWsHeNmmHGLUq+d7q4ouX
+         O+i00UZW+MKAlvVQTpjDSW2NaU8/lZeyUFp6SDpOtuCv1Bjoy7lRrU8Jx0y6ZFZ3l5q4
+         tY9xWSTIrPtaTEigT6XLzRodfUbQM4UIwBDix8ZLrVKHTgmk4LIvf09gT9HepGTvSF2V
+         X8vA==
+X-Gm-Message-State: AOAM533GMIscUvRCBr7LX1grkStmYhHQwPa7+oekvfYkmBD+LEwUL/rr
+        XLTRdzuPovO9c6F6hmnGF3h1Fw==
+X-Google-Smtp-Source: ABdhPJxfr1ds5iMTGjgHETAfl1Qew67RRVxQWW5Rmg5m3CN9CftRmIzMQbCdpyVjYzUGWOgofV47Dw==
+X-Received: by 2002:a5d:61c2:: with SMTP id q2mr1490265wrv.25.1601295150767;
+        Mon, 28 Sep 2020 05:12:30 -0700 (PDT)
 Received: from dell ([91.110.221.154])
-        by smtp.gmail.com with ESMTPSA id q15sm1219701wrr.8.2020.09.28.05.11.55
+        by smtp.gmail.com with ESMTPSA id d19sm871991wmd.0.2020.09.28.05.12.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Sep 2020 05:11:55 -0700 (PDT)
-Date:   Mon, 28 Sep 2020 13:11:53 +0100
+        Mon, 28 Sep 2020 05:12:30 -0700 (PDT)
+Date:   Mon, 28 Sep 2020 13:12:28 +0100
 From:   Lee Jones <lee.jones@linaro.org>
 To:     Luca Ceresoli <luca@lucaceresoli.net>
 Cc:     Keerthy <j-keerthy@ti.com>, Axel Lin <axel.lin@ingics.com>,
         Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 2/3] dt-bindings: mfd: add LP87524-Q1
-Message-ID: <20200928121153.GE4637@dell>
+Subject: Re: [PATCH v5 3/3] mfd: lp87565: add LP87524-Q1 variant
+Message-ID: <20200928121228.GF4637@dell>
 References: <20200902142259.28349-1-luca@lucaceresoli.net>
- <20200902142259.28349-3-luca@lucaceresoli.net>
+ <20200902142259.28349-4-luca@lucaceresoli.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200902142259.28349-3-luca@lucaceresoli.net>
+In-Reply-To: <20200902142259.28349-4-luca@lucaceresoli.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Wed, 02 Sep 2020, Luca Ceresoli wrote:
 
-> Add the LP87524-Q1 to the bindings along with an example. This is a variant
-> of the LP87565-Q1 and LP87561-Q1 chips which already have bindings.
+> Add support for the LP87524B/J/P-Q1 Four 4-MHz Buck Converter. This is a
+> variant of the LP87565 having 4 single-phase outputs and up to 10 A of
+> total output current.
 > 
 > Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
+> Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
 > 
 > ---
 > 
-> Changes in v5:
->  - describe the "regulators" node too (Rob)
->  - add 'additionalProperties: false' (Rob)
->  - user patternProperties for supplies
->  - simplify supply description
+> Changes in v5: none
 > 
-> Changes in v4:
->  - reformat as a standalone file
+> Changes in v4: none
 > 
-> Changes in v3:
->  - fix yaml errors
+> Changes in v3: none
 > 
 > Changes in v2:
->  - RFC,v1 was based on the txt file, rewrite for yaml
->  - use uppercase consistently in model names (Lee Jones)
 >  - replace "regulator" -> "mfd" in subject line (Lee Jones)
->  - replace "dt:" suffix with "dt-bindings:" prefix in subject line
+>  - add Acked-for-MFD-by: from Lee Jones
 > ---
->  .../bindings/mfd/ti,lp87524-q1.yaml           | 112 ++++++++++++++++++
->  1 file changed, 112 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mfd/ti,lp87524-q1.yaml
+>  drivers/mfd/lp87565.c       | 4 ++++
+>  include/linux/mfd/lp87565.h | 1 +
+>  2 files changed, 5 insertions(+)
 
 Applied, thanks.
 
