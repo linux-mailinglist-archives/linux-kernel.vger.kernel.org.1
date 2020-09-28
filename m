@@ -2,117 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D05427AA50
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 11:09:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 944D327AA58
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 11:10:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726841AbgI1JJD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 05:09:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46876 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726540AbgI1JI4 (ORCPT
+        id S1726722AbgI1JKf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 05:10:35 -0400
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:6446 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726461AbgI1JKa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 05:08:56 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DED1C061755
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 02:08:56 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id d9so401908pfd.3
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 02:08:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QJRxVMr8vNM+4CUUjCxZtsq4epCtaAgvHoQB6YN84/A=;
-        b=eFAEw6aSWHNemLtODytMKqio01lJ/bQUg8y8+gR7FwGppG47A1tMMO2K9x9PkIAnYy
-         wqKgRBR4T3mfabdTyoPT60UF+gdOD/1PpCl0e5jNKeYWPYFE2s0weU66Y1C3HACmbgJt
-         aC2ttLUnzmF8tJUG56oc/W8AAhqW0tvxYoldHnVd7z/gpAHZDDXAsYoFFL9gMZnnl6UZ
-         IN3cRWpvPhSYkc8rM2X8CUz9GQJsyx739m/d812fnTj78nXEjXe1uEc3zJBaoaZZ/2Uk
-         I3+q+mf2CxMkbIBNtdlM7jYqBrCM+NqhyFlfyS01LuT84sETN6A33DfxbcZlFMafg2Cn
-         ypcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QJRxVMr8vNM+4CUUjCxZtsq4epCtaAgvHoQB6YN84/A=;
-        b=JBbqaJu/gSoN8cv+vJ1zgyqmbKcQ9/dJpTxYUL9LHuYvpY3rqKCvb6q6J4eI4RPB4z
-         5OQbvsjO3HiTPFPDeyiFVqyGLhFLZSniqwzjxo6u694CFVEUBZIKBNcm+9jcuSUcgm3k
-         yiY8tL1R4KoaVPU5ogsvR1pmctjQpNrz+g9iqPZ+HmVSSujWAvyayvaRnxJ5gFJEzC+H
-         pnA1Et9xKxKrakWMLieIlmKNC3l8lA7hNOa73G3KrWxOpVpuJkDXCTKdHWWanNxHIz0n
-         HTSTi8iMH5AoedqWViN3mjeFP71xwKShWoJqJSLgZdkKPtTrIrAcYG1sfLG6x2uLvLWe
-         ELBg==
-X-Gm-Message-State: AOAM5330iMqUUYy6CNAHzUJOHT+vG38T/XpEIahWCDryV+0swij0bwmO
-        5IUKVk/GR/EkeovtfWfizcsbFidXx74MwOo+urE=
-X-Google-Smtp-Source: ABdhPJyTjOTPaS2GZF5y1LXw+tNypUeYL4fpZiG+gXTE4euVOYASxN50H5CnfJygB/btIwFLp4VjJAmLB45wwwoZ5uQ=
-X-Received: by 2002:a62:6287:0:b029:142:2501:35d5 with SMTP id
- w129-20020a6262870000b0290142250135d5mr600296pfb.53.1601284135818; Mon, 28
- Sep 2020 02:08:55 -0700 (PDT)
+        Mon, 28 Sep 2020 05:10:30 -0400
+Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08S953Y8023538;
+        Mon, 28 Sep 2020 05:10:28 -0400
+Received: from nwd2mta4.analog.com ([137.71.173.58])
+        by mx0a-00128a01.pphosted.com with ESMTP id 33syg5xpq3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 28 Sep 2020 05:10:28 -0400
+Received: from ASHBMBX9.ad.analog.com (ashbmbx9.ad.analog.com [10.64.17.10])
+        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 08S9ARj1012285
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
+        Mon, 28 Sep 2020 05:10:27 -0400
+Received: from ASHBCASHYB4.ad.analog.com (10.64.17.132) by
+ ASHBMBX9.ad.analog.com (10.64.17.10) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Mon, 28 Sep 2020 05:10:21 -0400
+Received: from ASHBMBX9.ad.analog.com (10.64.17.10) by
+ ASHBCASHYB4.ad.analog.com (10.64.17.132) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Mon, 28 Sep 2020 05:10:21 -0400
+Received: from zeus.spd.analog.com (10.66.68.11) by ASHBMBX9.ad.analog.com
+ (10.64.17.10) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
+ Transport; Mon, 28 Sep 2020 05:10:21 -0400
+Received: from localhost.localdomain ([10.48.65.12])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 08S9ANjV026287;
+        Mon, 28 Sep 2020 05:10:24 -0400
+From:   Cristian Pop <cristian.pop@analog.com>
+To:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <jic23@kernel.org>, Cristian Pop <cristian.pop@analog.com>
+Subject: [PATCH v7 1/5] iio: core: Add optional symbolic label to a device channel
+Date:   Mon, 28 Sep 2020 12:09:55 +0300
+Message-ID: <20200928090959.88842-1-cristian.pop@analog.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <000000000000b7551005b05ae3b8@google.com> <CACT4Y+Zc5W9kGUqjVkkuUTBEsLk-1k3eKF5F78-LioWF6XTR0w@mail.gmail.com>
- <CAK+_RLmGVr=ngG+Tqum==sDLEeEEz11su92EnoQVG6Zgm2gxzg@mail.gmail.com> <CACT4Y+Yb9UcpO6g+FMZ+4R1PiadcDqKXj7Em4h8+VMrzCdS=9g@mail.gmail.com>
-In-Reply-To: <CACT4Y+Yb9UcpO6g+FMZ+4R1PiadcDqKXj7Em4h8+VMrzCdS=9g@mail.gmail.com>
-From:   Tigran Aivazian <aivazian.tigran@gmail.com>
-Date:   Mon, 28 Sep 2020 10:08:44 +0100
-Message-ID: <CAK+_RLk6JBKqYj7mVThm+Nrpaj0OoqkGP6rRtb4PaOmphBMRSw@mail.gmail.com>
-Subject: Re: WARNING: filesystem loop0 was created with 512 inodes, the real
- maximum is 511, mounting anyway
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     syzbot <syzbot+54b10a5da9e59f1ed979@syzkaller.appspotmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-ADIRoutedOnPrem: True
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-28_07:2020-09-24,2020-09-28 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 malwarescore=0
+ priorityscore=1501 impostorscore=0 suspectscore=0 lowpriorityscore=0
+ spamscore=0 bulkscore=0 mlxscore=0 clxscore=1015 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009280076
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 28 Sep 2020 at 09:29, Dmitry Vyukov <dvyukov@google.com> wrote:
-> On Mon, Sep 28, 2020 at 10:23 AM Tigran Aivazian
-> > No, this is not an issue. In the latest change to BFS I added the
-> > following comment to the header fs/bfs/bfs.h, which explains it:
-> >
-> > /* In theory BFS supports up to 512 inodes, numbered from 2 (for /) up
-> > to 513 inclusive.
-> >    In actual fact, attempting to create the 512th inode (i.e. inode
-> > No. 513 or file No. 511)
-> >    will fail with ENOSPC in bfs_add_entry(): the root directory cannot
-> > contain so many entries, counting '..'.
-> >    So, mkfs.bfs(8) should really limit its -N option to 511 and not
-> > 512. For now, we just print a warning
-> >    if a filesystem is mounted with such "impossible to fill up" number
-> > of inodes */
->
-> There are rules for use of "WARNING" in output required to support
-> kernel testing:
-> https://github.com/torvalds/linux/blob/master/include/asm-generic/bug.h#L67-L80
-> This seems to be triggerable by exteranal inputs and breaks these rules.
+If a label is defined in the device tree for this channel add that
+to the channel specific attributes. This is useful for userspace to
+be able to identify an individual channel.
 
-Thank you, I didn't know about these rules. Ok, then, since this
-warning does not "need prompt attention if it should ever occur at
-runtime", the easiest solution is to change "WARNING" to lower case
-"warning" in that printk in fs/bfs/inode.c:
+Signed-off-by: Cristian Pop <cristian.pop@analog.com>
+---
+ drivers/iio/industrialio-core.c | 40 +++++++++++++++++++++++++++++++++
+ include/linux/iio/iio.h         |  6 +++++
+ 2 files changed, 46 insertions(+)
 
---- fs/bfs/inode.c.0 2020-09-28 10:03:00.658549556 +0100
-+++ fs/bfs/inode.c 2020-09-28 10:03:05.408548250 +0100
-@@ -351,7 +351,7 @@
+diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
+index 6e388293c828..b577fff35641 100644
+--- a/drivers/iio/industrialio-core.c
++++ b/drivers/iio/industrialio-core.c
+@@ -669,6 +669,19 @@ ssize_t iio_format_value(char *buf, unsigned int type, int size, int *vals)
+ }
+ EXPORT_SYMBOL_GPL(iio_format_value);
+ 
++static ssize_t iio_read_channel_label(struct device *dev,
++				      struct device_attribute *attr,
++				      char *buf)
++{
++	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
++	struct iio_dev_attr *this_attr = to_iio_dev_attr(attr);
++
++	if (!indio_dev->info->read_label)
++		return -EINVAL;
++
++	return indio_dev->info->read_label(indio_dev, this_attr->c, buf);
++}
++
+ static ssize_t iio_read_channel_info(struct device *dev,
+ 				     struct device_attribute *attr,
+ 				     char *buf)
+@@ -1137,6 +1150,28 @@ int __iio_add_chan_devattr(const char *postfix,
+ 	return ret;
+ }
+ 
++static int iio_device_add_channel_label(struct iio_dev *indio_dev,
++					 struct iio_chan_spec const *chan)
++{
++	int ret;
++
++	if (!indio_dev->info->read_label)
++		return 0;
++
++	ret = __iio_add_chan_devattr("label",
++				     chan,
++				     &iio_read_channel_label,
++				     NULL,
++				     0,
++				     IIO_SEPARATE,
++				     &indio_dev->dev,
++				     &indio_dev->channel_attr_list);
++	if (ret < 0)
++		return ret;
++
++	return 1;
++}
++
+ static int iio_device_add_info_mask_type(struct iio_dev *indio_dev,
+ 					 struct iio_chan_spec const *chan,
+ 					 enum iio_shared_by shared_by,
+@@ -1270,6 +1305,11 @@ static int iio_device_add_channel_sysfs(struct iio_dev *indio_dev,
+ 		return ret;
+ 	attrcount += ret;
+ 
++	ret = iio_device_add_channel_label(indio_dev, chan);
++	if (ret < 0)
++		return ret;
++	attrcount += ret;
++
+ 	if (chan->ext_info) {
+ 		unsigned int i = 0;
+ 		for (ext_info = chan->ext_info; ext_info->name; ext_info++) {
+diff --git a/include/linux/iio/iio.h b/include/linux/iio/iio.h
+index 2e45b3ceafa7..9a3cf4815148 100644
+--- a/include/linux/iio/iio.h
++++ b/include/linux/iio/iio.h
+@@ -362,6 +362,8 @@ struct iio_trigger; /* forward declaration */
+  *			and max. For lists, all possible values are enumerated.
+  * @write_raw:		function to write a value to the device.
+  *			Parameters are the same as for read_raw.
++ * @read_label:		function to request label name for a specified label,
++ *			for better channel identification.
+  * @write_raw_get_fmt:	callback function to query the expected
+  *			format/precision. If not set by the driver, write_raw
+  *			returns IIO_VAL_INT_PLUS_MICRO.
+@@ -420,6 +422,10 @@ struct iio_info {
+ 			 int val2,
+ 			 long mask);
+ 
++	int (*read_label)(struct iio_dev *indio_dev,
++			 struct iio_chan_spec const *chan,
++			 char *label);
++
+ 	int (*write_raw_get_fmt)(struct iio_dev *indio_dev,
+ 			 struct iio_chan_spec const *chan,
+ 			 long mask);
+-- 
+2.17.1
 
-  info->si_lasti = (le32_to_cpu(bfs_sb->s_start) - BFS_BSIZE) /
-sizeof(struct bfs_inode) + BFS_ROOT_INO - 1;
-  if (info->si_lasti == BFS_MAX_LASTI)
-- printf("WARNING: filesystem %s was created with 512 inodes, the real
-maximum is 511, mounting anyway\n", s->s_id);
-+ printf("warning: filesystem %s was created with 512 inodes, the real
-maximum is 511, mounting anyway\n", s->s_id);
-  else if (info->si_lasti > BFS_MAX_LASTI) {
-  printf("Impossible last inode number %lu > %d on %s\n",
-info->si_lasti, BFS_MAX_LASTI, s->s_id);
-  goto out1;
-
-If you want to submit this patch to the appropriate place(s), feel
-free to do this -- I approve it. If the comment in asm/bug.h is
-inaccurate and its mention of "BUG/WARNING" implies the lowercase
-"bug/warning" also, then one can remove the prefix "warning: " from
-the patch altogether and proper case "filesystem" to "Filesystem".
-
-Kind regards,
-Tigran
-
-Acked-By: Tigran Aivazian <aivazian.tigran@gmail.com>
-Approved-By: Tigran Aivazian <aivazian.tigran@gmail.com>
