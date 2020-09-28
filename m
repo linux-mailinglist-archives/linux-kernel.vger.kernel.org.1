@@ -2,133 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0461827AE14
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 14:43:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F28627AE18
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 14:45:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726589AbgI1MnD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 08:43:03 -0400
-Received: from mout.kundenserver.de ([212.227.126.131]:56297 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726461AbgI1MnD (ORCPT
+        id S1726552AbgI1MpI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 08:45:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52136 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726393AbgI1MpH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 08:43:03 -0400
-Received: from mail-qk1-f179.google.com ([209.85.222.179]) by
- mrelayeu.kundenserver.de (mreue012 [212.227.15.129]) with ESMTPSA (Nemesis)
- id 1MnpP8-1klUoI26e2-00pOWB; Mon, 28 Sep 2020 14:43:00 +0200
-Received: by mail-qk1-f179.google.com with SMTP id g72so740888qke.8;
-        Mon, 28 Sep 2020 05:43:00 -0700 (PDT)
-X-Gm-Message-State: AOAM533KsGcTCEjepB62goD1p5t2/fewDpwm/EM9CbURR2xH4kU9ifwf
-        9B2HELMRoiDvqnQ+T2pCk3JEauID4k/1Nw6C+ww=
-X-Google-Smtp-Source: ABdhPJwGqDO65ntGAdjq302JT9kz4grqzX1nUBEs13e10HB5wJSnUc85Ohe6MBKd5+4G8v6JAaqmSAOcRa0VKiSI31w=
-X-Received: by 2002:a37:5d8:: with SMTP id 207mr1246723qkf.352.1601296979151;
- Mon, 28 Sep 2020 05:42:59 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200907153701.2981205-1-arnd@arndb.de> <20200907153701.2981205-5-arnd@arndb.de>
- <CACRpkdYkL2=gkBvbHO514rnppLdHgsXwi0==6Ovq43kSZqEvUQ@mail.gmail.com>
-In-Reply-To: <CACRpkdYkL2=gkBvbHO514rnppLdHgsXwi0==6Ovq43kSZqEvUQ@mail.gmail.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Mon, 28 Sep 2020 14:42:43 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a0BZ-zdk+RB5ODcVs2z-Y6xmLCp57uzivUGWRcoeH2fQQ@mail.gmail.com>
-Message-ID: <CAK8P3a0BZ-zdk+RB5ODcVs2z-Y6xmLCp57uzivUGWRcoeH2fQQ@mail.gmail.com>
-Subject: Re: [PATCH 4/9] ARM: syscall: always store thread_info->syscall
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Russell King <rmk@arm.linux.org.uk>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "linux-kernel@vger.kernel.org" <kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Oleg Nesterov <oleg@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:CJWFLrA3SKB1padlpM+y7ShF7lXMlbKZdm1TjFDfHOwwpX2/X1l
- 4DwGU7nUfV3s+3R6aPkb+Fw3M18j5TvRh6/vUFDC+BVlmc2vrDKia7qgCM4qINevW2uL+YM
- IdppK2EJsIq+JZRI95ZlejNdSIk43nSq+6vf9413uDGaZnKaCULXxJZPd1vrYEEou9TV64f
- b5K+bFXBKO0KCPHgDuhVQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:gQsWUr9tEh8=:cKF/3Zynrx5p7FwCSuooU0
- FblKNcfyrL/tN4oej/9hFEGfqBr26hak8Jkl5u5Jaaufa758G4/DD3fM3DjlhN5QcZqRRKVtp
- iIFJ3LnJOoBgNp1PqfEupIuLyZn81y4W7ANyEnzS0phTIYa6YT1dL/3I5qMYZKkGfHZuvicrY
- MaZvcoDzw44RTY1B+BCNId4VEQVtyM+wPWwY0iCncm27V6yqiJ1JEsYoRvKl5rQLykM4ZimnV
- 6mi4GdvbB1aIvguwJV9OYj9C+inag7gxiASRcMe+Bo40rMIBw9rGCFMOJ58C5dwWVBHWj5biR
- VtHqQXj8nbDeZt0pwsZfa2znTo7GYiA5DEHnRNSXdda7KmEpKwKu59wIYYu16+ihAsXyzY1MM
- kTQeGQcTF103MGDNNGbdYAZd059P16DT25so0at+PoWRKlS40gi4t5IJOAJN5CiLgCPA3+4cX
- 5SL+MWYqrmjMIm3UhIVdO0Ecf0fa0kr0unLZuxq5N5piTVgX8SiIFPD4H0NtuHFLRTFuwdxEY
- D9bUPSxk/fFv85L1zrZqJyMb3dP7w2p6mdwFO3J5EuK1jXohAc329H6BaeeEIoQasI4Lt9UwB
- KwRBzF5sNuopi59nEMNVo7Qmav0OCMjEhMlUXgtN26ivxkduU6N5zY5XqKe9HBy43xXXk7oV9
- WMy7SaC7Fwe3s/TwkhXTH17awXpXiturbsY7z9NRT6lj3t8ozf1Uwz0M3OGyRh+ApItSa6oek
- IYcu/5sb1a3en+QmMp6Wj9krqWycrQ62ASG91W396zSv3ISRFI92Y0PwPBcZc7AI/36cRcBb0
- Q3ySynKhSXh8xEtyJXQpgjaUZGj9YXzgjbZvXuV5M6Dk8pjENarLR8+yZPjk12tXVTjHp4+
+        Mon, 28 Sep 2020 08:45:07 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 795F7C061755;
+        Mon, 28 Sep 2020 05:45:07 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id i26so8246190ejb.12;
+        Mon, 28 Sep 2020 05:45:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=eDbNGoXjUOxyTq/2/7gQ4AH74xLZ8mTu0ngi+MaAE+k=;
+        b=uCS0qWvuD09wigPlBYfAAAyoZyfjUT2Xc99XxqOxnCIlYvflGWoHp0ftk6mZH5d/uT
+         3Q5APB8NEVGPO20LVhDzCsYjZACyTTRbVfXtTp9ttdpHA+8P+WIwl0wBdAQXlumqmfid
+         prEWKXdYRBu6R2rDyNiN+EM4Whl6dk3xbOhxSvs2rmI2rzxjo1EbwIWjgPhmmwS0SDhz
+         NjYspqFgLLmxjrijp5cYue/6BehuzCNHBInqzGbbw46DaPO+BPYv6kotgwRBQPGQ8uFw
+         I7YROKBUhceRMTsDZHCKtWzjjmQ8/Rcz8scWhZCYqgg01BbE8tCpTZ0J217sajEvMiUt
+         8DDQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=eDbNGoXjUOxyTq/2/7gQ4AH74xLZ8mTu0ngi+MaAE+k=;
+        b=eA0QukvaPZ9dK6D52lS6yQyDsca2QDby1+1CVYz2L+FeGbBUIJ0Q23sBvvP57wIvbT
+         h6AD5JYvvfZ05hnik7gxVqWKoPrtFkhqkcy2xGJQaks5FA466p2osaNlpEb3wL4GPy6z
+         qfjd0+2bunMFeLXMzH3wJH2cMg9lBKvMbGeU3yCqunJfkpyVqrP4oxm843tuQXK5PUVK
+         hATjtZl34lh6ziVcYXXAFsXNuYxc861zZeacR/m+obNCujZjumPQ/isSDQ9h86WMvhJC
+         vjZpwKJJqVf4yXi0W17cYiygSvlGvM4qRi/bqVOUnM/9aNyqsMlYycsbs0I/0vFS6WLR
+         3Vhg==
+X-Gm-Message-State: AOAM533quDL6444zjz3J6OniXf9b6thhop+CYes023yvxk7h9hHO+sm7
+        QtNJ3jps92eLdesXeo3toZ8=
+X-Google-Smtp-Source: ABdhPJwrcAeGcgwC0x4c6zDkB9w6jAFa372e6W6yiAT/BrBcUqZaC6/RpiOAZ9gQGwQKzlOFDOyv0w==
+X-Received: by 2002:a17:906:1192:: with SMTP id n18mr1527579eja.515.1601297106102;
+        Mon, 28 Sep 2020 05:45:06 -0700 (PDT)
+Received: from felia.fritz.box ([2001:16b8:2d9d:5000:7872:7299:adfa:b749])
+        by smtp.gmail.com with ESMTPSA id m4sm1589214ede.70.2020.09.28.05.45.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Sep 2020 05:45:05 -0700 (PDT)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     Balbir Singh <sblbir@amazon.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        kernel-janitors@vger.kernel.org, linux-safety@lists.elisa.tech,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH -next for tip:x86/pti] x86/tlb: drop unneeded local vars in enable_l1d_flush_for_task()
+Date:   Mon, 28 Sep 2020 14:44:57 +0200
+Message-Id: <20200928124457.27289-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 11:41 AM Linus Walleij <linus.walleij@linaro.org> wrote:
->
-> Hi Arnd,
->
-> help me out here because I feel vaguely stupid...
->
-> On Mon, Sep 7, 2020 at 5:38 PM Arnd Bergmann <arnd@arndb.de> wrote:
->
-> >  {
-> > +       if (IS_ENABLED(CONFIG_OABI_COMPAT))
-> > +               return task_thread_info(task)->syscall & ~__NR_OABI_SYSCALL_BASE;
->
-> Where __NR_OABI_SYSCALL_BASE is
-> #define __NR_OABI_SYSCALL_BASE       0x900000
->
-> So you will end up with sycall number & FF6FFFFF
-> masking off bits 20 and 23.
+Commit b6724f118d44 ("prctl: Hook L1D flushing in via prctl") checks the
+validity for enable_l1d_flush_for_task() and introduces some superfluous
+local variables for that implementation.
 
-Right. I fixed a bug in here since I sent this, the correct version also
-needs to mask away the __NR_OABI_SYSCALL_BASE for a native
-oabi kernel, not just for an eabi kernel with oabi-compat mode.
+make clang-analyzer on x86_64 tinyconfig caught my attention with:
 
-> I suppose this is based on this:
->
-> >         bics    r10, r10, #0xff000000
-> > +       str     r10, [tsk, #TI_SYSCALL]
->
-> OK we mask off bits 24-31 before we store this.
->
-> >         bic     scno, scno, #0xff000000         @ mask off SWI op-code
-> > +       str     scno, [tsk, #TI_SYSCALL]
->
-> And here too.
->
-> >         eor     scno, scno, #__NR_SYSCALL_BASE  @ check OS number
->
-> And then happens that which will ... I don't know really.
-> Exclusive or with 0x9000000 is not immediately intuitive
-> evident to me, I suppose it is for everyone else... :/
+  arch/x86/mm/tlb.c:332:2: warning: Value stored to 'cpu' is never read \
+  [clang-analyzer-deadcode.DeadStores]
 
-This is how the SWI/SVC immediate argument gets turned into
-a system call number that is used as an offset into the sys_call_table.
+Compilers will detect these superfluous local variables and assignment and
+optimize this anyway. So, the resulting binary is identical before and
+after this change.
 
-OABI syscalls are called with '__NR_OABI_SYSCALL_BASE | scno'
-in the immediate argument of the instruction, so using an
-'eor ... , #__NR_SYSCALL_BASE' means that any valid
-argument afterwards is a number between zero and
-__NR_syscalls, and any invalid argument is a number outside
-of that range
+Simplify the code and remove superfluous local variables to make
+clang-analyzer happy.
 
-EABI syscalls are just 'SVC 0' with the syscall number in register 7
-and no offset.
+No functional change. No change in binary with supported compilers.
 
-See also
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=3f2829a31573e3e502b874c8d69a765f7a778793
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+---
+applies cleanly on next-20200925
 
-> I need some idea how this numberspace is managed in order to
-> understand the code so I can review it, I guess it all makes perfect
-> sense but I need some background here.
+Balbir, please review and ack.
+Thomas, please pick this minor non-urgent clean-up patch into the x86/pti
+branch of tip as follow-up to: 
+https://lore.kernel.org/lkml/160026187842.15536.285514864386042510.tip-bot2@tip-bot2/
 
-I also had never understood this part before, and I'm still not
-sure where the 0x900000 actually comes from, though my best
-guess is that this was intended as a an OS specific number space,
-with '9' being assigned to Linux (similar to the way Itanium and
-MIPS do with their respective offsets). By the time EABI got added,
-this was apparently no longer considered helpful.
+I quickly confirmed that the binary did not change with this change to the
+source code; The hash of tlb.o remained the same before and after the change.
 
-        Arnd
+So, in my setup:
+md5sum tlb.o
+7c7e096bab0fd87bd2c8437d8c7dc3fa  tlb.o
+
+linux-safety, please verify and validate this change.
+
+ arch/x86/mm/tlb.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/arch/x86/mm/tlb.c b/arch/x86/mm/tlb.c
+index 6b0f4c88b07c..90515c04d90a 100644
+--- a/arch/x86/mm/tlb.c
++++ b/arch/x86/mm/tlb.c
+@@ -316,7 +316,7 @@ EXPORT_SYMBOL_GPL(leave_mm);
+ 
+ int enable_l1d_flush_for_task(struct task_struct *tsk)
+ {
+-	int cpu, ret = 0, i;
++	int i;
+ 
+ 	/*
+ 	 * Do not enable L1D_FLUSH_OUT if
+@@ -329,7 +329,7 @@ int enable_l1d_flush_for_task(struct task_struct *tsk)
+ 			!static_cpu_has(X86_FEATURE_FLUSH_L1D))
+ 		return -EINVAL;
+ 
+-	cpu = get_cpu();
++	get_cpu();
+ 
+ 	for_each_cpu(i, &tsk->cpus_mask) {
+ 		if (cpu_data(i).smt_active == true) {
+@@ -340,7 +340,7 @@ int enable_l1d_flush_for_task(struct task_struct *tsk)
+ 
+ 	set_ti_thread_flag(&tsk->thread_info, TIF_SPEC_L1D_FLUSH);
+ 	put_cpu();
+-	return ret;
++	return 0;
+ }
+ 
+ int disable_l1d_flush_for_task(struct task_struct *tsk)
+-- 
+2.17.1
+
