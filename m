@@ -2,215 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82F1F27AFC5
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 16:13:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9AD927AFC2
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 16:12:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726651AbgI1ONQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 10:13:16 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:49800 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726310AbgI1ONQ (ORCPT
+        id S1726621AbgI1OMo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 10:12:44 -0400
+Received: from lb2-smtp-cloud7.xs4all.net ([194.109.24.28]:42211 "EHLO
+        lb2-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726310AbgI1OMn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 10:13:16 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08SE9Vn5065420;
-        Mon, 28 Sep 2020 14:12:24 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : in-reply-to : message-id : references : mime-version :
- content-type; s=corp-2020-01-29;
- bh=iQLxmJxSvSJscFRlyFmzx7cDJf4NvJfEUoYeUUEmSq0=;
- b=0Q8eHlmTxUZwNR4uBoJ/jRA6CQrm4V75pLJYhNynu/mQZ7SGs4IhFb5URe85IyR6NQmn
- 35FuToHscKSC/Wrpy+Cjtfn2qErrGK9aS1tGZVFCxgz1kIuI/URfiCdcjziZDMx4cPvs
- bWtFzR8OACZIAELD+dvm8zwZv8E9Tae6R6gW9qPgrI7GZetbXgt7R/ZsudIm+WJov0e3
- d1+bfs4LXwuaDTCuRpu8JqHUFdKPhp3spBQSdKHT3vLSn03QLYzTG63fLL8D1+pGITz5
- 64PayZfxn+8mvMsFXTW8ihexhiU35xJ9/oixDix5TdSPsI8KCeRydXcqiGFt+LXwBPqd lg== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 33swkkn9pk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 28 Sep 2020 14:12:24 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08SEAOmu181612;
-        Mon, 28 Sep 2020 14:12:24 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3020.oracle.com with ESMTP id 33tfhwax0j-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 28 Sep 2020 14:12:24 +0000
-Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 08SECIhV022371;
-        Mon, 28 Sep 2020 14:12:18 GMT
-Received: from dhcp-10-175-172-184.vpn.oracle.com (/10.175.172.184)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 28 Sep 2020 07:12:18 -0700
-Date:   Mon, 28 Sep 2020 15:12:04 +0100 (IST)
-From:   Alan Maguire <alan.maguire@oracle.com>
-X-X-Sender: alan@localhost
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-cc:     Alan Maguire <alan.maguire@oracle.com>, ast@kernel.org,
-        daniel@iogearbox.net, andriin@fb.com, yhs@fb.com,
-        linux@rasmusvillemoes.dk, andriy.shevchenko@linux.intel.com,
-        pmladek@suse.com, kafai@fb.com, songliubraving@fb.com,
-        john.fastabend@gmail.com, kpsingh@chromium.org, shuah@kernel.org,
-        rdna@fb.com, scott.branden@broadcom.com, quentin@isovalent.com,
-        cneirabustos@gmail.com, jakub@cloudflare.com, mingo@redhat.com,
-        rostedt@goodmis.org, bpf@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        acme@kernel.org
-Subject: Re: [PATCH v6 bpf-next 6/6] selftests/bpf: add test for bpf_seq_printf_btf
- helper
-In-Reply-To: <20200925012611.jebtlvcttusk3hbx@ast-mbp.dhcp.thefacebook.com>
-Message-ID: <alpine.LRH.2.21.2009281500220.13299@localhost>
-References: <1600883188-4831-1-git-send-email-alan.maguire@oracle.com> <1600883188-4831-7-git-send-email-alan.maguire@oracle.com> <20200925012611.jebtlvcttusk3hbx@ast-mbp.dhcp.thefacebook.com>
-User-Agent: Alpine 2.21 (LRH 202 2017-01-01)
+        Mon, 28 Sep 2020 10:12:43 -0400
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud7.xs4all.net with ESMTPA
+        id MttMk6kYjv4gEMttPkROmB; Mon, 28 Sep 2020 16:12:41 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s1;
+        t=1601302361; bh=tCYrxQLs0ptZjaQbbKuxZVmedyj/sbq6LVmqSQgCCYs=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=NgDg30vewxZvAttfeTM6OeTLv5O4WCVEuyMZvUNOT+uz/jOcgF2pk81XJONne8wGn
+         rTQFGfepRi9kW7U3PCrCBDMyjIrKfFnrn0+RucUbX0kcUSdX60Zz3zLx1wi64v51uZ
+         qJe7VSv1xX9GXu26P8wOZll8hQVPq7xWOZebrjgQH5Eqlr8MOc/CFpecgpiaJZFQ3P
+         R9rjZeVQdsX6mSbmOsmBCDvA0/g8H8DnlxGO3Z2Hwa/dwkCgEGxvVQgGVRAF6E0t5h
+         zeKs9kEtuO+Jp9keUYMI8wvlsWBiL4FlnQb5nCWT1Uwo+fKELGig/Yejwl7fl23kZ5
+         sNQpxhpjWH7PQ==
+Subject: Re: [PATCH] media: v4l2-mem2mem: Fix spurious v4l2_m2m_buf_done
+To:     Ezequiel Garcia <ezequiel@collabora.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Tomasz Figa <tfiga@chromium.org>, kernel@collabora.com,
+        Adrian Ratiu <adrian.ratiu@collabora.com>
+References: <20200814071202.25067-9-xia.jiang@mediatek.com>
+ <20200928140334.19070-1-ezequiel@collabora.com>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Message-ID: <a25c5c3e-6ece-5996-101e-a36a660f6c5a@xs4all.nl>
+Date:   Mon, 28 Sep 2020 16:12:36 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9757 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999 bulkscore=0
- phishscore=0 malwarescore=0 adultscore=0 suspectscore=3 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009280114
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9757 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0 phishscore=0
- suspectscore=3 mlxlogscore=999 clxscore=1015 priorityscore=1501
- impostorscore=0 lowpriorityscore=0 bulkscore=0 spamscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009280114
+In-Reply-To: <20200928140334.19070-1-ezequiel@collabora.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4wfFgE24lYB1apI/z5TurW1TjBc86r2cEyO8A5Oi12umsNgKNI1yFZGqEMtfaLYNAFcWhyAKo1SV2kIROJDYp8dmIv04EO/AILUu8TlPV245zb3Hgv+Uyd
+ 4xiTfitveilQFEgtI1VUd7J+obFaQZwrlyDxl4+UczfEyDyKW2trhHpMIVJ914WePg1IHAUfwE4z8Qk8yL4o3snEgey/2ok7FowkdUqE8fWRedhFdZcg6Xtx
+ yCDEEh+xE98dF1htLg+NGaVqi/2iQeqYZENIgeBOQQHGAQvVDvPkpggbwM4+vE8AZgbwZMYgZ3mQ6xg7YF0d5yKfCtH9bho7N7l+zs5kOttV3c/ZKyWserRz
+ VXDURmvb
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On Thu, 24 Sep 2020, Alexei Starovoitov wrote:
-
-> to whatever number, but printing single task_struct needs ~800 lines and
-> ~18kbytes. Humans can scroll through that much spam, but can we make it less
-> verbose by default somehow?
-> May be not in this patch set, but in the follow up?
->
-
-One approach that might work would be to devote 4 bits or so of
-flag space to a "maximum depth" specifier; i.e. at depth 1,
-only base types are displayed, no aggregate types like arrays,
-structs and unions.  We've already got depth processing in the
-code to figure out if possibly zeroed nested data needs to be
-displayed, so it should hopefully be a simple follow-up.
-
-One way to express it would be to use "..." to denote field(s)
-were omitted. We could even use the number of "."s to denote
-cases where multiple fields were omitted, giving a visual sense
-of how much data was omitted.  So for example with 
-BTF_F_MAX_DEPTH(1), task_struct looks like this:
-
-(struct task_struct){
- .state = ()1,
- .stack = ( *)0x00000000029d1e6f,
- ...
- .flags = (unsigned int)4194560,
- ...
- .cpu = (unsigned int)36,
- .wakee_flips = (unsigned int)11,
- .wakee_flip_decay_ts = (long unsigned int)4294914874,
- .last_wakee = (struct task_struct *)0x000000006c7dfe6d,
- .recent_used_cpu = (int)19,
- .wake_cpu = (int)36,
- .prio = (int)120,
- .static_prio = (int)120,
- .normal_prio = (int)120,
- .sched_class = (struct sched_class *)0x00000000ad1561e6,
- ...
- .exec_start = (u64)674402577156,
- .sum_exec_runtime = (u64)5009664110,
- .vruntime = (u64)167038057,
- .prev_sum_exec_runtime = (u64)5009578167,
- .nr_migrations = (u64)54,
- .depth = (int)1,
- .parent = (struct sched_entity *)0x00000000cba60e7d,
- .cfs_rq = (struct cfs_rq *)0x0000000014f353ed,
- ...
- 
-...etc. What do you think?
-
-> > +SEC("iter/task")
-> > +int dump_task_fs_struct(struct bpf_iter__task *ctx)
-> > +{
-> > +	static const char fs_type[] = "struct fs_struct";
-> > +	struct seq_file *seq = ctx->meta->seq;
-> > +	struct task_struct *task = ctx->task;
-> > +	struct fs_struct *fs = (void *)0;
-> > +	static struct btf_ptr ptr = { };
-> > +	long ret;
-> > +
-> > +	if (task)
-> > +		fs = task->fs;
-> > +
-> > +	ptr.type = fs_type;
-> > +	ptr.ptr = fs;
+On 28/09/2020 16:03, Ezequiel Garcia wrote:
+> A seemingly bad rebase introduced a spurious v4l2_m2m_buf_done,
+> which releases a buffer twice and therefore triggers a
+> noisy warning on each job:
 > 
-> imo the following is better:
->        ptr.type_id = __builtin_btf_type_id(*fs, 1);
->        ptr.ptr = fs;
+> WARNING: CPU: 0 PID: 0 at drivers/media/common/videobuf2/videobuf2-core.c:986 vb2_buffer_done+0x208/0x2a0
+> 
+> Fix it by removing the spurious v4l2_m2m_buf_done.
+> 
+> Reported-by: Adrian Ratiu <adrian.ratiu@collabora.com>
+> Fixes: 911ea8ec42dea ("media: v4l2-mem2mem: add v4l2_m2m_suspend, v4l2_m2m_resume")
+> Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
+
+Reviewed-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+
+> ---
+>  drivers/media/v4l2-core/v4l2-mem2mem.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/drivers/media/v4l2-core/v4l2-mem2mem.c b/drivers/media/v4l2-core/v4l2-mem2mem.c
+> index f626ba5ee3d9..b221b4e438a1 100644
+> --- a/drivers/media/v4l2-core/v4l2-mem2mem.c
+> +++ b/drivers/media/v4l2-core/v4l2-mem2mem.c
+> @@ -516,7 +516,6 @@ void v4l2_m2m_buf_done_and_job_finish(struct v4l2_m2m_dev *m2m_dev,
+>  
+>  	if (WARN_ON(!src_buf || !dst_buf))
+>  		goto unlock;
+> -	v4l2_m2m_buf_done(src_buf, state);
+>  	dst_buf->is_held = src_buf->flags & V4L2_BUF_FLAG_M2M_HOLD_CAPTURE_BUF;
+>  	if (!dst_buf->is_held) {
+>  		v4l2_m2m_dst_buf_remove(m2m_ctx);
 > 
 
-I'm still seeing lookup failures using __builtin_btf_type_id(,1) -
-whereas both __builtin_btf_type_id(,0) and Andrii's
-suggestion of bpf_core_type_id_kernel() work. Not sure what's
-going on - pahole is v1.17, clang is
-
-clang version 12.0.0 (/mnt/src/llvm-project/clang 
-7ab7b979d29e1e43701cf690f5cf1903740f50e3)
-
-> > +
-> > +	if (ctx->meta->seq_num == 0)
-> > +		BPF_SEQ_PRINTF(seq, "Raw BTF fs_struct per task\n");
-> > +
-> > +	ret = bpf_seq_printf_btf(seq, &ptr, sizeof(ptr), 0);
-> > +	switch (ret) {
-> > +	case 0:
-> > +		tasks++;
-> > +		break;
-> > +	case -ERANGE:
-> > +		/* NULL task or task->fs, don't count it as an error. */
-> > +		break;
-> > +	default:
-> > +		seq_err = ret;
-> > +		break;
-> > +	}
-> 
-> Please add handling of E2BIG to this switch. Otherwise
-> printing large amount of tiny structs will overflow PAGE_SIZE and E2BIG
-> will be send to user space.
-> Like this:
-> @@ -40,6 +40,8 @@ int dump_task_fs_struct(struct bpf_iter__task *ctx)
->         case -ERANGE:
->                 /* NULL task or task->fs, don't count it as an error. */
->                 break;
-> +       case -E2BIG:
-> +               return 1;
-> 
-
-Done.
-
-> Also please change bpf_seq_read() like this:
-> diff --git a/kernel/bpf/bpf_iter.c b/kernel/bpf/bpf_iter.c
-> index 30833bbf3019..8f10e30ea0b0 100644
-> --- a/kernel/bpf/bpf_iter.c
-> +++ b/kernel/bpf/bpf_iter.c
-> @@ -88,8 +88,8 @@ static ssize_t bpf_seq_read(struct file *file, char __user *buf, size_t size,
->         mutex_lock(&seq->lock);
-> 
->         if (!seq->buf) {
-> -               seq->size = PAGE_SIZE;
-> -               seq->buf = kmalloc(seq->size, GFP_KERNEL);
-> +               seq->size = PAGE_SIZE << 3;
-> +               seq->buf = kvmalloc(seq->size, GFP_KERNEL);
-> 
-> So users can print task_struct by default.
-> Hopefully we will figure out how to deal with spam later.
-> 
-
-Thanks for all the help and suggestions! I didn't want to
-attribute the patch bumping seq size in v7 to you without your 
-permission, but it's all your work so if I need to respin let me
-know if you'd like me to fix that. Thanks again!
-
-Alan
