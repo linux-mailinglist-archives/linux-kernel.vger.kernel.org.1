@@ -2,54 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89FC327B2AE
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 19:05:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D404F27B2CE
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 19:11:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726630AbgI1RFW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 13:05:22 -0400
-Received: from foss.arm.com ([217.140.110.172]:55152 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726420AbgI1RFW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 13:05:22 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D73B531B;
-        Mon, 28 Sep 2020 10:05:21 -0700 (PDT)
-Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D6DF03F6CF;
-        Mon, 28 Sep 2020 10:05:20 -0700 (PDT)
-Date:   Mon, 28 Sep 2020 18:05:15 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Bean Huo <huobean@gmail.com>
-Cc:     songxiaowei@hisilicon.com, wangbinghui@hisilicon.com,
-        bhelgaas@google.com, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, beanhuo@micron.com
-Subject: Re: [PATCH] PCI: kirin: Return -EPROBE_DEFER in case the gpio isn't
- ready
-Message-ID: <20200928165645.GA17518@e121166-lin.cambridge.arm.com>
-References: <20200918123800.19983-1-huobean@gmail.com>
- <20200921112209.GA2220@e121166-lin.cambridge.arm.com>
- <2f29372be8186f25222e370f5601019b4d95b7b3.camel@gmail.com>
- <9f5d395618ebd435a573527137370937ae3ef723.camel@gmail.com>
+        id S1726629AbgI1RLU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 13:11:20 -0400
+Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:53496
+        "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726393AbgI1RLU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 13:11:20 -0400
+X-IronPort-AV: E=Sophos;i="5.77,313,1596492000"; 
+   d="scan'208";a="360266987"
+Received: from abo-173-121-68.mrs.modulonet.fr (HELO hadrien) ([85.68.121.173])
+  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 19:11:16 +0200
+Date:   Mon, 28 Sep 2020 19:11:16 +0200 (CEST)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     Joe Perches <joe@perches.com>
+cc:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        =?UTF-8?Q?Valdis_Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        kernel-janitors@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 03/18] [ARM] pata_icside: use semicolons rather than
+ commas to separate statements
+In-Reply-To: <8cf2fad1659acd756703deb106d55483bd1e1eb9.camel@perches.com>
+Message-ID: <alpine.DEB.2.22.394.2009281909000.2650@hadrien>
+References: <1601233948-11629-1-git-send-email-Julia.Lawall@inria.fr>  <1601233948-11629-4-git-send-email-Julia.Lawall@inria.fr> <8cf2fad1659acd756703deb106d55483bd1e1eb9.camel@perches.com>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9f5d395618ebd435a573527137370937ae3ef723.camel@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 26, 2020 at 09:49:56AM +0200, Bean Huo wrote:
-> seems the Hisilicon PCI driver maintainers are absent, however, we are
-> still using their old platform based on Kirin.
-> 
-> hi, Lorenzo
-> is it possible to take this patch without Hisilicon maintainter's ACK?
 
-I applied it to pci/kirin, tentatively for v5.10.
 
-Lorenzo
+On Mon, 28 Sep 2020, Joe Perches wrote:
 
-> Thanks,
-> Bean
-> 
+> On Sun, 2020-09-27 at 21:12 +0200, Julia Lawall wrote:
+> > Replace commas with semicolons.  What is done is essentially described by
+> > the following Coccinelle semantic patch (http://coccinelle.lip6.fr/):
+>
+> Hi Julia.
+>
+> How did you decide on this patch subject header line?
+>
+> It's certainly reasonable, but not what I would expect
+> from any automation.
+
+Most of the patches on this file touch other files as well.  There are
+four that only touch this file.  One has no subsystem.  One has dma as the
+subsystem.  Two have pata_icside, so that was chosen.
+
+I found that taking the most popular overall could give results that were
+too general.
+
+julia
+
+>
+> A somewhat common method of finding the most commonly used
+> "git log" subject line doesn't easily provide a similar heading.
+>
+> $ git log --no-merges --format='%s' drivers/ata/pata_icside.c
+> treewide: Add SPDX license identifier for more missed files
+> libata: remove ata_sff_data_xfer_noirq()
+> scsi: rename SCSI_MAX_{SG, SG_CHAIN}_SEGMENTS
+> Drivers: ata: remove __dev* attributes.
+> ata: Convert ata_<foo>_printk(KERN_<LEVEL> to ata_<foo>_<level>
+> libata-sff: separate out BMDMA irq handler
+> libata-sff: separate out BMDMA EH
+> libata-sff: clean up BMDMA initialization
+> libata-sff: clean up inheritance in several drivers
+> include cleanup: Update gfp.h and slab.h includes to prepare for breaking implicit slab.h inclusion from percpu.h
+> [libata] convert drivers to use ata.h mode mask defines
+> [ARM] dma: Use sensible DMA parameters for Acorn drivers
+> [ARM] dma: pata_icside's contiguous sg array is now redundant
+> libata-sff: Fix oops reported in kerneloops.org for pnp devices with no ctl
+> libata: rename SFF port ops
+> libata: rename SFF functions
+> libata: make reset related methods proper port operations
+> libata: implement and use ops inheritance
+> libata: implement and use SHT initializers
+> libata: implement and use ata_noop_irq_clear()
+> libata: eliminate the home grown dma padding in favour of
+> libata: convert to chained sg
+> Fix pata_icside build for recent libata API changes
+> libata: implement and use ata_port_desc() to report port configuration
+> [libata] Remove ->port_disable() hook
+> [libata] Remove ->irq_ack() hook, and ata_dummy_irq_on()
+> [ARM] pata_icside: fix the FIXMEs
+> [libata] PATA drivers: remove ATA_FLAG_SRST
+> [ARM] pata_icside: fix build errors
+> [ARM] ecard: add ecardm_iomap() / ecardm_iounmap()
+> [ARM] ecard: add helper function for setting ecard irq ops
+> [ARM] Add support for ICSIDE interface on RiscPC
+>
+> $ git log --no-merges --format='%s' drivers/ata/pata_icside.c | \
+>   cut -f1 -d":" | sort | uniq -c | sort -rn
+>      10 libata
+>       5 libata-sff
+>       2 [ARM] pata_icside
+>       2 [ARM] ecard
+>       2 [ARM] dma
+>       1 treewide
+>       1 scsi
+>       1 [libata] Remove ->port_disable() hook
+>       1 [libata] Remove ->irq_ack() hook, and ata_dummy_irq_on()
+>       1 [libata] PATA drivers
+>       1 [libata] convert drivers to use ata.h mode mask defines
+>       1 include cleanup
+>       1 Fix pata_icside build for recent libata API changes
+>       1 Drivers
+>       1 ata
+>       1 [ARM] Add support for ICSIDE interface on RiscPC
+>
+>
+>
