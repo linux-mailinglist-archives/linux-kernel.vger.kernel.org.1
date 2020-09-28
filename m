@@ -2,229 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A3A327B7F3
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 01:19:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D31EC27B815
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 01:28:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727284AbgI1XTe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 19:19:34 -0400
-Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:34048 "EHLO
-        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726958AbgI1XTX (ORCPT
+        id S1727123AbgI1X2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 19:28:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38886 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727078AbgI1X2o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 19:19:23 -0400
-Received: from unknown (HELO ironmsg05-sd.qualcomm.com) ([10.53.140.145])
-  by alexa-out-sd-02.qualcomm.com with ESMTP; 28 Sep 2020 15:49:11 -0700
-X-QCInternal: smtphost
-Received: from gurus-linux.qualcomm.com ([10.46.162.81])
-  by ironmsg05-sd.qualcomm.com with ESMTP; 28 Sep 2020 15:49:10 -0700
-Received: by gurus-linux.qualcomm.com (Postfix, from userid 383780)
-        id EB5A0196D; Mon, 28 Sep 2020 15:49:10 -0700 (PDT)
-From:   Guru Das Srinagesh <gurus@codeaurora.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-msm@vger.kernel.org
-Cc:     Subbaraman Narayanamurthy <subbaram@codeaurora.org>,
-        David Collins <collinsd@codeaurora.org>,
-        linux-kernel@vger.kernel.org, Stephen Boyd <sboyd@kernel.org>,
-        Anirudh Ghayal <aghayal@codeaurora.org>,
-        Kavya Nunna <knunna@codeaurora.org>,
-        Guru Das Srinagesh <gurus@codeaurora.org>
-Subject: [RESEND PATCH v1 2/2] extcon: qcom-spmi: Add support for VBUS detection
-Date:   Mon, 28 Sep 2020 15:49:09 -0700
-Message-Id: <0f1784d1091bcdc9fb36ba4f33f1c35d61196a13.1601333246.git.gurus@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <cover.1601333246.git.gurus@codeaurora.org>
-References: <cover.1601333246.git.gurus@codeaurora.org>
-In-Reply-To: <cover.1601333246.git.gurus@codeaurora.org>
-References: <cover.1601333246.git.gurus@codeaurora.org>
+        Mon, 28 Sep 2020 19:28:44 -0400
+Received: from mail-ej1-x64a.google.com (mail-ej1-x64a.google.com [IPv6:2a00:1450:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F9BBC0613BA
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 15:49:28 -0700 (PDT)
+Received: by mail-ej1-x64a.google.com with SMTP id b17so989956ejb.20
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 15:49:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc
+         :content-transfer-encoding;
+        bh=TAg/M8M9moj9aK9JgpCPViDbJ0zI90Vf31L7QZTXfVA=;
+        b=WCUoXB1SE0Qc15j9g1xzWJXPQY6xWmD1DZrha/7ZIozuW1dz2KCGlkFXksQQHPiytA
+         37piZ/s1sdbzot6pdWymCATwrZYuWFcw4f5YRMl8VrGV7213VPF2JP5L8Y1UTIbiQSBu
+         3M6mmbaaaNbSbcuPDRz4HryzjbKVXh+uVXhpkAUQdY0+wtSxMHMpvzVk8B6asUzn95mK
+         dDvbAWQcXhp3gH6urgFmT1ke3ITD1KKZTupmsqtc7LY00xgBd/Xw6a4Q214C9xGvsj6A
+         v/u9lf8V2NoR/JWzAtDrzx67+0MzaHFTtxL3CwTSITPMHolHL8C78MI4byx3SuUqHLnM
+         x60w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc:content-transfer-encoding;
+        bh=TAg/M8M9moj9aK9JgpCPViDbJ0zI90Vf31L7QZTXfVA=;
+        b=CpGBn0MCPTuUV544ZwzojRQXL2+ZWd9gq5soYzZi5SbulDDwqtaf3VjGmEHkpH4+w4
+         1wBCMJTT4j57aYpsKXE33dfWhX679lUHybhemmg/yv2Kwd1ZV62LO2Uu09AMw+HkhJ2o
+         cuay0ZAUG/e++jw37rieYsb8deHwSiXJap5JtbvnVDyoRWz0OvtdhDNVf3+sIUwp18bA
+         rBpCBgHUKGWuZsIiIIbR7ygBAG53IZAmUgahRTWxbPJT1UvAGC/i855MEQ40DcJpGvz4
+         I29/qYz+V0Kdynd11ljhhOl3CeWTu52YwQE+4v6IR+V64bH//OVlB5wD/AvkHqCxMEUE
+         CDCA==
+X-Gm-Message-State: AOAM5306Q91HirxvZR556zIUjEd/WE5OlUP3RNOSq47LjOnhN4TxIZ3b
+        eYJPPP28T0qlQCA9fhPUSzqtfr001g==
+X-Google-Smtp-Source: ABdhPJx5pciSmGAqNJelDt4If0xrz1Ql9OatJJf8io35LL2bKVVeDGinctQ1ejMwKVM9nQBU4GZqMmWJlA==
+Sender: "jannh via sendgmr" <jannh@jannh2.zrh.corp.google.com>
+X-Received: from jannh2.zrh.corp.google.com ([2a00:79e0:1b:201:1a60:24ff:fea6:bf44])
+ (user=jannh job=sendgmr) by 2002:aa7:d3da:: with SMTP id o26mr221995edr.169.1601333366593;
+ Mon, 28 Sep 2020 15:49:26 -0700 (PDT)
+Date:   Tue, 29 Sep 2020 00:49:16 +0200
+Message-Id: <20200928224916.2101563-1-jannh@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.28.0.709.gb0816b6eb0-goog
+Subject: [PATCH] objtool: Permit __kasan_check_{read,write} under UACCESS
+From:   Jann Horn <jannh@google.com>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anirudh Ghayal <aghayal@codeaurora.org>
+Building linux-next with JUMP_LABEL=3Dn and KASAN=3Dy, I got this objtool
+warning:
 
-VBUS can be detected via a dedicated PMIC pin. Add support
-for reporting the VBUS status.
+arch/x86/lib/copy_mc.o: warning: objtool: copy_mc_to_user()+0x22: call to
+__kasan_check_read() with UACCESS enabled
 
-Signed-off-by: Anirudh Ghayal <aghayal@codeaurora.org>
-Signed-off-by: Kavya Nunna <knunna@codeaurora.org>
-Signed-off-by: Guru Das Srinagesh <gurus@codeaurora.org>
+What happens here is that copy_mc_to_user() branches on a static key in a
+UACCESS region:
+
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 __uaccess_begin();
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 if (static_branch_unlikely(&copy_mc_fragile_key=
+))
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 ret =3D copy_mc_fra=
+gile(to, from, len);
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 ret =3D copy_mc_generic(to, from, len);
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 __uaccess_end();
+
+and the !CONFIG_JUMP_LABEL version of static_branch_unlikely() uses
+static_key_enabled(), which uses static_key_count(), which uses
+atomic_read(), which calls instrument_atomic_read(), which uses
+kasan_check_read(), which is __kasan_check_read().
+
+Let's permit these KASAN helpers in UACCESS regions - static keys should
+probably work under UACCESS, I think.
+
+Signed-off-by: Jann Horn <jannh@google.com>
 ---
- drivers/extcon/extcon-qcom-spmi-misc.c | 100 ++++++++++++++++++++++++++-------
- 1 file changed, 81 insertions(+), 19 deletions(-)
+Calling atomic_read() on a global under UACCESS should probably be fine,
+right? The alternative to this patch would be to change
+copy_mc_to_user()...
 
-diff --git a/drivers/extcon/extcon-qcom-spmi-misc.c b/drivers/extcon/extcon-qcom-spmi-misc.c
-index 6b836ae..6bd6746 100644
---- a/drivers/extcon/extcon-qcom-spmi-misc.c
-+++ b/drivers/extcon/extcon-qcom-spmi-misc.c
-@@ -1,7 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0-only
- /**
-  * extcon-qcom-spmi-misc.c - Qualcomm USB extcon driver to support USB ID
-- *				detection based on extcon-usb-gpio.c.
-+ *			and VBUS detection based on extcon-usb-gpio.c.
-  *
-  * Copyright (C) 2016 Linaro, Ltd.
-  * Stephen Boyd <stephen.boyd@linaro.org>
-@@ -21,30 +21,56 @@
- 
- struct qcom_usb_extcon_info {
- 	struct extcon_dev *edev;
--	int irq;
-+	int id_irq;
-+	int vbus_irq;
- 	struct delayed_work wq_detcable;
- 	unsigned long debounce_jiffies;
- };
- 
- static const unsigned int qcom_usb_extcon_cable[] = {
-+	EXTCON_USB,
- 	EXTCON_USB_HOST,
- 	EXTCON_NONE,
- };
- 
- static void qcom_usb_extcon_detect_cable(struct work_struct *work)
- {
--	bool id;
-+	bool state = false;
- 	int ret;
-+	union extcon_property_value val;
- 	struct qcom_usb_extcon_info *info = container_of(to_delayed_work(work),
- 						    struct qcom_usb_extcon_info,
- 						    wq_detcable);
- 
--	/* check ID and update cable state */
--	ret = irq_get_irqchip_state(info->irq, IRQCHIP_STATE_LINE_LEVEL, &id);
--	if (ret)
--		return;
-+	if (info->id_irq > 0) {
-+		/* check ID and update cable state */
-+		ret = irq_get_irqchip_state(info->id_irq,
-+				IRQCHIP_STATE_LINE_LEVEL, &state);
-+		if (ret)
-+			return;
-+
-+		if (!state) {
-+			val.intval = true;
-+			extcon_set_property(info->edev, EXTCON_USB_HOST,
-+						EXTCON_PROP_USB_SS, val);
-+		}
-+		extcon_set_state_sync(info->edev, EXTCON_USB_HOST, !state);
-+	}
- 
--	extcon_set_state_sync(info->edev, EXTCON_USB_HOST, !id);
-+	if (info->vbus_irq > 0) {
-+		/* check VBUS and update cable state */
-+		ret = irq_get_irqchip_state(info->vbus_irq,
-+				IRQCHIP_STATE_LINE_LEVEL, &state);
-+		if (ret)
-+			return;
-+
-+		if (state) {
-+			val.intval = true;
-+			extcon_set_property(info->edev, EXTCON_USB,
-+						EXTCON_PROP_USB_SS, val);
-+		}
-+		extcon_set_state_sync(info->edev, EXTCON_USB, state);
-+	}
- }
- 
- static irqreturn_t qcom_usb_irq_handler(int irq, void *dev_id)
-@@ -79,21 +105,48 @@ static int qcom_usb_extcon_probe(struct platform_device *pdev)
- 		return ret;
- 	}
- 
-+	ret = extcon_set_property_capability(info->edev,
-+			EXTCON_USB, EXTCON_PROP_USB_SS);
-+	ret |= extcon_set_property_capability(info->edev,
-+			EXTCON_USB_HOST, EXTCON_PROP_USB_SS);
-+	if (ret) {
-+		dev_err(dev, "failed to register extcon props rc=%d\n",
-+						ret);
-+		return ret;
-+	}
-+
- 	info->debounce_jiffies = msecs_to_jiffies(USB_ID_DEBOUNCE_MS);
- 	INIT_DELAYED_WORK(&info->wq_detcable, qcom_usb_extcon_detect_cable);
- 
--	info->irq = platform_get_irq_byname(pdev, "usb_id");
--	if (info->irq < 0)
--		return info->irq;
-+	info->id_irq = platform_get_irq_byname(pdev, "usb_id");
-+	if (info->id_irq > 0) {
-+		ret = devm_request_threaded_irq(dev, info->id_irq, NULL,
-+					qcom_usb_irq_handler,
-+					IRQF_TRIGGER_RISING |
-+					IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
-+					pdev->name, info);
-+		if (ret < 0) {
-+			dev_err(dev, "failed to request handler for ID IRQ\n");
-+			return ret;
-+		}
-+	}
- 
--	ret = devm_request_threaded_irq(dev, info->irq, NULL,
-+	info->vbus_irq = platform_get_irq_byname(pdev, "usb_vbus");
-+	if (info->vbus_irq > 0) {
-+		ret = devm_request_threaded_irq(dev, info->vbus_irq, NULL,
- 					qcom_usb_irq_handler,
- 					IRQF_TRIGGER_RISING |
- 					IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
- 					pdev->name, info);
--	if (ret < 0) {
--		dev_err(dev, "failed to request handler for ID IRQ\n");
--		return ret;
-+		if (ret < 0) {
-+			dev_err(dev, "failed to request handler for VBUS IRQ\n");
-+			return ret;
-+		}
-+	}
-+
-+	if (info->id_irq < 0 && info->vbus_irq < 0) {
-+		dev_err(dev, "ID and VBUS IRQ not found\n");
-+		return -EINVAL;
- 	}
- 
- 	platform_set_drvdata(pdev, info);
-@@ -120,8 +173,12 @@ static int qcom_usb_extcon_suspend(struct device *dev)
- 	struct qcom_usb_extcon_info *info = dev_get_drvdata(dev);
- 	int ret = 0;
- 
--	if (device_may_wakeup(dev))
--		ret = enable_irq_wake(info->irq);
-+	if (device_may_wakeup(dev)) {
-+		if (info->id_irq > 0)
-+			ret = enable_irq_wake(info->id_irq);
-+		if (info->vbus_irq > 0)
-+			ret = enable_irq_wake(info->vbus_irq);
-+	}
- 
- 	return ret;
- }
-@@ -131,8 +188,12 @@ static int qcom_usb_extcon_resume(struct device *dev)
- 	struct qcom_usb_extcon_info *info = dev_get_drvdata(dev);
- 	int ret = 0;
- 
--	if (device_may_wakeup(dev))
--		ret = disable_irq_wake(info->irq);
-+	if (device_may_wakeup(dev)) {
-+		if (info->id_irq > 0)
-+			ret = disable_irq_wake(info->id_irq);
-+		if (info->vbus_irq > 0)
-+			ret = disable_irq_wake(info->vbus_irq);
-+	}
- 
- 	return ret;
- }
-@@ -143,6 +204,7 @@ static SIMPLE_DEV_PM_OPS(qcom_usb_extcon_pm_ops,
- 
- static const struct of_device_id qcom_usb_extcon_dt_match[] = {
- 	{ .compatible = "qcom,pm8941-misc", },
-+	{ .compatible = "qcom,pmd-vbus-det", },
- 	{ }
- };
- MODULE_DEVICE_TABLE(of, qcom_usb_extcon_dt_match);
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+Note that copy_mc_to_user() does not exist in the tip tree yet; it
+appeared in commit 0a78de3d4b7b1b80e5c1eead24ce11c4b3cc8791 in the
+nvdimm tree.
+
+ tools/objtool/check.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/tools/objtool/check.c b/tools/objtool/check.c
+index a88fb05242d5..1141a8e26c1e 100644
+--- a/tools/objtool/check.c
++++ b/tools/objtool/check.c
+@@ -583,6 +583,8 @@ static const char *uaccess_safe_builtin[] =3D {
+ 	"__asan_store4_noabort",
+ 	"__asan_store8_noabort",
+ 	"__asan_store16_noabort",
++	"__kasan_check_read",
++	"__kasan_check_write",
+ 	/* KASAN in-line */
+ 	"__asan_report_load_n_noabort",
+ 	"__asan_report_load1_noabort",
+
+base-commit: 0248dedd12d43035bf53c326633f0610a49d7134
+--=20
+2.28.0.709.gb0816b6eb0-goog
 
