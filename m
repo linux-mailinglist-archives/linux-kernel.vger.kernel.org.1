@@ -2,77 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EF7327D62F
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 20:53:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D459D27D63B
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 20:56:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728468AbgI2SxF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 14:53:05 -0400
-Received: from mail-ot1-f67.google.com ([209.85.210.67]:37480 "EHLO
-        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727740AbgI2SxE (ORCPT
+        id S1728509AbgI2S4d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 14:56:33 -0400
+Received: from mail-ot1-f68.google.com ([209.85.210.68]:35744 "EHLO
+        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727740AbgI2S4c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 14:53:04 -0400
-Received: by mail-ot1-f67.google.com with SMTP id o8so5520202otl.4;
-        Tue, 29 Sep 2020 11:53:02 -0700 (PDT)
+        Tue, 29 Sep 2020 14:56:32 -0400
+Received: by mail-ot1-f68.google.com with SMTP id s66so5530450otb.2;
+        Tue, 29 Sep 2020 11:56:31 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=4vsmavC+t3jWUrFxvQlPGqyQgVM8r2sGoRhi8Fg4sBM=;
-        b=SuXWq1TydqPIFCe3BogaRh18auBBwFROTdlceF66BzpNDNeUbZ6cpwabBp1h8hkFgL
-         uVKP1nHBvtTQf+rqbGicW8LhZGChDJJiMueiWc0nbs4u0z5Kt61++JY3iMmQcn57099M
-         JAdNEw4DhPAc4vn0UXArql2En3BqA8evxMvjcGAs1ZJC7IeXVzhsdcsjH1nimInA58LE
-         5fyAeMdtuLY/tC1TuFyE9T8O4mTpVLMfPyvvD8Y+uLyoVJ66a1xchALue7KILHkQPge7
-         qzHtsVMMDDds3yHL7gWVjfw0VsFFRXsNqnvgI+qEnb8FFiwrJHCA/ONngyPryF9VG2ik
-         A6WA==
-X-Gm-Message-State: AOAM530dbhgW1sVkz0MV+CliHVydeLQCoT1ZdanmpSONWYVRytI8DuX6
-        8sj3npXsZIZ9NSEaf2Iszg==
-X-Google-Smtp-Source: ABdhPJzz5OdfUnY1Kgb1WnljeQVvq4G0+uP+WdbRgqCe9+rnn7s/KTStarZQi4uDjVCSOgzc5VHIrg==
-X-Received: by 2002:a9d:6f98:: with SMTP id h24mr3664200otq.101.1601405582108;
-        Tue, 29 Sep 2020 11:53:02 -0700 (PDT)
+        bh=yQ/KrzK4yfoKUdCLw0ghQcxTiUteDo9PVTHtCn34YjM=;
+        b=Z1RrHA9hpvkE0JAp4qQ/RJZIlH2aCPAx+sB0K4vF8XYbGRCBz8WsqIFPO3YJzEMikB
+         dey3DpSDMfs9yMqtFo/e0bppD6lSzK/Pj1m7sm+OERErbMlv0m0jevvseTsseOXK3fL8
+         p7tJeynK+phBk+NUHBTHxlMkAhVeIlAWF20q9A6dZSwp1Fsk6fR3K5Qxdj3/1R2pz2lQ
+         P4BRd81xgduMkP0HVU/a/QjyPY0RAnsdx9tazoJfQqry7kGde73xi0yAozO5OwDm4SuL
+         M8iXBM0l6q1lhwhEQgd/KJh5CiGONbgpF2/8bfuX4VK10TBcoOuW1O4hG5yNfjqzsIen
+         3hxQ==
+X-Gm-Message-State: AOAM530klJZu8H1sG+7yhR+xfX0JVLimuiMS62LTJhz+iICbW5nBsSEY
+        xgW54vRufvnPaoo/oJsh/cuqlI9RUyCP
+X-Google-Smtp-Source: ABdhPJzkDOAfc+rv8g28EWOFXY2tIHwtG3dR5Toa04aCVd7WmrKVl84iCy093Kdia2S/C/B2j9xQUQ==
+X-Received: by 2002:a9d:5550:: with SMTP id h16mr3851712oti.157.1601405791567;
+        Tue, 29 Sep 2020 11:56:31 -0700 (PDT)
 Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id q81sm1176914oia.46.2020.09.29.11.53.01
+        by smtp.gmail.com with ESMTPSA id z20sm3131969oor.3.2020.09.29.11.56.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Sep 2020 11:53:01 -0700 (PDT)
-Received: (nullmailer pid 955668 invoked by uid 1000);
-        Tue, 29 Sep 2020 18:53:00 -0000
-Date:   Tue, 29 Sep 2020 13:53:00 -0500
+        Tue, 29 Sep 2020 11:56:30 -0700 (PDT)
+Received: (nullmailer pid 961198 invoked by uid 1000);
+        Tue, 29 Sep 2020 18:56:30 -0000
+Date:   Tue, 29 Sep 2020 13:56:30 -0500
 From:   Rob Herring <robh@kernel.org>
-To:     Michael Auchter <michael.auchter@ni.com>
-Cc:     linux-kernel@vger.kernel.org, Hartmut Knaack <knaack.h@gmx.de>,
-        linux-iio@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v3 3/3] dt-bindings: iio: dac: ad5686: add binding
-Message-ID: <20200929185300.GA955613@bogus>
-References: <20200924195215.49443-1-michael.auchter@ni.com>
- <20200924195215.49443-3-michael.auchter@ni.com>
+To:     Chu Lin <linchuyuan@google.com>
+Cc:     jdelvare@suse.com, linux@roeck-us.net, linux-hwmon@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        qiongwang@google.com, zhongqil@google.com, jasonling@google.com,
+        belgaied@google.com
+Subject: Re: [PATCH v3 1/2] dt-bindings: hwmon: max20730: adding device tree
+ doc for max20730
+Message-ID: <20200929185630.GA955932@bogus>
+References: <20200924215444.2865885-1-linchuyuan@google.com>
+ <20200924215444.2865885-2-linchuyuan@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200924195215.49443-3-michael.auchter@ni.com>
+In-Reply-To: <20200924215444.2865885-2-linchuyuan@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 24 Sep 2020 14:52:14 -0500, Michael Auchter wrote:
-> Add a binding for AD5686
+On Thu, Sep 24, 2020 at 09:54:43PM +0000, Chu Lin wrote:
+> max20730 Integrated, Step-Down Switching Regulator with PMBus
 > 
-> Signed-off-by: Michael Auchter <michael.auchter@ni.com>
+> Signed-off-by: Chu Lin <linchuyuan@google.com>
 > ---
-> Changes since v1:
-> - Keep supported device sorted
-> - fix adc -> dac typo in schema path
-> since v2:
-> - drop address-cells and size-cells from binding doc
-> - add "additionalProperties: false"
-> - end with ...
+>  .../bindings/hwmon/maxim,max20730.yaml        | 63 +++++++++++++++++++
+>  1 file changed, 63 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/hwmon/maxim,max20730.yaml
 > 
->  .../bindings/iio/dac/adi,ad5686.yaml          | 57 +++++++++++++++++++
->  1 file changed, 57 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/iio/dac/adi,ad5686.yaml
-> 
+> diff --git a/Documentation/devicetree/bindings/hwmon/maxim,max20730.yaml b/Documentation/devicetree/bindings/hwmon/maxim,max20730.yaml
+> new file mode 100644
+> index 000000000000..7372b27334c3
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/hwmon/maxim,max20730.yaml
+> @@ -0,0 +1,63 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +
+> +$id: http://devicetree.org/schemas/hwmon/maxim,max20730.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Maxim max20730
+> +
+> +maintainers:
+> +  - Jean Delvare <jdelvare@suse.com>
+> +  - Guenter Roeck <linux@roeck-us.net>
+> +
+> +description: |
+> +  The MAX20730 is a fully integrated, highly efficient switching regulator
+> +  with PMBus for applications operating from 4.5V to 16V and requiring
+> +  up to 25A (max) load. This single-chip regulator provides extremely
+> +  compact, highefficiency power-delivery solutions with high-precision
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+space             ^
+
+> +  output voltages and excellent transient response
+
+period needed
+
+> +
+> +  Datasheets:
+> +    https://datasheets.maximintegrated.com/en/ds/MAX20730.pdf
+> +    https://datasheets.maximintegrated.com/en/ds/MAX20734.pdf
+> +    https://datasheets.maximintegrated.com/en/ds/MAX20743.pdf
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - maxim,max20730
+> +      - maxim,max20734
+> +      - maxim,max20743
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  vout-voltage-divider:
+> +    description: |
+> +      If voltage divider presents at vout, the voltage at voltage sensor pin
+> +      will be scaled. The properties will convert the raw reading to a more
+> +      meaningful number if voltage divider presents. It has two numbers,
+
+s/presents/present/
+
+> +      the first number is the output resistor, the second number is the total
+> +      resistance. Therefore, the adjusted vout is equal to
+> +      Vout = Vout * output_resistance / total resistance.
+> +    $ref: /schemas/types.yaml#/definitions/uint32-array
+> +    minItems: 2
+> +    maxItems: 2
+> +
+> +required:
+> +  - compatible
+> +  - reg
+
+additionalProperties: false
+
+> +
+> +examples:
+> +  - |
+> +    i2c {
+> +      #address-cells = <1>;
+> +      #size-cells = <0>;
+> +
+> +      max20730@10 {
+> +        compatible = "maxim,max20730";
+> +        reg = <0x10>;
+> +        vout-voltage-divider = <1000 2000>; // vout would be scaled to 0.5
+> +      };
+> +    };
+> -- 
+> 2.28.0.681.g6f77f65b4e-goog
+> 
