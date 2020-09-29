@@ -2,120 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6034B27BDF3
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 09:25:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FCFF27BDF8
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 09:26:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727480AbgI2HZg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 03:25:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55448 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725536AbgI2HZg (ORCPT
+        id S1726182AbgI2H0p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 03:26:45 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:58128 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725562AbgI2H0p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 03:25:36 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E097C061755;
-        Tue, 29 Sep 2020 00:25:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=z1LEDC9dbIm7MGnY3PO/Fs+DYoGU7JMpABHegTdqjpc=; b=nti/DiKTMG0Y8EpNjr3yjweRtW
-        fa1KycD/kV7rLcodN4hbh7od44OKC3SvrxXGug7leDRtxVNArwKzDWAZFE9smz2SmdjG9HCmhDMON
-        Ytsq51xbxJR+qhqeuxy9vS+byVrrhRhSDinSWPunbMaYOgv4EGKOZel+sj72eOwyjdZlkQYwfN5mK
-        qIT/eVpYBywe+3D5t8qNmJEBd58fKgnhWoNbHxNE4QoxuPwnUosj+/WFkG2X0vX/DUnRLy0alNrSs
-        sE0qXmT+XraG/2za1aK41VngaiqqOUHzdz2V539GjFyrYy8+/1Sn+Zn/CHEJIRycBVlhU65KXIfKo
-        XhEhyPJw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kNA0x-0001BA-RA; Tue, 29 Sep 2020 07:25:32 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3CBA6303F45;
-        Tue, 29 Sep 2020 09:25:29 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id D121A200D4C46; Tue, 29 Sep 2020 09:25:29 +0200 (CEST)
-Date:   Tue, 29 Sep 2020 09:25:29 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Kim Phillips <kim.phillips@amd.com>
-Cc:     linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>, x86 <x86@kernel.org>
-Subject: Re: [tip: core/rcu] rcu/tree: Mark the idle relevant functions
- noinstr
-Message-ID: <20200929072529.GL2628@hirez.programming.kicks-ass.net>
-References: <20200505134100.575356107@linutronix.de>
- <158991795300.17951.11897222265664137612.tip-bot2@tip-bot2>
- <b94de56b-1b37-07a0-f0de-12471ee5fc3d@amd.com>
+        Tue, 29 Sep 2020 03:26:45 -0400
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08T73PKa051700;
+        Tue, 29 Sep 2020 03:26:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=9RtEMHaKi+1MTiyYg24OgQEf8tCsc8bulyo4UQQJu4c=;
+ b=RIt9eZBm2Gtnh9NPJ11VuwZIpny/FbqWM3h+9ZLpdFnw7hTo4onQ7x8koxHJS5hSw5wO
+ wP7nQ1gKhMuBOLGpyKmKpVAYDM/g9jrhMdmvEDetxXYmHKJ0mDfSEW2TZbzjpAE6+jBM
+ Vfe/1pwIKJiiY5RVCdzshS2QRW2kQP+6r4MCMGJ1YxkCISWIyHfnBmtQjy00HwVtEr84
+ +ybv0Jfp/e/Pvsy/0l3twosT67jgJzkbAhV9+EM+cfyzK7NLiwDk9u/2o+G/ftKI6epK
+ GtQ3id8qfgxT/vr/1Gn4KWHS275MuZ3yI5RlvRyvC7R3ml1OLfPyVTHNkEVNYWvqbjLr WA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33uwyq4nby-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 29 Sep 2020 03:26:31 -0400
+Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08T74TRl057212;
+        Tue, 29 Sep 2020 03:26:30 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33uwyq4nah-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 29 Sep 2020 03:26:30 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08T7MsXV029561;
+        Tue, 29 Sep 2020 07:26:28 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma04ams.nl.ibm.com with ESMTP id 33sw97u04k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 29 Sep 2020 07:26:28 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08T7QQ3931064362
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 29 Sep 2020 07:26:26 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EFF0EA4051;
+        Tue, 29 Sep 2020 07:26:25 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C2C96A404D;
+        Tue, 29 Sep 2020 07:26:24 +0000 (GMT)
+Received: from linux.ibm.com (unknown [9.145.79.47])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Tue, 29 Sep 2020 07:26:24 +0000 (GMT)
+Date:   Tue, 29 Sep 2020 10:26:22 +0300
+From:   Mike Rapoport <rppt@linux.ibm.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Nick Piggin <npiggin@gmail.com>,
+        Hugh Dickins <hughd@google.com>,
+        Peter Zijlstra <peterz@infradead.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, hch@lst.de, rdunlap@infradead.org
+Subject: Re: [PATCH v2] page_alloc: Fix freeing non-compound pages
+Message-ID: <20200929072622.GN2645148@linux.ibm.com>
+References: <20200926213919.26642-1-willy@infradead.org>
+ <20200928180307.7573f3b6128b5e3007dfc9f0@linux-foundation.org>
+ <20200929034026.GA20115@casper.infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <b94de56b-1b37-07a0-f0de-12471ee5fc3d@amd.com>
+In-Reply-To: <20200929034026.GA20115@casper.infradead.org>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-29_01:2020-09-29,2020-09-29 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=5
+ spamscore=0 impostorscore=0 mlxlogscore=992 bulkscore=0 phishscore=0
+ adultscore=0 clxscore=1011 priorityscore=1501 malwarescore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009290064
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 05:22:33PM -0500, Kim Phillips wrote:
-> On 5/19/20 2:52 PM, tip-bot2 for Thomas Gleixner wrote:
-> > The following commit has been merged into the core/rcu branch of tip:
-> > 
-> > Commit-ID:     ff5c4f5cad33061b07c3fb9187506783c0f3cb66
-> > Gitweb:        https://git.kernel.org/tip/ff5c4f5cad33061b07c3fb9187506783c0f3cb66
-> > Author:        Thomas Gleixner <tglx@linutronix.de>
-> > AuthorDate:    Fri, 13 Mar 2020 17:32:17 +01:00
-> > Committer:     Thomas Gleixner <tglx@linutronix.de>
-> > CommitterDate: Tue, 19 May 2020 15:51:20 +02:00
-> > 
-> > rcu/tree: Mark the idle relevant functions noinstr
-> > 
-> > These functions are invoked from context tracking and other places in the
-> > low level entry code. Move them into the .noinstr.text section to exclude
-> > them from instrumentation.
-> > 
-> > Mark the places which are safe to invoke traceable functions with
-> > instrumentation_begin/end() so objtool won't complain.
-> > 
-> > Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> > Reviewed-by: Alexandre Chartre <alexandre.chartre@oracle.com>
-> > Acked-by: Peter Zijlstra <peterz@infradead.org>
-> > Acked-by: Paul E. McKenney <paulmck@kernel.org>
-> > Link: https://lkml.kernel.org/r/20200505134100.575356107@linutronix.de
-> > 
-> > 
-> > ---
+On Tue, Sep 29, 2020 at 04:40:26AM +0100, Matthew Wilcox wrote:
+> On Mon, Sep 28, 2020 at 06:03:07PM -0700, Andrew Morton wrote:
+> > Well that's weird and scary looking.  `page' has non-zero refcount yet
+> > we go and free random followon pages.  Methinks it merits an
+> > explanatory comment?
 > 
-> I bisected a system hang condition down to this commit.
+> Here's some kernel-doc.  Opinions?
+> 
+> /**
+>  * __free_pages - Free pages allocated with alloc_pages().
+>  * @page: The page pointer returned from alloc_pages().
+>  * @order: The order of the allocation.
+>  *
+>  * This function differs from put_page() in that it can free multi-page
 
-That's odd, mostly its the lack of noinstr that causes hangs, I've never
-yet seen the presence of it cause problems.
+This sentence presumes existing description/prior knowledge about
+put_page().
 
-> To reproduce the hang, compile the below code and execute it as root
-> on an x86_64 server (AMD or Intel).  The code is opening a 
-> PERF_TYPE_TRACEPOINT event with a non-zero pe.config.
+Maybe
 
-In my experience, it is very relevant which exact tracepoint you end up
-using.
+  This function can free multi-page allocations that were not allocated
+  with %__GFP_COMP, unlike put_page() that would free only the first page
+  in such case. __free_pages() does not ...
 
-PERF_COUNT_HW_INSTRUCTIONS is a very long and tedious way of writing 1
-in this case, on my randonly selected test box this morning, trace event
-1 is:
+>  * allocations that were not allocated with %__GFP_COMP.  This function
+>  * does not check that the @order passed in matches that of the
+>  * allocation, so it is possible to leak memory.  Freeing more memory than
+>  * was allocated will probably be warned about by other debugging checks.
+>  *
+>  * It is only safe to use the page reference count to determine when
+>  * to free an allocation if you use %__GFP_COMP (in which case, you may
+>  * as well use put_page() to free the page).  Another thread may have a
+>  * speculative reference to the first page, but it has no way of knowing
+>  * about the rest of the allocation, so we have to free all but the
+>  * first page here.
+>  *
+>  * Context: May be called in interrupt context but not NMI context.
+>  */
+> 
 
-$ for file in /debug/tracing/events/*/*/id ;  do echo $file -- $(cat $file); done | grep " 1$"
-/debug/tracing/events/ftrace/function/id -- 1
-
-> If I revert the commit from Linus' ToT, the system stays up.
-
->    memset(&pe, 0, sizeof(struct perf_event_attr));
->    pe.type = PERF_TYPE_TRACEPOINT;
->    pe.size = sizeof(struct perf_event_attr);
->    pe.config = PERF_COUNT_HW_INSTRUCTIONS;
->    pe.disabled = 1;
-
-Doubly funny for not actually enabling the event...
-
->    pe.exclude_kernel = 1;
->    pe.exclude_hv = 1;
-
-Still, it seems to make my machine unhappy.. Let's see if I can get
-anything useful out of it.
+-- 
+Sincerely yours,
+Mike.
