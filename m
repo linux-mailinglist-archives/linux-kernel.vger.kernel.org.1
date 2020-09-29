@@ -2,79 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A575227C27F
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 12:36:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E289527C284
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 12:36:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728194AbgI2Kfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 06:35:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42794 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725306AbgI2Kfy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 06:35:54 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B8CF02075F;
-        Tue, 29 Sep 2020 10:35:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601375754;
-        bh=u4myyC2FCs6IeunqeNEz8KzBIYzR3949I//QihYj6Wc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=t39Ob8b965lJzHVgrp91VQv3HZgivaKc4BiOwFS1n7y4qtVKlA5fTteqGxoeTICnf
-         Il/sc9legvzzDNaoFyM1N/o9c8LxHhttwZTH3LiYcwywKN3ietVy4UMKvywhl39kiY
-         xuRac5zW6X8o8oRZdBZfTi1KqrUZBq3flLJ1IXGA=
-Date:   Tue, 29 Sep 2020 13:35:49 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>, Jens Axboe <axboe@kernel.dk>,
-        Keith Busch <kbusch@kernel.org>, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-rdma@vger.kernel.org, Sagi Grimberg <sagi@grimberg.me>
-Subject: Re: [PATCH blk-next 1/2] blk-mq-rdma: Delete not-used multi-queue
- RDMA map queue code
-Message-ID: <20200929103549.GE3094@unreal>
-References: <20200929091358.421086-1-leon@kernel.org>
- <20200929091358.421086-2-leon@kernel.org>
- <20200929102046.GA14445@lst.de>
+        id S1728233AbgI2Kgg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 06:36:36 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:27793 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725776AbgI2Kgg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 06:36:36 -0400
+Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601375793;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=I5YYFgfx5BlxcJjZ2anX8oHsy00ljGmpjltg0at7zMM=;
+        b=QQDfjGisA0XIcKFESFkOTd8CLfVzkgUWa7MauPYhNZHx6dSY+TObjHIhRJdELH3UHorVal
+        8NgcJZo9noLMiKOCsxAH87LQpFpHTIj5kT8eo00pAvk9ZrgYiBE3dINDMdTwH8ocjmtoRk
+        FpY6UI3svOrj3IknL+eBAgGtCGvWNBk=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-572-txoEsCiRNFGNi1zxShPV1A-1; Tue, 29 Sep 2020 06:36:31 -0400
+X-MC-Unique: txoEsCiRNFGNi1zxShPV1A-1
+Received: by mail-wr1-f71.google.com with SMTP id b7so1580072wrn.6
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 03:36:31 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=I5YYFgfx5BlxcJjZ2anX8oHsy00ljGmpjltg0at7zMM=;
+        b=HinICA9OnrIsXl4NW/rXncBD8PKMydhNCMkya7pQOTN/0Kl+bawY84GCvhfQXLieMS
+         txzWUDElJlICaYr1KcdFlEQoWsBLXubmA/KRDTGLHmrEnHTMS22f9nffVxqD5pXXiTaa
+         bc/N9Cxs5TM/xqRCTf6pW3AgyA3gHGLTcHkbxzMl1KKiXqLz2sokQt/ionPyweXnhsW2
+         Kp7SjTddqSkUiXjOLKe7FtMuDthb+jkPWXZo9sJ8UDGIvDgDT/KZ/orWjJFcRJAn1G+R
+         gMim/DGhF77YnHbfau74XwtMRKzOpe0HIYhzHPKj/kgZTp2zdzZsgLaFKDDrsP0JaDnu
+         gxLw==
+X-Gm-Message-State: AOAM531clUAozwO9HPWs1MBIehC7S1tU3iLulXSroG0jtefkFvKErhKb
+        zwDISLKz84ya4EUghGqM8x2cyPIex84D/F73l2eVj171w548Xl771WFHU+gv63cuIZi7IBZmf2e
+        7z8uyj2m6hsE2VnTFTKLomLyv
+X-Received: by 2002:a7b:c401:: with SMTP id k1mr3743594wmi.120.1601375790321;
+        Tue, 29 Sep 2020 03:36:30 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw1hBlibSkko/LAft8fxp3KWccCLsb2lvaX6Rp2ClMvNy4t8LCP+r9kdfFAUVwpGSAiYf7VwQ==
+X-Received: by 2002:a7b:c401:: with SMTP id k1mr3743568wmi.120.1601375790047;
+        Tue, 29 Sep 2020 03:36:30 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id m12sm4738035wml.38.2020.09.29.03.36.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Sep 2020 03:36:29 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Eduardo Habkost <ehabkost@redhat.com>,
+        Jon Doron <arilou@gmail.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 4/7] KVM: x86: hyper-v: always advertise HV_STIMER_DIRECT_MODE_AVAILABLE
+In-Reply-To: <ded79131-bef1-cb56-68ca-d2bc596a4425@redhat.com>
+References: <20200924145757.1035782-1-vkuznets@redhat.com> <20200924145757.1035782-5-vkuznets@redhat.com> <ded79131-bef1-cb56-68ca-d2bc596a4425@redhat.com>
+Date:   Tue, 29 Sep 2020 12:36:28 +0200
+Message-ID: <875z7wdg43.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200929102046.GA14445@lst.de>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 12:20:46PM +0200, Christoph Hellwig wrote:
-> On Tue, Sep 29, 2020 at 12:13:57PM +0300, Leon Romanovsky wrote:
-> > From: Leon Romanovsky <leonro@nvidia.com>
-> >
-> > The RDMA vector affinity code is not backed up by any driver and always
-> > returns NULL to every ib_get_vector_affinity() call.
-> >
-> > This means that blk_mq_rdma_map_queues() always takes fallback path.
-> >
-> > Fixes: 9afc97c29b03 ("mlx5: remove support for ib_get_vector_affinity")
-> > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+Paolo Bonzini <pbonzini@redhat.com> writes:
+
+> On 24/09/20 16:57, Vitaly Kuznetsov wrote:
+>> HV_STIMER_DIRECT_MODE_AVAILABLE is the last conditionally set feature bit
+>> in KVM_GET_SUPPORTED_HV_CPUID but it doesn't have to be conditional: first,
+>> this bit is only an indication to userspace VMM that direct mode stimers
+>> are supported, it still requires manual enablement (enabling SynIC) to
+>> work so no VMM should just blindly copy it to guest CPUIDs. Second,
+>> lapic_in_kernel() is a must for SynIC. Expose the bit unconditionally.
+>> 
+>> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+>> ---
+>>  arch/x86/kvm/hyperv.c | 8 +-------
+>>  1 file changed, 1 insertion(+), 7 deletions(-)
+>> 
+>> diff --git a/arch/x86/kvm/hyperv.c b/arch/x86/kvm/hyperv.c
+>> index 6da20f91cd59..503829f71270 100644
+>> --- a/arch/x86/kvm/hyperv.c
+>> +++ b/arch/x86/kvm/hyperv.c
+>> @@ -2028,13 +2028,7 @@ int kvm_vcpu_ioctl_get_hv_cpuid(struct kvm_vcpu *vcpu, struct kvm_cpuid2 *cpuid,
+>>  			ent->ebx |= HV_DEBUGGING;
+>>  			ent->edx |= HV_X64_GUEST_DEBUGGING_AVAILABLE;
+>>  			ent->edx |= HV_FEATURE_DEBUG_MSRS_AVAILABLE;
+>> -
+>> -			/*
+>> -			 * Direct Synthetic timers only make sense with in-kernel
+>> -			 * LAPIC
+>> -			 */
+>> -			if (lapic_in_kernel(vcpu))
+>> -				ent->edx |= HV_STIMER_DIRECT_MODE_AVAILABLE;
+>> +			ent->edx |= HV_STIMER_DIRECT_MODE_AVAILABLE;
+>>  
+>>  			break;
+>>  
+>> 
 >
-> So you guys totally broken the nvme queue assignment without even
-> telling anyone?  Great job!
+> Sorry for the late reply.  I think this is making things worse.  It's
+> obviously okay to add a system KVM_GET_SUPPORTED_HV_CPUID, and I guess
+> it makes sense to have bits in there that require to enable a
+> capability.  For example, KVM_GET_SUPPORTED_CPUID has a couple bits such
+> as X2APIC, that we return even if they require in-kernel irqchip.
+>
+> For the vCPU version however we should be able to copy the returned
+> leaves to KVM_SET_CPUID2, meaning that unsupported features should be
+> masked.
 
-Who is "you guys" and it wasn't silent either? I'm sure that Sagi knows the craft.
-https://lore.kernel.org/linux-rdma/20181224221606.GA25780@ziepe.ca/
+What I don't quite like about exposing HV_STIMER_DIRECT_MODE_AVAILABLE
+conditionally is that we're requiring userspace to have a certain
+control flow: first, it needs to create irqchip and only then call
+KVM_GET_SUPPORTED_HV_CPUID or it won't know that
+HV_STIMER_DIRECT_MODE_AVAILABLE is supported. 
 
-commit 759ace7832802eaefbca821b2b43a44ab896b449
-Author: Sagi Grimberg <sagi@grimberg.me>
-Date:   Thu Nov 1 13:08:07 2018 -0700
+Also, are you only concerned about HV_STIMER_DIRECT_MODE_AVAILABLE? E.g.
+PATCH3 of this series is somewhat similar, it exposes eVMCS even when
+the corresponding CAP wasn't enabled.
 
-    i40iw: remove support for ib_get_vector_affinity
+While I slightly prefer to get rid of this conditional feature exposure
+once and for all, I don't really feel very strong about it. We can have
+the system ioctl which always exposes all supported features and vCPU
+version which only exposes what is currently enabled. We would, however,
+need to preserve some inconsistency as a legacy: e.g. SynIC bits are now
+exposed unconditionally, even before KVM_CAP_HYPERV_SYNIC[2] is enabled
+(and if we change that we will break at least QEMU).
 
-....
+-- 
+Vitaly
 
-commit 9afc97c29b032af9a4112c2f4a02d5313b4dc71f
-Author: Sagi Grimberg <sagi@grimberg.me>
-Date:   Thu Nov 1 09:13:12 2018 -0700
-
-    mlx5: remove support for ib_get_vector_affinity
-
-Thanks
