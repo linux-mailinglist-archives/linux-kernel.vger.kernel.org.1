@@ -2,74 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 716BF27D832
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 22:30:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D00B27D834
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 22:31:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729288AbgI2Uau (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 16:30:50 -0400
-Received: from mail-oo1-f65.google.com ([209.85.161.65]:47008 "EHLO
-        mail-oo1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727761AbgI2Uas (ORCPT
+        id S1729298AbgI2UbI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 16:31:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36474 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727740AbgI2UbI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 16:30:48 -0400
-Received: by mail-oo1-f65.google.com with SMTP id b12so1630004oop.13;
-        Tue, 29 Sep 2020 13:30:47 -0700 (PDT)
+        Tue, 29 Sep 2020 16:31:08 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D456EC0613D0
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 13:31:06 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id kk9so3347046pjb.2
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 13:31:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=w6Gs5CgGrT7/dE/0i0Kz33QzSpxebvhL70Kc9W54Bfk=;
+        b=FgEC/9TjFwz3LPuu1b3e38wqyfYZXVCqBvGpZ+E6u8Kdp5LeC4QfJscyElLXVW4tfr
+         vRBfHkvctRKVaQL7QyBu8BrHU5iDWdwmJ8MaGj4PMgeSw2W1dshGhEBEvFtkHMk9TuHg
+         OwbSbd7mZGtr2aB+KZOl8Dyxb+aaZjO5Gzh90=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Ysicr+OljWVIkPaDnn1tgtJ552TftNwDVmnL4IPy1Vw=;
-        b=KV1G7Tv1t0IvO1ZG4Ke+zB/PX048874M2UyRd4XcR44WjffnK2SFyCQqb3NZwt/D/H
-         aJR+rJ66tRW/qdXQ2XpAkFIG3uUDRGp/4PszdXOPdlZqu2R1K3GndJ7mSF0bbK9IrYlP
-         YMAISxpZYmbI6tAUR/m03XUk0WOOFKU4CXaQfhRP5KavnFi3r7k8YLM7Evf0fLQrDKit
-         oXObFikqyumC/7o8H1vw02kPmt8W3MT/V/HytW1zGDwliTVIiVhGjX5qSoLrA9qMap6i
-         UCUF9pFX6CbM2k0CElMCl+wbzlTxaXk8R2RMcy9Zg5ve0b76iDEi2N6mdBxNuc9RP07P
-         hg2g==
-X-Gm-Message-State: AOAM533oGCcDLvIk1HlxxOmrcd0U9yrLSivfrAVwHjYcae/oqw5P1o/H
-        q5mhehcZ8nlBmB4pmae5iK7go5hwEPPoo6s=
-X-Google-Smtp-Source: ABdhPJzthx1/V+C6uaz2ytlIzWVBDJkOcgLaPnHZxWaHlN9OivG5ndu6bmucQ7V6Rq54cfiV2MRAwA==
-X-Received: by 2002:a4a:2c02:: with SMTP id o2mr5874345ooo.24.1601411447443;
-        Tue, 29 Sep 2020 13:30:47 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id f11sm3205239oot.4.2020.09.29.13.30.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Sep 2020 13:30:46 -0700 (PDT)
-Received: (nullmailer pid 1116407 invoked by uid 1000);
-        Tue, 29 Sep 2020 20:30:45 -0000
-Date:   Tue, 29 Sep 2020 15:30:45 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Zhen Lei <thunder.leizhen@huawei.com>
-Cc:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Wei Xu <xuwei5@hisilicon.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Libin <huawei.libin@huawei.com>, Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH v5 17/17] dt-bindings: arm: hisilicon: convert LPC
- controller bindings to json-schema
-Message-ID: <20200929203045.GA1116288@bogus>
-References: <20200929141454.2312-1-thunder.leizhen@huawei.com>
- <20200929141454.2312-18-thunder.leizhen@huawei.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=w6Gs5CgGrT7/dE/0i0Kz33QzSpxebvhL70Kc9W54Bfk=;
+        b=XNtH5Y9QVTsSULUhzoeC0XKOR7L7HUeKR5jCwdJZavkZxbh8jcUsBZFNKhwAYq9znQ
+         fsGFz3JKJqbbQHS27joGeoZ/lQ2vWFuQmZZ+GMJs5lfH8ha413h0XhEqcAvgoeR1iOyU
+         UyF7U1hMS2PJm+dV1/jtiu0D8w3CgOpX1O7Nsq7RSN1DX5C+7Jt6mT+0NakXoJCoOTdT
+         PNzUsQsLIRYPPy95BWXDI5r6dtgklJ3ogOw39jX3utDwv8tqnfZ6Nm6JQpABmAz3RwCu
+         +VtFFg2hz1wrDHSffLmEpwwvMxU+zlWc7qENnkohndTfrI/Tb9rxDLn3S7XcAUdC1Kjz
+         MMKQ==
+X-Gm-Message-State: AOAM530FiuCq3cmjbEa+AzMkFohfJervd9FiLpMo52R16Z3sumGtPOAi
+        Zuc4WNhxjcq4pPE93dBm3hR/f0RM+A1ccWxR
+X-Google-Smtp-Source: ABdhPJwmrwBwUiVGBgxlOcHDg1VpFJuJtHBMscZT15BqLh6qfbkVr+93YRjl0YskxIVEgWtawk4JCw==
+X-Received: by 2002:a17:90a:fb53:: with SMTP id iq19mr5465867pjb.122.1601411465785;
+        Tue, 29 Sep 2020 13:31:05 -0700 (PDT)
+Received: from evgreen-glaptop.cheshire.ch ([2601:646:c780:1404:a2ce:c8ff:fec4:54a3])
+        by smtp.gmail.com with ESMTPSA id j9sm5997167pfc.175.2020.09.29.13.31.04
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
+        Tue, 29 Sep 2020 13:31:05 -0700 (PDT)
+From:   Evan Green <evgreen@chromium.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Markus Elfring <elfring@users.sourceforge.net>,
+        Evan Green <evgreen@chromium.org>,
+        Andy Gross <agross@kernel.org>, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [RESEND PATCH] soc: qcom: smp2p: Safely acquire spinlock without IRQs
+Date:   Tue, 29 Sep 2020 13:30:57 -0700
+Message-Id: <20200929133040.RESEND.1.Ideabf6dcdfc577cf39ce3d95b0e4aa1ac8b38f0c@changeid>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200929141454.2312-18-thunder.leizhen@huawei.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 29 Sep 2020 22:14:54 +0800, Zhen Lei wrote:
-> Convert the Hisilicon Hip06 SoCs implement a Low Pin Count (LPC)
-> controller binding to DT schema format using json-schema.
-> 
-> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-> ---
->  .../arm/hisilicon/hisilicon-low-pin-count.txt      | 33 ------------
->  .../bindings/arm/hisilicon/low-pin-count.yaml      | 61 ++++++++++++++++++++++
->  2 files changed, 61 insertions(+), 33 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/arm/hisilicon/hisilicon-low-pin-count.txt
->  create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/low-pin-count.yaml
-> 
+smp2p_update_bits() should disable interrupts when it acquires its
+spinlock. This is important because without the _irqsave, a priority
+inversion can occur.
 
-Applied, thanks!
+This function is called both with interrupts enabled in
+qcom_q6v5_request_stop(), and with interrupts disabled in
+ipa_smp2p_panic_notifier(). IRQ handling of spinlocks should be
+consistent to avoid the panic notifier deadlocking because it's
+sitting on the thread that's already got the lock via _request_stop().
+
+Found via lockdep.
+
+Fixes: 50e99641413e7 ("soc: qcom: smp2p: Qualcomm Shared Memory Point to Point")
+Signed-off-by: Evan Green <evgreen@chromium.org>
+---
+
+ drivers/soc/qcom/smp2p.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/soc/qcom/smp2p.c b/drivers/soc/qcom/smp2p.c
+index 07183d731d747..a9709aae54abb 100644
+--- a/drivers/soc/qcom/smp2p.c
++++ b/drivers/soc/qcom/smp2p.c
+@@ -318,15 +318,16 @@ static int qcom_smp2p_inbound_entry(struct qcom_smp2p *smp2p,
+ static int smp2p_update_bits(void *data, u32 mask, u32 value)
+ {
+ 	struct smp2p_entry *entry = data;
++	unsigned long flags;
+ 	u32 orig;
+ 	u32 val;
+ 
+-	spin_lock(&entry->lock);
++	spin_lock_irqsave(&entry->lock, flags);
+ 	val = orig = readl(entry->value);
+ 	val &= ~mask;
+ 	val |= value;
+ 	writel(val, entry->value);
+-	spin_unlock(&entry->lock);
++	spin_unlock_irqrestore(&entry->lock, flags);
+ 
+ 	if (val != orig)
+ 		qcom_smp2p_kick(entry->smp2p);
+-- 
+2.26.2
+
