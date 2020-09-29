@@ -2,125 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD3C227CFA9
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 15:43:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB21227CFAD
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 15:44:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730879AbgI2Nm5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 09:42:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57980 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730884AbgI2Nmx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 09:42:53 -0400
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41AF2C0613D4
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 06:42:52 -0700 (PDT)
-Received: by mail-ot1-x342.google.com with SMTP id h17so4479150otr.1
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 06:42:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=7Re7sYUHoP/OO8RJy6m0dCE8FjQyDvN9idLxneZjSGs=;
-        b=Z34rZ/ds72mfUVTwVAO13Bpz4khcxmzLmZRTJ6BeCzZVGwvFQBFtfTqV+Mw0LWRYNM
-         uCrAI5JhrSTo6VZxNGORq4+uDlbuWvNn0BzZwcj+1vO5F++bvuicz0Q+A30JgXV/f7rA
-         Rk9jpCrpw+utP3CvREty99qb9cv8smpJnWoLw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=7Re7sYUHoP/OO8RJy6m0dCE8FjQyDvN9idLxneZjSGs=;
-        b=OSChv19u4J0E2U06VPJJStfO+OyfLJuest4lkdQUPaQsxT9MNoOMpHiHGY83/qDiRi
-         iuLR288TobHB8mPERw7EypMMP4WcvJkIweiR7mqS3OokhoATE+MCUCqqyfQblzpOLUUx
-         IpqQgZxHwzv2dPzrOZA9ag4WVp7cuiQa3s6jB0tO/Czy1W6t64231QM/wkipCc2LfIW8
-         ymijya1b3owuJdUFLFkAAofQrFV15njXXINn/76maO8wfspw6e4Y9LVuqQZ8Tv1o6GJD
-         kpbHvEyZNvPrPqHpUQCo4QoU4nhnzUBo5lV6z/GpkdSDhEh5CjSw3EPLZgXYDDc7UQOU
-         FIxg==
-X-Gm-Message-State: AOAM530rEZj7UwBd1niYslJYeaokChazDUIcncFZ5352uA9wGtqfT9DP
-        y2SuRLSTAIutbywYWYElL9Bbuw==
-X-Google-Smtp-Source: ABdhPJxomgEcCkXHcyd2u2LBzXalo3/5KY6BNqNVB1FRlJIPPq8bhwRXFJ9dfNYvva75m6zRbuIoZQ==
-X-Received: by 2002:a05:6830:196:: with SMTP id q22mr2688536ota.221.1601386971432;
-        Tue, 29 Sep 2020 06:42:51 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id l4sm993642oie.25.2020.09.29.06.42.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 29 Sep 2020 06:42:50 -0700 (PDT)
-Subject: Re: [PATCH 00/18] use semicolons rather than commas to separate
- statements
-To:     Joe Perches <joe@perches.com>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Shuah Khan <shuah@kernel.org>
-Cc:     Ard Biesheuvel <ardb@kernel.org>, linux-iio@vger.kernel.org,
-        drbd-dev@tron.linbit.com,
-        =?UTF-8?Q?Valdis_Kl=c4=93tnieks?= <valdis.kletnieks@vt.edu>,
-        David Lechner <david@lechnology.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        linux-wireless@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        kernel-janitors@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-block@vger.kernel.org, linux-ide@vger.kernel.org,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        linux-amlogic@lists.infradead.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        openipmi-developer@lists.sourceforge.net,
-        linux-clk@vger.kernel.org,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <1601233948-11629-1-git-send-email-Julia.Lawall@inria.fr>
- <CAMj1kXGh+CzuXkAnqsoMO2A3T1p=D6uFOV347Ym5+VFn5U1gWg@mail.gmail.com>
- <20200929124108.GY4282@kadam>
- <alpine.DEB.2.22.394.2009291445050.2808@hadrien>
- <5f0d2b20f5088281363bb4a35c5652a2c087f159.camel@perches.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <cd75e2d1-9923-b725-78cd-fd5611431584@linuxfoundation.org>
-Date:   Tue, 29 Sep 2020 07:42:49 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1728472AbgI2NoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 09:44:09 -0400
+Received: from mga04.intel.com ([192.55.52.120]:33791 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728487AbgI2NoI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 09:44:08 -0400
+IronPort-SDR: 8i6q3Rx9Nn+y9wO0y2NlGzNdATKyqHU7r81AjQFjWO7DibKuVbQF7f9cK0jMcfPRpZQ0bLSNeV
+ nAdOAXGxdXTg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9758"; a="159568250"
+X-IronPort-AV: E=Sophos;i="5.77,318,1596524400"; 
+   d="scan'208";a="159568250"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2020 06:43:45 -0700
+IronPort-SDR: mkrRdUkcaw4CBVY3WmZ8Q3fjAXelOgqhzRckxdGpkkwshFJp7ZAVnzYvC8+Ia9w+n3zf6e28+0
+ wGMJLDEaVoPg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,318,1596524400"; 
+   d="scan'208";a="294254987"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga008.fm.intel.com with ESMTP; 29 Sep 2020 06:43:43 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id D6A13327; Tue, 29 Sep 2020 16:43:42 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Cezary Rojewski <cezary.rojewski@intel.com>,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v2] list: Add a macro to test if entry is pointing to the head
+Date:   Tue, 29 Sep 2020 16:43:42 +0300
+Message-Id: <20200929134342.51489-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <5f0d2b20f5088281363bb4a35c5652a2c087f159.camel@perches.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/29/20 7:34 AM, Joe Perches wrote:
-> On Tue, 2020-09-29 at 14:47 +0200, Julia Lawall wrote:
->> On Tue, 29 Sep 2020, Dan Carpenter wrote:
->>> The times where commas are used deliberately to replace curly braces are
->>> just evil.  Either way the code is cleaner with semi-colons.
->>
->> I also found exaamples like the following to be particularly unforunate:
->>
->>                                  fprintf(stderr,
->>                                          "page_nr %lu wrong count %Lu %Lu\n",
->>                                         page_nr, count,
->>                                         count_verify[page_nr]), exit(1);
->>
->> The exit is very hard to see, unless you know to look for it.
-> 
-> I sent that patch last month.
-> https://patchwork.kernel.org/patch/11734877/
-> 
+Add a macro to test if entry is pointing to the head of the list
+which is useful in cases like:
 
-I see what happened. This patch touches lib, cpupower, and selftests.
-Guess lost in the limbo of who takes it.
+  list_for_each_entry(pos, &head, member) {
+    if (cond)
+      break;
+  }
+  if (list_entry_is_head(pos, &head, member))
+    return -ERRNO;
 
-  tools/lib/subcmd/help.c                    |  10 +-
-  tools/power/cpupower/utils/cpufreq-set.c   |  14 +-
-  tools/testing/selftests/vm/gup_benchmark.c |  18 +-
-  tools/testing/selftests/vm/userfaultfd.c   | 296 +++++++++++++--------
-  4 files changed, 210 insertions(+), 128 deletions(-)
+that allows to avoid additional variable to be added to track if loop
+has not been stopped in the middle.
 
-I can take it through one of my trees.
+While here, convert list_for_each_entry*() family of macros to use a new one.
 
-thanks,
--- Shuah
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+v2: converted users inside list.h, dropped ambiguous description
+ include/linux/list.h | 29 +++++++++++++++++++----------
+ 1 file changed, 19 insertions(+), 10 deletions(-)
+
+diff --git a/include/linux/list.h b/include/linux/list.h
+index 796975c3c35c..89bdc92e75c3 100644
+--- a/include/linux/list.h
++++ b/include/linux/list.h
+@@ -609,6 +609,15 @@ static inline void list_splice_tail_init(struct list_head *list,
+ 	     pos != (head); \
+ 	     pos = n, n = pos->prev)
+ 
++/**
++ * list_entry_is_head - test if the entry points to the head of the list
++ * @pos:	the type * to cursor
++ * @head:	the head for your list.
++ * @member:	the name of the list_head within the struct.
++ */
++#define list_entry_is_head(pos, head, member)				\
++	(&pos->member == (head))
++
+ /**
+  * list_for_each_entry	-	iterate over list of given type
+  * @pos:	the type * to use as a loop cursor.
+@@ -617,7 +626,7 @@ static inline void list_splice_tail_init(struct list_head *list,
+  */
+ #define list_for_each_entry(pos, head, member)				\
+ 	for (pos = list_first_entry(head, typeof(*pos), member);	\
+-	     &pos->member != (head);					\
++	     !list_entry_is_head(pos, head, member);			\
+ 	     pos = list_next_entry(pos, member))
+ 
+ /**
+@@ -628,7 +637,7 @@ static inline void list_splice_tail_init(struct list_head *list,
+  */
+ #define list_for_each_entry_reverse(pos, head, member)			\
+ 	for (pos = list_last_entry(head, typeof(*pos), member);		\
+-	     &pos->member != (head); 					\
++	     !list_entry_is_head(pos, head, member); 			\
+ 	     pos = list_prev_entry(pos, member))
+ 
+ /**
+@@ -653,7 +662,7 @@ static inline void list_splice_tail_init(struct list_head *list,
+  */
+ #define list_for_each_entry_continue(pos, head, member) 		\
+ 	for (pos = list_next_entry(pos, member);			\
+-	     &pos->member != (head);					\
++	     !list_entry_is_head(pos, head, member);			\
+ 	     pos = list_next_entry(pos, member))
+ 
+ /**
+@@ -667,7 +676,7 @@ static inline void list_splice_tail_init(struct list_head *list,
+  */
+ #define list_for_each_entry_continue_reverse(pos, head, member)		\
+ 	for (pos = list_prev_entry(pos, member);			\
+-	     &pos->member != (head);					\
++	     !list_entry_is_head(pos, head, member);			\
+ 	     pos = list_prev_entry(pos, member))
+ 
+ /**
+@@ -679,7 +688,7 @@ static inline void list_splice_tail_init(struct list_head *list,
+  * Iterate over list of given type, continuing from current position.
+  */
+ #define list_for_each_entry_from(pos, head, member) 			\
+-	for (; &pos->member != (head);					\
++	for (; !list_entry_is_head(pos, head, member);			\
+ 	     pos = list_next_entry(pos, member))
+ 
+ /**
+@@ -692,7 +701,7 @@ static inline void list_splice_tail_init(struct list_head *list,
+  * Iterate backwards over list of given type, continuing from current position.
+  */
+ #define list_for_each_entry_from_reverse(pos, head, member)		\
+-	for (; &pos->member != (head);					\
++	for (; !list_entry_is_head(pos, head, member);			\
+ 	     pos = list_prev_entry(pos, member))
+ 
+ /**
+@@ -705,7 +714,7 @@ static inline void list_splice_tail_init(struct list_head *list,
+ #define list_for_each_entry_safe(pos, n, head, member)			\
+ 	for (pos = list_first_entry(head, typeof(*pos), member),	\
+ 		n = list_next_entry(pos, member);			\
+-	     &pos->member != (head); 					\
++	     !list_entry_is_head(pos, head, member); 			\
+ 	     pos = n, n = list_next_entry(n, member))
+ 
+ /**
+@@ -721,7 +730,7 @@ static inline void list_splice_tail_init(struct list_head *list,
+ #define list_for_each_entry_safe_continue(pos, n, head, member) 		\
+ 	for (pos = list_next_entry(pos, member), 				\
+ 		n = list_next_entry(pos, member);				\
+-	     &pos->member != (head);						\
++	     !list_entry_is_head(pos, head, member);				\
+ 	     pos = n, n = list_next_entry(n, member))
+ 
+ /**
+@@ -736,7 +745,7 @@ static inline void list_splice_tail_init(struct list_head *list,
+  */
+ #define list_for_each_entry_safe_from(pos, n, head, member) 			\
+ 	for (n = list_next_entry(pos, member);					\
+-	     &pos->member != (head);						\
++	     !list_entry_is_head(pos, head, member);				\
+ 	     pos = n, n = list_next_entry(n, member))
+ 
+ /**
+@@ -752,7 +761,7 @@ static inline void list_splice_tail_init(struct list_head *list,
+ #define list_for_each_entry_safe_reverse(pos, n, head, member)		\
+ 	for (pos = list_last_entry(head, typeof(*pos), member),		\
+ 		n = list_prev_entry(pos, member);			\
+-	     &pos->member != (head); 					\
++	     !list_entry_is_head(pos, head, member); 			\
+ 	     pos = n, n = list_prev_entry(n, member))
+ 
+ /**
+-- 
+2.28.0
+
