@@ -2,30 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6920127C532
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:33:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BFAA27C539
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:33:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729498AbgI2LcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:32:24 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:33026 "EHLO huawei.com"
+        id S1728355AbgI2LdA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:33:00 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:33260 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729390AbgI2L3n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:29:43 -0400
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 84D83840CDE957B3B0ED;
-        Tue, 29 Sep 2020 19:29:41 +0800 (CST)
+        id S1729452AbgI2LaB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:30:01 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id AD480AAB8289BB08E24C;
+        Tue, 29 Sep 2020 19:29:46 +0800 (CST)
 Received: from localhost.localdomain.localdomain (10.175.113.25) by
  DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 29 Sep 2020 19:29:33 +0800
+ 14.3.487.0; Tue, 29 Sep 2020 19:29:36 +0800
 From:   Qinglang Miao <miaoqinglang@huawei.com>
 To:     Liam Girdwood <lgirdwood@gmail.com>,
         Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-CC:     <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
-        "Qinglang Miao" <miaoqinglang@huawei.com>
-Subject: [PATCH -next] ASoC: fsl: mx27vis-aic32x4: use devm_snd_soc_register_card()
-Date:   Tue, 29 Sep 2020 19:29:32 +0800
-Message-ID: <20200929112932.46926-1-miaoqinglang@huawei.com>
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        "Thierry Reding" <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>
+CC:     <alsa-devel@alsa-project.org>, <linux-tegra@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Qinglang Miao <miaoqinglang@huawei.com>
+Subject: [PATCH -next] ASoC: tegra: tegra_max98090: use devm_snd_soc_register_card()
+Date:   Tue, 29 Sep 2020 19:29:35 +0800
+Message-ID: <20200929112935.47035-1-miaoqinglang@huawei.com>
 X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -41,42 +45,46 @@ shorter and cleaner.
 
 Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
 ---
- sound/soc/fsl/mx27vis-aic32x4.c | 10 +---------
- 1 file changed, 1 insertion(+), 9 deletions(-)
+ sound/soc/tegra/tegra_max98090.c | 12 +-----------
+ 1 file changed, 1 insertion(+), 11 deletions(-)
 
-diff --git a/sound/soc/fsl/mx27vis-aic32x4.c b/sound/soc/fsl/mx27vis-aic32x4.c
-index 4ead537e0..8d3b18973 100644
---- a/sound/soc/fsl/mx27vis-aic32x4.c
-+++ b/sound/soc/fsl/mx27vis-aic32x4.c
-@@ -176,7 +176,7 @@ static int mx27vis_aic32x4_probe(struct platform_device *pdev)
- 	mx27vis_amp_muter_gpio = pdata->amp_muter_gpio;
+diff --git a/sound/soc/tegra/tegra_max98090.c b/sound/soc/tegra/tegra_max98090.c
+index af3e9e6da..9d8e16473 100644
+--- a/sound/soc/tegra/tegra_max98090.c
++++ b/sound/soc/tegra/tegra_max98090.c
+@@ -246,7 +246,7 @@ static int tegra_max98090_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		return ret;
  
- 	mx27vis_aic32x4.dev = &pdev->dev;
--	ret = snd_soc_register_card(&mx27vis_aic32x4);
-+	ret = devm_snd_soc_register_card(&pdev->dev, &mx27vis_aic32x4);
+-	ret = snd_soc_register_card(card);
++	ret = devm_snd_soc_register_card(&pdev->dev, card);
  	if (ret) {
  		dev_err(&pdev->dev, "snd_soc_register_card failed (%d)\n",
  			ret);
-@@ -199,19 +199,11 @@ static int mx27vis_aic32x4_probe(struct platform_device *pdev)
- 	return ret;
+@@ -256,15 +256,6 @@ static int tegra_max98090_probe(struct platform_device *pdev)
+ 	return 0;
  }
  
--static int mx27vis_aic32x4_remove(struct platform_device *pdev)
+-static int tegra_max98090_remove(struct platform_device *pdev)
 -{
--	snd_soc_unregister_card(&mx27vis_aic32x4);
+-	struct snd_soc_card *card = platform_get_drvdata(pdev);
+-
+-	snd_soc_unregister_card(card);
 -
 -	return 0;
 -}
 -
- static struct platform_driver mx27vis_aic32x4_audio_driver = {
- 	.driver = {
- 		.name = "mx27vis",
+ static const struct of_device_id tegra_max98090_of_match[] = {
+ 	{ .compatible = "nvidia,tegra-audio-max98090", },
+ 	{},
+@@ -277,7 +268,6 @@ static struct platform_driver tegra_max98090_driver = {
+ 		.of_match_table = tegra_max98090_of_match,
  	},
- 	.probe = mx27vis_aic32x4_probe,
--	.remove = mx27vis_aic32x4_remove,
+ 	.probe = tegra_max98090_probe,
+-	.remove = tegra_max98090_remove,
  };
+ module_platform_driver(tegra_max98090_driver);
  
- module_platform_driver(mx27vis_aic32x4_audio_driver);
 -- 
 2.23.0
 
