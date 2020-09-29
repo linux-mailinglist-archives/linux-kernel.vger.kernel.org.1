@@ -2,306 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC4DC27BD5E
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 08:51:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56B5A27BD63
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 08:52:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727289AbgI2GvZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 02:51:25 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:40097 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725818AbgI2GvX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 02:51:23 -0400
-Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601362281;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=P2el4z4T/pzkwfe+NnTyTuHBT85wHNdc3OI7ierNM/Y=;
-        b=U2Beoz1+b2gbB5JdBUJTMghgjG5V/LXARJXy9IShMEto9dGl6WADhC0I4TdUxN2pTqxvym
-        MvaPxTAgh1vWtf5lkfSZXSUGq97COwo8oHU7WgQCFh0SA0tc3nKKrP8Suzb01DW1ATrbP0
-        lcTlM4DJU3sjVzN3N8wChu6Qr6GHYz8=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-560-ccPf7I2EMUOKfH83ZYdshA-1; Tue, 29 Sep 2020 02:51:19 -0400
-X-MC-Unique: ccPf7I2EMUOKfH83ZYdshA-1
-Received: by mail-wr1-f70.google.com with SMTP id a2so1327145wrp.8
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 23:51:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=P2el4z4T/pzkwfe+NnTyTuHBT85wHNdc3OI7ierNM/Y=;
-        b=JJxL9BeJir/MFKQQHQYzJq2cHOGjDsR/F1WEh/oBFxXUlcr8XufOI9IEjZlxR6IwkF
-         AgP2L19S6GKxmAsy82k6Nt+S1/AzWl7HJFKP0emqSCiLDtrvdYKRW+/PBQ9PHAv/OQ9g
-         E0+prIMwWA3nS4BkjNlNE9CTxnZlu3n37omGNROk4uVKdiOUg4WnpU0VBU4MHjXuLa7E
-         UiUUQ4yevR/ayVKZ8tJ/M1Uywd8DX04w+rYz/Uh7Q4WKK66a3eTwWqa4CVdvhQIjH9DT
-         32DQDiUa1fDIwxkLeb5/UHMNkkviBNnajbInvhjm9eeCZoRsOooOC023OQIMS7k6t8cn
-         k2hA==
-X-Gm-Message-State: AOAM530GHTJmHj6oImOrBoU28T4VhoC6yD9Lv/VaDoUEVQ0hNmOg/oiF
-        0frJW/yPiEdyxVLXOmXOaSc4oS72VespyYdgi+Tex7W4IIoCs0hmH25Swb3BcoLSsWKW6u4YqFl
-        0uf724JOFtDAk06mztOlikY5O
-X-Received: by 2002:a5d:55c8:: with SMTP id i8mr2395209wrw.331.1601362276983;
-        Mon, 28 Sep 2020 23:51:16 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzFyBifzvckpLQD7r8EHKOtkcUo+iba3+gpfBH8ykb9hU5ZqL4RKVRr01XS3RiySG+bnJSoxA==
-X-Received: by 2002:a5d:55c8:: with SMTP id i8mr2395182wrw.331.1601362276658;
-        Mon, 28 Sep 2020 23:51:16 -0700 (PDT)
-Received: from redhat.com (bzq-79-179-71-128.red.bezeqint.net. [79.179.71.128])
-        by smtp.gmail.com with ESMTPSA id u13sm4356273wrm.77.2020.09.28.23.51.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Sep 2020 23:51:15 -0700 (PDT)
-Date:   Tue, 29 Sep 2020 02:51:12 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Eli Cohen <elic@nvidia.com>
-Cc:     jasowang@redhat.com, virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH V1 vhost-next] vdpa/mlx5: Make vdpa core driver a
- distinct module
-Message-ID: <20200929025038-mutt-send-email-mst@kernel.org>
-References: <20200924143231.GA186492@mtl-vdi-166.wap.labs.mlnx>
- <20200928155448-mutt-send-email-mst@kernel.org>
- <20200929062026.GB120395@mtl-vdi-166.wap.labs.mlnx>
- <20200929022430-mutt-send-email-mst@kernel.org>
- <20200929063433.GC120395@mtl-vdi-166.wap.labs.mlnx>
+        id S1727391AbgI2Gwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 02:52:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59440 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725306AbgI2Gwl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 02:52:41 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 72184206B7;
+        Tue, 29 Sep 2020 06:52:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601362361;
+        bh=6KqVFDoYR/Ej4IVjg3AKvUD6uYoOzhctINwi+ieMatQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=yhT7FELKUxc9KgxZ0qhglyD6nQB2+kKuq+NjurV4NqUrwHMpecx+oCwslztPLEM5Z
+         kj3sSG7tYf7NPd4QbX/EEj8/lt4FpmJzWOfxlDmkE6S8WMO5duTvFb7VXOlqR9e2ls
+         ZvX5SVevYQ7DLpDKkevFqpCfu/8lesk5ZL3jUYKk=
+Date:   Tue, 29 Sep 2020 08:52:47 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux- stable <stable@vger.kernel.org>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Chengming Zhou <zhouchengming@bytedance.com>
+Subject: Re: [PATCH 4.19 38/92] kprobes: Fix NULL pointer dereference at
+ kprobe_ftrace_handler
+Message-ID: <20200929065247.GB2439787@kroah.com>
+References: <20200820091537.490965042@linuxfoundation.org>
+ <20200820091539.592290034@linuxfoundation.org>
+ <CA+G9fYvdQv2Ukvs-UKiEgYaDdBthsWsY=35cQ4YpvMhA0hU5Gg@mail.gmail.com>
+ <20200928180942.100aa6c8@oasis.local.home>
+ <20200928181535.56d7b2cb@oasis.local.home>
+ <20200929144954.56090c5eeb5a36e1f552b315@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200929063433.GC120395@mtl-vdi-166.wap.labs.mlnx>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200929144954.56090c5eeb5a36e1f552b315@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 09:34:33AM +0300, Eli Cohen wrote:
-> On Tue, Sep 29, 2020 at 02:26:44AM -0400, Michael S. Tsirkin wrote:
-> > On Tue, Sep 29, 2020 at 09:20:26AM +0300, Eli Cohen wrote:
-> > > On Mon, Sep 28, 2020 at 03:55:09PM -0400, Michael S. Tsirkin wrote:
-> > > > On Thu, Sep 24, 2020 at 05:32:31PM +0300, Eli Cohen wrote:
-> > > > > Change core vdpa functionality into a loadbale module such that upcoming
-> > > > > block implementation will be able to use it.
-> > > > > 
-> > > > > Signed-off-by: Eli Cohen <elic@nvidia.com>
-> > > > 
-> > > > Why don't we merge this patch together with the block module?
-> > > > 
-> > > 
-> > > Since there are still not too many users of this driver, I would prefer
-> > > to merge this as early as possible so pepole get used to the involved
-> > > modules.
-> > > 
-> > > Anyways, I will send another version of the patch which makes use of
-> > > 'select' instead of 'depends'.
-> > > 
-> > > Hope you agree to merge this.
-> > 
-> > Are you quite sure there will be a block driver though?
-> > I'd like to avoid a situation in which we have infrastructure
-> > in place but no users.
-> >
+On Tue, Sep 29, 2020 at 02:49:54PM +0900, Masami Hiramatsu wrote:
+> Hi,
 > 
-> I know it's in our plans but I see your point. Let me know if you
-> prefer me to send the patch that fixes the 'depends' thing or defer it
-> to a later time.
-
-Not sure what's the depends thing.
-
-> > > > > ---
-> > > > > V0 --> V1:
-> > > > > Removed "default n" for configu options as 'n' is the default
-> > > > > 
-> > > > >  drivers/vdpa/Kconfig               |  8 +++-----
-> > > > >  drivers/vdpa/Makefile              |  2 +-
-> > > > >  drivers/vdpa/mlx5/Makefile         |  7 +++++--
-> > > > >  drivers/vdpa/mlx5/core/core_main.c | 20 ++++++++++++++++++++
-> > > > >  drivers/vdpa/mlx5/core/mr.c        |  3 +++
-> > > > >  drivers/vdpa/mlx5/core/resources.c | 10 ++++++++++
-> > > > >  6 files changed, 42 insertions(+), 8 deletions(-)
-> > > > >  create mode 100644 drivers/vdpa/mlx5/core/core_main.c
-> > > > > 
-> > > > > diff --git a/drivers/vdpa/Kconfig b/drivers/vdpa/Kconfig
-> > > > > index 4271c408103e..57ff6a7f7401 100644
-> > > > > --- a/drivers/vdpa/Kconfig
-> > > > > +++ b/drivers/vdpa/Kconfig
-> > > > > @@ -29,10 +29,9 @@ config IFCVF
-> > > > >  	  To compile this driver as a module, choose M here: the module will
-> > > > >  	  be called ifcvf.
-> > > > >  
-> > > > > -config MLX5_VDPA
-> > > > > -	bool "MLX5 VDPA support library for ConnectX devices"
-> > > > > +config MLX5_VDPA_CORE
-> > > > > +	tristate "MLX5 VDPA support library for ConnectX devices"
-> > > > >  	depends on MLX5_CORE
-> > > > > -	default n
-> > > > >  	help
-> > > > >  	  Support library for Mellanox VDPA drivers. Provides code that is
-> > > > >  	  common for all types of VDPA drivers. The following drivers are planned:
-> > > > > @@ -40,8 +39,7 @@ config MLX5_VDPA
-> > > > >  
-> > > > >  config MLX5_VDPA_NET
-> > > > >  	tristate "vDPA driver for ConnectX devices"
-> > > > > -	depends on MLX5_VDPA
-> > > > > -	default n
-> > > > > +	depends on MLX5_VDPA_CORE
-> > > > >  	help
-> > > > >  	  VDPA network driver for ConnectX6 and newer. Provides offloading
-> > > > >  	  of virtio net datapath such that descriptors put on the ring will
-> > > > > diff --git a/drivers/vdpa/Makefile b/drivers/vdpa/Makefile
-> > > > > index d160e9b63a66..07353bbb9f8b 100644
-> > > > > --- a/drivers/vdpa/Makefile
-> > > > > +++ b/drivers/vdpa/Makefile
-> > > > > @@ -2,4 +2,4 @@
-> > > > >  obj-$(CONFIG_VDPA) += vdpa.o
-> > > > >  obj-$(CONFIG_VDPA_SIM) += vdpa_sim/
-> > > > >  obj-$(CONFIG_IFCVF)    += ifcvf/
-> > > > > -obj-$(CONFIG_MLX5_VDPA) += mlx5/
-> > > > > +obj-$(CONFIG_MLX5_VDPA_CORE) += mlx5/
-> > > > > diff --git a/drivers/vdpa/mlx5/Makefile b/drivers/vdpa/mlx5/Makefile
-> > > > > index 89a5bededc9f..9f50f7e8d889 100644
-> > > > > --- a/drivers/vdpa/mlx5/Makefile
-> > > > > +++ b/drivers/vdpa/mlx5/Makefile
-> > > > > @@ -1,4 +1,7 @@
-> > > > >  subdir-ccflags-y += -I$(srctree)/drivers/vdpa/mlx5/core
-> > > > >  
-> > > > > -obj-$(CONFIG_MLX5_VDPA_NET) += mlx5_vdpa.o
-> > > > > -mlx5_vdpa-$(CONFIG_MLX5_VDPA_NET) += net/main.o net/mlx5_vnet.o core/resources.o core/mr.o
-> > > > > +obj-$(CONFIG_MLX5_VDPA_CORE) += mlx5_vdpa_core.o
-> > > > > +mlx5_vdpa_core-$(CONFIG_MLX5_VDPA_CORE) += core/resources.o core/mr.o core/core_main.o
-> > > > > +
-> > > > > +obj-$(CONFIG_MLX5_VDPA_NET) += mlx5_vdpa_net.o
-> > > > > +mlx5_vdpa_net-$(CONFIG_MLX5_VDPA_NET) += net/main.o net/mlx5_vnet.o
-> > > > > diff --git a/drivers/vdpa/mlx5/core/core_main.c b/drivers/vdpa/mlx5/core/core_main.c
-> > > > > new file mode 100644
-> > > > > index 000000000000..4b39b55f57ab
-> > > > > --- /dev/null
-> > > > > +++ b/drivers/vdpa/mlx5/core/core_main.c
-> > > > > @@ -0,0 +1,20 @@
-> > > > > +// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
-> > > > > +/* Copyright (c) 2020 Mellanox Technologies Ltd. */
-> > > > > +
-> > > > > +#include <linux/module.h>
-> > > > > +
-> > > > > +MODULE_AUTHOR("Eli Cohen <elic@nvidia.com>");
-> > > > > +MODULE_DESCRIPTION("Mellanox VDPA core driver");
-> > > > > +MODULE_LICENSE("Dual BSD/GPL");
-> > > > > +
-> > > > > +static int __init mlx5_vdpa_core_init(void)
-> > > > > +{
-> > > > > +	return 0;
-> > > > > +}
-> > > > > +
-> > > > > +static void __exit mlx5_vdpa_core_exit(void)
-> > > > > +{
-> > > > > +}
-> > > > > +
-> > > > > +module_init(mlx5_vdpa_core_init);
-> > > > > +module_exit(mlx5_vdpa_core_exit);
-> > > > > diff --git a/drivers/vdpa/mlx5/core/mr.c b/drivers/vdpa/mlx5/core/mr.c
-> > > > > index ef1c550f8266..c093eab6c714 100644
-> > > > > --- a/drivers/vdpa/mlx5/core/mr.c
-> > > > > +++ b/drivers/vdpa/mlx5/core/mr.c
-> > > > > @@ -434,6 +434,7 @@ int mlx5_vdpa_create_mr(struct mlx5_vdpa_dev *mvdev, struct vhost_iotlb *iotlb)
-> > > > >  	mutex_unlock(&mr->mkey_mtx);
-> > > > >  	return err;
-> > > > >  }
-> > > > > +EXPORT_SYMBOL(mlx5_vdpa_create_mr);
-> > > > >  
-> > > > >  void mlx5_vdpa_destroy_mr(struct mlx5_vdpa_dev *mvdev)
-> > > > >  {
-> > > > > @@ -456,6 +457,7 @@ void mlx5_vdpa_destroy_mr(struct mlx5_vdpa_dev *mvdev)
-> > > > >  out:
-> > > > >  	mutex_unlock(&mr->mkey_mtx);
-> > > > >  }
-> > > > > +EXPORT_SYMBOL(mlx5_vdpa_destroy_mr);
-> > > > >  
-> > > > >  static bool map_empty(struct vhost_iotlb *iotlb)
-> > > > >  {
-> > > > > @@ -484,3 +486,4 @@ int mlx5_vdpa_handle_set_map(struct mlx5_vdpa_dev *mvdev, struct vhost_iotlb *io
-> > > > >  
-> > > > >  	return err;
-> > > > >  }
-> > > > > +EXPORT_SYMBOL(mlx5_vdpa_handle_set_map);
-> > > > > diff --git a/drivers/vdpa/mlx5/core/resources.c b/drivers/vdpa/mlx5/core/resources.c
-> > > > > index 96e6421c5d1c..89606a18e286 100644
-> > > > > --- a/drivers/vdpa/mlx5/core/resources.c
-> > > > > +++ b/drivers/vdpa/mlx5/core/resources.c
-> > > > > @@ -98,6 +98,7 @@ int mlx5_vdpa_create_tis(struct mlx5_vdpa_dev *mvdev, void *in, u32 *tisn)
-> > > > >  
-> > > > >  	return err;
-> > > > >  }
-> > > > > +EXPORT_SYMBOL(mlx5_vdpa_create_tis);
-> > > > >  
-> > > > >  void mlx5_vdpa_destroy_tis(struct mlx5_vdpa_dev *mvdev, u32 tisn)
-> > > > >  {
-> > > > > @@ -108,6 +109,7 @@ void mlx5_vdpa_destroy_tis(struct mlx5_vdpa_dev *mvdev, u32 tisn)
-> > > > >  	MLX5_SET(destroy_tis_in, in, tisn, tisn);
-> > > > >  	mlx5_cmd_exec_in(mvdev->mdev, destroy_tis, in);
-> > > > >  }
-> > > > > +EXPORT_SYMBOL(mlx5_vdpa_destroy_tis);
-> > > > >  
-> > > > >  int mlx5_vdpa_create_rqt(struct mlx5_vdpa_dev *mvdev, void *in, int inlen, u32 *rqtn)
-> > > > >  {
-> > > > > @@ -121,6 +123,7 @@ int mlx5_vdpa_create_rqt(struct mlx5_vdpa_dev *mvdev, void *in, int inlen, u32 *
-> > > > >  
-> > > > >  	return err;
-> > > > >  }
-> > > > > +EXPORT_SYMBOL(mlx5_vdpa_create_rqt);
-> > > > >  
-> > > > >  void mlx5_vdpa_destroy_rqt(struct mlx5_vdpa_dev *mvdev, u32 rqtn)
-> > > > >  {
-> > > > > @@ -131,6 +134,7 @@ void mlx5_vdpa_destroy_rqt(struct mlx5_vdpa_dev *mvdev, u32 rqtn)
-> > > > >  	MLX5_SET(destroy_rqt_in, in, rqtn, rqtn);
-> > > > >  	mlx5_cmd_exec_in(mvdev->mdev, destroy_rqt, in);
-> > > > >  }
-> > > > > +EXPORT_SYMBOL(mlx5_vdpa_destroy_rqt);
-> > > > >  
-> > > > >  int mlx5_vdpa_create_tir(struct mlx5_vdpa_dev *mvdev, void *in, u32 *tirn)
-> > > > >  {
-> > > > > @@ -144,6 +148,7 @@ int mlx5_vdpa_create_tir(struct mlx5_vdpa_dev *mvdev, void *in, u32 *tirn)
-> > > > >  
-> > > > >  	return err;
-> > > > >  }
-> > > > > +EXPORT_SYMBOL(mlx5_vdpa_create_tir);
-> > > > >  
-> > > > >  void mlx5_vdpa_destroy_tir(struct mlx5_vdpa_dev *mvdev, u32 tirn)
-> > > > >  {
-> > > > > @@ -154,6 +159,7 @@ void mlx5_vdpa_destroy_tir(struct mlx5_vdpa_dev *mvdev, u32 tirn)
-> > > > >  	MLX5_SET(destroy_tir_in, in, tirn, tirn);
-> > > > >  	mlx5_cmd_exec_in(mvdev->mdev, destroy_tir, in);
-> > > > >  }
-> > > > > +EXPORT_SYMBOL(mlx5_vdpa_destroy_tir);
-> > > > >  
-> > > > >  int mlx5_vdpa_alloc_transport_domain(struct mlx5_vdpa_dev *mvdev, u32 *tdn)
-> > > > >  {
-> > > > > @@ -170,6 +176,7 @@ int mlx5_vdpa_alloc_transport_domain(struct mlx5_vdpa_dev *mvdev, u32 *tdn)
-> > > > >  
-> > > > >  	return err;
-> > > > >  }
-> > > > > +EXPORT_SYMBOL(mlx5_vdpa_alloc_transport_domain);
-> > > > >  
-> > > > >  void mlx5_vdpa_dealloc_transport_domain(struct mlx5_vdpa_dev *mvdev, u32 tdn)
-> > > > >  {
-> > > > > @@ -180,6 +187,7 @@ void mlx5_vdpa_dealloc_transport_domain(struct mlx5_vdpa_dev *mvdev, u32 tdn)
-> > > > >  	MLX5_SET(dealloc_transport_domain_in, in, transport_domain, tdn);
-> > > > >  	mlx5_cmd_exec_in(mvdev->mdev, dealloc_transport_domain, in);
-> > > > >  }
-> > > > > +EXPORT_SYMBOL(mlx5_vdpa_dealloc_transport_domain);
-> > > > >  
-> > > > >  int mlx5_vdpa_create_mkey(struct mlx5_vdpa_dev *mvdev, struct mlx5_core_mkey *mkey, u32 *in,
-> > > > >  			  int inlen)
-> > > > > @@ -266,6 +274,7 @@ int mlx5_vdpa_alloc_resources(struct mlx5_vdpa_dev *mvdev)
-> > > > >  	mutex_destroy(&mvdev->mr.mkey_mtx);
-> > > > >  	return err;
-> > > > >  }
-> > > > > +EXPORT_SYMBOL(mlx5_vdpa_alloc_resources);
-> > > > >  
-> > > > >  void mlx5_vdpa_free_resources(struct mlx5_vdpa_dev *mvdev)
-> > > > >  {
-> > > > > @@ -282,3 +291,4 @@ void mlx5_vdpa_free_resources(struct mlx5_vdpa_dev *mvdev)
-> > > > >  	mutex_destroy(&mvdev->mr.mkey_mtx);
-> > > > >  	res->valid = false;
-> > > > >  }
-> > > > > +EXPORT_SYMBOL(mlx5_vdpa_free_resources);
-> > > > > -- 
-> > > > > 2.27.0
-> > > > 
+> On Mon, 28 Sep 2020 18:15:35 -0400
+> Steven Rostedt <rostedt@goodmis.org> wrote:
+> 
+> > On Mon, 28 Sep 2020 18:09:42 -0400
+> > Steven Rostedt <rostedt@goodmis.org> wrote:
 > > 
+> > > On Tue, 29 Sep 2020 01:32:59 +0530
+> > > Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
+> > > 
+> > > > stable rc branch 4.19 build warning on arm64.
+> > > > 
+> > > > ../kernel/kprobes.c: In function ‘kill_kprobe’:
+> > > > ../kernel/kprobes.c:1070:33: warning: statement with no effect [-Wunused-value]
+> > > >  1070 | #define disarm_kprobe_ftrace(p) (-ENODEV)
+> > > >       |                                 ^
+> > > > ../kernel/kprobes.c:2090:3: note: in expansion of macro ‘disarm_kprobe_ftrace’
+> > > >  2090 |   disarm_kprobe_ftrace(p);
+> > > >       |   ^~~~~~~~~~~~~~~~~~~~  
+> > > 
+> > > Seems to affect upstream as well.
+> > > 
+> > 
+> > Bah, no (tested the wrong kernel).
+> > 
+> > You want this commit too:
+> > 
+> > 10de795a5addd ("kprobes: Fix compiler warning for !CONFIG_KPROBES_ON_FTRACE")
+> 
+> It seems that this commit's Fixes tag is wrong.
+> 
+> ae6aa16fdc163 (Masami Hiramatsu           2012-06-05 19:28:32 +0900 1079) #define prepare_kprobe(p)     arch_prepare_kprobe(p)
+> 12310e3437554 (Jessica Yu                 2018-01-10 00:51:23 +0100 1080) #define arm_kprobe_ftrace(p)  (-ENODEV)
+> 297f9233b53a0 (Jessica Yu                 2018-01-10 00:51:24 +0100 1081) #define disarm_kprobe_ftrace(p)       (-ENODEV)
+> 
+> Thus, it should have "Fixes: 297f9233b53a ("kprobes: Propagate error from disarm_kprobe_ftrace()")"
+> 
+> $ git tag -l --contains 297f9233b53a | grep "^v[[:digit:].]*$" | cut -f1-2 -d. | uniq
+> v4.16
+> v4.17
+> v4.18
+> v4.19
+> v4.20
+> v5.0
+> v5.1
+> v5.2
+> v5.3
+> v5.4
+> v5.5
+> v5.6
+> v5.7
+> v5.8
+> 
+> So the commit 10de795a5addd must be backported to 4.19.y and 5.4.y.
 
+Now queued up, thanks.
+
+greg k-h
