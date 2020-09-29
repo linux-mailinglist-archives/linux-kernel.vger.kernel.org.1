@@ -2,113 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21D9527BC5F
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 07:19:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 976AF27BC61
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 07:21:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727417AbgI2FTc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 01:19:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34096 "EHLO mail.kernel.org"
+        id S1727043AbgI2FVf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 01:21:35 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:25086 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725536AbgI2FTb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 01:19:31 -0400
-Received: from coco.lan (ip5f5ad5bc.dynamic.kabel-deutschland.de [95.90.213.188])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C60B42145D;
-        Tue, 29 Sep 2020 05:19:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601356771;
-        bh=Jkqd0x9y1qCqf4dEAyGH6DAakth8ael+GUF3gD5Y6yM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=xe4Ftg6fNu8TtjnFW5XlS6N3U6x+Jefb2Frpk6OW9otweRVse7t9N555j6aDwjkTg
-         ujzDx5GQTBjp8cUKyKhkOqHW1BYYAcG/rGo6OGsri7zLxKaw5NMtAVYbL/emfw95Va
-         hXuhDVnhwYNtljsas4TtLqV4lV2BHQ5PVkGnZ65s=
-Date:   Tue, 29 Sep 2020 07:19:18 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>
-Cc:     r.verdejo@samsung.com, nicolas@ndufresne.ca,
-        linux-media@vger.kernel.org, skhan@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH WIP 1/6] media: vidtv: extract the initial CRC value to
- into a #define
-Message-ID: <20200929071918.15c018ac@coco.lan>
-In-Reply-To: <20200929032625.1548909-1-dwlsalmeida@gmail.com>
-References: <20200929032625.1548909-1-dwlsalmeida@gmail.com>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        id S1725562AbgI2FVf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 01:21:35 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4C0nmp11djz9txQS;
+        Tue, 29 Sep 2020 07:21:30 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id Xv5OGtZ92lmC; Tue, 29 Sep 2020 07:21:30 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4C0nmn6QJkz9txQR;
+        Tue, 29 Sep 2020 07:21:29 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id DB55B8B79F;
+        Tue, 29 Sep 2020 07:21:30 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id x_ywH_gjOjI2; Tue, 29 Sep 2020 07:21:30 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 20E898B76C;
+        Tue, 29 Sep 2020 07:21:30 +0200 (CEST)
+Subject: Re: [PATCH v2 25/25] powerpc/signal32: Transform save_user_regs() and
+ save_tm_user_regs() in 'unsafe' version
+To:     "Christopher M. Riedl" <cmr@informatik.wtf>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+References: <C5ZIJ5D6XYSA.191D18GH311GD@geist>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <6fffc2fd-484c-c3d8-73ba-1048b5809b69@csgroup.eu>
+Date:   Tue, 29 Sep 2020 07:21:26 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <C5ZIJ5D6XYSA.191D18GH311GD@geist>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, 29 Sep 2020 00:26:20 -0300
-"Daniel W. S. Almeida" <dwlsalmeida@gmail.com> escreveu:
 
-> From: Daniel W. S. Almeida <dwlsalmeida@gmail.com>
 
-On a very quick look, patches seem good. Why did you mark them as WIP?
-
-Next time, please add a patch 0, specially when you tag something as
-WIP, or RFC.
-
+Le 29/09/2020 à 04:55, Christopher M. Riedl a écrit :
+> On Tue Aug 18, 2020 at 12:19 PM CDT, Christophe Leroy wrote:
+>> Change those two functions to be used within a user access block.
+>>
+>> For that, change save_general_regs() to and unsafe_save_general_regs(),
+>> then replace all user accesses by unsafe_ versions.
+>>
+>> This series leads to a reduction from 2.55s to 1.73s of
+>> the system CPU time with the following microbench app
+>> on an mpc832x with KUAP (approx 32%)
+>>
+>> Without KUAP, the difference is in the noise.
+>>
+>> void sigusr1(int sig) { }
+>>
+>> int main(int argc, char **argv)
+>> {
+>> int i = 100000;
+>>
+>> signal(SIGUSR1, sigusr1);
+>> for (;i--;)
+>> raise(SIGUSR1);
+>> exit(0);
+>> }
+>>
+>> An additional 0.10s reduction is achieved by removing
+>> CONFIG_PPC_FPU, as the mpc832x has no FPU.
+>>
+>> A bit less spectacular on an 8xx as KUAP is less heavy, prior to
+>> the series (with KUAP) it ran in 8.10 ms. Once applies the removal
+>> of FPU regs handling, we get 7.05s. With the full series, we get 6.9s.
+>> If artificially re-activating FPU regs handling with the full series,
+>> we get 7.6s.
+>>
+>> So for the 8xx, the removal of the FPU regs copy is what makes the
+>> difference, but the rework of handle_signal also have a benefit.
+>>
+>> Same as above, without KUAP the difference is in the noise.
+>>
+>> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+>> ---
+>> arch/powerpc/kernel/signal_32.c | 224 ++++++++++++++++----------------
+>> 1 file changed, 111 insertions(+), 113 deletions(-)
+>>
+>> diff --git a/arch/powerpc/kernel/signal_32.c
+>> b/arch/powerpc/kernel/signal_32.c
+>> index 86539a4e0514..f795fe0240a1 100644
+>> --- a/arch/powerpc/kernel/signal_32.c
+>> +++ b/arch/powerpc/kernel/signal_32.c
+>> @@ -93,8 +93,8 @@ static inline int get_sigset_t(sigset_t *set,
+>> #define to_user_ptr(p) ptr_to_compat(p)
+>> #define from_user_ptr(p) compat_ptr(p)
+>>   
+>> -static inline int save_general_regs(struct pt_regs *regs,
+>> - struct mcontext __user *frame)
+>> +static __always_inline int
+>> +save_general_regs_unsafe(struct pt_regs *regs, struct mcontext __user
+>> *frame)
+>> {
+>> elf_greg_t64 *gregs = (elf_greg_t64 *)regs;
+>> int val, i;
+>> @@ -108,10 +108,12 @@ static inline int save_general_regs(struct pt_regs
+>> *regs,
+>> else
+>> val = gregs[i];
+>>   
+>> - if (__put_user(val, &frame->mc_gregs[i]))
+>> - return -EFAULT;
+>> + unsafe_put_user(val, &frame->mc_gregs[i], failed);
+>> }
+>> return 0;
+>> +
+>> +failed:
+>> + return 1;
+>> }
+>>   
+>> static inline int restore_general_regs(struct pt_regs *regs,
+>> @@ -148,11 +150,15 @@ static inline int get_sigset_t(sigset_t *set,
+>> const sigset_t __user *uset)
+>> #define to_user_ptr(p) ((unsigned long)(p))
+>> #define from_user_ptr(p) ((void __user *)(p))
+>>   
+>> -static inline int save_general_regs(struct pt_regs *regs,
+>> - struct mcontext __user *frame)
+>> +static __always_inline int
+>> +save_general_regs_unsafe(struct pt_regs *regs, struct mcontext __user
+>> *frame)
+>> {
+>> WARN_ON(!FULL_REGS(regs));
+>> - return __copy_to_user(&frame->mc_gregs, regs, GP_REGS_SIZE);
+>> + unsafe_copy_to_user(&frame->mc_gregs, regs, GP_REGS_SIZE, failed);
+>> + return 0;
+>> +
+>> +failed:
+>> + return 1;
+>> }
+>>   
+>> static inline int restore_general_regs(struct pt_regs *regs,
+>> @@ -170,6 +176,11 @@ static inline int restore_general_regs(struct
+>> pt_regs *regs,
+>> }
+>> #endif
+>>   
+>> +#define unsafe_save_general_regs(regs, frame, label) do { \
+>> + if (save_general_regs_unsafe(regs, frame)) \
 > 
-> The same constant (0xffffffff) is used in three different functions.
+> Minor nitpick (sorry); this naming seems a bit strange to me, in x86 it
+> is "__unsafe_" as a prefix instead of "_unsafe" as a suffix. That sounds
+> a bit better to me, what do you think? Unless there is some convention I
+> am not aware of here apart from "unsafe_" using a goto label for errors.
 
-This one at least seems to be ready for merging ;-)
+You are probably right, I have never been good at naming stuff.
 
-Regards,
-Mauro
-> 
-> Extract it into a #define to avoid repetition.
-> 
-> Signed-off-by: Daniel W. S. Almeida <dwlsalmeida@gmail.com>
-> ---
->  drivers/media/test-drivers/vidtv/vidtv_psi.c | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/media/test-drivers/vidtv/vidtv_psi.c b/drivers/media/test-drivers/vidtv/vidtv_psi.c
-> index 3151b300a91b..a24e84adc8ce 100644
-> --- a/drivers/media/test-drivers/vidtv/vidtv_psi.c
-> +++ b/drivers/media/test-drivers/vidtv/vidtv_psi.c
-> @@ -30,6 +30,7 @@
->  
->  #define CRC_SIZE_IN_BYTES 4
->  #define MAX_VERSION_NUM 32
-> +#define INITIAL_CRC 0xffffffff
->  
->  static const u32 CRC_LUT[256] = {
->  	/* from libdvbv5 */
-> @@ -794,7 +795,7 @@ u32 vidtv_psi_pat_write_into(struct vidtv_psi_pat_write_args args)
->  	/* the number of bytes written by this function */
->  	u32 nbytes = 0;
->  	const u16 pat_pid = VIDTV_PAT_PID;
-> -	u32 crc = 0xffffffff;
-> +	u32 crc = INITIAL_CRC;
->  
->  	struct vidtv_psi_table_pat_program *p = args.pat->program;
->  
-> @@ -990,7 +991,7 @@ u32 vidtv_psi_pmt_write_into(struct vidtv_psi_pmt_write_args args)
->  {
->  	/* the number of bytes written by this function */
->  	u32 nbytes = 0;
-> -	u32 crc = 0xffffffff;
-> +	u32 crc = INITIAL_CRC;
->  
->  	struct vidtv_psi_desc *table_descriptor   = args.pmt->descriptor;
->  	struct vidtv_psi_table_pmt_stream *stream = args.pmt->stream;
-> @@ -1143,7 +1144,7 @@ u32 vidtv_psi_sdt_write_into(struct vidtv_psi_sdt_write_args args)
->  	u32 nbytes  = 0;
->  	u16 sdt_pid = VIDTV_SDT_PID;  /* see ETSI EN 300 468 v1.15.1 p. 11 */
->  
-> -	u32 crc = 0xffffffff;
-> +	u32 crc = INITIAL_CRC;
->  
->  	struct vidtv_psi_table_sdt_service *service = args.sdt->service;
->  	struct vidtv_psi_desc *service_desc = (args.sdt->service) ?
-
-
-
-Thanks,
-Mauro
+Christophe
