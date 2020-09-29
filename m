@@ -2,130 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EE2727C1BB
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 11:53:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B858827C1C0
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 11:55:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728089AbgI2JxZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 05:53:25 -0400
-Received: from mx2.suse.de ([195.135.220.15]:33768 "EHLO mx2.suse.de"
+        id S1727035AbgI2Jy7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 05:54:59 -0400
+Received: from ozlabs.org ([203.11.71.1]:40581 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725306AbgI2JxY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 05:53:24 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1601373203;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=il8OjVwDlFOXLr6gKoOMtVUBESGFP/mYXQMYTFLTgy0=;
-        b=FgrE8IX2EUa3cIXAIigwejv5YTcWAFYL9R6bdUEPDzYI8Pf5+aAhr0APlKW0XLYFWgWZB8
-        jxcbhMVQvBI4j9++8ywgL2eyk9ihUgt0moq936nqGdOtANVkjzZn5YZj1hX49DZ2dodVex
-        uFbL0fSMIKWk9E38xmJYBOPWtLTjUQQ=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id E7B08AD2E;
-        Tue, 29 Sep 2020 09:53:22 +0000 (UTC)
-Date:   Tue, 29 Sep 2020 11:53:18 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Joonsoo Kim <js1304@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Mel Gorman <mgorman@techsingularity.net>, kernel-team@lge.com,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Subject: Re: [PATCH v2 for v5.9] mm/page_alloc: handle a missing case for
- memalloc_nocma_{save/restore} APIs
-Message-ID: <20200929095318.GA2277@dhcp22.suse.cz>
-References: <1601283046-15329-1-git-send-email-iamjoonsoo.kim@lge.com>
- <20200929080814.GB22035@dhcp22.suse.cz>
- <CAAmzW4OK=ubyNWsjwfOkj4vZz2Tjuo0G9ceTMXUkx8W+3PEM=g@mail.gmail.com>
+        id S1725283AbgI2Jy7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 05:54:59 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C0vrK0LPHz9ryj;
+        Tue, 29 Sep 2020 19:54:56 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1601373297;
+        bh=K9o2m464FiOzYLspilJjEGxOl0UfxxUgUkxIWX09bKk=;
+        h=Date:From:To:Cc:Subject:From;
+        b=h+VL7xFuszdGTxuciwV9z/cgTgdEON8iD6Uur1Ln9yfu4j2KuQ9g90H/uNZNVZ+PW
+         O21vlbru1Y4/a3GzXXtdUdvMERCgb4Brkmhi3ajO07deMprPN+cen9LHQbUDMn7r0t
+         yO9r+pMzqKlcFYNtLE5Q44gMfOg5BObL9H69xR4k9gW+y2z3lHOmEUZTFkSMvPDWz5
+         WYyUQ3/jCETCO9yVJUQAiOPFocZSn3IrMcPcUD4BBq9PCIFuOlPLX+hnPz5VU5jmHs
+         DUSpDpCDlS8bIYbl5s5z9yj7QnlmSxfjx45qobEZXNX4qZYgw+yViLJC/TrHQtiVCn
+         Wk6J0x5vtakDg==
+Date:   Tue, 29 Sep 2020 19:54:55 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Ritesh Harjani <riteshh@linux.ibm.com>
+Subject: linux-next: Fixes tag needs some work in the ext4 tree
+Message-ID: <20200929195455.2cc5ae91@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAAmzW4OK=ubyNWsjwfOkj4vZz2Tjuo0G9ceTMXUkx8W+3PEM=g@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: multipart/signed; boundary="Sig_/fwZWsdF9ODuOFQ/NoS7O6U9";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 29-09-20 17:38:43, Joonsoo Kim wrote:
-> 2020년 9월 29일 (화) 오후 5:08, Michal Hocko <mhocko@suse.com>님이 작성:
-> >
-> > On Mon 28-09-20 17:50:46, Joonsoo Kim wrote:
-> > > From: Joonsoo Kim <iamjoonsoo.kim@lge.com>
-> > >
-> > > memalloc_nocma_{save/restore} APIs can be used to skip page allocation
-> > > on CMA area, but, there is a missing case and the page on CMA area could
-> > > be allocated even if APIs are used. This patch handles this case to fix
-> > > the potential issue.
-> > >
-> > > Missing case is an allocation from the pcplist. MIGRATE_MOVABLE pcplist
-> > > could have the pages on CMA area so we need to skip it if ALLOC_CMA isn't
-> > > specified.
-> > >
-> > > Fixes: 8510e69c8efe (mm/page_alloc: fix memalloc_nocma_{save/restore} APIs)
-> > > Signed-off-by: Joonsoo Kim <iamjoonsoo.kim@lge.com>
-> > > ---
-> > >  mm/page_alloc.c | 13 ++++++++++---
-> > >  1 file changed, 10 insertions(+), 3 deletions(-)
-> > >
-> > > diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> > > index fab5e97..104d2e1 100644
-> > > --- a/mm/page_alloc.c
-> > > +++ b/mm/page_alloc.c
-> > > @@ -3367,9 +3367,16 @@ struct page *rmqueue(struct zone *preferred_zone,
-> > >       struct page *page;
-> > >
-> > >       if (likely(order == 0)) {
-> > > -             page = rmqueue_pcplist(preferred_zone, zone, gfp_flags,
-> > > +             /*
-> > > +              * MIGRATE_MOVABLE pcplist could have the pages on CMA area and
-> > > +              * we need to skip it when CMA area isn't allowed.
-> > > +              */
-> > > +             if (!IS_ENABLED(CONFIG_CMA) || alloc_flags & ALLOC_CMA ||
-> > > +                             migratetype != MIGRATE_MOVABLE) {
-> > > +                     page = rmqueue_pcplist(preferred_zone, zone, gfp_flags,
-> > >                                       migratetype, alloc_flags);
-> > > -             goto out;
-> > > +                     goto out;
-> > > +             }
-> > >       }
-> >
-> > This approach looks definitely better than the previous version.
-> 
-> Thanks!
-> 
-> > >
-> > >       /*
-> > > @@ -3381,7 +3388,7 @@ struct page *rmqueue(struct zone *preferred_zone,
-> > >
-> > >       do {
-> > >               page = NULL;
-> > > -             if (alloc_flags & ALLOC_HARDER) {
-> > > +             if (order > 0 && alloc_flags & ALLOC_HARDER) {
-> > >                       page = __rmqueue_smallest(zone, order, MIGRATE_HIGHATOMIC);
-> > >                       if (page)
-> > >                               trace_mm_page_alloc_zone_locked(page, order, migratetype);
-> >
-> > But this condition is not clear to me. __rmqueue_smallest doesn't access
-> > pcp lists. Maybe I have missed the point in the original discussion but
-> > this deserves a comment at least.
-> 
-> Before the pcplist skipping is applied, order-0 request can not reach here.
-> But, now, an order-0 request can reach here. Free memory on
-> MIGRATE_HIGHATOMIC is reserved for high-order atomic allocation
-> so an order-0 request should skip it.
+--Sig_/fwZWsdF9ODuOFQ/NoS7O6U9
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-OK, I see. Thanks for the clarification.
+Hi all,
 
-> I will add a code comment on the next version.
+In commit
 
-Thanks, that would be indeed helpful. With that, feel free to add
-Acked-by: Michal Hocko <mhocko@suse.com>
+  424de74af0d0 ("ext4: implement swap_activate aops using iomap")
 
--- 
-Michal Hocko
-SUSE Labs
+Fixes tag
+
+  Fixes: ac58e4fb03f ("ext4: move ext4 bmap to use iomap infrastructure")
+
+has these problem(s):
+
+  - SHA1 should be at least 12 digits long
+    Can be fixed by setting core.abbrev to 12 (or more) or (for git v2.11
+    or later) just making sure it is not set (or set to "auto").
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/fwZWsdF9ODuOFQ/NoS7O6U9
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9zBG8ACgkQAVBC80lX
+0Gw2QAf+KOd5IXA5ojDFYpnA19uouUDXwodfC/UarXCJg1GPSrTzcrKlS5XIMii3
+Dz4EGsHETVKD0tUzFXFADPyyQQPsazbYpzfaTsEL/8gVVUMVxKf28y4vw7HY5g+4
+2waGlRX5YtwwHRS+n14FfUYNJ0HNtfdrwlTyL2OW4muE8V+GigjR9Qg9t6unGeq1
+BaL7z1tSi0pJEX3I/hyYKQg+q3Uz2Z9tcWGKXGKoFzjWH2wLnmTLTSiAPsUGfsAX
+A2cVZo6nq+MXSlypL0ck5uuR0IFn/PaUER/cwvZKUCtbD9CoH0rzUBH2ldTWxgdD
+qHfOxwJVp05EelcicLaCS9pgTOfMjA==
+=puhX
+-----END PGP SIGNATURE-----
+
+--Sig_/fwZWsdF9ODuOFQ/NoS7O6U9--
