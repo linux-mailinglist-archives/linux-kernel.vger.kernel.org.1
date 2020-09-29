@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E0FA27C852
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:01:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 980D927C8E6
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:06:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729259AbgI2MBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 08:01:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36572 "EHLO mail.kernel.org"
+        id S1730712AbgI2MFj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 08:05:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53440 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728366AbgI2Lkt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:40:49 -0400
+        id S1730272AbgI2Lhi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:37:38 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CD83123A5A;
-        Tue, 29 Sep 2020 11:23:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DEE54208FE;
+        Tue, 29 Sep 2020 11:37:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601378619;
-        bh=lZ+pWyGp/OxMLaBEKo2kh4hSw1enmeJ7BX5vwLBy3xA=;
+        s=default; t=1601379452;
+        bh=yvSfY/wFuXDNcZOalTPhO9jKbqjuz1HOllkdtnBtnqU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qNzbfL0lRaXPSEV8dv4cp7NuWBiKZVqfPEaGpyYkvxnZ8Tnugu3JXocKv+cwJdr2L
-         Q1gcUsCRgt2ShA4iaSbLzpJ5ERPukZSYD20M8K3Eiu64xiIlyOe7/iZpkL0WBf94Rl
-         gDeSx3IHjM+Y6/ZqTlUTET7lr1Ngxs9xrAA3Ra+4=
+        b=BbznGHsD3l3XwKTR43lICtqDc39yn74CzUcrCUYnMjfn5BqJq739zRe4nylzsk/5A
+         P/b8joIcY6Cv0MruPV5SgBHd7IbjMaL3/rOjt0OiY+qMpVtslqIvA1l07GBKhsRIvw
+         2HTC7O5knSx0BIX+lSq5QrN3C48A6AJjUi2nAArs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vasily Averin <vvs@virtuozzo.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 049/245] ipv6_route_seq_next should increase position index
-Date:   Tue, 29 Sep 2020 12:58:20 +0200
-Message-Id: <20200929105949.386278964@linuxfoundation.org>
+Subject: [PATCH 5.4 170/388] rtc: ds1374: fix possible race condition
+Date:   Tue, 29 Sep 2020 12:58:21 +0200
+Message-Id: <20200929110018.710658201@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929105946.978650816@linuxfoundation.org>
-References: <20200929105946.978650816@linuxfoundation.org>
+In-Reply-To: <20200929110010.467764689@linuxfoundation.org>
+References: <20200929110010.467764689@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,51 +43,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vasily Averin <vvs@virtuozzo.com>
+From: Alexandre Belloni <alexandre.belloni@bootlin.com>
 
-[ Upstream commit 4fc427e0515811250647d44de38d87d7b0e0790f ]
+[ Upstream commit c11af8131a4e7ba1960faed731ee7e84c2c13c94 ]
 
-if seq_file .next fuction does not change position index,
-read after some lseek can generate unexpected output.
+The RTC IRQ is requested before the struct rtc_device is allocated,
+this may lead to a NULL pointer dereference in the IRQ handler.
 
-https://bugzilla.kernel.org/show_bug.cgi?id=206283
-Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+To fix this issue, allocating the rtc_device struct before requesting
+the RTC IRQ using devm_rtc_allocate_device, and use rtc_register_device
+to register the RTC device.
+
+Link: https://lore.kernel.org/r/20200306073404.56921-1-alexandre.belloni@bootlin.com
+Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ipv6/ip6_fib.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+ drivers/rtc/rtc-ds1374.c | 15 +++++++++------
+ 1 file changed, 9 insertions(+), 6 deletions(-)
 
-diff --git a/net/ipv6/ip6_fib.c b/net/ipv6/ip6_fib.c
-index 05a206202e23d..b924941b96a31 100644
---- a/net/ipv6/ip6_fib.c
-+++ b/net/ipv6/ip6_fib.c
-@@ -2377,14 +2377,13 @@ static void *ipv6_route_seq_next(struct seq_file *seq, void *v, loff_t *pos)
- 	struct net *net = seq_file_net(seq);
- 	struct ipv6_route_iter *iter = seq->private;
+diff --git a/drivers/rtc/rtc-ds1374.c b/drivers/rtc/rtc-ds1374.c
+index 367497914c100..28eb96cbaf98b 100644
+--- a/drivers/rtc/rtc-ds1374.c
++++ b/drivers/rtc/rtc-ds1374.c
+@@ -620,6 +620,10 @@ static int ds1374_probe(struct i2c_client *client,
+ 	if (!ds1374)
+ 		return -ENOMEM;
  
-+	++(*pos);
- 	if (!v)
- 		goto iter_table;
++	ds1374->rtc = devm_rtc_allocate_device(&client->dev);
++	if (IS_ERR(ds1374->rtc))
++		return PTR_ERR(ds1374->rtc);
++
+ 	ds1374->client = client;
+ 	i2c_set_clientdata(client, ds1374);
  
- 	n = rcu_dereference_bh(((struct fib6_info *)v)->fib6_next);
--	if (n) {
--		++*pos;
-+	if (n)
- 		return n;
+@@ -641,12 +645,11 @@ static int ds1374_probe(struct i2c_client *client,
+ 		device_set_wakeup_capable(&client->dev, 1);
+ 	}
+ 
+-	ds1374->rtc = devm_rtc_device_register(&client->dev, client->name,
+-						&ds1374_rtc_ops, THIS_MODULE);
+-	if (IS_ERR(ds1374->rtc)) {
+-		dev_err(&client->dev, "unable to register the class device\n");
+-		return PTR_ERR(ds1374->rtc);
 -	}
++	ds1374->rtc->ops = &ds1374_rtc_ops;
++
++	ret = rtc_register_device(ds1374->rtc);
++	if (ret)
++		return ret;
  
- iter_table:
- 	ipv6_route_check_sernum(iter);
-@@ -2392,8 +2391,6 @@ iter_table:
- 	r = fib6_walk_continue(&iter->w);
- 	spin_unlock_bh(&iter->tbl->tb6_lock);
- 	if (r > 0) {
--		if (v)
--			++*pos;
- 		return iter->w.leaf;
- 	} else if (r < 0) {
- 		fib6_walker_unlink(net, &iter->w);
+ #ifdef CONFIG_RTC_DRV_DS1374_WDT
+ 	save_client = client;
 -- 
 2.25.1
 
