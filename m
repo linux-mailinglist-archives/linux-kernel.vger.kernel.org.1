@@ -2,110 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50DB927BCD9
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 08:11:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DA2627BCF1
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 08:19:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727695AbgI2GLC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 02:11:02 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59292 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725536AbgI2GLC (ORCPT
+        id S1725841AbgI2GS6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 02:18:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45244 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725320AbgI2GS4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 02:11:02 -0400
-Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601359860;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=JAxYHRdsbLtzM2kIQHgB0ZgL2sD23xll0p+Cp1/eLJU=;
-        b=PjW0eRA4pM5C9/JqUelAkuIIyjdEvfLyNL3rmlLqjhHIsxhYYsSI032U1CQMU4Jlw2bTbh
-        W7HaqygNCViATSnN4x6zY/AGZlsS/WGfmuvZdyqOGbSzNVIe8ETqobZhLhC0SYOyLUw4pu
-        EpQ96AhWjIiYIVRnXtZe6Y4E7wnJdOU=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-25-SaXWL9uIOrmTJhuIbJ30Kg-1; Tue, 29 Sep 2020 02:10:58 -0400
-X-MC-Unique: SaXWL9uIOrmTJhuIbJ30Kg-1
-Received: by mail-wr1-f69.google.com with SMTP id l15so1291241wro.10
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 23:10:58 -0700 (PDT)
+        Tue, 29 Sep 2020 02:18:56 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E456C061755;
+        Mon, 28 Sep 2020 23:18:55 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id s14so3280173pju.1;
+        Mon, 28 Sep 2020 23:18:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=bR1c5zVE1/wtGNRr4qAxGHHpVpEDG879HmZTYWlE/G8=;
+        b=fUx7CMc2F01xKbLmoLOoCpj/jkDlUK5sAdtumwTJWzrSIpPfAAEs4WVMaMmzXJfwuf
+         W5W/mq16+8r6JKDur6Zdc7IehJAbBu7y2seYQWXnRhHAIMeJg4Z2ZzCgGBliT6t9N8TA
+         LGTrxiKobVEpcojQg9Jv2g8paOfVdkk2NMNyGuDL4AARbl75lirK/vdu1tlkUvnIy7hJ
+         Pny1ylEvtffgCTj0bSkihmjdmaBZ5DiDc+++4RbD80cxfkpsAm/0g8lXbWon62XsqxBM
+         sJExeBaF7IDpPl/U+aRTX1Ltp0UNeQyyH/9Aujy/vhrC3zEd3hwYAJo7aoJyQFPtXrDl
+         22Ng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=JAxYHRdsbLtzM2kIQHgB0ZgL2sD23xll0p+Cp1/eLJU=;
-        b=CpD3Hz/QVOxISflfyeLZdswejBCnW5IgAsc22ODe6Ha4Qh5rHmY1sSp+46E1akesVk
-         xYjqDynFwwnVyJ1lmkmOq3k5hH4DoXJcI0px16T9pokMPeIa3QTq15ZTyRZeIPrBKJD8
-         TSP7HpnnCILflpd+FR1uqxAzI9v1GDsPeL7vZeDc73MOiRRhL4qRZXsNtpPil5AT3Hk5
-         cyYqn12sDS70vBLGP2I1I5PGm4hNGYRfsz9lxwtDN0rKTRRsMON1mXip/g1E1IQgQzjB
-         ceL4OcS8c/MDKMP6qQt5tVbfi7TWqfBKbh/mNj7wHhNAe5rC6nQGZUBT6OdIgzT/xahw
-         ZdbA==
-X-Gm-Message-State: AOAM5333QSkiZ/r9LTrDodghFmJvCPGNtwmmIiihz4tjTs0uuKs4yzNh
-        S+42WelEusyVDNBSEPmT0oxZtxTa2v1cOKYV69Px5VHYGarEyUzrFWvBaijNtEBdKL7tXgoeENA
-        KW+QrnMfqSE/D9sx3xzpAirfL
-X-Received: by 2002:adf:eb04:: with SMTP id s4mr2366076wrn.81.1601359857388;
-        Mon, 28 Sep 2020 23:10:57 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwbRp2Llm5I3cTgA/LEzQYm1zgKOCI/i4yvi7klM6uNyHOo4UgNBNnqGUpXczfJ7duXJzSDAA==
-X-Received: by 2002:adf:eb04:: with SMTP id s4mr2366044wrn.81.1601359857144;
-        Mon, 28 Sep 2020 23:10:57 -0700 (PDT)
-Received: from redhat.com (bzq-79-179-71-128.red.bezeqint.net. [79.179.71.128])
-        by smtp.gmail.com with ESMTPSA id e13sm4772905wre.60.2020.09.28.23.10.55
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=bR1c5zVE1/wtGNRr4qAxGHHpVpEDG879HmZTYWlE/G8=;
+        b=k6LmKkghcOAGriST8LAoFwTQL92bvVro73Jp+EWDO495YuFMNo/4Q3vYxB357vGnlu
+         2LtmWuUxkuypfC9ZJk5TSgU1ycqN5V/87f/daiKjcvxyGSfU6Pm/Ep6OPSVyQvt18o2g
+         Z7w+cQIhCplJgFknWvx0AFZ3T1qAcWgqbJHpI8vCN/13vVLD42U1phHocFIHguwolRXy
+         6w3aMDGmxw0f1LFhShBHTOWadKWcRVhkllTTHtc2E7WC+zMvfFVNJbRUpF7m5Kyjq1At
+         nSi0sbH7WqTlvVwUIqlNr6nall0/aMSC3g5UfgHPq2OA/RV1gmcJRCToOFFXGucv9r3r
+         VVWg==
+X-Gm-Message-State: AOAM532pW2aquICPOuv5CJThS6twYunfWNWqcdzwdUbQ4056sOAtlr/f
+        oTOyVL70ki2PsfrWcKD5epw=
+X-Google-Smtp-Source: ABdhPJzQmA4H34YEh2eRTAYZ9Szt4fmd9lwDaFSywAcg4Rghwf09cTORXan9bkhbsq+oer8yiNUXbw==
+X-Received: by 2002:a17:90a:b314:: with SMTP id d20mr458540pjr.7.1601360334679;
+        Mon, 28 Sep 2020 23:18:54 -0700 (PDT)
+Received: from Asurada-Nvidia.nvidia.com (thunderhill.nvidia.com. [216.228.112.22])
+        by smtp.gmail.com with ESMTPSA id cf7sm3280562pjb.52.2020.09.28.23.18.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Sep 2020 23:10:56 -0700 (PDT)
-Date:   Tue, 29 Sep 2020 02:10:53 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Eli Cohen <elic@nvidia.com>
-Cc:     Leon Romanovsky <leonro@nvidia.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        virtualization@lists.linux-foundation.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Jason Wang <jasowang@redhat.com>,
-        Saeed Mahameed <saeedm@nvidia.com>
-Subject: Re: [PATCH v3 -next] vdpa: mlx5: change Kconfig depends to fix build
- errors
-Message-ID: <20200929021030-mutt-send-email-mst@kernel.org>
-References: <73f7e48b-8d16-6b20-07d3-41dee0e3d3bd@infradead.org>
- <20200918082245.GP869610@unreal>
- <20200924052932-mutt-send-email-mst@kernel.org>
- <20200924102413.GD170403@mtl-vdi-166.wap.labs.mlnx>
- <20200925061959-mutt-send-email-mst@kernel.org>
- <20200929060142.GA120395@mtl-vdi-166.wap.labs.mlnx>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200929060142.GA120395@mtl-vdi-166.wap.labs.mlnx>
+        Mon, 28 Sep 2020 23:18:54 -0700 (PDT)
+From:   Nicolin Chen <nicoleotsuka@gmail.com>
+To:     thierry.reding@gmail.com, joro@8bytes.org
+Cc:     vdumpa@nvidia.com, jonathanh@nvidia.com, digetx@gmail.com,
+        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, hch@infradead.org
+Subject: [PATCH v4 0/2] iommu/tegra-smmu: Two followup changes
+Date:   Mon, 28 Sep 2020 23:13:23 -0700
+Message-Id: <20200929061325.10197-1-nicoleotsuka@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 09:01:42AM +0300, Eli Cohen wrote:
-> On Fri, Sep 25, 2020 at 06:20:45AM -0400, Michael S. Tsirkin wrote:
-> > > > 
-> > > > Hmm other drivers select VHOST_IOTLB, why not do the same?
-> > > 
-> > > I can't see another driver doing that.
-> > 
-> > Well grep VHOST_IOTLB and you will see some examples.
-> 
-> $ git grep -wn VHOST_IOTLB
-> drivers/vhost/Kconfig:2:config VHOST_IOTLB
-> drivers/vhost/Kconfig:11:       select VHOST_IOTLB
-> drivers/vhost/Kconfig:18:       select VHOST_IOTLB
-> 
-> What am I missing here?
+Two followup patches for tegra-smmu:
+PATCH-1 is a clean-up patch for the recently applied SWGROUP change.
+PATCH-2 fixes a potential race condition
 
-Nothing, there's a select here as expected.
+Changelog
+v3->v4:
+ * PATCH-2: Fixed typo in subject
+v2->v3:
+ * PATCH-2: renamed "err_unlock" to "unlock"
+v1->v2:
+ * Separated first two changs of V1 so they may get applied first,
+   since the other three changes need some extra time to finalize.
 
-> > > Perhaps I can set dependency on
-> > > VHOST which by itself depends on VHOST_IOTLB?
-> > 
-> > VHOST is processing virtio in the kernel. You don't really need that
-> > for mlx, do you?
-> > 
-> > > > 
-> > > > 
-> > > > > >  	help
-> > > > > >  	  Support library for Mellanox VDPA drivers. Provides code that is
-> > > > > >
-> > > > 
-> > 
+Nicolin Chen (2):
+  iommu/tegra-smmu: Unwrap tegra_smmu_group_get
+  iommu/tegra-smmu: Expand mutex protection range
+
+ drivers/iommu/tegra-smmu.c | 53 ++++++++++++++++++--------------------
+ 1 file changed, 25 insertions(+), 28 deletions(-)
+
+-- 
+2.17.1
 
