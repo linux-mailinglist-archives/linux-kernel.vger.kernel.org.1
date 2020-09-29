@@ -2,38 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7098527C3ED
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:10:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9166827C360
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:06:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729124AbgI2LKA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:10:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50316 "EHLO mail.kernel.org"
+        id S1728263AbgI2LFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:05:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40888 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729098AbgI2LJt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:09:49 -0400
+        id S1727360AbgI2LEk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:04:40 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4350A21941;
-        Tue, 29 Sep 2020 11:09:48 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1BD5520C09;
+        Tue, 29 Sep 2020 11:04:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601377788;
-        bh=rbY38R2MTUHiLfLudude9YVe8QTK+qxZFgcLZXsi02w=;
+        s=default; t=1601377479;
+        bh=iZAt96r+jQbEKpdGQoKdXM/V6GN3jgsKnp594FjHE1Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=idhtxN7HvEKNVKfvMnyPxMt48dMFo7SmGP0XiediFJ6rklvfY6NozADgRQt6FpiEH
-         lRGr7tRdLay/ZmVfdKA/gnyXIHLCXQC1S2I9INDHPoLUiEvDvU3jyke+P0Yq4mS8Kx
-         g2rQEnzd9S3nZ56Ow4ooG/rVgBx+ILfLAMwzr314=
+        b=Y1vGTAzPS1AHs2YRELnn2jEzO5OdgO+EY9xqiYqbG0UA3i2EefVE3Cv5STUB1bnvU
+         xadrT8ZFl0XNTVUjd3Oqpa8CBhytALfJVh+4Ne2gaFpts8Hu9wIcf+DjS54UhpEUcy
+         eQz34pG9o686nSWOuuE6yqQ6uodouuj4aTKYCHb0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andreas Steinmetz <ast@domdv.de>,
-        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 072/121] ALSA: usb-audio: Fix case when USB MIDI interface has more than one extra endpoint descriptor
-Date:   Tue, 29 Sep 2020 13:00:16 +0200
-Message-Id: <20200929105933.743397837@linuxfoundation.org>
+        stable@vger.kernel.org, Jaewon Kim <jaewon31.kim@samsung.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Michel Lespinasse <walken@google.com>,
+        Borislav Petkov <bp@suse.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 50/85] mm/mmap.c: initialize align_offset explicitly for vm_unmapped_area
+Date:   Tue, 29 Sep 2020 13:00:17 +0200
+Message-Id: <20200929105930.737435411@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929105930.172747117@linuxfoundation.org>
-References: <20200929105930.172747117@linuxfoundation.org>
+In-Reply-To: <20200929105928.198942536@linuxfoundation.org>
+References: <20200929105928.198942536@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,78 +47,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andreas Steinmetz <ast@domdv.de>
+From: Jaewon Kim <jaewon31.kim@samsung.com>
 
-[ Upstream commit 5c6cd7021a05a02fcf37f360592d7c18d4d807fb ]
+[ Upstream commit 09ef5283fd96ac424ef0e569626f359bf9ab86c9 ]
 
-The Miditech MIDIFACE 16x16 (USB ID 1290:1749) has more than one extra
-endpoint descriptor.
+On passing requirement to vm_unmapped_area, arch_get_unmapped_area and
+arch_get_unmapped_area_topdown did not set align_offset.  Internally on
+both unmapped_area and unmapped_area_topdown, if info->align_mask is 0,
+then info->align_offset was meaningless.
 
-The first extra descriptor is: 0x06 0x30 0x00 0x00 0x00 0x00
+But commit df529cabb7a2 ("mm: mmap: add trace point of
+vm_unmapped_area") always prints info->align_offset even though it is
+uninitialized.
 
-As the code in snd_usbmidi_get_ms_info() looks only at the
-first extra descriptor to find USB_DT_CS_ENDPOINT the device
-as such is recognized but there is neither input nor output
-configured.
+Fix this uninitialized value issue by setting it to 0 explicitly.
 
-The patch iterates through the extra descriptors to find the
-proper one. With this patch the device is correctly configured.
+Before:
+  vm_unmapped_area: addr=0x755b155000 err=0 total_vm=0x15aaf0 flags=0x1 len=0x109000 lo=0x8000 hi=0x75eed48000 mask=0x0 ofs=0x4022
 
-Signed-off-by: Andreas Steinmetz <ast@domdv.de>
-Link: https://lore.kernel.org/r/1c3b431a86f69e1d60745b6110cdb93c299f120b.camel@domdv.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+After:
+  vm_unmapped_area: addr=0x74a4ca1000 err=0 total_vm=0x168ab1 flags=0x1 len=0x9000 lo=0x8000 hi=0x753d94b000 mask=0x0 ofs=0x0
+
+Signed-off-by: Jaewon Kim <jaewon31.kim@samsung.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Reviewed-by: Andrew Morton <akpm@linux-foundation.org>
+Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
+Cc: Michel Lespinasse <walken@google.com>
+Cc: Borislav Petkov <bp@suse.de>
+Link: http://lkml.kernel.org/r/20200409094035.19457-1-jaewon31.kim@samsung.com
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/usb/midi.c | 29 ++++++++++++++++++++++++-----
- 1 file changed, 24 insertions(+), 5 deletions(-)
+ mm/mmap.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/usb/midi.c b/sound/usb/midi.c
-index 0676e7d485def..b8d4b5b3e54a1 100644
---- a/sound/usb/midi.c
-+++ b/sound/usb/midi.c
-@@ -1805,6 +1805,28 @@ static int snd_usbmidi_create_endpoints(struct snd_usb_midi *umidi,
- 	return 0;
+diff --git a/mm/mmap.c b/mm/mmap.c
+index 135cccce41f88..d48a654cbd237 100644
+--- a/mm/mmap.c
++++ b/mm/mmap.c
+@@ -1993,6 +1993,7 @@ arch_get_unmapped_area(struct file *filp, unsigned long addr,
+ 	info.low_limit = mm->mmap_base;
+ 	info.high_limit = TASK_SIZE;
+ 	info.align_mask = 0;
++	info.align_offset = 0;
+ 	return vm_unmapped_area(&info);
  }
+ #endif
+@@ -2034,6 +2035,7 @@ arch_get_unmapped_area_topdown(struct file *filp, const unsigned long addr0,
+ 	info.low_limit = max(PAGE_SIZE, mmap_min_addr);
+ 	info.high_limit = mm->mmap_base;
+ 	info.align_mask = 0;
++	info.align_offset = 0;
+ 	addr = vm_unmapped_area(&info);
  
-+static struct usb_ms_endpoint_descriptor *find_usb_ms_endpoint_descriptor(
-+					struct usb_host_endpoint *hostep)
-+{
-+	unsigned char *extra = hostep->extra;
-+	int extralen = hostep->extralen;
-+
-+	while (extralen > 3) {
-+		struct usb_ms_endpoint_descriptor *ms_ep =
-+				(struct usb_ms_endpoint_descriptor *)extra;
-+
-+		if (ms_ep->bLength > 3 &&
-+		    ms_ep->bDescriptorType == USB_DT_CS_ENDPOINT &&
-+		    ms_ep->bDescriptorSubtype == UAC_MS_GENERAL)
-+			return ms_ep;
-+		if (!extra[0])
-+			break;
-+		extralen -= extra[0];
-+		extra += extra[0];
-+	}
-+	return NULL;
-+}
-+
- /*
-  * Returns MIDIStreaming device capabilities.
-  */
-@@ -1842,11 +1864,8 @@ static int snd_usbmidi_get_ms_info(struct snd_usb_midi *umidi,
- 		ep = get_ep_desc(hostep);
- 		if (!usb_endpoint_xfer_bulk(ep) && !usb_endpoint_xfer_int(ep))
- 			continue;
--		ms_ep = (struct usb_ms_endpoint_descriptor *)hostep->extra;
--		if (hostep->extralen < 4 ||
--		    ms_ep->bLength < 4 ||
--		    ms_ep->bDescriptorType != USB_DT_CS_ENDPOINT ||
--		    ms_ep->bDescriptorSubtype != UAC_MS_GENERAL)
-+		ms_ep = find_usb_ms_endpoint_descriptor(hostep);
-+		if (!ms_ep)
- 			continue;
- 		if (usb_endpoint_dir_out(ep)) {
- 			if (endpoints[epidx].out_ep) {
+ 	/*
 -- 
 2.25.1
 
