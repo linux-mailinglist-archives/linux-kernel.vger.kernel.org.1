@@ -2,139 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6082C27B933
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 03:12:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14A3927B934
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 03:13:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727241AbgI2BMs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 21:12:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36630 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727035AbgI2BMg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 21:12:36 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D24B7221E7;
-        Tue, 29 Sep 2020 01:12:35 +0000 (UTC)
-Received: from rostedt by gandalf.local.home with local (Exim 4.94)
-        (envelope-from <rostedt@goodmis.org>)
-        id 1kN4C2-002Its-SR; Mon, 28 Sep 2020 21:12:34 -0400
-Message-ID: <20200929011234.763299545@goodmis.org>
-User-Agent: quilt/0.66
-Date:   Mon, 28 Sep 2020 21:12:00 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: [for-next][PATCH 4/4] x86: Use tracepoint_enabled() for msr tracepoints instead of open
- coding it
-References: <20200929011156.807392552@goodmis.org>
+        id S1727255AbgI2BM6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 21:12:58 -0400
+Received: from www262.sakura.ne.jp ([202.181.97.72]:58403 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726944AbgI2BM5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 21:12:57 -0400
+Received: from fsav105.sakura.ne.jp (fsav105.sakura.ne.jp [27.133.134.232])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 08T1CtiK060830;
+        Tue, 29 Sep 2020 10:12:55 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav105.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav105.sakura.ne.jp);
+ Tue, 29 Sep 2020 10:12:55 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav105.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 08T1CrW1060732
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO);
+        Tue, 29 Sep 2020 10:12:55 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: Re: [PATCH] vt_ioctl: make VT_RESIZEX behave like VT_RESIZE
+To:     Martin Hostettler <textshell@uchuujin.de>
+Cc:     gregkh@linuxfoundation.org, jirislaby@kernel.org,
+        Peilin Ye <yepeilin.cs@gmail.com>,
+        syzbot <syzbot+b308f5fd049fbbc6e74f@syzkaller.appspotmail.com>,
+        b.zolnierkie@samsung.com, daniel.vetter@ffwll.ch, deller@gmx.de,
+        syzkaller-bugs@googlegroups.com,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        George Kennedy <george.kennedy@oracle.com>
+References: <000000000000226d3f05b02dd607@google.com>
+ <bbcef674-4ac6-c933-b55d-8961ada97f4c@i-love.sakura.ne.jp>
+ <47907f77-b14b-b433-45c6-a315193f0c1a@i-love.sakura.ne.jp>
+ <494395bc-a7dd-fdb1-8196-a236a266ef54@i-love.sakura.ne.jp>
+ <20200927092701.GA1037755@PWN>
+ <4933b81b-9b1a-355b-df0e-9b31e8280ab9@i-love.sakura.ne.jp>
+ <20200928175956.GF24673@neutronstar.dyndns.org>
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Message-ID: <100dfd3f-3415-80ae-a6cf-30d15f7ca49f@i-love.sakura.ne.jp>
+Date:   Tue, 29 Sep 2020 10:12:46 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <20200928175956.GF24673@neutronstar.dyndns.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+On 2020/09/29 2:59, Martin Hostettler wrote:
+> On Sun, Sep 27, 2020 at 08:46:30PM +0900, Tetsuo Handa wrote:
+>> VT_RESIZEX was introduced in Linux 1.3.3, but it is unclear that what
+>> comes to the "+ more" part, and I couldn't find a user of VT_RESIZEX.
+>>
+> 
+> It seems this is/was used by "svgatextmode" which seems to be at
+> http://www.ibiblio.org/pub/Linux/utils/console/
+> 
+> Not sure if that kind of software still has a chance to work nowadays.
+> 
 
-7f47d8cc039f ("x86, tracing, perf: Add trace point for MSR accesses") added
-tracing of msr read and write, but because of complexity in having
-tracepoints in headers, and even more so for a core header like msr.h, not
-to mention the bloat a tracepoint adds to inline functions, a helper
-function is needed to be called from the header.
+Thanks for the information.
 
-Use the new tracepoint_enabled() macro in tracepoint-defs.h to test if the
-tracepoint is active before calling the helper function, instead of open
-coding the same logic, which requires knowing the internals of a tracepoint.
+It seems that v.v_vlin = curr_textmode->VDisplay / (MOFLG_ISSET(curr_textmode, ATTR_DOUBLESCAN) ? 2 : 1)
+and v.v_clin = curr_textmode->FontHeight . Thus, v.v_clin is font's height and seems to be non-zero.
+But according to https://bugs.gentoo.org/19485 , people are using kernel framebuffer instead.
 
-Cc: Andi Kleen <ak@linux.intel.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
----
- arch/x86/include/asm/msr.h | 20 +++++++++-----------
- 1 file changed, 9 insertions(+), 11 deletions(-)
+---------- SVGATextMode-1.10/SVGATextMode.c ----------
 
-diff --git a/arch/x86/include/asm/msr.h b/arch/x86/include/asm/msr.h
-index 86f20d520a07..0b4920a7238e 100644
---- a/arch/x86/include/asm/msr.h
-+++ b/arch/x86/include/asm/msr.h
-@@ -60,22 +60,20 @@ struct saved_msrs {
- #define EAX_EDX_RET(val, low, high)	"=A" (val)
- #endif
- 
--#ifdef CONFIG_TRACEPOINTS
- /*
-  * Be very careful with includes. This header is prone to include loops.
-  */
- #include <asm/atomic.h>
- #include <linux/tracepoint-defs.h>
- 
--extern struct tracepoint __tracepoint_read_msr;
--extern struct tracepoint __tracepoint_write_msr;
--extern struct tracepoint __tracepoint_rdpmc;
--#define msr_tracepoint_active(t) static_key_false(&(t).key)
-+#ifdef CONFIG_TRACEPOINTS
-+DECLARE_TRACEPOINT(read_msr);
-+DECLARE_TRACEPOINT(write_msr);
-+DECLARE_TRACEPOINT(rdpmc);
- extern void do_trace_write_msr(unsigned int msr, u64 val, int failed);
- extern void do_trace_read_msr(unsigned int msr, u64 val, int failed);
- extern void do_trace_rdpmc(unsigned int msr, u64 val, int failed);
- #else
--#define msr_tracepoint_active(t) false
- static inline void do_trace_write_msr(unsigned int msr, u64 val, int failed) {}
- static inline void do_trace_read_msr(unsigned int msr, u64 val, int failed) {}
- static inline void do_trace_rdpmc(unsigned int msr, u64 val, int failed) {}
-@@ -128,7 +126,7 @@ static inline unsigned long long native_read_msr(unsigned int msr)
- 
- 	val = __rdmsr(msr);
- 
--	if (msr_tracepoint_active(__tracepoint_read_msr))
-+	if (tracepoint_enabled(read_msr))
- 		do_trace_read_msr(msr, val, 0);
- 
- 	return val;
-@@ -150,7 +148,7 @@ static inline unsigned long long native_read_msr_safe(unsigned int msr,
- 		     _ASM_EXTABLE(2b, 3b)
- 		     : [err] "=r" (*err), EAX_EDX_RET(val, low, high)
- 		     : "c" (msr), [fault] "i" (-EIO));
--	if (msr_tracepoint_active(__tracepoint_read_msr))
-+	if (tracepoint_enabled(read_msr))
- 		do_trace_read_msr(msr, EAX_EDX_VAL(val, low, high), *err);
- 	return EAX_EDX_VAL(val, low, high);
- }
-@@ -161,7 +159,7 @@ native_write_msr(unsigned int msr, u32 low, u32 high)
- {
- 	__wrmsr(msr, low, high);
- 
--	if (msr_tracepoint_active(__tracepoint_write_msr))
-+	if (tracepoint_enabled(write_msr))
- 		do_trace_write_msr(msr, ((u64)high << 32 | low), 0);
- }
- 
-@@ -181,7 +179,7 @@ native_write_msr_safe(unsigned int msr, u32 low, u32 high)
- 		     : "c" (msr), "0" (low), "d" (high),
- 		       [fault] "i" (-EIO)
- 		     : "memory");
--	if (msr_tracepoint_active(__tracepoint_write_msr))
-+	if (tracepoint_enabled(write_msr))
- 		do_trace_write_msr(msr, ((u64)high << 32 | low), err);
- 	return err;
- }
-@@ -248,7 +246,7 @@ static inline unsigned long long native_read_pmc(int counter)
- 	DECLARE_ARGS(val, low, high);
- 
- 	asm volatile("rdpmc" : EAX_EDX_RET(val, low, high) : "c" (counter));
--	if (msr_tracepoint_active(__tracepoint_rdpmc))
-+	if (tracepoint_enabled(rdpmc))
- 		do_trace_rdpmc(counter, EAX_EDX_VAL(val, low, high), 0);
- 	return EAX_EDX_VAL(val, low, high);
- }
--- 
-2.28.0
+      /*
+       * Resize the screen. Still needs LOTS more error checking to avoid dropping out in the middle, leaving
+       * the user with a garbled screen.
+       *
+       * sresize will be TRUE when resizing tty's should be forced (due to the 2nd attempt do_VT_RESIZE will do
+       * when not enough memory is free).
+       *
+       */
 
+        /*
+         * ALWAYS do a VT_RESIZE, even if we already did a VT_RESIZEX on a 1.3.3 or higher kernel,
+         * until those kernel programmers make this unambiguous
+         */
+
+       if (do_VT_RESIZE(curr_textmode->cols, curr_textmode->rows, resize1x1)) sresize=TRUE;
+
+       if (check_kernel_version(1,3,3, "VT_RESIZEX"))
+         {
+           /*
+            * VDisplay must de divided by 2 for DoubleScan modes,
+            * or VT_RESIZEX will fail -- until someone fixes the kernel
+            * so it understands about doublescan modes.
+            */
+           if (do_VT_RESIZEX(curr_textmode->cols,
+                             curr_textmode->rows,
+                             curr_textmode->VDisplay / (MOFLG_ISSET(curr_textmode, ATTR_DOUBLESCAN) ? 2 : 1),
+                             curr_textmode->FontHeight,
+                             curr_textmode->HDisplay/8*curr_textmode->FontWidth,
+                             curr_textmode->FontWidth, resize1x1)) sresize=TRUE;
+         }
+
+---------- SVGATextMode-1.10/ttyresize.c ----------
+
+/*
+ * if VT_RESIZEX not supported (i.e. when compiling on < 1.3.3 kernels), define it.
+ * this is just te keep the compiler happy
+ */
+
+#ifndef VT_RESIZEX
+#  define VT_RESIZEX  0x560A
+   typedef struct vt_consize {
+      ushort v_rows; ushort v_cols; ushort v_vlin; ushort v_clin; ushort v_vcol; ushort v_ccol;
+    } vt_consize;
+#endif
+
+
+int do_VT_RESIZEX(int cols, int rows, int vlin, int clin, int vcol, int ccol, int allow1x1)
+{
+  struct vt_consize my_vt_size;      /* passes the new screen size on to the kernel */
+  struct vt_consize dummy_vt_size = { 1 , 1 , 1 , 1 , 1 , 1 };
+  int ram_needed = cols * rows * 2 * MAX_NR_CONSOLES;
+
+  my_vt_size.v_rows = rows;
+  my_vt_size.v_cols = cols;
+  my_vt_size.v_vlin = vlin;
+  my_vt_size.v_clin = clin;
+  my_vt_size.v_vcol = vcol;
+  my_vt_size.v_ccol = ccol;
+
+  PDEBUG(("VT_RESIZEX(cols=%d,rows=%d,vlin=%d,clin=%d,vcol=%d,ccol=%d)\n",cols, rows, vlin, clin, vcol, ccol));
+
+  return(generic_VT_RESIZE(&my_vt_size, &dummy_vt_size, allow1x1, ram_needed, VT_RESIZEX, "VT_RESIZEX"));
+}
 
