@@ -2,87 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 043D527C78A
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:55:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03C2227C784
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:55:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731482AbgI2Lyj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:54:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39694 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730623AbgI2Lps (ORCPT
+        id S1731475AbgI2LyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:54:21 -0400
+Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:32180 "EHLO
+        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730629AbgI2Lq2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:45:48 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7ADAC061755
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 04:45:47 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id a15so3754135ljk.2
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 04:45:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qpZdtba0dz/55nEB14IRTcskYiW/6pWMryxp9c80244=;
-        b=bn2ioNG8Y3op0LV3est95+r9HuyAYayGq9KICtlsy0PPCjUMxNEjMY6mLsEzZyzShx
-         0yk3ul77CTVdfxJqDB2C5dGPnPiSdxdfDCSkh8ww2zUWoS3LbxxpY7L5Q5FPrEV9YH9P
-         ctQaXFmvzvi3ATvK+h6B3Vht0dDQyajVW0z6sfszgni6mQ0npSrub4Qm0eIvGHhxcQw2
-         PpH8rLYu/kkLWkygcw1A1sKLy4iEAaiQfdW3kiCTshMel6GTYYf5PaqkLInt/xcuJEep
-         Onxx6NL6Q3Ea+2479Epk96vhh2EblJtMAe2ayYCX7ok2LqWvPrr4Kp6ntj1qL4kk6nty
-         /reQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qpZdtba0dz/55nEB14IRTcskYiW/6pWMryxp9c80244=;
-        b=JSN34rohn3MbI91JW8DrVvxBcn7UqIgJp6KRrCGn5ytKeHgxKScGExwluWlS/jKaJG
-         vgzXFxl54v7vLLi7sI32T7p3SvwhTRjTCw2axE0A/AeJuNW/lL3U42aHV/KVAecn/yeS
-         p3fKURhxyJ/pO5eU5nSAgwoKycymKjiOUcMJzL2wihVsSWouHXClrH5/rrSC4nF1RYfh
-         hC6TWrJENX2POYeEEJWRpoTnx5Xd+mb6jk4IhF0Z1BDnTVd4UDPVkR8YVoWEQLxYoGCr
-         mdjBJOpdxf3sdJVfLXKk7iSTun2EAPwrCdEzyEgsq2YJr50sRhfISxMOKM8jQqNRm/8P
-         v3Eg==
-X-Gm-Message-State: AOAM532x9u2oAhTjFEV53oIDLl3KNvT9hOMxlYoOLbHdt6J3qL8owqks
-        mHOQ+jfUPyGSwwhUMHZT/6gsdZI+gSI6SU1v3Kyosg==
-X-Google-Smtp-Source: ABdhPJwVrIDFHyNdf0I4UGrZT30gdri5pbkWVvCdfi55BBVMAQ95S27AdVvDU3jgAsR5BTdnpwzdvt7bveYbGt/bJdA=
-X-Received: by 2002:a05:651c:107b:: with SMTP id y27mr950638ljm.338.1601379946322;
- Tue, 29 Sep 2020 04:45:46 -0700 (PDT)
+        Tue, 29 Sep 2020 07:46:28 -0400
+X-IronPort-AV: E=Sophos;i="5.77,318,1596492000"; 
+   d="scan'208";a="470044784"
+Received: from abo-173-121-68.mrs.modulonet.fr (HELO hadrien) ([85.68.121.173])
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 29 Sep 2020 13:46:20 +0200
+Date:   Tue, 29 Sep 2020 13:46:19 +0200 (CEST)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     Mark Brown <broonie@kernel.org>
+cc:     Joe Perches <joe@perches.com>, linux-iio@vger.kernel.org,
+        Julia Lawall <Julia.Lawall@inria.fr>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-crypto@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        linux-acpi@vger.kernel.org, David Lechner <david@lechnology.com>,
+        =?UTF-8?Q?Valdis_Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>,
+        kernel-janitors@vger.kernel.org, drbd-dev@lists.linbit.com,
+        openipmi-developer@lists.sourceforge.net,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        linux-ide@vger.kernel.org, linux-amlogic@lists.infradead.org,
+        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-wireless@vger.kernel.org,
+        Neil Armstrong <narmstrong@baylibre.com>
+Subject: Re: [PATCH 00/18] use semicolons rather than commas to separate
+ statements
+In-Reply-To: <20200929113745.GB4799@sirena.org.uk>
+Message-ID: <alpine.DEB.2.22.394.2009291344590.2808@hadrien>
+References: <1601233948-11629-1-git-send-email-Julia.Lawall@inria.fr> <160132172369.55460.9237357219623604216.b4-ty@kernel.org> <b1174f9be2ce65f6b5ebefcba0b48e792926abbc.camel@perches.com> <20200929113745.GB4799@sirena.org.uk>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-References: <1599552721-24872-1-git-send-email-Anson.Huang@nxp.com> <1599552721-24872-3-git-send-email-Anson.Huang@nxp.com>
-In-Reply-To: <1599552721-24872-3-git-send-email-Anson.Huang@nxp.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 29 Sep 2020 13:45:35 +0200
-Message-ID: <CACRpkdbPP61aB0umannqkj+4cVk4cRHmW_JHWvBQ3=4uTjk0pg@mail.gmail.com>
-Subject: Re: [PATCH V4 3/3] pinctrl: imx: Support building i.MX pinctrl core
- driver as module
-To:     Anson Huang <Anson.Huang@nxp.com>
-Cc:     Dong Aisheng <aisheng.dong@nxp.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Stefan Agner <stefan@agner.ch>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        NXP Linux Team <Linux-imx@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 8, 2020 at 10:18 AM Anson Huang <Anson.Huang@nxp.com> wrote:
 
-> Change PINCTRL_IMX to tristate to support loadable module build.
->
-> And i.MX common pinctrl driver should depend on CONFIG_OF to make sure
-> no build error when i.MX common pinctrl driver is enabled for different
-> architectures without CONFIG_OF.
->
-> Also add module author, description and license.
->
-> Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
-> Reviewed-by: Dong Aisheng <aisheng.dong@nxp.com>
 
-All three patches applied, thanks a lot for working this out!
+On Tue, 29 Sep 2020, Mark Brown wrote:
 
-Yours,
-Linus Walleij
+> On Mon, Sep 28, 2020 at 05:45:24PM -0700, Joe Perches wrote:
+> > On Mon, 2020-09-28 at 20:35 +0100, Mark Brown wrote:
+>
+> > > [1/1] regmap: debugfs: use semicolons rather than commas to separate statements
+> > >       commit: 7f4a122d0b50b40c64d24a5cf7aafe26dd9487ee
+>
+> > Rather than replying to the 0/n cover letter to a patch
+> > series, can you reply to each of the specific patches in
+> > the patch series you are applying?
+>
+> > Otherwise, it's a bit difficult to figure out which patches
+> > you are applying.
+>
+> Feel free to submit patches to b4.  Ideally things like this wouldn't be
+> being sent as serieses in the first place, there's no dependencies or
+> interactions between the patches.
+
+It was suggested (a long time ago, not with respect to this patch in
+particular) that sending such patches in a series is useful because it
+allows people who are not interested in the 18 patches to skip over them
+more easily.  So there are two conflicting needs...
+
+julia
