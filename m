@@ -2,125 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BF8027D1F4
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 16:56:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D68E27D200
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 16:59:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731144AbgI2Oz5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 10:55:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52320 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728599AbgI2Oz4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 10:55:56 -0400
-Received: from mail-oi1-f179.google.com (mail-oi1-f179.google.com [209.85.167.179])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0239F20759;
-        Tue, 29 Sep 2020 14:55:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601391356;
-        bh=rRoIRoEtvKiTxqLBDCdJgd1vsV6WDXH8vqiw37EJFYA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=dPznjLDIaJpJChnMBlyMr9U65GihWzprmxsqEfcFO6syoe1QeDYMdtdEY24nUv6C5
-         G2+T7OTTyY2TfxrA0rzNaNVd352e42a+G/Czw8N9a9xSMAjByfzDW58Jy8TSGQykHx
-         OJAXVbqztgfMHk3ZclOgvMcOMFd5hKjEBfuJHDPs=
-Received: by mail-oi1-f179.google.com with SMTP id v20so5783384oiv.3;
-        Tue, 29 Sep 2020 07:55:55 -0700 (PDT)
-X-Gm-Message-State: AOAM532Rxdd7QaO2xxh59pn4ZQU3Ig+Q6tlx64Z9RxtIxnBnyx1riLf6
-        ZLlDaV/L6ovDrfnn+mrtwcyilLkxaZzzpPg+zA==
-X-Google-Smtp-Source: ABdhPJyUldfh8e5nBb7FCRtHZXShFRNUVuLZZfubdhoGCMHltLk6gRwvdq1tHkbGaKdvxwT4Kr+Mf9uzd0Eu9PdR/KQ=
-X-Received: by 2002:aca:fc07:: with SMTP id a7mr2845041oii.106.1601391354877;
- Tue, 29 Sep 2020 07:55:54 -0700 (PDT)
+        id S1730170AbgI2O7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 10:59:08 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:15448 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728983AbgI2O7I (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 10:59:08 -0400
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08TEX8Dk016644;
+        Tue, 29 Sep 2020 10:58:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=esolzCLlTJEPeG6627hqWcv24P1GZzdpl1qowU+wiLA=;
+ b=blMtUQ0t676Kma0/HQZ4K/xoewmRDbmMiDMRnwolwrmq0eLOO33nC1gr7BcmfqJPr3D8
+ CAT+0MSu9Y3Qk/0cpLy/GrEB3baPQAqeZn/cDZ+0OzKo9mBcl0vbT4rmFchwut7ISJZa
+ fQgwNK2lYd0i9yMnEMSnP+9Nas/BZi8HF3lyzkkbDrkqn4tFr9pKd/hKdrfFOA1TSMgO
+ pS5DkH/PhjoJX7uRIwwAILmTZkQPX7TRM58d7bIbB/W6ZcsatSCovsvRZn1NgL9uJ401
+ i5FM8ACSbSwRW44M2mQITd/5mjlEjlpe2ef7k+aNtYa/W79pxqU4aKM6ljbZGNT19oPG Og== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33v6mts9cd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 29 Sep 2020 10:58:25 -0400
+Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08TEXjtF019149;
+        Tue, 29 Sep 2020 10:58:24 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33v6mts9b8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 29 Sep 2020 10:58:24 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08TEmKSF023163;
+        Tue, 29 Sep 2020 14:58:22 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma06ams.nl.ibm.com with ESMTP id 33v6mgr0yg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 29 Sep 2020 14:58:21 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08TEwJVb28836272
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 29 Sep 2020 14:58:19 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7078D11C058;
+        Tue, 29 Sep 2020 14:58:19 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 17C1711C06E;
+        Tue, 29 Sep 2020 14:58:15 +0000 (GMT)
+Received: from linux.ibm.com (unknown [9.145.79.47])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Tue, 29 Sep 2020 14:58:14 +0000 (GMT)
+Date:   Tue, 29 Sep 2020 17:58:13 +0300
+From:   Mike Rapoport <rppt@linux.ibm.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Idan Yaniv <idan.yaniv@ibm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Shuah Khan <shuah@kernel.org>, Tycho Andersen <tycho@tycho.ws>,
+        Will Deacon <will@kernel.org>, linux-api@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org
+Subject: Re: [PATCH v6 5/6] mm: secretmem: use PMD-size pages to amortize
+ direct map fragmentation
+Message-ID: <20200929145813.GA3226834@linux.ibm.com>
+References: <20200924132904.1391-1-rppt@kernel.org>
+ <20200924132904.1391-6-rppt@kernel.org>
+ <20200925074125.GQ2628@hirez.programming.kicks-ass.net>
+ <20200929130529.GE2142832@kernel.org>
+ <20200929141216.GO2628@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <20200928155953.2819930-1-robh@kernel.org> <68d57be8-c2e9-4bfd-4f7f-041aa3ce2e92@xilinx.com>
-In-Reply-To: <68d57be8-c2e9-4bfd-4f7f-041aa3ce2e92@xilinx.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Tue, 29 Sep 2020 09:55:43 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqL6z5zarTv4e1aWCi0rVoyoDOvZYpYLEuxMJF5a1i7yHQ@mail.gmail.com>
-Message-ID: <CAL_JsqL6z5zarTv4e1aWCi0rVoyoDOvZYpYLEuxMJF5a1i7yHQ@mail.gmail.com>
-Subject: Re: [PATCH] dt-bindings: Fix 'reg' size issues in zynqmp examples
-To:     Michal Simek <michal.simek@xilinx.com>
-Cc:     devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Hyun Kwon <hyun.kwon@xilinx.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "open list:DMA GENERIC OFFLOAD ENGINE SUBSYSTEM" 
-        <dmaengine@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200929141216.GO2628@hirez.programming.kicks-ass.net>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-29_07:2020-09-29,2020-09-29 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 impostorscore=0
+ mlxscore=0 malwarescore=0 priorityscore=1501 bulkscore=0
+ lowpriorityscore=0 spamscore=0 adultscore=0 clxscore=1011 mlxlogscore=999
+ suspectscore=1 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009290129
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 1:55 AM Michal Simek <michal.simek@xilinx.com> wrote:
->
-> Hi Rob,
->
-> On 28. 09. 20 17:59, Rob Herring wrote:
-> > The default sizes in examples for 'reg' are 1 cell each. Fix the
-> > incorrect sizes in zynqmp examples:
-> >
-> > Documentation/devicetree/bindings/dma/xilinx/xlnx,zynqmp-dpdma.example.dt.yaml: example-0: dma-controller@fd4c0000:reg:0: [0, 4249616384, 0, 4096] is too long
-> >       From schema: /usr/local/lib/python3.8/dist-packages/dtschema/schemas/reg.yaml
-> > Documentation/devicetree/bindings/display/xlnx/xlnx,zynqmp-dpsub.example.dt.yaml: example-0: display@fd4a0000:reg:0: [0, 4249485312, 0, 4096] is too long
-> >       From schema: /usr/local/lib/python3.8/dist-packages/dtschema/schemas/reg.yaml
-> > Documentation/devicetree/bindings/display/xlnx/xlnx,zynqmp-dpsub.example.dt.yaml: example-0: display@fd4a0000:reg:1: [0, 4249526272, 0, 4096] is too long
-> >       From schema: /usr/local/lib/python3.8/dist-packages/dtschema/schemas/reg.yaml
-> > Documentation/devicetree/bindings/display/xlnx/xlnx,zynqmp-dpsub.example.dt.yaml: example-0: display@fd4a0000:reg:2: [0, 4249530368, 0, 4096] is too long
-> >       From schema: /usr/local/lib/python3.8/dist-packages/dtschema/schemas/reg.yaml
-> > Documentation/devicetree/bindings/display/xlnx/xlnx,zynqmp-dpsub.example.dt.yaml: example-0: display@fd4a0000:reg:3: [0, 4249534464, 0, 4096] is too long
-> >       From schema: /usr/local/lib/python3.8/dist-packages/dtschema/schemas/reg.yaml
-> >
-> > Cc: Hyun Kwon <hyun.kwon@xilinx.com>
-> > Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> > Cc: Michal Simek <michal.simek@xilinx.com>
-> > Cc: Vinod Koul <vkoul@kernel.org>
-> > Cc: dri-devel@lists.freedesktop.org
-> > Cc: dmaengine@vger.kernel.org
-> > Signed-off-by: Rob Herring <robh@kernel.org>
-> > ---
-> >  .../bindings/display/xlnx/xlnx,zynqmp-dpsub.yaml          | 8 ++++----
-> >  .../devicetree/bindings/dma/xilinx/xlnx,zynqmp-dpdma.yaml | 2 +-
-> >  2 files changed, 5 insertions(+), 5 deletions(-)
-> >
-> > diff --git a/Documentation/devicetree/bindings/display/xlnx/xlnx,zynqmp-dpsub.yaml b/Documentation/devicetree/bindings/display/xlnx/xlnx,zynqmp-dpsub.yaml
-> > index 52a939cade3b..7b9d468c3e52 100644
-> > --- a/Documentation/devicetree/bindings/display/xlnx/xlnx,zynqmp-dpsub.yaml
-> > +++ b/Documentation/devicetree/bindings/display/xlnx/xlnx,zynqmp-dpsub.yaml
-> > @@ -145,10 +145,10 @@ examples:
-> >
-> >      display@fd4a0000 {
-> >          compatible = "xlnx,zynqmp-dpsub-1.7";
-> > -        reg = <0x0 0xfd4a0000 0x0 0x1000>,
-> > -              <0x0 0xfd4aa000 0x0 0x1000>,
-> > -              <0x0 0xfd4ab000 0x0 0x1000>,
-> > -              <0x0 0xfd4ac000 0x0 0x1000>;
-> > +        reg = <0xfd4a0000 0x1000>,
-> > +              <0xfd4aa000 0x1000>,
-> > +              <0xfd4ab000 0x1000>,
-> > +              <0xfd4ac000 0x1000>;
-> >          reg-names = "dp", "blend", "av_buf", "aud";
-> >          interrupts = <0 119 4>;
-> >          interrupt-parent = <&gic>;
-> > diff --git a/Documentation/devicetree/bindings/dma/xilinx/xlnx,zynqmp-dpdma.yaml b/Documentation/devicetree/bindings/dma/xilinx/xlnx,zynqmp-dpdma.yaml
-> > index 5de510f8c88c..2a595b18ff6c 100644
-> > --- a/Documentation/devicetree/bindings/dma/xilinx/xlnx,zynqmp-dpdma.yaml
-> > +++ b/Documentation/devicetree/bindings/dma/xilinx/xlnx,zynqmp-dpdma.yaml
-> > @@ -57,7 +57,7 @@ examples:
-> >
-> >      dma: dma-controller@fd4c0000 {
-> >        compatible = "xlnx,zynqmp-dpdma";
-> > -      reg = <0x0 0xfd4c0000 0x0 0x1000>;
-> > +      reg = <0xfd4c0000 0x1000>;
-> >        interrupts = <GIC_SPI 122 IRQ_TYPE_LEVEL_HIGH>;
-> >        interrupt-parent = <&gic>;
-> >        clocks = <&dpdma_clk>;
-> >
->
-> I would prefer to keep 64bit version.
-> I use this style.
+On Tue, Sep 29, 2020 at 04:12:16PM +0200, Peter Zijlstra wrote:
+> On Tue, Sep 29, 2020 at 04:05:29PM +0300, Mike Rapoport wrote:
+> > On Fri, Sep 25, 2020 at 09:41:25AM +0200, Peter Zijlstra wrote:
+> > > On Thu, Sep 24, 2020 at 04:29:03PM +0300, Mike Rapoport wrote:
+> > > > From: Mike Rapoport <rppt@linux.ibm.com>
+> > > > 
+> > > > Removing a PAGE_SIZE page from the direct map every time such page is
+> > > > allocated for a secret memory mapping will cause severe fragmentation of
+> > > > the direct map. This fragmentation can be reduced by using PMD-size pages
+> > > > as a pool for small pages for secret memory mappings.
+> > > > 
+> > > > Add a gen_pool per secretmem inode and lazily populate this pool with
+> > > > PMD-size pages.
+> > > 
+> > > What's the actual efficacy of this? Since the pmd is per inode, all I
+> > > need is a lot of inodes and we're in business to destroy the directmap,
+> > > no?
+> > > 
+> > > Afaict there's no privs needed to use this, all a process needs is to
+> > > stay below the mlock limit, so a 'fork-bomb' that maps a single secret
+> > > page will utterly destroy the direct map.
+> > 
+> > This indeed will cause 1G pages in the direct map to be split into 2M
+> > chunks, but I disagree with 'destroy' term here. Citing the cover letter
+> > of an earlier version of this series:
+> 
+> It will drop them down to 4k pages. Given enough inodes, and allocating
+> only a single sekrit page per pmd, we'll shatter the directmap into 4k.
 
-I prefer to keep the examples simple. The address size is outside the
-scope of the binding.
+Why? Secretmem allocates PMD-size page per inode and uses it as a pool
+of 4K pages for that inode. This way it ensures that
+__kernel_map_pages() is always called on PMD boundaries.
 
-Rob
+-- 
+Sincerely yours,
+Mike.
