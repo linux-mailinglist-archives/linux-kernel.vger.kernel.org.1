@@ -2,114 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0473627D636
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 20:56:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECFE927D656
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 21:01:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728420AbgI2S4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 14:56:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60412 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727740AbgI2S4Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 14:56:16 -0400
-Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C9A622076D;
-        Tue, 29 Sep 2020 18:56:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601405775;
-        bh=B4LAoCA5W+8yr4Ajd8NMhnc+SSJLU315huDeq+kqHT0=;
-        h=Date:From:To:Cc:Subject:From;
-        b=K3kaRVQui+deC0532ckd9YNAnVhOcaqYzyqkRIy1t5X9hEm7PTeEMXip/Y0isOHre
-         dUXVtpwqhw0FMn56Tj9t/8gSeVLwjY6xrqk7TLaueetVHjsoVMNui6tScT/IO4QTT7
-         QBtev1ZKwIOco3iXvT+6s1BvGgR373hV3pMkdw7w=
-Date:   Tue, 29 Sep 2020 14:01:56 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH][next] ice: Replace one-element array with flexible-array
- member
-Message-ID: <20200929190156.GA25604@embeddedor>
+        id S1728586AbgI2TBr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 15:01:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50850 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728215AbgI2TBr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 15:01:47 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BBE5C0613D2
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 12:01:47 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id s14so4166392pju.1
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 12:01:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=7nARKy1YRpyTgSZxIUwrkU74pSG7aRsz7ayBIvLyxxw=;
+        b=K5Jq8aHp/pcgYY6/QdkXX9JB1LeqtGy1prh//v+zPwiUaXTQzBa2VCuXLyIaZ3nJeL
+         wW0cDksddcnfBWLBRQ5prkhoNZxxd0/Oy4PE35SdlJb/aqqbs454AE8WfY4X9NU1lMP2
+         c/fOAFbu8A+hI7P88st8YAXAvJ1cbSXMt5R9M=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7nARKy1YRpyTgSZxIUwrkU74pSG7aRsz7ayBIvLyxxw=;
+        b=Vv2Q9/KTPXzwGCUXi5hVZf2N5aNgQxwuVSd2e1522G1RhRhS3Hn7XLLHe47tmNPnzj
+         f+1RCgQthI6eUWpKdNvl/D2FT8OQlUu2ZHqYIDsUANIHvKcxQvqxe4g9pxObvsX+Biy+
+         NMKcNGh4VWBwPGbZPhvlZMqd//S1yhxMJs4Rhz6RhxpLqCV6Heg4FNtkWaL51xIt+q2K
+         Fe1EAHHVfqtB23Kw2/IrDD9kRWY4vN/FyuwkdRYbM+7nT6DgRSe/O6Xq7qgNmHE0MnAQ
+         SDLjoXZ4bf3lGU8bXTZ5H06rMSAza4PIZY+61HMK3BBiNNCa23eiAg4OO/Y8h3yc2gdq
+         KK+w==
+X-Gm-Message-State: AOAM533yKxiaE0PJ7MAgIsTXqC2avgENo9+QpRzLeHzupPEtsdsc9whU
+        XlAnBLPg6geHiGHidT0yyhwA6w==
+X-Google-Smtp-Source: ABdhPJwB7K7TSZqFAymAj9u1ww16GuQvJSGxJcrJYqk3iQ+Nbhr/JctY+HTfM4yaTcGjCSTMeNnoqA==
+X-Received: by 2002:a17:90a:7bcf:: with SMTP id d15mr5083857pjl.230.1601406106614;
+        Tue, 29 Sep 2020 12:01:46 -0700 (PDT)
+Received: from localhost ([2620:15c:202:1:f693:9fff:fef4:e70a])
+        by smtp.gmail.com with ESMTPSA id 64sm6245442pfz.204.2020.09.29.12.01.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 29 Sep 2020 12:01:46 -0700 (PDT)
+Date:   Tue, 29 Sep 2020 12:01:44 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Sandeep Maheswaram <sanm@codeaurora.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Doug Anderson <dianders@chromium.org>,
+        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Manu Gautam <mgautam@codeaurora.org>
+Subject: Re: [PATCH v3 3/5] usb: dwc3: qcom: Configure wakeup interrupts and
+ set genpd active wakeup flag
+Message-ID: <20200929190144.GD1621304@google.com>
+References: <1601376452-31839-1-git-send-email-sanm@codeaurora.org>
+ <1601376452-31839-4-git-send-email-sanm@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <1601376452-31839-4-git-send-email-sanm@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a regular need in the kernel to provide a way to declare having
-a dynamically sized set of trailing elements in a structure. Kernel code
-should always use “flexible array members”[1] for these cases. The older
-style of one-element or zero-length arrays should no longer be used[2].
+On Tue, Sep 29, 2020 at 04:17:30PM +0530, Sandeep Maheswaram wrote:
+> Configure interrupts based on hs_phy_flag to avoid triggering of
+> interrupts during system suspend and suspends successfully.
+> Set genpd active wakeup flag for usb gdsc if wakeup capable devices
+> are connected so that wake up happens without reenumeration.
+> 
+> Signed-off-by: Sandeep Maheswaram <sanm@codeaurora.org>
+> ---
+>  drivers/usb/dwc3/dwc3-qcom.c | 74 +++++++++++++++++++++++++++++++++++---------
+>  1 file changed, 59 insertions(+), 15 deletions(-)
+> 
+> diff --git a/drivers/usb/dwc3/dwc3-qcom.c b/drivers/usb/dwc3/dwc3-qcom.c
+> index c703d55..b6f36bd 100644
+> --- a/drivers/usb/dwc3/dwc3-qcom.c
+> +++ b/drivers/usb/dwc3/dwc3-qcom.c
+> @@ -17,9 +17,11 @@
+>  #include <linux/of_platform.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/phy/phy.h>
+> +#include <linux/pm_domain.h>
+>  #include <linux/usb/of.h>
+>  #include <linux/reset.h>
+>  #include <linux/iopoll.h>
+> +#include <linux/usb/hcd.h>
+>  
+>  #include "core.h"
+>  
+> @@ -293,19 +295,33 @@ static void dwc3_qcom_interconnect_exit(struct dwc3_qcom *qcom)
+>  
+>  static void dwc3_qcom_disable_interrupts(struct dwc3_qcom *qcom)
+>  {
+> +	struct dwc3 *dwc = platform_get_drvdata(qcom->dwc3);
+> +
+>  	if (qcom->hs_phy_irq) {
+>  		disable_irq_wake(qcom->hs_phy_irq);
+>  		disable_irq_nosync(qcom->hs_phy_irq);
+>  	}
+>  
+> -	if (qcom->dp_hs_phy_irq) {
+> -		disable_irq_wake(qcom->dp_hs_phy_irq);
+> -		disable_irq_nosync(qcom->dp_hs_phy_irq);
+> -	}
+> +	if (dwc->hs_phy_flags & PHY_MODE_USB_HOST_LS) {
+> +		if (qcom->dp_hs_phy_irq) {
+> +			disable_irq_wake(qcom->dp_hs_phy_irq);
+> +			disable_irq_nosync(qcom->dp_hs_phy_irq);
+> +		}
+> +	} else if (dwc->hs_phy_flags & PHY_MODE_USB_HOST_HS) {
+> +		if (qcom->dm_hs_phy_irq) {
+> +			disable_irq_wake(qcom->dm_hs_phy_irq);
+> +			disable_irq_nosync(qcom->dm_hs_phy_irq);
+> +		}
+> +	} else {
+> +		if (qcom->dp_hs_phy_irq) {
+> +			disable_irq_wake(qcom->dp_hs_phy_irq);
+> +			disable_irq_nosync(qcom->dp_hs_phy_irq);
+> +		}
+>  
+> -	if (qcom->dm_hs_phy_irq) {
+> -		disable_irq_wake(qcom->dm_hs_phy_irq);
+> -		disable_irq_nosync(qcom->dm_hs_phy_irq);
+> +		if (qcom->dm_hs_phy_irq) {
+> +			disable_irq_wake(qcom->dm_hs_phy_irq);
+> +			disable_irq_nosync(qcom->dm_hs_phy_irq);
+> +		}
 
-Refactor the code according to the use of a flexible-array member in
-struct ice_res_tracker, instead of a one-element array and use the
-struct_size() helper to calculate the size for the allocations.
+This function would benefit from a helper like this:
 
-Also, notice that the code below suggests that, currently, two too many
-bytes are being allocated with devm_kzalloc(), as the total number of
-entries (pf->irq_tracker->num_entries) for pf->irq_tracker->list[] is
-_vectors_ and sizeof(*pf->irq_tracker) also includes the size of the
-one-element array _list_ in struct ice_res_tracker.
+static void dwc3_qcon_enable_wakeup_irq(int wake_irq)
+{
+	if (wake_irq) {
+		disable_irq_wake(wake_irq);
+		disable_irq_nosync(wake_irq);
+	}
+}
 
-drivers/net/ethernet/intel/ice/ice_main.c:3511:
-3511         /* populate SW interrupts pool with number of OS granted IRQs. */
-3512         pf->num_avail_sw_msix = (u16)vectors;
-3513         pf->irq_tracker->num_entries = (u16)vectors;
-3514         pf->irq_tracker->end = pf->irq_tracker->num_entries;
+>  	}
+>  
+>  	if (qcom->ss_phy_irq) {
+> @@ -316,19 +332,33 @@ static void dwc3_qcom_disable_interrupts(struct dwc3_qcom *qcom)
+>  
+>  static void dwc3_qcom_enable_interrupts(struct dwc3_qcom *qcom)
+>  {
+> +	struct dwc3 *dwc = platform_get_drvdata(qcom->dwc3);
+> +
+>  	if (qcom->hs_phy_irq) {
+>  		enable_irq(qcom->hs_phy_irq);
+>  		enable_irq_wake(qcom->hs_phy_irq);
+>  	}
+>  
+> -	if (qcom->dp_hs_phy_irq) {
+> -		enable_irq(qcom->dp_hs_phy_irq);
+> -		enable_irq_wake(qcom->dp_hs_phy_irq);
+> -	}
+> +	if (dwc->hs_phy_flags & PHY_MODE_USB_HOST_LS) {
+> +		if (qcom->dp_hs_phy_irq) {
+> +			enable_irq(qcom->dp_hs_phy_irq);
+> +			enable_irq_wake(qcom->dp_hs_phy_irq);
+> +		}
+> +	} else if (dwc->hs_phy_flags & PHY_MODE_USB_HOST_HS) {
+> +		if (qcom->dm_hs_phy_irq) {
+> +			enable_irq(qcom->dm_hs_phy_irq);
+> +			enable_irq_wake(qcom->dm_hs_phy_irq);
+> +		}
+> +	} else {
+> +		if (qcom->dp_hs_phy_irq) {
+> +			enable_irq(qcom->dp_hs_phy_irq);
+> +			enable_irq_wake(qcom->dp_hs_phy_irq);
+> +		}
+>  
+> -	if (qcom->dm_hs_phy_irq) {
+> -		enable_irq(qcom->dm_hs_phy_irq);
+> -		enable_irq_wake(qcom->dm_hs_phy_irq);
+> +		if (qcom->dm_hs_phy_irq) {
+> +			enable_irq(qcom->dm_hs_phy_irq);
+> +			enable_irq_wake(qcom->dm_hs_phy_irq);
+> +		}
+>  	}
 
-With this change, the right amount of dynamic memory is now allocated
-because, contrary to one-element arrays which occupy at least as much
-space as a single object of the type, flexible-array members don't
-occupy such space in the containing structure.
+Same as for _disable(), a helper would make this function more
+digestable.
 
-[1] https://en.wikipedia.org/wiki/Flexible_array_member
-[2] https://www.kernel.org/doc/html/v5.9-rc1/process/deprecated.html#zero-length-and-one-element-arrays
+>  	if (qcom->ss_phy_irq) {
+> @@ -341,6 +371,15 @@ static int dwc3_qcom_suspend(struct dwc3_qcom *qcom)
+>  {
+>  	u32 val;
+>  	int i, ret;
+> +	struct dwc3 *dwc = platform_get_drvdata(qcom->dwc3);
+> +	struct usb_hcd  *hcd;
 
-Built-tested-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- drivers/net/ethernet/intel/ice/ice.h      | 2 +-
- drivers/net/ethernet/intel/ice/ice_main.c | 6 +++---
- 2 files changed, 4 insertions(+), 4 deletions(-)
+nit: remove extra blank
 
-diff --git a/drivers/net/ethernet/intel/ice/ice.h b/drivers/net/ethernet/intel/ice/ice.h
-index 65583f0a1797..a4c84faa36d6 100644
---- a/drivers/net/ethernet/intel/ice/ice.h
-+++ b/drivers/net/ethernet/intel/ice/ice.h
-@@ -164,7 +164,7 @@ struct ice_tc_cfg {
- struct ice_res_tracker {
- 	u16 num_entries;
- 	u16 end;
--	u16 list[1];
-+	u16 list[];
- };
- 
- struct ice_qs_cfg {
-diff --git a/drivers/net/ethernet/intel/ice/ice_main.c b/drivers/net/ethernet/intel/ice/ice_main.c
-index 2297ee7dba26..f6a7a23615eb 100644
---- a/drivers/net/ethernet/intel/ice/ice_main.c
-+++ b/drivers/net/ethernet/intel/ice/ice_main.c
-@@ -3500,9 +3500,9 @@ static int ice_init_interrupt_scheme(struct ice_pf *pf)
- 		return vectors;
- 
- 	/* set up vector assignment tracking */
--	pf->irq_tracker =
--		devm_kzalloc(ice_pf_to_dev(pf), sizeof(*pf->irq_tracker) +
--			     (sizeof(u16) * vectors), GFP_KERNEL);
-+	pf->irq_tracker = devm_kzalloc(ice_pf_to_dev(pf),
-+				       struct_size(pf->irq_tracker, list, vectors),
-+				       GFP_KERNEL);
- 	if (!pf->irq_tracker) {
- 		ice_dis_msix(pf);
- 		return -ENOMEM;
--- 
-2.27.0
+> +	struct generic_pm_domain *genpd = pd_to_genpd(qcom->dev->pm_domain);
+> +
+> +	if (dwc->xhci) {
+> +		hcd = platform_get_drvdata(dwc->xhci);
+> +		if (usb_wakeup_enabled_descendants(hcd->self.root_hub))
+> +			genpd->flags |= GENPD_FLAG_ACTIVE_WAKEUP;
+> +	}
 
+Do this after the check for 'qcom->is_suspended' below
+
+>  
+>  	if (qcom->is_suspended)
+>  		return 0;
+> @@ -366,6 +405,11 @@ static int dwc3_qcom_resume(struct dwc3_qcom *qcom)
+>  {
+>  	int ret;
+>  	int i;
+> +	struct dwc3 *dwc = platform_get_drvdata(qcom->dwc3);
+> +	struct generic_pm_domain *genpd = pd_to_genpd(qcom->dev->pm_domain);
+> +
+> +	if (dwc->xhci)
+> +		genpd->flags &= ~GENPD_FLAG_ACTIVE_WAKEUP;
+
+ditto
+
+>  
+>  	if (!qcom->is_suspended)
+>  		return 0;
+> @@ -764,7 +808,7 @@ static int dwc3_qcom_probe(struct platform_device *pdev)
+>  	if (ret)
+>  		goto interconnect_exit;
+>  
+> -	device_init_wakeup(&pdev->dev, 1);
+> +	device_init_wakeup(&pdev->dev, of_property_read_bool(np, "wakeup-source"));
+>  	qcom->is_suspended = false;
+>  	pm_runtime_set_active(dev);
+>  	pm_runtime_enable(dev);
+> 
