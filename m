@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CFF527C8B3
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:05:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EFF527C9AE
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:13:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729023AbgI2Lhp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:37:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56994 "EHLO mail.kernel.org"
+        id S1732130AbgI2MMw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 08:12:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58100 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730110AbgI2Lh3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:37:29 -0400
+        id S1730119AbgI2Lha (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:37:30 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C9FC623B27;
-        Tue, 29 Sep 2020 11:33:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 07A8823B70;
+        Tue, 29 Sep 2020 11:34:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601379237;
-        bh=sqlLud8CEaAaBFbB3Brfhi39Fv7Pc8MrM/ur4dg+zwM=;
+        s=default; t=1601379268;
+        bh=94AT0YPweooXiO7gK1/oiuOCZdrXc0s4UM0WFbWcmvc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qveqvEdW2V5Yz/6Y4rJm9Ty1a/+0VyTlu+gpIjS01o3gORLI146Ihj+zUrvt7rbZY
-         huJMAU+4LbpwZHSXY9q6eEAfCgONJXHwuTE4JRTl15wmVP9WVBXdrccw2huZuaOCeL
-         ftEVuzuoQHnsSNENW/DkC9dPYR1gcagXE9LrwaCo=
+        b=P0UniyVQqxQOh8EEQ3kdbuho5gdl5oPYGHNV24EqkRNmE1WHJMiwSe1Mr99yZhqQ1
+         YI2AGYinkoZU9XEXChxzBH0J2OvLN9l5+IEqdeB7jFOAfO4ts+/hZ24zZ0j8cXL+uJ
+         NX71ZvZN/kM4bC6Ece6gCdhQq9AxD2dE5/HQ3mY4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Felix Fietkau <nbd@nbd.name>,
+        stable@vger.kernel.org, Chuck Lever <chuck.lever@oracle.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 056/388] mt76: add missing locking around ampdu action
-Date:   Tue, 29 Sep 2020 12:56:27 +0200
-Message-Id: <20200929110013.207210372@linuxfoundation.org>
+Subject: [PATCH 5.4 058/388] SUNRPC: Capture completion of all RPC tasks
+Date:   Tue, 29 Sep 2020 12:56:29 +0200
+Message-Id: <20200929110013.304009219@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200929110010.467764689@linuxfoundation.org>
 References: <20200929110010.467764689@linuxfoundation.org>
@@ -42,81 +43,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Felix Fietkau <nbd@nbd.name>
+From: Chuck Lever <chuck.lever@oracle.com>
 
-[ Upstream commit 1a817fa73c3b27a593aadf0029de24db1bbc1a3e ]
+[ Upstream commit a264abad51d8ecb7954a2f6d9f1885b38daffc74 ]
 
-This is needed primarily to avoid races in dealing with rx aggregation
-related data structures
+RPC tasks on the backchannel never invoke xprt_complete_rqst(), so
+there is no way to report their tk_status at completion. Also, any
+RPC task that exits via rpc_exit_task() before it is replied to will
+also disappear without a trace.
 
-Signed-off-by: Felix Fietkau <nbd@nbd.name>
+Introduce a trace point that is symmetrical with rpc_task_begin that
+captures the termination status of each RPC task.
+
+Sample trace output for callback requests initiated on the server:
+   kworker/u8:12-448   [003]   127.025240: rpc_task_end:         task:50@3 flags=ASYNC|DYNAMIC|SOFT|SOFTCONN|SENT runstate=RUNNING|ACTIVE status=0 action=rpc_exit_task
+   kworker/u8:12-448   [002]   127.567310: rpc_task_end:         task:51@3 flags=ASYNC|DYNAMIC|SOFT|SOFTCONN|SENT runstate=RUNNING|ACTIVE status=0 action=rpc_exit_task
+   kworker/u8:12-448   [001]   130.506817: rpc_task_end:         task:52@3 flags=ASYNC|DYNAMIC|SOFT|SOFTCONN|SENT runstate=RUNNING|ACTIVE status=0 action=rpc_exit_task
+
+Odd, though, that I never see trace_rpc_task_complete, either in the
+forward or backchannel. Should it be removed?
+
+Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/mediatek/mt76/mt7603/main.c  | 2 ++
- drivers/net/wireless/mediatek/mt76/mt7615/main.c  | 2 ++
- drivers/net/wireless/mediatek/mt76/mt76x02_util.c | 2 ++
- 3 files changed, 6 insertions(+)
+ include/trace/events/sunrpc.h | 1 +
+ net/sunrpc/sched.c            | 1 +
+ 2 files changed, 2 insertions(+)
 
-diff --git a/drivers/net/wireless/mediatek/mt76/mt7603/main.c b/drivers/net/wireless/mediatek/mt76/mt7603/main.c
-index 25d5b1608bc91..0a5695c3d9241 100644
---- a/drivers/net/wireless/mediatek/mt76/mt7603/main.c
-+++ b/drivers/net/wireless/mediatek/mt76/mt7603/main.c
-@@ -561,6 +561,7 @@ mt7603_ampdu_action(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
+diff --git a/include/trace/events/sunrpc.h b/include/trace/events/sunrpc.h
+index ffa3c51dbb1a0..28df77a948e56 100644
+--- a/include/trace/events/sunrpc.h
++++ b/include/trace/events/sunrpc.h
+@@ -165,6 +165,7 @@ DECLARE_EVENT_CLASS(rpc_task_running,
+ DEFINE_RPC_RUNNING_EVENT(begin);
+ DEFINE_RPC_RUNNING_EVENT(run_action);
+ DEFINE_RPC_RUNNING_EVENT(complete);
++DEFINE_RPC_RUNNING_EVENT(end);
  
- 	mtxq = (struct mt76_txq *)txq->drv_priv;
+ DECLARE_EVENT_CLASS(rpc_task_queued,
  
-+	mutex_lock(&dev->mt76.mutex);
- 	switch (action) {
- 	case IEEE80211_AMPDU_RX_START:
- 		mt76_rx_aggr_start(&dev->mt76, &msta->wcid, tid, ssn,
-@@ -590,6 +591,7 @@ mt7603_ampdu_action(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
- 		ieee80211_stop_tx_ba_cb_irqsafe(vif, sta->addr, tid);
- 		break;
- 	}
-+	mutex_unlock(&dev->mt76.mutex);
- 
- 	return 0;
- }
-diff --git a/drivers/net/wireless/mediatek/mt76/mt7615/main.c b/drivers/net/wireless/mediatek/mt76/mt7615/main.c
-index 87c748715b5d7..38183aef0eb92 100644
---- a/drivers/net/wireless/mediatek/mt76/mt7615/main.c
-+++ b/drivers/net/wireless/mediatek/mt76/mt7615/main.c
-@@ -455,6 +455,7 @@ mt7615_ampdu_action(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
- 
- 	mtxq = (struct mt76_txq *)txq->drv_priv;
- 
-+	mutex_lock(&dev->mt76.mutex);
- 	switch (action) {
- 	case IEEE80211_AMPDU_RX_START:
- 		mt76_rx_aggr_start(&dev->mt76, &msta->wcid, tid, ssn,
-@@ -485,6 +486,7 @@ mt7615_ampdu_action(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
- 		ieee80211_stop_tx_ba_cb_irqsafe(vif, sta->addr, tid);
- 		break;
- 	}
-+	mutex_unlock(&dev->mt76.mutex);
- 
- 	return 0;
- }
-diff --git a/drivers/net/wireless/mediatek/mt76/mt76x02_util.c b/drivers/net/wireless/mediatek/mt76/mt76x02_util.c
-index aec73a0295e86..de0d6f21c621c 100644
---- a/drivers/net/wireless/mediatek/mt76/mt76x02_util.c
-+++ b/drivers/net/wireless/mediatek/mt76/mt76x02_util.c
-@@ -371,6 +371,7 @@ int mt76x02_ampdu_action(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
- 
- 	mtxq = (struct mt76_txq *)txq->drv_priv;
- 
-+	mutex_lock(&dev->mt76.mutex);
- 	switch (action) {
- 	case IEEE80211_AMPDU_RX_START:
- 		mt76_rx_aggr_start(&dev->mt76, &msta->wcid, tid,
-@@ -400,6 +401,7 @@ int mt76x02_ampdu_action(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
- 		ieee80211_stop_tx_ba_cb_irqsafe(vif, sta->addr, tid);
- 		break;
- 	}
-+	mutex_unlock(&dev->mt76.mutex);
- 
- 	return 0;
- }
+diff --git a/net/sunrpc/sched.c b/net/sunrpc/sched.c
+index 987c4b1f0b174..9c79548c68474 100644
+--- a/net/sunrpc/sched.c
++++ b/net/sunrpc/sched.c
+@@ -824,6 +824,7 @@ rpc_reset_task_statistics(struct rpc_task *task)
+  */
+ void rpc_exit_task(struct rpc_task *task)
+ {
++	trace_rpc_task_end(task, task->tk_action);
+ 	task->tk_action = NULL;
+ 	if (task->tk_ops->rpc_count_stats)
+ 		task->tk_ops->rpc_count_stats(task, task->tk_calldata);
 -- 
 2.25.1
 
