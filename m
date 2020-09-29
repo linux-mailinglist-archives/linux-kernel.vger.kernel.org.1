@@ -2,125 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB8D027D7C9
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 22:13:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F77927D7CE
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 22:14:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729008AbgI2UN2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 16:13:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33758 "EHLO
+        id S1729071AbgI2UOm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 16:14:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725372AbgI2UN2 (ORCPT
+        with ESMTP id S1725372AbgI2UOl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 16:13:28 -0400
-Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC411C061755;
-        Tue, 29 Sep 2020 13:13:27 -0700 (PDT)
-Received: by mail-qv1-xf42.google.com with SMTP id f11so2981060qvw.3;
-        Tue, 29 Sep 2020 13:13:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=2yE8tLnNFogNu2DcQZ3zwF/fyfjhAGFtUaRsrh9630g=;
-        b=BIudEvYyd7e1T8YFoEmamwmrXDhkLwQJxr4BDM05kapleUxs0tthYqNKmZe2im7Fg4
-         hqZobpyIYcoNoi3aCrfE9xsIeVuG/nvtg60WkfSsIhiRxHrauZ3/kmFbm8zve6GAcLRe
-         NfPPDG/F5nIBaBWcpAoNs9Jaj8p9OChDC+IfpR4TL4tn+jumhOdG7+L1+xhuEToq/p4I
-         1c83r3GUGkjfpccGMNvxMABHMlq11fnH7DTbqKu69VJYdr9qG7GPD4PBLoIwQsmBOzav
-         2SleYCY84l6fOPHP/XSRrHvvp4HhF0vSRGfPia6ybKVH5Cu9JEWVe/Bs1a6UmF6+EWmt
-         zg5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=2yE8tLnNFogNu2DcQZ3zwF/fyfjhAGFtUaRsrh9630g=;
-        b=FJ9IbHRFnmVtzZ3XKotQok3lGZCG+hiA0tHcASWFGYtpT2ucOot6d3IcgLnNkWeY5E
-         ea3NUOQjgluFfd72AThUBtM5+lXVIrBeAJo34e1/0GKeIJzX3z4ADAa0bnvWz4HnZGcI
-         NS7N7clIkiRXfKtLpMKo2Fl5picCyhk3cFD2LOtRNEMNAlZiU02IumUtPrnOzRTAKn52
-         TqPO89Zg5Kxc6QIS87e3fKAOgjd+s7l3Wd0WLYVHS09Hgf5PQfHmLD2aadCTQCRPFHIn
-         czDIcvihkc2IBgWUIfWkCKLDUhSUfBuPbytMdJm54hBbVMvpqWMKUPIt7tPfimrSB+Gf
-         hN9Q==
-X-Gm-Message-State: AOAM5309gBiKzCrSabdzbICOGeVx7EZgmvJ+p1/1+FFEi72B/MuBNc1C
-        HyXFMoNn+O+txfx60IIqxotFrOz9XxoQFA==
-X-Google-Smtp-Source: ABdhPJyzo/sh8biAN7ip8oRKWAQiwRLTYpJG2Fyd/mCxZt16Q4VCaIYRuBYqFS+C0odiRwqn2364UA==
-X-Received: by 2002:a0c:d443:: with SMTP id r3mr6364147qvh.17.1601410406562;
-        Tue, 29 Sep 2020 13:13:26 -0700 (PDT)
-Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id c40sm7012393qtb.72.2020.09.29.13.13.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Sep 2020 13:13:26 -0700 (PDT)
-Sender: Arvind Sankar <niveditas98@gmail.com>
-From:   Arvind Sankar <nivedita@alum.mit.edu>
-X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
-Date:   Tue, 29 Sep 2020 16:13:24 -0400
-To:     Arvind Sankar <nivedita@alum.mit.edu>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        linux-sparse@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: Re: [PATCH] compiler.h: avoid escaped section names
-Message-ID: <20200929201324.GB2668747@rani.riverdale.lan>
-References: <20200929194318.548707-1-ndesaulniers@google.com>
- <20200929200801.GA2668747@rani.riverdale.lan>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200929200801.GA2668747@rani.riverdale.lan>
+        Tue, 29 Sep 2020 16:14:41 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 860BEC061755;
+        Tue, 29 Sep 2020 13:14:41 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id 9A8BC145626AA;
+        Tue, 29 Sep 2020 12:57:53 -0700 (PDT)
+Date:   Tue, 29 Sep 2020 13:14:40 -0700 (PDT)
+Message-Id: <20200929.131440.961381809630838450.davem@davemloft.net>
+To:     tanhuazhong@huawei.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        salil.mehta@huawei.com, yisen.zhuang@huawei.com,
+        linuxarm@huawei.com, kuba@kernel.org
+Subject: Re: [PATCH net-next 0/7] net: hns3: updates for -next
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <1601371925-49426-1-git-send-email-tanhuazhong@huawei.com>
+References: <1601371925-49426-1-git-send-email-tanhuazhong@huawei.com>
+X-Mailer: Mew version 6.8 on Emacs 27.1
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [2620:137:e000::1:9]); Tue, 29 Sep 2020 12:57:53 -0700 (PDT)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 04:08:01PM -0400, Arvind Sankar wrote:
-> On Tue, Sep 29, 2020 at 12:43:18PM -0700, Nick Desaulniers wrote:
-> > The stringification operator, `#`, in the preprocessor escapes strings.
-> > For example, `# "foo"` becomes `"\"foo\""`.  GCC and Clang differ in how
-> > they treat section names that contain \".
-> > 
-> > The portable solution is to not use a string literal with the
-> > preprocessor stringification operator.
-> > 
-> > In this case, since __section unconditionally uses the stringification
-> > operator, we actually want the more verbose
-> > __attribute__((__section__())).
-> > 
-> > Link: https://bugs.llvm.org/show_bug.cgi?id=42950
-> > Fixes: commit e04462fb82f8 ("Compiler Attributes: remove uses of __attribute__ from compiler.h")
-> > Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-> > ---
-> >  include/linux/compiler.h | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/include/linux/compiler.h b/include/linux/compiler.h
-> > index 92ef163a7479..ac45f6d40d39 100644
-> > --- a/include/linux/compiler.h
-> > +++ b/include/linux/compiler.h
-> > @@ -155,7 +155,7 @@ void ftrace_likely_update(struct ftrace_likely_data *f, int val,
-> >  	extern typeof(sym) sym;					\
-> >  	static const unsigned long __kentry_##sym		\
-> >  	__used							\
-> > -	__section("___kentry" "+" #sym )			\
-> > +	__attribute__((__section__("___kentry+" #sym)))		\
-> >  	= (unsigned long)&sym;
-> >  #endif
-> >  
-> > -- 
-> > 2.28.0.709.gb0816b6eb0-goog
-> > 
-> 
-> There was this previous mini-thread:
-> https://lore.kernel.org/lkml/20200629205448.GA1474367@rani.riverdale.lan/
-> and this older one:
-> https://lore.kernel.org/lkml/20190904181740.GA19688@gmail.com/
-> 
-> Just for my own curiosity: how does KENTRY actually get used? grep
-> doesn't show any hits, and the thread from 2019 was actually going to
-> drop it if I read it right, and also just remove stringification from
-> the __section macro.
-> 
-> There are still other instances that need to be fixed, right?
-> 
-> Thanks.
+From: Huazhong Tan <tanhuazhong@huawei.com>
+Date: Tue, 29 Sep 2020 17:31:58 +0800
 
-Ignore the last question, I see you have separate patches for the rest.
+> There are some misc updates for the HNS3 ethernet driver.
+> #1 uses the queried BD number as the limit for TSO.
+> #2 renames trace event hns3_over_8bd since #1.
+> #3 adds UDP segmentation offload support.
+> #4 adds RoCE VF reset support.
+> #5 is a minor cleanup.
+> #6 & #7 add debugfs for device specifications and TQP enable status.
+
+Series applied, thank you.
