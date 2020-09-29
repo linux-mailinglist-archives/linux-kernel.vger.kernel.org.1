@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52B8D27C724
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:51:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D881D27C723
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:51:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731334AbgI2Lvo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:51:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50412 "EHLO mail.kernel.org"
+        id S1731331AbgI2Lvl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:51:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50508 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731119AbgI2LsQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:48:16 -0400
+        id S1731121AbgI2LsS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:48:18 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4EB85206F7;
-        Tue, 29 Sep 2020 11:48:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 82F1F20702;
+        Tue, 29 Sep 2020 11:48:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601380095;
-        bh=dHLNmb2pX13O08CVrF8T285nOhi98ZB73yvaJnTPrSE=;
+        s=default; t=1601380098;
+        bh=4dhuKEGjKN5Lugen+8MVSN9xqZT6R/7k0bNZwKsS9l4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FzxNCPmhd8/QG3ka7zG55J4kQ3xbf5WAsc2E+VRHxjj9+gJDIVMkTwA+Mim+7fbOt
-         YNv1007PLrnZHuUwQoCi6xWpCfG7gKdECv6QYowFZ5qA54Ru9V5j0ECmhVG2hbNCNq
-         +mKP9ZPXFQNe/ssNPseTGIJa8Bp+w6mox8o2LAEM=
+        b=cE8h7oAvBcRT/3uxmFMDbuSv9oj4YcmFLVSui+lZfW4klqGfVG/YHXoXmx4B77YPt
+         5g/w+VRAREF46kzgEdKIIMckCT9UinVJYjGA4wiXTLHEre2Pt7MQTm8/b/DAmn7dJu
+         rr+fm9HJ4XDYf+n1kgmzd/Ye9OOHFh5mE/EQ+z60=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Icenowy Zheng <icenowy@aosc.io>,
+        stable@vger.kernel.org, Ray Jui <ray.jui@broadcom.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
         Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 66/99] regulator: axp20x: fix LDO2/4 description
-Date:   Tue, 29 Sep 2020 13:01:49 +0200
-Message-Id: <20200929105932.980715248@linuxfoundation.org>
+Subject: [PATCH 5.8 67/99] spi: bcm-qspi: Fix probe regression on iProc platforms
+Date:   Tue, 29 Sep 2020 13:01:50 +0200
+Message-Id: <20200929105933.025542564@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200929105929.719230296@linuxfoundation.org>
 References: <20200929105929.719230296@linuxfoundation.org>
@@ -43,57 +44,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Icenowy Zheng <icenowy@aosc.io>
+From: Ray Jui <ray.jui@broadcom.com>
 
-[ Upstream commit fbb5a79d2fe7b01c6424fbbc04368373b1672d61 ]
+[ Upstream commit 00fb259c618ea1198fc51b53a6167aa0d78672a9 ]
 
-Currently we wrongly set the mask of value of LDO2/4 both to the mask of
-LDO2, and the LDO4 voltage configuration is left untouched. This leads
-to conflict when LDO2/4 are both in use.
+iProc chips have QSPI controller that does not have the MSPI_REV
+offset. Reading from that offset will cause a bus error. Fix it by
+having MSPI_REV query disabled in the generic compatible string.
 
-Fix this issue by setting different vsel_mask to both regulators.
-
-Fixes: db4a555f7c4c ("regulator: axp20x: use defines for masks")
-Signed-off-by: Icenowy Zheng <icenowy@aosc.io>
-Link: https://lore.kernel.org/r/20200923005142.147135-1-icenowy@aosc.io
+Fixes: 3a01f04d74ef ("spi: bcm-qspi: Handle lack of MSPI_REV offset")
+Link: https://lore.kernel.org/linux-arm-kernel/20200909211857.4144718-1-f.fainelli@gmail.com/T/#u
+Signed-off-by: Ray Jui <ray.jui@broadcom.com>
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+Link: https://lore.kernel.org/r/20200910152539.45584-3-ray.jui@broadcom.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/regulator/axp20x-regulator.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/spi/spi-bcm-qspi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/regulator/axp20x-regulator.c b/drivers/regulator/axp20x-regulator.c
-index fbc95cadaf539..126649c172e11 100644
---- a/drivers/regulator/axp20x-regulator.c
-+++ b/drivers/regulator/axp20x-regulator.c
-@@ -42,8 +42,9 @@
- 
- #define AXP20X_DCDC2_V_OUT_MASK		GENMASK(5, 0)
- #define AXP20X_DCDC3_V_OUT_MASK		GENMASK(7, 0)
--#define AXP20X_LDO24_V_OUT_MASK		GENMASK(7, 4)
-+#define AXP20X_LDO2_V_OUT_MASK		GENMASK(7, 4)
- #define AXP20X_LDO3_V_OUT_MASK		GENMASK(6, 0)
-+#define AXP20X_LDO4_V_OUT_MASK		GENMASK(3, 0)
- #define AXP20X_LDO5_V_OUT_MASK		GENMASK(7, 4)
- 
- #define AXP20X_PWR_OUT_EXTEN_MASK	BIT_MASK(0)
-@@ -542,14 +543,14 @@ static const struct regulator_desc axp20x_regulators[] = {
- 		 AXP20X_PWR_OUT_CTRL, AXP20X_PWR_OUT_DCDC3_MASK),
- 	AXP_DESC_FIXED(AXP20X, LDO1, "ldo1", "acin", 1300),
- 	AXP_DESC(AXP20X, LDO2, "ldo2", "ldo24in", 1800, 3300, 100,
--		 AXP20X_LDO24_V_OUT, AXP20X_LDO24_V_OUT_MASK,
-+		 AXP20X_LDO24_V_OUT, AXP20X_LDO2_V_OUT_MASK,
- 		 AXP20X_PWR_OUT_CTRL, AXP20X_PWR_OUT_LDO2_MASK),
- 	AXP_DESC(AXP20X, LDO3, "ldo3", "ldo3in", 700, 3500, 25,
- 		 AXP20X_LDO3_V_OUT, AXP20X_LDO3_V_OUT_MASK,
- 		 AXP20X_PWR_OUT_CTRL, AXP20X_PWR_OUT_LDO3_MASK),
- 	AXP_DESC_RANGES(AXP20X, LDO4, "ldo4", "ldo24in",
- 			axp20x_ldo4_ranges, AXP20X_LDO4_V_OUT_NUM_VOLTAGES,
--			AXP20X_LDO24_V_OUT, AXP20X_LDO24_V_OUT_MASK,
-+			AXP20X_LDO24_V_OUT, AXP20X_LDO4_V_OUT_MASK,
- 			AXP20X_PWR_OUT_CTRL, AXP20X_PWR_OUT_LDO4_MASK),
- 	AXP_DESC_IO(AXP20X, LDO5, "ldo5", "ldo5in", 1800, 3300, 100,
- 		    AXP20X_LDO5_V_OUT, AXP20X_LDO5_V_OUT_MASK,
+diff --git a/drivers/spi/spi-bcm-qspi.c b/drivers/spi/spi-bcm-qspi.c
+index 681d090851756..9cfa15ec8b08c 100644
+--- a/drivers/spi/spi-bcm-qspi.c
++++ b/drivers/spi/spi-bcm-qspi.c
+@@ -1295,7 +1295,7 @@ static const struct of_device_id bcm_qspi_of_match[] = {
+ 	},
+ 	{
+ 		.compatible = "brcm,spi-bcm-qspi",
+-		.data = &bcm_qspi_rev_data,
++		.data = &bcm_qspi_no_rev_data,
+ 	},
+ 	{
+ 		.compatible = "brcm,spi-bcm7216-qspi",
 -- 
 2.25.1
 
