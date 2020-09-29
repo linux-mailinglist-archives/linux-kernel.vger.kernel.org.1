@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61FE227CBE2
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:31:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F0F827CC0A
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:34:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732954AbgI2Maq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 08:30:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37340 "EHLO mail.kernel.org"
+        id S1733052AbgI2Mcd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 08:32:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36424 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729662AbgI2LYL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:24:11 -0400
+        id S1729473AbgI2LXA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:23:00 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 57E8E22204;
-        Tue, 29 Sep 2020 11:21:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4F6E9208B8;
+        Tue, 29 Sep 2020 11:20:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601378477;
-        bh=y3jpMweezOH58bo2BxNqa3+e1V+ib8lKEVEvmRmMAFY=;
+        s=default; t=1601378449;
+        bh=RuHzoO7xlF64Rg2hxhbru7L2etZcn5Mmcuz6f9Y0ZKE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vXKj43cE3a780tYUDtpOKRl5i8gdplFQoKrM+wQJdMDk6RDvbeVh5eK28d2kobtux
-         eHIhGpo7X9NKa6l77ITUQ0ixnXYr6WSDtB8xslQPUVjawbwPwQdNDPA3Cfwd0GeuLt
-         n2xrMSlMcPks5Nf6RxvQa0QCkcasPYWMFOY7IsmU=
+        b=Z0h9pw8XOIin7UDhwi9BMJSi2MF1v8k/zi56qST8L28qSuoj8V5jwot5nTLSIXBz6
+         3WOYSPimNBgc/PxFg4799hShs8iFbNmr+WHvPt5HlAzxPnNBsrhHpRxYkwEoA8HJpA
+         4x8wDxKjmomEciUKUgaFQzbA+7sj/ySayRoP2kok=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Russell King <rmk+kernel@armlinux.org.uk>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        Pavel Machek <pavel@ucw.cz>, Oleh Kravchenko <oleg@kaa.org.ua>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 010/245] ASoC: kirkwood: fix IRQ error handling
-Date:   Tue, 29 Sep 2020 12:57:41 +0200
-Message-Id: <20200929105947.490502471@linuxfoundation.org>
+Subject: [PATCH 4.19 018/245] leds: mlxreg: Fix possible buffer overflow
+Date:   Tue, 29 Sep 2020 12:57:49 +0200
+Message-Id: <20200929105947.879915087@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200929105946.978650816@linuxfoundation.org>
 References: <20200929105946.978650816@linuxfoundation.org>
@@ -43,34 +44,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Russell King <rmk+kernel@armlinux.org.uk>
+From: Oleh Kravchenko <oleg@kaa.org.ua>
 
-[ Upstream commit 175fc928198236037174e5c5c066fe3c4691903e ]
+[ Upstream commit 7c6082b903ac28dc3f383fba57c6f9e7e2594178 ]
 
-Propagate the error code from request_irq(), rather than returning
--EBUSY.
+Error was detected by PVS-Studio:
+V512 A call of the 'sprintf' function will lead to overflow of
+the buffer 'led_data->led_cdev_name'.
 
-Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
-Link: https://lore.kernel.org/r/E1iNIqh-0000tW-EZ@rmk-PC.armlinux.org.uk
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Acked-by: Jacek Anaszewski <jacek.anaszewski@gmail.com>
+Acked-by: Pavel Machek <pavel@ucw.cz>
+Signed-off-by: Oleh Kravchenko <oleg@kaa.org.ua>
+Signed-off-by: Pavel Machek <pavel@ucw.cz>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/kirkwood/kirkwood-dma.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/leds/leds-mlxreg.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/kirkwood/kirkwood-dma.c b/sound/soc/kirkwood/kirkwood-dma.c
-index c6a58520d377a..255cc45905b81 100644
---- a/sound/soc/kirkwood/kirkwood-dma.c
-+++ b/sound/soc/kirkwood/kirkwood-dma.c
-@@ -136,7 +136,7 @@ static int kirkwood_dma_open(struct snd_pcm_substream *substream)
- 		err = request_irq(priv->irq, kirkwood_dma_irq, IRQF_SHARED,
- 				  "kirkwood-i2s", priv);
- 		if (err)
--			return -EBUSY;
-+			return err;
- 
- 		/*
- 		 * Enable Error interrupts. We're only ack'ing them but
+diff --git a/drivers/leds/leds-mlxreg.c b/drivers/leds/leds-mlxreg.c
+index 1ee48cb21df95..022e973dc7c31 100644
+--- a/drivers/leds/leds-mlxreg.c
++++ b/drivers/leds/leds-mlxreg.c
+@@ -209,8 +209,8 @@ static int mlxreg_led_config(struct mlxreg_led_priv_data *priv)
+ 			brightness = LED_OFF;
+ 			led_data->base_color = MLXREG_LED_GREEN_SOLID;
+ 		}
+-		sprintf(led_data->led_cdev_name, "%s:%s", "mlxreg",
+-			data->label);
++		snprintf(led_data->led_cdev_name, sizeof(led_data->led_cdev_name),
++			 "mlxreg:%s", data->label);
+ 		led_cdev->name = led_data->led_cdev_name;
+ 		led_cdev->brightness = brightness;
+ 		led_cdev->max_brightness = LED_ON;
 -- 
 2.25.1
 
