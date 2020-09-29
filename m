@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90F6F27C66C
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:45:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 328C927C7A0
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:55:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730937AbgI2LpE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:45:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44520 "EHLO mail.kernel.org"
+        id S1730731AbgI2LzE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:55:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45320 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730930AbgI2LpB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:45:01 -0400
+        id S1730964AbgI2LpY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:45:24 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E82AF206F7;
-        Tue, 29 Sep 2020 11:44:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C1A122083B;
+        Tue, 29 Sep 2020 11:45:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601379899;
-        bh=BWkoQ2RbtMKWCuwA07Sr734hDHv/YkClx+QV/CZvqcg=;
+        s=default; t=1601379924;
+        bh=12xJvbvqdRVd30t9wmSbGra9w795QaC8oaspvVvofac=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VW2TB04ti3U6DqCZTSbIxlVN+RCeXGUQYn9A9pMweqK4yCASsHMaexgpNJoab+Cbi
-         4PI4ZjvF9AshEwiAzHrln+CiUlsTQgLrYaPDQQ+CzpToY3SfP4YXSUYqTlw1zAm/vs
-         nXRifcFgi8bhBmV4vq7s8Kh5SuMuTBXIiVuFAlw0=
+        b=vAqpgvtwss8Xl6gkEzzeaNC2mUnBNu8nqD7dOhuyWU8q6PEPFaY2Z04G2rCI3T46z
+         3VHHUI7G7JDu+dLbLTK+nloho5krpLatdUvKYfKBUAkJm2qpXz+PS5kGJVCS38mOxe
+         g9XosAnWa2AIL+UiEpMqSH4KmfTrH+9AGNoZ84BE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Manish Chopra <manishc@marvell.com>,
-        Igor Russkikh <irusskikh@marvell.com>,
+        stable@vger.kernel.org, Igor Russkikh <irusskikh@marvell.com>,
         Michal Kalderon <michal.kalderon@marvell.com>,
         Dmitry Bogdanov <dbogdanov@marvell.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 349/388] net: qede: Disable aRFS for NPAR and 100G
-Date:   Tue, 29 Sep 2020 13:01:20 +0200
-Message-Id: <20200929110027.355984073@linuxfoundation.org>
+Subject: [PATCH 5.4 350/388] net: qed: RDMA personality shouldnt fail VF load
+Date:   Tue, 29 Sep 2020 13:01:21 +0200
+Message-Id: <20200929110027.404693531@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200929110010.467764689@linuxfoundation.org>
 References: <20200929110010.467764689@linuxfoundation.org>
@@ -48,73 +47,32 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Dmitry Bogdanov <dbogdanov@marvell.com>
 
-[ Upstream commit 0367f05885b9f21d062447bd2ba1302ba3cc7392 ]
+[ Upstream commit ce1cf9e5025f4e2d2198728391f1847b3e168bc6 ]
 
-In some configurations ARFS cannot be used, so disable it if device
-is not capable.
+Fix the assert during VF driver installation when the personality is iWARP
 
-Fixes: e4917d46a653 ("qede: Add aRFS support")
-Signed-off-by: Manish Chopra <manishc@marvell.com>
+Fixes: 1fe614d10f45 ("qed: Relax VF firmware requirements")
 Signed-off-by: Igor Russkikh <irusskikh@marvell.com>
 Signed-off-by: Michal Kalderon <michal.kalderon@marvell.com>
 Signed-off-by: Dmitry Bogdanov <dbogdanov@marvell.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/qlogic/qede/qede_filter.c |  3 +++
- drivers/net/ethernet/qlogic/qede/qede_main.c   | 11 +++++------
- 2 files changed, 8 insertions(+), 6 deletions(-)
+ drivers/net/ethernet/qlogic/qed/qed_sriov.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/ethernet/qlogic/qede/qede_filter.c b/drivers/net/ethernet/qlogic/qede/qede_filter.c
-index c8bdbf057d5a2..5041994bf03fb 100644
---- a/drivers/net/ethernet/qlogic/qede/qede_filter.c
-+++ b/drivers/net/ethernet/qlogic/qede/qede_filter.c
-@@ -336,6 +336,9 @@ int qede_alloc_arfs(struct qede_dev *edev)
- {
- 	int i;
- 
-+	if (!edev->dev_info.common.b_arfs_capable)
-+		return -EINVAL;
-+
- 	edev->arfs = vzalloc(sizeof(*edev->arfs));
- 	if (!edev->arfs)
- 		return -ENOMEM;
-diff --git a/drivers/net/ethernet/qlogic/qede/qede_main.c b/drivers/net/ethernet/qlogic/qede/qede_main.c
-index 2c3d654c84543..ce3e62e73e4cd 100644
---- a/drivers/net/ethernet/qlogic/qede/qede_main.c
-+++ b/drivers/net/ethernet/qlogic/qede/qede_main.c
-@@ -770,7 +770,7 @@ static void qede_init_ndev(struct qede_dev *edev)
- 		      NETIF_F_IP_CSUM | NETIF_F_IPV6_CSUM |
- 		      NETIF_F_TSO | NETIF_F_TSO6 | NETIF_F_HW_TC;
- 
--	if (!IS_VF(edev) && edev->dev_info.common.num_hwfns == 1)
-+	if (edev->dev_info.common.b_arfs_capable)
- 		hw_features |= NETIF_F_NTUPLE;
- 
- 	if (edev->dev_info.common.vxlan_enable ||
-@@ -2211,7 +2211,7 @@ static void qede_unload(struct qede_dev *edev, enum qede_unload_mode mode,
- 	qede_vlan_mark_nonconfigured(edev);
- 	edev->ops->fastpath_stop(edev->cdev);
- 
--	if (!IS_VF(edev) && edev->dev_info.common.num_hwfns == 1) {
-+	if (edev->dev_info.common.b_arfs_capable) {
- 		qede_poll_for_freeing_arfs_filters(edev);
- 		qede_free_arfs(edev);
- 	}
-@@ -2278,10 +2278,9 @@ static int qede_load(struct qede_dev *edev, enum qede_load_mode mode,
- 	if (rc)
- 		goto err2;
- 
--	if (!IS_VF(edev) && edev->dev_info.common.num_hwfns == 1) {
--		rc = qede_alloc_arfs(edev);
--		if (rc)
--			DP_NOTICE(edev, "aRFS memory allocation failed\n");
-+	if (qede_alloc_arfs(edev)) {
-+		edev->ndev->features &= ~NETIF_F_NTUPLE;
-+		edev->dev_info.common.b_arfs_capable = false;
- 	}
- 
- 	qede_napi_add_enable(edev);
+diff --git a/drivers/net/ethernet/qlogic/qed/qed_sriov.c b/drivers/net/ethernet/qlogic/qed/qed_sriov.c
+index dcb5c917f3733..fb9c3ca5d36cc 100644
+--- a/drivers/net/ethernet/qlogic/qed/qed_sriov.c
++++ b/drivers/net/ethernet/qlogic/qed/qed_sriov.c
+@@ -96,6 +96,7 @@ static int qed_sp_vf_start(struct qed_hwfn *p_hwfn, struct qed_vf_info *p_vf)
+ 		p_ramrod->personality = PERSONALITY_ETH;
+ 		break;
+ 	case QED_PCI_ETH_ROCE:
++	case QED_PCI_ETH_IWARP:
+ 		p_ramrod->personality = PERSONALITY_RDMA_AND_ETH;
+ 		break;
+ 	default:
 -- 
 2.25.1
 
