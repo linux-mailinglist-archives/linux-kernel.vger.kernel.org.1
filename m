@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7479F27C428
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:11:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 465D927C43E
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:12:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728833AbgI2LLk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:11:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52980 "EHLO mail.kernel.org"
+        id S1729327AbgI2LMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:12:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54192 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729258AbgI2LLh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:11:37 -0400
+        id S1729319AbgI2LM0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:12:26 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 580EE20848;
-        Tue, 29 Sep 2020 11:11:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 197D721D46;
+        Tue, 29 Sep 2020 11:12:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601377896;
-        bh=D6Gt21NdP1RHVX6qAJIxw+Gh3//0YjI+ZRly1D7O83k=;
+        s=default; t=1601377945;
+        bh=mTj9LzB/u1SlBTV7r0y1PLzGi3Nkjo/lyZBSQnlSWIA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ta1djdTYksgjq2S9LP/05k5sl0R9CJD11mMXX4XC93jhbn/Sw9dvD4C9f9SNw+CB7
-         RUodtVbvYoVs/tGTsNzXtK2MHIGg/ddLhfKjSKxWvEt2eZ9PQ8rKecyNsDqmAI/KPH
-         oOyQMNMppd6sx9vUfaCgfDSNpzYUMjNWL6sLvBxM=
+        b=ahRwS2/QBMH/Jd6Y5rV24pMurq6Kx8K42bkke9dihxKs3LGctaMcjlLmfWQvrSqCE
+         24nPC1j28odX9T9WScSNvlS+3ATY8yr0wCBs7BQKMRDQZHhuSOHBup2Gx2h4WliRBA
+         fHsjEj6ZIoI+CVzmTw2pl48Qtm/qDjX6TOH/QCmQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Linus=20L=C3=BCssing?= <linus.luessing@c0d3.blue>,
-        Sven Eckelmann <sven@narfation.org>,
-        Simon Wunderlich <sw@simonwunderlich.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 111/121] batman-adv: mcast/TT: fix wrongly dropped or rerouted packets
-Date:   Tue, 29 Sep 2020 13:00:55 +0200
-Message-Id: <20200929105935.682499040@linuxfoundation.org>
+        stable@vger.kernel.org, Tom Rix <trix@redhat.com>,
+        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 115/121] ALSA: asihpi: fix iounmap in error handler
+Date:   Tue, 29 Sep 2020 13:00:59 +0200
+Message-Id: <20200929105935.881446841@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200929105930.172747117@linuxfoundation.org>
 References: <20200929105930.172747117@linuxfoundation.org>
@@ -45,54 +42,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linus Lüssing <linus.luessing@c0d3.blue>
+From: Tom Rix <trix@redhat.com>
 
-[ Upstream commit 7dda5b3384121181c4e79f6eaeac2b94c0622c8d ]
+[ Upstream commit 472eb39103e885f302fd8fd6eff104fcf5503f1b ]
 
-The unicast packet rerouting code makes several assumptions. For
-instance it assumes that there is always exactly one destination in the
-TT. This breaks for multicast frames in a unicast packets in several ways:
+clang static analysis flags this problem
+hpioctl.c:513:7: warning: Branch condition evaluates to
+  a garbage value
+                if (pci.ap_mem_base[idx]) {
+                    ^~~~~~~~~~~~~~~~~~~~
 
-For one thing if there is actually no TT entry and the destination node
-was selected due to the multicast tvlv flags it announced. Then an
-intermediate node will wrongly drop the packet.
+If there is a failure in the middle of the memory space loop,
+only some of the memory spaces need to be cleaned up.
 
-For another thing if there is a TT entry but the TTVN of this entry is
-newer than the originally addressed destination node: Then the
-intermediate node will wrongly redirect the packet, leading to
-duplicated multicast packets at a multicast listener and missing
-packets at other multicast listeners or multicast routers.
+At the error handler, idx holds the number of successful
+memory spaces mapped.  So rework the handler loop to use the
+old idx.
 
-Fixing this by not applying the unicast packet rerouting to batman-adv
-unicast packets with a multicast payload. We are not able to detect a
-roaming multicast listener at the moment and will just continue to send
-the multicast frame to both the new and old destination for a while in
-case of such a roaming multicast listener.
+There is a second problem, the memory space loop conditionally
+iomaps()/sets the mem_base so it is necessay to initize pci.
 
-Fixes: a73105b8d4c7 ("batman-adv: improved client announcement mechanism")
-Signed-off-by: Linus Lüssing <linus.luessing@c0d3.blue>
-Signed-off-by: Sven Eckelmann <sven@narfation.org>
-Signed-off-by: Simon Wunderlich <sw@simonwunderlich.de>
+Fixes: 719f82d3987a ("ALSA: Add support of AudioScience ASI boards")
+Signed-off-by: Tom Rix <trix@redhat.com>
+Link: https://lore.kernel.org/r/20200913165230.17166-1-trix@redhat.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/batman-adv/routing.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ sound/pci/asihpi/hpioctl.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/net/batman-adv/routing.c b/net/batman-adv/routing.c
-index 19059ae26e519..1ba205c3ea9fa 100644
---- a/net/batman-adv/routing.c
-+++ b/net/batman-adv/routing.c
-@@ -803,6 +803,10 @@ static bool batadv_check_unicast_ttvn(struct batadv_priv *bat_priv,
- 	vid = batadv_get_vid(skb, hdr_len);
- 	ethhdr = (struct ethhdr *)(skb->data + hdr_len);
+diff --git a/sound/pci/asihpi/hpioctl.c b/sound/pci/asihpi/hpioctl.c
+index 3ef9af53ef497..0d5ff00cdabca 100644
+--- a/sound/pci/asihpi/hpioctl.c
++++ b/sound/pci/asihpi/hpioctl.c
+@@ -346,7 +346,7 @@ int asihpi_adapter_probe(struct pci_dev *pci_dev,
+ 	struct hpi_message hm;
+ 	struct hpi_response hr;
+ 	struct hpi_adapter adapter;
+-	struct hpi_pci pci;
++	struct hpi_pci pci = { 0 };
  
-+	/* do not reroute multicast frames in a unicast header */
-+	if (is_multicast_ether_addr(ethhdr->h_dest))
-+		return true;
-+
- 	/* check if the destination client was served by this node and it is now
- 	 * roaming. In this case, it means that the node has got a ROAM_ADV
- 	 * message and that it knows the new destination in the mesh to re-route
+ 	memset(&adapter, 0, sizeof(adapter));
+ 
+@@ -502,7 +502,7 @@ int asihpi_adapter_probe(struct pci_dev *pci_dev,
+ 	return 0;
+ 
+ err:
+-	for (idx = 0; idx < HPI_MAX_ADAPTER_MEM_SPACES; idx++) {
++	while (--idx >= 0) {
+ 		if (pci.ap_mem_base[idx]) {
+ 			iounmap(pci.ap_mem_base[idx]);
+ 			pci.ap_mem_base[idx] = NULL;
 -- 
 2.25.1
 
