@@ -2,81 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55BB827DCC4
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 01:37:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1A3027DCCB
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 01:39:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728651AbgI2Xhf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 19:37:35 -0400
-Received: from sonic314-21.consmr.mail.ne1.yahoo.com ([66.163.189.147]:41807
-        "EHLO sonic314-21.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726637AbgI2Xhe (ORCPT
+        id S1728784AbgI2Xjf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 19:39:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37476 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726637AbgI2Xjf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 19:37:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1601422654; bh=4mWY6N2pvhoYteLll3TsJcj/b3lxDL9fu4mR9DmIf4o=; h=Date:From:Reply-To:Subject:References:From:Subject; b=du/kdJghrJ9WKUPUJv1G+6N8ztVwj27e4zvV3bs1m4v2f5XHURAZaOaWJyiMDELmdFWpxHpnE4DjyndQ27/yCu5c4Rtb6mwdNFpBXRidA7REcKKKfdaWVvUftXzViG2j7fObsPVZ1gKKeBSe8CjbeUbT7DmDK1T8tO4F1GJiODA0y0xoBUMneAEHeGroKM9x4MX5lfGlHSorjZvbah15YyW9b6j/X7OapfY83b3H6GryqiqpOk5zSC2PijJorzJlEynl8FdRYAInCphumTav3Tm/hDLXPKxRoTdW6Dgm0DECEzhlb8m481YD+mHjIRZGNzknEztMszH5e2f1HDBZSg==
-X-YMail-OSG: PCjAF6IVM1kGYNn6DJ0fIKeuG5HqjRkbYQEz4lN.7WNYuvA_PohChR8oFxJ26re
- QsNrCQAv2ggIFv15Lcxog6EMp3ZRlCkNY65fZ0ZHjzvvY3ZyM0eM0REA672RSsEMuGdMhFYWGIWj
- CEWHNP61RXppRaWJEPi7GVakEElhV6KQCXL4G3ioeJM.q9Ly7cOwHk0d8EDPSsTdetbxBG7BQcSS
- 0vO8nBNpEIMeZEWTIcNYCTg.6IW0f4c9ZRzS3ml0QGWtMp5lADcVzvwBXQppP9UIuFS7KC3rJxLP
- .j5RPDRTp.M3hYLkom1NV_uGpQafZZDLJmcgLrgju_6gug6rPLZUib4ku_nz19jdUzuJgkmLQn5x
- gTykcm7cr5EGYRFa8brC9F3SmcftF4OHyBgGYbpwCAmyk0I9WtKhOdPm1fr0GZLLXB6Ed38oK9w.
- B815tGayGbyLYASWwZwLxV7qFpafllpFzRwXzdWmz_a.nHcdALKm657aLG5Mn3XoaU.a9S4NpT3Z
- d0LXTBzDng3ZmW4RUTWSHsv4S0bD9_g8ki6l5kKIR7NR_CNjvqSReqZ956VPW6.t9HxMKZ8rRouJ
- DQIneCJbsuJSGZM_e1P.kOxzazn2Pfxl1tWtuSe0BVC96UDjdP3DZt4fY7al5_nervbnA1yBEyIA
- qghKui4j3Qcr0wVjsgvLL3k65WOXdgneNGsfJJQVa2zYQ.Hb0WcmAwhd.Lu7FkCK6S1PJNQG4JCE
- W1s2qvE2Ek_2E37k3hLrBR21gOi6WdhUIf92GlmT.7AfWGGm0wh3m4_q0Q8YBvucOgqWA4H8BNdr
- yToCL0zZwIeLVa_Dfgaofd5rSibznmxPfmitTgiPqoF__fvnH7sSo5Y_fGSX5_dgpZ3CMFJ7ty36
- pCbahaY.IhpMmX9tkYu_K.rKyVwE1HK3SxOF6AFgkBjNBW9ck0q.EFMKnetGK2rYvwo.WcvzCn98
- 4zdIYErBdJ5ZTZehLK8oCTczZdMAncvTrG8oPUHTCR57T2J_KDkne8.S_GZSoShF8MmrB86MFpmT
- Uv95.S4vD.pvhOGN03gfIxDO0a7hrjypwEuT8KvwIBKOpKLQAkrLkj3uBY9tnB2rHUcmI8RhEE6B
- 1o8hKdpNLbV0G4zCvZFdswAOnr3Qnq6xwoUac65TiMou7hz2DPO7dsFfI1hr92D0qpqKll48xH7t
- jZcD8qvFSuplXwzjcUWaZjUN2SL4tKU0Cna4TcyHhBZ6P1LPip_4HyLqey.ROzfnVUSC1xezyVpi
- vwUWEODqQtar6g1_lcz5SUZ1s1yp9T53D4429j.P3Xn5UZFiTC6gJqI5HLhNd1.sxkuzHTTzUwzA
- 4MVXl9zMenxWJN7LzmTunTv8Gg4ofx8sDATfJZuMj9dRXcjiOTDiXmzM8tbth1SB8Yxxp9aLHf1O
- t2.5x7GvusLdPk0f_mhJ4XNCm6_lBjfKEGOLSoWkeqdYUUddq
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic314.consmr.mail.ne1.yahoo.com with HTTP; Tue, 29 Sep 2020 23:37:34 +0000
-Date:   Tue, 29 Sep 2020 23:37:29 +0000 (UTC)
-From:   "Mr. Milla" <millasth804@gmail.com>
-Reply-To: millasmith7010@gmail.com
-Message-ID: <358748219.122146.1601422649190@mail.yahoo.com>
-Subject: compensation
+        Tue, 29 Sep 2020 19:39:35 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 169D6C061755;
+        Tue, 29 Sep 2020 16:39:35 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: ezequiel)
+        with ESMTPSA id 964BE2909EA
+From:   Ezequiel Garcia <ezequiel@collabora.com>
+To:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     kernel@collabora.com, Jonas Karlman <jonas@kwiboo.se>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Maxime Ripard <mripard@kernel.org>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Ezequiel Garcia <ezequiel@collabora.com>
+Subject: [PATCH 0/3] MPEG-2 stateless API cleanup
+Date:   Tue, 29 Sep 2020 20:39:06 -0300
+Message-Id: <20200929233909.6935-1-ezequiel@collabora.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-References: <358748219.122146.1601422649190.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.16718 YMailNodin Mozilla/5.0 (Windows NT 6.1; rv:80.0) Gecko/20100101 Firefox/80.0
-To:     unlisted-recipients:; (no To-header on input)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello everyone,
 
+Following the H.264 API cleanup, and with all the learning lessons
+from it, here's a revisit on the MPEG-2 API.
 
-Dear Friend,
+The biggest changes are:
 
-I'm sorry but happy to inform you about my success in getting those funds t=
-ransferred under the cooperation of a new partner from Vietnam, though I tr=
-ied my best to involve you in the business but God decided the whole situat=
-ions. Presently I=E2=80=99m in Vietnam for investment projects with my own =
-share of the total sum. Meanwhile, I didn't forget your past efforts and at=
-tempts to assist me in transferring those funds despite that it failed us s=
-ome how.
+* Drop slice size and offset parameters, given the API doesn't
+  seem to be designed to work per-slice.
 
-Now contact my secretary in Burkina Faso her name is Mr. Milla Smith on her=
- e-mail address below millasmith7010@gmail.com ask her to send you the tota=
-l of $450,000.00 which I kept for your compensation for all the past effort=
-s and attempts to assist me in this matter. I appreciated your efforts at t=
-hat time very much. So feel free and get in touched with my secretary Mr. M=
-illa Smith and instruct her where to send the amount to you. Please do let =
-me know immediately you receive it so that we can share joy after all the s=
-ufferness at that time.
+* Convert all the 1-bit syntax elements from structure fields
+  to bits in a bit field flags field, following the other codec APIs.
 
-In the moment, I=E2=80=99m very busy here because of the investment project=
-s which I and the new partner are having at hand, finally, remember that I =
-had forwarded instruction to the secretary on your behalf to receive that m=
-oney, so feel free to get in touch with Mr. Milla Smith she will send the a=
-mount to you without any delay OK. Extend my greetings to your family.
+* Split the sequence, picture and slice headers to separate controls.
 
-My Best regards
-Yours brother
-Mr. Abu Salam
-Greetings from Vietnam
+This is build tested only, I haven't yet modified the existing
+Ffmpeg-based implementation, as I'd like to have some consensus first.
+
+Reviews and feedback are appreciated!
+
+Thanks,
+Ezequiel
+
+Ezequiel Garcia (3):
+  media: uapi: mpeg2: Cleanup flags
+  media: uapi: mpeg2: Remove unused slice size and offset
+  media: uapi: mpeg2: Split sequence and picture parameters
+
+ .../media/v4l/ext-ctrls-codec.rst             | 159 +++++++++++-------
+ .../media/v4l/pixfmt-compressed.rst           |   5 +-
+ drivers/media/v4l2-core/v4l2-ctrls.c          |  59 ++++---
+ drivers/staging/media/hantro/hantro_drv.c     |  10 ++
+ .../media/hantro/hantro_g1_mpeg2_dec.c        |  82 +++++----
+ .../media/hantro/rk3399_vpu_hw_mpeg2_dec.c    |  82 +++++----
+ drivers/staging/media/sunxi/cedrus/cedrus.c   |  14 ++
+ drivers/staging/media/sunxi/cedrus/cedrus.h   |   2 +
+ .../staging/media/sunxi/cedrus/cedrus_mpeg2.c |  49 +++---
+ include/media/mpeg2-ctrls.h                   | 153 +++++++++++++----
+ include/media/v4l2-ctrls.h                    |   4 +
+ 11 files changed, 395 insertions(+), 224 deletions(-)
+
+-- 
+2.27.0
+
