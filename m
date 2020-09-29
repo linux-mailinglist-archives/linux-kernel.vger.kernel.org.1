@@ -2,177 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7053927BB40
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 05:05:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F46227BB41
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 05:05:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727306AbgI2DFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 23:05:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43862 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726944AbgI2DFB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 23:05:01 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64985C061755;
-        Mon, 28 Sep 2020 20:05:01 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C0klF3yGSz9s1t;
-        Tue, 29 Sep 2020 13:04:57 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1601348697;
-        bh=/QSIT6Tfgaxw+JmY9/F6hMsZ8bc6dWqVnIszkkrLOVE=;
-        h=Date:From:To:Cc:Subject:From;
-        b=IDAq7OZAH1PVcYkJ45gA2TXczwKRWwk3YQEl90qdwT7duObPUXBwYp5ggGZivY4RV
-         oSBm8wiwDC44i0p6cW3hiWBTiFEUmh4o3U1/F60kdKzgAHC1iVVkmCm7gmQdfHn/FK
-         MmD2gxkX2kgCRMXEbcMDhgM3AVKRVTPD/lUDPfoJWeUwoUJqDnMYbJQbMwpn17iAa+
-         D9xGbMqQYqm+uwv+cfbY6xcm/l6kL7/DYY4IRxPdV+58ndOO4QDyMCuA7njlx5TLLV
-         8EPKeHdrhDJx4cJv3sCwcP5NmB1kFeSrmNKERFr1eaSYB9tLts/17UM+ydpCU5dbOQ
-         bsUFlvs/JY53g==
-Date:   Tue, 29 Sep 2020 13:04:46 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>
-Cc:     Vadym Kochan <vadym.kochan@plvision.eu>,
-        Taehee Yoo <ap420073@gmail.com>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: linux-next: build failure after merge of the net-next tree
-Message-ID: <20200929130446.0c2630d2@canb.auug.org.au>
+        id S1727382AbgI2DFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 23:05:33 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:57908 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727350AbgI2DFc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 23:05:32 -0400
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 4B263599B2FDC8C3DDA8;
+        Tue, 29 Sep 2020 11:05:29 +0800 (CST)
+Received: from [127.0.0.1] (10.174.177.253) by DGGEMS408-HUB.china.huawei.com
+ (10.3.19.208) with Microsoft SMTP Server id 14.3.487.0; Tue, 29 Sep 2020
+ 11:05:19 +0800
+Subject: Re: [PATCH v4 01/20] dt-bindings: arm: hisilicon: split the
+ dt-bindings of each controller into a separate file
+To:     Rob Herring <robh@kernel.org>
+CC:     Wei Xu <xuwei5@hisilicon.com>,
+        Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Libin <huawei.libin@huawei.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>
+References: <20200928151324.2134-1-thunder.leizhen@huawei.com>
+ <20200928151324.2134-2-thunder.leizhen@huawei.com>
+ <20200928190528.GA3082719@bogus>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Message-ID: <70ddb558-ba4e-0f33-9bf0-90e21f3e6ec8@huawei.com>
+Date:   Tue, 29 Sep 2020 11:05:18 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/mIiG9H84CW6wa3if/A52zoG";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <20200928190528.GA3082719@bogus>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.177.253]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/mIiG9H84CW6wa3if/A52zoG
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
 
-After merging the net-next tree, today's linux-next build (x86_64
-allmodconfig) failed like this:
+On 2020/9/29 3:05, Rob Herring wrote:
+> On Mon, Sep 28, 2020 at 11:13:05PM +0800, Zhen Lei wrote:
+>> Split the devicetree bindings of each Hisilicon controller from
+>> hisilicon.txt into a separate file, the file name is the compatible name
+>> attach the .txt file name extension.
+>>
+>> All Hi6220 dedicated controllers are grouped into subdirectory "hi3620".
+>> All HiPxx  dedicated controllers are grouped into subdirectory "hipxx"
+>>
+>> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+>> ---
+>>  .../arm/hisilicon/controller/hisilicon,cpuctrl.txt |   8 +
+>>  .../hisilicon/controller/hisilicon,dsa-subctrl.txt |  15 ++
+>>  .../controller/hisilicon,hi3798cv200-perictrl.txt  |  21 ++
+>>  .../controller/hisilicon,hi6220-aoctrl.txt         |  18 ++
+>>  .../controller/hisilicon,hi6220-mediactrl.txt      |  18 ++
+>>  .../controller/hisilicon,hi6220-pmctrl.txt         |  18 ++
+>>  .../controller/hisilicon,hi6220-sramctrl.txt       |  16 ++
+>>  .../controller/hisilicon,hi6220-sysctrl.txt        |  19 ++
+>>  .../controller/hisilicon,hip01-sysctrl.txt         |  19 ++
+>>  .../controller/hisilicon,hip04-bootwrapper.txt     |   9 +
+>>  .../controller/hisilicon,hip04-fabric.txt          |   5 +
+>>  .../controller/hisilicon,pcie-sas-subctrl.txt      |  15 ++
+>>  .../arm/hisilicon/controller/hisilicon,pctrl.txt   |  13 +
+>>  .../controller/hisilicon,peri-subctrl.txt          |  16 ++
+>>  .../arm/hisilicon/controller/hisilicon,sysctrl.txt |  25 ++
+>>  .../bindings/arm/hisilicon/hisilicon.txt           | 262 ---------------------
+>>  16 files changed, 235 insertions(+), 262 deletions(-)
+>>  create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,cpuctrl.txt
+>>  create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,dsa-subctrl.txt
+>>  create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hi3798cv200-perictrl.txt
+>>  create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hi6220-aoctrl.txt
+>>  create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hi6220-mediactrl.txt
+>>  create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hi6220-pmctrl.txt
+>>  create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hi6220-sramctrl.txt
+>>  create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hi6220-sysctrl.txt
+>>  create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hip01-sysctrl.txt
+>>  create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hip04-bootwrapper.txt
+>>  create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hip04-fabric.txt
+>>  create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,pcie-sas-subctrl.txt
+>>  create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,pctrl.txt
+>>  create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,peri-subctrl.txt
+>>  create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,sysctrl.txt
+>>
+>> diff --git a/Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,cpuctrl.txt b/Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,cpuctrl.txt
+>> new file mode 100644
+>> index 000000000000000..ceffac537671668
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,cpuctrl.txt
+>> @@ -0,0 +1,8 @@
+>> +Hisilicon CPU controller
+>> +
+>> +Required properties:
+>> +- compatible : "hisilicon,cpuctrl"
+>> +- reg : Register address and size
+>> +
+>> +The clock registers and power registers of secondary cores are defined
+>> +in CPU controller, especially in HIX5HD2 SoC.
+>> diff --git a/Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,dsa-subctrl.txt b/Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,dsa-subctrl.txt
+>> new file mode 100644
+>> index 000000000000000..4d1c6abf03f6f97
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,dsa-subctrl.txt
+>> @@ -0,0 +1,15 @@
+>> +Hisilicon HiP05/HiP06 DSA sub system controller
+>> +
+>> +Required properties:
+>> +- compatible : "hisilicon,dsa-subctrl", "syscon";
+> 
+> This and others with only 'reg' can just be moved to syscon.yaml.
 
-drivers/net/ethernet/marvell/prestera/prestera_main.c: In function 'prester=
-a_port_dev_lower_find':
-drivers/net/ethernet/marvell/prestera/prestera_main.c:504:33: error: passin=
-g argument 2 of 'netdev_walk_all_lower_dev' from incompatible pointer type =
-[-Werror=3Dincompatible-pointer-types]
-  504 |  netdev_walk_all_lower_dev(dev, prestera_lower_dev_walk, &port);
-      |                                 ^~~~~~~~~~~~~~~~~~~~~~~
-      |                                 |
-      |                                 int (*)(struct net_device *, void *)
-In file included from include/linux/etherdevice.h:21,
-                 from drivers/net/ethernet/marvell/prestera/prestera_main.c=
-:4:
-include/linux/netdevice.h:4571:16: note: expected 'int (*)(struct net_devic=
-e *, struct netdev_nested_priv *)' but argument is of type 'int (*)(struct =
-net_device *, void *)'
- 4571 |          int (*fn)(struct net_device *lower_dev,
-      |          ~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- 4572 |      struct netdev_nested_priv *priv),
-      |      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-drivers/net/ethernet/marvell/prestera/prestera_main.c:504:58: error: passin=
-g argument 3 of 'netdev_walk_all_lower_dev' from incompatible pointer type =
-[-Werror=3Dincompatible-pointer-types]
-  504 |  netdev_walk_all_lower_dev(dev, prestera_lower_dev_walk, &port);
-      |                                                          ^~~~~
-      |                                                          |
-      |                                                          struct pre=
-stera_port **
-In file included from include/linux/etherdevice.h:21,
-                 from drivers/net/ethernet/marvell/prestera/prestera_main.c=
-:4:
-include/linux/netdevice.h:4573:37: note: expected 'struct netdev_nested_pri=
-v *' but argument is of type 'struct prestera_port **'
- 4573 |          struct netdev_nested_priv *priv);
-      |          ~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
-cc1: some warnings being treated as errors
+OK, I will do it.
 
-Caused by commit
+> 
+>> +- reg : Register address and size
+>> +
+>> +The DSA sub system controller is shared by peripheral controllers in
+>> +HiP05 or HiP06 Soc to implement some basic configurations.
+>> +
+>> +Example:
+>> +	/* for HiP05 dsa sub system */
+>> +	pcie_sas: system_controller@a0000000 {
+>> +		compatible = "hisilicon,dsa-subctrl", "syscon";
+>> +		reg = <0xa0000000 0x10000>;
+>> +	};
 
-  eff7423365a6 ("net: core: introduce struct netdev_nested_priv for nested =
-interface infrastructure")
+...
 
-interacting with commit
+> 
+> .
+> 
 
-  e1189d9a5fbe ("net: marvell: prestera: Add Switchdev driver implementatio=
-n")
-
-also in the net-next tree.
-
-I applied the following fix patch.
-
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Date: Tue, 29 Sep 2020 12:57:59 +1000
-Subject: [PATCH] fix up for "net: core: introduce struct netdev_nested_priv=
- for nested interface infrastructure"
-
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
----
- drivers/net/ethernet/marvell/prestera/prestera_main.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/net/ethernet/marvell/prestera/prestera_main.c b/driver=
-s/net/ethernet/marvell/prestera/prestera_main.c
-index 9bd57b89d1d0..633d8770be35 100644
---- a/drivers/net/ethernet/marvell/prestera/prestera_main.c
-+++ b/drivers/net/ethernet/marvell/prestera/prestera_main.c
-@@ -482,9 +482,10 @@ bool prestera_netdev_check(const struct net_device *de=
-v)
- 	return dev->netdev_ops =3D=3D &prestera_netdev_ops;
- }
-=20
--static int prestera_lower_dev_walk(struct net_device *dev, void *data)
-+static int prestera_lower_dev_walk(struct net_device *dev,
-+				   struct netdev_nested_priv *priv)
- {
--	struct prestera_port **pport =3D data;
-+	struct prestera_port **pport =3D (struct prestera_port **)priv->data;
-=20
- 	if (prestera_netdev_check(dev)) {
- 		*pport =3D netdev_priv(dev);
-@@ -497,11 +498,13 @@ static int prestera_lower_dev_walk(struct net_device =
-*dev, void *data)
- struct prestera_port *prestera_port_dev_lower_find(struct net_device *dev)
- {
- 	struct prestera_port *port =3D NULL;
-+	struct netdev_nested_priv priv;
-=20
- 	if (prestera_netdev_check(dev))
- 		return netdev_priv(dev);
-=20
--	netdev_walk_all_lower_dev(dev, prestera_lower_dev_walk, &port);
-+	priv.data =3D (void *)&port;
-+	netdev_walk_all_lower_dev(dev, prestera_lower_dev_walk, &priv);
-=20
- 	return port;
- }
---=20
-2.28.0
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/mIiG9H84CW6wa3if/A52zoG
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9ypE4ACgkQAVBC80lX
-0GyIhAgAg692cTGuoDdmBUZPumsXi8dzTcf+iDUqKKo8/cmfzDiOx/EQqZ09G8CO
-Y16VXoqXmbzqIG+X0DZq7MpR7Ul2kByk/2WSknS5xcNTBYFwWSTGGv4ooxX5zVYJ
-oGIcvBYdYt/H+TKIru34Vo0Ft7RbrSqkli1vrYjapxrK4VloHCaKtXOR73LLjKhv
-RgcHUYeNK33mTl9Ci+z+rpybPA5QV2RLdvu8TZ9oe77DN2WR9wrwyICZDKlnOe+9
-WgcrDRM9JuIPlov2e4/5ABgXBdaqDqSYGmsyvs5mpJLLqf2KN9WO5OIvVGJMayig
-CANz6GlDUsvHDgw21leSP76U0PvR0w==
-=LyoE
------END PGP SIGNATURE-----
-
---Sig_/mIiG9H84CW6wa3if/A52zoG--
