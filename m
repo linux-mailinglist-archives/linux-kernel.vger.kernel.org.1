@@ -2,62 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8965B27C13E
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 11:31:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D602327C136
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 11:31:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728114AbgI2JbV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 05:31:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46674 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728112AbgI2JbM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1728103AbgI2JbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 29 Sep 2020 05:31:12 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A934C0613D4
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 02:31:09 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id g4so4565631wrs.5
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 02:31:09 -0700 (PDT)
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46680 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727903AbgI2JbL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 05:31:11 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9520C0613D8
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 02:31:10 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id y15so4060160wmi.0
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 02:31:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloudflare.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=LTVgpGq4LLRpZSsnAEZ8quGTs1OVPgk5ISC/KzU0WmI=;
-        b=wSf3pUEw/Xo8Yo4QcjUMz5uvYca/gasUtpYXNJ+HlLUHwJ2w47KOF7O2zbnmOp07s/
-         xVDSkbUTexSgR365m7fe+s6QEwlg6Y5RjnNe6KvO3WncTS36hanrjZN4xC6nmuKTCc2D
-         VYjzZGELIKPAbI5sgdqnKZgrV30We47veR+1w=
+        bh=D8n+l8gv14D6aU0iTmaHay2HlmyUQqgp+pk0qCaA2cE=;
+        b=a11Tqk9rN0Ny5AQW2F3CxZzJMq6erFFZQd+00dhyz3BTrNft4mzSU+yomkjwnY0P6A
+         8Xw96aXuNFHFB69EQjNVejLnUZq0SYkG8vzW5UQbsP25ur8ZDlM439anquoEIz5R3XXL
+         cCt4snvYumxVxfqs/B+EWTcac2jR+IMlHPRog=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=LTVgpGq4LLRpZSsnAEZ8quGTs1OVPgk5ISC/KzU0WmI=;
-        b=MuJiPDEljuyqiKsh7fs2lefiUWC6n7UL9JK5W876zahhofIHepeoM2np9OdXT40veQ
-         3HMCpCYgIXbGbg67ibj+QCcBn1Xs5w6iP+BRgFZfyI0xX7aNeBqLlp3h3D1Ikc6d+c6O
-         oIOWiMW9esm5pT7yTwVXn648IRbrM/rVkNiA8D7akq8MAiW0wdMb07UqMGEVk766p/f0
-         MWmGcnY/7GLt2z8vZpRiJju5F9wOHVr58x7+CkETBxjFnFxWH05qz2zqazbLMq0tv6EI
-         p0Z9oE11UOy3xdyWalPfCX+zRbCJCDyGQzh9RbagSJoH/7XbVA7iSpI5v0ZkvkgjGzGm
-         4INg==
-X-Gm-Message-State: AOAM530IrRDghld06IjFRmaGfPLfvAbPoJ9meRFGLedCCZewdj+EdsRD
-        +vmHDIgwm6ORj31ZeVc619tfkg==
-X-Google-Smtp-Source: ABdhPJzNBJUbFcS3QxH2peWbETwJQ7UhwILzJSiAYhpNbKbUOrFixUtOc7+Cc64raXOoQQqcANIbaw==
-X-Received: by 2002:adf:b74a:: with SMTP id n10mr3081077wre.140.1601371867720;
-        Tue, 29 Sep 2020 02:31:07 -0700 (PDT)
+        bh=D8n+l8gv14D6aU0iTmaHay2HlmyUQqgp+pk0qCaA2cE=;
+        b=peuqBM4SMVZCMmO9WUPodKL1t75NbBvX41y65d1OWpYHz9ZIX1rgKP+MHI+eBAbSW7
+         a7djGephRk3G1vu/ymQWYNMJCvv7xYlg/213lb9+eLEejRLQVlwmGY2HsqLQvyb5BtlY
+         EwA20oot/eVK1sv5DYyIIpK/58UJt/Dlmfsx8V/PrNSHkW4UrZkgtoZL4Nh4B+wiEGVs
+         taiGYkTY7fvN5UQryrVJPqYq6cjxyzki0/OSoF+g2QEyhVqkBW0r2Hg5KFmaniXu40cO
+         wICssOK0Dh44EYA2o/iox4j98HsSzODpcgSHJH2lTrhNxR1ZO2kHLMkFwGwwaWNyjXqK
+         qT8A==
+X-Gm-Message-State: AOAM533mFAMIvQDclIjL27q3U84y5AVUP+yYSTwd1BGqse3W0Xvy8ZLu
+        ar0CI5upIQpVJqPxDh3G6XbcMg==
+X-Google-Smtp-Source: ABdhPJz4c/JPU9yXywc+QUsYzHYKx4XJiv0ilDLchd1zP/BQkQsGZMaCDYiGKUdh3Tz+96f73/4Djg==
+X-Received: by 2002:a7b:c192:: with SMTP id y18mr3402557wmi.108.1601371869268;
+        Tue, 29 Sep 2020 02:31:09 -0700 (PDT)
 Received: from antares.lan (1.f.1.6.a.e.6.5.a.0.3.2.4.7.4.0.f.f.6.2.a.5.a.7.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:7a5a:26ff:474:230a:56ea:61f1])
-        by smtp.gmail.com with ESMTPSA id i16sm5246798wrq.73.2020.09.29.02.31.06
+        by smtp.gmail.com with ESMTPSA id i16sm5246798wrq.73.2020.09.29.02.31.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Sep 2020 02:31:06 -0700 (PDT)
+        Tue, 29 Sep 2020 02:31:08 -0700 (PDT)
 From:   Lorenz Bauer <lmb@cloudflare.com>
-To:     kafai@fb.com, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     kernel-team@cloudflare.com, netdev@vger.kernel.org,
+To:     kafai@fb.com, Shuah Khan <shuah@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     kernel-team@cloudflare.com, Lorenz Bauer <lmb@cloudflare.com>,
+        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
         bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next v3 1/4] bpf: sockmap: enable map_update_elem from bpf_iter
-Date:   Tue, 29 Sep 2020 10:30:36 +0100
-Message-Id: <20200929093039.73872-2-lmb@cloudflare.com>
+Subject: [PATCH bpf-next v3 2/4] selftests: bpf: Add helper to compare socket cookies
+Date:   Tue, 29 Sep 2020 10:30:37 +0100
+Message-Id: <20200929093039.73872-3-lmb@cloudflare.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200929093039.73872-1-lmb@cloudflare.com>
 References: <20200929093039.73872-1-lmb@cloudflare.com>
@@ -67,48 +64,103 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allow passing a pointer to a BTF struct sock_common* when updating
-a sockmap or sockhash. Since BTF pointers can fault and therefore be
-NULL at runtime we need to add an additional !sk check to
-sock_map_update_elem. Since we may be passed a request or timewait
-socket we also need to check sk_fullsock. Doing this allows calling
-map_update_elem on sockmap from bpf_iter context, which uses
-BTF pointers.
+We compare socket cookies to ensure that insertion into a sockmap worked.
+Pull this out into a helper function for use in other tests.
 
 Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
-Acked-by: Martin KaFai Lau <kafai@fb.com>
 ---
- kernel/bpf/verifier.c | 2 +-
- net/core/sock_map.c   | 3 +++
- 2 files changed, 4 insertions(+), 1 deletion(-)
+ .../selftests/bpf/prog_tests/sockmap_basic.c  | 50 +++++++++++++------
+ 1 file changed, 36 insertions(+), 14 deletions(-)
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index b25ba989c2dc..cc9c90d74dc1 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -3943,7 +3943,7 @@ static int resolve_map_arg_type(struct bpf_verifier_env *env,
- 	case BPF_MAP_TYPE_SOCKMAP:
- 	case BPF_MAP_TYPE_SOCKHASH:
- 		if (*arg_type == ARG_PTR_TO_MAP_VALUE) {
--			*arg_type = ARG_PTR_TO_SOCKET;
-+			*arg_type = ARG_PTR_TO_BTF_ID_SOCK_COMMON;
- 		} else {
- 			verbose(env, "invalid arg_type for sockmap/sockhash\n");
- 			return -EINVAL;
-diff --git a/net/core/sock_map.c b/net/core/sock_map.c
-index e1f05e3fa1d0..08bc86f51593 100644
---- a/net/core/sock_map.c
-+++ b/net/core/sock_map.c
-@@ -610,6 +610,9 @@ static int sock_map_update_elem(struct bpf_map *map, void *key,
- 	struct sock *sk = (struct sock *)value;
- 	int ret;
+diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
+index 4b7a527e7e82..3596d3f3039f 100644
+--- a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
++++ b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
+@@ -50,6 +50,37 @@ static int connected_socket_v4(void)
+ 	return -1;
+ }
  
-+	if (unlikely(!sk || !sk_fullsock(sk)))
-+		return -EINVAL;
++static void compare_cookies(struct bpf_map *src, struct bpf_map *dst)
++{
++	__u32 i, max_entries = bpf_map__max_entries(src);
++	int err, duration = 0, src_fd, dst_fd;
 +
- 	if (!sock_map_sk_is_suitable(sk))
- 		return -EOPNOTSUPP;
++	src_fd = bpf_map__fd(src);
++	dst_fd = bpf_map__fd(dst);
++
++	for (i = 0; i < max_entries; i++) {
++		__u64 src_cookie, dst_cookie;
++
++		err = bpf_map_lookup_elem(src_fd, &i, &src_cookie);
++		if (err && errno == ENOENT) {
++			err = bpf_map_lookup_elem(dst_fd, &i, &dst_cookie);
++			CHECK(!err, "map_lookup_elem(dst)", "element %u not deleted\n", i);
++			CHECK(err && errno != ENOENT, "map_lookup_elem(dst)", "%s\n",
++			      strerror(errno));
++			continue;
++		}
++		if (CHECK(err, "lookup_elem(src)", "%s\n", strerror(errno)))
++			continue;
++
++		err = bpf_map_lookup_elem(dst_fd, &i, &dst_cookie);
++		if (CHECK(err, "lookup_elem(dst)", "%s\n", strerror(errno)))
++			continue;
++
++		CHECK(dst_cookie != src_cookie, "cookie mismatch",
++		      "%llu != %llu (pos %u)\n", dst_cookie, src_cookie, i);
++	}
++}
++
+ /* Create a map, populate it with one socket, and free the map. */
+ static void test_sockmap_create_update_free(enum bpf_map_type map_type)
+ {
+@@ -109,9 +140,9 @@ static void test_skmsg_helpers(enum bpf_map_type map_type)
+ static void test_sockmap_update(enum bpf_map_type map_type)
+ {
+ 	struct bpf_prog_test_run_attr tattr;
+-	int err, prog, src, dst, duration = 0;
++	int err, prog, src, duration = 0;
+ 	struct test_sockmap_update *skel;
+-	__u64 src_cookie, dst_cookie;
++	struct bpf_map *dst_map;
+ 	const __u32 zero = 0;
+ 	char dummy[14] = {0};
+ 	__s64 sk;
+@@ -127,18 +158,14 @@ static void test_sockmap_update(enum bpf_map_type map_type)
+ 	prog = bpf_program__fd(skel->progs.copy_sock_map);
+ 	src = bpf_map__fd(skel->maps.src);
+ 	if (map_type == BPF_MAP_TYPE_SOCKMAP)
+-		dst = bpf_map__fd(skel->maps.dst_sock_map);
++		dst_map = skel->maps.dst_sock_map;
+ 	else
+-		dst = bpf_map__fd(skel->maps.dst_sock_hash);
++		dst_map = skel->maps.dst_sock_hash;
  
+ 	err = bpf_map_update_elem(src, &zero, &sk, BPF_NOEXIST);
+ 	if (CHECK(err, "update_elem(src)", "errno=%u\n", errno))
+ 		goto out;
+ 
+-	err = bpf_map_lookup_elem(src, &zero, &src_cookie);
+-	if (CHECK(err, "lookup_elem(src, cookie)", "errno=%u\n", errno))
+-		goto out;
+-
+ 	tattr = (struct bpf_prog_test_run_attr){
+ 		.prog_fd = prog,
+ 		.repeat = 1,
+@@ -151,12 +178,7 @@ static void test_sockmap_update(enum bpf_map_type map_type)
+ 		       "errno=%u retval=%u\n", errno, tattr.retval))
+ 		goto out;
+ 
+-	err = bpf_map_lookup_elem(dst, &zero, &dst_cookie);
+-	if (CHECK(err, "lookup_elem(dst, cookie)", "errno=%u\n", errno))
+-		goto out;
+-
+-	CHECK(dst_cookie != src_cookie, "cookie mismatch", "%llu != %llu\n",
+-	      dst_cookie, src_cookie);
++	compare_cookies(skel->maps.src, dst_map);
+ 
+ out:
+ 	test_sockmap_update__destroy(skel);
 -- 
 2.25.1
 
