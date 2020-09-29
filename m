@@ -2,222 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97E1227DB7E
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 00:15:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FE0127DB80
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 00:15:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728474AbgI2WPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 18:15:22 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:33314 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727922AbgI2WPV (ORCPT
+        id S1728612AbgI2WPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 18:15:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52796 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728529AbgI2WPa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 18:15:21 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08TMF3aN067539;
-        Tue, 29 Sep 2020 22:15:17 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=v8FVZp2ta6OWGjFwuE9tOKJUzJfhRFSODvV9tZ//xik=;
- b=WWdvwFICm5JQBlAaWNiwFyCjkalq2bOBQya8xw2z5QXpjtRmVqMe/QGfu4Zyc4j1oXh/
- t0Lohy4ezjZ/6czhJLRg/OXI4iiqp360EdS0MJyy2aOTaWQmQMF5GKBXdoSluQi61pdw
- wB/ykAoYVh51r1F8Vf+ZV97oBYCbba9O15sYhTqCsnBpYPFZveRAZwjcOEace+VPaQuc
- GT5rjaiAe9jhS7gBchCk8wIwxuteuxl0qBa9I/RL8eHB6UocBGGD5HO9lggqZ8GItsOA
- ZnIyTR2JOV75Yl14BoNNljbGOUA2ISjiu5c7YxeLQBk1MBaI+YqzoehEyASz2jRKF4Jp rQ== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2120.oracle.com with ESMTP id 33sx9n5e2s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 29 Sep 2020 22:15:16 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08TM4wwV158901;
-        Tue, 29 Sep 2020 22:13:16 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3030.oracle.com with ESMTP id 33uv2eh4he-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 29 Sep 2020 22:13:16 +0000
-Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08TMDEMO031506;
-        Tue, 29 Sep 2020 22:13:14 GMT
-Received: from [10.39.199.45] (/10.39.199.45)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 29 Sep 2020 15:13:14 -0700
-Subject: Re: [PATCH] x86/boot: Place kernel_info at a fixed offset
-To:     Arvind Sankar <nivedita@alum.mit.edu>, x86@kernel.org
-Cc:     linux-kernel@vger.kernel.org
-References: <20200929210455.2718827-1-nivedita@alum.mit.edu>
-From:   Ross Philipson <ross.philipson@oracle.com>
-Autocrypt: addr=ross.philipson@oracle.com; keydata=
- mQENBFtHZ04BCADHhtvMImplKfIEOytU7ZH4haZ9eFAqZpGeIpG9D+pzTCuReM2/49bvgNoI
- e1xuiQFO+UEJ8FjedFjDdqY7fSw3xVdX9gLwD1Rmw0Dadc1w6sGbcoOQLHcglesu+BmcKBtU
- tWQZkzCpEShN4etgZThk8469YnAvO08vNZsrizgrpD90T7mEYiNXxIkX87sPGbnBrL1X7RvZ
- TaRXfE8174W+XVwGEpSiO/GjRgLW8+DFZB5MgXpCR993+U1YT9Lz97/MRzr4hqcOYry6LBYi
- s8dOly4oP7gK15oW8Xap9+ur0Jd8Vy8o99Axq+7yunF+2KE2SwP3/w8H3VDpx7EeDhWDABEB
- AAG0KlJvc3MgUGhpbGlwc29uIDxyb3NzLnBoaWxpcHNvbkBvcmFjbGUuY29tPokBVAQTAQgA
- PgIbAwULCQgHAgYVCgkICwIEFgIDAQIeAQIXgBYhBFsN7r6v0OZTCaJ1wdpHdTZHiMYcBQJb
- R2eBBQkJZgGzAAoJENpHdTZHiMYcPYcH/Rlp3/F3P4/2i/W0F4yQDVD6rAkejCws4KlbgC5D
- Slkdvk6j8jOW/HNeIY3n+a3mW0iyyhZlipgYAqkK1loDiDxJjc2eUaHxiYWNLQ4CwIj2EC27
- AWCp6hgwHNWmZrdeNbM/Z6LTFQILx5xzgX+86KNqzFV7gOcAaS2qBVz1D83dgrFZaGaao918
- nvfe+SnImo0GaEf8nVDKgsD2zfzMBkk4q/E0mrEADFXwBHSvNCnVyrCN6Ve0dHWgI7SszUDt
- 7v01zbGPR5mRfGuyC9gykd2SDCw5/Q27RMWfaPFL/dtiZBljUzb2yW5jicZAz7zNdDcBSUGR
- r//wxtG4k/dBrMW5AQ0EW0dnTwEIAPelEnLDnfJnHdFR+1Thrvv3Udt/1cjqQfHqH4F8zef/
- MsIcPV1skL7qPUYD+CrbasvmqhlPxtJAtN68inPa70fA2g0PtNmLUH1NBb2e6EjOoVZg9ais
- BWfdYUITZouOXs2zCTFsoNWjTJANnXxexbTf1ZEqfzlVtQK+xAnXl3kiL4Y47VMbgDkGedhw
- 3ZMWQ2zMMZqYJkPYhtlTXtedhV91DL1347ULwHsvkUJDZ0gL+WU6tYhsCOOiD61x58PfUiFb
- /WkZEPxb96dSSSWrTlLlBWSSD24RnhfbJjfsXeSu9s4XldmGTDkj7jclMVU1xV0BUfqEwhVn
- xR8FlC+dZvkAEQEAAYkBPAQYAQgAJgIbDBYhBFsN7r6v0OZTCaJ1wdpHdTZHiMYcBQJbR2eB
- BQkJZgGyAAoJENpHdTZHiMYcDIAIAIRJrKjIStRvLsOOCX92s9XJPUjrC/xmtVsqVviyFWIC
- QRPQzDE+bDSvRazudBHmcPW+BOOB5B+p7zKZzOGoZV2peG8oA/Y8oCxOYBtpbBaZ5KJexm/g
- BbnJUwb3uhmKtDShHGUCmtq8MZBJBr6Q6xHprOU8Qnzs9Jea8NVwaz9O226Rrg4XVv/sK1Lh
- ++xZfhi7YqKWdx5vdfdnX1xWe8ma0eXLeCDh3V6Ys+Habw1jEbMuafrcVzAbp1rMt2Lju1ls
- BNAoxeViK7QXWfwGTmGJP++jHmo99gMqEtiohf+37N0oS6uYu6kaE7PxsEcOjWKJxW/DdgwO
- eFq+D6xuiKk=
-Message-ID: <39c6052e-5615-9692-56fc-9850fa53f5de@oracle.com>
-Date:   Tue, 29 Sep 2020 18:13:13 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 29 Sep 2020 18:15:30 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50927C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 15:15:30 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id d9so6155776pfd.3
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 15:15:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=xFFV541JpFVpZa5fup8HecjMa+5f8eEZQ75k5SchOsw=;
+        b=GINgKNpPQ3dEwvji1OkaMxLp+2oOv0rqvfvcETZXJ0OgJ4sPhMK2IO+Jwn0khr2BB4
+         cEmITeKqqRJWYLdsMK2UqRcEqOjhcDe8VCDVA4eq0HFAviX8U+hpr0kRFCetQBQcwvPH
+         Q03AhyUQSYLdPlbxCWbj/e2c9OLS8r61K+oSCUyfMrh6mHxSDx4v5Yx+n3xkNVkmcOs3
+         G2MnemwVg3Ill+GJRF8tPu0HYN15dtadwZJZ6vr3zYclNCJNDwuFet24aRg2VWPf7qk4
+         czBvxwuLXRVtZqG/RjkTaw+ppSW2ICvuPYmlOD5x13ovHytQfL3aic5939xvFcvajkPX
+         gBaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xFFV541JpFVpZa5fup8HecjMa+5f8eEZQ75k5SchOsw=;
+        b=kNkrDiKC5JKUX1TqL4c9Z/sXbQrmmMbxPMKSR+6QDoYkqhv7jqxvKGLV6ZO4GVV0s6
+         2yOIiE3bpiac7JoG37bqqlrvk6pPIegl/NG+v9LBEc3WLzkDP7KYb6vdi73Mo6+l+ekT
+         /gExgeWSDkeaOEZ1MMUqXHzYrJNd2SCnV47vOzVcFb31Ak34YK0g6S+sZhkAKpf2ZthA
+         wUEqkHr0T4vvOifp9l6LH6Vkcx9Tuwjph1mb1gnxcY7ByfC1MTXqm3YTygosQXM2Zp1q
+         hWILaNAH4E5tsWWp5H6T64x9kRt0hX7h1MguujT7Fhe4ZM9J5WsavA5dvyncttulT9bm
+         N3aA==
+X-Gm-Message-State: AOAM531AA4mX/c/KReLuVGXpB2wVO3W9tEZrvnWCsAKIFuOtg+OMPHve
+        S9nvzErOLCwBhMd52BAhvdI=
+X-Google-Smtp-Source: ABdhPJyG6f7JhLNS7EcUnfuwRMe8BQkFit50KMbOf7krCaLnRToG+8jOjw+Gn1sScrZhRWebiOcPDA==
+X-Received: by 2002:a63:a505:: with SMTP id n5mr4695870pgf.71.1601417729719;
+        Tue, 29 Sep 2020 15:15:29 -0700 (PDT)
+Received: from ubuntu-m3-large-x86 ([2604:1380:45e1:2200::1])
+        by smtp.gmail.com with ESMTPSA id o6sm3483821pjp.33.2020.09.29.15.15.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Sep 2020 15:15:28 -0700 (PDT)
+Date:   Tue, 29 Sep 2020 15:15:26 -0700
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Eric Anholt <eric@anholt.net>,
+        Stefan Wahren <stefan.wahren@i2se.com>,
+        Tim Gover <tim.gover@raspberrypi.com>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Hoegeun Kwon <hoegeun.kwon@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-rpi-kernel@lists.infradead.org,
+        Phil Elwell <phil@raspberrypi.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v5 80/80] ARM: dts: bcm2711: Enable the display pipeline
+Message-ID: <20200929221526.GA1370981@ubuntu-m3-large-x86>
+References: <cover.dddc064d8bb83e46744336af67dcb13139e5747d.1599120059.git-series.maxime@cerno.tech>
+ <cfce2276d172d3d9c4d34d966b58fd47f77c4e46.1599120059.git-series.maxime@cerno.tech>
 MIME-Version: 1.0
-In-Reply-To: <20200929210455.2718827-1-nivedita@alum.mit.edu>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9759 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0 adultscore=0
- suspectscore=0 malwarescore=0 bulkscore=0 mlxlogscore=999 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009290190
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9759 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=0
- phishscore=0 mlxscore=0 lowpriorityscore=0 adultscore=0 clxscore=1015
- spamscore=0 impostorscore=0 malwarescore=0 bulkscore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009290191
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cfce2276d172d3d9c4d34d966b58fd47f77c4e46.1599120059.git-series.maxime@cerno.tech>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/29/20 5:04 PM, Arvind Sankar wrote:
-> There are use cases for storing the offset of a symbol in kernel_info.
-> For example, the trenchboot series [0] needs to store the offset of the
-> Measured Launch Environment header in kernel_info.
+On Thu, Sep 03, 2020 at 10:01:52AM +0200, Maxime Ripard wrote:
+> Now that all the drivers have been adjusted for it, let's bring in the
+> necessary device tree changes.
 > 
-> Since commit (note: commit ID from tip/master)
+> The VEC and PV3 are left out for now, since it will require a more specific
+> clock setup.
 > 
->   527afc212231 ("x86/boot: Check that there are no run-time relocations")
-> 
-> run-time relocations are not allowed in the compressed kernel, so simply
-> using the symbol in kernel_info, as
-> 
-> 	.long	symbol
-> 
-> will cause a linker error because this is not position-independent.
-> 
-> With kernel_info being a separate object file and in a different section
-> from startup_32, there is no way to calculate the offset of a symbol
-> from the start of the image in a position-independent way.
-> 
-> To enable such use cases, put kernel_info into its own section which is
-> placed at a predetermined offset (KERNEL_INFO_OFFSET) via the linker
-> script. This will allow calculating the symbol offset in a
-> position-independent way, by adding the offset from the start of
-> kernel_info to KERNEL_INFO_OFFSET.
-> 
-> Ensure that kernel_info is aligned, and use the SYM_DATA.* macros
-> instead of bare labels. This stores the size of the kernel_info
-> structure in the ELF symbol table.
+> Reviewed-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
+> Tested-by: Chanwoo Choi <cw00.choi@samsung.com>
+> Tested-by: Hoegeun Kwon <hoegeun.kwon@samsung.com>
+> Tested-by: Stefan Wahren <stefan.wahren@i2se.com>
+> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
 
-That is great. It looks like just what we will need. Thank you very much.
+Apologies if this has already been reported or have a solution but this
+patch (and presumably series) breaks output to the serial console after
+a certain point during init. On Raspbian, I see systemd startup messages
+then the output just turns into complete garbage. It looks like this
+patch is merged first in linux-next, which is why my bisect fell on the
+DRM merge. I am happy to provide whatever information could be helpful
+for debugging this. I am on the latest version of the firmware
+(currently 26620cc9a63c6cb9965374d509479b4ee2c30241).
 
-Acked-by: Ross Philipson <ross.philipson@oracle.com>
+$ git bisect log
+# bad: [49e7e3e905e437a02782019570f70997e2da9101] Add linux-next specific files for 20200929
+# good: [fb0155a09b0224a7147cb07a4ce6034c8d29667f] Merge tag 'nfs-for-5.9-3' of git://git.linux-nfs.org/projects/trondmy/linux-nfs
+git bisect start '49e7e3e905e437a02782019570f70997e2da9101' 'fb0155a09b0224a7147cb07a4ce6034c8d29667f'
+# good: [a07bf9042465c0e4ab28947daf70517f99ef021f] Merge remote-tracking branch 'bluetooth/master' into master
+git bisect good a07bf9042465c0e4ab28947daf70517f99ef021f
+# bad: [546d06883722dfc5823d53042b924f4b4f76a459] Merge remote-tracking branch 'spi/for-next' into master
+git bisect bad 546d06883722dfc5823d53042b924f4b4f76a459
+# good: [06c14f5c2d311100a447caf60ecbcf558e4e60fe] Merge tag 'mediatek-drm-next-5.10' of https://git.kernel.org/pub/scm/linux/kernel/git/chunkuang.hu/linux into drm-next
+git bisect good 06c14f5c2d311100a447caf60ecbcf558e4e60fe
+# bad: [606865c11f2ed6429c7eddcbc59d3295771d41a4] Merge remote-tracking branch 'sound-asoc/for-next' into master
+git bisect bad 606865c11f2ed6429c7eddcbc59d3295771d41a4
+# bad: [7492f2f52acc72a1d08ad1f1d722237ba66189b9] Merge remote-tracking branch 'regmap/for-next' into master
+git bisect bad 7492f2f52acc72a1d08ad1f1d722237ba66189b9
+# good: [0b7e44d39c8aa7536352b57af2265e92fc253e4f] integrity: Asymmetric digsig supports SM2-with-SM3 algorithm
+git bisect good 0b7e44d39c8aa7536352b57af2265e92fc253e4f
+# good: [2ce595ba1cd7a2bc053fcc937b7bbbf743c21818] Merge remote-tracking branch 'nand/nand/next' into master
+git bisect good 2ce595ba1cd7a2bc053fcc937b7bbbf743c21818
+# good: [10e07ca312548f90d5e0fc1d862209285c9a858c] gpu/drm/radeon: fix spelling typo in comments
+git bisect good 10e07ca312548f90d5e0fc1d862209285c9a858c
+# bad: [be877462417f05af69729a9eeda1332b15e81de8] Merge remote-tracking branch 'imx-drm/imx-drm/next' into master
+git bisect bad be877462417f05af69729a9eeda1332b15e81de8
+# bad: [7a80fa2ada067aa633a91bce67f6c3e39aad7504] Merge remote-tracking branch 'drm-intel/for-linux-next' into master
+git bisect bad 7a80fa2ada067aa633a91bce67f6c3e39aad7504
+# good: [f4a336053725b689a65021edca26f8d058c0d6b4] drm/amdgpu/display: fix CFLAGS setup for DCN30
+git bisect good f4a336053725b689a65021edca26f8d058c0d6b4
+# bad: [64e05a0ebd7e6047c9f67c685fe8d4ec79a397ba] Merge remote-tracking branch 'drm/drm-next' into master
+git bisect bad 64e05a0ebd7e6047c9f67c685fe8d4ec79a397ba
+# good: [a4b0c1f80de8ec3f473b02918556650b683f044d] Merge remote-tracking branch 'crypto/master' into master
+git bisect good a4b0c1f80de8ec3f473b02918556650b683f044d
+# first bad commit: [64e05a0ebd7e6047c9f67c685fe8d4ec79a397ba] Merge remote-tracking branch 'drm/drm-next' into master
 
-> 
-> Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
-> Cc: Ross Philipson <ross.philipson@oracle.com>
-> [0] https://urldefense.com/v3/__https://lore.kernel.org/lkml/1600959521-24158-8-git-send-email-ross.philipson@oracle.com/__;!!GqivPVa7Brio!JiEGSToX4gewsr8DY0iWrRR7oTzMZl1b-WBsZ1U6M7dCJXuGzIrF-5qVqN4v8LEys8M$ 
-> ---
->  arch/x86/boot/compressed/kernel_info.S | 19 +++++++++++++++----
->  arch/x86/boot/compressed/kernel_info.h | 12 ++++++++++++
->  arch/x86/boot/compressed/vmlinux.lds.S |  6 ++++++
->  3 files changed, 33 insertions(+), 4 deletions(-)
->  create mode 100644 arch/x86/boot/compressed/kernel_info.h
-> 
-> diff --git a/arch/x86/boot/compressed/kernel_info.S b/arch/x86/boot/compressed/kernel_info.S
-> index f818ee8fba38..c18f07181dd5 100644
-> --- a/arch/x86/boot/compressed/kernel_info.S
-> +++ b/arch/x86/boot/compressed/kernel_info.S
-> @@ -1,12 +1,23 @@
->  /* SPDX-License-Identifier: GPL-2.0 */
->  
-> +#include <linux/linkage.h>
->  #include <asm/bootparam.h>
-> +#include "kernel_info.h"
->  
-> -	.section ".rodata.kernel_info", "a"
-> +/*
-> + * If a field needs to hold the offset of a symbol from the start
-> + * of the image, use the macro below, eg
-> + *	.long	rva(symbol)
-> + * This will avoid creating run-time relocations, which are not
-> + * allowed in the compressed kernel.
-> + */
-> +
-> +#define rva(X) (((X) - kernel_info) + KERNEL_INFO_OFFSET)
->  
-> -	.global kernel_info
-> +	.section ".rodata.kernel_info", "a"
->  
-> -kernel_info:
-> +	.balign	16
-> +SYM_DATA_START(kernel_info)
->  	/* Header, Linux top (structure). */
->  	.ascii	"LToP"
->  	/* Size. */
-> @@ -19,4 +30,4 @@ kernel_info:
->  
->  kernel_info_var_len_data:
->  	/* Empty for time being... */
-> -kernel_info_end:
-> +SYM_DATA_END_LABEL(kernel_info, SYM_L_LOCAL, kernel_info_end)
-> diff --git a/arch/x86/boot/compressed/kernel_info.h b/arch/x86/boot/compressed/kernel_info.h
-> new file mode 100644
-> index 000000000000..c127f84aec63
-> --- /dev/null
-> +++ b/arch/x86/boot/compressed/kernel_info.h
-> @@ -0,0 +1,12 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +
-> +#ifndef BOOT_COMPRESSED_KERNEL_INFO_H
-> +#define BOOT_COMPRESSED_KERNEL_INFO_H
-> +
-> +#ifdef CONFIG_X86_64
-> +#define KERNEL_INFO_OFFSET 0x500
-> +#else /* 32-bit */
-> +#define KERNEL_INFO_OFFSET 0x100
-> +#endif
-> +
-> +#endif /* BOOT_COMPRESSED_KERNEL_INFO_H */
-> diff --git a/arch/x86/boot/compressed/vmlinux.lds.S b/arch/x86/boot/compressed/vmlinux.lds.S
-> index 112b2375d021..84c7b4de489e 100644
-> --- a/arch/x86/boot/compressed/vmlinux.lds.S
-> +++ b/arch/x86/boot/compressed/vmlinux.lds.S
-> @@ -7,6 +7,7 @@ OUTPUT_FORMAT(CONFIG_OUTPUT_FORMAT)
->  
->  #include <asm/cache.h>
->  #include <asm/page_types.h>
-> +#include "kernel_info.h"
->  
->  #ifdef CONFIG_X86_64
->  OUTPUT_ARCH(i386:x86-64)
-> @@ -27,6 +28,11 @@ SECTIONS
->  		HEAD_TEXT
->  		_ehead = . ;
->  	}
-> +	.rodata.kernel_info KERNEL_INFO_OFFSET : {
-> +		*(.rodata.kernel_info)
-> +	}
-> +	ASSERT(ABSOLUTE(kernel_info) == KERNEL_INFO_OFFSET, "kernel_info at bad address!")
-> +
->  	.rodata..compressed : {
->  		*(.rodata..compressed)
->  	}
-> 
-
+Cheers,
+Nathan
