@@ -2,63 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A943A27C033
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 10:57:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3822327C036
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 10:58:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727990AbgI2I5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 04:57:02 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:14704 "EHLO huawei.com"
+        id S1727774AbgI2I6T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 04:58:19 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:14705 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727468AbgI2I5B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 04:57:01 -0400
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id A03EA1992BC6526F4DEC;
-        Tue, 29 Sep 2020 16:56:58 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 29 Sep 2020 16:56:52 +0800
-From:   Qinglang Miao <miaoqinglang@huawei.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>
-CC:     <linux-serial@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        "Qinglang Miao" <miaoqinglang@huawei.com>
-Subject: [PATCH -next] serial: mvebu-uart: fix unused variable warning
-Date:   Tue, 29 Sep 2020 16:56:51 +0800
-Message-ID: <20200929085651.158283-1-miaoqinglang@huawei.com>
-X-Mailer: git-send-email 2.20.1
+        id S1727403AbgI2I6S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 04:58:18 -0400
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 1D71CC3F387B2EA285FF;
+        Tue, 29 Sep 2020 16:58:17 +0800 (CST)
+Received: from [10.174.179.91] (10.174.179.91) by
+ DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 29 Sep 2020 16:58:12 +0800
+Subject: Re: linux-next: build warning after merge of the tty tree
+To:     Greg KH <greg@kroah.com>
+CC:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20200929160111.18719071@canb.auug.org.au>
+ <2e36e978-1276-6b86-3956-4346fc04093f@huawei.com>
+ <20200929073213.GA409833@kroah.com>
+From:   miaoqinglang <miaoqinglang@huawei.com>
+Message-ID: <0993ddd8-dc95-c08b-2d6e-5a057519fa35@huawei.com>
+Date:   Tue, 29 Sep 2020 16:58:11 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
+In-Reply-To: <20200929073213.GA409833@kroah.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.179.91]
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There's a warning shows that 'ret' becomes an unused variable
-after simplify the return expression of mvebu_uart_probe(). So
-remove it.
 
-Fixes: b63537020db3 ("serial: mvebu-uart: simplify the return expression of mvebu_uart_probe()")
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
----
- drivers/tty/serial/mvebu-uart.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/tty/serial/mvebu-uart.c b/drivers/tty/serial/mvebu-uart.c
-index 4e9a590712cb..c9a51f18bf43 100644
---- a/drivers/tty/serial/mvebu-uart.c
-+++ b/drivers/tty/serial/mvebu-uart.c
-@@ -803,7 +803,7 @@ static int mvebu_uart_probe(struct platform_device *pdev)
- 							   &pdev->dev);
- 	struct uart_port *port;
- 	struct mvebu_uart *mvuart;
--	int ret, id, irq;
-+	int id, irq;
- 
- 	if (!reg) {
- 		dev_err(&pdev->dev, "no registers defined\n");
--- 
-2.23.0
-
+在 2020/9/29 15:32, Greg KH 写道:
+> On Tue, Sep 29, 2020 at 02:41:27PM +0800, miaoqinglang wrote:
+>>
+>>
+>> 在 2020/9/29 14:01, Stephen Rothwell 写道:
+>>> Hi all,
+>>>
+>>> After merging the tty tree, today's linux-next build (x86_64 allmodconfig)
+>>> produced this warning:
+>>>
+>>> drivers/tty/serial/mvebu-uart.c: In function 'mvebu_uart_probe':
+>>> drivers/tty/serial/mvebu-uart.c:806:6: warning: unused variable 'ret' [-Wunused-variable]
+>>>     806 |  int ret, id, irq;
+>>>         |      ^~~
+>>>
+>>> Introduced by commit
+>>>
+>>>     b63537020db3 ("serial: mvebu-uart: simplify the return expression of mvebu_uart_probe()")
+>>>
+>> Hi Greg,
+>>
+>> Sorry about the noise for remaining the unused variable 'ret' in commit
+>> b63537020db3.
+>>
+>> Should I send another patch to clean up this warning or send another v2
+>> patch instead?
+> 
+> A fix-up patch would be best, as this is already in my tree.
+> 
+> thanks,
+> 
+> greg k-h
+> .A fix-up patch has been sent.
+Thanks
+> 
