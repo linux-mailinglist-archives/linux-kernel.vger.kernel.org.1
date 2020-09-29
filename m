@@ -2,42 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8E4027C601
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:41:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A76E27C5EB
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:41:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730610AbgI2LlC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:41:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36916 "EHLO mail.kernel.org"
+        id S1729946AbgI2LkF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:40:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34386 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730578AbgI2Lkx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:40:53 -0400
+        id S1730482AbgI2Ljf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:39:35 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8548B206A5;
-        Tue, 29 Sep 2020 11:23:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A65DD2074A;
+        Tue, 29 Sep 2020 11:39:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601378594;
-        bh=AZ8ZANYn2ayZhfHdgsNtX6pMLu7dDv5koNz1Gu18hNE=;
+        s=default; t=1601379561;
+        bh=2Tf3zgpSVukYlNlSee2szXJUKUQnMg6ZoWjteapx+o8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=d+KyULDQ1yh8UjJqc+f63Dp2t15HWrNGk3byIY4IuKKhhRdWQhqEHIu4BF0g2EFp0
-         5cwRh+0ILatEd04HgEbATFqVADB+Ek1/N3dMrijrMrR9KIB7Yw9Cz2cws8w3FeWxEB
-         iVPuRoJju6VPr3GaKuDWCy8KYx7mWrbMSmd2q9sA=
+        b=BCCX65KT3S8fyB3HTTsSb2drpYAtyTOEIDhoo8p5qoXHJkYvnqXnw3P3i7HCEf/mR
+         jup4DfOucvzx37uFSUdeD+u3Usoj1ZwxN8hbA3r9nH2o/qteyBBNK5SJTmyL3sVFWz
+         BFYvbUyOfu6YtaAZfrIYybYb2OorPBHClxJVC7LI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+c3c5bdea7863886115dc@syzkaller.appspotmail.com,
-        Manish Mandlik <mmandlik@google.com>,
-        Hillf Danton <hdanton@sina.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
+        stable@vger.kernel.org, Andre Przywara <andre.przywara@arm.com>,
+        Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 069/245] Bluetooth: prefetch channel before killing sock
+Subject: [PATCH 5.4 189/388] net: axienet: Propagate failure of DMA descriptor setup
 Date:   Tue, 29 Sep 2020 12:58:40 +0200
-Message-Id: <20200929105950.351532974@linuxfoundation.org>
+Message-Id: <20200929110019.629877089@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929105946.978650816@linuxfoundation.org>
-References: <20200929105946.978650816@linuxfoundation.org>
+In-Reply-To: <20200929110010.467764689@linuxfoundation.org>
+References: <20200929110010.467764689@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,58 +44,112 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hillf Danton <hdanton@sina.com>
+From: Andre Przywara <andre.przywara@arm.com>
 
-[ Upstream commit 2a154903cec20fb64ff4d7d617ca53c16f8fd53a ]
+[ Upstream commit ee44d0b78839b21591501424fd3cb3648cc803b5 ]
 
-Prefetch channel before killing sock in order to fix UAF like
+When we fail allocating the DMA buffers in axienet_dma_bd_init(), we
+report this error, but carry on with initialisation nevertheless.
 
- BUG: KASAN: use-after-free in l2cap_sock_release+0x24c/0x290 net/bluetooth/l2cap_sock.c:1212
- Read of size 8 at addr ffff8880944904a0 by task syz-fuzzer/9751
+This leads to a kernel panic when the driver later wants to send a
+packet, as it uses uninitialised data structures.
 
-Reported-by: syzbot+c3c5bdea7863886115dc@syzkaller.appspotmail.com
-Fixes: 6c08fc896b60 ("Bluetooth: Fix refcount use-after-free issue")
-Cc: Manish Mandlik <mmandlik@google.com>
-Signed-off-by: Hillf Danton <hdanton@sina.com>
-Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+Make the axienet_device_reset() routine return an error value, as it
+contains the DMA buffer initialisation. Make sure we propagate the error
+up the chain and eventually fail the driver initialisation, to avoid
+relying on non-initialised buffers.
+
+Signed-off-by: Andre Przywara <andre.przywara@arm.com>
+Reviewed-by: Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/bluetooth/l2cap_sock.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ .../net/ethernet/xilinx/xilinx_axienet_main.c | 26 ++++++++++++++-----
+ 1 file changed, 19 insertions(+), 7 deletions(-)
 
-diff --git a/net/bluetooth/l2cap_sock.c b/net/bluetooth/l2cap_sock.c
-index d128750e47305..5572042f04531 100644
---- a/net/bluetooth/l2cap_sock.c
-+++ b/net/bluetooth/l2cap_sock.c
-@@ -1190,6 +1190,7 @@ static int l2cap_sock_release(struct socket *sock)
- {
- 	struct sock *sk = sock->sk;
- 	int err;
-+	struct l2cap_chan *chan;
- 
- 	BT_DBG("sock %p, sk %p", sock, sk);
- 
-@@ -1199,15 +1200,16 @@ static int l2cap_sock_release(struct socket *sock)
- 	bt_sock_unlink(&l2cap_sk_list, sk);
- 
- 	err = l2cap_sock_shutdown(sock, 2);
-+	chan = l2cap_pi(sk)->chan;
- 
--	l2cap_chan_hold(l2cap_pi(sk)->chan);
--	l2cap_chan_lock(l2cap_pi(sk)->chan);
-+	l2cap_chan_hold(chan);
-+	l2cap_chan_lock(chan);
- 
- 	sock_orphan(sk);
- 	l2cap_sock_kill(sk);
- 
--	l2cap_chan_unlock(l2cap_pi(sk)->chan);
--	l2cap_chan_put(l2cap_pi(sk)->chan);
-+	l2cap_chan_unlock(chan);
-+	l2cap_chan_put(chan);
- 
- 	return err;
+diff --git a/drivers/net/ethernet/xilinx/xilinx_axienet_main.c b/drivers/net/ethernet/xilinx/xilinx_axienet_main.c
+index 345a795666e92..bb6e52f3bdf9b 100644
+--- a/drivers/net/ethernet/xilinx/xilinx_axienet_main.c
++++ b/drivers/net/ethernet/xilinx/xilinx_axienet_main.c
+@@ -437,9 +437,10 @@ static void axienet_setoptions(struct net_device *ndev, u32 options)
+ 	lp->options |= options;
  }
+ 
+-static void __axienet_device_reset(struct axienet_local *lp)
++static int __axienet_device_reset(struct axienet_local *lp)
+ {
+ 	u32 timeout;
++
+ 	/* Reset Axi DMA. This would reset Axi Ethernet core as well. The reset
+ 	 * process of Axi DMA takes a while to complete as all pending
+ 	 * commands/transfers will be flushed or completed during this
+@@ -455,9 +456,11 @@ static void __axienet_device_reset(struct axienet_local *lp)
+ 		if (--timeout == 0) {
+ 			netdev_err(lp->ndev, "%s: DMA reset timeout!\n",
+ 				   __func__);
+-			break;
++			return -ETIMEDOUT;
+ 		}
+ 	}
++
++	return 0;
+ }
+ 
+ /**
+@@ -470,13 +473,17 @@ static void __axienet_device_reset(struct axienet_local *lp)
+  * areconnected to Axi Ethernet reset lines, this in turn resets the Axi
+  * Ethernet core. No separate hardware reset is done for the Axi Ethernet
+  * core.
++ * Returns 0 on success or a negative error number otherwise.
+  */
+-static void axienet_device_reset(struct net_device *ndev)
++static int axienet_device_reset(struct net_device *ndev)
+ {
+ 	u32 axienet_status;
+ 	struct axienet_local *lp = netdev_priv(ndev);
++	int ret;
+ 
+-	__axienet_device_reset(lp);
++	ret = __axienet_device_reset(lp);
++	if (ret)
++		return ret;
+ 
+ 	lp->max_frm_size = XAE_MAX_VLAN_FRAME_SIZE;
+ 	lp->options |= XAE_OPTION_VLAN;
+@@ -491,9 +498,11 @@ static void axienet_device_reset(struct net_device *ndev)
+ 			lp->options |= XAE_OPTION_JUMBO;
+ 	}
+ 
+-	if (axienet_dma_bd_init(ndev)) {
++	ret = axienet_dma_bd_init(ndev);
++	if (ret) {
+ 		netdev_err(ndev, "%s: descriptor allocation failed\n",
+ 			   __func__);
++		return ret;
+ 	}
+ 
+ 	axienet_status = axienet_ior(lp, XAE_RCW1_OFFSET);
+@@ -518,6 +527,8 @@ static void axienet_device_reset(struct net_device *ndev)
+ 	axienet_setoptions(ndev, lp->options);
+ 
+ 	netif_trans_update(ndev);
++
++	return 0;
+ }
+ 
+ /**
+@@ -921,8 +932,9 @@ static int axienet_open(struct net_device *ndev)
+ 	 */
+ 	mutex_lock(&lp->mii_bus->mdio_lock);
+ 	axienet_mdio_disable(lp);
+-	axienet_device_reset(ndev);
+-	ret = axienet_mdio_enable(lp);
++	ret = axienet_device_reset(ndev);
++	if (ret == 0)
++		ret = axienet_mdio_enable(lp);
+ 	mutex_unlock(&lp->mii_bus->mdio_lock);
+ 	if (ret < 0)
+ 		return ret;
 -- 
 2.25.1
 
