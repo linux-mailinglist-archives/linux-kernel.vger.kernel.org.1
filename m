@@ -2,114 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EE0A27D68D
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 21:12:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BAB727D693
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 21:13:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728727AbgI2TM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 15:12:57 -0400
-Received: from mail-ot1-f68.google.com ([209.85.210.68]:46410 "EHLO
-        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728166AbgI2TM4 (ORCPT
+        id S1728733AbgI2TNm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 15:13:42 -0400
+Received: from mail-oo1-f66.google.com ([209.85.161.66]:35265 "EHLO
+        mail-oo1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728166AbgI2TNm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 15:12:56 -0400
-Received: by mail-ot1-f68.google.com with SMTP id 95so5517115ota.13;
-        Tue, 29 Sep 2020 12:12:56 -0700 (PDT)
+        Tue, 29 Sep 2020 15:13:42 -0400
+Received: by mail-oo1-f66.google.com with SMTP id k13so1566817oor.2;
+        Tue, 29 Sep 2020 12:13:40 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=GgjKuyQJoERzQMpEMuhlPCE13zkCByWUan2/5brhiCU=;
-        b=ahYCxdjGh6vc+8vs84tn5CP4iJMl3GXT6gnodJscDP47jLs032Q9ElcLIwO+I8Jhak
-         1JY1JC3kdcZG64eg2bthagAuxpjsdb6QYBpIxR4P868Z/vFK2ZxK5PgB6bpHEqoRk2Tb
-         7cWTxXlB/WOX8ZzIVXiHmYRwhhrvlG0IETfeNQW89H5zfo/4OYdwvkDMn8UssEr7o19s
-         QEmuYyuofv6LxHb+jCQ7xkqZoTUR6KPJi5L/AtQVM3LDtvnalXmREI4IhvVWvWxTZdMo
-         4+jAcS9I9PDCZ0Xa0pJfAV3aVLwTCfI+E9dyx7Goc+rBdttVadDZBzj+1kkXxTV5/gO8
-         V2Rg==
-X-Gm-Message-State: AOAM530zWxyi8/Lze2Sz758r9T28hoBRgu5hdo/GgP1k8SNaXVNgYpyJ
-        1dY9fGZgu4KWyINDEIzjvw==
-X-Google-Smtp-Source: ABdhPJzWyMYcV45E2qABB4g0dlueAf1l8Bg8xQxbnk8POFF0QM48+jRHidYaB2vtazxWKOyqiyLcMg==
-X-Received: by 2002:a05:6830:ca:: with SMTP id x10mr3612103oto.344.1601406775723;
-        Tue, 29 Sep 2020 12:12:55 -0700 (PDT)
+        bh=3apJKDWcvWz74zAbbD3N/FA15x9Q19lWsHwIKOQmjrM=;
+        b=FYaObX4g1RQPSZHn/XtFWiLc4dZNgRRSVOCP8+d9KNBcitNfHTQb8VY2BLjnwl1D97
+         rsWjNBoMdy8raK7reS4D2LfCMFMcV6tJ1cMn3BqD5xjnAH/qkAFjZLwarJQvINyDv8pb
+         MnjJvgfgA3qctyfFUevIIs8CucyGwicsXFv8LEN9GQFvupPIwhxEtQk7MOXH7cf8+lM+
+         xd85dFSwq7jodUkwXYQBb/I4u7/lovZiPaExDSxzv/M+etUVZB3Xj/QaAgqKoQN77MHE
+         lJxJHz4OdH2Bqqo2c5mgeBKya38XrS/7jJrSGkHuk99OVLcT9Zop36I/S7CYSD3Kluqq
+         e2xg==
+X-Gm-Message-State: AOAM530ozh7KrXHPvd2t2rN/5RQerEYC1AbrHNQgYFqLRdJqHQt/pTJe
+        3/ILS/rGypNH/2XizxzQBrHGeHq4hze0th8=
+X-Google-Smtp-Source: ABdhPJyE7Q4zF24KtPjpoKMGqaGZg0/XYC6UygVr0CttuA24Hlv5xYif6jjMM0Xw0ZrdNlSIdF1DUg==
+X-Received: by 2002:a4a:dc06:: with SMTP id p6mr5794364oov.10.1601406819987;
+        Tue, 29 Sep 2020 12:13:39 -0700 (PDT)
 Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id k16sm1201190oij.56.2020.09.29.12.12.54
+        by smtp.gmail.com with ESMTPSA id c124sm1203355oib.22.2020.09.29.12.13.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Sep 2020 12:12:55 -0700 (PDT)
-Received: (nullmailer pid 987780 invoked by uid 1000);
-        Tue, 29 Sep 2020 19:12:54 -0000
-Date:   Tue, 29 Sep 2020 14:12:54 -0500
+        Tue, 29 Sep 2020 12:13:39 -0700 (PDT)
+Received: (nullmailer pid 989018 invoked by uid 1000);
+        Tue, 29 Sep 2020 19:13:38 -0000
+Date:   Tue, 29 Sep 2020 14:13:38 -0500
 From:   Rob Herring <robh@kernel.org>
-To:     kholk11@gmail.com
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org, kishon@ti.com,
-        marijns95@gmail.com, konradybcio@gmail.com,
-        martin.botka1@gmail.com, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, phone-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] phy: qcom-qusb2: Add support for SDM630/660
-Message-ID: <20200929191254.GA984478@bogus>
-References: <20200926131157.14633-1-kholk11@gmail.com>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     devicetree@vger.kernel.org, NXP Linux Team <linux-imx@nxp.com>,
+        Stefan Agner <stefan@agner.ch>,
+        Anson Huang <Anson.Huang@nxp.com>,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        linux-arm-kernel@lists.infradead.org,
+        Fabio Estevam <festevam@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        linux-watchdog@vger.kernel.org
+Subject: Re: [PATCH 1/3] dt-bindings: watchdog: fsl-imx: document i.MX
+ compatibles
+Message-ID: <20200929191338.GA988964@bogus>
+References: <20200926162302.32525-1-krzk@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200926131157.14633-1-kholk11@gmail.com>
+In-Reply-To: <20200926162302.32525-1-krzk@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 26, 2020 at 03:11:57PM +0200, kholk11@gmail.com wrote:
-> From: Konrad Dybcio <konradybcio@gmail.com>
+On Sat, 26 Sep 2020 18:23:00 +0200, Krzysztof Kozlowski wrote:
+> Document all ARMv5, ARMv6 and ARMv7 i.MX compatibles used in DTSes (even
+> though driver binds only to fsl,imx21-wdt) to fix dtbs_check warnings
+> like:
 > 
-> QUSB on these SoCs actually uses *almost* the same
-> configuration that msm8996 does, so we can reuse
-> the phy_cfg from there with just a single change
-> (se clock scheme).
+>   arch/arm/boot/dts/imx53-qsb.dt.yaml: gpio@53fe0000: compatible:
+>     ['fsl,imx53-gpio', 'fsl,imx35-gpio'] is not valid under any of the given schemas
 > 
-> Signed-off-by: Konrad Dybcio <konradybcio@gmail.com>
-> Signed-off-by: AngeloGioacchino Del Regno <kholk11@gmail.com>
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 > ---
->  Documentation/devicetree/bindings/phy/qcom,qusb2-phy.yaml | 1 +
->  drivers/phy/qualcomm/phy-qcom-qusb2.c                     | 7 ++++++-
->  2 files changed, 7 insertions(+), 1 deletion(-)
+>  .../devicetree/bindings/watchdog/fsl-imx-wdt.yaml  | 14 ++++++++++++++
+>  1 file changed, 14 insertions(+)
 > 
-> diff --git a/Documentation/devicetree/bindings/phy/qcom,qusb2-phy.yaml b/Documentation/devicetree/bindings/phy/qcom,qusb2-phy.yaml
-> index ccda92859eca..97dae24752b4 100644
-> --- a/Documentation/devicetree/bindings/phy/qcom,qusb2-phy.yaml
-> +++ b/Documentation/devicetree/bindings/phy/qcom,qusb2-phy.yaml
-> @@ -21,6 +21,7 @@ properties:
->                - qcom,ipq8074-qusb2-phy
->                - qcom,msm8996-qusb2-phy
->                - qcom,msm8998-qusb2-phy
-> +              - qcom,sdm660-qusb2-phy
->        - items:
->            - enum:
->                - qcom,sc7180-qusb2-phy
-> diff --git a/drivers/phy/qualcomm/phy-qcom-qusb2.c b/drivers/phy/qualcomm/phy-qcom-qusb2.c
-> index 557547dabfd5..a4d706b361b9 100644
-> --- a/drivers/phy/qualcomm/phy-qcom-qusb2.c
-> +++ b/drivers/phy/qualcomm/phy-qcom-qusb2.c
-> @@ -702,7 +702,8 @@ static int qusb2_phy_init(struct phy *phy)
->  	usleep_range(150, 160);
->  
->  	/* Default is single-ended clock on msm8996 */
-> -	qphy->has_se_clk_scheme = true;
-> +	if (!of_device_is_compatible(phy->dev.of_node, "qcom,sdm660-qusb2-phy"))
-> +		qphy->has_se_clk_scheme = true;
 
-You should just pull this from the driver data.
-
->  	/*
->  	 * read TCSR_PHY_CLK_SCHEME register to check if single-ended
->  	 * clock scheme is selected. If yes, then disable differential
-> @@ -818,6 +819,10 @@ static const struct of_device_id qusb2_phy_of_match_table[] = {
->  	}, {
->  		.compatible	= "qcom,msm8998-qusb2-phy",
->  		.data		= &msm8998_phy_cfg,
-> +	}, {
-> +		.compatible	= "qcom,sdm660-qusb2-phy",
-> +		/* sdm630/660 use the same config as msm8996. */
-> +		.data		= &msm8996_phy_cfg,
->  	}, {
->  		/*
->  		 * Deprecated. Only here to support legacy device
-> -- 
-> 2.28.0
-> 
+Reviewed-by: Rob Herring <robh@kernel.org>
