@@ -2,94 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E66A427D96E
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 22:58:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60BEE27D96C
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 22:58:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729583AbgI2U6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 16:58:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40828 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729475AbgI2U6v (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 16:58:51 -0400
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4560AC061755
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 13:58:51 -0700 (PDT)
-Received: by mail-oi1-x242.google.com with SMTP id i17so7026585oig.10
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 13:58:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DF+VZmXpgymJXg5aSsVulYHNq+hO9Tbc9xQXXJOCUZ4=;
-        b=mInI0AoNfBUI+EKslq8H7DHgvuWSGjgNqxvau/3r8lHinq5SMMEODdYvE0w4ds1ph0
-         bXaFU4uBsYTiKWX5Ksr19j6GHSvWUpIz1ALcVpcnNEkhoNNYKY/P2pasmFC2/nNy1sTW
-         2wGznZJyM0988xq+2T+R339D2ifk/lNsu/YtvEqscd3DKsL9jKozQ0lhcihO6nkSl2hf
-         ZzoJxAVBmwgi81yztTmMrkPosjWyExrQVJsHNITRR8N0atRCFkWdBiW5HJuCjj84HRb5
-         3Ft/g0nINMlEnbXCJUX1j42BtwV00T7Y1lrgZJ82E+kLrwDKIyRrkFTr6NtUpm90G5od
-         H5Cg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DF+VZmXpgymJXg5aSsVulYHNq+hO9Tbc9xQXXJOCUZ4=;
-        b=co6/fXXZm66B7xKc4sG6o1TWWwXz4d0HXchEa6rSm7kPzNNCQU05bdItXiaq1N9Z+0
-         uGs90ymui2E8Y344y23A4sQtP0Oc/Z+jVqmORsAE9o5bqMgdAYbLkbGw0D/pD57GMAF3
-         aWRrhpzKPGIxpy8pZeSr1H3wnOMm4a/UFPzfyvVkEXLpHUKrgOiSzLzLMGAMu1bkp9w9
-         5AyQmik+Hq0awonyhTPyml53HtvFzIyxTMKMn+ehxfO3kOMrB/BCHcyOjnIBMVVDTepr
-         5T8JagboliK42U6yCrqcptCjU+M0wtIzoBaUIsTZekQfLm72aJs7E82vbG8lu8246gvS
-         zAGw==
-X-Gm-Message-State: AOAM531rSjS/WYCOD0WQvsNOWEU1djvVEEXrFI7zTouaf7EaOFXyiF4m
-        cskNltU3XvMy3kqgibvAUEC1nqwMxjDFGLkXgy2hVCIyMuQ=
-X-Google-Smtp-Source: ABdhPJzG8XP2y29F+O2CyhTKWe1jGvAylif/OT4/LaXa6GOtvVpQmsp5tw1iXcqpLSFz3OF6J4rF3/ldGLjSufCyscw=
-X-Received: by 2002:a05:6808:3bb:: with SMTP id n27mr3642294oie.130.1601413130639;
- Tue, 29 Sep 2020 13:58:50 -0700 (PDT)
+        id S1729563AbgI2U6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 16:58:36 -0400
+Received: from mga05.intel.com ([192.55.52.43]:27949 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729499AbgI2U6e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 16:58:34 -0400
+IronPort-SDR: OWW/iFqVRDzvM04O8p/SvD8ztkLA43YfAuS13cJxyPamTLspycvurFUP0aH8UQg+bJAUGicnJT
+ xR0WCuNZZbsw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9759"; a="247019252"
+X-IronPort-AV: E=Sophos;i="5.77,319,1596524400"; 
+   d="scan'208";a="247019252"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2020 13:58:34 -0700
+IronPort-SDR: KN3cTVRkNoKQ4clAAfGsFNEd5ONRm9U1jTghmt3NPGHDnlVLN0q8SGNpTpAzMl32yJu8UrRN80
+ bJHZ/0jnfBdg==
+X-IronPort-AV: E=Sophos;i="5.77,319,1596524400"; 
+   d="scan'208";a="312349115"
+Received: from apickett-mobl.amr.corp.intel.com (HELO [10.255.228.142]) ([10.255.228.142])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2020 13:58:33 -0700
+Subject: Re: [PATCH v9 0/5] Simplify PCIe native ownership detection logic
+To:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.nkuppuswamy@gmail.com>, bhelgaas@google.com
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ashok.raj@intel.com
+References: <cover.1600457297.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+From:   "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Message-ID: <b88d3549-717c-8208-0900-c85db8788618@linux.intel.com>
+Date:   Tue, 29 Sep 2020 13:58:31 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20200925171415.25663-1-oded.gabbay@gmail.com>
-In-Reply-To: <20200925171415.25663-1-oded.gabbay@gmail.com>
-From:   Oded Gabbay <oded.gabbay@gmail.com>
-Date:   Tue, 29 Sep 2020 23:58:22 +0300
-Message-ID: <CAFCwf12jX9sg8xjh4AGQvzyJaCu=bZaf+HjBqeauxV4Ry0A5qQ@mail.gmail.com>
-Subject: Re: [PATCH] habanalabs/gaudi: use correct define for qman init
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <cover.1600457297.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 8:14 PM Oded Gabbay <oded.gabbay@gmail.com> wrote:
->
-> There was a copy-paste error, and the wrong define was used for
-> initializing the QMAN.
->
-> Signed-off-by: Oded Gabbay <oded.gabbay@gmail.com>
-> ---
->  drivers/misc/habanalabs/gaudi/gaudi.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/misc/habanalabs/gaudi/gaudi.c b/drivers/misc/habanalabs/gaudi/gaudi.c
-> index a227806be328..5f65a1691551 100644
-> --- a/drivers/misc/habanalabs/gaudi/gaudi.c
-> +++ b/drivers/misc/habanalabs/gaudi/gaudi.c
-> @@ -2039,7 +2039,7 @@ static void gaudi_init_hbm_dma_qman(struct hl_device *hdev, int dma_id,
->                 WREG32(mmDMA0_QM_CP_LDMA_SRC_BASE_LO_OFFSET_0 + q_off,
->                                                         QMAN_LDMA_SRC_OFFSET);
->                 WREG32(mmDMA0_QM_CP_LDMA_DST_BASE_LO_OFFSET_0 + q_off,
-> -                                                       QMAN_LDMA_SIZE_OFFSET);
-> +                                                       QMAN_LDMA_DST_OFFSET);
->
->                 /* Configure RAZWI IRQ */
->                 dma_qm_err_cfg = HBM_DMA_QMAN_GLBL_ERR_CFG_MSG_EN_MASK;
-> --
-> 2.17.1
->
+Hi Bjorn,
 
-Hi Greg,
-Do you think you can apply this patch directly to your char-misc-next
-branch before the merge window opens ?
-I don't have anything pending and I don't want to send a pull request
-for a single patch.
+On 9/27/20 6:11 PM, Kuppuswamy Sathyanarayanan wrote:
+> Currently, PCIe capabilities ownership status is detected by
+> verifying the status of pcie_ports_native, pcie_ports_dpc_native
+> and _OSC negotiated results (cached in  struct pci_host_bridge
+> ->native_* members). But this logic can be simplified, and we can
+> use only struct pci_host_bridge ->native_* members to detect it.
+> 
+Did you get this patch set or do I need to send it again?
+> This patchset removes the distributed checks for pcie_ports_native,
+> pcie_ports_dpc_native parameters.
+> 
+> Changes since v8:
+>   * Simplified setting _OSC ownwership logic
+>   * Moved bridge->native_ltr out of #ifdef CONFIG_PCIEPORTBUS.
+> 
+> Changes since v7:
+>   * Fixed "fix array_size.cocci warnings".
+> 
+> Changes since v6:
+>   * Created new patch for CONFIG_PCIEPORTBUS check in
+>     pci_init_host_bridge().
+>   * Added warning message for a case when pcie_ports_native
+>     overrides _OSC negotiation result.
+> 
+> Changes since v5:
+>   * Rebased on top of v5.8-rc1
+> 
+> Changes since v4:
+>   * Changed the patch set title (Original link: https://lkml.org/lkml/2020/5/26/1710)
+>   * Added AER/DPC dependency logic cleanup fixes.
+>   
+> 
+> Kuppuswamy Sathyanarayanan (5):
+>    PCI: Conditionally initialize host bridge native_* members
+>    ACPI/PCI: Ignore _OSC negotiation result if pcie_ports_native is set.
+>    ACPI/PCI: Ignore _OSC DPC negotiation result if pcie_ports_dpc_native
+>      is set.
+>    PCI/portdrv: Remove redundant pci_aer_available() check in DPC enable
+>      logic
+>    PCI/DPC: Move AER/DPC dependency checks out of DPC driver
+> 
+>   drivers/acpi/pci_root.c           | 37 ++++++++++++++++++++++---------
+>   drivers/pci/hotplug/pciehp_core.c |  2 +-
+>   drivers/pci/pci-acpi.c            |  3 ---
+>   drivers/pci/pcie/aer.c            |  2 +-
+>   drivers/pci/pcie/dpc.c            |  3 ---
+>   drivers/pci/pcie/portdrv.h        |  2 --
+>   drivers/pci/pcie/portdrv_core.c   | 13 +++++------
+>   drivers/pci/probe.c               |  6 +++--
+>   include/linux/acpi.h              |  2 ++
+>   include/linux/pci.h               |  2 ++
+>   10 files changed, 42 insertions(+), 30 deletions(-)
+> 
 
-Thanks,
-Oded
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
