@@ -2,98 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38D4C27D940
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 22:50:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A754527D943
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 22:52:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729193AbgI2Uuz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 16:50:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39576 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728362AbgI2Uuy (ORCPT
+        id S1729228AbgI2Uv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 16:51:57 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:36656 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728362AbgI2Uv5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 16:50:54 -0400
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86472C061755;
-        Tue, 29 Sep 2020 13:50:54 -0700 (PDT)
-Received: by mail-ot1-x344.google.com with SMTP id q21so5836666ota.8;
-        Tue, 29 Sep 2020 13:50:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=vUCqiDej9EjDMEnG/JeTz+FmhCWQs0Gy0fsqtuu17bY=;
-        b=W4Xkqla2zWmiBoUjuO8r8FgYtEUr1zs8iWkN4V5ypqqld2CvmY0OgNU26S2wPHykXh
-         vSxwthtO4DX0ktsFZq9Pbcz4QOsClU8GObaz0tbXvpVpefLx9+L9zxUIJZmNqYmCppp5
-         10bh/J933yvl5R0V4ewjQqnbrxXfuuzszUQ/6ztVKdyyAx7fx/usWEQHNsORSApLX6TL
-         5W2NMF7eESIC5KinSAui7kcMvCTzDhwh3ZRSghAGVLsaRELofqbsBwqeLkH2r1QgKV2Y
-         GpvUbLQBtuHVTQaUFst3tLDu8E2Q8ZwbWULpaD8RaozpBxaVTfBcrDf0bAGZ4XT/xu5b
-         W+MQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=vUCqiDej9EjDMEnG/JeTz+FmhCWQs0Gy0fsqtuu17bY=;
-        b=s8xUVrE3OjJEEFC/RFGO5nHefkSPjiwwOwYmrmxv8gmcARP/8XLrJc/rMPqMdC9PaS
-         nn79knzMSE/qLWlpWAfAjygBWRqfBgcCENFv+VvwN3r00ZncT61LSabbEXv/LHIBCY5S
-         9i87jsWHKDUAKWDv/9HYvQcYdUj2rAELFB5M1yCAsMLPKyjeonbkvP2DCi6SqSCwGkoq
-         wFnPG+t8bv4zlSnlOV5pDTt3vPaFZNKuzg7t7aNq7RIw9rSDvEOKpJVUVlfHQct6Fu4m
-         i2H90Ec0minzAw83Xl/2O8AJ23a0GuUMFY/ooWjpOHRKJ3C9sil6BNeq8iE1EuGew2Nh
-         J2yg==
-X-Gm-Message-State: AOAM532kolkF4xZ5um84m7XSb4O9BLeBknduDdCON9D6DU/AKlIBJkVV
-        RH97GLBXDYSpCXnW6XUxbJk=
-X-Google-Smtp-Source: ABdhPJx+bxiijmxV4bwVJzySrisq5b8n5ytOla9HrJFzgMsx34FTDVDvchb1xMIiRugUMDlIQM8VQA==
-X-Received: by 2002:a9d:66da:: with SMTP id t26mr3872493otm.240.1601412653870;
-        Tue, 29 Sep 2020 13:50:53 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id r5sm1259388otk.74.2020.09.29.13.50.53
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 29 Sep 2020 13:50:53 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Tue, 29 Sep 2020 13:50:52 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
-        pavel@denx.de, stable@vger.kernel.org
-Subject: Re: [PATCH 4.14 000/166] 4.14.200-rc1 review
-Message-ID: <20200929205052.GC152716@roeck-us.net>
-References: <20200929105935.184737111@linuxfoundation.org>
+        Tue, 29 Sep 2020 16:51:57 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id 0AA59803086A;
+        Tue, 29 Sep 2020 20:51:50 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at baikalelectronics.ru
+Received: from mail.baikalelectronics.ru ([127.0.0.1])
+        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id r4WGwg0cF7DZ; Tue, 29 Sep 2020 23:51:49 +0300 (MSK)
+Date:   Tue, 29 Sep 2020 23:51:45 +0300
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Hans de Goede <hdegoede@redhat.com>
+CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-serial@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 0/3] serial: 8250_dw: Fix clk-notifier/port suspend
+ deadlock
+Message-ID: <20200929205145.23itpxwns32uhjnx@mobilestation>
+References: <20200923161950.6237-1-Sergey.Semin@baikalelectronics.ru>
+ <e508b9c8-bcc4-00a6-0ca0-0b4a0c34f626@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20200929105935.184737111@linuxfoundation.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <e508b9c8-bcc4-00a6-0ca0-0b4a0c34f626@redhat.com>
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 12:58:32PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.14.200 release.
-> There are 166 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+Hello,
+
+On Sun, Sep 27, 2020 at 05:01:52PM +0200, Hans de Goede wrote:
+> Hi,
 > 
-> Responses should be made by Thu, 01 Oct 2020 10:59:03 +0000.
-> Anything received after that time might be too late.
+> On 9/23/20 6:19 PM, Serge Semin wrote:
+> > Hans has discovered that there is a potential deadlock between the ref
+> > clock change notifier and the port suspension procedures {see the link at
+> > the bottom of the letter}. Indeed the deadlock is possible if the port
+> > suspension is initiated during the ref clock rate change:
+> > 
+> >      CPU0 (suspend CPU/UART)   CPU1 (update clock)
+> >               ----                    ----
+> >      lock(&port->mutex);
+> >                                lock((work_completion)(&data->clk_work));
+> >                                lock(&port->mutex);
+> >      lock((work_completion)(&data->clk_work));
+> > 
+> >      *** DEADLOCK ***
+> > 
+> > So the CPU performing the UART port shutdown procedure will wait until the
+> > ref clock change notifier is finished (worker is flushed), while the later
+> > will wait for a port mutex being released.
+> > 
+> > A possible solution to bypass the deadlock is to move the worker flush out
+> > of the critical section protected by the TTY port mutex. For instance we
+> > can register and de-register the clock change notifier in the port probe
+> > and remove methods instead of having them called from the port
+> > startup/shutdown callbacks. But in order to do that we need to make sure
+> > that the serial8250_update_uartclk() method is safe to be used while the
+> > port is shutted down. Alas the current implementation doesn't provide that
+> > safety. The solution described above is introduced in the framework of
+> > this patchset. See individual patches for details.
+> > 
+> > Link: https://lore.kernel.org/linux-serial/f1cd5c75-9cda-6896-a4e2-42c5bfc3f5c3@redhat.com
+> > 
+> > Hans, could you test the patchset out on your Cherry Trail (x86)-based
+> > devices? After that we can merge it in into the kernels 5.8 and 5.9 if
+> > there is no objections against the fix.
 > 
+> Done, I can confirm that this fixes the lockdep issue for me, so you
+> can add my:
+> 
+> Tested-by: Hans de Goede <hdegoede@redhat.com>
 
-Build results:
-	total: 171 pass: 170 fail: 1
-Failed builds:
-	unicore32:allnoconfig
-Qemu test results:
-	total: 408 pass: 408 fail: 0
+Great! Thank you very much.
 
-The error is:
+Greg, could you merge the series in if you have no objection against the
+solution design? Seeing the bug has been introduced together with the
+original series integrated in the kernel 5.9, the fix provided by this
+patchset will be only needed in 5.9.
 
-/tmp/ccUSHFRj.s: Assembler messages:
-/tmp/ccUSHFRj.s:572: Error: invalid literal constant: pool needs to be closer
-make[2]: *** [mm/memory.o] Error 1
+-Sergey
 
-I didn't try to understand or track down the problem. I'll drop unicore32
-tests going forward.
-
-Tested-by: Guenter Roeck <linux@roeck-us.net>
-
-Guenter
+> 
+> To the entire series.
+> 
+> Regards,
+> 
+> Hans
+> 
