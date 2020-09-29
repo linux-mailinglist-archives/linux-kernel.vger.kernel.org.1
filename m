@@ -2,162 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3061927D15C
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 16:38:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FB9D27D149
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 16:35:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730820AbgI2Oi0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 10:38:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38408 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729038AbgI2Oi0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 10:38:26 -0400
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAB5BC061755
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 07:38:25 -0700 (PDT)
-Received: by mail-ot1-x341.google.com with SMTP id m12so4676214otr.0
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 07:38:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=zibFhjEW+WLnSL0ei2CrzONpzhgPG74isgsMjUmZmfw=;
-        b=iUhmU0GRhiOl+AeQuyPz21nFofYLKi0E9pXLJRGU33L4LmxpTcsA+UEe79zvUEJgPn
-         Y/0mJ+LZZHPLzUE3oZcEUQuJzkfeqx9ReRVXNtww6Io/Re6YG5Kq6ojfFJimi7s1wce9
-         cDER+doujAO1EigbshPz9ih4VAjR4TqPELu39f7a9S2km59gvoprMQa+62VUylz+eDiQ
-         YScXPCBLYQQ7llSYgNgtV937wGqE0eh20SDRpTmk0pcseweqRME2Q4JfEMsJ0dQ0/XuX
-         VZgzTQPfWXx400ShPrneFR61mJgHuWfTgwu7v+K9ycyyDtZQX8r3T0BNSNpZxlupcQ98
-         B5qg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=zibFhjEW+WLnSL0ei2CrzONpzhgPG74isgsMjUmZmfw=;
-        b=hhYCJHhugpksdwbU0ZZHm9tVtzCCZOomrKZGRoS27rXzn05DTjFFQrbv/8sS97VolE
-         Zf2O6gea6+4q9YzalOZDQP1PUbi04nH92SC0i83/IOt7BfbN2ahZ7eZwsIoxfSJ1AqBf
-         8njX2/PHMnkr+cX5bgRdSuzyMolso6isVF5j4uoibfCknvxFKjj1+i/d4Gg6XlS3yGT1
-         Sr5jNhprHtTTbv45FqBFbXV/7ihuJTir6SlvwOI8nfq69wHEIGYSLniuP2psGvl1JkKS
-         9jdkdM/9ubjtfVEzxMnAKAC+f1VDaDDzhN2GnnT1/TawEWUDTlnODCFUgd54iKdCUzEm
-         RTeg==
-X-Gm-Message-State: AOAM531GaagUEK93GSA+EFrXnrUDaw3PmaxyfuypMkn16GdmSlXPiewf
-        bmbE3Sc6yzLlKw+N5K/VwbtcVA==
-X-Google-Smtp-Source: ABdhPJwMpQcgBCj3FnEYTCgI8hLMNY6ggO/B/xnKVEsHnMugEnuYF7ONsaz1QGquIAohGZzPGat5Uw==
-X-Received: by 2002:a9d:32a1:: with SMTP id u30mr2957796otb.55.1601390305140;
-        Tue, 29 Sep 2020 07:38:25 -0700 (PDT)
-Received: from builder.lan (99-135-181-32.lightspeed.austtx.sbcglobal.net. [99.135.181.32])
-        by smtp.gmail.com with ESMTPSA id c25sm2978185oot.42.2020.09.29.07.38.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Sep 2020 07:38:24 -0700 (PDT)
-Date:   Tue, 29 Sep 2020 09:33:57 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Arnaud POULIQUEN <arnaud.pouliquen@st.com>
-Cc:     Rishabh Bhatnagar <rishabhb@codeaurora.org>,
-        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "tsoni@codeaurora.org" <tsoni@codeaurora.org>,
-        "psodagud@codeaurora.org" <psodagud@codeaurora.org>,
-        "sidgup@codeaurora.org" <sidgup@codeaurora.org>
-Subject: Re: [PATCH v6 0/3] Move recovery/coredump configuration to sysfs
-Message-ID: <20200929143357.GE10036@builder.lan>
-References: <1601331456-20432-1-git-send-email-rishabhb@codeaurora.org>
- <8222f5fa-2acc-a765-a728-6aad9ed88068@st.com>
+        id S1731002AbgI2Oe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 10:34:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44064 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729299AbgI2Oe6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 10:34:58 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CABEC20739;
+        Tue, 29 Sep 2020 14:34:56 +0000 (UTC)
+Date:   Tue, 29 Sep 2020 10:34:54 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>, x86 <x86@kernel.org>
+Subject: Re: [tip: core/rcu] rcu/tree: Mark the idle relevant functions
+ noinstr
+Message-ID: <20200929103454.03c29330@gandalf.local.home>
+In-Reply-To: <20200929112541.GM2628@hirez.programming.kicks-ass.net>
+References: <20200505134100.575356107@linutronix.de>
+        <158991795300.17951.11897222265664137612.tip-bot2@tip-bot2>
+        <20200929112541.GM2628@hirez.programming.kicks-ass.net>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8222f5fa-2acc-a765-a728-6aad9ed88068@st.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 29 Sep 03:44 CDT 2020, Arnaud POULIQUEN wrote:
+On Tue, 29 Sep 2020 13:25:41 +0200
+Peter Zijlstra <peterz@infradead.org> wrote:
 
+> On Tue, May 19, 2020 at 07:52:33PM -0000, tip-bot2 for Thomas Gleixner wrote:
+> > @@ -979,7 +988,7 @@ static void rcu_disable_urgency_upon_qs(struct rcu_data *rdp)
+> >   * if the current CPU is not in its idle loop or is in an interrupt or
+> >   * NMI handler, return true.
+> >   */
+> > -bool notrace rcu_is_watching(void)
+> > +bool rcu_is_watching(void)
+> >  {
+> >  	bool ret;
+> >    
 > 
+> This ^..
 > 
-> On 9/29/20 12:17 AM, Rishabh Bhatnagar wrote:
-> > From Android R onwards Google has restricted access to debugfs in user
-> > and user-debug builds. This restricts access to most of the features
-> > exposed through debugfs. 'Coredump' and 'Recovery' are critical
-> > interfaces that are required for remoteproc to work on Qualcomm Chipsets. 
-> > Coredump configuration needs to be set to "inline" in debug/test builds
-> > and "disabled" in production builds. Whereas recovery needs to be
-> > "disabled" for debugging purposes and "enabled" on production builds.
-> > This patch series removes the recovery/coredump entries from debugfs
-> > and moves them to sysfs. Also, this disables the coredump collection
-> > by default as this is a requirement for production devices.
-> > 
-> > Changelog:
-> > 
-> > v6 -> v5:
-> > - Disable coredump collection by default
-> > - Rename the "default" configuration to "enabled" to avoid confusion
-> > 
-> > v5 -> v4:
-> > - Fix the cover-letter of tha patch series.
-> > 
-> > v4 -> v3:
-> > - Remove the feature flag to expose recovery/coredump
-> > 
-> > v3 -> v2:
-> > - Remove the coredump/recovery entries from debugfs
+> it is required because __ftrace_ops_list_func() /
+> ftrace_ops_assist_func() call it outside of ftrace recursion, but only
+> when FL_RCU, and perf happens to be the only user of that.
 > 
-> Sorry i missed this and some associated discussion in V2...
-> 
-> I have also some concerns about the ABI breaks.
+> another morning wasted... :/
 
-Debugfs is not an ABI...
+Those are fun to debug. :-p (I'll use this in another email).
 
-> In ST and I suppose in several companies we have some 
-> test environments that use the debugfs to generate and/or get
-> the core dump.
-> 
+Anyway, you bring up a good point. I should have this:
 
-I do however acknowledge the inconvenience you're facing...
+diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
+index 84f32dbc7be8..2d76eaaad4a7 100644
+--- a/kernel/trace/ftrace.c
++++ b/kernel/trace/ftrace.c
+@@ -6993,16 +6993,14 @@ static void ftrace_ops_assist_func(unsigned long ip, unsigned long parent_ip,
+ {
+ 	int bit;
+ 
+-	if ((op->flags & FTRACE_OPS_FL_RCU) && !rcu_is_watching())
+-		return;
+-
+ 	bit = trace_test_and_set_recursion(TRACE_LIST_START, TRACE_LIST_MAX);
+ 	if (bit < 0)
+ 		return;
+ 
+ 	preempt_disable_notrace();
+ 
+-	op->func(ip, parent_ip, op, regs);
++	if (!(op->flags & FTRACE_OPS_FL_RCU) || rcu_is_watching())
++		op->func(ip, parent_ip, op, regs);
+ 
+ 	preempt_enable_notrace();
+ 	trace_clear_recursion(bit);
 
-> Even if the stability of the debugfs is not guaranteed it would
-> be nice to keep both interface.
-> 
-
-...and I wouldn't mind keeping the debugfs interface around, at least
-for some time to allow people to transition their tools/muscle memory.
-
-> It seems that it is possible to create symbolic link in the debugfs
-> thanks to the "debugfs_create_symlink" function.
-> This seems allowing to keep files in both place without duplicating the code.
-> To be honest i have never used this function so I'm not 100% sure that this
-> would do the job...
-> But if you think that this could be a good compromise, i can test it.
-> 
-
-The duplicated code is rather simple, so I don't mind the duplication -
-for now.
 
 
-So, how about we add the sysfs pieces of Rishabh's patches, leave out
-the debugfs and then in a while (e.g. one LTS) we remove the debugfs
-code?
-
-Regards,
-Bjorn
-
-> Regards,
-> Arnaud
-> 
-> > - Expose recovery/coredump from sysfs under a feature flag
-> > 
-> > v1 -> v2:
-> > - Correct the contact name in the sysfs documentation.
-> > - Remove the redundant write documentation for coredump/recovery sysfs
-> > - Add a feature flag to make this interface switch configurable.
-> > 
-> > Rishabh Bhatnagar (3):
-> >   remoteproc: Move coredump configuration to sysfs
-> >   remoteproc: Move recovery configuration to sysfs
-> >   remoteproc: Change default dump configuration to "disabled"
-> > 
-> >  Documentation/ABI/testing/sysfs-class-remoteproc |  46 +++++++
-> >  drivers/remoteproc/remoteproc_coredump.c         |   6 +-
-> >  drivers/remoteproc/remoteproc_debugfs.c          | 168 -----------------------
-> >  drivers/remoteproc/remoteproc_sysfs.c            | 120 ++++++++++++++++
-> >  include/linux/remoteproc.h                       |   8 +-
-> >  5 files changed, 173 insertions(+), 175 deletions(-)
-> > 
+-- Steve
