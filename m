@@ -2,192 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E6B127C1B7
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 11:52:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46A7E27C1C4
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 11:58:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728072AbgI2JwL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 05:52:11 -0400
-Received: from mga12.intel.com ([192.55.52.136]:14091 "EHLO mga12.intel.com"
+        id S1727691AbgI2J6M convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 29 Sep 2020 05:58:12 -0400
+Received: from mga01.intel.com ([192.55.52.88]:19760 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725355AbgI2JwL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 05:52:11 -0400
-IronPort-SDR: kTI21bfh+s1r/HjPKyOysAEZLKNpiNe7FBiAcQvLqqLR4keRnQVncMIqNe7hoEPDxb5809S0ub
- bKL5OpnXremQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9758"; a="141546390"
+        id S1725468AbgI2J6M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 05:58:12 -0400
+IronPort-SDR: 0ow8xLzmJtAfuvR3zUi4PRfdLrVg8NdMT/BtduVVQJ6qH3uWb6MvvYwZlLySnjSM/8QobpyNkx
+ lAdubrzb0y/g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9758"; a="180298121"
 X-IronPort-AV: E=Sophos;i="5.77,317,1596524400"; 
-   d="scan'208";a="141546390"
+   d="scan'208";a="180298121"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2020 01:12:53 -0700
-IronPort-SDR: oi9SrMvN7wHuiHJO8p/Ezpm4bh3joT/SfssgJvrvgiTP4oZXqqlatK/rxbreK+SKB/swrp+xC+
- NP/L/G5fgriw==
-X-ExtLoop1: 1
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2020 01:18:40 -0700
+IronPort-SDR: v8sk/OfXNv3tLbDFTwNKKIUDe3RcBDXzfM+1oKbAn5iWLXRTGxCFZ4gl7ewLphKsyFCcb66N2V
+ ec/iIRtf4cdQ==
 X-IronPort-AV: E=Sophos;i="5.77,317,1596524400"; 
-   d="scan'208";a="513769730"
-Received: from lkp-server02.sh.intel.com (HELO dda5aa0886d8) ([10.239.97.151])
-  by fmsmga006.fm.intel.com with ESMTP; 29 Sep 2020 01:12:51 -0700
-Received: from kbuild by dda5aa0886d8 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kNAkl-00004R-BN; Tue, 29 Sep 2020 08:12:51 +0000
-Date:   Tue, 29 Sep 2020 16:12:41 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [rcu:urezki-pcount.2020.09.28c] BUILD SUCCESS
- 71aa30d791cf3ca748f72dcb22fab9e0f70a246f
-Message-ID: <5f72ec79.AZq5SfjUllgSb16L%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+   d="scan'208";a="514592291"
+Received: from akoski1-mobl7.ger.corp.intel.com (HELO localhost) ([10.252.11.87])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2020 01:18:37 -0700
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <CAOMV6SUP1=U3bqO=+f_HrnTYpaLLwvZY4muCdW-ixQU2M10_WQ@mail.gmail.com>
+References: <CAOMV6SUP1=U3bqO=+f_HrnTYpaLLwvZY4muCdW-ixQU2M10_WQ@mail.gmail.com>
+To:     Tony Fischetti <tony.fischetti@gmail.com>, airlied@linux.ie,
+        jani.nikula@linux.intel.com, linux-kernel@vger.kernel.org,
+        peterx@redhat.com, rodrigo.vivi@intel.com,
+        chris@chris-wilson.co.uk, intel-gfx@lists.freedesktop.org
+From:   Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
+Subject: Re: REGRESSION: in intel video driver following introduction of mm_struct.has_pinned
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Message-ID: <160136751431.9258.5367116987368823201@jlahtine-mobl.ger.corp.intel.com>
+User-Agent: alot/0.8.1
+Date:   Tue, 29 Sep 2020 11:18:34 +0300
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  urezki-pcount.2020.09.28c
-branch HEAD: 71aa30d791cf3ca748f72dcb22fab9e0f70a246f  fixup! rcu/tree: Allocate a page when caller is preemptable
+(+ intel-gfx for being i915 related)
+(+ Chris who has looked into the issue)
 
-elapsed time: 824m
+Hi,
 
-configs tested: 128
-configs skipped: 2
+Thanks for reporting!
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Could you open a bug report according to following instructions:
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arc                     haps_hs_smp_defconfig
-m68k                          amiga_defconfig
-ia64                         bigsur_defconfig
-sh                             shx3_defconfig
-m68k                        stmark2_defconfig
-nios2                         3c120_defconfig
-powerpc                      arches_defconfig
-powerpc                      cm5200_defconfig
-sparc                       sparc32_defconfig
-arm                          badge4_defconfig
-powerpc                        cell_defconfig
-powerpc                     tqm8541_defconfig
-powerpc64                           defconfig
-csky                             alldefconfig
-riscv                          rv32_defconfig
-sh                          rsk7201_defconfig
-mips                        workpad_defconfig
-xtensa                       common_defconfig
-powerpc64                        alldefconfig
-arm                          lpd270_defconfig
-mips                         cobalt_defconfig
-arm                        multi_v7_defconfig
-powerpc                 mpc836x_rdk_defconfig
-arc                      axs103_smp_defconfig
-arm                              zx_defconfig
-arm                        mvebu_v5_defconfig
-c6x                        evmc6472_defconfig
-arm                  colibri_pxa300_defconfig
-powerpc                      ppc40x_defconfig
-arm                      integrator_defconfig
-arc                          axs103_defconfig
-mips                      malta_kvm_defconfig
-arm                         s5pv210_defconfig
-mips                       bmips_be_defconfig
-sh                           se7343_defconfig
-arm                           sunxi_defconfig
-m68k                          multi_defconfig
-arm                         cm_x300_defconfig
-powerpc                 xes_mpc85xx_defconfig
-sh                   secureedge5410_defconfig
-mips                  decstation_64_defconfig
-arm                         bcm2835_defconfig
-mips                           xway_defconfig
-ia64                            zx1_defconfig
-arm                          pxa910_defconfig
-sh                           se7750_defconfig
-arm                        cerfcube_defconfig
-arm                  colibri_pxa270_defconfig
-mips                      maltaaprp_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a005-20200928
-x86_64               randconfig-a003-20200928
-x86_64               randconfig-a004-20200928
-x86_64               randconfig-a002-20200928
-x86_64               randconfig-a006-20200928
-x86_64               randconfig-a001-20200928
-i386                 randconfig-a006-20200928
-i386                 randconfig-a002-20200928
-i386                 randconfig-a003-20200928
-i386                 randconfig-a004-20200928
-i386                 randconfig-a005-20200928
-i386                 randconfig-a001-20200928
-i386                 randconfig-a012-20200928
-i386                 randconfig-a016-20200928
-i386                 randconfig-a014-20200928
-i386                 randconfig-a013-20200928
-i386                 randconfig-a015-20200928
-i386                 randconfig-a011-20200928
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+https://gitlab.freedesktop.org/drm/intel/-/wikis/How-to-file-i915-bugs
 
-clang tested configs:
-x86_64               randconfig-a005-20200927
-x86_64               randconfig-a003-20200927
-x86_64               randconfig-a004-20200927
-x86_64               randconfig-a002-20200927
-x86_64               randconfig-a006-20200927
-x86_64               randconfig-a001-20200927
-x86_64               randconfig-a011-20200928
-x86_64               randconfig-a013-20200928
-x86_64               randconfig-a015-20200928
-x86_64               randconfig-a014-20200928
-x86_64               randconfig-a016-20200928
-x86_64               randconfig-a012-20200928
+A full dmesg of a bad boot and git bisect logs will be helpful.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Also, please describe when the problem happens, is it at boot? Are you
+getting the OOPS on every boot?
+
+For future reference, replying to a single thread helps keeping the
+attention focused.
+
+Regards, Joonas
+
+Quoting Tony Fischetti (2020-09-28 21:14:16)
+> After a length git bisection, I determined the commit that introduced
+> a change that ultimately caused a bug/oops null dereference (see below
+> for relevant syslog entries) was 008cfe4418b3dbda2ff.. (mm: Introduce
+> mm_struct.has_pinned)
+> 
+> The RIP (according to syslog) occurs in function
+> `__get_user_pages_remote` and the last function to call it from the
+> i915 code is `gem_userptr_get_pages_worker`
+> More specifically, it appears to be the call to
+> `pin_user_pages_remote` in `gem_userptr_get_pages_worker` in
+> drivers/gpu/drm/i915/gem/i915_gem_userptr.c that directly leads to the
+> oops.
+> 
+> Unfortunately, I don't know enough to try to fix and share the fix
+> myself, but I hope the information I provided is helpful. Please let
+> me know if there is any further information I can provide that might
+> be of use.
+> 
+> BUG: kernel NULL pointer dereference, address: 0000000000000054
+> #PF: supervisor write access in kernel mode
+> #PF: error_code(0x0002) - not-present page
+> Oops: 0002 [#1] PREEMPT SMP NOPTI
+> CPU: 8 PID: 497 Comm: kworker/u25:0 Not tainted
+> 5.9.0-rc7-alice-investigate-3+ #2
+> Hardware name: LENOVO 10ST001QUS/312A, BIOS M1UKT4BA 11/11/2019
+> Workqueue: i915-userptr-acquire __i915_gem_userptr_get_pages_worker [i915]
+> RIP: 0010:__get_user_pages_remote+0xa0/0x2d0
+> Code: 85 e7 01 00 00 83 3b 01 0f 85 e0 01 00 00 f7 c1 00 00 04 00 0f
+> 84 12 01 00 00 65 48 8b 04 25 00 6d 01 00 48 8b 80 58 03 00 00 <c7> 40
+> 54 01 00 00 00 c6 04 24 00 4d 8d 6f 68 48 c7 44 24 10 00 00
+> RSP: 0018:ffffa1a58086bde0 EFLAGS: 00010206
+> RAX: 0000000000000000 RBX: ffffa1a58086be64 RCX: 0000000000040001
+> RDX: 00000000000007e9 RSI: 00007f532f800000 RDI: ffff92f22d89c480
+> RBP: 00007f532f800000 R08: ffff92f23a188000 R09: 0000000000000000
+> R10: 0000000000000000 R11: ffffa1a58086bcfd R12: ffff92f23a188000
+> R13: ffff92f22d89c480 R14: 0000000000042003 R15: ffff92f22d89c480
+> FS:  0000000000000000(0000) GS:ffff92f23e400000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 0000000000000054 CR3: 0000000016c0a002 CR4: 00000000001706e0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>  __i915_gem_userptr_get_pages_worker+0x1ec/0x392 [i915]
+>  process_one_work+0x1c7/0x310
+>  worker_thread+0x28/0x3c0
+>  ? set_worker_desc+0xb0/0xb0
+>  kthread+0x123/0x140
+>  ? kthread_use_mm+0xe0/0xe0
+>  ret_from_fork+0x1f/0x30
+> Modules linked in: snd_hda_codec_hdmi snd_hda_codec_realtek
+> snd_hda_codec_generic ledtrig_audio iwlmvm mac80211 libarc4
+> x86_pkg_temp_thermal intel_powerclamp iwlwifi coretemp i915
+> crct10dif_pclmul crc32_pclmul crc32c_intel i2c_algo_bit
+> ghash_clmulni_intel drm_kms_helper syscopyarea sysfillrect sysimgblt
+> fb_sys_fops cec mei_hdcp wmi_bmof snd_hda_intel drm tpm_crb
+> snd_intel_dspcfg intel_wmi_thunderbolt snd_hda_codec snd_hwdep
+> aesni_intel crypto_simd glue_helper snd_hda_core cfg80211 i2c_i801
+> snd_pcm intel_cstate pcspkr snd_timer mei_me i2c_smbus mei i2c_core
+> thermal wmi tpm_tis tpm_tis_core tpm rng_core acpi_pad ppdev lp
+> ip_tables x_tables
+> CR2: 0000000000000054
+> ---[ end trace 8d080e8b96289c9e ]---
