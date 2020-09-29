@@ -2,104 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ABE927D49B
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 19:39:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A92EE27D49E
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 19:40:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729518AbgI2Rje (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 13:39:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33884 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725554AbgI2Rjd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 13:39:33 -0400
-Received: from localhost (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 795F32076A;
-        Tue, 29 Sep 2020 17:39:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601401172;
-        bh=3Q9bIE4KRAd2RN7bnCf2+tZORxbdZuhsPUXx+b2+McM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Oj4+d+/ZsAHArbDN58zR7nMq9nUyUiVAI2GcMw6FexUXT4msRXrG/Nb8rbg8V3JQV
-         pdHPG9CQAycWuWhULCHE52vbCR+oONa7rRf24cxjK1WXEYUuKVxE5Ap+IS918M8D7g
-         Gs/HA+a7NBLdIYgQVAGWt/TRMR31YXXrDb0RQFxE=
-Date:   Tue, 29 Sep 2020 13:39:31 -0400
-From:   Sasha Levin <sashal@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Raviteja Narayanam <raviteja.narayanam@xilinx.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux- stable <stable@vger.kernel.org>,
-        Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>,
-        linux-serial@vger.kernel.org,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        lkft-triage@lists.linaro.org
-Subject: Re: [PATCH AUTOSEL 4.9 64/90] serial: uartps: Wait for tx_empty in
- console setup
-Message-ID: <20200929173931.GC2415204@sasha-vm>
-References: <20200918021455.2067301-1-sashal@kernel.org>
- <20200918021455.2067301-64-sashal@kernel.org>
- <CA+G9fYuT_qF2sbmCV76C3B=KS7tSjo9XDkCLwm0A4ZBLJ_eBtw@mail.gmail.com>
- <CA+G9fYtRj=+KM0CJZjPnfCn6OHcW7iFAkE=ECKiz4uOOyq=B2Q@mail.gmail.com>
- <20200929065902.GD2439787@kroah.com>
+        id S1729567AbgI2Rkr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 13:40:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38286 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725554AbgI2Rkq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 13:40:46 -0400
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A86E2C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 10:40:46 -0700 (PDT)
+Received: by mail-il1-x141.google.com with SMTP id e5so2837182ils.10
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 10:40:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=P5s72Hf6M5ClxTjTHmlWEDSkkJVMo+6Qf2SmpOue9JI=;
+        b=Hx/cfu9Pj+cJsYmTc7JTnOpYFycF/dUkbQgiRmC6UKdqPmZ3zXU5bY8i3a7X7SMwVj
+         HM4ay3MfQoyrPOHVLEWMeQtEUGsGl0ROtJsmndmRzTyLq85EBk7rRP5OEq6+VwK66F4x
+         4BbvvIvz5cNOqbWnAFfVb43BngQij3Wxs2hAeKgBAJDsykg496GbeBkl476LxDW6oaly
+         lhVX92hui2oBXjs+ZcZt4mp7oGHokej4qWuZbGsxvVK/PG1ykW/rC2bK0QQO+5+762Fd
+         RzjjIoX7bJo2dXtojH+p4dD35fI/UdV9Uc2K6Uj37jbWi1+qkTI3Eiskb63QFl+RJhl0
+         9RzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=P5s72Hf6M5ClxTjTHmlWEDSkkJVMo+6Qf2SmpOue9JI=;
+        b=dUOG1GKFTQLjzHy9qkuo4zRHosrnrElUNdfuyp0UX/hvbmuRgarEVQZueOnwbXde6f
+         V7vxeEYp8GSggBlF9x5ISZz1ICDiRUmcr4jTNJ4Kc2lEBa0yWnk+b13r4m4kBXABbUCf
+         k2D6s9nDqKR4smDdYA8wdwR8Ggar38R5BWUHMbL6U7vLLMeL6KGQAfbWcwG/wychX6Da
+         FxSF7klJhKpt513JWR0mCNGJuodMHr96tpve40RY7G6YtT3lmgcSnooP3pn0lE0ajSeq
+         qg3NqjFp5jkzHBEVVJJJMbvkX8zqOdL5tjjeTH7tHlEcr+TI3NKaq0kG9ZOFCDDySGbe
+         gMhg==
+X-Gm-Message-State: AOAM532jCY/tQeQj6XlhWJi72wk5KYZsDt7WbEpbW+uZR7khS/JI4Wa2
+        WHzhbvqrbSrJ42BA/HSYfK7gM2wEqBYnKsmsWvo/ag==
+X-Google-Smtp-Source: ABdhPJxjPcf+NCE/Dzq0bpcTZChhxeRg6lrRMDM6ALhie/5Y42jWf2Fj7sT+bAbnzxcyaRgtla6ETmpdylcvXJaCGig=
+X-Received: by 2002:a92:9a82:: with SMTP id c2mr3929435ill.285.1601401245834;
+ Tue, 29 Sep 2020 10:40:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20200929065902.GD2439787@kroah.com>
+References: <20200925212302.3979661-1-bgardon@google.com> <425b098c-dbe0-d614-8e62-1f50b2f63272@redhat.com>
+In-Reply-To: <425b098c-dbe0-d614-8e62-1f50b2f63272@redhat.com>
+From:   Ben Gardon <bgardon@google.com>
+Date:   Tue, 29 Sep 2020 10:40:34 -0700
+Message-ID: <CANgfPd-zgP8GD+yOwZ1V-S=r9W92hFSEBpmjLzaqZDg=O20Hnw@mail.gmail.com>
+Subject: Re: [PATCH 00/22] Introduce the TDP MMU
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
+        Cannon Matthews <cannonmatthews@google.com>,
+        Peter Xu <peterx@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Peter Shier <pshier@google.com>,
+        Peter Feiner <pfeiner@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 08:59:02AM +0200, Greg Kroah-Hartman wrote:
->On Tue, Sep 29, 2020 at 01:43:22AM +0530, Naresh Kamboju wrote:
->> On Tue, 29 Sep 2020 at 01:41, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
->> >
->> > On Fri, 18 Sep 2020 at 07:55, Sasha Levin <sashal@kernel.org> wrote:
->> > >
->> > > From: Raviteja Narayanam <raviteja.narayanam@xilinx.com>
->> > >
->> > > [ Upstream commit 42e11948ddf68b9f799cad8c0ddeab0a39da33e8 ]
->> > >
->> > > On some platforms, the log is corrupted while console is being
->> > > registered. It is observed that when set_termios is called, there
->> > > are still some bytes in the FIFO to be transmitted.
->> > >
->> > > So, wait for tx_empty inside cdns_uart_console_setup before calling
->> > > set_termios.
->> > >
->> > > Signed-off-by: Raviteja Narayanam <raviteja.narayanam@xilinx.com>
->> > > Reviewed-by: Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>
->> > > Link: https://lore.kernel.org/r/1586413563-29125-2-git-send-email-raviteja.narayanam@xilinx.com
->> > > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->> > > Signed-off-by: Sasha Levin <sashal@kernel.org>
->> >
->> > stable rc 4.9 arm64 build broken.
->>
->> and stable rc 4.9 arm build broken.
+On Mon, Sep 28, 2020 at 10:31 AM Paolo Bonzini <pbonzini@redhat.com> wrote:
 >
->Thanks, I've queued up the dependant patch, somehow Sasha's builders
->must have missed this :)
+> On 25/09/20 23:22, Ben Gardon wrote:
+> > This series is the first of two. In this series we add a basic
+> > implementation of the TDP MMU. In the next series we will improve the
+> > performance of the TDP MMU and allow it to execute MMU operations
+> > in parallel.
+>
+> I have finished rebasing and adding a few cleanups on top, but I don't
+> have time to test it today.  I think the changes shouldn't get too much
+> in the way of the second series, but I've also pushed your v1 unmodified
+> to kvm/tdp-mmu for future convenience.  I'll await for your feedback in
+> the meanwhile!
 
-Because it doesn't fail here with an allmodconfig :(
+Awesome, thank you for the reviews and positive response! I'll get to
+work responding to your comments and preparing a v2.
 
-sasha@sasha-builder:~/data/linux$ git checkout queue-4.9
-HEAD is now at 77d58b1b4d54 kprobes: Fix to check probe enabled before disarm_kprobe_ftrace()
-sasha@sasha-builder:~/data/linux$ make ARCH=arm64 CROSS_COMPILE="/home/sasha/x-tools/aarch64-unknown-linux-android/bin/aarch64-unknown-linux-android-" allmodconfig
-scripts/kconfig/conf  --allmodconfig Kconfig
-#
-# configuration written to .config
-#
-sasha@sasha-builder:~/data/linux$ make ARCH=arm64 CROSS_COMPILE="/home/sasha/x-tools/aarch64-unknown-linux-gnu/bin/aarch64-unknown-linux-gnu-" drivers/tty/serial/xilinx_uartps.o
-   CHK     include/config/kernel.release
-   CHK     include/generated/uapi/linux/version.h
-   CHK     include/generated/utsrelease.h
-   CHK     include/generated/bounds.h
-   CHK     include/generated/timeconst.h
-   CHK     include/generated/asm-offsets.h
-   CALL    scripts/checksyscalls.sh
-   CHK     scripts/mod/devicetable-offsets.h
-   CC [M]  drivers/tty/serial/xilinx_uartps.o
+>
+> One feature that I noticed is missing is the shrinker.  What are your
+> plans (or opinions) around it?
 
--- 
-Thanks,
-Sasha
+I assume by the shrinker you mean the page table quota that controls
+how many pages the MMU can use at a time to back guest memory?
+I think the shrinker is less important for the TDP MMU as there is an
+implicit limit on how much memory it will use to back guest memory.
+You could set the limit smaller than the number of pages required to
+fully map the guest's memory, but I'm not really sure why you would
+want to in a practical scenario. I understand the quota's importance
+for x86 shadow paging and nested TDP scenarios where the guest could
+cause KVM to allocate an unbounded amount of memory for page tables,
+but the guest does not have this power in the non-nested TDP scenario.
+Really, I didn't include it in this series because we haven't needed
+it at Google and so I never implemented the quota enforcement. It
+shouldn't be difficult to implement if you think it's worth having,
+and it'll be needed to support nested on the TDP MMU (without using
+the shadow MMU) anyway. If you're okay with leaving it out of the
+initial patch set though, I'm inclined to do that.
+
+>
+> Also, the code generally assume a 64-bit CPU (i.e. that writes to 64-bit
+> PTEs are atomic).  That is not a big issue, it just needs a small change
+> on top to make the TDP MMU conditional on CONFIG_X86_64.
+
+Ah, that didn't occur to me. Thank you for pointing that out. I'll fix
+that oversight in v2.
+
+>
+> Thanks,
+>
+> Paolo
+>
