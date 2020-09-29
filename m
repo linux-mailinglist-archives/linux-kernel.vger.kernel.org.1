@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 194B327C425
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:11:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C9BB27C382
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:07:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728891AbgI2LLe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:11:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52010 "EHLO mail.kernel.org"
+        id S1728806AbgI2LGT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:06:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42398 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729197AbgI2LK4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:10:56 -0400
+        id S1728785AbgI2LFy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:05:54 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8EC05208FE;
-        Tue, 29 Sep 2020 11:10:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 59FFC206DB;
+        Tue, 29 Sep 2020 11:05:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601377855;
-        bh=upv3xnt3bWXiu6wKVob/j1pxoJ/5ELQvhiiDiyrMmdo=;
+        s=default; t=1601377553;
+        bh=oWexgkyQ5QqmqqfNAI66bcmREr4+IJ9zW+Zyy8Y73GU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=l1X4duriHItLEvtsjuW5ycl56KYJS/ltQ7rgh7vTEE+hT7h06aZLX3hUjcjt1bfj8
-         pNW9pgV1ZlPnsK+s+wbSzzk97GtV6ELcOfp7N1HI5uaXGyHuoQf6ep8Vc0TrrcY4y3
-         hXmJRQ6xwYREuKatO1/WvfO77LOmwTxSZwGyfRbM=
+        b=revYlZVFIPj404bbtxzIOoWYq7P/hs35ruZRtTBU4ZkozyALmKXfj0CqF+QUfMDL9
+         0kQQS6eSfVvojWLwtzdrOXED2K39XOi8DZpgN7sa94Jz/pGPHgR7iugQMz/7GJ1HTc
+         LawDlo32VO2+aLiCUUyT3HXdHpgF7YshLHgC5KH0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Ron Minnich <rminnich@google.com>,
-        Richard Weinberger <richard@nod.at>,
+        =?UTF-8?q?Linus=20L=C3=BCssing?= <ll@simonwunderlich.de>,
+        Sven Eckelmann <sven@narfation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 097/121] mtd: parser: cmdline: Support MTD names containing one or more colons
-Date:   Tue, 29 Sep 2020 13:00:41 +0200
-Message-Id: <20200929105934.983935666@linuxfoundation.org>
+Subject: [PATCH 4.4 75/85] batman-adv: bla: fix type misuse for backbone_gw hash indexing
+Date:   Tue, 29 Sep 2020 13:00:42 +0200
+Message-Id: <20200929105931.948044761@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929105930.172747117@linuxfoundation.org>
-References: <20200929105930.172747117@linuxfoundation.org>
+In-Reply-To: <20200929105928.198942536@linuxfoundation.org>
+References: <20200929105928.198942536@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,61 +44,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Boris Brezillon <boris.brezillon@collabora.com>
+From: Linus Lüssing <ll@simonwunderlich.de>
 
-[ Upstream commit eb13fa0227417e84aecc3bd9c029d376e33474d3 ]
+[ Upstream commit 097930e85f90f252c44dc0d084598265dd44ca48 ]
 
-Looks like some drivers define MTD names with a colon in it, thus
-making mtdpart= parsing impossible. Let's fix the parser to gracefully
-handle that case: the last ':' in a partition definition sequence is
-considered instead of the first one.
+It seems that due to a copy & paste error the void pointer
+in batadv_choose_backbone_gw() is cast to the wrong type.
 
-Signed-off-by: Boris Brezillon <boris.brezillon@collabora.com>
-Signed-off-by: Ron Minnich <rminnich@google.com>
-Tested-by: Ron Minnich <rminnich@google.com>
-Signed-off-by: Richard Weinberger <richard@nod.at>
+Fixing this by using "struct batadv_bla_backbone_gw" instead of "struct
+batadv_bla_claim" which better matches the caller's side.
+
+For now it seems that we were lucky because the two structs both have
+their orig/vid and addr/vid in the beginning. However I stumbled over
+this issue when I was trying to add some debug variables in front of
+"orig" in batadv_backbone_gw, which caused hash lookups to fail.
+
+Fixes: 07568d0369f9 ("batman-adv: don't rely on positions in struct for hashing")
+Signed-off-by: Linus Lüssing <ll@simonwunderlich.de>
+Signed-off-by: Sven Eckelmann <sven@narfation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mtd/cmdlinepart.c | 23 ++++++++++++++++++++---
- 1 file changed, 20 insertions(+), 3 deletions(-)
+ net/batman-adv/bridge_loop_avoidance.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/mtd/cmdlinepart.c b/drivers/mtd/cmdlinepart.c
-index fbd5affc0acfe..04fd845de05fb 100644
---- a/drivers/mtd/cmdlinepart.c
-+++ b/drivers/mtd/cmdlinepart.c
-@@ -228,12 +228,29 @@ static int mtdpart_setup_real(char *s)
- 		struct cmdline_mtd_partition *this_mtd;
- 		struct mtd_partition *parts;
- 		int mtd_id_len, num_parts;
--		char *p, *mtd_id;
-+		char *p, *mtd_id, *semicol;
-+
-+		/*
-+		 * Replace the first ';' by a NULL char so strrchr can work
-+		 * properly.
-+		 */
-+		semicol = strchr(s, ';');
-+		if (semicol)
-+			*semicol = '\0';
+diff --git a/net/batman-adv/bridge_loop_avoidance.c b/net/batman-adv/bridge_loop_avoidance.c
+index 9aa5daa551273..1267cbb1a329a 100644
+--- a/net/batman-adv/bridge_loop_avoidance.c
++++ b/net/batman-adv/bridge_loop_avoidance.c
+@@ -73,11 +73,12 @@ static inline u32 batadv_choose_claim(const void *data, u32 size)
+ /* return the index of the backbone gateway */
+ static inline u32 batadv_choose_backbone_gw(const void *data, u32 size)
+ {
+-	const struct batadv_bla_claim *claim = (struct batadv_bla_claim *)data;
++	const struct batadv_bla_backbone_gw *gw;
+ 	u32 hash = 0;
  
- 		mtd_id = s;
+-	hash = jhash(&claim->addr, sizeof(claim->addr), hash);
+-	hash = jhash(&claim->vid, sizeof(claim->vid), hash);
++	gw = (struct batadv_bla_backbone_gw *)data;
++	hash = jhash(&gw->orig, sizeof(gw->orig), hash);
++	hash = jhash(&gw->vid, sizeof(gw->vid), hash);
  
--		/* fetch <mtd-id> */
--		p = strchr(s, ':');
-+		/*
-+		 * fetch <mtd-id>. We use strrchr to ignore all ':' that could
-+		 * be present in the MTD name, only the last one is interpreted
-+		 * as an <mtd-id>/<part-definition> separator.
-+		 */
-+		p = strrchr(s, ':');
-+
-+		/* Restore the ';' now. */
-+		if (semicol)
-+			*semicol = ';';
-+
- 		if (!p) {
- 			pr_err("no mtd-id\n");
- 			return -EINVAL;
+ 	return hash % size;
+ }
 -- 
 2.25.1
 
