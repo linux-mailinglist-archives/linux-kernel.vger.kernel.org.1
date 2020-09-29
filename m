@@ -2,113 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9BBE27D7CB
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 22:13:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB8D027D7C9
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 22:13:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729061AbgI2UNd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 16:13:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33766 "EHLO
+        id S1729008AbgI2UN2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 16:13:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725372AbgI2UNb (ORCPT
+        with ESMTP id S1725372AbgI2UN2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 16:13:31 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D164C061755;
-        Tue, 29 Sep 2020 13:13:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=VetbJwcz0VNdIFVz9bDquQz2/ocvbi7sDHTKjwhn2Ok=; b=oJ/mbaWPjH3HiEvlKlB/S35Yal
-        3qKIXH3Uqtw5+zbECOw1RNNvCJAxrKJ5INRdfyu49e5VWecxkPOmJd7dnEC6448hL4AlEJ3Tc84bd
-        euL/xd2mT34xFU9BifEcP4oFHsD5PONKvTdjQiW3LF+85qrQM1Qfos3bPzJ8UkJLjp5fgaVuNisQ9
-        OVPFFnhiRLyuPqcyirdsK8LbgHq3Hs5Q+J/qyAEfiFLLwDdJHeIvHXQyzt2F0IKse1HmMhcroA9VY
-        xfbGagYuwYhwenlxBRL+xq4IEzodRLsYZFbd324lv+6iOrf0VZMoOU/dbeFtITJ6WRQUWhnZz+G9e
-        7mCJ6CMA==;
-Received: from [2601:1c0:6280:3f0::19c2]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kNM08-0000jV-JT; Tue, 29 Sep 2020 20:13:29 +0000
-Subject: Re: [PATCH] ACPI / NUMA: Add stub function for pxm_to_node
-To:     Nathan Chancellor <natechancellor@gmail.com>,
-        Robert Moore <robert.moore@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Len Brown <lenb@kernel.org>
-Cc:     Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        linux-acpi@vger.kernel.org, devel@acpica.org,
-        linux-kernel@vger.kernel.org
-References: <20200928194554.3423466-1-natechancellor@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <c313dcd3-7fab-00eb-15f2-65a3a51f7bd5@infradead.org>
-Date:   Tue, 29 Sep 2020 13:13:24 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Tue, 29 Sep 2020 16:13:28 -0400
+Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC411C061755;
+        Tue, 29 Sep 2020 13:13:27 -0700 (PDT)
+Received: by mail-qv1-xf42.google.com with SMTP id f11so2981060qvw.3;
+        Tue, 29 Sep 2020 13:13:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=2yE8tLnNFogNu2DcQZ3zwF/fyfjhAGFtUaRsrh9630g=;
+        b=BIudEvYyd7e1T8YFoEmamwmrXDhkLwQJxr4BDM05kapleUxs0tthYqNKmZe2im7Fg4
+         hqZobpyIYcoNoi3aCrfE9xsIeVuG/nvtg60WkfSsIhiRxHrauZ3/kmFbm8zve6GAcLRe
+         NfPPDG/F5nIBaBWcpAoNs9Jaj8p9OChDC+IfpR4TL4tn+jumhOdG7+L1+xhuEToq/p4I
+         1c83r3GUGkjfpccGMNvxMABHMlq11fnH7DTbqKu69VJYdr9qG7GPD4PBLoIwQsmBOzav
+         2SleYCY84l6fOPHP/XSRrHvvp4HhF0vSRGfPia6ybKVH5Cu9JEWVe/Bs1a6UmF6+EWmt
+         zg5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=2yE8tLnNFogNu2DcQZ3zwF/fyfjhAGFtUaRsrh9630g=;
+        b=FJ9IbHRFnmVtzZ3XKotQok3lGZCG+hiA0tHcASWFGYtpT2ucOot6d3IcgLnNkWeY5E
+         ea3NUOQjgluFfd72AThUBtM5+lXVIrBeAJo34e1/0GKeIJzX3z4ADAa0bnvWz4HnZGcI
+         NS7N7clIkiRXfKtLpMKo2Fl5picCyhk3cFD2LOtRNEMNAlZiU02IumUtPrnOzRTAKn52
+         TqPO89Zg5Kxc6QIS87e3fKAOgjd+s7l3Wd0WLYVHS09Hgf5PQfHmLD2aadCTQCRPFHIn
+         czDIcvihkc2IBgWUIfWkCKLDUhSUfBuPbytMdJm54hBbVMvpqWMKUPIt7tPfimrSB+Gf
+         hN9Q==
+X-Gm-Message-State: AOAM5309gBiKzCrSabdzbICOGeVx7EZgmvJ+p1/1+FFEi72B/MuBNc1C
+        HyXFMoNn+O+txfx60IIqxotFrOz9XxoQFA==
+X-Google-Smtp-Source: ABdhPJyzo/sh8biAN7ip8oRKWAQiwRLTYpJG2Fyd/mCxZt16Q4VCaIYRuBYqFS+C0odiRwqn2364UA==
+X-Received: by 2002:a0c:d443:: with SMTP id r3mr6364147qvh.17.1601410406562;
+        Tue, 29 Sep 2020 13:13:26 -0700 (PDT)
+Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
+        by smtp.gmail.com with ESMTPSA id c40sm7012393qtb.72.2020.09.29.13.13.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Sep 2020 13:13:26 -0700 (PDT)
+Sender: Arvind Sankar <niveditas98@gmail.com>
+From:   Arvind Sankar <nivedita@alum.mit.edu>
+X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
+Date:   Tue, 29 Sep 2020 16:13:24 -0400
+To:     Arvind Sankar <nivedita@alum.mit.edu>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        linux-sparse@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: Re: [PATCH] compiler.h: avoid escaped section names
+Message-ID: <20200929201324.GB2668747@rani.riverdale.lan>
+References: <20200929194318.548707-1-ndesaulniers@google.com>
+ <20200929200801.GA2668747@rani.riverdale.lan>
 MIME-Version: 1.0
-In-Reply-To: <20200928194554.3423466-1-natechancellor@gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Disposition: inline
+In-Reply-To: <20200929200801.GA2668747@rani.riverdale.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/28/20 12:45 PM, Nathan Chancellor wrote:
-> After commit 01feba590cd6 ("ACPI: Do not create new NUMA domains from
-> ACPI static tables that are not SRAT"):
+On Tue, Sep 29, 2020 at 04:08:01PM -0400, Arvind Sankar wrote:
+> On Tue, Sep 29, 2020 at 12:43:18PM -0700, Nick Desaulniers wrote:
+> > The stringification operator, `#`, in the preprocessor escapes strings.
+> > For example, `# "foo"` becomes `"\"foo\""`.  GCC and Clang differ in how
+> > they treat section names that contain \".
+> > 
+> > The portable solution is to not use a string literal with the
+> > preprocessor stringification operator.
+> > 
+> > In this case, since __section unconditionally uses the stringification
+> > operator, we actually want the more verbose
+> > __attribute__((__section__())).
+> > 
+> > Link: https://bugs.llvm.org/show_bug.cgi?id=42950
+> > Fixes: commit e04462fb82f8 ("Compiler Attributes: remove uses of __attribute__ from compiler.h")
+> > Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+> > ---
+> >  include/linux/compiler.h | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/include/linux/compiler.h b/include/linux/compiler.h
+> > index 92ef163a7479..ac45f6d40d39 100644
+> > --- a/include/linux/compiler.h
+> > +++ b/include/linux/compiler.h
+> > @@ -155,7 +155,7 @@ void ftrace_likely_update(struct ftrace_likely_data *f, int val,
+> >  	extern typeof(sym) sym;					\
+> >  	static const unsigned long __kentry_##sym		\
+> >  	__used							\
+> > -	__section("___kentry" "+" #sym )			\
+> > +	__attribute__((__section__("___kentry+" #sym)))		\
+> >  	= (unsigned long)&sym;
+> >  #endif
+> >  
+> > -- 
+> > 2.28.0.709.gb0816b6eb0-goog
+> > 
 > 
-> $ scripts/config --file arch/x86/configs/x86_64_defconfig -d NUMA -e ACPI_NFIT
+> There was this previous mini-thread:
+> https://lore.kernel.org/lkml/20200629205448.GA1474367@rani.riverdale.lan/
+> and this older one:
+> https://lore.kernel.org/lkml/20190904181740.GA19688@gmail.com/
 > 
-> $ make -skj"$(nproc)" distclean defconfig drivers/acpi/nfit/
-> drivers/acpi/nfit/core.c: In function ‘acpi_nfit_register_region’:
-> drivers/acpi/nfit/core.c:3010:27: error: implicit declaration of
-> function ‘pxm_to_node’; did you mean ‘xa_to_node’?
-> [-Werror=implicit-function-declaration]
->  3010 |   ndr_desc->target_node = pxm_to_node(spa->proximity_domain);
->       |                           ^~~~~~~~~~~
->       |                           xa_to_node
-> cc1: some warnings being treated as errors
-> ...
+> Just for my own curiosity: how does KENTRY actually get used? grep
+> doesn't show any hits, and the thread from 2019 was actually going to
+> drop it if I read it right, and also just remove stringification from
+> the __section macro.
 > 
-> Add a stub function like acpi_map_pxm_to_node had so that the build
-> continues to work.
+> There are still other instances that need to be fixed, right?
 > 
-> Fixes: 01feba590cd6 ("ACPI: Do not create new NUMA domains from ACPI static tables that are not SRAT")
-> Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
-> ---
-> 
-> I am not sure if this is the right place or value for this. It looks
-> like there is going to be another stub function added here, which is
-> going through -mm:
-> 
-> https://lkml.kernel.org/r/159643094925.4062302.14979872973043772305.stgit@dwillia2-desk3.amr.corp.intel.com
-> 
->  include/acpi/acpi_numa.h | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
-> diff --git a/include/acpi/acpi_numa.h b/include/acpi/acpi_numa.h
-> index fdebcfc6c8df..09eb3bc20ff5 100644
-> --- a/include/acpi/acpi_numa.h
-> +++ b/include/acpi/acpi_numa.h
-> @@ -22,5 +22,10 @@ extern int acpi_numa __initdata;
->  extern void bad_srat(void);
->  extern int srat_disabled(void);
->  
-> +#else				/* CONFIG_ACPI_NUMA */
-> +static inline int pxm_to_node(int pxm)
-> +{
-> +	return 0;
-> +}
->  #endif				/* CONFIG_ACPI_NUMA */
->  #endif				/* __ACP_NUMA_H */
-> 
-> base-commit: eb6335b68ce3fc85a93c4c6cd3bb6bc5ac490efe
+> Thanks.
 
-OK, that works/builds. It doesn't quite apply cleanly to linux-next-20200929
-but that's a minor detail and easy to get around.
-
-Thanks.
-
-Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
-
--- 
-~Randy
+Ignore the last question, I see you have separate patches for the rest.
