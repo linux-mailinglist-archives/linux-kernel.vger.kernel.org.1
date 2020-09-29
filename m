@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2605F27C8E5
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:06:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E0FA27C852
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:01:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730377AbgI2MFg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 08:05:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50310 "EHLO mail.kernel.org"
+        id S1729259AbgI2MBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 08:01:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36572 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730269AbgI2Lhi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:37:38 -0400
+        id S1728366AbgI2Lkt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:40:49 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ACF702074A;
-        Tue, 29 Sep 2020 11:37:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CD83123A5A;
+        Tue, 29 Sep 2020 11:23:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601379450;
-        bh=mQG+ER7t6O6YlEQAv1Ijbqu6u1XNyaxYMTu5QO3wwfw=;
+        s=default; t=1601378619;
+        bh=lZ+pWyGp/OxMLaBEKo2kh4hSw1enmeJ7BX5vwLBy3xA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KlCLfsa6NVd72KH9Gus9avX0BKHYGMT466dV6B56fWGHQBmyaUw+5iGOj8BK+H02P
-         G3BC8smMdpBSjc4d4fdjOuegeGK4QutMd5UKOZZxHzbTXLvAtkkNSLe9K3/tIbfl8C
-         bF9sN4iZZXWbmRNNpmLZUidx/lgKUnp3UU40KUCA=
+        b=qNzbfL0lRaXPSEV8dv4cp7NuWBiKZVqfPEaGpyYkvxnZ8Tnugu3JXocKv+cwJdr2L
+         Q1gcUsCRgt2ShA4iaSbLzpJ5ERPukZSYD20M8K3Eiu64xiIlyOe7/iZpkL0WBf94Rl
+         gDeSx3IHjM+Y6/ZqTlUTET7lr1Ngxs9xrAA3Ra+4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        stable@vger.kernel.org, Vasily Averin <vvs@virtuozzo.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 169/388] rtc: sa1100: fix possible race condition
+Subject: [PATCH 4.19 049/245] ipv6_route_seq_next should increase position index
 Date:   Tue, 29 Sep 2020 12:58:20 +0200
-Message-Id: <20200929110018.662445756@linuxfoundation.org>
+Message-Id: <20200929105949.386278964@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929110010.467764689@linuxfoundation.org>
-References: <20200929110010.467764689@linuxfoundation.org>
+In-Reply-To: <20200929105946.978650816@linuxfoundation.org>
+References: <20200929105946.978650816@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,69 +43,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexandre Belloni <alexandre.belloni@bootlin.com>
+From: Vasily Averin <vvs@virtuozzo.com>
 
-[ Upstream commit f2997775b111c6d660c32a18d5d44d37cb7361b1 ]
+[ Upstream commit 4fc427e0515811250647d44de38d87d7b0e0790f ]
 
-Both RTC IRQs are requested before the struct rtc_device is allocated,
-this may lead to a NULL pointer dereference in the IRQ handler.
+if seq_file .next fuction does not change position index,
+read after some lseek can generate unexpected output.
 
-To fix this issue, allocating the rtc_device struct before requesting
-the IRQs using devm_rtc_allocate_device, and use rtc_register_device
-to register the RTC device.
-
-Link: https://lore.kernel.org/r/20200306010146.39762-1-alexandre.belloni@bootlin.com
-Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+https://bugzilla.kernel.org/show_bug.cgi?id=206283
+Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/rtc/rtc-sa1100.c | 18 ++++++++++--------
- 1 file changed, 10 insertions(+), 8 deletions(-)
+ net/ipv6/ip6_fib.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/rtc/rtc-sa1100.c b/drivers/rtc/rtc-sa1100.c
-index 86fa723b3b762..795273269d58e 100644
---- a/drivers/rtc/rtc-sa1100.c
-+++ b/drivers/rtc/rtc-sa1100.c
-@@ -182,7 +182,6 @@ static const struct rtc_class_ops sa1100_rtc_ops = {
+diff --git a/net/ipv6/ip6_fib.c b/net/ipv6/ip6_fib.c
+index 05a206202e23d..b924941b96a31 100644
+--- a/net/ipv6/ip6_fib.c
++++ b/net/ipv6/ip6_fib.c
+@@ -2377,14 +2377,13 @@ static void *ipv6_route_seq_next(struct seq_file *seq, void *v, loff_t *pos)
+ 	struct net *net = seq_file_net(seq);
+ 	struct ipv6_route_iter *iter = seq->private;
  
- int sa1100_rtc_init(struct platform_device *pdev, struct sa1100_rtc *info)
- {
--	struct rtc_device *rtc;
- 	int ret;
++	++(*pos);
+ 	if (!v)
+ 		goto iter_table;
  
- 	spin_lock_init(&info->lock);
-@@ -211,15 +210,14 @@ int sa1100_rtc_init(struct platform_device *pdev, struct sa1100_rtc *info)
- 		writel_relaxed(0, info->rcnr);
- 	}
+ 	n = rcu_dereference_bh(((struct fib6_info *)v)->fib6_next);
+-	if (n) {
+-		++*pos;
++	if (n)
+ 		return n;
+-	}
  
--	rtc = devm_rtc_device_register(&pdev->dev, pdev->name, &sa1100_rtc_ops,
--					THIS_MODULE);
--	if (IS_ERR(rtc)) {
-+	info->rtc->ops = &sa1100_rtc_ops;
-+	info->rtc->max_user_freq = RTC_FREQ;
-+
-+	ret = rtc_register_device(info->rtc);
-+	if (ret) {
- 		clk_disable_unprepare(info->clk);
--		return PTR_ERR(rtc);
-+		return ret;
- 	}
--	info->rtc = rtc;
--
--	rtc->max_user_freq = RTC_FREQ;
- 
- 	/* Fix for a nasty initialization problem the in SA11xx RTSR register.
- 	 * See also the comments in sa1100_rtc_interrupt().
-@@ -268,6 +266,10 @@ static int sa1100_rtc_probe(struct platform_device *pdev)
- 	info->irq_1hz = irq_1hz;
- 	info->irq_alarm = irq_alarm;
- 
-+	info->rtc = devm_rtc_allocate_device(&pdev->dev);
-+	if (IS_ERR(info->rtc))
-+		return PTR_ERR(info->rtc);
-+
- 	ret = devm_request_irq(&pdev->dev, irq_1hz, sa1100_rtc_interrupt, 0,
- 			       "rtc 1Hz", &pdev->dev);
- 	if (ret) {
+ iter_table:
+ 	ipv6_route_check_sernum(iter);
+@@ -2392,8 +2391,6 @@ iter_table:
+ 	r = fib6_walk_continue(&iter->w);
+ 	spin_unlock_bh(&iter->tbl->tb6_lock);
+ 	if (r > 0) {
+-		if (v)
+-			++*pos;
+ 		return iter->w.leaf;
+ 	} else if (r < 0) {
+ 		fib6_walker_unlink(net, &iter->w);
 -- 
 2.25.1
 
