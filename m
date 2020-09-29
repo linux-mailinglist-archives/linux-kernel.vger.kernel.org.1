@@ -2,105 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 035F127D666
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 21:07:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49E6427D66C
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 21:08:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728343AbgI2THU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 15:07:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51732 "EHLO
+        id S1728537AbgI2TIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 15:08:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727740AbgI2THT (ORCPT
+        with ESMTP id S1728284AbgI2TIS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 15:07:19 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA7FCC061755
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 12:07:19 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id z40so5854364ybi.3
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 12:07:19 -0700 (PDT)
+        Tue, 29 Sep 2020 15:08:18 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4AC9C0613D0
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 12:08:18 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id n10so4511579qtv.3
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 12:08:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=kK71kCSNGJVaDe2pNd17eTqrSe4R+0MFugjIL4jzDFc=;
-        b=PfsZalFhEeBQpiATmlrk+FX19iTeTafrV6ltkUFI1L81IdRa3RE5BQxWSIu1MC9LGu
-         At+oUMALCekjXOZdxE7QjZm9osZl6Bvt/Ec6HQwLSMvPKIMa0W3A1hIyHf2O03QcpOsu
-         mPpIzo6bE1e9k1Pu2EpWJXZQtEWR0JXr/8YxSEPpCQRXIxVwnsQ7y1ZolUvb6fU9Kxxd
-         ZTGv6E3a/FiaB1jzEhtKI5BiOazL7bMK/Ew7EQ/z3wMS+b+6vIZFtUO7/dXf+aD0W3EG
-         UMD6cz2QzOBvjM9zP/aTFx8TrHrZgq3y0BAQ3JuaCk+VIPEf5di6QGR+HltkTNOfLLn7
-         eF9w==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ubN7nDZwcIPlTTYHe5FaCTt3Iw6Y7lTVBnmXQgBCqO4=;
+        b=dJuYu1b4GUdaRAFl3BrJoBgZhhuqb3ew4gTbyPaC+SO4QId0/YLmHm+BWdFQNUTHCN
+         L9NQY1+GFtFJqHEKvGnFkC2Dy4IPF5CnhPdGd1fJszGf2ZEQyJm499vH4e8pQEkhZkNe
+         2DA5AGCGBIVaHfJ2KSjtfpAdAoDFhc7KfUehLdrNdZNzp7zM6DG9gKPeZLSAAyv8mDVl
+         6LjPHZfWBe23kDrmbBzukp9kCLteTNknBCHhp/K2k8vAvDlmvu6tVwUL2Z8h3CQsuLPu
+         oVz7EFQEHFCPwkbdjkjpRbqYdjNZc9ospOvLohv3eVaMAiEhwk52DkB8bYh1WLBukhsM
+         YDGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=kK71kCSNGJVaDe2pNd17eTqrSe4R+0MFugjIL4jzDFc=;
-        b=kCLmyRkeTjsXA2kir7hi5Ob9H8lXISP6mDPFdj6jcfGOcMUiMQJKdChlXRUwychvdN
-         kRt2pfjvxNh/1/od1nD3cAe5BgnN8Lexvs30kPiPQZVcUHE0hixU6pD8PisYukYtdDrA
-         4lcxrL8MM8yl6l4ToOdFvKd6CeSOT+MIV47JNOUMxHuERFMBsp/qEM/YcyXD6wFP71IO
-         SSOG6WcVyqJc6X159fHni97BQmMd5kF9kZ7tm8zPZGbARQF6qSzsbIsHrjsQ1J3Vephq
-         +nLnIULyTxzaoh6nQwveuy+BgatXzODGN2t0lN1O0Lh2Mf7aWjaCDGZETZo6o7JAypmD
-         46PA==
-X-Gm-Message-State: AOAM530W4wzrnvXnDnjSE1wox8OoB4P+u2wUqfO9jDCuaW1qFK0KPFIz
-        /FXXY4meYvA7muAikySrvH04PbBMcuaYGZ8+X5E=
-X-Google-Smtp-Source: ABdhPJw31sfhQW0vMWLByBsMSjvUhsNEts7FFT3qqiTNiPW2cZz9iOfXZOfOS7C5ctLXlN0Juf/BuXQ2cnpyoFtBRuk=
-Sender: "ndesaulniers via sendgmr" 
-        <ndesaulniers@ndesaulniers1.mtv.corp.google.com>
-X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:f693:9fff:fef4:4d25])
- (user=ndesaulniers job=sendgmr) by 2002:a25:ba4f:: with SMTP id
- z15mr8385000ybj.408.1601406438780; Tue, 29 Sep 2020 12:07:18 -0700 (PDT)
-Date:   Tue, 29 Sep 2020 12:07:00 -0700
-Message-Id: <20200929190701.398762-1-ndesaulniers@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.28.0.709.gb0816b6eb0-goog
-Subject: [PATCH] export.h: fix section name for CONFIG_TRIM_UNUSED_KSYMS for Clang
-From:   Nick Desaulniers <ndesaulniers@google.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        kbuild test robot <lkp@intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Matthias Maennich <maennich@google.com>,
-        Jessica Yu <jeyu@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ubN7nDZwcIPlTTYHe5FaCTt3Iw6Y7lTVBnmXQgBCqO4=;
+        b=VLIjVy02y8FkQU/NortY6JhcLWBpBm5Q8YBzB1+R49oSavm4T7sVVUxxb5BVhG+dmY
+         k+EV+RXO+A4hu/K2g7K7hnOF2lglXnofzjlvWFQcQpfOCaAJWk3uXz/3ahz0MYNOqTkZ
+         tW6ITM9JfU3rOg0Jghu+dbmkT7Z3D74dpPBPaqyCMmRj7S7aEPn2mrsdJnTweBXpk8Te
+         8tVXLWRv2YvIrCDkVoCSCu9kLZn8W0aX2xD9Dh1nU9xTUZhO70DvrtdisUKWaw/Yg5zB
+         DLoaO0M+61XdblGaUQWqAGMNIc9PP4QN6kTS2KA372TqWQpwGd0RDmN4tvnQws5Bi+oP
+         /PmA==
+X-Gm-Message-State: AOAM530DWI/OGhJUo3xPe3ygV6XoXQiMyjNp382+6y5Rssgqf7s/nU7N
+        4BHCrWYmXWiXWSo652mQ9NXTnQ==
+X-Google-Smtp-Source: ABdhPJycYyIQXPXHmrimJcfRCfX8unjWqtXljPgcHzqOrxl8KM8vlavGzhbBfP33+3I4oV8FDS/vHA==
+X-Received: by 2002:ac8:1763:: with SMTP id u32mr4951171qtk.14.1601406497766;
+        Tue, 29 Sep 2020 12:08:17 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id t20sm5804267qke.79.2020.09.29.12.08.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Sep 2020 12:08:17 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kNKz2-003Exd-Hx; Tue, 29 Sep 2020 16:08:16 -0300
+Date:   Tue, 29 Sep 2020 16:08:16 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
+        Ralph Campbell <rcampbell@nvidia.com>,
+        Shuah Khan <shuah@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-s390@vger.kernel.org
+Subject: Re: [PATCH 2/8] selftests/vm: use a common gup_test.h
+Message-ID: <20200929190816.GY9916@ziepe.ca>
+References: <20200928062159.923212-1-jhubbard@nvidia.com>
+ <20200928062159.923212-3-jhubbard@nvidia.com>
+ <20200928125739.GP9916@ziepe.ca>
+ <6481e78f-c70d-133a-ff4a-325b5cd8fd5d@nvidia.com>
+ <20200929163507.GV9916@ziepe.ca>
+ <aab477bf-4353-5e6b-4cc9-9872c9376ed2@nvidia.com>
+ <20200929175524.GX9916@ziepe.ca>
+ <715c49ec-d2a8-45cb-8ace-c6b1b4b8f978@nvidia.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <715c49ec-d2a8-45cb-8ace-c6b1b4b8f978@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When enabling CONFIG_TRIM_UNUSED_KSYMS, the linker will warn about the
-orphan sections:
-(".discard.ksym") is being placed in '".discard.ksym"'
-repeatedly when linking vmlinux. This is because the stringification
-operator, `#`, in the preprocessor escapes strings.  GCC and Clang
-differ in how they treat section names that contain \".
+On Tue, Sep 29, 2020 at 11:59:55AM -0700, John Hubbard wrote:
+> On 9/29/20 10:55 AM, Jason Gunthorpe wrote:
+> > On Tue, Sep 29, 2020 at 10:44:31AM -0700, John Hubbard wrote:
+> > > On 9/29/20 9:35 AM, Jason Gunthorpe wrote:
+> > > > On Mon, Sep 28, 2020 at 01:10:24PM -0700, John Hubbard wrote:
+> > > > > On 9/28/20 5:57 AM, Jason Gunthorpe wrote:
+> > > > > > On Sun, Sep 27, 2020 at 11:21:53PM -0700, John Hubbard wrote:
+> ...
+> > > I don't see any "gcc -m" type of dependency generation pass happening
+> > > in this relatively simple Make system.
+> > 
+> > It happens with -MD, all the deps are stored in files like mm/.init-mm.o.cmd
+> > and sucked into the build.
+> 
+> You are thinking of kbuild. This is not kbuild. There are no such artifacts
+> being generated.
 
-The portable solution is to not use a string literal with the
-preprocessor stringification operator.
+Oh. Really? That's horrible.
 
-Link: https://bugs.llvm.org/show_bug.cgi?id=42950
-Link: https://github.com/ClangBuiltLinux/linux/issues/1166
-Fixes: commit bbda5ec671d3 ("kbuild: simplify dependency generation for CONFIG_TRIM_UNUSED_KSYMS")
-Reported-by: kbuild test robot <lkp@intel.com>
-Suggested-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
----
- include/linux/export.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/include/linux/export.h b/include/linux/export.h
-index fceb5e855717..8933ff6ad23a 100644
---- a/include/linux/export.h
-+++ b/include/linux/export.h
-@@ -130,7 +130,7 @@ struct kernel_symbol {
-  * discarded in the final link stage.
-  */
- #define __ksym_marker(sym)	\
--	static int __ksym_marker_##sym[0] __section(".discard.ksym") __used
-+	static int __ksym_marker_##sym[0] __section(.discard.ksym) __used
- 
- #define __EXPORT_SYMBOL(sym, sec, ns)					\
- 	__ksym_marker(sym);						\
--- 
-2.28.0.709.gb0816b6eb0-goog
-
+Jason
