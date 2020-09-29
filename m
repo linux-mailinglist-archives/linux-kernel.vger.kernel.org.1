@@ -2,78 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18CB427D843
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 22:33:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34B9D27D845
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 22:34:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729170AbgI2Udp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 16:33:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41752 "EHLO mail.kernel.org"
+        id S1729194AbgI2Udu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 16:33:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41762 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728396AbgI2Udp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 16:33:45 -0400
+        id S1729068AbgI2Udr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 16:33:47 -0400
 Received: from localhost.localdomain (c-98-220-232-140.hsd1.il.comcast.net [98.220.232.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3FB222076B;
-        Tue, 29 Sep 2020 20:33:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CADCA2076D;
+        Tue, 29 Sep 2020 20:33:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601411624;
-        bh=2ARM7EtvfC73dYBwbKeX0GvCQ36DtNcMhe7IIldK8gY=;
-        h=From:To:Cc:Subject:Date:From;
-        b=vCkJrQL3FiQ4cFWvD1kv7F21MIl+BeLri+YYMb51yKQIP/0471vGL13b3URDEJ3r+
-         gmjBE/j8YJIBwMInmCtUtBqZ+/OoHoIFfa9rCLHb1MgjYpqJZ1yh+qBka38S5M26pN
-         iNIl/ctFsUFTef+19r9XRRyvfsCrAcdOI/YrJFQI=
+        s=default; t=1601411626;
+        bh=/6X7+ekH9B9EzbyppXPju2VN9OD+fEAFrbkRAO+F05I=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:In-Reply-To:
+         References:From;
+        b=NILeGEoESpbimWiBOowP89wBSB4/Vd8PT15/hMX9Y6rQt7SY9T6ZODntUMLkKuvbA
+         WrtgTNE/kv0W53mfLT0vc3jxJvPI/qze5SqcQ2Os3w3Sr/YOeMV1NapsopSOlbWXNe
+         AgedXYocNm+WIPr7B8olIKsVeQEyicX+V6u9WARw=
 From:   Tom Zanussi <zanussi@kernel.org>
 To:     rostedt@goodmis.org, axelrasmussen@google.com
 Cc:     mhiramat@kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 0/3] tracing: Add dynamic strings for synthetic events
-Date:   Tue, 29 Sep 2020 15:33:38 -0500
-Message-Id: <cover.1601410890.git.zanussi@kernel.org>
+Subject: [PATCH 1/3] tracing: Change STR_VAR_MAX_LEN
+Date:   Tue, 29 Sep 2020 15:33:39 -0500
+Message-Id: <8616d1a2485fee1ae71d27d7c598acf1c9e32abe.1601410890.git.zanussi@kernel.org>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <cover.1601410890.git.zanussi@kernel.org>
+References: <cover.1601410890.git.zanussi@kernel.org>
+In-Reply-To: <cover.1601410890.git.zanussi@kernel.org>
+References: <cover.1601410890.git.zanussi@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+32 is too small for this value, and anyway it makes more sense to use
+MAX_FILTER_STR_VAL, as this is also the value used for variable-length
+__strings.
 
-This patchset adds support for dynamic strings for synthetic events,
-as requested by Axel Rasmussen.
+Signed-off-by: Tom Zanussi <zanussi@kernel.org>
+---
+ kernel/trace/trace_synth.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Actually, the first two patches should be applied in any case - the
-first just changes the current max string length and the second fixes
-a bug I found while testing.
-
-It works fine for my simple test cases, but I still need to do a lot
-more testing, especially of the in-kernel API parts, which don't
-affect Axel's use case.
-
-Anyway, Axel, please try it out and send me your Tested-by: if it
-works for you, and your broken testcase(s) if it doesn't. ;-)
-
-Thanks,
-
-Tom
-
-The following changes since commit 106c076d23cca67c959a6fd1ccadb5b3ef01ddc9:
-
-  mmap_lock: add tracepoints around lock acquisition (2020-09-23 08:48:08 -0500)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/zanussi/linux-trace.git ftrace/synth-dynstring-v0
-
-Tom Zanussi (3):
-  tracing: Change STR_VAR_MAX_LEN
-  tracing: Fix parse_synth_field() error handling
-  tracing: Add support for dynamic strings to synthetic events
-
- Documentation/trace/events.rst    |  15 ++-
- Documentation/trace/histogram.rst |  18 ++++
- kernel/trace/trace_events_hist.c  |   9 ++
- kernel/trace/trace_events_synth.c | 163 ++++++++++++++++++++++++++----
- kernel/trace/trace_synth.h        |   6 +-
- 5 files changed, 186 insertions(+), 25 deletions(-)
-
+diff --git a/kernel/trace/trace_synth.h b/kernel/trace/trace_synth.h
+index ac35c45207c4..5166705d1556 100644
+--- a/kernel/trace/trace_synth.h
++++ b/kernel/trace/trace_synth.h
+@@ -7,7 +7,7 @@
+ #define SYNTH_SYSTEM		"synthetic"
+ #define SYNTH_FIELDS_MAX	32
+ 
+-#define STR_VAR_LEN_MAX		32 /* must be multiple of sizeof(u64) */
++#define STR_VAR_LEN_MAX		MAX_FILTER_STR_VAL /* must be multiple of sizeof(u64) */
+ 
+ struct synth_field {
+ 	char *type;
 -- 
 2.17.1
 
