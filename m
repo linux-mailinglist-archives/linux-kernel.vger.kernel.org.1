@@ -2,78 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F76227D80A
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 22:27:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92F6627D80E
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 22:28:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728747AbgI2U1D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 16:27:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35844 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726643AbgI2U1C (ORCPT
+        id S1728994AbgI2U26 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 16:28:58 -0400
+Received: from mail-oi1-f195.google.com ([209.85.167.195]:38326 "EHLO
+        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728457AbgI2U25 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 16:27:02 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C792AC061755
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 13:27:02 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0ead004f62ea03a39a83a7.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:ad00:4f62:ea03:a39a:83a7])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 125EF1EC047E;
-        Tue, 29 Sep 2020 22:27:00 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1601411220;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=CjmvGfS48ESBGtW8w0gZRQtSZ5i61WRGavmSChoRrBg=;
-        b=GK5gwfr+F8ZCncvPht5h4nHQ7wTxIjkp4Rf9ijxT0UFRxxzHiVpQvYhxXnZS3+PAUhIkRr
-        xYfdwK7p/1Wb/Cq4sqof8n46vrUQkXGW/FOrmjzrJ1uOzqqLi1H/n2V05XBQijxyI8LnL/
-        i7YucoywA1pbhfb3A/jZyvT7EkjQMgk=
-Date:   Tue, 29 Sep 2020 22:26:54 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Thomas Gleixner <tglx@linutronix.de>, shuo.a.liu@intel.com
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "H . Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Yu Wang <yu1.wang@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Yakui Zhao <yakui.zhao@intel.com>,
-        Zhi Wang <zhi.a.wang@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Fengwei Yin <fengwei.yin@intel.com>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>
-Subject: Re: [PATCH v4 02/17] x86/acrn: Introduce acrn_{setup,
- remove}_intr_handler()
-Message-ID: <20200929202604.GP21110@zn.tnic>
-References: <20200922114311.38804-1-shuo.a.liu@intel.com>
- <20200922114311.38804-3-shuo.a.liu@intel.com>
- <20200929175947.GL21110@zn.tnic>
- <873630jqiy.fsf@nanos.tec.linutronix.de>
+        Tue, 29 Sep 2020 16:28:57 -0400
+Received: by mail-oi1-f195.google.com with SMTP id 26so6959425ois.5;
+        Tue, 29 Sep 2020 13:28:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=bVoe0onCvfCMQeU1B/9WRQhbpc2VxaWoqU+E5I8kvM8=;
+        b=KIWjOJfX+NX6clDmZBjImnzy1kDesTLLEFi8G5pUcVY17x05xQYDi6f7+tN4NF+BdT
+         zwpVe/jSsdl+/ONM5ENvea9AoBOXD4znoYBIAbGeZCT3rFhVpzTjl7MJyFRqRMd5bYQL
+         udVQ4WkqLDZ1omUH3qzYuYb93B+UtGRC1KFJhhlg/PhB+bhkZiurk7KNEndEsvfWmH2L
+         gNF42deC/MO2ZqDtyVZR9nWqHRGx/dJqjTW9h//RyoFol+xS0DANH8SI6i5uCRAD1zD3
+         8YAiQTlkKr74acr+V0CiScEHNQtJq+qHOliz+y5RcX+ajVBsVoR2oFDjznvYLNzlydVO
+         /rJw==
+X-Gm-Message-State: AOAM532ePWGFxDDLzHTLgshhIOmlCaW0QsGSCxTsN2H5APgJnoCE/w24
+        2yX05SERxFs2+PYQiEylOQ==
+X-Google-Smtp-Source: ABdhPJyLb/H4+yYaaRK/vYJFxCMwpI13NrBcRXjiOpWoXSXN1jcchqpv+h0bTtsXRnY3nBe3z+jesw==
+X-Received: by 2002:aca:72d0:: with SMTP id p199mr3531017oic.140.1601411336991;
+        Tue, 29 Sep 2020 13:28:56 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id q184sm3159083ooq.40.2020.09.29.13.28.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Sep 2020 13:28:56 -0700 (PDT)
+Received: (nullmailer pid 1112255 invoked by uid 1000);
+        Tue, 29 Sep 2020 20:28:55 -0000
+Date:   Tue, 29 Sep 2020 15:28:55 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Zhen Lei <thunder.leizhen@huawei.com>
+Cc:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
+        Wei Xu <xuwei5@hisilicon.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Libin <huawei.libin@huawei.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v5 03/17] dt-bindings: arm: hisilicon: split the
+ dt-bindings of each controller into a separate file
+Message-ID: <20200929202855.GA1112120@bogus>
+References: <20200929141454.2312-1-thunder.leizhen@huawei.com>
+ <20200929141454.2312-4-thunder.leizhen@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <873630jqiy.fsf@nanos.tec.linutronix.de>
+In-Reply-To: <20200929141454.2312-4-thunder.leizhen@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 10:07:17PM +0200, Thomas Gleixner wrote:
-> That does not prevent that either and notifiers suck.
+On Tue, 29 Sep 2020 22:14:40 +0800, Zhen Lei wrote:
+> Split the devicetree bindings of each Hisilicon controller from
+> hisilicon.txt into a separate file, the file name is the compatible name
+> attach the .txt file name extension.
+> 
+> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> ---
+>  .../arm/hisilicon/controller/hisilicon,cpuctrl.txt |   8 +
+>  .../controller/hisilicon,hi3798cv200-perictrl.txt  |  21 +++
+>  .../controller/hisilicon,hi6220-aoctrl.txt         |  18 ++
+>  .../controller/hisilicon,hi6220-mediactrl.txt      |  18 ++
+>  .../controller/hisilicon,hi6220-pmctrl.txt         |  18 ++
+>  .../controller/hisilicon,hi6220-sysctrl.txt        |  19 ++
+>  .../controller/hisilicon,hip01-sysctrl.txt         |  19 ++
+>  .../controller/hisilicon,hip04-bootwrapper.txt     |   9 +
+>  .../controller/hisilicon,hip04-fabric.txt          |   5 +
+>  .../arm/hisilicon/controller/hisilicon,pctrl.txt   |  13 ++
+>  .../arm/hisilicon/controller/hisilicon,sysctrl.txt |  25 +++
+>  .../bindings/arm/hisilicon/hisilicon.txt           | 194 ---------------------
+>  12 files changed, 173 insertions(+), 194 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,cpuctrl.txt
+>  create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hi3798cv200-perictrl.txt
+>  create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hi6220-aoctrl.txt
+>  create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hi6220-mediactrl.txt
+>  create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hi6220-pmctrl.txt
+>  create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hi6220-sysctrl.txt
+>  create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hip01-sysctrl.txt
+>  create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hip04-bootwrapper.txt
+>  create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hip04-fabric.txt
+>  create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,pctrl.txt
+>  create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,sysctrl.txt
+> 
 
-Bah, atomic notifiers run functions which cannot block, not what is
-needed here, right.
-
-> The pointer is fine and if something removes the handler before all of
-> the muck is shutdown then the author can keep the pieces and mop up
-> the remains.
-
-Uhu, so what makes sure that the module is not removed while an IRQ is
-happening?
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Applied, thanks!
