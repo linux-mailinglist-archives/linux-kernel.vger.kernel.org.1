@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD47F27C4BB
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:17:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F83927C36A
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:07:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729560AbgI2LQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:16:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60662 "EHLO mail.kernel.org"
+        id S1728730AbgI2LFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:05:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41880 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729551AbgI2LQB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:16:01 -0400
+        id S1728684AbgI2LF2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:05:28 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0A75C21D41;
-        Tue, 29 Sep 2020 11:15:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 886CF21D7D;
+        Tue, 29 Sep 2020 11:05:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601378160;
-        bh=G2pROOOvv0dU3i/XznMnDTbgZaexADnv4FKP0yQoJY8=;
+        s=default; t=1601377527;
+        bh=70QjCaOHpMZNXQETwGddEY2WVyd87achreBJ2LYAhVQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EV/W3tA7yFidhb268XibEDhwWorqSHfLJYwonn43w3gLaz8Lq9CwcWinfmodUcN/x
-         0/qnNg5CxR3/c7Zi1UUblZxnbcsGBMz4tm+mGId+KOMwN9HLf4GFMym/ZkcaYSxUdR
-         8I6bhKFzDoKpLBKAeB301LZVDq1Zw3B2RyieoXRg=
+        b=w6a+WUgZ0SH6d+R3+mOMKQbbNKuHGdEWqdmD56tmZU2dQQcDwOTDKEe5aiuNQN8Cl
+         eFitZo27sTn7Ny/7FQtl8up5UG/R7UODy2wECoiygwhUetSN+G71gABeopkbrSWxb8
+         UjX62MhNKki174JMZCm7ZgUxDc77FSfI1cvk5DZE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Dave Chinner <dchinner@redhat.com>,
+        stable@vger.kernel.org, Josef Bacik <jbacik@fb.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 082/166] xfs: dont ever return a stale pointer from __xfs_dir3_free_read
+Subject: [PATCH 4.4 27/85] tracing: Set kernel_stacks caller size properly
 Date:   Tue, 29 Sep 2020 12:59:54 +0200
-Message-Id: <20200929105939.308636246@linuxfoundation.org>
+Message-Id: <20200929105929.590199363@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929105935.184737111@linuxfoundation.org>
-References: <20200929105935.184737111@linuxfoundation.org>
+In-Reply-To: <20200929105928.198942536@linuxfoundation.org>
+References: <20200929105928.198942536@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,39 +43,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Darrick J. Wong <darrick.wong@oracle.com>
+From: Josef Bacik <jbacik@fb.com>
 
-[ Upstream commit 1cb5deb5bc095c070c09a4540c45f9c9ba24be43 ]
+[ Upstream commit cbc3b92ce037f5e7536f6db157d185cd8b8f615c ]
 
-If we decide that a directory free block is corrupt, we must take care
-not to leak a buffer pointer to the caller.  After xfs_trans_brelse
-returns, the buffer can be freed or reused, which means that we have to
-set *bpp back to NULL.
+I noticed when trying to use the trace-cmd python interface that reading the raw
+buffer wasn't working for kernel_stack events.  This is because it uses a
+stubbed version of __dynamic_array that doesn't do the __data_loc trick and
+encode the length of the array into the field.  Instead it just shows up as a
+size of 0.  So change this to __array and set the len to FTRACE_STACK_ENTRIES
+since this is what we actually do in practice and matches how user_stack_trace
+works.
 
-Callers are supposed to notice the nonzero return value and not use the
-buffer pointer, but we should code more defensively, even if all current
-callers handle this situation correctly.
+Link: http://lkml.kernel.org/r/1411589652-1318-1-git-send-email-jbacik@fb.com
 
-Fixes: de14c5f541e7 ("xfs: verify free block header fields")
-Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
-Reviewed-by: Dave Chinner <dchinner@redhat.com>
+Signed-off-by: Josef Bacik <jbacik@fb.com>
+[ Pulled from the archeological digging of my INBOX ]
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/xfs/libxfs/xfs_dir2_node.c | 1 +
- 1 file changed, 1 insertion(+)
+ kernel/trace/trace_entries.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/xfs/libxfs/xfs_dir2_node.c b/fs/xfs/libxfs/xfs_dir2_node.c
-index 682e2bf370c72..ee4ebc2dd7492 100644
---- a/fs/xfs/libxfs/xfs_dir2_node.c
-+++ b/fs/xfs/libxfs/xfs_dir2_node.c
-@@ -212,6 +212,7 @@ __xfs_dir3_free_read(
- 		xfs_buf_ioerror(*bpp, -EFSCORRUPTED);
- 		xfs_verifier_error(*bpp);
- 		xfs_trans_brelse(tp, *bpp);
-+		*bpp = NULL;
- 		return -EFSCORRUPTED;
- 	}
+diff --git a/kernel/trace/trace_entries.h b/kernel/trace/trace_entries.h
+index ee7b94a4810af..246db27dbdc99 100644
+--- a/kernel/trace/trace_entries.h
++++ b/kernel/trace/trace_entries.h
+@@ -178,7 +178,7 @@ FTRACE_ENTRY(kernel_stack, stack_entry,
  
+ 	F_STRUCT(
+ 		__field(	int,		size	)
+-		__dynamic_array(unsigned long,	caller	)
++		__array(	unsigned long,	caller,	FTRACE_STACK_ENTRIES	)
+ 	),
+ 
+ 	F_printk("\t=> (" IP_FMT ")\n\t=> (" IP_FMT ")\n\t=> (" IP_FMT ")\n"
 -- 
 2.25.1
 
