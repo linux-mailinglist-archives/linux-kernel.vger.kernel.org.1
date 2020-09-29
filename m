@@ -2,57 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E538C27B92E
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 03:05:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF86927B92A
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 03:01:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727131AbgI2BFh convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 28 Sep 2020 21:05:37 -0400
-Received: from edziennik.miasto.gdynia.pl ([153.19.91.66]:46252 "EHLO
-        pc66.miasto.gdynia.pl" rhost-flags-OK-FAIL-OK-OK) by vger.kernel.org
-        with ESMTP id S1726924AbgI2BFh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 21:05:37 -0400
-X-Greylist: delayed 522 seconds by postgrey-1.27 at vger.kernel.org; Mon, 28 Sep 2020 21:05:36 EDT
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by pc66.miasto.gdynia.pl (Postfix) with ESMTP id 730E32291B;
-        Tue, 29 Sep 2020 02:55:33 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at pc66.miasto.gdynia.pl
-Received: from pc66.miasto.gdynia.pl ([127.0.0.1])
-        by localhost (pc66.miasto.gdynia.pl [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id Glxb9HXrTBd6; Tue, 29 Sep 2020 02:55:32 +0200 (CEST)
-Received: from pc66.miasto.gdynia.pl (localhost6.localdomain6 [IPv6:::1])
-        (Authenticated sender: ibileklandowska@sp18.edu.gdynia.pl)
-        by pc66.miasto.gdynia.pl (Postfix) with ESMTPA id 3F42322802;
-        Tue, 29 Sep 2020 02:54:37 +0200 (CEST)
+        id S1727160AbgI2BBT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 21:01:19 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:60268 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726698AbgI2BBT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 21:01:19 -0400
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 77560ED12442A06B7F78;
+        Tue, 29 Sep 2020 09:01:17 +0800 (CST)
+Received: from [10.174.178.248] (10.174.178.248) by smtp.huawei.com
+ (10.3.19.211) with Microsoft SMTP Server (TLS) id 14.3.487.0; Tue, 29 Sep
+ 2020 09:01:15 +0800
+Subject: Re: [PATCH] staging: most: don't access hdm_ch before checking it
+ valid
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+References: <20200928104838.189639-1-jingxiangfeng@huawei.com>
+ <20200928114857.GR4282@kadam>
+CC:     <gregkh@linuxfoundation.org>, <christian.gromm@microchip.com>,
+        <masahiroy@kernel.org>, <tglx@linutronix.de>,
+        <keescook@chromium.org>, <devel@driverdev.osuosl.org>,
+        <linux-kernel@vger.kernel.org>
+From:   Jing Xiangfeng <jingxiangfeng@huawei.com>
+Message-ID: <5F72875A.8020900@huawei.com>
+Date:   Tue, 29 Sep 2020 09:01:14 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:38.0) Gecko/20100101
+ Thunderbird/38.1.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Date:   Tue, 29 Sep 2020 03:54:37 +0300
-From:   WILLIAM YUN <ibileklandowska@sp18.edu.gdynia.pl>
-To:     undisclosed-recipients:;
-Subject: =?UTF-8?Q?ATTN=3A_GESCH=C3=84FT_29-SEPT-2020?=
-Reply-To: williamyun768@gmail.com
-Mail-Reply-To: williamyun768@gmail.com
-Message-ID: <d9662e7c575d330424be6f252a77641a@sp18.edu.gdynia.pl>
-X-Sender: ibileklandowska@sp18.edu.gdynia.pl
-User-Agent: Roundcube Webmail/1.3.6
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20200928114857.GR4282@kadam>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.248]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
--- 
-Ich bin William Yun aus Hongkong, ich habe ein Geschäft für Sie im Wert 
-von 24,5 Mio. USD für Sie. Bei Interesse antworten Sie bitte für weitere 
-Details. williamyun768@gmail.com
+On 2020/9/28 19:48, Dan Carpenter wrote:
+> On Mon, Sep 28, 2020 at 06:48:38PM +0800, Jing Xiangfeng wrote:
+>> In try_start_dim_transfer(), pointer hdm_ch is accessed before checking.
+>> This may lead to a potential null pointer dereference. Fix this by
+>> dereferencing hdm_ch after calling BUG_ON().
+>>
+>> Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
+>> ---
+>>   drivers/staging/most/dim2/dim2.c | 3 ++-
+>>   1 file changed, 2 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/staging/most/dim2/dim2.c b/drivers/staging/most/dim2/dim2.c
+>> index 509c8012d20b..ccd7cc7545e4 100644
+>> --- a/drivers/staging/most/dim2/dim2.c
+>> +++ b/drivers/staging/most/dim2/dim2.c
+>> @@ -148,7 +148,7 @@ void dimcb_on_error(u8 error_id, const char *error_message)
+>>   static int try_start_dim_transfer(struct hdm_channel *hdm_ch)
+>>   {
+>>   	u16 buf_size;
+>> -	struct list_head *head = &hdm_ch->pending_list;
+> This is not a dereference, it's just pointer math.  In other words:
+>
+> 	struct list_head *head = hdm_ch + offsetof(struct hdm_channel, pending_list);
+Thanks for correcting!
 
-Grüße,
-William Yun
-Geschäftsführer,
-& Leiter Personal Banking,
-Hang Seng Bank,
-Hongkong.
-E-Mail: williamyun768@gmail.com
+>
+> So the commit message is wrong because this cannot lead to a NULL
+> dereference.  It's better to just delete the BUG_ON().  We don't really
+> like BUG_ON().  Checkpatch will complain about them.  An Oops gives
+> basically the same information as a BUG_ON() without completely killing
+> the kernel so just dereferencing a NULL is preferable.  Finally, we can
+> see from the callers that "hdm_ch" is never NULL.
+>
+> regards,
+> dan carpenter
+>
+> .
+>
 
