@@ -2,147 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEEFB27D0B6
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 16:12:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0BB727D0B9
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 16:13:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730187AbgI2OMx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 10:12:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34460 "EHLO
+        id S1730316AbgI2ONF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 10:13:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725554AbgI2OMw (ORCPT
+        with ESMTP id S1725554AbgI2ONF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 10:12:52 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EAE2C061755;
-        Tue, 29 Sep 2020 07:12:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=uS4mSgZTkE8/yrp3bjIeofv5zSFueI/JPFpcZg97ITA=; b=Fet6JWpIHhg7C+L/9n6jl3qceR
-        VVGXF/cZiowcX1njtqGv3BVchgxxt+6pfaX0K/uodq5lwCY0uql6owL+D3yGk3K+um/uu5HFMGNTz
-        7GQ5JZFIrAz1xjMr6CkqtNIt5CbKpTU8W8M6fT/AN5hqCewA4nMHg/DVwPf+0Au1I8pjgJgN0wyim
-        2Lm8otroeLSxIf8DDf05XIxzYfAnQajPM/6vNFT4lc1LYPhaFUjBKU3R697WR+vBRmU/2QzcP0Bye
-        R7v9MBE42kpKHmluJKOu5uwD73LJzyd4frQSP7sWbi/6nijp3lKc2BqXIIPYz+X8Bf4UcF7dvbpYT
-        sesw27Yw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kNGMf-0006Z5-8p; Tue, 29 Sep 2020 14:12:21 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2E2C9303F45;
-        Tue, 29 Sep 2020 16:12:16 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 1F4DD2022B66B; Tue, 29 Sep 2020 16:12:16 +0200 (CEST)
-Date:   Tue, 29 Sep 2020 16:12:16 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Idan Yaniv <idan.yaniv@ibm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Shuah Khan <shuah@kernel.org>, Tycho Andersen <tycho@tycho.ws>,
-        Will Deacon <will@kernel.org>, linux-api@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org
-Subject: Re: [PATCH v6 5/6] mm: secretmem: use PMD-size pages to amortize
- direct map fragmentation
-Message-ID: <20200929141216.GO2628@hirez.programming.kicks-ass.net>
-References: <20200924132904.1391-1-rppt@kernel.org>
- <20200924132904.1391-6-rppt@kernel.org>
- <20200925074125.GQ2628@hirez.programming.kicks-ass.net>
- <20200929130529.GE2142832@kernel.org>
+        Tue, 29 Sep 2020 10:13:05 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38E2DC0613D0
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 07:13:05 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id y74so4912360iof.12
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 07:13:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=pIqAOqrn6h0sWTOG6HQcdrGe1pJQq2qqrnbCVqbIgK8=;
+        b=ewHwiI493jKey9fnPfl//AmXDX3kVu2s6HJz1Vb9Hu7z26kP0rDDqWys9IU7lcNE/k
+         JFHIG/W9k5nNwlEs/Wnw3qvTnuxuiI37gYGYowcIV6OR9eN+HLF5xx2vtMOR1d5t7ruA
+         2iVl4x/jzPtSh79NtDTrreBP8eCKty6KM4FLSf4zjvQKu3dIeZ6Zo3r//G5iMPbpZyJ4
+         Nmtd2028l9Dcxz8RUS+xiA1WV/iGQnd90OZLTtYvOLi1BXCVqyIlTLm/gzC0hTe5QKF9
+         mE5TC/xgZUtBWF3GeeKLmG8i85jts+BLh5mhgtciEtvHNT3wz08PEdagNVdzVRChRkLo
+         218A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=pIqAOqrn6h0sWTOG6HQcdrGe1pJQq2qqrnbCVqbIgK8=;
+        b=GKwhATd1wTZs/ntWVsL/F6ljoH1UtvTUyI4vwEMBbE2NEtavmMsUqbCfEmMwrK7Heb
+         k4e97gLdGKi1OMAFWM3y7Mzn1DgJz70orrD00vdJSqUciMgMDkZYqIOzkQ6q0gPwwks7
+         BkZ7TZ8T0bWtg20pX4BNcB5ZBFmdZJXfWA9q04/fToN/z1ZmqtpbIZDMqr9NY0SLUFcI
+         IJPzOpBJqlxoBvk3agPC1SV7lCKXefCs9wBnzvPRTABp/IfMz3qo7KqiaYe/NjZTwubY
+         Z5vIhMd+kOMXlSIo+catOpg0CyDzhLMbazt7B3gdPtNyfs7cvSQo/4dVOuJkPNtQxKlq
+         444Q==
+X-Gm-Message-State: AOAM531Y1t32JlMX8/sh4Mv8/dxocys3KIbF/10mQ9JwbUAOvAoBdDAs
+        Q3X2qksW5VJ3pGOnKvoO77dzJfMpZPdeog==
+X-Google-Smtp-Source: ABdhPJxQPOLCOgpVlhV5WKBv4IpAqB78vNhpqOcppe1fOObbXJynagNpVFBnb2oq44Wxf0zr3YAFjw==
+X-Received: by 2002:a5d:8b4a:: with SMTP id c10mr2629435iot.143.1601388784174;
+        Tue, 29 Sep 2020 07:13:04 -0700 (PDT)
+Received: from [192.168.1.30] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id l6sm2406115ilo.21.2020.09.29.07.13.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 29 Sep 2020 07:13:03 -0700 (PDT)
+Subject: Re: [PATCH v3] null_blk: add support for max open/active zone limit
+ for zoned devices
+To:     Niklas Cassel <niklas.cassel@wdc.com>
+Cc:     damien.lemoal@wdc.com, johannes.thumshirn@wdc.com,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200828105400.80893-1-niklas.cassel@wdc.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <ea94a097-c5c1-1996-3398-a08d64503941@kernel.dk>
+Date:   Tue, 29 Sep 2020 08:13:02 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200929130529.GE2142832@kernel.org>
+In-Reply-To: <20200828105400.80893-1-niklas.cassel@wdc.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 04:05:29PM +0300, Mike Rapoport wrote:
-> On Fri, Sep 25, 2020 at 09:41:25AM +0200, Peter Zijlstra wrote:
-> > On Thu, Sep 24, 2020 at 04:29:03PM +0300, Mike Rapoport wrote:
-> > > From: Mike Rapoport <rppt@linux.ibm.com>
-> > > 
-> > > Removing a PAGE_SIZE page from the direct map every time such page is
-> > > allocated for a secret memory mapping will cause severe fragmentation of
-> > > the direct map. This fragmentation can be reduced by using PMD-size pages
-> > > as a pool for small pages for secret memory mappings.
-> > > 
-> > > Add a gen_pool per secretmem inode and lazily populate this pool with
-> > > PMD-size pages.
-> > 
-> > What's the actual efficacy of this? Since the pmd is per inode, all I
-> > need is a lot of inodes and we're in business to destroy the directmap,
-> > no?
-> > 
-> > Afaict there's no privs needed to use this, all a process needs is to
-> > stay below the mlock limit, so a 'fork-bomb' that maps a single secret
-> > page will utterly destroy the direct map.
+On 8/28/20 4:54 AM, Niklas Cassel wrote:
+> Add support for user space to set a max open zone and a max active zone
+> limit via configfs. By default, the default values are 0 == no limit.
 > 
-> This indeed will cause 1G pages in the direct map to be split into 2M
-> chunks, but I disagree with 'destroy' term here. Citing the cover letter
-> of an earlier version of this series:
+> Call the block layer API functions used for exposing the configured
+> limits to sysfs.
+> 
+> Add accounting in null_blk_zoned so that these new limits are respected.
+> Performing an operation that would exceed these limits results in a
+> standard I/O error.
+> 
+> A max open zone limit exists in the ZBC standard.
+> While null_blk_zoned is used to test the Zoned Block Device model in
+> Linux, when it comes to differences between ZBC and ZNS, null_blk_zoned
+> mostly follows ZBC.
+> 
+> Therefore, implement the manage open zone resources function from ZBC,
+> but additionally add support for max active zones.
+> This enables user space not only to test against a device with an open
+> zone limit, but also to test against a device with an active zone limit.
 
-It will drop them down to 4k pages. Given enough inodes, and allocating
-only a single sekrit page per pmd, we'll shatter the directmap into 4k.
+Applied, thanks.
 
->   I've tried to find some numbers that show the benefit of using larger
->   pages in the direct map, but I couldn't find anything so I've run a
->   couple of benchmarks from phoronix-test-suite on my laptop (i7-8650U
->   with 32G RAM).
+-- 
+Jens Axboe
 
-Existing benchmarks suck at this, but FB had a load that had a
-deterministic enough performance regression to bisect to a directmap
-issue, fixed by:
-
-  7af0145067bc ("x86/mm/cpa: Prevent large page split when ftrace flips RW on kernel text")
-
->   I've tested three variants: the default with 28G of the physical
->   memory covered with 1G pages, then I disabled 1G pages using
->   "nogbpages" in the kernel command line and at last I've forced the
->   entire direct map to use 4K pages using a simple patch to
->   arch/x86/mm/init.c.  I've made runs of the benchmarks with SSD and
->   tmpfs.
->   
->   Surprisingly, the results does not show huge advantage for large
->   pages. For instance, here the results for kernel build with
->   'make -j8', in seconds:
-
-Your benchmark should stress the TLB of your uarch, such that additional
-pressure added by the shattered directmap shows up.
-
-And no, I don't have one either.
-
->                         |  1G    |  2M    |  4K
->   ----------------------+--------+--------+---------
->   ssd, mitigations=on	| 308.75 | 317.37 | 314.9
->   ssd, mitigations=off	| 305.25 | 295.32 | 304.92
->   ram, mitigations=on	| 301.58 | 322.49 | 306.54
->   ram, mitigations=off	| 299.32 | 288.44 | 310.65
-
-These results lack error data, but assuming the reults are significant,
-then this very much makes a case for 1G mappings. 5s on a kernel builds
-is pretty good.
