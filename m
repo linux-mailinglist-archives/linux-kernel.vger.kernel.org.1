@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 491CC27C600
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:41:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA12A27C824
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:59:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730603AbgI2Lk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:40:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36572 "EHLO mail.kernel.org"
+        id S1730596AbgI2Lk4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:40:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36576 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730556AbgI2Lkm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1730557AbgI2Lkm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 29 Sep 2020 07:40:42 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9B08A21941;
-        Tue, 29 Sep 2020 11:40:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DE868221E7;
+        Tue, 29 Sep 2020 11:40:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601379620;
-        bh=/+pliRggyOjEy8m8uK+MrMptQUHltTkK+F/HawNYwaI=;
+        s=default; t=1601379622;
+        bh=lDDGUL4kvJ5mex8eDO//IqOW71j0i6XZXgohdWZWS0A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Psq5Z5mSlxRA/otudHeJtIQ9nRUU/dInMw5LkMKyYQSalaUzh5C3jmnrw58JU11o1
-         AtPD1essE61UlkunFHXzi9fHogecg13fe/vuPAjwLWoXUzVgZp7BS2dJdSReWJxIxi
-         zue42qSRR59i7eZBDmEJJDX5iXHLM/+69AmngwT8=
+        b=rFfwRRCBcrBYWMCdDuE5VJVhEGjjCD2+i8UQ364gsjd/B7WnKGx0NFSPBuT4D2AQ/
+         bNWn8sefBifx5iTVG4AbRSg4V3413uFHTm9SWKDuy8tTpdsdmOQc0NUIm0nTG0KdAo
+         QYqVKtJ0ZGj+xv/ObzmrkKHxsO8lO1kIcAzSOHPc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Wei Yongjun <weiyongjun1@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Jonathan Bakker <xc-racer2@live.ca>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 244/388] dpaa2-eth: fix error return code in setup_dpni()
-Date:   Tue, 29 Sep 2020 12:59:35 +0200
-Message-Id: <20200929110022.292450723@linuxfoundation.org>
+Subject: [PATCH 5.4 245/388] dt-bindings: sound: wm8994: Correct required supplies based on actual implementaion
+Date:   Tue, 29 Sep 2020 12:59:36 +0200
+Message-Id: <20200929110022.341122381@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200929110010.467764689@linuxfoundation.org>
 References: <20200929110010.467764689@linuxfoundation.org>
@@ -43,36 +44,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wei Yongjun <weiyongjun1@huawei.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
 
-[ Upstream commit 97fff7c8de1e54e5326dfeb66085796864bceb64 ]
+[ Upstream commit 8c149b7d75e53be47648742f40fc90d9fc6fa63a ]
 
-Fix to return negative error code -ENOMEM from the error handling
-case instead of 0, as done elsewhere in this function.
+The required supplies in bindings were actually not matching
+implementation making the bindings incorrect and misleading.  The Linux
+kernel driver requires all supplies to be present.  Also for wlf,wm8994
+uses just DBVDD-supply instead of DBVDDn-supply (n: <1,3>).
 
-Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Reported-by: Jonathan Bakker <xc-racer2@live.ca>
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Link: https://lore.kernel.org/r/20200501133534.6706-1-krzk@kernel.org
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ .../devicetree/bindings/sound/wm8994.txt       | 18 ++++++++++++------
+ 1 file changed, 12 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c b/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c
-index 7a248cc1055a3..7af7cc7c8669a 100644
---- a/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c
-+++ b/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c
-@@ -2654,8 +2654,10 @@ static int setup_dpni(struct fsl_mc_device *ls_dev)
+diff --git a/Documentation/devicetree/bindings/sound/wm8994.txt b/Documentation/devicetree/bindings/sound/wm8994.txt
+index 68cccc4653ba3..367b58ce1bb92 100644
+--- a/Documentation/devicetree/bindings/sound/wm8994.txt
++++ b/Documentation/devicetree/bindings/sound/wm8994.txt
+@@ -14,9 +14,15 @@ Required properties:
+   - #gpio-cells : Must be 2. The first cell is the pin number and the
+     second cell is used to specify optional parameters (currently unused).
  
- 	priv->cls_rules = devm_kzalloc(dev, sizeof(struct dpaa2_eth_cls_rule) *
- 				       dpaa2_eth_fs_count(priv), GFP_KERNEL);
--	if (!priv->cls_rules)
-+	if (!priv->cls_rules) {
-+		err = -ENOMEM;
- 		goto close;
-+	}
+-  - AVDD2-supply, DBVDD1-supply, DBVDD2-supply, DBVDD3-supply, CPVDD-supply,
+-    SPKVDD1-supply, SPKVDD2-supply : power supplies for the device, as covered
+-    in Documentation/devicetree/bindings/regulator/regulator.txt
++  - power supplies for the device, as covered in
++    Documentation/devicetree/bindings/regulator/regulator.txt, depending
++    on compatible:
++    - for wlf,wm1811 and wlf,wm8958:
++      AVDD1-supply, AVDD2-supply, DBVDD1-supply, DBVDD2-supply, DBVDD3-supply,
++      DCVDD-supply, CPVDD-supply, SPKVDD1-supply, SPKVDD2-supply
++    - for wlf,wm8994:
++      AVDD1-supply, AVDD2-supply, DBVDD-supply, DCVDD-supply, CPVDD-supply,
++      SPKVDD1-supply, SPKVDD2-supply
  
- 	return 0;
+ Optional properties:
  
+@@ -73,11 +79,11 @@ wm8994: codec@1a {
+ 
+ 	lineout1-se;
+ 
++	AVDD1-supply = <&regulator>;
+ 	AVDD2-supply = <&regulator>;
+ 	CPVDD-supply = <&regulator>;
+-	DBVDD1-supply = <&regulator>;
+-	DBVDD2-supply = <&regulator>;
+-	DBVDD3-supply = <&regulator>;
++	DBVDD-supply = <&regulator>;
++	DCVDD-supply = <&regulator>;
+ 	SPKVDD1-supply = <&regulator>;
+ 	SPKVDD2-supply = <&regulator>;
+ };
 -- 
 2.25.1
 
