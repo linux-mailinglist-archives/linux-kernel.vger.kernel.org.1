@@ -2,87 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EB9F27BF9E
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 10:34:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02DBE27BF9F
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 10:34:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727858AbgI2Idj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 04:33:39 -0400
-Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:7056 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727605AbgI2Idi (ORCPT
+        id S1727791AbgI2Idr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 04:33:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37706 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727484AbgI2Idq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 04:33:38 -0400
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-        by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 08T8WhDg027041;
-        Tue, 29 Sep 2020 03:33:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=PODMain02222019;
- bh=AtIwfUh1HCIzakGZPbCRTiACRVBGHlN9GnO9jcbx4xw=;
- b=X0oh74U/KQiFwEdosAf7qYv/9ceW2j3MPcI+oM2+pXStajs0fIOj70peG43U3PJfGa9m
- 7n64NmHH1PhHOwtFIoz8c48tqxX9WEJWGqfvVYZEIa33e54xPHOcHntdl54SODZzZ20j
- rTN2wFWK2fEKOzOuV7X+IRYTX7etYi0+Fd8ssxEmzLBWk4vzEeA7RFiB9DwJUkoeTRYM
- Gy3zDpSVfSNzq1O0TPJGd+oIzhzF/GtLkMfs4vnmcRtK//NvBUSnUtclpef/F7olH1Nv
- GsT6TdS8tH0cEg4TiV7Kbs87JEgQPWskGouEDkSVSZtYRRytDSxtcTfjFX4sQjDhyK4O 9Q== 
-Received: from ediex01.ad.cirrus.com ([87.246.76.36])
-        by mx0b-001ae601.pphosted.com with ESMTP id 33t22p3gy0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 29 Sep 2020 03:33:35 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Tue, 29 Sep
- 2020 09:33:34 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
- Transport; Tue, 29 Sep 2020 09:33:34 +0100
-Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 516202C6;
-        Tue, 29 Sep 2020 08:33:34 +0000 (UTC)
-Date:   Tue, 29 Sep 2020 08:33:34 +0000
-From:   Charles Keepax <ckeepax@opensource.cirrus.com>
-To:     Sasha Levin <sashal@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>,
-        Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH AUTOSEL 5.8 14/29] regmap: debugfs: Fix handling of name
- string for debugfs init delays
-Message-ID: <20200929083334.GX10899@ediswmail.ad.cirrus.com>
-References: <20200929013027.2406344-1-sashal@kernel.org>
- <20200929013027.2406344-14-sashal@kernel.org>
+        Tue, 29 Sep 2020 04:33:46 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3773FC061755
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 01:33:46 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0ead00a43ad9adcc23f8e0.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:ad00:a43a:d9ad:cc23:f8e0])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 86BC31EC0380;
+        Tue, 29 Sep 2020 10:33:44 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1601368424;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=zRkl9psdawzE3dNwfpL675Lq6bA7FNwxEYbUX2Cq0Jc=;
+        b=ApxB9IseuUOLN/z0/ymlpfm6pRayqf3cLQH1B1wqjKIHsuqzc9SMIiz8ohjVxlJFI7EdiX
+        zze4XjkydM0s9x4lcS8irgJKE6AK9jSPwF8P3QSvcXajSGfWUoZAzwIR0bNYEyO0koqYCG
+        NRKjvMnIyTQhmg1pVZ8mRqxoHF9lBgA=
+Date:   Tue, 29 Sep 2020 10:33:36 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        syzbot <syzbot+ce179bc99e64377c24bc@syzkaller.appspotmail.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Jiri Olsa <jolsa@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Subject: Re: general protection fault in perf_misc_flags
+Message-ID: <20200929083336.GA21110@zn.tnic>
+References: <00000000000052569205afa67426@google.com>
+ <20200927145737.GA4746@zn.tnic>
+ <CACT4Y+Zxt3-Dj6r53mEkwv24PazPzTxQ7usV1O+RB0bk2FzO8g@mail.gmail.com>
+ <CACT4Y+ZZH76qg810RzGp6FDLTxJWVqZgkrXSxqgq7AjpPYG9XQ@mail.gmail.com>
+ <20200928083819.GD1685@zn.tnic>
+ <CACT4Y+bPFASnmFRKpQ=KY1z+RnTbGmkPU3aikzdXZpKkV03D9A@mail.gmail.com>
+ <20200928085401.GE1685@zn.tnic>
+ <CACT4Y+Z4Y6SJJ6iYBhVRiknrWBAD6gGhQXiXLhxPniDNBFJGsA@mail.gmail.com>
+ <20200928202353.GI1685@zn.tnic>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200929013027.2406344-14-sashal@kernel.org>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 bulkscore=0 phishscore=0
- clxscore=1031 adultscore=0 priorityscore=1501 mlxscore=0 mlxlogscore=999
- impostorscore=0 suspectscore=2 spamscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009290078
+In-Reply-To: <20200928202353.GI1685@zn.tnic>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 09:30:11PM -0400, Sasha Levin wrote:
-> From: Charles Keepax <ckeepax@opensource.cirrus.com>
-> 
-> [ Upstream commit 94cc89eb8fa5039fcb6e3e3d50f929ddcccee095 ]
-> 
-> In regmap_debugfs_init the initialisation of the debugfs is delayed
-> if the root node isn't ready yet. Most callers of regmap_debugfs_init
-> pass the name from the regmap_config, which is considered temporary
-> ie. may be unallocated after the regmap_init call returns. This leads
-> to a potential use after free, where config->name has been freed by
-> the time it is used in regmap_debugfs_initcall.
-> 
+On Mon, Sep 28, 2020 at 10:23:53PM +0200, Borislav Petkov wrote:
+> 2020/09/28 22:21:01 VMs 3, executed 179, corpus cover 11792, corpus signal 10881, max signal 19337, crashes 0, repro 0
 
-Afraid this patch had some issues if you are back porting it you
-definitely need to take these two patches as well:
+Ok, so far triggered two things:
 
-commit 1d512ee861b80da63cbc501b973c53131aa22f29
-regmap: debugfs: Fix more error path regressions
+WARNING in f2fs_is_valid_blkaddr	1	2020/09/29 10:27	reproducing
+WARNING in reiserfs_put_super		1	2020/09/28 22:42
 
-commit d36cb0205f034e943aa29e35b59c6a441f0056b5
-regmap: debugfs: Add back in erroneously removed initialisation of ret
+you've probably seen them already.
 
-Thanks,
-Charles
+Anyway, next question. Let's say I trigger the corruption: is there a
+way to stop the guest VM which has triggered it so that I'm able to
+examine it with gdb?
+
+What about kdump? Can I dump the guest memory either with kdump or
+through the qemu monitor (I believe there's a command to dump memory) so
+that it can be poked at?
+
+Because as it is, we don't have a reproducer and as I see it, the fuzzing simply
+gets restarted:
+
+2020/09/29 10:27:03 vm-3: crash: WARNING in f2fs_is_valid_blkaddr
+...
+2020/09/29 10:27:05 loop: phase=1 shutdown=false instances=1/4 [3] repro: pending=0 reproducing=1 queued=1
+2020/09/29 10:27:05 loop: starting instance 3
+
+so it would be good to be able to say, when a vm encounters a crash, it
+should be stopped immediately so that the guest can be examined through
+qemu's gdb interface, i.e.,
+
+-gdb tcp::<portnum>
+
+or so?
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
