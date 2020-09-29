@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 999E527C795
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:55:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26A5E27C6AD
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:47:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730256AbgI2LzB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:55:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45730 "EHLO mail.kernel.org"
+        id S1731019AbgI2Lrb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:47:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49008 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730970AbgI2Lpi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:45:38 -0400
+        id S1728710AbgI2Lr1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:47:27 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 265B82074A;
-        Tue, 29 Sep 2020 11:45:37 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 97294221E7;
+        Tue, 29 Sep 2020 11:47:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601379937;
-        bh=cZ2tbxth4Mk4moZckChFCWivyag5Ri0GoPERLYhW2vo=;
+        s=default; t=1601380047;
+        bh=nWC9bumt/thuz8lzMMyHRXsr8TjNEpoiBVneue43Flw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BVFbIqlFDYrtjoFUwnVFj/Zw/LeheFSCsd2RZiI4chudT1YyCyuhIzs3pxuoqxN/1
-         gYbZ7Qaw0AWA7jEGkY9exQd49skN1lHRRuTA32cNe2zCI5GVDqqSIdCxf8i56ZUCO7
-         lzl1Gr82Be95Vi2SYuE3WylO3weE/nCcK8NFS1ps=
+        b=1ZgqqJkWdDqU6fQAjLaRV8dbKQfMhbwXVrS2UNQIJVwqRElRwDNY76tgC78s0xdnf
+         6EAqqFEy/kmmberEDSRYHw2QAjCgFQnP1KYwuli689IaRcL+Pd49jbvHgjwMwtvdir
+         OVop0aRj8LUpDbHlFZmZUbo05p8i+Sa4W8uNAS5c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Linus=20L=C3=BCssing?= <linus.luessing@c0d3.blue>,
-        Sven Eckelmann <sven@narfation.org>,
-        Simon Wunderlich <sw@simonwunderlich.de>,
+        stable@vger.kernel.org, Dexuan Cui <decui@microsoft.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 354/388] batman-adv: mcast: fix duplicate mcast packets in BLA backbone from LAN
-Date:   Tue, 29 Sep 2020 13:01:25 +0200
-Message-Id: <20200929110027.602126275@linuxfoundation.org>
+Subject: [PATCH 5.8 43/99] hv_netvsc: Switch the data path at the right time during hibernation
+Date:   Tue, 29 Sep 2020 13:01:26 +0200
+Message-Id: <20200929105931.847444271@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929110010.467764689@linuxfoundation.org>
-References: <20200929110010.467764689@linuxfoundation.org>
+In-Reply-To: <20200929105929.719230296@linuxfoundation.org>
+References: <20200929105929.719230296@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,200 +43,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linus Lüssing <linus.luessing@c0d3.blue>
+From: Dexuan Cui <decui@microsoft.com>
 
-[ Upstream commit 3236d215ad38a3f5372e65cd1e0a52cf93d3c6a2 ]
+[ Upstream commit de214e52de1bba5392b5b7054924a08dbd57c2f6 ]
 
-Scenario:
-* Multicast frame send from a BLA backbone (multiple nodes with
-  their bat0 bridged together, with BLA enabled)
+When netvsc_resume() is called, the mlx5 VF NIC has not been resumed yet,
+so in the future the host might sliently fail the call netvsc_vf_changed()
+-> netvsc_switch_datapath() there, even if the call works now.
 
-Issue:
-* BLA backbone nodes receive the frame multiple times on bat0
+Call netvsc_vf_changed() in the NETDEV_CHANGE event handler: at that time
+the mlx5 VF NIC has been resumed.
 
-For multicast frames received via batman-adv broadcast packets the
-originator of the broadcast packet is checked before decapsulating and
-forwarding the frame to bat0 (batadv_bla_is_backbone_gw()->
-batadv_recv_bcast_packet()). If it came from a node which shares the
-same BLA backbone with us then it is not forwarded to bat0 to avoid a
-loop.
-
-When sending a multicast frame in a non-4-address batman-adv unicast
-packet we are currently missing this check - and cannot do so because
-the batman-adv unicast packet has no originator address field.
-
-However, we can simply fix this on the sender side by only sending the
-multicast frame via unicasts to interested nodes which do not share the
-same BLA backbone with us. This also nicely avoids some unnecessary
-transmissions on mesh side.
-
-Note that no infinite loop was observed, probably because of dropping
-via batadv_interface_tx()->batadv_bla_tx(). However the duplicates still
-utterly confuse switches/bridges, ICMPv6 duplicate address detection and
-neighbor discovery and therefore leads to long delays before being able
-to establish TCP connections, for instance. And it also leads to the Linux
-bridge printing messages like:
-"br-lan: received packet on eth1 with own address as source address ..."
-
-Fixes: 2d3f6ccc4ea5 ("batman-adv: Modified forwarding behaviour for multicast packets")
-Signed-off-by: Linus Lüssing <linus.luessing@c0d3.blue>
-Signed-off-by: Sven Eckelmann <sven@narfation.org>
-Signed-off-by: Simon Wunderlich <sw@simonwunderlich.de>
+Fixes: 19162fd4063a ("hv_netvsc: Fix hibernation for mlx5 VF driver")
+Signed-off-by: Dexuan Cui <decui@microsoft.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/batman-adv/multicast.c      | 46 ++++++++++++++++++++++++++-------
- net/batman-adv/multicast.h      | 15 +++++++++++
- net/batman-adv/soft-interface.c |  5 ++--
- 3 files changed, 53 insertions(+), 13 deletions(-)
+ drivers/net/hyperv/netvsc_drv.c | 11 +----------
+ 1 file changed, 1 insertion(+), 10 deletions(-)
 
-diff --git a/net/batman-adv/multicast.c b/net/batman-adv/multicast.c
-index 1d5bdf3a4b655..f5bf931252c4b 100644
---- a/net/batman-adv/multicast.c
-+++ b/net/batman-adv/multicast.c
-@@ -51,6 +51,7 @@
- #include <uapi/linux/batadv_packet.h>
- #include <uapi/linux/batman_adv.h>
+diff --git a/drivers/net/hyperv/netvsc_drv.c b/drivers/net/hyperv/netvsc_drv.c
+index 8309194b351a9..a2db5ef3b62a2 100644
+--- a/drivers/net/hyperv/netvsc_drv.c
++++ b/drivers/net/hyperv/netvsc_drv.c
+@@ -2576,7 +2576,6 @@ static int netvsc_resume(struct hv_device *dev)
+ 	struct net_device *net = hv_get_drvdata(dev);
+ 	struct net_device_context *net_device_ctx;
+ 	struct netvsc_device_info *device_info;
+-	struct net_device *vf_netdev;
+ 	int ret;
  
-+#include "bridge_loop_avoidance.h"
- #include "hard-interface.h"
- #include "hash.h"
- #include "log.h"
-@@ -1434,6 +1435,35 @@ batadv_mcast_forw_mode(struct batadv_priv *bat_priv, struct sk_buff *skb,
- 	return BATADV_FORW_ALL;
- }
+ 	rtnl_lock();
+@@ -2589,15 +2588,6 @@ static int netvsc_resume(struct hv_device *dev)
+ 	netvsc_devinfo_put(device_info);
+ 	net_device_ctx->saved_netvsc_dev_info = NULL;
  
-+/**
-+ * batadv_mcast_forw_send_orig() - send a multicast packet to an originator
-+ * @bat_priv: the bat priv with all the soft interface information
-+ * @skb: the multicast packet to send
-+ * @vid: the vlan identifier
-+ * @orig_node: the originator to send the packet to
-+ *
-+ * Return: NET_XMIT_DROP in case of error or NET_XMIT_SUCCESS otherwise.
-+ */
-+int batadv_mcast_forw_send_orig(struct batadv_priv *bat_priv,
-+				struct sk_buff *skb,
-+				unsigned short vid,
-+				struct batadv_orig_node *orig_node)
-+{
-+	/* Avoid sending multicast-in-unicast packets to other BLA
-+	 * gateways - they already got the frame from the LAN side
-+	 * we share with them.
-+	 * TODO: Refactor to take BLA into account earlier, to avoid
-+	 * reducing the mcast_fanout count.
-+	 */
-+	if (batadv_bla_is_backbone_gw_orig(bat_priv, orig_node->orig, vid)) {
-+		dev_kfree_skb(skb);
-+		return NET_XMIT_SUCCESS;
-+	}
-+
-+	return batadv_send_skb_unicast(bat_priv, skb, BATADV_UNICAST, 0,
-+				       orig_node, vid);
-+}
-+
- /**
-  * batadv_mcast_forw_tt() - forwards a packet to multicast listeners
-  * @bat_priv: the bat priv with all the soft interface information
-@@ -1471,8 +1501,8 @@ batadv_mcast_forw_tt(struct batadv_priv *bat_priv, struct sk_buff *skb,
- 			break;
- 		}
+-	/* A NIC driver (e.g. mlx5) may keep the VF network interface across
+-	 * hibernation, but here the data path is implicitly switched to the
+-	 * netvsc NIC since the vmbus channel is closed and re-opened, so
+-	 * netvsc_vf_changed() must be used to switch the data path to the VF.
+-	 */
+-	vf_netdev = rtnl_dereference(net_device_ctx->vf_netdev);
+-	if (vf_netdev && netvsc_vf_changed(vf_netdev) != NOTIFY_OK)
+-		ret = -EINVAL;
+-
+ 	rtnl_unlock();
  
--		batadv_send_skb_unicast(bat_priv, newskb, BATADV_UNICAST, 0,
--					orig_entry->orig_node, vid);
-+		batadv_mcast_forw_send_orig(bat_priv, newskb, vid,
-+					    orig_entry->orig_node);
- 	}
- 	rcu_read_unlock();
- 
-@@ -1513,8 +1543,7 @@ batadv_mcast_forw_want_all_ipv4(struct batadv_priv *bat_priv,
- 			break;
- 		}
- 
--		batadv_send_skb_unicast(bat_priv, newskb, BATADV_UNICAST, 0,
--					orig_node, vid);
-+		batadv_mcast_forw_send_orig(bat_priv, newskb, vid, orig_node);
- 	}
- 	rcu_read_unlock();
  	return ret;
-@@ -1551,8 +1580,7 @@ batadv_mcast_forw_want_all_ipv6(struct batadv_priv *bat_priv,
- 			break;
- 		}
- 
--		batadv_send_skb_unicast(bat_priv, newskb, BATADV_UNICAST, 0,
--					orig_node, vid);
-+		batadv_mcast_forw_send_orig(bat_priv, newskb, vid, orig_node);
- 	}
- 	rcu_read_unlock();
- 	return ret;
-@@ -1618,8 +1646,7 @@ batadv_mcast_forw_want_all_rtr4(struct batadv_priv *bat_priv,
- 			break;
- 		}
- 
--		batadv_send_skb_unicast(bat_priv, newskb, BATADV_UNICAST, 0,
--					orig_node, vid);
-+		batadv_mcast_forw_send_orig(bat_priv, newskb, vid, orig_node);
- 	}
- 	rcu_read_unlock();
- 	return ret;
-@@ -1656,8 +1683,7 @@ batadv_mcast_forw_want_all_rtr6(struct batadv_priv *bat_priv,
- 			break;
- 		}
- 
--		batadv_send_skb_unicast(bat_priv, newskb, BATADV_UNICAST, 0,
--					orig_node, vid);
-+		batadv_mcast_forw_send_orig(bat_priv, newskb, vid, orig_node);
- 	}
- 	rcu_read_unlock();
- 	return ret;
-diff --git a/net/batman-adv/multicast.h b/net/batman-adv/multicast.h
-index 5d9e2bb29c971..403929013ac47 100644
---- a/net/batman-adv/multicast.h
-+++ b/net/batman-adv/multicast.h
-@@ -46,6 +46,11 @@ enum batadv_forw_mode
- batadv_mcast_forw_mode(struct batadv_priv *bat_priv, struct sk_buff *skb,
- 		       struct batadv_orig_node **mcast_single_orig);
- 
-+int batadv_mcast_forw_send_orig(struct batadv_priv *bat_priv,
-+				struct sk_buff *skb,
-+				unsigned short vid,
-+				struct batadv_orig_node *orig_node);
-+
- int batadv_mcast_forw_send(struct batadv_priv *bat_priv, struct sk_buff *skb,
- 			   unsigned short vid);
- 
-@@ -71,6 +76,16 @@ batadv_mcast_forw_mode(struct batadv_priv *bat_priv, struct sk_buff *skb,
- 	return BATADV_FORW_ALL;
- }
- 
-+static inline int
-+batadv_mcast_forw_send_orig(struct batadv_priv *bat_priv,
-+			    struct sk_buff *skb,
-+			    unsigned short vid,
-+			    struct batadv_orig_node *orig_node)
-+{
-+	kfree_skb(skb);
-+	return NET_XMIT_DROP;
-+}
-+
- static inline int
- batadv_mcast_forw_send(struct batadv_priv *bat_priv, struct sk_buff *skb,
- 		       unsigned short vid)
-diff --git a/net/batman-adv/soft-interface.c b/net/batman-adv/soft-interface.c
-index 5ee8e9a100f90..cf1a8ef7464f5 100644
---- a/net/batman-adv/soft-interface.c
-+++ b/net/batman-adv/soft-interface.c
-@@ -364,9 +364,8 @@ static netdev_tx_t batadv_interface_tx(struct sk_buff *skb,
- 				goto dropped;
- 			ret = batadv_send_skb_via_gw(bat_priv, skb, vid);
- 		} else if (mcast_single_orig) {
--			ret = batadv_send_skb_unicast(bat_priv, skb,
--						      BATADV_UNICAST, 0,
--						      mcast_single_orig, vid);
-+			ret = batadv_mcast_forw_send_orig(bat_priv, skb, vid,
-+							  mcast_single_orig);
- 		} else if (forw_mode == BATADV_FORW_SOME) {
- 			ret = batadv_mcast_forw_send(bat_priv, skb, vid);
- 		} else {
+@@ -2658,6 +2648,7 @@ static int netvsc_netdev_event(struct notifier_block *this,
+ 		return netvsc_unregister_vf(event_dev);
+ 	case NETDEV_UP:
+ 	case NETDEV_DOWN:
++	case NETDEV_CHANGE:
+ 		return netvsc_vf_changed(event_dev);
+ 	default:
+ 		return NOTIFY_DONE;
 -- 
 2.25.1
 
