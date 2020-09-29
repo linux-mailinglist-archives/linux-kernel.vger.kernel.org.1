@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1515C27C422
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:11:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2D5527C381
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:07:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729213AbgI2LL2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:11:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52154 "EHLO mail.kernel.org"
+        id S1728251AbgI2LGQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:06:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42458 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728440AbgI2LLB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:11:01 -0400
+        id S1728806AbgI2LF5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:05:57 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7F5DB2158C;
-        Tue, 29 Sep 2020 11:11:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 47AA121941;
+        Tue, 29 Sep 2020 11:05:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601377861;
-        bh=j9M/ZVACyoaoos25pViqIw0OqwIayoGBc0LWdds0Jx8=;
+        s=default; t=1601377556;
+        bh=1KKzDc20o8aDiN1xzsaNGjip393iEygRX8kvP7uo80Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XpCeUp1avYdYt+5+c3GMlUENDxKU164lpshBH59pftEvXVyYKFVYffOwWVquhX+QP
-         ir9PQDF3+NN71FpXjhTGyY/sZEDsgXCPM4WTJUZF4wNK4I2rsvVO6OkiO8Aly5Uc1u
-         QSIlV4NRxJycE+WbEuiQPzCVzOODb+Y5+XyP3OXQ=
+        b=cOw8kkgBiKfe0QajkLEai50DzhqZUQy6xgH87NuBkShTl4zXuWHYnlDbJisQZlfd5
+         Kw/+yRzMk4FeocOWUOsyLOfLAjsY/cA1pqzpRWCppoHNdY0eOQ0Roe5MjsZkT78nyB
+         njLjBkz7ETC8MEEGPb52vjcbRf8T6cEWkcYetEZI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qian Cai <cai@lca.pw>,
-        Daniel Wagner <dwagner@suse.de>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
+        stable@vger.kernel.org, Jing Xiangfeng <jingxiangfeng@huawei.com>,
+        Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 099/121] vfio/pci: Clear error and request eventfd ctx after releasing
+Subject: [PATCH 4.4 76/85] atm: eni: fix the missed pci_disable_device() for eni_init_one()
 Date:   Tue, 29 Sep 2020 13:00:43 +0200
-Message-Id: <20200929105935.086005935@linuxfoundation.org>
+Message-Id: <20200929105931.995203053@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929105930.172747117@linuxfoundation.org>
-References: <20200929105930.172747117@linuxfoundation.org>
+In-Reply-To: <20200929105928.198942536@linuxfoundation.org>
+References: <20200929105928.198942536@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,45 +43,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alex Williamson <alex.williamson@redhat.com>
+From: Jing Xiangfeng <jingxiangfeng@huawei.com>
 
-[ Upstream commit 5c5866c593bbd444d0339ede6a8fb5f14ff66d72 ]
+[ Upstream commit c2b947879ca320ac5505c6c29a731ff17da5e805 ]
 
-The next use of the device will generate an underflow from the
-stale reference.
+eni_init_one() misses to call pci_disable_device() in an error path.
+Jump to err_disable to fix it.
 
-Cc: Qian Cai <cai@lca.pw>
-Fixes: 1518ac272e78 ("vfio/pci: fix memory leaks of eventfd ctx")
-Reported-by: Daniel Wagner <dwagner@suse.de>
-Reviewed-by: Cornelia Huck <cohuck@redhat.com>
-Tested-by: Daniel Wagner <dwagner@suse.de>
-Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+Fixes: ede58ef28e10 ("atm: remove deprecated use of pci api")
+Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/vfio/pci/vfio_pci.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ drivers/atm/eni.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/vfio/pci/vfio_pci.c b/drivers/vfio/pci/vfio_pci.c
-index c9c0af9a571f6..c08cff0ca08df 100644
---- a/drivers/vfio/pci/vfio_pci.c
-+++ b/drivers/vfio/pci/vfio_pci.c
-@@ -392,10 +392,14 @@ static void vfio_pci_release(void *device_data)
- 	if (!(--vdev->refcnt)) {
- 		vfio_spapr_pci_eeh_release(vdev->pdev);
- 		vfio_pci_disable(vdev);
--		if (vdev->err_trigger)
-+		if (vdev->err_trigger) {
- 			eventfd_ctx_put(vdev->err_trigger);
--		if (vdev->req_trigger)
-+			vdev->err_trigger = NULL;
-+		}
-+		if (vdev->req_trigger) {
- 			eventfd_ctx_put(vdev->req_trigger);
-+			vdev->req_trigger = NULL;
-+		}
- 	}
+diff --git a/drivers/atm/eni.c b/drivers/atm/eni.c
+index ad591a2f7c822..340a1ee79d280 100644
+--- a/drivers/atm/eni.c
++++ b/drivers/atm/eni.c
+@@ -2242,7 +2242,7 @@ static int eni_init_one(struct pci_dev *pci_dev,
  
- 	mutex_unlock(&driver_lock);
+ 	rc = dma_set_mask_and_coherent(&pci_dev->dev, DMA_BIT_MASK(32));
+ 	if (rc < 0)
+-		goto out;
++		goto err_disable;
+ 
+ 	rc = -ENOMEM;
+ 	eni_dev = kmalloc(sizeof(struct eni_dev), GFP_KERNEL);
 -- 
 2.25.1
 
