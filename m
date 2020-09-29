@@ -2,110 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0944027C198
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 11:47:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0597227C193
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 11:46:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728080AbgI2Jqs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 05:46:48 -0400
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:34460 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725765AbgI2Jqp (ORCPT
+        id S1728067AbgI2Jqm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 05:46:42 -0400
+Received: from mail-ej1-f67.google.com ([209.85.218.67]:42521 "EHLO
+        mail-ej1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727740AbgI2Jqm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 05:46:45 -0400
-Received: by mail-oi1-f195.google.com with SMTP id n2so4761369oij.1;
-        Tue, 29 Sep 2020 02:46:44 -0700 (PDT)
+        Tue, 29 Sep 2020 05:46:42 -0400
+Received: by mail-ej1-f67.google.com with SMTP id q13so14039631ejo.9;
+        Tue, 29 Sep 2020 02:46:40 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=u6oOOgapcFsJWSWWYMZP4dZW4BhIh9EKlk0wS9w12pg=;
-        b=Udj0pdUpME7SVnKCDG2ulOB59g4WL+W6BOy09PUcuOzNzyYYkvh4b1awhLWsOSp7U1
-         dZtrORDwuiYiTjaCMKbayqzDxCqPoouTutoVEx7EXXbzj15Sudz4poSzv6kyK/yFIzbR
-         o0jVMVZdzb14L5xVIoKWIYnkKGHb2a+zRAEmJIWruectNWPeMR5mbM9tJTcJhtv/8glg
-         Z8Pwa80CYtu+VhreqQJka+fNAzYLDybW7/CGXmjKHVfzFxbBug4TvX/b8tXikHu8FGoK
-         HO3TF3IK4PM+jCZv8NGAxJ5UAo6nznlFHeXMAeAsVFa16FdyayfrxW/zcWCn54a1DjfT
-         DGSQ==
-X-Gm-Message-State: AOAM533T1DEzL0mP/DGRXaUrStfRc1kU/jDyX99fcMY+Yq90X/eAWLX7
-        gl6b7RXYNEgrklP+e4+lyVyz0lpHyXJGdlhoCcCEcxNawB0=
-X-Google-Smtp-Source: ABdhPJw69ARAmlJG/6Bkor+D8FVkFt/hrxObOfrwk39faTLjVzj+KTheJ5+4vSkT9LAzF9NPedcGkMZoQfBUpyJ3/ig=
-X-Received: by 2002:aca:f203:: with SMTP id q3mr1874944oih.148.1601372803976;
- Tue, 29 Sep 2020 02:46:43 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=5nWv42Ih42N2NRVG8MQhIrrPCYfOCsYTrczhveDJBnc=;
+        b=FC0L4dITgIc8QQ4W9S4eR5FiNCly0KqK5dYN1AR0Aganaxh+r0OacdUzDG8EbmqBxP
+         wEln4FBuWx+c2LmnJlZxsuOdcklQBKBaVtK/KrIBkla9DlGbVLoaq/1EU0+7mAOmbjSZ
+         29JvrbZnD2qQlFTMnXF0k7CNRev1PeMzz8f+go59AVPn3FWuOmZfeftDmWsxb7/4F4PL
+         46VD4yonq1Xf8UGvYI2F4GVNmPLCagvy7r2jwPQst9aE3rQfJhtMR++5jPpG2leXZgRO
+         K/C0cwEy9zEqgBkOXyTz3vRjkssseib80s0jIhDJnGGIp2K7ZYKL7n+d0I/rPftSfQXz
+         Bm4Q==
+X-Gm-Message-State: AOAM532VMpeS1nNh6zixwMyLBkZ4uetX9wjq7n8CVRrIEWAkbq69sdq0
+        zEKzBJ6CZKTBE9brj6yZT+DBIY/O8HpA/Q==
+X-Google-Smtp-Source: ABdhPJw1hpwhNC3rQ/oGOS8jzFlP0SaAObmpGtctW3hXetAzfkJI/GW1bHdNVmPi10NuZ+Id7P2tZQ==
+X-Received: by 2002:a17:906:b88e:: with SMTP id hb14mr2840343ejb.543.1601372799559;
+        Tue, 29 Sep 2020 02:46:39 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.194])
+        by smtp.googlemail.com with ESMTPSA id x6sm4663845ejf.59.2020.09.29.02.46.37
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 29 Sep 2020 02:46:38 -0700 (PDT)
+Date:   Tue, 29 Sep 2020 11:46:36 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 1/4] dt-bindings: media: imx258: add bindings for
+ IMX258 sensor
+Message-ID: <20200929094636.GA11333@kozik-lap>
+References: <20200923152129.21736-1-krzk@kernel.org>
+ <20200929091512.GF26842@paasikivi.fi.intel.com>
+ <CAJKOXPfRnMg2sUO8dd8CRrwyQFNr-9HN5-QV7Uy4YTVrRJosWQ@mail.gmail.com>
+ <20200929094046.GH26842@paasikivi.fi.intel.com>
 MIME-Version: 1.0
-References: <20200910133806.25077-1-manivannan.sadhasivam@linaro.org> <20200910133806.25077-3-manivannan.sadhasivam@linaro.org>
-In-Reply-To: <20200910133806.25077-3-manivannan.sadhasivam@linaro.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 29 Sep 2020 11:46:32 +0200
-Message-ID: <CAMuHMdVkwGjr6dJuMyhQNqFoJqbh6Ec5V2b5LenCshwpM2SDsQ@mail.gmail.com>
-Subject: Re: [PATCH 2/6] dt-bindings: can: mcp25xxfd: document device tree bindings
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>, linux-can@vger.kernel.org,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        dev.kurt@vandijck-laurijssen.be
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200929094046.GH26842@paasikivi.fi.intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Manivannan, Oleksij,
+On Tue, Sep 29, 2020 at 12:40:46PM +0300, Sakari Ailus wrote:
+> On Tue, Sep 29, 2020 at 11:18:46AM +0200, Krzysztof Kozlowski wrote:
+> > On Tue, 29 Sep 2020 at 11:15, Sakari Ailus <sakari.ailus@linux.intel.com> wrote:
+> > >
+> > > Hi Krzysztof,
+> > >
+> > > On Wed, Sep 23, 2020 at 05:21:26PM +0200, Krzysztof Kozlowski wrote:
+> > > > Add bindings for the IMX258 camera sensor.  The bindings, just like the
+> > > > driver, are quite limited, e.g. do not support regulator supplies.
+> > > >
+> > > > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> > > >
+> > > > ---
+> > > >
+> > > > Changes since v3:
+> > > > 1. Document also two lane setup.
+> > > >
+> > > > Changes since v2:
+> > > > 1. Remove clock-frequency, add reset GPIOs, add supplies.
+> > >
+> > > Oops. I missed this one.
+> > >
+> > > How does the driver know the appropriate clock frequency for the platform
+> > > if it's not in DT? The sensor supports a range of frequencies, not a single
+> > > frequency.
+> > >
+> > > Could you add clock-frequency back?
+> > 
+> > Not really, it was removed on Rob's request. The bindings do not
+> > describe driver's behavior so how the driver gets frequency should not
+> > be part of the bindings. Also it's not a real problem - the driver
+> > just calls clk_get_rate().
+> 
+> How is the rate determined? I mean, many ISPs or CSI-2 receivers that
+> provide the clock are also capable of using a variety of frequencies. But
+> only one can be used on the platform in general.
 
-On Thu, Sep 10, 2020 at 11:37 PM Manivannan Sadhasivam
-<manivannan.sadhasivam@linaro.org> wrote:
-> From: Oleksij Rempel <o.rempel@pengutronix.de>
->
-> This patch adds the device-tree binding documentation for the Microchip
-> MCP25xxFD SPI CAN controller family.
->
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Having "clock-frequency" property in DTS did not solve that. It has no
+effect on actual frequency.
 
-Thanks for your patch, which is now commit 1b5a78e69c1fdae9
-("dt-binding: can: mcp25xxfd: document device tree bindings") in net-next.
+> 
+> Where does it come from if it's not in DT?
 
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/net/can/microchip,mcp25xxfd.yaml
-> @@ -0,0 +1,79 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/net/can/microchip,mcp25xxfd.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title:
-> +  Microchip MCP2517FD and MCP2518FD stand-alone CAN controller device tree
-> +  bindings
-> +
-> +maintainers:
-> +  - Marc Kleine-Budde <mkl@pengutronix.de>
-> +
-> +properties:
-> +  compatible:
-> +    oneOf:
-> +      - const: microchip,mcp2517fd
-> +        description: for MCP2517FD
-> +      - const: microchip,mcp2518fd
-> +        description: for MCP2518FD
-> +      - const: microchip,mcp25xxfd
-> +        description: to autodetect chip variant
+The frequency is either chosen by consumer (imx258) or pre-assigned from
+DT, but not with "clock-frequency" property. There are generic
+properties for this: assigned-clocks, assigned-clock-rates and
+assigned-clock-parents.
 
-The last one is a wildcard?
-When would you want to use it (oh, in the example below)?
-Can you guarantee Microchip will not introduce other components that
-match this wildcard, but are not compatible?
+These properties should be added to DTS if additionalProperties is
+false, which is the case here... so I could add them. My DTS anyway does
+not use them, as the clock is generated internally on a camera board so
+I don't have a control over it.
 
-Gr{oetje,eeting}s,
-
-                        Geert
+Best regards,
+Krzysztof
 
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+> 
+> Using another frequency generally leads to failure later on as the desired
+> link frequency likely is not available for a random external clock
+> frequency.
