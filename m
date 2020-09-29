@@ -2,293 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAB9D27C0BF
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 11:16:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 778F227C0CD
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 11:17:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728035AbgI2JPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 05:15:54 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:14706 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727718AbgI2JPy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 05:15:54 -0400
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 6F838297318984F61466;
-        Tue, 29 Sep 2020 17:15:52 +0800 (CST)
-Received: from [10.136.114.67] (10.136.114.67) by smtp.huawei.com
- (10.3.19.214) with Microsoft SMTP Server (TLS) id 14.3.487.0; Tue, 29 Sep
- 2020 17:15:51 +0800
-Subject: Re: [PATCH v2 1/2] f2fs: compress: introduce page array slab cache
-To:     Jaegeuk Kim <jaegeuk@kernel.org>
-CC:     <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-kernel@vger.kernel.org>, <chao@kernel.org>
-References: <20200914090514.50102-1-yuchao0@huawei.com>
- <20200929082306.GA1567825@google.com>
- <6e7639db-9120-d406-0a46-ec841845bb28@huawei.com>
- <20200929084739.GB1567825@google.com>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <1b9774da-b2a8-2009-7796-9c576af1b4c4@huawei.com>
-Date:   Tue, 29 Sep 2020 17:15:51 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        id S1727966AbgI2JRN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 05:17:13 -0400
+Received: from mga03.intel.com ([134.134.136.65]:31792 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727468AbgI2JRN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 05:17:13 -0400
+IronPort-SDR: rfv/cNozREQ1CuhVHeAboTC1BbE7OMgijqB9oibH/EiO+jtzm0ukfqX26hhuz6ik5lXWfJ8PEq
+ QDT/kFTCLjpA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9758"; a="162214006"
+X-IronPort-AV: E=Sophos;i="5.77,317,1596524400"; 
+   d="scan'208";a="162214006"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2020 02:17:10 -0700
+IronPort-SDR: dR0v/GG9iY2ps19waNZ0R24yxWfRp4kUM6WLHLR0zm2IpE7Huydwo4xp/yRTIGgy0/7NhYyCPp
+ G85XSZjN5e/g==
+X-IronPort-AV: E=Sophos;i="5.77,317,1596524400"; 
+   d="scan'208";a="338555751"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2020 02:17:07 -0700
+Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
+        id 0B902204FD; Tue, 29 Sep 2020 12:17:05 +0300 (EEST)
+Date:   Tue, 29 Sep 2020 12:17:04 +0300
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 4/4] media: i2c: imx258: get clock from device
+ properties and enable it via runtime PM
+Message-ID: <20200929091704.GG26842@paasikivi.fi.intel.com>
+References: <20200923152129.21736-1-krzk@kernel.org>
+ <20200923152129.21736-4-krzk@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20200929084739.GB1567825@google.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.136.114.67]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200923152129.21736-4-krzk@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/9/29 16:47, Jaegeuk Kim wrote:
-> On 09/29, Chao Yu wrote:
->> On 2020/9/29 16:23, Jaegeuk Kim wrote:
->>> I found a bug related to the number of page pointer allocation related to
->>> nr_cpages.
->>
->> Jaegeuk,
->>
->> If I didn't miss anything, you mean that nr_cpages could be larger
->> than nr_rpages, right? the problematic case here is lzo/lzo-rle:
->>
->> cc->clen = lzo1x_worst_compress(PAGE_SIZE << cc->log_cluster_size);
->>
->> As we can't limited clen as we did for lz4/zstd:
->>
->> cc->clen = cc->rlen - PAGE_SIZE - COMPRESS_HEADER_SIZE;
+Hi Krzysztof,
+
+On Wed, Sep 23, 2020 at 05:21:29PM +0200, Krzysztof Kozlowski wrote:
+> The IMX258 sensor driver checked in device properties for a
+> clock-frequency property which actually does not mean that the clock is
+> really running such frequency or is it even enabled.
 > 
-> Yes, I've seen some memory corruption in lzo test. Here is another patch to fix
-> mem leak.
+> Get the provided clock and check it frequency.  If none is provided,
+> fall back to old property.
 > 
-> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+> Enable the clock when accessing the IMX258 registers and when streaming
+> starts with runtime PM.
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> 
 > ---
->   fs/f2fs/compress.c | 67 ++++++++++++++++++++++++++++------------------
->   1 file changed, 41 insertions(+), 26 deletions(-)
 > 
-> diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
-> index f086ac43ca825..ba2d4897744d8 100644
-> --- a/fs/f2fs/compress.c
-> +++ b/fs/f2fs/compress.c
-> @@ -20,22 +20,20 @@
->   static struct kmem_cache *cic_entry_slab;
->   static struct kmem_cache *dic_entry_slab;
->   
-> -static void *page_array_alloc(struct inode *inode)
-> +static void *page_array_alloc(struct inode *inode, int nr)
->   {
->   	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
-> -	unsigned int size = sizeof(struct page *) <<
-> -				F2FS_I(inode)->i_log_cluster_size;
-> +	unsigned int size = sizeof(struct page *) * nr;
->   
->   	if (likely(size == sbi->page_array_slab_size))
->   		return kmem_cache_zalloc(sbi->page_array_slab, GFP_NOFS);
->   	return f2fs_kzalloc(sbi, size, GFP_NOFS);
->   }
->   
-> -static void page_array_free(struct inode *inode, void *pages)
-> +static void page_array_free(struct inode *inode, void *pages, int nr)
->   {
->   	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
-> -	unsigned int size = sizeof(struct page *) <<
-> -				F2FS_I(inode)->i_log_cluster_size;
-> +	unsigned int size = sizeof(struct page *) * nr;
->   
->   	if (!pages)
->   		return;
-> @@ -162,13 +160,13 @@ int f2fs_init_compress_ctx(struct compress_ctx *cc)
->   	if (cc->rpages)
->   		return 0;
->   
-> -	cc->rpages = page_array_alloc(cc->inode);
-> +	cc->rpages = page_array_alloc(cc->inode, cc->cluster_size);
->   	return cc->rpages ? 0 : -ENOMEM;
->   }
->   
->   void f2fs_destroy_compress_ctx(struct compress_ctx *cc)
->   {
-> -	page_array_free(cc->inode, cc->rpages);
-> +	page_array_free(cc->inode, cc->rpages, cc->cluster_size);
->   	cc->rpages = NULL;
->   	cc->nr_rpages = 0;
->   	cc->nr_cpages = 0;
-> @@ -602,7 +600,8 @@ static int f2fs_compress_pages(struct compress_ctx *cc)
->   	struct f2fs_inode_info *fi = F2FS_I(cc->inode);
->   	const struct f2fs_compress_ops *cops =
->   				f2fs_cops[fi->i_compress_algorithm];
-> -	unsigned int max_len, nr_cpages;
-> +	unsigned int max_len, new_nr_cpages;
-> +	struct page **new_cpages;
->   	int i, ret;
->   
->   	trace_f2fs_compress_pages_start(cc->inode, cc->cluster_idx,
-> @@ -617,7 +616,7 @@ static int f2fs_compress_pages(struct compress_ctx *cc)
->   	max_len = COMPRESS_HEADER_SIZE + cc->clen;
->   	cc->nr_cpages = DIV_ROUND_UP(max_len, PAGE_SIZE);
->   
-> -	cc->cpages = page_array_alloc(cc->inode);
-> +	cc->cpages = page_array_alloc(cc->inode, cc->nr_cpages);
-
-Well, cc->nr_cpages will be set to cc->nr_rpages - 1 for zstd/lz4 cases, so
-this will make cpages allocation fallback to kmalloc, which can cause more
-memory use.
-
-Thanks,
-
->   	if (!cc->cpages) {
->   		ret = -ENOMEM;
->   		goto destroy_compress_ctx;
-> @@ -659,16 +658,28 @@ static int f2fs_compress_pages(struct compress_ctx *cc)
->   	for (i = 0; i < COMPRESS_DATA_RESERVED_SIZE; i++)
->   		cc->cbuf->reserved[i] = cpu_to_le32(0);
->   
-> -	nr_cpages = DIV_ROUND_UP(cc->clen + COMPRESS_HEADER_SIZE, PAGE_SIZE);
-> +	new_nr_cpages = DIV_ROUND_UP(cc->clen + COMPRESS_HEADER_SIZE, PAGE_SIZE);
+> Changes since v3:
+> 1. None
+> 
+> Changes since v2:
+> 1. Do not try to set drvdata, wrap lines.
+> 2. Use dev_dbg.
+> 
+> Changes since v1:
+> 1. Use runtime PM for clock toggling
+> ---
+>  drivers/media/i2c/imx258.c | 71 +++++++++++++++++++++++++++++++++-----
+>  1 file changed, 62 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/media/i2c/imx258.c b/drivers/media/i2c/imx258.c
+> index ae183b0dbba9..7bedbfe5c4d6 100644
+> --- a/drivers/media/i2c/imx258.c
+> +++ b/drivers/media/i2c/imx258.c
+> @@ -2,6 +2,7 @@
+>  // Copyright (C) 2018 Intel Corporation
+>  
+>  #include <linux/acpi.h>
+> +#include <linux/clk.h>
+>  #include <linux/delay.h>
+>  #include <linux/i2c.h>
+>  #include <linux/module.h>
+> @@ -68,6 +69,9 @@
+>  #define REG_CONFIG_MIRROR_FLIP		0x03
+>  #define REG_CONFIG_FLIP_TEST_PATTERN	0x02
+>  
+> +/* Input clock frequency in Hz */
+> +#define IMX258_INPUT_CLOCK_FREQ		19200000
 > +
-> +	/* Now we're going to cut unnecessary tail pages */
-> +	new_cpages = page_array_alloc(cc->inode, new_nr_cpages);
-> +	if (new_cpages) {
-> +		ret = -ENOMEM;
-> +		goto out_vunmap_cbuf;
-> +	}
->   
->   	/* zero out any unused part of the last page */
->   	memset(&cc->cbuf->cdata[cc->clen], 0,
-> -	       (nr_cpages * PAGE_SIZE) - (cc->clen + COMPRESS_HEADER_SIZE));
-> +			(new_nr_cpages * PAGE_SIZE) -
-> +			(cc->clen + COMPRESS_HEADER_SIZE));
->   
->   	vm_unmap_ram(cc->cbuf, cc->nr_cpages);
->   	vm_unmap_ram(cc->rbuf, cc->cluster_size);
->   
-> -	for (i = nr_cpages; i < cc->nr_cpages; i++) {
-> +	for (i = 0; i < cc->nr_cpages; i++) {
-> +		if (i < new_nr_cpages) {
-> +			new_cpages[i] = cc->cpages[i];
-> +			continue;
+>  struct imx258_reg {
+>  	u16 address;
+>  	u8 val;
+> @@ -610,6 +614,8 @@ struct imx258 {
+>  
+>  	/* Streaming on/off */
+>  	bool streaming;
+> +
+> +	struct clk *clk;
+>  };
+>  
+>  static inline struct imx258 *to_imx258(struct v4l2_subdev *_sd)
+> @@ -972,6 +978,29 @@ static int imx258_stop_streaming(struct imx258 *imx258)
+>  	return 0;
+>  }
+>  
+> +static int imx258_power_on(struct device *dev)
+> +{
+> +	struct v4l2_subdev *sd = dev_get_drvdata(dev);
+> +	struct imx258 *imx258 = to_imx258(sd);
+> +	int ret;
+> +
+> +	ret = clk_prepare_enable(imx258->clk);
+> +	if (ret)
+> +		dev_err(dev, "failed to enable clock\n");
+> +
+> +	return ret;
+> +}
+> +
+> +static int imx258_power_off(struct device *dev)
+> +{
+> +	struct v4l2_subdev *sd = dev_get_drvdata(dev);
+> +	struct imx258 *imx258 = to_imx258(sd);
+> +
+> +	clk_disable_unprepare(imx258->clk);
+> +
+> +	return 0;
+> +}
+> +
+>  static int imx258_set_stream(struct v4l2_subdev *sd, int enable)
+>  {
+>  	struct imx258 *imx258 = to_imx258(sd);
+> @@ -1199,9 +1228,28 @@ static int imx258_probe(struct i2c_client *client)
+>  	int ret;
+>  	u32 val = 0;
+>  
+> -	device_property_read_u32(&client->dev, "clock-frequency", &val);
+> -	if (val != 19200000)
+> -		return -EINVAL;
+> +	imx258 = devm_kzalloc(&client->dev, sizeof(*imx258), GFP_KERNEL);
+> +	if (!imx258)
+> +		return -ENOMEM;
+> +
+> +	imx258->clk = devm_clk_get_optional(&client->dev, NULL);
+> +	if (!imx258->clk) {
+> +		dev_dbg(&client->dev,
+> +			"no clock provided, using clock-frequency property\n");
+> +
+> +		device_property_read_u32(&client->dev, "clock-frequency", &val);
+> +		if (val != IMX258_INPUT_CLOCK_FREQ)
+> +			return -EINVAL;
+> +	} else if (IS_ERR(imx258->clk)) {
+> +		return dev_err_probe(&client->dev, PTR_ERR(imx258->clk),
+> +				     "error getting clock\n");
+> +	} else {
+> +		if (clk_get_rate(imx258->clk) != IMX258_INPUT_CLOCK_FREQ) {
+> +			dev_err(&client->dev,
+> +				"input clock frequency not supported\n");
+> +			return -EINVAL;
 > +		}
->   		f2fs_compress_free_page(cc->cpages[i]);
->   		cc->cpages[i] = NULL;
->   	}
-> @@ -676,7 +687,9 @@ static int f2fs_compress_pages(struct compress_ctx *cc)
->   	if (cops->destroy_compress_ctx)
->   		cops->destroy_compress_ctx(cc);
->   
-> -	cc->nr_cpages = nr_cpages;
-> +	page_array_free(cc->inode, cc->cpages, cc->nr_cpages);
-> +	cc->cpages = new_cpages;
-> +	cc->nr_cpages = new_nr_cpages;
->   
->   	trace_f2fs_compress_pages_end(cc->inode, cc->cluster_idx,
->   							cc->clen, ret);
-> @@ -691,7 +704,7 @@ static int f2fs_compress_pages(struct compress_ctx *cc)
->   		if (cc->cpages[i])
->   			f2fs_compress_free_page(cc->cpages[i]);
->   	}
-> -	page_array_free(cc->inode, cc->cpages);
-> +	page_array_free(cc->inode, cc->cpages, cc->nr_cpages);
->   	cc->cpages = NULL;
->   destroy_compress_ctx:
->   	if (cops->destroy_compress_ctx)
-> @@ -730,7 +743,7 @@ void f2fs_decompress_pages(struct bio *bio, struct page *page, bool verity)
->   		goto out_free_dic;
->   	}
->   
-> -	dic->tpages = page_array_alloc(dic->inode);
-> +	dic->tpages = page_array_alloc(dic->inode, dic->cluster_size);
->   	if (!dic->tpages) {
->   		ret = -ENOMEM;
->   		goto out_free_dic;
-> @@ -1203,7 +1216,7 @@ static int f2fs_write_compressed_pages(struct compress_ctx *cc,
->   	cic->magic = F2FS_COMPRESSED_PAGE_MAGIC;
->   	cic->inode = inode;
->   	atomic_set(&cic->pending_pages, cc->nr_cpages);
-> -	cic->rpages = page_array_alloc(cc->inode);
-> +	cic->rpages = page_array_alloc(cc->inode, cc->cluster_size);
->   	if (!cic->rpages)
->   		goto out_put_cic;
->   
-> @@ -1297,11 +1310,13 @@ static int f2fs_write_compressed_pages(struct compress_ctx *cc,
->   	spin_unlock(&fi->i_size_lock);
->   
->   	f2fs_put_rpages(cc);
-> +	page_array_free(cc->inode, cc->cpages, cc->nr_cpages);
-> +	cc->cpages = NULL;
->   	f2fs_destroy_compress_ctx(cc);
->   	return 0;
->   
->   out_destroy_crypt:
-> -	page_array_free(cc->inode, cic->rpages);
-> +	page_array_free(cc->inode, cic->rpages, cc->cluster_size);
->   
->   	for (--i; i >= 0; i--)
->   		fscrypt_finalize_bounce_page(&cc->cpages[i]);
-> @@ -1310,6 +1325,8 @@ static int f2fs_write_compressed_pages(struct compress_ctx *cc,
->   			continue;
->   		f2fs_put_page(cc->cpages[i], 1);
->   	}
-> +	page_array_free(cc->inode, cc->cpages, cc->nr_cpages);
-> +	cc->cpages = NULL;
->   out_put_cic:
->   	kmem_cache_free(cic_entry_slab, cic);
->   out_put_dnode:
-> @@ -1345,7 +1362,7 @@ void f2fs_compress_write_end_io(struct bio *bio, struct page *page)
->   		end_page_writeback(cic->rpages[i]);
->   	}
->   
-> -	page_array_free(cic->inode, cic->rpages);
-> +	page_array_free(cic->inode, cic->rpages, cic->nr_rpages);
->   	kmem_cache_free(cic_entry_slab, cic);
->   }
->   
-> @@ -1442,8 +1459,6 @@ int f2fs_write_multi_pages(struct compress_ctx *cc,
->   
->   		err = f2fs_write_compressed_pages(cc, submitted,
->   							wbc, io_type);
-> -		page_array_free(cc->inode, cc->cpages);
-> -		cc->cpages = NULL;
->   		if (!err)
->   			return 0;
->   		f2fs_bug_on(F2FS_I_SB(cc->inode), err != -EAGAIN);
-> @@ -1468,7 +1483,7 @@ struct decompress_io_ctx *f2fs_alloc_dic(struct compress_ctx *cc)
->   	if (!dic)
->   		return ERR_PTR(-ENOMEM);
->   
-> -	dic->rpages = page_array_alloc(cc->inode);
-> +	dic->rpages = page_array_alloc(cc->inode, cc->cluster_size);
->   	if (!dic->rpages) {
->   		kmem_cache_free(dic_entry_slab, dic);
->   		return ERR_PTR(-ENOMEM);
-> @@ -1487,7 +1502,7 @@ struct decompress_io_ctx *f2fs_alloc_dic(struct compress_ctx *cc)
->   		dic->rpages[i] = cc->rpages[i];
->   	dic->nr_rpages = cc->cluster_size;
->   
-> -	dic->cpages = page_array_alloc(dic->inode);
-> +	dic->cpages = page_array_alloc(dic->inode, dic->nr_cpages);
->   	if (!dic->cpages)
->   		goto out_free;
->   
-> @@ -1522,7 +1537,7 @@ void f2fs_free_dic(struct decompress_io_ctx *dic)
->   				continue;
->   			f2fs_compress_free_page(dic->tpages[i]);
->   		}
-> -		page_array_free(dic->inode, dic->tpages);
-> +		page_array_free(dic->inode, dic->tpages, dic->cluster_size);
->   	}
->   
->   	if (dic->cpages) {
-> @@ -1531,10 +1546,10 @@ void f2fs_free_dic(struct decompress_io_ctx *dic)
->   				continue;
->   			f2fs_compress_free_page(dic->cpages[i]);
->   		}
-> -		page_array_free(dic->inode, dic->cpages);
-> +		page_array_free(dic->inode, dic->cpages, dic->nr_cpages);
->   	}
->   
-> -	page_array_free(dic->inode, dic->rpages);
-> +	page_array_free(dic->inode, dic->rpages, dic->nr_rpages);
->   	kmem_cache_free(dic_entry_slab, dic);
->   }
->   
-> 
+> +	}
+>  
+>  	/*
+>  	 * Check that the device is mounted upside down. The driver only
+> @@ -1211,24 +1259,25 @@ static int imx258_probe(struct i2c_client *client)
+>  	if (ret || val != 180)
+>  		return -EINVAL;
+>  
+> -	imx258 = devm_kzalloc(&client->dev, sizeof(*imx258), GFP_KERNEL);
+> -	if (!imx258)
+> -		return -ENOMEM;
+> -
+>  	/* Initialize subdev */
+>  	v4l2_i2c_subdev_init(&imx258->sd, client, &imx258_subdev_ops);
+>  
+> +	/* Will be powered off via pm_runtime_idle */
+> +	ret = imx258_power_on(&client->dev);
+> +	if (ret)
+> +		return ret;
+> +
+>  	/* Check module identity */
+>  	ret = imx258_identify_module(imx258);
+>  	if (ret)
+> -		return ret;
+> +		goto error_identify;
+>  
+>  	/* Set default mode to max resolution */
+>  	imx258->cur_mode = &supported_modes[0];
+>  
+>  	ret = imx258_init_controls(imx258);
+>  	if (ret)
+> -		return ret;
+> +		goto error_identify;
+>  
+>  	/* Initialize subdev */
+>  	imx258->sd.internal_ops = &imx258_internal_ops;
+> @@ -1258,6 +1307,9 @@ static int imx258_probe(struct i2c_client *client)
+>  error_handler_free:
+>  	imx258_free_controls(imx258);
+>  
+> +error_identify:
+> +	imx258_power_off(&client->dev);
+
+You'll need this in remove callback, too.
+
+> +
+>  	return ret;
+>  }
+>  
+> @@ -1278,6 +1330,7 @@ static int imx258_remove(struct i2c_client *client)
+>  
+>  static const struct dev_pm_ops imx258_pm_ops = {
+>  	SET_SYSTEM_SLEEP_PM_OPS(imx258_suspend, imx258_resume)
+> +	SET_RUNTIME_PM_OPS(imx258_power_off, imx258_power_on, NULL)
+>  };
+>  
+>  #ifdef CONFIG_ACPI
+
+-- 
+Kind regards,
+
+Sakari Ailus
