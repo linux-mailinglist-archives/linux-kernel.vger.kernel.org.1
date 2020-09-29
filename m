@@ -2,160 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C49C27C6E6
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:49:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C76C27C6FB
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:50:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731251AbgI2Ltp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:49:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52938 "EHLO mail.kernel.org"
+        id S1731040AbgI2Lu3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:50:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53638 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730290AbgI2Ltb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:49:31 -0400
+        id S1731264AbgI2Lty (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:49:54 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 363BE206E5;
-        Tue, 29 Sep 2020 11:49:30 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D091020702;
+        Tue, 29 Sep 2020 11:49:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601380170;
-        bh=4/cPjszd6PXUS8KnSkQ7qbtwnVoczKYCPgoQ1nJZGUQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Q6VZ29gc97xBWVfKGrEvjTZHHZqnNmc8nJxK2tgAzJE5vmiY6qqm3+LSbq+bk5Tv4
-         91jPQM+DmhcAY7E5OpgzbN1VgVwYMYvsuxvF4g+1GVqa1j779BZ6w5CE+IK3W9t6lq
-         Ynly3KFlLw+If4MuptVID+csGnHJE26hYFQ2wbz4=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "H. Nikolaus Schaller" <hns@goldelico.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 99/99] clocksource/drivers/timer-ti-dm: Do reset before enable
-Date:   Tue, 29 Sep 2020 13:02:22 +0200
-Message-Id: <20200929105934.608275659@linuxfoundation.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929105929.719230296@linuxfoundation.org>
-References: <20200929105929.719230296@linuxfoundation.org>
-User-Agent: quilt/0.66
+        s=default; t=1601380193;
+        bh=IcH/OkK6c6PgRmS2MU+VFYNCA6U6LxmqTLkCNxc9sss=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=sBwMP6VkVMk8SU+Kr95qjPWHLGmfUTA4KcHFMIxAFBf23LsHrAVzrkBkyIPOUIKTu
+         0MjWCeoNfExNFnmUeZkVQs0IOVRaPGTQRv01XmpGBzMnjdCBe6MXl+J1LIKnhBQWKe
+         UsWH01iufmTzubfCf93jYgNbqT5W9g549Hh8/Mt4=
+Date:   Tue, 29 Sep 2020 13:05:09 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Chanwoo Choi <cw00.choi@samsung.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Chanwoo Choi (chanwoo@kernel.org)" <chanwoo@kernel.org>,
+        =?utf-8?B?7ZWo66qF7KO8?= <myungjoo.ham@samsung.com>
+Subject: Re: [GIT PULL] extcon next for v5.10
+Message-ID: <20200929110509.GA1160194@kroah.com>
+References: <CGME20200929091112epcas1p47da3938ff71bcacaa2691f158a471289@epcas1p4.samsung.com>
+ <64750b49-15be-7d51-7ae9-cb1dd4092fa4@samsung.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <64750b49-15be-7d51-7ae9-cb1dd4092fa4@samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tony Lindgren <tony@atomide.com>
+On Tue, Sep 29, 2020 at 06:24:23PM +0900, Chanwoo Choi wrote:
+> Dear Greg,
+> 
+> This is extcon-next pull request for v5.10. I add detailed description of
+> this pull request on below. Please pull extcon with following updates.
+> 
+> Best Regards,
+> Chanwoo Choi
+> 
+> 
+> The following changes since commit 856deb866d16e29bd65952e0289066f6078af773:
+> 
+>   Linux 5.9-rc5 (2020-09-13 16:06:00 -0700)
+> 
+> are available in the Git repository at:
+> 
+>   git://git.kernel.org/pub/scm/linux/kernel/git/chanwoo/extcon.git tags/extcon-next-for-5.10
 
-commit 164805157f3c6834670afbaff563353c773131f1 upstream.
+I get the following error from my scripts (which match what linux-next
+will also tell you):
 
-Commit 6cfcd5563b4f ("clocksource/drivers/timer-ti-dm: Fix suspend and
-resume for am3 and am4") exposed a new issue for type2 dual mode timers
-on at least omap5 where the clockevent will stop when the SoC starts
-entering idle states during the boot.
+Commit: 00a29c98369d ("extcon: ptn5150: Do not print error during probe if nothing is attached")
+	Fixes tag: Fixes: af71b7e384cd ("extcon: ptn5150: Check current USB mode when probing")
+	Has these problem(s):
+	        - Target SHA1 does not exist
 
-Turns out we are wrongly first enabling the system timer and then
-resetting it, while we must also re-enable it after reset. The current
-sequence leaves the timer module in a partially initialized state. This
-issue went unnoticed earlier with ti-sysc driver reconfiguring the timer
-module until we fixed the issue of ti-sysc reconfiguring system timers.
+Please fix up.
 
-Let's fix the issue by calling dmtimer_systimer_enable() from reset for
-both type1 and type2 timers, and switch the order of reset and enable in
-dmtimer_systimer_setup(). Let's also move dmtimer_systimer_enable() and
-dmtimer_systimer_disable() to do this without adding forward declarations.
+thanks,
 
-Fixes: 6cfcd5563b4f ("clocksource/drivers/timer-ti-dm: Fix suspend and resume for am3 and am4")
-Reported-by: H. Nikolaus Schaller <hns@goldelico.com>
-Signed-off-by: Tony Lindgren <tony@atomide.com>
-Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-Link: https://lore.kernel.org/r/20200817092428.6176-1-tony@atomide.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
----
- drivers/clocksource/timer-ti-dm-systimer.c |   44 +++++++++++++++--------------
- 1 file changed, 23 insertions(+), 21 deletions(-)
-
---- a/drivers/clocksource/timer-ti-dm-systimer.c
-+++ b/drivers/clocksource/timer-ti-dm-systimer.c
-@@ -69,12 +69,33 @@ static bool dmtimer_systimer_revision1(s
- 	return !(tidr >> 16);
- }
- 
-+static void dmtimer_systimer_enable(struct dmtimer_systimer *t)
-+{
-+	u32 val;
-+
-+	if (dmtimer_systimer_revision1(t))
-+		val = DMTIMER_TYPE1_ENABLE;
-+	else
-+		val = DMTIMER_TYPE2_ENABLE;
-+
-+	writel_relaxed(val, t->base + t->sysc);
-+}
-+
-+static void dmtimer_systimer_disable(struct dmtimer_systimer *t)
-+{
-+	if (!dmtimer_systimer_revision1(t))
-+		return;
-+
-+	writel_relaxed(DMTIMER_TYPE1_DISABLE, t->base + t->sysc);
-+}
-+
- static int __init dmtimer_systimer_type1_reset(struct dmtimer_systimer *t)
- {
- 	void __iomem *syss = t->base + OMAP_TIMER_V1_SYS_STAT_OFFSET;
- 	int ret;
- 	u32 l;
- 
-+	dmtimer_systimer_enable(t);
- 	writel_relaxed(BIT(1) | BIT(2), t->base + t->ifctrl);
- 	ret = readl_poll_timeout_atomic(syss, l, l & BIT(0), 100,
- 					DMTIMER_RESET_WAIT);
-@@ -88,6 +109,7 @@ static int __init dmtimer_systimer_type2
- 	void __iomem *sysc = t->base + t->sysc;
- 	u32 l;
- 
-+	dmtimer_systimer_enable(t);
- 	l = readl_relaxed(sysc);
- 	l |= BIT(0);
- 	writel_relaxed(l, sysc);
-@@ -336,26 +358,6 @@ static int __init dmtimer_systimer_init_
- 	return 0;
- }
- 
--static void dmtimer_systimer_enable(struct dmtimer_systimer *t)
--{
--	u32 val;
--
--	if (dmtimer_systimer_revision1(t))
--		val = DMTIMER_TYPE1_ENABLE;
--	else
--		val = DMTIMER_TYPE2_ENABLE;
--
--	writel_relaxed(val, t->base + t->sysc);
--}
--
--static void dmtimer_systimer_disable(struct dmtimer_systimer *t)
--{
--	if (!dmtimer_systimer_revision1(t))
--		return;
--
--	writel_relaxed(DMTIMER_TYPE1_DISABLE, t->base + t->sysc);
--}
--
- static int __init dmtimer_systimer_setup(struct device_node *np,
- 					 struct dmtimer_systimer *t)
- {
-@@ -409,8 +411,8 @@ static int __init dmtimer_systimer_setup
- 	t->wakeup = regbase + _OMAP_TIMER_WAKEUP_EN_OFFSET;
- 	t->ifctrl = regbase + _OMAP_TIMER_IF_CTRL_OFFSET;
- 
--	dmtimer_systimer_enable(t);
- 	dmtimer_systimer_reset(t);
-+	dmtimer_systimer_enable(t);
- 	pr_debug("dmtimer rev %08x sysc %08x\n", readl_relaxed(t->base),
- 		 readl_relaxed(t->base + t->sysc));
- 
-
-
+greg k-h
