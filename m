@@ -2,16 +2,16 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37B0F27BE9B
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 09:57:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 131B027BE89
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 09:57:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727798AbgI2H5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 03:57:33 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:44392 "EHLO
+        id S1727710AbgI2H5A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 03:57:00 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:44402 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727591AbgI2H4v (ORCPT
+        with ESMTP id S1727522AbgI2H4w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 03:56:51 -0400
+        Tue, 29 Sep 2020 03:56:52 -0400
 Date:   Tue, 29 Sep 2020 07:56:48 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1601366209;
@@ -20,12 +20,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=vZ3w8SsJAKo/o3IlRuPIMbGITx2IBGlQuNzdPw72lYI=;
-        b=ZrnaXY54cCQMfSVGy4Hh6XrHzFzGmpcBYMWtpu1xRw37F4+kAPfYol0391PD/nJwSM7eTR
-        k4NW3qcUPrAYHxlk5EgV7l2ztFqLZI0PEEV+jBnWsSYXAtHYLP1pVjK8i+AZC5eNH9Aq9Y
-        l8uem3MvE/qRQbw1UYqTshFCOZjOzgJGBgvdpp6zptP2oxG0/ayzAgvlYLXFlpSoeKzkpx
-        y9v0e8uUPwDeJLbrEKv7xwxuM+knSFf/IL6+4j+8tcWN43U4xCctSapj84/d2ld45XmZR3
-        OTNCjEXmGp+3eXpl0VxQZuxU1L92xv/qcfREggQ7nrD4y8TlitUzgWEFEAiGJQ==
+        bh=f1XYo2+cH1VCpRIz0lVKMzV6nqe5Kwfr/eW0vnIq1OU=;
+        b=M+sBsSBnUxW8wpCM1vVMZ2kGfLYui19LgLQglgBYRPsKwZpnSpHX0/QefmiJxIIX+9O1z4
+        cnXmYWRbLa7kHjQ5byaOygpG7VMSU6YjEbSRq+mltet3cgfVnNhxsefHKnwD+I1UbCQB0I
+        xxf0R1FTdrNUiXq9L6cNUSqcDuOLhSDozO+KyUQQI1Za+EGd7SErZyhcIYmxCtVfbfVLpY
+        FY81VkczbvhQhhTmKhm4qiK/zsyjt1vfOhAcsfjJPxMI0Tbd1BOpg1qfalgpkTSgtjH/DI
+        nmkRD4jGOFGX8Bcg+iG3JloaTG659pmPat9AVyetTgtOP77XjRghBAlu/FjENQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1601366209;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -33,22 +33,22 @@ DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=vZ3w8SsJAKo/o3IlRuPIMbGITx2IBGlQuNzdPw72lYI=;
-        b=zJ6X3ZyIn2MCYzDmJKXLU1klz78xP9N1R/PvJHUzEm4kGnLbgizMSq+IcqPrfLPfSd2pD9
-        02ixmCc6BC2e0QAw==
+        bh=f1XYo2+cH1VCpRIz0lVKMzV6nqe5Kwfr/eW0vnIq1OU=;
+        b=haxjIhCRRjpCTLbwy+NKtBO19zBgUb1b334HwcKxx50mkD7myRWZs/WfRxzVqj2LYzSoGr
+        sE+90nAuZsKGA2Dw==
 From:   "tip-bot2 for Vincent Guittot" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched/fair: Reduce busy load balance interval
+Subject: [tip: sched/core] sched/fair: Minimize concurrent LBs between domain level
 Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Phil Auld <pauld@redhat.com>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200921072424.14813-5-vincent.guittot@linaro.org>
-References: <20200921072424.14813-5-vincent.guittot@linaro.org>
+In-Reply-To: <20200921072424.14813-4-vincent.guittot@linaro.org>
+References: <20200921072424.14813-4-vincent.guittot@linaro.org>
 MIME-Version: 1.0
-Message-ID: <160136620854.7002.17745483479490087690.tip-bot2@tip-bot2>
+Message-ID: <160136620899.7002.5463550699330938953.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -59,42 +59,53 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     6e7499135db724539ca887b3aa64122502875c71
-Gitweb:        https://git.kernel.org/tip/6e7499135db724539ca887b3aa64122502875c71
+Commit-ID:     e4d32e4d5444977d8dc25fa98b3ce0a65544db8c
+Gitweb:        https://git.kernel.org/tip/e4d32e4d5444977d8dc25fa98b3ce0a65544db8c
 Author:        Vincent Guittot <vincent.guittot@linaro.org>
-AuthorDate:    Mon, 21 Sep 2020 09:24:24 +02:00
+AuthorDate:    Mon, 21 Sep 2020 09:24:23 +02:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
 CommitterDate: Fri, 25 Sep 2020 14:23:26 +02:00
 
-sched/fair: Reduce busy load balance interval
+sched/fair: Minimize concurrent LBs between domain level
 
-The busy_factor, which increases load balance interval when a cpu is busy,
-is set to 32 by default. This value generates some huge LB interval on
-large system like the THX2 made of 2 node x 28 cores x 4 threads.
-For such system, the interval increases from 112ms to 3584ms at MC level.
-And from 228ms to 7168ms at NUMA level.
+sched domains tend to trigger simultaneously the load balance loop but
+the larger domains often need more time to collect statistics. This
+slowness makes the larger domain trying to detach tasks from a rq whereas
+tasks already migrated somewhere else at a sub-domain level. This is not
+a real problem for idle LB because the period of smaller domains will
+increase with its CPUs being busy and this will let time for higher ones
+to pulled tasks. But this becomes a problem when all CPUs are already busy
+because all domains stay synced when they trigger their LB.
 
-Even on smaller system, a lower busy factor has shown improvement on the
-fair distribution of the running time so let reduce it for all.
+A simple way to minimize simultaneous LB of all domains is to decrement the
+the busy interval by 1 jiffies. Because of the busy_factor, the interval of
+larger domain will not be a multiple of smaller ones anymore.
 
 Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Reviewed-by: Phil Auld <pauld@redhat.com>
-Link: https://lkml.kernel.org/r/20200921072424.14813-5-vincent.guittot@linaro.org
+Link: https://lkml.kernel.org/r/20200921072424.14813-4-vincent.guittot@linaro.org
 ---
- kernel/sched/topology.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/sched/fair.c |  9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-index 41df628..a3a2417 100644
---- a/kernel/sched/topology.c
-+++ b/kernel/sched/topology.c
-@@ -1348,7 +1348,7 @@ sd_init(struct sched_domain_topology_level *tl,
- 	*sd = (struct sched_domain){
- 		.min_interval		= sd_weight,
- 		.max_interval		= 2*sd_weight,
--		.busy_factor		= 32,
-+		.busy_factor		= 16,
- 		.imbalance_pct		= 117,
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 5e3add3..24a5ee6 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -9790,6 +9790,15 @@ get_sd_balance_interval(struct sched_domain *sd, int cpu_busy)
  
- 		.cache_nice_tries	= 0,
+ 	/* scale ms to jiffies */
+ 	interval = msecs_to_jiffies(interval);
++
++	/*
++	 * Reduce likelihood of busy balancing at higher domains racing with
++	 * balancing at lower domains by preventing their balancing periods
++	 * from being multiples of each other.
++	 */
++	if (cpu_busy)
++		interval -= 1;
++
+ 	interval = clamp(interval, 1UL, max_load_balance_interval);
+ 
+ 	return interval;
