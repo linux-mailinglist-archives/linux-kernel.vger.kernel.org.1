@@ -2,38 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D46BC27C5B9
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:38:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8823527C581
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:38:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730364AbgI2LiR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:38:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55996 "EHLO mail.kernel.org"
+        id S1729921AbgI2Lfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:35:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49162 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730259AbgI2Lhh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:37:37 -0400
+        id S1729872AbgI2Lfg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:35:36 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A022823BC8;
-        Tue, 29 Sep 2020 11:36:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6840F23A9F;
+        Tue, 29 Sep 2020 11:21:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601379419;
-        bh=StopoSPyCs7EocPsq1Gp2kQ/vfNkfLuq7EPGBHDEt7c=;
+        s=default; t=1601378517;
+        bh=zivPMAu8jkBPM8BZpt+TkETyOcRAQFI9etCUOvmfXVI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jZUyMEhWf8atYdmSgdeiJ9/8W5R2ENs3czaDOUhd/46gMCv5uv3NAqz7+rv0Yyg8Q
-         CSJVWt0tAI6NiIzVhOezSHmh4yK7UqqrDQjHobCekv/cCazK9RkqtjIpHac/AD5QNp
-         G1TZxynz2oaqEWfg4DVqF0iI/hsygx/40HARhzh4=
+        b=XOhXb1+dB8Nwtdgrc79IkNknVRoxBa0/TjqiTnLRYpoLFLbr/QCktGnPHJV34znTE
+         g8ztpkRguu/kbcvICDnEeOVKMcy/+GGETOuqBku8QPnpgMzw5wzaQmi+bHbsW0whkJ
+         AiyQdsPH+UELmIn4NaO5I8Vvy86BZYjpSAvNT2A0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Felix Fietkau <nbd@nbd.name>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 124/388] mt76: fix handling full tx queues in mt76_dma_tx_queue_skb_raw
-Date:   Tue, 29 Sep 2020 12:57:35 +0200
-Message-Id: <20200929110016.470522701@linuxfoundation.org>
+        stable@vger.kernel.org, Mikulas Patocka <mpatocka@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dan Williams <dan.j.wiilliams@intel.com>,
+        Jan Kara <jack@suse.cz>, Jeff Moyer <jmoyer@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>, Christoph Hellwig <hch@lst.de>,
+        Toshi Kani <toshi.kani@hpe.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Matthew Wilcox <mawilcox@microsoft.com>,
+        Ross Zwisler <ross.zwisler@linux.intel.com>,
+        Ingo Molnar <mingo@elte.hu>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.19 012/245] arch/x86/lib/usercopy_64.c: fix __copy_user_flushcache() cache writeback
+Date:   Tue, 29 Sep 2020 12:57:43 +0200
+Message-Id: <20200929105947.589229658@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929110010.467764689@linuxfoundation.org>
-References: <20200929110010.467764689@linuxfoundation.org>
+In-Reply-To: <20200929105946.978650816@linuxfoundation.org>
+References: <20200929105946.978650816@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,51 +53,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Felix Fietkau <nbd@nbd.name>
+From: Mikulas Patocka <mpatocka@redhat.com>
 
-[ Upstream commit 93eaec7625f13cffb593b471405b017c7e64d4ee ]
+commit a1cd6c2ae47ee10ff21e62475685d5b399e2ed4a upstream.
 
-Fixes a theoretical issue where it could potentially overwrite an existing
-descriptor entry (and leaking its skb)
+If we copy less than 8 bytes and if the destination crosses a cache
+line, __copy_user_flushcache would invalidate only the first cache line.
 
-Signed-off-by: Felix Fietkau <nbd@nbd.name>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+This patch makes it invalidate the second cache line as well.
+
+Fixes: 0aed55af88345b ("x86, uaccess: introduce copy_from_iter_flushcache for pmem / cache-bypass operations")
+Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Reviewed-by: Dan Williams <dan.j.wiilliams@intel.com>
+Cc: Jan Kara <jack@suse.cz>
+Cc: Jeff Moyer <jmoyer@redhat.com>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: Toshi Kani <toshi.kani@hpe.com>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Matthew Wilcox <mawilcox@microsoft.com>
+Cc: Ross Zwisler <ross.zwisler@linux.intel.com>
+Cc: Ingo Molnar <mingo@elte.hu>
+Cc: <stable@vger.kernel.org>
+Link: https://lkml.kernel.org/r/alpine.LRH.2.02.2009161451140.21915@file01.intranet.prod.int.rdu2.redhat.com
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/net/wireless/mediatek/mt76/dma.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ arch/x86/lib/usercopy_64.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/mediatek/mt76/dma.c b/drivers/net/wireless/mediatek/mt76/dma.c
-index 6249a46c19762..026d996612fbe 100644
---- a/drivers/net/wireless/mediatek/mt76/dma.c
-+++ b/drivers/net/wireless/mediatek/mt76/dma.c
-@@ -261,10 +261,13 @@ mt76_dma_tx_queue_skb_raw(struct mt76_dev *dev, enum mt76_txq_id qid,
- 	struct mt76_queue_buf buf;
- 	dma_addr_t addr;
- 
-+	if (q->queued + 1 >= q->ndesc - 1)
-+		goto error;
-+
- 	addr = dma_map_single(dev->dev, skb->data, skb->len,
- 			      DMA_TO_DEVICE);
- 	if (unlikely(dma_mapping_error(dev->dev, addr)))
--		return -ENOMEM;
-+		goto error;
- 
- 	buf.addr = addr;
- 	buf.len = skb->len;
-@@ -275,6 +278,10 @@ mt76_dma_tx_queue_skb_raw(struct mt76_dev *dev, enum mt76_txq_id qid,
- 	spin_unlock_bh(&q->lock);
- 
- 	return 0;
-+
-+error:
-+	dev_kfree_skb(skb);
-+	return -ENOMEM;
- }
- 
- static int
--- 
-2.25.1
-
+--- a/arch/x86/lib/usercopy_64.c
++++ b/arch/x86/lib/usercopy_64.c
+@@ -139,7 +139,7 @@ long __copy_user_flushcache(void *dst, c
+ 	 */
+ 	if (size < 8) {
+ 		if (!IS_ALIGNED(dest, 4) || size != 4)
+-			clean_cache_range(dst, 1);
++			clean_cache_range(dst, size);
+ 	} else {
+ 		if (!IS_ALIGNED(dest, 8)) {
+ 			dest = ALIGN(dest, boot_cpu_data.x86_clflush_size);
 
 
