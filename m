@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 145A727CBA3
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:29:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B15CD27CB9E
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:29:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732873AbgI2M3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 08:29:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43570 "EHLO mail.kernel.org"
+        id S1732750AbgI2M3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 08:29:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46444 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728744AbgI2La6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:30:58 -0400
+        id S1729459AbgI2LcG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:32:06 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3AF7C23B06;
-        Tue, 29 Sep 2020 11:24:55 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 31DFE23B1A;
+        Tue, 29 Sep 2020 11:25:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601378695;
-        bh=Bp78cPVYjAliFs3m7XinnVw6ioVm945uiqpP/Ng4ObE=;
+        s=default; t=1601378717;
+        bh=pGhwVmzAKmrsyihS5XbA3TPrkvfmkoyMXMpaORXB8ZI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gW4l/rtnvu3khbQz8rNiNkjVLxq9xOHChsXeWgh0SPD9GdQ8Cea6i0CHOfX1+0SIK
-         +qdvAIgmkrCPRmLTrIXeMisuI7jvlpGgzuULAHq2CHipnGg07ZYOISW8djJ/c2Vf/o
-         Q2uZNdoQVw9MacsrxcX++aX8m3dmzuT6GtZvoWx4=
+        b=edGX1AG1IYHyZZwyT6yZDTWzbGchg9vYyU9CtyuoMKxkhtq/ZsCjwXvbfqtIuezPA
+         AvMsDEh3gEHdL/2rd5xgkvnvP9UKK1QRBAOgBPBZ6m/FETG3xRwYuMkWVLxYTQ0MuZ
+         MjXrS2lTuSlxKbPOjIxaOEyf9+Jm7d5b/V6XD9zc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sagar Biradar <Sagar.Biradar@microchip.com>,
-        Balsundar P <balsundar.p@microsemi.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
+        Sean Young <sean@mess.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 104/245] scsi: aacraid: Disabling TM path and only processing IOP reset
-Date:   Tue, 29 Sep 2020 12:59:15 +0200
-Message-Id: <20200929105952.063582441@linuxfoundation.org>
+Subject: [PATCH 4.19 106/245] media: tda10071: fix unsigned sign extension overflow
+Date:   Tue, 29 Sep 2020 12:59:17 +0200
+Message-Id: <20200929105952.160933968@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200929105946.978650816@linuxfoundation.org>
 References: <20200929105946.978650816@linuxfoundation.org>
@@ -45,124 +44,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sagar Biradar <Sagar.Biradar@microchip.com>
+From: Colin Ian King <colin.king@canonical.com>
 
-[ Upstream commit bef18d308a2215eff8c3411a23d7f34604ce56c3 ]
+[ Upstream commit a7463e2dc698075132de9905b89f495df888bb79 ]
 
-Fixes the occasional adapter panic when sg_reset is issued with -d, -t, -b
-and -H flags.  Removal of command type HBA_IU_TYPE_SCSI_TM_REQ in
-aac_hba_send since iu_type, request_id and fib_flags are not populated.
-Device and target reset handlers are made to send TMF commands only when
-reset_state is 0.
+The shifting of buf[3] by 24 bits to the left will be promoted to
+a 32 bit signed int and then sign-extended to an unsigned long. In
+the unlikely event that the the top bit of buf[3] is set then all
+then all the upper bits end up as also being set because of
+the sign-extension and this affect the ev->post_bit_error sum.
+Fix this by using the temporary u32 variable bit_error to avoid
+the sign-extension promotion. This also removes the need to do the
+computation twice.
 
-Link: https://lore.kernel.org/r/1581553771-25796-1-git-send-email-Sagar.Biradar@microchip.com
-Reviewed-by: Sagar Biradar <Sagar.Biradar@microchip.com>
-Signed-off-by: Sagar Biradar <Sagar.Biradar@microchip.com>
-Signed-off-by: Balsundar P <balsundar.p@microsemi.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Addresses-Coverity: ("Unintended sign extension")
+
+Fixes: 267897a4708f ("[media] tda10071: implement DVBv5 statistics")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Sean Young <sean@mess.org>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/aacraid/commsup.c |  2 +-
- drivers/scsi/aacraid/linit.c   | 34 +++++++++++++++++++++++++---------
- 2 files changed, 26 insertions(+), 10 deletions(-)
+ drivers/media/dvb-frontends/tda10071.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/scsi/aacraid/commsup.c b/drivers/scsi/aacraid/commsup.c
-index b7588de4484e5..4cb6ee6e1212e 100644
---- a/drivers/scsi/aacraid/commsup.c
-+++ b/drivers/scsi/aacraid/commsup.c
-@@ -743,7 +743,7 @@ int aac_hba_send(u8 command, struct fib *fibptr, fib_callback callback,
- 		hbacmd->request_id =
- 			cpu_to_le32((((u32)(fibptr - dev->fibs)) << 2) + 1);
- 		fibptr->flags |= FIB_CONTEXT_FLAG_SCSI_CMD;
--	} else if (command != HBA_IU_TYPE_SCSI_TM_REQ)
-+	} else
- 		return -EINVAL;
+diff --git a/drivers/media/dvb-frontends/tda10071.c b/drivers/media/dvb-frontends/tda10071.c
+index 097c42d3f8c26..df0c7243eafe4 100644
+--- a/drivers/media/dvb-frontends/tda10071.c
++++ b/drivers/media/dvb-frontends/tda10071.c
+@@ -483,10 +483,11 @@ static int tda10071_read_status(struct dvb_frontend *fe, enum fe_status *status)
+ 			goto error;
  
- 
-diff --git a/drivers/scsi/aacraid/linit.c b/drivers/scsi/aacraid/linit.c
-index 1046947064a0b..0142547aaadd2 100644
---- a/drivers/scsi/aacraid/linit.c
-+++ b/drivers/scsi/aacraid/linit.c
-@@ -736,7 +736,11 @@ static int aac_eh_abort(struct scsi_cmnd* cmd)
- 		status = aac_hba_send(HBA_IU_TYPE_SCSI_TM_REQ, fib,
- 				  (fib_callback) aac_hba_callback,
- 				  (void *) cmd);
--
-+		if (status != -EINPROGRESS) {
-+			aac_fib_complete(fib);
-+			aac_fib_free(fib);
-+			return ret;
-+		}
- 		/* Wait up to 15 secs for completion */
- 		for (count = 0; count < 15; ++count) {
- 			if (cmd->SCp.sent_command) {
-@@ -915,11 +919,11 @@ static int aac_eh_dev_reset(struct scsi_cmnd *cmd)
- 
- 	info = &aac->hba_map[bus][cid];
- 
--	if (info->devtype != AAC_DEVTYPE_NATIVE_RAW &&
--	    info->reset_state > 0)
-+	if (!(info->devtype == AAC_DEVTYPE_NATIVE_RAW &&
-+	 !(info->reset_state > 0)))
- 		return FAILED;
- 
--	pr_err("%s: Host adapter reset request. SCSI hang ?\n",
-+	pr_err("%s: Host device reset request. SCSI hang ?\n",
- 	       AAC_DRIVERNAME);
- 
- 	fib = aac_fib_alloc(aac);
-@@ -934,7 +938,12 @@ static int aac_eh_dev_reset(struct scsi_cmnd *cmd)
- 	status = aac_hba_send(command, fib,
- 			      (fib_callback) aac_tmf_callback,
- 			      (void *) info);
--
-+	if (status != -EINPROGRESS) {
-+		info->reset_state = 0;
-+		aac_fib_complete(fib);
-+		aac_fib_free(fib);
-+		return ret;
-+	}
- 	/* Wait up to 15 seconds for completion */
- 	for (count = 0; count < 15; ++count) {
- 		if (info->reset_state == 0) {
-@@ -973,11 +982,11 @@ static int aac_eh_target_reset(struct scsi_cmnd *cmd)
- 
- 	info = &aac->hba_map[bus][cid];
- 
--	if (info->devtype != AAC_DEVTYPE_NATIVE_RAW &&
--	    info->reset_state > 0)
-+	if (!(info->devtype == AAC_DEVTYPE_NATIVE_RAW &&
-+	 !(info->reset_state > 0)))
- 		return FAILED;
- 
--	pr_err("%s: Host adapter reset request. SCSI hang ?\n",
-+	pr_err("%s: Host target reset request. SCSI hang ?\n",
- 	       AAC_DRIVERNAME);
- 
- 	fib = aac_fib_alloc(aac);
-@@ -994,6 +1003,13 @@ static int aac_eh_target_reset(struct scsi_cmnd *cmd)
- 			      (fib_callback) aac_tmf_callback,
- 			      (void *) info);
- 
-+	if (status != -EINPROGRESS) {
-+		info->reset_state = 0;
-+		aac_fib_complete(fib);
-+		aac_fib_free(fib);
-+		return ret;
-+	}
+ 		if (dev->delivery_system == SYS_DVBS) {
+-			dev->dvbv3_ber = buf[0] << 24 | buf[1] << 16 |
+-					 buf[2] << 8 | buf[3] << 0;
+-			dev->post_bit_error += buf[0] << 24 | buf[1] << 16 |
+-					       buf[2] << 8 | buf[3] << 0;
++			u32 bit_error = buf[0] << 24 | buf[1] << 16 |
++					buf[2] << 8 | buf[3] << 0;
 +
- 	/* Wait up to 15 seconds for completion */
- 	for (count = 0; count < 15; ++count) {
- 		if (info->reset_state <= 0) {
-@@ -1046,7 +1062,7 @@ static int aac_eh_bus_reset(struct scsi_cmnd* cmd)
- 		}
- 	}
- 
--	pr_err("%s: Host adapter reset request. SCSI hang ?\n", AAC_DRIVERNAME);
-+	pr_err("%s: Host bus reset request. SCSI hang ?\n", AAC_DRIVERNAME);
- 
- 	/*
- 	 * Check the health of the controller
++			dev->dvbv3_ber = bit_error;
++			dev->post_bit_error += bit_error;
+ 			c->post_bit_error.stat[0].scale = FE_SCALE_COUNTER;
+ 			c->post_bit_error.stat[0].uvalue = dev->post_bit_error;
+ 			dev->block_error += buf[4] << 8 | buf[5] << 0;
 -- 
 2.25.1
 
