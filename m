@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE73227CC7D
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:37:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91B2227CD39
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:42:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733181AbgI2Mgt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 08:36:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35550 "EHLO mail.kernel.org"
+        id S2387452AbgI2Mmo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 08:42:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52458 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729503AbgI2LU6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:20:58 -0400
+        id S1728793AbgI2LLO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:11:14 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E3D1D23444;
-        Tue, 29 Sep 2020 11:18:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DD03B2158C;
+        Tue, 29 Sep 2020 11:11:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601378307;
-        bh=SI+fWPNrFFRRT2Bdau69PuEhJHWv0Qy0sgSIomMiLeU=;
+        s=default; t=1601377874;
+        bh=y2rnfhnxpWlFVztN7chK05aa0bL7kLddsCgaa2wztrI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IEM71ZweAXfF2J88O2BRnuDaHHiPPrvO39ODXR6cNwTdnmRjikAYBNvda5CPuOWvY
-         jh5vTv3R6vrMjBn15bHr8FAf26Oyn9sN5oC4c85uwkPAwXBqt9GRL1W37kZATfNJId
-         D3TN4W8h5W8nQso+2dhgyN88BxPOysijeB/wh8os=
+        b=KSOqSpQY6ZgaXsnwZrTW7Y1naZeBmRE2w+rOkWxJae9ThfL8luckPi7Kr6mQPfhbG
+         GeG+T2kWAcST0z7OMY5zrGB+8dFt1KTsVBr86MOk7WS2rfba+izcX3zQagyIFhhtyk
+         zJsCq3ELR6TdOBTdmf8NKyyUL47ykLQLDtCL0nHE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Peter Zijlstra <peterz@infradead.org>,
+        stable@vger.kernel.org, Ilya Leoshkevich <iii@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 135/166] x86/speculation/mds: Mark mds_user_clear_cpu_buffers() __always_inline
+Subject: [PATCH 4.9 103/121] s390/init: add missing __init annotations
 Date:   Tue, 29 Sep 2020 13:00:47 +0200
-Message-Id: <20200929105941.943720663@linuxfoundation.org>
+Message-Id: <20200929105935.288843366@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929105935.184737111@linuxfoundation.org>
-References: <20200929105935.184737111@linuxfoundation.org>
+In-Reply-To: <20200929105930.172747117@linuxfoundation.org>
+References: <20200929105930.172747117@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,45 +44,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+From: Ilya Leoshkevich <iii@linux.ibm.com>
 
-[ Upstream commit a7ef9ba986b5fae9d80f8a7b31db0423687efe4e ]
+[ Upstream commit fcb2b70cdb194157678fb1a75f9ff499aeba3d2a ]
 
-Prevent the compiler from uninlining and creating traceable/probable
-functions as this is invoked _after_ context tracking switched to
-CONTEXT_USER and rcu idle.
+Add __init to reserve_memory_end, reserve_oldmem and remove_oldmem.
+Sometimes these functions are not inlined, and then the build
+complains about section mismatch.
 
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Reviewed-by: Alexandre Chartre <alexandre.chartre@oracle.com>
-Acked-by: Peter Zijlstra <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20200505134340.902709267@linutronix.de
+Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/include/asm/nospec-branch.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/s390/kernel/setup.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/x86/include/asm/nospec-branch.h b/arch/x86/include/asm/nospec-branch.h
-index 041d2a04be1d8..270448b178a7a 100644
---- a/arch/x86/include/asm/nospec-branch.h
-+++ b/arch/x86/include/asm/nospec-branch.h
-@@ -330,7 +330,7 @@ DECLARE_STATIC_KEY_FALSE(mds_idle_clear);
-  * combination with microcode which triggers a CPU buffer flush when the
-  * instruction is executed.
+diff --git a/arch/s390/kernel/setup.c b/arch/s390/kernel/setup.c
+index a559908d180ec..ce49c2b9db7ee 100644
+--- a/arch/s390/kernel/setup.c
++++ b/arch/s390/kernel/setup.c
+@@ -529,7 +529,7 @@ static struct notifier_block kdump_mem_nb = {
+ /*
+  * Make sure that the area behind memory_end is protected
   */
--static inline void mds_clear_cpu_buffers(void)
-+static __always_inline void mds_clear_cpu_buffers(void)
+-static void reserve_memory_end(void)
++static void __init reserve_memory_end(void)
  {
- 	static const u16 ds = __KERNEL_DS;
- 
-@@ -351,7 +351,7 @@ static inline void mds_clear_cpu_buffers(void)
-  *
-  * Clear CPU buffers if the corresponding static key is enabled
+ #ifdef CONFIG_CRASH_DUMP
+ 	if (ipl_info.type == IPL_TYPE_FCP_DUMP &&
+@@ -547,7 +547,7 @@ static void reserve_memory_end(void)
+ /*
+  * Make sure that oldmem, where the dump is stored, is protected
   */
--static inline void mds_user_clear_cpu_buffers(void)
-+static __always_inline void mds_user_clear_cpu_buffers(void)
+-static void reserve_oldmem(void)
++static void __init reserve_oldmem(void)
  {
- 	if (static_branch_likely(&mds_user_clear))
- 		mds_clear_cpu_buffers();
+ #ifdef CONFIG_CRASH_DUMP
+ 	if (OLDMEM_BASE)
+@@ -559,7 +559,7 @@ static void reserve_oldmem(void)
+ /*
+  * Make sure that oldmem, where the dump is stored, is protected
+  */
+-static void remove_oldmem(void)
++static void __init remove_oldmem(void)
+ {
+ #ifdef CONFIG_CRASH_DUMP
+ 	if (OLDMEM_BASE)
 -- 
 2.25.1
 
