@@ -2,94 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ED1127DC99
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 01:20:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFE0027DD23
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 01:55:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729118AbgI2XUA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 19:20:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47490 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728494AbgI2XUA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 19:20:00 -0400
-Received: from earth.universe (unknown [185.213.155.232])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6579D20773;
-        Tue, 29 Sep 2020 23:19:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601421599;
-        bh=WPXNf1ElVSRNw3/GmB0unSeJlPq69xRHSvqa12iVl8M=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FFaDLFU5o5Aa0pzYqkKAhtfOSr1ssPQ6UUGMBnCf5x9pTvjnJVZCrEUiiJgZDybmd
-         7pbbsgjmjF+pfl8mn2c4b+eyQbt6z6lbDBNj8a4l28eiOtoW6otjOqhN4xZ1qBvOdP
-         cTr1sF1lWfwWX4s0TXg+X4JAZK7bSzztQRWHRWmM=
-Received: by earth.universe (Postfix, from userid 1000)
-        id 440ED3C0C84; Wed, 30 Sep 2020 01:19:57 +0200 (CEST)
-Date:   Wed, 30 Sep 2020 01:19:57 +0200
-From:   Sebastian Reichel <sre@kernel.org>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Dan Murphy <dmurphy@ti.com>, sumit.semwal@linaro.org,
-        linux-pm@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-media@vger.kernel.org
-Subject: Re: [PATCH] MAINTAINERS: Remove Andrew F Davis from list
-Message-ID: <20200929231957.fx2dchbky6wvyy4j@earth.universe>
-References: <20200917193702.31347-1-dmurphy@ti.com>
- <CAJKOXPc_K-T95MY84qGX6ERi4OmVVGXSkH3XCKqF84qvak_Eqg@mail.gmail.com>
+        id S1729138AbgI2Xz1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 19:55:27 -0400
+Received: from gateway30.websitewelcome.com ([192.185.196.18]:32280 "EHLO
+        gateway30.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728192AbgI2Xz1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 19:55:27 -0400
+X-Greylist: delayed 1499 seconds by postgrey-1.27 at vger.kernel.org; Tue, 29 Sep 2020 19:55:25 EDT
+Received: from cm11.websitewelcome.com (cm11.websitewelcome.com [100.42.49.5])
+        by gateway30.websitewelcome.com (Postfix) with ESMTP id 63B8A1AB7A
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 18:09:04 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id NOk4kK6goOIGpNOk4kb5Ya; Tue, 29 Sep 2020 18:09:04 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:Subject:From:References:Cc:To:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=F3Hu8rdqxutt27Kuqs0e/1Cw8tmnLLeziqDGNvmqmjo=; b=QKK+BopRHfjGmAN4Ju9rzC4OgN
+        ElYgDFU2I6w8cbKEsM53Oicl3Y0/ZDe38r7c7qq0QpUFZQszW8m2HD60/7ux4Zp84RCo83VqdyAQs
+        Bdg22amapHue2QtBS8tTfQMecwGfGQ+3wUo08Brc/VOGE0GGwCvMtbpfLzenUKMO/c+j3rncANujx
+        8C5P1RhuNsnq26vWCiAIBv45aftGe5lZGqExgJzdowwdlE88hmdjgn+j9ABPQ8kh+k1qTY9Gyj1Cf
+        MAZADaUyaZDEzWDOz/RFGpvCkVlZt+gDS2LRs63aD05JsQWQq3jGR5efgt6c0shB/guJBdycnYQg0
+        xTQsdTQQ==;
+Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:52182 helo=[192.168.15.4])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1kNOk1-002v7T-Aa; Tue, 29 Sep 2020 18:09:01 -0500
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "x86@kernel.org H. Peter Anvin" <hpa@zytor.com>,
+        John Stultz <john.stultz@linaro.org>
+Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Kees Cook <keescook@chromium.org>,
+        linux-hardening@vger.kernel.org
+References: <20200518190114.GA7757@embeddedor>
+ <20200521232415.GD29907@embeddedor>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Autocrypt: addr=gustavo@embeddedor.com; keydata=
+ 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
+ AP7RWS474w==
+Subject: Re: [PATCH] x86/uv/time: Replace one-element array and save heap
+ space
+Message-ID: <1d4a85b8-22e3-3c0d-5beb-28dadda5848a@embeddedor.com>
+Date:   Tue, 29 Sep 2020 18:14:45 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="h2ktrx6pnhubyryv"
-Content-Disposition: inline
-In-Reply-To: <CAJKOXPc_K-T95MY84qGX6ERi4OmVVGXSkH3XCKqF84qvak_Eqg@mail.gmail.com>
+In-Reply-To: <20200521232415.GD29907@embeddedor>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.31.110
+X-Source-L: No
+X-Exim-ID: 1kNOk1-002v7T-Aa
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.4]) [187.162.31.110]:52182
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 10
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi all,
 
---h2ktrx6pnhubyryv
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Who can take this?
 
-Hi,
+Thanks
+--
+Gustavo
 
-On Thu, Sep 24, 2020 at 02:01:06PM +0200, Krzysztof Kozlowski wrote:
-> On Thu, 17 Sep 2020 at 22:02, Dan Murphy <dmurphy@ti.com> wrote:
-> >
-> > Andrews TI email is no longer valid and he indicated that it is
-> > OK to remove him from the MAINTAINERS file for the DMA HEAPS FRAMEWORK.
-> >
-> > For the BQ27xxx list I replaced Andrews email with mine.
-> >
-> > Signed-off-by: Dan Murphy <dmurphy@ti.com>
-> > ---
-> >  MAINTAINERS | 3 +--
-> >  1 file changed, 1 insertion(+), 2 deletions(-)
->=20
-> Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
-
-Thanks, queued.
-
--- Sebastian
-
---h2ktrx6pnhubyryv
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAl9zwR0ACgkQ2O7X88g7
-+poD4A//Y/1rJNuF837cToE8LUnfayGAlHY6IKS77LoK0DvSCZBKxXLnSF++h/fZ
-rIcDgFZ6hzNm09Gj6WrY0pgVdv4e+IEHcke45dEmv3XR4qF7d3T2XGTft3aSGyak
-gkrk01D/gD1zinyGk5X5mSRyvp/v8CGKak0VEUTA83iUyccQY0ckLpOxvJw7WDRV
-CTZ5ALTNUgAUMlmZVzUB+SOH/9KQ3Az0t1YhZqfYyXidF3PgaU1XGdYWTGnVAo64
-i06OqguNqZ8cRFOeXXUnZMtL7DIUYXnouCf5Vu44/g4BKfPtDWfLVBWkb1x0D1iC
-jTNH1stbndht1so4Dc3GMbvcVIRI3Dl5fc/BXNaxuzmo5cK23EdRmNKXgNzjs2FL
-hsuDsEUZSTI3k6H75kwX2ZApxyEU3OLfx1GZwwJa6fG23Y1JOA7xTye97SOPxHKF
-5jkgxVgAU5NZlXcMpAsFI2LtK8ZlY+jwoNt0tGbUF3TQ+wjs3yyQi0kafrBAYL0R
-NOOt/KBme+edMC9rUuKP8gV/Pu2cKvestktFtH2b3gvgFmLf3Ic1jI3fYb4k36nU
-PQL+U8UissAqyAAzq/OmJeqSjDkBg6FFOpj05CqAxu0kp4etH0Yz/GQzr5N3U63I
-8RSbguqOItdrhDabnzhsipinFJdUAx6cLKB5QTMKHhG9Y8+5yZ0=
-=qhXO
------END PGP SIGNATURE-----
-
---h2ktrx6pnhubyryv--
+On 5/21/20 18:24, Gustavo A. R. Silva wrote:
+> [+CC John Stultz <john.stultz@linaro.org> and +Kees' Reviewed-by tag]
+> 
+> Reviewed-by: Kees Cook <keescook@chromium.org>
+> 
+> On Mon, May 18, 2020 at 02:01:14PM -0500, Gustavo A. R. Silva wrote:
+>> The current codebase makes use of one-element arrays in the following
+>> form:
+>>
+>> struct something {
+>>     int length;
+>>     u8 data[1];
+>> };
+>>
+>> struct something *instance;
+>>
+>> instance = kmalloc(sizeof(*instance) + size, GFP_KERNEL);
+>> instance->length = size;
+>> memcpy(instance->data, source, size);
+>>
+>> but the preferred mechanism to declare variable-length types such as
+>> these ones is a flexible array member[1][2], introduced in C99:
+>>
+>> struct foo {
+>>         int stuff;
+>>         struct boo array[];
+>> };
+>>
+>> By making use of the mechanism above, we will get a compiler warning
+>> in case the flexible array does not occur last in the structure, which
+>> will help us prevent some kind of undefined behavior bugs from being
+>> inadvertently introduced[3] to the codebase from now on. So, replace
+>> the one-element array with a flexible-array member.
+>>
+>> Also, make use of the new struct_size() helper to properly calculate the
+>> total size needed to allocate dynamic memory for struct uv_rtc_timer_head.
+>> Notice that, due to the use of a one-element array, space for an extra
+>> struct cpu:
+>>
+>> struct {
+>> 	int     lcpu;           /* systemwide logical cpu number */
+>> 	u64     expires;        /* next timer expiration for this cpu */
+>> } cpu[1]
+>>
+>> was being allocated at the moment of applying the sizeof operator to
+>> struct uv_rtc_timer_head in the call to kmalloc_node() at line 159:
+>>
+>> 159		head = kmalloc_node(sizeof(struct uv_rtc_timer_head) +
+>> 160			(uv_blade_nr_possible_cpus(bid) *
+>> 161				2 * sizeof(u64)),
+>> 162			GFP_KERNEL, nid);
+>>
+>> but that extra cpu[] was never actually being accessed due to the
+>> following piece of code at line 168:
+>>
+>> 168		head->ncpus = uv_blade_nr_possible_cpus(bid);
+>>
+>> and the piece of code at line 187:
+>>
+>> 187		for (c = 0; c < head->ncpus; c++) {
+>> 188			u64 exp = head->cpu[c].expires;
+>> 189			if (exp < lowest) {
+>> 190				bcpu = c;
+>> 191				lowest = exp;
+>> 192			}
+>> 193		}
+>>
+>> so heap space was being wasted.
+>>
+>> Another thing important to notice is that through the use of the
+>> struct_size() helper, code at line 161:
+>>
+>> 161		2 * sizeof(u64)),
+>>
+>> is changed to now be the actual size of struct cpu; see
+>> sizeof(*(p)->member) at include/linux/overflow.h:314:
+>>
+>> 314 #define struct_size(p, member, n)                                       \
+>> 315         __ab_c_size(n,                                                  \
+>> 316                     sizeof(*(p)->member) + __must_be_array((p)->member),\
+>> 317                     sizeof(*(p)))
+>>
+>> As a side note, the original developer could have implemented code at line
+>> 161: 2 * sizeof(64) as follows:
+>>
+>> sizeof(*head->cpu)
+>>
+>> This issue has been out there since 2009.
+>>
+>> This issue was found with the help of Coccinelle and fixed _manually_.
+>>
+>> [1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
+>> [2] https://github.com/KSPP/linux/issues/21
+>> [3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
+>>
+>> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+>> ---
+>>  arch/x86/platform/uv/uv_time.c | 7 +++----
+>>  1 file changed, 3 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/arch/x86/platform/uv/uv_time.c b/arch/x86/platform/uv/uv_time.c
+>> index 7af31b245636..993a8ae6fdfb 100644
+>> --- a/arch/x86/platform/uv/uv_time.c
+>> +++ b/arch/x86/platform/uv/uv_time.c
+>> @@ -52,7 +52,7 @@ struct uv_rtc_timer_head {
+>>  	struct {
+>>  		int	lcpu;		/* systemwide logical cpu number */
+>>  		u64	expires;	/* next timer expiration for this cpu */
+>> -	} cpu[1];
+>> +	} cpu[];
+>>  };
+>>  
+>>  /*
+>> @@ -156,9 +156,8 @@ static __init int uv_rtc_allocate_timers(void)
+>>  		struct uv_rtc_timer_head *head = blade_info[bid];
+>>  
+>>  		if (!head) {
+>> -			head = kmalloc_node(sizeof(struct uv_rtc_timer_head) +
+>> -				(uv_blade_nr_possible_cpus(bid) *
+>> -					2 * sizeof(u64)),
+>> +			head = kmalloc_node(struct_size(head, cpu,
+>> +				uv_blade_nr_possible_cpus(bid)),
+>>  				GFP_KERNEL, nid);
+>>  			if (!head) {
+>>  				uv_rtc_deallocate_timers();
+>> -- 
+>> 2.26.2
+>>
