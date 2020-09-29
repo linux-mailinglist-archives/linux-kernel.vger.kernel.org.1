@@ -2,111 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D99627DD1E
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 01:53:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B29127DD28
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 01:59:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729691AbgI2Xx3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 19:53:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39656 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729512AbgI2Xx2 (ORCPT
+        id S1729283AbgI2X7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 19:59:35 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:6238 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728851AbgI2X7f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 19:53:28 -0400
-Received: from mail-vk1-xa42.google.com (mail-vk1-xa42.google.com [IPv6:2607:f8b0:4864:20::a42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 089E5C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 16:53:28 -0700 (PDT)
-Received: by mail-vk1-xa42.google.com with SMTP id a16so3294vke.3
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 16:53:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GOMvpJf6jnH+JyF4Og6jExEF8H9zHVHC1Jf6qwYVtbM=;
-        b=iI8aT1Wp1Gb1k5+bUZubbPKESeO6IaGvH04eyr/FlKisSVUJrSN7sxDr7ZHh6ykQ/k
-         p7cNKRYxDABzhCKvmHmHPKiowzooCDlBaAZvhSAf2IiRXIGwzXrOzYmprGqkR3t5zyME
-         2T3KDDuBxMrpVIi6xezEVmNob5wdPQLidqukU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GOMvpJf6jnH+JyF4Og6jExEF8H9zHVHC1Jf6qwYVtbM=;
-        b=MHWE+K+DcTJuzg6gZU1Th7PTDB5qcdHGHMni+XXhCDZWNIxUahKf0BYcUpGXqpTnho
-         iqCXjkSmcnwLQ0mic2A9zuduj13ufvLRLvxcO+6VHlss9Dc4nMGpQoCIVTCJcbKOPnh/
-         6DjVBKHSaj4qWSJC2DUdSIShhE3W6nMbpFCupoCl2SlxOw8eGcTgOYpDZyPQMHznIlWR
-         SMWoi/ZlFtZSDpio2BcYlQm0O5v+YRMF/fA1lX2ipBi0OrsBU6JJzi0dUa5YqXYz9VlL
-         78l/T8Bg//XWDst4FegubzXiqDrneEGHV2SGQyOrPmcLzHtWYM+16x1/K2Hh3DicTCXU
-         rdNw==
-X-Gm-Message-State: AOAM533hNWDzeyA1bLxvX8goU9r6vvfLZX66U8LkwIVdpx6z7j68HB6c
-        /LXpac+R0uWtfT0a5y86cSdZLBnbvgxVUw==
-X-Google-Smtp-Source: ABdhPJy+182ZPmdnBWmyvSA4hJ0l0et9WC0In7SXS/FL77tVhYWhfT90qsnvKlxHuCxkchjko7P0gg==
-X-Received: by 2002:a1f:3a09:: with SMTP id h9mr20286vka.6.1601423606323;
-        Tue, 29 Sep 2020 16:53:26 -0700 (PDT)
-Received: from mail-ua1-f50.google.com (mail-ua1-f50.google.com. [209.85.222.50])
-        by smtp.gmail.com with ESMTPSA id j76sm1760534vkc.50.2020.09.29.16.53.24
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 29 Sep 2020 16:53:25 -0700 (PDT)
-Received: by mail-ua1-f50.google.com with SMTP id j12so4064630ual.7
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 16:53:24 -0700 (PDT)
-X-Received: by 2002:ab0:29d7:: with SMTP id i23mr2207uaq.121.1601423604458;
- Tue, 29 Sep 2020 16:53:24 -0700 (PDT)
+        Tue, 29 Sep 2020 19:59:35 -0400
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08TNsHVA011766
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 16:59:34 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=T1Yi2eDG1rI7nmoPC5+4fj7KjlElmvHPWj+SaKolS0M=;
+ b=IO8EcTYIa6ISyY3BUCiZLxmw+dPwl1Hmp4mWglXu5YkDLh/Fz08dV4VQ6ae8uSus1SQy
+ UYut7Di8x6Bj/6laBPIC2mGstCJD+7QAgnm7tyKW1j65ln0xyZAcQ2lToNN7a87dXuwo
+ CwRLcfQYOk4ZOAJfA8Gkx4ZRQ1Vc0fxHQ3U= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 33t3fhg73s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 16:59:34 -0700
+Received: from intmgw001.41.prn1.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 29 Sep 2020 16:59:33 -0700
+Received: by devvm1755.vll0.facebook.com (Postfix, from userid 111017)
+        id 63789D62150; Tue, 29 Sep 2020 16:59:21 -0700 (PDT)
+From:   Roman Gushchin <guro@fb.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+CC:     Shakeel Butt <shakeelb@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
+        <kernel-team@fb.com>, Roman Gushchin <guro@fb.com>
+Subject: [PATCH v3 0/4] mm: allow mapping accounted kernel pages to userspace
+Date:   Tue, 29 Sep 2020 16:59:16 -0700
+Message-ID: <20200929235920.537849-1-guro@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-References: <20200929121610.16060-1-lukasz.luba@arm.com>
-In-Reply-To: <20200929121610.16060-1-lukasz.luba@arm.com>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Tue, 29 Sep 2020 16:53:12 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=UnNkjMiOc0DZE7+OM3-Kr1ZRynxSerdA=ifbyGiRa2Zw@mail.gmail.com>
-Message-ID: <CAD=FV=UnNkjMiOc0DZE7+OM3-Kr1ZRynxSerdA=ifbyGiRa2Zw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] docs: Clarify abstract scale usage for power values
- in Energy Model
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>, linux-doc@vger.kernel.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Dietmar.Eggemann@arm.com, Quentin Perret <qperret@google.com>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Rajendra Nayak <rnayak@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-29_14:2020-09-29,2020-09-29 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 impostorscore=0
+ spamscore=0 mlxscore=0 malwarescore=0 bulkscore=0 lowpriorityscore=0
+ phishscore=0 adultscore=0 clxscore=1015 priorityscore=1501 mlxlogscore=545
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009290203
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Currently a non-slab kernel page which has been charged to a memory
+cgroup can't be mapped to userspace. The underlying reason is simple:
+PageKmemcg flag is defined as a page type (like buddy, offline, etc),
+so it takes a bit from a page->mapped counter. Pages with a type set
+can't be mapped to userspace.
 
-On Tue, Sep 29, 2020 at 5:16 AM Lukasz Luba <lukasz.luba@arm.com> wrote:
->
-> The Energy Model (EM) can store power values in milli-Watts or in abstract
-> scale. This might cause issues in the subsystems which use the EM for
-> estimating the device power, such as:
-> - mixing of different scales in a subsystem which uses multiple
->   (cooling) devices (e.g. thermal Intelligent Power Allocation (IPA))
-> - assuming that energy [milli-Joules] can be derived from the EM power
->   values which might not be possible since the power scale doesn't have to
->   be in milli-Watts
->
-> To avoid misconfiguration add the needed documentation to the EM and
-> related subsystems: EAS and IPA.
->
-> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
-> ---
->  .../driver-api/thermal/power_allocator.rst          |  8 ++++++++
->  Documentation/power/energy-model.rst                | 13 +++++++++++++
->  Documentation/scheduler/sched-energy.rst            |  5 +++++
->  3 files changed, 26 insertions(+)
+But in general the kmemcg flag has nothing to do with mapping to
+userspace. It only means that the page has been accounted by the page
+allocator, so it has to be properly uncharged on release.
 
-I haven't read through these files in massive detail, but the quick
-skim makes me believe that your additions seem sane.  In general, I'm
-happy with documenting reality, thus:
+Some bpf maps are mapping the vmalloc-based memory to userspace, and
+their memory can't be accounted because of this implementation detail.
 
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
+This patchset removes this limitation by moving the PageKmemcg flag
+into one of the free bits of the page->mem_cgroup pointer. Also it
+formalizes all accesses to the page->mem_cgroup and page->obj_cgroups
+using new helpers, adds several checks and removes a couple of obsolete
+functions. As the result the code became more robust with fewer
+open-coded bits tricks.
 
-I will note: you haven't actually updated the device tree bindings.
-Thus, presumably, anyone who is specifying these numbers in the device
-tree is still supposed to specify them in a way that mW can be
-recovered, right?  Said another way: nothing about your patches makes
-it OK to specify numbers in device trees using an "abstract scale",
-right?
+v3:
+  - READ_ONCE() in page_memcg_rcu() and page_objcgs*(), by Johannes
+  - many cosmetic changes and renamings, by Johannes
 
--Doug
+v2:
+  - fixed a bug in page_obj_cgroups_check()
+  - moved some definitions between patches, by Shakeel
+  - dropped the memcg flags mutual exclusion requirement, by Shakeel
+
+v1:
+  - added and fixed comments, by Shakeel
+  - added some VM_BUG_ON() checks
+  - fixed the debug output format of page->memcg_data
+
+
+Roman Gushchin (4):
+  mm: memcontrol: use helpers to access page's memcg data
+  mm: memcontrol/slab: use helpers to access slab page's memcg_data
+  mm: introduce page memcg flags
+  mm: convert page kmemcg type to a page memcg flag
+
+ fs/buffer.c                      |   2 +-
+ fs/iomap/buffered-io.c           |   2 +-
+ include/linux/memcontrol.h       | 294 ++++++++++++++++++++++++++++++-
+ include/linux/mm.h               |  22 ---
+ include/linux/mm_types.h         |   5 +-
+ include/linux/page-flags.h       |  11 +-
+ include/trace/events/writeback.h |   2 +-
+ kernel/fork.c                    |   7 +-
+ mm/debug.c                       |   4 +-
+ mm/huge_memory.c                 |   4 +-
+ mm/memcontrol.c                  | 139 +++++++--------
+ mm/page_alloc.c                  |   6 +-
+ mm/page_io.c                     |   6 +-
+ mm/slab.h                        |  38 +---
+ mm/workingset.c                  |   2 +-
+ 15 files changed, 378 insertions(+), 166 deletions(-)
+
+--=20
+2.26.2
+
