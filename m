@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2752A27CD0A
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:41:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADFA527CD0D
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:41:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387400AbgI2MlY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 08:41:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56356 "EHLO mail.kernel.org"
+        id S1730938AbgI2MlW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 08:41:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56436 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729389AbgI2LNr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:13:47 -0400
+        id S1729396AbgI2LNt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:13:49 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0090721924;
-        Tue, 29 Sep 2020 11:13:45 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D56742158C;
+        Tue, 29 Sep 2020 11:13:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601378026;
-        bh=yqRipaG9eyydr+dy1Kt9Iuj9ECa+KtOXIpqR2On9Yu0=;
+        s=default; t=1601378029;
+        bh=fO1WEb94QCbDjhfkjOsJon78TmvGQdqcmX/unoJm1l4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nQ4S2ZWeL+BEtAIbbCXdtcCAG+9mXkvgtVChP3YFUOrfqoWRdcXK3W/koNsKIoAao
-         wuBqso0sMGA3Gq+NfckwZhrQ7cVYk14OP/Dqf+IVshwpEXV9NiO5MZj2DTX8cTmK+o
-         5LqKSn8mP/cfKQvWGnvST/n4gYM/QbE5jAFVVHho=
+        b=t2ja9tJCKzfj9MljP4ZlVslF163O5c1E2tofWpWZp4JaZZ7GAAPw9LHPD7sKIeMnl
+         Px4oV+4TN3Jau3pIHIhogpKtyzN5ZbjIL9j03JuzTn0OIvTjix3Xmmdug0dvANrGUv
+         SAziEIcpBdr7uIUhSBgdfTycLBSnPl2gx3570Jlg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Brian Foster <bfoster@redhat.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Jason Gunthorpe <jgg@mellanox.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 036/166] xfs: fix attr leaf header freemap.size underflow
-Date:   Tue, 29 Sep 2020 12:59:08 +0200
-Message-Id: <20200929105937.007738158@linuxfoundation.org>
+Subject: [PATCH 4.14 037/166] RDMA/iw_cgxb4: Fix an error handling path in c4iw_connect()
+Date:   Tue, 29 Sep 2020 12:59:09 +0200
+Message-Id: <20200929105937.058247472@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200929105935.184737111@linuxfoundation.org>
 References: <20200929105935.184737111@linuxfoundation.org>
@@ -43,57 +44,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Brian Foster <bfoster@redhat.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit 2a2b5932db67586bacc560cc065d62faece5b996 ]
+[ Upstream commit 9067f2f0b41d7e817fc8c5259bab1f17512b0147 ]
 
-The leaf format xattr addition helper xfs_attr3_leaf_add_work()
-adjusts the block freemap in a couple places. The first update drops
-the size of the freemap that the caller had already selected to
-place the xattr name/value data. Before the function returns, it
-also checks whether the entries array has encroached on a freemap
-range by virtue of the new entry addition. This is necessary because
-the entries array grows from the start of the block (but end of the
-block header) towards the end of the block while the name/value data
-grows from the end of the block in the opposite direction. If the
-associated freemap is already empty, however, size is zero and the
-subtraction underflows the field and causes corruption.
+We should jump to fail3 in order to undo the 'xa_insert_irq()' call.
 
-This is reproduced rarely by generic/070. The observed behavior is
-that a smaller sized freemap is aligned to the end of the entries
-list, several subsequent xattr additions land in larger freemaps and
-the entries list expands into the smaller freemap until it is fully
-consumed and then underflows. Note that it is not otherwise a
-corruption for the entries array to consume an empty freemap because
-the nameval list (i.e. the firstused pointer in the xattr header)
-starts beyond the end of the corrupted freemap.
-
-Update the freemap size modification to account for the fact that
-the freemap entry can be empty and thus stale.
-
-Signed-off-by: Brian Foster <bfoster@redhat.com>
-Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
-Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
+Link: https://lore.kernel.org/r/20190923190746.10964-1-christophe.jaillet@wanadoo.fr
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/xfs/libxfs/xfs_attr_leaf.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/infiniband/hw/cxgb4/cm.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/fs/xfs/libxfs/xfs_attr_leaf.c b/fs/xfs/libxfs/xfs_attr_leaf.c
-index 299d17b088e21..facb83031ba77 100644
---- a/fs/xfs/libxfs/xfs_attr_leaf.c
-+++ b/fs/xfs/libxfs/xfs_attr_leaf.c
-@@ -1335,7 +1335,9 @@ xfs_attr3_leaf_add_work(
- 	for (i = 0; i < XFS_ATTR_LEAF_MAPSIZE; i++) {
- 		if (ichdr->freemap[i].base == tmp) {
- 			ichdr->freemap[i].base += sizeof(xfs_attr_leaf_entry_t);
--			ichdr->freemap[i].size -= sizeof(xfs_attr_leaf_entry_t);
-+			ichdr->freemap[i].size -=
-+				min_t(uint16_t, ichdr->freemap[i].size,
-+						sizeof(xfs_attr_leaf_entry_t));
+diff --git a/drivers/infiniband/hw/cxgb4/cm.c b/drivers/infiniband/hw/cxgb4/cm.c
+index 7eb1cc1b1aa04..5aa545f9a4232 100644
+--- a/drivers/infiniband/hw/cxgb4/cm.c
++++ b/drivers/infiniband/hw/cxgb4/cm.c
+@@ -3265,7 +3265,7 @@ int c4iw_connect(struct iw_cm_id *cm_id, struct iw_cm_conn_param *conn_param)
+ 		if (raddr->sin_addr.s_addr == htonl(INADDR_ANY)) {
+ 			err = pick_local_ipaddrs(dev, cm_id);
+ 			if (err)
+-				goto fail2;
++				goto fail3;
  		}
- 	}
- 	ichdr->usedbytes += xfs_attr_leaf_entsize(leaf, args->index);
+ 
+ 		/* find a route */
+@@ -3287,7 +3287,7 @@ int c4iw_connect(struct iw_cm_id *cm_id, struct iw_cm_conn_param *conn_param)
+ 		if (ipv6_addr_type(&raddr6->sin6_addr) == IPV6_ADDR_ANY) {
+ 			err = pick_local_ip6addrs(dev, cm_id);
+ 			if (err)
+-				goto fail2;
++				goto fail3;
+ 		}
+ 
+ 		/* find a route */
 -- 
 2.25.1
 
