@@ -2,51 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46E5427D4AE
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 19:44:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE39F27D4B5
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 19:44:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729854AbgI2RoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 13:44:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40324 "EHLO mail.kernel.org"
+        id S1730055AbgI2RoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 13:44:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40370 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728897AbgI2RoI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 13:44:08 -0400
-Subject: Re: [GIT PULL] virtio: last minute fixes
+        id S1728959AbgI2RoJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 13:44:09 -0400
+Subject: Re: [GIT PULL]: dmaengine late fixes for v5.9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601401448;
-        bh=03GvkImuXPeydQHobuE6Tvmyjh05QhbS/bF0LvHvOSc=;
+        s=default; t=1601401449;
+        bh=oBSAKC0VapuxUOsH74OiAhYzijvz991BP/wJW5O2NA0=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=G1KlPn+A/P/OU48SFCU8AEqmnPajLsFfhy1vgH9tcYTF/orapMWS7+W5rGhKLlyDo
-         i6RB1ZK04Ruxyb43bA+Kncn8jtrlM0mDAptVpEMbru1opGXBVUugo8pgX/c3khMD+H
-         117IDBtyd2RGXfYmI0Ne3L1H8GCJbKFEskM76cfQ=
+        b=dTJHDZ5N7gd2eS8a+Ab8jDb9I7h3rvH3g8jKfXX66KXqvwjMFgE7Z5wbR5pL8JHUB
+         7SXZW16YZLg/ty4QqLiPZFl2dBGQBnv/UeemcZywM917mEq7td/gNfIMBbop0YV2Wo
+         lL6vLlkGEl/b9SV47UEa3N1D7d7cXcDLEmS/VJig=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20200929035034-mutt-send-email-mst@kernel.org>
-References: <20200929035034-mutt-send-email-mst@kernel.org>
-X-PR-Tracked-List-Id: Linux virtualization <virtualization.lists.linux-foundation.org>
-X-PR-Tracked-Message-Id: <20200929035034-mutt-send-email-mst@kernel.org>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git tags/for_linus
-X-PR-Tracked-Commit-Id: a127c5bbb6a8eee851cbdec254424c480b8edd75
+In-Reply-To: <20200929134443.GL2968@vkoul-mobl>
+References: <20200929134443.GL2968@vkoul-mobl>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20200929134443.GL2968@vkoul-mobl>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/dmaengine.git tags/dmaengine-fix-5.9
+X-PR-Tracked-Commit-Id: ce65d55f92a67e247f4d799e581cf9fed677871c
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 1ccfa66d94cf65d3e89eeb95676a03e8f90edd99
-Message-Id: <160140144806.29614.17781182961923244998.pr-tracker-bot@kernel.org>
-Date:   Tue, 29 Sep 2020 17:44:08 +0000
-To:     "Michael S. Tsirkin" <mst@redhat.com>
+X-PR-Merge-Commit-Id: ccc1d052eff9f3cfe59d201263903fe1d46c79a5
+Message-Id: <160140144938.29614.13358017661965830254.pr-tracker-bot@kernel.org>
+Date:   Tue, 29 Sep 2020 17:44:09 +0000
+To:     Vinod Koul <vkoul@kernel.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        kvm@vger.kernel.org, mst@redhat.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, eli@mellanox.com,
-        elic@nvidia.com, lingshan.zhu@intel.com
+        dma <dmaengine@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Tue, 29 Sep 2020 03:50:34 -0400:
+The pull request you sent on Tue, 29 Sep 2020 19:14:43 +0530:
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git tags/for_linus
+> git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/dmaengine.git tags/dmaengine-fix-5.9
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/1ccfa66d94cf65d3e89eeb95676a03e8f90edd99
+https://git.kernel.org/torvalds/c/ccc1d052eff9f3cfe59d201263903fe1d46c79a5
 
 Thank you!
 
