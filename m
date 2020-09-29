@@ -2,134 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13C7227D1D3
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 16:51:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCD0727D1D7
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 16:51:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730778AbgI2Ovm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 10:51:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40458 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729721AbgI2Ovl (ORCPT
+        id S1731225AbgI2Ovt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 10:51:49 -0400
+Received: from mail-oi1-f193.google.com ([209.85.167.193]:44152 "EHLO
+        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729721AbgI2Ovo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 10:51:41 -0400
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96367C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 07:51:41 -0700 (PDT)
-Received: by mail-ot1-x342.google.com with SMTP id q21so4685843ota.8
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 07:51:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wW+VJQgARCCUxTSXrTTMpTSAvZIEsqsjgDYoqUGhARg=;
-        b=wMGD4VgcgbK4IxtOQtFKwIep4NE/Lks0XQ84z53sb9ztrBrhdOTixFBfNnnFmc2Mmp
-         2HRGwfLla5AakIrCbRVmzawkLIflkdRyIs1CUm9Xww1+2xb4I17TEtNyIQdpfpPU1G5h
-         qeYDoMGzWTg6XQ7p5H1nFebztaG3DFm6HtUk5e/0bb7mw9B6OmWARxPX3Gh2mUZrOiCU
-         1Yj5QhpxD1O63S8fIDxlpq1YHEA6AZVVWwBSkpVJAg7Z5s/nJ4OCOjvOjtvVXKkedQWq
-         VgWYHEeN/dpoT4xUm6hPg6iexodywLoB+SCcvUzZJs8ZWHAyLC6enNWDmQMm1PN6ysab
-         pssA==
+        Tue, 29 Sep 2020 10:51:44 -0400
+Received: by mail-oi1-f193.google.com with SMTP id 185so5719870oie.11;
+        Tue, 29 Sep 2020 07:51:41 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wW+VJQgARCCUxTSXrTTMpTSAvZIEsqsjgDYoqUGhARg=;
-        b=JrYDT2uDkfytoiMfQMv9I8xgqMtOWNzSzsgVIeY511nbp6VCgfaH04QQ2IqI5gFDhR
-         qyKtqsUlQadXjg5x4PXPTfUo0LG3M/0a60mZV3GJzEot7IMAu/rpFApEwdUR1tkCNTFL
-         mx6hjwSmCv7s9FujxDrPLm6OSLyA3Vt+E5CfiAOg7sU7L6rfcS5dXIDY3zWe533mA4GG
-         fTaVjmjbD8udBCWZOqC3PjW1RNYuAgJdIGvHpsqZ4amj5/IQceBGaplX8pO2fwq1Xd+V
-         X+6pwcz8APUtRPQC9tuU+oNOkXrMJqJVdMRlp5rBW4/2ggQiIkPBbLB7EKyhqp6aHwpu
-         4j1w==
-X-Gm-Message-State: AOAM533PqoZTkbEm/nXC71NuAfXbwWlqQ8FgI/5PF+XBkwGBI2nI7T8R
-        Oa1risypLwdUQqtiPXQsDksy0Z3PrK6nEMf8zxXlWQ==
-X-Google-Smtp-Source: ABdhPJxroT9i54MN1iDT4wifYt9kExM7oIJmn8MlrbnOEJQnD//Y0CVF3kuXJabOEMsMGXWE3i3iimChMga6hnEclNE=
-X-Received: by 2002:a9d:758b:: with SMTP id s11mr2840881otk.251.1601391100711;
- Tue, 29 Sep 2020 07:51:40 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=SNaAcKAAWIf+we0pnVV8QsaJ9JxOBJ024VqpUeXbwmU=;
+        b=q+BXhS8JpIrN3Slq6J0Wiu0XCQmzDtwagpGlsO12WFO//I/DLzc8WDvvHfm5tAUNGh
+         iPW0xXsoDtNYwXJ81D2asf6PsU3A1M/KO22SuB6sH/k5f1UFOz0Y8X6BxZuvPkZQqdiE
+         8JdVtLjoQFs/kpEQZFmJQV/HlX3Vfkl9HCeljcq/gheQXikOpFGyMF8/pJZcKSWBbq0r
+         JopSRSxah+W0CFNFqKgsKo9fHLtIdtN6yejsmT3XujGsxOnWCmem7wJCtHPodUlK4RyV
+         XiJ+CvaTX070SiWV3KyBCjszC4UhfXUMf/3IFFGROeTvWdFDwSuLv8PZCqKAj9VtAgmW
+         wiYw==
+X-Gm-Message-State: AOAM531NzqGf+z3maEUKsjmXj6CHbQXHOkiRxz3RmdlU75lGdTvCzk2U
+        Bw2+/cXCBj5GFEvYUUQK9g==
+X-Google-Smtp-Source: ABdhPJwQszdShg3UdLp+0KNVzAl5PfxP3q5d9+5FAltd1165TyykwgcIxNH0Yg1449Mm13ClAYrYlw==
+X-Received: by 2002:aca:f40a:: with SMTP id s10mr2913929oih.126.1601391101244;
+        Tue, 29 Sep 2020 07:51:41 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id g7sm1026686otl.59.2020.09.29.07.51.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Sep 2020 07:51:40 -0700 (PDT)
+Received: (nullmailer pid 572612 invoked by uid 1000);
+        Tue, 29 Sep 2020 14:51:39 -0000
+Date:   Tue, 29 Sep 2020 09:51:39 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
+        Andy Gross <agross@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
+        Martin Botka <martin.botka1@gmail.com>,
+        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-pwm@vger.kernel.org
+Subject: Re: [PATCH v4 1/4] dt-bindings: leds: Add Qualcomm Light Pulse
+ Generator binding
+Message-ID: <20200929145139.GB566563@bogus>
+References: <20200929031544.1000204-1-bjorn.andersson@linaro.org>
+ <20200929031544.1000204-2-bjorn.andersson@linaro.org>
 MIME-Version: 1.0
-References: <20200921132611.1700350-1-elver@google.com> <20200921132611.1700350-2-elver@google.com>
- <20200929142411.GC53442@C02TD0UTHF1T.local>
-In-Reply-To: <20200929142411.GC53442@C02TD0UTHF1T.local>
-From:   Marco Elver <elver@google.com>
-Date:   Tue, 29 Sep 2020 16:51:29 +0200
-Message-ID: <CANpmjNNQGrpq+fBh4OypP9aK+-548vbCbKYiWQnSHESM0SLVzw@mail.gmail.com>
-Subject: Re: [PATCH v3 01/10] mm: add Kernel Electric-Fence infrastructure
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Potapenko <glider@google.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christoph Lameter <cl@linux.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hillf Danton <hdanton@sina.com>,
-        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Kees Cook <keescook@chromium.org>,
-        Pekka Enberg <penberg@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        SeongJae Park <sjpark@amazon.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Will Deacon <will@kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200929031544.1000204-2-bjorn.andersson@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 29 Sep 2020 at 16:24, Mark Rutland <mark.rutland@arm.com> wrote:
-[...]
->
-> From other sub-threads it sounds like these addresses are not part of
-> the linear/direct map. Having kmalloc return addresses outside of the
-> linear map is going to break anything that relies on virt<->phys
-> conversions, and is liable to make DMA corrupt memory. There were
-> problems of that sort with VMAP_STACK, and this is why kvmalloc() is
-> separate from kmalloc().
->
-> Have you tested with CONFIG_DEBUG_VIRTUAL? I'd expect that to scream.
->
-> I strongly suspect this isn't going to be safe unless you always use an
-> in-place carevout from the linear map (which could be the linear alias
-> of a static carevout).
+On Mon, Sep 28, 2020 at 08:15:41PM -0700, Bjorn Andersson wrote:
+> This adds the binding document describing the three hardware blocks
+> related to the Light Pulse Generator found in a wide range of Qualcomm
+> PMICs.
+> 
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> ---
+> 
+> Changes since v3:
+> - Rewritten as YAML
+> - Adopt multicolor model
+> 
+>  .../bindings/leds/leds-qcom-lpg.yaml          | 170 ++++++++++++++++++
+>  1 file changed, 170 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/leds/leds-qcom-lpg.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/leds/leds-qcom-lpg.yaml b/Documentation/devicetree/bindings/leds/leds-qcom-lpg.yaml
+> new file mode 100644
+> index 000000000000..5c6e98fc3b9a
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/leds/leds-qcom-lpg.yaml
+> @@ -0,0 +1,170 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/leds/leds-qcom-lpg.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Qualcomm Light Pulse Generator
+> +
+> +maintainers:
+> +  - Bjorn Andersson <bjorn.andersson@linaro.org>
+> +
+> +description: >
+> +  The Qualcomm Light Pulse Generator consists of three different hardware blocks;
+> +  a ramp generator with lookup table, the light pulse generator and a three
+> +  channel current sink. These blocks are found in a wide range of Qualcomm PMICs.
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - qcom,pm8916-pwm
+> +      - qcom,pm8941-lpg
+> +      - qcom,pm8994-lpg
+> +      - qcom,pmi8994-lpg
+> +      - qcom,pmi8998-lpg
+> +
+> +  "#pwm-cells":
+> +    const: 2
+> +
+> +  "#address-cells":
+> +    const: 1
+> +
+> +  "#size-cells":
+> +    const: 0
+> +
+> +  "qcom,power-source":
 
-That's an excellent point, thank you! Indeed, on arm64, a version with
-naive static-pool screams with CONFIG_DEBUG_VIRTUAL.
+Don't need quotes.
 
-We'll try to put together an arm64 version using a carveout as you suggest.
+> +    $ref: /schemas/types.yaml#definitions/uint32
+> +    description: >
+> +      power-source used to drive the output, as defined in the datasheet.
+> +      Should be specified if the TRILED block is present
+> +    enum:
+> +      - 0
+> +      - 1
+> +      - 3
+> +
+> +patternProperties:
+> +  "^led@[0-9a-f]$":
+> +    type: object
+> +    $ref: common.yaml#
+> +    properties:
+> +      "qcom,dtest":
+> +        $ref: /schemas/types.yaml#definitions/uint32-array
+> +        description: >
+> +          configures the output into an internal test line of the pmic. Specified
+> +          by a list of u32 pairs, one pair per channel, where each pair denotes the
+> +          test line to drive and the second configures how the value should be
+> +          outputed, as defined in the datasheet
+> +        minItems: 2
+> +        maxItems: 2
+> +
+> +    required:
+> +      - reg
+> +
+> +  "^multi-led$":
 
-> [...]
->
-> > +static __always_inline void *kfence_alloc(struct kmem_cache *s, size_t size, gfp_t flags)
-> > +{
-> > +     return static_branch_unlikely(&kfence_allocation_key) ? __kfence_alloc(s, size, flags) :
-> > +                                                                   NULL;
-> > +}
->
-> Minor (unrelated) nit, but this would be easier to read as:
->
-> static __always_inline void *kfence_alloc(struct kmem_cache *s, size_t size, gfp_t flags)
-> {
->         if (static_branch_unlikely(&kfence_allocation_key))
->                 return __kfence_alloc(s, size, flags);
->         return NULL;
-> }
+Not a pattern, so move to 'properties'
 
-Will fix for v5.
-
-Thanks,
--- Marco
+> +    type: object
+> +    $ref: leds-class-multicolor.yaml#
+> +    properties:
+> +      "#address-cells":
+> +        const: 1
+> +
+> +      "#size-cells":
+> +        const: 0
+> +
+> +      "^led@[0-9a-f]$":
+> +        type: object
+> +        $ref: common.yaml#
+> +
+> +        properties:
+> +          "qcom,dtest":
+> +            $ref: /schemas/types.yaml#definitions/uint32-array
+> +            description: >
+> +              configures the output into an internal test line of the pmic. Specified
+> +              by a list of u32 pairs, one pair per channel, where each pair denotes the
+> +              test line to drive and the second configures how the value should be
+> +              outputed, as defined in the datasheet
+> +            minItems: 2
+> +            maxItems: 2
+> +
+> +        required:
+> +          - reg
+> +
+> +required:
+> +  - compatible
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/leds/common.h>
+> +
+> +    lpg {
+> +      compatible = "qcom,pmi8994-lpg";
+> +
+> +      #address-cells = <1>;
+> +      #size-cells = <0>;
+> +
+> +      qcom,power-source = <1>;
+> +
+> +      led@1 {
+> +        reg = <1>;
+> +        label = "green:user1";
+> +      };
+> +
+> +      led@2 {
+> +        reg = <2>;
+> +        label = "green:user0";
+> +        default-state = "on";
+> +      };
+> +
+> +      led@3 {
+> +        reg = <3>;
+> +        label = "green:user2";
+> +      };
+> +
+> +      led@4 {
+> +        reg = <4>;
+> +        label = "green:user3";
+> +
+> +        qcom,dtest = <4 1>;
+> +      };
+> +    };
+> +  - |
+> +    #include <dt-bindings/leds/common.h>
+> +
+> +    lpg {
+> +      compatible = "qcom,pmi8994-lpg";
+> +
+> +      #address-cells = <1>;
+> +      #size-cells = <0>;
+> +
+> +      qcom,power-source = <1>;
+> +
+> +      multi-led {
+> +        color = <LED_COLOR_ID_MULTI>;
+> +	label = "rgb:notification";
+> +
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        led@1 {
+> +          reg = <1>;
+> +          color = <LED_COLOR_ID_RED>;
+> +        };
+> +
+> +        led@2 {
+> +          reg = <2>;
+> +          color = <LED_COLOR_ID_GREEN>;
+> +        };
+> +
+> +        led@3 {
+> +          reg = <3>;
+> +          color = <LED_COLOR_ID_BLUE>;
+> +        };
+> +      };
+> +    };
+> +  - |
+> +    lpg {
+> +      compatible = "qcom,pm8916-pwm";
+> +      #pwm-cells = <2>;
+> +    };
+> +...
+> -- 
+> 2.28.0
+> 
