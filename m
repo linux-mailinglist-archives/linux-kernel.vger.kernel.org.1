@@ -2,97 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4B9627D73C
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 21:48:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFAC127D742
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 21:49:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728909AbgI2Tso (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 15:48:44 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:14827 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727700AbgI2Tso (ORCPT
+        id S1728927AbgI2Ttk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 15:49:40 -0400
+Received: from mail-ot1-f66.google.com ([209.85.210.66]:47040 "EHLO
+        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727700AbgI2Ttj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 15:48:44 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f738f8f0001>; Tue, 29 Sep 2020 12:48:31 -0700
-Received: from [10.2.53.30] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 29 Sep
- 2020 19:48:43 +0000
-Subject: Re: [PATCH 2/8] selftests/vm: use a common gup_test.h
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        Shuah Khan <shuah@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        <linux-kselftest@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <linux-s390@vger.kernel.org>
-References: <20200928062159.923212-1-jhubbard@nvidia.com>
- <20200928062159.923212-3-jhubbard@nvidia.com>
- <20200928125739.GP9916@ziepe.ca>
- <6481e78f-c70d-133a-ff4a-325b5cd8fd5d@nvidia.com>
- <20200929163507.GV9916@ziepe.ca>
- <aab477bf-4353-5e6b-4cc9-9872c9376ed2@nvidia.com>
- <20200929175524.GX9916@ziepe.ca>
- <715c49ec-d2a8-45cb-8ace-c6b1b4b8f978@nvidia.com>
- <20200929190816.GY9916@ziepe.ca>
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <3022912c-f11b-f564-3a8a-f516ca259a37@nvidia.com>
-Date:   Tue, 29 Sep 2020 12:48:43 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Tue, 29 Sep 2020 15:49:39 -0400
+Received: by mail-ot1-f66.google.com with SMTP id 95so5627197ota.13;
+        Tue, 29 Sep 2020 12:49:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=PzCaUNqysgEnTwvGeABBPTRtJRNx1R8CoMvMr2bX+p0=;
+        b=GijYO/JV/CRXFk7YcazOoIgLU48G4GmoV2TiUkxv5L7tdD5t4RIxovYGIfsFgsqhGe
+         2kJ7tlILSXH2/lTwARreFZyBt4tkLaAzBzFy0ZAxnF684UXvWf2DoznsEpef41k664/9
+         Rztm2DiBcmIrU5S+vqCSeTAb/Lr/N6nv2NaaW6dbbEUAQnbSA/S4pcvNXAQDESkLm+v2
+         1b9yJbsRd3Fabu5j9OUyIueDqWraQOBL8AutaYZzlb5e/JnuRz3DZ5aNQXcntUsRoZs8
+         M0xB3PiaaeIbXfyg4DasNHq65RJePYRgX8kX1q1grmntGVIx7I8/9erNkfhqSQZVYcuc
+         UhYA==
+X-Gm-Message-State: AOAM532TXi1SqcqwUx0XDvFBvg3UPFAgLZXgFJ3nvHOdtYa2M6yiKGa9
+        R8UU6neUhgYqTIlD7v3ur9oc/AhWJZPU
+X-Google-Smtp-Source: ABdhPJzbdNohssdId6Ay0RYezHnS3+x1bQ9iiytAaIkGHGjFfXlebmZ3QmzGhtq6BReC7gAAGlorYA==
+X-Received: by 2002:a05:6830:1e30:: with SMTP id t16mr3994469otr.18.1601408978854;
+        Tue, 29 Sep 2020 12:49:38 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id n13sm1248201oic.14.2020.09.29.12.49.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Sep 2020 12:49:38 -0700 (PDT)
+Received: (nullmailer pid 1048006 invoked by uid 1000);
+        Tue, 29 Sep 2020 19:49:37 -0000
+Date:   Tue, 29 Sep 2020 14:49:37 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Biwen Li <biwen.li@oss.nxp.com>
+Cc:     jdelvare@suse.com, linux@roeck-us.net, mark.rutland@arm.com,
+        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, Reinhard Pfau <pfau@gdsys.de>,
+        Biwen Li <biwen.li@nxp.com>
+Subject: Re: [PATCH] hwmon: add support for SMSC EMC2305/03/02/01 fan
+ controller
+Message-ID: <20200929194937.GA1046240@bogus>
+References: <20200928104326.40386-1-biwen.li@oss.nxp.com>
 MIME-Version: 1.0
-In-Reply-To: <20200929190816.GY9916@ziepe.ca>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1601408911; bh=l1M2t5AaCh7Q282ookH1so6zr+gWgGpQ9555vW1BLhM=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=iqPRvbyfsch0MrYEGsHqsW979RKlqiaKx6EVGkaR4G3LY6FTDkj5XSr5RZ0QBRBnW
-         v5p2goSD6wIA509stcKeeb7ggMHIwFqxCph7Todye4Y85Ry/3hZ4wGhAEz3tq/2EWY
-         gIDi8H03y8QBsTw3eZEz+Oe0yLxw5iSNy+fTvI+jJqlt6exlCUGQ21ocFEgmOK4Lhw
-         2rH6elYyKsm3FNui1WhZlhMWSalOBEpbBm8d1NN2llucQhgGoGXZCA6xgl+npBADuI
-         D+lyfsZjbNVvsZ3N9cPOKdaoffdLOIPZji03kkw8WkdKwu7lNW1elDySSaQrVzhkwl
-         Bswjpi+Rjseew==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200928104326.40386-1-biwen.li@oss.nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/29/20 12:08 PM, Jason Gunthorpe wrote:
-> On Tue, Sep 29, 2020 at 11:59:55AM -0700, John Hubbard wrote:
->> On 9/29/20 10:55 AM, Jason Gunthorpe wrote:
->>> On Tue, Sep 29, 2020 at 10:44:31AM -0700, John Hubbard wrote:
->>>> On 9/29/20 9:35 AM, Jason Gunthorpe wrote:
->>>>> On Mon, Sep 28, 2020 at 01:10:24PM -0700, John Hubbard wrote:
->>>>>> On 9/28/20 5:57 AM, Jason Gunthorpe wrote:
->>>>>>> On Sun, Sep 27, 2020 at 11:21:53PM -0700, John Hubbard wrote:
->> ...
->>>> I don't see any "gcc -m" type of dependency generation pass happening
->>>> in this relatively simple Make system.
->>>
->>> It happens with -MD, all the deps are stored in files like mm/.init-mm.o.cmd
->>> and sucked into the build.
->>
->> You are thinking of kbuild. This is not kbuild. There are no such artifacts
->> being generated.
+On Mon, Sep 28, 2020 at 06:43:26PM +0800, Biwen Li wrote:
+> From: Reinhard Pfau <pfau@gdsys.de>
 > 
-> Oh. Really? That's horrible.
+> Add support for SMSC EMC2305, EMC2303, EMC2302, EMC2301 fan controller
+> chips.
+> The driver primary supports the EMC2305 chip which provides RPM-based
+> PWM control and monitoring for up to 5 fans.
 > 
+> According to the SMSC data sheets the EMC2303, EMC2302 and EMC2301 chips
+> have basically the same functionality and register layout, but support
+> less fans and (in case of EMC2302 and EMC2301) less possible I2C addresses.
+> The driver supports them, too.
+> 
+> The driver supports configuration via devicetree. This can also be used
+> to restrict the fans exposed via sysfs (see doc for details).
+> 
+> Signed-off-by: Reinhard Pfau <pfau@gdsys.de>
+> Signed-off-by: Biwen Li <biwen.li@nxp.com>
+> ---
+>  .../devicetree/bindings/hwmon/emc2305.txt     |  33 +
 
-Well, yes, it's not a perfect build system down here in selftests/. Are you saying
-that it is worth upgrading? I'm open to suggestions and ideas for improvements,
-and at the moment, I have the miniature build system here mostly loaded into my
-head. So for a brief shining moment I can probably understand it well enough to
-work on it. :)
+Split to a separate patch and should be in DT schema format. 
+checkpatch.pl will tell you both of these things.
 
-
-thanks,
--- 
-John Hubbard
-NVIDIA
+>  Documentation/hwmon/emc2305.rst               |  34 +
+>  MAINTAINERS                                   |   8 +
+>  drivers/hwmon/Kconfig                         |  10 +
+>  drivers/hwmon/Makefile                        |   1 +
+>  drivers/hwmon/emc2305.c                       | 689 ++++++++++++++++++
+>  6 files changed, 775 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/hwmon/emc2305.txt
+>  create mode 100644 Documentation/hwmon/emc2305.rst
+>  create mode 100644 drivers/hwmon/emc2305.c
