@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF6D627C5A3
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:38:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4516D27C5B1
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:38:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729948AbgI2LhU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:37:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55996 "EHLO mail.kernel.org"
+        id S1730319AbgI2Lhw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:37:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53444 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730028AbgI2Lg7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:36:59 -0400
+        id S1730121AbgI2Lha (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:37:30 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 347FB23EB4;
-        Tue, 29 Sep 2020 11:32:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5A0C823B85;
+        Tue, 29 Sep 2020 11:34:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601379141;
-        bh=KHilziixZ3dsweEpRyzT8m7OaSAe+Q8HWApEZCDJZsg=;
+        s=default; t=1601379261;
+        bh=xOd9QKWTSY2iyHQRA3tBBDFqWyLXobXanE1Ql2zUFvk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=H2kjNgqOXb0VAWUvW9uDdWo5QW0fzghZRIq9qeysFAEyOhUKk5VlGVDivy7vnrNr6
-         c4cDhKtg01I++hrk7BfK3du3A36Zw0pcKcifcAB0CWPJhuuHxCuqy0PKOD0Z2VgVnY
-         wRNz2+J+hXfmxRtNp+foeeq9esJrynwX6Xbo7jqs=
+        b=yg9IR3bemiLTqTX/PAW2W9O3KhjIamAjZdmCz/7BTZMOTiOZeLSCSFTkaOPEsgcpE
+         ZqdvPss3ysBWaNuMUJi9EsZiao8pfeUgd6LsqEAI92JmJWhhyjcoXGLi3cvRIkRCv+
+         7UK1jwBW0ok1QkJXUt7vpvxWVGm2f7d8qyso6/rE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chao Yu <yuchao0@huawei.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
+        stable@vger.kernel.org, Kusanagi Kouichi <slash@ac.auone-net.jp>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 032/388] f2fs: avoid kernel panic on corruption test
-Date:   Tue, 29 Sep 2020 12:56:03 +0200
-Message-Id: <20200929110012.045569210@linuxfoundation.org>
+Subject: [PATCH 5.4 057/388] debugfs: Fix !DEBUG_FS debugfs_create_automount
+Date:   Tue, 29 Sep 2020 12:56:28 +0200
+Message-Id: <20200929110013.255980348@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200929110010.467764689@linuxfoundation.org>
 References: <20200929110010.467764689@linuxfoundation.org>
@@ -43,31 +42,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jaegeuk Kim <jaegeuk@kernel.org>
+From: Kusanagi Kouichi <slash@ac.auone-net.jp>
 
-[ Upstream commit bc005a4d5347da68e690f78d365d8927c87dc85a ]
+[ Upstream commit 4250b047039d324e0ff65267c8beb5bad5052a86 ]
 
-xfstests/generic/475 complains kernel warn/panic while testing corrupted disk.
+If DEBUG_FS=n, compile fails with the following error:
 
-Reviewed-by: Chao Yu <yuchao0@huawei.com>
-Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+kernel/trace/trace.c: In function 'tracing_init_dentry':
+kernel/trace/trace.c:8658:9: error: passing argument 3 of 'debugfs_create_automount' from incompatible pointer type [-Werror=incompatible-pointer-types]
+ 8658 |         trace_automount, NULL);
+      |         ^~~~~~~~~~~~~~~
+      |         |
+      |         struct vfsmount * (*)(struct dentry *, void *)
+In file included from kernel/trace/trace.c:24:
+./include/linux/debugfs.h:206:25: note: expected 'struct vfsmount * (*)(void *)' but argument is of type 'struct vfsmount * (*)(struct dentry *, void *)'
+  206 |      struct vfsmount *(*f)(void *),
+      |      ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+
+Signed-off-by: Kusanagi Kouichi <slash@ac.auone-net.jp>
+Link: https://lore.kernel.org/r/20191121102021787.MLMY.25002.ppp.dion.ne.jp@dmta0003.auone-net.jp
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/f2fs/node.c | 1 -
- 1 file changed, 1 deletion(-)
+ include/linux/debugfs.h | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/fs/f2fs/node.c b/fs/f2fs/node.c
-index 8a67b933ccd42..ed12e96681842 100644
---- a/fs/f2fs/node.c
-+++ b/fs/f2fs/node.c
-@@ -2353,7 +2353,6 @@ static int __f2fs_build_free_nids(struct f2fs_sb_info *sbi,
+diff --git a/include/linux/debugfs.h b/include/linux/debugfs.h
+index 58424eb3b3291..798f0b9b43aee 100644
+--- a/include/linux/debugfs.h
++++ b/include/linux/debugfs.h
+@@ -54,6 +54,8 @@ static const struct file_operations __fops = {				\
+ 	.llseek  = no_llseek,						\
+ }
  
- 			if (ret) {
- 				up_read(&nm_i->nat_tree_lock);
--				f2fs_bug_on(sbi, !mount);
- 				f2fs_err(sbi, "NAT is corrupt, run fsck to fix it");
- 				return ret;
- 			}
++typedef struct vfsmount *(*debugfs_automount_t)(struct dentry *, void *);
++
+ #if defined(CONFIG_DEBUG_FS)
+ 
+ struct dentry *debugfs_lookup(const char *name, struct dentry *parent);
+@@ -75,7 +77,6 @@ struct dentry *debugfs_create_dir(const char *name, struct dentry *parent);
+ struct dentry *debugfs_create_symlink(const char *name, struct dentry *parent,
+ 				      const char *dest);
+ 
+-typedef struct vfsmount *(*debugfs_automount_t)(struct dentry *, void *);
+ struct dentry *debugfs_create_automount(const char *name,
+ 					struct dentry *parent,
+ 					debugfs_automount_t f,
+@@ -203,7 +204,7 @@ static inline struct dentry *debugfs_create_symlink(const char *name,
+ 
+ static inline struct dentry *debugfs_create_automount(const char *name,
+ 					struct dentry *parent,
+-					struct vfsmount *(*f)(void *),
++					debugfs_automount_t f,
+ 					void *data)
+ {
+ 	return ERR_PTR(-ENODEV);
 -- 
 2.25.1
 
