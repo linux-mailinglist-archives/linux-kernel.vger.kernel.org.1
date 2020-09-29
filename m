@@ -2,130 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46A7E27C1C4
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 11:58:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8965B27C13E
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 11:31:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727691AbgI2J6M convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 29 Sep 2020 05:58:12 -0400
-Received: from mga01.intel.com ([192.55.52.88]:19760 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725468AbgI2J6M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 05:58:12 -0400
-IronPort-SDR: 0ow8xLzmJtAfuvR3zUi4PRfdLrVg8NdMT/BtduVVQJ6qH3uWb6MvvYwZlLySnjSM/8QobpyNkx
- lAdubrzb0y/g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9758"; a="180298121"
-X-IronPort-AV: E=Sophos;i="5.77,317,1596524400"; 
-   d="scan'208";a="180298121"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2020 01:18:40 -0700
-IronPort-SDR: v8sk/OfXNv3tLbDFTwNKKIUDe3RcBDXzfM+1oKbAn5iWLXRTGxCFZ4gl7ewLphKsyFCcb66N2V
- ec/iIRtf4cdQ==
-X-IronPort-AV: E=Sophos;i="5.77,317,1596524400"; 
-   d="scan'208";a="514592291"
-Received: from akoski1-mobl7.ger.corp.intel.com (HELO localhost) ([10.252.11.87])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2020 01:18:37 -0700
-Content-Type: text/plain; charset="utf-8"
+        id S1728114AbgI2JbV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 05:31:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46674 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728112AbgI2JbM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 05:31:12 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A934C0613D4
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 02:31:09 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id g4so4565631wrs.5
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 02:31:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=LTVgpGq4LLRpZSsnAEZ8quGTs1OVPgk5ISC/KzU0WmI=;
+        b=wSf3pUEw/Xo8Yo4QcjUMz5uvYca/gasUtpYXNJ+HlLUHwJ2w47KOF7O2zbnmOp07s/
+         xVDSkbUTexSgR365m7fe+s6QEwlg6Y5RjnNe6KvO3WncTS36hanrjZN4xC6nmuKTCc2D
+         VYjzZGELIKPAbI5sgdqnKZgrV30We47veR+1w=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=LTVgpGq4LLRpZSsnAEZ8quGTs1OVPgk5ISC/KzU0WmI=;
+        b=MuJiPDEljuyqiKsh7fs2lefiUWC6n7UL9JK5W876zahhofIHepeoM2np9OdXT40veQ
+         3HMCpCYgIXbGbg67ibj+QCcBn1Xs5w6iP+BRgFZfyI0xX7aNeBqLlp3h3D1Ikc6d+c6O
+         oIOWiMW9esm5pT7yTwVXn648IRbrM/rVkNiA8D7akq8MAiW0wdMb07UqMGEVk766p/f0
+         MWmGcnY/7GLt2z8vZpRiJju5F9wOHVr58x7+CkETBxjFnFxWH05qz2zqazbLMq0tv6EI
+         p0Z9oE11UOy3xdyWalPfCX+zRbCJCDyGQzh9RbagSJoH/7XbVA7iSpI5v0ZkvkgjGzGm
+         4INg==
+X-Gm-Message-State: AOAM530IrRDghld06IjFRmaGfPLfvAbPoJ9meRFGLedCCZewdj+EdsRD
+        +vmHDIgwm6ORj31ZeVc619tfkg==
+X-Google-Smtp-Source: ABdhPJzNBJUbFcS3QxH2peWbETwJQ7UhwILzJSiAYhpNbKbUOrFixUtOc7+Cc64raXOoQQqcANIbaw==
+X-Received: by 2002:adf:b74a:: with SMTP id n10mr3081077wre.140.1601371867720;
+        Tue, 29 Sep 2020 02:31:07 -0700 (PDT)
+Received: from antares.lan (1.f.1.6.a.e.6.5.a.0.3.2.4.7.4.0.f.f.6.2.a.5.a.7.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:7a5a:26ff:474:230a:56ea:61f1])
+        by smtp.gmail.com with ESMTPSA id i16sm5246798wrq.73.2020.09.29.02.31.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Sep 2020 02:31:06 -0700 (PDT)
+From:   Lorenz Bauer <lmb@cloudflare.com>
+To:     kafai@fb.com, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     kernel-team@cloudflare.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH bpf-next v3 1/4] bpf: sockmap: enable map_update_elem from bpf_iter
+Date:   Tue, 29 Sep 2020 10:30:36 +0100
+Message-Id: <20200929093039.73872-2-lmb@cloudflare.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200929093039.73872-1-lmb@cloudflare.com>
+References: <20200929093039.73872-1-lmb@cloudflare.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <CAOMV6SUP1=U3bqO=+f_HrnTYpaLLwvZY4muCdW-ixQU2M10_WQ@mail.gmail.com>
-References: <CAOMV6SUP1=U3bqO=+f_HrnTYpaLLwvZY4muCdW-ixQU2M10_WQ@mail.gmail.com>
-To:     Tony Fischetti <tony.fischetti@gmail.com>, airlied@linux.ie,
-        jani.nikula@linux.intel.com, linux-kernel@vger.kernel.org,
-        peterx@redhat.com, rodrigo.vivi@intel.com,
-        chris@chris-wilson.co.uk, intel-gfx@lists.freedesktop.org
-From:   Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
-Subject: Re: REGRESSION: in intel video driver following introduction of mm_struct.has_pinned
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-Message-ID: <160136751431.9258.5367116987368823201@jlahtine-mobl.ger.corp.intel.com>
-User-Agent: alot/0.8.1
-Date:   Tue, 29 Sep 2020 11:18:34 +0300
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-(+ intel-gfx for being i915 related)
-(+ Chris who has looked into the issue)
+Allow passing a pointer to a BTF struct sock_common* when updating
+a sockmap or sockhash. Since BTF pointers can fault and therefore be
+NULL at runtime we need to add an additional !sk check to
+sock_map_update_elem. Since we may be passed a request or timewait
+socket we also need to check sk_fullsock. Doing this allows calling
+map_update_elem on sockmap from bpf_iter context, which uses
+BTF pointers.
 
-Hi,
+Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
+Acked-by: Martin KaFai Lau <kafai@fb.com>
+---
+ kernel/bpf/verifier.c | 2 +-
+ net/core/sock_map.c   | 3 +++
+ 2 files changed, 4 insertions(+), 1 deletion(-)
 
-Thanks for reporting!
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index b25ba989c2dc..cc9c90d74dc1 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -3943,7 +3943,7 @@ static int resolve_map_arg_type(struct bpf_verifier_env *env,
+ 	case BPF_MAP_TYPE_SOCKMAP:
+ 	case BPF_MAP_TYPE_SOCKHASH:
+ 		if (*arg_type == ARG_PTR_TO_MAP_VALUE) {
+-			*arg_type = ARG_PTR_TO_SOCKET;
++			*arg_type = ARG_PTR_TO_BTF_ID_SOCK_COMMON;
+ 		} else {
+ 			verbose(env, "invalid arg_type for sockmap/sockhash\n");
+ 			return -EINVAL;
+diff --git a/net/core/sock_map.c b/net/core/sock_map.c
+index e1f05e3fa1d0..08bc86f51593 100644
+--- a/net/core/sock_map.c
++++ b/net/core/sock_map.c
+@@ -610,6 +610,9 @@ static int sock_map_update_elem(struct bpf_map *map, void *key,
+ 	struct sock *sk = (struct sock *)value;
+ 	int ret;
+ 
++	if (unlikely(!sk || !sk_fullsock(sk)))
++		return -EINVAL;
++
+ 	if (!sock_map_sk_is_suitable(sk))
+ 		return -EOPNOTSUPP;
+ 
+-- 
+2.25.1
 
-Could you open a bug report according to following instructions:
-
-https://gitlab.freedesktop.org/drm/intel/-/wikis/How-to-file-i915-bugs
-
-A full dmesg of a bad boot and git bisect logs will be helpful.
-
-Also, please describe when the problem happens, is it at boot? Are you
-getting the OOPS on every boot?
-
-For future reference, replying to a single thread helps keeping the
-attention focused.
-
-Regards, Joonas
-
-Quoting Tony Fischetti (2020-09-28 21:14:16)
-> After a length git bisection, I determined the commit that introduced
-> a change that ultimately caused a bug/oops null dereference (see below
-> for relevant syslog entries) was 008cfe4418b3dbda2ff.. (mm: Introduce
-> mm_struct.has_pinned)
-> 
-> The RIP (according to syslog) occurs in function
-> `__get_user_pages_remote` and the last function to call it from the
-> i915 code is `gem_userptr_get_pages_worker`
-> More specifically, it appears to be the call to
-> `pin_user_pages_remote` in `gem_userptr_get_pages_worker` in
-> drivers/gpu/drm/i915/gem/i915_gem_userptr.c that directly leads to the
-> oops.
-> 
-> Unfortunately, I don't know enough to try to fix and share the fix
-> myself, but I hope the information I provided is helpful. Please let
-> me know if there is any further information I can provide that might
-> be of use.
-> 
-> BUG: kernel NULL pointer dereference, address: 0000000000000054
-> #PF: supervisor write access in kernel mode
-> #PF: error_code(0x0002) - not-present page
-> Oops: 0002 [#1] PREEMPT SMP NOPTI
-> CPU: 8 PID: 497 Comm: kworker/u25:0 Not tainted
-> 5.9.0-rc7-alice-investigate-3+ #2
-> Hardware name: LENOVO 10ST001QUS/312A, BIOS M1UKT4BA 11/11/2019
-> Workqueue: i915-userptr-acquire __i915_gem_userptr_get_pages_worker [i915]
-> RIP: 0010:__get_user_pages_remote+0xa0/0x2d0
-> Code: 85 e7 01 00 00 83 3b 01 0f 85 e0 01 00 00 f7 c1 00 00 04 00 0f
-> 84 12 01 00 00 65 48 8b 04 25 00 6d 01 00 48 8b 80 58 03 00 00 <c7> 40
-> 54 01 00 00 00 c6 04 24 00 4d 8d 6f 68 48 c7 44 24 10 00 00
-> RSP: 0018:ffffa1a58086bde0 EFLAGS: 00010206
-> RAX: 0000000000000000 RBX: ffffa1a58086be64 RCX: 0000000000040001
-> RDX: 00000000000007e9 RSI: 00007f532f800000 RDI: ffff92f22d89c480
-> RBP: 00007f532f800000 R08: ffff92f23a188000 R09: 0000000000000000
-> R10: 0000000000000000 R11: ffffa1a58086bcfd R12: ffff92f23a188000
-> R13: ffff92f22d89c480 R14: 0000000000042003 R15: ffff92f22d89c480
-> FS:  0000000000000000(0000) GS:ffff92f23e400000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 0000000000000054 CR3: 0000000016c0a002 CR4: 00000000001706e0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->  __i915_gem_userptr_get_pages_worker+0x1ec/0x392 [i915]
->  process_one_work+0x1c7/0x310
->  worker_thread+0x28/0x3c0
->  ? set_worker_desc+0xb0/0xb0
->  kthread+0x123/0x140
->  ? kthread_use_mm+0xe0/0xe0
->  ret_from_fork+0x1f/0x30
-> Modules linked in: snd_hda_codec_hdmi snd_hda_codec_realtek
-> snd_hda_codec_generic ledtrig_audio iwlmvm mac80211 libarc4
-> x86_pkg_temp_thermal intel_powerclamp iwlwifi coretemp i915
-> crct10dif_pclmul crc32_pclmul crc32c_intel i2c_algo_bit
-> ghash_clmulni_intel drm_kms_helper syscopyarea sysfillrect sysimgblt
-> fb_sys_fops cec mei_hdcp wmi_bmof snd_hda_intel drm tpm_crb
-> snd_intel_dspcfg intel_wmi_thunderbolt snd_hda_codec snd_hwdep
-> aesni_intel crypto_simd glue_helper snd_hda_core cfg80211 i2c_i801
-> snd_pcm intel_cstate pcspkr snd_timer mei_me i2c_smbus mei i2c_core
-> thermal wmi tpm_tis tpm_tis_core tpm rng_core acpi_pad ppdev lp
-> ip_tables x_tables
-> CR2: 0000000000000054
-> ---[ end trace 8d080e8b96289c9e ]---
