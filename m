@@ -2,248 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C70927DA1A
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 23:28:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A68427DA25
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 23:32:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729721AbgI2V2K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 17:28:10 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:9213 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729523AbgI2V1w (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 17:27:52 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f73a6cb0000>; Tue, 29 Sep 2020 14:27:39 -0700
-Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 29 Sep
- 2020 21:27:51 +0000
-Received: from sandstorm.nvidia.com (10.124.1.5) by mail.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
- Transport; Tue, 29 Sep 2020 21:27:51 +0000
-From:   John Hubbard <jhubbard@nvidia.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-CC:     Jonathan Corbet <corbet@lwn.net>,
-        =?UTF-8?q?J=C3=A9r=C3=B4me=20Glisse?= <jglisse@redhat.com>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        Shuah Khan <shuah@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        <linux-kselftest@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <linux-s390@vger.kernel.org>, John Hubbard <jhubbard@nvidia.com>
-Subject: [PATCH v2 8/8] selftests/vm: hmm-tests: remove the libhugetlbfs dependency
-Date:   Tue, 29 Sep 2020 14:27:47 -0700
-Message-ID: <20200929212747.251804-9-jhubbard@nvidia.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929212747.251804-1-jhubbard@nvidia.com>
-References: <20200929212747.251804-1-jhubbard@nvidia.com>
+        id S1729140AbgI2Vb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 17:31:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47708 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727740AbgI2Vb4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 17:31:56 -0400
+Received: from localhost (52.sub-72-107-123.myvzw.com [72.107.123.52])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3A9802075E;
+        Tue, 29 Sep 2020 21:31:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601415115;
+        bh=gzFmxT/6qmRw+vWd7neiLPEnz55xC18T5I9oR0epPQ4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=biK92FkJ5NO8eo4zPyCqvnlWe1Yt3MLOicMFgBva2Q03CECFAc/BCvqfLEgK7xyZS
+         n/xueHrZ4FMwD3oxXt2YgJZuUawZVQGCl2Lqv1pXVTYUpiPe3xLqhJOt2MUvHNc+tE
+         zxrnAEpq7sJsCVijoI3emJcmeU1S6W2xMBeD4y4A=
+Date:   Tue, 29 Sep 2020 16:31:53 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Jim Quinlan <james.quinlan@broadcom.com>
+Cc:     linux-pci@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 RESEND 1/1] PCI: pcie_bus_config can be set at build
+ time
+Message-ID: <20200929213153.GA2578412@bjorn-Precision-5520>
 MIME-Version: 1.0
-X-NVConfidentiality: public
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1601414859; bh=AVSdxVZXFvWRMunNETbWmE7BTClvZyiw51tTHsvnJC4=;
-        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:In-Reply-To:
-         References:MIME-Version:X-NVConfidentiality:
-         Content-Transfer-Encoding:Content-Type;
-        b=CQN0D6jsPVRtQOJQkCS/LpMj+RtA5otEr4gJYWQsqS42nG+U+C5XfwBIlyfBU9PlC
-         JI9tD4UrzKZSzO3GaiIIFxXspMY0uxPixDhe7O6AgJOwFdtZjQA4H52YPEfq63gSkF
-         Y32Ia09Qs5WIHtpFI/2MRYx3/yVaSRo8OGqgQnl64BE2AqguJVgXdaGbo+DlWQ6u1W
-         xwn9RAJmPxes3lTVurai5mCLRAL3l49DVuLM2sKcrC0AXmoVBxLsT+UiWrcQuu7TzA
-         rhHhqv4hBxhR1LgpUaqcbYooL9QipAwq0FfVpMwAUO1o6og8OagxU30B2tqifaPAmf
-         YUD1hcQcCKW0A==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200928194651.5393-2-james.quinlan@broadcom.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-HMM selftests are incredibly useful, but they are only effective if
-people actually build and run them. All the other tests in selftests/vm
-can be built with very standard, always-available libraries: libpthread,
-librt. The hmm-tests.c program, on the other hand, requires something
-that is (much) less readily available: libhugetlbfs. And so the build
-will typically fail for many developers.
+On Mon, Sep 28, 2020 at 03:46:51PM -0400, Jim Quinlan wrote:
+> The Kconfig is modified so that the pcie_bus_config setting can be done at
+> build time in the same manner as the CONFIG_PCIEASPM_XXXX choice.  The
+> pci_bus_config setting may still be overridden by the bootline param.
+> 
+> Signed-off-by: Jim Quinlan <james.quinlan@broadcom.com>
 
-A simple attempt to install libhugetlbfs will also run into
-complications on some common distros these days: Fedora and Arch Linux
-(yes, Arch AUR has it, but that's fragile, as always with AUR). The
-library is not maintained actively enough at the moment, for distros to
-deal with it. I had to build it from source, for Fedora, and that didn't
-go too smoothly either.
+Applied to pci/enumeration for v5.10, thanks!
 
-It turns out that, out of 21 tests in hmm-tests.c, only 2 actually
-require functionality from libhugetlbfs. Therefore, if libhugetlbfs is
-missing, simply ifdef those two tests out and allow the developer to at
-least have the other 19 tests, if they don't want to pause to work
-through the above issues. Also issue a warning, so that it's clear that
-there is an imperfection in the build.
+I tweaked the help texts and made the Kconfig stuff depend on
+CONFIG_EXPERT.  Will that still be enough for what you need?  I'm
+worried that users will get themselves in trouble if they fiddle with
+things without really understanding what's going on.
 
-In order to do that, a tiny shell script (check_config.sh) runs a quick
-compile (not link, that's too prone to false failures with library
-paths), and basically, if the compiler doesn't find hugetlbfs.h in its
-standard locations, then the script concludes that libhugetlbfs is not
-available. The output is in two files, one for inclusion in hmm-test.c
-(local_config.h), and one for inclusion in the Makefile
-(local_config.mk).
+Here's what I applied:
 
-Cc: Ralph Campbell <rcampbell@nvidia.com>
-Signed-off-by: John Hubbard <jhubbard@nvidia.com>
----
- tools/testing/selftests/vm/.gitignore      |  1 +
- tools/testing/selftests/vm/Makefile        | 24 +++++++++++++++--
- tools/testing/selftests/vm/check_config.sh | 31 ++++++++++++++++++++++
- tools/testing/selftests/vm/hmm-tests.c     | 10 ++++++-
- 4 files changed, 63 insertions(+), 3 deletions(-)
- create mode 100755 tools/testing/selftests/vm/check_config.sh
 
-diff --git a/tools/testing/selftests/vm/.gitignore b/tools/testing/selftest=
-s/vm/.gitignore
-index 2c8ddcf41c0e..e90d28bcd518 100644
---- a/tools/testing/selftests/vm/.gitignore
-+++ b/tools/testing/selftests/vm/.gitignore
-@@ -20,3 +20,4 @@ va_128TBswitch
- map_fixed_noreplace
- write_to_hugetlbfs
- hmm-tests
-+local_config.*
-diff --git a/tools/testing/selftests/vm/Makefile b/tools/testing/selftests/=
-vm/Makefile
-index 2579242386ac..019cbb7f3cf8 100644
---- a/tools/testing/selftests/vm/Makefile
-+++ b/tools/testing/selftests/vm/Makefile
-@@ -1,5 +1,8 @@
- # SPDX-License-Identifier: GPL-2.0
- # Makefile for vm selftests
+commit 2a87f534d198 ("PCI: Add Kconfig options for pcie_bus_config")
+Author: Jim Quinlan <james.quinlan@broadcom.com>
+Date:   Mon Sep 28 15:46:51 2020 -0400
+
+    PCI: Add Kconfig options for pcie_bus_config
+    
+    Add Kconfig options for changing the default pcie_bus_config in the same
+    manner as the CONFIG_PCIEASPM_XXXX choice.  The pci_bus_config setting may
+    still be overridden by kernel command-line parameters, e.g.,
+    "pci=pcie_bus_tune_off".
+    
+    [bhelgaas: depend on EXPERT, tweak help texts]
+    Link: https://lore.kernel.org/r/20200928194651.5393-2-james.quinlan@broadcom.com
+    Signed-off-by: Jim Quinlan <james.quinlan@broadcom.com>
+    Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+
+diff --git a/drivers/pci/Kconfig b/drivers/pci/Kconfig
+index 4bef5c2bae9f..d323b25ae27e 100644
+--- a/drivers/pci/Kconfig
++++ b/drivers/pci/Kconfig
+@@ -187,6 +187,68 @@ config PCI_HYPERV
+ 	  The PCI device frontend driver allows the kernel to import arbitrary
+ 	  PCI devices from a PCI backend to support PCI driver domains.
+ 
++choice
++	prompt "PCI Express hierarchy optimization setting"
++	default PCIE_BUS_DEFAULT
++	depends on PCI && EXPERT
++	help
++	  MPS (Max Payload Size) and MRRS (Max Read Request Size) are PCIe
++	  device parameters that affect performance and the ability to
++	  support hotplug and peer-to-peer DMA.
 +
-+include local_config.mk
++	  The following choices set the MPS and MRRS optimization strategy
++	  at compile-time.  The choices are the same as those offered for
++	  the kernel command-line parameter 'pci', i.e.,
++	  'pci=pcie_bus_tune_off', 'pci=pcie_bus_safe',
++	  'pci=pcie_bus_perf', and 'pci=pcie_bus_peer2peer'.
 +
- uname_M :=3D $(shell uname -m 2>/dev/null || echo not)
- MACHINE ?=3D $(shell echo $(uname_M) | sed -e 's/aarch64.*/arm64/')
-=20
-@@ -76,8 +79,6 @@ TEST_FILES :=3D test_vmalloc.sh
- KSFT_KHDR_INSTALL :=3D 1
- include ../lib.mk
-=20
--$(OUTPUT)/hmm-tests: LDLIBS +=3D -lhugetlbfs
--
- ifeq ($(ARCH),x86_64)
- BINARIES_32 :=3D $(patsubst %,$(OUTPUT)/%,$(BINARIES_32))
- BINARIES_64 :=3D $(patsubst %,$(OUTPUT)/%,$(BINARIES_64))
-@@ -130,3 +131,22 @@ endif
- $(OUTPUT)/mlock-random-test: LDLIBS +=3D -lcap
-=20
- $(OUTPUT)/gup_test: ../../../../mm/gup_test.h
++	  This is a compile-time setting and can be overridden by the above
++	  command-line parameters.  If unsure, choose PCIE_BUS_DEFAULT.
 +
-+$(OUTPUT)/hmm-tests: local_config.h
++config PCIE_BUS_TUNE_OFF
++	bool "Tune Off"
++	depends on PCI
++	help
++	  Use the BIOS defaults; don't touch MPS at all.  This is the same
++	  as booting with 'pci=pcie_bus_tune_off'.
 +
-+# HMM_EXTRA_LIBS may get set in local_config.mk, or it may be left empty.
-+$(OUTPUT)/hmm-tests: LDLIBS +=3D $(HMM_EXTRA_LIBS)
++config PCIE_BUS_DEFAULT
++	bool "Default"
++	depends on PCI
++	help
++	  Default choice; ensure that the MPS matches upstream bridge.
 +
-+local_config.mk local_config.h: check_config.sh
-+	./check_config.sh $(CC)
++config PCIE_BUS_SAFE
++	bool "Safe"
++	depends on PCI
++	help
++	  Use largest MPS that boot-time devices support.  If you have a
++	  closed system with no possibility of adding new devices, this
++	  will use the largest MPS that's supported by all devices.  This
++	  is the same as booting with 'pci=pcie_bus_safe'.
 +
-+EXTRA_CLEAN +=3D local_config.mk local_config.h
++config PCIE_BUS_PERFORMANCE
++	bool "Performance"
++	depends on PCI
++	help
++	  Use MPS and MRRS for best performance.  Ensure that a given
++	  device's MPS is no larger than its parent MPS, which allows us to
++	  keep all switches/bridges to the max MPS supported by their
++	  parent.  This is the same as booting with 'pci=pcie_bus_perf'.
 +
-+ifeq ($(HMM_EXTRA_LIBS),)
-+all: warn_missing_hugelibs
++config PCIE_BUS_PEER2PEER
++	bool "Peer2peer"
++	depends on PCI
++	help
++	  Set MPS = 128 for all devices.  MPS configuration effected by the
++	  other options could cause the MPS on one root port to be
++	  different than that of the MPS on another, which may cause
++	  hot-added devices or peer-to-peer DMA to fail.  Set MPS to the
++	  smallest possible value (128B) system-wide to avoid these issues.
++	  This is the same as booting with 'pci=pcie_bus_peer2peer'.
 +
-+warn_missing_hugelibs:
-+	@echo ; \
-+	echo "Warning: missing libhugetlbfs support. Some HMM tests will be skipp=
-ed." ; \
-+	echo
-+endif
-diff --git a/tools/testing/selftests/vm/check_config.sh b/tools/testing/sel=
-ftests/vm/check_config.sh
-new file mode 100755
-index 000000000000..079c8a40b85d
---- /dev/null
-+++ b/tools/testing/selftests/vm/check_config.sh
-@@ -0,0 +1,31 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0
-+#
-+# Probe for libraries and create header files to record the results. Both =
-C
-+# header files and Makefile include fragments are created.
++endchoice
 +
-+OUTPUT_H_FILE=3Dlocal_config.h
-+OUTPUT_MKFILE=3Dlocal_config.mk
+ source "drivers/pci/hotplug/Kconfig"
+ source "drivers/pci/controller/Kconfig"
+ source "drivers/pci/endpoint/Kconfig"
+diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+index a458c46d7e39..49b66ba7c874 100644
+--- a/drivers/pci/pci.c
++++ b/drivers/pci/pci.c
+@@ -101,7 +101,19 @@ unsigned long pci_hotplug_mmio_pref_size = DEFAULT_HOTPLUG_MMIO_PREF_SIZE;
+ #define DEFAULT_HOTPLUG_BUS_SIZE	1
+ unsigned long pci_hotplug_bus_size = DEFAULT_HOTPLUG_BUS_SIZE;
+ 
 +
-+# libhugetlbfs
-+tmpname=3D$(mktemp)
-+tmpfile_c=3D${tmpname}.c
-+tmpfile_o=3D${tmpname}.o
-+
-+echo "#include <sys/types.h>"        > $tmpfile_c
-+echo "#include <hugetlbfs.h>"       >> $tmpfile_c
-+echo "int func(void) { return 0; }" >> $tmpfile_c
-+
-+CC=3D${1:?"Usage: $0 <compiler> # example compiler: gcc"}
-+$CC -c $tmpfile_c -o $tmpfile_o >/dev/null 2>&1
-+
-+if [ -f $tmpfile_o ]; then
-+    echo "#define LOCAL_CONFIG_HAVE_LIBHUGETLBFS 1" > $OUTPUT_H_FILE
-+    echo "HMM_EXTRA_LIBS =3D -lhugetlbfs"             > $OUTPUT_MKFILE
-+else
-+    echo "// No libhugetlbfs support found"      > $OUTPUT_H_FILE
-+    echo "# No libhugetlbfs support found, so:"  > $OUTPUT_MKFILE
-+    echo "HMM_EXTRA_LIBS =3D "                    >> $OUTPUT_MKFILE
-+fi
-+
-+rm ${tmpname}.*
-diff --git a/tools/testing/selftests/vm/hmm-tests.c b/tools/testing/selftes=
-ts/vm/hmm-tests.c
-index 0a28a6a29581..6b79723d7dc6 100644
---- a/tools/testing/selftests/vm/hmm-tests.c
-+++ b/tools/testing/selftests/vm/hmm-tests.c
-@@ -21,12 +21,16 @@
- #include <strings.h>
- #include <time.h>
- #include <pthread.h>
--#include <hugetlbfs.h>
- #include <sys/types.h>
- #include <sys/stat.h>
- #include <sys/mman.h>
- #include <sys/ioctl.h>
-=20
-+#include "./local_config.h"
-+#ifdef LOCAL_CONFIG_HAVE_LIBHUGETLBFS
-+#include <hugetlbfs.h>
++/* PCIE bus config, can be overridden by bootline param */
++#ifdef CONFIG_PCIE_BUS_TUNE_OFF
++enum pcie_bus_config_types pcie_bus_config = PCIE_BUS_TUNE_OFF;
++#elif defined CONFIG_PCIE_BUS_SAFE
++enum pcie_bus_config_types pcie_bus_config = PCIE_BUS_SAFE;
++#elif defined CONFIG_PCIE_BUS_PERFORMANCE
++enum pcie_bus_config_types pcie_bus_config = PCIE_BUS_PERFORMANCE;
++#elif defined CONFIG_PCIE_BUS_PEER2PEER
++enum pcie_bus_config_types pcie_bus_config = PCIE_BUS_PEER2PEER;
++#else
+ enum pcie_bus_config_types pcie_bus_config = PCIE_BUS_DEFAULT;
 +#endif
-+
+ 
  /*
-  * This is a private UAPI to the kernel test module so it isn't exported
-  * in the usual include/uapi/... directory.
-@@ -662,6 +666,7 @@ TEST_F(hmm, anon_write_huge)
- 	hmm_buffer_free(buffer);
- }
-=20
-+#ifdef LOCAL_CONFIG_HAVE_LIBHUGETLBFS
- /*
-  * Write huge TLBFS page.
-  */
-@@ -720,6 +725,7 @@ TEST_F(hmm, anon_write_hugetlbfs)
- 	buffer->ptr =3D NULL;
- 	hmm_buffer_free(buffer);
- }
-+#endif /* LOCAL_CONFIG_HAVE_LIBHUGETLBFS */
-=20
- /*
-  * Read mmap'ed file memory.
-@@ -1336,6 +1342,7 @@ TEST_F(hmm2, snapshot)
- 	hmm_buffer_free(buffer);
- }
-=20
-+#ifdef LOCAL_CONFIG_HAVE_LIBHUGETLBFS
- /*
-  * Test the hmm_range_fault() HMM_PFN_PMD flag for large pages that
-  * should be mapped by a large page table entry.
-@@ -1411,6 +1418,7 @@ TEST_F(hmm, compound)
- 	buffer->ptr =3D NULL;
- 	hmm_buffer_free(buffer);
- }
-+#endif /* LOCAL_CONFIG_HAVE_LIBHUGETLBFS */
-=20
- /*
-  * Test two devices reading the same memory (double mapped).
---=20
-2.28.0
-
+  * The default CLS is used if arch didn't set CLS explicitly and not
