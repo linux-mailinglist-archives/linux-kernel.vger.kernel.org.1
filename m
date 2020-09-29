@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0DD927C43B
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:12:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCDB127C390
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:07:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729034AbgI2LMU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:12:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53750 "EHLO mail.kernel.org"
+        id S1728533AbgI2LG5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:06:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44380 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729306AbgI2LMG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:12:06 -0400
+        id S1728454AbgI2LGt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:06:49 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0DB51206A5;
-        Tue, 29 Sep 2020 11:12:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9EEB521941;
+        Tue, 29 Sep 2020 11:06:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601377926;
-        bh=ugSFzKxkxgqkHGdJE77qqLWjQsB1bCv2+wihC4OBFXw=;
+        s=default; t=1601377608;
+        bh=eiz7aoc8IANfM5Zam+W3qobqu1VmS3mANYdwlS2WVIc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wjPyWMClTVu9kHIuU1O0dQgE3XmnllAbE3VolcZNE2w5/XmzKyt86/eVDp8qV3OyC
-         X20KP+zvPqI8AlrJe/2buL5j6lsizKiiAMwJ8u9xqv7FeS7GL6NBEVsx3mvX74eU3P
-         cRaOSovK6QNwQYV1/ipahDzJ5QUh5RFhUQcCxjiM=
+        b=ej6MU18kJwA4B0KocQfS8rQNbHwoTWGwDL1e9NaRg8MD1SPKAKeZcGA3CXNKjvRZh
+         LzoCFdv+tEvO6o68lu+erneU0prU+EAYR7noQlGVhxeGmTyZ68RxqzvzNNqFsZ7vn9
+         1n0F63tvvTt1WvwYc70VB0uX/Wgwe/g4A06v62GE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jonathan Bakker <xc-racer2@live.ca>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 082/121] phy: samsung: s5pv210-usb2: Add delay after reset
-Date:   Tue, 29 Sep 2020 13:00:26 +0200
-Message-Id: <20200929105934.244365701@linuxfoundation.org>
+Subject: [PATCH 4.4 60/85] ALSA: hda: Fix potential race in unsol event handler
+Date:   Tue, 29 Sep 2020 13:00:27 +0200
+Message-Id: <20200929105931.213540294@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929105930.172747117@linuxfoundation.org>
-References: <20200929105930.172747117@linuxfoundation.org>
+In-Reply-To: <20200929105928.198942536@linuxfoundation.org>
+References: <20200929105928.198942536@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,41 +42,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonathan Bakker <xc-racer2@live.ca>
+From: Takashi Iwai <tiwai@suse.de>
 
-[ Upstream commit 05942b8c36c7eb5d3fc5e375d4b0d0c49562e85d ]
+[ Upstream commit c637fa151259c0f74665fde7cba5b7eac1417ae5 ]
 
-The USB phy takes some time to reset, so make sure we give it to it. The
-delay length was taken from the 4x12 phy driver.
+The unsol event handling code has a loop retrieving the read/write
+indices and the arrays without locking while the append to the array
+may happen concurrently.  This may lead to some inconsistency.
+Although there hasn't been any proof of this bad results, it's still
+safer to protect the racy accesses.
 
-This manifested in issues with the DWC2 driver since commit fe369e1826b3
-("usb: dwc2: Make dwc2_readl/writel functions endianness-agnostic.")
-where the endianness check would read the DWC ID as 0 due to the phy still
-resetting, resulting in the wrong endian mode being chosen.
+This patch adds the spinlock protection around the unsol handling loop
+for addressing it.  Here we take bus->reg_lock as the writer side
+snd_hdac_bus_queue_event() is also protected by that lock.
 
-Signed-off-by: Jonathan Bakker <xc-racer2@live.ca>
-Link: https://lore.kernel.org/r/BN6PR04MB06605D52502816E500683553A3D10@BN6PR04MB0660.namprd04.prod.outlook.com
-Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+Link: https://lore.kernel.org/r/20200516062556.30951-1-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/phy/phy-s5pv210-usb2.c | 4 ++++
+ sound/hda/hdac_bus.c | 4 ++++
  1 file changed, 4 insertions(+)
 
-diff --git a/drivers/phy/phy-s5pv210-usb2.c b/drivers/phy/phy-s5pv210-usb2.c
-index 004d320767e4d..bb36cfd4e3e90 100644
---- a/drivers/phy/phy-s5pv210-usb2.c
-+++ b/drivers/phy/phy-s5pv210-usb2.c
-@@ -142,6 +142,10 @@ static void s5pv210_phy_pwr(struct samsung_usb2_phy_instance *inst, bool on)
- 		udelay(10);
- 		rst &= ~rstbits;
- 		writel(rst, drv->reg_phy + S5PV210_UPHYRST);
-+		/* The following delay is necessary for the reset sequence to be
-+		 * completed
-+		 */
-+		udelay(80);
- 	} else {
- 		pwr = readl(drv->reg_phy + S5PV210_UPHYPWR);
- 		pwr |= phypwr;
+diff --git a/sound/hda/hdac_bus.c b/sound/hda/hdac_bus.c
+index 0e81ea89a5965..e3f68a76d90eb 100644
+--- a/sound/hda/hdac_bus.c
++++ b/sound/hda/hdac_bus.c
+@@ -155,6 +155,7 @@ static void process_unsol_events(struct work_struct *work)
+ 	struct hdac_driver *drv;
+ 	unsigned int rp, caddr, res;
+ 
++	spin_lock_irq(&bus->reg_lock);
+ 	while (bus->unsol_rp != bus->unsol_wp) {
+ 		rp = (bus->unsol_rp + 1) % HDA_UNSOL_QUEUE_SIZE;
+ 		bus->unsol_rp = rp;
+@@ -166,10 +167,13 @@ static void process_unsol_events(struct work_struct *work)
+ 		codec = bus->caddr_tbl[caddr & 0x0f];
+ 		if (!codec || !codec->dev.driver)
+ 			continue;
++		spin_unlock_irq(&bus->reg_lock);
+ 		drv = drv_to_hdac_driver(codec->dev.driver);
+ 		if (drv->unsol_event)
+ 			drv->unsol_event(codec, res);
++		spin_lock_irq(&bus->reg_lock);
+ 	}
++	spin_unlock_irq(&bus->reg_lock);
+ }
+ 
+ /**
 -- 
 2.25.1
 
