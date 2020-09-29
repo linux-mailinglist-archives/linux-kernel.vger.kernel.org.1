@@ -2,45 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 080C227C305
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:02:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63FE727C3D5
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:09:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728225AbgI2LCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:02:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38114 "EHLO mail.kernel.org"
+        id S1729052AbgI2LJJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:09:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48602 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725283AbgI2LCj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:02:39 -0400
+        id S1729036AbgI2LJB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:09:01 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7BD1D2158C;
-        Tue, 29 Sep 2020 11:02:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 31F8521D92;
+        Tue, 29 Sep 2020 11:08:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601377359;
-        bh=IU6ZR18VAbdvVKXPApeLcq2M46/qop60Mav5MIT49AM=;
+        s=default; t=1601377740;
+        bh=IMqgfg1I+JZ+Db7k4qTX1k8eQKQ+wMBHtVjAinua6Mw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FyLxk4uPTqiHiHeq+cgsBSNM/DjmmIfDPdbrUdHetxKfOSct6R4sswVxbCNqx/MuM
-         H+cGA7js/T1hbCLImA2M5qCflJT71q1j0swfAlCRF7tNLprDDtCefdNF4+ZKu2nnjv
-         fBguMIf+BBuj6l0g7QEy4tVSvq9jtw7+J6xP9NKg=
+        b=dm9g5YyvLhFmzs3FfVCOiBhCp8GiJUtCKXGEpVpjeKmIhi9yL9w49Uql8PGBjyNKu
+         cCvpR/OQHCng65enCV8GUe8djr19CVZXsefeHuNZhnnJgormA4bJGWieR5yD6EcM+X
+         R1JaBQsWObLiFFeRy+AkMY1HUcf41y6F/0dZV8Eg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mark Salyzyn <salyzyn@android.com>,
-        netdev@vger.kernel.org, kernel-team@android.com,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.4 01/85] af_key: pfkey_dump needs parameter validation
-Date:   Tue, 29 Sep 2020 12:59:28 +0200
-Message-Id: <20200929105928.275181118@linuxfoundation.org>
+        stable@vger.kernel.org, Pan Bian <bianpan2016@163.com>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 025/121] RDMA/i40iw: Fix potential use after free
+Date:   Tue, 29 Sep 2020 12:59:29 +0200
+Message-Id: <20200929105931.436641200@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929105928.198942536@linuxfoundation.org>
-References: <20200929105928.198942536@linuxfoundation.org>
+In-Reply-To: <20200929105930.172747117@linuxfoundation.org>
+References: <20200929105930.172747117@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -48,46 +43,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mark Salyzyn <salyzyn@android.com>
+From: Pan Bian <bianpan2016@163.com>
 
-commit 37bd22420f856fcd976989f1d4f1f7ad28e1fcac upstream.
+[ Upstream commit da046d5f895fca18d63b15ac8faebd5bf784e23a ]
 
-In pfkey_dump() dplen and splen can both be specified to access the
-xfrm_address_t structure out of bounds in__xfrm_state_filter_match()
-when it calls addr_match() with the indexes.  Return EINVAL if either
-are out of range.
+Release variable dst after logging dst->error to avoid possible use after
+free.
 
-Signed-off-by: Mark Salyzyn <salyzyn@android.com>
-Cc: netdev@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Cc: kernel-team@android.com
-Cc: Steffen Klassert <steffen.klassert@secunet.com>
-Cc: Herbert Xu <herbert@gondor.apana.org.au>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Link: https://lore.kernel.org/r/1573022651-37171-1-git-send-email-bianpan2016@163.com
+Signed-off-by: Pan Bian <bianpan2016@163.com>
+Reviewed-by: Jason Gunthorpe <jgg@mellanox.com>
+Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/key/af_key.c |    7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/infiniband/hw/i40iw/i40iw_cm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/net/key/af_key.c
-+++ b/net/key/af_key.c
-@@ -1873,6 +1873,13 @@ static int pfkey_dump(struct sock *sk, s
- 	if (ext_hdrs[SADB_X_EXT_FILTER - 1]) {
- 		struct sadb_x_filter *xfilter = ext_hdrs[SADB_X_EXT_FILTER - 1];
- 
-+		if ((xfilter->sadb_x_filter_splen >=
-+			(sizeof(xfrm_address_t) << 3)) ||
-+		    (xfilter->sadb_x_filter_dplen >=
-+			(sizeof(xfrm_address_t) << 3))) {
-+			mutex_unlock(&pfk->dump_lock);
-+			return -EINVAL;
-+		}
- 		filter = kmalloc(sizeof(*filter), GFP_KERNEL);
- 		if (filter == NULL) {
- 			mutex_unlock(&pfk->dump_lock);
+diff --git a/drivers/infiniband/hw/i40iw/i40iw_cm.c b/drivers/infiniband/hw/i40iw/i40iw_cm.c
+index 282a726351c81..ce1a4817ab923 100644
+--- a/drivers/infiniband/hw/i40iw/i40iw_cm.c
++++ b/drivers/infiniband/hw/i40iw/i40iw_cm.c
+@@ -2036,9 +2036,9 @@ static int i40iw_addr_resolve_neigh_ipv6(struct i40iw_device *iwdev,
+ 	dst = i40iw_get_dst_ipv6(&src_addr, &dst_addr);
+ 	if (!dst || dst->error) {
+ 		if (dst) {
+-			dst_release(dst);
+ 			i40iw_pr_err("ip6_route_output returned dst->error = %d\n",
+ 				     dst->error);
++			dst_release(dst);
+ 		}
+ 		return rc;
+ 	}
+-- 
+2.25.1
+
 
 
