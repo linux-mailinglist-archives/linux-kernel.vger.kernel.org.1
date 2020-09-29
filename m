@@ -2,217 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DA0327BEFA
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 10:15:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDD1727BEFD
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 10:16:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727709AbgI2IPt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 04:15:49 -0400
-Received: from mail-lf1-f65.google.com ([209.85.167.65]:35034 "EHLO
-        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725536AbgI2IPt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 04:15:49 -0400
-Received: by mail-lf1-f65.google.com with SMTP id w11so4484222lfn.2;
-        Tue, 29 Sep 2020 01:15:46 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=U2XnucP1dM3YuXVS+++tyoB7Lws/BYKIf+9Wg+oK0Co=;
-        b=XrQsOfaIIAJ4lHKQl+28M7Dt2Y6q7xojDXDsZxw5y5J8dIYMK3uDPGcrCFJ11s4ON1
-         +bUdHdsOJklmDIyCr4QDYjb2ChMpin/vWUV7eGP6zSm31S0Yw4ZJny8CiX2j6LjRr0aP
-         oLZkLbR5BtEy7MRFQkGSl8XZ4PNAlPeMMg3L7xczQmImx/ssRiWE8xyi7zu4KXtORADb
-         3Qpj/UKdpJdeEoS/8pENrMEOuxgPpJdmk9azkw5UUAeSt8pUWGr3gD+cl98qX8yXxNcJ
-         lMCP2vDj6p10EKZnhUJx0kGlsCc1PlreGI8FUZ8IBTnEU+x1KcazIALvfJdHeC/lVxtk
-         2A0g==
-X-Gm-Message-State: AOAM532lCCDoyaQxFr/swLTY4fJTkZk3zBM8XBNcYpOuO9W0v8n6sj6/
-        X7HnKOVSrE6Q2XHZ73u6dURpUWgNSPk=
-X-Google-Smtp-Source: ABdhPJw5nLR1rnCV2ODTqDZMczu41T35FHrqrxtSkPKAXnzgPmuM5ouC6oqqwfQF6xi6kZHJvOwrHQ==
-X-Received: by 2002:a05:6512:2102:: with SMTP id q2mr739281lfr.14.1601367345340;
-        Tue, 29 Sep 2020 01:15:45 -0700 (PDT)
-Received: from localhost.localdomain ([213.255.186.46])
-        by smtp.gmail.com with ESMTPSA id z141sm3155110lfc.171.2020.09.29.01.15.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Sep 2020 01:15:44 -0700 (PDT)
-Date:   Tue, 29 Sep 2020 11:15:31 +0300
-From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-To:     mazziesaccount@gmail.com, matti.vaittinen@fi.rohmeurope.com
-Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-power@fi.rohmeurope.com,
-        linux-watchdog@vger.kernel.org
-Subject: [PATCH v3 1/4] dt_bindings: mfd: Add ROHM BD9576MUF and BD9573MUF
- PMICs
-Message-ID: <be3518afb2a54ff02ca15e63cac21c99bcdfaef6.1601366711.git.matti.vaittinen@fi.rohmeurope.com>
-References: <cover.1601366711.git.matti.vaittinen@fi.rohmeurope.com>
+        id S1727715AbgI2IQB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 04:16:01 -0400
+Received: from z5.mailgun.us ([104.130.96.5]:25769 "EHLO z5.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725536AbgI2IQA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 04:16:00 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1601367359; h=In-Reply-To: Content-Transfer-Encoding:
+ Content-Type: MIME-Version: References: Message-ID: Subject: Cc: To:
+ From: Date: Sender; bh=C9y1LdO+aWy0JAGGyfzZqhHPFniLyfb2PM4PGoHOs1Q=; b=oXag0gZVLoDrQgIODIYlL4Bd4aWplBQMb4wJMQUz27yQxijzACMXy6NOobz8d+0bqcohrgXk
+ AzwZ4BpXDc9V68tBeMRbmgeG5ZYC4M/N+/o9IhvIBPEFOi1WSkNiJZAgbn9to5gnFS9PcuJM
+ AABbscZvIT6PGXN0mrWoWftj4T8=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 5f72ed3f1fdd3a1390fb68ae (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 29 Sep 2020 08:15:59
+ GMT
+Sender: varada=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id C9530C43387; Tue, 29 Sep 2020 08:15:58 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from codeaurora.org (blr-c-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.19.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: varada)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id C8B20C433FF;
+        Tue, 29 Sep 2020 08:15:52 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org C8B20C433FF
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=varada@codeaurora.org
+Date:   Tue, 29 Sep 2020 13:45:47 +0530
+From:   Varadarajan Narayanan <varada@codeaurora.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     mturquette@baylibre.com, linux-arm-kernel@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
+        robh+dt@kernel.org, nsekar@codeaurora.org,
+        linux-gpio@vger.kernel.org, p.zabel@pengutronix.de,
+        sboyd@kernel.org, linus.walleij@linaro.org,
+        sricharan@codeaurora.org, linux-kernel@vger.kernel.org,
+        catalin.marinas@arm.com, agross@kernel.org,
+        linux-arm-msm@vger.kernel.org, will@kernel.org,
+        bjorn.andersson@linaro.org
+Subject: Re: [PATCH 4/7] dt-bindings: pinctrl: qcom: Add ipq5018 pinctrl
+ bindings
+Message-ID: <20200929081547.GA11411@codeaurora.org>
+References: <1601270140-4306-1-git-send-email-varada@codeaurora.org>
+ <1601270140-4306-5-git-send-email-varada@codeaurora.org>
+ <20200928181018.GA3007757@bogus>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1601366711.git.matti.vaittinen@fi.rohmeurope.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200928181018.GA3007757@bogus>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add bindings for ROHM BD9576MUF and BD9573MUF PMICs. These
-PMICs are primarily intended to be used to power the R-Car series
-processors. They provide 6 power outputs, safety features and a
-watchdog with two functional modes.
+On Mon, Sep 28, 2020 at 01:10:18PM -0500, Rob Herring wrote:
+> On Mon, 28 Sep 2020 10:45:37 +0530, Varadarajan Narayanan wrote:
+> > Add device tree binding Documentation details for ipq5018
+> > pinctrl driver.
+> >
+> > Signed-off-by: Varadarajan Narayanan <varada@codeaurora.org>
+> > ---
+> >  .../bindings/pinctrl/qcom,ipq5018-pinctrl.yaml     | 143 +++++++++++++=
+++++++++
+> >  1 file changed, 143 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,ipq5=
+018-pinctrl.yaml
+> >
+>
+>
+> My bot found errors running 'make dt_binding_check' on your patch:
+>
+> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/pinc=
+trl/qcom,ipq5018-pinctrl.example.dt.yaml: pinctrl@1000000: serial3-pinmux:f=
+unction:0: 'blsp2_uart' is not one of ['atest_char', 'atest_char0', 'atest_=
+char1', 'atest_char2', 'atest_char3', 'audio_pdm0', 'audio_pdm1', 'audio_rx=
+bclk', 'audio_rxd', 'audio_rxfsync', 'audio_rxmclk', 'audio_txbclk', 'audio=
+_txd', 'audio_txfsync', 'audio_txmclk', 'blsp0_i2c', 'blsp0_spi', 'blsp0_ua=
+rt0', 'blsp0_uart1', 'blsp1_i2c0', 'blsp1_i2c1', 'blsp1_spi0', 'blsp1_spi1'=
+, 'blsp1_uart0', 'blsp1_uart1', 'blsp1_uart2', 'blsp2_i2c0', 'blsp2_i2c1', =
+'blsp2_spi', 'blsp2_spi0', 'blsp2_spi1', 'btss0', 'btss1', 'btss10', 'btss1=
+1', 'btss12', 'btss13', 'btss2', 'btss3', 'btss4', 'btss5', 'btss6', 'btss7=
+', 'btss8', 'btss9', 'burn0', 'burn1', 'cri_trng', 'cri_trng0', 'cri_trng1'=
+, 'cxc_clk', 'cxc_data', 'dbg_out', 'eud_gpio', 'gcc_plltest', 'gcc_tlmm', =
+'gpio', 'mac0', 'mac1', 'mdc', 'mdio', 'pcie0_clk', 'pcie0_wake', 'pcie1_cl=
+k', 'pcie1_wake', 'pll_test', 'prng_rosc', 'pwm0', 'pwm1', 'pwm2', 'pwm3', =
+'qdss_cti_trig_in_a0', 'qdss_cti_trig_in_a1', 'qdss_cti_trig_in_b0', 'qdss_=
+cti_trig_in_b1', 'qdss_cti_trig_out_a0', 'qdss_cti_trig_out_a1', 'qdss_cti_=
+trig_out_b0', 'qdss_cti_trig_out_b1', 'qdss_traceclk_a', 'qdss_traceclk_b',=
+ 'qdss_tracectl_a', 'qdss_tracectl_b', 'qdss_tracedata_a', 'qdss_tracedata_=
+b', 'qspi_clk', 'qspi_cs', 'qspi0', 'qspi1', 'qspi2', 'qspi3', 'reset_out',=
+ 'sdc1_clk', 'sdc1_cmd', 'sdc10', 'sdc11', 'sdc12', 'sdc13', 'wci0', 'wci1'=
+, 'wci2', 'wci3', 'wci4', 'wci5', 'wci6', 'wci7', 'wsa_swrm', 'wsi_clk3', '=
+wsi_data3', 'wsis_reset', 'xfem0', 'xfem1', 'xfem2', 'xfem3', 'xfem4', 'xfe=
+m5', 'xfem6', 'xfem7']
+> 	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree=
+/bindings/pinctrl/qcom,ipq5018-pinctrl.yaml
+>
+>
+> See https://patchwork.ozlabs.org/patch/1372367
+>
+> If you already ran 'make dt_binding_check' and didn't see the above
+> error(s), then make sure dt-schema is up to date:
+>
+> pip3 install git+https://github.com/devicetree-org/dt-schema.git@master -=
+-upgrade
+>
+> Please check and re-submit.
 
-Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
----
+Ok, will check and post updated patches
 
-Changes from v2:
-  - Replace bindings hw_margin_ms and rohm,hw-margin-min-ms with
-    rohm,hw-timeout-ms
-
- .../bindings/mfd/rohm,bd9576-pmic.yaml        | 123 ++++++++++++++++++
- 1 file changed, 123 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mfd/rohm,bd9576-pmic.yaml
-
-diff --git a/Documentation/devicetree/bindings/mfd/rohm,bd9576-pmic.yaml b/Documentation/devicetree/bindings/mfd/rohm,bd9576-pmic.yaml
-new file mode 100644
-index 000000000000..1e468a29ec3b
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mfd/rohm,bd9576-pmic.yaml
-@@ -0,0 +1,123 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/mfd/rohm,bd9576-pmic.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: ROHM BD9576MUF and BD9573MUF Power Management Integrated Circuit bindings
-+
-+maintainers:
-+  - Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-+
-+description: |
-+  BD9576MUF and BD9573MUF are power management ICs primarily intended for
-+  powering the R-Car series processors.
-+  The IC provides 6 power outputs with configurable sequencing and safety
-+  monitoring. A watchdog logic with slow ping/windowed modes is also included.
-+
-+properties:
-+  compatible:
-+    enum:
-+      - rohm,bd9576
-+      - rohm,bd9573
-+
-+  reg:
-+    description:
-+      I2C slave address.
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  rohm,vout1-en-low:
-+    description:
-+      BD9576 and BD9573 VOUT1 regulator enable state can be individually
-+      controlled by a GPIO. This is dictated by state of vout1-en pin during
-+      the PMIC startup. If vout1-en is LOW during PMIC startup then the VOUT1
-+      enable sate is controlled via this pin. Set this property if vout1-en
-+      is wired to be down at PMIC start-up.
-+    type: boolean
-+
-+  rohm,vout1-en-gpios:
-+    description:
-+      GPIO specifier to specify the GPIO connected to vout1-en for vout1 ON/OFF
-+      state control.
-+    maxItems: 1
-+
-+  rohm,ddr-sel-low:
-+    description:
-+      The BD9576 and BD9573 output voltage for DDR can be selected by setting
-+      the ddr-sel pin low or high. Set this property if ddr-sel is grounded.
-+    type: boolean
-+
-+  rohm,watchdog-enable-gpios:
-+    description: The GPIO line used to enable the watchdog.
-+    maxItems: 1
-+
-+  rohm,watchdog-ping-gpios:
-+    description: The GPIO line used to ping the watchdog.
-+    maxItems: 1
-+
-+  rohm,hw-timeout-ms:
-+    maxItems: 2
-+    description:
-+      Watchog timeout in milliseconds. If single value is given it is
-+      the maximum timeout. Eg. if pinging watchdog is not done within this time
-+      limit the watchdog will be triggered. If two values are given watchdog
-+      is configured in "window mode". Then first value is limit for short-ping
-+      Eg. if watchdog is pinged sooner than that the watchdog will trigger.
-+      When two values is given the second value is the maximum timeout.
-+      # (HW) minimum for short timeout is 2ms, maximum 220 ms.
-+      # (HW) minimum for max timeout is 4ms, maximum maximum 4416 ms.
-+
-+  regulators:
-+    $ref: ../regulator/rohm,bd9576-regulator.yaml
-+    description:
-+      List of child nodes that specify the regulators.
-+
-+required:
-+  - compatible
-+  - reg
-+  - regulators
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/gpio/gpio.h>
-+    #include <dt-bindings/leds/common.h>
-+    i2c {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+        pmic: pmic@30 {
-+            compatible = "rohm,bd9576";
-+            reg = <0x30>;
-+            rohm,vout1-en-low;
-+            rohm,vout1-en-gpios = <&gpio2 6 GPIO_ACTIVE_HIGH>;
-+            rohm,ddr-sel-low;
-+            rohm,watchdog-enable-gpios = <&gpio2 6 GPIO_ACTIVE_HIGH>;
-+            rohm,watchdog-ping-gpios = <&gpio2 7 GPIO_ACTIVE_HIGH>;
-+            rohm,hw-timeout-ms = <150>, <2300>;
-+
-+            regulators {
-+                boost1: regulator-vd50 {
-+                    regulator-name = "VD50";
-+                };
-+                buck1: regulator-vd18 {
-+                    regulator-name = "VD18";
-+                };
-+                buck2: regulator-vdddr {
-+                    regulator-name = "VDDDR";
-+                };
-+                buck3: regulator-vd10 {
-+                    regulator-name = "VD10";
-+                };
-+                ldo: regulator-voutl1 {
-+                    regulator-name = "VOUTL1";
-+                };
-+                sw: regulator-vouts1 {
-+                    regulator-name = "VOUTS1";
-+                };
-+            };
-+        };
-+    };
--- 
-2.21.0
-
-
--- 
-Matti Vaittinen, Linux device drivers
-ROHM Semiconductors, Finland SWDC
-Kiviharjunlenkki 1E
-90220 OULU
-FINLAND
-
-~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
-Simon says - in Latin please.
-~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
-Thanks to Simon Glass for the translation =] 
+--
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member o=
+f Code Aurora Forum, hosted by The Linux Foundation
