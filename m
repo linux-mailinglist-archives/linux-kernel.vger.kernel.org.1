@@ -2,84 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0335727D324
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 17:52:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A31727D32E
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 17:54:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729206AbgI2PwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 11:52:04 -0400
-Received: from mail-oo1-f67.google.com ([209.85.161.67]:43477 "EHLO
-        mail-oo1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728401AbgI2PwE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 11:52:04 -0400
-Received: by mail-oo1-f67.google.com with SMTP id w25so1394555oos.10;
-        Tue, 29 Sep 2020 08:52:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=MhoFV9ElUshrcZczyvzu0eUgcLqJJOPkpBHv4bhmpeI=;
-        b=RdsZrJzgENJ6Di1b0UM5oDw/IO41zWDh5yiJTVCS5+Z+Zm1rxZ2qHJLiA/Gq1MOdkW
-         i6bUbusZksqV7s9voEhltvbRmh5ww+Oqx5rGEh/bZVJ08mG9xSJ9v/o+3qizMc+x0gHO
-         m4SEq/YNNoNlI6NASKl2l/X1GqaF35zUFYZJTnXRnKiRVa4XuObyyvzmM/f4G/6VhcQc
-         BwUKsQiAKkC9PVD/l2m0c787pJt9zGvMIsJdIWytudgaQ3LMczDJiqnThmPpWjm9OK16
-         iq8GBpoiLSgXwuYGyrE4k66d1cNZp4h5p21j5hNpwd14HwfK2L0kX6SnJaSW3WeSXLTf
-         kaNg==
-X-Gm-Message-State: AOAM533ZJ2deEeNSYztqwdZywo4et0kiidEnWfEar13PBE7l6nx8jFfe
-        UJorON87WB0v3cSb+Fye2A==
-X-Google-Smtp-Source: ABdhPJwuG3Ld+elk2b1227zUoNomM14opr/hmEQ0EAWgc/iigZJuNC67UKZmjHIr3zDq+pDM9upmtA==
-X-Received: by 2002:a4a:c541:: with SMTP id j1mr5123201ooq.13.1601394722536;
-        Tue, 29 Sep 2020 08:52:02 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id l136sm1071824oig.7.2020.09.29.08.52.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Sep 2020 08:52:02 -0700 (PDT)
-Received: (nullmailer pid 668050 invoked by uid 1000);
-        Tue, 29 Sep 2020 15:52:01 -0000
-Date:   Tue, 29 Sep 2020 10:52:01 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Joakim Zhang <qiangqing.zhang@nxp.com>
-Cc:     mchehab@kernel.org, sean@mess.org, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-imx@nxp.com
-Subject: Re: [PATCH V3 1/2] bindings: media: gpio-ir-receiver: add
- linux,autosuspend-period property
-Message-ID: <20200929155201.GA665464@bogus>
-References: <20200922190807.6830-1-qiangqing.zhang@nxp.com>
- <20200922190807.6830-2-qiangqing.zhang@nxp.com>
+        id S1729043AbgI2Pyf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 11:54:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45358 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725497AbgI2Pye (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 11:54:34 -0400
+Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 98D2820739;
+        Tue, 29 Sep 2020 15:54:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601394873;
+        bh=U3wTRYS5La8oZ9gPFQ2NLqNVrKaawXqnWmHLf7jBugo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=vcEe5K7ZTrM6qdlKpNQgRGLseTn+Z6feRuPNomWgf6sKL2sbO6e/9hUYdfC2q0l06
+         b0CN2OOqC971x/OGRYG2GbiANlDA75+8azjPrmgpGl0rrS7A6QuHScdzTw0lbNiIW5
+         oguiNtny8psnRx8jhn+BPl3ZZN/5efC564KKSQU8=
+Date:   Tue, 29 Sep 2020 16:54:28 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
+Cc:     <linux-iio@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <nicolas.ferre@microchip.com>,
+        <alexandre.belloni@bootlin.com>, <ludovic.desroches@microchip.com>
+Subject: Re: [PATCH 1/2] iio: adc: at91_adc: use of_device_get_match_data()
+ helper
+Message-ID: <20200929165428.15ac9e4c@archlinux>
+In-Reply-To: <20200928125424.35921-1-alexandru.ardelean@analog.com>
+References: <20200928125424.35921-1-alexandru.ardelean@analog.com>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200922190807.6830-2-qiangqing.zhang@nxp.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 03:08:06AM +0800, Joakim Zhang wrote:
-> Add linux,autosuspend-period property for gpio ir receiver. Some cpuidle
-> systems wake from idle may take a bit long time, for such case, need
-> disable cpuidle temporarily.
-> 
-> Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
-> ---
-> ChangeLogs:
-> V1->V2:
-> 	* New add.
-> V2->V3:
-> 	* linux,autosuspend-period = 125; -> linux,autosuspend-period = <125>;
-> ---
->  Documentation/devicetree/bindings/media/gpio-ir-receiver.txt | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/media/gpio-ir-receiver.txt b/Documentation/devicetree/bindings/media/gpio-ir-receiver.txt
-> index 58261fb7b408..e1447c9b0e26 100644
-> --- a/Documentation/devicetree/bindings/media/gpio-ir-receiver.txt
-> +++ b/Documentation/devicetree/bindings/media/gpio-ir-receiver.txt
-> @@ -7,6 +7,8 @@ Required properties:
->  Optional properties:
->  	- linux,rc-map-name: see rc.txt file in the same
->  	  directory.
-> +        - linux,autosuspend-period: autosuspend delay time,
-> +          the unit is milisecond.
+On Mon, 28 Sep 2020 15:54:23 +0300
+Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
 
-What makes this linux specific?
+> This tries to solve a warning reported by the lkp bot:
+> 
+> >> drivers/iio/adc/at91_adc.c:1439:34: warning: unused variable
+> >> 'at91_adc_dt_ids' [-Wunused-const-variable]  
+>    static const struct of_device_id at91_adc_dt_ids[] = {
+>                                     ^
+>    1 warning generated.
+> 
+> This shows up with 'compiler: clang version 12.0.0' and W=1 (as the bot
+> mentions).
+> 
+> Forward declarations for global variables can be a bit weird; forward
+> function declarations are more common.
+Hi,
+
+That's not the forward declaration that it is complaining about...
+
+It's a reasonable patch anyway, but doesn't fix that warning which is
+about of_match_ptr and the lack of #ifdef CONFIG_OF around the
+actual definition.
+
+For the bug warning, I'd add add a Kconfig dependency on OF.
+It doesn't make any sense to allow building this driver without that.
+
+So resend this as a simple tidy up patch and another one adding
+that build dependency.
+
+Thanks,
+
+Jonathan
+
+> 
+> Maybe another fix for this would have been to prefix with 'extern' the
+> 'at91_adc_dt_ids' variable, thus making it more friendly as a forward
+> declaration. It would look weird, but it would work.
+> 
+> But, we can avoid that forward declaration altogether simply by obtaining
+> the private data with of_device_get_match_data().
+> 
+> This appeared after commit 4027860dcc4c ("iio: Kconfig: at91_adc: add
+> COMPILE_TEST dependency to driver"), which put this driver on the lkp's bot
+> radar.
+> 
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+> ---
+>  drivers/iio/adc/at91_adc.c | 5 +----
+>  1 file changed, 1 insertion(+), 4 deletions(-)
+> 
+> diff --git a/drivers/iio/adc/at91_adc.c b/drivers/iio/adc/at91_adc.c
+> index 9b2c548fae95..c9ec0a4a357e 100644
+> --- a/drivers/iio/adc/at91_adc.c
+> +++ b/drivers/iio/adc/at91_adc.c
+> @@ -829,8 +829,6 @@ static u32 calc_startup_ticks_9x5(u32 startup_time, u32 adc_clk_khz)
+>  	return ticks;
+>  }
+>  
+> -static const struct of_device_id at91_adc_dt_ids[];
+> -
+>  static int at91_adc_probe_dt_ts(struct device_node *node,
+>  	struct at91_adc_state *st, struct device *dev)
+>  {
+> @@ -878,8 +876,7 @@ static int at91_adc_probe_dt(struct iio_dev *idev,
+>  	if (!node)
+>  		return -EINVAL;
+>  
+> -	st->caps = (struct at91_adc_caps *)
+> -		of_match_device(at91_adc_dt_ids, &pdev->dev)->data;
+> +	st->caps = (struct at91_adc_caps *)of_device_get_match_data(&pdev->dev);
+>  
+>  	st->use_external = of_property_read_bool(node, "atmel,adc-use-external-triggers");
+>  
+
