@@ -2,72 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4FEE27CF15
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 15:27:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B1EA27CEFA
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 15:22:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728253AbgI2N1B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 09:27:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55392 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728441AbgI2N1B (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 09:27:01 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAF23C0613D0
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 06:27:00 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id y11so5510276lfl.5
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 06:27:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=B3ONy2UEfURniD/LDED8tr1xeJcvKDrV1FhcEDlZN1c=;
-        b=i8HkhsevGRuO/1O5qc6zqJQJMWeWJ6YjXtnrcAkQaKBLLMU9r5g9/CFT8Lf1byQ9vD
-         MBkpuW3yyx2cjmDVpWQyjQPTWcun2lPWm/FtUmeIrvDXD7wnwRCX8Oxac4u3ZGMI0JlQ
-         rS3dnHTK2iOzyTFe7HgXA8RJa2eR6VyNe3YJ8NdSNb6C94kWKkxAFU167ySxmTHc6/8y
-         oegxD3xbulxRIa2ZbJAFrmj/2q0TN/tgkt74ZJvlf2r/EvTSu3b+rtOUar6Kz00oAyz2
-         P7wvIDy5FXWW2BrxTO20lFy30cEd0B5M/cNExQkabBbKU3w9vS5WpGrQg3wN80XTojFu
-         txSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=B3ONy2UEfURniD/LDED8tr1xeJcvKDrV1FhcEDlZN1c=;
-        b=CfVjPmchDJ45w1y43jGJCAOcisSGV/nmPcVIzqI9IfreP1EKCv/1Vt3mewC08ZiXBc
-         h1f0M9f8s3qD0MwPGOS3Xmm0ewMBV0Rt+sOHHSt/7soYeMzuSaB1PsGylGWdVpjRsdrl
-         J2GLXRxlw1okszrlvnnOCAqaPKo8s2JpfX9OisAqOKpdOH4dwwVIyztOgbN5DMOnFqKs
-         eaPhPHs1ktY1p0bbHQvFO027Y17NswxgeBM2gfo7VzcYL4bZ0NBoogcHxdVPdAnCAmeU
-         jPL5OfLdAI2V8a/SyuFiCGpTg+XJe9KOPzCW8y5OlTRendvokXU0x82n8bxschIJD9JL
-         QvQQ==
-X-Gm-Message-State: AOAM531TDrNjPGoT3/rqaCcIHgTuoIKumnLqK7hR45sICxV+GakpkCWy
-        zXcowJ7I2wfYr4ee83pMJnLx+oWuie2He1tqqWiIqTaSLFjMJw==
-X-Google-Smtp-Source: ABdhPJxYZWGx2BlnL51M4o0KtLt6jFMMUDac9OLNYrtc9O+5E+GkaUjkVK+ISl76t+r5900wTgOVE87xLeymBxW9JHY=
-X-Received: by 2002:a05:6512:20c3:: with SMTP id u3mr1126095lfr.572.1601386019274;
- Tue, 29 Sep 2020 06:26:59 -0700 (PDT)
+        id S1729686AbgI2NWL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 09:22:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39142 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728253AbgI2NWL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 09:22:11 -0400
+Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0A4D5208FE;
+        Tue, 29 Sep 2020 13:22:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601385730;
+        bh=b6cNApJ71KWPFc5afyfOtv/DriRF4+QdFvR4tXA/rRE=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Hw9EXKwIQHqyXWnMuNwl2HnhlaciWu33MQho6DnCf61yEgql855tpWl7PbGpFTpBa
+         LAAOdfkEBhDoCfR+4Sl7ILZ4JSA9f/UpX6+CfaT0xs/Bqx2TsagshlaeK0+zek9S3b
+         C4AevuEmq/9XcIpljcc08FfZpguHroei45R1vrr0=
+Date:   Tue, 29 Sep 2020 08:27:51 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Subject: [PATCH][next] fddi/skfp: Avoid the use of one-element array
+Message-ID: <20200929132751.GA29220@embeddedor>
 MIME-Version: 1.0
-References: <20200921131058.92941-1-miaoqinglang@huawei.com>
-In-Reply-To: <20200921131058.92941-1-miaoqinglang@huawei.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 29 Sep 2020 15:26:48 +0200
-Message-ID: <CACRpkdY3OzSLugezpB3KMatvo+5WFNEP7cRSKJprGUSeEY7UEA@mail.gmail.com>
-Subject: Re: [PATCH -next] pinctrl: spear: simplify the return expression of tvc_connect()
-To:     Qinglang Miao <miaoqinglang@huawei.com>
-Cc:     Viresh Kumar <vireshk@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 3:10 PM Qinglang Miao <miaoqinglang@huawei.com> wrote:
+One-element arrays are being deprecated[1]. Replace the one-element array
+with a simple object of type u_char: 'u_char rm_pad1'[2], once it seems
+this is just a placeholder for padding.
 
-> Simplify the return expression.
->
-> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+[1] https://www.kernel.org/doc/html/v5.9-rc1/process/deprecated.html#zero-length-and-one-element-arrays
+[2] https://github.com/KSPP/linux/issues/86
 
-Patch applied.
+Built-tested-by: kernel test robot <lkp@intel.com>
+Link: https://lore.kernel.org/lkml/5f72c23f.%2FkPBWcZBu+W6HKH4%25lkp@intel.com/
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ drivers/net/fddi/skfp/h/smc.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Yours,
-Linus Walleij
+diff --git a/drivers/net/fddi/skfp/h/smc.h b/drivers/net/fddi/skfp/h/smc.h
+index 991857f6a83c..706fa619b703 100644
+--- a/drivers/net/fddi/skfp/h/smc.h
++++ b/drivers/net/fddi/skfp/h/smc.h
+@@ -122,7 +122,7 @@ struct s_rmt {
+ 	u_char timer1_exp ;		/* flag : timer 1 expired */
+ 	u_char timer2_exp ;		/* flag : timer 2 expired */
+ 
+-	u_char rm_pad1[1] ;
++	u_char rm_pad1;
+ } ;
+ 
+ /*
+-- 
+2.27.0
+
