@@ -2,123 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B03727C1CE
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 12:00:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D130F27C1DD
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 12:06:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728000AbgI2KAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 06:00:12 -0400
-Received: from mail-41103.protonmail.ch ([185.70.41.103]:26374 "EHLO
-        mail-41103.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725535AbgI2KAJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 06:00:09 -0400
-Received: from mail-02.mail-europe.com (mail-02.mail-europe.com [51.89.119.103])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (No client certificate requested)
-        by mail-41103.protonmail.ch (Postfix) with ESMTPS id 8C92F200A0CF
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 10:00:07 +0000 (UTC)
-Authentication-Results: mail-41103.protonmail.ch;
-        dkim=pass (1024-bit key) header.d=protonmail.com header.i=@protonmail.com header.b="KK+owFak"
-Date:   Tue, 29 Sep 2020 09:59:59 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1601373603;
-        bh=WA0yMmzyA19KdGBc4XfL7+euocv+YVM4+4ufHMI+Rww=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=KK+owFakOjcmI2opGzX3SWkF8gsHgYUFDPVoXKphMPe5vQORUPGbYnm2On92zgxLd
-         h5gckuGoRMB4XTuPLXcHD0IVU23xnnznnIDtjBDEVi7+ZL1k37B5C5bzjQiv3koDCb
-         XMP7hmWy3LPCgI5vZgU8ETBN6j8FUahKwvXhf2TQ=
-To:     Takashi Iwai <tiwai@suse.de>
-From:   =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "platform-driver-x86@vger.kernel.org" 
-        <platform-driver-x86@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Reply-To: =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>
-Subject: Re: Keyboard regression by intel-vbtn
-Message-ID: <-ICwwoAndae7T9i-Ymr7Nx9jnXVd7H54dnkMmCWUcApM1S0FUPplPWhg8DVXkphN0L4DoTy24robhTiBzMmSBKZRl-P8VEXIX5r6ttceA_8=@protonmail.com>
-In-Reply-To: <s5h8sctkk2b.wl-tiwai@suse.de>
-References: <s5hft71klxl.wl-tiwai@suse.de> <bedb9d1b-3cca-43e2-ee44-1aac0e09a605@redhat.com> <s5h8sctkk2b.wl-tiwai@suse.de>
+        id S1727743AbgI2KFz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 06:05:55 -0400
+Received: from mga11.intel.com ([192.55.52.93]:8714 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725355AbgI2KFz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 06:05:55 -0400
+IronPort-SDR: 34daH3ZITRCbzM9L3wNNLuFp+HyAPUF7i+oYHH8Knpap2dklEyjeZOa5GXj219kdGT3Hl4eVkP
+ BRNVoRow/ZyA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9758"; a="159451637"
+X-IronPort-AV: E=Sophos;i="5.77,317,1596524400"; 
+   d="scan'208";a="159451637"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 22:12:45 -0700
+IronPort-SDR: fqdbavZNGWrnZB3XUgInjYbXvrmJoIWRevBpJi1IqMpaVFuAP3r7M93Xj5JM09QX9yCaCOB4+2
+ wtF04YR3w22w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,317,1596524400"; 
+   d="scan'208";a="307617742"
+Received: from lkp-server02.sh.intel.com (HELO 029ab7997206) ([10.239.97.151])
+  by orsmga003.jf.intel.com with ESMTP; 28 Sep 2020 22:12:44 -0700
+Received: from kbuild by 029ab7997206 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kN7wR-00006q-FF; Tue, 29 Sep 2020 05:12:43 +0000
+Date:   Tue, 29 Sep 2020 13:12:31 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Subject: [gustavoars-linux:testing/fam1-fddi] BUILD SUCCESS
+ ce71a10ee8f3bc7ead17c4a4333d6a57455bde2b
+Message-ID: <5f72c23f./kPBWcZBu+W6HKH4%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git  testing/fam1-fddi
+branch HEAD: ce71a10ee8f3bc7ead17c4a4333d6a57455bde2b  fddi/skfp: Avoid the use of one-element array
 
-2020. szeptember 29., kedd 11:29 keltez=C3=A9ssel, Takashi Iwai =C3=ADrta:
+elapsed time: 723m
 
-> On Tue, 29 Sep 2020 11:21:27 +0200,
-> Hans de Goede wrote:
->
-> > Hi,
-> > On 9/29/20 10:48 AM, Takashi Iwai wrote:
-> >
-> > > Hi Hans,
-> > > it seems that the recent update of intel-vtn broke the keyboard input
-> > > on some laptops with libinput:
-> > > https://bugzilla.opensuse.org/show_bug.cgi?id=3D1175599
-> > > Blacklisting intel-vtn fixes the issue, so it's likely the falsely
-> > > reported tablet mode switch that leads libinput misbehaving. The
-> > > affected machines are Acer E5-511 and ASUS X756UX laptops, and they
-> > > shouldn't have the tablet mode at all, AFAIK.
-> > > Could you take a look? I guess it's the commit cfae58ed681c that
-> > > broke. The chassis type is Notebook on those, and this type should be
-> > > excluded as well as Laptop.
-> > > The dmidecode outputs and other info are found in the bugzilla above:
-> > > https://bugzilla.opensuse.org/attachment.cgi?id=3D841999
-> > > https://bugzilla.opensuse.org/attachment.cgi?id=3D842039
-> > > The one for ASUS is embedded in hwinfo outpt:
-> > > https://bugzilla.opensuse.org/attachment.cgi?id=3D841157
-> >
-> > Ugh. What a mess, sorry about this.
-> > So as the commit message from commit cfae58ed681c
-> > ("platform/x86: intel-vbtn: Only blacklist SW_TABLET_MODE on the 9 / "L=
-aptop" chasis-type")
-> > explains the reason to NOT NOT report SW_TABLET_MODE on devices
-> > with a chassis type of 10 ("Notebook") is that at least
-> > some HP ... 360 ... models use that chassis type and do
-> > report a correct SW_TABLET_MODE through the intel-vbtn driver.
-> > The SW_TABLET_MODE on these actually got regressed by
-> > de9647efeaa9 ("platform/x86: intel-vbtn: Only activate tablet mode swit=
-ch on 2-in-1's")
-> > which first introduced the chassis-type check.
-> > And to complicate things further even though some
-> > HP ... 360 ... models use that chassis type and from the DSDT
-> > it seems that they do report a correct SW_TABLET_MODE through the
-> > intel-vbtn driver. In practice it is also broken on some
-> > HP ... 360 ... models, see:
-> > https://forum.manjaro.org/t/keyboard-and-touchpad-only-work-on-kernel-5=
--6/22668
-> > http://git.infradead.org/linux-platform-drivers-x86.git/commit/d8233468=
-76a970522ff9e4d2b323c9b734dcc4de
-> > "platform/x86: intel-vbtn: Fix SW_TABLET_MODE always reporting 1 on the=
- HP Pavilion 11 x360"
->
-> Oohoo, what a wonderful world :)
->
+configs tested: 141
+configs skipped: 2
 
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Splendid world, indeed. I'm wondering, however, why the incorrect state
-is reported? Is it similar to the linked issue on the Manjaro forum, where =
-a
-different bit is seemingly used to report the tablet mode state, or somethi=
-ng else?
-I'm also wondering why it was chosen that a *set* bit means that the tablet
-mode is *off*. All these problems could've been easily avoided... (given th=
-at
-I'm not missing anything obvious).
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arc                     haps_hs_smp_defconfig
+m68k                          amiga_defconfig
+ia64                         bigsur_defconfig
+sh                             shx3_defconfig
+m68k                        stmark2_defconfig
+nios2                         3c120_defconfig
+powerpc                      arches_defconfig
+powerpc                      cm5200_defconfig
+sparc                       sparc32_defconfig
+arm                          badge4_defconfig
+powerpc                        cell_defconfig
+powerpc                     tqm8541_defconfig
+powerpc64                           defconfig
+csky                             alldefconfig
+riscv                          rv32_defconfig
+sh                          rsk7201_defconfig
+openrisc                         alldefconfig
+mips                      pic32mzda_defconfig
+arm                   milbeaut_m10v_defconfig
+m68k                          multi_defconfig
+sh                        edosk7705_defconfig
+powerpc                    ge_imp3a_defconfig
+powerpc                      mgcoge_defconfig
+mips                        maltaup_defconfig
+alpha                            allyesconfig
+powerpc                     tqm8548_defconfig
+arm                          simpad_defconfig
+mips                        workpad_defconfig
+xtensa                       common_defconfig
+powerpc64                        alldefconfig
+arm                          lpd270_defconfig
+mips                         cobalt_defconfig
+arm                        multi_v7_defconfig
+powerpc                       maple_defconfig
+powerpc                   bluestone_defconfig
+powerpc                     tqm5200_defconfig
+arm                             mxs_defconfig
+arm                           omap1_defconfig
+microblaze                      mmu_defconfig
+powerpc                 mpc836x_rdk_defconfig
+arc                      axs103_smp_defconfig
+arm                              zx_defconfig
+arm                        mvebu_v5_defconfig
+c6x                        evmc6472_defconfig
+arm                  colibri_pxa300_defconfig
+powerpc                      ppc40x_defconfig
+arm                      integrator_defconfig
+arc                          axs103_defconfig
+mips                      malta_kvm_defconfig
+arm                         s5pv210_defconfig
+mips                       bmips_be_defconfig
+sh                           se7343_defconfig
+arm                           sunxi_defconfig
+m68k                          atari_defconfig
+arm                         orion5x_defconfig
+powerpc                     pseries_defconfig
+arm                         lpc32xx_defconfig
+ia64                            zx1_defconfig
+sh                           se7750_defconfig
+mips                           xway_defconfig
+arm                        cerfcube_defconfig
+arm                  colibri_pxa270_defconfig
+mips                      maltaaprp_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a005-20200928
+x86_64               randconfig-a003-20200928
+x86_64               randconfig-a004-20200928
+x86_64               randconfig-a002-20200928
+x86_64               randconfig-a006-20200928
+x86_64               randconfig-a001-20200928
+i386                 randconfig-a006-20200928
+i386                 randconfig-a002-20200928
+i386                 randconfig-a003-20200928
+i386                 randconfig-a004-20200928
+i386                 randconfig-a005-20200928
+i386                 randconfig-a001-20200928
+i386                 randconfig-a012-20200928
+i386                 randconfig-a016-20200928
+i386                 randconfig-a014-20200928
+i386                 randconfig-a013-20200928
+i386                 randconfig-a015-20200928
+i386                 randconfig-a011-20200928
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
-> [...]
+clang tested configs:
+x86_64               randconfig-a005-20200927
+x86_64               randconfig-a003-20200927
+x86_64               randconfig-a004-20200927
+x86_64               randconfig-a002-20200927
+x86_64               randconfig-a006-20200927
+x86_64               randconfig-a001-20200927
+x86_64               randconfig-a011-20200928
+x86_64               randconfig-a013-20200928
+x86_64               randconfig-a015-20200928
+x86_64               randconfig-a014-20200928
+x86_64               randconfig-a016-20200928
+x86_64               randconfig-a012-20200928
 
-
-Regards,
-Barnab=C3=A1s P=C5=91cze
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
