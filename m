@@ -2,95 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62CA227DC82
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 01:10:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B13827DC8F
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 01:17:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728792AbgI2XKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 19:10:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33086 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728291AbgI2XKf (ORCPT
+        id S1728756AbgI2XRu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 19:17:50 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:39306 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728206AbgI2XRu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 19:10:35 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83508C061755;
-        Tue, 29 Sep 2020 16:10:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=R3SUK8wQa6bfxKA9v51XX6INKEvLY/XZhJdqmyDu9e0=; b=ov5uqTvYiA1c7+n4IWI/Ter9cJ
-        lTDf4ZbTBpwFtwOZkYpxgjCGkoeRGI8JiuZ2y4rSaGjXb7v2knc5Q0XBZ2Jhj+pqQthSPdA+SQn5h
-        kaVCD7igGibRwJEnb3Afs/FgWnieuQQthZKSGcN0TYLfL/yvA1it3xC1uXHE2T+i0U7QeHb5y3VOx
-        cxNhAd3C1fLDrlq1jxrpEKvDAm1tvel28s2bggjAaU41CdqF3iKK560mSTz2HFX+3OXn743FsXZqi
-        W+mL4DfPVAZR1kDaNyQYC+jqZMhQAGIbCWnR1oXJX0i5V3Nat6jV9iDQ3s2Q9mxgD75RPuzgg5mq8
-        f/YSd2dQ==;
-Received: from [2601:1c0:6280:3f0::19c2]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kNOlT-0005Qj-VX; Tue, 29 Sep 2020 23:10:33 +0000
-Subject: Re: [PATCH] docs: programming-languages: refresh blurb on clang
- support
-To:     Nick Desaulniers <ndesaulniers@google.com>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     Nathan Chancellor <natechancellor@gmail.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-References: <20200929211936.580805-1-ndesaulniers@google.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <1925c4b7-2764-2b25-6aa4-a5001c8056f8@infradead.org>
-Date:   Tue, 29 Sep 2020 16:10:27 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Tue, 29 Sep 2020 19:17:50 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sre)
+        with ESMTPSA id 94E6329B618
+Received: by earth.universe (Postfix, from userid 1000)
+        id 0D4C03C0C84; Wed, 30 Sep 2020 01:17:46 +0200 (CEST)
+Date:   Wed, 30 Sep 2020 01:17:46 +0200
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
+Cc:     Angus Ainslie <angus@akkea.ca>, Rob Herring <robh+dt@kernel.org>,
+        Yauhen Kharuzhy <jekhor@gmail.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
+Subject: Re: [PATCH v4 0/2] power: bq25890: IBAT compensation support
+Message-ID: <20200929231746.ismdhwsjspoajccv@earth.universe>
+References: <cover.1601146802.git.mirq-linux@rere.qmqm.pl>
 MIME-Version: 1.0
-In-Reply-To: <20200929211936.580805-1-ndesaulniers@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="iwejtfvpsbziusc3"
+Content-Disposition: inline
+In-Reply-To: <cover.1601146802.git.mirq-linux@rere.qmqm.pl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/29/20 2:19 PM, Nick Desaulniers wrote:
-> Building the kernel with Clang doesn't rely on third party patches, and
-> has not for a few years now.
-> 
-> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-> ---
->  Documentation/process/programming-language.rst | 9 +++++----
->  1 file changed, 5 insertions(+), 4 deletions(-)
-> 
-> diff --git a/Documentation/process/programming-language.rst b/Documentation/process/programming-language.rst
-> index e5f5f065dc24..63af142d64ec 100644
-> --- a/Documentation/process/programming-language.rst
-> +++ b/Documentation/process/programming-language.rst
-> @@ -6,14 +6,15 @@ Programming Language
->  The kernel is written in the C programming language [c-language]_.
->  More precisely, the kernel is typically compiled with ``gcc`` [gcc]_
->  under ``-std=gnu89`` [gcc-c-dialect-options]_: the GNU dialect of ISO C90
-> -(including some C99 features).
-> +(including some C99 features). ``clang`` [clang]_ is also supported, see docs
 
-Drop duplicated "docs" before here or after here.
+--iwejtfvpsbziusc3
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-checkpatch should have caught that.
+Hi,
 
-> +docs on :ref:`Building Linux with Clang/LLVM <kbuild_llvm>`.
->  
->  This dialect contains many extensions to the language [gnu-extensions]_,
->  and many of them are used within the kernel as a matter of course.
->  
-> -There is some support for compiling the kernel with ``clang`` [clang]_
-> -and ``icc`` [icc]_ for several of the architectures, although at the time
-> -of writing it is not completed, requiring third-party patches.
-> +There is some support for compiling the kernel with ``icc`` [icc]_ for several
-> +of the architectures, although at the time of writing it is not completed,
-> +requiring third-party patches.
->  
->  Attributes
->  ----------
-> 
+On Sat, Sep 26, 2020 at 09:05:31PM +0200, Micha=C5=82 Miros=C5=82aw wrote:
+> These two patches add support for IBAT compensation feature of bq2589x
+> chargers.
 
-thanks.
--- 
-~Randy
+Thanks, queued.
 
+-- Sebastian
+
+> v4 fixed property names for the features and dropped other applied or rej=
+ected
+>    patches
+>=20
+> Micha=C5=82 Miros=C5=82aw (2):
+>   power: bq25890: document IBAT compensation DT properties
+>   power: bq25890: support IBAT compensation
+>=20
+>  .../devicetree/bindings/power/supply/bq25890.txt  |  4 ++++
+>  drivers/power/supply/bq25890_charger.c            | 15 +++++++++++++--
+>  2 files changed, 17 insertions(+), 2 deletions(-)
+>=20
+> --=20
+> 2.20.1
+>=20
+
+--iwejtfvpsbziusc3
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAl9zwJYACgkQ2O7X88g7
++pqDvg/7BwNRj0SzIruPKzHngoEYQIoulSraVhAf4B6oDUPzEVBoydvYX+suzolS
+cXVAbn6QhK4gcjPhhyC/noRQ5CGnpvfz/S25o4hhBuR3s+JyWL3RNAAsoqodZCG9
+dJKeF7FZOyLWbwTGHu/vvHc2Q/ZAAPR2O56/RqDl/PYdIfledxYutLZj0rsUJX2A
+9Egqp7XrzmuLUKoIFoexndILzqszJ5xyyrxRQdZGVMDh22ujKmLs9NPetEog435w
+Awb0/a+HbX2pr1QJ9oAnoOb16GOlsObFIUkX7euls7CtS1d3uP5hH5F1HZhMcH9R
+Tm7uwl/cfYo2EtmjpQgYaCSkZGkAWhsfLYZ6V3b+bfx3D+0mAciEdSegRNLo8kkg
+RsUtd8XTa2mKOJvOWuHxxasRj2Cs7cuZbfVMODrAMUN/KjCrLE1knwSnOXAoobI9
+gCjOX3fyq6A7f0C3DxVEvFGKSeMyWhj2Wpj90tqi+sRd+FDpiMlc1LKMq/YEgzry
+JMRRSkLYL9W+tBK9d9S6NJYuyESmaK5IWassgnMDjE9F9kwgJ4SHg/xZio8kVXSM
+VsB+iQqrFfciEG3FzIZLB5rsrTTmzESN+dCNK2V+Zwa7ryP3th+Kh5wSJC1oiodd
+DGiXxsGg1F22bTq64CVTgbk8SOQ7VrxtwtSKRgIYCb36o5owaUU=
+=P4At
+-----END PGP SIGNATURE-----
+
+--iwejtfvpsbziusc3--
