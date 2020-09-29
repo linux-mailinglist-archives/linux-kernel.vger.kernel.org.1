@@ -2,225 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBFF927BCD4
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 08:09:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50DB927BCD9
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 08:11:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727667AbgI2GJh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 02:09:37 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:43705 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727629AbgI2GJ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 02:09:27 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4C0pr36F00z9v05d;
-        Tue, 29 Sep 2020 08:09:23 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id uc0stjfnRqHf; Tue, 29 Sep 2020 08:09:23 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4C0pr355Fyz9v05Z;
-        Tue, 29 Sep 2020 08:09:23 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id C4D188B79F;
-        Tue, 29 Sep 2020 08:09:24 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id 36HPGfgjjba6; Tue, 29 Sep 2020 08:09:24 +0200 (CEST)
-Received: from po17688vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 514A28B76C;
-        Tue, 29 Sep 2020 08:09:24 +0200 (CEST)
-Received: by po17688vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 2C2E965E8A; Tue, 29 Sep 2020 06:09:24 +0000 (UTC)
-Message-Id: <4757e1ed21fe1968c761ae081d1f3d790a9673f8.1601359702.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <27951fa6c9a8f80724d1bc81a6117ac32343a55d.1601359702.git.christophe.leroy@csgroup.eu>
-References: <27951fa6c9a8f80724d1bc81a6117ac32343a55d.1601359702.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH v2 7/7] powerpc: Remove __USE_RTC()
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Tue, 29 Sep 2020 06:09:24 +0000 (UTC)
+        id S1727695AbgI2GLC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 02:11:02 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59292 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725536AbgI2GLC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 02:11:02 -0400
+Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601359860;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=JAxYHRdsbLtzM2kIQHgB0ZgL2sD23xll0p+Cp1/eLJU=;
+        b=PjW0eRA4pM5C9/JqUelAkuIIyjdEvfLyNL3rmlLqjhHIsxhYYsSI032U1CQMU4Jlw2bTbh
+        W7HaqygNCViATSnN4x6zY/AGZlsS/WGfmuvZdyqOGbSzNVIe8ETqobZhLhC0SYOyLUw4pu
+        EpQ96AhWjIiYIVRnXtZe6Y4E7wnJdOU=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-25-SaXWL9uIOrmTJhuIbJ30Kg-1; Tue, 29 Sep 2020 02:10:58 -0400
+X-MC-Unique: SaXWL9uIOrmTJhuIbJ30Kg-1
+Received: by mail-wr1-f69.google.com with SMTP id l15so1291241wro.10
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 23:10:58 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=JAxYHRdsbLtzM2kIQHgB0ZgL2sD23xll0p+Cp1/eLJU=;
+        b=CpD3Hz/QVOxISflfyeLZdswejBCnW5IgAsc22ODe6Ha4Qh5rHmY1sSp+46E1akesVk
+         xYjqDynFwwnVyJ1lmkmOq3k5hH4DoXJcI0px16T9pokMPeIa3QTq15ZTyRZeIPrBKJD8
+         TSP7HpnnCILflpd+FR1uqxAzI9v1GDsPeL7vZeDc73MOiRRhL4qRZXsNtpPil5AT3Hk5
+         cyYqn12sDS70vBLGP2I1I5PGm4hNGYRfsz9lxwtDN0rKTRRsMON1mXip/g1E1IQgQzjB
+         ceL4OcS8c/MDKMP6qQt5tVbfi7TWqfBKbh/mNj7wHhNAe5rC6nQGZUBT6OdIgzT/xahw
+         ZdbA==
+X-Gm-Message-State: AOAM5333QSkiZ/r9LTrDodghFmJvCPGNtwmmIiihz4tjTs0uuKs4yzNh
+        S+42WelEusyVDNBSEPmT0oxZtxTa2v1cOKYV69Px5VHYGarEyUzrFWvBaijNtEBdKL7tXgoeENA
+        KW+QrnMfqSE/D9sx3xzpAirfL
+X-Received: by 2002:adf:eb04:: with SMTP id s4mr2366076wrn.81.1601359857388;
+        Mon, 28 Sep 2020 23:10:57 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwbRp2Llm5I3cTgA/LEzQYm1zgKOCI/i4yvi7klM6uNyHOo4UgNBNnqGUpXczfJ7duXJzSDAA==
+X-Received: by 2002:adf:eb04:: with SMTP id s4mr2366044wrn.81.1601359857144;
+        Mon, 28 Sep 2020 23:10:57 -0700 (PDT)
+Received: from redhat.com (bzq-79-179-71-128.red.bezeqint.net. [79.179.71.128])
+        by smtp.gmail.com with ESMTPSA id e13sm4772905wre.60.2020.09.28.23.10.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Sep 2020 23:10:56 -0700 (PDT)
+Date:   Tue, 29 Sep 2020 02:10:53 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Eli Cohen <elic@nvidia.com>
+Cc:     Leon Romanovsky <leonro@nvidia.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        virtualization@lists.linux-foundation.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Jason Wang <jasowang@redhat.com>,
+        Saeed Mahameed <saeedm@nvidia.com>
+Subject: Re: [PATCH v3 -next] vdpa: mlx5: change Kconfig depends to fix build
+ errors
+Message-ID: <20200929021030-mutt-send-email-mst@kernel.org>
+References: <73f7e48b-8d16-6b20-07d3-41dee0e3d3bd@infradead.org>
+ <20200918082245.GP869610@unreal>
+ <20200924052932-mutt-send-email-mst@kernel.org>
+ <20200924102413.GD170403@mtl-vdi-166.wap.labs.mlnx>
+ <20200925061959-mutt-send-email-mst@kernel.org>
+ <20200929060142.GA120395@mtl-vdi-166.wap.labs.mlnx>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200929060142.GA120395@mtl-vdi-166.wap.labs.mlnx>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that PowerPC 601 is gone, __USE_RTC() is never true.
+On Tue, Sep 29, 2020 at 09:01:42AM +0300, Eli Cohen wrote:
+> On Fri, Sep 25, 2020 at 06:20:45AM -0400, Michael S. Tsirkin wrote:
+> > > > 
+> > > > Hmm other drivers select VHOST_IOTLB, why not do the same?
+> > > 
+> > > I can't see another driver doing that.
+> > 
+> > Well grep VHOST_IOTLB and you will see some examples.
+> 
+> $ git grep -wn VHOST_IOTLB
+> drivers/vhost/Kconfig:2:config VHOST_IOTLB
+> drivers/vhost/Kconfig:11:       select VHOST_IOTLB
+> drivers/vhost/Kconfig:18:       select VHOST_IOTLB
+> 
+> What am I missing here?
 
-Remove it.
+Nothing, there's a select here as expected.
 
-That also leads to removing get_rtc() and get_rtcl()
-
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
-v2: Also remove get_rtc() and get_rtcl()
----
- arch/powerpc/include/asm/time.h | 28 +-----------------
- arch/powerpc/kernel/time.c      | 52 +++++----------------------------
- 2 files changed, 9 insertions(+), 71 deletions(-)
-
-diff --git a/arch/powerpc/include/asm/time.h b/arch/powerpc/include/asm/time.h
-index ce065589192a..caf68a4bc19e 100644
---- a/arch/powerpc/include/asm/time.h
-+++ b/arch/powerpc/include/asm/time.h
-@@ -38,9 +38,6 @@ struct div_result {
- 	u64 result_low;
- };
- 
--/* Accessor functions for the timebase (RTC on 601) registers. */
--#define __USE_RTC()	(0)
--
- #ifdef CONFIG_PPC64
- 
- /* For compatibility, get_tbl() is defined as get_tb() on ppc64 */
-@@ -59,25 +56,6 @@ static inline unsigned int get_tbu(void)
- }
- #endif /* !CONFIG_PPC64 */
- 
--static inline unsigned int get_rtcl(void)
--{
--	unsigned int rtcl;
--
--	asm volatile("mfrtcl %0" : "=r" (rtcl));
--	return rtcl;
--}
--
--static inline u64 get_rtc(void)
--{
--	unsigned int hi, lo, hi2;
--
--	do {
--		asm volatile("mfrtcu %0; mfrtcl %1; mfrtcu %2"
--			     : "=r" (hi), "=r" (lo), "=r" (hi2));
--	} while (hi2 != hi);
--	return (u64)hi * 1000000000 + lo;
--}
--
- static inline u64 get_vtb(void)
- {
- #ifdef CONFIG_PPC_BOOK3S_64
-@@ -109,7 +87,7 @@ static inline u64 get_tb(void)
- 
- static inline u64 get_tb_or_rtc(void)
- {
--	return __USE_RTC() ? get_rtc() : get_tb();
-+	return get_tb();
- }
- 
- static inline void set_tb(unsigned int upper, unsigned int lower)
-@@ -153,10 +131,6 @@ static inline void set_dec(u64 val)
- 
- static inline unsigned long tb_ticks_since(unsigned long tstamp)
- {
--	if (__USE_RTC()) {
--		int delta = get_rtcl() - (unsigned int) tstamp;
--		return delta < 0 ? delta + 1000000000 : delta;
--	}
- 	return get_tbl() - tstamp;
- }
- 
-diff --git a/arch/powerpc/kernel/time.c b/arch/powerpc/kernel/time.c
-index f85539ebb513..13c820c15d37 100644
---- a/arch/powerpc/kernel/time.c
-+++ b/arch/powerpc/kernel/time.c
-@@ -75,15 +75,6 @@
- #include <linux/clockchips.h>
- #include <linux/timekeeper_internal.h>
- 
--static u64 rtc_read(struct clocksource *);
--static struct clocksource clocksource_rtc = {
--	.name         = "rtc",
--	.rating       = 400,
--	.flags        = CLOCK_SOURCE_IS_CONTINUOUS,
--	.mask         = CLOCKSOURCE_MASK(64),
--	.read         = rtc_read,
--};
--
- static u64 timebase_read(struct clocksource *);
- static struct clocksource clocksource_timebase = {
- 	.name         = "timebase",
-@@ -447,19 +438,9 @@ void vtime_flush(struct task_struct *tsk)
- void __delay(unsigned long loops)
- {
- 	unsigned long start;
--	int diff;
- 
- 	spin_begin();
--	if (__USE_RTC()) {
--		start = get_rtcl();
--		do {
--			/* the RTCL register wraps at 1000000000 */
--			diff = get_rtcl() - start;
--			if (diff < 0)
--				diff += 1000000000;
--			spin_cpu_relax();
--		} while (diff < loops);
--	} else if (tb_invalid) {
-+	if (tb_invalid) {
- 		/*
- 		 * TB is in error state and isn't ticking anymore.
- 		 * HMI handler was unable to recover from TB error.
-@@ -696,8 +677,6 @@ EXPORT_SYMBOL_GPL(tb_to_ns);
-  */
- notrace unsigned long long sched_clock(void)
- {
--	if (__USE_RTC())
--		return get_rtc();
- 	return mulhdu(get_tb() - boot_tb, tb_to_ns_scale) << tb_to_ns_shift;
- }
- 
-@@ -847,11 +826,6 @@ void read_persistent_clock64(struct timespec64 *ts)
- }
- 
- /* clocksource code */
--static notrace u64 rtc_read(struct clocksource *cs)
--{
--	return (u64)get_rtc();
--}
--
- static notrace u64 timebase_read(struct clocksource *cs)
- {
- 	return (u64)get_tb();
-@@ -948,12 +922,7 @@ void update_vsyscall_tz(void)
- 
- static void __init clocksource_init(void)
- {
--	struct clocksource *clock;
--
--	if (__USE_RTC())
--		clock = &clocksource_rtc;
--	else
--		clock = &clocksource_timebase;
-+	struct clocksource *clock = &clocksource_timebase;
- 
- 	if (clocksource_register_hz(clock, tb_ticks_per_sec)) {
- 		printk(KERN_ERR "clocksource: %s is already registered\n",
-@@ -1071,17 +1040,12 @@ void __init time_init(void)
- 	u64 scale;
- 	unsigned shift;
- 
--	if (__USE_RTC()) {
--		/* 601 processor: dec counts down by 128 every 128ns */
--		ppc_tb_freq = 1000000000;
--	} else {
--		/* Normal PowerPC with timebase register */
--		ppc_md.calibrate_decr();
--		printk(KERN_DEBUG "time_init: decrementer frequency = %lu.%.6lu MHz\n",
--		       ppc_tb_freq / 1000000, ppc_tb_freq % 1000000);
--		printk(KERN_DEBUG "time_init: processor frequency   = %lu.%.6lu MHz\n",
--		       ppc_proc_freq / 1000000, ppc_proc_freq % 1000000);
--	}
-+	/* Normal PowerPC with timebase register */
-+	ppc_md.calibrate_decr();
-+	printk(KERN_DEBUG "time_init: decrementer frequency = %lu.%.6lu MHz\n",
-+	       ppc_tb_freq / 1000000, ppc_tb_freq % 1000000);
-+	printk(KERN_DEBUG "time_init: processor frequency   = %lu.%.6lu MHz\n",
-+	       ppc_proc_freq / 1000000, ppc_proc_freq % 1000000);
- 
- 	tb_ticks_per_jiffy = ppc_tb_freq / HZ;
- 	tb_ticks_per_sec = ppc_tb_freq;
--- 
-2.25.0
+> > > Perhaps I can set dependency on
+> > > VHOST which by itself depends on VHOST_IOTLB?
+> > 
+> > VHOST is processing virtio in the kernel. You don't really need that
+> > for mlx, do you?
+> > 
+> > > > 
+> > > > 
+> > > > > >  	help
+> > > > > >  	  Support library for Mellanox VDPA drivers. Provides code that is
+> > > > > >
+> > > > 
+> > 
 
