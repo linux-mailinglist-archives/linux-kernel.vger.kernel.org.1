@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A80A127C71C
+	by mail.lfdr.de (Postfix) with ESMTP id 3943027C71B
 	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:51:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731319AbgI2Lv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:51:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51220 "EHLO mail.kernel.org"
+        id S1731317AbgI2LvX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:51:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51278 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731155AbgI2Lsi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:48:38 -0400
+        id S1729823AbgI2Lsk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:48:40 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 83F282075F;
-        Tue, 29 Sep 2020 11:48:37 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B5F142083B;
+        Tue, 29 Sep 2020 11:48:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601380118;
-        bh=ip3rXdZYN7Pep/nPtXkOid9ibu49xobAY8klnCH35VE=;
+        s=default; t=1601380120;
+        bh=2wQ9t7ZK5B5gmhcCF/Ew12LhiiPiRFkpEFjKVAYtJTg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Z47voQUMIc4npxLAedzrGm772OIJ46FWE+XucPhckKDEX1T5G3k+YpumGfVFf4kmi
-         r0KaBsWIRuJqYtBtzCApI5qBRaOyxGg0gjiPKA5zxR2t4Y0MnLwcmzkooU+rx+aB1c
-         mD305/7MX2Gd0u2qIbyY63O/x3dkS+mae5uroi7Q=
+        b=uQaGVgMZW7xXl+pPoKwUigQEfn4KA2610+aQIRwJ0gzmLa+Q4Ovm9HuMz9oTrD6R0
+         01ZO3YwUfJFdAmEgA0lEYYc1OJdyUR22PIMNI0S7n76jQsORw3UKGFU2EgVRYnkxPr
+         KOj3WVR1/ACesbXqBgd9XYu4ODRElmq0Clp9CFaA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Joakim Tjernlund <joakim.tjernlund@infinera.com>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.8 75/99] ALSA: usb-audio: Add delay quirk for H570e USB headsets
-Date:   Tue, 29 Sep 2020 13:01:58 +0200
-Message-Id: <20200929105933.426338873@linuxfoundation.org>
+        stable@vger.kernel.org, Kailang Yang <kailang@realtek.com>,
+        Hui Wang <hui.wang@canonical.com>, Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.8 76/99] ALSA: hda/realtek - Couldnt detect Mic if booting with headset plugged
+Date:   Tue, 29 Sep 2020 13:01:59 +0200
+Message-Id: <20200929105933.475114438@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200929105929.719230296@linuxfoundation.org>
 References: <20200929105929.719230296@linuxfoundation.org>
@@ -43,40 +42,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joakim Tjernlund <joakim.tjernlund@infinera.com>
+From: Hui Wang <hui.wang@canonical.com>
 
-commit 315c7ad7a701baba28c628c4c5426b3d9617ceed upstream.
+commit 3f74249057827c5f6676c41c18f6be12ce1469ce upstream.
 
-Needs the same delay as H650e
+We found a Mic detection issue on many Lenovo laptops, those laptops
+belong to differnt models and they have different audio design like
+internal mic connects to the codec or PCH, they all have this problem,
+the problem is if plugging a headset before powerup/reboot the
+machine, after booting up, the headphone could be detected but Mic
+couldn't. If we plug out and plug in the headset, both headphone and
+Mic could be detected then.
 
-Signed-off-by: Joakim Tjernlund <joakim.tjernlund@infinera.com>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20200910085328.19188-1-joakim.tjernlund@infinera.com
+Through debugging we found the codec on those laptops are same, it is
+alc257, and if we don't disable the 3k pulldown in alc256_shutup(),
+the issue will be fixed. So far there is no pop noise or power
+consumption regression on those laptops after this change.
+
+Cc: Kailang Yang <kailang@realtek.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Hui Wang <hui.wang@canonical.com>
+Link: https://lore.kernel.org/r/20200914065118.19238-1-hui.wang@canonical.com
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/usb/quirks.c |    7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ sound/pci/hda/patch_realtek.c |    6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
---- a/sound/usb/quirks.c
-+++ b/sound/usb/quirks.c
-@@ -1668,12 +1668,13 @@ void snd_usb_ctl_msg_quirk(struct usb_de
- 	    && (requesttype & USB_TYPE_MASK) == USB_TYPE_CLASS)
- 		msleep(20);
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -3419,7 +3419,11 @@ static void alc256_shutup(struct hda_cod
  
--	/* Zoom R16/24, Logitech H650e, Jabra 550a, Kingston HyperX needs a tiny
--	 * delay here, otherwise requests like get/set frequency return as
--	 * failed despite actually succeeding.
-+	/* Zoom R16/24, Logitech H650e/H570e, Jabra 550a, Kingston HyperX
-+	 *  needs a tiny delay here, otherwise requests like get/set
-+	 *  frequency return as failed despite actually succeeding.
- 	 */
- 	if ((chip->usb_id == USB_ID(0x1686, 0x00dd) ||
- 	     chip->usb_id == USB_ID(0x046d, 0x0a46) ||
-+	     chip->usb_id == USB_ID(0x046d, 0x0a56) ||
- 	     chip->usb_id == USB_ID(0x0b0e, 0x0349) ||
- 	     chip->usb_id == USB_ID(0x0951, 0x16ad)) &&
- 	    (requesttype & USB_TYPE_MASK) == USB_TYPE_CLASS)
+ 	/* 3k pull low control for Headset jack. */
+ 	/* NOTE: call this before clearing the pin, otherwise codec stalls */
+-	alc_update_coef_idx(codec, 0x46, 0, 3 << 12);
++	/* If disable 3k pulldown control for alc257, the Mic detection will not work correctly
++	 * when booting with headset plugged. So skip setting it for the codec alc257
++	 */
++	if (codec->core.vendor_id != 0x10ec0257)
++		alc_update_coef_idx(codec, 0x46, 0, 3 << 12);
+ 
+ 	if (!spec->no_shutup_pins)
+ 		snd_hda_codec_write(codec, hp_pin, 0,
 
 
