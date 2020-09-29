@@ -2,167 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9B1B27BE57
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 09:47:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6723127BE5A
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 09:48:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727560AbgI2Hru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 03:47:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58856 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725535AbgI2Hrt (ORCPT
+        id S1727632AbgI2HsH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 03:48:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:52188 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725774AbgI2HsH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 03:47:49 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79625C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 00:47:49 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id a9so3740451wmm.2
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 00:47:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=gTw8+Yfq2M+lgL6uz8tiJpeY2ZADAkzaEJEhPKyRCFI=;
-        b=IkT8QLC85j8yoqCUXeesrjQjdwYyMXKI+9pHr+gD194jy/JPlP7IULJjQBms6RfAcn
-         ngOpiL8YKxttlae/eW+ZSYsuN6fw22wjzPlxYz4CDVZQDW6jOe/fUpkTpZ06RqkrezNR
-         tZkf3oRsdTOWnYGJBVtyhGGF97Yrg4fEfY5ZIcZb811ljQIAJX1+o0YjTeWIaW1PBXE+
-         VLRgbDqUx1NexRNOfcMr8YML02icMyBzioqMZjt4FsQUuZccI2vjISzfstZ8Ll3CZL0X
-         uw2lFh1dlc98GFEzdezIO+4ogmKGDBjmkzMVNoNFeVIQxDwrMa1bVwb3S3R4Q7QIhlWk
-         BKJQ==
+        Tue, 29 Sep 2020 03:48:07 -0400
+Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601365686;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=8xO7rZy5t133U8JIyK4JzoQDnu4pz1aGJERQ/woAzd8=;
+        b=Wk2EeMrFjSuzNCsB1QhjRVI4H/X4sLt0kQ181LeDpIU1TD1BJwW5LJ/HeZ8Jr4b7Sj60sB
+        52dlehXltzBHtGWfyc2xMuXpiGHHMlJeK+krhHRGv5NGPSIkG1g7auu70KBT9kA0BaLIlP
+        7Jycih53fMJOCDWYisKM5FKwgLtvacw=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-354-A-q09_GuMY28IAoHCtK7Ew-1; Tue, 29 Sep 2020 03:48:03 -0400
+X-MC-Unique: A-q09_GuMY28IAoHCtK7Ew-1
+Received: by mail-wr1-f70.google.com with SMTP id s8so1379566wrb.15
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 00:48:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=gTw8+Yfq2M+lgL6uz8tiJpeY2ZADAkzaEJEhPKyRCFI=;
-        b=KXlJqeZx8y2kb/prHAtl7tWmeYF9rihUNllVseSnSkTXnBt8a+R7g4KSMoAyT9gNYO
-         ga66OJFAVOEDtQ+bUfvNvo9pN2/XdO/j2bU+8dwXZiI55mPR5x55EPNCNyv5sMV9F3gC
-         AkWK8JmBTUk/ASX9KFregRJhGuFIOrPDVBjzcqu6tczJJ3Q2tN6ObZaOIF6j9MCpTwhv
-         6IlECIsi6qm28hpNl7eu8KtqHHAWlkLRHk51Rm5Ma3Mg+FQ0DRq9ywtvYFDjA4rjFbKt
-         F7B3axz2UY2VogJd++FMCyXwRuJra++5Qez1ahg/Al1/fRoJIFO0wo3xs5wLaItg8Hbq
-         3jgQ==
-X-Gm-Message-State: AOAM533LYjylMdcpmNKo4QUJTsYCVbOwtNPsZNiZ6jHH8Lsi+rkwwGMO
-        rCWfEtdbyh3sjHKmRWJDqbbN9g+klxJy8GzWsgRVo+ksgHFdyg==
-X-Google-Smtp-Source: ABdhPJwgE/V6GpmwpxCPRvRtwn4tPlyvUYF/SJiKYjaeXSNi83XanhC/KGLo6HVBvseR3RSGee42R6EPnZDFrupv9vs=
-X-Received: by 2002:a7b:cc17:: with SMTP id f23mr2888405wmh.166.1601365668191;
- Tue, 29 Sep 2020 00:47:48 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8xO7rZy5t133U8JIyK4JzoQDnu4pz1aGJERQ/woAzd8=;
+        b=RnlmLhooRN+WudcYTr8HQfIPtQZHBtRii3qkc1YrYvd+dD2vanKCcVFEt54y8InG/l
+         +ZcK4VQBB/8S/ycADDjkPwGpD9/q7gqJPpLFQhQ7SCkrwBxWy247Befp0nnunbeHB++e
+         7tUk5bpttYCYyhRtP6MK6Ss1fu6MY3cDudo/FihZ9wo89jkpovE3vKJGkvZSYKwObplx
+         XTVO7soHYlyA4qJvZR5ZwRu4s3RZiLjSU4ouKNuCcnJNBH2wKEUzjTGpDFgNiiHAP0ME
+         bxCRJIw5iWm5cByja67uunVYV0uKllL9nQBYsUz9H4kLG7jm4z1RNFz3lNqAY1iSm9la
+         m5Qw==
+X-Gm-Message-State: AOAM532Ph+6A+Obz7wlHY+D33FU/oBm9VSV8iDx98vpTxVsJiDebRqI0
+        GbRDNmStH4SXpnwE8rJpcS633dt8D1v7/b7cgSMScC9nYzIPC3MzH2aocDJKRNAIOiNAuI3YP8L
+        qzr8Arkg1O1rrnyP5M4NTsX4R
+X-Received: by 2002:a1c:6a11:: with SMTP id f17mr2845848wmc.143.1601365682572;
+        Tue, 29 Sep 2020 00:48:02 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzy9cvP6BH1Mw0CQeNnVZeFoeM27Cd6X6OrMih1YP8wEj9eAKG/lzVukmjjG2bhZg1Xt9CE+Q==
+X-Received: by 2002:a1c:6a11:: with SMTP id f17mr2845808wmc.143.1601365681993;
+        Tue, 29 Sep 2020 00:48:01 -0700 (PDT)
+Received: from redhat.com (bzq-79-179-71-128.red.bezeqint.net. [79.179.71.128])
+        by smtp.gmail.com with ESMTPSA id 70sm4346876wme.15.2020.09.29.00.48.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Sep 2020 00:48:01 -0700 (PDT)
+Date:   Tue, 29 Sep 2020 03:47:58 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Eli Cohen <elic@nvidia.com>, Leon Romanovsky <leonro@nvidia.com>,
+        virtualization@lists.linux-foundation.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Jason Wang <jasowang@redhat.com>,
+        Saeed Mahameed <saeedm@nvidia.com>
+Subject: Re: [PATCH v3 -next] vdpa: mlx5: change Kconfig depends to fix build
+ errors
+Message-ID: <20200929034636-mutt-send-email-mst@kernel.org>
+References: <73f7e48b-8d16-6b20-07d3-41dee0e3d3bd@infradead.org>
+ <20200918082245.GP869610@unreal>
+ <20200924052932-mutt-send-email-mst@kernel.org>
+ <20200924102413.GD170403@mtl-vdi-166.wap.labs.mlnx>
+ <079c831e-214d-22c1-028e-05d84e3b7f04@infradead.org>
 MIME-Version: 1.0
-References: <1601274460-7866-1-git-send-email-kevin3.tang@gmail.com>
- <1601274460-7866-2-git-send-email-kevin3.tang@gmail.com> <20200928081726.hkh3rzbfr6m7jszt@gilmour.lan>
- <CAL_JsqLUT9gBiVgSdcHM86vNLR_1MxEZ+x9MDBaFGdv2j9EtvA@mail.gmail.com> <CAFPSGXYbdeZuVKQWnU6kiPzn3zgm224O2uDkr-uuLBUUjufGsA@mail.gmail.com>
-In-Reply-To: <CAFPSGXYbdeZuVKQWnU6kiPzn3zgm224O2uDkr-uuLBUUjufGsA@mail.gmail.com>
-From:   Chunyan Zhang <zhang.lyra@gmail.com>
-Date:   Tue, 29 Sep 2020 15:47:12 +0800
-Message-ID: <CAAfSe-uncUhsN_MFWe2KiaWjBwmdyrXOSp32O3sTvbgwTJ+VRQ@mail.gmail.com>
-Subject: Re: [PATCH RFC v7 1/6] dt-bindings: display: add Unisoc's drm master bindings
-To:     Kevin Tang <kevin3.tang@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <079c831e-214d-22c1-028e-05d84e3b7f04@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 29 Sep 2020 at 14:35, Kevin Tang <kevin3.tang@gmail.com> wrote:
->
-> Hi Rob,
-> Component framework include master and component, here is master subnode.
-> It seems that everyone else does it, why not me?
->
-> Your comments on v6:
-> "We generally try to avoid this virtual node as it doesn't represent
-> any h/w. Can't you bind the driver to the DPU directly?"
->
-> I'm sorry, maybe is my careless, I still don't understand why and how to =
-do it
+On Thu, Sep 24, 2020 at 08:47:05AM -0700, Randy Dunlap wrote:
+> On 9/24/20 3:24 AM, Eli Cohen wrote:
+> > On Thu, Sep 24, 2020 at 05:30:55AM -0400, Michael S. Tsirkin wrote:
+> >>>> --- linux-next-20200917.orig/drivers/vdpa/Kconfig
+> >>>> +++ linux-next-20200917/drivers/vdpa/Kconfig
+> >>>> @@ -31,7 +31,7 @@ config IFCVF
+> >>>>
+> >>>>  config MLX5_VDPA
+> >>>>  	bool "MLX5 VDPA support library for ConnectX devices"
+> >>>> -	depends on MLX5_CORE
+> >>>> +	depends on VHOST_IOTLB && MLX5_CORE
+> >>>>  	default n
+> >>>
+> >>> While we are here, can anyone who apply this patch delete the "default n" line?
+> >>> It is by default "n".
+> > 
+> > I can do that
+> > 
+> >>>
+> >>> Thanks
+> >>
+> >> Hmm other drivers select VHOST_IOTLB, why not do the same?
+> 
+> v1 used select, but Saeed requested use of depends instead because
+> select can cause problems.
 
-Devicetree is used to describe hardware rather than virtual things
-like "sprd,display-subsystem" which is not a real device.
-That's what I understand for Rob's comments here.
+OK I went over the history. v1 selected VHOST, that as the issue I think.
+A later version switched to VHOST_IOTLB, that is ok to select.
 
-Chunyan
+> > I can't see another driver doing that. Perhaps I can set dependency on
+> > VHOST which by itself depends on VHOST_IOTLB?
+> >>
+> >>
+> >>>>  	help
+> >>>>  	  Support library for Mellanox VDPA drivers. Provides code that is
+> >>>>
+> >>
+> 
+> 
+> -- 
+> ~Randy
 
->
-> Rob Herring <robh+dt@kernel.org> =E4=BA=8E2020=E5=B9=B49=E6=9C=8829=E6=97=
-=A5=E5=91=A8=E4=BA=8C =E4=B8=8A=E5=8D=8812:28=E5=86=99=E9=81=93=EF=BC=9A
->
-> >
-> > On Mon, Sep 28, 2020 at 3:17 AM Maxime Ripard <maxime@cerno.tech> wrote=
-:
-> > >
-> > > Hi!
-> > >
-> > > On Mon, Sep 28, 2020 at 02:27:35PM +0800, Kevin Tang wrote:
-> > > > From: Kevin Tang <kevin.tang@unisoc.com>
-> > > >
-> > > > The Unisoc DRM master device is a virtual device needed to list all
-> > > > DPU devices or other display interface nodes that comprise the
-> > > > graphics subsystem
-> > > >
-> > > > RFC v7:
-> > > >   - Fix DTC unit name warnings
-> > > >   - Fix the problem of maintainers
-> > > >
-> > > > Cc: Orson Zhai <orsonzhai@gmail.com>
-> > > > Cc: Chunyan Zhang <zhang.lyra@gmail.com>
-> > > > Signed-off-by: Kevin Tang <kevin.tang@unisoc.com>
-> > > > ---
-> > > >  .../display/sprd/sprd,display-subsystem.yaml       | 39 ++++++++++=
-++++++++++++
-> > > >  1 file changed, 39 insertions(+)
-> > > >  create mode 100644 Documentation/devicetree/bindings/display/sprd/=
-sprd,display-subsystem.yaml
-> > > >
-> > > > diff --git a/Documentation/devicetree/bindings/display/sprd/sprd,di=
-splay-subsystem.yaml b/Documentation/devicetree/bindings/display/sprd/sprd,=
-display-subsystem.yaml
-> > > > new file mode 100644
-> > > > index 0000000..9487a39
-> > > > --- /dev/null
-> > > > +++ b/Documentation/devicetree/bindings/display/sprd/sprd,display-s=
-ubsystem.yaml
-> > > > @@ -0,0 +1,39 @@
-> > > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > > > +%YAML 1.2
-> > > > +---
-> > > > +$id: http://devicetree.org/schemas/display/sprd/sprd,display-subsy=
-stem.yaml#
-> > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > > +
-> > > > +title: Unisoc DRM master device
-> > > > +
-> > > > +maintainers:
-> > > > +  - Kevin Tang <kevin.tang@unisoc.com>
-> > > > +
-> > > > +description: |
-> > > > +  The Unisoc DRM master device is a virtual device needed to list =
-all
-> > > > +  DPU devices or other display interface nodes that comprise the
-> > > > +  graphics subsystem.
-> > > > +
-> > > > +properties:
-> > > > +  compatible:
-> > > > +    const: sprd,display-subsystem
-> > > > +
-> > > > +  ports:
-> > > > +    $ref: /schemas/types.yaml#/definitions/phandle-array
-> > > > +    description:
-> > > > +      Should contain a list of phandles pointing to display interf=
-ace port
-> > > > +      of DPU devices.
-> > >
-> > > Generally speaking, driver-specific properties should be prefixed by =
-the
-> > > vendor name to avoid any conflict with generic properties (like the
-> > > OF-Graph ports subnode in this case)
-> >
-> > We try to avoid this virtual node altogether which I commented about
-> > on v6 which was ignored.
-> >
-> > Rob
