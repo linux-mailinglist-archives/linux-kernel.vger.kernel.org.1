@@ -2,161 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF9C127B8A3
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 02:07:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A63827B8C3
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 02:17:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727027AbgI2AHc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 20:07:32 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:49024 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726715AbgI2AHb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 20:07:31 -0400
-Received: from linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net (linux.microsoft.com [13.77.154.182])
-        by linux.microsoft.com (Postfix) with ESMTPSA id C006720B7178;
-        Mon, 28 Sep 2020 17:07:30 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com C006720B7178
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1601338050;
-        bh=nXHG8mIv43mdzRi0Z8TktkyURZnP1ZRLvJrqqBYf4uc=;
-        h=From:To:Cc:Subject:Date:From;
-        b=jNSUzwcS+TvHXHg5GsyhAMI6yaAB7XGESL5ni/XQ8vJabiZLc/qxdMe8NtrlvYhcH
-         vnvfGaMh7KtViJFItmL8ssSHuxux58hfeEc2VWyyfozUVQNXj0t48qCmhXFeEQlf5w
-         DEWBnI7Gj16zXkZDgeJkOK+Sdva8GorZwvABeR/A=
-From:   Vijay Balakrishna <vijayb@linux.microsoft.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Vijay Balakrishna <vijayb@linux.microsoft.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Allen Pais <apais@microsoft.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: [v4] mm: khugepaged: recalculate min_free_kbytes after memory hotplug as expected by khugepaged
-Date:   Mon, 28 Sep 2020 17:07:27 -0700
-Message-Id: <1601338047-18558-1-git-send-email-vijayb@linux.microsoft.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S1727056AbgI2ARu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 20:17:50 -0400
+Received: from mga01.intel.com ([192.55.52.88]:35622 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726698AbgI2ARu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 20:17:50 -0400
+IronPort-SDR: RbVH6Bc6DLDNbfZBUS24tpwE26LDNf7cIcCHNMF54hRrq3ZtsuhX8gXl1WYElpX1Tuny/jVVQc
+ uKx+Xs/VeuUQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9758"; a="180241687"
+X-IronPort-AV: E=Sophos;i="5.77,315,1596524400"; 
+   d="scan'208";a="180241687"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 17:17:49 -0700
+IronPort-SDR: vBRBwymd2PTiWX2JYPy/kVamnLH16EZO03swENsMtJAUXMzMi//4+COfuiuFAY5Az4SbuQygQB
+ dsW9T/Fk2OZA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,315,1596524400"; 
+   d="scan'208";a="415182150"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.139]) ([10.239.159.139])
+  by fmsmga001.fm.intel.com with ESMTP; 28 Sep 2020 17:17:47 -0700
+Cc:     baolu.lu@linux.intel.com, Ashok Raj <ashok.raj@intel.com>,
+        Intel-gfx@lists.freedesktop.org, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 0/7] Convert the intel iommu driver to the dma-iommu
+ api
+To:     Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        Joerg Roedel <joro@8bytes.org>, Tom Murphy <murphyt7@tcd.ie>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Christoph Hellwig <hch@infradead.org>
+References: <20200927063437.13988-1-baolu.lu@linux.intel.com>
+ <e999e371-6d36-ffea-542f-a5f4b230b0ed@linux.intel.com>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Message-ID: <c2af9a9d-1cae-b8f7-a0b3-880574060a23@linux.intel.com>
+Date:   Tue, 29 Sep 2020 08:11:35 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <e999e371-6d36-ffea-542f-a5f4b230b0ed@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When memory is hotplug added or removed the min_free_kbytes must be
-recalculated based on what is expected by khugepaged.  Currently
-after hotplug, min_free_kbytes will be set to a lower default and higher
-default set when THP enabled is lost.  This change restores min_free_kbytes
-as expected for THP consumers.
+Hi Tvrtko,
 
-Fixes: f000565adb77 ("thp: set recommended min free kbytes")
+On 9/28/20 5:44 PM, Tvrtko Ursulin wrote:
+> 
+> On 27/09/2020 07:34, Lu Baolu wrote:
+>> Hi,
+>>
+>> The previous post of this series could be found here.
+>>
+>> https://lore.kernel.org/linux-iommu/20200912032200.11489-1-baolu.lu@linux.intel.com/ 
+>>
+>>
+>> This version introduce a new patch [4/7] to fix an issue reported here.
+>>
+>> https://lore.kernel.org/linux-iommu/51a1baec-48d1-c0ac-181b-1fba92aa428d@linux.intel.com/ 
+>>
+>>
+>> There aren't any other changes.
+>>
+>> Please help to test and review.
+>>
+>> Best regards,
+>> baolu
+>>
+>> Lu Baolu (3):
+>>    iommu: Add quirk for Intel graphic devices in map_sg
+> 
+> Since I do have patches to fix i915 to handle this, do we want to 
+> co-ordinate the two and avoid having to add this quirk and then later 
+> remove it? Or you want to go the staged approach?
 
-Signed-off-by: Vijay Balakrishna <vijayb@linux.microsoft.com>
-Cc: stable@vger.kernel.org
-Reviewed-by: Pavel Tatashin <pasha.tatashin@soleen.com>
-Acked-by: Michal Hocko <mhocko@suse.com>
----
-v3 -> v4
-- made changes to move khugepaged_min_free_kbytes_update into
-  init_per_zone_wmark_min and rested changes
-  [suggestion from Michal Hocko]
+I have no preference. It depends on which patch goes first. Let the
+maintainers help here.
 
-[v2 1/2]
-- removed symptoms references from changelog
+Best regards,
+baolu
 
-[v2 2/2]
-- addressed following issues Michal Hocko raised:
-  . nr_free_buffer_pages can oveflow in int on very large machines
-  . min_free_kbytes can decrease the size theoretically
-
-v1 -> v2
---------
-- addressed issue Kirill A. Shutemov raised:
-  . changes would override min_free_kbytes set by user
-
- include/linux/khugepaged.h |  5 +++++
- mm/khugepaged.c            | 13 +++++++++++--
- mm/page_alloc.c            |  3 +++
- 3 files changed, 19 insertions(+), 2 deletions(-)
-
-diff --git a/include/linux/khugepaged.h b/include/linux/khugepaged.h
-index bc45ea1efbf7..c941b7377321 100644
---- a/include/linux/khugepaged.h
-+++ b/include/linux/khugepaged.h
-@@ -15,6 +15,7 @@ extern int __khugepaged_enter(struct mm_struct *mm);
- extern void __khugepaged_exit(struct mm_struct *mm);
- extern int khugepaged_enter_vma_merge(struct vm_area_struct *vma,
- 				      unsigned long vm_flags);
-+extern void khugepaged_min_free_kbytes_update(void);
- #ifdef CONFIG_SHMEM
- extern void collapse_pte_mapped_thp(struct mm_struct *mm, unsigned long addr);
- #else
-@@ -85,6 +86,10 @@ static inline void collapse_pte_mapped_thp(struct mm_struct *mm,
- 					   unsigned long addr)
- {
- }
-+
-+static inline void khugepaged_min_free_kbytes_update(void)
-+{
-+}
- #endif /* CONFIG_TRANSPARENT_HUGEPAGE */
- 
- #endif /* _LINUX_KHUGEPAGED_H */
-diff --git a/mm/khugepaged.c b/mm/khugepaged.c
-index cfa0dba5fd3b..4f7107476a6f 100644
---- a/mm/khugepaged.c
-+++ b/mm/khugepaged.c
-@@ -56,6 +56,9 @@ enum scan_result {
- #define CREATE_TRACE_POINTS
- #include <trace/events/huge_memory.h>
- 
-+static struct task_struct *khugepaged_thread __read_mostly;
-+static DEFINE_MUTEX(khugepaged_mutex);
-+
- /* default scan 8*512 pte (or vmas) every 30 second */
- static unsigned int khugepaged_pages_to_scan __read_mostly;
- static unsigned int khugepaged_pages_collapsed;
-@@ -2292,8 +2295,6 @@ static void set_recommended_min_free_kbytes(void)
- 
- int start_stop_khugepaged(void)
- {
--	static struct task_struct *khugepaged_thread __read_mostly;
--	static DEFINE_MUTEX(khugepaged_mutex);
- 	int err = 0;
- 
- 	mutex_lock(&khugepaged_mutex);
-@@ -2320,3 +2321,11 @@ int start_stop_khugepaged(void)
- 	mutex_unlock(&khugepaged_mutex);
- 	return err;
- }
-+
-+void khugepaged_min_free_kbytes_update(void)
-+{
-+	mutex_lock(&khugepaged_mutex);
-+	if (khugepaged_enabled() && khugepaged_thread)
-+		set_recommended_min_free_kbytes();
-+	mutex_unlock(&khugepaged_mutex);
-+}
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index fab5e97dc9ca..ac25d3526fa5 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -69,6 +69,7 @@
- #include <linux/nmi.h>
- #include <linux/psi.h>
- #include <linux/padata.h>
-+#include <linux/khugepaged.h>
- 
- #include <asm/sections.h>
- #include <asm/tlbflush.h>
-@@ -7891,6 +7892,8 @@ int __meminit init_per_zone_wmark_min(void)
- 	setup_min_slab_ratio();
- #endif
- 
-+	khugepaged_min_free_kbytes_update();
-+
- 	return 0;
- }
- postcore_initcall(init_per_zone_wmark_min)
--- 
-2.28.0
-
+> 
+> Regards,
+> 
+> Tvrtko
+> 
+>>    iommu/vt-d: Update domain geometry in iommu_ops.at(de)tach_dev
+>>    iommu/vt-d: Cleanup after converting to dma-iommu ops
+>>
+>> Tom Murphy (4):
+>>    iommu: Handle freelists when using deferred flushing in iommu drivers
+>>    iommu: Add iommu_dma_free_cpu_cached_iovas()
+>>    iommu: Allow the dma-iommu api to use bounce buffers
+>>    iommu/vt-d: Convert intel iommu driver to the iommu ops
+>>
+>>   .../admin-guide/kernel-parameters.txt         |   5 -
+>>   drivers/iommu/dma-iommu.c                     | 228 ++++-
+>>   drivers/iommu/intel/Kconfig                   |   1 +
+>>   drivers/iommu/intel/iommu.c                   | 901 +++---------------
+>>   include/linux/dma-iommu.h                     |   8 +
+>>   include/linux/iommu.h                         |   1 +
+>>   6 files changed, 336 insertions(+), 808 deletions(-)
+>>
