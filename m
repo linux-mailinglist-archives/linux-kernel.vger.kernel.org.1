@@ -2,121 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF9B527C15A
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 11:35:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D77B727C14F
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 11:32:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728171AbgI2JfG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 05:35:06 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:14713 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728054AbgI2Je5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 05:34:57 -0400
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id A71B77B768E2B691996D;
-        Tue, 29 Sep 2020 17:34:55 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 29 Sep 2020 17:34:45 +0800
-From:   Huazhong Tan <tanhuazhong@huawei.com>
-To:     <davem@davemloft.net>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <salil.mehta@huawei.com>, <yisen.zhuang@huawei.com>,
-        <linuxarm@huawei.com>, <kuba@kernel.org>,
-        Guangbin Huang <huangguangbin2@huawei.com>,
-        Huazhong Tan <tanhuazhong@huawei.com>
-Subject: [PATCH net-next 7/7] net: hns3: dump tqp enable status in debugfs
-Date:   Tue, 29 Sep 2020 17:32:05 +0800
-Message-ID: <1601371925-49426-8-git-send-email-tanhuazhong@huawei.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1601371925-49426-1-git-send-email-tanhuazhong@huawei.com>
-References: <1601371925-49426-1-git-send-email-tanhuazhong@huawei.com>
+        id S1728202AbgI2Jca (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 05:32:30 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45786 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727864AbgI2Jca (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 05:32:30 -0400
+Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601371949;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=LiEgRgilrtM/nzZfi6JlygGzcq6lLUMwcnD3ohkUPPc=;
+        b=V0ul40K5vcOw4UxiG7CEjgVC5EMNXzfkqX2nkkkVeWg5BdnHsmzBMbDvUUlNT+cbQfIxVJ
+        orRHJwgnYASv7APhPt/DKP4FC8l00M0ujGeWl//kDOd/ozYvlM3mL0vdkCNGRbzjpGYJ0Y
+        Zv7VDFx9j9PdeUaErjHk+15OeqX46YQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-125-lHto500SOc2Jx9pUas_Pvg-1; Tue, 29 Sep 2020 05:32:27 -0400
+X-MC-Unique: lHto500SOc2Jx9pUas_Pvg-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 019D9801AE3;
+        Tue, 29 Sep 2020 09:32:26 +0000 (UTC)
+Received: from sirius.home.kraxel.org (ovpn-112-56.ams2.redhat.com [10.36.112.56])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A253260BF1;
+        Tue, 29 Sep 2020 09:32:25 +0000 (UTC)
+Received: by sirius.home.kraxel.org (Postfix, from userid 1000)
+        id 9D0481750A; Tue, 29 Sep 2020 11:32:24 +0200 (CEST)
+Date:   Tue, 29 Sep 2020 11:32:24 +0200
+From:   Gerd Hoffmann <kraxel@redhat.com>
+To:     Qinglang Miao <miaoqinglang@huawei.com>
+Cc:     Dave Airlie <airlied@redhat.com>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        virtualization@lists.linux-foundation.org,
+        spice-devel@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] drm/qxl: simplify the return expression of
+ qxl_plane_prepare_fb()
+Message-ID: <20200929093224.2x4x72i5pwmfe5aa@sirius.home.kraxel.org>
+References: <20200921131022.91649-1-miaoqinglang@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200921131022.91649-1-miaoqinglang@huawei.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guangbin Huang <huangguangbin2@huawei.com>
+On Mon, Sep 21, 2020 at 09:10:22PM +0800, Qinglang Miao wrote:
+> Simplify the return expression.
 
-Adds debugfs to dump tqp enable status.
+Pushed to drm-misc-next.
 
-Signed-off-by: Guangbin Huang <huangguangbin2@huawei.com>
-Signed-off-by: Huazhong Tan <tanhuazhong@huawei.com>
----
- drivers/net/ethernet/hisilicon/hns3/hnae3.h        |  3 +++
- drivers/net/ethernet/hisilicon/hns3/hns3_debugfs.c | 22 ++++++++++++++++++++--
- drivers/net/ethernet/hisilicon/hns3/hns3_enet.h    |  2 ++
- 3 files changed, 25 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hnae3.h b/drivers/net/ethernet/hisilicon/hns3/hnae3.h
-index f6d0702..912c51e 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hnae3.h
-+++ b/drivers/net/ethernet/hisilicon/hns3/hnae3.h
-@@ -130,6 +130,9 @@ enum HNAE3_DEV_CAP_BITS {
- #define hnae3_dev_stash_supported(hdev) \
- 	test_bit(HNAE3_DEV_SUPPORT_STASH_B, (hdev)->ae_dev->caps)
- 
-+#define hnae3_ae_dev_tqp_txrx_indep_supported(ae_dev) \
-+	test_bit(HNAE3_DEV_SUPPORT_TQP_TXRX_INDEP_B, (ae_dev)->caps)
-+
- #define ring_ptr_move_fw(ring, p) \
- 	((ring)->p = ((ring)->p + 1) % (ring)->desc_num)
- #define ring_ptr_move_bw(ring, p) \
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_debugfs.c b/drivers/net/ethernet/hisilicon/hns3/hns3_debugfs.c
-index d6f8817..dc9a857 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3_debugfs.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3_debugfs.c
-@@ -15,6 +15,7 @@ static struct dentry *hns3_dbgfs_root;
- static int hns3_dbg_queue_info(struct hnae3_handle *h,
- 			       const char *cmd_buf)
- {
-+	struct hnae3_ae_dev *ae_dev = pci_get_drvdata(h->pdev);
- 	struct hns3_nic_priv *priv = h->priv;
- 	struct hns3_enet_ring *ring;
- 	u32 base_add_l, base_add_h;
-@@ -118,8 +119,25 @@ static int hns3_dbg_queue_info(struct hnae3_handle *h,
- 
- 		value = readl_relaxed(ring->tqp->io_base +
- 				      HNS3_RING_TX_RING_PKTNUM_RECORD_REG);
--		dev_info(&h->pdev->dev, "TX(%u) RING PKTNUM: %u\n\n", i,
--			 value);
-+		dev_info(&h->pdev->dev, "TX(%u) RING PKTNUM: %u\n", i, value);
-+
-+		value = readl_relaxed(ring->tqp->io_base + HNS3_RING_EN_REG);
-+		dev_info(&h->pdev->dev, "TX/RX(%u) RING EN: %s\n", i,
-+			 value ? "enable" : "disable");
-+
-+		if (hnae3_ae_dev_tqp_txrx_indep_supported(ae_dev)) {
-+			value = readl_relaxed(ring->tqp->io_base +
-+					      HNS3_RING_TX_EN_REG);
-+			dev_info(&h->pdev->dev, "TX(%u) RING EN: %s\n", i,
-+				 value ? "enable" : "disable");
-+
-+			value = readl_relaxed(ring->tqp->io_base +
-+					      HNS3_RING_RX_EN_REG);
-+			dev_info(&h->pdev->dev, "RX(%u) RING EN: %s\n", i,
-+				 value ? "enable" : "disable");
-+		}
-+
-+		dev_info(&h->pdev->dev, "\n");
- 	}
- 
- 	return 0;
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.h b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.h
-index 35b0375..1c81dea 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.h
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.h
-@@ -43,6 +43,8 @@ enum hns3_nic_state {
- #define HNS3_RING_TX_RING_EBD_OFFSET_REG	0x00070
- #define HNS3_RING_TX_RING_BD_ERR_REG		0x00074
- #define HNS3_RING_EN_REG			0x00090
-+#define HNS3_RING_RX_EN_REG			0x00098
-+#define HNS3_RING_TX_EN_REG			0x000D4
- 
- #define HNS3_RX_HEAD_SIZE			256
- 
--- 
-2.7.4
+thanks,
+  Gerd
 
