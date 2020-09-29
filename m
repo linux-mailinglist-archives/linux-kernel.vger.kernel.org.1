@@ -2,87 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC56E27B976
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 03:31:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B38B927BA5D
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 03:39:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727496AbgI2BbD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 21:31:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40054 "EHLO mail.kernel.org"
+        id S1727497AbgI2BjC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 21:39:02 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:47682 "EHLO inva021.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727460AbgI2Ba6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 21:30:58 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 89F3721D92;
-        Tue, 29 Sep 2020 01:30:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601343058;
-        bh=21FkWTn97faQnwphOoikRmtJOI5pXA5VMosofT5D3sU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XOPpJZTGMWCRLvUGYw9hwzGersGSWVMbASEu/0f4DzKwfX2qDm5a2ORp7b5lnyALD
-         AghnddGwrkObQdcsDBXEyjAjdiMzJn4RJ9ZTIkoYn54fw5SEB/0m9rcD/0fpB22mAv
-         3j/32NSsuj0tHTO7WnTv50jfvKH0MOF+TAEcSR+8=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Chris Packham <chris.packham@alliedtelesis.co.nz>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, linux-spi@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.8 24/29] spi: fsl-espi: Only process interrupts for expected events
-Date:   Mon, 28 Sep 2020 21:30:21 -0400
-Message-Id: <20200929013027.2406344-24-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200929013027.2406344-1-sashal@kernel.org>
-References: <20200929013027.2406344-1-sashal@kernel.org>
+        id S1726421AbgI2BjB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 21:39:01 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id D6F1F200E74;
+        Tue, 29 Sep 2020 03:38:58 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 80C6D200EAD;
+        Tue, 29 Sep 2020 03:38:55 +0200 (CEST)
+Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 060764030D;
+        Tue, 29 Sep 2020 03:38:50 +0200 (CEST)
+From:   Ran Wang <ran.wang_1@nxp.com>
+To:     Fabio Estevam <festevam@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>
+Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Biwen Li <biwen.li@nxp.com>,
+        Ran Wang <ran.wang_1@nxp.com>
+Subject: [PATCH v2] arm64: dts: fix endianness issue of rcpm
+Date:   Tue, 29 Sep 2020 09:30:21 +0800
+Message-Id: <20200929013021.46395-1-ran.wang_1@nxp.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chris Packham <chris.packham@alliedtelesis.co.nz>
+From: Biwen Li <biwen.li@nxp.com>
 
-[ Upstream commit b867eef4cf548cd9541225aadcdcee644669b9e1 ]
+Add little-endian property to RCPM node (for ls1028a,ls1088a,ls208xa),
+otherwise RCPM driver will program hardware with incorrect setting,
+causing system (such as LS1028ARDB) failed to be waked by wakeup source.
 
-The SPIE register contains counts for the TX FIFO so any time the irq
-handler was invoked we would attempt to process the RX/TX fifos. Use the
-SPIM value to mask the events so that we only process interrupts that
-were expected.
-
-This was a latent issue exposed by commit 3282a3da25bd ("powerpc/64:
-Implement soft interrupt replay in C").
-
-Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
-Link: https://lore.kernel.org/r/20200904002812.7300-1-chris.packham@alliedtelesis.co.nz
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 791c88ca5713 (“arm64: dts: ls1028a: Add ftm_alarm0 DT node”)
+Fixes: f4fe3a8665495 (“arm64: dts: layerscape: add ftm_alarm0 node”)
+Signed-off-by: Biwen Li <biwen.li@nxp.com>
+Signed-off-by: Ran Wang <ran.wang_1@nxp.com>
+Acked-by: Li Yang <leoyang.li@nxp.com>
 ---
- drivers/spi/spi-fsl-espi.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+Change in v2:
+ - Update commit message with more details
+ - Add Fixes and Singed-off tags
 
-diff --git a/drivers/spi/spi-fsl-espi.c b/drivers/spi/spi-fsl-espi.c
-index e60581283a247..6d148ab70b93e 100644
---- a/drivers/spi/spi-fsl-espi.c
-+++ b/drivers/spi/spi-fsl-espi.c
-@@ -564,13 +564,14 @@ static void fsl_espi_cpu_irq(struct fsl_espi *espi, u32 events)
- static irqreturn_t fsl_espi_irq(s32 irq, void *context_data)
- {
- 	struct fsl_espi *espi = context_data;
--	u32 events;
-+	u32 events, mask;
+ arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi | 1 +
+ arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi | 1 +
+ arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi | 1 +
+ 3 files changed, 3 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
+index 0efeb8f..651bfe1 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
++++ b/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
+@@ -1012,6 +1012,7 @@
+ 			compatible = "fsl,ls1028a-rcpm", "fsl,qoriq-rcpm-2.1+";
+ 			reg = <0x0 0x1e34040 0x0 0x1c>;
+ 			#fsl,rcpm-wakeup-cells = <7>;
++			little-endian;
+ 		};
  
- 	spin_lock(&espi->lock);
+ 		ftm_alarm0: timer@2800000 {
+diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi
+index 169f474..2ef812d 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi
++++ b/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi
+@@ -787,6 +787,7 @@
+ 			compatible = "fsl,ls1088a-rcpm", "fsl,qoriq-rcpm-2.1+";
+ 			reg = <0x0 0x1e34040 0x0 0x18>;
+ 			#fsl,rcpm-wakeup-cells = <6>;
++			little-endian;
+ 		};
  
- 	/* Get interrupt events(tx/rx) */
- 	events = fsl_espi_read_reg(espi, ESPI_SPIE);
--	if (!events) {
-+	mask = fsl_espi_read_reg(espi, ESPI_SPIM);
-+	if (!(events & mask)) {
- 		spin_unlock(&espi->lock);
- 		return IRQ_NONE;
- 	}
+ 		ftm_alarm0: timer@2800000 {
+diff --git a/arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi
+index 41102da..141b3d2 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi
++++ b/arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi
+@@ -769,6 +769,7 @@
+ 			compatible = "fsl,ls208xa-rcpm", "fsl,qoriq-rcpm-2.1+";
+ 			reg = <0x0 0x1e34040 0x0 0x18>;
+ 			#fsl,rcpm-wakeup-cells = <6>;
++			little-endian;
+ 		};
+ 
+ 		ftm_alarm0: timer@2800000 {
 -- 
-2.25.1
+2.7.4
 
