@@ -2,61 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 448CB27CE93
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 15:09:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B615727CECC
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 15:15:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729704AbgI2NJD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 09:09:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52414 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728407AbgI2NI5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 09:08:57 -0400
-Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E461A207F7;
-        Tue, 29 Sep 2020 13:08:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601384936;
-        bh=Su0UiZc0qmLvVTnSUix5XFVQIT/6cyR/d0HnpU80kbk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=yWKlRDduCWOBjEwP1oqDN6/BEc6zqVqWR36zVBC381AAUxXaP5olPCU6UY2oyG2MO
-         xIR/z647ta86JQnvIc8k52cBv6FZ5Fvx9SgUSJZ5Uoi1LpYm/T4ZfmgftSeteGR4bY
-         W5iAenCJkDGdEiI1A5iq0P/jqnXqr0nkYYOPL7W0=
-Date:   Tue, 29 Sep 2020 08:14:37 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     David Miller <davem@davemloft.net>
-Cc:     ioana.ciornei@nxp.com, ruxandra.radulescu@nxp.com, kuba@kernel.org,
-        andrew@lunn.ch, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] dpaa2-mac: Fix potential null pointer dereference
-Message-ID: <20200929131437.GB28922@embeddedor>
-References: <20200925170323.GA20546@embeddedor>
- <20200925.171554.1696394343282908508.davem@davemloft.net>
+        id S1729758AbgI2NPT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 09:15:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53556 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728441AbgI2NPT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 09:15:19 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B44BEC061755
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 06:15:17 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id 77so5488667lfj.0
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 06:15:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6aot3ORIQWKklkoQf+YaVDp4V9gsCzqvPIkopUs4mX0=;
+        b=dUmsJ0i7XR3z9EytyoaRkBCnYTTZbQbn8UUL/mjbFCipsoKs5VLk8XwRwEJqDieOFZ
+         2br9h21lt13EzHT2uov8YVPfwLuuuxx7gqpJm0YW87YyL/ui7yt0/4D7ptgB/CsR9yMF
+         shPgFfZJVWeaj5Y/Z/m9XKA2VPb5dCHIvsEOrCgD3WFxToHDdARq0StzAawOARdWrLig
+         rmLdvFUxwblNPZBkHvB/IbW2noxBL5RAeCZohzJDv46bWLM0lXYoWYNfhzyRYbjnTKaN
+         thkQ3rIYCeX9ruobWXasBbv9BBU58Irx5ShuFF778rFrCVATtMHHcZSKFh2lkNCuQaGT
+         wfVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6aot3ORIQWKklkoQf+YaVDp4V9gsCzqvPIkopUs4mX0=;
+        b=QENQwlcKn5M9FJBXJ63fqBM68tdrfQg4u6AonYS91V+aZoge7Dg+AtBKHgJOeZVQBY
+         ff1desGtdQNkGEoJxGHfAqUes1eUukGtsFhBlj5aF4axjEu62yQy96vfG0TxmZbpUW69
+         l5ilBdTjnSvqeGf2AZ6lc2ZTXPjO8NlpU67kvYjL2Ts88gUz3RXy3MGdhJ7hECz8UuHO
+         vS9a6R7iYkEde7rur1ipra4HCDq6bNpBB/FrCYKZI/3njNx3Ee3LuVW7Zwaq2X2r7cYl
+         xg0qq6VPcsLUunQS9pVnqWJi/+S1lmzwlKEyaQ38w6U5zmu+AZO07t2mWHCYpkUFalyi
+         +dOQ==
+X-Gm-Message-State: AOAM530bu1gm1x6YyJVQE+iuPlRG34ycLfOluoS9V3JN0T7vyCHCalPp
+        PWWFP/TdPAmTRDBWG/3uCWKMyMH8qropfPNXKH8iYg==
+X-Google-Smtp-Source: ABdhPJwc4/l/kg2LjGeD3Jd6MrQBZoVZ0JSIzvE4o2yVcYJFeRaz7+ouc9dM4cVpuLUXXCyFxzmEMnkMbT/8IQImEe0=
+X-Received: by 2002:a05:6512:370b:: with SMTP id z11mr1115395lfr.571.1601385316111;
+ Tue, 29 Sep 2020 06:15:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200925.171554.1696394343282908508.davem@davemloft.net>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20200919021832.191137-1-miaoqinglang@huawei.com>
+In-Reply-To: <20200919021832.191137-1-miaoqinglang@huawei.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 29 Sep 2020 15:15:04 +0200
+Message-ID: <CACRpkdaTRmQat9jejsqgA1PmtOKvndzmAb3qOk5ZknZKoWbidQ@mail.gmail.com>
+Subject: Re: [PATCH -next v2] mfd: ab3100-otp: Convert to DEFINE_SHOW_ATTRIBUTE
+To:     Qinglang Miao <miaoqinglang@huawei.com>
+Cc:     Lee Jones <lee.jones@linaro.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 05:15:54PM -0700, David Miller wrote:
-> From: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-> Date: Fri, 25 Sep 2020 12:03:23 -0500
-> 
-> > There is a null-check for _pcs_, but it is being dereferenced
-> > prior to this null-check. So, if _pcs_ can actually be null,
-> > then there is a potential null pointer dereference that should
-> > be fixed by null-checking _pcs_ before being dereferenced.
-> > 
-> > Addresses-Coverity-ID: 1497159 ("Dereference before null check")
-> > Fixes: 94ae899b2096 ("dpaa2-mac: add PCS support through the Lynx module")
-> > Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> 
-> Applied, thanks.
+On Sat, Sep 19, 2020 at 4:18 AM Qinglang Miao <miaoqinglang@huawei.com> wrote:
 
-Thanks, Dave.
---
-Gustavo
+> Use DEFINE_SHOW_ATTRIBUTE macro to simplify the code.
+>
+> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+
+Yours,
+Linus Walleij
