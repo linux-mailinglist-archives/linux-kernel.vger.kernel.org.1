@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98F8527C767
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:54:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE9E727C6A2
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:47:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731442AbgI2Lxf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:53:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47380 "EHLO mail.kernel.org"
+        id S1731055AbgI2LrB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:47:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46606 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730754AbgI2Lq7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:46:59 -0400
+        id S1730795AbgI2LqL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:46:11 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 085EF206E5;
-        Tue, 29 Sep 2020 11:46:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 095C1206E5;
+        Tue, 29 Sep 2020 11:46:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601380011;
-        bh=di3yULSM4+hdbZ5tqj+v7wIYucgeKwIWjwz7F8NA8nc=;
+        s=default; t=1601379971;
+        bh=qSBxa+hR0DswKEbGWHDjnrrfzx2tHi92FAoUi0YWZ6E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FPm4n5+wRn/tt6aAn5uGxQxMNOBZ6bRj0UJy/8D2KPr2rbpDuVZhhE/FdvKaRqVHA
-         QExrWsTvMHMQRgpEnbZEis/25oUXvMVQ/giY9bNHa11LiaqC3wwpWsDmt3c34QK10f
-         Ge+EoFCmahhZr6tIWO/hNp9mctX/v14kKv2abj2E=
+        b=cnQ/eTM0QkP7Qa83ul6G5i/PX7ua1jVZprw+VUBX9FqSihlCfrR0Gu61NwcDPWLil
+         XXJc/x/OJrj9cxvjQVolW7FNVWuyGmSd5l9r1/ffp5d10Unsri+7wDOGiV0lzttLgN
+         1sYNt8L5IajM429l39Z0Kd54Mcz/P74dHHHRVzr4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ilya Leoshkevich <iii@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
+        stable@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
+        Sven Schnelle <svens@linux.ibm.com>,
         Vasily Gorbik <gor@linux.ibm.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 09/99] s390/init: add missing __init annotations
-Date:   Tue, 29 Sep 2020 13:00:52 +0200
-Message-Id: <20200929105930.174562772@linuxfoundation.org>
+Subject: [PATCH 5.8 10/99] lockdep: fix order in trace_hardirqs_off_caller()
+Date:   Tue, 29 Sep 2020 13:00:53 +0200
+Message-Id: <20200929105930.227242587@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200929105929.719230296@linuxfoundation.org>
 References: <20200929105929.719230296@linuxfoundation.org>
@@ -44,53 +44,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ilya Leoshkevich <iii@linux.ibm.com>
+From: Sven Schnelle <svens@linux.ibm.com>
 
-[ Upstream commit fcb2b70cdb194157678fb1a75f9ff499aeba3d2a ]
+[ Upstream commit 73ac74c7d489756d2313219a108809921dbfaea1 ]
 
-Add __init to reserve_memory_end, reserve_oldmem and remove_oldmem.
-Sometimes these functions are not inlined, and then the build
-complains about section mismatch.
+Switch order so that locking state is consistent even
+if the IRQ tracer calls into lockdep again.
 
-Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
-Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+Acked-by: Peter Zijlstra <peterz@infradead.org>
+Signed-off-by: Sven Schnelle <svens@linux.ibm.com>
 Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/s390/kernel/setup.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ kernel/trace/trace_preemptirq.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/s390/kernel/setup.c b/arch/s390/kernel/setup.c
-index 07aa15ba43b3e..faf30f37c6361 100644
---- a/arch/s390/kernel/setup.c
-+++ b/arch/s390/kernel/setup.c
-@@ -619,7 +619,7 @@ static struct notifier_block kdump_mem_nb = {
- /*
-  * Make sure that the area behind memory_end is protected
-  */
--static void reserve_memory_end(void)
-+static void __init reserve_memory_end(void)
+diff --git a/kernel/trace/trace_preemptirq.c b/kernel/trace/trace_preemptirq.c
+index f10073e626030..f4938040c2286 100644
+--- a/kernel/trace/trace_preemptirq.c
++++ b/kernel/trace/trace_preemptirq.c
+@@ -102,14 +102,14 @@ NOKPROBE_SYMBOL(trace_hardirqs_on_caller);
+ 
+ __visible void trace_hardirqs_off_caller(unsigned long caller_addr)
  {
- 	if (memory_end_set)
- 		memblock_reserve(memory_end, ULONG_MAX);
-@@ -628,7 +628,7 @@ static void reserve_memory_end(void)
- /*
-  * Make sure that oldmem, where the dump is stored, is protected
-  */
--static void reserve_oldmem(void)
-+static void __init reserve_oldmem(void)
- {
- #ifdef CONFIG_CRASH_DUMP
- 	if (OLDMEM_BASE)
-@@ -640,7 +640,7 @@ static void reserve_oldmem(void)
- /*
-  * Make sure that oldmem, where the dump is stored, is protected
-  */
--static void remove_oldmem(void)
-+static void __init remove_oldmem(void)
- {
- #ifdef CONFIG_CRASH_DUMP
- 	if (OLDMEM_BASE)
++	lockdep_hardirqs_off(CALLER_ADDR0);
++
+ 	if (!this_cpu_read(tracing_irq_cpu)) {
+ 		this_cpu_write(tracing_irq_cpu, 1);
+ 		tracer_hardirqs_off(CALLER_ADDR0, caller_addr);
+ 		if (!in_nmi())
+ 			trace_irq_disable_rcuidle(CALLER_ADDR0, caller_addr);
+ 	}
+-
+-	lockdep_hardirqs_off(CALLER_ADDR0);
+ }
+ EXPORT_SYMBOL(trace_hardirqs_off_caller);
+ NOKPROBE_SYMBOL(trace_hardirqs_off_caller);
 -- 
 2.25.1
 
