@@ -2,79 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BAB727D693
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 21:13:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7FF127D695
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 21:15:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728733AbgI2TNm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 15:13:42 -0400
-Received: from mail-oo1-f66.google.com ([209.85.161.66]:35265 "EHLO
-        mail-oo1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728166AbgI2TNm (ORCPT
+        id S1728572AbgI2TP0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 15:15:26 -0400
+Received: from mail-oi1-f193.google.com ([209.85.167.193]:37695 "EHLO
+        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728166AbgI2TPZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 15:13:42 -0400
-Received: by mail-oo1-f66.google.com with SMTP id k13so1566817oor.2;
-        Tue, 29 Sep 2020 12:13:40 -0700 (PDT)
+        Tue, 29 Sep 2020 15:15:25 -0400
+Received: by mail-oi1-f193.google.com with SMTP id a3so6727310oib.4;
+        Tue, 29 Sep 2020 12:15:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=3apJKDWcvWz74zAbbD3N/FA15x9Q19lWsHwIKOQmjrM=;
-        b=FYaObX4g1RQPSZHn/XtFWiLc4dZNgRRSVOCP8+d9KNBcitNfHTQb8VY2BLjnwl1D97
-         rsWjNBoMdy8raK7reS4D2LfCMFMcV6tJ1cMn3BqD5xjnAH/qkAFjZLwarJQvINyDv8pb
-         MnjJvgfgA3qctyfFUevIIs8CucyGwicsXFv8LEN9GQFvupPIwhxEtQk7MOXH7cf8+lM+
-         xd85dFSwq7jodUkwXYQBb/I4u7/lovZiPaExDSxzv/M+etUVZB3Xj/QaAgqKoQN77MHE
-         lJxJHz4OdH2Bqqo2c5mgeBKya38XrS/7jJrSGkHuk99OVLcT9Zop36I/S7CYSD3Kluqq
-         e2xg==
-X-Gm-Message-State: AOAM530ozh7KrXHPvd2t2rN/5RQerEYC1AbrHNQgYFqLRdJqHQt/pTJe
-        3/ILS/rGypNH/2XizxzQBrHGeHq4hze0th8=
-X-Google-Smtp-Source: ABdhPJyE7Q4zF24KtPjpoKMGqaGZg0/XYC6UygVr0CttuA24Hlv5xYif6jjMM0Xw0ZrdNlSIdF1DUg==
-X-Received: by 2002:a4a:dc06:: with SMTP id p6mr5794364oov.10.1601406819987;
-        Tue, 29 Sep 2020 12:13:39 -0700 (PDT)
+        bh=346hJnOPmUdYTO1XGKfGPvftZz7Be1FErSbqV+wAnOk=;
+        b=W7FkNwIwVUb8/iowPEpW0Xia/RyJ5z35vTQY5W3Uw9Y2uZSNiDTRVeLEjd4rhQwfeQ
+         xxsNfUbLh94WDGNhoPdD3orqOe/PYM9PBg5LDWOhfCb1VqQ2MIyIfN3jDG25uqaiBkyU
+         8MyvyoGqdF2RLQyO2iySQZiAI8Vxs8P1NHca79bZZB125s8q30BQ2Kv3/n3i7ErxUTrw
+         9CTTfH/tOpSKLSEnczMrwBrPx5VeA20lAEXlSlnU2I6DheN+YfIcrchLoMsggofQafJt
+         lp30d175cA4/acJjK+rkiu2VgaUZxYs7JqLvK/LM5Nsmz15JKVT+tIwexaPYja4jG0ml
+         A0WA==
+X-Gm-Message-State: AOAM5315jqrhfjC2xpuVSWJBkrU7Vr6dUg0OLeGUJ6UqcyFNlalaGi+w
+        zYSfslPvxSdh+WlHQinGM30n+Fu0w73DooM=
+X-Google-Smtp-Source: ABdhPJyzfPf1XlU5BSygr2mx1dhBOPdRzVzEw9KhoGbdxHoU0skc1N7p1l3aYdyfh+ybxz4G4Cb3tQ==
+X-Received: by 2002:aca:4fd5:: with SMTP id d204mr3649900oib.58.1601406925027;
+        Tue, 29 Sep 2020 12:15:25 -0700 (PDT)
 Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id c124sm1203355oib.22.2020.09.29.12.13.38
+        by smtp.gmail.com with ESMTPSA id x21sm1188927oie.49.2020.09.29.12.15.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Sep 2020 12:13:39 -0700 (PDT)
-Received: (nullmailer pid 989018 invoked by uid 1000);
-        Tue, 29 Sep 2020 19:13:38 -0000
-Date:   Tue, 29 Sep 2020 14:13:38 -0500
+        Tue, 29 Sep 2020 12:15:24 -0700 (PDT)
+Received: (nullmailer pid 991934 invoked by uid 1000);
+        Tue, 29 Sep 2020 19:15:23 -0000
+Date:   Tue, 29 Sep 2020 14:15:23 -0500
 From:   Rob Herring <robh@kernel.org>
 To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     devicetree@vger.kernel.org, NXP Linux Team <linux-imx@nxp.com>,
-        Stefan Agner <stefan@agner.ch>,
-        Anson Huang <Anson.Huang@nxp.com>,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
         Sascha Hauer <s.hauer@pengutronix.de>,
-        linux-arm-kernel@lists.infradead.org,
         Fabio Estevam <festevam@gmail.com>,
-        Shawn Guo <shawnguo@kernel.org>,
         Pengutronix Kernel Team <kernel@pengutronix.de>,
-        linux-watchdog@vger.kernel.org
-Subject: Re: [PATCH 1/3] dt-bindings: watchdog: fsl-imx: document i.MX
- compatibles
-Message-ID: <20200929191338.GA988964@bogus>
-References: <20200926162302.32525-1-krzk@kernel.org>
+        Rob Herring <robh+dt@kernel.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Stefan Riedmueller <s.riedmueller@phytec.de>,
+        Robert Jones <rjones@gateworks.com>
+Subject: Re: [PATCH 01/14] dt-bindings: vendor-prefixes: add DFI
+Message-ID: <20200929191523.GA991853@bogus>
+References: <20200926162811.5335-1-krzk@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200926162302.32525-1-krzk@kernel.org>
+In-Reply-To: <20200926162811.5335-1-krzk@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 26 Sep 2020 18:23:00 +0200, Krzysztof Kozlowski wrote:
-> Document all ARMv5, ARMv6 and ARMv7 i.MX compatibles used in DTSes (even
-> though driver binds only to fsl,imx21-wdt) to fix dtbs_check warnings
-> like:
-> 
->   arch/arm/boot/dts/imx53-qsb.dt.yaml: gpio@53fe0000: compatible:
->     ['fsl,imx53-gpio', 'fsl,imx35-gpio'] is not valid under any of the given schemas
+On Sat, 26 Sep 2020 18:27:58 +0200, Krzysztof Kozlowski wrote:
+> Document binding for DFI Inc. company (https://www.dfi.com).
 > 
 > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 > ---
->  .../devicetree/bindings/watchdog/fsl-imx-wdt.yaml  | 14 ++++++++++++++
->  1 file changed, 14 insertions(+)
+>  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Applied, thanks!
