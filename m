@@ -2,143 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34BDF27BB28
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 04:50:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AC1F27BB2B
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 04:50:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727345AbgI2CuQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 22:50:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41594 "EHLO
+        id S1727383AbgI2Cuw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 22:50:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726924AbgI2CuQ (ORCPT
+        with ESMTP id S1726924AbgI2Cuv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 22:50:16 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4994C061755;
-        Mon, 28 Sep 2020 19:50:15 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id b12so4637387edz.11;
-        Mon, 28 Sep 2020 19:50:15 -0700 (PDT)
+        Mon, 28 Sep 2020 22:50:51 -0400
+Received: from mail-ua1-x944.google.com (mail-ua1-x944.google.com [IPv6:2607:f8b0:4864:20::944])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C581C061755
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 19:50:51 -0700 (PDT)
+Received: by mail-ua1-x944.google.com with SMTP id d18so2919824uav.4
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 19:50:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=UGDoo9i782f7BLI1IbefwVwd+1evnRY0tllTExyS5ik=;
-        b=JGeEYfKZ2djPZ8sEXlFNS6V/JBsKWpyP0RZgbQ8mLgz5ccqv8MwrvmGLLr9+qUc0QO
-         roGHR3I8TQoOmeVDmqA1SW3MZbiDGwggG37ARlgj+bc1Yp6ye4KAMzWTe3rJ42xb+tlt
-         wnKcomwxZJb0sG+FNBCoRJLxLT0ig0fOvJgqPJjD4N/vKAJgh027P5kZHCJS7X+m4oWt
-         a4PoprMsE1A5hakCVxEL2YU2IOQtZDHCsIuttMVhOZcjBA+9YnyE6vYJqMAKr2Z3OYgf
-         ea0gQOqz4DUvlgKCFZvEByYx3MTa2FcqF6Gem314g6V3STzDEfN82Rv6UcD/8z6gaxLk
-         LxUw==
+         :cc;
+        bh=9GAx9Hq+6Fd4bQwloLgfvRlKb4EZ2XSFfzzTZelLVOg=;
+        b=XGMpnQZ0Z8QdS1DSFWNLhlhz1hHsTJbzGZnnAf2lMIp8bD1BwTVwxkL4kQtCH9W4rt
+         XSmDhTptjQcg3tPs6EiP5Sz0xlUzDHRdvj/gGkdVNO5wFOmif2ji72sIDCxfcS1O8V3O
+         jM+Zp+Bk8R5brBRSuSuFdWDZWD3slhpiIIUzkrek1IKSd3EiwW7inuLNbAfFwKzRRRwO
+         oYLUyv96YseczUFA48+rSFMTYjVhig7h0yBTc+yHPP9IpjGHkQDop7e8cEXZ8Ra1fLaG
+         txuZck9nGQ3rzk01QLBfJc7bCefclzdyMomYNlfagywutaBQa2laMskGv7mQRgsX2bmc
+         9VhA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=UGDoo9i782f7BLI1IbefwVwd+1evnRY0tllTExyS5ik=;
-        b=Yz7u/ncYnkw8BqqoLmf7BwrKsL6R8an3MhXYF3qCZTJ8bIyKuMPm4+cnEp43TJNpeB
-         0d80o+vTWz+ikO7lM5+02E6WAnU2xarwTVQiHUG2rXGtm+RttaVD/r9k9t3IYQqDV4vq
-         1dnagkgVH2sc0MhB32zY5IhU5sSbyVmcj4Ce6xq3ZiGofFIh+MfV9nV+CYoU+RPfTVv5
-         X5GXz7OQqgRTb5yQHtK8jaQ2pqVgeFYcDgd5FFeAsJyuTcMAq95f9P8F3o/g59kaCm1P
-         OM+tUmaI+Pe625m9E6bJ0zkNdI8T62hlOBM/zh6fyow5+xJ4TAIvK2L1QUNOsYrJbiZ2
-         +8Hw==
-X-Gm-Message-State: AOAM533TPuijWEpvjXL6dUClHVFIyOy5m3SFZVwnEsOIInSkncMUGVri
-        tKdD7EtqpfxMg+DN7bBU6TngjP6PdcKpINAUPw7ymuQCFMc=
-X-Google-Smtp-Source: ABdhPJwmELR4adEkt+fubAV5EF+nU/JIdmsQ6xRev3QOUYi4G9voqJcDb9JzEtpCB/Ho6hC5iFHfcfxYru21zWLB+84=
-X-Received: by 2002:a05:6402:304f:: with SMTP id bu15mr993627edb.201.1601347814366;
- Mon, 28 Sep 2020 19:50:14 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=9GAx9Hq+6Fd4bQwloLgfvRlKb4EZ2XSFfzzTZelLVOg=;
+        b=N4tTda/8n1hl/uywq19D7X5nfVOp+n+tWcOAPnuGAOMqjjjr32bsVbiTAFEQjD01wp
+         rbkE/Z5Q7MTwiFGnOuVcXks/uLqYWwerxBI0ESr/D+oxRP3B197/iADE58jpTm2MSlBp
+         q9B1gFtW3zUFeMT56IZd6RWw1fj4dBdIk+xI/KSHwFy+7vKZ+32afapZ6wUXsKkn5DJK
+         k7jKLZRJjzq6t1X3PPu2mfGr3vU2UmTsmMRRYEWko1V/iFUsHGD712fQASI7jEN2J1b3
+         R2KaETc0nQptoH0Z/sKRnqtk51Zru8OOj40bdwlusOHXNgeRSZ1s9eTt+ZdUanEycqpr
+         GrJA==
+X-Gm-Message-State: AOAM5301QmTVZDOYQMMe6zfaU2OKBcBUpfYDQt5kDDkmI70FEHouaHAl
+        dxeVbF1qBRktFyWy7NQlqZGPzwIjwE4SS3QQoHM3wg==
+X-Google-Smtp-Source: ABdhPJykPD/wVu/GuqVLoAl0CUFyZ7Ig8IoI86G9PLllJY5ozDYdyZ0XkHUtE//4LZNoNAjteIoKJ2UvMV/tMEXoelM=
+X-Received: by 2002:ab0:26d0:: with SMTP id b16mr2589802uap.1.1601347850564;
+ Mon, 28 Sep 2020 19:50:50 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200927032829.11321-1-haifeng.zhao@intel.com>
- <20200927032829.11321-3-haifeng.zhao@intel.com> <f2c9e3db-2027-f669-fcdd-fbc80888b934@kernel.org>
- <MWHPR11MB1696BA6B8473248A8638FD3797350@MWHPR11MB1696.namprd11.prod.outlook.com>
- <14b7d988-212b-93dc-6fa6-6b155d5c8ac3@kernel.org> <16431a60-027e-eca9-36f4-74d348e88090@kernel.org>
-In-Reply-To: <16431a60-027e-eca9-36f4-74d348e88090@kernel.org>
-From:   Ethan Zhao <xerces.zhao@gmail.com>
-Date:   Tue, 29 Sep 2020 10:50:03 +0800
-Message-ID: <CAKF3qh2NLyLG4dV5n4ttW9hbsf0C1M58aYUo7xtHX86zfJxr-Q@mail.gmail.com>
-Subject: Re: [PATCH 2/5 V2] PCI: pciehp: check and wait port status out of DPC
- before handling DLLSC and PDC
-To:     Sinan Kaya <okaya@kernel.org>
-Cc:     "Zhao, Haifeng" <haifeng.zhao@intel.com>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "oohall@gmail.com" <oohall@gmail.com>,
-        "ruscur@russell.cc" <ruscur@russell.cc>,
-        "lukas@wunner.de" <lukas@wunner.de>,
-        "andriy.shevchenko@linux.intel.com" 
-        <andriy.shevchenko@linux.intel.com>,
-        "stuart.w.hayes@gmail.com" <stuart.w.hayes@gmail.com>,
-        "mr.nuke.me@gmail.com" <mr.nuke.me@gmail.com>,
-        "mika.westerberg@linux.intel.com" <mika.westerberg@linux.intel.com>,
-        Keith Busch <keith.busch@intel.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Jia, Pei P" <pei.p.jia@intel.com>,
-        "ashok.raj@linux.intel.com" <ashok.raj@linux.intel.com>,
-        "Kuppuswamy, Sathyanarayanan" <sathyanarayanan.kuppuswamy@intel.com>
+References: <20200921195555.1050731-1-badhri@google.com> <20200921195555.1050731-5-badhri@google.com>
+ <20200922160411.GB2759479@bogus>
+In-Reply-To: <20200922160411.GB2759479@bogus>
+From:   Badhri Jagan Sridharan <badhri@google.com>
+Date:   Mon, 28 Sep 2020 19:50:13 -0700
+Message-ID: <CAPTae5+Pe1m=TUhmPJY91eJbP+B6UroqBo3u7m0AC8YS1WPu9g@mail.gmail.com>
+Subject: Re: [PATCH v8 05/11] dt-bindings: connector: Add property to set
+ initial current cap for FRS
+To:     Rob Herring <robh@kernel.org>
+Cc:     Amelie Delaunay <amelie.delaunay@st.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Thierry Reding <treding@nvidia.com>,
+        Prashant Malani <pmalani@chromium.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        USB <linux-usb@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 12:44 AM Sinan Kaya <okaya@kernel.org> wrote:
+On Tue, Sep 22, 2020 at 9:04 AM Rob Herring <robh@kernel.org> wrote:
 >
-> On 9/28/2020 7:10 AM, Sinan Kaya wrote:
-> > On 9/27/2020 10:01 PM, Zhao, Haifeng wrote:
-> >> Sinan,
-> >>    I explained the reason why locks don't protect this case in the pat=
-ch description part.
-> >> Write side and read side hold different semaphore and mutex.
-> >>
-> > I have been thinking about it some time but is there any reason why we
-> > have to handle all port AER/DPC/HP events in different threads?
+> On Mon, Sep 21, 2020 at 12:55:49PM -0700, Badhri Jagan Sridharan wrote:
+> > This change adds frs-typec-current which allows setting the initial current
+> > capability of the new source when vSafe5V is applied during PD3.0
+> > sink Fast Role Swap.
 > >
-> > Can we go to single threaded event loop for all port drivers events?
+> > Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
+> > ---
+> > Changes since v1:
+> > - Changing patch version to v6 to fix version number confusion.
 > >
-> > This will require some refactoring but it wlll eliminate the lock
-> > nightmares we are having.
+> > Changes since v6:
+> > - Removed the redundant usb-connector.txt that I created by mistake.
+> > - Moved to yaml.
 > >
-> > This means no sleeping. All sleeps need to happen outside of the loop.
+> > Changes since v7:
+> > - Rebase
+> > ---
+> >  .../devicetree/bindings/connector/usb-connector.yaml   |  8 ++++++++
+> >  include/dt-bindings/usb/pd.h                           | 10 ++++++++++
+> >  2 files changed, 18 insertions(+)
 > >
-> > I wanted to see what you all are thinking about this.
+> > diff --git a/Documentation/devicetree/bindings/connector/usb-connector.yaml b/Documentation/devicetree/bindings/connector/usb-connector.yaml
+> > index 9bd52e63c935..1ca8e6a337e5 100644
+> > --- a/Documentation/devicetree/bindings/connector/usb-connector.yaml
+> > +++ b/Documentation/devicetree/bindings/connector/usb-connector.yaml
+> > @@ -142,6 +142,14 @@ properties:
+> >      required:
+> >        - port@0
 > >
-> > It might become a performance problem if the system is
-> > continuously observing a hotplug/aer/dpc events.
-> >
-> > I always think that these should be rare events.
+> > +  frs-typec-current:
+> > +    description: Initial current capability of the new source when vSafe5V
+> > +      is applied during PD3.0 Fast Role Swap. "Table 6-14 Fixed Supply PDO - Sink"
+> > +      of "USB Power Delivery Specification Revision 3.0, Version 1.2" provides the
+> > +      different power levels and "6.4.1.3.1.6 Fast Role Swap USB Type-C Current"
+> > +      provides a detailed description of the field.
+> > +    $ref: /schemas/types.yaml#/definitions/uint32
 >
-> If restructuring would be too costly, the preferred solution should be
-> to fix the locks in hotplug driver rather than throwing there a random
-> wait call.
+> Looks the same/similar to this[1]. Please come up with a common
+> approach to cover both.
+>
+> Rob
+>
+> https://lore.kernel.org/linux-arm-kernel/20200902075707.9052-2-amelie.delaunay@st.com/
 
-  My first though is to unify the pci_bus_sem & pci_rescan_remove_lock
-to one sleepable lock, but verifying every
-locking scenario to sort out dead lock warning, it is horrible job. I
-gave up and then played the device status waiting trick
-to workaround it.
+Hi Rob,
 
-    index 03d37128a24f..477d4c499f87 100644
---- a/drivers/pci/probe.c
-+++ b/drivers/pci/probe.c
-@@ -3223,17 +3223,19 @@ EXPORT_SYMBOL_GPL(pci_rescan_bus);
-  * pci_rescan_bus(), pci_rescan_bus_bridge_resize() and PCI device removal
-  * routines should always be executed under this mutex.
-  */
--static DEFINE_MUTEX(pci_rescan_remove_lock);
-+/* static DEFINE_MUTEX(pci_rescan_remove_lock); */
+The values will not be an exact overlap as it's a different
+functionality. [1] introduces a property
+for defining the power operation mode for the type-c connector.
+However [2] introduces a property
+to define the new-source's current capability during Fast role swap operation.
+However, I modified [2] to use string based enums to follow the
+pattern in [1] in v9 version of the
+patch which I just sent out.
 
- void pci_lock_rescan_remove(void)
- {
-- mutex_lock(&pci_rescan_remove_lock);
-+ /*mutex_lock(&pci_rescan_remove_lock); */
-+ down_write(&pci_bus_sem);
- }
- EXPORT_SYMBOL_GPL(pci_lock_rescan_remove);
+1. https://lore.kernel.org/linux-arm-kernel/20200902075707.9052-2-amelie.delaunay@st.com/
+2. https://lore.kernel.org/patchwork/patch/1309792/
 
- void pci_unlock_rescan_remove(void)
- {
-- mutex_unlock(&pci_rescan_remove_lock);
-+ /*mutex_unlock(&pci_rescan_remove_lock); */
-+ up_write(&pci_bus_sem);
- }
- EXPORT_SYMBOL_GPL(pci_unlock_rescan_remove);
-
-Thanks=EF=BC=8C
-Ethan
+Thanks,
+Badhri
