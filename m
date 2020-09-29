@@ -2,166 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A180E27C22B
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 12:15:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1D4E27C23F
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 12:21:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728097AbgI2KPi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 06:15:38 -0400
-Received: from mx2.suse.de ([195.135.220.15]:56814 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725774AbgI2KPh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 06:15:37 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id B78E0AD12;
-        Tue, 29 Sep 2020 10:15:34 +0000 (UTC)
-Subject: Re: [RFC-PATCH 2/4] mm: Add __rcu_alloc_page_lockless() func.
-To:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
-        Mel Gorman <mgorman@techsingularity.net>
-References: <20200918194817.48921-1-urezki@gmail.com>
- <20200918194817.48921-3-urezki@gmail.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <38f42ca1-ffcd-04a6-bf11-618deffa897a@suse.cz>
-Date:   Tue, 29 Sep 2020 12:15:34 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1728112AbgI2KU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 06:20:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54354 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725372AbgI2KU4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 06:20:56 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CF9AC061755;
+        Tue, 29 Sep 2020 03:20:56 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id t17so1562481wmi.4;
+        Tue, 29 Sep 2020 03:20:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=CR6oJAxdsZ0oQebADeL2mKnv0XXeEsb5hXWXU1I+cgw=;
+        b=mn6kU3lt9VBVcizDnEHeYfWz04AWaxbWe7IgBpFC5khbGDUWnR77i2BzrM2bSsTuNV
+         QGaq7cv2Y/ATCCMGrQlEFIt6QgY/QRfx1QoE7EmUZKWwWPfezvMo0mcI17ccQ8zsNVZN
+         zHBpbSadXr3DVAq6/SfhIJjZ776YKoFsdrKVjdLwKyk7AWmHrWdkGDxhUGoZge5awe4j
+         ZoDxTTYoZbqQOndwpUF0ShavbBw9FqmcJKhFo55ueoG3lOSTEycJRTwa2d/WaTC+zd7j
+         fbUvDzMswThRCU5VekkczyNN8PitF91d9f7cvYGotvS6DNFI6ciUxuoprgrx8Qp9JJMI
+         pJog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=CR6oJAxdsZ0oQebADeL2mKnv0XXeEsb5hXWXU1I+cgw=;
+        b=AYh3hLi7a7CAREo1vRGWJzl8uw7sCDCplCcCTZzsrd5rHJr2wbpvrP4owmAN/6PO8t
+         heDGHIhZWksFPonfWTyQUfZTi5n45DayoEjZWH4+OfFM6lXI+i3UVRC0ZdJ8kTZtY3Ku
+         QO7m5qpaabvN2er1sZ2yQKQR8u6oOCCZFKFUSj6u4rnFs82qQ81/Qyn5rhTGTWAt4ZWP
+         PdqFaOVMRCsDcve1VE7Pyi25I+3/kjjtyj9fYZrTchvlK0U4QnfrloG16IdAj00MvvEa
+         Yg4x6WFfk7wvjGRQ//7xHhQOFFNIs5sA/Ri5CRpkhSdR315uTWgLvkUmfj5yI81y83wE
+         jWRg==
+X-Gm-Message-State: AOAM53148dE0jJFlc3M06uHng3YtoC4gVplYaLhyTeRdPilNxrD7/eUd
+        KJ1magorwav0578AA7K47OY=
+X-Google-Smtp-Source: ABdhPJwwY4sIO2vQb7TXofoJGF17wZ6C0qDCqQexK77avk49EQ45Sus98hVitI4tOzOVFslntIJiaA==
+X-Received: by 2002:a1c:ed01:: with SMTP id l1mr4029413wmh.152.1601374854538;
+        Tue, 29 Sep 2020 03:20:54 -0700 (PDT)
+Received: from localhost.localdomain (cpc83661-brig20-2-0-cust443.3-3.cable.virginm.net. [82.28.105.188])
+        by smtp.gmail.com with ESMTPSA id t4sm5498954wrr.26.2020.09.29.03.20.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Sep 2020 03:20:53 -0700 (PDT)
+From:   Alex Dewar <alex.dewar90@gmail.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Alex Dewar <alex.dewar90@gmail.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Roi Dayan <roid@mellanox.com>, Oz Shlomo <ozsh@mellanox.com>,
+        Paul Blakey <paulb@mellanox.com>,
+        Eli Britstein <elibr@mellanox.com>,
+        Ariel Levkovich <lariel@nvidia.com>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] net/mlx5e: Fix use of freed pointer
+Date:   Tue, 29 Sep 2020 11:15:49 +0100
+Message-Id: <20200929101554.8963-1-alex.dewar90@gmail.com>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200928074301.GC3094@unreal>
+References: <20200928074301.GC3094@unreal>
 MIME-Version: 1.0
-In-Reply-To: <20200918194817.48921-3-urezki@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/18/20 9:48 PM, Uladzislau Rezki (Sony) wrote:
-> Some background and kfree_rcu()
-> ===============================
-> The pointers to be freed are stored in the per-cpu array to improve
-> performance, to enable an easier-to-use API, to accommodate vmalloc
-> memmory and to support a single argument of the kfree_rcu() when only
-> a pointer is passed. More details are below.
-> 
-> In order to maintain such per-CPU arrays there is a need in dynamic
-> allocation when a current array is fully populated and a new block is
-> required. See below the example:
-> 
->  0 1 2 3      0 1 2 3
-> |p|p|p|p| -> |p|p|p|p| -> NULL
-> 
-> there are two pointer-blocks, each one can store 4 addresses
-> which will be freed after a grace period is passed. In reality
-> we store PAGE_SIZE / sizeof(void *). So to maintain such blocks
-> a single page is obtain via the page allocator:
-> 
->     bnode = (struct kvfree_rcu_bulk_data *)
->         __get_free_page(GFP_NOWAIT | __GFP_NOWARN);
-> 
-> after that it is attached to the "head" and its "next" pointer is
-> set to previous "head", so the list of blocks can be maintained and
-> grow dynamically until it gets drained by the reclaiming thread.
-> 
-> Please note. There is always a fallback if an allocation fails. In the
-> single argument, this is a call to synchronize_rcu() and for the two
-> arguments case this is to use rcu_head structure embedded in the object
-> being free, and then paying cache-miss penalty, also invoke the kfree()
-> per object instead of kfree_bulk() for groups of objects.
-> 
-> Why we maintain arrays/blocks instead of linking objects by the regular
-> "struct rcu_head" technique. See below a few but main reasons:
-> 
-> a) A memory can be reclaimed by invoking of the kfree_bulk()
->    interface that requires passing an array and number of
->    entries in it. That reduces the per-object overhead caused
->    by calling kfree() per-object. This reduces the reclamation
->    time.
-> 
-> b) Improves locality and reduces the number of cache-misses, due to
->    "pointer chasing" between objects, which can be far spread between
->    each other.
-> 
-> c) Support a "single argument" in the kvfree_rcu()
->    void *ptr = kvmalloc(some_bytes, GFP_KERNEL);
->    if (ptr)
->         kvfree_rcu(ptr);
-> 
->    We need it when an "rcu_head" is not embed into a stucture but an
->    object must be freed after a grace period. Therefore for the single
->    argument, such objects cannot be queued on a linked list.
-> 
->    So nowadays, since we do not have a single argument but we see the
->    demand in it, to workaround it people just do a simple not efficient
->    sequence:
->    <snip>
->        synchronize_rcu(); /* Can be long and blocks a current context */
->        kfree(p);
->    <snip>
-> 
->    More details is here: https://lkml.org/lkml/2020/4/28/1626
-> 
-> d) To distinguish vmalloc pointers between SLAB ones. It becomes possible
->    to invoke the right freeing API for the right kind of pointer, kfree_bulk()
->    or TBD: vmalloc_bulk().
-> 
-> e) Speeding up the post-grace-period freeing reduces the chance of a flood
->    of callback's OOMing the system.
-> 
-> Also, please have a look here: https://lkml.org/lkml/2020/7/30/1166
-> 
-> Proposal
-> ========
-> Introduce a lock-free function that obtain a page from the per-cpu-lists
-> on current CPU. It returns NULL rather than acquiring any non-raw spinlock.
-> 
-> Description
-> ===========
-> The page allocator has two phases, fast path and slow one. We are interested
-> in fast path and order-0 allocations. In its turn it is divided also into two
-> phases: lock-less and not:
-> 
-> 1) As a first step the page allocator tries to obtain a page from the
->    per-cpu-list, so each CPU has its own one. That is why this step is
->    lock-less and fast. Basically it disables irqs on current CPU in order
->    to access to per-cpu data and remove a first element from the pcp-list.
->    An element/page is returned to an user.
-> 
-> 2) If there is no any available page in per-cpu-list, the second step is
->    involved. It removes a specified number of elements from the buddy allocator
->    transferring them to the "supplied-list/per-cpu-list" described in [1].
-> 
-> Summarizing. The __rcu_alloc_page_lockless() covers only [1] and can not
-> do step [2], due to the fact that [2] requires an access to zone->lock.
-> It implies that it is super fast, but a higher rate of fails is also
-> expected.
-> 
-> Usage: __rcu_alloc_page_lockless();
-> 
-> Link: https://lore.kernel.org/lkml/20200814215206.GL3982@worktop.programming.kicks-ass.net/
-> Not-signed-off-by: Peter Zijlstra <peterz@infradead.org>
-> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+If the call to mlx5_fc_create() fails, then shared_counter will be freed
+before its member, shared_counter->counter, is accessed to retrieve the
+error code. Fix by using an intermediate variable.
 
-After reading all the threads and mulling over this, I am going to deflect from
-Mel and Michal and not oppose the idea of lockless allocation. I would even
-prefer to do it via the gfp flag and not a completely separate path. Not using
-the exact code from v1, I think it could be done in a way that we don't actually
-look at the new flag until we find that pcplist is empty - which should not
-introduce overhead to the fast-fast path when pcpclist is not empty. It's more
-maintainable that adding new entry points, IMHO.
+Addresses-Coverity: CID 1497153: Memory - illegal accesses (USE_AFTER_FREE)
+Fixes: 1edae2335adf ("net/mlx5e: CT: Use the same counter for both directions")
+Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
+---
+v2:
+	- Add Fixes tag (Leon)
+	- Use ERR_CAST (Leon)
 
-But there's still the condition that it's sufficiently shown that the allocation
-is useful for RCU. In that case I prefer that the page allocator (or MM in
-general) can give its users what they need without having to work around it.
-Seems like GFP_ATOMIC is insufficient today so if that means we need a new flag
-for the raw spinlock context, so be it. But if your usage of __GFP_NO_LOCKS
-depends on the result of preempt_count() or similar check whether this is a
-context that needs it, I'd prefer to keep this in the caller.
+Hi Leon,
+
+I've made the suggested changes. Let me know if there's anything else
+you need :)
+
+There is also this patch in the series which doesn't seem to have been
+reviewed yet: https://lore.kernel.org/lkml/20200927113254.362480-4-alex.dewar90@gmail.com/
+
+Best,
+Alex
+
+
+ drivers/net/ethernet/mellanox/mlx5/core/en/tc_ct.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/tc_ct.c b/drivers/net/ethernet/mellanox/mlx5/core/en/tc_ct.c
+index b5f8ed30047b..1e80e7669995 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en/tc_ct.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en/tc_ct.c
+@@ -738,6 +738,7 @@ mlx5_tc_ct_shared_counter_get(struct mlx5_tc_ct_priv *ct_priv,
+ 	struct mlx5_ct_shared_counter *shared_counter;
+ 	struct mlx5_core_dev *dev = ct_priv->dev;
+ 	struct mlx5_ct_entry *rev_entry;
++	struct mlx5_fc *counter;
+ 	__be16 tmp_port;
+ 
+ 	/* get the reversed tuple */
+@@ -775,12 +776,13 @@ mlx5_tc_ct_shared_counter_get(struct mlx5_tc_ct_priv *ct_priv,
+ 	if (!shared_counter)
+ 		return ERR_PTR(-ENOMEM);
+ 
+-	shared_counter->counter = mlx5_fc_create(dev, true);
+-	if (IS_ERR(shared_counter->counter)) {
++	counter = mlx5_fc_create(dev, true);
++	if (IS_ERR(counter)) {
+ 		ct_dbg("Failed to create counter for ct entry");
+ 		kfree(shared_counter);
+-		return ERR_PTR(PTR_ERR(shared_counter->counter));
++		return ERR_CAST(counter);
+ 	}
++	shared_counter->counter = counter;
+ 
+ 	refcount_set(&shared_counter->refcount, 1);
+ 	return shared_counter;
+-- 
+2.28.0
+
