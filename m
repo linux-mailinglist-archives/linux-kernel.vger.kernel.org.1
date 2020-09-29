@@ -2,105 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 374F127BADE
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 04:35:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCF9527BAE1
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 04:36:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727288AbgI2Cfa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 22:35:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39260 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725272AbgI2Cfa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 22:35:30 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 834E6C061755;
-        Mon, 28 Sep 2020 19:35:29 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id u21so12746637eja.2;
-        Mon, 28 Sep 2020 19:35:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fispIEpvKzQ4yK99Q5GZdxzrqvs5hFT355gL1BD8Ux8=;
-        b=jlGtjwrZx/9uMiv9ZibPYP2cdAQGnAgA0Qn2ynTyFmxLUeLsZ0iQbZGioWKVQPTnDO
-         iAO1vT2ozPJoSLm+2um+GmrvOWUr6GqO+jFuDeWlMNYdUdFH4rFAPNDkyCPgj05+tZYx
-         sTeauxfwsTmf8TNF3IDalgItv0rvdhD8Khg5pksHiCGqIBpmXW8VVIyNgL83sZ0jcCFH
-         IZLCwd8opRhQceH027gyW1kz17FPywXI4tnf1AF4wSNwuAG7nCrpoy3Wj6tU724RCPrD
-         wUwpKqU8arpZjZIAox7JPhAfs8XTIEeSVgUqvZ0rClUpSQtuCRsP+9U+AOkyT9VDUwBt
-         i7cg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fispIEpvKzQ4yK99Q5GZdxzrqvs5hFT355gL1BD8Ux8=;
-        b=B57Lgrh7zCXMJU6vo9LRIKiEEIim93LgXPu39nbvdxEGJvHm4kBQgD3wFzJaBOfx2R
-         Z0OFgltGcydy4tONDzQEXuHXiZahSSKIlsA/5UVb78bG1iFd6VOE986wK0xOTuYx+bt5
-         gi8gB1933fHZp9FtMjnhJFK4y1DmUpJ3567EMayGJSopmrIcVACU6qk/yvk2R6b3bPEI
-         JxvFZDCEm0jpC7wvoJcDyUul9GpziD1YP1AkkjJypukGJPv8oktKeHdN53J8kKtFBTtR
-         hGXc5yPosnZHbF4F2N21ql6gYdUc/8zre8gpqd9jFToYLL0t6eihpusLfwWoP9mjiYq6
-         e8mQ==
-X-Gm-Message-State: AOAM532rDVdk3fgjp4lTpdtiM2yfefrBpJewB+Bg/H/JlK6OX0L7MfyV
-        8nyhhld417KrbdVOthNpAWoGSTMirIsNXAaoTH8=
-X-Google-Smtp-Source: ABdhPJyu6D8OayMr5IUYnr9YLRD1yDfO7Yj1MvWlAS6jspKb6UKU6joWizLvFp7R9Sl6zWrNw4rgtN3kGbJd9AmSE2I=
-X-Received: by 2002:a17:906:4956:: with SMTP id f22mr1629762ejt.62.1601346926062;
- Mon, 28 Sep 2020 19:35:26 -0700 (PDT)
+        id S1727314AbgI2Cg3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 22:36:29 -0400
+Received: from m42-4.mailgun.net ([69.72.42.4]:47301 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725272AbgI2Cg3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 22:36:29 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1601346988; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=xq3wf0X2ufcQl3gIMU5+oewCRuLye7B7HD/VCKzxjPM=;
+ b=hdgQQcMvYXDRrFBy14vhRN5MxC5uVVVaav75qzGuJE5I4z/ZQ15NlziGGqoM0jRU6g8Drpn8
+ UTYlKoWuT9VHgQsXkfoyO3t5IOOdSCFYaoi6tk3Bn1485yznsaSdxi3Ppk6LTDdDAW7Zp0ED
+ TgCHRBkF0MoXUzQgFKri/Pe80ag=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 5f729d8abe59ebabf3085adb (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 29 Sep 2020 02:35:54
+ GMT
+Sender: nguyenb=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 8671BC43387; Tue, 29 Sep 2020 02:35:53 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: nguyenb)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id AD975C433C8;
+        Tue, 29 Sep 2020 02:35:52 +0000 (UTC)
 MIME-Version: 1.0
-References: <20200925023423.42675-1-haifeng.zhao@intel.com>
- <20200925023423.42675-4-haifeng.zhao@intel.com> <20200925123515.GF3956970@smile.fi.intel.com>
-In-Reply-To: <20200925123515.GF3956970@smile.fi.intel.com>
-From:   Ethan Zhao <xerces.zhao@gmail.com>
-Date:   Tue, 29 Sep 2020 10:35:14 +0800
-Message-ID: <CAKF3qh1j-D=6mmyjuLQu9=Pka3ZbB+43_Ec4oge0LhRNnQz-Ug@mail.gmail.com>
-Subject: Re: [PATCH 3/5] PCI/ERR: get device before call device driver to
- avoid null pointer reference
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Ethan Zhao <haifeng.zhao@intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>, Oliver <oohall@gmail.com>,
-        ruscur@russell.cc, Lukas Wunner <lukas@wunner.de>,
-        Stuart Hayes <stuart.w.hayes@gmail.com>,
-        Alexandru Gagniuc <mr.nuke.me@gmail.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Jia, Pei P" <pei.p.jia@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 28 Sep 2020 19:35:52 -0700
+From:   nguyenb@codeaurora.org
+To:     cang@codeaurora.org, asutoshd@codeaurora.org,
+        martin.petersen@oracle.com, linux-scsi@vger.kernel.org
+Cc:     linux-arm-msm@vger.kernel.org,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 1/1] scsi: ufshcd: Properly set the device Icc Level
+In-Reply-To: <5c9d6f76303bbe5188bf839b2ea5e5bf530e7281.1598923023.git.nguyenb@codeaurora.org>
+References: <5c9d6f76303bbe5188bf839b2ea5e5bf530e7281.1598923023.git.nguyenb@codeaurora.org>
+Message-ID: <0edf03ca16e2ee6e4ed8e5ac72752a94@codeaurora.org>
+X-Sender: nguyenb@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Preferred style, there will be cleared comment in v6.
+On 2020-08-31 18:19, Bao D. Nguyen wrote:
+> UFS version 3.0 and later devices require Vcc and Vccq power supplies
+> with Vccq2 being optional. While earlier UFS version 2.0 and 2.1
+> devices, the Vcc and Vccq2 are required with Vccq being optional.
+> Check the required power supplies used by the device
+> and set the device's supported Icc level properly.
+> 
+> Signed-off-by: Can Guo <cang@codeaurora.org>
+> Signed-off-by: Asutosh Das <asutoshd@codeaurora.org>
+> Signed-off-by: Bao D. Nguyen <nguyenb@codeaurora.org>
+> ---
+>  drivers/scsi/ufs/ufshcd.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+> index 06e2439..fdd1d3e 100644
+> --- a/drivers/scsi/ufs/ufshcd.c
+> +++ b/drivers/scsi/ufs/ufshcd.c
+> @@ -6845,8 +6845,9 @@ static u32
+> ufshcd_find_max_sup_active_icc_level(struct ufs_hba *hba,
+>  {
+>  	u32 icc_level = 0;
+> 
+> -	if (!hba->vreg_info.vcc || !hba->vreg_info.vccq ||
+> -						!hba->vreg_info.vccq2) {
+> +	if (!hba->vreg_info.vcc ||
+> +		(!hba->vreg_info.vccq && hba->dev_info.wspecversion >= 0x300) ||
+> +		(!hba->vreg_info.vccq2 && hba->dev_info.wspecversion < 0x300)) {
+>  		dev_err(hba->dev,
+>  			"%s: Regulator capability was not set, actvIccLevel=%d",
+>  							__func__, icc_level);
 
-Thanks,
-Ethan
+Hello,
+Thank you for the comments on this change so far.
+It's been idle for some time, so I would like to ping and see if there 
+is any other comment.
 
-On Sat, Sep 26, 2020 at 12:42 AM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> On Thu, Sep 24, 2020 at 10:34:21PM -0400, Ethan Zhao wrote:
-> > During DPC error injection test we found there is race condition between
-> > pciehp and DPC driver, null pointer reference caused panic as following
->
-> null -> NULL
->
-> >
-> >  # setpci -s 64:02.0 0x196.w=000a
-> >   // 64:02.0 is rootport has DPC capability
-> >  # setpci -s 65:00.0 0x04.w=0544
-> >   // 65:00.0 is NVMe SSD populated in above port
-> >  # mount /dev/nvme0n1p1 nvme
-> >
-> >  (tested on stable 5.8 & ICX platform)
-> >
-> >  Buffer I/O error on dev nvme0n1p1, logical block 468843328,
-> >  async page read
-> >  BUG: kernel NULL pointer dereference, address: 0000000000000050
-> >  #PF: supervisor read access in kernel mode
-> >  #PF: error_code(0x0000) - not-present page
->
-> Same comment about Oops.
->
-> --
-> With Best Regards,
-> Andy Shevchenko
->
->
+Regards,
+Bao
+
