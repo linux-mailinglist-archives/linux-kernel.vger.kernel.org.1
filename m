@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B355727C50E
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:30:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE5D927C512
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:30:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728278AbgI2L34 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:29:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37658 "EHLO mail.kernel.org"
+        id S1728339AbgI2LaM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:30:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37024 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729659AbgI2LYL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:24:11 -0400
+        id S1729663AbgI2LYM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:24:12 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 77FC7221F0;
-        Tue, 29 Sep 2020 11:21:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 16AE3235F7;
+        Tue, 29 Sep 2020 11:21:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601378474;
-        bh=bobfu9SoHEs9owTKFCcOq+Z2blNWk7oH+LJ88r86vx4=;
+        s=default; t=1601378482;
+        bh=pIOkyG30BfIWYVMbPviugrtrP9wUBTkpp3JN20pBI3U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XVF7/ZCUszYRzJoTWlp79I2AWg9eERpUNwrgF9Kbfal9K/Escg5kPfGlWC5Ce0GxA
-         i41grKfTQxVtYdSjQ6YMQQDEbZgU/GcAqbjaWKAOQfE7dDHpUktE+tSYmTjXe0/k6B
-         S750ZdjTCaqRh95dmNax+r9E9CNcNL2ul8RCvjK0=
+        b=dMJA2LHMLNYjVABZ6S47pMq0a6kT+FCnrfwu9/9Q9BXmygU/UF2ehrkg5TyxciPnb
+         8S+L3iz9JscmgBiCjFvccr3OTWqdLNfFj7Mr3LgmEg/R2MGhPRFiqrzx0NWbt2k8v2
+         dOlkw5161zLDIgpcdLAKqdRPpiuHrUZ9O+1lffFs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Evan Quan <evan.quan@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org, Divya Indi <divya.indi@oracle.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 027/245] drm/amdgpu/powerplay/smu7: fix AVFS handling with custom powerplay table
-Date:   Tue, 29 Sep 2020 12:57:58 +0200
-Message-Id: <20200929105948.324108702@linuxfoundation.org>
+Subject: [PATCH 4.19 029/245] tracing: Adding NULL checks for trace_array descriptor pointer
+Date:   Tue, 29 Sep 2020 12:58:00 +0200
+Message-Id: <20200929105948.422981384@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200929105946.978650816@linuxfoundation.org>
 References: <20200929105946.978650816@linuxfoundation.org>
@@ -43,39 +43,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alex Deucher <alexander.deucher@amd.com>
+From: Divya Indi <divya.indi@oracle.com>
 
-[ Upstream commit 901245624c7812b6c95d67177bae850e783b5212 ]
+[ Upstream commit 953ae45a0c25e09428d4a03d7654f97ab8a36647 ]
 
-When a custom powerplay table is provided, we need to update
-the OD VDDC flag to avoid AVFS being enabled when it shouldn't be.
+As part of commit f45d1225adb0 ("tracing: Kernel access to Ftrace
+instances") we exported certain functions. Here, we are adding some additional
+NULL checks to ensure safe usage by users of these APIs.
 
-Bug: https://bugzilla.kernel.org/show_bug.cgi?id=205393
-Reviewed-by: Evan Quan <evan.quan@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Link: http://lkml.kernel.org/r/1565805327-579-4-git-send-email-divya.indi@oracle.com
+
+Signed-off-by: Divya Indi <divya.indi@oracle.com>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/powerplay/hwmgr/smu7_hwmgr.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ kernel/trace/trace.c        | 3 +++
+ kernel/trace/trace_events.c | 2 ++
+ 2 files changed, 5 insertions(+)
 
-diff --git a/drivers/gpu/drm/amd/powerplay/hwmgr/smu7_hwmgr.c b/drivers/gpu/drm/amd/powerplay/hwmgr/smu7_hwmgr.c
-index 72c0a2ae2dd4f..058898b321b8a 100644
---- a/drivers/gpu/drm/amd/powerplay/hwmgr/smu7_hwmgr.c
-+++ b/drivers/gpu/drm/amd/powerplay/hwmgr/smu7_hwmgr.c
-@@ -3970,6 +3970,13 @@ static int smu7_set_power_state_tasks(struct pp_hwmgr *hwmgr, const void *input)
- 			"Failed to populate and upload SCLK MCLK DPM levels!",
- 			result = tmp_result);
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index 4966410bb0f4d..17505a22d800b 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -3037,6 +3037,9 @@ int trace_array_printk(struct trace_array *tr,
+ 	if (!(global_trace.trace_flags & TRACE_ITER_PRINTK))
+ 		return 0;
  
-+	/*
-+	 * If a custom pp table is loaded, set DPMTABLE_OD_UPDATE_VDDC flag.
-+	 * That effectively disables AVFS feature.
-+	 */
-+	if (hwmgr->hardcode_pp_table != NULL)
-+		data->need_update_smu7_dpm_table |= DPMTABLE_OD_UPDATE_VDDC;
++	if (!tr)
++		return -ENOENT;
 +
- 	tmp_result = smu7_update_avfs(hwmgr);
- 	PP_ASSERT_WITH_CODE((0 == tmp_result),
- 			"Failed to update avfs voltages!",
+ 	va_start(ap, fmt);
+ 	ret = trace_array_vprintk(tr, ip, fmt, ap);
+ 	va_end(ap);
+diff --git a/kernel/trace/trace_events.c b/kernel/trace/trace_events.c
+index 27726121d332c..0fc06a7da87fb 100644
+--- a/kernel/trace/trace_events.c
++++ b/kernel/trace/trace_events.c
+@@ -800,6 +800,8 @@ static int ftrace_set_clr_event(struct trace_array *tr, char *buf, int set)
+ 	char *event = NULL, *sub = NULL, *match;
+ 	int ret;
+ 
++	if (!tr)
++		return -ENOENT;
+ 	/*
+ 	 * The buf format can be <subsystem>:<event-name>
+ 	 *  *:<event-name> means any event by that name.
 -- 
 2.25.1
 
