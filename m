@@ -2,134 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3D5227CD07
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:41:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5127327CBB0
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:31:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733034AbgI2MlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 08:41:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34286 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729376AbgI2LOF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:14:05 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12323C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 04:14:05 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id y17so5011273lfa.8
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 04:14:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=OZ4P5eCNZlIGtDfFRqaX5188qIJ0Vd0GiDBdv3mnk2A=;
-        b=CuDfLigkzrEE4BwFSYuMI1CE2TAXddfC2W4sMUVP2B78n8wvCD3c0UcaD2dtzvWr/X
-         Z8/+8I5bhKS4pQHy6t3vEKFJ/x42hdPx4mQkwNgM4q5jVQZo9wh3ABeM706zzaRX9bKA
-         zFLm5+BXNtjaBTFkC+mn7cM1eAu59isJ1zepfEX5F4x7JVc8R6GnvPXQTh6ILsK9hsv7
-         oGZQOrqrs1IiPsdftd762nGKhPhC40X1SIJP00N3DEhCV0AJ+5b7W15fI5vAMk8mE1OY
-         2JXDnxyzRSliB6jOpsnKamDB+jkjscry0cUEifAj+jtNGkdZEcNGlUIgvGpUFaoKjTwY
-         bIXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=OZ4P5eCNZlIGtDfFRqaX5188qIJ0Vd0GiDBdv3mnk2A=;
-        b=GMdpN81gndJcO5zYV1XlKWRAxgzWPExC8LeBIM0b1PFVR5mRkbnDocP6Aqq3ZlNwUR
-         ftLjUCRSyB03MtYqjFpWcRpr2tK3QiGDL0Sdzp2Toh7ixPNLIHu+zf6kfZxJngtV+kEK
-         SeI8fDNI70B4JYyMnULdzvtv6Oo4BOZZoS8+npA6NOwbg4GohuDc2W+A92h+tG+VPhcs
-         wruiiwzJFDkivbtUcgJwmMQ0JUOgGN6vxWhNB/PKSaZaq8SFyjtcKoTU0f28/Dp0i1ya
-         31ZMtpVIAXD6HVWAitnvY3P6SdSsiHa+f4B2vC0tQyWzFWV9Nn/Zw8B+U/277BhLbUzh
-         SfJQ==
-X-Gm-Message-State: AOAM532+8EsinqTaMbajteTt9Dr4VMgrqTvyU+llr3t48R/x5u1cqHyw
-        /sMo7tALCLaigZQG++HwA6Y=
-X-Google-Smtp-Source: ABdhPJwbsr4KqP9lUr/SPd0wqLe4sfUt3aQq9LtrAq87Ab3XluvBzFUACLuvEsdnhnPUmq2oWiBA5g==
-X-Received: by 2002:a19:be0b:: with SMTP id o11mr963382lff.117.1601378043293;
-        Tue, 29 Sep 2020 04:14:03 -0700 (PDT)
-Received: from localhost.localdomain ([149.255.130.5])
-        by smtp.gmail.com with ESMTPSA id z7sm3199419lfb.221.2020.09.29.04.14.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Sep 2020 04:14:02 -0700 (PDT)
-From:   Roman Stratiienko <r.stratiienko@gmail.com>
-To:     linux-sunxi@googlegroups.com
-Cc:     Roman Stratiienko <r.stratiienko@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        megous@megous.com
-Subject: [PATCH] RFC: arm64: arch_timer: Fix timer inconsistency test for A64
-Date:   Tue, 29 Sep 2020 14:13:47 +0300
-Message-Id: <20200929111347.1967438-1-r.stratiienko@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S1728690AbgI2LXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:23:13 -0400
+Received: from mga06.intel.com ([134.134.136.31]:4731 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729438AbgI2LRe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:17:34 -0400
+IronPort-SDR: yPDuCnUzXdw1E2lG/oyxxzrXI6YmYl1flCKefe1xh4EGCOXuzkLwgIwcgrcf169C6d7p1HOQH4
+ LNKq31A0m27A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9758"; a="223755289"
+X-IronPort-AV: E=Sophos;i="5.77,318,1596524400"; 
+   d="scan'208";a="223755289"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2020 04:17:32 -0700
+IronPort-SDR: Swr8C4loAq/cyZqbHf/Y5JidPgI7itO/PHCZgXfPrBVqjifmd4hr93kcQBbqhQr12Lq/Q6y3O/
+ WmZIA6aqArPA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,318,1596524400"; 
+   d="scan'208";a="490259651"
+Received: from lkp-server02.sh.intel.com (HELO dda5aa0886d8) ([10.239.97.151])
+  by orsmga005.jf.intel.com with ESMTP; 29 Sep 2020 04:17:31 -0700
+Received: from kbuild by dda5aa0886d8 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kNDdS-00009A-Py; Tue, 29 Sep 2020 11:17:30 +0000
+Date:   Tue, 29 Sep 2020 19:16:39 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [rcu:urezki-pcount] BUILD SUCCESS
+ 5f5f44ca646fa86f31cc66de8b647c8dba40a8a7
+Message-ID: <5f731797.mokTWNkNDphwSEgI%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes linux_kselftest:timers_inconsistency-check_arm_64
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  urezki-pcount
+branch HEAD: 5f5f44ca646fa86f31cc66de8b647c8dba40a8a7  EXP Revert "KVM: Check the allocation of pv cpu mask"
 
-Test logs without the fix:
-'''
-binary returned non-zero. Exit code: 1, stderr: , stdout:
-Consistent CLOCK_REALTIME
-1601335525:467086804
-1601335525:467087554
-1601335525:467088345
-1601335525:467089095
-1601335525:467089887
-1601335525:467090637
-1601335525:467091429
-1601335525:467092179
-1601335525:467092929
-1601335525:467093720
-1601335525:467094470
-1601335525:467095262
-1601335525:467096012
-1601335525:467096804
---------------------
-1601335525:467097554
-1601335525:467077012
---------------------
-1601335525:467099095
-1601335525:467099845
-1601335525:467100637
-1601335525:467101387
-1601335525:467102179
-1601335525:467102929
-'''
+elapsed time: 725m
 
-Signed-off-by: Roman Stratiienko <r.stratiienko@gmail.com>
-CC: linux-arm-kernel@lists.infradead.org
-CC: linux-kernel@vger.kernel.org
-CC: linux-sunxi@googlegroups.com
-CC: megous@megous.com
+configs tested: 103
+configs skipped: 2
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                                 defconfig
+m68k                          hp300_defconfig
+arm                          moxart_defconfig
+powerpc                         wii_defconfig
+arm                           sunxi_defconfig
+h8300                            allyesconfig
+mips                           ip28_defconfig
+xtensa                  audio_kc705_defconfig
+c6x                        evmc6474_defconfig
+powerpc                     rainier_defconfig
+sh                           se7619_defconfig
+i386                             alldefconfig
+sh                           se7724_defconfig
+riscv                    nommu_virt_defconfig
+arm                         mv78xx0_defconfig
+powerpc                     kilauea_defconfig
+arm                        shmobile_defconfig
+sh                           se7751_defconfig
+arm                       cns3420vb_defconfig
+h8300                    h8300h-sim_defconfig
+sh                           se7750_defconfig
+mips                           xway_defconfig
+arm                        cerfcube_defconfig
+arm                  colibri_pxa270_defconfig
+sh                          rsk7201_defconfig
+mips                      maltaaprp_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a005-20200928
+x86_64               randconfig-a003-20200928
+x86_64               randconfig-a004-20200928
+x86_64               randconfig-a002-20200928
+x86_64               randconfig-a006-20200928
+x86_64               randconfig-a001-20200928
+i386                 randconfig-a006-20200928
+i386                 randconfig-a002-20200928
+i386                 randconfig-a003-20200928
+i386                 randconfig-a004-20200928
+i386                 randconfig-a005-20200928
+i386                 randconfig-a001-20200928
+x86_64               randconfig-a011-20200929
+x86_64               randconfig-a013-20200929
+x86_64               randconfig-a015-20200929
+x86_64               randconfig-a014-20200929
+x86_64               randconfig-a016-20200929
+x86_64               randconfig-a012-20200929
+i386                 randconfig-a012-20200928
+i386                 randconfig-a016-20200928
+i386                 randconfig-a014-20200928
+i386                 randconfig-a013-20200928
+i386                 randconfig-a015-20200928
+i386                 randconfig-a011-20200928
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a005-20200929
+x86_64               randconfig-a003-20200929
+x86_64               randconfig-a004-20200929
+x86_64               randconfig-a002-20200929
+x86_64               randconfig-a006-20200929
+x86_64               randconfig-a001-20200929
+
 ---
- drivers/clocksource/arm_arch_timer.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/clocksource/arm_arch_timer.c b/drivers/clocksource/arm_arch_timer.c
-index 6c3e841801461..d50aa43cb654b 100644
---- a/drivers/clocksource/arm_arch_timer.c
-+++ b/drivers/clocksource/arm_arch_timer.c
-@@ -346,16 +346,17 @@ static u64 notrace arm64_858921_read_cntvct_el0(void)
-  * number of CPU cycles in 3 consecutive 24 MHz counter periods.
-  */
- #define __sun50i_a64_read_reg(reg) ({					\
--	u64 _val;							\
-+	u64 _val1, _val2;						\
- 	int _retries = 150;						\
- 									\
- 	do {								\
--		_val = read_sysreg(reg);				\
-+		_val1 = read_sysreg(reg);				\
-+		_val2 = read_sysreg(reg);				\
- 		_retries--;						\
--	} while (((_val + 1) & GENMASK(9, 0)) <= 1 && _retries);	\
-+	} while (((_val2 - _val1) > 0x10) && _retries);			\
- 									\
- 	WARN_ON_ONCE(!_retries);					\
--	_val;								\
-+	_val2;								\
- })
- 
- static u64 notrace sun50i_a64_read_cntpct_el0(void)
--- 
-2.25.1
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
