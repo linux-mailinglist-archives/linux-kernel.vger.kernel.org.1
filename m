@@ -2,212 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67BB327D6CC
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 21:23:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEC8127D6CF
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 21:24:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728498AbgI2TXE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 15:23:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54148 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727879AbgI2TXD (ORCPT
+        id S1728521AbgI2TYT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 15:24:19 -0400
+Received: from mail-ot1-f68.google.com ([209.85.210.68]:34529 "EHLO
+        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727700AbgI2TYS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 15:23:03 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E14DC061755
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 12:23:02 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id d6so5572986pfn.9
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 12:23:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XGb7x8YUCOsUH75obTDiJ9n5ILA2CmimR4Sm9Sn083E=;
-        b=MG2uhNgIoAqQ145gKQDC07A/bYdHkyq4BjCi5MOZn26OWSC3h2IphtTJdCVQgHEmvR
-         OnHSlEXHyRtMoL7b+uKgsnVEO1PanhsiRC5KprBPsAk17YZFL+/n6L8oB028d/4i8HLS
-         VG7u8sxK1KQ/QTcd8OYbp4s/buxbMK5QqTbkg1pWXm5wK/BsJ5C1wOks6MN05kgSxJ99
-         eMrGsHJI5vtsfyxVc0EhJgFFV3UCzVL5SdzdyzD9Yj33/udqxej7F4/I5QIPAzLtVE97
-         4/cHr+CBZjEnzjCxTlkSC/SODby7FLtNN7kHB2L/CYdMG5ENNYmTh4v+Xo9CdYsehwgZ
-         csYg==
+        Tue, 29 Sep 2020 15:24:18 -0400
+Received: by mail-ot1-f68.google.com with SMTP id h17so5622749otr.1;
+        Tue, 29 Sep 2020 12:24:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XGb7x8YUCOsUH75obTDiJ9n5ILA2CmimR4Sm9Sn083E=;
-        b=JnY2JaWtoYElb7lsBGnvoxLMAE/OcrCUrdK3Nbj3F4MOp/1txCBsKYnfHwAlbhwmHK
-         r6yq1eRzZReJHbVOA7Hkby/YguOQNMD5ewYip8zmQ9R6UpodXqeWovmP5TecgrtyX4sj
-         Gjh4dfXSj7HE5FuYE3EgPdiE9DpylW7CyeG+uFpSPsvSN6lPpYkX7NztAnfB8LSMRLj6
-         oWSuL/37EgTlGZ50ses7hyutgFHH1wk2LZezASK8SRO5AIW8sw3sXJsvemKm5sCxLz+p
-         5A5tOkm2ukcNuksULbcdTianqhAToJQfRw5zEa3K88UPsSWraeUugHSLsTZ8wPHEl2Uz
-         J7sA==
-X-Gm-Message-State: AOAM530Z3c9iD6bO+f81Pc6t/IchURRqGRDhqMIJxYc6916mtP2Jum8X
-        Tgpwm236EZ9DxkDiJCuYowxYuDnRI0ZMJS4ooX8eUQ==
-X-Google-Smtp-Source: ABdhPJyChWdjv4wSBHHt8wwhxCBeeusT+pYIJhoqpLnBIOnRZefz7ePm3oAHqooOXWwoLggiL4gJmRRyqKeWMQd5cAw=
-X-Received: by 2002:a17:902:ed11:b029:d1:f385:f4e7 with SMTP id
- b17-20020a170902ed11b02900d1f385f4e7mr5997772pld.56.1601407381691; Tue, 29
- Sep 2020 12:23:01 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=a0+40Jxvg/Op2A57V+2jGqRGB7XXMO2z6egIsw8beuM=;
+        b=CeR4A4TgFY4pPDoYLz8HJgeXY0bhXLMWSy6d26KAjle0dvgy+2sl3q6LYPUZX1zaWz
+         IYoM/5U2pOIMOB5sxv5WiNbDRsTT0llKQhHZcE1K1P0ZxcCdP6X8d3KSnPTKcsLqNum9
+         z36HPjSVOOJzu5JN+MIPZqD1s7NYgtP8UNgd+p+mf8e28Y1tpJcEAo1wBbehyLwfYhwp
+         vkSxMMjuYg+Ws+WXlY+irxwm2w5AHPMX7I6wlo5gpd8zHOleXV3avO2TEy0RJFadSYRr
+         tU7CEBb7XYqsAoqn+74SRAne2mzroBdyCEUtpQSufBu4243Bbp5xhZJIqDhTrjIDPLt/
+         iB2g==
+X-Gm-Message-State: AOAM530qktzWsqLsqLQW2y2yZJGWmZJH8QDu2H6pD0WestfQJjx7cfR4
+        GyEH/MzsyXHlsYASdsxNiQ==
+X-Google-Smtp-Source: ABdhPJxaOeJE50B4sFS6YIDZqlKoQ1hYpkgfDJx0OsxUxBOz7cE/j4mvVhUi5dl8x1vZLyOVovRFig==
+X-Received: by 2002:a05:6830:1d96:: with SMTP id y22mr3783015oti.243.1601407457125;
+        Tue, 29 Sep 2020 12:24:17 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id q14sm1209970ota.41.2020.09.29.12.24.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Sep 2020 12:24:16 -0700 (PDT)
+Received: (nullmailer pid 1007629 invoked by uid 1000);
+        Tue, 29 Sep 2020 19:24:15 -0000
+Date:   Tue, 29 Sep 2020 14:24:15 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Varadarajan Narayanan <varada@codeaurora.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org,
+        mturquette@baylibre.com, sboyd@kernel.org,
+        linus.walleij@linaro.org, catalin.marinas@arm.com, will@kernel.org,
+        p.zabel@pengutronix.de, nsekar@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        sricharan@codeaurora.org
+Subject: Re: [PATCH 2/7] dt-bindings: arm64: ipq5018: Add binding
+ descriptions for clock and reset
+Message-ID: <20200929192415.GA1003457@bogus>
+References: <1601270140-4306-1-git-send-email-varada@codeaurora.org>
+ <1601270140-4306-3-git-send-email-varada@codeaurora.org>
 MIME-Version: 1.0
-References: <20200929192204.499006-1-ndesaulniers@google.com>
-In-Reply-To: <20200929192204.499006-1-ndesaulniers@google.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Tue, 29 Sep 2020 12:22:50 -0700
-Message-ID: <CAKwvOd=s+N4+X94sTams_hKn8uV5Hc6QyCc7OHyOGC-JFesS8A@mail.gmail.com>
-Subject: Re: [PATCH] srcu: avoid escaped section names
-To:     "Paul E . McKenney" <paulmck@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Kees Cook <keescook@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>, rcu@vger.kernel.org,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1601270140-4306-3-git-send-email-varada@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-gah, must have had a `-a` in my `git commit --amend`...sorry, will send a v2...
-
-On Tue, Sep 29, 2020 at 12:22 PM Nick Desaulniers
-<ndesaulniers@google.com> wrote:
->
-> The stringification operator, `#`, in the preprocessor escapes strings.
-> For example, `# "foo"` becomes `"\"foo\""`.  GCC and Clang differ in how
-> they treat section names that contain \".
->
-> The portable solution is to not use a string literal with the
-> preprocessor stringification operator.
->
-> Link: https://bugs.llvm.org/show_bug.cgi?id=42950
-> Fixes: commit fe15b50cdeee ("srcu: Allocate per-CPU data for DEFINE_SRCU() in modules")
-> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+On Mon, Sep 28, 2020 at 10:45:35AM +0530, Varadarajan Narayanan wrote:
+> This patch adds support for the global clock controller found on
+> the IPQ5018 based devices.
+> 
+> Signed-off-by: Varadarajan Narayanan <varada@codeaurora.org>
 > ---
->  arch/arm/Kconfig         |  1 +
->  arch/arm/mm/Kconfig      | 11 +++++++++++
->  include/linux/srcutree.h |  2 +-
->  3 files changed, 13 insertions(+), 1 deletion(-)
->
-> diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-> index fe2f17eb2b50..51200e371faf 100644
-> --- a/arch/arm/Kconfig
-> +++ b/arch/arm/Kconfig
-> @@ -358,6 +358,7 @@ config ARCH_EBSA110
->
->  config ARCH_EP93XX
->         bool "EP93xx-based"
-> +       depends on !LD_IS_LLD
->         select ARCH_SPARSEMEM_ENABLE
->         select ARM_AMBA
->         imply ARM_PATCH_PHYS_VIRT
-> diff --git a/arch/arm/mm/Kconfig b/arch/arm/mm/Kconfig
-> index 65e4482e3849..c06787c9bb48 100644
-> --- a/arch/arm/mm/Kconfig
-> +++ b/arch/arm/mm/Kconfig
-> @@ -9,6 +9,7 @@ comment "Processor Type"
->  config CPU_ARM7TDMI
->         bool
->         depends on !MMU
-> +       depends on !LD_IS_LLD
->         select CPU_32v4T
->         select CPU_ABRT_LV4T
->         select CPU_CACHE_V4
-> @@ -23,6 +24,7 @@ config CPU_ARM7TDMI
->  # ARM720T
->  config CPU_ARM720T
->         bool
-> +       depends on !LD_IS_LLD
->         select CPU_32v4T
->         select CPU_ABRT_LV4T
->         select CPU_CACHE_V4
-> @@ -43,6 +45,7 @@ config CPU_ARM720T
->  config CPU_ARM740T
->         bool
->         depends on !MMU
-> +       depends on !LD_IS_LLD
->         select CPU_32v4T
->         select CPU_ABRT_LV4T
->         select CPU_CACHE_V4
-> @@ -61,6 +64,7 @@ config CPU_ARM740T
->  config CPU_ARM9TDMI
->         bool
->         depends on !MMU
-> +       depends on !LD_IS_LLD
->         select CPU_32v4T
->         select CPU_ABRT_NOMMU
->         select CPU_CACHE_V4
-> @@ -75,6 +79,7 @@ config CPU_ARM9TDMI
->  # ARM920T
->  config CPU_ARM920T
->         bool
-> +       depends on !LD_IS_LLD
->         select CPU_32v4T
->         select CPU_ABRT_EV4T
->         select CPU_CACHE_V4WT
-> @@ -94,6 +99,7 @@ config CPU_ARM920T
->  # ARM922T
->  config CPU_ARM922T
->         bool
-> +       depends on !LD_IS_LLD
->         select CPU_32v4T
->         select CPU_ABRT_EV4T
->         select CPU_CACHE_V4WT
-> @@ -114,6 +120,7 @@ config CPU_ARM922T
->  # ARM925T
->  config CPU_ARM925T
->         bool
-> +       depends on !LD_IS_LLD
->         select CPU_32v4T
->         select CPU_ABRT_EV4T
->         select CPU_CACHE_V4WT
-> @@ -153,6 +160,7 @@ config CPU_ARM926T
->  # FA526
->  config CPU_FA526
->         bool
-> +       depends on !LD_IS_LLD
->         select CPU_32v4
->         select CPU_ABRT_EV4
->         select CPU_CACHE_FA
-> @@ -172,6 +180,7 @@ config CPU_FA526
->  config CPU_ARM940T
->         bool
->         depends on !MMU
-> +       depends on !LD_IS_LLD
->         select CPU_32v4T
->         select CPU_ABRT_NOMMU
->         select CPU_CACHE_VIVT
-> @@ -278,6 +287,7 @@ config CPU_ARM1026
->  # SA110
->  config CPU_SA110
->         bool
-> +       depends on !LD_IS_LLD
->         select CPU_32v3 if ARCH_RPC
->         select CPU_32v4 if !ARCH_RPC
->         select CPU_ABRT_EV4
-> @@ -299,6 +309,7 @@ config CPU_SA110
->  # SA1100
->  config CPU_SA1100
->         bool
-> +       depends on !LD_IS_LLD
->         select CPU_32v4
->         select CPU_ABRT_EV4
->         select CPU_CACHE_V4WB
-> diff --git a/include/linux/srcutree.h b/include/linux/srcutree.h
-> index 9cfcc8a756ae..9de652f4e1bd 100644
-> --- a/include/linux/srcutree.h
-> +++ b/include/linux/srcutree.h
-> @@ -124,7 +124,7 @@ struct srcu_struct {
->  # define __DEFINE_SRCU(name, is_static)                                        \
->         is_static struct srcu_struct name;                              \
->         struct srcu_struct * const __srcu_struct_##name                 \
-> -               __section("___srcu_struct_ptrs") = &name
-> +               __section(___srcu_struct_ptrs) = &name
->  #else
->  # define __DEFINE_SRCU(name, is_static)                                        \
->         static DEFINE_PER_CPU(struct srcu_data, name##_srcu_data);      \
-> --
-> 2.28.0.709.gb0816b6eb0-goog
->
+>  .../devicetree/bindings/clock/qcom,gcc.yaml        |   3 +
+>  include/dt-bindings/clock/qcom,gcc-ipq5018.h       | 183 +++++++++++++++++++++
+>  include/dt-bindings/reset/qcom,gcc-ipq5018.h       | 119 ++++++++++++++
+>  3 files changed, 305 insertions(+)
+>  create mode 100644 include/dt-bindings/clock/qcom,gcc-ipq5018.h
+>  create mode 100644 include/dt-bindings/reset/qcom,gcc-ipq5018.h
+> 
+> diff --git a/Documentation/devicetree/bindings/clock/qcom,gcc.yaml b/Documentation/devicetree/bindings/clock/qcom,gcc.yaml
+> index ee0467f..74d67fc 100644
+> --- a/Documentation/devicetree/bindings/clock/qcom,gcc.yaml
+> +++ b/Documentation/devicetree/bindings/clock/qcom,gcc.yaml
+> @@ -18,6 +18,8 @@ description: |
+>    - dt-bindings/clock/qcom,gcc-apq8084.h
+>    - dt-bindings/reset/qcom,gcc-apq8084.h
+>    - dt-bindings/clock/qcom,gcc-ipq4019.h
+> +  - dt-bindings/clock/qcom,gcc-ipq5018.h
+> +  - dt-bindings/reset/qcom,gcc-ipq5018.h
+>    - dt-bindings/clock/qcom,gcc-ipq6018.h
+>    - dt-bindings/reset/qcom,gcc-ipq6018.h
+>    - dt-bindings/clock/qcom,gcc-ipq806x.h (qcom,gcc-ipq8064)
+> @@ -39,6 +41,7 @@ properties:
+>      enum:
+>        - qcom,gcc-apq8084
+>        - qcom,gcc-ipq4019
+> +      - qcom,gcc-ipq5018
+>        - qcom,gcc-ipq6018
+>        - qcom,gcc-ipq8064
+>        - qcom,gcc-msm8660
+> diff --git a/include/dt-bindings/clock/qcom,gcc-ipq5018.h b/include/dt-bindings/clock/qcom,gcc-ipq5018.h
+> new file mode 100644
+> index 00000000..069165f
+> --- /dev/null
+> +++ b/include/dt-bindings/clock/qcom,gcc-ipq5018.h
+> @@ -0,0 +1,183 @@
+> +/* SPDX-License-Identifier: GPL-2.0+ */
 
+Only care about Linux and GPL OSs? And your employer is okay with GPL3 
+(and GPL4, ...)?
 
--- 
-Thanks,
-~Nick Desaulniers
+IOW, dual license please.
