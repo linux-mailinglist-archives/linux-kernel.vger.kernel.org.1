@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BA4C27C028
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 10:55:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 351DF27C02A
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 10:55:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727970AbgI2Izp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 04:55:45 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:53790 "EHLO inva021.nxp.com"
+        id S1727945AbgI2Izl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 04:55:41 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:53832 "EHLO inva021.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726064AbgI2IzI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1727766AbgI2IzI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 29 Sep 2020 04:55:08 -0400
 Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 703BB200C87;
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id D4F19201097;
         Tue, 29 Sep 2020 10:55:06 +0200 (CEST)
 Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 63D072000AA;
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id C5EC120117A;
         Tue, 29 Sep 2020 10:55:06 +0200 (CEST)
 Received: from fsr-ub1864-111.ea.freescale.net (fsr-ub1864-111.ea.freescale.net [10.171.82.141])
-        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id 0BDFA2032C;
+        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id 737D62032C;
         Tue, 29 Sep 2020 10:55:06 +0200 (CEST)
 From:   Diana Craciun <diana.craciun@oss.nxp.com>
 To:     linux-kernel@vger.kernel.org, laurentiu.tudor@nxp.com
 Cc:     stuyoder@gmail.com, leoyang.li@nxp.com, gregkh@linuxfoundation.org,
         linux-arm-kernel@lists.infradead.org,
         Diana Craciun <diana.craciun@oss.nxp.com>
-Subject: [PATCH v5 04/13] bus/fsl-mc: Set the QMAN/BMAN region flags
-Date:   Tue, 29 Sep 2020 11:54:32 +0300
-Message-Id: <20200929085441.17448-5-diana.craciun@oss.nxp.com>
+Subject: [PATCH v5 05/13] bus/fsl-mc: Cache the DPRC API version
+Date:   Tue, 29 Sep 2020 11:54:33 +0300
+Message-Id: <20200929085441.17448-6-diana.craciun@oss.nxp.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200929085441.17448-1-diana.craciun@oss.nxp.com>
 References: <20200929085441.17448-1-diana.craciun@oss.nxp.com>
@@ -36,79 +36,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The QMAN region is memory mapped, so it should be of type
-IORESOURCE_MEM. The region flags bits were wrongly used to
-pass additional information. Use the bus specific bits for
-this purpose.
+There are already firmware API commands that have multiple
+versions. For each multiple version command, another command
+to retrieve the API version is issued. This may introduce an important
+overhead. The version does not change while the system is running,
+so the DPRC API version can be safely cached.
 
 Signed-off-by: Diana Craciun <diana.craciun@oss.nxp.com>
 ---
- drivers/bus/fsl-mc/fsl-mc-bus.c     | 7 ++-----
- drivers/bus/fsl-mc/fsl-mc-private.h | 6 ------
- include/linux/fsl/mc.h              | 8 ++++++++
- 3 files changed, 10 insertions(+), 11 deletions(-)
+ drivers/bus/fsl-mc/dprc.c | 30 +++++++++++++++++++++---------
+ 1 file changed, 21 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/bus/fsl-mc/fsl-mc-bus.c b/drivers/bus/fsl-mc/fsl-mc-bus.c
-index 9a884936e53e..1bb70a92167e 100644
---- a/drivers/bus/fsl-mc/fsl-mc-bus.c
-+++ b/drivers/bus/fsl-mc/fsl-mc-bus.c
-@@ -615,11 +615,8 @@ static int fsl_mc_device_get_mmio_regions(struct fsl_mc_device *mc_dev,
- 
- 		regions[i].end = regions[i].start + region_desc.size - 1;
- 		regions[i].name = "fsl-mc object MMIO region";
--		regions[i].flags = IORESOURCE_IO;
--		if (region_desc.flags & DPRC_REGION_CACHEABLE)
--			regions[i].flags |= IORESOURCE_CACHEABLE;
--		if (region_desc.flags & DPRC_REGION_SHAREABLE)
--			regions[i].flags |= IORESOURCE_MEM;
-+		regions[i].flags = region_desc.flags & IORESOURCE_BITS;
-+		regions[i].flags |= IORESOURCE_MEM;
- 	}
- 
- 	mc_dev->regions = regions;
-diff --git a/drivers/bus/fsl-mc/fsl-mc-private.h b/drivers/bus/fsl-mc/fsl-mc-private.h
-index 7a46a12eb747..9f200731b274 100644
---- a/drivers/bus/fsl-mc/fsl-mc-private.h
-+++ b/drivers/bus/fsl-mc/fsl-mc-private.h
-@@ -358,12 +358,6 @@ int dprc_set_obj_irq(struct fsl_mc_io *mc_io,
- 		     int obj_id,
- 		     u8 irq_index,
- 		     struct dprc_irq_cfg *irq_cfg);
--
--/* Region flags */
--/* Cacheable - Indicates that region should be mapped as cacheable */
--#define DPRC_REGION_CACHEABLE	0x00000001
--#define DPRC_REGION_SHAREABLE	0x00000002
--
- /**
-  * enum dprc_region_type - Region type
-  * @DPRC_REGION_TYPE_MC_PORTAL: MC portal region
-diff --git a/include/linux/fsl/mc.h b/include/linux/fsl/mc.h
-index 3b5f0c98636d..03a5d16dde73 100644
---- a/include/linux/fsl/mc.h
-+++ b/include/linux/fsl/mc.h
-@@ -3,6 +3,7 @@
-  * Freescale Management Complex (MC) bus public interface
-  *
-  * Copyright (C) 2014-2016 Freescale Semiconductor, Inc.
-+ * Copyright 2019-2020 NXP
-  * Author: German Rivera <German.Rivera@freescale.com>
+diff --git a/drivers/bus/fsl-mc/dprc.c b/drivers/bus/fsl-mc/dprc.c
+index 602f030d84eb..e76f2c76f4c8 100644
+--- a/drivers/bus/fsl-mc/dprc.c
++++ b/drivers/bus/fsl-mc/dprc.c
+@@ -1,6 +1,7 @@
+ // SPDX-License-Identifier: (GPL-2.0+ OR BSD-3-Clause)
+ /*
+  * Copyright 2013-2016 Freescale Semiconductor Inc.
++ * Copyright 2020 NXP
   *
   */
-@@ -148,6 +149,13 @@ struct fsl_mc_obj_desc {
-  */
- #define FSL_MC_IS_DPRC	0x0001
+ #include <linux/kernel.h>
+@@ -8,6 +9,13 @@
  
-+/* Region flags */
-+/* Indicates that region can be mapped as cacheable */
-+#define FSL_MC_REGION_CACHEABLE	0x00000001
-+
-+/* Indicates that region can be mapped as shareable */
-+#define FSL_MC_REGION_SHAREABLE	0x00000002
+ #include "fsl-mc-private.h"
+ 
++/*
++ * cache the DPRC version to reduce the number of commands
++ * towards the mc firmware
++ */
++static u16 dprc_major_ver;
++static u16 dprc_minor_ver;
 +
  /**
-  * struct fsl_mc_device - MC object device object
-  * @dev: Linux driver model device object
+  * dprc_open() - Open DPRC object for use
+  * @mc_io:	Pointer to MC portal's I/O object
+@@ -443,15 +451,19 @@ int dprc_get_obj_region(struct fsl_mc_io *mc_io,
+ 	struct fsl_mc_command cmd = { 0 };
+ 	struct dprc_cmd_get_obj_region *cmd_params;
+ 	struct dprc_rsp_get_obj_region *rsp_params;
+-	u16 major_ver, minor_ver;
+ 	int err;
+ 
+-	/* prepare command */
+-	err = dprc_get_api_version(mc_io, 0,
+-				     &major_ver,
+-				     &minor_ver);
+-	if (err)
+-		return err;
++    /*
++     * If the DPRC object version was not yet cached, cache it now.
++     * Otherwise use the already cached value.
++     */
++	if (!dprc_major_ver && !dprc_minor_ver) {
++		err = dprc_get_api_version(mc_io, 0,
++				      &dprc_major_ver,
++				      &dprc_minor_ver);
++		if (err)
++			return err;
++	}
+ 
+ 	/**
+ 	 * MC API version 6.3 introduced a new field to the region
+@@ -459,7 +471,7 @@ int dprc_get_obj_region(struct fsl_mc_io *mc_io,
+ 	 * address is set to zero to indicate it needs to be obtained elsewhere
+ 	 * (typically the device tree).
+ 	 */
+-	if (major_ver > 6 || (major_ver == 6 && minor_ver >= 3))
++	if (dprc_major_ver > 6 || (dprc_major_ver == 6 && dprc_minor_ver >= 3))
+ 		cmd.header =
+ 			mc_encode_cmd_header(DPRC_CMDID_GET_OBJ_REG_V2,
+ 					     cmd_flags, token);
+@@ -483,7 +495,7 @@ int dprc_get_obj_region(struct fsl_mc_io *mc_io,
+ 	rsp_params = (struct dprc_rsp_get_obj_region *)cmd.params;
+ 	region_desc->base_offset = le64_to_cpu(rsp_params->base_offset);
+ 	region_desc->size = le32_to_cpu(rsp_params->size);
+-	if (major_ver > 6 || (major_ver == 6 && minor_ver >= 3))
++	if (dprc_major_ver > 6 || (dprc_major_ver == 6 && dprc_minor_ver >= 3))
+ 		region_desc->base_address = le64_to_cpu(rsp_params->base_addr);
+ 	else
+ 		region_desc->base_address = 0;
 -- 
 2.17.1
 
