@@ -2,101 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABE9227CCC7
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:39:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2623727CCBB
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:39:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733274AbgI2Mik (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 08:38:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49778 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732771AbgI2Mie (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 08:38:34 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 74C452075F;
-        Tue, 29 Sep 2020 12:38:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601383113;
-        bh=1agHRxXJKhB2RD26+gZ4x8RWV4EKhITxeEYpiuBbO3Y=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DWmjA8UFdsFWnaqLQDJfMWuIbOP31zKYrwaHNjRkhgkkbyol6UJQNOL2g65mEmM7z
-         r3wh0aEAIXzhRSusZ2U0MLVqmtsLu8t/8GK56UP3hceV/6s4ECE+CCU/O8tZzN6Rvf
-         K42OX9LCLHmQUHnGEYx+BhHjmTGzPz+rvHs8rKnU=
-Date:   Tue, 29 Sep 2020 13:37:34 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Julia Lawall <julia.lawall@inria.fr>
-Cc:     Joe Perches <joe@perches.com>, linux-iio@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-crypto@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        linux-acpi@vger.kernel.org, David Lechner <david@lechnology.com>,
-        Valdis =?utf-8?Q?Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>,
-        kernel-janitors@vger.kernel.org, drbd-dev@lists.linbit.com,
-        openipmi-developer@lists.sourceforge.net,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        linux-ide@vger.kernel.org, linux-amlogic@lists.infradead.org,
-        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-wireless@vger.kernel.org,
-        Neil Armstrong <narmstrong@baylibre.com>
-Subject: Re: [PATCH 00/18] use semicolons rather than commas to separate
- statements
-Message-ID: <20200929123734.GC4799@sirena.org.uk>
-References: <1601233948-11629-1-git-send-email-Julia.Lawall@inria.fr>
- <160132172369.55460.9237357219623604216.b4-ty@kernel.org>
- <b1174f9be2ce65f6b5ebefcba0b48e792926abbc.camel@perches.com>
- <20200929113745.GB4799@sirena.org.uk>
- <alpine.DEB.2.22.394.2009291344590.2808@hadrien>
+        id S1733262AbgI2Mi2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 08:38:28 -0400
+Received: from mail-ej1-f68.google.com ([209.85.218.68]:34773 "EHLO
+        mail-ej1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733222AbgI2MiP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 08:38:15 -0400
+Received: by mail-ej1-f68.google.com with SMTP id gr14so14825264ejb.1;
+        Tue, 29 Sep 2020 05:38:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=8cBo88Rf0XB3Amo8WHaoA3mvFSPQ6LbFDMO+GstCOgU=;
+        b=Mj+tyuiiZTC+4Uydo/wKMVjw2kpPqgFowW9aufPtw6EVKHXP1T6g398Wsueuyr2o7E
+         1m2wPQR0R/HyDeroDS8x8G3ElyKPf1Pywtr7PqPD3hPmV61drXl/mv2tp/S6D/z8lVP9
+         M6oCYXFL5poOJz17K9ZOW080P0uFVJqcU3pqduVYCZifWqLlEOEeMFOyr+R8zVFX0Evf
+         UrmgH2n0xEg32P80swtoeULkg/tf+/LRVovB+d/B8NKOr6ICiSfl98De9kiK8j4v1LR/
+         fGEJV7irR+H/8wVojbqVcqyd9PpGkGWzy2rUIm2b4Zr5OMwx5Vw3U+LQOtEl81pMJO/T
+         EfXQ==
+X-Gm-Message-State: AOAM533kOsAosbq3QGYhB+AIpDvP2JLO9JWQwFg1D3l4kGuqwwCepGdK
+        KMNYumz5MaOcR/jz91e3P4w=
+X-Google-Smtp-Source: ABdhPJywdVpCr+WJQxL/CB+8FU0Ise/EiUvtP1NqlRdfdlKrgf438XWp3aGFvYREkH3IV2E+mX7okA==
+X-Received: by 2002:a17:906:b28d:: with SMTP id q13mr3590683ejz.378.1601383092996;
+        Tue, 29 Sep 2020 05:38:12 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.194])
+        by smtp.googlemail.com with ESMTPSA id c5sm5704977edt.24.2020.09.29.05.38.09
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 29 Sep 2020 05:38:11 -0700 (PDT)
+Date:   Tue, 29 Sep 2020 14:38:08 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>, Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Chris Packham <chris.packham@alliedtelesis.co.nz>,
+        Anson Huang <Anson.Huang@nxp.com>,
+        Sungbo Eo <mans0n@gorani.run>, Stefan Agner <stefan@agner.ch>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Yash Shah <yash.shah@sifive.com>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-unisoc@lists.infradead.org,
+        MSM <linux-arm-msm@vger.kernel.org>,
+        linux-riscv@lists.infradead.org
+Subject: Re: [PATCH 0/8] gpio: add common dtschema
+Message-ID: <20200929123808.GA21809@kozik-lap>
+References: <20200916162250.16098-1-krzk@kernel.org>
+ <CACRpkdacWQKgCY1E=ONegPRE001UA-DmvRKB+Yz1maapYQ5rVQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="MnLPg7ZWsaic7Fhd"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.22.394.2009291344590.2808@hadrien>
-X-Cookie: I left my WALLET in the BATHROOM!!
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CACRpkdacWQKgCY1E=ONegPRE001UA-DmvRKB+Yz1maapYQ5rVQ@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Sep 29, 2020 at 01:56:42PM +0200, Linus Walleij wrote:
+> On Wed, Sep 16, 2020 at 6:23 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
+> 
+> > This is independent work of pca953x bindings:
+> > https://lore.kernel.org/lkml/20200916155715.21009-1-krzk@kernel.org/T/#u
+> >
+> > The DTS patches can be also applied independently.
+> 
+> I'm a big fan of this patch series and hope for a v2 soon
+> so I can apply them.
 
---MnLPg7ZWsaic7Fhd
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I sent the dt-bindings part of it already to dtschema and it was
+applied.  It's missing the description of properties due to licensing
+but at least it brings the hog nodes validation.
 
-On Tue, Sep 29, 2020 at 01:46:19PM +0200, Julia Lawall wrote:
-> On Tue, 29 Sep 2020, Mark Brown wrote:
+> 
+> If you do not foresee any conflicts in the DTS files I can
+> apply also these, else you can apply them in the i.MX DTS
+> tree (wherever that is) or I can provide an immutable
+> branch, whichever you like!
 
-> > Feel free to submit patches to b4.  Ideally things like this wouldn't be
-> > being sent as serieses in the first place, there's no dependencies or
-> > interactions between the patches.
+Thanks! I resent already the DTS in separate patchset and most of them
+went in.
 
-> It was suggested (a long time ago, not with respect to this patch in
-> particular) that sending such patches in a series is useful because it
-> allows people who are not interested in the 18 patches to skip over them
-> more easily.  So there are two conflicting needs...
+Best regards,
+Krzysztof
 
-I'm not convinced that there are huge numbers of people reading LKML as
-a list TBH, and if you are sending things as a series then the way
-you're doing it at the minute where you don't CC the cover letter to
-people makes things confusing as it's unclear if there are dependencies
-to worry about.
-
---MnLPg7ZWsaic7Fhd
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEyBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl9zKo0ACgkQJNaLcl1U
-h9BJ9wf4mEIT3UglAONn9EPv4I6DolXuWfJHGs52mxyy1JeuXGyjVMYRuKfw8ZE5
-TbgRR0pAg1aZUsqI/T/PWSVDmUCNzL6QM4RbG8ZUSFw47v509iCABBidbK+PLnwo
-y5A+IrAPTDVviLFNJm2SfFN3XEgpsGmOqhyuhKiGNeLOryaPNvOmiRF6cwND7Vbq
-97kDmafX0KgHVsmK/br50D/XJpOJSR9T2hB5hjQRoVl44a6aV0eZWwDDZyH57kat
-KO59OyGGHDyWrsF9oHWajymCB1kMZZ4YLiwCyjx98g74uRLSiSaGwrsr4IeXGn66
-Mmpn90mfVDnP/Es10vbKsC+JZShG
-=qH7V
------END PGP SIGNATURE-----
-
---MnLPg7ZWsaic7Fhd--
