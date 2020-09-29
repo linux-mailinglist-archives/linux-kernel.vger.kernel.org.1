@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 501ED27CC7A
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:37:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE73227CC7D
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:37:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733091AbgI2Mgl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 08:36:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35634 "EHLO mail.kernel.org"
+        id S1733181AbgI2Mgt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 08:36:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35550 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729246AbgI2LU6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1729503AbgI2LU6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 29 Sep 2020 07:20:58 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 369AA22207;
-        Tue, 29 Sep 2020 11:18:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E3D1D23444;
+        Tue, 29 Sep 2020 11:18:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601378304;
-        bh=upv3xnt3bWXiu6wKVob/j1pxoJ/5ELQvhiiDiyrMmdo=;
+        s=default; t=1601378307;
+        bh=SI+fWPNrFFRRT2Bdau69PuEhJHWv0Qy0sgSIomMiLeU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sAa46/qwPDD2ud/qBRVRvoyvVhC1CxJJYAR/eigTZ3Dd38J2w3ThkrveC3kvz/uQy
-         IdIFudEH8vtuplDrJs6wihkwCRe+g9uVIIksAl592tdHJ8QFxeclApd/pcxh1C0w0x
-         ++uWLVSuBu+5Um0VhWiz2gBIlVoHBDUd1DK23kgo=
+        b=IEM71ZweAXfF2J88O2BRnuDaHHiPPrvO39ODXR6cNwTdnmRjikAYBNvda5CPuOWvY
+         jh5vTv3R6vrMjBn15bHr8FAf26Oyn9sN5oC4c85uwkPAwXBqt9GRL1W37kZATfNJId
+         D3TN4W8h5W8nQso+2dhgyN88BxPOysijeB/wh8os=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Ron Minnich <rminnich@google.com>,
-        Richard Weinberger <richard@nod.at>,
+        stable@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Peter Zijlstra <peterz@infradead.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 134/166] mtd: parser: cmdline: Support MTD names containing one or more colons
-Date:   Tue, 29 Sep 2020 13:00:46 +0200
-Message-Id: <20200929105941.893468951@linuxfoundation.org>
+Subject: [PATCH 4.14 135/166] x86/speculation/mds: Mark mds_user_clear_cpu_buffers() __always_inline
+Date:   Tue, 29 Sep 2020 13:00:47 +0200
+Message-Id: <20200929105941.943720663@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200929105935.184737111@linuxfoundation.org>
 References: <20200929105935.184737111@linuxfoundation.org>
@@ -45,61 +44,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Boris Brezillon <boris.brezillon@collabora.com>
+From: Thomas Gleixner <tglx@linutronix.de>
 
-[ Upstream commit eb13fa0227417e84aecc3bd9c029d376e33474d3 ]
+[ Upstream commit a7ef9ba986b5fae9d80f8a7b31db0423687efe4e ]
 
-Looks like some drivers define MTD names with a colon in it, thus
-making mtdpart= parsing impossible. Let's fix the parser to gracefully
-handle that case: the last ':' in a partition definition sequence is
-considered instead of the first one.
+Prevent the compiler from uninlining and creating traceable/probable
+functions as this is invoked _after_ context tracking switched to
+CONTEXT_USER and rcu idle.
 
-Signed-off-by: Boris Brezillon <boris.brezillon@collabora.com>
-Signed-off-by: Ron Minnich <rminnich@google.com>
-Tested-by: Ron Minnich <rminnich@google.com>
-Signed-off-by: Richard Weinberger <richard@nod.at>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Reviewed-by: Alexandre Chartre <alexandre.chartre@oracle.com>
+Acked-by: Peter Zijlstra <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/20200505134340.902709267@linutronix.de
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mtd/cmdlinepart.c | 23 ++++++++++++++++++++---
- 1 file changed, 20 insertions(+), 3 deletions(-)
+ arch/x86/include/asm/nospec-branch.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/cmdlinepart.c b/drivers/mtd/cmdlinepart.c
-index fbd5affc0acfe..04fd845de05fb 100644
---- a/drivers/mtd/cmdlinepart.c
-+++ b/drivers/mtd/cmdlinepart.c
-@@ -228,12 +228,29 @@ static int mtdpart_setup_real(char *s)
- 		struct cmdline_mtd_partition *this_mtd;
- 		struct mtd_partition *parts;
- 		int mtd_id_len, num_parts;
--		char *p, *mtd_id;
-+		char *p, *mtd_id, *semicol;
-+
-+		/*
-+		 * Replace the first ';' by a NULL char so strrchr can work
-+		 * properly.
-+		 */
-+		semicol = strchr(s, ';');
-+		if (semicol)
-+			*semicol = '\0';
+diff --git a/arch/x86/include/asm/nospec-branch.h b/arch/x86/include/asm/nospec-branch.h
+index 041d2a04be1d8..270448b178a7a 100644
+--- a/arch/x86/include/asm/nospec-branch.h
++++ b/arch/x86/include/asm/nospec-branch.h
+@@ -330,7 +330,7 @@ DECLARE_STATIC_KEY_FALSE(mds_idle_clear);
+  * combination with microcode which triggers a CPU buffer flush when the
+  * instruction is executed.
+  */
+-static inline void mds_clear_cpu_buffers(void)
++static __always_inline void mds_clear_cpu_buffers(void)
+ {
+ 	static const u16 ds = __KERNEL_DS;
  
- 		mtd_id = s;
- 
--		/* fetch <mtd-id> */
--		p = strchr(s, ':');
-+		/*
-+		 * fetch <mtd-id>. We use strrchr to ignore all ':' that could
-+		 * be present in the MTD name, only the last one is interpreted
-+		 * as an <mtd-id>/<part-definition> separator.
-+		 */
-+		p = strrchr(s, ':');
-+
-+		/* Restore the ';' now. */
-+		if (semicol)
-+			*semicol = ';';
-+
- 		if (!p) {
- 			pr_err("no mtd-id\n");
- 			return -EINVAL;
+@@ -351,7 +351,7 @@ static inline void mds_clear_cpu_buffers(void)
+  *
+  * Clear CPU buffers if the corresponding static key is enabled
+  */
+-static inline void mds_user_clear_cpu_buffers(void)
++static __always_inline void mds_user_clear_cpu_buffers(void)
+ {
+ 	if (static_branch_likely(&mds_user_clear))
+ 		mds_clear_cpu_buffers();
 -- 
 2.25.1
 
