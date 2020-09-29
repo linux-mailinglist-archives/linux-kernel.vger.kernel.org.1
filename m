@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BE3D27C6A3
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:47:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C81A27C76D
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:54:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730894AbgI2LrE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:47:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48150 "EHLO mail.kernel.org"
+        id S1731454AbgI2Lxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:53:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48148 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729752AbgI2Lq6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1728788AbgI2Lq6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 29 Sep 2020 07:46:58 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0057521D7D;
-        Tue, 29 Sep 2020 11:46:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2EA292083B;
+        Tue, 29 Sep 2020 11:46:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601380000;
-        bh=DauaKu40AGkfpzJ37rbt4KkUyts9P4szYG6QDESdX/c=;
+        s=default; t=1601380002;
+        bh=ilhWxfOXDu8ezwPzhsBzKr6n7V85uZToBWIv0QvK4u8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mCXyGBWWWjbIaFz7r3bHgG2GsvNxfwO+Ph8x9uq3XRraSw3DUszpiMSg9+BGaQFkQ
-         lw0ybZYC6QlqOkfn+j+MnD33Sa9exowqoWD1TdR3TdcHZ8iN1vbGm7z0oMolrsy4Gk
-         tmKkV1zs1VFc8ObEZ0hmgukrN+I7xfsSxGimX9Y8=
+        b=tHRB9aapFDcMj0L+oYAI/drGGV090+QLA7+u1/P+gp6Hv4yRCH4cDQsk2XG/sBe3M
+         2R9UZHA4cHDCEomTEyIPQJiQfC6Asm/DTdB1FkLToVBpMf2zHgv1nlQu/ilF9Vh4mr
+         v/KBlJFPHRgkYvKczNUocJPQhZ9rMctYyy3u2gIY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
         Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 04/99] ASoC: wm8994: Ensure the device is resumed in wm89xx_mic_detect functions
-Date:   Tue, 29 Sep 2020 13:00:47 +0200
-Message-Id: <20200929105929.939151155@linuxfoundation.org>
+Subject: [PATCH 5.8 05/99] ASoC: Intel: bytcr_rt5640: Add quirk for MPMAN Converter9 2-in-1
+Date:   Tue, 29 Sep 2020 13:00:48 +0200
+Message-Id: <20200929105929.979203463@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200929105929.719230296@linuxfoundation.org>
 References: <20200929105929.719230296@linuxfoundation.org>
@@ -46,69 +44,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
+From: Hans de Goede <hdegoede@redhat.com>
 
-[ Upstream commit f5a2cda4f1db89776b64c4f0f2c2ac609527ac70 ]
+[ Upstream commit 6a0137101f47301fff2da6ba4b9048383d569909 ]
 
-When the wm8958_mic_detect, wm8994_mic_detect functions get called from
-the machine driver, e.g. from the card's late_probe() callback, the CODEC
-device may be PM runtime suspended and any regmap writes have no effect.
-Add PM runtime calls to these functions to ensure the device registers
-are updated as expected.
-This suppresses an error during boot
-"wm8994-codec: ASoC: error at snd_soc_component_update_bits on wm8994-codec"
-caused by the regmap access error due to the cache_only flag being set.
+The MPMAN Converter9 2-in-1 almost fully works with out default settings.
+The only problem is that it has only 1 speaker so any sounds only playing
+on the right channel get lost.
 
-Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Link: https://lore.kernel.org/r/20200827173357.31891-2-s.nawrocki@samsung.com
+Add a quirk for this model using the default settings + MONO_SPEAKER.
+
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20200901080623.4987-1-hdegoede@redhat.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/wm8994.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ sound/soc/intel/boards/bytcr_rt5640.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
-index c2116836a7203..58f21329d0e99 100644
---- a/sound/soc/codecs/wm8994.c
-+++ b/sound/soc/codecs/wm8994.c
-@@ -3491,6 +3491,8 @@ int wm8994_mic_detect(struct snd_soc_component *component, struct snd_soc_jack *
- 		return -EINVAL;
- 	}
- 
-+	pm_runtime_get_sync(component->dev);
-+
- 	switch (micbias) {
- 	case 1:
- 		micdet = &wm8994->micdet[0];
-@@ -3538,6 +3540,8 @@ int wm8994_mic_detect(struct snd_soc_component *component, struct snd_soc_jack *
- 
- 	snd_soc_dapm_sync(dapm);
- 
-+	pm_runtime_put(component->dev);
-+
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(wm8994_mic_detect);
-@@ -3905,6 +3909,8 @@ int wm8958_mic_detect(struct snd_soc_component *component, struct snd_soc_jack *
- 		return -EINVAL;
- 	}
- 
-+	pm_runtime_get_sync(component->dev);
-+
- 	if (jack) {
- 		snd_soc_dapm_force_enable_pin(dapm, "CLK_SYS");
- 		snd_soc_dapm_sync(dapm);
-@@ -3973,6 +3979,8 @@ int wm8958_mic_detect(struct snd_soc_component *component, struct snd_soc_jack *
- 		snd_soc_dapm_sync(dapm);
- 	}
- 
-+	pm_runtime_put(component->dev);
-+
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(wm8958_mic_detect);
+diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
+index 1fdb70b9e4788..5f885062145fe 100644
+--- a/sound/soc/intel/boards/bytcr_rt5640.c
++++ b/sound/soc/intel/boards/bytcr_rt5640.c
+@@ -591,6 +591,16 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
+ 					BYT_RT5640_SSP0_AIF1 |
+ 					BYT_RT5640_MCLK_EN),
+ 	},
++	{	/* MPMAN Converter 9, similar hw as the I.T.Works TW891 2-in-1 */
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "MPMAN"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "Converter9"),
++		},
++		.driver_data = (void *)(BYTCR_INPUT_DEFAULTS |
++					BYT_RT5640_MONO_SPEAKER |
++					BYT_RT5640_SSP0_AIF1 |
++					BYT_RT5640_MCLK_EN),
++	},
+ 	{
+ 		/* MPMAN MPWIN895CL */
+ 		.matches = {
 -- 
 2.25.1
 
