@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 098F327C433
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:12:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B9E327C435
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:12:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729290AbgI2LMA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:12:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52838 "EHLO mail.kernel.org"
+        id S1728848AbgI2LMF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:12:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52836 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729240AbgI2LLb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1729243AbgI2LLb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 29 Sep 2020 07:11:31 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 58F6F21924;
-        Tue, 29 Sep 2020 11:11:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 27B4C21D46;
+        Tue, 29 Sep 2020 11:11:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601377880;
-        bh=4XE1DWf9nEaI5nkMyoVhNtkeaLmFM9LshbFKtDEupbo=;
+        s=default; t=1601377882;
+        bh=rdOroJv+vrav+dX/q2OHRgJCaRqFiHWcMMefK4d1WWQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=psfB7KjcHSf/bu6idl/YLS2BQ94msH+DJ1pOruH5v6X5Rf3wjxUojZzh8Xdy5Z3au
-         sKpfDSn7w+dE/46c5+ntG4ASpjCSVbx7NzXl622JZ28Ae8gIVFYSNFEqn7FOUTkuoX
-         HMXelI214tKChfUFetaIC9MMuOLqvOAJhF931wJU=
+        b=KvISM0rts+38kMTIkwnBkPTayH+IftHIiCiaRwNtTOZ3o8e3xXbdGMKpZ7B20zChs
+         eseQMuFuCL93wwpRIa4V3SSWgHwk7MgPAfIDKrfxC1YF8PHIhmeC8e97Gkdnnqugiy
+         0aaJHRGL3WhpOlXIWsod3bh96G7yYSNNjeVSx8jc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Borislav Petkov <bp@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 105/121] objtool: Fix noreturn detection for ignored functions
-Date:   Tue, 29 Sep 2020 13:00:49 +0200
-Message-Id: <20200929105935.386215422@linuxfoundation.org>
+        stable@vger.kernel.org, Tom Rix <trix@redhat.com>,
+        Michael Hennerich <michael.hennerich@analog.com>,
+        Stefan Schmidt <stefan@datenfreihafen.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 106/121] ieee802154/adf7242: check status of adf7242_read_reg
+Date:   Tue, 29 Sep 2020 13:00:50 +0200
+Message-Id: <20200929105935.437611073@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200929105930.172747117@linuxfoundation.org>
 References: <20200929105930.172747117@linuxfoundation.org>
@@ -44,55 +44,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Josh Poimboeuf <jpoimboe@redhat.com>
+From: Tom Rix <trix@redhat.com>
 
-[ Upstream commit db6c6a0df840e3f52c84cc302cc1a08ba11a4416 ]
+[ Upstream commit e3914ed6cf44bfe1f169e26241f8314556fd1ac1 ]
 
-When a function is annotated with STACK_FRAME_NON_STANDARD, objtool
-doesn't validate its code paths.  It also skips sibling call detection
-within the function.
+Clang static analysis reports this error
 
-But sibling call detection is actually needed for the case where the
-ignored function doesn't have any return instructions.  Otherwise
-objtool naively marks the function as implicit static noreturn, which
-affects the reachability of its callers, resulting in "unreachable
-instruction" warnings.
+adf7242.c:887:6: warning: Assigned value is garbage or undefined
+        len = len_u8;
+            ^ ~~~~~~
 
-Fix it by just enabling sibling call detection for ignored functions.
-The 'insn->ignore' check in add_jump_destinations() is no longer needed
-after
+len_u8 is set in
+       adf7242_read_reg(lp, 0, &len_u8);
 
-  e6da9567959e ("objtool: Don't use ignore flag for fake jumps").
+When this call fails, len_u8 is not set.
 
-Fixes the following warning:
+So check the return code.
 
-  arch/x86/kvm/vmx/vmx.o: warning: objtool: vmx_handle_exit_irqoff()+0x142: unreachable instruction
+Fixes: 7302b9d90117 ("ieee802154/adf7242: Driver for ADF7242 MAC IEEE802154")
 
-which triggers on an allmodconfig with CONFIG_GCOV_KERNEL unset.
-
-Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Acked-by: Linus Torvalds <torvalds@linux-foundation.org>
-Link: https://lkml.kernel.org/r/5b1e2536cdbaa5246b60d7791b76130a74082c62.1599751464.git.jpoimboe@redhat.com
+Signed-off-by: Tom Rix <trix@redhat.com>
+Acked-by: Michael Hennerich <michael.hennerich@analog.com>
+Link: https://lore.kernel.org/r/20200802142339.21091-1-trix@redhat.com
+Signed-off-by: Stefan Schmidt <stefan@datenfreihafen.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/objtool/check.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ieee802154/adf7242.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-index c7399d7f4bc77..31c512f19662e 100644
---- a/tools/objtool/check.c
-+++ b/tools/objtool/check.c
-@@ -502,7 +502,7 @@ static int add_jump_destinations(struct objtool_file *file)
- 		    insn->type != INSN_JUMP_UNCONDITIONAL)
- 			continue;
+diff --git a/drivers/net/ieee802154/adf7242.c b/drivers/net/ieee802154/adf7242.c
+index 1b980f12663af..a605dfb15bb75 100644
+--- a/drivers/net/ieee802154/adf7242.c
++++ b/drivers/net/ieee802154/adf7242.c
+@@ -834,7 +834,9 @@ static int adf7242_rx(struct adf7242_local *lp)
+ 	int ret;
+ 	u8 lqi, len_u8, *data;
  
--		if (insn->ignore || insn->offset == FAKE_JUMP_OFFSET)
-+		if (insn->offset == FAKE_JUMP_OFFSET)
- 			continue;
+-	adf7242_read_reg(lp, 0, &len_u8);
++	ret = adf7242_read_reg(lp, 0, &len_u8);
++	if (ret)
++		return ret;
  
- 		rela = find_rela_by_dest_range(insn->sec, insn->offset,
+ 	len = len_u8;
+ 
 -- 
 2.25.1
 
