@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8123727C76B
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:54:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17E1C27C6B7
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:48:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731242AbgI2Lxx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:53:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47386 "EHLO mail.kernel.org"
+        id S1730383AbgI2Lro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:47:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48148 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730882AbgI2Lq7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:46:59 -0400
+        id S1731072AbgI2LrU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:47:20 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 73331221E7;
-        Tue, 29 Sep 2020 11:46:55 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B8DDD221EC;
+        Tue, 29 Sep 2020 11:47:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601380015;
-        bh=fEJmQhPAKMkbY8sEpsumlVQIeQ+oUynX6P4xKhGDkMU=;
+        s=default; t=1601380040;
+        bh=Q7PDz35zNEzU/WetldDS6SxJcYtRsWaGKywmCulC/WM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZqIMIw0Qb6WVEeN7IozpDdKsYnlWFjHjrImwnxfCXQ2fpDD5q4w8P7574UlMf24zW
-         TuzdFjbkKh2bGhX/0MG5T1rsZyYaSnUPKz9oSCnXKaiwxiEft4wbcDw6dlp+UghVTs
-         81nu0fzC8F1QnfNidppZb/YNkxiUouLN3kzQphLw=
+        b=hDGZ3n5SvKgGaUCsDd0h52KA++1rz038c5kSPwH25IyXjo4DbXBKUDbFvYkZL70FR
+         7iYLUy6+Jn/D/bPedBajfu/h3QshTvL9FqFGU8Nt0migtn8+W5d4TOLqz489QIRP9v
+         8zl3A7zqXBfrA+jThs41HDHdMd64zkzyPmTpyIdk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tom Rix <trix@redhat.com>,
-        Michael Hennerich <michael.hennerich@analog.com>,
-        Stefan Schmidt <stefan@datenfreihafen.org>,
+        stable@vger.kernel.org, Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 22/99] ieee802154/adf7242: check status of adf7242_read_reg
-Date:   Tue, 29 Sep 2020 13:01:05 +0200
-Message-Id: <20200929105930.818581847@linuxfoundation.org>
+Subject: [PATCH 5.8 23/99] clocksource/drivers/h8300_timer8: Fix wrong return value in h8300_8timer_init()
+Date:   Tue, 29 Sep 2020 13:01:06 +0200
+Message-Id: <20200929105930.859643028@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200929105929.719230296@linuxfoundation.org>
 References: <20200929105929.719230296@linuxfoundation.org>
@@ -44,49 +43,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+From: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
 
-[ Upstream commit e3914ed6cf44bfe1f169e26241f8314556fd1ac1 ]
+[ Upstream commit 400d033f5a599120089b5f0c54d14d198499af5a ]
 
-Clang static analysis reports this error
+In the init function, if the call to of_iomap() fails, the return
+value is ENXIO instead of -ENXIO.
 
-adf7242.c:887:6: warning: Assigned value is garbage or undefined
-        len = len_u8;
-            ^ ~~~~~~
+Change to the right negative errno.
 
-len_u8 is set in
-       adf7242_read_reg(lp, 0, &len_u8);
-
-When this call fails, len_u8 is not set.
-
-So check the return code.
-
-Fixes: 7302b9d90117 ("ieee802154/adf7242: Driver for ADF7242 MAC IEEE802154")
-
-Signed-off-by: Tom Rix <trix@redhat.com>
-Acked-by: Michael Hennerich <michael.hennerich@analog.com>
-Link: https://lore.kernel.org/r/20200802142339.21091-1-trix@redhat.com
-Signed-off-by: Stefan Schmidt <stefan@datenfreihafen.org>
+Fixes: 691f8f878290f ("clocksource/drivers/h8300_timer8: Convert init function to return error")
+Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
+Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+Link: https://lore.kernel.org/r/20200802111541.5429-1-tianjia.zhang@linux.alibaba.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ieee802154/adf7242.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/clocksource/h8300_timer8.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ieee802154/adf7242.c b/drivers/net/ieee802154/adf7242.c
-index c11f32f644db3..7db9cbd0f5ded 100644
---- a/drivers/net/ieee802154/adf7242.c
-+++ b/drivers/net/ieee802154/adf7242.c
-@@ -882,7 +882,9 @@ static int adf7242_rx(struct adf7242_local *lp)
- 	int ret;
- 	u8 lqi, len_u8, *data;
+diff --git a/drivers/clocksource/h8300_timer8.c b/drivers/clocksource/h8300_timer8.c
+index 1d740a8c42ab3..47114c2a7cb54 100644
+--- a/drivers/clocksource/h8300_timer8.c
++++ b/drivers/clocksource/h8300_timer8.c
+@@ -169,7 +169,7 @@ static int __init h8300_8timer_init(struct device_node *node)
+ 		return PTR_ERR(clk);
+ 	}
  
--	adf7242_read_reg(lp, 0, &len_u8);
-+	ret = adf7242_read_reg(lp, 0, &len_u8);
-+	if (ret)
-+		return ret;
- 
- 	len = len_u8;
- 
+-	ret = ENXIO;
++	ret = -ENXIO;
+ 	base = of_iomap(node, 0);
+ 	if (!base) {
+ 		pr_err("failed to map registers for clockevent\n");
 -- 
 2.25.1
 
