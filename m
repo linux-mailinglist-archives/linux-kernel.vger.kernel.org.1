@@ -2,92 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89F0127D6B8
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 21:18:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9665627D6B7
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 21:18:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728629AbgI2TSq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 15:18:46 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43379 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725306AbgI2TSp (ORCPT
+        id S1728432AbgI2TSj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 15:18:39 -0400
+Received: from mail-ot1-f66.google.com ([209.85.210.66]:37887 "EHLO
+        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725306AbgI2TSi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 15:18:45 -0400
-Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601407124;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=PwDF8sRN981dD8fydiaK/PhWhCr08TO1kfBL5+e7gjw=;
-        b=X4EEo2oZNlI4Pg1lVOIq/NHpKU23xvh+Qsf85DfmS6TH1sdkpSLoSVgdxcBA+TdwRQdu9l
-        mQGrJJzra4lUVhso69ffXBJ+SciJjChjPhkkEahlNQ48/8fLzoQQmgq/o0VWrOGlG98z60
-        2iiLgnkrVbw2eMj5ErIdQpalp0lmuv4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-107-8LXkHtqgOoW2pfy9EyuA1g-1; Tue, 29 Sep 2020 15:18:40 -0400
-X-MC-Unique: 8LXkHtqgOoW2pfy9EyuA1g-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AAE36425CE;
-        Tue, 29 Sep 2020 19:18:38 +0000 (UTC)
-Received: from treble (ovpn-113-70.rdu2.redhat.com [10.10.113.70])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 11DAF7838A;
-        Tue, 29 Sep 2020 19:18:36 +0000 (UTC)
-Date:   Tue, 29 Sep 2020 14:18:34 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Julien Thierry <jthierry@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org, mbenes@suse.cz,
-        raphael.gault@arm.com, benh@kernel.crashing.org
-Subject: Re: [PATCH v2 1/3] objtool: check: Fully validate the stack frame
-Message-ID: <20200929191834.7daofidv6b5aef3y@treble>
-References: <20200928093631.210610-1-jthierry@redhat.com>
- <20200928093631.210610-2-jthierry@redhat.com>
+        Tue, 29 Sep 2020 15:18:38 -0400
+Received: by mail-ot1-f66.google.com with SMTP id o8so5599424otl.4;
+        Tue, 29 Sep 2020 12:18:38 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=40hh8IQfWNRqHPCW5sa6gIpUFNpap78I4kipBZ1tykA=;
+        b=HFxH8HKKZ3wluULAjl0TUP+OrDwzVh0xw0AtIYt5cd6Lv+hR5ZMdu9L0MXy+EpGbf1
+         7WEO10KXrgviyvkBdM3O75YMFFIlOpn0cbxRMiP5l5U4MKxIsMlOt2kmliUMrn/U9rHo
+         SzT3DYo7DRQBsWLIE0ZUbXmt9Xa/bX6Q427l8l8QCZkBNsk49MBeQAkDC9m5+m+ihlDL
+         VfbRimtzfp9ihve4sNcfaDVT9mmA+xZgGRxaRPgvRZW+YAjTVg+x62W8TRMRvp/sgOZ2
+         KiHuWL0xfIDdXflHcx6DD2EvboUz5RHe0RB4hnsP7zKyb52HKQjN8vj429XjrqlSQDNc
+         fCBw==
+X-Gm-Message-State: AOAM532YsGqA4Av4cfs4Lg4Xv8RIKattL/8Wj+fnUEVIksmGeX1nJw47
+        3n2fPRaj0P9wqIADff8e2w==
+X-Google-Smtp-Source: ABdhPJwlV7uK1dgR+6SZOi39pk7d4hc1FXLPr2jkbumfVgkMzMmHJGB0pU45obgHQO+nBeEqQpHLRQ==
+X-Received: by 2002:a05:6830:1f09:: with SMTP id u9mr3529289otg.175.1601407117928;
+        Tue, 29 Sep 2020 12:18:37 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id k10sm1210057ots.60.2020.09.29.12.18.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Sep 2020 12:18:37 -0700 (PDT)
+Received: (nullmailer pid 998175 invoked by uid 1000);
+        Tue, 29 Sep 2020 19:18:36 -0000
+Date:   Tue, 29 Sep 2020 14:18:36 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Stefan Riedmueller <s.riedmueller@phytec.de>,
+        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Robert Jones <rjones@gateworks.com>,
+        linux-arm-kernel@lists.infradead.org, Li Yang <leoyang.li@nxp.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        devicetree@vger.kernel.org, Shawn Guo <shawnguo@kernel.org>
+Subject: Re: [PATCH 09/14] dt-bindings: arm: fsl: document VF boards
+Message-ID: <20200929191836.GA998117@bogus>
+References: <20200926162811.5335-1-krzk@kernel.org>
+ <20200926162811.5335-9-krzk@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200928093631.210610-2-jthierry@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+In-Reply-To: <20200926162811.5335-9-krzk@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 10:36:29AM +0100, Julien Thierry wrote:
-> +++ b/tools/objtool/arch/x86/include/cfi_regs.h
-> @@ -22,4 +22,7 @@
->  #define CFI_RA			16
->  #define CFI_NUM_REGS		17
+On Sat, 26 Sep 2020 18:28:06 +0200, Krzysztof Kozlowski wrote:
+> Document and adjust the compatibles for VF500 and VF600 based boards.
+> The Toradex Colibri Evaluation Boards use multiple compatibles.
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> ---
+>  .../devicetree/bindings/arm/fsl.yaml          | 24 +++++++++++++++----
+>  1 file changed, 20 insertions(+), 4 deletions(-)
+> 
 
-A few more naming nitpicks:
-
-> +#define STACKFRAME_BP_OFFSET	-16
-> +#define STACKFRAME_RA_OFFSET	-8
-
-"Stack frame" has more than one meaning now, I suppose.  i.e. it could
-also include the callee-saved registers and any other stack space
-allocated by the function.
-
-Would "call frame" be clearer?
-
-  CALL_FRAME_BP_OFFSET
-  CALL_FRAME_RA_OFFSET
-
-?
-
-> +++ b/tools/objtool/cfi.h
-> @@ -35,4 +35,6 @@ struct cfi_state {
->  	bool end;
->  };
->  
-> +#define STACKFRAME_SIZE	16
-
-CALL_FRAME_SIZE ?
-
-I'm sort of contradicting my previous comment here, but even though this
-value may be generic, it's also very much intertwined with the
-CALL_FRAME_{BP|RA}_OFFSET values.  So I get the feeling it really
-belongs in the arch-specific cfi_regs.h next to the other defines after
-all.
-
--- 
-Josh
-
+Reviewed-by: Rob Herring <robh@kernel.org>
