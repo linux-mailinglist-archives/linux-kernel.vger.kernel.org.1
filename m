@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35EA227C31B
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:03:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 824DC27C4C3
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:17:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728387AbgI2LDP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:03:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38568 "EHLO mail.kernel.org"
+        id S1729581AbgI2LQU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:16:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59810 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728337AbgI2LDB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:03:01 -0400
+        id S1729278AbgI2LP3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:15:29 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D6C4420C09;
-        Tue, 29 Sep 2020 11:03:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C6AA2208FE;
+        Tue, 29 Sep 2020 11:15:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601377381;
-        bh=WI/pjt1weQQ7po3ewfU8oddQZDYZsLZAP0LT5WBgph8=;
+        s=default; t=1601378129;
+        bh=YTi2DVDTYY9Gzpuq/f0hpUTUJ4WQ85KgDRz9QQ36yCU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VLDIiV6u9ke1OEhFGi8t8L+kWQHZdWgOCPYEsgv4s62uUQtFxKLuD5yCDvEKfhiXA
-         Q6Y/N+NZSHpUGTH9SdQ6l5qXi6NdP3tU5h0H9xVypl7wBkeXM5VZtpvJb1Idljg+P2
-         FpzFMm7md/LD4rDWb1B3kcetQokhPmasdVKZp9aw=
+        b=Ydv5p0QodU3V6YXhH+TD4GyT/xni9lofKqu7/GWa/h81hhW9SzZI2PX/+rHZlahjK
+         lCmUW+RpVmubQwa/R//YvgFlA+OP4pP9EHDOAs0uDnAX72sksT/BHYUck0/iYWLI+l
+         n0rHTglW00eKatjzawHdSSDEHpVGbv9F0YHhD5v8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chanwoo Choi <cw00.choi@samsung.com>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 16/85] PM / devfreq: tegra30: Fix integer overflow on CPUs freq max out
-Date:   Tue, 29 Sep 2020 12:59:43 +0200
-Message-Id: <20200929105929.026530952@linuxfoundation.org>
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sasha Levin <sashal@kernel.org>,
+        =?UTF-8?q?Josef=20M=C3=B6llers?= <josef.moellers@suse.com>
+Subject: [PATCH 4.14 072/166] media: go7007: Fix URB type for interrupt handling
+Date:   Tue, 29 Sep 2020 12:59:44 +0200
+Message-Id: <20200929105938.817574636@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929105928.198942536@linuxfoundation.org>
-References: <20200929105928.198942536@linuxfoundation.org>
+In-Reply-To: <20200929105935.184737111@linuxfoundation.org>
+References: <20200929105935.184737111@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,45 +45,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmitry Osipenko <digetx@gmail.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-[ Upstream commit 53b4b2aeee26f42cde5ff2a16dd0d8590c51a55a ]
+[ Upstream commit a3ea410cac41b19a5490aad7fe6d9a9a772e646e ]
 
-There is another kHz-conversion bug in the code, resulting in integer
-overflow. Although, this time the resulting value is 4294966296 and it's
-close to ULONG_MAX, which is okay in this case.
+Josef reported that his old-and-good Plextor ConvertX M402U video
+converter spews lots of WARNINGs on the recent kernels, and it turned
+out that the device uses a bulk endpoint for interrupt handling just
+like 2250 board.
 
-Reviewed-by: Chanwoo Choi <cw00.choi@samsung.com>
-Tested-by: Peter Geis <pgwipeout@gmail.com>
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-Signed-off-by: Chanwoo Choi <cw00.choi@samsung.com>
+For fixing it, generalize the check with the proper verification of
+the endpoint instead of hard-coded board type check.
+
+Fixes: 7e5219d18e93 ("[media] go7007: Fix 2250 urb type")
+Reported-and-tested-by: Josef Möllers <josef.moellers@suse.com>
+BugLink: https://bugzilla.suse.com/show_bug.cgi?id=1162583
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=206427
+
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/devfreq/tegra-devfreq.c | 4 +++-
+ drivers/media/usb/go7007/go7007-usb.c | 4 +++-
  1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/devfreq/tegra-devfreq.c b/drivers/devfreq/tegra-devfreq.c
-index 64a2e02b87d78..0b0de6a049afb 100644
---- a/drivers/devfreq/tegra-devfreq.c
-+++ b/drivers/devfreq/tegra-devfreq.c
-@@ -79,6 +79,8 @@
+diff --git a/drivers/media/usb/go7007/go7007-usb.c b/drivers/media/usb/go7007/go7007-usb.c
+index ed9bcaf08d5ec..ddfaabd4c0813 100644
+--- a/drivers/media/usb/go7007/go7007-usb.c
++++ b/drivers/media/usb/go7007/go7007-usb.c
+@@ -1052,6 +1052,7 @@ static int go7007_usb_probe(struct usb_interface *intf,
+ 	struct go7007_usb *usb;
+ 	const struct go7007_usb_board *board;
+ 	struct usb_device *usbdev = interface_to_usbdev(intf);
++	struct usb_host_endpoint *ep;
+ 	unsigned num_i2c_devs;
+ 	char *name;
+ 	int video_pipe, i, v_urb_len;
+@@ -1147,7 +1148,8 @@ static int go7007_usb_probe(struct usb_interface *intf,
+ 	if (usb->intr_urb->transfer_buffer == NULL)
+ 		goto allocfail;
  
- #define KHZ							1000
- 
-+#define KHZ_MAX						(ULONG_MAX / KHZ)
-+
- /* Assume that the bus is saturated if the utilization is 25% */
- #define BUS_SATURATION_RATIO					25
- 
-@@ -179,7 +181,7 @@ struct tegra_actmon_emc_ratio {
- };
- 
- static struct tegra_actmon_emc_ratio actmon_emc_ratios[] = {
--	{ 1400000, ULONG_MAX },
-+	{ 1400000,    KHZ_MAX },
- 	{ 1200000,    750000 },
- 	{ 1100000,    600000 },
- 	{ 1000000,    500000 },
+-	if (go->board_id == GO7007_BOARDID_SENSORAY_2250)
++	ep = usb->usbdev->ep_in[4];
++	if (usb_endpoint_type(&ep->desc) == USB_ENDPOINT_XFER_BULK)
+ 		usb_fill_bulk_urb(usb->intr_urb, usb->usbdev,
+ 			usb_rcvbulkpipe(usb->usbdev, 4),
+ 			usb->intr_urb->transfer_buffer, 2*sizeof(u16),
 -- 
 2.25.1
 
