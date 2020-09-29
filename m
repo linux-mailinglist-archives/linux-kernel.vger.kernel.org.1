@@ -2,82 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B57BF27D211
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 17:04:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 119C027D21A
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 17:06:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730190AbgI2PEs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 11:04:48 -0400
-Received: from mx2.suse.de ([195.135.220.15]:42590 "EHLO mx2.suse.de"
+        id S1731186AbgI2PF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 11:05:59 -0400
+Received: from foss.arm.com ([217.140.110.172]:46806 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725710AbgI2PEs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 11:04:48 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1601391886;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BK7zsoCScu7iUZFoKsqeYor8HokJPerHJKMNvd3iTAo=;
-        b=X0bhDucboFOYukcc7cM6CgWPOH3Rf+ilMyYdAXP8JWtTcN2ymeRID9j68NiB2ZJGCZYx3Q
-        JzA7ZzQI15e65/pR4F3BG/EaXJnQz2cgQn2cgbRgLLJcuu/PZMGU0b4exblOFvu+6XVT/Z
-        4Xx9ee/8vd1rTiRrhHjAP7obubmgpL4=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 5B4EAAD0F;
-        Tue, 29 Sep 2020 15:04:46 +0000 (UTC)
-Date:   Tue, 29 Sep 2020 17:04:44 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Shakeel Butt <shakeelb@google.com>, Roman Gushchin <guro@fb.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Greg Thelen <gthelen@google.com>,
+        id S1725710AbgI2PF7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 11:05:59 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 566D91063;
+        Tue, 29 Sep 2020 08:05:58 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [10.57.51.69])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BE43B3F6CF;
+        Tue, 29 Sep 2020 08:05:51 -0700 (PDT)
+Date:   Tue, 29 Sep 2020 16:05:49 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Marco Elver <elver@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Potapenko <glider@google.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christoph Lameter <cl@linux.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
         David Rientjes <rientjes@google.com>,
-        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] memcg: introduce per-memcg reclaim interface
-Message-ID: <20200929150444.GG2277@dhcp22.suse.cz>
-References: <20200909215752.1725525-1-shakeelb@google.com>
- <20200928210216.GA378894@cmpxchg.org>
+        Dmitry Vyukov <dvyukov@google.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hillf Danton <hdanton@sina.com>,
+        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Kees Cook <keescook@chromium.org>,
+        Pekka Enberg <penberg@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        SeongJae Park <sjpark@amazon.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Will Deacon <will@kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>
+Subject: Re: [PATCH v3 01/10] mm: add Kernel Electric-Fence infrastructure
+Message-ID: <20200929150549.GE53442@C02TD0UTHF1T.local>
+References: <20200921132611.1700350-1-elver@google.com>
+ <20200921132611.1700350-2-elver@google.com>
+ <20200929142411.GC53442@C02TD0UTHF1T.local>
+ <CANpmjNNQGrpq+fBh4OypP9aK+-548vbCbKYiWQnSHESM0SLVzw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200928210216.GA378894@cmpxchg.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CANpmjNNQGrpq+fBh4OypP9aK+-548vbCbKYiWQnSHESM0SLVzw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 28-09-20 17:02:16, Johannes Weiner wrote:
-[...]
-> My take is that a proactive reclaim feature, whose goal is never to
-> thrash or punish but to keep the LRUs warm and the workingset trimmed,
-> would ideally have:
+On Tue, Sep 29, 2020 at 04:51:29PM +0200, Marco Elver wrote:
+> On Tue, 29 Sep 2020 at 16:24, Mark Rutland <mark.rutland@arm.com> wrote:
+> [...]
+> >
+> > From other sub-threads it sounds like these addresses are not part of
+> > the linear/direct map. Having kmalloc return addresses outside of the
+> > linear map is going to break anything that relies on virt<->phys
+> > conversions, and is liable to make DMA corrupt memory. There were
+> > problems of that sort with VMAP_STACK, and this is why kvmalloc() is
+> > separate from kmalloc().
+> >
+> > Have you tested with CONFIG_DEBUG_VIRTUAL? I'd expect that to scream.
+> >
+> > I strongly suspect this isn't going to be safe unless you always use an
+> > in-place carevout from the linear map (which could be the linear alias
+> > of a static carevout).
 > 
-> - a pressure or size target specified by userspace but with
->   enforcement driven inside the kernel from the allocation path
+> That's an excellent point, thank you! Indeed, on arm64, a version with
+> naive static-pool screams with CONFIG_DEBUG_VIRTUAL.
 > 
-> - the enforcement work NOT be done synchronously by the workload
->   (something I'd argue we want for *all* memory limits)
-> 
-> - the enforcement work ACCOUNTED to the cgroup, though, since it's the
->   cgroup's memory allocations causing the work (again something I'd
->   argue we want in general)
-> 
-> - a delegatable knob that is independent of setting the maximum size
->   of a container, as that expresses a different type of policy
-> 
-> - if size target, self-limiting (ha) enforcement on a pressure
->   threshold or stop enforcement when the userspace component dies
-> 
-> Thoughts?
+> We'll try to put together an arm64 version using a carveout as you suggest.
 
-Agreed with above points. What do you think about
-http://lkml.kernel.org/r/20200922190859.GH12990@dhcp22.suse.cz. I assume
-that you do not want to override memory.high to implement this because
-that tends to be tricky from the configuration POV as you mentioned
-above. But a new limit (memory.middle for a lack of a better name) to
-define the background reclaim sounds like a good fit with above points.
+Great, thanks!
 
--- 
-Michal Hocko
-SUSE Labs
+Just to be clear, the concerns for DMA and virt<->phys conversions also
+apply to x86 (the x86 virt<->phys conversion behaviour is more forgiving
+in the common case, but still has cases that can go wrong).
+
+Other than the code to initialize the page tables for the careveout, I
+think the carevout code can be geenric.
+
+Thanks,
+Mark.
