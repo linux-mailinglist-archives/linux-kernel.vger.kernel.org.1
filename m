@@ -2,111 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A956327B938
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 03:14:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0800527B940
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 03:21:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727007AbgI2BOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 21:14:43 -0400
-Received: from mga18.intel.com ([134.134.136.126]:4324 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726698AbgI2BOm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 21:14:42 -0400
-IronPort-SDR: 0VE6I+L1Fol83jxI6sTKxNeLjPrXI1miDj1xhAL+C+pXsUpiXHqhc4vxEFERovQhtoWZgKt20w
- uL3BNOWoGHqQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9758"; a="149867893"
-X-IronPort-AV: E=Sophos;i="5.77,316,1596524400"; 
-   d="scan'208";a="149867893"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 18:14:42 -0700
-IronPort-SDR: pgtpNA+jtuvGoogfUXxiqFnRu841hblJguoLlGbttUi+kgiYHcNtBAOTadUTHJP2gwNzlDQWAZ
- MIKAy04r32Pw==
-X-IronPort-AV: E=Sophos;i="5.77,316,1596524400"; 
-   d="scan'208";a="513656253"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 18:14:41 -0700
-Date:   Mon, 28 Sep 2020 18:14:39 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Cc:     Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Jethro Beekman <jethro@fortanix.com>,
-        Jordan Hand <jorhand@linux.microsoft.com>,
-        Nathaniel McCallum <npmccallum@redhat.com>,
-        Chunyang Hui <sanqian.hcy@antfin.com>,
-        Seth Moore <sethmo@google.com>, akpm@linux-foundation.org,
-        andriy.shevchenko@linux.intel.com, asapek@google.com,
-        cedric.xing@intel.com, chenalexchen@google.com,
-        conradparker@google.com, cyhanish@google.com,
-        dave.hansen@intel.com, haitao.huang@intel.com,
-        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
-        kmoy@google.com, ludloff@google.com, luto@kernel.org,
-        nhorman@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
-        tglx@linutronix.de, yaozhangx@google.com
-Subject: Re: [PATCH v38 16/24] x86/sgx: Add a page reclaimer
-Message-ID: <20200929011438.GA31167@linux.intel.com>
-References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
- <20200915112842.897265-17-jarkko.sakkinen@linux.intel.com>
- <20200922104538.GE22660@zn.tnic>
- <20200922140314.GA164527@linux.intel.com>
+        id S1727058AbgI2BVV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 21:21:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56132 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725272AbgI2BVV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 21:21:21 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8544C061755;
+        Mon, 28 Sep 2020 18:21:20 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id y14so2447046pgf.12;
+        Mon, 28 Sep 2020 18:21:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=LJ2EaLyywMeQ220DXk/3m8ij2UCaXBFliElieIvVcWo=;
+        b=dB5AkSvgSsuC4jqhJi1Du6fOX/N7Xqa7co1RAVRI7k5jGv6Bykuo2tOZ/hkkel3qzY
+         CTS8a/Oal7MbkDg+kiT/tRhuH74Nl3g/7dKHJijJyXGtbC8AlTGjsR/d9vYzi2kf/nR1
+         4oizg3sYkVtgATl4O58g0KvM7Gi3/4ZWup+Dxtczp0wmPtnV6YAR/bIsw1Er0jVGTujr
+         NNzOmFB+JjELoSImcu53H6HFX6UmQpQGSgK396wSboSVx3JwNZhGUL6f5QLWlLhJ7BnP
+         +5ITYJYN8klNUwbH3449wW7mMwZp0FIU8cp32Es6bcaZnfwrQWbNiFOcq4eUzNCZ4vzR
+         wOgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=LJ2EaLyywMeQ220DXk/3m8ij2UCaXBFliElieIvVcWo=;
+        b=P0ViIyE0a9OKkXP4akBguDBhzAoXS+l+4pwXMv7AvMMF4747k6LyB/9qQiS1REfsO/
+         VW234KOQo4TClX05ShRyNMH3xlaA/CW0uvXlhvmtREXA4zC9xft1PjEB4k5REnFnZV3R
+         JLeZoxU7y9Fx1cqZOl9QkHTMizuh7ur1mq9K6dQTRdCUuZLUpVVNKUPAjSO5PkJS/k13
+         2usqoDXBwvJi5OPfQt/vDr4T3U587XVvlGEI8mmDyumnpeMShBEqpSXOHJIVLBxzQrIj
+         EDJ0IW5d/nk1xS1kUhWfROxPutSx31bMGMndtCWwxve5I3cWIgXWLLS+xFJ8LZiG9/+M
+         Yxhg==
+X-Gm-Message-State: AOAM530IQQ71Pq+LSCSDWyR5ux7UAAdQU2WNAzjXvkqAU3vvFzljZy8F
+        eTruV20cK2tklYrxbULYOSg=
+X-Google-Smtp-Source: ABdhPJyImG3w8frEfpcUQx/Q4jWtb4RC9mBhFFjza2RqlH0U2v8tnaw3/b8ogIZGHZf/614y9A889w==
+X-Received: by 2002:a17:902:b685:b029:d2:1e62:4cbe with SMTP id c5-20020a170902b685b02900d21e624cbemr2075538pls.58.1601342477766;
+        Mon, 28 Sep 2020 18:21:17 -0700 (PDT)
+Received: from Asurada-Nvidia (thunderhill.nvidia.com. [216.228.112.22])
+        by smtp.gmail.com with ESMTPSA id d25sm2589760pgl.23.2020.09.28.18.21.17
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 28 Sep 2020 18:21:17 -0700 (PDT)
+Date:   Mon, 28 Sep 2020 18:15:57 -0700
+From:   Nicolin Chen <nicoleotsuka@gmail.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     thierry.reding@gmail.com, joro@8bytes.org, vdumpa@nvidia.com,
+        jonathanh@nvidia.com, linux-tegra@vger.kernel.org,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] iommu/tegra-smmu: Expend mutex protection range
+Message-ID: <20200929011557.GA905@Asurada-Nvidia>
+References: <20200928235901.28337-1-nicoleotsuka@gmail.com>
+ <20200928235901.28337-3-nicoleotsuka@gmail.com>
+ <692b51fa-7a3e-dee7-b628-7cb2d2dc188d@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200922140314.GA164527@linux.intel.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <692b51fa-7a3e-dee7-b628-7cb2d2dc188d@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 05:03:23PM +0300, Jarkko Sakkinen wrote:
-> On Tue, Sep 22, 2020 at 12:45:38PM +0200, Borislav Petkov wrote:
-> > > +	spin_lock(&sgx_active_page_list_lock);
-> > > +	for (i = 0; i < SGX_NR_TO_SCAN; i++) {
-> > > +		if (list_empty(&sgx_active_page_list))
-> > 
-> > Isn't it enough to do this once, i.e., not in the loop? You're holding
-> > sgx_active_page_list_lock...
+On Tue, Sep 29, 2020 at 03:17:58AM +0300, Dmitry Osipenko wrote:
+> ...
+> >  static bool tegra_smmu_capable(enum iommu_cap cap)
+> > @@ -420,17 +413,21 @@ static int tegra_smmu_as_prepare(struct tegra_smmu *smmu,
+> >  				 struct tegra_smmu_as *as)
+> >  {
+> >  	u32 value;
+> > -	int err;
+> > +	int err = 0;
+> > +
+> > +	mutex_lock(&smmu->lock);
+> >  
+> >  	if (as->use_count > 0) {
+> >  		as->use_count++;
+> > -		return 0;
+> > +		goto err_unlock;
+> 
+> This looks a bit odd because it's not a error condition. Perhaps should
+> be better to "goto bump_usecount"?
+> 
+> Or make it similar to tegra_smmu_as_unprepare()?
 
-Argh, I missed this until I looked at Jarkko's updated tree.
-
-The reason for checking list_empty() on every iteration is that the loop is
-greedy, i.e. it tries to grab and reclaim up to 16 (SGX_NR_TO_SCAN) EPC pages
-at a time.
-
-> I think that would make sense. Distantly analogous to the EINIT
-> discussion. Too complex code for yet to be known problem workloads I'd
-> say.
-
-Nooooo.  Please no.
-
-This will most definitely impact workloads running a single large enclave, or a
-process running multiple enclaves, as we'll lose the batching of ETRACK and IPIs.
-ETRACK isn't a big deal, but the IPIs are painful and could thrash the system.
-E.g. in the current code, reclaiming 10 pages from an enclave with actively
-running threads will generate one round of IPIs to CPUs associated with the
-enclave (based on the mm struct).  Going to per-page reclaim will likely result
-in 10 rounds of IPIs as threads will reenter the enclave immediately after each
-IPI wave.
-
-Having to grab the section spinlock for every page is also (very) problematic.
-Reclaiming one page at a time makes it nigh impossible for the reclaimer to
-keep up as every allocation attempt acquires the spinlock.  I.e. the reclaimer
-has to contend with every CPU that is faulting in an EPC page or is adding a
-page to the enclave.  In my experiments with the EPC cgroup, even batching 16
-pages may be insufficient to make "forward progress".  That's not an apples to
-apples comparison, but it's a rough equivalent of what will happen with the
-reclaim thread versus EPC page faults.  We can (and should) play with scaling
-the number of reclaim threads, but at this stage, that's an exercise best left
-to post-upstreaming.
-
-I can't do A/B testing to provide numbers, because the changes in Jarkko's tree
-break basic reclaim.  Which is a nice segue into my last point: this is by far
-the most subtle code in the SGX code base; I really, really don't want to be
-making last minute changes in this area unless they are absolutely necessary or
-obviously benign.  Even if/when we get the basic reclaim functional again, and
-assuming it doesn't have performance issues, I wouldn't be comfortable merging
-the code without hammering it with the EPC cgroup tests for multiple days (on
-top of the 1+ days to rebased the EPC cgroup).  Past testing with the cgroup
-found multiple bugs with races between CPUs that required hitting a window that
-was open for less than 10 instructions.
+Hmm...I think it's simple to just make it "goto unlock" then.
