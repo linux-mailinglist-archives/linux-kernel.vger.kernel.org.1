@@ -2,96 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15A5327BF5F
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 10:28:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED5E827BF62
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 10:29:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727682AbgI2I2a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 04:28:30 -0400
-Received: from mx2.suse.de ([195.135.220.15]:40790 "EHLO mx2.suse.de"
+        id S1725550AbgI2I3B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 04:29:01 -0400
+Received: from z5.mailgun.us ([104.130.96.5]:13627 "EHLO z5.mailgun.us"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725550AbgI2I2a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 04:28:30 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 97FA8B2B0;
-        Tue, 29 Sep 2020 08:28:28 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 693C41E12E9; Tue, 29 Sep 2020 10:28:28 +0200 (CEST)
-Date:   Tue, 29 Sep 2020 10:28:28 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        William Kucharski <william.kucharski@oracle.com>,
-        Johannes Weiner <hannes@cmpxchg.org>, Jan Kara <jack@suse.cz>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Dave Chinner <dchinner@redhat.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 02/12] mm/shmem: Use pagevec_lookup in
- shmem_unlock_mapping
-Message-ID: <20200929082828.GB10896@quack2.suse.cz>
-References: <20200914130042.11442-1-willy@infradead.org>
- <20200914130042.11442-3-willy@infradead.org>
+        id S1725535AbgI2I3B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 04:29:01 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1601368140; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=0OOcwzqr1dYwT4LposeccPgmKVDcaqiCHCOr1JztWkE=;
+ b=nMRKTjLreay9zmWTIXKj6EEYA6RKtQ3aXyE0Z/1EkaweiSFr32pCZhQ4jW7vILP2IdgAJNxc
+ vlsFNx6dn81g2IU47529rO7MKfj+0fcDFj5/kgWbB/72N9lLNAJIfXFtR4ZLoT6zNYd9/ckb
+ BvDXr9C1Q828hdIubqon8P5VDYs=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 5f72f04cbebf546dbbd4c975 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 29 Sep 2020 08:29:00
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 12899C433CB; Tue, 29 Sep 2020 08:29:00 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 091CCC433C8;
+        Tue, 29 Sep 2020 08:28:56 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 091CCC433C8
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200914130042.11442-3-willy@infradead.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH] ath10k: qmi: Skip host capability request for Xiaomi Poco
+ F1
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <1600328501-8832-1-git-send-email-amit.pundir@linaro.org>
+References: <1600328501-8832-1-git-send-email-amit.pundir@linaro.org>
+To:     Amit Pundir <amit.pundir@linaro.org>
+Cc:     David S Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Konrad Dybcio <konradybcio@gmail.com>,
+        ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
+Message-Id: <20200929082900.12899C433CB@smtp.codeaurora.org>
+Date:   Tue, 29 Sep 2020 08:29:00 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 14-09-20 14:00:32, Matthew Wilcox (Oracle) wrote:
-> The comment shows that the reason for using find_get_entries() is now
-> stale; find_get_pages() will not return 0 if it hits a consecutive run
-> of swap entries, and I don't believe it has since 2011.  pagevec_lookup()
-> is a simpler function to use than find_get_pages(), so use it instead.
+Amit Pundir <amit.pundir@linaro.org> wrote:
+
+> Workaround to get WiFi working on Xiaomi Poco F1 (sdm845)
+> phone. We get a non-fatal QMI_ERR_MALFORMED_MSG_V01 error
+> message in ath10k_qmi_host_cap_send_sync(), but we can still
+> bring up WiFi services successfully on AOSP if we ignore it.
 > 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-
-Looks good to me. BTW, I think I've already reviewed this... You can add:
-
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-								Honza
-
-> ---
->  mm/shmem.c | 11 +----------
->  1 file changed, 1 insertion(+), 10 deletions(-)
+> We suspect either the host cap is not implemented or there
+> may be firmware specific issues. Firmware version is
+> QC_IMAGE_VERSION_STRING=WLAN.HL.2.0.c3-00257-QCAHLSWMTPLZ-1
 > 
-> diff --git a/mm/shmem.c b/mm/shmem.c
-> index 58bc9e326d0d..108931a6cc43 100644
-> --- a/mm/shmem.c
-> +++ b/mm/shmem.c
-> @@ -840,7 +840,6 @@ unsigned long shmem_swap_usage(struct vm_area_struct *vma)
->  void shmem_unlock_mapping(struct address_space *mapping)
->  {
->  	struct pagevec pvec;
-> -	pgoff_t indices[PAGEVEC_SIZE];
->  	pgoff_t index = 0;
->  
->  	pagevec_init(&pvec);
-> @@ -848,16 +847,8 @@ void shmem_unlock_mapping(struct address_space *mapping)
->  	 * Minor point, but we might as well stop if someone else SHM_LOCKs it.
->  	 */
->  	while (!mapping_unevictable(mapping)) {
-> -		/*
-> -		 * Avoid pagevec_lookup(): find_get_pages() returns 0 as if it
-> -		 * has finished, if it hits a row of PAGEVEC_SIZE swap entries.
-> -		 */
-> -		pvec.nr = find_get_entries(mapping, index,
-> -					   PAGEVEC_SIZE, pvec.pages, indices);
-> -		if (!pvec.nr)
-> +		if (!pagevec_lookup(&pvec, mapping, &index))
->  			break;
-> -		index = indices[pvec.nr - 1] + 1;
-> -		pagevec_remove_exceptionals(&pvec);
->  		check_move_unevictable_pages(&pvec);
->  		pagevec_release(&pvec);
->  		cond_resched();
-> -- 
-> 2.28.0
+> qcom,snoc-host-cap-8bit-quirk didn't help. If I use this
+> quirk, then the host capability request does get accepted,
+> but we run into fatal "msa info req rejected" error and
+> WiFi interface doesn't come up.
 > 
+> Attempts are being made to debug the failure reasons but no
+> luck so far. Hence this device specific workaround instead
+> of checking for QMI_ERR_MALFORMED_MSG_V01 error message.
+> Tried ath10k/WCN3990/hw1.0/wlanmdsp.mbn from the upstream
+> linux-firmware project but it didn't help and neither did
+> building board-2.bin file from stock bdwlan* files.
+> 
+> This workaround will be removed once we have a viable fix.
+> Thanks to postmarketOS guys for catching this.
+> 
+> Signed-off-by: Amit Pundir <amit.pundir@linaro.org>
+> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+
+Dropped per discussion.
+
+Patch set to Changes Requested.
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+https://patchwork.kernel.org/patch/11781801/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
