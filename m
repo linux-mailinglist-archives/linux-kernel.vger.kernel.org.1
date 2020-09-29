@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63CB827CB97
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:29:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8726C27CB93
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:29:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732859AbgI2M2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 08:28:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49122 "EHLO mail.kernel.org"
+        id S1732841AbgI2M2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 08:28:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46898 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729112AbgI2LcX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:32:23 -0400
+        id S1729477AbgI2LcY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:32:24 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CCCE823B1C;
-        Tue, 29 Sep 2020 11:25:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 93ABA23B1F;
+        Tue, 29 Sep 2020 11:25:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601378723;
-        bh=MwGFtKWSGpn1CofDZXm/j7WAMuhx+zTxLN826jRE7rE=;
+        s=default; t=1601378726;
+        bh=hoMDBRCBrzHuduGsdOodBy1gbW/7O6IJYTr325qsCB0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=v9nSCoNOObCjrweGww4JgrSDUxCXfqxUBdEVX6pqKrlc3n6kkxYxHjoiuZJ2X1r93
-         I384DRBi4ktsdsmVrZcBnj7WB9mB4QT5HkQ2Uk3/84MA3yEn5whVbKs/3dEf3oDUF1
-         sN2Sr9ltiAbCHiWXlOzonPqJrZDsUSnhtytP5ReE=
+        b=N3Ju63twjAnZmN9h5951UjJkv1RvveLI4NhnlqNs1ECxKJ7utqSM9xtkNrhb3b1OU
+         dGZIViBnr//kaB/R3EdD71yHUcqd7KtwB+wGlwT1qj43ycM7uFeGZxGcAC6E/bjmjK
+         4ywl7l0q6iy4qD8kbHc5h6mVS2WqyOEup9i8huqk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Machek <pavel@denx.de>,
+        stable@vger.kernel.org, Jordan Crouse <jcrouse@codeaurora.org>,
+        Eric Anholt <eric@anholt.net>,
         Rob Clark <robdclark@chromium.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 116/245] drm/msm: fix leaks if initialization fails
-Date:   Tue, 29 Sep 2020 12:59:27 +0200
-Message-Id: <20200929105952.630300573@linuxfoundation.org>
+Subject: [PATCH 4.19 117/245] drm/msm/a5xx: Always set an OPP supported hardware value
+Date:   Tue, 29 Sep 2020 12:59:28 +0200
+Message-Id: <20200929105952.680253925@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200929105946.978650816@linuxfoundation.org>
 References: <20200929105946.978650816@linuxfoundation.org>
@@ -43,36 +44,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Machek <pavel@denx.de>
+From: Jordan Crouse <jcrouse@codeaurora.org>
 
-[ Upstream commit 66be340f827554cb1c8a1ed7dea97920b4085af2 ]
+[ Upstream commit 0478b4fc5f37f4d494245fe7bcce3f531cf380e9 ]
 
-We should free resources in unlikely case of allocation failure.
+If the opp table specifies opp-supported-hw as a property but the driver
+has not set a supported hardware value the OPP subsystem will reject
+all the table entries.
 
-Signed-off-by: Pavel Machek <pavel@denx.de>
+Set a "default" value that will match the default table entries but not
+conflict with any possible real bin values. Also fix a small memory leak
+and free the buffer allocated by nvmem_cell_read().
+
+Signed-off-by: Jordan Crouse <jcrouse@codeaurora.org>
+Reviewed-by: Eric Anholt <eric@anholt.net>
 Signed-off-by: Rob Clark <robdclark@chromium.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/msm/msm_drv.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/msm/adreno/a5xx_gpu.c | 27 ++++++++++++++++++++-------
+ 1 file changed, 20 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/gpu/drm/msm/msm_drv.c b/drivers/gpu/drm/msm/msm_drv.c
-index 7f45486b6650b..3ba3ae9749bec 100644
---- a/drivers/gpu/drm/msm/msm_drv.c
-+++ b/drivers/gpu/drm/msm/msm_drv.c
-@@ -495,8 +495,10 @@ static int msm_drm_init(struct device *dev, struct drm_driver *drv)
- 	if (!dev->dma_parms) {
- 		dev->dma_parms = devm_kzalloc(dev, sizeof(*dev->dma_parms),
- 					      GFP_KERNEL);
--		if (!dev->dma_parms)
--			return -ENOMEM;
-+		if (!dev->dma_parms) {
-+			ret = -ENOMEM;
-+			goto err_msm_uninit;
-+		}
- 	}
- 	dma_set_max_seg_size(dev, DMA_BIT_MASK(32));
+diff --git a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c b/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
+index 1fc9a7fa37b45..d29a58bd2f7a3 100644
+--- a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
++++ b/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
+@@ -1474,18 +1474,31 @@ static const struct adreno_gpu_funcs funcs = {
+ static void check_speed_bin(struct device *dev)
+ {
+ 	struct nvmem_cell *cell;
+-	u32 bin, val;
++	u32 val;
++
++	/*
++	 * If the OPP table specifies a opp-supported-hw property then we have
++	 * to set something with dev_pm_opp_set_supported_hw() or the table
++	 * doesn't get populated so pick an arbitrary value that should
++	 * ensure the default frequencies are selected but not conflict with any
++	 * actual bins
++	 */
++	val = 0x80;
  
+ 	cell = nvmem_cell_get(dev, "speed_bin");
+ 
+-	/* If a nvmem cell isn't defined, nothing to do */
+-	if (IS_ERR(cell))
+-		return;
++	if (!IS_ERR(cell)) {
++		void *buf = nvmem_cell_read(cell, NULL);
++
++		if (!IS_ERR(buf)) {
++			u8 bin = *((u8 *) buf);
+ 
+-	bin = *((u32 *) nvmem_cell_read(cell, NULL));
+-	nvmem_cell_put(cell);
++			val = (1 << bin);
++			kfree(buf);
++		}
+ 
+-	val = (1 << bin);
++		nvmem_cell_put(cell);
++	}
+ 
+ 	dev_pm_opp_set_supported_hw(dev, &val, 1);
+ }
 -- 
 2.25.1
 
