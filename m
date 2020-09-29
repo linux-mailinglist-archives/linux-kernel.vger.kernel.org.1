@@ -2,239 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89A2127C061
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 11:02:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D984C27C076
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 11:05:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727918AbgI2JCp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 05:02:45 -0400
-Received: from mx2.suse.de ([195.135.220.15]:39440 "EHLO mx2.suse.de"
+        id S1727981AbgI2JEA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 05:04:00 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:47816 "EHLO inva020.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727799AbgI2JCp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 05:02:45 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 64FD3AD03;
-        Tue, 29 Sep 2020 09:02:43 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 343211E12E9; Tue, 29 Sep 2020 11:02:43 +0200 (CEST)
-Date:   Tue, 29 Sep 2020 11:02:43 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        William Kucharski <william.kucharski@oracle.com>,
-        Johannes Weiner <hannes@cmpxchg.org>, Jan Kara <jack@suse.cz>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Dave Chinner <dchinner@redhat.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 07/12] mm: Add an 'end' parameter to
- pagevec_lookup_entries
-Message-ID: <20200929090243.GE10896@quack2.suse.cz>
-References: <20200914130042.11442-1-willy@infradead.org>
- <20200914130042.11442-8-willy@infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200914130042.11442-8-willy@infradead.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1726064AbgI2JD6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 05:03:58 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 4E82E1A1244;
+        Tue, 29 Sep 2020 11:03:56 +0200 (CEST)
+Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 371D21A121A;
+        Tue, 29 Sep 2020 11:03:56 +0200 (CEST)
+Received: from fsr-ub1864-111.ea.freescale.net (fsr-ub1864-111.ea.freescale.net [10.171.82.141])
+        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id DCC4D2032C;
+        Tue, 29 Sep 2020 11:03:55 +0200 (CEST)
+From:   Diana Craciun <diana.craciun@oss.nxp.com>
+To:     alex.williamson@redhat.com, kvm@vger.kernel.org
+Cc:     bharatb.linux@gmail.com, linux-kernel@vger.kernel.org,
+        eric.auger@redhat.com, Diana Craciun <diana.craciun@oss.nxp.com>
+Subject: [PATCH v5 00/10] vfio/fsl-mc: VFIO support for FSL-MC device
+Date:   Tue, 29 Sep 2020 12:03:29 +0300
+Message-Id: <20200929090339.17659-1-diana.craciun@oss.nxp.com>
+X-Mailer: git-send-email 2.17.1
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 14-09-20 14:00:37, Matthew Wilcox (Oracle) wrote:
-> Simplifies the callers and uses the existing functionality
-> in find_get_entries().  We can also drop the final argument of
-> truncate_exceptional_pvec_entries() and simplify the logic in that
-> function.
-> 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+DPAA2 (Data Path Acceleration Architecture) consists in
+mechanisms for processing Ethernet packets, queue management,
+accelerators, etc.
 
-Looks good to me. You can add:
+The Management Complex (mc) is a hardware entity that manages the DPAA2
+hardware resources. It provides an object-based abstraction for software
+drivers to use the DPAA2 hardware. The MC mediates operations such as
+create, discover, destroy of DPAA2 objects.
+The MC provides memory-mapped I/O command interfaces (MC portals) which
+DPAA2 software drivers use to operate on DPAA2 objects.
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+A DPRC is a container object that holds other types of DPAA2 objects.
+Each object in the DPRC is a Linux device and bound to a driver.
+The MC-bus driver is a platform driver (different from PCI or platform
+bus). The DPRC driver does runtime management of a bus instance. It
+performs the initial scan of the DPRC and handles changes in the DPRC
+configuration (adding/removing objects).
 
-								Honza
+All objects inside a container share the same hardware isolation
+context, meaning that only an entire DPRC can be assigned to
+a virtual machine.
+When a container is assigned to a virtual machine, all the objects
+within that container are assigned to that virtual machine.
+The DPRC container assigned to the virtual machine is not allowed
+to change contents (add/remove objects) by the guest. The restriction
+is set by the host and enforced by the mc hardware.
 
-> ---
->  include/linux/pagevec.h |  5 ++---
->  mm/swap.c               |  8 ++++----
->  mm/truncate.c           | 41 ++++++++++-------------------------------
->  3 files changed, 16 insertions(+), 38 deletions(-)
-> 
-> diff --git a/include/linux/pagevec.h b/include/linux/pagevec.h
-> index 081d934eda64..4b245592262c 100644
-> --- a/include/linux/pagevec.h
-> +++ b/include/linux/pagevec.h
-> @@ -26,9 +26,8 @@ struct pagevec {
->  void __pagevec_release(struct pagevec *pvec);
->  void __pagevec_lru_add(struct pagevec *pvec);
->  unsigned pagevec_lookup_entries(struct pagevec *pvec,
-> -				struct address_space *mapping,
-> -				pgoff_t start, unsigned nr_entries,
-> -				pgoff_t *indices);
-> +		struct address_space *mapping, pgoff_t start, pgoff_t end,
-> +		unsigned nr_entries, pgoff_t *indices);
->  void pagevec_remove_exceptionals(struct pagevec *pvec);
->  unsigned pagevec_lookup_range(struct pagevec *pvec,
->  			      struct address_space *mapping,
-> diff --git a/mm/swap.c b/mm/swap.c
-> index fcf6ccb94b09..b6e56a84b466 100644
-> --- a/mm/swap.c
-> +++ b/mm/swap.c
-> @@ -1036,6 +1036,7 @@ void __pagevec_lru_add(struct pagevec *pvec)
->   * @pvec:	Where the resulting entries are placed
->   * @mapping:	The address_space to search
->   * @start:	The starting entry index
-> + * @end:	The highest index to return (inclusive).
->   * @nr_entries:	The maximum number of pages
->   * @indices:	The cache indices corresponding to the entries in @pvec
->   *
-> @@ -1056,11 +1057,10 @@ void __pagevec_lru_add(struct pagevec *pvec)
->   * found.
->   */
->  unsigned pagevec_lookup_entries(struct pagevec *pvec,
-> -				struct address_space *mapping,
-> -				pgoff_t start, unsigned nr_entries,
-> -				pgoff_t *indices)
-> +		struct address_space *mapping, pgoff_t start, pgoff_t end,
-> +		unsigned nr_entries, pgoff_t *indices)
->  {
-> -	pvec->nr = find_get_entries(mapping, start, ULONG_MAX, nr_entries,
-> +	pvec->nr = find_get_entries(mapping, start, end, nr_entries,
->  				    pvec->pages, indices);
->  	return pagevec_count(pvec);
->  }
-> diff --git a/mm/truncate.c b/mm/truncate.c
-> index 5dbe0c77b5ac..69ea72e7fc1c 100644
-> --- a/mm/truncate.c
-> +++ b/mm/truncate.c
-> @@ -57,11 +57,10 @@ static void clear_shadow_entry(struct address_space *mapping, pgoff_t index,
->   * exceptional entries similar to what pagevec_remove_exceptionals does.
->   */
->  static void truncate_exceptional_pvec_entries(struct address_space *mapping,
-> -				struct pagevec *pvec, pgoff_t *indices,
-> -				pgoff_t end)
-> +				struct pagevec *pvec, pgoff_t *indices)
->  {
->  	int i, j;
-> -	bool dax, lock;
-> +	bool dax;
->  
->  	/* Handled by shmem itself */
->  	if (shmem_mapping(mapping))
-> @@ -75,8 +74,7 @@ static void truncate_exceptional_pvec_entries(struct address_space *mapping,
->  		return;
->  
->  	dax = dax_mapping(mapping);
-> -	lock = !dax && indices[j] < end;
-> -	if (lock)
-> +	if (!dax)
->  		xa_lock_irq(&mapping->i_pages);
->  
->  	for (i = j; i < pagevec_count(pvec); i++) {
-> @@ -88,9 +86,6 @@ static void truncate_exceptional_pvec_entries(struct address_space *mapping,
->  			continue;
->  		}
->  
-> -		if (index >= end)
-> -			continue;
-> -
->  		if (unlikely(dax)) {
->  			dax_delete_mapping_entry(mapping, index);
->  			continue;
-> @@ -99,7 +94,7 @@ static void truncate_exceptional_pvec_entries(struct address_space *mapping,
->  		__clear_shadow_entry(mapping, index, page);
->  	}
->  
-> -	if (lock)
-> +	if (!dax)
->  		xa_unlock_irq(&mapping->i_pages);
->  	pvec->nr = j;
->  }
-> @@ -329,7 +324,7 @@ void truncate_inode_pages_range(struct address_space *mapping,
->  	while (index < end && find_lock_entries(mapping, index, end - 1,
->  			&pvec, indices)) {
->  		index = indices[pagevec_count(&pvec) - 1] + 1;
-> -		truncate_exceptional_pvec_entries(mapping, &pvec, indices, end);
-> +		truncate_exceptional_pvec_entries(mapping, &pvec, indices);
->  		for (i = 0; i < pagevec_count(&pvec); i++)
->  			truncate_cleanup_page(mapping, pvec.pages[i]);
->  		delete_from_page_cache_batch(mapping, &pvec);
-> @@ -381,8 +376,8 @@ void truncate_inode_pages_range(struct address_space *mapping,
->  	index = start;
->  	for ( ; ; ) {
->  		cond_resched();
-> -		if (!pagevec_lookup_entries(&pvec, mapping, index,
-> -			min(end - index, (pgoff_t)PAGEVEC_SIZE), indices)) {
-> +		if (!pagevec_lookup_entries(&pvec, mapping, index, end - 1,
-> +				PAGEVEC_SIZE, indices)) {
->  			/* If all gone from start onwards, we're done */
->  			if (index == start)
->  				break;
-> @@ -390,23 +385,12 @@ void truncate_inode_pages_range(struct address_space *mapping,
->  			index = start;
->  			continue;
->  		}
-> -		if (index == start && indices[0] >= end) {
-> -			/* All gone out of hole to be punched, we're done */
-> -			pagevec_remove_exceptionals(&pvec);
-> -			pagevec_release(&pvec);
-> -			break;
-> -		}
->  
->  		for (i = 0; i < pagevec_count(&pvec); i++) {
->  			struct page *page = pvec.pages[i];
->  
->  			/* We rely upon deletion not changing page->index */
->  			index = indices[i];
-> -			if (index >= end) {
-> -				/* Restart punch to make sure all gone */
-> -				index = start - 1;
-> -				break;
-> -			}
->  
->  			if (xa_is_value(page))
->  				continue;
-> @@ -417,7 +401,7 @@ void truncate_inode_pages_range(struct address_space *mapping,
->  			truncate_inode_page(mapping, page);
->  			unlock_page(page);
->  		}
-> -		truncate_exceptional_pvec_entries(mapping, &pvec, indices, end);
-> +		truncate_exceptional_pvec_entries(mapping, &pvec, indices);
->  		pagevec_release(&pvec);
->  		index++;
->  	}
-> @@ -528,8 +512,6 @@ unsigned long invalidate_mapping_pages(struct address_space *mapping,
->  
->  			/* We rely upon deletion not changing page->index */
->  			index = indices[i];
-> -			if (index > end)
-> -				break;
->  
->  			if (xa_is_value(page)) {
->  				invalidate_exceptional_entry(mapping, index,
-> @@ -629,16 +611,13 @@ int invalidate_inode_pages2_range(struct address_space *mapping,
->  
->  	pagevec_init(&pvec);
->  	index = start;
-> -	while (index <= end && pagevec_lookup_entries(&pvec, mapping, index,
-> -			min(end - index, (pgoff_t)PAGEVEC_SIZE - 1) + 1,
-> -			indices)) {
-> +	while (pagevec_lookup_entries(&pvec, mapping, index, end,
-> +			PAGEVEC_SIZE, indices)) {
->  		for (i = 0; i < pagevec_count(&pvec); i++) {
->  			struct page *page = pvec.pages[i];
->  
->  			/* We rely upon deletion not changing page->index */
->  			index = indices[i];
-> -			if (index > end)
-> -				break;
->  
->  			if (xa_is_value(page)) {
->  				if (!invalidate_exceptional_entry2(mapping,
-> -- 
-> 2.28.0
-> 
+The DPAA2 objects can be directly assigned to the guest. However
+the MC portals (the memory mapped command interface to the MC) need
+to be emulated because there are commands that configure the
+interrupts and the isolation IDs which are virtual in the guest.
+
+Example:
+echo vfio-fsl-mc > /sys/bus/fsl-mc/devices/dprc.2/driver_override
+echo dprc.2 > /sys/bus/fsl-mc/drivers/vfio-fsl-mc/bind
+
+The dprc.2 is bound to the VFIO driver and all the objects within
+dprc.2 are going to be bound to the VFIO driver.
+
+More details about the DPAA2 objects can be found here:
+Documentation/networking/device_drivers/freescale/dpaa2/overview.rst
+
+The patches are dependent on some changes in the mc-bus (bus/fsl-mc)
+driver. The changes were needed in order to re-use code and to export
+some more functions that are needed by the VFIO driver.
+Currenlty the mc-bus patches are under review:
+https://www.spinics.net/lists/kernel/msg3680670.html
+
+v4 --> v5
+- do not allow mmap for DPRCs
+- style fixes
+
+v3 --> v4
+- use bus provided functions to tear down the DPRC
+- added reset support
+
+v2 --> v3
+- There is no need to align region size to page size
+- read/write implemented for all DPAA2 objects
+- review fixes
+
+v1 --> v2
+- Fixed the container reset, a new flag added to the firmware command
+- Implement a bus notifier for setting driver_override
+
+Bharat Bhushan (1):
+  vfio/fsl-mc: Add VFIO framework skeleton for fsl-mc devices
+
+Diana Craciun (9):
+  vfio/fsl-mc: Scan DPRC objects on vfio-fsl-mc driver bind
+  vfio/fsl-mc: Implement VFIO_DEVICE_GET_INFO ioctl
+  vfio/fsl-mc: Implement VFIO_DEVICE_GET_REGION_INFO ioctl call
+  vfio/fsl-mc: Allow userspace to MMAP fsl-mc device MMIO regions
+  vfio/fsl-mc: Added lock support in preparation for interrupt handling
+  vfio/fsl-mc: Add irq infrastructure for fsl-mc devices
+  vfio/fsl-mc: trigger an interrupt via eventfd
+  vfio/fsl-mc: Add read/write support for fsl-mc devices
+  vfio/fsl-mc: Add support for device reset
+
+ MAINTAINERS                               |   6 +
+ drivers/vfio/Kconfig                      |   1 +
+ drivers/vfio/Makefile                     |   1 +
+ drivers/vfio/fsl-mc/Kconfig               |   9 +
+ drivers/vfio/fsl-mc/Makefile              |   4 +
+ drivers/vfio/fsl-mc/vfio_fsl_mc.c         | 677 ++++++++++++++++++++++
+ drivers/vfio/fsl-mc/vfio_fsl_mc_intr.c    | 193 ++++++
+ drivers/vfio/fsl-mc/vfio_fsl_mc_private.h |  55 ++
+ include/uapi/linux/vfio.h                 |   1 +
+ 9 files changed, 947 insertions(+)
+ create mode 100644 drivers/vfio/fsl-mc/Kconfig
+ create mode 100644 drivers/vfio/fsl-mc/Makefile
+ create mode 100644 drivers/vfio/fsl-mc/vfio_fsl_mc.c
+ create mode 100644 drivers/vfio/fsl-mc/vfio_fsl_mc_intr.c
+ create mode 100644 drivers/vfio/fsl-mc/vfio_fsl_mc_private.h
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.17.1
+
