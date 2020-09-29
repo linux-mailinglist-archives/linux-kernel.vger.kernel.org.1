@@ -2,114 +2,309 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9591F27C116
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 11:28:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3B0327C113
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 11:27:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727974AbgI2J2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 05:28:05 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:51360 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727817AbgI2J2F (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 05:28:05 -0400
-Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601371683;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pYuc3/1S5yymvfflLAL9MMp/Ok6n0ZAyFbN3sbJRaT0=;
-        b=Jj/USoMBCSfieJHQR6JlxE4ZFYyfJEkT7W+lnGLf9g4i6cpQj3E+HyuIbaW9/EvlTgKFHt
-        CmK98WCW9XLnk4AxKIYN/b6IGN8lPpmOR3GJvS8pHkoo86z7MdLU8q7KCAaR0Taf3TGeyy
-        86MYWsKr3Jz3VXqyCi4M/JOhRUYKU64=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-580-qegXtShCOwWT77D3KJtmZg-1; Tue, 29 Sep 2020 05:27:23 -0400
-X-MC-Unique: qegXtShCOwWT77D3KJtmZg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0D80C801ADD;
-        Tue, 29 Sep 2020 09:27:21 +0000 (UTC)
-Received: from gondolin (ovpn-113-63.ams2.redhat.com [10.36.113.63])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A67356198B;
-        Tue, 29 Sep 2020 09:27:13 +0000 (UTC)
-Date:   Tue, 29 Sep 2020 11:27:10 +0200
-From:   Cornelia Huck <cohuck@redhat.com>
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Huacai Chen <chenhc@lemote.com>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        linux-mips@vger.kernel.org, Paul Mackerras <paulus@ozlabs.org>,
-        kvm-ppc@vger.kernel.org,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>
-Subject: Re: [RFC PATCH 0/3] KVM: Introduce "VM bugged" concept
-Message-ID: <20200929112710.3ce1365f.cohuck@redhat.com>
-In-Reply-To: <20200923224530.17735-1-sean.j.christopherson@intel.com>
-References: <20200923224530.17735-1-sean.j.christopherson@intel.com>
-Organization: Red Hat GmbH
+        id S1727914AbgI2J1S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 05:27:18 -0400
+Received: from mail-vi1eur05on2084.outbound.protection.outlook.com ([40.107.21.84]:22624
+        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727761AbgI2J1R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 05:27:17 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jLn7HwaCTXd3KwAe2IiYCe2Fdpci+NRfG3nKRS0uqZem5zlk07UYyDc0h8kcqJ7Nq+MpMw4ZYwZJaKBuRv1jNqfV5ngbpRljwyvKZyWMb7y5HJGdn/ZfZkyl2tGsxiwHTOLQ2qYAjE20tpMmb9q3Erog9T74VU5LaWXtpfkoQ/KfBWsRXNsQgoM0nV5A7dKiMFBvGTZxrjs6QaoAyzSCFljFypmbKW2VWvH8qHt3tWJGCBvyjY+dJpkQMZhp3cP9PNhOKLZkB0xM4JEacI7vye0H9oaY1+t3YMxJH2e+qo7Tz5bZ46ucEq3RnGp/F1qVQmELm8FmV3gJrtVeDQAyxw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Bi90CFMlfUn8UaER5hwAnYRfBuD0HxtlqQB2Jrmurxc=;
+ b=Kobc3bJc90rcZhqo8Co13sbfi7rs596Ly9zUBdsD7newG98O26uOp2c8QLk6wL3sdBukhwstJd/T40FzQO3GHrXJwJnN9M9r6/c4zCtw4Oqq8eBDbY+JE90RmzwnD43Pir5/cT+eMv+tNarMDy+vNw1zb7fYH9/PnepO9Lcknppr+XpYt1i+XCoBhvvdbDM2I+5UJYiC3voEPCvjdaZaYxYNp9g8eFo4CDomzIdKU5+dDp8E0/vx9l6vRXCjMsGjPB4N6uVtMV/DNBDA9O8isTUmNCy1hqVp3o7w++qkJRdeNaI1HfvRQbgzuGRKXnm6bdTeaSC3xVa2BzNzNODEsQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector2-NXP1-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Bi90CFMlfUn8UaER5hwAnYRfBuD0HxtlqQB2Jrmurxc=;
+ b=SzWtXKigFnDQeQQOjJkEML2S4qrNSQZVOiLUt1Xt1Lt275AJBEdGI5Vmbk6KfoMlNrNOdj+brUeiVpX5lFEsazJEk26+Q4ej89LWCoxmWuOKOzISr5z6gQe8Xbme+iDyZy1LNbvJ6mSW61LLZ8t8SCvwjYe8rztL+7D8e7K+hns=
+Received: from VI1PR0401MB2272.eurprd04.prod.outlook.com
+ (2603:10a6:800:31::12) by VI1PR04MB4078.eurprd04.prod.outlook.com
+ (2603:10a6:803:4e::30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.24; Tue, 29 Sep
+ 2020 09:27:11 +0000
+Received: from VI1PR0401MB2272.eurprd04.prod.outlook.com
+ ([fe80::e00e:ad13:489b:8000]) by VI1PR0401MB2272.eurprd04.prod.outlook.com
+ ([fe80::e00e:ad13:489b:8000%6]) with mapi id 15.20.3412.029; Tue, 29 Sep 2020
+ 09:27:11 +0000
+From:   "Viorel Suman (OSS)" <viorel.suman@oss.nxp.com>
+To:     Philipp Zabel <pza@pengutronix.de>,
+        "Viorel Suman (OSS)" <viorel.suman@oss.nxp.com>
+CC:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, Timur Tabi <timur@kernel.org>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Xiubo Li <Xiubo.Lee@gmail.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Shengjiu Wang <shengjiu.wang@gmail.com>,
+        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
+        Cosmin-Gabriel Samoila <cosmin.samoila@nxp.com>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        Viorel Suman <viorel.suman@gmail.com>
+Subject: RE: [PATCH v2 1/2] ASoC: fsl_xcvr: Add XCVR ASoC CPU DAI driver
+Thread-Topic: [PATCH v2 1/2] ASoC: fsl_xcvr: Add XCVR ASoC CPU DAI driver
+Thread-Index: AQHWkEqgDSS5CbAr10ON+1pXVni6nal0kbIAgArTIZA=
+Date:   Tue, 29 Sep 2020 09:27:11 +0000
+Message-ID: <VI1PR0401MB2272760740ECAF72FA507C2C92320@VI1PR0401MB2272.eurprd04.prod.outlook.com>
+References: <1600715292-28529-1-git-send-email-viorel.suman@oss.nxp.com>
+ <1600715292-28529-2-git-send-email-viorel.suman@oss.nxp.com>
+ <20200922120854.GA15104@pengutronix.de>
+In-Reply-To: <20200922120854.GA15104@pengutronix.de>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: pengutronix.de; dkim=none (message not signed)
+ header.d=none;pengutronix.de; dmarc=none action=none header.from=oss.nxp.com;
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [83.217.231.2]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 1932d0ff-ef19-4da0-ab32-08d86459d870
+x-ms-traffictypediagnostic: VI1PR04MB4078:
+x-ms-exchange-sharedmailbox-routingagent-processed: True
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <VI1PR04MB4078DB3FD1A4A84D7AACA8B0D3320@VI1PR04MB4078.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2733;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: bYRG6SFYsHCqNrlahBu+SGpwzazOTA2pBC3gkRgOQbD2n6AwA4XjhLfIhFxTd31t+QdbJpXNwQIMpi9pQegqdO4h/DpZ9C+13EAt8lh/docU7GlBIb/ClGSzOXjUQTcH4gTP5pG2/dWKNPA1wCwpVl60mrJpZRhI/tgGy7BCGvesxiW496vhbD0LYe62qO6SD7oFRQ9Rd3jf9HnxLFf6CN5CWXfBODxKXtGJMjPjI9K0OKdORzCt5G0o5TzlhjOOf8zD3QqBxy3C1P5QdCacUJzGLJ04LAmSDj1PSanldrZ/f/nOP0Lj+MfB8oeOejNUebCPrF/54aHN4XbvK+40xtnaeVohJ4KkRz1dZ3W5frXJq5Bh2pAkmn1QOIpV5mg3
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0401MB2272.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(376002)(346002)(366004)(136003)(39860400002)(55016002)(64756008)(66556008)(66476007)(186003)(71200400001)(66446008)(66946007)(7416002)(26005)(33656002)(2906002)(9686003)(5660300002)(8676002)(316002)(86362001)(478600001)(54906003)(76116006)(110136005)(52536014)(53546011)(6506007)(8936002)(7696005)(83380400001)(4326008);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: +kRIjVNyPbo1K9MRq/QL6zna5SJK+u3XhYL0AKj3KxZ9sWw0rMtVX+ZqLsmgDOA2KoJnjLLygZyY/SMTL0UDMX9p57jY+V9FP0WDxLcZjNgGdGUHAgjq2hyIxqRC1h73VQjofXvTj8U2SFe7dZUQL0WgSZ0Ah/3yP0gU656Polz95KxqFsOMJ6zZO8L2IHDYJwQUkuqLYbij1KOf+rDjBxn/wW6qXhL8ONxK+IucRwiNuaQTR1rDUubdhZM8CG5zp10bk3tgl4YXWaaj1p54yl4nDyA5UD90o56ynuE05DeJcZYSI+i4IwWWFLj8McpHbor/2CY4acLE1MS+HqT0focIeM8Ro3iAJDXi/2GUzU6QRyauQayMz2VVb7GUkNTMGKI5oRA5UJOWtObpSFNDfN25IA9W4qMv8NVixnR5ufSylO14ISTTpkEI8IMUB5CTfHF5beJW/ldiwC/JevTQrLBtP1IAw7mHoV32+xiGePYb8P8koJCIbvIPO0pD9W5O7kcRK2XiMmkn1DAIYid/fG3Mv+Xo0vsV1oLoJdeCXhqEU6u53umwOCaSK5rPJSlbQZCYAoJMF+MX+X8YP2NZwqMKiZpvwyQgIMG2dAeEPWyJj5FLRFK9WHMjfdxfkxA211K2Hi69skFxmy+hhzy1zg==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR0401MB2272.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1932d0ff-ef19-4da0-ab32-08d86459d870
+X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Sep 2020 09:27:11.6745
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ioWmrxRlZqTOPDV/bNTRNVwJQjEunBwN0PNPWYSdc8nzTMewf1uBh/SS6Q3Ad2XHNKMmsscQMluPmFWkStYdew==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB4078
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 23 Sep 2020 15:45:27 -0700
-Sean Christopherson <sean.j.christopherson@intel.com> wrote:
+Hi Philipp,
 
-> This series introduces a concept we've discussed a few times in x86 land.
-> The crux of the problem is that x86 has a few cases where KVM could
-> theoretically encounter a software or hardware bug deep in a call stack
-> without any sane way to propagate the error out to userspace.
-> 
-> Another use case would be for scenarios where letting the VM live will
-> do more harm than good, e.g. we've been using KVM_BUG_ON for early TDX
-> enabling as botching anything related to secure paging all but guarantees
-> there will be a flood of WARNs and error messages because lower level PTE
-> operations will fail if an upper level operation failed.
-> 
-> The basic idea is to WARN_ONCE if a bug is encountered, kick all vCPUs out
-> to userspace, and mark the VM as bugged so that no ioctls() can be issued
-> on the VM or its devices/vCPUs.
+Thank you for your review, please check my comments inline.
 
-I think this makes a lot of sense.
+/Viorel
 
-Are there other user space interactions where we want to generate an
-error for a bugged VM, e.g. via eventfd?
+> -----Original Message-----
+> From: Philipp Zabel [mailto:pza@pengutronix.de]
+> Sent: Tuesday, September 22, 2020 3:09 PM
+> To: Viorel Suman (OSS) <viorel.suman@oss.nxp.com>
+> Cc: Liam Girdwood <lgirdwood@gmail.com>; Mark Brown
+> <broonie@kernel.org>; Rob Herring <robh+dt@kernel.org>; Jaroslav Kysela
+> <perex@perex.cz>; Takashi Iwai <tiwai@suse.com>; Timur Tabi
+> <timur@kernel.org>; Nicolin Chen <nicoleotsuka@gmail.com>; Xiubo Li
+> <Xiubo.Lee@gmail.com>; Fabio Estevam <festevam@gmail.com>; Shengjiu
+> Wang <shengjiu.wang@gmail.com>; Viorel Suman <viorel.suman@nxp.com>;
+> Matthias Schiffer <matthias.schiffer@ew.tq-group.com>; Cosmin-Gabriel
+> Samoila <cosmin.samoila@nxp.com>; alsa-devel@alsa-project.org;
+> devicetree@vger.kernel.org; linux-kernel@vger.kernel.org; linuxppc-
+> dev@lists.ozlabs.org; dl-linux-imx <linux-imx@nxp.com>; Viorel Suman
+> <viorel.suman@gmail.com>
+> Subject: Re: [PATCH v2 1/2] ASoC: fsl_xcvr: Add XCVR ASoC CPU DAI driver
+>=20
+> On Mon, Sep 21, 2020 at 10:08:11PM +0300, Viorel Suman (OSS) wrote:
+> > From: Viorel Suman <viorel.suman@nxp.com>
+> >
+> > XCVR (Audio Transceiver) is a on-chip functional module found on
+> > i.MX8MP. It support HDMI2.1 eARC, HDMI1.4 ARC and SPDIF.
+> >
+> > Signed-off-by: Viorel Suman <viorel.suman@nxp.com>
+> > ---
+> >  sound/soc/fsl/Kconfig    |   10 +
+> >  sound/soc/fsl/Makefile   |    2 +
+> >  sound/soc/fsl/fsl_xcvr.c | 1343
+> > ++++++++++++++++++++++++++++++++++++++++++++++
+> >  sound/soc/fsl/fsl_xcvr.h |  266 +++++++++
+> >  4 files changed, 1621 insertions(+)
+> >  create mode 100644 sound/soc/fsl/fsl_xcvr.c  create mode 100644
+> > sound/soc/fsl/fsl_xcvr.h
+> >
+> > diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig index
+> > 3f76ff7..d04b64d 100644
+> > --- a/sound/soc/fsl/Kconfig
+> > +++ b/sound/soc/fsl/Kconfig
+> > @@ -95,6 +95,16 @@ config SND_SOC_FSL_EASRC
+> >  	  destination sample rate. It is a new design module compare with the
+> >  	  old ASRC.
+> >
+> > +config SND_SOC_FSL_XCVR
+> > +	tristate "NXP Audio Transceiver (XCVR) module support"
+> > +	select REGMAP_MMIO
+> > +	select SND_SOC_IMX_PCM_DMA if SND_IMX_SOC !=3D n
+> > +	select SND_SOC_GENERIC_DMAENGINE_PCM
+> > +	help
+> > +	  Say Y if you want to add Audio Transceiver (XCVR) support for NXP
+> > +	  iMX CPUs. XCVR is a digital module that supports HDMI2.1 eARC,
+> > +	  HDMI1.4 ARC and SPDIF.
+> > +
+> >  config SND_SOC_FSL_UTILS
+> >  	tristate
+> >
+> > diff --git a/sound/soc/fsl/Makefile b/sound/soc/fsl/Makefile index
+> > b835eeb..1d2231f 100644
+> > --- a/sound/soc/fsl/Makefile
+> > +++ b/sound/soc/fsl/Makefile
+> > @@ -25,6 +25,7 @@ snd-soc-fsl-utils-objs :=3D fsl_utils.o
+> > snd-soc-fsl-dma-objs :=3D fsl_dma.o  snd-soc-fsl-mqs-objs :=3D fsl_mqs.=
+o
+> > snd-soc-fsl-easrc-objs :=3D fsl_easrc.o
+> > +snd-soc-fsl-xcvr-objs :=3D fsl_xcvr.o
+> >
+> >  obj-$(CONFIG_SND_SOC_FSL_AUDMIX) +=3D snd-soc-fsl-audmix.o
+> >  obj-$(CONFIG_SND_SOC_FSL_ASOC_CARD) +=3D snd-soc-fsl-asoc-card.o @@
+> > -38,6 +39,7 @@ obj-$(CONFIG_SND_SOC_FSL_UTILS) +=3D snd-soc-fsl-utils.o
+> >  obj-$(CONFIG_SND_SOC_FSL_MQS) +=3D snd-soc-fsl-mqs.o
+> >  obj-$(CONFIG_SND_SOC_FSL_EASRC) +=3D snd-soc-fsl-easrc.o
+> >  obj-$(CONFIG_SND_SOC_POWERPC_DMA) +=3D snd-soc-fsl-dma.o
+> > +obj-$(CONFIG_SND_SOC_FSL_XCVR) +=3D snd-soc-fsl-xcvr.o
+> >
+> >  # MPC5200 Platform Support
+> >  obj-$(CONFIG_SND_MPC52xx_DMA) +=3D mpc5200_dma.o diff --git
+> > a/sound/soc/fsl/fsl_xcvr.c b/sound/soc/fsl/fsl_xcvr.c new file mode
+> > 100644 index 00000000..7391bca
+> > --- /dev/null
+> > +++ b/sound/soc/fsl/fsl_xcvr.c
+> > @@ -0,0 +1,1343 @@
+> [...]
+> > +static int fsl_xcvr_probe(struct platform_device *pdev) {
+> > +	struct device *dev =3D &pdev->dev;
+> > +	struct device_node *np =3D dev->of_node;
+> > +	const struct of_device_id *of_id;
+> > +	struct fsl_xcvr *xcvr;
+> > +	struct resource *ram_res, *regs_res, *rx_res, *tx_res;
+> > +	void __iomem *regs;
+> > +	int ret, irq;
+> > +
+> > +	of_id =3D of_match_device(fsl_xcvr_dt_ids, dev);
+> > +	if (!of_id)
+> > +		return -EINVAL;
+> > +
+> > +	xcvr =3D devm_kzalloc(dev, sizeof(*xcvr), GFP_KERNEL);
+> > +	if (!xcvr)
+> > +		return -ENOMEM;
+> > +
+> > +	xcvr->pdev =3D pdev;
+> > +	xcvr->ipg_clk =3D devm_clk_get(dev, "ipg");
+> > +	if (IS_ERR(xcvr->ipg_clk)) {
+> > +		dev_err(dev, "failed to get ipg clock\n");
+> > +		return PTR_ERR(xcvr->ipg_clk);
+> > +	}
+> > +
+> > +	xcvr->phy_clk =3D devm_clk_get(dev, "phy");
+> > +	if (IS_ERR(xcvr->phy_clk)) {
+> > +		dev_err(dev, "failed to get phy clock\n");
+> > +		return PTR_ERR(xcvr->phy_clk);
+> > +	}
+> > +
+> > +	xcvr->spba_clk =3D devm_clk_get(dev, "spba");
+> > +	if (IS_ERR(xcvr->spba_clk)) {
+> > +		dev_err(dev, "failed to get spba clock\n");
+> > +		return PTR_ERR(xcvr->spba_clk);
+> > +	}
+> > +
+> > +	xcvr->pll_ipg_clk =3D devm_clk_get(dev, "pll_ipg");
+> > +	if (IS_ERR(xcvr->pll_ipg_clk)) {
+> > +		dev_err(dev, "failed to get pll_ipg clock\n");
+> > +		return PTR_ERR(xcvr->pll_ipg_clk);
+> > +	}
+> > +
+> > +	ram_res =3D platform_get_resource_byname(pdev, IORESOURCE_MEM,
+> "ram");
+> > +	xcvr->ram_addr =3D devm_ioremap_resource(dev, ram_res);
+> > +	if (IS_ERR(xcvr->ram_addr))
+> > +		return PTR_ERR(xcvr->ram_addr);
+> > +
+> > +	regs_res =3D platform_get_resource_byname(pdev, IORESOURCE_MEM,
+> "regs");
+> > +	regs =3D devm_ioremap_resource(dev, regs_res);
+> > +	if (IS_ERR(regs))
+> > +		return PTR_ERR(regs);
+> > +
+> > +	xcvr->regmap =3D devm_regmap_init_mmio_clk(dev, NULL, regs,
+> > +						 &fsl_xcvr_regmap_cfg);
+> > +	if (IS_ERR(xcvr->regmap)) {
+> > +		dev_err(dev, "failed to init XCVR regmap: %ld\n",
+> > +			PTR_ERR(xcvr->regmap));
+> > +		return PTR_ERR(xcvr->regmap);
+> > +	}
+> > +
+> > +	xcvr->reset =3D of_reset_control_get(np, NULL);
+>=20
+> Please use devm_reset_control_get_exclusive().
 
-And can we make the 'bugged' information available to user space in a
-structured way?
+Done in V3.
 
-> 
-> RFC as I've done nowhere near enough testing to verify that rejecting the
-> ioctls(), evicting running vCPUs, etc... works as intended.
-> 
-> Sean Christopherson (3):
->   KVM: Export kvm_make_all_cpus_request() for use in marking VMs as
->     bugged
->   KVM: Add infrastructure and macro to mark VM as bugged
->   KVM: x86: Use KVM_BUG/KVM_BUG_ON to handle bugs that are fatal to the
->     VM
-> 
->  arch/x86/kvm/svm/svm.c   |  2 +-
->  arch/x86/kvm/vmx/vmx.c   | 23 ++++++++++++--------
->  arch/x86/kvm/x86.c       |  4 ++++
->  include/linux/kvm_host.h | 45 ++++++++++++++++++++++++++++++++--------
->  virt/kvm/kvm_main.c      | 11 +++++-----
->  5 files changed, 61 insertions(+), 24 deletions(-)
-> 
+>=20
+> [...]
+> > +static __maybe_unused int fsl_xcvr_runtime_resume(struct device *dev)
+> > +{
+> > +	struct fsl_xcvr *xcvr =3D dev_get_drvdata(dev);
+> > +	int ret;
+> > +
+> > +	ret =3D clk_prepare_enable(xcvr->ipg_clk);
+> > +	if (ret) {
+> > +		dev_err(dev, "failed to start IPG clock.\n");
+> > +		return ret;
+> > +	}
+> > +
+> > +	ret =3D clk_prepare_enable(xcvr->pll_ipg_clk);
+> > +	if (ret) {
+> > +		dev_err(dev, "failed to start PLL IPG clock.\n");
+> > +		goto stop_ipg_clk;
+> > +	}
+> > +
+> > +	ret =3D clk_prepare_enable(xcvr->phy_clk);
+> > +	if (ret) {
+> > +		dev_err(dev, "failed to start PHY clock: %d\n", ret);
+> > +		goto stop_pll_ipg_clk;
+> > +	}
+> > +
+> > +	ret =3D clk_prepare_enable(xcvr->spba_clk);
+> > +	if (ret) {
+> > +		dev_err(dev, "failed to start SPBA clock.\n");
+> > +		goto stop_phy_clk;
+> > +	}
+> > +
+> > +	regcache_cache_only(xcvr->regmap, false);
+> > +	regcache_mark_dirty(xcvr->regmap);
+> > +	ret =3D regcache_sync(xcvr->regmap);
+> > +
+> > +	if (ret) {
+> > +		dev_err(dev, "failed to sync regcache.\n");
+> > +		goto stop_spba_clk;
+> > +	}
+> > +
+> > +	reset_control_assert(xcvr->reset);
+> > +	reset_control_deassert(xcvr->reset);
+>=20
+> No delay required between the two?
 
+Not required. Just to keep things in proper context - in
+V3 I moved reset_control_assert call into runtime_suspend.
+
+/Viorel
