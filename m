@@ -2,98 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 861D927BD0D
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 08:22:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FB0327BD09
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 08:22:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727505AbgI2GWa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 02:22:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50190 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725306AbgI2GWT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 02:22:19 -0400
-Received: from mail.kernel.org (ip5f5ad5bc.dynamic.kabel-deutschland.de [95.90.213.188])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4BE0F20BED;
-        Tue, 29 Sep 2020 06:22:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601360538;
-        bh=uHJGfFfxEsHLO5eWd/AelHCZUHpBL7I1dn3ww937d/w=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FYCTVBSzQ10VJNTKvqdLNA69TY4sw+WB+WgrCx4ZwhN5OOyjQVf9rPVRN7uWzaCTn
-         dZGwVqYRuhq/SrRZuzxwqsYPGBpYSMsD9tIb6R0kLl9Gs3DvZPhby3s4FBBi3HYs53
-         CrXleN1poYH3PpatCu/8YEVPI2osmvbxCSoFPExo=
-Received: from mchehab by mail.kernel.org with local (Exim 4.94)
-        (envelope-from <mchehab@kernel.org>)
-        id 1kN91j-000cE5-Lv; Tue, 29 Sep 2020 08:22:15 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Stephen Boyd <sboyd@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "John Stultz" <john.stultz@linaro.org>,
-        "Manivannan Sadhasivam" <mani@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/2] spmi: fix some coding style issues at the spmi core
-Date:   Tue, 29 Sep 2020 08:22:13 +0200
-Message-Id: <fec878502147336cbf2cf86e476e9dd797cd7e6f.1601360391.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <cover.1601360391.git.mchehab+huawei@kernel.org>
-References: <cover.1601360391.git.mchehab+huawei@kernel.org>
+        id S1727420AbgI2GWX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 02:22:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45770 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727315AbgI2GWV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 02:22:21 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5BECC061755
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 23:22:21 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <sha@pengutronix.de>)
+        id 1kN91k-0005Qj-Js; Tue, 29 Sep 2020 08:22:16 +0200
+Received: from sha by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <sha@pengutronix.de>)
+        id 1kN91k-0006OL-AN; Tue, 29 Sep 2020 08:22:16 +0200
+Date:   Tue, 29 Sep 2020 08:22:16 +0200
+From:   Sascha Hauer <s.hauer@pengutronix.de>
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org
+Subject: Re: [PATCH AUTOSEL 5.8 28/29] spi: fsl-dspi: fix use-after-free in
+ remove path
+Message-ID: <20200929062216.GL11648@pengutronix.de>
+References: <20200929013027.2406344-1-sashal@kernel.org>
+ <20200929013027.2406344-28-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200929013027.2406344-28-sashal@kernel.org>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 08:20:02 up 222 days, 13:50, 130 users,  load average: 0.00, 0.10,
+ 0.15
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: sha@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While preparing to port the HiSilicon 6421v600 SPMI driver,
-I noticed some coding style issues at the SPMI core.
+Hi Sasha,
 
-Address them.
+On Mon, Sep 28, 2020 at 09:30:25PM -0400, Sasha Levin wrote:
+> From: Sascha Hauer <s.hauer@pengutronix.de>
+> 
+> [ Upstream commit 530b5affc675ade5db4a03f04ed7cd66806c8a1a ]
+> 
+> spi_unregister_controller() not only unregisters the controller, but
+> also frees the controller. This will free the driver data with it, so
+> we must not access it later dspi_remove().
+> 
+> Solve this by allocating the driver data separately from the SPI
+> controller.
+> 
+> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+> Link: https://lore.kernel.org/r/20200923131026.20707-1-s.hauer@pengutronix.de
+> Signed-off-by: Mark Brown <broonie@kernel.org>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
+> ---
+>  drivers/spi/spi-fsl-dspi.c | 12 +++++++-----
+>  1 file changed, 7 insertions(+), 5 deletions(-)
 
-Reviewed-by: Stephen Boyd <sboyd@kernel.org>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- drivers/spmi/spmi.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+This patch causes a regression and shouldn't be applied without the fix
+in https://lkml.org/lkml/2020/9/28/300.
 
-diff --git a/drivers/spmi/spmi.c b/drivers/spmi/spmi.c
-index fd3ff6079b15..253340e10dab 100644
---- a/drivers/spmi/spmi.c
-+++ b/drivers/spmi/spmi.c
-@@ -23,6 +23,7 @@ static DEFINE_IDA(ctrl_ida);
- static void spmi_dev_release(struct device *dev)
- {
- 	struct spmi_device *sdev = to_spmi_device(dev);
-+
- 	kfree(sdev);
- }
- 
-@@ -33,6 +34,7 @@ static const struct device_type spmi_dev_type = {
- static void spmi_ctrl_release(struct device *dev)
- {
- 	struct spmi_controller *ctrl = to_spmi_controller(dev);
-+
- 	ida_simple_remove(&ctrl_ida, ctrl->nr);
- 	kfree(ctrl);
- }
-@@ -487,7 +489,7 @@ static void of_spmi_register_devices(struct spmi_controller *ctrl)
- 			continue;
- 
- 		sdev->dev.of_node = node;
--		sdev->usid = (u8) reg[0];
-+		sdev->usid = (u8)reg[0];
- 
- 		err = spmi_device_add(sdev);
- 		if (err) {
-@@ -531,6 +533,7 @@ EXPORT_SYMBOL_GPL(spmi_controller_add);
- static int spmi_ctrl_remove_device(struct device *dev, void *data)
- {
- 	struct spmi_device *spmidev = to_spmi_device(dev);
-+
- 	if (dev->type == &spmi_dev_type)
- 		spmi_device_remove(spmidev);
- 	return 0;
+Sascha
+
+> index 91c6affe139c9..aae9f9a7aea6c 100644
+> --- a/drivers/spi/spi-fsl-dspi.c
+> +++ b/drivers/spi/spi-fsl-dspi.c
+> @@ -1273,11 +1273,14 @@ static int dspi_probe(struct platform_device *pdev)
+>  	void __iomem *base;
+>  	bool big_endian;
+>  
+> -	ctlr = spi_alloc_master(&pdev->dev, sizeof(struct fsl_dspi));
+> +	dspi = devm_kzalloc(&pdev->dev, sizeof(*dspi), GFP_KERNEL);
+> +	if (!dspi)
+> +		return -ENOMEM;
+> +
+> +	ctlr = spi_alloc_master(&pdev->dev, 0);
+>  	if (!ctlr)
+>  		return -ENOMEM;
+>  
+> -	dspi = spi_controller_get_devdata(ctlr);
+>  	dspi->pdev = pdev;
+>  	dspi->ctlr = ctlr;
+>  
+> @@ -1414,7 +1417,7 @@ static int dspi_probe(struct platform_device *pdev)
+>  	if (dspi->devtype_data->trans_mode != DSPI_DMA_MODE)
+>  		ctlr->ptp_sts_supported = true;
+>  
+> -	platform_set_drvdata(pdev, ctlr);
+> +	platform_set_drvdata(pdev, dspi);
+>  
+>  	ret = spi_register_controller(ctlr);
+>  	if (ret != 0) {
+> @@ -1437,8 +1440,7 @@ static int dspi_probe(struct platform_device *pdev)
+>  
+>  static int dspi_remove(struct platform_device *pdev)
+>  {
+> -	struct spi_controller *ctlr = platform_get_drvdata(pdev);
+> -	struct fsl_dspi *dspi = spi_controller_get_devdata(ctlr);
+> +	struct fsl_dspi *dspi = platform_get_drvdata(pdev);
+>  
+>  	/* Disconnect from the SPI framework */
+>  	spi_unregister_controller(dspi->ctlr);
+> -- 
+> 2.25.1
+> 
+> 
+
 -- 
-2.26.2
-
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
