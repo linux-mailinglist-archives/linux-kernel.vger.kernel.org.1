@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C06B927C611
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:42:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8155B27C563
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:35:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730650AbgI2LlW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:41:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37708 "EHLO mail.kernel.org"
+        id S1728887AbgI2LfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:35:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45278 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729924AbgI2LlS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:41:18 -0400
+        id S1729634AbgI2Ldb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:33:31 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DEDE2206DB;
-        Tue, 29 Sep 2020 11:41:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 38ABA23BA7;
+        Tue, 29 Sep 2020 11:26:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601379677;
-        bh=ixzpbqLb4xocEfRBNC7ZiSrrGa/FbibEd/KqN8FpI8Y=;
+        s=default; t=1601378817;
+        bh=hyfbLpE+MJF+XhVMmG9grOk4tySb8I3OuUyv+6NdWIs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=u5q01zyHKYafkuoL6kFR5FC3Mhbyo1itDULQZk8NgTt99WFgRnN8MsQFiwwBLgH+I
-         912g3l5EOacnDlvYiKJLaiwdMknWppvMt2084vc2797dkRiUWeT91E6QfaTmElDdqL
-         HtirWbepdy9xo86fRwWP92w/VNNgvUQfpUpfob8I=
+        b=EVNQ/ZengawDhg0o5hK0k0mk2+QLuT/RMTTToUqBMYJv59B5OcYlc8fosJzGDIiDE
+         E0ciTiq9XpRcQm/Xrm+rAeHQEEepi7rvM6q9Fv3Xwz9jfNkvowSzrJCYiZjgoRA7d/
+         f3/Q41pnMfegaSCIp1P2p+4nDnLBZUyl7zFsRuO0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Matthew R. Ochs" <mrochs@linux.ibm.com>,
-        Wei Yongjun <weiyongjun1@huawei.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Pravin B Shelar <pshelar@ovn.org>,
+        Andy Zhou <azhou@ovn.org>,
+        Tonghao Zhang <xiangxia.m.yue@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 269/388] scsi: cxlflash: Fix error return code in cxlflash_probe()
-Date:   Tue, 29 Sep 2020 13:00:00 +0200
-Message-Id: <20200929110023.483080948@linuxfoundation.org>
+Subject: [PATCH 4.19 150/245] net: openvswitch: use u64 for meter bucket
+Date:   Tue, 29 Sep 2020 13:00:01 +0200
+Message-Id: <20200929105954.280070788@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929110010.467764689@linuxfoundation.org>
-References: <20200929110010.467764689@linuxfoundation.org>
+In-Reply-To: <20200929105946.978650816@linuxfoundation.org>
+References: <20200929105946.978650816@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,33 +45,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wei Yongjun <weiyongjun1@huawei.com>
+From: Tonghao Zhang <xiangxia.m.yue@gmail.com>
 
-[ Upstream commit d0b1e4a638d670a09f42017a3e567dc846931ba8 ]
+[ Upstream commit e57358873bb5d6caa882b9684f59140912b37dde ]
 
-Fix to return negative error code -ENOMEM from create_afu error handling
-case instead of 0, as done elsewhere in this function.
+When setting the meter rate to 4+Gbps, there is an
+overflow, the meters don't work as expected.
 
-Link: https://lore.kernel.org/r/20200428141855.88704-1-weiyongjun1@huawei.com
-Acked-by: Matthew R. Ochs <mrochs@linux.ibm.com>
-Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Cc: Pravin B Shelar <pshelar@ovn.org>
+Cc: Andy Zhou <azhou@ovn.org>
+Signed-off-by: Tonghao Zhang <xiangxia.m.yue@gmail.com>
+Acked-by: Pravin B Shelar <pshelar@ovn.org>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/cxlflash/main.c | 1 +
- 1 file changed, 1 insertion(+)
+ net/openvswitch/meter.c | 2 +-
+ net/openvswitch/meter.h | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/scsi/cxlflash/main.c b/drivers/scsi/cxlflash/main.c
-index 93ef97af22df4..67d681c53c295 100644
---- a/drivers/scsi/cxlflash/main.c
-+++ b/drivers/scsi/cxlflash/main.c
-@@ -3746,6 +3746,7 @@ static int cxlflash_probe(struct pci_dev *pdev,
- 	cfg->afu_cookie = cfg->ops->create_afu(pdev);
- 	if (unlikely(!cfg->afu_cookie)) {
- 		dev_err(dev, "%s: create_afu failed\n", __func__);
-+		rc = -ENOMEM;
- 		goto out_remove;
- 	}
+diff --git a/net/openvswitch/meter.c b/net/openvswitch/meter.c
+index c038e021a5916..6f5131d1074b0 100644
+--- a/net/openvswitch/meter.c
++++ b/net/openvswitch/meter.c
+@@ -255,7 +255,7 @@ static struct dp_meter *dp_meter_create(struct nlattr **a)
+ 		 *
+ 		 * Start with a full bucket.
+ 		 */
+-		band->bucket = (band->burst_size + band->rate) * 1000;
++		band->bucket = (band->burst_size + band->rate) * 1000ULL;
+ 		band_max_delta_t = band->bucket / band->rate;
+ 		if (band_max_delta_t > meter->max_delta_t)
+ 			meter->max_delta_t = band_max_delta_t;
+diff --git a/net/openvswitch/meter.h b/net/openvswitch/meter.h
+index 964ace2650f89..970557ed5b5b6 100644
+--- a/net/openvswitch/meter.h
++++ b/net/openvswitch/meter.h
+@@ -26,7 +26,7 @@ struct dp_meter_band {
+ 	u32 type;
+ 	u32 rate;
+ 	u32 burst_size;
+-	u32 bucket; /* 1/1000 packets, or in bits */
++	u64 bucket; /* 1/1000 packets, or in bits */
+ 	struct ovs_flow_stats stats;
+ };
  
 -- 
 2.25.1
