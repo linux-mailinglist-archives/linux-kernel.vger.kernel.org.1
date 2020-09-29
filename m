@@ -2,207 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B35327D765
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 21:57:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0490727D76D
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 21:59:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728872AbgI2T5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 15:57:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49780 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727740AbgI2T5r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 15:57:47 -0400
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DBAF32083B
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 19:57:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601409466;
-        bh=Qwu5PoL63lD9i/Fv1xhrZCI4FoJQXvwA0rtPHDOgnU8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=vGZY5XahMr5R+WKF6EfFh1JVk4HZVMZzR7QS4bPnpAPvPTX+f+smn0YBpAU5zlTPX
-         3J/GZNFCqc4hBT0ImF3z/Ea3WX29Vxa6HXJL7k6fj55kMIbrw2h1jBjMjbY+z9JIH/
-         Rl1zj4dQALVQuxsfJSKNbi23Qp6NHVHNk+eXKAfI=
-Received: by mail-wr1-f41.google.com with SMTP id x14so6775900wrl.12
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 12:57:45 -0700 (PDT)
-X-Gm-Message-State: AOAM5327+OWi2baAabEtMdK6pUbdHq42LuUjNDS61j8dsjnfha9OuW29
-        9nQDvdH1ZaftpSbpFdieRsMogN8rwqfhKlBd9iz3vQ==
-X-Google-Smtp-Source: ABdhPJx3lB2zlueCAMn75sMTUFY2AhvOfwqVqFgs8RvW9w4m++tuwShPo2eZ5RRLRFyI+R3rSLBO0y7Mo3n373Ou2ZQ=
-X-Received: by 2002:adf:a3c3:: with SMTP id m3mr6065511wrb.70.1601409464264;
- Tue, 29 Sep 2020 12:57:44 -0700 (PDT)
+        id S1728946AbgI2T7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 15:59:34 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:1204 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727740AbgI2T7e (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 15:59:34 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f7391c00000>; Tue, 29 Sep 2020 12:57:52 -0700
+Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL101.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 29 Sep
+ 2020 19:59:32 +0000
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.174)
+ by HQMAIL101.nvidia.com (172.20.187.10) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Tue, 29 Sep 2020 19:59:32 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hpQE0xXT6R29dDNNYmU5LuVUlx8pz4e3aWmZ9nOvpzFwhmgEcsCw859SIedWOJdmXXSQqny47/pOOyVMp8+Cb86Aot6oDc/QD+62YVggk/rshDd9AHksNWemqqo0mZsPeYJIJNfjOR349YlV9utM2yMCr+baszsluLE8/UE81zy7VqdN7DRV5W8qDp9hGhUKnjlTfYbGBWy3KWER53gGf5ozbf4BuNiZZnu7jw64sQJdpLC6Xc5pv+g9Eq+yh0Qp7MbXmw4RnrW65Dk7aZcpty6g0FTPgQNqiKNu/dbZD6siwQZh0lk4FWoODN8eFQph6PIvFVbArEyfMHsMBU7pfg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LbTynvgPyPjA+95ZRshJ0r2pHgwVG61L3zu9wlQdKUY=;
+ b=lROk2rtY9LlIV0VV+uyXYH0pK6gOM7W91Fh/acYxP218J6NnSZoo6rAVTD9u14rXzulc+APDClUQK7fa+SdPW5f+zK9cxHbTBtYorxgr3SEqEwKfUy+KxkCnsCZEV0u2GE8inr0h/yIeuRX4W9prkDg00J7bLQNA6HglpRlCig5ZqE+KF62W3cIOPTCVZlg+0UmifqxAXPWc/UGqSn5wEN54ytvgcW8nnEcNTKHLhS7MxZCjThmh9NBhJH+FzLClwVWEwDO+k2cx5kVJ+QMHPHagUBdtjbcyzYmiegC0hC2qMFJoY4W8h18fju5wMn9KbqJdSR049ZVG8qcVAHUvpg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB3209.namprd12.prod.outlook.com (2603:10b6:5:184::33) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.23; Tue, 29 Sep
+ 2020 19:59:31 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3433.032; Tue, 29 Sep 2020
+ 19:59:31 +0000
+Date:   Tue, 29 Sep 2020 16:59:29 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Leon Romanovsky <leon@kernel.org>
+CC:     Doug Ledford <dledford@redhat.com>,
+        Maor Gottlieb <maorg@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        <dri-devel@lists.freedesktop.org>,
+        <intel-gfx@lists.freedesktop.org>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Roland Scheidegger <sroland@vmware.com>,
+        "Tvrtko Ursulin" <tvrtko.ursulin@intel.com>,
+        VMware Graphics <linux-graphics-maintainer@vmware.com>
+Subject: Re: [PATCH rdma-next v4 4/4] RDMA/umem: Move to allocate SG table
+ from pages
+Message-ID: <20200929195929.GA803555@nvidia.com>
+References: <20200927064647.3106737-1-leon@kernel.org>
+ <20200927064647.3106737-5-leon@kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20200927064647.3106737-5-leon@kernel.org>
+X-ClientProxiedBy: MN2PR03CA0028.namprd03.prod.outlook.com
+ (2603:10b6:208:23a::33) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-References: <d0e4077e-129f-6823-dcea-a101ef626e8c@intel.com>
- <99B32E59-CFF2-4756-89BD-AEA0021F355F@amacapital.net> <d9099183dadde8fe675e1b10e589d13b0d46831f.camel@intel.com>
- <CALCETrWuhPE3A7eWC=ERJa7i7jLtsXnfu04PKUFJ-Gybro+p=Q@mail.gmail.com> <b8797fcd-9d70-5749-2277-ef61f2e1be1f@intel.com>
-In-Reply-To: <b8797fcd-9d70-5749-2277-ef61f2e1be1f@intel.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Tue, 29 Sep 2020 12:57:32 -0700
-X-Gmail-Original-Message-ID: <CALCETrWvWAxEuyteLaPmmu-r5LcWdh_DuW4JAOh3pVD4skWoBQ@mail.gmail.com>
-Message-ID: <CALCETrWvWAxEuyteLaPmmu-r5LcWdh_DuW4JAOh3pVD4skWoBQ@mail.gmail.com>
-Subject: Re: [PATCH v13 8/8] x86/vsyscall/64: Fixup Shadow Stack and Indirect
- Branch Tracking for vsyscall emulation
-To:     "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Cc:     Andy Lutomirski <luto@kernel.org>, X86 ML <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR03CA0028.namprd03.prod.outlook.com (2603:10b6:208:23a::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.32 via Frontend Transport; Tue, 29 Sep 2020 19:59:30 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kNLmb-003NQ0-Io; Tue, 29 Sep 2020 16:59:29 -0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1601409472; bh=LbTynvgPyPjA+95ZRshJ0r2pHgwVG61L3zu9wlQdKUY=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType;
+        b=iSmska3JZTIwY67fbkfO3gQL7hZD6bfd47hENqfwiNTYSB5LY6cGsQm+jZ+sYMRHO
+         JxfHosdNev+wqVzoOV7t82t96iLfcRbDLNiG58sA6X/waxJSkvzcPVNAAbEQUBmhke
+         ebZaoB456MkvM9RITmUnZsTIfajHih+nZR4gFs4CUf8HXgxLLovMa5gBAHDSH8Rbxn
+         2fGaMrhaoPm6HuEg32KEe/0Q9InmJ/zntpZsX4yR/uaBat9HN27tHmSEJisHHzdz62
+         LwXQPFrR0z8urAf4OB8SCh0m8DWleuVmmwGiBl5M42mABlUwgq4Q3Gt2elJadwLkLF
+         NayfjPM/0geOw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 11:37 AM Yu, Yu-cheng <yu-cheng.yu@intel.com> wrote:
->
-> On 9/28/2020 10:37 AM, Andy Lutomirski wrote:
-> > On Mon, Sep 28, 2020 at 9:59 AM Yu-cheng Yu <yu-cheng.yu@intel.com> wrote:
-> >>
-> >> On Fri, 2020-09-25 at 09:51 -0700, Andy Lutomirski wrote:
-> >>>> On Sep 25, 2020, at 9:48 AM, Yu, Yu-cheng <yu-cheng.yu@intel.com> wrote:
-> >> +
-> >> +               cet = get_xsave_addr(&fpu->state.xsave, XFEATURE_CET_USER);
-> >> +               if (!cet) {
-> >> +                       /*
-> >> +                        * This is an unlikely case where the task is
-> >> +                        * CET-enabled, but CET xstate is in INIT.
-> >> +                        */
-> >> +                       WARN_ONCE(1, "CET is enabled, but no xstates");
-> >
-> > "unlikely" doesn't really cover this.
-> >
-> >> +                       fpregs_unlock();
-> >> +                       goto sigsegv;
-> >> +               }
-> >> +
-> >> +               if (cet->user_ssp && ((cet->user_ssp + 8) < TASK_SIZE_MAX))
-> >> +                       cet->user_ssp += 8;
-> >
-> > This looks buggy.  The condition should be "if SHSTK is on, then add 8
-> > to user_ssp".  If the result is noncanonical, then some appropriate
-> > exception should be generated, probably by the FPU restore code -- see
-> > below.  You should be checking the SHSTK_EN bit, not SSP.
->
-> Updated.  Is this OK?  I will resend the whole series later.
->
-> Thanks,
-> Yu-cheng
->
-> ======
->
->  From 09803e66dca38d7784e32687d0693550948199ed Mon Sep 17 00:00:00 2001
-> From: Yu-cheng Yu <yu-cheng.yu@intel.com>
-> Date: Thu, 29 Nov 2018 14:15:38 -0800
-> Subject: [PATCH v13 8/8] x86/vsyscall/64: Fixup Shadow Stack and
-> Indirect Branch
->   Tracking for vsyscall emulation
->
-> Vsyscall entry points are effectively branch targets.  Mark them with
-> ENDBR64 opcodes.  When emulating the RET instruction, unwind shadow stack
-> and reset IBT state machine.
->
-> Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
-> ---
-> v13:
-> - Check shadow stack address is canonical.
-> - Change from writing to MSRs to writing to CET xstate.
->
->   arch/x86/entry/vsyscall/vsyscall_64.c     | 34 +++++++++++++++++++++++
->   arch/x86/entry/vsyscall/vsyscall_emu_64.S |  9 ++++++
->   arch/x86/entry/vsyscall/vsyscall_trace.h  |  1 +
->   3 files changed, 44 insertions(+)
->
-> diff --git a/arch/x86/entry/vsyscall/vsyscall_64.c
-> b/arch/x86/entry/vsyscall/vsyscall_64.c
-> index 44c33103a955..30b166091d46 100644
-> --- a/arch/x86/entry/vsyscall/vsyscall_64.c
-> +++ b/arch/x86/entry/vsyscall/vsyscall_64.c
-> @@ -38,6 +38,9 @@
->   #include <asm/fixmap.h>
->   #include <asm/traps.h>
->   #include <asm/paravirt.h>
-> +#include <asm/fpu/xstate.h>
-> +#include <asm/fpu/types.h>
-> +#include <asm/fpu/internal.h>
->
->   #define CREATE_TRACE_POINTS
->   #include "vsyscall_trace.h"
-> @@ -286,6 +289,44 @@ bool emulate_vsyscall(unsigned long error_code,
->         /* Emulate a ret instruction. */
->         regs->ip = caller;
->         regs->sp += 8;
-> +
-> +#ifdef CONFIG_X86_CET
-> +       if (tsk->thread.cet.shstk_size || tsk->thread.cet.ibt_enabled) {
-> +               struct cet_user_state *cet;
-> +               struct fpu *fpu;
-> +
-> +               fpu = &tsk->thread.fpu;
-> +               fpregs_lock();
-> +
-> +               if (!test_thread_flag(TIF_NEED_FPU_LOAD)) {
-> +                       copy_fpregs_to_fpstate(fpu);
-> +                       set_thread_flag(TIF_NEED_FPU_LOAD);
-> +               }
-> +
-> +               cet = get_xsave_addr(&fpu->state.xsave, XFEATURE_CET_USER);
-> +               if (!cet) {
-> +                       /*
-> +                        * This should not happen.  The task is
-> +                        * CET-enabled, but CET xstate is in INIT.
-> +                        */
+On Sun, Sep 27, 2020 at 09:46:47AM +0300, Leon Romanovsky wrote:
+> @@ -296,11 +223,17 @@ static struct ib_umem *__ib_umem_get(struct ib_device *device,
+>  			goto umem_release;
+> 
+>  		cur_base += ret * PAGE_SIZE;
+> -		npages   -= ret;
+> -
+> -		sg = ib_umem_add_sg_table(sg, page_list, ret,
+> -			dma_get_max_seg_size(device->dma_device),
+> -			&umem->sg_nents);
+> +		npages -= ret;
+> +		sg = __sg_alloc_table_from_pages(
+> +			&umem->sg_head, page_list, ret, 0, ret << PAGE_SHIFT,
+> +			dma_get_max_seg_size(device->dma_device), sg, npages,
+> +			GFP_KERNEL);
+> +		umem->sg_nents = umem->sg_head.nents;
+> +		if (IS_ERR(sg)) {
+> +			unpin_user_pages_dirty_lock(page_list, ret, 0);
+> +			ret = PTR_ERR(sg);
+> +			goto umem_release;
+> +		}
+>  	}
+> 
+>  	sg_mark_end(sg);
 
-Can the comment explain better, please?  I would say something like:
+Does it still need the sg_mark_end?
 
-If the kernel thinks this task has CET enabled (because
-tsk->thread.cet has one of the features enabled), then the
-corresponding bits must also be set in the CET XSAVES region.  If the
-CET XSAVES region is in the INIT state, then the kernel's concept of
-the task's CET state is corrupt.
-
-> +                       WARN_ONCE(1, "CET is enabled, but no xstates");
-> +                       fpregs_unlock();
-> +                       goto sigsegv;
-> +               }
-> +
-> +               if (cet->user_cet & CET_SHSTK_EN) {
-> +                       if (cet->user_ssp && (cet->user_ssp + 8 < TASK_SIZE_MAX))
-> +                               cet->user_ssp += 8;
-> +               }
-
-This makes so sense to me.  Also, the vsyscall emulation code is
-intended to be as rigid as possible to minimize the chance that it
-gets used as an exploit gadget.  So we should not silently corrupt
-anything.  Moreover, this code seems quite dangerous -- you've created
-a gadget that does RET without actually verifying the SHSTK token.  If
-SHSTK and some form of strong indirect branch/call CFI is in use, then
-the existance of a CFI-bypassing return primitive at a fixed address
-seems quite problematic.
-
-So I think you need to write a function that reasonably accurately
-emulates a usermode RET.
-
---Andy
+Jason
