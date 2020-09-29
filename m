@@ -2,40 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EF0127C34E
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:06:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7BA927C4DA
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:17:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728626AbgI2LEe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:04:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40604 "EHLO mail.kernel.org"
+        id S1729626AbgI2LRI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:17:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33612 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728494AbgI2LE0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:04:26 -0400
+        id S1728522AbgI2LQu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:16:50 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7177421D7D;
-        Tue, 29 Sep 2020 11:04:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 86ED921D41;
+        Tue, 29 Sep 2020 11:16:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601377466;
-        bh=SSaOXops64YH+iEYehZFdcf3MoI3XiQPJjZDXrL47MM=;
+        s=default; t=1601378210;
+        bh=nY6s31o4Uapbgqv3OMmpaHn2wWQKiW94YW1DjcUH4Bk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=d4EEWP4Gzee58d7jP62T1LHobLAUTccTtrEjH1vhW4IdNhyqYuY5NRiWduq5XUnnL
-         4cIlvRPpfiXNqxjibmtNTx9SibrTaa5gxWDxdw6kRpXYN54HGFj8OtmoC2rVavjHUu
-         vmk/f8bgUYw4T4KvOLZLRGmtz7vEbSWktEMcsNj0=
+        b=E9yXbdtdgNZth+qAgBbAPejLwFr3QemD8xvoPizpM+yM1udH52M5ljOq4Y6+38GJN
+         YEYQwp2/arouFhFBQf6676kdNtcKr1hO8WeKX4dd4LHPj067ju5h4anZmZpqtIWdwZ
+         w+iZOO9NZMsQLodH/4cWyQLhzn7XEgUyZOpBAWj0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Chuck Lever <chuck.lever@oracle.com>,
+        stable@vger.kernel.org, Jaewon Kim <jaewon31.kim@samsung.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Michel Lespinasse <walken@google.com>,
+        Borislav Petkov <bp@suse.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 46/85] SUNRPC: Fix a potential buffer overflow in svc_print_xprts()
+Subject: [PATCH 4.14 101/166] mm/mmap.c: initialize align_offset explicitly for vm_unmapped_area
 Date:   Tue, 29 Sep 2020 13:00:13 +0200
-Message-Id: <20200929105930.536704043@linuxfoundation.org>
+Message-Id: <20200929105940.251866393@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929105928.198942536@linuxfoundation.org>
-References: <20200929105928.198942536@linuxfoundation.org>
+In-Reply-To: <20200929105935.184737111@linuxfoundation.org>
+References: <20200929105935.184737111@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,73 +47,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Jaewon Kim <jaewon31.kim@samsung.com>
 
-[ Upstream commit b25b60d7bfb02a74bc3c2d998e09aab159df8059 ]
+[ Upstream commit 09ef5283fd96ac424ef0e569626f359bf9ab86c9 ]
 
-'maxlen' is the total size of the destination buffer. There is only one
-caller and this value is 256.
+On passing requirement to vm_unmapped_area, arch_get_unmapped_area and
+arch_get_unmapped_area_topdown did not set align_offset.  Internally on
+both unmapped_area and unmapped_area_topdown, if info->align_mask is 0,
+then info->align_offset was meaningless.
 
-When we compute the size already used and what we would like to add in
-the buffer, the trailling NULL character is not taken into account.
-However, this trailling character will be added by the 'strcat' once we
-have checked that we have enough place.
+But commit df529cabb7a2 ("mm: mmap: add trace point of
+vm_unmapped_area") always prints info->align_offset even though it is
+uninitialized.
 
-So, there is a off-by-one issue and 1 byte of the stack could be
-erroneously overwridden.
+Fix this uninitialized value issue by setting it to 0 explicitly.
 
-Take into account the trailling NULL, when checking if there is enough
-place in the destination buffer.
+Before:
+  vm_unmapped_area: addr=0x755b155000 err=0 total_vm=0x15aaf0 flags=0x1 len=0x109000 lo=0x8000 hi=0x75eed48000 mask=0x0 ofs=0x4022
 
-While at it, also replace a 'sprintf' by a safer 'snprintf', check for
-output truncation and avoid a superfluous 'strlen'.
+After:
+  vm_unmapped_area: addr=0x74a4ca1000 err=0 total_vm=0x168ab1 flags=0x1 len=0x9000 lo=0x8000 hi=0x753d94b000 mask=0x0 ofs=0x0
 
-Fixes: dc9a16e49dbba ("svc: Add /proc/sys/sunrpc/transport files")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-[ cel: very minor fix to documenting comment
-Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+Signed-off-by: Jaewon Kim <jaewon31.kim@samsung.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Reviewed-by: Andrew Morton <akpm@linux-foundation.org>
+Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
+Cc: Michel Lespinasse <walken@google.com>
+Cc: Borislav Petkov <bp@suse.de>
+Link: http://lkml.kernel.org/r/20200409094035.19457-1-jaewon31.kim@samsung.com
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/sunrpc/svc_xprt.c | 19 ++++++++++++++-----
- 1 file changed, 14 insertions(+), 5 deletions(-)
+ mm/mmap.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/net/sunrpc/svc_xprt.c b/net/sunrpc/svc_xprt.c
-index 2b8e80c721db1..a7cd031656801 100644
---- a/net/sunrpc/svc_xprt.c
-+++ b/net/sunrpc/svc_xprt.c
-@@ -97,8 +97,17 @@ void svc_unreg_xprt_class(struct svc_xprt_class *xcl)
+diff --git a/mm/mmap.c b/mm/mmap.c
+index 724b7c4f1a5b5..c389fd258384f 100644
+--- a/mm/mmap.c
++++ b/mm/mmap.c
+@@ -2034,6 +2034,7 @@ arch_get_unmapped_area(struct file *filp, unsigned long addr,
+ 	info.low_limit = mm->mmap_base;
+ 	info.high_limit = TASK_SIZE;
+ 	info.align_mask = 0;
++	info.align_offset = 0;
+ 	return vm_unmapped_area(&info);
  }
- EXPORT_SYMBOL_GPL(svc_unreg_xprt_class);
+ #endif
+@@ -2075,6 +2076,7 @@ arch_get_unmapped_area_topdown(struct file *filp, const unsigned long addr0,
+ 	info.low_limit = max(PAGE_SIZE, mmap_min_addr);
+ 	info.high_limit = mm->mmap_base;
+ 	info.align_mask = 0;
++	info.align_offset = 0;
+ 	addr = vm_unmapped_area(&info);
  
--/*
-- * Format the transport list for printing
-+/**
-+ * svc_print_xprts - Format the transport list for printing
-+ * @buf: target buffer for formatted address
-+ * @maxlen: length of target buffer
-+ *
-+ * Fills in @buf with a string containing a list of transport names, each name
-+ * terminated with '\n'. If the buffer is too small, some entries may be
-+ * missing, but it is guaranteed that all lines in the output buffer are
-+ * complete.
-+ *
-+ * Returns positive length of the filled-in string.
-  */
- int svc_print_xprts(char *buf, int maxlen)
- {
-@@ -111,9 +120,9 @@ int svc_print_xprts(char *buf, int maxlen)
- 	list_for_each_entry(xcl, &svc_xprt_class_list, xcl_list) {
- 		int slen;
- 
--		sprintf(tmpstr, "%s %d\n", xcl->xcl_name, xcl->xcl_max_payload);
--		slen = strlen(tmpstr);
--		if (len + slen > maxlen)
-+		slen = snprintf(tmpstr, sizeof(tmpstr), "%s %d\n",
-+				xcl->xcl_name, xcl->xcl_max_payload);
-+		if (slen >= sizeof(tmpstr) || len + slen >= maxlen)
- 			break;
- 		len += slen;
- 		strcat(buf, tmpstr);
+ 	/*
 -- 
 2.25.1
 
