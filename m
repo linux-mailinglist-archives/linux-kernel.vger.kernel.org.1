@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E453627CCB6
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:39:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75A5D27CD6F
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:44:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729636AbgI2LRM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:17:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33296 "EHLO mail.kernel.org"
+        id S2387494AbgI2MoG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 08:44:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49770 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729591AbgI2LQl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:16:41 -0400
+        id S1728235AbgI2LJ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:09:27 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6C66B21D7D;
-        Tue, 29 Sep 2020 11:16:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 207B021D92;
+        Tue, 29 Sep 2020 11:09:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601378199;
-        bh=zkaAA91lUk1zoVhUHdn8mM9FXUn61fVqzjB0/5Gz9Ks=;
+        s=default; t=1601377766;
+        bh=Dlfk325PvY/1044rpaPsuKPeowYZAH/12niluYwFG3k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UIreGQf8LUVC15qDlxzmRkT5BAy/UqItyQdgz93Aicx4F1KWd2j+QX70pAyiq3t2T
-         rSjtD9X3p+S7DgdaxLmQ0vePoKD10DboISFG5W0rH1NVqW8+jZogNM11IG612yQ09+
-         azTQN/Tg40zKIe4CD2LYnoLfHMEheuSY3f7FyOf0=
+        b=zNoMxkGIiN+AzaREBCQ2nxmjvCMDZHfGFoKy9L4tWjDiSUbAMaDSFl+3cVJVzuRFW
+         27e+nnU5vZW5gKnucklGuIVenJNv8MFOEbliG0o5ECdI2goJJ/ktFIsS53HPF/Gc6/
+         DYeafxl0ce5XEmwmoSQe1p3n3IRE9Nncjeer2nYc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        stable@vger.kernel.org, Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        Peter Ujfalusi <peter.ujfalusi@ti.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 097/166] NFS: Fix races nfs_page_group_destroy() vs nfs_destroy_unlinked_subrequests()
+Subject: [PATCH 4.9 065/121] serial: 8250_omap: Fix sleeping function called from invalid context during probe
 Date:   Tue, 29 Sep 2020 13:00:09 +0200
-Message-Id: <20200929105940.060513511@linuxfoundation.org>
+Message-Id: <20200929105933.393374352@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929105935.184737111@linuxfoundation.org>
-References: <20200929105935.184737111@linuxfoundation.org>
+In-Reply-To: <20200929105930.172747117@linuxfoundation.org>
+References: <20200929105930.172747117@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,168 +43,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Trond Myklebust <trond.myklebust@hammerspace.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
 
-[ Upstream commit 08ca8b21f760c0ed5034a5c122092eec22ccf8f4 ]
+[ Upstream commit 4ce35a3617c0ac758c61122b2218b6c8c9ac9398 ]
 
-When a subrequest is being detached from the subgroup, we want to
-ensure that it is not holding the group lock, or in the process
-of waiting for the group lock.
+When booting j721e the following bug is printed:
 
-Fixes: 5b2b5187fa85 ("NFS: Fix nfs_page_group_destroy() and nfs_lock_and_join_requests() race cases")
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+[    1.154821] BUG: sleeping function called from invalid context at kernel/sched/completion.c:99
+[    1.154827] in_atomic(): 0, irqs_disabled(): 128, non_block: 0, pid: 12, name: kworker/0:1
+[    1.154832] 3 locks held by kworker/0:1/12:
+[    1.154836]  #0: ffff000840030728 ((wq_completion)events){+.+.}, at: process_one_work+0x1d4/0x6e8
+[    1.154852]  #1: ffff80001214fdd8 (deferred_probe_work){+.+.}, at: process_one_work+0x1d4/0x6e8
+[    1.154860]  #2: ffff00084060b170 (&dev->mutex){....}, at: __device_attach+0x38/0x138
+[    1.154872] irq event stamp: 63096
+[    1.154881] hardirqs last  enabled at (63095): [<ffff800010b74318>] _raw_spin_unlock_irqrestore+0x70/0x78
+[    1.154887] hardirqs last disabled at (63096): [<ffff800010b740d8>] _raw_spin_lock_irqsave+0x28/0x80
+[    1.154893] softirqs last  enabled at (62254): [<ffff800010080c88>] _stext+0x488/0x564
+[    1.154899] softirqs last disabled at (62247): [<ffff8000100fdb3c>] irq_exit+0x114/0x140
+[    1.154906] CPU: 0 PID: 12 Comm: kworker/0:1 Not tainted 5.6.0-rc6-next-20200318-00094-g45e4089b0bd3 #221
+[    1.154911] Hardware name: Texas Instruments K3 J721E SoC (DT)
+[    1.154917] Workqueue: events deferred_probe_work_func
+[    1.154923] Call trace:
+[    1.154928]  dump_backtrace+0x0/0x190
+[    1.154933]  show_stack+0x14/0x20
+[    1.154940]  dump_stack+0xe0/0x148
+[    1.154946]  ___might_sleep+0x150/0x1f0
+[    1.154952]  __might_sleep+0x4c/0x80
+[    1.154957]  wait_for_completion_timeout+0x40/0x140
+[    1.154964]  ti_sci_set_device_state+0xa0/0x158
+[    1.154969]  ti_sci_cmd_get_device_exclusive+0x14/0x20
+[    1.154977]  ti_sci_dev_start+0x34/0x50
+[    1.154984]  genpd_runtime_resume+0x78/0x1f8
+[    1.154991]  __rpm_callback+0x3c/0x140
+[    1.154996]  rpm_callback+0x20/0x80
+[    1.155001]  rpm_resume+0x568/0x758
+[    1.155007]  __pm_runtime_resume+0x44/0xb0
+[    1.155013]  omap8250_probe+0x2b4/0x508
+[    1.155019]  platform_drv_probe+0x50/0xa0
+[    1.155023]  really_probe+0xd4/0x318
+[    1.155028]  driver_probe_device+0x54/0xe8
+[    1.155033]  __device_attach_driver+0x80/0xb8
+[    1.155039]  bus_for_each_drv+0x74/0xc0
+[    1.155044]  __device_attach+0xdc/0x138
+[    1.155049]  device_initial_probe+0x10/0x18
+[    1.155053]  bus_probe_device+0x98/0xa0
+[    1.155058]  deferred_probe_work_func+0x74/0xb0
+[    1.155063]  process_one_work+0x280/0x6e8
+[    1.155068]  worker_thread+0x48/0x430
+[    1.155073]  kthread+0x108/0x138
+[    1.155079]  ret_from_fork+0x10/0x18
+
+To fix the bug we need to first call pm_runtime_enable() prior to any
+pm_runtime calls.
+
+Reported-by: Tomi Valkeinen <tomi.valkeinen@ti.com>
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Link: https://lore.kernel.org/r/20200320125200.6772-1-peter.ujfalusi@ti.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/nfs/pagelist.c        | 67 +++++++++++++++++++++++++++-------------
- fs/nfs/write.c           | 10 ++++--
- include/linux/nfs_page.h |  2 ++
- 3 files changed, 55 insertions(+), 24 deletions(-)
+ drivers/tty/serial/8250/8250_omap.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/nfs/pagelist.c b/fs/nfs/pagelist.c
-index 7c01936be7c70..37358dba3b033 100644
---- a/fs/nfs/pagelist.c
-+++ b/fs/nfs/pagelist.c
-@@ -132,47 +132,70 @@ nfs_async_iocounter_wait(struct rpc_task *task, struct nfs_lock_context *l_ctx)
- EXPORT_SYMBOL_GPL(nfs_async_iocounter_wait);
+diff --git a/drivers/tty/serial/8250/8250_omap.c b/drivers/tty/serial/8250/8250_omap.c
+index a3adf21f9dcec..7d4680ef5307d 100644
+--- a/drivers/tty/serial/8250/8250_omap.c
++++ b/drivers/tty/serial/8250/8250_omap.c
+@@ -1194,11 +1194,11 @@ static int omap8250_probe(struct platform_device *pdev)
+ 	spin_lock_init(&priv->rx_dma_lock);
  
- /*
-- * nfs_page_group_lock - lock the head of the page group
-- * @req - request in group that is to be locked
-+ * nfs_page_set_headlock - set the request PG_HEADLOCK
-+ * @req: request that is to be locked
-  *
-- * this lock must be held when traversing or modifying the page
-- * group list
-+ * this lock must be held when modifying req->wb_head
-  *
-  * return 0 on success, < 0 on error
-  */
- int
--nfs_page_group_lock(struct nfs_page *req)
-+nfs_page_set_headlock(struct nfs_page *req)
- {
--	struct nfs_page *head = req->wb_head;
--
--	WARN_ON_ONCE(head != head->wb_head);
--
--	if (!test_and_set_bit(PG_HEADLOCK, &head->wb_flags))
-+	if (!test_and_set_bit(PG_HEADLOCK, &req->wb_flags))
- 		return 0;
+ 	device_init_wakeup(&pdev->dev, true);
++	pm_runtime_enable(&pdev->dev);
+ 	pm_runtime_use_autosuspend(&pdev->dev);
+ 	pm_runtime_set_autosuspend_delay(&pdev->dev, -1);
  
--	set_bit(PG_CONTENDED1, &head->wb_flags);
-+	set_bit(PG_CONTENDED1, &req->wb_flags);
- 	smp_mb__after_atomic();
--	return wait_on_bit_lock(&head->wb_flags, PG_HEADLOCK,
-+	return wait_on_bit_lock(&req->wb_flags, PG_HEADLOCK,
- 				TASK_UNINTERRUPTIBLE);
- }
+ 	pm_runtime_irq_safe(&pdev->dev);
+-	pm_runtime_enable(&pdev->dev);
  
- /*
-- * nfs_page_group_unlock - unlock the head of the page group
-- * @req - request in group that is to be unlocked
-+ * nfs_page_clear_headlock - clear the request PG_HEADLOCK
-+ * @req: request that is to be locked
-  */
- void
--nfs_page_group_unlock(struct nfs_page *req)
-+nfs_page_clear_headlock(struct nfs_page *req)
- {
--	struct nfs_page *head = req->wb_head;
--
--	WARN_ON_ONCE(head != head->wb_head);
--
- 	smp_mb__before_atomic();
--	clear_bit(PG_HEADLOCK, &head->wb_flags);
-+	clear_bit(PG_HEADLOCK, &req->wb_flags);
- 	smp_mb__after_atomic();
--	if (!test_bit(PG_CONTENDED1, &head->wb_flags))
-+	if (!test_bit(PG_CONTENDED1, &req->wb_flags))
- 		return;
--	wake_up_bit(&head->wb_flags, PG_HEADLOCK);
-+	wake_up_bit(&req->wb_flags, PG_HEADLOCK);
-+}
-+
-+/*
-+ * nfs_page_group_lock - lock the head of the page group
-+ * @req: request in group that is to be locked
-+ *
-+ * this lock must be held when traversing or modifying the page
-+ * group list
-+ *
-+ * return 0 on success, < 0 on error
-+ */
-+int
-+nfs_page_group_lock(struct nfs_page *req)
-+{
-+	int ret;
-+
-+	ret = nfs_page_set_headlock(req);
-+	if (ret || req->wb_head == req)
-+		return ret;
-+	return nfs_page_set_headlock(req->wb_head);
-+}
-+
-+/*
-+ * nfs_page_group_unlock - unlock the head of the page group
-+ * @req: request in group that is to be unlocked
-+ */
-+void
-+nfs_page_group_unlock(struct nfs_page *req)
-+{
-+	if (req != req->wb_head)
-+		nfs_page_clear_headlock(req->wb_head);
-+	nfs_page_clear_headlock(req);
- }
+ 	pm_runtime_get_sync(&pdev->dev);
  
- /*
-diff --git a/fs/nfs/write.c b/fs/nfs/write.c
-index 7b6bda68aa86a..767e46c09074b 100644
---- a/fs/nfs/write.c
-+++ b/fs/nfs/write.c
-@@ -406,22 +406,28 @@ nfs_destroy_unlinked_subrequests(struct nfs_page *destroy_list,
- 		destroy_list = (subreq->wb_this_page == old_head) ?
- 				   NULL : subreq->wb_this_page;
- 
-+		/* Note: lock subreq in order to change subreq->wb_head */
-+		nfs_page_set_headlock(subreq);
- 		WARN_ON_ONCE(old_head != subreq->wb_head);
- 
- 		/* make sure old group is not used */
- 		subreq->wb_this_page = subreq;
-+		subreq->wb_head = subreq;
- 
- 		clear_bit(PG_REMOVE, &subreq->wb_flags);
- 
- 		/* Note: races with nfs_page_group_destroy() */
- 		if (!kref_read(&subreq->wb_kref)) {
- 			/* Check if we raced with nfs_page_group_destroy() */
--			if (test_and_clear_bit(PG_TEARDOWN, &subreq->wb_flags))
-+			if (test_and_clear_bit(PG_TEARDOWN, &subreq->wb_flags)) {
-+				nfs_page_clear_headlock(subreq);
- 				nfs_free_request(subreq);
-+			} else
-+				nfs_page_clear_headlock(subreq);
- 			continue;
- 		}
-+		nfs_page_clear_headlock(subreq);
- 
--		subreq->wb_head = subreq;
- 		nfs_release_request(old_head);
- 
- 		if (test_and_clear_bit(PG_INODE_REF, &subreq->wb_flags)) {
-diff --git a/include/linux/nfs_page.h b/include/linux/nfs_page.h
-index ad69430fd0eb5..5162fc1533c2f 100644
---- a/include/linux/nfs_page.h
-+++ b/include/linux/nfs_page.h
-@@ -142,6 +142,8 @@ extern	void nfs_unlock_and_release_request(struct nfs_page *);
- extern int nfs_page_group_lock(struct nfs_page *);
- extern void nfs_page_group_unlock(struct nfs_page *);
- extern bool nfs_page_group_sync_on_bit(struct nfs_page *, unsigned int);
-+extern	int nfs_page_set_headlock(struct nfs_page *req);
-+extern void nfs_page_clear_headlock(struct nfs_page *req);
- extern bool nfs_async_iocounter_wait(struct rpc_task *, struct nfs_lock_context *);
- 
- /*
 -- 
 2.25.1
 
