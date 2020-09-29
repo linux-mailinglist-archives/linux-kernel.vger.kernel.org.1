@@ -2,68 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D7F227D4DC
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 19:49:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0027827D4E3
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 19:49:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729113AbgI2RtP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 13:49:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49654 "EHLO mail.kernel.org"
+        id S1728631AbgI2Rtl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 13:49:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50166 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728198AbgI2RtO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 13:49:14 -0400
+        id S1728198AbgI2Rtl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 13:49:41 -0400
 Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D85F1207F7;
-        Tue, 29 Sep 2020 17:49:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2F765207F7;
+        Tue, 29 Sep 2020 17:49:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601401754;
-        bh=YaGpwYM4wHlLVZrnm0P7uWY9V+NN6+GoMAAn4esffgQ=;
+        s=default; t=1601401779;
+        bh=xATh57AZpIGmcCcmkus9aGduwYFcRZ27/bzDlNqyfw4=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nwz05uUMoXx4p9WCvb1j8pJ1aOL64KjEzq8nlGxVCFWzCUdEkXJeQ5m9m6ecVKr7m
-         dSiVTTWIROrMfMbuLCf+jRSbCKn1+DzQv+0Vt0LRpjqjROJFs1K1Z2xfL/g1mWh4Q9
-         QpbOm2G/Y1rXMxYXaqASjbWXrR6Lz99Ydjz7pLSs=
-Date:   Tue, 29 Sep 2020 18:49:08 +0100
+        b=qC/LlRTf54MKtIyIZaxFlRRjob6Mb9SKpsvDbkUBIKt5LsXJZ4KbTpUiybtOPrOrx
+         2w3pzmlTNHYUQR54isna2dg1qbi1qav0PR4DK1nQlSWicZFQhu7vgNislYxQY98Cyz
+         +x07H1ohKx6NTCnmB7jc8P+zbWrtKUetwjXQdQNg=
+Date:   Tue, 29 Sep 2020 18:49:34 +0100
 From:   Will Deacon <will@kernel.org>
-To:     David Brazdil <dbrazdil@google.com>
-Cc:     kvmarm@lists.cs.columbia.edu,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Christoph Lameter <cl@linux.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel-team@android.com, Andrew Scull <ascull@google.com>
-Subject: Re: [PATCH v4 10/10] kvm: arm64: Remove unnecessary hyp mappings
-Message-ID: <20200929174908.GE14317@willie-the-truck>
-References: <20200922204910.7265-1-dbrazdil@google.com>
- <20200922204910.7265-11-dbrazdil@google.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Raphael Gault <raphael.gault@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Ian Rogers <irogers@google.com>,
+        Honnappa Nagarahalli <honnappa.nagarahalli@arm.com>
+Subject: Re: [PATCH v3 01/10] arm64: pmu: Add hook to handle pmu-related
+ undefined instructions
+Message-ID: <20200929174933.GF14317@willie-the-truck>
+References: <20200911215118.2887710-1-robh@kernel.org>
+ <20200911215118.2887710-2-robh@kernel.org>
+ <20200928182601.GA11974@willie-the-truck>
+ <CAL_Jsq+pNrqBN9TghXxPi2kT_T=pfMXf89diGXqo-RauuLYRuA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200922204910.7265-11-dbrazdil@google.com>
+In-Reply-To: <CAL_Jsq+pNrqBN9TghXxPi2kT_T=pfMXf89diGXqo-RauuLYRuA@mail.gmail.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 09:49:10PM +0100, David Brazdil wrote:
-> With all nVHE per-CPU variables being part of the hyp per-CPU region,
-> mapping them individual is not necessary any longer. They are mapped to hyp
-> as part of the overall per-CPU region.
+On Tue, Sep 29, 2020 at 08:46:46AM -0500, Rob Herring wrote:
+> On Mon, Sep 28, 2020 at 1:26 PM Will Deacon <will@kernel.org> wrote:
+> > On Fri, Sep 11, 2020 at 03:51:09PM -0600, Rob Herring wrote:
+> > > +static int emulate_pmu(struct pt_regs *regs, u32 insn)
+> > > +{
+> > > +     u32 rt;
+> > > +     u32 pmuserenr;
+> > > +
+> > > +     rt = aarch64_insn_decode_register(AARCH64_INSN_REGTYPE_RT, insn);
+> > > +     pmuserenr = read_sysreg(pmuserenr_el0);
+> > > +
+> > > +     if ((pmuserenr & (ARMV8_PMU_USERENR_ER|ARMV8_PMU_USERENR_CR)) !=
+> > > +         (ARMV8_PMU_USERENR_ER|ARMV8_PMU_USERENR_CR))
+> > > +             return -EINVAL;
+> > > +
+> > > +
+> > > +     /*
+> > > +      * Userspace is expected to only use this in the context of the scheme
+> > > +      * described in the struct perf_event_mmap_page comments.
+> > > +      *
+> > > +      * Given that context, we can only get here if we got migrated between
+> > > +      * getting the register index and doing the MSR read.  This in turn
+> > > +      * implies we'll fail the sequence and retry, so any value returned is
+> > > +      * 'good', all we need is to be non-fatal.
+> > > +      *
+> > > +      * The choice of the value 0 is comming from the fact that when
+> > > +      * accessing a register which is not counting events but is accessible,
+> > > +      * we get 0.
+> > > +      */
+> > > +     pt_regs_write_reg(regs, rt, 0);
+> >
+> > Hmm... this feels pretty fragile since, although we may expect userspace only
+> > to trigger this in the context of the specific perf use-case, we don't have
+> > a way to detect that, so the ABI we're exposing is that EL0 accesses to
+> > non-existent counters will return 0. I don't really think that's something
+> > we want to commit to.
+> >
+> > When restartable sequences were added to the kernel, one of the proposed
+> > use-cases was to allow PMU access on big/little systems, because the
+> > sequence will abort on preemption. Taking that approach removes the need
+> > for this emulation hook entirely. Is that something we can rely on instead
+> > of this emulation hook?
 > 
-> Acked-by: Andrew Scull<ascull@google.com>
+> So back to the RFC version[1]!? That would mean pulling librseq into
+> the kernel based on the prior discussion. It doesn't look like that
+> has happened yet.
 
-^^^ Missing space between "Scull" and "<".
+Yeah, or just don't bother supporting heterogeneous systems with this
+for now.
 
-> Signed-off-by: David Brazdil <dbrazdil@google.com>
-> ---
->  arch/arm64/include/asm/kvm_mmu.h | 20 --------------------
->  arch/arm64/kvm/arm.c             | 16 ----------------
->  2 files changed, 36 deletions(-)
+> Why not just drop the undef hook? For heterogeneous systems, we
+> require userspace to pin itself to cores for a specific PMU. See patch
+> 9. If userspace fails to do that, then it gets to keep the pieces.
 
-Acked-by: Will Deacon <will@kernel.org>
+Dropping it works too!
 
 Will
