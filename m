@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EEB027C6B4
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:47:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9224827C599
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:38:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731105AbgI2Lrt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:47:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49184 "EHLO mail.kernel.org"
+        id S1730024AbgI2Lg5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:36:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52840 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731076AbgI2Lrc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:47:32 -0400
+        id S1729948AbgI2LgR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:36:17 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 196FF20702;
-        Tue, 29 Sep 2020 11:47:30 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AAE2523DC2;
+        Tue, 29 Sep 2020 11:31:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601380051;
-        bh=yFH87YJ3rXHh/f5O4rYj9w3fFMwofdzuayhJ5lAVm/0=;
+        s=default; t=1601379068;
+        bh=/uGXbI4jXmIjNMbNLrOxiLv7i09fobEHxsSJbGJJKA4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=t4xOJuSvKfC8EDLBT7rdY5iRnFsF7vWcYpiPL9kXIUVMi2ImoesZnde5V1PSX1F34
-         JkIR05/d2pnheHq2XL8qOzBtY/PhfVPFD6V5IROrPVtlCHVzcFa12la+8acPKcE0d+
-         N3cpJYVxFg/N+1Nd+Hff7laX8o0KZ+NcyD4LPk9Y=
+        b=OPTvC5XgUDdyK2rJt8N9ssnaVkT30OYktQSv+4JNZsU0MteD2oReKAH6LpbBi/LIR
+         EryA7GNB5mkE+sutMk5f1kyiGAPrQuw78NHjFzA5WSD5nPiUGV2a21H8m2KrCG3Gr3
+         KqO4QtYu6jMbdg0CurK4h+FMBuXHhbSUEZPyK8jk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bart Van Assche <bvanassche@acm.org>,
-        Yi Zhang <yi.zhang@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 45/99] RDMA/core: Fix ordering of CQ pool destruction
+        stable@vger.kernel.org,
+        =?UTF-8?q?Jan=20H=C3=B6ppner?= <hoeppner@linux.ibm.com>,
+        Stefan Haberland <sth@linux.ibm.com>,
+        Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 4.19 237/245] s390/dasd: Fix zero write for FBA devices
 Date:   Tue, 29 Sep 2020 13:01:28 +0200
-Message-Id: <20200929105931.947114944@linuxfoundation.org>
+Message-Id: <20200929105958.524772889@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929105929.719230296@linuxfoundation.org>
-References: <20200929105929.719230296@linuxfoundation.org>
+In-Reply-To: <20200929105946.978650816@linuxfoundation.org>
+References: <20200929105946.978650816@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,69 +44,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jason Gunthorpe <jgg@nvidia.com>
+From: Jan Höppner <hoeppner@linux.ibm.com>
 
-[ Upstream commit 4aa1615268a8ac2b20096211d3f9ac53874067d7 ]
+commit 709192d531e5b0a91f20aa14abfe2fc27ddd47af upstream.
 
-rxe will hold a refcount on the IB device as long as CQ objects exist,
-this causes destruction of a rxe device to hang if the CQ pool has any
-cached CQs since they are being destroyed after the refcount must go to
-zero.
+A discard request that writes zeros using the global kernel internal
+ZERO_PAGE will fail for machines with more than 2GB of memory due to the
+location of the ZERO_PAGE.
 
-Treat the CQ pool like a client and create/destroy it before/after all
-other clients. No users of CQ pool can exist past a client remove call.
+Fix this by using a driver owned global zero page allocated with GFP_DMA
+flag set.
 
-Link: https://lore.kernel.org/r/e8a240aa-9e9b-3dca-062f-9130b787f29b@acm.org
-Fixes: c7ff819aefea ("RDMA/core: Introduce shared CQ pool API")
-Tested-by: Bart Van Assche <bvanassche@acm.org>
-Tested-by: Yi Zhang <yi.zhang@redhat.com>
-Signed-off-by: Bart Van Assche <bvanassche@acm.org>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 28b841b3a7cb ("s390/dasd: Add discard support for FBA devices")
+Signed-off-by: Jan Höppner <hoeppner@linux.ibm.com>
+Reviewed-by: Stefan Haberland <sth@linux.ibm.com>
+Cc: <stable@vger.kernel.org> # 4.14+
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/infiniband/core/device.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/s390/block/dasd_fba.c |    9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
-index eadba29432dd7..abcfe4dc1284f 100644
---- a/drivers/infiniband/core/device.c
-+++ b/drivers/infiniband/core/device.c
-@@ -1282,6 +1282,8 @@ static void disable_device(struct ib_device *device)
- 		remove_client_context(device, cid);
- 	}
+--- a/drivers/s390/block/dasd_fba.c
++++ b/drivers/s390/block/dasd_fba.c
+@@ -40,6 +40,7 @@
+ MODULE_LICENSE("GPL");
  
-+	ib_cq_pool_destroy(device);
+ static struct dasd_discipline dasd_fba_discipline;
++static void *dasd_fba_zero_page;
+ 
+ struct dasd_fba_private {
+ 	struct dasd_fba_characteristics rdc_data;
+@@ -270,7 +271,7 @@ static void ccw_write_zero(struct ccw1 *
+ 	ccw->cmd_code = DASD_FBA_CCW_WRITE;
+ 	ccw->flags |= CCW_FLAG_SLI;
+ 	ccw->count = count;
+-	ccw->cda = (__u32) (addr_t) page_to_phys(ZERO_PAGE(0));
++	ccw->cda = (__u32) (addr_t) dasd_fba_zero_page;
+ }
+ 
+ /*
+@@ -811,6 +812,11 @@ dasd_fba_init(void)
+ 	int ret;
+ 
+ 	ASCEBC(dasd_fba_discipline.ebcname, 4);
 +
- 	/* Pairs with refcount_set in enable_device */
- 	ib_device_put(device);
- 	wait_for_completion(&device->unreg_completion);
-@@ -1325,6 +1327,8 @@ static int enable_device_and_get(struct ib_device *device)
- 			goto out;
- 	}
- 
-+	ib_cq_pool_init(device);
++	dasd_fba_zero_page = (void *)get_zeroed_page(GFP_KERNEL | GFP_DMA);
++	if (!dasd_fba_zero_page)
++		return -ENOMEM;
 +
- 	down_read(&clients_rwsem);
- 	xa_for_each_marked (&clients, index, client, CLIENT_REGISTERED) {
- 		ret = add_client_context(device, client);
-@@ -1397,7 +1401,6 @@ int ib_register_device(struct ib_device *device, const char *name)
- 		goto dev_cleanup;
- 	}
+ 	ret = ccw_driver_register(&dasd_fba_driver);
+ 	if (!ret)
+ 		wait_for_device_probe();
+@@ -822,6 +828,7 @@ static void __exit
+ dasd_fba_cleanup(void)
+ {
+ 	ccw_driver_unregister(&dasd_fba_driver);
++	free_page((unsigned long)dasd_fba_zero_page);
+ }
  
--	ib_cq_pool_init(device);
- 	ret = enable_device_and_get(device);
- 	dev_set_uevent_suppress(&device->dev, false);
- 	/* Mark for userspace that device is ready */
-@@ -1452,7 +1455,6 @@ static void __ib_unregister_device(struct ib_device *ib_dev)
- 		goto out;
- 
- 	disable_device(ib_dev);
--	ib_cq_pool_destroy(ib_dev);
- 
- 	/* Expedite removing unregistered pointers from the hash table */
- 	free_netdevs(ib_dev);
--- 
-2.25.1
-
+ module_init(dasd_fba_init);
 
 
