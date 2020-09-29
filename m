@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CC8527C348
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:06:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74A2627C34A
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:06:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728588AbgI2LEV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:04:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40292 "EHLO mail.kernel.org"
+        id S1728604AbgI2LEX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:04:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40406 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728574AbgI2LEP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:04:15 -0400
+        id S1728494AbgI2LET (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:04:19 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6244021924;
-        Tue, 29 Sep 2020 11:04:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3483721D7D;
+        Tue, 29 Sep 2020 11:04:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601377454;
-        bh=DjjZnuXmxG8+DQetD0b8tSgVwIQADmWBtrQyC0jnWBU=;
+        s=default; t=1601377457;
+        bh=nivr5uKabFiDxArYXNE7/ak5J5omCb8fcQonRumIVTg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eP7Ei3VCt5FzO6GyOHZscJNtIdTJ3GX8Vx1dEtRxn8XdfZZjEK1VZ+xDPiURycLtJ
-         zwdNGoj9tCOImoGjzSWnXu5wPA3Bsa+kCi7IEKcCENS6MpVtWKAP4Msmr4cPIDwdok
-         MnnzWN7SXmxMTk6s+FxrrlzyG7eXExMHij0ThsD8=
+        b=IziH99XM0GkMjA+0YVCPEMlgDWshl7GkUmPHsrgPbDCjSvjLFOxjQrLJLM5C3lwxy
+         WX3y0zWFrB2aCmzufP1hX21fFrqonUlyZms5/+NlfXWPZabCyg1JC7psbv8hhOIhR4
+         zGSO04G0sG4KJC6DWAoQFJe8635oIUkL6Vk09sBE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
-        Sean Young <sean@mess.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, Stefan Berger <stefanb@linux.ibm.com>,
+        Nayna Jain <nayna@linux.ibm.com>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 42/85] media: tda10071: fix unsigned sign extension overflow
-Date:   Tue, 29 Sep 2020 13:00:09 +0200
-Message-Id: <20200929105930.336089662@linuxfoundation.org>
+Subject: [PATCH 4.4 43/85] tpm: ibmvtpm: Wait for buffer to be set before proceeding
+Date:   Tue, 29 Sep 2020 13:00:10 +0200
+Message-Id: <20200929105930.386267897@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200929105928.198942536@linuxfoundation.org>
 References: <20200929105928.198942536@linuxfoundation.org>
@@ -44,50 +44,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Stefan Berger <stefanb@linux.ibm.com>
 
-[ Upstream commit a7463e2dc698075132de9905b89f495df888bb79 ]
+[ Upstream commit d8d74ea3c00214aee1e1826ca18e77944812b9b4 ]
 
-The shifting of buf[3] by 24 bits to the left will be promoted to
-a 32 bit signed int and then sign-extended to an unsigned long. In
-the unlikely event that the the top bit of buf[3] is set then all
-then all the upper bits end up as also being set because of
-the sign-extension and this affect the ev->post_bit_error sum.
-Fix this by using the temporary u32 variable bit_error to avoid
-the sign-extension promotion. This also removes the need to do the
-computation twice.
+Synchronize with the results from the CRQs before continuing with
+the initialization. This avoids trying to send TPM commands while
+the rtce buffer has not been allocated, yet.
 
-Addresses-Coverity: ("Unintended sign extension")
+This patch fixes an existing race condition that may occurr if the
+hypervisor does not quickly respond to the VTPM_GET_RTCE_BUFFER_SIZE
+request sent during initialization and therefore the ibmvtpm->rtce_buf
+has not been allocated at the time the first TPM command is sent.
 
-Fixes: 267897a4708f ("[media] tda10071: implement DVBv5 statistics")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Signed-off-by: Sean Young <sean@mess.org>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Fixes: 132f76294744 ("drivers/char/tpm: Add new device driver to support IBM vTPM")
+Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
+Acked-by: Nayna Jain <nayna@linux.ibm.com>
+Tested-by: Nayna Jain <nayna@linux.ibm.com>
+Reviewed-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/dvb-frontends/tda10071.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ drivers/char/tpm/tpm_ibmvtpm.c | 9 +++++++++
+ drivers/char/tpm/tpm_ibmvtpm.h | 1 +
+ 2 files changed, 10 insertions(+)
 
-diff --git a/drivers/media/dvb-frontends/tda10071.c b/drivers/media/dvb-frontends/tda10071.c
-index 119d47596ac81..b81887c4f72a9 100644
---- a/drivers/media/dvb-frontends/tda10071.c
-+++ b/drivers/media/dvb-frontends/tda10071.c
-@@ -483,10 +483,11 @@ static int tda10071_read_status(struct dvb_frontend *fe, enum fe_status *status)
- 			goto error;
+diff --git a/drivers/char/tpm/tpm_ibmvtpm.c b/drivers/char/tpm/tpm_ibmvtpm.c
+index 3e6a22658b63b..d4cc1a1ac1f73 100644
+--- a/drivers/char/tpm/tpm_ibmvtpm.c
++++ b/drivers/char/tpm/tpm_ibmvtpm.c
+@@ -543,6 +543,7 @@ static irqreturn_t ibmvtpm_interrupt(int irq, void *vtpm_instance)
+ 	 */
+ 	while ((crq = ibmvtpm_crq_get_next(ibmvtpm)) != NULL) {
+ 		ibmvtpm_crq_process(crq, ibmvtpm);
++		wake_up_interruptible(&ibmvtpm->crq_queue.wq);
+ 		crq->valid = 0;
+ 		smp_wmb();
+ 	}
+@@ -589,6 +590,7 @@ static int tpm_ibmvtpm_probe(struct vio_dev *vio_dev,
+ 	}
  
- 		if (dev->delivery_system == SYS_DVBS) {
--			dev->dvbv3_ber = buf[0] << 24 | buf[1] << 16 |
--					 buf[2] << 8 | buf[3] << 0;
--			dev->post_bit_error += buf[0] << 24 | buf[1] << 16 |
--					       buf[2] << 8 | buf[3] << 0;
-+			u32 bit_error = buf[0] << 24 | buf[1] << 16 |
-+					buf[2] << 8 | buf[3] << 0;
+ 	crq_q->num_entry = CRQ_RES_BUF_SIZE / sizeof(*crq_q->crq_addr);
++	init_waitqueue_head(&crq_q->wq);
+ 	ibmvtpm->crq_dma_handle = dma_map_single(dev, crq_q->crq_addr,
+ 						 CRQ_RES_BUF_SIZE,
+ 						 DMA_BIDIRECTIONAL);
+@@ -641,6 +643,13 @@ static int tpm_ibmvtpm_probe(struct vio_dev *vio_dev,
+ 	if (rc)
+ 		goto init_irq_cleanup;
+ 
++	if (!wait_event_timeout(ibmvtpm->crq_queue.wq,
++				ibmvtpm->rtce_buf != NULL,
++				HZ)) {
++		dev_err(dev, "CRQ response timed out\n");
++		goto init_irq_cleanup;
++	}
 +
-+			dev->dvbv3_ber = bit_error;
-+			dev->post_bit_error += bit_error;
- 			c->post_bit_error.stat[0].scale = FE_SCALE_COUNTER;
- 			c->post_bit_error.stat[0].uvalue = dev->post_bit_error;
- 			dev->block_error += buf[4] << 8 | buf[5] << 0;
+ 	return tpm_chip_register(chip);
+ init_irq_cleanup:
+ 	do {
+diff --git a/drivers/char/tpm/tpm_ibmvtpm.h b/drivers/char/tpm/tpm_ibmvtpm.h
+index 6af92890518f8..1a8c3b698f104 100644
+--- a/drivers/char/tpm/tpm_ibmvtpm.h
++++ b/drivers/char/tpm/tpm_ibmvtpm.h
+@@ -31,6 +31,7 @@ struct ibmvtpm_crq_queue {
+ 	struct ibmvtpm_crq *crq_addr;
+ 	u32 index;
+ 	u32 num_entry;
++	wait_queue_head_t wq;
+ };
+ 
+ struct ibmvtpm_dev {
 -- 
 2.25.1
 
