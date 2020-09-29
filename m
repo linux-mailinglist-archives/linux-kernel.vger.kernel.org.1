@@ -2,206 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E11B27C28A
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 12:38:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49C3927C2A8
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 12:48:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727795AbgI2KiZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 06:38:25 -0400
-Received: from mga01.intel.com ([192.55.52.88]:23420 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725497AbgI2KiZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 06:38:25 -0400
-IronPort-SDR: ZTWJrj4qgY/EKAvfYw0peTqZQEOxcBlmn8gXwQhbSF+szQrgO2OFrw+mUY4mLQdgt2x39gNu0Q
- q0KcS+aFvrbw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9758"; a="180317421"
-X-IronPort-AV: E=Sophos;i="5.77,318,1596524400"; 
-   d="scan'208";a="180317421"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2020 03:38:23 -0700
-IronPort-SDR: 1kzM5THoNatQsnxf4aNbJZB9A9yNXZe8uZeiB8cfHI+zsrUQVKc/S//XLXWTuIgbWj1dVNd1z5
- rKcSsicj/94A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,318,1596524400"; 
-   d="scan'208";a="490008526"
-Received: from lkp-server02.sh.intel.com (HELO dda5aa0886d8) ([10.239.97.151])
-  by orsmga005.jf.intel.com with ESMTP; 29 Sep 2020 03:38:22 -0700
-Received: from kbuild by dda5aa0886d8 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kND1Z-00008Y-9X; Tue, 29 Sep 2020 10:38:21 +0000
-Date:   Tue, 29 Sep 2020 18:38:04 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [rcu:urezki-pcount.2020.09.28e] BUILD SUCCESS
- c33a83102cc2b9e4d6affc888e4f744d4beefe9a
-Message-ID: <5f730e8c.9EXoT9AFWXTEEO25%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+        id S1728267AbgI2KsX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 06:48:23 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:59739 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728183AbgI2KsN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 06:48:13 -0400
+Received: from ironmsg07-lv.qualcomm.com (HELO ironmsg07-lv.qulacomm.com) ([10.47.202.151])
+  by alexa-out.qualcomm.com with ESMTP; 29 Sep 2020 03:48:13 -0700
+X-QCInternal: smtphost
+Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
+  by ironmsg07-lv.qulacomm.com with ESMTP/TLS/AES256-SHA; 29 Sep 2020 03:48:11 -0700
+X-QCInternal: smtphost
+Received: from c-sanm-linux.qualcomm.com ([10.206.25.31])
+  by ironmsg02-blr.qualcomm.com with ESMTP; 29 Sep 2020 16:17:39 +0530
+Received: by c-sanm-linux.qualcomm.com (Postfix, from userid 2343233)
+        id BAB882D57; Tue, 29 Sep 2020 16:17:38 +0530 (IST)
+From:   Sandeep Maheswaram <sanm@codeaurora.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Doug Anderson <dianders@chromium.org>,
+        Matthias Kaehlcke <mka@chromium.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Manu Gautam <mgautam@codeaurora.org>,
+        Sandeep Maheswaram <sanm@codeaurora.org>
+Subject: [PATCH v3 0/5] USB DWC3 host wake up support from system suspend
+Date:   Tue, 29 Sep 2020 16:17:27 +0530
+Message-Id: <1601376452-31839-1-git-send-email-sanm@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  urezki-pcount.2020.09.28e
-branch HEAD: c33a83102cc2b9e4d6affc888e4f744d4beefe9a  EXP Revert "KVM: Check the allocation of pv cpu mask"
+Avoiding phy powerdown in host mode so that it can be wake up by devices.
+Set GENPD_FLAG_ACTIVE_WAKEUP flag to keep usb30_prim gdsc active
+when wakeup capable devices are connected to the host.
+Using PDC interrupts instead of GIC interrupst to support wakeup in
+xo shutdown case.
 
-elapsed time: 846m
+Changes in v3:
+Removed need_phy_for_wakeup flag and by default avoiding phy powerdown.
+Addressed Matthias comments and added entry for DEV_SUPERSPEED.
+Added suspend_quirk in dwc3 host and moved the dwc3_set_phy_speed_flags.
+Added wakeup-source dt entry and reading in dwc-qcom.c glue driver.
 
-configs tested: 142
-configs skipped: 2
+Changes in v2:
+Dropped the patch in clock to set GENPD_FLAG_ACTIVE_WAKEUP flag and 
+setting in usb dwc3 driver.
+Separated the core patch and glue driver patch.
+Made need_phy_for_wakeup flag part of dwc structure and 
+hs_phy_flags as unsgined int.
+Adrressed the comment on device_init_wakeup call.
+Corrected offset for reading portsc register.
+Added pacth to support wakeup in xo shutdown case.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Sandeep Maheswaram (5):
+  usb: dwc3: core: Host wake up support from system suspend
+  usb: dwc3: host: Add suspend_quirk for dwc3 host
+  usb: dwc3: qcom: Configure wakeup interrupts and set genpd active
+    wakeup flag
+  arm64: dts: qcom: sc7180: Use pdc interrupts for USB instead of GIC
+    interrupts
+  arm64: dts: qcom: sc7180: Add wakeup-source property for USB
+    controller node
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arc                     haps_hs_smp_defconfig
-m68k                          amiga_defconfig
-ia64                         bigsur_defconfig
-sh                             shx3_defconfig
-m68k                        stmark2_defconfig
-arm                         lpc18xx_defconfig
-arm                         s3c6400_defconfig
-powerpc                   lite5200b_defconfig
-arm                         orion5x_defconfig
-mips                           ip22_defconfig
-powerpc                  iss476-smp_defconfig
-powerpc                  mpc885_ads_defconfig
-openrisc                         alldefconfig
-arm                         at91_dt_defconfig
-arc                 nsimosci_hs_smp_defconfig
-sh                   sh7770_generic_defconfig
-arm                         assabet_defconfig
-riscv                    nommu_k210_defconfig
-sh                          landisk_defconfig
-sh                           se7712_defconfig
-sh                        dreamcast_defconfig
-ia64                      gensparse_defconfig
-arm                  colibri_pxa300_defconfig
-powerpc                      ppc40x_defconfig
-arm                      integrator_defconfig
-arc                          axs103_defconfig
-mips                      malta_kvm_defconfig
-arm                         s5pv210_defconfig
-mips                       bmips_be_defconfig
-sh                           se7343_defconfig
-arm                           sunxi_defconfig
-m68k                          multi_defconfig
-arm                        shmobile_defconfig
-sh                           se7751_defconfig
-arm                       cns3420vb_defconfig
-h8300                    h8300h-sim_defconfig
-arm                         bcm2835_defconfig
-mips                           xway_defconfig
-ia64                            zx1_defconfig
-arm                          pxa910_defconfig
-sh                           se7750_defconfig
-arm                        cerfcube_defconfig
-arm                  colibri_pxa270_defconfig
-sh                          rsk7201_defconfig
-mips                      maltaaprp_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a005-20200928
-x86_64               randconfig-a003-20200928
-x86_64               randconfig-a004-20200928
-x86_64               randconfig-a002-20200928
-x86_64               randconfig-a006-20200928
-x86_64               randconfig-a001-20200928
-i386                 randconfig-a002-20200927
-i386                 randconfig-a006-20200927
-i386                 randconfig-a003-20200927
-i386                 randconfig-a004-20200927
-i386                 randconfig-a005-20200927
-i386                 randconfig-a001-20200927
-i386                 randconfig-a002-20200928
-i386                 randconfig-a003-20200928
-i386                 randconfig-a004-20200928
-i386                 randconfig-a005-20200928
-i386                 randconfig-a001-20200928
-i386                 randconfig-a006-20200928
-x86_64               randconfig-a011-20200927
-x86_64               randconfig-a013-20200927
-x86_64               randconfig-a014-20200927
-x86_64               randconfig-a015-20200927
-x86_64               randconfig-a012-20200927
-x86_64               randconfig-a016-20200927
-i386                 randconfig-a012-20200928
-i386                 randconfig-a016-20200928
-i386                 randconfig-a014-20200928
-i386                 randconfig-a013-20200928
-i386                 randconfig-a015-20200928
-i386                 randconfig-a011-20200928
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+ arch/arm64/boot/dts/qcom/sc7180-idp.dts      |  1 +
+ arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi |  1 +
+ arch/arm64/boot/dts/qcom/sc7180.dtsi         |  8 +--
+ drivers/usb/dwc3/core.c                      | 14 ++----
+ drivers/usb/dwc3/core.h                      |  3 ++
+ drivers/usb/dwc3/dwc3-qcom.c                 | 74 ++++++++++++++++++++++------
+ drivers/usb/dwc3/host.c                      | 49 ++++++++++++++++++
+ 7 files changed, 120 insertions(+), 30 deletions(-)
 
-clang tested configs:
-x86_64               randconfig-a005-20200929
-x86_64               randconfig-a003-20200929
-x86_64               randconfig-a004-20200929
-x86_64               randconfig-a002-20200929
-x86_64               randconfig-a006-20200929
-x86_64               randconfig-a001-20200929
-x86_64               randconfig-a005-20200927
-x86_64               randconfig-a003-20200927
-x86_64               randconfig-a004-20200927
-x86_64               randconfig-a002-20200927
-x86_64               randconfig-a006-20200927
-x86_64               randconfig-a001-20200927
-x86_64               randconfig-a011-20200928
-x86_64               randconfig-a013-20200928
-x86_64               randconfig-a015-20200928
-x86_64               randconfig-a014-20200928
-x86_64               randconfig-a016-20200928
-x86_64               randconfig-a012-20200928
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
