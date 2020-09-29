@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45C6C27BA45
+	by mail.lfdr.de (Postfix) with ESMTP id BDDB627BA46
 	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 03:37:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727313AbgI2Baf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 21:30:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39310 "EHLO mail.kernel.org"
+        id S1727333AbgI2Bag (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 21:30:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39400 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726379AbgI2Bab (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 21:30:31 -0400
+        id S1727186AbgI2Bad (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 21:30:33 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ACD3621734;
-        Tue, 29 Sep 2020 01:30:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 89CFB2080A;
+        Tue, 29 Sep 2020 01:30:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601343030;
-        bh=zB0SGeeoNPVMkVnQLXd5mspfS30Xe6OaobqccoNYGuU=;
+        s=default; t=1601343033;
+        bh=Zq4MAkUNRAapzUbfhLqsFNJRbXU42khRWjBp5Tp/WM0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DQpo1itrfHYIa3bfnoMVkPwryZ7WZ/jrEMBr4My59eNxYqJEzVGgsMBFFxzuXYrXR
-         biaoBXMdWEeFagKD5o6sotBwbtzgJzY5J5ty4AtPTPhYYonebFCNPLJFtZjMUNiLmN
-         wkvo1X8d8W1/55P0sRhoHIXjTzgP8mQYurOQbpEM=
+        b=I6+a91YMk25s3z8ZTCbrKDW5Z1AxqfafPuluHc2myDLaj7oDWI+0tZqFJA9xtJW3F
+         S1ksUAbhhBa7busPHZlnFLFD9Or4NogpdhOUaaqP4OJFblAMngWrjToi0B4LFjRL8j
+         NKbfxJvb76KMfdt4u4cjSJL8qkByWbDwdvCLQb/w=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        kernel test robot <lkp@intel.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Sasha Levin <sashal@kernel.org>, linux-fsdevel@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.8 02/29] vboxsf: Fix the check for the old binary mount-arguments struct
-Date:   Mon, 28 Sep 2020 21:29:59 -0400
-Message-Id: <20200929013027.2406344-2-sashal@kernel.org>
+Cc:     "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
+        Vaidyanathan Srinivasan <svaidy@linux.ibm.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.8 04/29] libbpf: Remove arch-specific include path in Makefile
+Date:   Mon, 28 Sep 2020 21:30:01 -0400
+Message-Id: <20200929013027.2406344-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200929013027.2406344-1-sashal@kernel.org>
 References: <20200929013027.2406344-1-sashal@kernel.org>
@@ -44,42 +45,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
 
-[ Upstream commit 9d682ea6bcc76b8b2691c79add59f7d99c881635 ]
+[ Upstream commit 21e9ba5373fc2cec608fd68301a1dbfd14df3172 ]
 
-Fix the check for the mainline vboxsf code being used with the old
-mount.vboxsf mount binary from the out-of-tree vboxsf version doing
-a comparison between signed and unsigned data types.
+Ubuntu mainline builds for ppc64le are failing with the below error (*):
+    CALL    /home/kernel/COD/linux/scripts/atomic/check-atomics.sh
+    DESCEND  bpf/resolve_btfids
 
-This fixes the following smatch warnings:
+  Auto-detecting system features:
+  ...                        libelf: [ [32mon[m  ]
+  ...                          zlib: [ [32mon[m  ]
+  ...                           bpf: [ [31mOFF[m ]
 
-fs/vboxsf/super.c:390 vboxsf_parse_monolithic() warn: impossible condition '(options[1] == (255)) => ((-128)-127 == 255)'
-fs/vboxsf/super.c:391 vboxsf_parse_monolithic() warn: impossible condition '(options[2] == (254)) => ((-128)-127 == 254)'
-fs/vboxsf/super.c:392 vboxsf_parse_monolithic() warn: impossible condition '(options[3] == (253)) => ((-128)-127 == 253)'
+  BPF API too old
+  make[6]: *** [Makefile:295: bpfdep] Error 1
+  make[5]: *** [Makefile:54: /home/kernel/COD/linux/debian/build/build-generic/tools/bpf/resolve_btfids//libbpf.a] Error 2
+  make[4]: *** [Makefile:71: bpf/resolve_btfids] Error 2
+  make[3]: *** [/home/kernel/COD/linux/Makefile:1890: tools/bpf/resolve_btfids] Error 2
+  make[2]: *** [/home/kernel/COD/linux/Makefile:335: __build_one_by_one] Error 2
+  make[2]: Leaving directory '/home/kernel/COD/linux/debian/build/build-generic'
+  make[1]: *** [Makefile:185: __sub-make] Error 2
+  make[1]: Leaving directory '/home/kernel/COD/linux'
 
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+resolve_btfids needs to be build as a host binary and it needs libbpf.
+However, libbpf Makefile hardcodes an include path utilizing $(ARCH).
+This results in mixing of cross-architecture headers resulting in a
+build failure.
+
+The specific header include path doesn't seem necessary for a libbpf
+build. Hence, remove the same.
+
+(*) https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.9-rc3/ppc64el/log
+
+Reported-by: Vaidyanathan Srinivasan <svaidy@linux.ibm.com>
+Signed-off-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Acked-by: Andrii Nakryiko <andriin@fb.com>
+Link: https://lore.kernel.org/bpf/20200902084246.1513055-1-naveen.n.rao@linux.vnet.ibm.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/vboxsf/super.c | 2 +-
+ tools/lib/bpf/Makefile | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/vboxsf/super.c b/fs/vboxsf/super.c
-index 8fe03b4a0d2b0..25aade3441922 100644
---- a/fs/vboxsf/super.c
-+++ b/fs/vboxsf/super.c
-@@ -384,7 +384,7 @@ static int vboxsf_setup(void)
+diff --git a/tools/lib/bpf/Makefile b/tools/lib/bpf/Makefile
+index bf8ed134cb8a3..b78484e7a6089 100644
+--- a/tools/lib/bpf/Makefile
++++ b/tools/lib/bpf/Makefile
+@@ -59,7 +59,7 @@ FEATURE_USER = .libbpf
+ FEATURE_TESTS = libelf libelf-mmap zlib bpf reallocarray
+ FEATURE_DISPLAY = libelf zlib bpf
  
- static int vboxsf_parse_monolithic(struct fs_context *fc, void *data)
- {
--	char *options = data;
-+	unsigned char *options = data;
+-INCLUDES = -I. -I$(srctree)/tools/include -I$(srctree)/tools/arch/$(ARCH)/include/uapi -I$(srctree)/tools/include/uapi
++INCLUDES = -I. -I$(srctree)/tools/include -I$(srctree)/tools/include/uapi
+ FEATURE_CHECK_CFLAGS-bpf = $(INCLUDES)
  
- 	if (options && options[0] == VBSF_MOUNT_SIGNATURE_BYTE_0 &&
- 		       options[1] == VBSF_MOUNT_SIGNATURE_BYTE_1 &&
+ check_feat := 1
 -- 
 2.25.1
 
