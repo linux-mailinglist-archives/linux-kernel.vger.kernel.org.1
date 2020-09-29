@@ -2,107 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5B7327BE0C
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 09:32:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDEF027BE54
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 09:47:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727526AbgI2HcL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 03:32:11 -0400
-Received: from out5-smtp.messagingengine.com ([66.111.4.29]:43757 "EHLO
-        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725535AbgI2HcI (ORCPT
+        id S1727212AbgI2HrZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 03:47:25 -0400
+Received: from twelve.deepafrica.com ([67.225.192.144]:35259 "EHLO
+        twelve.deepafrica.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725765AbgI2HrZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 03:32:08 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id 259875C0105;
-        Tue, 29 Sep 2020 03:32:08 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Tue, 29 Sep 2020 03:32:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:content-transfer-encoding:in-reply-to; s=fm1; bh=i
-        agB2LUS1CCbxMstdb45o3Und7M5dIrnvWY92w//hVU=; b=gfrIyw4lobRU0cqRq
-        Png8qGruUEeFaP4xF5SQaNoIgVDONkhFC+6dVCACZewyo335vM4xYXyXUqIDZcZH
-        mVgquuPGGxIwaAQh3enUswKeYYAlt3NYEmPuieszpFHFDYT1oVIznpi0EuqPVsOU
-        2kACYvL9tCdhOhlWnzXVctUQut70qjdVZIsU33lF3wAMqh8GR11lpe1x35TysQNO
-        U5Ahe0/X5/tAprEcgLIa3IFaGN6N8Waoa3GQlNn6JDcCERUglsMJTDTjBv0PFfEd
-        98a2y4QIvnNjkRkLIOgXqVwOCb/HjLbuUbfRXYq6mXKLuoA/UHGHfHNKA4MRtA2o
-        utTFA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; bh=iagB2LUS1CCbxMstdb45o3Und7M5dIrnvWY92w//h
-        VU=; b=ega3JuZKHw7a8CHW9DOGsMIO2Noes2zJ8PP8WOZLPSMFMhAz6QY1pNqcf
-        eJwXYbBCqizEXnM3y2ShMxUry8E44J+RMvIKLTwvRDC63kriR03XnoCe6LqKuxh7
-        SfkCMJ82xOXK+Zq+JvIJbr7bRrz5eC+X7LD/mpPlX59pssFvpSl7kDxwZqHDH7XL
-        oDr/HJ50SfCg0z3ORIC4dE8+gnGi5BWkf3oAUaX0YOIPXvaSS6fBq1J9CckiL8g5
-        ASYotn4J/ZXjc/jgtJ8fBmg/ioiJyJ8rJmsKLWpacQ7LUQZ0gezz7tcclTVfvufQ
-        kiZ4mfY4yBLEPAC81PmF8N+hqdkow==
-X-ME-Sender: <xms:9-JyX5WLump78Ly-r9HwXKXkiwq7zjhNmZ9Rc9PJ_0ILNs-HEvcRVg>
-    <xme:9-JyX5loJzYxn7yuq30_mRCwXlY10pTtgn3ub1Hpjj6AEEY7Ys_LrtnjKXWBkIlB4
-    Lrf4f7yavE7rw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrvdejgdduvddvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtugfgjgesthekredttddtjeenucfhrhhomhepifhrvghg
-    ucfmjfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepueehke
-    ehlefffeeiudetfeekjeffvdeuheejjeffheeludfgteekvdelkeduuddvnecukfhppeek
-    fedrkeeirdejgedrieegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrg
-    hilhhfrhhomhepghhrvghgsehkrhhorghhrdgtohhm
-X-ME-Proxy: <xmx:9-JyX1ZXLYkyYpU0tN779gascUb7cveCr2E9updImwjtPDMOmydoRQ>
-    <xmx:9-JyX8Xf8IByEn_xs-FBRJG9oarO2_lpJixw7NKFSPiwVBP0RMJIoQ>
-    <xmx:9-JyXzkJeqtigx0CUJVFTDepQB3XFi3hsyvcde-gXkLkm-jFA2cfPA>
-    <xmx:-OJyX7s-2AcZXCU-SBHs8Q5XFqFxU1V66LJZay_O8OJQLDybnSTlDw>
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        by mail.messagingengine.com (Postfix) with ESMTPA id AC5FA3280059;
-        Tue, 29 Sep 2020 03:32:06 -0400 (EDT)
-Date:   Tue, 29 Sep 2020 09:32:13 +0200
-From:   Greg KH <greg@kroah.com>
-To:     miaoqinglang <miaoqinglang@huawei.com>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: linux-next: build warning after merge of the tty tree
-Message-ID: <20200929073213.GA409833@kroah.com>
-References: <20200929160111.18719071@canb.auug.org.au>
- <2e36e978-1276-6b86-3956-4346fc04093f@huawei.com>
+        Tue, 29 Sep 2020 03:47:25 -0400
+X-Greylist: delayed 12716 seconds by postgrey-1.27 at vger.kernel.org; Tue, 29 Sep 2020 03:47:24 EDT
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=horizonsecurity.co.ke; s=default; h=Content-Transfer-Encoding:MIME-Version:
+        Content-Type:Reply-to:Subject:To:From:Message-ID:Date:Sender:Cc:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=O3zuiBDMilVGFxBaOgdMoOlqgmFdYCE/d5aR5RvE4w4=; b=cXDx1HZ10sETGDpsqiiJKaXJQm
+        uKtWEyEHq5M8Pfj7s+YBEaLDvV6N+iYkasxzPG7zk16S1Z0iYEy9QLBPD88i8tup5OJpNbO1wE9of
+        Ptw0Gm6HIxtzGvmVlzbz0E9iz4hCElyzmSo/VQcdEsOHZrvX6jdhRJCOOoTb0G1aXPhEHxCaYlWE1
+        iER+/Zf30Cmv2FpAo+jEeVk++Z3gjQ7VpQAtvwBumr5//ylQsUylH1QZbt8sFs0hhfmK06rWZ5oMT
+        iLhaYwqElr/zU+Ogy4AXHocBDCvU5j4p5hNdYPAJqZhzNq9fscSQ2DjZgb9PIb5gFKyNpSs/JEnNd
+        nazpm4Ow==;
+Received: from [::1] (port=47432 helo=twelve.deepafrica.com)
+        by twelve.deepafrica.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <sender@horizonsecurity.co.ke>)
+        id 1kNA9z-0004ON-QZ; Tue, 29 Sep 2020 10:34:51 +0300
+Received: from [197.242.118.245] ([197.242.118.245]) by
+ twelve.deepafrica.com (Horde Framework) with HTTPS; Tue, 29 Sep 2020
+ 10:34:51 +0300
+Date:   Tue, 29 Sep 2020 10:34:51 +0300
+Message-ID: <20200929103451.Horde.xHlQXWtOIKKtdPQule2awDD@twelve.deepafrica.com>
+From:   SEDAT =?utf-8?b?U0VWxLBOw4c=?= <sender@horizonsecurity.co.ke>
+Subject: Re:Inquiry
+Reply-to: steveanderson1858@gmail.com
+User-Agent: Horde Application Framework 5
+Content-Type: text/plain; charset=utf-8; format=flowed; DelSp=Yes
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <2e36e978-1276-6b86-3956-4346fc04093f@huawei.com>
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - twelve.deepafrica.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - horizonsecurity.co.ke
+X-Get-Message-Sender-Via: twelve.deepafrica.com: authenticated_id: sender@horizonsecurity.co.ke
+X-Authenticated-Sender: twelve.deepafrica.com: sender@horizonsecurity.co.ke
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 02:41:27PM +0800, miaoqinglang wrote:
-> 
-> 
-> 在 2020/9/29 14:01, Stephen Rothwell 写道:
-> > Hi all,
-> > 
-> > After merging the tty tree, today's linux-next build (x86_64 allmodconfig)
-> > produced this warning:
-> > 
-> > drivers/tty/serial/mvebu-uart.c: In function 'mvebu_uart_probe':
-> > drivers/tty/serial/mvebu-uart.c:806:6: warning: unused variable 'ret' [-Wunused-variable]
-> >    806 |  int ret, id, irq;
-> >        |      ^~~
-> > 
-> > Introduced by commit
-> > 
-> >    b63537020db3 ("serial: mvebu-uart: simplify the return expression of mvebu_uart_probe()")
-> > 
-> Hi Greg,
-> 
-> Sorry about the noise for remaining the unused variable 'ret' in commit
-> b63537020db3.
-> 
-> Should I send another patch to clean up this warning or send another v2
-> patch instead?
 
-A fix-up patch would be best, as this is already in my tree.
 
-thanks,
+-- 
+Dear Sir/Ma,
 
-greg k-h
+I am Steve Anderson, the Purchase Manager of Sedat SEVİNÇ.
+We are interested in a large or wholesale supply of your Company Products.
+Please send us your product catalog and prices.
+Also kindly inform us about your Minimum Order Quantity, delivery time or
+CIF and payment terms.
+
+We are looking forward to receiving your early reply and assure you that
+it will have our best and prompt attention.
+
+Best regards
+
+Steve Anderson
+Sedat SEVİNÇ
+Address 520 Beach Street Apt 3
+Address Cont.
+City Revere
+State MA
+Postal (Zip) Code 02151
+Country USA
+Tel +1 857-615-5790
+Mobile (Cell) Phone
+Fax +1 617-322-0413
+Email: steveanderson1858@gmail.com
+
