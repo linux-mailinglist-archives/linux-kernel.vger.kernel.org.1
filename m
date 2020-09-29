@@ -2,115 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 727BB27C030
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 10:56:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A943A27C033
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 10:57:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727978AbgI2I4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 04:56:47 -0400
-Received: from m42-4.mailgun.net ([69.72.42.4]:37559 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727653AbgI2I4r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 04:56:47 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1601369806; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=KQpZEG0OKWPAvzpKPFBQIJ7O1U66uQTA+gBp9ugCrxg=; b=sVaDi0k7SVMsa0XzaoxSxRPNENwgTnI5/vN1xYH+MoMelu2aUddCLO0tD55goNS/0Haqd94/
- 3li76nliP1G0KKeVt+EW8XK8jTyBVD9dnZBYq2co/0DxuPMzSxU1yuiYImOj1riXCZqz+hMA
- Ytiuo5YpH++25lep5NMgT8OYRu0=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 5f72f6cdcc21f6157a7b1e04 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 29 Sep 2020 08:56:45
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id A06ECC433FF; Tue, 29 Sep 2020 08:56:44 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id BE92AC433CB;
-        Tue, 29 Sep 2020 08:56:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org BE92AC433CB
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     ath11k@lists.infradead.org
-Cc:     linux-wireless@vger.kernel.org, sfr@canb.auug.org.au,
-        govinds@codeaurora.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, manivannan.sadhasivam@linaro.org,
-        davem@davemloft.net
-Subject: [PATCH v2] ath11k: remove auto_start from channel config struct
-Date:   Tue, 29 Sep 2020 11:56:39 +0300
-Message-Id: <1601369799-22328-1-git-send-email-kvalo@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S1727990AbgI2I5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 04:57:02 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:14704 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727468AbgI2I5B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 04:57:01 -0400
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id A03EA1992BC6526F4DEC;
+        Tue, 29 Sep 2020 16:56:58 +0800 (CST)
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 29 Sep 2020 16:56:52 +0800
+From:   Qinglang Miao <miaoqinglang@huawei.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>
+CC:     <linux-serial@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        "Qinglang Miao" <miaoqinglang@huawei.com>
+Subject: [PATCH -next] serial: mvebu-uart: fix unused variable warning
+Date:   Tue, 29 Sep 2020 16:56:51 +0800
+Message-ID: <20200929085651.158283-1-miaoqinglang@huawei.com>
+X-Mailer: git-send-email 2.20.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.25]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+There's a warning shows that 'ret' becomes an unused variable
+after simplify the return expression of mvebu_uart_probe(). So
+remove it.
 
-Recent change in MHI bus removed the option to auto start the channels
-during MHI driver probe. The channel will only be started when the MHI
-client driver like QRTR gets probed. So, remove the option from ath11k
-channel config struct.
-
-Fixes: 1399fb87ea3e ("ath11k: register MHI controller device for QCA6390")
+Fixes: b63537020db3 ("serial: mvebu-uart: simplify the return expression of mvebu_uart_probe()")
 Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
 ---
+ drivers/tty/serial/mvebu-uart.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-v2
-
-* cc also linux-wireless so that this goes to patchwork
-
- drivers/net/wireless/ath/ath11k/mhi.c | 4 ----
- 1 file changed, 4 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath11k/mhi.c b/drivers/net/wireless/ath/ath11k/mhi.c
-index aded9a719d51..47a1ce1bee4f 100644
---- a/drivers/net/wireless/ath/ath11k/mhi.c
-+++ b/drivers/net/wireless/ath/ath11k/mhi.c
-@@ -24,7 +24,6 @@ static struct mhi_channel_config ath11k_mhi_channels[] = {
- 		.offload_channel = false,
- 		.doorbell_mode_switch = false,
- 		.auto_queue = false,
--		.auto_start = false,
- 	},
- 	{
- 		.num = 1,
-@@ -39,7 +38,6 @@ static struct mhi_channel_config ath11k_mhi_channels[] = {
- 		.offload_channel = false,
- 		.doorbell_mode_switch = false,
- 		.auto_queue = false,
--		.auto_start = false,
- 	},
- 	{
- 		.num = 20,
-@@ -54,7 +52,6 @@ static struct mhi_channel_config ath11k_mhi_channels[] = {
- 		.offload_channel = false,
- 		.doorbell_mode_switch = false,
- 		.auto_queue = false,
--		.auto_start = true,
- 	},
- 	{
- 		.num = 21,
-@@ -69,7 +66,6 @@ static struct mhi_channel_config ath11k_mhi_channels[] = {
- 		.offload_channel = false,
- 		.doorbell_mode_switch = false,
- 		.auto_queue = true,
--		.auto_start = true,
- 	},
- };
+diff --git a/drivers/tty/serial/mvebu-uart.c b/drivers/tty/serial/mvebu-uart.c
+index 4e9a590712cb..c9a51f18bf43 100644
+--- a/drivers/tty/serial/mvebu-uart.c
++++ b/drivers/tty/serial/mvebu-uart.c
+@@ -803,7 +803,7 @@ static int mvebu_uart_probe(struct platform_device *pdev)
+ 							   &pdev->dev);
+ 	struct uart_port *port;
+ 	struct mvebu_uart *mvuart;
+-	int ret, id, irq;
++	int id, irq;
  
+ 	if (!reg) {
+ 		dev_err(&pdev->dev, "no registers defined\n");
 -- 
-2.7.4
+2.23.0
 
