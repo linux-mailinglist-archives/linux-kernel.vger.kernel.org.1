@@ -2,463 +2,495 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A389D27D846
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 22:34:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8807027D8EE
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 22:39:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729238AbgI2Udx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 16:33:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41810 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728396AbgI2Udu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 16:33:50 -0400
-Received: from localhost.localdomain (c-98-220-232-140.hsd1.il.comcast.net [98.220.232.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C182820789;
-        Tue, 29 Sep 2020 20:33:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601411629;
-        bh=ROgRJ5TRGSnzwp0vc9wXgEz+8QVHQyhiy+P3uv63Qs0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:In-Reply-To:
-         References:From;
-        b=U6OyqKg7zQDNN51AWFchJ1fZnmK758RSn7q3NhuVk1/bnbLvRBYztPTaT35Px4vD9
-         74ZutbEbdm6rQ+ak3/ezJFwhZG6DYZ+dUXfDP6U8e3Gj6YqklSscBQic3ONwgUcr/N
-         G0cBsbLXvrHwDkm3f5Ti9KeyN06Lmd8dwNLN9Aq4=
-From:   Tom Zanussi <zanussi@kernel.org>
-To:     rostedt@goodmis.org, axelrasmussen@google.com
-Cc:     mhiramat@kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] tracing: Add support for dynamic strings to synthetic events
-Date:   Tue, 29 Sep 2020 15:33:41 -0500
-Message-Id: <a296c3ead3da5f55e29eda2f40d69847d745071b.1601410890.git.zanussi@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <cover.1601410890.git.zanussi@kernel.org>
-References: <cover.1601410890.git.zanussi@kernel.org>
-In-Reply-To: <cover.1601410890.git.zanussi@kernel.org>
-References: <cover.1601410890.git.zanussi@kernel.org>
+        id S1730157AbgI2Ujr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 16:39:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37236 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729422AbgI2Uf6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 16:35:58 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F775C061755;
+        Tue, 29 Sep 2020 13:35:58 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id m34so4836890pgl.9;
+        Tue, 29 Sep 2020 13:35:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=7esz1zpt/WRpXyKl5QBUf62b8nnV+Gd47cnXXKzqgyU=;
+        b=b4kMDljIAeqLuKRJnctW240uQGdoGfQAkLo3ph8CZgwpWg48QQnbi/R+5Z4VyMM1CS
+         Ph5SAa+9fED864kN9iNXHJiyPNNqRZIkSw4YgzjGEhT0OKMG1ipbCXsPiriv/u05Nul5
+         ejIck+eDbFmjyi4iLXiqwLBC6wCEjxBDw0pDZ2cmE/S65AmDYyUVjYzc9/V+CqTkZazj
+         9piNsKFUAWBabBMEKlJrcAi2LQ0ExDLrKS5k3vzLOioIJjCjjHW5zwKOLZuqSGmeA9kO
+         nh1dQYljG5WuUFkw5264yKnZK8ucI2n2hmUdIqBjh4gHzjNp8RxkApUpW5bQX8ZVc1z/
+         vIcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7esz1zpt/WRpXyKl5QBUf62b8nnV+Gd47cnXXKzqgyU=;
+        b=iUAxBUHHxY7zKq6w6ADhHcvg4CcMTaHImjmJFEPMTImn33olc8Xou6jqc3D6UHZkcC
+         vYPfESGXBYwNDoMcQ+Cv/rfLkr/J4MK+3x8wBxkphusvQomplFH5wyEGxCzUwxT0C1f2
+         SvhOlhanO9mJJl/OBN/QGl7asCCeEl77PJVRZj1fBzZp/HTREoOzZ/BwxpKLZMcbS9Kf
+         8O6BfT+P/nx/vidWinfdvcVBQDJXdBUh3z4iMObmh3KnlP0+AepqcKSMNAFGcK6sHF/S
+         bB1haRQavWu/KaGEuBWB2fiKeB99WJuhifMjLOW0cyr7NhXzIvJOHMLjIRRCXFbrdHRL
+         2xLw==
+X-Gm-Message-State: AOAM530dehJQBmnrHNpJZ4yUyQYg31lw0KNyVcFit8S/40Wz8Emw4XYw
+        tv46K2xkPC/qeiNgrBrKZVQ=
+X-Google-Smtp-Source: ABdhPJyS3CEUv2UhlHUk/i0VyYBwQvljBMHHfzucFaHTqjc9SI+um/lHZzdn7uQ2Dsi5s3jJdDTMyw==
+X-Received: by 2002:a17:902:ee02:b029:d1:8c50:aa73 with SMTP id z2-20020a170902ee02b02900d18c50aa73mr6692510plb.42.1601411757287;
+        Tue, 29 Sep 2020 13:35:57 -0700 (PDT)
+Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
+        by smtp.gmail.com with ESMTPSA id in10sm5418946pjb.11.2020.09.29.13.35.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Sep 2020 13:35:56 -0700 (PDT)
+Date:   Tue, 29 Sep 2020 13:35:54 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
+        linux-actions@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Subject: Re: [PATCH v2 5/6] input: atc260x: Add onkey driver for ATC260x PMICs
+Message-ID: <20200929203554.GA3313608@dtor-ws>
+References: <cover.1598043782.git.cristian.ciocaltea@gmail.com>
+ <aec6ea5cfc9bf820cb4bb4a92297d2eecf6d285d.1598043782.git.cristian.ciocaltea@gmail.com>
+ <20200914210941.GC1681290@dtor-ws>
+ <20200918103503.GA27182@BV030612LT>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200918103503.GA27182@BV030612LT>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, sythetic events only support static string fields such as:
+Hi Cristian,
 
-  # echo 'test_latency u64 lat; char somename[32]' > /sys/kernel/debug/tracing/synthetic_events
+On Fri, Sep 18, 2020 at 01:35:03PM +0300, Cristian Ciocaltea wrote:
+> Hi Dmitry,
+> 
+> Thanks for the review!
+> 
+> On Mon, Sep 14, 2020 at 02:09:41PM -0700, Dmitry Torokhov wrote:
+> > Hi Cristian,
+> > 
+> > On Sat, Aug 22, 2020 at 01:19:51AM +0300, Cristian Ciocaltea wrote:
+> > > The Actions Semi ATC260x PMICs are able to manage an onkey button.
+> > > This driver exposes the ATC260x onkey as an input device. It can also
+> > > be configured to force a system reset on a long key-press with an
+> > > adjustable duration.
+> > > 
+> > > The currently supported chip variants are ATC2603C and ATC2609A.
+> > > 
+> > > Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+> > > ---
+> > >  drivers/input/misc/Kconfig         |  11 ++
+> > >  drivers/input/misc/Makefile        |   2 +-
+> > >  drivers/input/misc/atc260x-onkey.c | 304 +++++++++++++++++++++++++++++
+> > >  3 files changed, 316 insertions(+), 1 deletion(-)
+> > >  create mode 100644 drivers/input/misc/atc260x-onkey.c
+> > > 
+> > > diff --git a/drivers/input/misc/Kconfig b/drivers/input/misc/Kconfig
+> > > index 362e8a01980c..9e297ebdea57 100644
+> > > --- a/drivers/input/misc/Kconfig
+> > > +++ b/drivers/input/misc/Kconfig
+> > > @@ -83,6 +83,17 @@ config INPUT_ARIZONA_HAPTICS
+> > >  	  To compile this driver as a module, choose M here: the
+> > >  	  module will be called arizona-haptics.
+> > >  
+> > > +config INPUT_ATC260X_ONKEY
+> > > +	tristate "Actions Semi ATC260x PMIC ONKEY"
+> > > +	depends on MFD_ATC260X
+> > > +	help
+> > > +	  Support the ONKEY of ATC260x PMICs as an input device reporting
+> > > +	  power button status. ONKEY can be used to wakeup from low power
+> > > +	  modes and force a reset on long press.
+> > > +
+> > > +	  To compile this driver as a module, choose M here: the
+> > > +	  module will be called atc260x-onkey.
+> > > +
+> > >  config INPUT_ATMEL_CAPTOUCH
+> > >  	tristate "Atmel Capacitive Touch Button Driver"
+> > >  	depends on OF || COMPILE_TEST
+> > > diff --git a/drivers/input/misc/Makefile b/drivers/input/misc/Makefile
+> > > index a48e5f2d859d..7f854c6ecefa 100644
+> > > --- a/drivers/input/misc/Makefile
+> > > +++ b/drivers/input/misc/Makefile
+> > > @@ -16,6 +16,7 @@ obj-$(CONFIG_INPUT_ADXL34X_I2C)		+= adxl34x-i2c.o
+> > >  obj-$(CONFIG_INPUT_ADXL34X_SPI)		+= adxl34x-spi.o
+> > >  obj-$(CONFIG_INPUT_APANEL)		+= apanel.o
+> > >  obj-$(CONFIG_INPUT_ARIZONA_HAPTICS)	+= arizona-haptics.o
+> > > +obj-$(CONFIG_INPUT_ATC260X_ONKEY)	+= atc260x-onkey.o
+> > >  obj-$(CONFIG_INPUT_ATI_REMOTE2)		+= ati_remote2.o
+> > >  obj-$(CONFIG_INPUT_ATLAS_BTNS)		+= atlas_btns.o
+> > >  obj-$(CONFIG_INPUT_ATMEL_CAPTOUCH)	+= atmel_captouch.o
+> > > @@ -84,4 +85,3 @@ obj-$(CONFIG_INPUT_WM831X_ON)		+= wm831x-on.o
+> > >  obj-$(CONFIG_INPUT_XEN_KBDDEV_FRONTEND)	+= xen-kbdfront.o
+> > >  obj-$(CONFIG_INPUT_YEALINK)		+= yealink.o
+> > >  obj-$(CONFIG_INPUT_IDEAPAD_SLIDEBAR)	+= ideapad_slidebar.o
+> > > -
+> > > diff --git a/drivers/input/misc/atc260x-onkey.c b/drivers/input/misc/atc260x-onkey.c
+> > > new file mode 100644
+> > > index 000000000000..7caec7d6f9ac
+> > > --- /dev/null
+> > > +++ b/drivers/input/misc/atc260x-onkey.c
+> > > @@ -0,0 +1,304 @@
+> > > +// SPDX-License-Identifier: GPL-2.0+
+> > > +/*
+> > > + * Onkey driver for Actions Semi ATC260x PMICs.
+> > > + *
+> > > + * Copyright (c) 2020 Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+> > > + */
+> > > +
+> > > +#include <linux/bitfield.h>
+> > > +#include <linux/input.h>
+> > > +#include <linux/interrupt.h>
+> > > +#include <linux/mfd/atc260x/core.h>
+> > > +#include <linux/module.h>
+> > > +#include <linux/of.h>
+> > > +#include <linux/platform_device.h>
+> > > +#include <linux/regmap.h>
+> > > +
+> > > +/* <2s for short press, >2s for long press */
+> > > +#define KEY_PRESS_TIME_SEC	2
+> > > +
+> > > +/* Driver internals */
+> > > +enum atc260x_onkey_reset_status {
+> > > +	KEY_RESET_HW_DEFAULT,
+> > > +	KEY_RESET_DISABLED,
+> > > +	KEY_RESET_USER_SEL,
+> > > +};
+> > > +
+> > > +struct atc260x_onkey_params {
+> > > +	u32 reg_int_ctl;
+> > > +	u32 kdwn_state_bm;
+> > > +	u32 long_int_pnd_bm;
+> > > +	u32 short_int_pnd_bm;
+> > > +	u32 kdwn_int_pnd_bm;
+> > > +	u32 press_int_en_bm;
+> > > +	u32 kdwn_int_en_bm;
+> > > +	u32 press_time_bm;
+> > > +	u32 reset_en_bm;
+> > > +	u32 reset_time_bm;
+> > > +};
+> > > +
+> > > +struct atc260x_onkey {
+> > > +	struct atc260x *atc260x;
+> > > +	const struct atc260x_onkey_params *params;
+> > > +	struct input_dev *input_dev;
+> > > +	struct delayed_work work;
+> > > +};
+> > > +
+> > > +static const struct atc260x_onkey_params atc2603c_onkey_params = {
+> > > +	.reg_int_ctl		= ATC2603C_PMU_SYS_CTL2,
+> > > +	.long_int_pnd_bm	= ATC2603C_PMU_SYS_CTL2_ONOFF_LONG_PRESS,
+> > > +	.short_int_pnd_bm	= ATC2603C_PMU_SYS_CTL2_ONOFF_SHORT_PRESS,
+> > > +	.kdwn_int_pnd_bm	= ATC2603C_PMU_SYS_CTL2_ONOFF_PRESS_PD,
+> > > +	.press_int_en_bm	= ATC2603C_PMU_SYS_CTL2_ONOFF_INT_EN,
+> > > +	.kdwn_int_en_bm		= ATC2603C_PMU_SYS_CTL2_ONOFF_PRESS_INT_EN,
+> > > +	.kdwn_state_bm		= ATC2603C_PMU_SYS_CTL2_ONOFF_PRESS,
+> > > +	.press_time_bm		= ATC2603C_PMU_SYS_CTL2_ONOFF_PRESS_TIME,
+> > > +	.reset_en_bm		= ATC2603C_PMU_SYS_CTL2_ONOFF_PRESS_RESET_EN,
+> > > +	.reset_time_bm		= ATC2603C_PMU_SYS_CTL2_ONOFF_RESET_TIME_SEL,
+> > > +};
+> > > +
+> > > +static const struct atc260x_onkey_params atc2609a_onkey_params = {
+> > > +	.reg_int_ctl		= ATC2609A_PMU_SYS_CTL2,
+> > > +	.long_int_pnd_bm	= ATC2609A_PMU_SYS_CTL2_ONOFF_LONG_PRESS,
+> > > +	.short_int_pnd_bm	= ATC2609A_PMU_SYS_CTL2_ONOFF_SHORT_PRESS,
+> > > +	.kdwn_int_pnd_bm	= ATC2609A_PMU_SYS_CTL2_ONOFF_PRESS_PD,
+> > > +	.press_int_en_bm	= ATC2609A_PMU_SYS_CTL2_ONOFF_LSP_INT_EN,
+> > > +	.kdwn_int_en_bm		= ATC2609A_PMU_SYS_CTL2_ONOFF_PRESS_INT_EN,
+> > > +	.kdwn_state_bm		= ATC2609A_PMU_SYS_CTL2_ONOFF_PRESS,
+> > > +	.press_time_bm		= ATC2609A_PMU_SYS_CTL2_ONOFF_PRESS_TIME,
+> > > +	.reset_en_bm		= ATC2609A_PMU_SYS_CTL2_ONOFF_RESET_EN,
+> > > +	.reset_time_bm		= ATC2609A_PMU_SYS_CTL2_ONOFF_RESET_TIME_SEL,
+> > > +};
+> > > +
+> > > +static int atc2603x_onkey_hw_init(struct atc260x_onkey *onkey,
+> > > +				  enum atc260x_onkey_reset_status reset_status,
+> > > +				  u32 reset_time, u32 press_time)
+> > > +{
+> > > +	u32 reg_bm, reg_val;
+> > > +
+> > > +	reg_bm = onkey->params->long_int_pnd_bm |
+> > > +		 onkey->params->short_int_pnd_bm |
+> > > +		 onkey->params->kdwn_int_pnd_bm |
+> > > +		 onkey->params->press_int_en_bm |
+> > > +		 onkey->params->kdwn_int_en_bm;
+> > > +
+> > > +	reg_val = reg_bm | press_time;
+> > > +	reg_bm |= onkey->params->press_time_bm;
+> > > +
+> > > +	if (reset_status == KEY_RESET_DISABLED) {
+> > > +		reg_bm |= onkey->params->reset_en_bm;
+> > > +	} else if (reset_status == KEY_RESET_USER_SEL) {
+> > > +		reg_bm |= onkey->params->reset_en_bm |
+> > > +			  onkey->params->reset_time_bm;
+> > > +		reg_val |= onkey->params->reset_en_bm | reset_time;
+> > > +	}
+> > > +
+> > > +	return regmap_update_bits(onkey->atc260x->regmap,
+> > > +				  onkey->params->reg_int_ctl, reg_bm, reg_val);
+> > > +}
+> > > +
+> > > +static void atc260x_onkey_query(struct atc260x_onkey *onkey)
+> > > +{
+> > > +	u32 reg_bits;
+> > > +	int ret, key_down;
+> > > +
+> > > +	ret = regmap_read(onkey->atc260x->regmap,
+> > > +			  onkey->params->reg_int_ctl, &key_down);
+> > > +	if (ret) {
+> > > +		key_down = 1;
+> > > +		dev_err(onkey->atc260x->dev,
+> > > +			"Failed to read onkey status: %d\n", ret);
+> > > +	} else {
+> > > +		key_down &= onkey->params->kdwn_state_bm;
+> > > +	}
+> > > +
+> > > +	/*
+> > > +	 * The hardware generates interrupt only when the onkey pin is
+> > > +	 * asserted. Hence, the deassertion of the pin is simulated through
+> > > +	 * work queue.
+> > > +	 */
+> > > +	if (key_down) {
+> > > +		schedule_delayed_work(&onkey->work, msecs_to_jiffies(200));
+> > > +		return;
+> > > +	}
+> > > +
+> > > +	/*
+> > > +	 * The key-down status bit is cleared when the On/Off button
+> > > +	 * is released.
+> > > +	 */
+> > > +	input_report_key(onkey->input_dev, KEY_POWER, 0);
+> > > +	input_sync(onkey->input_dev);
+> > > +
+> > > +	reg_bits = onkey->params->long_int_pnd_bm |
+> > > +		   onkey->params->short_int_pnd_bm |
+> > > +		   onkey->params->kdwn_int_pnd_bm |
+> > > +		   onkey->params->press_int_en_bm |
+> > > +		   onkey->params->kdwn_int_en_bm;
+> > > +
+> > > +	/* Clear key press pending events and enable key press interrupts. */
+> > > +	regmap_update_bits(onkey->atc260x->regmap, onkey->params->reg_int_ctl,
+> > > +			   reg_bits, reg_bits);
+> > > +}
+> > > +
+> > > +static void atc260x_onkey_work(struct work_struct *work)
+> > > +{
+> > > +	struct atc260x_onkey *onkey = container_of(work, struct atc260x_onkey,
+> > > +						   work.work);
+> > > +	atc260x_onkey_query(onkey);
+> > > +}
+> > > +
+> > > +static irqreturn_t atc260x_onkey_irq(int irq, void *data)
+> > > +{
+> > > +	struct atc260x_onkey *onkey = data;
+> > > +	int ret;
+> > > +
+> > > +	/* Disable key press interrupts. */
+> > > +	ret = regmap_update_bits(onkey->atc260x->regmap,
+> > > +				 onkey->params->reg_int_ctl,
+> > > +				 onkey->params->press_int_en_bm |
+> > > +				 onkey->params->kdwn_int_en_bm, 0);
+> > > +	if (ret)
+> > > +		dev_err(onkey->atc260x->dev,
+> > > +			"Failed to disable interrupts: %d\n", ret);
+> > > +
+> > > +	input_report_key(onkey->input_dev, KEY_POWER, 1);
+> > > +	input_sync(onkey->input_dev);
+> > > +
+> > > +	atc260x_onkey_query(onkey);
+> > > +
+> > > +	return IRQ_HANDLED;
+> > > +}
+> > > +
+> > > +static int atc260x_onkey_probe(struct platform_device *pdev)
+> > > +{
+> > > +	struct atc260x *atc260x = dev_get_drvdata(pdev->dev.parent);
+> > > +	struct atc260x_onkey *onkey;
+> > > +	struct input_dev *input_dev;
+> > > +	enum atc260x_onkey_reset_status reset_status;
+> > > +	u32 press_time = KEY_PRESS_TIME_SEC, reset_time = 0;
+> > > +	int val, irq, ret;
+> > > +
+> > > +	if (!pdev->dev.of_node)
+> > > +		return -ENXIO;
+> > 
+> > Why is this needed?
+> 
+> The idea was to allow the user enable/disable the ONKEY functionality
+> of the MFD device via the 'onkey' DTS node. So if this node is not
+> present, the driver will not be loaded.
+> 
+> Is there a better/recommended way to handle this scenario?
 
-Which is fine, but wastes a lot of space in the event.
+I believe the best way is not to create correspnding platform device if
+functionality is disabled. So the logic shoudl go into MFD piece.
 
-It also prevents the most commonly-defined strings in the existing
-trace events e.g. those defined using __string(), from being passed to
-synthetic events via the trace() action.
+> 
+> > > +
+> > > +	onkey = devm_kzalloc(&pdev->dev, sizeof(*onkey), GFP_KERNEL);
+> > > +	if (!onkey)
+> > > +		return -ENOMEM;
+> > > +
+> > > +	ret = device_property_read_u32(&pdev->dev,
+> > > +				       "actions,reset-time-sec", &val);
+> > 
+> > Call this "error" please.
+> 
+> Would something like bellow suffice?
+> 
+> 	if (ret) {
+> 		dev_err(&pdev->dev, "Failed to read actions,reset-time-sec\n");
+> 		return ret;
+> 	}
 
-With this change, synthetic events with dynamic fields can be defined:
 
-  # echo 'test_latency u64 lat; char somename[]' > /sys/kernel/debug/tracing/synthetic_events
+I meant
 
-And the trace() action can be used to generate events using either
-dynamic or static strings:
+	error = device_property_read_u32(&pdev->dev,
+					 "actions,reset-time-sec", &val);
+	if (error) {
+		reset_status = KEY_RESET_HW_DEFAULT;
+	}
 
-  # echo 'hist:keys=name:lat=common_timestamp.usecs-$ts0:onmatch(sys.event).test_latency($lat,name)' > /sys/kernel/debug/tracing/events
 
-The synthetic event dynamic strings are implemented in the same way as
-the existing __data_loc strings and appear as such in the format file.
+> 
+> > > +	if (ret) {
+> > > +		reset_status = KEY_RESET_HW_DEFAULT;
+> > > +	} else if (val) {
+> > > +		if (val < 6 || val > 12) {
+> > > +			dev_err(&pdev->dev, "actions,reset-time-sec out of range\n");
+> > > +			return -EINVAL;
+> > > +		}
+> > > +
+> > > +		reset_status = KEY_RESET_USER_SEL;
+> > > +		reset_time = (val - 6) / 2;
+> > > +	} else {
+> > > +		reset_status = KEY_RESET_DISABLED;
+> > > +		dev_info(&pdev->dev, "Disabled reset on long-press\n");
 
-Signed-off-by: Tom Zanussi <zanussi@kernel.org>
----
- Documentation/trace/events.rst    |  15 ++-
- Documentation/trace/histogram.rst |  18 ++++
- kernel/trace/trace_events_hist.c  |   9 ++
- kernel/trace/trace_events_synth.c | 157 ++++++++++++++++++++++++++----
- kernel/trace/trace_synth.h        |   4 +
- 5 files changed, 181 insertions(+), 22 deletions(-)
+dev_dbg();
 
-diff --git a/Documentation/trace/events.rst b/Documentation/trace/events.rst
-index f792b1959a33..2a5aa48eff6c 100644
---- a/Documentation/trace/events.rst
-+++ b/Documentation/trace/events.rst
-@@ -589,8 +589,19 @@ name::
-         { .type = "int",                .name = "my_int_field" },
-   };
- 
--See synth_field_size() for available types. If field_name contains [n]
--the field is considered to be an array.
-+See synth_field_size() for available types.
-+
-+If field_name contains [n], the field is considered to be a static array.
-+
-+If field_names contains[] (no subscript), the field is considered to
-+be a dynamic array, which will only take as much space in the event as
-+is required to hold the array.
-+
-+Because space for an event is reserved before assigning field values
-+to the event, using dynamic arrays implies that the piecewise
-+in-kernel API described below can't be used with dynamic arrays.  The
-+other non-piecewise in-kernel APIs can, however, be used with dynamic
-+arrays.
- 
- If the event is created from within a module, a pointer to the module
- must be passed to synth_event_create().  This will ensure that the
-diff --git a/Documentation/trace/histogram.rst b/Documentation/trace/histogram.rst
-index 8408670d0328..b573604deabd 100644
---- a/Documentation/trace/histogram.rst
-+++ b/Documentation/trace/histogram.rst
-@@ -1776,6 +1776,24 @@ consisting of the name of the new event along with one or more
- variables and their types, which can be any valid field type,
- separated by semicolons, to the tracing/synthetic_events file.
- 
-+See synth_field_size() for available types.
-+
-+If field_name contains [n], the field is considered to be a static array.
-+
-+If field_names contains[] (no subscript), the field is considered to
-+be a dynamic array, which will only take as much space in the event as
-+is required to hold the array.
-+
-+A string field can be specified using either the static notation:
-+
-+  char name[32];
-+
-+Or the dynamic:
-+
-+  char name[];
-+
-+The size limit for either is 256.
-+
- For instance, the following creates a new event named 'wakeup_latency'
- with 3 fields: lat, pid, and prio.  Each of those fields is simply a
- variable reference to a variable on another event::
-diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
-index 1b2ef6490229..ee6b27c82350 100644
---- a/kernel/trace/trace_events_hist.c
-+++ b/kernel/trace/trace_events_hist.c
-@@ -3279,6 +3279,15 @@ static int check_synth_field(struct synth_event *event,
- 
- 	field = event->fields[field_pos];
- 
-+	/*
-+	 * A dynamic string synth field can accept static or
-+	 * dynamic. A static string synth field can only accept a
-+	 * same-sized static string, which is checked for later.
-+	 */
-+	if (strstr(hist_field->type, "char[") && field->is_string
-+	    && field->is_dynamic)
-+		return 0;
-+
- 	if (strcmp(field->type, hist_field->type) != 0) {
- 		if (field->size != hist_field->size ||
- 		    field->is_signed != hist_field->is_signed)
-diff --git a/kernel/trace/trace_events_synth.c b/kernel/trace/trace_events_synth.c
-index 6e7282c7b530..00c6c61038d1 100644
---- a/kernel/trace/trace_events_synth.c
-+++ b/kernel/trace/trace_events_synth.c
-@@ -88,7 +88,7 @@ static int synth_event_define_fields(struct trace_event_call *call)
- 
- 		event->fields[i]->offset = n_u64;
- 
--		if (event->fields[i]->is_string) {
-+		if (event->fields[i]->is_string && !event->fields[i]->is_dynamic) {
- 			offset += STR_VAR_LEN_MAX;
- 			n_u64 += STR_VAR_LEN_MAX / sizeof(u64);
- 		} else {
-@@ -139,6 +139,9 @@ static int synth_field_string_size(char *type)
- 	if (len > 3)
- 		return -EINVAL;
- 
-+	if (len == 0)
-+		return 0; /* variable-length string */
-+
- 	strncpy(buf, start, len);
- 	buf[len] = '\0';
- 
-@@ -290,10 +293,25 @@ static enum print_line_t print_synth_event(struct trace_iterator *iter,
- 
- 		/* parameter values */
- 		if (se->fields[i]->is_string) {
--			trace_seq_printf(s, print_fmt, se->fields[i]->name,
--					 (char *)&entry->fields[n_u64],
--					 i == se->n_fields - 1 ? "" : " ");
--			n_u64 += STR_VAR_LEN_MAX / sizeof(u64);
-+			if (se->fields[i]->is_dynamic) {
-+				u32 offset, data_offset;
-+				char *str_field;
-+
-+				offset = (u32)entry->fields[n_u64];
-+				data_offset = offset & 0xffff;
-+
-+				str_field = (char *)entry + data_offset;
-+
-+				trace_seq_printf(s, print_fmt, se->fields[i]->name,
-+						 str_field,
-+						 i == se->n_fields - 1 ? "" : " ");
-+				n_u64++;
-+			} else {
-+				trace_seq_printf(s, print_fmt, se->fields[i]->name,
-+						 (char *)&entry->fields[n_u64],
-+						 i == se->n_fields - 1 ? "" : " ");
-+				n_u64 += STR_VAR_LEN_MAX / sizeof(u64);
-+			}
- 		} else {
- 			struct trace_print_flags __flags[] = {
- 			    __def_gfpflag_names, {-1, NULL} };
-@@ -325,16 +343,52 @@ static struct trace_event_functions synth_event_funcs = {
- 	.trace		= print_synth_event
- };
- 
-+static unsigned int trace_string(struct synth_trace_event *entry,
-+				 struct synth_event *event,
-+				 char *str_val,
-+				 bool is_dynamic,
-+				 unsigned int data_size,
-+				 unsigned int *n_u64)
-+{
-+	unsigned int len = 0;
-+	char *str_field;
-+
-+	if (is_dynamic) {
-+		u32 data_offset;
-+
-+		data_offset = offsetof(typeof(*entry), fields);
-+		data_offset += event->n_u64 * sizeof(u64);
-+		data_offset += data_size;
-+
-+		str_field = (char *)entry + data_offset;
-+
-+		len = strlen(str_val) + 1;
-+		strscpy(str_field, str_val, len);
-+
-+		data_offset |= len << 16;
-+		*(u32 *)&entry->fields[*n_u64] = data_offset;
-+
-+		(*n_u64)++;
-+	} else {
-+		str_field = (char *)&entry->fields[*n_u64];
-+
-+		strscpy(str_field, str_val, STR_VAR_LEN_MAX);
-+		(*n_u64) += STR_VAR_LEN_MAX / sizeof(u64);
-+	}
-+
-+	return len;
-+}
-+
- static notrace void trace_event_raw_event_synth(void *__data,
- 						u64 *var_ref_vals,
- 						unsigned int *var_ref_idx)
- {
-+	unsigned int i, n_u64, val_idx, len, data_size = 0;
- 	struct trace_event_file *trace_file = __data;
- 	struct synth_trace_event *entry;
- 	struct trace_event_buffer fbuffer;
- 	struct trace_buffer *buffer;
- 	struct synth_event *event;
--	unsigned int i, n_u64, val_idx;
- 	int fields_size = 0;
- 
- 	event = trace_file->event_call->data;
-@@ -344,6 +398,18 @@ static notrace void trace_event_raw_event_synth(void *__data,
- 
- 	fields_size = event->n_u64 * sizeof(u64);
- 
-+	for (i = 0; i < event->n_dynamic_fields; i++) {
-+		unsigned int field_pos = event->dynamic_fields[i]->field_pos;
-+		char *str_val;
-+
-+		val_idx = var_ref_idx[field_pos];
-+		str_val = (char *)(long)var_ref_vals[val_idx];
-+
-+		len = strlen(str_val) + 1;
-+
-+		fields_size += len;
-+	}
-+
- 	/*
- 	 * Avoid ring buffer recursion detection, as this event
- 	 * is being performed within another event.
-@@ -360,10 +426,11 @@ static notrace void trace_event_raw_event_synth(void *__data,
- 		val_idx = var_ref_idx[i];
- 		if (event->fields[i]->is_string) {
- 			char *str_val = (char *)(long)var_ref_vals[val_idx];
--			char *str_field = (char *)&entry->fields[n_u64];
- 
--			strscpy(str_field, str_val, STR_VAR_LEN_MAX);
--			n_u64 += STR_VAR_LEN_MAX / sizeof(u64);
-+			len = trace_string(entry, event, str_val,
-+					   event->fields[i]->is_dynamic,
-+					   data_size, &n_u64);
-+			data_size += len; /* only dynamic string increments */
- 		} else {
- 			struct synth_field *field = event->fields[i];
- 			u64 val = var_ref_vals[val_idx];
-@@ -525,6 +592,27 @@ static struct synth_field *parse_synth_field(int argc, const char **argv,
- 	if (size < 0) {
- 		ret = -EINVAL;
- 		goto free;
-+	} else if (size == 0) {
-+		if (synth_field_is_string(field->type)) {
-+			char *type;
-+
-+			type = kzalloc(sizeof("__data_loc ") + strlen(field->type) + 1, GFP_KERNEL);
-+			if (!type) {
-+				ret = -ENOMEM;
-+				goto free;
-+			}
-+
-+			strcat(type, "__data_loc ");
-+			strcat(type, field->type);
-+			kfree(field->type);
-+			field->type = type;
-+
-+			field->is_dynamic = true;
-+			size = sizeof(u64);
-+		} else {
-+			ret = -EINVAL;
-+			goto free;
-+		}
- 	}
- 	field->size = size;
- 
-@@ -532,7 +620,6 @@ static struct synth_field *parse_synth_field(int argc, const char **argv,
- 		field->is_string = true;
- 
- 	field->is_signed = synth_field_signed(field->type);
--
-  out:
- 	return field;
-  free:
-@@ -663,6 +750,7 @@ static void free_synth_event(struct synth_event *event)
- 		free_synth_field(event->fields[i]);
- 
- 	kfree(event->fields);
-+	kfree(event->dynamic_fields);
- 	kfree(event->name);
- 	kfree(event->class.system);
- 	free_synth_tracepoint(event->tp);
-@@ -673,8 +761,8 @@ static void free_synth_event(struct synth_event *event)
- static struct synth_event *alloc_synth_event(const char *name, int n_fields,
- 					     struct synth_field **fields)
- {
-+	unsigned int i, j, n_dynamic_fields = 0;
- 	struct synth_event *event;
--	unsigned int i;
- 
- 	event = kzalloc(sizeof(*event), GFP_KERNEL);
- 	if (!event) {
-@@ -696,11 +784,33 @@ static struct synth_event *alloc_synth_event(const char *name, int n_fields,
- 		goto out;
- 	}
- 
-+	for (i = 0; i < n_fields; i++)
-+		if (fields[i]->is_dynamic)
-+			n_dynamic_fields++;
-+
-+	if (n_dynamic_fields) {
-+		event->dynamic_fields = kcalloc(n_dynamic_fields,
-+						sizeof(*event->dynamic_fields),
-+						GFP_KERNEL);
-+		if (!event->dynamic_fields) {
-+			free_synth_event(event);
-+			event = ERR_PTR(-ENOMEM);
-+			goto out;
-+		}
-+	}
-+
- 	dyn_event_init(&event->devent, &synth_event_ops);
- 
--	for (i = 0; i < n_fields; i++)
-+	for (i = 0, j = 0; i < n_fields; i++) {
- 		event->fields[i] = fields[i];
- 
-+		if (fields[i]->is_dynamic) {
-+			event->dynamic_fields[j] = fields[i];
-+			event->dynamic_fields[j]->field_pos = i;
-+			event->dynamic_fields[j++] = fields[i];
-+			event->n_dynamic_fields++;
-+		}
-+	}
- 	event->n_fields = n_fields;
-  out:
- 	return event;
-@@ -1276,8 +1386,8 @@ __synth_event_trace_end(struct synth_event_trace_state *trace_state)
-  */
- int synth_event_trace(struct trace_event_file *file, unsigned int n_vals, ...)
- {
-+	unsigned int i, n_u64, len, data_size = 0;
- 	struct synth_event_trace_state state;
--	unsigned int i, n_u64;
- 	va_list args;
- 	int ret;
- 
-@@ -1301,10 +1411,11 @@ int synth_event_trace(struct trace_event_file *file, unsigned int n_vals, ...)
- 
- 		if (state.event->fields[i]->is_string) {
- 			char *str_val = (char *)(long)val;
--			char *str_field = (char *)&state.entry->fields[n_u64];
- 
--			strscpy(str_field, str_val, STR_VAR_LEN_MAX);
--			n_u64 += STR_VAR_LEN_MAX / sizeof(u64);
-+			len = trace_string(state.entry, state.event, str_val,
-+					   state.event->fields[i]->is_dynamic,
-+					   data_size, &n_u64);
-+			data_size += len; /* only dynamic string increments */
- 		} else {
- 			struct synth_field *field = state.event->fields[i];
- 
-@@ -1357,8 +1468,8 @@ EXPORT_SYMBOL_GPL(synth_event_trace);
- int synth_event_trace_array(struct trace_event_file *file, u64 *vals,
- 			    unsigned int n_vals)
- {
-+	unsigned int i, n_u64, len, data_size = 0;
- 	struct synth_event_trace_state state;
--	unsigned int i, n_u64;
- 	int ret;
- 
- 	ret = __synth_event_trace_start(file, &state);
-@@ -1376,10 +1487,11 @@ int synth_event_trace_array(struct trace_event_file *file, u64 *vals,
- 	for (i = 0, n_u64 = 0; i < state.event->n_fields; i++) {
- 		if (state.event->fields[i]->is_string) {
- 			char *str_val = (char *)(long)vals[i];
--			char *str_field = (char *)&state.entry->fields[n_u64];
- 
--			strscpy(str_field, str_val, STR_VAR_LEN_MAX);
--			n_u64 += STR_VAR_LEN_MAX / sizeof(u64);
-+			len = trace_string(state.entry, state.event, str_val,
-+					   state.event->fields[i]->is_dynamic,
-+					   data_size, &n_u64);
-+			data_size += len; /* only dynamic string increments */
- 		} else {
- 			struct synth_field *field = state.event->fields[i];
- 			u64 val = vals[i];
-@@ -1510,6 +1622,11 @@ static int __synth_event_add_val(const char *field_name, u64 val,
- 		char *str_val = (char *)(long)val;
- 		char *str_field;
- 
-+		if (field->is_dynamic) { /* add_val can't do dynamic strings */
-+			ret = -EINVAL;
-+			goto out;
-+		}
-+
- 		if (!str_val) {
- 			ret = -EINVAL;
- 			goto out;
-diff --git a/kernel/trace/trace_synth.h b/kernel/trace/trace_synth.h
-index 5166705d1556..6e146b959dcd 100644
---- a/kernel/trace/trace_synth.h
-+++ b/kernel/trace/trace_synth.h
-@@ -16,6 +16,8 @@ struct synth_field {
- 	unsigned int offset;
- 	bool is_signed;
- 	bool is_string;
-+	bool is_dynamic;
-+	bool field_pos;
- };
- 
- struct synth_event {
-@@ -24,6 +26,8 @@ struct synth_event {
- 	char					*name;
- 	struct synth_field			**fields;
- 	unsigned int				n_fields;
-+	struct synth_field			**dynamic_fields;
-+	unsigned int				n_dynamic_fields;
- 	unsigned int				n_u64;
- 	struct trace_event_class		class;
- 	struct trace_event_call			call;
+> > > +	}
+> > > +
+> > > +	switch (atc260x->ic_type) {
+> > > +	case ATC2603C:
+> > > +		onkey->params = &atc2603c_onkey_params;
+> > > +		press_time = FIELD_PREP(ATC2603C_PMU_SYS_CTL2_ONOFF_PRESS_TIME,
+> > > +					press_time);
+> > > +		reset_time = FIELD_PREP(ATC2603C_PMU_SYS_CTL2_ONOFF_RESET_TIME_SEL,
+> > > +					reset_time);
+> > > +		break;
+> > > +	case ATC2609A:
+> > > +		onkey->params = &atc2609a_onkey_params;
+> > > +		press_time = FIELD_PREP(ATC2609A_PMU_SYS_CTL2_ONOFF_PRESS_TIME,
+> > > +					press_time);
+> > > +		reset_time = FIELD_PREP(ATC2609A_PMU_SYS_CTL2_ONOFF_RESET_TIME_SEL,
+> > > +					reset_time);
+> > > +		break;
+> > > +	default:
+> > > +		dev_err(&pdev->dev,
+> > > +			"OnKey not supported for ATC260x PMIC type: %u\n",
+> > > +			atc260x->ic_type);
+> > > +		return -EINVAL;
+> > > +	}
+> > > +
+> > > +	input_dev = devm_input_allocate_device(&pdev->dev);
+> > > +	if (!input_dev) {
+> > > +		dev_err(&pdev->dev, "Failed to allocate input device\n");
+> > > +		return -ENOMEM;
+> > > +	}
+> > > +
+> > > +	onkey->input_dev = input_dev;
+> > > +	onkey->atc260x = atc260x;
+> > > +
+> > > +	input_dev->name = "atc260x-onkey";
+> > > +	input_dev->phys = "atc260x-onkey/input0";
+> > > +	input_dev->evbit[0] = BIT_MASK(EV_KEY);
+> > 
+> > Not needed.
+> 
+> Done.
+> 
+> > > +	input_set_capability(input_dev, EV_KEY, KEY_POWER);
+> > > +
+> > > +	INIT_DELAYED_WORK(&onkey->work, atc260x_onkey_work);
+> > > +
+> > > +	irq = platform_get_irq(pdev, 0);
+> > > +	if (irq < 0)
+> > > +		return irq;
+> > > +
+> > > +	ret = devm_request_threaded_irq(&pdev->dev, irq, NULL,
+> > > +					atc260x_onkey_irq,
+> > > +					IRQF_TRIGGER_HIGH | IRQF_ONESHOT,
+> > 
+> > Do we need to force the trigger type? Can we rely on the parent to
+> > configure it as needed?
+> 
+> Done, I removed the trigger type enforcement.
+> 
+> > > +					dev_name(&pdev->dev), onkey);
+> > > +	if (ret) {
+> > > +		dev_err(&pdev->dev,
+> > > +			"Failed to register IRQ %d: %d\n", irq, ret);
+> > > +		return ret;
+> > > +	}
+> > > +
+> > > +	ret = input_register_device(input_dev);
+> > > +	if (ret) {
+> > > +		dev_err(&pdev->dev,
+> > > +			"Failed to register input device: %d\n", ret);
+> > > +		return ret;
+> > > +	}
+> > > +
+> > > +	ret = atc2603x_onkey_hw_init(onkey, reset_status,
+> > > +				     reset_time, press_time);
+> > > +	if (ret)
+> > > +		return ret;
+> > > +
+> > > +	platform_set_drvdata(pdev, onkey);
+> > > +	device_init_wakeup(&pdev->dev, true);
+> > > +
+> > > +	return 0;
+> > > +}
+> > > +
+> > > +static int atc260x_onkey_remove(struct platform_device *pdev)
+> > > +{
+> > > +	struct atc260x_onkey *onkey = platform_get_drvdata(pdev);
+> > > +
+> > > +	cancel_delayed_work_sync(&onkey->work);
+> > 
+> > This is racy. Past this point the interrupts are not disabled, so if key
+> > happens to be pressed you will re-schedule the work and it will go BOOM.
+> > 
+> > You are using threaded interrupt. Maybe consider sleeping and
+> > re-checking the key status right there.
+> 
+> I've seen this approach in a few drivers: da9055_onkey.c,
+> palmas-pwrbutton.c, wm831x-on.c
+> 
+> I noticed they also call 'free_irq()' right before
+> 'cancel_delayed_work_sync()'. Would this help mitigate the racing issue?
+
+Yes, but this messes up with devm releasing resources.
+
+Another option is to implement open/close and call enable_irq() in open
+and disable_irq/cancel_work_sync in close.
+
+Thanks.
+
 -- 
-2.17.1
-
+Dmitry
