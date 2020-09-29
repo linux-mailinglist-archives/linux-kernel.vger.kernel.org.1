@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7033227BCED
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 08:18:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F01427BCF5
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 08:19:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725766AbgI2GS4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 02:18:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45250 "EHLO
+        id S1727186AbgI2GTE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 02:19:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725320AbgI2GS4 (ORCPT
+        with ESMTP id S1725829AbgI2GS6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 02:18:56 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC0FDC0613D0;
-        Mon, 28 Sep 2020 23:18:55 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id d13so3011520pgl.6;
-        Mon, 28 Sep 2020 23:18:55 -0700 (PDT)
+        Tue, 29 Sep 2020 02:18:58 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B55A9C061755;
+        Mon, 28 Sep 2020 23:18:56 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id n14so3500164pff.6;
+        Mon, 28 Sep 2020 23:18:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=7/FgS/Bu4Sm/fvo7Kw9FiL37U/scbZL5l1h7O/ec2LY=;
-        b=u5d9C8QP7pX6TR4cjb2BXigfMhHFBN/IE37xTN/FotpT2LDHCf7xdI/v5ncgR/Qio7
-         ijuWo0LqrkynH1CZLhUvG8MLopNAWs4rIXBluF84oqMpicliVKqQw6fjNseSjlOhruwM
-         yvIntkub8J8LKMMVQq0f4pl6iQx5tinvDvq5y7HdXBmrvnNqIyFCCn2TvEg/Ig+ua7Q3
-         KOwBSlB/seahfVqeo0NbYgaXTovchyVFTiR5PEhQt4dSfFS2sxxv57VH5YNYWJoYDq0u
-         ESe4wN3RxKxFgWBsNakhLy4jnUaP2hO/kBx3VUI05XCXIUBQIBVxFy/TeU2Hjrnpiu4A
-         /4Qw==
+        bh=29m/WsHiomvftKkO4f2zYzL4z5u90lYqkPGhVYhCT8U=;
+        b=sVYpadvLpMkkS4bEQ5e+A0z4ogXLC9YYnwmfGfHRrpyAPO+mNVYXnMFl122QKDJrGw
+         vZnh8RsrTvECTSeKFo4A7mw6sqtceZx8oaZCQBIwbd4Lcxyo1hjJBp5zNtGJdMvODtjF
+         2ScsoySk8y7L8dRABssQfFCxoNMnAoExuJEDmO+ROF+FRWWqn/ow40tkunGEVITa8ps8
+         78YcrW2lIg0EFPMRKzaTKD+ESKNbtQkcoIr9CjC2MT4drf4E4dPQaNrKrb0Chi6OqUKD
+         WTPYTD8DAmOd9WUmvd4oWbPugRTIbMrLQfgI+C4jkqzeavExEsJiLryMVMuvTOLBfsYh
+         siGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=7/FgS/Bu4Sm/fvo7Kw9FiL37U/scbZL5l1h7O/ec2LY=;
-        b=m5pMxGMmK4DDqywuHDUrNskmOCPSIX6GVEyvWq71dlVW/3vjbD/rDbQ42egj3Ml2fN
-         +YAayexs8PPq/hDWHvwKoN34inQU+GmyQiGat5W2l0sGdVCCZcb4n02wMsQJqnqfLOYq
-         DHNXVKadvjpX+Dr7AnsG54LcPcLqtMlp2iAek5znc2apezCgmuwX+vC6HjSeQAFxuop2
-         S0IQS0SM6BFuxw2Cy8WMKKZYVaEK8ZW2oJxDddm6U3yQgtFKEAuNYijlr5RwuBaxOjQR
-         bHbLBiw04ZeCfayBazocoaVHonfpUY2HZ57p4VvFjiCYl9IFTj+SxJB8muXod7ZNarT8
-         IjXg==
-X-Gm-Message-State: AOAM532Dguf3Q9mkSfxPL1rvCb4oMcAD/yJ94wnYNJV5pcHV5xfbgkGV
-        nCItuIPdqiHmhVX58K+jXNs=
-X-Google-Smtp-Source: ABdhPJxGI4JOU4vSr3MJXdzYNl+0jiOTY4oc4TF9Hm7jf+DDZR02RKXue3xKWNYtOdHYTa75l60wiw==
-X-Received: by 2002:a63:f70e:: with SMTP id x14mr2039284pgh.407.1601360335436;
-        Mon, 28 Sep 2020 23:18:55 -0700 (PDT)
+        bh=29m/WsHiomvftKkO4f2zYzL4z5u90lYqkPGhVYhCT8U=;
+        b=lrtTNV/k3rrXjA7zkSF+rcQojDGOqtH27C2YKiMqyNTsPMOHoFMmBrG8RPQ7PnIGaa
+         vNndgxdEtLOKyt9F5twe++HHTkyGknzSSpfiEcA1HwHahj9HJOc1hO+6QM+Esa3xD1HT
+         XbP3CSySJvUPNTa0zQWHV0KyBn7oxeJ6j7cg6I9bRkqbvDGwn47mGGxVlwDFBz31+3cd
+         5P57OopKFtbAySRIsZ5rPBZ6vlvJOKAp7FBCXiOIR2LgKd8eH8ZSKdsfA8DGZVq+UwYC
+         lBbdp7lKv0Lhsimy3BFut4R3XPTQvEca+xUHJcT+gAk5W6Y2MymcIcXKBx9sW6UXf7mQ
+         zI8g==
+X-Gm-Message-State: AOAM530J+SNR4mhzpOi4dBWbzDwwX6JO5J7hmzjs3LHfIPwcYUwpaqG+
+        9bGvK720Mhhzs5RRbiy77l4=
+X-Google-Smtp-Source: ABdhPJz+ApO82+RbI3i9Xh25kUhL/M7Ed9+Bj/ABhHgIZjjh2iEQew+S6GYvefeS5GMP8D36tTkgZA==
+X-Received: by 2002:a63:1a05:: with SMTP id a5mr2163913pga.145.1601360336284;
+        Mon, 28 Sep 2020 23:18:56 -0700 (PDT)
 Received: from Asurada-Nvidia.nvidia.com (thunderhill.nvidia.com. [216.228.112.22])
-        by smtp.gmail.com with ESMTPSA id cf7sm3280562pjb.52.2020.09.28.23.18.54
+        by smtp.gmail.com with ESMTPSA id cf7sm3280562pjb.52.2020.09.28.23.18.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Mon, 28 Sep 2020 23:18:55 -0700 (PDT)
 From:   Nicolin Chen <nicoleotsuka@gmail.com>
@@ -52,9 +52,9 @@ To:     thierry.reding@gmail.com, joro@8bytes.org
 Cc:     vdumpa@nvidia.com, jonathanh@nvidia.com, digetx@gmail.com,
         linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
         linux-kernel@vger.kernel.org, hch@infradead.org
-Subject: [PATCH v4 1/2] iommu/tegra-smmu: Unwrap tegra_smmu_group_get
-Date:   Mon, 28 Sep 2020 23:13:24 -0700
-Message-Id: <20200929061325.10197-2-nicoleotsuka@gmail.com>
+Subject: [PATCH v4 2/2] iommu/tegra-smmu: Expand mutex protection range
+Date:   Mon, 28 Sep 2020 23:13:25 -0700
+Message-Id: <20200929061325.10197-3-nicoleotsuka@gmail.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200929061325.10197-1-nicoleotsuka@gmail.com>
 References: <20200929061325.10197-1-nicoleotsuka@gmail.com>
@@ -62,78 +62,119 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The tegra_smmu_group_get was added to group devices in different
-SWGROUPs and it'd return a NULL group pointer upon a mismatch at
-tegra_smmu_find_group(), so for most of clients/devices, it very
-likely would mismatch and need a fallback generic_device_group().
-
-But now tegra_smmu_group_get handles devices in same SWGROUP too,
-which means that it would allocate a group for every new SWGROUP
-or would directly return an existing one upon matching a SWGROUP,
-i.e. any device will go through this function.
-
-So possibility of having a NULL group pointer in device_group()
-is upon failure of either devm_kzalloc() or iommu_group_alloc().
-In either case, calling generic_device_group() no longer makes a
-sense. Especially for devm_kzalloc() failing case, it'd cause a
-problem if it fails at devm_kzalloc() yet succeeds at a fallback
-generic_device_group(), because it does not create a group->list
-for other devices to match.
-
-This patch simply unwraps the function to clean it up.
+This is used to protect potential race condition at use_count.
+since probes of client drivers, calling attach_dev(), may run
+concurrently.
 
 Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
 ---
 
 Changelog
-v2->v4:
- * N/A
+v3->v4:
+ * Fixed typo "Expend" => "Expand"
+v2->v3:
+ * Renamed label "err_unlock" to "unlock"
 v1->v2:
- * Changed type of swgroup to "unsigned int", following Thierry's
-   commnets.
+ * N/A
 
- drivers/iommu/tegra-smmu.c | 19 ++++---------------
- 1 file changed, 4 insertions(+), 15 deletions(-)
+ drivers/iommu/tegra-smmu.c | 34 +++++++++++++++++++++-------------
+ 1 file changed, 21 insertions(+), 13 deletions(-)
 
 diff --git a/drivers/iommu/tegra-smmu.c b/drivers/iommu/tegra-smmu.c
-index 0becdbfea306..ec4c9dafff95 100644
+index ec4c9dafff95..6a3ecc334481 100644
 --- a/drivers/iommu/tegra-smmu.c
 +++ b/drivers/iommu/tegra-smmu.c
-@@ -903,10 +903,12 @@ static void tegra_smmu_group_release(void *iommu_data)
- 	mutex_unlock(&smmu->lock);
+@@ -256,26 +256,19 @@ static int tegra_smmu_alloc_asid(struct tegra_smmu *smmu, unsigned int *idp)
+ {
+ 	unsigned long id;
+ 
+-	mutex_lock(&smmu->lock);
+-
+ 	id = find_first_zero_bit(smmu->asids, smmu->soc->num_asids);
+-	if (id >= smmu->soc->num_asids) {
+-		mutex_unlock(&smmu->lock);
++	if (id >= smmu->soc->num_asids)
+ 		return -ENOSPC;
+-	}
+ 
+ 	set_bit(id, smmu->asids);
+ 	*idp = id;
+ 
+-	mutex_unlock(&smmu->lock);
+ 	return 0;
  }
  
--static struct iommu_group *tegra_smmu_group_get(struct tegra_smmu *smmu,
--						unsigned int swgroup)
-+static struct iommu_group *tegra_smmu_device_group(struct device *dev)
+ static void tegra_smmu_free_asid(struct tegra_smmu *smmu, unsigned int id)
  {
-+	struct iommu_fwspec *fwspec = dev_iommu_fwspec_get(dev);
-+	struct tegra_smmu *smmu = dev_iommu_priv_get(dev);
- 	const struct tegra_smmu_group_soc *soc;
-+	unsigned int swgroup = fwspec->ids[0];
- 	struct tegra_smmu_group *group;
- 	struct iommu_group *grp;
- 
-@@ -950,19 +952,6 @@ static struct iommu_group *tegra_smmu_group_get(struct tegra_smmu *smmu,
- 	return group->group;
+-	mutex_lock(&smmu->lock);
+ 	clear_bit(id, smmu->asids);
+-	mutex_unlock(&smmu->lock);
  }
  
--static struct iommu_group *tegra_smmu_device_group(struct device *dev)
--{
--	struct iommu_fwspec *fwspec = dev_iommu_fwspec_get(dev);
--	struct tegra_smmu *smmu = dev_iommu_priv_get(dev);
--	struct iommu_group *group;
--
--	group = tegra_smmu_group_get(smmu, fwspec->ids[0]);
--	if (!group)
--		group = generic_device_group(dev);
--
--	return group;
--}
--
- static int tegra_smmu_of_xlate(struct device *dev,
- 			       struct of_phandle_args *args)
+ static bool tegra_smmu_capable(enum iommu_cap cap)
+@@ -420,17 +413,21 @@ static int tegra_smmu_as_prepare(struct tegra_smmu *smmu,
+ 				 struct tegra_smmu_as *as)
  {
+ 	u32 value;
+-	int err;
++	int err = 0;
++
++	mutex_lock(&smmu->lock);
+ 
+ 	if (as->use_count > 0) {
+ 		as->use_count++;
+-		return 0;
++		goto unlock;
+ 	}
+ 
+ 	as->pd_dma = dma_map_page(smmu->dev, as->pd, 0, SMMU_SIZE_PD,
+ 				  DMA_TO_DEVICE);
+-	if (dma_mapping_error(smmu->dev, as->pd_dma))
+-		return -ENOMEM;
++	if (dma_mapping_error(smmu->dev, as->pd_dma)) {
++		err = -ENOMEM;
++		goto unlock;
++	}
+ 
+ 	/* We can't handle 64-bit DMA addresses */
+ 	if (!smmu_dma_addr_valid(smmu, as->pd_dma)) {
+@@ -453,24 +450,35 @@ static int tegra_smmu_as_prepare(struct tegra_smmu *smmu,
+ 	as->smmu = smmu;
+ 	as->use_count++;
+ 
++	mutex_unlock(&smmu->lock);
++
+ 	return 0;
+ 
+ err_unmap:
+ 	dma_unmap_page(smmu->dev, as->pd_dma, SMMU_SIZE_PD, DMA_TO_DEVICE);
++unlock:
++	mutex_unlock(&smmu->lock);
++
+ 	return err;
+ }
+ 
+ static void tegra_smmu_as_unprepare(struct tegra_smmu *smmu,
+ 				    struct tegra_smmu_as *as)
+ {
+-	if (--as->use_count > 0)
++	mutex_lock(&smmu->lock);
++
++	if (--as->use_count > 0) {
++		mutex_unlock(&smmu->lock);
+ 		return;
++	}
+ 
+ 	tegra_smmu_free_asid(smmu, as->id);
+ 
+ 	dma_unmap_page(smmu->dev, as->pd_dma, SMMU_SIZE_PD, DMA_TO_DEVICE);
+ 
+ 	as->smmu = NULL;
++
++	mutex_unlock(&smmu->lock);
+ }
+ 
+ static int tegra_smmu_attach_dev(struct iommu_domain *domain,
 -- 
 2.17.1
 
