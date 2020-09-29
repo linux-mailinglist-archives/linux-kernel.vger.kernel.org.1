@@ -2,41 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8155B27C563
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:35:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C19527C830
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:59:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728887AbgI2LfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:35:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45278 "EHLO mail.kernel.org"
+        id S1731416AbgI2L7m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:59:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37798 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729634AbgI2Ldb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:33:31 -0400
+        id S1730646AbgI2LlU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:41:20 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 38ABA23BA7;
-        Tue, 29 Sep 2020 11:26:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1D2BC206E5;
+        Tue, 29 Sep 2020 11:41:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601378817;
-        bh=hyfbLpE+MJF+XhVMmG9grOk4tySb8I3OuUyv+6NdWIs=;
+        s=default; t=1601379679;
+        bh=B4eCsjTh7FS/YdlI5c5j/x8bYTrYRym5ms+rocYMK+4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EVNQ/ZengawDhg0o5hK0k0mk2+QLuT/RMTTToUqBMYJv59B5OcYlc8fosJzGDIiDE
-         E0ciTiq9XpRcQm/Xrm+rAeHQEEepi7rvM6q9Fv3Xwz9jfNkvowSzrJCYiZjgoRA7d/
-         f3/Q41pnMfegaSCIp1P2p+4nDnLBZUyl7zFsRuO0=
+        b=A2YocDN7oAZg8HCFrieaoMSZwMLH8ryIn24wuiGGci5nZju2dMzeS2ZiaMySkbfhA
+         n/rX/C8GVWTXGfue5nahxxJGt/oZh2jzkJF5FcntPR4tvCKcWJktBdChdptTX4+SpA
+         myq7ii/AolVmv7nrGiSU5377DTUOIHNoPxETxey4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pravin B Shelar <pshelar@ovn.org>,
-        Andy Zhou <azhou@ovn.org>,
-        Tonghao Zhang <xiangxia.m.yue@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 150/245] net: openvswitch: use u64 for meter bucket
+Subject: [PATCH 5.4 270/388] arm64/cpufeature: Drop TraceFilt feature exposure from ID_DFR0 register
 Date:   Tue, 29 Sep 2020 13:00:01 +0200
-Message-Id: <20200929105954.280070788@linuxfoundation.org>
+Message-Id: <20200929110023.531554804@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929105946.978650816@linuxfoundation.org>
-References: <20200929105946.978650816@linuxfoundation.org>
+In-Reply-To: <20200929110010.467764689@linuxfoundation.org>
+References: <20200929110010.467764689@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,50 +48,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tonghao Zhang <xiangxia.m.yue@gmail.com>
+From: Anshuman Khandual <anshuman.khandual@arm.com>
 
-[ Upstream commit e57358873bb5d6caa882b9684f59140912b37dde ]
+[ Upstream commit 1ed1b90a0594c8c9d31e8bb8be25a2b37717dc9e ]
 
-When setting the meter rate to 4+Gbps, there is an
-overflow, the meters don't work as expected.
+ID_DFR0 based TraceFilt feature should not be exposed to guests. Hence lets
+drop it.
 
-Cc: Pravin B Shelar <pshelar@ovn.org>
-Cc: Andy Zhou <azhou@ovn.org>
-Signed-off-by: Tonghao Zhang <xiangxia.m.yue@gmail.com>
-Acked-by: Pravin B Shelar <pshelar@ovn.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Marc Zyngier <maz@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: James Morse <james.morse@arm.com>
+Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
+
+Suggested-by: Mark Rutland <mark.rutland@arm.com>
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+Link: https://lore.kernel.org/r/1589881254-10082-3-git-send-email-anshuman.khandual@arm.com
+Signed-off-by: Will Deacon <will@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/openvswitch/meter.c | 2 +-
- net/openvswitch/meter.h | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ arch/arm64/kernel/cpufeature.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/openvswitch/meter.c b/net/openvswitch/meter.c
-index c038e021a5916..6f5131d1074b0 100644
---- a/net/openvswitch/meter.c
-+++ b/net/openvswitch/meter.c
-@@ -255,7 +255,7 @@ static struct dp_meter *dp_meter_create(struct nlattr **a)
- 		 *
- 		 * Start with a full bucket.
- 		 */
--		band->bucket = (band->burst_size + band->rate) * 1000;
-+		band->bucket = (band->burst_size + band->rate) * 1000ULL;
- 		band_max_delta_t = band->bucket / band->rate;
- 		if (band_max_delta_t > meter->max_delta_t)
- 			meter->max_delta_t = band_max_delta_t;
-diff --git a/net/openvswitch/meter.h b/net/openvswitch/meter.h
-index 964ace2650f89..970557ed5b5b6 100644
---- a/net/openvswitch/meter.h
-+++ b/net/openvswitch/meter.h
-@@ -26,7 +26,7 @@ struct dp_meter_band {
- 	u32 type;
- 	u32 rate;
- 	u32 burst_size;
--	u32 bucket; /* 1/1000 packets, or in bits */
-+	u64 bucket; /* 1/1000 packets, or in bits */
- 	struct ovs_flow_stats stats;
+diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
+index 1df57ffc9314d..f2ec845404149 100644
+--- a/arch/arm64/kernel/cpufeature.c
++++ b/arch/arm64/kernel/cpufeature.c
+@@ -319,7 +319,7 @@ static const struct arm64_ftr_bits ftr_id_pfr0[] = {
  };
  
+ static const struct arm64_ftr_bits ftr_id_dfr0[] = {
+-	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, 28, 4, 0),
++	/* [31:28] TraceFilt */
+ 	S_ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, 24, 4, 0xf),	/* PerfMon */
+ 	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, 20, 4, 0),
+ 	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, 16, 4, 0),
 -- 
 2.25.1
 
