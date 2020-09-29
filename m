@@ -2,152 +2,346 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 564D727BDD3
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 09:15:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27BDB27BDD5
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 09:17:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727513AbgI2HPT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 03:15:19 -0400
-Received: from out5-smtp.messagingengine.com ([66.111.4.29]:40897 "EHLO
-        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725306AbgI2HPT (ORCPT
+        id S1725827AbgI2HR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 03:17:26 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39762 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725306AbgI2HRZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 03:15:19 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id 17B845C0195;
-        Tue, 29 Sep 2020 03:15:18 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Tue, 29 Sep 2020 03:15:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=PWqFhOK6Bo8sCV0S7SwUBsOgPdt
-        O5Cip5iwDuGiZBcI=; b=ojA59IDcgFXwhU4A2Cz0mAeDgebpRkxMtuM2Mw73sHq
-        BC/gicDHvgjOIOoOghHgG5WHLu9pzwuJwo8QP7/EYh47cq7oua7CuzWeYL/jiabK
-        3kuoNINwSJ50YtrC3x6TEHfx22M0HySUdOlEnD8sckgmbW6yYEFvpYsUTZrPDNok
-        zl+hrrQaWlKZ4N+wwPJtTfO0yuZs/FgMWemCrru+geZRA1zirNuPkyBqiqB5XhGK
-        n759TJKVWqDwuIVhIzoauSj5xMQlVCznjfiJC15nC9xUJXPc73V+/Db9/JjP9NBi
-        brHglPlrigCsFhIlH4ROVW7V7KyNSxDpyRi77mgW7rQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=PWqFhO
-        K6Bo8sCV0S7SwUBsOgPdtO5Cip5iwDuGiZBcI=; b=SeBLVopZenFfd9h3ev1u//
-        fiGSTg9thf8LMyuMCLeGLG/oKJWRRNU0XHiK3xAPh7DE2DIXgKWlpZgin6l037Gm
-        zk8VlxXA4qxidwvDamVy1UYUSfB5Hx87nj1doMgNH3LEcd+BdzXi69DFDqgxcmpW
-        8P7Vbxyv42uhbgFirFi/4iR/eMfCsbZ/M1+uMU5AHvcsErcPL05hoPFo5CtRXb89
-        BOzcsbsh7y1OmQkTmEJ0xTN+HgGCv1IUcHW1GF8wA2J7g8fLcgWD+PvgbQlTl4IF
-        0rY2Qb8KGt8zuvwcbkYzizufpVoxl8RkJCeaAaDHUya2T9yY/nScV0XE+FRAd5sw
-        ==
-X-ME-Sender: <xms:Bd9yXyVZuq3x1u98USCbXycY2lane4F6aYK6s_uzc3rc98axKB0WzA>
-    <xme:Bd9yX-lOgfBQQgsIXL3hfxDd5BURm4XWq1fGrSwCpyW75ObNDfFVARGX2P3G-RCra
-    Hz8l0orqBUfkA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrvdejgdduudelucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
-    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpedukeffve
-    dtkeduvddvudegueetgfejueehuedtgfehkefftdevieehkedvieejkeenucffohhmrghi
-    nhepshhushgvrdgtohhmpdhsvghrvhgvrhhfrghulhhtrdgtohhmpdhlrghunhgthhhprg
-    gurdhnvghtpdgtvghnthhoshdrohhrghenucfkphepkeefrdekiedrjeegrdeigeenucev
-    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrhgvgheskh
-    hrohgrhhdrtghomh
-X-ME-Proxy: <xmx:Bd9yX2ZHIFgMTJgheG_a0wsr40NTdyQin5QQ8sCpURTAmp-ILJZ7uw>
-    <xmx:Bd9yX5V2zxAgJV5NbTdAvU0YqtoNhqQ4D6QfXkRg-YWlhQ9zmObi8Q>
-    <xmx:Bd9yX8kff1DsVXPbq5OBagSwN_2CQS7zpYkGLVZ2BbJceknYYTg_CQ>
-    <xmx:Bt9yXzurjDy2XaSqrgqpWL1KwVGrJL_TarjZ6BAwCJwBo2EzzwuEdw>
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 3CB513280060;
-        Tue, 29 Sep 2020 03:15:17 -0400 (EDT)
-Date:   Tue, 29 Sep 2020 09:15:22 +0200
-From:   Greg KH <greg@kroah.com>
-To:     Jiri Slaby <jirislaby@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, stable-commits@vger.kernel.org
-Subject: Re: Patch "ata: sata_mv, avoid trigerrable BUG_ON" has been added to
- the 4.4-stable tree
-Message-ID: <20200929071522.GA3700372@kroah.com>
-References: <20200927181119.5ACB623A33@mail.kernel.org>
- <20200928123057.GA1116804@kroah.com>
- <167f8a53-6b68-05b8-a632-34df046a0376@kernel.org>
+        Tue, 29 Sep 2020 03:17:25 -0400
+Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601363843;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=uFFAkA3/1aZz/o+ZDBqbYbAsb3pp0PKXRHscgx88F1k=;
+        b=FWXV3iA+aecQ3gtsEddVCNb89l3zmGlh/4Tz0SdDDgcCzCqWLsItzYId7dZpuM+tbpAu++
+        LRTTouXbbXaJa8J3OqG9lCXukQr8ubw2Dfz28umoGGva4zr860Bsp+y4VmobSfrVfT3ZWm
+        Bec1npsaHRg/9XaM90UKrKmHe4jw0UM=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-183-nObGIGZFM82PqYK8IKqUkQ-1; Tue, 29 Sep 2020 03:17:21 -0400
+X-MC-Unique: nObGIGZFM82PqYK8IKqUkQ-1
+Received: by mail-wm1-f71.google.com with SMTP id p20so1354844wmg.0
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 00:17:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=uFFAkA3/1aZz/o+ZDBqbYbAsb3pp0PKXRHscgx88F1k=;
+        b=UQ/WsVpJsmCEEOOobV9T7l6Un/uslBx6ZI3plzmhG8/Duuq3jVHD/e1Ax79R8B5VUC
+         O5SfSpad/AvaiGBCJQHMkzfe4HISauUIebtSGKMeVr847xDjduE0S0eMfBnrlKyldxEP
+         ZtdLIpW/HeRw1Wux2kQcaHcvvYkRNg3fODZ41VgJp/TYEHWaHtmfbGmx/RIygEKSo6Zb
+         yOgDvnrvMzg+ebmku7IuFanxnI+TKlmWuRhJPNF1/Q4tDAv95Z9rx/BLGnqWSyBaOSK9
+         SCn7nqMKfuGomyrc3uRRjshep8KDdVt06vD1LiXs7HThY4hX0jsCOE7gfHwAY9F5PhVN
+         dA7w==
+X-Gm-Message-State: AOAM530qTMaHiKmYxo5zPukiOMurB6jLZvIUX83o3dBukOHLQXzqW9TF
+        ALabibG42cB6wOkFw8CGRC6V6B4o9ehiPwPWauMbT/l25RCMIB8Q7w0TwgYKJHraQ+qgjDv1qrI
+        bKrB+siveu166X3pBaQ9cX8zF
+X-Received: by 2002:a1c:c256:: with SMTP id s83mr2923761wmf.93.1601363839299;
+        Tue, 29 Sep 2020 00:17:19 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzM9slXPoYtcGdR2naRrQhkb2gEeBL2pP9tzwp7rdb0hF40OioFgPNIp6/uZtfjPtINhPMNVg==
+X-Received: by 2002:a1c:c256:: with SMTP id s83mr2923739wmf.93.1601363838975;
+        Tue, 29 Sep 2020 00:17:18 -0700 (PDT)
+Received: from redhat.com (bzq-79-179-71-128.red.bezeqint.net. [79.179.71.128])
+        by smtp.gmail.com with ESMTPSA id z15sm4722542wrv.94.2020.09.29.00.17.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Sep 2020 00:17:18 -0700 (PDT)
+Date:   Tue, 29 Sep 2020 03:17:05 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Eli Cohen <elic@nvidia.com>
+Cc:     jasowang@redhat.com, virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH V1 vhost-next] vdpa/mlx5: Make vdpa core driver a
+ distinct module
+Message-ID: <20200929031348-mutt-send-email-mst@kernel.org>
+References: <20200924143231.GA186492@mtl-vdi-166.wap.labs.mlnx>
+ <20200928155448-mutt-send-email-mst@kernel.org>
+ <20200929062026.GB120395@mtl-vdi-166.wap.labs.mlnx>
+ <20200929022430-mutt-send-email-mst@kernel.org>
+ <20200929063433.GC120395@mtl-vdi-166.wap.labs.mlnx>
+ <20200929025038-mutt-send-email-mst@kernel.org>
+ <20200929065744.GE120395@mtl-vdi-166.wap.labs.mlnx>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <167f8a53-6b68-05b8-a632-34df046a0376@kernel.org>
+In-Reply-To: <20200929065744.GE120395@mtl-vdi-166.wap.labs.mlnx>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 08:33:24AM +0200, Jiri Slaby wrote:
-> On 28. 09. 20, 14:30, Greg KH wrote:
-> >> commit 4b308d858a1a34dae1e38948f2c0497161d9ddd8
-> >> Author: Jiri Slaby <jslaby@suse.cz>
-> >> Date:   Thu Oct 31 10:59:46 2019 +0100
-> >>
-> >>     ata: sata_mv, avoid trigerrable BUG_ON
-> >>     
-> >>     [ Upstream commit e9f691d899188679746eeb96e6cb520459eda9b4 ]
-> >>     
-> >>     There are several reports that the BUG_ON on unsupported command in
-> >>     mv_qc_prep can be triggered under some circumstances:
-> >>     https://bugzilla.suse.com/show_bug.cgi?id=1110252
-> >>     https://serverfault.com/questions/888897/raid-problems-after-power-outage
-> >>     https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1652185
-> >>     https://bugs.centos.org/view.php?id=14998
-> >>     
-> >>     Let sata_mv handle the failure gracefully: warn about that incl. the
-> >>     failed command number and return an AC_ERR_INVALID error. We can do that
-> >>     now thanks to the previous patch.
-> >>     
-> >>     Remove also the long-standing FIXME.
-> >>     
-> >>     [v2] use %.2x as commands are defined as hexa.
-> >>     
-> >>     Signed-off-by: Jiri Slaby <jslaby@suse.cz>
-> >>     Cc: Jens Axboe <axboe@kernel.dk>
-> >>     Cc: linux-ide@vger.kernel.org
-> >>     Cc: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-> >>     Signed-off-by: Jens Axboe <axboe@kernel.dk>
-> >>     Signed-off-by: Sasha Levin <sashal@kernel.org>
-> >>
-> >> diff --git a/drivers/ata/sata_mv.c b/drivers/ata/sata_mv.c
-> >> index 729f26322095e..c24bbdb3f76c8 100644
-> >> --- a/drivers/ata/sata_mv.c
-> >> +++ b/drivers/ata/sata_mv.c
-> >> @@ -2113,12 +2113,10 @@ static void mv_qc_prep(struct ata_queued_cmd *qc)
-> >>  		 * non-NCQ mode are: [RW] STREAM DMA and W DMA FUA EXT, none
-> >>  		 * of which are defined/used by Linux.  If we get here, this
-> >>  		 * driver needs work.
-> >> -		 *
-> >> -		 * FIXME: modify libata to give qc_prep a return value and
-> >> -		 * return error here.
-> >>  		 */
-> >> -		BUG_ON(tf->command);
-> >> -		break;
-> >> +		ata_port_err(ap, "%s: unsupported command: %.2x\n", __func__,
-> >> +				tf->command);
-> >> +		return AC_ERR_INVALID;
-> >>  	}
-> >>  	mv_crqb_pack_cmd(cw++, tf->nsect, ATA_REG_NSECT, 0);
-> >>  	mv_crqb_pack_cmd(cw++, tf->hob_lbal, ATA_REG_LBAL, 0);
+On Tue, Sep 29, 2020 at 09:57:44AM +0300, Eli Cohen wrote:
+> On Tue, Sep 29, 2020 at 02:51:12AM -0400, Michael S. Tsirkin wrote:
+> > On Tue, Sep 29, 2020 at 09:34:33AM +0300, Eli Cohen wrote:
+> > > On Tue, Sep 29, 2020 at 02:26:44AM -0400, Michael S. Tsirkin wrote:
+> > > > On Tue, Sep 29, 2020 at 09:20:26AM +0300, Eli Cohen wrote:
+> > > > > On Mon, Sep 28, 2020 at 03:55:09PM -0400, Michael S. Tsirkin wrote:
+> > > > > > On Thu, Sep 24, 2020 at 05:32:31PM +0300, Eli Cohen wrote:
+> > > > > > > Change core vdpa functionality into a loadbale module such that upcoming
+> > > > > > > block implementation will be able to use it.
+> > > > > > > 
+> > > > > > > Signed-off-by: Eli Cohen <elic@nvidia.com>
+> > > > > > 
+> > > > > > Why don't we merge this patch together with the block module?
+> > > > > > 
+> > > > > 
+> > > > > Since there are still not too many users of this driver, I would prefer
+> > > > > to merge this as early as possible so pepole get used to the involved
+> > > > > modules.
+> > > > > 
+> > > > > Anyways, I will send another version of the patch which makes use of
+> > > > > 'select' instead of 'depends'.
+> > > > > 
+> > > > > Hope you agree to merge this.
+> > > > 
+> > > > Are you quite sure there will be a block driver though?
+> > > > I'd like to avoid a situation in which we have infrastructure
+> > > > in place but no users.
+> > > >
+> > > 
+> > > I know it's in our plans but I see your point. Let me know if you
+> > > prefer me to send the patch that fixes the 'depends' thing or defer it
+> > > to a later time.
 > > 
-> > This causes a build warning as you can not return a value for a void
-> > function :(
+> > Not sure what's the depends thing.
+> > 
 > 
-> Sure, you need the patch before, i.e. e9f691d899^:
-> commit 95364f36701e62dd50eee91e1303187fd1a9f567
-> Author: Jiri Slaby <jirislaby@kernel.org>
-> Date:   Thu Oct 31 10:59:45 2019 +0100
+> Use "select MLX5_CORE"
+> instead of "depends on MLX5_CORE"
 > 
->     ata: make qc_prep return ata_completion_errors
-> 
-> 
-> 
-> And that needs one more patch e9f691d899^^:
-> 
-> commit 25937580a5065d6fbd92d9c8ebd47145ad80052e
-> Author: Jiri Slaby <jirislaby@kernel.org>
-> Date:   Thu Oct 31 10:59:44 2019 +0100
-> 
->     ata: define AC_ERR_OK
+> Wasn't this agreed upon?
 
-Thanks, that worked!
+Hmm I don't know. I recall a similar discussion around VHOST_IOTLB.
+That's different ...
 
-greg k-h
+I see
+
+[linux]$ git grep MLX5_CORE|grep depends
+drivers/infiniband/hw/mlx5/Kconfig:     depends on NETDEVICES && ETHERNET && PCI && MLX5_CORE
+drivers/net/ethernet/mellanox/mlx5/core/Kconfig:        depends on MLX5_CORE
+drivers/net/ethernet/mellanox/mlx5/core/Kconfig:        depends on NETDEVICES && ETHERNET && INET && PCI && MLX5_CORE
+drivers/net/ethernet/mellanox/mlx5/core/Kconfig:        depends on MLX5_CORE_EN && RFS_ACCEL
+drivers/net/ethernet/mellanox/mlx5/core/Kconfig:        depends on MLX5_CORE_EN
+drivers/net/ethernet/mellanox/mlx5/core/Kconfig:        depends on MLX5_CORE_EN
+drivers/net/ethernet/mellanox/mlx5/core/Kconfig:        depends on MLX5_CORE_EN && NET_SWITCHDEV
+drivers/net/ethernet/mellanox/mlx5/core/Kconfig:        depends on MLX5_CORE_EN && DCB
+drivers/net/ethernet/mellanox/mlx5/core/Kconfig:        depends on MLX5_CORE_EN
+drivers/net/ethernet/mellanox/mlx5/core/Kconfig:        depends on MLX5_CORE
+drivers/net/ethernet/mellanox/mlx5/core/Kconfig:        depends on MLX5_CORE_EN
+drivers/net/ethernet/mellanox/mlx5/core/Kconfig:        depends on MLX5_CORE_EN
+drivers/net/ethernet/mellanox/mlx5/core/Kconfig:        depends on TLS=y || MLX5_CORE=m
+drivers/net/ethernet/mellanox/mlx5/core/Kconfig:        depends on MLX5_CORE_EN
+drivers/net/ethernet/mellanox/mlx5/core/Kconfig:        depends on TLS=y || MLX5_CORE=m
+drivers/net/ethernet/mellanox/mlx5/core/Kconfig:        depends on MLX5_CORE_EN
+drivers/net/ethernet/mellanox/mlx5/core/Kconfig:        depends on MLX5_CORE_EN && MLX5_ESWITCH
+drivers/vdpa/Kconfig:   depends on MLX5_CORE
+
+and no selects of this symbol, I guess you are saying you are changing everything
+else to select - is that right? Then I guess vdpa should follow suit ...
+
+
+> > > > > > > ---
+> > > > > > > V0 --> V1:
+> > > > > > > Removed "default n" for configu options as 'n' is the default
+> > > > > > > 
+> > > > > > >  drivers/vdpa/Kconfig               |  8 +++-----
+> > > > > > >  drivers/vdpa/Makefile              |  2 +-
+> > > > > > >  drivers/vdpa/mlx5/Makefile         |  7 +++++--
+> > > > > > >  drivers/vdpa/mlx5/core/core_main.c | 20 ++++++++++++++++++++
+> > > > > > >  drivers/vdpa/mlx5/core/mr.c        |  3 +++
+> > > > > > >  drivers/vdpa/mlx5/core/resources.c | 10 ++++++++++
+> > > > > > >  6 files changed, 42 insertions(+), 8 deletions(-)
+> > > > > > >  create mode 100644 drivers/vdpa/mlx5/core/core_main.c
+> > > > > > > 
+> > > > > > > diff --git a/drivers/vdpa/Kconfig b/drivers/vdpa/Kconfig
+> > > > > > > index 4271c408103e..57ff6a7f7401 100644
+> > > > > > > --- a/drivers/vdpa/Kconfig
+> > > > > > > +++ b/drivers/vdpa/Kconfig
+> > > > > > > @@ -29,10 +29,9 @@ config IFCVF
+> > > > > > >  	  To compile this driver as a module, choose M here: the module will
+> > > > > > >  	  be called ifcvf.
+> > > > > > >  
+> > > > > > > -config MLX5_VDPA
+> > > > > > > -	bool "MLX5 VDPA support library for ConnectX devices"
+> > > > > > > +config MLX5_VDPA_CORE
+> > > > > > > +	tristate "MLX5 VDPA support library for ConnectX devices"
+> > > > > > >  	depends on MLX5_CORE
+> > > > > > > -	default n
+> > > > > > >  	help
+> > > > > > >  	  Support library for Mellanox VDPA drivers. Provides code that is
+> > > > > > >  	  common for all types of VDPA drivers. The following drivers are planned:
+> > > > > > > @@ -40,8 +39,7 @@ config MLX5_VDPA
+> > > > > > >  
+> > > > > > >  config MLX5_VDPA_NET
+> > > > > > >  	tristate "vDPA driver for ConnectX devices"
+> > > > > > > -	depends on MLX5_VDPA
+> > > > > > > -	default n
+> > > > > > > +	depends on MLX5_VDPA_CORE
+> > > > > > >  	help
+> > > > > > >  	  VDPA network driver for ConnectX6 and newer. Provides offloading
+> > > > > > >  	  of virtio net datapath such that descriptors put on the ring will
+> > > > > > > diff --git a/drivers/vdpa/Makefile b/drivers/vdpa/Makefile
+> > > > > > > index d160e9b63a66..07353bbb9f8b 100644
+> > > > > > > --- a/drivers/vdpa/Makefile
+> > > > > > > +++ b/drivers/vdpa/Makefile
+> > > > > > > @@ -2,4 +2,4 @@
+> > > > > > >  obj-$(CONFIG_VDPA) += vdpa.o
+> > > > > > >  obj-$(CONFIG_VDPA_SIM) += vdpa_sim/
+> > > > > > >  obj-$(CONFIG_IFCVF)    += ifcvf/
+> > > > > > > -obj-$(CONFIG_MLX5_VDPA) += mlx5/
+> > > > > > > +obj-$(CONFIG_MLX5_VDPA_CORE) += mlx5/
+> > > > > > > diff --git a/drivers/vdpa/mlx5/Makefile b/drivers/vdpa/mlx5/Makefile
+> > > > > > > index 89a5bededc9f..9f50f7e8d889 100644
+> > > > > > > --- a/drivers/vdpa/mlx5/Makefile
+> > > > > > > +++ b/drivers/vdpa/mlx5/Makefile
+> > > > > > > @@ -1,4 +1,7 @@
+> > > > > > >  subdir-ccflags-y += -I$(srctree)/drivers/vdpa/mlx5/core
+> > > > > > >  
+> > > > > > > -obj-$(CONFIG_MLX5_VDPA_NET) += mlx5_vdpa.o
+> > > > > > > -mlx5_vdpa-$(CONFIG_MLX5_VDPA_NET) += net/main.o net/mlx5_vnet.o core/resources.o core/mr.o
+> > > > > > > +obj-$(CONFIG_MLX5_VDPA_CORE) += mlx5_vdpa_core.o
+> > > > > > > +mlx5_vdpa_core-$(CONFIG_MLX5_VDPA_CORE) += core/resources.o core/mr.o core/core_main.o
+> > > > > > > +
+> > > > > > > +obj-$(CONFIG_MLX5_VDPA_NET) += mlx5_vdpa_net.o
+> > > > > > > +mlx5_vdpa_net-$(CONFIG_MLX5_VDPA_NET) += net/main.o net/mlx5_vnet.o
+> > > > > > > diff --git a/drivers/vdpa/mlx5/core/core_main.c b/drivers/vdpa/mlx5/core/core_main.c
+> > > > > > > new file mode 100644
+> > > > > > > index 000000000000..4b39b55f57ab
+> > > > > > > --- /dev/null
+> > > > > > > +++ b/drivers/vdpa/mlx5/core/core_main.c
+> > > > > > > @@ -0,0 +1,20 @@
+> > > > > > > +// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
+> > > > > > > +/* Copyright (c) 2020 Mellanox Technologies Ltd. */
+> > > > > > > +
+> > > > > > > +#include <linux/module.h>
+> > > > > > > +
+> > > > > > > +MODULE_AUTHOR("Eli Cohen <elic@nvidia.com>");
+> > > > > > > +MODULE_DESCRIPTION("Mellanox VDPA core driver");
+> > > > > > > +MODULE_LICENSE("Dual BSD/GPL");
+> > > > > > > +
+> > > > > > > +static int __init mlx5_vdpa_core_init(void)
+> > > > > > > +{
+> > > > > > > +	return 0;
+> > > > > > > +}
+> > > > > > > +
+> > > > > > > +static void __exit mlx5_vdpa_core_exit(void)
+> > > > > > > +{
+> > > > > > > +}
+> > > > > > > +
+> > > > > > > +module_init(mlx5_vdpa_core_init);
+> > > > > > > +module_exit(mlx5_vdpa_core_exit);
+> > > > > > > diff --git a/drivers/vdpa/mlx5/core/mr.c b/drivers/vdpa/mlx5/core/mr.c
+> > > > > > > index ef1c550f8266..c093eab6c714 100644
+> > > > > > > --- a/drivers/vdpa/mlx5/core/mr.c
+> > > > > > > +++ b/drivers/vdpa/mlx5/core/mr.c
+> > > > > > > @@ -434,6 +434,7 @@ int mlx5_vdpa_create_mr(struct mlx5_vdpa_dev *mvdev, struct vhost_iotlb *iotlb)
+> > > > > > >  	mutex_unlock(&mr->mkey_mtx);
+> > > > > > >  	return err;
+> > > > > > >  }
+> > > > > > > +EXPORT_SYMBOL(mlx5_vdpa_create_mr);
+> > > > > > >  
+> > > > > > >  void mlx5_vdpa_destroy_mr(struct mlx5_vdpa_dev *mvdev)
+> > > > > > >  {
+> > > > > > > @@ -456,6 +457,7 @@ void mlx5_vdpa_destroy_mr(struct mlx5_vdpa_dev *mvdev)
+> > > > > > >  out:
+> > > > > > >  	mutex_unlock(&mr->mkey_mtx);
+> > > > > > >  }
+> > > > > > > +EXPORT_SYMBOL(mlx5_vdpa_destroy_mr);
+> > > > > > >  
+> > > > > > >  static bool map_empty(struct vhost_iotlb *iotlb)
+> > > > > > >  {
+> > > > > > > @@ -484,3 +486,4 @@ int mlx5_vdpa_handle_set_map(struct mlx5_vdpa_dev *mvdev, struct vhost_iotlb *io
+> > > > > > >  
+> > > > > > >  	return err;
+> > > > > > >  }
+> > > > > > > +EXPORT_SYMBOL(mlx5_vdpa_handle_set_map);
+> > > > > > > diff --git a/drivers/vdpa/mlx5/core/resources.c b/drivers/vdpa/mlx5/core/resources.c
+> > > > > > > index 96e6421c5d1c..89606a18e286 100644
+> > > > > > > --- a/drivers/vdpa/mlx5/core/resources.c
+> > > > > > > +++ b/drivers/vdpa/mlx5/core/resources.c
+> > > > > > > @@ -98,6 +98,7 @@ int mlx5_vdpa_create_tis(struct mlx5_vdpa_dev *mvdev, void *in, u32 *tisn)
+> > > > > > >  
+> > > > > > >  	return err;
+> > > > > > >  }
+> > > > > > > +EXPORT_SYMBOL(mlx5_vdpa_create_tis);
+> > > > > > >  
+> > > > > > >  void mlx5_vdpa_destroy_tis(struct mlx5_vdpa_dev *mvdev, u32 tisn)
+> > > > > > >  {
+> > > > > > > @@ -108,6 +109,7 @@ void mlx5_vdpa_destroy_tis(struct mlx5_vdpa_dev *mvdev, u32 tisn)
+> > > > > > >  	MLX5_SET(destroy_tis_in, in, tisn, tisn);
+> > > > > > >  	mlx5_cmd_exec_in(mvdev->mdev, destroy_tis, in);
+> > > > > > >  }
+> > > > > > > +EXPORT_SYMBOL(mlx5_vdpa_destroy_tis);
+> > > > > > >  
+> > > > > > >  int mlx5_vdpa_create_rqt(struct mlx5_vdpa_dev *mvdev, void *in, int inlen, u32 *rqtn)
+> > > > > > >  {
+> > > > > > > @@ -121,6 +123,7 @@ int mlx5_vdpa_create_rqt(struct mlx5_vdpa_dev *mvdev, void *in, int inlen, u32 *
+> > > > > > >  
+> > > > > > >  	return err;
+> > > > > > >  }
+> > > > > > > +EXPORT_SYMBOL(mlx5_vdpa_create_rqt);
+> > > > > > >  
+> > > > > > >  void mlx5_vdpa_destroy_rqt(struct mlx5_vdpa_dev *mvdev, u32 rqtn)
+> > > > > > >  {
+> > > > > > > @@ -131,6 +134,7 @@ void mlx5_vdpa_destroy_rqt(struct mlx5_vdpa_dev *mvdev, u32 rqtn)
+> > > > > > >  	MLX5_SET(destroy_rqt_in, in, rqtn, rqtn);
+> > > > > > >  	mlx5_cmd_exec_in(mvdev->mdev, destroy_rqt, in);
+> > > > > > >  }
+> > > > > > > +EXPORT_SYMBOL(mlx5_vdpa_destroy_rqt);
+> > > > > > >  
+> > > > > > >  int mlx5_vdpa_create_tir(struct mlx5_vdpa_dev *mvdev, void *in, u32 *tirn)
+> > > > > > >  {
+> > > > > > > @@ -144,6 +148,7 @@ int mlx5_vdpa_create_tir(struct mlx5_vdpa_dev *mvdev, void *in, u32 *tirn)
+> > > > > > >  
+> > > > > > >  	return err;
+> > > > > > >  }
+> > > > > > > +EXPORT_SYMBOL(mlx5_vdpa_create_tir);
+> > > > > > >  
+> > > > > > >  void mlx5_vdpa_destroy_tir(struct mlx5_vdpa_dev *mvdev, u32 tirn)
+> > > > > > >  {
+> > > > > > > @@ -154,6 +159,7 @@ void mlx5_vdpa_destroy_tir(struct mlx5_vdpa_dev *mvdev, u32 tirn)
+> > > > > > >  	MLX5_SET(destroy_tir_in, in, tirn, tirn);
+> > > > > > >  	mlx5_cmd_exec_in(mvdev->mdev, destroy_tir, in);
+> > > > > > >  }
+> > > > > > > +EXPORT_SYMBOL(mlx5_vdpa_destroy_tir);
+> > > > > > >  
+> > > > > > >  int mlx5_vdpa_alloc_transport_domain(struct mlx5_vdpa_dev *mvdev, u32 *tdn)
+> > > > > > >  {
+> > > > > > > @@ -170,6 +176,7 @@ int mlx5_vdpa_alloc_transport_domain(struct mlx5_vdpa_dev *mvdev, u32 *tdn)
+> > > > > > >  
+> > > > > > >  	return err;
+> > > > > > >  }
+> > > > > > > +EXPORT_SYMBOL(mlx5_vdpa_alloc_transport_domain);
+> > > > > > >  
+> > > > > > >  void mlx5_vdpa_dealloc_transport_domain(struct mlx5_vdpa_dev *mvdev, u32 tdn)
+> > > > > > >  {
+> > > > > > > @@ -180,6 +187,7 @@ void mlx5_vdpa_dealloc_transport_domain(struct mlx5_vdpa_dev *mvdev, u32 tdn)
+> > > > > > >  	MLX5_SET(dealloc_transport_domain_in, in, transport_domain, tdn);
+> > > > > > >  	mlx5_cmd_exec_in(mvdev->mdev, dealloc_transport_domain, in);
+> > > > > > >  }
+> > > > > > > +EXPORT_SYMBOL(mlx5_vdpa_dealloc_transport_domain);
+> > > > > > >  
+> > > > > > >  int mlx5_vdpa_create_mkey(struct mlx5_vdpa_dev *mvdev, struct mlx5_core_mkey *mkey, u32 *in,
+> > > > > > >  			  int inlen)
+> > > > > > > @@ -266,6 +274,7 @@ int mlx5_vdpa_alloc_resources(struct mlx5_vdpa_dev *mvdev)
+> > > > > > >  	mutex_destroy(&mvdev->mr.mkey_mtx);
+> > > > > > >  	return err;
+> > > > > > >  }
+> > > > > > > +EXPORT_SYMBOL(mlx5_vdpa_alloc_resources);
+> > > > > > >  
+> > > > > > >  void mlx5_vdpa_free_resources(struct mlx5_vdpa_dev *mvdev)
+> > > > > > >  {
+> > > > > > > @@ -282,3 +291,4 @@ void mlx5_vdpa_free_resources(struct mlx5_vdpa_dev *mvdev)
+> > > > > > >  	mutex_destroy(&mvdev->mr.mkey_mtx);
+> > > > > > >  	res->valid = false;
+> > > > > > >  }
+> > > > > > > +EXPORT_SYMBOL(mlx5_vdpa_free_resources);
+> > > > > > > -- 
+> > > > > > > 2.27.0
+> > > > > > 
+> > > > 
+> > 
+
