@@ -2,169 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7B0427D44D
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 19:18:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1293F27D455
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 19:23:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728699AbgI2RSl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 13:18:41 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:55004 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725554AbgI2RSk (ORCPT
+        id S1728378AbgI2RXD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 13:23:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35526 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725554AbgI2RXC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 13:18:40 -0400
-Received: from pps.filterd (m0046037.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08THHOmW010687;
-        Tue, 29 Sep 2020 19:18:34 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=STMicroelectronics;
- bh=KLsmjKeGsfFqyL6scwWy2f2Tm9641An3TKilO0TJJY0=;
- b=dxsnGq8Kfk9KZqvg/n54r74Rp4v8YZUIVsXRk2pV1FgEeHXL/YJVgG13jRo8RzZLBv1h
- SEM4zHrUpgCTFvPZBGCQHUSWTBu263EFkDG19w3lm8+7UbZ3HQ0QOaQIa2iU5yU06oVT
- /YnWvzdHiJKsMyN6RQ7hBWQp+mD6iBmNtF/GqTVB6RmCy5Ik2iRI4kqTlWDERLp+SlVJ
- q53d+cSPufDcs5Z2L5Aaw/2Ag6cvDS81c82h+1BnkP3+4mthgL+dtcMaSwd3lj8ixR04
- ft7L8RaCheurd7zjy5p02WvVBdUxO2JFLeF201ROsbw3QGZzPAqtWHu+i35IhwnYYTFj lA== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 33v0dgu1n8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 29 Sep 2020 19:18:34 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 41BB510002A;
-        Tue, 29 Sep 2020 19:18:34 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag3node1.st.com [10.75.127.7])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 2EA752BE253;
-        Tue, 29 Sep 2020 19:18:34 +0200 (CEST)
-Received: from lmecxl0889.tpe.st.com (10.75.127.49) by SFHDAG3NODE1.st.com
- (10.75.127.7) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 29 Sep
- 2020 19:18:32 +0200
-Subject: Re: [PATCH v6 0/3] Move recovery/coredump configuration to sysfs
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-CC:     Rishabh Bhatnagar <rishabhb@codeaurora.org>,
-        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "tsoni@codeaurora.org" <tsoni@codeaurora.org>,
-        "psodagud@codeaurora.org" <psodagud@codeaurora.org>,
-        "sidgup@codeaurora.org" <sidgup@codeaurora.org>
-References: <1601331456-20432-1-git-send-email-rishabhb@codeaurora.org>
- <8222f5fa-2acc-a765-a728-6aad9ed88068@st.com>
- <20200929143357.GE10036@builder.lan>
-From:   Arnaud POULIQUEN <arnaud.pouliquen@st.com>
-Message-ID: <69aecefd-b8c9-ff99-ab91-f0dde5fcf3d5@st.com>
-Date:   Tue, 29 Sep 2020 19:18:31 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 29 Sep 2020 13:23:02 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FBA1C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 10:23:02 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id u4so4669965ljd.10
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 10:23:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=e0kihtq9EEmKHWM3zruPiltig8hiiIn0Yr9BtelBznU=;
+        b=ovoDyTIDaCHovVhgarrlkJiW3uoanu2Dm2kg75HE5YjCPdwIF49n3vTuVzV7lj0tN4
+         P0fAfoGzzuq6nQpEo59jiYrDN+C8f2ePhyRSRu6x0QvKxwB3hZCTVl+C71oSxU7WKbnR
+         VlNny7sKYqJhMirwiCcj9kuLgr2x1f0JNNsb+n/NWPjom6CVeJrAUZX+QobKpD4siZxi
+         1Rj4Wja+QwjjN3huS55S3Z34ArKzzQPEeCiFBb0KzAJU+HkCB/1zSTa+14L3l9NAOXRm
+         nSFEMbZkBTHiXaK4hdOtOUWhmF1w9qE6AeAk5CR+1VCEjUfz/Uns8y4JhPKPrnTKY8F0
+         354g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=e0kihtq9EEmKHWM3zruPiltig8hiiIn0Yr9BtelBznU=;
+        b=tvlJBIt4vSwS7jONnoJ9rWoI3YC59dHZhYZj0XQyyb96N8fLKMS3WPnYqCwPHTWg1b
+         Ff3gPf1pBA8O9evnfNYop0+6wzulRLGAGiBMmTNv4iUiPypjENjezMfUL6lH0ASGAAAR
+         57YhicJ4hU+My1kZuNGt/pbMZzjJsFw5LuZrIxMQ+YtkRLabjiTgRnqT/EhcixrSSUxS
+         1lQjEDMCvfPdKOVjMQHYU3BK88s0my6T59zW71OnKW/PPhheBTqtooEVKlQw77MiAUJB
+         Ak/NSxdszu6iLKwQlc85SlFk8kB0sVqUC/4IL7na0xfQKmS72NJkCgIwke2vQ25bhKvf
+         sUeQ==
+X-Gm-Message-State: AOAM53011RBasmnjq9CnJLYRp59/70CwjNa8WNgQfUxN8BOzv6nX4KfO
+        0YaQvJeAwzg5WZ9q2lBKvnin5UGghRALgdquFyme0P8HPxFFImM=
+X-Google-Smtp-Source: ABdhPJyCLkOp+ZKTAD5f7vfO6SBmZ3p05q09GWu3cQlbyz81kCkKIIbPvFko8r5xiHvzyJoiAVSGBMIdYdM4cX7MTPo=
+X-Received: by 2002:a2e:7e0f:: with SMTP id z15mr1374067ljc.117.1601400180362;
+ Tue, 29 Sep 2020 10:23:00 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200929143357.GE10036@builder.lan>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.49]
-X-ClientProxiedBy: SFHDAG4NODE3.st.com (10.75.127.12) To SFHDAG3NODE1.st.com
- (10.75.127.7)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-29_11:2020-09-29,2020-09-29 signatures=0
+References: <20200921110020.GA2139@willie-the-truck> <20200922092153.978003-1-asteinhauser@google.com>
+ <20200928130208.GA11356@willie-the-truck> <CAN_oZf36S=eX5qgyXg+dRi+thN5tRWxp7=SWYvjO0hZhxTAhrQ@mail.gmail.com>
+ <20200929081035.GA13576@willie-the-truck>
+In-Reply-To: <20200929081035.GA13576@willie-the-truck>
+From:   Anthony Steinhauser <asteinhauser@google.com>
+Date:   Tue, 29 Sep 2020 13:22:48 -0400
+Message-ID: <CAN_oZf3HkO5+f5OJibGpsnnu1Khnx5mxdSimL9bDBbs+33ka0A@mail.gmail.com>
+Subject: Re: [PATCH v2] PR_SPEC_DISABLE_NOEXEC support for arm64.
+To:     Will Deacon <will@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, catalin.marinas@arm.com,
+        maz@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Thanks a lot Will,
 
-
-On 9/29/20 4:33 PM, Bjorn Andersson wrote:
-> On Tue 29 Sep 03:44 CDT 2020, Arnaud POULIQUEN wrote:
-> 
->>
->>
->> On 9/29/20 12:17 AM, Rishabh Bhatnagar wrote:
->>> From Android R onwards Google has restricted access to debugfs in user
->>> and user-debug builds. This restricts access to most of the features
->>> exposed through debugfs. 'Coredump' and 'Recovery' are critical
->>> interfaces that are required for remoteproc to work on Qualcomm Chipsets. 
->>> Coredump configuration needs to be set to "inline" in debug/test builds
->>> and "disabled" in production builds. Whereas recovery needs to be
->>> "disabled" for debugging purposes and "enabled" on production builds.
->>> This patch series removes the recovery/coredump entries from debugfs
->>> and moves them to sysfs. Also, this disables the coredump collection
->>> by default as this is a requirement for production devices.
->>>
->>> Changelog:
->>>
->>> v6 -> v5:
->>> - Disable coredump collection by default
->>> - Rename the "default" configuration to "enabled" to avoid confusion
->>>
->>> v5 -> v4:
->>> - Fix the cover-letter of tha patch series.
->>>
->>> v4 -> v3:
->>> - Remove the feature flag to expose recovery/coredump
->>>
->>> v3 -> v2:
->>> - Remove the coredump/recovery entries from debugfs
->>
->> Sorry i missed this and some associated discussion in V2...
->>
->> I have also some concerns about the ABI breaks.
-> 
-> Debugfs is not an ABI...
-> 
->> In ST and I suppose in several companies we have some 
->> test environments that use the debugfs to generate and/or get
->> the core dump.
->>
-> 
-> I do however acknowledge the inconvenience you're facing...
-> 
->> Even if the stability of the debugfs is not guaranteed it would
->> be nice to keep both interface.
->>
-> 
-> ...and I wouldn't mind keeping the debugfs interface around, at least
-> for some time to allow people to transition their tools/muscle memory.
-> 
->> It seems that it is possible to create symbolic link in the debugfs
->> thanks to the "debugfs_create_symlink" function.
->> This seems allowing to keep files in both place without duplicating the code.
->> To be honest i have never used this function so I'm not 100% sure that this
->> would do the job...
->> But if you think that this could be a good compromise, i can test it.
->>
-> 
-> The duplicated code is rather simple, so I don't mind the duplication -
-> for now.
-> 
-> 
-> So, how about we add the sysfs pieces of Rishabh's patches, leave out
-> the debugfs and then in a while (e.g. one LTS) we remove the debugfs
-> code?
-
-This smooth transition seems to me a very good compromise.
-
-Thanks,
-Arnaud
-
-> 
-> Regards,
-> Bjorn
-> 
->> Regards,
->> Arnaud
->>
->>> - Expose recovery/coredump from sysfs under a feature flag
->>>
->>> v1 -> v2:
->>> - Correct the contact name in the sysfs documentation.
->>> - Remove the redundant write documentation for coredump/recovery sysfs
->>> - Add a feature flag to make this interface switch configurable.
->>>
->>> Rishabh Bhatnagar (3):
->>>   remoteproc: Move coredump configuration to sysfs
->>>   remoteproc: Move recovery configuration to sysfs
->>>   remoteproc: Change default dump configuration to "disabled"
->>>
->>>  Documentation/ABI/testing/sysfs-class-remoteproc |  46 +++++++
->>>  drivers/remoteproc/remoteproc_coredump.c         |   6 +-
->>>  drivers/remoteproc/remoteproc_debugfs.c          | 168 -----------------------
->>>  drivers/remoteproc/remoteproc_sysfs.c            | 120 ++++++++++++++++
->>>  include/linux/remoteproc.h                       |   8 +-
->>>  5 files changed, 173 insertions(+), 175 deletions(-)
->>>
+Everything looks good to me now.
+On Tue, Sep 29, 2020 at 4:10 AM Will Deacon <will@kernel.org> wrote:
+>
+> Hi Anthony,
+>
+...
+>
+> I'll fold in the diff below, which I think solves the problem above; it's
+> closer to what you had originally, just refactored a bit and with the
+> execve()/fork() issue fixed.
+>
+> Will
+>
+> --->8
+>
+> diff --git a/arch/arm64/kernel/proton-pack.c b/arch/arm64/kernel/proton-pack.c
+> index 59f2ceb7a0e5..68b710f1b43f 100644
+> --- a/arch/arm64/kernel/proton-pack.c
+> +++ b/arch/arm64/kernel/proton-pack.c
+> @@ -660,6 +660,20 @@ void spectre_v4_enable_task_mitigation(struct task_struct *tsk)
+>   * prctl() may be necessary even when PSTATE.SSBS can be toggled directly
+>   * from userspace.
+>   */
+> +static void ssbd_prctl_enable_mitigation(struct task_struct *task)
+> +{
+> +       task_clear_spec_ssb_noexec(task);
+> +       task_set_spec_ssb_disable(task);
+> +       set_tsk_thread_flag(task, TIF_SSBD);
+> +}
+> +
+> +static void ssbd_prctl_disable_mitigation(struct task_struct *task)
+> +{
+> +       task_clear_spec_ssb_noexec(task);
+> +       task_clear_spec_ssb_disable(task);
+> +       clear_tsk_thread_flag(task, TIF_SSBD);
+> +}
+> +
+>  static int ssbd_prctl_set(struct task_struct *task, unsigned long ctrl)
+>  {
+>         switch (ctrl) {
+> @@ -679,8 +693,7 @@ static int ssbd_prctl_set(struct task_struct *task, unsigned long ctrl)
+>                 if (spectre_v4_mitigations_on())
+>                         return -EPERM;
+>
+> -               task_clear_spec_ssb_disable(task);
+> -               clear_tsk_thread_flag(task, TIF_SSBD);
+> +               ssbd_prctl_disable_mitigation(task);
+>                 break;
+>         case PR_SPEC_FORCE_DISABLE:
+>                 /* Force disable speculation: force enable mitigation */
+> @@ -693,28 +706,33 @@ static int ssbd_prctl_set(struct task_struct *task, unsigned long ctrl)
+>
+>                 task_set_spec_ssb_force_disable(task);
+>                 fallthrough;
+> -       case PR_SPEC_DISABLE_NOEXEC:
+> -               /* Disable speculation until execve(): enable mitigation */
+> -               fallthrough;
+>         case PR_SPEC_DISABLE:
+>                 /* Disable speculation: enable mitigation */
+>                 /* Same as PR_SPEC_FORCE_DISABLE */
+>                 if (spectre_v4_mitigations_off())
+>                         return -EPERM;
+>
+> -               task_set_spec_ssb_disable(task);
+> -               set_tsk_thread_flag(task, TIF_SSBD);
+> +               ssbd_prctl_enable_mitigation(task);
+> +               break;
+> +       case PR_SPEC_DISABLE_NOEXEC:
+> +               /* Disable speculation until execve(): enable mitigation */
+> +               /*
+> +                * If the mitigation state is forced one way or the other, then
+> +                * we must fail now before we try to toggle it on execve().
+> +                */
+> +               if (task_spec_ssb_force_disable(task) ||
+> +                   spectre_v4_mitigations_off() ||
+> +                   spectre_v4_mitigations_on()) {
+> +                       return -EPERM;
+> +               }
+> +
+> +               ssbd_prctl_enable_mitigation(task);
+> +               task_set_spec_ssb_noexec(task);
+>                 break;
+>         default:
+>                 return -ERANGE;
+>         }
+>
+> -       /* Handle the 'noexec' flag separately to save bloating up the switch */
+> -       if (ctrl == PR_SPEC_DISABLE_NOEXEC)
+> -               task_set_spec_ssb_noexec(task);
+> -       else
+> -               task_clear_spec_ssb_noexec(task);
+> -
+>         spectre_v4_enable_task_mitigation(task);
+>         return 0;
+>  }
