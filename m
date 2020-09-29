@@ -2,108 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A789A27BD02
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 08:21:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 079E027BD04
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 08:21:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727262AbgI2GVd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 02:21:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49822 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725320AbgI2GVd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 02:21:33 -0400
-Received: from saruman (91-155-214-30.elisa-laajakaista.fi [91.155.214.30])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2B71E20BED;
-        Tue, 29 Sep 2020 06:21:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601360492;
-        bh=dnqbDMCRs84eTHz5elPvtLuyKRU7ZTZKZvZADL2pPH8=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=hWroEyfWj9Yc2joeUSG7hgz8U+CHLD+pt3IWHBMy8QwSvcoG3EJF391iNm9LIYLjs
-         C1STzMJO+GtvRVwb/e507InQghxe9tI/wSPk90xYNqvuJXpLwdlgg6kbF9Wrlp3jN1
-         F3nh9lU5dejfLk7Utnv2ZS/ZkPgRE056Tg/CODGU=
-From:   Felipe Balbi <balbi@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Rob Herring <robh@kernel.org>
-Cc:     Linuxarm <linuxarm@huawei.com>, mauro.chehab@huawei.com,
-        John Stultz <john.stultz@linaro.org>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/2] dt-bindings: document a new quirk for dwc3
-In-Reply-To: <20200929080923.2a365748@coco.lan>
-References: <cover.1599549364.git.mchehab+huawei@kernel.org>
- <cb821a8b5ef2d44ce32c8ce1d01c34b7afb70eb2.1599549364.git.mchehab+huawei@kernel.org>
- <20200915163814.GA2084568@bogus> <20200917091821.0de18caa@coco.lan>
- <CAL_JsqLucKWwgBVAoyXpm1mCD5-OvFj2pM_q2+tcyA+K9fCnKg@mail.gmail.com>
- <20200929080923.2a365748@coco.lan>
-Date:   Tue, 29 Sep 2020 09:21:24 +0300
-Message-ID: <87pn659k7v.fsf@kernel.org>
+        id S1727517AbgI2GVv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 02:21:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45692 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725372AbgI2GVv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 02:21:51 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1C12C061755
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 23:21:50 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id u4so3004750ljd.10
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 23:21:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xScgugWUI7XPriw4lHg9Y3x0ePJygxK+gWE0slOgaQw=;
+        b=LAl5lvFQchm49TQAHMsx3c1dikcC7cb3THCmfMsDrigijcL/jG9L1vZ29VZlXg3xZp
+         X8Gw/VBPkU/1+wB6IQBAtZFpPoZ2n+mQIwhPmnmLZ/ZUxT78TF1hsit5ieR4j103gpKF
+         RTTz3W14zq4MGly44cIBGCShuQzCF/7avtyjpWLR7MlGVl06pS1hdAaj07ZOyuRuaxaz
+         WTt6j1xzAxNGWl13glCcT3Qkw8tc/uctxi1iLV1/OaqgOAWGRlzZV/4lA5lYg5+i/m+a
+         Omz5q3ejnPsU1axVJ0wVsCGqbXjZowZDj8XMemktnp3tgZ23p0ItbCSXR162kTvoEbGO
+         WtNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xScgugWUI7XPriw4lHg9Y3x0ePJygxK+gWE0slOgaQw=;
+        b=YlnhQoemEEpQumzybL05DfX58C9z1SKd9BxSM2fxOspCp1m+AROKXgUPRZSemJ5/Qo
+         /uV6m5xY4TUGrSuxlSDwF67uEydzZ5Xh4buR+yBTFW+DvY5eSDQIWLC1yufU4hWiYuoA
+         wO2QIAeYVIlnMjo97rBCa5Zfw610caBZ8tmDVvKj1n9t1kVEMEuThaV6tPMPX3cBxpIh
+         F8O1hsc2yCX2HL4IAP9hwP9VwBtYHaFty6VqiAQJa9929fV9+83g+GvFBtGQppmtilfr
+         jwegid4decxeInndh0sIsC5oXDw+KWXeUWiDpLCuXTimyqK+2wc4xMTLPeomlI9Bfkis
+         uvgA==
+X-Gm-Message-State: AOAM533pvPH5CccCSvFKMyL6wmhr98UHThIMhC0WXvUHVVRshoMb57dz
+        yv5CTB31eHIgnHYCn0SS4QnsPgVqu/8Tdaeu4jo=
+X-Google-Smtp-Source: ABdhPJxayp1GMZkZ4bH2XDWkc61FhC/N6Nzt20fyYUquGrWTWv61orr9z+CEFZMHzgdHWrXjmTPPSl0Gq3xiuUuYMSY=
+X-Received: by 2002:a05:651c:28c:: with SMTP id b12mr682984ljo.293.1601360509052;
+ Mon, 28 Sep 2020 23:21:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha256; protocol="application/pgp-signature"
+References: <20200920113808.22223-1-vichy.kuo@gmail.com> <20200920113808.22223-2-vichy.kuo@gmail.com>
+In-Reply-To: <20200920113808.22223-2-vichy.kuo@gmail.com>
+From:   pierre kuo <vichy.kuo@gmail.com>
+Date:   Tue, 29 Sep 2020 14:21:37 +0800
+Message-ID: <CAOVJa8F+NZQM4H=1Y683g7DTZQ2z1YSH0pKRCVcN+JmQfEi81g@mail.gmail.com>
+Subject: Re: [PATCH 2/2] driver core: platform: provide devm_platform_iounremap_resource
+To:     Greg KH <gregkh@linuxfoundation.org>, rafael@kernel.org
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+Hi Greg and Rafael:
+Would you please help to review these 2 patches?
 
-Mauro Carvalho Chehab <mchehab+huawei@kernel.org> writes:
+https://lkml.org/lkml/2020/9/20/112
+https://lkml.org/lkml/2020/9/20/113
 
-> Ping.
+Appreciate ur help in advance.
+
 >
-> Felipe,
+> Combine platform_get_resource() and devm_iounremap_resource() to release
+> the iomem allocated by devm_platform_get_and_ioremap_resource().
 >
-> Em Thu, 17 Sep 2020 08:47:48 -0600
-> Rob Herring <robh@kernel.org> escreveu:
+> Signed-off-by: pierre Kuo <vichy.kuo@gmail.com>
+> ---
+>  drivers/base/platform.c         | 24 ++++++++++++++++++++++++
+>  include/linux/platform_device.h |  4 ++++
+>  2 files changed, 28 insertions(+)
 >
->> On Thu, Sep 17, 2020 at 1:18 AM Mauro Carvalho Chehab
->> <mchehab+huawei@kernel.org> wrote:
->> >
+> diff --git a/drivers/base/platform.c b/drivers/base/platform.c
+> index e5d8a0503b4f..e2655c00873f 100644
+> --- a/drivers/base/platform.c
+> +++ b/drivers/base/platform.c
+> @@ -84,6 +84,30 @@ devm_platform_get_and_ioremap_resource(struct platform_device *pdev,
+>  }
+>  EXPORT_SYMBOL_GPL(devm_platform_get_and_ioremap_resource);
 >
->> > IMO, adding a new quirk is cleaner, and adopts the same solution
->> > that it is currently used by other drivers with Designware IP.=20=20
->>=20
->> We already have a bunch of quirk properties. What's one more, sigh. So
->> if that's what you want, fine.
->>=20
->> Rob
+> +/**
+> + * devm_platform_iounremap_resource - call devm_iounremap_resource() for a
+> + *                                   platform device with memory that addr points to.
+> + *
+> + * @pdev: platform device to use both for memory resource lookup as well as
+> + *        resource management
+> + * @index: resource index
+> + * @addr: address to be unmap.
+> + */
+> +void
+> +devm_platform_iounremap_resource(struct platform_device *pdev,
+> +                                unsigned int index, void __iomem *addr)
+> +{
+> +       struct resource *r;
+> +
+> +       r = platform_get_resource(pdev, IORESOURCE_MEM, index);
+> +       if (!r)
+> +               dev_err(&pdev->dev,
+> +                       "MEM resource index %d not found\n", index);
+> +       else
+> +               devm_iounremap_resource(&pdev->dev, r, addr);
+> +}
+> +EXPORT_SYMBOL_GPL(devm_platform_iounremap_resource);
+> +
+>  /**
+>   * devm_platform_ioremap_resource - call devm_ioremap_resource() for a platform
+>   *                                 device
+> diff --git a/include/linux/platform_device.h b/include/linux/platform_device.h
+> index 77a2aada106d..75da15937679 100644
+> --- a/include/linux/platform_device.h
+> +++ b/include/linux/platform_device.h
+> @@ -67,6 +67,10 @@ devm_platform_ioremap_resource_wc(struct platform_device *pdev,
+>  extern void __iomem *
+>  devm_platform_ioremap_resource_byname(struct platform_device *pdev,
+>                                       const char *name);
+> +extern void
+> +devm_platform_iounremap_resource(struct platform_device *pdev,
+> +                                unsigned int index,
+> +                                void __iomem *addr);
+>  extern int platform_get_irq(struct platform_device *, unsigned int);
+>  extern int platform_get_irq_optional(struct platform_device *, unsigned int);
+>  extern int platform_irq_count(struct platform_device *);
+> --
+> 2.17.1
 >
-> It sounds that this is the last piece for us to have everything
-> needed at the drivers in order to provide upstream support for
-> the Hikey 970 USB hub.
->
-> Could you please merge it?
-
-Pushed to testing/next. I'll send a pull request to Greg this week,
-unless something goes terribly wrong on linux-next
-
-=2D-=20
-balbi
-
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQJFBAEBCAAvFiEElLzh7wn96CXwjh2IzL64meEamQYFAl9y0mQRHGJhbGJpQGtl
-cm5lbC5vcmcACgkQzL64meEamQZR/g/6A/awS1ucwGO2YXjX09+rNM5M8NTvj65D
-NjsVi4GdO4vN1iy4jv7PhCd8MxSTAnqTn/c9Zm65zw875VvY9GFEtLXEcwMell8W
-IRNz38FLbaGED16qy4uyKEJDWLJS9/LmDXE8Ssof/VKF9rwD5ZEAds05mEz1IDZv
-ccgWY8dNnN2bNDLI9TblHHsqJmGJKUrGNuDxoCRURR3Bqg8pVZ4r64O/8PxnrCEc
-OWtgX9sVOrLz9QIXWTu1at5BlnBK8LW+jYA2Bmb8yy7CmUTFNByrbQ+AdfIZoNMw
-O1yveWGWfAsU454cF42bJNuN580rANCNcXQEy/tRdAZTKNvh/gohZ32gyYoHsXFm
-eiC4O5AYVqp3vRr0C7JHByZyzh64msFyBmr3N3d15sH431amNKDZ5O5tXJhK9sKB
-PzzxDyNYlrTK1fNs4ny998Wx9qONolpvEqFvLUwiyYM4n2P0OBew+H/q+3Ktn+b7
-qjIb64a1WfSwXglPcYDmM7GSFw2LuVpMmya2AzSPJyTbTwFHcWHw869/gQYlFtvM
-Ex4O3suwNl/SRoYXu2ekA1bmjQTuphbi+AWlxQ8yYgeFNRHo2e+E3iYMu/we54gb
-Y49wUh6xJpOZCqfN23m3fbdurAz1R+FVspj7QPzk2Gt/GbrNC6EpaZgOjskrdNv+
-d6ZsJowIemE=
-=KOoM
------END PGP SIGNATURE-----
---=-=-=--
