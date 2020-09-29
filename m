@@ -2,71 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1533A27D540
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 19:57:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E84B527D551
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 20:01:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728119AbgI2R5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 13:57:19 -0400
-Received: from mail-oo1-f68.google.com ([209.85.161.68]:46883 "EHLO
-        mail-oo1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727360AbgI2R5T (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 13:57:19 -0400
-Received: by mail-oo1-f68.google.com with SMTP id b12so1505905oop.13;
-        Tue, 29 Sep 2020 10:57:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Qp7SS2T14cd3C/5H7OFBLuz8PZLS14HzIh2NjdUhVbs=;
-        b=TMQIBn17HDu2TzliOQyuqSCSoj+5DybJtWAKfbofE1ylss2GoFP1KkoiVIKigs/IT2
-         9GyA+IQX5nE+8/Eq8oBFjsa77fUX4D2o0CqZbcqk14MeFEKDkdhc4iBxaaZksoq1Til/
-         I3KgJu/ba2DG5RLe98LhbP3bpOWQAjUof3hGgNSDkK5bV3aBRY4jJxV2o1ErxMZg2OTI
-         u1m0RcrhmodeRl+xe0YHoPsHdZH6kuMC8cuBKMa2qzqeXjSykwn7E87OTf4/HTwXVO2u
-         8WTNHtOz1wGcdz2Y6Gin89YtKw6xFLWYtcz3iT9AazWrKbMUkCP51EE2Bf3vAsOm+mqk
-         do8g==
-X-Gm-Message-State: AOAM531k/wmnS09TVQVVMwJTA9fcCeyr2m6OTTbEKVgtVE/9JO7xkROZ
-        YKOLTTwSMgw1qhN+WqpiJw==
-X-Google-Smtp-Source: ABdhPJyPPPR5zaH4ylWdewg8PL0HYyp+Im2DPtn2yqLeUBi4x5F0YYGe8L3UwiWAoA/LhAtVQgTj8A==
-X-Received: by 2002:a4a:751a:: with SMTP id j26mr5523657ooc.14.1601402238285;
-        Tue, 29 Sep 2020 10:57:18 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id k13sm3092247ood.31.2020.09.29.10.57.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Sep 2020 10:57:17 -0700 (PDT)
-Received: (nullmailer pid 865499 invoked by uid 1000);
-        Tue, 29 Sep 2020 17:57:16 -0000
-Date:   Tue, 29 Sep 2020 12:57:16 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Pengutronix Kernel Team <kernel@pengutronix.de>,
-        David Jander <david@protonic.nl>,
-        linux-arm-kernel@lists.infradead.org,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        linux-kernel@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>, devicetree@vger.kernel.org,
-        Sascha Hauer <s.hauer@pengutronix.de>
-Subject: Re: [PATCH v3 2/3] dt-bindings: arm: fsl: add Plymovent M2M board
-Message-ID: <20200929175716.GA865448@bogus>
-References: <20200922051454.30878-1-o.rempel@pengutronix.de>
- <20200922051454.30878-3-o.rempel@pengutronix.de>
+        id S1727917AbgI2SBc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 14:01:32 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:33676 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725320AbgI2SBb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 14:01:31 -0400
+Received: from zn.tnic (p200300ec2f0ead009e71cc6c0304d124.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:ad00:9e71:cc6c:304:d124])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 063E31EC037C;
+        Tue, 29 Sep 2020 20:01:29 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1601402490;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=wdBdZsIvOLM9wv6F7s7HGPPTACViaL/H1ZxNp7CAFFQ=;
+        b=MKpoxAqzPu3T7uN/7poJ3hu0Bm8+yyS3OVI4QH6zyDq8DG3zc8+Y0jHZLeoagM49hZyXYO
+        4eYyuThlNjTx9yz9Juc3CP1u0eOJxNf9ikKcdYkBBURKKLN0/dKqIw09/EPeR/ZH/GGFXo
+        osnyNI/FP649fkM+BWjIkF+F1U7TbNw=
+Date:   Tue, 29 Sep 2020 20:01:23 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     shuo.a.liu@intel.com
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Yu Wang <yu1.wang@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Yakui Zhao <yakui.zhao@intel.com>,
+        Zhi Wang <zhi.a.wang@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Fengwei Yin <fengwei.yin@intel.com>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>
+Subject: Re: [PATCH v4 02/17] x86/acrn: Introduce acrn_{setup,
+ remove}_intr_handler()
+Message-ID: <20200929175947.GL21110@zn.tnic>
+References: <20200922114311.38804-1-shuo.a.liu@intel.com>
+ <20200922114311.38804-3-shuo.a.liu@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200922051454.30878-3-o.rempel@pengutronix.de>
+In-Reply-To: <20200922114311.38804-3-shuo.a.liu@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 22 Sep 2020 07:14:53 +0200, Oleksij Rempel wrote:
-> Add Plymovent Group BV M2M iMX6dl based board
-> 
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> ---
->  Documentation/devicetree/bindings/arm/fsl.yaml | 1 +
->  1 file changed, 1 insertion(+)
-> 
+On Tue, Sep 22, 2020 at 07:42:56PM +0800, shuo.a.liu@intel.com wrote:
+> +void acrn_setup_intr_handler(void (*handler)(void))
+> +{
+> +	acrn_intr_handler = handler;
+> +}
+> +EXPORT_SYMBOL_GPL(acrn_setup_intr_handler);
+> +
+> +void acrn_remove_intr_handler(void)
+> +{
+> +	acrn_intr_handler = NULL;
+> +}
+> +EXPORT_SYMBOL_GPL(acrn_remove_intr_handler);
 
-Acked-by: Rob Herring <robh@kernel.org>
+I don't like this one bit.
+
+Also, what stops the module from doing acrn_remove_intr_handler()
+while it gets a HYPERVISOR_CALLBACK_VECTOR interrupt and the handler
+disappearing from under it?
+
+IOW, this should be an atomic notifier instead.
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
