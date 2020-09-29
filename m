@@ -2,169 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 083E727D58A
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 20:13:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AF6327D597
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 20:15:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728133AbgI2SNB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 14:13:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47796 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725320AbgI2SNA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 14:13:00 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 61130208B8;
-        Tue, 29 Sep 2020 18:12:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601403179;
-        bh=KbbIptFu2by3ZEgiSoxO0ItV258aPMBQ8QGyKLlZVN4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=RJjs+GRAdQMy1SObha2G7D1UaBcQCAAyaTf8WgvCvreuOJYCdRhPfgljfewCRMqNa
-         fgTvFA+0dGumXNIblpNRfptGGEAht5GxmMN852H1TK4YPcCUSphboNBwtzPzAVnGzS
-         +GpbuSl9ZZMwew3iyJxm0lXQg8HDC9Hx7S1EK6Fw=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <maz@kernel.org>)
-        id 1kNK7V-00FxpD-8M; Tue, 29 Sep 2020 19:12:57 +0100
+        id S1728178AbgI2SPX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 14:15:23 -0400
+Received: from mailout1.samsung.com ([203.254.224.24]:60505 "EHLO
+        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727758AbgI2SPW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 14:15:22 -0400
+Received: from epcas5p2.samsung.com (unknown [182.195.41.40])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20200929181519epoutp01eb9fc38bf6a4e415df3e516d176eeb02~5U9Wmcvsx0691806918epoutp01G
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 18:15:19 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20200929181519epoutp01eb9fc38bf6a4e415df3e516d176eeb02~5U9Wmcvsx0691806918epoutp01G
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1601403319;
+        bh=10/3mZvnT6czyDROBY36NFnpEJ7qJhK8MMPG5Yn9VQs=;
+        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+        b=uT3fprSTyByRvA/WVZ/T/mnnZycao+gweF4OOnxaZ/RH3tsaiaEi4rlZdG5AwgHwq
+         Pyg9OZCqUq7nXSwNcksvwJvfhmRlG5j2sk8KgfPVqx/fefCFCef3YX4ioIdsfpKL6B
+         E469X7wuRDc1FAOXYufke9pxmtM2tgS11jTA6Cck=
+Received: from epsmges5p1new.samsung.com (unknown [182.195.42.73]) by
+        epcas5p4.samsung.com (KnoxPortal) with ESMTP id
+        20200929181518epcas5p433e8f0a1dbbd105df6dae6a3ae20ae3f~5U9VcJFZc2633926339epcas5p4O;
+        Tue, 29 Sep 2020 18:15:18 +0000 (GMT)
+Received: from epcas5p2.samsung.com ( [182.195.41.40]) by
+        epsmges5p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        97.4A.09573.6B9737F5; Wed, 30 Sep 2020 03:15:18 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas5p2.samsung.com (KnoxPortal) with ESMTPA id
+        20200929181517epcas5p2f87d7cd32fda98c1e85622350b9a438b~5U9UPTFbm1492014920epcas5p2B;
+        Tue, 29 Sep 2020 18:15:17 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20200929181517epsmtrp27bcf45382c6199086444fc38253abdcc~5U9UN6Lih1019110191epsmtrp2o;
+        Tue, 29 Sep 2020 18:15:17 +0000 (GMT)
+X-AuditID: b6c32a49-a67ff70000002565-bb-5f7379b60c41
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        01.EB.08745.4B9737F5; Wed, 30 Sep 2020 03:15:16 +0900 (KST)
+Received: from alimakhtar02 (unknown [107.122.12.5]) by epsmtip1.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20200929181515epsmtip179251a9da5e38195affe0eb1c8996627~5U9SWDQ0Y0423504235epsmtip1m;
+        Tue, 29 Sep 2020 18:15:14 +0000 (GMT)
+From:   "Alim Akhtar" <alim.akhtar@samsung.com>
+To:     "'Bean Huo'" <huobean@gmail.com>, <avri.altman@wdc.com>,
+        <asutoshd@codeaurora.org>, <jejb@linux.ibm.com>,
+        <martin.petersen@oracle.com>, <stanley.chu@mediatek.com>,
+        <beanhuo@micron.com>, <bvanassche@acm.org>,
+        <tomas.winkler@intel.com>, <cang@codeaurora.org>
+Cc:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        "'Alim Akhtar'" <alim.akhtar@samsung.com>
+In-Reply-To: <20200916084017.14086-1-huobean@gmail.com>
+Subject: RE: [PATCH v2] scsi: ufs-exynos: use
+ devm_platform_ioremap_resource_byname()
+Date:   Tue, 29 Sep 2020 23:45:13 +0530
+Message-ID: <000b01d6968c$7ba0ec60$72e2c520$@samsung.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Tue, 29 Sep 2020 19:12:57 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Jon Hunter <jonathanh@nvidia.com>
-Cc:     Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
-        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        linux-pci@vger.kernel.org,
-        Binghui Wang <wangbinghui@hisilicon.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        linux-arm-kernel@axis.com, Vidya Sagar <vidyas@nvidia.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Rob Herring <robh@kernel.org>,
-        Jesper Nilsson <jesper.nilsson@axis.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Pratyush Anand <pratyush.anand@gmail.com>,
-        linux-tegra@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Kukjin Kim <kgene@kernel.org>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Xiaowei Song <songxiaowei@hisilicon.com>,
-        Richard Zhu <hongxing.zhu@nxp.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        linux-arm-msm@vger.kernel.org,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Yue Wang <yue.wang@amlogic.com>,
-        linux-samsung-soc@vger.kernel.org,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linux-amlogic@lists.infradead.org, linux-omap@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Andy Gross <agross@kernel.org>, linux-kernel@vger.kernel.org,
-        Stanimir Varbanov <svarbanov@mm-sol.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Lucas Stach <l.stach@pengutronix.de>
-Subject: Re: [PATCH v2 0/5] PCI: dwc: improve msi handling
-In-Reply-To: <6ead62a5-6ad5-bde8-a5df-93c0f8029f65@nvidia.com>
-References: <20200924190421.549cb8fc@xhacker.debian>
- <de4d9294-4f6d-c7d1-efc7-c8ef6570bd64@nvidia.com>
- <20200929184851.22682ff1@xhacker.debian>
- <8e06a370-a37a-5f33-b43b-2830adb31b3e@nvidia.com>
- <d4a6eea3c5e33a3a4056885419df95a7@kernel.org>
- <6ead62a5-6ad5-bde8-a5df-93c0f8029f65@nvidia.com>
-User-Agent: Roundcube Webmail/1.4.8
-Message-ID: <5f4947b18bf381615a37aa81c2242477@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: jonathanh@nvidia.com, Jisheng.Zhang@synaptics.com, hayashi.kunihiko@socionext.com, narmstrong@baylibre.com, linux-pci@vger.kernel.org, wangbinghui@hisilicon.com, bjorn.andersson@linaro.org, yamada.masahiro@socionext.com, thierry.reding@gmail.com, linux-arm-kernel@axis.com, vidyas@nvidia.com, festevam@gmail.com, jbrunet@baylibre.com, robh@kernel.org, jesper.nilsson@axis.com, lorenzo.pieralisi@arm.com, khilman@baylibre.com, pratyush.anand@gmail.com, linux-tegra@vger.kernel.org, krzk@kernel.org, kishon@ti.com, kgene@kernel.org, linux-imx@nxp.com, songxiaowei@hisilicon.com, hongxing.zhu@nxp.com, martin.blumenstingl@googlemail.com, linux-arm-msm@vger.kernel.org, s.hauer@pengutronix.de, yue.wang@amlogic.com, linux-samsung-soc@vger.kernel.org, bhelgaas@google.com, linux-amlogic@lists.infradead.org, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org, jingoohan1@gmail.com, agross@kernel.org, linux-kernel@vger.kernel.org, svarbanov@mm-sol.com, kernel@pengutroni
- x.de, gustavo.pimentel@synopsys.com, shawnguo@kernel.org, l.stach@pengutronix.de
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQLMFSyO1kZ5iiZoqB9dkEqiP/xkqwJk+P5vp4HGHPA=
+Content-Language: en-in
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrBKsWRmVeSWpSXmKPExsWy7bCmhu62yuJ4g4cNvBYP5m1js9jbdoLd
+        4uXPq2wWBx92slhM+/CT2eLT+mWsFnPONjBZLLqxjcni8q45bBbd13ewWSw//o/JYunWm4wW
+        H3rqHHg9Ll/x9rjc18vksXPWXXaPxXteMnlMWHSA0aPl5H4Wj+/rO9g8Pj69xeLRt2UVo8fn
+        TXIe7Qe6mQK4o7hsUlJzMstSi/TtErgylp67wVqwiK3izfTfjA2Ma1m7GDk5JARMJP5fWsHe
+        xcjFISSwm1Fi78mvUM4nRomWjZNYIJzPjBL7z8xnh2l59OAKM0RiF6PEvO1rmEESQgIvGSVW
+        7jcCsdkEdCV2LG5jAykSEehhktj44wALSIJZIFfi9u57QAkODk4Bc4l3V0tBwsIC4RK7Hzxm
+        A7FZBFQlNl+Zxwhi8wpYSjxv/M8GYQtKnJz5BGqMvMT2t3OYIQ5SkPj5dBnYPyICVhJ/lz9h
+        g6gRlzj6swfsUAmBNxwSF5ZdgPrAReLijF/QABCWeHV8C1RcSuLzu71gt0kIZEv07DKGCNdI
+        LJ13jAXCtpc4cGUOC0gJs4CmxPpd+hCr+CR6fz9hgujklehoE4KoVpVofncVqlNaYmJ3N9RS
+        D4m7DztZJzAqzkLy2Cwkj81C8sAshGULGFlWMUqmFhTnpqcWmxYY5qWW6xUn5haX5qXrJefn
+        bmIEJz4tzx2Mdx980DvEyMTBeIhRgoNZSYTXN6cgXog3JbGyKrUoP76oNCe1+BCjNAeLkjiv
+        0o8zcUIC6YklqdmpqQWpRTBZJg5OqQam/ArBd7s+3OeNW2o7OzMrKuOHrV13t+7OqKn+F/xv
+        rP/0SGL3fXnz+uLP3v6inMmHjjhd3blW9Xc5s6sZ8289l7xVpqcfHCq6u+iq5x/H30ynzm03
+        3mTWpbPv71JeNkbrRSdmPtLa16985qDaJbvdEyt5Kzjqbkiv5l6k9ugqz9sDh54+2c/QVWfN
+        zbC9y2qGcE2AebXNPtHaJXPm2Lgcn7pMLk294ZDklq6tJWxsglk5KpuT/81vFvtUdtnkpuV0
+        n+nG8ZOOhP09NvfJzO8Stcc1PnIblHBY31zo+U44dOGb0sxpL0LlDty9wpPg+m9v27SQmww3
+        +0Js9PhDjq18XVvM1RDP6B4V+W9ykkKMEktxRqKhFnNRcSIA4t3QqesDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrDIsWRmVeSWpSXmKPExsWy7bCSnO6WyuJ4g5aF5hYP5m1js9jbdoLd
+        4uXPq2wWBx92slhM+/CT2eLT+mWsFnPONjBZLLqxjcni8q45bBbd13ewWSw//o/JYunWm4wW
+        H3rqHHg9Ll/x9rjc18vksXPWXXaPxXteMnlMWHSA0aPl5H4Wj+/rO9g8Pj69xeLRt2UVo8fn
+        TXIe7Qe6mQK4o7hsUlJzMstSi/TtErgylp67wVqwiK3izfTfjA2Ma1m7GDk5JARMJB49uMLc
+        xcjFISSwg1Fi299XUAlpiesbJ7BD2MISK/89Z4coes4oseTAc0aQBJuArsSOxW1sIAkRgWlM
+        EnuWHWEGSTAL5Etc3fWGBaKjg1Fiy/7DQB0cHJwC5hLvrpaC1AgLhEr0Hd4Gto1FQFVi85V5
+        YEN5BSwlnjf+Z4OwBSVOznzCAtLKLKAn0baREWK8vMT2t3OYIY5TkPj5dBnYGBEBK4m/y5+w
+        QdSISxz92cM8gVF4FpJJsxAmzUIyaRaSjgWMLKsYJVMLinPTc4sNC4zyUsv1ihNzi0vz0vWS
+        83M3MYIjWEtrB+OeVR/0DjEycTAeYpTgYFYS4fXNKYgX4k1JrKxKLcqPLyrNSS0+xCjNwaIk
+        zvt11sI4IYH0xJLU7NTUgtQimCwTB6dUA5O4bAqLUHqmxsKvxukL/+6pcNt24oXxFpdnfyUO
+        i8vpTbLtvMj7yVCJ7dzLtrfT1xd72mca+hXOf5na8GiJ7gsZ+S2ZKmc5ru9wvp4w9fD2LJGO
+        +1+csk0DPfbqaERzM75jC/wmlq4XqsE3w5K/uJu3zUrPt+P5lh6JUPW/jwob317i9Dha9etE
+        ZdB/lTO/3d0fMuW3LZh79MryS9safx/4/ars7unas/OZKzo1fij+L+k8/+uxIjvTtwMVBlM7
+        7jbn2+2cVuhSpB5XKRnOkLJeNyW0YOn/JGm+R3oNNsE7c5yutnEJP5mWIO9gffzn6ai1W7RO
+        iGo9s9vpcP6o6e9Ds90/xTReklyzznSxtBJLcUaioRZzUXEiAKwbvOpPAwAA
+X-CMS-MailID: 20200929181517epcas5p2f87d7cd32fda98c1e85622350b9a438b
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+CMS-TYPE: 105P
+X-CMS-RootMailID: 20200916084036epcas5p3420a185827331c7dd4494f2adb115ead
+References: <CGME20200916084036epcas5p3420a185827331c7dd4494f2adb115ead@epcas5p3.samsung.com>
+        <20200916084017.14086-1-huobean@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-09-29 19:02, Jon Hunter wrote:
-> On 29/09/2020 18:25, Marc Zyngier wrote:
->> On 2020-09-29 14:22, Jon Hunter wrote:
->>> Hi Jisheng,
->>> 
->>> On 29/09/2020 11:48, Jisheng Zhang wrote:
->>>> Hi Jon,
->>>> 
->>>> On Fri, 25 Sep 2020 09:53:45 +0100 Jon Hunter wrote:
->>>> 
->>>>> 
->>>>> On 24/09/2020 12:05, Jisheng Zhang wrote:
->>>>>> Improve the msi code:
->>>>>> 1. Add proper error handling.
->>>>>> 2. Move dw_pcie_msi_init() from each users to designware host to 
->>>>>> solve
->>>>>> msi page leakage in resume path.
->>>>> 
->>>>> Apologies if this is slightly off topic, but I have been meaning to 
->>>>> ask
->>>>> about MSIs and PCI. On Tegra194 which uses the DWC PCI driver,
->>>>> whenever we
->>>>> hotplug CPUs we see the following warnings ...
->>>>> 
->>>>>  [      79.068351] WARNING KERN IRQ70: set affinity failed(-22).
->>>>>  [      79.068362] WARNING KERN IRQ71: set affinity failed(-22).
->>>>> 
->>>> 
->>>> I tried to reproduce this issue on Synaptics SoC, but can't 
->>>> reproduce
->>>> it.
->>>> Per my understanding of the code in kernel/irq/cpuhotplug.c, this
->>>> warning
->>>> happened when we migrate irqs away from the offline cpu, this 
->>>> implicitly
->>>> implies that before this point the irq has bind to the offline cpu,
->>>> but how
->>>> could this happen given current dw_pci_msi_set_affinity() 
->>>> implementation
->>>> always return -EINVAL
->>> 
->>> By default the smp_affinity should be set so that all CPUs can be
->>> interrupted ...
->>> 
->>> $ cat /proc/irq/70/smp_affinity
->>> 0xff
->>> 
->>> In my case there are 8 CPUs and so 0xff implies that the interrupt 
->>> can
->>> be triggered on any of the 8 CPUs.
->>> 
->>> Do you see the set_affinity callback being called for the DWC irqchip 
->>> in
->>> migrate_one_irq()?
->> 
->> The problem is common to all MSI implementations that end up muxing
->> all the end-point MSIs into a single interrupt. With these systems,
->> you cannot set the affinity of individual MSIs (they don't target a
->> CPU, they target another interrupt... braindead). Only the mux
->> interrupt can have its affinity changed.
->> 
->> So returning -EINVAL is the right thing to do.
+Hi Bean,
+
+> -----Original Message-----
+> From: Bean Huo <huobean@gmail.com>
+> Sent: 16 September 2020 14:10
+> To: alim.akhtar@samsung.com; avri.altman@wdc.com;
+> asutoshd@codeaurora.org; jejb@linux.ibm.com;
+> martin.petersen@oracle.com; stanley.chu@mediatek.com;
+> beanhuo@micron.com; bvanassche@acm.org; tomas.winkler@intel.com;
+> cang@codeaurora.org
+> Cc: linux-scsi@vger.kernel.org; linux-kernel@vger.kernel.org
+> Subject: [PATCH v2] scsi: ufs-exynos: use
+> devm_platform_ioremap_resource_byname()
 > 
-> Right, so if that is the case, then surely there should be some way to
-> avoid these warnings because they are not relevant?
+> From: Bean Huo <beanhuo@micron.com>
+> 
+> Use devm_platform_ioremap_resource_byname() to simplify the code.
+> 
+> Signed-off-by: Bean Huo <beanhuo@micron.com>
+> ---
+Thanks! 
+Acked-by: Alim Akhtar <alim.akhtar@samsung.com>
 
-I don't think there is a way to do this, because the core code
-doesn't (and cannot) know the exact interrupt topology.
+> 
+> v1-v2: change the patch commit subject
+> 
 
-The only alternative would be to change the affinity of the mux
-interrupt when a MSI affinity changes, but that tends to break
-userspace (irqbalance, for example).
-
-         M.
--- 
-Jazz is not dead. It just smells funny...
