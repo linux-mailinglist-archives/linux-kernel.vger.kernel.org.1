@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27B1427C572
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:36:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 270E127C777
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:54:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729895AbgI2Lfm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:35:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49122 "EHLO mail.kernel.org"
+        id S1731470AbgI2LyS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:54:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47384 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729783AbgI2LfK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:35:10 -0400
+        id S1731018AbgI2Lqg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:46:36 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AFF7123CD1;
-        Tue, 29 Sep 2020 11:28:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4544D21941;
+        Tue, 29 Sep 2020 11:46:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601378940;
-        bh=eRMfmZFwTImPEWtl1fuuHttjQfss4QTdStH+7CxWtYs=;
+        s=default; t=1601379993;
+        bh=ddpaCm8p5ORQV5vg1PVb89chVnV7o2HOUgXpkZ1SUy4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uhFIxDz2jEIkQ29GbOTysO1kFCW/ZL5B0FWIZCpEbTGfI07JIjSAS7whSsel/wSXH
-         1lFUrJl+nijYFvlCLHOy4C1o+5++UTpTkEw7wSFSjpSiCzlsGQ5zqnBLUK+oLV5xgs
-         NXhQEjxawKFx6guOhM6A4sU8rJX21HJMrOzZMVOY=
+        b=SPm/bgoN+V6L0B30AknUOSGy1wem9Ix/NlMe4IOoraDlDQhJ65FnRh3phtyK5JD+R
+         gazo/uzbHHf6psIK/jwjrlybaNFwLcT+dV3XOX973xJxaJArH9i7xF591HpO//W4/o
+         RvVITl0ckXnqmVjpgZRo6/rrYxsTIgUSGGtFfyag=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qian Cai <cai@lca.pw>,
-        Daniel Wagner <dwagner@suse.de>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
+        stable@vger.kernel.org,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 194/245] vfio/pci: Clear error and request eventfd ctx after releasing
+Subject: [PATCH 5.8 02/99] ASoC: pcm3168a: ignore 0 Hz settings
 Date:   Tue, 29 Sep 2020 13:00:45 +0200
-Message-Id: <20200929105956.421220350@linuxfoundation.org>
+Message-Id: <20200929105929.837687886@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929105946.978650816@linuxfoundation.org>
-References: <20200929105946.978650816@linuxfoundation.org>
+In-Reply-To: <20200929105929.719230296@linuxfoundation.org>
+References: <20200929105929.719230296@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,45 +44,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alex Williamson <alex.williamson@redhat.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-[ Upstream commit 5c5866c593bbd444d0339ede6a8fb5f14ff66d72 ]
+[ Upstream commit 7ad26d6671db758c959d7e1d100b138a38483612 ]
 
-The next use of the device will generate an underflow from the
-stale reference.
+Some sound card try to set 0 Hz as reset, but it is impossible.
+This patch ignores it to avoid error return.
 
-Cc: Qian Cai <cai@lca.pw>
-Fixes: 1518ac272e78 ("vfio/pci: fix memory leaks of eventfd ctx")
-Reported-by: Daniel Wagner <dwagner@suse.de>
-Reviewed-by: Cornelia Huck <cohuck@redhat.com>
-Tested-by: Daniel Wagner <dwagner@suse.de>
-Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Link: https://lore.kernel.org/r/87a6yjy5sy.wl-kuninori.morimoto.gx@renesas.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/vfio/pci/vfio_pci.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ sound/soc/codecs/pcm3168a.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/drivers/vfio/pci/vfio_pci.c b/drivers/vfio/pci/vfio_pci.c
-index 86cd8bdfa9f28..94fad366312f1 100644
---- a/drivers/vfio/pci/vfio_pci.c
-+++ b/drivers/vfio/pci/vfio_pci.c
-@@ -409,10 +409,14 @@ static void vfio_pci_release(void *device_data)
- 	if (!(--vdev->refcnt)) {
- 		vfio_spapr_pci_eeh_release(vdev->pdev);
- 		vfio_pci_disable(vdev);
--		if (vdev->err_trigger)
-+		if (vdev->err_trigger) {
- 			eventfd_ctx_put(vdev->err_trigger);
--		if (vdev->req_trigger)
-+			vdev->err_trigger = NULL;
-+		}
-+		if (vdev->req_trigger) {
- 			eventfd_ctx_put(vdev->req_trigger);
-+			vdev->req_trigger = NULL;
-+		}
- 	}
+diff --git a/sound/soc/codecs/pcm3168a.c b/sound/soc/codecs/pcm3168a.c
+index 9711fab296ebc..045c6f8b26bef 100644
+--- a/sound/soc/codecs/pcm3168a.c
++++ b/sound/soc/codecs/pcm3168a.c
+@@ -306,6 +306,13 @@ static int pcm3168a_set_dai_sysclk(struct snd_soc_dai *dai,
+ 	struct pcm3168a_priv *pcm3168a = snd_soc_component_get_drvdata(dai->component);
+ 	int ret;
  
- 	mutex_unlock(&driver_lock);
++	/*
++	 * Some sound card sets 0 Hz as reset,
++	 * but it is impossible to set. Ignore it here
++	 */
++	if (freq == 0)
++		return 0;
++
+ 	if (freq > PCM3168A_MAX_SYSCLK)
+ 		return -EINVAL;
+ 
 -- 
 2.25.1
 
