@@ -2,94 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A26D27CBDE
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:31:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3CF027CBE3
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:31:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733000AbgI2MbQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 08:31:16 -0400
-Received: from mail-ed1-f66.google.com ([209.85.208.66]:42572 "EHLO
-        mail-ed1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732799AbgI2MaS (ORCPT
+        id S1732533AbgI2Mbc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 08:31:32 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:54766 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732947AbgI2Maq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 08:30:18 -0400
-Received: by mail-ed1-f66.google.com with SMTP id j2so6117693eds.9
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 05:30:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=5K1RsZycD7BnQ8mECakiQ/2HzkXZ73MXqfcF+5Rj0bo=;
-        b=HFt5RdjD6i6vc6tkpxZ5d2DLIrB/OIAGVVkSencqLGlH68p4aro0SuuJan80uoiK13
-         PrnnoNiWccUITb/KXGstW776YLEPabeY9An3dktHnQLzTBRay8gkKJty3T0SGDGKcItL
-         M2CtnZNQp87zjvvVavtL7RkKZGN0X3UweaWlT6+gOS910egjcInxORxtGmt9Lm6kwX2K
-         nvUTENxDL4vjyMn5zQTMcZCtQtWbnT25DAEQ98MPr/HAh1ubv2+zfpt8ggeaVU/df8Tn
-         xwT5NeOCoAReV1fEfdWbMsOMjPZlT6weme5Y4H5Ulw5fEkv6+rcqmxh+Ra0hMp+162Bg
-         5A1Q==
-X-Gm-Message-State: AOAM533F/tNIOM5ML6SL/ZOD7482mw2dP4PUEO1DadCYKRiHApzBKVaU
-        HdiIqCA9GkFD9OT6nAoHZek=
-X-Google-Smtp-Source: ABdhPJx1UQvfenHa4EGvDQpqkY2w+8j7N45V2SRB3alkbRagkD9tkMPOaHYeOYcfUwDHVnNr9p1Cow==
-X-Received: by 2002:a05:6402:b9a:: with SMTP id cf26mr2852464edb.375.1601382616592;
-        Tue, 29 Sep 2020 05:30:16 -0700 (PDT)
-Received: from tiehlicka.suse.cz (ip-37-188-253-123.eurotel.cz. [37.188.253.123])
-        by smtp.gmail.com with ESMTPSA id b20sm5389568ejv.9.2020.09.29.05.30.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Sep 2020 05:30:15 -0700 (PDT)
-From:   Michal Hocko <mhocko@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Michal Hocko <mhocko@suse.com>
-Subject: [PATCH] mm: clarify usage of GFP_ATOMIC in !preemptible contexts
-Date:   Tue, 29 Sep 2020 14:30:10 +0200
-Message-Id: <20200929123010.5137-1-mhocko@kernel.org>
-X-Mailer: git-send-email 2.28.0
+        Tue, 29 Sep 2020 08:30:46 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08TCU42M162921;
+        Tue, 29 Sep 2020 12:30:35 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=mURocJg4aGJzNKsZw1W/x0nPR+UVj4K2kJtnPNURiU8=;
+ b=H4BkzIxZhjVBIH2ne5xsO2mLMTQftXS1evUX6WfPYEO4AfKxH3BsWOB0JDq378hE6SrP
+ UUkigvKYtWyjLB7fWaUVQPGahJ3bkSUgRrkXzOEIYB9T17briqCv3zPGjviv9P6d46CY
+ LbrDFegyxtGXOj95F85zqtDrImUXE+9D5MPcafcKA9IS5KoxvKZ7+nHQ+3ITCvJ5xBAd
+ 6EYzsmJV0bUSw9BGxWX5bVLokoNUCx4vmZzU9jQh/dlUnSbU6hvPnm/fOL+UjT+bwbcC
+ uJZT5MzF4gUwtVoNhoeVCB038QLsu2dWs/lvjkhnxexQM6ngYIaR3e4LUzJupPa3HMQu +A== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 33swkktcgs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 29 Sep 2020 12:30:35 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08TCTiP1051028;
+        Tue, 29 Sep 2020 12:30:35 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3030.oracle.com with ESMTP id 33tfjwmawj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 29 Sep 2020 12:30:34 +0000
+Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08TCUX0l011674;
+        Tue, 29 Sep 2020 12:30:33 GMT
+Received: from [10.74.86.231] (/10.74.86.231)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 29 Sep 2020 05:30:33 -0700
+Subject: Re: [PATCH 2/2] xen/gntdev.c: Convert get_user_pages*() to
+ pin_user_pages*()
+To:     Souptick Joarder <jrdr.linux@gmail.com>
+Cc:     Juergen Gross <jgross@suse.com>, sstabellini@kernel.org,
+        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
+        John Hubbard <jhubbard@nvidia.com>
+References: <1599375114-32360-1-git-send-email-jrdr.linux@gmail.com>
+ <1599375114-32360-2-git-send-email-jrdr.linux@gmail.com>
+ <8a608871-af25-fee6-24ea-24d78010cd6c@oracle.com>
+ <CAFqt6zbKdzFDq6TTadQqQhwZPsZKJLW0LE9ER-qTHm7y3raw9w@mail.gmail.com>
+From:   boris.ostrovsky@oracle.com
+Organization: Oracle Corporation
+Message-ID: <a3df6cac-4d29-a5cf-2bb2-35a8834aef64@oracle.com>
+Date:   Tue, 29 Sep 2020 08:30:30 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.2.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAFqt6zbKdzFDq6TTadQqQhwZPsZKJLW0LE9ER-qTHm7y3raw9w@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9758 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 spamscore=0 mlxscore=0
+ phishscore=0 adultscore=0 bulkscore=0 mlxlogscore=999 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009290111
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9758 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0 phishscore=0
+ suspectscore=0 mlxlogscore=999 clxscore=1015 priorityscore=1501
+ impostorscore=0 lowpriorityscore=0 bulkscore=0 spamscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009290111
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michal Hocko <mhocko@suse.com>
 
-There is a general understanding that GFP_ATOMIC/GFP_NOWAIT are
-to be used from atomic contexts. E.g. from within a spin lock or from
-the IRQ context. This is correct but there are some atomic contexts
-where the above doesn't hold. One of them would be an NMI context.
-Page allocator has never supported that and the general fear of this
-context didn't let anybody to actually even try to use the allocator
-there. Good, but let's be more specific about that.
+On 9/29/20 8:09 AM, Souptick Joarder wrote:
+> On Fri, Sep 11, 2020 at 8:12 PM <boris.ostrovsky@oracle.com> wrote:
+>>
+>> On 9/6/20 2:51 AM, Souptick Joarder wrote:
+>>> In 2019, we introduced pin_user_pages*() and now we are converting
+>>> get_user_pages*() to the new API as appropriate. [1] & [2] could
+>>> be referred for more information. This is case 5 as per document [1].
+>>>
+>>> [1] Documentation/core-api/pin_user_pages.rst
+>>>
+>>> [2] "Explicit pinning of user-space pages":
+>>>         https://lwn.net/Articles/807108/
+>>>
+>>> Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
+>>> Cc: John Hubbard <jhubbard@nvidia.com>
+>>> Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+>>> Cc: Juergen Gross <jgross@suse.com>
+>>> Cc: David Vrabel <david.vrabel@citrix.com>
+>>
+>> Reviewed-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+> Are these 2 patches queued for 5.10-rc1 ?
 
-Another such a context, and that is where people seem to be more daring,
-is raw_spin_lock. Mostly because it simply resembles regular spin lock
-which is supported by the allocator and there is not any implementation
-difference with !RT kernels in the first place. Be explicit that such
-a context is not supported by the allocator. The underlying reason is
-that zone->lock would have to become raw_spin_lock as well and that has
-turned out to be a problem for RT
-(http://lkml.kernel.org/r/87mu305c1w.fsf@nanos.tec.linutronix.de).
 
-Signed-off-by: Michal Hocko <mhocko@suse.com>
----
- include/linux/gfp.h | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Yes, I am preparing the branch. (BTW, your second patch appears to have been either manually edited or not generated on top of the first patch. Please don't do this next time)
 
-diff --git a/include/linux/gfp.h b/include/linux/gfp.h
-index 67a0774e080b..2e8370cf60c7 100644
---- a/include/linux/gfp.h
-+++ b/include/linux/gfp.h
-@@ -238,7 +238,9 @@ struct vm_area_struct;
-  * %__GFP_FOO flags as necessary.
-  *
-  * %GFP_ATOMIC users can not sleep and need the allocation to succeed. A lower
-- * watermark is applied to allow access to "atomic reserves"
-+ * watermark is applied to allow access to "atomic reserves".
-+ * The current implementation doesn't support NMI and few other strict
-+ * non-preemptive contexts (e.g. raw_spin_lock). The same applies to %GFP_NOWAIT.
-  *
-  * %GFP_KERNEL is typical for kernel-internal allocations. The caller requires
-  * %ZONE_NORMAL or a lower zone for direct access but can direct reclaim.
--- 
-2.28.0
+
+-boris
 
