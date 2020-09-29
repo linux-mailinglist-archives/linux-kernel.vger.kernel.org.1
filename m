@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77DB127C95A
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:10:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7A1C27C84B
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:01:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732011AbgI2MJv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 08:09:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50012 "EHLO mail.kernel.org"
+        id S1731622AbgI2MAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 08:00:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36574 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730206AbgI2Lhf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:37:35 -0400
+        id S1730584AbgI2Lkx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:40:53 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0121B21D41;
-        Tue, 29 Sep 2020 11:23:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A2E3E21D7D;
+        Tue, 29 Sep 2020 11:23:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601378602;
-        bh=LJr5lMTFye2vxGi0Lfw2VYCci9SKwWK0bBAKI4s7QuI=;
+        s=default; t=1601378605;
+        bh=ib6bpCU15aURJm9xCQYHOv2BKz+a24vt1oq41Qm4p5k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PROG3aVo+i8DOSP/0Q0RCy/eOUc0ncmo5NDGQLhAgGa43gl7nJB/G3R/FgjQuQinQ
-         SVCEEu19Bsai6KYxFSe258UwOHev/RKIA8lcULkKhbz7env4P3sQ+NFviefEUqfLX/
-         Xvo++Hpd7C8eeBrFT6d+7cGfdhO1ArlmNvDrPmH8=
+        b=wwWAkYjF7LZotbhB3XYsynSjOoYMNcOFI/GhthZIEwufN5joeSMp2HaI0onBvgcK8
+         sHobw02DJtwr2sO8Qfx3VVCIgGbONbZ6zHnAuLb+DUGSiyslYYEFdAMULnxqhsQkwy
+         LLHSu54gBp0B29CRd7qZwKu5xKByeo5nsrCiTfoI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mohan Kumar <mkumard@nvidia.com>,
-        Viswanath L <viswanathl@nvidia.com>,
-        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 071/245] ALSA: hda: Clear RIRB status before reading WP
-Date:   Tue, 29 Sep 2020 12:58:42 +0200
-Message-Id: <20200929105950.450875799@linuxfoundation.org>
+        stable@vger.kernel.org, Qian Cai <cai@lca.pw>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 072/245] skbuff: fix a data race in skb_queue_len()
+Date:   Tue, 29 Sep 2020 12:58:43 +0200
+Message-Id: <20200929105950.502188103@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200929105946.978650816@linuxfoundation.org>
 References: <20200929105946.978650816@linuxfoundation.org>
@@ -43,54 +43,113 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mohan Kumar <mkumard@nvidia.com>
+From: Qian Cai <cai@lca.pw>
 
-[ Upstream commit 6d011d5057ff88ee556c000ac6fe0be23bdfcd72 ]
+[ Upstream commit 86b18aaa2b5b5bb48e609cd591b3d2d0fdbe0442 ]
 
-RIRB interrupt status getting cleared after the write pointer is read
-causes a race condition, where last response(s) into RIRB may remain
-unserviced by IRQ, eventually causing azx_rirb_get_response to fall
-back to polling mode. Clearing the RIRB interrupt status ahead of
-write pointer access ensures that this condition is avoided.
+sk_buff.qlen can be accessed concurrently as noticed by KCSAN,
 
-Signed-off-by: Mohan Kumar <mkumard@nvidia.com>
-Signed-off-by: Viswanath L <viswanathl@nvidia.com>
-Link: https://lore.kernel.org/r/1580983853-351-1-git-send-email-viswanathl@nvidia.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+ BUG: KCSAN: data-race in __skb_try_recv_from_queue / unix_dgram_sendmsg
+
+ read to 0xffff8a1b1d8a81c0 of 4 bytes by task 5371 on cpu 96:
+  unix_dgram_sendmsg+0x9a9/0xb70 include/linux/skbuff.h:1821
+				 net/unix/af_unix.c:1761
+  ____sys_sendmsg+0x33e/0x370
+  ___sys_sendmsg+0xa6/0xf0
+  __sys_sendmsg+0x69/0xf0
+  __x64_sys_sendmsg+0x51/0x70
+  do_syscall_64+0x91/0xb47
+  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+
+ write to 0xffff8a1b1d8a81c0 of 4 bytes by task 1 on cpu 99:
+  __skb_try_recv_from_queue+0x327/0x410 include/linux/skbuff.h:2029
+  __skb_try_recv_datagram+0xbe/0x220
+  unix_dgram_recvmsg+0xee/0x850
+  ____sys_recvmsg+0x1fb/0x210
+  ___sys_recvmsg+0xa2/0xf0
+  __sys_recvmsg+0x66/0xf0
+  __x64_sys_recvmsg+0x51/0x70
+  do_syscall_64+0x91/0xb47
+  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+
+Since only the read is operating as lockless, it could introduce a logic
+bug in unix_recvq_full() due to the load tearing. Fix it by adding
+a lockless variant of skb_queue_len() and unix_recvq_full() where
+READ_ONCE() is on the read while WRITE_ONCE() is on the write similar to
+the commit d7d16a89350a ("net: add skb_queue_empty_lockless()").
+
+Signed-off-by: Qian Cai <cai@lca.pw>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/hda/hda_controller.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ include/linux/skbuff.h | 14 +++++++++++++-
+ net/unix/af_unix.c     | 11 +++++++++--
+ 2 files changed, 22 insertions(+), 3 deletions(-)
 
-diff --git a/sound/pci/hda/hda_controller.c b/sound/pci/hda/hda_controller.c
-index fa261b27d8588..8198d2e53b7df 100644
---- a/sound/pci/hda/hda_controller.c
-+++ b/sound/pci/hda/hda_controller.c
-@@ -1169,16 +1169,23 @@ irqreturn_t azx_interrupt(int irq, void *dev_id)
- 		if (snd_hdac_bus_handle_stream_irq(bus, status, stream_update))
- 			active = true;
+diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+index cbc0294f39899..703ce71caeacb 100644
+--- a/include/linux/skbuff.h
++++ b/include/linux/skbuff.h
+@@ -1688,6 +1688,18 @@ static inline __u32 skb_queue_len(const struct sk_buff_head *list_)
+ 	return list_->qlen;
+ }
  
--		/* clear rirb int */
- 		status = azx_readb(chip, RIRBSTS);
- 		if (status & RIRB_INT_MASK) {
-+			/*
-+			 * Clearing the interrupt status here ensures that no
-+			 * interrupt gets masked after the RIRB wp is read in
-+			 * snd_hdac_bus_update_rirb. This avoids a possible
-+			 * race condition where codec response in RIRB may
-+			 * remain unserviced by IRQ, eventually falling back
-+			 * to polling mode in azx_rirb_get_response.
-+			 */
-+			azx_writeb(chip, RIRBSTS, RIRB_INT_MASK);
- 			active = true;
- 			if (status & RIRB_INT_RESPONSE) {
- 				if (chip->driver_caps & AZX_DCAPS_CTX_WORKAROUND)
- 					udelay(80);
- 				snd_hdac_bus_update_rirb(bus);
- 			}
--			azx_writeb(chip, RIRBSTS, RIRB_INT_MASK);
- 		}
- 	} while (active && ++repeat < 10);
++/**
++ *	skb_queue_len_lockless	- get queue length
++ *	@list_: list to measure
++ *
++ *	Return the length of an &sk_buff queue.
++ *	This variant can be used in lockless contexts.
++ */
++static inline __u32 skb_queue_len_lockless(const struct sk_buff_head *list_)
++{
++	return READ_ONCE(list_->qlen);
++}
++
+ /**
+  *	__skb_queue_head_init - initialize non-spinlock portions of sk_buff_head
+  *	@list: queue to initialize
+@@ -1895,7 +1907,7 @@ static inline void __skb_unlink(struct sk_buff *skb, struct sk_buff_head *list)
+ {
+ 	struct sk_buff *next, *prev;
+ 
+-	list->qlen--;
++	WRITE_ONCE(list->qlen, list->qlen - 1);
+ 	next	   = skb->next;
+ 	prev	   = skb->prev;
+ 	skb->next  = skb->prev = NULL;
+diff --git a/net/unix/af_unix.c b/net/unix/af_unix.c
+index 2318e2e2748f4..2020306468af4 100644
+--- a/net/unix/af_unix.c
++++ b/net/unix/af_unix.c
+@@ -192,11 +192,17 @@ static inline int unix_may_send(struct sock *sk, struct sock *osk)
+ 	return unix_peer(osk) == NULL || unix_our_peer(sk, osk);
+ }
+ 
+-static inline int unix_recvq_full(struct sock const *sk)
++static inline int unix_recvq_full(const struct sock *sk)
+ {
+ 	return skb_queue_len(&sk->sk_receive_queue) > sk->sk_max_ack_backlog;
+ }
+ 
++static inline int unix_recvq_full_lockless(const struct sock *sk)
++{
++	return skb_queue_len_lockless(&sk->sk_receive_queue) >
++		READ_ONCE(sk->sk_max_ack_backlog);
++}
++
+ struct sock *unix_peer_get(struct sock *s)
+ {
+ 	struct sock *peer;
+@@ -1788,7 +1794,8 @@ restart_locked:
+ 	 * - unix_peer(sk) == sk by time of get but disconnected before lock
+ 	 */
+ 	if (other != sk &&
+-	    unlikely(unix_peer(other) != sk && unix_recvq_full(other))) {
++	    unlikely(unix_peer(other) != sk &&
++	    unix_recvq_full_lockless(other))) {
+ 		if (timeo) {
+ 			timeo = unix_wait_for_peer(other, timeo);
  
 -- 
 2.25.1
