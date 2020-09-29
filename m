@@ -2,122 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D19B27D1C4
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 16:48:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9A1327D1CB
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 16:50:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731450AbgI2OsF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 10:48:05 -0400
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:45090 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727328AbgI2OsF (ORCPT
+        id S1728929AbgI2OuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 10:50:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40200 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727328AbgI2OuC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 10:48:05 -0400
-Received: by mail-oi1-f195.google.com with SMTP id z26so5706626oih.12;
-        Tue, 29 Sep 2020 07:48:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=5Ib58i3Mc+qXCwlRZiyxQ8Wo1PM76xeIoDQNLOw2eDU=;
-        b=s7Dzq3zah4/WE26QcG9feY7TxLATS6pskf4J5RIuv9wUEbHAFBxeqN66v1lZRxuDd5
-         9/2rxh45nQrIHlefi/9PtZa2s58kymGX1q7SQ0M3VylY9GA2ocSVF3WveCbfHQSarApY
-         UWFk2WWlo7kTeXESTFLlu0pAIdLaF5IC5MF6lc2yRiOYk5G2pEiFn2iYN/qb7kDeNwLr
-         /Tg36yU2a0VL28UDQPbevAXJhfAg01CZgBjaveQ9Ck9aeBCYhq5RWMtA9M+KndT83dZX
-         6zzZM9IdFQaUAHucBwwMRYPIPxMzbr7qj8P2iOGrYvxzcQpA/Dn8HxzFGb8qE4DE8EqX
-         IXPg==
-X-Gm-Message-State: AOAM533IHfRpgV7+hvok+yU8uFMARpKp1fTTHQmCReZKA18s37pwlC52
-        Ee5f9TsVk+RGOcV7/As0mw==
-X-Google-Smtp-Source: ABdhPJymV/FSHw0GdQywCDGO1aFF+Ijgni8vx/KH8HAnpEuWTTKdp/wVaqgKa7dz8ax8yF9EWFNMpQ==
-X-Received: by 2002:aca:d07:: with SMTP id 7mr2951234oin.52.1601390884238;
-        Tue, 29 Sep 2020 07:48:04 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id a22sm1029421oie.13.2020.09.29.07.48.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Sep 2020 07:48:03 -0700 (PDT)
-Received: (nullmailer pid 567015 invoked by uid 1000);
-        Tue, 29 Sep 2020 14:48:02 -0000
-Date:   Tue, 29 Sep 2020 09:48:02 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, Andy Gross <agross@kernel.org>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>, linux-kernel@vger.kernel.org,
-        Lee Jones <lee.jones@linaro.org>,
-        Martin Botka <martin.botka1@gmail.com>,
-        Pavel Machek <pavel@ucw.cz>, devicetree@vger.kernel.org,
-        Dan Murphy <dmurphy@ti.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        linux-leds@vger.kernel.org, linux-pwm@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH v4 1/4] dt-bindings: leds: Add Qualcomm Light Pulse
- Generator binding
-Message-ID: <20200929144802.GA566563@bogus>
-References: <20200929031544.1000204-1-bjorn.andersson@linaro.org>
- <20200929031544.1000204-2-bjorn.andersson@linaro.org>
+        Tue, 29 Sep 2020 10:50:02 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D5FEC061755
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 07:50:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=QfNS7kmBNQ3K4ORpreZAzPxbXwgj+XL6qIvXBNr08X4=; b=mGxGxYrOkYHUlLWtDhpJ8xBYx9
+        pW03Xet+BVe68mn0pBWEvEIyPLTM+nOqaZK6NrB1m9VOliWy8wN57iX1Qz4wQmLNwAMfy+RRlIAsl
+        DR4/GKkinJWXw4N42fn/y3xqv8bf9WW+PCkpCvF+FaSbrxLRfOHjllw5mo0ps1CaJr0F4KqX6BK5J
+        VB+UhLDubUktXzqkRmC4MSv7HYCSfuiSfjQsNoCSXX49oIC9CCDcG/aUEpVYhrZT0J3KT3rOmIudh
+        5PBdctEt1hGBi2WQbNfBWJyuVhXM506d6dKg/XteURiJAVeLkMP8KCwD2PS3GLRxApFaiUxWdLDyq
+        zNSIEUHA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kNGx1-0006R1-PW; Tue, 29 Sep 2020 14:49:55 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5ACA0300F7A;
+        Tue, 29 Sep 2020 16:49:54 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id ED7F5210E84D0; Tue, 29 Sep 2020 16:49:53 +0200 (CEST)
+Date:   Tue, 29 Sep 2020 16:49:53 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Paul McKenney <paulmck@kernel.org>, linux-kernel@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>, kim.phillips@amd.com
+Subject: Re: [PATCH] rcu,ftrace: Fix ftrace recursion
+Message-ID: <20200929144953.GP2628@hirez.programming.kicks-ass.net>
+References: <20200929113340.GN2628@hirez.programming.kicks-ass.net>
+ <20200929103620.06762622@gandalf.local.home>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200929031544.1000204-2-bjorn.andersson@linaro.org>
+In-Reply-To: <20200929103620.06762622@gandalf.local.home>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 28 Sep 2020 20:15:41 -0700, Bjorn Andersson wrote:
-> This adds the binding document describing the three hardware blocks
-> related to the Light Pulse Generator found in a wide range of Qualcomm
-> PMICs.
+On Tue, Sep 29, 2020 at 10:36:20AM -0400, Steven Rostedt wrote:
+
+> > +notrace bool rcu_is_watching(void)
+> >  {
+> >  	bool ret;
+> >  
 > 
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> ---
-> 
-> Changes since v3:
-> - Rewritten as YAML
-> - Adopt multicolor model
-> 
->  .../bindings/leds/leds-qcom-lpg.yaml          | 170 ++++++++++++++++++
->  1 file changed, 170 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/leds/leds-qcom-lpg.yaml
-> 
+> I think the patch I suggested is more suitable.
 
-
-My bot found errors running 'make dt_binding_check' on your patch:
-
-Traceback (most recent call last):
-  File "/usr/local/bin/dt-extract-example", line 45, in <module>
-    binding = yaml.load(open(args.yamlfile, encoding='utf-8').read())
-  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/main.py", line 343, in load
-    return constructor.get_single_data()
-  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 111, in get_single_data
-    node = self.composer.get_single_node()
-  File "_ruamel_yaml.pyx", line 706, in _ruamel_yaml.CParser.get_single_node
-  File "_ruamel_yaml.pyx", line 724, in _ruamel_yaml.CParser._compose_document
-  File "_ruamel_yaml.pyx", line 775, in _ruamel_yaml.CParser._compose_node
-  File "_ruamel_yaml.pyx", line 889, in _ruamel_yaml.CParser._compose_mapping_node
-  File "_ruamel_yaml.pyx", line 773, in _ruamel_yaml.CParser._compose_node
-  File "_ruamel_yaml.pyx", line 852, in _ruamel_yaml.CParser._compose_sequence_node
-  File "_ruamel_yaml.pyx", line 904, in _ruamel_yaml.CParser._parse_next_event
-ruamel.yaml.scanner.ScannerError: while scanning a block scalar
-  in "<unicode string>", line 131, column 5
-found a tab character where an indentation space is expected
-  in "<unicode string>", line 144, column 1
-make[1]: *** [Documentation/devicetree/bindings/Makefile:18: Documentation/devicetree/bindings/leds/leds-qcom-lpg.example.dts] Error 1
-make[1]: *** Deleting file 'Documentation/devicetree/bindings/leds/leds-qcom-lpg.example.dts'
-make[1]: *** Waiting for unfinished jobs....
-./Documentation/devicetree/bindings/leds/leds-qcom-lpg.yaml:  while scanning a block scalar
-  in "<unicode string>", line 131, column 5
-found a tab character where an indentation space is expected
-  in "<unicode string>", line 144, column 1
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/leds/leds-qcom-lpg.yaml: ignoring, error parsing file
-warning: no schema found in file: ./Documentation/devicetree/bindings/leds/leds-qcom-lpg.yaml
-make: *** [Makefile:1366: dt_binding_check] Error 2
-
-
-See https://patchwork.ozlabs.org/patch/1372990
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure dt-schema is up to date:
-
-pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
-
-Please check and re-submit.
-
+Both, with only your patch we'd still take the pointless mcount call,
+which is then pure overhead.
