@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D896C27C474
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:14:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B82B027C43F
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:12:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728773AbgI2LON (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:14:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55620 "EHLO mail.kernel.org"
+        id S1729339AbgI2LMf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:12:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54340 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729352AbgI2LNV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:13:21 -0400
+        id S1729325AbgI2LMb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:12:31 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BFB1F2158C;
-        Tue, 29 Sep 2020 11:13:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9AF7F20848;
+        Tue, 29 Sep 2020 11:12:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601378000;
-        bh=uRBqL4UMxaM/h/T1q8XpgguM/2SBpklTv/zEIpHhygs=;
+        s=default; t=1601377951;
+        bh=JDZ3+6YB0uGguex7VGORBz61ij0uqFHkQ3vhlh0VuwY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aaLdLT40CdHktdZ4m3QhCT6n6szLAF4vlj+93VmQJqnv2IzqzKNyBTHY5NEfCMn3q
-         q7xVgIgILOiR7NaWxmTNvmX1gj8QY8Pb0z10dNAteSk4tRketjeBo2AR5k/ioaWh0a
-         63wbXUfZUQfEsOEM2/ju4t8IibcOVegLu1PELw3M=
+        b=UatfUneAoY56H3rdZO5Jc+niozuClR+LM6SZjfCtN9rbqPoSweEimhY0jx0xYj78r
+         LA7cNX9V6RMRm3mDGL3ArQCKZY0PBhxNbbkD6HOPyS3p3uIh+mObATrdkq/sDqDHvG
+         tODNY/TGi064F1hFJNYrnyMncVgIqMVivem6B8zM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
+        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
+        Ying Xue <ying.xue@windriver.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.14 009/166] net: ipv6: fix kconfig dependency warning for IPV6_SEG6_HMAC
-Date:   Tue, 29 Sep 2020 12:58:41 +0200
-Message-Id: <20200929105935.662502376@linuxfoundation.org>
+Subject: [PATCH 4.14 010/166] tipc: fix shutdown() of connection oriented socket
+Date:   Tue, 29 Sep 2020 12:58:42 +0200
+Message-Id: <20200929105935.710872245@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200929105935.184737111@linuxfoundation.org>
 References: <20200929105935.184737111@linuxfoundation.org>
@@ -43,51 +44,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Necip Fazil Yildiran <fazilyildiran@gmail.com>
+From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
 
-[ Upstream commit db7cd91a4be15e1485d6b58c6afc8761c59c4efb ]
+[ Upstream commit a4b5cc9e10803ecba64a7d54c0f47e4564b4a980 ]
 
-When IPV6_SEG6_HMAC is enabled and CRYPTO is disabled, it results in the
-following Kbuild warning:
+I confirmed that the problem fixed by commit 2a63866c8b51a3f7 ("tipc: fix
+shutdown() of connectionless socket") also applies to stream socket.
 
-WARNING: unmet direct dependencies detected for CRYPTO_HMAC
-  Depends on [n]: CRYPTO [=n]
-  Selected by [y]:
-  - IPV6_SEG6_HMAC [=y] && NET [=y] && INET [=y] && IPV6 [=y]
+----------
+#include <sys/socket.h>
+#include <unistd.h>
+#include <sys/wait.h>
 
-WARNING: unmet direct dependencies detected for CRYPTO_SHA1
-  Depends on [n]: CRYPTO [=n]
-  Selected by [y]:
-  - IPV6_SEG6_HMAC [=y] && NET [=y] && INET [=y] && IPV6 [=y]
+int main(int argc, char *argv[])
+{
+        int fds[2] = { -1, -1 };
+        socketpair(PF_TIPC, SOCK_STREAM /* or SOCK_DGRAM */, 0, fds);
+        if (fork() == 0)
+                _exit(read(fds[0], NULL, 1));
+        shutdown(fds[0], SHUT_RDWR); /* This must make read() return. */
+        wait(NULL); /* To be woken up by _exit(). */
+        return 0;
+}
+----------
 
-WARNING: unmet direct dependencies detected for CRYPTO_SHA256
-  Depends on [n]: CRYPTO [=n]
-  Selected by [y]:
-  - IPV6_SEG6_HMAC [=y] && NET [=y] && INET [=y] && IPV6 [=y]
+Since shutdown(SHUT_RDWR) should affect all processes sharing that socket,
+unconditionally setting sk->sk_shutdown to SHUTDOWN_MASK will be the right
+behavior.
 
-The reason is that IPV6_SEG6_HMAC selects CRYPTO_HMAC, CRYPTO_SHA1, and
-CRYPTO_SHA256 without depending on or selecting CRYPTO while those configs
-are subordinate to CRYPTO.
-
-Honor the kconfig menu hierarchy to remove kconfig dependency warnings.
-
-Fixes: bf355b8d2c30 ("ipv6: sr: add core files for SR HMAC support")
-Signed-off-by: Necip Fazil Yildiran <fazilyildiran@gmail.com>
+Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Acked-by: Ying Xue <ying.xue@windriver.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/ipv6/Kconfig |    1 +
- 1 file changed, 1 insertion(+)
+ net/tipc/socket.c |    5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
---- a/net/ipv6/Kconfig
-+++ b/net/ipv6/Kconfig
-@@ -321,6 +321,7 @@ config IPV6_SEG6_LWTUNNEL
- config IPV6_SEG6_HMAC
- 	bool "IPv6: Segment Routing HMAC support"
- 	depends on IPV6
-+	select CRYPTO
- 	select CRYPTO_HMAC
- 	select CRYPTO_SHA1
- 	select CRYPTO_SHA256
+--- a/net/tipc/socket.c
++++ b/net/tipc/socket.c
+@@ -2126,10 +2126,7 @@ static int tipc_shutdown(struct socket *
+ 	lock_sock(sk);
+ 
+ 	__tipc_shutdown(sock, TIPC_CONN_SHUTDOWN);
+-	if (tipc_sk_type_connectionless(sk))
+-		sk->sk_shutdown = SHUTDOWN_MASK;
+-	else
+-		sk->sk_shutdown = SEND_SHUTDOWN;
++	sk->sk_shutdown = SHUTDOWN_MASK;
+ 
+ 	if (sk->sk_state == TIPC_DISCONNECTING) {
+ 		/* Discard any unreceived messages */
 
 
