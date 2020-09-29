@@ -2,157 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 351B227C388
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:07:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6141327C38F
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:07:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728834AbgI2LGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:06:38 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:3564 "EHLO huawei.com"
+        id S1728868AbgI2LGz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:06:55 -0400
+Received: from mail-eopbgr140074.outbound.protection.outlook.com ([40.107.14.74]:21183
+        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728299AbgI2LFQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:05:16 -0400
-Received: from DGGEMM404-HUB.china.huawei.com (unknown [172.30.72.53])
-        by Forcepoint Email with ESMTP id 636CEFA2707949798961;
-        Tue, 29 Sep 2020 19:05:10 +0800 (CST)
-Received: from dggemi711-chm.china.huawei.com (10.3.20.110) by
- DGGEMM404-HUB.china.huawei.com (10.3.20.212) with Microsoft SMTP Server (TLS)
- id 14.3.487.0; Tue, 29 Sep 2020 19:05:05 +0800
-Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
- dggemi711-chm.china.huawei.com (10.3.20.110) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1913.5; Tue, 29 Sep 2020 19:05:04 +0800
-Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
- dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.1913.007;
- Tue, 29 Sep 2020 19:05:05 +0800
-From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-CC:     "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Luis Claudio R . Goncalves" <lgoncalv@redhat.com>,
-        Mahipal Challa <mahipalreddy2006@gmail.com>,
-        Seth Jennings <sjenning@redhat.com>,
-        "Dan Streetman" <ddstreet@ieee.org>,
-        Vitaly Wool <vitaly.wool@konsulko.com>,
-        "Wangzhou (B)" <wangzhou1@hisilicon.com>,
-        "fanghao (A)" <fanghao11@huawei.com>,
-        Colin Ian King <colin.king@canonical.com>
-Subject: RE: [PATCH v6] mm/zswap: move to use crypto_acomp API for hardware
- acceleration
-Thread-Topic: [PATCH v6] mm/zswap: move to use crypto_acomp API for hardware
- acceleration
-Thread-Index: AQHWlat2/tz4PWWjYEyGimM6I0lKCKl+fZuAgACGPED//9FBgIAAiB0w//+H/YCAAIqusA==
-Date:   Tue, 29 Sep 2020 11:05:05 +0000
-Message-ID: <2fe9a511f03c48c29a37ac1d6092410a@hisilicon.com>
-References: <20200818123100.4140-1-song.bao.hua@hisilicon.com>
- <20200928152432.l3auscdx2suyli4u@linutronix.de>
- <76bb2b545117413eb0879abcf91cf0f0@hisilicon.com>
- <20200929093113.3cv63szruo3c4inu@linutronix.de>
- <5951148aef79459192826f405a6fa5aa@hisilicon.com>
- <20200929102851.3m5ardu2orfbhe3d@linutronix.de>
-In-Reply-To: <20200929102851.3m5ardu2orfbhe3d@linutronix.de>
-Accept-Language: en-GB, en-US
+        id S1728126AbgI2LGt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:06:49 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=V+lYQb3cHsabndDlGXpe9VpUZi89ItKuZ43sS63X28iRmCXI8crllLZPFyFdLAdLkVmasD6VSr5LDpI/ZXkBjJAU6/Ge5FRl2FQ65TwcdbWXjyBZjstKR+ys1VW93XVLM6P2KP+qsqEcG1+qkRrJv8EA6LZGG54n7a3ssIwH77tViKn6n8rVYIH/+lhZigEvwnSjki13B0gI8NfouiQpNBAK2C2PZU68EgIS+NFcj74QLZ7tgYjQ9UXp34tZIIbdylwJ2znIOifD0FhTuraY40jfLvGJEfaN8l1V+Up5lzCvVRIDkErNidwpKbWzdABYfJR7S5MV/LYA/RVMebr+jw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=D1UYWqi3idshcF5UE2PpLX96WpJPHA7XSvgFZ21h2e8=;
+ b=X++v6cDacCsdvIf5LTkbE+wTc8CDAwuOi2m04VCTepm/RHVgUekQWoLZ5/crqYzE9pDUxJgLwMBVh6YLvcfejOwc9MYW8rDs3eyx/Fa4gSd4eXxL28E16e0BPLeMImPQpINDoYUHKkwxj1xBwFG0dTeL5/AfWWrCNA3KUhTlExoWo8tTbZ3CRzR7jt/bPnG12mu8qgAgYGz9eSS2XscjEBiL0unVw2ZYOycpv3c/p9BLml9UdsaTvJvtkytO+VJnf9SJ//fi1bbXIIyb8VncDKFnSX6X6QSHjZsHv7k2A7i2ENlQ7qDeBhJNerXP+olrIjXpG1CaELpkg26g41X4FA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=D1UYWqi3idshcF5UE2PpLX96WpJPHA7XSvgFZ21h2e8=;
+ b=WX2mEmJ6t2H25OOxdn3KvZfU+fGt4Jqu5uXCZAdjLHddJ8jrHtM3EPr8aVH0zW+ArYUNJhbyDgk7dlauHsoIAvjp4F54UMMLVtuz7vTOaMAvC8C36GAwkG75XlUrd+kDyJbgSkiEwxr9OXz8MPqRAm8GQuZgJQY946E8pIv733g=
+Authentication-Results: lists.infradead.org; dkim=none (message not signed)
+ header.d=none;lists.infradead.org; dmarc=none action=none
+ header.from=nxp.com;
+Received: from VI1PR0402MB3405.eurprd04.prod.outlook.com (2603:10a6:803:3::26)
+ by VE1PR04MB6351.eurprd04.prod.outlook.com (2603:10a6:803:128::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.23; Tue, 29 Sep
+ 2020 11:06:46 +0000
+Received: from VI1PR0402MB3405.eurprd04.prod.outlook.com
+ ([fe80::f960:c16d:16a5:6e7b]) by VI1PR0402MB3405.eurprd04.prod.outlook.com
+ ([fe80::f960:c16d:16a5:6e7b%7]) with mapi id 15.20.3412.029; Tue, 29 Sep 2020
+ 11:06:45 +0000
+Subject: Re: [PATCH v5 00/13] bus/fsl-mc: Extend mc-bus driver functionalities
+ in preparation for mc-bus VFIO support
+To:     Diana Craciun <diana.craciun@oss.nxp.com>,
+        linux-kernel@vger.kernel.org
+Cc:     stuyoder@gmail.com, leoyang.li@nxp.com, gregkh@linuxfoundation.org,
+        linux-arm-kernel@lists.infradead.org
+References: <20200929085441.17448-1-diana.craciun@oss.nxp.com>
+From:   Laurentiu Tudor <laurentiu.tudor@nxp.com>
+Message-ID: <8b3c1222-5dbd-5c51-ac10-8b1c1a69d2d5@nxp.com>
+Date:   Tue, 29 Sep 2020 14:06:41 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
+In-Reply-To: <20200929085441.17448-1-diana.craciun@oss.nxp.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.126.200.63]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: AM0P190CA0004.EURP190.PROD.OUTLOOK.COM
+ (2603:10a6:208:190::14) To VI1PR0402MB3405.eurprd04.prod.outlook.com
+ (2603:10a6:803:3::26)
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.1.106] (188.25.97.249) by AM0P190CA0004.EURP190.PROD.OUTLOOK.COM (2603:10a6:208:190::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.32 via Frontend Transport; Tue, 29 Sep 2020 11:06:44 +0000
+X-Originating-IP: [188.25.97.249]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: f5677841-999a-4a62-fdff-08d86467c103
+X-MS-TrafficTypeDiagnostic: VE1PR04MB6351:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VE1PR04MB6351545EE559E00E6E57A5C3EC320@VE1PR04MB6351.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: lWstUiOhFUuLryF4ykPGGFP2u/58ayF+QcRcMm127wk0MUwv4xtZ5gsdNt5RnocDWasUUG04i65uvtFK27nFE/6LrqzSwsCQVuLYje3KdVK5I4Worg2xpvN9FERupvugrExB8P+aJxLP5El/Zk1PfzbxDcVj6F1HL/ETtutI3DzjzoifLtAdhBszN+UVX7vmnjRtHquyATTfRk32g7jM5zxEc4LpgjY6B0KxJ//jc1j1qGDI/qQyTzTJ9BU+Sa5J51sxHdk4AiHZmIKbHGakEF0k4M2WRMd/yRCkkUxQHp7zvmORt8HIi5mG2t2HqfxRwPN2xlmsPbuJ55EJP2vA01FWmK5MLPAWi93tXgHsMWFdO0x5/NI/8T99L3momlb4+RadxSUgu1SCN2dv3zo7sy1SRai/qNiLSJ+vODZbNwJp90pq5NTf4kVurRBY6edT
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0402MB3405.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(346002)(376002)(39860400002)(366004)(396003)(2906002)(16526019)(186003)(26005)(36756003)(52116002)(4326008)(44832011)(53546011)(478600001)(2616005)(31696002)(31686004)(8676002)(956004)(86362001)(6486002)(6666004)(5660300002)(66946007)(83380400001)(316002)(16576012)(8936002)(66556008)(66476007)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: GMWPBTNWTuL1vxX5PKAz6cEivv4wMGTQf3Y9WmouBszmMuHKq6Mjb4HnHjKG2hIcdzAkQ5JBIaberzycF16lLp8kVPeXnr7RklzywUt3LfJ9OpSrTGf8uGbWLLnl6jkrbdJqssoW43I1DOGIryOlg2TlNIrwor9/NunVBYW7FCVDsnVnGs7WSndG9tl8a6QKVnKQS+5KXY7aia4h1drkMSNDF2YzkcolzrzJ4vvJvzZs09mhGEWsCRmGvsOb02hn/88cpPrAaPMTtA6xA3PLMzd+EsKALkM0G/mOoyAfMxWiuU6IVmiaIOYg2abLHvDGqD3qKrorag3zn7DN+7XN/NqavG+6KPArzQtmUddzhLTDl/vkHkI8CX9PvC/QjOc0w426Z11y+YDdKHQJ3rNgoiEnoLZtY8QJ6kDF0zT6BXfIGkczXzg3w9odgAhbPvLIPsIBk0JKfLI0NRMA7Wsx13mUMWYSmkO06iTLyYMtUlHW2BWcWiAHFatBxau7JXfmGqYvLDIUuvxvs9/geD+L5IiYHYb4ju7yWUvK2AOYHXm90P8nh8M8F67XEzzgZ2LHcq5aWaGxFDz6AtMKp3+3Zby8gj6r5voxkxIrOMDXJ8PaGg7OGYjX2B4ra9CCuwQtsoZn9oz8hNMJqFoCWaASbA==
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f5677841-999a-4a62-fdff-08d86467c103
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR0402MB3405.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Sep 2020 11:06:45.7967
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: hhem0PmiZWksdbdYPS7BDOlGWjxskg4vALBqED2DOa86iloKsQvX44581EgQ3kIWhVi7i9yFbOUX30iE8aOcMw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB6351
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogU2ViYXN0aWFuIEFuZHJ6
-ZWogU2lld2lvciBbbWFpbHRvOmJpZ2Vhc3lAbGludXRyb25peC5kZV0NCj4gU2VudDogVHVlc2Rh
-eSwgU2VwdGVtYmVyIDI5LCAyMDIwIDExOjI5IFBNDQo+IFRvOiBTb25nIEJhbyBIdWEgKEJhcnJ5
-IFNvbmcpIDxzb25nLmJhby5odWFAaGlzaWxpY29uLmNvbT4NCj4gQ2M6IGFrcG1AbGludXgtZm91
-bmRhdGlvbi5vcmc7IGhlcmJlcnRAZ29uZG9yLmFwYW5hLm9yZy5hdTsNCj4gZGF2ZW1AZGF2ZW1s
-b2Z0Lm5ldDsgbGludXgtY3J5cHRvQHZnZXIua2VybmVsLm9yZzsgbGludXgtbW1Aa3ZhY2sub3Jn
-Ow0KPiBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOyBMdWlzIENsYXVkaW8gUiAuIEdvbmNh
-bHZlcw0KPiA8bGdvbmNhbHZAcmVkaGF0LmNvbT47IE1haGlwYWwgQ2hhbGxhIDxtYWhpcGFscmVk
-ZHkyMDA2QGdtYWlsLmNvbT47DQo+IFNldGggSmVubmluZ3MgPHNqZW5uaW5nQHJlZGhhdC5jb20+
-OyBEYW4gU3RyZWV0bWFuIDxkZHN0cmVldEBpZWVlLm9yZz47DQo+IFZpdGFseSBXb29sIDx2aXRh
-bHkud29vbEBrb25zdWxrby5jb20+OyBXYW5nemhvdSAoQikNCj4gPHdhbmd6aG91MUBoaXNpbGlj
-b24uY29tPjsgZmFuZ2hhbyAoQSkgPGZhbmdoYW8xMUBodWF3ZWkuY29tPjsgQ29saW4NCj4gSWFu
-IEtpbmcgPGNvbGluLmtpbmdAY2Fub25pY2FsLmNvbT4NCj4gU3ViamVjdDogUmU6IFtQQVRDSCB2
-Nl0gbW0venN3YXA6IG1vdmUgdG8gdXNlIGNyeXB0b19hY29tcCBBUEkgZm9yDQo+IGhhcmR3YXJl
-IGFjY2VsZXJhdGlvbg0KPiANCj4gT24gMjAyMC0wOS0yOSAxMDowMjoxNSBbKzAwMDBdLCBTb25n
-IEJhbyBIdWEgKEJhcnJ5IFNvbmcpIHdyb3RlOg0KPiA+ID4gTXkgcG9pbnQgd2FzIHRoYXQgdGhl
-cmUgd2lsbCBiZSBhIHdhcm5pbmcgYXQgcnVuLXRpbWUgYW5kIHlvdSBkb24ndA0KPiA+ID4gd2Fu
-dCB0aGF0LiBUaGVyZSBhcmUgcmF3XyBhY2Nlc3NvcnMgaWYgeW91IGtub3cgd2hhdCB5b3UgYXJl
-IGRvaW5nLg0KPiA+ID4gQnV04oCmDQo+ID4NCj4gPiBJIGhhdmUgb25seSBzZWVuIGdldF9jcHVf
-cHRyL3ZhcigpIHRoaW5ncyB3aWxsIGRpc2FibGUgcHJlZW1wdGlvbi4gSQ0KPiA+IGRvbid0IHRo
-aW5rIHdlIHdpbGwgaGF2ZSBhIHdhcm5pbmcgYXMgdGhpc19jcHVfcHRyKCkgd29uJ3QgZGlzYWJs
-ZQ0KPiBwcmVlbXB0aW9uLg0KPiANCj4gR29vZC4gSnVzdCBlbmFibGUgQ09ORklHX0RFQlVHX1BS
-RUVNUFQgYW5kIHRlbGwgcGxlYXNlIHdoYXQgaGFwcGVucy4NCj4gDQoNClByb2JhYmx5IGdvdCB3
-aGF0IHlvdSBtZWFuIHdoaWxlIHRoaXNfY3B1X3B0ciBzaG91bGQgdXN1YWxseSBiZSBjYWxsZWQg
-aW4gcHJlZW1wdGlvbi1kaXNhYmxlZA0KY29udGV4dC4gV2lsbCBkbyBmdXJ0aGVyIHRlc3QgdG8g
-Y2hlY2sgYW5kIHZlcmlmeSBjYXJlZnVsbHkgd2l0aCBERUJVR19QUkVFTVBULg0KDQpTbyB5b3Vy
-IHN1Z2dlc3Rpb24gaXMgYWN0dWFsbHkgdGhlIGJlbG93Pw0KYS4gZ2V0X2NwdV9wdHIgIC8vIGZv
-ciBhY29tcF9jdHggYW5kIGRpc2FibGUgcHJlZW1wdGlvbg0KYi4gcmF3X2NwdV9wdHIgb3IgdGhp
-c19jcHVfcHRyICAvLyBmb3IgZHN0bWVtKyBtdXRleA0KYy4gcHV0X2NwdV9wdHIgIC8vZW5hYmxl
-IHByZWVtcHRpb24NCg0KaW4gdGhpcyB3YXksIGFsbCBzdGVwcyAiYSIgdG8gImMiIGFyZSBzdHJp
-Y3RseSBpbiBhIHByZWVtcHRpb24tZGlzYWJsZWQgY29udGV4dC4NCg0KPiA+ID4gRWFybGllciB5
-b3UgaGFkIGNvbXByZXNzaW9uL2RlY29tcHJlc3Npb24gd2l0aCBkaXNhYmxlZCBwcmVlbXB0aW9u
-DQo+ID4gPiBhbmQNCj4gPg0KPiA+IE5vLiB0aGF0IGlzIHJpZ2h0IG5vdyBkb25lIGluIGVuYWJs
-ZWQgcHJlZW1wdGlvbiBjb250ZXh0IHdpdGggdGhpcw0KPiA+IHBhdGNoLiBUaGUgY29kZSBiZWZv
-cmUgdGhpcyBwYXRjaCB3YXMgZG9pbmcgKGRlKWNvbXByZXNzaW9uIGluDQo+IHByZWVtcHRpb24t
-ZGlzYWJsZWQgY29udGV4dCBieSB1c2luZyBnZXRfY3B1X3B0ciBhbmQgZ2V0X2NwdV92YXIuDQo+
-IA0KPiBFeGFjdGx5IHdoYXQgSSBhbSBzYXlpbmcuIEFuZCB3aXRoaW4gdGhpcyBnZXRfY3B1X3B0
-cigpIHNlY3Rpb24gdGhlcmUgd2FzIHRoZQ0KPiBjb21wcmVzc2lvbi9kZWNvbXByZXNzaW9uIHNp
-dHRpbmcuIFNvIGNvbXByZXNzaW9uL2RlY29tcHJlc3Npb24gaGFwcGVuZA0KPiB3aGlsZSBwcmVl
-bXRpb24gd2FzIG9mZi4NCj4gDQo+ID4gPiBzdHJpY3QgcGVyLUNQVSBtZW1vcnkgYWxsb2NhdGlv
-bi4gTm93IGlmIHlvdSBrZWVwIHRoaXMgcGVyLUNQVQ0KPiA+ID4gbWVtb3J5IGFsbG9jYXRpb24g
-dGhlbiB5b3UgZ2FpbiBhIHBvc3NpYmxlIGJvdHRsZW5lY2suDQo+ID4gPiBJbiB0aGUgcHJldmlv
-dXMgZW1haWwgeW91IHNhaWQgdGhhdCB0aGVyZSBtYXkgYmUgYSBib3R0bGVuZWNrIGluIHRoZQ0K
-PiA+ID4gdXBwZXIgbGF5ZXIgd2hlcmUgeW91IGNhbid0IHV0aWxpemUgYWxsIHRoYXQgbWVtb3J5
-IHlvdSBhbGxvY2F0ZS4gU28NCj4gPiA+IHlvdSBtYXkgd2FudCB0byByZXRoaW5rIHRoYXQgc3Ry
-YXRlZ3kgYmVmb3JlIHRoYXQgcmV3b3JrLg0KPiA+DQo+ID4gd2UgYXJlIHByb2JhYmx5IG5vdCB0
-YWxraW5nIGFib3V0IHNhbWUgdGhpbmcgOi0pIEkgd2FzIHRhbGtpbmcgYWJvdXQNCj4gPiBwb3Nz
-aWJsZSBnZW5lcmljIHN3YXAgYm90dGxlbmVjay4gRm9yIGV4YW1wbGUsIExSVSBpcyBnbG9iYWws
-IHdoaWxlDQo+ID4gc3dhcHBpbmcsIG11bHRpcGxlIGNvcmVzIG1pZ2h0IGhhdmUgc29tZSBsb2Nr
-cyBvbiB0aGlzIExSVS4gZm9yDQo+ID4gZXhhbXBsZSwgaWYgd2UgaGF2ZSA4IGluYWN0aXZlIHBh
-Z2VzIHRvIHN3YXAgb3V0LCBJIGFtIG5vdCBzdXJlIGlmIG1tDQo+ID4gY2FuIHVzZSA4IGNvcmVz
-IHRvIHN3YXAgdGhlbSBvdXQgYXQgdGhlIHNhbWUgdGltZS4NCj4gDQo+IEluIHRoYXQgY2FzZSB5
-b3UgcHJvYmFibHkgZG9uJ3QgbmVlZCA4KiBwZXItQ1BVIG1lbW9yeSBmb3IgdGhpcyB0YXNrLg0K
-DQpFdmVudHVhbGx5IEkgZ290IHdoYXQgeW91IG1lYW4sIGl0IHNlZW1zIHlvdSBtZWFuIHdlIG1p
-Z2h0IGJlIGFibGUgdG8gc2F2ZSBzb21lIG1lbW9yeQ0Kc2luY2Ugd2UgaGF2ZSBtb3ZlZCB0byBw
-cmVlbXB0aW9uLWVuYWJsZWQgY29udGV4dCBmb3IgKGRlKWNvbXByZXNzaW9uLCB3ZSBkb27igJl0
-IGhhdmUgdG8NCnN0cmljdGx5IGRlcGVuZCBvbiBwZXItY3B1IHBhZ2UuDQoNCkkgYWdyZWUgaXQg
-bWlnaHQgYmUgcHV0IGludG8gdG9kbyBsaXN0IHRvIGludmVzdGlnYXRlLiBGb3IgdGhlIGZpcnN0
-IHBhdGNoIHRvIGZpeCB0aGUgYnJva2VuIEFQSXMNCmNvbm5lY3Rpb24sIGl0IHNlZW1zIGl0IGlz
-IG5vdCB0aGUgcHJvcGVyIHRpbWUgdG8gaGFuZGxlIHRoaXMgbWVtb3J5IHNhdmluZyBpc3N1ZS4g
-QW5kIGl0IGlzDQphY3R1YWxseSBxdWl0ZSBjb21wbGljYXRlZCBhcyB3ZSBuZWVkIGEgcGVyLW51
-bWEgcG9vbCBmb3IgZHN0bWVtIHJhdGhlciB0aGFuIGdsb2JhbCBwb29sLg0KDQo+IA0KPiA+ID4N
-Cj4gPiA+ID4gMi4gd2hpbGUgYWxsb2NhdGluZyBtdXRleCwgd2UgY2FuIHB1dCB0aGUgbXV0ZXgg
-aW50byBsb2NhbCBtZW1vcnkNCj4gPiA+ID4gYnkgdXNpbmcNCj4gPiA+IGttYWxsb2Nfbm9kZSgp
-Lg0KPiA+ID4gPiBJZiB3ZSBtb3ZlIHRvICJzdHJ1Y3QgbXV0ZXggbG9jayIgZGlyZWN0bHksIG1v
-c3QgQ1BVcyBpbiBhIE5VTUENCj4gPiA+ID4gc2VydmVyIHdpbGwNCj4gPiA+IGhhdmUgdG8gYWNj
-ZXNzDQo+ID4gPiA+IHJlbW90ZSBtZW1vcnkgdG8gcmVhZC93cml0ZSB0aGUgbXV0ZXgsIHRoZXJl
-Zm9yZSwgdGhpcyB3aWxsDQo+ID4gPiA+IGluY3JlYXNlIHRoZQ0KPiA+ID4gbGF0ZW5jeSBkcmFt
-YXRpY2FsbHkuDQo+ID4gPg0KPiA+ID4gSWYgeW91IG5lZWQgc29tZXRoaW5nIHBlci1DUFUgdGhl
-biBERUZJTkVfUEVSX0NQVSgpIHdpbGwgZ2l2ZSBpdCB0byB5b3UuDQo+ID4NCj4gPiBZZXMuIEl0
-IGlzIHRydWUuDQo+ID4NCj4gPiA+IEl0IHdvdWxkIGJlIHZlcnkgYmFkIGZvciBwZXJmb3JtYW5j
-ZSBpZiB0aGlzIGFsbG9jYXRpb25zIHdlcmUgbm90DQo+ID4gPiBmcm9tIENQVS1sb2NhbCBtZW1v
-cnksIHJpZ2h0PyBTbyB3aGF0IG1ha2VzIHlvdSB0aGluayB0aGlzIGlzIHdvcnNlDQo+ID4gPiB0
-aGFuDQo+ID4gPiBrbWFsbG9jX25vZGUoKSBiYXNlZCBhbGxvY2F0aW9ucz8NCj4gPg0KPiA+IFll
-cy4gSWYgeW91ciByZWFkIHpzd2FwIGNvZGUsIGl0IGhhcyBjb25zaWRlcmVkIE5VTUEgdmVyeSBj
-YXJlZnVsbHkgYnkNCj4gPiBhbGxvY2F0aW5nIHZhcmlvdXMgbWVtb3J5IGxvY2FsbHkuIEFuZCBp
-biBjcnlwdG8gZnJhbWV3b3JrLCBJIGFsc28gYWRkZWQgQVBJDQo+IHRvIGFsbG9jYXRlIGxvY2Fs
-IGNvbXByZXNzaW9uLg0KPiA+IGh0dHBzOi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9r
-ZXJuZWwvZ2l0L3RvcnZhbGRzL2xpbnV4LmdpdC9jb20NCj4gPiBtaXQvP2lkPTdiYzEzYjViNjBl
-OTQgdGhpcyB6c3dhcCBwYXRjaCBoYXMgdXNlZCB0aGUgbmV3IG5vZGUtYXdhcmUNCj4gPiBBUEku
-DQo+ID4NCj4gPiBNZW1vcnkgYWNjZXNzIGNyb3NzaW5nIE5VTUEgbm9kZSwgcHJhY3RpY2FsbHkg
-Y3Jvc3NpbmcgcGFja2FnZXMsIGNhbg0KPiA+IGRyYW1hdGljYWxseSBpbmNyZWFzZSwgbGlrZSBk
-b3VibGUsIHRyaXBsZSBvciBtb3JlLg0KPiANCj4gU28geW91IGFyZSB0ZWxsaW5nIG1lLCBERUZJ
-TkVfUEVSX0NQVSgpIGRvZXMgbm90IGFsbG9jYXRlIHRoZSBtZW1vcnkgZm9yDQo+IGVhY2ggQ1BV
-IHRvIGJlIGxvY2FsIGJ1dCBrbWFsbG9jX25vZGUoKSBkb2VzPw0KDQpGb3IgdGhlIGZpcnN0IGJl
-Z2lubmluZywgdGhleSBhcmUgcHV0IHRvZ2V0aGVyLiBCdXQgYWZ0ZXIgc2V0dXBfcGVyX2NwdV9h
-cmVhcygpDQp0aGV5IGFyZSBjb3BpZWQgdG8gYSBtZW1vcnkgYWNjb2xhdGVkIGJ5IG1lbWJsb2Nr
-IHdpdGggbm9kZSBpbmZvcm1hdGlvbi4NCkkgbWlzc2VkIHRoZSBzZWNvbmQgcGFydC4gWW91IGFy
-ZSByaWdodCA6LSkNCg0KVGhhbmtzDQpCYXJyeQ0K
+
+
+On 9/29/2020 11:54 AM, Diana Craciun wrote:
+> The vfio-mc bus driver needs some additional services to be exported by the
+> mc-bus driver like:
+> - a way to reset the DPRC container
+> - driver_override support
+> - functions to setup/tear down a DPRC
+> - functions for allocating the pool of interrupts. In case of VFIO the
+> interrupts are not configured at probe time, but later by userspace
+> request
+> 
+> v4 -> v5
+> - dprc_celanup should not fail
+> 
+> v3 -> v4
+> - Rebased on the latest kernel.
+> - Exported a dprc_remove function
+> 
+> v2 -> v3
+> - Add a new version for dprc_get_obj_region
+> - Export the cacheability bus specific bits defines
+> 
+> v1 -> v2
+> - Remove driver_override propagation through various functions
+> - Cache the DPRC API version
+> 
+> The patches are related with "vfio/fsl-mc: VFIO support for FSL-MC
+> devices" patches, but the series were split because they are targeting
+> different subsystems. However, the mc-bus patches may suffer changes
+> when addressing the VFIO review comments.
+> 
+> The patches do not address the comment regarding moving driver_override
+> in the core code. I prefer not to tie these patches on that change and
+> address that separately.
+> 
+> Bharat Bhushan (3):
+>   bus/fsl-mc: add support for 'driver_override' in the mc-bus
+>   bus/fsl-mc: Add dprc-reset-container support
+>   bus/fsl-mc: Extend ICID size from 16bit to 32bit
+> 
+> Diana Craciun (10):
+>   bus/fsl-mc: Do no longer export the total number of irqs outside
+>     dprc_scan_objects
+>   bus/fsl-mc: Add a new parameter to dprc_scan_objects function
+>   bus/fsl-mc: Set the QMAN/BMAN region flags
+>   bus/fsl-mc: Cache the DPRC API version
+>   bus/fsl-mc: Export dprc_scan/dprc_remove functions to be used by
+>     multiple entities
+>   bus/fsl-mc: Export a cleanup function for DPRC
+>   bus/fsl-mc: Add a container setup function
+>   bus/fsl_mc: Do not rely on caller to provide non NULL mc_io
+>   bus/fsl-mc: Export IRQ pool handling functions to be used by VFIO
+>   bus/fsl-mc: Add a new version for dprc_get_obj_region command
+> 
+>  drivers/bus/fsl-mc/dprc-driver.c      | 190 ++++++++++++++++----------
+>  drivers/bus/fsl-mc/dprc.c             | 141 +++++++++++++++----
+>  drivers/bus/fsl-mc/fsl-mc-allocator.c |  12 +-
+>  drivers/bus/fsl-mc/fsl-mc-bus.c       |  64 ++++++++-
+>  drivers/bus/fsl-mc/fsl-mc-private.h   |  31 ++---
+>  drivers/bus/fsl-mc/mc-io.c            |   7 +-
+>  include/linux/fsl/mc.h                |  41 +++++-
+>  7 files changed, 359 insertions(+), 127 deletions(-)
+> 
+
+For the series:
+Reviewed-by: Laurentiu Tudor <laurentiu.tudor@nxp.com>
+Acked-by: Laurentiu Tudor <laurentiu.tudor@nxp.com>
+
+---
+Best Regards, Laurentiu
