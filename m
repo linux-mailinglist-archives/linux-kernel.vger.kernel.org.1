@@ -2,46 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ADCD27C490
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:15:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 930BC27C48D
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:15:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728534AbgI2LOw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:14:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58336 "EHLO mail.kernel.org"
+        id S1728901AbgI2LOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:14:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58756 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729449AbgI2LOl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:14:41 -0400
+        id S1729463AbgI2LOr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:14:47 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ED63B20848;
-        Tue, 29 Sep 2020 11:14:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id ADE9D221EC;
+        Tue, 29 Sep 2020 11:14:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601378080;
-        bh=I2Z6OIspS6YUaYt1Dzh3PCUQ6/nbwqFQYOaXwnswFpE=;
+        s=default; t=1601378087;
+        bh=apXheJrvF9UwGoNCAJr1Ny8+KPRGtK5Z20uSuDveaZE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tAJWyA+lC0NtehQcjhZ9TXHv06yC6MAdK8qRAxsugKsmAI02BqVqAxARAPBL+l66r
-         eHwExnCceyOjptBGykqHiT8657HEtnjshNtBVRXmrJ+uV2SIeN7cX55zjJ5wftjyQk
-         PArqzmBVrPrVnvHmG0o7sRlzM0rW643wUebjQujE=
+        b=Ioc+TD+qiQxZHViokqCmyl+wwCaAPn8meDDO0wv3AOpY9H4kMu4B5j5vmhXOVbO6n
+         ti6wW2RbaPA2/fljINIkzJh23cZzlVkvkOrGr2BfT8E6+PwKi6udBK9VikVilcJvWs
+         rYwD/ikL4wmmvMqwF0wDt0DTAboGrHHIrfu16jFE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mikulas Patocka <mpatocka@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dan Williams <dan.j.wiilliams@intel.com>,
-        Jan Kara <jack@suse.cz>, Jeff Moyer <jmoyer@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>, Christoph Hellwig <hch@lst.de>,
-        Toshi Kani <toshi.kani@hpe.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Matthew Wilcox <mawilcox@microsoft.com>,
-        Ross Zwisler <ross.zwisler@linux.intel.com>,
-        Ingo Molnar <mingo@elte.hu>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.14 024/166] arch/x86/lib/usercopy_64.c: fix __copy_user_flushcache() cache writeback
-Date:   Tue, 29 Sep 2020 12:58:56 +0200
-Message-Id: <20200929105936.402814715@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Joakim Tjernlund <joakim.tjernlund@infinera.com>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 4.14 026/166] ALSA: usb-audio: Add delay quirk for H570e USB headsets
+Date:   Tue, 29 Sep 2020 12:58:58 +0200
+Message-Id: <20200929105936.505973703@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200929105935.184737111@linuxfoundation.org>
 References: <20200929105935.184737111@linuxfoundation.org>
@@ -53,49 +43,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mikulas Patocka <mpatocka@redhat.com>
+From: Joakim Tjernlund <joakim.tjernlund@infinera.com>
 
-commit a1cd6c2ae47ee10ff21e62475685d5b399e2ed4a upstream.
+commit 315c7ad7a701baba28c628c4c5426b3d9617ceed upstream.
 
-If we copy less than 8 bytes and if the destination crosses a cache
-line, __copy_user_flushcache would invalidate only the first cache line.
+Needs the same delay as H650e
 
-This patch makes it invalidate the second cache line as well.
-
-Fixes: 0aed55af88345b ("x86, uaccess: introduce copy_from_iter_flushcache for pmem / cache-bypass operations")
-Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Reviewed-by: Dan Williams <dan.j.wiilliams@intel.com>
-Cc: Jan Kara <jack@suse.cz>
-Cc: Jeff Moyer <jmoyer@redhat.com>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Christoph Hellwig <hch@lst.de>
-Cc: Toshi Kani <toshi.kani@hpe.com>
-Cc: "H. Peter Anvin" <hpa@zytor.com>
-Cc: Al Viro <viro@zeniv.linux.org.uk>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Matthew Wilcox <mawilcox@microsoft.com>
-Cc: Ross Zwisler <ross.zwisler@linux.intel.com>
-Cc: Ingo Molnar <mingo@elte.hu>
-Cc: <stable@vger.kernel.org>
-Link: https://lkml.kernel.org/r/alpine.LRH.2.02.2009161451140.21915@file01.intranet.prod.int.rdu2.redhat.com
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Joakim Tjernlund <joakim.tjernlund@infinera.com>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20200910085328.19188-1-joakim.tjernlund@infinera.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/x86/lib/usercopy_64.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/usb/quirks.c |    7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
---- a/arch/x86/lib/usercopy_64.c
-+++ b/arch/x86/lib/usercopy_64.c
-@@ -118,7 +118,7 @@ long __copy_user_flushcache(void *dst, c
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -1322,12 +1322,13 @@ void snd_usb_ctl_msg_quirk(struct usb_de
+ 	    && (requesttype & USB_TYPE_MASK) == USB_TYPE_CLASS)
+ 		mdelay(20);
+ 
+-	/* Zoom R16/24, Logitech H650e, Jabra 550a, Kingston HyperX needs a tiny
+-	 * delay here, otherwise requests like get/set frequency return as
+-	 * failed despite actually succeeding.
++	/* Zoom R16/24, Logitech H650e/H570e, Jabra 550a, Kingston HyperX
++	 *  needs a tiny delay here, otherwise requests like get/set
++	 *  frequency return as failed despite actually succeeding.
  	 */
- 	if (size < 8) {
- 		if (!IS_ALIGNED(dest, 4) || size != 4)
--			clean_cache_range(dst, 1);
-+			clean_cache_range(dst, size);
- 	} else {
- 		if (!IS_ALIGNED(dest, 8)) {
- 			dest = ALIGN(dest, boot_cpu_data.x86_clflush_size);
+ 	if ((chip->usb_id == USB_ID(0x1686, 0x00dd) ||
+ 	     chip->usb_id == USB_ID(0x046d, 0x0a46) ||
++	     chip->usb_id == USB_ID(0x046d, 0x0a56) ||
+ 	     chip->usb_id == USB_ID(0x0b0e, 0x0349) ||
+ 	     chip->usb_id == USB_ID(0x0951, 0x16ad)) &&
+ 	    (requesttype & USB_TYPE_MASK) == USB_TYPE_CLASS)
 
 
