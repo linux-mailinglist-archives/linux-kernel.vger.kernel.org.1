@@ -2,40 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 297C827C6DD
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:49:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B939927C7AA
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:56:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731228AbgI2LtZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:49:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52552 "EHLO mail.kernel.org"
+        id S1731309AbgI2Lzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:55:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44458 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731191AbgI2LtT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:49:19 -0400
+        id S1729081AbgI2Lo6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:44:58 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A5806208B8;
-        Tue, 29 Sep 2020 11:49:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B1B40206E5;
+        Tue, 29 Sep 2020 11:44:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601380159;
-        bh=uPVt/+A8SPP8nk6yfw0iRBBkK/tfiz8wyJFIYaXNVNk=;
+        s=default; t=1601379897;
+        bh=godIYlOVDfbEOcRpyrKVHCb+6ijvgxB/h7KB2/4W3KM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=a8Oclsp66iXGHqzzDU/x51trlFLKjmqQ25MpfGRf7Dt8N5tbu3zagJiT+SYuujiH0
-         0McC7ZUfAorxawsML7hrucSGXqvzlSVTBJUU2XeY2EDpo6IlnHM022nu6lOKtNQOSc
-         sZqY1dkgPfp4gNqLo38FTkja9Pnaal4/auJzTP7Q=
+        b=xxAM6y2Id5GR62GADn2zSIrRplPInXtsAI7tg9ppNyermxyp1riDb+ILlauOUe4Ba
+         OqCT+Hd7Bn4wmZ5vi7xsy3rFS8z7E/JMOmGFvptWxJTJM/3ZIwIzZDnuC9wVG9zboD
+         B55QpzG5cGVduX+XJlab8KVejGCAB8DiDACxT+ZU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
-        Johannes Berg <johannes.berg@intel.com>,
+        syzbot+ecf80462cb7d5d552bc7@syzkaller.appspotmail.com,
+        Minchan Kim <minchan@kernel.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 53/99] lib80211: fix unmet direct dependendices config warning when !CRYPTO
-Date:   Tue, 29 Sep 2020 13:01:36 +0200
-Message-Id: <20200929105932.338743420@linuxfoundation.org>
+Subject: [PATCH 5.4 366/388] mm: validate pmd after splitting
+Date:   Tue, 29 Sep 2020 13:01:37 +0200
+Message-Id: <20200929110028.184856474@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929105929.719230296@linuxfoundation.org>
-References: <20200929105929.719230296@linuxfoundation.org>
+In-Reply-To: <20200929110010.467764689@linuxfoundation.org>
+References: <20200929110010.467764689@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,39 +46,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Necip Fazil Yildiran <fazilyildiran@gmail.com>
+From: Minchan Kim <minchan@kernel.org>
 
-[ Upstream commit b959ba9f468b1c581f40e92661ad58b093abaa03 ]
+[ Upstream commit ce2684254bd4818ca3995c0d021fb62c4cf10a19 ]
 
-When LIB80211_CRYPT_CCMP is enabled and CRYPTO is disabled, it results in unmet
-direct dependencies config warning. The reason is that LIB80211_CRYPT_CCMP
-selects CRYPTO_AES and CRYPTO_CCM, which are subordinate to CRYPTO. This is
-reproducible with CRYPTO disabled and R8188EU enabled, where R8188EU selects
-LIB80211_CRYPT_CCMP but does not select or depend on CRYPTO.
+syzbot reported the following KASAN splat:
 
-Honor the kconfig menu hierarchy to remove kconfig dependency warnings.
+  general protection fault, probably for non-canonical address 0xdffffc0000000003: 0000 [#1] PREEMPT SMP KASAN
+  KASAN: null-ptr-deref in range [0x0000000000000018-0x000000000000001f]
+  CPU: 1 PID: 6826 Comm: syz-executor142 Not tainted 5.9.0-rc4-syzkaller #0
+  Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+  RIP: 0010:__lock_acquire+0x84/0x2ae0 kernel/locking/lockdep.c:4296
+  Code: ff df 8a 04 30 84 c0 0f 85 e3 16 00 00 83 3d 56 58 35 08 00 0f 84 0e 17 00 00 83 3d 25 c7 f5 07 00 74 2c 4c 89 e8 48 c1 e8 03 <80> 3c 30 00 74 12 4c 89 ef e8 3e d1 5a 00 48 be 00 00 00 00 00 fc
+  RSP: 0018:ffffc90004b9f850 EFLAGS: 00010006
+  Call Trace:
+    lock_acquire+0x140/0x6f0 kernel/locking/lockdep.c:5006
+    __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+    _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+    spin_lock include/linux/spinlock.h:354 [inline]
+    madvise_cold_or_pageout_pte_range+0x52f/0x25c0 mm/madvise.c:389
+    walk_pmd_range mm/pagewalk.c:89 [inline]
+    walk_pud_range mm/pagewalk.c:160 [inline]
+    walk_p4d_range mm/pagewalk.c:193 [inline]
+    walk_pgd_range mm/pagewalk.c:229 [inline]
+    __walk_page_range+0xe7b/0x1da0 mm/pagewalk.c:331
+    walk_page_range+0x2c3/0x5c0 mm/pagewalk.c:427
+    madvise_pageout_page_range mm/madvise.c:521 [inline]
+    madvise_pageout mm/madvise.c:557 [inline]
+    madvise_vma mm/madvise.c:946 [inline]
+    do_madvise+0x12d0/0x2090 mm/madvise.c:1145
+    __do_sys_madvise mm/madvise.c:1171 [inline]
+    __se_sys_madvise mm/madvise.c:1169 [inline]
+    __x64_sys_madvise+0x76/0x80 mm/madvise.c:1169
+    do_syscall_64+0x31/0x70 arch/x86/entry/common.c:46
+    entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-Fixes: a11e2f85481c ("lib80211: use crypto API ccm(aes) transform for CCMP processing")
-Signed-off-by: Necip Fazil Yildiran <fazilyildiran@gmail.com>
-Link: https://lore.kernel.org/r/20200909095452.3080-1-fazilyildiran@gmail.com
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+The backing vma was shmem.
+
+In case of split page of file-backed THP, madvise zaps the pmd instead
+of remapping of sub-pages.  So we need to check pmd validity after
+split.
+
+Reported-by: syzbot+ecf80462cb7d5d552bc7@syzkaller.appspotmail.com
+Fixes: 1a4e58cce84e ("mm: introduce MADV_PAGEOUT")
+Signed-off-by: Minchan Kim <minchan@kernel.org>
+Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/wireless/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ mm/madvise.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/wireless/Kconfig b/net/wireless/Kconfig
-index faf74850a1b52..27026f587fa61 100644
---- a/net/wireless/Kconfig
-+++ b/net/wireless/Kconfig
-@@ -217,6 +217,7 @@ config LIB80211_CRYPT_WEP
+diff --git a/mm/madvise.c b/mm/madvise.c
+index 26f7954865ed9..1107e99e498b2 100644
+--- a/mm/madvise.c
++++ b/mm/madvise.c
+@@ -380,9 +380,9 @@ static int madvise_cold_or_pageout_pte_range(pmd_t *pmd,
+ 		return 0;
+ 	}
  
- config LIB80211_CRYPT_CCMP
- 	tristate
-+	select CRYPTO
- 	select CRYPTO_AES
- 	select CRYPTO_CCM
- 
++regular_page:
+ 	if (pmd_trans_unstable(pmd))
+ 		return 0;
+-regular_page:
+ #endif
+ 	tlb_change_page_size(tlb, PAGE_SIZE);
+ 	orig_pte = pte = pte_offset_map_lock(vma->vm_mm, pmd, addr, &ptl);
 -- 
 2.25.1
 
