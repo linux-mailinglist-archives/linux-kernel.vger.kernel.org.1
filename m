@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1388127C6CD
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:49:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F8DB27C66D
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:45:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731028AbgI2Lsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:48:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51020 "EHLO mail.kernel.org"
+        id S1729983AbgI2LpK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:45:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44708 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731148AbgI2Lsb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:48:31 -0400
+        id S1730929AbgI2LpE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:45:04 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CAA732083B;
-        Tue, 29 Sep 2020 11:48:30 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A77B4206E5;
+        Tue, 29 Sep 2020 11:45:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601380111;
-        bh=x11w+LY5QJBSdM5krXK2rz3FcZrsr4Rjn84i83jltlk=;
+        s=default; t=1601379904;
+        bh=QWEe9lXeetwnmN3RorUwCPYnWoDrXGcTsLriocZ7dK8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YwG4u5nRxQANdsCoQw6Bkxb/SuSan5UkWGzeN0x7xhWOUsE2+xMg5CdD3CEZpMEjn
-         Y3nkg0pAoIE/myT5N1zjwSSD6rL8lKh7OUj43OBXSPtzO9ty2D0NoAAjem2ob0EZyu
-         streS3b5l/wjGMrP0kZ6zBUG1NxLMTTheVkLxn0U=
+        b=s1Qd50hSYXqbzA7l4KguZUZlPYSn/ABm0mUfMQ6yTJSok1pTpVD+/EnJhSogMYQro
+         A1RqVbZX32e/uOVIGFq9gvKXHZwCn3smG5rzTaiUabUuHt0ad3QSP6/57rw4mtLIoj
+         +2DymHlMoMXvjn32eTQaqXm1pnm24iwXwYIxVANw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Amar <asinghal@codeaurora.org>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 55/99] cfg80211: fix 6 GHz channel conversion
-Date:   Tue, 29 Sep 2020 13:01:38 +0200
-Message-Id: <20200929105932.431479822@linuxfoundation.org>
+        stable@vger.kernel.org, p_c_chan@hotmail.com, ecm4@mail.com,
+        perdigao1@yahoo.com, matzes@users.sourceforge.net,
+        rvelascog@gmail.com, Thomas Gleixner <tglx@linutronix.de>
+Subject: [PATCH 5.4 368/388] x86/ioapic: Unbreak check_timer()
+Date:   Tue, 29 Sep 2020 13:01:39 +0200
+Message-Id: <20200929110028.281082680@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929105929.719230296@linuxfoundation.org>
-References: <20200929105929.719230296@linuxfoundation.org>
+In-Reply-To: <20200929110010.467764689@linuxfoundation.org>
+References: <20200929110010.467764689@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,37 +43,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+From: Thomas Gleixner <tglx@linutronix.de>
 
-[ Upstream commit c0de8776af6543e10d1a5c8969679fd9f6b66fa9 ]
+commit 86a82ae0b5095ea24c55898a3f025791e7958b21 upstream.
 
-We shouldn't accept any channels bigger than 233, fix that.
+Several people reported in the kernel bugzilla that between v4.12 and v4.13
+the magic which works around broken hardware and BIOSes to find the proper
+timer interrupt delivery mode stopped working for some older affected
+platforms which need to fall back to ExtINT delivery mode.
 
-Reported-by: Amar <asinghal@codeaurora.org>
-Fixes: d1a1646c0de7 ("cfg80211: adapt to new channelization of the 6GHz band")
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-Link: https://lore.kernel.org/r/20200917115222.312ba6f1d461.I3a8c8fbcc3cc019814fd9cd0aced7eb591626136@changeid
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+The reason is that the core code changed to keep track of the masked and
+disabled state of an interrupt line more accurately to avoid the expensive
+hardware operations.
+
+That broke an assumption in i8259_make_irq() which invokes
+
+     disable_irq_nosync();
+     irq_set_chip_and_handler();
+     enable_irq();
+
+Up to v4.12 this worked because enable_irq() unconditionally unmasked the
+interrupt line, but after the state tracking improvements this is not
+longer the case because the IO/APIC uses lazy disabling. So the line state
+is unmasked which means that enable_irq() does not call into the new irq
+chip to unmask it.
+
+In principle this is a shortcoming of the core code, but it's more than
+unclear whether the core code should try to reset state. At least this
+cannot be done unconditionally as that would break other existing use cases
+where the chip type is changed, e.g. when changing the trigger type, but
+the callers expect the state to be preserved.
+
+As the way how check_timer() is switching the delivery modes is truly
+unique, the obvious fix is to simply unmask the i8259 manually after
+changing the mode to ExtINT delivery and switching the irq chip to the
+legacy PIC.
+
+Note, that the fixes tag is not really precise, but identifies the commit
+which broke the assumptions in the IO/APIC and i8259 code and that's the
+kernel version to which this needs to be backported.
+
+Fixes: bf22ff45bed6 ("genirq: Avoid unnecessary low level irq function calls")
+Reported-by: p_c_chan@hotmail.com
+Reported-by: ecm4@mail.com
+Reported-by: perdigao1@yahoo.com
+Reported-by: matzes@users.sourceforge.net
+Reported-by: rvelascog@gmail.com
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Tested-by: p_c_chan@hotmail.com
+Tested-by: matzes@users.sourceforge.net
+Cc: stable@vger.kernel.org
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=197769
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- net/wireless/util.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/kernel/apic/io_apic.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/net/wireless/util.c b/net/wireless/util.c
-index a72d2ad6ade8b..0f95844e73d80 100644
---- a/net/wireless/util.c
-+++ b/net/wireless/util.c
-@@ -95,7 +95,7 @@ u32 ieee80211_channel_to_freq_khz(int chan, enum nl80211_band band)
- 		/* see 802.11ax D6.1 27.3.23.2 */
- 		if (chan == 2)
- 			return MHZ_TO_KHZ(5935);
--		if (chan <= 253)
-+		if (chan <= 233)
- 			return MHZ_TO_KHZ(5950 + chan * 5);
- 		break;
- 	case NL80211_BAND_60GHZ:
--- 
-2.25.1
-
+--- a/arch/x86/kernel/apic/io_apic.c
++++ b/arch/x86/kernel/apic/io_apic.c
+@@ -2256,6 +2256,7 @@ static inline void __init check_timer(vo
+ 	legacy_pic->init(0);
+ 	legacy_pic->make_irq(0);
+ 	apic_write(APIC_LVT0, APIC_DM_EXTINT);
++	legacy_pic->unmask(0);
+ 
+ 	unlock_ExtINT_logic();
+ 
 
 
