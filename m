@@ -2,90 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2496727D672
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 21:08:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ED1B27D677
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 21:09:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728610AbgI2TIY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 15:08:24 -0400
-Received: from mail-oi1-f196.google.com ([209.85.167.196]:40085 "EHLO
-        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728284AbgI2TIU (ORCPT
+        id S1728652AbgI2TJN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 15:09:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52044 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728284AbgI2TJM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 15:08:20 -0400
-Received: by mail-oi1-f196.google.com with SMTP id t76so6673309oif.7;
-        Tue, 29 Sep 2020 12:08:19 -0700 (PDT)
+        Tue, 29 Sep 2020 15:09:12 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68759C0613D2
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 12:09:12 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id k13so5557812pfg.1
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 12:09:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Bgjd/B7KdoGPIMOIsXPxTUv6rCgIFOUt5UmLgFf58B0=;
+        b=dQ3pMRX6HmaArThDUQARb24+Xjkm3nNSp0LQnhrkH6Q8VE0a/qS2n9MzFLRfLNmvOA
+         UYkRtz/DV0vQeV88BnNct2Esl4yQ+YbNo9QCYNYX2j6ozt2VVH9Ecvs4926enaBsO7DU
+         XHL08Vy0QLO5NSbOVSjZXVQixxmTN4VELBTnU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=7M5WWuCCkp0VZzy+IL0R9xA2aVw6kleFif9899pGFyQ=;
-        b=NXnc7HSby/OO/nXaQ1YMZBX5OT6gXDJ7gHaXW8J54vU4YPqwGV8vhFdvjSZR0fQ27F
-         SIfh4TzBCId1DRMVmlVKzmqgvjkPNAFUfAXpgT46nVFQcVLnWbKc6dugWfUNYxpq1T+X
-         OXf4HLro8REnUAANM357BmdZQ/WDIYdYMIwtD+FCV9tfB8Guf5FUmyTLIYYADABGzfnh
-         JiJXFrj3FqWCvFRrFK3zn4QAU+UnmGb+klaaH3JsznN3uJpW7gjVYMiaa9Tl7AKgA+JO
-         3FfKESIpcb0iJma/SOEDVfVr2+dtpDfRbq5m9flwiFL19lPDXXQyDHyPYdgq5q1qUIX3
-         86IQ==
-X-Gm-Message-State: AOAM531mn9nj1RcuJ2UkgnGTlsESMhlG0sNLi6Q58MgnD6t2O4fD565z
-        ebMFRHA8dtimwPSgxHu22w==
-X-Google-Smtp-Source: ABdhPJy0b+HZcCj2usxdcLROYd54PlCp1iEn8dy5PwPN7+oTFJb3bRAq2L4tLGroeti9O+YaI9yabQ==
-X-Received: by 2002:aca:5c43:: with SMTP id q64mr3520166oib.18.1601406498870;
-        Tue, 29 Sep 2020 12:08:18 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id s13sm1207704otq.5.2020.09.29.12.08.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Sep 2020 12:08:18 -0700 (PDT)
-Received: (nullmailer pid 980133 invoked by uid 1000);
-        Tue, 29 Sep 2020 19:08:17 -0000
-Date:   Tue, 29 Sep 2020 14:08:17 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Amit Pundir <amit.pundir@linaro.org>
-Cc:     Kalle Valo <kvalo@codeaurora.org>,
-        David S Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
+        bh=Bgjd/B7KdoGPIMOIsXPxTUv6rCgIFOUt5UmLgFf58B0=;
+        b=QNMO2OGqqfL1OnSOxgJ54hWKxLPBVYztV1BfP/5mtUZphHI2vYFJjUC4nH/T+L8yvK
+         IwC4yevPViBPYneRB28VE2m/g8ZfX/E3+kF6FYjg3FtXXXA1bV0Hcni/dNWEhxTFAU//
+         /zK6bTlQagmLLv7ho6zebUlfPqveGsgiu1VXQ/K7lDijj1yTu6Cry0juut1HXrsFVzPW
+         ZrtchivHT3U6FQaMISw1ooNFts2o6GGkxe5jUmp8DaE2Natwkh17ifHXHlQBtq4Bori/
+         eLz2NKoQ3tju8OhYnltEV93ei92XBFdrjrGxmbAGdZEgLVhuZ0LeQ5c6rGOMGFMAAC5V
+         7sxA==
+X-Gm-Message-State: AOAM533hb6hKfIlXYmzkduWbED5SJFzCgVm45ATAW7gxikq2JtwOzgfH
+        wjHAPiqWPoKOqboqf+5G5ypgyw==
+X-Google-Smtp-Source: ABdhPJx3wUAAoTGCE0/p7O5ml66HnFt41zubIJc2k9Hv2XO3LVJyfT1FoSHimEJRWNPzejOkyZ/F1A==
+X-Received: by 2002:a62:92ce:0:b029:13b:88f6:3935 with SMTP id o197-20020a6292ce0000b029013b88f63935mr5110872pfd.2.1601406552006;
+        Tue, 29 Sep 2020 12:09:12 -0700 (PDT)
+Received: from localhost ([2620:15c:202:1:f693:9fff:fef4:e70a])
+        by smtp.gmail.com with ESMTPSA id n2sm5451462pja.41.2020.09.29.12.09.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 29 Sep 2020 12:09:11 -0700 (PDT)
+Date:   Tue, 29 Sep 2020 12:09:10 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Sandeep Maheswaram <sanm@codeaurora.org>
+Cc:     Andy Gross <agross@kernel.org>,
         Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Konrad Dybcio <konradybcio@gmail.com>,
-        ath10k@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        lkml <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] ath10k: Introduce a devicetree quirk to skip host cap
- QMI requests
-Message-ID: <20200929190817.GA968845@bogus>
-References: <1601058581-19461-1-git-send-email-amit.pundir@linaro.org>
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Doug Anderson <dianders@chromium.org>,
+        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Manu Gautam <mgautam@codeaurora.org>
+Subject: Re: [PATCH v3 5/5] arm64: dts: qcom: sc7180: Add wakeup-source
+ property for USB controller node
+Message-ID: <20200929190910.GE1621304@google.com>
+References: <1601376452-31839-1-git-send-email-sanm@codeaurora.org>
+ <1601376452-31839-6-git-send-email-sanm@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1601058581-19461-1-git-send-email-amit.pundir@linaro.org>
+In-Reply-To: <1601376452-31839-6-git-send-email-sanm@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 11:59:41PM +0530, Amit Pundir wrote:
-> There are firmware versions which do not support host capability
-> QMI request. We suspect either the host cap is not implemented or
-> there may be firmware specific issues, but apparently there seem
-> to be a generation of firmware that has this particular behavior.
+On Tue, Sep 29, 2020 at 04:17:32PM +0530, Sandeep Maheswaram wrote:
+> Adding wakeup-source property for USB controller for SC7180 boards.
 > 
-> For example, firmware build on Xiaomi Poco F1 (sdm845) phone:
-> "QC_IMAGE_VERSION_STRING=WLAN.HL.2.0.c3-00257-QCAHLSWMTPLZ-1"
-> 
-> If we do not skip the host cap QMI request on Poco F1, then we
-> get a QMI_ERR_MALFORMED_MSG_V01 error message in the
-> ath10k_qmi_host_cap_send_sync(). But this error message is not
-> fatal to the firmware nor to the ath10k driver and we can still
-> bring up the WiFi services successfully if we just ignore it.
-> 
-> Hence introducing this DeviceTree quirk to skip host capability
-> QMI request for the firmware versions which do not support this
-> feature.
+> Signed-off-by: Sandeep Maheswaram <sanm@codeaurora.org>
 
-So if you change the WiFi firmware, you may force a DT change too. Those 
-are pretty independent things otherwise.
+nit: it would be better to have two separate patches or at least mention
+in the subject that this change is for the IDP and trogdor, not SC7180 in
+general.
 
-Why can't you just always ignore this error? If you can't deal with this 
-entirely in the driver, then it should be part of the WiFi firmware so 
-it's always in sync.
+Besides that:
 
-Rob
+Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
