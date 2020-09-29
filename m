@@ -2,71 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 894CB27D79F
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 22:08:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7323E27D7AA
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 22:09:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728244AbgI2UIJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 16:08:09 -0400
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:40562 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728761AbgI2UIG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 16:08:06 -0400
-Received: by mail-oi1-f195.google.com with SMTP id t76so6881570oif.7;
-        Tue, 29 Sep 2020 13:08:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=tEjGdyigiYq/Vew+d6aDkAbA6G15ZhYScWUVPdFWPR0=;
-        b=c/RXtgVuCXdfuwPy4DJueYl1fciar6tL2ts4w9nISpc9Vy1OLrEIOVis0GvPO3sjWQ
-         FuwEradr6+/hsmZSaAnGgw7FcucFk5Tc0i1YAwsVRtPIaMEbrC619eqDEwKSZee7gMvj
-         tOH+fTAfuacTWflaI/t/YP1FqtMkz7fIelYlQyzxDxhPh2wLGxzH5XJWeirxFmtskpbB
-         2R6uEqJLTR3clukyWNvisvb59dDd5BllIbG8kLdCUI2wg2VGNf0P8By/1IM/PuMbQZPR
-         /fScd9hCPjz7ik7zuqKLsGX+D4Nb3NmMfruUk/w/IVl+kLDRQjPPOPvhD/bw0gCJ8IDt
-         Jpsg==
-X-Gm-Message-State: AOAM532bloPzJjxlqjJIQkhlqIYmYQkZjW4+z32wdFScxx2yGfzdo2AB
-        F4PNMLFQaGmgsANHeIiJiQ==
-X-Google-Smtp-Source: ABdhPJwpsmxom2RDb8/0qLp/q4YPVAI3qAHXAncJc++/sg44rh/f6H8n1wSpUocJwRGfOboKtRWJLw==
-X-Received: by 2002:aca:578c:: with SMTP id l134mr3413248oib.119.1601410085416;
-        Tue, 29 Sep 2020 13:08:05 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id i205sm1230997oih.23.2020.09.29.13.08.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Sep 2020 13:08:04 -0700 (PDT)
-Received: (nullmailer pid 1077618 invoked by uid 1000);
-        Tue, 29 Sep 2020 20:08:04 -0000
-Date:   Tue, 29 Sep 2020 15:08:04 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Alban Bedel <alban.bedel@aerq.com>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Mark Brown <broonie@kernel.org>, linux-hwmon@vger.kernel.org
-Subject: Re: [PATCH v2 2/3] dt-bindings: hwmon: Add the +vs supply to the
- lm75 bindings
-Message-ID: <20200929200804.GA1077587@bogus>
-References: <20200928153923.134151-1-alban.bedel@aerq.com>
- <20200928153923.134151-3-alban.bedel@aerq.com>
+        id S1729072AbgI2UJZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 16:09:25 -0400
+Received: from mga12.intel.com ([192.55.52.136]:11358 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728362AbgI2UJY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 16:09:24 -0400
+IronPort-SDR: I6o5N5ZB5XeGju4hGb47jWEq6D4LgYlTRSt5gLMWp2X5dkKyGKaMVt16WxK5zZtljToYJmCgmZ
+ +rPOKesTzbDw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9759"; a="141683851"
+X-IronPort-AV: E=Sophos;i="5.77,319,1596524400"; 
+   d="scan'208";a="141683851"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2020 13:09:23 -0700
+IronPort-SDR: k6lbaEZ6Kq6Tr+55Ah3ph5fY75+ANMKj7k+/gRlGnkvYZBURkyULKf0K716ivLNtoUxR08T4/v
+ 25TNVXctKViA==
+X-IronPort-AV: E=Sophos;i="5.77,319,1596524400"; 
+   d="scan'208";a="493255431"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2020 13:09:22 -0700
+Date:   Tue, 29 Sep 2020 13:09:22 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+Cc:     linux-man@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH] man/statx: Add STATX_ATTR_DAX
+Message-ID: <20200929200922.GC706602@iweiny-DESK2.sc.intel.com>
+References: <20200505002016.1085071-1-ira.weiny@intel.com>
+ <20200928164200.GA459459@iweiny-DESK2.sc.intel.com>
+ <ddf4dd69-6bf8-8ca7-cdd7-a949884d997f@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200928153923.134151-3-alban.bedel@aerq.com>
+In-Reply-To: <ddf4dd69-6bf8-8ca7-cdd7-a949884d997f@gmail.com>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 28 Sep 2020 17:39:22 +0200, Alban Bedel wrote:
-> Some boards might have a regulator that control the +VS supply, add it
-> to the bindings.
+On Tue, Sep 29, 2020 at 10:38:46AM +0200, Michael Kerrisk (man-pages) wrote:
+> Hello Ira,
 > 
-> Signed-off-by: Alban Bedel <alban.bedel@aerq.com>
-> ---
-> v2: Removed the unneeded `maxItems` attribute
-> ---
->  Documentation/devicetree/bindings/hwmon/lm75.yaml | 4 ++++
->  1 file changed, 4 insertions(+)
+> On 9/28/20 6:42 PM, Ira Weiny wrote:
+> > On Mon, May 04, 2020 at 05:20:16PM -0700, 'Ira Weiny' wrote:
+> >> From: Ira Weiny <ira.weiny@intel.com>
+> >>
+> >> Linux 5.8 is slated to have STATX_ATTR_DAX support.
+> >>
+> >> https://lore.kernel.org/lkml/20200428002142.404144-4-ira.weiny@intel.com/
+> >> https://lore.kernel.org/lkml/20200504161352.GA13783@magnolia/
+> >>
+> >> Add the text to the statx man page.
+> >>
+> >> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> > 
+> > Have I sent this to the wrong list?  Or perhaps I have missed a reply.
 > 
+> No, it's just me being a bit slow, I'm sorry. Thank you for pining.
 
-Acked-by: Rob Herring <robh@kernel.org>
+NP
+
+> 
+> > I don't see this applied to the man-pages project.[1]  But perhaps I am looking
+> > at the wrong place?
+> 
+> Your patch is applied now, and pushed to kernel .org. Thanks!
+
+Sweet!  Thank you!
+Ira
+
+> 
+> Cheers,
+> 
+> Michael
+> 
