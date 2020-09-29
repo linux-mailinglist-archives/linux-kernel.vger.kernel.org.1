@@ -2,95 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A626427D97A
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 23:00:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8173927D97F
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 23:01:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729602AbgI2VAp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 17:00:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41130 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728729AbgI2VAo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 17:00:44 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67A21C061755;
-        Tue, 29 Sep 2020 14:00:44 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id j2so8108428eds.9;
-        Tue, 29 Sep 2020 14:00:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=KFjBMwnr0euHuLOqoi5dKD5UMAj+YeZolmwPYrZ8vCI=;
-        b=VOh/uSh6VZfA3xkq4m0en5VoZi2PBQpqWq/pvwk4OWd58/qLL7UiXMYajKcmtpvt6o
-         EPJRk2YOnr9njp+jkdOWzUqgxbOLwAWgvRG19RjHvZ/FPHW/zXAvWH0YonUDiR1egwUX
-         voGo3LSvRZEvwDBfB6NPn/21GUaikA2kncOIbfOFKXRd5VxyTRnSIhsgNhwPBurFEYYM
-         jD4WOPpNr5+gkxEMcHnaiPqPEsknw0GioeAoOS6fNzS38BwcWUif877Ml+mPfx3YZXZh
-         i20DuJaPTvOth3Xr9Yx0T0K0wul/HiXAxwvqzxuL3OO6gTAhwIweVp9MxHyWGvKDimE0
-         +EQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=KFjBMwnr0euHuLOqoi5dKD5UMAj+YeZolmwPYrZ8vCI=;
-        b=lCiEPfVb9nCOvsrdbBToXKFiQDEyucTLy3v3B6BTuoAyV+MbWq9BeaOFxQmrrypaBm
-         cw591SwjtsXS5wr78WtaEnu5qc/VcXe0Gn+tOTiyEgV6n8S84t7XLc4RMZb4kLJ1ib3j
-         oCY/JwN2DKoJzE6534rlGWnrSqjCXP7at54YGyD8InY1b5MhmZTE/wd28kBANS+7LXJt
-         f8H//klyKxh7tn/Q9JAoHnXLEcAc7pddnUZqTsg//mNyWZpZuC8hqb6mZdXK0CvZaGR8
-         gMQTOE5Fe6MISWIYHo9FF23T+0oN7j54g4NojVeBHoqgNTvwfRXl6nd1dU8hN4WIzN4L
-         nzqw==
-X-Gm-Message-State: AOAM530vtbiigR4kw6E88PUHB9lCZcYxMg9ij6M5izBMP4POpUW4yzHS
-        qmoM23i7rQ0cRwdVu7Dt1Qo=
-X-Google-Smtp-Source: ABdhPJzENPgyaRQm3+MFtflMD9edfYqyb/lgtEcQtJ51bMN+IkAWc1fzyob2mUkz6P+pS2srZ/uIow==
-X-Received: by 2002:aa7:db82:: with SMTP id u2mr4548592edt.262.1601413243079;
-        Tue, 29 Sep 2020 14:00:43 -0700 (PDT)
-Received: from BV030612LT (oi48z9.static.otenet.gr. [79.129.51.141])
-        by smtp.gmail.com with ESMTPSA id a2sm16539ejx.27.2020.09.29.14.00.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Sep 2020 14:00:42 -0700 (PDT)
-Date:   Wed, 30 Sep 2020 00:00:10 +0300
-From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-To:     Wolfram Sang <wsa@kernel.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
-        linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-actions@lists.infradead.org
-Subject: Re: [PATCH v2 1/1] i2c: busses: Add support for atomic transfers in
- Actions Semi Owl driver
-Message-ID: <20200929210010.GB35053@BV030612LT>
-References: <b6c56858854805b0f03e29b7dde40b20796d5c93.1599561278.git.cristian.ciocaltea@gmail.com>
- <20200909151748.GA11397@mani>
- <20200909165915.GA387239@BV030612LT>
- <20200910030225.GA10495@mani>
- <20200910141223.GA447296@BV030612LT>
- <20200929194523.GE2010@kunai>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200929194523.GE2010@kunai>
+        id S1729491AbgI2VBo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 17:01:44 -0400
+Received: from mga02.intel.com ([134.134.136.20]:60573 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728729AbgI2VBo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 17:01:44 -0400
+IronPort-SDR: chJ2gBJXE8LCof6NiCxDl3C99+fmhBJ4tV/YY7CGxWQ0/+VX7DLfXf8TBe9CW9ubF3Lt37BVpH
+ wq9XNm4a2MGQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9759"; a="149947655"
+X-IronPort-AV: E=Sophos;i="5.77,319,1596524400"; 
+   d="scan'208";a="149947655"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2020 14:01:22 -0700
+IronPort-SDR: bFn8JtJ42VossFrlSUkzKDjyua51j/jF2FeiiAoBoXvDILU7PlBemmWR34TyuRuKfxE1NraZ6/
+ TvBROEA/0eLg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,319,1596524400"; 
+   d="scan'208";a="514024807"
+Received: from chang-linux-3.sc.intel.com ([172.25.66.175])
+  by fmsmga006.fm.intel.com with ESMTP; 29 Sep 2020 14:01:22 -0700
+From:   "Chang S. Bae" <chang.seok.bae@intel.com>
+To:     tglx@linutronix.de, mingo@kernel.org, bp@suse.de, luto@kernel.org,
+        x86@kernel.org
+Cc:     len.brown@intel.com, dave.hansen@intel.com, hjl.tools@gmail.com,
+        Dave.Martin@arm.com, mpe@ellerman.id.au, tony.luck@intel.com,
+        ravi.v.shankar@intel.com, libc-alpha@sourceware.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        linux-kernel@vger.kernel.org, chang.seok.bae@intel.com
+Subject: [RFC PATCH 0/4] x86: Improve Minimum Alternate Stack Size
+Date:   Tue, 29 Sep 2020 13:57:42 -0700
+Message-Id: <20200929205746.6763-1-chang.seok.bae@intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Wolfram,
+During signal entry, the kernel pushes data onto the normal userspace
+stack. On x86, the data pushed onto the user stack includes XSAVE state,
+which has grown over time as new features and larger registers have been
+added to the architecture.
 
-On Tue, Sep 29, 2020 at 09:45:23PM +0200, Wolfram Sang wrote:
-> 
-> > Sure, I can handle this. I assume this should be a separate patch, to
-> > be applied before the current patch. Should I submit a patch series
-> > instead?
-> 
-> Yes, just do it. 
+MINSIGSTKSZ is a constant provided in the kernel signal.h headers and
+typically distributed in lib-dev(el) packages, e.g. [1]. Its value is
+compiled into programs and is part of the user/kernel ABI. The MINSIGSTKSZ
+constant indicates to userspace how much data the kernel expects to push on
+the user stack, [2][3].
 
-Sure, I have already clarified this directly with Mani and I'm going
-to handle it soon.
+However, this constant is much too small and does not reflect recent
+additions to the architecture. For instance, when AVX-512 states are in
+use, the signal frame size can be 3.5KB while MINSIGSTKSZ remains 2KB.
 
-> And please remove irrelevant parts of the mail when
-> replying. Thanks!
+The bug report [4] explains this as an ABI issue. The small MINSIGSTKSZ can
+cause user stack overflow when delivering a signal.
 
-Ok, I'll pay attention to this.
+In this series, we suggest a couple of things:
+1. Provide a variable minimum stack size to userspace, as a similar
+   approach to [5]
+2. Avoid using a too-small alternate stack
 
-Thanks,
-Cristi
+[1]: https://sourceware.org/git/?p=glibc.git;a=blob;f=sysdeps/unix/sysv/linux/bits/sigstack.h;h=b9dca794da093dc4d41d39db9851d444e1b54d9b;hb=HEAD
+[2]: https://www.gnu.org/software/libc/manual/html_node/Signal-Stack.html
+[3]: https://man7.org/linux/man-pages/man2/sigaltstack.2.html
+[4]: https://bugzilla.kernel.org/show_bug.cgi?id=153531
+[5]: https://blog.linuxplumbersconf.org/2017/ocw/system/presentations/4671/original/plumbers-dm-2017.pdf
 
+Chang S. Bae (4):
+  x86/signal: Introduce helpers to get the maximum signal frame size
+  x86/elf: Support a new ELF aux vector AT_MINSIGSTKSZ
+  x86/signal: Prevent an alternate stack overflow before a signal
+    delivery
+  selftest/x86/signal: Include test cases for validating sigaltstack
+
+ arch/x86/ia32/ia32_signal.c               |  11 +-
+ arch/x86/include/asm/elf.h                |   4 +
+ arch/x86/include/asm/fpu/signal.h         |   2 +
+ arch/x86/include/asm/sigframe.h           |  25 +++++
+ arch/x86/include/uapi/asm/auxvec.h        |   6 +-
+ arch/x86/kernel/cpu/common.c              |   3 +
+ arch/x86/kernel/fpu/signal.c              |  20 ++++
+ arch/x86/kernel/signal.c                  |  66 +++++++++++-
+ tools/testing/selftests/x86/Makefile      |   2 +-
+ tools/testing/selftests/x86/sigaltstack.c | 126 ++++++++++++++++++++++
+ 10 files changed, 258 insertions(+), 7 deletions(-)
+ create mode 100644 tools/testing/selftests/x86/sigaltstack.c
+
+--
+2.17.1
 
