@@ -2,43 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CCB127C545
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:33:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4B4327C5CA
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:39:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728768AbgI2Ldp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:33:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45276 "EHLO mail.kernel.org"
+        id S1730440AbgI2Li6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:38:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60716 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729278AbgI2Lbh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:31:37 -0400
+        id S1730402AbgI2Lio (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:38:44 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BE01E23B19;
-        Tue, 29 Sep 2020 11:25:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EB9B42074A;
+        Tue, 29 Sep 2020 11:38:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601378712;
-        bh=1b4JsZ4VH04Yz7PW3Dfj7RJdRXwpxJuAyxmg9mrOlys=;
+        s=default; t=1601379523;
+        bh=4aJ98UjtJt7kaQkL7jPD6T/htJNsIC50/6P6Y5BPc+A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kP5NPOrcmtWHt4aCW00qMbAC0K9f5yUV8Apo3cH4hznzwieEB4Rk9fAvyyUpebvOf
-         yA9uxh4hAtakKWf1IjynvljXNmNFUWoBvCQXzOBkd3Fe/h+yap3GMyWWPN3DlcV5YM
-         sy/aN2WsBBrrny64bpxwP3vgls0vZ87QrDrk11Kc=
+        b=s56hqB9vLjTZpnYxGYIbb1XibKnjqDo/Fmzo3lkcu39j7HEiTtwtJZ0Yf5dK5zPKC
+         tU+3weT3eLCWFuF4olRH6fAyEVyp0pf9kwWvhR8daxwUam8qKj7xKRPrCIHJdfSxG3
+         IEyISqXrvIWCCvzYaQpjljUJXRz/vunBAHnmVNKI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thomas Richter <tmricht@linux.ibm.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Sumanth Korikkar <sumanthk@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
+        stable@vger.kernel.org,
+        Raveendran Somu <raveendran.somu@cypress.com>,
+        Chi-hsien Lin <chi-hsien.lin@cypress.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 082/245] perf test: Fix test trace+probe_vfs_getname.sh on s390
+Subject: [PATCH 5.4 202/388] brcmfmac: Fix double freeing in the fmac usb data path
 Date:   Tue, 29 Sep 2020 12:58:53 +0200
-Message-Id: <20200929105950.984356570@linuxfoundation.org>
+Message-Id: <20200929110020.261842195@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929105946.978650816@linuxfoundation.org>
-References: <20200929105946.978650816@linuxfoundation.org>
+In-Reply-To: <20200929110010.467764689@linuxfoundation.org>
+References: <20200929110010.467764689@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,80 +45,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Richter <tmricht@linux.ibm.com>
+From: Raveendran Somu <raveendran.somu@cypress.com>
 
-[ Upstream commit 2bbc83537614517730e9f2811195004b712de207 ]
+[ Upstream commit 78179869dc3f5c0059bbf5d931a2717f1ad97ecd ]
 
-This test places a kprobe to function getname_flags() in the kernel
-which has the following prototype:
+When the brcmf_fws_process_skb() fails to get hanger slot for
+queuing the skb, it tries to free the skb.
+But the caller brcmf_netdev_start_xmit() of that funciton frees
+the packet on error return value.
+This causes the double freeing and which caused the kernel crash.
 
-  struct filename *getname_flags(const char __user *filename, int flags, int *empty)
-
-The 'filename' argument points to a filename located in user space memory.
-
-Looking at commit 88903c464321c ("tracing/probe: Add ustring type for
-user-space string") the kprobe should indicate that user space memory is
-accessed.
-
-Output before:
-
-   [root@m35lp76 perf]# ./perf test 66 67
-   66: Use vfs_getname probe to get syscall args filenames   : FAILED!
-   67: Check open filename arg using perf trace + vfs_getname: FAILED!
-   [root@m35lp76 perf]#
-
-Output after:
-
-   [root@m35lp76 perf]# ./perf test 66 67
-   66: Use vfs_getname probe to get syscall args filenames   : Ok
-   67: Check open filename arg using perf trace + vfs_getname: Ok
-   [root@m35lp76 perf]#
-
-Comments from Masami Hiramatsu:
-
-This bug doesn't happen on x86 or other archs on which user address
-space and kernel address space is the same. On some arches (ppc64 in
-this case?) user address space is partially or completely the same as
-kernel address space.
-
-(Yes, they switch the world when running into the kernel) In this case,
-we need to use different data access functions for each space.
-
-That is why I introduced the "ustring" type for kprobe events.
-
-As far as I can see, Thomas's patch is sane. Thomas, could you show us
-your result on your test environment?
-
-Comments from Thomas Richter:
-
-Test results for s/390 included above.
-
-Signed-off-by: Thomas Richter <tmricht@linux.ibm.com>
-Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
-Tested-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-Cc: Heiko Carstens <heiko.carstens@de.ibm.com>
-Cc: Sumanth Korikkar <sumanthk@linux.ibm.com>
-Cc: Vasily Gorbik <gor@linux.ibm.com>
-Link: http://lore.kernel.org/lkml/20200217102111.61137-1-tmricht@linux.ibm.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Signed-off-by: Raveendran Somu <raveendran.somu@cypress.com>
+Signed-off-by: Chi-hsien Lin <chi-hsien.lin@cypress.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/1585124429-97371-3-git-send-email-chi-hsien.lin@cypress.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/perf/tests/shell/lib/probe_vfs_getname.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwsignal.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/tools/perf/tests/shell/lib/probe_vfs_getname.sh b/tools/perf/tests/shell/lib/probe_vfs_getname.sh
-index 7cb99b433888b..c2cc42daf9242 100644
---- a/tools/perf/tests/shell/lib/probe_vfs_getname.sh
-+++ b/tools/perf/tests/shell/lib/probe_vfs_getname.sh
-@@ -14,7 +14,7 @@ add_probe_vfs_getname() {
- 	if [ $had_vfs_getname -eq 1 ] ; then
- 		line=$(perf probe -L getname_flags 2>&1 | egrep 'result.*=.*filename;' | sed -r 's/[[:space:]]+([[:digit:]]+)[[:space:]]+result->uptr.*/\1/')
- 		perf probe -q       "vfs_getname=getname_flags:${line} pathname=result->name:string" || \
--		perf probe $verbose "vfs_getname=getname_flags:${line} pathname=filename:string"
-+		perf probe $verbose "vfs_getname=getname_flags:${line} pathname=filename:ustring"
- 	fi
- }
- 
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwsignal.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwsignal.c
+index eadc64454839d..3d36b6ee158bb 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwsignal.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwsignal.c
+@@ -2149,8 +2149,7 @@ int brcmf_fws_process_skb(struct brcmf_if *ifp, struct sk_buff *skb)
+ 		brcmf_fws_enq(fws, BRCMF_FWS_SKBSTATE_DELAYED, fifo, skb);
+ 		brcmf_fws_schedule_deq(fws);
+ 	} else {
+-		bphy_err(drvr, "drop skb: no hanger slot\n");
+-		brcmf_txfinalize(ifp, skb, false);
++		bphy_err(drvr, "no hanger slot available\n");
+ 		rc = -ENOMEM;
+ 	}
+ 	brcmf_fws_unlock(fws);
 -- 
 2.25.1
 
