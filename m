@@ -2,89 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08D2D27C0E1
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 11:19:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EA9927C0E7
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 11:20:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728009AbgI2JTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 05:19:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40618 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727781AbgI2JTB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 05:19:01 -0400
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E734420C09;
-        Tue, 29 Sep 2020 09:18:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601371140;
-        bh=7d9m8YtmM0oZBYPyOHbYl7Ajwa8TOm2mgFhI2B2FaTY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=QCn0viO1E7fFEdHcrG7XpKuS95w0MxGkvORWGZ4t8rgF0qiA1+8nlhMIYTEzkHgKO
-         tMS3ZAI+vnstBUhPaeajoxZcysKp/06r7djzKNzINavjuKE453czOsxSWsXsDnekBQ
-         3xwjgzTsTovs86xQb71msEABZM9wIK1RIrNEOwVk=
-Received: by mail-ej1-f43.google.com with SMTP id i26so13940200ejb.12;
-        Tue, 29 Sep 2020 02:18:59 -0700 (PDT)
-X-Gm-Message-State: AOAM53181Mc47J8DKcZFghPN05OTCHF2YApuw7uNePPXbnKPgMW47C84
-        wRR8rc3I0CfFCiH+qd2pO6pMjG21SvxzuU2indY=
-X-Google-Smtp-Source: ABdhPJxGllGR2UiacyCTtjrgcZvi5cZtvrKkih45ZyLS0pOKgdvpZZMzMI6hYkQvt1+O3W0WIqLB4Ct0t3vT/qbhxdg=
-X-Received: by 2002:a17:906:8401:: with SMTP id n1mr2757814ejx.215.1601371138361;
- Tue, 29 Sep 2020 02:18:58 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200923152129.21736-1-krzk@kernel.org> <20200929091512.GF26842@paasikivi.fi.intel.com>
-In-Reply-To: <20200929091512.GF26842@paasikivi.fi.intel.com>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Date:   Tue, 29 Sep 2020 11:18:46 +0200
-X-Gmail-Original-Message-ID: <CAJKOXPfRnMg2sUO8dd8CRrwyQFNr-9HN5-QV7Uy4YTVrRJosWQ@mail.gmail.com>
-Message-ID: <CAJKOXPfRnMg2sUO8dd8CRrwyQFNr-9HN5-QV7Uy4YTVrRJosWQ@mail.gmail.com>
-Subject: Re: [PATCH v4 1/4] dt-bindings: media: imx258: add bindings for
- IMX258 sensor
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        id S1727838AbgI2JUB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 05:20:01 -0400
+Received: from mail-vi1eur05on2040.outbound.protection.outlook.com ([40.107.21.40]:63456
+        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725774AbgI2JUA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 05:20:00 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RGHxeUbKdfK5aH5IZQAUWC6w9XQ2HmMRE5XMTl40PGtff8eAdHcRBoiHeiBgPXngPS5/+iAxxcfB6d184Bv7qrYtUUETwe+z3b+mV6qtoOr0rNE7jRP4u9KoOKFoVCzEf6DNovF7/2e/uKKIgCv2Z/rX/tTS+dV3FgE9Ia3CM2xNZdAP4gXBaMFL0IMW3uZsuW+UXkh6N35n3FUY7xigFHQq2xlxrbjPlqs4eEHft5RR4Y0mNdP7aBDqQXKTvZWT3+zkO2vDfdr7y6OU3Il400tly+WoNn6y+MYms/01LyiZLVEzB1GOoCUMyUtOtk88spnBkATK9UpKVY5NfKOgMA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9e6TA/KBCGUY9d1AxH2UpbczpkCHYLx9Ze6RG1rtEVs=;
+ b=MdpFZ4N/xPJGTNlSDRNBDN7ryg7BqbYnb4bW/AtQvdIpqTqR7vdiozH1jC0uxUFwhBLwYTe2g4EPo1lv5oIx0ajUm6gZQHsx1lflLbo2msPX3+Fd0sEA3/a40dxdCrqAJ2DbAhbKngMdBQCMCM0EUjdwib+FBYm90TztmhPS3PCnp0mIiYaKElzzTX0Gj5HsjjrTBjC62B2ei7BR7vypnj0v5E6MxEdyNt4n0B+mzPnpdsszvnENS6k8tqOd+TMAt99pL36zLtdjGUELlTI1eNFoczdIU+XsSpAjh7M6bYzfmUBnlOqfdooLGTH9epg7nubF+tiXQ2y/O4xVMz1nAg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector2-NXP1-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9e6TA/KBCGUY9d1AxH2UpbczpkCHYLx9Ze6RG1rtEVs=;
+ b=OtnF6HjY1ayofZYhlP0DGK+c7MlQY93nFqD+oiZuA4VyfUb3epjj9bxlZb012p/9vbIKCr/ibI9qYfa+5oqk4CMcgKp4dp1CyB6UaGi0z5tL0Dzh8vVXB9VmGX9v5FAsVZ8cVj8NszMFUhssh7y63jjR8JkDfDAXEhdSAPNRZzo=
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=oss.nxp.com;
+Received: from VI1PR0401MB2272.eurprd04.prod.outlook.com
+ (2603:10a6:800:31::12) by VI1PR04MB6335.eurprd04.prod.outlook.com
+ (2603:10a6:803:f9::17) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.20; Tue, 29 Sep
+ 2020 09:19:52 +0000
+Received: from VI1PR0401MB2272.eurprd04.prod.outlook.com
+ ([fe80::e00e:ad13:489b:8000]) by VI1PR0401MB2272.eurprd04.prod.outlook.com
+ ([fe80::e00e:ad13:489b:8000%6]) with mapi id 15.20.3412.029; Tue, 29 Sep 2020
+ 09:19:51 +0000
+From:   "Viorel Suman (OSS)" <viorel.suman@oss.nxp.com>
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, Timur Tabi <timur@kernel.org>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Xiubo Li <Xiubo.Lee@gmail.com>,
         Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Shengjiu Wang <shengjiu.wang@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Cosmin-Gabriel Samoila <cosmin.samoila@nxp.com>,
+        Viorel Suman <viorel.suman@nxp.com>,
+        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Cc:     NXP Linux Team <linux-imx@nxp.com>,
+        Viorel Suman <viorel.suman@gmail.com>
+Subject: [PATCH v3 0/2] DAI driver for new XCVR IP
+Date:   Tue, 29 Sep 2020 12:19:25 +0300
+Message-Id: <1601371167-32239-1-git-send-email-viorel.suman@oss.nxp.com>
+X-Mailer: git-send-email 2.7.4
+Content-Type: text/plain
+X-ClientProxiedBy: AM0PR03CA0065.eurprd03.prod.outlook.com (2603:10a6:208::42)
+ To VI1PR0401MB2272.eurprd04.prod.outlook.com (2603:10a6:800:31::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from fsr-ub1664-116.ea.freescale.net (83.217.231.2) by AM0PR03CA0065.eurprd03.prod.outlook.com (2603:10a6:208::42) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3412.22 via Frontend Transport; Tue, 29 Sep 2020 09:19:49 +0000
+X-Mailer: git-send-email 2.7.4
+X-Originating-IP: [83.217.231.2]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 53f90cd4-bcd9-4cc8-4889-08d86458d1e2
+X-MS-TrafficTypeDiagnostic: VI1PR04MB6335:
+X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR04MB6335E8AA514C6AE11FA0BFB3D3320@VI1PR04MB6335.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2582;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: QWwlIXYDuCiFRBR+OH9Br8tx7l9NWHWrbE/A2ee/sT3S8W7YEEk7SFfdLAp1WOpBQbDSEgkwg2RJrexHwHAFTYhFj1Xw3ITieUr5kve+iJoJURiDnJ+Nf/hRQ1GJxDN2qOP1tBELYGMfcX9VRb2TnJdepBjTxwiV0e0sugHx05qOgAg7w2HEaRrZWD9mv7/XcbQ76z1dOKuwmdxgHBEHjTkL3344Bfol5QpN+ewW/IGLJee/ryQKat6jWClvVkJpPqRZDRlLG45Je5QB2S9Ga8YLQAPsWILOmtyGDoaQCeCrFtvkJQ4sv3uzIuAtm6OQvA6Xu84tm5oRs/F9EdLCnkK5c4ajI90RXtRWn+zwRMziKaAZr/0Nz8VukV239Uim5eZlwPYzcieogU5hEHJdRe+Gd4EgP6EXJbZuIE+a6Wo=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0401MB2272.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(39860400002)(396003)(376002)(346002)(136003)(5660300002)(66946007)(7416002)(4326008)(8936002)(8676002)(4744005)(83380400001)(66556008)(316002)(478600001)(2906002)(54906003)(110136005)(52116002)(186003)(86362001)(6666004)(6512007)(26005)(6506007)(16526019)(956004)(6486002)(66476007)(2616005)(921003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: MfqkXEQh8PoFsdMwBRFAK5TwxwG1DLrj2ya1QHYDefqTdamTQem/dnl0h0hz96gxfAWNDkwC9WMoaVZGdzZUl47jcA2SPkYfYdrEIonajCmFemcmXCPiurcHDbdbDP66k16PH+fj+s/CBicduONtdw+dgInQRokW7s7GVtwjEnUAaXOiM5Wzy2ZZJKvF70HmBrVsLwjR7O1HdzAiOsKgX04NE9WYsMRadRXKDz01haWnnUTy3A0h1Jv14wqXWTdRKDGIm6345i8Dmou2jVlziVZAIvQ2r0PsIhasKOcqWlAKN0EA9AoEZ41KVCqW/idD6Jy41wi0ZzyF1hTb/J86t8HjoKLlEsTOKccr26NQTzAuOb0dhco7Zh/N+puUxa7ZHumaYWiXYX1bsg8M1hA3cn8lDrf/CjL3gFVK4nptCCB/j6Nsst4DpgOGgocjWVqLQCVf2GcxyHeRHcr4mF89XuhZeXEzvuz/P1sqaIGKPscdksl+ODl+wns8U/giuYgjorMdnKzeLIo/Cj8HUF8XbJsdmQ6G2hPgsOERTxTXD/3PocKb71dn2oBf48UfPbrpgulehv0uQN2RlRVTtod84v/25bmTYPszI6bgOXQz7SBM8qgRxujatdSPzsVXWSv97npCtj/uQwrO7O0NR30KhA==
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 53f90cd4-bcd9-4cc8-4889-08d86458d1e2
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR0401MB2272.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Sep 2020 09:19:51.7511
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: cL4c+CIv1d3sKxdVBrlvwuCrhWr8dq323iqT2xbeJPDOyoIt1SCH/I8PvW+2fDrbP+X3ngHb9sgReiaIPcKTwg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB6335
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 29 Sep 2020 at 11:15, Sakari Ailus <sakari.ailus@linux.intel.com> wrote:
->
-> Hi Krzysztof,
->
-> On Wed, Sep 23, 2020 at 05:21:26PM +0200, Krzysztof Kozlowski wrote:
-> > Add bindings for the IMX258 camera sensor.  The bindings, just like the
-> > driver, are quite limited, e.g. do not support regulator supplies.
-> >
-> > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> >
-> > ---
-> >
-> > Changes since v3:
-> > 1. Document also two lane setup.
-> >
-> > Changes since v2:
-> > 1. Remove clock-frequency, add reset GPIOs, add supplies.
->
-> Oops. I missed this one.
->
-> How does the driver know the appropriate clock frequency for the platform
-> if it's not in DT? The sensor supports a range of frequencies, not a single
-> frequency.
->
-> Could you add clock-frequency back?
+From: Viorel Suman <viorel.suman@nxp.com>
 
-Not really, it was removed on Rob's request. The bindings do not
-describe driver's behavior so how the driver gets frequency should not
-be part of the bindings. Also it's not a real problem - the driver
-just calls clk_get_rate().
+DAI driver for new XCVR IP found in i.MX8MP.
 
-Best regards,
-Krzysztof
+Viorel Suman (2):
+  ASoC: fsl_xcvr: Add XCVR ASoC CPU DAI driver
+  ASoC: dt-bindings: fsl_xcvr: Add document for XCVR
+
+Changes since v1:
+ - improved 6- and 12-ch layout comment
+ - used regmap polling function, improved
+   clocks handling in runtime_resume
+ - added FW size check in FW load function,
+   improved IRQ handler, removed dummy IRQ handlers
+ - fixed yaml file
+
+Changes since v2:
+ - used devm_reset_control_get_exclusive instead of of_reset_control_get
+ - moved reset_control_assert into runtime_suspend
+
+ .../devicetree/bindings/sound/fsl,xcvr.yaml        |  103 ++
+ sound/soc/fsl/Kconfig                              |   10 +
+ sound/soc/fsl/Makefile                             |    2 +
+ sound/soc/fsl/fsl_xcvr.c                           | 1356 ++++++++++++++++++++
+ sound/soc/fsl/fsl_xcvr.h                           |  266 ++++
+ 5 files changed, 1737 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/fsl,xcvr.yaml
+ create mode 100644 sound/soc/fsl/fsl_xcvr.c
+ create mode 100644 sound/soc/fsl/fsl_xcvr.h
+
+-- 
+2.7.4
+
