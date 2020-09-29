@@ -2,143 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C12C427BEF0
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 10:13:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 519F127BEF2
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 10:14:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727630AbgI2INy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 04:13:54 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21215 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725355AbgI2INy (ORCPT
+        id S1727260AbgI2IN7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 04:13:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34630 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725355AbgI2IN5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 04:13:54 -0400
-Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601367232;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=MeMpmPFrdOGRtU5ng8ECDSHXJcr1++BDe0Y6s4CWwho=;
-        b=XPKSSVEp5BcqTv0TN6UV1giQOHyU4MTWqpAz0/KnL7OrUozJ9MSI0LGP9JTkqSrWQ3O0Xs
-        p1I9VKqRDrqaZbEzbiUGzM+BcwHkpLIWlUdLvW+4hWxbv4Qy+R9/18tAyFF5TZHqEN732Z
-        GKvW5dOmktqK04OVaf7bKFz+bJdJh8w=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-99-TTVOso58PKmkvxrSBD76sA-1; Tue, 29 Sep 2020 04:13:48 -0400
-X-MC-Unique: TTVOso58PKmkvxrSBD76sA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D3985425D2;
-        Tue, 29 Sep 2020 08:13:45 +0000 (UTC)
-Received: from oldenburg2.str.redhat.com (ovpn-114-84.ams2.redhat.com [10.36.114.84])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 5223510013BD;
-        Tue, 29 Sep 2020 08:13:40 +0000 (UTC)
-From:   Florian Weimer <fweimer@redhat.com>
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        paulmck <paulmck@kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Paul Turner <pjt@google.com>,
-        linux-api <linux-api@vger.kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        carlos <carlos@redhat.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>
-Subject: Re: [RFC PATCH 1/2] rseq: Implement KTLS prototype for x86-64
-References: <20200925181518.4141-1-mathieu.desnoyers@efficios.com>
-        <87r1qm2atk.fsf@oldenburg2.str.redhat.com>
-        <905713397.71512.1601314192367.JavaMail.zimbra@efficios.com>
-Date:   Tue, 29 Sep 2020 10:13:38 +0200
-In-Reply-To: <905713397.71512.1601314192367.JavaMail.zimbra@efficios.com>
-        (Mathieu Desnoyers's message of "Mon, 28 Sep 2020 13:29:52 -0400
-        (EDT)")
-Message-ID: <873631yp8t.fsf@oldenburg2.str.redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        Tue, 29 Sep 2020 04:13:57 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BEA2C061755;
+        Tue, 29 Sep 2020 01:13:56 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id q21so3638969ota.8;
+        Tue, 29 Sep 2020 01:13:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XCup1vGEgIO8d5dqKissyH4pLkKEy+8bhlwI7Fk/JgE=;
+        b=PJsIvzsCo37C7ACdvZDANz7dBByHCqE+2UewKmT8tcfvrjNsHX80YlgzbFCcr5HYXx
+         6N2S6KiHD+GdRRglVSF0I+HJ3nc3PF6h8gEoT9WtS4Z3tCsCBdlCD9+HwaYuTF49ttie
+         NbyO6rubqvTgRsa4f7Heg2PfJfUbbgrLyZXoOJktwMIwQJ8txZwMmPwS2WQEgpSnik4b
+         D9yzkXdcCbjW7C6EdZclYnV/3jDAjQdTV+nZ+WUksc0eKXzeJqlpeSQpkSiesBULXG32
+         ouoDCU8Ful6wbbv6Xmjff25aOgiWx33ztUQ64zd0s+luAHlBHtSPSBGeUcRCkDNrYX63
+         NAMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XCup1vGEgIO8d5dqKissyH4pLkKEy+8bhlwI7Fk/JgE=;
+        b=of63Lk557eY+w3V4Q+XvckIzzcr1AyZr+yRuDy+QCVaCB1j7HQvFPdFsXj56e6G1LG
+         PbCcIsxRXn1lRwI0Br1LZ8EkrxiFcVCTE24pHIVPBWsj5m/OpqMkt7BtJAYu/KnRnVR0
+         1E5U+M0AZmrFHmIEFeMWaiETvjRHRnEX9y0mHm++dKD1BOR8jx/g0O9m6EeT87h4F4Nl
+         XXLV+dOTqfDLenxSGOWKxgj7pibVbHo59aM7sFFPKXggH+bpD1QgZpSjLCHR2x2mpqb0
+         bKe5CdwnYWzwhhV0q2cVPvpnBBCAUORWVPo7ftsET3v8kq61VLIcIBcXvIh5ZXTqsuMq
+         ceEg==
+X-Gm-Message-State: AOAM530aI++7sBvAKZgudj9flS4AdGNRMZlpa9O40wjiTu924ZgEFRcm
+        C0OwvBuaUhp+GbpdQ2tFUGf+jAxW0qKfZDShoj1ndtG5r3U=
+X-Google-Smtp-Source: ABdhPJwIl4voXZhuMAeIo5p6pCJJ4plObP3qKcN9I2JP8lusLk+mmggfoFHANVl5QMPSA+Q6ZDq2LEr9hblLYhSzQIc=
+X-Received: by 2002:a9d:4d0:: with SMTP id 74mr1973157otm.119.1601367235571;
+ Tue, 29 Sep 2020 01:13:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+References: <20200929070908.10456-1-alexandru.ardelean@analog.com>
+ <20200929070908.10456-2-alexandru.ardelean@analog.com> <CAHp75Ve_A_9ejG=sQKeLwEWWviLhZq1_L+WcTFk+=u8UGydKZw@mail.gmail.com>
+In-Reply-To: <CAHp75Ve_A_9ejG=sQKeLwEWWviLhZq1_L+WcTFk+=u8UGydKZw@mail.gmail.com>
+From:   Alexandru Ardelean <ardeleanalex@gmail.com>
+Date:   Tue, 29 Sep 2020 11:13:44 +0300
+Message-ID: <CA+U=Dsp3SDEiKRF-VBS8FnW0q7TjArEiU1cjX-PxxdV8C3emjQ@mail.gmail.com>
+Subject: Re: [PATCH v2 1/9] iio: buffer: dmaengine: unwrap the use of iio_buffer_set_attrs()
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Eugen Hristev <eugen.hristev@microchip.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Benson Leung <bleung@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        groeck@chromium.org,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Gwendal Grignou <gwendal@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Mathieu Desnoyers:
-
->> So we have a bootstrap issue here that needs to be solved, I think.
+On Tue, Sep 29, 2020 at 10:49 AM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
 >
-> The one thing I'm not sure about is whether the vDSO interface is indeed
-> superior to KTLS, or if it is just the model we are used to.
+> On Tue, Sep 29, 2020 at 10:09 AM Alexandru Ardelean
+> <alexandru.ardelean@analog.com> wrote:
+> >
+> > The iio_buffer_set_attrs() helper will be removed in this series. So, just
+> > assign the attributes of the DMAEngine buffer logic directly.
+> >
+> > This is IIO buffer core context, so there is direct access to the
+> > buffer->attrs object.
+> >
+> > Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+> > ---
+> >  drivers/iio/buffer/industrialio-buffer-dmaengine.c | 3 +--
+> >  1 file changed, 1 insertion(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/iio/buffer/industrialio-buffer-dmaengine.c b/drivers/iio/buffer/industrialio-buffer-dmaengine.c
+> > index 93b4e9e6bb55..becea9f68181 100644
+> > --- a/drivers/iio/buffer/industrialio-buffer-dmaengine.c
+> > +++ b/drivers/iio/buffer/industrialio-buffer-dmaengine.c
+> > @@ -200,8 +200,7 @@ static struct iio_buffer *iio_dmaengine_buffer_alloc(struct device *dev,
+> >
+> >         iio_dma_buffer_init(&dmaengine_buffer->queue, chan->device->dev,
+> >                 &iio_dmaengine_default_ops);
+> > -       iio_buffer_set_attrs(&dmaengine_buffer->queue.buffer,
+> > -               iio_dmaengine_buffer_attrs);
+> > +       dmaengine_buffer->queue.buffer.attrs = iio_dmaengine_buffer_attrs;
+> >
+> >         dmaengine_buffer->queue.buffer.access = &iio_dmaengine_buffer_ops;
 >
-> AFAIU, the current use-cases for vDSO is that an application calls into
-> glibc, which then calls the vDSO function exposed by the kernel. I wonder
-> whether the vDSO indirection is really needed if we typically have a glibc
-> function used as indirection ? For an end user, what is the benefit of vDSO
-> over accessing KTLS data directly from glibc ?
+> A nit: can we group assignments together, like
+> init()
+> ...blank line...
+> attr = ...
+> access = ...
 
-I think the kernel can only reasonably maintain a single userspace data
-structure.  It's not reasonable to update several versions of the data
-structure in parallel.
+fine by me
 
-This means that glibc would have to support multiple kernel data
-structures, and users might lose userspace acceleration after a kernel
-update, until they update glibc as well.  The glibc update should be
-ABI-compatible, but someone would still have to backport it, apply it to
-container images, etc.
-
-What's worse, the glibc code would be quite hard to test because we
-would have to keep around multiple kernel versions to exercise all the
-different data structure variants.
-
-In contrast, the vDSO code always matches the userspace data structures,
-is always updated at the same time, and tested together.  That looks
-like a clear win to me.
-
-> If we decide that using KTLS from a vDSO function is indeed a requirement,
-> then, as you point out, the thread_pointer is available as ABI, but we miss
-> the KTLS offset.
 >
-> Some ideas on how we could solve this: we could either make the KTLS
-> offset part of the ABI (fixed offset), or save the offset near the
-> thread pointer at a location that would become ABI. It would have to
-> be already populated with something which can help detect the case
-> where a vDSO is called from a thread which does not populate KTLS
-> though. Is that even remotely doable ?
-
-I don't know.
-
-We could decide that these accelerated system calls must only be called
-with a valid TCB.  That's unavoidable if the vDSO sets errno directly,
-so it's perhaps not a big loss.  It's also backwards-compatible because
-existing TCB-less code won't know about those new vDSO entrypoints.
-Calling into glibc from a TCB-less thread has always been undefined.
-TCB-less code would have to make direct, non-vDSO system calls, as today.
-
-For discovering the KTLS offset, a per-process page at a fixed offset
-from the vDSO code (i.e., what real shared objects already do for global
-data) could store this offset.  This way, we could entirely avoid an ABI
-dependency.
-
-We'll see what will break once we have the correct TID after vfork. 8->
-glibc currently supports malloc-after-vfork as an extension, and
-a lot of software depends on it (OpenJDK, for example).
-
->> With the latter, we could
->> directly expose the vDSO implementation to applications, assuming that
->> we agree that the vDSO will not fail with ENOSYS to request fallback to
->> the system call, but will itself perform the system call.
+> ?
 >
-> We should not forget the fields needed by rseq as well: the rseq_cs
-> pointer and the cpu_id fields need to be accessed directly from the
-> rseq critical section, without function call. Those use-cases require
-> that applications and library can know the KTLS offset and size and
-> use those fields directly.
-
-Yes, but those offsets could be queried using a function from the vDSO
-(or using a glibc interface, to simplify linking).
-
-Thanks,
-Florian
--- 
-Red Hat GmbH, https://de.redhat.com/ , Registered seat: Grasbrunn,
-Commercial register: Amtsgericht Muenchen, HRB 153243,
-Managing Directors: Charles Cachera, Brian Klemm, Laurie Krebs, Michael O'Neill
-
+> >
+> > --
+> > 2.17.1
+> >
+>
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
