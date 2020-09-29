@@ -2,110 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B675727CE90
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 15:09:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7508A27CE95
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 15:09:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728405AbgI2NI4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 09:08:56 -0400
-Received: from mga11.intel.com ([192.55.52.93]:25989 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728407AbgI2NIz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 09:08:55 -0400
-IronPort-SDR: 9q+QMJwxOrnmU0JS8jxzC2LDmaND5f6229+AzNgTrfrTCl6jU2EZhsB37ujKmONswRPpme1Y5a
- hpXJ1nfpxOSg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9758"; a="159514558"
-X-IronPort-AV: E=Sophos;i="5.77,318,1596524400"; 
-   d="scan'208";a="159514558"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2020 06:08:53 -0700
-IronPort-SDR: GLBwOey+qvi1JgCcffRXQGgfEkMe3pcTLQgmt0hdLiISYrL/vR5MLsui3fDMYhawdIqLfnFPtY
- F4lJ7fW6E8lA==
-X-IronPort-AV: E=Sophos;i="5.77,318,1596524400"; 
-   d="scan'208";a="491071392"
-Received: from sneftin-mobl.ger.corp.intel.com (HELO [10.251.191.104]) ([10.251.191.104])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2020 06:08:49 -0700
-Subject: Re: [Intel-wired-lan] [PATCH v4] e1000e: Increase polling timeout on
- MDIC ready bit
-To:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        jeffrey.t.kirsher@intel.com
-Cc:     andrew@lunn.ch,
-        "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:INTEL ETHERNET DRIVERS" 
-        <intel-wired-lan@lists.osuosl.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Lifshits, Vitaly" <vitaly.lifshits@intel.com>,
-        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>
-References: <20200924164542.19906-1-kai.heng.feng@canonical.com>
- <20200928083658.8567-1-kai.heng.feng@canonical.com>
-From:   "Neftin, Sasha" <sasha.neftin@intel.com>
-Message-ID: <469c71d5-93ac-e6c7-f85c-342b0df78a45@intel.com>
-Date:   Tue, 29 Sep 2020 16:08:45 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1729725AbgI2NJU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 09:09:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52622 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728407AbgI2NJU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 09:09:20 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D305CC061755;
+        Tue, 29 Sep 2020 06:09:19 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id u24so3858823pgi.1;
+        Tue, 29 Sep 2020 06:09:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Tt6v4ga1/Mgn+EM+y48V+7TqXjsy9HI9GgagZAZOHWw=;
+        b=DDgvQ+y5shVSCn0I9Gd0f6WGQ6jl//7KTJErMFo/3R5rlxhS92buZgWVNC4Fo4PmTb
+         sKdYM7NJfm2jxzTqJM0zZSuNNKqU/KdDOfeaE7nbHmc/h6cxdMH1Y/4P2cGAPgdiYtZf
+         43sCdHHkNSPeadh6BtsqlsaimhbW8crUtQhxJZTNsLZADdUHIKTS+ecbpi3HezNTep16
+         Z0IlU0lJgjmYY61qZbT/5mI6qYMIkcXvG3qQDUI1BDR69ru75VatblTVjhGCPptaWN2J
+         ZmHOe6dDap419lEKmf9xIgCWeq4R6hnJxjn3t5JQ+dkz3RFeNIVtVPmGPhfn0RjPLUv8
+         3g2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Tt6v4ga1/Mgn+EM+y48V+7TqXjsy9HI9GgagZAZOHWw=;
+        b=r7KQ63vZi3psSd6vMZ5rM7f25ZyeB9Uy0sw8b0f+RRdQBC7JFzfpo6EQaVxM8NEQaY
+         XqMEiUB31XxL4a5d/BUeBC1dJWebo9dJctntQWfuuJpFgc5r0mVZmegj6Eht7R738yYl
+         rtSph8S8+k6E1CO1xiyJ+tI8p2dtaGvJaXPSA+mJixFm+a6n5usgC+70OTvrB40Nnq09
+         FG/RO3wClowPNLSskPWxXrlw+HDh9QLQq0oX+Kgl3S4OxxOoD4naqFJ3HRMXUY1JWyRO
+         3R1oUP8d72A+aaDxshbvVfSVQ7QT/XvaneOVVR4WZdcDJG+hY4sYxHx1+hYx1ksJQ+1a
+         KEhQ==
+X-Gm-Message-State: AOAM5333FGpg9p/qQ+jtDppwqPKOpK9oaR48n7hMMvsDhvKlNTNijd7z
+        YuyLTK8F/IaqGBjrw+w3l15RyUw/LiqF5JVFcHY=
+X-Google-Smtp-Source: ABdhPJwZ+hnhwZsFlvFVPou6fwcLZNuHUShBmnu8YDwqpKs2XLK2SW85n9ZWpUNNNZN60wEeaUWMYfslyv8eSimIVis=
+X-Received: by 2002:a62:7b55:0:b029:13e:7367:2b2e with SMTP id
+ w82-20020a627b550000b029013e73672b2emr3942657pfc.7.1601384959384; Tue, 29 Sep
+ 2020 06:09:19 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200928083658.8567-1-kai.heng.feng@canonical.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200929125949.69934-1-alexandru.ardelean@analog.com>
+In-Reply-To: <20200929125949.69934-1-alexandru.ardelean@analog.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 29 Sep 2020 16:09:00 +0300
+Message-ID: <CAHp75VeQVEwtKGZcM6w=wfWuAvAD4xtveNUzT-7eXn5FVdheJQ@mail.gmail.com>
+Subject: Re: [PATCH v3 0/9] iio: remove iio_buffer_set_attrs() and assign
+ buffer attrs during alloc
+To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
+Cc:     linux-iio <linux-iio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Eugen Hristev <eugen.hristev@microchip.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Benson Leung <bleung@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        groeck@chromium.org,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Gwendal Grignou <gwendal@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/28/2020 11:36, Kai-Heng Feng wrote:
-> We are seeing the following error after S3 resume:
-> [  704.746874] e1000e 0000:00:1f.6 eno1: Setting page 0x6020
-> [  704.844232] e1000e 0000:00:1f.6 eno1: MDI Write did not complete
-> [  704.902817] e1000e 0000:00:1f.6 eno1: Setting page 0x6020
-> [  704.903075] e1000e 0000:00:1f.6 eno1: reading PHY page 769 (or 0x6020 shifted) reg 0x17
-> [  704.903281] e1000e 0000:00:1f.6 eno1: Setting page 0x6020
-> [  704.903486] e1000e 0000:00:1f.6 eno1: writing PHY page 769 (or 0x6020 shifted) reg 0x17
-> [  704.943155] e1000e 0000:00:1f.6 eno1: MDI Error
-> ...
-> [  705.108161] e1000e 0000:00:1f.6 eno1: Hardware Error
-> 
-> As Andrew Lunn pointed out, MDIO has nothing to do with phy, and indeed
-> increase polling iteration can resolve the issue.
-> 
-> This patch only papers over the symptom, as we don't really know the
-> root cause of the issue. The most possible culprit is Intel ME, which
-> may do its own things that conflict with software.
-> 
-> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-> ---
-> v4:
->   - States that this patch just papers over the symptom.
-> 
-> v3:
->   - Moving delay to end of loop doesn't save anytime, move it back.
->   - Point out this is quitely likely caused by Intel ME.
-> 
-> v2:
->   - Increase polling iteration instead of powering down the phy.
-> 
->   drivers/net/ethernet/intel/e1000e/phy.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/ethernet/intel/e1000e/phy.c b/drivers/net/ethernet/intel/e1000e/phy.c
-> index e11c877595fb..e6d4acd90937 100644
-> --- a/drivers/net/ethernet/intel/e1000e/phy.c
-> +++ b/drivers/net/ethernet/intel/e1000e/phy.c
-> @@ -203,7 +203,7 @@ s32 e1000e_write_phy_reg_mdic(struct e1000_hw *hw, u32 offset, u16 data)
->   	 * Increasing the time out as testing showed failures with
->   	 * the lower time out
->   	 */
-> -	for (i = 0; i < (E1000_GEN_POLL_TIMEOUT * 3); i++) {
-> +	for (i = 0; i < (E1000_GEN_POLL_TIMEOUT * 10); i++) {
-As we discussed (many threads) - AMT/ME systems not supported on Linux 
-as properly. I do not think increasing polling iteration will solve the 
-problem. Rather mask it.
-I prefer you check option to disable ME vi BIOS on your system.
->   		udelay(50);
->   		mdic = er32(MDIC);
->   		if (mdic & E1000_MDIC_READY)
-> 
-Thanks,
-Sasha
+On Tue, Sep 29, 2020 at 3:55 PM Alexandru Ardelean
+<alexandru.ardelean@analog.com> wrote:
+>
+> This is a v2 & v3 for [1]:
+>   https://lore.kernel.org/linux-iio/20200925083743.46469-1-alexandru.ardelean@analog.com/
+>
+> It also includes a at91-sama5d2_adc cleanup patch in this series:
+>   https://lore.kernel.org/linux-iio/20200924102902.136169-1-alexandru.ardelean@analog.com/
+> This patch is required, in order to make the removal of
+> iio_buffer_set_attrs() a bit cleaner in the at91-sama5d2_adc driver.
+>
+> Following the discussion from [1], this patchset implements the
+> following:
+
+Makes sense to me, FWIW,
+Reviewed-by: Andy Shevchenko <andy.shevchenjko>
+
+>
+> Changelog v2 -> v3:
+> * in patch 'iio: buffer: dmaengine: unwrap the use of iio_buffer_set_attrs()'
+>   - minor stylistic change;
+>
+> Changelog v1 -> v2:
+> * rename '{devm_}iio_triggered_buffer_setup()' ->
+>          '{devm_}iio_triggered_buffer_setup_ext()'
+>   - wrap with macros the new ext functions to preserve backwards
+>     compatibility
+>   - add a new parameter to the ext functions, which are the
+>     buffer->attrs
+> * split into separate patches the removal [from each driver] of
+>   iio_buffer_set_attrs() and the switch to a
+>   {devm_}iio_triggered_buffer_setup_ext variant
+> * add patch to remove iio_buffer_set_attrs() from DMAEngine IIO buffer
+> * remove the iio_buffer_set_attrs() helper in a final/separate patch
+> * add 'at91-sama5d2_adc: merge buffer & trigger' patch in this series,
+>   so that the removal of iio_buffer_set_attrs() is easier to view
+>
+> Alexandru Ardelean (9):
+>   iio: buffer: dmaengine: unwrap the use of iio_buffer_set_attrs()
+>   iio: adc: at91-sama5d2_adc: merge buffer & trigger init into a
+>     function
+>   iio: triggered-buffer: add {devm_}iio_triggered_buffer_setup_ext
+>     variants
+>   iio: accel: adxl372: use devm_iio_triggered_buffer_setup_ext()
+>   iio: accel: bmc150: use iio_triggered_buffer_setup_ext()
+>   iio: adc: at91-sama5d2_adc: use devm_iio_triggered_buffer_setup_ext()
+>   iio: cros_ec: use devm_iio_triggered_buffer_setup_ext()
+>   iio: hid-sensors: use iio_triggered_buffer_setup_ext()
+>   iio: buffer: remove iio_buffer_set_attrs() helper
+>
+>  drivers/iio/accel/adxl372.c                   | 11 ++-
+>  drivers/iio/accel/bmc150-accel-core.c         | 25 +++---
+>  drivers/iio/adc/at91-sama5d2_adc.c            | 82 +++++++++----------
+>  .../buffer/industrialio-buffer-dmaengine.c    |  3 +-
+>  .../buffer/industrialio-triggered-buffer.c    | 31 ++++---
+>  .../cros_ec_sensors/cros_ec_sensors_core.c    | 15 ++--
+>  .../common/hid-sensors/hid-sensor-trigger.c   | 22 ++---
+>  drivers/iio/industrialio-buffer.c             | 12 ---
+>  include/linux/iio/buffer.h                    |  3 -
+>  include/linux/iio/triggered_buffer.h          | 23 ++++--
+>  10 files changed, 113 insertions(+), 114 deletions(-)
+>
+> --
+> 2.17.1
+>
+
+
+-- 
+With Best Regards,
+Andy Shevchenko
