@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D0C427C549
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:34:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C06B927C611
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:42:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729701AbgI2Ld5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:33:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50012 "EHLO mail.kernel.org"
+        id S1730650AbgI2LlW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:41:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37708 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729604AbgI2Ld1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:33:27 -0400
+        id S1729924AbgI2LlS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:41:18 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B4B3223B99;
-        Tue, 29 Sep 2020 11:26:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DEDE2206DB;
+        Tue, 29 Sep 2020 11:41:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601378812;
-        bh=2UQ9DFaxS2qeBIdJST9eYG/tl8Ou/LtUg3wFI3kjC04=;
+        s=default; t=1601379677;
+        bh=ixzpbqLb4xocEfRBNC7ZiSrrGa/FbibEd/KqN8FpI8Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=p4KGSPV4V0briqR1i9iF0gZjkvc45jHtiB7/iPdL7sGIjxi+R1JdvzLgR7jq++vH4
-         ooR25f/ykC1XtIZ5N3wjSN8diOYp5sGD7d1nVWFHI1nbDOLsV5FLyM4eFrtA6Wegy1
-         +hq/KAt67TnIktHa+fhdL2jhB7m5d9n4wRSnZgys=
+        b=u5q01zyHKYafkuoL6kFR5FC3Mhbyo1itDULQZk8NgTt99WFgRnN8MsQFiwwBLgH+I
+         912g3l5EOacnDlvYiKJLaiwdMknWppvMt2084vc2797dkRiUWeT91E6QfaTmElDdqL
+         HtirWbepdy9xo86fRwWP92w/VNNgvUQfpUpfob8I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>,
+        stable@vger.kernel.org, "Matthew R. Ochs" <mrochs@linux.ibm.com>,
+        Wei Yongjun <weiyongjun1@huawei.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 148/245] drivers: char: tlclk.c: Avoid data race between init and interrupt handler
-Date:   Tue, 29 Sep 2020 12:59:59 +0200
-Message-Id: <20200929105954.189934904@linuxfoundation.org>
+Subject: [PATCH 5.4 269/388] scsi: cxlflash: Fix error return code in cxlflash_probe()
+Date:   Tue, 29 Sep 2020 13:00:00 +0200
+Message-Id: <20200929110023.483080948@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929105946.978650816@linuxfoundation.org>
-References: <20200929105946.978650816@linuxfoundation.org>
+In-Reply-To: <20200929110010.467764689@linuxfoundation.org>
+References: <20200929110010.467764689@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,74 +44,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
+From: Wei Yongjun <weiyongjun1@huawei.com>
 
-[ Upstream commit 44b8fb6eaa7c3fb770bf1e37619cdb3902cca1fc ]
+[ Upstream commit d0b1e4a638d670a09f42017a3e567dc846931ba8 ]
 
-After registering character device the file operation callbacks can be
-called. The open callback registers interrupt handler.
-Therefore interrupt handler can execute in parallel with rest of the init
-function. To avoid such data race initialize telclk_interrupt variable
-and struct alarm_events before registering character device.
+Fix to return negative error code -ENOMEM from create_afu error handling
+case instead of 0, as done elsewhere in this function.
 
-Found by Linux Driver Verification project (linuxtesting.org).
-
-Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
-Link: https://lore.kernel.org/r/20200417153451.1551-1-madhuparnabhowmik10@gmail.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Link: https://lore.kernel.org/r/20200428141855.88704-1-weiyongjun1@huawei.com
+Acked-by: Matthew R. Ochs <mrochs@linux.ibm.com>
+Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/char/tlclk.c | 17 ++++++++++-------
- 1 file changed, 10 insertions(+), 7 deletions(-)
+ drivers/scsi/cxlflash/main.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/char/tlclk.c b/drivers/char/tlclk.c
-index 8eeb4190207d1..dce22b7fc5449 100644
---- a/drivers/char/tlclk.c
-+++ b/drivers/char/tlclk.c
-@@ -776,17 +776,21 @@ static int __init tlclk_init(void)
- {
- 	int ret;
- 
-+	telclk_interrupt = (inb(TLCLK_REG7) & 0x0f);
-+
-+	alarm_events = kzalloc( sizeof(struct tlclk_alarms), GFP_KERNEL);
-+	if (!alarm_events) {
-+		ret = -ENOMEM;
-+		goto out1;
-+	}
-+
- 	ret = register_chrdev(tlclk_major, "telco_clock", &tlclk_fops);
- 	if (ret < 0) {
- 		printk(KERN_ERR "tlclk: can't get major %d.\n", tlclk_major);
-+		kfree(alarm_events);
- 		return ret;
+diff --git a/drivers/scsi/cxlflash/main.c b/drivers/scsi/cxlflash/main.c
+index 93ef97af22df4..67d681c53c295 100644
+--- a/drivers/scsi/cxlflash/main.c
++++ b/drivers/scsi/cxlflash/main.c
+@@ -3746,6 +3746,7 @@ static int cxlflash_probe(struct pci_dev *pdev,
+ 	cfg->afu_cookie = cfg->ops->create_afu(pdev);
+ 	if (unlikely(!cfg->afu_cookie)) {
+ 		dev_err(dev, "%s: create_afu failed\n", __func__);
++		rc = -ENOMEM;
+ 		goto out_remove;
  	}
- 	tlclk_major = ret;
--	alarm_events = kzalloc( sizeof(struct tlclk_alarms), GFP_KERNEL);
--	if (!alarm_events) {
--		ret = -ENOMEM;
--		goto out1;
--	}
- 
- 	/* Read telecom clock IRQ number (Set by BIOS) */
- 	if (!request_region(TLCLK_BASE, 8, "telco_clock")) {
-@@ -795,7 +799,6 @@ static int __init tlclk_init(void)
- 		ret = -EBUSY;
- 		goto out2;
- 	}
--	telclk_interrupt = (inb(TLCLK_REG7) & 0x0f);
- 
- 	if (0x0F == telclk_interrupt ) { /* not MCPBL0010 ? */
- 		printk(KERN_ERR "telclk_interrupt = 0x%x non-mcpbl0010 hw.\n",
-@@ -836,8 +839,8 @@ out3:
- 	release_region(TLCLK_BASE, 8);
- out2:
- 	kfree(alarm_events);
--out1:
- 	unregister_chrdev(tlclk_major, "telco_clock");
-+out1:
- 	return ret;
- }
  
 -- 
 2.25.1
