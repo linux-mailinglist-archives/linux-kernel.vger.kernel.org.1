@@ -2,116 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CB6C27CE3E
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:56:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5840327CD4B
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:43:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729709AbgI2M4H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 08:56:07 -0400
-Received: from disco-boy.misterjones.org ([51.254.78.96]:34262 "EHLO
-        disco-boy.misterjones.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729447AbgI2Mzx (ORCPT
+        id S1729400AbgI2MnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 08:43:14 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:35702 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387467AbgI2Mmv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 08:55:53 -0400
-X-Greylist: delayed 941 seconds by postgrey-1.27 at vger.kernel.org; Tue, 29 Sep 2020 08:55:52 EDT
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <maz@misterjones.org>)
-        id 1kNEvL-00FpwQ-Tb; Tue, 29 Sep 2020 13:40:04 +0100
+        Tue, 29 Sep 2020 08:42:51 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08TCTVhK162323;
+        Tue, 29 Sep 2020 12:41:28 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=ooQL/jdNK5E0bwGTZMVh9gDWLUQ2nvmJK92rRekHYUQ=;
+ b=fbDsT6lWzQ+ORM5K3s5HbTh37q+P1z9c+/B6RQ4VQx7oLjM2gwzIeE8N0TK9/h4MlugJ
+ VmZKpujw7s9mQJMKXROtdkaJX+/M40fG89wb5M/Eb5lfOuzm6ifBoSQMNa1ZDYLDy96Q
+ N5FurL2lN7UYjwYGf1sjjyvRX87rPwj+KMvYkCQLizmlU/Ua4y+pfB0M4iK5IHDAfOby
+ Hommc306kBsy4enPQXLV0Mli3U5nB0z5aegJtQ2KWz1ehAOh7di/nh/mvWIUPuCzfgWZ
+ mEbkR9polc8Mr77IP2HqyemXrTNGhtvRUKntBy9kx5+xTdBCZUmB2KCW9Fcu9Ddd4fTT HQ== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 33swkktdv9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 29 Sep 2020 12:41:28 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08TCTjQh051184;
+        Tue, 29 Sep 2020 12:41:27 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3030.oracle.com with ESMTP id 33tfjwmsb8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 29 Sep 2020 12:41:27 +0000
+Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08TCfLK3017010;
+        Tue, 29 Sep 2020 12:41:21 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 29 Sep 2020 05:41:20 -0700
+Date:   Tue, 29 Sep 2020 15:41:08 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Julia Lawall <Julia.Lawall@inria.fr>, linux-iio@vger.kernel.org,
+        drbd-dev@tron.linbit.com,
+        Valdis =?utf-8?Q?Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>,
+        David Lechner <david@lechnology.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        linux-wireless@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        kernel-janitors@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-block@vger.kernel.org, linux-ide@vger.kernel.org,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Joe Perches <joe@perches.com>,
+        linux-amlogic@lists.infradead.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        openipmi-developer@lists.sourceforge.net,
+        linux-clk@vger.kernel.org,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Jerome Brunet <jbrunet@baylibre.com>
+Subject: Re: [PATCH 00/18] use semicolons rather than commas to separate
+ statements
+Message-ID: <20200929124108.GY4282@kadam>
+References: <1601233948-11629-1-git-send-email-Julia.Lawall@inria.fr>
+ <CAMj1kXGh+CzuXkAnqsoMO2A3T1p=D6uFOV347Ym5+VFn5U1gWg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 29 Sep 2020 13:40:03 +0100
-From:   Marc Zyngier <maz@misterjones.org>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Will Deacon <will@kernel.org>, Rabin Vincent <rabin@rab.in>,
-        x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC] Add RIP to scripts/decodecode
-In-Reply-To: <20200929113238.GC21110@zn.tnic>
-References: <20200929113238.GC21110@zn.tnic>
-User-Agent: Roundcube Webmail/1.4.8
-Message-ID: <b18c145f7b96cace7cd503de33c08311@misterjones.org>
-X-Sender: maz@misterjones.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: bp@alien8.de, akpm@linux-foundation.org, will@kernel.org, rabin@rab.in, x86@kernel.org, linux-kernel@vger.kernel.org
-X-SA-Exim-Mail-From: maz@misterjones.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMj1kXGh+CzuXkAnqsoMO2A3T1p=D6uFOV347Ym5+VFn5U1gWg@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9758 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 spamscore=0 mlxscore=0
+ phishscore=0 adultscore=0 bulkscore=0 mlxlogscore=942 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009290111
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9758 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0 phishscore=0
+ suspectscore=0 mlxlogscore=966 clxscore=1011 priorityscore=1501
+ impostorscore=0 lowpriorityscore=0 bulkscore=0 spamscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009290111
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-[dropping these ARM people I never heard of...]
-
-On 2020-09-29 12:32, Borislav Petkov wrote:
-> Hi,
+On Tue, Sep 29, 2020 at 02:20:00PM +0200, Ard Biesheuvel wrote:
+> On Sun, 27 Sep 2020 at 21:56, Julia Lawall <Julia.Lawall@inria.fr> wrote:
+> >
+> > These patches replace commas by semicolons.
 > 
-> how about we add RIP to decodecode output? See below.
 > 
-> I've added the couple of people to Cc who seem to use this thing. The
-> patch is dirty and needs cleaning still but I think it would be cool to
-> have the actual addresses in that output so that when you compare with
-> objdump output in another window, you can find the code very quickly.
-> 
-> You'd need to supply the rIP from the splat, though, as an env var:
-> 
-> $ RIP=0xffffffff8329a927 ./scripts/decodecode < ~/tmp/syz/gfs2.splat
-> [ 477.379104][T23917] Code: 48 83 ec 28 48 89 3c 24 48 89 54 24 08 e8
-> c1 b4 4a fe 48 8d bb 00 01 00 00 48 b8 00 00 00 00 00 fc ff df 48 89
-> fa 48 c1 ea 03 <80> 3c 02 00 0f 85 97 05 00 00 48 8b 9b 00 01 00 00 48
-> 85 db 0f 84
-> Cleaned: [48 83 ec 28 48 89 3c 24 48 89 54 24 08 e8 c1 b4 4a fe 48 8d
-> bb 00 01 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80>
-> 3c 02 00 0f 85 97 05 00 00 48 8b 9b 00 01 00 00 48 85 db 0f 84]
-> Marker: 127
-> rIP_sub: 42
-> adj_vma: 0xffffffff8329a8fd
-> All code
-> ========
-> ffffffff8329a8fd:       48 83 ec 28             sub    $0x28,%rsp
-> ffffffff8329a901:       48 89 3c 24             mov    %rdi,(%rsp)
-> ffffffff8329a905:       48 89 54 24 08          mov    %rdx,0x8(%rsp)
-> ffffffff8329a90a:       e8 c1 b4 4a fe          callq  
-> 0xffffffff81745dd0
-> ffffffff8329a90f:       48 8d bb 00 01 00 00    lea    0x100(%rbx),%rdi
-> ffffffff8329a916:       48 b8 00 00 00 00 00    movabs 
-> $0xdffffc0000000000,%rax
-> ffffffff8329a91d:       fc ff df
-> ffffffff8329a920:       48 89 fa                mov    %rdi,%rdx
-> ffffffff8329a923:       48 c1 ea 03             shr    $0x3,%rdx
-> ffffffff8329a927:*      80 3c 02 00             cmpb
-> $0x0,(%rdx,%rax,1)               <-- trapping instruction
-> ffffffff8329a92b:       0f 85 97 05 00 00       jne    
-> 0xffffffff8329aec8
-> ffffffff8329a931:       48 8b 9b 00 01 00 00    mov    0x100(%rbx),%rbx
-> ffffffff8329a938:       48 85 db                test   %rbx,%rbx
-> ffffffff8329a93b:       0f                      .byte 0xf
-> ffffffff8329a93c:       84                      .byte 0x84
-> 
-> Code starting with the faulting instruction
-> ===========================================
-> ffffffff8329a8fd:       80 3c 02 00             cmpb   
-> $0x0,(%rdx,%rax,1)
-> ffffffff8329a901:       0f 85 97 05 00 00       jne    
-> 0xffffffff8329ae9e
-> ffffffff8329a907:       48 8b 9b 00 01 00 00    mov    0x100(%rbx),%rbx
-> ffffffff8329a90e:       48 85 db                test   %rbx,%rbx
-> ffffffff8329a911:       0f                      .byte 0xf
-> ffffffff8329a912:       84                      .byte 0x84
+> Why?
 > 
 
-Looks neat. Only objection is that RIP is pretty tainted from an
-architecture perspective. How about PC instead, which most people
-understand immediately?
+In the best case, these commas are just uninitentional mess, like typing
+an extra space character or something.  I've looked at them before and
+one case I see where they are introduced is when people convert a
+struct initializer to code.
 
-Bonus points if you can convince decodecode to grok something such
-as "do_undefinstr+0x2e0/0x2f0" as the PC! ;-)
+-	struct foo {
+-		.a = 1,
+-		.b = 2,
+ 		...
++	foo.a = 1,
++	foo.b = 2,
 
-Thanks,
+The times where commas are used deliberately to replace curly braces are
+just evil.  Either way the code is cleaner with semi-colons.
 
-         M.
--- 
-Who you jivin' with that Cosmik Debris?
+regards,
+dan carpenter
+
