@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4332227C84C
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:01:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 145A727CBA3
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:29:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731675AbgI2MAq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 08:00:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36916 "EHLO mail.kernel.org"
+        id S1732873AbgI2M3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 08:29:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43570 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730582AbgI2Lkx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:40:53 -0400
+        id S1728744AbgI2La6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:30:58 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DF4E62076A;
-        Tue, 29 Sep 2020 11:40:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3AF7C23B06;
+        Tue, 29 Sep 2020 11:24:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601379640;
-        bh=uMzatrwYt8y8qpM4E128ZkyGVe/RJOCjs/3WqC4f2/E=;
+        s=default; t=1601378695;
+        bh=Bp78cPVYjAliFs3m7XinnVw6ioVm945uiqpP/Ng4ObE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hzJmkbPKGte/gRsPSmUZB2haUXWozYZ0kcjJ1LSZ5WWOO2ziTMB59vqMTFku8sqt2
-         vbl+tApJ53xVwGwhZra0fLEvtaY76RdbUdxG2rixP8HxRVybsYew/nvwIye4gFYtIN
-         9szevj6ew6qYvRnVYPDbAvlllDz4wc/PD2yArWv0=
+        b=gW4l/rtnvu3khbQz8rNiNkjVLxq9xOHChsXeWgh0SPD9GdQ8Cea6i0CHOfX1+0SIK
+         +qdvAIgmkrCPRmLTrIXeMisuI7jvlpGgzuULAHq2CHipnGg07ZYOISW8djJ/c2Vf/o
+         Q2uZNdoQVw9MacsrxcX++aX8m3dmzuT6GtZvoWx4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Sagar Biradar <Sagar.Biradar@microchip.com>,
+        Balsundar P <balsundar.p@microsemi.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 223/388] SUNRPC: Dont start a timer on an already queued rpc task
-Date:   Tue, 29 Sep 2020 12:59:14 +0200
-Message-Id: <20200929110021.274284127@linuxfoundation.org>
+Subject: [PATCH 4.19 104/245] scsi: aacraid: Disabling TM path and only processing IOP reset
+Date:   Tue, 29 Sep 2020 12:59:15 +0200
+Message-Id: <20200929105952.063582441@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929110010.467764689@linuxfoundation.org>
-References: <20200929110010.467764689@linuxfoundation.org>
+In-Reply-To: <20200929105946.978650816@linuxfoundation.org>
+References: <20200929105946.978650816@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,68 +45,124 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Trond Myklebust <trond.myklebust@hammerspace.com>
+From: Sagar Biradar <Sagar.Biradar@microchip.com>
 
-[ Upstream commit 1fab7dc477241c12f977955aa6baea7938b6f08d ]
+[ Upstream commit bef18d308a2215eff8c3411a23d7f34604ce56c3 ]
 
-Move the test for whether a task is already queued to prevent
-corruption of the timer list in __rpc_sleep_on_priority_timeout().
+Fixes the occasional adapter panic when sg_reset is issued with -d, -t, -b
+and -H flags.  Removal of command type HBA_IU_TYPE_SCSI_TM_REQ in
+aac_hba_send since iu_type, request_id and fib_flags are not populated.
+Device and target reset handlers are made to send TMF commands only when
+reset_state is 0.
 
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+Link: https://lore.kernel.org/r/1581553771-25796-1-git-send-email-Sagar.Biradar@microchip.com
+Reviewed-by: Sagar Biradar <Sagar.Biradar@microchip.com>
+Signed-off-by: Sagar Biradar <Sagar.Biradar@microchip.com>
+Signed-off-by: Balsundar P <balsundar.p@microsemi.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/sunrpc/sched.c | 19 +++++++++++++------
- 1 file changed, 13 insertions(+), 6 deletions(-)
+ drivers/scsi/aacraid/commsup.c |  2 +-
+ drivers/scsi/aacraid/linit.c   | 34 +++++++++++++++++++++++++---------
+ 2 files changed, 26 insertions(+), 10 deletions(-)
 
-diff --git a/net/sunrpc/sched.c b/net/sunrpc/sched.c
-index 9c79548c68474..53d8b82eda006 100644
---- a/net/sunrpc/sched.c
-+++ b/net/sunrpc/sched.c
-@@ -204,10 +204,6 @@ static void __rpc_add_wait_queue(struct rpc_wait_queue *queue,
- 		struct rpc_task *task,
- 		unsigned char queue_priority)
- {
--	WARN_ON_ONCE(RPC_IS_QUEUED(task));
--	if (RPC_IS_QUEUED(task))
--		return;
+diff --git a/drivers/scsi/aacraid/commsup.c b/drivers/scsi/aacraid/commsup.c
+index b7588de4484e5..4cb6ee6e1212e 100644
+--- a/drivers/scsi/aacraid/commsup.c
++++ b/drivers/scsi/aacraid/commsup.c
+@@ -743,7 +743,7 @@ int aac_hba_send(u8 command, struct fib *fibptr, fib_callback callback,
+ 		hbacmd->request_id =
+ 			cpu_to_le32((((u32)(fibptr - dev->fibs)) << 2) + 1);
+ 		fibptr->flags |= FIB_CONTEXT_FLAG_SCSI_CMD;
+-	} else if (command != HBA_IU_TYPE_SCSI_TM_REQ)
++	} else
+ 		return -EINVAL;
+ 
+ 
+diff --git a/drivers/scsi/aacraid/linit.c b/drivers/scsi/aacraid/linit.c
+index 1046947064a0b..0142547aaadd2 100644
+--- a/drivers/scsi/aacraid/linit.c
++++ b/drivers/scsi/aacraid/linit.c
+@@ -736,7 +736,11 @@ static int aac_eh_abort(struct scsi_cmnd* cmd)
+ 		status = aac_hba_send(HBA_IU_TYPE_SCSI_TM_REQ, fib,
+ 				  (fib_callback) aac_hba_callback,
+ 				  (void *) cmd);
 -
- 	INIT_LIST_HEAD(&task->u.tk_wait.timer_list);
- 	if (RPC_IS_PRIORITY(queue))
- 		__rpc_add_wait_queue_priority(queue, task, queue_priority);
-@@ -382,7 +378,7 @@ static void rpc_make_runnable(struct workqueue_struct *wq,
-  * NB: An RPC task will only receive interrupt-driven events as long
-  * as it's on a wait queue.
-  */
--static void __rpc_sleep_on_priority(struct rpc_wait_queue *q,
-+static void __rpc_do_sleep_on_priority(struct rpc_wait_queue *q,
- 		struct rpc_task *task,
- 		unsigned char queue_priority)
- {
-@@ -395,12 +391,23 @@ static void __rpc_sleep_on_priority(struct rpc_wait_queue *q,
++		if (status != -EINPROGRESS) {
++			aac_fib_complete(fib);
++			aac_fib_free(fib);
++			return ret;
++		}
+ 		/* Wait up to 15 secs for completion */
+ 		for (count = 0; count < 15; ++count) {
+ 			if (cmd->SCp.sent_command) {
+@@ -915,11 +919,11 @@ static int aac_eh_dev_reset(struct scsi_cmnd *cmd)
  
- }
+ 	info = &aac->hba_map[bus][cid];
  
-+static void __rpc_sleep_on_priority(struct rpc_wait_queue *q,
-+		struct rpc_task *task,
-+		unsigned char queue_priority)
-+{
-+	if (WARN_ON_ONCE(RPC_IS_QUEUED(task)))
-+		return;
-+	__rpc_do_sleep_on_priority(q, task, queue_priority);
-+}
+-	if (info->devtype != AAC_DEVTYPE_NATIVE_RAW &&
+-	    info->reset_state > 0)
++	if (!(info->devtype == AAC_DEVTYPE_NATIVE_RAW &&
++	 !(info->reset_state > 0)))
+ 		return FAILED;
+ 
+-	pr_err("%s: Host adapter reset request. SCSI hang ?\n",
++	pr_err("%s: Host device reset request. SCSI hang ?\n",
+ 	       AAC_DRIVERNAME);
+ 
+ 	fib = aac_fib_alloc(aac);
+@@ -934,7 +938,12 @@ static int aac_eh_dev_reset(struct scsi_cmnd *cmd)
+ 	status = aac_hba_send(command, fib,
+ 			      (fib_callback) aac_tmf_callback,
+ 			      (void *) info);
+-
++	if (status != -EINPROGRESS) {
++		info->reset_state = 0;
++		aac_fib_complete(fib);
++		aac_fib_free(fib);
++		return ret;
++	}
+ 	/* Wait up to 15 seconds for completion */
+ 	for (count = 0; count < 15; ++count) {
+ 		if (info->reset_state == 0) {
+@@ -973,11 +982,11 @@ static int aac_eh_target_reset(struct scsi_cmnd *cmd)
+ 
+ 	info = &aac->hba_map[bus][cid];
+ 
+-	if (info->devtype != AAC_DEVTYPE_NATIVE_RAW &&
+-	    info->reset_state > 0)
++	if (!(info->devtype == AAC_DEVTYPE_NATIVE_RAW &&
++	 !(info->reset_state > 0)))
+ 		return FAILED;
+ 
+-	pr_err("%s: Host adapter reset request. SCSI hang ?\n",
++	pr_err("%s: Host target reset request. SCSI hang ?\n",
+ 	       AAC_DRIVERNAME);
+ 
+ 	fib = aac_fib_alloc(aac);
+@@ -994,6 +1003,13 @@ static int aac_eh_target_reset(struct scsi_cmnd *cmd)
+ 			      (fib_callback) aac_tmf_callback,
+ 			      (void *) info);
+ 
++	if (status != -EINPROGRESS) {
++		info->reset_state = 0;
++		aac_fib_complete(fib);
++		aac_fib_free(fib);
++		return ret;
++	}
 +
- static void __rpc_sleep_on_priority_timeout(struct rpc_wait_queue *q,
- 		struct rpc_task *task, unsigned long timeout,
- 		unsigned char queue_priority)
- {
-+	if (WARN_ON_ONCE(RPC_IS_QUEUED(task)))
-+		return;
- 	if (time_is_after_jiffies(timeout)) {
--		__rpc_sleep_on_priority(q, task, queue_priority);
-+		__rpc_do_sleep_on_priority(q, task, queue_priority);
- 		__rpc_add_timer(q, task, timeout);
- 	} else
- 		task->tk_status = -ETIMEDOUT;
+ 	/* Wait up to 15 seconds for completion */
+ 	for (count = 0; count < 15; ++count) {
+ 		if (info->reset_state <= 0) {
+@@ -1046,7 +1062,7 @@ static int aac_eh_bus_reset(struct scsi_cmnd* cmd)
+ 		}
+ 	}
+ 
+-	pr_err("%s: Host adapter reset request. SCSI hang ?\n", AAC_DRIVERNAME);
++	pr_err("%s: Host bus reset request. SCSI hang ?\n", AAC_DRIVERNAME);
+ 
+ 	/*
+ 	 * Check the health of the controller
 -- 
 2.25.1
 
