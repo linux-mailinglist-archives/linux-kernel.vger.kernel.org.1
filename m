@@ -2,124 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1283627BEF5
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 10:14:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7176227BEF6
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 10:14:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727702AbgI2IOT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 04:14:19 -0400
-Received: from mail-lj1-f196.google.com ([209.85.208.196]:41588 "EHLO
-        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725355AbgI2IOT (ORCPT
+        id S1727707AbgI2IOs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 04:14:48 -0400
+Received: from mail-pf1-f177.google.com ([209.85.210.177]:36327 "EHLO
+        mail-pf1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725550AbgI2IOr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 04:14:19 -0400
-Received: by mail-lj1-f196.google.com with SMTP id y4so3238804ljk.8;
-        Tue, 29 Sep 2020 01:14:16 -0700 (PDT)
+        Tue, 29 Sep 2020 04:14:47 -0400
+Received: by mail-pf1-f177.google.com with SMTP id d9so3779105pfd.3
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 01:14:46 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=lJ0udYKkVONmAvzXZ5w1sc6h3Mnsltml1S9gpyJpMs8=;
-        b=EkWgJ5EN4hc9X6ylmrg3IEjAgBREz3mgW1ZIUXdcCdGToUxjTmJQhq1EVG7bn0Xnw5
-         rhnYl72Shx4V7pjlR99IvOxmsfBSn5yxB+Gzqw654uSgr11h2xU4yly9Ig6kVBI8TAEx
-         YYObvc0WmTdsf1VomRV+1bYLE0OumENBzmpl0Cqz1pING6ebhfN/jtIK1wJOqlegIYit
-         1/Z4M39zKAC72L5sSeZ7e1RxaKLfsHHqCzKK06t6GGuk86rznz3GnLbm03DHX4TKJlXe
-         CbxZ+LeajYxfIiE8xrW3EIjz6KU/3HijXAlZBOPZmxPHj45mWui+6qwGqa9cPeFAfKJs
-         Jkzw==
-X-Gm-Message-State: AOAM533bXxTtqr+6EuAADsOBIBZrdVHddDBr1qJ6TRt6B0ihAJbXmJcp
-        hzJeX4JuuYqH9nhuZijiemI=
-X-Google-Smtp-Source: ABdhPJzunNQuzEeCQHxIt7tuWczSWtLEb3ASnY/whZh/nDFuW7yaXVgS3tQiIzmLsha5XwYY6prWHw==
-X-Received: by 2002:a2e:98c8:: with SMTP id s8mr787602ljj.268.1601367255889;
-        Tue, 29 Sep 2020 01:14:15 -0700 (PDT)
-Received: from localhost.localdomain ([213.255.186.46])
-        by smtp.gmail.com with ESMTPSA id 21sm3182751lfg.263.2020.09.29.01.14.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Sep 2020 01:14:15 -0700 (PDT)
-Date:   Tue, 29 Sep 2020 11:14:03 +0300
-From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-To:     mazziesaccount@gmail.com, matti.vaittinen@fi.rohmeurope.com
-Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-power@fi.rohmeurope.com,
-        linux-watchdog@vger.kernel.org
-Subject: [PATCH v3 0/4] Support ROHM BD9576MUF and BD9573MUF PMICs
-Message-ID: <cover.1601366711.git.matti.vaittinen@fi.rohmeurope.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=nWpDQmZNg8zKVk12QskQ7NNS05C4fI/JmZBKLdKyu8Q=;
+        b=nSfcmuB/6nve2Q2+0rkYlIemWZK/+Ii36id+QeSMR7dcF5cBg0nO4COfawE/CXKMOD
+         8GTOx1rE8BhlLP9ZwUXl/fQyc6ZRvZru7ioLhW4JSO556gE1q7mFmSuRksIm53xlVYb8
+         6jPvlXZQObHtkuAEF+Cbd9R3EmGpHBCR6zcex9NfAP6NCY0aK+lTMx6KUDIgBTDeOHo+
+         MCDPvVBuuSSChAqssGvjkUkRFYu9xMa9D6QP2cBlQaHxgT6eEY8OqCMlt+IPmaPVtAq1
+         vo4ZSbevlSFSA/zeZcAU7FhZGEQIlHpGkEakbc9WqOKrQVux5Txyi5ADZKO8TAko1Wt8
+         1Ytw==
+X-Gm-Message-State: AOAM530pNyQ/s4WD79AMeu/eXgjD3rUlUp+ybjO8AVXG9foeci9RPTkB
+        bY6fz6cmgU10xr9iHoLy/wrcPj4ibOU=
+X-Google-Smtp-Source: ABdhPJyxpBZd5gDKDEFKF7nTD72p5mg0bBklYnrG+VNrKrXBgtH1KoVMJOYAFRaelIVZgzXL1NEEyQ==
+X-Received: by 2002:a17:902:8ec7:b029:d2:42fe:37de with SMTP id x7-20020a1709028ec7b02900d242fe37demr2247420plo.23.1601367285551;
+        Tue, 29 Sep 2020 01:14:45 -0700 (PDT)
+Received: from ?IPv6:2601:647:4802:9070:8ff9:9348:1454:22ce? ([2601:647:4802:9070:8ff9:9348:1454:22ce])
+        by smtp.gmail.com with ESMTPSA id d12sm3644988pgd.93.2020.09.29.01.14.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 29 Sep 2020 01:14:44 -0700 (PDT)
+Subject: Re: [PATCH] [v2] nvme: replace meaningless judgement by checking
+ whether req is null
+To:     Xianting Tian <tian.xianting@h3c.com>, kbusch@kernel.org,
+        axboe@fb.com, hch@lst.de
+Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20200922062517.30031-1-tian.xianting@h3c.com>
+From:   Sagi Grimberg <sagi@grimberg.me>
+Message-ID: <2b9e078d-7fb9-804b-cca1-b5b1197d1b4f@grimberg.me>
+Date:   Tue, 29 Sep 2020 01:14:33 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.12.1 (2019-06-15)
+In-Reply-To: <20200922062517.30031-1-tian.xianting@h3c.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Initial support for ROHM BD9576MUF and BD9573MUF PMICs.
-
-These PMICs are primarily intended to be used to power the R-Car family
-processors. BD9576MUF includes some additional safety features the
-BD9573MUF does not have. This initial version of drivers does not
-utilize these features and for now the SW behaviour is identical.
-
-This patch series includes MFD and watchdog drivers. Regulator part was
-already applied.
-
-- Enabling and pinging the watchdog
-- configuring watchog timeout / window from device-tree
-
-This patch series does not bring interrupt support. BD9576MUF and BD9573MUF
-are designed to keep the IRQ line low for whole duration of error
-condition. IRQ can't be 'acked'. So proper IRQ support would require
-some IRQ limiter implementation (delayed unmask?) in order to not hog
-the CPU.
-
-Changelog v3:
-  - use only one binding to specify watchdog time-out window.
-
-Changelog v2:
-  - dropped already applied regulator part
-  - dt_bindings: Fix case for regulator-names in the example
-  - watchdod: unify probe error check and revise includes
-
----
-
-Matti Vaittinen (4):
-  dt_bindings: mfd: Add ROHM BD9576MUF and BD9573MUF PMICs
-  mfd: Support ROHM BD9576MUF and BD9573MUF
-  wdt: Support wdt on ROHM BD9576MUF and BD9573MUF
-  MAINTAINERS: Add ROHM BD9576MUF and BD9573MUF drivers
-
- .../bindings/mfd/rohm,bd9576-pmic.yaml        | 123 ++++++++
- MAINTAINERS                                   |   4 +
- drivers/mfd/Kconfig                           |  11 +
- drivers/mfd/Makefile                          |   1 +
- drivers/mfd/rohm-bd9576.c                     | 130 ++++++++
- drivers/watchdog/Kconfig                      |  13 +
- drivers/watchdog/Makefile                     |   1 +
- drivers/watchdog/bd9576_wdt.c                 | 290 ++++++++++++++++++
- include/linux/mfd/rohm-bd957x.h               |  59 ++++
- include/linux/mfd/rohm-generic.h              |   2 +
- 10 files changed, 634 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mfd/rohm,bd9576-pmic.yaml
- create mode 100644 drivers/mfd/rohm-bd9576.c
- create mode 100644 drivers/watchdog/bd9576_wdt.c
- create mode 100644 include/linux/mfd/rohm-bd957x.h
-
-
-base-commit: f4d51dffc6c01a9e94650d95ce0104964f8ae822
--- 
-2.21.0
-
-
--- 
-Matti Vaittinen, Linux device drivers
-ROHM Semiconductors, Finland SWDC
-Kiviharjunlenkki 1E
-90220 OULU
-FINLAND
-
-~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
-Simon says - in Latin please.
-~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
-Thanks to Simon Glass for the translation =] 
+Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
