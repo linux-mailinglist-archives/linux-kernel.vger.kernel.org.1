@@ -2,119 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ABDA27D30B
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 17:48:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F47627D30E
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 17:48:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728736AbgI2PsC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 11:48:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49154 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725497AbgI2PsB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 11:48:01 -0400
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAFAAC061755
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 08:47:59 -0700 (PDT)
-Received: by mail-io1-xd35.google.com with SMTP id u19so5319502ion.3
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 08:47:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+fRDsNgN2uFtN5BY9cG8Ru5uS2pUVkVtSMvZ/oFCZ9E=;
-        b=x9Z/6sT5LSTuCUR7kzaaUJSzg1TkTbzFbyQjcLWsMkHkRvIWkdk9OBzY5wawZ4ObZK
-         5GE+8/seStWi3GQ2XoIQUfLMGLL8Wb/RbRMbRK4xTROmLxOvecQyniFoGhAJYzvwIqS2
-         YRUMVpr4p1k8mNLTNTjDhtOogQyGwk2nWCAZ5yZNokL61fZFQsqyGWMo9shE9JUWxTD/
-         iZ1eLUkOgxOJ58kOii/fzArF7XwHyinUGcXwQW1/6Vwis9eah0+PoJPKzFU+jZHHg+El
-         amYzX370qWMdZDMn+jMjH7gQsksOUGVTGdebAuAv2+gzvHh3MgN0bnYH2v2lEwJp6ezi
-         uTPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+fRDsNgN2uFtN5BY9cG8Ru5uS2pUVkVtSMvZ/oFCZ9E=;
-        b=g50gve0gtTzeLGAqo6pfQELYeX6kPX5eadf2lrTClfgkjQNLPaT4X9XF7xH6Dqzf2A
-         MjrUbKbSVhIu5GdEDjh68P8i9FDhON7yItcLY5MMOXsSGqZ+yqRkrUEyy3jcAA7cTmJ/
-         V4+DiEslbedKxysdOOC6CR+sNBUAZZyHNa6lBYfZdMWhyqJxOcbgSPWV81xuFeUvNe9n
-         zp1l/6zPPGmBcgwnKA9sDc5c+zSIODJUpWmmw1s5kQzawiM6W4pzlojWZG6Aj04+5/dA
-         0h18JLWTLXLtZ0BGmldaA3W8D1Nfk3HBFVCVvOJVlSH/OidaLSIqKFCv5xM7dsJD23sv
-         6E5A==
-X-Gm-Message-State: AOAM5324DxHv82fL9e0QhpAPAePIff+Y50q4qF8e69biMYpqsPVmxoA5
-        2mnyrwpq4uUSSgDkaRUAwJcM5J5UvbIzeXzGRWPHIQ==
-X-Google-Smtp-Source: ABdhPJyQsuGvOKqXQmMRSBpnMXmXFrQ8GQAMhq92OErRmFnbHAaXulpCnWr7QcOrhhAKug9yo0lalEsORfrv1aGwo+Y=
-X-Received: by 2002:a5d:8e14:: with SMTP id e20mr2924164iod.119.1601394479066;
- Tue, 29 Sep 2020 08:47:59 -0700 (PDT)
+        id S1729416AbgI2PsT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 11:48:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40260 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725497AbgI2PsT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 11:48:19 -0400
+Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 00729206D9;
+        Tue, 29 Sep 2020 15:48:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601394498;
+        bh=WW9lgDeN8iQFoq7lTXLFBgvRZng4yjecbQILCi4uOd0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=NIno9hhau8LsyYnfVKhWqYr7gfl/Yh8wBMCWreIxuqNk0Yj207B4DQ1tb3FFgcxMt
+         qGz50qnVmVUWGEVAOStcyHD42XhDl8ci5cIwSZfyGfRFRw7/Ce2EOqDm3bBQaGy5fm
+         KpFnzsWuDAUaiIG9H/jxJbf8i2Y1n9tRgrkbl1zs=
+Date:   Tue, 29 Sep 2020 16:48:13 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Cristian Pop <cristian.pop@analog.com>
+Cc:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
+Subject: Re: [PATCH v7 5/5] dt-bindings:iio:adc:adc.txt: Add documentation
+ for channel label attribute
+Message-ID: <20200929164813.2a9bfcf7@archlinux>
+In-Reply-To: <20200928090959.88842-5-cristian.pop@analog.com>
+References: <20200928090959.88842-1-cristian.pop@analog.com>
+        <20200928090959.88842-5-cristian.pop@analog.com>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <9152bb8be33e4192a7766eb53c6ca9af@asem.it>
-In-Reply-To: <9152bb8be33e4192a7766eb53c6ca9af@asem.it>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Tue, 29 Sep 2020 17:47:48 +0200
-Message-ID: <CAMRc=McnsSkg-7UMp7pKaGX2wSqsZC2jQZV2zRepxm9UxGg=YA@mail.gmail.com>
-Subject: Re: How to use an ACPI declared GPIO in a userspace ...
-To:     Flavio Suligoi <f.suligoi@asem.it>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 5:43 PM Flavio Suligoi <f.suligoi@asem.it> wrote:
->
-> Hi all,
->
-> I need to expose to the userspace a GPIO, physically connected to a board
-> push-button. This GPIO must expose a pre-defined name, such as
-> "user-push-button", so that the userspace applications can use it without
-> know any physical GPIO details.
->
-> I can customize the board BIOS and so my goal is to add an ACPI table with
-> a content like this:
->
-> ...
-> Scope (\_SB.GPO1)
->         {
->                 Device (BTNS)
->                 {
->                         Name (_HID, "PRP0001")
->                         Name (_DDN, "GPIO buttons device")
->
->                         Name (_CRS, ResourceTemplate ()
->                         {
->                                 GpioIo (
->                                 Exclusive,               // Not shared
->                                 PullNone,                // No need for pulls
->                                 0,                       // Debounce timeout
->                                 0,                       // Drive strength
->                                 IoRestrictionInputOnly,  // Only used as input
->                                 "\\_SB.GPO1",            // GPIO controller
->                                 0, ResourceConsumer, , ) // Must be 0
->                                 {
->                                         25,              // GPIO number
->                                 }
-> ...
->
-> I know that this GPIO can be used from other drivers.
-> For example I successfully tested it using the "gpio-keys" device driver,
-> giving to my GPIO a key-code and emulating in this way a keyboard key.
-> This could be a possible solution.
->
-> But I prefer to expose my GPIO as a classic GPIO, not as a keyboard key.
->
-> I was wondering if there is a generic GPIO driver that I can use to expose
-> this GPIO with its pre-defined name (caming from the ACPI table declaration),
-> to the userspace...
->
-> Best regards,
->
-> Flavio
+On Mon, 28 Sep 2020 12:09:59 +0300
+Cristian Pop <cristian.pop@analog.com> wrote:
 
-Adding Andy who knows ACPI GPIO well.
+> Optional attribute for better identification of the channels.
+> 
+> Signed-off-by: Cristian Pop <cristian.pop@analog.com>
 
-In general, the "gpio-line-names" property is used for that and it's
-supported both for device tree as well as ACPI, although I have only
-ever used the former.
+This one is on my list of binding files to convert fairly soon
+so I'm fine with this going in whilst it's still in txt form.
 
-Bartosz
+The addition of reg here shows up a quirk of this binding.  We
+originally introduced it to specify differential pairs, hence
+the @ can refer to the first value of diff-channels instead
+of reg.  Hopefully I'll remember to clarify that when doing the
+yaml conversion.
+
+The series looks good to me, but given timing it won't make the
+merge window for the coming cycle.
++CC Rob and the dt list.
+
+> ---
+> Changes in v7:
+>  - Add this extra commit
+>  Documentation/devicetree/bindings/iio/adc/adc.txt | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/iio/adc/adc.txt b/Documentation/devicetree/bindings/iio/adc/adc.txt
+> index 5bbaa330a250..4b37575bbddc 100644
+> --- a/Documentation/devicetree/bindings/iio/adc/adc.txt
+> +++ b/Documentation/devicetree/bindings/iio/adc/adc.txt
+> @@ -5,18 +5,24 @@ Optional properties for child nodes:
+>  - diff-channels : Differential channels muxed for this ADC. The first value
+>  		specifies the positive input pin, the second value the negative
+>  		input pin.
+> +- reg: The channel number.
+> +- label: Unique name to identify which channel this is.
+>  
+>  Example:
+>  	adc@0 {
+>  		compatible = "some,adc";
+>  		...
+>  		channel@0 {
+> +			reg = <0>;
+> +			label = "channel_0_name";
+>  			bipolar;
+>  			diff-channels = <0 1>;
+>  			...
+>  		};
+>  
+>  		channel@1 {
+> +			reg = <1>;
+> +			label = "channel_1_name";
+>  			diff-channels = <2 3>;
+>  			...
+>  		};
+
