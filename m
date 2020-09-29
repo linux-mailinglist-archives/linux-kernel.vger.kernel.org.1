@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C94727C691
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:46:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E0B127C6D1
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:49:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731015AbgI2Lq3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:46:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46400 "EHLO mail.kernel.org"
+        id S1731183AbgI2Lsz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:48:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51368 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730995AbgI2LqF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:46:05 -0400
+        id S1730987AbgI2Lsn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:48:43 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5B235206E5;
-        Tue, 29 Sep 2020 11:46:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E73A92158C;
+        Tue, 29 Sep 2020 11:48:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601379964;
-        bh=QNd/mNtDUlryYCwCxDvovtIW4k86maIz4Dt1ByuNfgo=;
+        s=default; t=1601380122;
+        bh=WCwjatINeXFq0IDOmh9qiS+TABvJtY2nBro1OWYcvcA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tggFKSNpmR7BV0PZrweNOwEMA8KJVM/eHPl3Ay9+K7CV0uXGPAqMlBOcrlgvNtPE+
-         sp++6zaA+F6EfSf13fiywehLYk4Hkb3O9tIhIB5djW3JMjuSRSakgXHRRpk+SR/D26
-         RmGlrdHGMvk+CYPGl8F3JEOsfTFQSXaEUMCOMmeE=
+        b=axHdvqDD1eYxj418gVQAPkvFSuU1/1LtOPFdo/87awkNaRR7yRnqqa/vZz9MYcFJH
+         aTCe48Fh8FmC+7RXVbQZXjtLjeZlSnXMozrWwvPKWuDbjB3cbt8a6awEHUzKFxWmv/
+         KeGhoIvII6A4AzJg7usqzNcQ74nB7DV85b9ZYWOY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jiri Slaby <jslaby@suse.cz>,
-        Jens Axboe <axboe@kernel.dk>, linux-ide@vger.kernel.org,
-        Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Subject: [PATCH 5.4 388/388] ata: sata_mv, avoid trigerrable BUG_ON
-Date:   Tue, 29 Sep 2020 13:01:59 +0200
-Message-Id: <20200929110029.243572359@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Hui Wang <hui.wang@canonical.com>, Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.8 77/99] ALSA: hda/realtek: Enable front panel headset LED on Lenovo ThinkStation P520
+Date:   Tue, 29 Sep 2020 13:02:00 +0200
+Message-Id: <20200929105933.528264235@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929110010.467764689@linuxfoundation.org>
-References: <20200929110010.467764689@linuxfoundation.org>
+In-Reply-To: <20200929105929.719230296@linuxfoundation.org>
+References: <20200929105929.719230296@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,53 +43,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jiri Slaby <jslaby@suse.cz>
+From: Kai-Heng Feng <kai.heng.feng@canonical.com>
 
-commit e9f691d899188679746eeb96e6cb520459eda9b4 upstream.
+commit f73bbf639b32acb6b409e188fdde5644b301978f upstream.
 
-There are several reports that the BUG_ON on unsupported command in
-mv_qc_prep can be triggered under some circumstances:
-https://bugzilla.suse.com/show_bug.cgi?id=1110252
-https://serverfault.com/questions/888897/raid-problems-after-power-outage
-https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1652185
-https://bugs.centos.org/view.php?id=14998
+On Lenovo P520, the front panel headset LED isn't lit up right now.
 
-Let sata_mv handle the failure gracefully: warn about that incl. the
-failed command number and return an AC_ERR_INVALID error. We can do that
-now thanks to the previous patch.
+Realtek states that the LED needs to be enabled by ALC233's GPIO2, so
+let's do it accordingly to light the LED up.
 
-Remove also the long-standing FIXME.
-
-[v2] use %.2x as commands are defined as hexa.
-
-Signed-off-by: Jiri Slaby <jslaby@suse.cz>
-Cc: Jens Axboe <axboe@kernel.dk>
-Cc: linux-ide@vger.kernel.org
-Cc: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Acked-by: Hui Wang <hui.wang@canonical.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20200914070231.13192-1-kai.heng.feng@canonical.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/ata/sata_mv.c |    8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+ sound/pci/hda/patch_realtek.c |    7 +++++++
+ 1 file changed, 7 insertions(+)
 
---- a/drivers/ata/sata_mv.c
-+++ b/drivers/ata/sata_mv.c
-@@ -2098,12 +2098,10 @@ static enum ata_completion_errors mv_qc_
- 		 * non-NCQ mode are: [RW] STREAM DMA and W DMA FUA EXT, none
- 		 * of which are defined/used by Linux.  If we get here, this
- 		 * driver needs work.
--		 *
--		 * FIXME: modify libata to give qc_prep a return value and
--		 * return error here.
- 		 */
--		BUG_ON(tf->command);
--		break;
-+		ata_port_err(ap, "%s: unsupported command: %.2x\n", __func__,
-+				tf->command);
-+		return AC_ERR_INVALID;
- 	}
- 	mv_crqb_pack_cmd(cw++, tf->nsect, ATA_REG_NSECT, 0);
- 	mv_crqb_pack_cmd(cw++, tf->hob_lbal, ATA_REG_LBAL, 0);
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -6066,6 +6066,7 @@ static void alc_fixup_thinkpad_acpi(stru
+ #include "hp_x360_helper.c"
+ 
+ enum {
++	ALC269_FIXUP_GPIO2,
+ 	ALC269_FIXUP_SONY_VAIO,
+ 	ALC275_FIXUP_SONY_VAIO_GPIO2,
+ 	ALC269_FIXUP_DELL_M101Z,
+@@ -6247,6 +6248,10 @@ enum {
+ };
+ 
+ static const struct hda_fixup alc269_fixups[] = {
++	[ALC269_FIXUP_GPIO2] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = alc_fixup_gpio2,
++	},
+ 	[ALC269_FIXUP_SONY_VAIO] = {
+ 		.type = HDA_FIXUP_PINCTLS,
+ 		.v.pins = (const struct hda_pintbl[]) {
+@@ -7066,6 +7071,8 @@ static const struct hda_fixup alc269_fix
+ 	[ALC233_FIXUP_LENOVO_MULTI_CODECS] = {
+ 		.type = HDA_FIXUP_FUNC,
+ 		.v.func = alc233_alc662_fixup_lenovo_dual_codecs,
++		.chained = true,
++		.chain_id = ALC269_FIXUP_GPIO2
+ 	},
+ 	[ALC233_FIXUP_ACER_HEADSET_MIC] = {
+ 		.type = HDA_FIXUP_VERBS,
 
 
