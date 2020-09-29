@@ -2,119 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC69F27BE38
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 09:39:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFB7727BE42
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 09:42:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727680AbgI2Hjc convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 29 Sep 2020 03:39:32 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:53152 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725774AbgI2Hjb (ORCPT
+        id S1727410AbgI2Hmy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 03:42:54 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:10874 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725554AbgI2Hmy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 03:39:31 -0400
-Received: from mail-pg1-f197.google.com ([209.85.215.197])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1kNAES-00057w-N6
-        for linux-kernel@vger.kernel.org; Tue, 29 Sep 2020 07:39:28 +0000
-Received: by mail-pg1-f197.google.com with SMTP id r4so2448196pgl.20
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 00:39:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=FaS4Msu62B2hZhVAHv5KDuf0HZsqaYRRgWIx2cKWtok=;
-        b=IHh3TfnZqbJPFwJCbRnxtxZ/5tyo/J/dW0OBRgwRl4f350z0xdadXnE8y1G3YqRU7g
-         7zfaX1hD3OYZ5yFkswokt9CnMdeWMNSwYwxecdBTNToxNoue7hucTSKYeZyl4Lg/jaUo
-         BXlKSmikP927dWF0kEe7eeZdo1QqpvFzuWvAXEjFtnWflPvnr2NYxaa9a4CN9vRcAWUf
-         1bQPlGPwU2hVHTVfAJ3C78Ko6KcwCuv/5w5jyWC/AArsAVeaoKbDsAkZB37iGIjI/ldN
-         FOwEaLbC/TDRvCOQze9RFzmw2nkZ9ojwgDFxMmw8ZDyjtjqJDf06LucWUgGXlis3bf+7
-         C3fA==
-X-Gm-Message-State: AOAM533JA9qBAcotrTC4pRbDESV7ztUx72CX4YwJqJHA4r81G6giYf95
-        /Atc6yAHhbS0jtIJuSpOiVEE6CeFyePkW6jl5J+KsKP7WjwQcEeM4e4ZSw46XrtguJRFHHRGSKG
-        /rcyfQIPxWnPo6vtLvrNqTTMlWRUQ+01Nzy2n57evAQ==
-X-Received: by 2002:a62:7b55:0:b029:13e:7367:2b2e with SMTP id w82-20020a627b550000b029013e73672b2emr2888499pfc.7.1601365167188;
-        Tue, 29 Sep 2020 00:39:27 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxxrRTB/PNOVXX3/RH8nEoit9OT6YQk+J4K/XU5DBnLBCyEjot2MG7XCX7isOsyJ60uvL1VTA==
-X-Received: by 2002:a62:7b55:0:b029:13e:7367:2b2e with SMTP id w82-20020a627b550000b029013e73672b2emr2888469pfc.7.1601365166777;
-        Tue, 29 Sep 2020 00:39:26 -0700 (PDT)
-Received: from [192.168.1.208] (220-133-187-190.HINET-IP.hinet.net. [220.133.187.190])
-        by smtp.gmail.com with ESMTPSA id a3sm4163130pfl.213.2020.09.29.00.39.24
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 29 Sep 2020 00:39:25 -0700 (PDT)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
-Subject: Re: [PATCH v3] xhci: Prevent runtime suspend on Etron EJ168
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-In-Reply-To: <8d913b15-a7e4-5e35-a137-355d222ccf1f@linux.intel.com>
-Date:   Tue, 29 Sep 2020 15:39:23 +0800
-Cc:     Mathias Nyman <mathias.nyman@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "open list:USB XHCI DRIVER" <linux-usb@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Transfer-Encoding: 8BIT
-Message-Id: <E2501192-3B1E-4887-92CB-AD6ECDED65F9@canonical.com>
-References: <20200504171642.26947-1-kai.heng.feng@canonical.com>
- <0F26EE78-D4F4-4CCB-892B-999E203BF515@canonical.com>
- <14291E1B-6580-4C69-9EF8-3B30BC78B8D0@canonical.com>
- <8d913b15-a7e4-5e35-a137-355d222ccf1f@linux.intel.com>
-To:     Mathias Nyman <mathias.nyman@linux.intel.com>
-X-Mailer: Apple Mail (2.3608.120.23.2.4)
+        Tue, 29 Sep 2020 03:42:54 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f72e5710000>; Tue, 29 Sep 2020 00:42:41 -0700
+Received: from mtl-vdi-166.wap.labs.mlnx (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 29 Sep
+ 2020 07:42:52 +0000
+Date:   Tue, 29 Sep 2020 10:42:48 +0300
+From:   Eli Cohen <elic@nvidia.com>
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+CC:     <jasowang@redhat.com>, <virtualization@lists.linux-foundation.org>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <elic@nvidia.com>
+Subject: Re: [PATCH V1 vhost-next] vdpa/mlx5: Make vdpa core driver a
+ distinct module
+Message-ID: <20200929074248.GA123696@mtl-vdi-166.wap.labs.mlnx>
+References: <20200924143231.GA186492@mtl-vdi-166.wap.labs.mlnx>
+ <20200928155448-mutt-send-email-mst@kernel.org>
+ <20200929062026.GB120395@mtl-vdi-166.wap.labs.mlnx>
+ <20200929022430-mutt-send-email-mst@kernel.org>
+ <20200929063433.GC120395@mtl-vdi-166.wap.labs.mlnx>
+ <20200929025038-mutt-send-email-mst@kernel.org>
+ <20200929065744.GE120395@mtl-vdi-166.wap.labs.mlnx>
+ <20200929031348-mutt-send-email-mst@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20200929031348-mutt-send-email-mst@kernel.org>
+User-Agent: Mutt/1.9.5 (bf161cf53efb) (2018-04-13)
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1601365361; bh=khNyUg6fCBHz2WjAbLMQyLYkEJvYeDmjiMJT4IcmDR4=;
+        h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+         Content-Type:Content-Disposition:In-Reply-To:User-Agent:
+         X-Originating-IP:X-ClientProxiedBy;
+        b=n1Ox6h0L1r6zOGQpGzRyQfSzRq3NzlDT35HuIqTIFBGQgtpjIQVsDtbeflwSaQJ6K
+         XkVDzlEe31USSyJKRh7tk4xxdTAuRRA0x4cx+zMnrhjodwWqTj+c3M7fQER3Kn1ACY
+         7CuVNm0Ye7x0rMtuCeOA4zmgij1kdii+MiYBUyDgDKoWugX9H6E+0euCubuykyP7jV
+         8wHDiakvHVmXta6n3mBT9KDPzKUO+hm4W3oEHGWRoRDqbpXcNhG/LawykCdM48Yg2m
+         HqbXV439INGTKl1HpYlDyGsexuvPc+zwHktE0xNSfJIpcrgvs4qI2nFTPuZPi/4ZSQ
+         sOoSVd7Oz71Lg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-> On Sep 29, 2020, at 05:42, Mathias Nyman <mathias.nyman@linux.intel.com> wrote:
+On Tue, Sep 29, 2020 at 03:17:05AM -0400, Michael S. Tsirkin wrote:
+> > 
+> > Use "select MLX5_CORE"
+> > instead of "depends on MLX5_CORE"
+> > 
+> > Wasn't this agreed upon?
 > 
-> On 28.9.2020 12.10, Kai-Heng Feng wrote:
->> 
->> 
->>> On Jun 8, 2020, at 11:56, Kai-Heng Feng <kai.heng.feng@canonical.com> wrote:
->>> 
->>> 
->>> 
->>>> On May 5, 2020, at 01:16, Kai-Heng Feng <kai.heng.feng@canonical.com> wrote:
->>>> 
->>>> Etron EJ168 USB 3.0 Host Controller stops working after S3, if it was
->>>> runtime suspended previously:
->>>> [  370.080359] pci 0000:02:00.0: can't change power state from D3cold to D0 (config space inaccessible)
->>>> [  370.080477] xhci_hcd 0000:04:00.0: can't change power state from D3cold to D0 (config space inaccessible)
->>>> [  370.080532] pcieport 0000:00:1c.0: DPC: containment event, status:0x1f05 source:0x0200
->>>> [  370.080533] pcieport 0000:00:1c.0: DPC: ERR_FATAL detected
->>>> [  370.080536] xhci_hcd 0000:04:00.0: can't change power state from D3hot to D0 (config space inaccessible)
->>>> [  370.080552] xhci_hcd 0000:04:00.0: AER: can't recover (no error_detected callback)
->>>> [  370.080566] usb usb3: root hub lost power or was reset
->>>> [  370.080566] usb usb4: root hub lost power or was reset
->>>> [  370.080572] xhci_hcd 0000:04:00.0: Host halt failed, -19
->>>> [  370.080574] xhci_hcd 0000:04:00.0: Host not accessible, reset failed.
->>>> [  370.080575] xhci_hcd 0000:04:00.0: PCI post-resume error -19!
->>>> [  370.080586] xhci_hcd 0000:04:00.0: HC died; cleaning up
->>>> 
->>>> This can be fixed by not runtime suspend the controller at all.
->>>> 
->>>> So disable runtime suspend for EJ168 xHCI device.
->>>> 
->>>> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
->>> 
->>> A gentle ping...
->> 
->> Another gentle ping...
-> 
-> Thanks, somehow I didn't notice this earlier.
-> 
-> Was the rootcause ever investigated?
-> Preventing runtime suspend looks like a quick fix to get rid of the issue, but 
-> possibly just hides some other underlying power management problem
+> Hmm I don't know. I recall a similar discussion around VHOST_IOTLB.
+> That's different ...
 
-I tried different angles but didn't find any useful solution.
-
-Eventually I found out that the device stays at D0 under Windows, so this is the approach I take.
-
-Kai-Heng
+I see.
 
 > 
-> -Mathias
+> I see
+> 
+> [linux]$ git grep MLX5_CORE|grep depends
+> drivers/infiniband/hw/mlx5/Kconfig:     depends on NETDEVICES && ETHERNET && PCI && MLX5_CORE
+> drivers/net/ethernet/mellanox/mlx5/core/Kconfig:        depends on MLX5_CORE
+> drivers/net/ethernet/mellanox/mlx5/core/Kconfig:        depends on NETDEVICES && ETHERNET && INET && PCI && MLX5_CORE
+> drivers/net/ethernet/mellanox/mlx5/core/Kconfig:        depends on MLX5_CORE_EN && RFS_ACCEL
+> drivers/net/ethernet/mellanox/mlx5/core/Kconfig:        depends on MLX5_CORE_EN
+> drivers/net/ethernet/mellanox/mlx5/core/Kconfig:        depends on MLX5_CORE_EN
+> drivers/net/ethernet/mellanox/mlx5/core/Kconfig:        depends on MLX5_CORE_EN && NET_SWITCHDEV
+> drivers/net/ethernet/mellanox/mlx5/core/Kconfig:        depends on MLX5_CORE_EN && DCB
+> drivers/net/ethernet/mellanox/mlx5/core/Kconfig:        depends on MLX5_CORE_EN
+> drivers/net/ethernet/mellanox/mlx5/core/Kconfig:        depends on MLX5_CORE
+> drivers/net/ethernet/mellanox/mlx5/core/Kconfig:        depends on MLX5_CORE_EN
+> drivers/net/ethernet/mellanox/mlx5/core/Kconfig:        depends on MLX5_CORE_EN
+> drivers/net/ethernet/mellanox/mlx5/core/Kconfig:        depends on TLS=y || MLX5_CORE=m
+> drivers/net/ethernet/mellanox/mlx5/core/Kconfig:        depends on MLX5_CORE_EN
+> drivers/net/ethernet/mellanox/mlx5/core/Kconfig:        depends on TLS=y || MLX5_CORE=m
+> drivers/net/ethernet/mellanox/mlx5/core/Kconfig:        depends on MLX5_CORE_EN
+> drivers/net/ethernet/mellanox/mlx5/core/Kconfig:        depends on MLX5_CORE_EN && MLX5_ESWITCH
+> drivers/vdpa/Kconfig:   depends on MLX5_CORE
+> 
+> and no selects of this symbol, I guess you are saying you are changing everything
+> else to select - is that right? Then I guess vdpa should follow suit ...
+> 
 
+No, I will leave that and will discuss internally if/who/when will do
+this.
