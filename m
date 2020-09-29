@@ -2,42 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27F0527C6C6
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:48:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15CC427C697
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:46:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731157AbgI2Lse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:48:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50254 "EHLO mail.kernel.org"
+        id S1731031AbgI2Lql (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:46:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46220 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731138AbgI2Ls0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:48:26 -0400
+        id S1730823AbgI2Lp7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:45:59 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3B3F821D46;
-        Tue, 29 Sep 2020 11:48:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DBFCD206E5;
+        Tue, 29 Sep 2020 11:45:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601380104;
-        bh=Z9zINBTkfZmfbOq4gDCIpgMI0kU5zrXfwt8ME2p+uig=;
+        s=default; t=1601379953;
+        bh=m4XZgdRnetvr/TBujqFj3i9yQ9RUo+GPbys/yKow/TE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=U+zSoteUyoU0eWeqe+KzZ+AnX17HtWClsGQHSQHvsVJs1sIDF/zzqbpiP9ROdyaC1
-         morLrN/euEgbr75D7EOR7VKYhJy89pVQCn6MKIh0OoYcjt37LA5teuMWm/N9SeD7DU
-         ZaILKRFujhkCQ5OwS6WNBpsXY0V4v6ZJnzwIs3Ow=
+        b=sEPFQ0iD02p0XVFybbS71B1Fp5fKnpO826vaqirRMd4JFB+XJMTdsFOh9DFDGs1CS
+         hj8lGaQE5LhMaNT0Kbg+NkIngA6RZFrDYT9DhNNtPxqAG2v9CJD+gq5Ys+/YsQQI5h
+         NOZuf+dXEvEVkXWfrtZ8viTBP2x41CQGc/9PJA/o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+ecf80462cb7d5d552bc7@syzkaller.appspotmail.com,
-        Minchan Kim <minchan@kernel.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 70/99] mm: validate pmd after splitting
-Date:   Tue, 29 Sep 2020 13:01:53 +0200
-Message-Id: <20200929105933.173288917@linuxfoundation.org>
+        stable@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
+        Will Deacon <will@kernel.org>
+Subject: [PATCH 5.4 383/388] KVM: arm64: Assume write fault on S1PTW permission fault on instruction fetch
+Date:   Tue, 29 Sep 2020 13:01:54 +0200
+Message-Id: <20200929110029.005392112@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929105929.719230296@linuxfoundation.org>
-References: <20200929105929.719230296@linuxfoundation.org>
+In-Reply-To: <20200929110010.467764689@linuxfoundation.org>
+References: <20200929110010.467764689@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,74 +42,154 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Minchan Kim <minchan@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
 
-[ Upstream commit ce2684254bd4818ca3995c0d021fb62c4cf10a19 ]
+commit c4ad98e4b72cb5be30ea282fce935248f2300e62 upstream.
 
-syzbot reported the following KASAN splat:
+KVM currently assumes that an instruction abort can never be a write.
+This is in general true, except when the abort is triggered by
+a S1PTW on instruction fetch that tries to update the S1 page tables
+(to set AF, for example).
 
-  general protection fault, probably for non-canonical address 0xdffffc0000000003: 0000 [#1] PREEMPT SMP KASAN
-  KASAN: null-ptr-deref in range [0x0000000000000018-0x000000000000001f]
-  CPU: 1 PID: 6826 Comm: syz-executor142 Not tainted 5.9.0-rc4-syzkaller #0
-  Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-  RIP: 0010:__lock_acquire+0x84/0x2ae0 kernel/locking/lockdep.c:4296
-  Code: ff df 8a 04 30 84 c0 0f 85 e3 16 00 00 83 3d 56 58 35 08 00 0f 84 0e 17 00 00 83 3d 25 c7 f5 07 00 74 2c 4c 89 e8 48 c1 e8 03 <80> 3c 30 00 74 12 4c 89 ef e8 3e d1 5a 00 48 be 00 00 00 00 00 fc
-  RSP: 0018:ffffc90004b9f850 EFLAGS: 00010006
-  Call Trace:
-    lock_acquire+0x140/0x6f0 kernel/locking/lockdep.c:5006
-    __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
-    _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
-    spin_lock include/linux/spinlock.h:354 [inline]
-    madvise_cold_or_pageout_pte_range+0x52f/0x25c0 mm/madvise.c:389
-    walk_pmd_range mm/pagewalk.c:89 [inline]
-    walk_pud_range mm/pagewalk.c:160 [inline]
-    walk_p4d_range mm/pagewalk.c:193 [inline]
-    walk_pgd_range mm/pagewalk.c:229 [inline]
-    __walk_page_range+0xe7b/0x1da0 mm/pagewalk.c:331
-    walk_page_range+0x2c3/0x5c0 mm/pagewalk.c:427
-    madvise_pageout_page_range mm/madvise.c:521 [inline]
-    madvise_pageout mm/madvise.c:557 [inline]
-    madvise_vma mm/madvise.c:946 [inline]
-    do_madvise+0x12d0/0x2090 mm/madvise.c:1145
-    __do_sys_madvise mm/madvise.c:1171 [inline]
-    __se_sys_madvise mm/madvise.c:1169 [inline]
-    __x64_sys_madvise+0x76/0x80 mm/madvise.c:1169
-    do_syscall_64+0x31/0x70 arch/x86/entry/common.c:46
-    entry_SYSCALL_64_after_hwframe+0x44/0xa9
+This can happen if the page tables have been paged out and brought
+back in without seeing a direct write to them (they are thus marked
+read only), and the fault handling code will make the PT executable(!)
+instead of writable. The guest gets stuck forever.
 
-The backing vma was shmem.
+In these conditions, the permission fault must be considered as
+a write so that the Stage-1 update can take place. This is essentially
+the I-side equivalent of the problem fixed by 60e21a0ef54c ("arm64: KVM:
+Take S1 walks into account when determining S2 write faults").
 
-In case of split page of file-backed THP, madvise zaps the pmd instead
-of remapping of sub-pages.  So we need to check pmd validity after
-split.
+Update kvm_is_write_fault() to return true on IABT+S1PTW, and introduce
+kvm_vcpu_trap_is_exec_fault() that only return true when no faulting
+on a S1 fault. Additionally, kvm_vcpu_dabt_iss1tw() is renamed to
+kvm_vcpu_abt_iss1tw(), as the above makes it plain that it isn't
+specific to data abort.
 
-Reported-by: syzbot+ecf80462cb7d5d552bc7@syzkaller.appspotmail.com
-Fixes: 1a4e58cce84e ("mm: introduce MADV_PAGEOUT")
-Signed-off-by: Minchan Kim <minchan@kernel.org>
-Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Reviewed-by: Will Deacon <will@kernel.org>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20200915104218.1284701-2-maz@kernel.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- mm/madvise.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm/include/asm/kvm_emulate.h   |   11 ++++++++---
+ arch/arm64/include/asm/kvm_emulate.h |   12 ++++++++++--
+ arch/arm64/kvm/hyp/switch.c          |    2 +-
+ virt/kvm/arm/mmio.c                  |    2 +-
+ virt/kvm/arm/mmu.c                   |    2 +-
+ 5 files changed, 21 insertions(+), 8 deletions(-)
 
-diff --git a/mm/madvise.c b/mm/madvise.c
-index d4aa5f7765435..0e0d61003fc6f 100644
---- a/mm/madvise.c
-+++ b/mm/madvise.c
-@@ -381,9 +381,9 @@ static int madvise_cold_or_pageout_pte_range(pmd_t *pmd,
- 		return 0;
- 	}
+--- a/arch/arm/include/asm/kvm_emulate.h
++++ b/arch/arm/include/asm/kvm_emulate.h
+@@ -204,7 +204,7 @@ static inline int kvm_vcpu_dabt_get_rd(s
+ 	return (kvm_vcpu_get_hsr(vcpu) & HSR_SRT_MASK) >> HSR_SRT_SHIFT;
+ }
  
-+regular_page:
- 	if (pmd_trans_unstable(pmd))
- 		return 0;
--regular_page:
- #endif
- 	tlb_change_page_size(tlb, PAGE_SIZE);
- 	orig_pte = pte = pte_offset_map_lock(vma->vm_mm, pmd, addr, &ptl);
--- 
-2.25.1
-
+-static inline bool kvm_vcpu_dabt_iss1tw(struct kvm_vcpu *vcpu)
++static inline bool kvm_vcpu_abt_iss1tw(const struct kvm_vcpu *vcpu)
+ {
+ 	return kvm_vcpu_get_hsr(vcpu) & HSR_DABT_S1PTW;
+ }
+@@ -236,16 +236,21 @@ static inline bool kvm_vcpu_trap_il_is32
+ 	return kvm_vcpu_get_hsr(vcpu) & HSR_IL;
+ }
+ 
+-static inline u8 kvm_vcpu_trap_get_class(struct kvm_vcpu *vcpu)
++static inline u8 kvm_vcpu_trap_get_class(const struct kvm_vcpu *vcpu)
+ {
+ 	return kvm_vcpu_get_hsr(vcpu) >> HSR_EC_SHIFT;
+ }
+ 
+-static inline bool kvm_vcpu_trap_is_iabt(struct kvm_vcpu *vcpu)
++static inline bool kvm_vcpu_trap_is_iabt(const struct kvm_vcpu *vcpu)
+ {
+ 	return kvm_vcpu_trap_get_class(vcpu) == HSR_EC_IABT;
+ }
+ 
++static inline bool kvm_vcpu_trap_is_exec_fault(const struct kvm_vcpu *vcpu)
++{
++	return kvm_vcpu_trap_is_iabt(vcpu) && !kvm_vcpu_abt_iss1tw(vcpu);
++}
++
+ static inline u8 kvm_vcpu_trap_get_fault(struct kvm_vcpu *vcpu)
+ {
+ 	return kvm_vcpu_get_hsr(vcpu) & HSR_FSC;
+--- a/arch/arm64/include/asm/kvm_emulate.h
++++ b/arch/arm64/include/asm/kvm_emulate.h
+@@ -299,7 +299,7 @@ static inline int kvm_vcpu_dabt_get_rd(c
+ 	return (kvm_vcpu_get_hsr(vcpu) & ESR_ELx_SRT_MASK) >> ESR_ELx_SRT_SHIFT;
+ }
+ 
+-static inline bool kvm_vcpu_dabt_iss1tw(const struct kvm_vcpu *vcpu)
++static __always_inline bool kvm_vcpu_abt_iss1tw(const struct kvm_vcpu *vcpu)
+ {
+ 	return !!(kvm_vcpu_get_hsr(vcpu) & ESR_ELx_S1PTW);
+ }
+@@ -307,7 +307,7 @@ static inline bool kvm_vcpu_dabt_iss1tw(
+ static inline bool kvm_vcpu_dabt_iswrite(const struct kvm_vcpu *vcpu)
+ {
+ 	return !!(kvm_vcpu_get_hsr(vcpu) & ESR_ELx_WNR) ||
+-		kvm_vcpu_dabt_iss1tw(vcpu); /* AF/DBM update */
++		kvm_vcpu_abt_iss1tw(vcpu); /* AF/DBM update */
+ }
+ 
+ static inline bool kvm_vcpu_dabt_is_cm(const struct kvm_vcpu *vcpu)
+@@ -336,6 +336,11 @@ static inline bool kvm_vcpu_trap_is_iabt
+ 	return kvm_vcpu_trap_get_class(vcpu) == ESR_ELx_EC_IABT_LOW;
+ }
+ 
++static inline bool kvm_vcpu_trap_is_exec_fault(const struct kvm_vcpu *vcpu)
++{
++	return kvm_vcpu_trap_is_iabt(vcpu) && !kvm_vcpu_abt_iss1tw(vcpu);
++}
++
+ static inline u8 kvm_vcpu_trap_get_fault(const struct kvm_vcpu *vcpu)
+ {
+ 	return kvm_vcpu_get_hsr(vcpu) & ESR_ELx_FSC;
+@@ -373,6 +378,9 @@ static inline int kvm_vcpu_sys_get_rt(st
+ 
+ static inline bool kvm_is_write_fault(struct kvm_vcpu *vcpu)
+ {
++	if (kvm_vcpu_abt_iss1tw(vcpu))
++		return true;
++
+ 	if (kvm_vcpu_trap_is_iabt(vcpu))
+ 		return false;
+ 
+--- a/arch/arm64/kvm/hyp/switch.c
++++ b/arch/arm64/kvm/hyp/switch.c
+@@ -496,7 +496,7 @@ static bool __hyp_text fixup_guest_exit(
+ 			kvm_vcpu_trap_get_fault_type(vcpu) == FSC_FAULT &&
+ 			kvm_vcpu_dabt_isvalid(vcpu) &&
+ 			!kvm_vcpu_dabt_isextabt(vcpu) &&
+-			!kvm_vcpu_dabt_iss1tw(vcpu);
++			!kvm_vcpu_abt_iss1tw(vcpu);
+ 
+ 		if (valid) {
+ 			int ret = __vgic_v2_perform_cpuif_access(vcpu);
+--- a/virt/kvm/arm/mmio.c
++++ b/virt/kvm/arm/mmio.c
+@@ -130,7 +130,7 @@ static int decode_hsr(struct kvm_vcpu *v
+ 	bool sign_extend;
+ 	bool sixty_four;
+ 
+-	if (kvm_vcpu_dabt_iss1tw(vcpu)) {
++	if (kvm_vcpu_abt_iss1tw(vcpu)) {
+ 		/* page table accesses IO mem: tell guest to fix its TTBR */
+ 		kvm_inject_dabt(vcpu, kvm_vcpu_get_hfar(vcpu));
+ 		return 1;
+--- a/virt/kvm/arm/mmu.c
++++ b/virt/kvm/arm/mmu.c
+@@ -1690,7 +1690,7 @@ static int user_mem_abort(struct kvm_vcp
+ 	unsigned long vma_pagesize, flags = 0;
+ 
+ 	write_fault = kvm_is_write_fault(vcpu);
+-	exec_fault = kvm_vcpu_trap_is_iabt(vcpu);
++	exec_fault = kvm_vcpu_trap_is_exec_fault(vcpu);
+ 	VM_BUG_ON(write_fault && exec_fault);
+ 
+ 	if (fault_status == FSC_PERM && !write_fault && !exec_fault) {
 
 
