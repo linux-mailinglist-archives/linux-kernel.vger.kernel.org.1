@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABD0A27C7AC
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:56:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F2F127C735
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:52:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730317AbgI2Lzg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:55:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44192 "EHLO mail.kernel.org"
+        id S1731095AbgI2LwW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:52:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49692 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730916AbgI2Lou (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:44:50 -0400
+        id S1730976AbgI2Lrt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:47:49 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E22EC206F7;
-        Tue, 29 Sep 2020 11:44:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BC235206E5;
+        Tue, 29 Sep 2020 11:47:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601379890;
-        bh=KZQ9f2ThrYsBwnShTY4CzWONmYeLRS/jhAQMNxl6zo8=;
+        s=default; t=1601380069;
+        bh=sEpzjWuZ9hyjjnZIWEtMkLj3DA6JgKVB0ZbEBx9Bd9I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Wb7qcmOttUL+PyiaOq0v7VnWC3flzAxP3VUI5cSjHiKWg0Y1dVfFqhVejlFZFaJOo
-         ce6OgarpGo56PrE3Ko+ByXWjgNj9ir1hUDKAYmRg4hhtbgQk0NlXNlN5FFf+b8VyJ7
-         XZoJ+UPs7zinF5K7O3KDpklqVsQ6knpIGHE/UQn4=
+        b=TdH1vEG6Vw3GPCOw9VUdsvfXA0/k2L2Td57ioFXt39Dvt356d3bv/Y4sAn8bPbw1V
+         3VcGuTeUPXakHuExPvHLKKdNwoD1TG15CRfcOkoX0zjbOd3HliZnI3a2lJ8DVx0Mwg
+         BKYDb9KdJg6OuOYirWHzxrYQ/fIn8d2I7AfhrBfM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Icenowy Zheng <icenowy@aosc.io>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Yonghong Song <yhs@fb.com>, Andrii Nakryiko <andriin@fb.com>,
+        Martin KaFai Lau <kafai@fb.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 363/388] regulator: axp20x: fix LDO2/4 description
-Date:   Tue, 29 Sep 2020 13:01:34 +0200
-Message-Id: <20200929110028.039156867@linuxfoundation.org>
+Subject: [PATCH 5.8 52/99] bpf: Fix a rcu warning for bpffs map pretty-print
+Date:   Tue, 29 Sep 2020 13:01:35 +0200
+Message-Id: <20200929105932.288309635@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929110010.467764689@linuxfoundation.org>
-References: <20200929110010.467764689@linuxfoundation.org>
+In-Reply-To: <20200929105929.719230296@linuxfoundation.org>
+References: <20200929105929.719230296@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,57 +44,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Icenowy Zheng <icenowy@aosc.io>
+From: Yonghong Song <yhs@fb.com>
 
-[ Upstream commit fbb5a79d2fe7b01c6424fbbc04368373b1672d61 ]
+[ Upstream commit ce880cb825fcc22d4e39046a6c3a3a7f6603883d ]
 
-Currently we wrongly set the mask of value of LDO2/4 both to the mask of
-LDO2, and the LDO4 voltage configuration is left untouched. This leads
-to conflict when LDO2/4 are both in use.
+Running selftest
+  ./btf_btf -p
+the kernel had the following warning:
+  [   51.528185] WARNING: CPU: 3 PID: 1756 at kernel/bpf/hashtab.c:717 htab_map_get_next_key+0x2eb/0x300
+  [   51.529217] Modules linked in:
+  [   51.529583] CPU: 3 PID: 1756 Comm: test_btf Not tainted 5.9.0-rc1+ #878
+  [   51.530346] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.9.3-1.el7.centos 04/01/2014
+  [   51.531410] RIP: 0010:htab_map_get_next_key+0x2eb/0x300
+  ...
+  [   51.542826] Call Trace:
+  [   51.543119]  map_seq_next+0x53/0x80
+  [   51.543528]  seq_read+0x263/0x400
+  [   51.543932]  vfs_read+0xad/0x1c0
+  [   51.544311]  ksys_read+0x5f/0xe0
+  [   51.544689]  do_syscall_64+0x33/0x40
+  [   51.545116]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-Fix this issue by setting different vsel_mask to both regulators.
+The related source code in kernel/bpf/hashtab.c:
+  709 static int htab_map_get_next_key(struct bpf_map *map, void *key, void *next_key)
+  710 {
+  711         struct bpf_htab *htab = container_of(map, struct bpf_htab, map);
+  712         struct hlist_nulls_head *head;
+  713         struct htab_elem *l, *next_l;
+  714         u32 hash, key_size;
+  715         int i = 0;
+  716
+  717         WARN_ON_ONCE(!rcu_read_lock_held());
 
-Fixes: db4a555f7c4c ("regulator: axp20x: use defines for masks")
-Signed-off-by: Icenowy Zheng <icenowy@aosc.io>
-Link: https://lore.kernel.org/r/20200923005142.147135-1-icenowy@aosc.io
-Signed-off-by: Mark Brown <broonie@kernel.org>
+In kernel/bpf/inode.c, bpffs map pretty print calls map->ops->map_get_next_key()
+without holding a rcu_read_lock(), hence causing the above warning.
+To fix the issue, just surrounding map->ops->map_get_next_key() with rcu read lock.
+
+Fixes: a26ca7c982cb ("bpf: btf: Add pretty print support to the basic arraymap")
+Reported-by: Alexei Starovoitov <ast@kernel.org>
+Signed-off-by: Yonghong Song <yhs@fb.com>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Acked-by: Andrii Nakryiko <andriin@fb.com>
+Cc: Martin KaFai Lau <kafai@fb.com>
+Link: https://lore.kernel.org/bpf/20200916004401.146277-1-yhs@fb.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/regulator/axp20x-regulator.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ kernel/bpf/inode.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/regulator/axp20x-regulator.c b/drivers/regulator/axp20x-regulator.c
-index 16f0c85700360..7075f42b9fcf6 100644
---- a/drivers/regulator/axp20x-regulator.c
-+++ b/drivers/regulator/axp20x-regulator.c
-@@ -42,8 +42,9 @@
+diff --git a/kernel/bpf/inode.c b/kernel/bpf/inode.c
+index fb878ba3f22f0..18f4969552ac2 100644
+--- a/kernel/bpf/inode.c
++++ b/kernel/bpf/inode.c
+@@ -226,10 +226,12 @@ static void *map_seq_next(struct seq_file *m, void *v, loff_t *pos)
+ 	else
+ 		prev_key = key;
  
- #define AXP20X_DCDC2_V_OUT_MASK		GENMASK(5, 0)
- #define AXP20X_DCDC3_V_OUT_MASK		GENMASK(7, 0)
--#define AXP20X_LDO24_V_OUT_MASK		GENMASK(7, 4)
-+#define AXP20X_LDO2_V_OUT_MASK		GENMASK(7, 4)
- #define AXP20X_LDO3_V_OUT_MASK		GENMASK(6, 0)
-+#define AXP20X_LDO4_V_OUT_MASK		GENMASK(3, 0)
- #define AXP20X_LDO5_V_OUT_MASK		GENMASK(7, 4)
++	rcu_read_lock();
+ 	if (map->ops->map_get_next_key(map, prev_key, key)) {
+ 		map_iter(m)->done = true;
+-		return NULL;
++		key = NULL;
+ 	}
++	rcu_read_unlock();
+ 	return key;
+ }
  
- #define AXP20X_PWR_OUT_EXTEN_MASK	BIT_MASK(0)
-@@ -544,14 +545,14 @@ static const struct regulator_desc axp20x_regulators[] = {
- 		 AXP20X_PWR_OUT_CTRL, AXP20X_PWR_OUT_DCDC3_MASK),
- 	AXP_DESC_FIXED(AXP20X, LDO1, "ldo1", "acin", 1300),
- 	AXP_DESC(AXP20X, LDO2, "ldo2", "ldo24in", 1800, 3300, 100,
--		 AXP20X_LDO24_V_OUT, AXP20X_LDO24_V_OUT_MASK,
-+		 AXP20X_LDO24_V_OUT, AXP20X_LDO2_V_OUT_MASK,
- 		 AXP20X_PWR_OUT_CTRL, AXP20X_PWR_OUT_LDO2_MASK),
- 	AXP_DESC(AXP20X, LDO3, "ldo3", "ldo3in", 700, 3500, 25,
- 		 AXP20X_LDO3_V_OUT, AXP20X_LDO3_V_OUT_MASK,
- 		 AXP20X_PWR_OUT_CTRL, AXP20X_PWR_OUT_LDO3_MASK),
- 	AXP_DESC_RANGES(AXP20X, LDO4, "ldo4", "ldo24in",
- 			axp20x_ldo4_ranges, AXP20X_LDO4_V_OUT_NUM_VOLTAGES,
--			AXP20X_LDO24_V_OUT, AXP20X_LDO24_V_OUT_MASK,
-+			AXP20X_LDO24_V_OUT, AXP20X_LDO4_V_OUT_MASK,
- 			AXP20X_PWR_OUT_CTRL, AXP20X_PWR_OUT_LDO4_MASK),
- 	AXP_DESC_IO(AXP20X, LDO5, "ldo5", "ldo5in", 1800, 3300, 100,
- 		    AXP20X_LDO5_V_OUT, AXP20X_LDO5_V_OUT_MASK,
 -- 
 2.25.1
 
