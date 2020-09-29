@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5874527C366
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:07:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD0F227C407
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:11:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728735AbgI2LF0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:05:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41362 "EHLO mail.kernel.org"
+        id S1729169AbgI2LKb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:10:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51022 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728684AbgI2LFD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:05:03 -0400
+        id S1728543AbgI2LKR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:10:17 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5081A21924;
-        Tue, 29 Sep 2020 11:05:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E40C621941;
+        Tue, 29 Sep 2020 11:10:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601377503;
-        bh=+rbdhmB+nELvAR5PBIrLE6yII0u3D4M+5+DERJ6SAOU=;
+        s=default; t=1601377816;
+        bh=eRhLSHWLg8jIE38ZEn7ZZMokZ3lZzVVbn52lcanlTjY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FMQQYE+nrZCzJtE+XrWuMyFzeJVUsFkr53afgbaWjHEmUq+Ip1VQLreHUYuMhg4fm
-         cu4ZEuceyEPwshkw+gCMFJWHE01Z7RmUW1o55XJpSA16YGRf+FI6zZ+0SRJWzdEITe
-         QYv7cU8GPnv5evJjbG2oZte1aftoPPz/ollz6yHQ=
+        b=ZoODFOeD65yGpWzlEltd0wITm8XdgrmA3cvpnhGJS8Z0vyecsgn+6BOPpSJuAkcAa
+         +MGrrRM38IvkGhtpjhx6Gfm/gS5CYni39xeIB1rfrkzTZXXLD847nYDBviIpE2QBgS
+         S5JsY62HauzIGWRUz98mOakS2jvQLts6u4mkuzNY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sonny Sasaka <sonnysasaka@chromium.org>,
-        Marcel Holtmann <marcel@holtmann.org>,
+        stable@vger.kernel.org, Gengming Liu <l.dmxcsnsbh@gmail.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 57/85] Bluetooth: Handle Inquiry Cancel error after Inquiry Complete
-Date:   Tue, 29 Sep 2020 13:00:24 +0200
-Message-Id: <20200929105931.067294717@linuxfoundation.org>
+Subject: [PATCH 4.9 081/121] atm: fix a memory leak of vcc->user_back
+Date:   Tue, 29 Sep 2020 13:00:25 +0200
+Message-Id: <20200929105934.197711441@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929105928.198942536@linuxfoundation.org>
-References: <20200929105928.198942536@linuxfoundation.org>
+In-Reply-To: <20200929105930.172747117@linuxfoundation.org>
+References: <20200929105930.172747117@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,75 +44,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sonny Sasaka <sonnysasaka@chromium.org>
+From: Cong Wang <xiyou.wangcong@gmail.com>
 
-[ Upstream commit adf1d6926444029396861413aba8a0f2a805742a ]
+[ Upstream commit 8d9f73c0ad2f20e9fed5380de0a3097825859d03 ]
 
-After sending Inquiry Cancel command to the controller, it is possible
-that Inquiry Complete event comes before Inquiry Cancel command complete
-event. In this case the Inquiry Cancel command will have status of
-Command Disallowed since there is no Inquiry session to be cancelled.
-This case should not be treated as error, otherwise we can reach an
-inconsistent state.
+In lec_arp_clear_vccs() only entry->vcc is freed, but vcc
+could be installed on entry->recv_vcc too in lec_vcc_added().
 
-Example of a btmon trace when this happened:
+This fixes the following memory leak:
 
-< HCI Command: Inquiry Cancel (0x01|0x0002) plen 0
-> HCI Event: Inquiry Complete (0x01) plen 1
-        Status: Success (0x00)
-> HCI Event: Command Complete (0x0e) plen 4
-      Inquiry Cancel (0x01|0x0002) ncmd 1
-        Status: Command Disallowed (0x0c)
+unreferenced object 0xffff8880d9266b90 (size 16):
+  comm "atm2", pid 425, jiffies 4294907980 (age 23.488s)
+  hex dump (first 16 bytes):
+    00 00 00 00 00 00 00 00 00 00 00 00 6b 6b 6b a5  ............kkk.
+  backtrace:
+    [<(____ptrval____)>] kmem_cache_alloc_trace+0x10e/0x151
+    [<(____ptrval____)>] lane_ioctl+0x4b3/0x569
+    [<(____ptrval____)>] do_vcc_ioctl+0x1ea/0x236
+    [<(____ptrval____)>] svc_ioctl+0x17d/0x198
+    [<(____ptrval____)>] sock_do_ioctl+0x47/0x12f
+    [<(____ptrval____)>] sock_ioctl+0x2f9/0x322
+    [<(____ptrval____)>] vfs_ioctl+0x1e/0x2b
+    [<(____ptrval____)>] ksys_ioctl+0x61/0x80
+    [<(____ptrval____)>] __x64_sys_ioctl+0x16/0x19
+    [<(____ptrval____)>] do_syscall_64+0x57/0x65
+    [<(____ptrval____)>] entry_SYSCALL_64_after_hwframe+0x49/0xb3
 
-Signed-off-by: Sonny Sasaka <sonnysasaka@chromium.org>
-Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+Cc: Gengming Liu <l.dmxcsnsbh@gmail.com>
+Signed-off-by: Cong Wang <xiyou.wangcong@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/bluetooth/hci_event.c | 19 +++++++++++++++++--
- 1 file changed, 17 insertions(+), 2 deletions(-)
+ net/atm/lec.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
-index 04c77747a768d..03319ab8a7c6e 100644
---- a/net/bluetooth/hci_event.c
-+++ b/net/bluetooth/hci_event.c
-@@ -41,12 +41,27 @@
- 
- /* Handle HCI Event packets */
- 
--static void hci_cc_inquiry_cancel(struct hci_dev *hdev, struct sk_buff *skb)
-+static void hci_cc_inquiry_cancel(struct hci_dev *hdev, struct sk_buff *skb,
-+				  u8 *new_status)
- {
- 	__u8 status = *((__u8 *) skb->data);
- 
- 	BT_DBG("%s status 0x%2.2x", hdev->name, status);
- 
-+	/* It is possible that we receive Inquiry Complete event right
-+	 * before we receive Inquiry Cancel Command Complete event, in
-+	 * which case the latter event should have status of Command
-+	 * Disallowed (0x0c). This should not be treated as error, since
-+	 * we actually achieve what Inquiry Cancel wants to achieve,
-+	 * which is to end the last Inquiry session.
-+	 */
-+	if (status == 0x0c && !test_bit(HCI_INQUIRY, &hdev->flags)) {
-+		bt_dev_warn(hdev, "Ignoring error of Inquiry Cancel command");
-+		status = 0x00;
-+	}
+diff --git a/net/atm/lec.c b/net/atm/lec.c
+index 704892d79bf19..756429c95e859 100644
+--- a/net/atm/lec.c
++++ b/net/atm/lec.c
+@@ -1290,6 +1290,12 @@ static void lec_arp_clear_vccs(struct lec_arp_table *entry)
+ 		entry->vcc = NULL;
+ 	}
+ 	if (entry->recv_vcc) {
++		struct atm_vcc *vcc = entry->recv_vcc;
++		struct lec_vcc_priv *vpriv = LEC_VCC_PRIV(vcc);
 +
-+	*new_status = status;
++		kfree(vpriv);
++		vcc->user_back = NULL;
 +
- 	if (status)
- 		return;
- 
-@@ -2758,7 +2773,7 @@ static void hci_cmd_complete_evt(struct hci_dev *hdev, struct sk_buff *skb,
- 
- 	switch (*opcode) {
- 	case HCI_OP_INQUIRY_CANCEL:
--		hci_cc_inquiry_cancel(hdev, skb);
-+		hci_cc_inquiry_cancel(hdev, skb, status);
- 		break;
- 
- 	case HCI_OP_PERIODIC_INQ:
+ 		entry->recv_vcc->push = entry->old_recv_push;
+ 		vcc_release_async(entry->recv_vcc, -EPIPE);
+ 		entry->recv_vcc = NULL;
 -- 
 2.25.1
 
