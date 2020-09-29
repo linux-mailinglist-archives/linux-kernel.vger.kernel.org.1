@@ -2,132 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3DB727D7D7
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 22:17:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B16627D7DF
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 22:17:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729007AbgI2URE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 16:17:04 -0400
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:44202 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725372AbgI2URE (ORCPT
+        id S1729117AbgI2URt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 16:17:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34420 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729102AbgI2URr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 16:17:04 -0400
-Received: by mail-ot1-f66.google.com with SMTP id a2so5714754otr.11;
-        Tue, 29 Sep 2020 13:17:03 -0700 (PDT)
+        Tue, 29 Sep 2020 16:17:47 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36AFAC061755
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 13:17:46 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id y17so7043215lfa.8
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 13:17:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+EosCr5gn7ZyZ+N6mEKKFHdvoy+RoVVYIyzqWT5rRa0=;
+        b=SIKcNag+g326Er1qOD+M4r8gtWgXQPVz/kic6Pqhzd4ohq0ETwiQic06PA+s1UQEdt
+         99zWEbowBbjJ7ul1HAHrvx+By9s/EXBD3Jmk7ADbYdxs0I/dpZ6CGBQO6i9TVL1ugdDv
+         MuWS7XkKqVOtc8q/7yiROVeTOs2R2AD8MD7AzKLGE9/S1+tuXeIyAmlEoZ4pL2EHfRyt
+         Ex9q8hU3lX7hbXod2tc09Xw/ooaVbREt+wUfzCXNgC43b9D3Z8UXLaMXs1Yyf3eSFDjB
+         G6BtF/YFVGHNWiQb+ZVWfZt9Bftdr3+DfoZMDBf/uwOpJPkA7T/3N1y62/m4G3n9aX/2
+         CqfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=GF1S+O6TcCTua7IiLpMCQUTQhVT/wWc1LlYe9jO62rw=;
-        b=f9sW/e4uN7VQbHFuizFNwO6/w7ChbfERMyZkX/jZE1nkbyKXeF/KBSnpRmZode42tp
-         2wbtSI67BJOrsV734RyUORGwV9YyK8K/Y2qQH2VolnKs+4Nc7vcOZy+7dkMvZzJZCyVz
-         5f1pLhIlfFK2entKujV7Cejl56dNAfckxaWJX7H1WIq5MepvgUv4wHg9AD/j0kfz/djX
-         NrqEeN0z7UicC+eqZYVkJvEWXoyrgRTpXCxXqQaUgHWnYxblWYJ0pQYMD8ka+X+PGueR
-         daRl8Rq/fhRCNzkAtUmUuZffYYwGFGDd/8rUgjkt9ZsUrUaHqp5VevISbGvk3stq8Ffz
-         6ggQ==
-X-Gm-Message-State: AOAM530ToKXMJMZnhKwTS5+5atIWcf0tk8JXRXaOxxrkQdOLA5KrYbna
-        DawxS7YUpzQstqy407Zq2A==
-X-Google-Smtp-Source: ABdhPJwXlYj46ql9N4QV6q3UzHTUW9NrH00DqjEu+h2M9Wj4krankN8F/kzuSpSVFz5EUKv8RTJzmw==
-X-Received: by 2002:a05:6830:1f13:: with SMTP id u19mr4168856otg.127.1601410623317;
-        Tue, 29 Sep 2020 13:17:03 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id s20sm3175800oot.15.2020.09.29.13.17.02
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+EosCr5gn7ZyZ+N6mEKKFHdvoy+RoVVYIyzqWT5rRa0=;
+        b=M7oZlow4OepeJLyudFwiqT7PtfYcuhLDkVyVbnY3a0eS3pd0y3pOc1s/i0UO93z57b
+         DBIUmsAEpX3XnPZlR9ms/q1+HmXrBStJdaXhM39Iiq82ORJcm6XvvF3lWK0/OeUCID/Q
+         fe5W+MMV70xuRr2PyuDkJIroE4EeE+BrghOEzNIETxOpwg1DxWdRLE5Aw2iAk0kS3DJE
+         RouKBxFFcI5EioCsy87zB7TvUT0m/DtV58SlARWKxvkw26ztczpnqRVmaItzJBR11rOW
+         zKXeT04gmVD+AyFOHhRN/nkzdtoRDWpXWLW8vBKb7J34dlHtzVpo24/J985Ig9GM1vME
+         5cew==
+X-Gm-Message-State: AOAM533dBg1oYRNOEmOTTMrIOfsOlXcuMYTTI4udHwxCZcu+Od8kLz/Y
+        NxRBmiuA5/yzI5I1lARJaC4=
+X-Google-Smtp-Source: ABdhPJyefhwk3thR3Nx5YFjMDve83dUfvSBVcpTuJ8Em8uq/iPX2wl3isbkUd/wXNmxePbm5yKNmsQ==
+X-Received: by 2002:a05:6512:70f:: with SMTP id b15mr1791605lfs.39.1601410664672;
+        Tue, 29 Sep 2020 13:17:44 -0700 (PDT)
+Received: from localhost.localdomain (h-155-4-221-87.NA.cust.bahnhof.se. [155.4.221.87])
+        by smtp.gmail.com with ESMTPSA id c22sm3329356lff.202.2020.09.29.13.17.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Sep 2020 13:17:02 -0700 (PDT)
-Received: (nullmailer pid 1092114 invoked by uid 1000);
-        Tue, 29 Sep 2020 20:17:01 -0000
-Date:   Tue, 29 Sep 2020 15:17:01 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Matthias Kaehlcke <mka@chromium.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        Bastien Nocera <hadess@hadess.net>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        devicetree@vger.kernel.org, Peter Chen <peter.chen@nxp.com>
-Subject: Re: [PATCH v4 1/2] dt-bindings: usb: Add binding for discrete
- onboard USB hubs
-Message-ID: <20200929201701.GA1080459@bogus>
-References: <20200928101326.v4.1.I248292623d3d0f6a4f0c5bc58478ca3c0062b49a@changeid>
+        Tue, 29 Sep 2020 13:17:43 -0700 (PDT)
+From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
+To:     Barry Song <baohua@kernel.org>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Subject: [PATCH] ARM: prima2: Constify static sirfsoc_rstc_ops
+Date:   Tue, 29 Sep 2020 22:17:38 +0200
+Message-Id: <20200929201738.349465-1-rikard.falkeborn@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200928101326.v4.1.I248292623d3d0f6a4f0c5bc58478ca3c0062b49a@changeid>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 10:13:54AM -0700, Matthias Kaehlcke wrote:
-> Discrete onboard USB hubs (an example for such a hub is the Realtek
-> RTS5411) need to be powered and may require initialization of other
-> resources (like GPIOs or clocks) to work properly. This adds a device
-> tree binding for these hubs.
-> 
-> Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
-> ---
-> 
-> (no changes since v3)
-> 
-> Changes in v3:
-> - updated commit message
-> - removed recursive reference to $self
-> - adjusted 'compatible' definition to support multiple entries
-> - changed USB controller phandle to be a node
-> 
-> Changes in v2:
-> - removed 'wakeup-source' and 'power-off-in-suspend' properties
-> - consistently use spaces for indentation in example
-> 
->  .../bindings/usb/onboard_usb_hub.yaml         | 54 +++++++++++++++++++
->  1 file changed, 54 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/usb/onboard_usb_hub.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/usb/onboard_usb_hub.yaml b/Documentation/devicetree/bindings/usb/onboard_usb_hub.yaml
-> new file mode 100644
-> index 000000000000..c9783da3e75c
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/usb/onboard_usb_hub.yaml
-> @@ -0,0 +1,54 @@
-> +# SPDX-License-Identifier: GPL-2.0-only or BSD-2-Clause
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/usb/onboard_usb_hub.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Binding for onboard USB hubs
-> +
-> +maintainers:
-> +  - Matthias Kaehlcke <mka@chromium.org>
-> +
-> +properties:
-> +  compatible:
-> +    items:
-> +      - enum:
-> +        - realtek,rts5411
-> +      - const: onboard-usb-hub
-> +
-> +  vdd-supply:
-> +    description:
-> +      phandle to the regulator that provides power to the hub.
-> +
-> +required:
-> +  - compatible
-> +  - vdd-supply
-> +
-> +examples:
-> +  - |
-> +    usb_hub: usb-hub {
-> +        compatible = "realtek,rts5411", "onboard-usb-hub";
-> +        vdd-supply = <&pp3300_hub>;
-> +    };
+The only usage of sirfsoc_rstc_ops is to assign its address to the ops
+field in the reset_controller_dev struct, which is a const pointer. Make
+it const to allow the compiler to put it in read-only memory.
 
-As I said in prior version, this separate node and 'hub' phandle is not 
-going to work. You are doing this because you want a platform driver for 
-"realtek,rts5411". That may be convenient for Linux, but doesn't reflect 
-the h/w.
+Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
+---
+ arch/arm/mach-prima2/rstc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Rob
+diff --git a/arch/arm/mach-prima2/rstc.c b/arch/arm/mach-prima2/rstc.c
+index 9d56606ac87f..1ee405e2dde9 100644
+--- a/arch/arm/mach-prima2/rstc.c
++++ b/arch/arm/mach-prima2/rstc.c
+@@ -53,7 +53,7 @@ static int sirfsoc_reset_module(struct reset_controller_dev *rcdev,
+ 	return 0;
+ }
+ 
+-static struct reset_control_ops sirfsoc_rstc_ops = {
++static const struct reset_control_ops sirfsoc_rstc_ops = {
+ 	.reset = sirfsoc_reset_module,
+ };
+ 
+-- 
+2.28.0
+
