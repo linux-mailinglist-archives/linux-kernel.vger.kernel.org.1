@@ -2,124 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3145B27BAD0
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 04:28:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A932F27BACE
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 04:28:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727323AbgI2C2Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 22:28:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38164 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727305AbgI2C2W (ORCPT
+        id S1727298AbgI2C2U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 22:28:20 -0400
+Received: from mail-il1-f208.google.com ([209.85.166.208]:42188 "EHLO
+        mail-il1-f208.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727088AbgI2C2T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 22:28:22 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1546C061755;
-        Mon, 28 Sep 2020 19:28:21 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id e22so4625938edq.6;
-        Mon, 28 Sep 2020 19:28:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ygg9/4iRHT21kcmBGkSM1pLATrrcqMs4HjO1+e+77XE=;
-        b=Vl6HngjmW6fkWNnFUozmkjOJ7Aeg1U7JaEUUQe3qD7RGFCCRL2X9yWPmil47nY3Fh9
-         XQtiIhpFdniiqBQ/3oSBl+ChvTWQ69m8pd7tdftr9ZocGBS5AcQw7pKxYzPoQBMK2j/H
-         NlNjhPEJ6MRLs7e9ehYzO4o06ErMlg2vQrEn6q3zZcB5BU2J9oB6zKinOmvdvoEovCBA
-         oXxuoIKVH4BTXHp17ncBzqzUWHF17twiyb50Uh8eE2+OG6ukHGlXZmjyyGJfBI25jhRv
-         G4G9GlIco+Sw/+c+822xbQENRwToPh9gtzIbj87X1zL9/j4NGi+z+L1EkNwcxzHJLAJm
-         7Y4w==
+        Mon, 28 Sep 2020 22:28:19 -0400
+Received: by mail-il1-f208.google.com with SMTP id 18so2335142ilt.9
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 19:28:19 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ygg9/4iRHT21kcmBGkSM1pLATrrcqMs4HjO1+e+77XE=;
-        b=R5MX+GzQXAJskmUgNJSZUwQQo7Hn4c+15EVSS3ziSdUN4ViWuH4w737K7j2kVGDElm
-         MZZ4eIcLCjCCW4A4fIljqvp7DSaqXTHWHRGiSdGv/tty0ADYigHhJUKI3DLdRe5OLedF
-         ROEqzBDDBSMg3DKb+dY3zDsKfnb7OlM/9RLd1jT0F6VNNeMkR8Ud1dW//iijLHyBjwgu
-         /QBLk5vg5UfWO8czpq9nrRF/UkT8BL0ClLXzMw7nX+ks0ir/WaKSNAMEU1LucA5MkmOQ
-         e3WSS7jMC9ixvlIIem4PqFR6gSvqyB3CrQEc6smGHrDOSa7S7X4iBzSArxKSfCU3vUCy
-         jy9w==
-X-Gm-Message-State: AOAM5329lXjqN8Irg1a51a+e7t8vstCd8L6+58Ze53UMneDZnTxkfp5x
-        dAuE2D6Q5cBQgVvQHkIeKU/WTaSmfWiEe61d+ho=
-X-Google-Smtp-Source: ABdhPJy8/ZnHAdreYcqpUMlQNKl4LBK67PDtCwMgVYRt58mkOpDye85bngrZE/uxB3pwomb4wHRHZdEmm98TyABMjfk=
-X-Received: by 2002:a05:6402:7d2:: with SMTP id u18mr942326edy.69.1601346499551;
- Mon, 28 Sep 2020 19:28:19 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=Kv6Md2UlAv+qsEgbPVjygV1Z8fU17byPB4v94bmo1SQ=;
+        b=dKucN7OltZpd/pHuX7DjSkKpjz+t9yJcqwljJEimPcgFX+PkHrzV9tDMmUVXFC9kVh
+         qSS6EDpSm8+w/gqWUZJV/uwPLgy+3alN1oZ3wtsMyecI+HCH0c1N1hyGqLECtWeNsK4g
+         Sl/glA0ZwP1Vkq4uzL/9ZWpY26popD+F1z8rZ3W1VkmEb+xlqdzeaZ2VI5eXyLdS0PQT
+         7tjpMDZXxXlsVi1n93vjnJDbm+m3M/CZwF+olJA1bcQPUcw2m62jPmVZvVr5TwrFW1d1
+         a36RTo47syhAUV7UJujnRXv2owVl6MSGylDazEr15F4wSTqDn/Kq853uZAWT0b484c3i
+         Movg==
+X-Gm-Message-State: AOAM530vPXaCP+sc0kKpxmlF8FSFieq/ataC/Mk0CuaSthEmziAgUfsa
+        +T/BvHqIr+n32SlR62NQfFFzlxoN2Lr0aI3d0B7Ut5OoipPH
+X-Google-Smtp-Source: ABdhPJxVACHIxMueFo4YAPNo1llEYKcwN7jWWIr62WgQxzu/voJiTzx4YJ9e9HESWgj0X470rGcvVnw0Zsm0q4DK5fa2ikKhgQ6f
 MIME-Version: 1.0
-References: <20200927032829.11321-1-haifeng.zhao@intel.com>
- <20200927032829.11321-3-haifeng.zhao@intel.com> <f2c9e3db-2027-f669-fcdd-fbc80888b934@kernel.org>
- <MWHPR11MB1696BA6B8473248A8638FD3797350@MWHPR11MB1696.namprd11.prod.outlook.com>
- <14b7d988-212b-93dc-6fa6-6b155d5c8ac3@kernel.org> <16431a60-027e-eca9-36f4-74d348e88090@kernel.org>
- <38cc8252-e485-ef11-93a1-7b43ad85fc2e@intel.com>
-In-Reply-To: <38cc8252-e485-ef11-93a1-7b43ad85fc2e@intel.com>
-From:   Ethan Zhao <xerces.zhao@gmail.com>
-Date:   Tue, 29 Sep 2020 10:28:08 +0800
-Message-ID: <CAKF3qh3nBS=bbusT_na54qo-yBdM1vc38Lx7JGm0Ck2sZ6qoCA@mail.gmail.com>
-Subject: Re: [PATCH 2/5 V2] PCI: pciehp: check and wait port status out of DPC
- before handling DLLSC and PDC
-To:     "Kuppuswamy, Sathyanarayanan" <sathyanarayanan.kuppuswamy@intel.com>
-Cc:     Sinan Kaya <okaya@kernel.org>,
-        "Zhao, Haifeng" <haifeng.zhao@intel.com>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "oohall@gmail.com" <oohall@gmail.com>,
-        "ruscur@russell.cc" <ruscur@russell.cc>,
-        "lukas@wunner.de" <lukas@wunner.de>,
-        "andriy.shevchenko@linux.intel.com" 
-        <andriy.shevchenko@linux.intel.com>,
-        "stuart.w.hayes@gmail.com" <stuart.w.hayes@gmail.com>,
-        "mr.nuke.me@gmail.com" <mr.nuke.me@gmail.com>,
-        "mika.westerberg@linux.intel.com" <mika.westerberg@linux.intel.com>,
-        Keith Busch <keith.busch@intel.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Jia, Pei P" <pei.p.jia@intel.com>,
-        "ashok.raj@linux.intel.com" <ashok.raj@linux.intel.com>
+X-Received: by 2002:a05:6638:220c:: with SMTP id l12mr1193102jas.139.1601346498705;
+ Mon, 28 Sep 2020 19:28:18 -0700 (PDT)
+Date:   Mon, 28 Sep 2020 19:28:18 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000037bd5305b06a8988@google.com>
+Subject: possible deadlock in io_poll_double_wake (2)
+From:   syzbot <syzbot+28abd693db9e92c160d8@syzkaller.appspotmail.com>
+To:     axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 12:45 AM Kuppuswamy, Sathyanarayanan
-<sathyanarayanan.kuppuswamy@intel.com> wrote:
->
->
-> On 9/28/20 9:43 AM, Sinan Kaya wrote:
-> > On 9/28/2020 7:10 AM, Sinan Kaya wrote:
-> >> On 9/27/2020 10:01 PM, Zhao, Haifeng wrote:
-> >>> Sinan,
-> >>>     I explained the reason why locks don't protect this case in the patch description part.
-> >>> Write side and read side hold different semaphore and mutex.
-> >>>
-> >> I have been thinking about it some time but is there any reason why we
-> >> have to handle all port AER/DPC/HP events in different threads?
-> >>
-> >> Can we go to single threaded event loop for all port drivers events?
-> >>
-> >> This will require some refactoring but it wlll eliminate the lock
-> >> nightmares we are having.
-> >>
-> >> This means no sleeping. All sleeps need to happen outside of the loop.
-> >>
-> >> I wanted to see what you all are thinking about this.
-> >>
-> >> It might become a performance problem if the system is
-> >> continuously observing a hotplug/aer/dpc events.
-> >>
-> >> I always think that these should be rare events.
-> > If restructuring would be too costly, the preferred solution should be
-> > to fix the locks in hotplug driver rather than throwing there a random
-> > wait call.
-> Since the current race condition is detected between DPC and
-> hotplug, I recommend synchronizing them.
+Hello,
 
-The locks are the first place to root cause and try to fix. but not so easy to
-refactor the remove-scan-semaphore and the bus-walk-mutex. too expensive
-work. --- rework every piece of code that uses them.
+syzbot found the following issue on:
 
-Thanks,
-Ethan
+HEAD commit:    d1d2220c Add linux-next specific files for 20200924
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=14cd5cd3900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=254e028a642027c
+dashboard link: https://syzkaller.appspot.com/bug?extid=28abd693db9e92c160d8
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13ba3881900000
 
->
-> --
-> Sathyanarayanan Kuppuswamy
-> Linux Kernel Developer
->
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+28abd693db9e92c160d8@syzkaller.appspotmail.com
+
+============================================
+WARNING: possible recursive locking detected
+5.9.0-rc6-next-20200924-syzkaller #0 Not tainted
+--------------------------------------------
+kworker/0:1/12 is trying to acquire lock:
+ffff88808d998130 (&runtime->sleep){..-.}-{2:2}, at: spin_lock include/linux/spinlock.h:354 [inline]
+ffff88808d998130 (&runtime->sleep){..-.}-{2:2}, at: io_poll_double_wake+0x156/0x510 fs/io_uring.c:4855
+
+but task is already holding lock:
+ffff888093f4c130 (&runtime->sleep){..-.}-{2:2}, at: __wake_up_common_lock+0xb4/0x130 kernel/sched/wait.c:122
+
+other info that might help us debug this:
+ Possible unsafe locking scenario:
+
+       CPU0
+       ----
+  lock(&runtime->sleep);
+  lock(&runtime->sleep);
+
+ *** DEADLOCK ***
+
+ May be due to missing lock nesting notation
+
+6 locks held by kworker/0:1/12:
+ #0: ffff8880aa063d38 ((wq_completion)events){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff8880aa063d38 ((wq_completion)events){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
+ #0: ffff8880aa063d38 ((wq_completion)events){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
+ #0: ffff8880aa063d38 ((wq_completion)events){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
+ #0: ffff8880aa063d38 ((wq_completion)events){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
+ #0: ffff8880aa063d38 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work+0x821/0x15a0 kernel/workqueue.c:2240
+ #1: ffffc90000d2fda8 ((linkwatch_work).work){+.+.}-{0:0}, at: process_one_work+0x854/0x15a0 kernel/workqueue.c:2244
+ #2: ffffffff8b6c5648 (rtnl_mutex){+.+.}-{3:3}, at: linkwatch_event+0xb/0x60 net/core/link_watch.c:250
+ #3: ffffffff8a553d40 (rcu_read_lock){....}-{1:2}, at: ib_device_get_by_netdev+0x0/0x4f0 drivers/infiniband/core/device.c:2550
+ #4: ffff888214d31908 (&group->lock){..-.}-{2:2}, at: _snd_pcm_stream_lock_irqsave+0x9f/0xd0 sound/core/pcm_native.c:170
+ #5: ffff888093f4c130 (&runtime->sleep){..-.}-{2:2}, at: __wake_up_common_lock+0xb4/0x130 kernel/sched/wait.c:122
+
+stack backtrace:
+CPU: 0 PID: 12 Comm: kworker/0:1 Not tainted 5.9.0-rc6-next-20200924-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: events linkwatch_event
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x198/0x1fb lib/dump_stack.c:118
+ print_deadlock_bug kernel/locking/lockdep.c:2714 [inline]
+ check_deadlock kernel/locking/lockdep.c:2755 [inline]
+ validate_chain kernel/locking/lockdep.c:3546 [inline]
+ __lock_acquire.cold+0x12e/0x3ad kernel/locking/lockdep.c:4796
+ lock_acquire+0x1f2/0xaa0 kernel/locking/lockdep.c:5398
+ __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+ _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+ spin_lock include/linux/spinlock.h:354 [inline]
+ io_poll_double_wake+0x156/0x510 fs/io_uring.c:4855
+ __wake_up_common+0x147/0x650 kernel/sched/wait.c:93
+ __wake_up_common_lock+0xd0/0x130 kernel/sched/wait.c:123
+ snd_pcm_update_state+0x46a/0x540 sound/core/pcm_lib.c:203
+ snd_pcm_update_hw_ptr0+0xa71/0x1a50 sound/core/pcm_lib.c:464
+ snd_pcm_period_elapsed+0x160/0x250 sound/core/pcm_lib.c:1805
+ dummy_hrtimer_callback+0x94/0x1b0 sound/drivers/dummy.c:378
+ __run_hrtimer kernel/time/hrtimer.c:1524 [inline]
+ __hrtimer_run_queues+0x693/0xea0 kernel/time/hrtimer.c:1588
+ hrtimer_run_softirq+0x17b/0x360 kernel/time/hrtimer.c:1605
+ __do_softirq+0x203/0xab6 kernel/softirq.c:298
+ asm_call_on_stack+0xf/0x20 arch/x86/entry/entry_64.S:786
+ </IRQ>
+ __run_on_irqstack arch/x86/include/asm/irq_stack.h:22 [inline]
+ run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:48 [inline]
+ do_softirq_own_stack+0x9d/0xd0 arch/x86/kernel/irq_64.c:77
+ invoke_softirq kernel/softirq.c:393 [inline]
+ __irq_exit_rcu kernel/softirq.c:423 [inline]
+ irq_exit_rcu+0x235/0x280 kernel/softirq.c:435
+ sysvec_apic_timer_interrupt+0x51/0xf0 arch/x86/kernel/apic/apic.c:1091
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+RIP: 0010:arch_local_irq_restore arch/x86/include/asm/paravirt.h:653 [inline]
+RIP: 0010:lock_acquire+0x27b/0xaa0 kernel/locking/lockdep.c:5401
+Code: 00 00 00 00 00 fc ff df 48 c1 e8 03 80 3c 10 00 0f 85 d2 06 00 00 48 83 3d 89 bc e1 08 00 0f 84 2d 05 00 00 48 8b 3c 24 57 9d <0f> 1f 44 00 00 48 b8 00 00 00 00 00 fc ff df 48 01 c3 48 c7 03 00
+RSP: 0018:ffffc90000d2f8c8 EFLAGS: 00000282
+RAX: 1ffffffff1479e35 RBX: 1ffff920001a5f1c RCX: 00000000f1571e19
+RDX: dffffc0000000000 RSI: 0000000000000001 RDI: 0000000000000282
+RBP: ffff8880a969a300 R08: 0000000000000000 R09: ffffffff8d71a9e7
+R10: fffffbfff1ae353c R11: 0000000000000000 R12: 0000000000000002
+R13: 0000000000000000 R14: ffffffff8a553d40 R15: 0000000000000000
+ rcu_lock_acquire include/linux/rcupdate.h:253 [inline]
+ rcu_read_lock include/linux/rcupdate.h:642 [inline]
+ ib_device_get_by_netdev+0x9a/0x4f0 drivers/infiniband/core/device.c:2248
+ rxe_get_dev_from_net drivers/infiniband/sw/rxe/rxe.h:76 [inline]
+ rxe_notify+0x8b/0x1c0 drivers/infiniband/sw/rxe/rxe_net.c:566
+ notifier_call_chain+0xb5/0x200 kernel/notifier.c:83
+ call_netdevice_notifiers_info+0xb5/0x130 net/core/dev.c:2034
+ netdev_state_change net/core/dev.c:1464 [inline]
+ netdev_state_change+0x100/0x130 net/core/dev.c:1457
+ linkwatch_do_dev+0x13f/0x180 net/core/link_watch.c:167
+ __linkwatch_run_queue+0x1ea/0x630 net/core/link_watch.c:212
+ linkwatch_event+0x4a/0x60 net/core/link_watch.c:251
+ process_one_work+0x933/0x15a0 kernel/workqueue.c:2269
+ worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
+ kthread+0x3af/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
