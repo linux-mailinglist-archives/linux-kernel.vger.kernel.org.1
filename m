@@ -2,40 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ED6227C7CE
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:56:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BE3D27C6A3
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:47:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731538AbgI2L4p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:56:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42230 "EHLO mail.kernel.org"
+        id S1730894AbgI2LrE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:47:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48150 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730806AbgI2Lnn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:43:43 -0400
+        id S1729752AbgI2Lq6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:46:58 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 25A5220702;
-        Tue, 29 Sep 2020 11:43:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0057521D7D;
+        Tue, 29 Sep 2020 11:46:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601379823;
-        bh=8MljDeggPdi9vFj6AXRrmOaExwKwArRNdb/1KDKnZxQ=;
+        s=default; t=1601380000;
+        bh=DauaKu40AGkfpzJ37rbt4KkUyts9P4szYG6QDESdX/c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=P9YjJ/70xZHi6Bh/1X+r9pRdknq48LsghN4dF+bK75/2dlm+BYB33gE+5iFhZo6I9
-         DbBTXhOXYCUMl2xqeC3Tmlwr3R/xUgOoB0y1ek9pHMES8baYiEry52SgowSJal8ZKG
-         3hVvpPnFJ8EWa0w9/NoAsphKq6s+yN5eqi/ytAeI=
+        b=mCXyGBWWWjbIaFz7r3bHgG2GsvNxfwO+Ph8x9uq3XRraSw3DUszpiMSg9+BGaQFkQ
+         lw0ybZYC6QlqOkfn+j+MnD33Sa9exowqoWD1TdR3TdcHZ8iN1vbGm7z0oMolrsy4Gk
+         tmKkV1zs1VFc8ObEZ0hmgukrN+I7xfsSxGimX9Y8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Walter Lozano <walter.lozano@collabora.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 316/388] opp: Increase parsed_static_opps in _of_add_opp_table_v1()
+Subject: [PATCH 5.8 04/99] ASoC: wm8994: Ensure the device is resumed in wm89xx_mic_detect functions
 Date:   Tue, 29 Sep 2020 13:00:47 +0200
-Message-Id: <20200929110025.765499256@linuxfoundation.org>
+Message-Id: <20200929105929.939151155@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929110010.467764689@linuxfoundation.org>
-References: <20200929110010.467764689@linuxfoundation.org>
+In-Reply-To: <20200929105929.719230296@linuxfoundation.org>
+References: <20200929105929.719230296@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,45 +46,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Walter Lozano <walter.lozano@collabora.com>
+From: Sylwester Nawrocki <s.nawrocki@samsung.com>
 
-[ Upstream commit 6544abc520f0fff701e9da382110dc29676c683a ]
+[ Upstream commit f5a2cda4f1db89776b64c4f0f2c2ac609527ac70 ]
 
-Currently, when using _of_add_opp_table_v2 parsed_static_opps is
-increased and this value is used in _opp_remove_all_static() to
-check if there are static opp entries that need to be freed.
-Unfortunately this does not happen when using _of_add_opp_table_v1(),
-which leads to warnings.
+When the wm8958_mic_detect, wm8994_mic_detect functions get called from
+the machine driver, e.g. from the card's late_probe() callback, the CODEC
+device may be PM runtime suspended and any regmap writes have no effect.
+Add PM runtime calls to these functions to ensure the device registers
+are updated as expected.
+This suppresses an error during boot
+"wm8994-codec: ASoC: error at snd_soc_component_update_bits on wm8994-codec"
+caused by the regmap access error due to the cache_only flag being set.
 
-This patch increases parsed_static_opps in _of_add_opp_table_v1() in a
-similar way as in _of_add_opp_table_v2().
-
-Fixes: 03758d60265c ("opp: Replace list_kref with a local counter")
-Cc: v5.6+ <stable@vger.kernel.org> # v5.6+
-Signed-off-by: Walter Lozano <walter.lozano@collabora.com>
-[ Viresh: Do the operation with lock held and set the value to 1 instead
-	  of incrementing it ]
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Link: https://lore.kernel.org/r/20200827173357.31891-2-s.nawrocki@samsung.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/opp/of.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ sound/soc/codecs/wm8994.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/drivers/opp/of.c b/drivers/opp/of.c
-index 9cd8f0adacae4..249738e1e0b7a 100644
---- a/drivers/opp/of.c
-+++ b/drivers/opp/of.c
-@@ -733,6 +733,10 @@ static int _of_add_opp_table_v1(struct device *dev, struct opp_table *opp_table)
+diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
+index c2116836a7203..58f21329d0e99 100644
+--- a/sound/soc/codecs/wm8994.c
++++ b/sound/soc/codecs/wm8994.c
+@@ -3491,6 +3491,8 @@ int wm8994_mic_detect(struct snd_soc_component *component, struct snd_soc_jack *
  		return -EINVAL;
  	}
  
-+	mutex_lock(&opp_table->lock);
-+	opp_table->parsed_static_opps = 1;
-+	mutex_unlock(&opp_table->lock);
++	pm_runtime_get_sync(component->dev);
 +
- 	val = prop->value;
- 	while (nr) {
- 		unsigned long freq = be32_to_cpup(val++) * 1000;
+ 	switch (micbias) {
+ 	case 1:
+ 		micdet = &wm8994->micdet[0];
+@@ -3538,6 +3540,8 @@ int wm8994_mic_detect(struct snd_soc_component *component, struct snd_soc_jack *
+ 
+ 	snd_soc_dapm_sync(dapm);
+ 
++	pm_runtime_put(component->dev);
++
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(wm8994_mic_detect);
+@@ -3905,6 +3909,8 @@ int wm8958_mic_detect(struct snd_soc_component *component, struct snd_soc_jack *
+ 		return -EINVAL;
+ 	}
+ 
++	pm_runtime_get_sync(component->dev);
++
+ 	if (jack) {
+ 		snd_soc_dapm_force_enable_pin(dapm, "CLK_SYS");
+ 		snd_soc_dapm_sync(dapm);
+@@ -3973,6 +3979,8 @@ int wm8958_mic_detect(struct snd_soc_component *component, struct snd_soc_jack *
+ 		snd_soc_dapm_sync(dapm);
+ 	}
+ 
++	pm_runtime_put(component->dev);
++
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(wm8958_mic_detect);
 -- 
 2.25.1
 
