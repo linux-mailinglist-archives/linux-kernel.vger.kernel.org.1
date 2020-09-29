@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9243C27C37A
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:07:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89E8327C426
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:11:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728804AbgI2LFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:05:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42234 "EHLO mail.kernel.org"
+        id S1729257AbgI2LLh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:11:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51946 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728785AbgI2LFn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:05:43 -0400
+        id S1729194AbgI2LKw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:10:52 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 27039206DB;
-        Tue, 29 Sep 2020 11:05:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9628720848;
+        Tue, 29 Sep 2020 11:10:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601377542;
-        bh=1PR2f9q4ciLZz1AQCn23XYiF4qTzYugQqKbHT2FMAac=;
+        s=default; t=1601377852;
+        bh=sTH9H5cLkDDkeT7+8BSnxFuTL3G71zT6DoZ7bdCP3GE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WUKMjeh7q2DIT65/R3WeN3ygPrZz+8Tig1mGzcCfiLfZTQg+74biRh3jAp8C66PbS
-         qF/RZgQ7BHomtcw6IdDnUgI+Itfybwa1iD2VVE8AkiWqcoH0XvRa/qck/gg/W7AeTF
-         p0BDIXMXzpBoo8BVeef3XI4VMqs8x+eRE9MF4w8w=
+        b=G2l5qnXiRXoc4dmM7a02nJ4Ar8W+17SuF6gouRZ+uIu4QhrvUci4B11CmDp/xx3Yd
+         D32k3gMZ3RzKw9KIx8A0Q2zGTwmQmcIb8wrTcQHVxEZMKycCFafU1qi11aFoHaahim
+         8/A/P0TBVOznPkOCV2Dze9D6As21YJeDMFRbcjhI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ilya Leoshkevich <iii@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
+        stable@vger.kernel.org, Jeff Layton <jlayton@kernel.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 73/85] s390/init: add missing __init annotations
+Subject: [PATCH 4.9 096/121] ceph: fix potential race in ceph_check_caps
 Date:   Tue, 29 Sep 2020 13:00:40 +0200
-Message-Id: <20200929105931.862930416@linuxfoundation.org>
+Message-Id: <20200929105934.940310959@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929105928.198942536@linuxfoundation.org>
-References: <20200929105928.198942536@linuxfoundation.org>
+In-Reply-To: <20200929105930.172747117@linuxfoundation.org>
+References: <20200929105930.172747117@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,53 +43,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ilya Leoshkevich <iii@linux.ibm.com>
+From: Jeff Layton <jlayton@kernel.org>
 
-[ Upstream commit fcb2b70cdb194157678fb1a75f9ff499aeba3d2a ]
+[ Upstream commit dc3da0461cc4b76f2d0c5b12247fcb3b520edbbf ]
 
-Add __init to reserve_memory_end, reserve_oldmem and remove_oldmem.
-Sometimes these functions are not inlined, and then the build
-complains about section mismatch.
+Nothing ensures that session will still be valid by the time we
+dereference the pointer. Take and put a reference.
 
-Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
-Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
-Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
+In principle, we should always be able to get a reference here, but
+throw a warning if that's ever not the case.
+
+Signed-off-by: Jeff Layton <jlayton@kernel.org>
+Signed-off-by: Ilya Dryomov <idryomov@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/s390/kernel/setup.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ fs/ceph/caps.c | 14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
 
-diff --git a/arch/s390/kernel/setup.c b/arch/s390/kernel/setup.c
-index 47692c78d09c5..fdc5e76e1f6b0 100644
---- a/arch/s390/kernel/setup.c
-+++ b/arch/s390/kernel/setup.c
-@@ -513,7 +513,7 @@ static struct notifier_block kdump_mem_nb = {
- /*
-  * Make sure that the area behind memory_end is protected
-  */
--static void reserve_memory_end(void)
-+static void __init reserve_memory_end(void)
- {
- #ifdef CONFIG_CRASH_DUMP
- 	if (ipl_info.type == IPL_TYPE_FCP_DUMP &&
-@@ -531,7 +531,7 @@ static void reserve_memory_end(void)
- /*
-  * Make sure that oldmem, where the dump is stored, is protected
-  */
--static void reserve_oldmem(void)
-+static void __init reserve_oldmem(void)
- {
- #ifdef CONFIG_CRASH_DUMP
- 	if (OLDMEM_BASE)
-@@ -543,7 +543,7 @@ static void reserve_oldmem(void)
- /*
-  * Make sure that oldmem, where the dump is stored, is protected
-  */
--static void remove_oldmem(void)
-+static void __init remove_oldmem(void)
- {
- #ifdef CONFIG_CRASH_DUMP
- 	if (OLDMEM_BASE)
+diff --git a/fs/ceph/caps.c b/fs/ceph/caps.c
+index e11aacb35d6b5..cbd92dd89de16 100644
+--- a/fs/ceph/caps.c
++++ b/fs/ceph/caps.c
+@@ -1807,12 +1807,24 @@ ack:
+ 			if (mutex_trylock(&session->s_mutex) == 0) {
+ 				dout("inverting session/ino locks on %p\n",
+ 				     session);
++				session = ceph_get_mds_session(session);
+ 				spin_unlock(&ci->i_ceph_lock);
+ 				if (took_snap_rwsem) {
+ 					up_read(&mdsc->snap_rwsem);
+ 					took_snap_rwsem = 0;
+ 				}
+-				mutex_lock(&session->s_mutex);
++				if (session) {
++					mutex_lock(&session->s_mutex);
++					ceph_put_mds_session(session);
++				} else {
++					/*
++					 * Because we take the reference while
++					 * holding the i_ceph_lock, it should
++					 * never be NULL. Throw a warning if it
++					 * ever is.
++					 */
++					WARN_ON_ONCE(true);
++				}
+ 				goto retry;
+ 			}
+ 		}
 -- 
 2.25.1
 
