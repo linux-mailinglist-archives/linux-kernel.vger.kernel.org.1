@@ -2,153 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE0D427D466
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 19:25:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF12A27D470
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 19:26:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728882AbgI2RZo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 13:25:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35900 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727328AbgI2RZl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 13:25:41 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 003972075A;
-        Tue, 29 Sep 2020 17:25:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601400340;
-        bh=Xv0rt8BvK5NQflV4HM9+bGl203Y0k3NIGUz7VcStvqM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=vW3pXJX83SknNw5HoHFJQaYImR0HN6DhmSa2zEwx5veHCgjUlwS3WW2rRAeg408gA
-         H1Lqkq/nBOwGW3k+W/Jj3WHvm6EHshDZ2YUWoZtTfb4mE55OgYwVXg8gdo4huvJu+i
-         McYfN0AlCJeWRJ5Ebe8RDHaYlGXXxb3l0QXk+F9c=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <maz@kernel.org>)
-        id 1kNJNh-00Fu9z-Hl; Tue, 29 Sep 2020 18:25:37 +0100
+        id S1728613AbgI2R0u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 13:26:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36118 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727328AbgI2R0u (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 13:26:50 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 589B3C061755;
+        Tue, 29 Sep 2020 10:26:48 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id a22so4674334ljp.13;
+        Tue, 29 Sep 2020 10:26:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vhk3MbInaaF/6croUvi+/zraDixQnx7wCrXOslWTtys=;
+        b=n4MkOq3UvJP9m0yc5Rtex4KtclxrWnItxqOpn6tZJzlS3ahY9sxrZ99wx/IIjkLyvA
+         K0GqFxQHjcFt79Rjzd/Zm9P8+hgfC0QYVVFBS3iB5TCojtSzbQJOyd0rGk4g2xAykhL1
+         Mpwh64dBzCzV9r1Za8avYcsDcrmErdyZmkPZ9kEoUIO8LDElIUZB0ATuZbnGDNr+fYQS
+         fMRGTlsGFAmcXPGzIlYRJpjM9y6G5KnSBPq844V0njnx82hXnbevNRGQZz0ZkAWsenvR
+         bKCofziWQTxGJfxBozUMNCYve9GC3OKOVWJ2cqK5v8FXJ+cKBVDwL7pzd68pvgwRMTG2
+         wnFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vhk3MbInaaF/6croUvi+/zraDixQnx7wCrXOslWTtys=;
+        b=WfRKpf+xKr1jnku10q+LWizcTjobYgzqxwg/MsSTHoORCKk8U4zB7RTf4RSA17I1mC
+         6j907yyP/WpxcHxSU4oDDKJxMGaOhWSZAdbXQMlXOKr03tBVdm87wT7UDrwpQNpBrhgg
+         XN+QUXfiwFPiHupYV1lQoxDSPwar+sqKD29xFAzkz0VYIoACQC9f5lbcZUlU4S1RMH/w
+         NMIsQ0jOvMDfN0Tp75Ei02S4lft5jjHJI67km4uinwl4uhL4iqXtss58V0PQWRaHVSS7
+         aJaUBcxh0Af83tHbS/+Y41C/MaT9GUWyN9Npb5SFdpVekU/bPFMvZIqDrignIfeITfWO
+         sKcQ==
+X-Gm-Message-State: AOAM533e6CaU0nhZ/epOu1jmf6pUGOji4zQrTtOK2XQig8Ln9l2iknLI
+        FG4Igp8uYV8x0FEHqyLnasICk9Q7fz6lHn9Owgg=
+X-Google-Smtp-Source: ABdhPJwxqnsM76aGzSU8gOeBJXlMS/Kp47YaHZhDo+51LyfyeEh9/7V3IF/bZW3wgT6Vd6jz1IR+rbVD/zCvPQOIjpY=
+X-Received: by 2002:a2e:8988:: with SMTP id c8mr1422707lji.433.1601400406761;
+ Tue, 29 Sep 2020 10:26:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 29 Sep 2020 18:25:37 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Jon Hunter <jonathanh@nvidia.com>
-Cc:     Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
-        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        linux-pci@vger.kernel.org,
-        Binghui Wang <wangbinghui@hisilicon.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        linux-arm-kernel@axis.com, Vidya Sagar <vidyas@nvidia.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Rob Herring <robh@kernel.org>,
-        Jesper Nilsson <jesper.nilsson@axis.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Pratyush Anand <pratyush.anand@gmail.com>,
-        linux-tegra@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Kukjin Kim <kgene@kernel.org>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Xiaowei Song <songxiaowei@hisilicon.com>,
-        Richard Zhu <hongxing.zhu@nxp.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        linux-arm-msm@vger.kernel.org,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Yue Wang <yue.wang@amlogic.com>,
-        linux-samsung-soc@vger.kernel.org,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linux-amlogic@lists.infradead.org, linux-omap@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Andy Gross <agross@kernel.org>, linux-kernel@vger.kernel.org,
-        Stanimir Varbanov <svarbanov@mm-sol.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Lucas Stach <l.stach@pengutronix.de>
-Subject: Re: [PATCH v2 0/5] PCI: dwc: improve msi handling
-In-Reply-To: <8e06a370-a37a-5f33-b43b-2830adb31b3e@nvidia.com>
-References: <20200924190421.549cb8fc@xhacker.debian>
- <de4d9294-4f6d-c7d1-efc7-c8ef6570bd64@nvidia.com>
- <20200929184851.22682ff1@xhacker.debian>
- <8e06a370-a37a-5f33-b43b-2830adb31b3e@nvidia.com>
-User-Agent: Roundcube Webmail/1.4.8
-Message-ID: <d4a6eea3c5e33a3a4056885419df95a7@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: jonathanh@nvidia.com, Jisheng.Zhang@synaptics.com, hayashi.kunihiko@socionext.com, narmstrong@baylibre.com, linux-pci@vger.kernel.org, wangbinghui@hisilicon.com, bjorn.andersson@linaro.org, yamada.masahiro@socionext.com, thierry.reding@gmail.com, linux-arm-kernel@axis.com, vidyas@nvidia.com, festevam@gmail.com, jbrunet@baylibre.com, robh@kernel.org, jesper.nilsson@axis.com, lorenzo.pieralisi@arm.com, khilman@baylibre.com, pratyush.anand@gmail.com, linux-tegra@vger.kernel.org, krzk@kernel.org, kishon@ti.com, kgene@kernel.org, linux-imx@nxp.com, songxiaowei@hisilicon.com, hongxing.zhu@nxp.com, martin.blumenstingl@googlemail.com, linux-arm-msm@vger.kernel.org, s.hauer@pengutronix.de, yue.wang@amlogic.com, linux-samsung-soc@vger.kernel.org, bhelgaas@google.com, linux-amlogic@lists.infradead.org, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org, jingoohan1@gmail.com, agross@kernel.org, linux-kernel@vger.kernel.org, svarbanov@mm-sol.com, kernel@pengutroni
- x.de, gustavo.pimentel@synopsys.com, shawnguo@kernel.org, l.stach@pengutronix.de
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+References: <1600959521-24158-1-git-send-email-ross.philipson@oracle.com> <1600959521-24158-4-git-send-email-ross.philipson@oracle.com>
+In-Reply-To: <1600959521-24158-4-git-send-email-ross.philipson@oracle.com>
+From:   Jason Andryuk <jandryuk@gmail.com>
+Date:   Tue, 29 Sep 2020 13:26:34 -0400
+Message-ID: <CAKf6xpt=G_SJTGikXpQ36pfpSfXQZf0Upn9qTkf-F+mrY2SRDA@mail.gmail.com>
+Subject: Re: [PATCH 03/13] x86: Add early SHA support for Secure Launch early measurements
+To:     Ross Philipson <ross.philipson@oracle.com>
+Cc:     open list <linux-kernel@vger.kernel.org>, x86@kernel.org,
+        iommu@lists.linux-foundation.org, linux-integrity@vger.kernel.org,
+        linux-doc@vger.kernel.org,
+        Daniel Smith <dpsmith@apertussolutions.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, luto@amacapital.net,
+        trenchboot-devel@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-09-29 14:22, Jon Hunter wrote:
-> Hi Jisheng,
-> 
-> On 29/09/2020 11:48, Jisheng Zhang wrote:
->> Hi Jon,
->> 
->> On Fri, 25 Sep 2020 09:53:45 +0100 Jon Hunter wrote:
->> 
->>> 
->>> On 24/09/2020 12:05, Jisheng Zhang wrote:
->>>> Improve the msi code:
->>>> 1. Add proper error handling.
->>>> 2. Move dw_pcie_msi_init() from each users to designware host to 
->>>> solve
->>>> msi page leakage in resume path.
->>> 
->>> Apologies if this is slightly off topic, but I have been meaning to 
->>> ask
->>> about MSIs and PCI. On Tegra194 which uses the DWC PCI driver, 
->>> whenever we
->>> hotplug CPUs we see the following warnings ...
->>> 
->>>  [      79.068351] WARNING KERN IRQ70: set affinity failed(-22).
->>>  [      79.068362] WARNING KERN IRQ71: set affinity failed(-22).
->>> 
->> 
->> I tried to reproduce this issue on Synaptics SoC, but can't reproduce 
->> it.
->> Per my understanding of the code in kernel/irq/cpuhotplug.c, this 
->> warning
->> happened when we migrate irqs away from the offline cpu, this 
->> implicitly
->> implies that before this point the irq has bind to the offline cpu, 
->> but how
->> could this happen given current dw_pci_msi_set_affinity() 
->> implementation
->> always return -EINVAL
-> 
-> By default the smp_affinity should be set so that all CPUs can be
-> interrupted ...
-> 
-> $ cat /proc/irq/70/smp_affinity
-> 0xff
-> 
-> In my case there are 8 CPUs and so 0xff implies that the interrupt can
-> be triggered on any of the 8 CPUs.
-> 
-> Do you see the set_affinity callback being called for the DWC irqchip 
-> in
-> migrate_one_irq()?
+On Thu, Sep 24, 2020 at 11:00 AM Ross Philipson
+<ross.philipson@oracle.com> wrote:
+>
+> The SHA algorithms are necessary to measure configuration information into
+> the TPM as early as possible before using the values. This implementation
+> uses the established approach of #including the SHA libraries directly in
+> the code since the compressed kernel is not uncompressed at this point.
+>
+> The SHA code here has its origins in the code from the main kernel. That
+> code could not be pulled directly into the setup portion of the compressed
+> kernel because of other dependencies it pulls in. The result is this is a
+> modified copy of that code that still leverages the core SHA algorithms.
+>
+> Signed-off-by: Daniel P. Smith <dpsmith@apertussolutions.com>
+> Signed-off-by: Ross Philipson <ross.philipson@oracle.com>
+> ---
+>  arch/x86/boot/compressed/Makefile       |   4 +
+>  arch/x86/boot/compressed/early_sha1.c   | 104 ++++++++++++++++
+>  arch/x86/boot/compressed/early_sha1.h   |  17 +++
+>  arch/x86/boot/compressed/early_sha256.c |   6 +
+>  arch/x86/boot/compressed/early_sha512.c |   6 +
+>  include/linux/sha512.h                  |  21 ++++
+>  lib/sha1.c                              |   4 +
+>  lib/sha512.c                            | 209 ++++++++++++++++++++++++++++++++
+>  8 files changed, 371 insertions(+)
+>  create mode 100644 arch/x86/boot/compressed/early_sha1.c
+>  create mode 100644 arch/x86/boot/compressed/early_sha1.h
+>  create mode 100644 arch/x86/boot/compressed/early_sha256.c
+>  create mode 100644 arch/x86/boot/compressed/early_sha512.c
+>  create mode 100644 include/linux/sha512.h
+>  create mode 100644 lib/sha512.c
+>
+> diff --git a/arch/x86/boot/compressed/Makefile b/arch/x86/boot/compressed/Makefile
+> index ff7894f..0fd84b9 100644
+> --- a/arch/x86/boot/compressed/Makefile
+> +++ b/arch/x86/boot/compressed/Makefile
+> @@ -96,6 +96,10 @@ vmlinux-objs-$(CONFIG_ACPI) += $(obj)/acpi.o
+>  vmlinux-objs-$(CONFIG_EFI_MIXED) += $(obj)/efi_thunk_$(BITS).o
+>  efi-obj-$(CONFIG_EFI_STUB) = $(objtree)/drivers/firmware/efi/libstub/lib.a
+>
+> +vmlinux-objs-$(CONFIG_SECURE_LAUNCH) += $(obj)/early_sha1.o
+> +vmlinux-objs-$(CONFIG_SECURE_LAUNCH_SHA256) += $(obj)/early_sha256.o
+> +vmlinux-objs-$(CONFIG_SECURE_LAUNCH_SHA512) += $(obj)/early_sha512.o
+> +
+>  # The compressed kernel is built with -fPIC/-fPIE so that a boot loader
+>  # can place it anywhere in memory and it will still run. However, since
+>  # it is executed as-is without any ELF relocation processing performed
+> diff --git a/arch/x86/boot/compressed/early_sha1.c b/arch/x86/boot/compressed/early_sha1.c
+> new file mode 100644
+> index 0000000..198c46d
+> --- /dev/null
+> +++ b/arch/x86/boot/compressed/early_sha1.c
+> @@ -0,0 +1,104 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (c) 2020, Oracle and/or its affiliates.
+> + * Copyright (c) 2020 Apertus Solutions, LLC.
+> + */
+> +
+> +#include <linux/init.h>
+> +#include <linux/linkage.h>
+> +#include <linux/string.h>
+> +#include <asm/boot.h>
+> +#include <asm/unaligned.h>
+> +
+> +#include "early_sha1.h"
+> +
+> +#define SHA1_DISABLE_EXPORT
+> +#include "../../../../lib/sha1.c"
+> +
+> +/* The SHA1 implementation in lib/sha1.c was written to get the workspace
+> + * buffer as a parameter. This wrapper function provides a container
+> + * around a temporary workspace that is cleared after the transform completes.
+> + */
+> +static void __sha_transform(u32 *digest, const char *data)
+> +{
+> +       u32 ws[SHA1_WORKSPACE_WORDS];
+> +
+> +       sha1_transform(digest, data, ws);
+> +
+> +       memset(ws, 0, sizeof(ws));
+> +       /*
+> +        * As this is cryptographic code, prevent the memset 0 from being
+> +        * optimized out potentially leaving secrets in memory.
+> +        */
+> +       wmb();
 
-The problem is common to all MSI implementations that end up muxing
-all the end-point MSIs into a single interrupt. With these systems,
-you cannot set the affinity of individual MSIs (they don't target a
-CPU, they target another interrupt... braindead). Only the mux
-interrupt can have its affinity changed.
+You can use memzero_explicit instead of open coding it.
 
-So returning -EINVAL is the right thing to do.
-
-          M.
--- 
-Jazz is not dead. It just smells funny...
+Regards,
+Jason
