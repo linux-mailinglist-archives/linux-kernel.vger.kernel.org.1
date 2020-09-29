@@ -2,82 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0D0127BC2F
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 06:49:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AE8F27BC30
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 06:50:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725835AbgI2EtU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 00:49:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59848 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725815AbgI2EtT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 00:49:19 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0153C061755
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 21:49:19 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id f18so3307649pfa.10
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 21:49:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=gZJjXeIoqp10fgs412ZBMIhuGHG/6qS/5ErOSn9zoRw=;
-        b=L4tOM7XZuoynJQGnQNM8Jw6RcsrFAp2a7NfHNmtUN/3CD5xAUGd3QWa3id5UZcs912
-         CFZbwwMKfsVuiDCTbsuSn8tRIhK/LP8tPuYwp1+H7nm2FLSef+DRHybUfAY9Du/BJo8j
-         xI6XvgVMyZGQZoTe4m6BzdppnZT12wlk7Jlo5djT/98vWgIEbedDPtCDBH7zpUc/sJ8D
-         tbCPwsXDtM3l0VHwPj3KHhtkIm0zRVzMAMEQFTY1s/LbZ/iHOHvRXFcPXN1qlafjpxop
-         DGTKxWciIIitSQyeuDXPLHT7TZUlKAg8xn+cJNDLjDJnxSbUG9WXeLWL7wHic949Je/a
-         7DCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=gZJjXeIoqp10fgs412ZBMIhuGHG/6qS/5ErOSn9zoRw=;
-        b=n/xz25Gzp1+tLfQ1F0PwJ63UBnnq9epUguMwuQWP16J7gNCtift3fYilZBmt3w6TgP
-         rjgyVYPItsunH99AfOCf09yrEdPjeROYutCfoNVENP0Gxle9jQeHOuuIbfu6j+iniAnw
-         nyZc7WjpvB68V33WM57b+AEONpQBCI7FqO4lqP0VCwgqk0pjCTI4EHKi5ZNWwMQgIbL6
-         jcmeq0bAN/1LEFX5a4LkwEri0LHd1CEesrnSWwE8HtZ78SwvRxr5A1Isg195K3WHmRfz
-         MS9OJNWuDY9LTRIoGc8ujCRvsVQdWL09k8ZyiaY737MVGujh0MOKaki7h/WFa/mVbNbF
-         EySg==
-X-Gm-Message-State: AOAM530S1sAGReG19Xd/GsZ5jqAVsEe3QDOIz6HSs6V4pTEhtPjGSRTW
-        v5gMhWMnu24EhyWSlyofQTo=
-X-Google-Smtp-Source: ABdhPJztxLsRS+LCBWAaSFwoZd0rxYav7kddouqGpKhDEplIHmMZ6NV/2Y662JylylYKBGWjHCKZAA==
-X-Received: by 2002:aa7:9986:0:b029:142:2501:39db with SMTP id k6-20020aa799860000b0290142250139dbmr2493310pfh.42.1601354959511;
-        Mon, 28 Sep 2020 21:49:19 -0700 (PDT)
-Received: from localhost ([43.224.245.180])
-        by smtp.gmail.com with ESMTPSA id s2sm2770102pjg.52.2020.09.28.21.49.18
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 28 Sep 2020 21:49:18 -0700 (PDT)
-From:   jiahao <jiahao243@gmail.com>
-X-Google-Original-From: jiahao <jiahao@xiaomi.com>
-To:     christian@brauner.io, jiahao@xiaomi.com
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH] kernel: exit: fix a spacing coding style
-Date:   Tue, 29 Sep 2020 12:48:53 +0800
-Message-Id: <1601354933-28526-1-git-send-email-jiahao@xiaomi.com>
-X-Mailer: git-send-email 2.7.4
+        id S1725855AbgI2Eu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 00:50:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56488 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725535AbgI2Eu4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 00:50:56 -0400
+Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 85B8C207F7;
+        Tue, 29 Sep 2020 04:50:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601355055;
+        bh=gV6QEyJxDl+g2byKjvydjtaPQ921rhOyIz0suE2c25k=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=sCMA5ZZQOAmaVjdHqeK6yhK/tgd6/OZ8p6xiO3FXaqhHXXKFSBJUraJtmLw/h+1+v
+         7NVLZpHwdpdZYTVxbEKvNdW90Ro0uzGbqllUrO9gmksEhAkYZAAYN9ry4SYwcwhjI/
+         tM1udPnGxoN0EfCCBV7EWtxiCfMrjeVecHwxRmdk=
+Date:   Mon, 28 Sep 2020 21:50:55 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Joonsoo Kim <js1304@gmail.com>
+Cc:     Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Mel Gorman <mgorman@techsingularity.net>, kernel-team@lge.com,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Subject: Re: [PATCH v2 for v5.9] mm/page_alloc: handle a missing case for
+ memalloc_nocma_{save/restore} APIs
+Message-Id: <20200928215055.02ff9b3ff5e0c392b2403411@linux-foundation.org>
+In-Reply-To: <CAAmzW4OY7z+bF=aFOsNuadc8M_f1Pb7jifuxzQo5AL6mCuO5Ng@mail.gmail.com>
+References: <1601283046-15329-1-git-send-email-iamjoonsoo.kim@lge.com>
+        <20200928165215.f46924bfff9a109131048f81@linux-foundation.org>
+        <CAAmzW4OY7z+bF=aFOsNuadc8M_f1Pb7jifuxzQo5AL6mCuO5Ng@mail.gmail.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add some spaces before and after the operator.
+On Tue, 29 Sep 2020 10:28:05 +0900 Joonsoo Kim <js1304@gmail.com> wrote:
 
-Signed-off-by: jiahao <jiahao@xiaomi.com>
----
- kernel/exit.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> > What about manually emptying the pcplists beforehand?
+> 
+> It also increases the probability. schedule() or interrupt after emptying but
+> before the allocation could invalidate the effect.
 
-diff --git a/kernel/exit.c b/kernel/exit.c
-index 733e80f..a3c831c 100644
---- a/kernel/exit.c
-+++ b/kernel/exit.c
-@@ -869,7 +869,7 @@ EXPORT_SYMBOL(complete_and_exit);
- 
- SYSCALL_DEFINE1(exit, int, error_code)
- {
--	do_exit((error_code&0xff)<<8);
-+	do_exit((error_code & 0xff) << 8);
- }
- 
- /*
--- 
-2.7.4
+Keep local interrupts disabled across the pcp drain and the allocation
+attempt.
+
+> > Or byassing the pcplists for this caller and calling __rmqueue() directly?
+> 
+> What this patch does is this one.
+
+I meant via a different function rather than by adding overhead to the
+existing commonly-used function.
 
