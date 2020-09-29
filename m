@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AE5427C73F
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:52:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47E7F27C669
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:44:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731380AbgI2Lwf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:52:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49310 "EHLO mail.kernel.org"
+        id S1729274AbgI2Lox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:44:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43910 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731079AbgI2Lrg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:47:36 -0400
+        id S1730900AbgI2Lon (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:44:43 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 81AB4206F7;
-        Tue, 29 Sep 2020 11:47:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E61A9206E5;
+        Tue, 29 Sep 2020 11:44:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601380056;
-        bh=0gpkqYr6zeW+XZmL6JgbcEWeivALiNbg7XH8JSez6cU=;
+        s=default; t=1601379881;
+        bh=RsHOz24AamUalIT+Vh94hhCx8b+xThUBH6MW5GOnlXc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hYYPpNHyhQ+IPrObaAXa6hU8zj8pWaULCW4zibJ+j0fCWjND5CxQ+C7jYL7IT5Wm8
-         vNQ3Rzb+JCNela2CyNUE9FEH/00wHddW/7fN3CcHpR4rnTg+DBv3btK0io9GC8KrjM
-         oYNh3x7fKxxLTbCpvF+LLK8+S+1cLaaLQ7F5rW5g=
+        b=JJdM6zRdG/nYvRy4n2245GWXa/oRJYW6fiaUFeiTofcQyujr7JRY4su+lcwKSyAiP
+         Clml3pOCPUkdY2r/iirjp3M7Ew+8GH49CwM51lCA4DVTiif0OZ3mRNvgV53/MSGmoP
+         jpGt8B2OMxWokF7Lu7+tavvGMLSXMbAJ3UqVIq54=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ciara Loftus <ciara.loftus@intel.com>,
-        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 47/99] xsk: Fix number of pinned pages/umem size discrepancy
+        stable@vger.kernel.org, Tom Rix <trix@redhat.com>,
+        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 359/388] ALSA: asihpi: fix iounmap in error handler
 Date:   Tue, 29 Sep 2020 13:01:30 +0200
-Message-Id: <20200929105932.042990534@linuxfoundation.org>
+Message-Id: <20200929110027.842246203@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929105929.719230296@linuxfoundation.org>
-References: <20200929105929.719230296@linuxfoundation.org>
+In-Reply-To: <20200929110010.467764689@linuxfoundation.org>
+References: <20200929110010.467764689@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,80 +42,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Björn Töpel <bjorn.topel@intel.com>
+From: Tom Rix <trix@redhat.com>
 
-[ Upstream commit 2b1667e54caf95e1e4249d9068eea7a3089a5229 ]
+[ Upstream commit 472eb39103e885f302fd8fd6eff104fcf5503f1b ]
 
-For AF_XDP sockets, there was a discrepancy between the number of of
-pinned pages and the size of the umem region.
+clang static analysis flags this problem
+hpioctl.c:513:7: warning: Branch condition evaluates to
+  a garbage value
+                if (pci.ap_mem_base[idx]) {
+                    ^~~~~~~~~~~~~~~~~~~~
 
-The size of the umem region is used to validate the AF_XDP descriptor
-addresses. The logic that pinned the pages covered by the region only
-took whole pages into consideration, creating a mismatch between the
-size and pinned pages. A user could then pass AF_XDP addresses outside
-the range of pinned pages, but still within the size of the region,
-crashing the kernel.
+If there is a failure in the middle of the memory space loop,
+only some of the memory spaces need to be cleaned up.
 
-This change correctly calculates the number of pages to be
-pinned. Further, the size check for the aligned mode is
-simplified. Now the code simply checks if the size is divisible by the
-chunk size.
+At the error handler, idx holds the number of successful
+memory spaces mapped.  So rework the handler loop to use the
+old idx.
 
-Fixes: bbff2f321a86 ("xsk: new descriptor addressing scheme")
-Reported-by: Ciara Loftus <ciara.loftus@intel.com>
-Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Tested-by: Ciara Loftus <ciara.loftus@intel.com>
-Acked-by: Song Liu <songliubraving@fb.com>
-Link: https://lore.kernel.org/bpf/20200910075609.7904-1-bjorn.topel@gmail.com
+There is a second problem, the memory space loop conditionally
+iomaps()/sets the mem_base so it is necessay to initize pci.
+
+Fixes: 719f82d3987a ("ALSA: Add support of AudioScience ASI boards")
+Signed-off-by: Tom Rix <trix@redhat.com>
+Link: https://lore.kernel.org/r/20200913165230.17166-1-trix@redhat.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/xdp/xdp_umem.c | 17 ++++++++---------
- 1 file changed, 8 insertions(+), 9 deletions(-)
+ sound/pci/asihpi/hpioctl.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/net/xdp/xdp_umem.c b/net/xdp/xdp_umem.c
-index e97db37354e4f..b010bfde01490 100644
---- a/net/xdp/xdp_umem.c
-+++ b/net/xdp/xdp_umem.c
-@@ -303,10 +303,10 @@ static int xdp_umem_account_pages(struct xdp_umem *umem)
+diff --git a/sound/pci/asihpi/hpioctl.c b/sound/pci/asihpi/hpioctl.c
+index 496dcde9715d6..9790f5108a166 100644
+--- a/sound/pci/asihpi/hpioctl.c
++++ b/sound/pci/asihpi/hpioctl.c
+@@ -343,7 +343,7 @@ int asihpi_adapter_probe(struct pci_dev *pci_dev,
+ 	struct hpi_message hm;
+ 	struct hpi_response hr;
+ 	struct hpi_adapter adapter;
+-	struct hpi_pci pci;
++	struct hpi_pci pci = { 0 };
  
- static int xdp_umem_reg(struct xdp_umem *umem, struct xdp_umem_reg *mr)
- {
-+	u32 npgs_rem, chunk_size = mr->chunk_size, headroom = mr->headroom;
- 	bool unaligned_chunks = mr->flags & XDP_UMEM_UNALIGNED_CHUNK_FLAG;
--	u32 chunk_size = mr->chunk_size, headroom = mr->headroom;
- 	u64 npgs, addr = mr->addr, size = mr->len;
--	unsigned int chunks, chunks_per_page;
-+	unsigned int chunks, chunks_rem;
- 	int err;
+ 	memset(&adapter, 0, sizeof(adapter));
  
- 	if (chunk_size < XDP_UMEM_MIN_CHUNK_SIZE || chunk_size > PAGE_SIZE) {
-@@ -336,19 +336,18 @@ static int xdp_umem_reg(struct xdp_umem *umem, struct xdp_umem_reg *mr)
- 	if ((addr + size) < addr)
- 		return -EINVAL;
+@@ -499,7 +499,7 @@ int asihpi_adapter_probe(struct pci_dev *pci_dev,
+ 	return 0;
  
--	npgs = size >> PAGE_SHIFT;
-+	npgs = div_u64_rem(size, PAGE_SIZE, &npgs_rem);
-+	if (npgs_rem)
-+		npgs++;
- 	if (npgs > U32_MAX)
- 		return -EINVAL;
- 
--	chunks = (unsigned int)div_u64(size, chunk_size);
-+	chunks = (unsigned int)div_u64_rem(size, chunk_size, &chunks_rem);
- 	if (chunks == 0)
- 		return -EINVAL;
- 
--	if (!unaligned_chunks) {
--		chunks_per_page = PAGE_SIZE / chunk_size;
--		if (chunks < chunks_per_page || chunks % chunks_per_page)
--			return -EINVAL;
--	}
-+	if (!unaligned_chunks && chunks_rem)
-+		return -EINVAL;
- 
- 	if (headroom >= chunk_size - XDP_PACKET_HEADROOM)
- 		return -EINVAL;
+ err:
+-	for (idx = 0; idx < HPI_MAX_ADAPTER_MEM_SPACES; idx++) {
++	while (--idx >= 0) {
+ 		if (pci.ap_mem_base[idx]) {
+ 			iounmap(pci.ap_mem_base[idx]);
+ 			pci.ap_mem_base[idx] = NULL;
 -- 
 2.25.1
 
