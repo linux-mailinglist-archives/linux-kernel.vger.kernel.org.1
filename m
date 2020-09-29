@@ -2,139 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8CF627C258
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 12:25:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7C7427C259
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 12:25:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728158AbgI2KZZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 06:25:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55030 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725372AbgI2KZY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 06:25:24 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76740C061755;
-        Tue, 29 Sep 2020 03:25:24 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0ead0084926be0aaf8b723.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:ad00:8492:6be0:aaf8:b723])
+        id S1728165AbgI2KZu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 06:25:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33722 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725372AbgI2KZu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 06:25:50 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 753C21EC034B;
-        Tue, 29 Sep 2020 12:25:21 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1601375121;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=vD3s6odY/cyE9Bx1q0oRZfhly7bcVfpKxNIBv+AD3wk=;
-        b=ShLtAJ1+ONETkeLGQIFpUr5YpYO4Y8avI/Jwm/uh7pk67leh6pvbESMFqfa71vUJRYBzXL
-        Utw8bgAfPDECvMhnh48UTxadK4tT9xzoHIe9xly+7QEHld/P6HTUArNTnmwb8000XJnLXZ
-        noscDle3MKpVzFNcmkIiIUTBqk1oOjk=
-Date:   Tue, 29 Sep 2020 12:25:12 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     mingo@redhat.com, x86@kernel.org, stable@vger.kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mikulas Patocka <mpatocka@redhat.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        linux-nvdimm@lists.01.org, linux-kernel@vger.kernel.org,
-        jack@suse.cz
-Subject: Re: [PATCH v9 1/2] x86, powerpc: Rename memcpy_mcsafe() to
- copy_mc_to_{user, kernel}()
-Message-ID: <20200929102512.GB21110@zn.tnic>
-References: <160087928642.3520.17063139768910633998.stgit@dwillia2-desk3.amr.corp.intel.com>
- <160087929294.3520.12013578778066801369.stgit@dwillia2-desk3.amr.corp.intel.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id 53D7D20708;
+        Tue, 29 Sep 2020 10:25:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601375148;
+        bh=2CICJMeSzhqcrQ75ym2YrOJwBAyZ9BZUaOvY7HlgRtk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=AP52XRTbs8ea37as+UHsd/EfICnUz75+8dDjb9g+XgzDycwcL6hXWTPkOPmNFlIy6
+         FslTahUc0klf6E6Ko5DHsP7BSjR3/jP8nQyOaVTFWcalbHax4UjKGiKmVd4uNvBTlA
+         BkIGpp2a/sBxVsXhDCOUwBcDNOhIPw/d0QUqkdFc=
+Date:   Tue, 29 Sep 2020 12:25:54 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Scott Branden <scott.branden@broadcom.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Kees Cook <keescook@chromium.org>,
+        linux-kernel@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com
+Subject: Re: [PATCH v4 01/16] bcm-vk: add bcm_vk UAPI
+Message-ID: <20200929102554.GB951772@kroah.com>
+References: <20200929001209.16393-1-scott.branden@broadcom.com>
+ <20200929001209.16393-2-scott.branden@broadcom.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <160087929294.3520.12013578778066801369.stgit@dwillia2-desk3.amr.corp.intel.com>
+In-Reply-To: <20200929001209.16393-2-scott.branden@broadcom.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 09:41:33AM -0700, Dan Williams wrote:
-> The rename replaces a single top-level memcpy_mcsafe() with either
-> copy_mc_to_user(), or copy_mc_to_kernel().
+On Mon, Sep 28, 2020 at 05:11:54PM -0700, Scott Branden wrote:
+> Add user space api for bcm-vk driver.
+> 
+> Provide ioctl api to load images and issue reset command to card.
+> FW status registers in PCI BAR space also defined as part
+> of API so that user space is able to interpret these memory locations
+> as needed via direct PCIe access.
+> 
+> Signed-off-by: Scott Branden <scott.branden@broadcom.com>
+> ---
+>  include/uapi/linux/misc/bcm_vk.h | 84 ++++++++++++++++++++++++++++++++
+>  1 file changed, 84 insertions(+)
+>  create mode 100644 include/uapi/linux/misc/bcm_vk.h
+> 
+> diff --git a/include/uapi/linux/misc/bcm_vk.h b/include/uapi/linux/misc/bcm_vk.h
+> new file mode 100644
+> index 000000000000..5f1fc403bc67
+> --- /dev/null
+> +++ b/include/uapi/linux/misc/bcm_vk.h
+> @@ -0,0 +1,84 @@
+> +/* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR BSD-2-Clause) */
 
-What is "copy_mc" supposed to mean? Especially if it is called that on
-two arches...
+Why do you need BSD-2 if you already have the syscall-note license?
 
-> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-> index 7101ac64bb20..e876b3a087f9 100644
-> --- a/arch/x86/Kconfig
-> +++ b/arch/x86/Kconfig
-> @@ -75,7 +75,7 @@ config X86
->  	select ARCH_HAS_PTE_DEVMAP		if X86_64
->  	select ARCH_HAS_PTE_SPECIAL
->  	select ARCH_HAS_UACCESS_FLUSHCACHE	if X86_64
-> -	select ARCH_HAS_UACCESS_MCSAFE		if X86_64 && X86_MCE
-> +	select ARCH_HAS_COPY_MC			if X86_64
+thanks,
 
-X86_MCE is dropped here. So if I have a build which has
-
-# CONFIG_X86_MCE is not set
-
-One of those quirks like:
-
-        /*
-         * CAPID0{7:6} indicate whether this is an advanced RAS SKU
-         * CAPID5{8:5} indicate that various NVDIMM usage modes are
-         * enabled, so memory machine check recovery is also enabled.
-         */
-        if ((capid0 & 0xc0) == 0xc0 || (capid5 & 0x1e0))
-                enable_copy_mc_fragile();
-
-will still call enable_copy_mc_fragile() and none of those platforms
-need MCE functionality?
-
-But there's a hunk in here which sets it in the MCE code:
-
-        if (mca_cfg.recovery)
-                enable_copy_mc_fragile();
-
-So which is it? They need it or they don't?
-
-The comment over copy_mc_to_kernel() says:
-
- * Call into the 'fragile' version on systems that have trouble
- * actually do machine check recovery
-
-If CONFIG_X86_MCE is not set, I'll say. :)
-
-> +++ b/arch/x86/lib/copy_mc.c
-> @@ -0,0 +1,66 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright(c) 2016-2020 Intel Corporation. All rights reserved. */
-> +
-> +#include <linux/jump_label.h>
-> +#include <linux/uaccess.h>
-> +#include <linux/export.h>
-> +#include <linux/string.h>
-> +#include <linux/types.h>
-> +
-> +static DEFINE_STATIC_KEY_FALSE(copy_mc_fragile_key);
-> +
-> +void enable_copy_mc_fragile(void)
-> +{
-> +	static_branch_inc(&copy_mc_fragile_key);
-> +}
-> +
-> +/**
-> + * copy_mc_to_kernel - memory copy that that handles source exceptions
-
-One "that" is enough.
-
-...
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+greg k-h
