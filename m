@@ -2,102 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0751927D402
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 18:57:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6615827D400
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 18:57:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729830AbgI2Q5H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 12:57:07 -0400
-Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:42859 "EHLO
-        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728933AbgI2Q5H (ORCPT
+        id S1729519AbgI2Q5D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 12:57:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59800 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728933AbgI2Q5C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 12:57:07 -0400
-X-IronPort-AV: E=Sophos;i="5.77,319,1596492000"; 
-   d="scan'208";a="470119051"
-Received: from abo-173-121-68.mrs.modulonet.fr (HELO hadrien) ([85.68.121.173])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 29 Sep 2020 18:56:50 +0200
-Date:   Tue, 29 Sep 2020 18:56:49 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Joe Perches <joe@perches.com>
-cc:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Malcolm Priestley <tvboxspy@gmail.com>,
-        =?UTF-8?Q?Valdis_Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        kernel-janitors@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 10/20] media: lmedm04: use semicolons rather than commas
- to separate statements
-In-Reply-To: <c79b36c12c978d38f3ad89b1c659871a@perches.com>
-Message-ID: <alpine.DEB.2.22.394.2009291855580.2808@hadrien>
-References: <1601385283-26144-1-git-send-email-Julia.Lawall@inria.fr> <1601385283-26144-11-git-send-email-Julia.Lawall@inria.fr> <8d73748e-be82-4c30-4550-b5f4eecb3055@wanadoo.fr> <c79b36c12c978d38f3ad89b1c659871a@perches.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        Tue, 29 Sep 2020 12:57:02 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D47EC0613D0
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 09:57:02 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id w2so5356456wmi.1
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 09:57:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=nQq4copkzrTWJFWPrIjoaGpC7LzDugYFHrKyuAj+WCk=;
+        b=MzZghrQtN3nF8Y/lUEqyS+JQazMX4C8+eDh7eh/JV1dh3GOplVIGXXBw19lWPfy3ie
+         4KC69ffpLyrDofRK+U2y6PDp9oQE6MdrBUO29+NC4yMyvU8RzsbuzWKxPr26qCD5YsPr
+         R42W/BKz4oQEgnTPwd62+BkpjZfezYgWC17ls=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=nQq4copkzrTWJFWPrIjoaGpC7LzDugYFHrKyuAj+WCk=;
+        b=goT+/x1ipPH8enb8pa0OX7s+yU9PeHCsRESGs7C/SNycKLG59Bh8AtAcR+OALw0Pxy
+         kTk+DWHhRSmNAxHEhR3N5KjJIx95yW/LNYqbTzfZGamqMK43zWtXxnYpvb8GmJVZnrcM
+         UunSKI5MQA2MWmh6V+M6Q3wUVZEkzxHMfvyvmqVvEDzr98gNsDtDtANykyjugepLrWcU
+         Yc46y1EcwK2iZZbqTe5uhz+oBZ4wfGPKARIahMqZ3yaGV+blA6z8aJdTaa2Qy1ckzymk
+         /2jSZ+AvLydwqmRPQ4crPFUvFIs+1vl11VgeXFts4zdcOFXDiiiZMiygvKAUbySXMFm2
+         WYPg==
+X-Gm-Message-State: AOAM533pbnhT7Br5Vrvhlb51+JXoZM7mT5QUPohh4lCrbUxcmCm60AHt
+        I21sSZ/P/9/pZqVdl6ZCfm33HA==
+X-Google-Smtp-Source: ABdhPJxSWkIHkpAEXbL2VmRDFNprfEkhWbClVdbLQTZbv7RVDpq4HuSembcT2Wrqfw7IxPzBCnBXdw==
+X-Received: by 2002:a1c:6607:: with SMTP id a7mr5501099wmc.142.1601398620840;
+        Tue, 29 Sep 2020 09:57:00 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id u126sm8002518wmu.9.2020.09.29.09.56.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Sep 2020 09:56:59 -0700 (PDT)
+Date:   Tue, 29 Sep 2020 18:56:57 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Martin Hostettler <textshell@uchuujin.de>
+Cc:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        gregkh@linuxfoundation.org, jirislaby@kernel.org,
+        Peilin Ye <yepeilin.cs@gmail.com>,
+        syzbot <syzbot+b308f5fd049fbbc6e74f@syzkaller.appspotmail.com>,
+        b.zolnierkie@samsung.com, daniel.vetter@ffwll.ch, deller@gmx.de,
+        syzkaller-bugs@googlegroups.com,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        George Kennedy <george.kennedy@oracle.com>
+Subject: Re: [PATCH] vt_ioctl: make VT_RESIZEX behave like VT_RESIZE
+Message-ID: <20200929165657.GS438822@phenom.ffwll.local>
+Mail-Followup-To: Martin Hostettler <textshell@uchuujin.de>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        gregkh@linuxfoundation.org, jirislaby@kernel.org,
+        Peilin Ye <yepeilin.cs@gmail.com>,
+        syzbot <syzbot+b308f5fd049fbbc6e74f@syzkaller.appspotmail.com>,
+        b.zolnierkie@samsung.com, deller@gmx.de,
+        syzkaller-bugs@googlegroups.com,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        George Kennedy <george.kennedy@oracle.com>
+References: <000000000000226d3f05b02dd607@google.com>
+ <bbcef674-4ac6-c933-b55d-8961ada97f4c@i-love.sakura.ne.jp>
+ <47907f77-b14b-b433-45c6-a315193f0c1a@i-love.sakura.ne.jp>
+ <494395bc-a7dd-fdb1-8196-a236a266ef54@i-love.sakura.ne.jp>
+ <20200927092701.GA1037755@PWN>
+ <4933b81b-9b1a-355b-df0e-9b31e8280ab9@i-love.sakura.ne.jp>
+ <20200928175956.GF24673@neutronstar.dyndns.org>
+ <100dfd3f-3415-80ae-a6cf-30d15f7ca49f@i-love.sakura.ne.jp>
+ <20200929105203.GG24673@neutronstar.dyndns.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-1035064695-1601398610=:2808"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200929105203.GG24673@neutronstar.dyndns.org>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+On Tue, Sep 29, 2020 at 12:52:03PM +0200, Martin Hostettler wrote:
+> On Tue, Sep 29, 2020 at 10:12:46AM +0900, Tetsuo Handa wrote:
+> > On 2020/09/29 2:59, Martin Hostettler wrote:
+> > > On Sun, Sep 27, 2020 at 08:46:30PM +0900, Tetsuo Handa wrote:
+> > >> VT_RESIZEX was introduced in Linux 1.3.3, but it is unclear that what
+> > >> comes to the "+ more" part, and I couldn't find a user of VT_RESIZEX.
+> > >>
+> > > 
+> > > It seems this is/was used by "svgatextmode" which seems to be at
+> > > http://www.ibiblio.org/pub/Linux/utils/console/
+> > > 
+> > > Not sure if that kind of software still has a chance to work nowadays.
+> > > 
+> > 
+> > Thanks for the information.
+> > 
+> > It seems that v.v_vlin = curr_textmode->VDisplay / (MOFLG_ISSET(curr_textmode, ATTR_DOUBLESCAN) ? 2 : 1)
+> > and v.v_clin = curr_textmode->FontHeight . Thus, v.v_clin is font's height and seems to be non-zero.
+> > But according to https://bugs.gentoo.org/19485 , people are using kernel framebuffer instead.
+> > 
+> 
+> Yes, this seems to be from pre framebuffer times.
+> 
+> Back in the days "svga" was the wording you got for "pokes svga card
+> hardware registers from userspace drivers". And textmode means font
+> rendering is done via (fixed function in those times) hardware scanout
+> engine. Of course having only to update 2 bytes per character was a huge
+> saving early on. Likely this is also before vesa VBE was reliable.
+> 
+> So i guess the point where this all starts going wrong allowing the X parts
+> of the api to be combined with FB based rendering at all? Sounds the only
+> user didn't use that combination and so it was never tested?
+> 
+> Then again, this all relates to hardware from 20 years ago...
 
---8323329-1035064695-1601398610=:2808
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Imo userspace modesetting should be burned down anywhere we can. We've
+gotten away with this in drivers/gpu by just seamlessly transitioning to
+kernel drivers.
 
+Since th only userspace we've found seems to be able to cope if this ioctl
+doesn't do anything, my vote goes towards ripping it out completely and
+doing nothing in there. Only question is whether we should error or fail
+with a silent success: Former is safer, latter can avoid a few regression
+reports since the userspace tools keep "working", and usually people don't
+notice for stuff this old. It worked in drivers/gpu :-)
 
-
-On Tue, 29 Sep 2020, Joe Perches wrote:
-
-> On 2020-09-29 09:00, Christophe JAILLET wrote:
-> > Le 29/09/2020 à 15:14, Julia Lawall a écrit :
-> > > Replace commas with semicolons.  Commas introduce unnecessary
-> > > variability in the code structure and are hard to see.  What is done
-> > > is essentially described by the following Coccinelle semantic patch
-> > > (http://coccinelle.lip6.fr/):
-> > >
-> > > // <smpl>
-> > > @@ expression e1,e2; @@
-> > > e1
-> > > -,
-> > > +;
-> > > e2
-> > > ... when any
-> > > // </smpl>
-> > >
-> > > Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
-> > >
-> > > ---
-> > >   drivers/media/usb/dvb-usb-v2/lmedm04.c |    2 +-
-> > >   1 file changed, 1 insertion(+), 1 deletion(-)
-> > >
-> > > diff --git a/drivers/media/usb/dvb-usb-v2/lmedm04.c
-> > > b/drivers/media/usb/dvb-usb-v2/lmedm04.c
-> > > index 5a7a9522d46d..9ddda8d68ee0 100644
-> > > --- a/drivers/media/usb/dvb-usb-v2/lmedm04.c
-> > > +++ b/drivers/media/usb/dvb-usb-v2/lmedm04.c
-> > > @@ -391,7 +391,7 @@ static int lme2510_int_read(struct dvb_usb_adapter
-> > > *adap)
-> > >   	ep = usb_pipe_endpoint(d->udev, lme_int->lme_urb->pipe);
-> > >     	if (usb_endpoint_type(&ep->desc) == USB_ENDPOINT_XFER_BULK)
-> > > -		lme_int->lme_urb->pipe = usb_rcvbulkpipe(d->udev, 0xa),
-> > > +		lme_int->lme_urb->pipe = usb_rcvbulkpipe(d->udev, 0xa);
-> > >     	usb_submit_urb(lme_int->lme_urb, GFP_ATOMIC);
-> > >   	info("INT Interrupt Service Started");
-> > >
-> > >
-> > Ouch!
-> >
-> > This one looks like a real issue!
->
->
-> Julia?  Did you do this one by hand?  This actually changes logic which I did
-> not expectthe cocci script to do.
-
-Joe already submitted this patch so please ignore my version:
-
-https://lkml.org/lkml/2020/8/23/178
-
-julia
---8323329-1035064695-1601398610=:2808--
+Cheers, Daniel
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
