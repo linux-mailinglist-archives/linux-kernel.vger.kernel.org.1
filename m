@@ -2,335 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28DD927D556
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 20:01:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 654CA27D559
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 20:02:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728051AbgI2SBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 14:01:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41632 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728006AbgI2SBp (ORCPT
+        id S1728096AbgI2SCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 14:02:40 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:12168 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727657AbgI2SCk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 14:01:45 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66923C0613D0
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 11:01:45 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id fa1so3095268pjb.0
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 11:01:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=p2KegjCaWpZfkKR5IwwEO7WoWrrwh7P9M4al+Q9eyFw=;
-        b=ltm7u1IzNbmPXd4mELnjFy6fBuCuAEmTAWvG7wgY2Ju0Y2xDjUwBwmcqJz0HcdGXGj
-         owX73g8pFXrJQOGgBQ8VFf2/h1rfVzz57wAgJlQ1RXjI2yuj0FdNfmBHZhhrh7RhKj/U
-         THAagurUTSLh9MsQFHsao2aA/B81jzXhS4VhW2QroQXlgldavwNU+MnuG2iwuNlEbRI8
-         BTTP7ejSIkq5gj15IAj6cza0LmSX3yCq4dWxAlEw4G0tcZrVuIqVWmEuC9W8Me8R5T1r
-         hTfHhiPAt1PhaKDY4zdOz6cHVH38koWX6O1UULSeqvSWmlcsTmos7qg/uWQkDd3xieev
-         mwdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=p2KegjCaWpZfkKR5IwwEO7WoWrrwh7P9M4al+Q9eyFw=;
-        b=hsD2wJj4G1sRmKH8zVA5Y945HPMAt8IqsDpSWM/aCVIqvebJ/MB50Z2jVnqQ5hEMGt
-         sOdshyuuZIjjpDZvfUqcDbHjROjOkPpG64+CxH0VTMgtNyHMAdQlzpAYd8vK0iED7d0V
-         ABcDQKtRRqE+912IgXcxHhGUnU/ozzS2Xm4Mvb81ayAW9E2+Q2XRLcyoy5o6cQrTEoOs
-         HN0Hc2ee+zZyaieO47dFo6mG59IVrtcx2ICgR0aEuvxVzEVi5h4qkz8+FQJDkTKQrMAx
-         m1ZWepBB80yrX3ciU/zUNlmDofBRF5dSYJMiVJU/UBri5+nKNvJ2ty+c21SJ/fZbnXqL
-         r7nA==
-X-Gm-Message-State: AOAM530MDtP+lhotfgrUBZiJ78sd255O76jrgmnUawpj4nPglvMgfmrV
-        W7oBgFIaz6/Vq35Z94xVmUY8xw==
-X-Google-Smtp-Source: ABdhPJz5fuCu0iwJuiJcxoduPOjH/Dc8pBwOSprE2AvYkGXrMkTGOaSUFFpecrmFSuUfh4qlWaiRWQ==
-X-Received: by 2002:a17:90a:9912:: with SMTP id b18mr5292485pjp.192.1601402504742;
-        Tue, 29 Sep 2020 11:01:44 -0700 (PDT)
-Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
-        by smtp.gmail.com with ESMTPSA id q15sm5782201pgr.27.2020.09.29.11.01.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Sep 2020 11:01:43 -0700 (PDT)
-Date:   Tue, 29 Sep 2020 12:01:41 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Alexandre Bailon <abailon@baylibre.com>
-Cc:     ohad@wizery.com, bjorn.andersson@linaro.org, robh+dt@kernel.org,
-        matthias.bgg@gmail.com, linux-remoteproc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        stephane.leprovost@mediatek.com, gpain@baylibre.com
-Subject: Re: [PATCH v2 3/4] remoteproc: mtk_vpu_rproc: Add support of JTAG
-Message-ID: <20200929180141.GC124290@xps15>
-References: <20200910130148.8734-1-abailon@baylibre.com>
- <20200910130148.8734-4-abailon@baylibre.com>
+        Tue, 29 Sep 2020 14:02:40 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f73768a0000>; Tue, 29 Sep 2020 11:01:46 -0700
+Received: from [10.26.75.44] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 29 Sep
+ 2020 18:02:19 +0000
+Subject: Re: [PATCH v2 0/5] PCI: dwc: improve msi handling
+To:     Marc Zyngier <maz@kernel.org>
+CC:     Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
+        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        <linux-pci@vger.kernel.org>,
+        Binghui Wang <wangbinghui@hisilicon.com>,
+        "Bjorn Andersson" <bjorn.andersson@linaro.org>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        <linux-arm-kernel@axis.com>, Vidya Sagar <vidyas@nvidia.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Rob Herring <robh@kernel.org>,
+        Jesper Nilsson <jesper.nilsson@axis.com>,
+        "Lorenzo Pieralisi" <lorenzo.pieralisi@arm.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Pratyush Anand <pratyush.anand@gmail.com>,
+        <linux-tegra@vger.kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Kukjin Kim <kgene@kernel.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Xiaowei Song <songxiaowei@hisilicon.com>,
+        Richard Zhu <hongxing.zhu@nxp.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        <linux-arm-msm@vger.kernel.org>,
+        "Sascha Hauer" <s.hauer@pengutronix.de>,
+        Yue Wang <yue.wang@amlogic.com>,
+        <linux-samsung-soc@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        <linux-amlogic@lists.infradead.org>, <linux-omap@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Andy Gross <agross@kernel.org>, <linux-kernel@vger.kernel.org>,
+        "Stanimir Varbanov" <svarbanov@mm-sol.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Lucas Stach <l.stach@pengutronix.de>
+References: <20200924190421.549cb8fc@xhacker.debian>
+ <de4d9294-4f6d-c7d1-efc7-c8ef6570bd64@nvidia.com>
+ <20200929184851.22682ff1@xhacker.debian>
+ <8e06a370-a37a-5f33-b43b-2830adb31b3e@nvidia.com>
+ <d4a6eea3c5e33a3a4056885419df95a7@kernel.org>
+From:   Jon Hunter <jonathanh@nvidia.com>
+Message-ID: <6ead62a5-6ad5-bde8-a5df-93c0f8029f65@nvidia.com>
+Date:   Tue, 29 Sep 2020 19:02:16 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200910130148.8734-4-abailon@baylibre.com>
+In-Reply-To: <d4a6eea3c5e33a3a4056885419df95a7@kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1601402506; bh=DFFoTBk7ct8iktjKeMDlsj2Utbk2NKyQWxL2aKVjTaM=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=W80lX/ssDGSCkmOHGNX8qfEHRIGTVGbYctuQLU1uEcEjyE0fnkV9wz2g53gstJyUI
+         E4spYYHmwagaxJa4TO8sL06dLbzRwQ2r0mAvKv53wUNqKGfxnV3JfaTodLW7VFp50E
+         IzpjML0CTcNLrRF0t2KZ6sm6PRKfBBHHCK90MeJ/+oyhR43oJQMRzJKkRWKVKPfhQW
+         DwViT05UxhiaQfRiAFkxUNBjLgzRTgqifdmv2KJ8qQd4RmhXR1HisAMmb9APrvJDe6
+         fdCnmmZWbJ3ZUiuMA9/5d7ErTB3BYY+MpqowblPmh6cWgZXddyMV73hexYShiBEboJ
+         plJvT038Egg7Q==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 10, 2020 at 03:01:47PM +0200, Alexandre Bailon wrote:
-> The DSP could be debugged using JTAG.
-> The support of JTAG could enabled at build time and it could be enabled
-> using debugfs.
-> 
-> Signed-off-by: Alexandre Bailon <abailon@baylibre.com>
-> ---
->  drivers/remoteproc/Kconfig   |   9 +++
->  drivers/remoteproc/mtk_apu.c | 151 ++++++++++++++++++++++++++++++++++-
->  2 files changed, 159 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/remoteproc/Kconfig b/drivers/remoteproc/Kconfig
-> index 4ebea57bf4c8..310462346bd8 100644
-> --- a/drivers/remoteproc/Kconfig
-> +++ b/drivers/remoteproc/Kconfig
-> @@ -61,6 +61,15 @@ config MTK_APU
->  
->  	  It's safe to say N here.
->  
-> +config MTK_APU_JTAG
-> +	bool "Enable support of JTAG"
 
-I think it is better to simply go with "Enable JTAG support"
+On 29/09/2020 18:25, Marc Zyngier wrote:
+> On 2020-09-29 14:22, Jon Hunter wrote:
+>> Hi Jisheng,
+>>
+>> On 29/09/2020 11:48, Jisheng Zhang wrote:
+>>> Hi Jon,
+>>>
+>>> On Fri, 25 Sep 2020 09:53:45 +0100 Jon Hunter wrote:
+>>>
+>>>>
+>>>> On 24/09/2020 12:05, Jisheng Zhang wrote:
+>>>>> Improve the msi code:
+>>>>> 1. Add proper error handling.
+>>>>> 2. Move dw_pcie_msi_init() from each users to designware host to solv=
+e
+>>>>> msi page leakage in resume path.
+>>>>
+>>>> Apologies if this is slightly off topic, but I have been meaning to as=
+k
+>>>> about MSIs and PCI. On Tegra194 which uses the DWC PCI driver,
+>>>> whenever we
+>>>> hotplug CPUs we see the following warnings ...
+>>>>
+>>>> =C2=A0[=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 79.068351] WARNING KERN IRQ70: s=
+et affinity failed(-22).
+>>>> =C2=A0[=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 79.068362] WARNING KERN IRQ71: s=
+et affinity failed(-22).
+>>>>
+>>>
+>>> I tried to reproduce this issue on Synaptics SoC, but can't reproduce
+>>> it.
+>>> Per my understanding of the code in kernel/irq/cpuhotplug.c, this
+>>> warning
+>>> happened when we migrate irqs away from the offline cpu, this implicitl=
+y
+>>> implies that before this point the irq has bind to the offline cpu,
+>>> but how
+>>> could this happen given current dw_pci_msi_set_affinity() implementatio=
+n
+>>> always return -EINVAL
+>>
+>> By default the smp_affinity should be set so that all CPUs can be
+>> interrupted ...
+>>
+>> $ cat /proc/irq/70/smp_affinity
+>> 0xff
+>>
+>> In my case there are 8 CPUs and so 0xff implies that the interrupt can
+>> be triggered on any of the 8 CPUs.
+>>
+>> Do you see the set_affinity callback being called for the DWC irqchip in
+>> migrate_one_irq()?
+>=20
+> The problem is common to all MSI implementations that end up muxing
+> all the end-point MSIs into a single interrupt. With these systems,
+> you cannot set the affinity of individual MSIs (they don't target a
+> CPU, they target another interrupt... braindead). Only the mux
+> interrupt can have its affinity changed.
+>=20
+> So returning -EINVAL is the right thing to do.
 
-> +	depends on MTK_APU
-> +	help
-> +	  Say y to enable support of JTAG.
+Right, so if that is the case, then surely there should be some way to
+avoid these warnings because they are not relevant?
 
-Same here.
+Cheers
+Jon
 
-> +	  By default, JTAG will remain disabled until it is enabled using
-> +	  debugfs: remoteproc/remoteproc0/jtag. Write 1 to enable it and
-
-s/remoteproc0/remoteprocX
-
-> +	  0 to disable it.
-> +
->  config OMAP_REMOTEPROC
->  	tristate "OMAP remoteproc support"
->  	depends on ARCH_OMAP4 || SOC_OMAP5 || SOC_DRA7XX
-> diff --git a/drivers/remoteproc/mtk_apu.c b/drivers/remoteproc/mtk_apu.c
-> index 6d2f577cfde5..07157fdc24ba 100644
-> --- a/drivers/remoteproc/mtk_apu.c
-> +++ b/drivers/remoteproc/mtk_apu.c
-> @@ -5,6 +5,7 @@
->  
->  #include <linux/bitops.h>
->  #include <linux/clk.h>
-> +#include <linux/debugfs.h>
->  #include <linux/delay.h>
->  #include <linux/highmem.h>
->  #include <linux/interrupt.h>
-> @@ -14,6 +15,7 @@
->  #include <linux/kernel.h>
->  #include <linux/module.h>
->  #include <linux/of_reserved_mem.h>
-> +#include <linux/pinctrl/consumer.h>
->  #include <linux/platform_device.h>
->  #include <linux/remoteproc.h>
->  
-> @@ -48,6 +50,11 @@
->  #define CORE_DEFAULT1				(0x00000140)
->  #define CORE_DEFAULT0_ARUSER_IDMA_USE_IOMMU	(0x10 << 0)
->  #define CORE_DEFAULT0_AWUSER_IDMA_USE_IOMMU	(0x10 << 5)
-> +#define CORE_DEFAULT2				(0x00000144)
-> +#define CORE_DEFAULT2_DBG_EN			BIT(3)
-> +#define CORE_DEFAULT2_NIDEN			BIT(2)
-> +#define CORE_DEFAULT2_SPNIDEN			BIT(1)
-> +#define CORE_DEFAULT2_SPIDEN			BIT(0)
->  #define CORE_XTENSA_ALTRESETVEC			(0x000001F8)
->  
->  struct mtk_apu_rproc {
-> @@ -57,6 +64,13 @@ struct mtk_apu_rproc {
->  	void __iomem *base;
->  	int irq;
->  	struct clk_bulk_data clks[3];
-> +
-> +#ifdef CONFIG_MTK_APU_JTAG
-> +	struct pinctrl *pinctrl;
-> +	struct pinctrl_state *pinctrl_jtag;
-> +	bool jtag_enabled;
-> +	struct mutex jtag_mutex;
-
-Move this up to keep all the struct together.
-
-> +#endif
->  };
->  
->  static int mtk_apu_rproc_prepare(struct rproc *rproc)
-> @@ -166,6 +180,137 @@ static irqreturn_t handle_event(int irq, void *data)
->  	return IRQ_HANDLED;
->  }
->  
-> +#ifdef CONFIG_MTK_APU_JTAG
-> +
-> +static int apu_enable_jtag(struct mtk_apu_rproc *apu_rproc)
-> +{
-> +	int ret = 0;
-> +
-> +	mutex_lock(&apu_rproc->jtag_mutex);
-> +	if (apu_rproc->jtag_enabled) {
-> +		ret = -EINVAL;
-
-The JTAG is already enabled, I think enabling it again isn't a big deal and
-should simply return 0 rather than an error.
-
-> +		goto err_mutex_unlock;
-> +	}
-> +
-> +	writel(CORE_DEFAULT2_SPNIDEN | CORE_DEFAULT2_SPIDEN |
-> +		CORE_DEFAULT2_NIDEN | CORE_DEFAULT2_DBG_EN,
-> +		apu_rproc->base + CORE_DEFAULT2);
-> +
-> +	apu_rproc->jtag_enabled = 1;
-
-s/1/true
-
-> +
-> +err_mutex_unlock:
-> +	mutex_unlock(&apu_rproc->jtag_mutex);
-> +
-> +	return ret;
-> +}
-> +
-> +static int apu_disable_jtag(struct mtk_apu_rproc *apu_rproc)
-> +{
-> +	int ret = 0;
-> +
-> +	mutex_lock(&apu_rproc->jtag_mutex);
-> +	if (!apu_rproc->jtag_enabled) {
-> +		ret = -EINVAL;
-
-Same as above
-
-> +		goto err_mutex_unlock;
-> +	}
-> +
-> +	writel(0, apu_rproc->base + CORE_DEFAULT2);
-> +
-> +	apu_rproc->jtag_enabled = 0;
-
-s/0/false
-
-Thanks for the patience,
-Mathieu
-
-> +
-> +err_mutex_unlock:
-> +	mutex_unlock(&apu_rproc->jtag_mutex);
-> +
-> +	return ret;
-> +}
-> +
-> +static ssize_t rproc_jtag_read(struct file *filp, char __user *userbuf,
-> +			       size_t count, loff_t *ppos)
-> +{
-> +	struct rproc *rproc = filp->private_data;
-> +	struct mtk_apu_rproc *apu_rproc = (struct mtk_apu_rproc *)rproc->priv;
-> +	char *buf = apu_rproc->jtag_enabled ? "enabled\n" : "disabled\n";
-> +
-> +	return simple_read_from_buffer(userbuf, count, ppos, buf, strlen(buf));
-> +}
-> +
-> +static ssize_t rproc_jtag_write(struct file *filp, const char __user *user_buf,
-> +				size_t count, loff_t *ppos)
-> +{
-> +	struct rproc *rproc = filp->private_data;
-> +	struct mtk_apu_rproc *apu_rproc = (struct mtk_apu_rproc *)rproc->priv;
-> +	char buf[10];
-> +	int ret;
-> +
-> +	if (count < 1 || count > sizeof(buf))
-> +		return -EINVAL;
-> +
-> +	ret = copy_from_user(buf, user_buf, count);
-> +	if (ret)
-> +		return -EFAULT;
-> +
-> +	/* remove end of line */
-> +	if (buf[count - 1] == '\n')
-> +		buf[count - 1] = '\0';
-> +
-> +	if (!strncmp(buf, "enabled", count))
-> +		ret = apu_enable_jtag(apu_rproc);
-> +	else if (!strncmp(buf, "disabled", count))
-> +		ret = apu_disable_jtag(apu_rproc);
-> +	else
-> +		return -EINVAL;
-> +
-> +	return ret ? ret : count;
-> +}
-> +
-> +static const struct file_operations rproc_jtag_ops = {
-> +	.read = rproc_jtag_read,
-> +	.write = rproc_jtag_write,
-> +	.open = simple_open,
-> +};
-> +
-> +static int apu_jtag_probe(struct mtk_apu_rproc *apu_rproc)
-> +{
-> +	int ret;
-> +
-> +	if (!apu_rproc->rproc->dbg_dir)
-> +		return -ENODEV;
-> +
-> +	apu_rproc->pinctrl = devm_pinctrl_get(apu_rproc->dev);
-> +	if (IS_ERR(apu_rproc->pinctrl)) {
-> +		dev_warn(apu_rproc->dev, "Failed to find JTAG pinctrl\n");
-> +		return PTR_ERR(apu_rproc->pinctrl);
-> +	}
-> +
-> +	apu_rproc->pinctrl_jtag = pinctrl_lookup_state(apu_rproc->pinctrl,
-> +						       "jtag");
-> +	if (IS_ERR(apu_rproc->pinctrl_jtag))
-> +		return PTR_ERR(apu_rproc->pinctrl_jtag);
-> +
-> +	ret = pinctrl_select_state(apu_rproc->pinctrl,
-> +				   apu_rproc->pinctrl_jtag);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	mutex_init(&apu_rproc->jtag_mutex);
-> +
-> +	debugfs_create_file("jtag", 0600, apu_rproc->rproc->dbg_dir,
-> +			    apu_rproc->rproc, &rproc_jtag_ops);
-> +
-> +	return 0;
-> +}
-> +#else
-> +static int apu_jtag_probe(struct mtk_apu_rproc *apu_rproc)
-> +{
-> +	return 0;
-> +}
-> +
-> +static int apu_disable_jtag(struct mtk_apu_rproc *apu_rproc)
-> +{
-> +	return 0;
-> +}
-> +#endif /* CONFIG_MTK_APU_JTAG */
-> +
->  static int mtk_apu_rproc_probe(struct platform_device *pdev)
->  {
->  	struct device *dev = &pdev->dev;
-> @@ -242,6 +387,10 @@ static int mtk_apu_rproc_probe(struct platform_device *pdev)
->  		goto free_mem;
->  	}
->  
-> +	ret = apu_jtag_probe(apu_rproc);
-> +	if (ret)
-> +		dev_warn(dev, "Failed to configure jtag\n");
-> +
->  	return 0;
->  
->  free_mem:
-> @@ -259,7 +408,7 @@ static int mtk_apu_rproc_remove(struct platform_device *pdev)
->  	struct device *dev = &pdev->dev;
->  
->  	disable_irq(apu_rproc->irq);
-> -
-> +	apu_disable_jtag(apu_rproc);
->  	rproc_del(rproc);
->  	of_reserved_mem_device_release(dev);
->  	rproc_free(rproc);
-> -- 
-> 2.26.2
-> 
+--=20
+nvpublic
