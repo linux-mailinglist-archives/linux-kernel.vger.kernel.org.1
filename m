@@ -2,108 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BA0B27CEC6
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 15:15:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61D3127CEC9
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 15:15:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729635AbgI2NOZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 09:14:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53400 "EHLO
+        id S1729700AbgI2NOp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 09:14:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728441AbgI2NOS (ORCPT
+        with ESMTP id S1728441AbgI2NOo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 09:14:18 -0400
-Received: from smtp1.goneo.de (smtp1.goneo.de [IPv6:2001:1640:5::8:30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE84EC061755
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 06:14:17 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by smtp1.goneo.de (Postfix) with ESMTP id 29B0E23F0C2;
-        Tue, 29 Sep 2020 15:14:15 +0200 (CEST)
-X-Virus-Scanned: by goneo
-X-Spam-Flag: NO
-X-Spam-Score: -2.99
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.99 tagged_above=-999 tests=[ALL_TRUSTED=-1,
-        AWL=-0.090, BAYES_00=-1.9] autolearn=ham
-Received: from smtp1.goneo.de ([127.0.0.1])
-        by localhost (smtp1.goneo.de [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id H0o0PylUI-AA; Tue, 29 Sep 2020 15:14:14 +0200 (CEST)
-Received: from lem-wkst-02.lemonage (hq.lemonage.de [87.138.178.34])
-        by smtp1.goneo.de (Postfix) with ESMTPSA id DC14323F0C4;
-        Tue, 29 Sep 2020 15:14:13 +0200 (CEST)
-Date:   Tue, 29 Sep 2020 15:14:09 +0200
-From:   Lars Poeschel <poeschel@lemonage.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] driver core: Remove double assignment
-Message-ID: <20200929131409.wfq663eb4yukvofg@lem-wkst-02.lemonage>
-References: <20200929115808.2815382-1-poeschel@lemonage.de>
- <20200929122533.GA1193271@kroah.com>
+        Tue, 29 Sep 2020 09:14:44 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97D68C061755;
+        Tue, 29 Sep 2020 06:14:44 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id n14so4486773pff.6;
+        Tue, 29 Sep 2020 06:14:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jh0GLZpzBbjRrSh/msJBZ2oenCHRsVM/j1YzWOGaB/w=;
+        b=dqnymzjl2wf8hdUH1oGx5ndS5k/Q++Ks+kamR+OvZg4UkRbUvSD9nzBQOMHtG2705R
+         1a4SXPzy6yAwm6V+YEUa9Xe+8ssoEGua7KTkDT+rnBI+QrCycDBORKWF1yh8sxFql38b
+         Y0HslFnFOxaxeBaDNWSQur0qECYOOwCImjdcAXjvDDiHyDWmCXeP0zJgP44UH3IHJYoU
+         clt8gz7N+FYD/U+iaeIXa8dgsd7rqOjrAzqpldqp+EcC5QX71rFoSf+r3F4zUVSojkRb
+         1ZIqVa4FjtoYy6VUqfaShqOfmgZI72w9o3VpKH9zcBksbLS0OIrYSqLL31364ozD6JHO
+         lY3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jh0GLZpzBbjRrSh/msJBZ2oenCHRsVM/j1YzWOGaB/w=;
+        b=SyAJCR+eaYrmv+k3Z6FEO0NsPW7R6dCwTnDc12jYx5hCh44FJNXHUXW0WUKhgb44gp
+         x8/a2UW1ii85NYlvN7dbv6jCEZqsSVYeAXryy5bBhRYNsps8PUZdTgbkCcmzhofmsISv
+         l5gYVVG5nlUfLyjpNDyVNhnc+cMpSjPA9sGTjhC5QJUXMdwoMfpKRK3fJ3cI3dW2aoUt
+         AfyMlEx0ORQNgkowk11SGzlTlGqnyfyCgc/wPa0ooPfJbpc95rHFIUVBtEkHDJgF+FF4
+         OB7PjZ4zoHdcoQfsxgUokCssVzBz3wTxT0tsdXeCauEdDLK8bnX817Huv1Xs5CpMhMsW
+         OuCQ==
+X-Gm-Message-State: AOAM533Wtho7oVWJlwObLAzQ/zZp0QTidDkG+yOSBGhtFo8qgDB+LMxt
+        IWE4K/8GNk6UCS7mis5Qo35cZptlDozWyBgjwJE=
+X-Google-Smtp-Source: ABdhPJyhLNcv1GQUuvKWQRlG0vNVotWRi8tnN9tvFGnxerJxPkMwudpNYSXHgX97533bO6SgRzKi1O77y/FKRaxdY5Y=
+X-Received: by 2002:aa7:9201:0:b029:13e:d13d:a10c with SMTP id
+ 1-20020aa792010000b029013ed13da10cmr3929913pfo.40.1601385284101; Tue, 29 Sep
+ 2020 06:14:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200929122533.GA1193271@kroah.com>
+References: <cover.1593243079.git.syednwaris@gmail.com> <CACRpkdYyCNEUSOtCJMTm7t1z15oK7nH3KcTe5LreJAzZ0KtQuw@mail.gmail.com>
+ <20200911225417.GA5286@shinobu> <CACRpkdah+k-EyhF8bNRkvw4bFDiai9dYo3ph9wsumo_v3U-U0g@mail.gmail.com>
+ <20200929130743.GB4458@shinobu>
+In-Reply-To: <20200929130743.GB4458@shinobu>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 29 Sep 2020 16:14:25 +0300
+Message-ID: <CAHp75VdtUr1KHD5bng4sHZqsR888gN_TJ-bN8oLsX8GpsM8wYw@mail.gmail.com>
+Subject: Re: [PATCH v9 0/4] Introduce the for_each_set_clump macro
+To:     William Breathitt Gray <vilhelm.gray@gmail.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Syed Nayyar Waris <syednwaris@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Robert Richter <rrichter@marvell.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amit.kucheria@verdurent.com>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux PM list <linux-pm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 02:25:33PM +0200, Greg Kroah-Hartman wrote:
-> On Tue, Sep 29, 2020 at 01:58:08PM +0200, poeschel@lemonage.de wrote:
-> > From: Lars Poeschel <poeschel@lemonage.de>
-> > 
-> > This removes an assignment in device_add. It assigned the parent
-> > kobject to the kobject of the  new device. This is not necessary,
-> > because the call to kobject_add a few lines later also does this same
-> > assignment.
-> > 
-> > Signed-off-by: Lars Poeschel <poeschel@lemonage.de>
-> > ---
-> >  drivers/base/core.c | 4 +---
-> >  1 file changed, 1 insertion(+), 3 deletions(-)
-> > 
-> > diff --git a/drivers/base/core.c b/drivers/base/core.c
-> > index bb5806a2bd4c..03b5396cd192 100644
-> > --- a/drivers/base/core.c
-> > +++ b/drivers/base/core.c
-> > @@ -2847,8 +2847,6 @@ int device_add(struct device *dev)
-> >  		error = PTR_ERR(kobj);
-> >  		goto parent_error;
-> >  	}
-> > -	if (kobj)
-> > -		dev->kobj.parent = kobj;
-> >  
-> >  	/* use parent numa_node */
-> >  	if (parent && (dev_to_node(dev) == NUMA_NO_NODE))
-> > @@ -2856,7 +2854,7 @@ int device_add(struct device *dev)
-> >  
-> >  	/* first, register with generic layer. */
-> >  	/* we require the name to be set before, and pass NULL */
-> > -	error = kobject_add(&dev->kobj, dev->kobj.parent, NULL);
-> > +	error = kobject_add(&dev->kobj, kobj, NULL);
-> 
-> That's very subtle, and might not really be correct for all users, have
-> you checked?
+On Tue, Sep 29, 2020 at 4:09 PM William Breathitt Gray
+<vilhelm.gray@gmail.com> wrote:
+>
+> On Tue, Sep 29, 2020 at 02:45:18PM +0200, Linus Walleij wrote:
+> > On Sat, Sep 12, 2020 at 12:54 AM William Breathitt Gray
+> > <vilhelm.gray@gmail.com> wrote:
+> > > On Thu, Jul 16, 2020 at 02:49:35PM +0200, Linus Walleij wrote:
+> > > > On Sat, Jun 27, 2020 at 10:10 AM Syed Nayyar Waris <syednwaris@gmail.com> wrote:
 
-Of course I have not checked for all users ;-), but I have checked this
-for my system and I did not notice any difference. My system is an arm
-based board that does several hundreds of calls to the device_add
-function per kernel bootup.
+...
 
-> Anyway, I'd rather leave this as-is if possible, as we know this works
-> correctly, and it is not going to save any time/energy to remove that
-> assignment, right?
+> > > What's the name of the branch with these patches on kernelorg; I'm
+> > > having trouble finding it?
+> > >
+> > > Btw, I'm CCing Andrew as well here because I notice him missing from the
+> > > CC list earlier for this patchset.
+> >
+> > IIRC there were complaints from the zeroday build robot so I
+> > dropped the branch and I am still waiting for a fixed up patch
+> > series.
 
-Of course it's up to you to leave this as is.
-Pure binary size drops from 0x784 to 0x778 (12 bytes) with this patch
-for the device_add function on arm with gcc 10.2.0.
-So this saves a tiny amount of size and energy. If it's worth that, I
-don't know.
-And not to mention the time/energy you save when some time some random
-guy again stubles upon this, sends you a patch and then you have to
-reply. ;-)
+> My apologies, I wasn't aware a build error was reported. I'll be happy
+> to help address the issue with Syed, but I can't seem to find a copy of
+> the message on <https://lkml.org/lkml/2020/6/27/107> or my email logs.
+> Do you have a link available to the zeroday build log?
 
-Ok, as said:Taking this is up to you. I can also live without this.
 
-Regards,
-Lars
+Time to open lore.kernel.org? [1][2]
 
+Linus, are you referencing to [3]? It was fixed in GENMASK()
+implementation some time ago.
+
+[1]: https://lore.kernel.org/lkml/cover.1593243079.git.syednwaris@gmail.com/
+[2]: https://lore.kernel.org/lkml/cover.1592224128.git.syednwaris@gmail.com/
+[3]: https://lore.kernel.org/lkml/202006171559.JSbGJXNw%25lkp@intel.com/
+
+-- 
+With Best Regards,
+Andy Shevchenko
