@@ -2,84 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5B9D27BBC3
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 06:06:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8046527BBCE
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 06:11:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725785AbgI2EGm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 00:06:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53356 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725372AbgI2EGl (ORCPT
+        id S1725616AbgI2ELJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 00:11:09 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:55899 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725320AbgI2ELJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 00:06:41 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18264C061755;
-        Mon, 28 Sep 2020 21:06:41 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id r24so2842709ljm.3;
-        Mon, 28 Sep 2020 21:06:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=8YsXwgo3KPHwWcfe1EqRif6k6a8lufSqL4k1+GmC9Iw=;
-        b=OEr1kq2UweWPHFgI55L5tGm1VUAj9zkJkt+i/OPT+VVHA2UQ1CgP9k9YrXcCA3L0jO
-         uTnqUmj7mkEb8FYPmMTSF0Epy/R+kq9D8L1Z4hqVpxkCHU9tcGUWRTothsLwUf/VV0fc
-         hX7P6xJX6prz8QTvT0vv6eEIE9B1D/wGfLCTDtiL+PBsOuJ1iLNPhM420SxF1Yl668nF
-         4ip8gNOJBYZ3+RrhgY1B1ak4X99rctj3Fh49y/11xd6q7OETNR8swvaK9OKsy3lINd4F
-         5c7EBEYI3CFagkY1v1DZG4rcLat7a5POPH48T/Air8R+8ESbwx/2Qx+1FeKqDnYgoju9
-         0aeg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=8YsXwgo3KPHwWcfe1EqRif6k6a8lufSqL4k1+GmC9Iw=;
-        b=kuHi4daiue1Fz/GOrwXbmVZStmt+fGdRkRHy+BnyU4dFkx0FcqU1Nwlt7BrJgaE8eW
-         MyiGpZJSIzyRIZ1QKVTpz0xSaCvVrcdiU7q2m4lfRnpClrUxY7bJzD0vKkohYxva/x1g
-         /cHFuEFpLnVqARtf1UekZlXss9GsYgJrwsDJRAJJLBDf9kLMproar703kGLWtl0WRhyF
-         CUSmwHMbqfbzgKeS4S9g9LV7GN7Oq1o6q2WSjt5r8eOJkzuIXZY69EkG9hVWhjMycWJv
-         hJIxwWsgzs4wQICYcwaVpdST/lAWzOak6+4lomLjcksMyzuA+tfYhpRGWYfn0pyLhOS/
-         hz8w==
-X-Gm-Message-State: AOAM531zglM2j1XGN9milX4G4rUsgck7Z7vFVT9l75ebt2/Op8LFM2zr
-        u5KlDxtFx6+OpfoGt4SgbIWgbRrWZIY=
-X-Google-Smtp-Source: ABdhPJyQLKj57i7w5GaEn2Bz+SyKQPTqLHYtcRtXOkRuB6jh/iUfg2yXdzy4Vga6s0sT9Qa8nFo0gQ==
-X-Received: by 2002:a05:651c:543:: with SMTP id q3mr490972ljp.6.1601352398288;
-        Mon, 28 Sep 2020 21:06:38 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
-        by smtp.googlemail.com with ESMTPSA id p21sm3081470lfo.194.2020.09.28.21.06.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Sep 2020 21:06:37 -0700 (PDT)
-Subject: Re: [PATCH 3/5] iommu/tegra-smmu: Use iommu_fwspec in
- .probe_/.attach_device()
-To:     Nicolin Chen <nicoleotsuka@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, krzk@kernel.org,
-        jonathanh@nvidia.com, iommu@lists.linux-foundation.org,
-        linux-tegra@vger.kernel.org
-References: <20200926080719.6822-1-nicoleotsuka@gmail.com>
- <20200926080719.6822-4-nicoleotsuka@gmail.com>
- <20200928075212.GF2837573@ulmo> <20200928221829.GB15720@Asurada-Nvidia>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <2a38018a-3f95-74da-6dc1-270efc26a8fb@gmail.com>
-Date:   Tue, 29 Sep 2020 07:06:37 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 29 Sep 2020 00:11:09 -0400
+Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601352668;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=dyx38wIked7j7LE32TY+lTP/Kvmn3DXgSAx3Y20CudE=;
+        b=TGJNTVLR5kq7CFHtj60v+R0+5T0cvXA1bzn1LeKEYKj+oYiiwrfJfj37hsj4yryaUCQCLM
+        tbfRztBeA+J4cxXOxx85sFJr4lz+mHvCehXJE1TOPiHkd0QDksmFT/GB/XBvjmG9bvxV/z
+        xkiV/xDcruD7uJVyzHtVRwnd1KDI+mM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-516-GwNLlKHaP0ONTNhf19ePkQ-1; Tue, 29 Sep 2020 00:11:05 -0400
+X-MC-Unique: GwNLlKHaP0ONTNhf19ePkQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 59EBD1084C84;
+        Tue, 29 Sep 2020 04:11:03 +0000 (UTC)
+Received: from treble (ovpn-112-110.rdu2.redhat.com [10.10.112.110])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 035A67BE42;
+        Tue, 29 Sep 2020 04:10:59 +0000 (UTC)
+Date:   Mon, 28 Sep 2020 23:10:56 -0500
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@suse.de>
+Subject: Re: linux-next: build failure after merge of the vfs tree
+Message-ID: <20200929041056.uj6gedgm6hfjaxrx@treble>
+References: <20200924183038.3c6da86e@canb.auug.org.au>
+ <20200924200807.GU3421308@ZenIV.linux.org.uk>
+ <20200925220128.1604f09b@canb.auug.org.au>
+ <20200925133820.GW3421308@ZenIV.linux.org.uk>
 MIME-Version: 1.0
-In-Reply-To: <20200928221829.GB15720@Asurada-Nvidia>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20200925133820.GW3421308@ZenIV.linux.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-...
->> As I mentioned in another reply, I think tegra_smmu_find() should be all
->> you need in this case.
+On Fri, Sep 25, 2020 at 02:38:20PM +0100, Al Viro wrote:
+> On Fri, Sep 25, 2020 at 10:01:28PM +1000, Stephen Rothwell wrote:
+> > $ x86_64-linux-gnu-gcc --version
+> > x86_64-linux-gnu-gcc (Debian 10.2.0-9) 10.2.0
+> > $ x86_64-linux-gnu-ld --version
+> > GNU ld (GNU Binutils for Debian) 2.35
+> > 
+> > and the gcc plugins don't get built for the allnoconfig builds.
 > 
-> This function is used by .probe_device() where its dev pointer is
-> an SMMU client. IIUC, tegra_smmu_find() needs np pointer of "mc".
-> For a PCI device that doesn't have a DT node with iommus property,
-> not sure how we can use tegra_smmu_find().
+> > I reverted my Revert commit after I finished linux-next today and built
+> > the x86_64 allnoconfig verion of lib/iov_iter.s:
+> > 
+> > $ grep -A 1 '41 "/home/sfr/next/next/arch/x86/include/asm/barrier.h"' lib/iov_iter.s
+> > # 41 "/home/sfr/next/next/arch/x86/include/asm/barrier.h" 1
+> > 	cmp $140737488351232,%rdx; sbb %rcx,%rcx;	#, uaddr, mask
+> 
+> Wait a sec...
+> static inline unsigned long array_index_mask_nospec(unsigned long index,
+>                 unsigned long size)
+> {
+>         unsigned long mask;
+> 
+>         asm volatile ("cmp %1,%2; sbb %0,%0;"
+>                         :"=r" (mask)
+>                         :"g"(size),"r" (index)
+>                         :"cc");
+>         return mask;
+> }  
+> 
+> used with large constant size will blow up - "g" is wrong, since cmp allows
+> 64bit arguments to be register or memory ones; immediates can't go past
+> 32bit.
+> 
+> Looks like on the configs where it builds we end up with not seeing it's
+> a constant...
+> 
+> Josh, any ideas?  We could, of course, make it "r"(size), but that would
+> be unpleasant in all existing callers...
 
-Perhaps you could get np from struct pci_dev.bus?
+Sorry, I've been traveling.  I'd just vote for making it "r".
+
+array_index_nospec() is always called after a usercopy.  I don't think
+anyone will notice the extra mov, for the cases where it would be
+propagated as an immediate.  And the argument *is* an unsigned long
+after all.
+
+Stephen, can you confirm this fixes it?
+
+diff --git a/arch/x86/include/asm/barrier.h b/arch/x86/include/asm/barrier.h
+index d158ea1fa250..69045ac62f58 100644
+--- a/arch/x86/include/asm/barrier.h
++++ b/arch/x86/include/asm/barrier.h
+@@ -40,7 +40,7 @@ static inline unsigned long array_index_mask_nospec(unsigned long index,
+ 
+ 	asm volatile ("cmp %1,%2; sbb %0,%0;"
+ 			:"=r" (mask)
+-			:"g"(size),"r" (index)
++			:"r"(size), "r"(index)
+ 			:"cc");
+ 	return mask;
+ }
+
