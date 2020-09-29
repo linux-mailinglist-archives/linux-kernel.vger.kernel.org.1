@@ -2,49 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3863E27BA5E
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 03:39:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ED7B27BA61
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 03:39:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727621AbgI2BjW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 21:39:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58878 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726064AbgI2BjV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 21:39:21 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1C32C061755;
-        Mon, 28 Sep 2020 18:39:21 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id E743B1279E311;
-        Mon, 28 Sep 2020 18:22:33 -0700 (PDT)
-Date:   Mon, 28 Sep 2020 18:39:20 -0700 (PDT)
-Message-Id: <20200928.183920.1112211279234288010.davem@davemloft.net>
-To:     wilken.gottwalt@mailbox.org
-Cc:     linux-kernel@vger.kernel.org, kuba@kernel.org,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH] net: usb: ax88179_178a: add MCT usb 3.0 adapter
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20200928091740.GA27844@monster.powergraphx.local>
-References: <20200928091740.GA27844@monster.powergraphx.local>
-X-Mailer: Mew version 6.8 on Emacs 27.1
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [2620:137:e000::1:9]); Mon, 28 Sep 2020 18:22:34 -0700 (PDT)
+        id S1727520AbgI2Bjy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 21:39:54 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:14697 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727210AbgI2Bjx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 21:39:53 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 110F3634EDD56EEAA5B5;
+        Tue, 29 Sep 2020 09:39:51 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by DGGEMS409-HUB.china.huawei.com
+ (10.3.19.209) with Microsoft SMTP Server id 14.3.487.0; Tue, 29 Sep 2020
+ 09:39:41 +0800
+From:   Yu Kuai <yukuai3@huawei.com>
+To:     <robdclark@gmail.com>, <will@kernel.org>, <joro@8bytes.org>
+CC:     <iommu@lists.linux-foundation.org>,
+        <linux-arm-msm@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <yukuai3@huawei.com>,
+        <yi.zhang@huawei.com>
+Subject: [PATCH V2] iommu/qcom: add missing put_device() call in qcom_iommu_of_xlate()
+Date:   Tue, 29 Sep 2020 09:40:37 +0800
+Message-ID: <20200929014037.2436663-1-yukuai3@huawei.com>
+X-Mailer: git-send-email 2.25.4
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wilken Gottwalt <wilken.gottwalt@mailbox.org>
-Date: Mon, 28 Sep 2020 11:17:40 +0200
+if of_find_device_by_node() succeed, qcom_iommu_of_xlate() doesn't have
+a corresponding put_device(). Thus add put_device() to fix the exception
+handling for this function implementation.
 
-> Adds the driver_info and usb ids of the AX88179 based MCT U3-A9003 USB
-> 3.0 ethernet adapter.
-> 
-> Signed-off-by: Wilken Gottwalt <wilken.gottwalt@mailbox.org>
+Fixes: 0ae349a0f33fb ("iommu/qcom: Add qcom_iommu")
+Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+---
 
-Applied.
+Changes in V2:
+ - Fix wrong 'Fixes'
+ - add missing '{}' after if
+
+ drivers/iommu/arm/arm-smmu/qcom_iommu.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/iommu/arm/arm-smmu/qcom_iommu.c b/drivers/iommu/arm/arm-smmu/qcom_iommu.c
+index 9535a6af7553..b30d6c966e2c 100644
+--- a/drivers/iommu/arm/arm-smmu/qcom_iommu.c
++++ b/drivers/iommu/arm/arm-smmu/qcom_iommu.c
+@@ -584,8 +584,10 @@ static int qcom_iommu_of_xlate(struct device *dev, struct of_phandle_args *args)
+ 	 * index into qcom_iommu->ctxs:
+ 	 */
+ 	if (WARN_ON(asid < 1) ||
+-	    WARN_ON(asid > qcom_iommu->num_ctxs))
++	    WARN_ON(asid > qcom_iommu->num_ctxs)) {
++		put_device(&iommu_pdev->dev);
+ 		return -EINVAL;
++	}
+ 
+ 	if (!dev_iommu_priv_get(dev)) {
+ 		dev_iommu_priv_set(dev, qcom_iommu);
+@@ -594,8 +596,10 @@ static int qcom_iommu_of_xlate(struct device *dev, struct of_phandle_args *args)
+ 		 * multiple different iommu devices.  Multiple context
+ 		 * banks are ok, but multiple devices are not:
+ 		 */
+-		if (WARN_ON(qcom_iommu != dev_iommu_priv_get(dev)))
++		if (WARN_ON(qcom_iommu != dev_iommu_priv_get(dev))) {
++			put_device(&iommu_pdev->dev);
+ 			return -EINVAL;
++		}
+ 	}
+ 
+ 	return iommu_fwspec_add_ids(dev, &asid, 1);
+-- 
+2.25.4
+
