@@ -2,141 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52C8A27BE8E
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 09:57:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17EE327BEA5
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 10:00:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727733AbgI2H5J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 03:57:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60246 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727697AbgI2H4z (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 03:56:55 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42325C0613D0;
-        Tue, 29 Sep 2020 00:56:55 -0700 (PDT)
-Date:   Tue, 29 Sep 2020 07:56:52 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1601366213;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=hcgWzVVHPrOcK7GAbCCBw2GHpraNSPQv1d0tkOlRPzU=;
-        b=PKUHiXCAyOaBuEdROP2hC6vYurt41cpb/qBYaf+xYyx4S3eENP68qZKhub2CU9dGGfg2xn
-        WYs+rYmjaWD56jEAxS5m+U0j8B9tOFZebw+87bk7VmQvo4XDs6f472PMcfUEGflQkoR1PC
-        g3ykeAmkpvR+P8YTkF0M5cDhNL3NB8zPLdv1lbJCK0VgVDyhMrJwXrShm6q3Q4MwzXMIzl
-        /i3JiY483vZK5us/r5uPJmC/Sq2F8XvPTyyKqtU6CkpzpRbDSt8pdJKqMNZhnA85Lr1YF7
-        nWflQNysM66kX+uvf2IY69ZvfKF03wXiVTUr7CTys0BXFbKaEIRGH+mIhRyWzg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1601366213;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=hcgWzVVHPrOcK7GAbCCBw2GHpraNSPQv1d0tkOlRPzU=;
-        b=vFqh1ZquBwBKkGwSnRoU2kD71H7b0q0LIjFz4myGyPiJIxgeBlU9ir6AD3a0IiiSqs3j+t
-        QKPqziubIgQQNeDg==
-From:   "tip-bot2 for Vincent Guittot" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched/numa: Use runnable_avg to classify node
-Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Mel Gorman <mgorman@suse.de>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200921072959.16317-1-vincent.guittot@linaro.org>
-References: <20200921072959.16317-1-vincent.guittot@linaro.org>
-MIME-Version: 1.0
-Message-ID: <160136621295.7002.7186616848185614077.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+        id S1727812AbgI2H6c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 03:58:32 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:29073 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725535AbgI2H6a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 03:58:30 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4C0sFn2p3rz9tyZQ;
+        Tue, 29 Sep 2020 09:58:21 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id mbEkuZLQQ3B7; Tue, 29 Sep 2020 09:58:21 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4C0sFn1rZYz9tyZP;
+        Tue, 29 Sep 2020 09:58:21 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 593C48B7A4;
+        Tue, 29 Sep 2020 09:58:22 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id z5cP4InGEJbW; Tue, 29 Sep 2020 09:58:22 +0200 (CEST)
+Received: from po17688vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id E986A8B76C;
+        Tue, 29 Sep 2020 09:58:21 +0200 (CEST)
+Received: by po17688vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id 243D065EBA; Tue, 29 Sep 2020 07:58:22 +0000 (UTC)
+Message-Id: <cover.1601365869.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH v12 0/5] powerpc: switch VDSO to C implementation
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, nathanl@linux.ibm.com,
+        anton@ozlabs.org
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        arnd@arndb.de, tglx@linutronix.de, vincenzo.frascino@arm.com,
+        luto@kernel.org, linux-arch@vger.kernel.org
+Date:   Tue, 29 Sep 2020 07:58:22 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the sched/core branch of tip:
+This is a series to switch powerpc VDSO to generic C implementation.
 
-Commit-ID:     8e0e0eda6a13e242239799263cc354796c05434a
-Gitweb:        https://git.kernel.org/tip/8e0e0eda6a13e242239799263cc354796c05434a
-Author:        Vincent Guittot <vincent.guittot@linaro.org>
-AuthorDate:    Mon, 21 Sep 2020 09:29:59 +02:00
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Fri, 25 Sep 2020 14:23:24 +02:00
+Changes in v12:
+- Rebased to today's powerpc/merge branch (Conflicts on VDSO Makefiles)
+- Added missing prototype for __kernel_clock_gettime64()
 
-sched/numa: Use runnable_avg to classify node
+Changes in v11:
+- Rebased to today's powerpc/merge branch
+- Prototype of __arch_get_hw_counter() was modified in mainline (patch 2)
 
-Use runnable_avg to classify numa node state similarly to what is done for
-normal load balancer. This helps to ensure that numa and normal balancers
-use the same view of the state of the system.
+Changes in v10 are:
+- Added a comment explaining the reason for the double stack frame
+- Moved back .cfi_register lr next to mflr
 
-Large arm64system: 2 nodes / 224 CPUs:
+Main changes in v9 are:
+- Dropped the patches which put the VDSO datapage in front of VDSO text in the mapping
+- Adds a second stack frame because the caller doesn't set one, at least on PPC64
+- Saving the TOC pointer on PPC64 (is that really needed ?)
 
-  hackbench -l (256000/#grp) -g #grp
+This series applies on today's powerpc/merge branch.
 
-  grp    tip/sched/core         +patchset              improvement
-  1      14,008(+/- 4,99 %)     13,800(+/- 3.88 %)     1,48 %
-  4       4,340(+/- 5.35 %)      4.283(+/- 4.85 %)     1,33 %
-  16      3,357(+/- 0.55 %)      3.359(+/- 0.54 %)    -0,06 %
-  32      3,050(+/- 0.94 %)      3.039(+/- 1,06 %)     0,38 %
-  64      2.968(+/- 1,85 %)      3.006(+/- 2.92 %)    -1.27 %
-  128     3,290(+/-12.61 %)      3,108(+/- 5.97 %)     5.51 %
-  256     3.235(+/- 3.95 %)      3,188(+/- 2.83 %)     1.45 %
+See the last patches for details on changes and performance.
 
-Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Mel Gorman <mgorman@suse.de>
-Link: https://lkml.kernel.org/r/20200921072959.16317-1-vincent.guittot@linaro.org
----
- kernel/sched/fair.c |  9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+Christophe Leroy (5):
+  powerpc/processor: Move cpu_relax() into asm/vdso/processor.h
+  powerpc/vdso: Prepare for switching VDSO to generic C implementation.
+  powerpc/vdso: Save and restore TOC pointer on PPC64
+  powerpc/vdso: Switch VDSO to generic C implementation.
+  powerpc/vdso: Provide __kernel_clock_gettime64() on vdso32
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 33699db..a15deb2 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -1504,6 +1504,7 @@ enum numa_type {
- /* Cached statistics for all CPUs within a node */
- struct numa_stats {
- 	unsigned long load;
-+	unsigned long runnable;
- 	unsigned long util;
- 	/* Total compute capacity of CPUs on a node */
- 	unsigned long compute_capacity;
-@@ -1547,6 +1548,7 @@ struct task_numa_env {
- };
- 
- static unsigned long cpu_load(struct rq *rq);
-+static unsigned long cpu_runnable(struct rq *rq);
- static unsigned long cpu_util(int cpu);
- static inline long adjust_numa_imbalance(int imbalance, int src_nr_running);
- 
-@@ -1555,11 +1557,13 @@ numa_type numa_classify(unsigned int imbalance_pct,
- 			 struct numa_stats *ns)
- {
- 	if ((ns->nr_running > ns->weight) &&
--	    ((ns->compute_capacity * 100) < (ns->util * imbalance_pct)))
-+	    (((ns->compute_capacity * 100) < (ns->util * imbalance_pct)) ||
-+	     ((ns->compute_capacity * imbalance_pct) < (ns->runnable * 100))))
- 		return node_overloaded;
- 
- 	if ((ns->nr_running < ns->weight) ||
--	    ((ns->compute_capacity * 100) > (ns->util * imbalance_pct)))
-+	    (((ns->compute_capacity * 100) > (ns->util * imbalance_pct)) &&
-+	     ((ns->compute_capacity * imbalance_pct) > (ns->runnable * 100))))
- 		return node_has_spare;
- 
- 	return node_fully_busy;
-@@ -1610,6 +1614,7 @@ static void update_numa_stats(struct task_numa_env *env,
- 		struct rq *rq = cpu_rq(cpu);
- 
- 		ns->load += cpu_load(rq);
-+		ns->runnable += cpu_runnable(rq);
- 		ns->util += cpu_util(cpu);
- 		ns->nr_running += rq->cfs.h_nr_running;
- 		ns->compute_capacity += capacity_of(cpu);
+ arch/powerpc/Kconfig                         |   2 +
+ arch/powerpc/include/asm/clocksource.h       |   7 +
+ arch/powerpc/include/asm/processor.h         |  13 +-
+ arch/powerpc/include/asm/vdso/clocksource.h  |   7 +
+ arch/powerpc/include/asm/vdso/gettimeofday.h | 200 +++++++++++++
+ arch/powerpc/include/asm/vdso/processor.h    |  23 ++
+ arch/powerpc/include/asm/vdso/vsyscall.h     |  25 ++
+ arch/powerpc/include/asm/vdso_datapage.h     |  40 +--
+ arch/powerpc/kernel/asm-offsets.c            |  49 +--
+ arch/powerpc/kernel/time.c                   |  91 +-----
+ arch/powerpc/kernel/vdso.c                   |   5 +-
+ arch/powerpc/kernel/vdso32/Makefile          |  32 +-
+ arch/powerpc/kernel/vdso32/config-fake32.h   |  34 +++
+ arch/powerpc/kernel/vdso32/gettimeofday.S    | 300 +------------------
+ arch/powerpc/kernel/vdso32/vdso32.lds.S      |   1 +
+ arch/powerpc/kernel/vdso32/vgettimeofday.c   |  35 +++
+ arch/powerpc/kernel/vdso64/Makefile          |  23 +-
+ arch/powerpc/kernel/vdso64/gettimeofday.S    | 242 +--------------
+ arch/powerpc/kernel/vdso64/vgettimeofday.c   |  29 ++
+ 19 files changed, 456 insertions(+), 702 deletions(-)
+ create mode 100644 arch/powerpc/include/asm/clocksource.h
+ create mode 100644 arch/powerpc/include/asm/vdso/clocksource.h
+ create mode 100644 arch/powerpc/include/asm/vdso/gettimeofday.h
+ create mode 100644 arch/powerpc/include/asm/vdso/processor.h
+ create mode 100644 arch/powerpc/include/asm/vdso/vsyscall.h
+ create mode 100644 arch/powerpc/kernel/vdso32/config-fake32.h
+ create mode 100644 arch/powerpc/kernel/vdso32/vgettimeofday.c
+ create mode 100644 arch/powerpc/kernel/vdso64/vgettimeofday.c
+
+-- 
+2.25.0
+
