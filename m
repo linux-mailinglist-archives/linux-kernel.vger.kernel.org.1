@@ -2,44 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5857827CDD4
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:47:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4613E27CDC7
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:47:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387586AbgI2MrC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 08:47:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43518 "EHLO mail.kernel.org"
+        id S2387478AbgI2Mqx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 08:46:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43724 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728322AbgI2LGR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:06:17 -0400
+        id S1728346AbgI2LGU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:06:20 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D0A0421941;
-        Tue, 29 Sep 2020 11:06:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C7D43221E7;
+        Tue, 29 Sep 2020 11:06:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601377576;
-        bh=yCotqWN0Fw+n8Uf8OK6nE+mQ+eHrxusx5x9ZCt53jwg=;
+        s=default; t=1601377579;
+        bh=QDKfxoDM+5T1esu0nK05mSRgSFZGbDKj4bGkOREDUnc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pRex9wsQrnTbpJn9seFjho3CMj5Fc67ol5Hv5mJ79m3h16fT6VZJFDPTz6V3xb55i
-         UwWx/rzPSKlwjxuAxaMBzmqPSm9IqVIg6YAH1HHVVhIiLHOfPyXCgxprgyMW2Ito6/
-         CBCqL/5/JDGPFKp7h3gh090g1OjZFpwYugnDi4qc=
+        b=Ui3trTfl6UlPHCVQFvvYwBVuaC9ivlxyvIDpY+UP0l4R0CST9sLFglKasVdX+xeT4
+         MBna1jkg7f7GzML80iBYXi/qCSdiJgcFfwEd7337Zh24mbeB06bU/Ier8re3Np68n1
+         A87b8/d6fAXcAgclHwOp0oemHApTT2VeFs+WIZv4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sami Tolvanen <samitolvanen@google.com>,
-        Andy Lavr <andy.lavr@gmail.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Joe Perches <joe@perches.com>,
-        Kees Cook <keescook@chromium.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.4 82/85] lib/string.c: implement stpcpy
-Date:   Tue, 29 Sep 2020 13:00:49 +0200
-Message-Id: <20200929105932.277931126@linuxfoundation.org>
+        stable@vger.kernel.org, Jiri Slaby <jslaby@suse.cz>,
+        Jens Axboe <axboe@kernel.dk>, linux-ide@vger.kernel.org
+Subject: [PATCH 4.4 83/85] ata: define AC_ERR_OK
+Date:   Tue, 29 Sep 2020 13:00:50 +0200
+Message-Id: <20200929105932.330957859@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200929105928.198942536@linuxfoundation.org>
 References: <20200929105928.198942536@linuxfoundation.org>
@@ -51,123 +42,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nick Desaulniers <ndesaulniers@google.com>
+From: Jiri Slaby <jslaby@suse.cz>
 
-commit 1e1b6d63d6340764e00356873e5794225a2a03ea upstream.
+commit 25937580a5065d6fbd92d9c8ebd47145ad80052e upstream.
 
-LLVM implemented a recent "libcall optimization" that lowers calls to
-`sprintf(dest, "%s", str)` where the return value is used to
-`stpcpy(dest, str) - dest`.
+Since we will return enum ata_completion_errors from qc_prep in the next
+patch, let's define AC_ERR_OK to mark the OK status.
 
-This generally avoids the machinery involved in parsing format strings.
-`stpcpy` is just like `strcpy` except it returns the pointer to the new
-tail of `dest`.  This optimization was introduced into clang-12.
-
-Implement this so that we don't observe linkage failures due to missing
-symbol definitions for `stpcpy`.
-
-Similar to last year's fire drill with: commit 5f074f3e192f
-("lib/string.c: implement a basic bcmp")
-
-The kernel is somewhere between a "freestanding" environment (no full
-libc) and "hosted" environment (many symbols from libc exist with the
-same type, function signature, and semantics).
-
-As Peter Anvin notes, there's not really a great way to inform the
-compiler that you're targeting a freestanding environment but would like
-to opt-in to some libcall optimizations (see pr/47280 below), rather
-than opt-out.
-
-Arvind notes, -fno-builtin-* behaves slightly differently between GCC
-and Clang, and Clang is missing many __builtin_* definitions, which I
-consider a bug in Clang and am working on fixing.
-
-Masahiro summarizes the subtle distinction between compilers justly:
-  To prevent transformation from foo() into bar(), there are two ways in
-  Clang to do that; -fno-builtin-foo, and -fno-builtin-bar.  There is
-  only one in GCC; -fno-buitin-foo.
-
-(Any difference in that behavior in Clang is likely a bug from a missing
-__builtin_* definition.)
-
-Masahiro also notes:
-  We want to disable optimization from foo() to bar(),
-  but we may still benefit from the optimization from
-  foo() into something else. If GCC implements the same transform, we
-  would run into a problem because it is not -fno-builtin-bar, but
-  -fno-builtin-foo that disables that optimization.
-
-  In this regard, -fno-builtin-foo would be more future-proof than
-  -fno-built-bar, but -fno-builtin-foo is still potentially overkill. We
-  may want to prevent calls from foo() being optimized into calls to
-  bar(), but we still may want other optimization on calls to foo().
-
-It seems that compilers today don't quite provide the fine grain control
-over which libcall optimizations pseudo-freestanding environments would
-prefer.
-
-Finally, Kees notes that this interface is unsafe, so we should not
-encourage its use.  As such, I've removed the declaration from any
-header, but it still needs to be exported to avoid linkage errors in
-modules.
-
-Reported-by: Sami Tolvanen <samitolvanen@google.com>
-Suggested-by: Andy Lavr <andy.lavr@gmail.com>
-Suggested-by: Arvind Sankar <nivedita@alum.mit.edu>
-Suggested-by: Joe Perches <joe@perches.com>
-Suggested-by: Kees Cook <keescook@chromium.org>
-Suggested-by: Masahiro Yamada <masahiroy@kernel.org>
-Suggested-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Tested-by: Nathan Chancellor <natechancellor@gmail.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lkml.kernel.org/r/20200914161643.938408-1-ndesaulniers@google.com
-Link: https://bugs.llvm.org/show_bug.cgi?id=47162
-Link: https://bugs.llvm.org/show_bug.cgi?id=47280
-Link: https://github.com/ClangBuiltLinux/linux/issues/1126
-Link: https://man7.org/linux/man-pages/man3/stpcpy.3.html
-Link: https://pubs.opengroup.org/onlinepubs/9699919799/functions/stpcpy.html
-Link: https://reviews.llvm.org/D85963
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Jiri Slaby <jslaby@suse.cz>
+Cc: Jens Axboe <axboe@kernel.dk>
+Cc: linux-ide@vger.kernel.org
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- lib/string.c |   24 ++++++++++++++++++++++++
- 1 file changed, 24 insertions(+)
+ include/linux/libata.h |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/lib/string.c
-+++ b/lib/string.c
-@@ -235,6 +235,30 @@ ssize_t strscpy(char *dest, const char *
- EXPORT_SYMBOL(strscpy);
- #endif
+--- a/include/linux/libata.h
++++ b/include/linux/libata.h
+@@ -500,6 +500,7 @@ enum hsm_task_states {
+ };
  
-+/**
-+ * stpcpy - copy a string from src to dest returning a pointer to the new end
-+ *          of dest, including src's %NUL-terminator. May overrun dest.
-+ * @dest: pointer to end of string being copied into. Must be large enough
-+ *        to receive copy.
-+ * @src: pointer to the beginning of string being copied from. Must not overlap
-+ *       dest.
-+ *
-+ * stpcpy differs from strcpy in a key way: the return value is a pointer
-+ * to the new %NUL-terminating character in @dest. (For strcpy, the return
-+ * value is a pointer to the start of @dest). This interface is considered
-+ * unsafe as it doesn't perform bounds checking of the inputs. As such it's
-+ * not recommended for usage. Instead, its definition is provided in case
-+ * the compiler lowers other libcalls to stpcpy.
-+ */
-+char *stpcpy(char *__restrict__ dest, const char *__restrict__ src);
-+char *stpcpy(char *__restrict__ dest, const char *__restrict__ src)
-+{
-+	while ((*dest++ = *src++) != '\0')
-+		/* nothing */;
-+	return --dest;
-+}
-+EXPORT_SYMBOL(stpcpy);
-+
- #ifndef __HAVE_ARCH_STRCAT
- /**
-  * strcat - Append one %NUL-terminated string to another
+ enum ata_completion_errors {
++	AC_ERR_OK		= 0,	    /* no error */
+ 	AC_ERR_DEV		= (1 << 0), /* device reported error */
+ 	AC_ERR_HSM		= (1 << 1), /* host state machine violation */
+ 	AC_ERR_TIMEOUT		= (1 << 2), /* timeout */
 
 
