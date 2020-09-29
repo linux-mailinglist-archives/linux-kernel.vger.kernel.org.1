@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D81A127C358
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:06:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EBAC27C4E6
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:19:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728669AbgI2LEz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:04:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41058 "EHLO mail.kernel.org"
+        id S1729650AbgI2LRf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:17:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34182 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728663AbgI2LEs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:04:48 -0400
+        id S1729307AbgI2LRS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:17:18 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EA47E21734;
-        Tue, 29 Sep 2020 11:04:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 73BEE206A5;
+        Tue, 29 Sep 2020 11:17:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601377488;
-        bh=ktwXjJcoQBFeqzF3sVgSfhk9Th+iEadBnBf1ZaBJVBA=;
+        s=default; t=1601378238;
+        bh=G0XUegg2uzA3UgnBn9yPX22nbLSRwJK6CkzRvK3IWJk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ruPFbt242Rf3weFnVuZUI/MdwZtGRP2J5xSnQ13d2TPK0nGCG1DfIJgdFq2Baiavn
-         8zL6CUNw/A4sbwTr3E6RYgUSFp/ZQwlMHjyl5zZ7yXBHzF3MiS9R05i0SovBBv8Q4B
-         xoRkw23ZNjkJ95+C+LZteaDW/Cstko0IGiApONdI=
+        b=Qa556547lyyZdDiMS1g9vjzImUovt46fQsKLhRJ7QqIZsmZzuOiEjpT3mGaCskzQY
+         wLVu+Pz8FNy0njRfyabd0Xii+McMjRTrPQsp2WWIU7FlKIx/ANqEop+IR3VAe3qPWN
+         m6JzV/PVVC5IqSzUi6lwHwDEe5caYHq5SOlyt+Fo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 53/85] drivers: char: tlclk.c: Avoid data race between init and interrupt handler
-Date:   Tue, 29 Sep 2020 13:00:20 +0200
-Message-Id: <20200929105930.882323256@linuxfoundation.org>
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Will Deacon <will@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 109/166] arm64: cpufeature: Relax checks for AArch32 support at EL[0-2]
+Date:   Tue, 29 Sep 2020 13:00:21 +0200
+Message-Id: <20200929105940.641022617@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929105928.198942536@linuxfoundation.org>
-References: <20200929105928.198942536@linuxfoundation.org>
+In-Reply-To: <20200929105935.184737111@linuxfoundation.org>
+References: <20200929105935.184737111@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,75 +44,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
+From: Will Deacon <will@kernel.org>
 
-[ Upstream commit 44b8fb6eaa7c3fb770bf1e37619cdb3902cca1fc ]
+[ Upstream commit 98448cdfe7060dd5491bfbd3f7214ffe1395d58e ]
 
-After registering character device the file operation callbacks can be
-called. The open callback registers interrupt handler.
-Therefore interrupt handler can execute in parallel with rest of the init
-function. To avoid such data race initialize telclk_interrupt variable
-and struct alarm_events before registering character device.
+We don't need to be quite as strict about mismatched AArch32 support,
+which is good because the friendly hardware folks have been busy
+mismatching this to their hearts' content.
 
-Found by Linux Driver Verification project (linuxtesting.org).
+  * We don't care about EL2 or EL3 (there are silly comments concerning
+    the latter, so remove those)
 
-Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
-Link: https://lore.kernel.org/r/20200417153451.1551-1-madhuparnabhowmik10@gmail.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+  * EL1 support is gated by the ARM64_HAS_32BIT_EL1 capability and handled
+    gracefully when a mismatch occurs
+
+  * EL0 support is gated by the ARM64_HAS_32BIT_EL0 capability and handled
+    gracefully when a mismatch occurs
+
+Relax the AArch32 checks to FTR_NONSTRICT.
+
+Tested-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+Link: https://lore.kernel.org/r/20200421142922.18950-8-will@kernel.org
+Signed-off-by: Will Deacon <will@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/char/tlclk.c | 17 ++++++++++-------
- 1 file changed, 10 insertions(+), 7 deletions(-)
+ arch/arm64/kernel/cpufeature.c | 10 +++-------
+ 1 file changed, 3 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/char/tlclk.c b/drivers/char/tlclk.c
-index 100cd1de9939d..59e1e94d12c01 100644
---- a/drivers/char/tlclk.c
-+++ b/drivers/char/tlclk.c
-@@ -777,17 +777,21 @@ static int __init tlclk_init(void)
- {
- 	int ret;
+diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
+index 6b3bb67596ae8..b7d400a8921db 100644
+--- a/arch/arm64/kernel/cpufeature.c
++++ b/arch/arm64/kernel/cpufeature.c
+@@ -136,11 +136,10 @@ static const struct arm64_ftr_bits ftr_id_aa64pfr0[] = {
+ 	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64PFR0_GIC_SHIFT, 4, 0),
+ 	S_ARM64_FTR_BITS(FTR_VISIBLE, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64PFR0_ASIMD_SHIFT, 4, ID_AA64PFR0_ASIMD_NI),
+ 	S_ARM64_FTR_BITS(FTR_VISIBLE, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64PFR0_FP_SHIFT, 4, ID_AA64PFR0_FP_NI),
+-	/* Linux doesn't care about the EL3 */
+ 	ARM64_FTR_BITS(FTR_HIDDEN, FTR_NONSTRICT, FTR_LOWER_SAFE, ID_AA64PFR0_EL3_SHIFT, 4, 0),
+-	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64PFR0_EL2_SHIFT, 4, 0),
+-	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64PFR0_EL1_SHIFT, 4, ID_AA64PFR0_EL1_64BIT_ONLY),
+-	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64PFR0_EL0_SHIFT, 4, ID_AA64PFR0_EL0_64BIT_ONLY),
++	ARM64_FTR_BITS(FTR_HIDDEN, FTR_NONSTRICT, FTR_LOWER_SAFE, ID_AA64PFR0_EL2_SHIFT, 4, 0),
++	ARM64_FTR_BITS(FTR_HIDDEN, FTR_NONSTRICT, FTR_LOWER_SAFE, ID_AA64PFR0_EL1_SHIFT, 4, ID_AA64PFR0_EL1_64BIT_ONLY),
++	ARM64_FTR_BITS(FTR_HIDDEN, FTR_NONSTRICT, FTR_LOWER_SAFE, ID_AA64PFR0_EL0_SHIFT, 4, ID_AA64PFR0_EL0_64BIT_ONLY),
+ 	ARM64_FTR_END,
+ };
  
-+	telclk_interrupt = (inb(TLCLK_REG7) & 0x0f);
-+
-+	alarm_events = kzalloc( sizeof(struct tlclk_alarms), GFP_KERNEL);
-+	if (!alarm_events) {
-+		ret = -ENOMEM;
-+		goto out1;
-+	}
-+
- 	ret = register_chrdev(tlclk_major, "telco_clock", &tlclk_fops);
- 	if (ret < 0) {
- 		printk(KERN_ERR "tlclk: can't get major %d.\n", tlclk_major);
-+		kfree(alarm_events);
- 		return ret;
- 	}
- 	tlclk_major = ret;
--	alarm_events = kzalloc( sizeof(struct tlclk_alarms), GFP_KERNEL);
--	if (!alarm_events) {
--		ret = -ENOMEM;
--		goto out1;
--	}
+@@ -627,9 +626,6 @@ void update_cpu_features(int cpu,
+ 	taint |= check_update_ftr_reg(SYS_ID_AA64MMFR2_EL1, cpu,
+ 				      info->reg_id_aa64mmfr2, boot->reg_id_aa64mmfr2);
  
- 	/* Read telecom clock IRQ number (Set by BIOS) */
- 	if (!request_region(TLCLK_BASE, 8, "telco_clock")) {
-@@ -796,7 +800,6 @@ static int __init tlclk_init(void)
- 		ret = -EBUSY;
- 		goto out2;
- 	}
--	telclk_interrupt = (inb(TLCLK_REG7) & 0x0f);
- 
- 	if (0x0F == telclk_interrupt ) { /* not MCPBL0010 ? */
- 		printk(KERN_ERR "telclk_interrupt = 0x%x non-mcpbl0010 hw.\n",
-@@ -837,8 +840,8 @@ out3:
- 	release_region(TLCLK_BASE, 8);
- out2:
- 	kfree(alarm_events);
--out1:
- 	unregister_chrdev(tlclk_major, "telco_clock");
-+out1:
- 	return ret;
- }
- 
+-	/*
+-	 * EL3 is not our concern.
+-	 */
+ 	taint |= check_update_ftr_reg(SYS_ID_AA64PFR0_EL1, cpu,
+ 				      info->reg_id_aa64pfr0, boot->reg_id_aa64pfr0);
+ 	taint |= check_update_ftr_reg(SYS_ID_AA64PFR1_EL1, cpu,
 -- 
 2.25.1
 
