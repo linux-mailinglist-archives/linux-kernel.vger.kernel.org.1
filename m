@@ -2,142 +2,335 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B73327D552
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 20:01:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28DD927D556
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 20:01:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727996AbgI2SBo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 14:01:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37710 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725320AbgI2SBn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 14:01:43 -0400
-Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E061020702
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 18:01:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601402503;
-        bh=qHGaWE5xeSFtQ38W8/1bcT9r0GT5DWk3xHCTe2Q+VyQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=GmhvtEAKgfmvplao8J2xA3KgrSoqxRB/gFNKpQxz2OVUJFFlv8lpJaqfWSeu6pBDD
-         TzZxyLhXE5exJbeZ0HzFrwP37VSRejRhecommvSf6BUONsw3Voj/EcXn/cjteOEXLD
-         D8Izj1Qf9NupVuv5YuKwQtTAHHzQ4qmxttVJkjE0=
-Received: by mail-wr1-f53.google.com with SMTP id o5so6406542wrn.13
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 11:01:42 -0700 (PDT)
-X-Gm-Message-State: AOAM533IHav/V4mJSRBwxq6h86T0Hyv8mzJyKDcnCTKZHak9yZhl1k5q
-        S9FDl6QXuIm58V5Xf4mc4sp06GJqD/vG9BNg/PJYyw==
-X-Google-Smtp-Source: ABdhPJxuWgqQxEb9c//1fSJnomNu4Zi/ZcMkSNz00D7Sda+rKAu/GSSRaNKweGN4USIvCiXeS2KnXbl5FFLdwM/MeuM=
-X-Received: by 2002:adf:a3c3:: with SMTP id m3mr5626947wrb.70.1601402501271;
- Tue, 29 Sep 2020 11:01:41 -0700 (PDT)
+        id S1728051AbgI2SBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 14:01:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41632 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728006AbgI2SBp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 14:01:45 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66923C0613D0
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 11:01:45 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id fa1so3095268pjb.0
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 11:01:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=p2KegjCaWpZfkKR5IwwEO7WoWrrwh7P9M4al+Q9eyFw=;
+        b=ltm7u1IzNbmPXd4mELnjFy6fBuCuAEmTAWvG7wgY2Ju0Y2xDjUwBwmcqJz0HcdGXGj
+         owX73g8pFXrJQOGgBQ8VFf2/h1rfVzz57wAgJlQ1RXjI2yuj0FdNfmBHZhhrh7RhKj/U
+         THAagurUTSLh9MsQFHsao2aA/B81jzXhS4VhW2QroQXlgldavwNU+MnuG2iwuNlEbRI8
+         BTTP7ejSIkq5gj15IAj6cza0LmSX3yCq4dWxAlEw4G0tcZrVuIqVWmEuC9W8Me8R5T1r
+         hTfHhiPAt1PhaKDY4zdOz6cHVH38koWX6O1UULSeqvSWmlcsTmos7qg/uWQkDd3xieev
+         mwdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=p2KegjCaWpZfkKR5IwwEO7WoWrrwh7P9M4al+Q9eyFw=;
+        b=hsD2wJj4G1sRmKH8zVA5Y945HPMAt8IqsDpSWM/aCVIqvebJ/MB50Z2jVnqQ5hEMGt
+         sOdshyuuZIjjpDZvfUqcDbHjROjOkPpG64+CxH0VTMgtNyHMAdQlzpAYd8vK0iED7d0V
+         ABcDQKtRRqE+912IgXcxHhGUnU/ozzS2Xm4Mvb81ayAW9E2+Q2XRLcyoy5o6cQrTEoOs
+         HN0Hc2ee+zZyaieO47dFo6mG59IVrtcx2ICgR0aEuvxVzEVi5h4qkz8+FQJDkTKQrMAx
+         m1ZWepBB80yrX3ciU/zUNlmDofBRF5dSYJMiVJU/UBri5+nKNvJ2ty+c21SJ/fZbnXqL
+         r7nA==
+X-Gm-Message-State: AOAM530MDtP+lhotfgrUBZiJ78sd255O76jrgmnUawpj4nPglvMgfmrV
+        W7oBgFIaz6/Vq35Z94xVmUY8xw==
+X-Google-Smtp-Source: ABdhPJz5fuCu0iwJuiJcxoduPOjH/Dc8pBwOSprE2AvYkGXrMkTGOaSUFFpecrmFSuUfh4qlWaiRWQ==
+X-Received: by 2002:a17:90a:9912:: with SMTP id b18mr5292485pjp.192.1601402504742;
+        Tue, 29 Sep 2020 11:01:44 -0700 (PDT)
+Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
+        by smtp.gmail.com with ESMTPSA id q15sm5782201pgr.27.2020.09.29.11.01.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Sep 2020 11:01:43 -0700 (PDT)
+Date:   Tue, 29 Sep 2020 12:01:41 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Alexandre Bailon <abailon@baylibre.com>
+Cc:     ohad@wizery.com, bjorn.andersson@linaro.org, robh+dt@kernel.org,
+        matthias.bgg@gmail.com, linux-remoteproc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        stephane.leprovost@mediatek.com, gpain@baylibre.com
+Subject: Re: [PATCH v2 3/4] remoteproc: mtk_vpu_rproc: Add support of JTAG
+Message-ID: <20200929180141.GC124290@xps15>
+References: <20200910130148.8734-1-abailon@baylibre.com>
+ <20200910130148.8734-4-abailon@baylibre.com>
 MIME-Version: 1.0
-References: <20200925181518.4141-1-mathieu.desnoyers@efficios.com> <87r1qm2atk.fsf@oldenburg2.str.redhat.com>
-In-Reply-To: <87r1qm2atk.fsf@oldenburg2.str.redhat.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Tue, 29 Sep 2020 11:01:29 -0700
-X-Gmail-Original-Message-ID: <CALCETrU5eu+TBs4rs_vF28rP=46nPF8-=hANdRb7QuBLqkCQBg@mail.gmail.com>
-Message-ID: <CALCETrU5eu+TBs4rs_vF28rP=46nPF8-=hANdRb7QuBLqkCQBg@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/2] rseq: Implement KTLS prototype for x86-64
-To:     Florian Weimer <fweimer@redhat.com>
-Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        "H . Peter Anvin" <hpa@zytor.com>, Paul Turner <pjt@google.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        "Carlos O'Donell" <carlos@redhat.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200910130148.8734-4-abailon@baylibre.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 8:14 AM Florian Weimer <fweimer@redhat.com> wrote:
->
-> * Mathieu Desnoyers:
->
-> > Upstreaming efforts aiming to integrate rseq support into glibc led to
-> > interesting discussions, where we identified a clear need to extend the
-> > size of the per-thread structure shared between kernel and user-space
-> > (struct rseq).  This is something that is not possible with the current
-> > rseq ABI.  The fact that the current non-extensible rseq kernel ABI
-> > would also prevent glibc's ABI to be extended prevents its integration
-> > into glibc.
-> >
-> > Discussions with glibc maintainers led to the following design, which we
-> > are calling "Kernel Thread Local Storage" or KTLS:
-> >
-> > - at glibc library init:
-> >   - glibc queries the size and alignment of the KTLS area supported by the
-> >     kernel,
-> >   - glibc reserves the memory area required by the kernel for main
-> >     thread,
-> >   - glibc registers the offset from thread pointer where the KTLS area
-> >     will be placed for all threads belonging to the threads group which
-> >     are created with clone3 CLONE_RSEQ_KTLS,
-> > - at nptl thread creation:
-> >   - glibc reserves the memory area required by the kernel,
-> > - application/libraries can query glibc for the offset/size of the
-> >   KTLS area, and offset from the thread pointer to access that area.
->
-> One remaining challenge see is that we want to use vDSO functions to
-> abstract away the exact layout of the KTLS area.  For example, there are
-> various implementation strategies for getuid optimizations, some of them
-> exposing a shared struct cred in a thread group, and others not doing
-> that.
->
-> The vDSO has access to the thread pointer because it's ABI (something
-> that we recently (and quite conveniently) clarified for x86).  What it
-> does not know is the offset of the KTLS area from the thread pointer.
-> In the original rseq implementation, this offset could vary from thread
-> to thread in a process, although the submitted glibc implementation did
-> not use this level of flexibility and the offset is constant.  The vDSO
-> is not relocated by the run-time dynamic loader, so it can't use ELF TLS
-> data.
+On Thu, Sep 10, 2020 at 03:01:47PM +0200, Alexandre Bailon wrote:
+> The DSP could be debugged using JTAG.
+> The support of JTAG could enabled at build time and it could be enabled
+> using debugfs.
+> 
+> Signed-off-by: Alexandre Bailon <abailon@baylibre.com>
+> ---
+>  drivers/remoteproc/Kconfig   |   9 +++
+>  drivers/remoteproc/mtk_apu.c | 151 ++++++++++++++++++++++++++++++++++-
+>  2 files changed, 159 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/remoteproc/Kconfig b/drivers/remoteproc/Kconfig
+> index 4ebea57bf4c8..310462346bd8 100644
+> --- a/drivers/remoteproc/Kconfig
+> +++ b/drivers/remoteproc/Kconfig
+> @@ -61,6 +61,15 @@ config MTK_APU
+>  
+>  	  It's safe to say N here.
+>  
+> +config MTK_APU_JTAG
+> +	bool "Enable support of JTAG"
 
-I assume that, by "thread pointer", you mean the pointer stored in
-GSBASE on x86_32, FSBASE on x86_64, and elsewhere on other
-architectures?
+I think it is better to simply go with "Enable JTAG support"
 
-The vDSO has done pretty well so far having the vDSO not touch FS, GS,
-or their bases at all.  If we want to change that, I would be very
-nervous about doing so in existing vDSO functions.  Regardless of
-anything an ABI document might say and anything that existing or
-previous glibc versions may or may not have done, there are plenty of
-bizarre programs out there that don't really respect the psABI
-document.  Go and various not-ready-for-prime-time-but-released-anyway
-Bionic branches come to mind.  So we would need to tread very, very
-carefully.
+> +	depends on MTK_APU
+> +	help
+> +	  Say y to enable support of JTAG.
 
-One way to side-step much of this would be to make the interface explicit:
+Same here.
 
-long __vdso_do_whatever(void *ktls_ptr, ...);
+> +	  By default, JTAG will remain disabled until it is enabled using
+> +	  debugfs: remoteproc/remoteproc0/jtag. Write 1 to enable it and
 
-Sadly, on x86, actually generating the ktls ptr is bit nasty due to
-the fact that lea %fs:(offset) doesn't do what one might have liked it
-to do.  I suppose this could also be:
+s/remoteproc0/remoteprocX
 
-long __vdso_do_whatever(unsigned long ktls_offset);
+> +	  0 to disable it.
+> +
+>  config OMAP_REMOTEPROC
+>  	tristate "OMAP remoteproc support"
+>  	depends on ARCH_OMAP4 || SOC_OMAP5 || SOC_DRA7XX
+> diff --git a/drivers/remoteproc/mtk_apu.c b/drivers/remoteproc/mtk_apu.c
+> index 6d2f577cfde5..07157fdc24ba 100644
+> --- a/drivers/remoteproc/mtk_apu.c
+> +++ b/drivers/remoteproc/mtk_apu.c
+> @@ -5,6 +5,7 @@
+>  
+>  #include <linux/bitops.h>
+>  #include <linux/clk.h>
+> +#include <linux/debugfs.h>
+>  #include <linux/delay.h>
+>  #include <linux/highmem.h>
+>  #include <linux/interrupt.h>
+> @@ -14,6 +15,7 @@
+>  #include <linux/kernel.h>
+>  #include <linux/module.h>
+>  #include <linux/of_reserved_mem.h>
+> +#include <linux/pinctrl/consumer.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/remoteproc.h>
+>  
+> @@ -48,6 +50,11 @@
+>  #define CORE_DEFAULT1				(0x00000140)
+>  #define CORE_DEFAULT0_ARUSER_IDMA_USE_IOMMU	(0x10 << 0)
+>  #define CORE_DEFAULT0_AWUSER_IDMA_USE_IOMMU	(0x10 << 5)
+> +#define CORE_DEFAULT2				(0x00000144)
+> +#define CORE_DEFAULT2_DBG_EN			BIT(3)
+> +#define CORE_DEFAULT2_NIDEN			BIT(2)
+> +#define CORE_DEFAULT2_SPNIDEN			BIT(1)
+> +#define CORE_DEFAULT2_SPIDEN			BIT(0)
+>  #define CORE_XTENSA_ALTRESETVEC			(0x000001F8)
+>  
+>  struct mtk_apu_rproc {
+> @@ -57,6 +64,13 @@ struct mtk_apu_rproc {
+>  	void __iomem *base;
+>  	int irq;
+>  	struct clk_bulk_data clks[3];
+> +
+> +#ifdef CONFIG_MTK_APU_JTAG
+> +	struct pinctrl *pinctrl;
+> +	struct pinctrl_state *pinctrl_jtag;
+> +	bool jtag_enabled;
+> +	struct mutex jtag_mutex;
 
-which will generate quite nice code on x86_64.  I can't speak for the
-asm capabilities of other architectures.
+Move this up to keep all the struct together.
 
-What I *don't* want to do is to accidentally repeat anything like the
-%gs:0x28 mess we have with the stack cookie on x86_32.  (The stack
-cookie is, in kernel code, in a completely nonsensical location.  I'm
-quite surprised that any of the maintainers ever accepted the current
-stack cookie implementation.  I assume there's some history there, but
-I don't know it.  The end result is a festering mess in the x86_32
-kernel code that only persists because no one cares quite enough about
-x86_32 to fix it.)  We obviously won't end up with precisely the same
-type of mistake here, but a mis-step here certainly does have the
-possibility of promoting an unfortunate-in-hindsight design decision
-in glibc and/or psABI to something that every other x86_64 Linux
-software stack has to copy to be compatible with the vDSO.
+> +#endif
+>  };
+>  
+>  static int mtk_apu_rproc_prepare(struct rproc *rproc)
+> @@ -166,6 +180,137 @@ static irqreturn_t handle_event(int irq, void *data)
+>  	return IRQ_HANDLED;
+>  }
+>  
+> +#ifdef CONFIG_MTK_APU_JTAG
+> +
+> +static int apu_enable_jtag(struct mtk_apu_rproc *apu_rproc)
+> +{
+> +	int ret = 0;
+> +
+> +	mutex_lock(&apu_rproc->jtag_mutex);
+> +	if (apu_rproc->jtag_enabled) {
+> +		ret = -EINVAL;
 
-As for errno itself, with all due respect to those who designed errno
-before I was born, IMO it was a mistake.  Why exactly should the vDSO
-know about errno?
+The JTAG is already enabled, I think enabling it again isn't a big deal and
+should simply return 0 rather than an error.
+
+> +		goto err_mutex_unlock;
+> +	}
+> +
+> +	writel(CORE_DEFAULT2_SPNIDEN | CORE_DEFAULT2_SPIDEN |
+> +		CORE_DEFAULT2_NIDEN | CORE_DEFAULT2_DBG_EN,
+> +		apu_rproc->base + CORE_DEFAULT2);
+> +
+> +	apu_rproc->jtag_enabled = 1;
+
+s/1/true
+
+> +
+> +err_mutex_unlock:
+> +	mutex_unlock(&apu_rproc->jtag_mutex);
+> +
+> +	return ret;
+> +}
+> +
+> +static int apu_disable_jtag(struct mtk_apu_rproc *apu_rproc)
+> +{
+> +	int ret = 0;
+> +
+> +	mutex_lock(&apu_rproc->jtag_mutex);
+> +	if (!apu_rproc->jtag_enabled) {
+> +		ret = -EINVAL;
+
+Same as above
+
+> +		goto err_mutex_unlock;
+> +	}
+> +
+> +	writel(0, apu_rproc->base + CORE_DEFAULT2);
+> +
+> +	apu_rproc->jtag_enabled = 0;
+
+s/0/false
+
+Thanks for the patience,
+Mathieu
+
+> +
+> +err_mutex_unlock:
+> +	mutex_unlock(&apu_rproc->jtag_mutex);
+> +
+> +	return ret;
+> +}
+> +
+> +static ssize_t rproc_jtag_read(struct file *filp, char __user *userbuf,
+> +			       size_t count, loff_t *ppos)
+> +{
+> +	struct rproc *rproc = filp->private_data;
+> +	struct mtk_apu_rproc *apu_rproc = (struct mtk_apu_rproc *)rproc->priv;
+> +	char *buf = apu_rproc->jtag_enabled ? "enabled\n" : "disabled\n";
+> +
+> +	return simple_read_from_buffer(userbuf, count, ppos, buf, strlen(buf));
+> +}
+> +
+> +static ssize_t rproc_jtag_write(struct file *filp, const char __user *user_buf,
+> +				size_t count, loff_t *ppos)
+> +{
+> +	struct rproc *rproc = filp->private_data;
+> +	struct mtk_apu_rproc *apu_rproc = (struct mtk_apu_rproc *)rproc->priv;
+> +	char buf[10];
+> +	int ret;
+> +
+> +	if (count < 1 || count > sizeof(buf))
+> +		return -EINVAL;
+> +
+> +	ret = copy_from_user(buf, user_buf, count);
+> +	if (ret)
+> +		return -EFAULT;
+> +
+> +	/* remove end of line */
+> +	if (buf[count - 1] == '\n')
+> +		buf[count - 1] = '\0';
+> +
+> +	if (!strncmp(buf, "enabled", count))
+> +		ret = apu_enable_jtag(apu_rproc);
+> +	else if (!strncmp(buf, "disabled", count))
+> +		ret = apu_disable_jtag(apu_rproc);
+> +	else
+> +		return -EINVAL;
+> +
+> +	return ret ? ret : count;
+> +}
+> +
+> +static const struct file_operations rproc_jtag_ops = {
+> +	.read = rproc_jtag_read,
+> +	.write = rproc_jtag_write,
+> +	.open = simple_open,
+> +};
+> +
+> +static int apu_jtag_probe(struct mtk_apu_rproc *apu_rproc)
+> +{
+> +	int ret;
+> +
+> +	if (!apu_rproc->rproc->dbg_dir)
+> +		return -ENODEV;
+> +
+> +	apu_rproc->pinctrl = devm_pinctrl_get(apu_rproc->dev);
+> +	if (IS_ERR(apu_rproc->pinctrl)) {
+> +		dev_warn(apu_rproc->dev, "Failed to find JTAG pinctrl\n");
+> +		return PTR_ERR(apu_rproc->pinctrl);
+> +	}
+> +
+> +	apu_rproc->pinctrl_jtag = pinctrl_lookup_state(apu_rproc->pinctrl,
+> +						       "jtag");
+> +	if (IS_ERR(apu_rproc->pinctrl_jtag))
+> +		return PTR_ERR(apu_rproc->pinctrl_jtag);
+> +
+> +	ret = pinctrl_select_state(apu_rproc->pinctrl,
+> +				   apu_rproc->pinctrl_jtag);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	mutex_init(&apu_rproc->jtag_mutex);
+> +
+> +	debugfs_create_file("jtag", 0600, apu_rproc->rproc->dbg_dir,
+> +			    apu_rproc->rproc, &rproc_jtag_ops);
+> +
+> +	return 0;
+> +}
+> +#else
+> +static int apu_jtag_probe(struct mtk_apu_rproc *apu_rproc)
+> +{
+> +	return 0;
+> +}
+> +
+> +static int apu_disable_jtag(struct mtk_apu_rproc *apu_rproc)
+> +{
+> +	return 0;
+> +}
+> +#endif /* CONFIG_MTK_APU_JTAG */
+> +
+>  static int mtk_apu_rproc_probe(struct platform_device *pdev)
+>  {
+>  	struct device *dev = &pdev->dev;
+> @@ -242,6 +387,10 @@ static int mtk_apu_rproc_probe(struct platform_device *pdev)
+>  		goto free_mem;
+>  	}
+>  
+> +	ret = apu_jtag_probe(apu_rproc);
+> +	if (ret)
+> +		dev_warn(dev, "Failed to configure jtag\n");
+> +
+>  	return 0;
+>  
+>  free_mem:
+> @@ -259,7 +408,7 @@ static int mtk_apu_rproc_remove(struct platform_device *pdev)
+>  	struct device *dev = &pdev->dev;
+>  
+>  	disable_irq(apu_rproc->irq);
+> -
+> +	apu_disable_jtag(apu_rproc);
+>  	rproc_del(rproc);
+>  	of_reserved_mem_device_release(dev);
+>  	rproc_free(rproc);
+> -- 
+> 2.26.2
+> 
