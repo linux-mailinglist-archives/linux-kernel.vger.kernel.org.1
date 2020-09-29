@@ -2,266 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2A8D27BED4
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 10:06:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4257427BED6
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 10:06:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727623AbgI2IGK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 04:06:10 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:52438 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725776AbgI2IGK (ORCPT
+        id S1727670AbgI2IGi convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 29 Sep 2020 04:06:38 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:22437 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725776AbgI2IGh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 04:06:10 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08T8668B036512;
-        Tue, 29 Sep 2020 03:06:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1601366766;
-        bh=Zk6WGDzhpPM6sRSQ1cFhP30MQOAdaqW+rvAUokcbiH8=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=mwdmVWOiXOKLHqFtvjW6Vf8ALeenzgKfXxMqCa9NuUrd8bYIHwFgoxYeRJkY9FZuT
-         eTNaCuE5GBa99AlfpoEffgEAq/rVpGzhg6ekcDICwieVPzui63yC7O1/shYBGDlPW9
-         ODDgXWoByWQ9DdebmF6UYtWl6VmA7OkDDCGjiTHk=
-Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08T86681120938
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 29 Sep 2020 03:06:06 -0500
-Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 29
- Sep 2020 03:06:06 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 29 Sep 2020 03:06:06 -0500
-Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08T864GY102128;
-        Tue, 29 Sep 2020 03:06:04 -0500
-Subject: Re: [PATCH v3 2/3] dmaengine: add peripheral configuration
-To:     Vinod Koul <vkoul@kernel.org>, <dmaengine@vger.kernel.org>
-CC:     Rob Herring <robh+dt@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20200923063410.3431917-1-vkoul@kernel.org>
- <20200923063410.3431917-3-vkoul@kernel.org>
-From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
-X-Pep-Version: 2.0
-Message-ID: <29f95fff-c484-0131-d1fe-b06e3000fb9f@ti.com>
-Date:   Tue, 29 Sep 2020 11:06:18 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Tue, 29 Sep 2020 04:06:37 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-217-WEwbKJjdNOOsWYNVPyIehQ-1; Tue, 29 Sep 2020 09:06:33 +0100
+X-MC-Unique: WEwbKJjdNOOsWYNVPyIehQ-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Tue, 29 Sep 2020 09:06:32 +0100
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Tue, 29 Sep 2020 09:06:32 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Christoph Hellwig' <hch@lst.de>,
+        Eric Biggers <ebiggers@kernel.org>
+CC:     "syzbot+51177e4144d764827c45@syzkaller.appspotmail.com" 
+        <syzbot+51177e4144d764827c45@syzkaller.appspotmail.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "syzkaller-bugs@googlegroups.com" <syzkaller-bugs@googlegroups.com>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>
+Subject: RE: WARNING in __kernel_read (2)
+Thread-Topic: WARNING in __kernel_read (2)
+Thread-Index: AQHWk7DmAtv55MEfq0C+fzgffzQfPql6xRLQgAAhQ/CABE1+YYAAEyYg
+Date:   Tue, 29 Sep 2020 08:06:32 +0000
+Message-ID: <e81e2721e8ce4612b0fc6098d311d378@AcuMS.aculab.com>
+References: <000000000000da992305b02e9a51@google.com>
+ <3b3de066852d4e30bd9d85bd28023100@AcuMS.aculab.com>
+ <642ed0b4810d44ab97a7832ccb8b3e44@AcuMS.aculab.com>
+ <20200928221441.GF1340@sol.localdomain> <20200929063815.GB1839@lst.de>
+ <20200929064648.GA238449@sol.localdomain> <20200929065601.GA2095@lst.de>
+In-Reply-To: <20200929065601.GA2095@lst.de>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-In-Reply-To: <20200923063410.3431917-3-vkoul@kernel.org>
-Content-Type: text/plain; charset="utf-8"
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
 Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Christoph Hellwig
+> Sent: 29 September 2020 07:56
+> 
+> On Mon, Sep 28, 2020 at 11:46:48PM -0700, Eric Biggers wrote:
+> > > Linus asked for it.  What is the call chain that we hit it with?
+> >
+> > Call Trace:
+> >  kernel_read+0x52/0x70 fs/read_write.c:471
+> >  kernel_read_file fs/exec.c:989 [inline]
+> >  kernel_read_file+0x2e5/0x620 fs/exec.c:952
+> >  kernel_read_file_from_fd+0x56/0xa0 fs/exec.c:1076
+> >  __do_sys_finit_module+0xe6/0x190 kernel/module.c:4066
+> >  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+> >  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> >
+> > See the email from syzbot for the full details:
+> > https://lkml.kernel.org/linux-fsdevel/000000000000da992305b02e9a51@google.com
+> 
+> Passing a fs without read permissions definitively looks bogus for
+> the finit_module syscall.  So I think all we need is an extra check
+> to validate the fd.
 
+The sysbot test looked like it didn't even have a regular file.
+I thought I saw a test for that - but it might be in a different path.
 
-On 23/09/2020 9.34, Vinod Koul wrote:
-> Some complex dmaengine controllers have capability to program the
-> peripheral device, so pass on the peripheral configuration as part of
-> dma_slave_config
->=20
-> Signed-off-by: Vinod Koul <vkoul@kernel.org>
-> ---
->  include/linux/dmaengine.h | 91 +++++++++++++++++++++++++++++++++++++++=
+You do need to ensure that 'exec' doesn't need read access.
 
->  1 file changed, 91 insertions(+)
->=20
-> diff --git a/include/linux/dmaengine.h b/include/linux/dmaengine.h
-> index 6fbd5c99e30c..bbc32271ad7f 100644
-> --- a/include/linux/dmaengine.h
-> +++ b/include/linux/dmaengine.h
-> @@ -380,6 +380,94 @@ enum dma_slave_buswidth {
->  	DMA_SLAVE_BUSWIDTH_64_BYTES =3D 64,
->  };
-> =20
-> +/**
-> + * enum spi_transfer_cmd - spi transfer commands
-> + */
-> +enum spi_transfer_cmd {
-> +	SPI_TX =3D 1,
-> +	SPI_RX,
-> +	SPI_DUPLEX,
-> +};
-> +
-> +/**
-> + * struct dmaengine_spi_config - spi config for peripheral
-> + *
-> + * @loopback_en: spi loopback enable when set
-> + * @clock_pol: clock polarity
-> + * @data_pol: data polarity
+	David
 
-*_pol_high ?
-
-> + * @pack_en: process tx/rx buffers as packed
-
-what does this mean?
-
-> + * @word_len: spi word length
-> + * @clk_div: source clock divider
-> + * @clk_src: serial clock
-
-we tend to use common clock framework for clock configuration?
-
-> + * @cmd: spi cmd
-> + * @cs: chip select toggle
-> + */
-> +struct dmaengine_spi_config {
-> +	u8 loopback_en;
-> +	u8 clock_pol;
-> +	u8 data_pol;
-> +	u8 pack_en;
-> +	u8 word_len;
-> +	u32 clk_div;
-> +	u32 clk_src;
-> +	u8 fragmentation;
-
-This is not documented and I can not really guess what it is.
-
-> +	enum spi_transfer_cmd cmd;
-> +	u8 cs;
-> +};
-> +
-> +enum i2c_op {
-> +	I2C_WRITE =3D 1,
-> +	I2C_READ,
-> +};
-> +
-> +/**
-> + * struct dmaengine_i2c_config - i2c config for peripheral
-> + *
-> + * @pack_enable: process tx/rx buffers as packed
-
-Is this the same thing as with the spi?
-
-> + * @cycle_count: clock cycles to be sent
-> + * @high_count: high period of clock
-> + * @low_count: low period of clock
-> + * @clk_div: source clock divider
-> + * @addr: i2c bus address
-> + * @stretch: stretch the clock at eot
-> + * @op: i2c cmd
-> + */
-> +struct dmaengine_i2c_config {
-> +	u8 pack_enable;
-> +	u8 cycle_count;
-> +	u8 high_count;
-> +	u8 low_count;
-> +	u16 clk_div;
-> +	u8 addr;
-> +	u8 stretch;
-> +	enum i2c_op op;
-> +	bool multi_msg;
-
-Not documented.
-Is it indicates multiple-byte read/write or multiple messages?
-
-> +};
-> +
-> +enum dmaengine_peripheral {
-> +	DMAENGINE_PERIPHERAL_SPI =3D 1,
-> +	DMAENGINE_PERIPHERAL_UART =3D 2,
-> +	DMAENGINE_PERIPHERAL_I2C =3D 3,
-> +	DMAENGINE_PERIPHERAL_LAST =3D DMAENGINE_PERIPHERAL_I2C,
-> +};
-> +
-> +/**
-> + * struct dmaengine_peripheral_config - peripheral configuration for
-> + * dmaengine peripherals
-> + *
-> + * @peripheral: type of peripheral to DMA to/from
-> + * @set_config: set peripheral config
-> + * @rx_len: receive length for buffer
-
-Why is it part of the peripheral config? You get the buffer via
-prep_slave_sg(). Or is this something else?
-
-The GPI driver uses the rx_len for DMA_MEM_TO_DEV (tx) setup.
-
-> + * @spi: peripheral config for spi
-> + * @i2c: peripheral config for i2c
-> + */
-> +struct dmaengine_peripheral_config {
-> +	enum dmaengine_peripheral peripheral;
-> +	u8 set_config;
-> +	u32 rx_len;
-> +	struct dmaengine_spi_config spi;
-> +	struct dmaengine_i2c_config i2c;
-
-I know that you want this to be as generic as much as it is possible,
-but do we really want to?
-GPIv2 will also handle I2S peripheral, other vendor's similar solution
-would require different sets of parameters unique to their IPs?
-
-How we are going to handle similar setups for DMA which is used for
-networking, SPI/I2C/I2S/NAND/display/capture, etc?
-
-Imho these settings are really part of the peripheral's domain and not
-the DMA. It is just a small detail that instead of direct register
-writes, your setup is using the DMA descriptors to write.
-It is similar to what I use as metadata (part of the descriptor belongs
-and owned by the client driver).
-
-I think it would be better to have:
-
-enum dmaengine_peripheral {
-	DMAENGINE_PERIPHERAL_GPI_SPI =3D 1,
-	DMAENGINE_PERIPHERAL_GPI_UART,
-	DMAENGINE_PERIPHERAL_GPI_I2C,
-	DMAENGINE_PERIPHERAL_XYZ_SPI,
-	DMAENGINE_PERIPHERAL_XYZ_AASRC,
-	DMAENGINE_PERIPHERAL_ABC_CAM,
-	...
-	DMAENGINE_PERIPHERAL_LAST,
-};
-
-enum dmaengine_peripheral peripheral_type;
-void *peripheral_config;
-
-
-and that's it. The set_config is specific to GPI.
-It can be debated where the structs should be defined, in the generic
-dmaengine.h or in include/linux/dma/ as controller specific
-(gpi_peripheral.h) or a generic one, like dmaengine_peripheral.h
-
-The SPI/I2C/UART client of yours would pass the GPI specific struct as
-in any case it has to know what is the DMA it is serviced by.
-
-> +};
->  /**
->   * struct dma_slave_config - dma slave channel runtime config
->   * @direction: whether the data shall go in or out on this slave
-> @@ -418,6 +506,8 @@ enum dma_slave_buswidth {
->   * @slave_id: Slave requester id. Only valid for slave channels. The d=
-ma
->   * slave peripheral will have unique id as dma requester which need to=
- be
->   * pass as slave config.
-> + * @peripheral: peripheral configuration for programming peripheral fo=
-r
-> + * dmaengine transfer
->   *
->   * This struct is passed in as configuration data to a DMA engine
->   * in order to set up a certain channel for DMA transport at runtime.
-> @@ -443,6 +533,7 @@ struct dma_slave_config {
->  	u32 dst_port_window_size;
->  	bool device_fc;
->  	unsigned int slave_id;
-> +	struct dmaengine_peripheral_config *peripheral;
->  };
-> =20
->  /**
->=20
-
-- P=C3=A9ter
-
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
