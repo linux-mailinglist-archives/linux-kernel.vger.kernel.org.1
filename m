@@ -2,138 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E203327D087
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 16:04:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D91FA27D08D
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 16:05:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731088AbgI2OEn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 10:04:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50122 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730077AbgI2OEm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 10:04:42 -0400
-Received: from kernel.org (unknown [87.71.73.56])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2C8EF20848;
-        Tue, 29 Sep 2020 14:04:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601388281;
-        bh=WaJTg3SQjbcW6v/DzBgW2ai/TQzh1nqimfbp97MMiZg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=g/sTn+vuGDTybOkywy/hzK7aJ4iFWFxujqk7E2jgui44H35NmFrCcMr3S2mhlUWeH
-         RlNghCYd1xYJLA4ucZ8Vo4pHssTfstFhjlURUf8gE12YAEPb3mM3qxx0M1Gl8xPkdq
-         sLFMhLXPdlIflpJ6y2oTcFDApMPO11kHq6sLeZiY=
-Date:   Tue, 29 Sep 2020 17:04:24 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Idan Yaniv <idan.yaniv@ibm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Shuah Khan <shuah@kernel.org>, Tycho Andersen <tycho@tycho.ws>,
-        Will Deacon <will@kernel.org>, linux-api@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org
-Subject: Re: [PATCH v6 5/6] mm: secretmem: use PMD-size pages to amortize
- direct map fragmentation
-Message-ID: <20200929140424.GI2142832@kernel.org>
-References: <20200924132904.1391-1-rppt@kernel.org>
- <20200924132904.1391-6-rppt@kernel.org>
- <20200925074125.GQ2628@hirez.programming.kicks-ass.net>
- <8435eff6-7fa9-d923-45e5-d8850e4c6d73@redhat.com>
- <20200925095029.GX2628@hirez.programming.kicks-ass.net>
- <20200925103114.GA7407@C02TD0UTHF1T.local>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200925103114.GA7407@C02TD0UTHF1T.local>
+        id S1730936AbgI2OFH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 10:05:07 -0400
+Received: from relmlor2.renesas.com ([210.160.252.172]:21448 "EHLO
+        relmlie6.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728481AbgI2OFH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 10:05:07 -0400
+X-IronPort-AV: E=Sophos;i="5.77,318,1596466800"; 
+   d="scan'208";a="58254312"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+  by relmlie6.idc.renesas.com with ESMTP; 29 Sep 2020 23:05:05 +0900
+Received: from localhost.localdomain (unknown [10.226.36.204])
+        by relmlir5.idc.renesas.com (Postfix) with ESMTP id 8E7F34006DF0;
+        Tue, 29 Sep 2020 23:05:03 +0900 (JST)
+From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org
+Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        linux-kernel@vger.kernel.org,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Prabhakar <prabhakar.csengg@gmail.com>
+Subject: [PATCH v3] ARM: dts: r8a7742-iwg21d-q7: Add LCD support
+Date:   Tue, 29 Sep 2020 15:05:02 +0100
+Message-Id: <20200929140502.16017-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 11:31:14AM +0100, Mark Rutland wrote:
-> Hi,
-> 
-> Agreed. I think if we really need something like this, something between
-> XPFO and DEBUG_PAGEALLOC would be generally better, since:
-> 
-> * Secretmem puts userspace in charge of kernel internals (AFAICT without
->   any ulimits?), so that seems like an avenue for malicious or buggy
->   userspace to exploit and trigger DoS, etc. The other approaches leave
->   the kernel in charge at all times, and it's a system-level choice
->   which is easier to reason about and test.
+The iwg21d comes with a 7" capacitive touch screen, therefore
+add support for it.
 
-Secretmem obeys RLIMIT_MLOCK.
-I don't see why it "puts userpspace in charge of kernel internals" more
-than other system calls. The fact that memory is dropped from
-linear/direct mapping does not make userspace in charge of the kernel
-internals. The fact that this is not system-level actually makes it more
-controllable and tunable, IMHO.
+Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Reviewed-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+---
+v2->v3
+* Renamed vcc-supply to power-supply due to recent bindings changes [4]
+  (similar changes done for G1[MN] [5]).
+* Restored RB tags from Laurent and Geert.
+* Sorted the DTS
 
-> * Secretmem interaction with existing ABIs is unclear. Should uaccess
->   primitives work for secretmem? If so, this means that it's not valid
->   to transform direct uaccesses in syscalls etc into accesses via the
->   linear/direct map. If not, how do we prevent syscalls? The other
->   approaches are clear that this should always work, but the kernel
->   should avoid mappings wherever possible.
+v1->v2
+* This patch is part of series [1] (rest of the patches have be accepted
+  by Geert [2]).
+* Added regulator for lvds
+* Added reset pin for touchpanel
+* This patch is based on series [3]
 
-Our idea was that direct uaccess in the context of the process that owns
-the secretmem should work and that transforming the direct uaccesses
-into accesses via the linear map would be valid only when allowed
-explicitly. E.g with addition of FOLL_SOMETHING to gup.
-Yet, this would be required for any implementation of memory areas that
-excludes pages from the linear mapping.
+[1] https://patchwork.kernel.org/project/linux-renesas-soc/list/
+    ?series=330277
+[2] https://git.kernel.org/pub/scm/linux/kernel/git/geert/
+    renesas-devel.git/log/?h=renesas-arm-dt-for-v5.10
+[3] https://patchwork.kernel.org/project/linux-renesas-soc/list/
+    ?series=330957
+[4] https://patchwork.kernel.org/patch/11792205/
+[5] https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/
+    commit/?h=next-20200929&id=08d7a73fffb6769b1cf2278bf697e692daba3abf
+---
+ arch/arm/boot/dts/r8a7742-iwg21d-q7.dts | 99 +++++++++++++++++++++++++
+ 1 file changed, 99 insertions(+)
 
-> * The uncached option doesn't work in a number of situations, such as
->   systems which are purely cache coherent at all times, or where the
->   hypervisor has overridden attributes. The kernel cannot even know that
->   whther this works as intended. On its own this doens't solve a
->   particular problem, and I think this is a solution looking for a
->   problem.
-
-As we discussed at one of the previous iterations, the uncached makes
-sense for x86 to reduce availability of side channels and I've only
-enabled uncached mappings on x86.
-
-> ... and fundamentally, this seems like a "more security, please" option
-> that is going to be abused, since everyone wants security, regardless of
-> how we say it *should* be used. The few use-cases that may make sense
-> (e.g. protection of ketys and/or crypto secrrets), aren't going to be
-> able to rely on this (since e.g. other uses may depelete memory pools),
-> so this is going to be best-effort. With all that in mind, I struggle to
-> beleive that this is going to be worth the maintenance cost (e.g. with
-> any issues arising from uaccess, IO, etc).
-
-I think that making secretmem a file descriptor that only allows mmap()
-already makes it quite self contained and simple. There could be several
-cases that will need special treatment, but I don't think it will have
-large maintenance cost.
-I've run syzkaller for some time with memfd_secret() enabled and I never
-hit a crash because of it.
-
-> Thanks,
-> Mark.
-
+diff --git a/arch/arm/boot/dts/r8a7742-iwg21d-q7.dts b/arch/arm/boot/dts/r8a7742-iwg21d-q7.dts
+index c2c05c9685d1..0063ef92f50e 100644
+--- a/arch/arm/boot/dts/r8a7742-iwg21d-q7.dts
++++ b/arch/arm/boot/dts/r8a7742-iwg21d-q7.dts
+@@ -30,6 +30,7 @@
+ 
+ /dts-v1/;
+ #include "r8a7742-iwg21m.dtsi"
++#include <dt-bindings/pwm/pwm.h>
+ 
+ / {
+ 	model = "iWave Systems RainboW-G21D-Qseven board based on RZ/G1H";
+@@ -52,6 +53,16 @@
+ 		clock-frequency = <26000000>;
+ 	};
+ 
++	lcd_backlight: backlight {
++		compatible = "pwm-backlight";
++		pwms = <&tpu 2 5000000 0>;
++		brightness-levels = <0 4 8 16 32 64 128 255>;
++		pinctrl-0 = <&backlight_pins>;
++		pinctrl-names = "default";
++		default-brightness-level = <7>;
++		enable-gpios = <&gpio3 11 GPIO_ACTIVE_HIGH>;
++	};
++
+ 	leds {
+ 		compatible = "gpio-leds";
+ 
+@@ -62,6 +73,41 @@
+ 		};
+ 	};
+ 
++	lvds-receiver {
++		compatible = "ti,ds90cf384a", "lvds-decoder";
++		power-supply = <&vcc_3v3_tft1>;
++
++		ports {
++			#address-cells = <1>;
++			#size-cells = <0>;
++
++			port@0 {
++				reg = <0>;
++				lvds_receiver_in: endpoint {
++					remote-endpoint = <&lvds0_out>;
++				};
++			};
++			port@1 {
++				reg = <1>;
++				lvds_receiver_out: endpoint {
++					remote-endpoint = <&panel_in>;
++				};
++			};
++		};
++	};
++
++	panel {
++		compatible = "edt,etm0700g0dh6";
++		backlight = <&lcd_backlight>;
++		power-supply = <&vcc_3v3_tft1>;
++
++		port {
++			panel_in: endpoint {
++				remote-endpoint = <&lvds_receiver_out>;
++			};
++		};
++	};
++
+ 	reg_1p5v: 1p5v {
+ 		compatible = "regulator-fixed";
+ 		regulator-name = "1P5V";
+@@ -85,6 +131,17 @@
+ 		};
+ 	};
+ 
++	vcc_3v3_tft1: regulator-panel {
++		compatible = "regulator-fixed";
++
++		regulator-name = "vcc-3v3-tft1";
++		regulator-min-microvolt = <3300000>;
++		regulator-max-microvolt = <3300000>;
++		enable-active-high;
++		startup-delay-us = <500>;
++		gpio = <&gpio5 28 GPIO_ACTIVE_HIGH>;
++	};
++
+ 	vcc_sdhi2: regulator-vcc-sdhi2 {
+ 		compatible = "regulator-fixed";
+ 
+@@ -139,6 +196,16 @@
+ 		VDDIO-supply = <&reg_3p3v>;
+ 		VDDD-supply = <&reg_1p5v>;
+ 	};
++
++	touch: touchpanel@38 {
++		compatible = "edt,edt-ft5406";
++		reg = <0x38>;
++		interrupt-parent = <&gpio0>;
++		interrupts = <24 IRQ_TYPE_EDGE_FALLING>;
++		/* GP1_29 is also shared with audio codec reset pin */
++		reset-gpios = <&gpio1 29 GPIO_ACTIVE_LOW>;
++		vcc-supply = <&vcc_3v3_tft1>;
++	};
+ };
+ 
+ &can1 {
+@@ -152,6 +219,18 @@
+ 	status = "okay";
+ };
+ 
++&du {
++	status = "okay";
++};
++
++&gpio0 {
++	touch-interrupt {
++		gpio-hog;
++		gpios = <24 GPIO_ACTIVE_LOW>;
++		input;
++	};
++};
++
+ &gpio1 {
+ 	can-trx-en-gpio{
+ 		gpio-hog;
+@@ -167,6 +246,17 @@
+ 	status = "okay";
+ };
+ 
++&lvds0 {
++	status = "okay";
++	ports {
++		port@1 {
++			lvds0_out: endpoint {
++				remote-endpoint = <&lvds_receiver_in>;
++			};
++		};
++	};
++};
++
+ &msiof0 {
+ 	pinctrl-0 = <&msiof0_pins>;
+ 	pinctrl-names = "default";
+@@ -229,6 +319,11 @@
+ 		function = "avb";
+ 	};
+ 
++	backlight_pins: backlight {
++		groups = "tpu0_to2";
++		function = "tpu0";
++	};
++
+ 	can1_pins: can1 {
+ 		groups = "can1_data_b";
+ 		function = "can1";
+@@ -335,6 +430,10 @@
+ 	shared-pin;
+ };
+ 
++&tpu {
++	status = "okay";
++};
++
+ &usbphy {
+ 	status = "okay";
+ };
 -- 
-Sincerely yours,
-Mike.
+2.17.1
+
