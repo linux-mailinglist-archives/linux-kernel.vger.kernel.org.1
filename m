@@ -2,99 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B38B927BA5D
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 03:39:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D52627B984
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 03:31:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727497AbgI2BjC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 21:39:02 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:47682 "EHLO inva021.nxp.com"
+        id S1727628AbgI2Bb3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 21:31:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40064 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726421AbgI2BjB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 21:39:01 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id D6F1F200E74;
-        Tue, 29 Sep 2020 03:38:58 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 80C6D200EAD;
-        Tue, 29 Sep 2020 03:38:55 +0200 (CEST)
-Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 060764030D;
-        Tue, 29 Sep 2020 03:38:50 +0200 (CEST)
-From:   Ran Wang <ran.wang_1@nxp.com>
-To:     Fabio Estevam <festevam@gmail.com>,
-        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>
-Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Biwen Li <biwen.li@nxp.com>,
-        Ran Wang <ran.wang_1@nxp.com>
-Subject: [PATCH v2] arm64: dts: fix endianness issue of rcpm
-Date:   Tue, 29 Sep 2020 09:30:21 +0800
-Message-Id: <20200929013021.46395-1-ran.wang_1@nxp.com>
-X-Mailer: git-send-email 2.17.1
+        id S1727473AbgI2BbA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 21:31:00 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A3E1E2080A;
+        Tue, 29 Sep 2020 01:30:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601343059;
+        bh=4H/fR5q1JoOOjC4z3zPdkX31ixnSBx8yrYjHOz3qP/I=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=RJ+7UUfstL5VPqQflLnTSbj/NGZWs8De/E+qWMP9ZuhsWHqr9wrYb9q8ArQNWasii
+         860luA0Z8njc6JqyC4oxYM9gc1tQcSbzBwVS+Cd0F623QddysFgeG5psc3vCzO3YU0
+         H90rII5NwxUovQNiDs11Ao0i8Jgqb46Kudeb8VZE=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Xiaoliang Yang <xiaoliang.yang_1@nxp.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.8 25/29] net: dsa: felix: fix some key offsets for IP4_TCP_UDP VCAP IS2 entries
+Date:   Mon, 28 Sep 2020 21:30:22 -0400
+Message-Id: <20200929013027.2406344-25-sashal@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200929013027.2406344-1-sashal@kernel.org>
+References: <20200929013027.2406344-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+X-stable: review
+X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Biwen Li <biwen.li@nxp.com>
+From: Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
 
-Add little-endian property to RCPM node (for ls1028a,ls1088a,ls208xa),
-otherwise RCPM driver will program hardware with incorrect setting,
-causing system (such as LS1028ARDB) failed to be waked by wakeup source.
+[ Upstream commit 8b9e03cd08250c60409099c791e858157838d9eb ]
 
-Fixes: 791c88ca5713 (“arm64: dts: ls1028a: Add ftm_alarm0 DT node”)
-Fixes: f4fe3a8665495 (“arm64: dts: layerscape: add ftm_alarm0 node”)
-Signed-off-by: Biwen Li <biwen.li@nxp.com>
-Signed-off-by: Ran Wang <ran.wang_1@nxp.com>
-Acked-by: Li Yang <leoyang.li@nxp.com>
+Some of the IS2 IP4_TCP_UDP keys are not correct, like L4_DPORT,
+L4_SPORT and other L4 keys. This prevents offloaded tc-flower rules from
+matching on src_port and dst_port for TCP and UDP packets.
+
+Signed-off-by: Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
+Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
-Change in v2:
- - Update commit message with more details
- - Add Fixes and Singed-off tags
+ drivers/net/dsa/ocelot/felix_vsc9959.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
- arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi | 1 +
- arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi | 1 +
- arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi | 1 +
- 3 files changed, 3 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
-index 0efeb8f..651bfe1 100644
---- a/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
-+++ b/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
-@@ -1012,6 +1012,7 @@
- 			compatible = "fsl,ls1028a-rcpm", "fsl,qoriq-rcpm-2.1+";
- 			reg = <0x0 0x1e34040 0x0 0x1c>;
- 			#fsl,rcpm-wakeup-cells = <7>;
-+			little-endian;
- 		};
- 
- 		ftm_alarm0: timer@2800000 {
-diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi
-index 169f474..2ef812d 100644
---- a/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi
-+++ b/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi
-@@ -787,6 +787,7 @@
- 			compatible = "fsl,ls1088a-rcpm", "fsl,qoriq-rcpm-2.1+";
- 			reg = <0x0 0x1e34040 0x0 0x18>;
- 			#fsl,rcpm-wakeup-cells = <6>;
-+			little-endian;
- 		};
- 
- 		ftm_alarm0: timer@2800000 {
-diff --git a/arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi
-index 41102da..141b3d2 100644
---- a/arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi
-+++ b/arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi
-@@ -769,6 +769,7 @@
- 			compatible = "fsl,ls208xa-rcpm", "fsl,qoriq-rcpm-2.1+";
- 			reg = <0x0 0x1e34040 0x0 0x18>;
- 			#fsl,rcpm-wakeup-cells = <6>;
-+			little-endian;
- 		};
- 
- 		ftm_alarm0: timer@2800000 {
+diff --git a/drivers/net/dsa/ocelot/felix_vsc9959.c b/drivers/net/dsa/ocelot/felix_vsc9959.c
+index 1dd9e348152d7..7c167a394b762 100644
+--- a/drivers/net/dsa/ocelot/felix_vsc9959.c
++++ b/drivers/net/dsa/ocelot/felix_vsc9959.c
+@@ -607,17 +607,17 @@ struct vcap_field vsc9959_vcap_is2_keys[] = {
+ 	[VCAP_IS2_HK_DIP_EQ_SIP]		= {118,   1},
+ 	/* IP4_TCP_UDP (TYPE=100) */
+ 	[VCAP_IS2_HK_TCP]			= {119,   1},
+-	[VCAP_IS2_HK_L4_SPORT]			= {120,  16},
+-	[VCAP_IS2_HK_L4_DPORT]			= {136,  16},
++	[VCAP_IS2_HK_L4_DPORT]			= {120,  16},
++	[VCAP_IS2_HK_L4_SPORT]			= {136,  16},
+ 	[VCAP_IS2_HK_L4_RNG]			= {152,   8},
+ 	[VCAP_IS2_HK_L4_SPORT_EQ_DPORT]		= {160,   1},
+ 	[VCAP_IS2_HK_L4_SEQUENCE_EQ0]		= {161,   1},
+-	[VCAP_IS2_HK_L4_URG]			= {162,   1},
+-	[VCAP_IS2_HK_L4_ACK]			= {163,   1},
+-	[VCAP_IS2_HK_L4_PSH]			= {164,   1},
+-	[VCAP_IS2_HK_L4_RST]			= {165,   1},
+-	[VCAP_IS2_HK_L4_SYN]			= {166,   1},
+-	[VCAP_IS2_HK_L4_FIN]			= {167,   1},
++	[VCAP_IS2_HK_L4_FIN]			= {162,   1},
++	[VCAP_IS2_HK_L4_SYN]			= {163,   1},
++	[VCAP_IS2_HK_L4_RST]			= {164,   1},
++	[VCAP_IS2_HK_L4_PSH]			= {165,   1},
++	[VCAP_IS2_HK_L4_ACK]			= {166,   1},
++	[VCAP_IS2_HK_L4_URG]			= {167,   1},
+ 	[VCAP_IS2_HK_L4_1588_DOM]		= {168,   8},
+ 	[VCAP_IS2_HK_L4_1588_VER]		= {176,   4},
+ 	/* IP4_OTHER (TYPE=101) */
 -- 
-2.7.4
+2.25.1
 
