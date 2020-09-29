@@ -2,174 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1509127D1F2
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 16:55:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BF8027D1F4
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 16:56:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730777AbgI2OzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 10:55:21 -0400
-Received: from mx2.suse.de ([195.135.220.15]:34658 "EHLO mx2.suse.de"
+        id S1731144AbgI2Oz5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 10:55:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52320 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728627AbgI2OzV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 10:55:21 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1601391320;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=c9HO/9n9icXpRGOaw7exoBm2LCNPxUE5Eyu2A1eeiOQ=;
-        b=eImcL4LJ9+xPI1gvbuUL+dTyMwpTQgk1m3wpiD3Z3l/ASvh9JfX446dwJLUw7fPD9WjOMV
-        YdhUyHqbxQz+6f3/ii9xZoOD0iydN0+7HY5kpxqyXxTjVUT7VNN/njalb4Wz4HXPwHS3m6
-        Zwq0pIZKZ0bkUf8CtGJ+aNOxURKikJU=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 02F66AC12;
-        Tue, 29 Sep 2020 14:55:20 +0000 (UTC)
-Date:   Tue, 29 Sep 2020 16:55:19 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Vijay Balakrishna <vijayb@linux.microsoft.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Allen Pais <apais@microsoft.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [v4] mm: khugepaged: recalculate min_free_kbytes after memory
- hotplug as expected by khugepaged
-Message-ID: <20200929145519.GF2277@dhcp22.suse.cz>
-References: <1601338047-18558-1-git-send-email-vijayb@linux.microsoft.com>
+        id S1728599AbgI2Oz4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 10:55:56 -0400
+Received: from mail-oi1-f179.google.com (mail-oi1-f179.google.com [209.85.167.179])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0239F20759;
+        Tue, 29 Sep 2020 14:55:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601391356;
+        bh=rRoIRoEtvKiTxqLBDCdJgd1vsV6WDXH8vqiw37EJFYA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=dPznjLDIaJpJChnMBlyMr9U65GihWzprmxsqEfcFO6syoe1QeDYMdtdEY24nUv6C5
+         G2+T7OTTyY2TfxrA0rzNaNVd352e42a+G/Czw8N9a9xSMAjByfzDW58Jy8TSGQykHx
+         OJAXVbqztgfMHk3ZclOgvMcOMFd5hKjEBfuJHDPs=
+Received: by mail-oi1-f179.google.com with SMTP id v20so5783384oiv.3;
+        Tue, 29 Sep 2020 07:55:55 -0700 (PDT)
+X-Gm-Message-State: AOAM532Rxdd7QaO2xxh59pn4ZQU3Ig+Q6tlx64Z9RxtIxnBnyx1riLf6
+        ZLlDaV/L6ovDrfnn+mrtwcyilLkxaZzzpPg+zA==
+X-Google-Smtp-Source: ABdhPJyUldfh8e5nBb7FCRtHZXShFRNUVuLZZfubdhoGCMHltLk6gRwvdq1tHkbGaKdvxwT4Kr+Mf9uzd0Eu9PdR/KQ=
+X-Received: by 2002:aca:fc07:: with SMTP id a7mr2845041oii.106.1601391354877;
+ Tue, 29 Sep 2020 07:55:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1601338047-18558-1-git-send-email-vijayb@linux.microsoft.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200928155953.2819930-1-robh@kernel.org> <68d57be8-c2e9-4bfd-4f7f-041aa3ce2e92@xilinx.com>
+In-Reply-To: <68d57be8-c2e9-4bfd-4f7f-041aa3ce2e92@xilinx.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Tue, 29 Sep 2020 09:55:43 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqL6z5zarTv4e1aWCi0rVoyoDOvZYpYLEuxMJF5a1i7yHQ@mail.gmail.com>
+Message-ID: <CAL_JsqL6z5zarTv4e1aWCi0rVoyoDOvZYpYLEuxMJF5a1i7yHQ@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: Fix 'reg' size issues in zynqmp examples
+To:     Michal Simek <michal.simek@xilinx.com>
+Cc:     devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Hyun Kwon <hyun.kwon@xilinx.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "open list:DMA GENERIC OFFLOAD ENGINE SUBSYSTEM" 
+        <dmaengine@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 28-09-20 17:07:27, Vijay Balakrishna wrote:
-> When memory is hotplug added or removed the min_free_kbytes must be
+On Tue, Sep 29, 2020 at 1:55 AM Michal Simek <michal.simek@xilinx.com> wrote:
+>
+> Hi Rob,
+>
+> On 28. 09. 20 17:59, Rob Herring wrote:
+> > The default sizes in examples for 'reg' are 1 cell each. Fix the
+> > incorrect sizes in zynqmp examples:
+> >
+> > Documentation/devicetree/bindings/dma/xilinx/xlnx,zynqmp-dpdma.example.dt.yaml: example-0: dma-controller@fd4c0000:reg:0: [0, 4249616384, 0, 4096] is too long
+> >       From schema: /usr/local/lib/python3.8/dist-packages/dtschema/schemas/reg.yaml
+> > Documentation/devicetree/bindings/display/xlnx/xlnx,zynqmp-dpsub.example.dt.yaml: example-0: display@fd4a0000:reg:0: [0, 4249485312, 0, 4096] is too long
+> >       From schema: /usr/local/lib/python3.8/dist-packages/dtschema/schemas/reg.yaml
+> > Documentation/devicetree/bindings/display/xlnx/xlnx,zynqmp-dpsub.example.dt.yaml: example-0: display@fd4a0000:reg:1: [0, 4249526272, 0, 4096] is too long
+> >       From schema: /usr/local/lib/python3.8/dist-packages/dtschema/schemas/reg.yaml
+> > Documentation/devicetree/bindings/display/xlnx/xlnx,zynqmp-dpsub.example.dt.yaml: example-0: display@fd4a0000:reg:2: [0, 4249530368, 0, 4096] is too long
+> >       From schema: /usr/local/lib/python3.8/dist-packages/dtschema/schemas/reg.yaml
+> > Documentation/devicetree/bindings/display/xlnx/xlnx,zynqmp-dpsub.example.dt.yaml: example-0: display@fd4a0000:reg:3: [0, 4249534464, 0, 4096] is too long
+> >       From schema: /usr/local/lib/python3.8/dist-packages/dtschema/schemas/reg.yaml
+> >
+> > Cc: Hyun Kwon <hyun.kwon@xilinx.com>
+> > Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> > Cc: Michal Simek <michal.simek@xilinx.com>
+> > Cc: Vinod Koul <vkoul@kernel.org>
+> > Cc: dri-devel@lists.freedesktop.org
+> > Cc: dmaengine@vger.kernel.org
+> > Signed-off-by: Rob Herring <robh@kernel.org>
+> > ---
+> >  .../bindings/display/xlnx/xlnx,zynqmp-dpsub.yaml          | 8 ++++----
+> >  .../devicetree/bindings/dma/xilinx/xlnx,zynqmp-dpdma.yaml | 2 +-
+> >  2 files changed, 5 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/Documentation/devicetree/bindings/display/xlnx/xlnx,zynqmp-dpsub.yaml b/Documentation/devicetree/bindings/display/xlnx/xlnx,zynqmp-dpsub.yaml
+> > index 52a939cade3b..7b9d468c3e52 100644
+> > --- a/Documentation/devicetree/bindings/display/xlnx/xlnx,zynqmp-dpsub.yaml
+> > +++ b/Documentation/devicetree/bindings/display/xlnx/xlnx,zynqmp-dpsub.yaml
+> > @@ -145,10 +145,10 @@ examples:
+> >
+> >      display@fd4a0000 {
+> >          compatible = "xlnx,zynqmp-dpsub-1.7";
+> > -        reg = <0x0 0xfd4a0000 0x0 0x1000>,
+> > -              <0x0 0xfd4aa000 0x0 0x1000>,
+> > -              <0x0 0xfd4ab000 0x0 0x1000>,
+> > -              <0x0 0xfd4ac000 0x0 0x1000>;
+> > +        reg = <0xfd4a0000 0x1000>,
+> > +              <0xfd4aa000 0x1000>,
+> > +              <0xfd4ab000 0x1000>,
+> > +              <0xfd4ac000 0x1000>;
+> >          reg-names = "dp", "blend", "av_buf", "aud";
+> >          interrupts = <0 119 4>;
+> >          interrupt-parent = <&gic>;
+> > diff --git a/Documentation/devicetree/bindings/dma/xilinx/xlnx,zynqmp-dpdma.yaml b/Documentation/devicetree/bindings/dma/xilinx/xlnx,zynqmp-dpdma.yaml
+> > index 5de510f8c88c..2a595b18ff6c 100644
+> > --- a/Documentation/devicetree/bindings/dma/xilinx/xlnx,zynqmp-dpdma.yaml
+> > +++ b/Documentation/devicetree/bindings/dma/xilinx/xlnx,zynqmp-dpdma.yaml
+> > @@ -57,7 +57,7 @@ examples:
+> >
+> >      dma: dma-controller@fd4c0000 {
+> >        compatible = "xlnx,zynqmp-dpdma";
+> > -      reg = <0x0 0xfd4c0000 0x0 0x1000>;
+> > +      reg = <0xfd4c0000 0x1000>;
+> >        interrupts = <GIC_SPI 122 IRQ_TYPE_LEVEL_HIGH>;
+> >        interrupt-parent = <&gic>;
+> >        clocks = <&dpdma_clk>;
+> >
+>
+> I would prefer to keep 64bit version.
+> I use this style.
 
-s@must@should@
+I prefer to keep the examples simple. The address size is outside the
+scope of the binding.
 
-> recalculated based on what is expected by khugepaged.  Currently
-> after hotplug, min_free_kbytes will be set to a lower default and higher
-> default set when THP enabled is lost.  This change restores min_free_kbytes
-> as expected for THP consumers.
-> 
-> Fixes: f000565adb77 ("thp: set recommended min free kbytes")
-> 
-> Signed-off-by: Vijay Balakrishna <vijayb@linux.microsoft.com>
-> Cc: stable@vger.kernel.org
-> Reviewed-by: Pavel Tatashin <pasha.tatashin@soleen.com>
-> Acked-by: Michal Hocko <mhocko@suse.com>
-> ---
-> v3 -> v4
-> - made changes to move khugepaged_min_free_kbytes_update into
->   init_per_zone_wmark_min and rested changes
->   [suggestion from Michal Hocko]
-> 
-> [v2 1/2]
-> - removed symptoms references from changelog
-> 
-> [v2 2/2]
-> - addressed following issues Michal Hocko raised:
->   . nr_free_buffer_pages can oveflow in int on very large machines
->   . min_free_kbytes can decrease the size theoretically
-> 
-> v1 -> v2
-> --------
-> - addressed issue Kirill A. Shutemov raised:
->   . changes would override min_free_kbytes set by user
-> 
->  include/linux/khugepaged.h |  5 +++++
->  mm/khugepaged.c            | 13 +++++++++++--
->  mm/page_alloc.c            |  3 +++
->  3 files changed, 19 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/linux/khugepaged.h b/include/linux/khugepaged.h
-> index bc45ea1efbf7..c941b7377321 100644
-> --- a/include/linux/khugepaged.h
-> +++ b/include/linux/khugepaged.h
-> @@ -15,6 +15,7 @@ extern int __khugepaged_enter(struct mm_struct *mm);
->  extern void __khugepaged_exit(struct mm_struct *mm);
->  extern int khugepaged_enter_vma_merge(struct vm_area_struct *vma,
->  				      unsigned long vm_flags);
-> +extern void khugepaged_min_free_kbytes_update(void);
->  #ifdef CONFIG_SHMEM
->  extern void collapse_pte_mapped_thp(struct mm_struct *mm, unsigned long addr);
->  #else
-> @@ -85,6 +86,10 @@ static inline void collapse_pte_mapped_thp(struct mm_struct *mm,
->  					   unsigned long addr)
->  {
->  }
-> +
-> +static inline void khugepaged_min_free_kbytes_update(void)
-> +{
-> +}
->  #endif /* CONFIG_TRANSPARENT_HUGEPAGE */
->  
->  #endif /* _LINUX_KHUGEPAGED_H */
-> diff --git a/mm/khugepaged.c b/mm/khugepaged.c
-> index cfa0dba5fd3b..4f7107476a6f 100644
-> --- a/mm/khugepaged.c
-> +++ b/mm/khugepaged.c
-> @@ -56,6 +56,9 @@ enum scan_result {
->  #define CREATE_TRACE_POINTS
->  #include <trace/events/huge_memory.h>
->  
-> +static struct task_struct *khugepaged_thread __read_mostly;
-> +static DEFINE_MUTEX(khugepaged_mutex);
-> +
->  /* default scan 8*512 pte (or vmas) every 30 second */
->  static unsigned int khugepaged_pages_to_scan __read_mostly;
->  static unsigned int khugepaged_pages_collapsed;
-> @@ -2292,8 +2295,6 @@ static void set_recommended_min_free_kbytes(void)
->  
->  int start_stop_khugepaged(void)
->  {
-> -	static struct task_struct *khugepaged_thread __read_mostly;
-> -	static DEFINE_MUTEX(khugepaged_mutex);
->  	int err = 0;
->  
->  	mutex_lock(&khugepaged_mutex);
-> @@ -2320,3 +2321,11 @@ int start_stop_khugepaged(void)
->  	mutex_unlock(&khugepaged_mutex);
->  	return err;
->  }
-> +
-> +void khugepaged_min_free_kbytes_update(void)
-> +{
-> +	mutex_lock(&khugepaged_mutex);
-> +	if (khugepaged_enabled() && khugepaged_thread)
-> +		set_recommended_min_free_kbytes();
-> +	mutex_unlock(&khugepaged_mutex);
-> +}
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index fab5e97dc9ca..ac25d3526fa5 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -69,6 +69,7 @@
->  #include <linux/nmi.h>
->  #include <linux/psi.h>
->  #include <linux/padata.h>
-> +#include <linux/khugepaged.h>
->  
->  #include <asm/sections.h>
->  #include <asm/tlbflush.h>
-> @@ -7891,6 +7892,8 @@ int __meminit init_per_zone_wmark_min(void)
->  	setup_min_slab_ratio();
->  #endif
->  
-> +	khugepaged_min_free_kbytes_update();
-> +
->  	return 0;
->  }
->  postcore_initcall(init_per_zone_wmark_min)
-> -- 
-> 2.28.0
-
--- 
-Michal Hocko
-SUSE Labs
+Rob
