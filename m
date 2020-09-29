@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D8BF27C38A
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:07:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2670427C3FB
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:10:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728460AbgI2LGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:06:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41564 "EHLO mail.kernel.org"
+        id S1729156AbgI2LKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:10:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51164 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728297AbgI2LFP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:05:15 -0400
+        id S1728863AbgI2LKW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:10:22 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 89C5621734;
-        Tue, 29 Sep 2020 11:05:12 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 665F621D7F;
+        Tue, 29 Sep 2020 11:10:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601377512;
-        bh=uQsG3jFKRmd236heYix3rvHt30j7s0Zb8CG8ugHrr6A=;
+        s=default; t=1601377821;
+        bh=YTi2DVDTYY9Gzpuq/f0hpUTUJ4WQ85KgDRz9QQ36yCU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NbB5MVnPgkupiRzC3E3Q3fmKrnqioy8KVUNKy7Gj/UO45/AAf/c1QJt/kwLAcm4IL
-         IgkREmoD6k/VkvvH1aYVZxmW4mESJj+MsOdqpcO1RDXYYua1uti67vxXA8TJMxUpLN
-         m9AY/m5DU3VlN3raHC7fuEsvl84olw/9Ld2rvDf0=
+        b=NHRr8hfPN4+cDf/VzZVGsyxFhCpKHwyYvEJjxTXTlwc5Hl8qJM9MrsMSQbWM21Rsg
+         yhvPmow9PCAp340Hf19C+gD14NUS8GZXO7syjSwf/0La4uE1RRod2JW24Xlhh6skzS
+         7cq6Je2LAvcLQGAWYHuMeRw+AV963ecyD0aGmthA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qian Cai <cai@lca.pw>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 32/85] skbuff: fix a data race in skb_queue_len()
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sasha Levin <sashal@kernel.org>,
+        =?UTF-8?q?Josef=20M=C3=B6llers?= <josef.moellers@suse.com>
+Subject: [PATCH 4.9 055/121] media: go7007: Fix URB type for interrupt handling
 Date:   Tue, 29 Sep 2020 12:59:59 +0200
-Message-Id: <20200929105929.830354639@linuxfoundation.org>
+Message-Id: <20200929105932.907570026@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929105928.198942536@linuxfoundation.org>
-References: <20200929105928.198942536@linuxfoundation.org>
+In-Reply-To: <20200929105930.172747117@linuxfoundation.org>
+References: <20200929105930.172747117@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,114 +45,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qian Cai <cai@lca.pw>
+From: Takashi Iwai <tiwai@suse.de>
 
-[ Upstream commit 86b18aaa2b5b5bb48e609cd591b3d2d0fdbe0442 ]
+[ Upstream commit a3ea410cac41b19a5490aad7fe6d9a9a772e646e ]
 
-sk_buff.qlen can be accessed concurrently as noticed by KCSAN,
+Josef reported that his old-and-good Plextor ConvertX M402U video
+converter spews lots of WARNINGs on the recent kernels, and it turned
+out that the device uses a bulk endpoint for interrupt handling just
+like 2250 board.
 
- BUG: KCSAN: data-race in __skb_try_recv_from_queue / unix_dgram_sendmsg
+For fixing it, generalize the check with the proper verification of
+the endpoint instead of hard-coded board type check.
 
- read to 0xffff8a1b1d8a81c0 of 4 bytes by task 5371 on cpu 96:
-  unix_dgram_sendmsg+0x9a9/0xb70 include/linux/skbuff.h:1821
-				 net/unix/af_unix.c:1761
-  ____sys_sendmsg+0x33e/0x370
-  ___sys_sendmsg+0xa6/0xf0
-  __sys_sendmsg+0x69/0xf0
-  __x64_sys_sendmsg+0x51/0x70
-  do_syscall_64+0x91/0xb47
-  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+Fixes: 7e5219d18e93 ("[media] go7007: Fix 2250 urb type")
+Reported-and-tested-by: Josef Möllers <josef.moellers@suse.com>
+BugLink: https://bugzilla.suse.com/show_bug.cgi?id=1162583
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=206427
 
- write to 0xffff8a1b1d8a81c0 of 4 bytes by task 1 on cpu 99:
-  __skb_try_recv_from_queue+0x327/0x410 include/linux/skbuff.h:2029
-  __skb_try_recv_datagram+0xbe/0x220
-  unix_dgram_recvmsg+0xee/0x850
-  ____sys_recvmsg+0x1fb/0x210
-  ___sys_recvmsg+0xa2/0xf0
-  __sys_recvmsg+0x66/0xf0
-  __x64_sys_recvmsg+0x51/0x70
-  do_syscall_64+0x91/0xb47
-  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-
-Since only the read is operating as lockless, it could introduce a logic
-bug in unix_recvq_full() due to the load tearing. Fix it by adding
-a lockless variant of skb_queue_len() and unix_recvq_full() where
-READ_ONCE() is on the read while WRITE_ONCE() is on the write similar to
-the commit d7d16a89350a ("net: add skb_queue_empty_lockless()").
-
-Signed-off-by: Qian Cai <cai@lca.pw>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/skbuff.h | 14 +++++++++++++-
- net/unix/af_unix.c     | 11 +++++++++--
- 2 files changed, 22 insertions(+), 3 deletions(-)
+ drivers/media/usb/go7007/go7007-usb.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
-index 2528f712b8c0b..95feb153fe9a8 100644
---- a/include/linux/skbuff.h
-+++ b/include/linux/skbuff.h
-@@ -1438,6 +1438,18 @@ static inline __u32 skb_queue_len(const struct sk_buff_head *list_)
- 	return list_->qlen;
- }
+diff --git a/drivers/media/usb/go7007/go7007-usb.c b/drivers/media/usb/go7007/go7007-usb.c
+index ed9bcaf08d5ec..ddfaabd4c0813 100644
+--- a/drivers/media/usb/go7007/go7007-usb.c
++++ b/drivers/media/usb/go7007/go7007-usb.c
+@@ -1052,6 +1052,7 @@ static int go7007_usb_probe(struct usb_interface *intf,
+ 	struct go7007_usb *usb;
+ 	const struct go7007_usb_board *board;
+ 	struct usb_device *usbdev = interface_to_usbdev(intf);
++	struct usb_host_endpoint *ep;
+ 	unsigned num_i2c_devs;
+ 	char *name;
+ 	int video_pipe, i, v_urb_len;
+@@ -1147,7 +1148,8 @@ static int go7007_usb_probe(struct usb_interface *intf,
+ 	if (usb->intr_urb->transfer_buffer == NULL)
+ 		goto allocfail;
  
-+/**
-+ *	skb_queue_len_lockless	- get queue length
-+ *	@list_: list to measure
-+ *
-+ *	Return the length of an &sk_buff queue.
-+ *	This variant can be used in lockless contexts.
-+ */
-+static inline __u32 skb_queue_len_lockless(const struct sk_buff_head *list_)
-+{
-+	return READ_ONCE(list_->qlen);
-+}
-+
- /**
-  *	__skb_queue_head_init - initialize non-spinlock portions of sk_buff_head
-  *	@list: queue to initialize
-@@ -1641,7 +1653,7 @@ static inline void __skb_unlink(struct sk_buff *skb, struct sk_buff_head *list)
- {
- 	struct sk_buff *next, *prev;
- 
--	list->qlen--;
-+	WRITE_ONCE(list->qlen, list->qlen - 1);
- 	next	   = skb->next;
- 	prev	   = skb->prev;
- 	skb->next  = skb->prev = NULL;
-diff --git a/net/unix/af_unix.c b/net/unix/af_unix.c
-index b5e2ef242efe7..ac78c5ac82846 100644
---- a/net/unix/af_unix.c
-+++ b/net/unix/af_unix.c
-@@ -191,11 +191,17 @@ static inline int unix_may_send(struct sock *sk, struct sock *osk)
- 	return unix_peer(osk) == NULL || unix_our_peer(sk, osk);
- }
- 
--static inline int unix_recvq_full(struct sock const *sk)
-+static inline int unix_recvq_full(const struct sock *sk)
- {
- 	return skb_queue_len(&sk->sk_receive_queue) > sk->sk_max_ack_backlog;
- }
- 
-+static inline int unix_recvq_full_lockless(const struct sock *sk)
-+{
-+	return skb_queue_len_lockless(&sk->sk_receive_queue) >
-+		READ_ONCE(sk->sk_max_ack_backlog);
-+}
-+
- struct sock *unix_peer_get(struct sock *s)
- {
- 	struct sock *peer;
-@@ -1792,7 +1798,8 @@ restart_locked:
- 	 * - unix_peer(sk) == sk by time of get but disconnected before lock
- 	 */
- 	if (other != sk &&
--	    unlikely(unix_peer(other) != sk && unix_recvq_full(other))) {
-+	    unlikely(unix_peer(other) != sk &&
-+	    unix_recvq_full_lockless(other))) {
- 		if (timeo) {
- 			timeo = unix_wait_for_peer(other, timeo);
- 
+-	if (go->board_id == GO7007_BOARDID_SENSORAY_2250)
++	ep = usb->usbdev->ep_in[4];
++	if (usb_endpoint_type(&ep->desc) == USB_ENDPOINT_XFER_BULK)
+ 		usb_fill_bulk_urb(usb->intr_urb, usb->usbdev,
+ 			usb_rcvbulkpipe(usb->usbdev, 4),
+ 			usb->intr_urb->transfer_buffer, 2*sizeof(u16),
 -- 
 2.25.1
 
