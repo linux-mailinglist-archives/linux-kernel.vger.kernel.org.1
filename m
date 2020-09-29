@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFA8A27C31A
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:03:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6025427C4A9
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:15:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728381AbgI2LDM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:03:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38680 "EHLO mail.kernel.org"
+        id S1729535AbgI2LPi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:15:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60062 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728301AbgI2LDE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:03:04 -0400
+        id S1728958AbgI2LPf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:15:35 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 91F6A21924;
-        Tue, 29 Sep 2020 11:03:03 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6BFD7206DB;
+        Tue, 29 Sep 2020 11:15:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601377384;
-        bh=TQVJNt/bVD6oxbkrcWUlYDbOjx04blkfjvwyasnhIXg=;
+        s=default; t=1601378135;
+        bh=lFCzPiwrwZi+2I/qPpv079tYMk9JTossO09i+z/sBqQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gYDWuxk9EAfCBlLGGLzvt62bBOGfCJRkqjPPYo2fOujHvzFtWbccwiUM/IqWRKVF9
-         uqacKetpKrIwoB8GcOwnapFNOHWqs2RsF2j8Z05zrxzUlcipGr4GKMGGfIQmwFUe56
-         xdKy/aDl6fqSkWc3Xq4Wru4lqWW2KOj+q02bFzPI=
+        b=zp6JANwnW6mlKKErI1FikGxaZFZH81GGrFRfCVJKw7QOYt2ctbKuVJI7u4Lp6Lrqf
+         IQTfBKlnCRS0BZ6kKPCon9+PIiHlQSR8/0JSkQigI0HCa5JErZIcumA2oBCAepiyKA
+         l/uDvvvvizibY91GRdhD/+JCUoVJu6jOPfEFhjRM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hou Tao <houtao1@huawei.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
+        stable@vger.kernel.org, Alain Michaud <alainm@chromium.org>,
+        Marcel Holtmann <marcel@holtmann.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 17/85] mtd: cfi_cmdset_0002: dont free cfi->cfiq in error path of cfi_amdstd_setup()
-Date:   Tue, 29 Sep 2020 12:59:44 +0200
-Message-Id: <20200929105929.076572462@linuxfoundation.org>
+Subject: [PATCH 4.14 073/166] Bluetooth: guard against controllers sending zerod events
+Date:   Tue, 29 Sep 2020 12:59:45 +0200
+Message-Id: <20200929105938.865682425@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929105928.198942536@linuxfoundation.org>
-References: <20200929105928.198942536@linuxfoundation.org>
+In-Reply-To: <20200929105935.184737111@linuxfoundation.org>
+References: <20200929105935.184737111@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,34 +43,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hou Tao <houtao1@huawei.com>
+From: Alain Michaud <alainm@chromium.org>
 
-[ Upstream commit 03976af89e3bd9489d542582a325892e6a8cacc0 ]
+[ Upstream commit 08bb4da90150e2a225f35e0f642cdc463958d696 ]
 
-Else there may be a double-free problem, because cfi->cfiq will
-be freed by mtd_do_chip_probe() if both the two invocations of
-check_cmd_set() return failure.
+Some controllers have been observed to send zero'd events under some
+conditions.  This change guards against this condition as well as adding
+a trace to facilitate diagnosability of this condition.
 
-Signed-off-by: Hou Tao <houtao1@huawei.com>
-Reviewed-by: Richard Weinberger <richard@nod.at>
-Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
+Signed-off-by: Alain Michaud <alainm@chromium.org>
+Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mtd/chips/cfi_cmdset_0002.c | 1 -
- 1 file changed, 1 deletion(-)
+ net/bluetooth/hci_event.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
-index 972935f1b2f7e..3a3da0eeef1fb 100644
---- a/drivers/mtd/chips/cfi_cmdset_0002.c
-+++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-@@ -724,7 +724,6 @@ static struct mtd_info *cfi_amdstd_setup(struct mtd_info *mtd)
- 	kfree(mtd->eraseregions);
- 	kfree(mtd);
- 	kfree(cfi->cmdset_priv);
--	kfree(cfi->cfiq);
- 	return NULL;
- }
+diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
+index 70b8e2de40cf4..1d2f439043669 100644
+--- a/net/bluetooth/hci_event.c
++++ b/net/bluetooth/hci_event.c
+@@ -5257,6 +5257,11 @@ void hci_event_packet(struct hci_dev *hdev, struct sk_buff *skb)
+ 	u8 status = 0, event = hdr->evt, req_evt = 0;
+ 	u16 opcode = HCI_OP_NOP;
  
++	if (!event) {
++		bt_dev_warn(hdev, "Received unexpected HCI Event 00000000");
++		goto done;
++	}
++
+ 	if (hdev->sent_cmd && bt_cb(hdev->sent_cmd)->hci.req_event == event) {
+ 		struct hci_command_hdr *cmd_hdr = (void *) hdev->sent_cmd->data;
+ 		opcode = __le16_to_cpu(cmd_hdr->opcode);
+@@ -5468,6 +5473,7 @@ void hci_event_packet(struct hci_dev *hdev, struct sk_buff *skb)
+ 		req_complete_skb(hdev, status, opcode, orig_skb);
+ 	}
+ 
++done:
+ 	kfree_skb(orig_skb);
+ 	kfree_skb(skb);
+ 	hdev->stat.evt_rx++;
 -- 
 2.25.1
 
