@@ -2,53 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B542327C1CC
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 12:00:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E4D227C1CD
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 12:00:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727856AbgI2KAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 06:00:02 -0400
-Received: from esa5.microchip.iphmx.com ([216.71.150.166]:32824 "EHLO
-        esa5.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725535AbgI2J77 (ORCPT
+        id S1727963AbgI2KAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 06:00:09 -0400
+Received: from esa6.microchip.iphmx.com ([216.71.154.253]:41943 "EHLO
+        esa6.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727851AbgI2KAC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 05:59:59 -0400
+        Tue, 29 Sep 2020 06:00:02 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1601373599; x=1632909599;
+  t=1601373601; x=1632909601;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=Cu69HIcgGSdlgNuwF6Hj+SbTIxuPhxtas1dOTY7FDXA=;
-  b=ViP5tDhrKy8ywAi+Hl0MLiHwQ8mlZ43bp6Juj61ddHI6ilAolPI8KuUA
-   Ky9+KbpZTnB+nl8GzU9LioaTuC5NhjFnBMabcpDlswXxpv3ZNb/ya4re6
-   udiHh/N126SBXTge8kb1g93xOH3Aekcd+FD/I0wdkyDOSgu+8GcuHnMQt
-   /UpZi+G1NIp1bAIdfX8XXm4YbUbmbxFkfRQp7N7SDF3aWc3ybT4VRjA3/
-   9mFOMsFsL6OMtV78wOmG79xeCDcHLmPG6sZ88pE46B6Q9D5NrXFIkgl31
-   zWvY0dwzlp3p7VScCpub2Sgb1PQsXV3BYj1zcJ6Fw8WL7tS2QqNitoQOY
-   g==;
-IronPort-SDR: j4sKAl3FTdf4+QbHv7XYJHwqRp08gLHFmKENBn3POez2WgR5k1TBd8Kh5XEfCUOhCFsuztG+YR
- jDX53CUGHQ3v/rKaoxKkljujYXwrh0AqtQAQvwHegqICdKFMuBkE9t6TY6rHH//+5dWPYsufHw
- vvKJjtrLcfxtb+COOXLXom8AquanXMUZMrXkeHLqiZeValMn0rDZkx7ebiepEmaWtoL1X9fK/j
- QDQf3I1rPx96aYEPNYWuI1ngf9NOuVm4rRhKTseSnCl3KM/PuUWqTYVcepcN9Ln0iPIKkai1tq
- jjM=
+  bh=PbCfDU0S2s2udnRqZm0ylD87jZbPya712ODwCNDxOrw=;
+  b=eZESUqwDV9SrobvCO3JJkmn+zfmr9mXQ8pbu6PIJb7+ScyeyaiqOSB+1
+   HpfQ1zXJLeoAmf/z0EMXAG9xUopu+lvP+zHtdtMntcXMO6y1DKfWaByKf
+   SFlaF/fAGAHHTD9cIYgKAFnksgfBDacNGtO2FnLHAgYY2gOe1Pnr+bwZc
+   cOmIv0E8nio0g4pMrXaNfOryhuwWWy1JkDNMyJEQuQRR1mefY3C9JEeZn
+   EYVCSABBF7obE6wqqJkg39fxOLYjibvNdj76Ju+9RdmpYUekFB7fh1yIp
+   UOoaUkBKEfP58mG5QXHHpBMfmmOUVCGX1kvqR7+kNuYa9UlAJidXFaDnN
+   A==;
+IronPort-SDR: SHRISkPzNj7otgVw8fP3mtayUWwfa2zCqYpnxcM9aShRXeOYE7CL7yyaE+9dSybKTlVtMtWwbs
+ 3SYAoVYoEhMPgXbSA/+/SAOLgiVSlMoFWSTFVRiS/Q+zi5FQShDIeu94vNeu660C42kcMUf7BJ
+ R171Toh7cyjsPcIvuHQv+rUChnbDImtyvOqaEuHLG5Q7plTI8YlJw50oWAFq/C+a6WzcPUN2hX
+ unABIzFmivIdsh9PBNZlWCrNzDRS6lRwwV195bPZYbKjWBctqYkBvv5wNLW6vodzK3dM325Jyz
+ zz8=
 X-IronPort-AV: E=Sophos;i="5.77,318,1596524400"; 
-   d="scan'208";a="92761633"
+   d="scan'208";a="28034382"
 Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 29 Sep 2020 02:59:59 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.87.72) by
- chn-vm-ex02.mchp-main.com (10.10.87.72) with Microsoft SMTP Server
+  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 29 Sep 2020 03:00:00 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 29 Sep 2020 02:59:49 -0700
+ 15.1.1979.3; Tue, 29 Sep 2020 03:00:00 -0700
 Received: from atudor-ThinkPad-T470p.amer.actel.com (10.10.115.15) by
  chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Tue, 29 Sep 2020 02:59:47 -0700
+ 15.1.1979.3 via Frontend Transport; Tue, 29 Sep 2020 02:59:49 -0700
 From:   Tudor Ambarus <tudor.ambarus@microchip.com>
 To:     <p.yadav@ti.com>, <vigneshr@ti.com>,
         <boris.brezillon@collabora.com>
 CC:     <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
         "Tudor Ambarus" <tudor.ambarus@microchip.com>
-Subject: [RFC PATCH 2/3] mtd: spi-nor: Introduce MTD_SPI_NOR_ALLOW_STATEFUL_MODES
-Date:   Tue, 29 Sep 2020 12:59:50 +0300
-Message-ID: <20200929095951.1575658-3-tudor.ambarus@microchip.com>
+Subject: [RFC PATCH 3/3] mtd: spi-nor: Parse SFDP SCCR Map
+Date:   Tue, 29 Sep 2020 12:59:51 +0300
+Message-ID: <20200929095951.1575658-4-tudor.ambarus@microchip.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200929095951.1575658-1-tudor.ambarus@microchip.com>
 References: <20200916124418.833-1-p.yadav@ti.com>
@@ -60,69 +60,97 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some users may teach their bootloaders to discover and recover a
-flash even when left in a statefull mode (a X-X-X I/O mode that is
-configured via a non-volatile bit).
+Parse just the 22nd dword and look for the 'DTR Octal Mode Enable
+Volatile bit'.
 
-Provide a way for those users to enter in stateful modes. A reset
-or a crash will leave the flash in full I/O mode and if the bootloader
-does not know how to recover, the SPI NOR boot will be broken.
-
-Flashes that will enable stateful modes will be accepted only if a
-hook to recover from the stateful mode is provided in the kernel.
-With this, even if a user will break its SPI NOR boot, it'll be able
-to recover the flash at the kernel level (on those systems that have
-at least another boot media). Both the Kconfig and the acceptance
-restriction are needed, so that we don't end up completely hopeless
-and look at a flash for which there is no software to discover and
-recover the flash. Even if we can recover the flash from a stateful
-mode in kernel, entering the stateful mode is still dangerous if one's
-bootloader can't handle it. We need a way to pass the responsibility
-to the user and let him decide conciously about the risks of allowing
-stateful modes.
+SPI_NOR_IO_MODE_EN_VOLATILE should be set just for the flashes
+that don't define the optional SFDP SCCR Map. For the others,
+let the SFDP do its job and fill the SNOR_F_IO_MODE_EN_VOLATILE
+flag. We avoid this way polluting the flash flags when declaring
+one.
 
 Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
 ---
- drivers/mtd/spi-nor/Kconfig | 10 ++++++++++
- drivers/mtd/spi-nor/core.c  |  2 ++
- 2 files changed, 12 insertions(+)
+ drivers/mtd/spi-nor/sfdp.c | 52 ++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 52 insertions(+)
 
-diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
-index ffc4b380f2b1..ab62457559b2 100644
---- a/drivers/mtd/spi-nor/Kconfig
-+++ b/drivers/mtd/spi-nor/Kconfig
-@@ -24,6 +24,16 @@ config MTD_SPI_NOR_USE_4K_SECTORS
- 	  Please note that some tools/drivers/filesystems may not work with
- 	  4096 B erase size (e.g. UBIFS requires 15 KiB as a minimum).
+diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
+index f192710aca31..7bca64cbba02 100644
+--- a/drivers/mtd/spi-nor/sfdp.c
++++ b/drivers/mtd/spi-nor/sfdp.c
+@@ -21,6 +21,10 @@
+ #define SFDP_SECTOR_MAP_ID	0xff81	/* Sector Map Table */
+ #define SFDP_4BAIT_ID		0xff84  /* 4-byte Address Instruction Table */
+ #define SFDP_PROFILE1_ID	0xff05	/* xSPI Profile 1.0 table. */
++#define SFDP_SCCR_MAP_ID	0xff87	/*
++					 * Status, Control and Configuration
++					 * Register Map.
++					 */
  
-+config MTD_SPI_NOR_ALLOW_STATEFUL_MODES
-+	bool "Allow stateful modes (DANGEROUS)"
-+	help
-+	  Allow the flash to enter in full I/O mode via a non-volatile bit.
-+	  A reset or a crash will leave the flash in the full I/O mode and if
-+	  the bootloader does not know how to recover, the SPI NOR boot will be
-+	  broken.
+ #define SFDP_SIGNATURE		0x50444653U
+ 
+@@ -1199,6 +1203,50 @@ static int spi_nor_parse_profile1(struct spi_nor *nor,
+ 	return ret;
+ }
+ 
++#define SCCR_DWORD22_OCTAL_DTR_EN_VOLATILE		BIT(31)
 +
-+	  Say N, unless you absolutely know what you are doing.
++/**
++ * spi_nor_parse_sccr() - Parse the Status, Control and Configuration Register
++ *                        Map.
++ * @nor:		pointer to a 'struct spi_nor'
++ * @sccr_header:	pointer to the 'struct sfdp_parameter_header' describing
++ *			the SCCR Map table length and version.
++ * @params:		pointer to the 'struct spi_nor_flash_parameter' to be.
++ *
++ * Return: 0 on success, -errno otherwise.
++ */
++static int spi_nor_parse_sccr(struct spi_nor *nor,
++			      const struct sfdp_parameter_header *sccr_header,
++			      struct spi_nor_flash_parameter *params)
++{
++	u32 *dwords, addr;
++	size_t len;
++	int ret;
++	u8 io_mode_en_volatile;
 +
- source "drivers/mtd/spi-nor/controllers/Kconfig"
++	len = sccr_header->length * sizeof(*dwords);
++	dwords = kmalloc(len, GFP_KERNEL);
++	if (!dwords)
++		return -ENOMEM;
++
++	addr = SFDP_PARAM_HEADER_PTP(sccr_header);
++	ret = spi_nor_read_sfdp(nor, addr, len, dwords);
++	if (ret)
++		goto out;
++
++	le32_to_cpu_array(dwords, sccr_header->length);
++
++	io_mode_en_volatile = FIELD_GET(SCCR_DWORD22_OCTAL_DTR_EN_VOLATILE,
++					dwords[22]);
++
++	if (io_mode_en_volatile)
++		nor->flags |= SNOR_F_IO_MODE_EN_VOLATILE;
++
++out:
++	kfree(dwords);
++	return ret;
++}
++
+ /**
+  * spi_nor_parse_sfdp() - parse the Serial Flash Discoverable Parameters.
+  * @nor:		pointer to a 'struct spi_nor'
+@@ -1304,6 +1352,10 @@ int spi_nor_parse_sfdp(struct spi_nor *nor,
+ 			err = spi_nor_parse_profile1(nor, param_header, params);
+ 			break;
  
- endif # MTD_SPI_NOR
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index c149b318e2e8..e89c3ea9a736 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -3089,8 +3089,10 @@ static int spi_nor_octal_dtr_enable(struct spi_nor *nor, bool enable)
- 	      nor->write_proto == SNOR_PROTO_8_8_8_DTR))
- 		return 0;
- 
-+#ifndef CONFIG_MTD_SPI_NOR_ALLOW_STATEFUL_MODES
- 	if (!(nor->flags & SNOR_F_IO_MODE_EN_VOLATILE))
- 		return 0;
-+#endif
- 
- 	ret = nor->params->octal_dtr_enable(nor, enable);
- 	if (ret)
++		case SFDP_SCCR_MAP_ID:
++			err = spi_nor_parse_sccr(nor, param_header, params);
++			break;
++
+ 		default:
+ 			break;
+ 		}
 -- 
 2.25.1
 
