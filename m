@@ -2,144 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3415E27D10B
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 16:27:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9D2527D10F
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 16:28:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729208AbgI2O1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 10:27:54 -0400
-Received: from mx2.suse.de ([195.135.220.15]:41766 "EHLO mx2.suse.de"
+        id S1729321AbgI2O2B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 10:28:01 -0400
+Received: from foss.arm.com ([217.140.110.172]:46258 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727543AbgI2O1y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 10:27:54 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1601389672;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Cmghqqosv6TC+EEk46m5qn+kgDZqcMz3XHHlxEb5k7E=;
-        b=WswOj2YCAeSn4D+OcezhC8ARfAUfxI+Jifu5PcvKgjgcyorjPIkOcdFs5ZYUTpo7B4g4UN
-        +aO7xj1VuQ6CUpzcf1RVFOv5PBxkACN2awTasaa+AYhJ+TLwC0onzmCyYg0w+Q61TpHWST
-        r87iUgH+gZmdW9Jb/CvRMqSFfjPVxQY=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 38ED2B03D;
-        Tue, 29 Sep 2020 14:27:52 +0000 (UTC)
-Date:   Tue, 29 Sep 2020 16:27:51 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Chengming Zhou <zhouchengming@bytedance.com>,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@linux.ie, daniel@ffwll.ch,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        sergey.senozhatsky@gmail.com, rostedt@goodmis.org,
-        mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        bsegall@google.com, mgorman@suse.de, songmuchun@bytedance.com,
-        john.ogness@linutronix.de
-Subject: Re: [External] Re: [PATCH 2/2] sched: mark
- PRINTK_DEFERRED_CONTEXT_MASK in __schedule()
-Message-ID: <20200929142750.GT6442@alley>
-References: <20200927161130.33172-1-zhouchengming@bytedance.com>
- <20200927161130.33172-2-zhouchengming@bytedance.com>
- <20200928073202.GA2611@hirez.programming.kicks-ass.net>
- <40ab934e-5b8b-735b-da65-3043efab9fdc@bytedance.com>
- <20200928090143.GA2628@hirez.programming.kicks-ass.net>
- <688eadd7-4ca3-3e32-3520-25977ff059a6@bytedance.com>
- <20200928102559.GF2611@hirez.programming.kicks-ass.net>
+        id S1727543AbgI2O2B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 10:28:01 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1F3D031B;
+        Tue, 29 Sep 2020 07:28:00 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [10.57.51.69])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2B01F3F6CF;
+        Tue, 29 Sep 2020 07:27:55 -0700 (PDT)
+Date:   Tue, 29 Sep 2020 15:27:52 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Marco Elver <elver@google.com>
+Cc:     akpm@linux-foundation.org, glider@google.com, hpa@zytor.com,
+        paulmck@kernel.org, andreyknvl@google.com, aryabinin@virtuozzo.com,
+        luto@kernel.org, bp@alien8.de, catalin.marinas@arm.com,
+        cl@linux.com, dave.hansen@linux.intel.com, rientjes@google.com,
+        dvyukov@google.com, edumazet@google.com,
+        gregkh@linuxfoundation.org, hdanton@sina.com, mingo@redhat.com,
+        jannh@google.com, Jonathan.Cameron@huawei.com, corbet@lwn.net,
+        iamjoonsoo.kim@lge.com, keescook@chromium.org, penberg@kernel.org,
+        peterz@infradead.org, sjpark@amazon.com, tglx@linutronix.de,
+        vbabka@suse.cz, will@kernel.org, x86@kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH v3 03/10] arm64, kfence: enable KFENCE for ARM64
+Message-ID: <20200929142752.GD53442@C02TD0UTHF1T.local>
+References: <20200921132611.1700350-1-elver@google.com>
+ <20200921132611.1700350-4-elver@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200928102559.GF2611@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200921132611.1700350-4-elver@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 2020-09-28 12:25:59, Peter Zijlstra wrote:
-> On Mon, Sep 28, 2020 at 06:04:23PM +0800, Chengming Zhou wrote:
+On Mon, Sep 21, 2020 at 03:26:04PM +0200, Marco Elver wrote:
+> Add architecture specific implementation details for KFENCE and enable
+> KFENCE for the arm64 architecture. In particular, this implements the
+> required interface in <asm/kfence.h>. Currently, the arm64 version does
+> not yet use a statically allocated memory pool, at the cost of a pointer
+> load for each is_kfence_address().
 > 
-> > Well, you are lucky. So it's a problem in our printk implementation.
+> Reviewed-by: Dmitry Vyukov <dvyukov@google.com>
+> Co-developed-by: Alexander Potapenko <glider@google.com>
+> Signed-off-by: Alexander Potapenko <glider@google.com>
+> Signed-off-by: Marco Elver <elver@google.com>
+> ---
+> For ARM64, we would like to solicit feedback on what the best option is
+> to obtain a constant address for __kfence_pool. One option is to declare
+> a memory range in the memory layout to be dedicated to KFENCE (like is
+> done for KASAN), however, it is unclear if this is the best available
+> option. We would like to avoid touching the memory layout.
+> ---
+>  arch/arm64/Kconfig              |  1 +
+>  arch/arm64/include/asm/kfence.h | 39 +++++++++++++++++++++++++++++++++
+>  arch/arm64/mm/fault.c           |  4 ++++
+>  3 files changed, 44 insertions(+)
+>  create mode 100644 arch/arm64/include/asm/kfence.h
 > 
-> Not lucky; I just kicked it in the groin really hard:
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git debug/experimental
-> 
-> > The deadlock path is:
-> > 
-> > printk
-> >   vprintk_emit
-> >     console_unlock
-> >       vt_console_print
-> >         hide_cursor
-> >           bit_cursor
-> >             soft_cursor
-> >               queue_work_on
-> >                 __queue_work
-> >                   try_to_wake_up
-> >                     _raw_spin_lock
-> >                       native_queued_spin_lock_slowpath
-> > 
-> > Looks like it's introduced by this commit:
-> > 
-> > eaa434defaca1781fb2932c685289b610aeb8b4b
-> > 
-> > "drm/fb-helper: Add fb_deferred_io support"
-> 
-> Oh gawd, yeah, all the !serial consoles are utter batshit.
-> 
-> Please look at John's last printk rewrite, IIRC it farms all that off to
-> a kernel thread instead of doing it from the printk() caller's context.
-> 
-> I'm not sure where he hides his latests patches, but I'm sure he'll be
-> more than happy to tell you.
+> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+> index 6d232837cbee..1acc6b2877c3 100644
+> --- a/arch/arm64/Kconfig
+> +++ b/arch/arm64/Kconfig
+> @@ -132,6 +132,7 @@ config ARM64
+>  	select HAVE_ARCH_JUMP_LABEL_RELATIVE
+>  	select HAVE_ARCH_KASAN if !(ARM64_16K_PAGES && ARM64_VA_BITS_48)
+>  	select HAVE_ARCH_KASAN_SW_TAGS if HAVE_ARCH_KASAN
+> +	select HAVE_ARCH_KFENCE if (!ARM64_16K_PAGES && !ARM64_64K_PAGES)
+>  	select HAVE_ARCH_KGDB
+>  	select HAVE_ARCH_MMAP_RND_BITS
+>  	select HAVE_ARCH_MMAP_RND_COMPAT_BITS if COMPAT
+> diff --git a/arch/arm64/include/asm/kfence.h b/arch/arm64/include/asm/kfence.h
+> new file mode 100644
+> index 000000000000..608dde80e5ca
+> --- /dev/null
+> +++ b/arch/arm64/include/asm/kfence.h
+> @@ -0,0 +1,39 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +
+> +#ifndef __ASM_KFENCE_H
+> +#define __ASM_KFENCE_H
+> +
+> +#include <linux/kfence.h>
+> +#include <linux/log2.h>
+> +#include <linux/mm.h>
+> +
+> +#include <asm/cacheflush.h>
+> +
+> +#define KFENCE_SKIP_ARCH_FAULT_HANDLER "el1_sync"
+> +
+> +/*
+> + * FIXME: Support HAVE_ARCH_KFENCE_STATIC_POOL: Use the statically allocated
+> + * __kfence_pool, to avoid the extra pointer load for is_kfence_address(). By
+> + * default, however, we do not have struct pages for static allocations.
+> + */
+> +
+> +static inline bool arch_kfence_initialize_pool(void)
+> +{
+> +	const unsigned int num_pages = ilog2(roundup_pow_of_two(KFENCE_POOL_SIZE / PAGE_SIZE));
+> +	struct page *pages = alloc_pages(GFP_KERNEL, num_pages);
+> +
+> +	if (!pages)
+> +		return false;
+> +
+> +	__kfence_pool = page_address(pages);
+> +	return true;
+> +}
+> +
+> +static inline bool kfence_protect_page(unsigned long addr, bool protect)
+> +{
+> +	set_memory_valid(addr, 1, !protect);
+> +
+> +	return true;
+> +}
 
-AFAIK, John is just working on updating the patchset so that it will
-be based on the lockless ringbuffer that is finally in the queue
-for-5.10.
+This is only safe if the linear map is force ot page granularity. That's
+the default with rodata=full, but this is not always the case, so this
+will need some interaction with the MMU setup in arch/arm64/mm/mmu.c.
 
-Upstreaming the console handling will be the next big step. I am sure
-that there will be long discussion about it. But there might be
-few things that would help removing printk_deferred().
-
-1. Messages will be printed on consoles by dedicated kthreads. It will
-   be safe context. No deadlocks.
-
-2. The registration and unregistration of consoles should not longer
-   be handled by console_lock (semaphore). It should be possible to
-   call most consoles without a sleeping lock. It should remove all
-   these deadlocks between printk() and scheduler().
-
-   There might be problems with some consoles. For example, tty would
-   most likely still need a sleeping lock because it is using the console
-   semaphore also internally.
-
-
-3. We will try harder to get the messages out immediately during
-   panic().
-
-
-It would take some time until the above reaches upstream. But it seems
-to be the right way to go.
-
-
-About printk_deferred():
-
-It is a whack a mole game. It is easy to miss printk() that might
-eventually cause the deadlock.
-
-printk deferred context is more safe. But it is still a what a mole
-game. The kthreads will do the same job for sure.
-
-Finally, the deadlock happens "only" when someone is waiting on
-console_lock() in parallel. Otherwise, the waitqueue for the semaphore
-is empty and scheduler is not called.
-
-It means that there is quite a big change to see the WARN(). It might
-be even bigger than with printk_deferred() because WARN() in scheduler
-means that the scheduler is big troubles. Nobody guarantees that
-the deferred messages will get handled later.
-
-Best Regards,
-Petr
+Thanks,
+Mark.
