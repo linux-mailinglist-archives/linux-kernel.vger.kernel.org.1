@@ -2,203 +2,302 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D79B927C8F6
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:06:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE9BB27C922
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:08:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731554AbgI2MGQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 08:06:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42858 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731901AbgI2MGN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 08:06:13 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0284BC061755;
-        Tue, 29 Sep 2020 05:06:13 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id m6so5128555wrn.0;
-        Tue, 29 Sep 2020 05:06:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=cc:subject:to:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=JkfzwPFEgR6eqrtsaH3iBBCMGvSyOxw11OTpBaI42jY=;
-        b=BFDNDeO4JtAlWsNLc241AAkX+uwihHDXGI6cSeHgQO3WtsxM7KtgDzB9ZqKr45Mm/k
-         5SIuPAnJZDdiy19k4VUk/zw9CL/04k51KHsOBw06EHaTK5Lj5MTs3QQpbfvt4TWOe49p
-         7UHaLCHkbc028Ia8z72VNAmkzr0IJ1icTjkJRjG58DFgOmTV2L/F/RSy4qcAN943RkFr
-         VxFDHkDNEP5FUZPatpzzKchrseqhPKNf25kK0cQM2GQxgsYA+M6NoDgTqyer6273v3DO
-         0GimAPb3L9m11zJC+9pR37lHWks1daMT3qUg+9msYgvsKbrw9i8XCxUJYHnfCw/z4tvW
-         t3xw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:cc:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=JkfzwPFEgR6eqrtsaH3iBBCMGvSyOxw11OTpBaI42jY=;
-        b=M4IRqa3+GPeok/sx2NQXKZPENmRUGl6HfQyaBE2Qiss0A7L6sBMeDufW0wZLOvwmZx
-         Op+UimclWbsBsxEUA7lHpFFLiD+5ifLuhhiegnaeR5QZyza5fDdBpfQvo7AQK2LOk49I
-         PT3TyJoVfrKJ8TKyfIaR3u0hMt8tZy2LMbI89mlmK8HWLX/B2qYe3RBrxT78wwF0DkKl
-         fzLxIJ+EgZEu09TncR3H0bpOPmxtMghKqSemulVHFwzydbsi/WvhHyHV26w7oiopAPKb
-         JGgYc4OJNbOZGt1HTRdvh0sNNti4dZmm/Qb3xEn1gHJti6olIxSK7E4mwvVCcjBJGAZ9
-         /EEw==
-X-Gm-Message-State: AOAM530kT1NKsSzaZkztuVK2L1TSVNEmvCkWYVokbuOv5/RAoSIdNz0L
-        M2APEkNgfm6YPgNPE7KddDFxn9dHEp4=
-X-Google-Smtp-Source: ABdhPJxe8TS0p/7FhIKfQ3DZzhiud3KocCaTNj03DhjQfmrjzNFA9glvILUgS8isPzWjfHI2KlwQFw==
-X-Received: by 2002:adf:e6c2:: with SMTP id y2mr4191333wrm.117.1601381171317;
-        Tue, 29 Sep 2020 05:06:11 -0700 (PDT)
-Received: from ?IPv6:2001:a61:2479:6801:d8fe:4132:9f23:7e8f? ([2001:a61:2479:6801:d8fe:4132:9f23:7e8f])
-        by smtp.gmail.com with ESMTPSA id k8sm5325750wma.16.2020.09.29.05.06.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 29 Sep 2020 05:06:10 -0700 (PDT)
-Cc:     mtk.manpages@gmail.com,
-        "linux-man@vger.kernel.org" <linux-man@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 22/24] membarrier.2: Note that glibc does not provide a
- wrapper
-To:     "G. Branden Robinson" <g.branden.robinson@gmail.com>
-References: <20200910211344.3562-1-colomar.6.4.3@gmail.com>
- <20200910211344.3562-23-colomar.6.4.3@gmail.com>
- <4ace434523f5491b9efcc7af175ad781@bfs.de>
- <20200921143617.2iskdncu3diginqn@localhost.localdomain>
- <2862c745-a23a-95d2-157e-7f91f671f839@gmail.com>
- <20200927054657.ea2zaiesle6hwjit@localhost.localdomain>
-From:   "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-Message-ID: <baeb500b-f252-2632-585a-93adfab28141@gmail.com>
-Date:   Tue, 29 Sep 2020 14:06:07 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1731222AbgI2MHx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 08:07:53 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:41016 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1731616AbgI2MHo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 08:07:44 -0400
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 2C9FB6FBC48F72C23B8B;
+        Tue, 29 Sep 2020 20:07:37 +0800 (CST)
+Received: from [10.136.114.67] (10.136.114.67) by smtp.huawei.com
+ (10.3.19.205) with Microsoft SMTP Server (TLS) id 14.3.487.0; Tue, 29 Sep
+ 2020 20:07:31 +0800
+Subject: Re: [f2fs-dev] [PATCH v2 1/2] f2fs: compress: introduce page array
+ slab cache
+To:     Jaegeuk Kim <jaegeuk@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>
+References: <20200914090514.50102-1-yuchao0@huawei.com>
+ <20200929082306.GA1567825@google.com>
+ <6e7639db-9120-d406-0a46-ec841845bb28@huawei.com>
+ <20200929084739.GB1567825@google.com>
+ <1b9774da-b2a8-2009-7796-9c576af1b4c4@huawei.com>
+ <5872f50c-4f3c-84bb-636f-6a6bd748c25f@huawei.com>
+ <20200929094605.GD1567825@google.com>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <4d203fa5-1814-bdd3-da31-7ee207b4bdd8@huawei.com>
+Date:   Tue, 29 Sep 2020 20:07:31 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-In-Reply-To: <20200927054657.ea2zaiesle6hwjit@localhost.localdomain>
-Content-Type: text/plain; charset=windows-1252
+In-Reply-To: <20200929094605.GD1567825@google.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.136.114.67]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Branden,
+On 2020/9/29 17:46, Jaegeuk Kim wrote:
+> On 09/29, Chao Yu wrote:
+>> On 2020/9/29 17:15, Chao Yu wrote:
+>>> On 2020/9/29 16:47, Jaegeuk Kim wrote:
+>>>> On 09/29, Chao Yu wrote:
+>>>>> On 2020/9/29 16:23, Jaegeuk Kim wrote:
+>>>>>> I found a bug related to the number of page pointer allocation related to
+>>>>>> nr_cpages.
+>>>>>
+>>>>> Jaegeuk,
+>>>>>
+>>>>> If I didn't miss anything, you mean that nr_cpages could be larger
+>>>>> than nr_rpages, right? the problematic case here is lzo/lzo-rle:
+>>>>>
+>>>>> cc->clen = lzo1x_worst_compress(PAGE_SIZE << cc->log_cluster_size);
+>>>>>
+>>>>> As we can't limited clen as we did for lz4/zstd:
+>>>>>
+>>>>> cc->clen = cc->rlen - PAGE_SIZE - COMPRESS_HEADER_SIZE;
+>>>>
+>>>> Yes, I've seen some memory corruption in lzo test. Here is another patch to fix
+>>>> mem leak.
+>>>>
+>>>> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+>>>> ---
+>>>>     fs/f2fs/compress.c | 67 ++++++++++++++++++++++++++++------------------
+>>>>     1 file changed, 41 insertions(+), 26 deletions(-)
+>>>>
+>>>> diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
+>>>> index f086ac43ca825..ba2d4897744d8 100644
+>>>> --- a/fs/f2fs/compress.c
+>>>> +++ b/fs/f2fs/compress.c
+>>>> @@ -20,22 +20,20 @@
+>>>>     static struct kmem_cache *cic_entry_slab;
+>>>>     static struct kmem_cache *dic_entry_slab;
+>>>> -static void *page_array_alloc(struct inode *inode)
+>>>> +static void *page_array_alloc(struct inode *inode, int nr)
+>>>>     {
+>>>>     	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
+>>>> -	unsigned int size = sizeof(struct page *) <<
+>>>> -				F2FS_I(inode)->i_log_cluster_size;
+>>>> +	unsigned int size = sizeof(struct page *) * nr;
+>>>>     	if (likely(size == sbi->page_array_slab_size))
+>>>>     		return kmem_cache_zalloc(sbi->page_array_slab, GFP_NOFS);
+>>>>     	return f2fs_kzalloc(sbi, size, GFP_NOFS);
+>>>>     }
+>>>> -static void page_array_free(struct inode *inode, void *pages)
+>>>> +static void page_array_free(struct inode *inode, void *pages, int nr)
+>>>>     {
+>>>>     	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
+>>>> -	unsigned int size = sizeof(struct page *) <<
+>>>> -				F2FS_I(inode)->i_log_cluster_size;
+>>>> +	unsigned int size = sizeof(struct page *) * nr;
+>>>>     	if (!pages)
+>>>>     		return;
+>>>> @@ -162,13 +160,13 @@ int f2fs_init_compress_ctx(struct compress_ctx *cc)
+>>>>     	if (cc->rpages)
+>>>>     		return 0;
+>>>> -	cc->rpages = page_array_alloc(cc->inode);
+>>>> +	cc->rpages = page_array_alloc(cc->inode, cc->cluster_size);
+>>>>     	return cc->rpages ? 0 : -ENOMEM;
+>>>>     }
+>>>>     void f2fs_destroy_compress_ctx(struct compress_ctx *cc)
+>>>>     {
+>>>> -	page_array_free(cc->inode, cc->rpages);
+>>>> +	page_array_free(cc->inode, cc->rpages, cc->cluster_size);
+>>>>     	cc->rpages = NULL;
+>>>>     	cc->nr_rpages = 0;
+>>>>     	cc->nr_cpages = 0;
+>>>> @@ -602,7 +600,8 @@ static int f2fs_compress_pages(struct compress_ctx *cc)
+>>>>     	struct f2fs_inode_info *fi = F2FS_I(cc->inode);
+>>>>     	const struct f2fs_compress_ops *cops =
+>>>>     				f2fs_cops[fi->i_compress_algorithm];
+>>>> -	unsigned int max_len, nr_cpages;
+>>>> +	unsigned int max_len, new_nr_cpages;
+>>>> +	struct page **new_cpages;
+>>>>     	int i, ret;
+>>>>     	trace_f2fs_compress_pages_start(cc->inode, cc->cluster_idx,
+>>>> @@ -617,7 +616,7 @@ static int f2fs_compress_pages(struct compress_ctx *cc)
+>>>>     	max_len = COMPRESS_HEADER_SIZE + cc->clen;
+>>>>     	cc->nr_cpages = DIV_ROUND_UP(max_len, PAGE_SIZE);
+>>>> -	cc->cpages = page_array_alloc(cc->inode);
+>>>> +	cc->cpages = page_array_alloc(cc->inode, cc->nr_cpages);
+>>>
+>>> Well, cc->nr_cpages will be set to cc->nr_rpages - 1 for zstd/lz4 cases, so
+>>> this will make cpages allocation fallback to kmalloc, which can cause more
+>>> memory use.
+>>
+>> Could we handle cpages allocation for lzo/lzo-rle separately as:
+>>
+>> force_xxx = is_lzo/lzo-rle_algorithm and is_cpages_array_allocation
+>>
+>> page_array_alloc(, force_kmalloc)
+>> page_array_free(, force_kfree)
+> 
+> What about:
+>    if (likely(size <= sbi->page_array_slab_size))
+> 	  return kmem_cache_zalloc(sbi->page_array_slab, GFP_NOFS);
 
-On 9/27/20 7:46 AM, G. Branden Robinson wrote:
-> At 2020-09-24T10:06:23+0200, Michael Kerrisk (man-pages) wrote:
->> Thanks for the interesting history, Branden!
-> 
-> Hi, Michael.  And you're welcome!  I often wonder if I test people's
-> patience with my info dumps but I try to show my work when making
-> claims.
-> 
->> From time toi time I wonder if the function prototypes in
->> the SYNOPSIS should also be inside .EX/.EE. Your thoughts?
-> 
-> I think there are trade-offs.
-> 
-> 1. If you want alignment, the monospaced font that .EX/.EE uses is the
->    most portable way to get it.
-> 2. For typeset output, you'll generally run out of line more quickly
->    with a monospaced font than with the troff/man default (Times).
->    _Any_ time filling is off, output should be checked to see if it
->    overruns the right margin, but this point strengthens in monospace.
-
-Yes, it's a good point. I think I'll leave this idea for now.
-
-> Here's something that isn't a trade-off that might come as a surprise to
-> some readers.
-> 
-> * You can still get bold and italics inside an .EX/.EE region, so you
->   can still use these distinguish data types, variable names, and
->   what-have-you.
-> 
-> The idiom for achieving this is apparently not well-known among those
-> who write man pages by hand, and tools that generate man(7) language
-> from some other source often produce output that is so ugly as to be
-> unintelligible to non-experts in *roff.
-> 
-> The key insights are that (A) you can still make macro calls inside an
-> .EX/.EE region, and (B) you can use the \c escape to "interrupt" an
-> input line and continue it on the next without introducing any
-> whitespace.  For instance, looking at fstat() from your stat(2) page, I
-> might write it using .EX and .EE as follows:
-> 
-> .EX
-> .B int fstat(int \c
-> .IB fd , \~\c
-> .B struct stat *\c
-> .IB statbuf );
-> .EE
-> 
-> Normally in man pages, it is senseless to have any spaces before the \c
-> escape, and \c is best omitted in that event.  However, when filling is
-> disabled (as is the case in .EX/.EE regions), output lines break where
-> the input lines do by default--\c overrides this, causing the lines to
-> be joined.  (Regarding the \~, see below.)
-> 
-> If there is no use for roman in the line, then you could do the whole
-> function signature with the .BI macro by quoting macro arguments that
-> contain whitespace.
-
-I was more or less aware of all of the above. (But the \c technique
-is something that I see rarely enough that I often take a moment to
-remember what it does.)
-> 
-> .EX
-> .BI "int fstat(int " fd ", struct stat *" statbuf );
-> .EE
-> 
-> As a matter of personal style, I find quoted space characters interior
-> but adjacent to quotation marks visually confusing--it's slower for me
-> to tell which parts of the line are "inside" the quotes and which
-> outside--so I turn to groff's \~ non-breaking space escape (widely
-> supported elsewhere) for these boundary spaces.
-> 
-> .EX
-> .BI "int fstat(int\~" fd ", struct stat *" statbuf );
-> .EE
-> 
-> Which of the above three models do you think would work best for the
-> man-pages project?
-
-I understand what you say about quoted interior spaces being 
-a little hard to parse. But I find the \~ makes the source
-less readable. Likewise, IMO, the \c technique renders the source
-harder to read.
-
-> Also, do you have any use for roman in function signatures?  I see it
-> used for comments and feature test macro material, but not within
-> function signatures proper.
-
-I think you're correct. Roman only occurs in comments.
-
-> 
-> As an aside, I will admit to some unease with the heavy use of bold in
-> synopses in section 2 and 3 man pages, 
-
-It's been that way "forever" in the Linux man-pages.
-
-> but I can marshal no historical
-> argument against it.  In fact, a quick check of some Unix v7 section 2
-> pages from 1979 that I have lying around (thanks to TUHS) reveals that
-> Bell Labs used undifferentiated bold for the whole synopsis!
-> 
-> $ head -n 13 usr/man/man2/stat.2
-> .TH STAT 2 
-> .SH NAME
-> stat, fstat \- get file status
-> .SH SYNOPSIS
-> .B #include <sys/types.h>
-> .br
-> .B #include <sys/stat.h>
-> .PP
-> .B stat(name, buf)
-> .br
-> .B char *name;
-> .br
-> .B struct stat *buf;
-
-As ever, thanks for the history!
+Better, :)
 
 Thanks,
 
-Michael
-
--- 
-Michael Kerrisk
-Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
-Linux/UNIX System Programming Training: http://man7.org/training/
+> 
+>>
+>> Thanks,
+>>
+>>>
+>>> Thanks,
+>>>
+>>>>     	if (!cc->cpages) {
+>>>>     		ret = -ENOMEM;
+>>>>     		goto destroy_compress_ctx;
+>>>> @@ -659,16 +658,28 @@ static int f2fs_compress_pages(struct compress_ctx *cc)
+>>>>     	for (i = 0; i < COMPRESS_DATA_RESERVED_SIZE; i++)
+>>>>     		cc->cbuf->reserved[i] = cpu_to_le32(0);
+>>>> -	nr_cpages = DIV_ROUND_UP(cc->clen + COMPRESS_HEADER_SIZE, PAGE_SIZE);
+>>>> +	new_nr_cpages = DIV_ROUND_UP(cc->clen + COMPRESS_HEADER_SIZE, PAGE_SIZE);
+>>>> +
+>>>> +	/* Now we're going to cut unnecessary tail pages */
+>>>> +	new_cpages = page_array_alloc(cc->inode, new_nr_cpages);
+>>>> +	if (new_cpages) {
+>>>> +		ret = -ENOMEM;
+>>>> +		goto out_vunmap_cbuf;
+>>>> +	}
+>>>>     	/* zero out any unused part of the last page */
+>>>>     	memset(&cc->cbuf->cdata[cc->clen], 0,
+>>>> -	       (nr_cpages * PAGE_SIZE) - (cc->clen + COMPRESS_HEADER_SIZE));
+>>>> +			(new_nr_cpages * PAGE_SIZE) -
+>>>> +			(cc->clen + COMPRESS_HEADER_SIZE));
+>>>>     	vm_unmap_ram(cc->cbuf, cc->nr_cpages);
+>>>>     	vm_unmap_ram(cc->rbuf, cc->cluster_size);
+>>>> -	for (i = nr_cpages; i < cc->nr_cpages; i++) {
+>>>> +	for (i = 0; i < cc->nr_cpages; i++) {
+>>>> +		if (i < new_nr_cpages) {
+>>>> +			new_cpages[i] = cc->cpages[i];
+>>>> +			continue;
+>>>> +		}
+>>>>     		f2fs_compress_free_page(cc->cpages[i]);
+>>>>     		cc->cpages[i] = NULL;
+>>>>     	}
+>>>> @@ -676,7 +687,9 @@ static int f2fs_compress_pages(struct compress_ctx *cc)
+>>>>     	if (cops->destroy_compress_ctx)
+>>>>     		cops->destroy_compress_ctx(cc);
+>>>> -	cc->nr_cpages = nr_cpages;
+>>>> +	page_array_free(cc->inode, cc->cpages, cc->nr_cpages);
+>>>> +	cc->cpages = new_cpages;
+>>>> +	cc->nr_cpages = new_nr_cpages;
+>>>>     	trace_f2fs_compress_pages_end(cc->inode, cc->cluster_idx,
+>>>>     							cc->clen, ret);
+>>>> @@ -691,7 +704,7 @@ static int f2fs_compress_pages(struct compress_ctx *cc)
+>>>>     		if (cc->cpages[i])
+>>>>     			f2fs_compress_free_page(cc->cpages[i]);
+>>>>     	}
+>>>> -	page_array_free(cc->inode, cc->cpages);
+>>>> +	page_array_free(cc->inode, cc->cpages, cc->nr_cpages);
+>>>>     	cc->cpages = NULL;
+>>>>     destroy_compress_ctx:
+>>>>     	if (cops->destroy_compress_ctx)
+>>>> @@ -730,7 +743,7 @@ void f2fs_decompress_pages(struct bio *bio, struct page *page, bool verity)
+>>>>     		goto out_free_dic;
+>>>>     	}
+>>>> -	dic->tpages = page_array_alloc(dic->inode);
+>>>> +	dic->tpages = page_array_alloc(dic->inode, dic->cluster_size);
+>>>>     	if (!dic->tpages) {
+>>>>     		ret = -ENOMEM;
+>>>>     		goto out_free_dic;
+>>>> @@ -1203,7 +1216,7 @@ static int f2fs_write_compressed_pages(struct compress_ctx *cc,
+>>>>     	cic->magic = F2FS_COMPRESSED_PAGE_MAGIC;
+>>>>     	cic->inode = inode;
+>>>>     	atomic_set(&cic->pending_pages, cc->nr_cpages);
+>>>> -	cic->rpages = page_array_alloc(cc->inode);
+>>>> +	cic->rpages = page_array_alloc(cc->inode, cc->cluster_size);
+>>>>     	if (!cic->rpages)
+>>>>     		goto out_put_cic;
+>>>> @@ -1297,11 +1310,13 @@ static int f2fs_write_compressed_pages(struct compress_ctx *cc,
+>>>>     	spin_unlock(&fi->i_size_lock);
+>>>>     	f2fs_put_rpages(cc);
+>>>> +	page_array_free(cc->inode, cc->cpages, cc->nr_cpages);
+>>>> +	cc->cpages = NULL;
+>>>>     	f2fs_destroy_compress_ctx(cc);
+>>>>     	return 0;
+>>>>     out_destroy_crypt:
+>>>> -	page_array_free(cc->inode, cic->rpages);
+>>>> +	page_array_free(cc->inode, cic->rpages, cc->cluster_size);
+>>>>     	for (--i; i >= 0; i--)
+>>>>     		fscrypt_finalize_bounce_page(&cc->cpages[i]);
+>>>> @@ -1310,6 +1325,8 @@ static int f2fs_write_compressed_pages(struct compress_ctx *cc,
+>>>>     			continue;
+>>>>     		f2fs_put_page(cc->cpages[i], 1);
+>>>>     	}
+>>>> +	page_array_free(cc->inode, cc->cpages, cc->nr_cpages);
+>>>> +	cc->cpages = NULL;
+>>>>     out_put_cic:
+>>>>     	kmem_cache_free(cic_entry_slab, cic);
+>>>>     out_put_dnode:
+>>>> @@ -1345,7 +1362,7 @@ void f2fs_compress_write_end_io(struct bio *bio, struct page *page)
+>>>>     		end_page_writeback(cic->rpages[i]);
+>>>>     	}
+>>>> -	page_array_free(cic->inode, cic->rpages);
+>>>> +	page_array_free(cic->inode, cic->rpages, cic->nr_rpages);
+>>>>     	kmem_cache_free(cic_entry_slab, cic);
+>>>>     }
+>>>> @@ -1442,8 +1459,6 @@ int f2fs_write_multi_pages(struct compress_ctx *cc,
+>>>>     		err = f2fs_write_compressed_pages(cc, submitted,
+>>>>     							wbc, io_type);
+>>>> -		page_array_free(cc->inode, cc->cpages);
+>>>> -		cc->cpages = NULL;
+>>>>     		if (!err)
+>>>>     			return 0;
+>>>>     		f2fs_bug_on(F2FS_I_SB(cc->inode), err != -EAGAIN);
+>>>> @@ -1468,7 +1483,7 @@ struct decompress_io_ctx *f2fs_alloc_dic(struct compress_ctx *cc)
+>>>>     	if (!dic)
+>>>>     		return ERR_PTR(-ENOMEM);
+>>>> -	dic->rpages = page_array_alloc(cc->inode);
+>>>> +	dic->rpages = page_array_alloc(cc->inode, cc->cluster_size);
+>>>>     	if (!dic->rpages) {
+>>>>     		kmem_cache_free(dic_entry_slab, dic);
+>>>>     		return ERR_PTR(-ENOMEM);
+>>>> @@ -1487,7 +1502,7 @@ struct decompress_io_ctx *f2fs_alloc_dic(struct compress_ctx *cc)
+>>>>     		dic->rpages[i] = cc->rpages[i];
+>>>>     	dic->nr_rpages = cc->cluster_size;
+>>>> -	dic->cpages = page_array_alloc(dic->inode);
+>>>> +	dic->cpages = page_array_alloc(dic->inode, dic->nr_cpages);
+>>>>     	if (!dic->cpages)
+>>>>     		goto out_free;
+>>>> @@ -1522,7 +1537,7 @@ void f2fs_free_dic(struct decompress_io_ctx *dic)
+>>>>     				continue;
+>>>>     			f2fs_compress_free_page(dic->tpages[i]);
+>>>>     		}
+>>>> -		page_array_free(dic->inode, dic->tpages);
+>>>> +		page_array_free(dic->inode, dic->tpages, dic->cluster_size);
+>>>>     	}
+>>>>     	if (dic->cpages) {
+>>>> @@ -1531,10 +1546,10 @@ void f2fs_free_dic(struct decompress_io_ctx *dic)
+>>>>     				continue;
+>>>>     			f2fs_compress_free_page(dic->cpages[i]);
+>>>>     		}
+>>>> -		page_array_free(dic->inode, dic->cpages);
+>>>> +		page_array_free(dic->inode, dic->cpages, dic->nr_cpages);
+>>>>     	}
+>>>> -	page_array_free(dic->inode, dic->rpages);
+>>>> +	page_array_free(dic->inode, dic->rpages, dic->nr_rpages);
+>>>>     	kmem_cache_free(dic_entry_slab, dic);
+>>>>     }
+>>>>
+>>>
+>>>
+>>> _______________________________________________
+>>> Linux-f2fs-devel mailing list
+>>> Linux-f2fs-devel@lists.sourceforge.net
+>>> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
+>>> .
+>>>
+> .
+> 
