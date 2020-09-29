@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2BE927C389
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:07:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D8BF27C38A
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:07:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728524AbgI2LGn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:06:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41532 "EHLO mail.kernel.org"
+        id S1728460AbgI2LGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:06:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41564 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728126AbgI2LFL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:05:11 -0400
+        id S1728297AbgI2LFP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:05:15 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 08ED620C09;
-        Tue, 29 Sep 2020 11:05:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 89C5621734;
+        Tue, 29 Sep 2020 11:05:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601377510;
-        bh=SQaBKSkiYQ6kVs5Ju1rSEjGVPCqXz8ymsFbpTrxbToQ=;
+        s=default; t=1601377512;
+        bh=uQsG3jFKRmd236heYix3rvHt30j7s0Zb8CG8ugHrr6A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mngGFJIa2LUAIIqBeZPMqxl83VQZwCUzxGLujqn66mSHwWLO+xYcOzh5UpRUqFXT2
-         WtOI5Iozsnzf3mqGbnK9QpxvwzRYV1iziR7VBF+3fg8FW0yyxJbiqnf+LKrBbnwrFZ
-         ANNxmDLNkMC+Hjis8ay2CWE+K54upuFvY+nGR6ak=
+        b=NbB5MVnPgkupiRzC3E3Q3fmKrnqioy8KVUNKy7Gj/UO45/AAf/c1QJt/kwLAcm4IL
+         IgkREmoD6k/VkvvH1aYVZxmW4mESJj+MsOdqpcO1RDXYYua1uti67vxXA8TJMxUpLN
+         m9AY/m5DU3VlN3raHC7fuEsvl84olw/9Ld2rvDf0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+c3c5bdea7863886115dc@syzkaller.appspotmail.com,
-        Manish Mandlik <mmandlik@google.com>,
-        Hillf Danton <hdanton@sina.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
+        stable@vger.kernel.org, Qian Cai <cai@lca.pw>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 31/85] Bluetooth: prefetch channel before killing sock
-Date:   Tue, 29 Sep 2020 12:59:58 +0200
-Message-Id: <20200929105929.781820236@linuxfoundation.org>
+Subject: [PATCH 4.4 32/85] skbuff: fix a data race in skb_queue_len()
+Date:   Tue, 29 Sep 2020 12:59:59 +0200
+Message-Id: <20200929105929.830354639@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200929105928.198942536@linuxfoundation.org>
 References: <20200929105928.198942536@linuxfoundation.org>
@@ -46,58 +43,114 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hillf Danton <hdanton@sina.com>
+From: Qian Cai <cai@lca.pw>
 
-[ Upstream commit 2a154903cec20fb64ff4d7d617ca53c16f8fd53a ]
+[ Upstream commit 86b18aaa2b5b5bb48e609cd591b3d2d0fdbe0442 ]
 
-Prefetch channel before killing sock in order to fix UAF like
+sk_buff.qlen can be accessed concurrently as noticed by KCSAN,
 
- BUG: KASAN: use-after-free in l2cap_sock_release+0x24c/0x290 net/bluetooth/l2cap_sock.c:1212
- Read of size 8 at addr ffff8880944904a0 by task syz-fuzzer/9751
+ BUG: KCSAN: data-race in __skb_try_recv_from_queue / unix_dgram_sendmsg
 
-Reported-by: syzbot+c3c5bdea7863886115dc@syzkaller.appspotmail.com
-Fixes: 6c08fc896b60 ("Bluetooth: Fix refcount use-after-free issue")
-Cc: Manish Mandlik <mmandlik@google.com>
-Signed-off-by: Hillf Danton <hdanton@sina.com>
-Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+ read to 0xffff8a1b1d8a81c0 of 4 bytes by task 5371 on cpu 96:
+  unix_dgram_sendmsg+0x9a9/0xb70 include/linux/skbuff.h:1821
+				 net/unix/af_unix.c:1761
+  ____sys_sendmsg+0x33e/0x370
+  ___sys_sendmsg+0xa6/0xf0
+  __sys_sendmsg+0x69/0xf0
+  __x64_sys_sendmsg+0x51/0x70
+  do_syscall_64+0x91/0xb47
+  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+
+ write to 0xffff8a1b1d8a81c0 of 4 bytes by task 1 on cpu 99:
+  __skb_try_recv_from_queue+0x327/0x410 include/linux/skbuff.h:2029
+  __skb_try_recv_datagram+0xbe/0x220
+  unix_dgram_recvmsg+0xee/0x850
+  ____sys_recvmsg+0x1fb/0x210
+  ___sys_recvmsg+0xa2/0xf0
+  __sys_recvmsg+0x66/0xf0
+  __x64_sys_recvmsg+0x51/0x70
+  do_syscall_64+0x91/0xb47
+  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+
+Since only the read is operating as lockless, it could introduce a logic
+bug in unix_recvq_full() due to the load tearing. Fix it by adding
+a lockless variant of skb_queue_len() and unix_recvq_full() where
+READ_ONCE() is on the read while WRITE_ONCE() is on the write similar to
+the commit d7d16a89350a ("net: add skb_queue_empty_lockless()").
+
+Signed-off-by: Qian Cai <cai@lca.pw>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/bluetooth/l2cap_sock.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ include/linux/skbuff.h | 14 +++++++++++++-
+ net/unix/af_unix.c     | 11 +++++++++--
+ 2 files changed, 22 insertions(+), 3 deletions(-)
 
-diff --git a/net/bluetooth/l2cap_sock.c b/net/bluetooth/l2cap_sock.c
-index cb024c25530a3..e562385d9440e 100644
---- a/net/bluetooth/l2cap_sock.c
-+++ b/net/bluetooth/l2cap_sock.c
-@@ -1189,6 +1189,7 @@ static int l2cap_sock_release(struct socket *sock)
- {
- 	struct sock *sk = sock->sk;
- 	int err;
-+	struct l2cap_chan *chan;
- 
- 	BT_DBG("sock %p, sk %p", sock, sk);
- 
-@@ -1198,15 +1199,16 @@ static int l2cap_sock_release(struct socket *sock)
- 	bt_sock_unlink(&l2cap_sk_list, sk);
- 
- 	err = l2cap_sock_shutdown(sock, 2);
-+	chan = l2cap_pi(sk)->chan;
- 
--	l2cap_chan_hold(l2cap_pi(sk)->chan);
--	l2cap_chan_lock(l2cap_pi(sk)->chan);
-+	l2cap_chan_hold(chan);
-+	l2cap_chan_lock(chan);
- 
- 	sock_orphan(sk);
- 	l2cap_sock_kill(sk);
- 
--	l2cap_chan_unlock(l2cap_pi(sk)->chan);
--	l2cap_chan_put(l2cap_pi(sk)->chan);
-+	l2cap_chan_unlock(chan);
-+	l2cap_chan_put(chan);
- 
- 	return err;
+diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+index 2528f712b8c0b..95feb153fe9a8 100644
+--- a/include/linux/skbuff.h
++++ b/include/linux/skbuff.h
+@@ -1438,6 +1438,18 @@ static inline __u32 skb_queue_len(const struct sk_buff_head *list_)
+ 	return list_->qlen;
  }
+ 
++/**
++ *	skb_queue_len_lockless	- get queue length
++ *	@list_: list to measure
++ *
++ *	Return the length of an &sk_buff queue.
++ *	This variant can be used in lockless contexts.
++ */
++static inline __u32 skb_queue_len_lockless(const struct sk_buff_head *list_)
++{
++	return READ_ONCE(list_->qlen);
++}
++
+ /**
+  *	__skb_queue_head_init - initialize non-spinlock portions of sk_buff_head
+  *	@list: queue to initialize
+@@ -1641,7 +1653,7 @@ static inline void __skb_unlink(struct sk_buff *skb, struct sk_buff_head *list)
+ {
+ 	struct sk_buff *next, *prev;
+ 
+-	list->qlen--;
++	WRITE_ONCE(list->qlen, list->qlen - 1);
+ 	next	   = skb->next;
+ 	prev	   = skb->prev;
+ 	skb->next  = skb->prev = NULL;
+diff --git a/net/unix/af_unix.c b/net/unix/af_unix.c
+index b5e2ef242efe7..ac78c5ac82846 100644
+--- a/net/unix/af_unix.c
++++ b/net/unix/af_unix.c
+@@ -191,11 +191,17 @@ static inline int unix_may_send(struct sock *sk, struct sock *osk)
+ 	return unix_peer(osk) == NULL || unix_our_peer(sk, osk);
+ }
+ 
+-static inline int unix_recvq_full(struct sock const *sk)
++static inline int unix_recvq_full(const struct sock *sk)
+ {
+ 	return skb_queue_len(&sk->sk_receive_queue) > sk->sk_max_ack_backlog;
+ }
+ 
++static inline int unix_recvq_full_lockless(const struct sock *sk)
++{
++	return skb_queue_len_lockless(&sk->sk_receive_queue) >
++		READ_ONCE(sk->sk_max_ack_backlog);
++}
++
+ struct sock *unix_peer_get(struct sock *s)
+ {
+ 	struct sock *peer;
+@@ -1792,7 +1798,8 @@ restart_locked:
+ 	 * - unix_peer(sk) == sk by time of get but disconnected before lock
+ 	 */
+ 	if (other != sk &&
+-	    unlikely(unix_peer(other) != sk && unix_recvq_full(other))) {
++	    unlikely(unix_peer(other) != sk &&
++	    unix_recvq_full_lockless(other))) {
+ 		if (timeo) {
+ 			timeo = unix_wait_for_peer(other, timeo);
+ 
 -- 
 2.25.1
 
