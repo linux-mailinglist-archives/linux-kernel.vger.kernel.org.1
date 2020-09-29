@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E10627C70D
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:51:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A27B27C7A2
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:55:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730557AbgI2LvC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:51:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52096 "EHLO mail.kernel.org"
+        id S1731521AbgI2LzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:55:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44844 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731195AbgI2LtG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:49:06 -0400
+        id S1730940AbgI2LpK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:45:10 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8C5E12158C;
-        Tue, 29 Sep 2020 11:49:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4EA692083B;
+        Tue, 29 Sep 2020 11:45:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601380145;
-        bh=RsHOz24AamUalIT+Vh94hhCx8b+xThUBH6MW5GOnlXc=;
+        s=default; t=1601379908;
+        bh=ZVNsZN16AryM6/MtQBsbLl+NtE0qR2FJdAhpFGrW2VE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Fc81Mkv1EIuREIV2cDANqIJFcTyFNzyWgr8Tok0Kwg0aX5ylUcvgS1OMWaCkRK/cT
-         TqluEkTXod1HvvLPwdzDioceGgs0Q9cs5FJ1nmJPx71iSln5KriqmfGd41rdHrmcm2
-         6soQvqZ7TCK3Pu1/WTurYf5lxr4bJUhrmGvNfbw4=
+        b=A7Y1/fnUGSORxAxb6zeqS8ASa6rNwGZafcavybUwszsSmwrtkFXuTR/9tgHsB7/WU
+         qoGhJP/v0cvYgtbfsFaBfPa5UUGgsTdeijv1xbSP25ChkDIj8LoVy49jm+3MnVhOMR
+         HsC9hr9xwmBY+0CwM+yICwPorfOMgtPBvSpz6P3s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tom Rix <trix@redhat.com>,
-        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 57/99] ALSA: asihpi: fix iounmap in error handler
-Date:   Tue, 29 Sep 2020 13:01:40 +0200
-Message-Id: <20200929105932.534489496@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Joakim Tjernlund <joakim.tjernlund@infinera.com>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.4 370/388] ALSA: usb-audio: Add delay quirk for H570e USB headsets
+Date:   Tue, 29 Sep 2020 13:01:41 +0200
+Message-Id: <20200929110028.377903856@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929105929.719230296@linuxfoundation.org>
-References: <20200929105929.719230296@linuxfoundation.org>
+In-Reply-To: <20200929110010.467764689@linuxfoundation.org>
+References: <20200929110010.467764689@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,59 +43,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+From: Joakim Tjernlund <joakim.tjernlund@infinera.com>
 
-[ Upstream commit 472eb39103e885f302fd8fd6eff104fcf5503f1b ]
+commit 315c7ad7a701baba28c628c4c5426b3d9617ceed upstream.
 
-clang static analysis flags this problem
-hpioctl.c:513:7: warning: Branch condition evaluates to
-  a garbage value
-                if (pci.ap_mem_base[idx]) {
-                    ^~~~~~~~~~~~~~~~~~~~
+Needs the same delay as H650e
 
-If there is a failure in the middle of the memory space loop,
-only some of the memory spaces need to be cleaned up.
-
-At the error handler, idx holds the number of successful
-memory spaces mapped.  So rework the handler loop to use the
-old idx.
-
-There is a second problem, the memory space loop conditionally
-iomaps()/sets the mem_base so it is necessay to initize pci.
-
-Fixes: 719f82d3987a ("ALSA: Add support of AudioScience ASI boards")
-Signed-off-by: Tom Rix <trix@redhat.com>
-Link: https://lore.kernel.org/r/20200913165230.17166-1-trix@redhat.com
+Signed-off-by: Joakim Tjernlund <joakim.tjernlund@infinera.com>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20200910085328.19188-1-joakim.tjernlund@infinera.com
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- sound/pci/asihpi/hpioctl.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/usb/quirks.c |    7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/sound/pci/asihpi/hpioctl.c b/sound/pci/asihpi/hpioctl.c
-index 496dcde9715d6..9790f5108a166 100644
---- a/sound/pci/asihpi/hpioctl.c
-+++ b/sound/pci/asihpi/hpioctl.c
-@@ -343,7 +343,7 @@ int asihpi_adapter_probe(struct pci_dev *pci_dev,
- 	struct hpi_message hm;
- 	struct hpi_response hr;
- 	struct hpi_adapter adapter;
--	struct hpi_pci pci;
-+	struct hpi_pci pci = { 0 };
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -1604,12 +1604,13 @@ void snd_usb_ctl_msg_quirk(struct usb_de
+ 	    && (requesttype & USB_TYPE_MASK) == USB_TYPE_CLASS)
+ 		msleep(20);
  
- 	memset(&adapter, 0, sizeof(adapter));
- 
-@@ -499,7 +499,7 @@ int asihpi_adapter_probe(struct pci_dev *pci_dev,
- 	return 0;
- 
- err:
--	for (idx = 0; idx < HPI_MAX_ADAPTER_MEM_SPACES; idx++) {
-+	while (--idx >= 0) {
- 		if (pci.ap_mem_base[idx]) {
- 			iounmap(pci.ap_mem_base[idx]);
- 			pci.ap_mem_base[idx] = NULL;
--- 
-2.25.1
-
+-	/* Zoom R16/24, Logitech H650e, Jabra 550a, Kingston HyperX needs a tiny
+-	 * delay here, otherwise requests like get/set frequency return as
+-	 * failed despite actually succeeding.
++	/* Zoom R16/24, Logitech H650e/H570e, Jabra 550a, Kingston HyperX
++	 *  needs a tiny delay here, otherwise requests like get/set
++	 *  frequency return as failed despite actually succeeding.
+ 	 */
+ 	if ((chip->usb_id == USB_ID(0x1686, 0x00dd) ||
+ 	     chip->usb_id == USB_ID(0x046d, 0x0a46) ||
++	     chip->usb_id == USB_ID(0x046d, 0x0a56) ||
+ 	     chip->usb_id == USB_ID(0x0b0e, 0x0349) ||
+ 	     chip->usb_id == USB_ID(0x0951, 0x16ad)) &&
+ 	    (requesttype & USB_TYPE_MASK) == USB_TYPE_CLASS)
 
 
