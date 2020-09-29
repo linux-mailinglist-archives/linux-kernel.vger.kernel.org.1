@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B71CF27C468
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:13:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1563427C48A
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:15:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729394AbgI2LNt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:13:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55766 "EHLO mail.kernel.org"
+        id S1729456AbgI2LOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:14:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57432 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728464AbgI2LN0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:13:26 -0400
+        id S1728480AbgI2LO3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:14:29 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9A6A4221E7;
-        Tue, 29 Sep 2020 11:13:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6EBD220848;
+        Tue, 29 Sep 2020 11:14:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601378006;
-        bh=IoCVrsR79AYUsIpowAJgDUNoxfHUm/Ij+N8h1eGcPGE=;
+        s=default; t=1601378068;
+        bh=xLEf58mjGmbH0CWWabSTZzpE4t32riFaLBMWYf6Q/rg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EQ6FDBGP0Q4xdita4QQ2m3eEO/NQkwoPmiebuZXjMl/5Lt/ZsgVIacgce7JkY4/te
-         R9F5kGtzwlo8WS6dW4afc+ucRd8humWZAWuC8ktWetgFtEbNMvp8smPAhGDiLJtEPA
-         SRw82yHFOcaFkGB2q5ccggWCj4SyZ6/FyzsQeX3o=
+        b=PqIuPjRrPij/5RPAFtFyyCqIcXSVP1C6ziGADElMAGY5HuNuT8YlD56wewJ+sVrmU
+         lcjpOauwH1R++pwB/Z4VWGdYFKc9kAwCHuE+EGmEY/lRchMrSyoEcRa1tpvnYIWcvJ
+         c63qSwUpkvuX1McZYSJwmNJ2/TNS3bY62t076VUI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kangjie Lu <kjlu@umn.edu>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        stable@vger.kernel.org,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 021/166] gma/gma500: fix a memory disclosure bug due to uninitialized bytes
-Date:   Tue, 29 Sep 2020 12:58:53 +0200
-Message-Id: <20200929105936.250017413@linuxfoundation.org>
+Subject: [PATCH 4.14 023/166] media: smiapp: Fix error handling at NVM reading
+Date:   Tue, 29 Sep 2020 12:58:55 +0200
+Message-Id: <20200929105936.351959864@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200929105935.184737111@linuxfoundation.org>
 References: <20200929105935.184737111@linuxfoundation.org>
@@ -43,35 +44,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kangjie Lu <kjlu@umn.edu>
+From: Sakari Ailus <sakari.ailus@linux.intel.com>
 
-[ Upstream commit 57a25a5f754ce27da2cfa6f413cfd366f878db76 ]
+[ Upstream commit a5b1d5413534607b05fb34470ff62bf395f5c8d0 ]
 
-`best_clock` is an object that may be sent out. Object `clock`
-contains uninitialized bytes that are copied to `best_clock`,
-which leads to memory disclosure and information leak.
+If NVM reading failed, the device was left powered on. Fix that.
 
-Signed-off-by: Kangjie Lu <kjlu@umn.edu>
-Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-Link: https://patchwork.freedesktop.org/patch/msgid/20191018042953.31099-1-kjlu@umn.edu
+Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/gma500/cdv_intel_display.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/media/i2c/smiapp/smiapp-core.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/gma500/cdv_intel_display.c b/drivers/gpu/drm/gma500/cdv_intel_display.c
-index 17db4b4749d5a..2e8479744ca4a 100644
---- a/drivers/gpu/drm/gma500/cdv_intel_display.c
-+++ b/drivers/gpu/drm/gma500/cdv_intel_display.c
-@@ -415,6 +415,8 @@ static bool cdv_intel_find_dp_pll(const struct gma_limit_t *limit,
- 	struct gma_crtc *gma_crtc = to_gma_crtc(crtc);
- 	struct gma_clock_t clock;
+diff --git a/drivers/media/i2c/smiapp/smiapp-core.c b/drivers/media/i2c/smiapp/smiapp-core.c
+index e4d7f2febf00c..05b3974bd9202 100644
+--- a/drivers/media/i2c/smiapp/smiapp-core.c
++++ b/drivers/media/i2c/smiapp/smiapp-core.c
+@@ -2338,11 +2338,12 @@ smiapp_sysfs_nvm_read(struct device *dev, struct device_attribute *attr,
+ 		if (rval < 0) {
+ 			if (rval != -EBUSY && rval != -EAGAIN)
+ 				pm_runtime_set_active(&client->dev);
+-			pm_runtime_put(&client->dev);
++			pm_runtime_put_noidle(&client->dev);
+ 			return -ENODEV;
+ 		}
  
-+	memset(&clock, 0, sizeof(clock));
-+
- 	switch (refclk) {
- 	case 27000:
- 		if (target < 200000) {
+ 		if (smiapp_read_nvm(sensor, sensor->nvm)) {
++			pm_runtime_put(&client->dev);
+ 			dev_err(&client->dev, "nvm read failed\n");
+ 			return -ENODEV;
+ 		}
 -- 
 2.25.1
 
