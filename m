@@ -2,205 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D130F27C1DD
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 12:06:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE6E827C1D5
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 12:02:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727743AbgI2KFz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 06:05:55 -0400
-Received: from mga11.intel.com ([192.55.52.93]:8714 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725355AbgI2KFz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 06:05:55 -0400
-IronPort-SDR: 34daH3ZITRCbzM9L3wNNLuFp+HyAPUF7i+oYHH8Knpap2dklEyjeZOa5GXj219kdGT3Hl4eVkP
- BRNVoRow/ZyA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9758"; a="159451637"
-X-IronPort-AV: E=Sophos;i="5.77,317,1596524400"; 
-   d="scan'208";a="159451637"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 22:12:45 -0700
-IronPort-SDR: fqdbavZNGWrnZB3XUgInjYbXvrmJoIWRevBpJi1IqMpaVFuAP3r7M93Xj5JM09QX9yCaCOB4+2
- wtF04YR3w22w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,317,1596524400"; 
-   d="scan'208";a="307617742"
-Received: from lkp-server02.sh.intel.com (HELO 029ab7997206) ([10.239.97.151])
-  by orsmga003.jf.intel.com with ESMTP; 28 Sep 2020 22:12:44 -0700
-Received: from kbuild by 029ab7997206 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kN7wR-00006q-FF; Tue, 29 Sep 2020 05:12:43 +0000
-Date:   Tue, 29 Sep 2020 13:12:31 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Subject: [gustavoars-linux:testing/fam1-fddi] BUILD SUCCESS
- ce71a10ee8f3bc7ead17c4a4333d6a57455bde2b
-Message-ID: <5f72c23f./kPBWcZBu+W6HKH4%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1727843AbgI2KCo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 06:02:44 -0400
+Received: from mail-vi1eur05on2060.outbound.protection.outlook.com ([40.107.21.60]:17248
+        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725355AbgI2KCo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 06:02:44 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kMrs54//JrX5AA93W0NZt/F3A9JKWWwn2xZEGDXuCmMg7nQGkAc3zyZqd8qjFgkOOHQeAAQewK2WaRJcE6Q4a8Mx22DjUd8Q3HXXhZoL2Mm05EteZyUJhB2ECn13gN75sAeiboNFSFiTJEbTnUV0+0BhsIKyE7EVkUYk9Q3OTUykqL0c4xJ6nr37EBcpy6DVJ2t2SHsMouGnMDIUy8TWGL5fFSgcs2F/YXoP3VxuEY2WTLZ8yX75AoxL7wkP1rmQC8euWgJZ2R2OTnPkppeMQNYjpcdbFduc2q3jt2BVp2y76GcZuxluok1ZwcbCsWTxOsjMZiLzN1WAki55X4rB4A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ree8aHAhXf/Ui/x7pMq+p2E3z6eNpT3rE8Eyb7/UfhY=;
+ b=QiH3H/kWpbkHZYExpuBQrY1sn4zXaS0DIpZ3ke3engvZRMx4j2MEvpdkIg9hXQam/MKzBdRq22iVbHMoKlmO2TNCglmGg5JJqi/y5vB/JUGnmvqeu6+dH63kF4J5sJdqPN1F7Iu8PUGyuaxewD9H++QwuO84ykDO8a83LCluweJGRayUdQXpJOcxXSnVD25XA6458FCfK0xlkoRIXy1xN8pLGAqiWxqGKqVnqWDSW1hQklsO8MuhnWcPN1GMGMEBdULCvVFgTN6RuQoa3tFLOiBPF/97898jLDzPzWcnfsYc4RTmeLCFvw5+TZhrf1DnZoWa4p6LJTC2ByQnVOhxsA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ree8aHAhXf/Ui/x7pMq+p2E3z6eNpT3rE8Eyb7/UfhY=;
+ b=bdVrV/lLSs+XGjg69v19A0GCmX8nTowpN6O8Dyw+U85z08RVefjWEgB2x5P7AWYT16c8DMS4WEpl4I6P8bIwZuqJAcs6tbS0DuH6YQjGbkHGJL8WzVvhzwd7P8Ouft0W1AX9fW5qUMQOItB8PbIdKUa7BMEN7bvTz0FW/aJCF+s=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
+Received: from AM7PR04MB6885.eurprd04.prod.outlook.com (2603:10a6:20b:10d::24)
+ by AM6PR04MB5190.eurprd04.prod.outlook.com (2603:10a6:20b:d::25) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.20; Tue, 29 Sep
+ 2020 10:02:40 +0000
+Received: from AM7PR04MB6885.eurprd04.prod.outlook.com
+ ([fe80::f431:1df6:f18b:ad99]) by AM7PR04MB6885.eurprd04.prod.outlook.com
+ ([fe80::f431:1df6:f18b:ad99%6]) with mapi id 15.20.3412.029; Tue, 29 Sep 2020
+ 10:02:40 +0000
+From:   meenakshi.aggarwal@nxp.com
+To:     shawnguo@kernel.org, robh+dt@kernel.org, V.sethi@nxp.com,
+        leoyang.li@nxp.com, linux-arm-kernel@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Meenakshi Aggarwal <meenakshi.aggarwal@nxp.com>
+Subject: [PATCH v3 0/2] Add device tree support for LX2162AQDS board
+Date:   Tue, 29 Sep 2020 15:31:56 +0530
+Message-Id: <1601373718-13218-1-git-send-email-meenakshi.aggarwal@nxp.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1599059610-7570-2-git-send-email-meenakshi.aggarwal@nxp.com>
+References: <1599059610-7570-2-git-send-email-meenakshi.aggarwal@nxp.com>
+Content-Type: text/plain
+X-ClientProxiedBy: SG2PR02CA0005.apcprd02.prod.outlook.com
+ (2603:1096:3:17::17) To AM7PR04MB6885.eurprd04.prod.outlook.com
+ (2603:10a6:20b:10d::24)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from lsv03032.swis.in-blr01.nxp.com (14.142.151.118) by SG2PR02CA0005.apcprd02.prod.outlook.com (2603:1096:3:17::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3433.32 via Frontend Transport; Tue, 29 Sep 2020 10:02:38 +0000
+X-Mailer: git-send-email 2.7.4
+X-Originating-IP: [14.142.151.118]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: e98579c8-10fc-4198-b09a-08d8645ecd29
+X-MS-TrafficTypeDiagnostic: AM6PR04MB5190:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <AM6PR04MB51903EB1B02900C12437DD528E320@AM6PR04MB5190.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1923;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: rlOGnIX6jCrrm9gxN6oNkDTITneJPwqwb1nIrnNckWN0mvoaFPgs/qn6SZLviCVSz6dcqD1MF3SrjUiF45ExIbVygHPZc5irVK6UyGaK+4MMTs81xTVfpE6Mxl2jPE5YLX1amZ2NWP5+ysX1pwYsam/YA8t8PRZWBsfSaFySk5c3TDtODkIFGx3ye/vu0XRQJfDUlgGX40cZ16FU5Xi1FetPyze37990sOrycjsFZdIFO2qK94G6dJIk3hSmcsLswYbE9Up4mq7piFN4U0a2M3y//ylmw1isurEBSukiankh1/yZVnh5e+CJxiqa1kkVakZ4fUXB/7i4skOApTIg4P4bw5hxgv6SOdPlY9/qNLy45Zeg/CA5gd4WbOZTJilWl9C6z4X80wrnx/xjzWghk3bu8Hf+ouZOkXMSQfALgNE=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM7PR04MB6885.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(396003)(376002)(346002)(39860400002)(5660300002)(36756003)(66476007)(66946007)(66556008)(2616005)(9686003)(316002)(4744005)(6666004)(1006002)(26005)(52116002)(956004)(7696005)(4326008)(86362001)(6486002)(186003)(16526019)(2906002)(8936002)(8676002)(55236004)(478600001)(110426005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: ZAKKKvkr2XdjxjlXxXZd0ymhvW2VUyaPxBNnJUOD0h02vrqJZX7A40ZHpkSH+PMF1uxuEop+YagX/WGi2Co0w0IrtyvegMoGoFoIDpXD4uvrz7/h7JVaRd2hy2auboX/dzhpcIqekr3MRjPpuUx1dNY+WspzXnY+ykxbk6Pa6jLeE0EWwTjtsgcvdxjaudsqDUKiMDRYeHHKSAiJbla3tBNG9M/TP+PSWSrH5tt3QgjrV5QlchDWyyh7fLMjIqag2KtLyyIYHwMZLDnBi5FiM/xJGXh+BrdxQhz/PKSxzSerPqLa97W4AzvCWftCni7fFvs/2lbmTG64hAKgGTlm2zdjnqtm5arEmrDqCbxfLoogu824NwL/dqqajR7u2PpAjulBh75QpTbrpuDbZPttZ6JJBGbvJE5Hg4U2984kcCB+HZ0cRe+HkztDvSjE3Bf5lJuETT0Yp4Tpm9JaASXK6Rn0n9mldLYZNd62g6LdBuVeDBDPWjW+t/YNA4/mMdB4Ey7Tdk81wS2eXKagiSu12UqLh9lN0z/7kpORlYCt1u4V37Id1XIG2CCYLG0Oinn+JQeqrDJrsTVcebOQETHDN5IgDIhLCzV8MqeY3LEqz/lRFjTlKyueGL5lfrqr5fJ5Y0Q+EkMG6Ete+5MWeM19+w==
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e98579c8-10fc-4198-b09a-08d8645ecd29
+X-MS-Exchange-CrossTenant-AuthSource: AM7PR04MB6885.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Sep 2020 10:02:40.8005
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 1UAOyQItJDl/aRzMRCzx74GZm8YfAPVDbtX8FtJw36JfhXEledfkdGKvvlV2QT3vKJiOxq/0UCpiStGIau5tt12WAngEw5M0lzIIIKXOIR0=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR04MB5190
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git  testing/fam1-fddi
-branch HEAD: ce71a10ee8f3bc7ead17c4a4333d6a57455bde2b  fddi/skfp: Avoid the use of one-element array
+From: Meenakshi Aggarwal <meenakshi.aggarwal@nxp.com>
 
-elapsed time: 723m
+LX2162A has same die as of LX2160A with different packaging.
 
-configs tested: 141
-configs skipped: 2
+Changes:
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+        v2:
+        - divided patch into two, binding and dts support
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arc                     haps_hs_smp_defconfig
-m68k                          amiga_defconfig
-ia64                         bigsur_defconfig
-sh                             shx3_defconfig
-m68k                        stmark2_defconfig
-nios2                         3c120_defconfig
-powerpc                      arches_defconfig
-powerpc                      cm5200_defconfig
-sparc                       sparc32_defconfig
-arm                          badge4_defconfig
-powerpc                        cell_defconfig
-powerpc                     tqm8541_defconfig
-powerpc64                           defconfig
-csky                             alldefconfig
-riscv                          rv32_defconfig
-sh                          rsk7201_defconfig
-openrisc                         alldefconfig
-mips                      pic32mzda_defconfig
-arm                   milbeaut_m10v_defconfig
-m68k                          multi_defconfig
-sh                        edosk7705_defconfig
-powerpc                    ge_imp3a_defconfig
-powerpc                      mgcoge_defconfig
-mips                        maltaup_defconfig
-alpha                            allyesconfig
-powerpc                     tqm8548_defconfig
-arm                          simpad_defconfig
-mips                        workpad_defconfig
-xtensa                       common_defconfig
-powerpc64                        alldefconfig
-arm                          lpd270_defconfig
-mips                         cobalt_defconfig
-arm                        multi_v7_defconfig
-powerpc                       maple_defconfig
-powerpc                   bluestone_defconfig
-powerpc                     tqm5200_defconfig
-arm                             mxs_defconfig
-arm                           omap1_defconfig
-microblaze                      mmu_defconfig
-powerpc                 mpc836x_rdk_defconfig
-arc                      axs103_smp_defconfig
-arm                              zx_defconfig
-arm                        mvebu_v5_defconfig
-c6x                        evmc6472_defconfig
-arm                  colibri_pxa300_defconfig
-powerpc                      ppc40x_defconfig
-arm                      integrator_defconfig
-arc                          axs103_defconfig
-mips                      malta_kvm_defconfig
-arm                         s5pv210_defconfig
-mips                       bmips_be_defconfig
-sh                           se7343_defconfig
-arm                           sunxi_defconfig
-m68k                          atari_defconfig
-arm                         orion5x_defconfig
-powerpc                     pseries_defconfig
-arm                         lpc32xx_defconfig
-ia64                            zx1_defconfig
-sh                           se7750_defconfig
-mips                           xway_defconfig
-arm                        cerfcube_defconfig
-arm                  colibri_pxa270_defconfig
-mips                      maltaaprp_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a005-20200928
-x86_64               randconfig-a003-20200928
-x86_64               randconfig-a004-20200928
-x86_64               randconfig-a002-20200928
-x86_64               randconfig-a006-20200928
-x86_64               randconfig-a001-20200928
-i386                 randconfig-a006-20200928
-i386                 randconfig-a002-20200928
-i386                 randconfig-a003-20200928
-i386                 randconfig-a004-20200928
-i386                 randconfig-a005-20200928
-i386                 randconfig-a001-20200928
-i386                 randconfig-a012-20200928
-i386                 randconfig-a016-20200928
-i386                 randconfig-a014-20200928
-i386                 randconfig-a013-20200928
-i386                 randconfig-a015-20200928
-i386                 randconfig-a011-20200928
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+	v3:
+	- incorporated review comments on voltage regulator node
 
-clang tested configs:
-x86_64               randconfig-a005-20200927
-x86_64               randconfig-a003-20200927
-x86_64               randconfig-a004-20200927
-x86_64               randconfig-a002-20200927
-x86_64               randconfig-a006-20200927
-x86_64               randconfig-a001-20200927
-x86_64               randconfig-a011-20200928
-x86_64               randconfig-a013-20200928
-x86_64               randconfig-a015-20200928
-x86_64               randconfig-a014-20200928
-x86_64               randconfig-a016-20200928
-x86_64               randconfig-a012-20200928
+Meenakshi Aggarwal (2):
+  dt-bindings: arm64: add compatible for LX2162A QDS Board
+  arm64: dts: lx2160a: add device tree for lx2162aqds board
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+ Documentation/devicetree/bindings/arm/fsl.yaml    |   1 +
+ arch/arm64/boot/dts/freescale/Makefile            |   1 +
+ arch/arm64/boot/dts/freescale/fsl-lx2162a-qds.dts | 334 ++++++++++++++++++++++
+ 3 files changed, 336 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/freescale/fsl-lx2162a-qds.dts
+
+-- 
+2.7.4
+
