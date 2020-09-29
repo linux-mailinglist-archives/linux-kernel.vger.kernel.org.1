@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B0E627CDDF
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:47:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8325527CD3B
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:42:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729410AbgI2MrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 08:47:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42786 "EHLO mail.kernel.org"
+        id S2387455AbgI2Mmr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 08:42:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52432 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728390AbgI2LGG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:06:06 -0400
+        id S1728372AbgI2LLM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:11:12 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C212D21D7D;
-        Tue, 29 Sep 2020 11:06:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8E934208FE;
+        Tue, 29 Sep 2020 11:11:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601377565;
-        bh=QnAdbV/gnrmD9qLJpLM3+vAbC9yQtyv0MFLjXT0ay3k=;
+        s=default; t=1601377872;
+        bh=riTm1g5Y3WFp4sj+q01W+RzDbN8hR5XQOrtSFTUzxlo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IeUMYWXtvF+DHCt8AJpDjEE17AEegD2bP3+QUqUvlp96xLN4qngVJqnaaCqtCObdx
-         A8WFkz2xbzN7UX0t4lHD2bN6z0ctstoRcOqREWk5cIuzWO1N+PEPzXJGH0JY/DGNJy
-         6XdCDMnZZLXZGtgiL5Bmmwtu5Rq6Ge5IdZiUl7yU=
+        b=mNAgrMIY2GG/wfZYm3tt6dol7qtezqJKc0GsUwGlwXcRjFKTJnirps9JF1n1vI9Js
+         5Izw517EDvQMfknT/oEvcbix1QkUziF1V/vHI/CFm5BjDvfI20YUwMBanoV/SBJWwE
+         EFslWf1sOLajxTUVDhZdXTAeg1zVU7OXXcl5AZuI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Wei Li <liwei391@huawei.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        stable@vger.kernel.org, Qian Cai <cai@lca.pw>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Zeng Tao <prime.zeng@hisilicon.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 79/85] MIPS: Add the missing CPU_1074K into __get_cpu_type()
+Subject: [PATCH 4.9 102/121] vfio/pci: fix racy on error and request eventfd ctx
 Date:   Tue, 29 Sep 2020 13:00:46 +0200
-Message-Id: <20200929105932.146636435@linuxfoundation.org>
+Message-Id: <20200929105935.237800473@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929105928.198942536@linuxfoundation.org>
-References: <20200929105928.198942536@linuxfoundation.org>
+In-Reply-To: <20200929105930.172747117@linuxfoundation.org>
+References: <20200929105930.172747117@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,31 +44,122 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wei Li <liwei391@huawei.com>
+From: Zeng Tao <prime.zeng@hisilicon.com>
 
-[ Upstream commit e393fbe6fa27af23f78df6e16a8fd2963578a8c4 ]
+[ Upstream commit b872d0640840018669032b20b6375a478ed1f923 ]
 
-Commit 442e14a2c55e ("MIPS: Add 1074K CPU support explicitly.") split
-1074K from the 74K as an unique CPU type, while it missed to add the
-'CPU_1074K' in __get_cpu_type(). So let's add it back.
+The vfio_pci_release call will free and clear the error and request
+eventfd ctx while these ctx could be in use at the same time in the
+function like vfio_pci_request, and it's expected to protect them under
+the vdev->igate mutex, which is missing in vfio_pci_release.
 
-Fixes: 442e14a2c55e ("MIPS: Add 1074K CPU support explicitly.")
-Signed-off-by: Wei Li <liwei391@huawei.com>
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+This issue is introduced since commit 1518ac272e78 ("vfio/pci: fix memory
+leaks of eventfd ctx"),and since commit 5c5866c593bb ("vfio/pci: Clear
+error and request eventfd ctx after releasing"), it's very easily to
+trigger the kernel panic like this:
+
+[ 9513.904346] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000008
+[ 9513.913091] Mem abort info:
+[ 9513.915871]   ESR = 0x96000006
+[ 9513.918912]   EC = 0x25: DABT (current EL), IL = 32 bits
+[ 9513.924198]   SET = 0, FnV = 0
+[ 9513.927238]   EA = 0, S1PTW = 0
+[ 9513.930364] Data abort info:
+[ 9513.933231]   ISV = 0, ISS = 0x00000006
+[ 9513.937048]   CM = 0, WnR = 0
+[ 9513.940003] user pgtable: 4k pages, 48-bit VAs, pgdp=0000007ec7d12000
+[ 9513.946414] [0000000000000008] pgd=0000007ec7d13003, p4d=0000007ec7d13003, pud=0000007ec728c003, pmd=0000000000000000
+[ 9513.956975] Internal error: Oops: 96000006 [#1] PREEMPT SMP
+[ 9513.962521] Modules linked in: vfio_pci vfio_virqfd vfio_iommu_type1 vfio hclge hns3 hnae3 [last unloaded: vfio_pci]
+[ 9513.972998] CPU: 4 PID: 1327 Comm: bash Tainted: G        W         5.8.0-rc4+ #3
+[ 9513.980443] Hardware name: Huawei TaiShan 2280 V2/BC82AMDC, BIOS 2280-V2 CS V3.B270.01 05/08/2020
+[ 9513.989274] pstate: 80400089 (Nzcv daIf +PAN -UAO BTYPE=--)
+[ 9513.994827] pc : _raw_spin_lock_irqsave+0x48/0x88
+[ 9513.999515] lr : eventfd_signal+0x6c/0x1b0
+[ 9514.003591] sp : ffff800038a0b960
+[ 9514.006889] x29: ffff800038a0b960 x28: ffff007ef7f4da10
+[ 9514.012175] x27: ffff207eefbbfc80 x26: ffffbb7903457000
+[ 9514.017462] x25: ffffbb7912191000 x24: ffff007ef7f4d400
+[ 9514.022747] x23: ffff20be6e0e4c00 x22: 0000000000000008
+[ 9514.028033] x21: 0000000000000000 x20: 0000000000000000
+[ 9514.033321] x19: 0000000000000008 x18: 0000000000000000
+[ 9514.038606] x17: 0000000000000000 x16: ffffbb7910029328
+[ 9514.043893] x15: 0000000000000000 x14: 0000000000000001
+[ 9514.049179] x13: 0000000000000000 x12: 0000000000000002
+[ 9514.054466] x11: 0000000000000000 x10: 0000000000000a00
+[ 9514.059752] x9 : ffff800038a0b840 x8 : ffff007ef7f4de60
+[ 9514.065038] x7 : ffff007fffc96690 x6 : fffffe01faffb748
+[ 9514.070324] x5 : 0000000000000000 x4 : 0000000000000000
+[ 9514.075609] x3 : 0000000000000000 x2 : 0000000000000001
+[ 9514.080895] x1 : ffff007ef7f4d400 x0 : 0000000000000000
+[ 9514.086181] Call trace:
+[ 9514.088618]  _raw_spin_lock_irqsave+0x48/0x88
+[ 9514.092954]  eventfd_signal+0x6c/0x1b0
+[ 9514.096691]  vfio_pci_request+0x84/0xd0 [vfio_pci]
+[ 9514.101464]  vfio_del_group_dev+0x150/0x290 [vfio]
+[ 9514.106234]  vfio_pci_remove+0x30/0x128 [vfio_pci]
+[ 9514.111007]  pci_device_remove+0x48/0x108
+[ 9514.115001]  device_release_driver_internal+0x100/0x1b8
+[ 9514.120200]  device_release_driver+0x28/0x38
+[ 9514.124452]  pci_stop_bus_device+0x68/0xa8
+[ 9514.128528]  pci_stop_and_remove_bus_device+0x20/0x38
+[ 9514.133557]  pci_iov_remove_virtfn+0xb4/0x128
+[ 9514.137893]  sriov_disable+0x3c/0x108
+[ 9514.141538]  pci_disable_sriov+0x28/0x38
+[ 9514.145445]  hns3_pci_sriov_configure+0x48/0xb8 [hns3]
+[ 9514.150558]  sriov_numvfs_store+0x110/0x198
+[ 9514.154724]  dev_attr_store+0x44/0x60
+[ 9514.158373]  sysfs_kf_write+0x5c/0x78
+[ 9514.162018]  kernfs_fop_write+0x104/0x210
+[ 9514.166010]  __vfs_write+0x48/0x90
+[ 9514.169395]  vfs_write+0xbc/0x1c0
+[ 9514.172694]  ksys_write+0x74/0x100
+[ 9514.176079]  __arm64_sys_write+0x24/0x30
+[ 9514.179987]  el0_svc_common.constprop.4+0x110/0x200
+[ 9514.184842]  do_el0_svc+0x34/0x98
+[ 9514.188144]  el0_svc+0x14/0x40
+[ 9514.191185]  el0_sync_handler+0xb0/0x2d0
+[ 9514.195088]  el0_sync+0x140/0x180
+[ 9514.198389] Code: b9001020 d2800000 52800022 f9800271 (885ffe61)
+[ 9514.204455] ---[ end trace 648de00c8406465f ]---
+[ 9514.212308] note: bash[1327] exited with preempt_count 1
+
+Cc: Qian Cai <cai@lca.pw>
+Cc: Alex Williamson <alex.williamson@redhat.com>
+Fixes: 1518ac272e78 ("vfio/pci: fix memory leaks of eventfd ctx")
+Signed-off-by: Zeng Tao <prime.zeng@hisilicon.com>
+Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/include/asm/cpu-type.h |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/vfio/pci/vfio_pci.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
---- a/arch/mips/include/asm/cpu-type.h
-+++ b/arch/mips/include/asm/cpu-type.h
-@@ -46,6 +46,7 @@ static inline int __pure __get_cpu_type(
- 	case CPU_34K:
- 	case CPU_1004K:
- 	case CPU_74K:
-+	case CPU_1074K:
- 	case CPU_M14KC:
- 	case CPU_M14KEC:
- 	case CPU_INTERAPTIV:
+diff --git a/drivers/vfio/pci/vfio_pci.c b/drivers/vfio/pci/vfio_pci.c
+index c08cff0ca08df..237d5aceb302d 100644
+--- a/drivers/vfio/pci/vfio_pci.c
++++ b/drivers/vfio/pci/vfio_pci.c
+@@ -392,14 +392,19 @@ static void vfio_pci_release(void *device_data)
+ 	if (!(--vdev->refcnt)) {
+ 		vfio_spapr_pci_eeh_release(vdev->pdev);
+ 		vfio_pci_disable(vdev);
++		mutex_lock(&vdev->igate);
+ 		if (vdev->err_trigger) {
+ 			eventfd_ctx_put(vdev->err_trigger);
+ 			vdev->err_trigger = NULL;
+ 		}
++		mutex_unlock(&vdev->igate);
++
++		mutex_lock(&vdev->igate);
+ 		if (vdev->req_trigger) {
+ 			eventfd_ctx_put(vdev->req_trigger);
+ 			vdev->req_trigger = NULL;
+ 		}
++		mutex_unlock(&vdev->igate);
+ 	}
+ 
+ 	mutex_unlock(&driver_lock);
+-- 
+2.25.1
+
 
 
