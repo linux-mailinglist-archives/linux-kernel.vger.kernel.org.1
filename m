@@ -2,131 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 323CF27C146
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 11:31:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F151127C160
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 11:35:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728179AbgI2Jbj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 05:31:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46706 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728095AbgI2JbQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 05:31:16 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDF49C0613D4;
-        Tue, 29 Sep 2020 02:31:16 -0700 (PDT)
-Date:   Tue, 29 Sep 2020 11:31:13 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1601371875;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2djAMpO5TFmJwF9yWVuXnnQCBlfzgcL1zzo3u7vPd8U=;
-        b=A5Zbb/DvjeeCK2DUlLEoZrvkhgGJsS37gshTwYsb3aqDUyGzOCuyQR/JFhGPul9jWwCbae
-        FCwQd92XgYGn96wE+HRHZnX9/lXWxL5UCQKikaQN3HJpMYQ7dnUuysi6REaMtPAuoUPu7Z
-        z9P38bjbqIzIXwget4wZiZoywWP3u3cr8ZKlfCh3wPE23RhcX1u3//hzEcvxpTpT9SRI1F
-        djjcpvjKvggYd+6zi005AyTdMMykFsP0ZbXiIzywn4RdT5hWSJtvpfIuH+a5wFTV2+UnL+
-        Ls3Z2Fw3Oq3EOa2/sEMMtjZWiUlr4JWmE3WBOpZFmMXLo0cGpJpduAuwhl0d9g==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1601371875;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2djAMpO5TFmJwF9yWVuXnnQCBlfzgcL1zzo3u7vPd8U=;
-        b=3EnIof77mO0TghjbFH5tQykZxy+5nn/AcwbZ4oiR5qNLmFhOp5rNJf4wsvWgkv1Zk9DKVb
-        IGzg5Bz5Fr63y7Aw==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-Cc:     "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Luis Claudio R . Goncalves" <lgoncalv@redhat.com>,
-        Mahipal Challa <mahipalreddy2006@gmail.com>,
-        Seth Jennings <sjenning@redhat.com>,
-        Dan Streetman <ddstreet@ieee.org>,
-        Vitaly Wool <vitaly.wool@konsulko.com>,
-        "Wangzhou (B)" <wangzhou1@hisilicon.com>,
-        "fanghao (A)" <fanghao11@huawei.com>,
-        Colin Ian King <colin.king@canonical.com>
-Subject: Re: [PATCH v6] mm/zswap: move to use crypto_acomp API for hardware
- acceleration
-Message-ID: <20200929093113.3cv63szruo3c4inu@linutronix.de>
-References: <20200818123100.4140-1-song.bao.hua@hisilicon.com>
- <20200928152432.l3auscdx2suyli4u@linutronix.de>
- <76bb2b545117413eb0879abcf91cf0f0@hisilicon.com>
+        id S1727960AbgI2Jex (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 05:34:53 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:14771 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727819AbgI2Jew (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 05:34:52 -0400
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 98115AD9875CEAF75CE3;
+        Tue, 29 Sep 2020 17:34:50 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 29 Sep 2020 17:34:43 +0800
+From:   Huazhong Tan <tanhuazhong@huawei.com>
+To:     <davem@davemloft.net>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <salil.mehta@huawei.com>, <yisen.zhuang@huawei.com>,
+        <linuxarm@huawei.com>, <kuba@kernel.org>,
+        Huazhong Tan <tanhuazhong@huawei.com>
+Subject: [PATCH net-next 0/7] net: hns3: updates for -next
+Date:   Tue, 29 Sep 2020 17:31:58 +0800
+Message-ID: <1601371925-49426-1-git-send-email-tanhuazhong@huawei.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <76bb2b545117413eb0879abcf91cf0f0@hisilicon.com>
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-09-29 05:14:31 [+0000], Song Bao Hua (Barry Song) wrote:
-> After second thought and trying to make this change, I would like to chan=
-ge my mind
-> and disagree with this idea. Two reasons:
-> 1. while using this_cpu_ptr() without preemption lock, people usually put=
- all things bound
-> with one cpu to one structure, so that once we get the pointer of the who=
-le structure, we get
-> all its parts belonging to the same cpu. If we move the dstmem and mutex =
-out of the structure
-> containing them, we will have to do:
-> 	a. get_cpu_ptr() for the acomp_ctx   //lock preemption
-> 	b. this_cpu_ptr() for the dstmem and mutex
-> 	c. put_cpu_ptr() for the acomp_ctx  //unlock preemption
-> 	d. mutex_lock()
-> 	  sg_init_one()
-> 	  compress/decompress etc.
-> 	  ...
-> 	  mutex_unlock
->=20
-> as the get() and put() have a preemption lock/unlock, this will make cert=
-ain this_cpu_ptr()
-> in the step "b" will return the right dstmem and mutex which belong to th=
-e same cpu with
-> step "a".
->=20
-> The steps from "a" to "c" are quite silly and confusing. I believe the ex=
-isting code aligns
-> with the most similar code in kernel better:
-> 	a. this_cpu_ptr()   //get everything for one cpu
-> 	b. mutex_lock()
-> 	  sg_init_one()
-> 	  compress/decompress etc.
-> 	  ...
-> 	  mutex_unlock
+There are some misc updates for the HNS3 ethernet driver.
+#1 uses the queried BD number as the limit for TSO.
+#2 renames trace event hns3_over_8bd since #1.
+#3 adds UDP segmentation offload support.
+#4 adds RoCE VF reset support.
+#5 is a minor cleanup.
+#6 & #7 add debugfs for device specifications and TQP enable status.
 
-My point was that there will be a warning at run-time and you don't want
-that. There are raw_ accessors if you know what you are doing. But=E2=80=A6
+Guangbin Huang (2):
+  net: hns3: debugfs add new command to query device specifications
+  net: hns3: dump tqp enable status in debugfs
 
-Earlier you had compression/decompression with disabled preemption and
-strict per-CPU memory allocation. Now if you keep this per-CPU memory
-allocation then you gain a possible bottleneck.
-In the previous email you said that there may be a bottleneck in the
-upper layer where you can't utilize all that memory you allocate. So you
-may want to rethink that strategy before that rework.
+Guojia Liao (1):
+  net: hns3: remove unused code in hns3_self_test()
 
-> 2. while allocating mutex, we can put the mutex into local memory by usin=
-g kmalloc_node().
-> If we move to "struct mutex lock" directly, most CPUs in a NUMA server wi=
-ll have to access
-> remote memory to read/write the mutex, therefore, this will increase the =
-latency dramatically.
+Huazhong Tan (4):
+  net: hns3: replace macro HNS3_MAX_NON_TSO_BD_NUM
+  net: hns3: rename trace event hns3_over_8bd
+  net: hns3: add UDP segmentation offload support
+  net: hns3: Add RoCE VF reset support
 
-If you need something per-CPU then DEFINE_PER_CPU() will give it to you.
-It would be very bad for performance if this allocations were not from
-CPU-local memory, right? So what makes you think this is worse than
-kmalloc_node() based allocations?
+ drivers/net/ethernet/hisilicon/hns3/hnae3.h        |  3 +
+ drivers/net/ethernet/hisilicon/hns3/hns3_debugfs.c | 50 ++++++++++++++-
+ drivers/net/ethernet/hisilicon/hns3/hns3_enet.c    | 71 ++++++++++++++--------
+ drivers/net/ethernet/hisilicon/hns3/hns3_enet.h    |  8 ++-
+ drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c |  9 +--
+ drivers/net/ethernet/hisilicon/hns3/hns3_trace.h   |  2 +-
+ .../ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c  | 50 +++++++++++++++
+ .../ethernet/hisilicon/hns3/hns3vf/hclgevf_main.h  |  1 +
+ 8 files changed, 157 insertions(+), 37 deletions(-)
 
-> Thanks
-> Barry
+-- 
+2.7.4
 
-Sebastian
