@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C60ED27C668
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:44:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 387ED27C596
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:38:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729956AbgI2Lou (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:44:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43958 "EHLO mail.kernel.org"
+        id S1730015AbgI2Lgy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:36:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53440 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730901AbgI2Loo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:44:44 -0400
+        id S1729967AbgI2LgV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:36:21 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 34385206F7;
-        Tue, 29 Sep 2020 11:44:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5917323DC4;
+        Tue, 29 Sep 2020 11:31:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601379883;
-        bh=JO5KuH9dgU3dALvaJEY+GwaZ5SvL6YABBJ4PYyJmbd8=;
+        s=default; t=1601379074;
+        bh=cMOMn+SFCJXlYxFMRSeaj8zBYzvgZpg3LElIdt4Okh0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tQo9EHJT4/ksipYJUIIjC8RK9A4PuVNZMfSfIWjMtZzt69WjV7BYfxfyl0abdRQi5
-         TgYDNGeklQGWxJ8FroqFQebxsC1kPeSgMlj6eswBKMPzavlM8hha0rovet60PtkMFd
-         rXxeWTcH2JNNtRah7ZKWvEL1p+eYrLQwcD+3ZuUU=
+        b=QYlmy5W2VqyUhfJ1vQ2iemKXLqxQMgbUkxKbWc/iEiBHPtXKT0c6xJpAms6VQv/sy
+         CQWtqD77au0faUGNItxQFYgK/5BDdiqwENZBAKuo2qIRKLRS4M3zfv+OJPGUPBREKY
+         XV9Euguw/aVITfwGb5M5Dj6siQNTluhPzLRvvIpM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 360/388] regmap: fix page selection for noinc reads
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Harald Freudenberger <freude@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>
+Subject: [PATCH 4.19 240/245] s390/zcrypt: Fix ZCRYPT_PERDEV_REQCNT ioctl
 Date:   Tue, 29 Sep 2020 13:01:31 +0200
-Message-Id: <20200929110027.891445123@linuxfoundation.org>
+Message-Id: <20200929105958.675637750@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929110010.467764689@linuxfoundation.org>
-References: <20200929110010.467764689@linuxfoundation.org>
+In-Reply-To: <20200929105946.978650816@linuxfoundation.org>
+References: <20200929105946.978650816@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,84 +44,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+From: Christian Borntraeger <borntraeger@de.ibm.com>
 
-[ Upstream commit 4003324856311faebb46cbd56a1616bd3f3b67c2 ]
+commit f7e80983f0cf470bb82036e73bff4d5a7daf8fc2 upstream.
 
-Non-incrementing reads can fail if register + length crosses page
-border. However for non-incrementing reads we should not check for page
-border crossing. Fix this by passing additional flag to _regmap_raw_read
-and passing length to _regmap_select_page basing on the flag.
+reqcnt is an u32 pointer but we do copy sizeof(reqcnt) which is the
+size of the pointer. This means we only copy 8 byte. Let us copy
+the full monty.
 
-Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Fixes: 74fe7b551f33 ("regmap: Add regmap_noinc_read API")
-Link: https://lore.kernel.org/r/20200917153405.3139200-1-dmitry.baryshkov@linaro.org
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Christian Borntraeger <borntraeger@de.ibm.com>
+Cc: Harald Freudenberger <freude@linux.ibm.com>
+Cc: stable@vger.kernel.org
+Fixes: af4a72276d49 ("s390/zcrypt: Support up to 256 crypto adapters.")
+Reviewed-by: Harald Freudenberger <freude@linux.ibm.com>
+Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/base/regmap/regmap.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ drivers/s390/crypto/zcrypt_api.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/base/regmap/regmap.c b/drivers/base/regmap/regmap.c
-index 927ebde1607be..7244319dd2d52 100644
---- a/drivers/base/regmap/regmap.c
-+++ b/drivers/base/regmap/regmap.c
-@@ -2454,7 +2454,7 @@ int regmap_raw_write_async(struct regmap *map, unsigned int reg,
- EXPORT_SYMBOL_GPL(regmap_raw_write_async);
- 
- static int _regmap_raw_read(struct regmap *map, unsigned int reg, void *val,
--			    unsigned int val_len)
-+			    unsigned int val_len, bool noinc)
- {
- 	struct regmap_range_node *range;
- 	int ret;
-@@ -2467,7 +2467,7 @@ static int _regmap_raw_read(struct regmap *map, unsigned int reg, void *val,
- 	range = _regmap_range_lookup(map, reg);
- 	if (range) {
- 		ret = _regmap_select_page(map, &reg, range,
--					  val_len / map->format.val_bytes);
-+					  noinc ? 1 : val_len / map->format.val_bytes);
- 		if (ret != 0)
- 			return ret;
- 	}
-@@ -2505,7 +2505,7 @@ static int _regmap_bus_read(void *context, unsigned int reg,
- 	if (!map->format.parse_val)
- 		return -EINVAL;
- 
--	ret = _regmap_raw_read(map, reg, work_val, map->format.val_bytes);
-+	ret = _regmap_raw_read(map, reg, work_val, map->format.val_bytes, false);
- 	if (ret == 0)
- 		*val = map->format.parse_val(work_val);
- 
-@@ -2621,7 +2621,7 @@ int regmap_raw_read(struct regmap *map, unsigned int reg, void *val,
- 
- 		/* Read bytes that fit into whole chunks */
- 		for (i = 0; i < chunk_count; i++) {
--			ret = _regmap_raw_read(map, reg, val, chunk_bytes);
-+			ret = _regmap_raw_read(map, reg, val, chunk_bytes, false);
- 			if (ret != 0)
- 				goto out;
- 
-@@ -2632,7 +2632,7 @@ int regmap_raw_read(struct regmap *map, unsigned int reg, void *val,
- 
- 		/* Read remaining bytes */
- 		if (val_len) {
--			ret = _regmap_raw_read(map, reg, val, val_len);
-+			ret = _regmap_raw_read(map, reg, val, val_len, false);
- 			if (ret != 0)
- 				goto out;
- 		}
-@@ -2707,7 +2707,7 @@ int regmap_noinc_read(struct regmap *map, unsigned int reg,
- 			read_len = map->max_raw_read;
- 		else
- 			read_len = val_len;
--		ret = _regmap_raw_read(map, reg, val, read_len);
-+		ret = _regmap_raw_read(map, reg, val, read_len, true);
- 		if (ret)
- 			goto out_unlock;
- 		val = ((u8 *)val) + read_len;
--- 
-2.25.1
-
+--- a/drivers/s390/crypto/zcrypt_api.c
++++ b/drivers/s390/crypto/zcrypt_api.c
+@@ -915,7 +915,8 @@ static long zcrypt_unlocked_ioctl(struct
+ 		if (!reqcnt)
+ 			return -ENOMEM;
+ 		zcrypt_perdev_reqcnt(reqcnt, AP_DEVICES);
+-		if (copy_to_user((int __user *) arg, reqcnt, sizeof(reqcnt)))
++		if (copy_to_user((int __user *) arg, reqcnt,
++				 sizeof(u32) * AP_DEVICES))
+ 			rc = -EFAULT;
+ 		kfree(reqcnt);
+ 		return rc;
 
 
