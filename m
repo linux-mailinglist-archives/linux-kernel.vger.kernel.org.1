@@ -2,133 +2,282 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63C6527CE9E
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 15:10:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76B5527CEA6
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 15:11:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729300AbgI2NKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 09:10:19 -0400
-Received: from mail-vi1eur05on2047.outbound.protection.outlook.com ([40.107.21.47]:2912
-        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725776AbgI2NKQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 09:10:16 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lNRLLgJSewdnK9UH1YZQu9++h6WxYfwtAYG83IN/a3X4kEPsIawgio30N2EwMdl5z/6RtD+rGVmDzaYqjSW65hnmmEALlLcVJ6lMRWvH2nucsRbeAbNn7WEGORKueBuHk7Vj77BXzif7vj9hKrrbbleHtjYkCJJhxq/dMk7nsp1VEwbH3XN+35POhg78G4RDS94Z9G241eb2CB+bM6O2yUZ9w+wA6a4yB1DJYU3j3/2SvBHrUzNLfKke/1W6seytzJm1dnSTeM1uYAiICyItC7RdUf+ZflzwuKE9R1bk2O6ouRMqJimMXN9MJhMNHtvuqUlmQDlKmlqKl19qB96p4A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jpmea/4IME4+s4xy/0C8l/LHYgDucfLQbgbMZbb75+Y=;
- b=W+JusnnoWTNe4KUMYWoomH0dCyLWKPFrz0OXClmb0HNkXArmNd7ZocvZNlgMHVhxOlgd5VUhIWvMFLtuke3CYa9CnVLKTF1+7Y0lat/0JkCcrQL5YfdOygqF8yDBA1H/4NfuGXUnJ4ErY+kFyQPjb9StCloj4WK5HXSIFPWnGs7exq2+o1JvrZWLKz0t37mtuvcL36tPRJDHwB+wWt4fXjD1hSsO84cSzPIKt0hntyVSUQMSejVL+VWzZ2gy3qtTAw29kbLXgc/nl53yxjGTwtVmUyWjjE/VHRc0oBl0ROWuAbeMJiNpk9piLFuy2t8G4pyi5ATxdVUMfOy2fvsCMQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jpmea/4IME4+s4xy/0C8l/LHYgDucfLQbgbMZbb75+Y=;
- b=k6TV2AEhhYIp9dVd9dbSXaurcccPWiJMPbiwOvTasQQg4KMIIK1elqOXSh/hjQv273qMo203t76qOIMISjLNU/P08I3IuH8XPclt0hXbFUjwgmcwTfj0DsCOL/0gWZb91Nzf2o95zNlOahvvFFrIMisec2Z0cs9AqX7njxZmNFk=
-Received: from VI1PR04MB4960.eurprd04.prod.outlook.com (2603:10a6:803:57::21)
- by VI1PR0401MB2381.eurprd04.prod.outlook.com (2603:10a6:800:2a::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.32; Tue, 29 Sep
- 2020 13:10:12 +0000
-Received: from VI1PR04MB4960.eurprd04.prod.outlook.com
- ([fe80::b178:a37b:1f9e:3a6]) by VI1PR04MB4960.eurprd04.prod.outlook.com
- ([fe80::b178:a37b:1f9e:3a6%3]) with mapi id 15.20.3412.029; Tue, 29 Sep 2020
- 13:10:12 +0000
-From:   Sherry Sun <sherry.sun@nxp.com>
-To:     Christoph Hellwig <hch@infradead.org>
-CC:     "sudeep.dutt@intel.com" <sudeep.dutt@intel.com>,
-        "ashutosh.dixit@intel.com" <ashutosh.dixit@intel.com>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "kishon@ti.com" <kishon@ti.com>,
-        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>
-Subject: RE: [PATCH V2 3/4] misc: vop: simply return the saved dma address
- instead of virt_to_phys
-Thread-Topic: [PATCH V2 3/4] misc: vop: simply return the saved dma address
- instead of virt_to_phys
-Thread-Index: AQHWljz3j2hLyZbXKkSFG46wUuvQYal/aZOAgAArmQA=
-Date:   Tue, 29 Sep 2020 13:10:12 +0000
-Message-ID: <VI1PR04MB4960A4E7D6A72C2CDEAC47CE92320@VI1PR04MB4960.eurprd04.prod.outlook.com>
-References: <20200929084425.24052-1-sherry.sun@nxp.com>
- <20200929084425.24052-4-sherry.sun@nxp.com>
- <20200929102643.GC7784@infradead.org>
-In-Reply-To: <20200929102643.GC7784@infradead.org>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: infradead.org; dkim=none (message not signed)
- header.d=none;infradead.org; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [114.219.66.133]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 21f1c057-2b0d-4801-976b-08d86479000f
-x-ms-traffictypediagnostic: VI1PR0401MB2381:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <VI1PR0401MB23817CA3C770EDB2A23326AE92320@VI1PR0401MB2381.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: +Lf0G7wXiyIA+eJKh6tWhHhve5nCO17/F+2qxy28cSmnyT6zgxgic1n4OP9IjYmFRozzgFZhfrH6nB/epwaB/BK/rt8BgK7OlznjqNYS0t9vwUTc11hqnAACT1FOpSJawxzAMgWa9HjzxJMC59h/aPz0NYDwU/5FNBsw9B4GxpXY3LMMkcPyCSL4OdsZwNhNBLWACF7CjEM9JugtpUvDJy5Qa6d7IP6KJ7NjeHFeSBFIWJcugxBcwnXtUgt700+I9+wo8qMS+6+QDCSpiP51SMbuOcW9MR3B+ZiQUyBeoSMvktYhFqQE/8+2TQ2UKzFK
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB4960.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(39850400004)(396003)(136003)(366004)(4326008)(9686003)(55016002)(86362001)(6916009)(52536014)(66446008)(64756008)(66556008)(66476007)(66946007)(5660300002)(8676002)(8936002)(26005)(186003)(54906003)(316002)(44832011)(71200400001)(478600001)(76116006)(33656002)(7696005)(6506007)(2906002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: iLfmcw7XltXDikUMkyJFhClnx5Hu4ORtVj6pm8rvFar/jkY6+zzMx3LxnTK4wa/mDF6kYWDjW3fwxh8hdMJ5pfJ22UTvXD2Qnx7Ftp8LP/8h2ONgF2H5rFCaPzrVOfKlEo+O9nPDIf9lpjSCyjDS7qhHoJ2dZAxP4nbMhlowu0Ftq0/5kA/IFpxG1onRU85KC3ZuMe8temC1+hJ2rAZ60yxuYLOcOzIGuvd3O9ZAVj1Owtz6jCmUWVIW8iDqfEdvonFQvxd9Dix6fwOAPJbNEh821EnHfQ1PmUsMbWsRLUakzeqDMNOYJQCQ9FvgcV1Xv4pXL/DNN7/Xa5cQhsJKLIFjlmrY01ibFV6/xAaUT+nCKHsLskq5zvworE3m5PX3ysmurjDOSP67uTCb809Pa7tqIyGJzoz2D+vyMG5K3PMotXIP44Gl6N0ywPIa/5cuYAsF40hOh0DT/8kHWQQ1ZLLfQjIyxVQnQXwiGmDW0vWTVb/DP+kIGABfQOIdt6MKr1871qB6aslzsj5GuPAhDKIYZ0I+1XZPv6M3s3wJVAu+RAtdpDzWz0hD2YDuDjh/LUxowFGTl564+DrbBzy4lqJOr+wFhEEaE/+b6CqZy2P9MeSdk3nanJPbS8nLsBi3SURRHAl3HwW18hrXlpKKeg==
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1729358AbgI2NLw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 09:11:52 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:56596 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728566AbgI2NLu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 09:11:50 -0400
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08TD3bDL095852;
+        Tue, 29 Sep 2020 09:11:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=RG1Uv5STyr5XZTpnTxIdCgVPhqYsGIeVg/+pw1rRP0s=;
+ b=Y8W7mO/P8lIb+sNsuBba+46UEz5kK9LSYw50K/SJJnQw7pm7I1Nqieqgk+zjDuJT/4Nd
+ KMIn7HZPY7P5uUB9hlqGoXIEGtql4P8fVDgQmAnKDqzihh0+XwErVsmQwt3aIKhJwc94
+ lfHPmDEJWcMxGUibPSjPgA+zTVG3FkSoUNcw1wq1ohAKHx20F+UcNrQgFU+Uz61IYruU
+ s8ubLEQ98rOxx/hB7X0Z6u2GCSjNMyxMih5/oc6isniUootLB+GxdYAqiP2sPCcrxORc
+ hYaWUjTUc4GyBzJbUQhClopT1FyHtE5zkeyfSI/ztWHsK60zgCe6SxK+3MJn1a3rdbhK qQ== 
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33v4w02095-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 29 Sep 2020 09:11:43 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08TD7cZk014352;
+        Tue, 29 Sep 2020 13:11:41 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma03ams.nl.ibm.com with ESMTP id 33sw983b1d-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 29 Sep 2020 13:11:41 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08TDBdMk36110786
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 29 Sep 2020 13:11:39 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E1B384C050;
+        Tue, 29 Sep 2020 13:11:38 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2235E4C052;
+        Tue, 29 Sep 2020 13:11:37 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.79.233.44])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 29 Sep 2020 13:11:36 +0000 (GMT)
+From:   Brahadambal Srinivasan <latha@linux.vnet.ibm.com>
+To:     shuah@kernel.org, trenn@suse.com
+Cc:     latha@linux.vnet.ibm.com, Janakarajan.Natarajan@amd.com,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Pavithra R . Prakash" <pavrampu@in.ibm.com>
+Subject: [PATCH v2] cpupower: Provide online and offline CPU information
+Date:   Tue, 29 Sep 2020 18:41:08 +0530
+Message-Id: <20200929131108.19435-1-latha@linux.vnet.ibm.com>
+X-Mailer: git-send-email 2.24.3 (Apple Git-128)
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB4960.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 21f1c057-2b0d-4801-976b-08d86479000f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Sep 2020 13:10:12.6648
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Omwl+fInuEIAmkwFYko8D3NP/zm8D6LWRmyaMkdjt114Ne8zfTvBAiE1ARzhF8aCoaSLoXbVkXb5gm6npWB2vg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0401MB2381
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-29_04:2020-09-29,2020-09-29 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 spamscore=0
+ lowpriorityscore=0 mlxscore=0 malwarescore=0 adultscore=0 clxscore=1011
+ priorityscore=1501 mlxlogscore=999 suspectscore=2 bulkscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009290114
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christoph,
+When a user tries to modify cpuidle or cpufreq properties on offline
+CPUs, the tool returns success (exit status 0) but also does not provide
+any warning message regarding offline cpus that may have been specified
+but left unchanged. In case of all or a few CPUs being offline, it can be
+difficult to keep track of which CPUs didn't get the new frequency or idle
+state set. Silent failures are difficult to keep track of when there are a
+huge number of CPUs on which the action is performed.
 
-> On Tue, Sep 29, 2020 at 04:44:24PM +0800, Sherry Sun wrote:
-> > The device page and vring should use consistent memory which are
-> > allocated by dma_alloc_coherent api, when user space wants to get its
-> > physical address, virt_to_phys cannot be used, should simply return
-> > the saved device page dma address by get_dp_dma callback and the vring
-> > dma address saved in mic_vqconfig.
->=20
-> More importantly you can't just all virt_to_phys on a return value from
-> dma_alloc_coherent, so this needs to be folded into patch 1.
+This patch adds helper functions to find both online and offline CPUs and
+print them out accordingly.
 
-Okay, will move this change into patch 1.
->=20
-> >  	if (!offset) {
-> > -		*pa =3D virt_to_phys(vpdev->hw_ops->get_dp(vpdev));
-> > +		if (vpdev->hw_ops->get_dp_dma)
-> > +			*pa =3D vpdev->hw_ops->get_dp_dma(vpdev);
-> > +		else {
-> > +			dev_err(vop_dev(vdev), "can't get device page
-> physical address\n");
-> > +			return -EINVAL;
-> > +		}
->=20
-> I don't think we need the NULL check here.  Wouldn't it also make sense t=
-o
-> return the virtual and DMA address from ->get_dp instead of adding anothe=
-r
-> method?
+We use these helper functions in cpuidle-set and cpufreq-set to print an
+additional message if the user attempts to modify offline cpus.
 
-Do you mean that we should only change the original ->get_dp callback to re=
-turn virtual
-and DMA address at the same time, instead of adding the ->get_dp_dma callba=
-ck?
+Reported-by: Pavithra R. Prakash <pavrampu@in.ibm.com>
+Signed-off-by: Brahadambal Srinivasan <latha@linux.vnet.ibm.com>
+---
+ tools/power/cpupower/utils/cpufreq-set.c     |  3 +
+ tools/power/cpupower/utils/cpuidle-set.c     |  4 ++
+ tools/power/cpupower/utils/cpupower.c        |  8 +++
+ tools/power/cpupower/utils/helpers/helpers.h | 12 ++++
+ tools/power/cpupower/utils/helpers/misc.c    | 66 +++++++++++++++++++-
+ 5 files changed, 92 insertions(+), 1 deletion(-)
 
-Regards
-Sherry
+diff --git a/tools/power/cpupower/utils/cpufreq-set.c b/tools/power/cpupower/utils/cpufreq-set.c
+index 6ed82fba5aaa..f25cdfa05c5f 100644
+--- a/tools/power/cpupower/utils/cpufreq-set.c
++++ b/tools/power/cpupower/utils/cpufreq-set.c
+@@ -311,6 +311,7 @@ int cmd_freq_set(int argc, char **argv)
+ 		}
+ 	}
+ 
++	get_cpustate();
+ 
+ 	/* loop over CPUs */
+ 	for (cpu = bitmask_first(cpus_chosen);
+@@ -328,5 +329,7 @@ int cmd_freq_set(int argc, char **argv)
+ 		}
+ 	}
+ 
++	print_offline_cpus();
++
+ 	return 0;
+ }
+diff --git a/tools/power/cpupower/utils/cpuidle-set.c b/tools/power/cpupower/utils/cpuidle-set.c
+index 569f268f4c7f..46158928f9ad 100644
+--- a/tools/power/cpupower/utils/cpuidle-set.c
++++ b/tools/power/cpupower/utils/cpuidle-set.c
+@@ -95,6 +95,8 @@ int cmd_idle_set(int argc, char **argv)
+ 		exit(EXIT_FAILURE);
+ 	}
+ 
++	get_cpustate();
++
+ 	/* Default is: set all CPUs */
+ 	if (bitmask_isallclear(cpus_chosen))
+ 		bitmask_setall(cpus_chosen);
+@@ -181,5 +183,7 @@ int cmd_idle_set(int argc, char **argv)
+ 			break;
+ 		}
+ 	}
++
++	print_offline_cpus();
+ 	return EXIT_SUCCESS;
+ }
+diff --git a/tools/power/cpupower/utils/cpupower.c b/tools/power/cpupower/utils/cpupower.c
+index 8e3d08042825..8ac3304a9957 100644
+--- a/tools/power/cpupower/utils/cpupower.c
++++ b/tools/power/cpupower/utils/cpupower.c
+@@ -34,6 +34,8 @@ int run_as_root;
+ int base_cpu;
+ /* Affected cpus chosen by -c/--cpu param */
+ struct bitmask *cpus_chosen;
++struct bitmask *online_cpus;
++struct bitmask *offline_cpus;
+ 
+ #ifdef DEBUG
+ int be_verbose;
+@@ -178,6 +180,8 @@ int main(int argc, const char *argv[])
+ 	char pathname[32];
+ 
+ 	cpus_chosen = bitmask_alloc(sysconf(_SC_NPROCESSORS_CONF));
++	online_cpus = bitmask_alloc(sysconf(_SC_NPROCESSORS_CONF));
++	offline_cpus = bitmask_alloc(sysconf(_SC_NPROCESSORS_CONF));
+ 
+ 	argc--;
+ 	argv += 1;
+@@ -230,6 +234,10 @@ int main(int argc, const char *argv[])
+ 		ret = p->main(argc, argv);
+ 		if (cpus_chosen)
+ 			bitmask_free(cpus_chosen);
++		if (online_cpus)
++			bitmask_free(online_cpus);
++		if (offline_cpus)
++			bitmask_free(offline_cpus);
+ 		return ret;
+ 	}
+ 	print_help();
+diff --git a/tools/power/cpupower/utils/helpers/helpers.h b/tools/power/cpupower/utils/helpers/helpers.h
+index c258eeccd05f..88ab1bda7ba4 100644
+--- a/tools/power/cpupower/utils/helpers/helpers.h
++++ b/tools/power/cpupower/utils/helpers/helpers.h
+@@ -94,6 +94,8 @@ struct cpupower_cpu_info {
+  */
+ extern int get_cpu_info(struct cpupower_cpu_info *cpu_info);
+ extern struct cpupower_cpu_info cpupower_cpu_info;
++
++
+ /* cpuid and cpuinfo helpers  **************************/
+ 
+ /* X86 ONLY ****************************************/
+@@ -171,4 +173,14 @@ static inline unsigned int cpuid_ecx(unsigned int op) { return 0; };
+ static inline unsigned int cpuid_edx(unsigned int op) { return 0; };
+ #endif /* defined(__i386__) || defined(__x86_64__) */
+ 
++/*
++ * CPU State related functions
++ */
++extern struct bitmask *online_cpus;
++extern struct bitmask *offline_cpus;
++
++void get_cpustate(void);
++void get_cpustate(void);
++void get_cpustate(void);
++
+ #endif /* __CPUPOWERUTILS_HELPERS__ */
+diff --git a/tools/power/cpupower/utils/helpers/misc.c b/tools/power/cpupower/utils/helpers/misc.c
+index f406adc40bad..2ead98169cf5 100644
+--- a/tools/power/cpupower/utils/helpers/misc.c
++++ b/tools/power/cpupower/utils/helpers/misc.c
+@@ -1,8 +1,12 @@
+ // SPDX-License-Identifier: GPL-2.0
+-#if defined(__i386__) || defined(__x86_64__)
++
++#include <stdio.h>
++#include <stdlib.h>
+ 
+ #include "helpers/helpers.h"
+ 
++#if defined(__i386__) || defined(__x86_64__)
++
+ #define MSR_AMD_HWCR	0xc0010015
+ 
+ int cpufreq_has_boost_support(unsigned int cpu, int *support, int *active,
+@@ -41,3 +45,63 @@ int cpufreq_has_boost_support(unsigned int cpu, int *support, int *active,
+ 	return 0;
+ }
+ #endif /* #if defined(__i386__) || defined(__x86_64__) */
++
++/* get_cpustate
++ *
++ * Gather the information of all online CPUs into bitmask struct
++ */
++void get_cpustate(void)
++{
++	unsigned int cpu = 0;
++
++	bitmask_clearall(online_cpus);
++	bitmask_clearall(offline_cpus);
++
++	for (cpu = bitmask_first(cpus_chosen);
++		cpu <= bitmask_last(cpus_chosen); cpu++) {
++
++		if (cpupower_is_cpu_online(cpu) == 1)
++			bitmask_setbit(online_cpus, cpu);
++		else
++			bitmask_setbit(offline_cpus, cpu);
++
++		continue;
++	}
++}
++
++/* print_online_cpus
++ *
++ * Print the CPU numbers of all CPUs that are online currently
++ */
++void print_online_cpus(void)
++{
++	int str_len = 0;
++	char *online_cpus_str = NULL;
++
++	str_len = online_cpus->size * 5;
++	online_cpus_str = (void *)malloc(sizeof(char) * str_len);
++
++	if (!bitmask_isallclear(online_cpus)) {
++		bitmask_displaylist(online_cpus_str, str_len, online_cpus);
++		printf(_("Following CPUs are online:\n%s\n"), online_cpus_str);
++	}
++}
++
++/* print_offline_cpus
++ *
++ * Print the CPU numbers of all CPUs that are offline currently
++ */
++void print_offline_cpus(void)
++{
++	int str_len = 0;
++	char *offline_cpus_str = NULL;
++
++	str_len = offline_cpus->size * 5;
++	offline_cpus_str = (void *)malloc(sizeof(char) * str_len);
++
++	if (!bitmask_isallclear(offline_cpus)) {
++		bitmask_displaylist(offline_cpus_str, str_len, offline_cpus);
++		printf(_("Following CPUs are offline:\n%s\n"), offline_cpus_str);
++		printf(_("cpupower set operation was not performed on them\n"));
++	}
++}
+-- 
+2.24.3 (Apple Git-128)
 
