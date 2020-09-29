@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B87E27C4CC
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:17:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53E5B27C3D8
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:09:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729598AbgI2LQn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:16:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60790 "EHLO mail.kernel.org"
+        id S1729070AbgI2LJQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:09:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49126 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729557AbgI2LQH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:16:07 -0400
+        id S1729051AbgI2LJJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:09:09 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A5771206DB;
-        Tue, 29 Sep 2020 11:16:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C467F21D46;
+        Tue, 29 Sep 2020 11:09:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601378166;
-        bh=ebj9lJkI57ng6Tqyc3i4ARW/ZirUUSd+psChkdtWmhU=;
+        s=default; t=1601377749;
+        bh=tZIA5kCi1OJs2CUyW7GZi810eovjNZzjiYFeAE6RF00=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oQrRJaiNFuGOdWPH88XoFxJ4WVYHNHDRIxvvUBibm8LyqfTykm7pAuPWAjiboBW53
-         21DtOZJBjKX8Iph4RGGtgTrzKalfNAv/KZUkhwMeK5+A71qdKWwSAmDWsU7ZFFAT7h
-         oeux1CF7994L/mGvpT8YDxWYZb5mC7VBCJqlCjCw=
+        b=eJFW2OAVB139Kcq/pplUgvB+9b8F4nfr3OCVdUsncODg7zsIpgjH4sJtd/kq5YPY0
+         3sTooNK/Rd7wfvipjxpOjITcGY2Z3MNqSoExPIOrxMd0yVpiYcx5F+tixfnk6f6D3M
+         T7BRYAvHtPLuEYrdTcTX6t7Pdarzv4jfFXQepwSE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stefan Berger <stefanb@linux.ibm.com>,
-        Nayna Jain <nayna@linux.ibm.com>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        stable@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 083/166] tpm: ibmvtpm: Wait for buffer to be set before proceeding
+Subject: [PATCH 4.9 051/121] KVM: x86: fix incorrect comparison in trace event
 Date:   Tue, 29 Sep 2020 12:59:55 +0200
-Message-Id: <20200929105939.359320011@linuxfoundation.org>
+Message-Id: <20200929105932.724806676@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929105935.184737111@linuxfoundation.org>
-References: <20200929105935.184737111@linuxfoundation.org>
+In-Reply-To: <20200929105930.172747117@linuxfoundation.org>
+References: <20200929105930.172747117@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,77 +42,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Berger <stefanb@linux.ibm.com>
+From: Paolo Bonzini <pbonzini@redhat.com>
 
-[ Upstream commit d8d74ea3c00214aee1e1826ca18e77944812b9b4 ]
+[ Upstream commit 147f1a1fe5d7e6b01b8df4d0cbd6f9eaf6b6c73b ]
 
-Synchronize with the results from the CRQs before continuing with
-the initialization. This avoids trying to send TPM commands while
-the rtce buffer has not been allocated, yet.
+The "u" field in the event has three states, -1/0/1.  Using u8 however means that
+comparison with -1 will always fail, so change to signed char.
 
-This patch fixes an existing race condition that may occurr if the
-hypervisor does not quickly respond to the VTPM_GET_RTCE_BUFFER_SIZE
-request sent during initialization and therefore the ibmvtpm->rtce_buf
-has not been allocated at the time the first TPM command is sent.
-
-Fixes: 132f76294744 ("drivers/char/tpm: Add new device driver to support IBM vTPM")
-Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
-Acked-by: Nayna Jain <nayna@linux.ibm.com>
-Tested-by: Nayna Jain <nayna@linux.ibm.com>
-Reviewed-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/char/tpm/tpm_ibmvtpm.c | 9 +++++++++
- drivers/char/tpm/tpm_ibmvtpm.h | 1 +
- 2 files changed, 10 insertions(+)
+ arch/x86/kvm/mmutrace.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/char/tpm/tpm_ibmvtpm.c b/drivers/char/tpm/tpm_ibmvtpm.c
-index 569e93e1f06cc..3ba67bc6baba0 100644
---- a/drivers/char/tpm/tpm_ibmvtpm.c
-+++ b/drivers/char/tpm/tpm_ibmvtpm.c
-@@ -588,6 +588,7 @@ static irqreturn_t ibmvtpm_interrupt(int irq, void *vtpm_instance)
- 	 */
- 	while ((crq = ibmvtpm_crq_get_next(ibmvtpm)) != NULL) {
- 		ibmvtpm_crq_process(crq, ibmvtpm);
-+		wake_up_interruptible(&ibmvtpm->crq_queue.wq);
- 		crq->valid = 0;
- 		smp_wmb();
- 	}
-@@ -635,6 +636,7 @@ static int tpm_ibmvtpm_probe(struct vio_dev *vio_dev,
- 	}
+diff --git a/arch/x86/kvm/mmutrace.h b/arch/x86/kvm/mmutrace.h
+index 756b14ecc957a..df1076b0eabf3 100644
+--- a/arch/x86/kvm/mmutrace.h
++++ b/arch/x86/kvm/mmutrace.h
+@@ -336,7 +336,7 @@ TRACE_EVENT(
+ 		/* These depend on page entry type, so compute them now.  */
+ 		__field(bool, r)
+ 		__field(bool, x)
+-		__field(u8, u)
++		__field(signed char, u)
+ 	),
  
- 	crq_q->num_entry = CRQ_RES_BUF_SIZE / sizeof(*crq_q->crq_addr);
-+	init_waitqueue_head(&crq_q->wq);
- 	ibmvtpm->crq_dma_handle = dma_map_single(dev, crq_q->crq_addr,
- 						 CRQ_RES_BUF_SIZE,
- 						 DMA_BIDIRECTIONAL);
-@@ -687,6 +689,13 @@ static int tpm_ibmvtpm_probe(struct vio_dev *vio_dev,
- 	if (rc)
- 		goto init_irq_cleanup;
- 
-+	if (!wait_event_timeout(ibmvtpm->crq_queue.wq,
-+				ibmvtpm->rtce_buf != NULL,
-+				HZ)) {
-+		dev_err(dev, "CRQ response timed out\n");
-+		goto init_irq_cleanup;
-+	}
-+
- 	return tpm_chip_register(chip);
- init_irq_cleanup:
- 	do {
-diff --git a/drivers/char/tpm/tpm_ibmvtpm.h b/drivers/char/tpm/tpm_ibmvtpm.h
-index 91dfe766d0800..4f6a124601db4 100644
---- a/drivers/char/tpm/tpm_ibmvtpm.h
-+++ b/drivers/char/tpm/tpm_ibmvtpm.h
-@@ -31,6 +31,7 @@ struct ibmvtpm_crq_queue {
- 	struct ibmvtpm_crq *crq_addr;
- 	u32 index;
- 	u32 num_entry;
-+	wait_queue_head_t wq;
- };
- 
- struct ibmvtpm_dev {
+ 	TP_fast_assign(
 -- 
 2.25.1
 
