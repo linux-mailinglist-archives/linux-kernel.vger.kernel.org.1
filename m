@@ -2,146 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6A1527C017
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 10:53:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7133527C0EE
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 11:20:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727816AbgI2IxH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 04:53:07 -0400
-Received: from mail-db8eur05on2071.outbound.protection.outlook.com ([40.107.20.71]:14528
-        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725372AbgI2IxH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 04:53:07 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=J3jpRFV3oFRWQRvkemyRUIJ3EV0jYPTZyfiWsaXIyxoB+odtTKfsmBGAQyZYj6laiq7FEw2wV3/4vnt9/UZtxyRtuN411u0qLHONmSLsCdFz1vw+aNBNpnex8R8J1LPMkPDk+h3DxY/mlIUihoclURykGvrB2h31HUi6OsS+wzVXiixz5o34oxLlZkbUMhhtiyjUR+M8lFPeimUfqrF/34HIQjVBapH+62mYOm4TowLmp0fUFCsbamBtAGUFISMbzhHMeJzilOLkET/3QkwrLMyhw0yr1DZX+vb94hoaTSLiP2CBAbRqRdZL4mgVoS0sEGoi17J/ZGdqTK1nXdv9tA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cTlxzLI5XFZs7G0Jtb6Tr/BgEu3gcAGqC4Ejj38NE8U=;
- b=bPJWpuNCftCIqXHnr7HB3fX61uTfrqweTxUHqBaVMfqj/w2ad9qc/8ZDB3xS2TjEPzTB/RZA2kgcst76zDGxHh7X9GJT8jjookreC7VXdUarpICxs+uB8BDtvkg25SkixlfPqVbMzoxktBCaToDjwELJYrcEIdK5CMhkmR0Ap6yoIMva66v2y/gBeQBUwzsG4dKctnY4MavpMuYzIz29egh9S3jVRbZbnbjgx6TVa4hSQ78TuUrpAiryynzA1F/DEQKOrK3wbDqKa8fSqAV76jhmVkap5pJUZthDRzkFlzMaPezEb+JJNlqljadoEmLd34cuF01hG2guRd1mXkAveg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cTlxzLI5XFZs7G0Jtb6Tr/BgEu3gcAGqC4Ejj38NE8U=;
- b=MRbswDMUc4Qf1Lw60UabqwmT79T2UbKtW37xhUGnW/dZqkS4VmpPGXmz2vu2het8kGSCa72nu7EUus2kro62IjXbnEmdpeBMsoaSKT6vrSn5bB6kobMpJcHA67rf6vvaoyrHlTNhoziCp3//gMkL7DUJHBd1aXoRBvzLnGcaejE=
-Authentication-Results: linuxfoundation.org; dkim=none (message not signed)
- header.d=none;linuxfoundation.org; dmarc=none action=none
- header.from=nxp.com;
-Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
- by DB7PR04MB4091.eurprd04.prod.outlook.com (2603:10a6:5:1e::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.32; Tue, 29 Sep
- 2020 08:53:02 +0000
-Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
- ([fe80::35c5:8c71:91f3:6bc6]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
- ([fe80::35c5:8c71:91f3:6bc6%12]) with mapi id 15.20.3412.029; Tue, 29 Sep
- 2020 08:53:02 +0000
-From:   Peng Fan <peng.fan@nxp.com>
-To:     gregkh@linuxfoundation.org, jirislaby@kernel.org,
-        andrew.smirnov@gmail.com
-Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-imx@nxp.com, Peng Fan <peng.fan@nxp.com>
-Subject: [PATCH V2] tty: serial: lpuart: fix lpuart32_write usage
-Date:   Tue, 29 Sep 2020 17:19:20 +0800
-Message-Id: <20200929091920.22612-1-peng.fan@nxp.com>
-X-Mailer: git-send-email 2.28.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SG2PR06CA0177.apcprd06.prod.outlook.com
- (2603:1096:1:1e::31) To DB6PR0402MB2760.eurprd04.prod.outlook.com
- (2603:10a6:4:a1::14)
+        id S1727991AbgI2JUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 05:20:52 -0400
+Received: from www62.your-server.de ([213.133.104.62]:36576 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727653AbgI2JUv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 05:20:51 -0400
+X-Greylist: delayed 1772 seconds by postgrey-1.27 at vger.kernel.org; Tue, 29 Sep 2020 05:20:50 EDT
+Received: from sslproxy01.your-server.de ([78.46.139.224])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kNBLf-00061o-Oa; Tue, 29 Sep 2020 10:50:59 +0200
+Received: from [178.196.57.75] (helo=pc-9.home)
+        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kNBLf-0004qV-AC; Tue, 29 Sep 2020 10:50:59 +0200
+Subject: Re: [PATCH v7 bpf-next 4/8] selftests/bpf: add bpf_snprintf_btf
+ helper tests
+To:     Alan Maguire <alan.maguire@oracle.com>, ast@kernel.org,
+        andriin@fb.com, yhs@fb.com
+Cc:     linux@rasmusvillemoes.dk, andriy.shevchenko@linux.intel.com,
+        pmladek@suse.com, kafai@fb.com, songliubraving@fb.com,
+        john.fastabend@gmail.com, kpsingh@chromium.org, shuah@kernel.org,
+        rdna@fb.com, scott.branden@broadcom.com, quentin@isovalent.com,
+        cneirabustos@gmail.com, jakub@cloudflare.com, mingo@redhat.com,
+        rostedt@goodmis.org, acme@kernel.org, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+References: <1601292670-1616-1-git-send-email-alan.maguire@oracle.com>
+ <1601292670-1616-5-git-send-email-alan.maguire@oracle.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <30b2a441-9772-1662-ca03-13bfa0b37d46@iogearbox.net>
+Date:   Tue, 29 Sep 2020 10:50:57 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from linux-1xn6.ap.freescale.net (119.31.174.71) by SG2PR06CA0177.apcprd06.prod.outlook.com (2603:1096:1:1e::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.21 via Frontend Transport; Tue, 29 Sep 2020 08:52:59 +0000
-X-Mailer: git-send-email 2.28.0
-X-Originating-IP: [119.31.174.71]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 0f0a42d2-76ff-4dec-2df1-08d864551277
-X-MS-TrafficTypeDiagnostic: DB7PR04MB4091:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DB7PR04MB4091352AEC059E3D9771E7BA88320@DB7PR04MB4091.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:462;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: DC6VHcoV0r3G6+PNjcm9fTWyp1yn5+Aul2cKNAjORDltjgHQ2OKXNWPz172SeAbvssUVoC6pIdfg6T0YgAAQxKP7MGhUQZh0iA3FpPmWcs/5ysFiQeFbrrIcuEIIBkR1Xm+7UaSbfhycHuZuuIldFTcodLlygjXgtJI5oFQM2fm12u8cKmOfQdyG5VASNecxJPVwukE7cIQIEUph1FXYnTulZvvBw/PR+TTblcIbuEv89d3RSgAC4Th7RPPipK04KfJQQjXWlRE8tAZ7X1rlmERU0NjZHC+9g3gJceu0zt0jBmAPj8aySverXL/TuhmE8HVcWF4CPUWqcHPEK/GIfA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(376002)(136003)(366004)(39860400002)(6512007)(86362001)(66476007)(66556008)(66946007)(5660300002)(8676002)(6486002)(8936002)(26005)(16526019)(186003)(36756003)(4326008)(316002)(44832011)(478600001)(2616005)(52116002)(83380400001)(6506007)(1076003)(956004)(6666004)(2906002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: hwAw5kliYRDjHb5KuhTE9flDcDfKi4cpUZ1RWnn61J7PvTpHiruiI5AT9FGRCeNYnoUCQR5BFoBhuzzjB5S3KUZZ6MwI4CGKhjW8vah3JYNlq4Dkxvj3OOqspMSm3BJZEzIq6ZZ5SopDOhoAbgnVuHgqEx3TP3ZJishIMs4VGryZdaz+N6KseE34oAc69btksHLBLEKRfxV7Zu/P8/T7AijyoovHO7oPvNI30ZcUNgAq2vIGfIZ3D6zMwJau/e0b8gArnIjAgSb77V3lI6ZUwP4iYJdeCLtFlzyqh95fqYV039EartrYv4CgSY4qTQAwpMfWMDYwe2a/o1W2QZyny0BTihYqAnM7DWWAv8ynsGoGVQ14qVcUxjSPFS6HhTfgcfOgIHZm6NMZUuGl8HBvYOmVv240jBfMVrt1VUA1Z1CfQI78qNTuRQBCyJhdLYT2QkrJYgtxw+IbjmmYhOe1WND0BNMEPC93Rkm0LPruAoqUMn+6uxN/e5o3OQzRd0UK2xfCUNnemQJgDS5jBJ3FtRV+ohbNlFHb/waoHQghK+5h/qJEtVnE9vT0UUF6AvQbwvATPVjq6f1OEKmxusnicaJRm+qweL0ClWdjj3gI0T2CnBc+XMH0P/AiYl8CIFjaU85Mc5BE+o5ifO8Obf7yLw==
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0f0a42d2-76ff-4dec-2df1-08d864551277
-X-MS-Exchange-CrossTenant-AuthSource: DB6PR0402MB2760.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Sep 2020 08:53:02.2031
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: h7+iX+ueM+qijINzdbdtZaAdjZdCv3GWFz9lL/AiH1Xt3DqzibTONvPqVU+OpeuRBD4ZeHI8dro2r1lk+C74UA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR04MB4091
+In-Reply-To: <1601292670-1616-5-git-send-email-alan.maguire@oracle.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/25941/Mon Sep 28 15:55:11 2020)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 2nd and 3rd parameter were wrongly used, and cause kernel abort when
-doing kgdb debug.
+On 9/28/20 1:31 PM, Alan Maguire wrote:
+> Tests verifying snprintf()ing of various data structures,
+> flags combinations using a tp_btf program. Tests are skipped
+> if __builtin_btf_type_id is not available to retrieve BTF
+> type ids.
+> 
+> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+[...]
+> +void test_snprintf_btf(void)
+> +{
+> +	struct netif_receive_skb *skel;
+> +	struct netif_receive_skb__bss *bss;
+> +	int err, duration = 0;
+> +
+> +	skel = netif_receive_skb__open();
+> +	if (CHECK(!skel, "skel_open", "failed to open skeleton\n"))
+> +		return;
+> +
+> +	err = netif_receive_skb__load(skel);
+> +	if (CHECK(err, "skel_load", "failed to load skeleton: %d\n", err))
+> +		goto cleanup;
+> +
+> +	bss = skel->bss;
+> +
+> +	err = netif_receive_skb__attach(skel);
+> +	if (CHECK(err, "skel_attach", "skeleton attach failed: %d\n", err))
+> +		goto cleanup;
+> +
+> +	/* generate receive event */
+> +	system("ping -c 1 127.0.0.1 > /dev/null");
 
-Fixes: 1da17d7cf8e2c4("tty: serial: fsl_lpuart: Use appropriate lpuart32_* I/O funcs")
-Signed-off-by: Peng Fan <peng.fan@nxp.com>
----
+This generates the following new warning when compiling BPF selftests:
 
-V2:
- Fix poll init
+   [...]
+   EXT-OBJ  [test_progs] cgroup_helpers.o
+   EXT-OBJ  [test_progs] trace_helpers.o
+   EXT-OBJ  [test_progs] network_helpers.o
+   EXT-OBJ  [test_progs] testing_helpers.o
+   TEST-OBJ [test_progs] snprintf_btf.test.o
+/root/bpf-next/tools/testing/selftests/bpf/prog_tests/snprintf_btf.c: In function ‘test_snprintf_btf’:
+/root/bpf-next/tools/testing/selftests/bpf/prog_tests/snprintf_btf.c:30:2: warning: ignoring return value of ‘system’, declared with attribute warn_unused_result [-Wunused-result]
+   system("ping -c 1 127.0.0.1 > /dev/null");
+   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   [...]
 
- drivers/tty/serial/fsl_lpuart.c | 14 ++++++--------
- 1 file changed, 6 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/tty/serial/fsl_lpuart.c b/drivers/tty/serial/fsl_lpuart.c
-index 5a5a22d77841..645bbb24b433 100644
---- a/drivers/tty/serial/fsl_lpuart.c
-+++ b/drivers/tty/serial/fsl_lpuart.c
-@@ -649,26 +649,24 @@ static int lpuart32_poll_init(struct uart_port *port)
- 	spin_lock_irqsave(&sport->port.lock, flags);
- 
- 	/* Disable Rx & Tx */
--	lpuart32_write(&sport->port, UARTCTRL, 0);
-+	lpuart32_write(&sport->port, 0, UARTCTRL);
- 
- 	temp = lpuart32_read(&sport->port, UARTFIFO);
- 
- 	/* Enable Rx and Tx FIFO */
--	lpuart32_write(&sport->port, UARTFIFO,
--		       temp | UARTFIFO_RXFE | UARTFIFO_TXFE);
-+	lpuart32_write(&sport->port, temp | UARTFIFO_RXFE | UARTFIFO_TXFE, UARTFIFO);
- 
- 	/* flush Tx and Rx FIFO */
--	lpuart32_write(&sport->port, UARTFIFO,
--		       UARTFIFO_TXFLUSH | UARTFIFO_RXFLUSH);
-+	lpuart32_write(&sport->port, UARTFIFO_TXFLUSH | UARTFIFO_RXFLUSH, UARTFIFO);
- 
- 	/* explicitly clear RDRF */
- 	if (lpuart32_read(&sport->port, UARTSTAT) & UARTSTAT_RDRF) {
- 		lpuart32_read(&sport->port, UARTDATA);
--		lpuart32_write(&sport->port, UARTFIFO, UARTFIFO_RXUF);
-+		lpuart32_write(&sport->port, UARTFIFO_RXUF, UARTFIFO);
- 	}
- 
- 	/* Enable Rx and Tx */
--	lpuart32_write(&sport->port, UARTCTRL, UARTCTRL_RE | UARTCTRL_TE);
-+	lpuart32_write(&sport->port, UARTCTRL_RE | UARTCTRL_TE, UARTCTRL);
- 	spin_unlock_irqrestore(&sport->port.lock, flags);
- 
- 	return 0;
-@@ -677,7 +675,7 @@ static int lpuart32_poll_init(struct uart_port *port)
- static void lpuart32_poll_put_char(struct uart_port *port, unsigned char c)
- {
- 	lpuart32_wait_bit_set(port, UARTSTAT, UARTSTAT_TDRE);
--	lpuart32_write(port, UARTDATA, c);
-+	lpuart32_write(port, c, UARTDATA);
- }
- 
- static int lpuart32_poll_get_char(struct uart_port *port)
--- 
-2.28.0
-
+Please fix, thx!
