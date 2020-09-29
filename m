@@ -2,140 +2,295 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADDFA27BD16
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 08:24:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BB6427BD19
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 08:26:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725842AbgI2GY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 02:24:27 -0400
-Received: from mail-eopbgr60102.outbound.protection.outlook.com ([40.107.6.102]:22241
-        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725710AbgI2GY1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 02:24:27 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QfrpxkFreaJw4FIuqAoJjAMc+CP/MF3epAX2yt6LYLmSmqjIYs0KL8uSDsLnVnvOWbgcf+Fjv88+Cz2cd0k0aNj60E1Usj12ZSKAHZZg2qy0GjY2skIQnYclOwqry92bk1fGrSbMLCMwzyHffV8ktMVfOu8TkDaDnEB3tBLCJC5PgdjFmy8kHUpoXwvIASO/4JenV4itleiFNpNagpjP7RhwxKHbos15HK2upKu5tt+pIwK1Pazcf7rpgJkxp9IKQr6kobGHUmVG88uWEmqyOrYsyodWZp15MnWlje3Gnemv6uG96SA//RgKuAGJX98Ci8Rz5CGP2tDqhEe8a4uxIA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cHzFKzn1MJoymPr9SpUDNbAvVYMkG6N2Fna0z0JtjxU=;
- b=MPX2pfiyTb6TijXP6dcIc0NFZaHUldywEk61nriJRcfNhXudzylsapDZKJhVs6PEdOCHIApH2pb13L70GItftOuLY6c9bEenD0wuVGekCVtBdrsXcSb+36rRO+mNvWf9caZfTaFeeCMmFW73mzCeGhTXdLLUAD0JmeenRLbVDujsMxVglE9K2kf5GQeB7jBcBJ0mQgj+HerWogSFvy9Q78U1andq4LAvyFS5XOBJSYPsgfOkO0nimsDgsi28FSjp/+J5bll7P8LvOAIRcRCuW4fhWMD/QBz+AV1/xc9NAKXsSYNcxzqhgtnj3MQS82Go2z4AvYYZyFjBcE0O+9S3rw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=axentia.se; dmarc=pass action=none header.from=axentia.se;
- dkim=pass header.d=axentia.se; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=axentia.se;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cHzFKzn1MJoymPr9SpUDNbAvVYMkG6N2Fna0z0JtjxU=;
- b=QuCMWmVhb6oddSQixPLSGamGG83VYNpLvoiIPUARkQbzOFFdD3/ng9Xws4p8t/qD2AJMKjDlXFbuJ1awUlH4kClaDkAwyWUxv5x1umSY9PKb0hHCw+QEruxIODlXExPU31VTnhIiP5Idp46iTBbuCi6kH3uotaJ5XDN7u17fzoc=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=axentia.se;
-Received: from DB8PR02MB5482.eurprd02.prod.outlook.com (2603:10a6:10:eb::29)
- by DB7PR02MB3673.eurprd02.prod.outlook.com (2603:10a6:5:8::24) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3412.28; Tue, 29 Sep 2020 06:24:22 +0000
-Received: from DB8PR02MB5482.eurprd02.prod.outlook.com
- ([fe80::f505:527c:91ae:6990]) by DB8PR02MB5482.eurprd02.prod.outlook.com
- ([fe80::f505:527c:91ae:6990%6]) with mapi id 15.20.3412.029; Tue, 29 Sep 2020
- 06:24:22 +0000
-Subject: Re: [PATCH v4 1/6] dt-bindings: ti-serdes-mux: Add defines for J7200
- SoC
-To:     Roger Quadros <rogerq@ti.com>, nm@ti.com
-Cc:     t-kristo@ti.com, nsekhar@ti.com, kishon@ti.com, robh+dt@kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-References: <20200921143941.13905-1-rogerq@ti.com>
- <20200921143941.13905-2-rogerq@ti.com>
-From:   Peter Rosin <peda@axentia.se>
-Organization: Axentia Technologies AB
-Message-ID: <1289d193-7c69-e93d-f6dd-287cba0f476a@axentia.se>
-Date:   Tue, 29 Sep 2020 08:24:15 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
-In-Reply-To: <20200921143941.13905-2-rogerq@ti.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: sv-SE
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: HE1PR0401CA0069.eurprd04.prod.outlook.com
- (2603:10a6:3:19::37) To DB8PR02MB5482.eurprd02.prod.outlook.com
- (2603:10a6:10:eb::29)
+        id S1725822AbgI2G0z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 02:26:55 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:33017 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725536AbgI2G0z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 02:26:55 -0400
+Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601360812;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=zAJ0Fhk7Jl4WMMRBzRepRA1oVyxLNpVd5noydx074OE=;
+        b=NNfIACwPRPsjDcPZoreX565xFpATvLtU41YPuOG5lY0s7WOetYlC6MpQ3osHjSO5IZnhh2
+        ZyRYbJpiJg7lIKShBTxODRWKG8oS9YLMZwEPY4QXi+IjKeTehlI/pK7SFMtBlZxlkG73Fc
+        B703lFRQqrH/zmoSbL2bo6V7wmUH4v8=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-176-TadSL0zbNUi6EWxj0DXA7g-1; Tue, 29 Sep 2020 02:26:50 -0400
+X-MC-Unique: TadSL0zbNUi6EWxj0DXA7g-1
+Received: by mail-wr1-f71.google.com with SMTP id v5so1287675wrs.17
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 23:26:50 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=zAJ0Fhk7Jl4WMMRBzRepRA1oVyxLNpVd5noydx074OE=;
+        b=iktCRJGKSmVIe8ccFcsGdvS87QCtYmwa5UOrU83RfcWTiVs4cx9EDdneCDUgtzM4Gv
+         CBR+A1h22jwyluWwr4g/ggH1XC9fH36q3n73pW+4M+CLPPBxg5tA87Z5Ie1yh06ivSAq
+         aRCPS4wQe8b4QqP/ubaZQEdS3T2DyGkhwDdrUIHI4/rRV+TXxZCWMwp5RtlF5Kumi/xj
+         vUOotPfvgo2ogC1Cp6Xbv+F7ueWJESxzBJ4R5DrOYLFpcaTfT5RbmSrtNptcjjDw2+yb
+         QAe/FIPqQywcK795qyUGn552dsC3z7NulNSmTROKz3sXSEiTo/jYnUEw87Q47AEImwG5
+         AqQg==
+X-Gm-Message-State: AOAM5326ypE9wHl2vY4Vgb43+FXuU8ZVzg249HcTp43oTA0u5FdC12rj
+        NakdPNKUD5MDv/GPPRk5dJSijt0MmqzbVnToeoInTINmXx2rzgacnQ0w/BWEhoX9tOud/JZysas
+        /XBJXNpExF9+fC0AiqCokkAyg
+X-Received: by 2002:adf:f508:: with SMTP id q8mr2142003wro.233.1601360807934;
+        Mon, 28 Sep 2020 23:26:47 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxaRo89FVwBcd4BiGa68p1LJ6RIySLUwgNzydk7tIMGjs9Ues2dq5ud7qi3aGmXV3VXybEnKA==
+X-Received: by 2002:adf:f508:: with SMTP id q8mr2141983wro.233.1601360807655;
+        Mon, 28 Sep 2020 23:26:47 -0700 (PDT)
+Received: from redhat.com (bzq-79-179-71-128.red.bezeqint.net. [79.179.71.128])
+        by smtp.gmail.com with ESMTPSA id b11sm4393471wrt.38.2020.09.28.23.26.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Sep 2020 23:26:47 -0700 (PDT)
+Date:   Tue, 29 Sep 2020 02:26:44 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Eli Cohen <elic@nvidia.com>
+Cc:     jasowang@redhat.com, virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        eli@nvidia.com
+Subject: Re: [PATCH V1 vhost-next] vdpa/mlx5: Make vdpa core driver a
+ distinct module
+Message-ID: <20200929022430-mutt-send-email-mst@kernel.org>
+References: <20200924143231.GA186492@mtl-vdi-166.wap.labs.mlnx>
+ <20200928155448-mutt-send-email-mst@kernel.org>
+ <20200929062026.GB120395@mtl-vdi-166.wap.labs.mlnx>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.13.3] (85.226.217.78) by HE1PR0401CA0069.eurprd04.prod.outlook.com (2603:10a6:3:19::37) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.32 via Frontend Transport; Tue, 29 Sep 2020 06:24:21 +0000
-X-Originating-IP: [85.226.217.78]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 50a4d2a1-6828-451d-10fb-08d864404db4
-X-MS-TrafficTypeDiagnostic: DB7PR02MB3673:
-X-Microsoft-Antispam-PRVS: <DB7PR02MB3673A5C4E85424E31FA9D5C4BC320@DB7PR02MB3673.eurprd02.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3826;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: UKRL1SwTeyBhZyHFpImXddzRVKqY2ss/Xel6R4G/In/1K3ZkNamfHMz8/OpI3CbFLNvRy9yr4ggl2Mek6dHNumO9oBYxwwomHl+hKahXWzzaOcqZ8Jnq/Vt2APRblHSh36JGk60ioIMzsIrdoieEZYyGpOpxUmVpzfCjWBaFBstkrphb6iAN0bHD7U2/GxevmL2AHUdsPNWA2AZ5P+jHNPGqEtMNMx0MFzvigv++fuCp9rqHbT8BVD0cZfKWGnAxAZo4cxmSr1pOqyX43pNhXYWWYFu2bavxbN1V5981d2Ep+6yBZJvSRzTXDnbAilaGsM1ep0EP7VRL5MXyzpJxIskH6NQALmsmKpb113fx30vWYaC+M9OStVe8SIwGx2ustz4fw5yDfUZ75bsNi4PNcx6uBDwUicLPhL8DJKZFonCp2nNYlfnhkAr5ID8vHccC
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR02MB5482.eurprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(39830400003)(346002)(396003)(136003)(366004)(31696002)(5660300002)(53546011)(36756003)(6666004)(956004)(36916002)(66556008)(66476007)(478600001)(86362001)(52116002)(2616005)(8676002)(8936002)(16576012)(26005)(2906002)(31686004)(16526019)(4326008)(186003)(66946007)(6486002)(316002)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: FdJ/D3mf0lBrwt+0XF3wHWfIHfMaJBG3/0nnU5sP/FNj7uZmGccwYRp2O6vpOYM4lxMOJqmbeI06+oqfuB7UcA2MvPaEyVc19SIsbmvSfLTeZPI/BkbVqmIvAHiSGWok7g5IWIVKXIPoRrIEpUFicMlCWAc4fPUfrMmtZIgVXclk5AJ1vT5x3OjI1w1e6+6nbuSa8HMj/upRSB78ZEQLClITtJWeZLVXt12Z217nkpWc3ARsOSj2U20nqgKtyaMfwWebwla7/+U+DtEXi6gD1zd9JuQ43tXDUPzm7T0Q1kLbfWGAEFtHb4ow4jhkqoetk9qi2j0gf7zxCGNVq6x361VdqgYBXiAqCrWmseyJrin3v0qXkAxH47lrOpjKWw4vdo1QiZj76cU3y61U3IMI/YF0G8u76za15wgpEr+khg1XT1J0RtN4rthqGqub2b5VxBmLGvUlm4LRKMHXPxyIe5bXqncs9fqJzQoVEAxEer32lRs51W/NQajSSIyz1dpxIIy9eupg6xjIUxgsSww8igDym1aur76R/iG4DM1G3v5VqzyNORXIIl3iekOhOZfiuCsYHDS/4gQIjZT2hAiXcMlNU7gxL31EJsZIbP9cchrDi95tFcgpa2aaNGu6y2SunMB7wXFpt7eVN4Pa8hunHA==
-X-OriginatorOrg: axentia.se
-X-MS-Exchange-CrossTenant-Network-Message-Id: 50a4d2a1-6828-451d-10fb-08d864404db4
-X-MS-Exchange-CrossTenant-AuthSource: DB8PR02MB5482.eurprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Sep 2020 06:24:21.9155
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4ee68585-03e1-4785-942a-df9c1871a234
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: nXzFI5q40i5fBtSDHT/cOEQX8SvAlH3wFDsISYSyH8VGgwhEnCDePwo5zC2SYt8W
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR02MB3673
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200929062026.GB120395@mtl-vdi-166.wap.labs.mlnx>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
-
-On 2020-09-21 16:39, Roger Quadros wrote:
-> There are 4 lanes in each J7200 SERDES. Each SERDES lane mux can
-> select upto 4 different IPs. Define all the possible functions.
+On Tue, Sep 29, 2020 at 09:20:26AM +0300, Eli Cohen wrote:
+> On Mon, Sep 28, 2020 at 03:55:09PM -0400, Michael S. Tsirkin wrote:
+> > On Thu, Sep 24, 2020 at 05:32:31PM +0300, Eli Cohen wrote:
+> > > Change core vdpa functionality into a loadbale module such that upcoming
+> > > block implementation will be able to use it.
+> > > 
+> > > Signed-off-by: Eli Cohen <elic@nvidia.com>
+> > 
+> > Why don't we merge this patch together with the block module?
+> > 
 > 
-> Cc: Peter Rosin <peda@axentia.se>
-> Signed-off-by: Roger Quadros <rogerq@ti.com>
-
-Acked-by: Peter Rosin <peda@axentia.se>
-
-Thanks for taking care of this!
-
-Cheers,
-Peter
-
-> ---
->  include/dt-bindings/mux/ti-serdes.h | 22 ++++++++++++++++++++++
->  1 file changed, 22 insertions(+)
+> Since there are still not too many users of this driver, I would prefer
+> to merge this as early as possible so pepole get used to the involved
+> modules.
 > 
-> diff --git a/include/dt-bindings/mux/ti-serdes.h b/include/dt-bindings/mux/ti-serdes.h
-> index 146d0685a925..9047ec6bd3cf 100644
-> --- a/include/dt-bindings/mux/ti-serdes.h
-> +++ b/include/dt-bindings/mux/ti-serdes.h
-> @@ -68,4 +68,26 @@
->  #define J721E_SERDES4_LANE3_QSGMII_LANE8	0x2
->  #define J721E_SERDES4_LANE3_IP4_UNUSED		0x3
->  
-> +/* J7200 */
-> +
-> +#define J7200_SERDES0_LANE0_QSGMII_LANE3	0x0
-> +#define J7200_SERDES0_LANE0_PCIE1_LANE0		0x1
-> +#define J7200_SERDES0_LANE0_IP3_UNUSED		0x2
-> +#define J7200_SERDES0_LANE0_IP4_UNUSED		0x3
-> +
-> +#define J7200_SERDES0_LANE1_QSGMII_LANE4	0x0
-> +#define J7200_SERDES0_LANE1_PCIE1_LANE1		0x1
-> +#define J7200_SERDES0_LANE1_IP3_UNUSED		0x2
-> +#define J7200_SERDES0_LANE1_IP4_UNUSED		0x3
-> +
-> +#define J7200_SERDES0_LANE2_QSGMII_LANE1	0x0
-> +#define J7200_SERDES0_LANE2_PCIE1_LANE2		0x1
-> +#define J7200_SERDES0_LANE2_IP3_UNUSED		0x2
-> +#define J7200_SERDES0_LANE2_IP4_UNUSED		0x3
-> +
-> +#define J7200_SERDES0_LANE3_QSGMII_LANE2	0x0
-> +#define J7200_SERDES0_LANE3_PCIE1_LANE3		0x1
-> +#define J7200_SERDES0_LANE3_USB			0x2
-> +#define J7200_SERDES0_LANE3_IP4_UNUSED		0x3
-> +
->  #endif /* _DT_BINDINGS_MUX_TI_SERDES */
+> Anyways, I will send another version of the patch which makes use of
+> 'select' instead of 'depends'.
 > 
+> Hope you agree to merge this.
+
+Are you quite sure there will be a block driver though?
+I'd like to avoid a situation in which we have infrastructure
+in place but no users.
+
+> > > ---
+> > > V0 --> V1:
+> > > Removed "default n" for configu options as 'n' is the default
+> > > 
+> > >  drivers/vdpa/Kconfig               |  8 +++-----
+> > >  drivers/vdpa/Makefile              |  2 +-
+> > >  drivers/vdpa/mlx5/Makefile         |  7 +++++--
+> > >  drivers/vdpa/mlx5/core/core_main.c | 20 ++++++++++++++++++++
+> > >  drivers/vdpa/mlx5/core/mr.c        |  3 +++
+> > >  drivers/vdpa/mlx5/core/resources.c | 10 ++++++++++
+> > >  6 files changed, 42 insertions(+), 8 deletions(-)
+> > >  create mode 100644 drivers/vdpa/mlx5/core/core_main.c
+> > > 
+> > > diff --git a/drivers/vdpa/Kconfig b/drivers/vdpa/Kconfig
+> > > index 4271c408103e..57ff6a7f7401 100644
+> > > --- a/drivers/vdpa/Kconfig
+> > > +++ b/drivers/vdpa/Kconfig
+> > > @@ -29,10 +29,9 @@ config IFCVF
+> > >  	  To compile this driver as a module, choose M here: the module will
+> > >  	  be called ifcvf.
+> > >  
+> > > -config MLX5_VDPA
+> > > -	bool "MLX5 VDPA support library for ConnectX devices"
+> > > +config MLX5_VDPA_CORE
+> > > +	tristate "MLX5 VDPA support library for ConnectX devices"
+> > >  	depends on MLX5_CORE
+> > > -	default n
+> > >  	help
+> > >  	  Support library for Mellanox VDPA drivers. Provides code that is
+> > >  	  common for all types of VDPA drivers. The following drivers are planned:
+> > > @@ -40,8 +39,7 @@ config MLX5_VDPA
+> > >  
+> > >  config MLX5_VDPA_NET
+> > >  	tristate "vDPA driver for ConnectX devices"
+> > > -	depends on MLX5_VDPA
+> > > -	default n
+> > > +	depends on MLX5_VDPA_CORE
+> > >  	help
+> > >  	  VDPA network driver for ConnectX6 and newer. Provides offloading
+> > >  	  of virtio net datapath such that descriptors put on the ring will
+> > > diff --git a/drivers/vdpa/Makefile b/drivers/vdpa/Makefile
+> > > index d160e9b63a66..07353bbb9f8b 100644
+> > > --- a/drivers/vdpa/Makefile
+> > > +++ b/drivers/vdpa/Makefile
+> > > @@ -2,4 +2,4 @@
+> > >  obj-$(CONFIG_VDPA) += vdpa.o
+> > >  obj-$(CONFIG_VDPA_SIM) += vdpa_sim/
+> > >  obj-$(CONFIG_IFCVF)    += ifcvf/
+> > > -obj-$(CONFIG_MLX5_VDPA) += mlx5/
+> > > +obj-$(CONFIG_MLX5_VDPA_CORE) += mlx5/
+> > > diff --git a/drivers/vdpa/mlx5/Makefile b/drivers/vdpa/mlx5/Makefile
+> > > index 89a5bededc9f..9f50f7e8d889 100644
+> > > --- a/drivers/vdpa/mlx5/Makefile
+> > > +++ b/drivers/vdpa/mlx5/Makefile
+> > > @@ -1,4 +1,7 @@
+> > >  subdir-ccflags-y += -I$(srctree)/drivers/vdpa/mlx5/core
+> > >  
+> > > -obj-$(CONFIG_MLX5_VDPA_NET) += mlx5_vdpa.o
+> > > -mlx5_vdpa-$(CONFIG_MLX5_VDPA_NET) += net/main.o net/mlx5_vnet.o core/resources.o core/mr.o
+> > > +obj-$(CONFIG_MLX5_VDPA_CORE) += mlx5_vdpa_core.o
+> > > +mlx5_vdpa_core-$(CONFIG_MLX5_VDPA_CORE) += core/resources.o core/mr.o core/core_main.o
+> > > +
+> > > +obj-$(CONFIG_MLX5_VDPA_NET) += mlx5_vdpa_net.o
+> > > +mlx5_vdpa_net-$(CONFIG_MLX5_VDPA_NET) += net/main.o net/mlx5_vnet.o
+> > > diff --git a/drivers/vdpa/mlx5/core/core_main.c b/drivers/vdpa/mlx5/core/core_main.c
+> > > new file mode 100644
+> > > index 000000000000..4b39b55f57ab
+> > > --- /dev/null
+> > > +++ b/drivers/vdpa/mlx5/core/core_main.c
+> > > @@ -0,0 +1,20 @@
+> > > +// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
+> > > +/* Copyright (c) 2020 Mellanox Technologies Ltd. */
+> > > +
+> > > +#include <linux/module.h>
+> > > +
+> > > +MODULE_AUTHOR("Eli Cohen <elic@nvidia.com>");
+> > > +MODULE_DESCRIPTION("Mellanox VDPA core driver");
+> > > +MODULE_LICENSE("Dual BSD/GPL");
+> > > +
+> > > +static int __init mlx5_vdpa_core_init(void)
+> > > +{
+> > > +	return 0;
+> > > +}
+> > > +
+> > > +static void __exit mlx5_vdpa_core_exit(void)
+> > > +{
+> > > +}
+> > > +
+> > > +module_init(mlx5_vdpa_core_init);
+> > > +module_exit(mlx5_vdpa_core_exit);
+> > > diff --git a/drivers/vdpa/mlx5/core/mr.c b/drivers/vdpa/mlx5/core/mr.c
+> > > index ef1c550f8266..c093eab6c714 100644
+> > > --- a/drivers/vdpa/mlx5/core/mr.c
+> > > +++ b/drivers/vdpa/mlx5/core/mr.c
+> > > @@ -434,6 +434,7 @@ int mlx5_vdpa_create_mr(struct mlx5_vdpa_dev *mvdev, struct vhost_iotlb *iotlb)
+> > >  	mutex_unlock(&mr->mkey_mtx);
+> > >  	return err;
+> > >  }
+> > > +EXPORT_SYMBOL(mlx5_vdpa_create_mr);
+> > >  
+> > >  void mlx5_vdpa_destroy_mr(struct mlx5_vdpa_dev *mvdev)
+> > >  {
+> > > @@ -456,6 +457,7 @@ void mlx5_vdpa_destroy_mr(struct mlx5_vdpa_dev *mvdev)
+> > >  out:
+> > >  	mutex_unlock(&mr->mkey_mtx);
+> > >  }
+> > > +EXPORT_SYMBOL(mlx5_vdpa_destroy_mr);
+> > >  
+> > >  static bool map_empty(struct vhost_iotlb *iotlb)
+> > >  {
+> > > @@ -484,3 +486,4 @@ int mlx5_vdpa_handle_set_map(struct mlx5_vdpa_dev *mvdev, struct vhost_iotlb *io
+> > >  
+> > >  	return err;
+> > >  }
+> > > +EXPORT_SYMBOL(mlx5_vdpa_handle_set_map);
+> > > diff --git a/drivers/vdpa/mlx5/core/resources.c b/drivers/vdpa/mlx5/core/resources.c
+> > > index 96e6421c5d1c..89606a18e286 100644
+> > > --- a/drivers/vdpa/mlx5/core/resources.c
+> > > +++ b/drivers/vdpa/mlx5/core/resources.c
+> > > @@ -98,6 +98,7 @@ int mlx5_vdpa_create_tis(struct mlx5_vdpa_dev *mvdev, void *in, u32 *tisn)
+> > >  
+> > >  	return err;
+> > >  }
+> > > +EXPORT_SYMBOL(mlx5_vdpa_create_tis);
+> > >  
+> > >  void mlx5_vdpa_destroy_tis(struct mlx5_vdpa_dev *mvdev, u32 tisn)
+> > >  {
+> > > @@ -108,6 +109,7 @@ void mlx5_vdpa_destroy_tis(struct mlx5_vdpa_dev *mvdev, u32 tisn)
+> > >  	MLX5_SET(destroy_tis_in, in, tisn, tisn);
+> > >  	mlx5_cmd_exec_in(mvdev->mdev, destroy_tis, in);
+> > >  }
+> > > +EXPORT_SYMBOL(mlx5_vdpa_destroy_tis);
+> > >  
+> > >  int mlx5_vdpa_create_rqt(struct mlx5_vdpa_dev *mvdev, void *in, int inlen, u32 *rqtn)
+> > >  {
+> > > @@ -121,6 +123,7 @@ int mlx5_vdpa_create_rqt(struct mlx5_vdpa_dev *mvdev, void *in, int inlen, u32 *
+> > >  
+> > >  	return err;
+> > >  }
+> > > +EXPORT_SYMBOL(mlx5_vdpa_create_rqt);
+> > >  
+> > >  void mlx5_vdpa_destroy_rqt(struct mlx5_vdpa_dev *mvdev, u32 rqtn)
+> > >  {
+> > > @@ -131,6 +134,7 @@ void mlx5_vdpa_destroy_rqt(struct mlx5_vdpa_dev *mvdev, u32 rqtn)
+> > >  	MLX5_SET(destroy_rqt_in, in, rqtn, rqtn);
+> > >  	mlx5_cmd_exec_in(mvdev->mdev, destroy_rqt, in);
+> > >  }
+> > > +EXPORT_SYMBOL(mlx5_vdpa_destroy_rqt);
+> > >  
+> > >  int mlx5_vdpa_create_tir(struct mlx5_vdpa_dev *mvdev, void *in, u32 *tirn)
+> > >  {
+> > > @@ -144,6 +148,7 @@ int mlx5_vdpa_create_tir(struct mlx5_vdpa_dev *mvdev, void *in, u32 *tirn)
+> > >  
+> > >  	return err;
+> > >  }
+> > > +EXPORT_SYMBOL(mlx5_vdpa_create_tir);
+> > >  
+> > >  void mlx5_vdpa_destroy_tir(struct mlx5_vdpa_dev *mvdev, u32 tirn)
+> > >  {
+> > > @@ -154,6 +159,7 @@ void mlx5_vdpa_destroy_tir(struct mlx5_vdpa_dev *mvdev, u32 tirn)
+> > >  	MLX5_SET(destroy_tir_in, in, tirn, tirn);
+> > >  	mlx5_cmd_exec_in(mvdev->mdev, destroy_tir, in);
+> > >  }
+> > > +EXPORT_SYMBOL(mlx5_vdpa_destroy_tir);
+> > >  
+> > >  int mlx5_vdpa_alloc_transport_domain(struct mlx5_vdpa_dev *mvdev, u32 *tdn)
+> > >  {
+> > > @@ -170,6 +176,7 @@ int mlx5_vdpa_alloc_transport_domain(struct mlx5_vdpa_dev *mvdev, u32 *tdn)
+> > >  
+> > >  	return err;
+> > >  }
+> > > +EXPORT_SYMBOL(mlx5_vdpa_alloc_transport_domain);
+> > >  
+> > >  void mlx5_vdpa_dealloc_transport_domain(struct mlx5_vdpa_dev *mvdev, u32 tdn)
+> > >  {
+> > > @@ -180,6 +187,7 @@ void mlx5_vdpa_dealloc_transport_domain(struct mlx5_vdpa_dev *mvdev, u32 tdn)
+> > >  	MLX5_SET(dealloc_transport_domain_in, in, transport_domain, tdn);
+> > >  	mlx5_cmd_exec_in(mvdev->mdev, dealloc_transport_domain, in);
+> > >  }
+> > > +EXPORT_SYMBOL(mlx5_vdpa_dealloc_transport_domain);
+> > >  
+> > >  int mlx5_vdpa_create_mkey(struct mlx5_vdpa_dev *mvdev, struct mlx5_core_mkey *mkey, u32 *in,
+> > >  			  int inlen)
+> > > @@ -266,6 +274,7 @@ int mlx5_vdpa_alloc_resources(struct mlx5_vdpa_dev *mvdev)
+> > >  	mutex_destroy(&mvdev->mr.mkey_mtx);
+> > >  	return err;
+> > >  }
+> > > +EXPORT_SYMBOL(mlx5_vdpa_alloc_resources);
+> > >  
+> > >  void mlx5_vdpa_free_resources(struct mlx5_vdpa_dev *mvdev)
+> > >  {
+> > > @@ -282,3 +291,4 @@ void mlx5_vdpa_free_resources(struct mlx5_vdpa_dev *mvdev)
+> > >  	mutex_destroy(&mvdev->mr.mkey_mtx);
+> > >  	res->valid = false;
+> > >  }
+> > > +EXPORT_SYMBOL(mlx5_vdpa_free_resources);
+> > > -- 
+> > > 2.27.0
+> > 
+
