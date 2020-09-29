@@ -2,120 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB4D727D2C2
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 17:30:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 659D227D2C7
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 17:33:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729151AbgI2Pan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 11:30:43 -0400
-Received: from mail-pj1-f68.google.com ([209.85.216.68]:53170 "EHLO
-        mail-pj1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725497AbgI2Pan (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 11:30:43 -0400
-Received: by mail-pj1-f68.google.com with SMTP id ml18so21882pjb.2;
-        Tue, 29 Sep 2020 08:30:42 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=aWsRNGEYWNS1FOlIs3a6BRy9lNpu3+jVuprEQmGm558=;
-        b=OeuwqgpYCfRfagPKO+b2cc1EsVsuzNHKWZMS8mhuydA6PyvtsFPk8QiZuAEi6h5oku
-         c7d465VG/xGC6hNdyuZf6ZHAQ8NBUUdDCRrIn2Klu1Sw9Ib19GbmV2uF9YkzE7Eud/aF
-         1L+LBMqiQ/ddomXYhwd3vDTsvezau5Tl0khJmwfp9bv3OhAH4ELnnCoHdjrT6kOoHzrf
-         yHWCd+pTqJbCrq8k4FfvjgE26y5dBITY1J66SeXVdHUYiNoTCgfKcI1EmcaK/g4jGUCx
-         CuOfn2from1OEez5wNnTlgcrgiWecz6FCai4NiLpYcs/Dj2xITc9578yis4HrCbs82tX
-         Ldgg==
-X-Gm-Message-State: AOAM532cWHnytd1YblAvFxViScNGEFYVPLdtcnLaRcPK9Kr9dbq+Tom7
-        Zrk022QsSR2qNgXgGHGT4x8=
-X-Google-Smtp-Source: ABdhPJw5BlNaN3pSF96qwEnIL8dGCXUqwG8oGgJpCFD6AsIPGoIrPO+DcbMR2zsgvf5a1G5dujk4ZQ==
-X-Received: by 2002:a17:90a:d986:: with SMTP id d6mr4327116pjv.108.1601393442163;
-        Tue, 29 Sep 2020 08:30:42 -0700 (PDT)
-Received: from localhost ([2601:647:5b00:1162:1ac0:17a6:4cc6:d1ef])
-        by smtp.gmail.com with ESMTPSA id b15sm5731377pft.84.2020.09.29.08.30.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Sep 2020 08:30:41 -0700 (PDT)
-Date:   Tue, 29 Sep 2020 08:30:40 -0700
-From:   Moritz Fischer <mdf@kernel.org>
-To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
-Cc:     linux-clk@vger.kernel.org, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mturquette@baylibre.com,
-        sboyd@kernel.org, mdf@kernel.org, ardeleanalex@gmail.com,
-        Mathias Tausen <mta@gomspace.com>
-Subject: Re: [PATCH v4 5/7] clk: axi-clkgen: Respect ZYNQMP PFD/VCO frequency
- limits
-Message-ID: <20200929153040.GA114067@archbook>
-References: <20200929144417.89816-1-alexandru.ardelean@analog.com>
- <20200929144417.89816-14-alexandru.ardelean@analog.com>
+        id S1728921AbgI2PdV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 11:33:21 -0400
+Received: from mail-dm6nam10on2061.outbound.protection.outlook.com ([40.107.93.61]:7553
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725497AbgI2PdU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 11:33:20 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lI4Y/0yHCWStf7oFZ5CwHmxb+Bqg2YYY8lo31w2acD7phgHDufqA4iKgnWtH/410UypN8G2Lxg02Xpfn9a+K/o5zBFDOPu7zMGCH/of2HIVW+8lYb0YPh/SaRd/sms1HmbmbipxQMeDhvKlJjCWOhyXnKVRXCbsIN1SfgF5dAGQRsvWj9gtr1u/KZofcEgzwvNbI0aPlwjs0FYkPo+X83tho5dT69Dz9ml22NhOEkGfdSgRiD+LsShd6dcyuRW9XAN6aSkZ6OpT1EKS9BCB9wX1UOWcgk2cx6NvWiwta46UL72wS+kHtpUWWrUNmpHN/TC1JmPGuljq7DmQtNpmn+g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9lMwUKHY0HwJSRlo3ZkJ4M+LWgdzzvglZW9E+Yz9Fmg=;
+ b=Jf8DYB+gWW78bo9PelF0TaCTfJMjc7utu/65K3RvAg8qXdiDkICU5B8fpX4Np5YyT3kk/zPX6MtcGD81W6Tr4ns9mYChUrzkOgSuCvuYGAQP3SXj9m6qaD7kkBt1k6AcWYHDqmxYf3hglCDtLdg4L2Zd+fNCoHxU/Fr5UCvxBH2Cg0Peari3uJJJ79jkgz73dNffaFeROYLKbGSZyG0o7MZsUxGiIuknFMhn0XTj+iHqbbn9VogM8DiCJ+PHOuirXUGkJQseVBjE1FIJT/VzgitdW/2aqaa6fd3ToFE9yKE7/gx1iXI0sl7JUCUNf2jWasHASkU6oJUbpC0TUem45Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=openfive.com; dmarc=pass action=none header.from=sifive.com;
+ dkim=pass header.d=sifive.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sifive.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9lMwUKHY0HwJSRlo3ZkJ4M+LWgdzzvglZW9E+Yz9Fmg=;
+ b=WER2Am0YrV2VCVlEIUB9aFUEuDCWnCjX684eZB8em/b0dbLv0H5yjUAAvkuEC13gNxSOX4SdVxPp0bPiyPXJUrmp2YTPmW22L/KcHG+sBDKVldlgCWLaK4c9eQ8mFMMbstPF9hMVop5EldK7WwyaBUHwXjXsfSVwfLfSrZD+8mM=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=sifive.com;
+Received: from DM6PR13MB3451.namprd13.prod.outlook.com (2603:10b6:5:1c3::10)
+ by DM6PR13MB2412.namprd13.prod.outlook.com (2603:10b6:5:c3::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.14; Tue, 29 Sep
+ 2020 15:33:17 +0000
+Received: from DM6PR13MB3451.namprd13.prod.outlook.com
+ ([fe80::a48a:1f7c:267c:876]) by DM6PR13MB3451.namprd13.prod.outlook.com
+ ([fe80::a48a:1f7c:267c:876%7]) with mapi id 15.20.3433.032; Tue, 29 Sep 2020
+ 15:33:17 +0000
+From:   Sagar Kadam <sagar.kadam@sifive.com>
+To:     linux-clk@vger.kernel.org
+Cc:     devicetree@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-pwm@vger.kernel.org,
+        mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
+        palmer@dabbelt.com, paul.walmsley@sifive.com, tglx@linutronix.de,
+        jason@lakedaemon.net, maz@kernel.org, thierry.reding@gmail.com,
+        u.kleine-koenig@pengutronix.de, lee.jones@linaro.org,
+        aou@eecs.berkeley.edu, yash.shah@sifive.com,
+        Sagar Kadam <sagar.kadam@sifive.com>
+Subject: [PATCH v2 0/3] convert sifive's prci, plic and pwm bindings to yaml 
+Date:   Tue, 29 Sep 2020 21:02:08 +0530
+Message-Id: <1601393531-2402-1-git-send-email-sagar.kadam@sifive.com>
+X-Mailer: git-send-email 2.7.4
+Content-Type: text/plain
+X-Originating-IP: [159.117.144.156]
+X-ClientProxiedBy: SG2PR02CA0101.apcprd02.prod.outlook.com
+ (2603:1096:4:92::17) To DM6PR13MB3451.namprd13.prod.outlook.com
+ (2603:10b6:5:1c3::10)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200929144417.89816-14-alexandru.ardelean@analog.com>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from osubuntu003.open-silicon.com (159.117.144.156) by SG2PR02CA0101.apcprd02.prod.outlook.com (2603:1096:4:92::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3433.32 via Frontend Transport; Tue, 29 Sep 2020 15:33:10 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: e0030f13-b013-4fe9-51b4-08d8648cfc5c
+X-MS-TrafficTypeDiagnostic: DM6PR13MB2412:
+X-LD-Processed: 22f88e9d-ae0d-4ed9-b984-cdc9be1529f1,ExtAddr
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM6PR13MB241220A6916416124787537E97320@DM6PR13MB2412.namprd13.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3173;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ElqgfvzYSvh5W5WyPUKoEqLPn2qlthWJ925s+zyEIJu4/1cPeg/WwsPeAGV4n2mm0eoKB34ABkuscxsy8qv9kPLMzUu5rj8VYQb0T9nN3lMLv9GRxt7Qfbu6H3bOazAWJ/6RsF/E1BhamhHBE1RDwD5T3tLfSI4ZEkUY9eMygekbNH2AMsDXfApdPDNFi/JeOFjAkLGv9pbAiJyyqSKeCkWtxn4ekRSr5XONSq+kGIE4xhx/NR/O9prxa1joxDXrBPbN61HrxbOM+vIvR4q05yc0ao13IluIIw0KX/cJ+sKSenhJJpmTdIvAUCIqnUlQy5F4gbD0G7X79caRF9vVq6yxfPAci2vGMXLfjoDWV7lk0zOCgZZfM9t9mYu6ywwz9e6hVr8HNODPZUZienTKTg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR13MB3451.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(366004)(396003)(346002)(376002)(39850400004)(6512007)(966005)(44832011)(83380400001)(4326008)(66946007)(7416002)(52116002)(8676002)(4743002)(83080400001)(2906002)(5660300002)(107886003)(6506007)(66476007)(66556008)(83170400001)(36756003)(8936002)(2616005)(478600001)(6486002)(956004)(316002)(186003)(16526019)(26005)(42882007)(6916009);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: Py1YppiDjdYD3ePTPkBjQcm0yhRpHg8bnkSYooKaqATFKBA4pfaIsfk6igMzLUvkvX/2aDNBgTKk4jYIFc9McMDhdrzFXnvQi+80vLK4wnOuy6FPdAvm+gDumVPozn46+2tRbQSPjC2WyUK4X+PVP3bSnn/F/GEy4i7YT4F6EU5jrR1Aub6fl4mzFRZJ9rzutsMuKoTlJPa2uegSagXOMlSGebkP7cKmIjaxv6eiLqOMvEJphOgcWICvTuun9jxw60eru+8HyQ02QJi9PJJrnri9dshuODVjIbzoH4p2VfcNRjdGZDzjCBgH6EnWd4sHhZSboe/wX6hN3hV6k3qQLkObqFRXO9+4p1ROfGIXByJsxC48n6bF+vzH7CrxWwWMy7IN9G4ni2NgmuREy75hPKoOomjG1lJtxGO7D6I3+DUmyVSzjdnf9rhVVr/lqv7D9C9LhAgqjOYbZ+c8XSlFG8HydpBhhVvwjguUtvb/3caP/iGGohvmfqfIMTY1wHUOAY+PZqABQ0QRCOgK9gty7XmuuCdqpX9s32wH36nDixTFJj3oIEWgI2igXphxPNq4ojdbJEVanYOudKJnhyNEGh91OhJJwxm8VWFI64OL4anGkdlezHfB2f49b0qyNZgg71jRSzrHKbTUo5WVxaa1KA==
+X-OriginatorOrg: sifive.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e0030f13-b013-4fe9-51b4-08d8648cfc5c
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR13MB3451.namprd13.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Sep 2020 15:33:16.7361
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 22f88e9d-ae0d-4ed9-b984-cdc9be1529f1
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 4JkEql8VXESfwjdCg0e9bF7k7kU6cECmuLP1L3eWWCWze4gltd4nrINuFdatR5tYhQzH7PKUB5J4dNAKPpGHxA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR13MB2412
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alexandru,
+The prci, plic and pwm controller bindings are in txt format. Here,
+we convert them to yaml format.
 
-On Tue, Sep 29, 2020 at 05:44:15PM +0300, Alexandru Ardelean wrote:
-> From: Mathias Tausen <mta@gomspace.com>
-> 
-> Since axi-clkgen is now supported on ZYNQMP, make sure the max/min
-> frequencies of the PFD and VCO are respected.
-> 
-> Signed-off-by: Mathias Tausen <mta@gomspace.com>
-> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+These patches are tested on commit a1b8638ba132 ("Linux 5.9-rc7")
+I have added the log of dt_binding_check for these IP block's
+on 5.9-rc7 kernel here [1] in case someone want's to refer it.
 
-This patch still does not cover the PCIe Zynq plugged into ZynqMP linux
-machine case.
+[1] https://paste.ubuntu.com/p/7BRfJXckkV/
 
-> ---
->  drivers/clk/clk-axi-clkgen.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
-> 
-> diff --git a/drivers/clk/clk-axi-clkgen.c b/drivers/clk/clk-axi-clkgen.c
-> index 4342b7735590..2319bb1c5c08 100644
-> --- a/drivers/clk/clk-axi-clkgen.c
-> +++ b/drivers/clk/clk-axi-clkgen.c
-> @@ -108,12 +108,21 @@ static uint32_t axi_clkgen_lookup_lock(unsigned int m)
->  	return 0x1f1f00fa;
->  }
->  
-> +#ifdef ARCH_ZYNQMP
-> +static const struct axi_clkgen_limits axi_clkgen_default_limits = {
-> +	.fpfd_min = 10000,
-> +	.fpfd_max = 450000,
-> +	.fvco_min = 800000,
-> +	.fvco_max = 1600000,
-> +};
-> +#else
->  static const struct axi_clkgen_limits axi_clkgen_default_limits = {
->  	.fpfd_min = 10000,
->  	.fpfd_max = 300000,
->  	.fvco_min = 600000,
->  	.fvco_max = 1200000,
->  };
-> +#endif
+Additionally the default log of dt_binding_check on linux-5.9-rc7 without
+these patches can be found here [2].
 
-I still don't understand this. You have a way to determine which fabric
-you are looking at with the FPGA info. Why not:
+[2] https://paste.ubuntu.com/p/ys5XNn38VP/
 
-[..] axi_clkgen_zynqmp_default_limits = {
-};
+Patch History:
+============================
+v2:
+-Incorporated suggestions as per discussion from here [3]
+ [3] https://patchwork.kernel.org/cover/11769499/
+-Rebased patches to 5.9-rc7
 
-[..] axi_clkgen_default_limits = {
-};
+V1: Base version.
 
-Set them based on what you read back, i.e. determine which fabric you
-are looking at *per clock gen* and use that info, rather than making a
-compile time decision to support only one of them.
+Sagar Kadam (3):
+  dt-bindings: fu540: prci: convert PRCI bindings to json-schema
+  dt-bindings: riscv: convert plic bindings to json-schema
+  dt-bindings: riscv: convert pwm bindings to json-schema
 
-Generally speaking #ifdef $ARCH should be a last resort solution.
->  
->  static void axi_clkgen_calc_params(const struct axi_clkgen_limits *limits,
->  	unsigned long fin, unsigned long fout,
-> -- 
-> 2.17.1
-> 
+ .../bindings/clock/sifive/fu540-prci.txt           | 46 ----------
+ .../bindings/clock/sifive/fu540-prci.yaml          | 60 +++++++++++++
+ .../interrupt-controller/sifive,plic-1.0.0.txt     | 58 -------------
+ .../interrupt-controller/sifive,plic-1.0.0.yaml    | 97 ++++++++++++++++++++++
+ .../devicetree/bindings/pwm/pwm-sifive.txt         | 33 --------
+ .../devicetree/bindings/pwm/pwm-sifive.yaml        | 69 +++++++++++++++
+ 6 files changed, 226 insertions(+), 137 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/clock/sifive/fu540-prci.txt
+ create mode 100644 Documentation/devicetree/bindings/clock/sifive/fu540-prci.yaml
+ delete mode 100644 Documentation/devicetree/bindings/interrupt-controller/sifive,plic-1.0.0.txt
+ create mode 100644 Documentation/devicetree/bindings/interrupt-controller/sifive,plic-1.0.0.yaml
+ delete mode 100644 Documentation/devicetree/bindings/pwm/pwm-sifive.txt
+ create mode 100644 Documentation/devicetree/bindings/pwm/pwm-sifive.yaml
 
-Cheers,
-Moritz
+-- 
+2.7.4
+
