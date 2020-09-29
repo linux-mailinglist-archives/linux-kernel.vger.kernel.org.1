@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C506127C8ED
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:06:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 617E027C903
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:06:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727566AbgI2MFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 08:05:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49816 "EHLO mail.kernel.org"
+        id S1731916AbgI2MGq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 08:06:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58078 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730266AbgI2Lhh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1730258AbgI2Lhh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 29 Sep 2020 07:37:37 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 689D523BEC;
-        Tue, 29 Sep 2020 11:36:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D8A3123A6A;
+        Tue, 29 Sep 2020 11:37:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601379416;
-        bh=EkxvQKN2BiZLqAT9vobDmZp+Guijf7tsfKu/d3ty/Qs=;
+        s=default; t=1601379421;
+        bh=FH1ZAFozw3UmdYRa+SC+Sc5mujLG3AFb2GJovZPNwD8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dstMRoRsVPiUCXBVVM/p6w6sGUoNPAe9Lue5pTSmQJPOyeURNWtsf9QoGeviqWCMH
-         xjoApS2gejWSdK8fVF/cIwUriI99h3gj/G9BV2iZ23/z6pyxxGdYBizBPVGly/61pH
-         jM/5XF0Ou0cWxbLUDW55+2wrgkaMKUji3YdXm2PU=
+        b=FVroFgidIzzk2WEulMB9WMXlQjo1+DXqqdHe2oQVcAJMyqInnSxy6VSYafhV5lMHj
+         gvWac1nUZGMiq95hKULjRIPDHxWAqJHfDqavujzVjz+PhEd1tnpivXZN6woqK03Lah
+         GpwnV/4WP16ipB/b3QH9Yjbw3a08q8W3T4fTmYHM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Felix Fietkau <nbd@nbd.name>,
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 123/388] mt76: clear skb pointers from rx aggregation reorder buffer during cleanup
-Date:   Tue, 29 Sep 2020 12:57:34 +0200
-Message-Id: <20200929110016.422495969@linuxfoundation.org>
+Subject: [PATCH 5.4 125/388] ALSA: usb-audio: Dont create a mixer element with bogus volume range
+Date:   Tue, 29 Sep 2020 12:57:36 +0200
+Message-Id: <20200929110016.517001947@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200929110010.467764689@linuxfoundation.org>
 References: <20200929110010.467764689@linuxfoundation.org>
@@ -42,33 +42,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Felix Fietkau <nbd@nbd.name>
+From: Takashi Iwai <tiwai@suse.de>
 
-[ Upstream commit 9379df2fd9234e3b67a23101c2370c99f6af6d77 ]
+[ Upstream commit e9a0ef0b5ddcbc0d56c65aefc0f18d16e6f71207 ]
 
-During the cleanup of the aggregation session, a rx handler (or release timer)
-on another CPU might still hold a pointer to the reorder buffer and could
-attempt to release some packets.
-Clearing pointers during cleanup avoids a theoretical use-after-free bug here.
+Some USB-audio descriptors provide a bogus volume range (e.g. volume
+min and max are identical), which confuses user-space.
+This patch makes the driver skipping such a control element.
 
-Signed-off-by: Felix Fietkau <nbd@nbd.name>
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=206221
+Link: https://lore.kernel.org/r/20200214144928.23628-1-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/mediatek/mt76/agg-rx.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/usb/mixer.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/drivers/net/wireless/mediatek/mt76/agg-rx.c b/drivers/net/wireless/mediatek/mt76/agg-rx.c
-index cbff0dfc96311..f8441fd65400c 100644
---- a/drivers/net/wireless/mediatek/mt76/agg-rx.c
-+++ b/drivers/net/wireless/mediatek/mt76/agg-rx.c
-@@ -268,6 +268,7 @@ static void mt76_rx_aggr_shutdown(struct mt76_dev *dev, struct mt76_rx_tid *tid)
- 		if (!skb)
- 			continue;
+diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
+index 9079c380228fc..8aa96ed0b1b56 100644
+--- a/sound/usb/mixer.c
++++ b/sound/usb/mixer.c
+@@ -1684,6 +1684,16 @@ static void __build_feature_ctl(struct usb_mixer_interface *mixer,
+ 	/* get min/max values */
+ 	get_min_max_with_quirks(cval, 0, kctl);
  
-+		tid->reorder_buf[i] = NULL;
- 		tid->nframes--;
- 		dev_kfree_skb(skb);
- 	}
++	/* skip a bogus volume range */
++	if (cval->max <= cval->min) {
++		usb_audio_dbg(mixer->chip,
++			      "[%d] FU [%s] skipped due to invalid volume\n",
++			      cval->head.id, kctl->id.name);
++		snd_ctl_free_one(kctl);
++		return;
++	}
++
++
+ 	if (control == UAC_FU_VOLUME) {
+ 		check_mapped_dB(map, cval);
+ 		if (cval->dBmin < cval->dBmax || !cval->initialized) {
 -- 
 2.25.1
 
