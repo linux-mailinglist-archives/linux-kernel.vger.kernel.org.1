@@ -2,112 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 813D427CD96
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:45:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2358E27CD93
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:45:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387539AbgI2Mpe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 08:45:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48904 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733299AbgI2Mpb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 08:45:31 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A497C0613D1
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 05:45:30 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id y2so5304251lfy.10
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 05:45:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZHvIyjp/HjptDKFZ4oCKWaRPRXAjZeylbH6QYR0nkL8=;
-        b=Ap5w2JEWZC58HriJWOs4n2ZnDkichjsVyC8xFiq2J8SswFqIFF+himI2Q6etMI5Tor
-         0HAQ0uRCNVT/WCSSr80x6XAjFY/LQ4xwvOUMdklYKWopXOkbo6mG5pWiXGkjhL9AWhoR
-         mkJd9fcd4WbUMOwMirSvxIqe90+JMueOwslLwTY1Cl1HLG6ybajV+IRsIMGc4lXQIPvR
-         oBODo/qW8n02KjwwuwPp7JApZC1TKPk6oOBjT6/EC/0WfPQWnfnEONc9r+KHAJMXhd/6
-         OmuxVY2iKAbQcjHOl6urR/ZSN2Q9c1vixSIZuVdgIvuQVlkxZJPRljV05LRqtXRwdHLf
-         cC0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZHvIyjp/HjptDKFZ4oCKWaRPRXAjZeylbH6QYR0nkL8=;
-        b=FMn41UJNvCnNwnf85Op9hoOsq1fDMJT0V9QX37B2HcVV5GrDLrIXgjvBHX1nX85kPC
-         Qt0S9QliVVh4Kvg7BXbbxMoOnfLulVziACk9dNg+2dGnvZu+eQe+T0RPPUMCTAExiP41
-         l2ahpeiMRB5eI6zroEgRbUU/1PEemxP4Y4upFPdeM0cdHJSiohTzRovBjjyJpWyjRbhD
-         rN0uvf4Qn7nh6m8DkSkunW3yNuLzIt8n4C2JK3gM7UyUTV2Xdjst7ZAPe9fDqHbnZRzf
-         yUnpi/BvDp+I0aKDfb/3qX8Xek/94mYaoJ83o//x6xtXkSzNiC2BdMpv1uKlhw/X7LGo
-         dBag==
-X-Gm-Message-State: AOAM531v8B6puRCJJ4J1535vnTgYIB2zSRO90KejaOcZFtZa9HPqxLd9
-        oaq5pU3s0FOki4R/pi8msGH2AESn+q6M+FeVfUbgkA==
-X-Google-Smtp-Source: ABdhPJxwNJVl7N6DgZU+9k9hMFwLmdKNKDwg3mdA4F/dtZ/iDwTOnDvzTa5ao9aFnFxXSFDsSjTTwZJlbUKTXKsnnAc=
-X-Received: by 2002:a05:6512:20c3:: with SMTP id u3mr1062919lfr.572.1601383528944;
- Tue, 29 Sep 2020 05:45:28 -0700 (PDT)
+        id S2387537AbgI2Mp3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 08:45:29 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:14716 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1733221AbgI2Mop (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 08:44:45 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 0E4F96135E49E978FB7F;
+        Tue, 29 Sep 2020 20:44:44 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by DGGEMS412-HUB.china.huawei.com
+ (10.3.19.212) with Microsoft SMTP Server id 14.3.487.0; Tue, 29 Sep 2020
+ 20:44:35 +0800
+From:   Zhihao Cheng <chengzhihao1@huawei.com>
+To:     <richard@nod.at>, <s.hauer@pengutronix.de>
+CC:     <yi.zhang@huawei.com>, <linux-mtd@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH 1/3] ubifs: Fix a memleak after dumping authentication mount options
+Date:   Tue, 29 Sep 2020 20:45:29 +0800
+Message-ID: <20200929124531.941873-1-chengzhihao1@huawei.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-References: <cover.1593243079.git.syednwaris@gmail.com> <CACRpkdYyCNEUSOtCJMTm7t1z15oK7nH3KcTe5LreJAzZ0KtQuw@mail.gmail.com>
- <20200911225417.GA5286@shinobu>
-In-Reply-To: <20200911225417.GA5286@shinobu>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 29 Sep 2020 14:45:18 +0200
-Message-ID: <CACRpkdah+k-EyhF8bNRkvw4bFDiai9dYo3ph9wsumo_v3U-U0g@mail.gmail.com>
-Subject: Re: [PATCH v9 0/4] Introduce the for_each_set_clump macro
-To:     William Breathitt Gray <vilhelm.gray@gmail.com>
-Cc:     Syed Nayyar Waris <syednwaris@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Robert Richter <rrichter@marvell.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amit.kucheria@verdurent.com>,
-        linux-arch@vger.kernel.org,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux PM list <linux-pm@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 12, 2020 at 12:54 AM William Breathitt Gray
-<vilhelm.gray@gmail.com> wrote:
-> On Thu, Jul 16, 2020 at 02:49:35PM +0200, Linus Walleij wrote:
-> > Hi Syed,
-> >
-> > sorry for taking so long. I was on vacation and a bit snowed
-> > under by work.
-> >
-> > On Sat, Jun 27, 2020 at 10:10 AM Syed Nayyar Waris <syednwaris@gmail.com> wrote:
-> >
-> > > Since this patchset primarily affects GPIO drivers, would you like
-> > > to pick it up through your GPIO tree?
-> >
-> > I have applied the patches to an immutable branch and pushed
-> > to kernelorg for testing (autobuilders will play with it I hope).
-> >
-> > If all works fine I will merge this into my devel branch for v5.9.
-> >
-> > It would be desirable if Andrew gave his explicit ACK on it too.
-> >
-> > Yours,
-> > Linus Walleij
->
-> Hi Linus,
->
-> What's the name of the branch with these patches on kernelorg; I'm
-> having trouble finding it?
->
-> Btw, I'm CCing Andrew as well here because I notice him missing from the
-> CC list earlier for this patchset.
+Fix a memory leak after dumping authentication mount options in error
+handling branch.
 
-IIRC there were complaints from the zeroday build robot so I
-dropped the branch and I am still waiting for a fixed up patch
-series.
+Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+Cc: <stable@vger.kernel.org>  # 4.20+
+Fixes: d8a22773a12c6d7 ("ubifs: Enable authentication support")
+---
+ fs/ubifs/super.c | 16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
 
-Yours,
-Linus Walleij
+diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
+index a2420c900275..6f85cd618766 100644
+--- a/fs/ubifs/super.c
++++ b/fs/ubifs/super.c
+@@ -1141,6 +1141,18 @@ static int ubifs_parse_options(struct ubifs_info *c, char *options,
+ 	return 0;
+ }
+ 
++/*
++ * ubifs_release_options - release mount parameters which have been dumped.
++ * @c: UBIFS file-system description object
++ */
++static void ubifs_release_options(struct ubifs_info *c)
++{
++	kfree(c->auth_key_name);
++	c->auth_key_name = NULL;
++	kfree(c->auth_hash_name);
++	c->auth_hash_name = NULL;
++}
++
+ /**
+  * destroy_journal - destroy journal data structures.
+  * @c: UBIFS file-system description object
+@@ -1650,8 +1662,7 @@ static void ubifs_umount(struct ubifs_info *c)
+ 	ubifs_lpt_free(c, 0);
+ 	ubifs_exit_authentication(c);
+ 
+-	kfree(c->auth_key_name);
+-	kfree(c->auth_hash_name);
++	ubifs_release_options(c);
+ 	kfree(c->cbuf);
+ 	kfree(c->rcvrd_mst_node);
+ 	kfree(c->mst_node);
+@@ -2219,6 +2230,7 @@ static int ubifs_fill_super(struct super_block *sb, void *data, int silent)
+ out_unlock:
+ 	mutex_unlock(&c->umount_mutex);
+ out_close:
++	ubifs_release_options(c);
+ 	ubi_close_volume(c->ubi);
+ out:
+ 	return err;
+-- 
+2.25.4
+
