@@ -2,38 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61E7E27C83C
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:00:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A66927C565
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:35:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731595AbgI2MAG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 08:00:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36570 "EHLO mail.kernel.org"
+        id S1729814AbgI2LfO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:35:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49816 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730590AbgI2Lky (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:40:54 -0400
+        id S1729590AbgI2Ld0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:33:26 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 55E44221E7;
-        Tue, 29 Sep 2020 11:40:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E922523B97;
+        Tue, 29 Sep 2020 11:26:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601379651;
-        bh=xR3JxS7dReW87Az2A8LeOTHlQ0QfKGc3fI+787wEz9Q=;
+        s=default; t=1601378809;
+        bh=r9GNCN1mMZ2mmSrYMyvHpFT99P4cCcj33Ml0g7pgzCo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=A7rEB1vyd/RoJMo+3to05PLrg/uOe1qssw1cIgxr3yAlLthSfZCmTyFpFo8UcMHwF
-         JFuSbciWWxtsOmt+VrzUWiLmeRBXJ2yJOzC6WtshmwpQSLQKIH554KEsBkIX2MRCds
-         IJneJTSx+08snTMbBqZkKSmsb8+b1O5I/dAWaziM=
+        b=gKuh4LDY7TsL5uZ6rzRR43RsjkRmBgpMzGW1+bMuObpFJA0i/uKFjT3LAKkyZg/ww
+         28nZ1dsFDSAbSeUv+gaA5ohZvD4Um+E6N//SdEPsHIBrdIEdTGCUv2/hh+J1DwAqlw
+         DKHEYUmiXJaW9qEP8wIAQsQg4JtSMqxGv9Q2Uyz8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
+        stable@vger.kernel.org, Xianting Tian <xianting_tian@126.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Jan Kara <jack@suse.cz>, yubin@h3c.com,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 259/388] ALSA: hda: Fix potential race in unsol event handler
+Subject: [PATCH 4.19 139/245] mm/filemap.c: clear page error before actual read
 Date:   Tue, 29 Sep 2020 12:59:50 +0200
-Message-Id: <20200929110023.008438923@linuxfoundation.org>
+Message-Id: <20200929105953.750782618@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929110010.467764689@linuxfoundation.org>
-References: <20200929110010.467764689@linuxfoundation.org>
+In-Reply-To: <20200929105946.978650816@linuxfoundation.org>
+References: <20200929105946.978650816@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,53 +46,145 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Xianting Tian <xianting_tian@126.com>
 
-[ Upstream commit c637fa151259c0f74665fde7cba5b7eac1417ae5 ]
+[ Upstream commit faffdfa04fa11ccf048cebdde73db41ede0679e0 ]
 
-The unsol event handling code has a loop retrieving the read/write
-indices and the arrays without locking while the append to the array
-may happen concurrently.  This may lead to some inconsistency.
-Although there hasn't been any proof of this bad results, it's still
-safer to protect the racy accesses.
+Mount failure issue happens under the scenario: Application forked dozens
+of threads to mount the same number of cramfs images separately in docker,
+but several mounts failed with high probability.  Mount failed due to the
+checking result of the page(read from the superblock of loop dev) is not
+uptodate after wait_on_page_locked(page) returned in function cramfs_read:
 
-This patch adds the spinlock protection around the unsol handling loop
-for addressing it.  Here we take bus->reg_lock as the writer side
-snd_hdac_bus_queue_event() is also protected by that lock.
+   wait_on_page_locked(page);
+   if (!PageUptodate(page)) {
+      ...
+   }
 
-Link: https://lore.kernel.org/r/20200516062556.30951-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+The reason of the checking result of the page not uptodate: systemd-udevd
+read the loopX dev before mount, because the status of loopX is Lo_unbound
+at this time, so loop_make_request directly trigger the calling of io_end
+handler end_buffer_async_read, which called SetPageError(page).  So It
+caused the page can't be set to uptodate in function
+end_buffer_async_read:
+
+   if(page_uptodate && !PageError(page)) {
+      SetPageUptodate(page);
+   }
+
+Then mount operation is performed, it used the same page which is just
+accessed by systemd-udevd above, Because this page is not uptodate, it
+will launch a actual read via submit_bh, then wait on this page by calling
+wait_on_page_locked(page).  When the I/O of the page done, io_end handler
+end_buffer_async_read is called, because no one cleared the page
+error(during the whole read path of mount), which is caused by
+systemd-udevd reading, so this page is still in "PageError" status, which
+can't be set to uptodate in function end_buffer_async_read, then caused
+mount failure.
+
+But sometimes mount succeed even through systemd-udeved read loopX dev
+just before, The reason is systemd-udevd launched other loopX read just
+between step 3.1 and 3.2, the steps as below:
+
+1, loopX dev default status is Lo_unbound;
+2, systemd-udved read loopX dev (page is set to PageError);
+3, mount operation
+   1) set loopX status to Lo_bound;
+   ==>systemd-udevd read loopX dev<==
+   2) read loopX dev(page has no error)
+   3) mount succeed
+
+As the loopX dev status is set to Lo_bound after step 3.1, so the other
+loopX dev read by systemd-udevd will go through the whole I/O stack, part
+of the call trace as below:
+
+   SYS_read
+      vfs_read
+          do_sync_read
+              blkdev_aio_read
+                 generic_file_aio_read
+                     do_generic_file_read:
+                        ClearPageError(page);
+                        mapping->a_ops->readpage(filp, page);
+
+here, mapping->a_ops->readpage() is blkdev_readpage.  In latest kernel,
+some function name changed, the call trace as below:
+
+   blkdev_read_iter
+      generic_file_read_iter
+         generic_file_buffered_read:
+            /*
+             * A previous I/O error may have been due to temporary
+             * failures, eg. mutipath errors.
+             * Pg_error will be set again if readpage fails.
+             */
+            ClearPageError(page);
+            /* Start the actual read. The read will unlock the page*/
+            error=mapping->a_ops->readpage(flip, page);
+
+We can see ClearPageError(page) is called before the actual read,
+then the read in step 3.2 succeed.
+
+This patch is to add the calling of ClearPageError just before the actual
+read of read path of cramfs mount.  Without the patch, the call trace as
+below when performing cramfs mount:
+
+   do_mount
+      cramfs_read
+         cramfs_blkdev_read
+            read_cache_page
+               do_read_cache_page:
+                  filler(data, page);
+                  or
+                  mapping->a_ops->readpage(data, page);
+
+With the patch, the call trace as below when performing mount:
+
+   do_mount
+      cramfs_read
+         cramfs_blkdev_read
+            read_cache_page:
+               do_read_cache_page:
+                  ClearPageError(page); <== new add
+                  filler(data, page);
+                  or
+                  mapping->a_ops->readpage(data, page);
+
+With the patch, mount operation trigger the calling of
+ClearPageError(page) before the actual read, the page has no error if no
+additional page error happen when I/O done.
+
+Signed-off-by: Xianting Tian <xianting_tian@126.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Cc: Jan Kara <jack@suse.cz>
+Cc: <yubin@h3c.com>
+Link: http://lkml.kernel.org/r/1583318844-22971-1-git-send-email-xianting_tian@126.com
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/hda/hdac_bus.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ mm/filemap.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/sound/hda/hdac_bus.c b/sound/hda/hdac_bus.c
-index 8f19876244ebe..53be2cac98e7c 100644
---- a/sound/hda/hdac_bus.c
-+++ b/sound/hda/hdac_bus.c
-@@ -158,6 +158,7 @@ static void snd_hdac_bus_process_unsol_events(struct work_struct *work)
- 	struct hdac_driver *drv;
- 	unsigned int rp, caddr, res;
- 
-+	spin_lock_irq(&bus->reg_lock);
- 	while (bus->unsol_rp != bus->unsol_wp) {
- 		rp = (bus->unsol_rp + 1) % HDA_UNSOL_QUEUE_SIZE;
- 		bus->unsol_rp = rp;
-@@ -169,10 +170,13 @@ static void snd_hdac_bus_process_unsol_events(struct work_struct *work)
- 		codec = bus->caddr_tbl[caddr & 0x0f];
- 		if (!codec || !codec->dev.driver)
- 			continue;
-+		spin_unlock_irq(&bus->reg_lock);
- 		drv = drv_to_hdac_driver(codec->dev.driver);
- 		if (drv->unsol_event)
- 			drv->unsol_event(codec, res);
-+		spin_lock_irq(&bus->reg_lock);
+diff --git a/mm/filemap.c b/mm/filemap.c
+index 45f1c6d73b5b0..f2e777003b901 100644
+--- a/mm/filemap.c
++++ b/mm/filemap.c
+@@ -2889,6 +2889,14 @@ filler:
+ 		unlock_page(page);
+ 		goto out;
  	}
-+	spin_unlock_irq(&bus->reg_lock);
- }
++
++	/*
++	 * A previous I/O error may have been due to temporary
++	 * failures.
++	 * Clear page error before actual read, PG_error will be
++	 * set again if read page fails.
++	 */
++	ClearPageError(page);
+ 	goto filler;
  
- /**
+ out:
 -- 
 2.25.1
 
