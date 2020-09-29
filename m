@@ -2,221 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE21327CF3A
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 15:34:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9243927CF3E
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 15:34:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729517AbgI2Nd7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 09:33:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56494 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728366AbgI2Nd7 (ORCPT
+        id S1729863AbgI2NeL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 09:34:11 -0400
+Received: from smtprelay0036.hostedemail.com ([216.40.44.36]:56784 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728273AbgI2NeK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 09:33:59 -0400
-Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E19D9C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 06:33:58 -0700 (PDT)
-Received: by mail-vs1-xe42.google.com with SMTP id y194so2944616vsc.4
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 06:33:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=EltL+J/Q1F5+mWF7g4qf+xcfPA5egjqaTP/RSUYOP3E=;
-        b=lI7G256uQ7RDLq3ZlDG8s61EF4QOy+bpJNOYxVVZEjTyNAuw3U8N6SjsZaUIZasnjQ
-         XNDW1g9JQ7yTzkw2wlPv0UzPoVVedlt+MCeDzulV7FNXw/BD4ZDC4RgIla8kugeQGMJi
-         S0QqXrliG6afGkMeO53zkovWcJQc4aSXEUzRNnxAKTPnzCqrN2VqF7r1DjkDFJVg5Kt0
-         jziAfhIAWjBf+BVApQo2ipCDqj5IPvolxUEJGQPrOkAY+Pp0+3vwMTzovQAY0qqOOyec
-         Lnhk0DxpSDMj5BdkftYe7fzy9kUY4s7oGArl9qGIXOXNxj83ZsI9oFm6snQjUNDfSbFk
-         KhIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=EltL+J/Q1F5+mWF7g4qf+xcfPA5egjqaTP/RSUYOP3E=;
-        b=NE/+NTGrRSZh7imlmdBEbf8aki+UjEf1ZWOP+x/EI/4Vb2adZCvW9NBithF2jTFIDn
-         L8RiZeJNkMFOMrtyy0erSpEDPheI911Ssl7FeW6U/ESia1bzJFCPUUNpsmhTeCZfZC/m
-         sKs/KDd5nDQhXaSwb1uJEFQDMOxBpBB/SZcjU1dZDPi7LAotFq/ab8opRvf5eH1nPdUS
-         xU5H5lfnSOKZFwKhgM38ZKS3LOO0zrLG3mM8V7iGShi5mYgetsyM181Wq3GySg5BdFfo
-         rD+pG8U3+fvFauCfS1KoNo3gspUfAlGm+CZdCx3RzbZ57eycr+OyXRWqHEPi+0HNJH2r
-         lcUQ==
-X-Gm-Message-State: AOAM530hJcvMpT1Skji5LN7phSf8sqaE0ypqzb9zuG3PVk4gyJ0ptOgz
-        Vii7Pfe58uipV8A5uBAXLTn7tLY0C9KLJf8W1fP2eQ==
-X-Google-Smtp-Source: ABdhPJw+UWARxsyFEWwL5peQBxGf6xI7fAmwaqXnexE8cgF05YYDnVBChPSxoX4AeXdRZPUhkT0+YRovYFgtjpixlQ8=
-X-Received: by 2002:a67:bd12:: with SMTP id y18mr2838977vsq.45.1601386438022;
- Tue, 29 Sep 2020 06:33:58 -0700 (PDT)
+        Tue, 29 Sep 2020 09:34:10 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay04.hostedemail.com (Postfix) with ESMTP id 472EC180A7FFF;
+        Tue, 29 Sep 2020 13:34:08 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:967:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1539:1593:1594:1711:1714:1730:1747:1777:1792:1801:2198:2199:2393:2525:2553:2560:2563:2682:2685:2828:2859:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3351:3622:3865:3867:3871:3872:3873:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:4605:5007:6742:6743:8985:9025:10004:10400:11232:11658:11854:11914:12043:12050:12297:12555:12740:12760:12895:12986:13019:13069:13311:13357:13439:14181:14659:14721:21080:21451:21627:21740:21939:30012:30054:30056:30060:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: event48_4a081af2718a
+X-Filterd-Recvd-Size: 2674
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf20.hostedemail.com (Postfix) with ESMTPA;
+        Tue, 29 Sep 2020 13:34:03 +0000 (UTC)
+Message-ID: <5f0d2b20f5088281363bb4a35c5652a2c087f159.camel@perches.com>
+Subject: Re: [PATCH 00/18] use semicolons rather than commas to separate
+ statements
+From:   Joe Perches <joe@perches.com>
+To:     Julia Lawall <julia.lawall@inria.fr>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Shuah Khan <shuah@kernel.org>
+Cc:     Ard Biesheuvel <ardb@kernel.org>, linux-iio@vger.kernel.org,
+        drbd-dev@tron.linbit.com,
+        Valdis =?UTF-8?Q?Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>,
+        David Lechner <david@lechnology.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        linux-wireless@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        kernel-janitors@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-block@vger.kernel.org, linux-ide@vger.kernel.org,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        linux-amlogic@lists.infradead.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        openipmi-developer@lists.sourceforge.net,
+        linux-clk@vger.kernel.org,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Jerome Brunet <jbrunet@baylibre.com>
+Date:   Tue, 29 Sep 2020 06:34:02 -0700
+In-Reply-To: <alpine.DEB.2.22.394.2009291445050.2808@hadrien>
+References: <1601233948-11629-1-git-send-email-Julia.Lawall@inria.fr>
+         <CAMj1kXGh+CzuXkAnqsoMO2A3T1p=D6uFOV347Ym5+VFn5U1gWg@mail.gmail.com>
+         <20200929124108.GY4282@kadam>
+         <alpine.DEB.2.22.394.2009291445050.2808@hadrien>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-References: <20200929105946.978650816@linuxfoundation.org> <20200929105954.090876288@linuxfoundation.org>
-In-Reply-To: <20200929105954.090876288@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 29 Sep 2020 19:03:46 +0530
-Message-ID: <CA+G9fYs-gqkrwzFeMQ1NpV_BfYPrV2CCOKJv6QE7U3mhc56F9w@mail.gmail.com>
-Subject: Re: [PATCH 4.19 146/245] perf stat: Force error in fallback on :k events
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux- stable <stable@vger.kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@redhat.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sasha Levin <sashal@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 29 Sep 2020 at 17:54, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> From: Stephane Eranian <eranian@google.com>
->
-> [ Upstream commit bec49a9e05db3dbdca696fa07c62c52638fb6371 ]
->
-> When it is not possible for a non-privilege perf command to monitor at
-> the kernel level (:k), the fallback code forces a :u. That works if the
-> event was previously monitoring both levels.  But if the event was
-> already constrained to kernel only, then it does not make sense to
-> restrict it to user only.
->
-> Given the code works by exclusion, a kernel only event would have:
->
->   attr->exclude_user = 1
->
-> The fallback code would add:
->
->   attr->exclude_kernel = 1
->
-> In the end the end would not monitor in either the user level or kernel
-> level. In other words, it would count nothing.
->
-> An event programmed to monitor kernel only cannot be switched to user
-> only without seriously warning the user.
->
-> This patch forces an error in this case to make it clear the request
-> cannot really be satisfied.
->
-> Behavior with paranoid 1:
->
->   $ sudo bash -c "echo 1 > /proc/sys/kernel/perf_event_paranoid"
->   $ perf stat -e cycles:k sleep 1
->
->    Performance counter stats for 'sleep 1':
->
->            1,520,413      cycles:k
->
->          1.002361664 seconds time elapsed
->
->          0.002480000 seconds user
->          0.000000000 seconds sys
->
-> Old behavior with paranoid 2:
->
->   $ sudo bash -c "echo 2 > /proc/sys/kernel/perf_event_paranoid"
->   $ perf stat -e cycles:k sleep 1
->    Performance counter stats for 'sleep 1':
->
->                    0      cycles:ku
->
->          1.002358127 seconds time elapsed
->
->          0.002384000 seconds user
->          0.000000000 seconds sys
->
-> New behavior with paranoid 2:
->
->   $ sudo bash -c "echo 2 > /proc/sys/kernel/perf_event_paranoid"
->   $ perf stat -e cycles:k sleep 1
->   Error:
->   You may not have permission to collect stats.
->
->   Consider tweaking /proc/sys/kernel/perf_event_paranoid,
->   which controls use of the performance events system by
->   unprivileged users (without CAP_PERFMON or CAP_SYS_ADMIN).
->
->   The current value is 2:
->
->     -1: Allow use of (almost) all events by all users
->         Ignore mlock limit after perf_event_mlock_kb without CAP_IPC_LOCK
->   >= 0: Disallow ftrace function tracepoint by users without CAP_PERFMON or CAP_SYS_ADMIN
->         Disallow raw tracepoint access by users without CAP_SYS_PERFMON or CAP_SYS_ADMIN
->   >= 1: Disallow CPU event access by users without CAP_PERFMON or CAP_SYS_ADMIN
->   >= 2: Disallow kernel profiling by users without CAP_PERFMON or CAP_SYS_ADMIN
->
->   To make this setting permanent, edit /etc/sysctl.conf too, e.g.:
->
->           kernel.perf_event_paranoid = -1
->
-> v2 of this patch addresses the review feedback from jolsa@redhat.com.
->
-> Signed-off-by: Stephane Eranian <eranian@google.com>
-> Reviewed-by: Ian Rogers <irogers@google.com>
-> Acked-by: Jiri Olsa <jolsa@redhat.com>
-> Tested-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-> Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-> Cc: Jiri Olsa <jolsa@redhat.com>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: Namhyung Kim <namhyung@kernel.org>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Link: http://lore.kernel.org/lkml/20200414161550.225588-1-irogers@google.com
-> Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
+On Tue, 2020-09-29 at 14:47 +0200, Julia Lawall wrote:
+> On Tue, 29 Sep 2020, Dan Carpenter wrote:
+> > The times where commas are used deliberately to replace curly braces are
+> > just evil.  Either way the code is cleaner with semi-colons.
+> 
+> I also found exaamples like the following to be particularly unforunate:
+> 
+>                                 fprintf(stderr,
+>                                         "page_nr %lu wrong count %Lu %Lu\n",
+>                                        page_nr, count,
+>                                        count_verify[page_nr]), exit(1);
+> 
+> The exit is very hard to see, unless you know to look for it.
 
-perf failed on stable rc branch 4.19 on all devices.
+I sent that patch last month.
+https://patchwork.kernel.org/patch/11734877/
 
-Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+It's still not applied.
 
-build warning and errors,
------------------------------------
-In file included from util/evlist.h:15:0,
-                 from util/evsel.c:30:
-util/evsel.c: In function 'perf_evsel__exit':
-util/util.h:25:28: warning: passing argument 1 of 'free' discards
-'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
- #define zfree(ptr) ({ free(*ptr); *ptr = NULL; })
-                            ^
-util/evsel.c:1293:2: note: in expansion of macro 'zfree'
-  zfree(&evsel->pmu_name);
-  ^~~~~
-In file included from
-/srv/oe/build/tmp-lkft-glibc/work/intel_corei7_64-linaro-linux/perf/1.0-r9/perf-1.0/tools/perf/arch/x86/include/perf_regs.h:5:0,
-                 from util/perf_regs.h:27,
-                 from util/event.h:11,
-                 from util/callchain.h:8,
-                 from util/evsel.c:26:
-perf/1.0-r9/recipe-sysroot/usr/include/stdlib.h:563:13: note: expected
-'void *' but argument is of type 'const char *'
- extern void free (void *__ptr) __THROW;
-             ^~~~
-util/evsel.c: In function 'perf_evsel__fallback':
-util/evsel.c:2802:14: error: 'struct perf_evsel' has no member named
-'core'; did you mean 'node'?
-   if (evsel->core.attr.exclude_user)
-              ^~~~
-              node
 
-> ---
->  tools/perf/util/evsel.c | 4 ++++
->  1 file changed, 4 insertions(+)
->
-> diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
-> index 68c5ab0e1800b..e8586957562b3 100644
-> --- a/tools/perf/util/evsel.c
-> +++ b/tools/perf/util/evsel.c
-> @@ -2796,6 +2796,10 @@ bool perf_evsel__fallback(struct perf_evsel *evsel, int err,
->                 char *new_name;
->                 const char *sep = ":";
->
-> +               /* If event has exclude user then don't exclude kernel. */
-> +               if (evsel->core.attr.exclude_user)
-> +                       return false;
-> +
->                 /* Is there already the separator in the name. */
->                 if (strchr(name, '/') ||
->                     strchr(name, ':'))
-> --
-> 2.25.1
->
->
->
+
