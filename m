@@ -2,79 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CFD627BDBB
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 09:13:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 564D727BDD3
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 09:15:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727464AbgI2HNx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 03:13:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53666 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725710AbgI2HNx (ORCPT
+        id S1727513AbgI2HPT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 03:15:19 -0400
+Received: from out5-smtp.messagingengine.com ([66.111.4.29]:40897 "EHLO
+        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725306AbgI2HPT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 03:13:53 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A6E4C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 00:13:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ELXndXXTSP15bhYlf8giv2I6wKSj/3tGXdDNG1yeq8I=; b=fK104d7bBl2CIgFMxM8svO3BA1
-        hY2IzK2/lLOU2NZ+jZUqL4qyCpZTmpGi8YXEz6Pfan/Xf0HwWHAQzDrxBLfie6SBHcgOem3oum6an
-        S2POnkB9xQCAt/IyGv35e38B1boGtIrevNPp8BkSplBuUFqNM2cy7FDtx/yiNrH31Q/s+EW7p37P6
-        vzjNO/kln+LGrfQ3CCRIEw8Esoo1a6En/LfUOoqTkGwPsNYd9bjBG0Phh6MPVDkPaSdPpexDJ/r8c
-        ulvTjcoGhOoVJP8Aw2nYFy+86QjIMBIKNdLeYdOvEgzNMNwMhpxs6jctznJBzW4wzv2CpVBiHkrcF
-        7TQ1bjBw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kN9pR-0000Hx-Hx; Tue, 29 Sep 2020 07:13:37 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 1E1B1300F7A;
-        Tue, 29 Sep 2020 09:13:34 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 0798D211CC1CC; Tue, 29 Sep 2020 09:13:34 +0200 (CEST)
-Date:   Tue, 29 Sep 2020 09:13:33 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     quanyang.wang@windriver.com, linux-kernel@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Leo Yan <leo.yan@linaro.org>, Will Deacon <will@kernel.org>,
-        a.darwish@linutronix.de,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Randy Dunlap <rdunlap@infradead.org>, ben.dooks@codethink.co.uk
-Subject: Re: [PATCH] time/sched_clock: mark sched_clock_read_begin as notrace
-Message-ID: <20200929071333.GK2628@hirez.programming.kicks-ass.net>
-References: <20200928104952.26892-1-quanyang.wang@windriver.com>
- <20200928105859.GF2628@hirez.programming.kicks-ass.net>
- <20200928173331.3ea3cfb7@oasis.local.home>
+        Tue, 29 Sep 2020 03:15:19 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id 17B845C0195;
+        Tue, 29 Sep 2020 03:15:18 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Tue, 29 Sep 2020 03:15:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=PWqFhOK6Bo8sCV0S7SwUBsOgPdt
+        O5Cip5iwDuGiZBcI=; b=ojA59IDcgFXwhU4A2Cz0mAeDgebpRkxMtuM2Mw73sHq
+        BC/gicDHvgjOIOoOghHgG5WHLu9pzwuJwo8QP7/EYh47cq7oua7CuzWeYL/jiabK
+        3kuoNINwSJ50YtrC3x6TEHfx22M0HySUdOlEnD8sckgmbW6yYEFvpYsUTZrPDNok
+        zl+hrrQaWlKZ4N+wwPJtTfO0yuZs/FgMWemCrru+geZRA1zirNuPkyBqiqB5XhGK
+        n759TJKVWqDwuIVhIzoauSj5xMQlVCznjfiJC15nC9xUJXPc73V+/Db9/JjP9NBi
+        brHglPlrigCsFhIlH4ROVW7V7KyNSxDpyRi77mgW7rQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=PWqFhO
+        K6Bo8sCV0S7SwUBsOgPdtO5Cip5iwDuGiZBcI=; b=SeBLVopZenFfd9h3ev1u//
+        fiGSTg9thf8LMyuMCLeGLG/oKJWRRNU0XHiK3xAPh7DE2DIXgKWlpZgin6l037Gm
+        zk8VlxXA4qxidwvDamVy1UYUSfB5Hx87nj1doMgNH3LEcd+BdzXi69DFDqgxcmpW
+        8P7Vbxyv42uhbgFirFi/4iR/eMfCsbZ/M1+uMU5AHvcsErcPL05hoPFo5CtRXb89
+        BOzcsbsh7y1OmQkTmEJ0xTN+HgGCv1IUcHW1GF8wA2J7g8fLcgWD+PvgbQlTl4IF
+        0rY2Qb8KGt8zuvwcbkYzizufpVoxl8RkJCeaAaDHUya2T9yY/nScV0XE+FRAd5sw
+        ==
+X-ME-Sender: <xms:Bd9yXyVZuq3x1u98USCbXycY2lane4F6aYK6s_uzc3rc98axKB0WzA>
+    <xme:Bd9yX-lOgfBQQgsIXL3hfxDd5BURm4XWq1fGrSwCpyW75ObNDfFVARGX2P3G-RCra
+    Hz8l0orqBUfkA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrvdejgdduudelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
+    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpedukeffve
+    dtkeduvddvudegueetgfejueehuedtgfehkefftdevieehkedvieejkeenucffohhmrghi
+    nhepshhushgvrdgtohhmpdhsvghrvhgvrhhfrghulhhtrdgtohhmpdhlrghunhgthhhprg
+    gurdhnvghtpdgtvghnthhoshdrohhrghenucfkphepkeefrdekiedrjeegrdeigeenucev
+    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrhgvgheskh
+    hrohgrhhdrtghomh
+X-ME-Proxy: <xmx:Bd9yX2ZHIFgMTJgheG_a0wsr40NTdyQin5QQ8sCpURTAmp-ILJZ7uw>
+    <xmx:Bd9yX5V2zxAgJV5NbTdAvU0YqtoNhqQ4D6QfXkRg-YWlhQ9zmObi8Q>
+    <xmx:Bd9yX8kff1DsVXPbq5OBagSwN_2CQS7zpYkGLVZ2BbJceknYYTg_CQ>
+    <xmx:Bt9yXzurjDy2XaSqrgqpWL1KwVGrJL_TarjZ6BAwCJwBo2EzzwuEdw>
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 3CB513280060;
+        Tue, 29 Sep 2020 03:15:17 -0400 (EDT)
+Date:   Tue, 29 Sep 2020 09:15:22 +0200
+From:   Greg KH <greg@kroah.com>
+To:     Jiri Slaby <jirislaby@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable-commits@vger.kernel.org
+Subject: Re: Patch "ata: sata_mv, avoid trigerrable BUG_ON" has been added to
+ the 4.4-stable tree
+Message-ID: <20200929071522.GA3700372@kroah.com>
+References: <20200927181119.5ACB623A33@mail.kernel.org>
+ <20200928123057.GA1116804@kroah.com>
+ <167f8a53-6b68-05b8-a632-34df046a0376@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200928173331.3ea3cfb7@oasis.local.home>
+In-Reply-To: <167f8a53-6b68-05b8-a632-34df046a0376@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 05:33:31PM -0400, Steven Rostedt wrote:
-> On Mon, 28 Sep 2020 12:58:59 +0200
-> Peter Zijlstra <peterz@infradead.org> wrote:
-> 
-> > > -struct clock_read_data *sched_clock_read_begin(unsigned int *seq)
-> > > +notrace struct clock_read_data *sched_clock_read_begin(unsigned int *seq)
-> > >  {
-> > >  	*seq = raw_read_seqcount_latch(&cd.seq);
-> > >  	return cd.read_data + (*seq & 1);  
+On Tue, Sep 29, 2020 at 08:33:24AM +0200, Jiri Slaby wrote:
+> On 28. 09. 20, 14:30, Greg KH wrote:
+> >> commit 4b308d858a1a34dae1e38948f2c0497161d9ddd8
+> >> Author: Jiri Slaby <jslaby@suse.cz>
+> >> Date:   Thu Oct 31 10:59:46 2019 +0100
+> >>
+> >>     ata: sata_mv, avoid trigerrable BUG_ON
+> >>     
+> >>     [ Upstream commit e9f691d899188679746eeb96e6cb520459eda9b4 ]
+> >>     
+> >>     There are several reports that the BUG_ON on unsupported command in
+> >>     mv_qc_prep can be triggered under some circumstances:
+> >>     https://bugzilla.suse.com/show_bug.cgi?id=1110252
+> >>     https://serverfault.com/questions/888897/raid-problems-after-power-outage
+> >>     https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1652185
+> >>     https://bugs.centos.org/view.php?id=14998
+> >>     
+> >>     Let sata_mv handle the failure gracefully: warn about that incl. the
+> >>     failed command number and return an AC_ERR_INVALID error. We can do that
+> >>     now thanks to the previous patch.
+> >>     
+> >>     Remove also the long-standing FIXME.
+> >>     
+> >>     [v2] use %.2x as commands are defined as hexa.
+> >>     
+> >>     Signed-off-by: Jiri Slaby <jslaby@suse.cz>
+> >>     Cc: Jens Axboe <axboe@kernel.dk>
+> >>     Cc: linux-ide@vger.kernel.org
+> >>     Cc: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+> >>     Signed-off-by: Jens Axboe <axboe@kernel.dk>
+> >>     Signed-off-by: Sasha Levin <sashal@kernel.org>
+> >>
+> >> diff --git a/drivers/ata/sata_mv.c b/drivers/ata/sata_mv.c
+> >> index 729f26322095e..c24bbdb3f76c8 100644
+> >> --- a/drivers/ata/sata_mv.c
+> >> +++ b/drivers/ata/sata_mv.c
+> >> @@ -2113,12 +2113,10 @@ static void mv_qc_prep(struct ata_queued_cmd *qc)
+> >>  		 * non-NCQ mode are: [RW] STREAM DMA and W DMA FUA EXT, none
+> >>  		 * of which are defined/used by Linux.  If we get here, this
+> >>  		 * driver needs work.
+> >> -		 *
+> >> -		 * FIXME: modify libata to give qc_prep a return value and
+> >> -		 * return error here.
+> >>  		 */
+> >> -		BUG_ON(tf->command);
+> >> -		break;
+> >> +		ata_port_err(ap, "%s: unsupported command: %.2x\n", __func__,
+> >> +				tf->command);
+> >> +		return AC_ERR_INVALID;
+> >>  	}
+> >>  	mv_crqb_pack_cmd(cw++, tf->nsect, ATA_REG_NSECT, 0);
+> >>  	mv_crqb_pack_cmd(cw++, tf->hob_lbal, ATA_REG_LBAL, 0);
 > > 
-> > At the very least sched_clock_read_retry() should also be marked such.
-> > 
-> > But Steve, how come x86 works? Our sched_clock() doesn't have notrace on
-> > at all.
+> > This causes a build warning as you can not return a value for a void
+> > function :(
 > 
-> It's because of that magic in the Makefile that you love so much ;-)
+> Sure, you need the patch before, i.e. e9f691d899^:
+> commit 95364f36701e62dd50eee91e1303187fd1a9f567
+> Author: Jiri Slaby <jirislaby@kernel.org>
+> Date:   Thu Oct 31 10:59:45 2019 +0100
 > 
-> CFLAGS_REMOVE_tsc.o = -pg
+>     ata: make qc_prep return ata_completion_errors
+> 
+> 
+> 
+> And that needs one more patch e9f691d899^^:
+> 
+> commit 25937580a5065d6fbd92d9c8ebd47145ad80052e
+> Author: Jiri Slaby <jirislaby@kernel.org>
+> Date:   Thu Oct 31 10:59:44 2019 +0100
+> 
+>     ata: define AC_ERR_OK
 
-ARGH!!, I really should write a script to fix up that mess :/
+Thanks, that worked!
+
+greg k-h
