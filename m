@@ -2,114 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF5B827D05B
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 16:00:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D23CC27D0A0
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 16:08:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730558AbgI2OAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 10:00:18 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:4408 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728867AbgI2OAR (ORCPT
+        id S1730546AbgI2OI2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 10:08:28 -0400
+Received: from fallback23.m.smailru.net ([94.100.187.222]:45086 "EHLO
+        fallback23.mail.ru" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725554AbgI2OI2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 10:00:17 -0400
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08TDXEk6012810;
-        Tue, 29 Sep 2020 10:00:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=KurX2Tj63i/99Pxz+3bnSVJmPd/cjS5Oqc++vVhCztw=;
- b=I429lhf6O8/1lpZRHHpoEXXn4ty9LLqGsxwiPwQ9zmZCDsqK9OwAJgX1plNpGpaQLSs8
- WqrOsc4rtPYnnBm2g7SnAB3AgLqAlcv/cJomCWh8qip8fUZ4wm2hZVcxkTagArz6hkbc
- vdveH7djk5/3PZZYm5umopIhlwC33bENwcmYxgmxM197/rUnT1RFj6EjmsloTL38x/JJ
- BNP+ZxjLa849VMHwfbQZyEUtkoLYWjeiuMIj7tLwgIFBRtv2XXJpzWNuv2hATEA6rWts
- k3E4FFlhC8FTC2/EYhGdGcMvq4CtujESEJFvEkkHkCHwAQ6B53t5nwS6LAonp870wbCY RA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33v4ybujva-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 29 Sep 2020 10:00:15 -0400
-Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08TDXF1g012903;
-        Tue, 29 Sep 2020 10:00:14 -0400
-Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33v4ybujtw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 29 Sep 2020 10:00:14 -0400
-Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
-        by ppma03wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08TDvxZ1014673;
-        Tue, 29 Sep 2020 14:00:13 GMT
-Received: from b03cxnp08028.gho.boulder.ibm.com (b03cxnp08028.gho.boulder.ibm.com [9.17.130.20])
-        by ppma03wdc.us.ibm.com with ESMTP id 33sw98vkp0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 29 Sep 2020 14:00:13 +0000
-Received: from b03ledav002.gho.boulder.ibm.com (b03ledav002.gho.boulder.ibm.com [9.17.130.233])
-        by b03cxnp08028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08TE0Ati59834800
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 29 Sep 2020 14:00:10 GMT
-Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A3A9B136079;
-        Tue, 29 Sep 2020 14:00:03 +0000 (GMT)
-Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1115913605D;
-        Tue, 29 Sep 2020 14:00:02 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.85.170.177])
-        by b03ledav002.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Tue, 29 Sep 2020 14:00:01 +0000 (GMT)
-Subject: Re: [PATCH v10 05/16] s390/vfio-ap: implement in-use callback for
- vfio_ap driver
-To:     Halil Pasic <pasic@linux.ibm.com>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, freude@linux.ibm.com, borntraeger@de.ibm.com,
-        cohuck@redhat.com, mjrosato@linux.ibm.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com,
-        fiuczy@linux.ibm.com, frankja@linux.ibm.com, david@redhat.com,
-        imbrenda@linux.ibm.com, hca@linux.ibm.com, gor@linux.ibm.com
-References: <20200821195616.13554-1-akrowiak@linux.ibm.com>
- <20200821195616.13554-6-akrowiak@linux.ibm.com>
- <20200925112941.71589591.pasic@linux.ibm.com>
-From:   Tony Krowiak <akrowiak@linux.ibm.com>
-Message-ID: <b6810e67-1e50-d62c-8c9e-57429e8a239f@linux.ibm.com>
-Date:   Tue, 29 Sep 2020 10:00:01 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        Tue, 29 Sep 2020 10:08:28 -0400
+X-Greylist: delayed 3398 seconds by postgrey-1.27 at vger.kernel.org; Tue, 29 Sep 2020 10:08:26 EDT
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=inbox.ru; s=mail;
+        h=Content-Transfer-Encoding:Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject; bh=6RSxY738ACpF+Ino9SWbcQaQGlKofTJn7oumjFW5fzQ=;
+        b=O0gShlYECDL+4ylfDc3t8Xb7A4cvQJkdbhnJ8zVkQmdpzgWnX7wxedlgfpl3qxn8JflTTXi6dF9I1dHY3YiPgHOytcA51x5TVZxGfLbxQpsD51n2KtxgtYHWIgw/HseZ8KOlQk/eWrcCTAwBGN/KvCh9GRadbfh95ui+iwjjIWU=;
+Received: from [10.161.25.38] (port=52190 helo=smtp61.i.mail.ru)
+        by fallback23.m.smailru.net with esmtp (envelope-from <fido_max@inbox.ru>)
+        id 1kNFPy-0002JK-Mw; Tue, 29 Sep 2020 16:11:43 +0300
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=inbox.ru; s=mail3;
+        h=Content-Transfer-Encoding:Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:From:Subject:Content-Type:Content-Transfer-Encoding:To:Cc; bh=6RSxY738ACpF+Ino9SWbcQaQGlKofTJn7oumjFW5fzQ=;
+        b=EVvtcjCG6iG0MRH8VznkQUDbusbVCMgyb98pKRrUiNHZFLxpji7qlsAMCvjBEe9s9/W/EARvx+qBDcYaWZoqVNH1zNqYZY7tXILI70LKoFc+rV7xFqTTji5W3xRz4asfoKYlkwxyK+oO+p9jgxiGnSsEQlEmcMVOU4cA6b1D08A=;
+Received: by smtp61.i.mail.ru with esmtpa (envelope-from <fido_max@inbox.ru>)
+        id 1kNFPg-0001yn-6c; Tue, 29 Sep 2020 16:11:24 +0300
+Subject: Re: [PATCH v2 devicetree 0/2] Add Seville Ethernet switch to T1040RDB
+To:     Vladimir Oltean <vladimir.oltean@nxp.com>, robh+dt@kernel.org,
+        shawnguo@kernel.org, mpe@ellerman.id.au, devicetree@vger.kernel.org
+Cc:     benh@kernel.crashing.org, paulus@samba.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, madalin.bucur@oss.nxp.com,
+        radu-andrei.bulie@nxp.com
+References: <20200929113209.3767787-1-vladimir.oltean@nxp.com>
+From:   Maxim Kochetkov <fido_max@inbox.ru>
+Message-ID: <5e3155b5-5fc1-387a-9721-02a2b7b9cf4e@inbox.ru>
+Date:   Tue, 29 Sep 2020 16:11:53 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-In-Reply-To: <20200925112941.71589591.pasic@linux.ibm.com>
+In-Reply-To: <20200929113209.3767787-1-vladimir.oltean@nxp.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-29_04:2020-09-29,2020-09-29 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- lowpriorityscore=0 suspectscore=0 impostorscore=0 adultscore=0 spamscore=0
- bulkscore=0 priorityscore=1501 mlxlogscore=879 mlxscore=0 phishscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009290119
+Content-Transfer-Encoding: 8bit
+X-7564579A: 646B95376F6C166E
+X-77F55803: 4F1203BC0FB41BD9943D5126A2FD5EE2E4744A35E03BDE7E88A2F725AC4993DD182A05F538085040E00759E436B1AE8B00F915B731C3D5B5EFF1BEFEFC18FF7FDBC6893C7533B864
+X-7FA49CB5: FF5795518A3D127A4AD6D5ED66289B5278DA827A17800CE782A779A89F7D69B2C2099A533E45F2D0395957E7521B51C2CFCAF695D4D8E9FCEA1F7E6F0F101C6778DA827A17800CE7DECE8D0A5E25C0FCEA1F7E6F0F101C674E70A05D1297E1BBC6CDE5D1141D2B1CA653A634B32B94ECB68811EB7CA856A18F8A64FDE1EEBEBE9FA2833FD35BB23D9E625A9149C048EE33AC447995A7AD18C26CFBAC0749D213D2E47CDBA5A96583BD4B6F7A4D31EC0BB23A54CFFDBC96A8389733CBF5DBD5E9D5E8D9A59859A8B68424CA1AAF98A6958941B15DA834481F9449624AB7ADAF372AE38A8E97BAFFB1D8FC6C240DEA76428AA50765F79006374B5E63B45CF01F35D81D268191BDAD3DBD4B6F7A4D31EC0B7A15B7713DBEF166D81D268191BDAD3D78DA827A17800CE75FBA0EF8B1D2889EEC76A7562686271E8729DE7A884B61D135872C767BF85DA29E625A9149C048EE0A3850AC1BE2E7352686C055BC15B7FB4AD6D5ED66289B524E70A05D1297E1BB35872C767BF85DA227C277FBC8AE2E8B80B9CEB5436E71E375ECD9A6C639B01B4E70A05D1297E1BBC6867C52282FAC85D9B7C4F32B44FF57C2F2A386D11C4599BD9CCCA9EDD067B1EDA766A37F9254B7
+X-C8649E89: C9FAD1E4A4F7ECA36AADBFC215A6348C82396AFA045BE753B9041556026F05AF288F6AE2636E4FD6
+X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2bioj50aJSQv4UNby20YYs+zVBg==
+X-Mailru-Sender: 11C2EC085EDE56FA9C10FA2967F5AB24928DA749C2ED0FF3FD4E7ECC4866820231FC2BFA7FE3EA0CEE9242D420CFEBFD3DDE9B364B0DF2891A624F84B2C74EDA4239CF2AF0A6D4F80DA7A0AF5A3A8387
+X-Mras: Ok
+X-7564579A: EEAE043A70213CC8
+X-77F55803: 6242723A09DB00B4DAC42D0CFF71F59E1485FCD7B475D8D787079C09ED9F4FF368F3CF0E9FE49B69332DF44F249B4C8D935375F240E155F4699919774D6B3F81A78295C7688E7FE6
+X-7FA49CB5: 0D63561A33F958A5EE1B9F76EDE2F3692C72DEB705C7C3BAC603FC59B98070898941B15DA834481FA18204E546F3947C6FF1B927F95F3316F6B57BC7E64490618DEB871D839B7333395957E7521B51C2545D4CF71C94A83E9FA2833FD35BB23D27C277FBC8AE2E8BAA867293B0326636D2E47CDBA5A96583CDB5D6C1DA9E2EA8302FCEF25BFAB3454AD6D5ED66289B5278DA827A17800CE7044D3B264367893ED32BA5DBAC0009BE395957E7521B51C20B4866841D68ED3567F23339F89546C55F5C1EE8F4F765FC80B9CEB5436E71E375ECD9A6C639B01BBD4B6F7A4D31EC0BC0CAF46E325F83A522CA9DD8327EE4930A3850AC1BE2E7352686C055BC15B7FBC4224003CC836476C0CAF46E325F83A50BF2EBBBDD9D6B0F8DB212830C5B42F72623479134186CDE6BA297DBC24807EABDAD6C7F3747799A
+X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2bioj50aJSQv4UNZUBTMZe2p1tQ==
+X-Mailru-MI: 800
+X-Mailru-Sender: A5480F10D64C9005EA165EA48716E380811A351EE4D290472FA911C9A7E4EC6DC8217CE68A9CF838C099ADC76E806A99D50E20E2BC48EF5A30D242760C51EA9CEAB4BC95F72C04283CDA0F3B3F5B9367
+X-Mras: Ok
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Reviewed-by: Maxim Kochetkov <fido_max@inbox.ru>
 
-
-On 9/25/20 5:29 AM, Halil Pasic wrote:
-> On Fri, 21 Aug 2020 15:56:05 -0400
-> Tony Krowiak <akrowiak@linux.ibm.com> wrote:
->
->> +
->> +bool vfio_ap_mdev_resource_in_use(unsigned long *apm, unsigned long *aqm)
->> +{
->> +	bool in_use;
->> +
->> +	mutex_lock(&matrix_dev->lock);
->> +	in_use = !!vfio_ap_mdev_verify_no_sharing(NULL, apm, aqm);
->> +	mutex_unlock(&matrix_dev->lock);
-> See also my comment for patch 4. AFAIU as soon as you release the lock
-> the in_use may become outdated in any moment.
-
-See my response to your comment for patch 4.
-
->
->> +
->> +	return in_use;
->> +}
-
+29.09.2020 14:32, Vladimir Oltean пишет:
+> Seville is a DSA switch that is embedded inside the T1040 SoC, and
+> supported by the mscc_seville DSA driver inside drivers/net/dsa/ocelot.
+> 
+> This series adds this switch to the SoC's dtsi files and to the T1040RDB
+> board file.
+> 
+> Vladimir Oltean (2):
+>    powerpc: dts: t1040: add bindings for Seville Ethernet switch
+>    powerpc: dts: t1040rdb: add ports for Seville Ethernet switch
+> 
+>   arch/powerpc/boot/dts/fsl/t1040rdb.dts      | 115 ++++++++++++++++++++
+>   arch/powerpc/boot/dts/fsl/t1040si-post.dtsi |  76 +++++++++++++
+>   2 files changed, 191 insertions(+)
+> 
