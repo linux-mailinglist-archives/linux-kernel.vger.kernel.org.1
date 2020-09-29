@@ -2,114 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5AE127C096
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 11:12:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF1F627C0FD
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 11:23:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727987AbgI2JMA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 05:12:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34926 "EHLO mail.kernel.org"
+        id S1727967AbgI2JWf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 05:22:35 -0400
+Received: from ns.iliad.fr ([212.27.33.1]:53170 "EHLO ns.iliad.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727854AbgI2JMA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 05:12:00 -0400
-Received: from localhost (unknown [104.132.1.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D3C93204FD;
-        Tue, 29 Sep 2020 09:11:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601370720;
-        bh=Ro99+3eggNn8iafNxEoxyEpWU/yokJe5HPgAFlFJtJg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aYSSwiEuA7DNdbyfu62/HdciUlsBNLlSEmWy/CoRIP3VmuHwPcAtH17QQRgwNvXIn
-         jSR9+7e8URP46YdQ2ndO0CUD5wOuxN6UciSxZJfMm7XF/W6T4d0GCdoPlryj/nqPxH
-         sT5MESd8Mr8si5SP8vc2A3Wuc6nQLc92MZD0YdbQ=
-Date:   Tue, 29 Sep 2020 02:11:59 -0700
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     Chao Yu <yuchao0@huawei.com>
-Cc:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-Subject: Re: [f2fs-dev] [PATCH v2 1/2] f2fs: compress: introduce page array
- slab cache
-Message-ID: <20200929091159.GC1567825@google.com>
-References: <20200914090514.50102-1-yuchao0@huawei.com>
- <20200929082306.GA1567825@google.com>
- <6e7639db-9120-d406-0a46-ec841845bb28@huawei.com>
- <20200929084739.GB1567825@google.com>
+        id S1727780AbgI2JWf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 05:22:35 -0400
+X-Greylist: delayed 554 seconds by postgrey-1.27 at vger.kernel.org; Tue, 29 Sep 2020 05:22:34 EDT
+Received: from ns.iliad.fr (localhost [127.0.0.1])
+        by ns.iliad.fr (Postfix) with ESMTP id C65262043B;
+        Tue, 29 Sep 2020 11:13:19 +0200 (CEST)
+Received: from [192.168.108.70] (freebox.vlq16.iliad.fr [213.36.7.13])
+        by ns.iliad.fr (Postfix) with ESMTP id B628C20035;
+        Tue, 29 Sep 2020 11:13:19 +0200 (CEST)
+Subject: Re: [PATCH v2 2/2] spmi: fix some coding style issues at the spmi
+ core
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>
+Cc:     John Stultz <john.stultz@linaro.org>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        MSM <linux-arm-msm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <cover.1601360391.git.mchehab+huawei@kernel.org>
+ <fec878502147336cbf2cf86e476e9dd797cd7e6f.1601360391.git.mchehab+huawei@kernel.org>
+From:   Marc Gonzalez <marc.w.gonzalez@free.fr>
+Message-ID: <f60e9ada-490d-10f9-6221-9a7d9eb054ba@free.fr>
+Date:   Tue, 29 Sep 2020 11:13:19 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200929084739.GB1567825@google.com>
+In-Reply-To: <fec878502147336cbf2cf86e476e9dd797cd7e6f.1601360391.git.mchehab+huawei@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Virus-Scanned: ClamAV using ClamSMTP ; ns.iliad.fr ; Tue Sep 29 11:13:19 2020 +0200 (CEST)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/29, Jaegeuk Kim wrote:
-> On 09/29, Chao Yu wrote:
-> > On 2020/9/29 16:23, Jaegeuk Kim wrote:
-> > > I found a bug related to the number of page pointer allocation related to
-> > > nr_cpages.
-> > 
-> > Jaegeuk,
-> > 
-> > If I didn't miss anything, you mean that nr_cpages could be larger
-> > than nr_rpages, right? the problematic case here is lzo/lzo-rle:
-> > 
-> > cc->clen = lzo1x_worst_compress(PAGE_SIZE << cc->log_cluster_size);
-> > 
-> > As we can't limited clen as we did for lz4/zstd:
-> > 
-> > cc->clen = cc->rlen - PAGE_SIZE - COMPRESS_HEADER_SIZE;
-> 
-> Yes, I've seen some memory corruption in lzo test. Here is another patch to fix
-> mem leak.
-> 
-One more fix:
+On 29/09/2020 08:22, Mauro Carvalho Chehab wrote:
 
----
- fs/f2fs/compress.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+> @@ -487,7 +489,7 @@ static void of_spmi_register_devices(struct spmi_controller *ctrl)
+>  			continue;
+>  
+>  		sdev->dev.of_node = node;
+> -		sdev->usid = (u8) reg[0];
+> +		sdev->usid = (u8)reg[0];
 
-diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
-index ba2d4897744d8..b9557865d627b 100644
---- a/fs/f2fs/compress.c
-+++ b/fs/f2fs/compress.c
-@@ -662,7 +662,7 @@ static int f2fs_compress_pages(struct compress_ctx *cc)
- 
- 	/* Now we're going to cut unnecessary tail pages */
- 	new_cpages = page_array_alloc(cc->inode, new_nr_cpages);
--	if (new_cpages) {
-+	if (!new_cpages) {
- 		ret = -ENOMEM;
- 		goto out_vunmap_cbuf;
- 	}
-@@ -1186,7 +1186,7 @@ static int f2fs_write_compressed_pages(struct compress_ctx *cc,
- 		 */
- 		down_read(&sbi->node_write);
- 	} else if (!f2fs_trylock_op(sbi)) {
--		return -EAGAIN;
-+		goto out_free;
- 	}
- 
- 	set_new_dnode(&dn, cc->inode, NULL, NULL, 0);
-@@ -1325,8 +1325,6 @@ static int f2fs_write_compressed_pages(struct compress_ctx *cc,
- 			continue;
- 		f2fs_put_page(cc->cpages[i], 1);
- 	}
--	page_array_free(cc->inode, cc->cpages, cc->nr_cpages);
--	cc->cpages = NULL;
- out_put_cic:
- 	kmem_cache_free(cic_entry_slab, cic);
- out_put_dnode:
-@@ -1336,6 +1334,9 @@ static int f2fs_write_compressed_pages(struct compress_ctx *cc,
- 		up_read(&sbi->node_write);
- 	else
- 		f2fs_unlock_op(sbi);
-+out_free:
-+	page_array_free(cc->inode, cc->cpages, cc->nr_cpages);
-+	cc->cpages = NULL;
- 	return -EAGAIN;
- }
- 
--- 
-2.28.0.709.gb0816b6eb0-goog
+typeof(sdev->usid) is u8.
 
+What is the point of this cast?
+
+Does GCC warn that u32 is being truncated to u8?
+
+Regards.
