@@ -2,40 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C81A27C76D
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:54:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDC7027C65A
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:44:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731454AbgI2Lxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:53:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48148 "EHLO mail.kernel.org"
+        id S1730864AbgI2LoV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:44:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42936 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728788AbgI2Lq6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:46:58 -0400
+        id S1730609AbgI2LoK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:44:10 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2EA292083B;
-        Tue, 29 Sep 2020 11:46:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 95A432074A;
+        Tue, 29 Sep 2020 11:44:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601380002;
-        bh=ilhWxfOXDu8ezwPzhsBzKr6n7V85uZToBWIv0QvK4u8=;
+        s=default; t=1601379849;
+        bh=PpWILbvaSbRSDmv/WzVvB/4xEWxhsruuCMMpTEwET7A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tHRB9aapFDcMj0L+oYAI/drGGV090+QLA7+u1/P+gp6Hv4yRCH4cDQsk2XG/sBe3M
-         2R9UZHA4cHDCEomTEyIPQJiQfC6Asm/DTdB1FkLToVBpMf2zHgv1nlQu/ilF9Vh4mr
-         v/KBlJFPHRgkYvKczNUocJPQhZ9rMctYyy3u2gIY=
+        b=vuGikQmfKni/722DDzZsI04YBb6fBoT/0SC7k0Wsrih1dfp6860gE2SrPWnuNcdv7
+         FHbQKJTJn8gGPBm0wTnW4ebJGuVG5Msjd2xAHHZ/qLekgS9rjR09uNTqPNdJ9xaq1O
+         bzoRtYZiBAESEOLRtBwwQNjajHxGZd7AAhserQ0k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Jin Yao <yao.jin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>, Jin Yao <yao.jin@intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 05/99] ASoC: Intel: bytcr_rt5640: Add quirk for MPMAN Converter9 2-in-1
+Subject: [PATCH 5.4 317/388] perf parse-events: Use strcmp() to compare the PMU name
 Date:   Tue, 29 Sep 2020 13:00:48 +0200
-Message-Id: <20200929105929.979203463@linuxfoundation.org>
+Message-Id: <20200929110025.813521238@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929105929.719230296@linuxfoundation.org>
-References: <20200929105929.719230296@linuxfoundation.org>
+In-Reply-To: <20200929110010.467764689@linuxfoundation.org>
+References: <20200929110010.467764689@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,48 +48,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Jin Yao <yao.jin@linux.intel.com>
 
-[ Upstream commit 6a0137101f47301fff2da6ba4b9048383d569909 ]
+[ Upstream commit 8510895bafdbf7c4dd24c22946d925691135c2b2 ]
 
-The MPMAN Converter9 2-in-1 almost fully works with out default settings.
-The only problem is that it has only 1 speaker so any sounds only playing
-on the right channel get lost.
+A big uncore event group is split into multiple small groups which only
+include the uncore events from the same PMU. This has been supported in
+the commit 3cdc5c2cb924a ("perf parse-events: Handle uncore event
+aliases in small groups properly").
 
-Add a quirk for this model using the default settings + MONO_SPEAKER.
+If the event's PMU name starts to repeat, it must be a new event.
+That can be used to distinguish the leader from other members.
+But now it only compares the pointer of pmu_name
+(leader->pmu_name == evsel->pmu_name).
 
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20200901080623.4987-1-hdegoede@redhat.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+If we use "perf stat -M LLC_MISSES.PCIE_WRITE -a" on cascadelakex,
+the event list is:
+
+  evsel->name					evsel->pmu_name
+  ---------------------------------------------------------------
+  unc_iio_data_req_of_cpu.mem_write.part0		uncore_iio_4 (as leader)
+  unc_iio_data_req_of_cpu.mem_write.part0		uncore_iio_2
+  unc_iio_data_req_of_cpu.mem_write.part0		uncore_iio_0
+  unc_iio_data_req_of_cpu.mem_write.part0		uncore_iio_5
+  unc_iio_data_req_of_cpu.mem_write.part0		uncore_iio_3
+  unc_iio_data_req_of_cpu.mem_write.part0		uncore_iio_1
+  unc_iio_data_req_of_cpu.mem_write.part1		uncore_iio_4
+  ......
+
+For the event "unc_iio_data_req_of_cpu.mem_write.part1" with
+"uncore_iio_4", it should be the event from PMU "uncore_iio_4".
+It's not a new leader for this PMU.
+
+But if we use "(leader->pmu_name == evsel->pmu_name)", the check
+would be failed and the event is stored to leaders[] as a new
+PMU leader.
+
+So this patch uses strcmp to compare the PMU name between events.
+
+Fixes: d4953f7ef1a2 ("perf parse-events: Fix 3 use after frees found with clang ASAN")
+Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
+Acked-by: Jiri Olsa <jolsa@redhat.com>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Andi Kleen <ak@linux.intel.com>
+Cc: Jin Yao <yao.jin@intel.com>
+Cc: Kan Liang <kan.liang@linux.intel.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Link: http://lore.kernel.org/lkml/20200430003618.17002-1-yao.jin@linux.intel.com
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/intel/boards/bytcr_rt5640.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ tools/perf/util/parse-events.c |    5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index 1fdb70b9e4788..5f885062145fe 100644
---- a/sound/soc/intel/boards/bytcr_rt5640.c
-+++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -591,6 +591,16 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
- 					BYT_RT5640_SSP0_AIF1 |
- 					BYT_RT5640_MCLK_EN),
- 	},
-+	{	/* MPMAN Converter 9, similar hw as the I.T.Works TW891 2-in-1 */
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "MPMAN"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "Converter9"),
-+		},
-+		.driver_data = (void *)(BYTCR_INPUT_DEFAULTS |
-+					BYT_RT5640_MONO_SPEAKER |
-+					BYT_RT5640_SSP0_AIF1 |
-+					BYT_RT5640_MCLK_EN),
-+	},
- 	{
- 		/* MPMAN MPWIN895CL */
- 		.matches = {
--- 
-2.25.1
-
+--- a/tools/perf/util/parse-events.c
++++ b/tools/perf/util/parse-events.c
+@@ -1505,12 +1505,11 @@ parse_events__set_leader_for_uncore_alia
+ 		 * event. That can be used to distinguish the leader from
+ 		 * other members, even they have the same event name.
+ 		 */
+-		if ((leader != evsel) && (leader->pmu_name == evsel->pmu_name)) {
++		if ((leader != evsel) &&
++		    !strcmp(leader->pmu_name, evsel->pmu_name)) {
+ 			is_leader = false;
+ 			continue;
+ 		}
+-		/* The name is always alias name */
+-		WARN_ON(strcmp(leader->name, evsel->name));
+ 
+ 		/* Store the leader event for each PMU */
+ 		leaders[nr_pmu++] = (uintptr_t) evsel;
 
 
