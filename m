@@ -2,109 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1761A27BD48
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 08:47:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C55C27BD4D
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 08:47:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727315AbgI2GrE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 02:47:04 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:18318 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725826AbgI2GrE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 02:47:04 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4C0qgL07GPz9v2YG;
-        Tue, 29 Sep 2020 08:46:54 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id YsPWlUzYnt5O; Tue, 29 Sep 2020 08:46:53 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4C0qgK6FBJz9v2FG;
-        Tue, 29 Sep 2020 08:46:53 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 00BBF8B79F;
-        Tue, 29 Sep 2020 08:46:54 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id TOrtpa9nxSz3; Tue, 29 Sep 2020 08:46:54 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id ECC3B8B76C;
-        Tue, 29 Sep 2020 08:46:53 +0200 (CEST)
-Subject: Re: [PATCH v2 1/7] powerpc: Remove SYNC on non 6xx
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-References: <27951fa6c9a8f80724d1bc81a6117ac32343a55d.1601359702.git.christophe.leroy@csgroup.eu>
-Message-ID: <a5f3a957-f9e0-4bf6-1d4a-41ccfa173366@csgroup.eu>
-Date:   Tue, 29 Sep 2020 08:46:55 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1727459AbgI2GrZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 02:47:25 -0400
+Received: from mail-oi1-f195.google.com ([209.85.167.195]:38327 "EHLO
+        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727350AbgI2GrZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 02:47:25 -0400
+Received: by mail-oi1-f195.google.com with SMTP id 26so4285253ois.5;
+        Mon, 28 Sep 2020 23:47:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eQxENvsyMWS22qKPMiworJ58ghi2NcksAJutpCi0NkU=;
+        b=UGfgbv1mpey3fH02yNy5nxEq452WVa5C3hvejVbsEJJYY6OUGHvOOfaiokwhj5Lzsq
+         KUYkODTBb7WlCC2Yp3mgx5quZYcLQ1VI/RVJcxjqBuWkWk+NGB6XKbP9BcBb/R5b4UAj
+         4rlmQ64Sr6C6WyI/55nYqK030QIAUFQrtNG2AsNUXgyhJkoHl53v3Z7+tsDtjplGhBtq
+         8MCZjexvh68RB1dELIePV04I7YZDavhi196MhyTB69N+WS7tdmruWv9NWaL2jUNU4EB0
+         2LS3pzkJ6kuD78WsGzpYScQc9auwI813UjUc9LKgawJKtnd0blLMUSr37eGlfYqbVYnk
+         /nlg==
+X-Gm-Message-State: AOAM532zv6zqFrbhauef+vZA2fAzQ5jPBvbgkIJyuYdMRBIW6aUV0rx0
+        mf881Lg4EmNASNoE/ZnzRQ06rmbdqZn2W4ByVZU=
+X-Google-Smtp-Source: ABdhPJwCxCGIdhoc6Arzmd5fdzaebLgPJZk0Xi6OttQFUI4UCwkVKHL9xVA8kyId/LWk1n30Q5fKOSTVwC2ovpDk1dk=
+X-Received: by 2002:aca:52d6:: with SMTP id g205mr1622307oib.54.1601362044107;
+ Mon, 28 Sep 2020 23:47:24 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <27951fa6c9a8f80724d1bc81a6117ac32343a55d.1601359702.git.christophe.leroy@csgroup.eu>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+References: <20200813140041.5082-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20200824004816.GS6002@pendragon.ideasonboard.com> <CA+V-a8uq44hKOxbwBXZ_90q6e4JjCEPwOWp4BDY7BJJaP1Cg6g@mail.gmail.com>
+ <20200927200418.GA3986@pendragon.ideasonboard.com> <CAMuHMdX0_VDVw41ZuGy0M+d6sgNMujSas4x+YqZMWwpF-TvOZg@mail.gmail.com>
+ <OSBPR01MB5048ABBC3F74E1DF49374E7DAA350@OSBPR01MB5048.jpnprd01.prod.outlook.com>
+In-Reply-To: <OSBPR01MB5048ABBC3F74E1DF49374E7DAA350@OSBPR01MB5048.jpnprd01.prod.outlook.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 29 Sep 2020 08:47:13 +0200
+Message-ID: <CAMuHMdWgAD+ugVyPVGjOVx-0zranRqRTEinbPZ9_T24EOg0Vag@mail.gmail.com>
+Subject: Re: [PATCH v2] ARM: dts: r8a7742-iwg21d-q7: Add LCD support
+To:     Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     "Lad, Prabhakar" <prabhakar.csengg@gmail.com>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Prabhakar,
 
+On Mon, Sep 28, 2020 at 9:52 AM Prabhakar Mahadev Lad
+<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> > On Sun, Sep 27, 2020 at 10:04 PM Laurent Pinchart
+> > <laurent.pinchart@ideasonboard.com> wrote:
+> > > On Sun, Sep 27, 2020 at 02:01:50PM +0100, Lad, Prabhakar wrote:
+> > > > On Mon, Aug 24, 2020 at 1:48 AM Laurent Pinchart wrote:
+> > > > > On Thu, Aug 13, 2020 at 03:00:41PM +0100, Lad Prabhakar wrote:
+> > > > > > The iwg21d comes with a 7" capacitive touch screen, therefore
+> > > > > > add support for it.
+> > > > > >
+> > > > > > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> > > > > > Reviewed-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
+> > > > >
+> > > > > Everything seems to match the schematics :-)
+> > > > >
+> > > > > Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> > > > >
+> > > > > > ---
+> > > > > > v1->v2
+> > > > > > * This patch is part of series [1] (rest of the patches have be accepted
+> > > > > >   by Geert [2]).
+> > > > > > * Added regulator for lvds
+> > > > > > * Added reset pin for touchpanel
+> > > > > > * This patch is based on series [3]
+> > > > > >
+> > > > > > [1] https://patchwork.kernel.org/project/linux-renesas-soc/list/
+> > > > > >     ?series=330277
+> > > > > > [2] https://git.kernel.org/pub/scm/linux/kernel/git/geert/
+> > > > > >     renesas-devel.git/log/?h=renesas-arm-dt-for-v5.10
+> > > > > > [3] https://patchwork.kernel.org/project/linux-renesas-soc/list/
+> > > > > >     ?series=330957
+> > > > > > ---
+> > > > > >  arch/arm/boot/dts/r8a7742-iwg21d-q7.dts | 99 +++++++++++++++++++++++++
+> > > > > >  1 file changed, 99 insertions(+)
+> > > >
+> > > > Would you be queueing this patch along with DRM driver patches for v5.10 ?
+> > >
+> > > No, I expect Geert to do so, DT patches go through his tree. I handle
+> > > the drivers and DT bindings.
+> >
+> > Indeed.
+> >
+> > As the dependencies are now in linux-next, I'm queueing this in
+> > renesas-devel for v5.11, after fixing all conflicts due to recent
+> > additions, and sorting &lvds0 before &pfc.
+> >
+> This also needs changing vcc-supply to power-supply for lvds receiver due to recent binding changes, probably Ill do the above and post a v3.
 
-Le 29/09/2020 à 08:09, Christophe Leroy a écrit :
-> SYNC is usefull for Powerpc 601 only. On everything else,
-> SYNC is empty.
-> 
-> Remove it from code that is not made to run on 6xx.
-> 
-> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Oh, I didn't know that.  So please send a v3, so I can replace the commit
+in my renesas-arm-dt-for-v5.11 branch.
+Thanks!
 
-Oops, the last patch of the series is missing. Will resend, sorry for the noise.
+Gr{oetje,eeting}s,
 
-Christophe
+                        Geert
 
-> ---
->   arch/powerpc/kernel/head_40x.S   | 1 -
->   arch/powerpc/kernel/head_booke.h | 1 -
->   arch/powerpc/kernel/misc_64.S    | 1 -
->   3 files changed, 3 deletions(-)
-> 
-> diff --git a/arch/powerpc/kernel/head_40x.S b/arch/powerpc/kernel/head_40x.S
-> index 5b282d9965a5..44c9018aed1b 100644
-> --- a/arch/powerpc/kernel/head_40x.S
-> +++ b/arch/powerpc/kernel/head_40x.S
-> @@ -72,7 +72,6 @@ turn_on_mmu:
->   	lis	r0,start_here@h
->   	ori	r0,r0,start_here@l
->   	mtspr	SPRN_SRR0,r0
-> -	SYNC
->   	rfi				/* enables MMU */
->   	b	.			/* prevent prefetch past rfi */
->   
-> diff --git a/arch/powerpc/kernel/head_booke.h b/arch/powerpc/kernel/head_booke.h
-> index 18f87bf9e32b..71c359d438b5 100644
-> --- a/arch/powerpc/kernel/head_booke.h
-> +++ b/arch/powerpc/kernel/head_booke.h
-> @@ -176,7 +176,6 @@ ALT_FTR_SECTION_END_IFSET(CPU_FTR_EMB_HV)
->   #endif
->   	mtspr	SPRN_SRR1,r10
->   	mtspr	SPRN_SRR0,r11
-> -	SYNC
->   	RFI				/* jump to handler, enable MMU */
->   99:	b	ret_from_kernel_syscall
->   .endm
-> diff --git a/arch/powerpc/kernel/misc_64.S b/arch/powerpc/kernel/misc_64.S
-> index 7bb46ad98207..070465825c21 100644
-> --- a/arch/powerpc/kernel/misc_64.S
-> +++ b/arch/powerpc/kernel/misc_64.S
-> @@ -365,7 +365,6 @@ _GLOBAL(kexec_smp_wait)
->   
->   	li	r4,KEXEC_STATE_REAL_MODE
->   	stb	r4,PACAKEXECSTATE(r13)
-> -	SYNC
->   
->   	b	kexec_wait
->   
-> 
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
