@@ -2,88 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2C0F27DC31
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 00:43:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A5E827DC47
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 00:46:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728680AbgI2WnI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 18:43:08 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:37140 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728124AbgI2WnI (ORCPT
+        id S1728627AbgI2Wqw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 18:46:52 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:50422 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728115AbgI2Wqw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 18:43:08 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id 5E6698030719;
-        Tue, 29 Sep 2020 22:43:05 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at baikalelectronics.ru
-Received: from mail.baikalelectronics.ru ([127.0.0.1])
-        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id AsX_kHAlHXIb; Wed, 30 Sep 2020 01:43:04 +0300 (MSK)
-Date:   Wed, 30 Sep 2020 01:43:03 +0300
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Mark Brown <broonie@kernel.org>
-CC:     Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
-        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        "wuxu . wu" <wuxu.wu@huawei.com>, Feng Tang <feng.tang@intel.com>,
-        Rob Herring <robh+dt@kernel.org>, <linux-spi@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 00/30] spi: dw: Add full Baikal-T1 SPI Controllers support
-Message-ID: <20200929224303.65awobe5dzwc2p4f@mobilestation>
-References: <20200920112914.26501-1-Sergey.Semin@baikalelectronics.ru>
- <20200929144351.GH4799@sirena.org.uk>
+        Tue, 29 Sep 2020 18:46:52 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08TMTWb6135669;
+        Tue, 29 Sep 2020 22:46:13 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=4L4hjQcgguBex9d3H5e7ELEzL5by2MBMQY742lzhLWU=;
+ b=zc+ED4evDYOuH9/g9HbbLzAy52RmgdTFRjAEctGbHVOWP3KnwRs4t2WJ0Mk/zCAIZNDx
+ x/SILLXci+TPEZd1PatwpY/ExXM6dYnvoxhn85fM4+0CqK6NOFtslkAWmcqaTHHy6pw9
+ DsrSoS8pyLmCV9NHtZZwDcIGn6o+9OVusjw1ElpjpWAmZickvLYFso5jmBwDDk4mGhDW
+ b9hTV+UMjiQlmNTh98hj9MTtNbQ1ADgw93FEK/OmyTBCXj7QdOz1mKqlAcAQvYkSrC3u
+ Fi+rtyLWONTJjhHktk8jo4wfoEWv02YFWn3FdAxFtyh57otB29/Lqu1/iybJgMOr/S5g bQ== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 33swkkwk9e-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 29 Sep 2020 22:46:13 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08TMTjUd017138;
+        Tue, 29 Sep 2020 22:46:13 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3030.oracle.com with ESMTP id 33tfjxmect-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 29 Sep 2020 22:46:13 +0000
+Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08TMk76u025850;
+        Tue, 29 Sep 2020 22:46:08 GMT
+Received: from [192.168.2.112] (/50.38.35.18)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 29 Sep 2020 15:46:07 -0700
+Subject: Re: [RFC PATCH 01/24] mm/memory_hotplug: Move bootmem info
+ registration API to bootmem_info.c
+To:     Muchun Song <songmuchun@bytedance.com>, corbet@lwn.net,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, dave.hansen@linux.intel.com, luto@kernel.org,
+        peterz@infradead.org, viro@zeniv.linux.org.uk,
+        akpm@linux-foundation.org, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        rdunlap@infradead.org, oneukum@suse.com, anshuman.khandual@arm.com,
+        jroedel@suse.de, almasrymina@google.com, rientjes@google.com
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
+References: <20200915125947.26204-1-songmuchun@bytedance.com>
+ <20200915125947.26204-2-songmuchun@bytedance.com>
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+Message-ID: <c8b8de11-1e50-1e84-d2fb-d81e29fea593@oracle.com>
+Date:   Tue, 29 Sep 2020 15:46:05 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20200929144351.GH4799@sirena.org.uk>
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+In-Reply-To: <20200915125947.26204-2-songmuchun@bytedance.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9759 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 spamscore=0 mlxscore=0
+ phishscore=0 adultscore=0 bulkscore=0 mlxlogscore=999 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009290192
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9759 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0 phishscore=0
+ suspectscore=0 mlxlogscore=999 clxscore=1015 priorityscore=1501
+ impostorscore=0 lowpriorityscore=0 bulkscore=0 spamscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009290192
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mark
-
-On Tue, Sep 29, 2020 at 03:43:51PM +0100, Mark Brown wrote:
-> On Sun, Sep 20, 2020 at 02:28:44PM +0300, Serge Semin wrote:
+On 9/15/20 5:59 AM, Muchun Song wrote:
+> Move bootmem info registration common API to individual bootmem_info.c
+> for later patch use.
 > 
-> > First two patches are just cleanups to simplify the DW APB SSI device
-> > initialization a bit. We suggest to discard the IRQ threshold macro as
-> > unused and use a ternary operator to initialize the set_cs callback
-> > instead of assigning-and-updating it.
-> 
-> > Then we've discovered that the n_bytes field of the driver private data is
-> > used by the DW APB SSI IRQ handler, which requires it to be initialized
-> 
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
 
-> This is a *huge* patch series which is a bit unweildy to review
-> (especially given the other 10+ patch series you sent at the same time),
+This is just code movement.
 
-Yeah, sorry about the bulky series. If most of the changes have been more
-complicated than that, less inter-dependent and less directed to having the code
-prepared for the main alterations I would have definitely split them up in
-different series. But the biggest part of the patchset is just a preparation
-before adding the mem-ops, poll-based transfers and Baikal-T1 SPI support. So
-having them submitted without the main part of the patchset would be just weird.
+Acked-by: Mike Kravetz <mike.kravetz@oracle.com>
+-- 
+Mike Kravetz
 
-The other 10+ patches were sent months ago. I've just resent them with minor
-alterations to get more attention.) Anyway since they concern an absolutely
-different functionality (DW APB SSI DMA driver) of course I've delivered them in
-the framework of the different patchset.
-
-> once you start getting over 10 patches it's time to pay attention to
-> series length and the fact that you're outlining a bunch of tangentially
-> related areas which could have been split out easily enough.  It is much
-> better to send smaller sets of patches at once, or if you're sending a
-> lot then to split them into smaller serieses.  This will tend to make
-> the review more approachable which will in turn tend to make things go
-> faster, people are much more likely to put off going through a huge
-> series.
-
-I see you have already merged in the first nine patches. So would you like me
-to split the rest of them up into two series or it would be ok to resend (if
-required) them as one series seeing it's not that bulky anymore?
-
--Sergey
+> ---
+>  arch/x86/mm/init_64.c          |  1 +
+>  include/linux/bootmem_info.h   | 27 ++++++++++
+>  include/linux/memory_hotplug.h | 23 --------
+>  mm/Makefile                    |  1 +
+>  mm/bootmem_info.c              | 99 ++++++++++++++++++++++++++++++++++
+>  mm/memory_hotplug.c            | 91 +------------------------------
+>  6 files changed, 129 insertions(+), 113 deletions(-)
+>  create mode 100644 include/linux/bootmem_info.h
+>  create mode 100644 mm/bootmem_info.c
