@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB97C27CD00
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:41:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA85C27CCEE
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:40:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733289AbgI2Mkx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 08:40:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57052 "EHLO mail.kernel.org"
+        id S1729462AbgI2LOq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:14:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57360 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729401AbgI2LOP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:14:15 -0400
+        id S1729434AbgI2LO0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:14:26 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6C3DB221EC;
-        Tue, 29 Sep 2020 11:14:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8E85C206A5;
+        Tue, 29 Sep 2020 11:14:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601378054;
-        bh=Tp7YaKR66qnz472Pvf8IC6ILZsObjrxW4B9MHocF3Bg=;
+        s=default; t=1601378066;
+        bh=IYgW8OLb/zFdIVzPPnLWfOpXT3c9vVAyrn9uipSSn7U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1r6RYZJZ5XXdqXjNcN1oZIWzs8ee4JIiml+50CKS82ndwXKscnl5CFTd+1ixShxL1
-         GJNMjNdGKQDTa6Vri3OSBapbjdPUtCoFtrDdt3vU2tBj0Fk8tkUVm/Jotrv828+Ebr
-         BFbdTgPV3zwxQaPQdQNHVaHVq8l0AFnx70ZPA7dY=
+        b=PAasGaiqo2kbrt3DJeSAex2sh+4JPsH9diVXpTCMOL7oiSdM/xofSEKJtYmqeisUA
+         CiKzT7kWzVSw2vaPTsKQMMB4oVfNohPwWlFKtHyDKaiCuT0ZvOgy2ErUwkrby1G0dS
+         HhSru7TIAJHeHGYzu6KQRHDCXnx/z8zRdteBtM7Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Marco Elver <elver@google.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
+        stable@vger.kernel.org, Oliver OHalloran <oohall@gmail.com>,
+        Sam Bobroff <sbobroff@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 045/166] seqlock: Require WRITE_ONCE surrounding raw_seqcount_barrier
-Date:   Tue, 29 Sep 2020 12:59:17 +0200
-Message-Id: <20200929105937.456046687@linuxfoundation.org>
+Subject: [PATCH 4.14 049/166] powerpc/eeh: Only dump stack once if an MMIO loop is detected
+Date:   Tue, 29 Sep 2020 12:59:21 +0200
+Message-Id: <20200929105937.651479414@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200929105935.184737111@linuxfoundation.org>
 References: <20200929105935.184737111@linuxfoundation.org>
@@ -43,65 +44,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marco Elver <elver@google.com>
+From: Oliver O'Halloran <oohall@gmail.com>
 
-[ Upstream commit bf07132f96d426bcbf2098227fb680915cf44498 ]
+[ Upstream commit 4e0942c0302b5ad76b228b1a7b8c09f658a1d58a ]
 
-This patch proposes to require marked atomic accesses surrounding
-raw_write_seqcount_barrier. We reason that otherwise there is no way to
-guarantee propagation nor atomicity of writes before/after the barrier
-[1]. For example, consider the compiler tears stores either before or
-after the barrier; in this case, readers may observe a partial value,
-and because readers are unaware that writes are going on (writes are not
-in a seq-writer critical section), will complete the seq-reader critical
-section while having observed some partial state.
-[1] https://lwn.net/Articles/793253/
+Many drivers don't check for errors when they get a 0xFFs response from an
+MMIO load. As a result after an EEH event occurs a driver can get stuck in
+a polling loop unless it some kind of internal timeout logic.
 
-This came up when designing and implementing KCSAN, because KCSAN would
-flag these accesses as data-races. After careful analysis, our reasoning
-as above led us to conclude that the best thing to do is to propose an
-amendment to the raw_seqcount_barrier usage.
+Currently EEH tries to detect and report stuck drivers by dumping a stack
+trace after eeh_dev_check_failure() is called EEH_MAX_FAILS times on an
+already frozen PE. The value of EEH_MAX_FAILS was chosen so that a dump
+would occur every few seconds if the driver was spinning in a loop. This
+results in a lot of spurious stack traces in the kernel log.
 
-Signed-off-by: Marco Elver <elver@google.com>
-Acked-by: Paul E. McKenney <paulmck@kernel.org>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Fix this by limiting it to printing one stack trace for each PE freeze. If
+the driver is truely stuck the kernel's hung task detector is better suited
+to reporting the probelm anyway.
+
+Signed-off-by: Oliver O'Halloran <oohall@gmail.com>
+Reviewed-by: Sam Bobroff <sbobroff@linux.ibm.com>
+Tested-by: Sam Bobroff <sbobroff@linux.ibm.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20191016012536.22588-1-oohall@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/seqlock.h | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ arch/powerpc/kernel/eeh.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/linux/seqlock.h b/include/linux/seqlock.h
-index f189a8a3bbb88..7b3b5d05ab0de 100644
---- a/include/linux/seqlock.h
-+++ b/include/linux/seqlock.h
-@@ -243,6 +243,13 @@ static inline void raw_write_seqcount_end(seqcount_t *s)
-  * usual consistency guarantee. It is one wmb cheaper, because we can
-  * collapse the two back-to-back wmb()s.
-  *
-+ * Note that, writes surrounding the barrier should be declared atomic (e.g.
-+ * via WRITE_ONCE): a) to ensure the writes become visible to other threads
-+ * atomically, avoiding compiler optimizations; b) to document which writes are
-+ * meant to propagate to the reader critical section. This is necessary because
-+ * neither writes before and after the barrier are enclosed in a seq-writer
-+ * critical section that would ensure readers are aware of ongoing writes.
-+ *
-  *      seqcount_t seq;
-  *      bool X = true, Y = false;
-  *
-@@ -262,11 +269,11 @@ static inline void raw_write_seqcount_end(seqcount_t *s)
-  *
-  *      void write(void)
-  *      {
-- *              Y = true;
-+ *              WRITE_ONCE(Y, true);
-  *
-  *              raw_write_seqcount_barrier(seq);
-  *
-- *              X = false;
-+ *              WRITE_ONCE(X, false);
-  *      }
-  */
- static inline void raw_write_seqcount_barrier(seqcount_t *s)
+diff --git a/arch/powerpc/kernel/eeh.c b/arch/powerpc/kernel/eeh.c
+index d2ba7936d0d33..7b46576962bfd 100644
+--- a/arch/powerpc/kernel/eeh.c
++++ b/arch/powerpc/kernel/eeh.c
+@@ -506,7 +506,7 @@ int eeh_dev_check_failure(struct eeh_dev *edev)
+ 	rc = 1;
+ 	if (pe->state & EEH_PE_ISOLATED) {
+ 		pe->check_count++;
+-		if (pe->check_count % EEH_MAX_FAILS == 0) {
++		if (pe->check_count == EEH_MAX_FAILS) {
+ 			dn = pci_device_to_OF_node(dev);
+ 			if (dn)
+ 				location = of_get_property(dn, "ibm,loc-code",
 -- 
 2.25.1
 
