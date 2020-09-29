@@ -2,150 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0B9127DA46
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 23:40:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66F4527DA40
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 23:38:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727958AbgI2Vkc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 17:40:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58154 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727922AbgI2Vkc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 17:40:32 -0400
-Received: from pali.im (pali.im [31.31.79.79])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DCD302075E;
-        Tue, 29 Sep 2020 21:32:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601415177;
-        bh=ywbQMNJ35DCgvZmqfomObXqYwPzB/CNC7+4cQBYCrrU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=0h081J+ix9NsmLmWVNHNXM9jL2WT4dYj2nq6wxyGbIX7lpgXIGLMlxEtiLs+2odPl
-         zTwotUR89a9sync30XA32edIWqtSLsxm53E4mz07UKDYRWLjjqCasqPNzP7DaLUHoo
-         t0QCxq1IVwHl6pBQW96n71nd33y73wSKbwjiXkAk=
-Received: by pali.im (Postfix)
-        id 58E00AA6; Tue, 29 Sep 2020 23:32:54 +0200 (CEST)
-Date:   Tue, 29 Sep 2020 23:32:54 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Pavel Machek <pavel@ucw.cz>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        Sebastian Reichel <sre@kernel.org>,
-        David Heidelberg <david@ixit.cz>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Removal of HCI commands, userspace bluetooth regression?
-Message-ID: <20200929213254.difivzrhapk766xp@pali>
-References: <20191228171212.56anj4d4kvjeqhms@pali>
- <45BB2908-4E16-4C74-9DB4-8BAD93B42A21@holtmann.org>
- <20200104102436.bhqagqrfwupj6hkm@pali>
- <20200209132137.7pi4pgnassosh3ax@pali>
- <20200414225618.zgh5h4jexahfukdl@pali>
- <20200808132747.4byefjg5ysddgkel@pali>
+        id S1728139AbgI2Vio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 17:38:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46944 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727740AbgI2Vin (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 17:38:43 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82606C0613D1;
+        Tue, 29 Sep 2020 14:33:23 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id u8so7325728lff.1;
+        Tue, 29 Sep 2020 14:33:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3dwCE+v0GZtE62h3ykTPVjBYnltbx4TcDziVD3ADHYA=;
+        b=UlhR/VAY11pK8/kOEEb2V2Sk7YVh2SsTM1fp5mhftb4GfVtcEep2R87RJMsy+h9OXL
+         krMeEYwjr4v0WBWrZqXAdmcg3CZCIG9y4UIwZNFmg532h1UGruvcpqixRcWbfObLKwUt
+         vzH6krIHv4D76CkP2FAYGIfF/z68FTakRAPjxd/yQxWIxysK+IyXFdY6+uQj0AnucBJj
+         xdiFInw/+bHarzuzrVaDGhHBGTV9QXfMUnQzjNu52Kmrz2sj4rGdnkJdqs8X3N7AFm4X
+         niM5GsUhSbL4JMLKy+YzgIxxfUeiDWyWPLQawpeJn0aloNvrFaZ276DtdHqjLZk2xpEn
+         oGcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3dwCE+v0GZtE62h3ykTPVjBYnltbx4TcDziVD3ADHYA=;
+        b=Z/VHcr1L48r2C0DPVyal3oAWNcRiUtQS5m1t2d8cXVbIuFDgnizzL09/f/X/Kfa+MV
+         dIJIARtg2kuuwIhWZVr6mEEVWAANsZ/hYyKOBN4q5kUkufsHXTgGy0CBVYFRhoKcOBD+
+         GUUfIiNAzyaChLxEWj11qIEQAFUvxFCFhdr8azjAl3crxM/7w74UQ7VFmd+m5qfo3a+7
+         jDh5gGJEX3qHsg5sKLiuoJNU31eccc/1di+7GWq9mkSqd4JlQ5cSVbRyHzGZZoybnBa3
+         Ga3jjb12ohOJ2PfvtrCLHdNN9f8cZGEPh2vLIkIlRehhEMHxYMFFsW7l/2Vcl8P/oXkt
+         BUsg==
+X-Gm-Message-State: AOAM532fXu4234U4q/oD95qU+dY90xv6WMnvUz6SXsESXw0xiYO8Eqhv
+        fVQHtyy+JD2cZ21xatWlgWK5/rkL9DuldEvRjuk=
+X-Google-Smtp-Source: ABdhPJwqS5IANoo/oW2mikNdyZRaSnTl1fqaWN9i8aZ6P3HTe46KWMXy8Z5Zke8FjOd/AxUwUa/m8bEkIpN9BvJhHr0=
+X-Received: by 2002:a19:e20b:: with SMTP id z11mr1939035lfg.440.1601415201947;
+ Tue, 29 Sep 2020 14:33:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200808132747.4byefjg5ysddgkel@pali>
-User-Agent: NeoMutt/20180716
+References: <20200929194318.548707-1-ndesaulniers@google.com>
+In-Reply-To: <20200929194318.548707-1-ndesaulniers@google.com>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Tue, 29 Sep 2020 23:33:10 +0200
+Message-ID: <CANiq72kHEhTm3-7WbZwmoKQV5Qn9fD_sk+yrVrdj_K0AqT6dNQ@mail.gmail.com>
+Subject: Re: [PATCH] compiler.h: avoid escaped section names
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        linux-sparse@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CCing other lists and maintainers, hopefully, somebody would have a time to look at it...
+Hi Nick,
 
-On Saturday 08 August 2020 15:27:47 Pali Rohár wrote:
-> On Wednesday 15 April 2020 00:56:18 Pali Rohár wrote:
-> > On Sunday 09 February 2020 14:21:37 Pali Rohár wrote:
-> > > On Saturday 04 January 2020 11:24:36 Pali Rohár wrote:
-> > > > On Saturday 04 January 2020 10:44:52 Marcel Holtmann wrote:
-> > > > > Hi Pali,
-> > > > > 
-> > > > > > I wrote a simple script "sco_features.pl" which show all supported
-> > > > > > codecs by local HCI bluetooth adapter. Script is available at:
-> > > > > > 
-> > > > > > https://github.com/pali/hsphfpd-prototype/blob/prototype/sco_features.pl
-> > > > > > 
-> > > > > > And I found out that OCF_READ_LOCAL_CODECS HCI command cannot be send by
-> > > > > > non-root user. Kernel returns "Operation not permitted" error.
-> > > > > > 
-> > > > > > What is reason that kernel blocks OCF_READ_LOCAL_CODECS command for
-> > > > > > non-root users? Without it (audio) application does not know which
-> > > > > > codecs local bluetooth adapter supports.
-> > > > > > 
-> > > > > > E.g. OCF_READ_LOCAL_EXT_FEATURES or OCF_READ_VOICE_SETTING commands can
-> > > > > > be send also by non-root user and kernel does not block them.
-> > > > > 
-> > > > > actually the direct access to HCI commands is being removed. So we have no plans to add new commands into the list since that it what the kernel is suppose to handle. If we wanted to expose this, then it has to be via mgmt.
-> > > > 
-> > > > Hi Marcel! Thank you for information. I have not know that this API is
-> > > > "deprecated" and is going to be removed. But userspace audio
-> > > > applications need to know what bluetooth adapter supports, so can you
-> > > > export result of these commands to userspace? My script linked above
-> > > > calls: OCF_READ_VOICE_SETTING, OCF_READ_LOCAL_COMMANDS,
-> > > > OCF_READ_LOCAL_EXT_FEATURES, OCF_READ_LOCAL_CODECS
-> > > 
-> > > Hello! Just a gently reminder for this question. How to retrieve
-> > > information about supported codecs from userspace by non-root user?
-> > > Because running all bluetooth audio applications by root is not really a
-> > > solution. Plus if above API for root user is going to be removed, what
-> > > is a replacement?
-> > 
-> > Hello!
-> > 
-> > I have not got any answer to my email from Marcel for months, so I'm
-> > adding other developers to loop. Could somebody tell me that is the
-> > replacement API if above one is going to be removed?
-> > 
-> > I was not able to find any documentation where could be described this
-> > API nor information about deprecation / removal.
-> > 
-> > And are you aware of the fact that removing of API could potentially
-> > break existing applications?
-> > 
-> > I really need to know which API should I use, because when I use API
-> > which is going to be removed, then my application stops working. And I
-> > really want to avoid it.
-> > 
-> > Also I have not got any response yet, how can I read list of supported
-> > codecs by bluetooth adapter by ordinary non-root user? Audio application
-> > needs to know list of supported codecs and it is really insane to run it
-> > as root.
-> 
-> Hello! This is just another reminder that I have not got any reply to
-> this email.
-> 
-> Does silence mean that audio applications are expected to work only
-> under root account and ordinary users are not able to use audio and list
-> supported codecs?
+On Tue, Sep 29, 2020 at 9:43 PM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
+>
+> The stringification operator, `#`, in the preprocessor escapes strings.
+> For example, `# "foo"` becomes `"\"foo\""`.  GCC and Clang differ in how
+> they treat section names that contain \".
+>
+> The portable solution is to not use a string literal with the
+> preprocessor stringification operator.
+>
+> In this case, since __section unconditionally uses the stringification
+> operator, we actually want the more verbose
+> __attribute__((__section__())).
 
-Hello! I have not got any reply for this issue for 10 months and if you
-are going to remove (or after these 10 months you already did it?)
-existing HCI API from kernel it would break existing and working
-userspace application. How do you want to handle such regressions?
+Let's add a comment about this in the code -- otherwise we/someone
+will convert it back without noticing. Also we could add another on
+`__section` itself warning about this.
 
-I think that more people in past said that there should not be
-regressions in userspace applications caused by kernel changes (e.g.
-removing of API).
+> Link: https://bugs.llvm.org/show_bug.cgi?id=42950
 
-Also, could you please say something about root requirement for listing
-supported codecs? At least clarifying something like
+Is there a link / have we opened a bug on GCC's side too?
 
-  "kernel allows only processes with uid=0 to access list of supported
-  bluetooth audio codecs, effectively means requirement of bluetooth
-  audio applications to run as root; and kernel developers do not have
-  a time to discuss any future changes on this topic"
+Thanks!
 
-would be nice to know what is current state or future, so developers of
-userspace bluetooth applications would know what should they do or
-expect.
-
-
-I really dislike this situation when after 10 months I just get
-information that API for userspace is being removed without any
-replacement and without any discussion how to handle issues and
-transition period.
+Cheers,
+Miguel
