@@ -2,302 +2,284 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64A7427D161
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 16:39:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A65227D196
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 16:41:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730950AbgI2OjD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 10:39:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38510 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729038AbgI2OjC (ORCPT
+        id S1728818AbgI2OlE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 10:41:04 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:23546 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729460AbgI2OlC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 10:39:02 -0400
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 941A3C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 07:39:02 -0700 (PDT)
-Received: by mail-oi1-x244.google.com with SMTP id a3so5704188oib.4
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 07:39:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=v5Tw3TRzMSnJ+zmzf+k5HrdAxKFGZjBxyksiiDH23tY=;
-        b=FO9EmsSUUymvIZirq9hzjdf/gb/yX0Q8fEpPsPcWqh1Ug8eeQ+AC6FMjga1EeczmSD
-         MJZP/89dJJJwW0iTCKtKTSyTDMXgqAft+Sxmi2qGrmp8h4nmm4KqpbhXGq7yvGRwHkQy
-         /x79YCxHsN1jAb9sIQSav+EvrKBwruGshMbx8=
+        Tue, 29 Sep 2020 10:41:02 -0400
+Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601390460;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=l0ySg0110w8OW3invBGriU5wyED1HKE44VPvaG4UaUQ=;
+        b=AuXITHLMddNggqzrWY49AcL+Ts2OjZigYZwG2vVUvy3IqvwxnZ8CYvnhZePE2BHv5d+d0Q
+        MDdxnn3PWPv63TOISMStceqyU4QqARDiZw7PDVf40SvgIe/GREN2jUTmwhDOQU0ktKE5+f
+        nHuE/EgEXz/byTCU6nEgaiNVGMZXBEo=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-242-kfd23hhEOoqarNEWWaVY2A-1; Tue, 29 Sep 2020 10:40:58 -0400
+X-MC-Unique: kfd23hhEOoqarNEWWaVY2A-1
+Received: by mail-qk1-f198.google.com with SMTP id m186so2796098qkf.12
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 07:40:58 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=v5Tw3TRzMSnJ+zmzf+k5HrdAxKFGZjBxyksiiDH23tY=;
-        b=W1gl6xXkKcRnFdHQU7KIh7bVkbLKEtQ0FeEq+Vv2cc3DzwQnqZSs18gcX/tVsxWhwP
-         FJlYPCspWK4bPYRMniLPz19tUV78QJr067zVpIVayM4pjTIeLRnRksp2prJrl5rHaPu0
-         s7QJ8qCEMXQIl6+QtzLa+cLU05R5dRAye7UG2KpeTBSnkIMhVjkHs4euuWoUbx3IwaYu
-         PYr15gtdmzaeknhKswtbBkOq9y33ztuogj/SzUiLntbGhoiWnwmhb5l+tt3KvCx5xBPp
-         Bg/1uBMz9JpcG45gZL05suZ2jMhDd3f9ov0/Oe8R6QLZ5B5Sq1VhKExkI+NnZ+wxLDzb
-         upew==
-X-Gm-Message-State: AOAM5328VXmyt6DgQxYPP2cvqOdJtI7fnMzUJNfo90V2BUtKzUHXBEsn
-        Idkqi8UPfQ0wzkcaHwF4eOj5QmX0Lg9QTaKFFlBUL5H/ErEXfLYA
-X-Google-Smtp-Source: ABdhPJxJZeO2VJPang7HeIHdj+cw78jw996VcPuS4lCoj3gndTIv5EkWZxhm8jT0V+48eSne4jxtZtzgnB99C181NQ0=
-X-Received: by 2002:aca:6083:: with SMTP id u125mr2832826oib.14.1601390341265;
- Tue, 29 Sep 2020 07:39:01 -0700 (PDT)
+        bh=l0ySg0110w8OW3invBGriU5wyED1HKE44VPvaG4UaUQ=;
+        b=HfVMa7zpjLPMnjnpzhBWE8dCFbM/qBP1FtcZI1opj5xDjbGSLhMNZ44e7wvut6ZEC+
+         wsLnidmWtvY4el8e5D4WjFK3dN7/a5o2zV5pF3cPEVlUYnh51Bw0rFZfSv4q3rYaFm9b
+         jajbVxaByXRMOOz7x1poyesbHpwdCJnItfjTciy7BroVpL3u2zrfTkh+sWhqoUHaOIlQ
+         GIEeJq37GTkY8dLaym8PB7hi3TiBuOpyvhBMQpQKzLmzPcuPYWIIojQBDIVu2/IdH8h8
+         CYf3urUQa5OP89F5w7tqtzGQOLDqGpPHnWGq95WyUgrpHAVkfRE9fkjZAkyt6uxQ5uv+
+         fvQQ==
+X-Gm-Message-State: AOAM530k0NM685rXHtBLvZZRmr7Ze6b6NrKU2zfveoyuNx+WU5B6k/De
+        D5Gcsw516UtncdJeo5w6LQGgnNZiuwTAoCnSji8XzTyhotrG4NrsTiI8jqvIKiI6dBCwJeXo4rB
+        Rsfyw6RJr5tsJMxwRoNK3yNtzsF2DSZAWR9M662u8
+X-Received: by 2002:a05:620a:b1a:: with SMTP id t26mr4681263qkg.353.1601390456406;
+        Tue, 29 Sep 2020 07:40:56 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxGXRiKbOouJmxqcaB852zvTvNt3brwJyM0RvvbA+jNO5LTY2XthmJfteBTC1EPfiJm02VqdiHjaCBPFS/38Hw=
+X-Received: by 2002:a05:620a:b1a:: with SMTP id t26mr4681238qkg.353.1601390456048;
+ Tue, 29 Sep 2020 07:40:56 -0700 (PDT)
 MIME-Version: 1.0
-References: <0000000000006b9e8d059952095e@google.com> <cover.1600953813.git.yepeilin.cs@gmail.com>
- <3f754d60-1d35-899c-4418-147d922e29af@kernel.org> <20200925101300.GA890211@PWN>
- <20200925132551.GF438822@phenom.ffwll.local> <20200929123420.GA1143575@PWN>
-In-Reply-To: <20200929123420.GA1143575@PWN>
-From:   Daniel Vetter <daniel@ffwll.ch>
-Date:   Tue, 29 Sep 2020 16:38:49 +0200
-Message-ID: <CAKMK7uFY2zv0adjKJ_ORVFT7Zzwn075MaU0rEU7_FuqENLR=UA@mail.gmail.com>
-Subject: Re: [PATCH 0/3] Prevent out-of-bounds access for built-in font data buffers
-To:     Peilin Ye <yepeilin.cs@gmail.com>
-Cc:     Jiri Slaby <jirislaby@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20200924032125.18619-1-jasowang@redhat.com> <20200924032125.18619-14-jasowang@redhat.com>
+In-Reply-To: <20200924032125.18619-14-jasowang@redhat.com>
+From:   Eugenio Perez Martin <eperezma@redhat.com>
+Date:   Tue, 29 Sep 2020 16:40:19 +0200
+Message-ID: <CAJaqyWf5tP9DtSc1JP_c4iOkHeVhnEm=kpW4Cv3cMLXfm71h0Q@mail.gmail.com>
+Subject: Re: [RFC PATCH 13/24] vhost-vdpa: introduce ASID based IOTLB
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     Michael Tsirkin <mst@redhat.com>, Cindy Lu <lulu@redhat.com>,
+        kvm list <kvm@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Rob Miller <rob.miller@broadcom.com>,
+        lingshan.zhu@intel.com, Harpreet Singh Anand <hanand@xilinx.com>,
+        mhabets@solarflare.com, eli@mellanox.com,
+        Adrian Moreno Zapata <amorenoz@redhat.com>,
+        Maxime Coquelin <maxime.coquelin@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 2:34 PM Peilin Ye <yepeilin.cs@gmail.com> wrote:
+On Thu, Sep 24, 2020 at 5:24 AM Jason Wang <jasowang@redhat.com> wrote:
 >
-> On Fri, Sep 25, 2020 at 03:25:51PM +0200, Daniel Vetter wrote:
-> > I think the only way to make this work is that we have one place which
-> > takes in the userspace uapi struct, and then converts it once into a
-> > kernel_console_font. With all the error checking.
+> This patch introduces the support of ASID based IOTLB by tagging IOTLB
+> with a unique ASID. This is a must for supporting ASID based vhost
+> IOTLB API by the following patches.
 >
-> Hi Daniel,
+> IOTLB were stored in a hlist and new IOTLB will be allocated when a
+> new ASID is seen via IOTLB API and destoryed when there's no mapping
+> associated with an ASID.
 >
-> It seems that users don't use `console_font` directly, they use
-> `console_font_op`. Then, in TTY:
+> Signed-off-by: Jason Wang <jasowang@redhat.com>
+> ---
+>  drivers/vhost/vdpa.c | 94 +++++++++++++++++++++++++++++++++-----------
+>  1 file changed, 72 insertions(+), 22 deletions(-)
+>
+> diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
+> index 6552987544d7..1ba7e95619b5 100644
+> --- a/drivers/vhost/vdpa.c
+> +++ b/drivers/vhost/vdpa.c
+> @@ -34,13 +34,21 @@ enum {
+>
+>  #define VHOST_VDPA_DEV_MAX (1U << MINORBITS)
+>
+> +#define VHOST_VDPA_IOTLB_BUCKETS 16
+> +
+> +struct vhost_vdpa_as {
+> +       struct hlist_node hash_link;
+> +       struct vhost_iotlb iotlb;
+> +       u32 id;
+> +};
+> +
+>  struct vhost_vdpa {
+>         struct vhost_dev vdev;
+>         struct iommu_domain *domain;
+>         struct vhost_virtqueue *vqs;
+>         struct completion completion;
+>         struct vdpa_device *vdpa;
+> -       struct vhost_iotlb *iotlb;
+> +       struct hlist_head as[VHOST_VDPA_IOTLB_BUCKETS];
+>         struct device dev;
+>         struct cdev cdev;
+>         atomic_t opened;
+> @@ -49,12 +57,64 @@ struct vhost_vdpa {
+>         int minor;
+>         struct eventfd_ctx *config_ctx;
+>         int in_batch;
+> +       int used_as;
 
-Wow, this is a maze :-/
+Hi!
 
-> (drivers/tty/vt/vt.c)
-> int con_font_op(struct vc_data *vc, struct console_font_op *op)
-> {
->         switch (op->op) {
->         case KD_FONT_OP_SET:
->                 return con_font_set(vc, op);
->         case KD_FONT_OP_GET:
->                 return con_font_get(vc, op);
->         case KD_FONT_OP_SET_DEFAULT:
->                 return con_font_default(vc, op);
->         case KD_FONT_OP_COPY:
->                 return con_font_copy(vc, op);
+The variable `used_as` is not used anywhere outside this commit, and
+in this commit is only tracking the number os AS added, not being able
+to query it or using it by limiting them or anything like that.
+
+If I'm right, could we consider deleting it? Or am I missing some usage of it?
+
+I smoke tested all the series deleting that variable and everything
+seems right to me.
+
+Thanks!
+
+>  };
+>
+>  static DEFINE_IDA(vhost_vdpa_ida);
+>
+>  static dev_t vhost_vdpa_major;
+>
+> +static struct vhost_vdpa_as *asid_to_as(struct vhost_vdpa *v, u32 asid)
+> +{
+> +       struct hlist_head *head = &v->as[asid % VHOST_VDPA_IOTLB_BUCKETS];
+> +       struct vhost_vdpa_as *as;
+> +
+> +       hlist_for_each_entry(as, head, hash_link)
+> +               if (as->id == asid)
+> +                       return as;
+> +
+> +       return NULL;
+> +}
+> +
+> +static struct vhost_vdpa_as *vhost_vdpa_alloc_as(struct vhost_vdpa *v, u32 asid)
+> +{
+> +       struct hlist_head *head = &v->as[asid % VHOST_VDPA_IOTLB_BUCKETS];
+> +       struct vhost_vdpa_as *as;
+> +
+> +       if (asid_to_as(v, asid))
+> +               return NULL;
+> +
+> +       as = kmalloc(sizeof(*as), GFP_KERNEL);
+> +       if (!as)
+> +               return NULL;
+> +
+> +       vhost_iotlb_init(&as->iotlb, 0, 0);
+> +       as->id = asid;
+> +       hlist_add_head(&as->hash_link, head);
+> +       ++v->used_as;
+> +
+> +       return as;
+> +}
+> +
+> +static int vhost_vdpa_remove_as(struct vhost_vdpa *v, u32 asid)
+> +{
+> +       struct vhost_vdpa_as *as = asid_to_as(v, asid);
+> +
+> +       /* Remove default address space is not allowed */
+> +       if (asid == 0)
+> +               return -EINVAL;
+> +
+> +       if (!as)
+> +               return -EINVAL;
+> +
+> +       hlist_del(&as->hash_link);
+> +       vhost_iotlb_reset(&as->iotlb);
+> +       kfree(as);
+> +       --v->used_as;
+> +
+> +       return 0;
+> +}
+> +
+>  static void handle_vq_kick(struct vhost_work *work)
+>  {
+>         struct vhost_virtqueue *vq = container_of(work, struct vhost_virtqueue,
+> @@ -513,15 +573,6 @@ static void vhost_vdpa_iotlb_unmap(struct vhost_vdpa *v,
 >         }
->         return -ENOSYS;
-> }
-
-So my gut feeling is that this is just a bit of overenthusiastic
-common code sharing, and all it results is confuse everyone. I think
-if we change the conf_font_get/set/default/copy functions to not take
-the *op struct (which is take pretty arbitrarily from one of the
-ioctl), but the parameters each needs directly, that would clean up
-the code a _lot_. Since most callers would then directly call the
-right operation, instead of this detour through console_font_op.
-struct console_font_op is an uapi struct, so really shouldn't be used
-for internal abstractions - we can't change uapi, hence this makes it
-impossible to refactor anything from the get-go.
-
-I also think that trying to get rid of con_font_op callers as much as
-possible (everywhere where the op struct is constructed in the kernel
-and doesn't come from userspace essentially) should be doable as a
-stand-alone patch series.
-
-> These 4 functions allocate `console_font`. We can replace them with our
-> `kernel_console_font`. So, ...
+>  }
 >
-> $ vgrep "\.con_font_set"
-
-An aside: git grep is awesome, and really fast.
-
-> Index File                                    Line Content
->     0 drivers/usb/misc/sisusbvga/sisusb_con.c 1294 .con_font_set =              sisusbcon_font_set,
->     1 drivers/usb/misc/sisusbvga/sisusb_con.c 1378 .con_font_set =              sisusbdummycon_font_set,
->     2 drivers/video/console/dummycon.c         162 .con_font_set =      dummycon_font_set,
->     3 drivers/video/console/newport_con.c      693 .con_font_set          = newport_font_set,
->     4 drivers/video/console/vgacon.c          1226 .con_font_set = vgacon_font_set,
->     5 drivers/video/fbdev/core/fbcon.c        3120 .con_font_set                = fbcon_set_font,
-> $
-> $ vgrep "\.con_font_get"
-> Index File                                    Line Content
->     0 drivers/usb/misc/sisusbvga/sisusb_con.c 1295 .con_font_get =              sisusbcon_font_get,
->     1 drivers/video/console/vgacon.c          1227 .con_font_get = vgacon_font_get,
->     2 drivers/video/fbdev/core/fbcon.c        3121 .con_font_get                = fbcon_get_font,
-> $
-> $ vgrep "\.con_font_default"
-> Index File                                    Line Content
->     0 drivers/usb/misc/sisusbvga/sisusb_con.c 1379 .con_font_default =  sisusbdummycon_font_default,
->     1 drivers/video/console/dummycon.c         163 .con_font_default =  dummycon_font_default,
-
-The above two return 0 but do nothing, which means width/height are
-now bogus (or well the same as what userspace set). I don't think that
-works correctly ...
-
->     2 drivers/video/console/newport_con.c      694 .con_font_default = newport_font_default,
-
-This just seems to release the userspace font. This is already done in
-other places where it makes a lot more sense to clean up.
-
->     3 drivers/video/fbdev/core/fbcon.c        3122 .con_font_default    = fbcon_set_def_font,
-
-This actually does something. tbh I would not be surprises if the
-fb_set utility is the only thing that uses this - with a bit of code
-search we could perhaps confirm this, and delete all the other
-implementations.
-
-> $
-> $ vgrep "\.con_font_copy"
-> Index File                                    Line Content
->     0 drivers/usb/misc/sisusbvga/sisusb_con.c 1380 .con_font_copy =     sisusbdummycon_font_copy,
->     1 drivers/video/console/dummycon.c         164 .con_font_copy =     dummycon_font_copy,
-
-Above two do nothing, but return 0. Again this wont work I think.
-
->     2 drivers/video/fbdev/core/fbcon.c        3123 .con_font_copy               = fbcon_copy_font,
-
-Smells again like something that's only used by fb_set, and we could
-probably delete the other dummy implementations. Also I'm not even
-really clear on what this does ...
-
-Removing these dummy functions means that for a dummy console these
-ioctls would start failing, but then I don't think anyone boots up
-into a dummy console and expects font changes to work. So again I
-think we could split this cleanup as prep work.
-
-
-> $ _
+> -static void vhost_vdpa_iotlb_free(struct vhost_vdpa *v)
+> -{
+> -       struct vhost_iotlb *iotlb = v->iotlb;
+> -
+> -       vhost_vdpa_iotlb_unmap(v, iotlb, 0ULL, 0ULL - 1);
+> -       kfree(v->iotlb);
+> -       v->iotlb = NULL;
+> -}
+> -
+>  static int perm_to_iommu_flags(u32 perm)
+>  {
+>         int flags = 0;
+> @@ -681,7 +732,8 @@ static int vhost_vdpa_process_iotlb_msg(struct vhost_dev *dev, u32 asid,
+>         struct vhost_vdpa *v = container_of(dev, struct vhost_vdpa, vdev);
+>         struct vdpa_device *vdpa = v->vdpa;
+>         const struct vdpa_config_ops *ops = vdpa->config;
+> -       struct vhost_iotlb *iotlb = v->iotlb;
+> +       struct vhost_vdpa_as *as = asid_to_as(v, 0);
+> +       struct vhost_iotlb *iotlb = &as->iotlb;
+>         int r = 0;
 >
-> ... are these all the callbacks we need to take care of? What about
-> other console drivers that don't register these callbacks? ...
+>         if (asid != 0)
+> @@ -775,6 +827,7 @@ static void vhost_vdpa_cleanup(struct vhost_vdpa *v)
+>  {
+>         vhost_dev_cleanup(&v->vdev);
+>         kfree(v->vdev.vqs);
+> +       vhost_vdpa_remove_as(v, 0);
+>  }
 >
-> $ vgrep "\.con_init"
-> Index File                                    Line Content
-> [...]
->     3 drivers/usb/misc/sisusbvga/sisusb_con.c 1285 .con_init =          sisusbcon_init,
->     4 drivers/usb/misc/sisusbvga/sisusb_con.c 1369 .con_init =          sisusbdummycon_init,
->     5 drivers/video/console/dummycon.c         153 .con_init =          dummycon_init,
->     6 drivers/video/console/mdacon.c           544 .con_init =          mdacon_init,
->     7 drivers/video/console/newport_con.c      684 .con_init      = newport_init,
->     8 drivers/video/console/sticon.c           328 .con_init            = sticon_init,
->     9 drivers/video/console/vgacon.c          1217 .con_init = vgacon_init,
->    10 drivers/video/fbdev/core/fbcon.c        3111 .con_init             = fbcon_init,
-> [...]
+>  static int vhost_vdpa_open(struct inode *inode, struct file *filep)
+> @@ -807,23 +860,18 @@ static int vhost_vdpa_open(struct inode *inode, struct file *filep)
+>         vhost_dev_init(dev, vqs, nvqs, 0, 0, 0, false,
+>                        vhost_vdpa_process_iotlb_msg);
 >
-> ... for example, mdacon.c? What font does mdacon.c use? I know that
-> /lib/fonts/ exports two functions, find_font() and get_default_font(),
-> but I don't see them being used in mdacon.c.
-
-I think all other consoles either don't have fonts at all, or only
-support built-in fonts.
-
-> Ah, and speaking of built-in fonts, see fbcon_startup():
+> -       dev->iotlb = vhost_iotlb_alloc(0, 0);
+> -       if (!dev->iotlb) {
+> -               r = -ENOMEM;
+> -               goto err_init_iotlb;
+> -       }
+> +       if (!vhost_vdpa_alloc_as(v, 0))
+> +               goto err_alloc_as;
 >
->         /* Setup default font */
->                 [...]
->                 vc->vc_font.charcount = 256; /* FIXME  Need to support more fonts */
->                             ^^^^^^^^^^^^^^^
+>         r = vhost_vdpa_alloc_domain(v);
+>         if (r)
+> -               goto err_alloc_domain;
+> +               goto err_alloc_as;
 >
-> This is because find_font() and get_default_font() return a `struct
-> font_desc *`, but `struct font_desc` doesn't contain `charcount`. I
-> think we also need to add a `charcount` field to `struct font_desc`.
-
-Hm yeah ... I guess maybe struct font_desc should be the starting
-point for the kernel internal font structure. It's at least there
-already ...
-
-> > Then all internal code deals in terms of kernel_console_font, with
-> > properly typed and named struct members and helper functions and
-> > everything. And we might need a gradual conversion for this, so that first
-> > we can convert over invidual console drivers, then subsystems, until at
-> > the end we've pushed the conversion from uapi array to kernel_console_font
-> > all the way to the ioctl entry points.
+>         filep->private_data = v;
 >
-> Currently `struct vc_data` contains a `struct console_font vc_font`, and
-> I think this is making gradual conversion very hard. As an example, in
-> fbcon_do_set_font(), we update `vc->vc_font`. We lose all the extra
-> information we want in `kernel_console_font`, as long as `struct
-> vc_data` still uses `console_font`...
+>         return 0;
 >
-> However, if we let `struct vc_data` use `kernel_console_font` instead,
-> we'll have to handle a lot of things in one go:
+> -err_alloc_domain:
+> -       vhost_vdpa_iotlb_free(v);
+> -err_init_iotlb:
+> +err_alloc_as:
+>         vhost_vdpa_cleanup(v);
+>  err:
+>         atomic_dec(&v->opened);
+> @@ -851,7 +899,6 @@ static int vhost_vdpa_release(struct inode *inode, struct file *filep)
+>         filep->private_data = NULL;
+>         vhost_vdpa_reset(v);
+>         vhost_dev_stop(&v->vdev);
+> -       vhost_vdpa_iotlb_free(v);
+>         vhost_vdpa_free_domain(v);
+>         vhost_vdpa_config_put(v);
+>         vhost_vdpa_clean_irq(v);
+> @@ -950,7 +997,7 @@ static int vhost_vdpa_probe(struct vdpa_device *vdpa)
+>         const struct vdpa_config_ops *ops = vdpa->config;
+>         struct vhost_vdpa *v;
+>         int minor;
+> -       int r;
+> +       int i, r;
 >
-> $ vgrep --no-less --no-header ".vc_font" | wc -l
-> 296
-> $ echo ":("
-> :(
-
-Yes :-/
-
-This is essentially why the entire vc/fbcon layer is such a mess. It's
-a chaos, it doesn't really have clear abstraction, and very often the
-uapi structures (see also conf_font_op) leak deeply into the
-implementation, which means changing anything is nearly impossible ...
-
-I think for vc_date->vc_font we might need a multi-step approach:
-- first add a new helper function which sets the font for a vc using
-an uapi console_font struct (and probably hard-coded assumes cnt ==
-256.
-- roll that out everwhere
-- change the type of vc_font to what we want (which should only need a
-change in the helper function, which will also set charcount hopefully
-correctly, using the hard-coded assumption
-- have another functions which sets the vf_font using a
-kernel_console_font for all the cases where it matters
-- now you can start using it and assume the charcount is set correctly
-
-It's a journey unfortunately.
-
-> The good news is, I've tried cleaning up all the macros in fbcon.c in my
-> playground, and things seem to work. For example, currently we have:
+>         /* Only support 1 address space */
+>         if (vdpa->ngroups != 1)
+> @@ -1002,6 +1049,9 @@ static int vhost_vdpa_probe(struct vdpa_device *vdpa)
+>         init_completion(&v->completion);
+>         vdpa_set_drvdata(vdpa, v);
 >
->         if (userfont)
->                 cnt = FNTCHARCNT(data);
->         else
->                 cnt = 256;
+> +       for (i = 0; i < VHOST_VDPA_IOTLB_BUCKETS; i++)
+> +               INIT_HLIST_HEAD(&v->as[i]);
+> +
+>         return 0;
 >
-> After introducing `kernel_console_font` (and adding `charcount` to
-> `struct font_desc` etc.), this should look like:
+>  err:
+> --
+> 2.20.1
 >
-> #define to_font(_data) container_of(_data, struct kernel_console_font, data)
->         [...]
->         cnt = to_font(data)->charcount;
 
-Hm I guess we can't unify font_desc and the kernel_console_font we're
-talking about into one? I think that was brough up already somewhere
-else in this thread ...
-
-> No more `if` and `else`, and the framebuffer layer will be able to
-> support new bulit-in fonts that have more than 256 characters. This
-> seems really nice, so I'd like to spend some time working on it.
->
-> However before I start working on real patches, do you have suggestions
-> about which console driver I should start with, or how should I split up
-> the work in general? I couldn't think of how do we clean up subsystems
-> one by one, while keeping a `console_font` in `struct vc_data`.
-
-I think from a "stop security bugs" trying to clean up fbcon is the
-important part. That's also the most complex (only one that supports
-the default and copy functions it seems, and also one of the few that
-supports get). The other ones I think we should just try to not break.
-vgacon should still be useable (but I think only on systems where you
-can boot into legacy bios, not into uefi, at least on x86). I have no
-idea where some of the other consoles are even used.
-
-For first steps I'd start with demidlayering some of the internal
-users of uapi structs, like the console_font_op really shouldn't be
-used anywhere in any function, except in the ioctl handler that
-converts it into the right function call. You'll probably discover a
-few other places like this on the go.
-
-Cheers, Daniel
---
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
