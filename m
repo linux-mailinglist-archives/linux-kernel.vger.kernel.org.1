@@ -2,148 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F8CC27D11B
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 16:30:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7254C27D11D
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 16:30:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729489AbgI2OaR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 10:30:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37136 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725554AbgI2OaQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 10:30:16 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE87CC061755
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 07:30:14 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id s13so4832119wmh.4
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 07:30:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=android.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=uFKLSPWDwm3eYZd6YdR+/hX/HXeA1BnZbw8cxB8l5tM=;
-        b=WLRfbKRyHsDE1KbYQsDpufajswYgeVpkZCRZM2rE14Jx7ciTmLPeGxQab+NzzN1k4g
-         X38WvCMV7E6erCcNfmdeLauHb9a0J2yy59NWFf7U4SB4Nn5QQLSnv62rv02144hynjG1
-         FC2+vhsot7ySsIfREUOKkn6m84xWWEHKFkGxbh5DUhhIyCgeCACveM1dRvWE2Z/W52gS
-         rehupa2hgU+q9dKjrg1/rS7wAZi18abSfFEBZlkig2QH6c3KhY+Jk4QZ3PdJX7AnJ4L4
-         zTuPzu5OqmGNZxTG8L5M8dcP8kULVBC1icpmpqxdIdcUf5m3qdvNnjdNjePEG0NJoGYg
-         TFeQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=uFKLSPWDwm3eYZd6YdR+/hX/HXeA1BnZbw8cxB8l5tM=;
-        b=rje/Hu+nOHoCzipieaA/43f7f6a9BIwmYSL7qO4sJThiqkWIFgq+jop/CI+k7fo+Xj
-         uY54t7RGZflt3oTjQYA0ft4ao12QFrdORc12W97y+IuTd65qpR/oFPIp8MgYT2Jq0z0o
-         6164r0eufA8C1CCTHk4F3FQnJ7F70H8ioQlrQJ2WKkxs4dy7JCNkit4L1LyDk5TNk3Qi
-         hLfZsF7WJfpfNgqkrCL2F/tTGclFvLgFqSpyz9axiAqwtYGzizew50vljsYVVFq+VTli
-         8rA6Zurw+qmXDaAoc2OHzriOULJ3bqPJAFFYc3H0OAR2oNOkYt8EiuQSJRgd37liEQ7Q
-         +4VQ==
-X-Gm-Message-State: AOAM532TDwqFtKGosVbqRvvH65oUiO8i6HtbKxAp4VUnRHjKQuyqxlP8
-        rCuKyHZ+aOep+LkKtPADmyBBjw==
-X-Google-Smtp-Source: ABdhPJykPpWjvgERiuRHSP5oeS8qkCVKd3aWFFRAg7EnL8L6Ivoa6wZFihmDj+vUefS/lJFiUhefWw==
-X-Received: by 2002:a1c:f716:: with SMTP id v22mr4675565wmh.183.1601389813562;
-        Tue, 29 Sep 2020 07:30:13 -0700 (PDT)
-Received: from google.com ([2a00:79e0:d:210:7220:84ff:fe09:7d5c])
-        by smtp.gmail.com with ESMTPSA id n10sm6012031wmk.7.2020.09.29.07.30.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Sep 2020 07:30:12 -0700 (PDT)
-Date:   Tue, 29 Sep 2020 15:30:11 +0100
-From:   Alessio Balsini <balsini@android.com>
-To:     Amir Goldstein <amir73il@gmail.com>
-Cc:     Alessio Balsini <balsini@android.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Akilesh Kailash <akailash@google.com>,
-        David Anderson <dvander@google.com>,
-        Eric Yan <eric.yan@oneplus.com>, Jann Horn <jannh@google.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Martijn Coenen <maco@android.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Lawrence <paullawrence@google.com>,
-        Stefano Duo <stefanoduo@google.com>,
-        Zimuzo Ezeozue <zezeozue@google.com>,
-        fuse-devel <fuse-devel@lists.sourceforge.net>,
-        kernel-team <kernel-team@android.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH V8 1/3] fuse: Definitions and ioctl() for passthrough
-Message-ID: <20200929143011.GA1680101@google.com>
-References: <20200911163403.79505-1-balsini@android.com>
- <20200911163403.79505-2-balsini@android.com>
- <CAOQ4uxiWK5dNMkrriApMVZQi6apmnMijcCw5j4fa2thHFdnFcw@mail.gmail.com>
- <20200918163354.GB3385065@google.com>
- <CAOQ4uxhNddkdZ5TCdg6Gdb9oYqNVUrpk25kGYxZNe-LDsZV_Ag@mail.gmail.com>
- <20200922121508.GB600068@google.com>
- <CAOQ4uxjFjpbVBQ6zAhtVfjB=+_T48m1c-cdA-Qr+O=2=6YmW3w@mail.gmail.com>
+        id S1730182AbgI2Oad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 10:30:33 -0400
+Received: from mx2.suse.de ([195.135.220.15]:44128 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725554AbgI2Oad (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 10:30:33 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id E61E1AD0F;
+        Tue, 29 Sep 2020 14:30:31 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 5BF841E12E9; Tue, 29 Sep 2020 16:30:31 +0200 (CEST)
+Date:   Tue, 29 Sep 2020 16:30:31 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     syzbot <syzbot+f816042a7ae2225f25ba@syzkaller.appspotmail.com>,
+        adi@adirat.com, alsa-devel@alsa-project.org,
+        coreteam@netfilter.org, davem@davemloft.net, jack@suse.com,
+        kaber@trash.net, kadlec@blackhole.kfki.hu,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, pablo@netfilter.org,
+        perex@perex.cz, syzkaller-bugs@googlegroups.com, tiwai@suse.com
+Subject: Re: BUG: unable to handle kernel paging request in dqput
+Message-ID: <20200929143031.GP10896@quack2.suse.cz>
+References: <00000000000067becf05b03d8dd6@google.com>
+ <s5htuvjpujt.wl-tiwai@suse.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAOQ4uxjFjpbVBQ6zAhtVfjB=+_T48m1c-cdA-Qr+O=2=6YmW3w@mail.gmail.com>
+In-Reply-To: <s5htuvjpujt.wl-tiwai@suse.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 07:08:48PM +0300, Amir Goldstein wrote:
+On Sun 27-09-20 09:07:02, Takashi Iwai wrote:
+> On Sat, 26 Sep 2020 22:48:15 +0200,
+> syzbot wrote:
+> > 
+> > Hello,
+> > 
+> > syzbot found the following issue on:
+> > 
+> > HEAD commit:    98477740 Merge branch 'rcu/urgent' of git://git.kernel.org..
+> > git tree:       upstream
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=17930875900000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=af502ec9a451c9fc
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=f816042a7ae2225f25ba
+> > compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=133783ab900000
+> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13bb5973900000
+> > 
+> > The issue was bisected to:
+> > 
+> > commit 1d0f953086f090a022f2c0e1448300c15372db46
+> > Author: Ioan-Adrian Ratiu <adi@adirat.com>
+> > Date:   Wed Jan 4 22:37:46 2017 +0000
+> > 
+> >     ALSA: usb-audio: Fix irq/process data synchronization
+> > 
+> > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=133362c3900000
+> > final oops:     https://syzkaller.appspot.com/x/report.txt?x=10b362c3900000
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=173362c3900000
 > 
-> I am hearing about a lot of these projects.
-> I think that FUSE_PASSTHROUGH is a very useful feature.
-> I have an intention to explore passthrough to directory fd for
-> directory modifications. I sure hope you will beat me to it ;-)
+> This commit looks really irrelevant from the Oops code path.
+> It must be a different reason.
 
+Yeah, it seems the bisection got confused because it hit a different error
+during the bisection. Looking at the original oops, I think the actual
+reason of a crash is that quota file got corrupted in a particular way.
+Quota code is not very paranoid when checking on disk contents. I'll work
+on adding more sanity checks to quota code...
 
-It's awesome that you mentioned this, something similar is already in my
-TODO list, suggested by Paul (in CC). I'll start working on this and will
-be glad to discuss as soon as this FUSE_PASSTHROUGH extension will
-hopefully get accepted.
-
-
-> 
-> > I'm not directly involved in the Incremental FS project, but, as far as I
-> > remember, only for the first PoC was actually developed as a FUSE file
-> > system. Because of the overhead introduced by the user space round-trips,
-> > that design was left behind and the whole Incremental FS infrastructure
-> > switched to becoming a kernel module.
-> > In general, the FUSE passthrough patch set proposed in this series wouldn't
-> > be helpful for that use case because, for example, Incremental FS requires
-> > live (de)compression of data, that can only be performed by the FUSE
-> > daemon.
-> >
-> 
-> Ext4 supports inline encryption. Btrfs supports encrypted/compressed extents.
-> No reason for FUSE not to support the same.
-> Is it trivial? No.
-> Is it an excuse for not using FUSE and writing a new userspace fs. Not
-> in my option.
-
-
-I started exploring the FUSE internals only in the last months and had the
-feeling this compression feature was a bit out of context or at least very
-use-case specific. But I'll start thinking about this.
-
-
-> 
-> > The specific use case I'm trying to improve with this FUSE passthrough
-> > series is instead related to the scoped storage feature that we introduced
-> > in Android 11, that is based on FUSE, and affects those folders that are
-> > shared among all the Apps (e.g., DCIM, Downloads, etc). More details here:
-> >
-> 
-> sdcard fs has had a lot of reincarnations :-)
-> 
-> I for one am happy with the return to FUSE.
-> Instead of saying "FUSE is too slow" and implementing a kernel sdcardfs,
-> improve FUSE to be faster for everyone - that's the way to go ;-)
-
-
-Yes! This is exactly what we are trying to achieve and this patch-set is
-the first piece of a bigger picture which, among others, includes the
-direct directory access that you mentioned before.
-I hope the community appreciates these improvement attempts :)
-
-As you may have noticed, I recently shared the v9 of the patch-set.
-Thanks to the feedback I received, what we have now has a completely
-different than the initial proposal.
-
-Thanks again everyone for the suggestions!
-
-Alessio
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
