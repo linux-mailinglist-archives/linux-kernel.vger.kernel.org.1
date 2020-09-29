@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C9BB27C382
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:07:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F20727C423
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:11:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728806AbgI2LGT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:06:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42398 "EHLO mail.kernel.org"
+        id S1729244AbgI2LLb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:11:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52088 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728785AbgI2LFy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:05:54 -0400
+        id S1729202AbgI2LK6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:10:58 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 59FFC206DB;
-        Tue, 29 Sep 2020 11:05:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A0255206A5;
+        Tue, 29 Sep 2020 11:10:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601377553;
-        bh=oWexgkyQ5QqmqqfNAI66bcmREr4+IJ9zW+Zyy8Y73GU=;
+        s=default; t=1601377858;
+        bh=7TO7qrRdF2w3UgLtQoTyJX5GGyPldyKEtr4DfDZyzR0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=revYlZVFIPj404bbtxzIOoWYq7P/hs35ruZRtTBU4ZkozyALmKXfj0CqF+QUfMDL9
-         0kQQS6eSfVvojWLwtzdrOXED2K39XOi8DZpgN7sa94Jz/pGPHgR7iugQMz/7GJ1HTc
-         LawDlo32VO2+aLiCUUyT3HXdHpgF7YshLHgC5KH0=
+        b=c6MgarHzhEBOzAVLqWZ/hPpt6ksk0ojxHphxQtw+jLJZacCdh0Oin6fbPax/Z8dmV
+         s7fUL/IUDDYwRPsgZ4gr0gV0ISifj8i2z9qSAh6daq+LV7eE8HyYTyBuYeFtiNCrLG
+         +4nZnFcdY3L/NTPwN7AV7sYUhwhRvl7R3nUptO9Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Linus=20L=C3=BCssing?= <ll@simonwunderlich.de>,
-        Sven Eckelmann <sven@narfation.org>,
+        stable@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Peter Zijlstra <peterz@infradead.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 75/85] batman-adv: bla: fix type misuse for backbone_gw hash indexing
+Subject: [PATCH 4.9 098/121] x86/speculation/mds: Mark mds_user_clear_cpu_buffers() __always_inline
 Date:   Tue, 29 Sep 2020 13:00:42 +0200
-Message-Id: <20200929105931.948044761@linuxfoundation.org>
+Message-Id: <20200929105935.036192257@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929105928.198942536@linuxfoundation.org>
-References: <20200929105928.198942536@linuxfoundation.org>
+In-Reply-To: <20200929105930.172747117@linuxfoundation.org>
+References: <20200929105930.172747117@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,49 +44,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linus Lüssing <ll@simonwunderlich.de>
+From: Thomas Gleixner <tglx@linutronix.de>
 
-[ Upstream commit 097930e85f90f252c44dc0d084598265dd44ca48 ]
+[ Upstream commit a7ef9ba986b5fae9d80f8a7b31db0423687efe4e ]
 
-It seems that due to a copy & paste error the void pointer
-in batadv_choose_backbone_gw() is cast to the wrong type.
+Prevent the compiler from uninlining and creating traceable/probable
+functions as this is invoked _after_ context tracking switched to
+CONTEXT_USER and rcu idle.
 
-Fixing this by using "struct batadv_bla_backbone_gw" instead of "struct
-batadv_bla_claim" which better matches the caller's side.
-
-For now it seems that we were lucky because the two structs both have
-their orig/vid and addr/vid in the beginning. However I stumbled over
-this issue when I was trying to add some debug variables in front of
-"orig" in batadv_backbone_gw, which caused hash lookups to fail.
-
-Fixes: 07568d0369f9 ("batman-adv: don't rely on positions in struct for hashing")
-Signed-off-by: Linus Lüssing <ll@simonwunderlich.de>
-Signed-off-by: Sven Eckelmann <sven@narfation.org>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Reviewed-by: Alexandre Chartre <alexandre.chartre@oracle.com>
+Acked-by: Peter Zijlstra <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/20200505134340.902709267@linutronix.de
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/batman-adv/bridge_loop_avoidance.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ arch/x86/include/asm/nospec-branch.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/net/batman-adv/bridge_loop_avoidance.c b/net/batman-adv/bridge_loop_avoidance.c
-index 9aa5daa551273..1267cbb1a329a 100644
---- a/net/batman-adv/bridge_loop_avoidance.c
-+++ b/net/batman-adv/bridge_loop_avoidance.c
-@@ -73,11 +73,12 @@ static inline u32 batadv_choose_claim(const void *data, u32 size)
- /* return the index of the backbone gateway */
- static inline u32 batadv_choose_backbone_gw(const void *data, u32 size)
+diff --git a/arch/x86/include/asm/nospec-branch.h b/arch/x86/include/asm/nospec-branch.h
+index 4af16acc001a3..204a5ce65afda 100644
+--- a/arch/x86/include/asm/nospec-branch.h
++++ b/arch/x86/include/asm/nospec-branch.h
+@@ -321,7 +321,7 @@ DECLARE_STATIC_KEY_FALSE(mds_idle_clear);
+  * combination with microcode which triggers a CPU buffer flush when the
+  * instruction is executed.
+  */
+-static inline void mds_clear_cpu_buffers(void)
++static __always_inline void mds_clear_cpu_buffers(void)
  {
--	const struct batadv_bla_claim *claim = (struct batadv_bla_claim *)data;
-+	const struct batadv_bla_backbone_gw *gw;
- 	u32 hash = 0;
+ 	static const u16 ds = __KERNEL_DS;
  
--	hash = jhash(&claim->addr, sizeof(claim->addr), hash);
--	hash = jhash(&claim->vid, sizeof(claim->vid), hash);
-+	gw = (struct batadv_bla_backbone_gw *)data;
-+	hash = jhash(&gw->orig, sizeof(gw->orig), hash);
-+	hash = jhash(&gw->vid, sizeof(gw->vid), hash);
- 
- 	return hash % size;
- }
+@@ -342,7 +342,7 @@ static inline void mds_clear_cpu_buffers(void)
+  *
+  * Clear CPU buffers if the corresponding static key is enabled
+  */
+-static inline void mds_user_clear_cpu_buffers(void)
++static __always_inline void mds_user_clear_cpu_buffers(void)
+ {
+ 	if (static_branch_likely(&mds_user_clear))
+ 		mds_clear_cpu_buffers();
 -- 
 2.25.1
 
