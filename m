@@ -2,116 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 694F127D2EA
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 17:39:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C087327D2EF
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 17:39:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728898AbgI2PjJ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 29 Sep 2020 11:39:09 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:22285 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727864AbgI2PjI (ORCPT
+        id S1729267AbgI2Pj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 11:39:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47922 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727864AbgI2Pj4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 11:39:08 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id uk-mta-4-d_J_rhScNZCl3nkQi2pUWw-1;
- Tue, 29 Sep 2020 16:39:04 +0100
-X-MC-Unique: d_J_rhScNZCl3nkQi2pUWw-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Tue, 29 Sep 2020 16:39:03 +0100
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Tue, 29 Sep 2020 16:39:03 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Christoph Hellwig' <hch@infradead.org>,
-        Sherry Sun <sherry.sun@nxp.com>
-CC:     "sudeep.dutt@intel.com" <sudeep.dutt@intel.com>,
-        "ashutosh.dixit@intel.com" <ashutosh.dixit@intel.com>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "kishon@ti.com" <kishon@ti.com>,
-        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-imx@nxp.com" <linux-imx@nxp.com>
-Subject: RE: [PATCH V2 4/4] misc: vop: mapping kernel memory to user space as
- noncached
-Thread-Topic: [PATCH V2 4/4] misc: vop: mapping kernel memory to user space as
- noncached
-Thread-Index: AQHWlktQ7pIMmph8j02KaWKexsD6oKl/u5wQ
-Date:   Tue, 29 Sep 2020 15:39:03 +0000
-Message-ID: <38d86b352ed6452ea225aa45e81af390@AcuMS.aculab.com>
-References: <20200929084425.24052-1-sherry.sun@nxp.com>
- <20200929084425.24052-5-sherry.sun@nxp.com>
- <20200929102833.GD7784@infradead.org>
-In-Reply-To: <20200929102833.GD7784@infradead.org>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Tue, 29 Sep 2020 11:39:56 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20FA8C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 08:39:56 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id e22so6841380edq.6
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 08:39:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=b/ndqPAMEfMRymlJX6dxjBJfNF/RdG7bAvnqIWB8lEs=;
+        b=m6ew1pj/QCtmtZdVPKnuFy/yv9ikzPhdzLQZb3eTh7KNJANrqRcPQiJEVwwigx97ST
+         7qToS47jUQXt9AY2dttqo+p/YyvGEMMH9woupRvvs/CwdLsLjYbwrE+EH+8VQsFit4UJ
+         +CTrbQOEDF0pwC3LNjxK36v3KNrLTCnVcn9hqU/ysYdjhpyAFE5smjZi2UKRfcvJ0MYE
+         XNIrg0HOOHpTGHP/WVefkWKXPCq+AdDbxDIAmSETPKQK1+a1K5bazpcKmhXcIORGxM0+
+         PP6Tqo0w+efWK18koinSdhezu0kZHorH69OHpLxvyETwOWeNBSFPivYsY/yJo7Iyulgr
+         WZuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=b/ndqPAMEfMRymlJX6dxjBJfNF/RdG7bAvnqIWB8lEs=;
+        b=gRxIxMCdWEDLd3HGfkb9nRJUeih11Ae9UXJufpNbhrwdoNvfjAYhaNHnY7dCpHKlNa
+         bUZCScYX8MSJ4PLLwoZZboTfKa0nF85B1RTPCwjt2UdCVhJ8mr+okYcgI4zfhIKaA4AR
+         y7fF6Kr1R5XRrrysfVoRzE6CkVAkLSTu2CsJlzXI+QNuxby+Zjb4+fKsGhc9sbOV15vv
+         hOBqMhFaagp6sLPDpc7V18BY2ZaQlQzETaN1t6ybgPY/iDQzknwGw3a7HSJLDAhs95YD
+         vBZwhCXsiqshjqdKC+enb81VJyH7H4myaEfo9xlizmpEargzzAqmV1vrIBQ1paFTEuo+
+         YW6A==
+X-Gm-Message-State: AOAM531Mtv0Jp2xPI0y6byar3Us86oGxYPqA48hnQ7HDygUD+Ep+vh6Z
+        xKQCPepZQIGoU0zclicq6E3Wu+U8IY1lboUagjtyVg==
+X-Google-Smtp-Source: ABdhPJzj08jD7SN2swqY0zDXlDRACi7t2mNBaSDLWh7De4wwnpuPdoYrVjW716dcYk4mBausg229OJ6uDeEDcfzXL9Q=
+X-Received: by 2002:a05:6402:78b:: with SMTP id d11mr4046267edy.341.1601393994450;
+ Tue, 29 Sep 2020 08:39:54 -0700 (PDT)
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+References: <20200928230939.5574-1-natechancellor@gmail.com>
+In-Reply-To: <20200928230939.5574-1-natechancellor@gmail.com>
+From:   Sami Tolvanen <samitolvanen@google.com>
+Date:   Tue, 29 Sep 2020 08:39:43 -0700
+Message-ID: <CABCJKuft6NaesrL+840n3ZNjwaWfrc7Z++QFM=e7Ludom_BhLQ@mail.gmail.com>
+Subject: Re: [PATCH] static_call: Fix return type of static_call_init
+To:     Nathan Chancellor <natechancellor@gmail.com>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christoph Hellwig
-> Sent: 29 September 2020 11:29
-...
-> You can't call remap_pfn_range on memory returned from
-> dma_alloc_coherent (which btw is not marked uncached on many platforms).
-> 
-> You need to use the dma_mmap_coherent helper instead.
+Hi Nathan,
 
-Hmmmm. I've a driver that does that.
-Fortunately it only has to work on x86 where it doesn't matter.
-However I can't easily convert it.
-The 'problem' is that the mmap() request can cover multiple
-dma buffers and need not start at the beginning of one.
+On Mon, Sep 28, 2020 at 4:09 PM Nathan Chancellor
+<natechancellor@gmail.com> wrote:
+>
+> Functions that are passed to early_initcall should be of type
+> initcall_t, which expects a return type of int. This is not currently an
+> error but a patch in the Clang LTO series could change that in the
+> future.
+>
+> Fixes: 9183c3f9ed71 ("static_call: Add inline static call infrastructure")
+> Link: https://lore.kernel.org/lkml/20200904044559.GA507165@ubuntu-n2-xlarge-x86/
+> Link: https://lore.kernel.org/lkml/20200903203053.3411268-17-samitolvanen@google.com/
+> Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+> ---
+>  include/linux/static_call.h | 6 +++---
+>  kernel/static_call.c        | 5 +++--
+>  2 files changed, 6 insertions(+), 5 deletions(-)
+>
+> diff --git a/include/linux/static_call.h b/include/linux/static_call.h
+> index bfa2ba39be57..695da4c9b338 100644
+> --- a/include/linux/static_call.h
+> +++ b/include/linux/static_call.h
+> @@ -136,7 +136,7 @@ extern void arch_static_call_transform(void *site, void *tramp, void *func, bool
+>
+>  #ifdef CONFIG_HAVE_STATIC_CALL_INLINE
+>
+> -extern void __init static_call_init(void);
+> +extern int __init static_call_init(void);
+>
+>  struct static_call_mod {
+>         struct static_call_mod *next;Thank you for sending the patch, this looks correct to me.
+> @@ -187,7 +187,7 @@ extern int static_call_text_reserved(void *start, void *end);
+>
+>  #elif defined(CONFIG_HAVE_STATIC_CALL)
+>
+> -static inline void static_call_init(void) { }
+> +static inline int static_call_init(void) { return 0; }
+>
+>  struct static_call_key {
+>         void *func;
+> @@ -234,7 +234,7 @@ static inline int static_call_text_reserved(void *start, void *end)
+>
+>  #else /* Generic implementation */
+>
+> -static inline void static_call_init(void) { }
+> +static inline int static_call_init(void) { return 0; }
+>
+>  struct static_call_key {
+>         void *func;
+> diff --git a/kernel/static_call.c b/kernel/static_call.c
+> index f8362b3f8fd5..84565c2a41b8 100644
+> --- a/kernel/static_call.c
+> +++ b/kernel/static_call.c
+> @@ -410,12 +410,12 @@ int static_call_text_reserved(void *start, void *end)
+>         return __static_call_mod_text_reserved(start, end);
+>  }
+>
+> -void __init static_call_init(void)
+> +int __init static_call_init(void)
+>  {
+>         int ret;
+>
+>         if (static_call_initialized)
+> -               return;
+> +               return 0;
+>
+>         cpus_read_lock();
+>         static_call_lock();
+> @@ -434,6 +434,7 @@ void __init static_call_init(void)
+>  #ifdef CONFIG_MODULES
+>         register_module_notifier(&static_call_module_nb);
+>  #endif
+> +       return 0;
+>  }
+>  early_initcall(static_call_init);
+>
+>
+> base-commit: de394e7568ce2cdb4643ed230169f484f25f9442
+> --
+> 2.28.0
 
-Basically we have a PCIe card that has an inbuilt iommu
-to convert internal 32bit addresses to 64bit PCIe ones.
-This has 512 16kB pages.
-So we do a number of dma_alloc_coherent() for 16k blocks.
-The user process then does an mmap() for part of the buffer.
-This request is 4k aligned so we do multiple remap_pfn_range()
-calls to map the disjoint physical (and kernel virtual)
-buffers into contiguous user memory.
+Thank you for sending the patch, this looks correct to me.
 
-So both ends see contiguous addresses even though the physical
-addresses are non-contiguous.
+Reviewed-by: Sami Tolvanen <samitolvanen@google.com>
 
-I guess I could modify the vm_start address and then restore
-it at the end.
-
-I found this big discussion:
-https://lore.kernel.org/patchwork/patch/351245/
-about these functions.
-
-The bit about VIPT caches is problematic.
-I don't think you can change the kernel address during mmap.
-What you need to do is defer allocating the user address until
-you know the kernel address.
-Otherwise you get into problems is you try to mmap the
-same memory into two processes.
-This is a general problem even for mmap() of files.
-ISTR SYSV on some sparc systems having to use uncached maps.
-
-If you might want to mmap two kernel buffers (dma or not)
-into adjacent user addresses then you need some way of
-allocating the second buffer to follow the first one
-in the VIVT cache.
-
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+Sami
