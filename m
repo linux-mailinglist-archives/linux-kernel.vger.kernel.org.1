@@ -2,81 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8D8727D645
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 20:59:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EE4F27D64A
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 21:00:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728523AbgI2S7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 14:59:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50414 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728172AbgI2S7A (ORCPT
+        id S1728549AbgI2S75 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 14:59:57 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:13455 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728172AbgI2S75 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 14:59:00 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C76F9C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 11:59:00 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id k13so5525279pfg.1
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 11:59:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=dk1cTODLxYw48Etf8ZXYv1O0s0b1u8jvfbtZJWNF/FU=;
-        b=iUYptqhO1Cb1oqT70B6OiYOEYPvUtMv6DmPRynZqXb0UsVj/WglJDwZUkMpyqS2El8
-         Fd8UtabAKffredo2BSoKxIcFQbo25h/vpQ00kE9PoG5u9WEJ0ixa5dWISEAnpDqMzojB
-         +00ID59hznF2RjXcFfPz2RjUs2bfCHrZQogjU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=dk1cTODLxYw48Etf8ZXYv1O0s0b1u8jvfbtZJWNF/FU=;
-        b=GC0adJ78VZ/SlMBDzf5vxOWBNbia3qMnRWCfTKSLxH1tEQI85hX1KgNIwGoFswTgAt
-         WAG3BJlKPcLgj3WNK46KwsQ6Nu9uf0s+caaV2cE+KiFawFlHWEbMwESjHqUSoKuU6+Zw
-         uIyJxzMerIFg6H/1fz6dxMo5dAPUxU+YzKly3SUn9vhx3fPb0fzVnX6miSnjWplJlpgh
-         5QRRwg2QYgVJNnOda8dckfvGGm8IeRSSCBgEGL+/v4CN4Xc8233YtAe/ppVPWWX8APfY
-         QwWIkzW6QRORRMs9re5W1AFA3nc8i+83xNc1I6z6xsl8F6ZgyM1/2fFuslYoIgXIZHOZ
-         2Fqw==
-X-Gm-Message-State: AOAM53233MJWTh7vbHZYP6G77bqVdIwAXZ2wT6x4LS9EVRz5p/OeVBow
-        QyAEM/iNL57+4Ixa5K6tgDQduB5Q2HiJPwUU
-X-Google-Smtp-Source: ABdhPJzU/8kPj+74FsXi5Gk92Xw8EMgcTBYX8nGMWdrd6Q+OG2MvX/M1oO4s/mu3/8z3kZaxwqcXlA==
-X-Received: by 2002:a62:1dc1:0:b029:13e:d13d:a051 with SMTP id d184-20020a621dc10000b029013ed13da051mr5198108pfd.23.1601405940393;
-        Tue, 29 Sep 2020 11:59:00 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id a15sm6170842pfi.119.2020.09.29.11.58.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Sep 2020 11:58:59 -0700 (PDT)
-Date:   Tue, 29 Sep 2020 11:58:58 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Kristen Carlson Accardi <kristen@linux.intel.com>
-Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        arjan@linux.intel.com, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kernel-hardening@lists.openwall.com,
-        rick.p.edgecombe@intel.com
-Subject: Re: [PATCH v5 00/10] Function Granular KASLR
-Message-ID: <202009291156.075F4215@keescook>
-References: <20200923173905.11219-1-kristen@linux.intel.com>
+        Tue, 29 Sep 2020 14:59:57 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f7383c70000>; Tue, 29 Sep 2020 11:58:15 -0700
+Received: from [10.2.53.30] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 29 Sep
+ 2020 18:59:56 +0000
+Subject: Re: [PATCH 2/8] selftests/vm: use a common gup_test.h
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+CC:     Andrew Morton <akpm@linux-foundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Ralph Campbell <rcampbell@nvidia.com>,
+        Shuah Khan <shuah@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
+        <linux-kselftest@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <linux-s390@vger.kernel.org>
+References: <20200928062159.923212-1-jhubbard@nvidia.com>
+ <20200928062159.923212-3-jhubbard@nvidia.com>
+ <20200928125739.GP9916@ziepe.ca>
+ <6481e78f-c70d-133a-ff4a-325b5cd8fd5d@nvidia.com>
+ <20200929163507.GV9916@ziepe.ca>
+ <aab477bf-4353-5e6b-4cc9-9872c9376ed2@nvidia.com>
+ <20200929175524.GX9916@ziepe.ca>
+From:   John Hubbard <jhubbard@nvidia.com>
+Message-ID: <715c49ec-d2a8-45cb-8ace-c6b1b4b8f978@nvidia.com>
+Date:   Tue, 29 Sep 2020 11:59:55 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200923173905.11219-1-kristen@linux.intel.com>
+In-Reply-To: <20200929175524.GX9916@ziepe.ca>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1601405895; bh=DnmTNplotRRR/qxw4AWftTeBjRlYNWMKBBfAgIjGMJM=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=ayxqxoWrh8CnUTzyfHWb9J4A5gPuRtiEduP2eFCYc38cvJTvbmnYbMndIFDpHd+F/
+         lA3vFdd4TyZ2V4QdwHIuQY3746GyhQkfmPuC72+KQ2agHmnfq1XjLcarkPcA+esGNk
+         +zJxX87yMrBcXZ3NPFIVilBE2+uaQC/RjGtA44gPSBoXo5/fc+QkrXpVCDlO0UMfpV
+         BLWyyZ+3o8fkKNMMAz+llCFL9pFhhLshyxzxsdQKPeIXPGgvuu5MaiWxs0s3G3Rnld
+         1cE+QIUrmDaGCu0q/LzmnT8CaKQjMITbruodKASFrF9T9Db5ChT6APdi21UtgS7cn6
+         bC7KgIIBIb79g==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 10:38:54AM -0700, Kristen Carlson Accardi wrote:
-> This patch set is an implementation of finer grained kernel address space
-> randomization. It rearranges your kernel code at load time 
-> on a per-function level granularity, with only around a second added to
-> boot time.
+On 9/29/20 10:55 AM, Jason Gunthorpe wrote:
+> On Tue, Sep 29, 2020 at 10:44:31AM -0700, John Hubbard wrote:
+>> On 9/29/20 9:35 AM, Jason Gunthorpe wrote:
+>>> On Mon, Sep 28, 2020 at 01:10:24PM -0700, John Hubbard wrote:
+>>>> On 9/28/20 5:57 AM, Jason Gunthorpe wrote:
+>>>>> On Sun, Sep 27, 2020 at 11:21:53PM -0700, John Hubbard wrote:
+...
+>> I don't see any "gcc -m" type of dependency generation pass happening
+>> in this relatively simple Make system.
 > 
-> Changes in v5:
-> --------------
-> [...]
+> It happens with -MD, all the deps are stored in files like mm/.init-mm.o.cmd
+> and sucked into the build.
 
-Builds and boots; looks happy. Hopefully this can go into -tip after
-the coming v5.10 merge window, for v5.11? Thoughts?
+You are thinking of kbuild. This is not kbuild. There are no such artifacts
+being generated.
 
-Tested-by: Kees Cook <keescook@chromium.org>
+>> And so, without including an explicit header file dependency (at
+>> least, that's the simplest way), changes to gup_test.h are not
+>> detected.
+> 
+> Shouldn't be
+> 
+>> Both the Makefile code and the observed behavior back this up. (I
+>> expect that this is because there is less use of header files in
+>> this area, because most unit tests are self-contained within a
+>> single .c file.)
+> 
+> Something else is very wrong then.
+> 
 
+Not really, it's just a less-cabable system than kbuild.
+
+thanks,
 -- 
-Kees Cook
+John Hubbard
+NVIDIA
