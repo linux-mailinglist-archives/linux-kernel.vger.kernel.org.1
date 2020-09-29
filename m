@@ -2,146 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 453C327CE8F
+	by mail.lfdr.de (Postfix) with ESMTP id B675727CE90
 	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 15:09:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729279AbgI2NIz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1728405AbgI2NI4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 09:08:56 -0400
+Received: from mga11.intel.com ([192.55.52.93]:25989 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728407AbgI2NIz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 29 Sep 2020 09:08:55 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:57452 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728346AbgI2NIy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 09:08:54 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08TD8gOU014639;
-        Tue, 29 Sep 2020 08:08:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1601384922;
-        bh=RLGW+YFIRVUBvC5l28tX8bJsGKwv4jqEcGYCjkq2IFw=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=p5V7gkCSfgKohSXSEosrHGboPtUvYy+TBjs3Jv56Mb+8/tiYDdMyojAZi5t0cjG8Y
-         GKcLN62ZIJ+DeotJu5DhNsUJbNZr1o1IOF7p2oEV/ExRI1btO59NHuxAzKcyWwyDQn
-         eUO0F/I9MEwTpIc+F41J6OysuyTnt1uHrPRDxTko=
-Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08TD8gM8101901
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 29 Sep 2020 08:08:42 -0500
-Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 29
- Sep 2020 08:08:41 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE108.ent.ti.com
- (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 29 Sep 2020 08:08:41 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08TD8e22128959;
-        Tue, 29 Sep 2020 08:08:41 -0500
-Date:   Tue, 29 Sep 2020 18:38:40 +0530
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-CC:     Sekhar Nori <nsekhar@ti.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>
-Subject: Re: [PATCH v13 11/15] mtd: spi-nor: core: perform a Soft Reset on
- shutdown
-Message-ID: <20200929130838.4hfa2y3qoxissdus@ti.com>
-References: <20200916124418.833-1-p.yadav@ti.com>
- <20200916124418.833-12-p.yadav@ti.com>
+IronPort-SDR: 9q+QMJwxOrnmU0JS8jxzC2LDmaND5f6229+AzNgTrfrTCl6jU2EZhsB37ujKmONswRPpme1Y5a
+ hpXJ1nfpxOSg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9758"; a="159514558"
+X-IronPort-AV: E=Sophos;i="5.77,318,1596524400"; 
+   d="scan'208";a="159514558"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2020 06:08:53 -0700
+IronPort-SDR: GLBwOey+qvi1JgCcffRXQGgfEkMe3pcTLQgmt0hdLiISYrL/vR5MLsui3fDMYhawdIqLfnFPtY
+ F4lJ7fW6E8lA==
+X-IronPort-AV: E=Sophos;i="5.77,318,1596524400"; 
+   d="scan'208";a="491071392"
+Received: from sneftin-mobl.ger.corp.intel.com (HELO [10.251.191.104]) ([10.251.191.104])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2020 06:08:49 -0700
+Subject: Re: [Intel-wired-lan] [PATCH v4] e1000e: Increase polling timeout on
+ MDIC ready bit
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        jeffrey.t.kirsher@intel.com
+Cc:     andrew@lunn.ch,
+        "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:INTEL ETHERNET DRIVERS" 
+        <intel-wired-lan@lists.osuosl.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Lifshits, Vitaly" <vitaly.lifshits@intel.com>,
+        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>
+References: <20200924164542.19906-1-kai.heng.feng@canonical.com>
+ <20200928083658.8567-1-kai.heng.feng@canonical.com>
+From:   "Neftin, Sasha" <sasha.neftin@intel.com>
+Message-ID: <469c71d5-93ac-e6c7-f85c-342b0df78a45@intel.com>
+Date:   Tue, 29 Sep 2020 16:08:45 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20200916124418.833-12-p.yadav@ti.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <20200928083658.8567-1-kai.heng.feng@canonical.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/09/20 06:14PM, Pratyush Yadav wrote:
-> Perform a Soft Reset on shutdown on flashes that support it so that the
-> flash can be reset to its initial state and any configurations made by
-> spi-nor (given that they're only done in volatile registers) will be
-> reset. This will hand back the flash in pristine state for any further
-> operations on it.
+On 9/28/2020 11:36, Kai-Heng Feng wrote:
+> We are seeing the following error after S3 resume:
+> [  704.746874] e1000e 0000:00:1f.6 eno1: Setting page 0x6020
+> [  704.844232] e1000e 0000:00:1f.6 eno1: MDI Write did not complete
+> [  704.902817] e1000e 0000:00:1f.6 eno1: Setting page 0x6020
+> [  704.903075] e1000e 0000:00:1f.6 eno1: reading PHY page 769 (or 0x6020 shifted) reg 0x17
+> [  704.903281] e1000e 0000:00:1f.6 eno1: Setting page 0x6020
+> [  704.903486] e1000e 0000:00:1f.6 eno1: writing PHY page 769 (or 0x6020 shifted) reg 0x17
+> [  704.943155] e1000e 0000:00:1f.6 eno1: MDI Error
+> ...
+> [  705.108161] e1000e 0000:00:1f.6 eno1: Hardware Error
 > 
-> Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
+> As Andrew Lunn pointed out, MDIO has nothing to do with phy, and indeed
+> increase polling iteration can resolve the issue.
+> 
+> This patch only papers over the symptom, as we don't really know the
+> root cause of the issue. The most possible culprit is Intel ME, which
+> may do its own things that conflict with software.
+> 
+> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
 > ---
->  drivers/mtd/spi-nor/core.c  | 41 +++++++++++++++++++++++++++++++++++++
->  include/linux/mtd/spi-nor.h |  2 ++
->  2 files changed, 43 insertions(+)
+> v4:
+>   - States that this patch just papers over the symptom.
 > 
-> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-> index 6ee93544d72f..853dfa02f0de 100644
-> --- a/drivers/mtd/spi-nor/core.c
-> +++ b/drivers/mtd/spi-nor/core.c
-> @@ -40,6 +40,9 @@
->  
->  #define SPI_NOR_MAX_ADDR_WIDTH	4
->  
-> +#define SPI_NOR_SRST_SLEEP_MIN 200
-> +#define SPI_NOR_SRST_SLEEP_MAX 400
-> +
->  /**
->   * spi_nor_get_cmd_ext() - Get the command opcode extension based on the
->   *			   extension type.
-> @@ -3174,6 +3177,41 @@ static int spi_nor_init(struct spi_nor *nor)
->  	return 0;
->  }
->  
-> +static void spi_nor_soft_reset(struct spi_nor *nor)
-> +{
-> +	struct spi_mem_op op;
-> +	int ret;
-> +
-> +	op = (struct spi_mem_op)SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_SRSTEN, 8),
-
-The buswidth used here should be 1 instead of 8. It makes no difference 
-in practice because the call to spi_nor_spimem_setup_op() immediately 
-after will over-write it to the correct value anyway, but let's follow 
-the style followed throughout the rest of the codebase. Will fix in the 
-next version.
-
-> +			SPI_MEM_OP_NO_DUMMY,
-> +			SPI_MEM_OP_NO_ADDR,
-> +			SPI_MEM_OP_NO_DATA);
-> +	spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
-> +	ret = spi_mem_exec_op(nor->spimem, &op);
-> +	if (ret) {
-> +		dev_warn(nor->dev, "Software reset failed: %d\n", ret);
-> +		return;
-> +	}
-> +
-> +	op = (struct spi_mem_op)SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_SRST, 8),
-
-Same here.
-
-> +			SPI_MEM_OP_NO_DUMMY,
-> +			SPI_MEM_OP_NO_ADDR,
-> +			SPI_MEM_OP_NO_DATA);
-> +	spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
-> +	ret = spi_mem_exec_op(nor->spimem, &op);
-> +	if (ret) {
-> +		dev_warn(nor->dev, "Software reset failed: %d\n", ret);
-> +		return;
-> +	}
-> +
-> +	/*
-> +	 * Software Reset is not instant, and the delay varies from flash to
-> +	 * flash. Looking at a few flashes, most range somewhere below 100
-> +	 * microseconds. So, sleep for a range of 200-400 us.
-> +	 */
-> +	usleep_range(SPI_NOR_SRST_SLEEP_MIN, SPI_NOR_SRST_SLEEP_MAX);
-> +}
-> +
->  /* mtd resume handler */
->  static void spi_nor_resume(struct mtd_info *mtd)
->  {
-
--- 
-Regards,
-Pratyush Yadav
-Texas Instruments India
+> v3:
+>   - Moving delay to end of loop doesn't save anytime, move it back.
+>   - Point out this is quitely likely caused by Intel ME.
+> 
+> v2:
+>   - Increase polling iteration instead of powering down the phy.
+> 
+>   drivers/net/ethernet/intel/e1000e/phy.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/ethernet/intel/e1000e/phy.c b/drivers/net/ethernet/intel/e1000e/phy.c
+> index e11c877595fb..e6d4acd90937 100644
+> --- a/drivers/net/ethernet/intel/e1000e/phy.c
+> +++ b/drivers/net/ethernet/intel/e1000e/phy.c
+> @@ -203,7 +203,7 @@ s32 e1000e_write_phy_reg_mdic(struct e1000_hw *hw, u32 offset, u16 data)
+>   	 * Increasing the time out as testing showed failures with
+>   	 * the lower time out
+>   	 */
+> -	for (i = 0; i < (E1000_GEN_POLL_TIMEOUT * 3); i++) {
+> +	for (i = 0; i < (E1000_GEN_POLL_TIMEOUT * 10); i++) {
+As we discussed (many threads) - AMT/ME systems not supported on Linux 
+as properly. I do not think increasing polling iteration will solve the 
+problem. Rather mask it.
+I prefer you check option to disable ME vi BIOS on your system.
+>   		udelay(50);
+>   		mdic = er32(MDIC);
+>   		if (mdic & E1000_MDIC_READY)
+> 
+Thanks,
+Sasha
