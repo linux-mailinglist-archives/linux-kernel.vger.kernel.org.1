@@ -2,91 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 270C627D338
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 17:57:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2571327D33F
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 18:00:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730006AbgI2P5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 11:57:11 -0400
-Received: from smtp08.smtpout.orange.fr ([80.12.242.130]:57485 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728597AbgI2P5J (ORCPT
+        id S1729361AbgI2QAh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 12:00:37 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:51239 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S1728570AbgI2QAh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 11:57:09 -0400
-Received: from [192.168.42.210] ([93.22.37.244])
-        by mwinf5d16 with ME
-        id Zrx32300w5G3HaM03rx48Y; Tue, 29 Sep 2020 17:57:08 +0200
-X-ME-Helo: [192.168.42.210]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Tue, 29 Sep 2020 17:57:08 +0200
-X-ME-IP: 93.22.37.244
-Subject: Re: [PATCH 04/20] media: saa7134: use semicolons rather than commas
- to separate statements
-To:     Julia Lawall <Julia.Lawall@inria.fr>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     =?UTF-8?Q?Valdis_Kl=c4=93tnieks?= <valdis.kletnieks@vt.edu>,
-        Joe Perches <joe@perches.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        kernel-janitors@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1601385283-26144-1-git-send-email-Julia.Lawall@inria.fr>
- <1601385283-26144-5-git-send-email-Julia.Lawall@inria.fr>
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Message-ID: <8a2e3c47-76d1-f959-fb7c-3a02641a57e2@wanadoo.fr>
-Date:   Tue, 29 Sep 2020 17:57:04 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Tue, 29 Sep 2020 12:00:37 -0400
+Received: (qmail 175276 invoked by uid 1000); 29 Sep 2020 12:00:36 -0400
+Date:   Tue, 29 Sep 2020 12:00:36 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Matthias Kaehlcke <mka@chromium.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        Bastien Nocera <hadess@hadess.net>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        devicetree@vger.kernel.org, Peter Chen <peter.chen@nxp.com>,
+        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Johan Hovold <johan@kernel.org>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH v4 2/2] USB: misc: Add onboard_usb_hub driver
+Message-ID: <20200929160036.GC173077@rowland.harvard.edu>
+References: <20200928101326.v4.1.I248292623d3d0f6a4f0c5bc58478ca3c0062b49a@changeid>
+ <20200928101326.v4.2.I7c9a1f1d6ced41dd8310e8a03da666a32364e790@changeid>
+ <20200928184759.GB142254@rowland.harvard.edu>
+ <20200929014355.GA1099144@google.com>
 MIME-Version: 1.0
-In-Reply-To: <1601385283-26144-5-git-send-email-Julia.Lawall@inria.fr>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200929014355.GA1099144@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 29/09/2020 à 15:14, Julia Lawall a écrit :
-> Replace commas with semicolons.  Commas introduce unnecessary
-> variability in the code structure and are hard to see.  What is done
-> is essentially described by the following Coccinelle semantic patch
-> (http://coccinelle.lip6.fr/):
+On Mon, Sep 28, 2020 at 06:43:55PM -0700, Matthias Kaehlcke wrote:
+> > Have you tried manually unbinding and rebinding the two drivers a few
+> > times to make sure they will still work?
 > 
-> // <smpl>
-> @@ expression e1,e2; @@
-> e1
-> -,
-> +;
-> e2
-> ... when any
-> // </smpl>
+> I went through a few dozen bund/unbind cycles for both drivers and things
+> looked good overall, but then last minute I found that determining whether
+> wakeup capable devices are connected doesn't always work as (I) expected.
+> I didn't see this earlier, it seems to be reproduce more easily after
+> unbinding and rebinding the platform driver.
 > 
-> Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
-> 
-> ---
->   drivers/media/pci/saa7134/saa7134-video.c |    7 +++++--
->   1 file changed, 5 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/media/pci/saa7134/saa7134-video.c b/drivers/media/pci/saa7134/saa7134-video.c
-> index 9a6a6b68f8e3..2ca963b04b3f 100644
-> --- a/drivers/media/pci/saa7134/saa7134-video.c
-> +++ b/drivers/media/pci/saa7134/saa7134-video.c
-> @@ -868,8 +868,11 @@ static int buffer_activate(struct saa7134_dev *dev,
->   		lines_uv = dev->height >> dev->fmt->vshift;
->   		base2    = base + bpl * dev->height;
->   		base3    = base2 + bpl_uv * lines_uv;
-> -		if (dev->fmt->uvswap)
-> -			tmp = base2, base2 = base3, base3 = tmp;
-> +		if (dev->fmt->uvswap) {
-> +			tmp = base2;
-> +			base2 = base3;
-> +			base3 = tmp;
-> +		}
->   		video_dbg("uv: bpl=%ld lines=%ld base2/3=%ld/%ld\n",
->   			bpl_uv,lines_uv,base2,base3);
->   		if (V4L2_FIELD_HAS_BOTH(dev->field)) {
-> 
-> 
-Hi,
-this could be turned into a simpler:
-    swap(base2, base3);
+> During development I already noticed that usb_wakeup_enabled_descendants()
+> returns a cached value, which was a problem for an earlier version of the
+> driver. The values are updated by hub_suspend(), my (flawed) assumption
+> was that the USB driver would always suspend before the platform driver.
+> This generally seems to be the case on my development platform after boot,
+> but not necessarily after unbinding and rebinding the driver. Using the
+> _suspend_late hook instead of _suspend seems to be a reliable workaround.
 
-CJ
+Yes, for unrelated (i.e., not in a parent-child relation) devices, the 
+PM subsystem doesn't guarantee ordering of suspend and resume callbacks.  
+You can enforce the ordering by using device_pm_wait_for_dev().  But the 
+suspend_late approach seems like a better solution in this case.
+
+> > I'm a little concerned about  all the devm_* stuff in here; does that
+> > get released when the driver is unbound from the device or when the device
+> > is unregistered?  And if the latter, what happens if you have multiple
+> > sysfs attribute groups going at the same time?
+> 
+> The memory gets released when the device is unbound:
+> 
+> device_release_driver
+>   device_release_driver_internal
+>     __device_release_driver
+>       devres_release_all
+> 
+> Anyway, if you prefer I can change the driver to use kmalloc/kfree.
+
+No, that's fine.  I just wasn't sure about this and wanted to check.
+
+Alan Stern
