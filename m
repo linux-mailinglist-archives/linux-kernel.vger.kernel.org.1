@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E281127CD70
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:44:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCF0C27CDEC
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:48:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387500AbgI2MoI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 08:44:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49612 "EHLO mail.kernel.org"
+        id S1732565AbgI2Mrq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 08:47:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40180 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729080AbgI2LJV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:09:21 -0400
+        id S1728557AbgI2LEJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:04:09 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2AF9021941;
-        Tue, 29 Sep 2020 11:09:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8A19C20C09;
+        Tue, 29 Sep 2020 11:04:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601377760;
-        bh=ts8SWlom9Ok1hRvpZEBIubVtwrk+rjAs3Bi/lvQxV3I=;
+        s=default; t=1601377449;
+        bh=XO91kag5Q6XfDIlS8s8GXt9cwhzf2kZxdMNcZgYwiuo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1RSCiKJ4gpicyCeQ2fTx6JmJRmj3SUy1XvfnKIHiKs6a197W3SGJMGqxdgqtUtCQv
-         H34ejUpZo+nR54cTAQuvhoJu8bg6os3c56fEOzRstM7WFOuihfAwew4CpUBPlg0CNV
-         DHpV0KE65zr2K9AiisdiRpCQsdaM2UtIhvPc/gH4=
+        b=uoforYoD3ptMhSPq7rl090VGadAnCiYKrhlFV+S47JHwfZMmxPwjA01hbgqIet8B+
+         +AmZAAmjWBgaSafu5zs2pdiPBBuOZZHTLtuYWIBGak6MozSv2Tr2V36JmSdeiRZ2xM
+         cAl6fvIWLcXcW20wK3DUfzxfX12EnqHe+9+PTl7U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        stable@vger.kernel.org, Hawking Zhang <Hawking.Zhang@amd.com>,
+        John Clements <john.clements@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 063/121] tracing: Use address-of operator on section symbols
+Subject: [PATCH 4.4 40/85] drm/amdgpu: increase atombios cmd timeout
 Date:   Tue, 29 Sep 2020 13:00:07 +0200
-Message-Id: <20200929105933.294270809@linuxfoundation.org>
+Message-Id: <20200929105930.230633955@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929105930.172747117@linuxfoundation.org>
-References: <20200929105930.172747117@linuxfoundation.org>
+In-Reply-To: <20200929105928.198942536@linuxfoundation.org>
+References: <20200929105928.198942536@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,47 +44,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nathan Chancellor <natechancellor@gmail.com>
+From: John Clements <john.clements@amd.com>
 
-[ Upstream commit bf2cbe044da275021b2de5917240411a19e5c50d ]
+[ Upstream commit 1b3460a8b19688ad3033b75237d40fa580a5a953 ]
 
-Clang warns:
+mitigates race condition on BACO reset between GPU bootcode and driver reload
 
-../kernel/trace/trace.c:9335:33: warning: array comparison always
-evaluates to true [-Wtautological-compare]
-        if (__stop___trace_bprintk_fmt != __start___trace_bprintk_fmt)
-                                       ^
-1 warning generated.
-
-These are not true arrays, they are linker defined symbols, which are
-just addresses. Using the address of operator silences the warning and
-does not change the runtime result of the check (tested with some print
-statements compiled in with clang + ld.lld and gcc + ld.bfd in QEMU).
-
-Link: http://lkml.kernel.org/r/20200220051011.26113-1-natechancellor@gmail.com
-
-Link: https://github.com/ClangBuiltLinux/linux/issues/893
-Suggested-by: Nick Desaulniers <ndesaulniers@google.com>
-Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Reviewed-by: Hawking Zhang <Hawking.Zhang@amd.com>
+Signed-off-by: John Clements <john.clements@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/trace/trace.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/amd/amdgpu/atom.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index 67cee2774a6b8..2388fb50d1885 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -7696,7 +7696,7 @@ __init static int tracer_alloc_buffers(void)
- 		goto out_free_buffer_mask;
- 
- 	/* Only allocate trace_printk buffers if a trace_printk exists */
--	if (__stop___trace_bprintk_fmt != __start___trace_bprintk_fmt)
-+	if (&__stop___trace_bprintk_fmt != &__start___trace_bprintk_fmt)
- 		/* Must be called before global_trace.buffer is allocated */
- 		trace_printk_init_buffers();
- 
+diff --git a/drivers/gpu/drm/amd/amdgpu/atom.c b/drivers/gpu/drm/amd/amdgpu/atom.c
+index 1b50e6c13fb3f..5fbf99d600587 100644
+--- a/drivers/gpu/drm/amd/amdgpu/atom.c
++++ b/drivers/gpu/drm/amd/amdgpu/atom.c
+@@ -748,8 +748,8 @@ static void atom_op_jump(atom_exec_context *ctx, int *ptr, int arg)
+ 			cjiffies = jiffies;
+ 			if (time_after(cjiffies, ctx->last_jump_jiffies)) {
+ 				cjiffies -= ctx->last_jump_jiffies;
+-				if ((jiffies_to_msecs(cjiffies) > 5000)) {
+-					DRM_ERROR("atombios stuck in loop for more than 5secs aborting\n");
++				if ((jiffies_to_msecs(cjiffies) > 10000)) {
++					DRM_ERROR("atombios stuck in loop for more than 10secs aborting\n");
+ 					ctx->abort = true;
+ 				}
+ 			} else {
 -- 
 2.25.1
 
