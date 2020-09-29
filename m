@@ -2,50 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41B3727C879
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:02:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8942E27C859
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:01:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731772AbgI2MC3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 08:02:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33642 "EHLO mail.kernel.org"
+        id S1731410AbgI2MB0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 08:01:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36582 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730460AbgI2LjM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:39:12 -0400
+        id S1730560AbgI2Lkn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:40:43 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7A3842083B;
-        Tue, 29 Sep 2020 11:39:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9D9562158C;
+        Tue, 29 Sep 2020 11:23:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601379552;
-        bh=rWMufWl3bYjWXmiA1ctYATk98OZ2gdOzkhxi01F/kE4=;
+        s=default; t=1601378591;
+        bh=cSiETaOBpIVW8HiynNuhSKyL08OZPxS1OwjuM5Z8U4w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=x1mkLpQeN8hTEP+eE9Sex4LZOq2KAptXBchgebWsOx2L5BDxMWApZbQFuWxwlPy97
-         0B+wXH+Zqn7xvsJR8+lckq7Ox27lC4lEvgwZjSQ65435NNVGEqRB0jtjiyDvq8pIcS
-         AUcjqJfA9tyDIHrVNk4wzqjYBKvRoyEYqv4D/+yk=
+        b=nBHrJvpbSPJMP40dvpaY2LtQKdzpx+qkq1NUHEiz/gC7nak5E32YHo9GBmJI7Dl5F
+         fBF8vYYE+drZStwRjWNhMlWmxSl5aIeudr/f2M/bYc8VXYt6kuu+VI1NiHhGFITF7I
+         sgviuy9DR+JOC1s1cy40GFnUyIsGNGACnd9UnOsQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        David Laight <David.Laight@ACULAB.COM>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Don Zickus <dzickus@redhat.com>, He Zhe <zhe.he@windriver.com>,
-        Jan Stancek <jstancek@redhat.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
+        stable@vger.kernel.org, Steven Price <steven.price@arm.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alexandre Ghiti <alex@ghiti.fr>,
+        Andy Lutomirski <luto@kernel.org>,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        James Hogan <jhogan@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        "Liang, Kan" <kan.liang@linux.intel.com>,
         Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Burton <paul.burton@mips.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        kernel-janitors@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        Will Deacon <will@kernel.org>, Zong Li <zong.li@sifive.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 187/388] perf cpumap: Fix snprintf overflow check
-Date:   Tue, 29 Sep 2020 12:58:38 +0200
-Message-Id: <20200929110019.529864567@linuxfoundation.org>
+Subject: [PATCH 4.19 068/245] mm: pagewalk: fix termination condition in walk_pte_range()
+Date:   Tue, 29 Sep 2020 12:58:39 +0200
+Message-Id: <20200929105950.299639581@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929110010.467764689@linuxfoundation.org>
-References: <20200929110010.467764689@linuxfoundation.org>
+In-Reply-To: <20200929105946.978650816@linuxfoundation.org>
+References: <20200929105946.978650816@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -54,88 +73,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Steven Price <steven.price@arm.com>
 
-[ Upstream commit d74b181a028bb5a468f0c609553eff6a8fdf4887 ]
+[ Upstream commit c02a98753e0a36ba65a05818626fa6adeb4e7c97 ]
 
-'snprintf' returns the number of characters which would be generated for
-the given input.
+If walk_pte_range() is called with a 'end' argument that is beyond the
+last page of memory (e.g.  ~0UL) then the comparison between 'addr' and
+'end' will always fail and the loop will be infinite.  Instead change the
+comparison to >= while accounting for overflow.
 
-If the returned value is *greater than* or equal to the buffer size, it
-means that the output has been truncated.
-
-Fix the overflow test accordingly.
-
-Fixes: 7780c25bae59f ("perf tools: Allow ability to map cpus to nodes easily")
-Fixes: 92a7e1278005b ("perf cpumap: Add cpu__max_present_cpu()")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Suggested-by: David Laight <David.Laight@ACULAB.COM>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Don Zickus <dzickus@redhat.com>
-Cc: He Zhe <zhe.he@windriver.com>
-Cc: Jan Stancek <jstancek@redhat.com>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: Kan Liang <kan.liang@linux.intel.com>
+Link: http://lkml.kernel.org/r/20191218162402.45610-15-steven.price@arm.com
+Signed-off-by: Steven Price <steven.price@arm.com>
+Cc: Albert Ou <aou@eecs.berkeley.edu>
+Cc: Alexandre Ghiti <alex@ghiti.fr>
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Ard Biesheuvel <ard.biesheuvel@linaro.org>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Christian Borntraeger <borntraeger@de.ibm.com>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: David S. Miller <davem@davemloft.net>
+Cc: Heiko Carstens <heiko.carstens@de.ibm.com>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: James Hogan <jhogan@kernel.org>
+Cc: James Morse <james.morse@arm.com>
+Cc: Jerome Glisse <jglisse@redhat.com>
+Cc: "Liang, Kan" <kan.liang@linux.intel.com>
 Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Paul Burton <paul.burton@mips.com>
+Cc: Paul Mackerras <paulus@samba.org>
+Cc: Paul Walmsley <paul.walmsley@sifive.com>
 Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: kernel-janitors@vger.kernel.org
-Link: http://lore.kernel.org/lkml/20200324070319.10901-1-christophe.jaillet@wanadoo.fr
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: Russell King <linux@armlinux.org.uk>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Vasily Gorbik <gor@linux.ibm.com>
+Cc: Vineet Gupta <vgupta@synopsys.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Zong Li <zong.li@sifive.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/perf/util/cpumap.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ mm/pagewalk.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/tools/perf/util/cpumap.c b/tools/perf/util/cpumap.c
-index a22c1114e880d..324ec0456c83f 100644
---- a/tools/perf/util/cpumap.c
-+++ b/tools/perf/util/cpumap.c
-@@ -299,7 +299,7 @@ static void set_max_cpu_num(void)
- 
- 	/* get the highest possible cpu number for a sparse allocation */
- 	ret = snprintf(path, PATH_MAX, "%s/devices/system/cpu/possible", mnt);
--	if (ret == PATH_MAX) {
-+	if (ret >= PATH_MAX) {
- 		pr_err("sysfs path crossed PATH_MAX(%d) size\n", PATH_MAX);
- 		goto out;
+diff --git a/mm/pagewalk.c b/mm/pagewalk.c
+index c3084ff2569d2..3c0930d94a295 100644
+--- a/mm/pagewalk.c
++++ b/mm/pagewalk.c
+@@ -15,9 +15,9 @@ static int walk_pte_range(pmd_t *pmd, unsigned long addr, unsigned long end,
+ 		err = walk->pte_entry(pte, addr, addr + PAGE_SIZE, walk);
+ 		if (err)
+ 		       break;
+-		addr += PAGE_SIZE;
+-		if (addr == end)
++		if (addr >= end - PAGE_SIZE)
+ 			break;
++		addr += PAGE_SIZE;
+ 		pte++;
  	}
-@@ -310,7 +310,7 @@ static void set_max_cpu_num(void)
  
- 	/* get the highest present cpu number for a sparse allocation */
- 	ret = snprintf(path, PATH_MAX, "%s/devices/system/cpu/present", mnt);
--	if (ret == PATH_MAX) {
-+	if (ret >= PATH_MAX) {
- 		pr_err("sysfs path crossed PATH_MAX(%d) size\n", PATH_MAX);
- 		goto out;
- 	}
-@@ -338,7 +338,7 @@ static void set_max_node_num(void)
- 
- 	/* get the highest possible cpu number for a sparse allocation */
- 	ret = snprintf(path, PATH_MAX, "%s/devices/system/node/possible", mnt);
--	if (ret == PATH_MAX) {
-+	if (ret >= PATH_MAX) {
- 		pr_err("sysfs path crossed PATH_MAX(%d) size\n", PATH_MAX);
- 		goto out;
- 	}
-@@ -423,7 +423,7 @@ int cpu__setup_cpunode_map(void)
- 		return 0;
- 
- 	n = snprintf(path, PATH_MAX, "%s/devices/system/node", mnt);
--	if (n == PATH_MAX) {
-+	if (n >= PATH_MAX) {
- 		pr_err("sysfs path crossed PATH_MAX(%d) size\n", PATH_MAX);
- 		return -1;
- 	}
-@@ -438,7 +438,7 @@ int cpu__setup_cpunode_map(void)
- 			continue;
- 
- 		n = snprintf(buf, PATH_MAX, "%s/%s", path, dent1->d_name);
--		if (n == PATH_MAX) {
-+		if (n >= PATH_MAX) {
- 			pr_err("sysfs path crossed PATH_MAX(%d) size\n", PATH_MAX);
- 			continue;
- 		}
 -- 
 2.25.1
 
