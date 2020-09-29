@@ -2,107 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2F2C27C17C
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 11:42:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E2F627C180
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 11:43:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727924AbgI2Jm4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 05:42:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48492 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727854AbgI2Jm4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 05:42:56 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E1EFC0613D1
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 02:42:56 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id k18so4076353wmj.5
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 02:42:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ofBo1DHZJAYOAfdvKdc+JIzoJ7spso5qBxDDaOUD8P0=;
-        b=fTyuu6u3qm+M2poqn0Gh7usMFQPyTseW+CABT/qMsrjz9vOA8ceeD4o7RmCWOO26dW
-         oEaa7rL+447KXdmCLIYEt0xHiW6wdJTKY/qI1uMQxBs0Nd5zdu0trrBr1m0YFgNNt6rG
-         8oGSRaxE7XwJ8CME7sbQRGm4iczVVBYCbzkuAwleDfDszVa5s/EtrWW9nrBvClGfiQpM
-         KjjsFT2izPU0BbVZrdZjX8npp+iXjBHsJ3db51ZC+kXY09b9YgK7ziZgel3ZOKf/ncTe
-         QjmfoEa7fSN+S1tCyKDwsN/YF7tyGjJPBAUeuQltd45vLTSOPaqTGd74EXDsdziiCEDc
-         /IfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ofBo1DHZJAYOAfdvKdc+JIzoJ7spso5qBxDDaOUD8P0=;
-        b=KZULDgQIRBM9n51S6VSxNLKF0UZrmQclCHAvzGeg/+vOP4bbmDMl4R8mk+jfKXnY+G
-         82NS5xJIpRS05QM86TsBwCntYLusgERzcFJGprtyOHD39ODeTPgFlG6C7jFUKdGAPwwr
-         zyH2qKSswoNxZqsyjsetiRbbO/5WW+dsCXbCgEMJHLLnDQG7RTdy+tkYU/3KaLFWZtxT
-         om46eM8rSq+EhUrvE9DtNJyHQgIbVbeaRknvgbNceZPdsMihfrggBZvyNKhXH0wykUHE
-         lntNerfEeAIJl65FI62vpGY/QK1CDsSt1S3c7gtwPpzLBvXSTDx+E+OKFwJ4JGzbF9nw
-         PPoA==
-X-Gm-Message-State: AOAM5333Q2D/tVAhE78jqELhgLXF1zNMsb5Tl0WazJuaATTTflYDPmRV
-        xmM86sMSzjEPNBIPsANo2nzdv+eFCUjDsmX4QChVw6UVqIk=
-X-Google-Smtp-Source: ABdhPJy8aJk0Qe5jx6T1KNmqaPSZNL92RWZshamoYqVLfPSR/i7AzMct9OcCvBPhw+CDlfdfUemPaLx4dXCGXWCh5xA=
-X-Received: by 2002:a05:600c:22d1:: with SMTP id 17mr3540326wmg.58.1601372574620;
- Tue, 29 Sep 2020 02:42:54 -0700 (PDT)
+        id S1727948AbgI2Jni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 05:43:38 -0400
+Received: from mga06.intel.com ([134.134.136.31]:60896 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727698AbgI2Jni (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 05:43:38 -0400
+IronPort-SDR: DpmdmpR2lLfoLZxB+Xdy9FwIrvjsmBah1zk8mXEu5yA2kfV9Dnr1e4fSA6ffO9nRWY5WSRgy0r
+ d4f1NoyCtS2w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9758"; a="223742650"
+X-IronPort-AV: E=Sophos;i="5.77,318,1596524400"; 
+   d="scan'208";a="223742650"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2020 02:43:37 -0700
+IronPort-SDR: WD+qoWE6LnEug60anhMsY7vQb4O4gTo65GPfZn61dErp8MTX4B/kTRUq4L18GR2r2Fb8ixAJRC
+ l/GNr7w3c9mg==
+X-IronPort-AV: E=Sophos;i="5.77,318,1596524400"; 
+   d="scan'208";a="307697837"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2020 02:43:33 -0700
+Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
+        id C5BB2204FD; Tue, 29 Sep 2020 12:43:00 +0300 (EEST)
+Date:   Tue, 29 Sep 2020 12:43:00 +0300
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 1/4] dt-bindings: media: imx258: add bindings for
+ IMX258 sensor
+Message-ID: <20200929094300.GI26842@paasikivi.fi.intel.com>
+References: <20200923152129.21736-1-krzk@kernel.org>
+ <20200929091512.GF26842@paasikivi.fi.intel.com>
+ <CAJKOXPfRnMg2sUO8dd8CRrwyQFNr-9HN5-QV7Uy4YTVrRJosWQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <20200928104155.7385-1-brgl@bgdev.pl> <20200928104155.7385-2-brgl@bgdev.pl>
- <2fcfd81f62ec87d9b75cca32468d8b9583faec47.camel@perches.com>
- <CAMRc=Mds0ccYBhRJnCQ0NEPkUpWRGtyX4FKj4+4rxN27_gfobA@mail.gmail.com>
- <12317bbc7712d96be8f52a3bf574e47628830191.camel@perches.com>
- <3ba6779e11684ec8bc32638aa67ab952@AcuMS.aculab.com> <20200929084912.GZ3956970@smile.fi.intel.com>
-In-Reply-To: <20200929084912.GZ3956970@smile.fi.intel.com>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Tue, 29 Sep 2020 11:42:43 +0200
-Message-ID: <CAMpxmJV84C9KTj+z8+BBE2zaiMhRSRcybBO52P7VEc008Pb6yg@mail.gmail.com>
-Subject: Re: [PATCH v2 1/9] lib: string_helpers: provide kfree_strarray()
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     David Laight <David.Laight@aculab.com>,
-        Joe Perches <joe@perches.com>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kent Gibson <warthog618@gmail.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-doc <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJKOXPfRnMg2sUO8dd8CRrwyQFNr-9HN5-QV7Uy4YTVrRJosWQ@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 10:49 AM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> On Tue, Sep 29, 2020 at 08:10:10AM +0000, David Laight wrote:
-> > From: Joe Perches
-> > > Sent: 28 September 2020 17:07
-> > >
-> > > On Mon, 2020-09-28 at 18:02 +0200, Bartosz Golaszewski wrote:
-> > > > On Mon, Sep 28, 2020 at 5:59 PM Joe Perches <joe@perches.com> wrote:
-> > > > > On Mon, 2020-09-28 at 12:41 +0200, Bartosz Golaszewski wrote:
-> > > > > > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> > > > > >
-> > > > > > There's a common pattern of dynamically allocating an array of char
-> > > > > > pointers and then also dynamically allocating each string in this
-> > > > > > array. Provide a helper for freeing such a string array with one call.
-> > > > >
-> > > > > Isn't this also common for things like ring buffers?
-> > > > > Why limit this to char *[]?
-> > > > >
-> > > >
-> > > > I don't want to add APIs nobody is using. What do you suggest?
-> > >
-> > > Change the argument to void** and call it
-> > >
-> > > void kfree_array(void **array, int count);
+On Tue, Sep 29, 2020 at 11:18:46AM +0200, Krzysztof Kozlowski wrote:
+> On Tue, 29 Sep 2020 at 11:15, Sakari Ailus <sakari.ailus@linux.intel.com> wrote:
 > >
-> > Does help, void doesn't work that way.
->
-> Actually good catch. void * and void ** have a big difference in the implicit
-> casting behaviour. I was stumbled over this while playing with some
-> experimental stuff locally.
->
+> > Hi Krzysztof,
+> >
+> > On Wed, Sep 23, 2020 at 05:21:26PM +0200, Krzysztof Kozlowski wrote:
+> > > Add bindings for the IMX258 camera sensor.  The bindings, just like the
+> > > driver, are quite limited, e.g. do not support regulator supplies.
+> > >
+> > > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> > >
+> > > ---
+> > >
+> > > Changes since v3:
+> > > 1. Document also two lane setup.
+> > >
+> > > Changes since v2:
+> > > 1. Remove clock-frequency, add reset GPIOs, add supplies.
+> >
+> > Oops. I missed this one.
+> >
+> > How does the driver know the appropriate clock frequency for the platform
+> > if it's not in DT? The sensor supports a range of frequencies, not a single
+> > frequency.
+> >
+> > Could you add clock-frequency back?
+> 
+> Not really, it was removed on Rob's request. The bindings do not
+> describe driver's behavior so how the driver gets frequency should not
+> be part of the bindings. Also it's not a real problem - the driver
+> just calls clk_get_rate().
 
-I'll keep kfree_strarray() then.
+Btw. we also have this nowadays:
+Documentation/driver-api/media/camera-sensor.rst .
 
-Bart
+-- 
+Sakari Ailus
