@@ -2,106 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84B2A27BFA5
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 10:35:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F5B327BFA7
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 10:36:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727763AbgI2Ifc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 04:35:32 -0400
-Received: from mga14.intel.com ([192.55.52.115]:44863 "EHLO mga14.intel.com"
+        id S1727637AbgI2Igt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 04:36:49 -0400
+Received: from mga07.intel.com ([134.134.136.100]:43405 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725535AbgI2Ifc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 04:35:32 -0400
-IronPort-SDR: NsYEVSA57OkvwXSDYcdQjyll6lGyXsK+UYo0nu+GCytTBVTbATLjmUIMoWgEFxATw6powPH+YN
- zi8Z0VwqLZqQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9758"; a="161371984"
+        id S1725710AbgI2Igr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 04:36:47 -0400
+IronPort-SDR: +nD7y7PLX41FEfOaCbKvcMWQp/C9Dxc/h69YRMaPEvmSHiJFkhpgRTip97QQeA/9j6fGuFLeTH
+ 9WpUcCj9nycQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9758"; a="226290069"
 X-IronPort-AV: E=Sophos;i="5.77,317,1596524400"; 
-   d="scan'208";a="161371984"
+   d="scan'208";a="226290069"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2020 01:35:31 -0700
-IronPort-SDR: UgLzSefUspPCRspHRQgyPO1tTCeV29f13AFZwPfkybz0UPN9MKI0TxsE4oe0T0uEB8aYLkGBoe
- 1sfjMFQPjf0Q==
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2020 01:36:45 -0700
+IronPort-SDR: gfjFoRTD3Ckn0GzHRqLSQ0Zlydos+4fT+cIcsr22pTLVnXZbDpIjcNY+JxMgiuh4dHIt86P3tU
+ G/Y8NNIuNjIg==
+X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.77,317,1596524400"; 
-   d="scan'208";a="345191068"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2020 01:35:30 -0700
-Date:   Tue, 29 Sep 2020 01:35:28 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Cc:     Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Jethro Beekman <jethro@fortanix.com>,
-        Jordan Hand <jorhand@linux.microsoft.com>,
-        Nathaniel McCallum <npmccallum@redhat.com>,
-        Chunyang Hui <sanqian.hcy@antfin.com>,
-        Seth Moore <sethmo@google.com>, akpm@linux-foundation.org,
-        andriy.shevchenko@linux.intel.com, asapek@google.com,
-        cedric.xing@intel.com, chenalexchen@google.com,
-        conradparker@google.com, cyhanish@google.com,
-        dave.hansen@intel.com, haitao.huang@intel.com,
-        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
-        kmoy@google.com, ludloff@google.com, luto@kernel.org,
-        nhorman@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
-        tglx@linutronix.de, yaozhangx@google.com
-Subject: Re: [PATCH v38 16/24] x86/sgx: Add a page reclaimer
-Message-ID: <20200929083528.GN353@linux.intel.com>
-References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
- <20200915112842.897265-17-jarkko.sakkinen@linux.intel.com>
- <20200922104538.GE22660@zn.tnic>
- <20200922140314.GA164527@linux.intel.com>
- <20200929011438.GA31167@linux.intel.com>
- <20200929035010.GB301037@linux.intel.com>
+   d="scan'208";a="340772900"
+Received: from lkp-server02.sh.intel.com (HELO dda5aa0886d8) ([10.239.97.151])
+  by orsmga008.jf.intel.com with ESMTP; 29 Sep 2020 01:36:43 -0700
+Received: from kbuild by dda5aa0886d8 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kNB7r-00005q-8Z; Tue, 29 Sep 2020 08:36:43 +0000
+Date:   Tue, 29 Sep 2020 16:36:21 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [rcu:urezki-pcount.2020.09.28d] BUILD SUCCESS
+ a5ea4d2af2ab21ad54196f9c27ff1c148a0d5320
+Message-ID: <5f72f205.zyF+oQUgoR50YVVm%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200929035010.GB301037@linux.intel.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 06:50:10AM +0300, Jarkko Sakkinen wrote:
-> On Mon, Sep 28, 2020 at 06:14:39PM -0700, Sean Christopherson wrote:
-> > On Tue, Sep 22, 2020 at 05:03:23PM +0300, Jarkko Sakkinen wrote:
-> > > On Tue, Sep 22, 2020 at 12:45:38PM +0200, Borislav Petkov wrote:
-> > > > > +	spin_lock(&sgx_active_page_list_lock);
-> > > > > +	for (i = 0; i < SGX_NR_TO_SCAN; i++) {
-> > > > > +		if (list_empty(&sgx_active_page_list))
-> > > > 
-> > > > Isn't it enough to do this once, i.e., not in the loop? You're holding
-> > > > sgx_active_page_list_lock...
-> > 
-> > Argh, I missed this until I looked at Jarkko's updated tree.
-> > 
-> > The reason for checking list_empty() on every iteration is that the loop is
-> > greedy, i.e. it tries to grab and reclaim up to 16 (SGX_NR_TO_SCAN) EPC pages
-> > at a time.
-> > 
-> > > I think that would make sense. Distantly analogous to the EINIT
-> > > discussion. Too complex code for yet to be known problem workloads I'd
-> > > say.
-> > 
-> > Nooooo.  Please no.
-> 
-> I added this comment in the beginning of the sgx_reclaim_pages() based
-> on your response:
-> 
-> /*
->  * Take a fixed number of pages from the head of the active page pool and
->  * reclaim them to the enclave's private shmem files. Skip the pages, which have
->  * been accessed since the last scan. Move those pages to the tail of active
->  * page pool so that the pages get scanned in LRU like fashion.
->  *
->  * Batch process a chunk of pages (at the moment 16) in order to degrade amount
->  * of IPI's and ETRACK's potentially required. sgx_encl_ewb() does degrade a bit
->  * among the HW threads with three stage EWB pipeline (EWB, ETRACK + EWB and IPI
->  * + EWB) but not sufficiently. Reclaiming one page at a time would also be
->  * problematic as it would increase the lock contention too much, which would
->  * halt forward progress.
->  */
-> 
-> And reverted reclaimer patch as it was. Do you have anything in mind
-> that I should add or modify in it?
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  urezki-pcount.2020.09.28d
+branch HEAD: a5ea4d2af2ab21ad54196f9c27ff1c148a0d5320  fixup! rcu/tree: Allocate a page when caller is preemptable
 
-Nope, can't think of anything.
+elapsed time: 746m
+
+configs tested: 139
+configs skipped: 2
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arc                     haps_hs_smp_defconfig
+m68k                          amiga_defconfig
+ia64                         bigsur_defconfig
+sh                             shx3_defconfig
+m68k                        stmark2_defconfig
+powerpc                     tqm8541_defconfig
+powerpc64                           defconfig
+csky                             alldefconfig
+riscv                          rv32_defconfig
+sh                          rsk7201_defconfig
+arm                         lpc18xx_defconfig
+arm                         s3c6400_defconfig
+powerpc                   lite5200b_defconfig
+arm                         orion5x_defconfig
+mips                           ip22_defconfig
+powerpc                  iss476-smp_defconfig
+powerpc                  mpc885_ads_defconfig
+openrisc                         alldefconfig
+arm                         at91_dt_defconfig
+arc                 nsimosci_hs_smp_defconfig
+sh                   sh7770_generic_defconfig
+arm                         assabet_defconfig
+riscv                    nommu_k210_defconfig
+sh                          landisk_defconfig
+sh                           se7712_defconfig
+sh                        dreamcast_defconfig
+ia64                      gensparse_defconfig
+mips                        workpad_defconfig
+xtensa                       common_defconfig
+powerpc64                        alldefconfig
+arm                          lpd270_defconfig
+mips                         cobalt_defconfig
+arm                        multi_v7_defconfig
+powerpc                       maple_defconfig
+powerpc                   bluestone_defconfig
+powerpc                     tqm5200_defconfig
+arm                             mxs_defconfig
+arm                           omap1_defconfig
+microblaze                      mmu_defconfig
+i386                             alldefconfig
+sh                           se7724_defconfig
+riscv                    nommu_virt_defconfig
+arm                         mv78xx0_defconfig
+powerpc                     kilauea_defconfig
+arm                  colibri_pxa300_defconfig
+powerpc                      ppc40x_defconfig
+arm                      integrator_defconfig
+arc                          axs103_defconfig
+arm                        shmobile_defconfig
+sh                           se7751_defconfig
+arm                       cns3420vb_defconfig
+h8300                    h8300h-sim_defconfig
+arm                         bcm2835_defconfig
+mips                           xway_defconfig
+ia64                            zx1_defconfig
+arm                          pxa910_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a002-20200928
+i386                 randconfig-a003-20200928
+i386                 randconfig-a004-20200928
+i386                 randconfig-a005-20200928
+i386                 randconfig-a001-20200928
+i386                 randconfig-a002-20200927
+i386                 randconfig-a006-20200927
+i386                 randconfig-a003-20200927
+i386                 randconfig-a004-20200927
+i386                 randconfig-a005-20200927
+i386                 randconfig-a001-20200927
+i386                 randconfig-a006-20200928
+i386                 randconfig-a012-20200928
+i386                 randconfig-a016-20200928
+i386                 randconfig-a014-20200928
+i386                 randconfig-a013-20200928
+i386                 randconfig-a015-20200928
+i386                 randconfig-a011-20200928
+x86_64               randconfig-a005-20200928
+x86_64               randconfig-a003-20200928
+x86_64               randconfig-a004-20200928
+x86_64               randconfig-a002-20200928
+x86_64               randconfig-a006-20200928
+x86_64               randconfig-a001-20200928
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a005-20200927
+x86_64               randconfig-a003-20200927
+x86_64               randconfig-a004-20200927
+x86_64               randconfig-a002-20200927
+x86_64               randconfig-a006-20200927
+x86_64               randconfig-a001-20200927
+x86_64               randconfig-a011-20200928
+x86_64               randconfig-a013-20200928
+x86_64               randconfig-a015-20200928
+x86_64               randconfig-a014-20200928
+x86_64               randconfig-a016-20200928
+x86_64               randconfig-a012-20200928
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
