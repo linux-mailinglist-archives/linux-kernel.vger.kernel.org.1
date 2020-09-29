@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6CEF27C374
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:07:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBFF727C40F
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:11:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728360AbgI2LFo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:05:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42078 "EHLO mail.kernel.org"
+        id S1728932AbgI2LKw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:10:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51864 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728770AbgI2LFh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:05:37 -0400
+        id S1729189AbgI2LKt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:10:49 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 80ADD21941;
-        Tue, 29 Sep 2020 11:05:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B6B9D206A5;
+        Tue, 29 Sep 2020 11:10:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601377537;
-        bh=pL8HchNcTxz2hexpSqJFIVrWoEqs3+yYGAGoxMaHPdw=;
+        s=default; t=1601377849;
+        bh=Esh9XX7sK0QzwJY5HJxLpsdnFAvWg67UV2BrQKFtAKY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=V+i3TI3OVl3eUa36eZEfDhPH6RYj7UIsswGBYpLnQhGLRya+1u31Asz3ojAoNWY63
-         IXp0Sevrm3hv5PhNnMkHZhyZeJRGwhqoBDiTrVRGMGGKlV051mNJMvgTUOYHDUHyeJ
-         414YsM2NHYhfj35gcYvkXh3dYqw62BYs++d+72mE=
+        b=PmYSg5HtHuAk54ozsAga4nUsb2Xhyvnd6sykuijhNzWs+4ZoXFPRlv1nNoh1oSGOS
+         KevyUQxDYB7e4Lrm4um/XxGb5on9I6zov/f1i4BsrkrJ1VxN9PnZTDrxEG9eVkDxFd
+         zTrofcH/O7f+Ge19UMGbdPxQSApT3UPnMRre3dl4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qian Cai <cai@lca.pw>,
-        Daniel Wagner <dwagner@suse.de>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
+        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 71/85] vfio/pci: Clear error and request eventfd ctx after releasing
-Date:   Tue, 29 Sep 2020 13:00:38 +0200
-Message-Id: <20200929105931.765074248@linuxfoundation.org>
+Subject: [PATCH 4.9 095/121] mtd: rawnand: omap_elm: Fix runtime PM imbalance on error
+Date:   Tue, 29 Sep 2020 13:00:39 +0200
+Message-Id: <20200929105934.898543503@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929105928.198942536@linuxfoundation.org>
-References: <20200929105928.198942536@linuxfoundation.org>
+In-Reply-To: <20200929105930.172747117@linuxfoundation.org>
+References: <20200929105930.172747117@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,45 +43,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alex Williamson <alex.williamson@redhat.com>
+From: Dinghao Liu <dinghao.liu@zju.edu.cn>
 
-[ Upstream commit 5c5866c593bbd444d0339ede6a8fb5f14ff66d72 ]
+[ Upstream commit 37f7212148cf1d796135cdf8d0c7fee13067674b ]
 
-The next use of the device will generate an underflow from the
-stale reference.
+pm_runtime_get_sync() increments the runtime PM usage counter even
+when it returns an error code. Thus a pairing decrement is needed on
+the error handling path to keep the counter balanced.
 
-Cc: Qian Cai <cai@lca.pw>
-Fixes: 1518ac272e78 ("vfio/pci: fix memory leaks of eventfd ctx")
-Reported-by: Daniel Wagner <dwagner@suse.de>
-Reviewed-by: Cornelia Huck <cohuck@redhat.com>
-Tested-by: Daniel Wagner <dwagner@suse.de>
-Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Link: https://lore.kernel.org/linux-mtd/20200522104008.28340-1-dinghao.liu@zju.edu.cn
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/vfio/pci/vfio_pci.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ drivers/mtd/nand/omap_elm.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/vfio/pci/vfio_pci.c b/drivers/vfio/pci/vfio_pci.c
-index ab765770e8dd6..662ea7ec82926 100644
---- a/drivers/vfio/pci/vfio_pci.c
-+++ b/drivers/vfio/pci/vfio_pci.c
-@@ -255,10 +255,14 @@ static void vfio_pci_release(void *device_data)
- 	if (!(--vdev->refcnt)) {
- 		vfio_spapr_pci_eeh_release(vdev->pdev);
- 		vfio_pci_disable(vdev);
--		if (vdev->err_trigger)
-+		if (vdev->err_trigger) {
- 			eventfd_ctx_put(vdev->err_trigger);
--		if (vdev->req_trigger)
-+			vdev->err_trigger = NULL;
-+		}
-+		if (vdev->req_trigger) {
- 			eventfd_ctx_put(vdev->req_trigger);
-+			vdev->req_trigger = NULL;
-+		}
- 	}
- 
- 	mutex_unlock(&driver_lock);
+diff --git a/drivers/mtd/nand/omap_elm.c b/drivers/mtd/nand/omap_elm.c
+index a3f32f939cc17..6736777a41567 100644
+--- a/drivers/mtd/nand/omap_elm.c
++++ b/drivers/mtd/nand/omap_elm.c
+@@ -421,6 +421,7 @@ static int elm_probe(struct platform_device *pdev)
+ 	pm_runtime_enable(&pdev->dev);
+ 	if (pm_runtime_get_sync(&pdev->dev) < 0) {
+ 		ret = -EINVAL;
++		pm_runtime_put_sync(&pdev->dev);
+ 		pm_runtime_disable(&pdev->dev);
+ 		dev_err(&pdev->dev, "can't enable clock\n");
+ 		return ret;
 -- 
 2.25.1
 
