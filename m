@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C69FF27CD0B
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:41:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CC7427CCF0
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:40:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733220AbgI2MlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 08:41:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56652 "EHLO mail.kernel.org"
+        id S1732822AbgI2Mkj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 08:40:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58534 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728723AbgI2LN6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:13:58 -0400
+        id S1729457AbgI2LOo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:14:44 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 72A9C208FE;
-        Tue, 29 Sep 2020 11:13:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B299321D46;
+        Tue, 29 Sep 2020 11:14:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601378038;
-        bh=B7Tmup4JVXwLfB4ORrdTHZPeQN2+VNzwXUp4AOeovjU=;
+        s=default; t=1601378083;
+        bh=g3SQ2oPbsCvb/719uNW9uFHtAfDY6nGDf0B5JFFjAn0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uw5UUb0hOrALsFDmCu8rY+7In5eiA0YGhJ5EKXrlK1syIgxO7jgO8GvklJX8Ifu7B
-         ugX53hU2RqusGEbPZaMVcOhD5nrwgFh834hJdFzQJzxvFiZuWxIoHRNPbzKcuxJBNo
-         gzXNgimkrQuy/8cqqqnhqBXFYxeu53Mzo+8G7/1E=
+        b=1N+dZi+8dX2QHgy46f0LDleYw6GB9HNPPR/w+4e7AffedgGwH5mW0z9rL8Ev22Uqb
+         IKozNJOxlnnHsSQYX3mP3TEWk88WUlp5QDCbCkrRh0tQezHKvZKtvab+dy4GJJrYkE
+         TUDFzrLBlV+12OgtNYnEWCyYddD5k/GDJJiZR0Yw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Russell King <rmk+kernel@armlinux.org.uk>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 022/166] ASoC: kirkwood: fix IRQ error handling
-Date:   Tue, 29 Sep 2020 12:58:54 +0200
-Message-Id: <20200929105936.300984878@linuxfoundation.org>
+        stable@vger.kernel.org, p_c_chan@hotmail.com, ecm4@mail.com,
+        perdigao1@yahoo.com, matzes@users.sourceforge.net,
+        rvelascog@gmail.com, Thomas Gleixner <tglx@linutronix.de>
+Subject: [PATCH 4.14 025/166] x86/ioapic: Unbreak check_timer()
+Date:   Tue, 29 Sep 2020 12:58:57 +0200
+Message-Id: <20200929105936.455185291@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200929105935.184737111@linuxfoundation.org>
 References: <20200929105935.184737111@linuxfoundation.org>
@@ -43,36 +43,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Russell King <rmk+kernel@armlinux.org.uk>
+From: Thomas Gleixner <tglx@linutronix.de>
 
-[ Upstream commit 175fc928198236037174e5c5c066fe3c4691903e ]
+commit 86a82ae0b5095ea24c55898a3f025791e7958b21 upstream.
 
-Propagate the error code from request_irq(), rather than returning
--EBUSY.
+Several people reported in the kernel bugzilla that between v4.12 and v4.13
+the magic which works around broken hardware and BIOSes to find the proper
+timer interrupt delivery mode stopped working for some older affected
+platforms which need to fall back to ExtINT delivery mode.
 
-Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
-Link: https://lore.kernel.org/r/E1iNIqh-0000tW-EZ@rmk-PC.armlinux.org.uk
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+The reason is that the core code changed to keep track of the masked and
+disabled state of an interrupt line more accurately to avoid the expensive
+hardware operations.
+
+That broke an assumption in i8259_make_irq() which invokes
+
+     disable_irq_nosync();
+     irq_set_chip_and_handler();
+     enable_irq();
+
+Up to v4.12 this worked because enable_irq() unconditionally unmasked the
+interrupt line, but after the state tracking improvements this is not
+longer the case because the IO/APIC uses lazy disabling. So the line state
+is unmasked which means that enable_irq() does not call into the new irq
+chip to unmask it.
+
+In principle this is a shortcoming of the core code, but it's more than
+unclear whether the core code should try to reset state. At least this
+cannot be done unconditionally as that would break other existing use cases
+where the chip type is changed, e.g. when changing the trigger type, but
+the callers expect the state to be preserved.
+
+As the way how check_timer() is switching the delivery modes is truly
+unique, the obvious fix is to simply unmask the i8259 manually after
+changing the mode to ExtINT delivery and switching the irq chip to the
+legacy PIC.
+
+Note, that the fixes tag is not really precise, but identifies the commit
+which broke the assumptions in the IO/APIC and i8259 code and that's the
+kernel version to which this needs to be backported.
+
+Fixes: bf22ff45bed6 ("genirq: Avoid unnecessary low level irq function calls")
+Reported-by: p_c_chan@hotmail.com
+Reported-by: ecm4@mail.com
+Reported-by: perdigao1@yahoo.com
+Reported-by: matzes@users.sourceforge.net
+Reported-by: rvelascog@gmail.com
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Tested-by: p_c_chan@hotmail.com
+Tested-by: matzes@users.sourceforge.net
+Cc: stable@vger.kernel.org
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=197769
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- sound/soc/kirkwood/kirkwood-dma.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/kernel/apic/io_apic.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/kirkwood/kirkwood-dma.c b/sound/soc/kirkwood/kirkwood-dma.c
-index cf23af159acf4..35ca8e8bb5e52 100644
---- a/sound/soc/kirkwood/kirkwood-dma.c
-+++ b/sound/soc/kirkwood/kirkwood-dma.c
-@@ -136,7 +136,7 @@ static int kirkwood_dma_open(struct snd_pcm_substream *substream)
- 		err = request_irq(priv->irq, kirkwood_dma_irq, IRQF_SHARED,
- 				  "kirkwood-i2s", priv);
- 		if (err)
--			return -EBUSY;
-+			return err;
+--- a/arch/x86/kernel/apic/io_apic.c
++++ b/arch/x86/kernel/apic/io_apic.c
+@@ -2160,6 +2160,7 @@ static inline void __init check_timer(vo
+ 	legacy_pic->init(0);
+ 	legacy_pic->make_irq(0);
+ 	apic_write(APIC_LVT0, APIC_DM_EXTINT);
++	legacy_pic->unmask(0);
  
- 		/*
- 		 * Enable Error interrupts. We're only ack'ing them but
--- 
-2.25.1
-
+ 	unlock_ExtINT_logic();
+ 
 
 
