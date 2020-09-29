@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D25127C70B
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:51:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E56D27C676
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:45:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731024AbgI2Luz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:50:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52216 "EHLO mail.kernel.org"
+        id S1730953AbgI2LpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:45:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44930 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731202AbgI2LtK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:49:10 -0400
+        id S1730945AbgI2LpP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:45:15 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 35B44208B8;
-        Tue, 29 Sep 2020 11:49:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B3FDB20702;
+        Tue, 29 Sep 2020 11:45:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601380149;
-        bh=7muWTMfFSOoAQDyVIXSONHMtbU5w9R5673QGdkFAnMo=;
+        s=default; t=1601379913;
+        bh=Fjd+qrSiNHS4O9k0/sEotJDUizzL/aeCH1SIYodH7jM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vEXTKU876ZhHF2hUfpKfjv+p6wxhukf4CfSLZMWrfBQWrXdEEj473/B/rmERkceJc
-         HHi5/geTeoJgiMJFNg/FWCG80TakFfR0X7pV1ckSK7A9Vp+V6lKfYkp19o8V5czvc8
-         S4ADFNMUKGJFnuq8TNYmLIFmviii2tJ1l6vYtW24=
+        b=R4gFzcp0XA/47AKRHl/OANSDb3eeFMKe+g74rsXlT1MYDbNO1+9o2OGnHXoIcIsxy
+         QSnIA1xS0+hRpz1Fbl3ujyxCtsxq9OTuDZH3UL5h9YA2ezPG+uHkM3dqE+imVuPJYY
+         vohG2ubB+3erHo1kqH/eRy+sZWQgLcVouQjQKUI0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, He Zhe <zhe.he@windriver.com>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 59/99] SUNRPC: Fix svc_flush_dcache()
-Date:   Tue, 29 Sep 2020 13:01:42 +0200
-Message-Id: <20200929105932.632481260@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Hui Wang <hui.wang@canonical.com>, Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.4 372/388] ALSA: hda/realtek: Enable front panel headset LED on Lenovo ThinkStation P520
+Date:   Tue, 29 Sep 2020 13:01:43 +0200
+Message-Id: <20200929110028.473436978@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929105929.719230296@linuxfoundation.org>
-References: <20200929105929.719230296@linuxfoundation.org>
+In-Reply-To: <20200929110010.467764689@linuxfoundation.org>
+References: <20200929110010.467764689@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,57 +43,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chuck Lever <chuck.lever@oracle.com>
+From: Kai-Heng Feng <kai.heng.feng@canonical.com>
 
-[ Upstream commit 13a9a9d74d4d9689ad65938966dbc66386063648 ]
+commit f73bbf639b32acb6b409e188fdde5644b301978f upstream.
 
-On platforms that implement flush_dcache_page(), a large NFS WRITE
-triggers the WARN_ONCE in bvec_iter_advance():
+On Lenovo P520, the front panel headset LED isn't lit up right now.
 
-Sep 20 14:01:05 klimt.1015granger.net kernel: Attempted to advance past end of bvec iter
-Sep 20 14:01:05 klimt.1015granger.net kernel: WARNING: CPU: 0 PID: 1032 at include/linux/bvec.h:101 bvec_iter_advance.isra.0+0xa7/0x158 [sunrpc]
+Realtek states that the LED needs to be enabled by ALC233's GPIO2, so
+let's do it accordingly to light the LED up.
 
-Sep 20 14:01:05 klimt.1015granger.net kernel: Call Trace:
-Sep 20 14:01:05 klimt.1015granger.net kernel:  svc_tcp_recvfrom+0x60c/0x12c7 [sunrpc]
-Sep 20 14:01:05 klimt.1015granger.net kernel:  ? bvec_iter_advance.isra.0+0x158/0x158 [sunrpc]
-Sep 20 14:01:05 klimt.1015granger.net kernel:  ? del_timer_sync+0x4b/0x55
-Sep 20 14:01:05 klimt.1015granger.net kernel:  ? test_bit+0x1d/0x27 [sunrpc]
-Sep 20 14:01:05 klimt.1015granger.net kernel:  svc_recv+0x1193/0x15e4 [sunrpc]
-Sep 20 14:01:05 klimt.1015granger.net kernel:  ? try_to_freeze.isra.0+0x6f/0x6f [sunrpc]
-Sep 20 14:01:05 klimt.1015granger.net kernel:  ? refcount_sub_and_test.constprop.0+0x13/0x40 [sunrpc]
-Sep 20 14:01:05 klimt.1015granger.net kernel:  ? svc_xprt_put+0x1e/0x29f [sunrpc]
-Sep 20 14:01:05 klimt.1015granger.net kernel:  ? svc_send+0x39f/0x3c1 [sunrpc]
-Sep 20 14:01:05 klimt.1015granger.net kernel:  nfsd+0x282/0x345 [nfsd]
-Sep 20 14:01:05 klimt.1015granger.net kernel:  ? __kthread_parkme+0x74/0xba
-Sep 20 14:01:05 klimt.1015granger.net kernel:  kthread+0x2ad/0x2bc
-Sep 20 14:01:05 klimt.1015granger.net kernel:  ? nfsd_destroy+0x124/0x124 [nfsd]
-Sep 20 14:01:05 klimt.1015granger.net kernel:  ? test_bit+0x1d/0x27
-Sep 20 14:01:05 klimt.1015granger.net kernel:  ? kthread_mod_delayed_work+0x115/0x115
-Sep 20 14:01:05 klimt.1015granger.net kernel:  ret_from_fork+0x22/0x30
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Acked-by: Hui Wang <hui.wang@canonical.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20200914070231.13192-1-kai.heng.feng@canonical.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Reported-by: He Zhe <zhe.he@windriver.com>
-Fixes: ca07eda33e01 ("SUNRPC: Refactor svc_recvfrom()")
-Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/sunrpc/svcsock.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/pci/hda/patch_realtek.c |    7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/net/sunrpc/svcsock.c b/net/sunrpc/svcsock.c
-index c537272f9c7ed..183d2465df7a3 100644
---- a/net/sunrpc/svcsock.c
-+++ b/net/sunrpc/svcsock.c
-@@ -228,7 +228,7 @@ static int svc_one_sock_name(struct svc_sock *svsk, char *buf, int remaining)
- static void svc_flush_bvec(const struct bio_vec *bvec, size_t size, size_t seek)
- {
- 	struct bvec_iter bi = {
--		.bi_size	= size,
-+		.bi_size	= size + seek,
- 	};
- 	struct bio_vec bv;
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -6036,6 +6036,7 @@ static void alc_fixup_thinkpad_acpi(stru
+ #include "hp_x360_helper.c"
  
--- 
-2.25.1
-
+ enum {
++	ALC269_FIXUP_GPIO2,
+ 	ALC269_FIXUP_SONY_VAIO,
+ 	ALC275_FIXUP_SONY_VAIO_GPIO2,
+ 	ALC269_FIXUP_DELL_M101Z,
+@@ -6217,6 +6218,10 @@ enum {
+ };
+ 
+ static const struct hda_fixup alc269_fixups[] = {
++	[ALC269_FIXUP_GPIO2] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = alc_fixup_gpio2,
++	},
+ 	[ALC269_FIXUP_SONY_VAIO] = {
+ 		.type = HDA_FIXUP_PINCTLS,
+ 		.v.pins = (const struct hda_pintbl[]) {
+@@ -7036,6 +7041,8 @@ static const struct hda_fixup alc269_fix
+ 	[ALC233_FIXUP_LENOVO_MULTI_CODECS] = {
+ 		.type = HDA_FIXUP_FUNC,
+ 		.v.func = alc233_alc662_fixup_lenovo_dual_codecs,
++		.chained = true,
++		.chain_id = ALC269_FIXUP_GPIO2
+ 	},
+ 	[ALC233_FIXUP_ACER_HEADSET_MIC] = {
+ 		.type = HDA_FIXUP_VERBS,
 
 
