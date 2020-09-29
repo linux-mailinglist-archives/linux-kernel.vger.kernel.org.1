@@ -2,103 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A5E827DC47
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 00:46:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBC7527DC57
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 00:53:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728627AbgI2Wqw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 18:46:52 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:50422 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728115AbgI2Wqw (ORCPT
+        id S1728624AbgI2WxM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 18:53:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58650 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728115AbgI2WxL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 18:46:52 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08TMTWb6135669;
-        Tue, 29 Sep 2020 22:46:13 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=4L4hjQcgguBex9d3H5e7ELEzL5by2MBMQY742lzhLWU=;
- b=zc+ED4evDYOuH9/g9HbbLzAy52RmgdTFRjAEctGbHVOWP3KnwRs4t2WJ0Mk/zCAIZNDx
- x/SILLXci+TPEZd1PatwpY/ExXM6dYnvoxhn85fM4+0CqK6NOFtslkAWmcqaTHHy6pw9
- DsrSoS8pyLmCV9NHtZZwDcIGn6o+9OVusjw1ElpjpWAmZickvLYFso5jmBwDDk4mGhDW
- b9hTV+UMjiQlmNTh98hj9MTtNbQ1ADgw93FEK/OmyTBCXj7QdOz1mKqlAcAQvYkSrC3u
- Fi+rtyLWONTJjhHktk8jo4wfoEWv02YFWn3FdAxFtyh57otB29/Lqu1/iybJgMOr/S5g bQ== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 33swkkwk9e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 29 Sep 2020 22:46:13 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08TMTjUd017138;
-        Tue, 29 Sep 2020 22:46:13 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3030.oracle.com with ESMTP id 33tfjxmect-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 29 Sep 2020 22:46:13 +0000
-Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08TMk76u025850;
-        Tue, 29 Sep 2020 22:46:08 GMT
-Received: from [192.168.2.112] (/50.38.35.18)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 29 Sep 2020 15:46:07 -0700
-Subject: Re: [RFC PATCH 01/24] mm/memory_hotplug: Move bootmem info
- registration API to bootmem_info.c
-To:     Muchun Song <songmuchun@bytedance.com>, corbet@lwn.net,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, dave.hansen@linux.intel.com, luto@kernel.org,
-        peterz@infradead.org, viro@zeniv.linux.org.uk,
-        akpm@linux-foundation.org, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        rdunlap@infradead.org, oneukum@suse.com, anshuman.khandual@arm.com,
-        jroedel@suse.de, almasrymina@google.com, rientjes@google.com
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
-References: <20200915125947.26204-1-songmuchun@bytedance.com>
- <20200915125947.26204-2-songmuchun@bytedance.com>
-From:   Mike Kravetz <mike.kravetz@oracle.com>
-Message-ID: <c8b8de11-1e50-1e84-d2fb-d81e29fea593@oracle.com>
-Date:   Tue, 29 Sep 2020 15:46:05 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        Tue, 29 Sep 2020 18:53:11 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9AD0C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 15:53:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=0S87uXkKSB7NmTMilPEy9DruRaasJPoFlfr0oUOWW2o=; b=QDrVr+ulZytJZEWhmEsh3fsECK
+        pMppEFaHGkHc5E5WGoKjTNnKEbi5cC6zgA5bdLXE9MD4yvCTzW/sUyO0PyzE5Bd0LLG5Sa7u+eVc8
+        uU7jE/LQ7VRgje0N9tq9mXxXDaBJseyOZQFkix4H/xp5jWEat5b+jhwgLOk5d0DIVN4po/Y8dOjFh
+        ZLrEmfxpDa2yUyRPw16ieUhvIcQZT/iqUAe6ahNSFIh6/4/OBcbuHYH6iS/Yyec340m+LgEdKgTc1
+        VN0sPMQUIAXKfyawdLV22ZBWO5pcKB6QzBanDv/TXtFCjFqAftVDYM73nq9tJhFrE5hoD1ii+7Aw3
+        f9rQaHmA==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kNOUd-0004Y3-VX; Tue, 29 Sep 2020 22:53:08 +0000
+Date:   Tue, 29 Sep 2020 23:53:07 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Nick Piggin <npiggin@gmail.com>, Hugh Dickins <hughd@google.com>,
+        Peter Zijlstra <peterz@infradead.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] page_alloc: Fix freeing non-compound pages
+Message-ID: <20200929225307.GL20115@casper.infradead.org>
+References: <20200926213919.26642-1-willy@infradead.org>
+ <20200928180307.7573f3b6128b5e3007dfc9f0@linux-foundation.org>
+ <20200929011719.GD30994@casper.infradead.org>
+ <20200928214656.be4a0f29961589c074e518fa@linux-foundation.org>
 MIME-Version: 1.0
-In-Reply-To: <20200915125947.26204-2-songmuchun@bytedance.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9759 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 spamscore=0 mlxscore=0
- phishscore=0 adultscore=0 bulkscore=0 mlxlogscore=999 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009290192
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9759 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0 phishscore=0
- suspectscore=0 mlxlogscore=999 clxscore=1015 priorityscore=1501
- impostorscore=0 lowpriorityscore=0 bulkscore=0 spamscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009290192
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200928214656.be4a0f29961589c074e518fa@linux-foundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/15/20 5:59 AM, Muchun Song wrote:
-> Move bootmem info registration common API to individual bootmem_info.c
-> for later patch use.
+On Mon, Sep 28, 2020 at 09:46:56PM -0700, Andrew Morton wrote:
+> On Tue, 29 Sep 2020 02:17:19 +0100 Matthew Wilcox <willy@infradead.org> wrote:
 > 
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> > On Mon, Sep 28, 2020 at 06:03:07PM -0700, Andrew Morton wrote:
+> > > On Sat, 26 Sep 2020 22:39:19 +0100 "Matthew Wilcox (Oracle)" <willy@infradead.org> wrote:
+> > > 
+> > > > Here is a very rare race which leaks memory:
+> > > 
+> > > Not worth a cc:stable?
+> > 
+> > Yes, it probably should have been.
+> 
+> Have you a feeling for how often this occurs?
 
-This is just code movement.
+I doubt it happens often.  I don't think I could construct a workload to
+make it happen frequently.  Maybe more often with a virtualised workload
+where a thread can be preempted between instructions.
 
-Acked-by: Mike Kravetz <mike.kravetz@oracle.com>
--- 
-Mike Kravetz
+> >  I just assume the stablebot will
+> > pick up anything that has a Fixes: tag.
+> 
+> We asked them not to do that for mm/ patches.  Crazy stuff was getting
+> backported.
 
-> ---
->  arch/x86/mm/init_64.c          |  1 +
->  include/linux/bootmem_info.h   | 27 ++++++++++
->  include/linux/memory_hotplug.h | 23 --------
->  mm/Makefile                    |  1 +
->  mm/bootmem_info.c              | 99 ++++++++++++++++++++++++++++++++++
->  mm/memory_hotplug.c            | 91 +------------------------------
->  6 files changed, 129 insertions(+), 113 deletions(-)
->  create mode 100644 include/linux/bootmem_info.h
->  create mode 100644 mm/bootmem_info.c
+That's a shame.  I'll try to remember to cc them explicitly in the future.
+
+> > Although I'm now thinking of making that comment into kernel-doc and
+> > turning it into advice to the caller rather than an internal note to
+> > other mm developers.
+> 
+> hm.  But what action could the caller take?  The explanatory comment
+> seems OK to me.
+
+Use compound pages instead of non-compound pages.  Although Linus has
+asked that people stop using __get_free_pages(), so maybe that will be
+the direction we go in.
+
+https://lore.kernel.org/lkml/CA+55aFwyxJ+TOpaJZnC5MPJ-25xbLAEu8iJP8zTYhmA3LXFF8Q@mail.gmail.com/
