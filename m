@@ -2,102 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27D3F27C8AA
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:03:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4519827C8D5
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:05:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731809AbgI2MDq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 08:03:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42448 "EHLO
+        id S1731775AbgI2MFO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 08:05:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731568AbgI2MDf (ORCPT
+        with ESMTP id S1731859AbgI2ME6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 08:03:35 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1928CC0613D2
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 05:03:34 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id g4so6058440edk.0
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 05:03:34 -0700 (PDT)
+        Tue, 29 Sep 2020 08:04:58 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E290C0613D1
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 05:04:58 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id i26so14598003ejb.12
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 05:04:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=60xpqL1mFMP5mTEXMd+Hf/JbwDeJfK2G/uC8t1br+6k=;
-        b=U2ylC5Xqp6u8ik+qLLVYLPja9a6CNN7H2bkCEa//UctRW98qRrcJt5iSmfa7HlRGDa
-         EDm/19NA602YOLiGzy8pur/PiSigZOnjiDFPDfp0wDQytj0AVKE9l1GJEsQDPHSaTpWN
-         VKjV4VqmYPDpuUP8xoVz5EngrDU4Ndza9QesC6eHUD3jbdE7/xUMMFZhYMSOldDRFI3t
-         ZdZxo51YFr3ToZQL3S3K4YVDbUkKbPpvyhMDBjwurhhpkVJ0dBbq+psxbbaZoqMRtKT+
-         C5157f+z9w4veodAaTjN6EGUBR216cMGPBpMSLAghcRBokc8uH+foNEF+FhICHvyRD9T
-         7rng==
+        bh=XuEHP21dhMBh5T4WXO9Xuu69AATfQ0zf7NJ5Z9eebL4=;
+        b=wueAy6HOAcQyM2KhegOErfUpHxD3ely0mqmCcGRxYnv3LowQpHQRGXzC6yDv0wkNb0
+         q/2L+bZxK2En+oYdP4J/VWWKl8wZrbIWNov3utIVNEkmeyiqR2Zfiu3/KysFtIrl9kHG
+         NobTiJSZKFQ+c9ivq+xh2OC4JdKJnV69ciBMS8lZGV1csYb1uGJWIH2RWSMYKMw/sLVv
+         fhBlEFeu6iO9KS+6RWx43LwE0GC59Su6pD6RHyNpeAoI2UzfHYyUc2mqv1GYjVVq+RW0
+         rEGEy9sugD7TRBKcyGXGQHBwlHP0NrfzO/KYAH6NjJ+2XAQzINGCTrM5OgPtod+o4TPM
+         Jopg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=60xpqL1mFMP5mTEXMd+Hf/JbwDeJfK2G/uC8t1br+6k=;
-        b=VFRJTrXPp9Qa/JeRLW7cPu6nt7eR7uH3JpOS/EruBLDMW7MqsZFLNrxl4Ouh+mo+RL
-         UiAWJyYCg5Qtf1CNqhhE7HE1vtwE2rScQJ9at2sUB630EwVEbL1eadkfnNCp/vpYYnJW
-         RzmRlt2hAs6d8Vh8nvPl/nMy2iQ9Dck3BTwQO63iSD2bKQPfnPgfX30T0cbaEPjA5K+N
-         MoBlHJbYk3aBC91Ms4bYwhftvLV+HC/ULS9/4QUPorz4ZpKBoDfKQa7FQcsjpsadBzMC
-         ZMDcpLUBRFPh6yfHDu0GFup7W15MDT49DzOCXE9bBe5YoARH4MDPImB5lg+F5j5LHoK/
-         dh5A==
-X-Gm-Message-State: AOAM530i1tx6kF8SqywztjkHoN620x52lG7ZdVzM8aBoqJ3rDm19FuI+
-        RfTFTTnPdj31X+1oWgyT7IvIfSbDiYSxD4vk0cIDxw==
-X-Google-Smtp-Source: ABdhPJx9YWw+klvNRqJR45fFUSS6cO52gWk7vHm028tT+rGobO97VJryE+a83/bztKgnEOk/N/ouPUUF0IEqke5ZwL8=
-X-Received: by 2002:a50:8e17:: with SMTP id 23mr2797118edw.42.1601381012666;
- Tue, 29 Sep 2020 05:03:32 -0700 (PDT)
+        bh=XuEHP21dhMBh5T4WXO9Xuu69AATfQ0zf7NJ5Z9eebL4=;
+        b=PQbH+kfXRJFIZfmFkpeKouux6xX2rK/Tw18s4E+TdSnxs9zGk7U1Tkxza+SvWfLM4W
+         P68d0w3bZjQwue9sa2EiEVvyM+XCyAsSpw5gFlrAD8XQj2etElwSqAsuWHlWecZkc4i1
+         Shin7xqeGGC5hiqQbBaueTKRhkkBLx5f7DnZTSYKm7nKdytOm/lUgj6rXL1NLVINwln0
+         u3VSYqtZgAHD6u1ranSa2j7aDMhgGbqAVs9NEzXX43eA5YvoLKGeam3Nuvs1y59wFa1x
+         UkAFn4B9ZUEPN0+zSGWo6cPm5EceALWCLy06lvLEcGTXjP+KdE59iyHNP6M1SrM1aTXW
+         fR1Q==
+X-Gm-Message-State: AOAM533vROh+G+O99/qAOcaeLyEGHQopGAo5+05+QtNZJ2coUZO43KBo
+        c+isu8kVCdDHUu6utbSoGl9UTl9KJP+G5xil3DmEaA==
+X-Google-Smtp-Source: ABdhPJz7awWKdkxeqGhj84kwINNLUBgCSDG/lRgEu5OC3wXnNTaiMCnWTwxOEKPk82plp2jM6wXgrPtvn8DqUzUc2Vo=
+X-Received: by 2002:a17:906:311a:: with SMTP id 26mr3426532ejx.226.1601381096838;
+ Tue, 29 Sep 2020 05:04:56 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200916155715.21009-1-krzk@kernel.org> <20200916155715.21009-2-krzk@kernel.org>
- <20200925154804.GB16392@kozik-lap>
-In-Reply-To: <20200925154804.GB16392@kozik-lap>
+References: <20200928184515.7345-1-krzk@kernel.org>
+In-Reply-To: <20200928184515.7345-1-krzk@kernel.org>
 From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 29 Sep 2020 14:03:21 +0200
-Message-ID: <CACRpkdZ8Db+6yf6QG8kNgLBWFUzfogxu-CGjy-jYgXSR_sKoFA@mail.gmail.com>
-Subject: Re: [PATCH v3 01/15] dt-bindings: gpio: convert bindings for NXP
- PCA953x family to dtschema
+Date:   Tue, 29 Sep 2020 14:04:46 +0200
+Message-ID: <CACRpkdZ9vbsFTsT4A+BH=8x++Uc4EujnMd9DTMvRfQ7QPnLU2w@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: pinctrl: renesas,pfc: align example GPIO hog
+ name with dtschema
 To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
         Rob Herring <robh+dt@kernel.org>,
-        =?UTF-8?Q?Beno=C3=AEt_Cousson?= <bcousson@baylibre.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Tero Kristo <t-kristo@ti.com>, Nishanth Menon <nm@ti.com>,
-        Michal Simek <michal.simek@xilinx.com>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
         "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
         "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
         <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux-OMAP <linux-omap@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 5:48 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
+On Mon, Sep 28, 2020 at 8:45 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
 
-> The first two patches (bindings) have Rob's ack/review. Could you pick
-> them via GPIO tree?
+> The convention for node names is to use hyphens, not underscores.
+> dtschema expects GPIO hogs to end with 'hog' suffix.  Adjust the example
+> DTS in the binding.  No changes to binding itself.
+>
+> Reported-by: Rob Herring <robh@kernel.org>
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-Yup! Patches 1 & 2 applied to the GPIO tree.
-
-Thanks for doing this schema work, much appreciated.
+Patch applied!
 
 Yours,
 Linus Walleij
