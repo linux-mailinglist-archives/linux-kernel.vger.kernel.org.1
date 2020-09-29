@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D146027C365
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:07:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64B4127C4E8
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:19:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728726AbgI2LFX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:05:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41424 "EHLO mail.kernel.org"
+        id S1729110AbgI2LRs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:17:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34336 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728691AbgI2LFG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:05:06 -0400
+        id S1729647AbgI2LR3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:17:29 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2F1BF21734;
-        Tue, 29 Sep 2020 11:05:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B8778206DB;
+        Tue, 29 Sep 2020 11:17:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601377505;
-        bh=sEnncAE7swknYM9ucIJ06y04dkrQWy4QGw1RueM3EMs=;
+        s=default; t=1601378249;
+        bh=LiQ50zNWaDoqN8dsTtDdIN6nIuc4ml902OZuUoJUDJA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kQdInCTcapPK9nke3sL4Wg0X6X9W1QcMSUC9PYdKqUJ/VLwOHwdzW6wqAkDd1XDfI
-         3zYuB5E8tvKH6bF5tuLtNJ7AabWyFE8b2QHX8Y5e1PLgPSiL0ONpq8DPhVNsxvoR6W
-         e0N/kAh3uuAzJc/8Qy4YvEak9iwztoh3uVOw4ppI=
+        b=nfZ0ePV4oYo8wb8bXw+kkZierIziDkxYNfWrfnU3vKA+rMzeC6mX5M0YliETTdg1B
+         mUlOyRyw0b8myu5mgnR4yqD+13VKUVZWzqf+N7/WL+eVQ/tYkM0pOB1q1MWMPwHRSw
+         klyCFyGcltBOdec7MrcZdKQkAJtO1Ukj0iPuid5w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Zhang Shengju <zhangshengju@cmss.chinamobile.com>,
-        Tang Bin <tangbin@cmss.chinamobile.com>,
+        stable@vger.kernel.org, Jonathan Bakker <xc-racer2@live.ca>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 58/85] USB: EHCI: ehci-mv: fix error handling in mv_ehci_probe()
+Subject: [PATCH 4.14 113/166] phy: samsung: s5pv210-usb2: Add delay after reset
 Date:   Tue, 29 Sep 2020 13:00:25 +0200
-Message-Id: <20200929105931.116849835@linuxfoundation.org>
+Message-Id: <20200929105940.844175128@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929105928.198942536@linuxfoundation.org>
-References: <20200929105928.198942536@linuxfoundation.org>
+In-Reply-To: <20200929105935.184737111@linuxfoundation.org>
+References: <20200929105935.184737111@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,41 +43,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tang Bin <tangbin@cmss.chinamobile.com>
+From: Jonathan Bakker <xc-racer2@live.ca>
 
-[ Upstream commit c856b4b0fdb5044bca4c0acf9a66f3b5cc01a37a ]
+[ Upstream commit 05942b8c36c7eb5d3fc5e375d4b0d0c49562e85d ]
 
-If the function platform_get_irq() failed, the negative value
-returned will not be detected here. So fix error handling in
-mv_ehci_probe(). And when get irq failed, the function
-platform_get_irq() logs an error message, so remove redundant
-message here.
+The USB phy takes some time to reset, so make sure we give it to it. The
+delay length was taken from the 4x12 phy driver.
 
-Signed-off-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
-Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
-Link: https://lore.kernel.org/r/20200508114305.15740-1-tangbin@cmss.chinamobile.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+This manifested in issues with the DWC2 driver since commit fe369e1826b3
+("usb: dwc2: Make dwc2_readl/writel functions endianness-agnostic.")
+where the endianness check would read the DWC ID as 0 due to the phy still
+resetting, resulting in the wrong endian mode being chosen.
+
+Signed-off-by: Jonathan Bakker <xc-racer2@live.ca>
+Link: https://lore.kernel.org/r/BN6PR04MB06605D52502816E500683553A3D10@BN6PR04MB0660.namprd04.prod.outlook.com
+Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/host/ehci-mv.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ drivers/phy/samsung/phy-s5pv210-usb2.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/usb/host/ehci-mv.c b/drivers/usb/host/ehci-mv.c
-index 849806a75f1ce..273736e1d33fa 100644
---- a/drivers/usb/host/ehci-mv.c
-+++ b/drivers/usb/host/ehci-mv.c
-@@ -197,9 +197,8 @@ static int mv_ehci_probe(struct platform_device *pdev)
- 	hcd->regs = ehci_mv->op_regs;
- 
- 	hcd->irq = platform_get_irq(pdev, 0);
--	if (!hcd->irq) {
--		dev_err(&pdev->dev, "Cannot get irq.");
--		retval = -ENODEV;
-+	if (hcd->irq < 0) {
-+		retval = hcd->irq;
- 		goto err_disable_clk;
- 	}
- 
+diff --git a/drivers/phy/samsung/phy-s5pv210-usb2.c b/drivers/phy/samsung/phy-s5pv210-usb2.c
+index f6f72339bbc32..bb7fdf491c1c2 100644
+--- a/drivers/phy/samsung/phy-s5pv210-usb2.c
++++ b/drivers/phy/samsung/phy-s5pv210-usb2.c
+@@ -142,6 +142,10 @@ static void s5pv210_phy_pwr(struct samsung_usb2_phy_instance *inst, bool on)
+ 		udelay(10);
+ 		rst &= ~rstbits;
+ 		writel(rst, drv->reg_phy + S5PV210_UPHYRST);
++		/* The following delay is necessary for the reset sequence to be
++		 * completed
++		 */
++		udelay(80);
+ 	} else {
+ 		pwr = readl(drv->reg_phy + S5PV210_UPHYPWR);
+ 		pwr |= phypwr;
 -- 
 2.25.1
 
