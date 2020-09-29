@@ -2,40 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A63027CCDD
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:39:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0AEB27CD8D
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:45:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733020AbgI2Mjx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 08:39:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32906 "EHLO mail.kernel.org"
+        id S2387530AbgI2MpL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 08:45:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46504 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729121AbgI2LQW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:16:22 -0400
+        id S1728973AbgI2LHw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:07:52 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5396F2083B;
-        Tue, 29 Sep 2020 11:16:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4728C21D46;
+        Tue, 29 Sep 2020 11:07:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601378181;
-        bh=x8jtC8Q1lphuUcKtQz2n3M+Vhekuau3Ukrj1emkaMfk=;
+        s=default; t=1601377672;
+        bh=sSXBrKnfvFxp02IRBIEvBTV7hKCLv23aDEhg+nMWbII=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QM1UcQkXRcGv0CGEJPWuUGKYWdImN/l7yHaTx/y+r/i8epv+yu7I1/YpipV556KAn
-         acn/vwkl58lEaJAYygDfS0tWZIGBdVo0a0jNi6a731pd4L7359qplEeawXFKv3J15n
-         zT2G6RW3lEAXAytw69CQOFk02fI3QRiaKUpiofik=
+        b=EXniN1n8wDnAhVCG5jFAxjrNL0LIDLz1xOQnsrj9bjwYU1o5dPuxeU4mH/dG1cuDT
+         nnJheGSjIq4gX/BuOnztawmfr1v3P3yIZTQ82ZjNh2FW02lNpsFLhyP4D3x7/5t7h7
+         MVjz+D50Uc0onJP47iNhjKsNhqvywWJNTTUKvNYU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vasily Averin <vvs@virtuozzo.com>,
-        Stephen Smalley <sds@tycho.nsa.gov>,
-        Paul Moore <paul@paul-moore.com>,
+        stable@vger.kernel.org, Joe Perches <joe@perches.com>,
+        Dan Carpenter <error27@gmail.com>,
+        Julia Lawall <julia.lawall@lip6.fr>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 061/166] selinux: sel_avc_get_stat_idx should increase position index
-Date:   Tue, 29 Sep 2020 12:59:33 +0200
-Message-Id: <20200929105938.267950074@linuxfoundation.org>
+Subject: [PATCH 4.9 030/121] kernel/sys.c: avoid copying possible padding bytes in copy_to_user
+Date:   Tue, 29 Sep 2020 12:59:34 +0200
+Message-Id: <20200929105931.671689510@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929105935.184737111@linuxfoundation.org>
-References: <20200929105935.184737111@linuxfoundation.org>
+In-Reply-To: <20200929105930.172747117@linuxfoundation.org>
+References: <20200929105930.172747117@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,62 +48,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vasily Averin <vvs@virtuozzo.com>
+From: Joe Perches <joe@perches.com>
 
-[ Upstream commit 8d269a8e2a8f0bca89022f4ec98de460acb90365 ]
+[ Upstream commit 5e1aada08cd19ea652b2d32a250501d09b02ff2e ]
 
-If seq_file .next function does not change position index,
-read after some lseek can generate unexpected output.
+Initialization is not guaranteed to zero padding bytes so use an
+explicit memset instead to avoid leaking any kernel content in any
+possible padding bytes.
 
-$ dd if=/sys/fs/selinux/avc/cache_stats # usual output
-lookups hits misses allocations reclaims frees
-817223 810034 7189 7189 6992 7037
-1934894 1926896 7998 7998 7632 7683
-1322812 1317176 5636 5636 5456 5507
-1560571 1551548 9023 9023 9056 9115
-0+1 records in
-0+1 records out
-189 bytes copied, 5,1564e-05 s, 3,7 MB/s
-
-$# read after lseek to midle of last line
-$ dd if=/sys/fs/selinux/avc/cache_stats bs=180 skip=1
-dd: /sys/fs/selinux/avc/cache_stats: cannot skip to specified offset
-056 9115   <<<< end of last line
-1560571 1551548 9023 9023 9056 9115  <<< whole last line once again
-0+1 records in
-0+1 records out
-45 bytes copied, 8,7221e-05 s, 516 kB/s
-
-$# read after lseek beyond  end of of file
-$ dd if=/sys/fs/selinux/avc/cache_stats bs=1000 skip=1
-dd: /sys/fs/selinux/avc/cache_stats: cannot skip to specified offset
-1560571 1551548 9023 9023 9056 9115  <<<< generates whole last line
-0+1 records in
-0+1 records out
-36 bytes copied, 9,0934e-05 s, 396 kB/s
-
-https://bugzilla.kernel.org/show_bug.cgi?id=206283
-
-Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
-Acked-by: Stephen Smalley <sds@tycho.nsa.gov>
-Signed-off-by: Paul Moore <paul@paul-moore.com>
+Link: http://lkml.kernel.org/r/dfa331c00881d61c8ee51577a082d8bebd61805c.camel@perches.com
+Signed-off-by: Joe Perches <joe@perches.com>
+Cc: Dan Carpenter <error27@gmail.com>
+Cc: Julia Lawall <julia.lawall@lip6.fr>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Kees Cook <keescook@chromium.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- security/selinux/selinuxfs.c | 1 +
- 1 file changed, 1 insertion(+)
+ kernel/sys.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/security/selinux/selinuxfs.c b/security/selinux/selinuxfs.c
-index 00eed842c491c..bf50fead9f8c0 100644
---- a/security/selinux/selinuxfs.c
-+++ b/security/selinux/selinuxfs.c
-@@ -1425,6 +1425,7 @@ static struct avc_cache_stats *sel_avc_get_stat_idx(loff_t *idx)
- 		*idx = cpu + 1;
- 		return &per_cpu(avc_cache_stats, cpu);
- 	}
-+	(*idx)++;
- 	return NULL;
- }
+diff --git a/kernel/sys.c b/kernel/sys.c
+index 157277cbf83aa..546cdc911dad4 100644
+--- a/kernel/sys.c
++++ b/kernel/sys.c
+@@ -1183,11 +1183,13 @@ SYSCALL_DEFINE1(uname, struct old_utsname __user *, name)
  
+ SYSCALL_DEFINE1(olduname, struct oldold_utsname __user *, name)
+ {
+-	struct oldold_utsname tmp = {};
++	struct oldold_utsname tmp;
+ 
+ 	if (!name)
+ 		return -EFAULT;
+ 
++	memset(&tmp, 0, sizeof(tmp));
++
+ 	down_read(&uts_sem);
+ 	memcpy(&tmp.sysname, &utsname()->sysname, __OLD_UTS_LEN);
+ 	memcpy(&tmp.nodename, &utsname()->nodename, __OLD_UTS_LEN);
 -- 
 2.25.1
 
