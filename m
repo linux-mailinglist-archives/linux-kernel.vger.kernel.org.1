@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3939E27C56E
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:36:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ED2F27C768
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:54:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729864AbgI2Lff (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:35:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50012 "EHLO mail.kernel.org"
+        id S1731451AbgI2Lxi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:53:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47384 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729782AbgI2LfK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:35:10 -0400
+        id S1731044AbgI2Lq7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:46:59 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8618C23D20;
-        Tue, 29 Sep 2020 11:29:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 97B7A2074A;
+        Tue, 29 Sep 2020 11:46:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601378954;
-        bh=R+FcVsk4idUsCIqnF7xfPVNJV0Y4c5vyctAqVvnmUIM=;
+        s=default; t=1601380007;
+        bh=qBx7cPjzZCuHyLGD9yeEbvIMCmbuJNrA95mv/2qo/iE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sc+JawjX6kEzRYEYXYhH09HTjTTAWR4IFha6mP15M2C6AQUs96EOOtPWe2ARvDDmp
-         THJzCuBhou+Lo+FAZDRtTA4Nyl+SsvEkNuXz2e+IEVPHB3KCsCZF0aNR7egoBmGN/l
-         7kx3IwXHb2Pzk+ZG7OHAfzFrDhfIZgzeoG3KIN/M=
+        b=nDUwWsha1/KX7gUkhQeAu2lzFYMIgeDWZTw5KdmvVpuCRqrqpndKAKuNjmPWilBk9
+         3/MEcvbr9EDrJ46yoB6PP1VPqALAPE0MI+eQebvdGu0JvTMWUSUfwkGRPKv46qwCG+
+         dYVnQrpr+AdWDPwhn/xCWY7NgenRMqngBIgipbNM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 199/245] selftests/x86/syscall_nt: Clear weird flags after each test
+        stable@vger.kernel.org, Palmer Dabbelt <palmerdabbelt@google.com>,
+        Guo Ren <guoren@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.8 07/99] RISC-V: Take text_mutex in ftrace_init_nop()
 Date:   Tue, 29 Sep 2020 13:00:50 +0200
-Message-Id: <20200929105956.658123534@linuxfoundation.org>
+Message-Id: <20200929105930.079643749@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929105946.978650816@linuxfoundation.org>
-References: <20200929105946.978650816@linuxfoundation.org>
+In-Reply-To: <20200929105929.719230296@linuxfoundation.org>
+References: <20200929105929.719230296@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,33 +42,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Lutomirski <luto@kernel.org>
+From: Palmer Dabbelt <palmerdabbelt@google.com>
 
-[ Upstream commit a61fa2799ef9bf6c4f54cf7295036577cececc72 ]
+[ Upstream commit 66d18dbda8469a944dfec6c49d26d5946efba218 ]
 
-Clear the weird flags before logging to improve strace output --
-logging results while, say, TF is set does no one any favors.
+Without this we get lockdep failures.  They're spurious failures as SMP isn't
+up when ftrace_init_nop() is called.  As far as I can tell the easiest fix is
+to just take the lock, which also seems like the safest fix.
 
-Signed-off-by: Andy Lutomirski <luto@kernel.org>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lkml.kernel.org/r/907bfa5a42d4475b8245e18b67a04b13ca51ffdb.1593191971.git.luto@kernel.org
+Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
+Acked-by: Guo Ren <guoren@kernel.org>
+Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/x86/syscall_nt.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/riscv/include/asm/ftrace.h |  7 +++++++
+ arch/riscv/kernel/ftrace.c      | 19 +++++++++++++++++++
+ 2 files changed, 26 insertions(+)
 
-diff --git a/tools/testing/selftests/x86/syscall_nt.c b/tools/testing/selftests/x86/syscall_nt.c
-index 43fcab367fb0a..74e6b3fc2d09e 100644
---- a/tools/testing/selftests/x86/syscall_nt.c
-+++ b/tools/testing/selftests/x86/syscall_nt.c
-@@ -67,6 +67,7 @@ static void do_it(unsigned long extraflags)
- 	set_eflags(get_eflags() | extraflags);
- 	syscall(SYS_getpid);
- 	flags = get_eflags();
-+	set_eflags(X86_EFLAGS_IF | X86_EFLAGS_FIXED);
- 	if ((flags & extraflags) == extraflags) {
- 		printf("[OK]\tThe syscall worked and flags are still set\n");
- 	} else {
+diff --git a/arch/riscv/include/asm/ftrace.h b/arch/riscv/include/asm/ftrace.h
+index ace8a6e2d11d3..845002cc2e571 100644
+--- a/arch/riscv/include/asm/ftrace.h
++++ b/arch/riscv/include/asm/ftrace.h
+@@ -66,6 +66,13 @@ do {									\
+  * Let auipc+jalr be the basic *mcount unit*, so we make it 8 bytes here.
+  */
+ #define MCOUNT_INSN_SIZE 8
++
++#ifndef __ASSEMBLY__
++struct dyn_ftrace;
++int ftrace_init_nop(struct module *mod, struct dyn_ftrace *rec);
++#define ftrace_init_nop ftrace_init_nop
++#endif
++
+ #endif
+ 
+ #endif /* _ASM_RISCV_FTRACE_H */
+diff --git a/arch/riscv/kernel/ftrace.c b/arch/riscv/kernel/ftrace.c
+index 2ff63d0cbb500..99e12faa54986 100644
+--- a/arch/riscv/kernel/ftrace.c
++++ b/arch/riscv/kernel/ftrace.c
+@@ -97,6 +97,25 @@ int ftrace_make_nop(struct module *mod, struct dyn_ftrace *rec,
+ 	return __ftrace_modify_call(rec->ip, addr, false);
+ }
+ 
++
++/*
++ * This is called early on, and isn't wrapped by
++ * ftrace_arch_code_modify_{prepare,post_process}() and therefor doesn't hold
++ * text_mutex, which triggers a lockdep failure.  SMP isn't running so we could
++ * just directly poke the text, but it's simpler to just take the lock
++ * ourselves.
++ */
++int ftrace_init_nop(struct module *mod, struct dyn_ftrace *rec)
++{
++	int out;
++
++	ftrace_arch_code_modify_prepare();
++	out = ftrace_make_nop(mod, rec, MCOUNT_ADDR);
++	ftrace_arch_code_modify_post_process();
++
++	return out;
++}
++
+ int ftrace_update_ftrace_func(ftrace_func_t func)
+ {
+ 	int ret = __ftrace_modify_call((unsigned long)&ftrace_call,
 -- 
 2.25.1
 
