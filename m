@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE5D927C512
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:30:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C85627C518
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:30:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728339AbgI2LaM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:30:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37024 "EHLO mail.kernel.org"
+        id S1729172AbgI2Lae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:30:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37028 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729663AbgI2LYM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1729680AbgI2LYM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 29 Sep 2020 07:24:12 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 16AE3235F7;
-        Tue, 29 Sep 2020 11:21:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2C80322574;
+        Tue, 29 Sep 2020 11:21:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601378482;
-        bh=pIOkyG30BfIWYVMbPviugrtrP9wUBTkpp3JN20pBI3U=;
+        s=default; t=1601378490;
+        bh=Jrjz1w+nRAnz2QLcyTOmt09nTzFZzNmf2WOi96S4Bjw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dMJA2LHMLNYjVABZ6S47pMq0a6kT+FCnrfwu9/9Q9BXmygU/UF2ehrkg5TyxciPnb
-         8S+L3iz9JscmgBiCjFvccr3OTWqdLNfFj7Mr3LgmEg/R2MGhPRFiqrzx0NWbt2k8v2
-         dOlkw5161zLDIgpcdLAKqdRPpiuHrUZ9O+1lffFs=
+        b=usockaJvPVThW70h0aMAd9gJuih0zKqrORf2IL5zv/CAL4JkvvYOsPmNiIUMiFvAV
+         Cv1eQAjg1C1iKJ5GJvq8g3PRkCtWaxgbwGTiC0Lo+8jaO0zAPzY2FMJC/s7x0+/5qo
+         0NbFFFqvvFAvjnOiJttg1XtHExy42o/BGOCYlj4k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Divya Indi <divya.indi@oracle.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        stable@vger.kernel.org, Pan Bian <bianpan2016@163.com>,
+        =?UTF-8?q?Michal=20Kalderon=C2=A0?= <michal.kalderon@marvell.com>,
+        Jason Gunthorpe <jgg@mellanox.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 029/245] tracing: Adding NULL checks for trace_array descriptor pointer
-Date:   Tue, 29 Sep 2020 12:58:00 +0200
-Message-Id: <20200929105948.422981384@linuxfoundation.org>
+Subject: [PATCH 4.19 032/245] RDMA/qedr: Fix potential use after free
+Date:   Tue, 29 Sep 2020 12:58:03 +0200
+Message-Id: <20200929105948.569675105@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200929105946.978650816@linuxfoundation.org>
 References: <20200929105946.978650816@linuxfoundation.org>
@@ -43,51 +44,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Divya Indi <divya.indi@oracle.com>
+From: Pan Bian <bianpan2016@163.com>
 
-[ Upstream commit 953ae45a0c25e09428d4a03d7654f97ab8a36647 ]
+[ Upstream commit 960657b732e1ce21b07be5ab48a7ad3913d72ba4 ]
 
-As part of commit f45d1225adb0 ("tracing: Kernel access to Ftrace
-instances") we exported certain functions. Here, we are adding some additional
-NULL checks to ensure safe usage by users of these APIs.
+Move the release operation after error log to avoid possible use after
+free.
 
-Link: http://lkml.kernel.org/r/1565805327-579-4-git-send-email-divya.indi@oracle.com
-
-Signed-off-by: Divya Indi <divya.indi@oracle.com>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Link: https://lore.kernel.org/r/1573021434-18768-1-git-send-email-bianpan2016@163.com
+Signed-off-by: Pan Bian <bianpan2016@163.com>
+Acked-by: Michal Kalderon <michal.kalderon@marvell.com>
+Reviewed-by: Jason Gunthorpe <jgg@mellanox.com>
+Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/trace/trace.c        | 3 +++
- kernel/trace/trace_events.c | 2 ++
- 2 files changed, 5 insertions(+)
+ drivers/infiniband/hw/qedr/qedr_iw_cm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index 4966410bb0f4d..17505a22d800b 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -3037,6 +3037,9 @@ int trace_array_printk(struct trace_array *tr,
- 	if (!(global_trace.trace_flags & TRACE_ITER_PRINTK))
- 		return 0;
+diff --git a/drivers/infiniband/hw/qedr/qedr_iw_cm.c b/drivers/infiniband/hw/qedr/qedr_iw_cm.c
+index 2566715773675..e908dfbaa1378 100644
+--- a/drivers/infiniband/hw/qedr/qedr_iw_cm.c
++++ b/drivers/infiniband/hw/qedr/qedr_iw_cm.c
+@@ -460,10 +460,10 @@ qedr_addr6_resolve(struct qedr_dev *dev,
  
-+	if (!tr)
-+		return -ENOENT;
-+
- 	va_start(ap, fmt);
- 	ret = trace_array_vprintk(tr, ip, fmt, ap);
- 	va_end(ap);
-diff --git a/kernel/trace/trace_events.c b/kernel/trace/trace_events.c
-index 27726121d332c..0fc06a7da87fb 100644
---- a/kernel/trace/trace_events.c
-+++ b/kernel/trace/trace_events.c
-@@ -800,6 +800,8 @@ static int ftrace_set_clr_event(struct trace_array *tr, char *buf, int set)
- 	char *event = NULL, *sub = NULL, *match;
- 	int ret;
- 
-+	if (!tr)
-+		return -ENOENT;
- 	/*
- 	 * The buf format can be <subsystem>:<event-name>
- 	 *  *:<event-name> means any event by that name.
+ 	if ((!dst) || dst->error) {
+ 		if (dst) {
+-			dst_release(dst);
+ 			DP_ERR(dev,
+ 			       "ip6_route_output returned dst->error = %d\n",
+ 			       dst->error);
++			dst_release(dst);
+ 		}
+ 		return -EINVAL;
+ 	}
 -- 
 2.25.1
 
