@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D2DD27C7E3
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:57:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC99527C7DF
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:57:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731567AbgI2L5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:57:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41830 "EHLO mail.kernel.org"
+        id S1731544AbgI2L5N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:57:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41864 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730441AbgI2Ln2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:43:28 -0400
+        id S1729366AbgI2Lna (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:43:30 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 35564207F7;
-        Tue, 29 Sep 2020 11:43:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 64EA920702;
+        Tue, 29 Sep 2020 11:43:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601379807;
-        bh=GmXUaK7KDx5Au+pQK6GEf2o0wJ5SeLpezqoStuF2LQ8=;
+        s=default; t=1601379809;
+        bh=m6VntauJMDSn9rRbPBvIGiZJuUNIY4Q+haPvrNHbwj0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xIDaQ4Lt1jU8yFTiSpvylu2vz4rJcIwe4m7xkrR68mS119nU+Oc6hG+f0414MoLOs
-         9Nf1JcxNA/k4ZKMz8RgTK+KacS0QUkPx+h1zqCm0MoG/cEEnFoqdVqfT1zIuzz3Hrs
-         fQJPrWjUblPVGLLTTpsSkJoRsB+Ne+wZ02MCKdzo=
+        b=gb52GWlTU8ZLysxlIU6nM6WTiGaeU+hA2N/bsAOERm7nvrKcjr7xDqBvGpjXWtJGY
+         CB550wszYCpUMn1rLb3RnrM3ZIVWF1K8wN4fObN0fmygaaO55NDeWTFMVwIT/uSG95
+         Br39wHzQc918Ta8/SLpp43zvsC62f8xMX6ks7gtQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Palmer Dabbelt <palmerdabbelt@google.com>,
-        Guo Ren <guoren@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 327/388] RISC-V: Take text_mutex in ftrace_init_nop()
-Date:   Tue, 29 Sep 2020 13:00:58 +0200
-Message-Id: <20200929110026.291447676@linuxfoundation.org>
+        stable@vger.kernel.org, Eddie James <eajames@linux.ibm.com>,
+        Tao Ren <rentao.bupt@gmail.com>, Wolfram Sang <wsa@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 328/388] i2c: aspeed: Mask IRQ status to relevant bits
+Date:   Tue, 29 Sep 2020 13:00:59 +0200
+Message-Id: <20200929110026.340009628@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200929110010.467764689@linuxfoundation.org>
 References: <20200929110010.467764689@linuxfoundation.org>
@@ -42,69 +43,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Palmer Dabbelt <palmerdabbelt@google.com>
+From: Eddie James <eajames@linux.ibm.com>
 
-[ Upstream commit 66d18dbda8469a944dfec6c49d26d5946efba218 ]
+[ Upstream commit 1a1d6db23ddacde0b15ea589e9103373e05af8de ]
 
-Without this we get lockdep failures.  They're spurious failures as SMP isn't
-up when ftrace_init_nop() is called.  As far as I can tell the easiest fix is
-to just take the lock, which also seems like the safest fix.
+Mask the IRQ status to only the bits that the driver checks. This
+prevents excessive driver warnings when operating in slave mode
+when additional bits are set that the driver doesn't handle.
 
-Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
-Acked-by: Guo Ren <guoren@kernel.org>
-Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
+Signed-off-by: Eddie James <eajames@linux.ibm.com>
+Reviewed-by: Tao Ren <rentao.bupt@gmail.com>
+Signed-off-by: Wolfram Sang <wsa@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/riscv/include/asm/ftrace.h |  7 +++++++
- arch/riscv/kernel/ftrace.c      | 19 +++++++++++++++++++
- 2 files changed, 26 insertions(+)
+ drivers/i2c/busses/i2c-aspeed.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/arch/riscv/include/asm/ftrace.h b/arch/riscv/include/asm/ftrace.h
-index c6dcc5291f972..02fbc175142e2 100644
---- a/arch/riscv/include/asm/ftrace.h
-+++ b/arch/riscv/include/asm/ftrace.h
-@@ -63,4 +63,11 @@ do {									\
-  * Let auipc+jalr be the basic *mcount unit*, so we make it 8 bytes here.
+diff --git a/drivers/i2c/busses/i2c-aspeed.c b/drivers/i2c/busses/i2c-aspeed.c
+index dad6e432de89f..bdcc3c9d0abe5 100644
+--- a/drivers/i2c/busses/i2c-aspeed.c
++++ b/drivers/i2c/busses/i2c-aspeed.c
+@@ -69,6 +69,7 @@
+  * These share bit definitions, so use the same values for the enable &
+  * status bits.
   */
- #define MCOUNT_INSN_SIZE 8
-+
-+#ifndef __ASSEMBLY__
-+struct dyn_ftrace;
-+int ftrace_init_nop(struct module *mod, struct dyn_ftrace *rec);
-+#define ftrace_init_nop ftrace_init_nop
-+#endif
-+
- #endif
-diff --git a/arch/riscv/kernel/ftrace.c b/arch/riscv/kernel/ftrace.c
-index c40fdcdeb950a..291c579e12457 100644
---- a/arch/riscv/kernel/ftrace.c
-+++ b/arch/riscv/kernel/ftrace.c
-@@ -88,6 +88,25 @@ int ftrace_make_nop(struct module *mod, struct dyn_ftrace *rec,
- 	return __ftrace_modify_call(rec->ip, addr, false);
- }
++#define ASPEED_I2CD_INTR_RECV_MASK			0xf000ffff
+ #define ASPEED_I2CD_INTR_SDA_DL_TIMEOUT			BIT(14)
+ #define ASPEED_I2CD_INTR_BUS_RECOVER_DONE		BIT(13)
+ #define ASPEED_I2CD_INTR_SLAVE_MATCH			BIT(7)
+@@ -604,6 +605,7 @@ static irqreturn_t aspeed_i2c_bus_irq(int irq, void *dev_id)
+ 	writel(irq_received & ~ASPEED_I2CD_INTR_RX_DONE,
+ 	       bus->base + ASPEED_I2C_INTR_STS_REG);
+ 	readl(bus->base + ASPEED_I2C_INTR_STS_REG);
++	irq_received &= ASPEED_I2CD_INTR_RECV_MASK;
+ 	irq_remaining = irq_received;
  
-+
-+/*
-+ * This is called early on, and isn't wrapped by
-+ * ftrace_arch_code_modify_{prepare,post_process}() and therefor doesn't hold
-+ * text_mutex, which triggers a lockdep failure.  SMP isn't running so we could
-+ * just directly poke the text, but it's simpler to just take the lock
-+ * ourselves.
-+ */
-+int ftrace_init_nop(struct module *mod, struct dyn_ftrace *rec)
-+{
-+	int out;
-+
-+	ftrace_arch_code_modify_prepare();
-+	out = ftrace_make_nop(mod, rec, MCOUNT_ADDR);
-+	ftrace_arch_code_modify_post_process();
-+
-+	return out;
-+}
-+
- int ftrace_update_ftrace_func(ftrace_func_t func)
- {
- 	int ret = __ftrace_modify_call((unsigned long)&ftrace_call,
+ #if IS_ENABLED(CONFIG_I2C_SLAVE)
 -- 
 2.25.1
 
