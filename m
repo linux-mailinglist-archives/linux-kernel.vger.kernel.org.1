@@ -2,92 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A91227D923
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 22:43:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AC4B27D92A
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 22:45:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729348AbgI2UnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 16:43:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38356 "EHLO
+        id S1729183AbgI2Upk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 16:45:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727740AbgI2UnA (ORCPT
+        with ESMTP id S1728820AbgI2Upj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 16:43:00 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 758C8C0613D1
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 13:43:00 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id t10so6957992wrv.1
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 13:43:00 -0700 (PDT)
+        Tue, 29 Sep 2020 16:45:39 -0400
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91E83C061755;
+        Tue, 29 Sep 2020 13:45:39 -0700 (PDT)
+Received: by mail-oi1-x241.google.com with SMTP id x14so6993110oic.9;
+        Tue, 29 Sep 2020 13:45:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=smile-fr.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=yxgmFTxkf8Q7snkiRmdFU3li5pqox2TGA0gnwiFInxo=;
-        b=UgbWx+QLzIaXuWGj5Ky/C2Dh/s+6ClhTiU6nRCRCCG20Ucbaw5PclR+ti4GKk1j6hL
-         NofBXmiD6yIiLMFyhMH3RjbPc+RNM/1FW/q6az8FGjQHm3++YOp1Pv+HcKrfVcU9/F2A
-         TF0cltucY5XzKDSvLpA+BNJB7ZmkaYuBI6ihPuSvYpaGZiOYHrhikW9LlzVLUQq/O7rx
-         rwWQZvd0t65zBXomYpYV0yU+Dv+qRr8+/cEAwaGzelE5JwgYRiPhYqJAbVkp3tdl1zz9
-         n2XQeXgqPY+KipSXI1az0+ZSFubPhOWpaAMOiIKE+5UKO6YpC4c+0jZqGGDkj931pc+j
-         oxHA==
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=kP/doZng03t9cIOCsvhZTRdinmkOlGOOCPdgpH3w1ng=;
+        b=XTnk2AtRDpkHBzz9sWx8w5mT51dVBD9fbnmAZaBD46WkoezvNhr9LSzEUS2wdwFwzL
+         DYXU/TYdKlfqiApZBWQwQv0OTGTByafnN8KE4fBmZ6mfgvqYxoiSsorw3JE876tSuS2J
+         G511PNgWidvcbTBz0KM70GLFuBnDMVK0nL8giWM3G0Sdq/yXMWHom6whugKHIrfTNN4d
+         jJGExyV5y9SYAV0+PJEETCWABXtT1uukYWkwe3fQfAe7PGw9viCuejv3i3sqAV/qUByd
+         nNOZWQI56zLf2y8TumS4BWBi5d8qj10/86dlFZ9vqXIpMCXufq94sCHR+RKfopOo9DNz
+         eQWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=yxgmFTxkf8Q7snkiRmdFU3li5pqox2TGA0gnwiFInxo=;
-        b=TyVZqyNNReXjMYlbbVjFv5YxlYpIPqizPuy7hzobVOXE6QVwtwC/Gr0VRZCH9cSkwi
-         jHZivos2OZVVWMO7Id8h4TPS1QtTpghkAzLRI7OeTyfmiouWC17FUAwlytu/8u6ZwU/x
-         olGUVOTRYdZ3S5jhOk7orxakdoLoCvT125tGcZuGkg79xESPqivak9CPoSzMgPoldeJN
-         SMNkZSqqZMeZ70ybpc16DZJgHaSHVuzjBgtvRGIkKQcM0cHJSUSoiyFLid2h3qpWvqtB
-         63fVn3FSQgnPdx/ZJXWEU/MHYNqGLnJjX4xCaQeZ88mtmebah9QQRCDvvsIvHcFvSvYZ
-         a2Bw==
-X-Gm-Message-State: AOAM533ev9PPTTJxjklOcBCFBlnIkIoXa02Hfgev7YJw7OkkxQAI+OH6
-        E6uDsJguYixasDGxa4tGRKJ31Q==
-X-Google-Smtp-Source: ABdhPJw9IC5utvm4ax9rkKU/A7/jQf1cuLDFaUdt5CEfnkoqvrM2W2ynFzUbR7P/w7Jw/uEaYSl2xw==
-X-Received: by 2002:a5d:56cd:: with SMTP id m13mr6120637wrw.261.1601412179072;
-        Tue, 29 Sep 2020 13:42:59 -0700 (PDT)
-Received: from P-ASN-KEVALD.idf.intranet (85-170-108-21.rev.numericable.fr. [85.170.108.21])
-        by smtp.gmail.com with ESMTPSA id a10sm6780755wmj.38.2020.09.29.13.42.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Sep 2020 13:42:58 -0700 (PDT)
-From:   Yoann Congal <yoann.congal@smile.fr>
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     linux-pm@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Yoann Congal <yoann.congal@smile.fr>
-Subject: [PATCH] Documentation: PM: Fix a reStructuredText syntax error
-Date:   Tue, 29 Sep 2020 22:41:58 +0200
-Message-Id: <20200929204157.26127-1-yoann.congal@smile.fr>
-X-Mailer: git-send-email 2.20.1
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=kP/doZng03t9cIOCsvhZTRdinmkOlGOOCPdgpH3w1ng=;
+        b=Jpe8+xbZRI5rOaaldJedVJrf4c2Gw6OHhqQ23R+SQf7qThpGRA21wkur6rovM8Q47V
+         aT0esHL5puA37TovjcXsvUGM6e5qSQ5fOGampXmBrULjgaUyqdhZ8K35CX66590A5uUH
+         41QhT3ao5E78pEwCqedcLG1mt7o2d8nPNdZJmctjJ2CZ7KxA99IUlKa8GChWPNVXidAw
+         JqJEPYAjCEdrKf/UM5LPQ69KKxFC91F6KHryZtrE6P55PDSDvyYxXWtjFnX4Oz9SyLNb
+         /pY+QBnmmuzZQ2eMX+nu5GysedUuPch7wdZ20fZgurr19xePz4zTbDOFphbzf+wdvJK5
+         hp0A==
+X-Gm-Message-State: AOAM531lHE4iMH2xrYkWc2OkWKqzsu3iCe149ECuFlYFekX+/OqNxij6
+        UdxgCOZv3n/a8cHtwo03grs=
+X-Google-Smtp-Source: ABdhPJw4/qaiLvD+h4NyHBW1CQ5Sl7uZ5aGOJvx9xEvx0b1wzb25hW6tjgoEGaOzMMdILvFzfL70Gw==
+X-Received: by 2002:aca:538f:: with SMTP id h137mr3826210oib.103.1601412339005;
+        Tue, 29 Sep 2020 13:45:39 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id w125sm1248435oia.57.2020.09.29.13.45.37
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 29 Sep 2020 13:45:38 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Tue, 29 Sep 2020 13:45:36 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
+        pavel@denx.de, stable@vger.kernel.org
+Subject: Re: [PATCH 4.4 00/85] 4.4.238-rc1 review
+Message-ID: <20200929204536.GA152716@roeck-us.net>
+References: <20200929105928.198942536@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200929105928.198942536@linuxfoundation.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix a reStructuredText syntax error in the cpuidle PM admin-guide
-documentation: the ``...'' quotation marks are parsed as partial ''...''
-reStructuredText markup and break the output formatting.
+On Tue, Sep 29, 2020 at 12:59:27PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.4.238 release.
+> There are 85 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Thu, 01 Oct 2020 10:59:03 +0000.
+> Anything received after that time might be too late.
+> 
 
-This change them to "...".
+Build results:
+	total: 169 pass: 169 fail: 0
+Qemu test results:
+	total: 332 pass: 332 fail: 0
 
-Signed-off-by: Yoann Congal <yoann.congal@smile.fr>
----
- Documentation/admin-guide/pm/cpuidle.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Tested-by: Guenter Roeck <linux@roeck-us.net>
 
-diff --git a/Documentation/admin-guide/pm/cpuidle.rst b/Documentation/admin-guide/pm/cpuidle.rst
-index e70b365dbc60..191cfa4a450b 100644
---- a/Documentation/admin-guide/pm/cpuidle.rst
-+++ b/Documentation/admin-guide/pm/cpuidle.rst
-@@ -690,7 +690,7 @@ which of the two parameters is added to the kernel command line.  In the
- instruction of the CPUs (which, as a rule, suspends the execution of the program
- and causes the hardware to attempt to enter the shallowest available idle state)
- for this purpose, and if ``idle=poll`` is used, idle CPUs will execute a
--more or less ``lightweight'' sequence of instructions in a tight loop.  [Note
-+more or less "lightweight" sequence of instructions in a tight loop.  [Note
- that using ``idle=poll`` is somewhat drastic in many cases, as preventing idle
- CPUs from saving almost any energy at all may not be the only effect of it.
- For example, on Intel hardware it effectively prevents CPUs from using
--- 
-2.20.1
-
+Guenter
