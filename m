@@ -2,89 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D961F27C1BA
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 11:53:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EE2727C1BB
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 11:53:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727928AbgI2JxN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 05:53:13 -0400
-Received: from mail-ed1-f68.google.com ([209.85.208.68]:36378 "EHLO
-        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725306AbgI2JxN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 05:53:13 -0400
-Received: by mail-ed1-f68.google.com with SMTP id w1so5678929edr.3;
-        Tue, 29 Sep 2020 02:53:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=dSAqW2cyeQ0egKUykaEYXlhb5CZIKu20QX0aomphFBo=;
-        b=tjKUWLkC4aKb5ldBiDVX9t4DvcFDDBzbrO9jLZ5MXy2gQiNKfgAjaoJclampDxT1NH
-         i+opfMI/X0dugmJUz7b41XSOdVfOUHhTH/rF2eM2B5Xc+bPqiWDNB9M9+pSyWSTkDtk9
-         nIBrBMKIPEp/bN+ji1b5cICWoja8P7TYrzjgZSwphccRWZ1u2VecWQoi9VvgcUNPywrP
-         HzYRN+Hsr2wnZDxxu7X1P8j+ALMEAuibj0idK7hsSyUOtCT2+7AaT74M13Lx0GZaI40T
-         N9pE5xyeqOKtO29ctPwVE/6lBOsu8IHz+FVC8XvuHGvzjb0HukpSVYkECGKMrdc4XRQ8
-         Aujg==
-X-Gm-Message-State: AOAM530j7jlismWTqPHnRqd0OuYIbDwCMx6zS/4bPg2YYpzha7zqST7l
-        TlgT2213EJGvRTa78fRMopQ=
-X-Google-Smtp-Source: ABdhPJwv9/ka4QCMQyifFX+4Rb6TSmSwEteJroVlbX+i09WZCNIxGbkf/V8sa9FJIbBsP2SI0fG9Sw==
-X-Received: by 2002:aa7:d29a:: with SMTP id w26mr2310110edq.106.1601373191131;
-        Tue, 29 Sep 2020 02:53:11 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.194])
-        by smtp.googlemail.com with ESMTPSA id p11sm5228692edu.93.2020.09.29.02.53.09
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 29 Sep 2020 02:53:09 -0700 (PDT)
-Date:   Tue, 29 Sep 2020 11:53:07 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Tim Harvey <tharvey@gateworks.com>,
-        Robert Jones <rjones@gateworks.com>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-power@fi.rohmeurope.com
-Subject: Re: [PATCH v2] dt-bindings: mfd: correct interrupt flags in examples
-Message-ID: <20200929095307.GB11333@kozik-lap>
-References: <20200917185613.5905-1-krzk@kernel.org>
- <20200929094657.GD6148@dell>
+        id S1728089AbgI2JxZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 05:53:25 -0400
+Received: from mx2.suse.de ([195.135.220.15]:33768 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725306AbgI2JxY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 05:53:24 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1601373203;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=il8OjVwDlFOXLr6gKoOMtVUBESGFP/mYXQMYTFLTgy0=;
+        b=FgrE8IX2EUa3cIXAIigwejv5YTcWAFYL9R6bdUEPDzYI8Pf5+aAhr0APlKW0XLYFWgWZB8
+        jxcbhMVQvBI4j9++8ywgL2eyk9ihUgt0moq936nqGdOtANVkjzZn5YZj1hX49DZ2dodVex
+        uFbL0fSMIKWk9E38xmJYBOPWtLTjUQQ=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id E7B08AD2E;
+        Tue, 29 Sep 2020 09:53:22 +0000 (UTC)
+Date:   Tue, 29 Sep 2020 11:53:18 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Joonsoo Kim <js1304@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Mel Gorman <mgorman@techsingularity.net>, kernel-team@lge.com,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Subject: Re: [PATCH v2 for v5.9] mm/page_alloc: handle a missing case for
+ memalloc_nocma_{save/restore} APIs
+Message-ID: <20200929095318.GA2277@dhcp22.suse.cz>
+References: <1601283046-15329-1-git-send-email-iamjoonsoo.kim@lge.com>
+ <20200929080814.GB22035@dhcp22.suse.cz>
+ <CAAmzW4OK=ubyNWsjwfOkj4vZz2Tjuo0G9ceTMXUkx8W+3PEM=g@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200929094657.GD6148@dell>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAAmzW4OK=ubyNWsjwfOkj4vZz2Tjuo0G9ceTMXUkx8W+3PEM=g@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 10:46:57AM +0100, Lee Jones wrote:
-> On Thu, 17 Sep 2020, Krzysztof Kozlowski wrote:
+On Tue 29-09-20 17:38:43, Joonsoo Kim wrote:
+> 2020년 9월 29일 (화) 오후 5:08, Michal Hocko <mhocko@suse.com>님이 작성:
+> >
+> > On Mon 28-09-20 17:50:46, Joonsoo Kim wrote:
+> > > From: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+> > >
+> > > memalloc_nocma_{save/restore} APIs can be used to skip page allocation
+> > > on CMA area, but, there is a missing case and the page on CMA area could
+> > > be allocated even if APIs are used. This patch handles this case to fix
+> > > the potential issue.
+> > >
+> > > Missing case is an allocation from the pcplist. MIGRATE_MOVABLE pcplist
+> > > could have the pages on CMA area so we need to skip it if ALLOC_CMA isn't
+> > > specified.
+> > >
+> > > Fixes: 8510e69c8efe (mm/page_alloc: fix memalloc_nocma_{save/restore} APIs)
+> > > Signed-off-by: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+> > > ---
+> > >  mm/page_alloc.c | 13 ++++++++++---
+> > >  1 file changed, 10 insertions(+), 3 deletions(-)
+> > >
+> > > diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> > > index fab5e97..104d2e1 100644
+> > > --- a/mm/page_alloc.c
+> > > +++ b/mm/page_alloc.c
+> > > @@ -3367,9 +3367,16 @@ struct page *rmqueue(struct zone *preferred_zone,
+> > >       struct page *page;
+> > >
+> > >       if (likely(order == 0)) {
+> > > -             page = rmqueue_pcplist(preferred_zone, zone, gfp_flags,
+> > > +             /*
+> > > +              * MIGRATE_MOVABLE pcplist could have the pages on CMA area and
+> > > +              * we need to skip it when CMA area isn't allowed.
+> > > +              */
+> > > +             if (!IS_ENABLED(CONFIG_CMA) || alloc_flags & ALLOC_CMA ||
+> > > +                             migratetype != MIGRATE_MOVABLE) {
+> > > +                     page = rmqueue_pcplist(preferred_zone, zone, gfp_flags,
+> > >                                       migratetype, alloc_flags);
+> > > -             goto out;
+> > > +                     goto out;
+> > > +             }
+> > >       }
+> >
+> > This approach looks definitely better than the previous version.
 > 
-> > GPIO_ACTIVE_x flags are not correct in the context of interrupt flags.
-> > These are simple defines so they could be used in DTS but they will not
-> > have the same meaning:
-> > 1. GPIO_ACTIVE_HIGH = 0 = IRQ_TYPE_NONE
-> > 2. GPIO_ACTIVE_LOW  = 1 = IRQ_TYPE_EDGE_RISING
-> > 
-> > Correct the interrupt flags, assuming the author of the code wanted same
-> > logical behavior behind the name "ACTIVE_xxx", this is:
-> >   ACTIVE_LOW => IRQ_TYPE_LEVEL_LOW
-> > 
-> > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> > Acked-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com> # for BD70528
-> > Acked-by: Tim Harvey <tharvey@gateworks.com> # for gateworks-gsc.yaml
-> > Acked-by: Rob Herring <robh@kernel.org>
-> > 
-> > ---
-> > 
-> > Changes since v1:
-> > 1. Add acks
+> Thanks!
 > 
-> FYI, this should not bump the patch version.
+> > >
+> > >       /*
+> > > @@ -3381,7 +3388,7 @@ struct page *rmqueue(struct zone *preferred_zone,
+> > >
+> > >       do {
+> > >               page = NULL;
+> > > -             if (alloc_flags & ALLOC_HARDER) {
+> > > +             if (order > 0 && alloc_flags & ALLOC_HARDER) {
+> > >                       page = __rmqueue_smallest(zone, order, MIGRATE_HIGHATOMIC);
+> > >                       if (page)
+> > >                               trace_mm_page_alloc_zone_locked(page, order, migratetype);
+> >
+> > But this condition is not clear to me. __rmqueue_smallest doesn't access
+> > pcp lists. Maybe I have missed the point in the original discussion but
+> > this deserves a comment at least.
+> 
+> Before the pcplist skipping is applied, order-0 request can not reach here.
+> But, now, an order-0 request can reach here. Free memory on
+> MIGRATE_HIGHATOMIC is reserved for high-order atomic allocation
+> so an order-0 request should skip it.
 
-Yes, that was my mistake. I kept this one with multiple other similar
-patches and was updating all of them.... but I sent each group
-independently at the end so this one did not receive any updates
-actually.
+OK, I see. Thanks for the clarification.
 
-Best regards,
-Krzysztof
+> I will add a code comment on the next version.
+
+Thanks, that would be indeed helpful. With that, feel free to add
+Acked-by: Michal Hocko <mhocko@suse.com>
+
+-- 
+Michal Hocko
+SUSE Labs
