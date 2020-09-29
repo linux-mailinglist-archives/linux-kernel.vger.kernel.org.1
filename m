@@ -2,89 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AB8027D729
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 21:45:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7395927D72B
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 21:46:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728746AbgI2Tp1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 15:45:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42692 "EHLO mail.kernel.org"
+        id S1728822AbgI2Tqb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 15:46:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43474 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727758AbgI2Tp1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 15:45:27 -0400
-Received: from localhost (p54b3311a.dip0.t-ipconnect.de [84.179.49.26])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1727700AbgI2Tqa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 15:46:30 -0400
+Received: from mail-ot1-f54.google.com (mail-ot1-f54.google.com [209.85.210.54])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A7B4620774;
-        Tue, 29 Sep 2020 19:45:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D6A9C2083B;
+        Tue, 29 Sep 2020 19:46:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601408726;
-        bh=Soet9P57gA78D46fkz8p/ZW7RggrzHRQhcNMOl/7jXA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FDraZpqel5v9eqODi0cXJO+4TqLjB9Gc3hOM/4bj4Y9gfbeRsPO6v2Ezx2A89NoYT
-         cY1+8SoGWGN4auoOGif8cTPn+HgGdGwIIN9tkbZ1bws9kDhxYuOsZLYiR8SNPs9i21
-         5DTXq+tyUg3JDDhvIWoC7W6lmrmUT/DRcrQvp/QY=
-Date:   Tue, 29 Sep 2020 21:45:23 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Andreas =?utf-8?Q?F=C3=A4rber?= <afaerber@suse.de>,
-        linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-actions@lists.infradead.org
-Subject: Re: [PATCH v2 1/1] i2c: busses: Add support for atomic transfers in
- Actions Semi Owl driver
-Message-ID: <20200929194523.GE2010@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Cristian Ciocaltea <cristian.ciocaltea@gmail.com>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Andreas =?utf-8?Q?F=C3=A4rber?= <afaerber@suse.de>,
-        linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-actions@lists.infradead.org
-References: <b6c56858854805b0f03e29b7dde40b20796d5c93.1599561278.git.cristian.ciocaltea@gmail.com>
- <20200909151748.GA11397@mani>
- <20200909165915.GA387239@BV030612LT>
- <20200910030225.GA10495@mani>
- <20200910141223.GA447296@BV030612LT>
+        s=default; t=1601408790;
+        bh=jjEzi8lg/fixZ8RSJmRBsh7VZs4uZ4cmuyV6enGSxv4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Kpj8AilVQM5xcmwB1Vb5LrYlzGb2bJ3ug0FO3i3lKqqT6+bQVh7OTRej29MV5LnRV
+         psaTnlyAqXAIu8B02xUOFooNMugUfaHjJwE7dKKfCJFzGf7f6aln2133qYvfH/UIrW
+         uYKbeYC+vvdFVf3B0Na3rUddE8UxIy8jMDLBlGNk=
+Received: by mail-ot1-f54.google.com with SMTP id m13so5643364otl.9;
+        Tue, 29 Sep 2020 12:46:29 -0700 (PDT)
+X-Gm-Message-State: AOAM531UbWK847ffND11rL5wNQ6uTrCI7j5D3ljb4HBtlYZGHOJ3kfbR
+        xhnFSqO5QOQVNjY8Vr37ipcgNrptxpi/uTUXww==
+X-Google-Smtp-Source: ABdhPJwn8glarH4xnTwvOThxWuXdjV7eB4z3CGp5Z7Qqwtx9a47NmAh96i2eJuXIc3W9IlW8LNcb2k3TadFysAdRT+g=
+X-Received: by 2002:a9d:6b0d:: with SMTP id g13mr3933936otp.129.1601408789102;
+ Tue, 29 Sep 2020 12:46:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="imjhCm/Pyz7Rq5F2"
-Content-Disposition: inline
-In-Reply-To: <20200910141223.GA447296@BV030612LT>
+References: <20200926131157.14633-1-kholk11@gmail.com> <20200929191254.GA984478@bogus>
+ <CAMS8qEX_eB1pMLfqVCh5sHVaRevCYnpr+846LyZf9dH1-DQvzQ@mail.gmail.com>
+In-Reply-To: <CAMS8qEX_eB1pMLfqVCh5sHVaRevCYnpr+846LyZf9dH1-DQvzQ@mail.gmail.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Tue, 29 Sep 2020 14:46:17 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqJF6gxtFMtQ7A3-rT7LSH07T8u=PdfVFAXtTDm4peiFEg@mail.gmail.com>
+Message-ID: <CAL_JsqJF6gxtFMtQ7A3-rT7LSH07T8u=PdfVFAXtTDm4peiFEg@mail.gmail.com>
+Subject: Re: [PATCH] phy: qcom-qusb2: Add support for SDM630/660
+To:     Konrad Dybcio <konradybcio@gmail.com>
+Cc:     AngeloGioacchino Del Regno <kholk11@gmail.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        marijns95@gmail.com, Martin Botka <martin.botka1@gmail.com>,
+        DTML <devicetree@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        phone-devel@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Sep 29, 2020 at 2:25 PM Konrad Dybcio <konradybcio@gmail.com> wrote:
+>
+> >You should just pull this from the driver data.
+>
+> I reused 8996's phy_cfg so as to change one line and not repeat dozens
+> for what's essentially the same thing, so I don't think it's the
+> better option..
 
---imjhCm/Pyz7Rq5F2
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Okay, save it for the next person when the if statement grows.
 
-
-> Sure, I can handle this. I assume this should be a separate patch, to
-> be applied before the current patch. Should I submit a patch series
-> instead?
-
-Yes, just do it. And please remove irrelevant parts of the mail when
-replying. Thanks!
-
-
---imjhCm/Pyz7Rq5F2
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl9zjtMACgkQFA3kzBSg
-KbYLhw//Yn21wF9FzyenX2h/pLxOeAwFCzpOqboAkiJ2T+PS/dqFZTNZbxCfgaTe
-ynhD7+ZRlJekYU5M5NiSrq+kKW+6Q5tQAvD6nkDPx22aXf0zrRxE60g+vvarCftV
-uwtx0vgY1PgMLeOGLWYXXO+Sx7WdW3Cn/fxnwmtL5rp3T3bTwLfBxD1Kc+79sDhI
-+6J/uaLB77bDVCexG5yjLL2nANsreuopXGaikornbNOxDSBBgtYXjZV1CLmFxJvB
-jgt2AfJBL5XR7597l3K+HpW5UTSoBmJMLj9YY5rF+xk5kiH6N06OqOH90lb2Munc
-jpvF7uI7AmsajEDL57u0ZLHTVQs8Rlu7ot77+OFnyp261JJetuvgR50lbjo60aU3
-QidNWf4uShznRRwAxAcWrefuFVmNp/LcYEtiTDaMZ9OI+raGL5dUW84z8BGWIi9v
-yhU+dEVNd3E3rK4/dTS+0l5t5o1mA5qJxwRnyC9qYGlI3SjxC0I9aNEXBPE1+HZb
-aDRqM1DY7D6SfVcVLbWgSHq+o+Qxif487GVXNwKNMffXJHoaHNgM+zDJu/3eSUp7
-HSNk0k9Db24z9eCIhmssASTk+wVKP89c+oGi+IxedpYUMQ4Frh6b8lwDWMjJbAwI
-AEkFyxDyHmbBZsnWYwVpPwBSperzJCfpxhnpIw8gAjo3w/M+kE4=
-=eaRf
------END PGP SIGNATURE-----
-
---imjhCm/Pyz7Rq5F2--
+Rob
