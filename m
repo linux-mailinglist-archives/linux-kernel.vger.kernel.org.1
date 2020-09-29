@@ -2,165 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 671D927C10E
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 11:26:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9591F27C116
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 11:28:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727988AbgI2J0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 05:26:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45946 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727769AbgI2J0f (ORCPT
+        id S1727974AbgI2J2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 05:28:05 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:51360 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727817AbgI2J2F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 05:26:35 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85DB7C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 02:26:35 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id j2so4534051wrx.7
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 02:26:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:autocrypt:organization:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=YhPm+9XSIa063djb3KYBZcrsLNGALctT0yxUobnyP7g=;
-        b=K5k7YwRiSFmd3dGvKV6HH2EfquMS34lxm3BxGaERUgAl9hK+82vNKpfzEl/9UTsJ2s
-         pyEVBPGN3QJJwW4a7+Ki1NbhIAJAi9uZMSeV3NnfDq/0mYra4bDSFJ23G0FPtDdn6Qgg
-         L2d8ArAHc6746je9dxTGpLbg7v2qu3WBnc3DKVTNYjUAzBzwG9CQvhGAI1TCOqzOtN4l
-         Soax5kl1UfKQHsFmimuD3L0yVEmx+hORBefC7RvKoeaMsYOM17agRNnNRIOnT+fMjykz
-         AXLShyDJPFKenrdfftaRAbEYk1pR1Z73gU06FWVvpX7TyhVzmgtNlSq7lax4x/7jlKMe
-         oPYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :organization:message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=YhPm+9XSIa063djb3KYBZcrsLNGALctT0yxUobnyP7g=;
-        b=ITdCEOF5z9UzGlh3ouJP9JkUo7NuauFwfbX1DIO9iSnP9PgqSjbWdn25dHLQKR5blU
-         tKT2X4X99fPITv80d2RD//7JB4DXfao89dD4uOcpppBgx7/O64djHWD1lQXRmudqdpcV
-         GlOSxA/qCBVAmMLFfi4MmsgebKQiP3bR8jskIdtYw1HIwTHLejXrfO/x11P0fqqT/hWI
-         2rZPzdH9tx0tnmqyPBV7AA/BAD9mBEt1KsiClQjz+AJ+mW1Ci/25T7gWiByIOD+XmqKE
-         5ju7R5Mmd/wvcbTjnfU3Kmp2A1AbWazhY44BAlCdv8bwPWOfzKfhQLR34A4xQ6nZi+4c
-         M8jw==
-X-Gm-Message-State: AOAM530dosjR8QxJZDe49VORvYtcS06raBizyMsbY2/MrKUIJZPV0NB0
-        JLG5FC2VJC/H5t6EjFBpkWsqKA==
-X-Google-Smtp-Source: ABdhPJwE1Z+6gxE1Cf6FS4vRe7b18sOoy0/iMBOvBXHUKz76KfpE2gNXLHz6Ev7i+ohcGkaoeoboGw==
-X-Received: by 2002:a05:6000:118a:: with SMTP id g10mr3245186wrx.67.1601371594009;
-        Tue, 29 Sep 2020 02:26:34 -0700 (PDT)
-Received: from ?IPv6:2a01:e35:2ec0:82b0:d50c:1ee4:fec5:ad12? ([2a01:e35:2ec0:82b0:d50c:1ee4:fec5:ad12])
-        by smtp.gmail.com with ESMTPSA id s12sm4303519wmd.20.2020.09.29.02.26.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 29 Sep 2020 02:26:33 -0700 (PDT)
-Subject: Re: [PATCH v2 0/5] usb: dwc-meson-g12a: Add support for USB on S400
- board
-To:     khilman@baylibre.com, kishon@ti.com, balbi@kernel.org,
-        martin.blumenstingl@googlemail.com
-Cc:     linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org
-References: <20200917065949.3476-1-narmstrong@baylibre.com>
-From:   Neil Armstrong <narmstrong@baylibre.com>
-Autocrypt: addr=narmstrong@baylibre.com; prefer-encrypt=mutual; keydata=
- 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
- ZaTUOEkgIor5losDrePdPgE=
-Organization: Baylibre
-Message-ID: <5e69947c-8a91-af7f-ed86-996920109e79@baylibre.com>
-Date:   Tue, 29 Sep 2020 11:26:32 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 29 Sep 2020 05:28:05 -0400
+Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601371683;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=pYuc3/1S5yymvfflLAL9MMp/Ok6n0ZAyFbN3sbJRaT0=;
+        b=Jj/USoMBCSfieJHQR6JlxE4ZFYyfJEkT7W+lnGLf9g4i6cpQj3E+HyuIbaW9/EvlTgKFHt
+        CmK98WCW9XLnk4AxKIYN/b6IGN8lPpmOR3GJvS8pHkoo86z7MdLU8q7KCAaR0Taf3TGeyy
+        86MYWsKr3Jz3VXqyCi4M/JOhRUYKU64=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-580-qegXtShCOwWT77D3KJtmZg-1; Tue, 29 Sep 2020 05:27:23 -0400
+X-MC-Unique: qegXtShCOwWT77D3KJtmZg-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0D80C801ADD;
+        Tue, 29 Sep 2020 09:27:21 +0000 (UTC)
+Received: from gondolin (ovpn-113-63.ams2.redhat.com [10.36.113.63])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A67356198B;
+        Tue, 29 Sep 2020 09:27:13 +0000 (UTC)
+Date:   Tue, 29 Sep 2020 11:27:10 +0200
+From:   Cornelia Huck <cohuck@redhat.com>
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Huacai Chen <chenhc@lemote.com>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        linux-mips@vger.kernel.org, Paul Mackerras <paulus@ozlabs.org>,
+        kvm-ppc@vger.kernel.org,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>
+Subject: Re: [RFC PATCH 0/3] KVM: Introduce "VM bugged" concept
+Message-ID: <20200929112710.3ce1365f.cohuck@redhat.com>
+In-Reply-To: <20200923224530.17735-1-sean.j.christopherson@intel.com>
+References: <20200923224530.17735-1-sean.j.christopherson@intel.com>
+Organization: Red Hat GmbH
 MIME-Version: 1.0
-In-Reply-To: <20200917065949.3476-1-narmstrong@baylibre.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Felipe,
+On Wed, 23 Sep 2020 15:45:27 -0700
+Sean Christopherson <sean.j.christopherson@intel.com> wrote:
 
-Is there anything to change in this serie ?
+> This series introduces a concept we've discussed a few times in x86 land.
+> The crux of the problem is that x86 has a few cases where KVM could
+> theoretically encounter a software or hardware bug deep in a call stack
+> without any sane way to propagate the error out to userspace.
+> 
+> Another use case would be for scenarios where letting the VM live will
+> do more harm than good, e.g. we've been using KVM_BUG_ON for early TDX
+> enabling as botching anything related to secure paging all but guarantees
+> there will be a flood of WARNs and error messages because lower level PTE
+> operations will fail if an upper level operation failed.
+> 
+> The basic idea is to WARN_ONCE if a bug is encountered, kick all vCPUs out
+> to userspace, and mark the VM as bugged so that no ioctls() can be issued
+> on the VM or its devices/vCPUs.
 
-Thanks,
-Neil
+I think this makes a lot of sense.
 
-On 17/09/2020 08:59, Neil Armstrong wrote:
-> The Amlogic AXG is close to the GXL Glue but with a single OTG PHY.
+Are there other user space interactions where we want to generate an
+error for a bugged VM, e.g. via eventfd?
+
+And can we make the 'bugged' information available to user space in a
+structured way?
+
 > 
-> It needs the same init sequence as GXL & GXM, but it seems it doesn't need
-> the host disconnect bit.
+> RFC as I've done nowhere near enough testing to verify that rejecting the
+> ioctls(), evicting running vCPUs, etc... works as intended.
 > 
-> The Glue driver reuses the already implemented GXL & GXM work.
+> Sean Christopherson (3):
+>   KVM: Export kvm_make_all_cpus_request() for use in marking VMs as
+>     bugged
+>   KVM: Add infrastructure and macro to mark VM as bugged
+>   KVM: x86: Use KVM_BUG/KVM_BUG_ON to handle bugs that are fatal to the
+>     VM
 > 
-> The USB2 PHY driver needs a slight tweak to keep the OTG detection working.
-> 
-> Changes since v1 at [1]:
-> - s/close from/close to/g
-> - collected review tags
-> - added small comment about phy management in patch 3
-> - removed status = "okay" in patch 4
-> - removed invalid phy-supply of phy1 in patch 5
-> 
-> [1] http://lore.kernel.org/r/20200909160409.8678-1-narmstrong@baylibre.com
-> 
-> Neil Armstrong (5):
->   phy: amlogic: phy-meson-gxl-usb2: keep ID pull-up even in Host mode
->   dt-bindings: usb: amlogic,meson-g12a-usb-ctrl: add the Amlogic AXG
->     Families USB Glue Bindings
->   usb: dwc-meson-g12a: Add support for USB on AXG SoCs
->   arm64: dts: meson-axg: add USB nodes
->   arm64: dts: meson-axg-s400: enable USB OTG
-> 
->  .../usb/amlogic,meson-g12a-usb-ctrl.yaml      | 22 +++++++-
->  .../arm64/boot/dts/amlogic/meson-axg-s400.dts |  6 +++
->  arch/arm64/boot/dts/amlogic/meson-axg.dtsi    | 50 +++++++++++++++++++
->  drivers/phy/amlogic/phy-meson-gxl-usb2.c      |  3 +-
->  drivers/usb/dwc3/dwc3-meson-g12a.c            | 18 +++++++
->  5 files changed, 97 insertions(+), 2 deletions(-)
+>  arch/x86/kvm/svm/svm.c   |  2 +-
+>  arch/x86/kvm/vmx/vmx.c   | 23 ++++++++++++--------
+>  arch/x86/kvm/x86.c       |  4 ++++
+>  include/linux/kvm_host.h | 45 ++++++++++++++++++++++++++++++++--------
+>  virt/kvm/kvm_main.c      | 11 +++++-----
+>  5 files changed, 61 insertions(+), 24 deletions(-)
 > 
 
