@@ -2,97 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B85EF27D958
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 22:55:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00BF127D950
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 22:54:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729482AbgI2Uz1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 16:55:27 -0400
-Received: from foss.arm.com ([217.140.110.172]:51334 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729293AbgI2Uz1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 16:55:27 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A8AC612FC;
-        Tue, 29 Sep 2020 13:55:26 -0700 (PDT)
-Received: from e108754-lin.cambridge.arm.com (unknown [10.1.199.49])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id E2F313F85F;
-        Tue, 29 Sep 2020 13:55:24 -0700 (PDT)
-From:   Ionela Voinescu <ionela.voinescu@arm.com>
-To:     mingo@redhat.com, peterz@infradead.org, vincent.guittot@linaro.org,
-        catalin.marinas@arm.com, will@kernel.org, rjw@rjwysocki.net,
-        viresh.kumar@linaro.org
-Cc:     dietmar.eggemann@arm.com, qperret@google.com,
-        valentin.schneider@arm.com, linux-pm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        ionela.voinescu@arm.com
-Subject: [PATCH v2 3/3] sched/topology: condition EAS enablement on FIE support
-Date:   Tue, 29 Sep 2020 21:54:42 +0100
-Message-Id: <20200929205442.24792-4-ionela.voinescu@arm.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200929205442.24792-1-ionela.voinescu@arm.com>
-References: <20200929205442.24792-1-ionela.voinescu@arm.com>
+        id S1729401AbgI2Uyt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 16:54:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40164 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729203AbgI2Uys (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 16:54:48 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5194AC061755;
+        Tue, 29 Sep 2020 13:54:48 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id g96so5824591otb.12;
+        Tue, 29 Sep 2020 13:54:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=fHuOrzSQZffWlySFfQDETSzvj6Y1lkDHWPBd7NUZaFk=;
+        b=l0pnQJv/HtPJm8RaEpMaeb4S39jz+dmjAnGZVtXGzCySWN9E5HhH87QbRC+rmsLtWG
+         urJ02xCRBDrDWY76ZbTzK1kAMvMIpfeYCm0uTm9MrvPU8ruOqfidvyvHw5M58ZXAY/EV
+         aed1wt/CefwkHuj4yZH6oulVTBw2qP2dbfX+yz49It1ZqKwqJFTv3FgBeRWR9RmY9lO1
+         pq4bmTrSeHDZjq9G3SoniERSPzhDngklCzqXlnOZ5s+mjBaoVgJhLqMMmu4+xBI3ys3p
+         QRO7pjtK3+qfNvLy5ciJuUCim6Dc+otuMerC+qQp2w2RJA502zQ8MPsFzHgUlzwujyeR
+         qGOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=fHuOrzSQZffWlySFfQDETSzvj6Y1lkDHWPBd7NUZaFk=;
+        b=dyQJpG1gxfqC5xFnC2K5GEcJ/FzrlBY/j3HfOQ0JviF+ipMZxgxtleAYPpzNpm7gnX
+         qc2mdNBbDTJ0ftGCEVgBWVC0f8BS5Id48lXh5gdKU60TsRZPOlhGSYuPhPrkrlUsGS+r
+         H8zcQ/vSACp/RbfxrRPT6F9TaZIPDWKLqTvhVxpwyyNhIinuDPFKKreUqkTgdbsL9tOJ
+         sa+emUlgi1EvKj1kUG+88rQKLi1iCAb3mr1nEzmkKDfv5FkWeCFFnIHQ5zeJVRQWbtKk
+         wph093xlWyKnewUh8N/0BxrmIBtB+Tc1CjPQczW3ozkOdAGVtPKgaUM8w2D5uKo4NLxA
+         kF3Q==
+X-Gm-Message-State: AOAM53208zo1jAzeAafhMq9VK1O8PiYPXM4d3JNj4cLU29iJbZvmG1tJ
+        1mhzWXx/XUN4ES+kXM2t4oI=
+X-Google-Smtp-Source: ABdhPJwNEkUFpR/QxpbcvUASGjzkCt/0otFRip1mb17c5iOdJrSywgOJZ3uAQ7ftwK3pgIZz0Y6LmA==
+X-Received: by 2002:a05:6830:1d4f:: with SMTP id p15mr3804464oth.223.1601412887745;
+        Tue, 29 Sep 2020 13:54:47 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id a20sm3181568oos.13.2020.09.29.13.54.46
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 29 Sep 2020 13:54:47 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Tue, 29 Sep 2020 13:54:46 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
+        pavel@denx.de, stable@vger.kernel.org
+Subject: Re: [PATCH 5.8 00/99] 5.8.13-rc1 review
+Message-ID: <20200929205446.GB153176@roeck-us.net>
+References: <20200929105929.719230296@linuxfoundation.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200929105929.719230296@linuxfoundation.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to make accurate predictions across CPUs and for all performance
-states, Energy Aware Scheduling (EAS) needs frequency-invariant load
-tracking signals.
+On Tue, Sep 29, 2020 at 01:00:43PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.8.13 release.
+> There are 99 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Thu, 01 Oct 2020 10:59:03 +0000.
+> Anything received after that time might be too late.
+> 
 
-EAS task placement aims to minimize energy consumption, and does so in
-part by limiting the search space to only CPUs with the highest spare
-capacity (CPU capacity - CPU utilization) in their performance domain.
-Those candidates are the placement choices that will keep frequency at
-its lowest possible and therefore save the most energy.
+Build results:
+	total: 154 pass: 153 fail: 1
+Failed builds:
+	powerpc:allmodconfig
+Qemu test results:
+	total: 430 pass: 430 fail: 0
 
-But without frequency invariance, a CPU's utilization is relative to the
-CPU's current performance level, and not relative to its maximum
-performance level, which determines its capacity. As a result, it will
-fail to correctly indicate any potential spare capacity obtained by an
-increase in a CPU's performance level. Therefore, a non-invariant
-utilization signal would render the EAS task placement logic invalid.
+powerpc link problem as usual. The fix has still not landed in mainline.
 
-Now that we properly report support for the Frequency Invariance Engine
-(FIE) through arch_scale_freq_invariant() for arm and arm64 systems,
-while also ensuring a re-evaluation of the EAS use conditions for
-possible invariance status change, we can assert this is the case when
-initializing EAS. Warn and bail out otherwise.
+Tested-by: Guenter Roeck <linux@roeck-us.net>
 
-Signed-off-by: Ionela Voinescu <ionela.voinescu@arm.com>
-Suggested-by: Quentin Perret <qperret@google.com>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
----
- kernel/sched/topology.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
-
-diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-index e0a8e55e7df0..cbe88b896f93 100644
---- a/kernel/sched/topology.c
-+++ b/kernel/sched/topology.c
-@@ -328,6 +328,7 @@ static void sched_energy_set(bool has_eas)
-  *    3. no SMT is detected.
-  *    4. the EM complexity is low enough to keep scheduling overheads low;
-  *    5. schedutil is driving the frequency of all CPUs of the rd;
-+ *    6. frequency invariance support is present;
-  *
-  * The complexity of the Energy Model is defined as:
-  *
-@@ -376,6 +377,14 @@ static bool build_perf_domains(const struct cpumask *cpu_map)
- 		goto free;
- 	}
- 
-+	if (!arch_scale_freq_invariant()) {
-+		if (sched_debug()) {
-+			pr_warn("rd %*pbl: Disabling EAS: frequency-invariant load tracking not yet supported",
-+				cpumask_pr_args(cpu_map));
-+		}
-+		goto free;
-+	}
-+
- 	for_each_cpu(i, cpu_map) {
- 		/* Skip already covered CPUs. */
- 		if (find_pd(pd, i))
--- 
-2.17.1
-
+Guenter
