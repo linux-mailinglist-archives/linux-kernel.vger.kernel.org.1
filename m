@@ -2,83 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7323E27D7AA
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 22:09:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AEC727D7B0
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 22:09:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729072AbgI2UJZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 16:09:25 -0400
-Received: from mga12.intel.com ([192.55.52.136]:11358 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728362AbgI2UJY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 16:09:24 -0400
-IronPort-SDR: I6o5N5ZB5XeGju4hGb47jWEq6D4LgYlTRSt5gLMWp2X5dkKyGKaMVt16WxK5zZtljToYJmCgmZ
- +rPOKesTzbDw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9759"; a="141683851"
-X-IronPort-AV: E=Sophos;i="5.77,319,1596524400"; 
-   d="scan'208";a="141683851"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2020 13:09:23 -0700
-IronPort-SDR: k6lbaEZ6Kq6Tr+55Ah3ph5fY75+ANMKj7k+/gRlGnkvYZBURkyULKf0K716ivLNtoUxR08T4/v
- 25TNVXctKViA==
-X-IronPort-AV: E=Sophos;i="5.77,319,1596524400"; 
-   d="scan'208";a="493255431"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2020 13:09:22 -0700
-Date:   Tue, 29 Sep 2020 13:09:22 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-Cc:     linux-man@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-api@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH] man/statx: Add STATX_ATTR_DAX
-Message-ID: <20200929200922.GC706602@iweiny-DESK2.sc.intel.com>
-References: <20200505002016.1085071-1-ira.weiny@intel.com>
- <20200928164200.GA459459@iweiny-DESK2.sc.intel.com>
- <ddf4dd69-6bf8-8ca7-cdd7-a949884d997f@gmail.com>
+        id S1729089AbgI2UJi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 16:09:38 -0400
+Received: from mail-ot1-f68.google.com ([209.85.210.68]:33670 "EHLO
+        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728362AbgI2UJi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 16:09:38 -0400
+Received: by mail-ot1-f68.google.com with SMTP id m12so5764835otr.0;
+        Tue, 29 Sep 2020 13:09:37 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=X9aOhCfi/B0xKU7dFMYaHxapvSEYg4wg92gtMCjdiuc=;
+        b=krU0jnhhuRXccprCk4kTMEQSLXlk3PPsubLiP7l/5phcIlQ1ek/JjNSALnb7Jmu15j
+         hZciV5V56RHFTMoGofqPq88k1s6RSg7UYa9TnAtiKZEJ3dkh0eR1q8cxfUUu1PqZS4E4
+         CHtSu8pkSi0vPPbFhgzhVJIEr8J5TwnHJRTbxDs5l5u2xAWR4JWXvm3/dQAf9GTK7aXY
+         K26xv3TymCG8saU6sxnThIypyXqoeVaQsOtkHynptfioKZk/aqLFDo3RKXcSxOA5JonE
+         zdIDjbS+4RRm6UEixAcUiRu8dhodoljxh/LZQVqPA+OUj7xPIQzNCuSHxTZpcaWGsQ2U
+         kTog==
+X-Gm-Message-State: AOAM531HMjErdwBoFXES2ObKWBo53PkowrpJQpCsm4YzaONOtfihPzgA
+        utp//39Msk+wjPZyF0om9w==
+X-Google-Smtp-Source: ABdhPJzp8TFuyuQd5hO7MbiTMambrzGZvIEVSIVQ3GM76JDqG28K8jX4ZtTpslQS3ksa/Cw6876jxA==
+X-Received: by 2002:a9d:50a:: with SMTP id 10mr3786384otw.207.1601410177211;
+        Tue, 29 Sep 2020 13:09:37 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id q81sm1225520oia.46.2020.09.29.13.09.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Sep 2020 13:09:36 -0700 (PDT)
+Received: (nullmailer pid 1080265 invoked by uid 1000);
+        Tue, 29 Sep 2020 20:09:35 -0000
+Date:   Tue, 29 Sep 2020 15:09:35 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Neil Armstrong <narmstrong@baylibre.com>
+Cc:     hverkuil-cisco@xs4all.nl, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org
+Subject: Re: [PATCH 1/4] dt-bindings: media: Add bindings for the Amlogic
+ GE2D Accelerator Unit
+Message-ID: <20200929200935.GA1078747@bogus>
+References: <20200928161411.323581-1-narmstrong@baylibre.com>
+ <20200928161411.323581-2-narmstrong@baylibre.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ddf4dd69-6bf8-8ca7-cdd7-a949884d997f@gmail.com>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+In-Reply-To: <20200928161411.323581-2-narmstrong@baylibre.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 10:38:46AM +0200, Michael Kerrisk (man-pages) wrote:
-> Hello Ira,
+On Mon, 28 Sep 2020 18:14:08 +0200, Neil Armstrong wrote:
+> The GE2D is a 2D accelerator with various features like configurable blitter
+> with alpha blending, frame rotation, scaling, format conversion and colorspace
+> conversion.
 > 
-> On 9/28/20 6:42 PM, Ira Weiny wrote:
-> > On Mon, May 04, 2020 at 05:20:16PM -0700, 'Ira Weiny' wrote:
-> >> From: Ira Weiny <ira.weiny@intel.com>
-> >>
-> >> Linux 5.8 is slated to have STATX_ATTR_DAX support.
-> >>
-> >> https://lore.kernel.org/lkml/20200428002142.404144-4-ira.weiny@intel.com/
-> >> https://lore.kernel.org/lkml/20200504161352.GA13783@magnolia/
-> >>
-> >> Add the text to the statx man page.
-> >>
-> >> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> > 
-> > Have I sent this to the wrong list?  Or perhaps I have missed a reply.
+> This adds the bindings for the GE2D version found in the AXG SoCs Family.
 > 
-> No, it's just me being a bit slow, I'm sorry. Thank you for pining.
+> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+> ---
+>  .../bindings/media/amlogic,axg-ge2d.yaml      | 47 +++++++++++++++++++
+>  1 file changed, 47 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/media/amlogic,axg-ge2d.yaml
+> 
 
-NP
-
-> 
-> > I don't see this applied to the man-pages project.[1]  But perhaps I am looking
-> > at the wrong place?
-> 
-> Your patch is applied now, and pushed to kernel .org. Thanks!
-
-Sweet!  Thank you!
-Ira
-
-> 
-> Cheers,
-> 
-> Michael
-> 
+Reviewed-by: Rob Herring <robh@kernel.org>
