@@ -2,125 +2,291 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E06D27BC7B
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 07:35:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C013E27BC7D
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 07:36:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727439AbgI2Ffv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 01:35:51 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:33404 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725300AbgI2Ffu (ORCPT
+        id S1726313AbgI2FgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 01:36:22 -0400
+Received: from smtprelay0235.hostedemail.com ([216.40.44.235]:44248 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725300AbgI2FgV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 01:35:50 -0400
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08T5UQZg025499;
-        Mon, 28 Sep 2020 22:35:34 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=Xw7Lxul/xCI52UGviK9+Nd/Vv/QbVESIt10e+s622Ss=;
- b=kQwxMoJMMSvfXTSzGccjfm1I2+fqr6O8h9cK7zPwjTOpizcAEcOZtgHGUhZmgw3GhiZL
- aOyxcIO6Zk8EaCuV+alsb5U7zEidqs5bORmeemeKxwvhqQljrA8v4qzNdhZ7b+MeDOZD
- tfESNEZIUmLOy/xGL1Nhe0hhiqi+bSJFpbY= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 33tnq48ky5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 28 Sep 2020 22:35:34 -0700
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.197) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Mon, 28 Sep 2020 22:35:33 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ug95FAcPjGC+UGSOuDh7qVe+RIJDrzYk+WkurE4QzWG/NJkRgimxCYtVUlOCEl8P/MWci/fTINLMevFbZNj0NaxFn7Ue3WsjlaS+MKs8Jn4dr4JlmZ9QxdkMLy7wlPT19WrU4CD0rp/42/XVgWPa7J2i4nsRMnKYfz+kVEYZ5uJ6Va9DdARduOqrpqzJDk61c6JpMBr4o2p0P6ZXD0K2RPoqip2vcYc1dlOxo0OsDWHMdszTvtovay3cbgcILAf/PM3ElwZfEOBM6YT6UtuQLYdqTN20idpEsLacVcjavYmvLhOdpRkLgRi7A9xTlN6+DNWuWSUpPIRs0Ogm+up80Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Xw7Lxul/xCI52UGviK9+Nd/Vv/QbVESIt10e+s622Ss=;
- b=MT0avZP7Ttv25bTufYVyF75XLMHcq+q+XZ519q/vojtLOpvMHi3K6OLaHYEj4L3IWsrA8ilU0dKDx7Umyicu8wx1amfFE38R71WTvTHH6dGE/Ab2Q9lmvhVcw0jABIjLkL4rzSvNXRpFGUlMIid9d2UsdZDhFyjd7yR8rc1gnb0BmOakDWTpNvUnxrRob0WELlo0kI0NhvLoNdKu9YIdtkTJc4+37wBQorHD2UmwDgS64EmNpQb3TRaU45192O9DuV2IQL4UBiOIEc4XHtIlx97FML/ZiuD+K52UhyWw+45HbAWRLOLp82Gxe+vYG9X7KQDZbFo6PGf3grSVrBsVpw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Xw7Lxul/xCI52UGviK9+Nd/Vv/QbVESIt10e+s622Ss=;
- b=Z3OGDjfp0lKEFic2hXhsmNYtpg3ptdv6on9LcUibuYjYhN29FLoVqXsBJvWDl84WjSPVyjm9X3hD/oHb+QJS2PDKjMMGC36oNgHAwkAq0+TNfDY5SPnXLJzOnqNo9jDzruGQCv/O2kbxKgUiD8E8NbizjBWlQWMs2Hb41LOjwrs=
-Authentication-Results: cloudflare.com; dkim=none (message not signed)
- header.d=none;cloudflare.com; dmarc=none action=none header.from=fb.com;
-Received: from BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32)
- by BYAPR15MB3255.namprd15.prod.outlook.com (2603:10b6:a03:107::26) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.20; Tue, 29 Sep
- 2020 05:35:32 +0000
-Received: from BY5PR15MB3571.namprd15.prod.outlook.com
- ([fe80::c13c:fca9:5e04:9bfb]) by BY5PR15MB3571.namprd15.prod.outlook.com
- ([fe80::c13c:fca9:5e04:9bfb%3]) with mapi id 15.20.3412.029; Tue, 29 Sep 2020
- 05:35:32 +0000
-Date:   Mon, 28 Sep 2020 22:35:25 -0700
-From:   Martin KaFai Lau <kafai@fb.com>
-To:     Lorenz Bauer <lmb@cloudflare.com>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, <kernel-team@cloudflare.com>,
-        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH bpf-next v2 1/4] bpf: sockmap: enable map_update_elem
- from bpf_iter
-Message-ID: <20200929053525.aje3oavmcrbzmo34@kafai-mbp>
-References: <20200928090805.23343-1-lmb@cloudflare.com>
- <20200928090805.23343-2-lmb@cloudflare.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200928090805.23343-2-lmb@cloudflare.com>
-X-Originating-IP: [2620:10d:c090:400::5:d609]
-X-ClientProxiedBy: MWHPR15CA0038.namprd15.prod.outlook.com
- (2603:10b6:300:ad::24) To BY5PR15MB3571.namprd15.prod.outlook.com
- (2603:10b6:a03:1f6::32)
+        Tue, 29 Sep 2020 01:36:21 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 90144182CED28;
+        Tue, 29 Sep 2020 05:36:20 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:2:41:355:379:421:541:800:960:973:979:982:988:989:1260:1311:1314:1345:1437:1515:1535:1605:1730:1747:1777:1792:2194:2197:2198:2199:2200:2201:2393:2559:2562:2693:3138:3139:3140:3141:3142:3653:3743:3865:3866:3867:3868:3870:3871:3872:3874:4050:4118:4321:4383:4605:5007:6119:6120:6261:6299:6691:7522:7903:7974:8957:9040:9121:10004:10848:11026:11233:11473:11658:11914:12043:12114:12219:12291:12297:12438:12555:12679:12895:12986:13161:13184:13229:13255:13894:21080:21221:21324:21450:21451:21627:21990:30054:30055:30062:30070:30074,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: pipe99_1e0cd2127187
+X-Filterd-Recvd-Size: 7903
+Received: from joe-laptop.perches.com (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf20.hostedemail.com (Postfix) with ESMTPA;
+        Tue, 29 Sep 2020 05:36:19 +0000 (UTC)
+From:   Joe Perches <joe@perches.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Julia Lawall <Julia.Lawall@inria.fr>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: [RFC PATCH] scripts/most_common_subject_prefix.pl: Find the most common commit subject prefix
+Date:   Mon, 28 Sep 2020 22:36:19 -0700
+Message-Id: <e949cb8f12caec813c22dc3791a92e9f87670a5b.1601356990.git.joe@perches.com>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from kafai-mbp (2620:10d:c090:400::5:d609) by MWHPR15CA0038.namprd15.prod.outlook.com (2603:10b6:300:ad::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.20 via Frontend Transport; Tue, 29 Sep 2020 05:35:31 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 722cc334-f5d6-4771-d8b1-08d864397baf
-X-MS-TrafficTypeDiagnostic: BYAPR15MB3255:
-X-Microsoft-Antispam-PRVS: <BYAPR15MB3255D2A20950082BBE65F371D5320@BYAPR15MB3255.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:2803;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: cPG1E/8a0qGbFkD7AgI2hOu3TIHfqzqsfBMFA6cohcFEijwBn6oy7U55HRedr3Ma9p7iMDlbyNamut/N1DQ5MpcDBCCvswaNMeKE3mkhYIQ3QjJnrdAOE6JPq5/XEJWJbR7HZu6IO35uCZJEC9fmXgtnXBNE2yrkelEqLEHtO5G9oEPoFPStJKujf/oe5ekC7VjvHe1xoScwIhap72g5iaNgXFAlcLmGU8Krw9hBNgrJdSal/Z2BeQds5KjR+TubvZd5ZToifZOnWoZ3ZbphkqReBlJGE6IOoIfBX2Y7pEdTk0Tx6xJW8zPyHZ18dPWyRZOeGSECeHhILp8wqWZ5B0+XON2Q8X6pkWnpZLmm4Bc=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3571.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(366004)(376002)(136003)(396003)(39860400002)(16526019)(52116002)(186003)(7416002)(6666004)(6496006)(316002)(1076003)(54906003)(4744005)(4326008)(5660300002)(2906002)(86362001)(8676002)(478600001)(8936002)(55016002)(66946007)(66556008)(6916009)(33716001)(83380400001)(66476007)(9686003);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: u6zDlN19bw+9PdGMPn4cz9zGQ3o85UafYnuILddcAl8spmzoY8ON4o5izeBYvyQsEVL9TFy/VWSsN+IB1ybz1BkIKbMJ+/QoMjLB1wk4t5U/3R2/mc7mMDoNF2FP5Y+hI3AVd/KesSAH9hkZ1hHVgXNWy5UTIxWD5tOtY5Ski40AlcWV8Z59Q0yWOP99tD2GOYaIetdr0AvsA4bczb/LonsRFyNeeXqYBubpWEoOeQzSx52x66PLgqRY0t7sphM9CNMkxerP6NvMWqI2j2R1UaQLSwlM6u8/4juCyzGujcrhCCxG+J846oSgaF4GJrEYVPkBoK4F3J8l+dFL2kYZGOkoJFVHEt9PCxgXgMtPSKBZXh0ApJ08mGWQskiG2okDYsDCMrLYl45XqGm4Bhhp0oogquZFAgNdNiPTxLPbt8sEV44OZJhJB4KEi9E8SIde62094z5ag2QtVjp9SnRmLfiWDs5BHA7sphT5316bfMMNR4FmCTkB1HbI1qgOYizyQNg4qRYIl3oUs1aq9+QJxqkB705whblmxc84XI3hbB8hTucN6fBo/LLeipPTHeGSm3my0QvvtvSLVRSNAud6ZV0y8m2mSLe03xjkVCwMdAfq0KgbwrRtdG7a6tm/n+avo0dmPWDyHYR9pINw85KmPCGHv51LsD2JUmcVdYWgzno=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 722cc334-f5d6-4771-d8b1-08d864397baf
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3571.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Sep 2020 05:35:32.6968
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: KfRlS+DW9vNKhcvYxJINPdbJs12BvZylOfyM375bxw/kedV4Quw305F8pTMjgsOZ
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3255
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-29_01:2020-09-28,2020-09-29 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=1
- lowpriorityscore=0 phishscore=0 spamscore=0 malwarescore=0 mlxlogscore=843
- impostorscore=0 bulkscore=0 adultscore=0 priorityscore=1501 clxscore=1015
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009290054
-X-FB-Internal: deliver
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 10:08:02AM +0100, Lorenz Bauer wrote:
-> Allow passing a pointer to a BTF struct sock_common* when updating
-> a sockmap or sockhash. Since BTF pointers can fault and therefore be
-> NULL at runtime we need to add an additional !sk check to
-> sock_map_update_elem. Since we may be passed a request or timewait
-> socket we also need to check sk_fullsock. Doing this allows calling
-> map_update_elem on sockmap from bpf_iter context, which uses
-> BTF pointers.
-Acked-by: Martin KaFai Lau <kafai@fb.com>
+A common patch subject prefix for specific files is to use the
+lowest level directory or just the basename of the file without the
+file extension.  For patches that touch multiple files, it's common to
+use the basename directory as the commit prefix.
+
+For example, patches to files in drivers/net/ethernet/intel/igb/ are
+most commonly prefixed with "igb: <then some description>".
+
+But many subsystems have specific commit subject line prefixes that are
+not simply the containing base directory.  For example, patches to
+drivers/staging are most often prefixed with "staging: <basename dir>: "
+then "<commit specific description>".
+
+So add a tool that can help find what prefix the subsystem or file most
+commonly uses for patch commit subject lines.
+
+This tool uses git log history in various ways to find the most common
+prefix used in for a specific file or path.
+
+$ ./scripts/most_common_subject_prefix.pl <file>
+
+This will emit a single line that is the most commonly used commit
+subject prefix up to and including the last colon of the commit subject
+for commits that _only_ include the specific file and not any other file.
+
+For instance:
+
+$ ./scripts/most_common_subject_prefix.pl arch/arm/net/bpf_jit_32.c
+ARM: net: bpf:
+
+An optional flag is --details which by default shows up to the 5 most common
+commit subject prefixes and will show commits with just the single file as
+well as commits that include other files.
+
+$ ./scripts/most_common_subject_prefix.pl arch/arm/net/bpf_jit_32.c --details
+Single file commits:
+     24 ARM: net: bpf:
+      5 bpf, arm32:
+      3 bpf, arm:
+      2 arm, bpf:
+      1 ARM: net:
+Multiple file commits:
+      4 ARM: net: bpf:
+      2 arm:
+      2 bpf:
+      1 ARM: net:
+      1 arm: bpf:
+
+command-line options are currently:
+  --git-since=<date>         (default: 5-years-ago)
+    (use commits more recent than this date to find the typical subject prefix)
+  --details                  show subject prefix details (default: 0/off)
+  --detail_lines=<count>     lines of details to show (default: 5)
+  --root=PATH                PATH to the kernel tree root (default: ./)
+
+Signed-off-by: Joe Perches <joe@perches.com>
+---
+ scripts/most_common_subject_prefix.pl | 183 ++++++++++++++++++++++++++
+ 1 file changed, 183 insertions(+)
+ create mode 100755 scripts/most_common_subject_prefix.pl
+
+diff --git a/scripts/most_common_subject_prefix.pl b/scripts/most_common_subject_prefix.pl
+new file mode 100755
+index 000000000000..c3ceeacbec2f
+--- /dev/null
++++ b/scripts/most_common_subject_prefix.pl
+@@ -0,0 +1,183 @@
++#!/usr/bin/env perl
++
++# Show possible patch subject prefixes for a file in git
++
++# use only commits that modify the file argument and
++# emit up to the 5 most common commit headers
++
++use warnings;
++use strict;
++
++my $P = $0;
++my $V = '0.1';
++
++my $git_command ='export LANGUAGE=en_US.UTF-8; git';
++my $root;
++my $gitroot = $ENV{'GIT_DIR'};
++$gitroot = ".git" if !defined($gitroot);
++my $git_since = "5-years-ago";
++my $details = 0;
++my $detail_lines = 5;
++my $version = 0;
++my $help = 0;
++
++sub usage {
++    print <<EOT;
++usage: $P [options] <file|path in git>
++version: $V
++
++Options:
++  --git-since=<date>         (default: $git_since)
++    (use commits more recent than this date to find the typical subject prefix)
++  --details                  show subject prefix details (default: $details)
++  --detail_lines=<count>     lines of details to show (default: $detail_lines)
++  --root=PATH                PATH to the kernel tree root (default: ./)
++
++EOT
++}
++
++use Getopt::Long qw(:config no_auto_abbrev);
++
++if (!GetOptions(
++		'git-since=s'	=> \$git_since,
++		'details!'	=> \$details,
++		'detail_lines=i'=> \$detail_lines,
++		'root=s'	=> \$root,
++		'v|version'	=> \$version,
++		'h|help|usage'	=> \$help,
++		)) {
++    die "$P: invalid argument - use --help if necessary\n";
++}
++
++if ($help != 0) {
++    usage();
++    exit 0;
++}
++
++if ($version != 0) {
++    print("${P} ${V}\n");
++    exit 0;
++}
++
++die "$P: Must have a single <file|path> argument\n" if ($#ARGV != 0);
++
++die "$P: git not found\n" if (which("git") eq "");
++die "$P: git directory not found\n" if (!(-e "$gitroot"));
++
++if (defined $root) {
++	if (!top_of_kernel_tree($root)) {
++		die "$P: $root: --root does not point at a valid kernel tree\n";
++	}
++} else {
++	if (top_of_kernel_tree('.')) {
++		$root = '.';
++	} elsif ($0 =~ m@(.*)/scripts/[^/]*$@ &&
++		     top_of_kernel_tree($1)) {
++		$root = $1;
++	}
++}
++
++if (!defined $root) {
++	print "$P: Must be run from the top-level dir of a kernel tree\n";
++	exit(2);
++}
++
++sub prefixes_from_subjects {
++	my ($array_ref) = @_;
++	my %lc;
++	my @subjects = ();
++
++	foreach my $line (@$array_ref) {
++		my $pos = rindex($line, ':');
++		if ($pos > 0) {
++			my $prefix = substr($line, 0, $pos + 1);
++			$lc{$prefix}++;
++		}
++	}
++
++	foreach my $subject (sort { $lc{$b} <=> $lc{$a} or $a cmp $b } keys %lc) {
++		push(@subjects, sprintf("%7u %s\n", $lc{$subject}, $subject));
++	}
++
++	return @subjects;
++}
++
++my @commit_desc = ();
++my $commit_count = 0;
++my @single_file_subjects = ();
++my @multi_file_subjects = ();
++
++my $output = `${git_command} log --no-merges --since=$git_since --format='%h' -- $ARGV[0]`;
++my @commits = split('\n', $output);
++
++foreach my $commit (@commits) {
++	$output = `${git_command} log --format='%s' --name-only -1 $commit`;
++	$commit_desc[$commit_count++] = $output;
++}
++
++for (my $i = 0; $i < $commit_count; $i++) {
++	my @lines = split('\n', $commit_desc[$i]);
++	if ($#lines == 2 && $lines[2] eq $ARGV[0]) {
++		push(@single_file_subjects, $lines[0]);
++	} elsif ($#lines >= 2) {
++		push(@multi_file_subjects, $lines[0]);
++	}
++}
++
++my @best_prefixes;
++
++if ($details) {
++	@best_prefixes = prefixes_from_subjects(\@single_file_subjects);
++	if ($#best_prefixes > 0) {
++		print("Single file commits:\n");
++		print(splice(@best_prefixes, 0, $detail_lines));
++	}
++	@best_prefixes = prefixes_from_subjects(\@multi_file_subjects);
++	if ($#best_prefixes > 0) {
++		print("Multiple file commits:\n");
++		print(splice(@best_prefixes, 0, $detail_lines));
++	}
++} else {
++	@best_prefixes = prefixes_from_subjects(\@single_file_subjects);
++	if ($#best_prefixes > 0) {
++		my $line = splice(@best_prefixes, 0, 1);
++		$line =~ s/^\s*\w+ //;
++		print("$line");
++	} else {
++		@best_prefixes = prefixes_from_subjects(\@multi_file_subjects);
++		if ($#best_prefixes > 0) {
++			my $line = splice(@best_prefixes, 0, 1);
++			$line =~ s/^\s*\w+ //;
++			print("$line");
++		}
++	}
++}
++
++sub which {
++	my ($bin) = @_;
++
++	foreach my $path (split(/:/, $ENV{PATH})) {
++		if (-e "$path/$bin") {
++			return "$path/$bin";
++		}
++	}
++
++	return "";
++}
++
++sub top_of_kernel_tree {
++	my ($root) = @_;
++
++	my @tree_check = (
++		"COPYING", "CREDITS", "Kbuild", "MAINTAINERS", "Makefile",
++		"README", "Documentation", "arch", "include", "drivers",
++		"fs", "init", "ipc", "kernel", "lib", "scripts",
++	);
++
++	foreach my $check (@tree_check) {
++		if (! -e $root . '/' . $check) {
++			return 0;
++		}
++	}
++	return 1;
++}
+-- 
+2.26.0
+
