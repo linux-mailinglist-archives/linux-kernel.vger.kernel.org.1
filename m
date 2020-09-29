@@ -2,118 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D23AE27BEB0
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 10:00:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8544727BEB3
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 10:01:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727687AbgI2H70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 03:59:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60632 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725536AbgI2H70 (ORCPT
+        id S1727561AbgI2IBZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 04:01:25 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:53640 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725283AbgI2IBZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 03:59:26 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDF04C0613D0
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 00:59:25 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id y15so3770751wmi.0
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 00:59:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=z44OCwOHJFAg70e5aEAiWS8XZCl9H96J8tZarWdkMhw=;
-        b=Z/FVuhB6HuycrwymG80hUaxXIvXS6rU4TG69hlvG+ssusxVSVTJLh0ht4r3+WubNj5
-         pr1etCcepdla4i8XyhR+EHVnudUFAyVS4HcImrMUtW9/KE3fnqZPwX8gQkq3+Z7JUvne
-         vhS3cq8/T0ve4f8JXT20BKpX7ZLj7xxHy3YTKepUFmJXieFECi1RrRyKCNXx8MMkfmna
-         T7CA0BYn55VTGYB0MlioT8P1EiFkPRtaK21hPFWzIK3k0oCZSytZC3lOzUugRSolw25C
-         x9FMzJeshW7diTqn154NjByRse9ZCJlSwLzXOGDNHYUSAD5sY2ZaWGZTCyIEsyocTbbP
-         XpWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=z44OCwOHJFAg70e5aEAiWS8XZCl9H96J8tZarWdkMhw=;
-        b=Xqvi4ZUzPxmFT2VTrBtgv9VrO8jCzlcN/l4DjH4Xzy2aFAsWB9GM5hl+Zrn7rdOFrI
-         nqu7Xyj602/SSSZkhb9cwxC2Ql3PLLdDC71yg19zcKnnDA3jbgq0CrD2zPg3Aii+tpRl
-         yRcDPidxvTj2XEFCI3yfjva9akqmEWzdjB4CpWe/zn4RlQGXM9syZOqsMCo/qtam68UJ
-         BizOXrPIUhhG9Wx5m819uxugbZWUeHgT/li8Ewq5Fvu4+4CzpZbhfof5tyufrAWebfOe
-         MOcjErxAXv70hUWVLMGFp28sr+tCx5k+cSwM2sxkcgo0byPThwAJfD3J5y4lCq2jT1nm
-         vQfQ==
-X-Gm-Message-State: AOAM530W/FezeigCPlUoX9UJa0ALVvufunl95VbG1zmpjUaUIRmpjwUn
-        /1LcckyFx45S0qQkJIcBz8B3rMm+df/Q1O+blYdW3Q==
-X-Google-Smtp-Source: ABdhPJzIEZ5Ks8NozSFCE7r8LavP2lhCwbT/Q4oIeeySm7aOZ1AaUXYJS3rAIesL32tHY4cMAE2SVnySAJXWyvrB2hw=
-X-Received: by 2002:a7b:c750:: with SMTP id w16mr727455wmk.16.1601366364393;
- Tue, 29 Sep 2020 00:59:24 -0700 (PDT)
+        Tue, 29 Sep 2020 04:01:25 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08T7sSxD021216;
+        Tue, 29 Sep 2020 08:01:15 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=fS3sbliVrTas/8VSegnyz4QBH86Z2DLuW1uqKlImwtk=;
+ b=UKijo+cC2Ku0I41FnXqYiG8QlG6AwNpBQ/Erc9zLcjBZGWNhbgxCm0+ucWSWKzpbPXtt
+ GrxbAYQyEGYeSpH58fSaPYTyL65vfHFLDYTpXxwgnXWFKfZufAID8F7oe85BAWZRsRbu
+ su/DZdwoqs35cxASqaxTz7L6fi8eT9cvr3ST5+h61hrlVn/jJcmshxTiNnmnP4qHmrpa
+ i1FcEmLZ+4Z3eOv682d6JU5oWdBPSdRnnayegXR7VFq37tt3J1ywh+L+vtCa7zgSwueO
+ hS3FhbZK6Td62Gq2TaWs+NtzC1nTOCWodznJ4DbEW1sA458h/bAKkp/WN3piYpKqkwWY xw== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 33swkks40t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 29 Sep 2020 08:01:15 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08T7uPbb185869;
+        Tue, 29 Sep 2020 08:01:15 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3020.oracle.com with ESMTP id 33tfhx8dwc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 29 Sep 2020 08:01:15 +0000
+Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 08T81Er7000851;
+        Tue, 29 Sep 2020 08:01:14 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 29 Sep 2020 01:01:13 -0700
+Date:   Tue, 29 Sep 2020 11:01:07 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Jing Xiangfeng <jingxiangfeng@huawei.com>
+Cc:     mchehab+huawei@kernel.org, gregkh@linuxfoundation.org,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: mfd: hi6421-spmi-pmic: Fix error return in
+ hi6421_spmi_pmic_probe()
+Message-ID: <20200929080107.GX4282@kadam>
+References: <20200929074847.47124-1-jingxiangfeng@huawei.com>
 MIME-Version: 1.0
-References: <20200927123542.553852-1-kholk11@gmail.com> <20200927123542.553852-3-kholk11@gmail.com>
- <CAMi1Hd1A-nRD57ETMnCbtKTFpQZ1f9-3D1SPx===BRx0f1FX7A@mail.gmail.com> <20200928215120.GP1681290@dtor-ws>
-In-Reply-To: <20200928215120.GP1681290@dtor-ws>
-From:   Amit Pundir <amit.pundir@linaro.org>
-Date:   Tue, 29 Sep 2020 13:28:48 +0530
-Message-ID: <CAMi1Hd1YWXG=Ua5y74Zmd+cCOtHPRRLToH+dhTeAzNRbTQ71Gg@mail.gmail.com>
-Subject: Re: [PATCH v2 2/3] Input: Add Novatek NT36xxx touchscreen driver
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     kholk11@gmail.com, Rob Herring <robh+dt@kernel.org>,
-        rydberg@bitmath.org, priv.luk@gmail.com,
-        linux-input@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
-        marijns95@gmail.com, Konrad Dybcio <konradybcio@gmail.com>,
-        martin.botka1@gmail.com, phone-devel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200929074847.47124-1-jingxiangfeng@huawei.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9758 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999 bulkscore=0
+ phishscore=0 malwarescore=0 adultscore=0 suspectscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009290073
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9758 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0 phishscore=0
+ suspectscore=0 mlxlogscore=999 clxscore=1015 priorityscore=1501
+ impostorscore=0 lowpriorityscore=0 bulkscore=0 spamscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009290073
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 29 Sep 2020 at 03:21, Dmitry Torokhov <dmitry.torokhov@gmail.com> wrote:
->
-> On Mon, Sep 28, 2020 at 03:18:18PM +0530, Amit Pundir wrote:
-> > On Sun, 27 Sep 2020 at 18:06, <kholk11@gmail.com> wrote:
-> > >
-> > > From: AngeloGioacchino Del Regno <kholk11@gmail.com>
-> > >
-> > > This is a driver for the Novatek in-cell touch controller and
-> > > supports various chips from the NT36xxx family, currently
-> > > including NT36525, NT36672A, NT36676F, NT36772 and NT36870.
-> > >
-> > > Functionality like wake gestures and firmware flashing is not
-> > > included: I am not aware of any of these DrIC+Touch combo
-> > > chips not including a non-volatile memory and it should be
-> > > highly unlikely to find one, since the touch firmware is
-> > > embedded into the DriverIC one, which is obviously necessary
-> > > to drive the display unit.
-> > >
-> > > However, the necessary address for the firmware update
-> > > procedure was included into the address table in this driver
-> > > so, in the event that someone finds the need to implement it
-> > > for a reason or another, it will be pretty straightforward to.
-> > >
-> > > This driver is lightly based on the downstream implementation [1].
-> > > [1] https://github.com/Rasenkai/caf-tsoft-Novatek-nt36xxx
-> > >
-> >
-> > This is so cool!
-> >
-> > Xiaomi PocoF1 phone uses same family touchscreen IC and I could
-> > test this series on that phone as well.
-> >
-> > However I do have to make a minor change to get it working. The
-> > downstream driver and even the github code you linked above use
-> > GPIO mapped IRQ, and I had to switch to that to get touchscreen
-> > working with your driver
-> > https://github.com/pundiramit/linux/commit/0a73eb656c1e80787dc195641ce7b0076fddb38e.
-> > I wonder if I'm missing any devicetree property other than interrupts?
->
-> Simply specifying GPIO controller/pin as interrupt property should work,
-> there should be no need to parse custom GPIO property and convert it to
-> IRQ in the driver.
->
+On Tue, Sep 29, 2020 at 03:48:47PM +0800, Jing Xiangfeng wrote:
+> Fix to return error code -ENOMEM from the error handling case instead
+> of 0.
+> 
+> Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
+> ---
+>  drivers/staging/hikey9xx/hi6421-spmi-pmic.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/staging/hikey9xx/hi6421-spmi-pmic.c b/drivers/staging/hikey9xx/hi6421-spmi-pmic.c
+> index 64b30d263c8d..4f34a5282970 100644
+> --- a/drivers/staging/hikey9xx/hi6421-spmi-pmic.c
+> +++ b/drivers/staging/hikey9xx/hi6421-spmi-pmic.c
+> @@ -262,8 +262,10 @@ static int hi6421_spmi_pmic_probe(struct spmi_device *pdev)
+>  	hi6421_spmi_pmic_irq_prc(pmic);
+>  
+>  	pmic->irqs = devm_kzalloc(dev, HISI_IRQ_NUM * sizeof(int), GFP_KERNEL);
+> -	if (!pmic->irqs)
+> +	if (!pmic->irqs) {
+> +		ret = -ENOMEM;
+>  		goto irq_malloc;
 
-Indeed. I don't know what was tripping me off yesterday, but I got it
-working today with interrupt properties. Thank you.
+It shouldn't do a goto, it should just return directly.  The goto
+releases an IRQ which isn't acquired until later in the function.
 
-Regards,
-Amit Pundir
+regards,
+dan carpenter
 
-> Thanks.
->
-> --
-> Dmitry
