@@ -2,44 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B4C327C958
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:10:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41B3727C879
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:02:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732017AbgI2MJx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 08:09:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53444 "EHLO mail.kernel.org"
+        id S1731772AbgI2MC3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 08:02:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33642 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730203AbgI2Lhf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:37:35 -0400
+        id S1730460AbgI2LjM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:39:12 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D5777208B8;
-        Tue, 29 Sep 2020 11:23:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7A3842083B;
+        Tue, 29 Sep 2020 11:39:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601378588;
-        bh=v1ywKTL+i+a9hYdP9thlSZcryxbdVaiCgD/tpqVL3/Y=;
+        s=default; t=1601379552;
+        bh=rWMufWl3bYjWXmiA1ctYATk98OZ2gdOzkhxi01F/kE4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Hq2J8AHZQa5Kc/8SHgybrVpeLvOckIOmvNkD0s6U7hub8v5KlVz27EcENpz2QWv7S
-         FX3E7cuOj3YfIW5wUKh5dru6Rp8lyIqmkJJR+5nDaOySBTefv0jEnMcEjckFiA18IB
-         OHnn9FoxfUk7i93O+zoAqfjNkdBeMex/Id9VRW+c=
+        b=x1mkLpQeN8hTEP+eE9Sex4LZOq2KAptXBchgebWsOx2L5BDxMWApZbQFuWxwlPy97
+         0B+wXH+Zqn7xvsJR8+lckq7Ox27lC4lEvgwZjSQ65435NNVGEqRB0jtjiyDvq8pIcS
+         AUcjqJfA9tyDIHrVNk4wzqjYBKvRoyEYqv4D/+yk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vasily Averin <vvs@virtuozzo.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jann Horn <jannh@google.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Kees Cook <keescook@chromium.org>,
-        Hugh Dickins <hughd@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        David Laight <David.Laight@ACULAB.COM>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Don Zickus <dzickus@redhat.com>, He Zhe <zhe.he@windriver.com>,
+        Jan Stancek <jstancek@redhat.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        kernel-janitors@vger.kernel.org,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 067/245] mm/swapfile.c: swap_next should increase position index
+Subject: [PATCH 5.4 187/388] perf cpumap: Fix snprintf overflow check
 Date:   Tue, 29 Sep 2020 12:58:38 +0200
-Message-Id: <20200929105950.250126963@linuxfoundation.org>
+Message-Id: <20200929110019.529864567@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929105946.978650816@linuxfoundation.org>
-References: <20200929105946.978650816@linuxfoundation.org>
+In-Reply-To: <20200929110010.467764689@linuxfoundation.org>
+References: <20200929110010.467764689@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -48,74 +54,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vasily Averin <vvs@virtuozzo.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit 10c8d69f314d557d94d74ec492575ae6a4f1eb1c ]
+[ Upstream commit d74b181a028bb5a468f0c609553eff6a8fdf4887 ]
 
-If seq_file .next fuction does not change position index, read after
-some lseek can generate unexpected output.
+'snprintf' returns the number of characters which would be generated for
+the given input.
 
-In Aug 2018 NeilBrown noticed commit 1f4aace60b0e ("fs/seq_file.c:
-simplify seq_file iteration code and interface") "Some ->next functions
-do not increment *pos when they return NULL...  Note that such ->next
-functions are buggy and should be fixed.  A simple demonstration is
+If the returned value is *greater than* or equal to the buffer size, it
+means that the output has been truncated.
 
-  dd if=/proc/swaps bs=1000 skip=1
+Fix the overflow test accordingly.
 
-Choose any block size larger than the size of /proc/swaps.  This will
-always show the whole last line of /proc/swaps"
-
-Described problem is still actual.  If you make lseek into middle of
-last output line following read will output end of last line and whole
-last line once again.
-
-  $ dd if=/proc/swaps bs=1  # usual output
-  Filename				Type		Size	Used	Priority
-  /dev/dm-0                               partition	4194812	97536	-2
-  104+0 records in
-  104+0 records out
-  104 bytes copied
-
-  $ dd if=/proc/swaps bs=40 skip=1    # last line was generated twice
-  dd: /proc/swaps: cannot skip to specified offset
-  v/dm-0                               partition	4194812	97536	-2
-  /dev/dm-0                               partition	4194812	97536	-2
-  3+1 records in
-  3+1 records out
-  131 bytes copied
-
-https://bugzilla.kernel.org/show_bug.cgi?id=206283
-
-Link: http://lkml.kernel.org/r/bd8cfd7b-ac95-9b91-f9e7-e8438bd5047d@virtuozzo.com
-Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
-Reviewed-by: Andrew Morton <akpm@linux-foundation.org>
-Cc: Jann Horn <jannh@google.com>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Hugh Dickins <hughd@google.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: 7780c25bae59f ("perf tools: Allow ability to map cpus to nodes easily")
+Fixes: 92a7e1278005b ("perf cpumap: Add cpu__max_present_cpu()")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Suggested-by: David Laight <David.Laight@ACULAB.COM>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Don Zickus <dzickus@redhat.com>
+Cc: He Zhe <zhe.he@windriver.com>
+Cc: Jan Stancek <jstancek@redhat.com>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: Kan Liang <kan.liang@linux.intel.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: kernel-janitors@vger.kernel.org
+Link: http://lore.kernel.org/lkml/20200324070319.10901-1-christophe.jaillet@wanadoo.fr
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- mm/swapfile.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/perf/util/cpumap.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/mm/swapfile.c b/mm/swapfile.c
-index 0047dcaf93697..c3684cfa9534e 100644
---- a/mm/swapfile.c
-+++ b/mm/swapfile.c
-@@ -2738,10 +2738,10 @@ static void *swap_next(struct seq_file *swap, void *v, loff_t *pos)
- 	else
- 		type = si->type + 1;
+diff --git a/tools/perf/util/cpumap.c b/tools/perf/util/cpumap.c
+index a22c1114e880d..324ec0456c83f 100644
+--- a/tools/perf/util/cpumap.c
++++ b/tools/perf/util/cpumap.c
+@@ -299,7 +299,7 @@ static void set_max_cpu_num(void)
  
-+	++(*pos);
- 	for (; (si = swap_type_to_swap_info(type)); type++) {
- 		if (!(si->flags & SWP_USED) || !si->swap_map)
- 			continue;
--		++*pos;
- 		return si;
+ 	/* get the highest possible cpu number for a sparse allocation */
+ 	ret = snprintf(path, PATH_MAX, "%s/devices/system/cpu/possible", mnt);
+-	if (ret == PATH_MAX) {
++	if (ret >= PATH_MAX) {
+ 		pr_err("sysfs path crossed PATH_MAX(%d) size\n", PATH_MAX);
+ 		goto out;
  	}
+@@ -310,7 +310,7 @@ static void set_max_cpu_num(void)
  
+ 	/* get the highest present cpu number for a sparse allocation */
+ 	ret = snprintf(path, PATH_MAX, "%s/devices/system/cpu/present", mnt);
+-	if (ret == PATH_MAX) {
++	if (ret >= PATH_MAX) {
+ 		pr_err("sysfs path crossed PATH_MAX(%d) size\n", PATH_MAX);
+ 		goto out;
+ 	}
+@@ -338,7 +338,7 @@ static void set_max_node_num(void)
+ 
+ 	/* get the highest possible cpu number for a sparse allocation */
+ 	ret = snprintf(path, PATH_MAX, "%s/devices/system/node/possible", mnt);
+-	if (ret == PATH_MAX) {
++	if (ret >= PATH_MAX) {
+ 		pr_err("sysfs path crossed PATH_MAX(%d) size\n", PATH_MAX);
+ 		goto out;
+ 	}
+@@ -423,7 +423,7 @@ int cpu__setup_cpunode_map(void)
+ 		return 0;
+ 
+ 	n = snprintf(path, PATH_MAX, "%s/devices/system/node", mnt);
+-	if (n == PATH_MAX) {
++	if (n >= PATH_MAX) {
+ 		pr_err("sysfs path crossed PATH_MAX(%d) size\n", PATH_MAX);
+ 		return -1;
+ 	}
+@@ -438,7 +438,7 @@ int cpu__setup_cpunode_map(void)
+ 			continue;
+ 
+ 		n = snprintf(buf, PATH_MAX, "%s/%s", path, dent1->d_name);
+-		if (n == PATH_MAX) {
++		if (n >= PATH_MAX) {
+ 			pr_err("sysfs path crossed PATH_MAX(%d) size\n", PATH_MAX);
+ 			continue;
+ 		}
 -- 
 2.25.1
 
