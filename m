@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E73C227C5E2
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:39:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB22E27C566
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:35:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730502AbgI2Ljr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:39:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34492 "EHLO mail.kernel.org"
+        id S1729818AbgI2LfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:35:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49122 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729879AbgI2Ljh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:39:37 -0400
+        id S1729553AbgI2LdZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:33:25 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 71F352083B;
-        Tue, 29 Sep 2020 11:39:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E26DE23B6B;
+        Tue, 29 Sep 2020 11:26:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601379576;
-        bh=9P09pX9CSmsoGNHoVEW3b11httRKm6P+siZpoeibr/g=;
+        s=default; t=1601378778;
+        bh=RsLRF8vLEU6ZXFXZGHE2tLISNmNjJZGFqf0VrK4rSrw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=p/PbyCNVl88u2xCt3RfRQPn0QNnuWWb7QdIZlZzSuMfjdT8/dBWbaz4/TkY+xJ5K7
-         1hPccmaIbSgmsHSXQr1pP06iQh0V7kFT1FvRa862EguLSNv/FQp0Y7KMH8eDDI0M2d
-         vxqgeKOwDaAitzwoyWiFz4+I+lFPirSxuW2zeqKE=
+        b=QQLvaLaq/TS9zoBSZKX57hRuDoD2DgFLSvgpxFK71zIxyZHMeeYdiCZ2lB619cd3b
+         m+4p5HMqgjGMfcTPnMJGMLMLPfPwgXfTIsBcQRghLNEpqn9+Id4A7qTqhaa5SA5zXv
+         na0Xbq6BmS/NF1SZCUeXisA6DrnY13ce0+Cs0FEA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jack Zhang <Jack.Zhang1@amd.com>,
-        Monk Liu <monk.liu@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Dave Chinner <dchinner@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 226/388] drm/amdgpu/sriov add amdgpu_amdkfd_pre_reset in gpu reset
-Date:   Tue, 29 Sep 2020 12:59:17 +0200
-Message-Id: <20200929110021.420299442@linuxfoundation.org>
+Subject: [PATCH 4.19 108/245] xfs: mark dir corrupt when lookup-by-hash fails
+Date:   Tue, 29 Sep 2020 12:59:19 +0200
+Message-Id: <20200929105952.244008724@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929110010.467764689@linuxfoundation.org>
-References: <20200929110010.467764689@linuxfoundation.org>
+In-Reply-To: <20200929105946.978650816@linuxfoundation.org>
+References: <20200929105946.978650816@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,68 +44,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jack Zhang <Jack.Zhang1@amd.com>
+From: Darrick J. Wong <darrick.wong@oracle.com>
 
-[ Upstream commit 04bef61e5da18c2b301c629a209ccdba4d4c6fbb ]
+[ Upstream commit 2e107cf869eecc770e3f630060bb4e5f547d0fd8 ]
 
-kfd_pre_reset will free mem_objs allocated by kfd_gtt_sa_allocate
+In xchk_dir_actor, we attempt to validate the directory hash structures
+by performing a directory entry lookup by (hashed) name.  If the lookup
+returns ENOENT, that means that the hash information is corrupt.  The
+_process_error functions don't catch this, so we have to add that
+explicitly.
 
-Without this change, sriov tdr code path will never free those allocated
-memories and get memory leak.
-
-v2:add a bugfix for kiq ring test fail
-
-Signed-off-by: Jack Zhang <Jack.Zhang1@amd.com>
-Reviewed-by: Monk Liu <monk.liu@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
+Reviewed-by: Dave Chinner <dchinner@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gfx_v10.c | 3 +++
- drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gfx_v9.c  | 3 +++
- drivers/gpu/drm/amd/amdgpu/amdgpu_device.c         | 2 ++
- 3 files changed, 8 insertions(+)
+ fs/xfs/scrub/dir.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gfx_v10.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gfx_v10.c
-index d10f483f5e273..ce30d4e8bf25f 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gfx_v10.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gfx_v10.c
-@@ -644,6 +644,9 @@ static int kgd_hqd_destroy(struct kgd_dev *kgd, void *mqd,
- 	uint32_t temp;
- 	struct v10_compute_mqd *m = get_mqd(mqd);
+diff --git a/fs/xfs/scrub/dir.c b/fs/xfs/scrub/dir.c
+index cd3e4d768a18c..33dfcba72c7a0 100644
+--- a/fs/xfs/scrub/dir.c
++++ b/fs/xfs/scrub/dir.c
+@@ -156,6 +156,9 @@ xchk_dir_actor(
+ 	xname.type = XFS_DIR3_FT_UNKNOWN;
  
-+	if (amdgpu_sriov_vf(adev) && adev->in_gpu_reset)
-+		return 0;
-+
- #if 0
- 	unsigned long flags;
- 	int retry;
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gfx_v9.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gfx_v9.c
-index e262f2ac07a35..92754cfb98086 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gfx_v9.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gfx_v9.c
-@@ -540,6 +540,9 @@ int kgd_gfx_v9_hqd_destroy(struct kgd_dev *kgd, void *mqd,
- 	uint32_t temp;
- 	struct v9_mqd *m = get_mqd(mqd);
- 
-+	if (amdgpu_sriov_vf(adev) && adev->in_gpu_reset)
-+		return 0;
-+
- 	if (adev->in_gpu_reset)
- 		return -EIO;
- 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
-index 5e1dce4241547..4105fbf571674 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
-@@ -3466,6 +3466,8 @@ static int amdgpu_device_reset_sriov(struct amdgpu_device *adev,
- 	if (r)
- 		return r;
- 
-+	amdgpu_amdkfd_pre_reset(adev);
-+
- 	/* Resume IP prior to SMC */
- 	r = amdgpu_device_ip_reinit_early_sriov(adev);
- 	if (r)
+ 	error = xfs_dir_lookup(sdc->sc->tp, ip, &xname, &lookup_ino, NULL);
++	/* ENOENT means the hash lookup failed and the dir is corrupt */
++	if (error == -ENOENT)
++		error = -EFSCORRUPTED;
+ 	if (!xchk_fblock_process_error(sdc->sc, XFS_DATA_FORK, offset,
+ 			&error))
+ 		goto out;
 -- 
 2.25.1
 
