@@ -2,42 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C052227C56D
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:36:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDD9427C661
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:44:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728582AbgI2Lfd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:35:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46888 "EHLO mail.kernel.org"
+        id S1730885AbgI2Log (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:44:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43486 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729790AbgI2LfK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:35:10 -0400
+        id S1728879AbgI2Lo3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:44:29 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C5D8523D21;
-        Tue, 29 Sep 2020 11:29:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AB124207F7;
+        Tue, 29 Sep 2020 11:44:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601378965;
-        bh=wNT+wgEq/onrFLwV6Wt3Ns5n98d+k00SFhxfTWKd6eE=;
+        s=default; t=1601379867;
+        bh=3wKhPCJK4e88PuLvX2Hp1ADWTWdm1mMqRIpGDGZjUag=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ac54E4dvfRa3fMm9ZcWSr7i13+CkTd9MU8T3QAmryS2D1xwVc5Kx7TOESYXFetzal
-         GuKvXJvLUj8VCmXpKFt7U4HQhqiah/OeHS2FGYcfLonHIe2DfCUua1h9Kk7EqJ+sd7
-         jvbV+vsjkrRP4KCS+wiyA8wOZPzeMKQ2eUgeF7Ek=
+        b=q3tsTmbvujbaC9Ld3ui9LxUADdZDeftCW5njEu8yaBM6XJHiZ4GxlmAmiANYmnoWo
+         XKzhczIsv7bThWgmz8+SBVccvUqIVLow2zSMDihTAwKtQoZJWT2O9T/oXUadolBMNN
+         hhk2JgIeYw6KlZNsE5Hyh5e5eryUMCGIVItGTr0U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+f317896aae32eb281a58@syzkaller.appspotmail.com,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Hou Tao <houtao1@huawei.com>,
-        Richard Weinberger <richard@nod.at>,
+        stable@vger.kernel.org, Amol Grover <frextrite@gmail.com>,
+        James Morris <jmorris@namei.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 202/245] ubi: fastmap: Free unused fastmap anchor peb during detach
+Subject: [PATCH 5.4 322/388] device_cgroup: Fix RCU list debugging warning
 Date:   Tue, 29 Sep 2020 13:00:53 +0200
-Message-Id: <20200929105956.806061670@linuxfoundation.org>
+Message-Id: <20200929110026.058290159@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929105946.978650816@linuxfoundation.org>
-References: <20200929105946.978650816@linuxfoundation.org>
+In-Reply-To: <20200929110010.467764689@linuxfoundation.org>
+References: <20200929110010.467764689@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,67 +43,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hou Tao <houtao1@huawei.com>
+From: Amol Grover <frextrite@gmail.com>
 
-[ Upstream commit c16f39d14a7e0ec59881fbdb22ae494907534384 ]
+[ Upstream commit bc62d68e2a0a69fcdcf28aca8edb01abf306b698 ]
 
-When CONFIG_MTD_UBI_FASTMAP is enabled, fm_anchor will be assigned
-a free PEB during ubi_wl_init() or ubi_update_fastmap(). However
-if fastmap is not used or disabled on the MTD device, ubi_wl_entry
-related with the PEB will not be freed during detach.
+exceptions may be traversed using list_for_each_entry_rcu()
+outside of an RCU read side critical section BUT under the
+protection of decgroup_mutex. Hence add the corresponding
+lockdep expression to fix the following false-positive
+warning:
 
-So Fix it by freeing the unused fastmap anchor during detach.
+[    2.304417] =============================
+[    2.304418] WARNING: suspicious RCU usage
+[    2.304420] 5.5.4-stable #17 Tainted: G            E
+[    2.304422] -----------------------------
+[    2.304424] security/device_cgroup.c:355 RCU-list traversed in non-reader section!!
 
-Fixes: f9c34bb52997 ("ubi: Fix producing anchor PEBs")
-Reported-by: syzbot+f317896aae32eb281a58@syzkaller.appspotmail.com
-Reviewed-by: Sascha Hauer <s.hauer@pengutronix.de>
-Signed-off-by: Hou Tao <houtao1@huawei.com>
-Signed-off-by: Richard Weinberger <richard@nod.at>
+Signed-off-by: Amol Grover <frextrite@gmail.com>
+Signed-off-by: James Morris <jmorris@namei.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mtd/ubi/fastmap-wl.c | 15 +++++++++++++--
- 1 file changed, 13 insertions(+), 2 deletions(-)
+ security/device_cgroup.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/ubi/fastmap-wl.c b/drivers/mtd/ubi/fastmap-wl.c
-index 13efebb400225..e08f6b4637dda 100644
---- a/drivers/mtd/ubi/fastmap-wl.c
-+++ b/drivers/mtd/ubi/fastmap-wl.c
-@@ -48,6 +48,13 @@ static struct ubi_wl_entry *find_anchor_wl_entry(struct rb_root *root)
- 	return victim;
- }
+diff --git a/security/device_cgroup.c b/security/device_cgroup.c
+index 725674f3276d3..5d7bb91c64876 100644
+--- a/security/device_cgroup.c
++++ b/security/device_cgroup.c
+@@ -352,7 +352,8 @@ static bool match_exception_partial(struct list_head *exceptions, short type,
+ {
+ 	struct dev_exception_item *ex;
  
-+static inline void return_unused_peb(struct ubi_device *ubi,
-+				     struct ubi_wl_entry *e)
-+{
-+	wl_tree_add(e, &ubi->free);
-+	ubi->free_count++;
-+}
-+
- /**
-  * return_unused_pool_pebs - returns unused PEB to the free tree.
-  * @ubi: UBI device description object
-@@ -61,8 +68,7 @@ static void return_unused_pool_pebs(struct ubi_device *ubi,
- 
- 	for (i = pool->used; i < pool->size; i++) {
- 		e = ubi->lookuptbl[pool->pebs[i]];
--		wl_tree_add(e, &ubi->free);
--		ubi->free_count++;
-+		return_unused_peb(ubi, e);
- 	}
- }
- 
-@@ -370,6 +376,11 @@ static void ubi_fastmap_close(struct ubi_device *ubi)
- 	return_unused_pool_pebs(ubi, &ubi->fm_pool);
- 	return_unused_pool_pebs(ubi, &ubi->fm_wl_pool);
- 
-+	if (ubi->fm_anchor) {
-+		return_unused_peb(ubi, ubi->fm_anchor);
-+		ubi->fm_anchor = NULL;
-+	}
-+
- 	if (ubi->fm) {
- 		for (i = 0; i < ubi->fm->used_blocks; i++)
- 			kfree(ubi->fm->e[i]);
+-	list_for_each_entry_rcu(ex, exceptions, list) {
++	list_for_each_entry_rcu(ex, exceptions, list,
++				lockdep_is_held(&devcgroup_mutex)) {
+ 		if ((type & DEVCG_DEV_BLOCK) && !(ex->type & DEVCG_DEV_BLOCK))
+ 			continue;
+ 		if ((type & DEVCG_DEV_CHAR) && !(ex->type & DEVCG_DEV_CHAR))
 -- 
 2.25.1
 
