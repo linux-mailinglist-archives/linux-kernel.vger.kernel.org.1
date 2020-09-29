@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC6A427C90B
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:07:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A71D27CA8F
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:22:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731446AbgI2MG6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 08:06:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54450 "EHLO mail.kernel.org"
+        id S1732458AbgI2MT6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 08:19:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49132 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730240AbgI2Lhg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:37:36 -0400
+        id S1729881AbgI2Lfg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:35:36 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4AF9223B45;
-        Tue, 29 Sep 2020 11:36:03 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EDEBB2389F;
+        Tue, 29 Sep 2020 11:21:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601379363;
-        bh=Jb4b+5OTPSm0f+YOgcsf9eXrLB8ukGPqsuUkC1mKNy4=;
+        s=default; t=1601378507;
+        bh=vawbVYzuOVeJn+j5hJ/QMNQt5FhYIupGwnPF8g0WWcY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ki3RE1/ccHTch3ZyFth1FK5+KThdOSyJxmaVEJYABp+s1NTQ1/2t42Ff/adUSzxaa
-         M70iJmHAThv7KwURWQPceUagmfhr099xEQsx3uQ4ju9G20SW/n0e0Ni5+Najysj+T1
-         VFKs2EpNcYnQz9GQ1+80768YAsIz88GaidylSt6Q=
+        b=dajJBB8ip3gD+vepiEBmh2MLh5+y4ebv6AB0MHrKirjJlt9+knK5zVpv+AtBoM6l4
+         8mRakhGagNPSpg2GjTkZ3P4EVOMzzOoJuxBJrBZGRXCQLlXhG/giY80woo8jT0q6GK
+         MvVMFWf6Kr514GZ0I7VR05nPsFJlNfwGmvQb70/s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Amelie Delaunay <amelie.delaunay@st.com>,
-        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 130/388] dmaengine: stm32-mdma: use vchan_terminate_vdesc() in .terminate_all
-Date:   Tue, 29 Sep 2020 12:57:41 +0200
-Message-Id: <20200929110016.766146152@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 011/245] media: smiapp: Fix error handling at NVM reading
+Date:   Tue, 29 Sep 2020 12:57:42 +0200
+Message-Id: <20200929105947.539551556@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929110010.467764689@linuxfoundation.org>
-References: <20200929110010.467764689@linuxfoundation.org>
+In-Reply-To: <20200929105946.978650816@linuxfoundation.org>
+References: <20200929105946.978650816@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,58 +44,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Amelie Delaunay <amelie.delaunay@st.com>
+From: Sakari Ailus <sakari.ailus@linux.intel.com>
 
-[ Upstream commit dfc708812a2acfc0ca56f56233b3c3e7b0d4ffe7 ]
+[ Upstream commit a5b1d5413534607b05fb34470ff62bf395f5c8d0 ]
 
-To avoid race with vchan_complete, use the race free way to terminate
-running transfer.
+If NVM reading failed, the device was left powered on. Fix that.
 
-Move vdesc->node list_del in stm32_mdma_start_transfer instead of in
-stm32_mdma_xfer_end to avoid another race in vchan_dma_desc_free_list.
-
-Signed-off-by: Amelie Delaunay <amelie.delaunay@st.com>
-Link: https://lore.kernel.org/r/20200127085334.13163-7-amelie.delaunay@st.com
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/dma/stm32-mdma.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ drivers/media/i2c/smiapp/smiapp-core.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/dma/stm32-mdma.c b/drivers/dma/stm32-mdma.c
-index 5838311cf9900..ee1cbf3be75d5 100644
---- a/drivers/dma/stm32-mdma.c
-+++ b/drivers/dma/stm32-mdma.c
-@@ -1127,6 +1127,8 @@ static void stm32_mdma_start_transfer(struct stm32_mdma_chan *chan)
- 		return;
- 	}
+diff --git a/drivers/media/i2c/smiapp/smiapp-core.c b/drivers/media/i2c/smiapp/smiapp-core.c
+index 4731e1c72f960..0a434bdce3b3b 100644
+--- a/drivers/media/i2c/smiapp/smiapp-core.c
++++ b/drivers/media/i2c/smiapp/smiapp-core.c
+@@ -2337,11 +2337,12 @@ smiapp_sysfs_nvm_read(struct device *dev, struct device_attribute *attr,
+ 		if (rval < 0) {
+ 			if (rval != -EBUSY && rval != -EAGAIN)
+ 				pm_runtime_set_active(&client->dev);
+-			pm_runtime_put(&client->dev);
++			pm_runtime_put_noidle(&client->dev);
+ 			return -ENODEV;
+ 		}
  
-+	list_del(&vdesc->node);
-+
- 	chan->desc = to_stm32_mdma_desc(vdesc);
- 	hwdesc = chan->desc->node[0].hwdesc;
- 	chan->curr_hwdesc = 0;
-@@ -1242,8 +1244,10 @@ static int stm32_mdma_terminate_all(struct dma_chan *c)
- 	LIST_HEAD(head);
- 
- 	spin_lock_irqsave(&chan->vchan.lock, flags);
--	if (chan->busy) {
--		stm32_mdma_stop(chan);
-+	if (chan->desc) {
-+		vchan_terminate_vdesc(&chan->desc->vdesc);
-+		if (chan->busy)
-+			stm32_mdma_stop(chan);
- 		chan->desc = NULL;
- 	}
- 	vchan_get_all_descriptors(&chan->vchan, &head);
-@@ -1331,7 +1335,6 @@ static enum dma_status stm32_mdma_tx_status(struct dma_chan *c,
- 
- static void stm32_mdma_xfer_end(struct stm32_mdma_chan *chan)
- {
--	list_del(&chan->desc->vdesc.node);
- 	vchan_cookie_complete(&chan->desc->vdesc);
- 	chan->desc = NULL;
- 	chan->busy = false;
+ 		if (smiapp_read_nvm(sensor, sensor->nvm)) {
++			pm_runtime_put(&client->dev);
+ 			dev_err(&client->dev, "nvm read failed\n");
+ 			return -ENODEV;
+ 		}
 -- 
 2.25.1
 
