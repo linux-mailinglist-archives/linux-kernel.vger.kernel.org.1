@@ -2,138 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 247B027C00E
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 10:51:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9837C27C009
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 10:51:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727846AbgI2Iv2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 04:51:28 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:35402 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727740AbgI2IvZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 04:51:25 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08T8j38T084020;
-        Tue, 29 Sep 2020 08:51:00 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
- mime-version : subject : from : in-reply-to : date : cc :
- content-transfer-encoding : message-id : references : to;
- s=corp-2020-01-29; bh=c2YLPyDXwfRnYYC9GXwYOS9VlCxlBWS/t7RvlFJ3MW0=;
- b=BMVvcltB4OpB1LZG10uXP4w4mA3r7V10zXKpsHferOi1SHTSJK3Wl8mcFc/gEMge+HC/
- 1hV2jFx7KQ/E9s0p6t/trSn5CD5+cygDrNB1cMtpcWhCG0uG3e+AC/Qvge55Dl+Gt82k
- 8YSvZCGDUHaQiTGCYtwFNy7r+WDZgFnXRaUZJSWNXwgZjNiM2c8CPOzVTEgIe2E6Vf5+
- cO4oAxtcwxR3iCdJq3ZrjNWsTDu8BF52JYIi0Rx0+PBeLc0vvBBvx6HGWZEbNgx614mS
- ApmRrYvYlLHmwnTNkWkf5qSDUnqxnDgracVdEiMb3/3GJo5PxtaLIAOGx1XUcZOeBf6g 1Q== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2120.oracle.com with ESMTP id 33sx9n1c0k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 29 Sep 2020 08:51:00 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08T8mj3l185278;
-        Tue, 29 Sep 2020 08:51:00 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3020.oracle.com with ESMTP id 33tfdrmfc4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 29 Sep 2020 08:51:00 +0000
-Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08T8ouxY028328;
-        Tue, 29 Sep 2020 08:50:56 GMT
-Received: from localhost.localdomain (/73.243.10.6)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 29 Sep 2020 01:50:56 -0700
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.0.3.2.33\))
-Subject: Re: [PATCH v2 00/12] Overhaul multi-page lookups for THP
-From:   William Kucharski <william.kucharski@oracle.com>
-In-Reply-To: <20200914130042.11442-1-willy@infradead.org>
-Date:   Tue, 29 Sep 2020 02:50:55 -0600
-Cc:     linux-mm <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>, Jan Kara <jack@suse.cz>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Dave Chinner <dchinner@redhat.com>,
-        linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <D4D7EBEC-920F-4DCE-9023-A7BB3BFD3137@oracle.com>
-References: <20200914130042.11442-1-willy@infradead.org>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-X-Mailer: Apple Mail (2.3654.0.3.2.33)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9758 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 phishscore=0
- adultscore=0 malwarescore=0 spamscore=0 mlxscore=0 bulkscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009290080
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9758 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=0
- phishscore=0 mlxscore=0 lowpriorityscore=0 adultscore=0 clxscore=1011
- spamscore=0 impostorscore=0 malwarescore=0 bulkscore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009290080
+        id S1727728AbgI2IvO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 04:51:14 -0400
+Received: from mga07.intel.com ([134.134.136.100]:44567 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725786AbgI2IvO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 04:51:14 -0400
+IronPort-SDR: 3YeyJpOvCvfZxTsPJsIBFU7RGbxNlVsKMS+jTd0d3Iu/ZUXvkECNeXSEZ0cWOpjL8Zu8j/YKNP
+ ZfIjKgqzqx3g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9758"; a="226292884"
+X-IronPort-AV: E=Sophos;i="5.77,317,1596524400"; 
+   d="scan'208";a="226292884"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2020 01:51:13 -0700
+IronPort-SDR: A9zOVNdreFCO6YB4HTLdxJvLJ9+LRqzWT8AkpMgnN0QKy4Zojqa8YYgh21NVNydBFRVAGhHDaZ
+ IWgcbqyC2IfQ==
+X-IronPort-AV: E=Sophos;i="5.77,317,1596524400"; 
+   d="scan'208";a="514600857"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2020 01:51:10 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1kNBLl-002kT8-1s; Tue, 29 Sep 2020 11:51:05 +0300
+Date:   Tue, 29 Sep 2020 11:51:05 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Ethan Zhao <xerces.zhao@gmail.com>
+Cc:     Ethan Zhao <haifeng.zhao@intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>, Oliver <oohall@gmail.com>,
+        ruscur@russell.cc, Lukas Wunner <lukas@wunner.de>,
+        Stuart Hayes <stuart.w.hayes@gmail.com>,
+        Alexandru Gagniuc <mr.nuke.me@gmail.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Jia, Pei P" <pei.p.jia@intel.com>
+Subject: Re: [PATCH 3/5] PCI/ERR: get device before call device driver to
+ avoid null pointer reference
+Message-ID: <20200929085105.GA3956970@smile.fi.intel.com>
+References: <20200925023423.42675-1-haifeng.zhao@intel.com>
+ <20200925023423.42675-4-haifeng.zhao@intel.com>
+ <20200925123515.GF3956970@smile.fi.intel.com>
+ <CAKF3qh1j-D=6mmyjuLQu9=Pka3ZbB+43_Ec4oge0LhRNnQz-Ug@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKF3qh1j-D=6mmyjuLQu9=Pka3ZbB+43_Ec4oge0LhRNnQz-Ug@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Looks good to me; I really like the addition of the "end" parameter to
-find_get_entries() and the conversion of pagevec_lookup_entries().=03=03
+On Tue, Sep 29, 2020 at 10:35:14AM +0800, Ethan Zhao wrote:
+> Preferred style, there will be cleared comment in v6.
 
-For the series:
+Avoid top postings.
 
-Reviewed-by: William Kucharski <william.kucharski@oracle.com>
+> On Sat, Sep 26, 2020 at 12:42 AM Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> wrote:
+> >
+> > On Thu, Sep 24, 2020 at 10:34:21PM -0400, Ethan Zhao wrote:
+> > > During DPC error injection test we found there is race condition between
+> > > pciehp and DPC driver, null pointer reference caused panic as following
+> >
+> > null -> NULL
+> >
+> > >
+> > >  # setpci -s 64:02.0 0x196.w=000a
+> > >   // 64:02.0 is rootport has DPC capability
+> > >  # setpci -s 65:00.0 0x04.w=0544
+> > >   // 65:00.0 is NVMe SSD populated in above port
+> > >  # mount /dev/nvme0n1p1 nvme
+> > >
+> > >  (tested on stable 5.8 & ICX platform)
+> > >
+> > >  Buffer I/O error on dev nvme0n1p1, logical block 468843328,
+> > >  async page read
+> > >  BUG: kernel NULL pointer dereference, address: 0000000000000050
+> > >  #PF: supervisor read access in kernel mode
+> > >  #PF: error_code(0x0000) - not-present page
+> >
+> > Same comment about Oops.
 
-> On Sep 14, 2020, at 7:00 AM, Matthew Wilcox (Oracle) =
-<willy@infradead.org> wrote:
->=20
-> The critical patch to review here is patch 11, "Handle truncates that
-> split THPs".  This code is shared with shmem, and while xfstests =
-passes
-> (both with the tmpfs filesystem and with THPs enabled for XFS), it is
-> terribly subtle.
->=20
-> I posted a similar patch series a few weeks ago [1], but this goes a =
-few
-> steps further than that one did.  In addition to the unification of
-> find_get_entries() and pagevec_lookup_entries(), this patch series
-> includes:
->=20
-> - Only return the head pages from tagged lookups
-> - Factor a lot of common code out of the various batch lookup routines
-> - Add mapping_seek_hole_data()
-> - Only return head pages from find_get_entries
->=20
-> I also have a patch to iomap to use mapping_seek_hole_data(), but I'm
-> not including that as part of this batch of patches -- I'll send it
-> through the iomap tree once mapping_seek_hole_data() lands upstream.
->=20
-> [1] =
-https://lore.kernel.org/linux-mm/20200819184850.24779-1-willy@infradead.or=
-g/
->=20
-> Matthew Wilcox (Oracle) (12):
->  mm: Make pagecache tagged lookups return only head pages
->  mm/shmem: Use pagevec_lookup in shmem_unlock_mapping
->  mm/filemap: Add helper for finding pages
->  mm/filemap: Add mapping_seek_hole_data
->  mm: Add and use find_lock_entries
->  mm: Add an 'end' parameter to find_get_entries
->  mm: Add an 'end' parameter to pagevec_lookup_entries
->  mm: Remove nr_entries parameter from pagevec_lookup_entries
->  mm: Pass pvec directly to find_get_entries
->  mm: Remove pagevec_lookup_entries
->  mm/truncate,shmem: Handle truncates that split THPs
->  mm/filemap: Return only head pages from find_get_entries
->=20
-> include/linux/pagemap.h |   5 +-
-> include/linux/pagevec.h |   4 -
-> mm/filemap.c            | 267 +++++++++++++++++++++++++++-------------
-> mm/internal.h           |   5 +
-> mm/shmem.c              | 214 +++++++-------------------------
-> mm/swap.c               |  38 +-----
-> mm/truncate.c           | 249 ++++++++++++++-----------------------
-> 7 files changed, 329 insertions(+), 453 deletions(-)
->=20
-> --=20
-> 2.28.0
->=20
+In another thread it was a good advice to move the full Oops (if you think it's
+very useful to have) after the cutter '---' line, so it will be in email
+archives but Git history.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
 
