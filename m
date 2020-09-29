@@ -2,111 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADE4127B8E5
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 02:31:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFA2B27B8EA
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 02:34:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727093AbgI2AbL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 20:31:11 -0400
-Received: from m42-4.mailgun.net ([69.72.42.4]:32598 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726379AbgI2AbK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 20:31:10 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1601339469; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=VyZ5pmQqa7xLFxb3IAghjc47NWjJ59HQREfpQdKbl/U=;
- b=q82/RPzL3UP45x+Snel+fSyg8ON7sSaoCzgJSm9ueAm4BWCl/lnttkLkz5ZPZz8v1/i4y/B6
- Fxuw7Equw5La2sN56fCvwl7ZF2rtw/Nch7QkbbrwIRYZ6RD1buIm5Sdvspz9ASlEcgxd3G8V
- Z/MjO5Cz+gj1g5MNN1FiK8OOVnM=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 5f72804d1fdd3a1390731782 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 29 Sep 2020 00:31:09
- GMT
-Sender: abhinavk=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id C65E0C433CB; Tue, 29 Sep 2020 00:31:08 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: abhinavk)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id A7AB1C433FE;
-        Tue, 29 Sep 2020 00:31:06 +0000 (UTC)
+        id S1727067AbgI2Aej (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 20:34:39 -0400
+Received: from mail-eopbgr140074.outbound.protection.outlook.com ([40.107.14.74]:47865
+        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726379AbgI2Aej (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 20:34:39 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FUNsIAhyrh+++xScjkxSjR3AOu79VNRo0fUMEFxNFhI/8Jrq6fIg2IR+wP/eWm50vsKDTV00VAvtQtwVsrSaaRL1jiZOjrRzlCQkYe/sxAmj8+jRpWi25YrEOYSCKRsAIbP6J6qbWTeIxGiaEk1eVxyqw03OQ/N4f0eantRwj+KDyFx4JO36uT+QoH/osD36eHRlJNICODco92vK5gAaPh3nwJvsWGYUKUEwHSjYQlt9kuek2fyI6jDf2PZXnSXihOfcG5Ma8NU3uNddaGcCI2aoSQ5o1QeWr7q0h7+pbkS+FagKk0v2Y4rznOWengkvcck6wRH+XTSnA7C1WIM7RQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FoNrg5319WqQ0zzlWjDD68rp354PUahorhMYHNhnbBw=;
+ b=LVNaVbJR5n+mbwerI4iS6MxPcHx9kdbymVtGxTK74g1A7+Y28uLZjIhCpgxEyy/niwzxAJBrc7LY9olGEqpEF3e80BkymD1Uw0OE6YdslJcUvYmoRCmDJIJmh+NMhdhuXEnuW4eTd6HEkGCSebvRezKbdGeXEah0QRLpn6AhmPIPNrJ5FdvO2/BER6PA3SdFN7iP1GFSW5VNaw81YC16Ayl+kqQyltH50+oEUUBfgevWIwjtVk9XL8Ps1Tx/1fMM5E2sgir8ZxGGubFVJlX7n9uErM6oWVHDWkKpnJTFIJh12VC0uwZItl9fkdWrXu/yR4oSjwurmOwWeZt+WvApPg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FoNrg5319WqQ0zzlWjDD68rp354PUahorhMYHNhnbBw=;
+ b=L07kyEvJwizLsRM5zo+Uuh+4ZFkYZ1mhJmxWfojY1HXgb1hjxQBYnv7xOz+Ao+TNHrU0YCmvMMKK1L82Snd8f30Rm+hDRSHvZ6/gav0KvvyBeCMwlU9CeC9xC3PGWrVg53s9CS3usSjgpdNvCP3OFEvyKZoP2Tsttr/iBlLNhAg=
+Received: from AM6PR04MB5413.eurprd04.prod.outlook.com (2603:10a6:20b:96::28)
+ by AM6PR04MB4038.eurprd04.prod.outlook.com (2603:10a6:209:44::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.25; Tue, 29 Sep
+ 2020 00:34:34 +0000
+Received: from AM6PR04MB5413.eurprd04.prod.outlook.com
+ ([fe80::1953:c81a:cca2:60ec]) by AM6PR04MB5413.eurprd04.prod.outlook.com
+ ([fe80::1953:c81a:cca2:60ec%7]) with mapi id 15.20.3412.029; Tue, 29 Sep 2020
+ 00:34:34 +0000
+From:   Ran Wang <ran.wang_1@nxp.com>
+To:     Rob Herring <robh@kernel.org>
+CC:     Leo Li <leoyang.li@nxp.com>, Shawn Guo <shawnguo@kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Biwen Li <biwen.li@nxp.com>
+Subject: RE: [PATCH 1/5] Documentation: dt: binding: fsl: Add
+ 'fsl,ippdexpcr1-alt-addr' property
+Thread-Topic: [PATCH 1/5] Documentation: dt: binding: fsl: Add
+ 'fsl,ippdexpcr1-alt-addr' property
+Thread-Index: AQHWjAMgWpwpgcZEfEity8vaUHwtLKl1i48AgABEr6CACFYpgIAAsbmQ
+Date:   Tue, 29 Sep 2020 00:34:34 +0000
+Message-ID: <AM6PR04MB5413F165301E03A8C1FC1D8FF1320@AM6PR04MB5413.eurprd04.prod.outlook.com>
+References: <20200916081831.24747-1-ran.wang_1@nxp.com>
+ <20200923023234.GA3751572@bogus>
+ <AM6PR04MB5413BB2F8D044B2312DAEC4FF1380@AM6PR04MB5413.eurprd04.prod.outlook.com>
+ <CAL_Jsq+uzkr7CcvwQTe5vhpMPtdqL9v4EeqH5yZjMoT=JrDtDQ@mail.gmail.com>
+In-Reply-To: <CAL_Jsq+uzkr7CcvwQTe5vhpMPtdqL9v4EeqH5yZjMoT=JrDtDQ@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [119.31.174.73]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: e74f2d12-6373-41d7-3565-08d8640f7073
+x-ms-traffictypediagnostic: AM6PR04MB4038:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <AM6PR04MB4038E71E8B227B1EA6A4BBF4F1320@AM6PR04MB4038.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2887;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: zBXRUOYbpwpgAu1fYDrixfVD7Rw6BweL2BTvHzQQFvBLKRv+UoI7Pq3eDdpTd4go6/02CWN4qzGgGz77HHCjLzKjyYRToMFdO5bnpA4V1R9N7+MjWMUgevXfxtTZDh8LJmLHh0C9SrARC+NJMCaKGzMJaWdqT95coWKUpTwAMtw0VacEAqIFKPlVZKoitRgSu24zPbTKPHTx7mfjos22KCl0Gb08jLVxVmWBWKB2M4uWkIhy7lL5IcYvI0bTBdIYlkaz+j3x0lqLNqt5gpGfKD/GmUQnPMSKjb2/N1BZ4Heq0Qy66Ehl7yyQ3/u14827WnTk9yqKNoBENnPpCYaDNiY5LTVUo3Z/kW30YsWVoL7NOYHKNIs45M58NaUeJrsi
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB5413.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(346002)(376002)(396003)(136003)(366004)(8936002)(4326008)(83380400001)(8676002)(6916009)(55016002)(9686003)(53546011)(6506007)(26005)(7696005)(186003)(316002)(54906003)(478600001)(33656002)(52536014)(71200400001)(64756008)(66446008)(66476007)(86362001)(5660300002)(66556008)(76116006)(66946007)(2906002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: ZPRTO+cQeJPWIAAdf50sdvAJYupTcAFc7bBphmitqPxM8E4drK4jtC4UYD4Te7cTt8R2Rb775kgKfu483cjK1walqXedNTtrBejhUkpT0n5X1b2BQ/GW2+Jl4JvDDqeFNXQU3piP7BFRioaTPR1sWS1LIoBh5Lms8bb1NSQ5TFbOLUyp0fJITyBiDhyq/KoEE0DDha6NhmMrRbyIGKA2bvWMqBkM9qqJqE24TQ6tiEsyz1Esl17FAunSaSPi9llYkuY4s77sQpPLIS37LXIc4H+ftbsMdwuh0yjfVYk9gWM8lCU2BF9Wu1/ELevzKf1Q3hes27GfGGHIecMEa0VIHnUhWIacggJUnHVbhH7f3SQxvwXTJn+0synBeNQVtE1eOPekqfAD4RAn8iYbwulEjL0ACn2H7UdTzN/IYjkrAA/g1ZBDO/lOMoPQ1FCRUDs4lkSnp+xKAdMmElvZqx6IJjDJC+/hXdgYuexYJm1tOLlbPmJPZpYIcBIesBHfQ0+8LCWpNxH+27n5YYFp3vH266RMWAvCdtSWMWbsF54RNtsCYHmYghKqyk3rXnML7pO7WoW7QmfaE5TE5MGGbess4YPTbB7y9UD/0J28kFovyP3zhHySspjsTeZ9kmwdBGtyIMbsZWbl2T/N3TnrPMAouQ==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 28 Sep 2020 17:31:06 -0700
-From:   abhinavk@codeaurora.org
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     dri-devel@lists.freedesktop.org,
-        Rob Clark <robdclark@chromium.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Brian Masney <masneyb@onstation.org>,
-        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drm/msm: fix 32b build warns
-In-Reply-To: <20200929001925.2916984-1-robdclark@gmail.com>
-References: <20200929001925.2916984-1-robdclark@gmail.com>
-Message-ID: <99486d8eae2223bc5131c56accca1444@codeaurora.org>
-X-Sender: abhinavk@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB5413.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e74f2d12-6373-41d7-3565-08d8640f7073
+X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Sep 2020 00:34:34.6261
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: GHZVOk0CrcQElpiUde73gMQMYbxcQsjJyHC4IbJMKLYI1GuobA5Xe7SA0pqecbXeXXjMWET30wIL2YHNUvhyFA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR04MB4038
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-09-28 17:19, Rob Clark wrote:
-> From: Rob Clark <robdclark@chromium.org>
-> 
-> Neither of these code-paths apply to older 32b devices, but it is rude
-> to introduce warnings.
-> 
-> Signed-off-by: Rob Clark <robdclark@chromium.org>
-Reviewed-by: Abhinav Kumar <abhinavk@codeaurora.org>
-> ---
->  drivers/gpu/drm/msm/adreno/adreno_gpu.c   | 2 +-
->  drivers/gpu/drm/msm/dsi/pll/dsi_pll_7nm.c | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/msm/adreno/adreno_gpu.c
-> b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
-> index fd8f491f2e48..458b5b26d3c2 100644
-> --- a/drivers/gpu/drm/msm/adreno/adreno_gpu.c
-> +++ b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
-> @@ -209,7 +209,7 @@ adreno_iommu_create_address_space(struct msm_gpu 
-> *gpu,
->  	size = iommu->geometry.aperture_end - start + 1;
-> 
->  	aspace = msm_gem_address_space_create(mmu, "gpu",
-> -		start & GENMASK(48, 0), size);
-> +		start & GENMASK_ULL(48, 0), size);
-> 
->  	if (IS_ERR(aspace) && !IS_ERR(mmu))
->  		mmu->funcs->destroy(mmu);
-> diff --git a/drivers/gpu/drm/msm/dsi/pll/dsi_pll_7nm.c
-> b/drivers/gpu/drm/msm/dsi/pll/dsi_pll_7nm.c
-> index 029cc8bf5a04..de0dfb815125 100644
-> --- a/drivers/gpu/drm/msm/dsi/pll/dsi_pll_7nm.c
-> +++ b/drivers/gpu/drm/msm/dsi/pll/dsi_pll_7nm.c
-> @@ -879,7 +879,7 @@ struct msm_dsi_pll *msm_dsi_pll_7nm_init(struct
-> platform_device *pdev, int id)
->  	pll->max_rate = 3500000000UL;
->  	if (pll->type == MSM_DSI_PHY_7NM_V4_1) {
->  		pll->min_rate = 600000000UL;
-> -		pll->max_rate = 5000000000UL;
-> +		pll->max_rate = (unsigned long)5000000000ULL;
->  		/* workaround for max rate overflowing on 32-bit builds: */
->  		pll->max_rate = max(pll->max_rate, 0xffffffffUL);
->  	}
+SGkgUm9iLA0KDQpPbiBNb25kYXksIFNlcHRlbWJlciAyOCwgMjAyMCA5OjU3IFBNLCBSb2IgSGVy
+cmluZyB3cm90ZToNCj4gDQo+IE9uIFdlZCwgU2VwIDIzLCAyMDIwIGF0IDE6NDQgQU0gUmFuIFdh
+bmcgPHJhbi53YW5nXzFAbnhwLmNvbT4gd3JvdGU6DQo+ID4NCj4gPiBIaSBSb2IsDQo+ID4NCj4g
+PiBPbiBXZWRuZXNkYXksIFNlcHRlbWJlciAyMywgMjAyMCAxMDozMyBBTSwgUm9iIEhlcnJpbmcg
+d3JvdGU6DQo+ID4gPg0KPiA+ID4gT24gV2VkLCBTZXAgMTYsIDIwMjAgYXQgMDQ6MTg6MjdQTSAr
+MDgwMCwgUmFuIFdhbmcgd3JvdGU6DQo+ID4gPiA+IEZyb206IEJpd2VuIExpIDxiaXdlbi5saUBu
+eHAuY29tPg0KPiA+ID4gPg0KPiA+ID4gPiBUaGUgJ2ZzbCxpcHBkZXhwY3IxLWFsdC1hZGRyJyBw
+cm9wZXJ0eSBpcyB1c2VkIHRvIGhhbmRsZSBhbiBlcnJhdGENCj4gPiA+ID4gQS0wMDg2NDYgb24g
+TFMxMDIxQQ0KPiA+ID4gPg0KPiA+ID4gPiBTaWduZWQtb2ZmLWJ5OiBCaXdlbiBMaSA8Yml3ZW4u
+bGlAbnhwLmNvbT4NCj4gPiA+ID4gU2lnbmVkLW9mZi1ieTogUmFuIFdhbmcgPHJhbi53YW5nXzFA
+bnhwLmNvbT4NCj4gPiA+ID4gLS0tDQo+ID4gPiA+ICBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUv
+YmluZGluZ3Mvc29jL2ZzbC9yY3BtLnR4dCB8IDE5DQo+ID4gPiA+ICsrKysrKysrKysrKysrKysr
+KysNCj4gPiA+ID4gIDEgZmlsZSBjaGFuZ2VkLCAxOSBpbnNlcnRpb25zKCspDQo+ID4gPiA+DQo+
+ID4gPiA+IGRpZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc29j
+L2ZzbC9yY3BtLnR4dA0KPiA+ID4gPiBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5n
+cy9zb2MvZnNsL3JjcG0udHh0DQo+ID4gPiA+IGluZGV4IDVhMzM2MTkuLjFiZTU4YTMgMTAwNjQ0
+DQo+ID4gPiA+IC0tLSBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zb2MvZnNs
+L3JjcG0udHh0DQo+ID4gPiA+ICsrKyBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5n
+cy9zb2MvZnNsL3JjcG0udHh0DQo+ID4gPiA+IEBAIC0zNCw2ICszNCwxMSBAQCBDaGFzc2lzIFZl
+cnNpb24gICAgICAgICAgRXhhbXBsZSBDaGlwcw0KPiA+ID4gPiAgT3B0aW9uYWwgcHJvcGVydGll
+czoNCj4gPiA+ID4gICAtIGxpdHRsZS1lbmRpYW4gOiBSQ1BNIHJlZ2lzdGVyIGJsb2NrIGlzIExp
+dHRsZSBFbmRpYW4uIFdpdGhvdXQgaXQgUkNQTQ0KPiA+ID4gPiAgICAgd2lsbCBiZSBCaWcgRW5k
+aWFuIChkZWZhdWx0IGNhc2UpLg0KPiA+ID4gPiArIC0gZnNsLGlwcGRleHBjcjEtYWx0LWFkZHIg
+OiBUaGUgcHJvcGVydHkgaXMgcmVsYXRlZCB0byBhIGhhcmR3YXJlIGlzc3VlDQo+ID4gPiA+ICsg
+ICBvbiBTb0MgTFMxMDIxQSBhbmQgb25seSBuZWVkZWQgb24gU29DIExTMTAyMUEuDQo+ID4gPiA+
+ICsgICBNdXN0IGluY2x1ZGUgMiBlbnRyaWVzOg0KPiA+ID4gPiArICAgVGhlIGZpcnN0IGVudHJ5
+IG11c3QgYmUgYSBsaW5rIHRvIHRoZSBTQ0ZHIGRldmljZSBub2RlLg0KPiA+ID4gPiArICAgVGhl
+IDJuZCBlbnRyeSBtdXN0IGJlIG9mZnNldCBvZiByZWdpc3RlciBJUFBERVhQQ1IxIGluIFNDRkcu
+DQo+ID4gPg0KPiA+ID4gWW91IGRvbid0IG5lZWQgYSBEVCBjaGFuZ2UgZm9yIHRoaXMuIFlvdSBj
+YW4gZmluZCBTQ0ZHIG5vZGUgYnkgaXRzDQo+ID4gPiBjb21wYXRpYmxlIHN0cmluZyBhbmQgdGhl
+biB0aGUgb2Zmc2V0IHNob3VsZCBiZSBrbm93biBnaXZlbiB0aGlzIGlzc3VlIGlzDQo+IG9ubHkg
+b24gMSBTb0MuDQo+ID4NCj4gPiBEaWQgeW91IG1lYW4gdGhhdCBSQ1BNIGRyaXZlciBqdXN0IHRv
+IGFjY2VzcyBJUFBERVhQQ1IxIHNoYWRvd2VkDQo+ID4gcmVnaXN0ZXIgaW4gU0NGRyBkaXJlY3Rs
+eSB3aXRob3V0IGZldGNoaW5nIGl0J3Mgb2Zmc2V0IGluZm8uIGZyb20gRFQ/DQo+IA0KPiBZZXMu
+IFRoZXJlJ3Mgb25seSAxIHBvc3NpYmxlIHZhbHVlIG9mIHRoZSBvZmZzZXQgYmVjYXVzZSB0aGVy
+ZSdzIG9ubHkgb25lIFNvQywgc28NCj4gdGhlIGRyaXZlciBjYW4gaGFyZGNvZGUgdGhlIG9mZnNl
+dC4gQW5kIEkgYXNzdW1lIHRoZXJlJ3Mgb25seSBvbmUgU0NGRyBub2RlLA0KPiBzbyB5b3UgY2Fu
+IGZpbmQgaXQgYnkgaXRzIGNvbXBhdGlibGUgc3RyaW5nIChvZl9maW5kX2NvbXBhdGlibGVfbm9k
+ZSkuDQoNCkdvdCBpdCwgbGV0IG1lIHVwZGF0ZSB0aGlzIGluIG5leHQgdmVyc2lvbiwgdGhhbmsg
+eW91Lg0KDQpSZWdhcmRzLA0KUmFuDQoNCj4gUm9iDQo=
