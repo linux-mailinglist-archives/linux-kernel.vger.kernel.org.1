@@ -2,44 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2582027C337
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:06:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD21527C329
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:03:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728520AbgI2LDx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:03:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39366 "EHLO mail.kernel.org"
+        id S1728483AbgI2LDl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:03:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39486 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728459AbgI2LDg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:03:36 -0400
+        id S1728474AbgI2LDj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:03:39 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 148C721924;
-        Tue, 29 Sep 2020 11:03:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 31DBE21941;
+        Tue, 29 Sep 2020 11:03:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601377415;
-        bh=8nCT9onTS12O7kRGYlMj2GxuwieMrLhg/b0HjITQ+WU=;
+        s=default; t=1601377418;
+        bh=uSLbclAto7chEjqnjOZyqiyMChQzMQjMHwUjFrhRau4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=v1WtgMxYdyZkyOWN/iogjyNlOJyMLcAiioKPBWCxg6qG/isKzo6MulgHstwFrIQhw
-         LqEN9ZUtlrdM75MdO8Mz9lV91RH0H0q+lkW1m3GNfA5rOhnItiGlpsTzc9msC9yfLx
-         O2s6prx5x5aPKYjD1+NH/alqq9qQ1NSrR10V3vp0=
+        b=RGwRfxAHIYbINd2VA+bw/Rr8UOVeSV/zi8QIeUTkGVpzGqL/E8g82qcUMTB3tmVSz
+         6i+wZ0JzfkCpMazswxJvFrgehYNA08OvPVrcEyX7+z3cdaO+0ZlMScQIYMluVCJcjl
+         id/hXiN2PDXQSd38/tRozSR7l0vS53HhYt8JzWto=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Muchun Song <songmuchun@bytedance.com>,
+        stable@vger.kernel.org,
         Chengming Zhou <zhouchengming@bytedance.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Song Liu <songliubraving@fb.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        Muchun Song <songmuchun@bytedance.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 03/85] kprobes: fix kill kprobe which has been marked as gone
-Date:   Tue, 29 Sep 2020 12:59:30 +0200
-Message-Id: <20200929105928.378688564@linuxfoundation.org>
+Subject: [PATCH 4.4 04/85] ftrace: Setup correct FTRACE_FL_REGS flags for module
+Date:   Tue, 29 Sep 2020 12:59:31 +0200
+Message-Id: <20200929105928.428212623@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200929105928.198942536@linuxfoundation.org>
 References: <20200929105928.198942536@linuxfoundation.org>
@@ -51,68 +45,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Muchun Song <songmuchun@bytedance.com>
+From: Chengming Zhou <zhouchengming@bytedance.com>
 
-[ Upstream commit b0399092ccebd9feef68d4ceb8d6219a8c0caa05 ]
+[ Upstream commit 8a224ffb3f52b0027f6b7279854c71a31c48fc97 ]
 
-If a kprobe is marked as gone, we should not kill it again.  Otherwise, we
-can disarm the kprobe more than once.  In that case, the statistics of
-kprobe_ftrace_enabled can unbalance which can lead to that kprobe do not
-work.
+When module loaded and enabled, we will use __ftrace_replace_code
+for module if any ftrace_ops referenced it found. But we will get
+wrong ftrace_addr for module rec in ftrace_get_addr_new, because
+rec->flags has not been setup correctly. It can cause the callback
+function of a ftrace_ops has FTRACE_OPS_FL_SAVE_REGS to be called
+with pt_regs set to NULL.
+So setup correct FTRACE_FL_REGS flags for rec when we call
+referenced_filters to find ftrace_ops references it.
 
-Fixes: e8386a0cb22f ("kprobes: support probing module __exit function")
-Co-developed-by: Chengming Zhou <zhouchengming@bytedance.com>
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+Link: https://lkml.kernel.org/r/20200728180554.65203-1-zhouchengming@bytedance.com
+
+Cc: stable@vger.kernel.org
+Fixes: 8c4f3c3fa9681 ("ftrace: Check module functions being traced on reload")
 Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>
-Cc: Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>
-Cc: David S. Miller <davem@davemloft.net>
-Cc: Song Liu <songliubraving@fb.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: <stable@vger.kernel.org>
-Link: https://lkml.kernel.org/r/20200822030055.32383-1-songmuchun@bytedance.com
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/kprobes.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ kernel/trace/ftrace.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-index 9241a29a1f9de..574f650eb818b 100644
---- a/kernel/kprobes.c
-+++ b/kernel/kprobes.c
-@@ -2012,6 +2012,9 @@ static void kill_kprobe(struct kprobe *p)
- {
- 	struct kprobe *kp;
+diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
+index e4c6f89b6b11f..89ed01911a9a2 100644
+--- a/kernel/trace/ftrace.c
++++ b/kernel/trace/ftrace.c
+@@ -2823,8 +2823,11 @@ static int referenced_filters(struct dyn_ftrace *rec)
+ 	int cnt = 0;
  
-+	if (WARN_ON_ONCE(kprobe_gone(p)))
-+		return;
-+
- 	p->flags |= KPROBE_FLAG_GONE;
- 	if (kprobe_aggrprobe(p)) {
- 		/*
-@@ -2154,7 +2157,10 @@ static int kprobes_module_callback(struct notifier_block *nb,
- 	mutex_lock(&kprobe_mutex);
- 	for (i = 0; i < KPROBE_TABLE_SIZE; i++) {
- 		head = &kprobe_table[i];
--		hlist_for_each_entry_rcu(p, head, hlist)
-+		hlist_for_each_entry_rcu(p, head, hlist) {
-+			if (kprobe_gone(p))
-+				continue;
-+
- 			if (within_module_init((unsigned long)p->addr, mod) ||
- 			    (checkcore &&
- 			     within_module_core((unsigned long)p->addr, mod))) {
-@@ -2165,6 +2171,7 @@ static int kprobes_module_callback(struct notifier_block *nb,
- 				 */
- 				kill_kprobe(p);
- 			}
+ 	for (ops = ftrace_ops_list; ops != &ftrace_list_end; ops = ops->next) {
+-		if (ops_references_rec(ops, rec))
+-		    cnt++;
++		if (ops_references_rec(ops, rec)) {
++			cnt++;
++			if (ops->flags & FTRACE_OPS_FL_SAVE_REGS)
++				rec->flags |= FTRACE_FL_REGS;
 +		}
  	}
- 	mutex_unlock(&kprobe_mutex);
- 	return NOTIFY_DONE;
+ 
+ 	return cnt;
+@@ -2874,7 +2877,7 @@ static int ftrace_update_code(struct module *mod, struct ftrace_page *new_pgs)
+ 			p = &pg->records[i];
+ 			if (test)
+ 				cnt += referenced_filters(p);
+-			p->flags = cnt;
++			p->flags += cnt;
+ 
+ 			/*
+ 			 * Do the initial record conversion from mcount jump
 -- 
 2.25.1
 
