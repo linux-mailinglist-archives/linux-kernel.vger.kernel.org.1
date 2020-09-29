@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53E5B27C3D8
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:09:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43CE727C3EF
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:10:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729070AbgI2LJQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:09:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49126 "EHLO mail.kernel.org"
+        id S1728840AbgI2LKD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:10:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50312 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729051AbgI2LJJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:09:09 -0400
+        id S1729094AbgI2LJt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:09:49 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C467F21D46;
-        Tue, 29 Sep 2020 11:09:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CA81C22262;
+        Tue, 29 Sep 2020 11:09:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601377749;
-        bh=tZIA5kCi1OJs2CUyW7GZi810eovjNZzjiYFeAE6RF00=;
+        s=default; t=1601377780;
+        bh=9Wr/DNObHYcXAhpRh/4Bt6/u8IKLiYEN6aWMbhJsL1o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eJFW2OAVB139Kcq/pplUgvB+9b8F4nfr3OCVdUsncODg7zsIpgjH4sJtd/kq5YPY0
-         3sTooNK/Rd7wfvipjxpOjITcGY2Z3MNqSoExPIOrxMd0yVpiYcx5F+tixfnk6f6D3M
-         T7BRYAvHtPLuEYrdTcTX6t7Pdarzv4jfFXQepwSE=
+        b=kAH/9z7VEEqt1i6k77IjcMKxLVo0pz+qzGDFD5Rb1rDAa7zCleqVBWa/Crtzo/y4M
+         6sff7zDjOM2VUPX5GKykwRgIZqq6vqBmpli74xL981jVNawR9cuoz5RIUNXrjyUw9r
+         k8pCy67VA5dA9OpozsdHA32tUECJ4Xr4SXxcdDDo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 051/121] KVM: x86: fix incorrect comparison in trace event
-Date:   Tue, 29 Sep 2020 12:59:55 +0200
-Message-Id: <20200929105932.724806676@linuxfoundation.org>
+        stable@vger.kernel.org, Alex Shi <alex.shi@linux.alibaba.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Borislav Petkov <bp@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 052/121] x86/pkeys: Add check for pkey "overflow"
+Date:   Tue, 29 Sep 2020 12:59:56 +0200
+Message-Id: <20200929105932.776070811@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200929105930.172747117@linuxfoundation.org>
 References: <20200929105930.172747117@linuxfoundation.org>
@@ -42,32 +43,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paolo Bonzini <pbonzini@redhat.com>
+From: Dave Hansen <dave.hansen@linux.intel.com>
 
-[ Upstream commit 147f1a1fe5d7e6b01b8df4d0cbd6f9eaf6b6c73b ]
+[ Upstream commit 16171bffc829272d5e6014bad48f680cb50943d9 ]
 
-The "u" field in the event has three states, -1/0/1.  Using u8 however means that
-comparison with -1 will always fail, so change to signed char.
+Alex Shi reported the pkey macros above arch_set_user_pkey_access()
+to be unused.  They are unused, and even refer to a nonexistent
+CONFIG option.
 
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+But, they might have served a good use, which was to ensure that
+the code does not try to set values that would not fit in the
+PKRU register.  As it stands, a too-large 'pkey' value would
+be likely to silently overflow the u32 new_pkru_bits.
+
+Add a check to look for overflows.  Also add a comment to remind
+any future developer to closely examine the types used to store
+pkey values if arch_max_pkey() ever changes.
+
+This boots and passes the x86 pkey selftests.
+
+Reported-by: Alex Shi <alex.shi@linux.alibaba.com>
+Signed-off-by: Dave Hansen <dave.hansen@intel.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/20200122165346.AD4DA150@viggo.jf.intel.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kvm/mmutrace.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/include/asm/pkeys.h | 5 +++++
+ arch/x86/kernel/fpu/xstate.c | 9 +++++++--
+ 2 files changed, 12 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/kvm/mmutrace.h b/arch/x86/kvm/mmutrace.h
-index 756b14ecc957a..df1076b0eabf3 100644
---- a/arch/x86/kvm/mmutrace.h
-+++ b/arch/x86/kvm/mmutrace.h
-@@ -336,7 +336,7 @@ TRACE_EVENT(
- 		/* These depend on page entry type, so compute them now.  */
- 		__field(bool, r)
- 		__field(bool, x)
--		__field(u8, u)
-+		__field(signed char, u)
- 	),
+diff --git a/arch/x86/include/asm/pkeys.h b/arch/x86/include/asm/pkeys.h
+index c50d6dcf4a227..4e7273e176cb7 100644
+--- a/arch/x86/include/asm/pkeys.h
++++ b/arch/x86/include/asm/pkeys.h
+@@ -3,6 +3,11 @@
  
- 	TP_fast_assign(
+ #define ARCH_DEFAULT_PKEY	0
+ 
++/*
++ * If more than 16 keys are ever supported, a thorough audit
++ * will be necessary to ensure that the types that store key
++ * numbers and masks have sufficient capacity.
++ */
+ #define arch_max_pkey() (boot_cpu_has(X86_FEATURE_OSPKE) ? 16 : 1)
+ 
+ extern int arch_set_user_pkey_access(struct task_struct *tsk, int pkey,
+diff --git a/arch/x86/kernel/fpu/xstate.c b/arch/x86/kernel/fpu/xstate.c
+index e9d7f461b7fa5..dbd396c913488 100644
+--- a/arch/x86/kernel/fpu/xstate.c
++++ b/arch/x86/kernel/fpu/xstate.c
+@@ -871,8 +871,6 @@ const void *get_xsave_field_ptr(int xsave_state)
+ 
+ #ifdef CONFIG_ARCH_HAS_PKEYS
+ 
+-#define NR_VALID_PKRU_BITS (CONFIG_NR_PROTECTION_KEYS * 2)
+-#define PKRU_VALID_MASK (NR_VALID_PKRU_BITS - 1)
+ /*
+  * This will go out and modify PKRU register to set the access
+  * rights for @pkey to @init_val.
+@@ -891,6 +889,13 @@ int arch_set_user_pkey_access(struct task_struct *tsk, int pkey,
+ 	if (!boot_cpu_has(X86_FEATURE_OSPKE))
+ 		return -EINVAL;
+ 
++	/*
++	 * This code should only be called with valid 'pkey'
++	 * values originating from in-kernel users.  Complain
++	 * if a bad value is observed.
++	 */
++	WARN_ON_ONCE(pkey >= arch_max_pkey());
++
+ 	/* Set the bits we need in PKRU:  */
+ 	if (init_val & PKEY_DISABLE_ACCESS)
+ 		new_pkru_bits |= PKRU_AD_BIT;
 -- 
 2.25.1
 
