@@ -2,137 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 333B027BF97
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 10:33:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EB9F27BF9E
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 10:34:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727919AbgI2IdR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 04:33:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37622 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727893AbgI2IdN (ORCPT
+        id S1727858AbgI2Idj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 04:33:39 -0400
+Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:7056 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727605AbgI2Idi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 04:33:13 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED92EC0613D5;
-        Tue, 29 Sep 2020 01:33:11 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id e22so5418560edq.6;
-        Tue, 29 Sep 2020 01:33:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=HK41/qbPxO+SoGRXquqjP/gEh3I+38ZE+z63fzbFSAM=;
-        b=S8yJWuwRM6E6vG99yfmoQMLxY2mnpbYIcvbtstIvuN666T+YtUHi8dh3la0w5Yafct
-         PZ/XVQQn9ZDZjIkn4uGu2dWW1+YOT5H5gGswkiD/F5rQIANePpgPusGcvJ6YplN7IZfP
-         WshdCVcyQ4ipZgpJwuIkCAotuYHX/k7lKN4DNBdxG1vIVH5x0h00kep03tjP3ggBWszA
-         nj8BzeKlG4yfnwmTtrV1GJoGQDLgRRI1iVYvEBI9TD5nYieaMf8Np5G1atY+LEHy8GBo
-         tfAdIRvOSPfaa6A2tJ/HySv258TxNjiCkJvG4IwF6Pn8G83LykzK+q8vWwIbnOcYDMYZ
-         tH6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=HK41/qbPxO+SoGRXquqjP/gEh3I+38ZE+z63fzbFSAM=;
-        b=RBmB2+3xCKjVc9l35kLufYxUL/276DTJufkP+incWKuwnaQttEW/3kSGj+9RHHpusr
-         uW0Ny049s6cTT5jHV3e3pzMskAq4b/N3oiG8jFWE3zsjGvpIiB5TrIcY3Zop8Dx/CIqv
-         UButUDOe8bIDHJx/F+9T5uqqKy6vH8WucaoOOj/GY4dXVMFHwI0Wls5TkRrAwQafu4R/
-         9D2MKj6JnYwWkmH4feNvaDlknujHfNRYtcjjyyERGRTSsmtwQRczR3hnGRGti6VFSzRN
-         67M1drh3P980l53v/DCz5VFuqgwb8iYp+nkH8w+8o+o46p8kZ0XaqWYmfnTB6/Rudaps
-         HDcA==
-X-Gm-Message-State: AOAM532NCrt/OQaI/HcV326JdRWmLQhT6aZEA9rsdaSl0sYaf9OrmB08
-        wdxEqBgm8seE2D6uAePBDf4=
-X-Google-Smtp-Source: ABdhPJyYvViBHNSY5FE7CXdKUdCiD1GV8vYp3T3pZ0xf9ePqRUqG3AW2pTxyVkmCuZ7dASJFxLP47Q==
-X-Received: by 2002:aa7:d4d0:: with SMTP id t16mr2020758edr.83.1601368390650;
-        Tue, 29 Sep 2020 01:33:10 -0700 (PDT)
-Received: from felia ([2001:16b8:2d89:9100:1da1:773b:dbb4:3fc9])
-        by smtp.gmail.com with ESMTPSA id cn21sm5173410edb.14.2020.09.29.01.33.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Sep 2020 01:33:09 -0700 (PDT)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-X-Google-Original-From: Lukas Bulwahn <lukas@gmail.com>
-Date:   Tue, 29 Sep 2020 10:33:08 +0200 (CEST)
-X-X-Sender: lukas@felia
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Balbir Singh <sblbir@amazon.com>
-cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
-        kernel-janitors@vger.kernel.org, linux-safety@lists.elisa.tech
-Subject: Re: [PATCH -next for tip:x86/pti] x86/tlb: drop unneeded local vars
- in enable_l1d_flush_for_task()
-In-Reply-To: <20200929071211.GJ2628@hirez.programming.kicks-ass.net>
-Message-ID: <alpine.DEB.2.21.2009291022000.17656@felia>
-References: <20200928124457.27289-1-lukas.bulwahn@gmail.com> <20200929071211.GJ2628@hirez.programming.kicks-ass.net>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        Tue, 29 Sep 2020 04:33:38 -0400
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 08T8WhDg027041;
+        Tue, 29 Sep 2020 03:33:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=PODMain02222019;
+ bh=AtIwfUh1HCIzakGZPbCRTiACRVBGHlN9GnO9jcbx4xw=;
+ b=X0oh74U/KQiFwEdosAf7qYv/9ceW2j3MPcI+oM2+pXStajs0fIOj70peG43U3PJfGa9m
+ 7n64NmHH1PhHOwtFIoz8c48tqxX9WEJWGqfvVYZEIa33e54xPHOcHntdl54SODZzZ20j
+ rTN2wFWK2fEKOzOuV7X+IRYTX7etYi0+Fd8ssxEmzLBWk4vzEeA7RFiB9DwJUkoeTRYM
+ Gy3zDpSVfSNzq1O0TPJGd+oIzhzF/GtLkMfs4vnmcRtK//NvBUSnUtclpef/F7olH1Nv
+ GsT6TdS8tH0cEg4TiV7Kbs87JEgQPWskGouEDkSVSZtYRRytDSxtcTfjFX4sQjDhyK4O 9Q== 
+Received: from ediex01.ad.cirrus.com ([87.246.76.36])
+        by mx0b-001ae601.pphosted.com with ESMTP id 33t22p3gy0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 29 Sep 2020 03:33:35 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Tue, 29 Sep
+ 2020 09:33:34 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
+ Transport; Tue, 29 Sep 2020 09:33:34 +0100
+Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 516202C6;
+        Tue, 29 Sep 2020 08:33:34 +0000 (UTC)
+Date:   Tue, 29 Sep 2020 08:33:34 +0000
+From:   Charles Keepax <ckeepax@opensource.cirrus.com>
+To:     Sasha Levin <sashal@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>,
+        Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH AUTOSEL 5.8 14/29] regmap: debugfs: Fix handling of name
+ string for debugfs init delays
+Message-ID: <20200929083334.GX10899@ediswmail.ad.cirrus.com>
+References: <20200929013027.2406344-1-sashal@kernel.org>
+ <20200929013027.2406344-14-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20200929013027.2406344-14-sashal@kernel.org>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 bulkscore=0 phishscore=0
+ clxscore=1031 adultscore=0 priorityscore=1501 mlxscore=0 mlxlogscore=999
+ impostorscore=0 suspectscore=2 spamscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009290078
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On Tue, 29 Sep 2020, Peter Zijlstra wrote:
-
-> On Mon, Sep 28, 2020 at 02:44:57PM +0200, Lukas Bulwahn wrote:
-> > diff --git a/arch/x86/mm/tlb.c b/arch/x86/mm/tlb.c
-> > index 6b0f4c88b07c..90515c04d90a 100644
-> > --- a/arch/x86/mm/tlb.c
-> > +++ b/arch/x86/mm/tlb.c
-> > @@ -316,7 +316,7 @@ EXPORT_SYMBOL_GPL(leave_mm);
-> >  
-> >  int enable_l1d_flush_for_task(struct task_struct *tsk)
-> >  {
-> > -	int cpu, ret = 0, i;
-> > +	int i;
-> >  
-> >  	/*
-> >  	 * Do not enable L1D_FLUSH_OUT if
-> > @@ -329,7 +329,7 @@ int enable_l1d_flush_for_task(struct task_struct *tsk)
-> >  			!static_cpu_has(X86_FEATURE_FLUSH_L1D))
-> >  		return -EINVAL;
-> >  
-> > -	cpu = get_cpu();
-> > +	get_cpu();
-> >  
-> >  	for_each_cpu(i, &tsk->cpus_mask) {
-> >  		if (cpu_data(i).smt_active == true) {
-> > @@ -340,7 +340,7 @@ int enable_l1d_flush_for_task(struct task_struct *tsk)
-> >  
-> >  	set_ti_thread_flag(&tsk->thread_info, TIF_SPEC_L1D_FLUSH);
-> >  	put_cpu();
-> > -	return ret;
-> > +	return 0;
-> >  }
+On Mon, Sep 28, 2020 at 09:30:11PM -0400, Sasha Levin wrote:
+> From: Charles Keepax <ckeepax@opensource.cirrus.com>
 > 
-> If you don't use the return value of get_cpu(), then change it over to
-> preempt_{dis,en}able(), but this got me looking at the function, wtf is
-> that garbage supposed to do in the first place
-
-I also thought that preempt_{dis,en}able() would do, but thought maybe 
-Balbir just considered {get,put}_cpu stylistically nicer... so I stayed 
-with the functions as-is.
-
+> [ Upstream commit 94cc89eb8fa5039fcb6e3e3d50f929ddcccee095 ]
 > 
-> What do we need to disable preemption for?
->
-
-I have no clue... not a good premise for touching the code, but I just 
-wanted to make clang-analyzer happy without modifying any semantics.
-
-Balbir, can you help out here? What was your intent?
- 
-> Please explain the desired semantics against sched_setaffinity().
+> In regmap_debugfs_init the initialisation of the debugfs is delayed
+> if the root node isn't ready yet. Most callers of regmap_debugfs_init
+> pass the name from the regmap_config, which is considered temporary
+> ie. may be unallocated after the regmap_init call returns. This leads
+> to a potential use after free, where config->name has been freed by
+> the time it is used in regmap_debugfs_initcall.
 > 
 
-I am happy to send a proper v2 once I understand if disabling preemption 
-is required and the preempt_{dis,en}able() function are preferred to the 
-{get,put}_cpu functions.
+Afraid this patch had some issues if you are back porting it you
+definitely need to take these two patches as well:
 
-Lukas
+commit 1d512ee861b80da63cbc501b973c53131aa22f29
+regmap: debugfs: Fix more error path regressions
+
+commit d36cb0205f034e943aa29e35b59c6a441f0056b5
+regmap: debugfs: Add back in erroneously removed initialisation of ret
+
+Thanks,
+Charles
