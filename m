@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5CC827C8A6
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:03:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2203F27C850
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:01:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731821AbgI2MDk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 08:03:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60306 "EHLO mail.kernel.org"
+        id S1731165AbgI2MBC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 08:01:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36830 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729595AbgI2Lie (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:38:34 -0400
+        id S1730571AbgI2Lku (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:40:50 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 22A8022207;
-        Tue, 29 Sep 2020 11:38:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3C14723A5D;
+        Tue, 29 Sep 2020 11:23:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601379505;
-        bh=u1qOtWnMXAlI04ZQS3g+oAR6V6XOrFj1hlQQ0sO9zp0=;
+        s=default; t=1601378627;
+        bh=i1ZgjExRvDCjhGcCJkiP8I89j+dferq7go6VHY189IY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=W05wgn7fajc8j2OQ0OgApBpODPsjOm56XyJ+Fpf6bW3+WGvOwAJ7ybUy7kE1CZcjH
-         QSHhE6PIjmJ0vPlP5/hSDTopu6Nbp7PWMgM9Gu6sw3uXUxLGVtHdc/wi7MZOjASRnH
-         iN8OdYhmEeaUCWQ0RUlEjnc2zXFIbOX82rZqVuk4=
+        b=aoI5z0xdFcE8PW3akf13/z358AKDHC2Jk5ZT29PYDHWfW4DxrCH9uSK88eJ57y2+q
+         75t1/7oKCDurIQLwmOXUwTm6gv/onr+yJYrJRupT5BCxlRlUsgoixS7tz7PZRVoQ7l
+         FKktzsYBnsJew6ckuwPfDX4raQ6EcIZpmvubzc58=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bernd Edlinger <bernd.edlinger@hotmail.de>,
-        Kees Cook <keescook@chromium.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
+        stable@vger.kernel.org, Vasily Averin <vvs@virtuozzo.com>,
+        Stephen Smalley <sds@tycho.nsa.gov>,
+        Paul Moore <paul@paul-moore.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 194/388] selftests/ptrace: add test cases for dead-locks
+Subject: [PATCH 4.19 074/245] selinux: sel_avc_get_stat_idx should increase position index
 Date:   Tue, 29 Sep 2020 12:58:45 +0200
-Message-Id: <20200929110019.871205043@linuxfoundation.org>
+Message-Id: <20200929105950.598465758@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929110010.467764689@linuxfoundation.org>
-References: <20200929110010.467764689@linuxfoundation.org>
+In-Reply-To: <20200929105946.978650816@linuxfoundation.org>
+References: <20200929105946.978650816@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,138 +44,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bernd Edlinger <bernd.edlinger@hotmail.de>
+From: Vasily Averin <vvs@virtuozzo.com>
 
-[ Upstream commit 2de4e82318c7f9d34f4b08599a612cd4cd10bf0b ]
+[ Upstream commit 8d269a8e2a8f0bca89022f4ec98de460acb90365 ]
 
-This adds test cases for ptrace deadlocks.
+If seq_file .next function does not change position index,
+read after some lseek can generate unexpected output.
 
-Additionally fixes a compile problem in get_syscall_info.c,
-observed with gcc-4.8.4:
+$ dd if=/sys/fs/selinux/avc/cache_stats # usual output
+lookups hits misses allocations reclaims frees
+817223 810034 7189 7189 6992 7037
+1934894 1926896 7998 7998 7632 7683
+1322812 1317176 5636 5636 5456 5507
+1560571 1551548 9023 9023 9056 9115
+0+1 records in
+0+1 records out
+189 bytes copied, 5,1564e-05 s, 3,7 MB/s
 
-get_syscall_info.c: In function 'get_syscall_info':
-get_syscall_info.c:93:3: error: 'for' loop initial declarations are only
-                                 allowed in C99 mode
-   for (unsigned int i = 0; i < ARRAY_SIZE(args); ++i) {
-   ^
-get_syscall_info.c:93:3: note: use option -std=c99 or -std=gnu99 to compile
-                               your code
+$# read after lseek to midle of last line
+$ dd if=/sys/fs/selinux/avc/cache_stats bs=180 skip=1
+dd: /sys/fs/selinux/avc/cache_stats: cannot skip to specified offset
+056 9115   <<<< end of last line
+1560571 1551548 9023 9023 9056 9115  <<< whole last line once again
+0+1 records in
+0+1 records out
+45 bytes copied, 8,7221e-05 s, 516 kB/s
 
-Signed-off-by: Bernd Edlinger <bernd.edlinger@hotmail.de>
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Eric W. Biederman <ebiederm@xmission.com>
+$# read after lseek beyond  end of of file
+$ dd if=/sys/fs/selinux/avc/cache_stats bs=1000 skip=1
+dd: /sys/fs/selinux/avc/cache_stats: cannot skip to specified offset
+1560571 1551548 9023 9023 9056 9115  <<<< generates whole last line
+0+1 records in
+0+1 records out
+36 bytes copied, 9,0934e-05 s, 396 kB/s
+
+https://bugzilla.kernel.org/show_bug.cgi?id=206283
+
+Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+Acked-by: Stephen Smalley <sds@tycho.nsa.gov>
+Signed-off-by: Paul Moore <paul@paul-moore.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/ptrace/Makefile   |  4 +-
- tools/testing/selftests/ptrace/vmaccess.c | 86 +++++++++++++++++++++++
- 2 files changed, 88 insertions(+), 2 deletions(-)
- create mode 100644 tools/testing/selftests/ptrace/vmaccess.c
+ security/selinux/selinuxfs.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/tools/testing/selftests/ptrace/Makefile b/tools/testing/selftests/ptrace/Makefile
-index c0b7f89f09300..2f1f532c39dbc 100644
---- a/tools/testing/selftests/ptrace/Makefile
-+++ b/tools/testing/selftests/ptrace/Makefile
-@@ -1,6 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0-only
--CFLAGS += -iquote../../../../include/uapi -Wall
-+CFLAGS += -std=c99 -pthread -iquote../../../../include/uapi -Wall
+diff --git a/security/selinux/selinuxfs.c b/security/selinux/selinuxfs.c
+index f3a5a138a096d..60b3f16bb5c7b 100644
+--- a/security/selinux/selinuxfs.c
++++ b/security/selinux/selinuxfs.c
+@@ -1509,6 +1509,7 @@ static struct avc_cache_stats *sel_avc_get_stat_idx(loff_t *idx)
+ 		*idx = cpu + 1;
+ 		return &per_cpu(avc_cache_stats, cpu);
+ 	}
++	(*idx)++;
+ 	return NULL;
+ }
  
--TEST_GEN_PROGS := get_syscall_info peeksiginfo
-+TEST_GEN_PROGS := get_syscall_info peeksiginfo vmaccess
- 
- include ../lib.mk
-diff --git a/tools/testing/selftests/ptrace/vmaccess.c b/tools/testing/selftests/ptrace/vmaccess.c
-new file mode 100644
-index 0000000000000..4db327b445862
---- /dev/null
-+++ b/tools/testing/selftests/ptrace/vmaccess.c
-@@ -0,0 +1,86 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+/*
-+ * Copyright (c) 2020 Bernd Edlinger <bernd.edlinger@hotmail.de>
-+ * All rights reserved.
-+ *
-+ * Check whether /proc/$pid/mem can be accessed without causing deadlocks
-+ * when de_thread is blocked with ->cred_guard_mutex held.
-+ */
-+
-+#include "../kselftest_harness.h"
-+#include <stdio.h>
-+#include <fcntl.h>
-+#include <pthread.h>
-+#include <signal.h>
-+#include <unistd.h>
-+#include <sys/ptrace.h>
-+
-+static void *thread(void *arg)
-+{
-+	ptrace(PTRACE_TRACEME, 0, 0L, 0L);
-+	return NULL;
-+}
-+
-+TEST(vmaccess)
-+{
-+	int f, pid = fork();
-+	char mm[64];
-+
-+	if (!pid) {
-+		pthread_t pt;
-+
-+		pthread_create(&pt, NULL, thread, NULL);
-+		pthread_join(pt, NULL);
-+		execlp("true", "true", NULL);
-+	}
-+
-+	sleep(1);
-+	sprintf(mm, "/proc/%d/mem", pid);
-+	f = open(mm, O_RDONLY);
-+	ASSERT_GE(f, 0);
-+	close(f);
-+	f = kill(pid, SIGCONT);
-+	ASSERT_EQ(f, 0);
-+}
-+
-+TEST(attach)
-+{
-+	int s, k, pid = fork();
-+
-+	if (!pid) {
-+		pthread_t pt;
-+
-+		pthread_create(&pt, NULL, thread, NULL);
-+		pthread_join(pt, NULL);
-+		execlp("sleep", "sleep", "2", NULL);
-+	}
-+
-+	sleep(1);
-+	k = ptrace(PTRACE_ATTACH, pid, 0L, 0L);
-+	ASSERT_EQ(errno, EAGAIN);
-+	ASSERT_EQ(k, -1);
-+	k = waitpid(-1, &s, WNOHANG);
-+	ASSERT_NE(k, -1);
-+	ASSERT_NE(k, 0);
-+	ASSERT_NE(k, pid);
-+	ASSERT_EQ(WIFEXITED(s), 1);
-+	ASSERT_EQ(WEXITSTATUS(s), 0);
-+	sleep(1);
-+	k = ptrace(PTRACE_ATTACH, pid, 0L, 0L);
-+	ASSERT_EQ(k, 0);
-+	k = waitpid(-1, &s, 0);
-+	ASSERT_EQ(k, pid);
-+	ASSERT_EQ(WIFSTOPPED(s), 1);
-+	ASSERT_EQ(WSTOPSIG(s), SIGSTOP);
-+	k = ptrace(PTRACE_DETACH, pid, 0L, 0L);
-+	ASSERT_EQ(k, 0);
-+	k = waitpid(-1, &s, 0);
-+	ASSERT_EQ(k, pid);
-+	ASSERT_EQ(WIFEXITED(s), 1);
-+	ASSERT_EQ(WEXITSTATUS(s), 0);
-+	k = waitpid(-1, NULL, 0);
-+	ASSERT_EQ(k, -1);
-+	ASSERT_EQ(errno, ECHILD);
-+}
-+
-+TEST_HARNESS_MAIN
 -- 
 2.25.1
 
