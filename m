@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A16127CC06
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:34:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61FE227CBE2
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:31:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733032AbgI2McV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 08:32:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37022 "EHLO mail.kernel.org"
+        id S1732954AbgI2Maq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 08:30:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37340 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729547AbgI2LXB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:23:01 -0400
+        id S1729662AbgI2LYL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:24:11 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C6922206A5;
-        Tue, 29 Sep 2020 11:20:46 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 57E8E22204;
+        Tue, 29 Sep 2020 11:21:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601378447;
-        bh=IoCVrsR79AYUsIpowAJgDUNoxfHUm/Ij+N8h1eGcPGE=;
+        s=default; t=1601378477;
+        bh=y3jpMweezOH58bo2BxNqa3+e1V+ib8lKEVEvmRmMAFY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KiRcA4e2N0KIJQyMbvbHa3ClyBijnkzqTI2XDTXjdI8i3NgxO6P6FhXBqGa//L+7w
-         m2iAEbVoUzryCr1c7hhMUKmqf7M0emjx7kOdo/4i+as2G/nkFApxuTG2UdQwBF2wM1
-         qHDwJOLHf51dPSQYwm/ni5aJOmRsnOyWBFQK4GiQ=
+        b=vXKj43cE3a780tYUDtpOKRl5i8gdplFQoKrM+wQJdMDk6RDvbeVh5eK28d2kobtux
+         eHIhGpo7X9NKa6l77ITUQ0ixnXYr6WSDtB8xslQPUVjawbwPwQdNDPA3Cfwd0GeuLt
+         n2xrMSlMcPks5Nf6RxvQa0QCkcasPYWMFOY7IsmU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kangjie Lu <kjlu@umn.edu>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        stable@vger.kernel.org, Russell King <rmk+kernel@armlinux.org.uk>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 009/245] gma/gma500: fix a memory disclosure bug due to uninitialized bytes
-Date:   Tue, 29 Sep 2020 12:57:40 +0200
-Message-Id: <20200929105947.440547899@linuxfoundation.org>
+Subject: [PATCH 4.19 010/245] ASoC: kirkwood: fix IRQ error handling
+Date:   Tue, 29 Sep 2020 12:57:41 +0200
+Message-Id: <20200929105947.490502471@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200929105946.978650816@linuxfoundation.org>
 References: <20200929105946.978650816@linuxfoundation.org>
@@ -43,35 +43,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kangjie Lu <kjlu@umn.edu>
+From: Russell King <rmk+kernel@armlinux.org.uk>
 
-[ Upstream commit 57a25a5f754ce27da2cfa6f413cfd366f878db76 ]
+[ Upstream commit 175fc928198236037174e5c5c066fe3c4691903e ]
 
-`best_clock` is an object that may be sent out. Object `clock`
-contains uninitialized bytes that are copied to `best_clock`,
-which leads to memory disclosure and information leak.
+Propagate the error code from request_irq(), rather than returning
+-EBUSY.
 
-Signed-off-by: Kangjie Lu <kjlu@umn.edu>
-Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-Link: https://patchwork.freedesktop.org/patch/msgid/20191018042953.31099-1-kjlu@umn.edu
+Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
+Link: https://lore.kernel.org/r/E1iNIqh-0000tW-EZ@rmk-PC.armlinux.org.uk
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/gma500/cdv_intel_display.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/kirkwood/kirkwood-dma.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/gma500/cdv_intel_display.c b/drivers/gpu/drm/gma500/cdv_intel_display.c
-index 17db4b4749d5a..2e8479744ca4a 100644
---- a/drivers/gpu/drm/gma500/cdv_intel_display.c
-+++ b/drivers/gpu/drm/gma500/cdv_intel_display.c
-@@ -415,6 +415,8 @@ static bool cdv_intel_find_dp_pll(const struct gma_limit_t *limit,
- 	struct gma_crtc *gma_crtc = to_gma_crtc(crtc);
- 	struct gma_clock_t clock;
+diff --git a/sound/soc/kirkwood/kirkwood-dma.c b/sound/soc/kirkwood/kirkwood-dma.c
+index c6a58520d377a..255cc45905b81 100644
+--- a/sound/soc/kirkwood/kirkwood-dma.c
++++ b/sound/soc/kirkwood/kirkwood-dma.c
+@@ -136,7 +136,7 @@ static int kirkwood_dma_open(struct snd_pcm_substream *substream)
+ 		err = request_irq(priv->irq, kirkwood_dma_irq, IRQF_SHARED,
+ 				  "kirkwood-i2s", priv);
+ 		if (err)
+-			return -EBUSY;
++			return err;
  
-+	memset(&clock, 0, sizeof(clock));
-+
- 	switch (refclk) {
- 	case 27000:
- 		if (target < 200000) {
+ 		/*
+ 		 * Enable Error interrupts. We're only ack'ing them but
 -- 
 2.25.1
 
