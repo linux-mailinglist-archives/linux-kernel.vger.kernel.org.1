@@ -2,93 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3584B27D1A4
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 16:43:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1978227D1AC
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 16:44:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730863AbgI2OnX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 10:43:23 -0400
-Received: from mail-oo1-f67.google.com ([209.85.161.67]:47074 "EHLO
-        mail-oo1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728607AbgI2OnX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 10:43:23 -0400
-Received: by mail-oo1-f67.google.com with SMTP id b12so1330299oop.13;
-        Tue, 29 Sep 2020 07:43:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6bgECZ9uqVfvJbocL8Cxkr581j2QQ4ktwy9AOE+ABj0=;
-        b=lYhycORRmA6ytx6j9muoZcFuBec7pd1tOfLw+VKEIehHPjLHa3XaHYiT7kn/bE0vhX
-         7WKbsEeqHLeRKWexDEUeWx7HLIffMn4Pnx7UPnn1I8X0Lq1NyplDbQVbrt5FbDs+Gi6N
-         0EkG/VfSH67tjoU2J1T5Jt4NmHAXP/4OCLAWaM9FK78RpnqrZ1k/fs0v5sS26bz9nTx/
-         SZ2idh5iYBJ2M24GLzIeRIjrPpx5PAuvvg9U3QBgEx1Z5/ytGGEyPMyyLj60U7Tpy26g
-         XE8UBiEYSEXJTTtgAJU4thIQI8szppTLb0QhzmemuLvvGQuWFIz0ie7dyqLhpSu5uipK
-         cBXg==
-X-Gm-Message-State: AOAM532mfUhsq6pR1r0ERXFEe8UgUzAQipv/bGj6cT/iOboGlfmQKmCD
-        q6yvgsML4xUvV+huJo812A==
-X-Google-Smtp-Source: ABdhPJyhKRuXHenxEEbcJRR3XpS7OSTwtwMBjFAFyQvdVeSkYH+HePX6cjvIUGv3FOkseJr8KsxsoA==
-X-Received: by 2002:a4a:b30d:: with SMTP id m13mr4771067ooo.50.1601390602115;
-        Tue, 29 Sep 2020 07:43:22 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id c14sm3106413ooi.9.2020.09.29.07.43.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Sep 2020 07:43:21 -0700 (PDT)
-Received: (nullmailer pid 559478 invoked by uid 1000);
-        Tue, 29 Sep 2020 14:43:20 -0000
-Date:   Tue, 29 Sep 2020 09:43:20 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     kholk11@gmail.com
-Cc:     agross@kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bjorn.andersson@linaro.org,
-        devicetree@vger.kernel.org, konradybcio@gmail.com,
-        phone-devel@vger.kernel.org, georgi.djakov@linaro.org,
-        linux-pm@vger.kernel.org, robh+dt@kernel.org, marijns95@gmail.com,
-        martin.botka1@gmail.com
-Subject: Re: [PATCH v2 2/2] dt-bindings: interconnect: Add bindings for
- Qualcomm SDM660 NoC
-Message-ID: <20200929144320.GA557822@bogus>
-References: <20200928195853.40084-1-kholk11@gmail.com>
- <20200928195853.40084-3-kholk11@gmail.com>
+        id S1730976AbgI2Oov (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 10:44:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48582 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728198AbgI2Oov (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 10:44:51 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DD3862074B;
+        Tue, 29 Sep 2020 14:44:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601390690;
+        bh=KuUDPd07ZUCkGwOTQxUQXbDwoFA7723w2z2hG3+G5dE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mG0iIRKcG/3qHSx04Kyiweul3cr9HfSLJuUDWUUTspZlYmtugRaqomEltIKJhEAUV
+         ZtswAEqOg8qCq+CRsj5HQ4X11TyB7koAi3a1Oe+oq030qjKmW3d433/iK2QiOYAmnE
+         NB2W493ZjzbXdIZ10UnmlkU5wPbB1yEg4wk/BIdI=
+Date:   Tue, 29 Sep 2020 15:43:51 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc:     Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        "wuxu . wu" <wuxu.wu@huawei.com>, Feng Tang <feng.tang@intel.com>,
+        Rob Herring <robh+dt@kernel.org>, linux-spi@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 00/30] spi: dw: Add full Baikal-T1 SPI Controllers support
+Message-ID: <20200929144351.GH4799@sirena.org.uk>
+References: <20200920112914.26501-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="AzNpbZlgThVzWita"
 Content-Disposition: inline
-In-Reply-To: <20200928195853.40084-3-kholk11@gmail.com>
+In-Reply-To: <20200920112914.26501-1-Sergey.Semin@baikalelectronics.ru>
+X-Cookie: I left my WALLET in the BATHROOM!!
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 28 Sep 2020 21:58:53 +0200, kholk11@gmail.com wrote:
-> From: AngeloGioacchino Del Regno <kholk11@gmail.com>
-> 
-> Add the bindings for the Qualcomm SDM660-class NoC, valid for
-> SDM630, SDM636, SDM660 and SDA variants.
-> 
-> Signed-off-by: AngeloGioacchino Del Regno <kholk11@gmail.com>
-> ---
->  .../bindings/interconnect/qcom,sdm660.yaml    | 147 ++++++++++++++++++
->  1 file changed, 147 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/interconnect/qcom,sdm660.yaml
-> 
 
+--AzNpbZlgThVzWita
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-My bot found errors running 'make dt_binding_check' on your patch:
+On Sun, Sep 20, 2020 at 02:28:44PM +0300, Serge Semin wrote:
 
-Documentation/devicetree/bindings/interconnect/qcom,sdm660.example.dts:20:18: fatal error: dt-bindings/clock/qcom,mmcc-sdm660.h: No such file or directory
-   20 |         #include <dt-bindings/clock/qcom,mmcc-sdm660.h>
-      |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-compilation terminated.
-make[1]: *** [scripts/Makefile.lib:342: Documentation/devicetree/bindings/interconnect/qcom,sdm660.example.dt.yaml] Error 1
-make[1]: *** Waiting for unfinished jobs....
-make: *** [Makefile:1366: dt_binding_check] Error 2
+> First two patches are just cleanups to simplify the DW APB SSI device
+> initialization a bit. We suggest to discard the IRQ threshold macro as
+> unused and use a ternary operator to initialize the set_cs callback
+> instead of assigning-and-updating it.
 
+> Then we've discovered that the n_bytes field of the driver private data is
+> used by the DW APB SSI IRQ handler, which requires it to be initialized
 
-See https://patchwork.ozlabs.org/patch/1372879
+This is a *huge* patch series which is a bit unweildy to review
+(especially given the other 10+ patch series you sent at the same time),
+once you start getting over 10 patches it's time to pay attention to
+series length and the fact that you're outlining a bunch of tangentially
+related areas which could have been split out easily enough.  It is much
+better to send smaller sets of patches at once, or if you're sending a
+lot then to split them into smaller serieses.  This will tend to make
+the review more approachable which will in turn tend to make things go
+faster, people are much more likely to put off going through a huge
+series.
 
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure dt-schema is up to date:
+--AzNpbZlgThVzWita
+Content-Type: application/pgp-signature; name="signature.asc"
 
-pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
+-----BEGIN PGP SIGNATURE-----
 
-Please check and re-submit.
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl9zSCYACgkQJNaLcl1U
+h9CxCwf8CbZT+iN4nAUHqLiTecG9wg4ekQiosiG6okukMMyarbUv3HtPDCDGxSI1
+paDuBbmPJuzmTZ7mpmy/lyLadEYw4ZPssvOxKwxB6FdrUnr0cZ49RA16246Yml0R
+Mc7zoRnib5+CjaMF9PAZhLm9tIKj9nTmcGzya1UbqSrBjVh1Zbo7l0Px3vXVadxd
+2CqvUNNGVC29zXmVary9mv26696nbC/gixmvv8kjzI0PuY/0/PVkFnuqUxtPYfbf
+MRW6fQ+rX3mB5ymXU94SpuDP3pMF1JZpWlhlBlUNdAXUAm5aOu4GMdRezPcXTXq4
+VQUu9FKH8Flq7PMWXO0wRPHcc8X54A==
+=eyc/
+-----END PGP SIGNATURE-----
 
+--AzNpbZlgThVzWita--
