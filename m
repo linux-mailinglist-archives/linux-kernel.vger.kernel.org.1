@@ -2,107 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D00B27D834
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 22:31:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DFFA27D837
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 22:31:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729298AbgI2UbI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 16:31:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36474 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727740AbgI2UbI (ORCPT
+        id S1729063AbgI2Ub6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 16:31:58 -0400
+Received: from mail-ot1-f66.google.com ([209.85.210.66]:36337 "EHLO
+        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725372AbgI2Ub6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 16:31:08 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D456EC0613D0
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 13:31:06 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id kk9so3347046pjb.2
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 13:31:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=w6Gs5CgGrT7/dE/0i0Kz33QzSpxebvhL70Kc9W54Bfk=;
-        b=FgEC/9TjFwz3LPuu1b3e38wqyfYZXVCqBvGpZ+E6u8Kdp5LeC4QfJscyElLXVW4tfr
-         vRBfHkvctRKVaQL7QyBu8BrHU5iDWdwmJ8MaGj4PMgeSw2W1dshGhEBEvFtkHMk9TuHg
-         OwbSbd7mZGtr2aB+KZOl8Dyxb+aaZjO5Gzh90=
+        Tue, 29 Sep 2020 16:31:58 -0400
+Received: by mail-ot1-f66.google.com with SMTP id 60so5786461otw.3;
+        Tue, 29 Sep 2020 13:31:56 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=w6Gs5CgGrT7/dE/0i0Kz33QzSpxebvhL70Kc9W54Bfk=;
-        b=XNtH5Y9QVTsSULUhzoeC0XKOR7L7HUeKR5jCwdJZavkZxbh8jcUsBZFNKhwAYq9znQ
-         fsGFz3JKJqbbQHS27joGeoZ/lQ2vWFuQmZZ+GMJs5lfH8ha413h0XhEqcAvgoeR1iOyU
-         UyF7U1hMS2PJm+dV1/jtiu0D8w3CgOpX1O7Nsq7RSN1DX5C+7Jt6mT+0NakXoJCoOTdT
-         PNzUsQsLIRYPPy95BWXDI5r6dtgklJ3ogOw39jX3utDwv8tqnfZ6Nm6JQpABmAz3RwCu
-         +VtFFg2hz1wrDHSffLmEpwwvMxU+zlWc7qENnkohndTfrI/Tb9rxDLn3S7XcAUdC1Kjz
-         MMKQ==
-X-Gm-Message-State: AOAM530FiuCq3cmjbEa+AzMkFohfJervd9FiLpMo52R16Z3sumGtPOAi
-        Zuc4WNhxjcq4pPE93dBm3hR/f0RM+A1ccWxR
-X-Google-Smtp-Source: ABdhPJwmrwBwUiVGBgxlOcHDg1VpFJuJtHBMscZT15BqLh6qfbkVr+93YRjl0YskxIVEgWtawk4JCw==
-X-Received: by 2002:a17:90a:fb53:: with SMTP id iq19mr5465867pjb.122.1601411465785;
-        Tue, 29 Sep 2020 13:31:05 -0700 (PDT)
-Received: from evgreen-glaptop.cheshire.ch ([2601:646:c780:1404:a2ce:c8ff:fec4:54a3])
-        by smtp.gmail.com with ESMTPSA id j9sm5997167pfc.175.2020.09.29.13.31.04
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
-        Tue, 29 Sep 2020 13:31:05 -0700 (PDT)
-From:   Evan Green <evgreen@chromium.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Markus Elfring <elfring@users.sourceforge.net>,
-        Evan Green <evgreen@chromium.org>,
-        Andy Gross <agross@kernel.org>, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [RESEND PATCH] soc: qcom: smp2p: Safely acquire spinlock without IRQs
-Date:   Tue, 29 Sep 2020 13:30:57 -0700
-Message-Id: <20200929133040.RESEND.1.Ideabf6dcdfc577cf39ce3d95b0e4aa1ac8b38f0c@changeid>
-X-Mailer: git-send-email 2.26.2
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=9ZpDCXi33xYMdZ4fkDsToUqUQjwLCzkdHP38hkkOuS8=;
+        b=nqhqO7YKx+BsdPW72qYunHCu0z4QijfLezVjRFW5QQ42rwvjNQe5wN+dtwN6RX0ykg
+         n/yqzIHTyjPcxTzud7hmD8gyRucUC3/hIW3fGeVMikr1phQyzWMt9kmtCwGFiOoaNInJ
+         tvye8J6vw58yAzrXmq6ewEVmrOurDQq2hzYi1iaMiywWO6SCyx1Oe5pVR0r0aGXk3yuZ
+         7G1R8my5PdasSo1njoJDtN/AP5YqZsoUWQmszp/wSN2ZUkQhj/AP4c1fcNazOjH+I88+
+         9F6N2fdcVU9y8fMMvAd6FZMLeYVULJC6kn6BMkp4OGs6zzMM3zapS3yiXUT5hRVMb6lR
+         HsLw==
+X-Gm-Message-State: AOAM532VJo96xcvbdqdyVi6H+M7Hf54fCBapKp7OE6dOT9RLr2kGaHpK
+        SFCuf42Kzuz36xVeRkEpzQ==
+X-Google-Smtp-Source: ABdhPJw3T9HsrVFXDzPRfCUqAvg9r56p9ZIQCTrUujFEwZ7NWfdVAZkC05VlQ0VMNHZZSbd3C0kjbg==
+X-Received: by 2002:a05:6830:1506:: with SMTP id k6mr3827634otp.142.1601411515923;
+        Tue, 29 Sep 2020 13:31:55 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id j18sm1249481otr.12.2020.09.29.13.31.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Sep 2020 13:31:55 -0700 (PDT)
+Received: (nullmailer pid 1118419 invoked by uid 1000);
+        Tue, 29 Sep 2020 20:31:54 -0000
+Date:   Tue, 29 Sep 2020 15:31:54 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Sagar Kadam <sagar.kadam@sifive.com>
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, yash.shah@sifive.com,
+        robh+dt@kernel.org, aou@eecs.berkeley.edu,
+        paul.walmsley@sifive.com, palmer@dabbelt.com
+Subject: Re: [PATCH v4 1/1] dt-bindings: riscv: sifive-l2-cache: convert
+ bindings to json-schema
+Message-ID: <20200929203154.GA1118332@bogus>
+References: <1601381896-29716-1-git-send-email-sagar.kadam@sifive.com>
+ <1601381896-29716-2-git-send-email-sagar.kadam@sifive.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1601381896-29716-2-git-send-email-sagar.kadam@sifive.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-smp2p_update_bits() should disable interrupts when it acquires its
-spinlock. This is important because without the _irqsave, a priority
-inversion can occur.
+On Tue, 29 Sep 2020 17:48:16 +0530, Sagar Kadam wrote:
+> Convert the device tree bindings for the SiFive's FU540-C000 SoC's L2 Cache
+> controller to YAML format.
+> 
+> Signed-off-by: Sagar Kadam <sagar.kadam@sifive.com>
+> ---
+>  .../devicetree/bindings/riscv/sifive-l2-cache.txt  | 51 -----------
+>  .../devicetree/bindings/riscv/sifive-l2-cache.yaml | 98 ++++++++++++++++++++++
+>  2 files changed, 98 insertions(+), 51 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/riscv/sifive-l2-cache.txt
+>  create mode 100644 Documentation/devicetree/bindings/riscv/sifive-l2-cache.yaml
+> 
 
-This function is called both with interrupts enabled in
-qcom_q6v5_request_stop(), and with interrupts disabled in
-ipa_smp2p_panic_notifier(). IRQ handling of spinlocks should be
-consistent to avoid the panic notifier deadlocking because it's
-sitting on the thread that's already got the lock via _request_stop().
-
-Found via lockdep.
-
-Fixes: 50e99641413e7 ("soc: qcom: smp2p: Qualcomm Shared Memory Point to Point")
-Signed-off-by: Evan Green <evgreen@chromium.org>
----
-
- drivers/soc/qcom/smp2p.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/soc/qcom/smp2p.c b/drivers/soc/qcom/smp2p.c
-index 07183d731d747..a9709aae54abb 100644
---- a/drivers/soc/qcom/smp2p.c
-+++ b/drivers/soc/qcom/smp2p.c
-@@ -318,15 +318,16 @@ static int qcom_smp2p_inbound_entry(struct qcom_smp2p *smp2p,
- static int smp2p_update_bits(void *data, u32 mask, u32 value)
- {
- 	struct smp2p_entry *entry = data;
-+	unsigned long flags;
- 	u32 orig;
- 	u32 val;
- 
--	spin_lock(&entry->lock);
-+	spin_lock_irqsave(&entry->lock, flags);
- 	val = orig = readl(entry->value);
- 	val &= ~mask;
- 	val |= value;
- 	writel(val, entry->value);
--	spin_unlock(&entry->lock);
-+	spin_unlock_irqrestore(&entry->lock, flags);
- 
- 	if (val != orig)
- 		qcom_smp2p_kick(entry->smp2p);
--- 
-2.26.2
-
+Applied, thanks!
