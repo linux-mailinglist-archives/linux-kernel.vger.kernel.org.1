@@ -2,179 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB21227CFAD
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 15:44:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9005627CFAF
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 15:44:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728472AbgI2NoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 09:44:09 -0400
-Received: from mga04.intel.com ([192.55.52.120]:33791 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728487AbgI2NoI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 09:44:08 -0400
-IronPort-SDR: 8i6q3Rx9Nn+y9wO0y2NlGzNdATKyqHU7r81AjQFjWO7DibKuVbQF7f9cK0jMcfPRpZQ0bLSNeV
- nAdOAXGxdXTg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9758"; a="159568250"
-X-IronPort-AV: E=Sophos;i="5.77,318,1596524400"; 
-   d="scan'208";a="159568250"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2020 06:43:45 -0700
-IronPort-SDR: mkrRdUkcaw4CBVY3WmZ8Q3fjAXelOgqhzRckxdGpkkwshFJp7ZAVnzYvC8+Ia9w+n3zf6e28+0
- wGMJLDEaVoPg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,318,1596524400"; 
-   d="scan'208";a="294254987"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga008.fm.intel.com with ESMTP; 29 Sep 2020 06:43:43 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id D6A13327; Tue, 29 Sep 2020 16:43:42 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Cezary Rojewski <cezary.rojewski@intel.com>,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v2] list: Add a macro to test if entry is pointing to the head
-Date:   Tue, 29 Sep 2020 16:43:42 +0300
-Message-Id: <20200929134342.51489-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.28.0
+        id S1729985AbgI2Nom (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 09:44:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58270 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728346AbgI2Nom (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 09:44:42 -0400
+Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C797C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 06:44:40 -0700 (PDT)
+Received: by mail-vs1-xe43.google.com with SMTP id x203so2946148vsc.11
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 06:44:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Cy4qcXyjvg/+Dx3IJ/YAv85ZXWLFUEJZrSSjlCMTA60=;
+        b=ZO2N0dQk5xyyp+tAn4+UTwHk/CwZNYcujPqNrRk7noBZpSnWF6H4kZ1feRkc+4VOnR
+         279D85yv3hvSlQ+K6++wsRncZ0lcKt/qR8F4BRGYJd80jv6/N5ORRHb1nkmetqhWg6iK
+         YooVIqGkeGm0OFHkyz0TCRsHV6nirHFzQahEEKjV0gV/bfHojgLKQDXe/kMloAVpB9sh
+         R4pAekPrj25OHCsZhkrVeg5yer6W8WnCMc1D1KqITzLSygLi7dH7F+RJL2XwnEj7UOHW
+         YtDdhsvQggTDRuvfYhCgME0EH/nqdtZlm3PBby+Q2oPQMtv/r6Ks9ysFT0dMB21VTw3q
+         4diw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Cy4qcXyjvg/+Dx3IJ/YAv85ZXWLFUEJZrSSjlCMTA60=;
+        b=HdwvIKszW7d2qRDo1xPlIBF7bwFVAmqRRrOD+j61xk28V30BBtP/fiZ9PRn6DA4GeP
+         3sCpMUhV5fXdoXJ8DBWhi4mVq85kbtHnEZCyDdnX67xnnpUrpZyhNaX1IP26Al4sdKzs
+         cvDPdt6D1RngLll5on/l78QrIEJjYttRSgq5K2Eyz2MzOJboIIjONfqtOPiQNoLYVtXj
+         kH1iaATpI+UR2MomfU+LFp+3qiKBtvgjg3o4MOmgc9hJM2BLhMBslyc4YZsTLJeZ3ZGi
+         sS0L2Lq1qmZNRrGedkpiN4QFAst5YS6QLK5b5FCVBd4LBazPARX/5y2Hdjpwlbcp9n/K
+         B1bw==
+X-Gm-Message-State: AOAM5329Mhz87bS3dWt7+dwpw7nub1LrYjC2HG7qRIqF4zT6nPqw+602
+        QUUy3YZe4eUqaRyUzTwZstcbZl6VxHnKMsK0DWsDXajHJNVw2jhH
+X-Google-Smtp-Source: ABdhPJznuae83ClNpbBMBoFUiCv/sta2s5ycrw5al0myMnOJJZ+IPm3k7VveReCAeDTJIWFvQB3gWXuW8MFGTsdvl0Y=
+X-Received: by 2002:a67:bd12:: with SMTP id y18mr2883840vsq.45.1601387079632;
+ Tue, 29 Sep 2020 06:44:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200929105946.978650816@linuxfoundation.org>
+In-Reply-To: <20200929105946.978650816@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 29 Sep 2020 19:14:28 +0530
+Message-ID: <CA+G9fYsMyseOo3ntS_7o4qibCHEPGr0w5AQYweXjjBTyJN0DYA@mail.gmail.com>
+Subject: Re: [PATCH 4.19 000/245] 4.19.149-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>,
+        linux- stable <stable@vger.kernel.org>, pavel@denx.de,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a macro to test if entry is pointing to the head of the list
-which is useful in cases like:
+On Tue, 29 Sep 2020 at 16:58, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.19.149 release.
+> There are 245 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Thu, 01 Oct 2020 10:59:03 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.149-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-  list_for_each_entry(pos, &head, member) {
-    if (cond)
-      break;
-  }
-  if (list_entry_is_head(pos, &head, member))
-    return -ERRNO;
+<trim>
 
-that allows to avoid additional variable to be added to track if loop
-has not been stopped in the middle.
+>
+> Stephane Eranian <eranian@google.com>
+>     perf stat: Force error in fallback on :k events
 
-While here, convert list_for_each_entry*() family of macros to use a new one.
+perf failed on stable rc branch 4.19 on all devices.
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
-v2: converted users inside list.h, dropped ambiguous description
- include/linux/list.h | 29 +++++++++++++++++++----------
- 1 file changed, 19 insertions(+), 10 deletions(-)
+Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
 
-diff --git a/include/linux/list.h b/include/linux/list.h
-index 796975c3c35c..89bdc92e75c3 100644
---- a/include/linux/list.h
-+++ b/include/linux/list.h
-@@ -609,6 +609,15 @@ static inline void list_splice_tail_init(struct list_head *list,
- 	     pos != (head); \
- 	     pos = n, n = pos->prev)
- 
-+/**
-+ * list_entry_is_head - test if the entry points to the head of the list
-+ * @pos:	the type * to cursor
-+ * @head:	the head for your list.
-+ * @member:	the name of the list_head within the struct.
-+ */
-+#define list_entry_is_head(pos, head, member)				\
-+	(&pos->member == (head))
-+
- /**
-  * list_for_each_entry	-	iterate over list of given type
-  * @pos:	the type * to use as a loop cursor.
-@@ -617,7 +626,7 @@ static inline void list_splice_tail_init(struct list_head *list,
-  */
- #define list_for_each_entry(pos, head, member)				\
- 	for (pos = list_first_entry(head, typeof(*pos), member);	\
--	     &pos->member != (head);					\
-+	     !list_entry_is_head(pos, head, member);			\
- 	     pos = list_next_entry(pos, member))
- 
- /**
-@@ -628,7 +637,7 @@ static inline void list_splice_tail_init(struct list_head *list,
-  */
- #define list_for_each_entry_reverse(pos, head, member)			\
- 	for (pos = list_last_entry(head, typeof(*pos), member);		\
--	     &pos->member != (head); 					\
-+	     !list_entry_is_head(pos, head, member); 			\
- 	     pos = list_prev_entry(pos, member))
- 
- /**
-@@ -653,7 +662,7 @@ static inline void list_splice_tail_init(struct list_head *list,
-  */
- #define list_for_each_entry_continue(pos, head, member) 		\
- 	for (pos = list_next_entry(pos, member);			\
--	     &pos->member != (head);					\
-+	     !list_entry_is_head(pos, head, member);			\
- 	     pos = list_next_entry(pos, member))
- 
- /**
-@@ -667,7 +676,7 @@ static inline void list_splice_tail_init(struct list_head *list,
-  */
- #define list_for_each_entry_continue_reverse(pos, head, member)		\
- 	for (pos = list_prev_entry(pos, member);			\
--	     &pos->member != (head);					\
-+	     !list_entry_is_head(pos, head, member);			\
- 	     pos = list_prev_entry(pos, member))
- 
- /**
-@@ -679,7 +688,7 @@ static inline void list_splice_tail_init(struct list_head *list,
-  * Iterate over list of given type, continuing from current position.
-  */
- #define list_for_each_entry_from(pos, head, member) 			\
--	for (; &pos->member != (head);					\
-+	for (; !list_entry_is_head(pos, head, member);			\
- 	     pos = list_next_entry(pos, member))
- 
- /**
-@@ -692,7 +701,7 @@ static inline void list_splice_tail_init(struct list_head *list,
-  * Iterate backwards over list of given type, continuing from current position.
-  */
- #define list_for_each_entry_from_reverse(pos, head, member)		\
--	for (; &pos->member != (head);					\
-+	for (; !list_entry_is_head(pos, head, member);			\
- 	     pos = list_prev_entry(pos, member))
- 
- /**
-@@ -705,7 +714,7 @@ static inline void list_splice_tail_init(struct list_head *list,
- #define list_for_each_entry_safe(pos, n, head, member)			\
- 	for (pos = list_first_entry(head, typeof(*pos), member),	\
- 		n = list_next_entry(pos, member);			\
--	     &pos->member != (head); 					\
-+	     !list_entry_is_head(pos, head, member); 			\
- 	     pos = n, n = list_next_entry(n, member))
- 
- /**
-@@ -721,7 +730,7 @@ static inline void list_splice_tail_init(struct list_head *list,
- #define list_for_each_entry_safe_continue(pos, n, head, member) 		\
- 	for (pos = list_next_entry(pos, member), 				\
- 		n = list_next_entry(pos, member);				\
--	     &pos->member != (head);						\
-+	     !list_entry_is_head(pos, head, member);				\
- 	     pos = n, n = list_next_entry(n, member))
- 
- /**
-@@ -736,7 +745,7 @@ static inline void list_splice_tail_init(struct list_head *list,
-  */
- #define list_for_each_entry_safe_from(pos, n, head, member) 			\
- 	for (n = list_next_entry(pos, member);					\
--	     &pos->member != (head);						\
-+	     !list_entry_is_head(pos, head, member);				\
- 	     pos = n, n = list_next_entry(n, member))
- 
- /**
-@@ -752,7 +761,7 @@ static inline void list_splice_tail_init(struct list_head *list,
- #define list_for_each_entry_safe_reverse(pos, n, head, member)		\
- 	for (pos = list_last_entry(head, typeof(*pos), member),		\
- 		n = list_prev_entry(pos, member);			\
--	     &pos->member != (head); 					\
-+	     !list_entry_is_head(pos, head, member); 			\
- 	     pos = n, n = list_prev_entry(n, member))
- 
- /**
+In file included from util/evlist.h:15:0,
+                 from util/evsel.c:30:
+util/evsel.c: In function 'perf_evsel__exit':
+util/util.h:25:28: warning: passing argument 1 of 'free' discards
+'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
+ #define zfree(ptr) ({ free(*ptr); *ptr = NULL; })
+                            ^
+util/evsel.c:1293:2: note: in expansion of macro 'zfree'
+  zfree(&evsel->pmu_name);
+  ^~~~~
+In file included from
+/srv/oe/build/tmp-lkft-glibc/work/intel_corei7_64-linaro-linux/perf/1.0-r9/perf-1.0/tools/perf/arch/x86/include/perf_regs.h:5:0,
+                 from util/perf_regs.h:27,
+                 from util/event.h:11,
+                 from util/callchain.h:8,
+                 from util/evsel.c:26:
+perf/1.0-r9/recipe-sysroot/usr/include/stdlib.h:563:13: note: expected
+'void *' but argument is of type 'const char *'
+ extern void free (void *__ptr) __THROW;
+             ^~~~
+util/evsel.c: In function 'perf_evsel__fallback':
+util/evsel.c:2802:14: error: 'struct perf_evsel' has no member named
+'core'; did you mean 'node'?
+   if (evsel->core.attr.exclude_user)
+              ^~~~
+              node
+
+
+
 -- 
-2.28.0
-
+Linaro LKFT
+https://lkft.linaro.org
