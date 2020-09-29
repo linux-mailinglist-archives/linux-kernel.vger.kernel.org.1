@@ -2,101 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CE4A27D1A2
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 16:43:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE08B27D1A7
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 16:43:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729775AbgI2OnL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 10:43:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48288 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728630AbgI2OnL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 10:43:11 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8525B2074F;
-        Tue, 29 Sep 2020 14:43:09 +0000 (UTC)
-Date:   Tue, 29 Sep 2020 10:43:07 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     quanyang.wang@windriver.com, linux-kernel@vger.kernel.org,
+        id S1731117AbgI2On1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 10:43:27 -0400
+Received: from mail-dm6nam10on2056.outbound.protection.outlook.com ([40.107.93.56]:7265
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728630AbgI2OnY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 10:43:24 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QQ5aWf1snPHOO9ZWFgRRDVLhKurPqIKe2zxtbRWLgCI/skhYL+hGBFtzPtBYU0GGgBq4HovbLZJqQP2Atv4xt5rxb0pciftu8zmIzn2VfLP2vVkjfEAA0W5UpzGYL4N3FTWQ3tCFhX9X4Jg7XkiVGy7bUXPI+gJifMU6t+qx/E6sKOIJd4WzV5pj2kmAnjjAnBUUSjU4ZKG5aDdPjrD/jrv7olN9d4MOKFPRri/4CoxKiRgMwEzrvhEqp1M5a9cpIYNXREjP1yU2q1J+YLPrz+QOx6gQ01HhB9fLLX/PItMmUvydB1nb8rap6MJUoiNCqeo/hWxMuBtFYHiBTcn6zg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5WVS/ko1J9y03y6dj5s3FxQeekMEceg0KZmh5c6jxwA=;
+ b=D3BtkrPkQ7r7avBlHGiuyLXEb2piZuiMBeAcsUORwTgO4zwjE0ov4QfSss9fomGARG24Gorufgz1Sy6xoE2t8aM2r8yo6ItsziUROsD85HeZ83r3N4VAKqv+0oDL70LEtE4fWt8OsuooBYm8Salah5/3L5Vch+hiE1vabstwsaid0DxcvpJgaF1tbJgOzvvi1gaIKRwfp1q7PjmThaVha2TBQTT+dkr8Kj5PwLkTiuOAtYit7FO/EfedR9lvTu/TFSYqxmhhtoeNezdSR/RdJV+T9yaQp3V5urQ321AZ5XAGi//kNQsWqOzvvKj57IzcuYUxZqZ9BTNOhO6TQ+o7wA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5WVS/ko1J9y03y6dj5s3FxQeekMEceg0KZmh5c6jxwA=;
+ b=ouSmD1kZgPlwXpxEYraOjBJO+6E/g0+MQNtED/rmTIP5jJCOpi1d1APJeFo17AqKOmqsD4jA7j2m+452w2B6EievUZyIyZxTc/72Nmx6oD/bp9p8J2Aq1k5rZCt9PwAsGdNp2GwRA9+KbfO0m19bxBuXZchtjdqUh1J/ybUWxzQ=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from BN8PR12MB2946.namprd12.prod.outlook.com (2603:10b6:408:9d::13)
+ by BN6PR12MB1570.namprd12.prod.outlook.com (2603:10b6:405:5::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.32; Tue, 29 Sep
+ 2020 14:43:22 +0000
+Received: from BN8PR12MB2946.namprd12.prod.outlook.com
+ ([fe80::3054:612a:b2d7:f46d]) by BN8PR12MB2946.namprd12.prod.outlook.com
+ ([fe80::3054:612a:b2d7:f46d%6]) with mapi id 15.20.3412.029; Tue, 29 Sep 2020
+ 14:43:21 +0000
+Subject: Re: [PATCH] rcu,ftrace: Fix ftrace recursion
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Paul McKenney <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Leo Yan <leo.yan@linaro.org>, Will Deacon <will@kernel.org>,
-        a.darwish@linutronix.de,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Randy Dunlap <rdunlap@infradead.org>, ben.dooks@codethink.co.uk
-Subject: Re: [PATCH] time/sched_clock: mark sched_clock_read_begin as
- notrace
-Message-ID: <20200929104307.19654426@gandalf.local.home>
-In-Reply-To: <20200929071333.GK2628@hirez.programming.kicks-ass.net>
-References: <20200928104952.26892-1-quanyang.wang@windriver.com>
-        <20200928105859.GF2628@hirez.programming.kicks-ass.net>
-        <20200928173331.3ea3cfb7@oasis.local.home>
-        <20200929071333.GK2628@hirez.programming.kicks-ass.net>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        Ingo Molnar <mingo@kernel.org>
+References: <20200929113340.GN2628@hirez.programming.kicks-ass.net>
+From:   Kim Phillips <kim.phillips@amd.com>
+Message-ID: <459f3c42-4e18-0a71-fd84-122342bdb4fe@amd.com>
+Date:   Tue, 29 Sep 2020 09:43:18 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <20200929113340.GN2628@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [165.204.77.11]
+X-ClientProxiedBy: SN2PR01CA0068.prod.exchangelabs.com (2603:10b6:800::36) To
+ BN8PR12MB2946.namprd12.prod.outlook.com (2603:10b6:408:9d::13)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.252.17.193] (165.204.77.11) by SN2PR01CA0068.prod.exchangelabs.com (2603:10b6:800::36) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.20 via Frontend Transport; Tue, 29 Sep 2020 14:43:20 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: f8eaef3e-ffd8-4f11-aeea-08d864860331
+X-MS-TrafficTypeDiagnostic: BN6PR12MB1570:
+X-Microsoft-Antispam-PRVS: <BN6PR12MB15701F85CCC5F6D8E4F82E8A87320@BN6PR12MB1570.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:147;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: zkLIH5u8MK8OSI5MtXuSGY6eC93hD6dbk+J63vJJ0X2sovlXWJtXdetdoJNUlAyCPS2lc8lqIfAwJzP9mfXOEuYTV17Dd3T0LUpe+cnk9wYty4Ort4WsAYrqp1Gpwx++UcEvzOCmVR1GtFECEptCj0s+gHUAARQis2w9hHWi8CkQrWQlJihhvSPTpFKBWlkHNj2VJ6hgUyAuGhJdyKPWrcJAyM00sARcz7LIKcdtUjwusUT5rMPsJj37Q/BVQpQrNCPTmSVZyZ5q5R1MP3eeFtdeMInARmxDOJn0tGM1XhUIVIfgOeetHoItIyxCCWK+/yPlb9+h8s7kGC+GhGVQJdExRSJnnXJOmqDS+jTvSFAwrIAiOks+RJhSWMnDgCfr
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB2946.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(136003)(376002)(39860400002)(346002)(366004)(6486002)(36756003)(8936002)(2906002)(53546011)(5660300002)(52116002)(31696002)(186003)(16526019)(86362001)(4744005)(31686004)(478600001)(26005)(4326008)(2616005)(8676002)(66556008)(66476007)(66946007)(110136005)(316002)(44832011)(956004)(16576012)(54906003)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: /fBOuhUDzky0lGwxNOPQVidJwjB0XBfxJntSCx3NHHakOf5T+gr5sslpCmRuxXw4URKPj9eHxY5V2al/pNDBB3WZqW9SKX4otXqdPupkmt318TyIDz9mSgU1lk1Pe7a39Q82qZXOni4PFg7PLKTw+DJnuOvFl/OXzP6ZuhiljZ9ZO1nPDvyijDVAzXe+iUsbj9ebSETuvSEX8s+zRXk7krVncSp6gouvvC3k+RViZU6UqTjSGrrNQ4Mohk+/CPm7uWEsfc9Of2YT/ZFXhJDFOUwSCpra+lIAoPlBcfu25BTM/6sFom5bctsLvfe9r4Cca0V73GNm7aJOlRkSOp9h4yzqc2cLmCuTuuul4InPhKdSyKwUe21gFAD9Ia4H+Mh0g+lqpOkzkroXSdN8+VFzMimzIXyqr5zQYGPszsFiwqZ38UIhNbAQ2wjBBaSNCHFuFcrqX8RzbhoPwfS+2PxQ7etWH6EUWk/3swlc/csRuFE3FaauPN3XCBROx66UEiISW+5tTeufjOv0sabp8ASTNfyY8lFvr0VGrn2SwHiNxZvx/XaJgbOtal+epkwu44Fb9NWX+VBQNHyd0ygt5qiO5KyQ4z/yuCay5Kvs3/fVPzrUogpX8cMvLb9yhHmhrGjPwIDyzGK6HgcdZrO0YfBiJA==
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f8eaef3e-ffd8-4f11-aeea-08d864860331
+X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB2946.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Sep 2020 14:43:21.7896
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: emj2L25QtfY2Q+xd4e0L3tqgl1lti8IdsDXMp3bqkTvc06N1tL+c78fdAgC6KmdoF3jqoGKKSoU92zLEOqRXlw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR12MB1570
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 29 Sep 2020 09:13:33 +0200
-Peter Zijlstra <peterz@infradead.org> wrote:
-
-> On Mon, Sep 28, 2020 at 05:33:31PM -0400, Steven Rostedt wrote:
-> > On Mon, 28 Sep 2020 12:58:59 +0200
-> > Peter Zijlstra <peterz@infradead.org> wrote:
-> >   
-> > > > -struct clock_read_data *sched_clock_read_begin(unsigned int *seq)
-> > > > +notrace struct clock_read_data *sched_clock_read_begin(unsigned int *seq)
-> > > >  {
-> > > >  	*seq = raw_read_seqcount_latch(&cd.seq);
-> > > >  	return cd.read_data + (*seq & 1);    
-> > > 
-> > > At the very least sched_clock_read_retry() should also be marked such.
-> > > 
-> > > But Steve, how come x86 works? Our sched_clock() doesn't have notrace on
-> > > at all.  
-> > 
-> > It's because of that magic in the Makefile that you love so much ;-)
-> > 
-> > CFLAGS_REMOVE_tsc.o = -pg  
+On 9/29/20 6:33 AM, Peter Zijlstra wrote:
 > 
-> ARGH!!, I really should write a script to fix up that mess :/
+> Kim reported that perf-ftrace made his box unhappy. It turns out that
+> commit:
+> 
+>   ff5c4f5cad33 ("rcu/tree: Mark the idle relevant functions noinstr")
+> 
+> removed one too many notrace. Probably due to there not being a helpful
+> comment.
+> 
+> Reinstate the notrace and add a comment to avoid loosing it again.
+> 
+> Fixes: ff5c4f5cad33 ("rcu/tree: Mark the idle relevant functions noinstr")
+> Reported-by: Kim Phillips <kim.phillips@amd.com>
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> ---
 
-Please don't.
+Tested-by: Kim Phillips <kim.phillips@amd.com>
 
-I did this because these files contain lots of functions, that if traced
-can cause function tracing to reboot without any information, and as you
-have recently found, they are very hard to find when they do happen.
+Thanks,
 
-I much rather blacklist an entire file, than to spend time debugging what
-function caused the system to reboot.
-
-I'd be OK with both. That is, add "notrace" to all the functions in the
-file that isn't traced, just for documentation purposes. Perhaps call it
-something else:
-
-  file_notrace  ?
-
-and have a comment about it being "this is just to let you know that the
-functions are not traced because of the file".
-
-And this "file_notrace" could even be:
-
-/*
- * Denote functions that are not traced because the make file removes the
- * tracing features via a CONFIG_REMOVE_xxx.o = CC_FLAGS_FTRACE or similar.
- * This is for documentation purposes only, to remind people why a function
- * is not being traced.
- */
-#define file_notrace /* Not traced because the file is blacklisted */
-
-We could also add:
-
-#define dir_notrace /* Not traced because the entire directory is blacklisted */
-
--- Steve
-
+Kim
