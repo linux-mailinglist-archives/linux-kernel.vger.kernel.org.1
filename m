@@ -2,106 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 749F327DBE7
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 00:22:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91E0A27DC10
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 00:31:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729769AbgI2WWS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 18:22:18 -0400
-Received: from smtprelay0147.hostedemail.com ([216.40.44.147]:40100 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729143AbgI2WWC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 18:22:02 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay02.hostedemail.com (Postfix) with ESMTP id A21001730861;
-        Tue, 29 Sep 2020 22:22:00 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:967:973:982:988:989:1260:1263:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1712:1730:1747:1777:1792:2393:2525:2553:2560:2563:2682:2685:2828:2859:2900:2904:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3354:3622:3865:3867:3868:3870:3871:3872:3873:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4250:4321:5007:7653:7903:9025:9040:9388:10004:10400:10848:11026:11232:11473:11657:11658:11914:12043:12297:12438:12555:12740:12895:13095:13255:13439:13894:14096:14097:14181:14659:14721:21080:21433:21451:21627:30012:30054:30075:30083:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: year47_3509c192718d
-X-Filterd-Recvd-Size: 3389
-Received: from XPS-9350 (047-006-102-041.res.spectrum.com [47.6.102.41])
-        (Authenticated sender: joe@perches.com)
-        by omf05.hostedemail.com (Postfix) with ESMTPA;
-        Tue, 29 Sep 2020 22:21:58 +0000 (UTC)
-Message-ID: <3b7457e4efd04865115152636ca65b5dc9cfe0e4.camel@perches.com>
-Subject: Re: [PATCH 10/20] media: lmedm04: use semicolons rather than commas
- to separate statements
-From:   Joe Perches <joe@perches.com>
-To:     Julia Lawall <julia.lawall@inria.fr>
-Cc:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Malcolm Priestley <tvboxspy@gmail.com>,
-        Valdis =?UTF-8?Q?Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        kernel-janitors@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Tue, 29 Sep 2020 15:21:57 -0700
-In-Reply-To: <alpine.DEB.2.22.394.2009291843560.2808@hadrien>
-References: <1601385283-26144-1-git-send-email-Julia.Lawall@inria.fr>
-         <1601385283-26144-11-git-send-email-Julia.Lawall@inria.fr>
-         <8d73748e-be82-4c30-4550-b5f4eecb3055@wanadoo.fr>
-         <c79b36c12c978d38f3ad89b1c659871a@perches.com>
-         <alpine.DEB.2.22.394.2009291843560.2808@hadrien>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        id S1728540AbgI2WbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 18:31:24 -0400
+Received: from ozlabs.org ([203.11.71.1]:53597 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728124AbgI2WbY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 18:31:24 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C1Dd50D5Tz9sSC;
+        Wed, 30 Sep 2020 08:31:21 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1601418681;
+        bh=W3Lg61ZUw1qk3MQEiHZDuvayLSkktmrH1/ZJeHsKV7Y=;
+        h=Date:From:To:Cc:Subject:From;
+        b=YSLnM2rNMjoOa+ttzwYf2aNDQnj+/IBUoYhl72snbC79HP4BDjAyVzhRnDRbmv8cm
+         ZDc4HTv8oQOYNn/Vj6SKbEsV81V7vqSW9RWKzao0mJH2s+ondBUw+MM2WC0vuA3BK7
+         akr8jnszyL83SyStlDZypM1jWcfAa7VBOgvR0G5+o1xI8q6g4v/HuHrG1jmakJEgQO
+         DXfYAXQR8zqW39QS+j3yPhu1xLeOCZgCio0hlADpgAqP/kFqFc5C3VN43hw3RZdbdD
+         iZCLKBlkQWAfK5Rp9O5bZ4PVndfvMaLlto7IaArgZlzEpFA4RWpUoyzxKW0q4aRu5Z
+         ba4NwXKHD4lxg==
+Date:   Wed, 30 Sep 2020 08:31:20 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Steve French <smfrench@gmail.com>,
+        CIFS <linux-cifs@vger.kernel.org>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: linux-next: Signed-off-by missing for commit in the cifs tree
+Message-ID: <20200930083120.6b969c8c@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/+zrm8fnmFoK4Q=bf7T5Jo4D";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-09-29 at 18:44 +0200, Julia Lawall wrote:
-> On Tue, 29 Sep 2020, Joe Perches wrote:
-> > On 2020-09-29 09:00, Christophe JAILLET wrote:
-> > > Le 29/09/2020 à 15:14, Julia Lawall a écrit :
-> > > > Replace commas with semicolons.  Commas introduce unnecessary
-> > > > variability in the code structure and are hard to see.  What is done
-> > > > is essentially described by the following Coccinelle semantic patch
-> > > > (http://coccinelle.lip6.fr/):
-> > > > 
-> > > > // <smpl>
-> > > > @@ expression e1,e2; @@
-> > > > e1
-> > > > -,
-> > > > +;
-> > > > e2
-> > > > ... when any
-> > > > // </smpl>
-> > > > 
-> > > > Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
-> > > > 
-> > > > ---
-> > > >   drivers/media/usb/dvb-usb-v2/lmedm04.c |    2 +-
-> > > >   1 file changed, 1 insertion(+), 1 deletion(-)
-> > > > 
-> > > > diff --git a/drivers/media/usb/dvb-usb-v2/lmedm04.c
-> > > > b/drivers/media/usb/dvb-usb-v2/lmedm04.c
-> > > > index 5a7a9522d46d..9ddda8d68ee0 100644
-> > > > --- a/drivers/media/usb/dvb-usb-v2/lmedm04.c
-> > > > +++ b/drivers/media/usb/dvb-usb-v2/lmedm04.c
-> > > > @@ -391,7 +391,7 @@ static int lme2510_int_read(struct dvb_usb_adapter
-> > > > *adap)
-> > > >   	ep = usb_pipe_endpoint(d->udev, lme_int->lme_urb->pipe);
-> > > >     	if (usb_endpoint_type(&ep->desc) == USB_ENDPOINT_XFER_BULK)
-> > > > -		lme_int->lme_urb->pipe = usb_rcvbulkpipe(d->udev, 0xa),
-> > > > +		lme_int->lme_urb->pipe = usb_rcvbulkpipe(d->udev, 0xa);
-> > > >     	usb_submit_urb(lme_int->lme_urb, GFP_ATOMIC);
-> > > >   	info("INT Interrupt Service Started");
-> > > > 
-> > > > 
-> > > Ouch!
-> > > 
-> > > This one looks like a real issue!
-> > 
-> > Julia?  Did you do this one by hand?  This actually changes logic which I did
-> > not expectthe cocci script to do.
-> 
-> No, I didn't do it by hand.  Did you already send this one?  Maybe I
-> should resend it with a more informative log message.
+--Sig_/+zrm8fnmFoK4Q=bf7T5Jo4D
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-I did not send a patch for this one.
+Hi all,
 
-Yes, I think you should say you are fixing
-a likely defect here.
+Commit
 
+  87505cefd88d ("Convert trailing spaces and periods in path components")
 
+is missing a Signed-off-by from its committer.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/+zrm8fnmFoK4Q=bf7T5Jo4D
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9ztbgACgkQAVBC80lX
+0Gyy3gf/bnrB4ISrmgHTaY+2jZVc51owFvlTe99kQQcmxYyCniN9DNZ+bZZ0/w6W
+ec4K+ta51bFc1l2cL+C3jbv6ZJfP7qh6UiDrvr7K+Xown7q9cd0YwhUXiDo/hXa4
+4zTB8AJIVtliZZhA5jJrtmkQ72HgXXqXKYcXqDEe6T8R2Iv7IkY4VQYRPetqerpR
+VwqQgLik+qCVyczJi20NMhBe1W8boOuFF9oV+TpZIZtJOEws6lWtdyEcqY9yWYLx
+Yne2EIzgmEewvVSe+KcfU+wHLNetUGnf8uhLQjPfnRNQLEdSHxn9fmb2c2pWbkS1
+qY5WQkoT4+m9SPwiTVOKauhY9oIsyw==
+=NgTT
+-----END PGP SIGNATURE-----
+
+--Sig_/+zrm8fnmFoK4Q=bf7T5Jo4D--
