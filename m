@@ -2,87 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05F0327BCB4
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 08:01:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E25D27BCC8
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 08:08:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727527AbgI2GBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 02:01:49 -0400
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:18603 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725355AbgI2GBs (ORCPT
+        id S1727525AbgI2GIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 02:08:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43594 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727442AbgI2GIB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 02:01:48 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f72cd9a0004>; Mon, 28 Sep 2020 23:00:58 -0700
-Received: from mtl-vdi-166.wap.labs.mlnx (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 29 Sep
- 2020 06:01:46 +0000
-Date:   Tue, 29 Sep 2020 09:01:42 +0300
-From:   Eli Cohen <elic@nvidia.com>
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-CC:     Leon Romanovsky <leonro@nvidia.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        <virtualization@lists.linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Jason Wang <jasowang@redhat.com>,
-        Saeed Mahameed <saeedm@nvidia.com>
-Subject: Re: [PATCH v3 -next] vdpa: mlx5: change Kconfig depends to fix build
- errors
-Message-ID: <20200929060142.GA120395@mtl-vdi-166.wap.labs.mlnx>
-References: <73f7e48b-8d16-6b20-07d3-41dee0e3d3bd@infradead.org>
- <20200918082245.GP869610@unreal>
- <20200924052932-mutt-send-email-mst@kernel.org>
- <20200924102413.GD170403@mtl-vdi-166.wap.labs.mlnx>
- <20200925061959-mutt-send-email-mst@kernel.org>
+        Tue, 29 Sep 2020 02:08:01 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 259B9C061755;
+        Mon, 28 Sep 2020 23:08:01 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id n14so3476095pff.6;
+        Mon, 28 Sep 2020 23:08:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=/P/yp1OEyu3c80ckdO9uP2rdLAyI1tAzR48P50ZSsbs=;
+        b=dUgGRg0F2EiJq8j/GyKL53Xz23EA1+tlZEGuIOLEyoyK0Oa4zv5h0k42ekp8k+mJjn
+         BrqMixaMhi3j+s8nXSTUiUcP67JR6+3iwPEO2lCIGIAsypGuhC4s8KDHtMV6hD2pogXh
+         NPSsqnMZNKaamvYLQLoYBCihXSV4jqvRYz8rsclO8EMqjKONGtcmyWp/zVi0Uw+Iim2x
+         pYe0nTIa8nz4IxuvOGg5szLwY4JIfjVfdWIU5eL8qa+SLmcwTD8o/5Qsl/b9l0/iFqsF
+         8d1CIKUrsAouOiiLr3fgMYfn/IoPVVVtK5xfYZMGADBcy7r377Ve1IgUGPg22ft5U5oe
+         Djlw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=/P/yp1OEyu3c80ckdO9uP2rdLAyI1tAzR48P50ZSsbs=;
+        b=bvnBAdwIGI6NDDutrZAd5/xEf/uWXv1uG3dOlZn49b8TLxo1TgrYzgBmPKgQC/Pm0X
+         IDNxNKchZtTbRLDpSPmwx2xjy8KMbxem+HXEu+4hBskDf8WNMuHIabyJOS2ciXwgTz6b
+         kYjigMISZwDW6iQROG9l6WWEp23B20UfNLEfz8GhTofz/7/+wyOrxzG8qU/qPsG5cTCg
+         0XSrWZoS/KQ7syzXucMPPSOQ98BCkxnTpibFpSs15ukuKhB48gSl73YPI6o60ntusc6h
+         aV1ZzS6XaoXf8bKXgxuyiZ6hTjavf4nCBvyirqN2m/Xq/+DjOH247SUBnecrPSKjZPkz
+         Xjug==
+X-Gm-Message-State: AOAM5310CkEbK/SNOzYRc79PPiKt0PLLExH065QO/ox07qG5ciQ6ST39
+        yGUp96Qc7rwXESmDqFrcH84=
+X-Google-Smtp-Source: ABdhPJxKFuyXyknFTFHwvRCgLnO4Ta05aP10J7TScmLJ9+Xxb5PcC5Pm/eXa3mu9/709Qa8qyXh9bA==
+X-Received: by 2002:a17:902:d695:b029:d2:89b9:f4a0 with SMTP id v21-20020a170902d695b02900d289b9f4a0mr3101170ply.10.1601359680524;
+        Mon, 28 Sep 2020 23:08:00 -0700 (PDT)
+Received: from Asurada-Nvidia (thunderhill.nvidia.com. [216.228.112.22])
+        by smtp.gmail.com with ESMTPSA id i17sm3718854pfa.2.2020.09.28.23.08.00
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 28 Sep 2020 23:08:00 -0700 (PDT)
+Date:   Mon, 28 Sep 2020 23:02:38 -0700
+From:   Nicolin Chen <nicoleotsuka@gmail.com>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     thierry.reding@gmail.com, joro@8bytes.org,
+        linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
+        jonathanh@nvidia.com, linux-tegra@vger.kernel.org, digetx@gmail.com
+Subject: Re: [PATCH v3 2/2] iommu/tegra-smmu: Expend mutex protection range
+Message-ID: <20200929060238.GA26785@Asurada-Nvidia>
+References: <20200929045247.15596-1-nicoleotsuka@gmail.com>
+ <20200929045247.15596-3-nicoleotsuka@gmail.com>
+ <20200929060336.GB6564@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200925061959-mutt-send-email-mst@kernel.org>
-User-Agent: Mutt/1.9.5 (bf161cf53efb) (2018-04-13)
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1601359258; bh=s1n4fxUnOrXqu7iO06sSwSUoafpNw5JWrX09ZriSJ6w=;
-        h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-         Content-Type:Content-Disposition:In-Reply-To:User-Agent:
-         X-Originating-IP:X-ClientProxiedBy;
-        b=B7cTZFwvFf76FTc/g/Ys1cglEtwHgufmhfFn7BYTLj1AF83c4NqrkPGEnL4Vhg/yG
-         LYbejwCA9lyVXrnoAf274Db1usjswzJIuTr/Eyf5URW4izcj9j2tk1qJryP8kmfxs1
-         xhJlHbKCzdqdviWqdcVe2sOK8BneC69mYO91YweTy+4qj1tJswR2W6uLFYmr7Snk/R
-         1SvgOV6oj264ehDJXQ9IKMRG7qmiZS06Exnl0DCk+R6+/882Ab5N4DeiIlYD1LKujA
-         IXt6ItLxD5E0O5Nkd5+18OO8Kx1Rx3ee20RWWnPdlzDbOT8cUKOk2Ks/UKokNV+Vz0
-         JvqWFubIjSQDA==
+In-Reply-To: <20200929060336.GB6564@infradead.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 06:20:45AM -0400, Michael S. Tsirkin wrote:
-> > > 
-> > > Hmm other drivers select VHOST_IOTLB, why not do the same?
-> > 
-> > I can't see another driver doing that.
+On Tue, Sep 29, 2020 at 07:03:36AM +0100, Christoph Hellwig wrote:
+> On Mon, Sep 28, 2020 at 09:52:47PM -0700, Nicolin Chen wrote:
+> > This is used to protect potential race condition at use_count.
+> > since probes of client drivers, calling attach_dev(), may run
+> > concurrently.
 > 
-> Well grep VHOST_IOTLB and you will see some examples.
+> Shouldn't this read "expand" instead of "expend"?
 
-$ git grep -wn VHOST_IOTLB
-drivers/vhost/Kconfig:2:config VHOST_IOTLB
-drivers/vhost/Kconfig:11:       select VHOST_IOTLB
-drivers/vhost/Kconfig:18:       select VHOST_IOTLB
+Oops...my poor English :)
 
-What am I missing here?
+Fixing....
 
-> > Perhaps I can set dependency on
-> > VHOST which by itself depends on VHOST_IOTLB?
-> 
-> VHOST is processing virtio in the kernel. You don't really need that
-> for mlx, do you?
-> 
-> > > 
-> > > 
-> > > > >  	help
-> > > > >  	  Support library for Mellanox VDPA drivers. Provides code that is
-> > > > >
-> > > 
-> 
+Thanks!
