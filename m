@@ -2,40 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27C1627C8FB
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:06:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E74527C8DF
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:06:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731827AbgI2MGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 08:06:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56998 "EHLO mail.kernel.org"
+        id S1729885AbgI2MFX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 08:05:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58098 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730255AbgI2Lhh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:37:37 -0400
+        id S1730275AbgI2Lhi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:37:38 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2E6B723B8A;
-        Tue, 29 Sep 2020 11:36:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C4A5023AC2;
+        Tue, 29 Sep 2020 11:37:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601379414;
-        bh=u+qmgOkYHxSu0qcrWfM2MoJZof2fGjj9lk5hJ1UyhMc=;
+        s=default; t=1601379432;
+        bh=21Dk2aP0mawlZhSZZ4BdMKCgfu56yphPCl+pNGPepT8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nHtledhvGED+UUKtF+7UDUS5hBNUtjbVlLhF7y9aiLxZghzLRCeUP/03S7bnCVKXZ
-         WCRMxWjtNXD6j/XCskJX6xS+WCLZDk1uKVXiG+Ac6XZyeedvzGfNfLMrIdHPtaOEiC
-         J3lfKOXAKiIe3Oh6pps2j+9Qi76jJo48oZTCtWjo=
+        b=p8j12RuKduAzTqlmj+CFnl4VLzMeeMALo5MuwQPkQGVtXEdNTXIjs3wxiTXwNStQW
+         dKPE1TrdS+o3/pLG5qwRmeTLaG/GExL1+PkWjgnzjafpsievP+pRyk43N4+bwS0JqO
+         vudBpNC88tgIib69wy0pc7OELpTLGmLB/gVDIngk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jeff Moyer <jmoyer@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Justin He <Justin.He@arm.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        stable@vger.kernel.org, Dave Gerlach <d-gerlach@ti.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Keerthy <j-keerthy@ti.com>,
+        Ladislav Michl <ladis@linux-mips.org>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
+        Tero Kristo <t-kristo@ti.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 151/388] mm: avoid data corruption on CoW fault into PFN-mapped VMA
-Date:   Tue, 29 Sep 2020 12:58:02 +0200
-Message-Id: <20200929110017.786042227@linuxfoundation.org>
+Subject: [PATCH 5.4 153/388] ARM: OMAP2+: Handle errors for cpu_pm
+Date:   Tue, 29 Sep 2020 12:58:04 +0200
+Message-Id: <20200929110017.877885521@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200929110010.467764689@linuxfoundation.org>
 References: <20200929110010.467764689@linuxfoundation.org>
@@ -47,133 +49,164 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kirill A. Shutemov <kirill@shutemov.name>
+From: Tony Lindgren <tony@atomide.com>
 
-[ Upstream commit c3e5ea6ee574ae5e845a40ac8198de1fb63bb3ab ]
+[ Upstream commit 55be2f50336f67800513b46c5ba6270e4ed0e784 ]
 
-Jeff Moyer has reported that one of xfstests triggers a warning when run
-on DAX-enabled filesystem:
+We need to check for errors when calling cpu_pm_enter() and
+cpu_cluster_pm_enter(). And we need to bail out on errors as
+otherwise we can enter a deeper idle state when not desired.
 
-	WARNING: CPU: 76 PID: 51024 at mm/memory.c:2317 wp_page_copy+0xc40/0xd50
-	...
-	wp_page_copy+0x98c/0xd50 (unreliable)
-	do_wp_page+0xd8/0xad0
-	__handle_mm_fault+0x748/0x1b90
-	handle_mm_fault+0x120/0x1f0
-	__do_page_fault+0x240/0xd70
-	do_page_fault+0x38/0xd0
-	handle_page_fault+0x10/0x30
+I'm not aware of the lack of error handling causing issues yet,
+but we need this at least for blocking deeper idle states when
+a GPIO instance has pending interrupts.
 
-The warning happens on failed __copy_from_user_inatomic() which tries to
-copy data into a CoW page.
-
-This happens because of race between MADV_DONTNEED and CoW page fault:
-
-	CPU0					CPU1
- handle_mm_fault()
-   do_wp_page()
-     wp_page_copy()
-       do_wp_page()
-					madvise(MADV_DONTNEED)
-					  zap_page_range()
-					    zap_pte_range()
-					      ptep_get_and_clear_full()
-					      <TLB flush>
-	 __copy_from_user_inatomic()
-	 sees empty PTE and fails
-	 WARN_ON_ONCE(1)
-	 clear_page()
-
-The solution is to re-try __copy_from_user_inatomic() under PTL after
-checking that PTE is matches the orig_pte.
-
-The second copy attempt can still fail, like due to non-readable PTE, but
-there's nothing reasonable we can do about, except clearing the CoW page.
-
-Reported-by: Jeff Moyer <jmoyer@redhat.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Tested-by: Jeff Moyer <jmoyer@redhat.com>
-Cc: <stable@vger.kernel.org>
-Cc: Justin He <Justin.He@arm.com>
-Cc: Dan Williams <dan.j.williams@intel.com>
-Link: http://lkml.kernel.org/r/20200218154151.13349-1-kirill.shutemov@linux.intel.com
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Dave Gerlach <d-gerlach@ti.com>
+Cc: Grygorii Strashko <grygorii.strashko@ti.com>
+Cc: Keerthy <j-keerthy@ti.com>
+Cc: Ladislav Michl <ladis@linux-mips.org>
+Cc: Russell King <rmk+kernel@armlinux.org.uk>
+Cc: Tero Kristo <t-kristo@ti.com>
+Signed-off-by: Tony Lindgren <tony@atomide.com>
+Link: https://lore.kernel.org/r/20200304225433.37336-2-tony@atomide.com
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- mm/memory.c | 35 +++++++++++++++++++++++++++--------
- 1 file changed, 27 insertions(+), 8 deletions(-)
+ arch/arm/mach-omap2/cpuidle34xx.c |  9 +++++++--
+ arch/arm/mach-omap2/cpuidle44xx.c | 26 +++++++++++++++++---------
+ arch/arm/mach-omap2/pm34xx.c      |  8 ++++++--
+ 3 files changed, 30 insertions(+), 13 deletions(-)
 
-diff --git a/mm/memory.c b/mm/memory.c
-index 9ea917e28ef4e..2157bb28117ac 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -2163,7 +2163,7 @@ static inline bool cow_user_page(struct page *dst, struct page *src,
- 	bool ret;
- 	void *kaddr;
- 	void __user *uaddr;
--	bool force_mkyoung;
-+	bool locked = false;
- 	struct vm_area_struct *vma = vmf->vma;
- 	struct mm_struct *mm = vma->vm_mm;
- 	unsigned long addr = vmf->address;
-@@ -2188,11 +2188,11 @@ static inline bool cow_user_page(struct page *dst, struct page *src,
- 	 * On architectures with software "accessed" bits, we would
- 	 * take a double page fault, so mark it accessed here.
- 	 */
--	force_mkyoung = arch_faults_on_old_pte() && !pte_young(vmf->orig_pte);
--	if (force_mkyoung) {
-+	if (arch_faults_on_old_pte() && !pte_young(vmf->orig_pte)) {
- 		pte_t entry;
+diff --git a/arch/arm/mach-omap2/cpuidle34xx.c b/arch/arm/mach-omap2/cpuidle34xx.c
+index 532a3e4b98c6f..090a8aafb25e1 100644
+--- a/arch/arm/mach-omap2/cpuidle34xx.c
++++ b/arch/arm/mach-omap2/cpuidle34xx.c
+@@ -109,6 +109,7 @@ static int omap3_enter_idle(struct cpuidle_device *dev,
+ 			    int index)
+ {
+ 	struct omap3_idle_statedata *cx = &omap3_idle_data[index];
++	int error;
  
- 		vmf->pte = pte_offset_map_lock(mm, vmf->pmd, addr, &vmf->ptl);
-+		locked = true;
- 		if (!likely(pte_same(*vmf->pte, vmf->orig_pte))) {
- 			/*
- 			 * Other thread has already handled the fault
-@@ -2216,18 +2216,37 @@ static inline bool cow_user_page(struct page *dst, struct page *src,
- 	 * zeroes.
+ 	if (omap_irq_pending() || need_resched())
+ 		goto return_sleep_time;
+@@ -125,8 +126,11 @@ static int omap3_enter_idle(struct cpuidle_device *dev,
+ 	 * Call idle CPU PM enter notifier chain so that
+ 	 * VFP context is saved.
  	 */
- 	if (__copy_from_user_inatomic(kaddr, uaddr, PAGE_SIZE)) {
-+		if (locked)
-+			goto warn;
-+
-+		/* Re-validate under PTL if the page is still mapped */
-+		vmf->pte = pte_offset_map_lock(mm, vmf->pmd, addr, &vmf->ptl);
-+		locked = true;
-+		if (!likely(pte_same(*vmf->pte, vmf->orig_pte))) {
-+			/* The PTE changed under us. Retry page fault. */
-+			ret = false;
-+			goto pte_unlock;
-+		}
-+
- 		/*
--		 * Give a warn in case there can be some obscure
--		 * use-case
-+		 * The same page can be mapped back since last copy attampt.
-+		 * Try to copy again under PTL.
+-	if (cx->mpu_state == PWRDM_POWER_OFF)
+-		cpu_pm_enter();
++	if (cx->mpu_state == PWRDM_POWER_OFF) {
++		error = cpu_pm_enter();
++		if (error)
++			goto out_clkdm_set;
++	}
+ 
+ 	/* Execute ARM wfi */
+ 	omap_sram_idle();
+@@ -139,6 +143,7 @@ static int omap3_enter_idle(struct cpuidle_device *dev,
+ 	    pwrdm_read_prev_pwrst(mpu_pd) == PWRDM_POWER_OFF)
+ 		cpu_pm_exit();
+ 
++out_clkdm_set:
+ 	/* Re-allow idle for C1 */
+ 	if (cx->flags & OMAP_CPUIDLE_CX_NO_CLKDM_IDLE)
+ 		clkdm_allow_idle(mpu_pd->pwrdm_clkdms[0]);
+diff --git a/arch/arm/mach-omap2/cpuidle44xx.c b/arch/arm/mach-omap2/cpuidle44xx.c
+index fe75d4fa60738..6f5f89711f256 100644
+--- a/arch/arm/mach-omap2/cpuidle44xx.c
++++ b/arch/arm/mach-omap2/cpuidle44xx.c
+@@ -122,6 +122,7 @@ static int omap_enter_idle_coupled(struct cpuidle_device *dev,
+ {
+ 	struct idle_statedata *cx = state_ptr + index;
+ 	u32 mpuss_can_lose_context = 0;
++	int error;
+ 
+ 	/*
+ 	 * CPU0 has to wait and stay ON until CPU1 is OFF state.
+@@ -159,7 +160,9 @@ static int omap_enter_idle_coupled(struct cpuidle_device *dev,
+ 	 * Call idle CPU PM enter notifier chain so that
+ 	 * VFP and per CPU interrupt context is saved.
+ 	 */
+-	cpu_pm_enter();
++	error = cpu_pm_enter();
++	if (error)
++		goto cpu_pm_out;
+ 
+ 	if (dev->cpu == 0) {
+ 		pwrdm_set_logic_retst(mpu_pd, cx->mpu_logic_state);
+@@ -169,13 +172,17 @@ static int omap_enter_idle_coupled(struct cpuidle_device *dev,
+ 		 * Call idle CPU cluster PM enter notifier chain
+ 		 * to save GIC and wakeupgen context.
  		 */
--		WARN_ON_ONCE(1);
--		clear_page(kaddr);
-+		if (__copy_from_user_inatomic(kaddr, uaddr, PAGE_SIZE)) {
-+			/*
-+			 * Give a warn in case there can be some obscure
-+			 * use-case
-+			 */
-+warn:
-+			WARN_ON_ONCE(1);
-+			clear_page(kaddr);
+-		if (mpuss_can_lose_context)
+-			cpu_cluster_pm_enter();
++		if (mpuss_can_lose_context) {
++			error = cpu_cluster_pm_enter();
++			if (error)
++				goto cpu_cluster_pm_out;
 +		}
  	}
  
- 	ret = true;
+ 	omap4_enter_lowpower(dev->cpu, cx->cpu_state);
+ 	cpu_done[dev->cpu] = true;
  
- pte_unlock:
--	if (force_mkyoung)
-+	if (locked)
- 		pte_unmap_unlock(vmf->pte, vmf->ptl);
- 	kunmap_atomic(kaddr);
- 	flush_dcache_page(dst);
++cpu_cluster_pm_out:
+ 	/* Wakeup CPU1 only if it is not offlined */
+ 	if (dev->cpu == 0 && cpumask_test_cpu(1, cpu_online_mask)) {
+ 
+@@ -197,12 +204,6 @@ static int omap_enter_idle_coupled(struct cpuidle_device *dev,
+ 		}
+ 	}
+ 
+-	/*
+-	 * Call idle CPU PM exit notifier chain to restore
+-	 * VFP and per CPU IRQ context.
+-	 */
+-	cpu_pm_exit();
+-
+ 	/*
+ 	 * Call idle CPU cluster PM exit notifier chain
+ 	 * to restore GIC and wakeupgen context.
+@@ -210,6 +211,13 @@ static int omap_enter_idle_coupled(struct cpuidle_device *dev,
+ 	if (dev->cpu == 0 && mpuss_can_lose_context)
+ 		cpu_cluster_pm_exit();
+ 
++	/*
++	 * Call idle CPU PM exit notifier chain to restore
++	 * VFP and per CPU IRQ context.
++	 */
++	cpu_pm_exit();
++
++cpu_pm_out:
+ 	tick_broadcast_exit();
+ 
+ fail:
+diff --git a/arch/arm/mach-omap2/pm34xx.c b/arch/arm/mach-omap2/pm34xx.c
+index 54254fc92c2ed..fa66534a7ae22 100644
+--- a/arch/arm/mach-omap2/pm34xx.c
++++ b/arch/arm/mach-omap2/pm34xx.c
+@@ -194,6 +194,7 @@ void omap_sram_idle(void)
+ 	int per_next_state = PWRDM_POWER_ON;
+ 	int core_next_state = PWRDM_POWER_ON;
+ 	u32 sdrc_pwr = 0;
++	int error;
+ 
+ 	mpu_next_state = pwrdm_read_next_pwrst(mpu_pwrdm);
+ 	switch (mpu_next_state) {
+@@ -222,8 +223,11 @@ void omap_sram_idle(void)
+ 	pwrdm_pre_transition(NULL);
+ 
+ 	/* PER */
+-	if (per_next_state == PWRDM_POWER_OFF)
+-		cpu_cluster_pm_enter();
++	if (per_next_state == PWRDM_POWER_OFF) {
++		error = cpu_cluster_pm_enter();
++		if (error)
++			return;
++	}
+ 
+ 	/* CORE */
+ 	if (core_next_state < PWRDM_POWER_ON) {
 -- 
 2.25.1
 
