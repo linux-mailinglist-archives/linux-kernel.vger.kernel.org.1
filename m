@@ -2,120 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B0F627D79E
+	by mail.lfdr.de (Postfix) with ESMTP id 894CB27D79F
 	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 22:08:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729029AbgI2UIG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 16:08:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32912 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728244AbgI2UIF (ORCPT
+        id S1728244AbgI2UIJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 16:08:09 -0400
+Received: from mail-oi1-f195.google.com ([209.85.167.195]:40562 "EHLO
+        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728761AbgI2UIG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 16:08:05 -0400
-Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 287DFC061755;
-        Tue, 29 Sep 2020 13:08:04 -0700 (PDT)
-Received: by mail-qv1-xf43.google.com with SMTP id ef16so2964578qvb.8;
-        Tue, 29 Sep 2020 13:08:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=w5yusrSGveqthrL87NLW61j5LhSouuB+VXSBKe+YvgY=;
-        b=stCxwfWfqQsHP0bifFMTY2W9Y79SiOjHN0oXfGlK4nFcGiRbjFy259Du1fg1GD+q2q
-         B3royDGuBtVDnX7Q2W670LO80aVExEgQbzNyLwqSkAMf5hGGR6MmRyUxqeuqUyYq3Cpr
-         RXClXxZfHuyYk8JFAwmBbAEDyxGYWbay4AF8KuMfevWZs71w2zr6XiA8w+f0iUPU0b9d
-         4vxp/cJ1kkB71tpJZlErMoUMbsq0KXxhLdx5PYaSvDbikAlLZvxLHqrjHNCrIuQceP6P
-         gSzAlxbv46DXiaO04BBtRRwq6PEnfG3lgiBFYjBMaee+BZ0oP/eIcTvbOzbGNciPl0D7
-         CiNg==
+        Tue, 29 Sep 2020 16:08:06 -0400
+Received: by mail-oi1-f195.google.com with SMTP id t76so6881570oif.7;
+        Tue, 29 Sep 2020 13:08:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=w5yusrSGveqthrL87NLW61j5LhSouuB+VXSBKe+YvgY=;
-        b=EZo0HlxM0R8hY0ucK01IbQ/LnYsbXMmniIXoO6gXjip3N8xycYTRRVArxpxrF6mjhU
-         vErb/+TSNucAMgWQbJj9NMiAC1L41h9CmPJTou2gQbq3+pkFZtkzP19UUxexufArZCQi
-         h3M30sIfVgMtq46Gj8oNAoKzZRmW+tDkztmlnTBWF/LRIxcRhXAeorcMMKPzjwosWrYt
-         pAEcze7K8mX2iuS2NdHURlAnb2HL3C9dnR3RxYdN7Ly/J7ZZp4a8F2UX7FORa9YyAcPq
-         lfRXfpzHrHjKQRWLIcsjA/rHWd+Egr8f14kFznrRZuaFHSL7YloUexV2kULzMu0goCCG
-         J1Ew==
-X-Gm-Message-State: AOAM532Cd55P5cF/uPlPSu7tODFGiG7TfL8s+zfam83UL1tC7eNVv9/u
-        FBRVbtBBcO3xw5KL6PfnWjw=
-X-Google-Smtp-Source: ABdhPJwjiIuVP3Xk7TyGP/QzYW2QusdhN0VPHhBdqJhqNvVth0VkbdVieKSOTOS9Z/lfyA1mt+wx7A==
-X-Received: by 2002:ad4:5653:: with SMTP id bl19mr5770754qvb.7.1601410083317;
-        Tue, 29 Sep 2020 13:08:03 -0700 (PDT)
-Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id y30sm6932829qth.7.2020.09.29.13.08.02
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=tEjGdyigiYq/Vew+d6aDkAbA6G15ZhYScWUVPdFWPR0=;
+        b=c/RXtgVuCXdfuwPy4DJueYl1fciar6tL2ts4w9nISpc9Vy1OLrEIOVis0GvPO3sjWQ
+         FuwEradr6+/hsmZSaAnGgw7FcucFk5Tc0i1YAwsVRtPIaMEbrC619eqDEwKSZee7gMvj
+         tOH+fTAfuacTWflaI/t/YP1FqtMkz7fIelYlQyzxDxhPh2wLGxzH5XJWeirxFmtskpbB
+         2R6uEqJLTR3clukyWNvisvb59dDd5BllIbG8kLdCUI2wg2VGNf0P8By/1IM/PuMbQZPR
+         /fScd9hCPjz7ik7zuqKLsGX+D4Nb3NmMfruUk/w/IVl+kLDRQjPPOPvhD/bw0gCJ8IDt
+         Jpsg==
+X-Gm-Message-State: AOAM532bloPzJjxlqjJIQkhlqIYmYQkZjW4+z32wdFScxx2yGfzdo2AB
+        F4PNMLFQaGmgsANHeIiJiQ==
+X-Google-Smtp-Source: ABdhPJwpsmxom2RDb8/0qLp/q4YPVAI3qAHXAncJc++/sg44rh/f6H8n1wSpUocJwRGfOboKtRWJLw==
+X-Received: by 2002:aca:578c:: with SMTP id l134mr3413248oib.119.1601410085416;
+        Tue, 29 Sep 2020 13:08:05 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id i205sm1230997oih.23.2020.09.29.13.08.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Sep 2020 13:08:02 -0700 (PDT)
-Sender: Arvind Sankar <niveditas98@gmail.com>
-From:   Arvind Sankar <nivedita@alum.mit.edu>
-X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
-Date:   Tue, 29 Sep 2020 16:08:01 -0400
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        linux-sparse@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: Re: [PATCH] compiler.h: avoid escaped section names
-Message-ID: <20200929200801.GA2668747@rani.riverdale.lan>
-References: <20200929194318.548707-1-ndesaulniers@google.com>
+        Tue, 29 Sep 2020 13:08:04 -0700 (PDT)
+Received: (nullmailer pid 1077618 invoked by uid 1000);
+        Tue, 29 Sep 2020 20:08:04 -0000
+Date:   Tue, 29 Sep 2020 15:08:04 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Alban Bedel <alban.bedel@aerq.com>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Jean Delvare <jdelvare@suse.com>,
+        Mark Brown <broonie@kernel.org>, linux-hwmon@vger.kernel.org
+Subject: Re: [PATCH v2 2/3] dt-bindings: hwmon: Add the +vs supply to the
+ lm75 bindings
+Message-ID: <20200929200804.GA1077587@bogus>
+References: <20200928153923.134151-1-alban.bedel@aerq.com>
+ <20200928153923.134151-3-alban.bedel@aerq.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200929194318.548707-1-ndesaulniers@google.com>
+In-Reply-To: <20200928153923.134151-3-alban.bedel@aerq.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 12:43:18PM -0700, Nick Desaulniers wrote:
-> The stringification operator, `#`, in the preprocessor escapes strings.
-> For example, `# "foo"` becomes `"\"foo\""`.  GCC and Clang differ in how
-> they treat section names that contain \".
+On Mon, 28 Sep 2020 17:39:22 +0200, Alban Bedel wrote:
+> Some boards might have a regulator that control the +VS supply, add it
+> to the bindings.
 > 
-> The portable solution is to not use a string literal with the
-> preprocessor stringification operator.
-> 
-> In this case, since __section unconditionally uses the stringification
-> operator, we actually want the more verbose
-> __attribute__((__section__())).
-> 
-> Link: https://bugs.llvm.org/show_bug.cgi?id=42950
-> Fixes: commit e04462fb82f8 ("Compiler Attributes: remove uses of __attribute__ from compiler.h")
-> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+> Signed-off-by: Alban Bedel <alban.bedel@aerq.com>
 > ---
->  include/linux/compiler.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/include/linux/compiler.h b/include/linux/compiler.h
-> index 92ef163a7479..ac45f6d40d39 100644
-> --- a/include/linux/compiler.h
-> +++ b/include/linux/compiler.h
-> @@ -155,7 +155,7 @@ void ftrace_likely_update(struct ftrace_likely_data *f, int val,
->  	extern typeof(sym) sym;					\
->  	static const unsigned long __kentry_##sym		\
->  	__used							\
-> -	__section("___kentry" "+" #sym )			\
-> +	__attribute__((__section__("___kentry+" #sym)))		\
->  	= (unsigned long)&sym;
->  #endif
->  
-> -- 
-> 2.28.0.709.gb0816b6eb0-goog
+> v2: Removed the unneeded `maxItems` attribute
+> ---
+>  Documentation/devicetree/bindings/hwmon/lm75.yaml | 4 ++++
+>  1 file changed, 4 insertions(+)
 > 
 
-There was this previous mini-thread:
-https://lore.kernel.org/lkml/20200629205448.GA1474367@rani.riverdale.lan/
-and this older one:
-https://lore.kernel.org/lkml/20190904181740.GA19688@gmail.com/
-
-Just for my own curiosity: how does KENTRY actually get used? grep
-doesn't show any hits, and the thread from 2019 was actually going to
-drop it if I read it right, and also just remove stringification from
-the __section macro.
-
-There are still other instances that need to be fixed, right?
-
-Thanks.
+Acked-by: Rob Herring <robh@kernel.org>
