@@ -2,82 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F01527CD38
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:42:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDE0327CD54
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:43:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387441AbgI2Mml (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 08:42:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48444 "EHLO
+        id S1733028AbgI2MnZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 08:43:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729272AbgI2Mmg (ORCPT
+        with ESMTP id S1731252AbgI2MnH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 08:42:36 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53CFCC061755
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 05:42:35 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id y4so3881025ljk.8
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 05:42:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wL+1l72oaUbbwBYyOUJaeBQMR0dV1wzd/aL/FIdgzb4=;
-        b=xhI9/PHfv+fX23vW8dLBjw1liKAYXb+ehygLbCkVVwhzB6JiSXu+4BSaVZ4K8tBuz8
-         5betdA0Zo0dabPQTPyfZgfGTDRQYI5C1gWh0BRD9fKcCBngerR2lOWM6xr3sfq6S2s/Y
-         /Mo+9SC2I8EVmdNve7qAhBpn5F9tLTzY/IAKPCo6m5bShm0nxord7LzVA1x87AZPLb12
-         UJEziVcQ+xJKvZDAiTNt9Sn9HxG/gC5Yy8gtPpaw5V3T2wyIqipuXwsWfWmCgYiA8zHU
-         B6Hzix9baMwWdkCc2y+ggKX7H1oALbOfGl6Dq9X7RQQR7J7/Urh7pkj3jF5MeGQU7tMM
-         G/Qw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wL+1l72oaUbbwBYyOUJaeBQMR0dV1wzd/aL/FIdgzb4=;
-        b=ekycTg0tM4M9W5tpzpGzbjEGnGjXx6N14569CAuGJdECo5tmBDmnz2g3zXF72ir6Ra
-         jXLJOR2m5XozpGC/xOc70Yokw6weyOctQJpc06rBm8OB0xQ5RWtHZvA7Dj3bqsd6rPyc
-         fXMWEZR7crVaInC1+WlUhI39f/GZrtMj3kOeNx2so/4NxgNS2T+CAQx2d5S0+3CJNyUv
-         lzT9aaKFJxbsSbK56n8tiSLBMtNLctcOUzD+dgPq+pfnozmiweBqbfE702BMHctr96Th
-         4q8bDZ559bgI/HQ30AH3dR3fA1ofcGTHrkWnFjk969b+ugtnfQovVYNKKlL73tp3eeq8
-         FjYg==
-X-Gm-Message-State: AOAM532rFV+flMiyXTKytHq3n8UsNjb5dqA1RGeDg1u8c7OQzZsXqKrq
-        cLm7LVewAZe88/v8qtqjiOB6utrWa6G1F9mqCCMRDyrOJTHZ+Q==
-X-Google-Smtp-Source: ABdhPJz/TfA+SJy/EqXpDNJpRqIZcEOun8CwZs40GRQvdlhJ77EBdzNBtnUcoYLOOyqUveIA96w7ow/IynDH7+Culcc=
-X-Received: by 2002:a2e:a306:: with SMTP id l6mr1227143lje.286.1601383353717;
- Tue, 29 Sep 2020 05:42:33 -0700 (PDT)
+        Tue, 29 Sep 2020 08:43:07 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D443C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 05:43:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=3Zy06oRgcIcAQqe4Oh9nWNgW5XxynFsjn7qUS76GnM0=; b=FFQTzNV9FLJWoPmNhxe5yL1W+Q
+        tDkiItvKjFTET2X9o+OiiUO/NvmheEO+m5yLMVhFHhfebG1nbpZ6X034hcT2/wVo1ixij5+dxwvqN
+        s71s/67K+KnNkPIMUFTHdqAqiLkInwtvZZJpDTQog6HZvYypcOTmFUhLiGTrvDrh0Fw76AJufwe3e
+        pmSQqEclL6qF3fKcedWFu7/rp3eyIsS4U57xPU1gR+juL/YY7uhq1XdJ8eNJYa4pMfeROaFN21sl+
+        yJhcF8jHc7L0EdAqlkZPerM0uMCm4mi20gNAIwsil3v7pjo9XW5wTSGFKP7OZD2O56GV6HX1Qk+oL
+        oqYOxVPA==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kNEy4-00066L-2U; Tue, 29 Sep 2020 12:42:52 +0000
+Date:   Tue, 29 Sep 2020 13:42:51 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Jan Kara <jack@suse.cz>
+Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        William Kucharski <william.kucharski@oracle.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Dave Chinner <dchinner@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 04/12] mm/filemap: Add mapping_seek_hole_data
+Message-ID: <20200929124251.GB20115@casper.infradead.org>
+References: <20200914130042.11442-1-willy@infradead.org>
+ <20200914130042.11442-5-willy@infradead.org>
+ <20200929084653.GC10896@quack2.suse.cz>
 MIME-Version: 1.0
-References: <20200911034631.8473-1-chiawei_wang@aspeedtech.com> <20200911034631.8473-5-chiawei_wang@aspeedtech.com>
-In-Reply-To: <20200911034631.8473-5-chiawei_wang@aspeedtech.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 29 Sep 2020 14:42:22 +0200
-Message-ID: <CACRpkdbn9294JnddMsmGooCe7KCxMiGbuAZ+OAuLwPkZUYD10A@mail.gmail.com>
-Subject: Re: [PATCH 4/4] pinctrl: aspeed-g5: Fix LPC register offsets
-To:     "Chia-Wei, Wang" <chiawei_wang@aspeedtech.com>,
-        Andrew Jeffery <andrew@aj.id.au>
-Cc:     Rob Herring <robh+dt@kernel.org>, Joel Stanley <joel@jms.id.au>,
-        Corey Minyard <minyard@acm.org>, haiyue.wang@linux.intel.com,
-        cyrilbur@gmail.com, rlippert@google.com,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
-        Ryan Chen <ryan_chen@aspeedtech.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200929084653.GC10896@quack2.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 11, 2020 at 5:47 AM Chia-Wei, Wang
-<chiawei_wang@aspeedtech.com> wrote:
+On Tue, Sep 29, 2020 at 10:46:53AM +0200, Jan Kara wrote:
+> On Mon 14-09-20 14:00:34, Matthew Wilcox (Oracle) wrote:
+> > Rewrite shmem_seek_hole_data() and move it to filemap.c.
+> > 
+> > +	rcu_read_lock();
+> > +	while ((page = xas_find_get_entry(&xas, max, XA_PRESENT))) {
+> > +		loff_t pos = xas.xa_index * PAGE_SIZE;
+> 
+> OK, but for ordinary filesystems this could be problematic because of
+> exceptional entries?
 
-> The LPC register offsets are fixed to adapt to the LPC DTS change,
-> where the LPC partitioning is removed.
->
-> Signed-off-by: Chia-Wei, Wang <chiawei_wang@aspeedtech.com>
+For ordinary filesystems, I have this queued up on top:
 
-I can apply this one patch if I get a review from one of the
-Aspeed pinctrl maintainer.
+http://git.infradead.org/users/willy/pagecache.git/commitdiff/02c740b215bab901f95a560759b3bd906648da08
 
-Andrew?
+which handles exceptional entries.  It treats shadow/swap/DAX entries
+the same -- there's definitely data there, it's just not in a struct
+page right now.
 
-Yours,
-Linus Walleij
+> Also for shmem you've dropped the PageUptodate check which I'm not sure is
+> safe?
+
+That was unintentional.  I did run xfstests against this patch (just did
+it again ... it passes), so I suspect it doesn't create a !Uptodate page.
+I'll see if I can enhance the existing xfstests to catch this case.
+
+The patch I link to above also doesn't handle !Uptodate pages on shmem
+filesystems the same way that the current code does.  So ... on top of
+this patch, I propose doing this:
+
+@@ -2416,6 +2416,14 @@ generic_file_read_iter(struct kiocb *iocb, struct iov_ite
+r *iter)
+ }
+ EXPORT_SYMBOL(generic_file_read_iter);
+ 
++static inline loff_t page_seek_hole_data(struct page *page,
++               loff_t start, loff_t end, bool seek_data)
++{
++       if (xa_is_value(page) || PageUptodate(page))
++               return seek_data ? start : end;
++       return seek_data ? end : start;
++}
++
+ static inline
+ unsigned int seek_page_size(struct xa_state *xas, struct page *page)
+ {
+@@ -2463,10 +2471,10 @@ loff_t mapping_seek_hole_data(struct address_space *mapping, loff_t start,
+                        start = pos;
+                }
+ 
+-               if (seek_data)
++               pos += seek_page_size(&xas, page);
++               start = page_seek_hole_data(page, start, pos, seek_data);
++               if (start < pos)
+                        goto unlock;
+-
+-               start = pos + seek_page_size(&xas, page);
+        }
+        rcu_read_unlock();
+ 
+
+... and then rebasing the other patch on top of this works out nicely.
+
+Here's the result:
+http://git.infradead.org/users/willy/pagecache.git/commitdiff/9eb3f496b7cdcdcae83026e861e148f46921c367
+http://git.infradead.org/users/willy/pagecache.git/commitdiff/7d93274088f0872d849a906d783dc260bee106b9
