@@ -2,180 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCB5727D2B8
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 17:28:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB4D727D2C2
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 17:30:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729090AbgI2P2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 11:28:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46182 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725765AbgI2P2n (ORCPT
+        id S1729151AbgI2Pan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 11:30:43 -0400
+Received: from mail-pj1-f68.google.com ([209.85.216.68]:53170 "EHLO
+        mail-pj1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725497AbgI2Pan (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 11:28:43 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60E2BC061755
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 08:28:42 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id z19so4879913pfn.8
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 08:28:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=+97+bLWjG8Cnh6+0K5ue9SNwWVgC0isyenr+b9GC6ys=;
-        b=J8M0Kziv9svfBrZ+ZnUZToGP+ah43vFYAF1546jBzsfDVyAmrG0g0hsxC/NeO5/1XM
-         rGqOYwuSe45qyXeVOdTz9oFjmbER5svmirEVAzpcvLyEzd3JKPkmWQ+CTZqiy7naCfhi
-         NApDnQ7eQuGlF58/PXYpQOwyQo/RVKogx6v21BA0bmYGnHcV9hhCIrNG5bzZ0KcR56U/
-         0tvb1OYq+lSHBI7rJQpD/E9hmMwihmdnwHl9d9yaqaZU9RJL/KX4tcyvbG5ZX4wQ8RNC
-         fA5eheGFSz32PGeoGAYLfWbPkzRbSYaYvEVP7rosACouIUIHqP3QtGdQtPX9WV6bYVcB
-         eRLA==
+        Tue, 29 Sep 2020 11:30:43 -0400
+Received: by mail-pj1-f68.google.com with SMTP id ml18so21882pjb.2;
+        Tue, 29 Sep 2020 08:30:42 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=+97+bLWjG8Cnh6+0K5ue9SNwWVgC0isyenr+b9GC6ys=;
-        b=oI/wj770fGPWqvnWALHRRIuKvRjJNygLBFW6k7QNuHvekEvUbPMiHoslX5T7mXNXCW
-         sH0vbB7AHV4E1z5hg0HCI6ZumSnJWX9F2BFzoIh/oeXzh3wf4I59JbBpaVeUQOGE8J1j
-         Ncg5NfCQN8oRWh6D7EzIhdHUGoHcUNmHlh5DeR79B+zw81WyB/07fJXupsGoSlALPrjb
-         oWIm0YasqD0C8bJLokNKz7B8FScy1R5+4yN+fLh0BrUmL5kKpcxW4P3fYA6IS6ofkKbi
-         0Ct0Y95fg+FBCq023H5Hr+n8Kgfz2aEZ//6TpCTVYaAh0kFaoGoMQBU651pnhVK/7UuI
-         Nfrg==
-X-Gm-Message-State: AOAM5326l7C3TsP+sQWBxPuD6Wrar1vq8uLq1CFAZ6YvbIHw80A2/ndg
-        p/mcq6+OeqXdYjNNfZP/cJbL
-X-Google-Smtp-Source: ABdhPJz523+9I5p665u5UEBxj+5pSPklH4lLxk5h8MOYoA0FSRk8WOJFC6AUtx907yLtLtHQeM2KNw==
-X-Received: by 2002:a05:6a00:808:b029:13e:d13d:a05d with SMTP id m8-20020a056a000808b029013ed13da05dmr4414184pfk.35.1601393321614;
-        Tue, 29 Sep 2020 08:28:41 -0700 (PDT)
-Received: from Mani-XPS-13-9360 ([103.59.133.81])
-        by smtp.gmail.com with ESMTPSA id gn24sm5216956pjb.8.2020.09.29.08.28.38
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 29 Sep 2020 08:28:40 -0700 (PDT)
-Date:   Tue, 29 Sep 2020 20:58:34 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     gregkh@linuxfoundation.org
-Cc:     hemantk@codeaurora.org, bbhatt@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, jhugo@codeaurora.org,
-        linux-kernel@vger.kernel.org, kvalo@codeaurora.org,
-        ath11k@lists.infradead.org
-Subject: Re: [PATCH v2 00/21] MHI changes for v5.10
-Message-ID: <20200929152834.GA17845@Mani-XPS-13-9360>
-References: <20200928040951.18207-1-manivannan.sadhasivam@linaro.org>
+         :mime-version:content-disposition:in-reply-to;
+        bh=aWsRNGEYWNS1FOlIs3a6BRy9lNpu3+jVuprEQmGm558=;
+        b=OeuwqgpYCfRfagPKO+b2cc1EsVsuzNHKWZMS8mhuydA6PyvtsFPk8QiZuAEi6h5oku
+         c7d465VG/xGC6hNdyuZf6ZHAQ8NBUUdDCRrIn2Klu1Sw9Ib19GbmV2uF9YkzE7Eud/aF
+         1L+LBMqiQ/ddomXYhwd3vDTsvezau5Tl0khJmwfp9bv3OhAH4ELnnCoHdjrT6kOoHzrf
+         yHWCd+pTqJbCrq8k4FfvjgE26y5dBITY1J66SeXVdHUYiNoTCgfKcI1EmcaK/g4jGUCx
+         CuOfn2from1OEez5wNnTlgcrgiWecz6FCai4NiLpYcs/Dj2xITc9578yis4HrCbs82tX
+         Ldgg==
+X-Gm-Message-State: AOAM532cWHnytd1YblAvFxViScNGEFYVPLdtcnLaRcPK9Kr9dbq+Tom7
+        Zrk022QsSR2qNgXgGHGT4x8=
+X-Google-Smtp-Source: ABdhPJw5BlNaN3pSF96qwEnIL8dGCXUqwG8oGgJpCFD6AsIPGoIrPO+DcbMR2zsgvf5a1G5dujk4ZQ==
+X-Received: by 2002:a17:90a:d986:: with SMTP id d6mr4327116pjv.108.1601393442163;
+        Tue, 29 Sep 2020 08:30:42 -0700 (PDT)
+Received: from localhost ([2601:647:5b00:1162:1ac0:17a6:4cc6:d1ef])
+        by smtp.gmail.com with ESMTPSA id b15sm5731377pft.84.2020.09.29.08.30.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Sep 2020 08:30:41 -0700 (PDT)
+Date:   Tue, 29 Sep 2020 08:30:40 -0700
+From:   Moritz Fischer <mdf@kernel.org>
+To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
+Cc:     linux-clk@vger.kernel.org, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mturquette@baylibre.com,
+        sboyd@kernel.org, mdf@kernel.org, ardeleanalex@gmail.com,
+        Mathias Tausen <mta@gomspace.com>
+Subject: Re: [PATCH v4 5/7] clk: axi-clkgen: Respect ZYNQMP PFD/VCO frequency
+ limits
+Message-ID: <20200929153040.GA114067@archbook>
+References: <20200929144417.89816-1-alexandru.ardelean@analog.com>
+ <20200929144417.89816-14-alexandru.ardelean@analog.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200928040951.18207-1-manivannan.sadhasivam@linaro.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200929144417.89816-14-alexandru.ardelean@analog.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+Hi Alexandru,
 
-On Mon, Sep 28, 2020 at 09:39:30AM +0530, Manivannan Sadhasivam wrote:
-> Hi Greg,
+On Tue, Sep 29, 2020 at 05:44:15PM +0300, Alexandru Ardelean wrote:
+> From: Mathias Tausen <mta@gomspace.com>
 > 
-> Here is the MHI series for v5.10 cycle. Most of the patches are cleanups
-> in the MHI stack. Notable changes are below:
+> Since axi-clkgen is now supported on ZYNQMP, make sure the max/min
+> frequencies of the PFD and VCO are respected.
 > 
-> * Saving the client device hardware information obtained through the BHI
->   protocol. This information will be exposed through sysfs to make use in
->   the userland applications.
-> * Introduce sysfs entries to read the serial number and OEM PK hash values
->   of the client device obtained from BHI protocol. Relevant API documentation
->   is also added.
-> * Introduce debugfs entries to show MHI states, events, channels, register
->   state etc... to aid debug.
-> * Remove the channel name from MHI device name as the device is not specific
->   to channels. Used generic names instead!
-> * Fix the warning reported by Kbuild bot by using append (+=) Kbuild rule
->   to the mhi/core Makefile.
-> * Introduce APIs to allocate and free MHI controllers. This is done to make
->   sure that the allocated structs are initialized to NULL before passing to
->   the MHI core.
-> * Remove the requirement to have a dedicated IRQ for each event ring.
->   The MHI controllers can now use a single IRQ for all event rings.
-> * Remove the auto-start option for MHI channels. This is done to avoid
->   receiving spurious uplink from MHI client device when the client driver
->   is not up. The corresponding qrtr change is also included with Dave's ACK.
-> 
-> Please consider merging!
-> 
+> Signed-off-by: Mathias Tausen <mta@gomspace.com>
+> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
 
-Can you please drop the below two patches while applying this series?
+This patch still does not cover the PCIe Zynq plugged into ZynqMP linux
+machine case.
 
-bus: mhi: Remove auto-start option
-net: qrtr: Start MHI channels during init
+> ---
+>  drivers/clk/clk-axi-clkgen.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+> 
+> diff --git a/drivers/clk/clk-axi-clkgen.c b/drivers/clk/clk-axi-clkgen.c
+> index 4342b7735590..2319bb1c5c08 100644
+> --- a/drivers/clk/clk-axi-clkgen.c
+> +++ b/drivers/clk/clk-axi-clkgen.c
+> @@ -108,12 +108,21 @@ static uint32_t axi_clkgen_lookup_lock(unsigned int m)
+>  	return 0x1f1f00fa;
+>  }
+>  
+> +#ifdef ARCH_ZYNQMP
+> +static const struct axi_clkgen_limits axi_clkgen_default_limits = {
+> +	.fpfd_min = 10000,
+> +	.fpfd_max = 450000,
+> +	.fvco_min = 800000,
+> +	.fvco_max = 1600000,
+> +};
+> +#else
+>  static const struct axi_clkgen_limits axi_clkgen_default_limits = {
+>  	.fpfd_min = 10000,
+>  	.fpfd_max = 300000,
+>  	.fvco_min = 600000,
+>  	.fvco_max = 1200000,
+>  };
+> +#endif
 
-We realized that without these patches, net-next will be broken for QCA6390.
-Proper way to handle this is by using an immutable branch or by carrying the
-ath11k change through MHI tree. We decided to handle this in next merge window.
+I still don't understand this. You have a way to determine which fabric
+you are looking at with the FPGA info. Why not:
 
-Or if you prefer to have a next revision of the series without these patches
-I can send it. Please let me know!
+[..] axi_clkgen_zynqmp_default_limits = {
+};
 
-Thanks,
-Mani
+[..] axi_clkgen_default_limits = {
+};
 
-> Thanks,
-> Mani
-> 
-> Changes in v2:
-> 
-> * Clubbed both series (take one and two) onto a single one
-> * Used dev_groups to manage sysfs attributes
-> * Merged the debugfs fix patch with the debugfs patch
-> * Dropped MAX_MTU patch for now
-> 
-> Bhaumik Bhatt (12):
->   bus: mhi: core: Remove double occurrence for mhi_ctrl_ev_task()
->     declaration
->   bus: mhi: core: Abort suspends due to outgoing pending packets
->   bus: mhi: core: Use helper API to trigger a non-blocking host resume
->   bus: mhi: core: Trigger host resume if suspended during
->     mhi_device_get()
->   bus: mhi: core: Use generic name field for an MHI device
->   bus: mhi: core: Introduce helper function to check device state
->   bus: mhi: core: Introduce counters to track MHI device state
->     transitions
->   bus: mhi: core: Read and save device hardware information from BHI
->   bus: mhi: core: Introduce APIs to allocate and free the MHI controller
->   bus: mhi: Fix entries based on Kconfig coding style
->   bus: mhi: core: Introduce debugfs entries for MHI
->   bus: mhi: core: Introduce sysfs entries for MHI
-> 
-> Clark Williams (1):
->   bus: mhi: Remove include of rwlock_types.h
-> 
-> Hemant Kumar (1):
->   bus: mhi: core: Add const qualifier to MHI config information
-> 
-> Loic Poulain (5):
->   bus: mhi: core: Allow shared IRQ for event rings
->   bus: mhi: Remove unused nr_irqs_req variable
->   bus: mhi: debugfs: Print channel context read-pointer
->   bus: mhi: Remove auto-start option
->   net: qrtr: Start MHI channels during init
-> 
-> Manivannan Sadhasivam (1):
->   bus: mhi: core: Fix the building of MHI module
-> 
-> Randy Dunlap (1):
->   bus: mhi: fix doubled words and struct image_info kernel-doc
-> 
->  Documentation/ABI/stable/sysfs-bus-mhi |  21 ++
->  MAINTAINERS                            |   1 +
->  drivers/bus/mhi/Kconfig                |  20 +-
->  drivers/bus/mhi/core/Makefile          |   3 +-
->  drivers/bus/mhi/core/boot.c            |  17 +-
->  drivers/bus/mhi/core/debugfs.c         | 411 +++++++++++++++++++++++++
->  drivers/bus/mhi/core/init.c            |  96 ++++--
->  drivers/bus/mhi/core/internal.h        |  38 ++-
->  drivers/bus/mhi/core/main.c            |  27 +-
->  drivers/bus/mhi/core/pm.c              |  28 +-
->  include/linux/mhi.h                    |  53 +++-
->  net/qrtr/mhi.c                         |   5 +
->  12 files changed, 644 insertions(+), 76 deletions(-)
->  create mode 100644 Documentation/ABI/stable/sysfs-bus-mhi
->  create mode 100644 drivers/bus/mhi/core/debugfs.c
-> 
+Set them based on what you read back, i.e. determine which fabric you
+are looking at *per clock gen* and use that info, rather than making a
+compile time decision to support only one of them.
+
+Generally speaking #ifdef $ARCH should be a last resort solution.
+>  
+>  static void axi_clkgen_calc_params(const struct axi_clkgen_limits *limits,
+>  	unsigned long fin, unsigned long fout,
 > -- 
 > 2.17.1
 > 
+
+Cheers,
+Moritz
