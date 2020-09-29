@@ -2,103 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 045AC27D6DB
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 21:26:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5F2827D6DF
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 21:27:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728592AbgI2TZ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 15:25:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54590 "EHLO
+        id S1728616AbgI2T1l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 15:27:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725306AbgI2TZ4 (ORCPT
+        with ESMTP id S1727740AbgI2T1l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 15:25:56 -0400
-Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7A82C0613D0
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 12:25:54 -0700 (PDT)
-Received: by mail-qk1-x74a.google.com with SMTP id m203so3413384qke.16
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 12:25:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=rYftVaj976XAVBBPD1tw6YKpSPevzCd8/SePPlUAJ1M=;
-        b=siCtqrfjEEMVi2yF63FhGYeZSPJGGgIFsjp02OHmUhBAgvg7nXnxYs0u3Jij+pDOi/
-         aaUOWyxYPvHQwt3ucdhvmboX4cgQ7hu4gbFQ2HpdMx6Is0NFW5ycThzrgub3jJ0Ahb6B
-         0F48VrKa40b1yLeHahn+d8Ym3XS/8/dS4MskZFES19vpRlIa95obeoTN/m13RVVTJEDB
-         fSwqrbc+fQM7+IHe01GrNe09AdxszY23Vc04EF3+xerJYFdHY7rjIqf0qtN8/uoHuYXU
-         xkieDcS2BVxCMzqGonbSb9HE18kY2ttjOYwJx6WH3mIln/0djUiI+YLbBYRODu4QU+7B
-         Ze2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=rYftVaj976XAVBBPD1tw6YKpSPevzCd8/SePPlUAJ1M=;
-        b=ZO2mco5AdqIHS/0hFw7gnzGwCv3OFGoY/RYvO4PXWqP2ZJKldU0PIv3XXllN+uXKay
-         lBYSxEvYOffq5uJPPf8xaAjFZ8uNoUtap45pd4i5KISomKrqYRFi62w2Tf1piXpq95lv
-         jtmAHGTZe9sfo4VSe8sGtR+LquWy20HJQjCSv2wfvCA6r/ZcTJNXOO8l9tjcCzJtbM+O
-         s6dtCqPJE5kSsBVRS//khGyK+TeBZsA7RanQElRwQJ5l1VZBV2jsrd1N2QPwr/HzlmXj
-         gJ+4UCjJc9pKirHBT20xv2ES9zHt4tF0G/I1O3mXMOupVKicvq5pxk1FBTj5O6omZGMP
-         Gb3g==
-X-Gm-Message-State: AOAM531bFy3hDb9USeYq0BlHiXHKfMZbpHkIp+XCDyvAHo966WteEvfk
-        /vSybRyxwsuHPa/Pa1WcI3LddPvY81qdaNLPMYo=
-X-Google-Smtp-Source: ABdhPJwco412wUhwx4p0sbTHmoj7w2c8QO+QNegOV++VsHPsuzZEEydgm6hxQuBFySTARFLRC7RbAziWW5Y0bUifTwA=
-Sender: "ndesaulniers via sendgmr" 
-        <ndesaulniers@ndesaulniers1.mtv.corp.google.com>
-X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:f693:9fff:fef4:4d25])
- (user=ndesaulniers job=sendgmr) by 2002:a0c:ee6a:: with SMTP id
- n10mr5625188qvs.45.1601407553788; Tue, 29 Sep 2020 12:25:53 -0700 (PDT)
-Date:   Tue, 29 Sep 2020 12:25:49 -0700
-In-Reply-To: <CAKwvOd=s+N4+X94sTams_hKn8uV5Hc6QyCc7OHyOGC-JFesS8A@mail.gmail.com>
-Message-Id: <20200929192549.501516-1-ndesaulniers@google.com>
-Mime-Version: 1.0
-References: <CAKwvOd=s+N4+X94sTams_hKn8uV5Hc6QyCc7OHyOGC-JFesS8A@mail.gmail.com>
-X-Mailer: git-send-email 2.28.0.709.gb0816b6eb0-goog
-Subject: [PATCH v2] srcu: avoid escaped section names
-From:   Nick Desaulniers <ndesaulniers@google.com>
-To:     "Paul E . McKenney" <paulmck@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Kees Cook <keescook@chromium.org>,
-        linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-        clang-built-linux@googlegroups.com,
-        Nick Desaulniers <ndesaulniers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 29 Sep 2020 15:27:41 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2E5FC061755;
+        Tue, 29 Sep 2020 12:27:40 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1601407659;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=wJ1qyY7jDkW+3C7cu3ELBYPJyjIPnO9bcBY7ay153cw=;
+        b=1IVUUKatatMgwT9hBqzolQ9HwFPjr5+Kl+UsD2fUgkUFSw9idfYJxLjEYno39KdBeXfLtj
+        2mKl44/p8IXvM6CPFe2bTKwerGoPvqlYNqljOnB1fHvDQM48Vmlx0CRhhXeY8Pzs88twxB
+        szAWq/sQFtXltHepYe2cdh8l+l0NeXVq2v4BXOsw1OIJBYnzBIDiPQ9YGWNTNU8nV26Fas
+        4eVhHKQJyrsOJfQ5+hKzZTg1FzebyXpSKhG72BoTdKDCYxoAuixMarb2uVslLcq2AGcxVT
+        9QiwlZozmscQOkL2dplsNToENGGyQcUjZM4n89ojanr17igW6erRFzM8vgevPw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1601407659;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=wJ1qyY7jDkW+3C7cu3ELBYPJyjIPnO9bcBY7ay153cw=;
+        b=GPLf73/FDvrOorX45S3+L4AuFSHVdpfp3GxBhPTmRPh/3b9sTLZpvuJ3yN9H37bEs2Dd7l
+        lsat9yjeu4S4EkBQ==
+To:     Edward Cree <ecree@solarflare.com>,
+        linux-net-drivers@solarflare.com
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [RFC PATCH net-next] sfc: replace in_interrupt() usage
+In-Reply-To: <d098eea1-6390-3900-b819-0c03e1872609@solarflare.com>
+References: <168a1f9e-cba4-69a8-9b29-5c121295e960@solarflare.com> <e45d9556-2759-6f33-01a0-d1739ce5760d@solarflare.com> <87k0wdk5t2.fsf@nanos.tec.linutronix.de> <d098eea1-6390-3900-b819-0c03e1872609@solarflare.com>
+Date:   Tue, 29 Sep 2020 21:27:38 +0200
+Message-ID: <87eemkjsd1.fsf@nanos.tec.linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The stringification operator, `#`, in the preprocessor escapes strings.
-For example, `# "foo"` becomes `"\"foo\""`.  GCC and Clang differ in how
-they treat section names that contain \".
+On Tue, Sep 29 2020 at 16:15, Edward Cree wrote:
+>> On Mon, Sep 28 2020 at 21:05, Edward Cree wrote:
+>>> Only compile-tested so far, because I'm waiting for my kernel to
+>>>  finish rebuilding with CONFIG_DEBUG_ATOMIC_SLEEP
+>
+> I've now tested and confirmed that the might_sleep warning goes
+>  away with this patch.
+>
+> Thomas, do you want to pull it into v2 of your series, or should
+>  I submit it separately to David?
 
-The portable solution is to not use a string literal with the
-preprocessor stringification operator.
+I have it already, but if Dave applies it right away, that's fine.
 
-Link: https://bugs.llvm.org/show_bug.cgi?id=42950
-Fixes: commit fe15b50cdeee ("srcu: Allocate per-CPU data for DEFINE_SRCU() in modules")
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
----
-Changes V1->V2:
-* drop unrelated Kconfig changes accidentally committed in v1.
+Thanks,
 
- include/linux/srcutree.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/include/linux/srcutree.h b/include/linux/srcutree.h
-index 9cfcc8a756ae..9de652f4e1bd 100644
---- a/include/linux/srcutree.h
-+++ b/include/linux/srcutree.h
-@@ -124,7 +124,7 @@ struct srcu_struct {
- # define __DEFINE_SRCU(name, is_static)					\
- 	is_static struct srcu_struct name;				\
- 	struct srcu_struct * const __srcu_struct_##name			\
--		__section("___srcu_struct_ptrs") = &name
-+		__section(___srcu_struct_ptrs) = &name
- #else
- # define __DEFINE_SRCU(name, is_static)					\
- 	static DEFINE_PER_CPU(struct srcu_data, name##_srcu_data);	\
--- 
-2.28.0.709.gb0816b6eb0-goog
-
+        tglx
