@@ -2,113 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50DAE27D1E7
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 16:53:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7E2B27D1ED
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 16:54:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731474AbgI2Oxk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 10:53:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40772 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727328AbgI2Oxj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 10:53:39 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFD0AC061755;
-        Tue, 29 Sep 2020 07:53:39 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id k25so3742827qtu.4;
-        Tue, 29 Sep 2020 07:53:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=LxdLM+iHttbSOumhWDZv97egHmbUeQtF2b9Swdl0B60=;
-        b=hX4Y+3jtPvmClo/JSzRgoXA7gAjY0UBMBegDnAUpaUUZ7Q0TCFt3Rbmkl9e7xFp03h
-         8RrDQvip4qZZDm6p9y5GvJy67aDdmxQjqTE7g9ieImWJKEl8VeBCjiA9BP4ZEUbtvAW4
-         mksZA6rG6G59SjA9ixhEV2oGgk2ayn5BlCQESHVEBZfgoxvEQ7lrj9uLsAX+LwH5REbL
-         EMMRnX6vmW+F3Pj22TnZiHbIJiwkPW9TZRZGq+UK9OJ2hEmuFLUCISVsl7Xs9pEOrgpc
-         skwvBWO7Fb5zomGupjbOUIUAXxGPqeje0IPbSJhKm6/deaEvFM/NFc/a2yKxsIbPhRv0
-         jswA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=LxdLM+iHttbSOumhWDZv97egHmbUeQtF2b9Swdl0B60=;
-        b=C75rfI0z3PCzjVhWYYoLDKS+MNyEXQFSBWGOrGtepD+p9EywGTjI0TB268DC2nYwE6
-         QX/mqORA8t6mUFcV80UAkSx4C73PkrA1C0sEEkQv0Y5WIw9Be4WXmsMIkAER36Okdwo6
-         F10kZGq3kOammhcIb1/x2a/Bs9obqdGnMn1QrpHwCROgg073Z6XsroqHXDiLCypzplAP
-         Dfu2/td+e7yoMyBhCjrXL7z4+nDpu9R1NvdLpoXYcDfxOwU2peAvBL+NbW+LOjOtgXZ4
-         Lo2gtInDX31Vii3suz9hrnzfOAd70xDlAIx1NHQke24x7nz07rs+CndwWWP+tNkBOVcO
-         5NLw==
-X-Gm-Message-State: AOAM531ZdjlNQkIKDXo8x/T70l/KJJNk5PTguVT1cSW0wlcX+KjKCeum
-        B0Rwy5adIYBr92d+CVjWX6c=
-X-Google-Smtp-Source: ABdhPJymfyNEfxzlEcxwwnxSu38R7ekXhi2LVXO3vbzyz7NOzIeyRuscN1rfk14H6x5irwigFmaiaA==
-X-Received: by 2002:ac8:6a06:: with SMTP id t6mr3700476qtr.1.1601391218859;
-        Tue, 29 Sep 2020 07:53:38 -0700 (PDT)
-Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id 192sm4923961qkm.110.2020.09.29.07.53.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Sep 2020 07:53:38 -0700 (PDT)
-Sender: Arvind Sankar <niveditas98@gmail.com>
-From:   Arvind Sankar <nivedita@alum.mit.edu>
-X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
-Date:   Tue, 29 Sep 2020 10:53:35 -0400
-To:     Ross Philipson <ross.philipson@oracle.com>
-Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        iommu@lists.linux-foundation.org, linux-integrity@vger.kernel.org,
-        linux-doc@vger.kernel.org, dpsmith@apertussolutions.com,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
-        luto@amacapital.net, trenchboot-devel@googlegroups.com
-Subject: Re: [PATCH 07/13] x86: Secure Launch kernel early boot stub
-Message-ID: <20200929145335.GA2454775@rani.riverdale.lan>
-References: <1600959521-24158-1-git-send-email-ross.philipson@oracle.com>
- <1600959521-24158-8-git-send-email-ross.philipson@oracle.com>
- <20200924173801.GA103726@rani.riverdale.lan>
- <c9ab2edf-1aaf-a1c9-92d5-2d37382a3163@oracle.com>
- <20200925191842.GA643740@rani.riverdale.lan>
- <d34c189c-4528-0458-0b84-cfd36dc068b3@oracle.com>
+        id S1731163AbgI2OyJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 10:54:09 -0400
+Received: from mx2.suse.de ([195.135.220.15]:33862 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728937AbgI2OyH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 10:54:07 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1601391245;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=IgDvWNQP8iyuHEvr4G441L71BKSYFJPWhAP8LkzWJfg=;
+        b=eoKKMBN7CEGS/O8wpnxX5YX5p7R/6oj0pmjByAZssa/tlgDzObwBIbhZXkZHaNf3yxFnjs
+        /xxRgUM/x4iZ6RwvlYDvqSTGjNG6UgIhlOVv1JFsk77ppGGHvo3dx1IKn0uI5+hjhXkchS
+        /V0QnFBKAlwY5qjuSlhyF3uziX8+a1k=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id CB7CAAD0F;
+        Tue, 29 Sep 2020 14:54:04 +0000 (UTC)
+Date:   Tue, 29 Sep 2020 16:54:03 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Daniel Vetter <daniel@ffwll.ch>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Ben Segall <bsegall@google.com>, Linux-MM <linux-mm@kvack.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, linux-hexagon@vger.kernel.org,
+        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@kernel.org>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Brian Cain <bcain@codeaurora.org>,
+        Richard Weinberger <richard@nod.at>,
+        Russell King <linux@armlinux.org.uk>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        Ingo Molnar <mingo@redhat.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Mel Gorman <mgorman@suse.de>,
+        intel-gfx <intel-gfx@lists.freedesktop.org>,
+        Matt Turner <mattst88@gmail.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        linux-xtensa@linux-xtensa.org, Shuah Khan <shuah@kernel.org>,
+        Jeff Dike <jdike@addtoit.com>,
+        linux-um <linux-um@lists.infradead.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>, rcu@vger.kernel.org,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        alpha <linux-alpha@vger.kernel.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [patch 00/13] preempt: Make preempt count unconditional
+Message-ID: <20200929145403.GE2277@dhcp22.suse.cz>
+References: <CAHk-=wj0eUuVQ=hRFZv_nY7g5ZLt7Fy3K7SMJL0ZCzniPtsbbg@mail.gmail.com>
+ <87bli75t7v.fsf@nanos.tec.linutronix.de>
+ <CAHk-=wht7kAeyR5xEW2ORj7m0hibVxZ3t+2ie8vNHLQfdbN2_g@mail.gmail.com>
+ <CAKMK7uHAk9-Vy2cof0ws=DrcD52GHiCDiyHbjLd19CgpBU2rKQ@mail.gmail.com>
+ <20200916152956.GV29330@paulmck-ThinkPad-P72>
+ <CAKMK7uGFyfhEyt=jmdk2jDO-hq0_Pf0ck+cKSELHjr2U3rPuYQ@mail.gmail.com>
+ <20200916205840.GD29330@paulmck-ThinkPad-P72>
+ <CAKMK7uHL2dMv80b8uBXr=BqHD2TQeODQQM1MGYhAfCYbX7sLrA@mail.gmail.com>
+ <20200929081938.GC22035@dhcp22.suse.cz>
+ <20200929090003.GG438822@phenom.ffwll.local>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <d34c189c-4528-0458-0b84-cfd36dc068b3@oracle.com>
+In-Reply-To: <20200929090003.GG438822@phenom.ffwll.local>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 10:03:47AM -0400, Ross Philipson wrote:
-> On 9/25/20 3:18 PM, Arvind Sankar wrote:
-> > You will also need to avoid initializing data with symbol addresses.
+On Tue 29-09-20 11:00:03, Daniel Vetter wrote:
+> On Tue, Sep 29, 2020 at 10:19:38AM +0200, Michal Hocko wrote:
+> > On Wed 16-09-20 23:43:02, Daniel Vetter wrote:
+> > > I can
+> > > then figure out whether it's better to risk not spotting issues with
+> > > call_rcu vs slapping a memalloc_noio_save/restore around all these
+> > > critical section which force-degrades any allocation to GFP_ATOMIC at
 > > 
-> > 	.long mle_header
-> > 	.long sl_stub_entry
-> > 	.long sl_gdt
+> > did you mean memalloc_noreclaim_* here?
+> 
+> Yeah I picked the wrong one of that family of functions.
+> 
+> > > most, but has the risk that we run into code that assumes "GFP_KERNEL
+> > > never fails for small stuff" and has a decidedly less tested fallback
+> > > path than rcu code.
 > > 
-...
-> > 
-> > The other two are more messy, unfortunately there is no easy way to tell
-> > the linker what we want here. The other entry point addresses (for the
-> > EFI stub) are populated in a post-processing step after the compressed
-> > kernel has been linked, we could teach it to also update kernel_info.
-> > 
-> > Without that, for kernel_info, you could change it to store the offset
-> > of the MLE header from kernel_info, instead of from the start of the
-> > image.
+> > Even if the above then please note that memalloc_noreclaim_* or
+> > PF_MEMALLOC should be used with an extreme care. Essentially only for
+> > internal memory reclaimers. It grants access to _all_ the available
+> > memory so any abuse can be detrimental to the overall system operation.
+> > Allocation failure in this mode means that we are out of memory and any
+> > code relying on such an allocation has to carefuly consider failure.
+> > This is not a random allocation mode.
+> 
+> Agreed, that's why I don't like having these kind of automagic critical
+> sections. It's a bit a shotgun approach. Paul said that the code would
+> handle failures, but the problem is that it applies everywhere.
 
-Actually, kernel_info is currently placed inside .rodata, which is quite
-a ways into the compressed kernel, so an offset from kernel_info would
-end up having to be negative, which would be ugly. I'll see if I can
-come up with some way to avoid this.
+Ohh, in the ideal world we wouldn't need anything like that. But then
+the reality fires:
+* PF_MEMALLOC (resp memalloc_noreclaim_* for that matter) is primarily used
+  to make sure that allocations from inside the memory reclaim - yeah that
+  happens - will not recurse.
+* PF_MEMALLOC_NO{FS,IO} (resp memalloc_no{fs,io}*) are used to mark no
+  fs/io reclaim recursion critical sections because controling that for
+  each allocation inside fs transaction (or other sensitive) or IO
+  contexts turned out to be unmaintainable and people simply fallen into
+  using NOFS/NOIO unconditionally which is causing reclaim imbalance
+  problems.
+* PF_MEMALLOC_NOCMA (resp memalloc_nocma*) is used for long term pinning
+  when CMA pages cannot be pinned because that would break the CMA
+  guarantees. Communicating this to all potential allocations during
+  pinning is simply unfeasible.
 
-> > 
-> > For the MLE header, it could be moved to .head.text in head_64.S, and
-> > initialized with
-> > 	.long rva(sl_stub)
-> > This will also let it be placed at a fixed offset from startup_32, so
-> > that kernel_info can just be populated with a constant.
-> 
-> Thank you for the detailed reply. I am going to start digging into this now.
-> 
-> Ross
-> 
-> > 
-> 
+So you are absolutely right that these critical sections with side
+effects on all allocations are far from ideal from the API point of view
+but they are mostly mirroring a demand for functionality which is
+_practically_ impossible to achieve with our current code base. Not that
+we couldn't get back to drawing board and come up with a saner thing and
+rework the world...
+-- 
+Michal Hocko
+SUSE Labs
