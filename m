@@ -2,43 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7BA927C4DA
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:17:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9222027C353
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:06:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729626AbgI2LRI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:17:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33612 "EHLO mail.kernel.org"
+        id S1728653AbgI2LEo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:04:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40688 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728522AbgI2LQu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:16:50 -0400
+        id S1728586AbgI2LEc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:04:32 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 86ED921D41;
-        Tue, 29 Sep 2020 11:16:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DA35321734;
+        Tue, 29 Sep 2020 11:04:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601378210;
-        bh=nY6s31o4Uapbgqv3OMmpaHn2wWQKiW94YW1DjcUH4Bk=;
+        s=default; t=1601377471;
+        bh=nV2hnbKtkB2BlDOC4qeSSeGMkvJWmVGMRnEvR21pAkU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=E9yXbdtdgNZth+qAgBbAPejLwFr3QemD8xvoPizpM+yM1udH52M5ljOq4Y6+38GJN
-         YEYQwp2/arouFhFBQf6676kdNtcKr1hO8WeKX4dd4LHPj067ju5h4anZmZpqtIWdwZ
-         w+iZOO9NZMsQLodH/4cWyQLhzn7XEgUyZOpBAWj0=
+        b=xwjsv/X2lMlxrPWc6cYbgjJuqbTxiAF5dD45WC56vp9JWpdXnkx5gtJnt1RYnelHI
+         BGPME54sIT3+b2uR1ulmShaZvROocdOsbKMOmkg6RtkppSxjugah1MHFQP1YeWrqiT
+         Q/HljNQJYbKAarYIHdMlvjIT3sHu38RHu+0+oPpk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jaewon Kim <jaewon31.kim@samsung.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Michel Lespinasse <walken@google.com>,
-        Borislav Petkov <bp@suse.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        stable@vger.kernel.org, Liu Song <liu.song11@zte.com.cn>,
+        Richard Weinberger <richard@nod.at>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 101/166] mm/mmap.c: initialize align_offset explicitly for vm_unmapped_area
-Date:   Tue, 29 Sep 2020 13:00:13 +0200
-Message-Id: <20200929105940.251866393@linuxfoundation.org>
+Subject: [PATCH 4.4 47/85] ubifs: Fix out-of-bounds memory access caused by abnormal value of node_len
+Date:   Tue, 29 Sep 2020 13:00:14 +0200
+Message-Id: <20200929105930.589534153@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929105935.184737111@linuxfoundation.org>
-References: <20200929105935.184737111@linuxfoundation.org>
+In-Reply-To: <20200929105928.198942536@linuxfoundation.org>
+References: <20200929105928.198942536@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,60 +43,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jaewon Kim <jaewon31.kim@samsung.com>
+From: Liu Song <liu.song11@zte.com.cn>
 
-[ Upstream commit 09ef5283fd96ac424ef0e569626f359bf9ab86c9 ]
+[ Upstream commit acc5af3efa303d5f36cc8c0f61716161f6ca1384 ]
 
-On passing requirement to vm_unmapped_area, arch_get_unmapped_area and
-arch_get_unmapped_area_topdown did not set align_offset.  Internally on
-both unmapped_area and unmapped_area_topdown, if info->align_mask is 0,
-then info->align_offset was meaningless.
+In “ubifs_check_node”, when the value of "node_len" is abnormal,
+the code will goto label of "out_len" for execution. Then, in the
+following "ubifs_dump_node", if inode type is "UBIFS_DATA_NODE",
+in "print_hex_dump", an out-of-bounds access may occur due to the
+wrong "ch->len".
 
-But commit df529cabb7a2 ("mm: mmap: add trace point of
-vm_unmapped_area") always prints info->align_offset even though it is
-uninitialized.
+Therefore, when the value of "node_len" is abnormal, data length
+should to be adjusted to a reasonable safe range. At this time,
+structured data is not credible, so dump the corrupted data directly
+for analysis.
 
-Fix this uninitialized value issue by setting it to 0 explicitly.
-
-Before:
-  vm_unmapped_area: addr=0x755b155000 err=0 total_vm=0x15aaf0 flags=0x1 len=0x109000 lo=0x8000 hi=0x75eed48000 mask=0x0 ofs=0x4022
-
-After:
-  vm_unmapped_area: addr=0x74a4ca1000 err=0 total_vm=0x168ab1 flags=0x1 len=0x9000 lo=0x8000 hi=0x753d94b000 mask=0x0 ofs=0x0
-
-Signed-off-by: Jaewon Kim <jaewon31.kim@samsung.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Reviewed-by: Andrew Morton <akpm@linux-foundation.org>
-Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
-Cc: Michel Lespinasse <walken@google.com>
-Cc: Borislav Petkov <bp@suse.de>
-Link: http://lkml.kernel.org/r/20200409094035.19457-1-jaewon31.kim@samsung.com
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Liu Song <liu.song11@zte.com.cn>
+Signed-off-by: Richard Weinberger <richard@nod.at>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- mm/mmap.c | 2 ++
- 1 file changed, 2 insertions(+)
+ fs/ubifs/io.c | 16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
 
-diff --git a/mm/mmap.c b/mm/mmap.c
-index 724b7c4f1a5b5..c389fd258384f 100644
---- a/mm/mmap.c
-+++ b/mm/mmap.c
-@@ -2034,6 +2034,7 @@ arch_get_unmapped_area(struct file *filp, unsigned long addr,
- 	info.low_limit = mm->mmap_base;
- 	info.high_limit = TASK_SIZE;
- 	info.align_mask = 0;
-+	info.align_offset = 0;
- 	return vm_unmapped_area(&info);
- }
- #endif
-@@ -2075,6 +2076,7 @@ arch_get_unmapped_area_topdown(struct file *filp, const unsigned long addr0,
- 	info.low_limit = max(PAGE_SIZE, mmap_min_addr);
- 	info.high_limit = mm->mmap_base;
- 	info.align_mask = 0;
-+	info.align_offset = 0;
- 	addr = vm_unmapped_area(&info);
+diff --git a/fs/ubifs/io.c b/fs/ubifs/io.c
+index 97be412153328..9213a9e046ae0 100644
+--- a/fs/ubifs/io.c
++++ b/fs/ubifs/io.c
+@@ -237,7 +237,7 @@ int ubifs_is_mapped(const struct ubifs_info *c, int lnum)
+ int ubifs_check_node(const struct ubifs_info *c, const void *buf, int lnum,
+ 		     int offs, int quiet, int must_chk_crc)
+ {
+-	int err = -EINVAL, type, node_len;
++	int err = -EINVAL, type, node_len, dump_node = 1;
+ 	uint32_t crc, node_crc, magic;
+ 	const struct ubifs_ch *ch = buf;
  
- 	/*
+@@ -290,10 +290,22 @@ int ubifs_check_node(const struct ubifs_info *c, const void *buf, int lnum,
+ out_len:
+ 	if (!quiet)
+ 		ubifs_err(c, "bad node length %d", node_len);
++	if (type == UBIFS_DATA_NODE && node_len > UBIFS_DATA_NODE_SZ)
++		dump_node = 0;
+ out:
+ 	if (!quiet) {
+ 		ubifs_err(c, "bad node at LEB %d:%d", lnum, offs);
+-		ubifs_dump_node(c, buf);
++		if (dump_node) {
++			ubifs_dump_node(c, buf);
++		} else {
++			int safe_len = min3(node_len, c->leb_size - offs,
++				(int)UBIFS_MAX_DATA_NODE_SZ);
++			pr_err("\tprevent out-of-bounds memory access\n");
++			pr_err("\ttruncated data node length      %d\n", safe_len);
++			pr_err("\tcorrupted data node:\n");
++			print_hex_dump(KERN_ERR, "\t", DUMP_PREFIX_OFFSET, 32, 1,
++					buf, safe_len, 0);
++		}
+ 		dump_stack();
+ 	}
+ 	return err;
 -- 
 2.25.1
 
