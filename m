@@ -2,102 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABBCF27D642
+	by mail.lfdr.de (Postfix) with ESMTP id 19D0A27D641
 	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 20:58:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728502AbgI2S6h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 14:58:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50342 "EHLO
+        id S1728308AbgI2S6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 14:58:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728172AbgI2S6d (ORCPT
+        with ESMTP id S1727740AbgI2S6d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 29 Sep 2020 14:58:33 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50337C061755;
-        Tue, 29 Sep 2020 11:58:33 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id f18so5486159pfa.10;
-        Tue, 29 Sep 2020 11:58:33 -0700 (PDT)
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6632C061755;
+        Tue, 29 Sep 2020 11:58:32 -0700 (PDT)
+Received: by mail-oi1-x244.google.com with SMTP id v20so6672497oiv.3;
+        Tue, 29 Sep 2020 11:58:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
+        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=XZ/FToa3AtOQUQOsb9qJSrILRh6kvTTOmkZ8BW0o6ag=;
-        b=cjUBSlhZ6UxY7zZ/tL81xKJQC2TvgjdO4HRMZp3UP623ayNyff2RcBVkImm4i/gX1Y
-         E8vN0otEvcaBRFSvMH/7soYlnd5nbvxUCwZiewdQ789yRXxCxeqL0HHuwKDShVWwBbjG
-         CcStVRVo9N/N4rKWTUeopfKxnOwrkQt+BlooeaaK37C1LnAdCoHAFc4MczSgufDDutTJ
-         Ovvoyd5BK7T+1oLdqoqvykgugZ+bLrEj8TZDSE9zeuXYI8b4/OCvevAvRbsSX0lLIisS
-         dWP4oThRfkB5OqpoWbRCxOsxBF2h3ISeP9WCV37vpSgm4XAzqICdiZzrrbrM5Flm/Dds
-         b33w==
+        bh=xVCdiR1eSWeaaz96xLLdMC6aVvmqcPrWvUUEmOcfrNc=;
+        b=TFxGn8vL0pRtbL04NfgZacOqM8aPccnRq1HfVXnHn1ujjTAkEO1OlpHjmGaXcB51a8
+         3y97nIg8Tgu+aTJLyvlfi+a1vLSBJ2WNxNIIriM8jqlz6GZlL87Cmi6vZOPhReulaRxM
+         LSIBvKYlomziYCpdCny/7z2+ypAmGdlsIn6jVpFugf9foXq1eQt6jaA4sknO0B/1B+y0
+         YBQY2Mm1qxw6wCL5iPxcCecW4a7AyIVTRYweHc/7Ciob3HRoF6CEh/wV/U81hJU9S8xI
+         d/7fSgTfo20YWNjZAm1tJ3MVPkiWQ2YhrMQlUcLUBGyfGs1gHwx/5VKw9J1zXrWRA1Zj
+         WCfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=XZ/FToa3AtOQUQOsb9qJSrILRh6kvTTOmkZ8BW0o6ag=;
-        b=lFnB5NMZ9uaE3805ko4Y128majJDOBIIrZXGEqskA4BJI8n3PzeKacn88fERbzaiq4
-         UJNVHkGchwDZKonqZk+pGi1E1dRnk3Qj/VMtzC+eJmquf9DXt3gas1iFragzETmzFyw8
-         9dSESRpymFJ9VXDgjHe+CEF/Lpgs+4ghdFM0/w+dT+7xh9NGDmadRtk8vwjGrztIcf9e
-         Y/neB5L28YNFZkB+lH6wWCfmGwOdmp6Fpj0yKbpsIPShRo+Gmf0HPXEFssSd/t3rMoHk
-         qBPS9LDf5+Dje6aXO8GoB75IrCsQOEw4kvKeRdGTksbs8vbaIMUoRRgC7npfwh4E8gXr
-         pR9Q==
-X-Gm-Message-State: AOAM533cNJ1lEyMAlQR7tQ0nZpq+oXFy2iShUYdZ5O5IsnbJpc2ps4PQ
-        7fJYd8Wdf9uFtzn3v6yjfcE=
-X-Google-Smtp-Source: ABdhPJyKwhZR3c4Ipym8Bpt1caw0vWJ1Z4f6NSyMSqvkGi3xTPgpjdLmkGO66H3GJheo+MBVnsaTKQ==
-X-Received: by 2002:a17:902:74ca:b029:d2:ad1b:332 with SMTP id f10-20020a17090274cab02900d2ad1b0332mr3471411plt.7.1601405912614;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=xVCdiR1eSWeaaz96xLLdMC6aVvmqcPrWvUUEmOcfrNc=;
+        b=qPC3jTuurc9RMWfoW5suZcvtF35mZ3CAJfpsZ3SQwnycnKmYjZasgEJ0EUCVoev8v2
+         V2bV6E4EMmMBVbSipuKLdMEfMqzpF8/GbUDWrmcvjZ6iK4nFMZqPzTDHIdCUAk3Qlr1O
+         NEO+Tva6w8SsL22Ozo0fPtG2THC6hA6d3NGZ5jKuE1//eFHD6uZ3rHWUq0fROYysjUPL
+         wI8+Jyq0x+fgLaSZQ5lGQ199CZGRVAY44ALA5gnu3u+wVEM3YVhD+wVjVSEuzsF5XUeZ
+         gM9vrcQ5kvgIcYUm0MLk7MDISY7p9IzMkcPKTUQ2uvLegrQYsBctrvKvWfTUSxhNdI4W
+         8fdw==
+X-Gm-Message-State: AOAM533BVqjutkmqOJWZT3cPdff/fAHbJYWbjS3COpeo1ZWV4tAMaHwY
+        1zspKjVqayt7SGtXKF8qGOT7hmZiIcs=
+X-Google-Smtp-Source: ABdhPJzGpvjr3srKIs0LvX9h0qTRYrDdzDPEeaOX3uNI172a1MRng59mUJqY/uYk0Hitx8Pwtv5qXg==
+X-Received: by 2002:aca:51cf:: with SMTP id f198mr3610949oib.107.1601405912079;
         Tue, 29 Sep 2020 11:58:32 -0700 (PDT)
-Received: from localhost.localdomain ([49.207.218.220])
-        by smtp.gmail.com with ESMTPSA id c3sm6350181pfn.23.2020.09.29.11.58.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id u2sm1184612oig.48.2020.09.29.11.58.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
         Tue, 29 Sep 2020 11:58:31 -0700 (PDT)
-From:   Anant Thazhemadam <anant.thazhemadam@gmail.com>
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        Anant Thazhemadam <anant.thazhemadam@gmail.com>,
-        syzbot+6ce141c55b2f7aafd1c4@syzkaller.appspotmail.com,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [Linux-kernel-mentees][PATCH] bluetooth: hci_h5: close serdev device and free hu in h5_close
-Date:   Wed, 30 Sep 2020 00:28:15 +0530
-Message-Id: <20200929185815.12879-1-anant.thazhemadam@gmail.com>
-X-Mailer: git-send-email 2.25.1
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH 4.9 000/121] 4.9.238-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        shuah@kernel.org, patches@kernelci.org,
+        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
+        pavel@denx.de, stable@vger.kernel.org
+References: <20200929105930.172747117@linuxfoundation.org>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+Message-ID: <7b495e30-6349-b3dd-e157-09a5c74ecd45@roeck-us.net>
+Date:   Tue, 29 Sep 2020 11:58:28 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+In-Reply-To: <20200929105930.172747117@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When h5_close() gets called, the memory allocated for the hu gets 
-freed only if hu->serdev doesn't exist. This leads to a memory leak.
-So when h5_close() is requested, close the serdev device instance and
-free the memory allocated to the hu entirely instead.
+On 9/29/20 3:59 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.9.238 release.
+> There are 121 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Thu, 01 Oct 2020 10:59:03 +0000.
+> Anything received after that time might be too late.
+> 
 
-Fixes: https://syzkaller.appspot.com/bug?extid=6ce141c55b2f7aafd1c4
-Reported-by: syzbot+6ce141c55b2f7aafd1c4@syzkaller.appspotmail.com
-Tested-by: syzbot+6ce141c55b2f7aafd1c4@syzkaller.appspotmail.com
-Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
----
- drivers/bluetooth/hci_h5.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+I am seeing a bunch of boot stalls with this image for various arm
+and arm64 boots. I'll bisect and report.
 
-diff --git a/drivers/bluetooth/hci_h5.c b/drivers/bluetooth/hci_h5.c
-index e41854e0d79a..3d1585add572 100644
---- a/drivers/bluetooth/hci_h5.c
-+++ b/drivers/bluetooth/hci_h5.c
-@@ -248,8 +248,12 @@ static int h5_close(struct hci_uart *hu)
- 	if (h5->vnd && h5->vnd->close)
- 		h5->vnd->close(h5);
- 
--	if (!hu->serdev)
--		kfree(h5);
-+	if (hu->serdev)
-+		serdev_device_close(hu->serdev);
-+
-+	kfree_skb(h5->rx_skb);
-+	kfree(h5);
-+	h5 = NULL;
- 
- 	return 0;
- }
--- 
-2.25.1
+Guenter
+
 
