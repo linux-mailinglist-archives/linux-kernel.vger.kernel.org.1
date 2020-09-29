@@ -2,284 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A65227D196
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 16:41:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7263C27D17B
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 16:40:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728818AbgI2OlE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 10:41:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:23546 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729460AbgI2OlC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 10:41:02 -0400
-Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601390460;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=l0ySg0110w8OW3invBGriU5wyED1HKE44VPvaG4UaUQ=;
-        b=AuXITHLMddNggqzrWY49AcL+Ts2OjZigYZwG2vVUvy3IqvwxnZ8CYvnhZePE2BHv5d+d0Q
-        MDdxnn3PWPv63TOISMStceqyU4QqARDiZw7PDVf40SvgIe/GREN2jUTmwhDOQU0ktKE5+f
-        nHuE/EgEXz/byTCU6nEgaiNVGMZXBEo=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-242-kfd23hhEOoqarNEWWaVY2A-1; Tue, 29 Sep 2020 10:40:58 -0400
-X-MC-Unique: kfd23hhEOoqarNEWWaVY2A-1
-Received: by mail-qk1-f198.google.com with SMTP id m186so2796098qkf.12
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 07:40:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=l0ySg0110w8OW3invBGriU5wyED1HKE44VPvaG4UaUQ=;
-        b=HfVMa7zpjLPMnjnpzhBWE8dCFbM/qBP1FtcZI1opj5xDjbGSLhMNZ44e7wvut6ZEC+
-         wsLnidmWtvY4el8e5D4WjFK3dN7/a5o2zV5pF3cPEVlUYnh51Bw0rFZfSv4q3rYaFm9b
-         jajbVxaByXRMOOz7x1poyesbHpwdCJnItfjTciy7BroVpL3u2zrfTkh+sWhqoUHaOIlQ
-         GIEeJq37GTkY8dLaym8PB7hi3TiBuOpyvhBMQpQKzLmzPcuPYWIIojQBDIVu2/IdH8h8
-         CYf3urUQa5OP89F5w7tqtzGQOLDqGpPHnWGq95WyUgrpHAVkfRE9fkjZAkyt6uxQ5uv+
-         fvQQ==
-X-Gm-Message-State: AOAM530k0NM685rXHtBLvZZRmr7Ze6b6NrKU2zfveoyuNx+WU5B6k/De
-        D5Gcsw516UtncdJeo5w6LQGgnNZiuwTAoCnSji8XzTyhotrG4NrsTiI8jqvIKiI6dBCwJeXo4rB
-        Rsfyw6RJr5tsJMxwRoNK3yNtzsF2DSZAWR9M662u8
-X-Received: by 2002:a05:620a:b1a:: with SMTP id t26mr4681263qkg.353.1601390456406;
-        Tue, 29 Sep 2020 07:40:56 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxGXRiKbOouJmxqcaB852zvTvNt3brwJyM0RvvbA+jNO5LTY2XthmJfteBTC1EPfiJm02VqdiHjaCBPFS/38Hw=
-X-Received: by 2002:a05:620a:b1a:: with SMTP id t26mr4681238qkg.353.1601390456048;
- Tue, 29 Sep 2020 07:40:56 -0700 (PDT)
+        id S1729122AbgI2Okb convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 29 Sep 2020 10:40:31 -0400
+Received: from mga09.intel.com ([134.134.136.24]:6246 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731420AbgI2Ok0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 10:40:26 -0400
+IronPort-SDR: vRDWGH6FOVcYL5eSl+8FzHWbSGlUb5ZOiiLgWdt1GNZlJ+4R+iLln+eTQDY6SWhDAwNIZVhavZ
+ 7OaSzg3ZGe3w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9758"; a="163078429"
+X-IronPort-AV: E=Sophos;i="5.77,319,1596524400"; 
+   d="scan'208";a="163078429"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2020 07:40:24 -0700
+IronPort-SDR: +wZ7CksQQGgpYoSu7T9vjla7Z7LXHP4nUC66KD+iy+ZE+tDTtX+LPy1y98ZBdBUPec+1xZycL9
+ aYqZuQ+jA89A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,319,1596524400"; 
+   d="scan'208";a="324693822"
+Received: from irsmsx606.ger.corp.intel.com ([163.33.146.139])
+  by orsmga002.jf.intel.com with ESMTP; 29 Sep 2020 07:40:24 -0700
+Received: from irsmsx601.ger.corp.intel.com (163.33.146.7) by
+ IRSMSX606.ger.corp.intel.com (163.33.146.139) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Tue, 29 Sep 2020 15:40:23 +0100
+Received: from irsmsx601.ger.corp.intel.com ([163.33.146.7]) by
+ irsmsx601.ger.corp.intel.com ([163.33.146.7]) with mapi id 15.01.1713.004;
+ Tue, 29 Sep 2020 15:40:23 +0100
+From:   "Rojewski, Cezary" <cezary.rojewski@intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Andrew Morton" <akpm@linux-foundation.org>
+Subject: Re: [PATCH v2] list: Add a macro to test if entry is pointing to the
+ head
+Thread-Topic: [PATCH v2] list: Add a macro to test if entry is pointing to the
+ head
+Thread-Index: AQHWlmaO97X0AF+CMUuhSjA0mQ6lcal/rq5g
+Date:   Tue, 29 Sep 2020 14:40:23 +0000
+Message-ID: <5f95bede9603416ca9f1c6ee17d54b35@intel.com>
+References: <20200929134342.51489-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20200929134342.51489-1-andriy.shevchenko@linux.intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [163.33.253.164]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-References: <20200924032125.18619-1-jasowang@redhat.com> <20200924032125.18619-14-jasowang@redhat.com>
-In-Reply-To: <20200924032125.18619-14-jasowang@redhat.com>
-From:   Eugenio Perez Martin <eperezma@redhat.com>
-Date:   Tue, 29 Sep 2020 16:40:19 +0200
-Message-ID: <CAJaqyWf5tP9DtSc1JP_c4iOkHeVhnEm=kpW4Cv3cMLXfm71h0Q@mail.gmail.com>
-Subject: Re: [RFC PATCH 13/24] vhost-vdpa: introduce ASID based IOTLB
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     Michael Tsirkin <mst@redhat.com>, Cindy Lu <lulu@redhat.com>,
-        kvm list <kvm@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Rob Miller <rob.miller@broadcom.com>,
-        lingshan.zhu@intel.com, Harpreet Singh Anand <hanand@xilinx.com>,
-        mhabets@solarflare.com, eli@mellanox.com,
-        Adrian Moreno Zapata <amorenoz@redhat.com>,
-        Maxime Coquelin <maxime.coquelin@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 5:24 AM Jason Wang <jasowang@redhat.com> wrote:
->
-> This patch introduces the support of ASID based IOTLB by tagging IOTLB
-> with a unique ASID. This is a must for supporting ASID based vhost
-> IOTLB API by the following patches.
->
-> IOTLB were stored in a hlist and new IOTLB will be allocated when a
-> new ASID is seen via IOTLB API and destoryed when there's no mapping
-> associated with an ASID.
->
-> Signed-off-by: Jason Wang <jasowang@redhat.com>
+On 2020-09-29 3:43 PM, Andy Shevchenko wrote:
+> Add a macro to test if entry is pointing to the head of the list
+> which is useful in cases like:
+> 
+>    list_for_each_entry(pos, &head, member) {
+>      if (cond)
+>        break;
+>    }
+>    if (list_entry_is_head(pos, &head, member))
+>      return -ERRNO;
+> 
+> that allows to avoid additional variable to be added to track if loop
+> has not been stopped in the middle.
+> 
+> While here, convert list_for_each_entry*() family of macros to use a new one.
+> 
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 > ---
->  drivers/vhost/vdpa.c | 94 +++++++++++++++++++++++++++++++++-----------
->  1 file changed, 72 insertions(+), 22 deletions(-)
->
-> diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
-> index 6552987544d7..1ba7e95619b5 100644
-> --- a/drivers/vhost/vdpa.c
-> +++ b/drivers/vhost/vdpa.c
-> @@ -34,13 +34,21 @@ enum {
->
->  #define VHOST_VDPA_DEV_MAX (1U << MINORBITS)
->
-> +#define VHOST_VDPA_IOTLB_BUCKETS 16
-> +
-> +struct vhost_vdpa_as {
-> +       struct hlist_node hash_link;
-> +       struct vhost_iotlb iotlb;
-> +       u32 id;
-> +};
-> +
->  struct vhost_vdpa {
->         struct vhost_dev vdev;
->         struct iommu_domain *domain;
->         struct vhost_virtqueue *vqs;
->         struct completion completion;
->         struct vdpa_device *vdpa;
-> -       struct vhost_iotlb *iotlb;
-> +       struct hlist_head as[VHOST_VDPA_IOTLB_BUCKETS];
->         struct device dev;
->         struct cdev cdev;
->         atomic_t opened;
-> @@ -49,12 +57,64 @@ struct vhost_vdpa {
->         int minor;
->         struct eventfd_ctx *config_ctx;
->         int in_batch;
-> +       int used_as;
+> v2: converted users inside list.h, dropped ambiguous description
 
-Hi!
+Reviewed-by: Cezary Rojewski <cezary.rojewski@intel.com>
 
-The variable `used_as` is not used anywhere outside this commit, and
-in this commit is only tracking the number os AS added, not being able
-to query it or using it by limiting them or anything like that.
+This is a good addition to the list of helper macros found in list.h.
 
-If I'm right, could we consider deleting it? Or am I missing some usage of it?
+When looking at below:
 
-I smoke tested all the series deleting that variable and everything
-seems right to me.
+>   /**
+>    * list_for_each_entry	-	iterate over list of given type
+>    * @pos:	the type * to use as a loop cursor.
+> @@ -617,7 +626,7 @@ static inline void list_splice_tail_init(struct list_head *list,
+>    */
+>   #define list_for_each_entry(pos, head, member)				\
+>   	for (pos = list_first_entry(head, typeof(*pos), member);	\
+> -	     &pos->member != (head);					\
+> +	     !list_entry_is_head(pos, head, member);			\
+>   	     pos = list_next_entry(pos, member))
+>   
 
-Thanks!
+it seems such helper should have been here a long time ago (notice the
+usage of helpers for initial assignment and cursor update while the
+loop-exit check was devoid of such).
 
->  };
->
->  static DEFINE_IDA(vhost_vdpa_ida);
->
->  static dev_t vhost_vdpa_major;
->
-> +static struct vhost_vdpa_as *asid_to_as(struct vhost_vdpa *v, u32 asid)
-> +{
-> +       struct hlist_head *head = &v->as[asid % VHOST_VDPA_IOTLB_BUCKETS];
-> +       struct vhost_vdpa_as *as;
-> +
-> +       hlist_for_each_entry(as, head, hash_link)
-> +               if (as->id == asid)
-> +                       return as;
-> +
-> +       return NULL;
-> +}
-> +
-> +static struct vhost_vdpa_as *vhost_vdpa_alloc_as(struct vhost_vdpa *v, u32 asid)
-> +{
-> +       struct hlist_head *head = &v->as[asid % VHOST_VDPA_IOTLB_BUCKETS];
-> +       struct vhost_vdpa_as *as;
-> +
-> +       if (asid_to_as(v, asid))
-> +               return NULL;
-> +
-> +       as = kmalloc(sizeof(*as), GFP_KERNEL);
-> +       if (!as)
-> +               return NULL;
-> +
-> +       vhost_iotlb_init(&as->iotlb, 0, 0);
-> +       as->id = asid;
-> +       hlist_add_head(&as->hash_link, head);
-> +       ++v->used_as;
-> +
-> +       return as;
-> +}
-> +
-> +static int vhost_vdpa_remove_as(struct vhost_vdpa *v, u32 asid)
-> +{
-> +       struct vhost_vdpa_as *as = asid_to_as(v, asid);
-> +
-> +       /* Remove default address space is not allowed */
-> +       if (asid == 0)
-> +               return -EINVAL;
-> +
-> +       if (!as)
-> +               return -EINVAL;
-> +
-> +       hlist_del(&as->hash_link);
-> +       vhost_iotlb_reset(&as->iotlb);
-> +       kfree(as);
-> +       --v->used_as;
-> +
-> +       return 0;
-> +}
-> +
->  static void handle_vq_kick(struct vhost_work *work)
->  {
->         struct vhost_virtqueue *vq = container_of(work, struct vhost_virtqueue,
-> @@ -513,15 +573,6 @@ static void vhost_vdpa_iotlb_unmap(struct vhost_vdpa *v,
->         }
->  }
->
-> -static void vhost_vdpa_iotlb_free(struct vhost_vdpa *v)
-> -{
-> -       struct vhost_iotlb *iotlb = v->iotlb;
-> -
-> -       vhost_vdpa_iotlb_unmap(v, iotlb, 0ULL, 0ULL - 1);
-> -       kfree(v->iotlb);
-> -       v->iotlb = NULL;
-> -}
-> -
->  static int perm_to_iommu_flags(u32 perm)
->  {
->         int flags = 0;
-> @@ -681,7 +732,8 @@ static int vhost_vdpa_process_iotlb_msg(struct vhost_dev *dev, u32 asid,
->         struct vhost_vdpa *v = container_of(dev, struct vhost_vdpa, vdev);
->         struct vdpa_device *vdpa = v->vdpa;
->         const struct vdpa_config_ops *ops = vdpa->config;
-> -       struct vhost_iotlb *iotlb = v->iotlb;
-> +       struct vhost_vdpa_as *as = asid_to_as(v, 0);
-> +       struct vhost_iotlb *iotlb = &as->iotlb;
->         int r = 0;
->
->         if (asid != 0)
-> @@ -775,6 +827,7 @@ static void vhost_vdpa_cleanup(struct vhost_vdpa *v)
->  {
->         vhost_dev_cleanup(&v->vdev);
->         kfree(v->vdev.vqs);
-> +       vhost_vdpa_remove_as(v, 0);
->  }
->
->  static int vhost_vdpa_open(struct inode *inode, struct file *filep)
-> @@ -807,23 +860,18 @@ static int vhost_vdpa_open(struct inode *inode, struct file *filep)
->         vhost_dev_init(dev, vqs, nvqs, 0, 0, 0, false,
->                        vhost_vdpa_process_iotlb_msg);
->
-> -       dev->iotlb = vhost_iotlb_alloc(0, 0);
-> -       if (!dev->iotlb) {
-> -               r = -ENOMEM;
-> -               goto err_init_iotlb;
-> -       }
-> +       if (!vhost_vdpa_alloc_as(v, 0))
-> +               goto err_alloc_as;
->
->         r = vhost_vdpa_alloc_domain(v);
->         if (r)
-> -               goto err_alloc_domain;
-> +               goto err_alloc_as;
->
->         filep->private_data = v;
->
->         return 0;
->
-> -err_alloc_domain:
-> -       vhost_vdpa_iotlb_free(v);
-> -err_init_iotlb:
-> +err_alloc_as:
->         vhost_vdpa_cleanup(v);
->  err:
->         atomic_dec(&v->opened);
-> @@ -851,7 +899,6 @@ static int vhost_vdpa_release(struct inode *inode, struct file *filep)
->         filep->private_data = NULL;
->         vhost_vdpa_reset(v);
->         vhost_dev_stop(&v->vdev);
-> -       vhost_vdpa_iotlb_free(v);
->         vhost_vdpa_free_domain(v);
->         vhost_vdpa_config_put(v);
->         vhost_vdpa_clean_irq(v);
-> @@ -950,7 +997,7 @@ static int vhost_vdpa_probe(struct vdpa_device *vdpa)
->         const struct vdpa_config_ops *ops = vdpa->config;
->         struct vhost_vdpa *v;
->         int minor;
-> -       int r;
-> +       int i, r;
->
->         /* Only support 1 address space */
->         if (vdpa->ngroups != 1)
-> @@ -1002,6 +1049,9 @@ static int vhost_vdpa_probe(struct vdpa_device *vdpa)
->         init_completion(&v->completion);
->         vdpa_set_drvdata(vdpa, v);
->
-> +       for (i = 0; i < VHOST_VDPA_IOTLB_BUCKETS; i++)
-> +               INIT_HLIST_HEAD(&v->as[i]);
-> +
->         return 0;
->
->  err:
-> --
-> 2.20.1
->
+Czarek
 
