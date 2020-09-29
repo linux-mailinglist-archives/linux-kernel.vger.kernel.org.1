@@ -2,103 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64EA927D9BA
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 23:04:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75D6927D9BD
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 23:05:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729223AbgI2VEd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 17:04:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41712 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726643AbgI2VEc (ORCPT
+        id S1729392AbgI2VE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 17:04:58 -0400
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:32857 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726643AbgI2VE6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 17:04:32 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1B45C061755;
-        Tue, 29 Sep 2020 14:04:32 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id k6so4098335ior.2;
-        Tue, 29 Sep 2020 14:04:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=a0NkXAOfz/tCmoqwRSNwwLFhEObgDZyv1aGRYsN3A58=;
-        b=TeS19AGYCf3rt3zZCs54zjW1ptgIGEl3q1296IzjUYomFm/qDGvxkkapB5cfsT6TsK
-         n10pzh/dE+mtOpk0sjG9QQhvLxDtcjBpDd2ySFdfU5xGRmdn3VbU1coeYLNqrpz9M+3N
-         jsZNqR6JhuGleXROuWpm8bJNtiiZUWhvUdjSwmJon/vKVG4jQgr0HmFco26wzG0/uDk9
-         7FqTufKk58VzGNGLwnYe0EXupMLEyENg8b9tRMvOh7VYIJcG+QxHXA6YN4eKvyjs1BhY
-         Nuj0rANjzFjBVNVURmjrYmqOwEb4gyo1XaVHqDLOnYhdzb+JuXhtpZ2nnWDoqWQ8m2CO
-         iSSw==
+        Tue, 29 Sep 2020 17:04:58 -0400
+Received: by mail-qt1-f194.google.com with SMTP id a4so4862801qth.0
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 14:04:57 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=a0NkXAOfz/tCmoqwRSNwwLFhEObgDZyv1aGRYsN3A58=;
-        b=ACMsA0FtwewR19kT6qzwM2pdZ87cvXluEyKJignl1Vs+BSV1DDafUnY7CaZL1vZh8l
-         VeB0msqL9KRYcXuxJocOZjTeCOQbwyXM0FH6Qb6/g8ssb1Vq4S4qTJcKO4d8TbFIZ/5x
-         ruVtrdeKI7U2DFyAqgQVS8VYWrgcrU39NEYy27uXyiF/WvBngsuiexYX1Yzeqy1omu0V
-         ZPSsqK16uf9BPPvkJm1FWoF9EPsY+fgXuwzVJ0bk55x4UywR9VNr6NTfs8+JzApGCjTP
-         ry9ZAHkgh0uyGsTLZNdapGO6QkN78i/i1pEMAJtVJeXVC3MRqVpI6qPbedz0XjX4aBfJ
-         3hpA==
-X-Gm-Message-State: AOAM53332uwuRyaiIo6A1Y5ISKLsIBfdjh9aGJnayN6W+xziTcBAsH4e
-        viHen34rT/zrX6r5ApVh13miUUf446OE6qlJ68lcJ25u9jg=
-X-Google-Smtp-Source: ABdhPJw9R4hpdBEcsERF5nvqenBU3lc4J0Oq7b72lcUX6fVXHUqz5rtyubnWtQBdKHPjJIZzjwgcjhnA/I/AE9lyWsY=
-X-Received: by 2002:a02:6995:: with SMTP id e143mr4442633jac.78.1601413471150;
- Tue, 29 Sep 2020 14:04:31 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MXHCjm2f4B3C88ZBMrTBGAoyRnpIg67/FPZnMRlWhj8=;
+        b=WidYGR55xyS8OOEXMowb96/LuIE1QRhyf3UP+fFmBzfEClfdPjg1XOzoko3g04U66O
+         KV9YwtiLaXC+RijZ95iZP5yJEOJIPAbhFq0wX6a+J+p4M2HT3I5nXJAG0tlDBxtPMOTG
+         tZhi8lprXUud5ow5UdtE/Rhor7AEXyn+L8K2vMsufqkjS84Ff8pZwlbgmrPqi7JaEgkV
+         6FALRIDKDpUHmSHUMadb2r9g6NjVcCChy6yyZbl7EWQ9bh+Ll63owxkRxJvBAFyN5mwM
+         wPWEhjgMdDdtIoWnG9/siSSejar5cNxzM7/dvvJH18bScVk4TqrKjTUdCtr6Gq9XmbZo
+         YEUA==
+X-Gm-Message-State: AOAM530WhlVhqcIUDQDPPvpzzzy9yfbgQDlFMUXDLRaPIEzJvxb3tXPe
+        SB1KioJayVDheLF+szhrghXqPjbFii3PlA==
+X-Google-Smtp-Source: ABdhPJxwDwQj7/PD82n4z/8SUv6nOfQkmljWpHQbVLg5n8K95n7c/vD6QscKFc44OOUSRU4OhZ3YGw==
+X-Received: by 2002:ac8:1387:: with SMTP id h7mr5495384qtj.386.1601413496799;
+        Tue, 29 Sep 2020 14:04:56 -0700 (PDT)
+Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
+        by smtp.gmail.com with ESMTPSA id s20sm6049524qkg.65.2020.09.29.14.04.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Sep 2020 14:04:56 -0700 (PDT)
+From:   Arvind Sankar <nivedita@alum.mit.edu>
+To:     x86@kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Ross Philipson <ross.philipson@oracle.com>
+Subject: [PATCH] x86/boot: Place kernel_info at a fixed offset
+Date:   Tue, 29 Sep 2020 17:04:55 -0400
+Message-Id: <20200929210455.2718827-1-nivedita@alum.mit.edu>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <cover.1600457297.git.sathyanarayanan.kuppuswamy@linux.intel.com> <b88d3549-717c-8208-0900-c85db8788618@linux.intel.com>
-In-Reply-To: <b88d3549-717c-8208-0900-c85db8788618@linux.intel.com>
-Reply-To: bjorn@helgaas.com
-From:   Bjorn Helgaas <bjorn.helgaas@gmail.com>
-Date:   Tue, 29 Sep 2020 16:04:19 -0500
-Message-ID: <CABhMZUUBGuQjP5cBsFNxv3UGNPDVNPjjTm5CQfD9YnYBk9yVnA@mail.gmail.com>
-Subject: Re: [PATCH v9 0/5] Simplify PCIe native ownership detection logic
-To:     "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.nkuppuswamy@gmail.com>,
-        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Raj, Ashok" <ashok.raj@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 4:00 PM Kuppuswamy, Sathyanarayanan
-<sathyanarayanan.kuppuswamy@linux.intel.com> wrote:
->
-> Hi Bjorn,
->
-> On 9/27/20 6:11 PM, Kuppuswamy Sathyanarayanan wrote:
-> > Currently, PCIe capabilities ownership status is detected by
-> > verifying the status of pcie_ports_native, pcie_ports_dpc_native
-> > and _OSC negotiated results (cached in  struct pci_host_bridge
-> > ->native_* members). But this logic can be simplified, and we can
-> > use only struct pci_host_bridge ->native_* members to detect it.
-> >
-> Did you get this patch set or do I need to send it again?
+There are use cases for storing the offset of a symbol in kernel_info.
+For example, the trenchboot series [0] needs to store the offset of the
+Measured Launch Environment header in kernel_info.
 
-I got it, thanks.  More importantly, it looks like linux-pci got it, too :)
+Since commit (note: commit ID from tip/master)
 
-$ b4 am -om/ https://lore.kernel.org/r/a640e9043db50f5adee8e38f5c60ff8423f3f598.1600457297.git.sathyanarayanan.kuppuswamy@linux.intel.com
-Looking up https://lore.kernel.org/r/a640e9043db50f5adee8e38f5c60ff8423f3f598.1600457297.git.sathyanarayanan.kuppuswamy%40linux.intel.com
-Grabbing thread from lore.kernel.org/linux-pci
-Reduced thread to strict matches only (18->10)
-Analyzing 10 messages in the thread
+  527afc212231 ("x86/boot: Check that there are no run-time relocations")
+
+run-time relocations are not allowed in the compressed kernel, so simply
+using the symbol in kernel_info, as
+
+	.long	symbol
+
+will cause a linker error because this is not position-independent.
+
+With kernel_info being a separate object file and in a different section
+from startup_32, there is no way to calculate the offset of a symbol
+from the start of the image in a position-independent way.
+
+To enable such use cases, put kernel_info into its own section which is
+placed at a predetermined offset (KERNEL_INFO_OFFSET) via the linker
+script. This will allow calculating the symbol offset in a
+position-independent way, by adding the offset from the start of
+kernel_info to KERNEL_INFO_OFFSET.
+
+Ensure that kernel_info is aligned, and use the SYM_DATA.* macros
+instead of bare labels. This stores the size of the kernel_info
+structure in the ELF symbol table.
+
+Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
+Cc: Ross Philipson <ross.philipson@oracle.com>
+[0] https://lore.kernel.org/lkml/1600959521-24158-8-git-send-email-ross.philipson@oracle.com/
 ---
-Writing m/v9_20200922_sathyanarayanan_kuppuswamy_simplify_pcie_native_ownership_detection_logic.mbx
-  [PATCH v9 1/5] PCI: Conditionally initialize host bridge native_* members
-  [PATCH v9 2/5] ACPI/PCI: Ignore _OSC negotiation result if
-pcie_ports_native is set.
-  [PATCH v9 3/5] ACPI/PCI: Ignore _OSC DPC negotiation result if
-pcie_ports_dpc_native is set.
-  [PATCH v9 4/5] PCI/portdrv: Remove redundant pci_aer_available()
-check in DPC enable logic
-  [PATCH v9 5/5] PCI/DPC: Move AER/DPC dependency checks out of DPC driver
----
-Total patches: 5
----
-Cover: m/v9_20200922_sathyanarayanan_kuppuswamy_simplify_pcie_native_ownership_detection_logic.cover
- Link: https://lore.kernel.org/r/cover.1600457297.git.sathyanarayanan.kuppuswamy@linux.intel.com
- Base: not found (applies clean to current tree)
-       git am m/v9_20200922_sathyanarayanan_kuppuswamy_simplify_pcie_native_ownership_detection_logic.mbx
+ arch/x86/boot/compressed/kernel_info.S | 19 +++++++++++++++----
+ arch/x86/boot/compressed/kernel_info.h | 12 ++++++++++++
+ arch/x86/boot/compressed/vmlinux.lds.S |  6 ++++++
+ 3 files changed, 33 insertions(+), 4 deletions(-)
+ create mode 100644 arch/x86/boot/compressed/kernel_info.h
+
+diff --git a/arch/x86/boot/compressed/kernel_info.S b/arch/x86/boot/compressed/kernel_info.S
+index f818ee8fba38..c18f07181dd5 100644
+--- a/arch/x86/boot/compressed/kernel_info.S
++++ b/arch/x86/boot/compressed/kernel_info.S
+@@ -1,12 +1,23 @@
+ /* SPDX-License-Identifier: GPL-2.0 */
+ 
++#include <linux/linkage.h>
+ #include <asm/bootparam.h>
++#include "kernel_info.h"
+ 
+-	.section ".rodata.kernel_info", "a"
++/*
++ * If a field needs to hold the offset of a symbol from the start
++ * of the image, use the macro below, eg
++ *	.long	rva(symbol)
++ * This will avoid creating run-time relocations, which are not
++ * allowed in the compressed kernel.
++ */
++
++#define rva(X) (((X) - kernel_info) + KERNEL_INFO_OFFSET)
+ 
+-	.global kernel_info
++	.section ".rodata.kernel_info", "a"
+ 
+-kernel_info:
++	.balign	16
++SYM_DATA_START(kernel_info)
+ 	/* Header, Linux top (structure). */
+ 	.ascii	"LToP"
+ 	/* Size. */
+@@ -19,4 +30,4 @@ kernel_info:
+ 
+ kernel_info_var_len_data:
+ 	/* Empty for time being... */
+-kernel_info_end:
++SYM_DATA_END_LABEL(kernel_info, SYM_L_LOCAL, kernel_info_end)
+diff --git a/arch/x86/boot/compressed/kernel_info.h b/arch/x86/boot/compressed/kernel_info.h
+new file mode 100644
+index 000000000000..c127f84aec63
+--- /dev/null
++++ b/arch/x86/boot/compressed/kernel_info.h
+@@ -0,0 +1,12 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++
++#ifndef BOOT_COMPRESSED_KERNEL_INFO_H
++#define BOOT_COMPRESSED_KERNEL_INFO_H
++
++#ifdef CONFIG_X86_64
++#define KERNEL_INFO_OFFSET 0x500
++#else /* 32-bit */
++#define KERNEL_INFO_OFFSET 0x100
++#endif
++
++#endif /* BOOT_COMPRESSED_KERNEL_INFO_H */
+diff --git a/arch/x86/boot/compressed/vmlinux.lds.S b/arch/x86/boot/compressed/vmlinux.lds.S
+index 112b2375d021..84c7b4de489e 100644
+--- a/arch/x86/boot/compressed/vmlinux.lds.S
++++ b/arch/x86/boot/compressed/vmlinux.lds.S
+@@ -7,6 +7,7 @@ OUTPUT_FORMAT(CONFIG_OUTPUT_FORMAT)
+ 
+ #include <asm/cache.h>
+ #include <asm/page_types.h>
++#include "kernel_info.h"
+ 
+ #ifdef CONFIG_X86_64
+ OUTPUT_ARCH(i386:x86-64)
+@@ -27,6 +28,11 @@ SECTIONS
+ 		HEAD_TEXT
+ 		_ehead = . ;
+ 	}
++	.rodata.kernel_info KERNEL_INFO_OFFSET : {
++		*(.rodata.kernel_info)
++	}
++	ASSERT(ABSOLUTE(kernel_info) == KERNEL_INFO_OFFSET, "kernel_info at bad address!")
++
+ 	.rodata..compressed : {
+ 		*(.rodata..compressed)
+ 	}
+-- 
+2.26.2
+
