@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA65E27C3C0
+	by mail.lfdr.de (Postfix) with ESMTP id 5B7A827C3BF
 	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:09:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728984AbgI2LIZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:08:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44248 "EHLO mail.kernel.org"
+        id S1728685AbgI2LIX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:08:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44314 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728846AbgI2LGn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:06:43 -0400
+        id S1728513AbgI2LGq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:06:46 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D614621D43;
-        Tue, 29 Sep 2020 11:06:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B196621D46;
+        Tue, 29 Sep 2020 11:06:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601377602;
-        bh=0DYThMcMEwXruMBnQ2Tklc/P7QvnSqF1jjBm4YAjmow=;
+        s=default; t=1601377605;
+        bh=3T9CsaQ3l2wYOtqtsfLNFqmg+/ln9/Tg2eV+eIuG2Mw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=I61mi21FRO1vWZwwJjymoBEFeYPWrGzD5A8yYTfsen76lAg8Fr73ivx7s7Hx9dAHq
-         zg/INgoBNQ3jaKjad/IUlYH53AlOHUvoQsAhGfrzmDjLiSYvjmZkNDJ/xhubU86bXk
-         vf7wBWgSEIRasWP5XHAuzO8964tk2/DYR7R70qQ0=
+        b=1btUoPcZ9ilEcwFxpj4Gme3Hc45Awcre0oZuuWC41/O78sE7n2SpiEOb6jJKnrgp+
+         GZ87R2UXmYnI9gbZQ1BoynEsVNquAbBjiQbDR/wvUOZdE/Z2sJ3hxegUAmWOMTOeuF
+         uljYrJfZiWJo2hdg3IDz2mVIQhY9YDWWWJ7PQNF0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jeff Layton <jlayton@kernel.org>,
-        Ilya Dryomov <idryomov@gmail.com>,
+        stable@vger.kernel.org,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Ron Minnich <rminnich@google.com>,
+        Richard Weinberger <richard@nod.at>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 68/85] ceph: fix potential race in ceph_check_caps
-Date:   Tue, 29 Sep 2020 13:00:35 +0200
-Message-Id: <20200929105931.616933450@linuxfoundation.org>
+Subject: [PATCH 4.4 69/85] mtd: parser: cmdline: Support MTD names containing one or more colons
+Date:   Tue, 29 Sep 2020 13:00:36 +0200
+Message-Id: <20200929105931.665756933@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200929105928.198942536@linuxfoundation.org>
 References: <20200929105928.198942536@linuxfoundation.org>
@@ -43,53 +45,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jeff Layton <jlayton@kernel.org>
+From: Boris Brezillon <boris.brezillon@collabora.com>
 
-[ Upstream commit dc3da0461cc4b76f2d0c5b12247fcb3b520edbbf ]
+[ Upstream commit eb13fa0227417e84aecc3bd9c029d376e33474d3 ]
 
-Nothing ensures that session will still be valid by the time we
-dereference the pointer. Take and put a reference.
+Looks like some drivers define MTD names with a colon in it, thus
+making mtdpart= parsing impossible. Let's fix the parser to gracefully
+handle that case: the last ':' in a partition definition sequence is
+considered instead of the first one.
 
-In principle, we should always be able to get a reference here, but
-throw a warning if that's ever not the case.
-
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
-Signed-off-by: Ilya Dryomov <idryomov@gmail.com>
+Signed-off-by: Boris Brezillon <boris.brezillon@collabora.com>
+Signed-off-by: Ron Minnich <rminnich@google.com>
+Tested-by: Ron Minnich <rminnich@google.com>
+Signed-off-by: Richard Weinberger <richard@nod.at>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ceph/caps.c | 14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
+ drivers/mtd/cmdlinepart.c | 23 ++++++++++++++++++++---
+ 1 file changed, 20 insertions(+), 3 deletions(-)
 
-diff --git a/fs/ceph/caps.c b/fs/ceph/caps.c
-index 3d0497421e62b..49e693232916f 100644
---- a/fs/ceph/caps.c
-+++ b/fs/ceph/caps.c
-@@ -1777,12 +1777,24 @@ ack:
- 			if (mutex_trylock(&session->s_mutex) == 0) {
- 				dout("inverting session/ino locks on %p\n",
- 				     session);
-+				session = ceph_get_mds_session(session);
- 				spin_unlock(&ci->i_ceph_lock);
- 				if (took_snap_rwsem) {
- 					up_read(&mdsc->snap_rwsem);
- 					took_snap_rwsem = 0;
- 				}
--				mutex_lock(&session->s_mutex);
-+				if (session) {
-+					mutex_lock(&session->s_mutex);
-+					ceph_put_mds_session(session);
-+				} else {
-+					/*
-+					 * Because we take the reference while
-+					 * holding the i_ceph_lock, it should
-+					 * never be NULL. Throw a warning if it
-+					 * ever is.
-+					 */
-+					WARN_ON_ONCE(true);
-+				}
- 				goto retry;
- 			}
- 		}
+diff --git a/drivers/mtd/cmdlinepart.c b/drivers/mtd/cmdlinepart.c
+index 08f62987cc37c..ffbc9b304beb2 100644
+--- a/drivers/mtd/cmdlinepart.c
++++ b/drivers/mtd/cmdlinepart.c
+@@ -228,12 +228,29 @@ static int mtdpart_setup_real(char *s)
+ 		struct cmdline_mtd_partition *this_mtd;
+ 		struct mtd_partition *parts;
+ 		int mtd_id_len, num_parts;
+-		char *p, *mtd_id;
++		char *p, *mtd_id, *semicol;
++
++		/*
++		 * Replace the first ';' by a NULL char so strrchr can work
++		 * properly.
++		 */
++		semicol = strchr(s, ';');
++		if (semicol)
++			*semicol = '\0';
+ 
+ 		mtd_id = s;
+ 
+-		/* fetch <mtd-id> */
+-		p = strchr(s, ':');
++		/*
++		 * fetch <mtd-id>. We use strrchr to ignore all ':' that could
++		 * be present in the MTD name, only the last one is interpreted
++		 * as an <mtd-id>/<part-definition> separator.
++		 */
++		p = strrchr(s, ':');
++
++		/* Restore the ';' now. */
++		if (semicol)
++			*semicol = ';';
++
+ 		if (!p) {
+ 			pr_err("no mtd-id\n");
+ 			return -EINVAL;
 -- 
 2.25.1
 
