@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C00A27C67C
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:45:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0800627C67E
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:46:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730773AbgI2Lpl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:45:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45632 "EHLO mail.kernel.org"
+        id S1730748AbgI2Lps (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:45:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45674 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730475AbgI2Lpd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:45:33 -0400
+        id S1730823AbgI2Lpg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:45:36 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A96E22075F;
-        Tue, 29 Sep 2020 11:45:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EB9EB20702;
+        Tue, 29 Sep 2020 11:45:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601379933;
-        bh=xbmZiav8KBb2lLzmDpq2li++HkxxT7yOisH4XlscVxE=;
+        s=default; t=1601379935;
+        bh=tLSyyFAiyrfCcpkggBtzpBYmew/kkvwnUWR/5N5vq6M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CwGf67SXSBE1+uUR5+s7gm/eQNF2o3KpbyTFYNxogvXlv8LNr+fTAvHvYh2jAQFVT
-         565Mfb+R6Ox8H6eeA3Q+Z8XnuDdUc/QiKGSAaQ54SvoToh1xmISpqQAEWRp1ez0eyG
-         dhSu7pHrk+D6ltmtIvSlqFat02bDSMXx+qIV46dQ=
+        b=Y0kndwVPy0T/nUYXL0ni5NKrNQVwuDvOL09AMzZuPFdPp2x38FAYK+Cst81nM2AFz
+         RNCO2wVnsNYIGg0vL+BS0P9kw1pq2909yyhpa0WOvF8G/KiM1616/wqga/dXN9DueC
+         n23J5I7EJGFo+4RzljNwqVAQuIK7wV6N9GJBiAH0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sven Eckelmann <sven@narfation.org>,
-        Simon Wunderlich <sw@simonwunderlich.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 352/388] batman-adv: Add missing include for in_interrupt()
-Date:   Tue, 29 Sep 2020 13:01:23 +0200
-Message-Id: <20200929110027.503979078@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 353/388] nvme-tcp: fix kconfig dependency warning when !CRYPTO
+Date:   Tue, 29 Sep 2020 13:01:24 +0200
+Message-Id: <20200929110027.552015229@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200929110010.467764689@linuxfoundation.org>
 References: <20200929110010.467764689@linuxfoundation.org>
@@ -43,35 +44,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sven Eckelmann <sven@narfation.org>
+From: Necip Fazil Yildiran <fazilyildiran@gmail.com>
 
-[ Upstream commit 4bba9dab86b6ac15ca560ef1f2b5aa4529cbf784 ]
+[ Upstream commit af5ad17854f96a6d3c9775e776bd01ab262672a1 ]
 
-The fix for receiving (internally generated) bla packets outside the
-interrupt context introduced the usage of in_interrupt(). But this
-functionality is only defined in linux/preempt.h which was not included
-with the same patch.
+When NVME_TCP is enabled and CRYPTO is disabled, it results in the
+following Kbuild warning:
 
-Fixes: 279e89b2281a ("batman-adv: bla: use netif_rx_ni when not in interrupt context")
-Signed-off-by: Sven Eckelmann <sven@narfation.org>
-Signed-off-by: Simon Wunderlich <sw@simonwunderlich.de>
+WARNING: unmet direct dependencies detected for CRYPTO_CRC32C
+  Depends on [n]: CRYPTO [=n]
+  Selected by [y]:
+  - NVME_TCP [=y] && INET [=y] && BLK_DEV_NVME [=y]
+
+The reason is that NVME_TCP selects CRYPTO_CRC32C without depending on or
+selecting CRYPTO while CRYPTO_CRC32C is subordinate to CRYPTO.
+
+Honor the kconfig menu hierarchy to remove kconfig dependency warnings.
+
+Fixes: 79fd751d61aa ("nvme: tcp: selects CRYPTO_CRC32C for nvme-tcp")
+Signed-off-by: Necip Fazil Yildiran <fazilyildiran@gmail.com>
+Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/batman-adv/bridge_loop_avoidance.c | 1 +
+ drivers/nvme/host/Kconfig | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/net/batman-adv/bridge_loop_avoidance.c b/net/batman-adv/bridge_loop_avoidance.c
-index 62d2e766dd392..fe406c17b2c0a 100644
---- a/net/batman-adv/bridge_loop_avoidance.c
-+++ b/net/batman-adv/bridge_loop_avoidance.c
-@@ -25,6 +25,7 @@
- #include <linux/lockdep.h>
- #include <linux/netdevice.h>
- #include <linux/netlink.h>
-+#include <linux/preempt.h>
- #include <linux/rculist.h>
- #include <linux/rcupdate.h>
- #include <linux/seq_file.h>
+diff --git a/drivers/nvme/host/Kconfig b/drivers/nvme/host/Kconfig
+index 2b36f052bfb91..7b3f6555e67ba 100644
+--- a/drivers/nvme/host/Kconfig
++++ b/drivers/nvme/host/Kconfig
+@@ -64,6 +64,7 @@ config NVME_TCP
+ 	depends on INET
+ 	depends on BLK_DEV_NVME
+ 	select NVME_FABRICS
++	select CRYPTO
+ 	select CRYPTO_CRC32C
+ 	help
+ 	  This provides support for the NVMe over Fabrics protocol using
 -- 
 2.25.1
 
