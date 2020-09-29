@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1B0A27CD56
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:43:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4879C27CD60
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:44:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733242AbgI2Mnc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 08:43:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50310 "EHLO mail.kernel.org"
+        id S1733312AbgI2Mnh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 08:43:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50308 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729096AbgI2LJs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1729093AbgI2LJs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 29 Sep 2020 07:09:48 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 30CE4221E8;
-        Tue, 29 Sep 2020 11:09:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 10C61221EC;
+        Tue, 29 Sep 2020 11:09:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601377774;
-        bh=XYLW7AwDHfNVBR1Kle+05njd23MtGyHnDr0udEVvZvA=;
+        s=default; t=1601377777;
+        bh=ffVmtk+MMzKg1ZNQEVX/lHavatGWRWr6XMVURgNQYTM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uQstXZsWyOEln63HiIOpx2qdRwllIqsQYjnLOF+WvwpHcYygRxlQkbrgEckk7RYhQ
-         JWUMz5QJ3fxFN5IzWIh8wV5AmBaGhypR+q2HJYbmiImcQB3w4lNTVIWP4jZ7w6V2MA
-         zQgBcN2IEWXMD/SjZtGiZlmHtjAt6cOleBAcVypw=
+        b=ZqkmojtcrqzS39t8Stw9CungmVOnaOX8K7aEy+1Ggo2RMcsIdNP4+V+/tKIC4K2qy
+         6dZOMSv5o+jMocGSo01gZoJA/KEOFhRFlmY9cnwdYp4ywDG5PW96QL9vMHtT99Dm9U
+         swGVAqgOUf2fQgfPOXpQ4t4cGGX+R6ej1c0L7ySE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Gabriel Ravier <gabravier@gmail.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Chuck Lever <chuck.lever@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 068/121] tools: gpio-hammer: Avoid potential overflow in main
-Date:   Tue, 29 Sep 2020 13:00:12 +0200
-Message-Id: <20200929105933.538410182@linuxfoundation.org>
+Subject: [PATCH 4.9 069/121] SUNRPC: Fix a potential buffer overflow in svc_print_xprts()
+Date:   Tue, 29 Sep 2020 13:00:13 +0200
+Message-Id: <20200929105933.588887336@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200929105930.172747117@linuxfoundation.org>
 References: <20200929105930.172747117@linuxfoundation.org>
@@ -43,57 +44,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gabriel Ravier <gabravier@gmail.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit d1ee7e1f5c9191afb69ce46cc7752e4257340a31 ]
+[ Upstream commit b25b60d7bfb02a74bc3c2d998e09aab159df8059 ]
 
-If '-o' was used more than 64 times in a single invocation of gpio-hammer,
-this could lead to an overflow of the 'lines' array. This commit fixes
-this by avoiding the overflow and giving a proper diagnostic back to the
-user
+'maxlen' is the total size of the destination buffer. There is only one
+caller and this value is 256.
 
-Signed-off-by: Gabriel Ravier <gabravier@gmail.com>
-Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+When we compute the size already used and what we would like to add in
+the buffer, the trailling NULL character is not taken into account.
+However, this trailling character will be added by the 'strcat' once we
+have checked that we have enough place.
+
+So, there is a off-by-one issue and 1 byte of the stack could be
+erroneously overwridden.
+
+Take into account the trailling NULL, when checking if there is enough
+place in the destination buffer.
+
+While at it, also replace a 'sprintf' by a safer 'snprintf', check for
+output truncation and avoid a superfluous 'strlen'.
+
+Fixes: dc9a16e49dbba ("svc: Add /proc/sys/sunrpc/transport files")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+[ cel: very minor fix to documenting comment
+Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/gpio/gpio-hammer.c | 17 ++++++++++++++++-
- 1 file changed, 16 insertions(+), 1 deletion(-)
+ net/sunrpc/svc_xprt.c | 19 ++++++++++++++-----
+ 1 file changed, 14 insertions(+), 5 deletions(-)
 
-diff --git a/tools/gpio/gpio-hammer.c b/tools/gpio/gpio-hammer.c
-index 37b3f141053df..85f45800f881f 100644
---- a/tools/gpio/gpio-hammer.c
-+++ b/tools/gpio/gpio-hammer.c
-@@ -171,7 +171,14 @@ int main(int argc, char **argv)
- 			device_name = optarg;
- 			break;
- 		case 'o':
--			lines[i] = strtoul(optarg, NULL, 10);
-+			/*
-+			 * Avoid overflow. Do not immediately error, we want to
-+			 * be able to accurately report on the amount of times
-+			 * '-o' was given to give an accurate error message
-+			 */
-+			if (i < GPIOHANDLES_MAX)
-+				lines[i] = strtoul(optarg, NULL, 10);
-+
- 			i++;
- 			break;
- 		case '?':
-@@ -179,6 +186,14 @@ int main(int argc, char **argv)
- 			return -1;
- 		}
- 	}
-+
-+	if (i >= GPIOHANDLES_MAX) {
-+		fprintf(stderr,
-+			"Only %d occurences of '-o' are allowed, %d were found\n",
-+			GPIOHANDLES_MAX, i + 1);
-+		return -1;
-+	}
-+
- 	nlines = i;
+diff --git a/net/sunrpc/svc_xprt.c b/net/sunrpc/svc_xprt.c
+index 42ce3ed216376..56e4ac8e2e994 100644
+--- a/net/sunrpc/svc_xprt.c
++++ b/net/sunrpc/svc_xprt.c
+@@ -103,8 +103,17 @@ void svc_unreg_xprt_class(struct svc_xprt_class *xcl)
+ }
+ EXPORT_SYMBOL_GPL(svc_unreg_xprt_class);
  
- 	if (!device_name || !nlines) {
+-/*
+- * Format the transport list for printing
++/**
++ * svc_print_xprts - Format the transport list for printing
++ * @buf: target buffer for formatted address
++ * @maxlen: length of target buffer
++ *
++ * Fills in @buf with a string containing a list of transport names, each name
++ * terminated with '\n'. If the buffer is too small, some entries may be
++ * missing, but it is guaranteed that all lines in the output buffer are
++ * complete.
++ *
++ * Returns positive length of the filled-in string.
+  */
+ int svc_print_xprts(char *buf, int maxlen)
+ {
+@@ -117,9 +126,9 @@ int svc_print_xprts(char *buf, int maxlen)
+ 	list_for_each_entry(xcl, &svc_xprt_class_list, xcl_list) {
+ 		int slen;
+ 
+-		sprintf(tmpstr, "%s %d\n", xcl->xcl_name, xcl->xcl_max_payload);
+-		slen = strlen(tmpstr);
+-		if (len + slen > maxlen)
++		slen = snprintf(tmpstr, sizeof(tmpstr), "%s %d\n",
++				xcl->xcl_name, xcl->xcl_max_payload);
++		if (slen >= sizeof(tmpstr) || len + slen >= maxlen)
+ 			break;
+ 		len += slen;
+ 		strcat(buf, tmpstr);
 -- 
 2.25.1
 
