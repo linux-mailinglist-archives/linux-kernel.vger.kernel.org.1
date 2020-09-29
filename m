@@ -2,199 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D61F827D5D0
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 20:34:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACC4827D5D2
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 20:35:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728182AbgI2Sey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 14:34:54 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45185 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727980AbgI2Sey (ORCPT
+        id S1728240AbgI2Se7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 14:34:59 -0400
+Received: from esa5.microchip.iphmx.com ([216.71.150.166]:8655 "EHLO
+        esa5.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728207AbgI2Se5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 14:34:54 -0400
-Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601404491;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=FfKogqPI4RDlW0YYC3c4xJNHnuiLN6dhs19349Htcrg=;
-        b=ShkUin3Qe9Qptrwr68Grr8Z/FIH5UkgSDgPO6ja1sQG/Y5nuyx6y2wiOLxbjbwSDYAqpq7
-        VYJZOIiwzhrYRGW0grJExhR7BXwz5UrypJdirVHmmYSFmgZvgUkDMv2bniYsBbACnffLJY
-        Xc+7TQibTUmWVV1bpskhpvhwgmbnc1I=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-399-cHV3WGSuORKFCG_ly6EV9g-1; Tue, 29 Sep 2020 14:34:47 -0400
-X-MC-Unique: cHV3WGSuORKFCG_ly6EV9g-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CDDF0186840A;
-        Tue, 29 Sep 2020 18:34:45 +0000 (UTC)
-Received: from localhost.localdomain.com (ovpn-66-32.rdu2.redhat.com [10.10.66.32])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id CA38978807;
-        Tue, 29 Sep 2020 18:34:44 +0000 (UTC)
-From:   Qian Cai <cai@redhat.com>
-To:     Robert Moore <robert.moore@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Cc:     Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org,
-        devel@acpica.org, linux-kernel@vger.kernel.org,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH] ACPICA: Fix a soft-lockup on large systems
-Date:   Tue, 29 Sep 2020 14:34:44 -0400
-Message-Id: <20200929183444.25079-1-cai@redhat.com>
+        Tue, 29 Sep 2020 14:34:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1601404498; x=1632940498;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=UGkMVf664zrLR9iFUz4G3kQ2Emh/TkSyP14QzOeZeL0=;
+  b=cokpnFWMrUIUlL1uSDoiKCZkaBuYCe/iTJJI+mkXH2YMuclWIw2U8yvt
+   kJrPw1d55S52cXU/GoLEyPIrFjYxvR4cqpfX62FpEd2A5Rjh6K+etee/D
+   Wmj9Z95+prZtKNRTzthNccHqQutArmVXnF0RaJTN6WbUMFRls2u+xKG4I
+   Aog58v3NsTv3aYNu71aNvqKPt2m0sEfKoAYQ+wkEy7UCzegImQ+GSBP8u
+   0Yce0mUKyLelueGuCYtSO7jPxHwpJtr9/Fn/RwqC7qGVVabH9Xh5Dwvvv
+   R31wrSooaX50X9IKVVjDgeoSfJAT4skncaRI1XueFEd/gj7Ce+WUqGgl7
+   g==;
+IronPort-SDR: gAIVvBWUnEqy+fmO8tPBxgvKz6axVOhAI4KeFRCty+2dTXKBQJ4BjORaSb3Z2hgZQIfJZesdD2
+ rZ2LYnqLX8h0Yj58HrPn6daM7/Z35KZX5Rn9VdubnFMrLFY8dUX6G4uRbid0ILUXmySWMlrg51
+ kr7nkEJslbcxDpYlvlKTqqb+asqE34+Gi8yhT54lYBnGUe+RIdOcqJlD2fSwSUJ9wfDxWEU3EC
+ IwTNv6ndMuFpL0B8MGySOelWPrGC1CgWNsFnhAd8VmrDD+dcSJoWaeYos05PXSP99npuvPL6yy
+ ks8=
+X-IronPort-AV: E=Sophos;i="5.77,319,1596524400"; 
+   d="scan'208";a="92836405"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 29 Sep 2020 11:34:57 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 29 Sep 2020 11:34:56 -0700
+Received: from NAM04-CO1-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.72) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3 via Frontend
+ Transport; Tue, 29 Sep 2020 11:34:44 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ULRXLvj2QjB7nEs4EGYcmv8p+wJTDgXXx8u9ev4O5f3w31+L30RlJPpDuKMhT7KXS5mJhHNBcISRYIuS7HNGejvyJZT56SG7PXrYOnFHdUfFj37zya+zhQggkQlmkENqVXpr29AfC0x0znKAGI+YnBHy1Evj4lbyHKN4mRkAW1GiwYe4XFJ1vjMvgNZvgT8AygabK2t/hJDx8LUYmlMB/cq7BNLZsf9W9bP02JWMCwaYgJW9B2iyr73dzpKjCz46SBprb6ocddmMrT3EY1fvI7MtIG1ipbIsVl4TxTT2T8UrYe9iVHg1eO1GKPNxO2s9o6CaoGG0QnqNacV3JmQCqQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=UGkMVf664zrLR9iFUz4G3kQ2Emh/TkSyP14QzOeZeL0=;
+ b=ih0bqCOgpgg7Q73SsARznACDC2iPIBLgN9OnKVYkKpNAKfXkmodEt1r6+lRIbg/W5eYG7T7uqepsmaH81sAAfi5nwloZm4uU/SxV5dQ8YYIMcNptLSvWPGKZumbjpnq/sG22Ax4B8awbxqgjRHxi5mbtsaoK6dfXgb1PT1SAstBJp2I53oEpMy+3kMRP1eSk0LduMqlDNNp0wTyVco7jR7/DOSzKZfLH4FHYSQFlNlWE8scje22MSwZtfbAlm21B+NhVkrP60qu+IjkD0vC0WINrzMRlO1DWMfA6gmY/m8FoPYqCzzrTaBk94BJsdyWtHHF0LMSY2TZdpC29EleZDw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=UGkMVf664zrLR9iFUz4G3kQ2Emh/TkSyP14QzOeZeL0=;
+ b=ZFEOrjINsm6yIQfBS7bCP83w/+ueMJH3shKhoVFHjfh5n7Y8GyjDyVpguROl2/FCFAve+wsJwlygAh5hDTYC1A+//6ciVIen2gNUJJKHg/u7jIRS2/6BA0+qLNow9Y2bdO4Va9vaxrXerbTUPNZKdiVryh5x9YzMeLGYEm+hHoI=
+Received: from DM5PR11MB1914.namprd11.prod.outlook.com (2603:10b6:3:112::12)
+ by DM5PR11MB1914.namprd11.prod.outlook.com (2603:10b6:3:112::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.32; Tue, 29 Sep
+ 2020 18:34:52 +0000
+Received: from DM5PR11MB1914.namprd11.prod.outlook.com
+ ([fe80::f44a:f58e:c13b:947a]) by DM5PR11MB1914.namprd11.prod.outlook.com
+ ([fe80::f44a:f58e:c13b:947a%4]) with mapi id 15.20.3433.032; Tue, 29 Sep 2020
+ 18:34:52 +0000
+From:   <Tudor.Ambarus@microchip.com>
+To:     <p.yadav@ti.com>
+CC:     <me@yadavpratyush.com>, <miquel.raynal@bootlin.com>,
+        <richard@nod.at>, <vigneshr@ti.com>, <broonie@kernel.org>,
+        <Nicolas.Ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
+        <Ludovic.Desroches@microchip.com>, <matthias.bgg@gmail.com>,
+        <michal.simek@xilinx.com>, <linux-mtd@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-spi@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <boris.brezillon@collabora.com>, <nsekhar@ti.com>
+Subject: Re: [PATCH v10 05/17] mtd: spi-nor: add support for DTR protocol
+Thread-Topic: [PATCH v10 05/17] mtd: spi-nor: add support for DTR protocol
+Thread-Index: AQHWVIVGo10ftuQ9H0mpaQ4YA8PU1w==
+Date:   Tue, 29 Sep 2020 18:34:52 +0000
+Message-ID: <184f757b-dadc-0fd9-67f2-4c5903ec9c5c@microchip.com>
+References: <20200623183030.26591-1-p.yadav@ti.com>
+ <20200623183030.26591-6-p.yadav@ti.com>
+ <fbb3d7e7-75ed-dbf6-a975-2ae871bc9fbf@microchip.com>
+ <20200721112951.rngfk7njubcsahzp@yadavpratyush.com>
+ <f9a22bc5-35f6-9507-b0e7-dcbad51caea7@microchip.com>
+ <20200929162943.qbnzmzgxb75wdpyo@ti.com>
+In-Reply-To: <20200929162943.qbnzmzgxb75wdpyo@ti.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+authentication-results: ti.com; dkim=none (message not signed)
+ header.d=none;ti.com; dmarc=none action=none header.from=microchip.com;
+x-originating-ip: [82.77.80.20]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: a1ce27db-24b7-49c7-1817-08d864a65af1
+x-ms-traffictypediagnostic: DM5PR11MB1914:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM5PR11MB191487AA9494804759AAEEFBF0320@DM5PR11MB1914.namprd11.prod.outlook.com>
+x-bypassexternaltag: True
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: XpZV9oFdt+qxQee67T9xxEHDWU5F+QPdWweMI7xo8a0dtCAzvCCLqzBrXfn45unqukOwjpFAJnBp0jd5vsl558z+EKN3252A5yCIz/lakvvanwX5oK7GaKGVTXNsVGakIH5bBGG0Ak5dq7p8RKi+d3iEH28CuiTRiBjDBTkW4IAAShwDKJ8Jm5H1i3DhJ9rpiEW5YB+D5Ouc//k1VvDuj2RpFLUCBSEUH1QT5wuW5Iu1SBYbP67EAm48GoXAYEqIG1viSM+SnlrO0R7+aUERefYD9CdxJobVfnOiTQILMEbeAxk5mZ8Lp4vlkTFt9lomSzmZJsrpKvalXiJm4BKlJjvi2rRM0/BInGvIrQUWyre7kKd+nyUv3hhq6Tw9NkHoxzeUTej8tWBBU1VrNm20aNFPLBlnAFgrY1iCKrVsWk8=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR11MB1914.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(366004)(346002)(396003)(376002)(136003)(31686004)(86362001)(478600001)(26005)(6916009)(186003)(31696002)(7416002)(66946007)(316002)(54906003)(4326008)(83380400001)(66446008)(66476007)(66556008)(64756008)(8676002)(2616005)(8936002)(6486002)(36756003)(91956017)(76116006)(5660300002)(2906002)(6512007)(6506007)(53546011)(71200400001)(43740500002)(352734003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: IXfOl62T3cw+HPKB0rUTI+hoTrAWmFmc7IpBsGU5+vZwFLUc9cQqYqcGA6wB9Gny9zGkO+w0ukB8qSEXBEcTA3jf/Rb82caNnpo7mnCO2Io8Tqlbda74okBe+HpkP7Ju1JCcITYW2X4eOEb2urRJAGWtDZIlcj/zcQj3ksPzKZDKsLgAlnHbXKkFaBQ4Po8OpB6FLJtsHMuCrNqxyVEWCDr99QtWaqUzo0gfKYwy6SL/AQzurO0Jwr7YlCV8vFwiUkkFIxN9zjBvCJUe8jaEoB1OJNWxH8Uyo5wJyR6PSgIBP0v6Wo0WzIV1fVrg9B1XeBGZKduSLnz6oQobl3H+ViprWsYdeM8sc8WEo4wdAb6GEAxEJQaQ1B/tXL9L2sWEbO4kNoChkLWYVjbunIbtpVYgvjzA/3TzlFkTDhQUumMVZOdYl1fIkXIADcnLY7/1vHwMkiHxd1TSS5GDhqZeXjgi05jv7+HqPxfbBqNcU3/Eb2O8tr13G3tUYB32WRLMIUye2Q2tarnvFgnxb5d47az6emx6fHJEvV3Gm+iE7H2mMtbSJcTeHaiaRUFs3eimwSaiTBvI859ZrgS6RlGzSBEFDXSO6OvubkKolS2fySSU2qLcYgzCkjHSGaAtJYV4Q2hfJAFClMHJbQ2zWt/zNQ==
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <4DA2A9213EBB004492088D5506B3737A@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR11MB1914.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a1ce27db-24b7-49c7-1817-08d864a65af1
+X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Sep 2020 18:34:52.4154
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: c6ayO7/Vk+p9Si3TeRSka2L5z++hHupR8pCWDU7nno2hfgcW3nI2ebg27gdIwX294EJrEXdMIv9kFSFnpmhIj2RFUXfMMf+sn2w77lAF1uE=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR11MB1914
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It could take a long time in the loop of acpi_ns_walk_namespace() on
-large systems due to there are many nodes in ACPI namespace, and then
-trigger a soft-lockup. Fix it by adding cond_resched() within the loop.
-
-[   70.533393] watchdog: BUG: soft lockup - CPU#25 stuck for 22s! [swapper/0:1]
-[   70.533438] Modules linked in:
-[   70.533468] irq event stamp: 26257732
-[   70.533489] hardirqs last  enabled at (26257731): [<ffffa000106f2e88>] __slab_alloc+0xa8/0xc8
-[   70.533505] hardirqs last disabled at (26257732): [<ffffa0001017387c>] el1_irq+0x7c/0x140
-el1_irq at arch/arm64/kernel/entry.S:650
-[   70.533520] softirqs last  enabled at (26197382): [<ffffa00010171a90>] efi_header_end+0xa90/0x10bc
-[   70.533535] softirqs last disabled at (26197377): [<ffffa0001024a63c>] irq_exit+0x2c4/0x348
-[   70.533551] CPU: 25 PID: 1 Comm: swapper/0 Not tainted 5.9.0-rc7-next-20200929 #1
-[   70.533563] Hardware name: HPE Apollo 70             /C01_APACHE_MB         , BIOS L50_5.13_1.15 05/08/2020
-[   70.533577] pstate: 60400009 (nZCv daif +PAN -UAO -TCO BTYPE=--)
-[   70.533593] pc : arch_local_irq_restore+0x4/0x8
-[   70.533605] lr : __slab_alloc+0xb0/0xc8
-[   70.533617] sp : ffff000005bd61a0
-[   70.533628] x29: ffff000005bd61a0 x28: 000000000000000e
-[   70.533653] x27: ffff0087b41c8ff8 x26: 0080000000000000
-[   70.533677] x25: ffffa000190db000 x24: ffff000e788d6c10
-[   70.533700] x23: ffffa00010cb41c8 x22: 00000000ffffffff
-[   70.533723] x21: 0000000000012b20 x20: ffff0087b41cde10
-[   70.533746] x19: 0000000000000000 x18: 1fffe001cf1193ca
-[   70.533768] x17: 0000000000000000 x16: 0000000000000000
-[   70.533791] x15: 0000000000071ccc x14: 0000000000071ccc
-[   70.533813] x13: ffff800000b7ac1d x12: 1fffe00000b7ac1c
-[   70.533836] x11: 1fffe00000b7ac1c x10: ffff800000b7ac1c
-[   70.533859] x9 : dfffa00000000000 x8 : ffff000005bd60e7
-[   70.533882] x7 : 00000000f2000000 x6 : dfffa00000000000
-[   70.533904] x5 : 00000000f2f2f200 x4 : 00000000f2f2f2f2
-[   70.533927] x3 : 1fffe00000b6ddca x2 : ffffa00019bf2000
-[   70.533950] x1 : 000000000190a943 x0 : 0000000000000000
-[   70.533973] Call trace:
-[   70.533987]  arch_local_irq_restore+0x4/0x8
-[   70.534000]  kmem_cache_alloc+0x35c/0x3c0
-[   70.534015]  fill_pool+0x278/0x588
-[   70.534028]  __debug_object_init+0x8c/0x1100
-[   70.534041]  debug_object_activate+0x234/0x448
-[   70.534055]  call_rcu+0x38/0x630
-[   70.534070]  put_object+0x84/0xc0
-[   70.534082]  __delete_object+0xc4/0x110
-[   70.534095]  delete_object_full+0x18/0x20
-[   70.534110]  kmemleak_free+0x2c/0x38
-[   70.534122]  slab_free_freelist_hook+0x15c/0x240
-[   70.534135]  kmem_cache_free+0x10c/0x518
-[   70.534150]  acpi_os_release_object+0xc/0x18
-[   70.534165]  acpi_ut_delete_object_desc+0xa8/0xac
-[   70.534177]  acpi_ut_update_ref_count.part.2+0x33c/0x788
-[   70.534190]  acpi_ut_update_object_reference+0x304/0x42c
-[   70.534203]  acpi_ut_remove_reference+0x64/0x74
-[   70.534218]  acpi_ds_store_object_to_local+0x2d8/0x300
-[   70.534231]  acpi_ex_store+0x600/0x658
-[   70.534244]  acpi_ex_opcode_1A_0T_1R+0x3e4/0xb34
-[   70.534257]  acpi_ds_exec_end_op+0x338/0xad0
-[   70.534270]  acpi_ps_parse_loop+0xdb4/0x1020
-[   70.534282]  acpi_ps_parse_aml+0x1f0/0x614
-[   70.534295]  acpi_ps_execute_method+0x500/0x508
-[   70.534308]  acpi_ns_evaluate+0x680/0x7b4
-[   70.534320]  acpi_ut_evaluate_object+0xc4/0x30c
-[   70.534333]  acpi_rs_get_method_data+0x84/0xd8
-[   70.534345]  acpi_walk_resources+0x13c/0x17c
-[   70.534359]  __acpi_dev_get_resources+0x150/0x1d8
-[   70.534371]  acpi_dev_get_resources+0x14/0x20
-[   70.534384]  acpi_init_device_object+0x698/0x10b8
-[   70.534396]  acpi_add_single_object+0xf8/0x1028
-[   70.534408]  acpi_bus_check_add+0x160/0x3f8
-[   70.534421]  acpi_ns_walk_namespace+0x1f4/0x298
-[   70.534433]  acpi_walk_namespace+0xa4/0xe8
-[   70.534446]  acpi_bus_scan+0xe0/0xf0
-[   70.534460]  acpi_scan_init+0x218/0x51c
-[   70.534472]  acpi_init+0x45c/0x4e4
-[   70.534485]  do_one_initcall+0x168/0xb60
-[   70.534498]  kernel_init_freeable+0x698/0x724
-[   70.534511]  kernel_init+0x10/0x11c
-[   70.534524]  ret_from_fork+0x10/0x18
-[  113.641710] rcu: INFO: rcu_sched self-detected stall on CPU
-[  113.641774] rcu:     25-....: (6495 ticks this GP) idle=cbe/1/0x4000000000000002 softirq=772/772 fqs=3246
-[  113.641842]  (t=6500 jiffies g=309 q=1185230)
-[  113.641852] Task dump for CPU 25:
-[  113.641872] task:swapper/0       state:R  running task     stack:22624 pid:    1 ppid:     0 flags:0x0000002a
-[  113.641907] Call trace:
-[  113.641927]  dump_backtrace+0x0/0x398
-[  113.641941]  show_stack+0x14/0x60
-[  113.641956]  sched_show_task.part.94+0x358/0x374
-[  113.641970]  sched_show_task+0x13c/0x1c0
-[  113.641983]  dump_cpu_task+0x80/0x90
-[  113.641996]  rcu_dump_cpu_stacks+0x1ac/0x1f8
-[  113.642012]  rcu_sched_clock_irq+0x1d94/0x2048
-[  113.642027]  update_process_times+0x30/0x1b8
-[  113.642041]  tick_periodic+0x6c/0x310
-[  113.642054]  tick_handle_periodic+0x70/0x140
-[  113.642070]  arch_timer_handler_phys+0x48/0x68
-[  113.642084]  handle_percpu_devid_irq+0x234/0xc08
-[  113.642099]  generic_handle_irq+0x74/0xa0
-[  113.642112]  __handle_domain_irq+0x98/0x158
-[  113.642126]  gic_handle_irq+0xd0/0x158
-[  113.642139]  el1_irq+0xbc/0x140
-[  113.642154]  arch_local_irq_restore+0x4/0x8
-[  113.642167]  kmem_cache_alloc+0x35c/0x3c0
-[  113.642182]  acpi_os_acquire_object+0x28/0x30
-[  113.642195]  acpi_ps_alloc_op+0x98/0x1d4
-[  113.642208]  acpi_ps_create_op+0x374/0x86c
-[  113.642221]  acpi_ps_parse_loop+0x3f4/0x1020
-[  113.642233]  acpi_ps_parse_aml+0x1f0/0x614
-[  113.642246]  acpi_ps_execute_method+0x500/0x508
-[  113.642258]  acpi_ns_evaluate+0x680/0x7b4
-[  113.642273]  acpi_ut_evaluate_object+0xc4/0x30c
-[  113.642286]  acpi_rs_get_method_data+0x84/0xd8
-[  113.642298]  acpi_walk_resources+0x13c/0x17c
-[  113.642313]  __acpi_dev_get_resources+0x150/0x1d8
-[  113.642325]  acpi_dev_get_resources+0x14/0x20
-[  113.642338]  acpi_init_device_object+0x698/0x10b8
-[  113.642351]  acpi_add_single_object+0xf8/0x1028
-[  113.642363]  acpi_bus_check_add+0x160/0x3f8
-acpi_bus_check_add at drivers/acpi/scan.c:1885
-[  113.642376]  acpi_ns_walk_namespace+0x1f4/0x298
-acpi_ns_walk_namespace at drivers/acpi/acpica/nswalk.c:237
-[  113.642389]  acpi_walk_namespace+0xa4/0xe8
-[  113.642401]  acpi_bus_scan+0xe0/0xf0
-[  113.642416]  acpi_scan_init+0x218/0x51c
-[  113.642428]  acpi_init+0x45c/0x4e4
-[  113.642441]  do_one_initcall+0x168/0xb60
-[  113.642455]  kernel_init_freeable+0x698/0x724
-[  113.642469]  kernel_init+0x10/0x11c
-[  113.642481]  ret_from_fork+0x10/0x18
-[  128.674020] ACPI: PCI Root Bridge [PCI0] (domain 0000 [bus 00-7f])
-
-Signed-off-by: Qian Cai <cai@redhat.com>
----
- drivers/acpi/acpica/nswalk.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/acpi/acpica/nswalk.c b/drivers/acpi/acpica/nswalk.c
-index b7f3e8603ad8..216bf9e5a96e 100644
---- a/drivers/acpi/acpica/nswalk.c
-+++ b/drivers/acpi/acpica/nswalk.c
-@@ -267,6 +267,7 @@ acpi_ns_walk_namespace(acpi_object_type type,
- 
- 				return_ACPI_STATUS(status);
- 			}
-+			cond_resched();
- 		}
- 
- 		/*
--- 
-2.18.4
-
+T24gOS8yOS8yMCA3OjI5IFBNLCBQcmF0eXVzaCBZYWRhdiB3cm90ZToNCj4gRVhURVJOQUwgRU1B
+SUw6IERvIG5vdCBjbGljayBsaW5rcyBvciBvcGVuIGF0dGFjaG1lbnRzIHVubGVzcyB5b3Uga25v
+dyB0aGUgY29udGVudCBpcyBzYWZlDQo+IA0KPiBPbiAyOS8wOS8yMCAwMzo0MlBNLCBUdWRvci5B
+bWJhcnVzQG1pY3JvY2hpcC5jb20gd3JvdGU6DQo+PiBIaSwgUHJhdHl1c2gsDQo+Pg0KPj4gSSdt
+IHJlcGx5aW5nIHRvIHYxMCBzbyB0aGF0IHdlIGNvbnRpbnVlIHRoZSBkaXNjdXNzaW9uLCBidXQg
+dGhpcyBhcHBsaWVzIHRvIHYxMyBhcyB3ZWxsLg0KPj4NCj4+IE9uIDcvMjEvMjAgMjoyOSBQTSwg
+UHJhdHl1c2ggWWFkYXYgd3JvdGU6DQo+Pg0KPj4+Pj4gQEAgLTIzNjgsMTIgKzI1MTcsMTYgQEAg
+c3BpX25vcl9zcGltZW1fYWRqdXN0X2h3Y2FwcyhzdHJ1Y3Qgc3BpX25vciAqbm9yLCB1MzIgKmh3
+Y2FwcykNCj4+Pj4+ICAgICAgICAgc3RydWN0IHNwaV9ub3JfZmxhc2hfcGFyYW1ldGVyICpwYXJh
+bXMgPSBub3ItPnBhcmFtczsNCj4+Pj4+ICAgICAgICAgdW5zaWduZWQgaW50IGNhcDsNCj4+Pj4+
+DQo+Pj4+PiAtICAgICAgIC8qIERUUiBtb2RlcyBhcmUgbm90IHN1cHBvcnRlZCB5ZXQsIG1hc2sg
+dGhlbSBhbGwuICovDQo+Pj4+PiAtICAgICAgICpod2NhcHMgJj0gflNOT1JfSFdDQVBTX0RUUjsN
+Cj4+Pj4+IC0NCj4+Pj4+ICAgICAgICAgLyogWC1YLVggbW9kZXMgYXJlIG5vdCBzdXBwb3J0ZWQg
+eWV0LCBtYXNrIHRoZW0gYWxsLiAqLw0KPj4+Pj4gICAgICAgICAqaHdjYXBzICY9IH5TTk9SX0hX
+Q0FQU19YX1hfWDsNCj4+Pj4+DQo+Pj4+PiArICAgICAgIC8qDQo+Pj4+PiArICAgICAgICAqIElm
+IHRoZSByZXNldCBsaW5lIGlzIGJyb2tlbiwgd2UgZG8gbm90IHdhbnQgdG8gZW50ZXIgYSBzdGF0
+ZWZ1bA0KPj4+Pj4gKyAgICAgICAgKiBtb2RlLg0KPj4+Pj4gKyAgICAgICAgKi8NCj4+Pj4+ICsg
+ICAgICAgaWYgKG5vci0+ZmxhZ3MgJiBTTk9SX0ZfQlJPS0VOX1JFU0VUKQ0KPj4+Pj4gKyAgICAg
+ICAgICAgICAgICpod2NhcHMgJj0gfihTTk9SX0hXQ0FQU19YX1hfWCB8IFNOT1JfSFdDQVBTX1hf
+WF9YX0RUUik7DQo+Pj4+DQo+Pj4+IEEgZGVkaWNhdGVkIHJlc2V0IGxpbmUgaXMgbm90IGVub3Vn
+aCBmb3IgZmxhc2hlcyB0aGF0IGtlZXAgdGhlaXIgc3RhdGUNCj4+Pj4gaW4gbm9uLXZvbGF0aWxl
+IGJpdHMuIFNpbmNlIHdlIGNhbid0IHByb3RlY3QgZnJvbSB1bmV4cGVjdGVkIGNyYXNoZXMgaW4N
+Cj4+Pj4gdGhlIG5vbiB2b2xhdGlsZSBzdGF0ZSBjYXNlLCB3ZSBzaG91bGQgZW50ZXIgdGhlc2Ug
+bW9kZXMgb25seSB3aXRoIGFuDQo+Pj4+IGV4cGxpY2l0IHJlcXVlc3QsIGkuZS4gYW4gb3B0aW9u
+YWwgRFQgcHJvcGVydHk6ICJ1cGRhdGUtbm9udm9sYXRpbGUtc3RhdGUiLA0KPj4+PiBvciBzb21l
+dGhpbmcgc2ltaWxhci4NCj4+Pg0KPj4+IEkgd3JvdGUgdGhpcyBwYXRjaCB3aXRoIHRoZSBhc3N1
+bXB0aW9uIHRoYXQgd2Ugd29uJ3QgYmUgc3VwcG9ydGluZz4gbm9uLXZvbGF0aWxlIGNvbmZpZ3Vy
+YXRpb24gYXMgb2Ygbm93LiBJbiB0aGUgcHJldmlvdXMgZGlzY3Vzc2lvbnMgd2UNCj4+DQo+PiBJ
+IHRoaW5rIHdlIGhhdmUgdG8gdGFrZSBjYXJlIG9mIHRoZSBzdGF0ZWZ1bCBmbGFzaGVzIG5vdywg
+b3RoZXJ3aXNlIHdlJ2xsIHJpc2sNCj4+IHRvIGVuZCB1cCB3aXRoIHVzZXJzIHRoYXQgbGV0IHRo
+ZWlyIGZsYXNoZXMgaW4gYSBtb2RlIGZyb20gd2hpY2ggdGhleSBjYW4ndCByZWNvdmVyLg0KPj4g
+SSBtYWRlIHNvbWUgc21hbGwgUkZDIHBhdGNoZXMgaW4gcmVwbHkgdG8geW91ciB2MTMsIGxldCBt
+ZSBrbm93IHdoYXQgeW91IHRoaW5rLg0KPiANCj4gSSBoYXZlbid0IGdvbmUgdGhyb3VnaCB0aGVt
+IHlldC4gV2lsbCBjaGVjayB0b21vcnJvdy4NCj4gDQo+Pj4gY2FtZSB0byB0aGUgY29uY2x1c2lv
+biB0aGF0IGl0IGlzIG5vdCBlYXN5IHRvIGRldGVjdCB0aGUgZmxhc2ggaWYgaXQNCj4+PiBib290
+cyBpbiBhbnkgbW9kZSBvdGhlciB0aGFuIDFTLTFTLTFTIFswXS4gU28gaWYgd2UgdXBkYXRlIG5v
+bi12b2xhdGlsZQ0KPj4+IHN0YXRlLCB0aGUgZmxhc2ggd291bGQgYmUgdXNlbGVzcyBhZnRlciBh
+IHJlYm9vdCBiZWNhdXNlIHdlIHdvbid0IGJlDQo+Pj4gYWJsZSB0byBkZXRlY3QgaXQgaW4gOEQg
+bW9kZS4gSXQgZG9lc24ndCBtYXR0ZXIgaWYgdGhlIHJlc2V0IGxpbmUgaXMNCj4+PiBjb25uZWN0
+ZWQgb3Igbm90IGJlY2F1c2UgaXQgd2lsbCByZXNldCB0aGUgZmxhc2ggdG8gdGhlIG5vbi12b2xh
+dGlsZQ0KPj4+IHN0YXRlLCBhbmQgd2UgY2FuJ3QgZGV0ZWN0IGl0IGZyb20gdGhlIG5vbi12b2xh
+dGlsZSBzdGF0ZS4NCj4+DQo+PiBjb3JyZWN0LCBzbyBhIHJlc2V0IGxpbmUgZm9yIHN0YXRlZnVs
+IG1vZGVzIGRvZXNuJ3QgaGVscCBhbmQgdGhlIGNvbW1lbnQgZnJvbSB0aGUNCj4+IGNvZGUgc2hv
+dWxkIGJlIHVwZGF0ZWQuIHMvc3RhdGVmdWwvc3RhdGVsZXNzDQo+IA0KPiBXZSBhcmUgdGFsa2lu
+ZyBhYm91dCB0d28gZGlmZmVyZW50IGtpbmRzIG9mICJzdGF0ZSIgaGVyZS4gVGhlIHN0YXRlIHlv
+dQ0KDQpSaWdodCwgSSB1c2VkICdzdGF0ZWZ1bCcgZm9yIGZsYXNoZXMgdGhhdCBlbnRlciBpbiBh
+IFgtWC1YIG1vZGUgYnkgc2V0dGluZyBhDQpub24tdm9sYXRpbGUgYml0IGFuZCAnc3RhdGVsZXNz
+JyBmb3IgdGhvc2UgdGhhdCBlbnRlciBpbiBhIFgtWC1YIG1vZGUNCnZpYSB2b2xhdGlsZSBiaXRz
+Lg0KDQo+IGFyZSB0YWxraW5nIGFib3V0IGlzIHRoZSBwZXJzaXN0ZW50IHN0YXRlIG9mIHRoZSBm
+bGFzaCBjb25maWd1cmVkIHZpYQ0KPiBub24tdm9sYXRpbGUgcmVnaXN0ZXJzLiBZZXMsIGEgcmVz
+ZXQgbGluZSBkb2Vzbid0IGhlbHAgaW4gdGhhdCBjYXNlIGF0DQo+IGFsbC4NCj4gPiBUaGUgb3Ro
+ZXIgc3RhdGUgaXMgdGhlIG5vbi1wZXJzaXN0ZW50IHN0YXRlIHdlIHNldCBvbiB0aGUgZmxhc2gu
+IFVzaW5nDQo+IDFTLTFTLThEIG1vZGUgaXMgc3RhdGVsZXNzIGluIHRoZSBzZW5zZSB0aGF0IHdl
+IGRpZG4ndCBjaGFuZ2UgYW55IHN0YXRlDQo+IG9uIHRoZSBmbGFzaCB0byBiZSBhYmxlIHRvIHVz
+ZSB0aGlzIG1vZGUsIGFuZCBvbmx5IGhhZCB0byB1c2UgdGhlDQo+IGNvcnJlY3Qgb3Bjb2RlLiBJ
+ZiB3ZSBleGVjdXRlIGEgMVMtMVMtMVMgY29tbWFuZCBuZXh0IGl0IHdpbGwgYWxzbyB3b3JrDQo+
+IGJlY2F1c2UgdGhlIGZsYXNoIGlzIHN0aWxsIGludGVycHJldGluZyBvcGNvZGVzIGluIDFTIG1v
+ZGUuIFVzaW5nDQo+IDhELThELThEIG9yIDRTLTRTLTRTIG1vZGUgaXMgc3RhdGVmdWwgYmVjYXVz
+ZSB3ZSBkaWQgaGF2ZSB0byBjb25maWd1cmUNCj4gc29tZSBzdGF0ZSBvbiB0aGUgZmxhc2ggKHdo
+aWNoIGNhbiB2ZXJ5IHdlbGwgYmUgdm9sYXRpbGUpLiBPbmNlIDhELThELThEDQo+IG9yIDRTLTRT
+LTRTIG1vZGUgaXMgZW50ZXJlZCwgd2UgY2Fubm90IGV4ZWN1dGUgMVMtMVMtMVMgY29tbWFuZHMg
+dW50aWwNCj4gd2UgcmVzZXQgdGhlIGZsYXNoIGJlY2F1c2Ugbm93IHRoZSBmbGFzaCBpcyBpbnRl
+cnByZXRpbmcgY29tbWFuZHMgaW4gNFMNCj4gb3IgOEQgbW9kZS4gVGhpcyBtZWFucyB3ZSBpbnRy
+b2R1Y2VkIHNvbWUgc3RhdGUgb24gdGhlIGZsYXNoLg0KPiANCj4gSGF2aW5nIGEgcmVzZXQgbGlu
+ZSB3aWxsIG5vdCBoZWxwIGFnYWluc3QgdGhlIGZvcm1lciBidXQgd2lsbCBoZWxwDQo+IGFnYWlu
+c3QgdGhlIGxhdHRlci4gSWYgdGhlIGZsYXNoIGlzIGluIGEgc3RhdGVmdWwgbW9kZSBsaWtlIDhE
+LThELThEDQo+IHdpdGhvdXQgYSByZXNldCBsaW5lLCBhbiB1bmV4cGVjdGVkIHJlc2V0IGNvdWxk
+IGxlYXZlIGJvb3Rsb2FkZXIgdW5hYmxlDQo+IHRvIGJvb3QgYmVjYXVzZSBpdCBpc3N1ZXMgdGhl
+IGNvbW1hbmRzIGluIDFTLTFTLTFTIG1vZGUgdGhhdCB0aGUgZmxhc2gNCj4gY2Fubm90IGludGVy
+cHJldC4gU28gZXZlbiBpZiB0aGUgc3RhdGUgd2Ugc2V0IGlzIHZvbGF0aWxlLCB3ZSBzdGlsbCB3
+YW50DQo+IHRvIGF2b2lkIGRvaW5nIGl0IGlmIHRoZXJlIGlzIG5vIHJlc2V0IGxpbmUuDQo+IA0K
+PiBTbyBJIHRoaW5rIHRoZSBjb2RlIGFuZCBjb21tZW50IHNob3VsZCBzdGF5IGFzIHRoZXkgYXJl
+Lg0KDQpPay4gQ2hlZXJzLA0KdGENCg==
