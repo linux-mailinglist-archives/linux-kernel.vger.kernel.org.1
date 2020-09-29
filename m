@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F88727C659
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:44:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 792CD27C75B
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:53:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730860AbgI2LoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:44:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43016 "EHLO mail.kernel.org"
+        id S1730974AbgI2Lx0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:53:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47470 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730853AbgI2LoM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:44:12 -0400
+        id S1730881AbgI2LrA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:47:00 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EDDD42076A;
-        Tue, 29 Sep 2020 11:44:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E956B206F7;
+        Tue, 29 Sep 2020 11:46:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601379851;
-        bh=4QyhCQYhik/mnoyt6VC91J/68akRV2AxGSUZPqprYfI=;
+        s=default; t=1601380020;
+        bh=YyTHnaHcQzf24/k/Rb3DPJ5xGybphhRFbp5wDu/aL44=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=G5ZzuwCR7vOuQfYvmfkBh2g7Z2bC4VgTl/9XaSZqeQ0ToPkgV7cwCBfFlqNhqChpF
-         ID9pS2x5bt6T8QwUvzo4IzBmOFGZxBupBKctWcyorsEwg6rtYs6xsqR/FS9OIRe4f7
-         C3o1SPJg5Yeq0Aml/jLOHgBgSfhFoqndk/4K71c8=
+        b=k/UYDPgON9gHTHffAvkXscyqxazNKJupgGmcMG89YLlB7qAaUQEspPDyA/e83xikK
+         CLHGxdiFhhlwTxmBWAVhEcMtdVY6KwxlFtU4e4xZObJGqaLJOgQaKlOzlLGh43ookN
+         pWNOjekbE92nn53sai00kdTFgZyunf+SRtMVMe/Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eelco Chaudron <echaudro@redhat.com>,
-        Simon Horman <simon.horman@netronome.com>,
+        stable@vger.kernel.org, Phil Sutter <phil@nwl.cc>,
         Pablo Neira Ayuso <pablo@netfilter.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 344/388] netfilter: conntrack: nf_conncount_init is failing with IPv6 disabled
+Subject: [PATCH 5.8 32/99] netfilter: nft_meta: use socket user_ns to retrieve skuid and skgid
 Date:   Tue, 29 Sep 2020 13:01:15 +0200
-Message-Id: <20200929110027.111654436@linuxfoundation.org>
+Message-Id: <20200929105931.310039891@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929110010.467764689@linuxfoundation.org>
-References: <20200929110010.467764689@linuxfoundation.org>
+In-Reply-To: <20200929105929.719230296@linuxfoundation.org>
+References: <20200929105929.719230296@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,48 +43,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eelco Chaudron <echaudro@redhat.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
 
-[ Upstream commit 526e81b990e53e31ba40ba304a2285ffd098721f ]
+[ Upstream commit 0c92411bb81de9bc516d6924f50289d8d5f880e5 ]
 
-The openvswitch module fails initialization when used in a kernel
-without IPv6 enabled. nf_conncount_init() fails because the ct code
-unconditionally tries to initialize the netns IPv6 related bit,
-regardless of the build option. The change below ignores the IPv6
-part if not enabled.
+... instead of using init_user_ns.
 
-Note that the corresponding _put() function already has this IPv6
-configuration check.
-
-Fixes: 11efd5cb04a1 ("openvswitch: Support conntrack zone limit")
-Signed-off-by: Eelco Chaudron <echaudro@redhat.com>
-Reviewed-by: Simon Horman <simon.horman@netronome.com>
+Fixes: 96518518cc41 ("netfilter: add nftables")
+Tested-by: Phil Sutter <phil@nwl.cc>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/netfilter/nf_conntrack_proto.c | 2 ++
- 1 file changed, 2 insertions(+)
+ net/netfilter/nft_meta.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/net/netfilter/nf_conntrack_proto.c b/net/netfilter/nf_conntrack_proto.c
-index a0560d175a7ff..aaf4293ddd459 100644
---- a/net/netfilter/nf_conntrack_proto.c
-+++ b/net/netfilter/nf_conntrack_proto.c
-@@ -565,6 +565,7 @@ static int nf_ct_netns_inet_get(struct net *net)
- 	int err;
+diff --git a/net/netfilter/nft_meta.c b/net/netfilter/nft_meta.c
+index 7bc6537f3ccb5..b37bd02448d8c 100644
+--- a/net/netfilter/nft_meta.c
++++ b/net/netfilter/nft_meta.c
+@@ -147,11 +147,11 @@ nft_meta_get_eval_skugid(enum nft_meta_keys key,
  
- 	err = nf_ct_netns_do_get(net, NFPROTO_IPV4);
-+#if IS_ENABLED(CONFIG_IPV6)
- 	if (err < 0)
- 		goto err1;
- 	err = nf_ct_netns_do_get(net, NFPROTO_IPV6);
-@@ -575,6 +576,7 @@ static int nf_ct_netns_inet_get(struct net *net)
- err2:
- 	nf_ct_netns_put(net, NFPROTO_IPV4);
- err1:
-+#endif
- 	return err;
- }
- 
+ 	switch (key) {
+ 	case NFT_META_SKUID:
+-		*dest = from_kuid_munged(&init_user_ns,
++		*dest = from_kuid_munged(sock_net(sk)->user_ns,
+ 					 sock->file->f_cred->fsuid);
+ 		break;
+ 	case NFT_META_SKGID:
+-		*dest =	from_kgid_munged(&init_user_ns,
++		*dest =	from_kgid_munged(sock_net(sk)->user_ns,
+ 					 sock->file->f_cred->fsgid);
+ 		break;
+ 	default:
 -- 
 2.25.1
 
