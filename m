@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E18CC27CAEB
+	by mail.lfdr.de (Postfix) with ESMTP id 73E0227CAEA
 	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:24:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732592AbgI2MXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 08:23:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49816 "EHLO mail.kernel.org"
+        id S1732589AbgI2MW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 08:22:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49132 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729786AbgI2LfK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1729788AbgI2LfK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 29 Sep 2020 07:35:10 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A56EB23CD5;
-        Tue, 29 Sep 2020 11:29:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4B4B223D1C;
+        Tue, 29 Sep 2020 11:29:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601378951;
-        bh=J+DVPE/WCTi2SxBKzJYHwhm+7eW5FHl8NKJjIx3duh4=;
+        s=default; t=1601378956;
+        bh=pKvCOEWJAUQnHQZizbxl1KjIHkWsysFhsGXiYcN/2rs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hLV08ZHOoIo39ZTjQpQy3gdkTaiGpyoxFXHzRbDW5uzn2ar6QpPHh5L2zOzPayitx
-         FTbKt75F/5OCh8Y9pOmpHVwhEiP5JbRNVw9klmpEs1ChvTR0QlsNv4naJkZZSst7yn
-         C8yoPP4GErIBPWj6T2EHzamZIQlIxbI1rDrEy5KY=
+        b=0s+m65/KWneo7YtkXZRDDLM2cklWVE0uYdwHfpTLH00yqYv/xhtbYJRDDuGINXNT0
+         ulTqZnee+mMVwWVNwE52HslNWRJ4jvrRgWAtwngVnUT5ssZKKn14Pwz4IaGkDcSt7Z
+         JTQLjd1CNqW1rknxfa6nyurSEQPLHH22h530BACo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Girish Basrur <gbasrur@marvell.com>,
-        Saurav Kashyap <skashyap@marvell.com>,
-        Shyam Sundar <ssundar@marvell.com>,
-        Javed Hasan <jhasan@marvell.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Qian Cai <cai@lca.pw>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Zeng Tao <prime.zeng@hisilicon.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 198/245] scsi: libfc: Skip additional kref updating work event
-Date:   Tue, 29 Sep 2020 13:00:49 +0200
-Message-Id: <20200929105956.608881155@linuxfoundation.org>
+Subject: [PATCH 4.19 200/245] vfio/pci: fix racy on error and request eventfd ctx
+Date:   Tue, 29 Sep 2020 13:00:51 +0200
+Message-Id: <20200929105956.707062612@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200929105946.978650816@linuxfoundation.org>
 References: <20200929105946.978650816@linuxfoundation.org>
@@ -46,81 +44,120 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Javed Hasan <jhasan@marvell.com>
+From: Zeng Tao <prime.zeng@hisilicon.com>
 
-[ Upstream commit 823a65409c8990f64c5693af98ce0e7819975cba ]
+[ Upstream commit b872d0640840018669032b20b6375a478ed1f923 ]
 
-When an rport event (RPORT_EV_READY) is updated without work being queued,
-avoid taking an additional reference.
+The vfio_pci_release call will free and clear the error and request
+eventfd ctx while these ctx could be in use at the same time in the
+function like vfio_pci_request, and it's expected to protect them under
+the vdev->igate mutex, which is missing in vfio_pci_release.
 
-This issue was leading to memory leak. Trace from KMEMLEAK tool:
+This issue is introduced since commit 1518ac272e78 ("vfio/pci: fix memory
+leaks of eventfd ctx"),and since commit 5c5866c593bb ("vfio/pci: Clear
+error and request eventfd ctx after releasing"), it's very easily to
+trigger the kernel panic like this:
 
-  unreferenced object 0xffff8888259e8780 (size 512):
-  comm "kworker/2:1", jiffies 4433237386 (age 113021.971s)
-    hex dump (first 32 bytes):
-	58 0a ec cf 83 88 ff ff 00 00 00 00 00 00 00 00
-	01 00 00 00 08 00 00 00 13 7d f0 1e 0e 00 00 10
-  backtrace:
-  [<000000006b25760f>] fc_rport_recv_req+0x3c6/0x18f0 [libfc]
-  [<00000000f208d994>] fc_lport_recv_els_req+0x120/0x8a0 [libfc]
-  [<00000000a9c437b8>] fc_lport_recv+0xb9/0x130 [libfc]
-  [<00000000a9c437b8>] fc_lport_recv+0xb9/0x130 [libfc]
-  [<00000000ad5be37b>] qedf_ll2_process_skb+0x73d/0xad0 [qedf]
-  [<00000000e0eb6893>] process_one_work+0x382/0x6c0
-  [<000000002dfd9e21>] worker_thread+0x57/0x5c0
-  [<00000000b648204f>] kthread+0x1a0/0x1c0
-  [<0000000072f5ab20>] ret_from_fork+0x35/0x40
-  [<000000001d5c05d8>] 0xffffffffffffffff
+[ 9513.904346] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000008
+[ 9513.913091] Mem abort info:
+[ 9513.915871]   ESR = 0x96000006
+[ 9513.918912]   EC = 0x25: DABT (current EL), IL = 32 bits
+[ 9513.924198]   SET = 0, FnV = 0
+[ 9513.927238]   EA = 0, S1PTW = 0
+[ 9513.930364] Data abort info:
+[ 9513.933231]   ISV = 0, ISS = 0x00000006
+[ 9513.937048]   CM = 0, WnR = 0
+[ 9513.940003] user pgtable: 4k pages, 48-bit VAs, pgdp=0000007ec7d12000
+[ 9513.946414] [0000000000000008] pgd=0000007ec7d13003, p4d=0000007ec7d13003, pud=0000007ec728c003, pmd=0000000000000000
+[ 9513.956975] Internal error: Oops: 96000006 [#1] PREEMPT SMP
+[ 9513.962521] Modules linked in: vfio_pci vfio_virqfd vfio_iommu_type1 vfio hclge hns3 hnae3 [last unloaded: vfio_pci]
+[ 9513.972998] CPU: 4 PID: 1327 Comm: bash Tainted: G        W         5.8.0-rc4+ #3
+[ 9513.980443] Hardware name: Huawei TaiShan 2280 V2/BC82AMDC, BIOS 2280-V2 CS V3.B270.01 05/08/2020
+[ 9513.989274] pstate: 80400089 (Nzcv daIf +PAN -UAO BTYPE=--)
+[ 9513.994827] pc : _raw_spin_lock_irqsave+0x48/0x88
+[ 9513.999515] lr : eventfd_signal+0x6c/0x1b0
+[ 9514.003591] sp : ffff800038a0b960
+[ 9514.006889] x29: ffff800038a0b960 x28: ffff007ef7f4da10
+[ 9514.012175] x27: ffff207eefbbfc80 x26: ffffbb7903457000
+[ 9514.017462] x25: ffffbb7912191000 x24: ffff007ef7f4d400
+[ 9514.022747] x23: ffff20be6e0e4c00 x22: 0000000000000008
+[ 9514.028033] x21: 0000000000000000 x20: 0000000000000000
+[ 9514.033321] x19: 0000000000000008 x18: 0000000000000000
+[ 9514.038606] x17: 0000000000000000 x16: ffffbb7910029328
+[ 9514.043893] x15: 0000000000000000 x14: 0000000000000001
+[ 9514.049179] x13: 0000000000000000 x12: 0000000000000002
+[ 9514.054466] x11: 0000000000000000 x10: 0000000000000a00
+[ 9514.059752] x9 : ffff800038a0b840 x8 : ffff007ef7f4de60
+[ 9514.065038] x7 : ffff007fffc96690 x6 : fffffe01faffb748
+[ 9514.070324] x5 : 0000000000000000 x4 : 0000000000000000
+[ 9514.075609] x3 : 0000000000000000 x2 : 0000000000000001
+[ 9514.080895] x1 : ffff007ef7f4d400 x0 : 0000000000000000
+[ 9514.086181] Call trace:
+[ 9514.088618]  _raw_spin_lock_irqsave+0x48/0x88
+[ 9514.092954]  eventfd_signal+0x6c/0x1b0
+[ 9514.096691]  vfio_pci_request+0x84/0xd0 [vfio_pci]
+[ 9514.101464]  vfio_del_group_dev+0x150/0x290 [vfio]
+[ 9514.106234]  vfio_pci_remove+0x30/0x128 [vfio_pci]
+[ 9514.111007]  pci_device_remove+0x48/0x108
+[ 9514.115001]  device_release_driver_internal+0x100/0x1b8
+[ 9514.120200]  device_release_driver+0x28/0x38
+[ 9514.124452]  pci_stop_bus_device+0x68/0xa8
+[ 9514.128528]  pci_stop_and_remove_bus_device+0x20/0x38
+[ 9514.133557]  pci_iov_remove_virtfn+0xb4/0x128
+[ 9514.137893]  sriov_disable+0x3c/0x108
+[ 9514.141538]  pci_disable_sriov+0x28/0x38
+[ 9514.145445]  hns3_pci_sriov_configure+0x48/0xb8 [hns3]
+[ 9514.150558]  sriov_numvfs_store+0x110/0x198
+[ 9514.154724]  dev_attr_store+0x44/0x60
+[ 9514.158373]  sysfs_kf_write+0x5c/0x78
+[ 9514.162018]  kernfs_fop_write+0x104/0x210
+[ 9514.166010]  __vfs_write+0x48/0x90
+[ 9514.169395]  vfs_write+0xbc/0x1c0
+[ 9514.172694]  ksys_write+0x74/0x100
+[ 9514.176079]  __arm64_sys_write+0x24/0x30
+[ 9514.179987]  el0_svc_common.constprop.4+0x110/0x200
+[ 9514.184842]  do_el0_svc+0x34/0x98
+[ 9514.188144]  el0_svc+0x14/0x40
+[ 9514.191185]  el0_sync_handler+0xb0/0x2d0
+[ 9514.195088]  el0_sync+0x140/0x180
+[ 9514.198389] Code: b9001020 d2800000 52800022 f9800271 (885ffe61)
+[ 9514.204455] ---[ end trace 648de00c8406465f ]---
+[ 9514.212308] note: bash[1327] exited with preempt_count 1
 
-Below is the log sequence which leads to memory leak.  Here we get the
-RPORT_EV_READY and RPORT_EV_STOP back to back, which lead to overwrite the
-event RPORT_EV_READY by event RPORT_EV_STOP.  Because of this, kref_count
-gets incremented by 1.
-
-  kernel: host0: rport fffce5: Received PLOGI request
-  kernel: host0: rport fffce5: Received PLOGI in INIT state
-  kernel: host0: rport fffce5: Port is Ready
-  kernel: host0: rport fffce5: Received PRLI request while in state Ready
-  kernel: host0: rport fffce5: PRLI rspp type 8 active 1 passive 0
-  kernel: host0: rport fffce5: Received LOGO request while in state Ready
-  kernel: host0: rport fffce5: Delete port
-  kernel: host0: rport fffce5: Received PLOGI request
-  kernel: host0: rport fffce5: Received PLOGI in state Delete - send busy
-  kernel: host0: rport fffce5: work event 3
-  kernel: host0: rport fffce5: lld callback ev 3
-  kernel: host0: rport fffce5: work delete
-
-Link: https://lore.kernel.org/r/20200626094959.32151-1-jhasan@marvell.com
-Reviewed-by: Girish Basrur <gbasrur@marvell.com>
-Reviewed-by: Saurav Kashyap <skashyap@marvell.com>
-Reviewed-by: Shyam Sundar <ssundar@marvell.com>
-Signed-off-by: Javed Hasan <jhasan@marvell.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Cc: Qian Cai <cai@lca.pw>
+Cc: Alex Williamson <alex.williamson@redhat.com>
+Fixes: 1518ac272e78 ("vfio/pci: fix memory leaks of eventfd ctx")
+Signed-off-by: Zeng Tao <prime.zeng@hisilicon.com>
+Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/libfc/fc_rport.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ drivers/vfio/pci/vfio_pci.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/scsi/libfc/fc_rport.c b/drivers/scsi/libfc/fc_rport.c
-index f39d2d62b002f..2b3239765c249 100644
---- a/drivers/scsi/libfc/fc_rport.c
-+++ b/drivers/scsi/libfc/fc_rport.c
-@@ -495,10 +495,11 @@ static void fc_rport_enter_delete(struct fc_rport_priv *rdata,
+diff --git a/drivers/vfio/pci/vfio_pci.c b/drivers/vfio/pci/vfio_pci.c
+index 94fad366312f1..58e7336b2748b 100644
+--- a/drivers/vfio/pci/vfio_pci.c
++++ b/drivers/vfio/pci/vfio_pci.c
+@@ -409,14 +409,19 @@ static void vfio_pci_release(void *device_data)
+ 	if (!(--vdev->refcnt)) {
+ 		vfio_spapr_pci_eeh_release(vdev->pdev);
+ 		vfio_pci_disable(vdev);
++		mutex_lock(&vdev->igate);
+ 		if (vdev->err_trigger) {
+ 			eventfd_ctx_put(vdev->err_trigger);
+ 			vdev->err_trigger = NULL;
+ 		}
++		mutex_unlock(&vdev->igate);
++
++		mutex_lock(&vdev->igate);
+ 		if (vdev->req_trigger) {
+ 			eventfd_ctx_put(vdev->req_trigger);
+ 			vdev->req_trigger = NULL;
+ 		}
++		mutex_unlock(&vdev->igate);
+ 	}
  
- 	fc_rport_state_enter(rdata, RPORT_ST_DELETE);
- 
--	kref_get(&rdata->kref);
--	if (rdata->event == RPORT_EV_NONE &&
--	    !queue_work(rport_event_queue, &rdata->event_work))
--		kref_put(&rdata->kref, fc_rport_destroy);
-+	if (rdata->event == RPORT_EV_NONE) {
-+		kref_get(&rdata->kref);
-+		if (!queue_work(rport_event_queue, &rdata->event_work))
-+			kref_put(&rdata->kref, fc_rport_destroy);
-+	}
- 
- 	rdata->event = event;
- }
+ 	mutex_unlock(&driver_lock);
 -- 
 2.25.1
 
