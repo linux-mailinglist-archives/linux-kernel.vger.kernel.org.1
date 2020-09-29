@@ -2,42 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B77B227C6A6
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:47:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ED6227C7CE
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:56:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730675AbgI2LrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:47:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47470 "EHLO mail.kernel.org"
+        id S1731538AbgI2L4p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:56:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42230 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731025AbgI2Lqi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:46:38 -0400
+        id S1730806AbgI2Lnn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:43:43 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C3439206F7;
-        Tue, 29 Sep 2020 11:46:37 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 25A5220702;
+        Tue, 29 Sep 2020 11:43:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601379998;
-        bh=aqhq97v0vMI/8zhDlmjgrthGC99DKHlygRR/9St7wN8=;
+        s=default; t=1601379823;
+        bh=8MljDeggPdi9vFj6AXRrmOaExwKwArRNdb/1KDKnZxQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OEWHbIc+C4PswQgfn9OcAuuoF0dqopRh40k41s5tLLNofiheSMDoex9RVfIxRZV2x
-         TSD7hZgkWIVbjs0L4Ro2oSauSIBfthCt4skk1sFP3bJwRBNtRWh6mUfx/fGzJ/Dx6C
-         LQZ3XnPD+l96UfapvRCO9ybPRBl+1c12rqIjFxsk=
+        b=P9YjJ/70xZHi6Bh/1X+r9pRdknq48LsghN4dF+bK75/2dlm+BYB33gE+5iFhZo6I9
+         DbBTXhOXYCUMl2xqeC3Tmlwr3R/xUgOoB0y1ek9pHMES8baYiEry52SgowSJal8ZKG
+         3hVvpPnFJ8EWa0w9/NoAsphKq6s+yN5eqi/ytAeI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        Mark Brown <broonie@kernel.org>,
+        Walter Lozano <walter.lozano@collabora.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 03/99] ASoC: wm8994: Skip setting of the WM8994_MICBIAS register for WM1811
-Date:   Tue, 29 Sep 2020 13:00:46 +0200
-Message-Id: <20200929105929.888567276@linuxfoundation.org>
+Subject: [PATCH 5.4 316/388] opp: Increase parsed_static_opps in _of_add_opp_table_v1()
+Date:   Tue, 29 Sep 2020 13:00:47 +0200
+Message-Id: <20200929110025.765499256@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929105929.719230296@linuxfoundation.org>
-References: <20200929105929.719230296@linuxfoundation.org>
+In-Reply-To: <20200929110010.467764689@linuxfoundation.org>
+References: <20200929110010.467764689@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,71 +44,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
+From: Walter Lozano <walter.lozano@collabora.com>
 
-[ Upstream commit 811c5494436789e7149487c06e0602b507ce274b ]
+[ Upstream commit 6544abc520f0fff701e9da382110dc29676c683a ]
 
-The WM8994_MICBIAS register is not available in the WM1811 CODEC so skip
-initialization of that register for that device.
-This suppresses an error during boot:
-"wm8994-codec: ASoC: error at snd_soc_component_update_bits on wm8994-codec"
+Currently, when using _of_add_opp_table_v2 parsed_static_opps is
+increased and this value is used in _opp_remove_all_static() to
+check if there are static opp entries that need to be freed.
+Unfortunately this does not happen when using _of_add_opp_table_v1(),
+which leads to warnings.
 
-Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Link: https://lore.kernel.org/r/20200827173357.31891-1-s.nawrocki@samsung.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+This patch increases parsed_static_opps in _of_add_opp_table_v1() in a
+similar way as in _of_add_opp_table_v2().
+
+Fixes: 03758d60265c ("opp: Replace list_kref with a local counter")
+Cc: v5.6+ <stable@vger.kernel.org> # v5.6+
+Signed-off-by: Walter Lozano <walter.lozano@collabora.com>
+[ Viresh: Do the operation with lock held and set the value to 1 instead
+	  of incrementing it ]
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/wm8994.c  | 2 ++
- sound/soc/codecs/wm_hubs.c | 3 +++
- sound/soc/codecs/wm_hubs.h | 1 +
- 3 files changed, 6 insertions(+)
+ drivers/opp/of.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
-index 55d0b9be6ff00..c2116836a7203 100644
---- a/sound/soc/codecs/wm8994.c
-+++ b/sound/soc/codecs/wm8994.c
-@@ -4166,11 +4166,13 @@ static int wm8994_component_probe(struct snd_soc_component *component)
- 			wm8994->hubs.dcs_readback_mode = 2;
- 			break;
- 		}
-+		wm8994->hubs.micd_scthr = true;
- 		break;
+diff --git a/drivers/opp/of.c b/drivers/opp/of.c
+index 9cd8f0adacae4..249738e1e0b7a 100644
+--- a/drivers/opp/of.c
++++ b/drivers/opp/of.c
+@@ -733,6 +733,10 @@ static int _of_add_opp_table_v1(struct device *dev, struct opp_table *opp_table)
+ 		return -EINVAL;
+ 	}
  
- 	case WM8958:
- 		wm8994->hubs.dcs_readback_mode = 1;
- 		wm8994->hubs.hp_startup_mode = 1;
-+		wm8994->hubs.micd_scthr = true;
- 
- 		switch (control->revision) {
- 		case 0:
-diff --git a/sound/soc/codecs/wm_hubs.c b/sound/soc/codecs/wm_hubs.c
-index e93af7edd8f75..dd421e2fe7b21 100644
---- a/sound/soc/codecs/wm_hubs.c
-+++ b/sound/soc/codecs/wm_hubs.c
-@@ -1223,6 +1223,9 @@ int wm_hubs_handle_analogue_pdata(struct snd_soc_component *component,
- 		snd_soc_component_update_bits(component, WM8993_ADDITIONAL_CONTROL,
- 				    WM8993_LINEOUT2_FB, WM8993_LINEOUT2_FB);
- 
-+	if (!hubs->micd_scthr)
-+		return 0;
++	mutex_lock(&opp_table->lock);
++	opp_table->parsed_static_opps = 1;
++	mutex_unlock(&opp_table->lock);
 +
- 	snd_soc_component_update_bits(component, WM8993_MICBIAS,
- 			    WM8993_JD_SCTHR_MASK | WM8993_JD_THR_MASK |
- 			    WM8993_MICB1_LVL | WM8993_MICB2_LVL,
-diff --git a/sound/soc/codecs/wm_hubs.h b/sound/soc/codecs/wm_hubs.h
-index 4b8e5f0d6e32d..988b29e630607 100644
---- a/sound/soc/codecs/wm_hubs.h
-+++ b/sound/soc/codecs/wm_hubs.h
-@@ -27,6 +27,7 @@ struct wm_hubs_data {
- 	int hp_startup_mode;
- 	int series_startup;
- 	int no_series_update;
-+	bool micd_scthr;
- 
- 	bool no_cache_dac_hp_direct;
- 	struct list_head dcs_cache;
+ 	val = prop->value;
+ 	while (nr) {
+ 		unsigned long freq = be32_to_cpup(val++) * 1000;
 -- 
 2.25.1
 
