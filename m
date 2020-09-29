@@ -2,170 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75D6927D9BD
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 23:05:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29FE027D9C1
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 23:08:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729392AbgI2VE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 17:04:58 -0400
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:32857 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726643AbgI2VE6 (ORCPT
+        id S1729318AbgI2VIL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 17:08:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42270 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727347AbgI2VIL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 17:04:58 -0400
-Received: by mail-qt1-f194.google.com with SMTP id a4so4862801qth.0
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 14:04:57 -0700 (PDT)
+        Tue, 29 Sep 2020 17:08:11 -0400
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B9A0C061755;
+        Tue, 29 Sep 2020 14:08:11 -0700 (PDT)
+Received: by mail-ot1-x341.google.com with SMTP id 95so5847984ota.13;
+        Tue, 29 Sep 2020 14:08:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=PlmNXw7ZpFTwSV3L+F5jDFoW1vvdajkclsGk3mMsf4k=;
+        b=mXmdQXAsrxqScrzTvmHDTNHXXq/PBtM6GvG22NOOWp8K5sqChjRxJYFMi9JfMCiW1A
+         yGXoIzQK60jUF06Zrxpj8jn0nAxuHiwim01gSOKBFSA9eL+SZPjsPvxXkTahWnAx5OTx
+         jRJ9LZIVMquVE8YzPGNaW/i5qW+FtqJ5DrA2XNr1konCcDZr/d+LzQ3N/hSRkEx4xOA6
+         cbiW3TMHroFVDHbYwEqkv7txMjv2vIZZh04wiEOvHaWE3NeB472Iq/ji133B5BzFcLoc
+         XPND7vGkt2msl4r0/fDWKgTFePxHgneXH3OUUBg4gknHY18jBmDBXcU/9ysdChS9eMkD
+         AW4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=MXHCjm2f4B3C88ZBMrTBGAoyRnpIg67/FPZnMRlWhj8=;
-        b=WidYGR55xyS8OOEXMowb96/LuIE1QRhyf3UP+fFmBzfEClfdPjg1XOzoko3g04U66O
-         KV9YwtiLaXC+RijZ95iZP5yJEOJIPAbhFq0wX6a+J+p4M2HT3I5nXJAG0tlDBxtPMOTG
-         tZhi8lprXUud5ow5UdtE/Rhor7AEXyn+L8K2vMsufqkjS84Ff8pZwlbgmrPqi7JaEgkV
-         6FALRIDKDpUHmSHUMadb2r9g6NjVcCChy6yyZbl7EWQ9bh+Ll63owxkRxJvBAFyN5mwM
-         wPWEhjgMdDdtIoWnG9/siSSejar5cNxzM7/dvvJH18bScVk4TqrKjTUdCtr6Gq9XmbZo
-         YEUA==
-X-Gm-Message-State: AOAM530WhlVhqcIUDQDPPvpzzzy9yfbgQDlFMUXDLRaPIEzJvxb3tXPe
-        SB1KioJayVDheLF+szhrghXqPjbFii3PlA==
-X-Google-Smtp-Source: ABdhPJxwDwQj7/PD82n4z/8SUv6nOfQkmljWpHQbVLg5n8K95n7c/vD6QscKFc44OOUSRU4OhZ3YGw==
-X-Received: by 2002:ac8:1387:: with SMTP id h7mr5495384qtj.386.1601413496799;
-        Tue, 29 Sep 2020 14:04:56 -0700 (PDT)
-Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id s20sm6049524qkg.65.2020.09.29.14.04.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Sep 2020 14:04:56 -0700 (PDT)
-From:   Arvind Sankar <nivedita@alum.mit.edu>
-To:     x86@kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Ross Philipson <ross.philipson@oracle.com>
-Subject: [PATCH] x86/boot: Place kernel_info at a fixed offset
-Date:   Tue, 29 Sep 2020 17:04:55 -0400
-Message-Id: <20200929210455.2718827-1-nivedita@alum.mit.edu>
-X-Mailer: git-send-email 2.26.2
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to:user-agent;
+        bh=PlmNXw7ZpFTwSV3L+F5jDFoW1vvdajkclsGk3mMsf4k=;
+        b=U6symX+C+lrobPdUP+3qg847HPmGH5UuaI4+ItRJAia4vbg9uDE4XA08Wx2VCYmnGt
+         yPi1eDvHMAADLR2ZDeYS1i7xvKVhv62GfgQnPspmlVcqLtG2obhxcgAEDPybDfMmsV4P
+         mj9t6qAiloD43PMNZRneOQte9q2XibS4MKphE3SpPvUfBF8SVOj1eYNrOnAG93K07I9G
+         HsvBmMAveQpyKtqfXakRoUeq9N2/28fvASjLvV1F7sAAGZNKARV6VGy/wS+3zQbnhGTb
+         oqBkWM1OBkQf+VO066BXORSjTQcDje+LcqgZ+eD9Qm8iolhkQ+2ivI1MoOoUheNFhfvu
+         kw6Q==
+X-Gm-Message-State: AOAM532RRCaE6C0S7ndGyLKwVfHZT01CEfNYgbs+rlrPXTSw0s5D5/Xm
+        e1XVZgLORqv+K7bSF90GGSA=
+X-Google-Smtp-Source: ABdhPJxPrDKCJz+3VJEX/ZpKrEq+OWZrCRe2f53nK42EpGgT86sw4rpedKOYdAnMc+C8WB8Ls5li/Q==
+X-Received: by 2002:a9d:4cd:: with SMTP id 71mr3891833otm.276.1601413690631;
+        Tue, 29 Sep 2020 14:08:10 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id m12sm1283417otq.8.2020.09.29.14.08.09
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 29 Sep 2020 14:08:10 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Tue, 29 Sep 2020 14:08:09 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
+        pavel@denx.de, stable@vger.kernel.org
+Subject: Re: [PATCH 4.19 000/244] 4.19.149-rc2 review
+Message-ID: <20200929210809.GA154271@roeck-us.net>
+References: <20200929142826.951084251@linuxfoundation.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200929142826.951084251@linuxfoundation.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are use cases for storing the offset of a symbol in kernel_info.
-For example, the trenchboot series [0] needs to store the offset of the
-Measured Launch Environment header in kernel_info.
+On Tue, Sep 29, 2020 at 04:29:27PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.19.149 release.
+> There are 244 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Thu, 01 Oct 2020 14:27:43 +0000.
+> Anything received after that time might be too late.
+> 
 
-Since commit (note: commit ID from tip/master)
+For v4.19.148-245-g78ef55b:
 
-  527afc212231 ("x86/boot: Check that there are no run-time relocations")
+Build results:
+	total: 155 pass: 153 fail: 2
+Failed builds:
+	i386:tools/perf
+	x86_64:tools/perf
+Qemu test results:
+	total: 421 pass: 421 fail: 0
 
-run-time relocations are not allowed in the compressed kernel, so simply
-using the symbol in kernel_info, as
+perf build error:
 
-	.long	symbol
+util/evsel.c: In function ‘perf_evsel__exit’:
+util/util.h:25:28: error: passing argument 1 of ‘free’ discards ‘const’ qualifier from pointer target type
 
-will cause a linker error because this is not position-independent.
-
-With kernel_info being a separate object file and in a different section
-from startup_32, there is no way to calculate the offset of a symbol
-from the start of the image in a position-independent way.
-
-To enable such use cases, put kernel_info into its own section which is
-placed at a predetermined offset (KERNEL_INFO_OFFSET) via the linker
-script. This will allow calculating the symbol offset in a
-position-independent way, by adding the offset from the start of
-kernel_info to KERNEL_INFO_OFFSET.
-
-Ensure that kernel_info is aligned, and use the SYM_DATA.* macros
-instead of bare labels. This stores the size of the kernel_info
-structure in the ELF symbol table.
-
-Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
-Cc: Ross Philipson <ross.philipson@oracle.com>
-[0] https://lore.kernel.org/lkml/1600959521-24158-8-git-send-email-ross.philipson@oracle.com/
----
- arch/x86/boot/compressed/kernel_info.S | 19 +++++++++++++++----
- arch/x86/boot/compressed/kernel_info.h | 12 ++++++++++++
- arch/x86/boot/compressed/vmlinux.lds.S |  6 ++++++
- 3 files changed, 33 insertions(+), 4 deletions(-)
- create mode 100644 arch/x86/boot/compressed/kernel_info.h
-
-diff --git a/arch/x86/boot/compressed/kernel_info.S b/arch/x86/boot/compressed/kernel_info.S
-index f818ee8fba38..c18f07181dd5 100644
---- a/arch/x86/boot/compressed/kernel_info.S
-+++ b/arch/x86/boot/compressed/kernel_info.S
-@@ -1,12 +1,23 @@
- /* SPDX-License-Identifier: GPL-2.0 */
- 
-+#include <linux/linkage.h>
- #include <asm/bootparam.h>
-+#include "kernel_info.h"
- 
--	.section ".rodata.kernel_info", "a"
-+/*
-+ * If a field needs to hold the offset of a symbol from the start
-+ * of the image, use the macro below, eg
-+ *	.long	rva(symbol)
-+ * This will avoid creating run-time relocations, which are not
-+ * allowed in the compressed kernel.
-+ */
-+
-+#define rva(X) (((X) - kernel_info) + KERNEL_INFO_OFFSET)
- 
--	.global kernel_info
-+	.section ".rodata.kernel_info", "a"
- 
--kernel_info:
-+	.balign	16
-+SYM_DATA_START(kernel_info)
- 	/* Header, Linux top (structure). */
- 	.ascii	"LToP"
- 	/* Size. */
-@@ -19,4 +30,4 @@ kernel_info:
- 
- kernel_info_var_len_data:
- 	/* Empty for time being... */
--kernel_info_end:
-+SYM_DATA_END_LABEL(kernel_info, SYM_L_LOCAL, kernel_info_end)
-diff --git a/arch/x86/boot/compressed/kernel_info.h b/arch/x86/boot/compressed/kernel_info.h
-new file mode 100644
-index 000000000000..c127f84aec63
---- /dev/null
-+++ b/arch/x86/boot/compressed/kernel_info.h
-@@ -0,0 +1,12 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+
-+#ifndef BOOT_COMPRESSED_KERNEL_INFO_H
-+#define BOOT_COMPRESSED_KERNEL_INFO_H
-+
-+#ifdef CONFIG_X86_64
-+#define KERNEL_INFO_OFFSET 0x500
-+#else /* 32-bit */
-+#define KERNEL_INFO_OFFSET 0x100
-+#endif
-+
-+#endif /* BOOT_COMPRESSED_KERNEL_INFO_H */
-diff --git a/arch/x86/boot/compressed/vmlinux.lds.S b/arch/x86/boot/compressed/vmlinux.lds.S
-index 112b2375d021..84c7b4de489e 100644
---- a/arch/x86/boot/compressed/vmlinux.lds.S
-+++ b/arch/x86/boot/compressed/vmlinux.lds.S
-@@ -7,6 +7,7 @@ OUTPUT_FORMAT(CONFIG_OUTPUT_FORMAT)
- 
- #include <asm/cache.h>
- #include <asm/page_types.h>
-+#include "kernel_info.h"
- 
- #ifdef CONFIG_X86_64
- OUTPUT_ARCH(i386:x86-64)
-@@ -27,6 +28,11 @@ SECTIONS
- 		HEAD_TEXT
- 		_ehead = . ;
- 	}
-+	.rodata.kernel_info KERNEL_INFO_OFFSET : {
-+		*(.rodata.kernel_info)
-+	}
-+	ASSERT(ABSOLUTE(kernel_info) == KERNEL_INFO_OFFSET, "kernel_info at bad address!")
-+
- 	.rodata..compressed : {
- 		*(.rodata..compressed)
- 	}
--- 
-2.26.2
-
+Guenter
