@@ -2,131 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A91C27BEA9
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 10:00:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D23AE27BEB0
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 10:00:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727820AbgI2H6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 03:58:33 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:12726 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727715AbgI2H6a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 03:58:30 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4C0sFt43pNz9v04g;
-        Tue, 29 Sep 2020 09:58:26 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id bBCL2Vs1tFh2; Tue, 29 Sep 2020 09:58:26 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4C0sFt39GRz9v04d;
-        Tue, 29 Sep 2020 09:58:26 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id AE9008B7A4;
-        Tue, 29 Sep 2020 09:58:27 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id jX54WFx0YwnC; Tue, 29 Sep 2020 09:58:27 +0200 (CEST)
-Received: from po17688vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 43E448B76C;
-        Tue, 29 Sep 2020 09:58:27 +0200 (CEST)
-Received: by po17688vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 7CAA165EBA; Tue, 29 Sep 2020 07:58:27 +0000 (UTC)
-Message-Id: <d7c1fd375fbf4b88993eea64e0df085e38117cdc.1601365870.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <cover.1601365869.git.christophe.leroy@csgroup.eu>
-References: <cover.1601365869.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH v12 5/5] powerpc/vdso: Provide __kernel_clock_gettime64() on
- vdso32
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>, nathanl@linux.ibm.com,
-        anton@ozlabs.org
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        arnd@arndb.de, tglx@linutronix.de, vincenzo.frascino@arm.com,
-        luto@kernel.org, linux-arch@vger.kernel.org
-Date:   Tue, 29 Sep 2020 07:58:27 +0000 (UTC)
+        id S1727687AbgI2H70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 03:59:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60632 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725536AbgI2H70 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 03:59:26 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDF04C0613D0
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 00:59:25 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id y15so3770751wmi.0
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 00:59:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=z44OCwOHJFAg70e5aEAiWS8XZCl9H96J8tZarWdkMhw=;
+        b=Z/FVuhB6HuycrwymG80hUaxXIvXS6rU4TG69hlvG+ssusxVSVTJLh0ht4r3+WubNj5
+         pr1etCcepdla4i8XyhR+EHVnudUFAyVS4HcImrMUtW9/KE3fnqZPwX8gQkq3+Z7JUvne
+         vhS3cq8/T0ve4f8JXT20BKpX7ZLj7xxHy3YTKepUFmJXieFECi1RrRyKCNXx8MMkfmna
+         T7CA0BYn55VTGYB0MlioT8P1EiFkPRtaK21hPFWzIK3k0oCZSytZC3lOzUugRSolw25C
+         x9FMzJeshW7diTqn154NjByRse9ZCJlSwLzXOGDNHYUSAD5sY2ZaWGZTCyIEsyocTbbP
+         XpWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=z44OCwOHJFAg70e5aEAiWS8XZCl9H96J8tZarWdkMhw=;
+        b=Xqvi4ZUzPxmFT2VTrBtgv9VrO8jCzlcN/l4DjH4Xzy2aFAsWB9GM5hl+Zrn7rdOFrI
+         nqu7Xyj602/SSSZkhb9cwxC2Ql3PLLdDC71yg19zcKnnDA3jbgq0CrD2zPg3Aii+tpRl
+         yRcDPidxvTj2XEFCI3yfjva9akqmEWzdjB4CpWe/zn4RlQGXM9syZOqsMCo/qtam68UJ
+         BizOXrPIUhhG9Wx5m819uxugbZWUeHgT/li8Ewq5Fvu4+4CzpZbhfof5tyufrAWebfOe
+         MOcjErxAXv70hUWVLMGFp28sr+tCx5k+cSwM2sxkcgo0byPThwAJfD3J5y4lCq2jT1nm
+         vQfQ==
+X-Gm-Message-State: AOAM530W/FezeigCPlUoX9UJa0ALVvufunl95VbG1zmpjUaUIRmpjwUn
+        /1LcckyFx45S0qQkJIcBz8B3rMm+df/Q1O+blYdW3Q==
+X-Google-Smtp-Source: ABdhPJzIEZ5Ks8NozSFCE7r8LavP2lhCwbT/Q4oIeeySm7aOZ1AaUXYJS3rAIesL32tHY4cMAE2SVnySAJXWyvrB2hw=
+X-Received: by 2002:a7b:c750:: with SMTP id w16mr727455wmk.16.1601366364393;
+ Tue, 29 Sep 2020 00:59:24 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200927123542.553852-1-kholk11@gmail.com> <20200927123542.553852-3-kholk11@gmail.com>
+ <CAMi1Hd1A-nRD57ETMnCbtKTFpQZ1f9-3D1SPx===BRx0f1FX7A@mail.gmail.com> <20200928215120.GP1681290@dtor-ws>
+In-Reply-To: <20200928215120.GP1681290@dtor-ws>
+From:   Amit Pundir <amit.pundir@linaro.org>
+Date:   Tue, 29 Sep 2020 13:28:48 +0530
+Message-ID: <CAMi1Hd1YWXG=Ua5y74Zmd+cCOtHPRRLToH+dhTeAzNRbTQ71Gg@mail.gmail.com>
+Subject: Re: [PATCH v2 2/3] Input: Add Novatek NT36xxx touchscreen driver
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     kholk11@gmail.com, Rob Herring <robh+dt@kernel.org>,
+        rydberg@bitmath.org, priv.luk@gmail.com,
+        linux-input@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
+        marijns95@gmail.com, Konrad Dybcio <konradybcio@gmail.com>,
+        martin.botka1@gmail.com, phone-devel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Provides __kernel_clock_gettime64() on vdso32. This is the
-64 bits version of __kernel_clock_gettime() which is
-y2038 compliant.
+On Tue, 29 Sep 2020 at 03:21, Dmitry Torokhov <dmitry.torokhov@gmail.com> wrote:
+>
+> On Mon, Sep 28, 2020 at 03:18:18PM +0530, Amit Pundir wrote:
+> > On Sun, 27 Sep 2020 at 18:06, <kholk11@gmail.com> wrote:
+> > >
+> > > From: AngeloGioacchino Del Regno <kholk11@gmail.com>
+> > >
+> > > This is a driver for the Novatek in-cell touch controller and
+> > > supports various chips from the NT36xxx family, currently
+> > > including NT36525, NT36672A, NT36676F, NT36772 and NT36870.
+> > >
+> > > Functionality like wake gestures and firmware flashing is not
+> > > included: I am not aware of any of these DrIC+Touch combo
+> > > chips not including a non-volatile memory and it should be
+> > > highly unlikely to find one, since the touch firmware is
+> > > embedded into the DriverIC one, which is obviously necessary
+> > > to drive the display unit.
+> > >
+> > > However, the necessary address for the firmware update
+> > > procedure was included into the address table in this driver
+> > > so, in the event that someone finds the need to implement it
+> > > for a reason or another, it will be pretty straightforward to.
+> > >
+> > > This driver is lightly based on the downstream implementation [1].
+> > > [1] https://github.com/Rasenkai/caf-tsoft-Novatek-nt36xxx
+> > >
+> >
+> > This is so cool!
+> >
+> > Xiaomi PocoF1 phone uses same family touchscreen IC and I could
+> > test this series on that phone as well.
+> >
+> > However I do have to make a minor change to get it working. The
+> > downstream driver and even the github code you linked above use
+> > GPIO mapped IRQ, and I had to switch to that to get touchscreen
+> > working with your driver
+> > https://github.com/pundiramit/linux/commit/0a73eb656c1e80787dc195641ce7b0076fddb38e.
+> > I wonder if I'm missing any devicetree property other than interrupts?
+>
+> Simply specifying GPIO controller/pin as interrupt property should work,
+> there should be no need to parse custom GPIO property and convert it to
+> IRQ in the driver.
+>
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
-v12: Added missing prototype
----
- arch/powerpc/include/asm/vdso/gettimeofday.h | 2 ++
- arch/powerpc/kernel/vdso32/gettimeofday.S    | 9 +++++++++
- arch/powerpc/kernel/vdso32/vdso32.lds.S      | 1 +
- arch/powerpc/kernel/vdso32/vgettimeofday.c   | 6 ++++++
- 4 files changed, 18 insertions(+)
+Indeed. I don't know what was tripping me off yesterday, but I got it
+working today with interrupt properties. Thank you.
 
-diff --git a/arch/powerpc/include/asm/vdso/gettimeofday.h b/arch/powerpc/include/asm/vdso/gettimeofday.h
-index 59a609a48b63..8da84722729b 100644
---- a/arch/powerpc/include/asm/vdso/gettimeofday.h
-+++ b/arch/powerpc/include/asm/vdso/gettimeofday.h
-@@ -186,6 +186,8 @@ int __c_kernel_clock_getres(clockid_t clock_id, struct __kernel_timespec *res,
- #else
- int __c_kernel_clock_gettime(clockid_t clock, struct old_timespec32 *ts,
- 			     const struct vdso_data *vd);
-+int __c_kernel_clock_gettime64(clockid_t clock, struct __kernel_timespec *ts,
-+			       const struct vdso_data *vd);
- int __c_kernel_clock_getres(clockid_t clock_id, struct old_timespec32 *res,
- 			    const struct vdso_data *vd);
- #endif
-diff --git a/arch/powerpc/kernel/vdso32/gettimeofday.S b/arch/powerpc/kernel/vdso32/gettimeofday.S
-index fd7b01c51281..a6e29f880e0e 100644
---- a/arch/powerpc/kernel/vdso32/gettimeofday.S
-+++ b/arch/powerpc/kernel/vdso32/gettimeofday.S
-@@ -35,6 +35,15 @@ V_FUNCTION_BEGIN(__kernel_clock_gettime)
- 	cvdso_call __c_kernel_clock_gettime
- V_FUNCTION_END(__kernel_clock_gettime)
- 
-+/*
-+ * Exact prototype of clock_gettime64()
-+ *
-+ * int __kernel_clock_gettime64(clockid_t clock_id, struct __timespec64 *ts);
-+ *
-+ */
-+V_FUNCTION_BEGIN(__kernel_clock_gettime64)
-+	cvdso_call __c_kernel_clock_gettime64
-+V_FUNCTION_END(__kernel_clock_gettime64)
- 
- /*
-  * Exact prototype of clock_getres()
-diff --git a/arch/powerpc/kernel/vdso32/vdso32.lds.S b/arch/powerpc/kernel/vdso32/vdso32.lds.S
-index 5206c2eb2a1d..af5812ca5dce 100644
---- a/arch/powerpc/kernel/vdso32/vdso32.lds.S
-+++ b/arch/powerpc/kernel/vdso32/vdso32.lds.S
-@@ -147,6 +147,7 @@ VERSION
- #ifndef CONFIG_PPC_BOOK3S_601
- 		__kernel_gettimeofday;
- 		__kernel_clock_gettime;
-+		__kernel_clock_gettime64;
- 		__kernel_clock_getres;
- 		__kernel_time;
- 		__kernel_get_tbfreq;
-diff --git a/arch/powerpc/kernel/vdso32/vgettimeofday.c b/arch/powerpc/kernel/vdso32/vgettimeofday.c
-index 0b9ab4c22ef2..f7f71fecf4ed 100644
---- a/arch/powerpc/kernel/vdso32/vgettimeofday.c
-+++ b/arch/powerpc/kernel/vdso32/vgettimeofday.c
-@@ -11,6 +11,12 @@ int __c_kernel_clock_gettime(clockid_t clock, struct old_timespec32 *ts,
- 	return __cvdso_clock_gettime32_data(vd, clock, ts);
- }
- 
-+int __c_kernel_clock_gettime64(clockid_t clock, struct __kernel_timespec *ts,
-+			       const struct vdso_data *vd)
-+{
-+	return __cvdso_clock_gettime_data(vd, clock, ts);
-+}
-+
- int __c_kernel_gettimeofday(struct __kernel_old_timeval *tv, struct timezone *tz,
- 			    const struct vdso_data *vd)
- {
--- 
-2.25.0
+Regards,
+Amit Pundir
 
+> Thanks.
+>
+> --
+> Dmitry
