@@ -2,84 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E35F827C1B4
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 11:51:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44B4A27C1B6
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 11:52:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728015AbgI2Jvb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 05:51:31 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:50163 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727660AbgI2JvY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 05:51:24 -0400
-Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601373083;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Q7VcobJF6uyWmgL5vmwuoyYLR7D7rwBPhHFHQDDI+jU=;
-        b=WvSTpYhmbBOKXQX9qewutzU9/aj+rMPezrax/1XhwKdE0YPBW8WZa+XwVY+PHdzp5WGLUQ
-        8Sijo9sAnKFFkWgq2VJJ1Oqtj7ihvfLnHLzo0QG0kH6lToC2AzNuBqKnQlDOwt0MvfysHo
-        ++QqXROfMmWxdSVEOIzGWHt/QMHLQpA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-584-vkhqYCmMOjSawZD1UYOkUA-1; Tue, 29 Sep 2020 05:51:21 -0400
-X-MC-Unique: vkhqYCmMOjSawZD1UYOkUA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1728055AbgI2JwC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 05:52:02 -0400
+Received: from ozlabs.org ([203.11.71.1]:52607 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725355AbgI2JwB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 05:52:01 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A4DC8801AE3;
-        Tue, 29 Sep 2020 09:51:19 +0000 (UTC)
-Received: from sirius.home.kraxel.org (ovpn-112-56.ams2.redhat.com [10.36.112.56])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 6EDE47880B;
-        Tue, 29 Sep 2020 09:51:16 +0000 (UTC)
-Received: by sirius.home.kraxel.org (Postfix, from userid 1000)
-        id AC8AA358099; Tue, 29 Sep 2020 11:51:15 +0200 (CEST)
-From:   Gerd Hoffmann <kraxel@redhat.com>
-To:     dri-devel@lists.freedesktop.org
-Cc:     Gerd Hoffmann <kraxel@redhat.com>,
-        Dave Airlie <airlied@redhat.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, Huang Rui <ray.huang@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        virtualization@lists.linux-foundation.org (open list:DRM DRIVER FOR QXL
-        VIRTUAL GPU),
-        spice-devel@lists.freedesktop.org (open list:DRM DRIVER FOR QXL VIRTUAL
-        GPU), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v2 4/4] drm/qxl: use qxl pin function
-Date:   Tue, 29 Sep 2020 11:51:15 +0200
-Message-Id: <20200929095115.24430-5-kraxel@redhat.com>
-In-Reply-To: <20200929095115.24430-1-kraxel@redhat.com>
-References: <20200929095115.24430-1-kraxel@redhat.com>
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C0vmt3WpWz9ryj;
+        Tue, 29 Sep 2020 19:51:58 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1601373118;
+        bh=/UqAU7011XTSxM8Odjpdoba4HXdub/28FHyXfr9VDpI=;
+        h=Date:From:To:Cc:Subject:From;
+        b=dIj/eZyfw+55aEIdKO8HC8PE32itvRp2Gg25y6ZNySuDSdUy+FuE1C68tJXbUgVM2
+         zs6F2H2cf4XKb9LPj5lUPTv5l1RnF6W+tYXKNcMCgdWsAunjl3MKVSGoLtz2U4zgJa
+         m9W8tuzoWLyBvWNO9adkmFJJf/YPV/rGO/G+qMx7KSQ+srnA40HbG5y+KCP+KMrkfO
+         cJa0cDBqLvt9WMyqp26Y5iV3hbtfFRfbMFIl2NV2+FHSIBiHcHdfBvIvQFkEAwfPO+
+         gK1vDFuFnkosKgdmKKm4I1/BvgiV0+VydDJg8PaH5h/0//Ymhqb9rcBmpfl/ZDW2D4
+         QALX3J3+25O7w==
+Date:   Tue, 29 Sep 2020 19:51:57 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: linux-next: Signed-off-by missing for commit in the arm64 tree
+Message-ID: <20200929195157.147ea306@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: multipart/signed; boundary="Sig_/YUbYQoHY0xpILsM7N=.UA3h";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Otherwise ttm throws a WARN because we try to pin without a reservation.
+--Sig_/YUbYQoHY0xpILsM7N=.UA3h
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Fixes: 9d36d4320462 ("drm/qxl: switch over to the new pin interface")
-Signed-off-by: Gerd Hoffmann <kraxel@redhat.com>
----
- drivers/gpu/drm/qxl/qxl_object.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Hi all,
 
-diff --git a/drivers/gpu/drm/qxl/qxl_object.c b/drivers/gpu/drm/qxl/qxl_object.c
-index d3635e3e3267..eb45267d51db 100644
---- a/drivers/gpu/drm/qxl/qxl_object.c
-+++ b/drivers/gpu/drm/qxl/qxl_object.c
-@@ -145,7 +145,7 @@ int qxl_bo_create(struct qxl_device *qdev,
- 		return r;
- 	}
- 	if (pinned)
--		ttm_bo_pin(&bo->tbo);
-+		qxl_bo_pin(bo);
- 	*bo_ptr = bo;
- 	return 0;
- }
--- 
-2.27.0
+Commits
 
+  9a313c5d65a5 ("arm64: Get rid of arm64_ssbd_state")
+  d48ecc90a0e1 ("KVM: arm64: Convert ARCH_WORKAROUND_2 to arm64_get_spectre=
+_v4_state()")
+  780bb94b072e ("KVM: arm64: Get rid of kvm_arm_have_ssbd()")
+  2197c8674ce3 ("KVM: arm64: Simplify handling of ARCH_WORKAROUND_2")
+  977ce2df500e ("KVM: arm64: Set CSV2 for guests on hardware unaffected by =
+Spectre-v2")
+
+are missing a Signed-off-by from their committer.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/YUbYQoHY0xpILsM7N=.UA3h
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9zA70ACgkQAVBC80lX
+0GwqFQf9E4mpGxrLTA0vGc1FCcPtteSJHRa0erd+X9L0W5NY8jjIAro7YAifhV5H
+q6l3yU4YhnfL60CMbY13DTqlulxqMkIZK28I2s8agRo25w77V6pcB3/uObuXj2Sn
+M8TyeBr2h7LELWZuNpBVSDUzZ5dWLTk3XkqUAWSpCCGcSDsI2SVgcRGRbMOWJKO4
+bc25J57JHEo7ykBD7vqHfbvu23DlgD7IfIdQPjcoz+r/np01ir6zbQB/k0lF1Xu7
+uBCjdWCkbsxssohMjqAJDn3T0NlrZUAJro7YNz8nTrmSzsGq4ld7sVRYTlNM7fzY
+7f7Mkn66PEFxWLESmkTUe3q+vpV0dA==
+=5UDm
+-----END PGP SIGNATURE-----
+
+--Sig_/YUbYQoHY0xpILsM7N=.UA3h--
