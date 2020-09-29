@@ -2,101 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FA9C27BEED
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 10:13:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C12C427BEF0
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 10:13:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727521AbgI2INO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 04:13:14 -0400
-Received: from mx2.suse.de ([195.135.220.15]:53020 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725774AbgI2INN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 04:13:13 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 14F04B28E;
-        Tue, 29 Sep 2020 08:13:12 +0000 (UTC)
-Subject: Re: [PATCH v2 for v5.9] mm/page_alloc: handle a missing case for
- memalloc_nocma_{save/restore} APIs
-To:     js1304@gmail.com, Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Michal Hocko <mhocko@kernel.org>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Mel Gorman <mgorman@techsingularity.net>, kernel-team@lge.com,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>
-References: <1601283046-15329-1-git-send-email-iamjoonsoo.kim@lge.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <ea529528-0fcf-5a57-ebc7-1692bcf15b0f@suse.cz>
-Date:   Tue, 29 Sep 2020 10:13:10 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1727630AbgI2INy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 04:13:54 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21215 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725355AbgI2INy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 04:13:54 -0400
+Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601367232;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=MeMpmPFrdOGRtU5ng8ECDSHXJcr1++BDe0Y6s4CWwho=;
+        b=XPKSSVEp5BcqTv0TN6UV1giQOHyU4MTWqpAz0/KnL7OrUozJ9MSI0LGP9JTkqSrWQ3O0Xs
+        p1I9VKqRDrqaZbEzbiUGzM+BcwHkpLIWlUdLvW+4hWxbv4Qy+R9/18tAyFF5TZHqEN732Z
+        GKvW5dOmktqK04OVaf7bKFz+bJdJh8w=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-99-TTVOso58PKmkvxrSBD76sA-1; Tue, 29 Sep 2020 04:13:48 -0400
+X-MC-Unique: TTVOso58PKmkvxrSBD76sA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D3985425D2;
+        Tue, 29 Sep 2020 08:13:45 +0000 (UTC)
+Received: from oldenburg2.str.redhat.com (ovpn-114-84.ams2.redhat.com [10.36.114.84])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 5223510013BD;
+        Tue, 29 Sep 2020 08:13:40 +0000 (UTC)
+From:   Florian Weimer <fweimer@redhat.com>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        paulmck <paulmck@kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Paul Turner <pjt@google.com>,
+        linux-api <linux-api@vger.kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        carlos <carlos@redhat.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>
+Subject: Re: [RFC PATCH 1/2] rseq: Implement KTLS prototype for x86-64
+References: <20200925181518.4141-1-mathieu.desnoyers@efficios.com>
+        <87r1qm2atk.fsf@oldenburg2.str.redhat.com>
+        <905713397.71512.1601314192367.JavaMail.zimbra@efficios.com>
+Date:   Tue, 29 Sep 2020 10:13:38 +0200
+In-Reply-To: <905713397.71512.1601314192367.JavaMail.zimbra@efficios.com>
+        (Mathieu Desnoyers's message of "Mon, 28 Sep 2020 13:29:52 -0400
+        (EDT)")
+Message-ID: <873631yp8t.fsf@oldenburg2.str.redhat.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <1601283046-15329-1-git-send-email-iamjoonsoo.kim@lge.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/28/20 10:50 AM, js1304@gmail.com wrote:
-> From: Joonsoo Kim <iamjoonsoo.kim@lge.com>
-> 
-> memalloc_nocma_{save/restore} APIs can be used to skip page allocation
-> on CMA area, but, there is a missing case and the page on CMA area could
-> be allocated even if APIs are used. This patch handles this case to fix
-> the potential issue.
-> 
-> Missing case is an allocation from the pcplist. MIGRATE_MOVABLE pcplist
-> could have the pages on CMA area so we need to skip it if ALLOC_CMA isn't
-> specified.
-> 
-> Fixes: 8510e69c8efe (mm/page_alloc: fix memalloc_nocma_{save/restore} APIs)
-> Signed-off-by: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+* Mathieu Desnoyers:
 
-It's unfortunate, but hopefully we can still get the CMA in ZONE_MOVABLE one day
-and get rid of all of this again? :)
+>> So we have a bootstrap issue here that needs to be solved, I think.
+>
+> The one thing I'm not sure about is whether the vDSO interface is indeed
+> superior to KTLS, or if it is just the model we are used to.
+>
+> AFAIU, the current use-cases for vDSO is that an application calls into
+> glibc, which then calls the vDSO function exposed by the kernel. I wonder
+> whether the vDSO indirection is really needed if we typically have a glibc
+> function used as indirection ? For an end user, what is the benefit of vDSO
+> over accessing KTLS data directly from glibc ?
 
-For that reason I'd prefer simple solutions even if there's some potential
-overhead. I think those tests should be in the noise, and avoided completely
-with !CONFIG_CMA.
+I think the kernel can only reasonably maintain a single userspace data
+structure.  It's not reasonable to update several versions of the data
+structure in parallel.
 
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
+This means that glibc would have to support multiple kernel data
+structures, and users might lose userspace acceleration after a kernel
+update, until they update glibc as well.  The glibc update should be
+ABI-compatible, but someone would still have to backport it, apply it to
+container images, etc.
 
-> ---
->  mm/page_alloc.c | 13 ++++++++++---
->  1 file changed, 10 insertions(+), 3 deletions(-)
-> 
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index fab5e97..104d2e1 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -3367,9 +3367,16 @@ struct page *rmqueue(struct zone *preferred_zone,
->  	struct page *page;
->  
->  	if (likely(order == 0)) {
-> -		page = rmqueue_pcplist(preferred_zone, zone, gfp_flags,
-> +		/*
-> +		 * MIGRATE_MOVABLE pcplist could have the pages on CMA area and
-> +		 * we need to skip it when CMA area isn't allowed.
-> +		 */
-> +		if (!IS_ENABLED(CONFIG_CMA) || alloc_flags & ALLOC_CMA ||
-> +				migratetype != MIGRATE_MOVABLE) {
-> +			page = rmqueue_pcplist(preferred_zone, zone, gfp_flags,
->  					migratetype, alloc_flags);
-> -		goto out;
-> +			goto out;
-> +		}
->  	}
->  
->  	/*
-> @@ -3381,7 +3388,7 @@ struct page *rmqueue(struct zone *preferred_zone,
->  
->  	do {
->  		page = NULL;
-> -		if (alloc_flags & ALLOC_HARDER) {
-> +		if (order > 0 && alloc_flags & ALLOC_HARDER) {
->  			page = __rmqueue_smallest(zone, order, MIGRATE_HIGHATOMIC);
->  			if (page)
->  				trace_mm_page_alloc_zone_locked(page, order, migratetype);
-> 
+What's worse, the glibc code would be quite hard to test because we
+would have to keep around multiple kernel versions to exercise all the
+different data structure variants.
+
+In contrast, the vDSO code always matches the userspace data structures,
+is always updated at the same time, and tested together.  That looks
+like a clear win to me.
+
+> If we decide that using KTLS from a vDSO function is indeed a requirement,
+> then, as you point out, the thread_pointer is available as ABI, but we miss
+> the KTLS offset.
+>
+> Some ideas on how we could solve this: we could either make the KTLS
+> offset part of the ABI (fixed offset), or save the offset near the
+> thread pointer at a location that would become ABI. It would have to
+> be already populated with something which can help detect the case
+> where a vDSO is called from a thread which does not populate KTLS
+> though. Is that even remotely doable ?
+
+I don't know.
+
+We could decide that these accelerated system calls must only be called
+with a valid TCB.  That's unavoidable if the vDSO sets errno directly,
+so it's perhaps not a big loss.  It's also backwards-compatible because
+existing TCB-less code won't know about those new vDSO entrypoints.
+Calling into glibc from a TCB-less thread has always been undefined.
+TCB-less code would have to make direct, non-vDSO system calls, as today.
+
+For discovering the KTLS offset, a per-process page at a fixed offset
+from the vDSO code (i.e., what real shared objects already do for global
+data) could store this offset.  This way, we could entirely avoid an ABI
+dependency.
+
+We'll see what will break once we have the correct TID after vfork. 8->
+glibc currently supports malloc-after-vfork as an extension, and
+a lot of software depends on it (OpenJDK, for example).
+
+>> With the latter, we could
+>> directly expose the vDSO implementation to applications, assuming that
+>> we agree that the vDSO will not fail with ENOSYS to request fallback to
+>> the system call, but will itself perform the system call.
+>
+> We should not forget the fields needed by rseq as well: the rseq_cs
+> pointer and the cpu_id fields need to be accessed directly from the
+> rseq critical section, without function call. Those use-cases require
+> that applications and library can know the KTLS offset and size and
+> use those fields directly.
+
+Yes, but those offsets could be queried using a function from the vDSO
+(or using a glibc interface, to simplify linking).
+
+Thanks,
+Florian
+-- 
+Red Hat GmbH, https://de.redhat.com/ , Registered seat: Grasbrunn,
+Commercial register: Amtsgericht Muenchen, HRB 153243,
+Managing Directors: Charles Cachera, Brian Klemm, Laurie Krebs, Michael O'Neill
 
