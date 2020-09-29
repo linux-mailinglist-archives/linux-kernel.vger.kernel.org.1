@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C089E27C578
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:36:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6760A27C5B8
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:38:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729468AbgI2Lf4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:35:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49134 "EHLO mail.kernel.org"
+        id S1730360AbgI2LiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:38:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55996 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729871AbgI2Lfg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:35:36 -0400
+        id S1730242AbgI2Lhg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:37:36 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AFE1A23AA1;
-        Tue, 29 Sep 2020 11:22:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7EA1A2395A;
+        Tue, 29 Sep 2020 11:36:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601378526;
-        bh=64VOfE9/+OA65A6IGYIhcvmlZseuy8KUgWCKGTp63J8=;
+        s=default; t=1601379386;
+        bh=9LHSlaA2Hm05YczGqeSAK5+Erp4ymMiNdM7KFdW++2E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0ZwjhBxgTJ/s+eGq5yylh1iYzTmUiM6MQ4ZU4VJdrYzkY4qXK3sESZ+U/3RjGhDq8
-         IrKu+v+8LU0YWfC/ZLM6VQZqnF1Jec6V4QSdHnKgl1ef7oMHUrA06kbVxjCbKaxFwU
-         jhSEi7kr5Rn6V9Z1tuKAsGYNGFu6gXPX1UjtQte0=
+        b=ixZVsIQpe6Z800hfdNC15pmZ08Tw3A2kINaLWQvQ9iooDENSuH7BXNwv2+Xh8IWAw
+         k7Bxd6fgNDZhzqgj5MGY6ouBEjYno7l7U0rzGqCVdhTQbeN8bRPMJ/9ANEYKXgz5WT
+         NJw7VTOlkxL6NaCu9BznphzptDb0r/IhUXRsEdE4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kailang Yang <kailang@realtek.com>,
-        Hui Wang <hui.wang@canonical.com>, Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4.19 015/245] ALSA: hda/realtek - Couldnt detect Mic if booting with headset plugged
-Date:   Tue, 29 Sep 2020 12:57:46 +0200
-Message-Id: <20200929105947.732203702@linuxfoundation.org>
+        stable@vger.kernel.org, Jiri Pirko <jiri@mellanox.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 139/388] iavf: use tc_cls_can_offload_and_chain0() instead of chain check
+Date:   Tue, 29 Sep 2020 12:57:50 +0200
+Message-Id: <20200929110017.204172448@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929105946.978650816@linuxfoundation.org>
-References: <20200929105946.978650816@linuxfoundation.org>
+In-Reply-To: <20200929110010.467764689@linuxfoundation.org>
+References: <20200929110010.467764689@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,48 +43,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hui Wang <hui.wang@canonical.com>
+From: Jiri Pirko <jiri@mellanox.com>
 
-commit 3f74249057827c5f6676c41c18f6be12ce1469ce upstream.
+[ Upstream commit bb0858d8bc828ebc3eaa90be02a0f32bca3c2351 ]
 
-We found a Mic detection issue on many Lenovo laptops, those laptops
-belong to differnt models and they have different audio design like
-internal mic connects to the codec or PCH, they all have this problem,
-the problem is if plugging a headset before powerup/reboot the
-machine, after booting up, the headphone could be detected but Mic
-couldn't. If we plug out and plug in the headset, both headphone and
-Mic could be detected then.
+Looks like the iavf code actually experienced a race condition, when a
+developer took code before the check for chain 0 was put to helper.
+So use tc_cls_can_offload_and_chain0() helper instead of direct check and
+move the check to _cb() so this is similar to i40e code.
 
-Through debugging we found the codec on those laptops are same, it is
-alc257, and if we don't disable the 3k pulldown in alc256_shutup(),
-the issue will be fixed. So far there is no pop noise or power
-consumption regression on those laptops after this change.
-
-Cc: Kailang Yang <kailang@realtek.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Hui Wang <hui.wang@canonical.com>
-Link: https://lore.kernel.org/r/20200914065118.19238-1-hui.wang@canonical.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Jiri Pirko <jiri@mellanox.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/hda/patch_realtek.c |    6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/intel/iavf/iavf_main.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -3290,7 +3290,11 @@ static void alc256_shutup(struct hda_cod
- 
- 	/* 3k pull low control for Headset jack. */
- 	/* NOTE: call this before clearing the pin, otherwise codec stalls */
--	alc_update_coef_idx(codec, 0x46, 0, 3 << 12);
-+	/* If disable 3k pulldown control for alc257, the Mic detection will not work correctly
-+	 * when booting with headset plugged. So skip setting it for the codec alc257
-+	 */
-+	if (codec->core.vendor_id != 0x10ec0257)
-+		alc_update_coef_idx(codec, 0x46, 0, 3 << 12);
- 
- 	if (!spec->no_shutup_pins)
- 		snd_hda_codec_write(codec, hp_pin, 0,
+diff --git a/drivers/net/ethernet/intel/iavf/iavf_main.c b/drivers/net/ethernet/intel/iavf/iavf_main.c
+index 34124c213d27c..222ae76809aa1 100644
+--- a/drivers/net/ethernet/intel/iavf/iavf_main.c
++++ b/drivers/net/ethernet/intel/iavf/iavf_main.c
+@@ -3077,9 +3077,6 @@ static int iavf_delete_clsflower(struct iavf_adapter *adapter,
+ static int iavf_setup_tc_cls_flower(struct iavf_adapter *adapter,
+ 				    struct flow_cls_offload *cls_flower)
+ {
+-	if (cls_flower->common.chain_index)
+-		return -EOPNOTSUPP;
+-
+ 	switch (cls_flower->command) {
+ 	case FLOW_CLS_REPLACE:
+ 		return iavf_configure_clsflower(adapter, cls_flower);
+@@ -3103,6 +3100,11 @@ static int iavf_setup_tc_cls_flower(struct iavf_adapter *adapter,
+ static int iavf_setup_tc_block_cb(enum tc_setup_type type, void *type_data,
+ 				  void *cb_priv)
+ {
++	struct iavf_adapter *adapter = cb_priv;
++
++	if (!tc_cls_can_offload_and_chain0(adapter->netdev, type_data))
++		return -EOPNOTSUPP;
++
+ 	switch (type) {
+ 	case TC_SETUP_CLSFLOWER:
+ 		return iavf_setup_tc_cls_flower(cb_priv, type_data);
+-- 
+2.25.1
+
 
 
