@@ -2,75 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B13D627CB4B
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:27:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C612D27CB49
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:27:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732601AbgI2M02 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 08:26:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45912 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732216AbgI2M0H (ORCPT
+        id S1732608AbgI2M01 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 08:26:27 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:53176 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731931AbgI2M0X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 08:26:07 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E6E7C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 05:26:07 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id p9so14711597ejf.6
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 05:26:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ilnc9lRErTLGwRUB4HFPyYF6CW3YVVZPYLQOJap/2CY=;
-        b=PBObQnKCeYlQmX+ppCXiidvlj5kZaNyn66HJEGKsSItxAJbS3f4GRWcCAoD/fkRc/s
-         TCyYZiJLpvbCFtAmAQp56BNedoYF5SviUf6TDZOtFmEB5iFyseDoU2k91pwdPNLBwMUM
-         cNWTZk/4coV1MHacUBz4iCe7YdfwSqWJDqB+fYEaWqAga/IvbqUfKXSIujqp4UaN+WjT
-         I0FqzAqAph41GOCzuGS1/iqee7tzcDYPZHtGhUqmRvBBjiiVkyYvkPg+nbetpkpe1IRu
-         Q1ByFC6ny7RLlg8hPDxQYEMMKGUIoh1uuIxaL8s/bBaqUngdWWBwNripByFqy5ha0xSV
-         kJlQ==
+        Tue, 29 Sep 2020 08:26:23 -0400
+Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601382381;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=gYCM27eQBX+C1GSLSFKxmj4gnOFHGu50TnKuH5f77Uw=;
+        b=MbbQmcVSJCECXC7Lk/pWxHFiHlDjqhzSumqG3zcVbHGtZg2E46vtGaDqIKMPL+rxIsDe4S
+        6WZLSjn8jCdxDP6/7nIRB9QeCj+A/IqWZEb0Zkkt5vIZc1Y0XRfLOPw8eT3FNnFM/qAAIR
+        Lplog8E5tIWtx25i9nbVte9kli0FQ2M=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-128-XTHID-QhO0CGtwCPdkvJWg-1; Tue, 29 Sep 2020 08:26:20 -0400
+X-MC-Unique: XTHID-QhO0CGtwCPdkvJWg-1
+Received: by mail-wr1-f71.google.com with SMTP id b2so1677397wrs.7
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 05:26:20 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ilnc9lRErTLGwRUB4HFPyYF6CW3YVVZPYLQOJap/2CY=;
-        b=bZOQ3OncNG+AXWKKy7wdzVC+fPJvbC2L0+/cY1MOj7ZaeGrhqU9TLPmiNubSZIAUwi
-         q/QCRps6X19Q74g6P4k/WmmxdlFQZ7FdXO+LLtcsqlRzXBnFn4naYAtz6xlMH8MOs79e
-         NEOpIyDmgsAHZvVmj/Gw4yQttXC5r5M/lqhTIuszgKvFoujEHRuovQqES+n5Pd/fkQhP
-         AJA5OOqHuk9F1dwdj0JekRFjWmkOQsBz0B1VQGYBIq5B0LCmYaMC7n2BgmvUAV406mOa
-         Gak63qQAhTtBz15zpcCevkIgmD3oU4SF5hkwDr5KsGa0cVRSwmehpXEmpzMBneYVvWgo
-         lGZA==
-X-Gm-Message-State: AOAM5323tkp9wDyBJ+cawKn6EaJWUrF3tVBBP0CxJeuK7HN/xMN1hruf
-        1xP2IW5S9xeX8XVsK/kDEqvZsBQjqIdIyz0rCahayQ==
-X-Google-Smtp-Source: ABdhPJyLuBCaI/z76rq/ffz504IdUDE9QfTuJtstdyt9uN0hf5yxvpSQvQ54/CYy2BsZ9vpzh9BTavQ+/5oaPPvIETw=
-X-Received: by 2002:a17:906:c007:: with SMTP id e7mr894474ejz.55.1601382365730;
- Tue, 29 Sep 2020 05:26:05 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=gYCM27eQBX+C1GSLSFKxmj4gnOFHGu50TnKuH5f77Uw=;
+        b=RgeJJKh2YhY/D/Ay9fLGghUhn5ZqEDzagCQra3FI6FOCWf0jZkX2XZY1HTYtMo88CS
+         Fh+YhvpUqavGpC7nc+GQo++IrnYkpRgOOgb7wbobvlCsaQ2ojSx9o6CuCjs4cwPOOm3Q
+         eZq3oMUVUj59f/28iLPSwj2K/IUMMwkkPCnn5RHrP8i73UmLfBUk3CQ6oAdsl3k9ghMM
+         1D6t4xnvtQuWD22PgcCjhUTKv8hLsXnc0REz21P/8inwWndXCK0ti8pHDD9dGQtVsF7A
+         Y6tG+u909RZ06PhPm6cvIx/WxuWJ2yZrDOTyMBXjJYFr5u7rQqaAOkdK/vY7VrZHVA6f
+         9rEg==
+X-Gm-Message-State: AOAM530XWOlMflA8xwzu7WnQ711skmf2cBSWfI5CaZjHlmXsk9jjN+rk
+        F+/G2wWiJIXLDIKPHhcpgZtKw8Br7hDjZBixTGM8eXxqJ23FLAxvkiuxicJ7Dl1y4CkuNlhOgUn
+        JJxgG4GiOY+8iyrwsSRFcI67h
+X-Received: by 2002:a7b:c749:: with SMTP id w9mr4033754wmk.29.1601382376049;
+        Tue, 29 Sep 2020 05:26:16 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz2s4HKbrVlR26BGHrynO5370fP6WNbutA1OCmeWGjDR5Zag1+91h5hGA+sTgEMJPKwtl+9PA==
+X-Received: by 2002:a7b:c749:: with SMTP id w9mr4033734wmk.29.1601382375843;
+        Tue, 29 Sep 2020 05:26:15 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:9dbe:2c91:3d1b:58c6? ([2001:b07:6468:f312:9dbe:2c91:3d1b:58c6])
+        by smtp.gmail.com with ESMTPSA id l18sm5937819wrp.84.2020.09.29.05.26.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 29 Sep 2020 05:26:15 -0700 (PDT)
+Subject: Re: [PATCH] KVM: x86: VMX: Make smaller physical guest address space
+ support user-configurable
+To:     Qian Cai <cai@redhat.com>, Mohammed Gamal <mgamal@redhat.com>,
+        kvm@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, sean.j.christopherson@intel.com,
+        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
+        joro@8bytes.org, Stephen Rothwell <sfr@canb.auug.org.au>,
+        linux-next@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>
+References: <20200903141122.72908-1-mgamal@redhat.com>
+ <1f42d8f084083cdf6933977eafbb31741080f7eb.camel@redhat.com>
+ <e1dee0fd2b4be9d8ea183d3cf6d601cf9566fde9.camel@redhat.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <ebcd39a5-364f-c4ac-f8c7-41057a3d84be@redhat.com>
+Date:   Tue, 29 Sep 2020 14:26:13 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-References: <20200909114312.2863675-1-andrew@aj.id.au>
-In-Reply-To: <20200909114312.2863675-1-andrew@aj.id.au>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 29 Sep 2020 14:25:54 +0200
-Message-ID: <CACRpkdaF7LaU_+4FrKGFYnKwLLe-iYkEzh4u3anv+16m6XUi4A@mail.gmail.com>
-Subject: Re: [PATCH 0/3] pinctrl: aspeed: AST2600 pinconf fixes
-To:     Andrew Jeffery <andrew@aj.id.au>
-Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Joel Stanley <joel@jms.id.au>,
-        Johnny Huang <johnny_huang@aspeedtech.com>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
-        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <e1dee0fd2b4be9d8ea183d3cf6d601cf9566fde9.camel@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 9, 2020 at 1:43 PM Andrew Jeffery <andrew@aj.id.au> wrote:
+On 29/09/20 13:59, Qian Cai wrote:
+> 
+> WARN_ON_ONCE(!allow_smaller_maxphyaddr);
+> 
+> I noticed the origin patch did not have this WARN_ON_ONCE(), but the mainline
+> commit b96e6506c2ea ("KVM: x86: VMX: Make smaller physical guest address space
+> support user-configurable") does have it for some reasons.
 
-> The AST2600 pinctrl driver was missing support for bias control on the 1.8V
-> GPIO pins, and in the process of resolving that I discovered a couple of other
-> bugs that are fixed in the first two patches of the series.
+Because that part of the code should not be reached.  The exception
+bitmap is set up with
 
-All 3 patches applied.
+        if (!vmx_need_pf_intercept(vcpu))
+                eb &= ~(1u << PF_VECTOR);
 
-Yours,
-Linus Walleij
+where
+
+static inline bool vmx_need_pf_intercept(struct kvm_vcpu *vcpu)
+{
+        if (!enable_ept)
+                return true;
+
+        return allow_smaller_maxphyaddr &&
+		 cpuid_maxphyaddr(vcpu) < boot_cpu_data.x86_phys_bits;
+}
+
+We shouldn't get here if "enable_ept && !allow_smaller_maxphyaddr",
+which implies vmx_need_pf_intercept(vcpu) == false.  So the warning is
+genuine; I've sent a patch.
+
+Paolo
+
