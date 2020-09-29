@@ -2,127 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D7DA27D4BA
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 19:44:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43EDC27D4CE
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 19:46:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730115AbgI2Rod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 13:44:33 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:16614 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725776AbgI2Roc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 13:44:32 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f7372730000>; Tue, 29 Sep 2020 10:44:19 -0700
-Received: from [10.2.53.30] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 29 Sep
- 2020 17:44:32 +0000
-Subject: Re: [PATCH 2/8] selftests/vm: use a common gup_test.h
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        Shuah Khan <shuah@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        <linux-kselftest@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <linux-s390@vger.kernel.org>
-References: <20200928062159.923212-1-jhubbard@nvidia.com>
- <20200928062159.923212-3-jhubbard@nvidia.com>
- <20200928125739.GP9916@ziepe.ca>
- <6481e78f-c70d-133a-ff4a-325b5cd8fd5d@nvidia.com>
- <20200929163507.GV9916@ziepe.ca>
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <aab477bf-4353-5e6b-4cc9-9872c9376ed2@nvidia.com>
-Date:   Tue, 29 Sep 2020 10:44:31 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1730244AbgI2Rq3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 13:46:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44780 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729113AbgI2Rq0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 13:46:26 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B1485207F7;
+        Tue, 29 Sep 2020 17:46:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601401585;
+        bh=Eygb0b3lGWlgqkHSLZz5ftXfR6UVNqbZY53CkkEuGME=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ANSra6H4xGSHUFI7hYAnAt1P73+jiHWeE3tEvS93Fzj96VdhSDsD+vcopQcIBnEj2
+         njZKuVe2AWaCC63qSJT/rItjjfCKlWU+gpuBoHKnJHy3xWJ5zmaY2qyjFrIBOS/M9L
+         slpvSN2E7Mo9Vf01eUrE3jhf05OCf8mXPaUkBjBw=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <maz@kernel.org>)
+        id 1kNJhn-00FxNf-Tk; Tue, 29 Sep 2020 18:46:24 +0100
 MIME-Version: 1.0
-In-Reply-To: <20200929163507.GV9916@ziepe.ca>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1601401459; bh=uNB6W6VUgOF7PVI0O4uW24Wk0Hp70vGOsM51NQ2J+Xo=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=T25zSwWnUbC5wggeyQkeiG3SpY0bF9dllCWrcl9qmeMPam+QqfE5yXi725BbPimLw
-         uMGGWVg+kObDn3P6CVyIiiSpdYQhkt19mBrUU49eM9Xygp1gpM++3NMGhCgpYRy9Ax
-         6AtHWa8ndJVmvWK2H+hmkTRX8ePqTzQ9AfDAglOnTtB4qSJa+v1KWKsiienZfPvO2f
-         Da5doU60TAsENipzY0Owwuuso8AjyDBo/akCrdDwvx7CuL/T0U2hIVYX8wCo9tdFu6
-         ogkDtq1tLCiKr0kvhN3cQ73Svdd7FPVnYHnshz7+mQ8u9UgeVb0DC1jcRrmOJzaf2H
-         ZCBlQv0MjQf7g==
+Date:   Tue, 29 Sep 2020 18:46:23 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     Will Deacon <will@kernel.org>
+Cc:     David Brazdil <dbrazdil@google.com>, kvmarm@lists.cs.columbia.edu,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Christoph Lameter <cl@linux.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel-team@android.com, Andrew Scull <ascull@google.com>
+Subject: Re: [PATCH v4 05/10] kvm: arm64: Remove hyp_adr/ldr_this_cpu
+In-Reply-To: <20200929173407.GC14317@willie-the-truck>
+References: <20200922204910.7265-1-dbrazdil@google.com>
+ <20200922204910.7265-6-dbrazdil@google.com>
+ <20200929173407.GC14317@willie-the-truck>
+User-Agent: Roundcube Webmail/1.4.8
+Message-ID: <2221d6a88c4077b7e0a4ce2ac5f50a45@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: will@kernel.org, dbrazdil@google.com, kvmarm@lists.cs.columbia.edu, catalin.marinas@arm.com, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, dennis@kernel.org, tj@kernel.org, cl@linux.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, kernel-team@android.com, ascull@google.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/29/20 9:35 AM, Jason Gunthorpe wrote:
-> On Mon, Sep 28, 2020 at 01:10:24PM -0700, John Hubbard wrote:
->> On 9/28/20 5:57 AM, Jason Gunthorpe wrote:
->>> On Sun, Sep 27, 2020 at 11:21:53PM -0700, John Hubbard wrote:
->>>> diff --git a/tools/testing/selftests/vm/Makefile b/tools/testing/selftests/vm/Makefile
->>>> index d1ae706d9927..9cc6bc087461 100644
->>>> +++ b/tools/testing/selftests/vm/Makefile
->>>> @@ -130,3 +130,5 @@ endif
->>>>    $(OUTPUT)/userfaultfd: LDLIBS += -lpthread
->>>>    $(OUTPUT)/mlock-random-test: LDLIBS += -lcap
->>>> +
->>>> +$(OUTPUT)/gup_test: ../../../../mm/gup_test.h
->>>
->>> There is no reason to do this, the auto depends will pick up header
->>> files, and gup_test.h isn't a generated file
->>>
-
-Oh, I misread your comment! You were talking about this Makefile
-dependency that I'm adding, rather than the ../'s in the path.
-
-Well, for that though, it also has to stay as shown in this patch,
-because of this:
-
-I don't see any "gcc -m" type of dependency generation pass happening
-in this relatively simple Make system. And so, without including an
-explicit header file dependency (at least, that's the simplest way),
-changes to gup_test.h are not detected. Both the Makefile code and the
-observed behavior back this up. (I expect that this is because there is
-less use of header files in this area, because most unit tests are
-self-contained within a single .c file.)
-
-
->>
->> It is less capable than you might think. Without the admittedly ugly technique
->> above, it fails to build, and as you can see, the include paths that are fed to
->> gcc are just a single one: usr/include:
->>
->> $ make
->> make --no-builtin-rules ARCH=x86 -C ../../../.. headers_install
->> gcc -Wall -I ../../../../usr/include     gup_test.c
->> /kernel_work/linux-next-github/tools/testing/selftests/kselftest_harness.h
->> /kernel_work/linux-next-github/tools/testing/selftests/kselftest.h
->> ../../../../mm/gup_test.h -lrt -o
->> /kernel_work/linux-next-github/tools/testing/selftests/vm/gup_test
->> make[1]: Entering directory '/kernel_work/linux-next-github'
->> gup_test.c:10:10: fatal error: gup_test.h: No such file or directory
->>     10 | #include "gup_test.h"
->>        |          ^~~~~~~~~~~~
+On 2020-09-29 18:34, Will Deacon wrote:
+> On Tue, Sep 22, 2020 at 09:49:05PM +0100, David Brazdil wrote:
+>> The hyp_adr/ldr_this_cpu helpers were introduced for use in hyp code
+>> because they always needed to use TPIDR_EL2 for base, while
+>> adr/ldr_this_cpu from kernel proper would select between TPIDR_EL2 and
+>> _EL1 based on VHE/nVHE.
+>> 
+>> Simplify this now that the hyp mode case can be handled using the
+>> __KVM_VHE/NVHE_HYPERVISOR__ macros.
+>> 
+>> Acked-by: Andrew Scull <ascull@google.com>
+>> Acked-by: Will Deacon <will@kernel.org>
+>> Signed-off-by: David Brazdil <dbrazdil@google.com>
+>> ---
+>>  arch/arm64/include/asm/assembler.h | 29 +++++++++++++++++++----------
+>>  arch/arm64/include/asm/kvm_asm.h   | 14 +-------------
+>>  arch/arm64/kvm/hyp/hyp-entry.S     |  2 +-
+>>  3 files changed, 21 insertions(+), 24 deletions(-)
+>> 
+>> diff --git a/arch/arm64/include/asm/assembler.h 
+>> b/arch/arm64/include/asm/assembler.h
+>> index 54d181177656..86e0ef79a799 100644
+>> --- a/arch/arm64/include/asm/assembler.h
+>> +++ b/arch/arm64/include/asm/assembler.h
+>> @@ -218,6 +218,23 @@ lr	.req	x30		// link register
+>>  	str	\src, [\tmp, :lo12:\sym]
+>>  	.endm
+>> 
+>> +	/*
+>> +	 * @dst: destination register (32 or 64 bit wide)
 > 
-> You are supposed to use
-> 
->    #include "../../../../mm/gup_test.h"
+> nit: this comment is wrong as I don't think mrs can take a W register
+> as the destination argument. I'm assuming Marc can fix that up.
 
-Good, I'll leave it as I had it.
+Indeed. I'll fix it locally.
 
+Another thing is that this patch is going to clash with the Ghostbuster
+branch (the hyp-entry.S hunk goes), but we can deal with that.
 
-> I have no idea what weird behavior the makefile is triggering that the
-> above include works
-> 
-
-See the commit description for yet another Makefile weird behavior point. :)
-
-thanks,
+         M.
 -- 
-John Hubbard
-NVIDIA
+Jazz is not dead. It just smells funny...
