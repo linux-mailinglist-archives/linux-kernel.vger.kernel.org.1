@@ -2,131 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D69E27D393
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 18:25:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A33227D39B
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 18:27:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728902AbgI2QZW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 12:25:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54910 "EHLO
+        id S1728867AbgI2Q1r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 12:27:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728322AbgI2QZV (ORCPT
+        with ESMTP id S1728273AbgI2Q1q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 12:25:21 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68C3BC061755;
-        Tue, 29 Sep 2020 09:25:19 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id y11so6247720lfl.5;
-        Tue, 29 Sep 2020 09:25:19 -0700 (PDT)
+        Tue, 29 Sep 2020 12:27:46 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3EF1C061755;
+        Tue, 29 Sep 2020 09:27:46 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id n14so5052497pff.6;
+        Tue, 29 Sep 2020 09:27:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=3h7n0kDoWxJUkwhkiM6hwjpaSHbo+Kpn1WLzHzipkyI=;
-        b=ItqoUv/YfW+YGoIsABPqwUCJ3aW66rxag+E/tYt/pr3c9vgOZqoboOPd/5+G+Jta4u
-         VmOds2eutD86AJOuEwpqr14g03ny82jaLNumOm3y12CtvgwLXNhV37zkqa22rhb0QZz8
-         P58mF/7/sH35NzmpmvuCopz4osPHpHhsA9vTUQiEbr8bljBXd1wkEN5v4ZLd4L2E9etw
-         yl7C2uiqwLjlnYJK8BgFU96NiYrXR74S961ym6CsMYjjHSwIENjqoA+DFtW5aGp1b46U
-         F/CvJksW5nwaNXbW++dT4UPtQzVTtIfSlXUiwrZQd/wJfDYk+dKv0j93mDj+OsjuYmPx
-         yLNw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=oaRTr4r771JWjjoDIpUuKiWXTOXHRHBkmXXfAxrPMlQ=;
+        b=vV6BgnA+TmH0IZFrSENdnRXu2K5m4budlqJvYiO70mUxDkgx6uEzD12BXenaoFAjso
+         1Fh53SK+vrjJcCg4W4VdeY9nWRICn6IaRMHefLxPsnI5SFMmJRO1A2ZMkn5WOpr+kO5f
+         JR+c1SQ63CgFh2VpiGZj+C5x6v0Y/P80nCt/ja67546KajwqLAlR+vBLtXH7i5LtFwYh
+         eH8Mwt0F0MowOXTEFGHsWmmjFZNQFdFtrL1UrZniqTQL0DuWvzDb9spIHha4vms5BOWZ
+         QY3PaqRTbj8W4L7XdR09D27ul04slDfiiSZoNLJI0aeDxNzahK2r7Nv3yvevOJsAcvG/
+         /oIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=3h7n0kDoWxJUkwhkiM6hwjpaSHbo+Kpn1WLzHzipkyI=;
-        b=iGtQaSxXlW2Cmn5GtU+US9cW3yWS8+ZeI/2GpMWOfBpKWF+9m5wx5xAcmcBnOBMw5d
-         qeHTZa9gkxLpZth1yvpbKLEbkt4Rp5AhjA6gJoDkDRckKSuEdffm0xk1I7zXSsdoCC6o
-         xaVG+1/ErwJ4MmRu8egLxmzvTk1dYQfbpbNHagN3SAsTueCJC7Ch0QSmy3mqHhszvDlV
-         vntbdB8SzvsMZRoYFyiNeMf3/I/QjREa4XxFoL7cM0Zgo2ZlhpuzxTMS5kY77HKzPxCd
-         XSYVTQNZtq2uXJuDTa+Cyz79LxfDcrKNdMQ48uDVINhvAwkjRhXy0hChdNVjAIJfsKxu
-         9Tvw==
-X-Gm-Message-State: AOAM533BSj+iwnyYMv08ApiQr6Es+bUkBLu5uabG5RvmyJrpHRG/s1VH
-        eqnNYw/VdJqGhosl8FXJMFg=
-X-Google-Smtp-Source: ABdhPJypuHLpBjSrh4x5SAP5mpaT+K/3JmAlFT4O+cw8Pet4vn4FOFS90XV3mVEaMASa+nEvO2elOg==
-X-Received: by 2002:a19:a93:: with SMTP id 141mr1439631lfk.292.1601396717818;
-        Tue, 29 Sep 2020 09:25:17 -0700 (PDT)
-Received: from pc636 (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
-        by smtp.gmail.com with ESMTPSA id q24sm3289429lfo.149.2020.09.29.09.25.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Sep 2020 09:25:16 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Tue, 29 Sep 2020 18:25:14 +0200
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
-        Mel Gorman <mgorman@suse.de>
-Subject: Re: [RFC-PATCH 2/4] mm: Add __rcu_alloc_page_lockless() func.
-Message-ID: <20200929162514.GA8768@pc636>
-References: <20200921194819.GA24236@pc636>
- <20200922075002.GU12990@dhcp22.suse.cz>
- <20200922131257.GA29241@pc636>
- <20200923103706.GJ3179@techsingularity.net>
- <20200923154105.GO29330@paulmck-ThinkPad-P72>
- <20200923232251.GK3179@techsingularity.net>
- <20200924081614.GA14819@pc636>
- <20200925080503.GC3389@dhcp22.suse.cz>
- <20200925153129.GB25350@pc636>
- <20200925154741.GI3389@dhcp22.suse.cz>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=oaRTr4r771JWjjoDIpUuKiWXTOXHRHBkmXXfAxrPMlQ=;
+        b=pINztfjeGA92MmBLiU/gDQMqvS5UyzM6k+iKUtwWcnzBAp97ksOle2V+bDTMGOunD9
+         Gjpy3+XGR1x/TxjWtlJeDiPLKTuvKmFfpcNaH2FlzHZIeZZYg3wiD+KlJvfT9ZhTYdIb
+         zDb+zX6icfK/hu3lJZM1h4/JdGx/WB7mw2KQAFcoBTFxAhgSjBXQ3RX/4f1pMQ7BIjS/
+         qUiqeP/5SsCVhPFPqHzyZb/gJHfyKjstksYTYqNr4CgCS96q6phbRHpaANmd179fukdo
+         0f5BDzpK8ME0N1+fzoPqzFvxfVjxP1Nn5lOoipOR/sECrr510kxPmCJwa0onuUH9nYpU
+         MjBg==
+X-Gm-Message-State: AOAM531LfuDEIF5oeHRgWQgbAxpwo3/Xcmq+gDcMgh+2fnn+usI0NXbh
+        GNv7MFok/3be5KGYw0fEzzuDolC3iFa2VZvxl8FSzd+Ag5Xq9A==
+X-Google-Smtp-Source: ABdhPJzT8xE2c8y3+Wg2grWhe4In/xKroYpFgjJjpQ2LW2Tt5Z5zNkkImaccSh88eNEfzPMcUHtsMq/UzEiHPy5Chh8=
+X-Received: by 2002:a17:902:ea8c:b029:d2:8abd:c8de with SMTP id
+ x12-20020a170902ea8cb02900d28abdc8demr5590642plb.21.1601396866094; Tue, 29
+ Sep 2020 09:27:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200925154741.GI3389@dhcp22.suse.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <9152bb8be33e4192a7766eb53c6ca9af@asem.it> <CAMRc=McnsSkg-7UMp7pKaGX2wSqsZC2jQZV2zRepxm9UxGg=YA@mail.gmail.com>
+ <CAHp75VfgEGydXN1A+Y=wn3iX1MbLhN8F9kYyfQwTZBJydr+0+Q@mail.gmail.com> <feb8567c830748c483c8c66dd4717003@asem.it>
+In-Reply-To: <feb8567c830748c483c8c66dd4717003@asem.it>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 29 Sep 2020 19:27:26 +0300
+Message-ID: <CAHp75Vdd2QjvJvLGHa1x=RaSknEG+O+YB4eJA6+2htnZ=Gf52g@mail.gmail.com>
+Subject: Re: How to use an ACPI declared GPIO in a userspace ...
+To:     Flavio Suligoi <f.suligoi@asem.it>
+Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > I look at it in scope of GFP_ATOMIC/GFP_NOWAIT issues, i.e. inability
-> > to provide a memory service for contexts which are not allowed to
-> > sleep, RCU is part of them. Both flags used to provide such ability
-> > before but not anymore.
-> > 
-> > Do you agree with it?
-> 
-> Yes this sucks. But this is something that we likely really want to live
-> with. We have to explicitly _document_ that really atomic contexts in RT
-> cannot use the allocator. From the past discussions we've had this is
-> likely the most reasonable way forward because we do not really want to
-> encourage anybody to do something like that and there should be ways
-> around that. The same is btw. true also for !RT. The allocator is not
-> NMI safe and while we should be able to make it compatible I am not
-> convinced we really want to.
-> 
-> Would something like this be helpful wrt documentation?
-> 
-> diff --git a/include/linux/gfp.h b/include/linux/gfp.h
-> index 67a0774e080b..9fcd47606493 100644
-> --- a/include/linux/gfp.h
-> +++ b/include/linux/gfp.h
-> @@ -238,7 +238,9 @@ struct vm_area_struct;
->   * %__GFP_FOO flags as necessary.
->   *
->   * %GFP_ATOMIC users can not sleep and need the allocation to succeed. A lower
-> - * watermark is applied to allow access to "atomic reserves"
-> + * watermark is applied to allow access to "atomic reserves".
-> + * The current implementation doesn't support NMI and other non-preemptive context
-> + * (e.g. raw_spin_lock).
->   *
->   * %GFP_KERNEL is typical for kernel-internal allocations. The caller requires
->   * %ZONE_NORMAL or a lower zone for direct access but can direct reclaim.
-> 
-To me it is clear. But also above conflicting statement:
+On Tue, Sep 29, 2020 at 7:21 PM Flavio Suligoi <f.suligoi@asem.it> wrote:
+> > > > I need to expose to the userspace a GPIO, physically connected to a
+> > board
+> > > > push-button. This GPIO must expose a pre-defined name, such as
+> > > > "user-push-button", so that the userspace applications can use it
+> > without
+> > > > know any physical GPIO details.
+> > > >
+> > > > I can customize the board BIOS and so my goal is to add an ACPI tab=
+le
+> > with
+> > > > a content like this:
+> > > >
+> > > > ...
+> > > > Scope (\_SB.GPO1)
+> > > >         {
+> > > >                 Device (BTNS)
+> > > >                 {
+> > > >                         Name (_HID, "PRP0001")
+> > > >                         Name (_DDN, "GPIO buttons device")
+> > > >
+> > > >                         Name (_CRS, ResourceTemplate ()
+> > > >                         {
+> > > >                                 GpioIo (
+> > > >                                 Exclusive,               // Not sha=
+red
+> > > >                                 PullNone,                // No need
+> > for pulls
+> > > >                                 0,                       // Debounc=
+e
+> > timeout
+> > > >                                 0,                       // Drive
+> > strength
+> > > >                                 IoRestrictionInputOnly,  // Only us=
+ed
+> > as input
+> > > >                                 "\\_SB.GPO1",            // GPIO
+> > controller
+> > > >                                 0, ResourceConsumer, , ) // Must be=
+ 0
+> > > >                                 {
+> > > >                                         25,              // GPIO
+> > number
+> > > >                                 }
+> > > > ...
+> > > >
+> > > > I know that this GPIO can be used from other drivers.
+> > > > For example I successfully tested it using the "gpio-keys" device
+> > driver,
+> > > > giving to my GPIO a key-code and emulating in this way a keyboard k=
+ey.
+> > > > This could be a possible solution.
+> > > >
+> > > > But I prefer to expose my GPIO as a classic GPIO, not as a keyboard
+> > key.
+> > > >
+> > > > I was wondering if there is a generic GPIO driver that I can use to
+> > expose
+> > > > this GPIO with its pre-defined name (caming from the ACPI table
+> > declaration),
+> > > > to the userspace...
+> >
+> > Unfortunately what you are describing in the second part is rather
+> > property of the controller which can hog the line, but this is not
+> > what you want in the first part.
+> > The Linux kernel, in many ways, is designed that you need a driver
+> > (I=C2=B2C user space device node is rather a mistake, but compromise fo=
+r
+> > that time when most of the devices have access from user space
+> > drivers). So, the proper way is to define this as gpio-keys (either
+> > interrupt version or polling one) and connect a listener to the event.
+> >
+> > Summarize: you need to describe pin(s) via "gpio-line-names" property
+> > of the controller (it's not so easy task if ACPI tables already have
+> > parts of it, but I think your case should be feasible). And either
+> > provide a gpio-keys device, or use line directly by name as (libgpiod
+> > example):
+> >  gpiodetect
+> >  gpioinfo gpiochipX
+> >  gpiofind $GPIO_LINE_NAME
+> >  gpiomon gpiochipX $(gpiofind $GPIO_LINE_NAME) &
+> >
+> > Examples of ACPI are here [1] for controller part (look at the name
+> > list) and for device part [2]. You may look into other folders as
+> > well, though they are not so reach of examples.
+> >
+> > [1]: https://github.com/westeri/meta-acpi/blob/master/recipes-bsp/acpi-
+> > tables/samples/edison/arduino.asli
+> > [2]: https://github.com/westeri/meta-acpi/blob/master/recipes-bsp/acpi-
+> > tables/samples/edison/buttons.asli
+>
+> I have already written and ACPI table, not in the BIOS but as separate
+> SSDT, loaded manually at runtime, using the gpio-keys (with interrupt)
+> and in this way all works good. So I have already tested this solution.
+>
+> But I prefer obtain this result in the classic way, with GPIO...
+>
+> So I think I'll write a device driver for it. A device driver which
+> reads the ACPI table and publishes the GPIO, with its name, in sysfs...
 
-<snip>
-%GFP_ATOMIC users can not sleep and need the allocation to succeed. A %lower
-<snip>
+Maybe I was not so clear, but as Bart mentioned the least you can do
+is simply define line name via "gpio-line-names" property. The problem
+here is when and how you would like to have them incorporated.
+When: if ACPI tables are being provided by firmware which you may not
+alter, then you must use initramfs type of solution (no configfs,
+don't know about EFI var though). How: In that case you might have a
+chance to incorporate _DSD() method into *existing* _CRS() one.
+Possible impediments: if ACPI table from firmware already has a _DSD()
+defined or above is not working for some reason. In such a case you
+must upgrade entire DSDT via initramfs.
 
-should be rephrased, IMHO.
+> > > Adding Andy who knows ACPI GPIO well.
+> >
+> > Thanks.
+> >
+> > > In general, the "gpio-line-names" property is used for that and it's
+> > > supported both for device tree as well as ACPI, although I have only
+> > > ever used the former.
+> >
+> > Right. ACPI supports properties via _DSD() method.
 
---
-Vlad Rezki
+--=20
+With Best Regards,
+Andy Shevchenko
