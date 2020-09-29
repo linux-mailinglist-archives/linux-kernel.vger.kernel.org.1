@@ -2,55 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB4D027BE91
+	by mail.lfdr.de (Postfix) with ESMTP id 3BA8527BE90
 	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 09:57:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727752AbgI2H5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 03:57:12 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:44438 "EHLO
+        id S1727741AbgI2H5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 03:57:11 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:44408 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727670AbgI2H4y (ORCPT
+        with ESMTP id S1727681AbgI2H4z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 03:56:54 -0400
-Date:   Tue, 29 Sep 2020 07:56:51 -0000
+        Tue, 29 Sep 2020 03:56:55 -0400
+Date:   Tue, 29 Sep 2020 07:56:52 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1601366211;
+        s=2020; t=1601366213;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=BQTYCiPI5q40fNQm3+NrIave3SiYE5V8nJl7SiTseKo=;
-        b=ZyyoRvgOhcl7sRf1ajoEi4OxH0V4Ndc7tBLQfIkxlOAhuenLdwUJGIQc8R5zGUIkPpr8Sn
-        KtUGAW3RJ2ipUdm4Mdl6Y9O5A9Cdk47kzCSWT68pLgvzNd7G+y9a2SohR6XRC+Ado5bbqV
-        cZcW8zHB5V6sBTliq1c8ievi5MuC8sv7zL062bDSsZivNEIGf/PRZQ7ON4w5UgOZLWnca/
-        PdgPZvVngEg5fiIRHJzWFxLZ4HMuoXSkxQ1zhOzXQuKKhVvIRBJAtJqkZ3lDBX0PlHqiNp
-        AjOLvEyi0PScxPuaVqYEWhlk8K8ocFf90AtTOnFbbY5Li+6ESJT9FSVfjBgsVw==
+        bh=sSr+Me/c5x9os+xUvFwv4kI6DU7PHuIuud7+xmT9O00=;
+        b=YturEfF/wOTfOtT3Bdl3RPgEnOXw0AzDZN6Hi329H6RI2p5frR2Z4nDo/PJsRvgeWQfFKr
+        y6dHyhXYFlQd3Wc0rzhhR9CI6Po3x/MrmOoy6t1ZZh+qC+UagYqMk+l2QqOV+EzFdgRuQj
+        8oXH8bp6nNypHHFOzZJUnHtsB493If7wwLn+Evds6Xbl15O4DLI9AZqLDMdIlQGijzod9z
+        YPw5VMbK4YxbUQxiH47VEvrhZ8LuZ0bw9w9mtvzwHDBPl+ILd3nVOVx+PbeFMP66t+xdfP
+        ErTvYOM1nGVzujxMFmfVshvwdxdTwgvFEOk9wup7Re3grdGAJNE5a2U8/kcTJQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1601366211;
+        s=2020e; t=1601366213;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=BQTYCiPI5q40fNQm3+NrIave3SiYE5V8nJl7SiTseKo=;
-        b=2TCtJsDmxlylJpJMje6d2D9Oexb/pmfUunDSMqrlAiXwEgUkYVcqfG/4ozllfiWTLYqAM1
-        3KR/g3U8I/m/LBCg==
-From:   "tip-bot2 for Xunlei Pang" <tip-bot2@linutronix.de>
+        bh=sSr+Me/c5x9os+xUvFwv4kI6DU7PHuIuud7+xmT9O00=;
+        b=ucpLxgAQYdgKLGX2aTh3pFbbinJ08CRYEaUX03bH+8e5d7rjr3ggqJ5mJbq+btvpLTPUrY
+        XIeap8lv0B//LVDg==
+From:   "tip-bot2 for Lucas Stach" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched/fair: Fix wrong cpu selecting from isolated domain
-Cc:     Wetp Zhang <wetp.zy@linux.alibaba.com>,
-        Xunlei Pang <xlpang@linux.alibaba.com>,
+Subject: [tip: sched/core] sched/deadline: Fix stale throttling on de-/boosted tasks
+Cc:     Lucas Stach <l.stach@pengutronix.de>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Jiang Biao <benbjiang@tencent.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <1600930127-76857-1-git-send-email-xlpang@linux.alibaba.com>
-References: <1600930127-76857-1-git-send-email-xlpang@linux.alibaba.com>
+        Juri Lelli <juri.lelli@redhat.com>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200831110719.2126930-1-l.stach@pengutronix.de>
+References: <20200831110719.2126930-1-l.stach@pengutronix.de>
 MIME-Version: 1.0
-Message-ID: <160136621101.7002.9603761843385133161.tip-bot2@tip-bot2>
+Message-ID: <160136621248.7002.15248843800877733816.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -61,79 +59,64 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     df3cb4ea1fb63ff326488efd671ba3c39034255e
-Gitweb:        https://git.kernel.org/tip/df3cb4ea1fb63ff326488efd671ba3c39034255e
-Author:        Xunlei Pang <xlpang@linux.alibaba.com>
-AuthorDate:    Thu, 24 Sep 2020 14:48:47 +08:00
+Commit-ID:     46fcc4b00c3cca8adb9b7c9afdd499f64e427135
+Gitweb:        https://git.kernel.org/tip/46fcc4b00c3cca8adb9b7c9afdd499f64e427135
+Author:        Lucas Stach <l.stach@pengutronix.de>
+AuthorDate:    Mon, 31 Aug 2020 13:07:19 +02:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Fri, 25 Sep 2020 14:23:25 +02:00
+CommitterDate: Fri, 25 Sep 2020 14:23:24 +02:00
 
-sched/fair: Fix wrong cpu selecting from isolated domain
+sched/deadline: Fix stale throttling on de-/boosted tasks
 
-We've met problems that occasionally tasks with full cpumask
-(e.g. by putting it into a cpuset or setting to full affinity)
-were migrated to our isolated cpus in production environment.
+When a boosted task gets throttled, what normally happens is that it's
+immediately enqueued again with ENQUEUE_REPLENISH, which replenishes the
+runtime and clears the dl_throttled flag. There is a special case however:
+if the throttling happened on sched-out and the task has been deboosted in
+the meantime, the replenish is skipped as the task will return to its
+normal scheduling class. This leaves the task with the dl_throttled flag
+set.
 
-After some analysis, we found that it is due to the current
-select_idle_smt() not considering the sched_domain mask.
+Now if the task gets boosted up to the deadline scheduling class again
+while it is sleeping, it's still in the throttled state. The normal wakeup
+however will enqueue the task with ENQUEUE_REPLENISH not set, so we don't
+actually place it on the rq. Thus we end up with a task that is runnable,
+but not actually on the rq and neither a immediate replenishment happens,
+nor is the replenishment timer set up, so the task is stuck in
+forever-throttled limbo.
 
-Steps to reproduce on my 31-CPU hyperthreads machine:
-1. with boot parameter: "isolcpus=domain,2-31"
-   (thread lists: 0,16 and 1,17)
-2. cgcreate -g cpu:test; cgexec -g cpu:test "test_threads"
-3. some threads will be migrated to the isolated cpu16~17.
+Clear the dl_throttled flag before dropping back to the normal scheduling
+class to fix this issue.
 
-Fix it by checking the valid domain mask in select_idle_smt().
-
-Fixes: 10e2f1acd010 ("sched/core: Rewrite and improve select_idle_siblings())
-Reported-by: Wetp Zhang <wetp.zy@linux.alibaba.com>
-Signed-off-by: Xunlei Pang <xlpang@linux.alibaba.com>
+Signed-off-by: Lucas Stach <l.stach@pengutronix.de>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Jiang Biao <benbjiang@tencent.com>
-Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
-Link: https://lkml.kernel.org/r/1600930127-76857-1-git-send-email-xlpang@linux.alibaba.com
+Acked-by: Juri Lelli <juri.lelli@redhat.com>
+Link: https://lkml.kernel.org/r/20200831110719.2126930-1-l.stach@pengutronix.de
 ---
- kernel/sched/fair.c |  9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ kernel/sched/deadline.c | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index a15deb2..9613e5d 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -6080,7 +6080,7 @@ static int select_idle_core(struct task_struct *p, struct sched_domain *sd, int 
- /*
-  * Scan the local SMT mask for idle CPUs.
-  */
--static int select_idle_smt(struct task_struct *p, int target)
-+static int select_idle_smt(struct task_struct *p, struct sched_domain *sd, int target)
- {
- 	int cpu;
- 
-@@ -6088,7 +6088,8 @@ static int select_idle_smt(struct task_struct *p, int target)
- 		return -1;
- 
- 	for_each_cpu(cpu, cpu_smt_mask(target)) {
--		if (!cpumask_test_cpu(cpu, p->cpus_ptr))
-+		if (!cpumask_test_cpu(cpu, p->cpus_ptr) ||
-+		    !cpumask_test_cpu(cpu, sched_domain_span(sd)))
- 			continue;
- 		if (available_idle_cpu(cpu) || sched_idle_cpu(cpu))
- 			return cpu;
-@@ -6104,7 +6105,7 @@ static inline int select_idle_core(struct task_struct *p, struct sched_domain *s
- 	return -1;
- }
- 
--static inline int select_idle_smt(struct task_struct *p, int target)
-+static inline int select_idle_smt(struct task_struct *p, struct sched_domain *sd, int target)
- {
- 	return -1;
- }
-@@ -6279,7 +6280,7 @@ symmetric:
- 	if ((unsigned)i < nr_cpumask_bits)
- 		return i;
- 
--	i = select_idle_smt(p, target);
-+	i = select_idle_smt(p, sd, target);
- 	if ((unsigned)i < nr_cpumask_bits)
- 		return i;
- 
+diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
+index 3862a28..c19c188 100644
+--- a/kernel/sched/deadline.c
++++ b/kernel/sched/deadline.c
+@@ -1527,12 +1527,15 @@ static void enqueue_task_dl(struct rq *rq, struct task_struct *p, int flags)
+ 		pi_se = &pi_task->dl;
+ 	} else if (!dl_prio(p->normal_prio)) {
+ 		/*
+-		 * Special case in which we have a !SCHED_DEADLINE task
+-		 * that is going to be deboosted, but exceeds its
+-		 * runtime while doing so. No point in replenishing
+-		 * it, as it's going to return back to its original
+-		 * scheduling class after this.
++		 * Special case in which we have a !SCHED_DEADLINE task that is going
++		 * to be deboosted, but exceeds its runtime while doing so. No point in
++		 * replenishing it, as it's going to return back to its original
++		 * scheduling class after this. If it has been throttled, we need to
++		 * clear the flag, otherwise the task may wake up as throttled after
++		 * being boosted again with no means to replenish the runtime and clear
++		 * the throttle.
+ 		 */
++		p->dl.dl_throttled = 0;
+ 		BUG_ON(!p->dl.dl_boosted || flags != ENQUEUE_REPLENISH);
+ 		return;
+ 	}
