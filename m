@@ -2,226 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B67EE27BB1D
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 04:45:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 146BF27BADA
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 04:32:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727373AbgI2CpL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 22:45:11 -0400
-Received: from mga11.intel.com ([192.55.52.93]:35280 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727268AbgI2CpK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 22:45:10 -0400
-IronPort-SDR: nMXL4art+XnkjchRrgQkqn7eBhRtJE/yNo2XLP7X52k/roPJoftHrmAo+3NCtHkkKR4/IoNmSB
- t9saboyXs03g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9758"; a="159433353"
-X-IronPort-AV: E=Sophos;i="5.77,316,1596524400"; 
-   d="scan'208";a="159433353"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 19:10:02 -0700
-IronPort-SDR: ccBO/CbTE+G6frgD5MXpKmp00FLtPci/LQJEQBrqOqvsUmteMA6ayTyZAhwGzghN98Uf+xz0W9
- RSGUweq0G+vA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,316,1596524400"; 
-   d="scan'208";a="307579653"
-Received: from lkp-server01.sh.intel.com (HELO 0e0978ea3297) ([10.239.97.150])
-  by orsmga003.jf.intel.com with ESMTP; 28 Sep 2020 19:10:01 -0700
-Received: from kbuild by 0e0978ea3297 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kN55c-0000TS-HH; Tue, 29 Sep 2020 02:10:00 +0000
-Date:   Tue, 29 Sep 2020 10:09:09 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/irq] BUILD SUCCESS
- 981aa1d366bf46bdc1c9259a5ab818a8d522724e
-Message-ID: <5f729745.5g/siu70VaUd/Bgm%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1727290AbgI2Ccu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 22:32:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38850 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727177AbgI2Cct (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 22:32:49 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B761C061755;
+        Mon, 28 Sep 2020 19:32:47 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id p15so12670201ejm.7;
+        Mon, 28 Sep 2020 19:32:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6nFlIsB4GESJdOkUx69zEcDDOqVB4l0gvS9twPgreSA=;
+        b=vRMH+MokrPwXWhbeU7cKcfPB4Sqpm2NglnjYJwpD4svuEO7ylGHVrassEcFDxjKRwc
+         HNYSNESEnWrd3zlmho1CBQkIpGc0farrNkTcxq5s3WkTakz7UJ/1p+Fbzb1odgV1hGZR
+         nSW7bPbI2WisIHdYzr9gLGPu6rc4UVd2jjf3YSSpkjZ01WW1Ngzrhq8OH2RaN64Y1dPz
+         a0roil8uH9PniZf6KkJ8qLyUfgVyl9EgAaybHWUBPw61uTcceZlYRl+vJT5tR/PKn77d
+         U2i8b9vTmyodvcm4wavl3OYFXC57t/fjjtV1HXFTSn2bhwq87sh8cvp9eCqplNNd74WD
+         cTKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6nFlIsB4GESJdOkUx69zEcDDOqVB4l0gvS9twPgreSA=;
+        b=bm5q+s1lQrRIFqmmA/1fP3omY0K9WwOJku5C7vp4hvb9czJeCXnxk/yc83+Q8mL85d
+         zIvHSlIqOlNiFO1MUEt6dMcHcD8ZeQiNTZN8r8VuSBDCeBOqgw3uKVyRH1/vyXsepQq9
+         6HZ1UIMtQxnnbCVuAh+tpulrkRDbT/0GiBIgHTUY3jySB1MSm5Lgexs6PD/mrxK4SpIm
+         7YoldRueN8TmIwhYN3qQO3+95Ukn70j0L85Ne0y9342dItNpw8OEcEvlY+qgrDgz4N7l
+         VyVgM8E3TPxl+CdBHu0OJ+onTqYhQ/OGywkvgtsn3WVXeSudGKj3hePqOuDV3CzHGJ+A
+         Wtog==
+X-Gm-Message-State: AOAM532LdDceZUuGQxxQd9/LN6/npiVHlq2yk2qxWio0oPFzIHUDCkCU
+        OyDcdQvT075WLC5Nc8PvvF4AsCTZTFcZv546sNI=
+X-Google-Smtp-Source: ABdhPJwRfTy7g6qwbOFcPc7j5O0NPP9zelvfniUFw8ShhQbdGq4igwNqE+eAwXqAveu2scwhXZqtMpxKAi8hJTm4B08=
+X-Received: by 2002:a17:906:5008:: with SMTP id s8mr1772423ejj.408.1601346765902;
+ Mon, 28 Sep 2020 19:32:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+References: <20200927032829.11321-1-haifeng.zhao@intel.com>
+ <20200927032829.11321-2-haifeng.zhao@intel.com> <20200927062359.GA23452@infradead.org>
+In-Reply-To: <20200927062359.GA23452@infradead.org>
+From:   Ethan Zhao <xerces.zhao@gmail.com>
+Date:   Tue, 29 Sep 2020 10:32:34 +0800
+Message-ID: <CAKF3qh3gVoSfCg+83Kgrq4Pu4f6pSd2TUo+5XwTRZW4qTrkN2A@mail.gmail.com>
+Subject: Re: [PATCH 1/5 V2] PCI: define a function to check and wait till port
+ finish DPC handling
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Ethan Zhao <haifeng.zhao@intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>, Oliver <oohall@gmail.com>,
+        ruscur@russell.cc, Lukas Wunner <lukas@wunner.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Stuart Hayes <stuart.w.hayes@gmail.com>,
+        Alexandru Gagniuc <mr.nuke.me@gmail.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Jia, Pei P" <pei.p.jia@intel.com>, ashok.raj@linux.intel.com,
+        Sathyanarayanan Kuppuswamy <sathyanarayanan.kuppuswamy@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/irq
-branch HEAD: 981aa1d366bf46bdc1c9259a5ab818a8d522724e  PCI: MSI: Fix Kconfig dependencies for PCI_MSI_ARCH_FALLBACKS
+Fixed this concern by moving the function to DPC driver and its
+declaration to pci.h.  see v5
 
-elapsed time: 722m
+Thanks,
+Ethan
 
-configs tested: 162
-configs skipped: 2
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-sh                           se7750_defconfig
-sh                           se7722_defconfig
-sh                        sh7763rdp_defconfig
-powerpc                mpc7448_hpc2_defconfig
-ia64                         bigsur_defconfig
-powerpc                      arches_defconfig
-powerpc                      cm5200_defconfig
-sparc                       sparc32_defconfig
-arm                          badge4_defconfig
-powerpc                        cell_defconfig
-powerpc                     tqm8541_defconfig
-powerpc64                           defconfig
-csky                             alldefconfig
-sh                             shx3_defconfig
-riscv                          rv32_defconfig
-sh                          rsk7201_defconfig
-openrisc                         alldefconfig
-mips                      pic32mzda_defconfig
-arm                   milbeaut_m10v_defconfig
-m68k                          multi_defconfig
-sh                        edosk7705_defconfig
-nios2                         3c120_defconfig
-powerpc                     rainier_defconfig
-powerpc                     mpc512x_defconfig
-mips                       lemote2f_defconfig
-powerpc                    ge_imp3a_defconfig
-powerpc                      mgcoge_defconfig
-mips                        maltaup_defconfig
-alpha                            allyesconfig
-powerpc                     tqm8548_defconfig
-arm                          simpad_defconfig
-sh                        edosk7760_defconfig
-mips                      bmips_stb_defconfig
-sh                        apsh4ad0a_defconfig
-arm                        magician_defconfig
-mips                           ip22_defconfig
-arm                        spear6xx_defconfig
-mips                         db1xxx_defconfig
-powerpc                       maple_defconfig
-powerpc                   bluestone_defconfig
-powerpc                     tqm5200_defconfig
-arm                             mxs_defconfig
-arm                           omap1_defconfig
-microblaze                      mmu_defconfig
-powerpc                 mpc836x_rdk_defconfig
-arc                      axs103_smp_defconfig
-arm                              zx_defconfig
-arm                        mvebu_v5_defconfig
-c6x                        evmc6472_defconfig
-mips                     loongson1b_defconfig
-xtensa                    smp_lx200_defconfig
-mips                 decstation_r4k_defconfig
-powerpc                 mpc837x_rdb_defconfig
-arm                  colibri_pxa300_defconfig
-powerpc                      ppc40x_defconfig
-arm                      integrator_defconfig
-arc                          axs103_defconfig
-nios2                         10m50_defconfig
-mips                     cu1000-neo_defconfig
-sh                           se7619_defconfig
-powerpc                     stx_gp3_defconfig
-sh                      rts7751r2d1_defconfig
-m68k                             alldefconfig
-mips                     decstation_defconfig
-arm                           stm32_defconfig
-powerpc                     kilauea_defconfig
-powerpc                     pseries_defconfig
-arm                         lpc32xx_defconfig
-ia64                            zx1_defconfig
-sh                          polaris_defconfig
-powerpc                      walnut_defconfig
-sh                         microdev_defconfig
-arm                           sunxi_defconfig
-microblaze                    nommu_defconfig
-mips                           xway_defconfig
-arm                        cerfcube_defconfig
-arm                  colibri_pxa270_defconfig
-mips                      maltaaprp_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a005-20200928
-x86_64               randconfig-a003-20200928
-x86_64               randconfig-a004-20200928
-x86_64               randconfig-a002-20200928
-x86_64               randconfig-a006-20200928
-x86_64               randconfig-a001-20200928
-i386                 randconfig-a006-20200928
-i386                 randconfig-a002-20200928
-i386                 randconfig-a003-20200928
-i386                 randconfig-a004-20200928
-i386                 randconfig-a005-20200928
-i386                 randconfig-a001-20200928
-i386                 randconfig-a002-20200927
-i386                 randconfig-a006-20200927
-i386                 randconfig-a003-20200927
-i386                 randconfig-a004-20200927
-i386                 randconfig-a005-20200927
-i386                 randconfig-a001-20200927
-x86_64               randconfig-a011-20200927
-x86_64               randconfig-a013-20200927
-x86_64               randconfig-a014-20200927
-x86_64               randconfig-a015-20200927
-x86_64               randconfig-a012-20200927
-x86_64               randconfig-a016-20200927
-i386                 randconfig-a012-20200928
-i386                 randconfig-a013-20200928
-i386                 randconfig-a011-20200928
-i386                 randconfig-a016-20200928
-i386                 randconfig-a014-20200928
-i386                 randconfig-a015-20200928
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a011-20200928
-x86_64               randconfig-a013-20200928
-x86_64               randconfig-a015-20200928
-x86_64               randconfig-a014-20200928
-x86_64               randconfig-a016-20200928
-x86_64               randconfig-a012-20200928
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+On Sun, Sep 27, 2020 at 2:27 PM Christoph Hellwig <hch@infradead.org> wrote:
+>
+> > +#ifdef CONFIG_PCIE_DPC
+> > +static inline bool pci_wait_port_outdpc(struct pci_dev *pdev)
+> > +{
+> > +     u16 cap = pdev->dpc_cap, status;
+> > +     u16 loop = 0;
+> > +
+> > +     if (!cap) {
+> > +             pci_WARN_ONCE(pdev, !cap, "No DPC capability initiated\n");
+> > +             return false;
+> > +     }
+> > +     pci_read_config_word(pdev, cap + PCI_EXP_DPC_STATUS, &status);
+> > +     pci_dbg(pdev, "DPC status %x, cap %x\n", status, cap);
+> > +     while (status & PCI_EXP_DPC_STATUS_TRIGGER && loop < 100) {
+> > +             msleep(10);
+> > +             loop++;
+> > +             pci_read_config_word(pdev, cap + PCI_EXP_DPC_STATUS, &status);
+> > +     }
+> > +     if (!(status & PCI_EXP_DPC_STATUS_TRIGGER)) {
+> > +             pci_dbg(pdev, "Out of DPC %x, cost %d ms\n", status, loop*10);
+> > +             return true;
+> > +     }
+> > +     pci_dbg(pdev, "Timeout to wait port out of DPC status\n");
+> > +     return false;
+> > +}
+>
+> I don't think that there is any good reason to have this as an
+> inline function.
