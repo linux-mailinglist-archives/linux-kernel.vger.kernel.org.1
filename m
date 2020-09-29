@@ -2,251 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F334227BE33
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 09:39:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39CC727BE24
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 09:38:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725819AbgI2Hiy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 03:38:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57488 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727645AbgI2Hiu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 03:38:50 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA364C0613D0
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 00:38:49 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id 34so3135214pgo.13
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 00:38:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=+r3GF4m4YugxKvqRkeEORPE8tzc/vmAmjb3ldF1z+f4=;
-        b=JtxfRfZCoc631J3QzxUjx4tE5DyJzN21HObAkaJYd4wrzRIqBXFDtvuODhfBDwkwZ0
-         p5topaqX9fGfxHY+UgHltGgyZ53cXwrSvY7+pi1vMor1i1veQRdlPnSIz9tMgLAbdfyl
-         Wks3teP5eZ2k0RkFBrzxXXh/TazUdXKvCRvHQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=+r3GF4m4YugxKvqRkeEORPE8tzc/vmAmjb3ldF1z+f4=;
-        b=kZgZ93uN8H5x1jaqom+x5jzp1FCR5rFCdTuESV0XSxM1SaeZ+7OS9nmVx2fXFen/R0
-         3xtHIpwiG6HXiHdcKOAHFyF4Nrm9QXTVT/OzmPHZeUCPw23xjCNJ3OnelsPep5wjy2r9
-         +I4Yzg6TJbA/rzMt2ajODs+sRzxnCGwX91CFtCUewsrStkpipr1RctMHGNRx/4AirK0E
-         J3DO7EByL0YbY3kJ8fxzdVTvpEBKCfa/DxkWUL0ExjmG061b1DwE7YNJgFWLpbr0pRtK
-         pKkpJKBab14tlN5rQcKxIXRHEnfCmayFGz6kcwWORaHTFWdeZgvIm/Kh4PbJzHhPOHm4
-         syTw==
-X-Gm-Message-State: AOAM532MFj/0KGHhMQmb+MvU0+RaC/rzu78j6iXo7fngGNXyiT4A0I7p
-        XOmMtNqsfgs/zUOBYagl7q5kYg==
-X-Google-Smtp-Source: ABdhPJyloqcHPGpb8wGIRonsrVvNDR1Fti9p84W6aNSgDQau78lYJz5cH0Ahbvu0HvDaz77e72y6mw==
-X-Received: by 2002:aa7:97a8:0:b029:13e:d13d:a105 with SMTP id d8-20020aa797a80000b029013ed13da105mr2970507pfq.33.1601365129442;
-        Tue, 29 Sep 2020 00:38:49 -0700 (PDT)
-Received: from ikjn-p920.tpe.corp.google.com ([2401:fa00:1:10:f693:9fff:fef4:a8fc])
-        by smtp.gmail.com with ESMTPSA id e13sm3737317pjy.38.2020.09.29.00.38.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Sep 2020 00:38:49 -0700 (PDT)
-From:   Ikjoon Jang <ikjn@chromium.org>
-To:     Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>,
-        devicetree@vger.kernel.org, linux-spi@vger.kernel.org,
-        linux-mtd@lists.infradead.org
-Cc:     Ikjoon Jang <ikjn@chromium.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org
-Subject: [PATCH v4 4/4] spi: spi-mtk-nor: Add power management support
-Date:   Tue, 29 Sep 2020 15:37:55 +0800
-Message-Id: <20200929153320.v4.4.I68983b582d949a91866163bab588ff3c2a0d0275@changeid>
-X-Mailer: git-send-email 2.28.0.709.gb0816b6eb0-goog
-In-Reply-To: <20200929073755.3741416-1-ikjn@chromium.org>
-References: <20200929073755.3741416-1-ikjn@chromium.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1727445AbgI2HiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 03:38:15 -0400
+Received: from mx2.suse.de ([195.135.220.15]:36298 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725320AbgI2HiP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 03:38:15 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 6B5F3AC4D;
+        Tue, 29 Sep 2020 07:38:13 +0000 (UTC)
+From:   Daniel Wagner <dwagner@suse.de>
+To:     Nilesh Javali <njavali@marvell.com>, Arun Easi <aeasi@marvell.com>
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Daniel Wagner <dwagner@suse.de>
+Subject: [PATCH] qla2xxx: Do not consume srb greedily
+Date:   Tue, 29 Sep 2020 09:38:02 +0200
+Message-Id: <20200929073802.18770-1-dwagner@suse.de>
+X-Mailer: git-send-email 2.16.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds dev_pm_ops to mtk-nor to support suspend/resume,
-auto suspend delay is set to -1 by default.
+qla2xx_process_get_sp_from_handle() will clear the slot which the
+current srb is stored. So this function has a side effect. Therefore,
+we can't use it in qla24xx_process_mbx_iocb_response() to check
+for consistency and later again in qla24xx_mbx_iocb_entry().
 
-Accessing registers are only permitted after its clock is enabled
-to deal with unknown state of operating clk at probe time,
+Let's move the consistency check directly into
+qla24xx_mbx_iocb_entry() and avoid the double call or any open coding
+of the qla2xx_process_get_sp_from_handle() functionality.
 
-Signed-off-by: Ikjoon Jang <ikjn@chromium.org>
+Fixes: 31a3271ff11b ("scsi: qla2xxx: Handle incorrect entry_type entries")
+Signed-off-by: Daniel Wagner <dwagner@suse.de>
 ---
-Changes in v4:
-- No changes
+Hi,
 
-Changes in v3:
-- Remove unrelated changes of dma_set_mask_coherent()
+Brown bag for me please. My test patch had an open coded version of
+qla2xx_process_get_sp_from_handle() which didn't consume the srb. When
+I prepared it for sending it out, I 'cleaned' it up by using
+qla2xx_process_get_sp_from_handle() twice.
 
- drivers/spi/spi-mtk-nor.c | 98 ++++++++++++++++++++++++++++++---------
- 1 file changed, 76 insertions(+), 22 deletions(-)
+Sorry,
+Daniel
 
-diff --git a/drivers/spi/spi-mtk-nor.c b/drivers/spi/spi-mtk-nor.c
-index eac613b3930d..6179eb163cd6 100644
---- a/drivers/spi/spi-mtk-nor.c
-+++ b/drivers/spi/spi-mtk-nor.c
-@@ -14,6 +14,7 @@
- #include <linux/kernel.h>
- #include <linux/module.h>
- #include <linux/of_device.h>
-+#include <linux/pm_runtime.h>
- #include <linux/spi/spi.h>
- #include <linux/spi/spi-mem.h>
- #include <linux/string.h>
-@@ -548,22 +549,15 @@ static int mtk_nor_enable_clk(struct mtk_nor *sp)
- 	return 0;
- }
- 
--static int mtk_nor_init(struct mtk_nor *sp)
-+static void mtk_nor_init(struct mtk_nor *sp)
+ drivers/scsi/qla2xxx/qla_isr.c | 42 +++++++++++++++---------------------------
+ 1 file changed, 15 insertions(+), 27 deletions(-)
+
+diff --git a/drivers/scsi/qla2xxx/qla_isr.c b/drivers/scsi/qla2xxx/qla_isr.c
+index 96811354f78a..2baba87c4e0c 100644
+--- a/drivers/scsi/qla2xxx/qla_isr.c
++++ b/drivers/scsi/qla2xxx/qla_isr.c
+@@ -1839,6 +1839,7 @@ qla24xx_mbx_iocb_entry(scsi_qla_host_t *vha, struct req_que *req,
+     struct mbx_24xx_entry *pkt)
  {
--	int ret;
--
--	ret = mtk_nor_enable_clk(sp);
--	if (ret)
--		return ret;
--
--	sp->spi_freq = clk_get_rate(sp->spi_clk);
-+	writel(0, sp->base + MTK_NOR_REG_IRQ_EN);
-+	writel(MTK_NOR_IRQ_MASK, sp->base + MTK_NOR_REG_IRQ_STAT);
+ 	const char func[] = "MBX-IOCB2";
++	struct qla_hw_data *ha = vha->hw;
+ 	srb_t *sp;
+ 	struct srb_iocb *si;
+ 	u16 sz, i;
+@@ -1848,6 +1849,18 @@ qla24xx_mbx_iocb_entry(scsi_qla_host_t *vha, struct req_que *req,
+ 	if (!sp)
+ 		return;
  
- 	writel(MTK_NOR_ENABLE_SF_CMD, sp->base + MTK_NOR_REG_WP);
- 	mtk_nor_rmw(sp, MTK_NOR_REG_CFG2, MTK_NOR_WR_CUSTOM_OP_EN, 0);
- 	mtk_nor_rmw(sp, MTK_NOR_REG_CFG3,
- 		    MTK_NOR_DISABLE_WREN | MTK_NOR_DISABLE_SR_POLL, 0);
--
--	return ret;
++	if (sp->type == SRB_SCSI_CMD ||
++	    sp->type == SRB_NVME_CMD ||
++	    sp->type == SRB_TM_CMD) {
++		ql_log(ql_log_warn, vha, 0x509d,
++			"Inconsistent event entry type %d\n", sp->type);
++		if (IS_P3P_TYPE(ha))
++			set_bit(FCOE_CTX_RESET_NEEDED, &vha->dpc_flags);
++		else
++			set_bit(ISP_ABORT_NEEDED, &vha->dpc_flags);
++		return;
++	}
++
+ 	si = &sp->u.iocb_cmd;
+ 	sz = min(ARRAY_SIZE(pkt->mb), ARRAY_SIZE(sp->u.iocb_cmd.u.mbx.in_mb));
+ 
+@@ -3406,32 +3419,6 @@ void qla24xx_nvme_ls4_iocb(struct scsi_qla_host *vha,
+ 	sp->done(sp, comp_status);
  }
  
- static irqreturn_t mtk_nor_irq_handler(int irq, void *data)
-@@ -646,6 +640,7 @@ static int mtk_nor_probe(struct platform_device *pdev)
- 	ctlr->num_chipselect = 1;
- 	ctlr->setup = mtk_nor_setup;
- 	ctlr->transfer_one_message = mtk_nor_transfer_one_message;
-+	ctlr->auto_runtime_pm = true;
- 
- 	dev_set_drvdata(&pdev->dev, ctlr);
- 
-@@ -669,12 +664,19 @@ static int mtk_nor_probe(struct platform_device *pdev)
- 		return -ENOMEM;
- 	}
- 
-+	ret = mtk_nor_enable_clk(sp);
-+	if (ret < 0)
-+		return ret;
-+
-+	sp->spi_freq = clk_get_rate(sp->spi_clk);
-+
-+	mtk_nor_init(sp);
-+
- 	irq = platform_get_irq_optional(pdev, 0);
-+
- 	if (irq < 0) {
- 		dev_warn(sp->dev, "IRQ not available.");
- 	} else {
--		writel(MTK_NOR_IRQ_MASK, base + MTK_NOR_REG_IRQ_STAT);
--		writel(0, base + MTK_NOR_REG_IRQ_EN);
- 		ret = devm_request_irq(sp->dev, irq, mtk_nor_irq_handler, 0,
- 				       pdev->name, sp);
- 		if (ret < 0) {
-@@ -685,34 +687,86 @@ static int mtk_nor_probe(struct platform_device *pdev)
- 		}
- 	}
- 
--	ret = mtk_nor_init(sp);
--	if (ret < 0) {
--		kfree(ctlr);
--		return ret;
+-static void qla24xx_process_mbx_iocb_response(struct scsi_qla_host *vha,
+-	struct rsp_que *rsp, struct sts_entry_24xx *pkt)
+-{
+-	struct qla_hw_data *ha = vha->hw;
+-	srb_t *sp;
+-	static const char func[] = "MBX-IOCB2";
+-
+-	sp = qla2x00_get_sp_from_handle(vha, func, rsp->req, pkt);
+-	if (!sp)
+-		return;
+-
+-	if (sp->type == SRB_SCSI_CMD ||
+-	    sp->type == SRB_NVME_CMD ||
+-	    sp->type == SRB_TM_CMD) {
+-		ql_log(ql_log_warn, vha, 0x509d,
+-			"Inconsistent event entry type %d\n", sp->type);
+-		if (IS_P3P_TYPE(ha))
+-			set_bit(FCOE_CTX_RESET_NEEDED, &vha->dpc_flags);
+-		else
+-			set_bit(ISP_ABORT_NEEDED, &vha->dpc_flags);
+-		return;
 -	}
-+	pm_runtime_set_autosuspend_delay(&pdev->dev, -1);
-+	pm_runtime_use_autosuspend(&pdev->dev);
-+	pm_runtime_set_active(&pdev->dev);
-+	pm_runtime_enable(&pdev->dev);
-+	pm_runtime_get_noresume(&pdev->dev);
-+
-+	ret = devm_spi_register_controller(&pdev->dev, ctlr);
-+	if (ret < 0)
-+		goto err_probe;
-+
-+	pm_runtime_mark_last_busy(&pdev->dev);
-+	pm_runtime_put_autosuspend(&pdev->dev);
- 
- 	dev_info(&pdev->dev, "spi frequency: %d Hz\n", sp->spi_freq);
- 
--	return devm_spi_register_controller(&pdev->dev, ctlr);
-+	return 0;
-+
-+err_probe:
-+	pm_runtime_disable(&pdev->dev);
-+	pm_runtime_set_suspended(&pdev->dev);
-+	pm_runtime_dont_use_autosuspend(&pdev->dev);
-+
-+	mtk_nor_disable_clk(sp);
-+
-+	return ret;
- }
- 
- static int mtk_nor_remove(struct platform_device *pdev)
- {
--	struct spi_controller *ctlr;
--	struct mtk_nor *sp;
-+	struct spi_controller *ctlr = dev_get_drvdata(&pdev->dev);
-+	struct mtk_nor *sp = spi_controller_get_devdata(ctlr);
- 
--	ctlr = dev_get_drvdata(&pdev->dev);
--	sp = spi_controller_get_devdata(ctlr);
-+	pm_runtime_disable(&pdev->dev);
-+	pm_runtime_set_suspended(&pdev->dev);
-+	pm_runtime_dont_use_autosuspend(&pdev->dev);
-+
-+	mtk_nor_disable_clk(sp);
-+
-+	return 0;
-+}
-+
-+static int __maybe_unused mtk_nor_runtime_suspend(struct device *dev)
-+{
-+	struct spi_controller *ctlr = dev_get_drvdata(dev);
-+	struct mtk_nor *sp = spi_controller_get_devdata(ctlr);
- 
- 	mtk_nor_disable_clk(sp);
- 
- 	return 0;
- }
- 
-+static int __maybe_unused mtk_nor_runtime_resume(struct device *dev)
-+{
-+	struct spi_controller *ctlr = dev_get_drvdata(dev);
-+	struct mtk_nor *sp = spi_controller_get_devdata(ctlr);
-+
-+	return mtk_nor_enable_clk(sp);
-+}
-+
-+static int __maybe_unused mtk_nor_suspend(struct device *dev)
-+{
-+	return pm_runtime_force_suspend(dev);
-+}
-+
-+static int __maybe_unused mtk_nor_resume(struct device *dev)
-+{
-+	return pm_runtime_force_resume(dev);
-+}
-+
-+static const struct dev_pm_ops mtk_nor_pm_ops = {
-+	SET_RUNTIME_PM_OPS(mtk_nor_runtime_suspend,
-+			   mtk_nor_runtime_resume, NULL)
-+	SET_SYSTEM_SLEEP_PM_OPS(mtk_nor_suspend, mtk_nor_resume)
-+};
-+
- static struct platform_driver mtk_nor_driver = {
- 	.driver = {
- 		.name = DRIVER_NAME,
- 		.of_match_table = mtk_nor_match,
-+		.pm = &mtk_nor_pm_ops,
- 	},
- 	.probe = mtk_nor_probe,
- 	.remove = mtk_nor_remove,
+-
+-	qla24xx_mbx_iocb_entry(vha, rsp->req, (struct mbx_24xx_entry *)pkt);
+-}
+-
+ /**
+  * qla24xx_process_response_queue() - Process response queue entries.
+  * @vha: SCSI driver HA context
+@@ -3539,7 +3526,8 @@ void qla24xx_process_response_queue(struct scsi_qla_host *vha,
+ 			    (struct abort_entry_24xx *)pkt);
+ 			break;
+ 		case MBX_IOCB_TYPE:
+-			qla24xx_process_mbx_iocb_response(vha, rsp, pkt);
++			qla24xx_mbx_iocb_entry(vha, rsp->req,
++			    (struct mbx_24xx_entry *)pkt);
+ 			break;
+ 		case VP_CTRL_IOCB_TYPE:
+ 			qla_ctrlvp_completed(vha, rsp->req,
 -- 
-2.28.0.709.gb0816b6eb0-goog
+2.16.4
 
