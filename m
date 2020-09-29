@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA12A27C824
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:59:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2DE727C603
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:41:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730596AbgI2Lk4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:40:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36576 "EHLO mail.kernel.org"
+        id S1730616AbgI2LlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:41:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36910 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730557AbgI2Lkm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:40:42 -0400
+        id S1730576AbgI2Lkx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:40:53 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DE868221E7;
-        Tue, 29 Sep 2020 11:40:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C545421924;
+        Tue, 29 Sep 2020 11:40:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601379622;
-        bh=lDDGUL4kvJ5mex8eDO//IqOW71j0i6XZXgohdWZWS0A=;
+        s=default; t=1601379631;
+        bh=jGhZISFgVL+/FUIGMcXqvuU+A9Nr5jP1pkKvf9EPlPM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rFfwRRCBcrBYWMCdDuE5VJVhEGjjCD2+i8UQ364gsjd/B7WnKGx0NFSPBuT4D2AQ/
-         bNWn8sefBifx5iTVG4AbRSg4V3413uFHTm9SWKDuy8tTpdsdmOQc0NUIm0nTG0KdAo
-         QYqVKtJ0ZGj+xv/ObzmrkKHxsO8lO1kIcAzSOHPc=
+        b=17FbeLt4z3eaDmNxvB/kDokILaah3TWjvGSH2HgUFR8BD85kvtKYrSeXGkmCrr54D
+         98cnHh103FM5IrXlcnKXrYJHdlkKXPLv6KiufzbtZExj9LXrd8pG+7flm9wQ28TIHW
+         8WNkZypnPaPnacxAlop9SVxnmDaITwksSZadU/g0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jonathan Bakker <xc-racer2@live.ca>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org,
+        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 245/388] dt-bindings: sound: wm8994: Correct required supplies based on actual implementaion
-Date:   Tue, 29 Sep 2020 12:59:36 +0200
-Message-Id: <20200929110022.341122381@linuxfoundation.org>
+Subject: [PATCH 5.4 248/388] media: venus: vdec: Init registered list unconditionally
+Date:   Tue, 29 Sep 2020 12:59:39 +0200
+Message-Id: <20200929110022.487807492@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200929110010.467764689@linuxfoundation.org>
 References: <20200929110010.467764689@linuxfoundation.org>
@@ -44,62 +44,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzk@kernel.org>
+From: Stanimir Varbanov <stanimir.varbanov@linaro.org>
 
-[ Upstream commit 8c149b7d75e53be47648742f40fc90d9fc6fa63a ]
+[ Upstream commit bc3d870e414b42d72cd386aa20a4fc3612e4feb7 ]
 
-The required supplies in bindings were actually not matching
-implementation making the bindings incorrect and misleading.  The Linux
-kernel driver requires all supplies to be present.  Also for wlf,wm8994
-uses just DBVDD-supply instead of DBVDDn-supply (n: <1,3>).
+Presently the list initialization is done only in
+dynamic-resolution-change state, which leads to list corruptions
+and use-after-free. Init list_head unconditionally in
+vdec_stop_capture called by vb2 stop_streaming without takeing
+into account current codec state.
 
-Reported-by: Jonathan Bakker <xc-racer2@live.ca>
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-Link: https://lore.kernel.org/r/20200501133534.6706-1-krzk@kernel.org
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../devicetree/bindings/sound/wm8994.txt       | 18 ++++++++++++------
- 1 file changed, 12 insertions(+), 6 deletions(-)
+ drivers/media/platform/qcom/venus/vdec.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/wm8994.txt b/Documentation/devicetree/bindings/sound/wm8994.txt
-index 68cccc4653ba3..367b58ce1bb92 100644
---- a/Documentation/devicetree/bindings/sound/wm8994.txt
-+++ b/Documentation/devicetree/bindings/sound/wm8994.txt
-@@ -14,9 +14,15 @@ Required properties:
-   - #gpio-cells : Must be 2. The first cell is the pin number and the
-     second cell is used to specify optional parameters (currently unused).
+diff --git a/drivers/media/platform/qcom/venus/vdec.c b/drivers/media/platform/qcom/venus/vdec.c
+index 59ae7a1e63bc2..05b80a66e80ed 100644
+--- a/drivers/media/platform/qcom/venus/vdec.c
++++ b/drivers/media/platform/qcom/venus/vdec.c
+@@ -987,13 +987,14 @@ static int vdec_stop_capture(struct venus_inst *inst)
+ 		ret = hfi_session_flush(inst, HFI_FLUSH_OUTPUT);
+ 		vdec_cancel_dst_buffers(inst);
+ 		inst->codec_state = VENUS_DEC_STATE_CAPTURE_SETUP;
+-		INIT_LIST_HEAD(&inst->registeredbufs);
+ 		venus_helper_free_dpb_bufs(inst);
+ 		break;
+ 	default:
+-		return 0;
++		break;
+ 	}
  
--  - AVDD2-supply, DBVDD1-supply, DBVDD2-supply, DBVDD3-supply, CPVDD-supply,
--    SPKVDD1-supply, SPKVDD2-supply : power supplies for the device, as covered
--    in Documentation/devicetree/bindings/regulator/regulator.txt
-+  - power supplies for the device, as covered in
-+    Documentation/devicetree/bindings/regulator/regulator.txt, depending
-+    on compatible:
-+    - for wlf,wm1811 and wlf,wm8958:
-+      AVDD1-supply, AVDD2-supply, DBVDD1-supply, DBVDD2-supply, DBVDD3-supply,
-+      DCVDD-supply, CPVDD-supply, SPKVDD1-supply, SPKVDD2-supply
-+    - for wlf,wm8994:
-+      AVDD1-supply, AVDD2-supply, DBVDD-supply, DCVDD-supply, CPVDD-supply,
-+      SPKVDD1-supply, SPKVDD2-supply
++	INIT_LIST_HEAD(&inst->registeredbufs);
++
+ 	return ret;
+ }
  
- Optional properties:
- 
-@@ -73,11 +79,11 @@ wm8994: codec@1a {
- 
- 	lineout1-se;
- 
-+	AVDD1-supply = <&regulator>;
- 	AVDD2-supply = <&regulator>;
- 	CPVDD-supply = <&regulator>;
--	DBVDD1-supply = <&regulator>;
--	DBVDD2-supply = <&regulator>;
--	DBVDD3-supply = <&regulator>;
-+	DBVDD-supply = <&regulator>;
-+	DCVDD-supply = <&regulator>;
- 	SPKVDD1-supply = <&regulator>;
- 	SPKVDD2-supply = <&regulator>;
- };
 -- 
 2.25.1
 
