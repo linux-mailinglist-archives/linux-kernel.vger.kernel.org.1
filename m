@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98D7E27CBD8
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:31:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C69FF27CD0B
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:41:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732979AbgI2Maz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 08:30:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45276 "EHLO mail.kernel.org"
+        id S1733220AbgI2MlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 08:41:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56652 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729436AbgI2L3g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:29:36 -0400
+        id S1728723AbgI2LN6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:13:58 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0FE5623AC2;
-        Tue, 29 Sep 2020 11:24:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 72A9C208FE;
+        Tue, 29 Sep 2020 11:13:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601378658;
-        bh=q1fau9bNkZ6LiM0LKa+WiRcI7VTXUMNlPmohccdDR2Q=;
+        s=default; t=1601378038;
+        bh=B7Tmup4JVXwLfB4ORrdTHZPeQN2+VNzwXUp4AOeovjU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Mm780USaHuuvjs76g50D7t1DjChG7hqfJf5mHTEsJjo9X/iHfxpjwI83Si96x3/Lx
-         r4DEfaikAw7KLyOkaz5gZbhzMI9PrhgdWjlt+la3LFrA+ooevPRLdPqObv+5ek2GZw
-         ObkF9GU40Au07SId0Uo+S/luir7/dO+LDAwG5FY8=
+        b=uw5UUb0hOrALsFDmCu8rY+7In5eiA0YGhJ5EKXrlK1syIgxO7jgO8GvklJX8Ifu7B
+         ugX53hU2RqusGEbPZaMVcOhD5nrwgFh834hJdFzQJzxvFiZuWxIoHRNPbzKcuxJBNo
+         gzXNgimkrQuy/8cqqqnhqBXFYxeu53Mzo+8G7/1E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dick Kennedy <dick.kennedy@broadcom.com>,
-        James Smart <jsmart2021@gmail.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Russell King <rmk+kernel@armlinux.org.uk>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 075/245] scsi: lpfc: Fix RQ buffer leakage when no IOCBs available
-Date:   Tue, 29 Sep 2020 12:58:46 +0200
-Message-Id: <20200929105950.649130665@linuxfoundation.org>
+Subject: [PATCH 4.14 022/166] ASoC: kirkwood: fix IRQ error handling
+Date:   Tue, 29 Sep 2020 12:58:54 +0200
+Message-Id: <20200929105936.300984878@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929105946.978650816@linuxfoundation.org>
-References: <20200929105946.978650816@linuxfoundation.org>
+In-Reply-To: <20200929105935.184737111@linuxfoundation.org>
+References: <20200929105935.184737111@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,56 +43,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: James Smart <jsmart2021@gmail.com>
+From: Russell King <rmk+kernel@armlinux.org.uk>
 
-[ Upstream commit 39c4f1a965a9244c3ba60695e8ff8da065ec6ac4 ]
+[ Upstream commit 175fc928198236037174e5c5c066fe3c4691903e ]
 
-The driver is occasionally seeing the following SLI Port error, requiring
-reset and reinit:
+Propagate the error code from request_irq(), rather than returning
+-EBUSY.
 
- Port Status Event: ... error 1=0x52004a01, error 2=0x218
-
-The failure means an RQ timeout. That is, the adapter had received
-asynchronous receive frames, ran out of buffer slots to place the frames,
-and the driver did not replenish the buffer slots before a timeout
-occurred. The driver should not be so slow in replenishing buffers that a
-timeout can occur.
-
-When the driver received all the frames of a sequence, it allocates an IOCB
-to put the frames in. In a situation where there was no IOCB available for
-the frame of a sequence, the RQ buffer corresponding to the first frame of
-the sequence was not returned to the FW. Eventually, with enough traffic
-encountering the situation, the timeout occurred.
-
-Fix by releasing the buffer back to firmware whenever there is no IOCB for
-the first frame.
-
-[mkp: typo]
-
-Link: https://lore.kernel.org/r/20200128002312.16346-2-jsmart2021@gmail.com
-Signed-off-by: Dick Kennedy <dick.kennedy@broadcom.com>
-Signed-off-by: James Smart <jsmart2021@gmail.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
+Link: https://lore.kernel.org/r/E1iNIqh-0000tW-EZ@rmk-PC.armlinux.org.uk
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/lpfc/lpfc_sli.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ sound/soc/kirkwood/kirkwood-dma.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/lpfc/lpfc_sli.c b/drivers/scsi/lpfc/lpfc_sli.c
-index a56a939792ac1..2ab351260e815 100644
---- a/drivers/scsi/lpfc/lpfc_sli.c
-+++ b/drivers/scsi/lpfc/lpfc_sli.c
-@@ -17413,6 +17413,10 @@ lpfc_prep_seq(struct lpfc_vport *vport, struct hbq_dmabuf *seq_dmabuf)
- 			list_add_tail(&iocbq->list, &first_iocbq->list);
- 		}
- 	}
-+	/* Free the sequence's header buffer */
-+	if (!first_iocbq)
-+		lpfc_in_buf_free(vport->phba, &seq_dmabuf->dbuf);
-+
- 	return first_iocbq;
- }
+diff --git a/sound/soc/kirkwood/kirkwood-dma.c b/sound/soc/kirkwood/kirkwood-dma.c
+index cf23af159acf4..35ca8e8bb5e52 100644
+--- a/sound/soc/kirkwood/kirkwood-dma.c
++++ b/sound/soc/kirkwood/kirkwood-dma.c
+@@ -136,7 +136,7 @@ static int kirkwood_dma_open(struct snd_pcm_substream *substream)
+ 		err = request_irq(priv->irq, kirkwood_dma_irq, IRQF_SHARED,
+ 				  "kirkwood-i2s", priv);
+ 		if (err)
+-			return -EBUSY;
++			return err;
  
+ 		/*
+ 		 * Enable Error interrupts. We're only ack'ing them but
 -- 
 2.25.1
 
