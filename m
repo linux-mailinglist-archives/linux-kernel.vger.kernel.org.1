@@ -2,93 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3FB227CDF3
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:48:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B30DD27CE09
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:48:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387406AbgI2MsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 08:48:11 -0400
-Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:38307 "EHLO
-        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729646AbgI2Mrg (ORCPT
+        id S2387521AbgI2Msb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 08:48:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49342 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387491AbgI2MsT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 08:47:36 -0400
-X-IronPort-AV: E=Sophos;i="5.77,318,1596492000"; 
-   d="scan'208";a="470060117"
-Received: from abo-173-121-68.mrs.modulonet.fr (HELO hadrien) ([85.68.121.173])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 29 Sep 2020 14:47:29 +0200
-Date:   Tue, 29 Sep 2020 14:47:29 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-cc:     Ard Biesheuvel <ardb@kernel.org>,
-        Julia Lawall <Julia.Lawall@inria.fr>,
-        linux-iio@vger.kernel.org, drbd-dev@tron.linbit.com,
-        =?UTF-8?Q?Valdis_Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>,
-        David Lechner <david@lechnology.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        linux-wireless@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        kernel-janitors@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-block@vger.kernel.org, linux-ide@vger.kernel.org,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Joe Perches <joe@perches.com>,
-        linux-amlogic@lists.infradead.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        openipmi-developer@lists.sourceforge.net,
-        linux-clk@vger.kernel.org,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Jerome Brunet <jbrunet@baylibre.com>
-Subject: Re: [PATCH 00/18] use semicolons rather than commas to separate
- statements
-In-Reply-To: <20200929124108.GY4282@kadam>
-Message-ID: <alpine.DEB.2.22.394.2009291445050.2808@hadrien>
-References: <1601233948-11629-1-git-send-email-Julia.Lawall@inria.fr> <CAMj1kXGh+CzuXkAnqsoMO2A3T1p=D6uFOV347Ym5+VFn5U1gWg@mail.gmail.com> <20200929124108.GY4282@kadam>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        Tue, 29 Sep 2020 08:48:19 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F1A6C0613D0
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 05:48:18 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id b19so3895104lji.11
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 05:48:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=IMvMGHi3GydeVKLOrfC/vWyiwI8YwAhMbrnZw1cRxOs=;
+        b=peVIjQzaZ/pszoAnmZbBscUTAEFKGErn4WRK47+BgAKJqP6xS2c1xk6K7ZzWovbZf2
+         ti/cmwLcSSkQA1+F5ilOUDu+17EGfvIXoA7hKyUL9TUXK6n4amn0IS6lylrteOul7Mt/
+         byyqhv8G7Xs6tKXwZ5Yp5KyzWFjxCCPz+lqp8amlgOslfWgajcu7CXF1VwQpixq80y8G
+         jqjncbVXsxjra/Q9gEaOY+/Nrqodjlh5n4MVPGhnHLGNES/s5eiuNxjoDWwAeqYMeRiO
+         NWfelKACab2zTbAd8O8AonkYy7rhaiqEdBeXhl5ak+OGX5iVmsvqz8yelSf8ht+hiB1Y
+         Zr9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=IMvMGHi3GydeVKLOrfC/vWyiwI8YwAhMbrnZw1cRxOs=;
+        b=nZy2rNUGV1iXbE9xAhpKASR6ctXXqYCUe1MQTVj9gbm4TfLMf1D/jpOS4x/vJtdNh4
+         arZLHj86nEyc9rB+E7kKBsIhMzLR1hKwob8K58ykVDC9+OvdUlOL2sSEDe3IGUzePmYA
+         JX3t4afQEk55YyYstF4AwPmc6iWPW3O4OMH5663LQItFoEczooa5vt6OQydoT711h8z4
+         nCfFZL+ekXYLYwZn5mjuniFcdA4aZwPeEFKUtIjwllsh+RkvQpLX3dQXpebPtPsDGZ9m
+         HD1LYYbWf9E6KdwGQUK+haeGbyd3+uOF5xb2x4wa/UWP0OfaX8S59Pp4zeS3PiiE89Le
+         4LZQ==
+X-Gm-Message-State: AOAM531goxck18hJALA1s11WXdW3kO9EYu1Bj+kezUs2hmB1CQBQ7sAT
+        fSZJv34jDtcAZFpON+bTwXOgGYV6O+IoHg1CKvr5QA==
+X-Google-Smtp-Source: ABdhPJxnA3qRid3mM60XUEJepbYMl8mDolsQ9KdGO3C9GOZv0vZRhKfRr/vLKQSMNCCxJr+uBzpvSl9ICGCfbY+94Q4=
+X-Received: by 2002:a2e:9b15:: with SMTP id u21mr1193777lji.283.1601383696871;
+ Tue, 29 Sep 2020 05:48:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <20200913065836.12156-1-zhouyanjie@wanyeetech.com>
+In-Reply-To: <20200913065836.12156-1-zhouyanjie@wanyeetech.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 29 Sep 2020 14:48:06 +0200
+Message-ID: <CACRpkda1B3LcGWc1PhXNgi-6JxapiKY4F_94c6dk4eBLgVGBJg@mail.gmail.com>
+Subject: Re: [PATCH v4 0/3] pinctrl: Ingenic: Add support for SSI and I2S pins.
+To:     =?UTF-8?B?5ZGo55Cw5p2wIChaaG91IFlhbmppZSk=?= 
+        <zhouyanjie@wanyeetech.com>
+Cc:     Paul Cercueil <paul@crapouillou.net>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
+        rick.tyliu@ingenic.com, yanfei.li@ingenic.com,
+        sernia.zhou@foxmail.com, zhenwenjin@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Sep 13, 2020 at 8:59 AM =E5=91=A8=E7=90=B0=E6=9D=B0 (Zhou Yanjie)
+<zhouyanjie@wanyeetech.com> wrote:
 
-
-On Tue, 29 Sep 2020, Dan Carpenter wrote:
-
-> On Tue, Sep 29, 2020 at 02:20:00PM +0200, Ard Biesheuvel wrote:
-> > On Sun, 27 Sep 2020 at 21:56, Julia Lawall <Julia.Lawall@inria.fr> wrote:
-> > >
-> > > These patches replace commas by semicolons.
-> >
-> >
-> > Why?
-> >
+> 1.Add SSI pins support for JZ4770 and JZ4780.
+> 2.Correct the pullup and pulldown parameters of JZ4780.
+> 3.Add I2S pins support for JZ4780, X1000, X1500, and X1830.
 >
-> In the best case, these commas are just uninitentional mess, like typing
-> an extra space character or something.  I've looked at them before and
-> one case I see where they are introduced is when people convert a
-> struct initializer to code.
->
-> -	struct foo {
-> -		.a = 1,
-> -		.b = 2,
->  		...
-> +	foo.a = 1,
-> +	foo.b = 2,
->
-> The times where commas are used deliberately to replace curly braces are
-> just evil.  Either way the code is cleaner with semi-colons.
+> v2->v3:
+> 1.Add Paul Cercueil's Reviewed-by.
+> 2.Fix bug about PE15's pull-up parameter.
 
-I also found exaamples like the following to be particularly unforunate:
+This v3 patch set applied!
 
-                                fprintf(stderr,
-                                        "page_nr %lu wrong count %Lu %Lu\n",
-                                       page_nr, count,
-                                       count_verify[page_nr]), exit(1);
+Thank you so much for your hard work!
 
-The exit is very hard to see, unless you know to look for it.
-
-julia
+Yours,
+Linus Walleij
