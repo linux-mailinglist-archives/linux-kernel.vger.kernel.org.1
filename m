@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F7DE27C844
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:00:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6167F27C54B
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:34:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731669AbgI2MAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 08:00:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36572 "EHLO mail.kernel.org"
+        id S1728803AbgI2LeH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:34:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45188 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730585AbgI2Lkx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:40:53 -0400
+        id S1729595AbgI2Ld1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:33:27 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8454C206E5;
-        Tue, 29 Sep 2020 11:40:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id F078423B87;
+        Tue, 29 Sep 2020 11:26:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601379645;
-        bh=AiRrw4gYZftgvCZFwosYg7/WVjgkagPGraiwlo0q5IA=;
+        s=default; t=1601378806;
+        bh=Co2r5RQiN2Ize0jVU3icZTDc0tKWKljnPEkgNplGz4o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iE3NzpX+ZJl9CLQAI+X2ijIBgkaKN2Rv5qKy509FqjL7WBwx20kVSEPgMAiHLy2Yl
-         GazKr1cu2A89QIM72izW9A2PWBTZxDIJUwi1OLFLHFXvub/FpHFGAmiYY43lEt3Tue
-         LG5PNaWz9amJx+VtyxqzRHi6cVN4n6TQUznPj+kg=
+        b=ubE9RXr5UpvgCNQtDcrLnWmeDqnhhmtpSpEYTtRIWq91PK0uQV91kV0eGvb+d3iJv
+         2sf5B1153T1h1cIZazt+EHUu9h2ioRwYdewwcRbcPVGNPJAdAQudSrC/DR6ZfsKnB3
+         CSkW6iUP7KaOglp/s0a5vJ0RHCG8LlBZbbGmk0dc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>, Tejun Heo <tj@kernel.org>,
+        stable@vger.kernel.org, Howard Chung <howardchung@google.com>,
+        Marcel Holtmann <marcel@holtmann.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 225/388] workqueue: Remove the warning in wq_worker_sleeping()
+Subject: [PATCH 4.19 105/245] Bluetooth: L2CAP: handle l2cap config request during open state
 Date:   Tue, 29 Sep 2020 12:59:16 +0200
-Message-Id: <20200929110021.371056413@linuxfoundation.org>
+Message-Id: <20200929105952.114243069@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929110010.467764689@linuxfoundation.org>
-References: <20200929110010.467764689@linuxfoundation.org>
+In-Reply-To: <20200929105946.978650816@linuxfoundation.org>
+References: <20200929105946.978650816@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,100 +43,173 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+From: Howard Chung <howardchung@google.com>
 
-[ Upstream commit 62849a9612924a655c67cf6962920544aa5c20db ]
+[ Upstream commit 96298f640104e4cd9a913a6e50b0b981829b94ff ]
 
-The kernel test robot triggered a warning with the following race:
-   task-ctx A                            interrupt-ctx B
- worker
-  -> process_one_work()
-    -> work_item()
-      -> schedule();
-         -> sched_submit_work()
-           -> wq_worker_sleeping()
-             -> ->sleeping = 1
-               atomic_dec_and_test(nr_running)
-         __schedule();                *interrupt*
-                                       async_page_fault()
-                                       -> local_irq_enable();
-                                       -> schedule();
-                                          -> sched_submit_work()
-                                            -> wq_worker_sleeping()
-                                               -> if (WARN_ON(->sleeping)) return
-                                          -> __schedule()
-                                            ->  sched_update_worker()
-                                              -> wq_worker_running()
-                                                 -> atomic_inc(nr_running);
-                                                 -> ->sleeping = 0;
+According to Core Spec Version 5.2 | Vol 3, Part A 6.1.5,
+the incoming L2CAP_ConfigReq should be handled during
+OPEN state.
 
-      ->  sched_update_worker()
-        -> wq_worker_running()
-          if (!->sleeping) return
+The section below shows the btmon trace when running
+L2CAP/COS/CFD/BV-12-C before and after this change.
 
-In this context the warning is pointless everything is fine.
-An interrupt before wq_worker_sleeping() will perform the ->sleeping
-assignment (0 -> 1 > 0) twice.
-An interrupt after wq_worker_sleeping() will trigger the warning and
-nr_running will be decremented (by A) and incremented once (only by B, A
-will skip it). This is the case until the ->sleeping is zeroed again in
-wq_worker_running().
+=== Before ===
+...
+> ACL Data RX: Handle 256 flags 0x02 dlen 12                #22
+      L2CAP: Connection Request (0x02) ident 2 len 4
+        PSM: 1 (0x0001)
+        Source CID: 65
+< ACL Data TX: Handle 256 flags 0x00 dlen 16                #23
+      L2CAP: Connection Response (0x03) ident 2 len 8
+        Destination CID: 64
+        Source CID: 65
+        Result: Connection successful (0x0000)
+        Status: No further information available (0x0000)
+< ACL Data TX: Handle 256 flags 0x00 dlen 12                #24
+      L2CAP: Configure Request (0x04) ident 2 len 4
+        Destination CID: 65
+        Flags: 0x0000
+> HCI Event: Number of Completed Packets (0x13) plen 5      #25
+        Num handles: 1
+        Handle: 256
+        Count: 1
+> HCI Event: Number of Completed Packets (0x13) plen 5      #26
+        Num handles: 1
+        Handle: 256
+        Count: 1
+> ACL Data RX: Handle 256 flags 0x02 dlen 16                #27
+      L2CAP: Configure Request (0x04) ident 3 len 8
+        Destination CID: 64
+        Flags: 0x0000
+        Option: Unknown (0x10) [hint]
+        01 00                                            ..
+< ACL Data TX: Handle 256 flags 0x00 dlen 18                #28
+      L2CAP: Configure Response (0x05) ident 3 len 10
+        Source CID: 65
+        Flags: 0x0000
+        Result: Success (0x0000)
+        Option: Maximum Transmission Unit (0x01) [mandatory]
+          MTU: 672
+> HCI Event: Number of Completed Packets (0x13) plen 5      #29
+        Num handles: 1
+        Handle: 256
+        Count: 1
+> ACL Data RX: Handle 256 flags 0x02 dlen 14                #30
+      L2CAP: Configure Response (0x05) ident 2 len 6
+        Source CID: 64
+        Flags: 0x0000
+        Result: Success (0x0000)
+> ACL Data RX: Handle 256 flags 0x02 dlen 20                #31
+      L2CAP: Configure Request (0x04) ident 3 len 12
+        Destination CID: 64
+        Flags: 0x0000
+        Option: Unknown (0x10) [hint]
+        01 00 91 02 11 11                                ......
+< ACL Data TX: Handle 256 flags 0x00 dlen 14                #32
+      L2CAP: Command Reject (0x01) ident 3 len 6
+        Reason: Invalid CID in request (0x0002)
+        Destination CID: 64
+        Source CID: 65
+> HCI Event: Number of Completed Packets (0x13) plen 5      #33
+        Num handles: 1
+        Handle: 256
+        Count: 1
+...
+=== After ===
+...
+> ACL Data RX: Handle 256 flags 0x02 dlen 12               #22
+      L2CAP: Connection Request (0x02) ident 2 len 4
+        PSM: 1 (0x0001)
+        Source CID: 65
+< ACL Data TX: Handle 256 flags 0x00 dlen 16               #23
+      L2CAP: Connection Response (0x03) ident 2 len 8
+        Destination CID: 64
+        Source CID: 65
+        Result: Connection successful (0x0000)
+        Status: No further information available (0x0000)
+< ACL Data TX: Handle 256 flags 0x00 dlen 12               #24
+      L2CAP: Configure Request (0x04) ident 2 len 4
+        Destination CID: 65
+        Flags: 0x0000
+> HCI Event: Number of Completed Packets (0x13) plen 5     #25
+        Num handles: 1
+        Handle: 256
+        Count: 1
+> HCI Event: Number of Completed Packets (0x13) plen 5     #26
+        Num handles: 1
+        Handle: 256
+        Count: 1
+> ACL Data RX: Handle 256 flags 0x02 dlen 16               #27
+      L2CAP: Configure Request (0x04) ident 3 len 8
+        Destination CID: 64
+        Flags: 0x0000
+        Option: Unknown (0x10) [hint]
+        01 00                                            ..
+< ACL Data TX: Handle 256 flags 0x00 dlen 18               #28
+      L2CAP: Configure Response (0x05) ident 3 len 10
+        Source CID: 65
+        Flags: 0x0000
+        Result: Success (0x0000)
+        Option: Maximum Transmission Unit (0x01) [mandatory]
+          MTU: 672
+> HCI Event: Number of Completed Packets (0x13) plen 5     #29
+        Num handles: 1
+        Handle: 256
+        Count: 1
+> ACL Data RX: Handle 256 flags 0x02 dlen 14               #30
+      L2CAP: Configure Response (0x05) ident 2 len 6
+        Source CID: 64
+        Flags: 0x0000
+        Result: Success (0x0000)
+> ACL Data RX: Handle 256 flags 0x02 dlen 20               #31
+      L2CAP: Configure Request (0x04) ident 3 len 12
+        Destination CID: 64
+        Flags: 0x0000
+        Option: Unknown (0x10) [hint]
+        01 00 91 02 11 11                                .....
+< ACL Data TX: Handle 256 flags 0x00 dlen 18               #32
+      L2CAP: Configure Response (0x05) ident 3 len 10
+        Source CID: 65
+        Flags: 0x0000
+        Result: Success (0x0000)
+        Option: Maximum Transmission Unit (0x01) [mandatory]
+          MTU: 672
+< ACL Data TX: Handle 256 flags 0x00 dlen 12               #33
+      L2CAP: Configure Request (0x04) ident 3 len 4
+        Destination CID: 65
+        Flags: 0x0000
+> HCI Event: Number of Completed Packets (0x13) plen 5     #34
+        Num handles: 1
+        Handle: 256
+        Count: 1
+> HCI Event: Number of Completed Packets (0x13) plen 5     #35
+        Num handles: 1
+        Handle: 256
+        Count: 1
+...
 
-Remove the WARN statement because this condition may happen. Document
-that preemption around wq_worker_sleeping() needs to be disabled to
-protect ->sleeping and not just as an optimisation.
-
-Fixes: 6d25be5782e48 ("sched/core, workqueues: Distangle worker accounting from rq lock")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Cc: Tejun Heo <tj@kernel.org>
-Link: https://lkml.kernel.org/r/20200327074308.GY11705@shao2-debian
+Signed-off-by: Howard Chung <howardchung@google.com>
+Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/sched/core.c | 3 ++-
- kernel/workqueue.c  | 6 ++++--
- 2 files changed, 6 insertions(+), 3 deletions(-)
+ net/bluetooth/l2cap_core.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 352239c411a44..79ce22de44095 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -4199,7 +4199,8 @@ static inline void sched_submit_work(struct task_struct *tsk)
- 	 * it wants to wake up a task to maintain concurrency.
- 	 * As this function is called inside the schedule() context,
- 	 * we disable preemption to avoid it calling schedule() again
--	 * in the possible wakeup of a kworker.
-+	 * in the possible wakeup of a kworker and because wq_worker_sleeping()
-+	 * requires it.
- 	 */
- 	if (tsk->flags & PF_WQ_WORKER) {
- 		preempt_disable();
-diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-index 1a0c224af6fb3..4aa268582a225 100644
---- a/kernel/workqueue.c
-+++ b/kernel/workqueue.c
-@@ -864,7 +864,8 @@ void wq_worker_running(struct task_struct *task)
-  * @task: task going to sleep
-  *
-  * This function is called from schedule() when a busy worker is
-- * going to sleep.
-+ * going to sleep. Preemption needs to be disabled to protect ->sleeping
-+ * assignment.
-  */
- void wq_worker_sleeping(struct task_struct *task)
- {
-@@ -881,7 +882,8 @@ void wq_worker_sleeping(struct task_struct *task)
+diff --git a/net/bluetooth/l2cap_core.c b/net/bluetooth/l2cap_core.c
+index b1f51cb007ea6..c04107d446016 100644
+--- a/net/bluetooth/l2cap_core.c
++++ b/net/bluetooth/l2cap_core.c
+@@ -4117,7 +4117,8 @@ static inline int l2cap_config_req(struct l2cap_conn *conn,
+ 		return 0;
+ 	}
  
- 	pool = worker->pool;
- 
--	if (WARN_ON_ONCE(worker->sleeping))
-+	/* Return if preempted before wq_worker_running() was reached */
-+	if (worker->sleeping)
- 		return;
- 
- 	worker->sleeping = 1;
+-	if (chan->state != BT_CONFIG && chan->state != BT_CONNECT2) {
++	if (chan->state != BT_CONFIG && chan->state != BT_CONNECT2 &&
++	    chan->state != BT_CONNECTED) {
+ 		cmd_reject_invalid_cid(conn, cmd->ident, chan->scid,
+ 				       chan->dcid);
+ 		goto unlock;
 -- 
 2.25.1
 
