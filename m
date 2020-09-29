@@ -2,40 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05F4A27C72C
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:52:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3F3927C685
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:46:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731345AbgI2Lvz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:51:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50252 "EHLO mail.kernel.org"
+        id S1730991AbgI2LqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:46:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45394 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731093AbgI2LsL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:48:11 -0400
+        id S1729724AbgI2Lp1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:45:27 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0C8BC2074A;
-        Tue, 29 Sep 2020 11:48:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id F40CA206E5;
+        Tue, 29 Sep 2020 11:45:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601380091;
-        bh=E+h+4T8t9gvH2CklFUCUtEYdfN0kaDKomiSDEuZ1QaY=;
+        s=default; t=1601379926;
+        bh=3G74lMHIvO2jqUSsc3xQbKaOeDcz4Un0sJZvzINicxY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=So1/gJ6QWxNBQOVTgJ18nTARX0skk7fo4S2tA0RD2NeIjmgmE1fqULum08u1Tzarv
-         oMjRmDFxrJfE3/0eD2BY1AIOZaJNMfY44gDw5O6DN3VGszH4wsOyV1KLIlukY5g5Ui
-         Nox+7yxo3GSscjP0MDB4pKPU5U8djRKHykidDRjM=
+        b=aevQEA4//fERMFZsgnzHxuQu4RY0/DHPscVXNq5fVlP+Fr+Gn7YlF8pY7Lu1SaWaO
+         vZ0ypJQqg+mL+K9TMIYIJSNPtgVj0w9pU1EXT+2yggwGltgi/ugfLJIJ8fHHcBcut/
+         b16UrwP36KpZd5MmVGPuqKL5G+neaCUGEPkFmGXQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 64/99] PM / devfreq: tegra30: Disable clock on error in probe
-Date:   Tue, 29 Sep 2020 13:01:47 +0200
-Message-Id: <20200929105932.880194205@linuxfoundation.org>
+        stable@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Subject: [PATCH 5.4 377/388] kprobes: tracing/kprobes: Fix to kill kprobes on initmem after boot
+Date:   Tue, 29 Sep 2020 13:01:48 +0200
+Message-Id: <20200929110028.712621169@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929105929.719230296@linuxfoundation.org>
-References: <20200929105929.719230296@linuxfoundation.org>
+In-Reply-To: <20200929110010.467764689@linuxfoundation.org>
+References: <20200929110010.467764689@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,46 +46,104 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Masami Hiramatsu <mhiramat@kernel.org>
 
-[ Upstream commit 6bf560766a8ef5afe4faa3244220cf5b3a934549 ]
+commit 82d083ab60c3693201c6f5c7a5f23a6ed422098d upstream.
 
-This error path needs to call clk_disable_unprepare().
+Since kprobe_event= cmdline option allows user to put kprobes on the
+functions in initmem, kprobe has to make such probes gone after boot.
+Currently the probes on the init functions in modules will be handled
+by module callback, but the kernel init text isn't handled.
+Without this, kprobes may access non-exist text area to disable or
+remove it.
 
-Fixes: 7296443b900e ("PM / devfreq: tegra30: Handle possible round-rate error")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Reviewed-by: Dmitry Osipenko <digetx@gmail.com>
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Chanwoo Choi <cw00.choi@samsung.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Link: https://lkml.kernel.org/r/159972810544.428528.1839307531600646955.stgit@devnote2
+
+Fixes: 970988e19eb0 ("tracing/kprobe: Add kprobe_event= boot parameter")
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: Shuah Khan <skhan@linuxfoundation.org>
+Cc: Randy Dunlap <rdunlap@infradead.org>
+Cc: Ingo Molnar <mingo@kernel.org>
+Cc: stable@vger.kernel.org
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/devfreq/tegra30-devfreq.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ include/linux/kprobes.h |    5 +++++
+ init/main.c             |    2 ++
+ kernel/kprobes.c        |   22 ++++++++++++++++++++++
+ 3 files changed, 29 insertions(+)
 
-diff --git a/drivers/devfreq/tegra30-devfreq.c b/drivers/devfreq/tegra30-devfreq.c
-index e94a27804c209..dedd39de73675 100644
---- a/drivers/devfreq/tegra30-devfreq.c
-+++ b/drivers/devfreq/tegra30-devfreq.c
-@@ -836,7 +836,8 @@ static int tegra_devfreq_probe(struct platform_device *pdev)
- 	rate = clk_round_rate(tegra->emc_clock, ULONG_MAX);
- 	if (rate < 0) {
- 		dev_err(&pdev->dev, "Failed to round clock rate: %ld\n", rate);
--		return rate;
-+		err = rate;
-+		goto disable_clk;
- 	}
+--- a/include/linux/kprobes.h
++++ b/include/linux/kprobes.h
+@@ -369,6 +369,8 @@ void unregister_kretprobes(struct kretpr
+ void kprobe_flush_task(struct task_struct *tk);
+ void recycle_rp_inst(struct kretprobe_instance *ri, struct hlist_head *head);
  
- 	tegra->max_freq = rate / KHZ;
-@@ -897,6 +898,7 @@ static int tegra_devfreq_probe(struct platform_device *pdev)
- 	dev_pm_opp_remove_all_dynamic(&pdev->dev);
++void kprobe_free_init_mem(void);
++
+ int disable_kprobe(struct kprobe *kp);
+ int enable_kprobe(struct kprobe *kp);
  
- 	reset_control_reset(tegra->reset);
-+disable_clk:
- 	clk_disable_unprepare(tegra->clock);
+@@ -426,6 +428,9 @@ static inline void unregister_kretprobes
+ static inline void kprobe_flush_task(struct task_struct *tk)
+ {
+ }
++static inline void kprobe_free_init_mem(void)
++{
++}
+ static inline int disable_kprobe(struct kprobe *kp)
+ {
+ 	return -ENOSYS;
+--- a/init/main.c
++++ b/init/main.c
+@@ -32,6 +32,7 @@
+ #include <linux/nmi.h>
+ #include <linux/percpu.h>
+ #include <linux/kmod.h>
++#include <linux/kprobes.h>
+ #include <linux/vmalloc.h>
+ #include <linux/kernel_stat.h>
+ #include <linux/start_kernel.h>
+@@ -1111,6 +1112,7 @@ static int __ref kernel_init(void *unuse
+ 	kernel_init_freeable();
+ 	/* need to finish all async __init code before freeing the memory */
+ 	async_synchronize_full();
++	kprobe_free_init_mem();
+ 	ftrace_free_init_mem();
+ 	free_initmem();
+ 	mark_readonly();
+--- a/kernel/kprobes.c
++++ b/kernel/kprobes.c
+@@ -2309,6 +2309,28 @@ static struct notifier_block kprobe_modu
+ extern unsigned long __start_kprobe_blacklist[];
+ extern unsigned long __stop_kprobe_blacklist[];
  
- 	return err;
--- 
-2.25.1
-
++void kprobe_free_init_mem(void)
++{
++	void *start = (void *)(&__init_begin);
++	void *end = (void *)(&__init_end);
++	struct hlist_head *head;
++	struct kprobe *p;
++	int i;
++
++	mutex_lock(&kprobe_mutex);
++
++	/* Kill all kprobes on initmem */
++	for (i = 0; i < KPROBE_TABLE_SIZE; i++) {
++		head = &kprobe_table[i];
++		hlist_for_each_entry(p, head, hlist) {
++			if (start <= (void *)p->addr && (void *)p->addr < end)
++				kill_kprobe(p);
++		}
++	}
++
++	mutex_unlock(&kprobe_mutex);
++}
++
+ static int __init init_kprobes(void)
+ {
+ 	int i, err = 0;
 
 
