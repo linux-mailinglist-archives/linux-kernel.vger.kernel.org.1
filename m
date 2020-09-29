@@ -2,156 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFDCF27D2F1
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 17:40:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 295D127D2F2
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 17:40:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729437AbgI2PkR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 11:40:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36762 "EHLO mail.kernel.org"
+        id S1729509AbgI2PkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 11:40:18 -0400
+Received: from foss.arm.com ([217.140.110.172]:47394 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727864AbgI2PkR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1728623AbgI2PkR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 29 Sep 2020 11:40:17 -0400
-Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4784F207F7;
-        Tue, 29 Sep 2020 15:40:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601394016;
-        bh=cl/tv7Gw2KmVmjZoQdzc7Jl8iI8HojP9TODUXpSAT5M=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=u1g7qACEahXq4UhQbqL+3rW7fClsXGsn2gIZaBKZ4Mt1IFvEpcAijTyxlO3iJlyet
-         XiV6/148vqMr3kB3xyljoxkXhorcbuoz9ZczitESNfltDo7JyXnjsLPyMi6J7EYNvK
-         Ya+lkaGgmwI597NsGSe1QdHPq3UY2NMIsxx2wH5g=
-Date:   Tue, 29 Sep 2020 16:40:10 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Alexandru Ardelean <ardeleanalex@gmail.com>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Eugen Hristev <eugen.hristev@microchip.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        groeck@chromium.org,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Gwendal Grignou <gwendal@chromium.org>
-Subject: Re: [PATCH v3 7/9] iio: cros_ec: use
- devm_iio_triggered_buffer_setup_ext()
-Message-ID: <20200929164010.75f191c3@archlinux>
-In-Reply-To: <CA+U=DsoKM6S+1vrhE6txB-zQLhpJE1St19D_tmHa0=bbqj-g8w@mail.gmail.com>
-References: <20200929125949.69934-1-alexandru.ardelean@analog.com>
-        <20200929125949.69934-8-alexandru.ardelean@analog.com>
-        <CAHp75VerL3x7L=AeLfnT6D01a=FyY3JE4vbwNFMaJz-v=f2k9w@mail.gmail.com>
-        <CA+U=DsoKM6S+1vrhE6txB-zQLhpJE1St19D_tmHa0=bbqj-g8w@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 36A941063;
+        Tue, 29 Sep 2020 08:40:17 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [10.57.51.69])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A44C43F70D;
+        Tue, 29 Sep 2020 08:40:15 -0700 (PDT)
+Date:   Tue, 29 Sep 2020 16:40:12 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Roman Stratiienko <r.stratiienko@gmail.com>
+Cc:     linux-sunxi@googlegroups.com, megous@megous.com,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        maz@kernel.org
+Subject: Re: [PATCH] RFC: arm64: arch_timer: Fix timer inconsistency test for
+ A64
+Message-ID: <20200929154012.GF53442@C02TD0UTHF1T.local>
+References: <20200929111347.1967438-1-r.stratiienko@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200929111347.1967438-1-r.stratiienko@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 29 Sep 2020 17:31:55 +0300
-Alexandru Ardelean <ardeleanalex@gmail.com> wrote:
+Hi,
 
-> On Tue, Sep 29, 2020 at 4:09 PM Andy Shevchenko
-> <andy.shevchenko@gmail.com> wrote:
-> >
-> > On Tue, Sep 29, 2020 at 3:55 PM Alexandru Ardelean
-> > <alexandru.ardelean@analog.com> wrote:
-> >  
-> > > This change switches to the new devm_iio_triggered_buffer_setup_ext()
-> > > function and removes the iio_buffer_set_attrs() call, for assigning the
-> > > HW FIFO attributes to the buffer.  
-> >
-> > Sorry, you were too fast with the version, below one nit.
-> >  
-> > > Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
-> > > ---
-> > >  .../common/cros_ec_sensors/cros_ec_sensors_core.c | 15 +++++++++------
-> > >  1 file changed, 9 insertions(+), 6 deletions(-)
-> > >
-> > > diff --git a/drivers/iio/common/cros_ec_sensors/cros_ec_sensors_core.c b/drivers/iio/common/cros_ec_sensors/cros_ec_sensors_core.c
-> > > index c62cacc04672..1eafcf04ad69 100644
-> > > --- a/drivers/iio/common/cros_ec_sensors/cros_ec_sensors_core.c
-> > > +++ b/drivers/iio/common/cros_ec_sensors/cros_ec_sensors_core.c
-> > > @@ -353,19 +353,22 @@ int cros_ec_sensors_core_init(struct platform_device *pdev,
-> > >                         if (ret)
-> > >                                 return ret;
-> > >                 } else {
-> > > +                       const struct attribute **fifo_attrs;
-> > > +
-> > > +                       if (has_hw_fifo)
-> > > +                               fifo_attrs = cros_ec_sensor_fifo_attributes;
-> > > +                       else
-> > > +                               fifo_attrs = NULL;
-> > > +
-> > >                         /*
-> > >                          * The only way to get samples in buffer is to set a
-> > >                          * software trigger (systrig, hrtimer).
-> > >                          */
-> > > -                       ret = devm_iio_triggered_buffer_setup(  
-> >  
-> > > +                       ret = devm_iio_triggered_buffer_setup_ext(
-> > >                                         dev, indio_dev, NULL, trigger_capture,
-> > > -                                       NULL);
-> > > +                                       NULL, fifo_attrs);  
-> >
-> > Perhaps it's time to reformat a bit, i.e. move dev to the first line
-> > and do the rest accordingly?  
+Please Cc maintainers for drivers -- Marc and I maintain the arch timer
+driver.
+
+On Tue, Sep 29, 2020 at 02:13:47PM +0300, Roman Stratiienko wrote:
+> Fixes linux_kselftest:timers_inconsistency-check_arm_64
 > 
-> this feels like a mix of preferences here;
-> for once, the patch here [as-is], is the minimal form for this change
-> [in terms of patch-noise];
-> so, some people would choose the least noisiest patch;
+> Test logs without the fix:
+> '''
+> binary returned non-zero. Exit code: 1, stderr: , stdout:
+> Consistent CLOCK_REALTIME
+> 1601335525:467086804
+> 1601335525:467087554
+> 1601335525:467088345
+> 1601335525:467089095
+> 1601335525:467089887
+> 1601335525:467090637
+> 1601335525:467091429
+> 1601335525:467092179
+> 1601335525:467092929
+> 1601335525:467093720
+> 1601335525:467094470
+> 1601335525:467095262
+> 1601335525:467096012
+> 1601335525:467096804
+> --------------------
+> 1601335525:467097554
+> 1601335525:467077012
+
+That's 0x1BD757D2 followed by 0x1BD70794. The rollback is somewhere in
+bits 15:12 to go from 0x1BD75xxx to 0x1BD70xxx, which suggests the
+analysis in the existing comment is incomplete.
+
+> --------------------
+> 1601335525:467099095
+> 1601335525:467099845
+> 1601335525:467100637
+> 1601335525:467101387
+> 1601335525:467102179
+> 1601335525:467102929
+> '''
+
+It would be very helpful if the commit message could explain the rough
+idea behind the change, because the rationale is not clear to me.
+
+> Signed-off-by: Roman Stratiienko <r.stratiienko@gmail.com>
+> CC: linux-arm-kernel@lists.infradead.org
+> CC: linux-kernel@vger.kernel.org
+> CC: linux-sunxi@googlegroups.com
+> CC: megous@megous.com
+> ---
+>  drivers/clocksource/arm_arch_timer.c | 9 +++++----
+>  1 file changed, 5 insertions(+), 4 deletions(-)
 > 
-> also, this indentation was chosen [as-is here] from the start [for
-> this code block];
-> not sure if it was preferred; i'd suspect it was due to the old 80-col limit;
+> diff --git a/drivers/clocksource/arm_arch_timer.c b/drivers/clocksource/arm_arch_timer.c
+> index 6c3e841801461..d50aa43cb654b 100644
+> --- a/drivers/clocksource/arm_arch_timer.c
+> +++ b/drivers/clocksource/arm_arch_timer.c
+> @@ -346,16 +346,17 @@ static u64 notrace arm64_858921_read_cntvct_el0(void)
+>   * number of CPU cycles in 3 consecutive 24 MHz counter periods.
+>   */
+>  #define __sun50i_a64_read_reg(reg) ({					\
+> -	u64 _val;							\
+> +	u64 _val1, _val2;						\
+>  	int _retries = 150;						\
+>  									\
+>  	do {								\
+> -		_val = read_sysreg(reg);				\
+> +		_val1 = read_sysreg(reg);				\
+> +		_val2 = read_sysreg(reg);				\
+>  		_retries--;						\
+> -	} while (((_val + 1) & GENMASK(9, 0)) <= 1 && _retries);	\
+> +	} while (((_val2 - _val1) > 0x10) && _retries);			\
+
+This is going to fail quite often at low CPU frequencies, and it's not
+clear to me that this solves the problem any more generally. DO we know
+what the underlying erratum is here?
+
+Thanks,
+Mark.
+
+>  									\
+>  	WARN_ON_ONCE(!_retries);					\
+> -	_val;								\
+> +	_val2;								\
+>  })
+>  
+>  static u64 notrace sun50i_a64_read_cntpct_el0(void)
+> -- 
+> 2.25.1
 > 
-> i'd leave it as-is [for now], or defer the decision to a maintainer to
-> decide [either IIO or chromium];
-
-The indenting of this whole code block is a bit too deep.
-
-Looks to me like we should flip the sense of the outer if statement
-
-if (!physical_device)
-	return 0;
-
-That would lead to a whole bunch of reformatting around here including
-picking up this.
-
-For now I can just shuffle it a bit whilst applying.
-
-This set isn't likely to make the merge window anyway now as I'd like
-it to sit on list a little longer just because it touches several
-drivers with active maintainers and I'd like time for them to sanity
-check.
-
-Jonathan
-
-
 > 
-> >  
-> > >                         if (ret)
-> > >                                 return ret;
-> > > -
-> > > -                       if (has_hw_fifo)
-> > > -                               iio_buffer_set_attrs(indio_dev->buffer,
-> > > -                                                    cros_ec_sensor_fifo_attributes);
-> > >                 }
-> > >         }
-> > >
-> > > --
-> > > 2.17.1
-> > >  
-> >
-> >
-> > --
-> > With Best Regards,
-> > Andy Shevchenko  
-
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
