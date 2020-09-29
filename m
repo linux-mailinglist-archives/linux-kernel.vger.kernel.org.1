@@ -2,83 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8131627DC2E
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 00:43:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2C0F27DC31
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 00:43:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728535AbgI2WnA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 18:43:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57042 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728124AbgI2Wm7 (ORCPT
+        id S1728680AbgI2WnI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 18:43:08 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:37140 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728124AbgI2WnI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 18:42:59 -0400
-Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E6A6C061755;
-        Tue, 29 Sep 2020 15:42:58 -0700 (PDT)
-Received: by mail-yb1-xb42.google.com with SMTP id x20so4856880ybs.8;
-        Tue, 29 Sep 2020 15:42:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8Uzp0mbaDszk4+DW+KjTjHRU3IuMkydHeAh8AYBMQC4=;
-        b=Q1ihDVJGMcmGgokcLCYYkQYPU9KeaYFCXnc+QgKy4eqoziuhyzRkLSvHcpKyK9009p
-         PF+gxQ+uoqzwaIcZVBRaKivcKDI01ryz2oykrOGoQZQlDPqxMkZ0Dl19+1YQiKm9VATs
-         eoGxRASnHgiDHkXdtJpePVRBU38c96/XAAONMG9mAtVet0lyOjkD8gHYPIG33WImTR3o
-         afdrIddQuVkPAJ/JFA5MLUvv19v4lsDhvbL24UBtX5bG+u3bvT9SLt7sB0xp41cnNfNm
-         AdRMg6W23+/KI2D2irV8TWc6wC38naQ2c21upraF4JZu6zWG1HxQpvSnfWyr1xtd3Jyq
-         gkhg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8Uzp0mbaDszk4+DW+KjTjHRU3IuMkydHeAh8AYBMQC4=;
-        b=a+1mXeKkFLeD0Hfa1z5REyyORyZeiHk1v3r4OPYMgsCRaIURW3n46P9R8+GXjd7lEo
-         yzYtE3TKz+XE91ip6abo121mAAWiCBfObiFeHouWmxs82khVB+49VwqF4MG+KHH1Xl5f
-         gqtZrjvGSCvVXlQhbw3sMD/Dq1OxJbsAal4BSLFvN4UTdcCT1tpgPI7jyfC7mCGRKHr2
-         gGyFMQtj+braXo5AnCZfED5sT6Bc5pASbKMYSyPcAIQInTTJNz53P9iniV9DEqW2TycW
-         JAgKDfNy2Okm8k2PjoW4QelOoSu2cgkeFSB1TTmhGdWw14MbTGIo9SJzgvORqpWfxrH0
-         yoGw==
-X-Gm-Message-State: AOAM5325wR6BLGODVADUxYc92WdUY/n4AtJ936Wyr5eEjUL10YKojqyQ
-        TdCh6cha9fw9MnZmxgZzsO9cUYY+ouNCG0s/fCv7mUbitb0=
-X-Google-Smtp-Source: ABdhPJzUbfFoYw22pNhJEoKzH7dhAwYSkX18z6yiPiKX2FigwmnpapCglVbEwnP3QeiMNaqFQeKUpVGiT8RnaBQlekY=
-X-Received: by 2002:a25:9c82:: with SMTP id y2mr8603291ybo.364.1601419377394;
- Tue, 29 Sep 2020 15:42:57 -0700 (PDT)
+        Tue, 29 Sep 2020 18:43:08 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id 5E6698030719;
+        Tue, 29 Sep 2020 22:43:05 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at baikalelectronics.ru
+Received: from mail.baikalelectronics.ru ([127.0.0.1])
+        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id AsX_kHAlHXIb; Wed, 30 Sep 2020 01:43:04 +0300 (MSK)
+Date:   Wed, 30 Sep 2020 01:43:03 +0300
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Mark Brown <broonie@kernel.org>
+CC:     Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        "wuxu . wu" <wuxu.wu@huawei.com>, Feng Tang <feng.tang@intel.com>,
+        Rob Herring <robh+dt@kernel.org>, <linux-spi@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 00/30] spi: dw: Add full Baikal-T1 SPI Controllers support
+Message-ID: <20200929224303.65awobe5dzwc2p4f@mobilestation>
+References: <20200920112914.26501-1-Sergey.Semin@baikalelectronics.ru>
+ <20200929144351.GH4799@sirena.org.uk>
 MIME-Version: 1.0
-References: <20200930083120.6b969c8c@canb.auug.org.au>
-In-Reply-To: <20200930083120.6b969c8c@canb.auug.org.au>
-From:   Steve French <smfrench@gmail.com>
-Date:   Tue, 29 Sep 2020 17:42:46 -0500
-Message-ID: <CAH2r5mu6mSDQ5STUoFKYnDqyyQTY9jfdFiq6J0YwcxOuBd6y_w@mail.gmail.com>
-Subject: Re: linux-next: Signed-off-by missing for commit in the cifs tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     CIFS <linux-cifs@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20200929144351.GH4799@sirena.org.uk>
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-fixed
+Hi Mark
 
-On Tue, Sep 29, 2020 at 5:31 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->
-> Hi all,
->
-> Commit
->
->   87505cefd88d ("Convert trailing spaces and periods in path components")
->
-> is missing a Signed-off-by from its committer.
->
-> --
-> Cheers,
-> Stephen Rothwell
+On Tue, Sep 29, 2020 at 03:43:51PM +0100, Mark Brown wrote:
+> On Sun, Sep 20, 2020 at 02:28:44PM +0300, Serge Semin wrote:
+> 
+> > First two patches are just cleanups to simplify the DW APB SSI device
+> > initialization a bit. We suggest to discard the IRQ threshold macro as
+> > unused and use a ternary operator to initialize the set_cs callback
+> > instead of assigning-and-updating it.
+> 
+> > Then we've discovered that the n_bytes field of the driver private data is
+> > used by the DW APB SSI IRQ handler, which requires it to be initialized
+> 
 
+> This is a *huge* patch series which is a bit unweildy to review
+> (especially given the other 10+ patch series you sent at the same time),
 
+Yeah, sorry about the bulky series. If most of the changes have been more
+complicated than that, less inter-dependent and less directed to having the code
+prepared for the main alterations I would have definitely split them up in
+different series. But the biggest part of the patchset is just a preparation
+before adding the mem-ops, poll-based transfers and Baikal-T1 SPI support. So
+having them submitted without the main part of the patchset would be just weird.
 
--- 
-Thanks,
+The other 10+ patches were sent months ago. I've just resent them with minor
+alterations to get more attention.) Anyway since they concern an absolutely
+different functionality (DW APB SSI DMA driver) of course I've delivered them in
+the framework of the different patchset.
 
-Steve
+> once you start getting over 10 patches it's time to pay attention to
+> series length and the fact that you're outlining a bunch of tangentially
+> related areas which could have been split out easily enough.  It is much
+> better to send smaller sets of patches at once, or if you're sending a
+> lot then to split them into smaller serieses.  This will tend to make
+> the review more approachable which will in turn tend to make things go
+> faster, people are much more likely to put off going through a huge
+> series.
+
+I see you have already merged in the first nine patches. So would you like me
+to split the rest of them up into two series or it would be ok to resend (if
+required) them as one series seeing it's not that bulky anymore?
+
+-Sergey
