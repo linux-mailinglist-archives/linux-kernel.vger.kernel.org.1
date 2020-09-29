@@ -2,152 +2,305 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B07B27BE46
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 09:43:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D654B27BE4D
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 09:45:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727614AbgI2HnZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 03:43:25 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:53480 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725535AbgI2HnZ (ORCPT
+        id S1725791AbgI2HpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 03:45:23 -0400
+Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:65224 "EHLO
+        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725468AbgI2HpX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 03:43:25 -0400
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08T7gdGG015378;
-        Tue, 29 Sep 2020 09:43:20 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=STMicroelectronics;
- bh=3ZTyTad/LPENqeBpYwoZJvryhUoT8AVWQSPJR6PaLm4=;
- b=Kf9hAEqoVtujC55STGbhL+MpTLiw14FxZdXpfigtD+K0Z0qenZGaWU3FxpgyZP6e9g3+
- Yc26BAsMXBBVlBVQew+HldhmNuSXOPupSb4IHO/CqiBepbHVUm3O1hZ7LMr7bCtcQetJ
- MzzfIoabu/26+u4WrYLWWzaPJ5qGVbYqjePhyoJQlohi7quzYOHIPUNeShgt2CbfIRV1
- /AuLUup6HvrC4Q2SO/SOkrDS/e1espk6YbiIT/YDUH+hDVtdp3b9XmI1pyc4Xa3lAUmU
- iGuQI3e/HYOmWknc02vz6JR70l6chWX/TKWti+J0LnR7zAGLHmcBq7jKkM3ZBaij2Tk7 UQ== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 33svhefd0v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 29 Sep 2020 09:43:20 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 5A64810002A;
-        Tue, 29 Sep 2020 09:43:18 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag3node1.st.com [10.75.127.7])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 5C75321BE20;
-        Tue, 29 Sep 2020 09:43:18 +0200 (CEST)
-Received: from lmecxl0889.tpe.st.com (10.75.127.49) by SFHDAG3NODE1.st.com
- (10.75.127.7) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 29 Sep
- 2020 09:43:16 +0200
-Subject: Re: [PATCH v2 0/3] Expose recovery/coredump configuration from sysfs
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-CC:     Rishabh Bhatnagar <rishabhb@codeaurora.org>,
-        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "mathieu.poirier@linaro.org" <mathieu.poirier@linaro.org>,
-        "tsoni@codeaurora.org" <tsoni@codeaurora.org>,
-        "psodagud@codeaurora.org" <psodagud@codeaurora.org>,
-        "sidgup@codeaurora.org" <sidgup@codeaurora.org>
-References: <1598557731-1566-1-git-send-email-rishabhb@codeaurora.org>
- <7ad40d80-5ac4-97a5-5e05-c83dc08896a2@st.com>
- <20200926033109.GA10036@builder.lan>
-From:   Arnaud POULIQUEN <arnaud.pouliquen@st.com>
-Message-ID: <41909da5-bc64-e81c-9a1d-99ab413461ec@st.com>
-Date:   Tue, 29 Sep 2020 09:43:15 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 29 Sep 2020 03:45:23 -0400
+X-IronPort-AV: E=Sophos;i="5.77,317,1596492000"; 
+   d="scan'208";a="469986358"
+Received: from abo-173-121-68.mrs.modulonet.fr (HELO hadrien) ([85.68.121.173])
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 29 Sep 2020 09:45:18 +0200
+Date:   Tue, 29 Sep 2020 09:45:17 +0200 (CEST)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     Joe Perches <joe@perches.com>
+cc:     Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH] scripts/most_common_subject_prefix.pl: Find the most
+ common commit subject prefix
+In-Reply-To: <e949cb8f12caec813c22dc3791a92e9f87670a5b.1601356990.git.joe@perches.com>
+Message-ID: <alpine.DEB.2.22.394.2009290941260.2808@hadrien>
+References: <e949cb8f12caec813c22dc3791a92e9f87670a5b.1601356990.git.joe@perches.com>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-In-Reply-To: <20200926033109.GA10036@builder.lan>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.75.127.49]
-X-ClientProxiedBy: SFHDAG6NODE3.st.com (10.75.127.18) To SFHDAG3NODE1.st.com
- (10.75.127.7)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-29_01:2020-09-29,2020-09-29 signatures=0
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bjorn,
 
-On 9/26/20 5:31 AM, Bjorn Andersson wrote:
-> On Tue 15 Sep 02:51 PDT 2020, Arnaud POULIQUEN wrote:
-> 
->> Hi Rishabh,
->>
->> On 8/27/20 9:48 PM, Rishabh Bhatnagar wrote:
->>> From Android R onwards Google has restricted access to debugfs in user
->>> and user-debug builds. This restricts access to most of the features
->>> exposed through debugfs. This patch series adds a configurable option
->>> to move the recovery/coredump interfaces to sysfs. If the feature
->>> flag is selected it would move these interfaces to sysfs and remove
->>> the equivalent debugfs interface. 'Coredump' and 'Recovery' are critical
->>> interfaces that are required for remoteproc to work on Qualcomm Chipsets.
->>> Coredump configuration needs to be set to "inline" in debug/test build
->>> and "disabled" in production builds. Whereas recovery needs to be
->>> "disabled" for debugging purposes and "enabled" on production builds.
->>
->> The remoteproc_cdev had been created to respond to some sysfs limitations.
-> 
-> The limitation here is in debugfs not being available on all systems,
-> sysfs is present and I really do like the idea of being able to change
-> these things without having to compile a tool to invoke the ioctl...
 
-Right,
+On Mon, 28 Sep 2020, Joe Perches wrote:
 
-> 
->> I wonder if this evolution should not also be implemented in the cdev.
->> In this case an additional event could be addedd to inform the application
->> that a crash occurred and that a core dump is available.
->>
-> 
-> Specifically for userspace to know when a coredump is present there's
-> already uevents being sent when the devcoredump is ready. That said,
-> having some means to getting notified about remoteproc state changes
-> does sounds reasonable. If there is a use case we should discuss that.
+> A common patch subject prefix for specific files is to use the
+> lowest level directory or just the basename of the file without the
+> file extension.  For patches that touch multiple files, it's common to
+> use the basename directory as the commit prefix.
+>
+> For example, patches to files in drivers/net/ethernet/intel/igb/ are
+> most commonly prefixed with "igb: <then some description>".
+>
+> But many subsystems have specific commit subject line prefixes that are
+> not simply the containing base directory.  For example, patches to
+> drivers/staging are most often prefixed with "staging: <basename dir>: "
+> then "<commit specific description>".
+>
+> So add a tool that can help find what prefix the subsystem or file most
+> commonly uses for patch commit subject lines.
+>
+> This tool uses git log history in various ways to find the most common
+> prefix used in for a specific file or path.
+>
+> $ ./scripts/most_common_subject_prefix.pl <file>
+>
+> This will emit a single line that is the most commonly used commit
+> subject prefix up to and including the last colon of the commit subject
+> for commits that _only_ include the specific file and not any other file.
 
-The main use case i have in mind is to inform the userspace that the remote
-processor has crashed. This would allow applications to perform specific action
-to avoid getting stuck and/or resetting it's environement befor restarting the
-remote processor and associated IPC.
-If i well remember QCOM has this kind of mechanism for its modem but this is
-implemented in a platform driver.
-We would be interested to have something more generic relying on the remoteproc
-framework.
+For the comma->semicolon patches, I noticed the need for a number of
+suject lines of the form:
 
-Thanks,
-Arnaud
+hwrng: xxx - patch description
 
-> 
->> Of course it's only a suggestion... As it would be a redesign.
-> 
-> A very valid suggestion. I don't think it's a redesign, but more of an
-> extension of what we have today.
-> 
-> Regards,
-> Bjorn
-> 
->> I let Björn and Mathieu comment.
->>
->> Regards,
->> Arnaud
->>
->>>
->>> Changelog:
->>>
->>> v1 -> v2:
->>> - Correct the contact name in the sysfs documentation.
->>> - Remove the redundant write documentation for coredump/recovery sysfs
->>> - Add a feature flag to make this interface switch configurable.
->>>
->>> Rishabh Bhatnagar (3):
->>>   remoteproc: Expose remoteproc configuration through sysfs
->>>   remoteproc: Add coredump configuration to sysfs
->>>   remoteproc: Add recovery configuration to sysfs
->>>
->>>  Documentation/ABI/testing/sysfs-class-remoteproc |  44 ++++++++
->>>  drivers/remoteproc/Kconfig                       |  12 +++
->>>  drivers/remoteproc/remoteproc_debugfs.c          |  10 +-
->>>  drivers/remoteproc/remoteproc_sysfs.c            | 126 +++++++++++++++++++++++
->>>  4 files changed, 190 insertions(+), 2 deletions(-)
->>>
+So maybe other delimiters have to be taken into account.
+
+julia
+
+
+
+>
+> For instance:
+>
+> $ ./scripts/most_common_subject_prefix.pl arch/arm/net/bpf_jit_32.c
+> ARM: net: bpf:
+>
+> An optional flag is --details which by default shows up to the 5 most common
+> commit subject prefixes and will show commits with just the single file as
+> well as commits that include other files.
+>
+> $ ./scripts/most_common_subject_prefix.pl arch/arm/net/bpf_jit_32.c --details
+> Single file commits:
+>      24 ARM: net: bpf:
+>       5 bpf, arm32:
+>       3 bpf, arm:
+>       2 arm, bpf:
+>       1 ARM: net:
+> Multiple file commits:
+>       4 ARM: net: bpf:
+>       2 arm:
+>       2 bpf:
+>       1 ARM: net:
+>       1 arm: bpf:
+>
+> command-line options are currently:
+>   --git-since=<date>         (default: 5-years-ago)
+>     (use commits more recent than this date to find the typical subject prefix)
+>   --details                  show subject prefix details (default: 0/off)
+>   --detail_lines=<count>     lines of details to show (default: 5)
+>   --root=PATH                PATH to the kernel tree root (default: ./)
+>
+> Signed-off-by: Joe Perches <joe@perches.com>
+> ---
+>  scripts/most_common_subject_prefix.pl | 183 ++++++++++++++++++++++++++
+>  1 file changed, 183 insertions(+)
+>  create mode 100755 scripts/most_common_subject_prefix.pl
+>
+> diff --git a/scripts/most_common_subject_prefix.pl b/scripts/most_common_subject_prefix.pl
+> new file mode 100755
+> index 000000000000..c3ceeacbec2f
+> --- /dev/null
+> +++ b/scripts/most_common_subject_prefix.pl
+> @@ -0,0 +1,183 @@
+> +#!/usr/bin/env perl
+> +
+> +# Show possible patch subject prefixes for a file in git
+> +
+> +# use only commits that modify the file argument and
+> +# emit up to the 5 most common commit headers
+> +
+> +use warnings;
+> +use strict;
+> +
+> +my $P = $0;
+> +my $V = '0.1';
+> +
+> +my $git_command ='export LANGUAGE=en_US.UTF-8; git';
+> +my $root;
+> +my $gitroot = $ENV{'GIT_DIR'};
+> +$gitroot = ".git" if !defined($gitroot);
+> +my $git_since = "5-years-ago";
+> +my $details = 0;
+> +my $detail_lines = 5;
+> +my $version = 0;
+> +my $help = 0;
+> +
+> +sub usage {
+> +    print <<EOT;
+> +usage: $P [options] <file|path in git>
+> +version: $V
+> +
+> +Options:
+> +  --git-since=<date>         (default: $git_since)
+> +    (use commits more recent than this date to find the typical subject prefix)
+> +  --details                  show subject prefix details (default: $details)
+> +  --detail_lines=<count>     lines of details to show (default: $detail_lines)
+> +  --root=PATH                PATH to the kernel tree root (default: ./)
+> +
+> +EOT
+> +}
+> +
+> +use Getopt::Long qw(:config no_auto_abbrev);
+> +
+> +if (!GetOptions(
+> +		'git-since=s'	=> \$git_since,
+> +		'details!'	=> \$details,
+> +		'detail_lines=i'=> \$detail_lines,
+> +		'root=s'	=> \$root,
+> +		'v|version'	=> \$version,
+> +		'h|help|usage'	=> \$help,
+> +		)) {
+> +    die "$P: invalid argument - use --help if necessary\n";
+> +}
+> +
+> +if ($help != 0) {
+> +    usage();
+> +    exit 0;
+> +}
+> +
+> +if ($version != 0) {
+> +    print("${P} ${V}\n");
+> +    exit 0;
+> +}
+> +
+> +die "$P: Must have a single <file|path> argument\n" if ($#ARGV != 0);
+> +
+> +die "$P: git not found\n" if (which("git") eq "");
+> +die "$P: git directory not found\n" if (!(-e "$gitroot"));
+> +
+> +if (defined $root) {
+> +	if (!top_of_kernel_tree($root)) {
+> +		die "$P: $root: --root does not point at a valid kernel tree\n";
+> +	}
+> +} else {
+> +	if (top_of_kernel_tree('.')) {
+> +		$root = '.';
+> +	} elsif ($0 =~ m@(.*)/scripts/[^/]*$@ &&
+> +		     top_of_kernel_tree($1)) {
+> +		$root = $1;
+> +	}
+> +}
+> +
+> +if (!defined $root) {
+> +	print "$P: Must be run from the top-level dir of a kernel tree\n";
+> +	exit(2);
+> +}
+> +
+> +sub prefixes_from_subjects {
+> +	my ($array_ref) = @_;
+> +	my %lc;
+> +	my @subjects = ();
+> +
+> +	foreach my $line (@$array_ref) {
+> +		my $pos = rindex($line, ':');
+> +		if ($pos > 0) {
+> +			my $prefix = substr($line, 0, $pos + 1);
+> +			$lc{$prefix}++;
+> +		}
+> +	}
+> +
+> +	foreach my $subject (sort { $lc{$b} <=> $lc{$a} or $a cmp $b } keys %lc) {
+> +		push(@subjects, sprintf("%7u %s\n", $lc{$subject}, $subject));
+> +	}
+> +
+> +	return @subjects;
+> +}
+> +
+> +my @commit_desc = ();
+> +my $commit_count = 0;
+> +my @single_file_subjects = ();
+> +my @multi_file_subjects = ();
+> +
+> +my $output = `${git_command} log --no-merges --since=$git_since --format='%h' -- $ARGV[0]`;
+> +my @commits = split('\n', $output);
+> +
+> +foreach my $commit (@commits) {
+> +	$output = `${git_command} log --format='%s' --name-only -1 $commit`;
+> +	$commit_desc[$commit_count++] = $output;
+> +}
+> +
+> +for (my $i = 0; $i < $commit_count; $i++) {
+> +	my @lines = split('\n', $commit_desc[$i]);
+> +	if ($#lines == 2 && $lines[2] eq $ARGV[0]) {
+> +		push(@single_file_subjects, $lines[0]);
+> +	} elsif ($#lines >= 2) {
+> +		push(@multi_file_subjects, $lines[0]);
+> +	}
+> +}
+> +
+> +my @best_prefixes;
+> +
+> +if ($details) {
+> +	@best_prefixes = prefixes_from_subjects(\@single_file_subjects);
+> +	if ($#best_prefixes > 0) {
+> +		print("Single file commits:\n");
+> +		print(splice(@best_prefixes, 0, $detail_lines));
+> +	}
+> +	@best_prefixes = prefixes_from_subjects(\@multi_file_subjects);
+> +	if ($#best_prefixes > 0) {
+> +		print("Multiple file commits:\n");
+> +		print(splice(@best_prefixes, 0, $detail_lines));
+> +	}
+> +} else {
+> +	@best_prefixes = prefixes_from_subjects(\@single_file_subjects);
+> +	if ($#best_prefixes > 0) {
+> +		my $line = splice(@best_prefixes, 0, 1);
+> +		$line =~ s/^\s*\w+ //;
+> +		print("$line");
+> +	} else {
+> +		@best_prefixes = prefixes_from_subjects(\@multi_file_subjects);
+> +		if ($#best_prefixes > 0) {
+> +			my $line = splice(@best_prefixes, 0, 1);
+> +			$line =~ s/^\s*\w+ //;
+> +			print("$line");
+> +		}
+> +	}
+> +}
+> +
+> +sub which {
+> +	my ($bin) = @_;
+> +
+> +	foreach my $path (split(/:/, $ENV{PATH})) {
+> +		if (-e "$path/$bin") {
+> +			return "$path/$bin";
+> +		}
+> +	}
+> +
+> +	return "";
+> +}
+> +
+> +sub top_of_kernel_tree {
+> +	my ($root) = @_;
+> +
+> +	my @tree_check = (
+> +		"COPYING", "CREDITS", "Kbuild", "MAINTAINERS", "Makefile",
+> +		"README", "Documentation", "arch", "include", "drivers",
+> +		"fs", "init", "ipc", "kernel", "lib", "scripts",
+> +	);
+> +
+> +	foreach my $check (@tree_check) {
+> +		if (! -e $root . '/' . $check) {
+> +			return 0;
+> +		}
+> +	}
+> +	return 1;
+> +}
+> --
+> 2.26.0
+>
+>
