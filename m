@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D85A27C5ED
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:41:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 491CC27C600
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:41:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730535AbgI2LkM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:40:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35262 "EHLO mail.kernel.org"
+        id S1730603AbgI2Lk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:40:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36572 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730519AbgI2LkC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:40:02 -0400
+        id S1730556AbgI2Lkm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:40:42 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 71726206E5;
-        Tue, 29 Sep 2020 11:40:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9B08A21941;
+        Tue, 29 Sep 2020 11:40:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601379601;
-        bh=h0sytWbdEGOEgVs+icjGQEMOPOER/gMbDxTDVREQRBI=;
+        s=default; t=1601379620;
+        bh=/+pliRggyOjEy8m8uK+MrMptQUHltTkK+F/HawNYwaI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NVUX6mGh/kiTmMEanLpZJP7yqoXmJfUd/S6pHxWC2Z3GoIhBXeyjz18aPDF6qkI11
-         9eBK5WpKxR8FCImd5WHHyIvSrluuzBEsUGPvdnoH8xowH2FfhPwWECnrd9+XFX/qh0
-         Ofxpt9zZlGySlLjeTmsYTu9GEmb6g8vXeT6L9mTQ=
+        b=Psq5Z5mSlxRA/otudHeJtIQ9nRUU/dInMw5LkMKyYQSalaUzh5C3jmnrw58JU11o1
+         AtPD1essE61UlkunFHXzi9fHogecg13fe/vuPAjwLWoXUzVgZp7BS2dJdSReWJxIxi
+         zue42qSRR59i7eZBDmEJJDX5iXHLM/+69AmngwT8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, James Morse <james.morse@arm.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Marc Zyngier <maz@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 236/388] KVM: arm64: vgic-v3: Retire all pending LPIs on vcpu destroy
-Date:   Tue, 29 Sep 2020 12:59:27 +0200
-Message-Id: <20200929110021.904289673@linuxfoundation.org>
+        stable@vger.kernel.org, Wei Yongjun <weiyongjun1@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 244/388] dpaa2-eth: fix error return code in setup_dpni()
+Date:   Tue, 29 Sep 2020 12:59:35 +0200
+Message-Id: <20200929110022.292450723@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200929110010.467764689@linuxfoundation.org>
 References: <20200929110010.467764689@linuxfoundation.org>
@@ -43,89 +43,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zenghui Yu <yuzenghui@huawei.com>
+From: Wei Yongjun <weiyongjun1@huawei.com>
 
-[ Upstream commit 969ce8b5260d8ec01e6f1949d2927a86419663ce ]
+[ Upstream commit 97fff7c8de1e54e5326dfeb66085796864bceb64 ]
 
-It's likely that the vcpu fails to handle all virtual interrupts if
-userspace decides to destroy it, leaving the pending ones stay in the
-ap_list. If the un-handled one is a LPI, its vgic_irq structure will
-be eventually leaked because of an extra refcount increment in
-vgic_queue_irq_unlock().
+Fix to return negative error code -ENOMEM from the error handling
+case instead of 0, as done elsewhere in this function.
 
-This was detected by kmemleak on almost every guest destroy, the
-backtrace is as follows:
-
-unreferenced object 0xffff80725aed5500 (size 128):
-comm "CPU 5/KVM", pid 40711, jiffies 4298024754 (age 166366.512s)
-hex dump (first 32 bytes):
-00 00 00 00 00 00 00 00 08 01 a9 73 6d 80 ff ff ...........sm...
-c8 61 ee a9 00 20 ff ff 28 1e 55 81 6c 80 ff ff .a... ..(.U.l...
-backtrace:
-[<000000004bcaa122>] kmem_cache_alloc_trace+0x2dc/0x418
-[<0000000069c7dabb>] vgic_add_lpi+0x88/0x418
-[<00000000bfefd5c5>] vgic_its_cmd_handle_mapi+0x4dc/0x588
-[<00000000cf993975>] vgic_its_process_commands.part.5+0x484/0x1198
-[<000000004bd3f8e3>] vgic_its_process_commands+0x50/0x80
-[<00000000b9a65b2b>] vgic_mmio_write_its_cwriter+0xac/0x108
-[<0000000009641ebb>] dispatch_mmio_write+0xd0/0x188
-[<000000008f79d288>] __kvm_io_bus_write+0x134/0x240
-[<00000000882f39ac>] kvm_io_bus_write+0xe0/0x150
-[<0000000078197602>] io_mem_abort+0x484/0x7b8
-[<0000000060954e3c>] kvm_handle_guest_abort+0x4cc/0xa58
-[<00000000e0d0cd65>] handle_exit+0x24c/0x770
-[<00000000b44a7fad>] kvm_arch_vcpu_ioctl_run+0x460/0x1988
-[<0000000025fb897c>] kvm_vcpu_ioctl+0x4f8/0xee0
-[<000000003271e317>] do_vfs_ioctl+0x160/0xcd8
-[<00000000e7f39607>] ksys_ioctl+0x98/0xd8
-
-Fix it by retiring all pending LPIs in the ap_list on the destroy path.
-
-p.s. I can also reproduce it on a normal guest shutdown. It is because
-userspace still send LPIs to vcpu (through KVM_SIGNAL_MSI ioctl) while
-the guest is being shutdown and unable to handle it. A little strange
-though and haven't dig further...
-
-Reviewed-by: James Morse <james.morse@arm.com>
-Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
-[maz: moved the distributor deallocation down to avoid an UAF splat]
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Link: https://lore.kernel.org/r/20200414030349.625-2-yuzenghui@huawei.com
+Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- virt/kvm/arm/vgic/vgic-init.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/virt/kvm/arm/vgic/vgic-init.c b/virt/kvm/arm/vgic/vgic-init.c
-index 6d85c6d894c39..6899101538890 100644
---- a/virt/kvm/arm/vgic/vgic-init.c
-+++ b/virt/kvm/arm/vgic/vgic-init.c
-@@ -358,6 +358,12 @@ void kvm_vgic_vcpu_destroy(struct kvm_vcpu *vcpu)
- {
- 	struct vgic_cpu *vgic_cpu = &vcpu->arch.vgic_cpu;
+diff --git a/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c b/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c
+index 7a248cc1055a3..7af7cc7c8669a 100644
+--- a/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c
++++ b/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c
+@@ -2654,8 +2654,10 @@ static int setup_dpni(struct fsl_mc_device *ls_dev)
  
-+	/*
-+	 * Retire all pending LPIs on this vcpu anyway as we're
-+	 * going to destroy it.
-+	 */
-+	vgic_flush_pending_lpis(vcpu);
-+
- 	INIT_LIST_HEAD(&vgic_cpu->ap_list_head);
- }
+ 	priv->cls_rules = devm_kzalloc(dev, sizeof(struct dpaa2_eth_cls_rule) *
+ 				       dpaa2_eth_fs_count(priv), GFP_KERNEL);
+-	if (!priv->cls_rules)
++	if (!priv->cls_rules) {
++		err = -ENOMEM;
+ 		goto close;
++	}
  
-@@ -369,10 +375,10 @@ static void __kvm_vgic_destroy(struct kvm *kvm)
+ 	return 0;
  
- 	vgic_debug_destroy(kvm);
- 
--	kvm_vgic_dist_destroy(kvm);
--
- 	kvm_for_each_vcpu(i, vcpu, kvm)
- 		kvm_vgic_vcpu_destroy(vcpu);
-+
-+	kvm_vgic_dist_destroy(kvm);
- }
- 
- void kvm_vgic_destroy(struct kvm *kvm)
 -- 
 2.25.1
 
