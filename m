@@ -2,90 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B16627D7DF
+	by mail.lfdr.de (Postfix) with ESMTP id 1AA0527D7DD
 	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 22:17:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729117AbgI2URt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 16:17:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34420 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729102AbgI2URr (ORCPT
+        id S1729099AbgI2URp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 16:17:45 -0400
+Received: from mail-oi1-f196.google.com ([209.85.167.196]:43479 "EHLO
+        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725372AbgI2URp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 16:17:47 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36AFAC061755
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 13:17:46 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id y17so7043215lfa.8
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 13:17:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+EosCr5gn7ZyZ+N6mEKKFHdvoy+RoVVYIyzqWT5rRa0=;
-        b=SIKcNag+g326Er1qOD+M4r8gtWgXQPVz/kic6Pqhzd4ohq0ETwiQic06PA+s1UQEdt
-         99zWEbowBbjJ7ul1HAHrvx+By9s/EXBD3Jmk7ADbYdxs0I/dpZ6CGBQO6i9TVL1ugdDv
-         MuWS7XkKqVOtc8q/7yiROVeTOs2R2AD8MD7AzKLGE9/S1+tuXeIyAmlEoZ4pL2EHfRyt
-         Ex9q8hU3lX7hbXod2tc09Xw/ooaVbREt+wUfzCXNgC43b9D3Z8UXLaMXs1Yyf3eSFDjB
-         G6BtF/YFVGHNWiQb+ZVWfZt9Bftdr3+DfoZMDBf/uwOpJPkA7T/3N1y62/m4G3n9aX/2
-         CqfA==
+        Tue, 29 Sep 2020 16:17:45 -0400
+Received: by mail-oi1-f196.google.com with SMTP id i17so6894566oig.10;
+        Tue, 29 Sep 2020 13:17:44 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+EosCr5gn7ZyZ+N6mEKKFHdvoy+RoVVYIyzqWT5rRa0=;
-        b=M7oZlow4OepeJLyudFwiqT7PtfYcuhLDkVyVbnY3a0eS3pd0y3pOc1s/i0UO93z57b
-         DBIUmsAEpX3XnPZlR9ms/q1+HmXrBStJdaXhM39Iiq82ORJcm6XvvF3lWK0/OeUCID/Q
-         fe5W+MMV70xuRr2PyuDkJIroE4EeE+BrghOEzNIETxOpwg1DxWdRLE5Aw2iAk0kS3DJE
-         RouKBxFFcI5EioCsy87zB7TvUT0m/DtV58SlARWKxvkw26ztczpnqRVmaItzJBR11rOW
-         zKXeT04gmVD+AyFOHhRN/nkzdtoRDWpXWLW8vBKb7J34dlHtzVpo24/J985Ig9GM1vME
-         5cew==
-X-Gm-Message-State: AOAM533dBg1oYRNOEmOTTMrIOfsOlXcuMYTTI4udHwxCZcu+Od8kLz/Y
-        NxRBmiuA5/yzI5I1lARJaC4=
-X-Google-Smtp-Source: ABdhPJyefhwk3thR3Nx5YFjMDve83dUfvSBVcpTuJ8Em8uq/iPX2wl3isbkUd/wXNmxePbm5yKNmsQ==
-X-Received: by 2002:a05:6512:70f:: with SMTP id b15mr1791605lfs.39.1601410664672;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=t59aWAhpZ67eszyLSCndlt/OHfuA01Ub+RG0vyS1B2E=;
+        b=X3KRllpqRl49EGS9rag8lXncSvTmsoQy94nTlh/AryV8LCyYDGQupKIN5Q83sp3lRR
+         7IdnjlHJoKeRqYLGL6IhJ6m8MHu3hoVrrTJ86YOGsEEYuQpsDnPxDOlQUS7gX7JpnEXA
+         mtTWiYnYJWMHA4BZH4Oh8UBhNDfXlxpOjsxhfJzlOSwmCxBIU1wrdH3DKA24MkrSv4hr
+         Nnadx5OkBBuk2D70ekCKQpBLrD7AKPn5geaRl0ENnF/3/w8y8XcP2BBuRoU6x0NVB7Kz
+         AbSGSaoiysnxhiUBZPCD2gsuMJpyf6mChqpxQY7/cN84gH5oMyVyIK6lj3MUfTPvLvV9
+         IHMQ==
+X-Gm-Message-State: AOAM5315aCkfgawzE8X5LGVoTsgh4Y78q/iXmcPnwLaGvLEi/7thxrXT
+        zrNtE03HY2ZJjos+L421TRlyt9fiL1korXs=
+X-Google-Smtp-Source: ABdhPJw8oXYd5dk/F9BkkLRFREqhVnH4h9vwagRk0zBQyF0ATX6mu/B6LtNXUtj9G+uoPk7GzUntfw==
+X-Received: by 2002:aca:8cb:: with SMTP id 194mr3505368oii.37.1601410664200;
         Tue, 29 Sep 2020 13:17:44 -0700 (PDT)
-Received: from localhost.localdomain (h-155-4-221-87.NA.cust.bahnhof.se. [155.4.221.87])
-        by smtp.gmail.com with ESMTPSA id c22sm3329356lff.202.2020.09.29.13.17.43
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id m20sm3144986oof.23.2020.09.29.13.17.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Tue, 29 Sep 2020 13:17:43 -0700 (PDT)
-From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
-To:     Barry Song <baohua@kernel.org>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Subject: [PATCH] ARM: prima2: Constify static sirfsoc_rstc_ops
-Date:   Tue, 29 Sep 2020 22:17:38 +0200
-Message-Id: <20200929201738.349465-1-rikard.falkeborn@gmail.com>
-X-Mailer: git-send-email 2.28.0
+Received: (nullmailer pid 1093221 invoked by uid 1000);
+        Tue, 29 Sep 2020 20:17:42 -0000
+Date:   Tue, 29 Sep 2020 15:17:42 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Alexandru Gagniuc <mr.nuke.me@gmail.com>
+Cc:     Jernej Skrabec <jernej.skrabec@siol.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Mark Brown <broonie@kernel.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        David Airlie <airlied@linux.ie>,
+        Jonas Karlman <jonas@kwiboo.se>
+Subject: Re: [PATCH v2 2/2] dt-bindings: display: sii902x: Add supply bindings
+Message-ID: <20200929201742.GA1093186@bogus>
+References: <20200924200507.1175888-1-mr.nuke.me@gmail.com>
+ <20200928173056.1674274-1-mr.nuke.me@gmail.com>
+ <20200928173056.1674274-2-mr.nuke.me@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200928173056.1674274-2-mr.nuke.me@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The only usage of sirfsoc_rstc_ops is to assign its address to the ops
-field in the reset_controller_dev struct, which is a const pointer. Make
-it const to allow the compiler to put it in read-only memory.
+On Mon, 28 Sep 2020 12:30:54 -0500, Alexandru Gagniuc wrote:
+> The sii902x chip family requires IO and core voltages to reach the
+> correct voltage before chip initialization. Add binding for describing
+> the two supplies.
+> 
+> Signed-off-by: Alexandru Gagniuc <mr.nuke.me@gmail.com>
+> ---
+> Changes since v1:
+>   * Nothing. version incremented to stay in sync with sii902x regulator patch
+> 
+>  Documentation/devicetree/bindings/display/bridge/sii902x.txt | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
 
-Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
----
- arch/arm/mach-prima2/rstc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/arm/mach-prima2/rstc.c b/arch/arm/mach-prima2/rstc.c
-index 9d56606ac87f..1ee405e2dde9 100644
---- a/arch/arm/mach-prima2/rstc.c
-+++ b/arch/arm/mach-prima2/rstc.c
-@@ -53,7 +53,7 @@ static int sirfsoc_reset_module(struct reset_controller_dev *rcdev,
- 	return 0;
- }
- 
--static struct reset_control_ops sirfsoc_rstc_ops = {
-+static const struct reset_control_ops sirfsoc_rstc_ops = {
- 	.reset = sirfsoc_reset_module,
- };
- 
--- 
-2.28.0
-
+Acked-by: Rob Herring <robh@kernel.org>
