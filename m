@@ -2,196 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF81527C053
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 11:00:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D8E427C02D
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 10:56:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727957AbgI2JAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 05:00:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41774 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727650AbgI2JAJ (ORCPT
+        id S1727975AbgI2I4T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 04:56:19 -0400
+Received: from mailout4.samsung.com ([203.254.224.34]:28206 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727660AbgI2I4S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 05:00:09 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09EF1C0613D2
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 02:00:09 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id t17so1310375wmi.4
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 02:00:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=l8n+Qtmools068Op1SBkscZ3rmiXf/OnO40zpDWJvQs=;
-        b=HSfJ7A4FNQbt4jfghWagnZ0q3COkKg8qz4BPThTLTJ7eDRMt1DvHHeb7XKEZ522gOH
-         eWGtprOnXgZp5uEMLqACAESKMKR8I99jBaCAbi8CJzl/OnYlzX1P6crhIyasKLf4c1bf
-         2XybbZVEohhAC+dLedQmm8E/GOTp7GyR5iP8M=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=l8n+Qtmools068Op1SBkscZ3rmiXf/OnO40zpDWJvQs=;
-        b=sUWFpjehb1oUP+W5rICSDAQCVkFeYMkdukKSWNeZHRS9q3nx3mL+RD9XN52e5AHidg
-         devOw+n4vi4Y46P8DksTVz2i4rQipxr21Oz9kXa5mzm6iz/gg4Fm6s9PzyO7NWU8EcXp
-         Z6MU06voJb3pqm2PdlN84WV16TV0rZ5cPzrbo7u4LLyj4NbgrrpNovAsu/ee4xPy3gFS
-         v/CwpbXfQ6m3VOjW8NOcMhOgXhL+pINvukgnEOW0wk6yMG0l+Z8/9fh7vurxv5QvyOH5
-         V+U2Qm8WdCX+DiQjiAAQnisGP+3lZY9DjJ/+yykzePOBZ2yI/p2pj+aCuAv0CqlQBNgp
-         Pdyw==
-X-Gm-Message-State: AOAM533io3RCofL2pFIsYxORwfLm5a+GJcS12PCTwr7nt5IZWXFzSCJc
-        NUgUPVgyisYo1TsZ5elV+dXLrQ==
-X-Google-Smtp-Source: ABdhPJxYoSwWp1/Rwj6+DAZKjozJGei8dnC1WhCd/eu2wZIqXPLzEpFDxM+EMdAcXI41uJyANz2nYw==
-X-Received: by 2002:a1c:a5c8:: with SMTP id o191mr3465483wme.127.1601370007530;
-        Tue, 29 Sep 2020 02:00:07 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id z191sm1552480wme.40.2020.09.29.02.00.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Sep 2020 02:00:06 -0700 (PDT)
-Date:   Tue, 29 Sep 2020 11:00:03 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Daniel Vetter <daniel@ffwll.ch>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Ben Segall <bsegall@google.com>, Linux-MM <linux-mm@kvack.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, linux-hexagon@vger.kernel.org,
-        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Brian Cain <bcain@codeaurora.org>,
-        Richard Weinberger <richard@nod.at>,
-        Russell King <linux@armlinux.org.uk>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        Ingo Molnar <mingo@redhat.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Mel Gorman <mgorman@suse.de>,
-        intel-gfx <intel-gfx@lists.freedesktop.org>,
-        Matt Turner <mattst88@gmail.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        linux-xtensa@linux-xtensa.org, Shuah Khan <shuah@kernel.org>,
-        Jeff Dike <jdike@addtoit.com>,
-        linux-um <linux-um@lists.infradead.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>, rcu@vger.kernel.org,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Richard Henderson <rth@twiddle.net>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        alpha <linux-alpha@vger.kernel.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [patch 00/13] preempt: Make preempt count unconditional
-Message-ID: <20200929090003.GG438822@phenom.ffwll.local>
-Mail-Followup-To: Michal Hocko <mhocko@suse.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Ben Segall <bsegall@google.com>, Linux-MM <linux-mm@kvack.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>,
-        linux-hexagon@vger.kernel.org, Will Deacon <will@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Brian Cain <bcain@codeaurora.org>,
-        Richard Weinberger <richard@nod.at>,
-        Russell King <linux@armlinux.org.uk>,
-        Ard Biesheuvel <ardb@kernel.org>, David Airlie <airlied@linux.ie>,
-        Ingo Molnar <mingo@redhat.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Mel Gorman <mgorman@suse.de>,
-        intel-gfx <intel-gfx@lists.freedesktop.org>,
-        Matt Turner <mattst88@gmail.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        linux-xtensa@linux-xtensa.org, Shuah Khan <shuah@kernel.org>,
-        Jeff Dike <jdike@addtoit.com>,
-        linux-um <linux-um@lists.infradead.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>, rcu@vger.kernel.org,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Richard Henderson <rth@twiddle.net>,
-        Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        alpha <linux-alpha@vger.kernel.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-References: <871rj4owfn.fsf@nanos.tec.linutronix.de>
- <CAHk-=wj0eUuVQ=hRFZv_nY7g5ZLt7Fy3K7SMJL0ZCzniPtsbbg@mail.gmail.com>
- <87bli75t7v.fsf@nanos.tec.linutronix.de>
- <CAHk-=wht7kAeyR5xEW2ORj7m0hibVxZ3t+2ie8vNHLQfdbN2_g@mail.gmail.com>
- <CAKMK7uHAk9-Vy2cof0ws=DrcD52GHiCDiyHbjLd19CgpBU2rKQ@mail.gmail.com>
- <20200916152956.GV29330@paulmck-ThinkPad-P72>
- <CAKMK7uGFyfhEyt=jmdk2jDO-hq0_Pf0ck+cKSELHjr2U3rPuYQ@mail.gmail.com>
- <20200916205840.GD29330@paulmck-ThinkPad-P72>
- <CAKMK7uHL2dMv80b8uBXr=BqHD2TQeODQQM1MGYhAfCYbX7sLrA@mail.gmail.com>
- <20200929081938.GC22035@dhcp22.suse.cz>
+        Tue, 29 Sep 2020 04:56:18 -0400
+Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20200929085616epoutp04eeb639d6c8c0584382bd777aa144514b~5NVO_gGr42120021200epoutp04H
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 08:56:16 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20200929085616epoutp04eeb639d6c8c0584382bd777aa144514b~5NVO_gGr42120021200epoutp04H
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1601369776;
+        bh=107FJKn3uMv27QUa2VyeeFJZ89mUpDJ75ixuz7wWBCw=;
+        h=From:Subject:To:Cc:Date:References:From;
+        b=nsZt7ugIj1iQ+cFs61xB/dLLZu1xuWiS7nB+YpkqcP9kR5TKDXL1r+kzTRyUX+qXh
+         vlB8c7H3ZxhIONRU/rPsLcneLjFuOsyeVP3zFH4T2LjS/hc1h2euqMfJFD2UG+gEvA
+         Dz0KBL5RSD9xY9vEyYX1bB28FdC422bVsvqJo7q8=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        epcas1p4.samsung.com (KnoxPortal) with ESMTP id
+        20200929085615epcas1p4fb58f0faf93b24073849d11ef135e4c2~5NVOoePoN1275712757epcas1p4W;
+        Tue, 29 Sep 2020 08:56:15 +0000 (GMT)
+Received: from epsmges1p3.samsung.com (unknown [182.195.40.154]) by
+        epsnrtp4.localdomain (Postfix) with ESMTP id 4C0tXY0lcFzMqYkh; Tue, 29 Sep
+        2020 08:56:13 +0000 (GMT)
+Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
+        epsmges1p3.samsung.com (Symantec Messaging Gateway) with SMTP id
+        28.AB.09582.BA6F27F5; Tue, 29 Sep 2020 17:56:11 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20200929085610epcas1p2447455fd0bcde25f5dff466e71b7ac15~5NVJ8gPoj2176521765epcas1p2f;
+        Tue, 29 Sep 2020 08:56:10 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20200929085610epsmtrp19c2df24cac065eaaab7500ade5082654~5NVJ73JRL1460514605epsmtrp1f;
+        Tue, 29 Sep 2020 08:56:10 +0000 (GMT)
+X-AuditID: b6c32a37-8afff7000000256e-f0-5f72f6abd21f
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        95.B5.08745.AA6F27F5; Tue, 29 Sep 2020 17:56:10 +0900 (KST)
+Received: from [10.113.221.102] (unknown [10.113.221.102]) by
+        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20200929085610epsmtip2534b6f583955bdb8c859f9e6e9bc5972~5NVJv__RB1039610396epsmtip2E;
+        Tue, 29 Sep 2020 08:56:10 +0000 (GMT)
+From:   Chanwoo Choi <cw00.choi@samsung.com>
+Subject: [GIT PULL] devfreq next for v5.10
+Organization: Samsung Electronics
+To:     "Rafael J. Wysocki <rjw@rjwysocki.net>" <rjw@rjwysocki.net>
+Cc:     "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        cw00.choi@samsung.com,
+        "Chanwoo Choi (chanwoo@kernel.org)" <chanwoo@kernel.org>,
+        =?UTF-8?B?7ZWo66qF7KO8?= <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>
+Message-ID: <b5d67c59-90c7-6a77-7420-a8783282430f@samsung.com>
+Date:   Tue, 29 Sep 2020 18:09:21 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
+        Thunderbird/59.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200929081938.GC22035@dhcp22.suse.cz>
-X-Operating-System: Linux phenom 5.7.0-1-amd64 
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprEJsWRmVeSWpSXmKPExsWy7bCmvu7qb0XxBnduy1lMvHGFxeL6l+es
+        Fmeb3rBbXN41h83ic+8RRovbjSvYLM6cvsTqwO6xaVUnm8eWq+0sHn1bVjF6fN4kF8ASlW2T
+        kZqYklqkkJqXnJ+SmZduq+QdHO8cb2pmYKhraGlhrqSQl5ibaqvk4hOg65aZA3SBkkJZYk4p
+        UCggsbhYSd/Opii/tCRVISO/uMRWKbUgJafAskCvODG3uDQvXS85P9fK0MDAyBSoMCE74+jO
+        +6wF24Qq7n5ZxtLA+Jevi5GTQ0LAROJC43SmLkYuDiGBHYwSN5oPM0M4nxgl3ny5xArhfGaU
+        2Pj9IUsXIwdYy55/sRDxXYwSq/+fhep4zyjx4XQ/G8hcNgEtif0vboDZwkD23ldXWEFsfgFF
+        ias/HjOCDBIRsJfo+JAJ0ssssJFJ4sORZUwgNbwCdhLTjr5nBLFZBFQlZk3cARYXFQiTOLmt
+        hRGiRlDi5MwnLCA2s4C4xK0n85kgbHmJ7W/nMEP89pNd4mqzCoTtInFo1ydGCFtY4tXxLewQ
+        tpTEy/42KLtaYuXJI2wgB0kIdDBKbNl/gRUiYSyxf+lkJpCjmQU0Jdbv0ocIK0rs/D2XEWIv
+        n8S7rz2skADilehoE4IoUZa4/OAuE4QtKbG4vZMNwvaQePP9PMsERsVZSL6ZheSbWUi+mYWw
+        eAEjyypGsdSC4tz01GLDAmPkyN7ECE6cWuY7GKe9/aB3iJGJg/EQowQHs5IIr29OQbwQb0pi
+        ZVVqUX58UWlOavEhRlNg+E5klhJNzgem7rySeENTI2NjYwsTQzNTQ0Mlcd6HtxTihQTSE0tS
+        s1NTC1KLYPqYODilGpjylN4VVxxyn+PGbWL164zn4gn+xdOnrKlpe7LxXYtl5xQn7kiem5ui
+        vPri8u5IlxU9KE5/dZOvx2aJmMz19fPbK6dE5L99eMgyT9d9i7iXmPJp+wsf+bXTQwXn+NTY
+        lv47Eb3+6dLNW5Mm283qfek2RXVSymaDFca+xyadX77c5mWxROTn27LB1XICx8svX19x/v+2
+        78zVHQKNB80U3i/Qn2KncaS4c4X7Ln1ZcX2tqbz6b3dFb9vfnPFq78qkDqPDYoap21nLp59I
+        jpkh3/HllfTEn2WRB1m1uzbs6+E+qu59eFf5tWWrZKoW6sxsmHjYWPWmaeDiNpaZj7XbZZ5n
+        bip6zH5bs9Dg34UDla+UWIozEg21mIuKEwG2JFhxJQQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrCLMWRmVeSWpSXmKPExsWy7bCSvO6qb0XxBsdeGFpMvHGFxeL6l+es
+        Fmeb3rBbXN41h83ic+8RRovbjSvYLM6cvsTqwO6xaVUnm8eWq+0sHn1bVjF6fN4kF8ASxWWT
+        kpqTWZZapG+XwJVxdOd91oJtQhV3vyxjaWD8y9fFyMEhIWAisedfbBcjF4eQwA5GiX3397F1
+        MXICxSUlpl08ygxRIyxx+HAxRM1bRonXp6ayg9SwCWhJ7H9xA6xeGMje++oKK4jNL6AocfXH
+        Y0aQXhEBe4mOD5kgvcwCG5kkztw5wgRSwytgJzHt6HtGEJtFQFVi1sQdYHFRgTCJnUseQ9UI
+        Spyc+YQFxGYWUJf4M+8SM4QtLnHryXwmCFteYvvbOcwTGAVnIWmZhaRlFpKWWUhaFjCyrGKU
+        TC0ozk3PLTYsMMpLLdcrTswtLs1L10vOz93ECI4ILa0djHtWfdA7xMjEwXiIUYKDWUmE1zen
+        IF6INyWxsiq1KD++qDQntfgQozQHi5I479dZC+OEBNITS1KzU1MLUotgskwcnFINTN3h6nLN
+        OR283ff39j8pZAw/zj35ZGDOPONPKlbnmibtNJPdxTkzmnvqrSNWLhy5YS//GN2v1I+7pKUy
+        wfCi0tE373MUX81xPHrg2OyJc1p/T4nYeN5pWbmyge2NzhlCOW/Y+E/pn7a7m7b4yGynL61x
+        c94YTuth1v23UeCs0Qe/hisM71pUlj9RzjXlezPD5uf9j/O3CYeVCaac355dfb5Z4OevD5du
+        Hv0449ObyuXfmj9dzjw1zSLBU/XJrpenxGeG3GM3sy1SdV397adyDSfrf/0o5ijZpUefWXxj
+        4d/vw7Ezy83oquGzMoE1xYeY/BJsDoZkRompJXM8WDJF0ytuW5/C1BLz9dZ9lk8CG5RYijMS
+        DbWYi4oTAR3NwAn3AgAA
+X-CMS-MailID: 20200929085610epcas1p2447455fd0bcde25f5dff466e71b7ac15
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20200929085610epcas1p2447455fd0bcde25f5dff466e71b7ac15
+References: <CGME20200929085610epcas1p2447455fd0bcde25f5dff466e71b7ac15@epcas1p2.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 10:19:38AM +0200, Michal Hocko wrote:
-> On Wed 16-09-20 23:43:02, Daniel Vetter wrote:
-> > I can
-> > then figure out whether it's better to risk not spotting issues with
-> > call_rcu vs slapping a memalloc_noio_save/restore around all these
-> > critical section which force-degrades any allocation to GFP_ATOMIC at
-> 
-> did you mean memalloc_noreclaim_* here?
+Dear Rafael,
 
-Yeah I picked the wrong one of that family of functions.
+This is devfreq-next pull request for v5.10-rc1. I add detailed description of
+this pull request on the following tag. Please pull devfreq with following updates.
+- tag name : devfreq-next-for-5.10
 
-> > most, but has the risk that we run into code that assumes "GFP_KERNEL
-> > never fails for small stuff" and has a decidedly less tested fallback
-> > path than rcu code.
-> 
-> Even if the above then please note that memalloc_noreclaim_* or
-> PF_MEMALLOC should be used with an extreme care. Essentially only for
-> internal memory reclaimers. It grants access to _all_ the available
-> memory so any abuse can be detrimental to the overall system operation.
-> Allocation failure in this mode means that we are out of memory and any
-> code relying on such an allocation has to carefuly consider failure.
-> This is not a random allocation mode.
+Best Regards,
+Chanwoo Choi
 
-Agreed, that's why I don't like having these kind of automagic critical
-sections. It's a bit a shotgun approach. Paul said that the code would
-handle failures, but the problem is that it applies everywhere.
 
-Anyway my understanding is that call_rcu will be reworked and gain a pile
-of tricks so that these problems for the callchains leading to call_rcu
-all disappear.
--Daniel
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+The following changes since commit a1b8638ba1320e6684aa98233c15255eb803fac7:
+
+  Linux 5.9-rc7 (2020-09-27 14:38:10 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/chanwoo/linux.git tags/devfreq-next-for-5.10
+
+for you to fetch changes up to d353d1202b89ab039acd079cd97f7646058ebe11:
+
+  PM / devfreq: tegra30: Improve initial hardware resetting (2020-09-29 17:50:10 +0900)
+
+----------------------------------------------------------------
+
+Detailed description for this pull request:
+1. Update devfreq core
+-  Until now, devfreq and devfreq-event framework defines the fixed 'devfreq'
+and 'devfreq-event' property to get the devfreq/devfreq-event phandle. But,
+these property name are not expressing the h/w. So, deprecate the fixed
+property name of both 'devfreq' and 'devfreq-event'. But, in order to keep
+the backward compatibility of devicetree, doesn't change the property name
+on devfreq device drivers and devicetree.
+
+2. Update devfreq driver
+- Replace reset_control_(assert|dessert) fucntions with reset_control_reset()
+for reseting the h/w during probe on tegra30-devfreq.c.
+
+----------------------------------------------------------------
+
+Chanwoo Choi (2):
+      PM / devfreq: Change prototype of devfreq_get_devfreq_by_phandle function
+      PM / devfreq: event: Change prototype of devfreq_event_get_edev_by_phandle function
+
+Dmitry Osipenko (1):
+      PM / devfreq: tegra30: Improve initial hardware resetting
+
+Leonard Crestez (1):
+      PM / devfreq: Add devfreq_get_devfreq_by_node function
+
+ drivers/devfreq/devfreq-event.c         | 14 ++++----
+ drivers/devfreq/devfreq.c               | 57 ++++++++++++++++++++++++---------
+ drivers/devfreq/exynos-bus.c            |  7 ++--
+ drivers/devfreq/rk3399_dmc.c            |  2 +-
+ drivers/devfreq/tegra30-devfreq.c       |  8 +++--
+ drivers/memory/samsung/exynos5422-dmc.c |  6 ++--
+ include/linux/devfreq-event.h           | 14 +++++---
+ include/linux/devfreq.h                 | 11 +++++--
+ 8 files changed, 83 insertions(+), 36 deletions(-)
+
