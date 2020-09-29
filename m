@@ -2,128 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E225D27CEA4
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 15:11:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43C6027CEB2
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 15:13:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728935AbgI2NLp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 09:11:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52994 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725776AbgI2NLp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 09:11:45 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6E5DC061755
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 06:11:44 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id m6so5375670wrn.0
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 06:11:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=4Zoo7sR5M5htbvHNu3bicEUq1AAqj0gs6k4W5/ci+9Q=;
-        b=RNHLBk7i6XR1zMD1p4N6ZqYbYyWG4mssQ7O+gFffzxxHmle0A5/U9YEwjGVqZWhUxh
-         DQIl7RGT3z8N78DcH5EToKU6xktWeegW2yJKIm4P5N6M21o0mJ3HRdLVZAjWadYujsYm
-         XFeSekc+TLgmk0Qxu95Y4U0aXOcie3bPgpcwTA+g/292Vx3HkNq2xn1D2jnkpVDS8d+7
-         DBl/WzKaHleY9+rrQpEls6TZBtK9635dKBhL5g0rX+RSs7NLDM3660UnFWAT71UVVLdH
-         GrqoUwjZAa6ubaJFcQETRsYLcVH5q22Dnp0s8CQSTEGcZx103ImXkF5fZc7VFh85HATD
-         +eSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=4Zoo7sR5M5htbvHNu3bicEUq1AAqj0gs6k4W5/ci+9Q=;
-        b=Knfi4mUV8rBTzamofGRiEk8WoXom1U2MRFfc/cqUuLK29i77Sswwm/uZXyRDl9DcuJ
-         EUcQdObKq1LmcA8nB4fluGZtyLRdFDn7mVoHUVfeoXQnjFHpw6ZYL87yMPBT5urD/Q23
-         0qGtAZ+WlD6GU9qJ4yx9RCYGR4s7pXCioIs8A7DoTbO2e6eo6sg0cN/uk97ntGNgyVFV
-         yHoUR91G5TywOY30lGTJAANnQyiYo1HZCKg8InueZYeN2Jcmn7uw6zQPTWaZ/+/V2Bex
-         +4N7CeZzxPs9cqqhdbDZI4eFKui7mxzi4kwoSoz3jceZ7ygYnPqrcv8P4qwjkw9WI6Bw
-         5T0w==
-X-Gm-Message-State: AOAM530O0UN1aGl7pMkR8FK2WMAxxeuNtjmdik/5FeuP5f/cgom9L6cr
-        bYYmUp6iABnX0070Rm1bWZBMgw==
-X-Google-Smtp-Source: ABdhPJy/x6OJ9PkFKsanJQaxmyzHovoF3ynu7/cmwlQcwnjBTZ7zNLjMOnQyomIwVrgGeAQcVFMTzw==
-X-Received: by 2002:adf:ee01:: with SMTP id y1mr4452655wrn.2.1601385102792;
-        Tue, 29 Sep 2020 06:11:42 -0700 (PDT)
-Received: from elver.google.com ([100.105.32.75])
-        by smtp.gmail.com with ESMTPSA id s12sm5024777wmd.20.2020.09.29.06.11.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Sep 2020 06:11:41 -0700 (PDT)
-Date:   Tue, 29 Sep 2020 15:11:35 +0200
-From:   Marco Elver <elver@google.com>
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Potapenko <glider@google.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christoph Lameter <cl@linux.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hillf Danton <hdanton@sina.com>,
-        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
-        Jonathan.Cameron@huawei.com, Jonathan Corbet <corbet@lwn.net>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Kees Cook <keescook@chromium.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>, sjpark@amazon.com,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Will Deacon <will@kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>
-Subject: Re: [PATCH v3 01/10] mm: add Kernel Electric-Fence infrastructure
-Message-ID: <20200929131135.GA2822082@elver.google.com>
-References: <20200921132611.1700350-1-elver@google.com>
- <20200921132611.1700350-2-elver@google.com>
- <CAAeHK+zYP6xhAEcv75zdSt03V2wAOTed6vNBYReV_U7EsRmUBw@mail.gmail.com>
+        id S1729783AbgI2NMz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 09:12:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57772 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729363AbgI2NMx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 09:12:53 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id EDB85208FE;
+        Tue, 29 Sep 2020 13:12:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601385172;
+        bh=2rl44aidI3q+YJ67zNfJz2z3LJuhtx2vNYInVu39t9c=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oxOf2Jt/xCnYJi6WX3kh0Yk4uHi44l0tqvXJqn+0wELxV2JcMAB4ecyfSDL+ZrG1i
+         nj5zBUWZofzBntN0foiDSAK9XvGMnF3EquTu+mtVQPyqTWtvNFE5NYShcqNIMZnXIk
+         ZowA64huVCkLUGkJx0D06y4l07GXH7AFJUmVGODI=
+Date:   Tue, 29 Sep 2020 14:11:53 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc:     Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        "wuxu . wu" <wuxu.wu@huawei.com>, Feng Tang <feng.tang@intel.com>,
+        Rob Herring <robh+dt@kernel.org>, linux-spi@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 02/30] spi: dw: Use ternary op to init set_cs callback
+Message-ID: <20200929131153.GD4799@sirena.org.uk>
+References: <20200920112914.26501-1-Sergey.Semin@baikalelectronics.ru>
+ <20200920112914.26501-3-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="LKTjZJSUETSlgu2t"
 Content-Disposition: inline
-In-Reply-To: <CAAeHK+zYP6xhAEcv75zdSt03V2wAOTed6vNBYReV_U7EsRmUBw@mail.gmail.com>
-User-Agent: Mutt/1.14.4 (2020-06-18)
+In-Reply-To: <20200920112914.26501-3-Sergey.Semin@baikalelectronics.ru>
+X-Cookie: I left my WALLET in the BATHROOM!!
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 02:42PM +0200, Andrey Konovalov wrote:
-[...]
-> > +        */
-> > +       index = (addr - (unsigned long)__kfence_pool) / (PAGE_SIZE * 2) - 1;
-> 
-> Why do we subtract 1 here? We do have the metadata entry reserved for something?
 
-Above the declaration of __kfence_pool it says:
+--LKTjZJSUETSlgu2t
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-	* We allocate an even number of pages, as it simplifies calculations to map
-	* address to metadata indices; effectively, the very first page serves as an
-	* extended guard page, but otherwise has no special purpose.
+On Sun, Sep 20, 2020 at 02:28:46PM +0300, Serge Semin wrote:
+> Simplify the dw_spi_add_host() method a bit by replacing the set_cs
+> callback overwrite procedure with direct setting the callback if a custom
+> version of one is specified.
 
-Hopefully that clarifies the `- 1` here.
+> -	master->set_cs = dw_spi_set_cs;
+> +	master->set_cs = dws->set_cs ?: dw_spi_set_cs;
 
-[...]
-> > +       /* Allocation and free stack information. */
-> > +       int num_alloc_stack;
-> > +       int num_free_stack;
-> > +       unsigned long alloc_stack[KFENCE_STACK_DEPTH];
-> > +       unsigned long free_stack[KFENCE_STACK_DEPTH];
-> 
-> It was a concious decision to not use stackdepot, right? Perhaps it
-> makes sense to document the reason somewhere.
+> -	if (dws->set_cs)
+> -		master->set_cs = dws->set_cs;
 
-Yes; we want to avoid the dynamic allocations that stackdepot does.
+This doesn't look like a win for legibility or comprehensibility.
 
-[...]
+--LKTjZJSUETSlgu2t
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Thanks,
--- Marco
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl9zMpgACgkQJNaLcl1U
+h9BCEAf+LUL3IhFgY8tpN/cxDegxeKq+2luBPnBzkz4mnoVIAU2IRLjszEkA1AhE
+0+Ggq8GQjaAllOEKlP+yALng0JAQgCX+Skvlxy7O00I4nWdwVFf92r8KSh/0TUTW
+FFplexpsYJlLNN7XosVsuKKc2pzYXmp7FhBAklu0VBHUi/T/cc76veo5sTIZuaUM
+eVq4MYe7cbczRQ53QvqG5CJmy4QS3h7KkyIcuSkEouR/FNKMHBLliK5E2ybbO5k/
+nfNnvkbKWQpnDj58C7/Gx3+X6419zptudbKW2OCmYqJv2QaHSgc1SqDhFHRX5Ue8
+IHcUc0pLkvjrl2hTn5TEtwhQhOMBkQ==
+=eJqS
+-----END PGP SIGNATURE-----
+
+--LKTjZJSUETSlgu2t--
