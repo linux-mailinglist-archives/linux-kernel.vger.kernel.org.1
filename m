@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A77B627C8B8
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:05:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 977EB27C96D
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:10:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731824AbgI2MEH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 08:04:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60238 "EHLO mail.kernel.org"
+        id S1732041AbgI2MKj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 08:10:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58076 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729069AbgI2Lic (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:38:32 -0400
+        id S1730201AbgI2Lhe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:37:34 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 434B021941;
-        Tue, 29 Sep 2020 11:38:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7456C23A74;
+        Tue, 29 Sep 2020 11:22:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601379485;
-        bh=OaIXy9pjhG6VdpJctz+9+sMtzA7P+US57dK2OhFZ3jE=;
+        s=default; t=1601378580;
+        bh=JYuoka6Dcpa7rPPX+K0pgm8y9LHlMras/8gA7lLYGAY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vl119FvJHqFh9Pf46ZxS6z17bln5I4/TgcYrkYVgYbUKs9LCSmIx3NFkvS25Ce6vI
-         mv2M4I8DrqJsy3k8ydcbPuhOBkzvdgU7Czq0K+SDXkGEt3kATDSpb0NhnVmVrYSs8u
-         3Rt5E+4YGSD37JNT2nQPR0gGEREcxXbbv+zax0Zk=
+        b=Sj5SgIByo9Orv0HQ7RjsmJIwxbSVhbFGRko0sYO5J14w1Kvm61CzaNpBpJS1SUEDn
+         9u9r5Q4stPPQuPqBX4vfH+Qe4j37wbTr2mqCV7l+VEhJ3IaONiGiIB3R30r2cL8hJ6
+         VxhIRqjM6roJYS2O3yYf8uN6pKUyZz9NXzkPVYy0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 183/388] r8169: improve RTL8168b FIFO overflow workaround
-Date:   Tue, 29 Sep 2020 12:58:34 +0200
-Message-Id: <20200929110019.337637946@linuxfoundation.org>
+Subject: [PATCH 4.19 064/245] selftests/ftrace: fix glob selftest
+Date:   Tue, 29 Sep 2020 12:58:35 +0200
+Message-Id: <20200929105950.109915899@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929110010.467764689@linuxfoundation.org>
-References: <20200929110010.467764689@linuxfoundation.org>
+In-Reply-To: <20200929105946.978650816@linuxfoundation.org>
+References: <20200929105946.978650816@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,36 +45,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Heiner Kallweit <hkallweit1@gmail.com>
+From: Sven Schnelle <svens@linux.ibm.com>
 
-[ Upstream commit 6b02e407cbf8d421477ebb7792cd6380affcd313 ]
+[ Upstream commit af4ddd607dff7aabd466a4a878e01b9f592a75ab ]
 
-So far only the reset bit it set, but the handler executing the reset
-is not scheduled. Therefore nothing will happen until some other action
-schedules the handler. Improve this by ensuring that the handler is
-scheduled.
+test.d/ftrace/func-filter-glob.tc is failing on s390 because it has
+ARCH_INLINE_SPIN_LOCK and friends set to 'y'. So the usual
+__raw_spin_lock symbol isn't in the ftrace function list. Change
+'*aw*lock' to '*spin*lock' which would hopefully match some of the
+locking functions on all platforms.
 
-Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Signed-off-by: Sven Schnelle <svens@linux.ibm.com>
+Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/realtek/r8169_main.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ .../testing/selftests/ftrace/test.d/ftrace/func-filter-glob.tc  | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/realtek/r8169_main.c b/drivers/net/ethernet/realtek/r8169_main.c
-index 6fa9852e3f97f..903212ad9bb2f 100644
---- a/drivers/net/ethernet/realtek/r8169_main.c
-+++ b/drivers/net/ethernet/realtek/r8169_main.c
-@@ -6256,8 +6256,7 @@ static irqreturn_t rtl8169_interrupt(int irq, void *dev_instance)
- 	if (unlikely(status & RxFIFOOver &&
- 	    tp->mac_version == RTL_GIGA_MAC_VER_11)) {
- 		netif_stop_queue(tp->dev);
--		/* XXX - Hack alert. See rtl_task(). */
--		set_bit(RTL_FLAG_TASK_RESET_PENDING, tp->wk.flags);
-+		rtl_schedule_task(tp, RTL_FLAG_TASK_RESET_PENDING);
- 	}
+diff --git a/tools/testing/selftests/ftrace/test.d/ftrace/func-filter-glob.tc b/tools/testing/selftests/ftrace/test.d/ftrace/func-filter-glob.tc
+index 27a54a17da65d..f4e92afab14b2 100644
+--- a/tools/testing/selftests/ftrace/test.d/ftrace/func-filter-glob.tc
++++ b/tools/testing/selftests/ftrace/test.d/ftrace/func-filter-glob.tc
+@@ -30,7 +30,7 @@ ftrace_filter_check '*schedule*' '^.*schedule.*$'
+ ftrace_filter_check 'schedule*' '^schedule.*$'
  
- 	rtl_irq_disable(tp);
+ # filter by *mid*end
+-ftrace_filter_check '*aw*lock' '.*aw.*lock$'
++ftrace_filter_check '*pin*lock' '.*pin.*lock$'
+ 
+ # filter by start*mid*
+ ftrace_filter_check 'mutex*try*' '^mutex.*try.*'
 -- 
 2.25.1
 
