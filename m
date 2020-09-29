@@ -2,114 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D22B827BE5D
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 09:48:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33D8927BE61
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 09:49:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727652AbgI2Hs2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 03:48:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58956 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725774AbgI2Hs2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 03:48:28 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 276EDC061755;
-        Tue, 29 Sep 2020 00:48:28 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id 5so3186062pgf.5;
-        Tue, 29 Sep 2020 00:48:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cB5LlZwyATx3IbiMyEseL5EpOMoLqG0eCQBkSlYQVOs=;
-        b=e7oU7+wyUsaxcKD1alcjs93UUqANuwvDb+ykR81C3+GQkaESuFLDn0S8n0wRiuN3iG
-         t7ZQdvTz8mc7uvG4NjcHQX7UuNuulca3GIB89PesySPTASGX4f0n3jPo6qlMxr/0WOjg
-         o/7UpmXfFz3SzUE+3kjUa/FlBbrfbDt+gJzmRrjehOd8qJ3rhfpnwAdFXVm73ISKwvNS
-         4oq60H+tFKbA4q75LzUnkukXzr0h1vdH5Ka1hwRN3ZZM118nigC7xI4SqQEIvq9mWh53
-         agF+OePPWrF4LWqzavkaoud+7G1UVSiUylO0QnvMTEbprJ77hyYstANe/vyNTnOxBj+6
-         RHbA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cB5LlZwyATx3IbiMyEseL5EpOMoLqG0eCQBkSlYQVOs=;
-        b=nWV9PiG1vZqatAcuBBHWSsKWtIIO7nLBVdcI2xaR93Mx9mGg8FmdjArjb+Z/LwWEPg
-         qjchYKnLg7qAMSdd/37aH7W3sEKShbsdZciIXmJxBCIngUqQGrkLL1lP7Kdub2dElaFT
-         OJRJbMQv3yJoxYvpCMlGwPV5TA/eWD1QHKDM4+3c7NQGG3V1sPkYwQjRRkAyuzqnAkis
-         MzoIuXIc12iCdZ3KDTmK3wh7fWd/jkawuRwFWvmssAs2A4abVMYhwnF8OjAnALdn3/Qy
-         YU9GqzqfICxsQsEO0qLNNPqzct8euf3ihg2gNLqml3hqPYmHpn56s29j+wOsOHFnsuKj
-         KF8Q==
-X-Gm-Message-State: AOAM53331DJ2PVf6NNnmuUf+VWP8pwfNbr11cHKdquGFc1HsMqozpJZK
-        QHQOvuVMLjEHOWQP+fpWxEQShXNjeL8Vk3bm/XM=
-X-Google-Smtp-Source: ABdhPJzy8yoTjJV4fVJxL4+fg9cfC3eH2bevrkjGuWVFYNqE5SyQkYbg3AGUUQWQefgrKn4Gj2ZrexDXMX+E7pE3JUI=
-X-Received: by 2002:a63:d648:: with SMTP id d8mr2297018pgj.4.1601365707643;
- Tue, 29 Sep 2020 00:48:27 -0700 (PDT)
+        id S1727661AbgI2Htr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 03:49:47 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:34138 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725554AbgI2Hto (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 03:49:44 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id B4E6BE01A41B648043A0;
+        Tue, 29 Sep 2020 15:49:39 +0800 (CST)
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 29 Sep 2020 15:49:29 +0800
+From:   Jing Xiangfeng <jingxiangfeng@huawei.com>
+To:     <mchehab+huawei@kernel.org>, <gregkh@linuxfoundation.org>
+CC:     <devel@driverdev.osuosl.org>, <linux-kernel@vger.kernel.org>,
+        <jingxiangfeng@huawei.com>
+Subject: [PATCH] staging: mfd: hi6421-spmi-pmic: Fix error return in hi6421_spmi_pmic_probe()
+Date:   Tue, 29 Sep 2020 15:48:47 +0800
+Message-ID: <20200929074847.47124-1-jingxiangfeng@huawei.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <20200929070908.10456-1-alexandru.ardelean@analog.com> <20200929070908.10456-2-alexandru.ardelean@analog.com>
-In-Reply-To: <20200929070908.10456-2-alexandru.ardelean@analog.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 29 Sep 2020 10:48:11 +0300
-Message-ID: <CAHp75Ve_A_9ejG=sQKeLwEWWviLhZq1_L+WcTFk+=u8UGydKZw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/9] iio: buffer: dmaengine: unwrap the use of iio_buffer_set_attrs()
-To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
-Cc:     linux-iio <linux-iio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Eugen Hristev <eugen.hristev@microchip.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        groeck@chromium.org,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Gwendal Grignou <gwendal@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.25]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 10:09 AM Alexandru Ardelean
-<alexandru.ardelean@analog.com> wrote:
->
-> The iio_buffer_set_attrs() helper will be removed in this series. So, just
-> assign the attributes of the DMAEngine buffer logic directly.
->
-> This is IIO buffer core context, so there is direct access to the
-> buffer->attrs object.
->
-> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
-> ---
->  drivers/iio/buffer/industrialio-buffer-dmaengine.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
->
-> diff --git a/drivers/iio/buffer/industrialio-buffer-dmaengine.c b/drivers/iio/buffer/industrialio-buffer-dmaengine.c
-> index 93b4e9e6bb55..becea9f68181 100644
-> --- a/drivers/iio/buffer/industrialio-buffer-dmaengine.c
-> +++ b/drivers/iio/buffer/industrialio-buffer-dmaengine.c
-> @@ -200,8 +200,7 @@ static struct iio_buffer *iio_dmaengine_buffer_alloc(struct device *dev,
->
->         iio_dma_buffer_init(&dmaengine_buffer->queue, chan->device->dev,
->                 &iio_dmaengine_default_ops);
-> -       iio_buffer_set_attrs(&dmaengine_buffer->queue.buffer,
-> -               iio_dmaengine_buffer_attrs);
-> +       dmaengine_buffer->queue.buffer.attrs = iio_dmaengine_buffer_attrs;
->
->         dmaengine_buffer->queue.buffer.access = &iio_dmaengine_buffer_ops;
+Fix to return error code -ENOMEM from the error handling case instead
+of 0.
 
-A nit: can we group assignments together, like
-init()
-...blank line...
-attr = ...
-access = ...
+Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
+---
+ drivers/staging/hikey9xx/hi6421-spmi-pmic.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-?
-
->
-> --
-> 2.17.1
->
-
-
+diff --git a/drivers/staging/hikey9xx/hi6421-spmi-pmic.c b/drivers/staging/hikey9xx/hi6421-spmi-pmic.c
+index 64b30d263c8d..4f34a5282970 100644
+--- a/drivers/staging/hikey9xx/hi6421-spmi-pmic.c
++++ b/drivers/staging/hikey9xx/hi6421-spmi-pmic.c
+@@ -262,8 +262,10 @@ static int hi6421_spmi_pmic_probe(struct spmi_device *pdev)
+ 	hi6421_spmi_pmic_irq_prc(pmic);
+ 
+ 	pmic->irqs = devm_kzalloc(dev, HISI_IRQ_NUM * sizeof(int), GFP_KERNEL);
+-	if (!pmic->irqs)
++	if (!pmic->irqs) {
++		ret = -ENOMEM;
+ 		goto irq_malloc;
++	}
+ 
+ 	pmic->domain = irq_domain_add_simple(np, HISI_IRQ_NUM, 0,
+ 					     &hi6421_spmi_domain_ops, pmic);
 -- 
-With Best Regards,
-Andy Shevchenko
+2.26.0.106.g9fadedd
+
