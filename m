@@ -2,113 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5A0827C556
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:34:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EE3327C5CB
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:39:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728526AbgI2Lec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:34:32 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:46236 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729620AbgI2Ld1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:33:27 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08TBORjQ163313;
-        Tue, 29 Sep 2020 11:33:11 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=mime-version :
- message-id : date : from : to : cc : subject : references : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=HVb5LyBGgi3fU77zrxjv0Gn2ESkyJHXWAtQJVfno9vY=;
- b=mA1TO9XK9CFlHIQ1Yun1Dnxw6N9cPBw5zNjBXPKLstW5CEK/dCMyjqHZwn1UJUWLL/P/
- jTp3pOYAXd2XxG3lhmwYu+9gNyPRBLsbWNG2C0qUa/aLZqAHvhO5slRvkQQMXdEYhK4Y
- L0r0k5OaaMZo52ijgFKoZ+wCZWi5AeE+fF4YdhMvUQnvAprlNese8j3GFylPmhQ4tux/
- +sl5yJIH7vdH652YMp8LBEjgJPZqUeFuimTGztbVxqy2v+Y+QkPM1Z4wHo0xqA+D7gvD
- NuF+Tf2yIb34NM9e09QfdmSWXfp09a+YLngpiT4zDxi4ztlrkjxZqOELC1L/5pzS267g ig== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2130.oracle.com with ESMTP id 33su5at8h9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 29 Sep 2020 11:33:11 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08TBUpIB173331;
-        Tue, 29 Sep 2020 11:33:11 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3030.oracle.com with ESMTP id 33uv2drd3n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 29 Sep 2020 11:33:10 +0000
-Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08TBX9K5015999;
-        Tue, 29 Sep 2020 11:33:09 GMT
-Received: from localhost.uk.oracle.com (/10.175.172.184) by default (Oracle
- Beehive Gateway v4.0) with ESMTP ; Tue, 29 Sep 2020 04:32:47 -0700
+        id S1730443AbgI2LjA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:39:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60746 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730404AbgI2Lio (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:38:44 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6554921924;
+        Tue, 29 Sep 2020 11:38:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601379523;
+        bh=a1gSTFeVH3iQKCsomWRRIF1vuKiVS5UiB6voFxEywig=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hdzI0LjRLhiFG0H47FIBQWDcq5DX1OrXKHvX76qVWK0yBh7qixa5RtPKtcE8g49eP
+         849mw8WVqgX3AJpUqyOH01WQOeFbrbw/M492DQxRltPOst6YZTph/nyc+VD+s81Egu
+         Ct3VdN9U6DSJGkK9104YvlYtXkg0L6SNaTM2JCZ4=
+Date:   Tue, 29 Sep 2020 12:37:45 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Joe Perches <joe@perches.com>
+Cc:     linux-iio@vger.kernel.org, Julia Lawall <Julia.Lawall@inria.fr>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-crypto@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        linux-acpi@vger.kernel.org, David Lechner <david@lechnology.com>,
+        Valdis =?utf-8?Q?Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>,
+        kernel-janitors@vger.kernel.org, drbd-dev@lists.linbit.com,
+        openipmi-developer@lists.sourceforge.net,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        linux-ide@vger.kernel.org, linux-amlogic@lists.infradead.org,
+        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-wireless@vger.kernel.org,
+        Neil Armstrong <narmstrong@baylibre.com>
+Subject: Re: [PATCH 00/18] use semicolons rather than commas to separate
+ statements
+Message-ID: <20200929113745.GB4799@sirena.org.uk>
+References: <1601233948-11629-1-git-send-email-Julia.Lawall@inria.fr>
+ <160132172369.55460.9237357219623604216.b4-ty@kernel.org>
+ <b1174f9be2ce65f6b5ebefcba0b48e792926abbc.camel@perches.com>
 MIME-Version: 1.0
-Message-ID: <1601379151-21449-2-git-send-email-alan.maguire@oracle.com>
-Date:   Tue, 29 Sep 2020 04:32:30 -0700 (PDT)
-From:   Alan Maguire <alan.maguire@oracle.com>
-To:     ast@kernel.org, daniel@iogearbox.net, andriin@fb.com
-Cc:     kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@chromium.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: [PATCH bpf-next 1/2] selftests/bpf: fix unused-result warning in
- snprintf_btf.c
-References: <1601379151-21449-1-git-send-email-alan.maguire@oracle.com>
-In-Reply-To: <1601379151-21449-1-git-send-email-alan.maguire@oracle.com>
-X-Mailer: git-send-email 1.8.3.1
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9758 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0 adultscore=0
- suspectscore=0 malwarescore=0 bulkscore=0 mlxlogscore=999 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009290103
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9758 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=0
- lowpriorityscore=0 spamscore=0 clxscore=1015 mlxscore=0 impostorscore=0
- malwarescore=0 phishscore=0 adultscore=0 bulkscore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009290102
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="0ntfKIWw70PvrIHh"
+Content-Disposition: inline
+In-Reply-To: <b1174f9be2ce65f6b5ebefcba0b48e792926abbc.camel@perches.com>
+X-Cookie: I left my WALLET in the BATHROOM!!
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Daniel reports:
 
-+    system("ping -c 1 127.0.0.1 > /dev/null");
+--0ntfKIWw70PvrIHh
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-This generates the following new warning when compiling BPF selftests:
+On Mon, Sep 28, 2020 at 05:45:24PM -0700, Joe Perches wrote:
+> On Mon, 2020-09-28 at 20:35 +0100, Mark Brown wrote:
 
-  [...]
-  EXT-OBJ  [test_progs] cgroup_helpers.o
-  EXT-OBJ  [test_progs] trace_helpers.o
-  EXT-OBJ  [test_progs] network_helpers.o
-  EXT-OBJ  [test_progs] testing_helpers.o
-  TEST-OBJ [test_progs] snprintf_btf.test.o
-/root/bpf-next/tools/testing/selftests/bpf/prog_tests/snprintf_btf.c: In function ‘test_snprintf_btf’:
-/root/bpf-next/tools/testing/selftests/bpf/prog_tests/snprintf_btf.c:30:2: warning: ignoring return value of ‘system’, declared with attribute warn_unused_result [-Wunused-result]
-  system("ping -c 1 127.0.0.1 > /dev/null");
-  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  [...]
+> > [1/1] regmap: debugfs: use semicolons rather than commas to separate statements
+> >       commit: 7f4a122d0b50b40c64d24a5cf7aafe26dd9487ee
 
-Fixes: 076a95f5aff2 ("selftests/bpf: Add bpf_snprintf_btf helper tests")
-Reported-by: Daniel Borkmann <daniel@iogearbox.net>
-Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
----
- tools/testing/selftests/bpf/prog_tests/snprintf_btf.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> Rather than replying to the 0/n cover letter to a patch
+> series, can you reply to each of the specific patches in
+> the patch series you are applying?
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/snprintf_btf.c b/tools/testing/selftests/bpf/prog_tests/snprintf_btf.c
-index 3a8ecf8..3c63a70 100644
---- a/tools/testing/selftests/bpf/prog_tests/snprintf_btf.c
-+++ b/tools/testing/selftests/bpf/prog_tests/snprintf_btf.c
-@@ -27,7 +27,7 @@ void test_snprintf_btf(void)
- 		goto cleanup;
- 
- 	/* generate receive event */
--	system("ping -c 1 127.0.0.1 > /dev/null");
-+	(void) system("ping -c 1 127.0.0.1 > /dev/null");
- 
- 	if (bss->skip) {
- 		printf("%s:SKIP:no __builtin_btf_type_id\n", __func__);
--- 
-1.8.3.1
+> Otherwise, it's a bit difficult to figure out which patches
+> you are applying.
 
+Feel free to submit patches to b4.  Ideally things like this wouldn't be
+being sent as serieses in the first place, there's no dependencies or
+interactions between the patches.
+
+--0ntfKIWw70PvrIHh
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl9zHIgACgkQJNaLcl1U
+h9AUrQf/V6+K22eTWHbMJo7Z/GUR0aZ8ZbPiLfJjhWnbSq+gQVC1xnbSwQx7hDlv
++AoeDaVjgmnGS3YtW/c1K8e4d2SFvxR89a5I5U/dEtc/j/N/5vnGgwxjLDfN5xUC
+lV2F+ftiHGIRzn0ojcUVOj6hEIqnGvkQe17key6Po0TlZuuoZE+eh3mfbajDeYCs
+/BJ39skDi0g8xqOY8V8qZAoH/Bowz0xIroEbdg0zbM78UIOi2Fzxl5MSXapN2Cd7
+o9QO7lsPCWxberp7ZwIUg6cvYQnjBE4ZZRGsfnzuPRH4fptLRzDSZRJCSW6IqH8s
+j8rUaeCv+XQBPjpBvj3FJIUWXyI5QQ==
+=kEnh
+-----END PGP SIGNATURE-----
+
+--0ntfKIWw70PvrIHh--
