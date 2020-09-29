@@ -2,48 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35A0227B8B3
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 02:13:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 825BF27B8B5
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 02:13:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727229AbgI2ANE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 20:13:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45738 "EHLO
+        id S1727251AbgI2ANP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 20:13:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727218AbgI2ANE (ORCPT
+        with ESMTP id S1727077AbgI2ANJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 20:13:04 -0400
-Received: from mail-pl1-x663.google.com (mail-pl1-x663.google.com [IPv6:2607:f8b0:4864:20::663])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 002F6C0613D4
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 17:13:03 -0700 (PDT)
-Received: by mail-pl1-x663.google.com with SMTP id x5so15955plo.6
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 17:13:03 -0700 (PDT)
+        Mon, 28 Sep 2020 20:13:09 -0400
+Received: from mail-pf1-x464.google.com (mail-pf1-x464.google.com [IPv6:2607:f8b0:4864:20::464])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46D98C0613D3
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 17:13:08 -0700 (PDT)
+Received: by mail-pf1-x464.google.com with SMTP id d6so2769267pfn.9
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 17:13:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=broadcom.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=cU7Ag9stEwt1IzvkS7calmRSvN4o+b90Pfxdn02qUGU=;
-        b=enolhUsp03qOPPNtJMJ5tmi5RSt0Fc/7qSHyqFshtSHMl12nC9gEPFwVLHOwOVCUyb
-         Bd4tehbLT75Tdp3wtXTfDRki0dxgoyYbHxRwDYdxLF2Tw0Fz96+xiwsTGoNS1IXfo+1u
-         1cCJwUDuqOYEdG8e3aHzSDbEL3hDAOl9/nFzY=
+        bh=kUs7tuzfn3LWmHHxpwphPv9GJET0LAzdeP91m48/C80=;
+        b=FlShdHuix5nCfE/tu01vgriYM67dqm7G9gIMJDFYgQPBAj2P3okwJTcTDaBaWRUpDQ
+         wPN3DqNv5rqCZTVrkh/ngm4qskKW9uC6jjCFFUOCZJV+WWoIbqDCjNsqov/rJEKtgWrd
+         6r5b5Yb7z06cLLrzApkykU9ghGFXrq9CeWyUE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=cU7Ag9stEwt1IzvkS7calmRSvN4o+b90Pfxdn02qUGU=;
-        b=pEQP7v/3gjHQJgsZgJZCLak+qHTO5tM9lYfByE8d/41hlcAwBhdOyU8ear+tPC9L9J
-         +9Kmm9cFWBVZr/IPJEnfHyVPU+FMKONv7WsauV4vVuAFKYTFol3Cm+qS6RyNcocYiWC8
-         SGJlnoAVv1E10LgI+Njr5mVXtzz/cTrNVvPvG/5nlAPQOhXnsE1YBHMFyVjrAMmpr/NM
-         r3dR7fXyd6WoP/0VdayJksotqmXMMzjfh1BryKaU47540RQZrX26P0/4kwX9Nw32+swt
-         xwslBfN+9yWewSIrCQWLDcsIay6dKu3ceMVFnvrd8htLisZXFhLBL+tqfQ8AqJ9Yvttj
-         uqeQ==
-X-Gm-Message-State: AOAM530OOJ3EPdo2ISVa1rmlx+iavNmXQDWaY3KWFQOXX3u3UBYmwMYX
-        WWpJ5cMYhtAysQ9XZvK5HMV6ZTli4fVUZbG6QjaGCJVSr+uI
-X-Google-Smtp-Source: ABdhPJz4F9PDxY9Qw4M98rOZ6UCQpmIz4MPNb9dETYcL+s7XtRiynpnNEMdhdryNE+kRvVLJj9rkQQFEr50R
-X-Received: by 2002:a17:90a:34cd:: with SMTP id m13mr282735pjf.73.1601338383423;
-        Mon, 28 Sep 2020 17:13:03 -0700 (PDT)
+        bh=kUs7tuzfn3LWmHHxpwphPv9GJET0LAzdeP91m48/C80=;
+        b=MIaC4ryc7yq+Bx9QuAKcj9BWzeGzf9o68K6dv2J04HCSniSId1r4pzWHBCQzILk5fX
+         tCffyQn5ErgBuVOQLjX7rjxLGgJeVlGn8UE42i7Bjr8Cq7f/Fl8B22PVYrMRxaIe50qg
+         qjuJ7LPdqRRdTnhc8OveGN1lWP+LQxGRIRwpt4XhLNvam5uccnq875/WUAhWym0xj/xn
+         Z7jf4o1c76QINfiTnRbiWbSziOBROAboI2nXy5pTx01EoRIcfzbdxVaNgGvr/WvH/yWI
+         xTXIldE5573ixwE71J3xXAPRapaYc6H4hQ9U1xHQc9ziB+4GnMdjsGnQ1RW9JQ5QFCGk
+         ZLeQ==
+X-Gm-Message-State: AOAM533LquqWbh85QdkckJPE7BWaEXCop8FzFxUvN79H89Vw2d9ndMGk
+        XZqajyvGQmvCqxfwJ+GJccy6hTVw/q3EDn1itJKyijfI1lQX
+X-Google-Smtp-Source: ABdhPJxOb/P8pscXvHfvdY3Xxu+oQUxKKnXMrCjCKNo6GnWMjxVyU5MwzXlKr3y8DvYHB9CwLO/z/M+cNRvv
+X-Received: by 2002:a65:4d01:: with SMTP id i1mr1113938pgt.390.1601338387445;
+        Mon, 28 Sep 2020 17:13:07 -0700 (PDT)
 Received: from lbrmn-lnxub113.broadcom.net ([192.19.228.250])
-        by smtp-relay.gmail.com with ESMTPS id t1sm1047973pjr.8.2020.09.28.17.12.59
+        by smtp-relay.gmail.com with ESMTPS id t1sm1047973pjr.8.2020.09.28.17.13.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Sep 2020 17:13:03 -0700 (PDT)
+        Mon, 28 Sep 2020 17:13:07 -0700 (PDT)
 X-Relaying-Domain: broadcom.com
 From:   Scott Branden <scott.branden@broadcom.com>
 To:     Arnd Bergmann <arnd@arndb.de>,
@@ -51,11 +51,10 @@ To:     Arnd Bergmann <arnd@arndb.de>,
         Scott Branden <scott.branden@broadcom.com>
 Cc:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org,
         bcm-kernel-feedback-list@broadcom.com,
-        Desmond Yan <desmond.yan@broadcom.com>,
-        James Hu <james.hu@broadcom.com>
-Subject: [PATCH v4 08/16] misc: bcm-vk: add ioctl load_image
-Date:   Mon, 28 Sep 2020 17:12:01 -0700
-Message-Id: <20200929001209.16393-9-scott.branden@broadcom.com>
+        Desmond Yan <desmond.yan@broadcom.com>
+Subject: [PATCH v4 09/16] misc: bcm-vk: add get_card_info, peerlog_info, and proc_mon_info
+Date:   Mon, 28 Sep 2020 17:12:02 -0700
+Message-Id: <20200929001209.16393-10-scott.branden@broadcom.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200929001209.16393-1-scott.branden@broadcom.com>
 References: <20200929001209.16393-1-scott.branden@broadcom.com>
@@ -63,170 +62,213 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add ioctl support to issue load_image operation to VK card.
+Add support to get card_info (details about card),
+peerlog_info (to get details of peerlog on card),
+and proc_mon_info (process monitoring on card).
+
+This info is used for collection of logs via direct
+read of BAR space and by sysfs access (in a follow on commit).
 
 Co-developed-by: Desmond Yan <desmond.yan@broadcom.com>
 Signed-off-by: Desmond Yan <desmond.yan@broadcom.com>
-Co-developed-by: James Hu <james.hu@broadcom.com>
-Signed-off-by: James Hu <james.hu@broadcom.com>
 Signed-off-by: Scott Branden <scott.branden@broadcom.com>
 ---
- drivers/misc/bcm-vk/bcm_vk.h     |  3 +
- drivers/misc/bcm-vk/bcm_vk_dev.c | 95 ++++++++++++++++++++++++++++++++
- 2 files changed, 98 insertions(+)
+ drivers/misc/bcm-vk/bcm_vk.h     | 58 +++++++++++++++++++++
+ drivers/misc/bcm-vk/bcm_vk_dev.c | 87 ++++++++++++++++++++++++++++++++
+ 2 files changed, 145 insertions(+)
 
 diff --git a/drivers/misc/bcm-vk/bcm_vk.h b/drivers/misc/bcm-vk/bcm_vk.h
-index 346508daa67f..02c75b2fd6c3 100644
+index 02c75b2fd6c3..11fa748a4fbd 100644
 --- a/drivers/misc/bcm-vk/bcm_vk.h
 +++ b/drivers/misc/bcm-vk/bcm_vk.h
-@@ -13,6 +13,7 @@
- #include <linux/pci.h>
- #include <linux/sched/signal.h>
- #include <linux/tty.h>
-+#include <linux/uaccess.h>
- #include <uapi/linux/misc/bcm_vk.h>
+@@ -222,6 +222,21 @@ struct bcm_vk_tty {
+ 	bool is_opened;		/* tracks tty open/close */
+ };
  
- #include "bcm_vk_msg.h"
-@@ -237,6 +238,8 @@ struct bcm_vk {
++/* VK device max power state, supports 3, full, reduced and low */
++#define MAX_OPP 3
++#define MAX_CARD_INFO_TAG_SIZE 64
++
++struct bcm_vk_card_info {
++	u32 version;
++	char os_tag[MAX_CARD_INFO_TAG_SIZE];
++	char cmpt_tag[MAX_CARD_INFO_TAG_SIZE];
++	u32 cpu_freq_mhz;
++	u32 cpu_scale[MAX_OPP];
++	u32 ddr_freq_mhz;
++	u32 ddr_size_MB;
++	u32 video_core_freq_mhz;
++};
++
+ /* DAUTH related info */
+ struct bcm_vk_dauth_key {
+ 	char store[VK_BAR1_DAUTH_STORE_SIZE];
+@@ -232,10 +247,47 @@ struct bcm_vk_dauth_info {
+ 	struct bcm_vk_dauth_key keys[VK_BAR1_DAUTH_MAX];
+ };
  
++/*
++ * Control structure of logging messages from the card.  This
++ * buffer is for logmsg that comes from vk
++ */
++struct bcm_vk_peer_log {
++	u32 rd_idx;
++	u32 wr_idx;
++	u32 buf_size;
++	u32 mask;
++	char data[0];
++};
++
++/* max size per line of peer log */
++#define BCM_VK_PEER_LOG_LINE_MAX  256
++
++/*
++ * single entry for processing type + utilization
++ */
++#define BCM_VK_PROC_TYPE_TAG_LEN 8
++struct bcm_vk_proc_mon_entry_t {
++	char tag[BCM_VK_PROC_TYPE_TAG_LEN];
++	u32 used;
++	u32 max; /**< max capacity */
++};
++
++/**
++ * Structure for run time utilization
++ */
++#define BCM_VK_PROC_MON_MAX 8 /* max entries supported */
++struct bcm_vk_proc_mon_info {
++	u32 num; /**< no of entries */
++	u32 entry_size; /**< per entry size */
++	struct bcm_vk_proc_mon_entry_t entries[BCM_VK_PROC_MON_MAX];
++};
++
+ struct bcm_vk {
+ 	struct pci_dev *pdev;
+ 	void __iomem *bar[MAX_BAR];
+ 
++	struct bcm_vk_card_info card_info;
++	struct bcm_vk_proc_mon_info proc_mon_info;
  	struct bcm_vk_dauth_info dauth_info;
  
-+	/* mutex to protect the ioctls */
-+	struct mutex mutex;
- 	struct miscdevice miscdev;
- 	int devid; /* dev id allocated */
+ 	/* mutex to protect the ioctls */
+@@ -263,6 +315,12 @@ struct bcm_vk {
+ 	dma_addr_t tdma_addr; /* test dma segment bus addr */
  
+ 	struct notifier_block panic_nb;
++
++	/* offset of the peer log control in BAR2 */
++	u32 peerlog_off;
++	struct bcm_vk_peer_log peerlog_info; /* record of peer log info */
++	/* offset of processing monitoring info in BAR2 */
++	u32 proc_mon_off;
+ };
+ 
+ /* wq offload work items bits definitions */
 diff --git a/drivers/misc/bcm-vk/bcm_vk_dev.c b/drivers/misc/bcm-vk/bcm_vk_dev.c
-index b9f095a7905b..cc52d3e6e706 100644
+index cc52d3e6e706..6a35a9a088b6 100644
 --- a/drivers/misc/bcm-vk/bcm_vk_dev.c
 +++ b/drivers/misc/bcm-vk/bcm_vk_dev.c
-@@ -10,6 +10,7 @@
- #include <linux/idr.h>
- #include <linux/kref.h>
- #include <linux/module.h>
-+#include <linux/mutex.h>
- #include <linux/pci.h>
- #include <linux/pci_regs.h>
- #include <uapi/linux/misc/bcm_vk.h>
-@@ -580,6 +581,71 @@ static void bcm_vk_wq_handler(struct work_struct *work)
- 	}
- }
- 
-+static long bcm_vk_load_image(struct bcm_vk *vk,
-+			      const struct vk_image __user *arg)
-+{
-+	struct device *dev = &vk->pdev->dev;
-+	const char *image_name;
-+	struct vk_image image;
-+	u32 next_loadable;
-+	enum soc_idx idx;
-+	int image_idx;
-+	int ret = -EPERM;
-+
-+	if (copy_from_user(&image, arg, sizeof(image)))
-+		return -EACCES;
-+
-+	if ((image.type != VK_IMAGE_TYPE_BOOT1) &&
-+	    (image.type != VK_IMAGE_TYPE_BOOT2)) {
-+		dev_err(dev, "invalid image.type %u\n", image.type);
-+		return ret;
-+	}
-+
-+	next_loadable = bcm_vk_next_boot_image(vk);
-+	if (next_loadable != image.type) {
-+		dev_err(dev, "Next expected image %u, Loading %u\n",
-+			next_loadable, image.type);
-+		return ret;
-+	}
-+
-+	/*
-+	 * if something is pending download already.  This could only happen
-+	 * for now when the driver is being loaded, or if someone has issued
-+	 * another download command in another shell.
-+	 */
-+	if (test_and_set_bit(BCM_VK_WQ_DWNLD_PEND, vk->wq_offload) != 0) {
-+		dev_err(dev, "Download operation already pending.\n");
-+		return ret;
-+	}
-+
-+	image_name = image.filename;
-+	if (image_name[0] == '\0') {
-+		/* Use default image name if NULL */
-+		idx = get_soc_idx(vk);
-+		if (idx == VK_IDX_INVALID)
-+			goto err_idx;
-+
-+		/* Image idx starts with boot1 */
-+		image_idx = image.type - VK_IMAGE_TYPE_BOOT1;
-+		image_name = get_load_fw_name(vk, &image_tab[idx][image_idx]);
-+		if (!image_name) {
-+			dev_err(dev, "No suitable image found for type %d",
-+				image.type);
-+			ret = -ENOENT;
-+			goto err_idx;
-+		}
-+	} else {
-+		/* Ensure filename is NULL terminated */
-+		image.filename[sizeof(image.filename) - 1] = '\0';
-+	}
-+	ret = bcm_vk_load_image_by_type(vk, image.type, image_name);
-+	dev_info(dev, "Load %s, ret %d\n", image_name, ret);
-+err_idx:
-+	clear_bit(BCM_VK_WQ_DWNLD_PEND, vk->wq_offload);
-+
-+	return ret;
-+}
-+
- static void bcm_to_v_reset_doorbell(struct bcm_vk *vk, u32 db_val)
- {
- 	vkwrite32(vk, db_val, BAR_0, VK_BAR0_RESET_DB_BASE);
-@@ -631,10 +697,38 @@ static int bcm_vk_trigger_reset(struct bcm_vk *vk)
+@@ -172,6 +172,86 @@ static inline int bcm_vk_wait(struct bcm_vk *vk, enum pci_barno bar,
  	return 0;
  }
  
-+static long bcm_vk_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
++static void bcm_vk_get_card_info(struct bcm_vk *vk)
 +{
-+	long ret = -EINVAL;
-+	struct bcm_vk_ctx *ctx = file->private_data;
-+	struct bcm_vk *vk = container_of(ctx->miscdev, struct bcm_vk, miscdev);
-+	void __user *argp = (void __user *)arg;
++	struct device *dev = &vk->pdev->dev;
++	u32 offset;
++	int i;
++	u8 *dst;
++	struct bcm_vk_card_info *info = &vk->card_info;
 +
-+	dev_dbg(&vk->pdev->dev,
-+		"ioctl, cmd=0x%02x, arg=0x%02lx\n",
-+		cmd, arg);
++	/* first read the offset from spare register */
++	offset = vkread32(vk, BAR_0, BAR_CARD_STATIC_INFO);
++	offset &= (pci_resource_len(vk->pdev, BAR_2 * 2) - 1);
 +
-+	mutex_lock(&vk->mutex);
++	/* based on the offset, read info to internal card info structure */
++	dst = (u8 *)info;
++	for (i = 0; i < sizeof(*info); i++)
++		*dst++ = vkread8(vk, BAR_2, offset++);
 +
-+	switch (cmd) {
-+	case VK_IOCTL_LOAD_IMAGE:
-+		ret = bcm_vk_load_image(vk, argp);
-+		break;
++#define CARD_INFO_LOG_FMT "version   : %x\n" \
++			  "os_tag    : %s\n" \
++			  "cmpt_tag  : %s\n" \
++			  "cpu_freq  : %d MHz\n" \
++			  "cpu_scale : %d full, %d lowest\n" \
++			  "ddr_freq  : %d MHz\n" \
++			  "ddr_size  : %d MB\n" \
++			  "video_freq: %d MHz\n"
++	dev_dbg(dev, CARD_INFO_LOG_FMT, info->version, info->os_tag,
++		info->cmpt_tag, info->cpu_freq_mhz, info->cpu_scale[0],
++		info->cpu_scale[MAX_OPP - 1], info->ddr_freq_mhz,
++		info->ddr_size_MB, info->video_core_freq_mhz);
 +
-+	default:
-+		break;
-+	}
-+
-+	mutex_unlock(&vk->mutex);
-+
-+	return ret;
++	/*
++	 * get the peer log pointer, only need the offset, and get record
++	 * of the log buffer information which would be used for checking
++	 * before dump, in case the BAR2 memory has been corrupted.
++	 */
++	vk->peerlog_off = offset;
++	memcpy_fromio(&vk->peerlog_info, vk->bar[BAR_2] + vk->peerlog_off,
++		      sizeof(vk->peerlog_info));
++	dev_dbg(dev, "Peer log: Size 0x%x(0x%x), [Rd Wr] = [%d %d]\n",
++		vk->peerlog_info.buf_size,
++		vk->peerlog_info.mask,
++		vk->peerlog_info.rd_idx,
++		vk->peerlog_info.wr_idx);
 +}
 +
- static const struct file_operations bcm_vk_fops = {
- 	.owner = THIS_MODULE,
- 	.open = bcm_vk_open,
- 	.release = bcm_vk_release,
-+	.unlocked_ioctl = bcm_vk_ioctl,
- };
++static void bcm_vk_get_proc_mon_info(struct bcm_vk *vk)
++{
++	struct device *dev = &vk->pdev->dev;
++	struct bcm_vk_proc_mon_info *mon = &vk->proc_mon_info;
++	u32 num, entry_size, offset, buf_size;
++	u8 *dst;
++
++	/* calculate offset which is based on peerlog offset */
++	buf_size = vkread32(vk, BAR_2,
++			    vk->peerlog_off
++			    + offsetof(struct bcm_vk_peer_log, buf_size));
++	offset = vk->peerlog_off + sizeof(struct bcm_vk_peer_log)
++		 + buf_size;
++
++	/* first read the num and entry size */
++	num = vkread32(vk, BAR_2, offset);
++	entry_size = vkread32(vk, BAR_2, offset + sizeof(num));
++
++	/* check for max allowed */
++	if (num > BCM_VK_PROC_MON_MAX) {
++		dev_err(dev, "Processing monitoring entry %d exceeds max %d\n",
++			num, BCM_VK_PROC_MON_MAX);
++		return;
++	}
++	mon->num = num;
++	mon->entry_size = entry_size;
++
++	vk->proc_mon_off = offset;
++
++	/* read it once that will capture those static info */
++	dst = (u8 *)&mon->entries[0];
++	offset += sizeof(num) + sizeof(entry_size);
++	memcpy_fromio(dst, vk->bar[BAR_2] + offset, num * entry_size);
++}
++
+ static int bcm_vk_sync_card_info(struct bcm_vk *vk)
+ {
+ 	u32 rdy_marker = vkread32(vk, BAR_1, VK_BAR1_MSGQ_DEF_RDY);
+@@ -193,6 +273,13 @@ static int bcm_vk_sync_card_info(struct bcm_vk *vk)
+ 		vkwrite32(vk, nr_scratch_pages * PAGE_SIZE, BAR_1,
+ 			  VK_BAR1_SCRATCH_SZ_ADDR);
+ 	}
++
++	/* get static card info, only need to read once */
++	bcm_vk_get_card_info(vk);
++
++	/* get the proc mon info once */
++	bcm_vk_get_proc_mon_info(vk);
++
+ 	return 0;
+ }
  
- static int bcm_vk_on_panic(struct notifier_block *nb,
-@@ -665,6 +759,7 @@ static int bcm_vk_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 		return -ENOMEM;
- 
- 	kref_init(&vk->kref);
-+	mutex_init(&vk->mutex);
- 
- 	err = pci_enable_device(pdev);
- 	if (err) {
 -- 
 2.17.1
 
