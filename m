@@ -2,96 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5266727CA15
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:16:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B251F27CA38
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:19:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732297AbgI2MQf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 08:16:35 -0400
-Received: from foss.arm.com ([217.140.110.172]:42552 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730048AbgI2MQb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 08:16:31 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6C3E814BF;
-        Tue, 29 Sep 2020 05:16:30 -0700 (PDT)
-Received: from e123648.arm.com (unknown [10.57.50.89])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 2933E3F73B;
-        Tue, 29 Sep 2020 05:16:27 -0700 (PDT)
-From:   Lukasz Luba <lukasz.luba@arm.com>
-To:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-doc@vger.kernel.org
-Cc:     corbet@lwn.net, daniel.lezcano@linaro.org, lukasz.luba@arm.com,
-        Dietmar.Eggemann@arm.com, qperret@google.com, mka@chromium.org,
-        rjw@rjwysocki.net
-Subject: [PATCH 2/2] PM / EM: update the comments related to power scale
-Date:   Tue, 29 Sep 2020 13:16:10 +0100
-Message-Id: <20200929121610.16060-2-lukasz.luba@arm.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200929121610.16060-1-lukasz.luba@arm.com>
-References: <20200929121610.16060-1-lukasz.luba@arm.com>
+        id S1732316AbgI2MRR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 08:17:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44502 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730047AbgI2MQ7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 08:16:59 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B0FDC061755
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 05:16:59 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id t16so6087271edw.7
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 05:16:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=WmQ4HXFZOiQNgwplnNphS1aF43ZxufpXoarc3usGdEM=;
+        b=qpKdWznEoF0VXNEXTayLjtsb2T+jAgRhbs/Zn/wYm6lpxIzMUgO8OS1OwVkbrPgcjq
+         C64VyNgFzie4RdTaGZ5U03PUJ2/kRUJTZ/OI2HJi+dC8TWHvKyHQwBxig86wTzJsQntR
+         OGaWIeqcGWN7uiIhW4KY9EIF1VzVVFgTOeQLtVADHY+PkGNt69YEYEI7rif8U42S02Rt
+         i86vmYCPL3srS5mRbmElsm3INvC4TsXuCxmrqsJ6mM7TCAkJmIx52uSTmUZOl9lgAdcK
+         dwKHaRWJMXJ1pnq6hKGzJWm+apPp/zaAmZI31iGgF55sAAHqOWYJWAysdSABbAdLTsaQ
+         ic5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=WmQ4HXFZOiQNgwplnNphS1aF43ZxufpXoarc3usGdEM=;
+        b=WV0t97ONkvjG2pSjZh89M/p9rdr7uW3ENNf6l3+9Fiw6+oe5lpQac35xl4Art/xMwW
+         NQqgADe0Q2xacLbhW5s48q6xi5/WGKrITkD9tja1z04bU67ZOvmjoHtUrt//lsoinbl/
+         5gidJA1395NYD6R2TuP4C05ui3+tmTeGegN8bb0SEUP+F14bNjAtBhqH9CsMhZ5fwsUx
+         L3GZ8Lt0tpkfn4N9W4zmv1H6ksc2R7iWtZ3Y39rWxKPsDO/tNaMikJ8fZ53Fmh0gSPck
+         blBed0Rg7ici3yncxsa/wzscsBL7BHzWtDX4vZ5aphHR1Prdii3Uenvc4MU6aZM7+qGt
+         BdpA==
+X-Gm-Message-State: AOAM530t7sK2B+O4SOOAb9Thsh4d5V+gtQYoeI9lUNv2YWbadqOdc+8y
+        9uDqtrYkjw1vobvwPjHBLA1YcA==
+X-Google-Smtp-Source: ABdhPJzQa153E1Rkgt87UDJf1vE8rz6Hpi0RQZdQQDSXy+J5iH/wwvNOr9/UrScWq8FHFcEgYstltA==
+X-Received: by 2002:a05:6402:6c1:: with SMTP id n1mr2958666edy.215.1601381818107;
+        Tue, 29 Sep 2020 05:16:58 -0700 (PDT)
+Received: from [192.168.1.7] ([195.24.90.54])
+        by smtp.googlemail.com with ESMTPSA id r16sm5120171ejb.110.2020.09.29.05.16.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 29 Sep 2020 05:16:57 -0700 (PDT)
+Subject: Re: [RESEND v3 2/4] venus: core: vote for video-mem path
+To:     Mansur Alisha Shaik <mansur@codeaurora.org>,
+        linux-media@vger.kernel.org, stanimir.varbanov@linaro.org
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        vgarodia@codeaurora.org, swboyd@chromium.org
+References: <1601262496-27026-1-git-send-email-mansur@codeaurora.org>
+ <1601262496-27026-3-git-send-email-mansur@codeaurora.org>
+From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Message-ID: <339d0c7e-a5ba-400d-e733-3ede8d20dc7f@linaro.org>
+Date:   Tue, 29 Sep 2020 15:16:55 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <1601262496-27026-3-git-send-email-mansur@codeaurora.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Energy Model supports power values expressed in milli-Watts or in an
-'abstract scale'. Update the related comments is the code to reflect that
-state.
+Hi Mansur,
 
-Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
----
- include/linux/energy_model.h | 11 +++++------
- kernel/power/energy_model.c  |  2 +-
- 2 files changed, 6 insertions(+), 7 deletions(-)
+On 9/28/20 6:08 AM, Mansur Alisha Shaik wrote:
+> Currently video driver is voting for venus0-ebi path during buffer
+> processing with an average bandwidth of all the instances and
+> unvoting during session release.
+> 
+> While video streaming when we try to do XO-SD using the command
+> "echo mem > /sys/power/state command" , device is not entering
+> to suspend state and from interconnect summary seeing votes for venus0-ebi
+> 
+> Corrected this by voting for venus0-ebi path in venus_runtime_resume()
+> and unvote during venus_runtime_suspend().
+> 
+> Fixes: 7482a983d ("media: venus: redesign clocks and pm domains control")
 
-diff --git a/include/linux/energy_model.h b/include/linux/energy_model.h
-index b67a51c574b9..b19146b31760 100644
---- a/include/linux/energy_model.h
-+++ b/include/linux/energy_model.h
-@@ -13,9 +13,8 @@
- /**
-  * em_perf_state - Performance state of a performance domain
-  * @frequency:	The frequency in KHz, for consistency with CPUFreq
-- * @power:	The power consumed at this level, in milli-watts (by 1 CPU or
--		by a registered device). It can be a total power: static and
--		dynamic.
-+ * @power:	The power consumed at this level (by 1 CPU or by a registered
-+ *		device). It can be a total power: static and dynamic.
-  * @cost:	The cost coefficient associated with this level, used during
-  *		energy calculation. Equal to: power * max_frequency / frequency
-  */
-@@ -55,7 +54,7 @@ struct em_data_callback {
- 	/**
- 	 * active_power() - Provide power at the next performance state of
- 	 *		a device
--	 * @power	: Active power at the performance state in mW
-+	 * @power	: Active power at the performance state
- 	 *		(modified)
- 	 * @freq	: Frequency at the performance state in kHz
- 	 *		(modified)
-@@ -66,8 +65,8 @@ struct em_data_callback {
- 	 * and frequency.
- 	 *
- 	 * In case of CPUs, the power is the one of a single CPU in the domain,
--	 * expressed in milli-watts. It is expected to fit in the
--	 * [0, EM_MAX_POWER] range.
-+	 * expressed in milli-Watts or an abstract scale. It is expected to
-+	 * fit in the [0, EM_MAX_POWER] range.
- 	 *
- 	 * Return 0 on success.
- 	 */
-diff --git a/kernel/power/energy_model.c b/kernel/power/energy_model.c
-index c1ff7fa030ab..2bd2afbb83f5 100644
---- a/kernel/power/energy_model.c
-+++ b/kernel/power/energy_model.c
-@@ -130,7 +130,7 @@ static int em_create_perf_table(struct device *dev, struct em_perf_domain *pd,
- 
- 		/*
- 		 * The power returned by active_state() is expected to be
--		 * positive, in milli-watts and to fit into 16 bits.
-+		 * positive and to fit into 16 bits.
- 		 */
- 		if (!power || power > EM_MAX_POWER) {
- 			dev_err(dev, "EM: invalid power: %lu\n",
+In fact all changes in this series are related to interconnect. The
+interconnect calls are moved to venus_runtime_suspend/resume by commit
+[1], that's why I think the Fixes: tag for all patches in this series
+should be [1].
+
+[1] 07f8f22a33a9e ("media: venus: core: remove CNOC voting while device
+suspend")
+
+> Signed-off-by: Mansur Alisha Shaik <mansur@codeaurora.org>
+> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+> ---
+>  drivers/media/platform/qcom/venus/core.c | 17 ++++++++++++++++-
+>  1 file changed, 16 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/media/platform/qcom/venus/core.c b/drivers/media/platform/qcom/venus/core.c
+> index 52a3886..fa363b8 100644
+> --- a/drivers/media/platform/qcom/venus/core.c
+> +++ b/drivers/media/platform/qcom/venus/core.c
+> @@ -363,7 +363,18 @@ static __maybe_unused int venus_runtime_suspend(struct device *dev)
+>  
+>  	ret = icc_set_bw(core->cpucfg_path, 0, 0);
+>  	if (ret)
+> -		return ret;
+> +		goto err_cpucfg_path;
+> +
+> +	ret = icc_set_bw(core->video_path, 0, 0);
+> +	if (ret)
+> +		goto err_video_path;
+> +
+> +	return ret;
+> +
+> +err_video_path:
+> +	icc_set_bw(core->cpucfg_path, kbps_to_icc(1000), 0);
+> +err_cpucfg_path:
+> +	pm_ops->core_power(dev, POWER_ON);
+>  
+>  	return ret;
+>  }
+> @@ -374,6 +385,10 @@ static __maybe_unused int venus_runtime_resume(struct device *dev)
+>  	const struct venus_pm_ops *pm_ops = core->pm_ops;
+>  	int ret;
+>  
+> +	ret = icc_set_bw(core->video_path, 0, kbps_to_icc(1000));
+> +	if (ret)
+> +		return ret;
+> +
+>  	ret = icc_set_bw(core->cpucfg_path, 0, kbps_to_icc(1000));
+>  	if (ret)
+>  		return ret;
+> 
+
 -- 
-2.17.1
-
+regards,
+Stan
