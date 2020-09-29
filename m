@@ -2,71 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B031527D625
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 20:50:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86A4627D628
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 20:51:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728528AbgI2Su3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 14:50:29 -0400
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:35167 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728215AbgI2SuW (ORCPT
+        id S1728371AbgI2Svm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 14:51:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49296 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728166AbgI2Svm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 14:50:22 -0400
-Received: by mail-ot1-f66.google.com with SMTP id s66so5511608otb.2;
-        Tue, 29 Sep 2020 11:50:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=FlY36t0lFmSG/YEvAXZ1c3DWMltvR1kv4E6I0v2DXSI=;
-        b=Mo4EhGnRaNaQFJ/A2yhNo/rgz8ptOxjqdL73ikdx20VfILCviD00wvcRU1NLZ06HT5
-         pLQCL1tY5riG88Nc70eCfuob4N8wHbyqTGcaghX4Havcidz5zfv7mSGs0JGYX7PHNqWx
-         cme8t8nEeTjVS9j0uDHkB3qoWP6hKmyZGn/19SpsqNczSVQWhZZqp+pDSSMYl9nL/m/J
-         m2MtBQTYZqhbE4YuzmX8h9SqVyKWcUa5H1InJdg7Rtxc4TUMM2pZTYIzmNcIyX5hv9rd
-         2DEhAGLHM56J/wPyYhJcxNsiuiFLVk4XYvESbxdfCDYwsJiUfiP0EpP7/eqDK/W91MNb
-         DgOw==
-X-Gm-Message-State: AOAM532q34pYun5hA4gPt2TdMXgEievHYU8CvdykCF3hzMKc13sdS91D
-        NfWVIoUBFXmLa+UI0yzYmw==
-X-Google-Smtp-Source: ABdhPJxeT2mQJ6sjFhni6l8SuAbEzbsIDMANxd+3WvcyMMsKV7IcExTq3d1wBEt9nCzGwCxEEG0+qg==
-X-Received: by 2002:a9d:1721:: with SMTP id i33mr3595627ota.366.1601405419948;
-        Tue, 29 Sep 2020 11:50:19 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id o205sm1183869oig.8.2020.09.29.11.50.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Sep 2020 11:50:19 -0700 (PDT)
-Received: (nullmailer pid 950972 invoked by uid 1000);
-        Tue, 29 Sep 2020 18:50:18 -0000
-Date:   Tue, 29 Sep 2020 13:50:18 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
-        Shawn Guo <shawnguo@kernel.org>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        David Jander <david@protonic.nl>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Sascha Hauer <s.hauer@pengutronix.de>
-Subject: Re: [PATCH v2 1/2] dt-bindings: arm: fsl: add Protonic WD3 board
-Message-ID: <20200929185018.GA950920@bogus>
-References: <20200924045706.23496-1-o.rempel@pengutronix.de>
- <20200924045706.23496-2-o.rempel@pengutronix.de>
+        Tue, 29 Sep 2020 14:51:42 -0400
+Received: from hall.aurel32.net (hall.aurel32.net [IPv6:2001:bc8:30d7:100::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9870C061755;
+        Tue, 29 Sep 2020 11:51:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=aurel32.net
+        ; s=202004.hall; h=In-Reply-To:Content-Type:MIME-Version:References:
+        Message-ID:Subject:Cc:To:From:Date:Content-Transfer-Encoding:From:Reply-To:
+        Subject:Content-ID:Content-Description:X-Debbugs-Cc;
+        bh=4oPHUpydHQHVg7N/DiTg/2k5w4HoApzrMoMKz556bOk=; b=LYrI13lQzAkLkQtkFjsnhoaIto
+        +1o1p738YrPZINi8UpfLvfRYPfu9YXt/TWANnemzsu/WSbVsODTgNC/ARyLKp/gLoIW2mMZcjbv3h
+        xuq8plU4wHnSGvLKW7Na6oePETtve74DhVmSH1azo2sOAD20v1lKUPSjlfwiZTCV4h428O7imIpgq
+        Snj2dEUyADwX3v8TK2TE3RW9aKAlgwp0u6u7LrqL0g3WUhu28JHW/wN0OwOFJb3Vw1LrEIoySZeWm
+        pL3Vh556nV4bXwDnWg55LQ2iKoMUCR+NdXDfzufhACNgLNiyB5lv78YOlT6Ir/QgO5WLarIidRO86
+        Tg+BbfCw==;
+Received: from [2a01:e35:2fdd:a4e1:fe91:fc89:bc43:b814] (helo=ohm.rr44.fr)
+        by hall.aurel32.net with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <aurelien@aurel32.net>)
+        id 1kNKio-0004jI-HC; Tue, 29 Sep 2020 20:51:30 +0200
+Received: from aurel32 by ohm.rr44.fr with local (Exim 4.94)
+        (envelope-from <aurelien@aurel32.net>)
+        id 1kNKil-000oKY-UZ; Tue, 29 Sep 2020 20:51:27 +0200
+Date:   Tue, 29 Sep 2020 20:51:27 +0200
+From:   Aurelien Jarno <aurelien@aurel32.net>
+To:     Guo Ren <guoren@kernel.org>
+Cc:     Andreas Schwab <schwab@linux-m68k.org>,
+        Tycho Andersen <tycho@tycho.ws>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Nick Hu <nickhu@andestech.com>,
+        Anup Patel <anup@brainfault.org>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-csky@vger.kernel.org, Guo Ren <guoren@linux.alibaba.com>,
+        Zong Li <zong.li@sifive.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Greentime Hu <greentime.hu@sifive.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-riscv <linux-riscv@lists.infradead.org>
+Subject: Re: [PATCH V2 1/3] riscv: Fixup static_obj() fail
+Message-ID: <20200929185127.GC2705@aurel32.net>
+Mail-Followup-To: Guo Ren <guoren@kernel.org>,
+        Andreas Schwab <schwab@linux-m68k.org>,
+        Tycho Andersen <tycho@tycho.ws>, Albert Ou <aou@eecs.berkeley.edu>,
+        Nick Hu <nickhu@andestech.com>, Anup Patel <anup@brainfault.org>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-csky@vger.kernel.org, Guo Ren <guoren@linux.alibaba.com>,
+        Zong Li <zong.li@sifive.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Greentime Hu <greentime.hu@sifive.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-riscv <linux-riscv@lists.infradead.org>
+References: <1593266228-61125-1-git-send-email-guoren@kernel.org>
+ <1593266228-61125-2-git-send-email-guoren@kernel.org>
+ <20200911204512.GA2705@aurel32.net>
+ <CAJF2gTQiLV8sDE5cnvP=aBog4zaiMvMeieg_JtXwRODky1u3Hg@mail.gmail.com>
+ <20200914103836.GB2705@aurel32.net>
+ <87lfgzeidk.fsf@igel.home>
+ <CAJF2gTQ8ONde3GRhQgx2Nqvb5X20nTmW8jZEemZKhezRDzP3aQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200924045706.23496-2-o.rempel@pengutronix.de>
+In-Reply-To: <CAJF2gTQ8ONde3GRhQgx2Nqvb5X20nTmW8jZEemZKhezRDzP3aQ@mail.gmail.com>
+User-Agent: Mutt/1.14.6 (2020-07-11)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 24 Sep 2020 06:57:05 +0200, Oleksij Rempel wrote:
-> Add Protonic Holland WD3 iMX6qp based board
+Hi,
+
+On 2020-09-25 00:19, Guo Ren wrote:
+> How about this, revert the commit and don't free INIT_DATA_SECTION. I
+> think the solution is safe enough, but wast a little memory.
 > 
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> ---
->  Documentation/devicetree/bindings/arm/fsl.yaml | 1 +
->  1 file changed, 1 insertion(+)
+> diff --git a/arch/riscv/kernel/vmlinux.lds.S b/arch/riscv/kernel/vmlinux.lds.S
+> index f3586e3..34d00d9 100644
+> --- a/arch/riscv/kernel/vmlinux.lds.S
+> +++ b/arch/riscv/kernel/vmlinux.lds.S
+> @@ -22,13 +22,11 @@ SECTIONS
+>         /* Beginning of code and text segment */
+>         . = LOAD_OFFSET;
+>         _start = .;
+> -       _stext = .;
+>         HEAD_TEXT_SECTION
+>         . = ALIGN(PAGE_SIZE);
+> 
+>         __init_begin = .;
+>         INIT_TEXT_SECTION(PAGE_SIZE)
+> -       INIT_DATA_SECTION(16)
+>         . = ALIGN(8);
+>         __soc_early_init_table : {
+>                 __soc_early_init_table_start = .;
+> @@ -55,6 +53,7 @@ SECTIONS
+>         . = ALIGN(SECTION_ALIGN);
+>         .text : {
+>                 _text = .;
+> +               _stext = .;
+>                 TEXT_TEXT
+>                 SCHED_TEXT
+>                 CPUIDLE_TEXT
+> @@ -67,6 +66,8 @@ SECTIONS
+>                 _etext = .;
+>         }
+> 
+> +       INIT_DATA_SECTION(16)
+> +
+>         /* Start of data section */
+>         _sdata = .;
+>         RO_DATA(SECTION_ALIGN)
 > 
 
-Acked-by: Rob Herring <robh@kernel.org>
+This patch doesn't apply, as tabs have been converted to space
+somewhere. After fixing that, the patch applies and I confirm that it
+fixes the problem.
+
+Tested-by: Aurelien Jarno <aurelien@aurel32.net>
+
+Thanks,
+Aurelien
+
+-- 
+Aurelien Jarno                          GPG: 4096R/1DDD8C9B
+aurelien@aurel32.net                 http://www.aurel32.net
