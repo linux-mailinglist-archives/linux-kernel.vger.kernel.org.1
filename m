@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94C2D27C932
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:08:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74E5927C938
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:08:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731395AbgI2MI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 08:08:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55996 "EHLO mail.kernel.org"
+        id S1731786AbgI2MIj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 08:08:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56994 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730231AbgI2Lhg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1730232AbgI2Lhg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 29 Sep 2020 07:37:36 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3B11023B55;
-        Tue, 29 Sep 2020 11:36:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 823E523B5D;
+        Tue, 29 Sep 2020 11:36:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601379374;
-        bh=SvIJh07UqMEX773ha9mfl9vjNO/Yk8dtySZJaD5i3jo=;
+        s=default; t=1601379377;
+        bh=TJqsiAM/hFr9HnL8UDamF+XdU6EhqsF4svPBJEguVd0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1HDimXehda9rwCuG/N9KmodIMxbQeokYGk8HdmnSzHrZUhJ5pcbREz2vZR+5lDJ6T
-         B/6efWVprhW4KyFQUeFBi8dc/tQVBYeD20hG+0yHyBVYMCr2I2Razd6Ab4cbB/B++5
-         WM7vUCoX1pOELJ2n8ZzdyialEWxOAMlXqnMFk9Rk=
+        b=rPur0TyP96P+aMbRzf4njpNJMDsmK95C2QGj20Di/yhzQimV2QZr3Z0aOImSO2FVa
+         rfmNMV/H+eI2XuNS3tiNC/Cc4ejcjvCCodLeaCnuf5idQ6eVIGSBOUVxvkDgmwgT8H
+         C9VVGJ9A9PKMVFtPXq9BXhWNV8nJvcHsTQwt+4Bk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dmitry Osipenko <digetx@gmail.com>,
-        Jon Hunter <jonathanh@nvidia.com>,
+        stable@vger.kernel.org,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
         Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 135/388] dmaengine: tegra-apb: Prevent race conditions on channels freeing
-Date:   Tue, 29 Sep 2020 12:57:46 +0200
-Message-Id: <20200929110017.009426557@linuxfoundation.org>
+Subject: [PATCH 5.4 136/388] soundwire: bus: disable pm_runtime in sdw_slave_delete
+Date:   Tue, 29 Sep 2020 12:57:47 +0200
+Message-Id: <20200929110017.058597177@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200929110010.467764689@linuxfoundation.org>
 References: <20200929110010.467764689@linuxfoundation.org>
@@ -43,37 +43,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmitry Osipenko <digetx@gmail.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-[ Upstream commit 8e84172e372bdca20c305d92d51d33640d2da431 ]
+[ Upstream commit dff70572e9a3a1a01d9dbc2279faa784d95f41b6 ]
 
-It's incorrect to check the channel's "busy" state without taking a lock.
-That shouldn't cause any real troubles, nevertheless it's always better
-not to have any race conditions in the code.
+Before removing the slave device, disable pm_runtime to prevent any
+race condition with the resume being executed after the bus and slave
+devices are removed.
 
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-Acked-by: Jon Hunter <jonathanh@nvidia.com>
-Link: https://lore.kernel.org/r/20200209163356.6439-5-digetx@gmail.com
+Since this pm_runtime_disable() is handled in common routines,
+implementations of Slave drivers do not need to call it in their
+.remove() routine.
+
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20200115000844.14695-8-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/dma/tegra20-apb-dma.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/soundwire/bus.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/dma/tegra20-apb-dma.c b/drivers/dma/tegra20-apb-dma.c
-index 4a750e29bfb53..3fe27dbde5b2b 100644
---- a/drivers/dma/tegra20-apb-dma.c
-+++ b/drivers/dma/tegra20-apb-dma.c
-@@ -1287,8 +1287,7 @@ static void tegra_dma_free_chan_resources(struct dma_chan *dc)
+diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
+index fc53dbe57f854..a90963812357c 100644
+--- a/drivers/soundwire/bus.c
++++ b/drivers/soundwire/bus.c
+@@ -113,6 +113,8 @@ static int sdw_delete_slave(struct device *dev, void *data)
+ 	struct sdw_slave *slave = dev_to_sdw_dev(dev);
+ 	struct sdw_bus *bus = slave->bus;
  
- 	dev_dbg(tdc2dev(tdc), "Freeing channel %d\n", tdc->id);
++	pm_runtime_disable(dev);
++
+ 	sdw_slave_debugfs_exit(slave);
  
--	if (tdc->busy)
--		tegra_dma_terminate_all(dc);
-+	tegra_dma_terminate_all(dc);
- 
- 	spin_lock_irqsave(&tdc->lock, flags);
- 	list_splice_init(&tdc->pending_sg_req, &sg_req_list);
+ 	mutex_lock(&bus->bus_lock);
 -- 
 2.25.1
 
