@@ -2,39 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5489527C4C7
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:17:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9849527C32B
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:03:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729589AbgI2LQc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:16:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32814 "EHLO mail.kernel.org"
+        id S1728491AbgI2LDo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:03:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39548 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729576AbgI2LQR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:16:17 -0400
+        id S1728474AbgI2LDm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:03:42 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 95D40206A5;
-        Tue, 29 Sep 2020 11:16:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3695C20C09;
+        Tue, 29 Sep 2020 11:03:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601378176;
-        bh=ZIwn71VTK2fauOMlr/olKull/NtNHPDh5lZ9JvYgnbI=;
+        s=default; t=1601377421;
+        bh=KzL3UvGrZD1l0U50mqGd94n3Rav+iKUimbADn3+1D/Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Mj1Nb9i8MJBNvrWrHmMq4E4nOqqMmCUZa1IA67bAF3Qe3U29szyIaA8jjXUniUVHO
-         eXnIOrWUyTGWoO/iZA7mFAyU4ATfaXhPu2ALuGFZtkyhCMTIIDgFEhNZmnI0h2qrMG
-         xJ8s5c37JXBizISno+4a4oiJCP9y1dYJeMAfvd7o=
+        b=zOR71EwVvSs7pScJEKooz8Y6OqdPP4tAbBswdp8n1+elHM0h5MyZZYmscAfsrkFbH
+         Sp7HY+6G27dDS8uxQ5vf0KNSk1dfKeLnU78DME3w6uTc/EAvBn0Tu/WZDxiUImdWhK
+         IJh97zD1e6zgKYW44qOMSQtxeZuzct4CAjsbj39g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qian Cai <cai@lca.pw>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org,
+        Shamir Rabinovitch <shamir.rabinovitch@oracle.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        "Nobuhiro Iwamatsu (CIP)" <nobuhiro1.iwamatsu@toshiba.co.jp>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 059/166] skbuff: fix a data race in skb_queue_len()
-Date:   Tue, 29 Sep 2020 12:59:31 +0200
-Message-Id: <20200929105938.166163606@linuxfoundation.org>
+Subject: [PATCH 4.4 05/85] RDMA/ucma: ucma_context reference leak in error path
+Date:   Tue, 29 Sep 2020 12:59:32 +0200
+Message-Id: <20200929105928.479979630@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929105935.184737111@linuxfoundation.org>
-References: <20200929105935.184737111@linuxfoundation.org>
+In-Reply-To: <20200929105928.198942536@linuxfoundation.org>
+References: <20200929105928.198942536@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,114 +46,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qian Cai <cai@lca.pw>
+From: Shamir Rabinovitch <shamir.rabinovitch@oracle.com>
 
-[ Upstream commit 86b18aaa2b5b5bb48e609cd591b3d2d0fdbe0442 ]
+commit ef95a90ae6f4f21990e1f7ced6719784a409e811 upstream.
 
-sk_buff.qlen can be accessed concurrently as noticed by KCSAN,
+Validating input parameters should be done before getting the cm_id
+otherwise it can leak a cm_id reference.
 
- BUG: KCSAN: data-race in __skb_try_recv_from_queue / unix_dgram_sendmsg
-
- read to 0xffff8a1b1d8a81c0 of 4 bytes by task 5371 on cpu 96:
-  unix_dgram_sendmsg+0x9a9/0xb70 include/linux/skbuff.h:1821
-				 net/unix/af_unix.c:1761
-  ____sys_sendmsg+0x33e/0x370
-  ___sys_sendmsg+0xa6/0xf0
-  __sys_sendmsg+0x69/0xf0
-  __x64_sys_sendmsg+0x51/0x70
-  do_syscall_64+0x91/0xb47
-  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-
- write to 0xffff8a1b1d8a81c0 of 4 bytes by task 1 on cpu 99:
-  __skb_try_recv_from_queue+0x327/0x410 include/linux/skbuff.h:2029
-  __skb_try_recv_datagram+0xbe/0x220
-  unix_dgram_recvmsg+0xee/0x850
-  ____sys_recvmsg+0x1fb/0x210
-  ___sys_recvmsg+0xa2/0xf0
-  __sys_recvmsg+0x66/0xf0
-  __x64_sys_recvmsg+0x51/0x70
-  do_syscall_64+0x91/0xb47
-  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-
-Since only the read is operating as lockless, it could introduce a logic
-bug in unix_recvq_full() due to the load tearing. Fix it by adding
-a lockless variant of skb_queue_len() and unix_recvq_full() where
-READ_ONCE() is on the read while WRITE_ONCE() is on the write similar to
-the commit d7d16a89350a ("net: add skb_queue_empty_lockless()").
-
-Signed-off-by: Qian Cai <cai@lca.pw>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 6a21dfc0d0db ("RDMA/ucma: Limit possible option size")
+Signed-off-by: Shamir Rabinovitch <shamir.rabinovitch@oracle.com>
+Reviewed-by: Leon Romanovsky <leonro@mellanox.com>
+Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+[iwamatsu: Backported to 4.4, 4.9 and 4.14: adjust context]
+Signed-off-by: Nobuhiro Iwamatsu (CIP) <nobuhiro1.iwamatsu@toshiba.co.jp>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/skbuff.h | 14 +++++++++++++-
- net/unix/af_unix.c     | 11 +++++++++--
- 2 files changed, 22 insertions(+), 3 deletions(-)
+ drivers/infiniband/core/ucma.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
-index 71c77463d3432..3690985e24a8a 100644
---- a/include/linux/skbuff.h
-+++ b/include/linux/skbuff.h
-@@ -1674,6 +1674,18 @@ static inline __u32 skb_queue_len(const struct sk_buff_head *list_)
- 	return list_->qlen;
- }
+diff --git a/drivers/infiniband/core/ucma.c b/drivers/infiniband/core/ucma.c
+index 3e4d3d5560bf1..6315f77b4a58c 100644
+--- a/drivers/infiniband/core/ucma.c
++++ b/drivers/infiniband/core/ucma.c
+@@ -1295,13 +1295,13 @@ static ssize_t ucma_set_option(struct ucma_file *file, const char __user *inbuf,
+ 	if (copy_from_user(&cmd, inbuf, sizeof(cmd)))
+ 		return -EFAULT;
  
-+/**
-+ *	skb_queue_len_lockless	- get queue length
-+ *	@list_: list to measure
-+ *
-+ *	Return the length of an &sk_buff queue.
-+ *	This variant can be used in lockless contexts.
-+ */
-+static inline __u32 skb_queue_len_lockless(const struct sk_buff_head *list_)
-+{
-+	return READ_ONCE(list_->qlen);
-+}
++	if (unlikely(cmd.optlen > KMALLOC_MAX_SIZE))
++		return -EINVAL;
 +
- /**
-  *	__skb_queue_head_init - initialize non-spinlock portions of sk_buff_head
-  *	@list: queue to initialize
-@@ -1881,7 +1893,7 @@ static inline void __skb_unlink(struct sk_buff *skb, struct sk_buff_head *list)
- {
- 	struct sk_buff *next, *prev;
+ 	ctx = ucma_get_ctx(file, cmd.id);
+ 	if (IS_ERR(ctx))
+ 		return PTR_ERR(ctx);
  
--	list->qlen--;
-+	WRITE_ONCE(list->qlen, list->qlen - 1);
- 	next	   = skb->next;
- 	prev	   = skb->prev;
- 	skb->next  = skb->prev = NULL;
-diff --git a/net/unix/af_unix.c b/net/unix/af_unix.c
-index 091e93798eacc..44ff3f5c22dfd 100644
---- a/net/unix/af_unix.c
-+++ b/net/unix/af_unix.c
-@@ -192,11 +192,17 @@ static inline int unix_may_send(struct sock *sk, struct sock *osk)
- 	return unix_peer(osk) == NULL || unix_our_peer(sk, osk);
- }
- 
--static inline int unix_recvq_full(struct sock const *sk)
-+static inline int unix_recvq_full(const struct sock *sk)
- {
- 	return skb_queue_len(&sk->sk_receive_queue) > sk->sk_max_ack_backlog;
- }
- 
-+static inline int unix_recvq_full_lockless(const struct sock *sk)
-+{
-+	return skb_queue_len_lockless(&sk->sk_receive_queue) >
-+		READ_ONCE(sk->sk_max_ack_backlog);
-+}
-+
- struct sock *unix_peer_get(struct sock *s)
- {
- 	struct sock *peer;
-@@ -1792,7 +1798,8 @@ restart_locked:
- 	 * - unix_peer(sk) == sk by time of get but disconnected before lock
- 	 */
- 	if (other != sk &&
--	    unlikely(unix_peer(other) != sk && unix_recvq_full(other))) {
-+	    unlikely(unix_peer(other) != sk &&
-+	    unix_recvq_full_lockless(other))) {
- 		if (timeo) {
- 			timeo = unix_wait_for_peer(other, timeo);
- 
+-	if (unlikely(cmd.optlen > KMALLOC_MAX_SIZE))
+-		return -EINVAL;
+-
+ 	optval = memdup_user((void __user *) (unsigned long) cmd.optval,
+ 			     cmd.optlen);
+ 	if (IS_ERR(optval)) {
 -- 
 2.25.1
 
