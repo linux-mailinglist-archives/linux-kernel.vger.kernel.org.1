@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0721327C349
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:06:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CC8527C348
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:06:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728595AbgI2LEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:04:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40266 "EHLO mail.kernel.org"
+        id S1728588AbgI2LEV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:04:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40292 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728566AbgI2LEM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:04:12 -0400
+        id S1728574AbgI2LEP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:04:15 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 623D021D7F;
-        Tue, 29 Sep 2020 11:04:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6244021924;
+        Tue, 29 Sep 2020 11:04:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601377451;
-        bh=4VeEx4Bn4wUKIRHmnGHk6hZdQ1MlXkjkfxA8fr7dEWo=;
+        s=default; t=1601377454;
+        bh=DjjZnuXmxG8+DQetD0b8tSgVwIQADmWBtrQyC0jnWBU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iLN4ijGJagx6uE49XXvoMTbY0XLvriIRne6dQkwCDIfOk28BHAkc+xqfQ0k4sXWxy
-         jf6ZEa2nGsCN9/3KkhvuRKL9QDYY2/ewVQFMxJX/4cGD/80iGT2C9coSqRk0dEdi+C
-         4CkF9WZ57px/KSvSZANDBhHDAA0PErbdBYShBeas=
+        b=eP7Ei3VCt5FzO6GyOHZscJNtIdTJ3GX8Vx1dEtRxn8XdfZZjEK1VZ+xDPiURycLtJ
+         zwdNGoj9tCOImoGjzSWnXu5wPA3Bsa+kCi7IEKcCENS6MpVtWKAP4Msmr4cPIDwdok
+         MnnzWN7SXmxMTk6s+FxrrlzyG7eXExMHij0ThsD8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Howard Chung <howardchung@google.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
+        Sean Young <sean@mess.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 41/85] Bluetooth: L2CAP: handle l2cap config request during open state
-Date:   Tue, 29 Sep 2020 13:00:08 +0200
-Message-Id: <20200929105930.282334426@linuxfoundation.org>
+Subject: [PATCH 4.4 42/85] media: tda10071: fix unsigned sign extension overflow
+Date:   Tue, 29 Sep 2020 13:00:09 +0200
+Message-Id: <20200929105930.336089662@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200929105928.198942536@linuxfoundation.org>
 References: <20200929105928.198942536@linuxfoundation.org>
@@ -43,173 +44,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Howard Chung <howardchung@google.com>
+From: Colin Ian King <colin.king@canonical.com>
 
-[ Upstream commit 96298f640104e4cd9a913a6e50b0b981829b94ff ]
+[ Upstream commit a7463e2dc698075132de9905b89f495df888bb79 ]
 
-According to Core Spec Version 5.2 | Vol 3, Part A 6.1.5,
-the incoming L2CAP_ConfigReq should be handled during
-OPEN state.
+The shifting of buf[3] by 24 bits to the left will be promoted to
+a 32 bit signed int and then sign-extended to an unsigned long. In
+the unlikely event that the the top bit of buf[3] is set then all
+then all the upper bits end up as also being set because of
+the sign-extension and this affect the ev->post_bit_error sum.
+Fix this by using the temporary u32 variable bit_error to avoid
+the sign-extension promotion. This also removes the need to do the
+computation twice.
 
-The section below shows the btmon trace when running
-L2CAP/COS/CFD/BV-12-C before and after this change.
+Addresses-Coverity: ("Unintended sign extension")
 
-=== Before ===
-...
-> ACL Data RX: Handle 256 flags 0x02 dlen 12                #22
-      L2CAP: Connection Request (0x02) ident 2 len 4
-        PSM: 1 (0x0001)
-        Source CID: 65
-< ACL Data TX: Handle 256 flags 0x00 dlen 16                #23
-      L2CAP: Connection Response (0x03) ident 2 len 8
-        Destination CID: 64
-        Source CID: 65
-        Result: Connection successful (0x0000)
-        Status: No further information available (0x0000)
-< ACL Data TX: Handle 256 flags 0x00 dlen 12                #24
-      L2CAP: Configure Request (0x04) ident 2 len 4
-        Destination CID: 65
-        Flags: 0x0000
-> HCI Event: Number of Completed Packets (0x13) plen 5      #25
-        Num handles: 1
-        Handle: 256
-        Count: 1
-> HCI Event: Number of Completed Packets (0x13) plen 5      #26
-        Num handles: 1
-        Handle: 256
-        Count: 1
-> ACL Data RX: Handle 256 flags 0x02 dlen 16                #27
-      L2CAP: Configure Request (0x04) ident 3 len 8
-        Destination CID: 64
-        Flags: 0x0000
-        Option: Unknown (0x10) [hint]
-        01 00                                            ..
-< ACL Data TX: Handle 256 flags 0x00 dlen 18                #28
-      L2CAP: Configure Response (0x05) ident 3 len 10
-        Source CID: 65
-        Flags: 0x0000
-        Result: Success (0x0000)
-        Option: Maximum Transmission Unit (0x01) [mandatory]
-          MTU: 672
-> HCI Event: Number of Completed Packets (0x13) plen 5      #29
-        Num handles: 1
-        Handle: 256
-        Count: 1
-> ACL Data RX: Handle 256 flags 0x02 dlen 14                #30
-      L2CAP: Configure Response (0x05) ident 2 len 6
-        Source CID: 64
-        Flags: 0x0000
-        Result: Success (0x0000)
-> ACL Data RX: Handle 256 flags 0x02 dlen 20                #31
-      L2CAP: Configure Request (0x04) ident 3 len 12
-        Destination CID: 64
-        Flags: 0x0000
-        Option: Unknown (0x10) [hint]
-        01 00 91 02 11 11                                ......
-< ACL Data TX: Handle 256 flags 0x00 dlen 14                #32
-      L2CAP: Command Reject (0x01) ident 3 len 6
-        Reason: Invalid CID in request (0x0002)
-        Destination CID: 64
-        Source CID: 65
-> HCI Event: Number of Completed Packets (0x13) plen 5      #33
-        Num handles: 1
-        Handle: 256
-        Count: 1
-...
-=== After ===
-...
-> ACL Data RX: Handle 256 flags 0x02 dlen 12               #22
-      L2CAP: Connection Request (0x02) ident 2 len 4
-        PSM: 1 (0x0001)
-        Source CID: 65
-< ACL Data TX: Handle 256 flags 0x00 dlen 16               #23
-      L2CAP: Connection Response (0x03) ident 2 len 8
-        Destination CID: 64
-        Source CID: 65
-        Result: Connection successful (0x0000)
-        Status: No further information available (0x0000)
-< ACL Data TX: Handle 256 flags 0x00 dlen 12               #24
-      L2CAP: Configure Request (0x04) ident 2 len 4
-        Destination CID: 65
-        Flags: 0x0000
-> HCI Event: Number of Completed Packets (0x13) plen 5     #25
-        Num handles: 1
-        Handle: 256
-        Count: 1
-> HCI Event: Number of Completed Packets (0x13) plen 5     #26
-        Num handles: 1
-        Handle: 256
-        Count: 1
-> ACL Data RX: Handle 256 flags 0x02 dlen 16               #27
-      L2CAP: Configure Request (0x04) ident 3 len 8
-        Destination CID: 64
-        Flags: 0x0000
-        Option: Unknown (0x10) [hint]
-        01 00                                            ..
-< ACL Data TX: Handle 256 flags 0x00 dlen 18               #28
-      L2CAP: Configure Response (0x05) ident 3 len 10
-        Source CID: 65
-        Flags: 0x0000
-        Result: Success (0x0000)
-        Option: Maximum Transmission Unit (0x01) [mandatory]
-          MTU: 672
-> HCI Event: Number of Completed Packets (0x13) plen 5     #29
-        Num handles: 1
-        Handle: 256
-        Count: 1
-> ACL Data RX: Handle 256 flags 0x02 dlen 14               #30
-      L2CAP: Configure Response (0x05) ident 2 len 6
-        Source CID: 64
-        Flags: 0x0000
-        Result: Success (0x0000)
-> ACL Data RX: Handle 256 flags 0x02 dlen 20               #31
-      L2CAP: Configure Request (0x04) ident 3 len 12
-        Destination CID: 64
-        Flags: 0x0000
-        Option: Unknown (0x10) [hint]
-        01 00 91 02 11 11                                .....
-< ACL Data TX: Handle 256 flags 0x00 dlen 18               #32
-      L2CAP: Configure Response (0x05) ident 3 len 10
-        Source CID: 65
-        Flags: 0x0000
-        Result: Success (0x0000)
-        Option: Maximum Transmission Unit (0x01) [mandatory]
-          MTU: 672
-< ACL Data TX: Handle 256 flags 0x00 dlen 12               #33
-      L2CAP: Configure Request (0x04) ident 3 len 4
-        Destination CID: 65
-        Flags: 0x0000
-> HCI Event: Number of Completed Packets (0x13) plen 5     #34
-        Num handles: 1
-        Handle: 256
-        Count: 1
-> HCI Event: Number of Completed Packets (0x13) plen 5     #35
-        Num handles: 1
-        Handle: 256
-        Count: 1
-...
-
-Signed-off-by: Howard Chung <howardchung@google.com>
-Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+Fixes: 267897a4708f ("[media] tda10071: implement DVBv5 statistics")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Sean Young <sean@mess.org>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/bluetooth/l2cap_core.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/media/dvb-frontends/tda10071.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/net/bluetooth/l2cap_core.c b/net/bluetooth/l2cap_core.c
-index f6112f495a36c..f2db50da8ce2e 100644
---- a/net/bluetooth/l2cap_core.c
-+++ b/net/bluetooth/l2cap_core.c
-@@ -4096,7 +4096,8 @@ static inline int l2cap_config_req(struct l2cap_conn *conn,
- 		return 0;
- 	}
+diff --git a/drivers/media/dvb-frontends/tda10071.c b/drivers/media/dvb-frontends/tda10071.c
+index 119d47596ac81..b81887c4f72a9 100644
+--- a/drivers/media/dvb-frontends/tda10071.c
++++ b/drivers/media/dvb-frontends/tda10071.c
+@@ -483,10 +483,11 @@ static int tda10071_read_status(struct dvb_frontend *fe, enum fe_status *status)
+ 			goto error;
  
--	if (chan->state != BT_CONFIG && chan->state != BT_CONNECT2) {
-+	if (chan->state != BT_CONFIG && chan->state != BT_CONNECT2 &&
-+	    chan->state != BT_CONNECTED) {
- 		cmd_reject_invalid_cid(conn, cmd->ident, chan->scid,
- 				       chan->dcid);
- 		goto unlock;
+ 		if (dev->delivery_system == SYS_DVBS) {
+-			dev->dvbv3_ber = buf[0] << 24 | buf[1] << 16 |
+-					 buf[2] << 8 | buf[3] << 0;
+-			dev->post_bit_error += buf[0] << 24 | buf[1] << 16 |
+-					       buf[2] << 8 | buf[3] << 0;
++			u32 bit_error = buf[0] << 24 | buf[1] << 16 |
++					buf[2] << 8 | buf[3] << 0;
++
++			dev->dvbv3_ber = bit_error;
++			dev->post_bit_error += bit_error;
+ 			c->post_bit_error.stat[0].scale = FE_SCALE_COUNTER;
+ 			c->post_bit_error.stat[0].uvalue = dev->post_bit_error;
+ 			dev->block_error += buf[4] << 8 | buf[5] << 0;
 -- 
 2.25.1
 
