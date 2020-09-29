@@ -2,133 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6191B27CF29
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 15:30:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFBAC27D016
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 15:57:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729875AbgI2NaO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 09:30:14 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44665 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728675AbgI2NaL (ORCPT
+        id S1730886AbgI2N5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 09:57:51 -0400
+Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:47096 "EHLO
+        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729557AbgI2N5o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 09:30:11 -0400
-Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601386210;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=Jen+vsBTJmwNeJb6XLUSNHPzK02PCNuLWQ2L4D6slPY=;
-        b=e5SUxbWAhjVIlYU9oRbFA/6AeA4INYKxfNSb3xtL8eVoMWs7jtFxLJV3kIpfg+eG/uLkB1
-        DmyeLwGqU6KXL0Ot3Ag1W+R+cunSDWWCT8ewv3p3+rFlb+sv+zZ3ACxjieuJauy3J0wUoI
-        pOmUQSJW0LG9YiBubvT4JOT6BZtgJvM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-359--XiroSRQOTW_NfsTbVWhWg-1; Tue, 29 Sep 2020 09:30:05 -0400
-X-MC-Unique: -XiroSRQOTW_NfsTbVWhWg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9A4768015C5;
-        Tue, 29 Sep 2020 13:30:03 +0000 (UTC)
-Received: from [10.36.112.157] (ovpn-112-157.ams2.redhat.com [10.36.112.157])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C5E0E5C1C4;
-        Tue, 29 Sep 2020 13:30:00 +0000 (UTC)
-Subject: Re: [PATCH] mm: clarify usage of GFP_ATOMIC in !preemptible contexts
-To:     Michal Hocko <mhocko@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
-        "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+        Tue, 29 Sep 2020 09:57:44 -0400
+X-IronPort-AV: E=Sophos;i="5.77,318,1596492000"; 
+   d="scan'208";a="470079946"
+Received: from palace.lip6.fr ([132.227.105.202])
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/AES256-SHA256; 29 Sep 2020 15:57:40 +0200
+From:   Julia Lawall <Julia.Lawall@inria.fr>
+To:     linux-samsung-soc@vger.kernel.org
+Cc:     =?UTF-8?q?Valdis=20Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>,
+        Joe Perches <joe@perches.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Michal Hocko <mhocko@suse.com>
-References: <20200929123010.5137-1-mhocko@kernel.org>
-From:   David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat GmbH
-Message-ID: <746c1b7d-f082-8f15-e3ae-c1f09344789f@redhat.com>
-Date:   Tue, 29 Sep 2020 15:29:59 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
-MIME-Version: 1.0
-In-Reply-To: <20200929123010.5137-1-mhocko@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+        kernel-janitors@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH 00/20] media: use semicolons rather than commas to separate statements
+Date:   Tue, 29 Sep 2020 15:14:23 +0200
+Message-Id: <1601385283-26144-1-git-send-email-Julia.Lawall@inria.fr>
+X-Mailer: git-send-email 1.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29.09.20 14:30, Michal Hocko wrote:
-> From: Michal Hocko <mhocko@suse.com>
-> 
-> There is a general understanding that GFP_ATOMIC/GFP_NOWAIT are
-> to be used from atomic contexts. E.g. from within a spin lock or from
-> the IRQ context. This is correct but there are some atomic contexts
-> where the above doesn't hold. One of them would be an NMI context.
-> Page allocator has never supported that and the general fear of this
-> context didn't let anybody to actually even try to use the allocator
-> there. Good, but let's be more specific about that.
-> 
-> Another such a context, and that is where people seem to be more daring,
-> is raw_spin_lock. Mostly because it simply resembles regular spin lock
-> which is supported by the allocator and there is not any implementation
-> difference with !RT kernels in the first place. Be explicit that such
-> a context is not supported by the allocator. The underlying reason is
-> that zone->lock would have to become raw_spin_lock as well and that has
-> turned out to be a problem for RT
-> (http://lkml.kernel.org/r/87mu305c1w.fsf@nanos.tec.linutronix.de).
+These patches replace commas by semicolons.  This was done using the
+Coccinelle semantic patch (http://coccinelle.lip6.fr/) shown below.
 
-Interesting
+This semantic patch ensures that commas inside for loop headers will not be
+transformed.  It also doesn't touch macro definitions.
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
+Coccinelle ensures that braces are added as needed when a single-statement
+branch turns into a multi-statement one.
 
--- 
-Thanks,
+This semantic patch has a few false positives, for variable delcarations
+such as:
 
-David / dhildenb
+LIST_HEAD(x), *y;
 
+The semantic patch could be improved to avoid these, but for the moment
+they have been removed manually (2 occurrences).
+
+// <smpl>
+@initialize:ocaml@
+@@
+
+let infunction p =
+  (* avoid macros *)
+  (List.hd p).current_element <> "something_else"
+
+let combined p1 p2 =
+  (List.hd p1).line_end = (List.hd p2).line ||
+  (((List.hd p1).line_end < (List.hd p2).line) &&
+   ((List.hd p1).col < (List.hd p2).col))
+
+@bad@
+statement S;
+declaration d;
+position p;
+@@
+
+S@p
+d
+
+// special cases where newlines are needed (hope for no more than 5)
+@@
+expression e1,e2;
+statement S;
+position p != bad.p;
+position p1;
+position p2 :
+    script:ocaml(p1) { infunction p1 && combined p1 p2 };
+@@
+
+- e1@p1,@S@p e2@p2;
++ e1; e2;
+
+@@
+expression e1,e2;
+statement S;
+position p != bad.p;
+position p1;
+position p2 :
+    script:ocaml(p1) { infunction p1 && combined p1 p2 };
+@@
+
+- e1@p1,@S@p e2@p2;
++ e1; e2;
+
+@@
+expression e1,e2;
+statement S;
+position p != bad.p;
+position p1;
+position p2 :
+    script:ocaml(p1) { infunction p1 && combined p1 p2 };
+@@
+
+- e1@p1,@S@p e2@p2;
++ e1; e2;
+
+@@
+expression e1,e2;
+statement S;
+position p != bad.p;
+position p1;
+position p2 :
+    script:ocaml(p1) { infunction p1 && combined p1 p2 };
+@@
+
+- e1@p1,@S@p e2@p2;
++ e1; e2;
+
+@@
+expression e1,e2;
+statement S;
+position p != bad.p;
+position p1;
+position p2 :
+    script:ocaml(p1) { infunction p1 && combined p1 p2 };
+@@
+
+- e1@p1,@S@p e2@p2;
++ e1; e2;
+
+@r@
+expression e1,e2;
+statement S;
+position p != bad.p;
+@@
+
+e1 ,@S@p e2;
+
+@@
+expression e1,e2;
+position p1;
+position p2 :
+    script:ocaml(p1) { infunction p1 && not(combined p1 p2) };
+statement S;
+position r.p;
+@@
+
+e1@p1
+-,@S@p
++;
+e2@p2
+... when any
+// </smpl>
+
+---
+
+ drivers/media/dvb-frontends/m88ds3103.c             |    6 ++---
+ drivers/media/dvb-frontends/rtl2832.c               |   14 ++++++------
+ drivers/media/dvb-frontends/ts2020.c                |   10 ++++-----
+ drivers/media/i2c/msp3400-kthreads.c                |   12 +++++++---
+ drivers/media/pci/bt8xx/bttv-cards.c                |    6 +++--
+ drivers/media/pci/saa7134/saa7134-video.c           |    7 ++++--
+ drivers/media/platform/coda/coda-common.c           |    2 -
+ drivers/media/platform/exynos4-is/fimc-core.c       |    6 +++--
+ drivers/media/platform/s3c-camif/camif-core.c       |    6 +++--
+ drivers/media/platform/sunxi/sun4i-csi/sun4i_v4l2.c |    2 -
+ drivers/media/radio/radio-sf16fmr2.c                |    2 -
+ drivers/media/tuners/mt2060.c                       |    2 -
+ drivers/media/usb/au0828/au0828-video.c             |    2 -
+ drivers/media/usb/dvb-usb-v2/dvbsky.c               |   22 ++++++++++----------
+ drivers/media/usb/dvb-usb-v2/lmedm04.c              |    2 -
+ drivers/media/usb/dvb-usb-v2/rtl28xxu.c             |    4 +--
+ drivers/media/usb/dvb-usb/dib0700_devices.c         |    4 +--
+ drivers/media/usb/em28xx/em28xx-audio.c             |   14 ++++++------
+ drivers/media/usb/gspca/ov534.c                     |   12 +++++-----
+ drivers/media/usb/pvrusb2/pvrusb2-devattr.c         |    2 -
+ 20 files changed, 75 insertions(+), 62 deletions(-)
