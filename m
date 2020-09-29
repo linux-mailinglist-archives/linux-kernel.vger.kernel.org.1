@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B207E27CBBD
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:31:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE71E27CD09
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:41:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732682AbgI2MaP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 08:30:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41770 "EHLO mail.kernel.org"
+        id S2387395AbgI2MlT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 08:41:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56504 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729237AbgI2LaX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:30:23 -0400
+        id S1728264AbgI2LNx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:13:53 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0582623ACA;
-        Tue, 29 Sep 2020 11:24:34 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B506421D46;
+        Tue, 29 Sep 2020 11:13:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601378675;
-        bh=+pU0invXC4/YrAgQHq5Xiv0cJU+MIJEVjntsabr4JjU=;
+        s=default; t=1601378032;
+        bh=jUtQX6nZHKTwIyA2f40aoFnLm/DrVK0Fk+Q6WWSm8So=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BzVtX/LjvtrE3wMo1pb+BoNy8Umf4/NYfYjAkGIH9TA/R3RiceTAEklfxpjSyaZHy
-         5rdf5dj9luDKDW+ZQw+TmB5xu3uH0/6RrOGNVv2UfkJ+QhZvzyMN0wzc8O0QXzNs0E
-         yL+a3bMinIOX2nbnEKW/YSIkVLHgpI7rWxOv5LI4=
+        b=kFpV6FHBIKygdR+RyFfcOepejL0mY4/YhUNLoBaKXkvIe8lnxAfM5f3F4wWHTNjnV
+         XydGkQW288eFw7MpErkpPhEVQ5XNB6r/E2XVNfbmFVYk7nJKtFlY1lHEV2Qskf2OmV
+         Aa96XOOQVhJBuf6q3iZ/ddRREPQRh50Qh6fQtR8Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qiujun Huang <hqjagain@gmail.com>,
-        Theodore Tso <tytso@mit.edu>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 098/245] ext4: fix a data race at inode->i_disksize
-Date:   Tue, 29 Sep 2020 12:59:09 +0200
-Message-Id: <20200929105951.767336502@linuxfoundation.org>
+        stable@vger.kernel.org, Bradley Bolen <bradleybolen@gmail.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 038/166] mmc: core: Fix size overflow for mmc partitions
+Date:   Tue, 29 Sep 2020 12:59:10 +0200
+Message-Id: <20200929105937.106531814@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929105946.978650816@linuxfoundation.org>
-References: <20200929105946.978650816@linuxfoundation.org>
+In-Reply-To: <20200929105935.184737111@linuxfoundation.org>
+References: <20200929105935.184737111@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,70 +43,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qiujun Huang <hqjagain@gmail.com>
+From: Bradley Bolen <bradleybolen@gmail.com>
 
-[ Upstream commit dce8e237100f60c28cc66effb526ba65a01d8cb3 ]
+[ Upstream commit f3d7c2292d104519195fdb11192daec13229c219 ]
 
-KCSAN find inode->i_disksize could be accessed concurrently.
+With large eMMC cards, it is possible to create general purpose
+partitions that are bigger than 4GB.  The size member of the mmc_part
+struct is only an unsigned int which overflows for gp partitions larger
+than 4GB.  Change this to a u64 to handle the overflow.
 
-BUG: KCSAN: data-race in ext4_mark_iloc_dirty / ext4_write_end
-
-write (marked) to 0xffff8b8932f40090 of 8 bytes by task 66792 on cpu 0:
- ext4_write_end+0x53f/0x5b0
- ext4_da_write_end+0x237/0x510
- generic_perform_write+0x1c4/0x2a0
- ext4_buffered_write_iter+0x13a/0x210
- ext4_file_write_iter+0xe2/0x9b0
- new_sync_write+0x29c/0x3a0
- __vfs_write+0x92/0xa0
- vfs_write+0xfc/0x2a0
- ksys_write+0xe8/0x140
- __x64_sys_write+0x4c/0x60
- do_syscall_64+0x8a/0x2a0
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-read to 0xffff8b8932f40090 of 8 bytes by task 14414 on cpu 1:
- ext4_mark_iloc_dirty+0x716/0x1190
- ext4_mark_inode_dirty+0xc9/0x360
- ext4_convert_unwritten_extents+0x1bc/0x2a0
- ext4_convert_unwritten_io_end_vec+0xc5/0x150
- ext4_put_io_end+0x82/0x130
- ext4_writepages+0xae7/0x16f0
- do_writepages+0x64/0x120
- __writeback_single_inode+0x7d/0x650
- writeback_sb_inodes+0x3a4/0x860
- __writeback_inodes_wb+0xc4/0x150
- wb_writeback+0x43f/0x510
- wb_workfn+0x3b2/0x8a0
- process_one_work+0x39b/0x7e0
- worker_thread+0x88/0x650
- kthread+0x1d4/0x1f0
- ret_from_fork+0x35/0x40
-
-The plain read is outside of inode->i_data_sem critical section
-which results in a data race. Fix it by adding READ_ONCE().
-
-Signed-off-by: Qiujun Huang <hqjagain@gmail.com>
-Link: https://lore.kernel.org/r/1582556566-3909-1-git-send-email-hqjagain@gmail.com
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Signed-off-by: Bradley Bolen <bradleybolen@gmail.com>
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ext4/inode.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mmc/core/mmc.c   | 9 ++++-----
+ include/linux/mmc/card.h | 2 +-
+ 2 files changed, 5 insertions(+), 6 deletions(-)
 
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index cd833f4e64ef1..52be4c9650241 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -5315,7 +5315,7 @@ static int ext4_do_update_inode(handle_t *handle,
- 		raw_inode->i_file_acl_high =
- 			cpu_to_le16(ei->i_file_acl >> 32);
- 	raw_inode->i_file_acl_lo = cpu_to_le32(ei->i_file_acl);
--	if (ei->i_disksize != ext4_isize(inode->i_sb, raw_inode)) {
-+	if (READ_ONCE(ei->i_disksize) != ext4_isize(inode->i_sb, raw_inode)) {
- 		ext4_isize_set(raw_inode, ei->i_disksize);
- 		need_datasync = 1;
+diff --git a/drivers/mmc/core/mmc.c b/drivers/mmc/core/mmc.c
+index 814a04e8fdd77..2be2313f5950a 100644
+--- a/drivers/mmc/core/mmc.c
++++ b/drivers/mmc/core/mmc.c
+@@ -300,7 +300,7 @@ static void mmc_manage_enhanced_area(struct mmc_card *card, u8 *ext_csd)
  	}
+ }
+ 
+-static void mmc_part_add(struct mmc_card *card, unsigned int size,
++static void mmc_part_add(struct mmc_card *card, u64 size,
+ 			 unsigned int part_cfg, char *name, int idx, bool ro,
+ 			 int area_type)
+ {
+@@ -316,7 +316,7 @@ static void mmc_manage_gp_partitions(struct mmc_card *card, u8 *ext_csd)
+ {
+ 	int idx;
+ 	u8 hc_erase_grp_sz, hc_wp_grp_sz;
+-	unsigned int part_size;
++	u64 part_size;
+ 
+ 	/*
+ 	 * General purpose partition feature support --
+@@ -346,8 +346,7 @@ static void mmc_manage_gp_partitions(struct mmc_card *card, u8 *ext_csd)
+ 				(ext_csd[EXT_CSD_GP_SIZE_MULT + idx * 3 + 1]
+ 				<< 8) +
+ 				ext_csd[EXT_CSD_GP_SIZE_MULT + idx * 3];
+-			part_size *= (size_t)(hc_erase_grp_sz *
+-				hc_wp_grp_sz);
++			part_size *= (hc_erase_grp_sz * hc_wp_grp_sz);
+ 			mmc_part_add(card, part_size << 19,
+ 				EXT_CSD_PART_CONFIG_ACC_GP0 + idx,
+ 				"gp%d", idx, false,
+@@ -365,7 +364,7 @@ static void mmc_manage_gp_partitions(struct mmc_card *card, u8 *ext_csd)
+ static int mmc_decode_ext_csd(struct mmc_card *card, u8 *ext_csd)
+ {
+ 	int err = 0, idx;
+-	unsigned int part_size;
++	u64 part_size;
+ 	struct device_node *np;
+ 	bool broken_hpi = false;
+ 
+diff --git a/include/linux/mmc/card.h b/include/linux/mmc/card.h
+index 279b39008a33b..de81ed857ea37 100644
+--- a/include/linux/mmc/card.h
++++ b/include/linux/mmc/card.h
+@@ -226,7 +226,7 @@ struct mmc_queue_req;
+  * MMC Physical partitions
+  */
+ struct mmc_part {
+-	unsigned int	size;	/* partition size (in bytes) */
++	u64		size;	/* partition size (in bytes) */
+ 	unsigned int	part_cfg;	/* partition type */
+ 	char	name[MAX_MMC_PART_NAME_LEN];
+ 	bool	force_ro;	/* to make boot parts RO by default */
 -- 
 2.25.1
 
