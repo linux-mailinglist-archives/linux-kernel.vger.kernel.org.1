@@ -2,94 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5A5227CC1D
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:34:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3D5227CD07
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:41:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729403AbgI2MdT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 08:33:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37340 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729206AbgI2LW5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:22:57 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5D5D923A5F;
-        Tue, 29 Sep 2020 11:19:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601378397;
-        bh=jsNYaKVgFHpLC/ktuWsKIVg7iwR9LxHLmxcBHAgJsHI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TI7ZDqx0XpMowAgSX5/bXIRAQfhNSAfMM8oEfzVn+uNIwg0B15BSwkN3a3rgjUoTk
-         SsGXinzBDFgrOGnQ6nwrgTN6OqrVmkbR7dm0fj3709HrQJXIzqVTLvbbyVXyULgaeQ
-         WKwZIV/XAhpCLo65qUocS8aaRQEBCdTPQexTBWec=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jiri Slaby <jslaby@suse.cz>,
-        Jens Axboe <axboe@kernel.dk>, linux-ide@vger.kernel.org,
-        Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Subject: [PATCH 4.14 166/166] ata: sata_mv, avoid trigerrable BUG_ON
-Date:   Tue, 29 Sep 2020 13:01:18 +0200
-Message-Id: <20200929105943.488679849@linuxfoundation.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929105935.184737111@linuxfoundation.org>
-References: <20200929105935.184737111@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S1733034AbgI2MlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 08:41:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34286 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729376AbgI2LOF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:14:05 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12323C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 04:14:05 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id y17so5011273lfa.8
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 04:14:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OZ4P5eCNZlIGtDfFRqaX5188qIJ0Vd0GiDBdv3mnk2A=;
+        b=CuDfLigkzrEE4BwFSYuMI1CE2TAXddfC2W4sMUVP2B78n8wvCD3c0UcaD2dtzvWr/X
+         Z8/+8I5bhKS4pQHy6t3vEKFJ/x42hdPx4mQkwNgM4q5jVQZo9wh3ABeM706zzaRX9bKA
+         zFLm5+BXNtjaBTFkC+mn7cM1eAu59isJ1zepfEX5F4x7JVc8R6GnvPXQTh6ILsK9hsv7
+         oGZQOrqrs1IiPsdftd762nGKhPhC40X1SIJP00N3DEhCV0AJ+5b7W15fI5vAMk8mE1OY
+         2JXDnxyzRSliB6jOpsnKamDB+jkjscry0cUEifAj+jtNGkdZEcNGlUIgvGpUFaoKjTwY
+         bIXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OZ4P5eCNZlIGtDfFRqaX5188qIJ0Vd0GiDBdv3mnk2A=;
+        b=GMdpN81gndJcO5zYV1XlKWRAxgzWPExC8LeBIM0b1PFVR5mRkbnDocP6Aqq3ZlNwUR
+         ftLjUCRSyB03MtYqjFpWcRpr2tK3QiGDL0Sdzp2Toh7ixPNLIHu+zf6kfZxJngtV+kEK
+         SeI8fDNI70B4JYyMnULdzvtv6Oo4BOZZoS8+npA6NOwbg4GohuDc2W+A92h+tG+VPhcs
+         wruiiwzJFDkivbtUcgJwmMQ0JUOgGN6vxWhNB/PKSaZaq8SFyjtcKoTU0f28/Dp0i1ya
+         31ZMtpVIAXD6HVWAitnvY3P6SdSsiHa+f4B2vC0tQyWzFWV9Nn/Zw8B+U/277BhLbUzh
+         SfJQ==
+X-Gm-Message-State: AOAM532+8EsinqTaMbajteTt9Dr4VMgrqTvyU+llr3t48R/x5u1cqHyw
+        /sMo7tALCLaigZQG++HwA6Y=
+X-Google-Smtp-Source: ABdhPJwbsr4KqP9lUr/SPd0wqLe4sfUt3aQq9LtrAq87Ab3XluvBzFUACLuvEsdnhnPUmq2oWiBA5g==
+X-Received: by 2002:a19:be0b:: with SMTP id o11mr963382lff.117.1601378043293;
+        Tue, 29 Sep 2020 04:14:03 -0700 (PDT)
+Received: from localhost.localdomain ([149.255.130.5])
+        by smtp.gmail.com with ESMTPSA id z7sm3199419lfb.221.2020.09.29.04.14.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Sep 2020 04:14:02 -0700 (PDT)
+From:   Roman Stratiienko <r.stratiienko@gmail.com>
+To:     linux-sunxi@googlegroups.com
+Cc:     Roman Stratiienko <r.stratiienko@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        megous@megous.com
+Subject: [PATCH] RFC: arm64: arch_timer: Fix timer inconsistency test for A64
+Date:   Tue, 29 Sep 2020 14:13:47 +0300
+Message-Id: <20200929111347.1967438-1-r.stratiienko@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jiri Slaby <jslaby@suse.cz>
+Fixes linux_kselftest:timers_inconsistency-check_arm_64
 
-commit e9f691d899188679746eeb96e6cb520459eda9b4 upstream.
+Test logs without the fix:
+'''
+binary returned non-zero. Exit code: 1, stderr: , stdout:
+Consistent CLOCK_REALTIME
+1601335525:467086804
+1601335525:467087554
+1601335525:467088345
+1601335525:467089095
+1601335525:467089887
+1601335525:467090637
+1601335525:467091429
+1601335525:467092179
+1601335525:467092929
+1601335525:467093720
+1601335525:467094470
+1601335525:467095262
+1601335525:467096012
+1601335525:467096804
+--------------------
+1601335525:467097554
+1601335525:467077012
+--------------------
+1601335525:467099095
+1601335525:467099845
+1601335525:467100637
+1601335525:467101387
+1601335525:467102179
+1601335525:467102929
+'''
 
-There are several reports that the BUG_ON on unsupported command in
-mv_qc_prep can be triggered under some circumstances:
-https://bugzilla.suse.com/show_bug.cgi?id=1110252
-https://serverfault.com/questions/888897/raid-problems-after-power-outage
-https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1652185
-https://bugs.centos.org/view.php?id=14998
-
-Let sata_mv handle the failure gracefully: warn about that incl. the
-failed command number and return an AC_ERR_INVALID error. We can do that
-now thanks to the previous patch.
-
-Remove also the long-standing FIXME.
-
-[v2] use %.2x as commands are defined as hexa.
-
-Signed-off-by: Jiri Slaby <jslaby@suse.cz>
-Cc: Jens Axboe <axboe@kernel.dk>
-Cc: linux-ide@vger.kernel.org
-Cc: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Roman Stratiienko <r.stratiienko@gmail.com>
+CC: linux-arm-kernel@lists.infradead.org
+CC: linux-kernel@vger.kernel.org
+CC: linux-sunxi@googlegroups.com
+CC: megous@megous.com
 ---
- drivers/ata/sata_mv.c |    8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+ drivers/clocksource/arm_arch_timer.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
---- a/drivers/ata/sata_mv.c
-+++ b/drivers/ata/sata_mv.c
-@@ -2111,12 +2111,10 @@ static enum ata_completion_errors mv_qc_
- 		 * non-NCQ mode are: [RW] STREAM DMA and W DMA FUA EXT, none
- 		 * of which are defined/used by Linux.  If we get here, this
- 		 * driver needs work.
--		 *
--		 * FIXME: modify libata to give qc_prep a return value and
--		 * return error here.
- 		 */
--		BUG_ON(tf->command);
--		break;
-+		ata_port_err(ap, "%s: unsupported command: %.2x\n", __func__,
-+				tf->command);
-+		return AC_ERR_INVALID;
- 	}
- 	mv_crqb_pack_cmd(cw++, tf->nsect, ATA_REG_NSECT, 0);
- 	mv_crqb_pack_cmd(cw++, tf->hob_lbal, ATA_REG_LBAL, 0);
-
+diff --git a/drivers/clocksource/arm_arch_timer.c b/drivers/clocksource/arm_arch_timer.c
+index 6c3e841801461..d50aa43cb654b 100644
+--- a/drivers/clocksource/arm_arch_timer.c
++++ b/drivers/clocksource/arm_arch_timer.c
+@@ -346,16 +346,17 @@ static u64 notrace arm64_858921_read_cntvct_el0(void)
+  * number of CPU cycles in 3 consecutive 24 MHz counter periods.
+  */
+ #define __sun50i_a64_read_reg(reg) ({					\
+-	u64 _val;							\
++	u64 _val1, _val2;						\
+ 	int _retries = 150;						\
+ 									\
+ 	do {								\
+-		_val = read_sysreg(reg);				\
++		_val1 = read_sysreg(reg);				\
++		_val2 = read_sysreg(reg);				\
+ 		_retries--;						\
+-	} while (((_val + 1) & GENMASK(9, 0)) <= 1 && _retries);	\
++	} while (((_val2 - _val1) > 0x10) && _retries);			\
+ 									\
+ 	WARN_ON_ONCE(!_retries);					\
+-	_val;								\
++	_val2;								\
+ })
+ 
+ static u64 notrace sun50i_a64_read_cntpct_el0(void)
+-- 
+2.25.1
 
