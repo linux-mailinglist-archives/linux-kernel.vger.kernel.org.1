@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0407527CCA2
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:38:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C970B27CDEA
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:48:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729360AbgI2Mh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 08:37:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35550 "EHLO mail.kernel.org"
+        id S2387607AbgI2Mrm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 08:47:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40112 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728535AbgI2LR5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:17:57 -0400
+        id S1728530AbgI2LEG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:04:06 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 41B33221E7;
-        Tue, 29 Sep 2020 11:17:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C2F2E21941;
+        Tue, 29 Sep 2020 11:04:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601378276;
-        bh=AVpRSkgj0eO6IkQtoEcXFT1DLNyNXuMgutww47Zi4pk=;
+        s=default; t=1601377446;
+        bh=Hco7q7e69Yo5LGxGMrHGpP4cBxSJ2N88PDO+7MEVdSY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YRnL3ZjzjxMmmk6uByosXRdzk2Z/NyZeAwKJDbB1WFUljQ+Y05JEe0Xe+AIeeYu/2
-         JgM3n2axsVunG3+1HHRPS+3JNHKGRDD8gDwh5bG74BnZoYDpuqNhNaSBC6J3WU2JCF
-         2zBiV9kQVeCxWec73Wv2HwPru9CIpnlqsbQYUzk8=
+        b=R8+gNfXXg58GMEx97lBFz4km8DavNayDBM/nFLhAserxVYLjO8aBPGzD/o7eYwRXQ
+         Ejpo3lljKzCpXVa0QhJ3H3HqBc+6xG8fQWC7ZEYOt/XOtPBp7OPoXUBJ/vyFNm74ma
+         DWrMId8I/5RybxiMdAAidHFSoCGUa1NimTvLlLF4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Chuck Lever <chuck.lever@oracle.com>,
+        stable@vger.kernel.org, Alain Michaud <alainm@chromium.org>,
+        Marcel Holtmann <marcel@holtmann.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 093/166] SUNRPC: Fix a potential buffer overflow in svc_print_xprts()
-Date:   Tue, 29 Sep 2020 13:00:05 +0200
-Message-Id: <20200929105939.864115668@linuxfoundation.org>
+Subject: [PATCH 4.4 39/85] Bluetooth: guard against controllers sending zerod events
+Date:   Tue, 29 Sep 2020 13:00:06 +0200
+Message-Id: <20200929105930.180096664@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929105935.184737111@linuxfoundation.org>
-References: <20200929105935.184737111@linuxfoundation.org>
+In-Reply-To: <20200929105928.198942536@linuxfoundation.org>
+References: <20200929105928.198942536@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,73 +43,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Alain Michaud <alainm@chromium.org>
 
-[ Upstream commit b25b60d7bfb02a74bc3c2d998e09aab159df8059 ]
+[ Upstream commit 08bb4da90150e2a225f35e0f642cdc463958d696 ]
 
-'maxlen' is the total size of the destination buffer. There is only one
-caller and this value is 256.
+Some controllers have been observed to send zero'd events under some
+conditions.  This change guards against this condition as well as adding
+a trace to facilitate diagnosability of this condition.
 
-When we compute the size already used and what we would like to add in
-the buffer, the trailling NULL character is not taken into account.
-However, this trailling character will be added by the 'strcat' once we
-have checked that we have enough place.
-
-So, there is a off-by-one issue and 1 byte of the stack could be
-erroneously overwridden.
-
-Take into account the trailling NULL, when checking if there is enough
-place in the destination buffer.
-
-While at it, also replace a 'sprintf' by a safer 'snprintf', check for
-output truncation and avoid a superfluous 'strlen'.
-
-Fixes: dc9a16e49dbba ("svc: Add /proc/sys/sunrpc/transport files")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-[ cel: very minor fix to documenting comment
-Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+Signed-off-by: Alain Michaud <alainm@chromium.org>
+Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/sunrpc/svc_xprt.c | 19 ++++++++++++++-----
- 1 file changed, 14 insertions(+), 5 deletions(-)
+ net/bluetooth/hci_event.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/net/sunrpc/svc_xprt.c b/net/sunrpc/svc_xprt.c
-index 7e5f849b44cdb..b293827b2a583 100644
---- a/net/sunrpc/svc_xprt.c
-+++ b/net/sunrpc/svc_xprt.c
-@@ -103,8 +103,17 @@ void svc_unreg_xprt_class(struct svc_xprt_class *xcl)
- }
- EXPORT_SYMBOL_GPL(svc_unreg_xprt_class);
+diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
+index 16cf5633eae3e..04c77747a768d 100644
+--- a/net/bluetooth/hci_event.c
++++ b/net/bluetooth/hci_event.c
+@@ -5230,6 +5230,11 @@ void hci_event_packet(struct hci_dev *hdev, struct sk_buff *skb)
+ 	u8 status = 0, event = hdr->evt, req_evt = 0;
+ 	u16 opcode = HCI_OP_NOP;
  
--/*
-- * Format the transport list for printing
-+/**
-+ * svc_print_xprts - Format the transport list for printing
-+ * @buf: target buffer for formatted address
-+ * @maxlen: length of target buffer
-+ *
-+ * Fills in @buf with a string containing a list of transport names, each name
-+ * terminated with '\n'. If the buffer is too small, some entries may be
-+ * missing, but it is guaranteed that all lines in the output buffer are
-+ * complete.
-+ *
-+ * Returns positive length of the filled-in string.
-  */
- int svc_print_xprts(char *buf, int maxlen)
- {
-@@ -117,9 +126,9 @@ int svc_print_xprts(char *buf, int maxlen)
- 	list_for_each_entry(xcl, &svc_xprt_class_list, xcl_list) {
- 		int slen;
++	if (!event) {
++		bt_dev_warn(hdev, "Received unexpected HCI Event 00000000");
++		goto done;
++	}
++
+ 	if (hdev->sent_cmd && bt_cb(hdev->sent_cmd)->hci.req_event == event) {
+ 		struct hci_command_hdr *cmd_hdr = (void *) hdev->sent_cmd->data;
+ 		opcode = __le16_to_cpu(cmd_hdr->opcode);
+@@ -5441,6 +5446,7 @@ void hci_event_packet(struct hci_dev *hdev, struct sk_buff *skb)
+ 		req_complete_skb(hdev, status, opcode, orig_skb);
+ 	}
  
--		sprintf(tmpstr, "%s %d\n", xcl->xcl_name, xcl->xcl_max_payload);
--		slen = strlen(tmpstr);
--		if (len + slen > maxlen)
-+		slen = snprintf(tmpstr, sizeof(tmpstr), "%s %d\n",
-+				xcl->xcl_name, xcl->xcl_max_payload);
-+		if (slen >= sizeof(tmpstr) || len + slen >= maxlen)
- 			break;
- 		len += slen;
- 		strcat(buf, tmpstr);
++done:
+ 	kfree_skb(orig_skb);
+ 	kfree_skb(skb);
+ 	hdev->stat.evt_rx++;
 -- 
 2.25.1
 
