@@ -2,102 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 308F927D008
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 15:56:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81A2827D00F
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 15:57:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730662AbgI2N4V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 09:56:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41920 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727328AbgI2N4U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 09:56:20 -0400
-Received: from mail-oi1-f169.google.com (mail-oi1-f169.google.com [209.85.167.169])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2A63121531;
-        Tue, 29 Sep 2020 13:56:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601387780;
-        bh=uRJnlxyDIqK1z0xXEQyA0WTBRacwx7hXWOOlHUk7db8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=owyxPAUUGklTGXbl9zzQmLxVPE6CKVkrTZntI27qfpCMh/Cr8YtrB82pi8hfW1y7/
-         7LYjgghWALjXNhMPKoos3YBmO2VJTCDC1KNZgoi/RgrkKoeWpx1rUAagjFYsdYVKY9
-         a2MkVT/H3ebKkcNFbYLidoIqOiS0iUmpEsqJM+rQ=
-Received: by mail-oi1-f169.google.com with SMTP id v20so5556693oiv.3;
-        Tue, 29 Sep 2020 06:56:20 -0700 (PDT)
-X-Gm-Message-State: AOAM530ebxF3wwsn6Zm08N46KZzzTQyKF+QWe8RVBvb9O0pdl7j4g3TW
-        52iuzBXsGB3itgoVg4triAdFYUvA//+aXiCJ8w==
-X-Google-Smtp-Source: ABdhPJyZwlJWIDEVgF/lxBVWBxEh8NZUj9WkweYpi7M6hWCdX840Y3vhe88h8a44y5ld4Bh1pVSLqF/8s8tezFZzpYw=
-X-Received: by 2002:a05:6808:10e:: with SMTP id b14mr2734685oie.152.1601387779028;
- Tue, 29 Sep 2020 06:56:19 -0700 (PDT)
+        id S1730085AbgI2N50 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 09:57:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60266 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728461AbgI2N5Z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 09:57:25 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F258C061755;
+        Tue, 29 Sep 2020 06:57:25 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id k10so5523652wru.6;
+        Tue, 29 Sep 2020 06:57:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=m+GzUJ/cc3gOU8YTK7hhp/1AHmJaFJDTSpVKrvN9jyI=;
+        b=FcA34252V91S22zkWLVguCgoC9Q0JgorvJMPcSkMBwPSX9dQP2sa2jJczIvlR8+zwo
+         6xsovhOrwDSD3IMzUqcXxeKiGhE7VZ4v+1oIL6+w16e8pyQGEuRMSD3dODzDoscChMcx
+         lSfFSG3PsMAj9hc68+QAEUNJxPgaB4Tzxnk3y6/INHtyYGaxqOZ9RbOxrRbalM8Jl5ed
+         aDUE0zxl4vc8JaeAWN+dPSjtCFmCACwXdqLjZCwzsVM1Dzv5/yxecFhqsa7GZmRIG4st
+         DKWu4I6fg6cXvW2Z+olhX2cbKiidjWM5wbNpB0AUytithNuoQAS3AhD8UG8w/kGQoS7E
+         knfw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=m+GzUJ/cc3gOU8YTK7hhp/1AHmJaFJDTSpVKrvN9jyI=;
+        b=H9GrUSaD/j1MQde4f7CgOHRrj7mM088vLLVdloygKG4LvRDzmO86djnGVyXngOnJNc
+         4YEVOOPaR6KrFh6IN0z6NbpVXaslRw3AEgnkUi+g6TxGsObbj7CXpjfTVJvWcxLd7bs9
+         fb8VtR7Fc0rKNc43DxgcOKjONnXZZqpQNOm/6IAAmLW6exP99abQ4OErj+qcU7MArceY
+         +R6q72FBSTeoWYOPSm1L+7E5Zj11u92rOxrJ6nUyF4GBV/DOkXIw2fGfoHbUhCsddcv4
+         Dmudu1d2hYC2WVNJtMV8hKZsupHp84Dv6U638uJXh8RBBU1D5Xq8V6YybPSSEfdpBAQi
+         T8LQ==
+X-Gm-Message-State: AOAM533ZIBzpMWn4Xoz15I71iYnsjYb6FaZtaAirWWkw7B7jEA1P/Mq7
+        Bog8Pn9qrAHZV4tmgJMz/qRMH4o4tsY6Tw==
+X-Google-Smtp-Source: ABdhPJyxcCD57/sgwTDPtY/wQ4+nVkGfWQvXEtjN4c6r4+f9ifvON84oJ4VpqNRXbzJ2ljgh3iuuRg==
+X-Received: by 2002:adf:ffc3:: with SMTP id x3mr4425714wrs.290.1601387843782;
+        Tue, 29 Sep 2020 06:57:23 -0700 (PDT)
+Received: from [192.168.1.143] ([170.253.60.68])
+        by smtp.gmail.com with ESMTPSA id l18sm6286194wrp.84.2020.09.29.06.57.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 29 Sep 2020 06:57:23 -0700 (PDT)
+Subject: Re: [PATCH 12/24] getgrent_r.3: Use sizeof() to get buffer size
+ (instead of hardcoding macro name)
+To:     mtk.manpages@gmail.com
+Cc:     Stefan Puiu <stefan.puiu@gmail.com>,
+        lnx-man <linux-man@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
+References: <20200910211344.3562-1-colomar.6.4.3@gmail.com>
+ <20200910211344.3562-13-colomar.6.4.3@gmail.com>
+ <CACKs7VD_p=d+nvuFxkWofSE6jCoKAKx5w44_5ciTJ0NX_H1ZFA@mail.gmail.com>
+ <7dd2ab72-3ce7-1f50-229a-e663c3df2dcd@gmail.com>
+ <CAKgNAkjDmBfR_9-8zZAu2sKDw+dfD4LgokMdLApy-_00ngxnLg@mail.gmail.com>
+From:   Alejandro Colomar <colomar.6.4.3@gmail.com>
+Message-ID: <3a59be19-252e-0285-6d9f-5f9a9f0388b5@gmail.com>
+Date:   Tue, 29 Sep 2020 15:57:22 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-References: <20200928063950.64722-1-chunfeng.yun@mediatek.com>
- <20200928181247.GA3008733@bogus> <1601359599.29336.49.camel@mhfsdcap03>
-In-Reply-To: <1601359599.29336.49.camel@mhfsdcap03>
-From:   Rob Herring <robh@kernel.org>
-Date:   Tue, 29 Sep 2020 08:56:07 -0500
-X-Gmail-Original-Message-ID: <CAL_Jsq+UxJAGv4+om1BFAJbq1VETnY4UvpqgGs3mSP8e1kkFmQ@mail.gmail.com>
-Message-ID: <CAL_Jsq+UxJAGv4+om1BFAJbq1VETnY4UvpqgGs3mSP8e1kkFmQ@mail.gmail.com>
-Subject: Re: [PATCH] dt-bindings: usb: add properties for hard wired devices
-To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAKgNAkjDmBfR_9-8zZAu2sKDw+dfD4LgokMdLApy-_00ngxnLg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 1:09 AM Chunfeng Yun <chunfeng.yun@mediatek.com> wrote:
->
-> On Mon, 2020-09-28 at 13:12 -0500, Rob Herring wrote:
-> > On Mon, Sep 28, 2020 at 02:39:50PM +0800, Chunfeng Yun wrote:
-> > > Add some optional properties which are needed for hard wired devices
-> > >
-> > > Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
-> > > ---
-> > >  Documentation/devicetree/bindings/usb/usb-hcd.yaml | 11 +++++++++++
-> > >  1 file changed, 11 insertions(+)
-> > >
-> > > diff --git a/Documentation/devicetree/bindings/usb/usb-hcd.yaml b/Documentation/devicetree/bindings/usb/usb-hcd.yaml
-> > > index 7263b7f2b510..1194a82887e7 100644
-> > > --- a/Documentation/devicetree/bindings/usb/usb-hcd.yaml
-> > > +++ b/Documentation/devicetree/bindings/usb/usb-hcd.yaml
-> > > @@ -22,6 +22,17 @@ properties:
-> > >      description:
-> > >        Name specifier for the USB PHY
-> > >
-> > > +  "#address-cells":
-> > > +    const: 1
-> > > +
-> > > +  "#size-cells":
-> > > +    const: 0
-> > > +
-> > > +patternProperties:
-> > > +  "^hub|device@[0-9a-f]+$":
-> >
-> > Could be any class of device, so '@[0-9a-f]+$'
-> You mean we will use different standard node name for each usb class?
-> e.g.
-> Use 'ethernet@*' for a usb ethernet adapter, and use 'camera@*' for a
-> usb camera sensor?
 
-Yes.
 
-> > > +    type: object
-> > > +    description: The hard wired USB devices. See usb/usb-device.txt
-> >
-> > Ideally, we'd convert usb-device.txt to schema and reference it here.
-> Ok, I'll try to do it.
->
-> BTW: Does the compatible support pattern? Is there any example I can
-> refer to?
+On 2020-09-29 15:38, Michael Kerrisk (man-pages) wrote:
+>> 2.-     Use sizeof() everywhere, and the macro for the initializer.
+>>
+>> pros:
+>> - It is valid as long as the buffer is an array.
+>> cons:
+>> - If the code gets into a function, and the buffer is then a pointer,
+>>     it will definitively produce a silent bug.
+> 
+> Sigh! I just did exactly the last point in a test program I've been writing...
+> 
+> M
+> 
 
-Yes, use 'pattern' keyword.
 
-Rob
+Hmmm, maybe you would like to comment on this LKML thread I started 
+yesterday:
+
+https://lore.kernel.org/lkml/71c25cb0-9fa2-4e97-c93c-44eadfd781fb@gmail.com
+
+Concretely, point 4 is about this.
+
+I'd push 'array_bytes()' to all "libc"s I can, so that it's then common 
+enough to use it everywhere, even in the man.
+
+I'd also recommend reading this StackOverflow answer I wrote last year:
+
+https://stackoverflow.com/a/57537491/6872717
+
+
+Cheers,
+
+Alex
