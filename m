@@ -2,77 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03C2227C784
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:55:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A59627C731
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:52:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731475AbgI2LyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:54:21 -0400
-Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:32180 "EHLO
-        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730629AbgI2Lq2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:46:28 -0400
-X-IronPort-AV: E=Sophos;i="5.77,318,1596492000"; 
-   d="scan'208";a="470044784"
-Received: from abo-173-121-68.mrs.modulonet.fr (HELO hadrien) ([85.68.121.173])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 29 Sep 2020 13:46:20 +0200
-Date:   Tue, 29 Sep 2020 13:46:19 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Mark Brown <broonie@kernel.org>
-cc:     Joe Perches <joe@perches.com>, linux-iio@vger.kernel.org,
-        Julia Lawall <Julia.Lawall@inria.fr>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-crypto@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        linux-acpi@vger.kernel.org, David Lechner <david@lechnology.com>,
-        =?UTF-8?Q?Valdis_Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>,
-        kernel-janitors@vger.kernel.org, drbd-dev@lists.linbit.com,
-        openipmi-developer@lists.sourceforge.net,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        linux-ide@vger.kernel.org, linux-amlogic@lists.infradead.org,
-        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-wireless@vger.kernel.org,
-        Neil Armstrong <narmstrong@baylibre.com>
-Subject: Re: [PATCH 00/18] use semicolons rather than commas to separate
- statements
-In-Reply-To: <20200929113745.GB4799@sirena.org.uk>
-Message-ID: <alpine.DEB.2.22.394.2009291344590.2808@hadrien>
-References: <1601233948-11629-1-git-send-email-Julia.Lawall@inria.fr> <160132172369.55460.9237357219623604216.b4-ty@kernel.org> <b1174f9be2ce65f6b5ebefcba0b48e792926abbc.camel@perches.com> <20200929113745.GB4799@sirena.org.uk>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        id S1731370AbgI2LwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:52:08 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:14714 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1730546AbgI2LwD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:52:03 -0400
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id C36F43EC24B5F0C375CC;
+        Tue, 29 Sep 2020 19:51:58 +0800 (CST)
+Received: from huawei.com (10.175.124.27) by DGGEMS407-HUB.china.huawei.com
+ (10.3.19.207) with Microsoft SMTP Server id 14.3.487.0; Tue, 29 Sep 2020
+ 19:51:52 +0800
+From:   Wang ShaoBo <bobo.shaobowang@huawei.com>
+CC:     <weiyongjun1@huawei.com>, <huawei.libin@huawei.com>,
+        <cj.chengjian@huawei.com>, <pbonzini@redhat.com>,
+        <sean.j.christopherson@intel.com>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <x86@kernel.org>
+Subject: [PATCH -next] x86/kvm: Fix build with CONFIG_SMP disabled
+Date:   Tue, 29 Sep 2020 19:50:13 +0800
+Message-ID: <20200929115013.3913359-1-bobo.shaobowang@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.175.124.27]
+X-CFilter-Loop: Reflected
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+When CONFIG_SMP is disabled, build failed like this:
 
+arch/x86/kernel/kvm.c: In function ‘kvm_alloc_cpumask’:
+arch/x86/kernel/kvm.c:823:35: error: ‘kvm_send_ipi_mask_allbutself’
+ undeclared (first use in this function); did you mean ‘apic_send_IPI_allbutself’?
+  apic->send_IPI_mask_allbutself = kvm_send_ipi_mask_allbutself;
+                                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                                   apic_send_IPI_allbutself
+arch/x86/kernel/kvm.c:823:35: note: each undeclared identifier
+ is reported only once for each function it appears in
 
-On Tue, 29 Sep 2020, Mark Brown wrote:
+It is because the declaration of kvm_send_ipi_mask_allbutself() is guarded
+by CONFIG_SMP. kvm_send_ipi_mask_allbutself() do not need do anything at
+this time.
 
-> On Mon, Sep 28, 2020 at 05:45:24PM -0700, Joe Perches wrote:
-> > On Mon, 2020-09-28 at 20:35 +0100, Mark Brown wrote:
->
-> > > [1/1] regmap: debugfs: use semicolons rather than commas to separate statements
-> > >       commit: 7f4a122d0b50b40c64d24a5cf7aafe26dd9487ee
->
-> > Rather than replying to the 0/n cover letter to a patch
-> > series, can you reply to each of the specific patches in
-> > the patch series you are applying?
->
-> > Otherwise, it's a bit difficult to figure out which patches
-> > you are applying.
->
-> Feel free to submit patches to b4.  Ideally things like this wouldn't be
-> being sent as serieses in the first place, there's no dependencies or
-> interactions between the patches.
+Signed-off-by: Wang ShaoBo <bobo.shaobowang@huawei.com>
+---
+ arch/x86/kernel/kvm.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-It was suggested (a long time ago, not with respect to this patch in
-particular) that sending such patches in a series is useful because it
-allows people who are not interested in the 18 patches to skip over them
-more easily.  So there are two conflicting needs...
+diff --git a/arch/x86/kernel/kvm.c b/arch/x86/kernel/kvm.c
+index a44398d2bc44..47d65864e29c 100644
+--- a/arch/x86/kernel/kvm.c
++++ b/arch/x86/kernel/kvm.c
+@@ -611,6 +611,13 @@ static int kvm_cpu_down_prepare(unsigned int cpu)
+ 	local_irq_enable();
+ 	return 0;
+ }
++
++#else /* !CONFIG_SMP */
++
++static void kvm_send_ipi_mask_allbutself(const struct cpumask *mask, int vector)
++{
++}
++
+ #endif
+ 
+ static void kvm_flush_tlb_others(const struct cpumask *cpumask,
+-- 
+2.25.1
 
-julia
