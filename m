@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 995FB27CBA2
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:29:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4345A27CB9D
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:29:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732872AbgI2M3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 08:29:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43018 "EHLO mail.kernel.org"
+        id S1732869AbgI2M3S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 08:29:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48452 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728780AbgI2Lbg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1729074AbgI2Lbg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 29 Sep 2020 07:31:36 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D3C6523B09;
-        Tue, 29 Sep 2020 11:25:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A50AF23B17;
+        Tue, 29 Sep 2020 11:25:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601378701;
-        bh=eZDc5ObhMHtmYpVYSId1z6YNr6xNx6COQw+PeGTLRM8=;
+        s=default; t=1601378704;
+        bh=CnL7UVfLVRp1dnhxjeYgYx7RdDwaiew1tP06opg43wE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kxIBp6y80MaVu+VzBGO0gawwXccY+KL+qE38MpG5gkJZ+uNY8qfdUztfOfFfK+k/C
-         mAhK7zt3tQ2+plj7SX1Kd2JPUtCfi2WHY7LgqQy+4V66gmyC2jeJTMnzBFNgQoyTRJ
-         uLLBwrcwTjkw8RkSK0yyVvnhfrAmakLvDzyWOupU=
+        b=mtHXA/JmzAgB0d4vpz0OqdGs4HcOHxeCepOZT6mjwsnyqOfAxf5N3798B2tvxpLAb
+         eC5XNcMc6GB6LUfzo3lEoLJaYHalMfy60EUJ6EgXwjrCYyr/uVNbCx2tPcBpPt8W9u
+         PrlTYb/zdrVhRpWjVbY0v2O7xtuJjKZWlldqJ1z0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dinh Nguyen <dinguyen@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
+        stable@vger.kernel.org, Ayush Sawal <ayush.sawal@chelsio.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 078/245] clk: stratix10: use do_div() for 64-bit calculation
-Date:   Tue, 29 Sep 2020 12:58:49 +0200
-Message-Id: <20200929105950.797035112@linuxfoundation.org>
+Subject: [PATCH 4.19 079/245] crypto: chelsio - This fixes the kernel panic which occurs during a libkcapi test
+Date:   Tue, 29 Sep 2020 12:58:50 +0200
+Message-Id: <20200929105950.845689901@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200929105946.978650816@linuxfoundation.org>
 References: <20200929105946.978650816@linuxfoundation.org>
@@ -43,36 +43,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dinh Nguyen <dinguyen@kernel.org>
+From: Ayush Sawal <ayush.sawal@chelsio.com>
 
-[ Upstream commit cc26ed7be46c5f5fa45f3df8161ed7ca3c4d318c ]
+[ Upstream commit 9195189e00a7db55e7d448cee973cae87c5a3c71 ]
 
-do_div() macro to perform u64 division and guards against overflow if
-the result is too large for the unsigned long return type.
+The libkcapi test which causes kernel panic is
+aead asynchronous vmsplice multiple test.
 
-Signed-off-by: Dinh Nguyen <dinguyen@kernel.org>
-Link: https://lkml.kernel.org/r/20200114160726.19771-1-dinguyen@kernel.org
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+./bin/kcapi  -v -d 4 -x 10   -c "ccm(aes)"
+-q 4edb58e8d5eb6bc711c43a6f3693daebde2e5524f1b55297abb29f003236e43d
+-t a7877c99 -n 674742abd0f5ba -k 2861fd0253705d7875c95ba8a53171b4
+-a fb7bc304a3909e66e2e0c5ef952712dd884ce3e7324171369f2c5db1adc48c7d
+
+This patch avoids dma_mapping of a zero length sg which causes the panic,
+by using sg_nents_for_len which maps only upto a specific length
+
+Signed-off-by: Ayush Sawal <ayush.sawal@chelsio.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/socfpga/clk-pll-s10.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/crypto/chelsio/chcr_algo.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/clk/socfpga/clk-pll-s10.c b/drivers/clk/socfpga/clk-pll-s10.c
-index c4d0b6f6abf2e..fc2e2839fe570 100644
---- a/drivers/clk/socfpga/clk-pll-s10.c
-+++ b/drivers/clk/socfpga/clk-pll-s10.c
-@@ -38,7 +38,9 @@ static unsigned long clk_pll_recalc_rate(struct clk_hw *hwclk,
- 	/* read VCO1 reg for numerator and denominator */
- 	reg = readl(socfpgaclk->hw.reg);
- 	refdiv = (reg & SOCFPGA_PLL_REFDIV_MASK) >> SOCFPGA_PLL_REFDIV_SHIFT;
--	vco_freq = (unsigned long long)parent_rate / refdiv;
-+
-+	vco_freq = parent_rate;
-+	do_div(vco_freq, refdiv);
- 
- 	/* Read mdiv and fdiv from the fdbck register */
- 	reg = readl(socfpgaclk->hw.reg + 0x4);
+diff --git a/drivers/crypto/chelsio/chcr_algo.c b/drivers/crypto/chelsio/chcr_algo.c
+index 9b3c259f081d3..ee508bbbb7504 100644
+--- a/drivers/crypto/chelsio/chcr_algo.c
++++ b/drivers/crypto/chelsio/chcr_algo.c
+@@ -2418,8 +2418,9 @@ int chcr_aead_dma_map(struct device *dev,
+ 	else
+ 		reqctx->b0_dma = 0;
+ 	if (req->src == req->dst) {
+-		error = dma_map_sg(dev, req->src, sg_nents(req->src),
+-				   DMA_BIDIRECTIONAL);
++		error = dma_map_sg(dev, req->src,
++				sg_nents_for_len(req->src, dst_size),
++					DMA_BIDIRECTIONAL);
+ 		if (!error)
+ 			goto err;
+ 	} else {
 -- 
 2.25.1
 
