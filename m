@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 210CC27D5D5
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 20:35:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AA8427D5D8
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 20:35:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728269AbgI2Sfm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 14:35:42 -0400
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:32883 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727841AbgI2Sfm (ORCPT
+        id S1728285AbgI2Sfs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 14:35:48 -0400
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:43908 "EHLO
+        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727841AbgI2Sfr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 14:35:42 -0400
-Received: by mail-wr1-f65.google.com with SMTP id m6so6586848wrn.0
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 11:35:39 -0700 (PDT)
+        Tue, 29 Sep 2020 14:35:47 -0400
+Received: by mail-wr1-f68.google.com with SMTP id k15so6528823wrn.10
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 11:35:43 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=eqJLertCH1IwPmpvLzgQGPTWwPvCX5lgWM52z3jpf1I=;
-        b=SW0AnIa+diiQ4AWaaq7w7kpPoXcLAA8n0RNkdIU97DrOM3SZjiu/qQcIoV3uxBgRdh
-         ku9Gn5dOrkeQYzX41tzwkBHZkxDtrErOVGm8VfcKtqoioME+KzEco7nMzDELypSIGVmz
-         hF3mdsArNnCP4d6bSQcrGOgjEj5XnDKjEyeLSc4pYoVJHJ0zWkNWpLToaGKQxyfTtk3b
-         bXTAHwJ87oLee23F5aEyzam7vqIyxsqvstmGEGamG1EYqaVuy1fu/kkU8+ptrH39fzH5
-         6XW5JyJPROyMy9yjPJGHxZl9psKsx+k5MifsxlXPCVuKa/TaY8QxD5N3jHhe7+GTMJPo
-         7Y3w==
-X-Gm-Message-State: AOAM530W1a6QJjl5ZkEUWUMvXR1oKODG/ibSkNWOIQUpiMFas8lCAO/J
-        zTHObXtByZVDViIBBVQWtiw=
-X-Google-Smtp-Source: ABdhPJxWZLL9RP7nXf3W4jf2LKYICeObNnqcueChYVBbcf4bfgeDNmDM/nZcIVKbwqwVFYQ7oBrK+A==
-X-Received: by 2002:a5d:6b84:: with SMTP id n4mr6285730wrx.55.1601404538270;
-        Tue, 29 Sep 2020 11:35:38 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=8LfRs7pMiXG/De7Fp35AYlrA7J9JX6bB4nnk3Ktwc38=;
+        b=BbDAK9VWkoHoexocVmkyZTmZYmNH5Tzs2EMlq1ef9PcHEPqrHpzmFSpNhRA9GL8M+s
+         PD8vfo8UDLAVbuI/ThoP8jZ4dDqLq2lZ4SFtx45YEOoy1JhaeP1IqYHavlsrxUWP+71r
+         ZF96EfW3F+y1PfXuwSwe16Ybpf5S2taCevFYU/CMdpjusQ9Wrt2kzBxrP5KpdEW0t1Bl
+         idobwAUVsm0RmrBYrz4PcFkpfqbRrTSEc/QCWXg3Pvv+3ArkQIX/KSVSeGDVG7HHxMzw
+         Fz7nGRW7fd5rFPS1xYKOqOFIONdc0FbnyvgSWg7SX2wKmWyCmytCbhqfS6Hp0KFmXhKj
+         I3qA==
+X-Gm-Message-State: AOAM533EiiOJqqSyNdkFjiTqJAeeet1vRwwrKcpCMfBd3eZu/CzwjtGw
+        dhBDawEe/rvCDU3vAC+jPBo=
+X-Google-Smtp-Source: ABdhPJzw7/4lwsPXLr9uHK5VyHHxvCPoWj8adTatoRGU2t447dV3ze110C2IkHUbO40w2tP2hJDwnQ==
+X-Received: by 2002:adf:dcd1:: with SMTP id x17mr6179562wrm.150.1601404542418;
+        Tue, 29 Sep 2020 11:35:42 -0700 (PDT)
 Received: from localhost.localdomain ([185.248.161.177])
-        by smtp.gmail.com with ESMTPSA id b188sm12151271wmb.2.2020.09.29.11.35.33
+        by smtp.gmail.com with ESMTPSA id b188sm12151271wmb.2.2020.09.29.11.35.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Sep 2020 11:35:37 -0700 (PDT)
+        Tue, 29 Sep 2020 11:35:41 -0700 (PDT)
 From:   Alexander Popov <alex.popov@linux.com>
 To:     Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>,
         Will Deacon <will@kernel.org>,
@@ -66,46 +66,29 @@ To:     Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>,
         kernel-hardening@lists.openwall.com, linux-kernel@vger.kernel.org,
         Alexander Popov <alex.popov@linux.com>
 Cc:     notify@kernel.org
-Subject: [PATCH RFC v2 0/6] Break heap spraying needed for exploiting use-after-free
-Date:   Tue, 29 Sep 2020 21:35:07 +0300
-Message-Id: <20200929183513.380760-1-alex.popov@linux.com>
+Subject: [PATCH RFC v2 1/6] mm: Extract SLAB_QUARANTINE from KASAN
+Date:   Tue, 29 Sep 2020 21:35:08 +0300
+Message-Id: <20200929183513.380760-2-alex.popov@linux.com>
 X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200929183513.380760-1-alex.popov@linux.com>
+References: <20200929183513.380760-1-alex.popov@linux.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello everyone! Requesting for your comments.
+Heap spraying is an exploitation technique that aims to put controlled
+bytes at a predetermined memory location on the heap. Heap spraying for
+exploiting use-after-free in the Linux kernel relies on the fact that on
+kmalloc(), the slab allocator returns the address of the memory that was
+recently freed. Allocating a kernel object with the same size and
+controlled contents allows overwriting the vulnerable freed object.
 
-This is the second version of the heap quarantine prototype for the Linux
-kernel. I performed a deeper evaluation of its security properties and
-developed new features like quarantine randomization and integration with
-init_on_free. That is fun! See below for more details.
-
-
-Rationale
-=========
-
-Use-after-free vulnerabilities in the Linux kernel are very popular for
-exploitation. There are many examples, some of them:
- https://googleprojectzero.blogspot.com/2018/09/a-cache-invalidation-bug-in-linux.html
- https://googleprojectzero.blogspot.com/2019/11/bad-binder-android-in-wild-exploit.html?m=1
- https://a13xp0p0v.github.io/2020/02/15/CVE-2019-18683.html
-
-Use-after-free exploits usually employ heap spraying technique.
-Generally it aims to put controlled bytes at a predetermined memory
-location on the heap.
-
-Heap spraying for exploiting use-after-free in the Linux kernel relies on
-the fact that on kmalloc(), the slab allocator returns the address of
-the memory that was recently freed. So allocating a kernel object with
-the same size and controlled contents allows overwriting the vulnerable
-freed object.
-
-I've found an easy way to break the heap spraying for use-after-free
-exploitation. I extracted slab freelist quarantine from KASAN functionality
-and called it CONFIG_SLAB_QUARANTINE. Please see patch 1/6.
+Let's extract slab freelist quarantine from KASAN functionality and
+call it CONFIG_SLAB_QUARANTINE. This feature breaks widespread heap
+spraying technique for exploiting use-after-free vulnerabilities
+in the kernel code.
 
 If this feature is enabled, freed allocations are stored in the quarantine
 queue where they wait for actual freeing. So they can't be instantly
@@ -114,215 +97,526 @@ reallocated and overwritten by use-after-free exploits.
 N.B. Heap spraying for out-of-bounds exploitation is another technique,
 heap quarantine doesn't break it.
 
-
-Security properties
-===================
-
-For researching security properties of the heap quarantine I developed 2 lkdtm
-tests (see the patch 5/6).
-
-The first test is called lkdtm_HEAP_SPRAY. It allocates and frees an object
-from a separate kmem_cache and then allocates 400000 similar objects.
-I.e. this test performs an original heap spraying technique for use-after-free
-exploitation.
-
-If CONFIG_SLAB_QUARANTINE is disabled, the freed object is instantly
-reallocated and overwritten:
-  # echo HEAP_SPRAY > /sys/kernel/debug/provoke-crash/DIRECT
-   lkdtm: Performing direct entry HEAP_SPRAY
-   lkdtm: Allocated and freed spray_cache object 000000002b5b3ad4 of size 333
-   lkdtm: Original heap spraying: allocate 400000 objects of size 333...
-   lkdtm: FAIL: attempt 0: freed object is reallocated
-
-If CONFIG_SLAB_QUARANTINE is enabled, 400000 new allocations don't overwrite
-the freed object:
-  # echo HEAP_SPRAY > /sys/kernel/debug/provoke-crash/DIRECT
-   lkdtm: Performing direct entry HEAP_SPRAY
-   lkdtm: Allocated and freed spray_cache object 000000009909e777 of size 333
-   lkdtm: Original heap spraying: allocate 400000 objects of size 333...
-   lkdtm: OK: original heap spraying hasn't succeed
-
-That happens because pushing an object through the quarantine requires _both_
-allocating and freeing memory. Objects are released from the quarantine on
-new memory allocations, but only when the quarantine size is over the limit.
-And the quarantine size grows on new memory freeing.
-
-That's why I created the second test called lkdtm_PUSH_THROUGH_QUARANTINE.
-It allocates and frees an object from a separate kmem_cache and then performs
-kmem_cache_alloc()+kmem_cache_free() for that cache 400000 times.
-This test effectively pushes the object through the heap quarantine and
-reallocates it after it returns back to the allocator freelist:
-  # echo PUSH_THROUGH_QUARANTINE > /sys/kernel/debug/provoke-crash/
-   lkdtm: Performing direct entry PUSH_THROUGH_QUARANTINE
-   lkdtm: Allocated and freed spray_cache object 000000008fdb15c3 of size 333
-   lkdtm: Push through quarantine: allocate and free 400000 objects of size 333...
-   lkdtm: Target object is reallocated at attempt 182994
-  # echo PUSH_THROUGH_QUARANTINE > /sys/kernel/debug/provoke-crash/
-   lkdtm: Performing direct entry PUSH_THROUGH_QUARANTINE
-   lkdtm: Allocated and freed spray_cache object 000000004e223cbe of size 333
-   lkdtm: Push through quarantine: allocate and free 400000 objects of size 333...
-   lkdtm: Target object is reallocated at attempt 186830
-  # echo PUSH_THROUGH_QUARANTINE > /sys/kernel/debug/provoke-crash/
-   lkdtm: Performing direct entry PUSH_THROUGH_QUARANTINE
-   lkdtm: Allocated and freed spray_cache object 000000007663a058 of size 333
-   lkdtm: Push through quarantine: allocate and free 400000 objects of size 333...
-   lkdtm: Target object is reallocated at attempt 182010
-
-As you can see, the number of the allocations that are needed for overwriting
-the vulnerable object is almost the same. That would be good for stable
-use-after-free exploitation and should not be allowed.
-That's why I developed the quarantine randomization (see the patch 4/6).
-
-This randomization required very small hackish changes of the heap quarantine
-mechanism. At first all quarantine batches are filled by objects. Then during
-the quarantine reducing I randomly choose and free 1/2 of objects from a
-randomly chosen batch. Now the randomized quarantine releases the freed object
-at an unpredictable moment:
-   lkdtm: Target object is reallocated at attempt 107884
-   lkdtm: Target object is reallocated at attempt 265641
-   lkdtm: Target object is reallocated at attempt 100030
-   lkdtm: Target object is NOT reallocated in 400000 attempts
-   lkdtm: Target object is reallocated at attempt 204731
-   lkdtm: Target object is reallocated at attempt 359333
-   lkdtm: Target object is reallocated at attempt 289349
-   lkdtm: Target object is reallocated at attempt 119893
-   lkdtm: Target object is reallocated at attempt 225202
-   lkdtm: Target object is reallocated at attempt 87343
-
-However, this randomization alone would not disturb the attacker, because
-the quarantine stores the attacker's data (the payload) in the sprayed objects.
-I.e. the reallocated and overwritten vulnerable object contains the payload
-until the next reallocation (very bad).
-
-Hence heap objects should be erased before going to the heap quarantine.
-Moreover, filling them by zeros gives a chance to detect use-after-free
-accesses to non-zero data while an object stays in the quarantine (nice!).
-That functionality already exists in the kernel, it's called init_on_free.
-I integrated it with CONFIG_SLAB_QUARANTINE in the patch 3/6.
-
-During that work I found a bug: in CONFIG_SLAB init_on_free happens too
-late, and heap objects go to the KASAN quarantine being dirty. See the fix
-in the patch 2/6.
-
-For deeper understanding of the heap quarantine inner workings, I attach
-the patch 6/6, which contains verbose debugging (not for merge).
-It's very helpful, see the output example:
-   quarantine: PUT 508992 to tail batch 123, whole sz 65118872, batch sz 508854
-   quarantine: whole sz exceed max by 494552, REDUCE head batch 0 by 415392, leave 396304
-   quarantine: data level in batches:
-     0 - 77%
-     1 - 108%
-     2 - 83%
-     3 - 21%
-   ...
-     125 - 75%
-     126 - 12%
-     127 - 108%
-   quarantine: whole sz exceed max by 79160, REDUCE head batch 12 by 14160, leave 17608
-   quarantine: whole sz exceed max by 65000, REDUCE head batch 75 by 218328, leave 195232
-   quarantine: PUT 508992 to tail batch 124, whole sz 64979984, batch sz 508854
-   ...
-
-
-Changes in v2
-=============
-
- - Added heap quarantine randomization (the patch 4/6).
-
- - Integrated CONFIG_SLAB_QUARANTINE with init_on_free (the patch 3/6).
-
- - Fixed late init_on_free in CONFIG_SLAB (the patch 2/6).
-
- - Added lkdtm_PUSH_THROUGH_QUARANTINE test.
-
- - Added the quarantine verbose debugging (the patch 6/6, not for merge).
-
- - Improved the descriptions according to the feedback from Kees Cook
-   and Matthew Wilcox.
-
- - Made fixes recommended by Kees Cook:
-
-   * Avoided BUG_ON() in kasan_cache_create() by handling the error and
-     reporting with WARN_ON().
-
-   * Created a separate kmem_cache for new lkdtm tests.
-
-   * Fixed kasan_track.pid type to pid_t.
-
-
-TODO for the next prototypes
-============================
-
-1. Performance evaluation and optimization.
-   I would really appreciate your ideas about performance testing of a
-   kernel with the heap quarantine. The first prototype was tested with
-   hackbench and kernel build timing (which showed very different numbers).
-   Earlier the developers similarly tested init_on_free functionality.
-   However, Brad Spengler says in his twitter that such testing method
-   is poor.
-
-2. Complete separation of CONFIG_SLAB_QUARANTINE from KASAN (feedback
-   from Andrey Konovalov).
-
-3. Adding a kernel boot parameter for enabling/disabling the heap quaranitne
-   (feedback from Kees Cook).
-
-4. Testing the heap quarantine in near-OOM situations (feedback from
-   Pavel Machek).
-
-5. Does this work somehow help or disturb the integration of the
-   Memory Tagging for the Linux kernel?
-
-6. After rebasing the series onto v5.9.0-rc6, CONFIG_SLAB kernel started to
-   show warnings about few slab caches that have no space for additional
-   metadata. It needs more investigation. I believe it affects KASAN bug
-   detection abilities as well. Warning example:
-     WARNING: CPU: 0 PID: 0 at mm/kasan/slab_quarantine.c:38 kasan_cache_create+0x37/0x50
-     Modules linked in:
-     CPU: 0 PID: 0 Comm: swapper Not tainted 5.9.0-rc6+ #1
-     Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-2.fc32 04/01/2014
-     RIP: 0010:kasan_cache_create+0x37/0x50
-     ...
-     Call Trace:
-      __kmem_cache_create+0x74/0x250
-      create_boot_cache+0x6d/0x91
-      create_kmalloc_cache+0x57/0x93
-      new_kmalloc_cache+0x39/0x47
-      create_kmalloc_caches+0x33/0xd9
-      start_kernel+0x25b/0x532
-      secondary_startup_64+0xb6/0xc0
-
-Thanks in advance for your feedback.
-Best regards,
-Alexander
-
-
-Alexander Popov (6):
-  mm: Extract SLAB_QUARANTINE from KASAN
-  mm/slab: Perform init_on_free earlier
-  mm: Integrate SLAB_QUARANTINE with init_on_free
-  mm: Implement slab quarantine randomization
-  lkdtm: Add heap quarantine tests
-  mm: Add heap quarantine verbose debugging (not for merge)
-
- drivers/misc/lkdtm/core.c  |   2 +
- drivers/misc/lkdtm/heap.c  | 110 +++++++++++++++++++++++++++++++++++++
- drivers/misc/lkdtm/lkdtm.h |   2 +
- include/linux/kasan.h      | 107 ++++++++++++++++++++----------------
+Signed-off-by: Alexander Popov <alex.popov@linux.com>
+---
+ include/linux/kasan.h      | 107 ++++++++++++++++++++-----------------
  include/linux/slab_def.h   |   2 +-
  include/linux/slub_def.h   |   2 +-
- init/Kconfig               |  14 +++++
+ init/Kconfig               |  13 +++++
  mm/Makefile                |   3 +-
  mm/kasan/Makefile          |   2 +
- mm/kasan/kasan.h           |  75 +++++++++++++------------
- mm/kasan/quarantine.c      | 102 ++++++++++++++++++++++++++++++----
- mm/kasan/slab_quarantine.c | 106 +++++++++++++++++++++++++++++++++++
- mm/page_alloc.c            |  22 ++++++++
- mm/slab.c                  |   5 +-
+ mm/kasan/kasan.h           |  75 +++++++++++++-------------
+ mm/kasan/quarantine.c      |   2 +
+ mm/kasan/slab_quarantine.c | 106 ++++++++++++++++++++++++++++++++++++
  mm/slub.c                  |   2 +-
- 15 files changed, 455 insertions(+), 101 deletions(-)
+ 10 files changed, 225 insertions(+), 89 deletions(-)
  create mode 100644 mm/kasan/slab_quarantine.c
 
+diff --git a/include/linux/kasan.h b/include/linux/kasan.h
+index 087fba34b209..b837216f760c 100644
+--- a/include/linux/kasan.h
++++ b/include/linux/kasan.h
+@@ -42,32 +42,14 @@ void kasan_unpoison_task_stack(struct task_struct *task);
+ void kasan_alloc_pages(struct page *page, unsigned int order);
+ void kasan_free_pages(struct page *page, unsigned int order);
+ 
+-void kasan_cache_create(struct kmem_cache *cache, unsigned int *size,
+-			slab_flags_t *flags);
+-
+ void kasan_poison_slab(struct page *page);
+ void kasan_unpoison_object_data(struct kmem_cache *cache, void *object);
+ void kasan_poison_object_data(struct kmem_cache *cache, void *object);
+ void * __must_check kasan_init_slab_obj(struct kmem_cache *cache,
+ 					const void *object);
+ 
+-void * __must_check kasan_kmalloc_large(const void *ptr, size_t size,
+-						gfp_t flags);
+ void kasan_kfree_large(void *ptr, unsigned long ip);
+ void kasan_poison_kfree(void *ptr, unsigned long ip);
+-void * __must_check kasan_kmalloc(struct kmem_cache *s, const void *object,
+-					size_t size, gfp_t flags);
+-void * __must_check kasan_krealloc(const void *object, size_t new_size,
+-					gfp_t flags);
+-
+-void * __must_check kasan_slab_alloc(struct kmem_cache *s, void *object,
+-					gfp_t flags);
+-bool kasan_slab_free(struct kmem_cache *s, void *object, unsigned long ip);
+-
+-struct kasan_cache {
+-	int alloc_meta_offset;
+-	int free_meta_offset;
+-};
+ 
+ /*
+  * These functions provide a special case to support backing module
+@@ -107,10 +89,6 @@ static inline void kasan_disable_current(void) {}
+ static inline void kasan_alloc_pages(struct page *page, unsigned int order) {}
+ static inline void kasan_free_pages(struct page *page, unsigned int order) {}
+ 
+-static inline void kasan_cache_create(struct kmem_cache *cache,
+-				      unsigned int *size,
+-				      slab_flags_t *flags) {}
+-
+ static inline void kasan_poison_slab(struct page *page) {}
+ static inline void kasan_unpoison_object_data(struct kmem_cache *cache,
+ 					void *object) {}
+@@ -122,17 +100,65 @@ static inline void *kasan_init_slab_obj(struct kmem_cache *cache,
+ 	return (void *)object;
+ }
+ 
++static inline void kasan_kfree_large(void *ptr, unsigned long ip) {}
++static inline void kasan_poison_kfree(void *ptr, unsigned long ip) {}
++static inline void kasan_free_shadow(const struct vm_struct *vm) {}
++static inline void kasan_remove_zero_shadow(void *start, unsigned long size) {}
++static inline void kasan_unpoison_slab(const void *ptr) {}
++
++static inline int kasan_module_alloc(void *addr, size_t size)
++{
++	return 0;
++}
++
++static inline int kasan_add_zero_shadow(void *start, unsigned long size)
++{
++	return 0;
++}
++
++static inline size_t kasan_metadata_size(struct kmem_cache *cache)
++{
++	return 0;
++}
++
++#endif /* CONFIG_KASAN */
++
++struct kasan_cache {
++	int alloc_meta_offset;
++	int free_meta_offset;
++};
++
++#if defined(CONFIG_KASAN) || defined(CONFIG_SLAB_QUARANTINE)
++
++void kasan_cache_create(struct kmem_cache *cache, unsigned int *size,
++			slab_flags_t *flags);
++void * __must_check kasan_kmalloc_large(const void *ptr, size_t size,
++						gfp_t flags);
++void * __must_check kasan_kmalloc(struct kmem_cache *s, const void *object,
++					size_t size, gfp_t flags);
++void * __must_check kasan_krealloc(const void *object, size_t new_size,
++					gfp_t flags);
++void * __must_check kasan_slab_alloc(struct kmem_cache *s, void *object,
++					gfp_t flags);
++bool kasan_slab_free(struct kmem_cache *s, void *object, unsigned long ip);
++
++#else /* CONFIG_KASAN || CONFIG_SLAB_QUARANTINE */
++
++static inline void kasan_cache_create(struct kmem_cache *cache,
++				      unsigned int *size,
++				      slab_flags_t *flags) {}
++
+ static inline void *kasan_kmalloc_large(void *ptr, size_t size, gfp_t flags)
+ {
+ 	return ptr;
+ }
+-static inline void kasan_kfree_large(void *ptr, unsigned long ip) {}
+-static inline void kasan_poison_kfree(void *ptr, unsigned long ip) {}
++
+ static inline void *kasan_kmalloc(struct kmem_cache *s, const void *object,
+ 				size_t size, gfp_t flags)
+ {
+ 	return (void *)object;
+ }
++
+ static inline void *kasan_krealloc(const void *object, size_t new_size,
+ 				 gfp_t flags)
+ {
+@@ -144,43 +170,28 @@ static inline void *kasan_slab_alloc(struct kmem_cache *s, void *object,
+ {
+ 	return object;
+ }
++
+ static inline bool kasan_slab_free(struct kmem_cache *s, void *object,
+ 				   unsigned long ip)
+ {
+ 	return false;
+ }
+-
+-static inline int kasan_module_alloc(void *addr, size_t size) { return 0; }
+-static inline void kasan_free_shadow(const struct vm_struct *vm) {}
+-
+-static inline int kasan_add_zero_shadow(void *start, unsigned long size)
+-{
+-	return 0;
+-}
+-static inline void kasan_remove_zero_shadow(void *start,
+-					unsigned long size)
+-{}
+-
+-static inline void kasan_unpoison_slab(const void *ptr) { }
+-static inline size_t kasan_metadata_size(struct kmem_cache *cache) { return 0; }
+-
+-#endif /* CONFIG_KASAN */
++#endif /* CONFIG_KASAN || CONFIG_SLAB_QUARANTINE */
+ 
+ #ifdef CONFIG_KASAN_GENERIC
+-
+ #define KASAN_SHADOW_INIT 0
+-
+-void kasan_cache_shrink(struct kmem_cache *cache);
+-void kasan_cache_shutdown(struct kmem_cache *cache);
+ void kasan_record_aux_stack(void *ptr);
+-
+ #else /* CONFIG_KASAN_GENERIC */
++static inline void kasan_record_aux_stack(void *ptr) {}
++#endif /* CONFIG_KASAN_GENERIC */
+ 
++#if defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_SLAB_QUARANTINE)
++void kasan_cache_shrink(struct kmem_cache *cache);
++void kasan_cache_shutdown(struct kmem_cache *cache);
++#else /* CONFIG_KASAN_GENERIC || CONFIG_SLAB_QUARANTINE */
+ static inline void kasan_cache_shrink(struct kmem_cache *cache) {}
+ static inline void kasan_cache_shutdown(struct kmem_cache *cache) {}
+-static inline void kasan_record_aux_stack(void *ptr) {}
+-
+-#endif /* CONFIG_KASAN_GENERIC */
++#endif /* CONFIG_KASAN_GENERIC || CONFIG_SLAB_QUARANTINE */
+ 
+ #ifdef CONFIG_KASAN_SW_TAGS
+ 
+diff --git a/include/linux/slab_def.h b/include/linux/slab_def.h
+index 9eb430c163c2..fc7548f27512 100644
+--- a/include/linux/slab_def.h
++++ b/include/linux/slab_def.h
+@@ -72,7 +72,7 @@ struct kmem_cache {
+ 	int obj_offset;
+ #endif /* CONFIG_DEBUG_SLAB */
+ 
+-#ifdef CONFIG_KASAN
++#if defined(CONFIG_KASAN) || defined(CONFIG_SLAB_QUARANTINE)
+ 	struct kasan_cache kasan_info;
+ #endif
+ 
+diff --git a/include/linux/slub_def.h b/include/linux/slub_def.h
+index 1be0ed5befa1..71020cee9fd2 100644
+--- a/include/linux/slub_def.h
++++ b/include/linux/slub_def.h
+@@ -124,7 +124,7 @@ struct kmem_cache {
+ 	unsigned int *random_seq;
+ #endif
+ 
+-#ifdef CONFIG_KASAN
++#if defined(CONFIG_KASAN) || defined(CONFIG_SLAB_QUARANTINE)
+ 	struct kasan_cache kasan_info;
+ #endif
+ 
+diff --git a/init/Kconfig b/init/Kconfig
+index d6a0b31b13dc..358c8ce818f4 100644
+--- a/init/Kconfig
++++ b/init/Kconfig
+@@ -1931,6 +1931,19 @@ config SLAB_FREELIST_HARDENED
+ 	  sanity-checking than others. This option is most effective with
+ 	  CONFIG_SLUB.
+ 
++config SLAB_QUARANTINE
++	bool "Enable slab freelist quarantine"
++	depends on !KASAN && (SLAB || SLUB)
++	help
++	  Enable slab freelist quarantine to delay reusing of freed slab
++	  objects. If this feature is enabled, freed objects are stored
++	  in the quarantine queue where they wait for actual freeing.
++	  So they can't be instantly reallocated and overwritten by
++	  use-after-free exploits. In other words, this feature mitigates
++	  heap spraying technique for exploiting use-after-free
++	  vulnerabilities in the kernel code.
++	  KASAN also employs this feature for use-after-free detection.
++
+ config SHUFFLE_PAGE_ALLOCATOR
+ 	bool "Page allocator randomization"
+ 	default SLAB_FREELIST_RANDOM && ACPI_NUMA
+diff --git a/mm/Makefile b/mm/Makefile
+index d5649f1c12c0..c052bc616a88 100644
+--- a/mm/Makefile
++++ b/mm/Makefile
+@@ -52,7 +52,7 @@ obj-y			:= filemap.o mempool.o oom_kill.o fadvise.o \
+ 			   mm_init.o percpu.o slab_common.o \
+ 			   compaction.o vmacache.o \
+ 			   interval_tree.o list_lru.o workingset.o \
+-			   debug.o gup.o $(mmu-y)
++			   debug.o gup.o kasan/ $(mmu-y)
+ 
+ # Give 'page_alloc' its own module-parameter namespace
+ page-alloc-y := page_alloc.o
+@@ -80,7 +80,6 @@ obj-$(CONFIG_KSM) += ksm.o
+ obj-$(CONFIG_PAGE_POISONING) += page_poison.o
+ obj-$(CONFIG_SLAB) += slab.o
+ obj-$(CONFIG_SLUB) += slub.o
+-obj-$(CONFIG_KASAN)	+= kasan/
+ obj-$(CONFIG_FAILSLAB) += failslab.o
+ obj-$(CONFIG_MEMORY_HOTPLUG) += memory_hotplug.o
+ obj-$(CONFIG_MEMTEST)		+= memtest.o
+diff --git a/mm/kasan/Makefile b/mm/kasan/Makefile
+index 370d970e5ab5..f6367d56a4d0 100644
+--- a/mm/kasan/Makefile
++++ b/mm/kasan/Makefile
+@@ -32,3 +32,5 @@ CFLAGS_tags_report.o := $(CC_FLAGS_KASAN_RUNTIME)
+ obj-$(CONFIG_KASAN) := common.o init.o report.o
+ obj-$(CONFIG_KASAN_GENERIC) += generic.o generic_report.o quarantine.o
+ obj-$(CONFIG_KASAN_SW_TAGS) += tags.o tags_report.o
++
++obj-$(CONFIG_SLAB_QUARANTINE) += slab_quarantine.o quarantine.o
+diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
+index ac499456740f..6692177177a2 100644
+--- a/mm/kasan/kasan.h
++++ b/mm/kasan/kasan.h
+@@ -5,6 +5,43 @@
+ #include <linux/kasan.h>
+ #include <linux/stackdepot.h>
+ 
++struct qlist_node {
++	struct qlist_node *next;
++};
++
++struct kasan_track {
++	pid_t pid;
++	depot_stack_handle_t stack;
++};
++
++struct kasan_free_meta {
++	/* This field is used while the object is in the quarantine.
++	 * Otherwise it might be used for the allocator freelist.
++	 */
++	struct qlist_node quarantine_link;
++#ifdef CONFIG_KASAN_GENERIC
++	struct kasan_track free_track;
++#endif
++};
++
++struct kasan_free_meta *get_free_info(struct kmem_cache *cache,
++					const void *object);
++
++#if defined(CONFIG_KASAN_GENERIC) && \
++	(defined(CONFIG_SLAB) || defined(CONFIG_SLUB)) || \
++	defined(CONFIG_SLAB_QUARANTINE)
++void quarantine_put(struct kasan_free_meta *info, struct kmem_cache *cache);
++void quarantine_reduce(void);
++void quarantine_remove_cache(struct kmem_cache *cache);
++#else
++static inline void quarantine_put(struct kasan_free_meta *info,
++				struct kmem_cache *cache) { }
++static inline void quarantine_reduce(void) { }
++static inline void quarantine_remove_cache(struct kmem_cache *cache) { }
++#endif
++
++#ifdef CONFIG_KASAN
++
+ #define KASAN_SHADOW_SCALE_SIZE (1UL << KASAN_SHADOW_SCALE_SHIFT)
+ #define KASAN_SHADOW_MASK       (KASAN_SHADOW_SCALE_SIZE - 1)
+ 
+@@ -87,17 +124,8 @@ struct kasan_global {
+ #endif
+ };
+ 
+-/**
+- * Structures to keep alloc and free tracks *
+- */
+-
+ #define KASAN_STACK_DEPTH 64
+ 
+-struct kasan_track {
+-	u32 pid;
+-	depot_stack_handle_t stack;
+-};
+-
+ #ifdef CONFIG_KASAN_SW_TAGS_IDENTIFY
+ #define KASAN_NR_FREE_STACKS 5
+ #else
+@@ -121,23 +149,8 @@ struct kasan_alloc_meta {
+ #endif
+ };
+ 
+-struct qlist_node {
+-	struct qlist_node *next;
+-};
+-struct kasan_free_meta {
+-	/* This field is used while the object is in the quarantine.
+-	 * Otherwise it might be used for the allocator freelist.
+-	 */
+-	struct qlist_node quarantine_link;
+-#ifdef CONFIG_KASAN_GENERIC
+-	struct kasan_track free_track;
+-#endif
+-};
+-
+ struct kasan_alloc_meta *get_alloc_info(struct kmem_cache *cache,
+ 					const void *object);
+-struct kasan_free_meta *get_free_info(struct kmem_cache *cache,
+-					const void *object);
+ 
+ static inline const void *kasan_shadow_to_mem(const void *shadow_addr)
+ {
+@@ -178,18 +191,6 @@ void kasan_set_free_info(struct kmem_cache *cache, void *object, u8 tag);
+ struct kasan_track *kasan_get_free_track(struct kmem_cache *cache,
+ 				void *object, u8 tag);
+ 
+-#if defined(CONFIG_KASAN_GENERIC) && \
+-	(defined(CONFIG_SLAB) || defined(CONFIG_SLUB))
+-void quarantine_put(struct kasan_free_meta *info, struct kmem_cache *cache);
+-void quarantine_reduce(void);
+-void quarantine_remove_cache(struct kmem_cache *cache);
+-#else
+-static inline void quarantine_put(struct kasan_free_meta *info,
+-				struct kmem_cache *cache) { }
+-static inline void quarantine_reduce(void) { }
+-static inline void quarantine_remove_cache(struct kmem_cache *cache) { }
+-#endif
+-
+ #ifdef CONFIG_KASAN_SW_TAGS
+ 
+ void print_tags(u8 addr_tag, const void *addr);
+@@ -296,4 +297,6 @@ void __hwasan_storeN_noabort(unsigned long addr, size_t size);
+ 
+ void __hwasan_tag_memory(unsigned long addr, u8 tag, unsigned long size);
+ 
++#endif /* CONFIG_KASAN */
++
+ #endif
+diff --git a/mm/kasan/quarantine.c b/mm/kasan/quarantine.c
+index 4c5375810449..61666263c53e 100644
+--- a/mm/kasan/quarantine.c
++++ b/mm/kasan/quarantine.c
+@@ -145,7 +145,9 @@ static void qlink_free(struct qlist_node *qlink, struct kmem_cache *cache)
+ 	if (IS_ENABLED(CONFIG_SLAB))
+ 		local_irq_save(flags);
+ 
++#ifdef CONFIG_KASAN
+ 	*(u8 *)kasan_mem_to_shadow(object) = KASAN_KMALLOC_FREE;
++#endif
+ 	___cache_free(cache, object, _THIS_IP_);
+ 
+ 	if (IS_ENABLED(CONFIG_SLAB))
+diff --git a/mm/kasan/slab_quarantine.c b/mm/kasan/slab_quarantine.c
+new file mode 100644
+index 000000000000..493c994ff87b
+--- /dev/null
++++ b/mm/kasan/slab_quarantine.c
+@@ -0,0 +1,106 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * The layer providing KASAN slab quarantine separately without the
++ * main KASAN functionality.
++ *
++ * Author: Alexander Popov <alex.popov@linux.com>
++ *
++ * This feature breaks widespread heap spraying technique used for
++ * exploiting use-after-free vulnerabilities in the kernel code.
++ *
++ * Heap spraying is an exploitation technique that aims to put controlled
++ * bytes at a predetermined memory location on the heap. Heap spraying for
++ * exploiting use-after-free in the Linux kernel relies on the fact that on
++ * kmalloc(), the slab allocator returns the address of the memory that was
++ * recently freed. Allocating a kernel object with the same size and
++ * controlled contents allows overwriting the vulnerable freed object.
++ *
++ * If freed allocations are stored in the quarantine queue where they wait
++ * for actual freeing, they can't be instantly reallocated and overwritten
++ * by use-after-free exploits.
++ *
++ * N.B. Heap spraying for out-of-bounds exploitation is another technique,
++ * heap quarantine doesn't break it.
++ */
++
++#include <linux/kasan.h>
++#include <linux/bug.h>
++#include <linux/slab.h>
++#include <linux/mm.h>
++#include "../slab.h"
++#include "kasan.h"
++
++void kasan_cache_create(struct kmem_cache *cache, unsigned int *size,
++			slab_flags_t *flags)
++{
++	cache->kasan_info.alloc_meta_offset = 0;
++
++	if (WARN_ON(*size + sizeof(struct kasan_free_meta) > KMALLOC_MAX_SIZE)) {
++		cache->kasan_info.free_meta_offset = 0;
++		return;
++	}
++
++	if (cache->flags & SLAB_TYPESAFE_BY_RCU || cache->ctor ||
++	     cache->object_size < sizeof(struct kasan_free_meta)) {
++		cache->kasan_info.free_meta_offset = *size;
++		*size += sizeof(struct kasan_free_meta);
++	}
++
++	*flags |= SLAB_KASAN;
++}
++
++struct kasan_free_meta *get_free_info(struct kmem_cache *cache,
++				      const void *object)
++{
++	BUILD_BUG_ON(sizeof(struct kasan_free_meta) > 32);
++	return (void *)object + cache->kasan_info.free_meta_offset;
++}
++
++bool kasan_slab_free(struct kmem_cache *cache, void *object, unsigned long ip)
++{
++	quarantine_put(get_free_info(cache, object), cache);
++	return true;
++}
++
++static void *reduce_helper(const void *ptr, gfp_t flags)
++{
++	if (gfpflags_allow_blocking(flags))
++		quarantine_reduce();
++
++	return (void *)ptr;
++}
++
++void * __must_check kasan_kmalloc_large(const void *ptr, size_t size,
++						gfp_t flags)
++{
++	return reduce_helper(ptr, flags);
++}
++
++void * __must_check kasan_krealloc(const void *object, size_t size, gfp_t flags)
++{
++	return reduce_helper(object, flags);
++}
++
++void * __must_check kasan_slab_alloc(struct kmem_cache *cache, void *object,
++					gfp_t flags)
++{
++	return reduce_helper(object, flags);
++}
++
++void * __must_check kasan_kmalloc(struct kmem_cache *cache, const void *object,
++				size_t size, gfp_t flags)
++{
++	return reduce_helper(object, flags);
++}
++EXPORT_SYMBOL(kasan_kmalloc);
++
++void kasan_cache_shrink(struct kmem_cache *cache)
++{
++	quarantine_remove_cache(cache);
++}
++
++void kasan_cache_shutdown(struct kmem_cache *cache)
++{
++	if (!__kmem_cache_empty(cache))
++		quarantine_remove_cache(cache);
++}
+diff --git a/mm/slub.c b/mm/slub.c
+index d4177aecedf6..6e276ed7606c 100644
+--- a/mm/slub.c
++++ b/mm/slub.c
+@@ -3143,7 +3143,7 @@ static __always_inline void slab_free(struct kmem_cache *s, struct page *page,
+ 		do_slab_free(s, page, head, tail, cnt, addr);
+ }
+ 
+-#ifdef CONFIG_KASAN_GENERIC
++#if defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_SLAB_QUARANTINE)
+ void ___cache_free(struct kmem_cache *cache, void *x, unsigned long addr)
+ {
+ 	do_slab_free(cache, virt_to_head_page(x), x, NULL, 1, addr);
 -- 
 2.26.2
 
