@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 824DC27C4C3
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:17:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFA8A27C31A
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:03:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729581AbgI2LQU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:16:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59810 "EHLO mail.kernel.org"
+        id S1728381AbgI2LDM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:03:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38680 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729278AbgI2LP3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:15:29 -0400
+        id S1728301AbgI2LDE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:03:04 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C6AA2208FE;
-        Tue, 29 Sep 2020 11:15:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 91F6A21924;
+        Tue, 29 Sep 2020 11:03:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601378129;
-        bh=YTi2DVDTYY9Gzpuq/f0hpUTUJ4WQ85KgDRz9QQ36yCU=;
+        s=default; t=1601377384;
+        bh=TQVJNt/bVD6oxbkrcWUlYDbOjx04blkfjvwyasnhIXg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ydv5p0QodU3V6YXhH+TD4GyT/xni9lofKqu7/GWa/h81hhW9SzZI2PX/+rHZlahjK
-         lCmUW+RpVmubQwa/R//YvgFlA+OP4pP9EHDOAs0uDnAX72sksT/BHYUck0/iYWLI+l
-         n0rHTglW00eKatjzawHdSSDEHpVGbv9F0YHhD5v8=
+        b=gYDWuxk9EAfCBlLGGLzvt62bBOGfCJRkqjPPYo2fOujHvzFtWbccwiUM/IqWRKVF9
+         uqacKetpKrIwoB8GcOwnapFNOHWqs2RsF2j8Z05zrxzUlcipGr4GKMGGfIQmwFUe56
+         xdKy/aDl6fqSkWc3Xq4Wru4lqWW2KOj+q02bFzPI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sasha Levin <sashal@kernel.org>,
-        =?UTF-8?q?Josef=20M=C3=B6llers?= <josef.moellers@suse.com>
-Subject: [PATCH 4.14 072/166] media: go7007: Fix URB type for interrupt handling
+        stable@vger.kernel.org, Hou Tao <houtao1@huawei.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 17/85] mtd: cfi_cmdset_0002: dont free cfi->cfiq in error path of cfi_amdstd_setup()
 Date:   Tue, 29 Sep 2020 12:59:44 +0200
-Message-Id: <20200929105938.817574636@linuxfoundation.org>
+Message-Id: <20200929105929.076572462@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929105935.184737111@linuxfoundation.org>
-References: <20200929105935.184737111@linuxfoundation.org>
+In-Reply-To: <20200929105928.198942536@linuxfoundation.org>
+References: <20200929105928.198942536@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,53 +44,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Hou Tao <houtao1@huawei.com>
 
-[ Upstream commit a3ea410cac41b19a5490aad7fe6d9a9a772e646e ]
+[ Upstream commit 03976af89e3bd9489d542582a325892e6a8cacc0 ]
 
-Josef reported that his old-and-good Plextor ConvertX M402U video
-converter spews lots of WARNINGs on the recent kernels, and it turned
-out that the device uses a bulk endpoint for interrupt handling just
-like 2250 board.
+Else there may be a double-free problem, because cfi->cfiq will
+be freed by mtd_do_chip_probe() if both the two invocations of
+check_cmd_set() return failure.
 
-For fixing it, generalize the check with the proper verification of
-the endpoint instead of hard-coded board type check.
-
-Fixes: 7e5219d18e93 ("[media] go7007: Fix 2250 urb type")
-Reported-and-tested-by: Josef Möllers <josef.moellers@suse.com>
-BugLink: https://bugzilla.suse.com/show_bug.cgi?id=1162583
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=206427
-
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Hou Tao <houtao1@huawei.com>
+Reviewed-by: Richard Weinberger <richard@nod.at>
+Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/usb/go7007/go7007-usb.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/mtd/chips/cfi_cmdset_0002.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/media/usb/go7007/go7007-usb.c b/drivers/media/usb/go7007/go7007-usb.c
-index ed9bcaf08d5ec..ddfaabd4c0813 100644
---- a/drivers/media/usb/go7007/go7007-usb.c
-+++ b/drivers/media/usb/go7007/go7007-usb.c
-@@ -1052,6 +1052,7 @@ static int go7007_usb_probe(struct usb_interface *intf,
- 	struct go7007_usb *usb;
- 	const struct go7007_usb_board *board;
- 	struct usb_device *usbdev = interface_to_usbdev(intf);
-+	struct usb_host_endpoint *ep;
- 	unsigned num_i2c_devs;
- 	char *name;
- 	int video_pipe, i, v_urb_len;
-@@ -1147,7 +1148,8 @@ static int go7007_usb_probe(struct usb_interface *intf,
- 	if (usb->intr_urb->transfer_buffer == NULL)
- 		goto allocfail;
+diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
+index 972935f1b2f7e..3a3da0eeef1fb 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0002.c
++++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+@@ -724,7 +724,6 @@ static struct mtd_info *cfi_amdstd_setup(struct mtd_info *mtd)
+ 	kfree(mtd->eraseregions);
+ 	kfree(mtd);
+ 	kfree(cfi->cmdset_priv);
+-	kfree(cfi->cfiq);
+ 	return NULL;
+ }
  
--	if (go->board_id == GO7007_BOARDID_SENSORAY_2250)
-+	ep = usb->usbdev->ep_in[4];
-+	if (usb_endpoint_type(&ep->desc) == USB_ENDPOINT_XFER_BULK)
- 		usb_fill_bulk_urb(usb->intr_urb, usb->usbdev,
- 			usb_rcvbulkpipe(usb->usbdev, 4),
- 			usb->intr_urb->transfer_buffer, 2*sizeof(u16),
 -- 
 2.25.1
 
