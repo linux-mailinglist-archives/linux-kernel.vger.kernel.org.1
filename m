@@ -2,88 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BB4227D9D0
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 23:17:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 976C127D9D8
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 23:19:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729363AbgI2VQy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 17:16:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43610 "EHLO
+        id S1728657AbgI2VTn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 17:19:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726643AbgI2VQy (ORCPT
+        with ESMTP id S1727347AbgI2VTn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 17:16:54 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A14B1C061755;
-        Tue, 29 Sep 2020 14:16:53 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id z19so7269925lfr.4;
-        Tue, 29 Sep 2020 14:16:53 -0700 (PDT)
+        Tue, 29 Sep 2020 17:19:43 -0400
+Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2306BC0613D0
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 14:19:43 -0700 (PDT)
+Received: by mail-pj1-x104a.google.com with SMTP id y7so4513400pjt.1
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 14:19:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=nTqRPB3v1tkiwN7Cg1ds4smhECywcgz+mhK9iqkYF2I=;
-        b=ZVcgqr1eJH2THDTRaxDQl1RhHaVCg3p3KCfxr/2U52C+17STyk7+SfAHRsDwfd6N1M
-         LA/DhkvC1Dl1Dam0E0C6Qbwem0AsqPhk/exsjZirWA6X/6iSv8pwYfBnJfoqtsCCwUtA
-         bSfPLpIWtuWKsJQhiDVuhhPPEl8TZvl+JtKz8mbfiYyZKI+fvXDpPu7sjXGSmxbqEOYJ
-         gH7c2eqvhHK7laPgxpRW4IdKhftVfiQarhXwcz2RCFQJzLFhuJy3QJcRpd9dxSXtUmrV
-         scQFaoeO1+D/xt7pjV7cXn3X0a+mDZCCJnDKDNSp1471mWqNh28y87m4RbAn6oExcDHT
-         LhzA==
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=zLJyFMf9XZVQIy9gnwTsATrEt+DgUwH6ys2B+6ApuhI=;
+        b=Y7594vIbHkXBhApmTedw2NwyrpJX9f2YfI72IgOYLGX/daGmvomA28H71cor7NZwm8
+         rhkEBz7K2u6j3w5klPkBAnppYc0cuCn4RnyLCDfttpT4iDWk/n94iCjGAyKlW2n5HKFv
+         VZD80GgYBFs4kqSlF/45g2NKdo+yFdg4pHUfz8VxC89N+fm2M6pDetzbdZyiv3grIhWa
+         ap5hgRUbvDzc79SpSnPaJ5WA1QmEAg097fIckc35Qc5saTiIWtXSiIAsSZhdZQWhyJIQ
+         3X5tYfFzxQR0xYWMH+W0II9PkT9SbovJ5UMOG1DwLs1ZAzODwQFn/4CsCnMvoeXYBi6y
+         tEEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=nTqRPB3v1tkiwN7Cg1ds4smhECywcgz+mhK9iqkYF2I=;
-        b=kZvapGl2zZ846LCE1W5yWYdt2xSbu60QAJGzJINLbmiQYJA/mqUoCjYV6W5VCSAmdh
-         EbYHA424FCN61+M5mJQYJdqXJ4HvPRiBdcQS5igsJ18knza5VliE7YDkq/XKRKY3Jpiy
-         KVYJMzy7Ilqz0OXBlShTD0+j+9reChtlKTz4Wcd3aRmY492m0+go1Yl6DtmffFnV6KRM
-         /psJbLABOQQqJH1bPiu2KIAk9TZ8n7ISFRDWW5OSQOKJHiDEylqRCa3Pb+q4/ZS0selF
-         8PQc97qSxn/BldWnQ+BQwHyplaIOSw+CxkGX4a9yeQGr0OgJEsdfKgm57lp01my4ybIX
-         t+GA==
-X-Gm-Message-State: AOAM533JUxkAicEup68DH/r1xxohZ4Kn6OxVuCWiS6JLrqE/d2xkyERv
-        Uolabit+2m3bE2k25PJmXOwxl9umq6E=
-X-Google-Smtp-Source: ABdhPJwhIFSkn4Fo5pgos3rHIO9bWKVVBCmj//jHJymDs1j7bnlLztn+lZ1jUtcuzWZQ/dnQrSFk4w==
-X-Received: by 2002:ac2:4433:: with SMTP id w19mr2079597lfl.548.1601414211794;
-        Tue, 29 Sep 2020 14:16:51 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
-        by smtp.googlemail.com with ESMTPSA id m203sm3387483lfd.195.2020.09.29.14.16.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 29 Sep 2020 14:16:51 -0700 (PDT)
-Subject: Re: [PATCH v8 23/32] i2c: tegra: Factor out packet header setup from
- tegra_i2c_xfer_msg()
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     linux-i2c@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200922225155.10798-1-digetx@gmail.com>
- <20200922225155.10798-24-digetx@gmail.com>
-Message-ID: <2efb1256-dae8-34d1-1175-e70059b7cdec@gmail.com>
-Date:   Wed, 30 Sep 2020 00:16:50 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20200922225155.10798-24-digetx@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=zLJyFMf9XZVQIy9gnwTsATrEt+DgUwH6ys2B+6ApuhI=;
+        b=k19E0Th3/7xl2f7q21ZMyybx4+CjsOlekX5dT5ya/iPMpLa8e6+g8D+pfGpDsnPzSI
+         outqNJU8+qDCPnruDQlhdn8C6CdSpCuhlDDz6wQ2YqMPqlmYcsug01INrt0X2qYBh8GB
+         5BTwZZVq9zB/UyPA17Se5hcAiCrcGVwm7s7+G3Jnl1djkEDEB1zlkCpXssF4mXvz4G/n
+         EMlNvSrkCZGGI9weOFR1FGk8rT3MQOtoj9gP/NxHx3h2KNiRyFCyFzVTYbdXgMtmDD29
+         DOq31IMjKs/8jJbVA6mZYoDsW7w8s2Vn42X6vOwZ6OBrnl3v8kVUuwI7JNDYMb5+ldEV
+         MiMA==
+X-Gm-Message-State: AOAM532+F07P53sxUlNhEfUz3OLYVeXfV0z/nx2iS7qjmUZi6YCGNW8c
+        kloxQoq1Z0bH5tF1na6W76qqUp0l9DbPB+QgMsw=
+X-Google-Smtp-Source: ABdhPJxMiJ29B6/aBRGEVbZqKnFd8BQ8IkyftiV8NGjJZ/F47cWFXbYu/vlnLs/c9iNH8M+N1zQ5Jkxd0qSzOpcar/4=
+Sender: "ndesaulniers via sendgmr" 
+        <ndesaulniers@ndesaulniers1.mtv.corp.google.com>
+X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:f693:9fff:fef4:4d25])
+ (user=ndesaulniers job=sendgmr) by 2002:aa7:9592:0:b029:13e:d13d:a054 with
+ SMTP id z18-20020aa795920000b029013ed13da054mr5822227pfj.26.1601414382399;
+ Tue, 29 Sep 2020 14:19:42 -0700 (PDT)
+Date:   Tue, 29 Sep 2020 14:19:35 -0700
+Message-Id: <20200929211936.580805-1-ndesaulniers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.28.0.709.gb0816b6eb0-goog
+Subject: [PATCH] docs: programming-languages: refresh blurb on clang support
+From:   Nick Desaulniers <ndesaulniers@google.com>
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-...
-> +	tegra_i2c_push_packet_header(i2c_dev, msg, end_state);
->  
->  	if (!i2c_dev->msg_read) {
->  		if (i2c_dev->is_curr_dma_xfer) {
-> -			memcpy(buffer, msg->buf, msg->len);
-> +			memcpy(i2c_dev->dma_buf, msg->buf, msg->len);
+Building the kernel with Clang doesn't rely on third party patches, and
+has not for a few years now.
 
-I spotted that this now shall be i2c_dev->dma_buf + I2C_PACKET_HEADER_SIZE.
+Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+---
+ Documentation/process/programming-language.rst | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-I also checked that the enforced DMA mode doesn't work using v8 and it
-works fine after the fix. Will make v9 shortly.
+diff --git a/Documentation/process/programming-language.rst b/Documentation/process/programming-language.rst
+index e5f5f065dc24..63af142d64ec 100644
+--- a/Documentation/process/programming-language.rst
++++ b/Documentation/process/programming-language.rst
+@@ -6,14 +6,15 @@ Programming Language
+ The kernel is written in the C programming language [c-language]_.
+ More precisely, the kernel is typically compiled with ``gcc`` [gcc]_
+ under ``-std=gnu89`` [gcc-c-dialect-options]_: the GNU dialect of ISO C90
+-(including some C99 features).
++(including some C99 features). ``clang`` [clang]_ is also supported, see docs
++docs on :ref:`Building Linux with Clang/LLVM <kbuild_llvm>`.
+ 
+ This dialect contains many extensions to the language [gnu-extensions]_,
+ and many of them are used within the kernel as a matter of course.
+ 
+-There is some support for compiling the kernel with ``clang`` [clang]_
+-and ``icc`` [icc]_ for several of the architectures, although at the time
+-of writing it is not completed, requiring third-party patches.
++There is some support for compiling the kernel with ``icc`` [icc]_ for several
++of the architectures, although at the time of writing it is not completed,
++requiring third-party patches.
+ 
+ Attributes
+ ----------
+-- 
+2.28.0.709.gb0816b6eb0-goog
+
