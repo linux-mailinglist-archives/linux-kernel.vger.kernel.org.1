@@ -2,159 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1293F27D455
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 19:23:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00D9A27D457
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 19:23:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728378AbgI2RXD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 13:23:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35526 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725554AbgI2RXC (ORCPT
+        id S1729033AbgI2RXh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 13:23:37 -0400
+Received: from mail-oi1-f193.google.com ([209.85.167.193]:43321 "EHLO
+        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728459AbgI2RXg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 13:23:02 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FBA1C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 10:23:02 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id u4so4669965ljd.10
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 10:23:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=e0kihtq9EEmKHWM3zruPiltig8hiiIn0Yr9BtelBznU=;
-        b=ovoDyTIDaCHovVhgarrlkJiW3uoanu2Dm2kg75HE5YjCPdwIF49n3vTuVzV7lj0tN4
-         P0fAfoGzzuq6nQpEo59jiYrDN+C8f2ePhyRSRu6x0QvKxwB3hZCTVl+C71oSxU7WKbnR
-         VlNny7sKYqJhMirwiCcj9kuLgr2x1f0JNNsb+n/NWPjom6CVeJrAUZX+QobKpD4siZxi
-         1Rj4Wja+QwjjN3huS55S3Z34ArKzzQPEeCiFBb0KzAJU+HkCB/1zSTa+14L3l9NAOXRm
-         nSFEMbZkBTHiXaK4hdOtOUWhmF1w9qE6AeAk5CR+1VCEjUfz/Uns8y4JhPKPrnTKY8F0
-         354g==
+        Tue, 29 Sep 2020 13:23:36 -0400
+Received: by mail-oi1-f193.google.com with SMTP id i17so6284264oig.10;
+        Tue, 29 Sep 2020 10:23:34 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=e0kihtq9EEmKHWM3zruPiltig8hiiIn0Yr9BtelBznU=;
-        b=tvlJBIt4vSwS7jONnoJ9rWoI3YC59dHZhYZj0XQyyb96N8fLKMS3WPnYqCwPHTWg1b
-         Ff3gPf1pBA8O9evnfNYop0+6wzulRLGAGiBMmTNv4iUiPypjENjezMfUL6lH0ASGAAAR
-         57YhicJ4hU+My1kZuNGt/pbMZzjJsFw5LuZrIxMQ+YtkRLabjiTgRnqT/EhcixrSSUxS
-         1lQjEDMCvfPdKOVjMQHYU3BK88s0my6T59zW71OnKW/PPhheBTqtooEVKlQw77MiAUJB
-         Ak/NSxdszu6iLKwQlc85SlFk8kB0sVqUC/4IL7na0xfQKmS72NJkCgIwke2vQ25bhKvf
-         sUeQ==
-X-Gm-Message-State: AOAM53011RBasmnjq9CnJLYRp59/70CwjNa8WNgQfUxN8BOzv6nX4KfO
-        0YaQvJeAwzg5WZ9q2lBKvnin5UGghRALgdquFyme0P8HPxFFImM=
-X-Google-Smtp-Source: ABdhPJyCLkOp+ZKTAD5f7vfO6SBmZ3p05q09GWu3cQlbyz81kCkKIIbPvFko8r5xiHvzyJoiAVSGBMIdYdM4cX7MTPo=
-X-Received: by 2002:a2e:7e0f:: with SMTP id z15mr1374067ljc.117.1601400180362;
- Tue, 29 Sep 2020 10:23:00 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=6pizakLc17yzkgx68uXJkRvEy7t99Oc2Nx6DxepZaYU=;
+        b=jbn+CaB74hw0JAFzwr8y2/G5IahlobXAmWP20d4Ex6QjAyGq0QxLNUJdfhAXo3B1m9
+         rQxRQ+PIUyL8Vjd0GQb7k2oQSXxC9cPviiN0LO7+FXR3MDKxvnbvPue1PVVPuhFeyvDa
+         eCDYrzXRK0zF8mPDRJIViqUDnxC+rYQB8+Ytcp88bAGdHNev7hz1ru9BZMiT91NRQDEQ
+         nBtaD15xp+zH6hHUTEUmTWgjc7yiA7CHIUbLWfyJ4BE29Con13ljknezsfTzaHQLFs45
+         MzeZv4iIyqBLFGlQOzMOhgZe2HmcRn2ZSpIQqYXNON6lMkBwijOtigQcDtZZPtX2GRMS
+         Yrmw==
+X-Gm-Message-State: AOAM530OdKYIHXQYBJFfJWAk5LOZ/Px830KuAui61O6R3/x99QSWLKfR
+        nH1wyFZxWtkxStoi5jYSig==
+X-Google-Smtp-Source: ABdhPJy6ZCmnwJ17NtcBnFZ55+qshShpfv1j7J+iO/HYytDKmivmIKAnHhn5fWiKrJLfcxbhgjsoTw==
+X-Received: by 2002:aca:446:: with SMTP id 67mr3365853oie.171.1601400214366;
+        Tue, 29 Sep 2020 10:23:34 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id g3sm1134234otp.14.2020.09.29.10.23.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Sep 2020 10:23:33 -0700 (PDT)
+Received: (nullmailer pid 811296 invoked by uid 1000);
+        Tue, 29 Sep 2020 17:23:32 -0000
+Date:   Tue, 29 Sep 2020 12:23:32 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Wan Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>
+Cc:     lakshmi.bai.raja.subramanian@intel.com,
+        linux-kernel@vger.kernel.org, robh+dt@kernel.org,
+        devicetree@vger.kernel.org, andriy.shevchenko@linux.intel.com,
+        mgross@linux.intel.com, balbi@kernel.org, kishon@ti.com,
+        linux-usb@vger.kernel.org, vkoul@kernel.org,
+        gregkh@linuxfoundation.org
+Subject: Re: [PATCH 1/4] dt-bindings: phy: Add Intel Keem Bay USB PHY bindings
+Message-ID: <20200929172332.GA811234@bogus>
+References: <20200921024459.20899-1-wan.ahmad.zainie.wan.mohamad@intel.com>
+ <20200921024459.20899-2-wan.ahmad.zainie.wan.mohamad@intel.com>
 MIME-Version: 1.0
-References: <20200921110020.GA2139@willie-the-truck> <20200922092153.978003-1-asteinhauser@google.com>
- <20200928130208.GA11356@willie-the-truck> <CAN_oZf36S=eX5qgyXg+dRi+thN5tRWxp7=SWYvjO0hZhxTAhrQ@mail.gmail.com>
- <20200929081035.GA13576@willie-the-truck>
-In-Reply-To: <20200929081035.GA13576@willie-the-truck>
-From:   Anthony Steinhauser <asteinhauser@google.com>
-Date:   Tue, 29 Sep 2020 13:22:48 -0400
-Message-ID: <CAN_oZf3HkO5+f5OJibGpsnnu1Khnx5mxdSimL9bDBbs+33ka0A@mail.gmail.com>
-Subject: Re: [PATCH v2] PR_SPEC_DISABLE_NOEXEC support for arm64.
-To:     Will Deacon <will@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, catalin.marinas@arm.com,
-        maz@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200921024459.20899-2-wan.ahmad.zainie.wan.mohamad@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks a lot Will,
+On Mon, 21 Sep 2020 10:44:56 +0800, Wan Ahmad Zainie wrote:
+> Binding description for Intel Keem Bay USB PHY.
+> 
+> Signed-off-by: Wan Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>
+> ---
+>  .../bindings/phy/intel,phy-keembay-usb.yaml   | 44 +++++++++++++++++++
+>  1 file changed, 44 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/phy/intel,phy-keembay-usb.yaml
+> 
 
-Everything looks good to me now.
-On Tue, Sep 29, 2020 at 4:10 AM Will Deacon <will@kernel.org> wrote:
->
-> Hi Anthony,
->
-...
->
-> I'll fold in the diff below, which I think solves the problem above; it's
-> closer to what you had originally, just refactored a bit and with the
-> execve()/fork() issue fixed.
->
-> Will
->
-> --->8
->
-> diff --git a/arch/arm64/kernel/proton-pack.c b/arch/arm64/kernel/proton-pack.c
-> index 59f2ceb7a0e5..68b710f1b43f 100644
-> --- a/arch/arm64/kernel/proton-pack.c
-> +++ b/arch/arm64/kernel/proton-pack.c
-> @@ -660,6 +660,20 @@ void spectre_v4_enable_task_mitigation(struct task_struct *tsk)
->   * prctl() may be necessary even when PSTATE.SSBS can be toggled directly
->   * from userspace.
->   */
-> +static void ssbd_prctl_enable_mitigation(struct task_struct *task)
-> +{
-> +       task_clear_spec_ssb_noexec(task);
-> +       task_set_spec_ssb_disable(task);
-> +       set_tsk_thread_flag(task, TIF_SSBD);
-> +}
-> +
-> +static void ssbd_prctl_disable_mitigation(struct task_struct *task)
-> +{
-> +       task_clear_spec_ssb_noexec(task);
-> +       task_clear_spec_ssb_disable(task);
-> +       clear_tsk_thread_flag(task, TIF_SSBD);
-> +}
-> +
->  static int ssbd_prctl_set(struct task_struct *task, unsigned long ctrl)
->  {
->         switch (ctrl) {
-> @@ -679,8 +693,7 @@ static int ssbd_prctl_set(struct task_struct *task, unsigned long ctrl)
->                 if (spectre_v4_mitigations_on())
->                         return -EPERM;
->
-> -               task_clear_spec_ssb_disable(task);
-> -               clear_tsk_thread_flag(task, TIF_SSBD);
-> +               ssbd_prctl_disable_mitigation(task);
->                 break;
->         case PR_SPEC_FORCE_DISABLE:
->                 /* Force disable speculation: force enable mitigation */
-> @@ -693,28 +706,33 @@ static int ssbd_prctl_set(struct task_struct *task, unsigned long ctrl)
->
->                 task_set_spec_ssb_force_disable(task);
->                 fallthrough;
-> -       case PR_SPEC_DISABLE_NOEXEC:
-> -               /* Disable speculation until execve(): enable mitigation */
-> -               fallthrough;
->         case PR_SPEC_DISABLE:
->                 /* Disable speculation: enable mitigation */
->                 /* Same as PR_SPEC_FORCE_DISABLE */
->                 if (spectre_v4_mitigations_off())
->                         return -EPERM;
->
-> -               task_set_spec_ssb_disable(task);
-> -               set_tsk_thread_flag(task, TIF_SSBD);
-> +               ssbd_prctl_enable_mitigation(task);
-> +               break;
-> +       case PR_SPEC_DISABLE_NOEXEC:
-> +               /* Disable speculation until execve(): enable mitigation */
-> +               /*
-> +                * If the mitigation state is forced one way or the other, then
-> +                * we must fail now before we try to toggle it on execve().
-> +                */
-> +               if (task_spec_ssb_force_disable(task) ||
-> +                   spectre_v4_mitigations_off() ||
-> +                   spectre_v4_mitigations_on()) {
-> +                       return -EPERM;
-> +               }
-> +
-> +               ssbd_prctl_enable_mitigation(task);
-> +               task_set_spec_ssb_noexec(task);
->                 break;
->         default:
->                 return -ERANGE;
->         }
->
-> -       /* Handle the 'noexec' flag separately to save bloating up the switch */
-> -       if (ctrl == PR_SPEC_DISABLE_NOEXEC)
-> -               task_set_spec_ssb_noexec(task);
-> -       else
-> -               task_clear_spec_ssb_noexec(task);
-> -
->         spectre_v4_enable_task_mitigation(task);
->         return 0;
->  }
+Reviewed-by: Rob Herring <robh@kernel.org>
