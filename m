@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E967327C881
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:02:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0293C27C895
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:03:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730411AbgI2Li4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:38:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60828 "EHLO mail.kernel.org"
+        id S1731787AbgI2MC7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 08:02:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32788 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729136AbgI2Liq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:38:46 -0400
+        id S1729143AbgI2Liu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:38:50 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 34835208FE;
-        Tue, 29 Sep 2020 11:38:45 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9976B206E5;
+        Tue, 29 Sep 2020 11:38:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601379525;
-        bh=eTuzjZLcFvYsTQMGwxCoA2SSC4OdI8g8w3E8lmz2xjo=;
+        s=default; t=1601379530;
+        bh=xGpQi0Mls+wpXdYop4ZeotRmA30ZWmvbez3egXEdMmU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HlersRKZtqJ6YDsfvS3R3QJlH6w/CbJiDBeJHhWxbUAvvefLLDdKQny+Bmjdu9IWy
-         /VoM20D9cZJzcY8cLloGO0xxeYnAwssqD2nknFqS/VbUvZwWIG6OU0xGVuMQcazdzu
-         k1TL44sHdebnH6V+UgcYKbSL6xmrXzRKG7bgakBE=
+        b=s6S7JbB40tSv+h5nYgmt4tOcooXZUeuVYdNg/3PP/uHzVM5ubdYKFEup6xqOcffmV
+         G2ntuF6FtfB3D1QiD1L9Xy08m+vcRPtrsUuJbJv3gg2GqsxoeTX6I3+Eij9YjDjUGo
+         WeLIKJpV2qcprCpscsW+x+ZowIE6UZ7wnGh1g9Y4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Dave Chinner <dchinner@redhat.com>,
+        stable@vger.kernel.org, Zhu Yanjun <yanjunz@mellanox.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        Jason Gunthorpe <jgg@mellanox.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 203/388] xfs: prohibit fs freezing when using empty transactions
-Date:   Tue, 29 Sep 2020 12:58:54 +0200
-Message-Id: <20200929110020.311892084@linuxfoundation.org>
+Subject: [PATCH 5.4 204/388] RDMA/rxe: Set sys_image_guid to be aligned with HW IB devices
+Date:   Tue, 29 Sep 2020 12:58:55 +0200
+Message-Id: <20200929110020.358963369@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200929110010.467764689@linuxfoundation.org>
 References: <20200929110010.467764689@linuxfoundation.org>
@@ -44,134 +44,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Darrick J. Wong <darrick.wong@oracle.com>
+From: Zhu Yanjun <yanjunz@mellanox.com>
 
-[ Upstream commit 27fb5a72f50aa770dd38b0478c07acacef97e3e7 ]
+[ Upstream commit d0ca2c35dd15a3d989955caec02beea02f735ee6 ]
 
-I noticed that fsfreeze can take a very long time to freeze an XFS if
-there happens to be a GETFSMAP caller running in the background.  I also
-happened to notice the following in dmesg:
+The RXE driver doesn't set sys_image_guid and user space applications see
+zeros. This causes to pyverbs tests to fail with the following traceback,
+because the IBTA spec requires to have valid sys_image_guid.
 
-------------[ cut here ]------------
-WARNING: CPU: 2 PID: 43492 at fs/xfs/xfs_super.c:853 xfs_quiesce_attr+0x83/0x90 [xfs]
-Modules linked in: xfs libcrc32c ip6t_REJECT nf_reject_ipv6 ipt_REJECT nf_reject_ipv4 ip_set_hash_ip ip_set_hash_net xt_tcpudp xt_set ip_set_hash_mac ip_set nfnetlink ip6table_filter ip6_tables bfq iptable_filter sch_fq_codel ip_tables x_tables nfsv4 af_packet [last unloaded: xfs]
-CPU: 2 PID: 43492 Comm: xfs_io Not tainted 5.6.0-rc4-djw #rc4
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.10.2-1ubuntu1 04/01/2014
-RIP: 0010:xfs_quiesce_attr+0x83/0x90 [xfs]
-Code: 7c 07 00 00 85 c0 75 22 48 89 df 5b e9 96 c1 00 00 48 c7 c6 b0 2d 38 a0 48 89 df e8 57 64 ff ff 8b 83 7c 07 00 00 85 c0 74 de <0f> 0b 48 89 df 5b e9 72 c1 00 00 66 90 0f 1f 44 00 00 41 55 41 54
-RSP: 0018:ffffc900030f3e28 EFLAGS: 00010202
-RAX: 0000000000000001 RBX: ffff88802ac54000 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: ffffffff81e4a6f0 RDI: 00000000ffffffff
-RBP: ffff88807859f070 R08: 0000000000000001 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000010 R12: 0000000000000000
-R13: ffff88807859f388 R14: ffff88807859f4b8 R15: ffff88807859f5e8
-FS:  00007fad1c6c0fc0(0000) GS:ffff88807e000000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f0c7d237000 CR3: 0000000077f01003 CR4: 00000000001606a0
-Call Trace:
- xfs_fs_freeze+0x25/0x40 [xfs]
- freeze_super+0xc8/0x180
- do_vfs_ioctl+0x70b/0x750
- ? __fget_files+0x135/0x210
- ksys_ioctl+0x3a/0xb0
- __x64_sys_ioctl+0x16/0x20
- do_syscall_64+0x50/0x1a0
- entry_SYSCALL_64_after_hwframe+0x49/0xbe
+ Traceback (most recent call last):
+   File "./tests/test_device.py", line 51, in test_query_device
+     self.verify_device_attr(attr)
+   File "./tests/test_device.py", line 74, in verify_device_attr
+     assert attr.sys_image_guid != 0
 
-These two things appear to be related.  The assertion trips when another
-thread initiates a fsmap request (which uses an empty transaction) after
-the freezer waited for m_active_trans to hit zero but before the the
-freezer executes the WARN_ON just prior to calling xfs_log_quiesce.
+In order to fix it, set sys_image_guid to be equal to node_guid.
 
-The lengthy delays in freezing happen because the freezer calls
-xfs_wait_buftarg to clean out the buffer lru list.  Meanwhile, the
-GETFSMAP caller is continuing to grab and release buffers, which means
-that it can take a very long time for the buffer lru list to empty out.
+Before:
+ 5: rxe0: ... node_guid 5054:00ff:feaa:5363 sys_image_guid
+ 0000:0000:0000:0000
 
-We fix both of these races by calling sb_start_write to obtain freeze
-protection while using empty transactions for GETFSMAP and for metadata
-scrubbing.  The other two users occur during mount, during which time we
-cannot fs freeze.
+After:
+ 5: rxe0: ... node_guid 5054:00ff:feaa:5363 sys_image_guid
+ 5054:00ff:feaa:5363
 
-Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
-Reviewed-by: Dave Chinner <dchinner@redhat.com>
+Fixes: 8700e3e7c485 ("Soft RoCE driver")
+Link: https://lore.kernel.org/r/20200323112800.1444784-1-leon@kernel.org
+Signed-off-by: Zhu Yanjun <yanjunz@mellanox.com>
+Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/xfs/scrub/scrub.c | 9 +++++++++
- fs/xfs/xfs_fsmap.c   | 9 +++++++++
- fs/xfs/xfs_trans.c   | 5 +++++
- 3 files changed, 23 insertions(+)
+ drivers/infiniband/sw/rxe/rxe.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/fs/xfs/scrub/scrub.c b/fs/xfs/scrub/scrub.c
-index 15c8c5f3f688d..720bef5779989 100644
---- a/fs/xfs/scrub/scrub.c
-+++ b/fs/xfs/scrub/scrub.c
-@@ -167,6 +167,7 @@ xchk_teardown(
- 			xfs_irele(sc->ip);
- 		sc->ip = NULL;
- 	}
-+	sb_end_write(sc->mp->m_super);
- 	if (sc->flags & XCHK_REAPING_DISABLED)
- 		xchk_start_reaping(sc);
- 	if (sc->flags & XCHK_HAS_QUOTAOFFLOCK) {
-@@ -489,6 +490,14 @@ xfs_scrub_metadata(
- 	sc.ops = &meta_scrub_ops[sm->sm_type];
- 	sc.sick_mask = xchk_health_mask_for_scrub_type(sm->sm_type);
- retry_op:
-+	/*
-+	 * If freeze runs concurrently with a scrub, the freeze can be delayed
-+	 * indefinitely as we walk the filesystem and iterate over metadata
-+	 * buffers.  Freeze quiesces the log (which waits for the buffer LRU to
-+	 * be emptied) and that won't happen while checking is running.
-+	 */
-+	sb_start_write(mp->m_super);
-+
- 	/* Set up for the operation. */
- 	error = sc.ops->setup(&sc, ip);
- 	if (error)
-diff --git a/fs/xfs/xfs_fsmap.c b/fs/xfs/xfs_fsmap.c
-index d082143feb5ab..c13754e119be1 100644
---- a/fs/xfs/xfs_fsmap.c
-+++ b/fs/xfs/xfs_fsmap.c
-@@ -895,6 +895,14 @@ xfs_getfsmap(
- 	info.format_arg = arg;
- 	info.head = head;
+diff --git a/drivers/infiniband/sw/rxe/rxe.c b/drivers/infiniband/sw/rxe/rxe.c
+index 70c4ea438664d..de5f3efe9fcb4 100644
+--- a/drivers/infiniband/sw/rxe/rxe.c
++++ b/drivers/infiniband/sw/rxe/rxe.c
+@@ -118,6 +118,8 @@ static void rxe_init_device_param(struct rxe_dev *rxe)
+ 	rxe->attr.max_fast_reg_page_list_len	= RXE_MAX_FMR_PAGE_LIST_LEN;
+ 	rxe->attr.max_pkeys			= RXE_MAX_PKEYS;
+ 	rxe->attr.local_ca_ack_delay		= RXE_LOCAL_CA_ACK_DELAY;
++	addrconf_addr_eui48((unsigned char *)&rxe->attr.sys_image_guid,
++			rxe->ndev->dev_addr);
  
-+	/*
-+	 * If fsmap runs concurrently with a scrub, the freeze can be delayed
-+	 * indefinitely as we walk the rmapbt and iterate over metadata
-+	 * buffers.  Freeze quiesces the log (which waits for the buffer LRU to
-+	 * be emptied) and that won't happen while we're reading buffers.
-+	 */
-+	sb_start_write(mp->m_super);
-+
- 	/* For each device we support... */
- 	for (i = 0; i < XFS_GETFSMAP_DEVS; i++) {
- 		/* Is this device within the range the user asked for? */
-@@ -934,6 +942,7 @@ xfs_getfsmap(
- 
- 	if (tp)
- 		xfs_trans_cancel(tp);
-+	sb_end_write(mp->m_super);
- 	head->fmh_oflags = FMH_OF_DEV_T;
- 	return error;
+ 	rxe->max_ucontext			= RXE_MAX_UCONTEXT;
  }
-diff --git a/fs/xfs/xfs_trans.c b/fs/xfs/xfs_trans.c
-index f4795fdb7389c..b32a66452d441 100644
---- a/fs/xfs/xfs_trans.c
-+++ b/fs/xfs/xfs_trans.c
-@@ -306,6 +306,11 @@ xfs_trans_alloc(
-  *
-  * Note the zero-length reservation; this transaction MUST be cancelled
-  * without any dirty data.
-+ *
-+ * Callers should obtain freeze protection to avoid two conflicts with fs
-+ * freezing: (1) having active transactions trip the m_active_trans ASSERTs;
-+ * and (2) grabbing buffers at the same time that freeze is trying to drain
-+ * the buffer LRU list.
-  */
- int
- xfs_trans_alloc_empty(
 -- 
 2.25.1
 
