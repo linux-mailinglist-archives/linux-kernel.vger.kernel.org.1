@@ -2,234 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7815A27DB69
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 00:07:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDCA927DB6B
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 00:07:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728654AbgI2WHo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 18:07:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51608 "EHLO
+        id S1728681AbgI2WHt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 18:07:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728262AbgI2WHo (ORCPT
+        with ESMTP id S1728262AbgI2WHr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 18:07:44 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2B32C0613D1
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 15:07:43 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id g29so5078758pgl.2
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 15:07:43 -0700 (PDT)
+        Tue, 29 Sep 2020 18:07:47 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B659C061755;
+        Tue, 29 Sep 2020 15:07:47 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id b22so7346454lfs.13;
+        Tue, 29 Sep 2020 15:07:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to;
-        bh=pmb11azH9g/ZZfUHCbD+oo+XOGmLjCAwdGmP9uEDV1I=;
-        b=Uj9UkmzezGa/UmEDv6NnnztitJTB5m13JXn2gEEBPMtfZX1coWvwbp2o9lgen1gLQ2
-         A8yiONNEl0/+Cga+VIVgeYYHCvOqenOzyfrh1HZbknGV2az/EKfFRzfOIrfkTXZLtxl/
-         oUzlg8pOeMcC1QmGeMVjAIS7XzVm1quUIHHJI=
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=hn6SYuogvOYugBSSRBBeLSaREsfixTCGGz8LC233vrU=;
+        b=XRRUhIoZQcIbTHcdQ9wz2fR6v0v5O8t1FskQd5kUOJcBxw9FNwgI/ZvQmC5irIIS1k
+         gfKDpwl8IyHXceE8qsO9M3bJu5mheqr61MWzUgPUGFXX09UdIN4TIeV7alV6OtULJ85G
+         8gGzj3rGgM2pEDCEB9IVZtGYFO8eQM/38l5IM4H1j6HKIFajFsGZSPNK+DF/TbbldJRQ
+         35Ebj70bH5tWHRg47z++b2UudEto7lq0aIh3EV7hpx7BvGT5VCZNijQCcTcaX9uFitXg
+         frtyQ3yC7sW7gWKKj1gKtc+wB16vrsKzmHjF1FuEctW8cl46dk8aquhdQhhMBZ7C8cdD
+         20hA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to;
-        bh=pmb11azH9g/ZZfUHCbD+oo+XOGmLjCAwdGmP9uEDV1I=;
-        b=pESibavbh3JiLjqYZj8D9OvRqab2mH3vOwAzCWSm0pgdAqJvhhcyyop2iJHv8LX4LX
-         JsATa+JLcRLyPficYZnK5NFEQuAVA6N70fULMeu43MiCW0Eknm3L5vM9Z6gAzOCEWFPg
-         dDAqKuuCGW50PaPVQZWFf970eNzer7UX2vTMxrpxOpeoB7qh0MZil62JTPP/Ys+4osio
-         9YU4Lct2X698m5JI6Rn3Zf7D6jAcNMhVUnJ3fc/zCyuFNxRZxNb07QEVuWN+LLccaBKS
-         1e1gWRqddFRD+9jEjE5XqYYvs+m3oCobdfG4MtK08/e/BYwZZ47rDFhzrr4YxHp3bE6V
-         P+VQ==
-X-Gm-Message-State: AOAM532IRQPoHgxUmiXO5dnOYTix6QdO0Elpj8ffw/He/D4layFtRYK0
-        hlBxXCWieKPOocTH1jkfl248dA==
-X-Google-Smtp-Source: ABdhPJxBc5zsDsmSyhashbX/PxCC3L6VtkRhu/YMWfBpT3q96/RllS7cR/QOMPbMCXrcPBLhVgsIhQ==
-X-Received: by 2002:a17:902:fe0b:b029:d1:9bd3:6e20 with SMTP id g11-20020a170902fe0bb02900d19bd36e20mr6663658plj.31.1601417263123;
-        Tue, 29 Sep 2020 15:07:43 -0700 (PDT)
-Received: from [192.168.178.129] (f140230.upc-f.chello.nl. [80.56.140.230])
-        by smtp.gmail.com with ESMTPSA id h12sm6336925pfo.68.2020.09.29.15.07.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 29 Sep 2020 15:07:42 -0700 (PDT)
-Subject: Re: [patch V2 27/36] net: brcmfmac: Convey allocation mode as
- argument
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Paul McKenney <paulmck@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Christian Benvenuti <benve@cisco.com>,
-        Govindarajulu Varadarajan <_govind@gmx.com>,
-        Dave Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-doc@vger.kernel.org,
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=hn6SYuogvOYugBSSRBBeLSaREsfixTCGGz8LC233vrU=;
+        b=Q0JGsa5c53v7btNWeq3g+gdDmQP2elknR5sqTXb7ZSQf4Cd/+agwgptYrk361MVSvu
+         OHR6P5cXpydNdT5YX9zs8T+Wn8b9qNG43oiYb0I6Yjna3Tupcy/50+CQWIWAkAf37pYx
+         86/EBhLJ4selxw+/KBR9fchcFI0zNy6q8TtFnz50iMR1UzOJDH7M6r4ZAO7qGHBcho3y
+         7PegtLOFxsQ9UOdL4FKqoYPMIQoyxLQAygRc4HYl0NF6mBybEAtKF7J6/Ko9rhq75WJO
+         e3SeocUYbOi++sCQCZ8K49yojJAIR+NxlX6wx4y/Sx/CRvKPu03GvddDQuLqxvH9XQoT
+         /GFg==
+X-Gm-Message-State: AOAM533BueVcvq/Tr1O8Qiv4+3X+wdEU2xxFEZsm+qM5v4pxMmjJ/WKu
+        Ovi16HwepPEH8pm6Va1+5ro=
+X-Google-Smtp-Source: ABdhPJx2QA/yJvaWmB8FETulM7KFPS1EBXWCdOWAPkn1rl8WStsGnZ3cDaZ2JiCZSvuSCK8RRI6KtQ==
+X-Received: by 2002:a19:754:: with SMTP id 81mr1844732lfh.272.1601417265526;
+        Tue, 29 Sep 2020 15:07:45 -0700 (PDT)
+Received: from pc636 (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
+        by smtp.gmail.com with ESMTPSA id x5sm3388397lff.280.2020.09.29.15.07.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Sep 2020 15:07:44 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date:   Wed, 30 Sep 2020 00:07:42 +0200
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Joel Fernandes <joel@joelfernandes.org>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Jay Cliburn <jcliburn@gmail.com>,
-        Chris Snook <chris.snook@gmail.com>,
-        Vishal Kulkarni <vishal@chelsio.com>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        intel-wired-lan@lists.osuosl.org,
-        Shannon Nelson <snelson@pensando.io>,
-        Pensando Drivers <drivers@pensando.io>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Solarflare linux maintainers <linux-net-drivers@solarflare.com>,
-        Edward Cree <ecree@solarflare.com>,
-        Martin Habets <mhabets@solarflare.com>,
-        Jon Mason <jdmason@kudzu.us>, Daniel Drake <dsd@gentoo.org>,
-        Ulrich Kunitz <kune@deine-taler.de>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        linux-wireless@vger.kernel.org, linux-usb@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Franky Lin <franky.lin@broadcom.com>,
-        Hante Meuleman <hante.meuleman@broadcom.com>,
-        Chi-Hsien Lin <chi-hsien.lin@cypress.com>,
-        Wright Feng <wright.feng@cypress.com>,
-        brcm80211-dev-list.pdl@broadcom.com,
-        brcm80211-dev-list@cypress.com,
-        Stanislav Yakovlev <stas.yakovlev@gmail.com>,
-        Stanislaw Gruszka <stf_xl@wp.pl>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
-        Luca Coelho <luciano.coelho@intel.com>,
-        Intel Linux Wireless <linuxwifi@intel.com>,
-        Jouni Malinen <j@w1.fi>,
-        Amitkumar Karwar <amitkarwar@gmail.com>,
-        Ganapathi Bhat <ganapathi.bhat@nxp.com>,
-        Xinming Hu <huxinming820@gmail.com>,
-        libertas-dev@lists.infradead.org,
-        Pascal Terjan <pterjan@google.com>,
-        Ping-Ke Shih <pkshih@realtek.com>
-References: <20200929202509.673358734@linutronix.de>
- <20200929203502.180883992@linutronix.de>
-From:   Arend Van Spriel <arend.vanspriel@broadcom.com>
-Message-ID: <d64a84f6-2ae6-ab26-e7a7-969f45b8cfb8@broadcom.com>
-Date:   Wed, 30 Sep 2020 00:07:30 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.2.2
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
+        Mel Gorman <mgorman@techsingularity.net>
+Subject: Re: [RFC-PATCH 2/4] mm: Add __rcu_alloc_page_lockless() func.
+Message-ID: <20200929220742.GB8768@pc636>
+References: <20200918194817.48921-1-urezki@gmail.com>
+ <20200918194817.48921-3-urezki@gmail.com>
+ <38f42ca1-ffcd-04a6-bf11-618deffa897a@suse.cz>
 MIME-Version: 1.0
-In-Reply-To: <20200929203502.180883992@linutronix.de>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000217c7805b07b0393"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <38f42ca1-ffcd-04a6-bf11-618deffa897a@suse.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000217c7805b07b0393
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-
-On 9/29/2020 10:25 PM, Thomas Gleixner wrote:
-> From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+On Tue, Sep 29, 2020 at 12:15:34PM +0200, Vlastimil Babka wrote:
+> On 9/18/20 9:48 PM, Uladzislau Rezki (Sony) wrote:
+> > Some background and kfree_rcu()
+> > ===============================
+> > The pointers to be freed are stored in the per-cpu array to improve
+> > performance, to enable an easier-to-use API, to accommodate vmalloc
+> > memmory and to support a single argument of the kfree_rcu() when only
+> > a pointer is passed. More details are below.
+> > 
+> > In order to maintain such per-CPU arrays there is a need in dynamic
+> > allocation when a current array is fully populated and a new block is
+> > required. See below the example:
+> > 
+> >  0 1 2 3      0 1 2 3
+> > |p|p|p|p| -> |p|p|p|p| -> NULL
+> > 
+> > there are two pointer-blocks, each one can store 4 addresses
+> > which will be freed after a grace period is passed. In reality
+> > we store PAGE_SIZE / sizeof(void *). So to maintain such blocks
+> > a single page is obtain via the page allocator:
+> > 
+> >     bnode = (struct kvfree_rcu_bulk_data *)
+> >         __get_free_page(GFP_NOWAIT | __GFP_NOWARN);
+> > 
+> > after that it is attached to the "head" and its "next" pointer is
+> > set to previous "head", so the list of blocks can be maintained and
+> > grow dynamically until it gets drained by the reclaiming thread.
+> > 
+> > Please note. There is always a fallback if an allocation fails. In the
+> > single argument, this is a call to synchronize_rcu() and for the two
+> > arguments case this is to use rcu_head structure embedded in the object
+> > being free, and then paying cache-miss penalty, also invoke the kfree()
+> > per object instead of kfree_bulk() for groups of objects.
+> > 
+> > Why we maintain arrays/blocks instead of linking objects by the regular
+> > "struct rcu_head" technique. See below a few but main reasons:
+> > 
+> > a) A memory can be reclaimed by invoking of the kfree_bulk()
+> >    interface that requires passing an array and number of
+> >    entries in it. That reduces the per-object overhead caused
+> >    by calling kfree() per-object. This reduces the reclamation
+> >    time.
+> > 
+> > b) Improves locality and reduces the number of cache-misses, due to
+> >    "pointer chasing" between objects, which can be far spread between
+> >    each other.
+> > 
+> > c) Support a "single argument" in the kvfree_rcu()
+> >    void *ptr = kvmalloc(some_bytes, GFP_KERNEL);
+> >    if (ptr)
+> >         kvfree_rcu(ptr);
+> > 
+> >    We need it when an "rcu_head" is not embed into a stucture but an
+> >    object must be freed after a grace period. Therefore for the single
+> >    argument, such objects cannot be queued on a linked list.
+> > 
+> >    So nowadays, since we do not have a single argument but we see the
+> >    demand in it, to workaround it people just do a simple not efficient
+> >    sequence:
+> >    <snip>
+> >        synchronize_rcu(); /* Can be long and blocks a current context */
+> >        kfree(p);
+> >    <snip>
+> > 
+> >    More details is here: https://lkml.org/lkml/2020/4/28/1626
+> > 
+> > d) To distinguish vmalloc pointers between SLAB ones. It becomes possible
+> >    to invoke the right freeing API for the right kind of pointer, kfree_bulk()
+> >    or TBD: vmalloc_bulk().
+> > 
+> > e) Speeding up the post-grace-period freeing reduces the chance of a flood
+> >    of callback's OOMing the system.
+> > 
+> > Also, please have a look here: https://lkml.org/lkml/2020/7/30/1166
+> > 
+> > Proposal
+> > ========
+> > Introduce a lock-free function that obtain a page from the per-cpu-lists
+> > on current CPU. It returns NULL rather than acquiring any non-raw spinlock.
+> > 
+> > Description
+> > ===========
+> > The page allocator has two phases, fast path and slow one. We are interested
+> > in fast path and order-0 allocations. In its turn it is divided also into two
+> > phases: lock-less and not:
+> > 
+> > 1) As a first step the page allocator tries to obtain a page from the
+> >    per-cpu-list, so each CPU has its own one. That is why this step is
+> >    lock-less and fast. Basically it disables irqs on current CPU in order
+> >    to access to per-cpu data and remove a first element from the pcp-list.
+> >    An element/page is returned to an user.
+> > 
+> > 2) If there is no any available page in per-cpu-list, the second step is
+> >    involved. It removes a specified number of elements from the buddy allocator
+> >    transferring them to the "supplied-list/per-cpu-list" described in [1].
+> > 
+> > Summarizing. The __rcu_alloc_page_lockless() covers only [1] and can not
+> > do step [2], due to the fact that [2] requires an access to zone->lock.
+> > It implies that it is super fast, but a higher rate of fails is also
+> > expected.
+> > 
+> > Usage: __rcu_alloc_page_lockless();
+> > 
+> > Link: https://lore.kernel.org/lkml/20200814215206.GL3982@worktop.programming.kicks-ass.net/
+> > Not-signed-off-by: Peter Zijlstra <peterz@infradead.org>
+> > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 > 
-> The usage of in_interrupt() in drivers is phased out and Linus clearly
-> requested that code which changes behaviour depending on context should
-> either be seperated or the context be conveyed in an argument passed by the
-> caller, which usually knows the context.
+> After reading all the threads and mulling over this, I am going to deflect from
+> Mel and Michal and not oppose the idea of lockless allocation. I would even
+> prefer to do it via the gfp flag and not a completely separate path. Not using
+> the exact code from v1, I think it could be done in a way that we don't actually
+> look at the new flag until we find that pcplist is empty - which should not
+> introduce overhead to the fast-fast path when pcpclist is not empty. It's more
+> maintainable that adding new entry points, IMHO.
 > 
-> brcmf_fweh_process_event() uses in_interrupt() to select the allocation
-> mode GFP_KERNEL/GFP_ATOMIC. Aside of the above reasons this check is
-> incomplete as it cannot detect contexts which just have preemption or
-> interrupts disabled.
-> 
-> All callchains leading to brcmf_fweh_process_event() can clearly identify
-> the calling context. Convey a 'gfp' argument through the callchains and let
-> the callers hand in the appropriate GFP mode.
-> 
-> This has also the advantage that any change of execution context or
-> preemption/interrupt state in these callchains will be detected by the
-> memory allocator for all GFP_KERNEL allocations.
+Thanks for reading all that from the beginning! It must be tough due to the
+fact there were lot of messages in the threads, so at least i was lost.
 
-Reviewed-by: Arend van Spriel <arend.vanspriel@broadcom.com>
-> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> ---
-> V2: Adopt to the 'inirq' changes
-> ---
->   drivers/net/wireless/broadcom/brcm80211/brcmfmac/core.c   |   10 ++++++----
->   drivers/net/wireless/broadcom/brcm80211/brcmfmac/fweh.c   |    8 ++------
->   drivers/net/wireless/broadcom/brcm80211/brcmfmac/fweh.h   |    7 ++++---
->   drivers/net/wireless/broadcom/brcm80211/brcmfmac/msgbuf.c |    2 +-
->   4 files changed, 13 insertions(+), 14 deletions(-)
+I agree that adding a new entry or separate lock-less function can be considered
+as something that is hard to maintain. I have a question here. I mean about your
+different look at it:
 
---000000000000217c7805b07b0393
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+<snip>
+bool is_pcp_cache_empty(gfp_t gfp)
+{
+    struct per_cpu_pages *pcp;
+    struct zoneref *ref;
+    unsigned long flags;
+    bool empty;
 
-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
-pra5sIx/TR6gNtLG9MpND9zQt5j42hInkP81vqu9DG8lovoPMuR0JVpFRbPjHZ07cLqqbFMVS/8z
-53iSewIDAQABo4IB0zCCAc8wDgYDVR0PAQH/BAQDAgWgMIGeBggrBgEFBQcBAQSBkTCBjjBNBggr
-BgEFBQcwAoZBaHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NwZXJzb25hbHNp
-Z24yc2hhMmczb2NzcC5jcnQwPQYIKwYBBQUHMAGGMWh0dHA6Ly9vY3NwMi5nbG9iYWxzaWduLmNv
-bS9nc3BlcnNvbmFsc2lnbjJzaGEyZzMwTQYDVR0gBEYwRDBCBgorBgEEAaAyASgKMDQwMgYIKwYB
-BQUHAgEWJmh0dHBzOi8vd3d3Lmdsb2JhbHNpZ24uY29tL3JlcG9zaXRvcnkvMAkGA1UdEwQCMAAw
-RAYDVR0fBD0wOzA5oDegNYYzaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9nc3BlcnNvbmFsc2ln
-bjJzaGEyZzMuY3JsMCcGA1UdEQQgMB6BHGFyZW5kLnZhbnNwcmllbEBicm9hZGNvbS5jb20wEwYD
-VR0lBAwwCgYIKwYBBQUHAwQwHwYDVR0jBBgwFoAUaXKCYjFnlUSFd5GAxAQ2SZ17C2EwHQYDVR0O
-BBYEFHAaaA+cRo3vYiA6aKVu1bOs4YAYMA0GCSqGSIb3DQEBCwUAA4IBAQCYLdyC8SuyQV6oa5uH
-kGtqz9FCJC/9gSclQLM8dZLHF3FYX8LlcQg/3Ct5I29YLK3T/r35B2zGljtXqVOIeSEz7sDXfGNy
-3dnLIafB1y04e7aR+thVn5Rp1YTF01FUWYbZrixlVuKvjn8vtKC+HhAoDCxvqnqEuA/8Usn7B0/N
-uOA46oQTLe3kjdIgXWJ29JWVqFUavYdcK0+0zyfeMBCTO6heYABeMP3wzYHfcuFDhqldTCpumqhZ
-WwHVQUbAn+xLMIQpycIQFoJIGJX4MeaTSMfLNP2w7nP2uLNgIeleF284vS0XVkBXSCgIGylP4SN+
-HQYrv7fVCbtp+c7nFvP7MYICbzCCAmsCAQEwbTBdMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQR2xv
-YmFsU2lnbiBudi1zYTEzMDEGA1UEAxMqR2xvYmFsU2lnbiBQZXJzb25hbFNpZ24gMiBDQSAtIFNI
-QTI1NiAtIEczAgxR3m7Pj6LvQiWjJy0wDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIE
-IIuMKD8R1d3dTMFYq0C8kaH43I3CaH55tKZnji15616RMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0B
-BwEwHAYJKoZIhvcNAQkFMQ8XDTIwMDkyOTIyMDc0M1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgB
-ZQMEASowCwYJYIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQow
-CwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQAyFr8g5BAy5xlHh6m0
-pAKb6kfrp9bG+c03cQSNarxjD0bJgEfiCmgtF5Ow4Gwbs7YAqZ77/ykDFMQYBRCwDjjbPfByzhnk
-DuegEaAUUZlknAeY2hOPLls1ybPx/o2kYzs/xjorK1FwYzz7/Bn3c6kLOL9EAXeDqEeZOg53kMd7
-AkBK2Sw2MrlJPnpHK4yTUzKGSWwjvYffYSlyND7qCTWW2S+ZFzCUAedbIMXMSI6ad/IkAFBoJoCe
-CW9UY/f52BaZ23VzKikxq5W1KEdA+WAWD7IM0s5dxsIs5GTyZzjKli6xETCWmCbmIdUmGQBz935A
-Ok2HNqnQ1+StXVWyTXYA
---000000000000217c7805b07b0393--
+    ref = first_zones_zonelist(node_zonelist(
+            numa_node_id(), gfp), gfp_zone(gfp), NULL);
+    if (!ref->zone)
+            return true;
+
+    local_irq_save(flags);
+    pcp = &this_cpu_ptr(ref->zone->pageset)->pcp;
+    empty = list_empty(&pcp->lists[gfp_migratetype(gfp)]);
+    local_irq_restore(flags);
+
+    return empty;
+}
+
+disable_irq();
+if (!is_pcp_cache_empty(GFP_NOWAIT))
+    __get_free_page(GFP_NOWAIT);
+enable_irq();
+<snip>
+
+Do you mean to have something like above? I mean some extra API
+function that returns true or false if fast-fast allocation can
+either occur or not. Above code works just fine and never touches
+main zone->lock.
+
+i.e. Instead of introducing an extra GFP_LOCKLESS flag or any new
+extra lock-less function. We could have something that checks a
+pcp page cache list, thus it can guarantee that a request would
+be accomplish using fast-fast path.
+
+>
+> But there's still the condition that it's sufficiently shown that the allocation
+> is useful for RCU. In that case I prefer that the page allocator (or MM in
+> general) can give its users what they need without having to work around it.
+>
+I see your point, if there is something that can be generic and not specif - makes
+sense to me also. I do share your view.
+
+>
+> Seems like GFP_ATOMIC is insufficient today so if that means we need a new flag
+> for the raw spinlock context, so be it. But if your usage of __GFP_NO_LOCKS
+> depends on the result of preempt_count() or similar check whether this is a
+> context that needs it, I'd prefer to keep this in the caller.
+>
+By having the preemptabele() thing, we can just workaround GFP_ATOMIC or GFP_NOWAIT
+flag issues. Because both are insufficient. I mean when we see that a context is
+atomic(can not sleep) we can bypass any usage of the page allocator because it will
+hit BUG() with flags which are in question. And yes, the best is when we do not
+think much about context, so there is something reliable from point of using the
+page allocator.
+
+Thanks Vlastimil!
+
+--
+Vlad Rezki
