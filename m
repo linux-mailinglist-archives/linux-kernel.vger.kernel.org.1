@@ -2,199 +2,323 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6D0927BB7E
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 05:24:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B35727BB8E
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 05:29:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727448AbgI2DYI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 23:24:08 -0400
-Received: from mail-vi1eur05on2056.outbound.protection.outlook.com ([40.107.21.56]:22497
-        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727035AbgI2DYH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 23:24:07 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=X4LUkW1owbP4bJQtRFwnwlhRpb9xr0gQGvQzF1BwAvbkMXIcnooqJ5GiuQTW4mMlm6o1xCSWmJUNVvwpVVe2AWncWOy//L99pfFW+rIu4AGL8JvuohgyQHWiSVB41wb4rO+eUIBMBBTeePilq5odLpgklniCdnecRq5aDofJ5QlMUSrH4ALGs4rqT4Hn93Zd3z/q36mH5Tyb1HAzZid0zGG0PEvBNMB1rdNDBQRopHdOGg0TiDPXd6vpLvZsyhmnKMhpMCNr5jINmx35Upoj2DRgVQB7Nz39AL+iQD4Sf/fi47OsCQ4go8znZb3oO1bmXAxT80MXfpplGsko/NQBgA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=u7i80600fXk5XGkDevaZha+JPHgPUuOTjKUWJ9ta7QM=;
- b=Nq5r/zWsnppKa5uXyVCSfJZGEHG4zm6SHPdNnWP0H4LS0AfbwHb9LNAPR7KbjhMGlreKghe2HFuntKFLo5URmE3lnaof6FZ9nnOiLMGQKw5oHkCpsXiQ/v38QXJj4GBXDRwICmiKM6wezMZYeYlP4XdmBYeTlD2yDhFreUZ/L/X/7sZyxXHLHoSI73WFzZ5QxCIerPHddBrR2hy1rbgC34K1wQDzqZUPQOUdDxwu5OWQnU/igqH+lqMt09f1eTA/CxsmrdQM8xJqx6bXkKEHMM759JT/mL2PgYvtvuwhFwqvJCnfVJaXMp+wydhKtb43N5Bb5TeiG2LtdUoA+3bzhg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=u7i80600fXk5XGkDevaZha+JPHgPUuOTjKUWJ9ta7QM=;
- b=I0df4GSveJtUPQcZ4Wmk0xVvJBQEzzwGeRPcrOUHU+gbkKhQZOf/qUnBkx3Y96Pl8vygP6wl0uQIEqbLX9yFyIomvhzaAm0fIYoFDNo5+SRM4kDNlkFUkEXn5hDTpR9hvhDF/eon30ixMQBRt4ghe60sko1BITd0ZQ36JuczrcM=
-Received: from AM8PR04MB7300.eurprd04.prod.outlook.com (2603:10a6:20b:1c7::12)
- by AM0PR04MB6372.eurprd04.prod.outlook.com (2603:10a6:208:16b::27) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.21; Tue, 29 Sep
- 2020 03:24:03 +0000
-Received: from AM8PR04MB7300.eurprd04.prod.outlook.com
- ([fe80::ad01:9b1c:3b4b:3a77]) by AM8PR04MB7300.eurprd04.prod.outlook.com
- ([fe80::ad01:9b1c:3b4b:3a77%7]) with mapi id 15.20.3412.029; Tue, 29 Sep 2020
- 03:24:03 +0000
-From:   Peter Chen <peter.chen@nxp.com>
-To:     Pawel Laszczak <pawell@cadence.com>
-CC:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "balbi@kernel.org" <balbi@kernel.org>,
-        "colin.king@canonical.com" <colin.king@canonical.com>,
-        "rogerq@ti.com" <rogerq@ti.com>,
-        "jpawar@cadence.com" <jpawar@cadence.com>,
-        "kurahul@cadence.com" <kurahul@cadence.com>,
-        "sparmar@cadence.com" <sparmar@cadence.com>,
-        "nsekhar@ti.com" <nsekhar@ti.com>,
-        "heikki.krogerus@linux.intel.com" <heikki.krogerus@linux.intel.com>,
-        "chunfeng.yun@mediatek.com" <chunfeng.yun@mediatek.com>,
-        "yanaijie@huawei.com" <yanaijie@huawei.com>
-Subject: Re: [PATCH 0/8] Introduced new Cadence USBSSP DRD Driver.
-Thread-Topic: [PATCH 0/8] Introduced new Cadence USBSSP DRD Driver.
-Thread-Index: AQHWlZOgx8QuRR8gQ06qRBCVZ4Wqcal+9IAA
-Date:   Tue, 29 Sep 2020 03:24:03 +0000
-Message-ID: <20200929032258.GA9076@b29397-desktop>
-References: <20200928122741.17884-1-pawell@cadence.com>
-In-Reply-To: <20200928122741.17884-1-pawell@cadence.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: cadence.com; dkim=none (message not signed)
- header.d=none;cadence.com; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [119.31.174.67]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 569573c7-1c67-448e-aa52-08d864271d6e
-x-ms-traffictypediagnostic: AM0PR04MB6372:
-x-microsoft-antispam-prvs: <AM0PR04MB6372A2D28DC300C57BB8C8ED8B320@AM0PR04MB6372.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: cdRN+iXGz1TclE9IzUAXZza002sVAL0USdmPZ5YCXyA4l9YrEyQf5Eaisalt2X8CPx0dumXPaM5SBESqgPrOuYbJdb/bCVEoGBfsJhqL0hff1OHmHEnGw7NHTAP5YjuG4QEbNcyWahtpbxGZlNdwQx6mH0zmw16AnlsTfZM5IaUu+F2zMhkopaCavnq5UgWQaTHShsCh4cvAoPjZVzCT5ur7PA/nVibHIzqkZvXSixFGDAJZdGmuavp1FYVN7DraqJtVW/WyjXO3maf8Pg8CK2EmkynK04ylIXzIScHZ2AZ8fVJ0KcSpaCvcvu9+QfDffkhy8SjUVwj5ELp8uc9mNpCPR290rp5NqX9Or2Ia2wlG8O5f/rRlWZtIl2xQybJd
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM8PR04MB7300.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(7916004)(366004)(346002)(136003)(376002)(39860400002)(396003)(2906002)(86362001)(6916009)(44832011)(316002)(478600001)(6486002)(4326008)(9686003)(6506007)(53546011)(6512007)(83380400001)(33716001)(5660300002)(33656002)(8676002)(1076003)(7416002)(66556008)(76116006)(91956017)(8936002)(64756008)(66476007)(66446008)(66946007)(26005)(54906003)(186003)(71200400001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: Nn8kyRT3Zt+pKvzZXL/VF/hSTUOfJOH1imUFZdj+pcdc8hTDx3Pyje8rNtU8PkKMYo2IlZWrlUbF5JGvBVI5uAO56qHWQRyfcjKN+HFTAriNhQcB/FKRZqRe7o+bS1WNKLGGRFdJKAQx9UEL3oV5QVMbK9OHIhMpbk/FE+MSPw9o4y3AxEoOrgTxguUAQ80t82R5UIheWtB6QDBI3h1/y3X/zQ/mP2cFZv+UjzDxeO287BlN6rNbRqjvxJsJZKJkub+8dlPAlGUm2q/OWaOuTMHVcFEEQ1YZp4UDJ+tix8qpeAN1nDTdbqGjurvjqqPwmV/FCPRi9U7J/wyTsyaw0BG7MEszRTQIMndgZ+6G9et8p+Eaj+KDvAC17Rgo+z8q5KncTVPyLhj5tInKYKjlZG0pIGCko0t7nOgHkLUXzxguo5ytw6RHAQZEKS8QYjry4Fqj2d2sMrvxg2Yq2gcsWXESuUKjVKMJ0OYqVHRtxDozrBzVIpRkqykv/vanSiBNtJndLcr7tRMpgO+Pm1lF0LHoVKVNCJmt3664GzIvRW2OlVf+OmuLaMNvFvFzFFgedxEpw5che1VGQwpVsOuXASPCozG2D/Y0k8zkVuCsApiZI37rr85zh65BCkkr7GDOmF2aDcQovMufv55kzszBTA==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <40B5B350F1D5C04DB0B5F303587A7397@eurprd04.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S1727409AbgI2D3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 23:29:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47598 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727088AbgI2D3O (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 23:29:14 -0400
+Received: from mail-oo1-xc43.google.com (mail-oo1-xc43.google.com [IPv6:2607:f8b0:4864:20::c43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92373C061755
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 20:29:13 -0700 (PDT)
+Received: by mail-oo1-xc43.google.com with SMTP id g26so908370ooa.9
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 20:29:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=hu4YXAuBLQLmzuM9LAe+jg7VyLMnvCxFxuS+4W73o84=;
+        b=F8gVtygBYbZft86s9tfz/NKwd0H3W/gZ4dm9DjjXc2FkKzkD4KhqX1FK/LEBcHZun8
+         GzwhBFCyaaOKZOoeJ1N/hktUq7NhoDNa33qoTeUpg9i0Fj9D89s9uN7nh3jIo8uhGq0K
+         7F9PPyLFMzh6b2uxfE95sBVWauzUyAEVx6edlAfmmDm2fps3G2pfiKXoRBYfxkWyGc/0
+         jAEwYm9eXaYXE0VizxOv82UBeC4IGkxVnauMQjW/0W35bOEZsS/BDX9J7AOXT+xqfr0b
+         IJ0fMwYEo/p/it0S6RIFyC165DCF4xc00ep1k5Lvya90E/IoMcczwIBrnnFsiuzuWIs0
+         9eNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=hu4YXAuBLQLmzuM9LAe+jg7VyLMnvCxFxuS+4W73o84=;
+        b=J0Dm/Xt043ei9L9eGUIF0u479ZsNoCgVS1siS0iJZu1Yiud3ud7TRtZolDx/U5/rhV
+         PIYQ0aFaSvSRy20D813mKRjvw944Ptn4nYJUNlFuN8wDoxNeEby/faNpSKSzv9KM6k0m
+         Au03ePWufqNFUf9jnQISXuyllKHzEEhn7nwZ8PKQrK4oS8esjgk/2+phPhIrfNzsXYO9
+         vWRpw67b5s4dDTJpkbpP+gy4VdmSS6x3h8EJUBny/zjCQ40wxIUP3To00JAeNR38Dty6
+         4iTQ28+1XyNPOAbn8inolIzpMnryIzJvmYO6ok9C5byym9ssoTgm1hyDWH21IRWjp929
+         oafQ==
+X-Gm-Message-State: AOAM530JYJE+zRhFljyHZ5+gemhpGwGTpWQ3DgZxIHMbTFpCstd6id4m
+        sXEChHaH9awbYwj2msejmI8Rww==
+X-Google-Smtp-Source: ABdhPJxiIqgT96/r1ZkxQ8S6nww5fR0axZFT9tzfWN/Jg5Eg443rLZKF8z8J/5x3gZk9l5NxPGSJyg==
+X-Received: by 2002:a4a:315b:: with SMTP id v27mr3088101oog.20.1601350152825;
+        Mon, 28 Sep 2020 20:29:12 -0700 (PDT)
+Received: from builder.lan (99-135-181-32.lightspeed.austtx.sbcglobal.net. [99.135.181.32])
+        by smtp.gmail.com with ESMTPSA id k19sm776741otb.45.2020.09.28.20.29.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Sep 2020 20:29:12 -0700 (PDT)
+Date:   Mon, 28 Sep 2020 22:24:44 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Rishabh Bhatnagar <rishabhb@codeaurora.org>
+Cc:     linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        tsoni@codeaurora.org, psodagud@codeaurora.org,
+        sidgup@codeaurora.org
+Subject: Re: [PATCH v6 1/3] remoteproc: Move coredump configuration to sysfs
+Message-ID: <20200929032444.GC71055@builder.lan>
+References: <1601331456-20432-1-git-send-email-rishabhb@codeaurora.org>
+ <1601331456-20432-2-git-send-email-rishabhb@codeaurora.org>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AM8PR04MB7300.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 569573c7-1c67-448e-aa52-08d864271d6e
-X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Sep 2020 03:24:03.1646
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ca+1IUl0X/v2Hx9mz5J+GzFN2srx1eu3j4VS7Q69qA0XW0EW7XjAqMwtE3oPFkiIAPn/aZocfrDoQfohvmCQ7Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR04MB6372
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1601331456-20432-2-git-send-email-rishabhb@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20-09-28 14:27:33, Pawel Laszczak wrote:
-> This patch introduce new Cadence USBSS DRD driver to linux kernel.
->=20
-> The Cadence USBSS DRD Controller is a highly configurable IP Core which
-> can be instantiated as Dual-Role Device (DRD), Peripheral Only and
-> Host Only (XHCI)configurations.
->=20
-> The current driver has been validated with FPGA burned. We have support
-> for PCIe bus, which is used on FPGA prototyping.
->=20
-> The host side of USBSS-DRD controller is compliance with XHCI
-> specification, so it works with standard XHCI Linux driver.
->=20
-> The host side of USBSS DRD controller is compliant with XHCI.
+On Mon 28 Sep 17:17 CDT 2020, Rishabh Bhatnagar wrote:
 
-The device side?
+> Move coredump configuration from debugfs to sysfs.This will
+> allow usage of this configuration feature in production
+> devices where access to debugfs might be limited.
+> 
+> Signed-off-by: Rishabh Bhatnagar <rishabhb@codeaurora.org>
 
-> The architecture for device side is almost the same as for host side,
-> and most of the XHCI specification can be used to understand how
-> this controller operates.
->=20
-> This controller and driver support Full Speed, Hight Speed, Supper Speed
-> and Supper Speed Plus USB protocol.
->=20
-> The prefix cdnsp used in driver has chosen by analogy to cdn3 driver.
-> The last letter of this acronym means PLUS. The formal name of controller
-> is USBSSP but it's to generic so I've decided to use CDNSP.
->=20
-> The patch 1: adds support for DRD CDNSP.=20
-> The patch 2: separates common code that can be reusable by cdnsp driver.
-> The patch 3: moves reusable code to separate module.
-> The patch 4: changes prefixes in reusable code frome cdns3 to common cdns=
-.
-> The patch 5: adopts gadget_dev pointer in cdns structure to make possible=
-=20
-> 	     use it in both drivers.
-> The patches 6-8: add the main part of driver and has been intentionally
->              split into 3 part. In my opinion such division should not
->              affect understanding and reviewing the driver, and cause tha=
-t
->              main patch (7/8) is little smaller. Patch 6 introduces main
->              header file for driver, 7 is the main part that implements a=
-ll
->              functionality of driver and 8 introduces tracepoints.
->=20
+I like the end result of this series now Rishabh, but...
+
 > ---
->=20
-> Pawel Laszczak (7):
->   usb: cdns3: Add support for DRD CDNSP
->   usb: cdns3: Split core.c into cdns3-plat and core.c file
->   usb: cdns3: Moves reusable code to separate module
->   usb: cdns3: Refactoring names in reusable code
->   usb: cdns3: Changed type of gadget_dev in cdns structure
->   usb: cdnsp: Device side header file for CDNSP driver
->   usb: cdnsp: cdns3 Add main part of Cadence USBSSP DRD Driver
->   usb: cdnsp: Add tracepoints for CDNSP driver
->=20
->  drivers/usb/Kconfig               |    1 +
->  drivers/usb/Makefile              |    1 +
->  drivers/usb/cdns3/Kconfig         |    8 +
->  drivers/usb/cdns3/Makefile        |    8 +-
->  drivers/usb/cdns3/cdns3-plat.c    |  209 +++
->  drivers/usb/cdns3/core.c          |  336 ++--
->  drivers/usb/cdns3/core.h          |   51 +-
->  drivers/usb/cdns3/drd.c           |  219 ++-
->  drivers/usb/cdns3/drd.h           |   93 +-
->  drivers/usb/cdns3/gadget-export.h |   26 +-
->  drivers/usb/cdns3/gadget.c        |   29 +-
->  drivers/usb/cdns3/host-export.h   |   10 +-
->  drivers/usb/cdns3/host.c          |   23 +-
->  drivers/usb/cdnsp/Kconfig         |   40 +
->  drivers/usb/cdnsp/Makefile        |   12 +
->  drivers/usb/cdnsp/cdnsp-pci.c     |  247 +++
->  drivers/usb/cdnsp/debug.h         |  583 +++++++
->  drivers/usb/cdnsp/ep0.c           |  500 ++++++
->  drivers/usb/cdnsp/gadget.c        | 2009 ++++++++++++++++++++++++
->  drivers/usb/cdnsp/gadget.h        | 1598 +++++++++++++++++++
->  drivers/usb/cdnsp/mem.c           | 1326 ++++++++++++++++
->  drivers/usb/cdnsp/ring.c          | 2426 +++++++++++++++++++++++++++++
->  drivers/usb/cdnsp/trace.c         |   12 +
->  drivers/usb/cdnsp/trace.h         |  840 ++++++++++
->  24 files changed, 10228 insertions(+), 379 deletions(-)
->  create mode 100644 drivers/usb/cdns3/cdns3-plat.c
->  create mode 100644 drivers/usb/cdnsp/Kconfig
->  create mode 100644 drivers/usb/cdnsp/Makefile
->  create mode 100644 drivers/usb/cdnsp/cdnsp-pci.c
->  create mode 100644 drivers/usb/cdnsp/debug.h
->  create mode 100644 drivers/usb/cdnsp/ep0.c
->  create mode 100644 drivers/usb/cdnsp/gadget.c
->  create mode 100644 drivers/usb/cdnsp/gadget.h
->  create mode 100644 drivers/usb/cdnsp/mem.c
->  create mode 100644 drivers/usb/cdnsp/ring.c
->  create mode 100644 drivers/usb/cdnsp/trace.c
->  create mode 100644 drivers/usb/cdnsp/trace.h
->=20
-> --=20
-> 2.17.1
->=20
+>  Documentation/ABI/testing/sysfs-class-remoteproc | 24 +++++++
+>  drivers/remoteproc/remoteproc_debugfs.c          | 90 ------------------------
+>  drivers/remoteproc/remoteproc_sysfs.c            | 64 +++++++++++++++++
+>  3 files changed, 88 insertions(+), 90 deletions(-)
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-class-remoteproc b/Documentation/ABI/testing/sysfs-class-remoteproc
+> index 36094fb..f6c44fa 100644
+> --- a/Documentation/ABI/testing/sysfs-class-remoteproc
+> +++ b/Documentation/ABI/testing/sysfs-class-remoteproc
+> @@ -58,3 +58,27 @@ Description:	Remote processor name
+>  		Reports the name of the remote processor. This can be used by
+>  		userspace in exactly identifying a remote processor and ease
+>  		up the usage in modifying the 'firmware' or 'state' files.
+> +
+> +What:		/sys/class/remoteproc/.../coredump
+> +Date:		July 2020
+> +Contact:	Bjorn Andersson <bjorn.andersson@linaro.org>, Ohad Ben-Cohen <ohad@wizery.com>
+> +Description:	Remote processor coredump configuration
+> +
+> +		Reports the coredump configuration of the remote processor,
+> +		which will be one of:
+> +
+> +		"default"
 
---=20
+...can you please make this "enabled" already here, so that patch 3
+doesn't touch the definition of the sysfs. That way we don't introduce a
+new sysfs attribute and immediately change it.
 
-Thanks,
-Peter Chen=
+Please keep the remainder (rename of defines etc) in patch 3 as is - I
+just want the string exposed to userspace to be consistent here.
+
+(Or if you find the end result, you can move patch 3 before this change
+in the series)
+
+Regards,
+Bjorn
+
+> +		"inline"
+> +		"disabled"
+> +
+> +		"default" means when the remote processor's coredump is
+> +		collected it will be copied to a separate buffer and that
+> +		buffer is exposed to userspace.
+> +
+> +		"inline" means when the remote processor's coredump is
+> +		collected userspace will directly read from the remote
+> +		processor's device memory. Extra buffer will not be used to
+> +		copy the dump. Also recovery process will not proceed until
+> +		all data is read by usersapce.
+> +
+> +		"disabled" means no dump will be collected.
+> diff --git a/drivers/remoteproc/remoteproc_debugfs.c b/drivers/remoteproc/remoteproc_debugfs.c
+> index 2e3b3e2..732770e 100644
+> --- a/drivers/remoteproc/remoteproc_debugfs.c
+> +++ b/drivers/remoteproc/remoteproc_debugfs.c
+> @@ -28,94 +28,6 @@
+>  static struct dentry *rproc_dbg;
+>  
+>  /*
+> - * A coredump-configuration-to-string lookup table, for exposing a
+> - * human readable configuration via debugfs. Always keep in sync with
+> - * enum rproc_coredump_mechanism
+> - */
+> -static const char * const rproc_coredump_str[] = {
+> -	[RPROC_COREDUMP_DEFAULT]	= "default",
+> -	[RPROC_COREDUMP_INLINE]		= "inline",
+> -	[RPROC_COREDUMP_DISABLED]	= "disabled",
+> -};
+> -
+> -/* Expose the current coredump configuration via debugfs */
+> -static ssize_t rproc_coredump_read(struct file *filp, char __user *userbuf,
+> -				   size_t count, loff_t *ppos)
+> -{
+> -	struct rproc *rproc = filp->private_data;
+> -	char buf[20];
+> -	int len;
+> -
+> -	len = scnprintf(buf, sizeof(buf), "%s\n",
+> -			rproc_coredump_str[rproc->dump_conf]);
+> -
+> -	return simple_read_from_buffer(userbuf, count, ppos, buf, len);
+> -}
+> -
+> -/*
+> - * By writing to the 'coredump' debugfs entry, we control the behavior of the
+> - * coredump mechanism dynamically. The default value of this entry is "default".
+> - *
+> - * The 'coredump' debugfs entry supports these commands:
+> - *
+> - * default:	This is the default coredump mechanism. When the remoteproc
+> - *		crashes the entire coredump will be copied to a separate buffer
+> - *		and exposed to userspace.
+> - *
+> - * inline:	The coredump will not be copied to a separate buffer and the
+> - *		recovery process will have to wait until data is read by
+> - *		userspace. But this avoid usage of extra memory.
+> - *
+> - * disabled:	This will disable coredump. Recovery will proceed without
+> - *		collecting any dump.
+> - */
+> -static ssize_t rproc_coredump_write(struct file *filp,
+> -				    const char __user *user_buf, size_t count,
+> -				    loff_t *ppos)
+> -{
+> -	struct rproc *rproc = filp->private_data;
+> -	int ret, err = 0;
+> -	char buf[20];
+> -
+> -	if (count > sizeof(buf))
+> -		return -EINVAL;
+> -
+> -	ret = copy_from_user(buf, user_buf, count);
+> -	if (ret)
+> -		return -EFAULT;
+> -
+> -	/* remove end of line */
+> -	if (buf[count - 1] == '\n')
+> -		buf[count - 1] = '\0';
+> -
+> -	if (rproc->state == RPROC_CRASHED) {
+> -		dev_err(&rproc->dev, "can't change coredump configuration\n");
+> -		err = -EBUSY;
+> -		goto out;
+> -	}
+> -
+> -	if (!strncmp(buf, "disable", count)) {
+> -		rproc->dump_conf = RPROC_COREDUMP_DISABLED;
+> -	} else if (!strncmp(buf, "inline", count)) {
+> -		rproc->dump_conf = RPROC_COREDUMP_INLINE;
+> -	} else if (!strncmp(buf, "default", count)) {
+> -		rproc->dump_conf = RPROC_COREDUMP_DEFAULT;
+> -	} else {
+> -		dev_err(&rproc->dev, "Invalid coredump configuration\n");
+> -		err = -EINVAL;
+> -	}
+> -out:
+> -	return err ? err : count;
+> -}
+> -
+> -static const struct file_operations rproc_coredump_fops = {
+> -	.read = rproc_coredump_read,
+> -	.write = rproc_coredump_write,
+> -	.open = simple_open,
+> -	.llseek = generic_file_llseek,
+> -};
+> -
+> -/*
+>   * Some remote processors may support dumping trace logs into a shared
+>   * memory buffer. We expose this trace buffer using debugfs, so users
+>   * can easily tell what's going on remotely.
+> @@ -425,8 +337,6 @@ void rproc_create_debug_dir(struct rproc *rproc)
+>  			    rproc, &rproc_rsc_table_fops);
+>  	debugfs_create_file("carveout_memories", 0400, rproc->dbg_dir,
+>  			    rproc, &rproc_carveouts_fops);
+> -	debugfs_create_file("coredump", 0600, rproc->dbg_dir,
+> -			    rproc, &rproc_coredump_fops);
+>  }
+>  
+>  void __init rproc_init_debugfs(void)
+> diff --git a/drivers/remoteproc/remoteproc_sysfs.c b/drivers/remoteproc/remoteproc_sysfs.c
+> index eea514c..2a44571 100644
+> --- a/drivers/remoteproc/remoteproc_sysfs.c
+> +++ b/drivers/remoteproc/remoteproc_sysfs.c
+> @@ -10,6 +10,69 @@
+>  
+>  #define to_rproc(d) container_of(d, struct rproc, dev)
+>  
+> +/*
+> + * A coredump-configuration-to-string lookup table, for exposing a
+> + * human readable configuration via sysfs. Always keep in sync with
+> + * enum rproc_coredump_mechanism
+> + */
+> +static const char * const rproc_coredump_str[] = {
+> +	[RPROC_COREDUMP_DEFAULT]	= "default",
+> +	[RPROC_COREDUMP_INLINE]		= "inline",
+> +	[RPROC_COREDUMP_DISABLED]	= "disabled",
+> +};
+> +
+> +/* Expose the current coredump configuration via debugfs */
+> +static ssize_t coredump_show(struct device *dev,
+> +			     struct device_attribute *attr, char *buf)
+> +{
+> +	struct rproc *rproc = to_rproc(dev);
+> +
+> +	return sprintf(buf, "%s\n", rproc_coredump_str[rproc->dump_conf]);
+> +}
+> +
+> +/*
+> + * By writing to the 'coredump' sysfs entry, we control the behavior of the
+> + * coredump mechanism dynamically. The default value of this entry is "default".
+> + *
+> + * The 'coredump' sysfs entry supports these commands:
+> + *
+> + * default:	This is the default coredump mechanism. When the remoteproc
+> + *		crashes the entire coredump will be copied to a separate buffer
+> + *		and exposed to userspace.
+> + *
+> + * inline:	The coredump will not be copied to a separate buffer and the
+> + *		recovery process will have to wait until data is read by
+> + *		userspace. But this avoid usage of extra memory.
+> + *
+> + * disabled:	This will disable coredump. Recovery will proceed without
+> + *		collecting any dump.
+> + */
+> +static ssize_t coredump_store(struct device *dev,
+> +			      struct device_attribute *attr,
+> +			      const char *buf, size_t count)
+> +{
+> +	struct rproc *rproc = to_rproc(dev);
+> +
+> +	if (rproc->state == RPROC_CRASHED) {
+> +		dev_err(&rproc->dev, "can't change coredump configuration\n");
+> +		return -EBUSY;
+> +	}
+> +
+> +	if (sysfs_streq(buf, "disabled")) {
+> +		rproc->dump_conf = RPROC_COREDUMP_DISABLED;
+> +	} else if (sysfs_streq(buf, "inline")) {
+> +		rproc->dump_conf = RPROC_COREDUMP_INLINE;
+> +	} else if (sysfs_streq(buf, "default")) {
+> +		rproc->dump_conf = RPROC_COREDUMP_DEFAULT;
+> +	} else {
+> +		dev_err(&rproc->dev, "Invalid coredump configuration\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	return count;
+> +}
+> +static DEVICE_ATTR_RW(coredump);
+> +
+>  /* Expose the loaded / running firmware name via sysfs */
+>  static ssize_t firmware_show(struct device *dev, struct device_attribute *attr,
+>  			  char *buf)
+> @@ -138,6 +201,7 @@ static ssize_t name_show(struct device *dev, struct device_attribute *attr,
+>  static DEVICE_ATTR_RO(name);
+>  
+>  static struct attribute *rproc_attrs[] = {
+> +	&dev_attr_coredump.attr,
+>  	&dev_attr_firmware.attr,
+>  	&dev_attr_state.attr,
+>  	&dev_attr_name.attr,
+> -- 
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
+> 
