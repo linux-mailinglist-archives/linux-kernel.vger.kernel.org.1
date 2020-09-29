@@ -2,83 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E71B227BF59
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 10:27:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DBA627BF0E
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 10:18:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727802AbgI2I1S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 04:27:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36678 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725468AbgI2I1S (ORCPT
+        id S1727744AbgI2ISQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 04:18:16 -0400
+Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:58812
+        "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727522AbgI2ISQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 04:27:18 -0400
-X-Greylist: delayed 554 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 29 Sep 2020 01:27:18 PDT
-Received: from bmailout1.hostsharing.net (bmailout1.hostsharing.net [IPv6:2a01:37:1000::53df:5f64:0])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34456C061755;
-        Tue, 29 Sep 2020 01:27:18 -0700 (PDT)
-Received: from h08.hostsharing.net (h08.hostsharing.net [IPv6:2a01:37:1000::53df:5f1c:0])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client CN "*.hostsharing.net", Issuer "COMODO RSA Domain Validation Secure Server CA" (not verified))
-        by bmailout1.hostsharing.net (Postfix) with ESMTPS id C9ACA3000C988;
-        Tue, 29 Sep 2020 10:18:00 +0200 (CEST)
-Received: by h08.hostsharing.net (Postfix, from userid 100393)
-        id 91B9959759; Tue, 29 Sep 2020 10:18:00 +0200 (CEST)
-Date:   Tue, 29 Sep 2020 10:18:00 +0200
-From:   Lukas Wunner <lukas@wunner.de>
-To:     Sinan Kaya <okaya@kernel.org>
-Cc:     Ethan Zhao <haifeng.zhao@intel.com>, bhelgaas@google.com,
-        oohall@gmail.com, ruscur@russell.cc,
-        andriy.shevchenko@linux.intel.com, stuart.w.hayes@gmail.com,
-        mr.nuke.me@gmail.com, mika.westerberg@linux.intel.com,
-        Keith Busch <keith.busch@intel.com>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, pei.p.jia@intel.com,
-        ashok.raj@linux.intel.com, sathyanarayanan.kuppuswamy@intel.com
-Subject: Re: [PATCH 2/5 V2] PCI: pciehp: check and wait port status out of
- DPC before handling DLLSC and PDC
-Message-ID: <20200929081800.GA15858@wunner.de>
-References: <20200927032829.11321-1-haifeng.zhao@intel.com>
- <20200927032829.11321-3-haifeng.zhao@intel.com>
- <f2c9e3db-2027-f669-fcdd-fbc80888b934@kernel.org>
+        Tue, 29 Sep 2020 04:18:16 -0400
+X-IronPort-AV: E=Sophos;i="5.77,317,1596492000"; 
+   d="scan'208";a="360311607"
+Received: from abo-173-121-68.mrs.modulonet.fr (HELO hadrien) ([85.68.121.173])
+  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 29 Sep 2020 10:18:14 +0200
+Date:   Tue, 29 Sep 2020 10:18:14 +0200 (CEST)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     Joe Perches <joe@perches.com>
+cc:     Julia Lawall <julia.lawall@inria.fr>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH] scripts/most_common_subject_prefix.pl: Find the most
+ common commit subject prefix
+In-Reply-To: <c04c10773d5fd12fac67d0dc9ebab46d41962376.camel@perches.com>
+Message-ID: <alpine.DEB.2.22.394.2009291012560.2808@hadrien>
+References: <e949cb8f12caec813c22dc3791a92e9f87670a5b.1601356990.git.joe@perches.com>  <alpine.DEB.2.22.394.2009290941260.2808@hadrien> <c04c10773d5fd12fac67d0dc9ebab46d41962376.camel@perches.com>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f2c9e3db-2027-f669-fcdd-fbc80888b934@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 27, 2020 at 11:27:46AM -0400, Sinan Kaya wrote:
-> On 9/26/2020 11:28 PM, Ethan Zhao wrote:
-> > --- a/drivers/pci/hotplug/pciehp_hpc.c
-> > +++ b/drivers/pci/hotplug/pciehp_hpc.c
-> > @@ -710,8 +710,10 @@ static irqreturn_t pciehp_ist(int irq, void *dev_id)
-> >  	down_read(&ctrl->reset_lock);
-> >  	if (events & DISABLE_SLOT)
-> >  		pciehp_handle_disable_request(ctrl);
-> > -	else if (events & (PCI_EXP_SLTSTA_PDC | PCI_EXP_SLTSTA_DLLSC))
-> > +	else if (events & (PCI_EXP_SLTSTA_PDC | PCI_EXP_SLTSTA_DLLSC)) {
-> > +		pci_wait_port_outdpc(pdev);
-> >  		pciehp_handle_presence_or_link_change(ctrl, events);
-> > +	}
-> >  	up_read(&ctrl->reset_lock);
-> 
-> This looks like a hack TBH.
-> 
-> Lukas, Keith;
-> 
-> What is your take on this?
-> Why is device lock not protecting this situation?
-> 
-> Is there a lock missing in hotplug driver?
 
-According to Ethan's commit message, there are two issues here:
-One, that pciehp may remove a device even though DPC recovered the error,
-and two, that a null pointer deref occurs.
 
-The latter is most certainly not a locking issue but failure of DPC
-to hold a reference on the pci_dev.
+On Tue, 29 Sep 2020, Joe Perches wrote:
 
-Thanks,
+> On Tue, 2020-09-29 at 09:45 +0200, Julia Lawall wrote:
+> > On Mon, 28 Sep 2020, Joe Perches wrote:
+> > < This will emit a single line that is the most commonly used commit
+> > > subject prefix up to and including the last colon of the commit subject
+> > > for commits that _only_ include the specific file and not any other file.
+> >
+> > For the comma->semicolon patches, I noticed the need for a number of
+> > suject lines of the form:
+> >
+> > hwrng: xxx - patch description
+> >
+> > So maybe other delimiters have to be taken into account.
+>
+> Maybe. Can you provide a few more examples?
 
-Lukas
+Looking through git log --oneline, nothing else is jumping out.  Another
+issue is colons in the message text.  I think that I check that the only
+spaces have the form ": " to avoid this problem, but I do see:
+
+88db0aa24216 all arch: remove system call sys_sysctl
+92e4edba6e2 perf ftrace: Make option description initials all capital letters
+(most of the perf patches seem to be like this one)
+
+Here is another with -
+
+27aced19e098 Input: exc3000 - add reset gpio support
+
+Reverts seem to typically have Revert followed by the original subject
+line in quotes.
+
+julia
