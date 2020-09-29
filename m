@@ -2,493 +2,486 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1A6827DB50
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 00:02:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 240E827DB4E
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 00:02:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728464AbgI2WCh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 18:02:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50790 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727922AbgI2WCh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 18:02:37 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3721C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 15:02:36 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id md22so4360525pjb.0
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 15:02:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Lj6wRGM9Tdc2xfVB9HHjXprQqeJjKQWn9/2bOPM/4/8=;
-        b=wBcfuUDPvHn3Rja5AVt9J82WEe30BNhkKF0KkkHyhJKHsQ7OlQJbrUB7e1PMGJsy5s
-         pUsxb78MweqhlcrR7fwqWA+19yhgHA9nak4fhgSuXFlh8CBW8ElWsT+SvwGtlEVKq+ST
-         V/rTJwc+HsLMaM9+ltZ00zRmuvvchBK+azyKIo9vO6q+5uHAClLWkOWE8ArvlGbNtxun
-         SskUR7OuofeYzvv9gan4Rxue7bSqtFTR4C9elxcosIQMp6KnwBGPu6sWGeKzRdbms2my
-         Z/layxkdPRjwOXh8YhDFqGuFCJiNnT8cqqtVjFowJyeULsBTq+1buM6cIPbb9Nx8Ppxt
-         hdCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Lj6wRGM9Tdc2xfVB9HHjXprQqeJjKQWn9/2bOPM/4/8=;
-        b=C+6x6dkif4L23Ds4ZApHI3mXgsIcn/RK8jHDaVBJ5aFRqrBIYfLbMeJf2PLUCiScmh
-         pi+UvffLPCd0JzP6siYw2phQPrsyDxrY3Z5q3ZBf777L6gdsB2MM7ei54M1Z3NpvBJkU
-         IyWFOBKq0aYtMa4nfXXtUZ0zbZUnjei0vRPbBgFdRsAr1IWu10zBonsTJqGFkbdGhnCl
-         IZwE7BdcZAAHCcoAK9MN/5Vm+QqZNuURaRY/jlL30emVtsfk+T0r7xK70o9OGafw01xz
-         cXd8SE5ltKpBU886LXjtwt5jTLQ3cvQPTEDqT6vSr+0IrBVWPwaIMxyPRXeX0PteR8XO
-         Ls+w==
-X-Gm-Message-State: AOAM530G18JebGbdBpBP/FJvvd0jzZN+XF2hCXuGd94+8wGupEMYzVYY
-        i7IqrxRnrxbQOHpHb10sYgJh+bWUVJ8S63KYEoIu63UgRVU=
-X-Google-Smtp-Source: ABdhPJzL2GO2sgioy3lrewCrQVOAn34+ntuBnhCn8r6OhaQa0zd7nHuLsZEOEL7Z0BKiYWv0EjjqJfBje5W30vI6XXw=
-X-Received: by 2002:a17:90a:c17:: with SMTP id 23mr5680357pjs.127.1601416956019;
- Tue, 29 Sep 2020 15:02:36 -0700 (PDT)
-MIME-Version: 1.0
-References: <cover.1601410890.git.zanussi@kernel.org> <a296c3ead3da5f55e29eda2f40d69847d745071b.1601410890.git.zanussi@kernel.org>
-In-Reply-To: <a296c3ead3da5f55e29eda2f40d69847d745071b.1601410890.git.zanussi@kernel.org>
-From:   Axel Rasmussen <axelrasmussen@google.com>
-Date:   Tue, 29 Sep 2020 15:01:59 -0700
-Message-ID: <CAJHvVch+VA4oHafZzf5HRAwW321hKJKsTYC8mr_89yGjnUx8aw@mail.gmail.com>
-Subject: Re: [PATCH 3/3] tracing: Add support for dynamic strings to synthetic events
-To:     Tom Zanussi <zanussi@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1728312AbgI2WCP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 18:02:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33890 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727922AbgI2WCO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 18:02:14 -0400
+Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 01B842083B;
+        Tue, 29 Sep 2020 22:02:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601416931;
+        bh=NWkBUutFUh7VIuY/l4Loe6fkNBkz+39uD5VzDNAgccg=;
+        h=Date:From:To:Subject:From;
+        b=I78LjtKZ8zHD4nBIyyorFWrMNhJzipXKx4zzCfReao9E9Kbsm55+J91Nk17JvVXnv
+         zmEwJYXtBJTxcDH8KUJMU62rAzCU426xQrwfsmPHOjQzONAUvb6mHyVEanwvRsCLXd
+         YcAsME+s2WoPGdaiLQl6uiiBCI1mLs7u56CmpBdg=
+Date:   Tue, 29 Sep 2020 15:02:10 -0700
+From:   akpm@linux-foundation.org
+To:     broonie@kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-next@vger.kernel.org, mhocko@suse.cz,
+        mm-commits@vger.kernel.org, sfr@canb.auug.org.au
+Subject:  mmotm 2020-09-29-15-01 uploaded
+Message-ID: <20200929220210.FP6xCohEW%akpm@linux-foundation.org>
+User-Agent: s-nail v14.8.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 1:33 PM Tom Zanussi <zanussi@kernel.org> wrote:
->
-> Currently, sythetic events only support static string fields such as:
->
->   # echo 'test_latency u64 lat; char somename[32]' > /sys/kernel/debug/tracing/synthetic_events
->
-> Which is fine, but wastes a lot of space in the event.
->
-> It also prevents the most commonly-defined strings in the existing
-> trace events e.g. those defined using __string(), from being passed to
-> synthetic events via the trace() action.
->
-> With this change, synthetic events with dynamic fields can be defined:
->
->   # echo 'test_latency u64 lat; char somename[]' > /sys/kernel/debug/tracing/synthetic_events
->
-> And the trace() action can be used to generate events using either
-> dynamic or static strings:
->
->   # echo 'hist:keys=name:lat=common_timestamp.usecs-$ts0:onmatch(sys.event).test_latency($lat,name)' > /sys/kernel/debug/tracing/events
->
-> The synthetic event dynamic strings are implemented in the same way as
-> the existing __data_loc strings and appear as such in the format file.
->
-> Signed-off-by: Tom Zanussi <zanussi@kernel.org>
-> ---
->  Documentation/trace/events.rst    |  15 ++-
->  Documentation/trace/histogram.rst |  18 ++++
->  kernel/trace/trace_events_hist.c  |   9 ++
->  kernel/trace/trace_events_synth.c | 157 ++++++++++++++++++++++++++----
->  kernel/trace/trace_synth.h        |   4 +
->  5 files changed, 181 insertions(+), 22 deletions(-)
->
-> diff --git a/Documentation/trace/events.rst b/Documentation/trace/events.rst
-> index f792b1959a33..2a5aa48eff6c 100644
-> --- a/Documentation/trace/events.rst
-> +++ b/Documentation/trace/events.rst
-> @@ -589,8 +589,19 @@ name::
->          { .type = "int",                .name = "my_int_field" },
->    };
->
-> -See synth_field_size() for available types. If field_name contains [n]
-> -the field is considered to be an array.
-> +See synth_field_size() for available types.
-> +
-> +If field_name contains [n], the field is considered to be a static array.
-> +
-> +If field_names contains[] (no subscript), the field is considered to
-> +be a dynamic array, which will only take as much space in the event as
-> +is required to hold the array.
-> +
-> +Because space for an event is reserved before assigning field values
-> +to the event, using dynamic arrays implies that the piecewise
-> +in-kernel API described below can't be used with dynamic arrays.  The
-> +other non-piecewise in-kernel APIs can, however, be used with dynamic
-> +arrays.
->
->  If the event is created from within a module, a pointer to the module
->  must be passed to synth_event_create().  This will ensure that the
-> diff --git a/Documentation/trace/histogram.rst b/Documentation/trace/histogram.rst
-> index 8408670d0328..b573604deabd 100644
-> --- a/Documentation/trace/histogram.rst
-> +++ b/Documentation/trace/histogram.rst
-> @@ -1776,6 +1776,24 @@ consisting of the name of the new event along with one or more
->  variables and their types, which can be any valid field type,
->  separated by semicolons, to the tracing/synthetic_events file.
->
-> +See synth_field_size() for available types.
-> +
-> +If field_name contains [n], the field is considered to be a static array.
-> +
-> +If field_names contains[] (no subscript), the field is considered to
-> +be a dynamic array, which will only take as much space in the event as
-> +is required to hold the array.
-> +
-> +A string field can be specified using either the static notation:
-> +
-> +  char name[32];
-> +
-> +Or the dynamic:
-> +
-> +  char name[];
-> +
-> +The size limit for either is 256.
-> +
->  For instance, the following creates a new event named 'wakeup_latency'
->  with 3 fields: lat, pid, and prio.  Each of those fields is simply a
->  variable reference to a variable on another event::
-> diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
-> index 1b2ef6490229..ee6b27c82350 100644
-> --- a/kernel/trace/trace_events_hist.c
-> +++ b/kernel/trace/trace_events_hist.c
-> @@ -3279,6 +3279,15 @@ static int check_synth_field(struct synth_event *event,
->
->         field = event->fields[field_pos];
->
-> +       /*
-> +        * A dynamic string synth field can accept static or
-> +        * dynamic. A static string synth field can only accept a
-> +        * same-sized static string, which is checked for later.
-> +        */
-> +       if (strstr(hist_field->type, "char[") && field->is_string
-> +           && field->is_dynamic)
-> +               return 0;
-> +
->         if (strcmp(field->type, hist_field->type) != 0) {
->                 if (field->size != hist_field->size ||
->                     field->is_signed != hist_field->is_signed)
-> diff --git a/kernel/trace/trace_events_synth.c b/kernel/trace/trace_events_synth.c
-> index 6e7282c7b530..00c6c61038d1 100644
-> --- a/kernel/trace/trace_events_synth.c
-> +++ b/kernel/trace/trace_events_synth.c
-> @@ -88,7 +88,7 @@ static int synth_event_define_fields(struct trace_event_call *call)
->
->                 event->fields[i]->offset = n_u64;
->
-> -               if (event->fields[i]->is_string) {
-> +               if (event->fields[i]->is_string && !event->fields[i]->is_dynamic) {
->                         offset += STR_VAR_LEN_MAX;
->                         n_u64 += STR_VAR_LEN_MAX / sizeof(u64);
->                 } else {
-> @@ -139,6 +139,9 @@ static int synth_field_string_size(char *type)
->         if (len > 3)
->                 return -EINVAL;
->
-> +       if (len == 0)
-> +               return 0; /* variable-length string */
-> +
->         strncpy(buf, start, len);
->         buf[len] = '\0';
->
-> @@ -290,10 +293,25 @@ static enum print_line_t print_synth_event(struct trace_iterator *iter,
->
->                 /* parameter values */
->                 if (se->fields[i]->is_string) {
-> -                       trace_seq_printf(s, print_fmt, se->fields[i]->name,
-> -                                        (char *)&entry->fields[n_u64],
-> -                                        i == se->n_fields - 1 ? "" : " ");
-> -                       n_u64 += STR_VAR_LEN_MAX / sizeof(u64);
-> +                       if (se->fields[i]->is_dynamic) {
-> +                               u32 offset, data_offset;
-> +                               char *str_field;
-> +
-> +                               offset = (u32)entry->fields[n_u64];
-> +                               data_offset = offset & 0xffff;
-> +
-> +                               str_field = (char *)entry + data_offset;
+The mm-of-the-moment snapshot 2020-09-29-15-01 has been uploaded to
 
-Is it better to re-use __get_str from include/trace/trace_events.h
-instead of writing this out directly?
+   https://www.ozlabs.org/~akpm/mmotm/
 
-> +
-> +                               trace_seq_printf(s, print_fmt, se->fields[i]->name,
-> +                                                str_field,
-> +                                                i == se->n_fields - 1 ? "" : " ");
-> +                               n_u64++;
-> +                       } else {
-> +                               trace_seq_printf(s, print_fmt, se->fields[i]->name,
-> +                                                (char *)&entry->fields[n_u64],
-> +                                                i == se->n_fields - 1 ? "" : " ");
-> +                               n_u64 += STR_VAR_LEN_MAX / sizeof(u64);
-> +                       }
->                 } else {
->                         struct trace_print_flags __flags[] = {
->                             __def_gfpflag_names, {-1, NULL} };
-> @@ -325,16 +343,52 @@ static struct trace_event_functions synth_event_funcs = {
->         .trace          = print_synth_event
->  };
->
-> +static unsigned int trace_string(struct synth_trace_event *entry,
-> +                                struct synth_event *event,
-> +                                char *str_val,
-> +                                bool is_dynamic,
-> +                                unsigned int data_size,
-> +                                unsigned int *n_u64)
-> +{
-> +       unsigned int len = 0;
-> +       char *str_field;
-> +
-> +       if (is_dynamic) {
-> +               u32 data_offset;
-> +
-> +               data_offset = offsetof(typeof(*entry), fields);
-> +               data_offset += event->n_u64 * sizeof(u64);
-> +               data_offset += data_size;
-> +
-> +               str_field = (char *)entry + data_offset;
-> +
-> +               len = strlen(str_val) + 1;
-> +               strscpy(str_field, str_val, len);
-> +
-> +               data_offset |= len << 16;
-> +               *(u32 *)&entry->fields[*n_u64] = data_offset;
+mmotm-readme.txt says
 
-Similar thing here, is it possible to reuse __dynamic_array or __string?
+README for mm-of-the-moment:
 
-> +
-> +               (*n_u64)++;
-> +       } else {
-> +               str_field = (char *)&entry->fields[*n_u64];
-> +
-> +               strscpy(str_field, str_val, STR_VAR_LEN_MAX);
-> +               (*n_u64) += STR_VAR_LEN_MAX / sizeof(u64);
-> +       }
-> +
-> +       return len;
-> +}
-> +
->  static notrace void trace_event_raw_event_synth(void *__data,
->                                                 u64 *var_ref_vals,
->                                                 unsigned int *var_ref_idx)
->  {
-> +       unsigned int i, n_u64, val_idx, len, data_size = 0;
->         struct trace_event_file *trace_file = __data;
->         struct synth_trace_event *entry;
->         struct trace_event_buffer fbuffer;
->         struct trace_buffer *buffer;
->         struct synth_event *event;
-> -       unsigned int i, n_u64, val_idx;
->         int fields_size = 0;
->
->         event = trace_file->event_call->data;
-> @@ -344,6 +398,18 @@ static notrace void trace_event_raw_event_synth(void *__data,
->
->         fields_size = event->n_u64 * sizeof(u64);
->
-> +       for (i = 0; i < event->n_dynamic_fields; i++) {
-> +               unsigned int field_pos = event->dynamic_fields[i]->field_pos;
-> +               char *str_val;
-> +
-> +               val_idx = var_ref_idx[field_pos];
-> +               str_val = (char *)(long)var_ref_vals[val_idx];
-> +
-> +               len = strlen(str_val) + 1;
-> +
-> +               fields_size += len;
-> +       }
-> +
->         /*
->          * Avoid ring buffer recursion detection, as this event
->          * is being performed within another event.
-> @@ -360,10 +426,11 @@ static notrace void trace_event_raw_event_synth(void *__data,
->                 val_idx = var_ref_idx[i];
->                 if (event->fields[i]->is_string) {
->                         char *str_val = (char *)(long)var_ref_vals[val_idx];
-> -                       char *str_field = (char *)&entry->fields[n_u64];
->
-> -                       strscpy(str_field, str_val, STR_VAR_LEN_MAX);
-> -                       n_u64 += STR_VAR_LEN_MAX / sizeof(u64);
-> +                       len = trace_string(entry, event, str_val,
-> +                                          event->fields[i]->is_dynamic,
-> +                                          data_size, &n_u64);
-> +                       data_size += len; /* only dynamic string increments */
->                 } else {
->                         struct synth_field *field = event->fields[i];
->                         u64 val = var_ref_vals[val_idx];
-> @@ -525,6 +592,27 @@ static struct synth_field *parse_synth_field(int argc, const char **argv,
->         if (size < 0) {
->                 ret = -EINVAL;
->                 goto free;
-> +       } else if (size == 0) {
-> +               if (synth_field_is_string(field->type)) {
-> +                       char *type;
-> +
-> +                       type = kzalloc(sizeof("__data_loc ") + strlen(field->type) + 1, GFP_KERNEL);
-> +                       if (!type) {
-> +                               ret = -ENOMEM;
-> +                               goto free;
-> +                       }
-> +
-> +                       strcat(type, "__data_loc ");
-> +                       strcat(type, field->type);
-> +                       kfree(field->type);
-> +                       field->type = type;
-> +
-> +                       field->is_dynamic = true;
-> +                       size = sizeof(u64);
-> +               } else {
-> +                       ret = -EINVAL;
-> +                       goto free;
-> +               }
->         }
->         field->size = size;
->
-> @@ -532,7 +620,6 @@ static struct synth_field *parse_synth_field(int argc, const char **argv,
->                 field->is_string = true;
->
->         field->is_signed = synth_field_signed(field->type);
-> -
->   out:
->         return field;
->   free:
-> @@ -663,6 +750,7 @@ static void free_synth_event(struct synth_event *event)
->                 free_synth_field(event->fields[i]);
->
->         kfree(event->fields);
-> +       kfree(event->dynamic_fields);
->         kfree(event->name);
->         kfree(event->class.system);
->         free_synth_tracepoint(event->tp);
-> @@ -673,8 +761,8 @@ static void free_synth_event(struct synth_event *event)
->  static struct synth_event *alloc_synth_event(const char *name, int n_fields,
->                                              struct synth_field **fields)
->  {
-> +       unsigned int i, j, n_dynamic_fields = 0;
->         struct synth_event *event;
-> -       unsigned int i;
->
->         event = kzalloc(sizeof(*event), GFP_KERNEL);
->         if (!event) {
-> @@ -696,11 +784,33 @@ static struct synth_event *alloc_synth_event(const char *name, int n_fields,
->                 goto out;
->         }
->
-> +       for (i = 0; i < n_fields; i++)
-> +               if (fields[i]->is_dynamic)
-> +                       n_dynamic_fields++;
-> +
-> +       if (n_dynamic_fields) {
-> +               event->dynamic_fields = kcalloc(n_dynamic_fields,
-> +                                               sizeof(*event->dynamic_fields),
-> +                                               GFP_KERNEL);
-> +               if (!event->dynamic_fields) {
-> +                       free_synth_event(event);
-> +                       event = ERR_PTR(-ENOMEM);
-> +                       goto out;
-> +               }
-> +       }
-> +
->         dyn_event_init(&event->devent, &synth_event_ops);
->
-> -       for (i = 0; i < n_fields; i++)
-> +       for (i = 0, j = 0; i < n_fields; i++) {
->                 event->fields[i] = fields[i];
->
-> +               if (fields[i]->is_dynamic) {
-> +                       event->dynamic_fields[j] = fields[i];
-> +                       event->dynamic_fields[j]->field_pos = i;
-> +                       event->dynamic_fields[j++] = fields[i];
-> +                       event->n_dynamic_fields++;
-> +               }
-> +       }
->         event->n_fields = n_fields;
->   out:
->         return event;
-> @@ -1276,8 +1386,8 @@ __synth_event_trace_end(struct synth_event_trace_state *trace_state)
->   */
->  int synth_event_trace(struct trace_event_file *file, unsigned int n_vals, ...)
->  {
-> +       unsigned int i, n_u64, len, data_size = 0;
->         struct synth_event_trace_state state;
-> -       unsigned int i, n_u64;
->         va_list args;
->         int ret;
->
-> @@ -1301,10 +1411,11 @@ int synth_event_trace(struct trace_event_file *file, unsigned int n_vals, ...)
->
->                 if (state.event->fields[i]->is_string) {
->                         char *str_val = (char *)(long)val;
-> -                       char *str_field = (char *)&state.entry->fields[n_u64];
->
-> -                       strscpy(str_field, str_val, STR_VAR_LEN_MAX);
-> -                       n_u64 += STR_VAR_LEN_MAX / sizeof(u64);
-> +                       len = trace_string(state.entry, state.event, str_val,
-> +                                          state.event->fields[i]->is_dynamic,
-> +                                          data_size, &n_u64);
-> +                       data_size += len; /* only dynamic string increments */
->                 } else {
->                         struct synth_field *field = state.event->fields[i];
->
-> @@ -1357,8 +1468,8 @@ EXPORT_SYMBOL_GPL(synth_event_trace);
->  int synth_event_trace_array(struct trace_event_file *file, u64 *vals,
->                             unsigned int n_vals)
->  {
-> +       unsigned int i, n_u64, len, data_size = 0;
->         struct synth_event_trace_state state;
-> -       unsigned int i, n_u64;
->         int ret;
->
->         ret = __synth_event_trace_start(file, &state);
-> @@ -1376,10 +1487,11 @@ int synth_event_trace_array(struct trace_event_file *file, u64 *vals,
->         for (i = 0, n_u64 = 0; i < state.event->n_fields; i++) {
->                 if (state.event->fields[i]->is_string) {
->                         char *str_val = (char *)(long)vals[i];
-> -                       char *str_field = (char *)&state.entry->fields[n_u64];
->
-> -                       strscpy(str_field, str_val, STR_VAR_LEN_MAX);
-> -                       n_u64 += STR_VAR_LEN_MAX / sizeof(u64);
-> +                       len = trace_string(state.entry, state.event, str_val,
-> +                                          state.event->fields[i]->is_dynamic,
-> +                                          data_size, &n_u64);
-> +                       data_size += len; /* only dynamic string increments */
->                 } else {
->                         struct synth_field *field = state.event->fields[i];
->                         u64 val = vals[i];
-> @@ -1510,6 +1622,11 @@ static int __synth_event_add_val(const char *field_name, u64 val,
->                 char *str_val = (char *)(long)val;
->                 char *str_field;
->
-> +               if (field->is_dynamic) { /* add_val can't do dynamic strings */
-> +                       ret = -EINVAL;
-> +                       goto out;
-> +               }
-> +
->                 if (!str_val) {
->                         ret = -EINVAL;
->                         goto out;
-> diff --git a/kernel/trace/trace_synth.h b/kernel/trace/trace_synth.h
-> index 5166705d1556..6e146b959dcd 100644
-> --- a/kernel/trace/trace_synth.h
-> +++ b/kernel/trace/trace_synth.h
-> @@ -16,6 +16,8 @@ struct synth_field {
->         unsigned int offset;
->         bool is_signed;
->         bool is_string;
-> +       bool is_dynamic;
-> +       bool field_pos;
->  };
->
->  struct synth_event {
-> @@ -24,6 +26,8 @@ struct synth_event {
->         char                                    *name;
->         struct synth_field                      **fields;
->         unsigned int                            n_fields;
-> +       struct synth_field                      **dynamic_fields;
-> +       unsigned int                            n_dynamic_fields;
->         unsigned int                            n_u64;
->         struct trace_event_class                class;
->         struct trace_event_call                 call;
-> --
-> 2.17.1
->
+https://www.ozlabs.org/~akpm/mmotm/
+
+This is a snapshot of my -mm patch queue.  Uploaded at random hopefully
+more than once a week.
+
+You will need quilt to apply these patches to the latest Linus release (5.x
+or 5.x-rcY).  The series file is in broken-out.tar.gz and is duplicated in
+https://ozlabs.org/~akpm/mmotm/series
+
+The file broken-out.tar.gz contains two datestamp files: .DATE and
+.DATE-yyyy-mm-dd-hh-mm-ss.  Both contain the string yyyy-mm-dd-hh-mm-ss,
+followed by the base kernel version against which this patch series is to
+be applied.
+
+This tree is partially included in linux-next.  To see which patches are
+included in linux-next, consult the `series' file.  Only the patches
+within the #NEXT_PATCHES_START/#NEXT_PATCHES_END markers are included in
+linux-next.
+
+
+A full copy of the full kernel tree with the linux-next and mmotm patches
+already applied is available through git within an hour of the mmotm
+release.  Individual mmotm releases are tagged.  The master branch always
+points to the latest release, so it's constantly rebasing.
+
+	https://github.com/hnaz/linux-mm
+
+The directory https://www.ozlabs.org/~akpm/mmots/ (mm-of-the-second)
+contains daily snapshots of the -mm tree.  It is updated more frequently
+than mmotm, and is untested.
+
+A git copy of this tree is also available at
+
+	https://github.com/hnaz/linux-mm
+
+
+
+This mmotm tree contains the following patches against 5.9-rc7:
+(patches marked "*" will be included in linux-next)
+
+  origin.patch
+* proc-kpageflags-prevent-an-integer-overflow-in-stable_page_flags.patch
+* proc-kpageflags-do-not-use-uninitialized-struct-pages.patch
+* mm-khugepaged-recalculate-min_free_kbytes-after-memory-hotplug-as-expected-by-khugepaged.patch
+* mm-khugepaged-recalculate-min_free_kbytes-after-memory-hotplug-as-expected-by-khugepaged-v5.patch
+* mm-swapfile-avoid-split_swap_cluster-null-pointer-dereference.patch
+* compiler-clang-add-build-check-for-clang-1001.patch
+* revert-kbuild-disable-clangs-default-use-of-fmerge-all-constants.patch
+* revert-arm64-bti-require-clang-=-1001-for-in-kernel-bti-support.patch
+* revert-arm64-vdso-fix-compilation-with-clang-older-than-8.patch
+* partially-revert-arm-8905-1-emit-__gnu_mcount_nc-when-using-clang-1000-or-newer.patch
+* kasan-remove-mentions-of-unsupported-clang-versions.patch
+* compiler-gcc-improve-version-error.patch
+* compilerh-avoid-escaped-section-names.patch
+* exporth-fix-section-name-for-config_trim_unused_ksyms-for-clang.patch
+* increase-error-prone-spell-checking.patch
+* ntfs-add-check-for-mft-record-size-in-superblock.patch
+* fs-ocfs2-delete-repeated-words-in-comments.patch
+* ocfs2-fix-potential-soft-lockup-during-fstrim.patch
+* ocfs2-clear-links-count-in-ocfs2_mknod-if-an-error-occurs.patch
+* ocfs2-fix-ocfs2-corrupt-when-iputting-an-inode.patch
+* ramfs-support-o_tmpfile.patch
+* fs-xattrc-fix-kernel-doc-warnings-for-setxattr-removexattr.patch
+* fs_parse-mark-fs_param_bad_value-as-static.patch
+* kernel-watchdog-flush-all-printk-nmi-buffers-when-hardlockup-detected.patch
+  mm.patch
+* mm-slabc-clean-code-by-removing-redundant-if-condition.patch
+* include-linux-slabh-fix-a-typo-error-in-comment.patch
+* mm-slub-branch-optimization-in-free-slowpath.patch
+* mm-slub-fix-missing-alloc_slowpath-stat-when-bulk-alloc.patch
+* mm-slub-make-add_full-condition-more-explicit.patch
+* mm-kmemleak-rely-on-rcu-for-task-stack-scanning.patch
+* mmkmemleak-testc-move-kmemleak-testc-to-samples-dir.patch
+* x86-numa-cleanup-configuration-dependent-command-line-options.patch
+* x86-numa-add-nohmat-option.patch
+* x86-numa-add-nohmat-option-fix.patch
+* efi-fake_mem-arrange-for-a-resource-entry-per-efi_fake_mem-instance.patch
+* acpi-hmat-refactor-hmat_register_target_device-to-hmem_register_device.patch
+* acpi-hmat-refactor-hmat_register_target_device-to-hmem_register_device-fix.patch
+* resource-report-parent-to-walk_iomem_res_desc-callback.patch
+* mm-memory_hotplug-introduce-default-phys_to_target_node-implementation.patch
+* mm-memory_hotplug-introduce-default-phys_to_target_node-implementation-fix.patch
+* acpi-hmat-attach-a-device-for-each-soft-reserved-range.patch
+* acpi-hmat-attach-a-device-for-each-soft-reserved-range-fix.patch
+* device-dax-drop-the-dax_regionpfn_flags-attribute.patch
+* device-dax-move-instance-creation-parameters-to-struct-dev_dax_data.patch
+* device-dax-make-pgmap-optional-for-instance-creation.patch
+* device-dax-kmem-introduce-dax_kmem_range.patch
+* device-dax-kmem-move-resource-name-tracking-to-drvdata.patch
+* device-dax-kmem-replace-release_resource-with-release_mem_region.patch
+* device-dax-add-an-allocation-interface-for-device-dax-instances.patch
+* device-dax-introduce-struct-dev_dax-typed-driver-operations.patch
+* device-dax-introduce-seed-devices.patch
+* drivers-base-make-device_find_child_by_name-compatible-with-sysfs-inputs.patch
+* device-dax-add-resize-support.patch
+* mm-memremap_pages-convert-to-struct-range.patch
+* mm-memremap_pages-convert-to-struct-range-fix.patch
+* mm-memremap_pages-support-multiple-ranges-per-invocation.patch
+* device-dax-add-dis-contiguous-resource-support.patch
+* device-dax-introduce-mapping-devices.patch
+* device-dax-make-align-a-per-device-property.patch
+* device-dax-add-an-align-attribute.patch
+* dax-hmem-introduce-dax_hmemregion_idle-parameter.patch
+* device-dax-add-a-range-mapping-allocation-attribute.patch
+* mm-debug-do-not-dereference-i_ino-blindly.patch
+* mm-dump_page-rename-head_mapcount-head_compound_mapcount.patch
+* powerpc-mm-add-debug_vm-warn-for-pmd_clear.patch
+* powerpc-mm-move-setting-pte-specific-flags-to-pfn_pte.patch
+* powerpc-mm-move-setting-pte-specific-flags-to-pfn_pte-fix.patch
+* mm-debug_vm_pgtable-ppc64-avoid-setting-top-bits-in-radom-value.patch
+* mm-debug_vm_pgtables-hugevmap-use-the-arch-helper-to-identify-huge-vmap-support.patch
+* mm-debug_vm_pgtable-savedwrite-enable-savedwrite-test-with-config_numa_balancing.patch
+* mm-debug_vm_pgtable-thp-mark-the-pte-entry-huge-before-using-set_pmd-pud_at.patch
+* mm-debug_vm_pgtable-set_pte-pmd-pud-dont-use-set__at-to-update-an-existing-pte-entry.patch
+* mm-debug_vm_pgtable-locks-move-non-page-table-modifying-test-together.patch
+* mm-debug_vm_pgtable-locks-take-correct-page-table-lock.patch
+* mm-debug_vm_pgtable-thp-use-page-table-depost-withdraw-with-thp.patch
+* mm-debug_vm_pgtable-pmd_clear-dont-use-pmd-pud_clear-on-pte-entries.patch
+* mm-debug_vm_pgtable-hugetlb-disable-hugetlb-test-on-ppc64.patch
+* mm-debug_vm_pgtable-hugetlb-disable-hugetlb-test-on-ppc64-fix.patch
+* mm-debug_vm_pgtable-avoid-none-pte-in-pte_clear_test.patch
+* mm-debug_vm_pgtable-avoid-doing-memory-allocation-with-pgtable_t-mapped.patch
+* mm-factor-find_get_incore_page-out-of-mincore_page.patch
+* mm-use-find_get_incore_page-in-memcontrol.patch
+* mm-optimise-madvise-willneed.patch
+* mm-optimise-madvise-willneed-fix.patch
+* proc-optimise-smaps-for-shmem-entries.patch
+* i915-use-find_lock_page-instead-of-find_lock_entry.patch
+* mm-convert-find_get_entry-to-return-the-head-page.patch
+* mm-convert-find_get_entry-to-return-the-head-page-fix.patch
+* mm-shmem-return-head-page-from-find_lock_entry.patch
+* mm-shmem-return-head-page-from-find_lock_entry-fix.patch
+* mm-add-find_lock_head.patch
+* mm-filemap-fix-filemap_map_pages-for-thp.patch
+* mm-fadvise-improve-the-expensive-remote-lru-cache-draining-after-fadv_dontneed.patch
+* mm-gup_benchmark-update-the-documentation-in-kconfig.patch
+* mm-gup_benchmark-use-pin_user_pages-for-foll_longterm-flag.patch
+* mm-gup-dont-permit-users-to-call-get_user_pages-with-foll_longterm.patch
+* mm-gup-dont-permit-users-to-call-get_user_pages-with-foll_longterm-fix.patch
+* mm-gup-protect-unpin_user_pages-against-npages==-errno.patch
+* swap-rename-swp_fs-to-swap_fs_ops-to-avoid-ambiguity.patch
+* mm-remove-activate_page-from-unuse_pte.patch
+* mm-remove-superfluous-__clearpageactive.patch
+* mm-swap-fix-confusing-comment-in-release_pages.patch
+* mm-swap_slotsc-remove-always-zero-and-unused-return-value-of-enable_swap_slots_cache.patch
+* mm-remove-useless-out-label-in-__swap_writepage.patch
+* mm-fix-incomplete-comment-in-lru_cache_add_inactive_or_unevictable.patch
+* memremap-convert-devmap-static-branch-to-incdec.patch
+* mm-memcontrol-use-flex_array_size-helper-in-memcpy.patch
+* mm-memcontrol-use-the-preferred-form-for-passing-the-size-of-a-structure-type.patch
+* mm-memcg-slab-fix-racy-access-to-page-mem_cgroup-in-mem_cgroup_from_obj.patch
+* mm-memcontrol-correct-the-comment-of-mem_cgroup_iter.patch
+* mm-memcg-clean-up-obsolete-enum-charge_type.patch
+* mm-memcg-simplify-mem_cgroup_get_max.patch
+* mm-memcg-simplify-mem_cgroup_get_max-v4.patch
+* mm-memcg-unify-swap-and-memsw-page-counters.patch
+* mm-memcontrol-add-the-missing-numa_stat-interface-for-cgroup-v2.patch
+* mm-page_counter-correct-the-obsolete-func-name-in-the-comment-of-page_counter_try_charge.patch
+* selftests-vm-fix-false-build-success-on-the-second-and-later-attempts.patch
+* selftests-vm-fix-incorrect-gcc-invocation-in-some-cases.patch
+* mm-account-pmd-tables-like-pte-tables.patch
+* mm-account-pmd-tables-like-pte-tables-fix.patch
+* mm-memory-fix-typo-in-__do_fault-comment.patch
+* mm-memoryc-replace-vmf-vma-with-variable-vma.patch
+* mm-mmap-rename-__vma_unlink_common-to-__vma_unlink.patch
+* mm-mmap-leverage-vma_rb_erase_ignore-to-implement-vma_rb_erase.patch
+* mmap-locking-api-add-mmap_lock_is_contended.patch
+* mm-smaps-extend-smap_gather_stats-to-support-specified-beginning.patch
+* mm-proc-smaps_rollup-do-not-stall-write-attempts-on-mmap_lock.patch
+* mm-mmap-fix-the-adjusted-length-error.patch
+* mm-move-pagedoublemap-bit.patch
+* mm-simplify-pagedoublemap-with-pf_second-policy.patch
+* mm-mmap-leave-adjust_next-as-virtual-address-instead-of-page-frame-number.patch
+* mm-memoryc-fix-spello-of-function.patch
+* mm-mmap-not-necessary-to-check-mapping-separately.patch
+* mm-mmap-check-on-file-instead-of-the-rb_root_cached-of-its-address_space.patch
+* mm-use-helper-function-mapping_allow_writable.patch
+* mm-mmap-use-helper-function-allow_write_access-in-__remove_shared_vm_struct.patch
+* mm-mmapc-replace-do_brk-with-do_brk_flags-in-comment-of-insert_vm_struct.patch
+* mm-cleanup-mincore_huge_pmd.patch
+* mm-test-use-the-new-skip-macro.patch
+* hmm-test-remove-unused-dmirror_zero_page.patch
+* mm-dmapoolc-replace-open-coded-list_for_each_entry_safe.patch
+* mm-dmapoolc-replace-hard-coded-function-name-with-__func__.patch
+* mm-memory-failure-do-pgoff-calculation-before-for_each_process.patch
+* mm-remove-unused-marco-writeback.patch
+* mm-vmallocc-update-the-comment-in-__vmalloc_area_node.patch
+* mm-vmallocc-fix-the-comment-of-find_vm_area.patch
+* docs-vm-fix-mm_count-vs-mm_users-counter-confusion.patch
+* add-kunit-struct-to-current-task.patch
+* kunit-kasan-integration.patch
+* kasan-port-kasan-tests-to-kunit.patch
+* kasan-port-kasan-tests-to-kunit-v14.patch
+* kasan-testing-documentation.patch
+* mm-kasan-do-not-panic-if-both-panic_on_warn-and-kasan_multishot-set.patch
+* mm-page_alloc-tweak-comments-in-has_unmovable_pages.patch
+* mm-page_isolation-exit-early-when-pageblock-is-isolated-in-set_migratetype_isolate.patch
+* mm-page_isolation-drop-warn_on_once-in-set_migratetype_isolate.patch
+* mm-page_isolation-cleanup-set_migratetype_isolate.patch
+* virtio-mem-dont-special-case-zone_movable.patch
+* mm-document-semantics-of-zone_movable.patch
+* mm-isolation-avoid-checking-unmovable-pages-across-pageblock-boundary.patch
+* mm-page_allocc-clean-code-by-removing-unnecessary-initialization.patch
+* mm-page_allocc-clean-code-by-removing-unnecessary-initialization-fix.patch
+* mm-page_allocc-micro-optimization-remove-unnecessary-branch.patch
+* mm-page_allocc-fix-early-params-garbage-value-accesses.patch
+* mm-page_allocc-clean-code-by-merging-two-functions.patch
+* mm-page_allocc-__perform_reclaim-should-return-unsigned-long.patch
+* mmzone-clean-code-by-removing-unused-macro-parameter.patch
+* mm-move-call-to-compound_head-in-release_pages.patch
+* page_alloc-fix-freeing-non-compound-pages.patch
+* mm-clarify-usage-of-gfp_atomic-in-preemptible-contexts.patch
+* mm-hugetlbc-make-is_hugetlb_entry_hwpoisoned-return-bool.patch
+* mm-hugetlbc-remove-the-unnecessary-non_swap_entry.patch
+* doc-vm-fix-typo-in-the-hugetlb-admin-documentation.patch
+* mm-huge_memoryc-update-tlb-entry-if-pmd-is-changed.patch
+* mips-do-not-call-flush_tlb_all-when-setting-pmd-entry.patch
+* mm-hugetlb-not-necessary-to-coalesce-regions-recursively.patch
+* mm-hugetlb-remove-vm_bug_onnrg-in-get_file_region_entry_from_cache.patch
+* mm-hugetlb-use-list_splice-to-merge-two-list-at-once.patch
+* mm-hugetlb-count-file_region-to-be-added-when-regions_needed-=-null.patch
+* mm-hugetlb-a-page-from-buddy-is-not-on-any-list.patch
+* mm-hugetlb-narrow-the-hugetlb_lock-protection-area-during-preparing-huge-page.patch
+* mm-hugetlb-take-the-free-hpage-during-the-iteration-directly.patch
+* mm-hugetlb-take-the-free-hpage-during-the-iteration-directly-v4.patch
+* hugetlb-add-lockdep-check-for-i_mmap_rwsem-held-in-huge_pmd_share.patch
+* mm-vmscan-fix-infinite-loop-in-drop_slab_node.patch
+* mm-vmscan-add-a-fatal-signals-check-in-drop_slab_node.patch
+* mm-vmscan-fix-comments-for-isolate_lru_page.patch
+* mmz3fold-use-xx_zalloc-instead-xx_alloc-and-memset.patch
+* mm-zbud-remove-redundant-initialization.patch
+* mm-compactionc-micro-optimization-remove-unnecessary-branch.patch
+* include-linux-compactionh-clean-code-by-removing-unused-enum-value.patch
+* mm-mempolicy-remove-or-narrow-the-lock-on-current.patch
+* mm-remove-unused-alloc_page_vma_node.patch
+* mm-mempool-add-else-to-split-mutually-exclusive-case.patch
+* mm-mempool-add-else-to-split-mutually-exclusive-case-fix.patch
+* kvm-ppc-book3s-hv-simplify-kvm_cma_reserve.patch
+* dma-contiguous-simplify-cma_early_percent_memory.patch
+* arm-xtensa-simplify-initialization-of-high-memory-pages.patch
+* arm64-numa-simplify-dummy_numa_init.patch
+* h8300-nds32-openrisc-simplify-detection-of-memory-extents.patch
+* riscv-drop-unneeded-node-initialization.patch
+* mircoblaze-drop-unneeded-numa-and-sparsemem-initializations.patch
+* memblock-make-for_each_memblock_type-iterator-private.patch
+* memblock-make-memblock_debug-and-related-functionality-private.patch
+* memblock-make-memblock_debug-and-related-functionality-private-fix.patch
+* memblock-reduce-number-of-parameters-in-for_each_mem_range.patch
+* arch-mm-replace-for_each_memblock-with-for_each_mem_pfn_range.patch
+* arch-drivers-replace-for_each_membock-with-for_each_mem_range.patch
+* arch-drivers-replace-for_each_membock-with-for_each_mem_range-fix.patch
+* arch-drivers-replace-for_each_membock-with-for_each_mem_range-fix-2.patch
+* x86-setup-simplify-initrd-relocation-and-reservation.patch
+* x86-setup-simplify-reserve_crashkernel.patch
+* memblock-remove-unused-memblock_mem_size.patch
+* memblock-implement-for_each_reserved_mem_region-using-__next_mem_region.patch
+* memblock-use-separate-iterators-for-memory-and-reserved-regions.patch
+* mm-oom_adj-dont-loop-through-tasks-in-__set_oom_adj-when-not-necessary.patch
+* mm-oom_adj-dont-loop-through-tasks-in-__set_oom_adj-when-not-necessary-v3.patch
+* mm-migrate-remove-cpages-in-migrate_vma_finalize.patch
+* mm-migrate-remove-obsolete-comment-about-device-public.patch
+* xarray-add-xa_get_order.patch
+* xarray-add-xa_get_order-fix.patch
+* xarray-add-xas_split.patch
+* xarray-add-xas_split-fix.patch
+* xarray-add-xas_split-fix-2.patch
+* mm-filemap-fix-storing-to-a-thp-shadow-entry.patch
+* mm-filemap-fix-page-cache-removal-for-arbitrary-sized-thps.patch
+* mm-memory-remove-page-fault-assumption-of-compound-page-size.patch
+* mm-page_owner-change-split_page_owner-to-take-a-count.patch
+* mm-huge_memory-fix-total_mapcount-assumption-of-page-size.patch
+* mm-huge_memory-fix-split-assumption-of-page-size.patch
+* mm-huge_memory-fix-page_trans_huge_mapcount-assumption-of-thp-size.patch
+* mm-huge_memory-fix-can_split_huge_page-assumption-of-thp-size.patch
+* mm-rmap-fix-assumptions-of-thp-size.patch
+* mm-truncate-fix-truncation-for-pages-of-arbitrary-size.patch
+* mm-page-writeback-support-tail-pages-in-wait_for_stable_page.patch
+* mm-vmscan-allow-arbitrary-sized-pages-to-be-paged-out.patch
+* fs-add-a-filesystem-flag-for-thps.patch
+* fs-do-not-update-nr_thps-for-mappings-which-support-thps.patch
+* mm-readahead-add-define_readahead.patch
+* mm-readahead-make-page_cache_ra_unbounded-take-a-readahead_control.patch
+* mm-readahead-make-do_page_cache_ra-take-a-readahead_control.patch
+* mm-readahead-make-ondemand_readahead-take-a-readahead_control.patch
+* mm-readahead-pass-readahead_control-to-force_page_cache_ra.patch
+* mm-readahead-add-page_cache_sync_ra-and-page_cache_async_ra.patch
+* mm-filemap-fold-ra_submit-into-do_sync_mmap_readahead.patch
+* mm-readahead-pass-a-file_ra_state-into-force_page_cache_ra.patch
+* mmhwpoison-cleanup-unused-pagehuge-check.patch
+* mm-hwpoison-remove-recalculating-hpage.patch
+* mmhwpoison-inject-dont-pin-for-hwpoison_filter.patch
+* mmhwpoison-unexport-get_hwpoison_page-and-make-it-static.patch
+* mmhwpoison-refactor-madvise_inject_error.patch
+* mmhwpoison-kill-put_hwpoison_page.patch
+* mmhwpoison-unify-thp-handling-for-hard-and-soft-offline.patch
+* mmhwpoison-rework-soft-offline-for-free-pages.patch
+* mmhwpoison-rework-soft-offline-for-in-use-pages.patch
+* mmhwpoison-refactor-soft_offline_huge_page-and-__soft_offline_page.patch
+* mmhwpoison-return-0-if-the-page-is-already-poisoned-in-soft-offline.patch
+* mmhwpoison-introduce-mf_msg_unsplit_thp.patch
+* mmhwpoison-double-check-page-count-in-__get_any_page.patch
+* mmhwpoison-try-to-narrow-window-race-for-free-pages.patch
+* mm-page_poisonc-replace-bool-variable-with-static-key.patch
+* mm-vmstat-fix-proc-sys-vm-stat_refresh-generating-false-warnings.patch
+* mm-vmstat-fix-proc-sys-vm-stat_refresh-generating-false-warnings-fix.patch
+* mm-vmstat-fix-proc-sys-vm-stat_refresh-generating-false-warnings-fix-2.patch
+* mm-vmstat-use-helper-macro-abs.patch
+* mm-util-update-the-kerneldoc-for-kstrdup_const.patch
+* mm-mmu_notifier-fix-mmget-assert-in-__mmu_interval_notifier_insert.patch
+* mm-memory_hotplug-inline-__offline_pages-into-offline_pages.patch
+* mm-memory_hotplug-enforce-section-granularity-when-onlining-offlining.patch
+* mm-memory_hotplug-simplify-page-offlining.patch
+* mm-memory_hotplug-simplify-page-offlining-fix.patch
+* mm-page_alloc-simplify-__offline_isolated_pages.patch
+* mm-memory_hotplug-drop-nr_isolate_pageblock-in-offline_pages.patch
+* mm-page_isolation-simplify-return-value-of-start_isolate_page_range.patch
+* mm-memory_hotplug-simplify-page-onlining.patch
+* mm-page_alloc-drop-stale-pageblock-comment-in-memmap_init_zone.patch
+* mm-pass-migratetype-into-memmap_init_zone-and-move_pfn_range_to_zone.patch
+* mm-memory_hotplug-mark-pageblocks-migrate_isolate-while-onlining-memory.patch
+* kernel-resource-make-release_mem_region_adjustable-never-fail.patch
+* kernel-resource-make-release_mem_region_adjustable-never-fail-fix.patch
+* kernel-resource-move-and-rename-ioresource_mem_driver_managed.patch
+* mm-memory_hotplug-guard-more-declarations-by-config_memory_hotplug.patch
+* mm-memory_hotplug-prepare-passing-flags-to-add_memory-and-friends.patch
+* mm-memory_hotplug-memhp_merge_resource-to-specify-merging-of-system-ram-resources.patch
+* virtio-mem-try-to-merge-system-ram-resources.patch
+* xen-balloon-try-to-merge-system-ram-resources.patch
+* hv_balloon-try-to-merge-system-ram-resources.patch
+* kernel-resource-make-iomem_resource-implicit-in-release_mem_region_adjustable.patch
+* mm-dont-panic-when-links-cant-be-created-in-sysfs.patch
+* zram-failing-to-decompress-is-warn_on-worthy.patch
+* mm-slab-remove-duplicate-include.patch
+* mm-page_reporting-drop-stale-list-head-check-in-page_reporting_cycle.patch
+* mm-highmem-clean-up-endif-comments.patch
+* mm-use-add_page_to_lru_list-page_lru-page_off_lru.patch
+* mm-use-self-explanatory-macros-rather-than-2.patch
+* mm-fix-some-broken-comments.patch
+* mm-fix-some-comments-formatting.patch
+* mm-fix-some-doc-warnings-in-workingsetc.patch
+* mm-use-helper-function-put_write_access.patch
+* mm-remove-unused-early_pfn_valid.patch
+* mm-fix-some-comments-in-page_allocc-and-mempolicyc.patch
+* info-task-hung-in-generic_file_write_iter.patch
+* info-task-hung-in-generic_file_write-fix.patch
+* kernel-hung_taskc-monitor-killed-tasks.patch
+* proc-sysctl-make-protected_-world-readable.patch
+* fs-configfs-delete-repeated-words-in-comments.patch
+* kernelh-split-out-min-max-et-al-helpers.patch
+* kernel-sysc-replace-do_brk-with-do_brk_flags-in-comment-of-prctl_set_mm_map.patch
+* get_maintainer-add-test-for-file-in-vcs.patch
+* get_maintainer-exclude-maintainers-files-from-git-fallback.patch
+* lib-bitmap-delete-duplicated-words.patch
+* lib-libcrc32c-delete-duplicated-words.patch
+* lib-decompress_bunzip2-delete-duplicated-words.patch
+* lib-devres-delete-duplicated-words.patch
+* lib-dynamic_queue_limits-delete-duplicated-words-fix-typo.patch
+* lib-earlycpio-delete-duplicated-words.patch
+* lib-radix-tree-delete-duplicated-words.patch
+* lib-syscall-delete-duplicated-words.patch
+* lib-test_sysctl-delete-duplicated-words.patch
+* lib-mpi-fix-spello-of-functions.patch
+* idr-document-calling-context-for-ida-apis-mustnt-use-locks.patch
+* idr-document-that-ida_simple_getremove-are-deprecated.patch
+* lib-scatterlist-avoid-a-double-memset.patch
+* percpu_counter-use-helper-macro-abs.patch
+* list-add-a-macro-to-test-if-entry-is-pointing-to-the-head.patch
+* lib-crc32c-fix-trivial-typo-in-preprocessor-condition.patch
+* bitops-simplify-get_count_order_long.patch
+* bitops-use-the-same-mechanism-for-get_count_order.patch
+* checkpatch-add-kconfig-prefix.patch
+* checkpatch-move-repeated-word-test.patch
+* checkpatch-add-test-for-comma-use-that-should-be-semicolon.patch
+* const_structscheckpatch-add-phy_ops.patch
+* checkpatch-warn-if-trace_printk-and-friends-are-called.patch
+* const_structscheckpatch-add-pinctrl_ops-and-pinmux_ops.patch
+* checkpatch-warn-on-self-assignments.patch
+* checkpatch-warn-on-self-assignments-checkpatch-fixes.patch
+* checkpatch-allow-not-using-f-with-files-that-are-in-git.patch
+* checkpatch-allow-not-using-f-with-files-that-are-in-git-fix.patch
+* checkpatch-extend-author-signed-off-by-check-for-split-from-header.patch
+* checkpatch-test-git_dir-changes.patch
+* fs-binfmt_elf-use-pt_load-p_align-values-for-suitable-start-address.patch
+* fs-binfmt_elf-use-pt_load-p_align-values-for-suitable-start-address-fix.patch
+* fs-binfmt_elf-use-pt_load-p_align-values-for-suitable-start-address-v4.patch
+* add-self-test-for-verifying-load-alignment.patch
+* binfmt_elf_fdpic-stop-using-dump_emit-on-user-pointers-on-mmu.patch
+* coredump-let-dump_emit-bail-out-on-short-writes.patch
+* coredump-refactor-page-range-dumping-into-common-helper.patch
+* coredump-rework-elf-elf_fdpic-vma_dump_size-into-common-helper.patch
+* binfmt_elf-binfmt_elf_fdpic-use-a-vma-list-snapshot.patch
+* mm-gup-take-mmap_lock-in-get_dump_page.patch
+* mm-remove-the-now-unnecessary-mmget_still_valid-hack.patch
+* ramfs-fix-nommu-mmap-with-gaps-in-the-page-cache.patch
+* harden-autofs-ioctl-table.patch
+* nilfs2-fix-some-kernel-doc-warnings-for-nilfs2.patch
+* rapidio-fix-error-handling-path.patch
+* rapidio-fix-the-missed-put_device-for-rio_mport_add_riodev.patch
+* panic-dump-registers-on-panic_on_warn.patch
+* aio-simplify-read_events.patch
+* proc-add-struct-mount-struct-super_block-addr-in-lx-mounts-command.patch
+* tasks-add-headers-and-improve-spacing-format.patch
+* schedh-drop-in_ubsan-field-when-ubsan-is-in-trap-mode.patch
+* ubsan-introducing-config_ubsan_local_bounds-for-clang.patch
+* romfs-support-inode-blocks-calculation.patch
+* lib-include-linux-add-usercopy-failure-capability.patch
+* lib-uaccess-add-failure-injection-to-usercopy-functions.patch
+* x86-add-failure-injection-to-get-put-clear_user.patch
+  linux-next.patch
+  linux-next-rejects.patch
+* fs-fuse-virtio_fsc-fix-for-mm-memremap_pages-convert-to-struct-range.patch
+* ia64-fix-build-error-with-coredump.patch
+* mm-rework-remote-memcg-charging-api-to-support-nesting.patch
+* mm-kmem-move-memcg_kmem_bypass-calls-to-get_mem-obj_cgroup_from_current.patch
+* mm-kmem-remove-redundant-checks-from-get_obj_cgroup_from_current.patch
+* mm-kmem-prepare-remote-memcg-charging-infra-for-interrupt-contexts.patch
+* mm-kmem-enable-kernel-memcg-accounting-from-interrupt-contexts.patch
+* mm-memory-failure-remove-a-wrapper-for-alloc_migration_target.patch
+* mm-memory_hotplug-remove-a-wrapper-for-alloc_migration_target.patch
+* mm-migrate-avoid-possible-unnecessary-process-right-check-in-kernel_move_pages.patch
+* mm-mmap-add-inline-vma_next-for-readability-of-mmap-code.patch
+* mm-mmap-add-inline-munmap_vma_range-for-code-readability.patch
+* mm-madvise-pass-mm-to-do_madvise.patch
+* pid-move-pidfd_get_pid-to-pidc.patch
+* mm-madvise-introduce-process_madvise-syscall-an-external-memory-hinting-api.patch
+* mm-madvise-introduce-process_madvise-syscall-an-external-memory-hinting-api-fix.patch
+* mm-madvise-introduce-process_madvise-syscall-an-external-memory-hinting-api-fix-fix.patch
+* mm-madvise-introduce-process_madvise-syscall-an-external-memory-hinting-api-fix-fix-fix.patch
+* mm-madvise-introduce-process_madvise-syscall-an-external-memory-hinting-api-fix-fix-fix-fix.patch
+* mm-madvise-introduce-process_madvise-syscall-an-external-memory-hinting-api-fix-fix-fix-fix-fix.patch
+* mm-madvise-introduce-process_madvise-syscall-an-external-memory-hinting-api-fix-fix-fix-fix-fix-fix.patch
+* mm-madvise-introduce-process_madvise-syscall-an-external-memory-hinting-api-fix-fix-fix-fix-fix-fix-fix.patch
+* mm-madvise-introduce-process_madvise-syscall-an-external-memory-hinting-api-fix-fix-fix-fix-fix-fix-fix-fix.patch
+* mm-madvise-introduce-process_madvise-syscall-an-external-memory-hinting-api-fix-fix-fix-fix-fix-fix-fix-fix-fix.patch
+* mm-remove-duplicate-include-statement-in-mmuc.patch
+* lib-mpi-fix-off-by-one-check-on-index-no.patch
+  make-sure-nobodys-leaking-resources.patch
+  releasing-resources-with-children.patch
+  mutex-subsystem-synchro-test-module.patch
+  kernel-forkc-export-kernel_thread-to-modules.patch
+  workaround-for-a-pci-restoring-bug.patch
