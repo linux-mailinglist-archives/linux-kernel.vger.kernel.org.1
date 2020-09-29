@@ -2,172 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D270827C027
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 10:55:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 727BB27C030
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 10:56:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727935AbgI2Ize (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 04:55:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41048 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727826AbgI2Izb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 04:55:31 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6B24C061755;
-        Tue, 29 Sep 2020 01:55:29 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id z19so3845092pfn.8;
-        Tue, 29 Sep 2020 01:55:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=yLZJxx2l7hUl8Pgn3o5psWobrD3TjYQxwKuaDcKpaAs=;
-        b=P1SOZ08oNzcpvT4+1QdPJIKbuRcOJfMQYnh/POijnSls+YiMR3I01WSLLQF026Ji+X
-         sFBFvMWHQy+8WmXb6uZE4C2CbkWqcJPyLYNTydGkMRnQtnAwU/GUhQhCPptmv+1+9o5m
-         x+E8wV87cHvjSDpzqY7+yQchBCePaRo8WyWvXXzySB3dkUhQouA/8T0Qscq4EwhqYyV3
-         sSE9LR0vxv3Du/u7SqZj35C3wzKvOJlS1xT0KH+2HXiDPUxmMi+2DUVQFsucygQNj0KR
-         1BPzUvV5xbBNyLK/gIgPbQU6XKjaOzNNqRxcQkHb3LygnjzPbQ48YaxitC433eIgUAPv
-         wU7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=yLZJxx2l7hUl8Pgn3o5psWobrD3TjYQxwKuaDcKpaAs=;
-        b=ZykxsLdlMfhPCpFcfWvFO/SsMlTQ5jIMGKyliPnIh33dLstQNGHFU3iwrEPIV6QNUw
-         Z8+hkKj0Fl58iVIi4xfXXup2n9N/eZ3N7+Lt7znnUDPtfPBSVRQ3sWV9rOZiZwlUv39n
-         TuiRRLN+Ho+MgbzNODC30xA97FoSzigxBeSSldW1ZNd1JYttdg2JoSV6+AoyX3NeOk7m
-         QyJBBfJc+0Xyd2OKZCAVXG7gFYUpR2KN6T0Vj8XumUoIZI0+ukGI0xN6Nd6RkUOhI8T/
-         dVv7fO9FMK8PWDUUU02fpIzatKS8m6shX8J10ZtdZmOcGZE7zFTUQ8fkDFNGCFUOewwW
-         pMfw==
-X-Gm-Message-State: AOAM533cyBxGEu5TUsTgxG74uum6VVZIFrjQXdrzQ5hJ1dvTlAm7hOFL
-        ADQI606Gcerc74wEf2QHmG9sbKe02BjH
-X-Google-Smtp-Source: ABdhPJzFiU1OJyLuqrPQYy4g/DXmxjdQ1IuHdxUHeRilWdjdpUgleXtTv+wvD1zReMnlywsDc95k7w==
-X-Received: by 2002:a63:1925:: with SMTP id z37mr2502003pgl.23.1601369729029;
-        Tue, 29 Sep 2020 01:55:29 -0700 (PDT)
-Received: from localhost.localdomain ([203.205.141.39])
-        by smtp.gmail.com with ESMTPSA id x185sm4616952pfc.188.2020.09.29.01.55.25
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 29 Sep 2020 01:55:28 -0700 (PDT)
-From:   lihaiwei.kernel@gmail.com
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org, x86@kernel.org
-Cc:     pbonzini@redhat.com, sean.j.christopherson@intel.com,
-        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
-        joro@8bytes.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, hpa@zytor.com, Haiwei Li <lihaiwei@tencent.com>
-Subject: [PATCH] KVM: x86: Add tracepoint for dr_write/dr_read
-Date:   Tue, 29 Sep 2020 16:55:15 +0800
-Message-Id: <20200929085515.24059-1-lihaiwei.kernel@gmail.com>
-X-Mailer: git-send-email 2.28.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1727978AbgI2I4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 04:56:47 -0400
+Received: from m42-4.mailgun.net ([69.72.42.4]:37559 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727653AbgI2I4r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 04:56:47 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1601369806; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=KQpZEG0OKWPAvzpKPFBQIJ7O1U66uQTA+gBp9ugCrxg=; b=sVaDi0k7SVMsa0XzaoxSxRPNENwgTnI5/vN1xYH+MoMelu2aUddCLO0tD55goNS/0Haqd94/
+ 3li76nliP1G0KKeVt+EW8XK8jTyBVD9dnZBYq2co/0DxuPMzSxU1yuiYImOj1riXCZqz+hMA
+ Ytiuo5YpH++25lep5NMgT8OYRu0=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 5f72f6cdcc21f6157a7b1e04 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 29 Sep 2020 08:56:45
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id A06ECC433FF; Tue, 29 Sep 2020 08:56:44 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id BE92AC433CB;
+        Tue, 29 Sep 2020 08:56:41 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org BE92AC433CB
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     ath11k@lists.infradead.org
+Cc:     linux-wireless@vger.kernel.org, sfr@canb.auug.org.au,
+        govinds@codeaurora.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, manivannan.sadhasivam@linaro.org,
+        davem@davemloft.net
+Subject: [PATCH v2] ath11k: remove auto_start from channel config struct
+Date:   Tue, 29 Sep 2020 11:56:39 +0300
+Message-Id: <1601369799-22328-1-git-send-email-kvalo@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Haiwei Li <lihaiwei@tencent.com>
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 
-Add tracepoint trace_kvm_dr_write/trace_kvm_dr_read for x86 kvm.
+Recent change in MHI bus removed the option to auto start the channels
+during MHI driver probe. The channel will only be started when the MHI
+client driver like QRTR gets probed. So, remove the option from ath11k
+channel config struct.
 
-Signed-off-by: Haiwei Li <lihaiwei@tencent.com>
+Fixes: 1399fb87ea3e ("ath11k: register MHI controller device for QCA6390")
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 ---
- arch/x86/kvm/svm/svm.c |  2 ++
- arch/x86/kvm/trace.h   | 27 +++++++++++++++++++++++++++
- arch/x86/kvm/vmx/vmx.c | 10 ++++++++--
- arch/x86/kvm/x86.c     |  1 +
- 4 files changed, 38 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index 4f401fc6a05d..52c69551aea4 100644
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -2423,12 +2423,14 @@ static int dr_interception(struct vcpu_svm *svm)
- 		if (!kvm_require_dr(&svm->vcpu, dr - 16))
- 			return 1;
- 		val = kvm_register_read(&svm->vcpu, reg);
-+		trace_kvm_dr_write(dr - 16, val);
- 		kvm_set_dr(&svm->vcpu, dr - 16, val);
- 	} else {
- 		if (!kvm_require_dr(&svm->vcpu, dr))
- 			return 1;
- 		kvm_get_dr(&svm->vcpu, dr, &val);
- 		kvm_register_write(&svm->vcpu, reg, val);
-+		trace_kvm_dr_read(dr, val);
- 	}
+v2
+
+* cc also linux-wireless so that this goes to patchwork
+
+ drivers/net/wireless/ath/ath11k/mhi.c | 4 ----
+ 1 file changed, 4 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath11k/mhi.c b/drivers/net/wireless/ath/ath11k/mhi.c
+index aded9a719d51..47a1ce1bee4f 100644
+--- a/drivers/net/wireless/ath/ath11k/mhi.c
++++ b/drivers/net/wireless/ath/ath11k/mhi.c
+@@ -24,7 +24,6 @@ static struct mhi_channel_config ath11k_mhi_channels[] = {
+ 		.offload_channel = false,
+ 		.doorbell_mode_switch = false,
+ 		.auto_queue = false,
+-		.auto_start = false,
+ 	},
+ 	{
+ 		.num = 1,
+@@ -39,7 +38,6 @@ static struct mhi_channel_config ath11k_mhi_channels[] = {
+ 		.offload_channel = false,
+ 		.doorbell_mode_switch = false,
+ 		.auto_queue = false,
+-		.auto_start = false,
+ 	},
+ 	{
+ 		.num = 20,
+@@ -54,7 +52,6 @@ static struct mhi_channel_config ath11k_mhi_channels[] = {
+ 		.offload_channel = false,
+ 		.doorbell_mode_switch = false,
+ 		.auto_queue = false,
+-		.auto_start = true,
+ 	},
+ 	{
+ 		.num = 21,
+@@ -69,7 +66,6 @@ static struct mhi_channel_config ath11k_mhi_channels[] = {
+ 		.offload_channel = false,
+ 		.doorbell_mode_switch = false,
+ 		.auto_queue = true,
+-		.auto_start = true,
+ 	},
+ };
  
- 	return kvm_skip_emulated_instruction(&svm->vcpu);
-diff --git a/arch/x86/kvm/trace.h b/arch/x86/kvm/trace.h
-index aef960f90f26..b3bf54405862 100644
---- a/arch/x86/kvm/trace.h
-+++ b/arch/x86/kvm/trace.h
-@@ -405,6 +405,33 @@ TRACE_EVENT(kvm_cr,
- #define trace_kvm_cr_read(cr, val)		trace_kvm_cr(0, cr, val)
- #define trace_kvm_cr_write(cr, val)		trace_kvm_cr(1, cr, val)
- 
-+/*
-+ * Tracepoint for guest DR access.
-+ */
-+TRACE_EVENT(kvm_dr,
-+	TP_PROTO(unsigned int rw, unsigned int dr, unsigned long val),
-+	TP_ARGS(rw, dr, val),
-+
-+	TP_STRUCT__entry(
-+		__field(	unsigned int,	rw		)
-+		__field(	unsigned int,	dr		)
-+		__field(	unsigned long,	val		)
-+	),
-+
-+	TP_fast_assign(
-+		__entry->rw		= rw;
-+		__entry->dr		= dr;
-+		__entry->val		= val;
-+	),
-+
-+	TP_printk("dr_%s %x = 0x%lx",
-+		  __entry->rw ? "write" : "read",
-+		  __entry->dr, __entry->val)
-+);
-+
-+#define trace_kvm_dr_read(dr, val)		trace_kvm_dr(0, dr, val)
-+#define trace_kvm_dr_write(dr, val)		trace_kvm_dr(1, dr, val)
-+
- TRACE_EVENT(kvm_pic_set_irq,
- 	    TP_PROTO(__u8 chip, __u8 pin, __u8 elcr, __u8 imr, bool coalesced),
- 	    TP_ARGS(chip, pin, elcr, imr, coalesced),
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index 4551a7e80ebc..f78fd297d51e 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -5091,10 +5091,16 @@ static int handle_dr(struct kvm_vcpu *vcpu)
- 
- 		if (kvm_get_dr(vcpu, dr, &val))
- 			return 1;
-+		trace_kvm_dr_read(dr, val);
- 		kvm_register_write(vcpu, reg, val);
--	} else
--		if (kvm_set_dr(vcpu, dr, kvm_register_readl(vcpu, reg)))
-+	} else {
-+		unsigned long val;
-+
-+		val = kvm_register_readl(vcpu, reg);
-+		trace_kvm_dr_write(dr, val);
-+		if (kvm_set_dr(vcpu, dr, val))
- 			return 1;
-+	}
- 
- 	return kvm_skip_emulated_instruction(vcpu);
- }
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index c4015a43cc8a..68cb7b331324 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -11153,6 +11153,7 @@ EXPORT_TRACEPOINT_SYMBOL_GPL(kvm_inj_virq);
- EXPORT_TRACEPOINT_SYMBOL_GPL(kvm_page_fault);
- EXPORT_TRACEPOINT_SYMBOL_GPL(kvm_msr);
- EXPORT_TRACEPOINT_SYMBOL_GPL(kvm_cr);
-+EXPORT_TRACEPOINT_SYMBOL_GPL(kvm_dr);
- EXPORT_TRACEPOINT_SYMBOL_GPL(kvm_nested_vmrun);
- EXPORT_TRACEPOINT_SYMBOL_GPL(kvm_nested_vmexit);
- EXPORT_TRACEPOINT_SYMBOL_GPL(kvm_nested_vmexit_inject);
 -- 
-2.18.4
+2.7.4
 
