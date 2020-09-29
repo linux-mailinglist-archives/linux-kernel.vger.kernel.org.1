@@ -2,134 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFA2B27B8EA
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 02:34:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 284A027B8EC
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 02:35:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727067AbgI2Aej (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 20:34:39 -0400
-Received: from mail-eopbgr140074.outbound.protection.outlook.com ([40.107.14.74]:47865
-        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726379AbgI2Aej (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 20:34:39 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FUNsIAhyrh+++xScjkxSjR3AOu79VNRo0fUMEFxNFhI/8Jrq6fIg2IR+wP/eWm50vsKDTV00VAvtQtwVsrSaaRL1jiZOjrRzlCQkYe/sxAmj8+jRpWi25YrEOYSCKRsAIbP6J6qbWTeIxGiaEk1eVxyqw03OQ/N4f0eantRwj+KDyFx4JO36uT+QoH/osD36eHRlJNICODco92vK5gAaPh3nwJvsWGYUKUEwHSjYQlt9kuek2fyI6jDf2PZXnSXihOfcG5Ma8NU3uNddaGcCI2aoSQ5o1QeWr7q0h7+pbkS+FagKk0v2Y4rznOWengkvcck6wRH+XTSnA7C1WIM7RQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FoNrg5319WqQ0zzlWjDD68rp354PUahorhMYHNhnbBw=;
- b=LVNaVbJR5n+mbwerI4iS6MxPcHx9kdbymVtGxTK74g1A7+Y28uLZjIhCpgxEyy/niwzxAJBrc7LY9olGEqpEF3e80BkymD1Uw0OE6YdslJcUvYmoRCmDJIJmh+NMhdhuXEnuW4eTd6HEkGCSebvRezKbdGeXEah0QRLpn6AhmPIPNrJ5FdvO2/BER6PA3SdFN7iP1GFSW5VNaw81YC16Ayl+kqQyltH50+oEUUBfgevWIwjtVk9XL8Ps1Tx/1fMM5E2sgir8ZxGGubFVJlX7n9uErM6oWVHDWkKpnJTFIJh12VC0uwZItl9fkdWrXu/yR4oSjwurmOwWeZt+WvApPg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FoNrg5319WqQ0zzlWjDD68rp354PUahorhMYHNhnbBw=;
- b=L07kyEvJwizLsRM5zo+Uuh+4ZFkYZ1mhJmxWfojY1HXgb1hjxQBYnv7xOz+Ao+TNHrU0YCmvMMKK1L82Snd8f30Rm+hDRSHvZ6/gav0KvvyBeCMwlU9CeC9xC3PGWrVg53s9CS3usSjgpdNvCP3OFEvyKZoP2Tsttr/iBlLNhAg=
-Received: from AM6PR04MB5413.eurprd04.prod.outlook.com (2603:10a6:20b:96::28)
- by AM6PR04MB4038.eurprd04.prod.outlook.com (2603:10a6:209:44::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.25; Tue, 29 Sep
- 2020 00:34:34 +0000
-Received: from AM6PR04MB5413.eurprd04.prod.outlook.com
- ([fe80::1953:c81a:cca2:60ec]) by AM6PR04MB5413.eurprd04.prod.outlook.com
- ([fe80::1953:c81a:cca2:60ec%7]) with mapi id 15.20.3412.029; Tue, 29 Sep 2020
- 00:34:34 +0000
-From:   Ran Wang <ran.wang_1@nxp.com>
-To:     Rob Herring <robh@kernel.org>
-CC:     Leo Li <leoyang.li@nxp.com>, Shawn Guo <shawnguo@kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Biwen Li <biwen.li@nxp.com>
-Subject: RE: [PATCH 1/5] Documentation: dt: binding: fsl: Add
- 'fsl,ippdexpcr1-alt-addr' property
-Thread-Topic: [PATCH 1/5] Documentation: dt: binding: fsl: Add
- 'fsl,ippdexpcr1-alt-addr' property
-Thread-Index: AQHWjAMgWpwpgcZEfEity8vaUHwtLKl1i48AgABEr6CACFYpgIAAsbmQ
-Date:   Tue, 29 Sep 2020 00:34:34 +0000
-Message-ID: <AM6PR04MB5413F165301E03A8C1FC1D8FF1320@AM6PR04MB5413.eurprd04.prod.outlook.com>
-References: <20200916081831.24747-1-ran.wang_1@nxp.com>
- <20200923023234.GA3751572@bogus>
- <AM6PR04MB5413BB2F8D044B2312DAEC4FF1380@AM6PR04MB5413.eurprd04.prod.outlook.com>
- <CAL_Jsq+uzkr7CcvwQTe5vhpMPtdqL9v4EeqH5yZjMoT=JrDtDQ@mail.gmail.com>
-In-Reply-To: <CAL_Jsq+uzkr7CcvwQTe5vhpMPtdqL9v4EeqH5yZjMoT=JrDtDQ@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [119.31.174.73]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: e74f2d12-6373-41d7-3565-08d8640f7073
-x-ms-traffictypediagnostic: AM6PR04MB4038:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <AM6PR04MB4038E71E8B227B1EA6A4BBF4F1320@AM6PR04MB4038.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2887;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: zBXRUOYbpwpgAu1fYDrixfVD7Rw6BweL2BTvHzQQFvBLKRv+UoI7Pq3eDdpTd4go6/02CWN4qzGgGz77HHCjLzKjyYRToMFdO5bnpA4V1R9N7+MjWMUgevXfxtTZDh8LJmLHh0C9SrARC+NJMCaKGzMJaWdqT95coWKUpTwAMtw0VacEAqIFKPlVZKoitRgSu24zPbTKPHTx7mfjos22KCl0Gb08jLVxVmWBWKB2M4uWkIhy7lL5IcYvI0bTBdIYlkaz+j3x0lqLNqt5gpGfKD/GmUQnPMSKjb2/N1BZ4Heq0Qy66Ehl7yyQ3/u14827WnTk9yqKNoBENnPpCYaDNiY5LTVUo3Z/kW30YsWVoL7NOYHKNIs45M58NaUeJrsi
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB5413.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(346002)(376002)(396003)(136003)(366004)(8936002)(4326008)(83380400001)(8676002)(6916009)(55016002)(9686003)(53546011)(6506007)(26005)(7696005)(186003)(316002)(54906003)(478600001)(33656002)(52536014)(71200400001)(64756008)(66446008)(66476007)(86362001)(5660300002)(66556008)(76116006)(66946007)(2906002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: ZPRTO+cQeJPWIAAdf50sdvAJYupTcAFc7bBphmitqPxM8E4drK4jtC4UYD4Te7cTt8R2Rb775kgKfu483cjK1walqXedNTtrBejhUkpT0n5X1b2BQ/GW2+Jl4JvDDqeFNXQU3piP7BFRioaTPR1sWS1LIoBh5Lms8bb1NSQ5TFbOLUyp0fJITyBiDhyq/KoEE0DDha6NhmMrRbyIGKA2bvWMqBkM9qqJqE24TQ6tiEsyz1Esl17FAunSaSPi9llYkuY4s77sQpPLIS37LXIc4H+ftbsMdwuh0yjfVYk9gWM8lCU2BF9Wu1/ELevzKf1Q3hes27GfGGHIecMEa0VIHnUhWIacggJUnHVbhH7f3SQxvwXTJn+0synBeNQVtE1eOPekqfAD4RAn8iYbwulEjL0ACn2H7UdTzN/IYjkrAA/g1ZBDO/lOMoPQ1FCRUDs4lkSnp+xKAdMmElvZqx6IJjDJC+/hXdgYuexYJm1tOLlbPmJPZpYIcBIesBHfQ0+8LCWpNxH+27n5YYFp3vH266RMWAvCdtSWMWbsF54RNtsCYHmYghKqyk3rXnML7pO7WoW7QmfaE5TE5MGGbess4YPTbB7y9UD/0J28kFovyP3zhHySspjsTeZ9kmwdBGtyIMbsZWbl2T/N3TnrPMAouQ==
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1727132AbgI2Af4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 20:35:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49224 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726522AbgI2Afz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 20:35:55 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17E88C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 17:35:54 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id fa1so1731903pjb.0
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 17:35:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:in-reply-to:references:date:message-id
+         :mime-version;
+        bh=uaAgCWaphNg4XUpNx4joWU1xUSe7LvQcJOGZWvIHnHc=;
+        b=v69NAAkuCTEr7hg3phUdSwS/jRxtb9RhagIGnDoxmqRXRs2S6C/CmnrYbXfDPrKmM7
+         QKjikJoR6KEdqOFIQ0BMA2SDVoq2ov6NBMoBRH42AjSEXXz+zca8AQjnpe+FciLxsMNS
+         mTm0/iSB/gGJ4zkbRi+9IGT69J067NB76CdJmDnGwpZ/eZqCO8nZ6G77J0x6C6sZn2Tf
+         sarRvQVDFOV4eSjr1zdVf9CA+EwfAUiXpEjL+jpMGujhWiuo7JMxdHoy6SCk+CbR09Q3
+         u8QlDxiw3bRifR3UEMb1QX9f82B+GzxbIkCVeaMBS+mMYhLjSMIZFQFQCl6DcBSG+mhW
+         HwHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=uaAgCWaphNg4XUpNx4joWU1xUSe7LvQcJOGZWvIHnHc=;
+        b=kloNAV8rEswRdrkemXpdMbwnHIdcxhigZkyvXTWlmkmiVxAKOaX2zV9CdCG4niEjEU
+         kuJbrsDruvDyWslBv9YEdg/g0Tzh3mrIsb5EcUcvpsJ9edkdlpN7pSsb/Z+RPJXD3y9x
+         BLWketbIaPmbs6ZHpGuP+j8p3/YCwcROufIM6Do7/NaVkZ7PBwF1ocXTqEIxqj296ImB
+         swI9HqWj650DvLlCbkoLWvxK4McP2oPKZgsHmiKp19YYtVgvSVPabZHWy9sByQzz/Dpq
+         NT1TFECAjPn/pmv3iLvvMr93UWQkRXy8MeyNtpnFjBB87cjt0fxLYXvBnMNZeEHJC1zb
+         RvcQ==
+X-Gm-Message-State: AOAM530xofKDm12jolONlKKeKzw7+TwXcr6D1lg6J6WlMpnP0dXnPaE4
+        ZZPR685d2Q8rmMovzn4UgOjsZg==
+X-Google-Smtp-Source: ABdhPJw4qd17QzT6F2MmDcBshvhH/7FLRINF+lgsSnB4r4uMssLfw33w1g4TzP14kOgM0kQATT3GoA==
+X-Received: by 2002:a17:90a:fc1:: with SMTP id 59mr1653722pjz.156.1601339753340;
+        Mon, 28 Sep 2020 17:35:53 -0700 (PDT)
+Received: from localhost (c-71-197-186-152.hsd1.wa.comcast.net. [71.197.186.152])
+        by smtp.gmail.com with ESMTPSA id q16sm3127759pfj.117.2020.09.28.17.35.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Sep 2020 17:35:52 -0700 (PDT)
+From:   Kevin Hilman <khilman@baylibre.com>
+To:     Brad Harper <bjharper@gmail.com>,
+        linux-amlogic@lists.infradead.org, linux-mmc@vger.kernel.org
+Cc:     linux-rt-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Brad Harper <bjharper@gmail.com>
+Subject: Re: [PATCH v2 1/1] mmc: host: meson-gx-mmc: fix possible deadlock condition for preempt_rt
+In-Reply-To: <20200927025418.12382-2-bjharper@gmail.com>
+References: <20200927025418.12382-1-bjharper@gmail.com> <20200927025418.12382-2-bjharper@gmail.com>
+Date:   Mon, 28 Sep 2020 17:35:50 -0700
+Message-ID: <7hwo0dmnbt.fsf@baylibre.com>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB5413.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e74f2d12-6373-41d7-3565-08d8640f7073
-X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Sep 2020 00:34:34.6261
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: GHZVOk0CrcQElpiUde73gMQMYbxcQsjJyHC4IbJMKLYI1GuobA5Xe7SA0pqecbXeXXjMWET30wIL2YHNUvhyFA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR04MB4038
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgUm9iLA0KDQpPbiBNb25kYXksIFNlcHRlbWJlciAyOCwgMjAyMCA5OjU3IFBNLCBSb2IgSGVy
-cmluZyB3cm90ZToNCj4gDQo+IE9uIFdlZCwgU2VwIDIzLCAyMDIwIGF0IDE6NDQgQU0gUmFuIFdh
-bmcgPHJhbi53YW5nXzFAbnhwLmNvbT4gd3JvdGU6DQo+ID4NCj4gPiBIaSBSb2IsDQo+ID4NCj4g
-PiBPbiBXZWRuZXNkYXksIFNlcHRlbWJlciAyMywgMjAyMCAxMDozMyBBTSwgUm9iIEhlcnJpbmcg
-d3JvdGU6DQo+ID4gPg0KPiA+ID4gT24gV2VkLCBTZXAgMTYsIDIwMjAgYXQgMDQ6MTg6MjdQTSAr
-MDgwMCwgUmFuIFdhbmcgd3JvdGU6DQo+ID4gPiA+IEZyb206IEJpd2VuIExpIDxiaXdlbi5saUBu
-eHAuY29tPg0KPiA+ID4gPg0KPiA+ID4gPiBUaGUgJ2ZzbCxpcHBkZXhwY3IxLWFsdC1hZGRyJyBw
-cm9wZXJ0eSBpcyB1c2VkIHRvIGhhbmRsZSBhbiBlcnJhdGENCj4gPiA+ID4gQS0wMDg2NDYgb24g
-TFMxMDIxQQ0KPiA+ID4gPg0KPiA+ID4gPiBTaWduZWQtb2ZmLWJ5OiBCaXdlbiBMaSA8Yml3ZW4u
-bGlAbnhwLmNvbT4NCj4gPiA+ID4gU2lnbmVkLW9mZi1ieTogUmFuIFdhbmcgPHJhbi53YW5nXzFA
-bnhwLmNvbT4NCj4gPiA+ID4gLS0tDQo+ID4gPiA+ICBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUv
-YmluZGluZ3Mvc29jL2ZzbC9yY3BtLnR4dCB8IDE5DQo+ID4gPiA+ICsrKysrKysrKysrKysrKysr
-KysNCj4gPiA+ID4gIDEgZmlsZSBjaGFuZ2VkLCAxOSBpbnNlcnRpb25zKCspDQo+ID4gPiA+DQo+
-ID4gPiA+IGRpZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc29j
-L2ZzbC9yY3BtLnR4dA0KPiA+ID4gPiBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5n
-cy9zb2MvZnNsL3JjcG0udHh0DQo+ID4gPiA+IGluZGV4IDVhMzM2MTkuLjFiZTU4YTMgMTAwNjQ0
-DQo+ID4gPiA+IC0tLSBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zb2MvZnNs
-L3JjcG0udHh0DQo+ID4gPiA+ICsrKyBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5n
-cy9zb2MvZnNsL3JjcG0udHh0DQo+ID4gPiA+IEBAIC0zNCw2ICszNCwxMSBAQCBDaGFzc2lzIFZl
-cnNpb24gICAgICAgICAgRXhhbXBsZSBDaGlwcw0KPiA+ID4gPiAgT3B0aW9uYWwgcHJvcGVydGll
-czoNCj4gPiA+ID4gICAtIGxpdHRsZS1lbmRpYW4gOiBSQ1BNIHJlZ2lzdGVyIGJsb2NrIGlzIExp
-dHRsZSBFbmRpYW4uIFdpdGhvdXQgaXQgUkNQTQ0KPiA+ID4gPiAgICAgd2lsbCBiZSBCaWcgRW5k
-aWFuIChkZWZhdWx0IGNhc2UpLg0KPiA+ID4gPiArIC0gZnNsLGlwcGRleHBjcjEtYWx0LWFkZHIg
-OiBUaGUgcHJvcGVydHkgaXMgcmVsYXRlZCB0byBhIGhhcmR3YXJlIGlzc3VlDQo+ID4gPiA+ICsg
-ICBvbiBTb0MgTFMxMDIxQSBhbmQgb25seSBuZWVkZWQgb24gU29DIExTMTAyMUEuDQo+ID4gPiA+
-ICsgICBNdXN0IGluY2x1ZGUgMiBlbnRyaWVzOg0KPiA+ID4gPiArICAgVGhlIGZpcnN0IGVudHJ5
-IG11c3QgYmUgYSBsaW5rIHRvIHRoZSBTQ0ZHIGRldmljZSBub2RlLg0KPiA+ID4gPiArICAgVGhl
-IDJuZCBlbnRyeSBtdXN0IGJlIG9mZnNldCBvZiByZWdpc3RlciBJUFBERVhQQ1IxIGluIFNDRkcu
-DQo+ID4gPg0KPiA+ID4gWW91IGRvbid0IG5lZWQgYSBEVCBjaGFuZ2UgZm9yIHRoaXMuIFlvdSBj
-YW4gZmluZCBTQ0ZHIG5vZGUgYnkgaXRzDQo+ID4gPiBjb21wYXRpYmxlIHN0cmluZyBhbmQgdGhl
-biB0aGUgb2Zmc2V0IHNob3VsZCBiZSBrbm93biBnaXZlbiB0aGlzIGlzc3VlIGlzDQo+IG9ubHkg
-b24gMSBTb0MuDQo+ID4NCj4gPiBEaWQgeW91IG1lYW4gdGhhdCBSQ1BNIGRyaXZlciBqdXN0IHRv
-IGFjY2VzcyBJUFBERVhQQ1IxIHNoYWRvd2VkDQo+ID4gcmVnaXN0ZXIgaW4gU0NGRyBkaXJlY3Rs
-eSB3aXRob3V0IGZldGNoaW5nIGl0J3Mgb2Zmc2V0IGluZm8uIGZyb20gRFQ/DQo+IA0KPiBZZXMu
-IFRoZXJlJ3Mgb25seSAxIHBvc3NpYmxlIHZhbHVlIG9mIHRoZSBvZmZzZXQgYmVjYXVzZSB0aGVy
-ZSdzIG9ubHkgb25lIFNvQywgc28NCj4gdGhlIGRyaXZlciBjYW4gaGFyZGNvZGUgdGhlIG9mZnNl
-dC4gQW5kIEkgYXNzdW1lIHRoZXJlJ3Mgb25seSBvbmUgU0NGRyBub2RlLA0KPiBzbyB5b3UgY2Fu
-IGZpbmQgaXQgYnkgaXRzIGNvbXBhdGlibGUgc3RyaW5nIChvZl9maW5kX2NvbXBhdGlibGVfbm9k
-ZSkuDQoNCkdvdCBpdCwgbGV0IG1lIHVwZGF0ZSB0aGlzIGluIG5leHQgdmVyc2lvbiwgdGhhbmsg
-eW91Lg0KDQpSZWdhcmRzLA0KUmFuDQoNCj4gUm9iDQo=
+Brad Harper <bjharper@gmail.com> writes:
+
+> ---
+>  drivers/mmc/host/meson-gx-mmc.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+
+
+This patch still needs changelog summarizing the problem and what is
+being fixed by the patch.  Most of what's in the cover letter belongs
+here.
+
+The cover letter can be used to describe the history/background that you
+don't want in the patch itself.  Alternatviely, you could include that
+information in the a single patch email also because everything after
+the "---" line does not end up in git history.
+
+> diff --git a/drivers/mmc/host/meson-gx-mmc.c b/drivers/mmc/host/meson-gx-mmc.c
+> index 08a3b1c05..3ba8f988d 100644
+> --- a/drivers/mmc/host/meson-gx-mmc.c
+> +++ b/drivers/mmc/host/meson-gx-mmc.c
+> @@ -146,6 +146,7 @@ struct sd_emmc_desc {
+>  };
+>  
+>  struct meson_host {
+> +	spinlock_t		lock;
+>  	struct	device		*dev;
+>  	struct	meson_mmc_data *data;
+>  	struct	mmc_host	*mmc;
+> @@ -1051,6 +1052,7 @@ static int meson_mmc_probe(struct platform_device *pdev)
+>  	host->mmc = mmc;
+>  	host->dev = &pdev->dev;
+>  	dev_set_drvdata(&pdev->dev, host);
+> +	spin_lock_init(&host->lock);
+
+I'm confused about what this lock is intended to do.  You init it here,
+but it's never used anywhere.  
+
+>  	/* The G12A SDIO Controller needs an SRAM bounce buffer */
+>  	host->dram_access_quirk = device_property_read_bool(&pdev->dev,
+> @@ -1139,7 +1141,7 @@ static int meson_mmc_probe(struct platform_device *pdev)
+>  	       host->regs + SD_EMMC_IRQ_EN);
+>  
+>  	ret = request_threaded_irq(host->irq, meson_mmc_irq,
+> -				   meson_mmc_irq_thread, IRQF_ONESHOT,
+> +				   meson_mmc_irq_thread, 0,
+>  				   dev_name(&pdev->dev), host);
+>  	if (ret)
+>  		goto err_init_clk;
+
+Kevin
