@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34B9D27D845
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 22:34:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86E2D27D844
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 22:33:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729194AbgI2Udu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1729221AbgI2Udu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 29 Sep 2020 16:33:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41762 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:41804 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729068AbgI2Udr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 16:33:47 -0400
+        id S1725372AbgI2Uds (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 16:33:48 -0400
 Received: from localhost.localdomain (c-98-220-232-140.hsd1.il.comcast.net [98.220.232.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CADCA2076D;
-        Tue, 29 Sep 2020 20:33:45 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5A00120774;
+        Tue, 29 Sep 2020 20:33:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601411626;
-        bh=/6X7+ekH9B9EzbyppXPju2VN9OD+fEAFrbkRAO+F05I=;
+        s=default; t=1601411628;
+        bh=IlCiiXSdFVg26r0cW4LFHMH7vpn3iaT4iQWTImkzK9E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:In-Reply-To:
          References:From;
-        b=NILeGEoESpbimWiBOowP89wBSB4/Vd8PT15/hMX9Y6rQt7SY9T6ZODntUMLkKuvbA
-         WrtgTNE/kv0W53mfLT0vc3jxJvPI/qze5SqcQ2Os3w3Sr/YOeMV1NapsopSOlbWXNe
-         AgedXYocNm+WIPr7B8olIKsVeQEyicX+V6u9WARw=
+        b=zg+NCCjCB72o+zPYS6kKibkWT6+i1T3vwWIP+UYBYg65KS/w3Fz3zKtkfipygoX75
+         Vn2CDK0peuh+/+AsFGHI4crYCLkXmz9Z7zA0ctJDXjnMnPrQxib7RIVVfStfyOBCN4
+         qVygflMWoUsuM2q+J4ku1kjj++1NMBwqEvKl4lmU=
 From:   Tom Zanussi <zanussi@kernel.org>
 To:     rostedt@goodmis.org, axelrasmussen@google.com
 Cc:     mhiramat@kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 1/3] tracing: Change STR_VAR_MAX_LEN
-Date:   Tue, 29 Sep 2020 15:33:39 -0500
-Message-Id: <8616d1a2485fee1ae71d27d7c598acf1c9e32abe.1601410890.git.zanussi@kernel.org>
+Subject: [PATCH 2/3] tracing: Fix parse_synth_field() error handling
+Date:   Tue, 29 Sep 2020 15:33:40 -0500
+Message-Id: <834e9060c2e7e3272e25d8bfc6e7566639c18aa9.1601410890.git.zanussi@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <cover.1601410890.git.zanussi@kernel.org>
 References: <cover.1601410890.git.zanussi@kernel.org>
@@ -39,28 +39,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-32 is too small for this value, and anyway it makes more sense to use
-MAX_FILTER_STR_VAL, as this is also the value used for variable-length
-__strings.
+synth_field_size() returns either the size or an error.  However, the
+code assigns the return val to ssize_t which is unsigned, and then
+tests whether it's less than 0, which it isn't so discards the error.
+
+Do the test before assignment to field->size.
 
 Signed-off-by: Tom Zanussi <zanussi@kernel.org>
 ---
- kernel/trace/trace_synth.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/trace/trace_events_synth.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/trace/trace_synth.h b/kernel/trace/trace_synth.h
-index ac35c45207c4..5166705d1556 100644
---- a/kernel/trace/trace_synth.h
-+++ b/kernel/trace/trace_synth.h
-@@ -7,7 +7,7 @@
- #define SYNTH_SYSTEM		"synthetic"
- #define SYNTH_FIELDS_MAX	32
+diff --git a/kernel/trace/trace_events_synth.c b/kernel/trace/trace_events_synth.c
+index a9cd7793f7ea..6e7282c7b530 100644
+--- a/kernel/trace/trace_events_synth.c
++++ b/kernel/trace/trace_events_synth.c
+@@ -465,6 +465,7 @@ static struct synth_field *parse_synth_field(int argc, const char **argv,
+ 	struct synth_field *field;
+ 	const char *prefix = NULL, *field_type = argv[0], *field_name, *array;
+ 	int len, ret = 0;
++	int size;
  
--#define STR_VAR_LEN_MAX		32 /* must be multiple of sizeof(u64) */
-+#define STR_VAR_LEN_MAX		MAX_FILTER_STR_VAL /* must be multiple of sizeof(u64) */
+ 	if (field_type[0] == ';')
+ 		field_type++;
+@@ -520,11 +521,12 @@ static struct synth_field *parse_synth_field(int argc, const char **argv,
+ 			field->type[len - 1] = '\0';
+ 	}
  
- struct synth_field {
- 	char *type;
+-	field->size = synth_field_size(field->type);
+-	if (!field->size) {
++	size = synth_field_size(field->type);
++	if (size < 0) {
+ 		ret = -EINVAL;
+ 		goto free;
+ 	}
++	field->size = size;
+ 
+ 	if (synth_field_is_string(field->type))
+ 		field->is_string = true;
 -- 
 2.17.1
 
