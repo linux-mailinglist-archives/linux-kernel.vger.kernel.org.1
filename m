@@ -2,169 +2,273 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A932F27BACE
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 04:28:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D392D27BB36
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 04:59:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727298AbgI2C2U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 22:28:20 -0400
-Received: from mail-il1-f208.google.com ([209.85.166.208]:42188 "EHLO
-        mail-il1-f208.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727088AbgI2C2T (ORCPT
+        id S1727355AbgI2C7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 22:59:46 -0400
+Received: from h1.fbrelay.privateemail.com ([131.153.2.42]:34380 "EHLO
+        h1.fbrelay.privateemail.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727035AbgI2C7p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 22:28:19 -0400
-Received: by mail-il1-f208.google.com with SMTP id 18so2335142ilt.9
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 19:28:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=Kv6Md2UlAv+qsEgbPVjygV1Z8fU17byPB4v94bmo1SQ=;
-        b=dKucN7OltZpd/pHuX7DjSkKpjz+t9yJcqwljJEimPcgFX+PkHrzV9tDMmUVXFC9kVh
-         qSS6EDpSm8+w/gqWUZJV/uwPLgy+3alN1oZ3wtsMyecI+HCH0c1N1hyGqLECtWeNsK4g
-         Sl/glA0ZwP1Vkq4uzL/9ZWpY26popD+F1z8rZ3W1VkmEb+xlqdzeaZ2VI5eXyLdS0PQT
-         7tjpMDZXxXlsVi1n93vjnJDbm+m3M/CZwF+olJA1bcQPUcw2m62jPmVZvVr5TwrFW1d1
-         a36RTo47syhAUV7UJujnRXv2owVl6MSGylDazEr15F4wSTqDn/Kq853uZAWT0b484c3i
-         Movg==
-X-Gm-Message-State: AOAM530vPXaCP+sc0kKpxmlF8FSFieq/ataC/Mk0CuaSthEmziAgUfsa
-        +T/BvHqIr+n32SlR62NQfFFzlxoN2Lr0aI3d0B7Ut5OoipPH
-X-Google-Smtp-Source: ABdhPJxVACHIxMueFo4YAPNo1llEYKcwN7jWWIr62WgQxzu/voJiTzx4YJ9e9HESWgj0X470rGcvVnw0Zsm0q4DK5fa2ikKhgQ6f
-MIME-Version: 1.0
-X-Received: by 2002:a05:6638:220c:: with SMTP id l12mr1193102jas.139.1601346498705;
- Mon, 28 Sep 2020 19:28:18 -0700 (PDT)
-Date:   Mon, 28 Sep 2020 19:28:18 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000037bd5305b06a8988@google.com>
-Subject: possible deadlock in io_poll_double_wake (2)
-From:   syzbot <syzbot+28abd693db9e92c160d8@syzkaller.appspotmail.com>
-To:     axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 28 Sep 2020 22:59:45 -0400
+X-Greylist: delayed 646 seconds by postgrey-1.27 at vger.kernel.org; Mon, 28 Sep 2020 22:59:45 EDT
+Received: from MTA-09-3.privateemail.com (mta-09.privateemail.com [198.54.127.58])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by h1.fbrelay.privateemail.com (Postfix) with ESMTPS id A6A1C80CBE
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 22:48:58 -0400 (EDT)
+Received: from MTA-09.privateemail.com (localhost [127.0.0.1])
+        by MTA-09.privateemail.com (Postfix) with ESMTP id 584A160045;
+        Mon, 28 Sep 2020 22:48:57 -0400 (EDT)
+Received: from localhost (unknown [10.20.151.217])
+        by MTA-09.privateemail.com (Postfix) with ESMTPA id CE3C060034;
+        Tue, 29 Sep 2020 02:48:56 +0000 (UTC)
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Cc:     <linuxppc-dev@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 23/25] powerpc/signal: Create 'unsafe' versions of
+ copy_[ck][fpr/vsx]_to_user()
+From:   "Christopher M. Riedl" <cmr@informatik.wtf>
+To:     "Christophe Leroy" <christophe.leroy@csgroup.eu>,
+        "Benjamin Herrenschmidt" <benh@kernel.crashing.org>,
+        "Paul Mackerras" <paulus@samba.org>,
+        "Michael Ellerman" <mpe@ellerman.id.au>
+Date:   Mon, 28 Sep 2020 21:04:37 -0500
+Message-Id: <C5ZHGD1JVX0H.1UI1PWMZN73UX@geist>
+In-Reply-To: <29f6c4b8e7a5bbc61e6a8801b78bbf493f9f819e.1597770847.git.christophe.leroy@csgroup.eu>
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Tue Aug 18, 2020 at 12:19 PM CDT, Christophe Leroy wrote:
+> For the non VSX version, that's trivial. Just use unsafe_copy_to_user()
+> instead of __copy_to_user().
+>
+> For the VSX version, remove the intermediate step through a buffer and
+> use unsafe_put_user() directly. This generates a far smaller code which
+> is acceptable to inline, see below:
+>
+> Standard VSX version:
+>
+> 0000000000000000 <.copy_fpr_to_user>:
+> 0: 7c 08 02 a6 mflr r0
+> 4: fb e1 ff f8 std r31,-8(r1)
+> 8: 39 00 00 20 li r8,32
+> c: 39 24 0b 80 addi r9,r4,2944
+> 10: 7d 09 03 a6 mtctr r8
+> 14: f8 01 00 10 std r0,16(r1)
+> 18: f8 21 fe 71 stdu r1,-400(r1)
+> 1c: 39 41 00 68 addi r10,r1,104
+> 20: e9 09 00 00 ld r8,0(r9)
+> 24: 39 4a 00 08 addi r10,r10,8
+> 28: 39 29 00 10 addi r9,r9,16
+> 2c: f9 0a 00 00 std r8,0(r10)
+> 30: 42 00 ff f0 bdnz 20 <.copy_fpr_to_user+0x20>
+> 34: e9 24 0d 80 ld r9,3456(r4)
+> 38: 3d 42 00 00 addis r10,r2,0
+> 3a: R_PPC64_TOC16_HA .toc
+> 3c: eb ea 00 00 ld r31,0(r10)
+> 3e: R_PPC64_TOC16_LO_DS .toc
+> 40: f9 21 01 70 std r9,368(r1)
+> 44: e9 3f 00 00 ld r9,0(r31)
+> 48: 81 29 00 20 lwz r9,32(r9)
+> 4c: 2f 89 00 00 cmpwi cr7,r9,0
+> 50: 40 9c 00 18 bge cr7,68 <.copy_fpr_to_user+0x68>
+> 54: 4c 00 01 2c isync
+> 58: 3d 20 40 00 lis r9,16384
+> 5c: 79 29 07 c6 rldicr r9,r9,32,31
+> 60: 7d 3d 03 a6 mtspr 29,r9
+> 64: 4c 00 01 2c isync
+> 68: 38 a0 01 08 li r5,264
+> 6c: 38 81 00 70 addi r4,r1,112
+> 70: 48 00 00 01 bl 70 <.copy_fpr_to_user+0x70>
+> 70: R_PPC64_REL24 .__copy_tofrom_user
+> 74: 60 00 00 00 nop
+> 78: e9 3f 00 00 ld r9,0(r31)
+> 7c: 81 29 00 20 lwz r9,32(r9)
+> 80: 2f 89 00 00 cmpwi cr7,r9,0
+> 84: 40 9c 00 18 bge cr7,9c <.copy_fpr_to_user+0x9c>
+> 88: 4c 00 01 2c isync
+> 8c: 39 20 ff ff li r9,-1
+> 90: 79 29 00 44 rldicr r9,r9,0,1
+> 94: 7d 3d 03 a6 mtspr 29,r9
+> 98: 4c 00 01 2c isync
+> 9c: 38 21 01 90 addi r1,r1,400
+> a0: e8 01 00 10 ld r0,16(r1)
+> a4: eb e1 ff f8 ld r31,-8(r1)
+> a8: 7c 08 03 a6 mtlr r0
+> ac: 4e 80 00 20 blr
+>
+> 'unsafe' simulated VSX version (The ... are only nops) using
+> unsafe_copy_fpr_to_user() macro:
+>
+> unsigned long copy_fpr_to_user(void __user *to,
+> struct task_struct *task)
+> {
+> unsafe_copy_fpr_to_user(to, task, failed);
+> return 0;
+> failed:
+> return 1;
+> }
+>
+> 0000000000000000 <.copy_fpr_to_user>:
+> 0: 39 00 00 20 li r8,32
+> 4: 39 44 0b 80 addi r10,r4,2944
+> 8: 7d 09 03 a6 mtctr r8
+> c: 7c 69 1b 78 mr r9,r3
+> ...
+> 20: e9 0a 00 00 ld r8,0(r10)
+> 24: f9 09 00 00 std r8,0(r9)
+> 28: 39 4a 00 10 addi r10,r10,16
+> 2c: 39 29 00 08 addi r9,r9,8
+> 30: 42 00 ff f0 bdnz 20 <.copy_fpr_to_user+0x20>
+> 34: e9 24 0d 80 ld r9,3456(r4)
+> 38: f9 23 01 00 std r9,256(r3)
+> 3c: 38 60 00 00 li r3,0
+> 40: 4e 80 00 20 blr
+> ...
+> 50: 38 60 00 01 li r3,1
+> 54: 4e 80 00 20 blr
+>
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> ---
+> arch/powerpc/kernel/signal.h | 53 ++++++++++++++++++++++++++++++++++++
+> 1 file changed, 53 insertions(+)
+>
+> diff --git a/arch/powerpc/kernel/signal.h b/arch/powerpc/kernel/signal.h
+> index f610cfafa478..2559a681536e 100644
+> --- a/arch/powerpc/kernel/signal.h
+> +++ b/arch/powerpc/kernel/signal.h
+> @@ -32,7 +32,54 @@ unsigned long copy_fpr_to_user(void __user *to,
+> struct task_struct *task);
+> unsigned long copy_ckfpr_to_user(void __user *to, struct task_struct
+> *task);
+> unsigned long copy_fpr_from_user(struct task_struct *task, void __user
+> *from);
+> unsigned long copy_ckfpr_from_user(struct task_struct *task, void __user
+> *from);
+> +
+> +#define unsafe_copy_fpr_to_user(to, task, label) do { \
+> + struct task_struct *__t =3D task; \
+> + u64 __user *buf =3D (u64 __user *)to; \
+> + int i; \
+> + \
+> + for (i =3D 0; i < ELF_NFPREG - 1 ; i++) \
+> + unsafe_put_user(__t->thread.TS_FPR(i), &buf[i], label); \
+> + unsafe_put_user(__t->thread.fp_state.fpscr, &buf[i], label); \
+> +} while (0)
+> +
 
-syzbot found the following issue on:
+I've been working on the PPC64 side of this "unsafe" rework using this
+series as a basis. One question here - I don't really understand what
+the benefit of re-implementing this logic in macros (similarly for the
+other copy_* functions below) is?
 
-HEAD commit:    d1d2220c Add linux-next specific files for 20200924
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=14cd5cd3900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=254e028a642027c
-dashboard link: https://syzkaller.appspot.com/bug?extid=28abd693db9e92c160d8
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13ba3881900000
+I am considering  a "__unsafe_copy_*" implementation in signal.c for
+each (just the original implementation w/ using the "unsafe_" variants
+of the uaccess stuff) which gets called by the "safe" functions w/ the
+appropriate "user_*_access_begin/user_*_access_end". Something like
+(pseudo-ish code):
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+28abd693db9e92c160d8@syzkaller.appspotmail.com
+	/* signal.c */
+	unsigned long __unsafe_copy_fpr_to_user(...)
+	{
+		...
+		unsafe_copy_to_user(..., bad);
+		return 0;
+	bad:
+		return 1; /* -EFAULT? */
+	}
 
-============================================
-WARNING: possible recursive locking detected
-5.9.0-rc6-next-20200924-syzkaller #0 Not tainted
---------------------------------------------
-kworker/0:1/12 is trying to acquire lock:
-ffff88808d998130 (&runtime->sleep){..-.}-{2:2}, at: spin_lock include/linux/spinlock.h:354 [inline]
-ffff88808d998130 (&runtime->sleep){..-.}-{2:2}, at: io_poll_double_wake+0x156/0x510 fs/io_uring.c:4855
+	unsigned long copy_fpr_to_user(...)
+	{
+		unsigned long err;
+		if (!user_write_access_begin(...))
+			return 1; /* -EFAULT? */
 
-but task is already holding lock:
-ffff888093f4c130 (&runtime->sleep){..-.}-{2:2}, at: __wake_up_common_lock+0xb4/0x130 kernel/sched/wait.c:122
+		err =3D __unsafe_copy_fpr_to_user(...);
 
-other info that might help us debug this:
- Possible unsafe locking scenario:
+		user_write_access_end();
+		return err;
+	}
 
-       CPU0
-       ----
-  lock(&runtime->sleep);
-  lock(&runtime->sleep);
+	/* signal.h */
+	unsigned long __unsafe_copy_fpr_to_user(...);
+	#define unsafe_copy_fpr_to_user(..., label) \
+		unsafe_op_wrap(__unsafe_copy_fpr_to_user(...), label)
 
- *** DEADLOCK ***
+This way there is a single implementation for each copy routine "body".
+The "unsafe" wrappers then just exist as simple macros similar to what
+x86 does: "unsafe_" macro wraps "__unsafe" functions for the goto label.
 
- May be due to missing lock nesting notation
+Granted this does pollute "signal.h" w/ the "__unsafe_copy_*"
+prototypes...
 
-6 locks held by kworker/0:1/12:
- #0: ffff8880aa063d38 ((wq_completion)events){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
- #0: ffff8880aa063d38 ((wq_completion)events){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
- #0: ffff8880aa063d38 ((wq_completion)events){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
- #0: ffff8880aa063d38 ((wq_completion)events){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
- #0: ffff8880aa063d38 ((wq_completion)events){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
- #0: ffff8880aa063d38 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work+0x821/0x15a0 kernel/workqueue.c:2240
- #1: ffffc90000d2fda8 ((linkwatch_work).work){+.+.}-{0:0}, at: process_one_work+0x854/0x15a0 kernel/workqueue.c:2244
- #2: ffffffff8b6c5648 (rtnl_mutex){+.+.}-{3:3}, at: linkwatch_event+0xb/0x60 net/core/link_watch.c:250
- #3: ffffffff8a553d40 (rcu_read_lock){....}-{1:2}, at: ib_device_get_by_netdev+0x0/0x4f0 drivers/infiniband/core/device.c:2550
- #4: ffff888214d31908 (&group->lock){..-.}-{2:2}, at: _snd_pcm_stream_lock_irqsave+0x9f/0xd0 sound/core/pcm_native.c:170
- #5: ffff888093f4c130 (&runtime->sleep){..-.}-{2:2}, at: __wake_up_common_lock+0xb4/0x130 kernel/sched/wait.c:122
+> +#define unsafe_copy_vsx_to_user(to, task, label) do { \
+> + struct task_struct *__t =3D task; \
+> + u64 __user *buf =3D (u64 __user *)to; \
+> + int i; \
+> + \
+> + for (i =3D 0; i < ELF_NVSRHALFREG ; i++) \
+> + unsafe_put_user(__t->thread.fp_state.fpr[i][TS_VSRLOWOFFSET], \
+> + &buf[i], label);\
+> +} while (0)
+> +
+> +#ifdef CONFIG_PPC_TRANSACTIONAL_MEM
+> +#define unsafe_copy_ckfpr_to_user(to, task, label) do { \
+> + struct task_struct *__t =3D task; \
+> + u64 __user *buf =3D (u64 __user *)to; \
+> + int i; \
+> + \
+> + for (i =3D 0; i < ELF_NFPREG - 1 ; i++) \
+> + unsafe_put_user(__t->thread.TS_CKFPR(i), &buf[i], label);\
+> + unsafe_put_user(__t->thread.ckfp_state.fpscr, &buf[i], label); \
+> +} while (0)
+> +
+> +#define unsafe_copy_ckvsx_to_user(to, task, label) do { \
+> + struct task_struct *__t =3D task; \
+> + u64 __user *buf =3D (u64 __user *)to; \
+> + int i; \
+> + \
+> + for (i =3D 0; i < ELF_NVSRHALFREG ; i++) \
+> + unsafe_put_user(__t->thread.ckfp_state.fpr[i][TS_VSRLOWOFFSET], \
+> + &buf[i], label);\
+> +} while (0)
+> +#endif
+> #elif defined(CONFIG_PPC_FPU_REGS)
+> +
+> +#define unsafe_copy_fpr_to_user(to, task, label) \
+> + unsafe_copy_to_user(to, (task)->thread.fp_state.fpr, \
+> + ELF_NFPREG * sizeof(double), label)
+> +
+> static inline unsigned long
+> copy_fpr_to_user(void __user *to, struct task_struct *task)
+> {
+> @@ -48,6 +95,10 @@ copy_fpr_from_user(struct task_struct *task, void
+> __user *from)
+> }
+> =20
+> #ifdef CONFIG_PPC_TRANSACTIONAL_MEM
+> +#define unsafe_copy_ckfpr_to_user(to, task, label) \
+> + unsafe_copy_to_user(to, (task)->thread.ckfp_state.fpr, \
+> + ELF_NFPREG * sizeof(double), label)
+> +
+> inline unsigned long copy_ckfpr_to_user(void __user *to, struct
+> task_struct *task)
+> {
+> return __copy_to_user(to, task->thread.ckfp_state.fpr,
+> @@ -62,6 +113,8 @@ copy_ckfpr_from_user(struct task_struct *task, void
+> __user *from)
+> }
+> #endif /* CONFIG_PPC_TRANSACTIONAL_MEM */
+> #else
+> +#define unsafe_copy_fpr_to_user(to, task, label) do { } while (0)
+> +
+> static inline unsigned long
+> copy_fpr_to_user(void __user *to, struct task_struct *task)
+> {
+> --
+> 2.25.0
 
-stack backtrace:
-CPU: 0 PID: 12 Comm: kworker/0:1 Not tainted 5.9.0-rc6-next-20200924-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: events linkwatch_event
-Call Trace:
- <IRQ>
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x198/0x1fb lib/dump_stack.c:118
- print_deadlock_bug kernel/locking/lockdep.c:2714 [inline]
- check_deadlock kernel/locking/lockdep.c:2755 [inline]
- validate_chain kernel/locking/lockdep.c:3546 [inline]
- __lock_acquire.cold+0x12e/0x3ad kernel/locking/lockdep.c:4796
- lock_acquire+0x1f2/0xaa0 kernel/locking/lockdep.c:5398
- __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
- _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
- spin_lock include/linux/spinlock.h:354 [inline]
- io_poll_double_wake+0x156/0x510 fs/io_uring.c:4855
- __wake_up_common+0x147/0x650 kernel/sched/wait.c:93
- __wake_up_common_lock+0xd0/0x130 kernel/sched/wait.c:123
- snd_pcm_update_state+0x46a/0x540 sound/core/pcm_lib.c:203
- snd_pcm_update_hw_ptr0+0xa71/0x1a50 sound/core/pcm_lib.c:464
- snd_pcm_period_elapsed+0x160/0x250 sound/core/pcm_lib.c:1805
- dummy_hrtimer_callback+0x94/0x1b0 sound/drivers/dummy.c:378
- __run_hrtimer kernel/time/hrtimer.c:1524 [inline]
- __hrtimer_run_queues+0x693/0xea0 kernel/time/hrtimer.c:1588
- hrtimer_run_softirq+0x17b/0x360 kernel/time/hrtimer.c:1605
- __do_softirq+0x203/0xab6 kernel/softirq.c:298
- asm_call_on_stack+0xf/0x20 arch/x86/entry/entry_64.S:786
- </IRQ>
- __run_on_irqstack arch/x86/include/asm/irq_stack.h:22 [inline]
- run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:48 [inline]
- do_softirq_own_stack+0x9d/0xd0 arch/x86/kernel/irq_64.c:77
- invoke_softirq kernel/softirq.c:393 [inline]
- __irq_exit_rcu kernel/softirq.c:423 [inline]
- irq_exit_rcu+0x235/0x280 kernel/softirq.c:435
- sysvec_apic_timer_interrupt+0x51/0xf0 arch/x86/kernel/apic/apic.c:1091
- asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
-RIP: 0010:arch_local_irq_restore arch/x86/include/asm/paravirt.h:653 [inline]
-RIP: 0010:lock_acquire+0x27b/0xaa0 kernel/locking/lockdep.c:5401
-Code: 00 00 00 00 00 fc ff df 48 c1 e8 03 80 3c 10 00 0f 85 d2 06 00 00 48 83 3d 89 bc e1 08 00 0f 84 2d 05 00 00 48 8b 3c 24 57 9d <0f> 1f 44 00 00 48 b8 00 00 00 00 00 fc ff df 48 01 c3 48 c7 03 00
-RSP: 0018:ffffc90000d2f8c8 EFLAGS: 00000282
-RAX: 1ffffffff1479e35 RBX: 1ffff920001a5f1c RCX: 00000000f1571e19
-RDX: dffffc0000000000 RSI: 0000000000000001 RDI: 0000000000000282
-RBP: ffff8880a969a300 R08: 0000000000000000 R09: ffffffff8d71a9e7
-R10: fffffbfff1ae353c R11: 0000000000000000 R12: 0000000000000002
-R13: 0000000000000000 R14: ffffffff8a553d40 R15: 0000000000000000
- rcu_lock_acquire include/linux/rcupdate.h:253 [inline]
- rcu_read_lock include/linux/rcupdate.h:642 [inline]
- ib_device_get_by_netdev+0x9a/0x4f0 drivers/infiniband/core/device.c:2248
- rxe_get_dev_from_net drivers/infiniband/sw/rxe/rxe.h:76 [inline]
- rxe_notify+0x8b/0x1c0 drivers/infiniband/sw/rxe/rxe_net.c:566
- notifier_call_chain+0xb5/0x200 kernel/notifier.c:83
- call_netdevice_notifiers_info+0xb5/0x130 net/core/dev.c:2034
- netdev_state_change net/core/dev.c:1464 [inline]
- netdev_state_change+0x100/0x130 net/core/dev.c:1457
- linkwatch_do_dev+0x13f/0x180 net/core/link_watch.c:167
- __linkwatch_run_queue+0x1ea/0x630 net/core/link_watch.c:212
- linkwatch_event+0x4a/0x60 net/core/link_watch.c:251
- process_one_work+0x933/0x15a0 kernel/workqueue.c:2269
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
- kthread+0x3af/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
