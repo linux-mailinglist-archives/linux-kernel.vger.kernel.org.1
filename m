@@ -2,78 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F30327D4D1
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 19:47:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83D7027D4D4
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 19:47:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729961AbgI2RrF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 13:47:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39268 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728386AbgI2RrE (ORCPT
+        id S1730251AbgI2RrV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 13:47:21 -0400
+Received: from mail-oi1-f195.google.com ([209.85.167.195]:34120 "EHLO
+        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728386AbgI2RrV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 13:47:04 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BE38C061755;
-        Tue, 29 Sep 2020 10:47:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=oCfvHV+eKDJ81YLxCB6N47LJuI+3zUrT7MS+gF7gNr4=; b=NjIGhaXrWwlKfAho6RX83T5VBG
-        9kU191xaHfQf9xMkmFbUhsM8unnI6/Cu/ZcxCQa07jLGVfllxEv6zJQNU/QSetYE/OyO4R5J1nfJe
-        tyQEzzf82Vu/tTa++E0RflrJePy3HLzmjShO5JUtUXPNOhAuwTkJScF1wDER73o3ROFT/gajTsenI
-        4XtDhwfOso7PtCEtkDtRszmeTq4W+xoyXI5+uhPwIQnUNCGNTfxG+kWAAPHV54h4cJDDstUqGHuct
-        noGbPWU/Gu1kVxKq4X2UWJffCQAqVupBC4HQRqYLChEr/xqJzsRedUoGgfK4sRbhoX9/Ln5Cpce+T
-        Ww2Yp2mA==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kNJiI-0000Hg-5T; Tue, 29 Sep 2020 17:46:54 +0000
-Date:   Tue, 29 Sep 2020 18:46:54 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Nitesh Narayan Lal <nitesh@redhat.com>, hch@infradead.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-pci@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
-        frederic@kernel.org, mtosatti@redhat.com, sassmann@redhat.com,
-        jesse.brandeburg@intel.com, lihong.yang@intel.com,
-        jeffrey.t.kirsher@intel.com, jacob.e.keller@intel.com,
-        jlelli@redhat.com, bhelgaas@google.com, mike.marciniszyn@intel.com,
-        dennis.dalessandro@intel.com, thomas.lendacky@amd.com,
-        jiri@nvidia.com, mingo@redhat.com, peterz@infradead.org,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        lgoncalv@redhat.com
-Subject: Re: [PATCH v4 4/4] PCI: Limit pci_alloc_irq_vectors() to
- housekeeping CPUs
-Message-ID: <20200929174654.GA773@infradead.org>
-References: <20200928183529.471328-5-nitesh@redhat.com>
- <20200928215931.GA2499944@bjorn-Precision-5520>
+        Tue, 29 Sep 2020 13:47:21 -0400
+Received: by mail-oi1-f195.google.com with SMTP id n2so6406822oij.1;
+        Tue, 29 Sep 2020 10:47:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=KZRMr4mdPoTh1ehZPsE7EnlMD2nYYqtZbdCYkxjagbE=;
+        b=dB8Npl7BrpwBuK1lmIXghK6uDGdDcqf6um8q4ZbG4hor2kAKfL7xTs1n39do8M0isp
+         FPy1PAa8FA9pBmAos3pZO+ZVLPSSGvdchtcX3GNI0Y4K803nkfODxaBinNngm1Fi4ynn
+         sATs1drrpj5Jy/r45W8iIhxQeMwW1g41cTCeYkaTBixnpk/+49Odp+a0UZ4HW+HFDDJ2
+         uCfAPMp8ZjUgRYopN+IDePOptRNZHKC8sfq6JccFsHmfqZQ0JsDuqlUXABrpFpjSx+gw
+         dtl3SiqVgCylJtwSVAZafpuT4RpBXQz3eHWjn7AJgL6EyK7iK3pUwi1s0ueG48M2NFP5
+         HT1g==
+X-Gm-Message-State: AOAM533HzM4aogua7dqLzphrjBkBddYlyl5dV9Nu5ZsIUNUEZ2skv1JI
+        YDFPPtn8pTWI4ptosvygfqSco+f55ehN
+X-Google-Smtp-Source: ABdhPJx3wYtz1WxeOXO3Dnbowx1BLv+z7vIPqs4+VSQ7rQkYVfJD1gS7+GWYeJddpk/hnScGZjG13A==
+X-Received: by 2002:aca:3655:: with SMTP id d82mr3433472oia.75.1601401640217;
+        Tue, 29 Sep 2020 10:47:20 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id l23sm1146271otk.79.2020.09.29.10.47.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Sep 2020 10:47:19 -0700 (PDT)
+Received: (nullmailer pid 849102 invoked by uid 1000);
+        Tue, 29 Sep 2020 17:47:19 -0000
+Date:   Tue, 29 Sep 2020 12:47:19 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     Alessandro Zummo <a.zummo@towertech.it>, linux-rtc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] dt-bindings: rtc: add trickle-voltage-mV
+Message-ID: <20200929174719.GA847795@bogus>
+References: <20200921171735.1191342-1-alexandre.belloni@bootlin.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200928215931.GA2499944@bjorn-Precision-5520>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20200921171735.1191342-1-alexandre.belloni@bootlin.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 04:59:31PM -0500, Bjorn Helgaas wrote:
-> [to: Christoph in case he has comments, since I think he wrote this code]
+On Mon, Sep 21, 2020 at 07:17:32PM +0200, Alexandre Belloni wrote:
+> Some RTCs have a trickle charge that is able to output different voltages
+> depending on the type of the connected auxiliary power (battery, supercap,
+> ...). Add a property allowing to specify the necessary voltage.
+> 
+> Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+> ---
+>  Documentation/devicetree/bindings/rtc/rtc.yaml | 7 +++++++
+>  1 file changed, 7 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/rtc/rtc.yaml b/Documentation/devicetree/bindings/rtc/rtc.yaml
+> index ee237b2ed66a..93f04d5e5307 100644
+> --- a/Documentation/devicetree/bindings/rtc/rtc.yaml
+> +++ b/Documentation/devicetree/bindings/rtc/rtc.yaml
+> @@ -42,6 +42,13 @@ properties:
+>        Selected resistor for trickle charger. Should be given
+>        if trickle charger should be enabled.
+>  
+> +  trickle-voltage-mV:
 
-I think I actually suggested this a few iterations back.
+Use standard unit suffix.
 
-> > +	hk_cpus = housekeeping_num_online_cpus(HK_FLAG_MANAGED_IRQ);
-> > +
-> > +	/*
-> > +	 * If we have isolated CPUs for use by real-time tasks, to keep the
-> > +	 * latency overhead to a minimum, device-specific IRQ vectors are moved
-> > +	 * to the housekeeping CPUs from the userspace by changing their
-> > +	 * affinity mask. Limit the vector usage to keep housekeeping CPUs from
-> > +	 * running out of IRQ vectors.
-> > +	 */
-> > +	if (hk_cpus < num_online_cpus()) {
+> +    $ref: /schemas/types.yaml#/definitions/uint32
 
-I woukd have moved the assignment to hk_cpus below the comment and
-just above the if, but that is really just a minor style preference.
+And then you don't need a type.
 
-Otherwise this looks good:
-
-Acked-by: Christoph Hellwig <hch@lst.de>
+> +    description:
+> +      Selected voltage for trickle charger. Should be given
+> +      if trickle charger should be enabled and the trickle voltage is different
+> +      from the RTC main power supply.
+> +
+>    wakeup-source:
+>      $ref: /schemas/types.yaml#/definitions/flag
+>      description:
+> -- 
+> 2.26.2
+> 
