@@ -2,87 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E72227BF4D
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 10:26:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A37C827BF5B
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 10:27:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727714AbgI2IZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 04:25:54 -0400
-Received: from z5.mailgun.us ([104.130.96.5]:61905 "EHLO z5.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725765AbgI2IZx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 04:25:53 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1601367953; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=Mmer3bugB2xRynpfernBH9+GUGVN6Z0ZBCnOlNL98jk=;
- b=qDsnK7jdEDU40YxRTceKjU5qpdm3O/p+UTwRRBwQv9xmgXppoJIlPUZIFEG/s+f3rAvnre8J
- 3mYD0DyaxtKfEuAJ6c42Y2cUBafCrmXLvrc4p03jaGO5iRV4tcUyBnFsD5fnopLE6Kw3tX3R
- VTSzaGnvH59tMuoi0EENJcw/Z2w=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 5f72ef8a9a923ee7a55e785f (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 29 Sep 2020 08:25:46
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 4D176C433FE; Tue, 29 Sep 2020 08:25:46 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        MISSING_DATE,MISSING_MID,SPF_FAIL autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0E720C433F1;
-        Tue, 29 Sep 2020 08:25:43 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 0E720C433F1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        id S1727591AbgI2I1n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 04:27:43 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:40054 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725550AbgI2I1n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 04:27:43 -0400
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 6773D63A7B6C47B20E41;
+        Tue, 29 Sep 2020 16:27:16 +0800 (CST)
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 29 Sep 2020 16:27:05 +0800
+From:   Jing Xiangfeng <jingxiangfeng@huawei.com>
+To:     <rui.zhang@intel.com>, <daniel.lezcano@linaro.org>,
+        <amitk@kernel.org>
+CC:     <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <jingxiangfeng@huawei.com>
+Subject: [PATCH] thermal: core: add the misse nlmsg_free() for thermal_genl_sampling_temp()
+Date:   Tue, 29 Sep 2020 16:26:52 +0800
+Message-ID: <20200929082652.59876-1-jingxiangfeng@huawei.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH] wl3501_cs: Remove unnecessary NULL check
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20200926174558.9436-1-alex.dewar90@gmail.com>
-References: <20200926174558.9436-1-alex.dewar90@gmail.com>
-To:     Alex Dewar <alex.dewar90@gmail.com>
-Cc:     unlisted-recipients:; (no To-header on input)
-        Alex Dewar <alex.dewar90@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Illegal-Object: Syntax error in Cc: address found on vger.kernel.org:
-        Cc:     unlisted-recipients:; (no To-header on input)Alex Dewar <alex.dewar90@gmail.com>
-                                                                     ^-missing end of address
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
-Message-Id: <20200929082546.4D176C433FE@smtp.codeaurora.org>
-Date:   Tue, 29 Sep 2020 08:25:46 +0000 (UTC)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.25]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Alex Dewar <alex.dewar90@gmail.com> wrote:
+thermal_genl_sampling_temp() misses to call nlmsg_free() in an error path.
+Jump to out_free to fix it.
 
-> In wl3501_detach(), link->priv is checked for a NULL value before being
-> passed to free_netdev(). However, it cannot be NULL at this point as it
-> has already been passed to other functions, so just remove the check.
-> 
-> Addresses-Coverity: CID 710499: Null pointer dereferences (REVERSE_INULL)
-> Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
+Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
+---
+ drivers/thermal/thermal_netlink.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Patch applied to wireless-drivers-next.git, thanks.
-
-1d2a85382282 wl3501_cs: Remove unnecessary NULL check
-
+diff --git a/drivers/thermal/thermal_netlink.c b/drivers/thermal/thermal_netlink.c
+index af7b2383e8f6..019f4812def6 100644
+--- a/drivers/thermal/thermal_netlink.c
++++ b/drivers/thermal/thermal_netlink.c
+@@ -78,7 +78,7 @@ int thermal_genl_sampling_temp(int id, int temp)
+ 	hdr = genlmsg_put(skb, 0, 0, &thermal_gnl_family, 0,
+ 			  THERMAL_GENL_SAMPLING_TEMP);
+ 	if (!hdr)
+-		return -EMSGSIZE;
++		goto out_free;
+ 
+ 	if (nla_put_u32(skb, THERMAL_GENL_ATTR_TZ_ID, id))
+ 		goto out_cancel;
+@@ -93,6 +93,7 @@ int thermal_genl_sampling_temp(int id, int temp)
+ 	return 0;
+ out_cancel:
+ 	genlmsg_cancel(skb, hdr);
++out_free:
+ 	nlmsg_free(skb);
+ 
+ 	return -EMSGSIZE;
 -- 
-https://patchwork.kernel.org/patch/11801615/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+2.26.0.106.g9fadedd
 
