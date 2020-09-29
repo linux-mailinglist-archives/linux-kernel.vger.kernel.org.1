@@ -2,96 +2,297 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FC0C27BD77
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 08:56:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C54A827BD79
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 08:57:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727471AbgI2G4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 02:56:34 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:36730 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725355AbgI2G4e (ORCPT
+        id S1725829AbgI2G5w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 02:57:52 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:10029 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725283AbgI2G5v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 02:56:34 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08T6uLSJ009267;
-        Tue, 29 Sep 2020 01:56:21 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1601362582;
-        bh=BFkXgP5gDCcaMl/MOafuuTLn+rBSoUlL3gONewgmCDA=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=kJuRL2mOnT10QTX5G5imNN5wFMJXCzG+MJDOy+2CXX+Q/gBmj0BsswOR2Dmtnh0j1
-         H1H4KYHyXjhHPvZtz3YK3RlOyvMXiUtBS1LD8/OIu234dTDVLdqVx3GtHiBA1PC9r8
-         zrleoLmrPoEXCsGCQ6k75+ssEEVtuxL7Py8YfHEU=
-Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08T6uLwP009403
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 29 Sep 2020 01:56:21 -0500
-Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 29
- Sep 2020 01:56:21 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 29 Sep 2020 01:56:21 -0500
-Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08T6uJ12102914;
-        Tue, 29 Sep 2020 01:56:19 -0500
-Subject: Re: [PATCH v3] leds: tlc591xx: fix leak of device node iterator
-To:     Tobias Jordan <kernel@cdqe.de>, <linux-leds@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
-        =?UTF-8?Q?Marek_Beh=c3=ban?= <kabel@kernel.org>,
-        Markus Elfring <Markus.Elfring@web.de>
-References: <20200926162755.GA26532@agrajag.zerfleddert.de>
-From:   Tomi Valkeinen <tomi.valkeinen@ti.com>
-Message-ID: <ec14762f-29fd-39ba-8314-cfd4ec7a0001@ti.com>
-Date:   Tue, 29 Sep 2020 09:56:18 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 29 Sep 2020 02:57:51 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f72da8a0000>; Mon, 28 Sep 2020 23:56:10 -0700
+Received: from mtl-vdi-166.wap.labs.mlnx (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 29 Sep
+ 2020 06:57:48 +0000
+Date:   Tue, 29 Sep 2020 09:57:44 +0300
+From:   Eli Cohen <elic@nvidia.com>
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+CC:     <jasowang@redhat.com>, <virtualization@lists.linux-foundation.org>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <elic@nvidia.com>
+Subject: Re: [PATCH V1 vhost-next] vdpa/mlx5: Make vdpa core driver a
+ distinct module
+Message-ID: <20200929065744.GE120395@mtl-vdi-166.wap.labs.mlnx>
+References: <20200924143231.GA186492@mtl-vdi-166.wap.labs.mlnx>
+ <20200928155448-mutt-send-email-mst@kernel.org>
+ <20200929062026.GB120395@mtl-vdi-166.wap.labs.mlnx>
+ <20200929022430-mutt-send-email-mst@kernel.org>
+ <20200929063433.GC120395@mtl-vdi-166.wap.labs.mlnx>
+ <20200929025038-mutt-send-email-mst@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20200926162755.GA26532@agrajag.zerfleddert.de>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20200929025038-mutt-send-email-mst@kernel.org>
+User-Agent: Mutt/1.9.5 (bf161cf53efb) (2018-04-13)
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1601362570; bh=qX0VezLa0GBHLLAfabypjfJhrpG/izBbOuqMQZLjD1g=;
+        h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+         Content-Type:Content-Disposition:In-Reply-To:User-Agent:
+         X-Originating-IP:X-ClientProxiedBy;
+        b=UryIlOK0lnRpRu8T502/vyOcYR+QAiB8IuJpjPgYzZNyizkmWrHn+cr/aKQ8BTswL
+         WmVib1a6AhKAfmAw4v9NhU7U3aSUfA2UlaMTS2zrbfWtJwreU/M+RyHWLZ672jidd4
+         a1TvLnSzuWcV0nJwwF3+WMZU1dbpybh8C1Yyiu1GcMYh6eKGPwMU0bcPaUecAzaX/Z
+         07zd2j5HljTmPlJbPQ7FngT2JfjiQW1xqUdRzLhopIGkJJdVTyXNbc9eKu1mGNvbuy
+         mAwN3n5xe/BR9xOUzsbdKFp1v3wfZx17WD7mMzrKVGHQfmvzosLRI2hsv9UyS4/TUG
+         mhJAuP84BJRoQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/09/2020 19:27, Tobias Jordan wrote:
-> In one of the error paths of the for_each_child_of_node loop in
-> tlc591xx_probe, add missing call to of_node_put.
+On Tue, Sep 29, 2020 at 02:51:12AM -0400, Michael S. Tsirkin wrote:
+> On Tue, Sep 29, 2020 at 09:34:33AM +0300, Eli Cohen wrote:
+> > On Tue, Sep 29, 2020 at 02:26:44AM -0400, Michael S. Tsirkin wrote:
+> > > On Tue, Sep 29, 2020 at 09:20:26AM +0300, Eli Cohen wrote:
+> > > > On Mon, Sep 28, 2020 at 03:55:09PM -0400, Michael S. Tsirkin wrote:
+> > > > > On Thu, Sep 24, 2020 at 05:32:31PM +0300, Eli Cohen wrote:
+> > > > > > Change core vdpa functionality into a loadbale module such that upcoming
+> > > > > > block implementation will be able to use it.
+> > > > > > 
+> > > > > > Signed-off-by: Eli Cohen <elic@nvidia.com>
+> > > > > 
+> > > > > Why don't we merge this patch together with the block module?
+> > > > > 
+> > > > 
+> > > > Since there are still not too many users of this driver, I would prefer
+> > > > to merge this as early as possible so pepole get used to the involved
+> > > > modules.
+> > > > 
+> > > > Anyways, I will send another version of the patch which makes use of
+> > > > 'select' instead of 'depends'.
+> > > > 
+> > > > Hope you agree to merge this.
+> > > 
+> > > Are you quite sure there will be a block driver though?
+> > > I'd like to avoid a situation in which we have infrastructure
+> > > in place but no users.
+> > >
+> > 
+> > I know it's in our plans but I see your point. Let me know if you
+> > prefer me to send the patch that fixes the 'depends' thing or defer it
+> > to a later time.
 > 
-> Fixes: 1ab4531ad132 ("leds: tlc591xx: simplify driver by using the managed led API")
-> Signed-off-by: Tobias Jordan <kernel@cdqe.de>
-> Reviewed-by: Marek Behún <kabel@kernel.org>
-> 
-> ---
-> v3: removed linebreak from Fixes: tag in commit message
-> v2: rebased to Pavel's for-next branch
-> 
->  drivers/leds/leds-tlc591xx.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/leds/leds-tlc591xx.c b/drivers/leds/leds-tlc591xx.c
-> index 0929f1275814..a8cc49752cd5 100644
-> --- a/drivers/leds/leds-tlc591xx.c
-> +++ b/drivers/leds/leds-tlc591xx.c
-> @@ -214,6 +214,7 @@ tlc591xx_probe(struct i2c_client *client,
->  		err = devm_led_classdev_register_ext(dev, &led->ldev,
->  						     &init_data);
->  		if (err < 0) {
-> +			of_node_put(child);
->  			if (err != -EPROBE_DEFER)
->  				dev_err(dev, "couldn't register LED %s\n",
->  					led->ldev.name);
+> Not sure what's the depends thing.
 > 
 
-Reviewed-by: Tomi Valkeinen <tomi.valkeinen@ti.com>
+Use "select MLX5_CORE"
+instead of "depends on MLX5_CORE"
 
- Tomi
+Wasn't this agreed upon?
 
--- 
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+> > > > > > ---
+> > > > > > V0 --> V1:
+> > > > > > Removed "default n" for configu options as 'n' is the default
+> > > > > > 
+> > > > > >  drivers/vdpa/Kconfig               |  8 +++-----
+> > > > > >  drivers/vdpa/Makefile              |  2 +-
+> > > > > >  drivers/vdpa/mlx5/Makefile         |  7 +++++--
+> > > > > >  drivers/vdpa/mlx5/core/core_main.c | 20 ++++++++++++++++++++
+> > > > > >  drivers/vdpa/mlx5/core/mr.c        |  3 +++
+> > > > > >  drivers/vdpa/mlx5/core/resources.c | 10 ++++++++++
+> > > > > >  6 files changed, 42 insertions(+), 8 deletions(-)
+> > > > > >  create mode 100644 drivers/vdpa/mlx5/core/core_main.c
+> > > > > > 
+> > > > > > diff --git a/drivers/vdpa/Kconfig b/drivers/vdpa/Kconfig
+> > > > > > index 4271c408103e..57ff6a7f7401 100644
+> > > > > > --- a/drivers/vdpa/Kconfig
+> > > > > > +++ b/drivers/vdpa/Kconfig
+> > > > > > @@ -29,10 +29,9 @@ config IFCVF
+> > > > > >  	  To compile this driver as a module, choose M here: the module will
+> > > > > >  	  be called ifcvf.
+> > > > > >  
+> > > > > > -config MLX5_VDPA
+> > > > > > -	bool "MLX5 VDPA support library for ConnectX devices"
+> > > > > > +config MLX5_VDPA_CORE
+> > > > > > +	tristate "MLX5 VDPA support library for ConnectX devices"
+> > > > > >  	depends on MLX5_CORE
+> > > > > > -	default n
+> > > > > >  	help
+> > > > > >  	  Support library for Mellanox VDPA drivers. Provides code that is
+> > > > > >  	  common for all types of VDPA drivers. The following drivers are planned:
+> > > > > > @@ -40,8 +39,7 @@ config MLX5_VDPA
+> > > > > >  
+> > > > > >  config MLX5_VDPA_NET
+> > > > > >  	tristate "vDPA driver for ConnectX devices"
+> > > > > > -	depends on MLX5_VDPA
+> > > > > > -	default n
+> > > > > > +	depends on MLX5_VDPA_CORE
+> > > > > >  	help
+> > > > > >  	  VDPA network driver for ConnectX6 and newer. Provides offloading
+> > > > > >  	  of virtio net datapath such that descriptors put on the ring will
+> > > > > > diff --git a/drivers/vdpa/Makefile b/drivers/vdpa/Makefile
+> > > > > > index d160e9b63a66..07353bbb9f8b 100644
+> > > > > > --- a/drivers/vdpa/Makefile
+> > > > > > +++ b/drivers/vdpa/Makefile
+> > > > > > @@ -2,4 +2,4 @@
+> > > > > >  obj-$(CONFIG_VDPA) += vdpa.o
+> > > > > >  obj-$(CONFIG_VDPA_SIM) += vdpa_sim/
+> > > > > >  obj-$(CONFIG_IFCVF)    += ifcvf/
+> > > > > > -obj-$(CONFIG_MLX5_VDPA) += mlx5/
+> > > > > > +obj-$(CONFIG_MLX5_VDPA_CORE) += mlx5/
+> > > > > > diff --git a/drivers/vdpa/mlx5/Makefile b/drivers/vdpa/mlx5/Makefile
+> > > > > > index 89a5bededc9f..9f50f7e8d889 100644
+> > > > > > --- a/drivers/vdpa/mlx5/Makefile
+> > > > > > +++ b/drivers/vdpa/mlx5/Makefile
+> > > > > > @@ -1,4 +1,7 @@
+> > > > > >  subdir-ccflags-y += -I$(srctree)/drivers/vdpa/mlx5/core
+> > > > > >  
+> > > > > > -obj-$(CONFIG_MLX5_VDPA_NET) += mlx5_vdpa.o
+> > > > > > -mlx5_vdpa-$(CONFIG_MLX5_VDPA_NET) += net/main.o net/mlx5_vnet.o core/resources.o core/mr.o
+> > > > > > +obj-$(CONFIG_MLX5_VDPA_CORE) += mlx5_vdpa_core.o
+> > > > > > +mlx5_vdpa_core-$(CONFIG_MLX5_VDPA_CORE) += core/resources.o core/mr.o core/core_main.o
+> > > > > > +
+> > > > > > +obj-$(CONFIG_MLX5_VDPA_NET) += mlx5_vdpa_net.o
+> > > > > > +mlx5_vdpa_net-$(CONFIG_MLX5_VDPA_NET) += net/main.o net/mlx5_vnet.o
+> > > > > > diff --git a/drivers/vdpa/mlx5/core/core_main.c b/drivers/vdpa/mlx5/core/core_main.c
+> > > > > > new file mode 100644
+> > > > > > index 000000000000..4b39b55f57ab
+> > > > > > --- /dev/null
+> > > > > > +++ b/drivers/vdpa/mlx5/core/core_main.c
+> > > > > > @@ -0,0 +1,20 @@
+> > > > > > +// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
+> > > > > > +/* Copyright (c) 2020 Mellanox Technologies Ltd. */
+> > > > > > +
+> > > > > > +#include <linux/module.h>
+> > > > > > +
+> > > > > > +MODULE_AUTHOR("Eli Cohen <elic@nvidia.com>");
+> > > > > > +MODULE_DESCRIPTION("Mellanox VDPA core driver");
+> > > > > > +MODULE_LICENSE("Dual BSD/GPL");
+> > > > > > +
+> > > > > > +static int __init mlx5_vdpa_core_init(void)
+> > > > > > +{
+> > > > > > +	return 0;
+> > > > > > +}
+> > > > > > +
+> > > > > > +static void __exit mlx5_vdpa_core_exit(void)
+> > > > > > +{
+> > > > > > +}
+> > > > > > +
+> > > > > > +module_init(mlx5_vdpa_core_init);
+> > > > > > +module_exit(mlx5_vdpa_core_exit);
+> > > > > > diff --git a/drivers/vdpa/mlx5/core/mr.c b/drivers/vdpa/mlx5/core/mr.c
+> > > > > > index ef1c550f8266..c093eab6c714 100644
+> > > > > > --- a/drivers/vdpa/mlx5/core/mr.c
+> > > > > > +++ b/drivers/vdpa/mlx5/core/mr.c
+> > > > > > @@ -434,6 +434,7 @@ int mlx5_vdpa_create_mr(struct mlx5_vdpa_dev *mvdev, struct vhost_iotlb *iotlb)
+> > > > > >  	mutex_unlock(&mr->mkey_mtx);
+> > > > > >  	return err;
+> > > > > >  }
+> > > > > > +EXPORT_SYMBOL(mlx5_vdpa_create_mr);
+> > > > > >  
+> > > > > >  void mlx5_vdpa_destroy_mr(struct mlx5_vdpa_dev *mvdev)
+> > > > > >  {
+> > > > > > @@ -456,6 +457,7 @@ void mlx5_vdpa_destroy_mr(struct mlx5_vdpa_dev *mvdev)
+> > > > > >  out:
+> > > > > >  	mutex_unlock(&mr->mkey_mtx);
+> > > > > >  }
+> > > > > > +EXPORT_SYMBOL(mlx5_vdpa_destroy_mr);
+> > > > > >  
+> > > > > >  static bool map_empty(struct vhost_iotlb *iotlb)
+> > > > > >  {
+> > > > > > @@ -484,3 +486,4 @@ int mlx5_vdpa_handle_set_map(struct mlx5_vdpa_dev *mvdev, struct vhost_iotlb *io
+> > > > > >  
+> > > > > >  	return err;
+> > > > > >  }
+> > > > > > +EXPORT_SYMBOL(mlx5_vdpa_handle_set_map);
+> > > > > > diff --git a/drivers/vdpa/mlx5/core/resources.c b/drivers/vdpa/mlx5/core/resources.c
+> > > > > > index 96e6421c5d1c..89606a18e286 100644
+> > > > > > --- a/drivers/vdpa/mlx5/core/resources.c
+> > > > > > +++ b/drivers/vdpa/mlx5/core/resources.c
+> > > > > > @@ -98,6 +98,7 @@ int mlx5_vdpa_create_tis(struct mlx5_vdpa_dev *mvdev, void *in, u32 *tisn)
+> > > > > >  
+> > > > > >  	return err;
+> > > > > >  }
+> > > > > > +EXPORT_SYMBOL(mlx5_vdpa_create_tis);
+> > > > > >  
+> > > > > >  void mlx5_vdpa_destroy_tis(struct mlx5_vdpa_dev *mvdev, u32 tisn)
+> > > > > >  {
+> > > > > > @@ -108,6 +109,7 @@ void mlx5_vdpa_destroy_tis(struct mlx5_vdpa_dev *mvdev, u32 tisn)
+> > > > > >  	MLX5_SET(destroy_tis_in, in, tisn, tisn);
+> > > > > >  	mlx5_cmd_exec_in(mvdev->mdev, destroy_tis, in);
+> > > > > >  }
+> > > > > > +EXPORT_SYMBOL(mlx5_vdpa_destroy_tis);
+> > > > > >  
+> > > > > >  int mlx5_vdpa_create_rqt(struct mlx5_vdpa_dev *mvdev, void *in, int inlen, u32 *rqtn)
+> > > > > >  {
+> > > > > > @@ -121,6 +123,7 @@ int mlx5_vdpa_create_rqt(struct mlx5_vdpa_dev *mvdev, void *in, int inlen, u32 *
+> > > > > >  
+> > > > > >  	return err;
+> > > > > >  }
+> > > > > > +EXPORT_SYMBOL(mlx5_vdpa_create_rqt);
+> > > > > >  
+> > > > > >  void mlx5_vdpa_destroy_rqt(struct mlx5_vdpa_dev *mvdev, u32 rqtn)
+> > > > > >  {
+> > > > > > @@ -131,6 +134,7 @@ void mlx5_vdpa_destroy_rqt(struct mlx5_vdpa_dev *mvdev, u32 rqtn)
+> > > > > >  	MLX5_SET(destroy_rqt_in, in, rqtn, rqtn);
+> > > > > >  	mlx5_cmd_exec_in(mvdev->mdev, destroy_rqt, in);
+> > > > > >  }
+> > > > > > +EXPORT_SYMBOL(mlx5_vdpa_destroy_rqt);
+> > > > > >  
+> > > > > >  int mlx5_vdpa_create_tir(struct mlx5_vdpa_dev *mvdev, void *in, u32 *tirn)
+> > > > > >  {
+> > > > > > @@ -144,6 +148,7 @@ int mlx5_vdpa_create_tir(struct mlx5_vdpa_dev *mvdev, void *in, u32 *tirn)
+> > > > > >  
+> > > > > >  	return err;
+> > > > > >  }
+> > > > > > +EXPORT_SYMBOL(mlx5_vdpa_create_tir);
+> > > > > >  
+> > > > > >  void mlx5_vdpa_destroy_tir(struct mlx5_vdpa_dev *mvdev, u32 tirn)
+> > > > > >  {
+> > > > > > @@ -154,6 +159,7 @@ void mlx5_vdpa_destroy_tir(struct mlx5_vdpa_dev *mvdev, u32 tirn)
+> > > > > >  	MLX5_SET(destroy_tir_in, in, tirn, tirn);
+> > > > > >  	mlx5_cmd_exec_in(mvdev->mdev, destroy_tir, in);
+> > > > > >  }
+> > > > > > +EXPORT_SYMBOL(mlx5_vdpa_destroy_tir);
+> > > > > >  
+> > > > > >  int mlx5_vdpa_alloc_transport_domain(struct mlx5_vdpa_dev *mvdev, u32 *tdn)
+> > > > > >  {
+> > > > > > @@ -170,6 +176,7 @@ int mlx5_vdpa_alloc_transport_domain(struct mlx5_vdpa_dev *mvdev, u32 *tdn)
+> > > > > >  
+> > > > > >  	return err;
+> > > > > >  }
+> > > > > > +EXPORT_SYMBOL(mlx5_vdpa_alloc_transport_domain);
+> > > > > >  
+> > > > > >  void mlx5_vdpa_dealloc_transport_domain(struct mlx5_vdpa_dev *mvdev, u32 tdn)
+> > > > > >  {
+> > > > > > @@ -180,6 +187,7 @@ void mlx5_vdpa_dealloc_transport_domain(struct mlx5_vdpa_dev *mvdev, u32 tdn)
+> > > > > >  	MLX5_SET(dealloc_transport_domain_in, in, transport_domain, tdn);
+> > > > > >  	mlx5_cmd_exec_in(mvdev->mdev, dealloc_transport_domain, in);
+> > > > > >  }
+> > > > > > +EXPORT_SYMBOL(mlx5_vdpa_dealloc_transport_domain);
+> > > > > >  
+> > > > > >  int mlx5_vdpa_create_mkey(struct mlx5_vdpa_dev *mvdev, struct mlx5_core_mkey *mkey, u32 *in,
+> > > > > >  			  int inlen)
+> > > > > > @@ -266,6 +274,7 @@ int mlx5_vdpa_alloc_resources(struct mlx5_vdpa_dev *mvdev)
+> > > > > >  	mutex_destroy(&mvdev->mr.mkey_mtx);
+> > > > > >  	return err;
+> > > > > >  }
+> > > > > > +EXPORT_SYMBOL(mlx5_vdpa_alloc_resources);
+> > > > > >  
+> > > > > >  void mlx5_vdpa_free_resources(struct mlx5_vdpa_dev *mvdev)
+> > > > > >  {
+> > > > > > @@ -282,3 +291,4 @@ void mlx5_vdpa_free_resources(struct mlx5_vdpa_dev *mvdev)
+> > > > > >  	mutex_destroy(&mvdev->mr.mkey_mtx);
+> > > > > >  	res->valid = false;
+> > > > > >  }
+> > > > > > +EXPORT_SYMBOL(mlx5_vdpa_free_resources);
+> > > > > > -- 
+> > > > > > 2.27.0
+> > > > > 
+> > > 
+> 
