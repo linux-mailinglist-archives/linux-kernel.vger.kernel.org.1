@@ -2,162 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FD8827CE83
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 15:08:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11B5027CE7D
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 15:07:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729406AbgI2NHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 09:07:54 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:55434 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728346AbgI2NHw (ORCPT
+        id S1729314AbgI2NHx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 09:07:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52384 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728241AbgI2NHs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 09:07:52 -0400
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08TD1lhL087243;
         Tue, 29 Sep 2020 09:07:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=ZcPwatVVGGsdrG5qoLd7oo/6QSYi4b7oVsRPZCVSCv0=;
- b=hMBciB/e/paaxMbwOcrlTziWVDhjn90lQ4Nfk0ddWI9bPQxQSwqHBNNaKAxYLc7TkR3k
- 6nVG2S1qN564KFhPtGTXSySMg5wRdNjl/9T0+4hrgQ34K6xoeLrOnY9cEpgSysxFVZtq
- +BAEQBGF4GqebDLXOHIV0SeyfrahJkjmywx1iqqGGs1/KXC4SKGnWkEENVKIIOGNI+Tf
- kgfXUbma9GXJirC9xwsSnaR5/Q97QbMbU7SB3kn05TnDe75W6TPGYu18Z6sr8aGAAM0A
- /Knlf0ekf/B3hzY6vEa8YyjE0qe2t+jjBIinbJAQh8qUNr8eJUIfGKF1Cw769M/TAFHs jA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33v58ygs2t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 29 Sep 2020 09:07:48 -0400
-Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08TD3d1O097479;
-        Tue, 29 Sep 2020 09:07:47 -0400
-Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33v58ygs1r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 29 Sep 2020 09:07:47 -0400
-Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
-        by ppma04dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08TCw6Xu017060;
-        Tue, 29 Sep 2020 13:07:46 GMT
-Received: from b03cxnp08028.gho.boulder.ibm.com (b03cxnp08028.gho.boulder.ibm.com [9.17.130.20])
-        by ppma04dal.us.ibm.com with ESMTP id 33sw99395q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 29 Sep 2020 13:07:46 +0000
-Received: from b03ledav002.gho.boulder.ibm.com (b03ledav002.gho.boulder.ibm.com [9.17.130.233])
-        by b03cxnp08028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08TD7gTX24773098
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 29 Sep 2020 13:07:42 GMT
-Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C5FC9136067;
-        Tue, 29 Sep 2020 13:07:42 +0000 (GMT)
-Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2A267136055;
-        Tue, 29 Sep 2020 13:07:41 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.85.170.177])
-        by b03ledav002.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Tue, 29 Sep 2020 13:07:40 +0000 (GMT)
-Subject: Re: [PATCH v10 02/16] s390/vfio-ap: use new AP bus interface to
- search for queue devices
-To:     Halil Pasic <pasic@linux.ibm.com>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, freude@linux.ibm.com, borntraeger@de.ibm.com,
-        cohuck@redhat.com, mjrosato@linux.ibm.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com,
-        fiuczy@linux.ibm.com, frankja@linux.ibm.com, david@redhat.com,
-        imbrenda@linux.ibm.com, hca@linux.ibm.com, gor@linux.ibm.com,
-        kernel test robot <lkp@intel.com>
-References: <20200821195616.13554-1-akrowiak@linux.ibm.com>
- <20200821195616.13554-3-akrowiak@linux.ibm.com>
- <20200925042729.3b9d5704.pasic@linux.ibm.com>
-From:   Tony Krowiak <akrowiak@linux.ibm.com>
-Message-ID: <ed021f29-927d-5bd6-4f2c-466f502f49f4@linux.ibm.com>
-Date:   Tue, 29 Sep 2020 09:07:40 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B74D9C061755;
+        Tue, 29 Sep 2020 06:07:47 -0700 (PDT)
+Received: by mail-qt1-x843.google.com with SMTP id r8so3416846qtp.13;
+        Tue, 29 Sep 2020 06:07:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=7vpidMw0HWxX/6cx3RBRN6x4KkgYNc8nMb6h2YX3QMA=;
+        b=uEFvEhv19wQsEcRNHH6yVD1084qfg6Pj4nrTxmDW0UfBKThyXC18qxVI0Sr278NBFp
+         QhMyZBoNnJN7CcikqikkkmTGVvJu44iJ86pcbmzHUb0zw/d3tE8iwjAxY7iN41XusioE
+         Z57maCFo9jO8ZWrtvghGSX7hiF31oVLxYeAbHQ1Dhs+deEqirh3Jc76s+fd2KSP4x/Uv
+         5C++V86gALFO/pFhV7lfesfFdDatOdN7S0rs2QTqLkThT71ExAupq6lgjUfn8P1fK3aq
+         VasjDadv3sGj9HvjQy322Fqsh3apvisLeqWDA6xlJ2T4iabQJu+ziVeunbzp5/skRIxF
+         cqCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7vpidMw0HWxX/6cx3RBRN6x4KkgYNc8nMb6h2YX3QMA=;
+        b=SA9Lax6BETozMKj8Ge0oMAzioWsRVMM0FDhOSULXsJhDUjPZ6q1uE3pAo+tTRmitdo
+         GV4JVTpqqZjN9XUjK475Tmr1N02bpeJ73K6Umyr7xsi8LVK4EnID2FUua2FohF4hCni9
+         cZVer1eYJA0T4Li4r06DBhGp6aXAzX0a+eWo/MzHSAexFENX/tPZIlqqGoaQ7saQItIt
+         A/BVjqhqcndw8Zf9gW82X3VzoHh0gtWaqpFvgi8Z2olOaFh0JcOBbqFx10nfDKcUVYEh
+         tDmPHJrbGbPYjExS2/IVZklgS3SCmOdxlajWeqRnkxpZxBbXrafycfR8MXo6FTrK5LxM
+         Egqw==
+X-Gm-Message-State: AOAM531U/XO4E03yOehS20Nk6raq7YuAxV8FFvWo9ppr5B+xA5Yp8krN
+        q4sok2Md6RtBIjA5XefwigI=
+X-Google-Smtp-Source: ABdhPJxaE8lTwuOySLwhCQ/9B/ylIcnWpBoFn/x+SwnEU4LMZQcbJzXzO3M60w/YptS92AuCQ3o57w==
+X-Received: by 2002:aed:35b2:: with SMTP id c47mr2950755qte.95.1601384866843;
+        Tue, 29 Sep 2020 06:07:46 -0700 (PDT)
+Received: from shinobu (072-189-064-225.res.spectrum.com. [72.189.64.225])
+        by smtp.gmail.com with ESMTPSA id w94sm5147990qte.93.2020.09.29.06.07.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Sep 2020 06:07:46 -0700 (PDT)
+Date:   Tue, 29 Sep 2020 09:07:43 -0400
+From:   William Breathitt Gray <vilhelm.gray@gmail.com>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Syed Nayyar Waris <syednwaris@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Robert Richter <rrichter@marvell.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amit.kucheria@verdurent.com>,
+        linux-arch@vger.kernel.org,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux PM list <linux-pm@vger.kernel.org>
+Subject: Re: [PATCH v9 0/4] Introduce the for_each_set_clump macro
+Message-ID: <20200929130743.GB4458@shinobu>
+References: <cover.1593243079.git.syednwaris@gmail.com>
+ <CACRpkdYyCNEUSOtCJMTm7t1z15oK7nH3KcTe5LreJAzZ0KtQuw@mail.gmail.com>
+ <20200911225417.GA5286@shinobu>
+ <CACRpkdah+k-EyhF8bNRkvw4bFDiai9dYo3ph9wsumo_v3U-U0g@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200925042729.3b9d5704.pasic@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-29_04:2020-09-29,2020-09-29 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxlogscore=999
- impostorscore=0 suspectscore=0 malwarescore=0 spamscore=0
- priorityscore=1501 phishscore=0 lowpriorityscore=0 mlxscore=0
- clxscore=1015 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009290111
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="5I6of5zJg18YgZEa"
+Content-Disposition: inline
+In-Reply-To: <CACRpkdah+k-EyhF8bNRkvw4bFDiai9dYo3ph9wsumo_v3U-U0g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--5I6of5zJg18YgZEa
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 9/24/20 10:27 PM, Halil Pasic wrote:
-> On Fri, 21 Aug 2020 15:56:02 -0400
-> Tony Krowiak <akrowiak@linux.ibm.com> wrote:
->
->> --- a/drivers/s390/crypto/vfio_ap_ops.c
->> +++ b/drivers/s390/crypto/vfio_ap_ops.c
->> @@ -26,43 +26,26 @@
->>   
->>   static int vfio_ap_mdev_reset_queues(struct mdev_device *mdev);
->>   
->> -static int match_apqn(struct device *dev, const void *data)
->> -{
->> -	struct vfio_ap_queue *q = dev_get_drvdata(dev);
->> -
->> -	return (q->apqn == *(int *)(data)) ? 1 : 0;
->> -}
->> -
->>   /**
->> - * vfio_ap_get_queue: Retrieve a queue with a specific APQN from a list
->> - * @matrix_mdev: the associated mediated matrix
->> + * vfio_ap_get_queue: Retrieve a queue with a specific APQN.
->>    * @apqn: The queue APQN
->>    *
->> - * Retrieve a queue with a specific APQN from the list of the
->> - * devices of the vfio_ap_drv.
->> - * Verify that the APID and the APQI are set in the matrix.
->> + * Retrieve a queue with a specific APQN from the AP queue devices attached to
->> + * the AP bus.
->>    *
->> - * Returns the pointer to the associated vfio_ap_queue
->> + * Returns the pointer to the vfio_ap_queue with the specified APQN, or NULL.
->>    */
->> -static struct vfio_ap_queue *vfio_ap_get_queue(
->> -					struct ap_matrix_mdev *matrix_mdev,
->> -					int apqn)
->> +static struct vfio_ap_queue *vfio_ap_get_queue(unsigned long apqn)
->>   {
->> +	struct ap_queue *queue;
->>   	struct vfio_ap_queue *q;
->> -	struct device *dev;
->>   
->> -	if (!test_bit_inv(AP_QID_CARD(apqn), matrix_mdev->matrix.apm))
->> -		return NULL;
->> -	if (!test_bit_inv(AP_QID_QUEUE(apqn), matrix_mdev->matrix.aqm))
->> +	queue = ap_get_qdev(apqn);
->> +	if (!queue)
->>   		return NULL;
->>   
->> -	dev = driver_find_device(&matrix_dev->vfio_ap_drv->driver, NULL,
->> -				 &apqn, match_apqn);
->> -	if (!dev)
->> -		return NULL;
->> -	q = dev_get_drvdata(dev);
->> -	q->matrix_mdev = matrix_mdev;
->> -	put_device(dev);
->> +	q = dev_get_drvdata(&queue->ap_dev.device);
-> Is this cast here safe? (I don't think it is.)
+On Tue, Sep 29, 2020 at 02:45:18PM +0200, Linus Walleij wrote:
+> On Sat, Sep 12, 2020 at 12:54 AM William Breathitt Gray
+> <vilhelm.gray@gmail.com> wrote:
+> > On Thu, Jul 16, 2020 at 02:49:35PM +0200, Linus Walleij wrote:
+> > > Hi Syed,
+> > >
+> > > sorry for taking so long. I was on vacation and a bit snowed
+> > > under by work.
+> > >
+> > > On Sat, Jun 27, 2020 at 10:10 AM Syed Nayyar Waris <syednwaris@gmail.=
+com> wrote:
+> > >
+> > > > Since this patchset primarily affects GPIO drivers, would you like
+> > > > to pick it up through your GPIO tree?
+> > >
+> > > I have applied the patches to an immutable branch and pushed
+> > > to kernelorg for testing (autobuilders will play with it I hope).
+> > >
+> > > If all works fine I will merge this into my devel branch for v5.9.
+> > >
+> > > It would be desirable if Andrew gave his explicit ACK on it too.
+> > >
+> > > Yours,
+> > > Linus Walleij
+> >
+> > Hi Linus,
+> >
+> > What's the name of the branch with these patches on kernelorg; I'm
+> > having trouble finding it?
+> >
+> > Btw, I'm CCing Andrew as well here because I notice him missing from the
+> > CC list earlier for this patchset.
+>=20
+> IIRC there were complaints from the zeroday build robot so I
+> dropped the branch and I am still waiting for a fixed up patch
+> series.
+>=20
+> Yours,
+> Linus Walleij
 
-In the probe, we execute:
-dev_set_drvdata(&queue->ap_dev.device, q);
+My apologies, I wasn't aware a build error was reported. I'll be happy
+to help address the issue with Syed, but I can't seem to find a copy of
+the message on <https://lkml.org/lkml/2020/6/27/107> or my email logs.
+Do you have a link available to the zeroday build log?
 
-I don't get any compile nor execution errors. Why wouldn't it be safe?
+Thanks,
 
->
->> +	put_device(&queue->ap_dev.device);
->>   
->>   	return q;
->>   }
+William Breathitt Gray
 
+--5I6of5zJg18YgZEa
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAl9zMZ8ACgkQhvpINdm7
+VJJhJBAAne4+TuZ5ye+zKdwxECRHf9+8DEOtmN37vuRuxtlFqmGEngLWRwKNmzhF
+8wwqSulCWUT32f7vjozpkEiT06bcV+zHcmkRu5xb/Bo8KIkc/7F1YQeVH5KxkUn+
+u0mmZBnjEWc8oBBjSBArc2XqMRVTnATMlViSbs/Ilax7/d0S6Ywlm3GlioGPJp+E
+uj5X8AUEi7Zhtsz3VT2lxNQN20BsyhwY16DnU8n69D4XIeF09vGu7htqsU05a2NW
+DtO5MVf9uUH6c637WiTBnwor2SgsR1/5OBZzSdXqu5Gqq43Ol+8s8cUvF1Gr64g/
+lKFULCcFfyrj2hSLJrfjkOW6qd1NxsHAWwvSMyGWfM7b7laTaWPV5jHjZuS2Wu7w
+lRZdp4N5XibtDSWUxt2Pi6NgnV9C6lgv5Fz4fX/Dd927E/WMcF3q46QutRXT8Mab
+z2Z4PEs+RR4A2E5cJv/qRxPID3ZzEINx+LLs1koor9F8av9ve4LH3cy6aQ7k3O7L
+jk1cg48c2GSLMH5bDfgJ6xhW7vNvBzjp0SaFlZl6DYiFq7HNISMzIsIXi0t8Yi2t
+/FIXL/xih9BzeX3+MDEcgyfJhwh+btrerBF544kHkI61QLaxHLaSvU0Iy/qHmkGg
+43o+XzQZeWHrZ/rt4FgDYG+oGL0pJVKVg5C9cQyZUTY+F/ROTeY=
+=9zS3
+-----END PGP SIGNATURE-----
+
+--5I6of5zJg18YgZEa--
