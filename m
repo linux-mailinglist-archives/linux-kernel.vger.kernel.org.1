@@ -2,153 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9863827BC77
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 07:33:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8FB027BC78
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 07:34:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726602AbgI2Fdp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 01:33:45 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:33832 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725819AbgI2Fdo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 01:33:44 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4C0p2r3TPVz9txQw;
-        Tue, 29 Sep 2020 07:33:40 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id TIqEvTt6Jfz6; Tue, 29 Sep 2020 07:33:40 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4C0p2r28n5z9txQv;
-        Tue, 29 Sep 2020 07:33:40 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 4DC678B79F;
-        Tue, 29 Sep 2020 07:33:41 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id 3fyGxHwIxsx4; Tue, 29 Sep 2020 07:33:41 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 982908B76C;
-        Tue, 29 Sep 2020 07:33:40 +0200 (CEST)
-Subject: Re: [PATCH v2 23/25] powerpc/signal: Create 'unsafe' versions of
- copy_[ck][fpr/vsx]_to_user()
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-To:     "Christopher M. Riedl" <cmr@informatik.wtf>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-References: <C5ZHGD1JVX0H.1UI1PWMZN73UX@geist>
- <a14a82a6-74c2-cc0a-8c6b-46e571cadb7d@csgroup.eu>
-Message-ID: <61bd2283-94bb-edff-5140-8be2b98a02e3@csgroup.eu>
-Date:   Tue, 29 Sep 2020 07:33:30 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1727371AbgI2FeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 01:34:08 -0400
+Received: from mail-il1-f207.google.com ([209.85.166.207]:40948 "EHLO
+        mail-il1-f207.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725842AbgI2FeI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 01:34:08 -0400
+Received: by mail-il1-f207.google.com with SMTP id e9so2592051ils.7
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 22:34:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=KfWV0gnoumlsZJk50gbr1pEK2WkQDVbgVi8fBs3qwgg=;
+        b=qKsn7iNiWcNM/E/SNajREAynT0BHx7FSL7mXtbsNt7RAm08ndjoapjfKP7cM6q4aa9
+         BjrWxVnoZ9fkmhr6FerCX8jO0/cfkJ+dJQtS2zNGS9wOUW+3fC/dGv7oSYXA5GXGE58J
+         Q3D05AVpkO2dRWdXCxQ2HexKro6a8t2Z3Q9UoEx+Sq3vaS1JpGKiVeq0N9fYqadOVdod
+         4DXdd8K6eFV1ezqpruzN0rQUC87VDdaKcARbTr9CnxJL9djZagLFvlPqUVD9rUO5KMvM
+         h+pjF5KiKgI3Vq45gq7uHFSlP5rnrwiqjDcgRzuQeKxhXloOzJWcJ3mTEBcEOc2A/yeO
+         hmcA==
+X-Gm-Message-State: AOAM533zTV0fMD0pkY/Qtmlk/v/3ClWFnOfPCucyRl6kOavqY1J3M96s
+        Nhwj6BS8w+QrEHudC4moFiITOSlMLVJp87vKls4ec4CSViis
+X-Google-Smtp-Source: ABdhPJwbUrHiwJnq2FAlkdIXW3NQ3i/5IXxdyF7HO+N7tTecczltm5HcCn0fFrzgglyR/4GrYjNiHL/H+BnicYsWOYzmtkWC2k5H
 MIME-Version: 1.0
-In-Reply-To: <a14a82a6-74c2-cc0a-8c6b-46e571cadb7d@csgroup.eu>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6e02:ed3:: with SMTP id i19mr1536216ilk.188.1601357646098;
+ Mon, 28 Sep 2020 22:34:06 -0700 (PDT)
+Date:   Mon, 28 Sep 2020 22:34:06 -0700
+In-Reply-To: <000000000000b6d7fd05b02037ef@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a7770405b06d21ac@google.com>
+Subject: Re: general protection fault in gfs2_withdraw
+From:   syzbot <syzbot+50a8a9cf8127f2c6f5df@syzkaller.appspotmail.com>
+To:     agruenba@redhat.com, anprice@redhat.com, cluster-devel@redhat.com,
+        linux-kernel@vger.kernel.org, rpeterso@redhat.com,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+syzbot has bisected this issue to:
 
+commit 601ef0d52e9617588fcff3df26953592f2eb44ac
+Author: Bob Peterson <rpeterso@redhat.com>
+Date:   Tue Jan 28 19:23:45 2020 +0000
 
-Le 29/09/2020 à 07:22, Christophe Leroy a écrit :
-> 
-> 
-> Le 29/09/2020 à 04:04, Christopher M. Riedl a écrit :
->> On Tue Aug 18, 2020 at 12:19 PM CDT, Christophe Leroy wrote:
->>> For the non VSX version, that's trivial. Just use unsafe_copy_to_user()
->>> instead of __copy_to_user().
->>>
->>> For the VSX version, remove the intermediate step through a buffer and
->>> use unsafe_put_user() directly. This generates a far smaller code which
->>> is acceptable to inline, see below:
->>>
->>>
->>> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
->>> ---
->>> arch/powerpc/kernel/signal.h | 53 ++++++++++++++++++++++++++++++++++++
->>> 1 file changed, 53 insertions(+)
->>>
->>> diff --git a/arch/powerpc/kernel/signal.h b/arch/powerpc/kernel/signal.h
->>> index f610cfafa478..2559a681536e 100644
->>> --- a/arch/powerpc/kernel/signal.h
->>> +++ b/arch/powerpc/kernel/signal.h
->>> @@ -32,7 +32,54 @@ unsigned long copy_fpr_to_user(void __user *to,
->>> struct task_struct *task);
->>> unsigned long copy_ckfpr_to_user(void __user *to, struct task_struct
->>> *task);
->>> unsigned long copy_fpr_from_user(struct task_struct *task, void __user
->>> *from);
->>> unsigned long copy_ckfpr_from_user(struct task_struct *task, void __user
->>> *from);
->>> +
->>> +#define unsafe_copy_fpr_to_user(to, task, label) do { \
->>> + struct task_struct *__t = task; \
->>> + u64 __user *buf = (u64 __user *)to; \
->>> + int i; \
->>> + \
->>> + for (i = 0; i < ELF_NFPREG - 1 ; i++) \
->>> + unsafe_put_user(__t->thread.TS_FPR(i), &buf[i], label); \
->>> + unsafe_put_user(__t->thread.fp_state.fpscr, &buf[i], label); \
->>> +} while (0)
->>> +
->>
->> I've been working on the PPC64 side of this "unsafe" rework using this
->> series as a basis. One question here - I don't really understand what
->> the benefit of re-implementing this logic in macros (similarly for the
->> other copy_* functions below) is?
-> 
-> Not sure either.
-> 
-> The whole purpose is to not manage the error through a local var but exclusively use labels.
-> However, GCC is probably smart enough to understand it and drop the local var while inlining.
-> 
-> One important thing however is to make sure we won't end up with an outline function, otherwise you 
-> completely loose the benefit of the label stuff. And you get a function call inside a user access, 
-> which is what we want to avoid.
-> 
->>
->> I am considering  a "__unsafe_copy_*" implementation in signal.c for
->> each (just the original implementation w/ using the "unsafe_" variants
->> of the uaccess stuff) which gets called by the "safe" functions w/ the
->> appropriate "user_*_access_begin/user_*_access_end". Something like
->> (pseudo-ish code):
-> 
-> Good idea, however ...
-> 
->>
->>     /* signal.c */
->>     unsigned long __unsafe_copy_fpr_to_user(...)
->>     {
->>         ...
->>         unsafe_copy_to_user(..., bad);
->>         return 0;
->>     bad:
->>         return 1; /* -EFAULT? */
->>     }
-> 
-> This __unsafe_copy_fpr_to_user() has to be in signal.h and must be tagged 'static __always_inline' 
-> for the reasons explained above.
-> 
->>
->>     unsigned long copy_fpr_to_user(...)
->>     {
->>         unsigned long err;
->>         if (!user_write_access_begin(...))
->>             return 1; /* -EFAULT? */
->>
->>         err = __unsafe_copy_fpr_to_user(...);
->>
->>         user_write_access_end();
->>         return err;
->>     }
+    gfs2: Force withdraw to replay journals and wait for it to finish
 
-Also note that at the end (ie when both PPC32 and PPC64 signal code are using "unsafe" versions), 
-the "safe" version won't be used anymore and will be dropped.
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=151d25e3900000
+start commit:   7c7ec322 Merge tag 'for-linus' of git://git.kernel.org/pub..
+git tree:       upstream
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=171d25e3900000
+console output: https://syzkaller.appspot.com/x/log.txt?x=131d25e3900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6184b75aa6d48d66
+dashboard link: https://syzkaller.appspot.com/bug?extid=50a8a9cf8127f2c6f5df
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13c6a109900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15d45ed3900000
 
-Christophe
+Reported-by: syzbot+50a8a9cf8127f2c6f5df@syzkaller.appspotmail.com
+Fixes: 601ef0d52e96 ("gfs2: Force withdraw to replay journals and wait for it to finish")
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
