@@ -2,92 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE96F27BD46
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 08:46:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1761A27BD48
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 08:47:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726277AbgI2Gqv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 02:46:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58256 "EHLO mail.kernel.org"
+        id S1727315AbgI2GrE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 02:47:04 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:18318 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725826AbgI2Gqu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 02:46:50 -0400
-Received: from sol.localdomain (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 198AC20C09;
-        Tue, 29 Sep 2020 06:46:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601362010;
-        bh=z1PlfEDRDNoBC/EsAjqTakw7ooTqgEMmSkPYuYZv2pM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=yJjvRLOBFLJxQfCjd5cyQuj05zAFGdn1bvzW/JZrxAB4k2LUn3sbWGAV23LAyIstn
-         eiMSvPkiz9LCD774QF64FHIghd8sPQaVcaqrpb64QsL8zZw32cyuvyefdbLS2qImuk
-         bEANYEu+rpLOGeCOVFGZGNg4K7RGo30bVqxAXf74=
-Date:   Mon, 28 Sep 2020 23:46:48 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     David Laight <David.Laight@aculab.com>,
-        syzbot+51177e4144d764827c45@syzkaller.appspotmail.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-Subject: Re: WARNING in __kernel_read (2)
-Message-ID: <20200929064648.GA238449@sol.localdomain>
-References: <000000000000da992305b02e9a51@google.com>
- <3b3de066852d4e30bd9d85bd28023100@AcuMS.aculab.com>
- <642ed0b4810d44ab97a7832ccb8b3e44@AcuMS.aculab.com>
- <20200928221441.GF1340@sol.localdomain>
- <20200929063815.GB1839@lst.de>
+        id S1725826AbgI2GrE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 02:47:04 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4C0qgL07GPz9v2YG;
+        Tue, 29 Sep 2020 08:46:54 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id YsPWlUzYnt5O; Tue, 29 Sep 2020 08:46:53 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4C0qgK6FBJz9v2FG;
+        Tue, 29 Sep 2020 08:46:53 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 00BBF8B79F;
+        Tue, 29 Sep 2020 08:46:54 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id TOrtpa9nxSz3; Tue, 29 Sep 2020 08:46:54 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id ECC3B8B76C;
+        Tue, 29 Sep 2020 08:46:53 +0200 (CEST)
+Subject: Re: [PATCH v2 1/7] powerpc: Remove SYNC on non 6xx
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+References: <27951fa6c9a8f80724d1bc81a6117ac32343a55d.1601359702.git.christophe.leroy@csgroup.eu>
+Message-ID: <a5f3a957-f9e0-4bf6-1d4a-41ccfa173366@csgroup.eu>
+Date:   Tue, 29 Sep 2020 08:46:55 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200929063815.GB1839@lst.de>
+In-Reply-To: <27951fa6c9a8f80724d1bc81a6117ac32343a55d.1601359702.git.christophe.leroy@csgroup.eu>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 08:38:15AM +0200, Christoph Hellwig wrote:
-> On Mon, Sep 28, 2020 at 03:14:41PM -0700, Eric Biggers wrote:
-> > On Sat, Sep 26, 2020 at 01:17:04PM +0000, David Laight wrote:
-> > > From: David Laight
-> > > > Sent: 26 September 2020 12:16
-> > > > To: 'syzbot' <syzbot+51177e4144d764827c45@syzkaller.appspotmail.com>; linux-fsdevel@vger.kernel.org;
-> > > > linux-kernel@vger.kernel.org; syzkaller-bugs@googlegroups.com; viro@zeniv.linux.org.uk
-> > > > Subject: RE: WARNING in __kernel_read (2)
-> > > > 
-> > > > > From: syzbot <syzbot+51177e4144d764827c45@syzkaller.appspotmail.com>
-> > > > > Sent: 26 September 2020 03:58
-> > > > > To: linux-fsdevel@vger.kernel.org; linux-kernel@vger.kernel.org; syzkaller-bugs@googlegroups.com;
-> > > > > viro@zeniv.linux.org.uk
-> > > > > Subject: WARNING in __kernel_read (2)
-> > > > 
-> > > > I suspect this is calling finit_module() on an fd
-> > > > that doesn't have read permissions.
-> > > 
-> > > Code inspection also seems to imply that the check means
-> > > the exec() also requires read permissions on the file.
-> > > 
-> > > This isn't traditionally true.
-> > > suid #! scripts are particularly odd without 'owner read'
-> > > (everyone except the owner can run them!).
-> > 
-> > Christoph, any thoughts here?  You added this WARN_ON_ONCE in:
-> > 
-> > 	commit 61a707c543e2afe3aa7e88f87267c5dafa4b5afa
-> > 	Author: Christoph Hellwig <hch@lst.de>
-> > 	Date:   Fri May 8 08:54:16 2020 +0200
-> > 
-> > 	    fs: add a __kernel_read helper
+
+
+Le 29/09/2020 à 08:09, Christophe Leroy a écrit :
+> SYNC is usefull for Powerpc 601 only. On everything else,
+> SYNC is empty.
 > 
-> Linus asked for it.  What is the call chain that we hit it with?
+> Remove it from code that is not made to run on 6xx.
+> 
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 
-Call Trace:
- kernel_read+0x52/0x70 fs/read_write.c:471
- kernel_read_file fs/exec.c:989 [inline]
- kernel_read_file+0x2e5/0x620 fs/exec.c:952
- kernel_read_file_from_fd+0x56/0xa0 fs/exec.c:1076
- __do_sys_finit_module+0xe6/0x190 kernel/module.c:4066
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
+Oops, the last patch of the series is missing. Will resend, sorry for the noise.
 
-See the email from syzbot for the full details:
-https://lkml.kernel.org/linux-fsdevel/000000000000da992305b02e9a51@google.com
+Christophe
+
+> ---
+>   arch/powerpc/kernel/head_40x.S   | 1 -
+>   arch/powerpc/kernel/head_booke.h | 1 -
+>   arch/powerpc/kernel/misc_64.S    | 1 -
+>   3 files changed, 3 deletions(-)
+> 
+> diff --git a/arch/powerpc/kernel/head_40x.S b/arch/powerpc/kernel/head_40x.S
+> index 5b282d9965a5..44c9018aed1b 100644
+> --- a/arch/powerpc/kernel/head_40x.S
+> +++ b/arch/powerpc/kernel/head_40x.S
+> @@ -72,7 +72,6 @@ turn_on_mmu:
+>   	lis	r0,start_here@h
+>   	ori	r0,r0,start_here@l
+>   	mtspr	SPRN_SRR0,r0
+> -	SYNC
+>   	rfi				/* enables MMU */
+>   	b	.			/* prevent prefetch past rfi */
+>   
+> diff --git a/arch/powerpc/kernel/head_booke.h b/arch/powerpc/kernel/head_booke.h
+> index 18f87bf9e32b..71c359d438b5 100644
+> --- a/arch/powerpc/kernel/head_booke.h
+> +++ b/arch/powerpc/kernel/head_booke.h
+> @@ -176,7 +176,6 @@ ALT_FTR_SECTION_END_IFSET(CPU_FTR_EMB_HV)
+>   #endif
+>   	mtspr	SPRN_SRR1,r10
+>   	mtspr	SPRN_SRR0,r11
+> -	SYNC
+>   	RFI				/* jump to handler, enable MMU */
+>   99:	b	ret_from_kernel_syscall
+>   .endm
+> diff --git a/arch/powerpc/kernel/misc_64.S b/arch/powerpc/kernel/misc_64.S
+> index 7bb46ad98207..070465825c21 100644
+> --- a/arch/powerpc/kernel/misc_64.S
+> +++ b/arch/powerpc/kernel/misc_64.S
+> @@ -365,7 +365,6 @@ _GLOBAL(kexec_smp_wait)
+>   
+>   	li	r4,KEXEC_STATE_REAL_MODE
+>   	stb	r4,PACAKEXECSTATE(r13)
+> -	SYNC
+>   
+>   	b	kexec_wait
+>   
+> 
