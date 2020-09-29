@@ -2,142 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6615827D400
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 18:57:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 625AF27D407
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 18:57:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729519AbgI2Q5D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 12:57:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59800 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728933AbgI2Q5C (ORCPT
+        id S1730100AbgI2Q54 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 12:57:56 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:59458 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728728AbgI2Q5z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 12:57:02 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D47EC0613D0
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 09:57:02 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id w2so5356456wmi.1
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 09:57:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=nQq4copkzrTWJFWPrIjoaGpC7LzDugYFHrKyuAj+WCk=;
-        b=MzZghrQtN3nF8Y/lUEqyS+JQazMX4C8+eDh7eh/JV1dh3GOplVIGXXBw19lWPfy3ie
-         4KC69ffpLyrDofRK+U2y6PDp9oQE6MdrBUO29+NC4yMyvU8RzsbuzWKxPr26qCD5YsPr
-         R42W/BKz4oQEgnTPwd62+BkpjZfezYgWC17ls=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=nQq4copkzrTWJFWPrIjoaGpC7LzDugYFHrKyuAj+WCk=;
-        b=goT+/x1ipPH8enb8pa0OX7s+yU9PeHCsRESGs7C/SNycKLG59Bh8AtAcR+OALw0Pxy
-         kTk+DWHhRSmNAxHEhR3N5KjJIx95yW/LNYqbTzfZGamqMK43zWtXxnYpvb8GmJVZnrcM
-         UunSKI5MQA2MWmh6V+M6Q3wUVZEkzxHMfvyvmqVvEDzr98gNsDtDtANykyjugepLrWcU
-         Yc46y1EcwK2iZZbqTe5uhz+oBZ4wfGPKARIahMqZ3yaGV+blA6z8aJdTaa2Qy1ckzymk
-         /2jSZ+AvLydwqmRPQ4crPFUvFIs+1vl11VgeXFts4zdcOFXDiiiZMiygvKAUbySXMFm2
-         WYPg==
-X-Gm-Message-State: AOAM533pbnhT7Br5Vrvhlb51+JXoZM7mT5QUPohh4lCrbUxcmCm60AHt
-        I21sSZ/P/9/pZqVdl6ZCfm33HA==
-X-Google-Smtp-Source: ABdhPJxSWkIHkpAEXbL2VmRDFNprfEkhWbClVdbLQTZbv7RVDpq4HuSembcT2Wrqfw7IxPzBCnBXdw==
-X-Received: by 2002:a1c:6607:: with SMTP id a7mr5501099wmc.142.1601398620840;
-        Tue, 29 Sep 2020 09:57:00 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id u126sm8002518wmu.9.2020.09.29.09.56.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Sep 2020 09:56:59 -0700 (PDT)
-Date:   Tue, 29 Sep 2020 18:56:57 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Martin Hostettler <textshell@uchuujin.de>
-Cc:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        gregkh@linuxfoundation.org, jirislaby@kernel.org,
-        Peilin Ye <yepeilin.cs@gmail.com>,
-        syzbot <syzbot+b308f5fd049fbbc6e74f@syzkaller.appspotmail.com>,
-        b.zolnierkie@samsung.com, daniel.vetter@ffwll.ch, deller@gmx.de,
-        syzkaller-bugs@googlegroups.com,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        George Kennedy <george.kennedy@oracle.com>
-Subject: Re: [PATCH] vt_ioctl: make VT_RESIZEX behave like VT_RESIZE
-Message-ID: <20200929165657.GS438822@phenom.ffwll.local>
-Mail-Followup-To: Martin Hostettler <textshell@uchuujin.de>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        gregkh@linuxfoundation.org, jirislaby@kernel.org,
-        Peilin Ye <yepeilin.cs@gmail.com>,
-        syzbot <syzbot+b308f5fd049fbbc6e74f@syzkaller.appspotmail.com>,
-        b.zolnierkie@samsung.com, deller@gmx.de,
-        syzkaller-bugs@googlegroups.com,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        George Kennedy <george.kennedy@oracle.com>
-References: <000000000000226d3f05b02dd607@google.com>
- <bbcef674-4ac6-c933-b55d-8961ada97f4c@i-love.sakura.ne.jp>
- <47907f77-b14b-b433-45c6-a315193f0c1a@i-love.sakura.ne.jp>
- <494395bc-a7dd-fdb1-8196-a236a266ef54@i-love.sakura.ne.jp>
- <20200927092701.GA1037755@PWN>
- <4933b81b-9b1a-355b-df0e-9b31e8280ab9@i-love.sakura.ne.jp>
- <20200928175956.GF24673@neutronstar.dyndns.org>
- <100dfd3f-3415-80ae-a6cf-30d15f7ca49f@i-love.sakura.ne.jp>
- <20200929105203.GG24673@neutronstar.dyndns.org>
+        Tue, 29 Sep 2020 12:57:55 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08TGvgCN072729;
+        Tue, 29 Sep 2020 11:57:43 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1601398663;
+        bh=ZjsMCRxqgZfNl/B8Bnf/B0HPPXkHxOxgRdvcoJ1EHs4=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=Xh8+aOwVV9+lh0mvVMUcKcfgTIYokgwRlJLO/XnsYWOrTo1QISttpld+a9HZMFyYN
+         zKChsbfnpxLLmI4u//ArR1Igyqvrj9UvLjii0/GwpUdzRpMljWwf2OcSqTdrOsTucW
+         G6OfERD2O1pTSKTO730J+dwDfVUOJf0N5srSj2Ac=
+Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08TGvgtu067181
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 29 Sep 2020 11:57:42 -0500
+Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 29
+ Sep 2020 11:57:42 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE101.ent.ti.com
+ (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 29 Sep 2020 11:57:42 -0500
+Received: from [10.250.235.166] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08TGvabf047655;
+        Tue, 29 Sep 2020 11:57:36 -0500
+Subject: Re: [PATCH v10 05/17] mtd: spi-nor: add support for DTR protocol
+To:     <Tudor.Ambarus@microchip.com>, <me@yadavpratyush.com>
+CC:     <p.yadav@ti.com>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
+        <broonie@kernel.org>, <Nicolas.Ferre@microchip.com>,
+        <alexandre.belloni@bootlin.com>, <Ludovic.Desroches@microchip.com>,
+        <matthias.bgg@gmail.com>, <michal.simek@xilinx.com>,
+        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <linux-spi@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <boris.brezillon@collabora.com>, <nsekhar@ti.com>
+References: <20200623183030.26591-1-p.yadav@ti.com>
+ <20200623183030.26591-6-p.yadav@ti.com>
+ <fbb3d7e7-75ed-dbf6-a975-2ae871bc9fbf@microchip.com>
+ <20200721112951.rngfk7njubcsahzp@yadavpratyush.com>
+ <f9a22bc5-35f6-9507-b0e7-dcbad51caea7@microchip.com>
+From:   Vignesh Raghavendra <vigneshr@ti.com>
+Message-ID: <df262497-028e-83a7-eb4e-25c20fc7e216@ti.com>
+Date:   Tue, 29 Sep 2020 22:27:35 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200929105203.GG24673@neutronstar.dyndns.org>
-X-Operating-System: Linux phenom 5.7.0-1-amd64 
+In-Reply-To: <f9a22bc5-35f6-9507-b0e7-dcbad51caea7@microchip.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 12:52:03PM +0200, Martin Hostettler wrote:
-> On Tue, Sep 29, 2020 at 10:12:46AM +0900, Tetsuo Handa wrote:
-> > On 2020/09/29 2:59, Martin Hostettler wrote:
-> > > On Sun, Sep 27, 2020 at 08:46:30PM +0900, Tetsuo Handa wrote:
-> > >> VT_RESIZEX was introduced in Linux 1.3.3, but it is unclear that what
-> > >> comes to the "+ more" part, and I couldn't find a user of VT_RESIZEX.
-> > >>
-> > > 
-> > > It seems this is/was used by "svgatextmode" which seems to be at
-> > > http://www.ibiblio.org/pub/Linux/utils/console/
-> > > 
-> > > Not sure if that kind of software still has a chance to work nowadays.
-> > > 
-> > 
-> > Thanks for the information.
-> > 
-> > It seems that v.v_vlin = curr_textmode->VDisplay / (MOFLG_ISSET(curr_textmode, ATTR_DOUBLESCAN) ? 2 : 1)
-> > and v.v_clin = curr_textmode->FontHeight . Thus, v.v_clin is font's height and seems to be non-zero.
-> > But according to https://bugs.gentoo.org/19485 , people are using kernel framebuffer instead.
-> > 
-> 
-> Yes, this seems to be from pre framebuffer times.
-> 
-> Back in the days "svga" was the wording you got for "pokes svga card
-> hardware registers from userspace drivers". And textmode means font
-> rendering is done via (fixed function in those times) hardware scanout
-> engine. Of course having only to update 2 bytes per character was a huge
-> saving early on. Likely this is also before vesa VBE was reliable.
-> 
-> So i guess the point where this all starts going wrong allowing the X parts
-> of the api to be combined with FB based rendering at all? Sounds the only
-> user didn't use that combination and so it was never tested?
-> 
-> Then again, this all relates to hardware from 20 years ago...
 
-Imo userspace modesetting should be burned down anywhere we can. We've
-gotten away with this in drivers/gpu by just seamlessly transitioning to
-kernel drivers.
 
-Since th only userspace we've found seems to be able to cope if this ioctl
-doesn't do anything, my vote goes towards ripping it out completely and
-doing nothing in there. Only question is whether we should error or fail
-with a silent success: Former is safer, latter can avoid a few regression
-reports since the userspace tools keep "working", and usually people don't
-notice for stuff this old. It worked in drivers/gpu :-)
+On 9/29/20 9:12 PM, Tudor.Ambarus@microchip.com wrote:
+> Hi, Pratyush,
+> 
+> I'm replying to v10 so that we continue the discussion, but this applies to v13 as well.
+> 
+> On 7/21/20 2:29 PM, Pratyush Yadav wrote:
+> 
+>>>> @@ -2368,12 +2517,16 @@ spi_nor_spimem_adjust_hwcaps(struct spi_nor *nor, u32 *hwcaps)
+>>>>         struct spi_nor_flash_parameter *params = nor->params;
+>>>>         unsigned int cap;
+>>>>
+>>>> -       /* DTR modes are not supported yet, mask them all. */
+>>>> -       *hwcaps &= ~SNOR_HWCAPS_DTR;
+>>>> -
+>>>>         /* X-X-X modes are not supported yet, mask them all. */
+>>>>         *hwcaps &= ~SNOR_HWCAPS_X_X_X;
+>>>>
+>>>> +       /*
+>>>> +        * If the reset line is broken, we do not want to enter a stateful
+>>>> +        * mode.
+>>>> +        */
+>>>> +       if (nor->flags & SNOR_F_BROKEN_RESET)
+>>>> +               *hwcaps &= ~(SNOR_HWCAPS_X_X_X | SNOR_HWCAPS_X_X_X_DTR);
+>>>
+>>> A dedicated reset line is not enough for flashes that keep their state
+>>> in non-volatile bits. Since we can't protect from unexpected crashes in
+>>> the non volatile state case, we should enter these modes only with an
+>>> explicit request, i.e. an optional DT property: "update-nonvolatile-state",
+>>> or something similar.
+>>
+>> I wrote this patch with the assumption that we won't be supporting> non-volatile configuration as of now. In the previous discussions we
+> 
+> I think we have to take care of the stateful flashes now, otherwise we'll risk
+> to end up with users that let their flashes in a mode from which they can't recover.
+> I made some small RFC patches in reply to your v13, let me know what you think.
+> 
+>> came to the conclusion that it is not easy to detect the flash if it
+>> boots in any mode other than 1S-1S-1S [0]. So if we update non-volatile
+>> state, the flash would be useless after a reboot because we won't be
+>> able to detect it in 8D mode. It doesn't matter if the reset line is
+>> connected or not because it will reset the flash to the non-volatile
+>> state, and we can't detect it from the non-volatile state.
+> 
+> correct, so a reset line for stateful modes doesn't help and the comment from the
+> code should be updated. s/stateful/stateless
 
-Cheers, Daniel
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Entering an IO mode even using volatile bits (which gets cleared on SW
+or HW reset) creates a "state" that SW needs to keep track of which is
+why "stateful" term is used. I think that's what is implied here
+
+AFAIU, Boris's original RFC[1] introducing X-X-X mode also used
+"stateful mode" term in the same context .
+
+
+>>
+>>> For the volatile state case, we can parse the SFDP SCCR map, save if we
+>>> can enter stateful modes in a volatile way, and if yes allow the entering.
+>>
+>> If we are not support volatile configurations, the reset line is enough
+>> to take care of unexpected resets, no? I don't see any need to parse
+> 
+> the reset line is excellent for the stateless flashes, it guarantees that the
+> volatile bits will return to their default state. Disabling the clock, waiting
+> for a period and re-enabling it again should do the trick too, but probably
+> a dedicated reset line is safer.
+> 
+
+I don't think disable-wait-enable sequence of clock input to flash will
+trigger a reset... You have to take down the power and thus force flash
+to go through power-down/power-up sequence or use HW or SW reset sequences
+
+[1]
+https://patchwork.ozlabs.org/project/linux-mtd/cover/20181012084825.23697-1-boris.brezillon@bootlin.com/
+
+Regards
+Vignesh
