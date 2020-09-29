@@ -2,79 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42D4527D1CD
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 16:51:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13C7227D1D3
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 16:51:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730047AbgI2OvG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 10:51:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50744 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727328AbgI2OvF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 10:51:05 -0400
-Received: from coco.lan (ip5f5ad5bc.dynamic.kabel-deutschland.de [95.90.213.188])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8986220757;
-        Tue, 29 Sep 2020 14:51:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601391065;
-        bh=awysxynaEavNiWkrMGoJ+3iohFJphxuf/7dxcqFCIyo=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=f4hRlWNYxTccQq+r+tsxPYLadqK1OIVMbsyRxTAK3G0ejuwPPAPb/V7VqZxgvajDj
-         9TsgJdxgGMGQrp1Ilx+8MLgnawlEa+I+shZiggODhd4LxWwrc9fj8CKBxbrVDsyxtp
-         UFUBuO4paZX+zwwiqf4MVl3xmX6w2zXHM7jk4KTs=
-Date:   Tue, 29 Sep 2020 16:51:00 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>
-Cc:     "r.verdejo@samsung.com" <r.verdejo@samsung.com>,
-        "nicolas@ndufresne.ca" <nicolas@ndufresne.ca>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        "skhan@linuxfoundation.org" <skhan@linuxfoundation.org>,
-        "linux-kernel-mentees@lists.linuxfoundation.org" 
-        <linux-kernel-mentees@lists.linuxfoundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH WIP 1/6] media: vidtv: extract the initial CRC value to
- into a #define
-Message-ID: <20200929165100.4483625c@coco.lan>
-In-Reply-To: <8397580E-7905-4B02-B9F5-C3B09794A742@getmailspring.com>
-References: <20200929071918.15c018ac@coco.lan>
-        <8397580E-7905-4B02-B9F5-C3B09794A742@getmailspring.com>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        id S1730778AbgI2Ovm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 10:51:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40458 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729721AbgI2Ovl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 10:51:41 -0400
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96367C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 07:51:41 -0700 (PDT)
+Received: by mail-ot1-x342.google.com with SMTP id q21so4685843ota.8
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 07:51:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wW+VJQgARCCUxTSXrTTMpTSAvZIEsqsjgDYoqUGhARg=;
+        b=wMGD4VgcgbK4IxtOQtFKwIep4NE/Lks0XQ84z53sb9ztrBrhdOTixFBfNnnFmc2Mmp
+         2HRGwfLla5AakIrCbRVmzawkLIflkdRyIs1CUm9Xww1+2xb4I17TEtNyIQdpfpPU1G5h
+         qeYDoMGzWTg6XQ7p5H1nFebztaG3DFm6HtUk5e/0bb7mw9B6OmWARxPX3Gh2mUZrOiCU
+         1Yj5QhpxD1O63S8fIDxlpq1YHEA6AZVVWwBSkpVJAg7Z5s/nJ4OCOjvOjtvVXKkedQWq
+         VgWYHEeN/dpoT4xUm6hPg6iexodywLoB+SCcvUzZJs8ZWHAyLC6enNWDmQMm1PN6ysab
+         pssA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wW+VJQgARCCUxTSXrTTMpTSAvZIEsqsjgDYoqUGhARg=;
+        b=JrYDT2uDkfytoiMfQMv9I8xgqMtOWNzSzsgVIeY511nbp6VCgfaH04QQ2IqI5gFDhR
+         qyKtqsUlQadXjg5x4PXPTfUo0LG3M/0a60mZV3GJzEot7IMAu/rpFApEwdUR1tkCNTFL
+         mx6hjwSmCv7s9FujxDrPLm6OSLyA3Vt+E5CfiAOg7sU7L6rfcS5dXIDY3zWe533mA4GG
+         fTaVjmjbD8udBCWZOqC3PjW1RNYuAgJdIGvHpsqZ4amj5/IQceBGaplX8pO2fwq1Xd+V
+         X+6pwcz8APUtRPQC9tuU+oNOkXrMJqJVdMRlp5rBW4/2ggQiIkPBbLB7EKyhqp6aHwpu
+         4j1w==
+X-Gm-Message-State: AOAM533PqoZTkbEm/nXC71NuAfXbwWlqQ8FgI/5PF+XBkwGBI2nI7T8R
+        Oa1risypLwdUQqtiPXQsDksy0Z3PrK6nEMf8zxXlWQ==
+X-Google-Smtp-Source: ABdhPJxroT9i54MN1iDT4wifYt9kExM7oIJmn8MlrbnOEJQnD//Y0CVF3kuXJabOEMsMGXWE3i3iimChMga6hnEclNE=
+X-Received: by 2002:a9d:758b:: with SMTP id s11mr2840881otk.251.1601391100711;
+ Tue, 29 Sep 2020 07:51:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20200921132611.1700350-1-elver@google.com> <20200921132611.1700350-2-elver@google.com>
+ <20200929142411.GC53442@C02TD0UTHF1T.local>
+In-Reply-To: <20200929142411.GC53442@C02TD0UTHF1T.local>
+From:   Marco Elver <elver@google.com>
+Date:   Tue, 29 Sep 2020 16:51:29 +0200
+Message-ID: <CANpmjNNQGrpq+fBh4OypP9aK+-548vbCbKYiWQnSHESM0SLVzw@mail.gmail.com>
+Subject: Re: [PATCH v3 01/10] mm: add Kernel Electric-Fence infrastructure
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Potapenko <glider@google.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christoph Lameter <cl@linux.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hillf Danton <hdanton@sina.com>,
+        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Kees Cook <keescook@chromium.org>,
+        Pekka Enberg <penberg@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        SeongJae Park <sjpark@amazon.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Will Deacon <will@kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, 29 Sep 2020 06:30:56 -0300
-"Daniel W. S. Almeida" <dwlsalmeida@gmail.com> escreveu:
+On Tue, 29 Sep 2020 at 16:24, Mark Rutland <mark.rutland@arm.com> wrote:
+[...]
+>
+> From other sub-threads it sounds like these addresses are not part of
+> the linear/direct map. Having kmalloc return addresses outside of the
+> linear map is going to break anything that relies on virt<->phys
+> conversions, and is liable to make DMA corrupt memory. There were
+> problems of that sort with VMAP_STACK, and this is why kvmalloc() is
+> separate from kmalloc().
+>
+> Have you tested with CONFIG_DEBUG_VIRTUAL? I'd expect that to scream.
+>
+> I strongly suspect this isn't going to be safe unless you always use an
+> in-place carevout from the linear map (which could be the linear alias
+> of a static carevout).
 
-> Hi Mauro!
-> 
-> > Next time, please add a patch 0, specially when you tag something as
-> > WIP, or RFC.  
-> 
-> Sorry about that :)
-> 
-> These are almost good but I came across some weird kasan output.
-> 
-> Can you test this series in a kernel with kasan instrumentation turned on?
-> 
-> Should apply just fine on top of your latest changes in mchehab-experimental/vidtv
+That's an excellent point, thank you! Indeed, on arm64, a version with
+naive static-pool screams with CONFIG_DEBUG_VIRTUAL.
 
-I'm currently focusing preparing some things for the merge window.
+We'll try to put together an arm64 version using a carveout as you suggest.
 
-I can try to test them after it.
+> [...]
+>
+> > +static __always_inline void *kfence_alloc(struct kmem_cache *s, size_t size, gfp_t flags)
+> > +{
+> > +     return static_branch_unlikely(&kfence_allocation_key) ? __kfence_alloc(s, size, flags) :
+> > +                                                                   NULL;
+> > +}
+>
+> Minor (unrelated) nit, but this would be easier to read as:
+>
+> static __always_inline void *kfence_alloc(struct kmem_cache *s, size_t size, gfp_t flags)
+> {
+>         if (static_branch_unlikely(&kfence_allocation_key))
+>                 return __kfence_alloc(s, size, flags);
+>         return NULL;
+> }
 
-Btw, before testing those patches, you should test with KASAN and
-with the memory leak detector if everything is being de-allocated
-when the drivers are removed from the memory.
-
-If you find something wrong there, I suggest you to fix the
-found issues before applying the new NIT and EDT tables support,
-as it may help to check what it could be happening after the
-patches.
+Will fix for v5.
 
 Thanks,
-Mauro
+-- Marco
