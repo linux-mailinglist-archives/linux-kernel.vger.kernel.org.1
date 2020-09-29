@@ -2,204 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34CC227BFB2
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 10:37:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06C5227BFBC
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 10:39:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727788AbgI2Ihk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 04:37:40 -0400
-Received: from mail-eopbgr1310103.outbound.protection.outlook.com ([40.107.131.103]:64448
-        "EHLO APC01-SG2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725774AbgI2Ihk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 04:37:40 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lr0hyaLyZLicIops6KlO8lTMRYkfJrAkR7e23zViSYV5cW1l9vFp07Dqnr8ZUKcPnuATCw3u6j5f/4i3sBci2YXw8zmNL5rtslVpw2qvg3VZ/Jh4zhibeXagILk2GmQTfP/TXfwRKTis9xMBUSC47ubgiFEaqa8cKbWyVf/wAKJj8x1vio/PW8hUA9LcFbg/3f8wsJSffFWFD1lHUKLnJNw1piabNKaGcXDTNusiLUOoAIAkGO1r73rAIaI/+PC0okZ2wXyZLITI9C+bVsdIHETG4mxWxSOEm0AswFK0OI9YPAgT+NjKOoai0/BGug1yj8l23wTfSLTmnHfLUYKWOw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=L9uZlPzhYUkHb4sda3qq37aniU47e4MMS3N4JSD8crY=;
- b=POLQKZVhlZoLV+nKQE6/kxlzZvbbUkwMrB83ht64D733nYWbKY6wV7bEEQ2yDi4t9KSZfNQuArcsASt4L48tDIKiXJq1m8EMYR7Lsvaemn/5McO9lUJhlp1/P/oDJS/qL0fA3dqN6KocdYdLZW7bavwdk0wetN/Udc7JmHp8sPQeDnP50FjAuAhJvlwUqHXzLMk5OxOTUKAETKEzbE8MDiKcTZ7YbqC2i1q/0QoCHpvs/s7VLTQgTAAoTK2C5Dtl9ROOsp7Rp8rkjbP+8RH8FbSTwTboAEDYLyjTCb9mdsVunQX/OLyHJiw/IfS/Riy41LlXOY17uHvCDDbT4RKkeA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=aspeedtech.com; dmarc=pass action=none
- header.from=aspeedtech.com; dkim=pass header.d=aspeedtech.com; arc=none
-Received: from HK0PR06MB3380.apcprd06.prod.outlook.com (2603:1096:203:82::18)
- by HK0PR06MB2835.apcprd06.prod.outlook.com (2603:1096:203:5e::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.21; Tue, 29 Sep
- 2020 08:37:34 +0000
-Received: from HK0PR06MB3380.apcprd06.prod.outlook.com
- ([fe80::6def:b61:3beb:f3d5]) by HK0PR06MB3380.apcprd06.prod.outlook.com
- ([fe80::6def:b61:3beb:f3d5%6]) with mapi id 15.20.3412.029; Tue, 29 Sep 2020
- 08:37:34 +0000
-From:   Ryan Chen <ryan_chen@aspeedtech.com>
-To:     Joel Stanley <joel@jms.id.au>,
-        Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>,
-        Andrew Jeffery <andrew@aj.id.au>
-CC:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        BMC-SW <BMC-SW@aspeedtech.com>
-Subject: RE: [PATCH 1/1] clk: aspeed: modify some default clks are critical
-Thread-Topic: [PATCH 1/1] clk: aspeed: modify some default clks are critical
-Thread-Index: AQHWlWUpDwyjj9Eb9EeIGPpnHXDUp6l/Q2cAgAAIW6A=
-Date:   Tue, 29 Sep 2020 08:37:34 +0000
-Message-ID: <HK0PR06MB338059A24B66C14675298D0BF2320@HK0PR06MB3380.apcprd06.prod.outlook.com>
-References: <20200928070108.14040-1-ryan_chen@aspeedtech.com>
- <20200928070108.14040-2-ryan_chen@aspeedtech.com>
- <CACPK8XcjmxBGUfDxE2WB3zBgG8OCoRMogfG=Fk5f+wNZu0pjMg@mail.gmail.com>
-In-Reply-To: <CACPK8XcjmxBGUfDxE2WB3zBgG8OCoRMogfG=Fk5f+wNZu0pjMg@mail.gmail.com>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: jms.id.au; dkim=none (message not signed)
- header.d=none;jms.id.au; dmarc=none action=none header.from=aspeedtech.com;
-x-originating-ip: [211.20.114.70]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 136f8f23-477b-45f3-dbfb-08d86452e9c1
-x-ms-traffictypediagnostic: HK0PR06MB2835:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <HK0PR06MB28350C679F9E282D3A427410F2320@HK0PR06MB2835.apcprd06.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6790;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: rsIBi8IQRy8ZIEdgHLWeur5Yn5SGVDzdyw/TjhIlMUfU3pPFG2Jvp0aHG67tYVuOF6MM/uPQDv/prr2510Yn1FzX9gQG1rkG42nbQNI3Bn4oSgxuZamMwzATP5T6Dzs0xs7Hio374VhNYU6zHGJETmER0LBhTfIKPrDILPRLL0P3jpeV/TfqfYb1yWLGkYVEsmm15BL0roKVtMS/oLTOuFAUbzWhrEW9eV+xKhrETv2jSpgjfwdBUM4B36qycuuF/pfW+TAwFvetaWf951LWdKFOMYfpT+UKjacEKdGOwgwGac1ONiQAc9FAH0hoh/KGxkwpPdK9Zdl0LYolrVqHtPDRE6U6DPQW4lPXNjQN7bVFIZuCr1nzIccuf0Bom0EkYjSUxJZkaaNk/w99xWqfBXwgPu/jmBpY1q1eZCS2psXfuG2KNY67eXCxrMEPUreX
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HK0PR06MB3380.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(39840400004)(376002)(396003)(346002)(136003)(86362001)(186003)(7696005)(33656002)(316002)(478600001)(54906003)(71200400001)(110136005)(83380400001)(2906002)(76116006)(66946007)(107886003)(9686003)(26005)(966005)(5660300002)(4326008)(55236004)(6506007)(8936002)(53546011)(66476007)(8676002)(66446008)(64756008)(66556008)(52536014)(55016002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: 0gxu+k4e0fyiCNwKETH0lJiA9CfBclH6yFk+jqsNkkpEuVEH/PyAuXrO/42aIHB1oF2+4B5REqKCa3/ZhDH3EKbbvhODrK3n2n6FvOqGxs29L8l/0UdsAbwp3r5k4OpKvrTP2Fz0bRw6YqZAHusihLidOP3muIYgAQk4dWOz+RryaHVXcrMVnqIER3JSH6zVtWLPSa6ZSCTkzhopICG4wKQZJjDwUxVnmCidvagq/Xai8Rngaobid5gJE0C3J6Qk1AvHKX1s1kirG9A1Flus8zpe8q0tlU90F1Dm/l+FJXWINoEmSAXDe9md1WrlNi0FF4Of7dg+/5Lv3seuPKUSHuK04sZFLklSO1WLXEEZsneypD5E3DNjVmP/Xnu0FrULhaFZFgwr/4Jfngj7rW1nbc0LFNU4Qrzyr7sjwkcEx4V7rB+kSowyLJLNSGO24tO6wr+qlscstzAm+omFqJ1K4r0IXtB2HH0PhzMQzCyWCm97VzOECYeqZl1Jf9pHYybTy1Nz5kI4wJSvCIhbK3sLd7Beypszhxcbhl5OAKwT/BvdR4DnbmKw0Z1wTTS8JBS4f+6U8ouwMiwB0HsJA8Ax+nvw7gJi7o0mJnbSKFwCyQo2RrxXcwY0YC6nC4gmNQNfgThh8QxtidEN7jb4SLIOyw==
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1727818AbgI2Ii6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 04:38:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38500 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727634AbgI2Iiz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 04:38:55 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98D40C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 01:38:55 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id v123so3556743qkd.9
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 01:38:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=wNxZsxbLvCMFxlDhPXL+cS3czzmsURxJF3wNkez0/n8=;
+        b=qXQPhpbgyg6aqhcQtcnINkSq2dfm0LrlyOwffEz10gH9Sh5fv77nXfyC4O0Oky2kcg
+         gExXpXB1KciLPj8cthjFSWYZF+y2HppBZYle1ASHIvxWEliZqhVOQYB5O3+zVEhHsMKJ
+         Mvfiwux38RGAVHXTPOKnVbTs+ko8a3d4rrJjUON/tm6Gp3+zQ1HvBKsbnTSxs9fSDYyF
+         UipLMqKj7pGGp4hV2K9CHSpbK7MTR8QG6YXTg7vtsODyTbemdheIYdkfueFRawjohFrx
+         DIY1XozyWMGDLnUNd0jIV9rzSo6itAqM7Pm3rwJAQTnsZvEdPV0Aebbyj8Lq85NTv3KH
+         /R0A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=wNxZsxbLvCMFxlDhPXL+cS3czzmsURxJF3wNkez0/n8=;
+        b=G4MGjiiyF4mhlBDJZCU7ekBhdsOW97rgJtCM7HkfmZ18XQvSTSzFqfsuBlAiOYDDEb
+         ZBCkrcDI/1YrpQoFuPbKOW4FCRpO3GwBq9XsUd+O5S40a5MT+D036BhVh1hgU1jtUElQ
+         QeF5KTT9kFjV1vR7LAeEZTuc/FY4eYgyGgGwIHuhgVS+e89XxP8XrPGrUxhoPHj8T5Z2
+         U5d6Df2XjklYIc0FdRW6DCUhhwZGu4B/+sikhTXOdD0uqKcCej8AzXh/FTNX8kn25QCC
+         atrXnnkfkZMtFA9F2vE/1t+m/2JA/BckNrwL0kvovUSlMyKQaTLjwkjNeyp+ojOPCIVm
+         alZQ==
+X-Gm-Message-State: AOAM533a/6Ho1JzBpXMU+g0pDpjf1QwjsWcSLka1f9uEcMQA2Qs88i10
+        xIuiqQHPFb/VFBauwXKG0OaIQdMDwtIXe4/kXfM=
+X-Google-Smtp-Source: ABdhPJzFfebg2ClF5+UVCKk05dn1cBrNGM77uQlAG0YUJHDkE5t2I63gzCmCZHh8E7bFhS1fTT9p+d1hDf8/ivrI20Q=
+X-Received: by 2002:a37:7844:: with SMTP id t65mr3160367qkc.136.1601368734576;
+ Tue, 29 Sep 2020 01:38:54 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: aspeedtech.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: HK0PR06MB3380.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 136f8f23-477b-45f3-dbfb-08d86452e9c1
-X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Sep 2020 08:37:34.2738
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43d4aa98-e35b-4575-8939-080e90d5a249
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: g6rXNxcsX9dHRPVAzAFgVGw2n4pNUvuzlz+fEX6FNfqCmuvRYsLyFrb58ssBZYx3iS9q7P+nYTSSW96MMXRuipydHh2weNiAX/vnQyFSw6s=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HK0PR06MB2835
+References: <1601283046-15329-1-git-send-email-iamjoonsoo.kim@lge.com> <20200929080814.GB22035@dhcp22.suse.cz>
+In-Reply-To: <20200929080814.GB22035@dhcp22.suse.cz>
+From:   Joonsoo Kim <js1304@gmail.com>
+Date:   Tue, 29 Sep 2020 17:38:43 +0900
+Message-ID: <CAAmzW4OK=ubyNWsjwfOkj4vZz2Tjuo0G9ceTMXUkx8W+3PEM=g@mail.gmail.com>
+Subject: Re: [PATCH v2 for v5.9] mm/page_alloc: handle a missing case for
+ memalloc_nocma_{save/restore} APIs
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Mel Gorman <mgorman@techsingularity.net>, kernel-team@lge.com,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBGcm9tOiBKb2VsIFN0YW5sZXkgPGpvZWxAam1zLmlkLmF1Pg0KPiBTZW50OiBUdWVzZGF5LCBT
-ZXB0ZW1iZXIgMjksIDIwMjAgNDowNCBQTQ0KPiBUbzogUnlhbiBDaGVuIDxyeWFuX2NoZW5AYXNw
-ZWVkdGVjaC5jb20+OyBKYWUgSHl1biBZb28NCj4gPGphZS5oeXVuLnlvb0BsaW51eC5pbnRlbC5j
-b20+OyBBbmRyZXcgSmVmZmVyeSA8YW5kcmV3QGFqLmlkLmF1Pg0KPiBDYzogTWljaGFlbCBUdXJx
-dWV0dGUgPG10dXJxdWV0dGVAYmF5bGlicmUuY29tPjsgU3RlcGhlbiBCb3lkDQo+IDxzYm95ZEBr
-ZXJuZWwub3JnPjsgbGludXgtY2xrQHZnZXIua2VybmVsLm9yZzsgTGludXggQVJNDQo+IDxsaW51
-eC1hcm0ta2VybmVsQGxpc3RzLmluZnJhZGVhZC5vcmc+OyBsaW51eC1hc3BlZWQNCj4gPGxpbnV4
-LWFzcGVlZEBsaXN0cy5vemxhYnMub3JnPjsgTGludXggS2VybmVsIE1haWxpbmcgTGlzdA0KPiA8
-bGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZz47IEJNQy1TVyA8Qk1DLVNXQGFzcGVlZHRlY2gu
-Y29tPg0KPiBTdWJqZWN0OiBSZTogW1BBVENIIDEvMV0gY2xrOiBhc3BlZWQ6IG1vZGlmeSBzb21l
-IGRlZmF1bHQgY2xrcyBhcmUgY3JpdGljYWwNCj4gDQo+IE9uIE1vbiwgMjggU2VwIDIwMjAgYXQg
-MDc6MDEsIFJ5YW4gQ2hlbiA8cnlhbl9jaGVuQGFzcGVlZHRlY2guY29tPg0KPiB3cm90ZToNCj4g
-Pg0KPiA+IEluIEFTUEVFRCBTb0MgTENMSyBpcyBMUEMgY2xvY2sgZm9yIGFsbCBTdXBlcklPIGRl
-dmljZSwgVUFSVDEvVUFSVDINCj4gPiBhcmUgZGVmYXVsdCBmb3IgSG9zdCBTdXBlcklPIFVBUlQg
-ZGV2aWNlLCBlU1BJIGNsayBmb3IgSG9zdCBlU1BJIGJ1cw0KPiA+IGFjY2VzcyBlU1BJIHNsYXZl
-IGNoYW5uZWwsIHRob3NlIGNsa3MgY2FuJ3QgYmUgZGlzYWJsZSBzaG91bGQga2VlcA0KPiA+IGRl
-ZmF1bHQsIG90aGVyd2lzZSB3aWxsIGFmZmVjdCBIb3N0IHNpZGUgYWNjZXNzIFN1cGVySU8gYW5k
-IFNQSSBzbGF2ZSBkZXZpY2UuDQo+ID4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBSeWFuIENoZW4gPHJ5
-YW5fY2hlbkBhc3BlZWR0ZWNoLmNvbT4NCj4gPiAtLS0NCj4gPiAgZHJpdmVycy9jbGsvY2xrLWFz
-cGVlZC5jICB8IDggKysrKy0tLS0gIGRyaXZlcnMvY2xrL2Nsay1hc3QyNjAwLmMgfCA4DQo+ID4g
-KysrKy0tLS0NCj4gPiAgMiBmaWxlcyBjaGFuZ2VkLCA4IGluc2VydGlvbnMoKyksIDggZGVsZXRp
-b25zKC0pDQo+ID4NCj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9jbGsvY2xrLWFzcGVlZC5jIGIv
-ZHJpdmVycy9jbGsvY2xrLWFzcGVlZC5jIGluZGV4DQo+ID4gNDExZmY1ZmIyYzA3Li5kMzQ4YzRm
-ZDNmOWYgMTAwNjQ0DQo+ID4gLS0tIGEvZHJpdmVycy9jbGsvY2xrLWFzcGVlZC5jDQo+ID4gKysr
-IGIvZHJpdmVycy9jbGsvY2xrLWFzcGVlZC5jDQo+ID4gQEAgLTU0LDE1ICs1NCwxNSBAQCBzdGF0
-aWMgY29uc3Qgc3RydWN0IGFzcGVlZF9nYXRlX2RhdGEgYXNwZWVkX2dhdGVzW10NCj4gPSB7DQo+
-ID4gICAgICAgICBbQVNQRUVEX0NMS19HQVRFX0RDTEtdID0gICAgICAgIHsgIDUsIC0xLCAiZGNs
-ay1nYXRlIiwNCj4gTlVMTCwgICBDTEtfSVNfQ1JJVElDQUwgfSwgLyogREFDICovDQo+ID4gICAg
-ICAgICBbQVNQRUVEX0NMS19HQVRFX1JFRkNMS10gPSAgICAgIHsgIDYsIC0xLCAicmVmY2xrLWdh
-dGUiLA0KPiAiY2xraW4iLCBDTEtfSVNfQ1JJVElDQUwgfSwNCj4gPiAgICAgICAgIFtBU1BFRURf
-Q0xLX0dBVEVfVVNCUE9SVDJDTEtdID0geyAgNywgIDMsICJ1c2ItcG9ydDItZ2F0ZSIsDQo+IE5V
-TEwsICAgMCB9LCAvKiBVU0IyLjAgSG9zdCBwb3J0IDIgKi8NCj4gPiAtICAgICAgIFtBU1BFRURf
-Q0xLX0dBVEVfTENMS10gPSAgICAgICAgeyAgOCwgIDUsICJsY2xrLWdhdGUiLA0KPiBOVUxMLCAg
-IDAgfSwgLyogTFBDICovDQo+ID4gKyAgICAgICBbQVNQRUVEX0NMS19HQVRFX0xDTEtdID0gICAg
-ICAgIHsgIDgsICA1LCAibGNsay1nYXRlIiwNCj4gTlVMTCwgICBDTEtfSVNfQ1JJVElDQUwgfSwg
-LyogTFBDICovDQo+ID4gICAgICAgICBbQVNQRUVEX0NMS19HQVRFX1VTQlVIQ0lDTEtdID0gIHsg
-IDksIDE1LCAidXNiLXVoY2ktZ2F0ZSIsDQo+IE5VTEwsICAgMCB9LCAvKiBVU0IxLjEgKHJlcXVp
-cmVzIHBvcnQgMiBlbmFibGVkKSAqLw0KPiA+ICAgICAgICAgW0FTUEVFRF9DTEtfR0FURV9EMUNM
-S10gPSAgICAgICB7IDEwLCAxMywgImQxY2xrLWdhdGUiLA0KPiBOVUxMLCAgIDAgfSwgLyogR0ZY
-IENSVCAqLw0KPiA+ICAgICAgICAgW0FTUEVFRF9DTEtfR0FURV9ZQ0xLXSA9ICAgICAgICB7IDEz
-LCAgNCwgInljbGstZ2F0ZSIsDQo+IE5VTEwsICAgMCB9LCAvKiBIQUMgKi8NCj4gPiAgICAgICAg
-IFtBU1BFRURfQ0xLX0dBVEVfVVNCUE9SVDFDTEtdID0geyAxNCwgMTQsICJ1c2ItcG9ydDEtZ2F0
-ZSIsDQo+IE5VTEwsICAgMCB9LCAvKiBVU0IyIGh1Yi9VU0IyIGhvc3QgcG9ydCAxL1VTQjEuMSBk
-ZXYgKi8NCj4gPiAtICAgICAgIFtBU1BFRURfQ0xLX0dBVEVfVUFSVDFDTEtdID0gICAgeyAxNSwg
-LTEsICJ1YXJ0MWNsay1nYXRlIiwNCj4gInVhcnQiLCAwIH0sIC8qIFVBUlQxICovDQo+ID4gLSAg
-ICAgICBbQVNQRUVEX0NMS19HQVRFX1VBUlQyQ0xLXSA9ICAgIHsgMTYsIC0xLCAidWFydDJjbGst
-Z2F0ZSIsDQo+ICJ1YXJ0IiwgMCB9LCAvKiBVQVJUMiAqLw0KPiA+ICsgICAgICAgW0FTUEVFRF9D
-TEtfR0FURV9VQVJUMUNMS10gPSAgICB7IDE1LCAtMSwgInVhcnQxY2xrLWdhdGUiLA0KPiAidWFy
-dCIsIENMS19JU19DUklUSUNBTCB9LCAvKiBVQVJUMSAqLw0KPiA+ICsgICAgICAgW0FTUEVFRF9D
-TEtfR0FURV9VQVJUMkNMS10gPSAgICB7IDE2LCAtMSwgInVhcnQyY2xrLWdhdGUiLA0KPiAidWFy
-dCIsIENMS19JU19DUklUSUNBTCB9LCAvKiBVQVJUMiAqLw0KPiA+ICAgICAgICAgW0FTUEVFRF9D
-TEtfR0FURV9VQVJUNUNMS10gPSAgICB7IDE3LCAtMSwgInVhcnQ1Y2xrLWdhdGUiLA0KPiAidWFy
-dCIsIDAgfSwgLyogVUFSVDUgKi8NCj4gPiAtICAgICAgIFtBU1BFRURfQ0xLX0dBVEVfRVNQSUNM
-S10gPSAgICAgeyAxOSwgLTEsICJlc3BpY2xrLWdhdGUiLA0KPiBOVUxMLCAgIDAgfSwgLyogZVNQ
-SSAqLw0KPiA+ICsgICAgICAgW0FTUEVFRF9DTEtfR0FURV9FU1BJQ0xLXSA9ICAgICB7IDE5LCAt
-MSwgImVzcGljbGstZ2F0ZSIsDQo+IE5VTEwsICAgQ0xLX0lTX0NSSVRJQ0FMIH0sIC8qIGVTUEkg
-Ki8NCj4gDQo+IFRoaXMgaXMgZmluZSBmb3Igc3lzdGVtcyB0aGF0IGhhdmUgZVNQSS4gRm9yIHN5
-c3RlbXMgdGhhdCBkbyBub3QgdXNlIGVTUEksIHRoZQ0KPiBjbG9ja3MgYXJlIG5vdCAicmVxdWly
-ZWQiLg0KPiANCj4gSSB3YXMgc2VudCBhIHNpbWlsYXIgcGF0Y2ggYnkgSmFlIHNvbWUgdGltZSBh
-Z286DQo+IA0KPiANCj4gaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvb3BlbmJtYy82OTdhMTg0Yi1l
-Zjk5LWE0NmUtYmY5OC00ZDMzOWIzYWFmZDhAbGluDQo+IHV4LmludGVsLmNvbS8NCj4gDQo+IEJl
-dHRlciBpcyB0byBhc3NvY2lhdGUgZHJpdmVycyB3aXRoIHRoZXNlIGNsb2NrcywgYW5kIHRob3Nl
-IGRyaXZlcnMgd2lsbCBlbnN1cmUNCj4gdGhleSBhcmUgbGVmdCBlbmFibGVkLg0KPiANCj4gQWx0
-ZXJuYXRpdmVseSwgd2Ugd2lsbCBuZWVkIHRvIGNvbWUgdXAgd2l0aCBhIGRldmljZSB0cmVlIGJp
-bmRpbmcgdG8gZGVzY3JpYmUNCj4gdGhlIGhhcmR3YXJlIHJlcXVpcmVtZW50IHRoYXQgdGhlc2Ug
-Y2xvY2tzIGFyZSBsZWZ0IG9uLg0KPiANCkFTUEVFRCBCTUMgU29DIGhhdmUgU3VwZXJJTyBkZXZp
-Y2UgdGhhdCBkZWZhdWx0IGVuYWJsZSwgZXZlbiB3aXRob3V0IEJNQyBmdyBib290Lg0KSG9zdCBj
-YW4gdXNlIFNVQVJUMS9TVUFSVDIvR1BJTy4uLi4gDQpUaGF0IHRoZSByZWFzb24gZXZlbiBMaW51
-eCBrZXJuZWwgYm9vdCBzaG91bGQgbm90IGNoYW5nZSB0aGUgU29DIGRlZmF1bHQgY2xrLCB0aGF0
-IGlzIHRoZSBpbXBhY3QuDQoNClJ5YW4NCj4gDQo+ID4gICAgICAgICBbQVNQRUVEX0NMS19HQVRF
-X01BQzFDTEtdID0gICAgIHsgMjAsIDExLCAibWFjMWNsay1nYXRlIiwNCj4gIm1hYyIsICAwIH0s
-IC8qIE1BQzEgKi8NCj4gPiAgICAgICAgIFtBU1BFRURfQ0xLX0dBVEVfTUFDMkNMS10gPSAgICAg
-eyAyMSwgMTIsICJtYWMyY2xrLWdhdGUiLA0KPiAibWFjIiwgIDAgfSwgLyogTUFDMiAqLw0KPiA+
-ICAgICAgICAgW0FTUEVFRF9DTEtfR0FURV9SU0FDTEtdID0gICAgICB7IDI0LCAtMSwgInJzYWNs
-ay1nYXRlIiwNCj4gTlVMTCwgICAwIH0sIC8qIFJTQSAqLw0KPiA+IGRpZmYgLS1naXQgYS9kcml2
-ZXJzL2Nsay9jbGstYXN0MjYwMC5jIGIvZHJpdmVycy9jbGsvY2xrLWFzdDI2MDAuYw0KPiA+IGlu
-ZGV4IGJiYWNhY2NhZDU1NC4uNjgwMmEyZDViYmUyIDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMv
-Y2xrL2Nsay1hc3QyNjAwLmMNCj4gPiArKysgYi9kcml2ZXJzL2Nsay9jbGstYXN0MjYwMC5jDQo+
-ID4gQEAgLTg2LDggKzg2LDggQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBhc3BlZWRfZ2F0ZV9kYXRh
-IGFzcGVlZF9nNl9nYXRlc1tdDQo+ID0gew0KPiA+ICAgICAgICAgLyogUmVzZXJ2ZWQgMjYgKi8N
-Cj4gPiAgICAgICAgIFtBU1BFRURfQ0xLX0dBVEVfRU1NQ0NMS10gICAgICAgPSB7IDI3LCAxNiwN
-Cj4gImVtbWNjbGstZ2F0ZSIsICAgICBOVUxMLCAgICAwIH0sICAgLyogRm9yIGNhcmQgY2xrICov
-DQo+ID4gICAgICAgICAvKiBSZXNlcnZlZCAyOC8yOS8zMCAqLw0KPiA+IC0gICAgICAgW0FTUEVF
-RF9DTEtfR0FURV9MQ0xLXSAgICAgICAgICA9IHsgMzIsIDMyLCAibGNsay1nYXRlIiwNCj4gTlVM
-TCwgICAgMCB9LCAvKiBMUEMgKi8NCj4gPiAtICAgICAgIFtBU1BFRURfQ0xLX0dBVEVfRVNQSUNM
-S10gICAgICAgPSB7IDMzLCAtMSwgImVzcGljbGstZ2F0ZSIsDQo+IE5VTEwsICAgIDAgfSwgLyog
-ZVNQSSAqLw0KPiA+ICsgICAgICAgW0FTUEVFRF9DTEtfR0FURV9MQ0xLXSAgICAgICAgICA9IHsg
-MzIsIDMyLCAibGNsay1nYXRlIiwNCj4gTlVMTCwgICAgQ0xLX0lTX0NSSVRJQ0FMIH0sIC8qIExQ
-QyAqLw0KPiA+ICsgICAgICAgW0FTUEVFRF9DTEtfR0FURV9FU1BJQ0xLXSAgICAgICA9IHsgMzMs
-IC0xLCAiZXNwaWNsay1nYXRlIiwNCj4gTlVMTCwgICAgQ0xLX0lTX0NSSVRJQ0FMIH0sIC8qIGVT
-UEkgKi8NCj4gPiAgICAgICAgIFtBU1BFRURfQ0xLX0dBVEVfUkVGMUNMS10gICAgICAgPSB7IDM0
-LCAtMSwgInJlZjFjbGstZ2F0ZSIsDQo+ICJjbGtpbiIsIENMS19JU19DUklUSUNBTCB9LA0KPiA+
-ICAgICAgICAgLyogUmVzZXJ2ZWQgMzUgKi8NCj4gPiAgICAgICAgIFtBU1BFRURfQ0xLX0dBVEVf
-U0RDTEtdICAgICAgICAgPSB7IDM2LCA1NiwgInNkY2xrLWdhdGUiLA0KPiBOVUxMLCAgICAwIH0s
-ICAgLyogU0RJTy9TRCAqLw0KPiA+IEBAIC0xMDIsOCArMTAyLDggQEAgc3RhdGljIGNvbnN0IHN0
-cnVjdCBhc3BlZWRfZ2F0ZV9kYXRhDQo+IGFzcGVlZF9nNl9nYXRlc1tdID0gew0KPiA+ICAgICAg
-ICAgW0FTUEVFRF9DTEtfR0FURV9JM0M1Q0xLXSAgICAgICA9IHsgNDUsICA0NSwgImkzYzVjbGst
-Z2F0ZSIsDQo+IE5VTEwsICAgIDAgfSwgICAvKiBJM0M1ICovDQo+ID4gICAgICAgICBbQVNQRUVE
-X0NMS19HQVRFX0kzQzZDTEtdICAgICAgID0geyA0NiwgIDQ2LCAiaTNjNmNsay1nYXRlIiwNCj4g
-TlVMTCwgICAgMCB9LCAgIC8qIEkzQzYgKi8NCj4gPiAgICAgICAgIFtBU1BFRURfQ0xLX0dBVEVf
-STNDN0NMS10gICAgICAgPSB7IDQ3LCAgNDcsICJpM2M3Y2xrLWdhdGUiLA0KPiBOVUxMLCAgICAw
-IH0sICAgLyogSTNDNyAqLw0KPiA+IC0gICAgICAgW0FTUEVFRF9DTEtfR0FURV9VQVJUMUNMS10g
-ICAgICA9IHsgNDgsICAtMSwgInVhcnQxY2xrLWdhdGUiLA0KPiAidWFydCIsICAwIH0sICAgLyog
-VUFSVDEgKi8NCj4gPiAtICAgICAgIFtBU1BFRURfQ0xLX0dBVEVfVUFSVDJDTEtdICAgICAgPSB7
-IDQ5LCAgLTEsICJ1YXJ0MmNsay1nYXRlIiwNCj4gInVhcnQiLCAgMCB9LCAgIC8qIFVBUlQyICov
-DQo+ID4gKyAgICAgICBbQVNQRUVEX0NMS19HQVRFX1VBUlQxQ0xLXSAgICAgID0geyA0OCwgIC0x
-LCAidWFydDFjbGstZ2F0ZSIsDQo+ICJ1YXJ0IiwgIENMS19JU19DUklUSUNBTCB9LCAgICAgLyog
-VUFSVDEgKi8NCj4gPiArICAgICAgIFtBU1BFRURfQ0xLX0dBVEVfVUFSVDJDTEtdICAgICAgPSB7
-IDQ5LCAgLTEsICJ1YXJ0MmNsay1nYXRlIiwNCj4gInVhcnQiLCAgQ0xLX0lTX0NSSVRJQ0FMIH0s
-ICAgICAvKiBVQVJUMiAqLw0KPiA+ICAgICAgICAgW0FTUEVFRF9DTEtfR0FURV9VQVJUM0NMS10g
-ICAgICA9IHsgNTAsICAtMSwNCj4gInVhcnQzY2xrLWdhdGUiLCAgICJ1YXJ0IiwgIDAgfSwgICAv
-KiBVQVJUMyAqLw0KPiA+ICAgICAgICAgW0FTUEVFRF9DTEtfR0FURV9VQVJUNENMS10gICAgICA9
-IHsgNTEsICAtMSwNCj4gInVhcnQ0Y2xrLWdhdGUiLCAgICJ1YXJ0IiwgIDAgfSwgICAvKiBVQVJU
-NCAqLw0KPiA+ICAgICAgICAgW0FTUEVFRF9DTEtfR0FURV9NQUMzQ0xLXSAgICAgICA9IHsgNTIs
-ICA1MiwNCj4gIm1hYzNjbGstZ2F0ZSIsICAgICJtYWMzNCIsIDAgfSwgICAvKiBNQUMzICovDQo+
-ID4gLS0NCj4gPiAyLjE3LjENCj4gPg0K
+2020=EB=85=84 9=EC=9B=94 29=EC=9D=BC (=ED=99=94) =EC=98=A4=ED=9B=84 5:08, M=
+ichal Hocko <mhocko@suse.com>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
+>
+> On Mon 28-09-20 17:50:46, Joonsoo Kim wrote:
+> > From: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+> >
+> > memalloc_nocma_{save/restore} APIs can be used to skip page allocation
+> > on CMA area, but, there is a missing case and the page on CMA area coul=
+d
+> > be allocated even if APIs are used. This patch handles this case to fix
+> > the potential issue.
+> >
+> > Missing case is an allocation from the pcplist. MIGRATE_MOVABLE pcplist
+> > could have the pages on CMA area so we need to skip it if ALLOC_CMA isn=
+'t
+> > specified.
+> >
+> > Fixes: 8510e69c8efe (mm/page_alloc: fix memalloc_nocma_{save/restore} A=
+PIs)
+> > Signed-off-by: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+> > ---
+> >  mm/page_alloc.c | 13 ++++++++++---
+> >  1 file changed, 10 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> > index fab5e97..104d2e1 100644
+> > --- a/mm/page_alloc.c
+> > +++ b/mm/page_alloc.c
+> > @@ -3367,9 +3367,16 @@ struct page *rmqueue(struct zone *preferred_zone=
+,
+> >       struct page *page;
+> >
+> >       if (likely(order =3D=3D 0)) {
+> > -             page =3D rmqueue_pcplist(preferred_zone, zone, gfp_flags,
+> > +             /*
+> > +              * MIGRATE_MOVABLE pcplist could have the pages on CMA ar=
+ea and
+> > +              * we need to skip it when CMA area isn't allowed.
+> > +              */
+> > +             if (!IS_ENABLED(CONFIG_CMA) || alloc_flags & ALLOC_CMA ||
+> > +                             migratetype !=3D MIGRATE_MOVABLE) {
+> > +                     page =3D rmqueue_pcplist(preferred_zone, zone, gf=
+p_flags,
+> >                                       migratetype, alloc_flags);
+> > -             goto out;
+> > +                     goto out;
+> > +             }
+> >       }
+>
+> This approach looks definitely better than the previous version.
+
+Thanks!
+
+> >
+> >       /*
+> > @@ -3381,7 +3388,7 @@ struct page *rmqueue(struct zone *preferred_zone,
+> >
+> >       do {
+> >               page =3D NULL;
+> > -             if (alloc_flags & ALLOC_HARDER) {
+> > +             if (order > 0 && alloc_flags & ALLOC_HARDER) {
+> >                       page =3D __rmqueue_smallest(zone, order, MIGRATE_=
+HIGHATOMIC);
+> >                       if (page)
+> >                               trace_mm_page_alloc_zone_locked(page, ord=
+er, migratetype);
+>
+> But this condition is not clear to me. __rmqueue_smallest doesn't access
+> pcp lists. Maybe I have missed the point in the original discussion but
+> this deserves a comment at least.
+
+Before the pcplist skipping is applied, order-0 request can not reach here.
+But, now, an order-0 request can reach here. Free memory on
+MIGRATE_HIGHATOMIC is reserved for high-order atomic allocation
+so an order-0 request should skip it.
+
+I will add a code comment on the next version.
+
+Thanks.
