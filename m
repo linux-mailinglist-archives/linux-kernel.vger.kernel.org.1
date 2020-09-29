@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A83B327C351
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:06:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7098527C3ED
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:10:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728645AbgI2LEi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:04:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40760 "EHLO mail.kernel.org"
+        id S1729124AbgI2LKA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:10:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50316 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728627AbgI2LEe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:04:34 -0400
+        id S1729098AbgI2LJt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:09:49 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6636921D43;
-        Tue, 29 Sep 2020 11:04:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4350A21941;
+        Tue, 29 Sep 2020 11:09:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601377474;
-        bh=5oJXERcogd7RSgtOBW51ypRk6CSY3vCWQB6geNwizwU=;
+        s=default; t=1601377788;
+        bh=rbY38R2MTUHiLfLudude9YVe8QTK+qxZFgcLZXsi02w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xeSGZ0QLbeXgMmuSU0l0Gx+rJ3bc1hRqfPM4iknIHboGSvTBrzapmC9blZr2XGMNB
-         /MXdDCVRd+7b5I/A7+QTCpduT7FDtyHNmdfkocNrKAYsUi8gPCylfXnhjh0dYVtYer
-         XnWrLNVvTe3YGXCSH8PeZw0jnC4bgQqRVMb0IboI=
+        b=idhtxN7HvEKNVKfvMnyPxMt48dMFo7SmGP0XiediFJ6rklvfY6NozADgRQt6FpiEH
+         lRGr7tRdLay/ZmVfdKA/gnyXIHLCXQC1S2I9INDHPoLUiEvDvU3jyke+P0Yq4mS8Kx
+         g2rQEnzd9S3nZ56Ow4ooG/rVgBx+ILfLAMwzr314=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Andreas Steinmetz <ast@domdv.de>,
         Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 48/85] ALSA: usb-audio: Fix case when USB MIDI interface has more than one extra endpoint descriptor
-Date:   Tue, 29 Sep 2020 13:00:15 +0200
-Message-Id: <20200929105930.637779107@linuxfoundation.org>
+Subject: [PATCH 4.9 072/121] ALSA: usb-audio: Fix case when USB MIDI interface has more than one extra endpoint descriptor
+Date:   Tue, 29 Sep 2020 13:00:16 +0200
+Message-Id: <20200929105933.743397837@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929105928.198942536@linuxfoundation.org>
-References: <20200929105928.198942536@linuxfoundation.org>
+In-Reply-To: <20200929105930.172747117@linuxfoundation.org>
+References: <20200929105930.172747117@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -68,10 +68,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 24 insertions(+), 5 deletions(-)
 
 diff --git a/sound/usb/midi.c b/sound/usb/midi.c
-index 5c4a3d6c42341..934540042bc2e 100644
+index 0676e7d485def..b8d4b5b3e54a1 100644
 --- a/sound/usb/midi.c
 +++ b/sound/usb/midi.c
-@@ -1803,6 +1803,28 @@ static int snd_usbmidi_create_endpoints(struct snd_usb_midi *umidi,
+@@ -1805,6 +1805,28 @@ static int snd_usbmidi_create_endpoints(struct snd_usb_midi *umidi,
  	return 0;
  }
  
@@ -100,7 +100,7 @@ index 5c4a3d6c42341..934540042bc2e 100644
  /*
   * Returns MIDIStreaming device capabilities.
   */
-@@ -1840,11 +1862,8 @@ static int snd_usbmidi_get_ms_info(struct snd_usb_midi *umidi,
+@@ -1842,11 +1864,8 @@ static int snd_usbmidi_get_ms_info(struct snd_usb_midi *umidi,
  		ep = get_ep_desc(hostep);
  		if (!usb_endpoint_xfer_bulk(ep) && !usb_endpoint_xfer_int(ep))
  			continue;
