@@ -2,38 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2622A27CD2B
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:42:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D19D27CDAB
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:46:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387440AbgI2MmQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 08:42:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53300 "EHLO mail.kernel.org"
+        id S1732030AbgI2MqG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 08:46:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44066 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729271AbgI2LLu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:11:50 -0400
+        id S1728474AbgI2LGg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:06:36 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C9768208FE;
-        Tue, 29 Sep 2020 11:11:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 67207221EF;
+        Tue, 29 Sep 2020 11:06:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601377910;
-        bh=eiz7aoc8IANfM5Zam+W3qobqu1VmS3mANYdwlS2WVIc=;
+        s=default; t=1601377588;
+        bh=lMkrXVPs6tn1bQEf4liM779mvfh72/5GDT1ZaVbXnJw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Eo+VT7aUGXyTZqFzZcZvbE08kUeWCeAcD456QkQG4ClN7LGQxcAS52ZrjgqbBYNp8
-         LH9OFNtt03ykKNxo1EOBtvYTvGLGSTVoj3qsHFwJuxXQBQDUlErWEm+blkcXM63eZa
-         zG+DSOfkR1NPpoEFTob6Xfp6/oijsUA9fPL0eEGA=
+        b=Nggih1gcRC3frhSMYopAGx1gadoGKxUOsGwtsadezJ0ScpaaeDVOFeXXYfoHZKrqH
+         N7geoiqzpXYQHvHFwM1FREuMmnNHF7xPsKucUWshehLyuHdYyz/WWvMWykkN1jZuk2
+         CYpK/tdlYsAQJRe2UaflUbHA6t7UaAI6gCu2aa/w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
+        stable@vger.kernel.org,
+        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        Maxim Zhukov <mussitantesmortem@gmail.com>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 086/121] ALSA: hda: Fix potential race in unsol event handler
+Subject: [PATCH 4.4 63/85] e1000: Do not perform reset in reset_task if we are already down
 Date:   Tue, 29 Sep 2020 13:00:30 +0200
-Message-Id: <20200929105934.438541203@linuxfoundation.org>
+Message-Id: <20200929105931.364887308@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929105930.172747117@linuxfoundation.org>
-References: <20200929105930.172747117@linuxfoundation.org>
+In-Reply-To: <20200929105928.198942536@linuxfoundation.org>
+References: <20200929105928.198942536@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,53 +45,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Alexander Duyck <alexander.h.duyck@linux.intel.com>
 
-[ Upstream commit c637fa151259c0f74665fde7cba5b7eac1417ae5 ]
+[ Upstream commit 49ee3c2ab5234757bfb56a0b3a3cb422f427e3a3 ]
 
-The unsol event handling code has a loop retrieving the read/write
-indices and the arrays without locking while the append to the array
-may happen concurrently.  This may lead to some inconsistency.
-Although there hasn't been any proof of this bad results, it's still
-safer to protect the racy accesses.
+We are seeing a deadlock in e1000 down when NAPI is being disabled. Looking
+over the kernel function trace of the system it appears that the interface
+is being closed and then a reset is hitting which deadlocks the interface
+as the NAPI interface is already disabled.
 
-This patch adds the spinlock protection around the unsol handling loop
-for addressing it.  Here we take bus->reg_lock as the writer side
-snd_hdac_bus_queue_event() is also protected by that lock.
+To prevent this from happening I am disabling the reset task when
+__E1000_DOWN is already set. In addition code has been added so that we set
+the __E1000_DOWN while holding the __E1000_RESET flag in e1000_close in
+order to guarantee that the reset task will not run after we have started
+the close call.
 
-Link: https://lore.kernel.org/r/20200516062556.30951-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Alexander Duyck <alexander.h.duyck@linux.intel.com>
+Tested-by: Maxim Zhukov <mussitantesmortem@gmail.com>
+Signed-off-by: Jeff Kirsher <jeffrey.t.kirsher@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/hda/hdac_bus.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/net/ethernet/intel/e1000/e1000_main.c | 18 ++++++++++++++----
+ 1 file changed, 14 insertions(+), 4 deletions(-)
 
-diff --git a/sound/hda/hdac_bus.c b/sound/hda/hdac_bus.c
-index 0e81ea89a5965..e3f68a76d90eb 100644
---- a/sound/hda/hdac_bus.c
-+++ b/sound/hda/hdac_bus.c
-@@ -155,6 +155,7 @@ static void process_unsol_events(struct work_struct *work)
- 	struct hdac_driver *drv;
- 	unsigned int rp, caddr, res;
- 
-+	spin_lock_irq(&bus->reg_lock);
- 	while (bus->unsol_rp != bus->unsol_wp) {
- 		rp = (bus->unsol_rp + 1) % HDA_UNSOL_QUEUE_SIZE;
- 		bus->unsol_rp = rp;
-@@ -166,10 +167,13 @@ static void process_unsol_events(struct work_struct *work)
- 		codec = bus->caddr_tbl[caddr & 0x0f];
- 		if (!codec || !codec->dev.driver)
- 			continue;
-+		spin_unlock_irq(&bus->reg_lock);
- 		drv = drv_to_hdac_driver(codec->dev.driver);
- 		if (drv->unsol_event)
- 			drv->unsol_event(codec, res);
-+		spin_lock_irq(&bus->reg_lock);
- 	}
-+	spin_unlock_irq(&bus->reg_lock);
+diff --git a/drivers/net/ethernet/intel/e1000/e1000_main.c b/drivers/net/ethernet/intel/e1000/e1000_main.c
+index f958188207fd6..e57aca6239f8e 100644
+--- a/drivers/net/ethernet/intel/e1000/e1000_main.c
++++ b/drivers/net/ethernet/intel/e1000/e1000_main.c
+@@ -568,8 +568,13 @@ void e1000_reinit_locked(struct e1000_adapter *adapter)
+ 	WARN_ON(in_interrupt());
+ 	while (test_and_set_bit(__E1000_RESETTING, &adapter->flags))
+ 		msleep(1);
+-	e1000_down(adapter);
+-	e1000_up(adapter);
++
++	/* only run the task if not already down */
++	if (!test_bit(__E1000_DOWN, &adapter->flags)) {
++		e1000_down(adapter);
++		e1000_up(adapter);
++	}
++
+ 	clear_bit(__E1000_RESETTING, &adapter->flags);
  }
  
- /**
+@@ -1456,10 +1461,15 @@ static int e1000_close(struct net_device *netdev)
+ 	struct e1000_hw *hw = &adapter->hw;
+ 	int count = E1000_CHECK_RESET_COUNT;
+ 
+-	while (test_bit(__E1000_RESETTING, &adapter->flags) && count--)
++	while (test_and_set_bit(__E1000_RESETTING, &adapter->flags) && count--)
+ 		usleep_range(10000, 20000);
+ 
+-	WARN_ON(test_bit(__E1000_RESETTING, &adapter->flags));
++	WARN_ON(count < 0);
++
++	/* signal that we're down so that the reset task will no longer run */
++	set_bit(__E1000_DOWN, &adapter->flags);
++	clear_bit(__E1000_RESETTING, &adapter->flags);
++
+ 	e1000_down(adapter);
+ 	e1000_power_down_phy(adapter);
+ 	e1000_free_irq(adapter);
 -- 
 2.25.1
 
