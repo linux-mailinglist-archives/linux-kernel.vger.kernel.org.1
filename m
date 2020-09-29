@@ -2,157 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E3E527C092
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 11:11:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E77F27C097
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 11:12:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727897AbgI2JLE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 05:11:04 -0400
-Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:56290 "EHLO
-        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727035AbgI2JLE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 05:11:04 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=richard.weiyang@linux.alibaba.com;NM=1;PH=DS;RN=17;SR=0;TI=SMTPD_---0UATjY34_1601370658;
-Received: from localhost(mailfrom:richard.weiyang@linux.alibaba.com fp:SMTPD_---0UATjY34_1601370658)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 29 Sep 2020 17:10:58 +0800
-Date:   Tue, 29 Sep 2020 17:10:58 +0800
-From:   Wei Yang <richard.weiyang@linux.alibaba.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-hyperv@vger.kernel.org, xen-devel@lists.xenproject.org,
-        linux-acpi@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Michal Hocko <mhocko@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Scott Cheloha <cheloha@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: Re: [PATCH v1 2/5] mm/page_alloc: place pages to tail in
- __putback_isolated_page()
-Message-ID: <20200929091058.GA36904@L-31X9LVDL-1304.local>
-Reply-To: Wei Yang <richard.weiyang@linux.alibaba.com>
-References: <20200928182110.7050-1-david@redhat.com>
- <20200928182110.7050-3-david@redhat.com>
+        id S1727998AbgI2JMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 05:12:06 -0400
+Received: from mail-eopbgr80044.outbound.protection.outlook.com ([40.107.8.44]:4078
+        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725306AbgI2JMG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 05:12:06 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nuHeoN2TOvMwQGWGiSlZI+jyO0zXE4IVvvAQFDwLDaon7F+u0OdXQUnJPysoM0P/dPJ5fqPPIyBmgD8jCoqlfBMUs2fmvh/yNxk/cb1bQyMuGspX8fQ1zvnq0hn+8/+91MzCA7aI+AJV3BnYLvlJNSiEzoBVyccVSef+H/AoVtTYwAdkg1uOmVLl0QlcJaGMZZ7bN7dWyjuZuWqUViWkpxxB5ecrxF/uEtY90H+H9bfz06dr0DcgVZbaYa13zuPzCemjuirqpnMrZlZ+v1Sf23YMNS7FumvfK/rPdJCLn3C+3GrG+JxtintOxomkppL5G5eITX4xzo2GT4+FQcPf3g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7XKWZIrLq5uhXQObLF/p+knE7SdZGHHxBD4yREltqFI=;
+ b=Q/LZh6frJv2wLEkCEF7DwIIL69Jry/+rU6kunFSR3uVxa0c5B2Z6+P7ImHNSLFBD2HJXuZ5Ag4bhPUYNbt8CFZ2jL4/aKAnW0mldAZ4ObVuEUqXoqUnT7xYwgwnaSWhJm5Zo+igZHMibw3nzk76w06+r+EzQDm6yFlNwAL884r3Pte4fxQ/xBMowmZTpUTmsWNIAEMjzqaUCcDibtkHdq39NbEp5w7tosxQPBPD2TEKkQFKpAXUcDGR8SG3c4LVoIpWedgRiJaU7N8fcpYUzvcakDoD69sKnjIKEx1W9AngfOQiuTDSsPYDrCwLTWzA6ADFTlYQdYptRUkSu6GLaLg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7XKWZIrLq5uhXQObLF/p+knE7SdZGHHxBD4yREltqFI=;
+ b=mLWs+y8KfmvZ+ihVgCq1Bv5YAy34qk7Orv9daMvpZaxQEtDGK3aN316aZHkRWTW/JtJka5yxIzwk5P07YwGDh7AicvH3d9y92g9WSX8/AMlHr88O+SnWeoi+3UyKDhqT02AztsSzdR84NHbu8vwZ6VdBw0gFQExomt+2BkFO40E=
+Authentication-Results: intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=none action=none header.from=nxp.com;
+Received: from VI1PR04MB4960.eurprd04.prod.outlook.com (2603:10a6:803:57::21)
+ by VI1PR04MB4751.eurprd04.prod.outlook.com (2603:10a6:803:53::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.20; Tue, 29 Sep
+ 2020 09:11:57 +0000
+Received: from VI1PR04MB4960.eurprd04.prod.outlook.com
+ ([fe80::b178:a37b:1f9e:3a6]) by VI1PR04MB4960.eurprd04.prod.outlook.com
+ ([fe80::b178:a37b:1f9e:3a6%3]) with mapi id 15.20.3412.029; Tue, 29 Sep 2020
+ 09:11:57 +0000
+From:   Sherry Sun <sherry.sun@nxp.com>
+To:     sudeep.dutt@intel.com, ashutosh.dixit@intel.com, arnd@arndb.de,
+        gregkh@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org, linux-imx@nxp.com
+Subject: [PATCH V2 0/4] Fix some bugs of the vop driver and mpssd user space tool
+Date:   Tue, 29 Sep 2020 17:11:02 +0800
+Message-Id: <20200929091106.24624-1-sherry.sun@nxp.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-ClientProxiedBy: SG2PR02CA0008.apcprd02.prod.outlook.com
+ (2603:1096:3:17::20) To VI1PR04MB4960.eurprd04.prod.outlook.com
+ (2603:10a6:803:57::21)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200928182110.7050-3-david@redhat.com>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from nxp.ap.freescale.net (119.31.174.71) by SG2PR02CA0008.apcprd02.prod.outlook.com (2603:1096:3:17::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.20 via Frontend Transport; Tue, 29 Sep 2020 09:11:55 +0000
+X-Mailer: git-send-email 2.17.1
+X-Originating-IP: [119.31.174.71]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 1b28ed31-f949-4d80-5f80-08d86457b71e
+X-MS-TrafficTypeDiagnostic: VI1PR04MB4751:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR04MB4751D29F7CF7C7649DC774CA92320@VI1PR04MB4751.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: lubdWV4jXUgbGEXPYW7f+V7uVkFxNosZKb6m28HUTln8USe6m7mz+9C64kDXoQim9E5VfobURcqgRqOhHk1n5VT3YVMOAdo6xgN3ifCEfbQR8Uz1/F3M+t/SVm9KwvKPS9dCSHWShXzzdeI1Enblt0y4j5U1mxCYG68j/kiuTkQ8FKrmH4917e7h1ehp2on+3IzzzyVNZYbHUS7ocKcNN1T8XttYgoEyNrHG9hpB6TJL/HvzGPQmv7H09a5PHvXy8rDy3hj6L6VHDaC6SrBsbqXMxky6IZBV/9/uaz+ob7lEWOToJzUhnHhwpISYLwXZdfy+DVdYwAE9ryzeIWEL80MSUHcd9xTBfHGdTdtMrhi/U19ndmpvTx/LjEto3oon
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB4960.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(346002)(39860400002)(136003)(396003)(44832011)(1076003)(26005)(2616005)(16526019)(186003)(4326008)(5660300002)(956004)(6666004)(478600001)(316002)(2906002)(66556008)(66476007)(66946007)(83380400001)(6486002)(36756003)(8676002)(8936002)(86362001)(4744005)(6506007)(52116002)(6512007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: FSM3PXwj3f2yTwY59sTAZU5/rNwTjY2jOadJDiE2Gt6ikugf/JpDgPjYVnUN29IqsXArpw5ccpTrAhUraDRM3jMr+it5ECyvBgk4my0BvssXf374G6+0mUAM4kekxlDJA1Xhq0ADpCkLRPJj37eRM+2wQoyp1Y6F6nZwpfJyJwcqJE/GS/3hxpyFA1486O7VKVQcw22O6T0vj1FXddrPE8Y7IZNJAMByopC//zxBd2TOV1UuFduQdmEeu0WQ2gnXvZbR5p5dMPZiSkEbWEGk9Jr+ZZFSd9gVnR4cE5bVfeZvH6Xup2r9SwzEDrvH/hGuK83UXSHD1p1E1LdJ4RqgxnQmFPq+BpiFZba2j41uwUEbTQ/b5REgfyCc1eACfI+xmgSH6DZtZsNqg6/jfr+Irub2kVZdJHjwqj9g2zYX+uAfQY46Kh0tCvoJxN0Cmh98UDdfGjhq7q8swbsVpl/KQvZP3PAZl78XxfbJ+BM09lQvdzRg0hcVAGFWTSw7FKGQGMkHf0TKb6s6zo3pAWvKO+GVoWDezSzvkREiGATigqdZZsh/kdF7le87+q8odzlL7M3P/bQSknWNjIHAtd3pBOYfLg3fwu1RApV0VI2aRa8Gqoaw0CGPSoprdFof7MlfTmrWmvOZbLTg+eh1tPORxg==
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1b28ed31-f949-4d80-5f80-08d86457b71e
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB4960.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Sep 2020 09:11:57.3616
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: vuDwjNjRVXV4/2elNLkkfgTwgtimTHyY3vfoOTLrX5UREw54aVabMBVGrHo+MvXuYcSO2mzIfjGF6nEN4UZiSw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB4751
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 08:21:07PM +0200, David Hildenbrand wrote:
->__putback_isolated_page() already documents that pages will be placed to
->the tail of the freelist - this is, however, not the case for
->"order >= MAX_ORDER - 2" (see buddy_merge_likely()) - which should be
->the case for all existing users.
->
->This change affects two users:
->- free page reporting
->- page isolation, when undoing the isolation (including memory onlining).
->
->This behavior is desireable for pages that haven't really been touched
->lately, so exactly the two users that don't actually read/write page
->content, but rather move untouched pages.
->
->The new behavior is especially desirable for memory onlining, where we
->allow allocation of newly onlined pages via undo_isolate_page_range()
->in online_pages(). Right now, we always place them to the head of the
->free list, resulting in undesireable behavior: Assume we add
->individual memory chunks via add_memory() and online them right away to
->the NORMAL zone. We create a dependency chain of unmovable allocations
->e.g., via the memmap. The memmap of the next chunk will be placed onto
->previous chunks - if the last block cannot get offlined+removed, all
->dependent ones cannot get offlined+removed. While this can already be
->observed with individual DIMMs, it's more of an issue for virtio-mem
->(and I suspect also ppc DLPAR).
->
->Document that this should only be used for optimizations, and no code
->should realy on this for correction (if the order of freepage lists
->ever changes).
->
->We won't care about page shuffling: memory onlining already properly
->shuffles after onlining. free page reporting doesn't care about
->physically contiguous ranges, and there are already cases where page
->isolation will simply move (physically close) free pages to (currently)
->the head of the freelists via move_freepages_block() instead of
->shuffling. If this becomes ever relevant, we should shuffle the whole
->zone when undoing isolation of larger ranges, and after
->free_contig_range().
->
->Reviewed-by: Alexander Duyck <alexander.h.duyck@linux.intel.com>
->Reviewed-by: Oscar Salvador <osalvador@suse.de>
->Cc: Andrew Morton <akpm@linux-foundation.org>
->Cc: Alexander Duyck <alexander.h.duyck@linux.intel.com>
->Cc: Mel Gorman <mgorman@techsingularity.net>
->Cc: Michal Hocko <mhocko@kernel.org>
->Cc: Dave Hansen <dave.hansen@intel.com>
->Cc: Vlastimil Babka <vbabka@suse.cz>
->Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
->Cc: Oscar Salvador <osalvador@suse.de>
->Cc: Mike Rapoport <rppt@kernel.org>
->Cc: Scott Cheloha <cheloha@linux.ibm.com>
->Cc: Michael Ellerman <mpe@ellerman.id.au>
->Signed-off-by: David Hildenbrand <david@redhat.com>
+Changes in V2:
+1. Change the way of copy data from ubuf to dbuf in patch4. Reuse the allocated
+vvr->buf as the temp buffer and add a loop for multiple copies if there are too
+much data.
 
-Reviewed-by: Wei Yang <richard.weiyang@linux.alibaba.com>
+This patchset fix some bugs about the vop driver and Intel MIC user space tool.
 
->---
-> mm/page_alloc.c | 18 ++++++++++++++++--
-> 1 file changed, 16 insertions(+), 2 deletions(-)
->
->diff --git a/mm/page_alloc.c b/mm/page_alloc.c
->index daab90e960fe..9e3ed4a6f69a 100644
->--- a/mm/page_alloc.c
->+++ b/mm/page_alloc.c
->@@ -89,6 +89,18 @@ typedef int __bitwise fop_t;
->  */
-> #define FOP_SKIP_REPORT_NOTIFY	((__force fop_t)BIT(0))
-> 
->+/*
->+ * Place the (possibly merged) page to the tail of the freelist. Will ignore
->+ * page shuffling (relevant code - e.g., memory onlining - is expected to
->+ * shuffle the whole zone).
->+ *
->+ * Note: No code should rely onto this flag for correctness - it's purely
->+ *       to allow for optimizations when handing back either fresh pages
->+ *       (memory onlining) or untouched pages (page isolation, free page
->+ *       reporting).
->+ */
->+#define FOP_TO_TAIL		((__force fop_t)BIT(1))
->+
-> /* prevent >1 _updater_ of zone percpu pageset ->high and ->batch fields */
-> static DEFINE_MUTEX(pcp_batch_high_lock);
-> #define MIN_PERCPU_PAGELIST_FRACTION	(8)
->@@ -1038,7 +1050,9 @@ static inline void __free_one_page(struct page *page, unsigned long pfn,
-> done_merging:
-> 	set_page_order(page, order);
-> 
->-	if (is_shuffle_order(order))
->+	if (fop_flags & FOP_TO_TAIL)
->+		to_tail = true;
->+	else if (is_shuffle_order(order))
-> 		to_tail = shuffle_pick_tail();
-> 	else
-> 		to_tail = buddy_merge_likely(pfn, buddy_pfn, page, order);
->@@ -3300,7 +3314,7 @@ void __putback_isolated_page(struct page *page, unsigned int order, int mt)
-> 
-> 	/* Return isolated page to tail of freelist. */
-> 	__free_one_page(page, page_to_pfn(page), zone, order, mt,
->-			FOP_SKIP_REPORT_NOTIFY);
->+			FOP_SKIP_REPORT_NOTIFY | FOP_TO_TAIL);
-> }
-> 
-> /*
->-- 
->2.26.2
+Sherry Sun (4):
+  samples: mpssd: fix the build errors when enable DEBUG in mpssd.c
+  misc: vop: build VOP based on CONFIG_VOP
+  misc: vop: add round_up(x,4) for vring_size to avoid kernel panic
+  mic: vop: copy data to kernel space then write to io memory
+
+ drivers/misc/mic/vop/Makefile     |  2 +-
+ drivers/misc/mic/vop/vop_main.c   |  2 +-
+ drivers/misc/mic/vop/vop_vringh.c | 24 ++++++++++++++++--------
+ samples/mic/mpssd/mpssd.c         | 24 ++++++++++++------------
+ 4 files changed, 30 insertions(+), 22 deletions(-)
 
 -- 
-Wei Yang
-Help you, Help me
+2.17.1
+
