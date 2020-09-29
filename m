@@ -2,116 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0490727D76D
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 21:59:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B577527D774
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 22:00:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728946AbgI2T7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 15:59:34 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:1204 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727740AbgI2T7e (ORCPT
+        id S1728913AbgI2UAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 16:00:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59998 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728747AbgI2UAq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 15:59:34 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f7391c00000>; Tue, 29 Sep 2020 12:57:52 -0700
-Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL101.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 29 Sep
- 2020 19:59:32 +0000
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.174)
- by HQMAIL101.nvidia.com (172.20.187.10) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Tue, 29 Sep 2020 19:59:32 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hpQE0xXT6R29dDNNYmU5LuVUlx8pz4e3aWmZ9nOvpzFwhmgEcsCw859SIedWOJdmXXSQqny47/pOOyVMp8+Cb86Aot6oDc/QD+62YVggk/rshDd9AHksNWemqqo0mZsPeYJIJNfjOR349YlV9utM2yMCr+baszsluLE8/UE81zy7VqdN7DRV5W8qDp9hGhUKnjlTfYbGBWy3KWER53gGf5ozbf4BuNiZZnu7jw64sQJdpLC6Xc5pv+g9Eq+yh0Qp7MbXmw4RnrW65Dk7aZcpty6g0FTPgQNqiKNu/dbZD6siwQZh0lk4FWoODN8eFQph6PIvFVbArEyfMHsMBU7pfg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LbTynvgPyPjA+95ZRshJ0r2pHgwVG61L3zu9wlQdKUY=;
- b=lROk2rtY9LlIV0VV+uyXYH0pK6gOM7W91Fh/acYxP218J6NnSZoo6rAVTD9u14rXzulc+APDClUQK7fa+SdPW5f+zK9cxHbTBtYorxgr3SEqEwKfUy+KxkCnsCZEV0u2GE8inr0h/yIeuRX4W9prkDg00J7bLQNA6HglpRlCig5ZqE+KF62W3cIOPTCVZlg+0UmifqxAXPWc/UGqSn5wEN54ytvgcW8nnEcNTKHLhS7MxZCjThmh9NBhJH+FzLClwVWEwDO+k2cx5kVJ+QMHPHagUBdtjbcyzYmiegC0hC2qMFJoY4W8h18fju5wMn9KbqJdSR049ZVG8qcVAHUvpg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB3209.namprd12.prod.outlook.com (2603:10b6:5:184::33) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.23; Tue, 29 Sep
- 2020 19:59:31 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3433.032; Tue, 29 Sep 2020
- 19:59:31 +0000
-Date:   Tue, 29 Sep 2020 16:59:29 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Leon Romanovsky <leon@kernel.org>
-CC:     Doug Ledford <dledford@redhat.com>,
-        Maor Gottlieb <maorg@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        <dri-devel@lists.freedesktop.org>,
-        <intel-gfx@lists.freedesktop.org>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Roland Scheidegger <sroland@vmware.com>,
-        "Tvrtko Ursulin" <tvrtko.ursulin@intel.com>,
-        VMware Graphics <linux-graphics-maintainer@vmware.com>
-Subject: Re: [PATCH rdma-next v4 4/4] RDMA/umem: Move to allocate SG table
- from pages
-Message-ID: <20200929195929.GA803555@nvidia.com>
-References: <20200927064647.3106737-1-leon@kernel.org>
- <20200927064647.3106737-5-leon@kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20200927064647.3106737-5-leon@kernel.org>
-X-ClientProxiedBy: MN2PR03CA0028.namprd03.prod.outlook.com
- (2603:10b6:208:23a::33) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        Tue, 29 Sep 2020 16:00:46 -0400
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90E97C0613D2
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 13:00:46 -0700 (PDT)
+Received: by mail-oi1-x244.google.com with SMTP id m7so6890278oie.0
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 13:00:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=AmCsi2BDdE0wC8EuTHmuUbDB6XL/3OtoUvlKfVp4OPQ=;
+        b=JaM/LYlOqwadQ1GLoLRVv3Oj+9kSXFmsUfgwy1SU33RAhEzLUM/wZq0TfyxQVpePnP
+         vpmwQYk+Bm0P5EKjiUf0Jqdxudmx3PqfQXArmHqgth4hxoAtdasEj0YvUB7ENFAI3u5f
+         +bLmy9nILEhL2MBiJPYpYGRBg5QDgOdfkE1bw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=AmCsi2BDdE0wC8EuTHmuUbDB6XL/3OtoUvlKfVp4OPQ=;
+        b=ScX3MhIPpgpVlKOA1BO9Z/oQuwN+YPGeIHsyM8SVKKEySypROoQ3Uq9O6H2Ye/jpaK
+         BXT6YkJiShOlTYd/nuL13ZiaUkxTP4p/gt4J/6GiOOoWC8Sl/1lnRq+wIpTub83xX9TZ
+         6nl4MZGGXiqaXySB+2wO1uqp6oCo8/o0OCNcYo1fudGjCW0s9qbo9j6auFA6yQ4kqa6Y
+         67yGZTgu5Ij0FRQen2fiFrPgGvgr+hxqOL7eC4TlKlGwSASSnmMRheeQ5xcJe0kuW2qg
+         gKcH+/QtLC6gs3bRFiStp+A8mq7WN+hBDuk917ut791f8HnY7yKY80jL//zSSn6nBflJ
+         bCfA==
+X-Gm-Message-State: AOAM530IQ+m798gG54iCUH7XGMC3vw9O624WhmCl4jFeXI6sMU0W0wtj
+        fL6yzcg3Ex48YJC4ojiW7DBdow==
+X-Google-Smtp-Source: ABdhPJyKOoPZmEuXMRYFPdazhGdDQVw44SgQKBs3AgX2hDMLBj6VIr7dd1knTEulo8aEXP6lB2hiUg==
+X-Received: by 2002:aca:ab06:: with SMTP id u6mr3475700oie.84.1601409645845;
+        Tue, 29 Sep 2020 13:00:45 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id 126sm3124089oof.28.2020.09.29.13.00.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 29 Sep 2020 13:00:45 -0700 (PDT)
+Subject: Re: [PATCH 2/8] selftests/vm: use a common gup_test.h
+To:     Jason Gunthorpe <jgg@ziepe.ca>, John Hubbard <jhubbard@nvidia.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Ralph Campbell <rcampbell@nvidia.com>,
+        Shuah Khan <shuah@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-s390@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>
+References: <20200928062159.923212-1-jhubbard@nvidia.com>
+ <20200928062159.923212-3-jhubbard@nvidia.com>
+ <20200928125739.GP9916@ziepe.ca>
+ <6481e78f-c70d-133a-ff4a-325b5cd8fd5d@nvidia.com>
+ <20200929163507.GV9916@ziepe.ca>
+ <aab477bf-4353-5e6b-4cc9-9872c9376ed2@nvidia.com>
+ <20200929175524.GX9916@ziepe.ca>
+ <715c49ec-d2a8-45cb-8ace-c6b1b4b8f978@nvidia.com>
+ <20200929190816.GY9916@ziepe.ca>
+ <3022912c-f11b-f564-3a8a-f516ca259a37@nvidia.com>
+ <20200929195356.GZ9916@ziepe.ca>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <64bb5ba7-77f7-2f09-44f0-29ee9329b183@linuxfoundation.org>
+Date:   Tue, 29 Sep 2020 14:00:44 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR03CA0028.namprd03.prod.outlook.com (2603:10b6:208:23a::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.32 via Frontend Transport; Tue, 29 Sep 2020 19:59:30 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kNLmb-003NQ0-Io; Tue, 29 Sep 2020 16:59:29 -0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1601409472; bh=LbTynvgPyPjA+95ZRshJ0r2pHgwVG61L3zu9wlQdKUY=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=iSmska3JZTIwY67fbkfO3gQL7hZD6bfd47hENqfwiNTYSB5LY6cGsQm+jZ+sYMRHO
-         JxfHosdNev+wqVzoOV7t82t96iLfcRbDLNiG58sA6X/waxJSkvzcPVNAAbEQUBmhke
-         ebZaoB456MkvM9RITmUnZsTIfajHih+nZR4gFs4CUf8HXgxLLovMa5gBAHDSH8Rbxn
-         2fGaMrhaoPm6HuEg32KEe/0Q9InmJ/zntpZsX4yR/uaBat9HN27tHmSEJisHHzdz62
-         LwXQPFrR0z8urAf4OB8SCh0m8DWleuVmmwGiBl5M42mABlUwgq4Q3Gt2elJadwLkLF
-         NayfjPM/0geOw==
+In-Reply-To: <20200929195356.GZ9916@ziepe.ca>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 27, 2020 at 09:46:47AM +0300, Leon Romanovsky wrote:
-> @@ -296,11 +223,17 @@ static struct ib_umem *__ib_umem_get(struct ib_device *device,
->  			goto umem_release;
+On 9/29/20 1:53 PM, Jason Gunthorpe wrote:
+> On Tue, Sep 29, 2020 at 12:48:43PM -0700, John Hubbard wrote:
+>> On 9/29/20 12:08 PM, Jason Gunthorpe wrote:
+>>> On Tue, Sep 29, 2020 at 11:59:55AM -0700, John Hubbard wrote:
+>>>> On 9/29/20 10:55 AM, Jason Gunthorpe wrote:
+>>>>> On Tue, Sep 29, 2020 at 10:44:31AM -0700, John Hubbard wrote:
+>>>>>> On 9/29/20 9:35 AM, Jason Gunthorpe wrote:
+>>>>>>> On Mon, Sep 28, 2020 at 01:10:24PM -0700, John Hubbard wrote:
+>>>>>>>> On 9/28/20 5:57 AM, Jason Gunthorpe wrote:
+>>>>>>>>> On Sun, Sep 27, 2020 at 11:21:53PM -0700, John Hubbard wrote:
+>>>> ...
+>>>>>> I don't see any "gcc -m" type of dependency generation pass happening
+>>>>>> in this relatively simple Make system.
+>>>>>
+>>>>> It happens with -MD, all the deps are stored in files like mm/.init-mm.o.cmd
+>>>>> and sucked into the build.
+>>>>
+>>>> You are thinking of kbuild. This is not kbuild. There are no such artifacts
+>>>> being generated.
+>>>
+>>> Oh. Really? That's horrible.
+>>>
+>>
+>> Well, yes, it's not a perfect build system down here in selftests/. Are you saying
+>> that it is worth upgrading? I'm open to suggestions and ideas for improvements,
+>> and at the moment, I have the miniature build system here mostly loaded into my
+>> head. So for a brief shining moment I can probably understand it well enough to
+>> work on it. :)
 > 
->  		cur_base += ret * PAGE_SIZE;
-> -		npages   -= ret;
-> -
-> -		sg = ib_umem_add_sg_table(sg, page_list, ret,
-> -			dma_get_max_seg_size(device->dma_device),
-> -			&umem->sg_nents);
-> +		npages -= ret;
-> +		sg = __sg_alloc_table_from_pages(
-> +			&umem->sg_head, page_list, ret, 0, ret << PAGE_SHIFT,
-> +			dma_get_max_seg_size(device->dma_device), sg, npages,
-> +			GFP_KERNEL);
-> +		umem->sg_nents = umem->sg_head.nents;
-> +		if (IS_ERR(sg)) {
-> +			unpin_user_pages_dirty_lock(page_list, ret, 0);
-> +			ret = PTR_ERR(sg);
-> +			goto umem_release;
-> +		}
->  	}
+> I only remarked because I didn't know it wasn't using kbuild. I
+> thought it would have used the existing HOSTCC stuff, not sure why it
+> is special.
 > 
->  	sg_mark_end(sg);
+> The only investment that seems worthwhile would be to switch it to use
+> the normal kbuild stuff??
+> 
 
-Does it still need the sg_mark_end?
+I explored switching to kbuild at the kernel summit last year during
+my kselftest where are we talk.
 
-Jason
+There was push back from several developers. We can definitely explore
+it as long as we can still support being able to build and run
+individual subsystem tests and doesn't break workflow for developers.
+
+If you are up for it, propose a patch and we can discuss it.
+
+thanks,
+-- Shuah
+
