@@ -2,49 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF91A27C571
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:36:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53C9927C639
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:43:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729889AbgI2Lfj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:35:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48450 "EHLO mail.kernel.org"
+        id S1730762AbgI2LnC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:43:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40812 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729638AbgI2LfK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:35:10 -0400
+        id S1730753AbgI2Lm4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:42:56 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 82C8A23C86;
-        Tue, 29 Sep 2020 11:28:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0CBD0208B8;
+        Tue, 29 Sep 2020 11:42:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601378932;
-        bh=X9muonmfWAuDSfD3pHKYkFEG5SbW6wcHVWpvbCHYHlw=;
+        s=default; t=1601379775;
+        bh=Ys4BXVQKu1BJf2pHka02imQW3nBiwA2HiB/Nyx5Sucg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ey/vwygCLEzKz/jRyPH1IhckBooKvTyrRr2DN6PHWRIRcKeI2I6Nk/pnrBnu5uNY1
-         PIcpxI+PhjeJYmYR1z4tqTLx0/ZoSCXZzM4WCBPxYfDHcXlSUEd42PafrgxunGGB8O
-         +lUc3QNYqFDruTtROVdIhWrR8qjwl5pa7v9vbF6c=
+        b=vtWVzWDdauyZLd2gXXuLxQswV6fWHYz9Y/VoPZ+D4OcA/NKAJEeDNpaiAfTl3KxBE
+         YRKu8pL7AYa838gmICB6O2zn3FyNlIld/QOiGf3E/g0tF/hAJ5+8yi8njTPbKSW7Rx
+         Vf0csg5OKfb0sIokrRJye3vjxuALZCDH8lTzq8x8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexandre Bounine <alex.bou9@gmail.com>,
-        Matt Porter <mporter@kernel.crashing.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Mike Marshall <hubcap@omnibond.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Allison Randal <allison@lohutok.net>,
-        Pavel Andrianov <andrianov@ispras.ru>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        stable@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
+        Qu Wenruo <wqu@suse.com>, David Sterba <dsterba@suse.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 191/245] rapidio: avoid data race between file operation callbacks and mport_cdev_add().
+Subject: [PATCH 5.4 311/388] btrfs: qgroup: fix data leak caused by race between writeback and truncate
 Date:   Tue, 29 Sep 2020 13:00:42 +0200
-Message-Id: <20200929105956.274940265@linuxfoundation.org>
+Message-Id: <20200929110025.524412203@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929105946.978650816@linuxfoundation.org>
-References: <20200929105946.978650816@linuxfoundation.org>
+In-Reply-To: <20200929110010.467764689@linuxfoundation.org>
+References: <20200929110010.467764689@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -53,73 +43,116 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
+From: Qu Wenruo <wqu@suse.com>
 
-[ Upstream commit e1c3cdb26ab881b77486dc50370356a349077c74 ]
+[ Upstream commit fa91e4aa1716004ea8096d5185ec0451e206aea0 ]
 
-Fields of md(mport_dev) are set after cdev_device_add().  However, the
-file operation callbacks can be called after cdev_device_add() and
-therefore accesses to fields of md in the callbacks can race with the rest
-of the mport_cdev_add() function.
+[BUG]
+When running tests like generic/013 on test device with btrfs quota
+enabled, it can normally lead to data leak, detected at unmount time:
 
-One such example is INIT_LIST_HEAD(&md->portwrites) in mport_cdev_add(),
-the list is initialised after cdev_device_add().  This can race with
-list_add_tail(&pw_filter->md_node,&md->portwrites) in
-rio_mport_add_pw_filter() which is called by unlocked_ioctl.
+  BTRFS warning (device dm-3): qgroup 0/5 has unreleased space, type 0 rsv 4096
+  ------------[ cut here ]------------
+  WARNING: CPU: 11 PID: 16386 at fs/btrfs/disk-io.c:4142 close_ctree+0x1dc/0x323 [btrfs]
+  RIP: 0010:close_ctree+0x1dc/0x323 [btrfs]
+  Call Trace:
+   btrfs_put_super+0x15/0x17 [btrfs]
+   generic_shutdown_super+0x72/0x110
+   kill_anon_super+0x18/0x30
+   btrfs_kill_super+0x17/0x30 [btrfs]
+   deactivate_locked_super+0x3b/0xa0
+   deactivate_super+0x40/0x50
+   cleanup_mnt+0x135/0x190
+   __cleanup_mnt+0x12/0x20
+   task_work_run+0x64/0xb0
+   __prepare_exit_to_usermode+0x1bc/0x1c0
+   __syscall_return_slowpath+0x47/0x230
+   do_syscall_64+0x64/0xb0
+   entry_SYSCALL_64_after_hwframe+0x44/0xa9
+  ---[ end trace caf08beafeca2392 ]---
+  BTRFS error (device dm-3): qgroup reserved space leaked
 
-To avoid such data races use cdev_device_add() after initializing md.
+[CAUSE]
+In the offending case, the offending operations are:
+2/6: writev f2X[269 1 0 0 0 0] [1006997,67,288] 0
+2/7: truncate f2X[269 1 0 0 48 1026293] 18388 0
 
-Found by Linux Driver Verification project (linuxtesting.org).
+The following sequence of events could happen after the writev():
+	CPU1 (writeback)		|		CPU2 (truncate)
+-----------------------------------------------------------------
+btrfs_writepages()			|
+|- extent_write_cache_pages()		|
+   |- Got page for 1003520		|
+   |  1003520 is Dirty, no writeback	|
+   |  So (!clear_page_dirty_for_io())   |
+   |  gets called for it		|
+   |- Now page 1003520 is Clean.	|
+   |					| btrfs_setattr()
+   |					| |- btrfs_setsize()
+   |					|    |- truncate_setsize()
+   |					|       New i_size is 18388
+   |- __extent_writepage()		|
+   |  |- page_offset() > i_size		|
+      |- btrfs_invalidatepage()		|
+	 |- Page is clean, so no qgroup |
+	    callback executed
 
-Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Acked-by: Alexandre Bounine <alex.bou9@gmail.com>
-Cc: Matt Porter <mporter@kernel.crashing.org>
-Cc: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: Mike Marshall <hubcap@omnibond.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ira Weiny <ira.weiny@intel.com>
-Cc: Allison Randal <allison@lohutok.net>
-Cc: Pavel Andrianov <andrianov@ispras.ru>
-Link: http://lkml.kernel.org/r/20200426112950.1803-1-madhuparnabhowmik10@gmail.com
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+This means, the qgroup reserved data space is not properly released in
+btrfs_invalidatepage() as the page is Clean.
+
+[FIX]
+Instead of checking the dirty bit of a page, call
+btrfs_qgroup_free_data() unconditionally in btrfs_invalidatepage().
+
+As qgroup rsv are completely bound to the QGROUP_RESERVED bit of
+io_tree, not bound to page status, thus we won't cause double freeing
+anyway.
+
+Fixes: 0b34c261e235 ("btrfs: qgroup: Prevent qgroup->reserved from going subzero")
+CC: stable@vger.kernel.org # 4.14+
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/rapidio/devices/rio_mport_cdev.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ fs/btrfs/inode.c | 23 ++++++++++-------------
+ 1 file changed, 10 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/rapidio/devices/rio_mport_cdev.c b/drivers/rapidio/devices/rio_mport_cdev.c
-index 5940780648e0f..f36a8a5261a13 100644
---- a/drivers/rapidio/devices/rio_mport_cdev.c
-+++ b/drivers/rapidio/devices/rio_mport_cdev.c
-@@ -2385,13 +2385,6 @@ static struct mport_dev *mport_cdev_add(struct rio_mport *mport)
- 	cdev_init(&md->cdev, &mport_fops);
- 	md->cdev.owner = THIS_MODULE;
- 
--	ret = cdev_device_add(&md->cdev, &md->dev);
--	if (ret) {
--		rmcd_error("Failed to register mport %d (err=%d)",
--		       mport->id, ret);
--		goto err_cdev;
--	}
--
- 	INIT_LIST_HEAD(&md->doorbells);
- 	spin_lock_init(&md->db_lock);
- 	INIT_LIST_HEAD(&md->portwrites);
-@@ -2411,6 +2404,13 @@ static struct mport_dev *mport_cdev_add(struct rio_mport *mport)
- #else
- 	md->properties.transfer_mode |= RIO_TRANSFER_MODE_TRANSFER;
- #endif
-+
-+	ret = cdev_device_add(&md->cdev, &md->dev);
-+	if (ret) {
-+		rmcd_error("Failed to register mport %d (err=%d)",
-+		       mport->id, ret);
-+		goto err_cdev;
-+	}
- 	ret = rio_query_mport(mport, &attr);
- 	if (!ret) {
- 		md->properties.flags = attr.flags;
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index e9787b7b943a2..182e93a5b11d5 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -9044,20 +9044,17 @@ again:
+ 	/*
+ 	 * Qgroup reserved space handler
+ 	 * Page here will be either
+-	 * 1) Already written to disk
+-	 *    In this case, its reserved space is released from data rsv map
+-	 *    and will be freed by delayed_ref handler finally.
+-	 *    So even we call qgroup_free_data(), it won't decrease reserved
+-	 *    space.
+-	 * 2) Not written to disk
+-	 *    This means the reserved space should be freed here. However,
+-	 *    if a truncate invalidates the page (by clearing PageDirty)
+-	 *    and the page is accounted for while allocating extent
+-	 *    in btrfs_check_data_free_space() we let delayed_ref to
+-	 *    free the entire extent.
++	 * 1) Already written to disk or ordered extent already submitted
++	 *    Then its QGROUP_RESERVED bit in io_tree is already cleaned.
++	 *    Qgroup will be handled by its qgroup_record then.
++	 *    btrfs_qgroup_free_data() call will do nothing here.
++	 *
++	 * 2) Not written to disk yet
++	 *    Then btrfs_qgroup_free_data() call will clear the QGROUP_RESERVED
++	 *    bit of its io_tree, and free the qgroup reserved data space.
++	 *    Since the IO will never happen for this page.
+ 	 */
+-	if (PageDirty(page))
+-		btrfs_qgroup_free_data(inode, NULL, page_start, PAGE_SIZE);
++	btrfs_qgroup_free_data(inode, NULL, page_start, PAGE_SIZE);
+ 	if (!inode_evicting) {
+ 		clear_extent_bit(tree, page_start, page_end, EXTENT_LOCKED |
+ 				 EXTENT_DELALLOC | EXTENT_DELALLOC_NEW |
 -- 
 2.25.1
 
