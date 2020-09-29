@@ -2,98 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29FE027D9C1
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 23:08:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79FDF27D9CA
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 23:12:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729318AbgI2VIL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 17:08:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42270 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727347AbgI2VIL (ORCPT
+        id S1729389AbgI2VMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 17:12:37 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:36720 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727347AbgI2VMh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 17:08:11 -0400
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B9A0C061755;
-        Tue, 29 Sep 2020 14:08:11 -0700 (PDT)
-Received: by mail-ot1-x341.google.com with SMTP id 95so5847984ota.13;
-        Tue, 29 Sep 2020 14:08:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=PlmNXw7ZpFTwSV3L+F5jDFoW1vvdajkclsGk3mMsf4k=;
-        b=mXmdQXAsrxqScrzTvmHDTNHXXq/PBtM6GvG22NOOWp8K5sqChjRxJYFMi9JfMCiW1A
-         yGXoIzQK60jUF06Zrxpj8jn0nAxuHiwim01gSOKBFSA9eL+SZPjsPvxXkTahWnAx5OTx
-         jRJ9LZIVMquVE8YzPGNaW/i5qW+FtqJ5DrA2XNr1konCcDZr/d+LzQ3N/hSRkEx4xOA6
-         cbiW3TMHroFVDHbYwEqkv7txMjv2vIZZh04wiEOvHaWE3NeB472Iq/ji133B5BzFcLoc
-         XPND7vGkt2msl4r0/fDWKgTFePxHgneXH3OUUBg4gknHY18jBmDBXcU/9ysdChS9eMkD
-         AW4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to:user-agent;
-        bh=PlmNXw7ZpFTwSV3L+F5jDFoW1vvdajkclsGk3mMsf4k=;
-        b=U6symX+C+lrobPdUP+3qg847HPmGH5UuaI4+ItRJAia4vbg9uDE4XA08Wx2VCYmnGt
-         yPi1eDvHMAADLR2ZDeYS1i7xvKVhv62GfgQnPspmlVcqLtG2obhxcgAEDPybDfMmsV4P
-         mj9t6qAiloD43PMNZRneOQte9q2XibS4MKphE3SpPvUfBF8SVOj1eYNrOnAG93K07I9G
-         HsvBmMAveQpyKtqfXakRoUeq9N2/28fvASjLvV1F7sAAGZNKARV6VGy/wS+3zQbnhGTb
-         oqBkWM1OBkQf+VO066BXORSjTQcDje+LcqgZ+eD9Qm8iolhkQ+2ivI1MoOoUheNFhfvu
-         kw6Q==
-X-Gm-Message-State: AOAM532RRCaE6C0S7ndGyLKwVfHZT01CEfNYgbs+rlrPXTSw0s5D5/Xm
-        e1XVZgLORqv+K7bSF90GGSA=
-X-Google-Smtp-Source: ABdhPJxPrDKCJz+3VJEX/ZpKrEq+OWZrCRe2f53nK42EpGgT86sw4rpedKOYdAnMc+C8WB8Ls5li/Q==
-X-Received: by 2002:a9d:4cd:: with SMTP id 71mr3891833otm.276.1601413690631;
-        Tue, 29 Sep 2020 14:08:10 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id m12sm1283417otq.8.2020.09.29.14.08.09
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 29 Sep 2020 14:08:10 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Tue, 29 Sep 2020 14:08:09 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
-        pavel@denx.de, stable@vger.kernel.org
-Subject: Re: [PATCH 4.19 000/244] 4.19.149-rc2 review
-Message-ID: <20200929210809.GA154271@roeck-us.net>
-References: <20200929142826.951084251@linuxfoundation.org>
+        Tue, 29 Sep 2020 17:12:37 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id 9B0998030719;
+        Tue, 29 Sep 2020 21:12:34 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at baikalelectronics.ru
+Received: from mail.baikalelectronics.ru ([127.0.0.1])
+        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id CKKqguQB-tFs; Wed, 30 Sep 2020 00:12:33 +0300 (MSK)
+Date:   Wed, 30 Sep 2020 00:12:32 +0300
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+CC:     Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        Vadim Vlasov <V.Vlasov@baikalelectronics.ru>,
+        "Maciej W . Rozycki" <macro@linux-mips.org>,
+        <linux-mips@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 0/2] mips: Introduce some IO-accessors optimizations
+Message-ID: <20200929211232.t4yw2d33jokmzb4i@mobilestation>
+References: <20200920110010.16796-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200929142826.951084251@linuxfoundation.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200920110010.16796-1-Sergey.Semin@baikalelectronics.ru>
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 04:29:27PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.19.149 release.
-> There are 244 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+Thomas,
+Any comment on the series? The changes aren't that comprehensive, so it would
+be great to merge it in before the 5.10 merge window is opened.
+
+-Sergey
+
+On Sun, Sep 20, 2020 at 02:00:08PM +0300, Serge Semin wrote:
+> It has been discovered that on our MIPS P5600-based CPU the IO accessors
+> aren't that rapid as they could be even taking into account a relatively
+> slow AXI2APB bridge embedded into the system interconnect. Turned out we
+> can introduce two types of optimizations. First we can remove the
+> execution barriers from the relaxed IO-accessors as our CPU conforms to
+> the MIPS Coherency Protocol Specification [1, 2]. Of course it also
+> concerns the IO interconnect implementation. So in accordance with [3] we
+> suggest to remove the barriers at least for the platforms which conform
+> the specification the same way as ours. Second there is a dedicated
+> Coherency Manager control register, which can be also used to tune the IO
+> methods up. For some reason it hasn't been added to the MIPS arch code so
+> far, while it provides flags for instance to speed the SYNC barrier for
+> the platforms with non-re-ordering IO interconnect, to set the cache ops
+> serialization limits, enable the speculative reads, etc. For now we
+> suggest to add just the macro with the CM2 GCR_CONTROL register accessors
+> and fields description. So any platform could use it to activate the
+> corresponding optimization. Our platform-wise we'll do this in the
+> framework of our Baikal-T1 platform code in the prom_init() method.
 > 
-> Responses should be made by Thu, 01 Oct 2020 14:27:43 +0000.
-> Anything received after that time might be too late.
+> [1] MIPS Coherence Protocol Specification, Document Number: MD00605,
+>     Revision 01.01. September 14, 2015, 4.2 Execution Order Behavior,
+>     p. 33
 > 
-
-For v4.19.148-245-g78ef55b:
-
-Build results:
-	total: 155 pass: 153 fail: 2
-Failed builds:
-	i386:tools/perf
-	x86_64:tools/perf
-Qemu test results:
-	total: 421 pass: 421 fail: 0
-
-perf build error:
-
-util/evsel.c: In function ‘perf_evsel__exit’:
-util/util.h:25:28: error: passing argument 1 of ‘free’ discards ‘const’ qualifier from pointer target type
-
-Guenter
+> [2] MIPS Coherence Protocol Specification, Document Number: MD00605,
+>     Revision 01.01. September 14, 2015, 4.8.1 IO Device Access, p. 58
+> 
+> [3] "LINUX KERNEL MEMORY BARRIERS", Documentation/memory-barriers.txt,
+> Section "KERNEL I/O BARRIER EFFECTS"
+> 
+> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+> Cc: Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>
+> Cc: Vadim Vlasov <V.Vlasov@baikalelectronics.ru>
+> Cc: Maciej W. Rozycki <macro@linux-mips.org>
+> Cc: linux-mips@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> 
+> Serge Semin (2):
+>   mips: Add strong UC ordering config
+>   mips: Introduce MIPS CM2 GCR Control register accessors
+> 
+>  arch/mips/Kconfig               |  8 ++++++++
+>  arch/mips/include/asm/io.h      | 20 ++++++++++----------
+>  arch/mips/include/asm/mips-cm.h | 15 +++++++++++++++
+>  3 files changed, 33 insertions(+), 10 deletions(-)
+> 
+> -- 
+> 2.27.0
+> 
