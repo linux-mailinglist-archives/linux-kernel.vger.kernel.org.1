@@ -2,148 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1272C27B8C7
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 02:18:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48AA127B8D2
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 02:18:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727090AbgI2ASD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 20:18:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46510 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726379AbgI2ASC (ORCPT
+        id S1727215AbgI2ASw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 20:18:52 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:13610 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727201AbgI2ASt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 20:18:02 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8C26C061755;
-        Mon, 28 Sep 2020 17:18:01 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id z17so3360885lfi.12;
-        Mon, 28 Sep 2020 17:18:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=LWyAFftzTgQ/8ZzQPra6i4Q9NzonWukybh/xqSD4SNY=;
-        b=KVViTjv7RofB3mbilJ2qmNPZNQQZQ2SkADTKbbPfsgHfvKhDmG8TMVEnLO+2Krmjrm
-         OQJFHEfjvECuHHMGCafV5snickVdo8dhrl+Q2j/yh3Hbq2kvm9teu9Rpn0tG5lPPi6Qe
-         zyUuHkY5yn/SIMD6H4Jy7HupHIvoCpS8dk2IyVuXQxrHzo7NQMgkPIrqzNul7mQiDMVI
-         53dSdLsumgoB2js+usNGms5nvdcz2QhLsOFimGfizTbkV18pygYDl5jCyz0vR3u+trvg
-         FZ1+dk2qbQRZV6u9X6LBvV53Xv6MDgESnLeqnfjhdNEaHzrsnkWWhro1xHp45PKiHMJt
-         BN1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=LWyAFftzTgQ/8ZzQPra6i4Q9NzonWukybh/xqSD4SNY=;
-        b=WNzXMQr865qKtg2VKbxmfXWGs44mEtAxEG8PI+A4X7LakheaESTZMAr89ZBFCwMK7K
-         Bo0BplKWT+JtVkyf342aj3ck5RqEPD0CBjjdYtguJL60Sh3f/WXJMZnaK9RdGlJ6Mgbm
-         om5MP7k5zKkvVFWsuAxEf60X6ib4eqAeWZ7MbqWJwAB8gk210En5q+KhBRdbn+ecHOoG
-         g9UASIoFLDomCuiCj7Z3kvbgrbr5kPjrFt4b3XcYZc+Is6ac7O0kxvaHsXLM4jxKaaHw
-         QAA651ZilOXq7eOry/gau/mahBbu3HBu+Bvvb309R+frXMOuMeZMQI6wmX32WQeabH+a
-         9IRQ==
-X-Gm-Message-State: AOAM530rMYmsA2WKQSL9+FTK7T9R8d1pLcZup5eNVH1Y96K0F1vLo7T1
-        IppPT1223sD07uhS1vfMh6cyeRKGyUU=
-X-Google-Smtp-Source: ABdhPJwFazCF3sQTeRk6md9P7UFhr2ln8RaMSsv5Xi844x9rjX1AdEJnCbCVu/UtUBG0dljKX7XY9Q==
-X-Received: by 2002:ac2:4424:: with SMTP id w4mr217288lfl.447.1601338679960;
-        Mon, 28 Sep 2020 17:17:59 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
-        by smtp.googlemail.com with ESMTPSA id x25sm2990589lfe.284.2020.09.28.17.17.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Sep 2020 17:17:59 -0700 (PDT)
-Subject: Re: [PATCH v2 2/2] iommu/tegra-smmu: Expend mutex protection range
-To:     Nicolin Chen <nicoleotsuka@gmail.com>, thierry.reding@gmail.com,
-        joro@8bytes.org
-Cc:     vdumpa@nvidia.com, jonathanh@nvidia.com,
-        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-References: <20200928235901.28337-1-nicoleotsuka@gmail.com>
- <20200928235901.28337-3-nicoleotsuka@gmail.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <692b51fa-7a3e-dee7-b628-7cb2d2dc188d@gmail.com>
-Date:   Tue, 29 Sep 2020 03:17:58 +0300
+        Mon, 28 Sep 2020 20:18:49 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f727d5c0000>; Mon, 28 Sep 2020 17:18:36 -0700
+Received: from [10.2.53.30] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 29 Sep
+ 2020 00:18:48 +0000
+Subject: Re: [PATCH 1/5] mm: Introduce mm_struct.has_pinned
+To:     Jason Gunthorpe <jgg@ziepe.ca>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+CC:     Peter Xu <peterx@redhat.com>, Leon Romanovsky <leonro@nvidia.com>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jan Kara <jack@suse.cz>, Michal Hocko <mhocko@suse.com>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Kirill Shutemov <kirill@shutemov.name>,
+        Hugh Dickins <hughd@google.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>
+References: <CAHk-=wi_gd+JWj-8t8tc8cy3WZ7NMj-_1hATfH3Rt0ytUxtMpQ@mail.gmail.com>
+ <20200927062337.GE2280698@unreal>
+ <CAHk-=winqSOFsdn1ntYL13s2UuhpQQ9+GRvjWth3sA5APY4Wwg@mail.gmail.com>
+ <CAHk-=wj61s30pt8POVtKYVamYTh6h=7-_ser2Hx9sEjqeACkDA@mail.gmail.com>
+ <20200928124937.GN9916@ziepe.ca>
+ <CAHk-=wj6aTsqq6BAUci-NYJ3b-EkDwVgz_NvW_kW8KBqGocouQ@mail.gmail.com>
+ <20200928172256.GB59869@xz-x1>
+ <CAHk-=wi=iCnYCARbPGjkVJu9eyYeZ13N64tZYLdOB8CP5Q_PLw@mail.gmail.com>
+ <20200928183928.GR9916@ziepe.ca>
+ <CAHk-=wiRHLVK7Usrfdbh0MF7b86NLZ7gBWHV-Y89K_p3GU4KQg@mail.gmail.com>
+ <20200928235739.GU9916@ziepe.ca>
+From:   John Hubbard <jhubbard@nvidia.com>
+Message-ID: <6c1292e6-11f0-811c-6cdd-cfc1f4bccbc2@nvidia.com>
+Date:   Mon, 28 Sep 2020 17:18:47 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <20200928235901.28337-3-nicoleotsuka@gmail.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20200928235739.GU9916@ziepe.ca>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1601338716; bh=jmpEGsoMCEZFctwNCe64tE1wCWqRXRFpjk0kPlELp9U=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=Ip0+ASZj36jbq8s5v/IRZrxCWxN7x9Ajr9pKiIngaoMWvezVaC+2qD1ODDIaqoAZM
+         3c4N8uS+/i2iohuT+Xo9cXMyOlM0UgLf31nnbgUJ/kf5zWp/8DYtIkZXQYNy9vGcVp
+         kIH9y6/2LnfRWNs+j8p3ccNk5rKULE9A7/s5iNEwZV+7nTQE8E/YFL4BVzIEbSnQNy
+         l52c4dfm475LxdYswpYaGNs9znw/AA3hqQTBBSxrhGO2qasfHkAuf9gFoA9na/Y/aS
+         RtZdcAu/RlRBVcdKhQfV0XV9CpY+uvVdbHtnatZHcL7Vmr6Owys6x6maLO3Vt8DGnG
+         edzvpmBLkJRJw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 9/28/20 4:57 PM, Jason Gunthorpe wrote:
+> On Mon, Sep 28, 2020 at 12:29:55PM -0700, Linus Torvalds wrote:
 ...
->  static bool tegra_smmu_capable(enum iommu_cap cap)
-> @@ -420,17 +413,21 @@ static int tegra_smmu_as_prepare(struct tegra_smmu *smmu,
->  				 struct tegra_smmu_as *as)
->  {
->  	u32 value;
-> -	int err;
-> +	int err = 0;
-> +
-> +	mutex_lock(&smmu->lock);
->  
->  	if (as->use_count > 0) {
->  		as->use_count++;
-> -		return 0;
-> +		goto err_unlock;
+> I think this is really hard to use and ugly. My thinking has been to
+> just stick:
+> 
+>     if (flags & FOLL_LONGTERM)
+>         flags |= FOLL_FORCE | FOLL_WRITE
+> 
+> In pin_user_pages(). It would make the driver API cleaner. If we can
 
-This looks a bit odd because it's not a error condition. Perhaps should
-be better to "goto bump_usecount"?
++1, yes. The other choices so far are, as you say, really difficult to figure
+out.
 
-Or make it similar to tegra_smmu_as_unprepare()?
+> do a bit better somehow by not COW'ing for certain VMA's as you
+> explained then all the better, but not my primary goal..
+> 
+> Basically, I think if a driver is using FOLL_LONGTERM | FOLL_PIN we
+> should guarentee that driver a consistent MM and take the gup_fast
+> performance hit to do it.
+> 
+> AFAICT the giant wack of other cases not using FOLL_LONGTERM really
+> shouldn't care about read-decoherence. For those cases the user should
+> really not be racing write's with data under read-only pin, and the
+> new COW logic looks like it solves the other issues with this.
 
->  	}
->  
->  	as->pd_dma = dma_map_page(smmu->dev, as->pd, 0, SMMU_SIZE_PD,
->  				  DMA_TO_DEVICE);
-> -	if (dma_mapping_error(smmu->dev, as->pd_dma))
-> -		return -ENOMEM;
-> +	if (dma_mapping_error(smmu->dev, as->pd_dma)) {
-> +		err = -ENOMEM;
-> +		goto err_unlock;
-> +	}
->  
->  	/* We can't handle 64-bit DMA addresses */
->  	if (!smmu_dma_addr_valid(smmu, as->pd_dma)) {
-> @@ -453,24 +450,35 @@ static int tegra_smmu_as_prepare(struct tegra_smmu *smmu,
->  	as->smmu = smmu;
+I hope this doesn't kill the seqcount() idea, though. That was my favorite
+part of the discussion, because it neatly separates out the two racing domains
+(fork, gup/pup) and allows easy reasoning about them--without really impacting
+performance.
 
-bump_usecount:
+Truly elegant. We should go there.
 
->  	as->use_count++;
->  
-> +	mutex_unlock(&smmu->lock);
-> +
->  	return 0;
->  
->  err_unmap:
->  	dma_unmap_page(smmu->dev, as->pd_dma, SMMU_SIZE_PD, DMA_TO_DEVICE);
-> +err_unlock:
-> +	mutex_unlock(&smmu->lock);
-> +
->  	return err;
->  }
->  
->  static void tegra_smmu_as_unprepare(struct tegra_smmu *smmu,
->  				    struct tegra_smmu_as *as)
->  {
-> -	if (--as->use_count > 0)
-> +	mutex_lock(&smmu->lock);
-> +
-> +	if (--as->use_count > 0) {
-> +		mutex_unlock(&smmu->lock);
->  		return;
-> +	}
->  
->  	tegra_smmu_free_asid(smmu, as->id);
->  
->  	dma_unmap_page(smmu->dev, as->pd_dma, SMMU_SIZE_PD, DMA_TO_DEVICE);
->  
->  	as->smmu = NULL;
-> +
-> +	mutex_unlock(&smmu->lock);
->  }
->  
->  static int tegra_smmu_attach_dev(struct iommu_domain *domain,
+> 
+> I know Jann/John have been careful to not have special behaviors for
+> the DMA case, but I think it makes sense here. It is actually different.
 > 
 
+I think that makes sense. Everyone knew that DMA/FOLL_LONGTERM call sites
+were at least potentially special, despite the spirited debates in at least
+two conferences about the meaning and implications of "long term". :)
+
+And here we are seeing an example of such a special case, which I think is
+natural enough.
+
+
+thanks,
+-- 
+John Hubbard
+NVIDIA
