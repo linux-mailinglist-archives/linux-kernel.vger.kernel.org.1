@@ -2,127 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16A3927BFCD
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 10:42:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F293727BFD5
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 10:44:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727617AbgI2ImU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 04:42:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39024 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725468AbgI2ImT (ORCPT
+        id S1727697AbgI2Iop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 04:44:45 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:55479 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725826AbgI2Iop (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 04:42:19 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94716C061755;
-        Tue, 29 Sep 2020 01:42:19 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id p9so13822843ejf.6;
-        Tue, 29 Sep 2020 01:42:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=lMOqo3ypO/SZ3oHUy6euRnuasGkm67DC6ZbiwUFwB8M=;
-        b=C9E4mLgNTPQm8NqaAoz6itH7ufzLLW2Afp390W5SRJ4Rdbl7etn2wAbpam4yITVwLD
-         F6FwrUs08Nvzo3Mfl42l34qKUnxrHpNoeI4tuU4Rh5fdZSfPxUztwLF3B8mRIf+EFyTV
-         Bw1kXUFQm0WiVqzUhAXpob85WyYHYrBekAyw4cYZeVFKbNMVv3Lb2xSuVqe13M3RxfjP
-         KdrELuR5PtKXB6MbMdbyIvZpTiEB14c8DNlnX3V1U7sPu/om8bscAIW+QwD0756G5JJb
-         3SL0nmILrDsE4MXwsMmLjKYUtJWrj6PUmyZB5LLwrM1DZ4kB+fPrk7jWxb/T3ePyRn8t
-         njcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=lMOqo3ypO/SZ3oHUy6euRnuasGkm67DC6ZbiwUFwB8M=;
-        b=e0UM7bIITYZ/g+6JKGoZKdz8GJHATTiFn/GuvOovr67E7mEfaY6LAoQAOf6+LECzyK
-         IK8QR8lx7mxCPiBxPxuaKqqEwMExhX0XMVPJHhZ0TKOd/uBbU4QxP4JNxSX85lbCJtgE
-         F5SAkJlVBCFhVVLAAZmtWw02jAlWUP1YMiJXhfAbnM9YNJszqKsaEj1qWRwY7ixTCtxC
-         R15mDY4YiE7mWczbmZ6XsMRHopT89KDNXWzbLPdAp4B0osi2vLklEbrJlecrcjcYCbhY
-         /zyeK2KNe7kepp7bukbepvVwKd9o4JR+NtYqJJLlU0lyf/EDFZfXye9sUacMjNWK1pTL
-         v6wQ==
-X-Gm-Message-State: AOAM531WJWeQpcii1E5gk22yz3M4BmqlTm+FbrJ+ngpmoYe4x8qeiMTq
-        Ukb1n1p+J4SDkoXxSEIiea8=
-X-Google-Smtp-Source: ABdhPJzGWfoP9r1EYK/PGbfUWz5nDplWzfMQE+vmcmMJK3RNsVSeyNcSHA23E0BLUDmcdQqqkuVHYg==
-X-Received: by 2002:a17:906:f755:: with SMTP id jp21mr326002ejb.97.1601368938287;
-        Tue, 29 Sep 2020 01:42:18 -0700 (PDT)
-Received: from felia ([2001:16b8:2d89:9100:6c4a:28e4:c658:86f9])
-        by smtp.gmail.com with ESMTPSA id u9sm4528036eje.119.2020.09.29.01.42.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Sep 2020 01:42:17 -0700 (PDT)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-X-Google-Original-From: Lukas Bulwahn <lukas@gmail.com>
-Date:   Tue, 29 Sep 2020 10:42:15 +0200 (CEST)
-X-X-Sender: lukas@felia
-To:     Dave Hansen <dave.hansen@intel.com>
-cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
-        kernel-janitors@vger.kernel.org, linux-safety@lists.elisa.tech
-Subject: Re: [PATCH] x86/mm: drop superfluous initialization
-In-Reply-To: <1d376c1f-2f14-5c29-671e-ca59853fa4a4@intel.com>
-Message-ID: <alpine.DEB.2.21.2009291034160.17656@felia>
-References: <20200928100004.25674-1-lukas.bulwahn@gmail.com> <1d376c1f-2f14-5c29-671e-ca59853fa4a4@intel.com>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        Tue, 29 Sep 2020 04:44:45 -0400
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08T8hJN1012901;
+        Tue, 29 Sep 2020 10:44:38 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=STMicroelectronics;
+ bh=KqUvozA/JR3y08fUfkqMtKFt3RT984BzYpCu5n3nbFw=;
+ b=flWHTWDX3xXKaG8D7S5up2Ky9noBdO5mwetG9HgbDwWIuciIp2T9BAdWn1QII6ZdNpZV
+ /Mo918Wx8+dKiSZpb00jcgHxAkxKm3gacW9M6/U6EJJ9vLBYBhnqbKDFOHQ4VAHUgAIU
+ jIYCQIfVqPUa7TmYUj6qJEVjwMqVJOBuSRjGgH5z03HhgPoDCsgwlYkMqksoPDsIX0CK
+ 4+ZeiRlDljZ/WaNBDpcNi0f2W46mVnrnOwdLZma/aOMlFqSJ7hv+tycQSxnUntmh/83/
+ gPqUzV/3Gd9/TcA+unNfc8j2MWQnF9LkgE6BFaRsarxYOH+yMXnVNoTHlo1va9uQqMqW 9w== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 33su3yqkkt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 29 Sep 2020 10:44:38 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 224DF100034;
+        Tue, 29 Sep 2020 10:44:38 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag3node1.st.com [10.75.127.7])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 0711221E67E;
+        Tue, 29 Sep 2020 10:44:38 +0200 (CEST)
+Received: from lmecxl0889.tpe.st.com (10.75.127.46) by SFHDAG3NODE1.st.com
+ (10.75.127.7) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 29 Sep
+ 2020 10:44:20 +0200
+Subject: Re: [PATCH v6 0/3] Move recovery/coredump configuration to sysfs
+To:     Rishabh Bhatnagar <rishabhb@codeaurora.org>,
+        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>
+CC:     "tsoni@codeaurora.org" <tsoni@codeaurora.org>,
+        "psodagud@codeaurora.org" <psodagud@codeaurora.org>,
+        "sidgup@codeaurora.org" <sidgup@codeaurora.org>
+References: <1601331456-20432-1-git-send-email-rishabhb@codeaurora.org>
+From:   Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Message-ID: <8222f5fa-2acc-a765-a728-6aad9ed88068@st.com>
+Date:   Tue, 29 Sep 2020 10:44:18 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <1601331456-20432-1-git-send-email-rishabhb@codeaurora.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.46]
+X-ClientProxiedBy: SFHDAG7NODE1.st.com (10.75.127.19) To SFHDAG3NODE1.st.com
+ (10.75.127.7)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-29_01:2020-09-29,2020-09-29 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On Mon, 28 Sep 2020, Dave Hansen wrote:
-
-> On 9/28/20 3:00 AM, Lukas Bulwahn wrote:
-> > diff --git a/arch/x86/mm/init.c b/arch/x86/mm/init.c
-> > index c7a47603537f..5632f02146ca 100644
-> > --- a/arch/x86/mm/init.c
-> > +++ b/arch/x86/mm/init.c
-> > @@ -609,7 +609,7 @@ static void __init memory_map_top_down(unsigned long map_start,
-> >  	step_size = PMD_SIZE;
-> >  	max_pfn_mapped = 0; /* will get exact value next */
-> >  	min_pfn_mapped = real_end >> PAGE_SHIFT;
-> > -	last_start = start = real_end;
-> > +	last_start = real_end;
+On 9/29/20 12:17 AM, Rishabh Bhatnagar wrote:
+> From Android R onwards Google has restricted access to debugfs in user
+> and user-debug builds. This restricts access to most of the features
+> exposed through debugfs. 'Coredump' and 'Recovery' are critical
+> interfaces that are required for remoteproc to work on Qualcomm Chipsets. 
+> Coredump configuration needs to be set to "inline" in debug/test builds
+> and "disabled" in production builds. Whereas recovery needs to be
+> "disabled" for debugging purposes and "enabled" on production builds.
+> This patch series removes the recovery/coredump entries from debugfs
+> and moves them to sysfs. Also, this disables the coredump collection
+> by default as this is a requirement for production devices.
 > 
-> Thanks for finding this.
+> Changelog:
 > 
-> This becomes even more obviously correct if we just move the 'start'
-> declaration into the while() loop.  If we do that, it puts the three
-> assignment locations right next to the definition, and its trivial to
-> spot that the initialization was not missed:
+> v6 -> v5:
+> - Disable coredump collection by default
+> - Rename the "default" configuration to "enabled" to avoid confusion
 > 
->         while (last_start > map_start) {
-> 		unsigned long start;
+> v5 -> v4:
+> - Fix the cover-letter of tha patch series.
 > 
->                 if (last_start > step_size) {
->                         start = round_down(last_start - 1, step_size);
->                         if (start < map_start)
->                                 start = map_start;
->                 } else
->                         start = map_start;
-> 		...
->
-
-Agree, this point is simply a question of style:
-
-Shall local variables be defined as "local" as possible or simply 
-consistently at the beginning of each function?
-
-If there are no strong opinions of style, I would just keep this patch 
-as-is.
-
-> Either way, your patch looks correct to me:
+> v4 -> v3:
+> - Remove the feature flag to expose recovery/coredump
 > 
-> Acked-by: Dave Hansen <dave.hansen@linux.intel.com>
+> v3 -> v2:
+> - Remove the coredump/recovery entries from debugfs
+
+Sorry i missed this and some associated discussion in V2...
+
+I have also some concerns about the ABI breaks.
+In ST and I suppose in several companies we have some 
+test environments that use the debugfs to generate and/or get
+the core dump.
+
+Even if the stability of the debugfs is not guaranteed it would
+be nice to keep both interface.
+
+It seems that it is possible to create symbolic link in the debugfs
+thanks to the "debugfs_create_symlink" function.
+This seems allowing to keep files in both place without duplicating the code.
+To be honest i have never used this function so I'm not 100% sure that this
+would do the job...
+But if you think that this could be a good compromise, i can test it.
+
+Regards,
+Arnaud
+
+> - Expose recovery/coredump from sysfs under a feature flag
 > 
-
-Thanks for the Ack.
-
-Lukas
+> v1 -> v2:
+> - Correct the contact name in the sysfs documentation.
+> - Remove the redundant write documentation for coredump/recovery sysfs
+> - Add a feature flag to make this interface switch configurable.
+> 
+> Rishabh Bhatnagar (3):
+>   remoteproc: Move coredump configuration to sysfs
+>   remoteproc: Move recovery configuration to sysfs
+>   remoteproc: Change default dump configuration to "disabled"
+> 
+>  Documentation/ABI/testing/sysfs-class-remoteproc |  46 +++++++
+>  drivers/remoteproc/remoteproc_coredump.c         |   6 +-
+>  drivers/remoteproc/remoteproc_debugfs.c          | 168 -----------------------
+>  drivers/remoteproc/remoteproc_sysfs.c            | 120 ++++++++++++++++
+>  include/linux/remoteproc.h                       |   8 +-
+>  5 files changed, 173 insertions(+), 175 deletions(-)
+> 
