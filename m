@@ -2,247 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 486E227D134
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 16:33:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79AF427D137
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 16:34:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729738AbgI2OdV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 10:33:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:25907 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725554AbgI2OdV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 10:33:21 -0400
-Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601389998;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=1dXwN/gQHjgpimFQFyfQlWV9Z1paasODx41KPbBDDvg=;
-        b=DTq/TvFZYDHd0X8hNpBl33c016PZx8WVkBRviw1iNIyU4XAwT4I2tNp86ZHrX5YnqkBik+
-        Goqu80Z1PSCvkFRnTlwPsRwvQ49BvcucVMs0CZU9BZEFD5+/K/kx5kter86NsgX3ZMbdfs
-        1yYPK2WmTGzEIQr6PpOL2/noQOCQ1nI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-378-e66tAtY_PpK9JY02i0jX-g-1; Tue, 29 Sep 2020 10:33:15 -0400
-X-MC-Unique: e66tAtY_PpK9JY02i0jX-g-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 08372905BB3;
-        Tue, 29 Sep 2020 14:31:59 +0000 (UTC)
-Received: from ovpn-66-32.rdu2.redhat.com (ovpn-66-32.rdu2.redhat.com [10.10.66.32])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id DDF5772FC4;
-        Tue, 29 Sep 2020 14:31:57 +0000 (UTC)
-Message-ID: <5fd046115645daa00f8841f5467da4c4d960ca92.camel@redhat.com>
-Subject: lockdep null-ptr-deref
-From:   Qian Cai <cai@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Boqun Feng <boqun.feng@gmail.com>
-Cc:     Waiman Long <longman@redhat.com>, Ingo Molnar <mingo@redhat.com>,
-        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org
-Date:   Tue, 29 Sep 2020 10:31:56 -0400
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+        id S1730154AbgI2OeQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 10:34:16 -0400
+Received: from mail-eopbgr80138.outbound.protection.outlook.com ([40.107.8.138]:5703
+        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725554AbgI2OeQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 10:34:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=l2task.onmicrosoft.com; s=selector1-l2task-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=OWG7Nx9q1C2Grx7c/nWS4+L9zJ0Iz7+HRTGsFHaLUGQ=;
+ b=BlUDho43r7be35Tcxjpb7gqGHu3+/FU+cdXi9CQQMJHbCo40qS5XUOHAoh/VWaIz4s9qd8m4Ai5peUcTeBKBzRzL9/7Nhg2MDtPdhm8UM29L60WgNdk1R4qtYfO9TE8Kkpn4eItH+pTRrnsqaZ08iYEfN9QEE/0r+TmOQAQi48U=
+Received: from AM5PR0701CA0005.eurprd07.prod.outlook.com
+ (2603:10a6:203:51::15) by AM0PR10MB3331.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:208:18b::19) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.20; Tue, 29 Sep
+ 2020 14:34:13 +0000
+Received: from AM5EUR03FT059.eop-EUR03.prod.protection.outlook.com
+ (2603:10a6:203:51:cafe::b7) by AM5PR0701CA0005.outlook.office365.com
+ (2603:10a6:203:51::15) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.18 via Frontend
+ Transport; Tue, 29 Sep 2020 14:34:13 +0000
+X-MS-Exchange-Authentication-Results: spf=fail (sender IP is 104.40.229.156)
+ smtp.mailfrom=aerq.com; vger.kernel.org; dkim=fail (body hash did not verify)
+ header.d=l2task.onmicrosoft.com;vger.kernel.org; dmarc=none action=none
+ header.from=aerq.com;
+Received-SPF: Fail (protection.outlook.com: domain of aerq.com does not
+ designate 104.40.229.156 as permitted sender)
+ receiver=protection.outlook.com; client-ip=104.40.229.156;
+ helo=eu1.smtp.exclaimer.net;
+Received: from eu1.smtp.exclaimer.net (104.40.229.156) by
+ AM5EUR03FT059.mail.protection.outlook.com (10.152.17.193) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.3412.21 via Frontend Transport; Tue, 29 Sep 2020 14:34:12 +0000
+Received: from EUR05-VI1-obe.outbound.protection.outlook.com (104.47.17.175)
+         by eu1.smtp.exclaimer.net (104.40.229.156) with Exclaimer Signature Manager
+         ESMTP Proxy eu1.smtp.exclaimer.net (tlsversion=TLS12,
+         tlscipher=TLS_ECDHE_WITH_AES256_SHA384); Tue, 29 Sep 2020 14:34:13 +0000
+X-ExclaimerHostedSignatures-MessageProcessed: true
+X-ExclaimerProxyLatency: 11184970
+X-ExclaimerImprintLatency: 664734
+X-ExclaimerImprintAction: 27a206c0bcef49c5a066bbbe6637220b
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eYkU8rbrrMTQHRn12bgK4acxpzcremEUrFaf7iCaVFCQ61gtxsDNMW7hq8CVdOgR+ii8ICDit/3/38CDEblZErzL/xuFMEKhrgFzQ+lkBuwITqe3pnKy2It+aEhV3a/QQuCmPzA0FaOS5sreYkbNMRxvSTo3tyXWWOCDjfzTKmwCOHSHeBELya90x1CVvepSJvMa8lsiwWOS3VxlMuCzWL9tch5u95xj66IlMLJGwzCo0STViSN6nzUYPF/izVGHLftVF7sOc35G2YH+y+787Q0nWUGdtyM6+7pOCJUdXlWLVK8Tx1v6lHEVFZkqTd0qH3atAMiEZ/6tldmxi+xdsQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=T25PbV/QSKtT8hZ6FDFVSomYkj+fX8WWtRcSAe16HHA=;
+ b=WCt7dX1oumLLEKCc+stluM2iXGLrq1g8pn6Rj1SylW5H0w4M2pRto5TkGSbtdXUMO9LWDlETqZK6h0MBXXJltIPgKxznO/79san6ezmP7zvTsxncQIXoSNbVEkvngwfEPWbNIT8O+r+uLE8zTVUFxMqQPKqSFjRjd+y3G0c0RVNHw5qX0DDAXXHfJJioni1ob5X5za8g35BRPWr88nbCbiNbobO6TK2u06HxRaAQ1KsFG3Sh7VQz7GMqqx4Z30WSQvTHRKnQLc19fRp/0y5OtDnqLrkR/LSwTlEbm/7BpmXEKCQxIjBg5Sv+bJlcA1pFMnRHm35sZM5RfAOvJRNGGA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=aerq.com; dmarc=pass action=none header.from=aerq.com;
+ dkim=pass header.d=aerq.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=l2task.onmicrosoft.com; s=selector1-l2task-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=T25PbV/QSKtT8hZ6FDFVSomYkj+fX8WWtRcSAe16HHA=;
+ b=emJGUmDyaYvPHOndH8HD+ny2KoU3w9VGJZmCd5e1ypVFUXb7ArEe0cOtlMpFDqZMiHl6P620kdUNJ2No5wk7a4vfv4JkBHdktDrWj0Hg0gnnNRzApg/aIAGjAhu3Qejx1dl5rqE/l84iNtc8BdK9YRZzx5xgvTd2nJhETVfqn6k=
+Authentication-Results-Original: vger.kernel.org; dkim=none (message not
+ signed) header.d=none;vger.kernel.org; dmarc=none action=none
+ header.from=aerq.com;
+Received: from DB8PR10MB3434.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:e4::19)
+ by DBAPR10MB4091.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:1c3::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.22; Tue, 29 Sep
+ 2020 14:34:09 +0000
+Received: from DB8PR10MB3434.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::14f7:2e71:2913:d431]) by DB8PR10MB3434.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::14f7:2e71:2913:d431%7]) with mapi id 15.20.3433.032; Tue, 29 Sep 2020
+ 14:34:09 +0000
+From:   Alban Bedel <alban.bedel@aerq.com>
+To:     linux-hwmon@vger.kernel.org
+CC:     Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Alban Bedel <alban.bedel@aerq.com>
+Subject: [PATCH v3 0/3] hwmon: (lm75) Add regulator support
+Date:   Tue, 29 Sep 2020 16:33:42 +0200
+Message-ID: <20200929143345.73170-1-alban.bedel@aerq.com>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-Originating-IP: [88.130.152.63]
+X-ClientProxiedBy: AM0PR04CA0065.eurprd04.prod.outlook.com
+ (2603:10a6:208:1::42) To DB8PR10MB3434.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:10:e4::19)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from aerq-nb-1030.dotsec.gv (88.130.152.63) by AM0PR04CA0065.eurprd04.prod.outlook.com (2603:10a6:208:1::42) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.20 via Frontend Transport; Tue, 29 Sep 2020 14:34:08 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 59479558-16c2-4553-423f-08d86484bc76
+X-MS-TrafficTypeDiagnostic: DBAPR10MB4091:|AM0PR10MB3331:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <AM0PR10MB3331661F516098FD115105F996320@AM0PR10MB3331.EURPRD10.PROD.OUTLOOK.COM>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5797;OLM:5797;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam-Untrusted: BCL:0;
+X-Microsoft-Antispam-Message-Info-Original: 14m3+3Y2dIfmW5Q4bYSiDQ+jpMyKj+iC46lwZXISYkwQmpsvW8TCavOR2gJm89E953bnfUfJ1eIkJfTffgiOzdArujFIhhiBZ6HLJKf2HAfY3fkOMoVjfawjE/I6HUWNODwgPfNfmmURJUufeswxYN3/7R0p8UslH5Ht7O7kxAFiB/UQIBMnoIriFcMj0HSUqvOytHy71Oj8h/88nnM7DjriTkcKXuI2+phK+6clhfYaihCARYkSlyWg4H8e8r6322HyglHhgeDu1AsF+2UpEuF1HS9NktlMMybbin7lCkuPvnEmR47Gq1nUcjdhF9nk7d1qhTH8nQJEKCGPDEIObIYLjANC6KrA5A0BDZml/caqg3sHTFcdEn2cfsObFoYv
+X-Forefront-Antispam-Report-Untrusted: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR10MB3434.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(39830400003)(396003)(366004)(346002)(376002)(2616005)(44832011)(6666004)(6506007)(1076003)(26005)(54906003)(36756003)(8936002)(186003)(52116002)(83380400001)(66946007)(5660300002)(508600001)(16526019)(6916009)(8676002)(6512007)(6486002)(956004)(2906002)(107886003)(66476007)(4326008)(66556008)(86362001)(4744005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: WbopKMMnMZcexsvjHvKNyWdw+wm9vCEycTcz1lWViNVerjYl7FVH93gO2wMaHUY/zvBKCWUEBfapvsuMcyxOGmk/FeVdavP2oiNz5VO2B3ncNgrV/H8VkH4DMe75KT8RSx6i1+1fi5uG/fojfecGWv3NDvpV2aXnqnfgg2PMApWMHRMbdxJ01s+iX8/84I9WM/Petryt6cUIc0k4h+tHJ5GJXQ2rbI+0LF7x1PcwTP+hV8rHk+DwvQXJcUaB9/YoivLv1YdYswaQK8ug5kumHcnrNhKnL1o1YX2ojZayszx5XkBWYLSFYuESU5Qdj0lx6XMyRBUd+9nDdrqBrZQbcmfyYG8PXJDa3t3kRWxV58TOHIieZfxbVQHISQrOHM8mNLwjk3PXC0IV49MN/bkF7C8196oVSPafiDjZlRUZZw+cdsrihT5pb9zAxCT+9MoFjcspVUrjxlYXSUx2qV2YljRaaFral+7dC0Dft5peF8m7C+0H2Gm01dCKLdkRG9Yx9X6ay84gBdl/4o0nrMoeBqCFyuJudXeKjV+aodbUvkOQo0Gu/s2MGusHnQaPpzZNE7DndzNToJF96CwtNdvGBSEph1Av6cDcelpqcLjRjZAlDEwwsJh1tnWdwEuyaHWTL+Zc6VC/zQVRmD5sltwldQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBAPR10MB4091
+X-EOPAttributedMessage: 0
+X-MS-Exchange-Transport-CrossTenantHeadersStripped: AM5EUR03FT059.eop-EUR03.prod.protection.outlook.com
+X-MS-Office365-Filtering-Correlation-Id-Prvs: 60983e86-d50f-4d06-22ee-08d86484b9ca
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: SImweB1Hcbs1V/WlGARoef/wrWu0NQ/sype5BGbaq0gJYuRiFx2/aAKZyzH7ZyTtlvdb9SAewshh6YXmhH7+U8mpNb6dKJLNDvs9kZEhu2YsrdEELblKew/eBsPeKp62TqO2B+sOQnNFkjPxrRssWj5swElLXmYO2PAPbLmYFfwXee6f7D0PF1jFLPuB2CBlJY52twYGbqZNuXnjersgCpeDxXTqTFP3RWHD5djsdhvYrS7pML9GepSVnUWny+zM+Rwtm8eVopN5JnbnNr8qgwmDxVxQCM5yZaZJAWTA+Nk75ax+b6LoZvYpcTTqXRWK007d7wbJhOL062VRJ2tbbISkmiGQX6DFFtricl49eRWE/R/BKf1bnq8pTYsY9XiQnCyF24Q49S8aBHjayR5JA7EtkmbvFyaNE6zjBOsafQr4RJkWIEZfUPLa3MtatbXrFpOQ39QEuY+FwBg1BTtQSa2B8MDbdYA1T1yATmcl/3A=
+X-Forefront-Antispam-Report: CIP:104.40.229.156;CTRY:NL;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:eu1.smtp.exclaimer.net;PTR:eu1.smtp.exclaimer.net;CAT:NONE;SFS:(346002)(396003)(39830400003)(376002)(46966005)(6512007)(16526019)(186003)(6486002)(47076004)(26005)(54906003)(36756003)(5660300002)(70586007)(2906002)(8936002)(8676002)(4744005)(70206006)(6666004)(1076003)(508600001)(956004)(336012)(2616005)(316002)(86362001)(44832011)(6916009)(82310400003)(356005)(83380400001)(4326008)(7636003)(6506007)(7596003)(33310700002)(107886003);DIR:OUT;SFP:1102;
+X-OriginatorOrg: aerq.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Sep 2020 14:34:12.6116
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 59479558-16c2-4553-423f-08d86484bc76
+X-MS-Exchange-CrossTenant-Id: bf24ff3e-ad0a-4c79-a44a-df7092489e22
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=bf24ff3e-ad0a-4c79-a44a-df7092489e22;Ip=[104.40.229.156];Helo=[eu1.smtp.exclaimer.net]
+X-MS-Exchange-CrossTenant-AuthSource: AM5EUR03FT059.eop-EUR03.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR10MB3331
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I tried to add a few new Kconfig options like LEDS_TRIGGERS instantly trigger a
-warning during the boot, and then there is null-ptr-deref in lockdep below. Any
-idea?
+v2: - Fixed the DT example while converting to YAML
+    - Removed the unneeded maxItems from the binding documentation
+    - Use dummy regulator insted of explicitly handling missing regulator
 
-[   16.487309] WARNING: possible irq lock inversion dependency detected
-[   16.488313] 5.9.0-rc7-next-20200928+ #9 Not tainted
-[   16.488936] --------------------------------------------------------
-[   16.489767] swapper/6/0 just changed the state of lock:
-[   16.490449] ffff8889eea6f418 (&host->lock){-...}-{2:2}, at: ata_bmdma_interrupt+0x1e/0x530 [libata]
-__ata_sff_interrupt at /home/linux-mm/linux-next/drivers/ata/libata-sff.c:1534
-(inlined by) ata_bmdma_interrupt at /home/linux-mm/linux-next/drivers/ata/libata-sff.c:2832
-[   16.491639] but this lock took another, HARDIRQ-READ-unsafe lock in the past:
-[   16.492561]  (&trig->leddev_list_lock){.+.?}-{2:2}
-[   16.492565] 
-[   16.492565] 
-[   16.492565] and interrupts could create inverse lock ordering between them.
-[   16.492565] 
-[   16.494635] 
-[   16.494635] other info that might help us debug this:
-[   16.495479]  Possible interrupt unsafe locking scenario:
-[   16.495479] 
-[   16.496360]        CPU0                    CPU1
-[   16.496941]        ----                    ----
-[   16.497542]   lock(&trig->leddev_list_lock);
-[   16.498095]                                local_irq_disable();
-[   16.498864]                                lock(&host->lock);
-[   16.499611]                                lock(&trig->leddev_list_lock);
-[   16.500481]   <Interrupt>
-[   16.500833]     lock(&host->lock);
-[   16.501289] 
-[   16.501289]  *** DEADLOCK ***
-[   16.501289] 
-[   16.502044] no locks held by swapper/6/0.
-[   16.502566] 
-[   16.502566] the shortest dependencies between 2nd lock and 1st lock:
-[   16.503578]  -> (&trig->leddev_list_lock){.+.?}-{2:2} {
-[   16.504259]     HARDIRQ-ON-R at:
-[   16.504692]                       lock_acquire+0x17f/0x7e0
-[   16.505411]                       _raw_read_lock+0x38/0x70
-[   16.506120]                       led_trigger_event+0x2b/0xb0
-led_trigger_event at drivers/leds/led-triggers.c:386
-(inlined by) led_trigger_event at drivers/leds/led-triggers.c:377
-[   16.506868]                       kbd_propagate_led_state+0x5d/0x80
-[   16.507680]                       kbd_bh+0x14d/0x1d0
-[   16.508335]                       tasklet_action_common.isra.13+0x23a/0x2e0
-[   16.509235]                       __do_softirq+0x1ce/0x828
-[   16.509940]                       run_ksoftirqd+0x26/0x50
-[   16.510647]                       smpboot_thread_fn+0x30f/0x740
-[   16.511413]                       kthread+0x357/0x420
-[   16.512068]                       ret_from_fork+0x22/0x30
-[   16.512762]     IN-SOFTIRQ-R at:
-[   16.513187]                       lock_acquire+0x17f/0x7e0
-[   16.513891]                       _raw_read_lock+0x38/0x70
-[   16.514602]                       led_trigger_event+0x2b/0xb0
-[   16.515356]                       kbd_propagate_led_state+0x5d/0x80
-[   16.516165]                       kbd_bh+0x14d/0x1d0
-[   16.516810]                       tasklet_action_common.isra.13+0x23a/0x2e0
-[   16.517701]                       __do_softirq+0x1ce/0x828
-[   16.518418]                       run_ksoftirqd+0x26/0x50
-[   16.519119]                       smpboot_thread_fn+0x30f/0x740
-[   16.519874]                       kthread+0x357/0x420
-[   16.520460] scsi 0:0:0:0: Direct-Access     ATA      QEMU HARDDISK    2.5+ PQ: 0 ANSI: 5
-[   16.520528]                       ret_from_fork+0x22/0x30
-[   16.520531]     SOFTIRQ-ON-R at:
-[   16.522704]                       lock_acquire+0x17f/0x7e0
-[   16.523423]                       _raw_read_lock+0x5d/0x70
-[   16.524124]                       led_trigger_event+0x2b/0xb0
-[   16.524865]                       kbd_propagate_led_state+0x5d/0x80
-[   16.525671]                       kbd_start+0xd2/0xf0
-[   16.526332]                       input_register_handle+0x282/0x4f0
-[   16.527142]                       kbd_connect+0xc0/0x120
-[   16.527826]                       input_attach_handler+0x10a/0x170
-[   16.528758]                       input_register_device.cold.22+0xac/0x29d
-[   16.529651]                       atkbd_connect+0x58f/0x810
-[   16.530374]                       serio_connect_driver+0x4a/0x70
-[   16.531144]                       really_probe+0x222/0xb20
-[   16.531861]                       driver_probe_device+0x1f6/0x380
-[   16.532650]                       device_driver_attach+0xea/0x120
-[   16.533441]                       __driver_attach+0xf5/0x270
-[   16.534172]                       bus_for_each_dev+0x11c/0x1b0
-[   16.534924]                       serio_handle_event+0x1df/0x7f0
-[   16.535701]                       process_one_work+0x842/0x1410
-[   16.536470]                       worker_thread+0x87/0xb40
-[   16.537178]                       kthread+0x357/0x420
-[   16.537828]                       ret_from_fork+0x22/0x30
-[   16.538674]     INITIAL USE at:
-[   16.539220]                      lock_acquire+0x17f/0x7e0
-[   16.540116]                      _raw_read_lock+0x38/0x70
-[   16.540999]                      led_trigger_event+0x2b/0xb0
-[   16.541923]                      kbd_propagate_led_state+0x5d/0x80
-[   16.542879]                      kbd_bh+0x14d/0x1d0
-[   16.543538]                      tasklet_action_common.isra.13+0x23a/0x2e0
-[   16.544427]                      __do_softirq+0x1ce/0x828
-[   16.545117]                      run_ksoftirqd+0x26/0x50
-[   16.545807]                      smpboot_thread_fn+0x30f/0x740
-[   16.546566]                      kthread+0x357/0x420
-[   16.547227]                      ret_from_fork+0x22/0x30
-[   16.547899]     (null) at:
-[   16.548298] general protection fault, probably for non-canonical address 0xdffffc0000000002: 0000 [#1] SMP KASAN PTI
-[   16.549666] KASAN: null-ptr-deref in range [0x0000000000000010-0x0000000000000017]
-[   16.550644] CPU: 6 PID: 0 Comm: swapper/6 Not tainted 5.9.0-rc7-next-20200928+ #9
-[   16.551615] Hardware name: Red Hat KVM, BIOS 1.14.0-1.module+el8.3.0+7638+07cf13d2 04/01/2014
-[   16.552722] RIP: 0010:print_shortest_lock_dependencies.cold.65+0x10b/0x2a4
-print_shortest_lock_dependencies.cold.65+0x10b/0x2a4:
-print_lock_trace at kernel/locking/lockdep.c:1751
-(inlined by) print_lock_class_header at kernel/locking/lockdep.c:2240
-(inlined by) print_shortest_lock_dependencies at kernel/locking/lockdep.c:2263
-[   16.553613] Code: 41 01 c6 4c 89 e8 48 c1 e8 03 45 01 fe 80 3c 18 00 74 08 4c 89 ef e8 db e2 ac fe 49 8b 45 00 48 8d 78 14 48 89 fa 48 c1 ea 03 <0f> b6 0c 1a 48 89 fa 83 e2 07 83 c2 03 38 ca 7c 08 84 c9 0f 82
-[   16.555983] RSP: 0018:ffff888a7eb09988 EFLAGS: 00010003
-[   16.556658] RAX: 0000000000000001 RBX: dffffc0000000000 RCX: 0000000000000027
-[   16.557571] RDX: 0000000000000002 RSI: 0000000000000004 RDI: 0000000000000015
-[   16.558499] RBP: ffffffffb3dd5888 R08: ffffed114fd640c2 R09: ffffed114fd640c2
-[   16.559420] R10: ffff888a7eb2060b R11: ffffed114fd640c1 R12: 0000000000000009
-[   16.560329] R13: ffffffffb3dd5928 R14: 000000000000000f R15: 0000000000000001
-[   16.561237] FS:  0000000000000000(0000) GS:ffff888a7eb00000(0000) knlGS:0000000000000000
-[   16.562264] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   16.562989] CR2: 00007fdc00f597a0 CR3: 000000091f02e006 CR4: 0000000000770ee0
-[   16.563909] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[   16.564818] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[   16.565728] PKRU: 55555554
-[   16.566080] Call Trace:
-[   16.566410]  <IRQ>
-[   16.566679]  print_irq_inversion_bug.cold.66+0x31b/0x36e
-print_irq_inversion_bug at kernel/locking/lockdep.c:3771
-(inlined by) print_irq_inversion_bug at kernel/locking/lockdep.c:3716
-[   16.567369]  mark_lock.part.49+0x116a/0x1900
-[   16.567915]  ? print_usage_bug+0x1f0/0x1f0
-[   16.568456]  ? __lock_acquire+0xc66/0x3ac0
-[   16.568983]  ? print_usage_bug+0x1f0/0x1f0
-[   16.569521]  ? mark_lock.part.49+0x107/0x1900
-[   16.570085]  __lock_acquire+0x14ec/0x3ac0
-[   16.570610]  ? static_obj+0xb0/0xc0
-[   16.571064]  ? lockdep_hardirqs_on_prepare+0x4d0/0x4d0
-[   16.571731]  ? rcu_read_lock_sched_held+0xa1/0xd0
-[   16.572347]  lock_acquire+0x17f/0x7e0
-[   16.572825]  ? ata_bmdma_interrupt+0x1e/0x530 [libata]
-[   16.573494]  ? rcu_read_unlock+0x40/0x40
-[   16.573994]  ? __lock_acquire+0x1864/0x3ac0
-[   16.574543]  _raw_spin_lock_irqsave+0x35/0x50
-[   16.575111]  ? ata_bmdma_interrupt+0x1e/0x530 [libata]
-[   16.575779]  ? ata_bmdma_port_intr+0x320/0x320 [libata]
-[   16.576460]  ata_bmdma_interrupt+0x1e/0x530 [libata]
-[   16.577092]  ? rcu_read_lock_bh_held+0xb0/0xb0
-[   16.577676]  ? find_held_lock+0x33/0x1c0
-[   16.578205]  ? ata_bmdma_port_intr+0x320/0x320 [libata]
-[   16.578875]  __handle_irq_event_percpu+0xeb/0x5f0
-[   16.579491]  handle_irq_event_percpu+0x73/0x140
-[   16.580072]  ? __handle_irq_event_percpu+0x5f0/0x5f0
-[   16.580714]  ? rwlock_bug.part.1+0x90/0x90
-[   16.581251]  ? do_raw_spin_unlock+0x14b/0x230
-[   16.581805]  handle_irq_event+0xa1/0x130
-[   16.582324]  handle_edge_irq+0x1ee/0x770
-[   16.582841]  asm_call_irq_on_stack+0x12/0x20
-[   16.583416]  </IRQ>
-[   16.583699]  common_interrupt+0xe2/0x180
-[   16.584225]  asm_common_interrupt+0x1e/0x40
-[   16.584760] RIP: 0010:default_idle+0x18/0x20
-[   16.585323] Code: 5d e9 bc cd 35 ff cc cc cc cc cc cc cc cc cc cc cc cc 0f 1f 44 00 00 e8 96 07 6b fe e9 07 00 00 00 0f 00 2d 4a 98 5b 00 fb f4 <c3> 0f 1f 80 00 00 00 00 0f 1f 44 00 00 53 be 08 00 00 00 65 4b
-[   16.587687] RSP: 0018:ffff888107317df8 EFLAGS: 00000202
-[   16.588378] RAX: 0000000000008ca1 RBX: 0000000000000006 RCX: ffffffffb143f2e0
-[   16.589297] RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffffffffb1464e4a
-[   16.590207] RBP: 0000000000000006 R08: 0000000000000001 R09: 0000000000000001
-[   16.591109] R10: ffff888a7eb360eb R11: ffffed114fd66c1d R12: ffffffffb2d6fca0
-[   16.592012] R13: 0000000000000000 R14: 1ffff11020e62fc6 R15: 0000000000000000
-[   16.592931]  ? rcu_eqs_enter.constprop.75+0xa0/0xc0
-[   16.593572]  ? default_idle+0xa/0x20
-[   16.594034]  ? default_idle+0xa/0x20
-[   16.594511]  default_idle_call+0xa0/0x370
-[   16.595028]  do_idle+0x3c1/0x570
-[   16.595462]  ? arch_cpu_idle_exit+0x40/0x40
-[   16.595995]  ? lockdep_hardirqs_on_prepare+0x32b/0x4d0
-[   16.596663]  ? _raw_spin_unlock_irqrestore+0x39/0x40
-[   16.597306]  cpu_startup_entry+0x19/0x20
-[   16.597817]  start_secondary+0x250/0x2f0
-[   16.598342]  ? set_cpu_sibling_map+0x2430/0x2430
-[   16.598935]  ? start_cpu0+0xc/0xc
-[   16.599378]  secondary_startup_64_no_verify+0xb8/0xbb
-[   16.600017] Modules linked in: crct10dif_pclmul crc32_pclmul crc32c_intel virtiofs ata_piix ghash_clmulni_intel fuse libata serio_raw e1000(+) sunrpc dm_mirror dm_region_hash dm_log dm_mod
-[   16.602209] ---[ end trace f713527030b9fc6e ]---
-[   16.602804] RIP: 0010:print_shortest_lock_dependencies.cold.65+0x10b/0x2a4
-[   16.603695] Code: 41 01 c6 4c 89 e8 48 c1 e8 03 45 01 fe 80 3c 18 00 74 08 4c 89 ef e8 db e2 ac fe 49 8b 45 00 48 8d 78 14 48 89 fa 48 c1 ea 03 <0f> b6 0c 1a 48 89 fa 83 e2 07 83 c2 03 38 ca 7c 08 84 c9 0f 82
-[   16.606060] RSP: 0018:ffff888a7eb09988 EFLAGS: 00010003
-[   16.606730] RAX: 0000000000000001 RBX: dffffc0000000000 RCX: 0000000000000027
-[   16.607640] RDX: 0000000000000002 RSI: 0000000000000004 RDI: 0000000000000015
-[   16.608568] RBP: ffffffffb3dd5888 R08: ffffed114fd640c2 R09: ffffed114fd640c2
-[   16.609495] R10: ffff888a7eb2060b R11: ffffed114fd640c1 R12: 0000000000000009
-[   16.610410] R13: ffffffffb3dd5928 R14: 000000000000000f R15: 0000000000000001
-[   16.611322] FS:  0000000000000000(0000) GS:ffff888a7eb00000(0000) knlGS:0000000000000000
-[   16.612351] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   16.613078] CR2: 00007fdc00f597a0 CR3: 000000091f02e006 CR4: 0000000000770ee0
-[   16.613980] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[   16.614903] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[   16.615824] PKRU: 55555554
-[   16.616177] Kernel panic - not syncing: Fatal exception in interrupt
-[   16.617445] Kernel Offset: 0x2e600000 from 0xffffffff81000000 (relocation range: 0xffffffff80000000-0xffffffffbfffffff)
-[   16.618792] ---[ end Kernel panic - not syncing: Fatal exception in interrupt ]---
+v3: - Use a devm action to handle disabling the regulator
+
+Alban Bedel (3):
+  dt-bindings: hwmon: Convert lm75 bindings to yaml
+  dt-bindings: hwmon: Add the +vs supply to the lm75 bindings
+  hwmon: (lm75) Add regulator support
+
+ .../devicetree/bindings/hwmon/lm75.txt        | 39 -----------
+ .../devicetree/bindings/hwmon/lm75.yaml       | 64 +++++++++++++++++++
+ drivers/hwmon/lm75.c                          | 24 +++++++
+ 3 files changed, 88 insertions(+), 39 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/hwmon/lm75.txt
+ create mode 100644 Documentation/devicetree/bindings/hwmon/lm75.yaml
+
+--=20
+2.25.1
 
