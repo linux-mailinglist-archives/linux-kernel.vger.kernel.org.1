@@ -2,153 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B820627BC74
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 07:30:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D732327BC4F
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 07:15:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726108AbgI2Fa2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 01:30:28 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:3534 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725554AbgI2Fa2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 01:30:28 -0400
-X-Greylist: delayed 952 seconds by postgrey-1.27 at vger.kernel.org; Tue, 29 Sep 2020 01:30:26 EDT
-Received: from DGGEMM403-HUB.china.huawei.com (unknown [172.30.72.56])
-        by Forcepoint Email with ESMTP id 6A4C513F0518D2320ABE;
-        Tue, 29 Sep 2020 13:14:32 +0800 (CST)
-Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
- DGGEMM403-HUB.china.huawei.com (10.3.20.211) with Microsoft SMTP Server (TLS)
- id 14.3.487.0; Tue, 29 Sep 2020 13:14:32 +0800
-Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
- dggemi761-chm.china.huawei.com (10.1.198.147) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1913.5; Tue, 29 Sep 2020 13:14:31 +0800
-Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
- dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.1913.007;
- Tue, 29 Sep 2020 13:14:31 +0800
-From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-CC:     "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Luis Claudio R . Goncalves" <lgoncalv@redhat.com>,
-        Mahipal Challa <mahipalreddy2006@gmail.com>,
-        Seth Jennings <sjenning@redhat.com>,
-        "Dan Streetman" <ddstreet@ieee.org>,
-        Vitaly Wool <vitaly.wool@konsulko.com>,
-        "Wangzhou (B)" <wangzhou1@hisilicon.com>,
-        "fanghao (A)" <fanghao11@huawei.com>,
-        Colin Ian King <colin.king@canonical.com>
-Subject: RE: [PATCH v6] mm/zswap: move to use crypto_acomp API for hardware
- acceleration
-Thread-Topic: [PATCH v6] mm/zswap: move to use crypto_acomp API for hardware
- acceleration
-Thread-Index: AQHWlat2/tz4PWWjYEyGimM6I0lKCKl+fZuAgACGPEA=
-Date:   Tue, 29 Sep 2020 05:14:31 +0000
-Message-ID: <76bb2b545117413eb0879abcf91cf0f0@hisilicon.com>
-References: <20200818123100.4140-1-song.bao.hua@hisilicon.com>
- <20200928152432.l3auscdx2suyli4u@linutronix.de> 
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.126.200.63]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1726165AbgI2FP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 01:15:29 -0400
+Received: from mga03.intel.com ([134.134.136.65]:10267 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725355AbgI2FP2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 01:15:28 -0400
+IronPort-SDR: Bm+EbaawbJDQ+rlpgwhgqSYR6TxIklYrLVzifWew0xHFwX1AZ6CFEw9jZYEI9EaHlAME2uK3Rf
+ nd40msS0PbiQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9758"; a="162180219"
+X-IronPort-AV: E=Sophos;i="5.77,317,1596524400"; 
+   d="scan'208";a="162180219"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 22:15:27 -0700
+IronPort-SDR: DTZmPi9P93L/egJWF9MbJKYfFpDPN2yT9BwsCdgxHKC1nCm2v7aLggLB4d/6P6AzP0ylnW/f9k
+ T1oPt0BuLQ4A==
+X-IronPort-AV: E=Sophos;i="5.77,317,1596524400"; 
+   d="scan'208";a="457124988"
+Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 22:15:27 -0700
+Date:   Mon, 28 Sep 2020 22:15:26 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Maxim Levitsky <mlevitsk@redhat.com>
+Cc:     kvm@vger.kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org, Jim Mattson <jmattson@google.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>
+Subject: Re: [PATCH v6 4/4] KVM: nSVM: implement on demand allocation of the
+ nested state
+Message-ID: <20200929051526.GD353@linux.intel.com>
+References: <20200922211025.175547-1-mlevitsk@redhat.com>
+ <20200922211025.175547-5-mlevitsk@redhat.com>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200922211025.175547-5-mlevitsk@redhat.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogU29uZyBCYW8gSHVhIChC
-YXJyeSBTb25nKQ0KPiBTZW50OiBUdWVzZGF5LCBTZXB0ZW1iZXIgMjksIDIwMjAgMTA6MDIgQU0N
-Cj4gVG86ICdTZWJhc3RpYW4gQW5kcnplaiBTaWV3aW9yJyA8YmlnZWFzeUBsaW51dHJvbml4LmRl
-Pg0KPiBDYzogYWtwbUBsaW51eC1mb3VuZGF0aW9uLm9yZzsgaGVyYmVydEBnb25kb3IuYXBhbmEu
-b3JnLmF1Ow0KPiBkYXZlbUBkYXZlbWxvZnQubmV0OyBsaW51eC1jcnlwdG9Admdlci5rZXJuZWwu
-b3JnOyBsaW51eC1tbUBrdmFjay5vcmc7DQo+IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7
-IEx1aXMgQ2xhdWRpbyBSIC4gR29uY2FsdmVzDQo+IDxsZ29uY2FsdkByZWRoYXQuY29tPjsgTWFo
-aXBhbCBDaGFsbGEgPG1haGlwYWxyZWRkeTIwMDZAZ21haWwuY29tPjsNCj4gU2V0aCBKZW5uaW5n
-cyA8c2plbm5pbmdAcmVkaGF0LmNvbT47IERhbiBTdHJlZXRtYW4gPGRkc3RyZWV0QGllZWUub3Jn
-PjsNCj4gVml0YWx5IFdvb2wgPHZpdGFseS53b29sQGtvbnN1bGtvLmNvbT47IFdhbmd6aG91IChC
-KQ0KPiA8d2FuZ3pob3UxQGhpc2lsaWNvbi5jb20+OyBmYW5naGFvIChBKSA8ZmFuZ2hhbzExQGh1
-YXdlaS5jb20+OyBDb2xpbg0KPiBJYW4gS2luZyA8Y29saW4ua2luZ0BjYW5vbmljYWwuY29tPg0K
-PiBTdWJqZWN0OiBSRTogW1BBVENIIHY2XSBtbS96c3dhcDogbW92ZSB0byB1c2UgY3J5cHRvX2Fj
-b21wIEFQSSBmb3INCj4gaGFyZHdhcmUgYWNjZWxlcmF0aW9uDQo+IA0KPiANCj4gDQo+ID4gLS0t
-LS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gPiBGcm9tOiBTZWJhc3RpYW4gQW5kcnplaiBTaWV3
-aW9yIFttYWlsdG86YmlnZWFzeUBsaW51dHJvbml4LmRlXQ0KPiA+IFNlbnQ6IFR1ZXNkYXksIFNl
-cHRlbWJlciAyOSwgMjAyMCA0OjI1IEFNDQo+ID4gVG86IFNvbmcgQmFvIEh1YSAoQmFycnkgU29u
-ZykgPHNvbmcuYmFvLmh1YUBoaXNpbGljb24uY29tPg0KPiA+IENjOiBha3BtQGxpbnV4LWZvdW5k
-YXRpb24ub3JnOyBoZXJiZXJ0QGdvbmRvci5hcGFuYS5vcmcuYXU7DQo+ID4gZGF2ZW1AZGF2ZW1s
-b2Z0Lm5ldDsgbGludXgtY3J5cHRvQHZnZXIua2VybmVsLm9yZzsgbGludXgtbW1Aa3ZhY2sub3Jn
-Ow0KPiA+IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7IEx1aXMgQ2xhdWRpbyBSIC4gR29u
-Y2FsdmVzDQo+ID4gPGxnb25jYWx2QHJlZGhhdC5jb20+OyBNYWhpcGFsIENoYWxsYSA8bWFoaXBh
-bHJlZGR5MjAwNkBnbWFpbC5jb20+Ow0KPiA+IFNldGggSmVubmluZ3MgPHNqZW5uaW5nQHJlZGhh
-dC5jb20+OyBEYW4gU3RyZWV0bWFuIDxkZHN0cmVldEBpZWVlLm9yZz47DQo+ID4gVml0YWx5IFdv
-b2wgPHZpdGFseS53b29sQGtvbnN1bGtvLmNvbT47IFdhbmd6aG91IChCKQ0KPiA+IDx3YW5nemhv
-dTFAaGlzaWxpY29uLmNvbT47IGZhbmdoYW8gKEEpIDxmYW5naGFvMTFAaHVhd2VpLmNvbT47IENv
-bGluDQo+ID4gSWFuIEtpbmcgPGNvbGluLmtpbmdAY2Fub25pY2FsLmNvbT4NCj4gPiBTdWJqZWN0
-OiBSZTogW1BBVENIIHY2XSBtbS96c3dhcDogbW92ZSB0byB1c2UgY3J5cHRvX2Fjb21wIEFQSSBm
-b3INCj4gPiBoYXJkd2FyZSBhY2NlbGVyYXRpb24NCj4gPg0KPiA+IE9uIDIwMjAtMDgtMTkgMDA6
-MzE6MDAgWysxMjAwXSwgQmFycnkgU29uZyB3cm90ZToNCj4gPiA+IGRpZmYgLS1naXQgYS9tbS96
-c3dhcC5jIGIvbW0venN3YXAuYw0KPiA+ID4gaW5kZXggZmJiNzgyOTI0Y2NjLi4wMGI1ZjE0YTcz
-MzIgMTAwNjQ0DQo+ID4gPiAtLS0gYS9tbS96c3dhcC5jDQo+ID4gPiArKysgYi9tbS96c3dhcC5j
-DQo+ID4gPiBAQCAtMTI3LDkgKzEyOSwxNyBAQA0KPiA+IG1vZHVsZV9wYXJhbV9uYW1lZChzYW1l
-X2ZpbGxlZF9wYWdlc19lbmFibGVkLA0KPiA+IHpzd2FwX3NhbWVfZmlsbGVkX3BhZ2VzX2VuYWJs
-ZWQsDQo+ID4gPiAgKiBkYXRhIHN0cnVjdHVyZXMNCj4gPiA+ICAqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqLw0KPiA+ID4NCj4gPiA+ICtzdHJ1Y3QgY3J5cHRvX2Fjb21wX2N0eCB7
-DQo+ID4gPiArCXN0cnVjdCBjcnlwdG9fYWNvbXAgKmFjb21wOw0KPiA+ID4gKwlzdHJ1Y3QgYWNv
-bXBfcmVxICpyZXE7DQo+ID4gPiArCXN0cnVjdCBjcnlwdG9fd2FpdCB3YWl0Ow0KPiA+ID4gKwl1
-OCAqZHN0bWVtOw0KPiA+ID4gKwlzdHJ1Y3QgbXV0ZXggKm11dGV4Ow0KPiA+ID4gK307DQo+ID4g
-PiArDQo+ID4gPiAgc3RydWN0IHpzd2FwX3Bvb2wgew0KPiA+ID4gIAlzdHJ1Y3QgenBvb2wgKnpw
-b29sOw0KPiA+ID4gLQlzdHJ1Y3QgY3J5cHRvX2NvbXAgKiBfX3BlcmNwdSAqdGZtOw0KPiA+ID4g
-KwlzdHJ1Y3QgY3J5cHRvX2Fjb21wX2N0eCBfX3BlcmNwdSAqYWNvbXBfY3R4Ow0KPiA+ID4gIAlz
-dHJ1Y3Qga3JlZiBrcmVmOw0KPiA+ID4gIAlzdHJ1Y3QgbGlzdF9oZWFkIGxpc3Q7DQo+ID4gPiAg
-CXN0cnVjdCB3b3JrX3N0cnVjdCByZWxlYXNlX3dvcms7DQo+ID4gPiBAQCAtMzg4LDIzICszOTgs
-NDMgQEAgc3RhdGljIHN0cnVjdCB6c3dhcF9lbnRyeQ0KPiA+ICp6c3dhcF9lbnRyeV9maW5kX2dl
-dChzdHJ1Y3QgcmJfcm9vdCAqcm9vdCwNCj4gPiA+ICAqIHBlci1jcHUgY29kZQ0KPiA+ID4gICoq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKiovDQo+ID4gPiAgc3RhdGljIERFRklORV9Q
-RVJfQ1BVKHU4ICosIHpzd2FwX2RzdG1lbSk7DQo+ID4gPiArLyoNCj4gPiA+ICsgKiBJZiB1c2Vy
-cyBkeW5hbWljYWxseSBjaGFuZ2UgdGhlIHpwb29sIHR5cGUgYW5kIGNvbXByZXNzb3IgYXQgcnVu
-dGltZSwNCj4gPiBpLmUuDQo+ID4gPiArICogenN3YXAgaXMgcnVubmluZywgenN3YXAgY2FuIGhh
-dmUgbW9yZSB0aGFuIG9uZSB6cG9vbCBvbiBvbmUgY3B1LCBidXQNCj4gPiB0aGV5DQo+ID4gPiAr
-ICogYXJlIHNoYXJpbmcgZHRzbWVtLiBTbyB3ZSBuZWVkIHRoaXMgbXV0ZXggdG8gYmUgcGVyLWNw
-dS4NCj4gPiA+ICsgKi8NCj4gPiA+ICtzdGF0aWMgREVGSU5FX1BFUl9DUFUoc3RydWN0IG11dGV4
-ICosIHpzd2FwX211dGV4KTsNCj4gPg0KPiA+IFRoZXJlIGlzIG5vIG5lZWQgdG8gbWFrZSBpdCBz
-dHVyY3QgbXV0ZXgqLiBZb3UgY291bGQgbWFrZSBpdCBzdHJ1Y3QNCj4gPiBtdXRleC4gVGhlIGZv
-bGxvd2luZyBtYWtlIGl0IG1vcmUgb2J2aW91cyBob3cgdGhlIHJlbGF0aW9uIGhlcmUgaXMgKGV2
-ZW4NCj4gPiB3aXRob3V0IGEgY29tbWVudCk6DQo+ID4NCj4gPiB8c3RydWN0IHpzd2FwX21lbV9w
-b29sIHsNCj4gPiB8CXZvaWQJCSpkc3RfbWVtOw0KPiA+IHwJc3RydWN0IG11dGV4CWxvY2s7DQo+
-ID4gfH07DQo+ID4gfA0KPiA+IHxzdGF0aWMgREVGSU5FX1BFUl9DUFUoc3RydWN0IHpzd2FwX21l
-bV9wb29sICwgenN3YXBfbWVtX3Bvb2wpOw0KPiA+DQo+ID4gUGxlYXNlIGFjY2VzcyBvbmx5IHRo
-aXMsIGRvbid0IGFkZCB1c2UgYSBwb2ludGVyIGluIGEgYW5vdGhlciBzdHJ1Y3QgdG8NCj4gPiBk
-ZXN0X21lbSBvciBsb2NrIHdoaWNoIG1heSBjb25mdXNlIHBlb3BsZS4NCj4gDQo+IFdlbGwuIEl0
-IHNlZW1zIHNlbnNpYmxlLg0KDQpBZnRlciBzZWNvbmQgdGhvdWdodCBhbmQgdHJ5aW5nIHRvIG1h
-a2UgdGhpcyBjaGFuZ2UsIEkgd291bGQgbGlrZSB0byBjaGFuZ2UgbXkgbWluZA0KYW5kIGRpc2Fn
-cmVlIHdpdGggdGhpcyBpZGVhLiBUd28gcmVhc29uczoNCjEuIHdoaWxlIHVzaW5nIHRoaXNfY3B1
-X3B0cigpIHdpdGhvdXQgcHJlZW1wdGlvbiBsb2NrLCBwZW9wbGUgdXN1YWxseSBwdXQgYWxsIHRo
-aW5ncyBib3VuZA0Kd2l0aCBvbmUgY3B1IHRvIG9uZSBzdHJ1Y3R1cmUsIHNvIHRoYXQgb25jZSB3
-ZSBnZXQgdGhlIHBvaW50ZXIgb2YgdGhlIHdob2xlIHN0cnVjdHVyZSwgd2UgZ2V0DQphbGwgaXRz
-IHBhcnRzIGJlbG9uZ2luZyB0byB0aGUgc2FtZSBjcHUuIElmIHdlIG1vdmUgdGhlIGRzdG1lbSBh
-bmQgbXV0ZXggb3V0IG9mIHRoZSBzdHJ1Y3R1cmUNCmNvbnRhaW5pbmcgdGhlbSwgd2Ugd2lsbCBo
-YXZlIHRvIGRvOg0KCWEuIGdldF9jcHVfcHRyKCkgZm9yIHRoZSBhY29tcF9jdHggICAvL2xvY2sg
-cHJlZW1wdGlvbg0KCWIuIHRoaXNfY3B1X3B0cigpIGZvciB0aGUgZHN0bWVtIGFuZCBtdXRleA0K
-CWMuIHB1dF9jcHVfcHRyKCkgZm9yIHRoZSBhY29tcF9jdHggIC8vdW5sb2NrIHByZWVtcHRpb24N
-CglkLiBtdXRleF9sb2NrKCkNCgkgIHNnX2luaXRfb25lKCkNCgkgIGNvbXByZXNzL2RlY29tcHJl
-c3MgZXRjLg0KCSAgLi4uDQoJICBtdXRleF91bmxvY2sNCg0KYXMgdGhlIGdldCgpIGFuZCBwdXQo
-KSBoYXZlIGEgcHJlZW1wdGlvbiBsb2NrL3VubG9jaywgdGhpcyB3aWxsIG1ha2UgY2VydGFpbiB0
-aGlzX2NwdV9wdHIoKQ0KaW4gdGhlIHN0ZXAgImIiIHdpbGwgcmV0dXJuIHRoZSByaWdodCBkc3Rt
-ZW0gYW5kIG11dGV4IHdoaWNoIGJlbG9uZyB0byB0aGUgc2FtZSBjcHUgd2l0aA0Kc3RlcCAiYSIu
-DQoNClRoZSBzdGVwcyBmcm9tICJhIiB0byAiYyIgYXJlIHF1aXRlIHNpbGx5IGFuZCBjb25mdXNp
-bmcuIEkgYmVsaWV2ZSB0aGUgZXhpc3RpbmcgY29kZSBhbGlnbnMNCndpdGggdGhlIG1vc3Qgc2lt
-aWxhciBjb2RlIGluIGtlcm5lbCBiZXR0ZXI6DQoJYS4gdGhpc19jcHVfcHRyKCkgICAvL2dldCBl
-dmVyeXRoaW5nIGZvciBvbmUgY3B1DQoJYi4gbXV0ZXhfbG9jaygpDQoJICBzZ19pbml0X29uZSgp
-DQoJICBjb21wcmVzcy9kZWNvbXByZXNzIGV0Yy4NCgkgIC4uLg0KCSAgbXV0ZXhfdW5sb2NrDQoN
-CjIuIHdoaWxlIGFsbG9jYXRpbmcgbXV0ZXgsIHdlIGNhbiBwdXQgdGhlIG11dGV4IGludG8gbG9j
-YWwgbWVtb3J5IGJ5IHVzaW5nIGttYWxsb2Nfbm9kZSgpLg0KSWYgd2UgbW92ZSB0byAic3RydWN0
-IG11dGV4IGxvY2siIGRpcmVjdGx5LCBtb3N0IENQVXMgaW4gYSBOVU1BIHNlcnZlciB3aWxsIGhh
-dmUgdG8gYWNjZXNzDQpyZW1vdGUgbWVtb3J5IHRvIHJlYWQvd3JpdGUgdGhlIG11dGV4LCB0aGVy
-ZWZvcmUsIHRoaXMgd2lsbCBpbmNyZWFzZSB0aGUgbGF0ZW5jeSBkcmFtYXRpY2FsbHkuDQoNClRo
-YW5rcw0KQmFycnkNCg0K
+On Wed, Sep 23, 2020 at 12:10:25AM +0300, Maxim Levitsky wrote:
+> This way we don't waste memory on VMs which don't use nesting
+> virtualization even when the host enabled it for them.
+> 
+> Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
+> ---
+>  arch/x86/kvm/svm/nested.c | 42 ++++++++++++++++++++++++++++++
+>  arch/x86/kvm/svm/svm.c    | 55 ++++++++++++++++++++++-----------------
+>  arch/x86/kvm/svm/svm.h    |  6 +++++
+>  3 files changed, 79 insertions(+), 24 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
+> index 09417f5197410..dd13856818a03 100644
+> --- a/arch/x86/kvm/svm/nested.c
+> +++ b/arch/x86/kvm/svm/nested.c
+> @@ -467,6 +467,9 @@ int nested_svm_vmrun(struct vcpu_svm *svm)
+>  
+>  	vmcb12 = map.hva;
+>  
+> +	if (WARN_ON(!svm->nested.initialized))
+
+Probably should use WARN_ON_ONCE, if this is somehow it, userspace could
+easily spam the kernel.
+
+Side topic, do we actually need 'initialized'?  Wouldn't checking for a
+valid nested.msrpm or nested.hsave suffice?
+
+> +		return 1;
+> +
+>  	if (!nested_vmcb_checks(svm, vmcb12)) {
+>  		vmcb12->control.exit_code    = SVM_EXIT_ERR;
+>  		vmcb12->control.exit_code_hi = 0;
+> @@ -684,6 +687,45 @@ int nested_svm_vmexit(struct vcpu_svm *svm)
+>  	return 0;
+>  }
