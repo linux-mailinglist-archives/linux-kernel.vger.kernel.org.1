@@ -2,89 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 441E327CEFF
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 15:23:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28B2E27CF02
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 15:23:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729825AbgI2NXG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 09:23:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54760 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728481AbgI2NXF (ORCPT
+        id S1729894AbgI2NXX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 09:23:23 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:13115 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727495AbgI2NXW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 09:23:05 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 179C1C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 06:23:05 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0ead002e8cabed22dc07c6.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:ad00:2e8c:abed:22dc:7c6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 94AE31EC03CE;
-        Tue, 29 Sep 2020 15:23:03 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1601385783;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=qJWK6oVsor6MMB8V/whGU+FkMsOlIUQbLsxtldtAgmE=;
-        b=ZZ0R3km1p3b50/n8sG68AMnJ0HuJ6kzG2/EQ+iMT469VS1CAz3JP7bTHT14KEqsnALGpR4
-        zdFDeKzSWvWsLTi8dQSu/jVZlLE+psQGWHnQfw6jFvsi+kybvgnuvwyXrDDR2XoWWyf2lV
-        ha5DA4nXoCRzr4yiHyPYwC3Nr+OE4uo=
-Date:   Tue, 29 Sep 2020 15:22:55 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Marc Zyngier <maz@misterjones.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Will Deacon <will@kernel.org>, Rabin Vincent <rabin@rab.in>,
-        x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC] Add RIP to scripts/decodecode
-Message-ID: <20200929132255.GE21110@zn.tnic>
-References: <20200929113238.GC21110@zn.tnic>
- <b18c145f7b96cace7cd503de33c08311@misterjones.org>
+        Tue, 29 Sep 2020 09:23:22 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f7335390005>; Tue, 29 Sep 2020 06:23:05 -0700
+Received: from [10.26.75.44] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 29 Sep
+ 2020 13:22:59 +0000
+Subject: Re: [PATCH v2 0/5] PCI: dwc: improve msi handling
+To:     Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+CC:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Richard Zhu <hongxing.zhu@nxp.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        "Pengutronix Kernel Team" <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        "NXP Linux Team" <linux-imx@nxp.com>,
+        Yue Wang <yue.wang@Amlogic.com>,
+        "Kevin Hilman" <khilman@baylibre.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Jesper Nilsson <jesper.nilsson@axis.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Xiaowei Song <songxiaowei@hisilicon.com>,
+        Binghui Wang <wangbinghui@hisilicon.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Stanimir Varbanov <svarbanov@mm-sol.com>,
+        Pratyush Anand <pratyush.anand@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        <linux-omap@vger.kernel.org>, <linux-pci@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-samsung-soc@vger.kernel.org>,
+        <linux-amlogic@lists.infradead.org>, <linux-arm-kernel@axis.com>,
+        <linux-arm-msm@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        Vidya Sagar <vidyas@nvidia.com>
+References: <20200924190421.549cb8fc@xhacker.debian>
+ <de4d9294-4f6d-c7d1-efc7-c8ef6570bd64@nvidia.com>
+ <20200929184851.22682ff1@xhacker.debian>
+From:   Jon Hunter <jonathanh@nvidia.com>
+Message-ID: <8e06a370-a37a-5f33-b43b-2830adb31b3e@nvidia.com>
+Date:   Tue, 29 Sep 2020 14:22:57 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <b18c145f7b96cace7cd503de33c08311@misterjones.org>
+In-Reply-To: <20200929184851.22682ff1@xhacker.debian>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1601385785; bh=O1AmZKE8e7EeFMJXiJzyuvgvP7i5Nhyk8/759La3vkU=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=PEUGx/Oto2o82hJdlAk6/ts4WMeu88gqStSAIbht98Z/IG5S7VWh+vP98HENpPGWz
+         dvi4P4CwF9nHeRHsl9AzVkrvmXIBrwVTKKBrg57TUdTtX6rbg2iu/yl/npKamfzDfN
+         bde3+rbXPUm4osMwTFyxLBEvxx/+GgYRccoic8JmGxsvmJpOdJQ499JIrzTlkZbfGy
+         uatLuKB6XhZi8NLNwtLMbP08tRGBLxw/s1yS6UBfhIRviBPwMOohoewPUOkIiYkNbc
+         kQHmRyOIchEWyKHIRxQV7sPqqZB+NDjrJDEXtUGp+aaP6iFoCKud6BERbUL3KiIhZi
+         LjHupkiehvUcg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 01:40:03PM +0100, Marc Zyngier wrote:
-> Hi,
+Hi Jisheng,
+
+On 29/09/2020 11:48, Jisheng Zhang wrote:
+> Hi Jon,
 > 
-> [dropping these ARM people I never heard of...]
+> On Fri, 25 Sep 2020 09:53:45 +0100 Jon Hunter wrote:
+> 
+>>
+>> On 24/09/2020 12:05, Jisheng Zhang wrote:
+>>> Improve the msi code:
+>>> 1. Add proper error handling.
+>>> 2. Move dw_pcie_msi_init() from each users to designware host to solve
+>>> msi page leakage in resume path.  
+>>
+>> Apologies if this is slightly off topic, but I have been meaning to ask
+>> about MSIs and PCI. On Tegra194 which uses the DWC PCI driver, whenever we
+>> hotplug CPUs we see the following warnings ...
+>>
+>>  [      79.068351] WARNING KERN IRQ70: set affinity failed(-22).
+>>  [      79.068362] WARNING KERN IRQ71: set affinity failed(-22).
+>>
+> 
+> I tried to reproduce this issue on Synaptics SoC, but can't reproduce it.
+> Per my understanding of the code in kernel/irq/cpuhotplug.c, this warning
+> happened when we migrate irqs away from the offline cpu, this implicitly
+> implies that before this point the irq has bind to the offline cpu, but how
+> could this happen given current dw_pci_msi_set_affinity() implementation
+> always return -EINVAL
 
-Yeah, I completely forgot that those ARM folks are not there anymore,
-thx! :-)
+By default the smp_affinity should be set so that all CPUs can be
+interrupted ...
 
-> Looks neat. Only objection is that RIP is pretty tainted from an
-> architecture perspective. How about PC instead, which most people
-> understand immediately?
+$ cat /proc/irq/70/smp_affinity
+0xff
 
-Sure.
+In my case there are 8 CPUs and so 0xff implies that the interrupt can
+be triggered on any of the 8 CPUs.
 
-> Bonus points if you can convince decodecode to grok something such
-> as "do_undefinstr+0x2e0/0x2f0" as the PC! ;-)
+Do you see the set_affinity callback being called for the DWC irqchip in
+migrate_one_irq()?
 
-Well, I thought about it. And I don't know how the splats look on ARM
-but on x86 we're not dumping the actual PC contents anymore:
-
-[  477.366747][T23917] KASAN: null-ptr-deref in range [0x0000000000000100-0x0000000000000107]
-[  477.374897][T23917] CPU: 1 PID: 23917 Comm: syz-executor.0 Not tainted 5.9.0-rc7+ #1
-[  477.376375][T23917] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-1 04/01/2014
-[  477.378098][T23917] RIP: 0010:gfs2_rgrp_dump+0x37/0x660
-			^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-so I could make the splat code dump PC again, but in brackets:
-
-[  477.378098][T23917] RIP: 0010:gfs2_rgrp_dump+0x37/0x660 (0xffffffff8329a927)
-
-or I would have to somehow have access to vmlinux or symbols which would
-give me the function address. But that is not always the case - most of
-the time you see a splat somewhere and that's all.
-
-Unless you have a better idea...
+Cheers
+Jon
 
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+nvpublic
