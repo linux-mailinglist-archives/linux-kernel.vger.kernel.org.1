@@ -2,101 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DC0C27BE64
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 09:50:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B078E27BE70
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 09:55:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727533AbgI2Hum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 03:50:42 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:44811 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725554AbgI2Hum (ORCPT
+        id S1726521AbgI2HzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 03:55:05 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:57664 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725765AbgI2HzF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 03:50:42 -0400
-Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601365840;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=ZH5RUsiNCBnwQO3HdBH/S2GadrEkNWR9w8D2mfkC+xk=;
-        b=hHAP+yEsfXNFbeo5E8kcZzYTiThkE7Qv8ciUdP7sO8ekrcbB+Ppo88bEVffek1C6xufWcN
-        ntlBddjnWar0+5sq5PGmH8QSz7qXwJFFs2eQQVEpuRYaL2KXlTqPAUe2mI/1s6NGIym64R
-        ioFsWDbKN+5Ws22w7QAWjmLNmMy2wVM=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-250-EMQeTyUaP66jzwKTnuvAKg-1; Tue, 29 Sep 2020 03:50:38 -0400
-X-MC-Unique: EMQeTyUaP66jzwKTnuvAKg-1
-Received: by mail-wm1-f71.google.com with SMTP id p20so1387264wmg.0
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 00:50:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=ZH5RUsiNCBnwQO3HdBH/S2GadrEkNWR9w8D2mfkC+xk=;
-        b=T/ZdcYxe7lXK6pYfp52W2a4+JOZmkeejo4/S4VhUPHTjPsZYhtXK46zg0PvhD/rfQj
-         ri4jZmUfcX1O+GHT50cqRjSDYolmYG7t3QCpHAwhzNp3QSvbetWoNuWYziW2R6ru6LvJ
-         vT55g2g77hrTPiGYa4E2RW2jdY/gSKyr9QHvYpoGrkmQahB1t8zZxBWVbWJHcjBv/y1Y
-         +0VCQbLhBPYPqNnXIyGt/wmziKc/6uCd66k8nf5vEu6SAZi0qBxK0XcOhUOpwWvLMpdb
-         cZE+tg/HE8xA7j0jW/VW+4bsGr9V/7BwM28V7rqgkbXelur25NGG9iegqiRvGCEWCU9A
-         q8sQ==
-X-Gm-Message-State: AOAM532kCysY80bdwy6rKR6h+6GkU34PZT6NdW6XEYKT6YTHTBpDCkxd
-        5dQXL0IJUZTnvdIMfvI099a2j3fmJRgJ7v6BLLqdSVtJb+TrsG/69jj9sh6FTbjjVnUJJ70Pmbd
-        C5oRtTRXI+bGxr8ZE9lDN2VHY
-X-Received: by 2002:a5d:660f:: with SMTP id n15mr2849631wru.103.1601365837345;
-        Tue, 29 Sep 2020 00:50:37 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw9yDNuK/HRBfrUSRppU/hB6f1n2dAKzHM+mssOZcfIMLGHfW5jc72hMkHH51Lh+uUsHHthwg==
-X-Received: by 2002:a5d:660f:: with SMTP id n15mr2849612wru.103.1601365837164;
-        Tue, 29 Sep 2020 00:50:37 -0700 (PDT)
-Received: from redhat.com (bzq-79-179-71-128.red.bezeqint.net. [79.179.71.128])
-        by smtp.gmail.com with ESMTPSA id o15sm4204743wmh.29.2020.09.29.00.50.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Sep 2020 00:50:36 -0700 (PDT)
-Date:   Tue, 29 Sep 2020 03:50:34 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        elic@nvidia.com, eli@mellanox.com, jasowang@redhat.com,
-        lingshan.zhu@intel.com, mst@redhat.com
-Subject: [GIT PULL] virtio: last minute fixes
-Message-ID: <20200929035034-mutt-send-email-mst@kernel.org>
+        Tue, 29 Sep 2020 03:55:05 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: eballetbo)
+        with ESMTPSA id B4E5129A913
+Subject: Re: [PATCH] platform_data: ti: fix a typo
+To:     Wang Qing <wangqing@vivo.com>, Benson Leung <bleung@chromium.org>,
+        Guenter Roeck <groeck@chromium.org>,
+        Mark Brown <broonie@kernel.org>,
+        Tzung-Bi Shih <tzungbi@google.com>,
+        Pi-Hsun Shih <pihsun@chromium.org>,
+        Prashant Malani <pmalani@chromium.org>,
+        linux-kernel@vger.kernel.org
+References: <1601088620-16070-1-git-send-email-wangqing@vivo.com>
+From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Message-ID: <b2b61349-db5c-07dd-0d55-84d7a7d54492@collabora.com>
+Date:   Tue, 29 Sep 2020 09:54:59 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mutt-Fcc: =sent
+In-Reply-To: <1601088620-16070-1-git-send-email-wangqing@vivo.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Unfortunately there are a couple more reported issues in vhost and vdpa,
-but those fixes are still being worked upon, no reason to
-delay those that are ready.
+Hi Wang Qing,
 
-The following changes since commit ba4f184e126b751d1bffad5897f263108befc780:
+Thank you for your patch.
 
-  Linux 5.9-rc6 (2020-09-20 16:33:55 -0700)
+On 26/9/20 4:49, Wang Qing wrote:
+> Modify the typo: "compliment" -> "complement".
+> 
+> Signed-off-by: Wang Qing <wangqing@vivo.com>
+> ---
+>  include/linux/platform_data/cros_ec_commands.h | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/include/linux/platform_data/cros_ec_commands.h b/include/linux/platform_data/cros_ec_commands.h
+> index 1fcfe9e..42203ce
+> --- a/include/linux/platform_data/cros_ec_commands.h
+> +++ b/include/linux/platform_data/cros_ec_commands.h
+> @@ -261,12 +261,12 @@
+>  /* Memory space version; set to EC_ACPI_MEM_VERSION_CURRENT */
+>  #define EC_ACPI_MEM_VERSION            0x00
+>  /*
+> - * Test location; writing value here updates test compliment byte to (0xff -
+> + * Test location; writing value here updates test complement byte to (0xff -
+>   * value).
+>   */
+>  #define EC_ACPI_MEM_TEST               0x01
+> -/* Test compliment; writes here are ignored. */
+> -#define EC_ACPI_MEM_TEST_COMPLIMENT    0x02
+> +/* Test complement; writes here are ignored. */
+> +#define EC_ACPI_MEM_TEST_COMPLEMENT    0x02
+>  
 
-are available in the Git repository at:
+Although there is a typo, we did an effort to have cros_ec_command synced with
+ec commands in the firmware code, so I'd like to see this change also applied on
+the EC code. Do you mind to populate this change in the EC firmware code [1], please
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git tags/for_linus
+[1] https://chromium.googlesource.com/chromiumos/platform/ec/+/refs/heads/master
 
-for you to fetch changes up to a127c5bbb6a8eee851cbdec254424c480b8edd75:
+Thanks,
+  Enric
 
-  vhost-vdpa: fix backend feature ioctls (2020-09-24 05:54:36 -0400)
 
-----------------------------------------------------------------
-virtio: last minute fixes
-
-A couple of last minute fixes
-
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-
-----------------------------------------------------------------
-Eli Cohen (1):
-      vhost: Fix documentation
-
-Jason Wang (1):
-      vhost-vdpa: fix backend feature ioctls
-
- drivers/vhost/iotlb.c |  4 ++--
- drivers/vhost/vdpa.c  | 30 ++++++++++++++++--------------
- 2 files changed, 18 insertions(+), 16 deletions(-)
-
+>  /* Keyboard backlight brightness percent (0 - 100) */
+>  #define EC_ACPI_MEM_KEYBOARD_BACKLIGHT 0x03
+> 
