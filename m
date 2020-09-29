@@ -2,109 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7BDF27D488
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 19:32:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C48C227D48D
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 19:34:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729234AbgI2Rcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 13:32:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37058 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725554AbgI2Rct (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 13:32:49 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89380C061755;
-        Tue, 29 Sep 2020 10:32:49 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id z19so5241330pfn.8;
-        Tue, 29 Sep 2020 10:32:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=xf7UYd55bBypBMw3nNJvaFu6tO4OkMryDnkxOfP4mCQ=;
-        b=L3b+sbb1ZAJZvbidh3Qs2l8xQ/zyz/rGbhWqi3+dHNjqGS9VFkuw2TcY05NlVObSlS
-         C7D93tqsTEzDPJzm0/8tb55prGjb/hfPt9tkKWScgCxv8xgPsJheyuFlzoy3MwPjh9++
-         Uw2KIcbqIN4Gz1PPBd7Z2WvnQz7WPp7PVXx6/iRnA6OpUP7T4vpqhUzdGnnl9HCM9RoE
-         8jWIA1WJilZ34mDpIlpYNTxjEiRUpC/atZuqfVDWjfjMzvVlGjZHFr/opJa9iqJYAXQ0
-         4uFaYeiu89+ESDndbe10lndLfbPEiuLssadC518emRGFzU1gOf0YmI/UC7maKLgLremH
-         nLWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=xf7UYd55bBypBMw3nNJvaFu6tO4OkMryDnkxOfP4mCQ=;
-        b=aq51k6AxnIDoqwt/8PUMxJhc/tqeKpl2PkMWGIPCLO4HMzH0NUwcrsgkFy+uYz+umu
-         0sDKJmabhD6v3vY3GOO+FDWgs4vSQtjzgGo3F7l0kuDnPZREIPwZxe3Ztj7hkPFZeaTL
-         0M06UKrIkxpSl73mkV7ts6nsmvN3X0JaUQIJZF2s+GOFi0Mx9Zgh55aOt07fxbffgHF0
-         QZfgvbqH7C3QVGLwrjo+ZdieOF79R8PBduFyp5OmXzq7Vn1214tYHRoauysvJAxoykg2
-         aXgV15M+xNBqaI/roxiWJi30uhdmJCaapCrHL9WcQ6OTdByOIbEU+x7aSy8YmU3jWaku
-         Tb2w==
-X-Gm-Message-State: AOAM532X/8duci0fT4vxs10ZxHnOOs76JFJo4tSibDt8i+BDWKc5F+qF
-        Q40onfDLu9wdGZhipw14oHc=
-X-Google-Smtp-Source: ABdhPJwc0s8N7Xf0hxKKvWjT3DfKxAZtK9X2pcW+qM/TaWv5j/tdAoTup1/sAlPie73LycYp7I8z/g==
-X-Received: by 2002:a62:93:0:b029:13e:d13d:a085 with SMTP id 141-20020a6200930000b029013ed13da085mr4916522pfa.28.1601400768890;
-        Tue, 29 Sep 2020 10:32:48 -0700 (PDT)
-Received: from localhost.localdomain ([45.118.167.204])
-        by smtp.googlemail.com with ESMTPSA id d17sm6270070pfq.157.2020.09.29.10.32.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Sep 2020 10:32:47 -0700 (PDT)
-From:   Anmol Karn <anmol.karan123@gmail.com>
-To:     marcel@holtmann.org, johan.hedberg@gmail.com
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        netdev@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-        kuba@kernel.org, davem@davemloft.net, anmol.karan123@gmail.com,
-        syzbot+0bef568258653cff272f@syzkaller.appspotmail.com
-Subject: [Linux-kernel-mentees] [PATCH] net: bluetooth: Fix null pointer dereference in hci_event_packet()
-Date:   Tue, 29 Sep 2020 23:02:31 +0530
-Message-Id: <20200929173231.396261-1-anmol.karan123@gmail.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200914154405.GC18329@kadam>
-References: <20200914154405.GC18329@kadam>
+        id S1729269AbgI2ReO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 13:34:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52600 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728205AbgI2ReO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 13:34:14 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id F2BD42075F;
+        Tue, 29 Sep 2020 17:34:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601400853;
+        bh=j0fCGiLcbnkITaxQRT0Ke2lzkcknLm9OTwR/cvXL0XE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=e/6aevJ8x5eLSFiTmIwukWzyhkAbSNY5IS3lu9gBeiCTqp3Deya4iQV85YYPrPNR+
+         uITte911QYHvItarSn0LYoaR4TvndgCdpIsTrblTpxrHXZsFbZQLiQwAOS7SQqNv4m
+         4wxmWcDhYBM7gDR4fQcBa4vnb8E/ha/kp8TvnAcQ=
+Date:   Tue, 29 Sep 2020 18:34:07 +0100
+From:   Will Deacon <will@kernel.org>
+To:     David Brazdil <dbrazdil@google.com>
+Cc:     kvmarm@lists.cs.columbia.edu,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Christoph Lameter <cl@linux.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel-team@android.com, Andrew Scull <ascull@google.com>
+Subject: Re: [PATCH v4 05/10] kvm: arm64: Remove hyp_adr/ldr_this_cpu
+Message-ID: <20200929173407.GC14317@willie-the-truck>
+References: <20200922204910.7265-1-dbrazdil@google.com>
+ <20200922204910.7265-6-dbrazdil@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200922204910.7265-6-dbrazdil@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-AMP_MGR is getting derefernced in hci_phy_link_complete_evt(), when called from hci_event_packet() and there is a possibility, that hcon->amp_mgr may not be found when accessing after initialization of hcon.
+On Tue, Sep 22, 2020 at 09:49:05PM +0100, David Brazdil wrote:
+> The hyp_adr/ldr_this_cpu helpers were introduced for use in hyp code
+> because they always needed to use TPIDR_EL2 for base, while
+> adr/ldr_this_cpu from kernel proper would select between TPIDR_EL2 and
+> _EL1 based on VHE/nVHE.
+> 
+> Simplify this now that the hyp mode case can be handled using the
+> __KVM_VHE/NVHE_HYPERVISOR__ macros.
+> 
+> Acked-by: Andrew Scull <ascull@google.com>
+> Acked-by: Will Deacon <will@kernel.org>
+> Signed-off-by: David Brazdil <dbrazdil@google.com>
+> ---
+>  arch/arm64/include/asm/assembler.h | 29 +++++++++++++++++++----------
+>  arch/arm64/include/asm/kvm_asm.h   | 14 +-------------
+>  arch/arm64/kvm/hyp/hyp-entry.S     |  2 +-
+>  3 files changed, 21 insertions(+), 24 deletions(-)
+> 
+> diff --git a/arch/arm64/include/asm/assembler.h b/arch/arm64/include/asm/assembler.h
+> index 54d181177656..86e0ef79a799 100644
+> --- a/arch/arm64/include/asm/assembler.h
+> +++ b/arch/arm64/include/asm/assembler.h
+> @@ -218,6 +218,23 @@ lr	.req	x30		// link register
+>  	str	\src, [\tmp, :lo12:\sym]
+>  	.endm
+>  
+> +	/*
+> +	 * @dst: destination register (32 or 64 bit wide)
 
-- net/bluetooth/hci_event.c:4945
-The bug seems to get triggered in this line:
+nit: this comment is wrong as I don't think mrs can take a W register
+as the destination argument. I'm assuming Marc can fix that up.
 
-bredr_hcon = hcon->amp_mgr->l2cap_conn->hcon;
-
-Fix it by adding a NULL check for the hcon->amp_mgr before checking the ev-status.
-
-Fixes: d5e911928bd8 ("Bluetooth: AMP: Process Physical Link Complete evt") 
-Reported-and-tested-by: syzbot+0bef568258653cff272f@syzkaller.appspotmail.com 
-Link: https://syzkaller.appspot.com/bug?extid=0bef568258653cff272f 
-Signed-off-by: Anmol Karn <anmol.karan123@gmail.com>
----
-Cahnge in v2:
-  - Replaced IS_ERR_OR_NULL check with NULL check only (Suggested by: Dan Carpenter <dan.carpenter@oracle.com>)
-  - Added "Fixes:" tag (Suggested by: Dan Carpenter <dan.carpenter@oracle.com>)
-
-
- net/bluetooth/hci_event.c | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
-index 4b7fc430793c..b084142c578e 100644
---- a/net/bluetooth/hci_event.c
-+++ b/net/bluetooth/hci_event.c
-@@ -4936,6 +4936,11 @@ static void hci_phy_link_complete_evt(struct hci_dev *hdev,
- 		return;
- 	}
- 
-+	if (!hcon->amp_mgr) {
-+		hci_dev_unlock(hdev);
-+		return 0;
-+	}
-+
- 	if (ev->status) {
- 		hci_conn_del(hcon);
- 		hci_dev_unlock(hdev);
--- 
-2.28.0
-
+Will
