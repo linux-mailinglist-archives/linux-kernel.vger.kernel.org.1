@@ -2,94 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD79D27CD91
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:45:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6163427CDA9
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:46:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733248AbgI2MpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 08:45:24 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:14715 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728701AbgI2Mot (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 08:44:49 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 09F14FBF6EE64F5A029C;
-        Tue, 29 Sep 2020 20:44:44 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by DGGEMS412-HUB.china.huawei.com
- (10.3.19.212) with Microsoft SMTP Server id 14.3.487.0; Tue, 29 Sep 2020
- 20:44:36 +0800
-From:   Zhihao Cheng <chengzhihao1@huawei.com>
-To:     <richard@nod.at>, <s.hauer@pengutronix.de>
-CC:     <yi.zhang@huawei.com>, <linux-mtd@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH 3/3] ubifs: mount_ubifs: Release authentication resource in error handling path
-Date:   Tue, 29 Sep 2020 20:45:31 +0800
-Message-ID: <20200929124531.941873-3-chengzhihao1@huawei.com>
-X-Mailer: git-send-email 2.25.4
-In-Reply-To: <20200929124531.941873-1-chengzhihao1@huawei.com>
-References: <20200929124531.941873-1-chengzhihao1@huawei.com>
+        id S1729095AbgI2Mp6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 08:45:58 -0400
+Received: from mga07.intel.com ([134.134.136.100]:64263 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729185AbgI2Mpm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 08:45:42 -0400
+IronPort-SDR: yqnu7QATYepJ8OvXgYx1XtYC3TcdZBEbENXMSc/G8iAcuAmA+qjw7vwva4zDq/6GVe/CQrdvNL
+ E07jWJrO8zbg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9758"; a="226326337"
+X-IronPort-AV: E=Sophos;i="5.77,318,1596524400"; 
+   d="scan'208";a="226326337"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2020 05:45:39 -0700
+IronPort-SDR: rZhR3i5skYFkZcM9FFfgas+U+VZ9dwCKWT248BkK49LNgGZa8irsoqJFwZlTdmerXWBtuY/y3N
+ lq1j76NU3nbw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,318,1596524400"; 
+   d="scan'208";a="312203472"
+Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.174])
+  by orsmga006.jf.intel.com with SMTP; 29 Sep 2020 05:45:34 -0700
+Received: by stinkbox (sSMTP sendmail emulation); Tue, 29 Sep 2020 15:45:33 +0300
+Date:   Tue, 29 Sep 2020 15:45:33 +0300
+From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+To:     Jani Nikula <jani.nikula@linux.intel.com>
+Cc:     James Ausmus <james.ausmus@intel.com>,
+        Tejas Upadhyay <tejaskumarx.surendrakumar.upadhyay@intel.com>,
+        rodrigo.vivi@intel.com, airlied@linux.ie, daniel@ffwll.ch,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, matthew.d.roper@intel.com,
+        jose.souza@intel.com, lucas.demarchi@intel.com,
+        hariom.pandey@intel.com
+Subject: Re: [Intel-gfx] [PATCH 2/2] drm/i915/edp/jsl: Update vswing table
+ for HBR and HBR2
+Message-ID: <20200929124533.GX6112@intel.com>
+References: <20200928080931.246347-1-tejaskumarx.surendrakumar.upadhyay@intel.com>
+ <20200928080931.246347-3-tejaskumarx.surendrakumar.upadhyay@intel.com>
+ <87a6xaow40.fsf@intel.com>
+ <20200928141543.GG5197@jausmus-gentoo-dev6>
+ <20200928150257.GW6112@intel.com>
+ <87y2ktom10.fsf@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87y2ktom10.fsf@intel.com>
+X-Patchwork-Hint: comment
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Release the authentication related resource in some error handling
-branches in mount_ubifs().
+On Mon, Sep 28, 2020 at 08:20:59PM +0300, Jani Nikula wrote:
+> On Mon, 28 Sep 2020, Ville Syrjälä <ville.syrjala@linux.intel.com> wrote:
+> > On Mon, Sep 28, 2020 at 07:15:43AM -0700, James Ausmus wrote:
+> >> On Mon, Sep 28, 2020 at 04:43:11PM +0300, Jani Nikula wrote:
+> >> > On Mon, 28 Sep 2020, Tejas Upadhyay <tejaskumarx.surendrakumar.upadhyay@intel.com> wrote:
+> >> > > JSL has update in vswing table for eDP
+> >> > 
+> >> > I've thought the TLA for Jasper Lake is JSP, not JSL. At least we have
+> >> > PCH_JSP for Jasper Lake PCH.
+> >> 
+> >> JSP == Point (the PCH), JSL == Lake
+> >
+> > .PT was "<something> Point", ..P stands just for "<something> PCH" IIRC.
+> 
+> Yeah, nowadays it doesn't have "Point", however bspec agrees on the JSL
+> acronym for Jasper Lake.
 
-Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
-Cc: <stable@vger.kernel.org>  # 4.20+
-Fixes: d8a22773a12c6d7 ("ubifs: Enable authentication support")
----
- fs/ubifs/super.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+Bspec uses ..P for "<platform> PCH", when it acknowledges the existence
+of said PCH (see eg. CNP,ICP,TGP). JSP is not among that select crowd
+however, neither really is MCC (although it is mentioned by name in the
+JSL section).
 
-diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
-index 9796f5df2f7f..732218ef6656 100644
---- a/fs/ubifs/super.c
-+++ b/fs/ubifs/super.c
-@@ -1331,7 +1331,7 @@ static int mount_ubifs(struct ubifs_info *c)
- 
- 	err = ubifs_read_superblock(c);
- 	if (err)
--		goto out_free;
-+		goto out_auth;
- 
- 	c->probing = 0;
- 
-@@ -1343,18 +1343,18 @@ static int mount_ubifs(struct ubifs_info *c)
- 		ubifs_err(c, "'compressor \"%s\" is not compiled in",
- 			  ubifs_compr_name(c, c->default_compr));
- 		err = -ENOTSUPP;
--		goto out_free;
-+		goto out_auth;
- 	}
- 
- 	err = init_constants_sb(c);
- 	if (err)
--		goto out_free;
-+		goto out_auth;
- 
- 	sz = ALIGN(c->max_idx_node_sz, c->min_io_size) * 2;
- 	c->cbuf = kmalloc(sz, GFP_NOFS);
- 	if (!c->cbuf) {
- 		err = -ENOMEM;
--		goto out_free;
-+		goto out_auth;
- 	}
- 
- 	err = alloc_wbufs(c);
-@@ -1629,6 +1629,8 @@ static int mount_ubifs(struct ubifs_info *c)
- 	free_wbufs(c);
- out_cbuf:
- 	kfree(c->cbuf);
-+out_auth:
-+	ubifs_exit_authentication(c);
- out_free:
- 	kfree(c->write_reserve_buf);
- 	kfree(c->bu.buf);
+I kinda want to nuke the JSP and MCC types entirely. I believe we should
+be able to treat them as just ICP and TGP variants respectively. But
+theres's still a bit of work left to do before we can get there.
+
 -- 
-2.25.4
-
+Ville Syrjälä
+Intel
