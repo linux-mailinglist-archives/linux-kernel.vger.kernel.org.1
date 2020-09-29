@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7009D27C875
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:02:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B9FC27C84E
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:01:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731762AbgI2MCX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 08:02:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33906 "EHLO mail.kernel.org"
+        id S1731087AbgI2MAz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 08:00:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36578 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729696AbgI2LjU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:39:20 -0400
+        id S1730570AbgI2Lkv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:40:51 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6BB65208B8;
-        Tue, 29 Sep 2020 11:39:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5B00D206DB;
+        Tue, 29 Sep 2020 11:23:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601379558;
-        bh=L5kmpAn79D/tXs9IeDbby86Z83ojvIcGboEfiX1DnFs=;
+        s=default; t=1601378596;
+        bh=H+D9a56bd2hog7OSW5dgLnmopbyTU7F+LxszBL7pB8c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DfIX2l8SQD21iSI8lLJVmvqdHaYybVjGqBoinO0nX9ygrWYkyWGlVgraQ1K2DrAb6
-         CZrwDQcv4OGVP86QmeHpK6hOLbDjwQVwnfh4VrT7ztrJ82CU1fd3rH+oj3Y/sPq1p7
-         AKlEYJKzEmGtJL5M0R4w+5sEHdZcB0vNoSc8lQUI=
+        b=AlmGFdFIDL9ETj+Pl4YR3uOFDDM3+UVAIAowCz9MUdF+dYKynuTA0Ilz2AduRJpph
+         TEH/929m8YH0QHm5XT3ywAMkgBS6NR9QIjBzJV+hIQs99OfnqrG/7zvyZoahuYbbGb
+         KSZOM/dmr/hd7Lbfhb6lD9UG3t2GDaQ6VQmzDm4M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andre Przywara <andre.przywara@arm.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, LinFeng <linfeng23@huawei.com>,
+        Zhuang Yanying <ann.zhuangyanying@huawei.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 188/388] net: axienet: Convert DMA error handler to a work queue
-Date:   Tue, 29 Sep 2020 12:58:39 +0200
-Message-Id: <20200929110019.579418764@linuxfoundation.org>
+Subject: [PATCH 4.19 070/245] KVM: fix overflow of zero page refcount with ksm running
+Date:   Tue, 29 Sep 2020 12:58:41 +0200
+Message-Id: <20200929105950.400694095@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929110010.467764689@linuxfoundation.org>
-References: <20200929110010.467764689@linuxfoundation.org>
+In-Reply-To: <20200929105946.978650816@linuxfoundation.org>
+References: <20200929105946.978650816@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,172 +44,113 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andre Przywara <andre.przywara@arm.com>
+From: Zhuang Yanying <ann.zhuangyanying@huawei.com>
 
-[ Upstream commit 24201a64770afe2e17050b2ab9e8c0e24e9c23b2 ]
+[ Upstream commit 7df003c85218b5f5b10a7f6418208f31e813f38f ]
 
-The DMA error handler routine is currently a tasklet, scheduled to run
-after the DMA error IRQ was handled.
-However it needs to take the MDIO mutex, which is not allowed to do in a
-tasklet. A kernel (with debug options) complains consequently:
-[  614.050361] net eth0: DMA Tx error 0x174019
-[  614.064002] net eth0: Current BD is at: 0x8f84aa0ce
-[  614.080195] BUG: sleeping function called from invalid context at kernel/locking/mutex.c:935
-[  614.109484] in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 40, name: kworker/u4:4
-[  614.135428] 3 locks held by kworker/u4:4/40:
-[  614.149075]  #0: ffff000879863328 ((wq_completion)rpciod){....}, at: process_one_work+0x1f0/0x6a8
-[  614.177528]  #1: ffff80001251bdf8 ((work_completion)(&task->u.tk_work)){....}, at: process_one_work+0x1f0/0x6a8
-[  614.209033]  #2: ffff0008784e0110 (sk_lock-AF_INET-RPC){....}, at: tcp_sendmsg+0x24/0x58
-[  614.235429] CPU: 0 PID: 40 Comm: kworker/u4:4 Not tainted 5.6.0-rc3-00926-g4a165a9d5921 #26
-[  614.260854] Hardware name: ARM Test FPGA (DT)
-[  614.274734] Workqueue: rpciod rpc_async_schedule
-[  614.289022] Call trace:
-[  614.296871]  dump_backtrace+0x0/0x1a0
-[  614.308311]  show_stack+0x14/0x20
-[  614.318751]  dump_stack+0xbc/0x100
-[  614.329403]  ___might_sleep+0xf0/0x140
-[  614.341018]  __might_sleep+0x4c/0x80
-[  614.352201]  __mutex_lock+0x5c/0x8a8
-[  614.363348]  mutex_lock_nested+0x1c/0x28
-[  614.375654]  axienet_dma_err_handler+0x38/0x388
-[  614.389999]  tasklet_action_common.isra.15+0x160/0x1a8
-[  614.405894]  tasklet_action+0x24/0x30
-[  614.417297]  efi_header_end+0xe0/0x494
-[  614.429020]  irq_exit+0xd0/0xd8
-[  614.439047]  __handle_domain_irq+0x60/0xb0
-[  614.451877]  gic_handle_irq+0xdc/0x2d0
-[  614.463486]  el1_irq+0xcc/0x180
-[  614.473451]  __tcp_transmit_skb+0x41c/0xb58
-[  614.486513]  tcp_write_xmit+0x224/0x10a0
-[  614.498792]  __tcp_push_pending_frames+0x38/0xc8
-[  614.513126]  tcp_rcv_established+0x41c/0x820
-[  614.526301]  tcp_v4_do_rcv+0x8c/0x218
-[  614.537784]  __release_sock+0x5c/0x108
-[  614.549466]  release_sock+0x34/0xa0
-[  614.560318]  tcp_sendmsg+0x40/0x58
-[  614.571053]  inet_sendmsg+0x40/0x68
-[  614.582061]  sock_sendmsg+0x18/0x30
-[  614.593074]  xs_sendpages+0x218/0x328
-[  614.604506]  xs_tcp_send_request+0xa0/0x1b8
-[  614.617461]  xprt_transmit+0xc8/0x4f0
-[  614.628943]  call_transmit+0x8c/0xa0
-[  614.640028]  __rpc_execute+0xbc/0x6f8
-[  614.651380]  rpc_async_schedule+0x28/0x48
-[  614.663846]  process_one_work+0x298/0x6a8
-[  614.676299]  worker_thread+0x40/0x490
-[  614.687687]  kthread+0x134/0x138
-[  614.697804]  ret_from_fork+0x10/0x18
-[  614.717319] xilinx_axienet 7fe00000.ethernet eth0: Link is Down
-[  615.748343] xilinx_axienet 7fe00000.ethernet eth0: Link is Up - 1Gbps/Full - flow control off
+We are testing Virtual Machine with KSM on v5.4-rc2 kernel,
+and found the zero_page refcount overflow.
+The cause of refcount overflow is increased in try_async_pf
+(get_user_page) without being decreased in mmu_set_spte()
+while handling ept violation.
+In kvm_release_pfn_clean(), only unreserved page will call
+put_page. However, zero page is reserved.
+So, as well as creating and destroy vm, the refcount of
+zero page will continue to increase until it overflows.
 
-Since tasklets are not really popular anymore anyway, lets convert this
-over to a work queue, which can sleep and thus can take the MDIO mutex.
+step1:
+echo 10000 > /sys/kernel/pages_to_scan/pages_to_scan
+echo 1 > /sys/kernel/pages_to_scan/run
+echo 1 > /sys/kernel/pages_to_scan/use_zero_pages
 
-Signed-off-by: Andre Przywara <andre.przywara@arm.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+step2:
+just create several normal qemu kvm vms.
+And destroy it after 10s.
+Repeat this action all the time.
+
+After a long period of time, all domains hang because
+of the refcount of zero page overflow.
+
+Qemu print error log as follow:
+ â€¦
+ error: kvm run failed Bad address
+ EAX=00006cdc EBX=00000008 ECX=80202001 EDX=078bfbfd
+ ESI=ffffffff EDI=00000000 EBP=00000008 ESP=00006cc4
+ EIP=000efd75 EFL=00010002 [-------] CPL=0 II=0 A20=1 SMM=0 HLT=0
+ ES =0010 00000000 ffffffff 00c09300 DPL=0 DS   [-WA]
+ CS =0008 00000000 ffffffff 00c09b00 DPL=0 CS32 [-RA]
+ SS =0010 00000000 ffffffff 00c09300 DPL=0 DS   [-WA]
+ DS =0010 00000000 ffffffff 00c09300 DPL=0 DS   [-WA]
+ FS =0010 00000000 ffffffff 00c09300 DPL=0 DS   [-WA]
+ GS =0010 00000000 ffffffff 00c09300 DPL=0 DS   [-WA]
+ LDT=0000 00000000 0000ffff 00008200 DPL=0 LDT
+ TR =0000 00000000 0000ffff 00008b00 DPL=0 TSS32-busy
+ GDT=     000f7070 00000037
+ IDT=     000f70ae 00000000
+ CR0=00000011 CR2=00000000 CR3=00000000 CR4=00000000
+ DR0=0000000000000000 DR1=0000000000000000 DR2=0000000000000000 DR3=0000000000000000
+ DR6=00000000ffff0ff0 DR7=0000000000000400
+ EFER=0000000000000000
+ Code=00 01 00 00 00 e9 e8 00 00 00 c7 05 4c 55 0f 00 01 00 00 00 <8b> 35 00 00 01 00 8b 3d 04 00 01 00 b8 d8 d3 00 00 c1 e0 08 0c ea a3 00 00 01 00 c7 05 04
+ â€¦
+
+Meanwhile, a kernel warning is departed.
+
+ [40914.836375] WARNING: CPU: 3 PID: 82067 at ./include/linux/mm.h:987 try_get_page+0x1f/0x30
+ [40914.836412] CPU: 3 PID: 82067 Comm: CPU 0/KVM Kdump: loaded Tainted: G           OE     5.2.0-rc2 #5
+ [40914.836415] RIP: 0010:try_get_page+0x1f/0x30
+ [40914.836417] Code: 40 00 c3 0f 1f 84 00 00 00 00 00 48 8b 47 08 a8 01 75 11 8b 47 34 85 c0 7e 10 f0 ff 47 34 b8 01 00 00 00 c3 48 8d 78 ff eb e9 <0f> 0b 31 c0 c3 66 90 66 2e 0f 1f 84 00 0
+ 0 00 00 00 48 8b 47 08 a8
+ [40914.836418] RSP: 0018:ffffb4144e523988 EFLAGS: 00010286
+ [40914.836419] RAX: 0000000080000000 RBX: 0000000000000326 RCX: 0000000000000000
+ [40914.836420] RDX: 0000000000000000 RSI: 00004ffdeba10000 RDI: ffffdf07093f6440
+ [40914.836421] RBP: ffffdf07093f6440 R08: 800000424fd91225 R09: 0000000000000000
+ [40914.836421] R10: ffff9eb41bfeebb8 R11: 0000000000000000 R12: ffffdf06bbd1e8a8
+ [40914.836422] R13: 0000000000000080 R14: 800000424fd91225 R15: ffffdf07093f6440
+ [40914.836423] FS:  00007fb60ffff700(0000) GS:ffff9eb4802c0000(0000) knlGS:0000000000000000
+ [40914.836425] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+ [40914.836426] CR2: 0000000000000000 CR3: 0000002f220e6002 CR4: 00000000003626e0
+ [40914.836427] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+ [40914.836427] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+ [40914.836428] Call Trace:
+ [40914.836433]  follow_page_pte+0x302/0x47b
+ [40914.836437]  __get_user_pages+0xf1/0x7d0
+ [40914.836441]  ? irq_work_queue+0x9/0x70
+ [40914.836443]  get_user_pages_unlocked+0x13f/0x1e0
+ [40914.836469]  __gfn_to_pfn_memslot+0x10e/0x400 [kvm]
+ [40914.836486]  try_async_pf+0x87/0x240 [kvm]
+ [40914.836503]  tdp_page_fault+0x139/0x270 [kvm]
+ [40914.836523]  kvm_mmu_page_fault+0x76/0x5e0 [kvm]
+ [40914.836588]  vcpu_enter_guest+0xb45/0x1570 [kvm]
+ [40914.836632]  kvm_arch_vcpu_ioctl_run+0x35d/0x580 [kvm]
+ [40914.836645]  kvm_vcpu_ioctl+0x26e/0x5d0 [kvm]
+ [40914.836650]  do_vfs_ioctl+0xa9/0x620
+ [40914.836653]  ksys_ioctl+0x60/0x90
+ [40914.836654]  __x64_sys_ioctl+0x16/0x20
+ [40914.836658]  do_syscall_64+0x5b/0x180
+ [40914.836664]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+ [40914.836666] RIP: 0033:0x7fb61cb6bfc7
+
+Signed-off-by: LinFeng <linfeng23@huawei.com>
+Signed-off-by: Zhuang Yanying <ann.zhuangyanying@huawei.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/xilinx/xilinx_axienet.h  |  2 +-
- .../net/ethernet/xilinx/xilinx_axienet_main.c | 24 +++++++++----------
- 2 files changed, 13 insertions(+), 13 deletions(-)
+ virt/kvm/kvm_main.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/ethernet/xilinx/xilinx_axienet.h b/drivers/net/ethernet/xilinx/xilinx_axienet.h
-index 2dacfc85b3baa..04e51af32178c 100644
---- a/drivers/net/ethernet/xilinx/xilinx_axienet.h
-+++ b/drivers/net/ethernet/xilinx/xilinx_axienet.h
-@@ -435,7 +435,7 @@ struct axienet_local {
- 	void __iomem *regs;
- 	void __iomem *dma_regs;
+diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+index 6bd01d12df2ec..9312c7e750ed3 100644
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -169,6 +169,7 @@ bool kvm_is_reserved_pfn(kvm_pfn_t pfn)
+ 	 */
+ 	if (pfn_valid(pfn))
+ 		return PageReserved(pfn_to_page(pfn)) &&
++		       !is_zero_pfn(pfn) &&
+ 		       !kvm_is_zone_device_pfn(pfn);
  
--	struct tasklet_struct dma_err_tasklet;
-+	struct work_struct dma_err_task;
- 
- 	int tx_irq;
- 	int rx_irq;
-diff --git a/drivers/net/ethernet/xilinx/xilinx_axienet_main.c b/drivers/net/ethernet/xilinx/xilinx_axienet_main.c
-index 479325eeaf8a0..345a795666e92 100644
---- a/drivers/net/ethernet/xilinx/xilinx_axienet_main.c
-+++ b/drivers/net/ethernet/xilinx/xilinx_axienet_main.c
-@@ -806,7 +806,7 @@ static irqreturn_t axienet_tx_irq(int irq, void *_ndev)
- 		/* Write to the Rx channel control register */
- 		axienet_dma_out32(lp, XAXIDMA_RX_CR_OFFSET, cr);
- 
--		tasklet_schedule(&lp->dma_err_tasklet);
-+		schedule_work(&lp->dma_err_task);
- 		axienet_dma_out32(lp, XAXIDMA_TX_SR_OFFSET, status);
- 	}
- out:
-@@ -855,7 +855,7 @@ static irqreturn_t axienet_rx_irq(int irq, void *_ndev)
- 		/* write to the Rx channel control register */
- 		axienet_dma_out32(lp, XAXIDMA_RX_CR_OFFSET, cr);
- 
--		tasklet_schedule(&lp->dma_err_tasklet);
-+		schedule_work(&lp->dma_err_task);
- 		axienet_dma_out32(lp, XAXIDMA_RX_SR_OFFSET, status);
- 	}
- out:
-@@ -891,7 +891,7 @@ static irqreturn_t axienet_eth_irq(int irq, void *_ndev)
- 	return IRQ_HANDLED;
- }
- 
--static void axienet_dma_err_handler(unsigned long data);
-+static void axienet_dma_err_handler(struct work_struct *work);
- 
- /**
-  * axienet_open - Driver open routine.
-@@ -935,9 +935,8 @@ static int axienet_open(struct net_device *ndev)
- 
- 	phylink_start(lp->phylink);
- 
--	/* Enable tasklets for Axi DMA error handling */
--	tasklet_init(&lp->dma_err_tasklet, axienet_dma_err_handler,
--		     (unsigned long) lp);
-+	/* Enable worker thread for Axi DMA error handling */
-+	INIT_WORK(&lp->dma_err_task, axienet_dma_err_handler);
- 
- 	/* Enable interrupts for Axi DMA Tx */
- 	ret = request_irq(lp->tx_irq, axienet_tx_irq, IRQF_SHARED,
-@@ -966,7 +965,7 @@ err_rx_irq:
- err_tx_irq:
- 	phylink_stop(lp->phylink);
- 	phylink_disconnect_phy(lp->phylink);
--	tasklet_kill(&lp->dma_err_tasklet);
-+	cancel_work_sync(&lp->dma_err_task);
- 	dev_err(lp->dev, "request_irq() failed\n");
- 	return ret;
- }
-@@ -1025,7 +1024,7 @@ static int axienet_stop(struct net_device *ndev)
- 	axienet_mdio_enable(lp);
- 	mutex_unlock(&lp->mii_bus->mdio_lock);
- 
--	tasklet_kill(&lp->dma_err_tasklet);
-+	cancel_work_sync(&lp->dma_err_task);
- 
- 	if (lp->eth_irq > 0)
- 		free_irq(lp->eth_irq, ndev);
-@@ -1505,17 +1504,18 @@ static const struct phylink_mac_ops axienet_phylink_ops = {
- };
- 
- /**
-- * axienet_dma_err_handler - Tasklet handler for Axi DMA Error
-- * @data:	Data passed
-+ * axienet_dma_err_handler - Work queue task for Axi DMA Error
-+ * @work:	pointer to work_struct
-  *
-  * Resets the Axi DMA and Axi Ethernet devices, and reconfigures the
-  * Tx/Rx BDs.
-  */
--static void axienet_dma_err_handler(unsigned long data)
-+static void axienet_dma_err_handler(struct work_struct *work)
- {
- 	u32 axienet_status;
- 	u32 cr, i;
--	struct axienet_local *lp = (struct axienet_local *) data;
-+	struct axienet_local *lp = container_of(work, struct axienet_local,
-+						dma_err_task);
- 	struct net_device *ndev = lp->ndev;
- 	struct axidma_bd *cur_p;
- 
+ 	return true;
 -- 
 2.25.1
 
