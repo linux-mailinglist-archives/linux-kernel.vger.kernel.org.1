@@ -2,94 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5B5527CE9B
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 15:09:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63C6527CE9E
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 15:10:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729740AbgI2NJm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 09:09:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52680 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725776AbgI2NJl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 09:09:41 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82696C061755;
-        Tue, 29 Sep 2020 06:09:41 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id h23so1496862pjv.5;
-        Tue, 29 Sep 2020 06:09:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jAvojDEwPP77Cf1Vn+zoDW7yhX4boGzv0zKIJzb7HK0=;
-        b=s8utigraGsRng0q8D2toVYXL0YC3jjPm0r0HaEv0zz28/W6Se/BswR2VTDqDNHMJrR
-         6paAWZguxV7XmEYk4CI6BIDd+hKhedrUTf8gOQ7LcgbiXNJET94ht8BKPGLVW+lNsT3P
-         9Tuk3ELyVjAygaKdF7dBTSfKRN7dciAjJE41VQQADIzuIJ18EVx/PqmTFTfaRJYXqzg7
-         B53OBojjYOzgFUmGp+9no4FGl9bbZQ53b0+N9AOKBJpGcB6xGNSBVQrs9Yjq3z0DXYQD
-         +1ImBvp2FNt0YW0p1+y1Oc7oI6yxkd4jYbUduYlJ8v8jjlimnFe8aYf6yMOGFT8xKJYs
-         K1JQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jAvojDEwPP77Cf1Vn+zoDW7yhX4boGzv0zKIJzb7HK0=;
-        b=ezfD4lzO4DJ+Tjc3zaJ7SRpzczaQ46exvT/PK4AIF3HBInLxVRnHoPlxX7KSRI1xty
-         6UQVVIiOPc+VYJEtAFFFbdY2JLnQ4DXzFQ6I4sp1UoDklF3xb+1uZ3cEZhuOEysqagC6
-         DLkSIvdiJ9SkCGcsluzW2wdcEmTUns1ZS0+5kZ2qIWqYGtefRQmfH1YsrYJNouzzaoEB
-         UbWEH2vn+hI8t4+MuPFCgXRwHom8Kp8pmLDTGjuOF1Kd7TpfXg4I6TF9PR5cfuWOAWNq
-         qAH9vMvImlCosiOfIXpRn9gyA+Avz0IPsYilkrY+HT5a8zobEHBme5DThV1bkUJnNPK0
-         kbXw==
-X-Gm-Message-State: AOAM532Oplv467sTp8yz7Z9yCjBEAUGC7mAd0tdWMqR/2ua8reYw5d98
-        D7g2TIpNUkZ//9o1KcNyI4CUXMLiRtERiLEiuhw=
-X-Google-Smtp-Source: ABdhPJz43usza+2e6m35ZxXuL/DIBXQoKpFuq77G2llkzWVkcSlh22Fn0hVML6oDua2jbhX86McCdeQ0OtAs33gDNRQ=
-X-Received: by 2002:a17:90b:fc4:: with SMTP id gd4mr3904635pjb.129.1601384981090;
- Tue, 29 Sep 2020 06:09:41 -0700 (PDT)
+        id S1729300AbgI2NKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 09:10:19 -0400
+Received: from mail-vi1eur05on2047.outbound.protection.outlook.com ([40.107.21.47]:2912
+        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725776AbgI2NKQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 09:10:16 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lNRLLgJSewdnK9UH1YZQu9++h6WxYfwtAYG83IN/a3X4kEPsIawgio30N2EwMdl5z/6RtD+rGVmDzaYqjSW65hnmmEALlLcVJ6lMRWvH2nucsRbeAbNn7WEGORKueBuHk7Vj77BXzif7vj9hKrrbbleHtjYkCJJhxq/dMk7nsp1VEwbH3XN+35POhg78G4RDS94Z9G241eb2CB+bM6O2yUZ9w+wA6a4yB1DJYU3j3/2SvBHrUzNLfKke/1W6seytzJm1dnSTeM1uYAiICyItC7RdUf+ZflzwuKE9R1bk2O6ouRMqJimMXN9MJhMNHtvuqUlmQDlKmlqKl19qB96p4A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jpmea/4IME4+s4xy/0C8l/LHYgDucfLQbgbMZbb75+Y=;
+ b=W+JusnnoWTNe4KUMYWoomH0dCyLWKPFrz0OXClmb0HNkXArmNd7ZocvZNlgMHVhxOlgd5VUhIWvMFLtuke3CYa9CnVLKTF1+7Y0lat/0JkCcrQL5YfdOygqF8yDBA1H/4NfuGXUnJ4ErY+kFyQPjb9StCloj4WK5HXSIFPWnGs7exq2+o1JvrZWLKz0t37mtuvcL36tPRJDHwB+wWt4fXjD1hSsO84cSzPIKt0hntyVSUQMSejVL+VWzZ2gy3qtTAw29kbLXgc/nl53yxjGTwtVmUyWjjE/VHRc0oBl0ROWuAbeMJiNpk9piLFuy2t8G4pyi5ATxdVUMfOy2fvsCMQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jpmea/4IME4+s4xy/0C8l/LHYgDucfLQbgbMZbb75+Y=;
+ b=k6TV2AEhhYIp9dVd9dbSXaurcccPWiJMPbiwOvTasQQg4KMIIK1elqOXSh/hjQv273qMo203t76qOIMISjLNU/P08I3IuH8XPclt0hXbFUjwgmcwTfj0DsCOL/0gWZb91Nzf2o95zNlOahvvFFrIMisec2Z0cs9AqX7njxZmNFk=
+Received: from VI1PR04MB4960.eurprd04.prod.outlook.com (2603:10a6:803:57::21)
+ by VI1PR0401MB2381.eurprd04.prod.outlook.com (2603:10a6:800:2a::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.32; Tue, 29 Sep
+ 2020 13:10:12 +0000
+Received: from VI1PR04MB4960.eurprd04.prod.outlook.com
+ ([fe80::b178:a37b:1f9e:3a6]) by VI1PR04MB4960.eurprd04.prod.outlook.com
+ ([fe80::b178:a37b:1f9e:3a6%3]) with mapi id 15.20.3412.029; Tue, 29 Sep 2020
+ 13:10:12 +0000
+From:   Sherry Sun <sherry.sun@nxp.com>
+To:     Christoph Hellwig <hch@infradead.org>
+CC:     "sudeep.dutt@intel.com" <sudeep.dutt@intel.com>,
+        "ashutosh.dixit@intel.com" <ashutosh.dixit@intel.com>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "kishon@ti.com" <kishon@ti.com>,
+        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>
+Subject: RE: [PATCH V2 3/4] misc: vop: simply return the saved dma address
+ instead of virt_to_phys
+Thread-Topic: [PATCH V2 3/4] misc: vop: simply return the saved dma address
+ instead of virt_to_phys
+Thread-Index: AQHWljz3j2hLyZbXKkSFG46wUuvQYal/aZOAgAArmQA=
+Date:   Tue, 29 Sep 2020 13:10:12 +0000
+Message-ID: <VI1PR04MB4960A4E7D6A72C2CDEAC47CE92320@VI1PR04MB4960.eurprd04.prod.outlook.com>
+References: <20200929084425.24052-1-sherry.sun@nxp.com>
+ <20200929084425.24052-4-sherry.sun@nxp.com>
+ <20200929102643.GC7784@infradead.org>
+In-Reply-To: <20200929102643.GC7784@infradead.org>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: infradead.org; dkim=none (message not signed)
+ header.d=none;infradead.org; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [114.219.66.133]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 21f1c057-2b0d-4801-976b-08d86479000f
+x-ms-traffictypediagnostic: VI1PR0401MB2381:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <VI1PR0401MB23817CA3C770EDB2A23326AE92320@VI1PR0401MB2381.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: +Lf0G7wXiyIA+eJKh6tWhHhve5nCO17/F+2qxy28cSmnyT6zgxgic1n4OP9IjYmFRozzgFZhfrH6nB/epwaB/BK/rt8BgK7OlznjqNYS0t9vwUTc11hqnAACT1FOpSJawxzAMgWa9HjzxJMC59h/aPz0NYDwU/5FNBsw9B4GxpXY3LMMkcPyCSL4OdsZwNhNBLWACF7CjEM9JugtpUvDJy5Qa6d7IP6KJ7NjeHFeSBFIWJcugxBcwnXtUgt700+I9+wo8qMS+6+QDCSpiP51SMbuOcW9MR3B+ZiQUyBeoSMvktYhFqQE/8+2TQ2UKzFK
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB4960.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(39850400004)(396003)(136003)(366004)(4326008)(9686003)(55016002)(86362001)(6916009)(52536014)(66446008)(64756008)(66556008)(66476007)(66946007)(5660300002)(8676002)(8936002)(26005)(186003)(54906003)(316002)(44832011)(71200400001)(478600001)(76116006)(33656002)(7696005)(6506007)(2906002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: iLfmcw7XltXDikUMkyJFhClnx5Hu4ORtVj6pm8rvFar/jkY6+zzMx3LxnTK4wa/mDF6kYWDjW3fwxh8hdMJ5pfJ22UTvXD2Qnx7Ftp8LP/8h2ONgF2H5rFCaPzrVOfKlEo+O9nPDIf9lpjSCyjDS7qhHoJ2dZAxP4nbMhlowu0Ftq0/5kA/IFpxG1onRU85KC3ZuMe8temC1+hJ2rAZ60yxuYLOcOzIGuvd3O9ZAVj1Owtz6jCmUWVIW8iDqfEdvonFQvxd9Dix6fwOAPJbNEh821EnHfQ1PmUsMbWsRLUakzeqDMNOYJQCQ9FvgcV1Xv4pXL/DNN7/Xa5cQhsJKLIFjlmrY01ibFV6/xAaUT+nCKHsLskq5zvworE3m5PX3ysmurjDOSP67uTCb809Pa7tqIyGJzoz2D+vyMG5K3PMotXIP44Gl6N0ywPIa/5cuYAsF40hOh0DT/8kHWQQ1ZLLfQjIyxVQnQXwiGmDW0vWTVb/DP+kIGABfQOIdt6MKr1871qB6aslzsj5GuPAhDKIYZ0I+1XZPv6M3s3wJVAu+RAtdpDzWz0hD2YDuDjh/LUxowFGTl564+DrbBzy4lqJOr+wFhEEaE/+b6CqZy2P9MeSdk3nanJPbS8nLsBi3SURRHAl3HwW18hrXlpKKeg==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <20200929125949.69934-1-alexandru.ardelean@analog.com> <CAHp75VeQVEwtKGZcM6w=wfWuAvAD4xtveNUzT-7eXn5FVdheJQ@mail.gmail.com>
-In-Reply-To: <CAHp75VeQVEwtKGZcM6w=wfWuAvAD4xtveNUzT-7eXn5FVdheJQ@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 29 Sep 2020 16:09:22 +0300
-Message-ID: <CAHp75Vf4dvVKMZo1C5sWWg3cjFgDM5pizJEtwGFieXruMQBS1Q@mail.gmail.com>
-Subject: Re: [PATCH v3 0/9] iio: remove iio_buffer_set_attrs() and assign
- buffer attrs during alloc
-To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
-Cc:     linux-iio <linux-iio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Eugen Hristev <eugen.hristev@microchip.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        groeck@chromium.org,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Gwendal Grignou <gwendal@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB4960.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 21f1c057-2b0d-4801-976b-08d86479000f
+X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Sep 2020 13:10:12.6648
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Omwl+fInuEIAmkwFYko8D3NP/zm8D6LWRmyaMkdjt114Ne8zfTvBAiE1ARzhF8aCoaSLoXbVkXb5gm6npWB2vg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0401MB2381
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 4:09 PM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
-> On Tue, Sep 29, 2020 at 3:55 PM Alexandru Ardelean
-> <alexandru.ardelean@analog.com> wrote:
-> >
-> > This is a v2 & v3 for [1]:
-> >   https://lore.kernel.org/linux-iio/20200925083743.46469-1-alexandru.ardelean@analog.com/
-> >
-> > It also includes a at91-sama5d2_adc cleanup patch in this series:
-> >   https://lore.kernel.org/linux-iio/20200924102902.136169-1-alexandru.ardelean@analog.com/
-> > This patch is required, in order to make the removal of
-> > iio_buffer_set_attrs() a bit cleaner in the at91-sama5d2_adc driver.
-> >
-> > Following the discussion from [1], this patchset implements the
-> > following:
->
-> Makes sense to me, FWIW,
-> Reviewed-by: Andy Shevchenko <andy.shevchenjko>
+Hi Christoph,
 
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> On Tue, Sep 29, 2020 at 04:44:24PM +0800, Sherry Sun wrote:
+> > The device page and vring should use consistent memory which are
+> > allocated by dma_alloc_coherent api, when user space wants to get its
+> > physical address, virt_to_phys cannot be used, should simply return
+> > the saved device page dma address by get_dp_dma callback and the vring
+> > dma address saved in mic_vqconfig.
+>=20
+> More importantly you can't just all virt_to_phys on a return value from
+> dma_alloc_coherent, so this needs to be folded into patch 1.
 
--- 
-With Best Regards,
-Andy Shevchenko
+Okay, will move this change into patch 1.
+>=20
+> >  	if (!offset) {
+> > -		*pa =3D virt_to_phys(vpdev->hw_ops->get_dp(vpdev));
+> > +		if (vpdev->hw_ops->get_dp_dma)
+> > +			*pa =3D vpdev->hw_ops->get_dp_dma(vpdev);
+> > +		else {
+> > +			dev_err(vop_dev(vdev), "can't get device page
+> physical address\n");
+> > +			return -EINVAL;
+> > +		}
+>=20
+> I don't think we need the NULL check here.  Wouldn't it also make sense t=
+o
+> return the virtual and DMA address from ->get_dp instead of adding anothe=
+r
+> method?
+
+Do you mean that we should only change the original ->get_dp callback to re=
+turn virtual
+and DMA address at the same time, instead of adding the ->get_dp_dma callba=
+ck?
+
+Regards
+Sherry
+
