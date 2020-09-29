@@ -2,146 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06C5227BFBC
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 10:39:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8137A27BFBB
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 10:38:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727818AbgI2Ii6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 04:38:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38500 "EHLO
+        id S1727809AbgI2Iiv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 04:38:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727634AbgI2Iiz (ORCPT
+        with ESMTP id S1727634AbgI2Iiu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 04:38:55 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98D40C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 01:38:55 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id v123so3556743qkd.9
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 01:38:55 -0700 (PDT)
+        Tue, 29 Sep 2020 04:38:50 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15B1EC061755;
+        Tue, 29 Sep 2020 01:38:50 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id e11so6102014wme.0;
+        Tue, 29 Sep 2020 01:38:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=wNxZsxbLvCMFxlDhPXL+cS3czzmsURxJF3wNkez0/n8=;
-        b=qXQPhpbgyg6aqhcQtcnINkSq2dfm0LrlyOwffEz10gH9Sh5fv77nXfyC4O0Oky2kcg
-         gExXpXB1KciLPj8cthjFSWYZF+y2HppBZYle1ASHIvxWEliZqhVOQYB5O3+zVEhHsMKJ
-         Mvfiwux38RGAVHXTPOKnVbTs+ko8a3d4rrJjUON/tm6Gp3+zQ1HvBKsbnTSxs9fSDYyF
-         UipLMqKj7pGGp4hV2K9CHSpbK7MTR8QG6YXTg7vtsODyTbemdheIYdkfueFRawjohFrx
-         DIY1XozyWMGDLnUNd0jIV9rzSo6itAqM7Pm3rwJAQTnsZvEdPV0Aebbyj8Lq85NTv3KH
-         /R0A==
+        h=cc:subject:to:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=dmGf1FRJlXDhCUgK6fiA66lZin9rP4W1yXe+rkN5lfo=;
+        b=pRjMRO5D33ilsDuphOJlgFYEuejymTllYwEQ9NL8+sx9tiphg8R8mfSxOqQuMbbaEi
+         jCe/ztdfDU4IiL+/ZaTo890rYlE2ON37+Vzui24nT+qJsfycmWRAwBwShTIoVNt7ha6t
+         f+rzbyUumVTWZsOzspEIxB/8YpDP/uWJiUpR9QpEtpxYQgQ9AksWRYsX2CmYk/1gMBlG
+         2d4d8C35oP6HK5OsCrwueA2GYqlVLnywW3Ua/zd6j+h97yzVSL8tQi3mZgFCSXxzrIbO
+         hmXhw2Nh4DBKvH5g2uoieE6S5/YTTTd3KVQFt47CelNpQ8JbJ+ASD1CD3DT3c/xWFJBC
+         8iCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=wNxZsxbLvCMFxlDhPXL+cS3czzmsURxJF3wNkez0/n8=;
-        b=G4MGjiiyF4mhlBDJZCU7ekBhdsOW97rgJtCM7HkfmZ18XQvSTSzFqfsuBlAiOYDDEb
-         ZBCkrcDI/1YrpQoFuPbKOW4FCRpO3GwBq9XsUd+O5S40a5MT+D036BhVh1hgU1jtUElQ
-         QeF5KTT9kFjV1vR7LAeEZTuc/FY4eYgyGgGwIHuhgVS+e89XxP8XrPGrUxhoPHj8T5Z2
-         U5d6Df2XjklYIc0FdRW6DCUhhwZGu4B/+sikhTXOdD0uqKcCej8AzXh/FTNX8kn25QCC
-         atrXnnkfkZMtFA9F2vE/1t+m/2JA/BckNrwL0kvovUSlMyKQaTLjwkjNeyp+ojOPCIVm
-         alZQ==
-X-Gm-Message-State: AOAM533a/6Ho1JzBpXMU+g0pDpjf1QwjsWcSLka1f9uEcMQA2Qs88i10
-        xIuiqQHPFb/VFBauwXKG0OaIQdMDwtIXe4/kXfM=
-X-Google-Smtp-Source: ABdhPJzFfebg2ClF5+UVCKk05dn1cBrNGM77uQlAG0YUJHDkE5t2I63gzCmCZHh8E7bFhS1fTT9p+d1hDf8/ivrI20Q=
-X-Received: by 2002:a37:7844:: with SMTP id t65mr3160367qkc.136.1601368734576;
- Tue, 29 Sep 2020 01:38:54 -0700 (PDT)
+        h=x-gm-message-state:cc:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=dmGf1FRJlXDhCUgK6fiA66lZin9rP4W1yXe+rkN5lfo=;
+        b=iQI4oSJ47ZBwPGr8WJ1UcaI1hstlEP1byQeUI9yjQmDf4n4jx7l9HKkTh2j0EzRXWe
+         9TkH6mJI9s2VPrWDd7WIptc63znuiioVttsuozC/TL/Qs5AP0iZyaQxmiRBfEO1oZgmD
+         6KJbwTSn3QPOo/yi6XT5cQ1BTDvqA4nPLJJM243tn6jBGYEZV4W072bN6Y31w8/vaIkH
+         7GzKGGE3QbYaDawTnr0LUAyhjMpzrIdWdGAxGWYGWO4k02bqcvs9d6UO+UMRZN1tP86d
+         nZ6ldOaDQwhlPf6kY6QaIGWC4S6rTuQS00AbzLstIaH8qho/aAOKN5BtDYiz7sHVHRlb
+         +n2Q==
+X-Gm-Message-State: AOAM532smaB4hG9Kq+6Zm8Q5BhxH6/rpF47Rkl4rT7Sr3loV+fx/0D+V
+        NGW6gTx4lm2QDEV4XNuwARRzfORo01U=
+X-Google-Smtp-Source: ABdhPJyBHXd39b1Y0Nd8HyE5S8phPtTwTGwEELYDj45/RQlofUJDP7uVEvOWdHxonXnH9wFc7n5rdA==
+X-Received: by 2002:a05:600c:2189:: with SMTP id e9mr3304284wme.8.1601368728464;
+        Tue, 29 Sep 2020 01:38:48 -0700 (PDT)
+Received: from ?IPv6:2001:a61:2479:6801:d8fe:4132:9f23:7e8f? ([2001:a61:2479:6801:d8fe:4132:9f23:7e8f])
+        by smtp.gmail.com with ESMTPSA id z191sm1470344wme.40.2020.09.29.01.38.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 29 Sep 2020 01:38:47 -0700 (PDT)
+Cc:     mtk.manpages@gmail.com, linux-man@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-api@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-ext4@vger.kernel.org
+Subject: Re: [PATCH] man/statx: Add STATX_ATTR_DAX
+To:     Ira Weiny <ira.weiny@intel.com>
+References: <20200505002016.1085071-1-ira.weiny@intel.com>
+ <20200928164200.GA459459@iweiny-DESK2.sc.intel.com>
+From:   "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+Message-ID: <ddf4dd69-6bf8-8ca7-cdd7-a949884d997f@gmail.com>
+Date:   Tue, 29 Sep 2020 10:38:46 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <1601283046-15329-1-git-send-email-iamjoonsoo.kim@lge.com> <20200929080814.GB22035@dhcp22.suse.cz>
-In-Reply-To: <20200929080814.GB22035@dhcp22.suse.cz>
-From:   Joonsoo Kim <js1304@gmail.com>
-Date:   Tue, 29 Sep 2020 17:38:43 +0900
-Message-ID: <CAAmzW4OK=ubyNWsjwfOkj4vZz2Tjuo0G9ceTMXUkx8W+3PEM=g@mail.gmail.com>
-Subject: Re: [PATCH v2 for v5.9] mm/page_alloc: handle a missing case for
- memalloc_nocma_{save/restore} APIs
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Mel Gorman <mgorman@techsingularity.net>, kernel-team@lge.com,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200928164200.GA459459@iweiny-DESK2.sc.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-2020=EB=85=84 9=EC=9B=94 29=EC=9D=BC (=ED=99=94) =EC=98=A4=ED=9B=84 5:08, M=
-ichal Hocko <mhocko@suse.com>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
->
-> On Mon 28-09-20 17:50:46, Joonsoo Kim wrote:
-> > From: Joonsoo Kim <iamjoonsoo.kim@lge.com>
-> >
-> > memalloc_nocma_{save/restore} APIs can be used to skip page allocation
-> > on CMA area, but, there is a missing case and the page on CMA area coul=
-d
-> > be allocated even if APIs are used. This patch handles this case to fix
-> > the potential issue.
-> >
-> > Missing case is an allocation from the pcplist. MIGRATE_MOVABLE pcplist
-> > could have the pages on CMA area so we need to skip it if ALLOC_CMA isn=
-'t
-> > specified.
-> >
-> > Fixes: 8510e69c8efe (mm/page_alloc: fix memalloc_nocma_{save/restore} A=
-PIs)
-> > Signed-off-by: Joonsoo Kim <iamjoonsoo.kim@lge.com>
-> > ---
-> >  mm/page_alloc.c | 13 ++++++++++---
-> >  1 file changed, 10 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> > index fab5e97..104d2e1 100644
-> > --- a/mm/page_alloc.c
-> > +++ b/mm/page_alloc.c
-> > @@ -3367,9 +3367,16 @@ struct page *rmqueue(struct zone *preferred_zone=
-,
-> >       struct page *page;
-> >
-> >       if (likely(order =3D=3D 0)) {
-> > -             page =3D rmqueue_pcplist(preferred_zone, zone, gfp_flags,
-> > +             /*
-> > +              * MIGRATE_MOVABLE pcplist could have the pages on CMA ar=
-ea and
-> > +              * we need to skip it when CMA area isn't allowed.
-> > +              */
-> > +             if (!IS_ENABLED(CONFIG_CMA) || alloc_flags & ALLOC_CMA ||
-> > +                             migratetype !=3D MIGRATE_MOVABLE) {
-> > +                     page =3D rmqueue_pcplist(preferred_zone, zone, gf=
-p_flags,
-> >                                       migratetype, alloc_flags);
-> > -             goto out;
-> > +                     goto out;
-> > +             }
-> >       }
->
-> This approach looks definitely better than the previous version.
+Hello Ira,
 
-Thanks!
+On 9/28/20 6:42 PM, Ira Weiny wrote:
+> On Mon, May 04, 2020 at 05:20:16PM -0700, 'Ira Weiny' wrote:
+>> From: Ira Weiny <ira.weiny@intel.com>
+>>
+>> Linux 5.8 is slated to have STATX_ATTR_DAX support.
+>>
+>> https://lore.kernel.org/lkml/20200428002142.404144-4-ira.weiny@intel.com/
+>> https://lore.kernel.org/lkml/20200504161352.GA13783@magnolia/
+>>
+>> Add the text to the statx man page.
+>>
+>> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> 
+> Have I sent this to the wrong list?  Or perhaps I have missed a reply.
 
-> >
-> >       /*
-> > @@ -3381,7 +3388,7 @@ struct page *rmqueue(struct zone *preferred_zone,
-> >
-> >       do {
-> >               page =3D NULL;
-> > -             if (alloc_flags & ALLOC_HARDER) {
-> > +             if (order > 0 && alloc_flags & ALLOC_HARDER) {
-> >                       page =3D __rmqueue_smallest(zone, order, MIGRATE_=
-HIGHATOMIC);
-> >                       if (page)
-> >                               trace_mm_page_alloc_zone_locked(page, ord=
-er, migratetype);
->
-> But this condition is not clear to me. __rmqueue_smallest doesn't access
-> pcp lists. Maybe I have missed the point in the original discussion but
-> this deserves a comment at least.
+No, it's just me being a bit slow, I'm sorry. Thank you for pining.
 
-Before the pcplist skipping is applied, order-0 request can not reach here.
-But, now, an order-0 request can reach here. Free memory on
-MIGRATE_HIGHATOMIC is reserved for high-order atomic allocation
-so an order-0 request should skip it.
+> I don't see this applied to the man-pages project.[1]  But perhaps I am looking
+> at the wrong place?
 
-I will add a code comment on the next version.
+Your patch is applied now, and pushed to kernel .org. Thanks!
 
-Thanks.
+Cheers,
+
+Michael
+
+> [1] git://git.kernel.org/pub/scm/docs/man-pages/man-pages.git
+> 
+>> ---
+>>  man2/statx.2 | 24 ++++++++++++++++++++++++
+>>  1 file changed, 24 insertions(+)
+>>
+>> diff --git a/man2/statx.2 b/man2/statx.2
+>> index 2e90f07dbdbc..14c4ab78e7bd 100644
+>> --- a/man2/statx.2
+>> +++ b/man2/statx.2
+>> @@ -468,6 +468,30 @@ The file has fs-verity enabled.
+>>  It cannot be written to, and all reads from it will be verified
+>>  against a cryptographic hash that covers the
+>>  entire file (e.g., via a Merkle tree).
+>> +.TP
+>> +.BR STATX_ATTR_DAX (since Linux 5.8)
+>> +The file is in the DAX (cpu direct access) state.  DAX state attempts to
+>> +minimize software cache effects for both I/O and memory mappings of this file.
+>> +It requires a file system which has been configured to support DAX.
+>> +.PP
+>> +DAX generally assumes all accesses are via cpu load / store instructions which
+>> +can minimize overhead for small accesses, but may adversely affect cpu
+>> +utilization for large transfers.
+>> +.PP
+>> +File I/O is done directly to/from user-space buffers and memory mapped I/O may
+>> +be performed with direct memory mappings that bypass kernel page cache.
+>> +.PP
+>> +While the DAX property tends to result in data being transferred synchronously,
+>> +it does not give the same guarantees of O_SYNC where data and the necessary
+>> +metadata are transferred together.
+>> +.PP
+>> +A DAX file may support being mapped with the MAP_SYNC flag, which enables a
+>> +program to use CPU cache flush instructions to persist CPU store operations
+>> +without an explicit
+>> +.BR fsync(2).
+>> +See
+>> +.BR mmap(2)
+>> +for more information.
+>>  .SH RETURN VALUE
+>>  On success, zero is returned.
+>>  On error, \-1 is returned, and
+>> -- 
+>> 2.25.1
+>>
+
+
+-- 
+Michael Kerrisk
+Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
+Linux/UNIX System Programming Training: http://man7.org/training/
