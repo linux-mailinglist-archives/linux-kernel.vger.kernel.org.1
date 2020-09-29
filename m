@@ -2,99 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E279327D28C
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 17:16:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FDA527D296
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 17:17:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731491AbgI2PQV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 11:16:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44278 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729064AbgI2PQT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 11:16:19 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66F58C061755;
-        Tue, 29 Sep 2020 08:16:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=rt/gWACyTIQuj5nIeNUdzNcwr8s1YVFasvFCFOsspG0=; b=C1EjOj6Mt1xdWZh3XPn8rkOVq0
-        OxLNUps2Qyz7f+SRn0b0qVlwpJY3G1qjZJrXsr79+xSJN576WRyGRCJBvE33ahL+K3bAl6J52zeHS
-        wSJqYA3kcEN4r81o5iv8mrkQNdTtpmXlgU0m94t4jobUJQw63e2MEofWlPsisf6M5B5+P7V7uo9JR
-        L+B8gNbZ5jGR4O4c1ouioTzYDVNXI11/fjGCnBu9osfq4flDd/ZImbGrL1Nb/QcxcZUrcloACztpk
-        f+A0BvS7dJrAKnyy1KN+GuPecThd5yRmSmk4dIzSCm/hex1K24N5dt/nnCwUMW+yOhjXGoH3qt8AN
-        HBl2N0ng==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kNHMC-0000zG-2k; Tue, 29 Sep 2020 15:15:56 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        id S1729703AbgI2PRb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 11:17:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59810 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725710AbgI2PRb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 11:17:31 -0400
+Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 191E5300F7A;
-        Tue, 29 Sep 2020 17:15:53 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 004CF210E84D8; Tue, 29 Sep 2020 17:15:52 +0200 (CEST)
-Date:   Tue, 29 Sep 2020 17:15:52 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Mike Rapoport <rppt@linux.ibm.com>
-Cc:     Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Idan Yaniv <idan.yaniv@ibm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Shuah Khan <shuah@kernel.org>, Tycho Andersen <tycho@tycho.ws>,
-        Will Deacon <will@kernel.org>, linux-api@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org
-Subject: Re: [PATCH v6 5/6] mm: secretmem: use PMD-size pages to amortize
- direct map fragmentation
-Message-ID: <20200929151552.GS2628@hirez.programming.kicks-ass.net>
-References: <20200924132904.1391-1-rppt@kernel.org>
- <20200924132904.1391-6-rppt@kernel.org>
- <20200925074125.GQ2628@hirez.programming.kicks-ass.net>
- <20200929130529.GE2142832@kernel.org>
- <20200929141216.GO2628@hirez.programming.kicks-ass.net>
- <20200929145813.GA3226834@linux.ibm.com>
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8F72C20773;
+        Tue, 29 Sep 2020 15:17:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601392650;
+        bh=Tg4e0HkMtzHqfzx+B1Jd5XPOo5wQ0MptzkCySYDjXnI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=eV+kK2nbloNFXchh95Pr8vkanZ+1W8f1vO/xaD/arhLCBm9SrAHwlRjFRNSdlMeNR
+         kYkA0B4Q9o4E6kuYLYm5aGxGY7zR8l7MzfBgIS0EAVMVLm5rXqAJ02DdrxxRyNgBkW
+         Rmh2raGt6kXHnIhu98S2zKLOsF1ab00IUy7ymcWE=
+Date:   Tue, 29 Sep 2020 16:17:25 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Fabrice Gasnier <fabrice.gasnier@st.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        olivier.moysan@st.com, linux-iio@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com
+Subject: Re: [RESEND PATCH v2] iio: adc: stm32-adc: fix runtime autosuspend
+ delay when slow polling
+Message-ID: <20200929161725.7c8e20a8@archlinux>
+In-Reply-To: <CAPDyKFp=KTf8=zGBSzPYqhjnZpY8xwvjCeM1e-WTKT1QLSxaDA@mail.gmail.com>
+References: <1593615328-5180-1-git-send-email-fabrice.gasnier@st.com>
+        <045e9e34-f1e0-087b-bc5b-44440db6be27@st.com>
+        <20200926161732.72af96e3@archlinux>
+        <CAPDyKFp=KTf8=zGBSzPYqhjnZpY8xwvjCeM1e-WTKT1QLSxaDA@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200929145813.GA3226834@linux.ibm.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 05:58:13PM +0300, Mike Rapoport wrote:
-> On Tue, Sep 29, 2020 at 04:12:16PM +0200, Peter Zijlstra wrote:
+On Mon, 28 Sep 2020 13:23:11 +0200
+Ulf Hansson <ulf.hansson@linaro.org> wrote:
 
-> > It will drop them down to 4k pages. Given enough inodes, and allocating
-> > only a single sekrit page per pmd, we'll shatter the directmap into 4k.
+> Jonathan, Fabrice,
 > 
-> Why? Secretmem allocates PMD-size page per inode and uses it as a pool
-> of 4K pages for that inode. This way it ensures that
-> __kernel_map_pages() is always called on PMD boundaries.
+> On Sat, 26 Sep 2020 at 17:17, Jonathan Cameron <jic23@kernel.org> wrote:
+> >
+> > On Wed, 16 Sep 2020 12:28:00 +0200
+> > Fabrice Gasnier <fabrice.gasnier@st.com> wrote:
+> >  
+> > > On 7/1/20 4:55 PM, Fabrice Gasnier wrote:  
+> > > > When the ADC is runtime suspended and starting a conversion, the stm32-adc
+> > > > driver calls pm_runtime_get_sync() that gets cascaded to the parent
+> > > > (e.g. runtime resume of stm32-adc-core driver). This also kicks the
+> > > > autosuspend delay (e.g. 2s) of the parent.
+> > > > Once the ADC is active, calling pm_runtime_get_sync() again (upon a new
+> > > > capture) won't kick the autosuspend delay for the parent (stm32-adc-core
+> > > > driver) as already active.
+> > > >
+> > > > Currently, this makes the stm32-adc-core driver go in suspend state
+> > > > every 2s when doing slow polling. As an example, doing a capture, e.g.
+> > > > cat in_voltageY_raw at a 0.2s rate, the auto suspend delay for the parent
+> > > > isn't refreshed. Once it expires, the parent immediately falls into
+> > > > runtime suspended state, in between two captures, as soon as the child
+> > > > driver falls into runtime suspend state:
+> > > > - e.g. after 2s, + child calls pm_runtime_put_autosuspend() + 100ms
+> > > >   autosuspend delay of the child.
+> > > > - stm32-adc-core switches off regulators, clocks and so on.
+> > > > - They get switched on back again 100ms later in this example (at 2.2s).
+> > > >
+> > > > So, use runtime_idle() callback in stm32-adc-core driver to call
+> > > > pm_runtime_mark_last_busy() for the parent driver (stm32-adc-core),
+> > > > to avoid this.
+> > > >
+> > > > Fixes: 9bdbb1139ca1 ("iio: adc: stm32-adc: add power management support")
+> > > >
+> > > > Signed-off-by: Fabrice Gasnier <fabrice.gasnier@st.com>
+> > > > ---
+> > > > Changes in v2:
+> > > > - Use runtime_idle callback in stm32-adc-core driver, instead of refreshing
+> > > >   last_busy from the child (for the parent) at many place. Initial patch v1
+> > > >   looked like "somewhat adhoc solution" as commented by Jonathan.  
+> > >
+> > > Hi all,
+> > >
+> > > Gentle reminder for this patch. Earlier discussions on it were as per
+> > > [1] and [2].
+> > >
+> > > Ideally, Jonathan was looking for an ack from Rafael on this patch.
+> > > This is a long pending issue. I'd like to progress on this.
+> > >
+> > > [1] https://patchwork.kernel.org/patch/11349841/
+> > > [2] https://lkml.org/lkml/2020/6/11/279  
+> >
+> > Fabrice, I think this one has sat waiting for inputs for
+> > too long. Hence I'm going to take a slight gamble that you are correct
+> > on doing the fix this way (I'm reasonably convinced)  
+> 
+> My apologies for the huge and unacceptable delay. I have re-started
+> looking at this several times, but just never got the point of writing
+> a proper reply. Let me do this now, better late than never I guess.
+> 
+> In general, I think this problem (nicely described by Fabrice), should
+> be solved in the runtime PM core, without having to involve drivers
+> for parents/childs. I have looked into that, but I don't have a patch
+> to propose, at least not yet.
+> 
+> FYI, I have also stumbled over the same problem, for a card controller
+> (parent), serving both sd and memstick cards. For that case, we simply
+> decided to skip using autosuspend for the child devices (represented
+> by an sd host and a memstick host), not optimal, but there were other
+> reasons why we decided for this approach as well.
+> 
+> That said, I also think the solution proposed in $subject patch, which
+> uses the ->runtime_idle() callback for the parent is perfectly fine,
+> at least until we have figured out something that can replace it.
+> 
+> >
+> > Applied to the fixes-togreg branch of iio.git.
+> > It won't go in for 5.9 now, so we have a bit of time for any last
+> > minute comments.  
+> 
+> Feel free to add:
+> 
+> Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
+Thanks and added.
 
-Oh, you unmap the 2m page upfront? I read it like you did the unmap at
-the sekrit page alloc, not the pool alloc side of things.
+Jonathan
 
-Then yes, but then you're wasting gobs of memory. Basically you can pin
-2M per inode while only accounting a single page.
+> 
+> Kind regards
+> Uffe
+> 
+> >
+> > Thanks,
+> >
+> > Jonathan
+> >  
+> > >
+> > > Please advise,
+> > > Thanks in advance,
+> > > Fabrice
+> > >  
+> > > > ---
+> > > >  drivers/iio/adc/stm32-adc-core.c | 9 ++++++++-
+> > > >  1 file changed, 8 insertions(+), 1 deletion(-)
+> > > >
+> > > > diff --git a/drivers/iio/adc/stm32-adc-core.c b/drivers/iio/adc/stm32-adc-core.c
+> > > > index 0e2068e..3586369 100644
+> > > > --- a/drivers/iio/adc/stm32-adc-core.c
+> > > > +++ b/drivers/iio/adc/stm32-adc-core.c
+> > > > @@ -794,6 +794,13 @@ static int stm32_adc_core_runtime_resume(struct device *dev)
+> > > >  {
+> > > >     return stm32_adc_core_hw_start(dev);
+> > > >  }
+> > > > +
+> > > > +static int stm32_adc_core_runtime_idle(struct device *dev)
+> > > > +{
+> > > > +   pm_runtime_mark_last_busy(dev);
+> > > > +
+> > > > +   return 0;
+> > > > +}
+> > > >  #endif
+> > > >
+> > > >  static const struct dev_pm_ops stm32_adc_core_pm_ops = {
+> > > > @@ -801,7 +808,7 @@ static const struct dev_pm_ops stm32_adc_core_pm_ops = {
+> > > >                             pm_runtime_force_resume)
+> > > >     SET_RUNTIME_PM_OPS(stm32_adc_core_runtime_suspend,
+> > > >                        stm32_adc_core_runtime_resume,
+> > > > -                      NULL)
+> > > > +                      stm32_adc_core_runtime_idle)
+> > > >  };
+> > > >
+> > > >  static const struct stm32_adc_priv_cfg stm32f4_adc_priv_cfg = {
+> > > >  
+> >  
+
