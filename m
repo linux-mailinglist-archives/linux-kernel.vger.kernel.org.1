@@ -2,139 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99BF827D938
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 22:47:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38A8627D93C
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 22:48:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729371AbgI2Urv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 16:47:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39108 "EHLO
+        id S1729376AbgI2Ush (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 16:48:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728907AbgI2Urv (ORCPT
+        with ESMTP id S1728657AbgI2Ush (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 16:47:51 -0400
-Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D814C061755;
-        Tue, 29 Sep 2020 13:47:51 -0700 (PDT)
-Received: by mail-qv1-xf42.google.com with SMTP id cy2so3054924qvb.0;
-        Tue, 29 Sep 2020 13:47:51 -0700 (PDT)
+        Tue, 29 Sep 2020 16:48:37 -0400
+Received: from mail-oo1-xc43.google.com (mail-oo1-xc43.google.com [IPv6:2607:f8b0:4864:20::c43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C234C061755;
+        Tue, 29 Sep 2020 13:48:37 -0700 (PDT)
+Received: by mail-oo1-xc43.google.com with SMTP id m25so1647189oou.0;
+        Tue, 29 Sep 2020 13:48:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=V3P4F4QWiuS/mi/zwuxmKRL+xPQc9F0a3ah2tRd6rKw=;
-        b=vTYMep3x7skP/KJWvFFLIt273NsL+ED/CoxGQh1gMmwkoEds7iSTZ6UShchFs72/nz
-         aZenBI+5VFJ4UgMk+QAmhiURn+oX+2EktjvIABTP9VQsIEXhjGrYo0D8h8OVBj+rlsat
-         gyvdqo0dS7pTDP1MBsAZrRB2MThsibWF8xwXd53qOg2sygdMccIOGR6/co4JzAd/lJxK
-         WNqXbGxbvjww4Z1neykbg4OTwy9+LDr1XY4P7zT208/h2U5z3mf5eOvMgdgYtFV92ql2
-         q3xx/6ble05mIBSdqPE8hhs+gq/gt5OFe5YIxeOMZI49xVOC80TZ2YGyVhCEQi9TS2MO
-         VmuA==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=6+H0ELsNtkKUqCdLMhCUZCLTr14QBm5aCtYZLFDOAdI=;
+        b=BGLlfzG/f2+kak9xtFG7UcDbAFcFiutBILBPAfSGgICbzGDcg4MNbfJgwlATYKzQsb
+         YlNabe/bG6B1m250mQEZVxynhMON01G/Q3YahAJ7oevSdyFeN741dMsU21fEsCsUXKrS
+         EBCIhB6zwcy4T9rfVUtSrCm1NG88Ux5/51q7jBRgPOZxFPk+mKYCgV5LVytKOXiV0RwD
+         jM0V29SP/WNa0lP2EWVDTJxa3QUxITfNMjtmGctLSHADGnmqSaM5tAY/wyy3PtS5ZRmk
+         WTiiZ8HcGZuiZNiWyFK39meG3ctPo/smAJMb/LLgSLAcUbidoW1yCuXlDT6R+IG/kkAZ
+         PMYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=V3P4F4QWiuS/mi/zwuxmKRL+xPQc9F0a3ah2tRd6rKw=;
-        b=h7Yp0l2nJbTPp8UJi8ZxqzdH66Ae9JrQ7SMkHZNUP+0EQtRKNmcHH1fXHYmNOSe6a7
-         W48KihfOwpjTREsdXYR7PfVm59Es7JgdG3WnUBmEPFt1+GMLLUGQap/DTP0kyvC3fJC3
-         s44lYCgPNA6eMEa746PcwmK7bxtul853DINyWska5KDTWHzarno8tLBhj+2Qn8h0ylIs
-         0sHi081eNKWhw/Q11Futg7XydXwxxBlQbfpXd2JbCqTywzMqk3ozoAsfI5re6moSHhNZ
-         tXns6N18SxpuFjb9KlTkmER+zVmTvTBZP5Da+zgn51sezL4zMOt1UZUSD/29KusscpaS
-         X+zw==
-X-Gm-Message-State: AOAM533TNWQhhDD+ztR1RRBvCdPYp7f0cbppP/VmNiqmm/CElGV+V/l7
-        /+hmIUBpInMygMi2WeSjWfQ=
-X-Google-Smtp-Source: ABdhPJwTn7VcT0oQIjGViXrIEyn0eM4IVKqOFomL08RKEFlmkD17GHRLw8UFTeGUNp2O4VUl8JBwgg==
-X-Received: by 2002:ad4:408f:: with SMTP id l15mr6401654qvp.4.1601412470319;
-        Tue, 29 Sep 2020 13:47:50 -0700 (PDT)
-Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id m18sm5964723qkg.77.2020.09.29.13.47.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Sep 2020 13:47:49 -0700 (PDT)
-Sender: Arvind Sankar <niveditas98@gmail.com>
-From:   Arvind Sankar <nivedita@alum.mit.edu>
-X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
-Date:   Tue, 29 Sep 2020 16:47:48 -0400
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        linux-sparse@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Joe Perches <joe@perches.com>
-Subject: Re: [PATCH] compiler.h: avoid escaped section names
-Message-ID: <20200929204748.GA2683578@rani.riverdale.lan>
-References: <20200929194318.548707-1-ndesaulniers@google.com>
- <20200929200801.GA2668747@rani.riverdale.lan>
- <CAKwvOdm=H3GDOPo-dbgsqH7UXzC1twz1h2Rdcidh8OXtFtCY4Q@mail.gmail.com>
- <CAKwvOdmA746irmMVAzs5pJz4XgcWMBA8jWM2Ha1Z5c6hajWzJw@mail.gmail.com>
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=6+H0ELsNtkKUqCdLMhCUZCLTr14QBm5aCtYZLFDOAdI=;
+        b=OteOYnbHVy0uLmb3O2wF/YFEAPeqLQ44Ffsnoe9vMCkTTA0An/rjSkUb7eQUV+fSW7
+         EabApsmaaQzQm4aqkqUOWjfByrt5Jgs0SQeYdBrNrAVW1oIkKhOuIM+hDwAuQX0LqOJd
+         5dNuvjJ6p1fdnlcpy29vObgzphb81pM1hm44gPgNnVI6zQddjdg/8XYCFBzkeWnkSH6K
+         2myJFxtBW9gtzorO5apmdoeteg/flgm9o/d0xRszV5ksnFtKBkgptCTbmMQHgGOdlFpW
+         bW2qi35kt2AHYGUOlgLWzz6jQbOkcynefF2H/4jTz3ZoUas0w8SAOLqQM6S5iuKgzOUP
+         lBIQ==
+X-Gm-Message-State: AOAM533iZbhlaU6NIW31glprONHCjbZJ4i6wX4xponGml+4crDFc4SzK
+        q7wxHksKU0Zbo2EwqRWgwjM=
+X-Google-Smtp-Source: ABdhPJwFFZgtDJSA0xYQlG6VEwO2G8bVEZdxREXYTOgM3lWVTX3Qs+xIPRN2axg0A1a8PzSjEvwLEA==
+X-Received: by 2002:a4a:e544:: with SMTP id s4mr5977981oot.74.1601412516918;
+        Tue, 29 Sep 2020 13:48:36 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id y23sm3186219ooj.34.2020.09.29.13.48.36
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 29 Sep 2020 13:48:36 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Tue, 29 Sep 2020 13:48:35 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
+        pavel@denx.de, stable@vger.kernel.org
+Subject: Re: [PATCH 4.9 000/121] 4.9.238-rc1 review
+Message-ID: <20200929204835.GB152716@roeck-us.net>
+References: <20200929105930.172747117@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAKwvOdmA746irmMVAzs5pJz4XgcWMBA8jWM2Ha1Z5c6hajWzJw@mail.gmail.com>
+In-Reply-To: <20200929105930.172747117@linuxfoundation.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 01:30:22PM -0700, Nick Desaulniers wrote:
-> On Tue, Sep 29, 2020 at 1:25 PM Nick Desaulniers
-> <ndesaulniers@google.com> wrote:
-> >
-> > On Tue, Sep 29, 2020 at 1:08 PM Arvind Sankar <nivedita@alum.mit.edu> wrote:
-> > >
-> > > On Tue, Sep 29, 2020 at 12:43:18PM -0700, Nick Desaulniers wrote:
-> > > > The stringification operator, `#`, in the preprocessor escapes strings.
-> > > > For example, `# "foo"` becomes `"\"foo\""`.  GCC and Clang differ in how
-> > > > they treat section names that contain \".
-> > > >
-> > > > The portable solution is to not use a string literal with the
-> > > > preprocessor stringification operator.
-> > > >
-> > > > In this case, since __section unconditionally uses the stringification
-> > > > operator, we actually want the more verbose
-> > > > __attribute__((__section__())).
-> > > >
-> > > > Link: https://bugs.llvm.org/show_bug.cgi?id=42950
-> > > > Fixes: commit e04462fb82f8 ("Compiler Attributes: remove uses of __attribute__ from compiler.h")
-> > > > Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-> > > > ---
-> > > >  include/linux/compiler.h | 2 +-
-> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > >
-> > > > diff --git a/include/linux/compiler.h b/include/linux/compiler.h
-> > > > index 92ef163a7479..ac45f6d40d39 100644
-> > > > --- a/include/linux/compiler.h
-> > > > +++ b/include/linux/compiler.h
-> > > > @@ -155,7 +155,7 @@ void ftrace_likely_update(struct ftrace_likely_data *f, int val,
-> > > >       extern typeof(sym) sym;                                 \
-> > > >       static const unsigned long __kentry_##sym               \
-> > > >       __used                                                  \
-> > > > -     __section("___kentry" "+" #sym )                        \
-> > > > +     __attribute__((__section__("___kentry+" #sym)))         \
-> > > >       = (unsigned long)&sym;
-> > > >  #endif
-> > > >
-> > > > --
-> > > > 2.28.0.709.gb0816b6eb0-goog
-> > > >
-> > >
-> > > There was this previous mini-thread:
-> > > https://lore.kernel.org/lkml/20200629205448.GA1474367@rani.riverdale.lan/
-> > > and this older one:
-> > > https://lore.kernel.org/lkml/20190904181740.GA19688@gmail.com/
-> > >
-> > > Just for my own curiosity: how does KENTRY actually get used? grep
-> > > doesn't show any hits, and the thread from 2019 was actually going to
-> > > drop it if I read it right, and also just remove stringification from
-> > > the __section macro.
-> >
-> > Oh, sorry I didn't respond on that thread; I could have sworn I ran a
-> > grep for KENTRY back then.
-> >
-> > $ git log -S KENTRY
+On Tue, Sep 29, 2020 at 12:59:04PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.9.238 release.
+> There are 121 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> Added by
-> b67067f1176df6ee727450546b58704e4b588563 ?
+> Responses should be made by Thu, 01 Oct 2020 10:59:03 +0000.
+> Anything received after that time might be too late.
 > 
 
-Yeah but nothing seems to have used it. I assume for LTO we use some
-other technique to mark functions as used?
+Build results:
+	total: 171 pass: 171 fail: 0
+Qemu test results:
+	total: 386 pass: 377 fail: 9
+Failed tests:
+	arm:xilinx-zynq-a9:multi_v7_defconfig:mem128:zynq-zc702:initrd
+	arm:xilinx-zynq-a9:multi_v7_defconfig:sd:mem128:zynq-zc702:rootfs
+	arm:xilinx-zynq-a9:multi_v7_defconfig:sd:mem128:zynq-zc706:rootfs
+	arm64:xlnx-zcu102:defconfig:smp:mem2G:initrd:xilinx/zynqmp-ep108
+	arm64:xlnx-zcu102:defconfig:smp:mem2G:sata:rootfs:xilinx/zynqmp-ep108
+	arm64:xlnx-zcu102:defconfig:nosmp:mem2G:initrd:xilinx/zynqmp-ep108
+	arm64be:xlnx-zcu102:defconfig:smp:mem2G:initrd:xilinx/zynqmp-ep108
+	arm64be:xlnx-zcu102:defconfig:smp:mem2G:sata:rootfs:xilinx/zynqmp-ep108
+	arm64be:xlnx-zcu102:defconfig:nosmp:mem2G:initrd:xilinx/zynqmp-ep108
+
+The Xilinx problems appears to be due to the following two commits.
+
+1156dd2483fd serial: uartps: Wait for tx_empty in console setup
+9a13572bf02b serial: uartps: Add a timeout to the tx empty wait
+
+I didn't try all tests, but reverting those two patches fixes the problem
+at least for arm64:xlnx-zcu102.
+
+I don't see this problem in any other stable releases.
+
+Guenter
