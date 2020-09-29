@@ -2,100 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4499B27D721
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 21:43:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 899F727D723
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 21:43:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728584AbgI2Tn0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 15:43:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57300 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727740AbgI2Tn0 (ORCPT
+        id S1728778AbgI2Tnx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 15:43:53 -0400
+Received: from mail-oi1-f195.google.com ([209.85.167.195]:41472 "EHLO
+        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728229AbgI2Tnw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 15:43:26 -0400
-Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57BFEC061755
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 12:43:24 -0700 (PDT)
-Received: by mail-pj1-x1049.google.com with SMTP id o11so4307765pjj.9
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 12:43:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=L+ZQTMyUzbfAF4MuXzem6ruOy1jTior618txOZRQrDw=;
-        b=JemOKWyuOxhCUEgCq4LBeWvD9B32/OB1HfIHGAAvckrTpq5LIvBiCbRxwut5xE9GQC
-         I/JldAYejW65SqHWDgvHvxerNRwDBLsXyMM+Dt+L5JuB5GCPpRUXw+RCKyk3Ksx5pqLW
-         AhNOAiW8tmlj1kXInhu2megrBHMi+RnlZqpSjpPjNDtHh2oN0df0yIr4VH4A9Xh+tyCU
-         1EiH/TjvUzM8GS7CRv9lSwl6qBz97BcGLKw//F+BsHJ5E93w2ancnfTwPc1cifM8wNYY
-         MTMfoOi4ezt13lJAe/mSWgyD3p5bnAIf8juKQ0G4eW+/X0JoVhbzTIjxukpW2XDQvv9r
-         O4TQ==
+        Tue, 29 Sep 2020 15:43:52 -0400
+Received: by mail-oi1-f195.google.com with SMTP id x69so6799818oia.8;
+        Tue, 29 Sep 2020 12:43:52 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=L+ZQTMyUzbfAF4MuXzem6ruOy1jTior618txOZRQrDw=;
-        b=J7l6kN7oe/LuPPxSxcsRXEpYJbps/NjBzHyF9Yy2ZEjnsrx2I9sqQxDT7p9peUlM4+
-         yNCcDLLlejxzXduZ998L2ihXZstW9WXNF0YLRl8hOHW+A1qyfNaN3XkWogjUpgquUkHb
-         4D8Zek7JpxgkH0RcK45AbBP/utb2/eDHuXTfMjiAkdXqqrcmWBlcHUYX3RzfWAWZgyHe
-         WwMCUAFl6I6diXvdQ0LYxNvRskfJnuzEX3KqTcCXjjS3bElEAuIj1WkKmy1CZWMrtJrw
-         dgZqJuQVMU15KHHoFKKCjO7bRM3k9MkjkS+sutmCTGZN+/5o3iH7PFRkiojZw9QnEa+/
-         kMfA==
-X-Gm-Message-State: AOAM531S/NTntvhMNbUmFn/BZU3p0+KnwyrecWKsZehUq4B56wtn04uA
-        AYu8h2p1yXv+VElr0iqqmTalfscJAIyKq3NmFJg=
-X-Google-Smtp-Source: ABdhPJz+UMD9185MqbkmGncxHLJ1Duw6GZjw3eYdwaS9kGJ0XQZJB5AmmUFPQqITN9rot3EA3+wKUg5wqkY7TZbMxVk=
-Sender: "ndesaulniers via sendgmr" 
-        <ndesaulniers@ndesaulniers1.mtv.corp.google.com>
-X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:f693:9fff:fef4:4d25])
- (user=ndesaulniers job=sendgmr) by 2002:a62:2c09:0:b029:142:2501:34f8 with
- SMTP id s9-20020a622c090000b0290142250134f8mr5448080pfs.81.1601408603686;
- Tue, 29 Sep 2020 12:43:23 -0700 (PDT)
-Date:   Tue, 29 Sep 2020 12:43:18 -0700
-Message-Id: <20200929194318.548707-1-ndesaulniers@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.28.0.709.gb0816b6eb0-goog
-Subject: [PATCH] compiler.h: avoid escaped section names
-From:   Nick Desaulniers <ndesaulniers@google.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        linux-sparse@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=q9gOxkBk6n8kdo+ETunaech3ZF6PmJ4G3bzk+Wi+tL8=;
+        b=fL3RTyrCRAa05iBmWE9YI+W7WFFK4Y65xWv994E94ztbevNklYRp4KbXAdMCKI35Wc
+         ClryFidFxk7E7FvZH8a2ilMQHTq/x+yTdXD6iLpQvMx7m4Bz434GcbuJKksm7n4v09do
+         Ft2udsaN4/IcTIiW5aMLNpg0ErSOGPKjkcSRNz4DIPGxJ/5rWRcQOz+wg9eRIllPMhmU
+         cDnM3/6U5Kf2/T5VyiBP6lQr483/PvG3UTElDUL9PId1TwU+jkzh4Zf7BF/POiBzzKHk
+         5J9/HTKFE8EY6vI6WFZ+CV/c7SSgxr9KNfSvDLMzQIxlYaX75IqPtGpBCu+yafsPIvs6
+         XSDg==
+X-Gm-Message-State: AOAM53355cuyujAL2uIf/bt0AGiNJxA4SvXQ6MllQaf07yJR0/qXaU8C
+        vQtq3X4+dhxLDQZ6ouKPkzEAn2d6vmEo
+X-Google-Smtp-Source: ABdhPJymhNE82M1UsXoHK3kRUrd5SWesFi3N9ZwcJhuYSr7wRsm6AdFXovh4us4f/k8ukKVnUK2jbg==
+X-Received: by 2002:aca:fd58:: with SMTP id b85mr3399954oii.20.1601408631669;
+        Tue, 29 Sep 2020 12:43:51 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id u68sm1294671otb.9.2020.09.29.12.43.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Sep 2020 12:43:51 -0700 (PDT)
+Received: (nullmailer pid 1038804 invoked by uid 1000);
+        Tue, 29 Sep 2020 19:43:50 -0000
+Date:   Tue, 29 Sep 2020 14:43:50 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc:     jason@lakedaemon.net, robh+dt@kernel.org, nm@ti.com,
+        linux-kernel@vger.kernel.org, maz@kernel.org,
+        devicetree@vger.kernel.org, t-kristo@ti.com,
+        linux-arm-kernel@lists.infradead.org, lokeshvutla@ti.com,
+        ssantosh@kernel.org, tglx@linutronix.de
+Subject: Re: [PATCH 1/2] dt-bindings: irqchip: ti, sci-inta: Update for
+ unmapped event handling
+Message-ID: <20200929194350.GA1038748@bogus>
+References: <20200928063930.12012-1-peter.ujfalusi@ti.com>
+ <20200928063930.12012-2-peter.ujfalusi@ti.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200928063930.12012-2-peter.ujfalusi@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The stringification operator, `#`, in the preprocessor escapes strings.
-For example, `# "foo"` becomes `"\"foo\""`.  GCC and Clang differ in how
-they treat section names that contain \".
+On Mon, 28 Sep 2020 09:39:29 +0300, Peter Ujfalusi wrote:
+> The new DMA architecture introduced with AM64 introduced new event types:
+> unampped events.
+> 
+> These events are mapped within INTA in contrast to other K3 devices where
+> the events with similar function was originating from the UDMAP or ringacc.
+> 
+> The ti,unmapped-event-sources should contain phandle array to the devices
+> in the system (typically DMA controllers) from where the unmapped events
+> originate.
+> 
+> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+> ---
+>  .../bindings/interrupt-controller/ti,sci-inta.yaml           | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
 
-The portable solution is to not use a string literal with the
-preprocessor stringification operator.
-
-In this case, since __section unconditionally uses the stringification
-operator, we actually want the more verbose
-__attribute__((__section__())).
-
-Link: https://bugs.llvm.org/show_bug.cgi?id=42950
-Fixes: commit e04462fb82f8 ("Compiler Attributes: remove uses of __attribute__ from compiler.h")
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
----
- include/linux/compiler.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/include/linux/compiler.h b/include/linux/compiler.h
-index 92ef163a7479..ac45f6d40d39 100644
---- a/include/linux/compiler.h
-+++ b/include/linux/compiler.h
-@@ -155,7 +155,7 @@ void ftrace_likely_update(struct ftrace_likely_data *f, int val,
- 	extern typeof(sym) sym;					\
- 	static const unsigned long __kentry_##sym		\
- 	__used							\
--	__section("___kentry" "+" #sym )			\
-+	__attribute__((__section__("___kentry+" #sym)))		\
- 	= (unsigned long)&sym;
- #endif
- 
--- 
-2.28.0.709.gb0816b6eb0-goog
-
+Reviewed-by: Rob Herring <robh@kernel.org>
