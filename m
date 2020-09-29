@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A44BC27C35E
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:06:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 396CE27C3F9
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:10:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728298AbgI2LFI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:05:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41156 "EHLO mail.kernel.org"
+        id S1728874AbgI2LKW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:10:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50826 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728198AbgI2LEy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:04:54 -0400
+        id S1728681AbgI2LKJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:10:09 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AABEB21734;
-        Tue, 29 Sep 2020 11:04:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id F220721D7F;
+        Tue, 29 Sep 2020 11:10:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601377494;
-        bh=nYibujcRQpsv8CCI/+pEmS6ylsTI/XAJNTHgYKHpAu8=;
+        s=default; t=1601377808;
+        bh=ktwXjJcoQBFeqzF3sVgSfhk9Th+iEadBnBf1ZaBJVBA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=c5ZPzm7Wh205nuNkgZZB+3UzmF6zH1CyWivdNys5jlO0kGhKS58r13d2QeYSCesIq
-         g4NmLe5Gvy7gJUj9tL0y2OwOy3a3+T8trtUPl+Vshgf1l63mPPXmM0HP5AIypbhr3J
-         xh4fpW64eakp0IXxsjvavAkeIrwWb/ZEXwZN1Wd8=
+        b=XFbuseJU17mmGfuKQrfHdh7kf7wRkrbIe83QXMGmGQ3pul5J/f4BZ1U99bUyAn+s0
+         CbGTREN9bgY1pKtVcfc6NPJHwF96RBZ8XYJN/R/cq02vzDJhHkWj3PwKapjyOekNVF
+         9ti6KZwsmlp38rartArM9an8rYT+2SdBdb3Y/QNQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Gengming Liu <l.dmxcsnsbh@gmail.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org,
+        Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 55/85] atm: fix a memory leak of vcc->user_back
-Date:   Tue, 29 Sep 2020 13:00:22 +0200
-Message-Id: <20200929105930.966110038@linuxfoundation.org>
+Subject: [PATCH 4.9 079/121] drivers: char: tlclk.c: Avoid data race between init and interrupt handler
+Date:   Tue, 29 Sep 2020 13:00:23 +0200
+Message-Id: <20200929105934.096762923@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929105928.198942536@linuxfoundation.org>
-References: <20200929105928.198942536@linuxfoundation.org>
+In-Reply-To: <20200929105930.172747117@linuxfoundation.org>
+References: <20200929105930.172747117@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,57 +43,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Cong Wang <xiyou.wangcong@gmail.com>
+From: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
 
-[ Upstream commit 8d9f73c0ad2f20e9fed5380de0a3097825859d03 ]
+[ Upstream commit 44b8fb6eaa7c3fb770bf1e37619cdb3902cca1fc ]
 
-In lec_arp_clear_vccs() only entry->vcc is freed, but vcc
-could be installed on entry->recv_vcc too in lec_vcc_added().
+After registering character device the file operation callbacks can be
+called. The open callback registers interrupt handler.
+Therefore interrupt handler can execute in parallel with rest of the init
+function. To avoid such data race initialize telclk_interrupt variable
+and struct alarm_events before registering character device.
 
-This fixes the following memory leak:
+Found by Linux Driver Verification project (linuxtesting.org).
 
-unreferenced object 0xffff8880d9266b90 (size 16):
-  comm "atm2", pid 425, jiffies 4294907980 (age 23.488s)
-  hex dump (first 16 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 6b 6b 6b a5  ............kkk.
-  backtrace:
-    [<(____ptrval____)>] kmem_cache_alloc_trace+0x10e/0x151
-    [<(____ptrval____)>] lane_ioctl+0x4b3/0x569
-    [<(____ptrval____)>] do_vcc_ioctl+0x1ea/0x236
-    [<(____ptrval____)>] svc_ioctl+0x17d/0x198
-    [<(____ptrval____)>] sock_do_ioctl+0x47/0x12f
-    [<(____ptrval____)>] sock_ioctl+0x2f9/0x322
-    [<(____ptrval____)>] vfs_ioctl+0x1e/0x2b
-    [<(____ptrval____)>] ksys_ioctl+0x61/0x80
-    [<(____ptrval____)>] __x64_sys_ioctl+0x16/0x19
-    [<(____ptrval____)>] do_syscall_64+0x57/0x65
-    [<(____ptrval____)>] entry_SYSCALL_64_after_hwframe+0x49/0xb3
-
-Cc: Gengming Liu <l.dmxcsnsbh@gmail.com>
-Signed-off-by: Cong Wang <xiyou.wangcong@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
+Link: https://lore.kernel.org/r/20200417153451.1551-1-madhuparnabhowmik10@gmail.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/atm/lec.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/char/tlclk.c | 17 ++++++++++-------
+ 1 file changed, 10 insertions(+), 7 deletions(-)
 
-diff --git a/net/atm/lec.c b/net/atm/lec.c
-index e4afac94ff158..a38680e194436 100644
---- a/net/atm/lec.c
-+++ b/net/atm/lec.c
-@@ -1290,6 +1290,12 @@ static void lec_arp_clear_vccs(struct lec_arp_table *entry)
- 		entry->vcc = NULL;
+diff --git a/drivers/char/tlclk.c b/drivers/char/tlclk.c
+index 100cd1de9939d..59e1e94d12c01 100644
+--- a/drivers/char/tlclk.c
++++ b/drivers/char/tlclk.c
+@@ -777,17 +777,21 @@ static int __init tlclk_init(void)
+ {
+ 	int ret;
+ 
++	telclk_interrupt = (inb(TLCLK_REG7) & 0x0f);
++
++	alarm_events = kzalloc( sizeof(struct tlclk_alarms), GFP_KERNEL);
++	if (!alarm_events) {
++		ret = -ENOMEM;
++		goto out1;
++	}
++
+ 	ret = register_chrdev(tlclk_major, "telco_clock", &tlclk_fops);
+ 	if (ret < 0) {
+ 		printk(KERN_ERR "tlclk: can't get major %d.\n", tlclk_major);
++		kfree(alarm_events);
+ 		return ret;
  	}
- 	if (entry->recv_vcc) {
-+		struct atm_vcc *vcc = entry->recv_vcc;
-+		struct lec_vcc_priv *vpriv = LEC_VCC_PRIV(vcc);
-+
-+		kfree(vpriv);
-+		vcc->user_back = NULL;
-+
- 		entry->recv_vcc->push = entry->old_recv_push;
- 		vcc_release_async(entry->recv_vcc, -EPIPE);
- 		entry->recv_vcc = NULL;
+ 	tlclk_major = ret;
+-	alarm_events = kzalloc( sizeof(struct tlclk_alarms), GFP_KERNEL);
+-	if (!alarm_events) {
+-		ret = -ENOMEM;
+-		goto out1;
+-	}
+ 
+ 	/* Read telecom clock IRQ number (Set by BIOS) */
+ 	if (!request_region(TLCLK_BASE, 8, "telco_clock")) {
+@@ -796,7 +800,6 @@ static int __init tlclk_init(void)
+ 		ret = -EBUSY;
+ 		goto out2;
+ 	}
+-	telclk_interrupt = (inb(TLCLK_REG7) & 0x0f);
+ 
+ 	if (0x0F == telclk_interrupt ) { /* not MCPBL0010 ? */
+ 		printk(KERN_ERR "telclk_interrupt = 0x%x non-mcpbl0010 hw.\n",
+@@ -837,8 +840,8 @@ out3:
+ 	release_region(TLCLK_BASE, 8);
+ out2:
+ 	kfree(alarm_events);
+-out1:
+ 	unregister_chrdev(tlclk_major, "telco_clock");
++out1:
+ 	return ret;
+ }
+ 
 -- 
 2.25.1
 
