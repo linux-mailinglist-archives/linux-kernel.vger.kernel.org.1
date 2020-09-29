@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EA1427CB80
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:29:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 858AF27C85D
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:02:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732538AbgI2M2O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 08:28:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49816 "EHLO mail.kernel.org"
+        id S1731705AbgI2MBb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 08:01:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36570 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729534AbgI2LdA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:33:00 -0400
+        id S1730555AbgI2Lkn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:40:43 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5D53823B2A;
-        Tue, 29 Sep 2020 11:25:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4584F221EC;
+        Tue, 29 Sep 2020 11:40:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601378750;
-        bh=i2k6psKD+dGUpLw0J0oosq21og7nGX/I57WbGKyndI4=;
+        s=default; t=1601379626;
+        bh=KlyB1V7trltBZqapT92xp/ft/alNfcd/5PzlcK1on1w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ulJ8zbnhnpkifbdPrCE0jGi0+PLARS1fjn994MC9K9Tn54mnBH9567Z14RzeoMFDe
-         rcgVtrK4tdzzT5VeDeq2o/e5EZY4HH31uuENltA7juQxrQLt7PXXG0iiOF00bOkNI5
-         lYEmkwP8gwiTQS/JhDJtsfooQFBZMaa/S3d2ldcg=
+        b=OpwZv2q24KWOknWZIGOhYC++iyq6eYg9BQtG0zTz/K9k2Q2HDBqa+3FDJOu8eoCyl
+         1Rl7NInMMevqJcwTgMDAsN7KH25nsPx5JT9FvBSKBnQxYVYPuifbmswI3Z5pgqi5l2
+         HzuXZGmz/veUfkXIoKpIXtoAmDf1aAyleJzRgPvA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Pratik Rajesh Sampat <psampat@linux.ibm.com>,
-        Daniel Axtens <dja@axtens.net>,
-        Michael Ellerman <mpe@ellerman.id.au>,
+        stable@vger.kernel.org, Aya Levin <ayal@mellanox.com>,
+        Moshe Shemesh <moshe@mellanox.com>,
+        Jiri Pirko <jiri@mellanox.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 125/245] cpufreq: powernv: Fix frame-size-overflow in powernv_cpufreq_work_fn
-Date:   Tue, 29 Sep 2020 12:59:36 +0200
-Message-Id: <20200929105953.071665889@linuxfoundation.org>
+Subject: [PATCH 5.4 246/388] devlink: Fix reporters recovery condition
+Date:   Tue, 29 Sep 2020 12:59:37 +0200
+Message-Id: <20200929110022.389390315@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929105946.978650816@linuxfoundation.org>
-References: <20200929105946.978650816@linuxfoundation.org>
+In-Reply-To: <20200929110010.467764689@linuxfoundation.org>
+References: <20200929110010.467764689@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,55 +45,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pratik Rajesh Sampat <psampat@linux.ibm.com>
+From: Aya Levin <ayal@mellanox.com>
 
-[ Upstream commit d95fe371ecd28901f11256c610b988ed44e36ee2 ]
+[ Upstream commit bea0c5c942d3b4e9fb6ed45f6a7de74c6b112437 ]
 
-The patch avoids allocating cpufreq_policy on stack hence fixing frame
-size overflow in 'powernv_cpufreq_work_fn'
+Devlink health core conditions the reporter's recovery with the
+expiration of the grace period. This is not relevant for the first
+recovery. Explicitly demand that the grace period will only apply to
+recoveries other than the first.
 
-Fixes: 227942809b52 ("cpufreq: powernv: Restore cpu frequency to policy->cur on unthrottling")
-Signed-off-by: Pratik Rajesh Sampat <psampat@linux.ibm.com>
-Reviewed-by: Daniel Axtens <dja@axtens.net>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20200316135743.57735-1-psampat@linux.ibm.com
+Fixes: c8e1da0bf923 ("devlink: Add health report functionality")
+Signed-off-by: Aya Levin <ayal@mellanox.com>
+Reviewed-by: Moshe Shemesh <moshe@mellanox.com>
+Reviewed-by: Jiri Pirko <jiri@mellanox.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/cpufreq/powernv-cpufreq.c | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
+ net/core/devlink.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/cpufreq/powernv-cpufreq.c b/drivers/cpufreq/powernv-cpufreq.c
-index 687c92ef76440..79942f7057576 100644
---- a/drivers/cpufreq/powernv-cpufreq.c
-+++ b/drivers/cpufreq/powernv-cpufreq.c
-@@ -903,6 +903,7 @@ static struct notifier_block powernv_cpufreq_reboot_nb = {
- void powernv_cpufreq_work_fn(struct work_struct *work)
+diff --git a/net/core/devlink.c b/net/core/devlink.c
+index 5667cae57072f..26c8993a17ae0 100644
+--- a/net/core/devlink.c
++++ b/net/core/devlink.c
+@@ -4823,6 +4823,7 @@ int devlink_health_report(struct devlink_health_reporter *reporter,
  {
- 	struct chip *chip = container_of(work, struct chip, throttle);
-+	struct cpufreq_policy *policy;
- 	unsigned int cpu;
- 	cpumask_t mask;
+ 	enum devlink_health_reporter_state prev_health_state;
+ 	struct devlink *devlink = reporter->devlink;
++	unsigned long recover_ts_threshold;
  
-@@ -917,12 +918,14 @@ void powernv_cpufreq_work_fn(struct work_struct *work)
- 	chip->restore = false;
- 	for_each_cpu(cpu, &mask) {
- 		int index;
--		struct cpufreq_policy policy;
+ 	/* write a log message of the current error */
+ 	WARN_ON(!msg);
+@@ -4832,10 +4833,12 @@ int devlink_health_report(struct devlink_health_reporter *reporter,
+ 	reporter->health_state = DEVLINK_HEALTH_REPORTER_STATE_ERROR;
  
--		cpufreq_get_policy(&policy, cpu);
--		index = cpufreq_table_find_index_c(&policy, policy.cur);
--		powernv_cpufreq_target_index(&policy, index);
--		cpumask_andnot(&mask, &mask, policy.cpus);
-+		policy = cpufreq_cpu_get(cpu);
-+		if (!policy)
-+			continue;
-+		index = cpufreq_table_find_index_c(policy, policy->cur);
-+		powernv_cpufreq_target_index(policy, index);
-+		cpumask_andnot(&mask, &mask, policy->cpus);
-+		cpufreq_cpu_put(policy);
- 	}
- out:
- 	put_online_cpus();
+ 	/* abort if the previous error wasn't recovered */
++	recover_ts_threshold = reporter->last_recovery_ts +
++			       msecs_to_jiffies(reporter->graceful_period);
+ 	if (reporter->auto_recover &&
+ 	    (prev_health_state != DEVLINK_HEALTH_REPORTER_STATE_HEALTHY ||
+-	     jiffies - reporter->last_recovery_ts <
+-	     msecs_to_jiffies(reporter->graceful_period))) {
++	     (reporter->last_recovery_ts && reporter->recovery_count &&
++	      time_is_after_jiffies(recover_ts_threshold)))) {
+ 		trace_devlink_health_recover_aborted(devlink,
+ 						     reporter->ops->name,
+ 						     reporter->health_state,
 -- 
 2.25.1
 
