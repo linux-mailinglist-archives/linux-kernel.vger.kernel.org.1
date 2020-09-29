@@ -2,98 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76DC227D23D
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 17:13:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2A5727D243
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 17:13:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731502AbgI2PNC convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 29 Sep 2020 11:13:02 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:37684 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725710AbgI2PNC (ORCPT
+        id S1731412AbgI2PN4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 11:13:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43902 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725710AbgI2PNz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 11:13:02 -0400
-Received: from mail-pg1-f198.google.com ([209.85.215.198])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1kNHJM-0005XX-Kw
-        for linux-kernel@vger.kernel.org; Tue, 29 Sep 2020 15:13:00 +0000
-Received: by mail-pg1-f198.google.com with SMTP id c26so3349950pgl.9
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 08:13:00 -0700 (PDT)
+        Tue, 29 Sep 2020 11:13:55 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF85FC061755
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 08:13:53 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id nw23so15563543ejb.4
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 08:13:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/xLPzAomu6d8D04kvDBrtRQzHyWgQisYCMsYSahXBt0=;
+        b=RfGxzvPa9jCfuxV2cMVQaoyEKnnWrbtl/1rWexSnmjmNpneYivCbMHg7oz+1AMmKDV
+         VqmBMVyQOvYLLFZYm2bN1i0auC7pQIO1/BXbW83aPOBwleQhSyEO/IGJ1pK1v41tnUuG
+         aI6FGNuUO0tO/Wx1n05/uhPGyB7dXp5kDaiaBpV7/9Ky3WRPtGqX9YjjxWHSxJNqMbXd
+         3GwEjYOwDfEqt1+zwC40Hc4JFEFQ7uygD/faUsTV4DKJ+3FnCj1Fs7HRFOK2FLXWZVhS
+         AxbRyYwj0HgcAEse+jmaHLrAs/LWQRyb8JCyq/sgGxc3qbeRJYuoGe9ZRu0kfKx1Ak4S
+         +Nag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=chf6sW9f/7H17vcG0LBXg02B+gAENr3JISCPSgXJJLo=;
-        b=Ge2wyhiZytnAL3miE25QMrMEJ+RId6HFq81UatWLBueostPbf+VnSNIKx4mfOUHvcX
-         E+xhU02xCBKGx8Z5v6hZyYofH4EyJfMwrfk4NjUGZqBQWCeS1AmfEsnlPwaSEqtNSOcl
-         LNdPn4TtiTwhd3DKangHnfHOz2khR0QNjnNxrquGy+kXpau0+mrLlkejgDLWD6NEUezL
-         RX9TzZOQOWBnV35z0jJy2obRlLZbjy1UG/NaUiKYDS06ClmHRiwbE56RQmQ/tECE7YEe
-         dt+QvfPgZvStPkd3ryxZwt7OC4UyqcFM8QgeHA1SaY0dVAiVabT6Mmm83eZuLA/wuHN4
-         0xLA==
-X-Gm-Message-State: AOAM530XnCFWO0eztdbgbYSnbces27HOXdlIQsjJXt26dE99N932S5er
-        Bd4gOp+TD1OWSBf15Cc5TGjRF605yKVUZsmMVHgzdER7m4zYCDBjxcUP8Elt+fE2hNmJemnIEsR
-        +Vriw18rVDqRe2gmev0nZh/BFB8UvtGX1Vy5Qau9z8g==
-X-Received: by 2002:a62:cd46:0:b029:150:ddeb:646b with SMTP id o67-20020a62cd460000b0290150ddeb646bmr4303293pfg.27.1601392378319;
-        Tue, 29 Sep 2020 08:12:58 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy0/olQ5yxz8/5kXGaM2e+jOh6gkWSTzzcliWV4N9POlON3DttDBggKkxhU1hGl3+7ZDtOILg==
-X-Received: by 2002:a62:cd46:0:b029:150:ddeb:646b with SMTP id o67-20020a62cd460000b0290150ddeb646bmr4303259pfg.27.1601392377925;
-        Tue, 29 Sep 2020 08:12:57 -0700 (PDT)
-Received: from [192.168.1.208] (220-133-187-190.HINET-IP.hinet.net. [220.133.187.190])
-        by smtp.gmail.com with ESMTPSA id f4sm5595689pfa.125.2020.09.29.08.12.55
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 29 Sep 2020 08:12:57 -0700 (PDT)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
-Subject: Re: [Intel-wired-lan] [PATCH v4] e1000e: Increase polling timeout on
- MDIC ready bit
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-In-Reply-To: <f8bd6a07276a4289b102118a132bd793@AcuMS.aculab.com>
-Date:   Tue, 29 Sep 2020 23:12:54 +0800
-Cc:     "Neftin, Sasha" <sasha.neftin@intel.com>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:INTEL ETHERNET DRIVERS" 
-        <intel-wired-lan@lists.osuosl.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Lifshits, Vitaly" <vitaly.lifshits@intel.com>,
-        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>
-Content-Transfer-Encoding: 8BIT
-Message-Id: <EF57895C-2B0D-4EE1-9A47-E3E07C04C9FB@canonical.com>
-References: <20200924164542.19906-1-kai.heng.feng@canonical.com>
- <20200928083658.8567-1-kai.heng.feng@canonical.com>
- <469c71d5-93ac-e6c7-f85c-342b0df78a45@intel.com>
- <30761C6B-28B8-4464-8615-55EF3E090E07@canonical.com>
- <345fffcd-e9f1-5881-fba1-d7313876e943@intel.com>
- <3DA721C5-F656-4085-9113-A0407CDF90FB@canonical.com>
- <f8bd6a07276a4289b102118a132bd793@AcuMS.aculab.com>
-To:     David Laight <David.Laight@ACULAB.COM>
-X-Mailer: Apple Mail (2.3608.120.23.2.4)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/xLPzAomu6d8D04kvDBrtRQzHyWgQisYCMsYSahXBt0=;
+        b=EAPwgeAark8t9PpbCBMIdWuylrFDwdBE8N5ZYzI/b8n5a9XW1vXii9ApIXruEDnTR0
+         VbQYY00W6B5Pgo3Xo4PhcgOcfYpWa6zL0SSkBPG5Au3UOCID5vtJza6+SixvJ7j7C4NN
+         VQFq7s5I2UPqbWVUlC0aZEJbOIKjznS8jcDgfiabLueDES23YmP3oHJTeF6xJtYGTk+Y
+         J6TJQmns5bGhWXNJT5SIDqCgn1sRyLggZJ5Lvugb6ejrGTXIjf6TR6oj66MZs5cNw33j
+         JlPu6Y3GgxmrHWXDp7aHglllHXSAp+XeCXbFOLNAycO+TlqF8KqNksmE1nK6xfuOC3vX
+         IaOg==
+X-Gm-Message-State: AOAM5317U3DsC+6Fx4EL9ms8wOplSdsiYFtPsRezpYwOyOVCc/kxuZiB
+        RFKDn976tnQQLd9SJ4cGx6MNNVz0b06XyNH7Q3eL0id+gA4=
+X-Google-Smtp-Source: ABdhPJwjTE/Z9dJqWNhprP87IkK1vkSW7TrtzWliVOx0vgTwGiPAqNxOn+Wf46e6bnCbqgFwyw9GtSr4dbIiBPGRkxQ=
+X-Received: by 2002:a17:906:49c6:: with SMTP id w6mr4224530ejv.445.1601392432582;
+ Tue, 29 Sep 2020 08:13:52 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200928002807.12146-1-warthog618@gmail.com>
+In-Reply-To: <20200928002807.12146-1-warthog618@gmail.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Tue, 29 Sep 2020 17:13:42 +0200
+Message-ID: <CAMpxmJVV5bCVAbC9WPsZwXqvYvnPLHAqEqky8w-iuPO4pDgeAQ@mail.gmail.com>
+Subject: Re: [PATCH v10 00/20] gpio: cdev: add uAPI v2
+To:     Kent Gibson <warthog618@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Sep 28, 2020 at 2:28 AM Kent Gibson <warthog618@gmail.com> wrote:
+>
+> This patchset defines and implements a new version of the
+> GPIO CDEV uAPI to address existing 32/64-bit alignment issues, add
+> support for debounce, event sequence numbers, and allow for requested
+> lines with different configurations.
+> It provides some future proofing by adding optional configuration fields
+> and padding reserved for future use.
+>
+> The series can be partitioned into three blocks; the first two patches
+> are minor fixes that impact later patches, the next eleven contain the
+> v2 uAPI definition and implementation, and the final seven port the GPIO
+> tools to the v2 uAPI and extend them to use new uAPI features.
+>
+> The more complicated patches include their own commentary where
+> appropriate.
+>
+> Cheers,
+> Kent.
+>
 
+This series looks great now. Unless there are new objections I intend
+on picking it up tomorrow.
 
-> On Sep 29, 2020, at 23:11, David Laight <David.Laight@ACULAB.COM> wrote:
-> 
->> Hope we finally have proper ME support under Linux?
-> 
-> How about a way to disable it.
-
-This will do, too :)
-
-Kai-Heng
-
-> 
-> 	David
-> 
-> -
-> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-> Registration No: 1397386 (Wales)
-> 
-
+Bartosz
