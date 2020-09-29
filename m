@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EF3427C477
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:14:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D896C27C474
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:14:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728945AbgI2LOR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:14:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55556 "EHLO mail.kernel.org"
+        id S1728773AbgI2LON (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:14:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55620 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728302AbgI2LNR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:13:17 -0400
+        id S1729352AbgI2LNV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:13:21 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DFFFB20848;
-        Tue, 29 Sep 2020 11:13:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BFB1F2158C;
+        Tue, 29 Sep 2020 11:13:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601377997;
-        bh=7SEeLCj5yQrMSigHSE5afT9jiaFPEXd9v2iN4C8SSbw=;
+        s=default; t=1601378000;
+        bh=uRBqL4UMxaM/h/T1q8XpgguM/2SBpklTv/zEIpHhygs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iDiedx9jDoarEiYXv4nu0J+NJnM6Bx7YmPj07UKdc/XIF9EpPkMtSczxoRRMcwSFG
-         16gon/pcqtPwDSQHYHRRXyH2IubC+fJaskvUg6bbMhil7G1ul2xJjobT8BcVMmw2kK
-         aRBpz32Y295/hdrT79+LHzjjgsapOFLOud9Y/yaQ=
+        b=aaLdLT40CdHktdZ4m3QhCT6n6szLAF4vlj+93VmQJqnv2IzqzKNyBTHY5NEfCMn3q
+         q7xVgIgILOiR7NaWxmTNvmX1gj8QY8Pb0z10dNAteSk4tRketjeBo2AR5k/ioaWh0a
+         63wbXUfZUQfEsOEM2/ju4t8IibcOVegLu1PELw3M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Wei Wang <weiwan@google.com>,
-        Eric Dumazet <edumazet@google.com>,
+        stable@vger.kernel.org,
+        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.14 008/166] ip: fix tos reflection in ack and reset packets
-Date:   Tue, 29 Sep 2020 12:58:40 +0200
-Message-Id: <20200929105935.611172942@linuxfoundation.org>
+Subject: [PATCH 4.14 009/166] net: ipv6: fix kconfig dependency warning for IPV6_SEG6_HMAC
+Date:   Tue, 29 Sep 2020 12:58:41 +0200
+Message-Id: <20200929105935.662502376@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200929105935.184737111@linuxfoundation.org>
 References: <20200929105935.184737111@linuxfoundation.org>
@@ -43,43 +43,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wei Wang <weiwan@google.com>
+From: Necip Fazil Yildiran <fazilyildiran@gmail.com>
 
-[ Upstream commit ba9e04a7ddf4f22a10e05bf9403db6b97743c7bf ]
+[ Upstream commit db7cd91a4be15e1485d6b58c6afc8761c59c4efb ]
 
-Currently, in tcp_v4_reqsk_send_ack() and tcp_v4_send_reset(), we
-echo the TOS value of the received packets in the response.
-However, we do not want to echo the lower 2 ECN bits in accordance
-with RFC 3168 6.1.5 robustness principles.
+When IPV6_SEG6_HMAC is enabled and CRYPTO is disabled, it results in the
+following Kbuild warning:
 
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+WARNING: unmet direct dependencies detected for CRYPTO_HMAC
+  Depends on [n]: CRYPTO [=n]
+  Selected by [y]:
+  - IPV6_SEG6_HMAC [=y] && NET [=y] && INET [=y] && IPV6 [=y]
 
-Signed-off-by: Wei Wang <weiwan@google.com>
-Signed-off-by: Eric Dumazet <edumazet@google.com>
+WARNING: unmet direct dependencies detected for CRYPTO_SHA1
+  Depends on [n]: CRYPTO [=n]
+  Selected by [y]:
+  - IPV6_SEG6_HMAC [=y] && NET [=y] && INET [=y] && IPV6 [=y]
+
+WARNING: unmet direct dependencies detected for CRYPTO_SHA256
+  Depends on [n]: CRYPTO [=n]
+  Selected by [y]:
+  - IPV6_SEG6_HMAC [=y] && NET [=y] && INET [=y] && IPV6 [=y]
+
+The reason is that IPV6_SEG6_HMAC selects CRYPTO_HMAC, CRYPTO_SHA1, and
+CRYPTO_SHA256 without depending on or selecting CRYPTO while those configs
+are subordinate to CRYPTO.
+
+Honor the kconfig menu hierarchy to remove kconfig dependency warnings.
+
+Fixes: bf355b8d2c30 ("ipv6: sr: add core files for SR HMAC support")
+Signed-off-by: Necip Fazil Yildiran <fazilyildiran@gmail.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/ipv4/ip_output.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ net/ipv6/Kconfig |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/net/ipv4/ip_output.c
-+++ b/net/ipv4/ip_output.c
-@@ -73,6 +73,7 @@
- #include <net/icmp.h>
- #include <net/checksum.h>
- #include <net/inetpeer.h>
-+#include <net/inet_ecn.h>
- #include <net/lwtunnel.h>
- #include <linux/bpf-cgroup.h>
- #include <linux/igmp.h>
-@@ -1562,7 +1563,7 @@ void ip_send_unicast_reply(struct sock *
- 	if (IS_ERR(rt))
- 		return;
- 
--	inet_sk(sk)->tos = arg->tos;
-+	inet_sk(sk)->tos = arg->tos & ~INET_ECN_MASK;
- 
- 	sk->sk_priority = skb->priority;
- 	sk->sk_protocol = ip_hdr(skb)->protocol;
+--- a/net/ipv6/Kconfig
++++ b/net/ipv6/Kconfig
+@@ -321,6 +321,7 @@ config IPV6_SEG6_LWTUNNEL
+ config IPV6_SEG6_HMAC
+ 	bool "IPv6: Segment Routing HMAC support"
+ 	depends on IPV6
++	select CRYPTO
+ 	select CRYPTO_HMAC
+ 	select CRYPTO_SHA1
+ 	select CRYPTO_SHA256
 
 
