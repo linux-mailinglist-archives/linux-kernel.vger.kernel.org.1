@@ -2,93 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1978227D1AC
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 16:44:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FDC927D166
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 16:40:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730976AbgI2Oov (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 10:44:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48582 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728198AbgI2Oov (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 10:44:51 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DD3862074B;
-        Tue, 29 Sep 2020 14:44:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601390690;
-        bh=KuUDPd07ZUCkGwOTQxUQXbDwoFA7723w2z2hG3+G5dE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mG0iIRKcG/3qHSx04Kyiweul3cr9HfSLJuUDWUUTspZlYmtugRaqomEltIKJhEAUV
-         ZtswAEqOg8qCq+CRsj5HQ4X11TyB7koAi3a1Oe+oq030qjKmW3d433/iK2QiOYAmnE
-         NB2W493ZjzbXdIZ10UnmlkU5wPbB1yEg4wk/BIdI=
-Date:   Tue, 29 Sep 2020 15:43:51 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc:     Serge Semin <fancer.lancer@gmail.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
-        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        "wuxu . wu" <wuxu.wu@huawei.com>, Feng Tang <feng.tang@intel.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-spi@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 00/30] spi: dw: Add full Baikal-T1 SPI Controllers support
-Message-ID: <20200929144351.GH4799@sirena.org.uk>
-References: <20200920112914.26501-1-Sergey.Semin@baikalelectronics.ru>
+        id S1730274AbgI2Oj6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 10:39:58 -0400
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:27462 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728446AbgI2Oj6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 10:39:58 -0400
+Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08TEbS09004451;
+        Tue, 29 Sep 2020 10:39:55 -0400
+Received: from nwd2mta4.analog.com ([137.71.173.58])
+        by mx0a-00128a01.pphosted.com with ESMTP id 33t2j4kefw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 29 Sep 2020 10:39:55 -0400
+Received: from SCSQMBX11.ad.analog.com (scsqmbx11.ad.analog.com [10.77.17.10])
+        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 08TEdrbf041842
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
+        Tue, 29 Sep 2020 10:39:53 -0400
+Received: from SCSQCASHYB7.ad.analog.com (10.77.17.133) by
+ SCSQMBX11.ad.analog.com (10.77.17.10) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Tue, 29 Sep 2020 07:39:45 -0700
+Received: from SCSQMBX11.ad.analog.com (10.77.17.10) by
+ SCSQCASHYB7.ad.analog.com (10.77.17.133) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Tue, 29 Sep 2020 07:39:45 -0700
+Received: from zeus.spd.analog.com (10.66.68.11) by SCSQMBX11.ad.analog.com
+ (10.77.17.10) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
+ Transport; Tue, 29 Sep 2020 07:39:45 -0700
+Received: from localhost.localdomain ([10.48.65.12])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 08TEdkbr028450;
+        Tue, 29 Sep 2020 10:39:46 -0400
+From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
+To:     <linux-clk@vger.kernel.org>, <linux-fpga@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <mturquette@baylibre.com>, <sboyd@kernel.org>, <mdf@kernel.org>,
+        <ardeleanalex@gmail.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>
+Subject: [PATCH v4 0/7] clk: axi-clk-gen: misc updates to the driver
+Date:   Tue, 29 Sep 2020 17:44:02 +0300
+Message-ID: <20200929144417.89816-1-alexandru.ardelean@analog.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="AzNpbZlgThVzWita"
-Content-Disposition: inline
-In-Reply-To: <20200920112914.26501-1-Sergey.Semin@baikalelectronics.ru>
-X-Cookie: I left my WALLET in the BATHROOM!!
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+X-ADIRoutedOnPrem: True
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-29_07:2020-09-29,2020-09-29 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ suspectscore=0 priorityscore=1501 phishscore=0 spamscore=0 malwarescore=0
+ bulkscore=0 clxscore=1015 mlxlogscore=999 mlxscore=0 adultscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009290130
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+These patches synchronize the driver with the current state in the
+Analog Devices Linux tree:
+  https://github.com/analogdevicesinc/linux/
 
---AzNpbZlgThVzWita
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+They have been in the tree for about 2-3, so they did receive some
+testing.
 
-On Sun, Sep 20, 2020 at 02:28:44PM +0300, Serge Semin wrote:
+Highlights are:
+* Add support for fractional dividers (Lars-Peter Clausen)
+* Enable support for ZynqMP (UltraScale) (Dragos Bogdan)
+* Support frequency limits for ZynqMP (Mathias Tausen)
+  - And continued by Mircea Caprioru, to read them from the IP cores
 
-> First two patches are just cleanups to simplify the DW APB SSI device
-> initialization a bit. We suggest to discard the IRQ threshold macro as
-> unused and use a ternary operator to initialize the set_cs callback
-> instead of assigning-and-updating it.
+Changelog v3 -> v4:
+* added patch 'clk: axi-clkgen: wrap limits in a struct and keep copy on the state object'
+  this resets the rest of the patch-set to adapt to adjusting the limits
+  on per-clock instance versus being global to the entire driver
+  Recommended-by: Moritz Fischer <mdf@kernel.org>
+    https://lore.kernel.org/linux-clk/20200924142108.GA60306@archbook/
 
-> Then we've discovered that the n_bytes field of the driver private data is
-> used by the DW APB SSI IRQ handler, which requires it to be initialized
+Changelog v2 -> v3:
+* https://lore.kernel.org/linux-clk/20200924065012.59605-1-alexandru.ardelean@analog.com/
+* for patch 'include: fpga: adi-axi-common.h: add definitions for supported FPGAs'
+  - fix whitespace found by checkpatch
+  - add 'Acked-by: Moritz Fischer <mdf@kernel.org>'
 
-This is a *huge* patch series which is a bit unweildy to review
-(especially given the other 10+ patch series you sent at the same time),
-once you start getting over 10 patches it's time to pay attention to
-series length and the fact that you're outlining a bunch of tangentially
-related areas which could have been split out easily enough.  It is much
-better to send smaller sets of patches at once, or if you're sending a
-lot then to split them into smaller serieses.  This will tend to make
-the review more approachable which will in turn tend to make things go
-faster, people are much more likely to put off going through a huge
-series.
+Changelog v1 -> v2:
+- https://lore.kernel.org/linux-clk/20200804110658.40911-1-alexandru.ardelean@analog.com/
+- in patch 'include: fpga: adi-axi-common.h: add definitions for supported FPGAs'
+  * converted enums to #define
+  * added Intel FPGA definitions
+  * added Device-Package definitions
+  * added INTEL / XILINX in the define names
+ definitions according to:
+ https://github.com/analogdevicesinc/hdl/blob/4e438261aa319b1dda4c593c155218a93b1d869b/library/scripts/adi_intel_device_info_enc.tcl
+ https://github.com/analogdevicesinc/hdl/blob/4e438261aa319b1dda4c593c155218a93b1d869b/library/scripts/adi_xilinx_device_info_enc.tcl
 
---AzNpbZlgThVzWita
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
+Alexandru Ardelean (1):
+  clk: axi-clkgen: wrap limits in a struct and keep copy on the state
+    object
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl9zSCYACgkQJNaLcl1U
-h9CxCwf8CbZT+iN4nAUHqLiTecG9wg4ekQiosiG6okukMMyarbUv3HtPDCDGxSI1
-paDuBbmPJuzmTZ7mpmy/lyLadEYw4ZPssvOxKwxB6FdrUnr0cZ49RA16246Yml0R
-Mc7zoRnib5+CjaMF9PAZhLm9tIKj9nTmcGzya1UbqSrBjVh1Zbo7l0Px3vXVadxd
-2CqvUNNGVC29zXmVary9mv26696nbC/gixmvv8kjzI0PuY/0/PVkFnuqUxtPYfbf
-MRW6fQ+rX3mB5ymXU94SpuDP3pMF1JZpWlhlBlUNdAXUAm5aOu4GMdRezPcXTXq4
-VQUu9FKH8Flq7PMWXO0wRPHcc8X54A==
-=eyc/
------END PGP SIGNATURE-----
+Dragos Bogdan (1):
+  clk: axi-clkgen: add support for ZynqMP (UltraScale)
 
---AzNpbZlgThVzWita--
+Lars-Peter Clausen (2):
+  clk: axi-clkgen: Add support for fractional dividers
+  clk: axi-clkgen: Set power bits for fractional mode
+
+Mathias Tausen (1):
+  clk: axi-clkgen: Respect ZYNQMP PFD/VCO frequency limits
+
+Mircea Caprioru (2):
+  include: fpga: adi-axi-common.h: add definitions for supported FPGAs
+  clk: axi-clkgen: Add support for FPGA info
+
+ drivers/clk/Kconfig                 |   2 +-
+ drivers/clk/clk-axi-clkgen.c        | 283 ++++++++++++++++++++++------
+ include/linux/fpga/adi-axi-common.h | 103 ++++++++++
+ 3 files changed, 326 insertions(+), 62 deletions(-)
+
+-- 
+2.17.1
+
