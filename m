@@ -2,75 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2968527D91D
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 22:43:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A91227D923
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 22:43:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729235AbgI2UmH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 16:42:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38202 "EHLO
+        id S1729348AbgI2UnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 16:43:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728907AbgI2UmH (ORCPT
+        with ESMTP id S1727740AbgI2UnA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 16:42:07 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89AAEC061755
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 13:42:06 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id b19so5138867lji.11
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 13:42:06 -0700 (PDT)
+        Tue, 29 Sep 2020 16:43:00 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 758C8C0613D1
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 13:43:00 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id t10so6957992wrv.1
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 13:43:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=h3Ga+GXaHWqM1SSiAmGnTzDtW87dgB5SS1X2AtSoYXA=;
-        b=w3/iDm2PFW3fbDKMGpQOBaH2T4oOcHIPglQUCvY49mVadEh7l3xX9LxvvAFVgEbOfx
-         A/kw9hjH+4pwryFRBXDgHY4DXDO9nhVP5elFWl0TfKEeKKVDHGWDq8kbQKE5wljX+UAx
-         6SfF5PQgc/mvTGmOBg91VkdgfSIbFeCaPJV4WqQsJx1gaCsghyMjXhgiZq7/eAyDdZhi
-         qw/zGDx4zcThur7wlLxbfu6xPVryI3FdgeQJR27f+4K+jbdA2RozGLBwkWdTysKYFREg
-         vD2SoT9tR2TqsDJ/6+fMt9Zq8drS387LO+OGB2nAifcaRoZs6Eps6nMM3Z15k92WetkA
-         6siA==
+        d=smile-fr.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yxgmFTxkf8Q7snkiRmdFU3li5pqox2TGA0gnwiFInxo=;
+        b=UgbWx+QLzIaXuWGj5Ky/C2Dh/s+6ClhTiU6nRCRCCG20Ucbaw5PclR+ti4GKk1j6hL
+         NofBXmiD6yIiLMFyhMH3RjbPc+RNM/1FW/q6az8FGjQHm3++YOp1Pv+HcKrfVcU9/F2A
+         TF0cltucY5XzKDSvLpA+BNJB7ZmkaYuBI6ihPuSvYpaGZiOYHrhikW9LlzVLUQq/O7rx
+         rwWQZvd0t65zBXomYpYV0yU+Dv+qRr8+/cEAwaGzelE5JwgYRiPhYqJAbVkp3tdl1zz9
+         n2XQeXgqPY+KipSXI1az0+ZSFubPhOWpaAMOiIKE+5UKO6YpC4c+0jZqGGDkj931pc+j
+         oxHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=h3Ga+GXaHWqM1SSiAmGnTzDtW87dgB5SS1X2AtSoYXA=;
-        b=OQoZY4uXdlZJ4H/Jv/0okY4hoUfw/TMExOuOQdk6nNsYTI4yYa5Y7MGX1Ldn1sFuaf
-         FrP1XB2PlKITD3pJ6W4iWuvh9gvSp2+1SV8ZIsiaKUOCYgNZBZl3VmiViQMdnhITYPIy
-         SJ1aHKIm0uKsYIFBqesEVrKWPyxYkEHKNpku0CJr+MetPd++F4XO4UpAZQKj+bTL6bA2
-         HD5aWLEt05jBb/eDEC/tj8zq3v5V35g02M9b0u3rEvnQm+3iWJWaDjsgI0yr70QPCFeB
-         mhTjOMTYRWoQieK2mCIgIqHh8YBEBfayKn6XRGPG7x0dXU1hE/TyAlE0RAuAb/9IC+fB
-         6Fhg==
-X-Gm-Message-State: AOAM5318e89/h8MYpGBSziwQZ/I4lq887U2Ebw1R1tLXFwzN45znJkN1
-        RBFIH+4AXsmUrOoRcTfhhN1ZM9ktK4zCin1jK9/PKw==
-X-Google-Smtp-Source: ABdhPJxlHO8fgKKXLbQPn+RNsP1AA22vJBqXR27uo8CmPTrI41l9k6j6HehIx/C6LRgRROAFD9skpfhD5m7ty2v4URw=
-X-Received: by 2002:a2e:9b15:: with SMTP id u21mr1839815lji.283.1601412124938;
- Tue, 29 Sep 2020 13:42:04 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yxgmFTxkf8Q7snkiRmdFU3li5pqox2TGA0gnwiFInxo=;
+        b=TyVZqyNNReXjMYlbbVjFv5YxlYpIPqizPuy7hzobVOXE6QVwtwC/Gr0VRZCH9cSkwi
+         jHZivos2OZVVWMO7Id8h4TPS1QtTpghkAzLRI7OeTyfmiouWC17FUAwlytu/8u6ZwU/x
+         olGUVOTRYdZ3S5jhOk7orxakdoLoCvT125tGcZuGkg79xESPqivak9CPoSzMgPoldeJN
+         SMNkZSqqZMeZ70ybpc16DZJgHaSHVuzjBgtvRGIkKQcM0cHJSUSoiyFLid2h3qpWvqtB
+         63fVn3FSQgnPdx/ZJXWEU/MHYNqGLnJjX4xCaQeZ88mtmebah9QQRCDvvsIvHcFvSvYZ
+         a2Bw==
+X-Gm-Message-State: AOAM533ev9PPTTJxjklOcBCFBlnIkIoXa02Hfgev7YJw7OkkxQAI+OH6
+        E6uDsJguYixasDGxa4tGRKJ31Q==
+X-Google-Smtp-Source: ABdhPJw9IC5utvm4ax9rkKU/A7/jQf1cuLDFaUdt5CEfnkoqvrM2W2ynFzUbR7P/w7Jw/uEaYSl2xw==
+X-Received: by 2002:a5d:56cd:: with SMTP id m13mr6120637wrw.261.1601412179072;
+        Tue, 29 Sep 2020 13:42:59 -0700 (PDT)
+Received: from P-ASN-KEVALD.idf.intranet (85-170-108-21.rev.numericable.fr. [85.170.108.21])
+        by smtp.gmail.com with ESMTPSA id a10sm6780755wmj.38.2020.09.29.13.42.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Sep 2020 13:42:58 -0700 (PDT)
+From:   Yoann Congal <yoann.congal@smile.fr>
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Jonathan Corbet <corbet@lwn.net>
+Cc:     linux-pm@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Yoann Congal <yoann.congal@smile.fr>
+Subject: [PATCH] Documentation: PM: Fix a reStructuredText syntax error
+Date:   Tue, 29 Sep 2020 22:41:58 +0200
+Message-Id: <20200929204157.26127-1-yoann.congal@smile.fr>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <20200917131257.273882-1-eugen.hristev@microchip.com>
-In-Reply-To: <20200917131257.273882-1-eugen.hristev@microchip.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 29 Sep 2020 22:41:53 +0200
-Message-ID: <CACRpkdYuCtS-M3LXOL3u3T1faH0-G5gHyjHVbeXPrhvFYX6Y_A@mail.gmail.com>
-Subject: Re: [PATCH 1/2] dt-bindings: pinctrl: at91-pio4: add microchip,sama7g5
-To:     Eugen Hristev <eugen.hristev@microchip.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 17, 2020 at 3:13 PM Eugen Hristev
-<eugen.hristev@microchip.com> wrote:
+Fix a reStructuredText syntax error in the cpuidle PM admin-guide
+documentation: the ``...'' quotation marks are parsed as partial ''...''
+reStructuredText markup and break the output formatting.
 
-> Add compatible string for microchip sama7g5 SoC.
->
-> Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
+This change them to "...".
 
-Patch applied.
+Signed-off-by: Yoann Congal <yoann.congal@smile.fr>
+---
+ Documentation/admin-guide/pm/cpuidle.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Yours,
-Linus Walleij
+diff --git a/Documentation/admin-guide/pm/cpuidle.rst b/Documentation/admin-guide/pm/cpuidle.rst
+index e70b365dbc60..191cfa4a450b 100644
+--- a/Documentation/admin-guide/pm/cpuidle.rst
++++ b/Documentation/admin-guide/pm/cpuidle.rst
+@@ -690,7 +690,7 @@ which of the two parameters is added to the kernel command line.  In the
+ instruction of the CPUs (which, as a rule, suspends the execution of the program
+ and causes the hardware to attempt to enter the shallowest available idle state)
+ for this purpose, and if ``idle=poll`` is used, idle CPUs will execute a
+-more or less ``lightweight'' sequence of instructions in a tight loop.  [Note
++more or less "lightweight" sequence of instructions in a tight loop.  [Note
+ that using ``idle=poll`` is somewhat drastic in many cases, as preventing idle
+ CPUs from saving almost any energy at all may not be the only effect of it.
+ For example, on Intel hardware it effectively prevents CPUs from using
+-- 
+2.20.1
+
