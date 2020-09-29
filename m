@@ -2,52 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 329CA27BD73
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 08:56:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FC0C27BD77
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 08:56:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727422AbgI2G4E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 02:56:04 -0400
-Received: from verein.lst.de ([213.95.11.211]:38389 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725355AbgI2G4E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 02:56:04 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 68CB46736F; Tue, 29 Sep 2020 08:56:01 +0200 (CEST)
-Date:   Tue, 29 Sep 2020 08:56:01 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        David Laight <David.Laight@aculab.com>,
-        syzbot+51177e4144d764827c45@syzkaller.appspotmail.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-Subject: Re: WARNING in __kernel_read (2)
-Message-ID: <20200929065601.GA2095@lst.de>
-References: <000000000000da992305b02e9a51@google.com> <3b3de066852d4e30bd9d85bd28023100@AcuMS.aculab.com> <642ed0b4810d44ab97a7832ccb8b3e44@AcuMS.aculab.com> <20200928221441.GF1340@sol.localdomain> <20200929063815.GB1839@lst.de> <20200929064648.GA238449@sol.localdomain>
+        id S1727471AbgI2G4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 02:56:34 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:36730 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725355AbgI2G4e (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 02:56:34 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08T6uLSJ009267;
+        Tue, 29 Sep 2020 01:56:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1601362582;
+        bh=BFkXgP5gDCcaMl/MOafuuTLn+rBSoUlL3gONewgmCDA=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=kJuRL2mOnT10QTX5G5imNN5wFMJXCzG+MJDOy+2CXX+Q/gBmj0BsswOR2Dmtnh0j1
+         H1H4KYHyXjhHPvZtz3YK3RlOyvMXiUtBS1LD8/OIu234dTDVLdqVx3GtHiBA1PC9r8
+         zrleoLmrPoEXCsGCQ6k75+ssEEVtuxL7Py8YfHEU=
+Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08T6uLwP009403
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 29 Sep 2020 01:56:21 -0500
+Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 29
+ Sep 2020 01:56:21 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 29 Sep 2020 01:56:21 -0500
+Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08T6uJ12102914;
+        Tue, 29 Sep 2020 01:56:19 -0500
+Subject: Re: [PATCH v3] leds: tlc591xx: fix leak of device node iterator
+To:     Tobias Jordan <kernel@cdqe.de>, <linux-leds@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
+        =?UTF-8?Q?Marek_Beh=c3=ban?= <kabel@kernel.org>,
+        Markus Elfring <Markus.Elfring@web.de>
+References: <20200926162755.GA26532@agrajag.zerfleddert.de>
+From:   Tomi Valkeinen <tomi.valkeinen@ti.com>
+Message-ID: <ec14762f-29fd-39ba-8314-cfd4ec7a0001@ti.com>
+Date:   Tue, 29 Sep 2020 09:56:18 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200929064648.GA238449@sol.localdomain>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <20200926162755.GA26532@agrajag.zerfleddert.de>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 11:46:48PM -0700, Eric Biggers wrote:
-> > Linus asked for it.  What is the call chain that we hit it with?
+On 26/09/2020 19:27, Tobias Jordan wrote:
+> In one of the error paths of the for_each_child_of_node loop in
+> tlc591xx_probe, add missing call to of_node_put.
 > 
-> Call Trace:
->  kernel_read+0x52/0x70 fs/read_write.c:471
->  kernel_read_file fs/exec.c:989 [inline]
->  kernel_read_file+0x2e5/0x620 fs/exec.c:952
->  kernel_read_file_from_fd+0x56/0xa0 fs/exec.c:1076
->  __do_sys_finit_module+0xe6/0x190 kernel/module.c:4066
->  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
->  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> Fixes: 1ab4531ad132 ("leds: tlc591xx: simplify driver by using the managed led API")
+> Signed-off-by: Tobias Jordan <kernel@cdqe.de>
+> Reviewed-by: Marek Behún <kabel@kernel.org>
 > 
-> See the email from syzbot for the full details:
-> https://lkml.kernel.org/linux-fsdevel/000000000000da992305b02e9a51@google.com
+> ---
+> v3: removed linebreak from Fixes: tag in commit message
+> v2: rebased to Pavel's for-next branch
+> 
+>  drivers/leds/leds-tlc591xx.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/leds/leds-tlc591xx.c b/drivers/leds/leds-tlc591xx.c
+> index 0929f1275814..a8cc49752cd5 100644
+> --- a/drivers/leds/leds-tlc591xx.c
+> +++ b/drivers/leds/leds-tlc591xx.c
+> @@ -214,6 +214,7 @@ tlc591xx_probe(struct i2c_client *client,
+>  		err = devm_led_classdev_register_ext(dev, &led->ldev,
+>  						     &init_data);
+>  		if (err < 0) {
+> +			of_node_put(child);
+>  			if (err != -EPROBE_DEFER)
+>  				dev_err(dev, "couldn't register LED %s\n",
+>  					led->ldev.name);
+> 
 
-Passing a fs without read permissions definitively looks bogus for
-the finit_module syscall.  So I think all we need is an extra check
-to validate the fd.
+Reviewed-by: Tomi Valkeinen <tomi.valkeinen@ti.com>
+
+ Tomi
+
+-- 
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
