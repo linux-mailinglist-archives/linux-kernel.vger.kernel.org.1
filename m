@@ -2,71 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E1A327D75B
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 21:55:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF83B27D75F
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 21:56:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728870AbgI2Tzs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 15:55:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59220 "EHLO
+        id S1728920AbgI2T4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 15:56:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727700AbgI2Tzs (ORCPT
+        with ESMTP id S1727700AbgI2T4e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 15:55:48 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA975C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 12:55:47 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1601409346;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=K3Ljcj9XHfAayChRM36o6HkpqXb+KiKhvnlC4UjmKDw=;
-        b=htpCqoW1pTAvYF2/rHNeySQw/+A65S9f1/VTBJ8SlduZC1yENqWKCjnXZmvFI+gmCMhOVK
-        VAC29Ec4N2DONDwgIzmsuvyueLimykBXiOw839xw055N39t4aGLRHBSAPmjafz4RhwCj9k
-        kmxp+KoUdlWDWmW807RuO0pwk4LqGmmQxg+pgkXtQG59WJYXzCy6KdehrNVVVj2+RK1+D8
-        t4lk6ZP0CAJI37PpAjtIpAhSO6iT1ozSoGaTismGOItChhRhZlIPl++uJ9rNaRDEImrrK4
-        o2U1R2hP+Z1UwpA8P5A814frmzmDuP4POFzgqvDqW26Vc/U3SBpSkJlHaLoxRQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1601409346;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=K3Ljcj9XHfAayChRM36o6HkpqXb+KiKhvnlC4UjmKDw=;
-        b=++EMBmuhKlRGdEM+1uo9+ZxjZyB54yKCQQM/ctHdAL0cnmfeKzxDnW43EQ89BcXhfNeOii
-        G1xXOYz6s3T4zUDQ==
-To:     Michal Hocko <mhocko@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
-        "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>,
-        "Uladzislau Rezki \(Sony\)" <urezki@gmail.com>,
-        Michal Hocko <mhocko@suse.com>
-Subject: Re: [PATCH] mm: clarify usage of GFP_ATOMIC in !preemptible contexts
-In-Reply-To: <20200929123010.5137-1-mhocko@kernel.org>
-References: <20200929123010.5137-1-mhocko@kernel.org>
-Date:   Tue, 29 Sep 2020 21:55:45 +0200
-Message-ID: <875z7wjr26.fsf@nanos.tec.linutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain
+        Tue, 29 Sep 2020 15:56:34 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D0ECC061755;
+        Tue, 29 Sep 2020 12:56:34 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id 8F76B13B07A75;
+        Tue, 29 Sep 2020 12:39:45 -0700 (PDT)
+Date:   Tue, 29 Sep 2020 12:56:32 -0700 (PDT)
+Message-Id: <20200929.125632.1592891495047804335.davem@davemloft.net>
+To:     willy.liu@realtek.com
+Cc:     andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
+        kuba@kernel.org, fancer.lancer@gmail.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kevans@FreeBSD.org,
+        ryankao@realtek.com
+Subject: Re: [PATCH net v4] net: phy: realtek: fix rtl8211e rx/tx delay
+ config
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <1601345449-14676-1-git-send-email-willy.liu@realtek.com>
+References: <1601345449-14676-1-git-send-email-willy.liu@realtek.com>
+X-Mailer: Mew version 6.8 on Emacs 27.1
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [2620:137:e000::1:9]); Tue, 29 Sep 2020 12:39:46 -0700 (PDT)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29 2020 at 14:30, Michal Hocko wrote:
-> diff --git a/include/linux/gfp.h b/include/linux/gfp.h
-> index 67a0774e080b..2e8370cf60c7 100644
-> --- a/include/linux/gfp.h
-> +++ b/include/linux/gfp.h
-> @@ -238,7 +238,9 @@ struct vm_area_struct;
->   * %__GFP_FOO flags as necessary.
->   *
->   * %GFP_ATOMIC users can not sleep and need the allocation to succeed. A lower
-> - * watermark is applied to allow access to "atomic reserves"
-> + * watermark is applied to allow access to "atomic reserves".
-> + * The current implementation doesn't support NMI and few other strict
-> + * non-preemptive contexts (e.g. raw_spin_lock). The same applies to %GFP_NOWAIT.
->   *
->   * %GFP_KERNEL is typical for kernel-internal allocations. The caller requires
->   * %ZONE_NORMAL or a lower zone for direct access but can direct reclaim.
+From: Willy Liu <willy.liu@realtek.com>
+Date: Tue, 29 Sep 2020 10:10:49 +0800
 
-Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
+> There are two chip pins named TXDLY and RXDLY which actually adds the 2ns
+> delays to TXC and RXC for TXD/RXD latching. These two pins can config via
+> 4.7k-ohm resistor to 3.3V hw setting, but also config via software setting
+> (extension page 0xa4 register 0x1c bit13 12 and 11).
+> 
+> The configuration register definitions from table 13 official PHY datasheet:
+> PHYAD[2:0] = PHY Address
+> AN[1:0] = Auto-Negotiation
+> Mode = Interface Mode Select
+> RX Delay = RX Delay
+> TX Delay = TX Delay
+> SELRGV = RGMII/GMII Selection
+> 
+> This table describes how to config these hw pins via external pull-high or pull-
+> low resistor.
+> 
+> It is a misunderstanding that mapping it as register bits below:
+> 8:6 = PHY Address
+> 5:4 = Auto-Negotiation
+> 3 = Interface Mode Select
+> 2 = RX Delay
+> 1 = TX Delay
+> 0 = SELRGV
+> So I removed these descriptions above and add related settings as below:
+> 14 = reserved
+> 13 = force Tx RX Delay controlled by bit12 bit11
+> 12 = Tx Delay
+> 11 = Rx Delay
+> 10:0 = Test && debug settings reserved by realtek
+> 
+> Test && debug settings are not recommend to modify by default.
+> 
+> Fixes: f81dadbcf7fd ("net: phy: realtek: Add rtl8211e rx/tx delays config")
+> Signed-off-by: Willy Liu <willy.liu@realtek.com>
+
+Applied and queued up for -stable, thank you.
