@@ -2,96 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C888527D1F0
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 16:54:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1509127D1F2
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 16:55:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731340AbgI2Oy1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 10:54:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51892 "EHLO mail.kernel.org"
+        id S1730777AbgI2OzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 10:55:21 -0400
+Received: from mx2.suse.de ([195.135.220.15]:34658 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728627AbgI2Oy0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 10:54:26 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 45DEF20757;
-        Tue, 29 Sep 2020 14:54:25 +0000 (UTC)
-Date:   Tue, 29 Sep 2020 10:54:16 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>, kim.phillips@amd.com
-Subject: Re: [PATCH] rcu,ftrace: Fix ftrace recursion
-Message-ID: <20200929105416.757c47f0@gandalf.local.home>
-In-Reply-To: <20200929144105.GU29330@paulmck-ThinkPad-P72>
-References: <20200929113340.GN2628@hirez.programming.kicks-ass.net>
-        <20200929103620.06762622@gandalf.local.home>
-        <20200929144105.GU29330@paulmck-ThinkPad-P72>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1728627AbgI2OzV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 10:55:21 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1601391320;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=c9HO/9n9icXpRGOaw7exoBm2LCNPxUE5Eyu2A1eeiOQ=;
+        b=eImcL4LJ9+xPI1gvbuUL+dTyMwpTQgk1m3wpiD3Z3l/ASvh9JfX446dwJLUw7fPD9WjOMV
+        YdhUyHqbxQz+6f3/ii9xZoOD0iydN0+7HY5kpxqyXxTjVUT7VNN/njalb4Wz4HXPwHS3m6
+        Zwq0pIZKZ0bkUf8CtGJ+aNOxURKikJU=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 02F66AC12;
+        Tue, 29 Sep 2020 14:55:20 +0000 (UTC)
+Date:   Tue, 29 Sep 2020 16:55:19 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Vijay Balakrishna <vijayb@linux.microsoft.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Song Liu <songliubraving@fb.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Allen Pais <apais@microsoft.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [v4] mm: khugepaged: recalculate min_free_kbytes after memory
+ hotplug as expected by khugepaged
+Message-ID: <20200929145519.GF2277@dhcp22.suse.cz>
+References: <1601338047-18558-1-git-send-email-vijayb@linux.microsoft.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1601338047-18558-1-git-send-email-vijayb@linux.microsoft.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 29 Sep 2020 07:41:06 -0700
-"Paul E. McKenney" <paulmck@kernel.org> wrote:
+On Mon 28-09-20 17:07:27, Vijay Balakrishna wrote:
+> When memory is hotplug added or removed the min_free_kbytes must be
 
-> On Tue, Sep 29, 2020 at 10:36:20AM -0400, Steven Rostedt wrote:
-> > On Tue, 29 Sep 2020 13:33:40 +0200
-> > Peter Zijlstra <peterz@infradead.org> wrote:
-> >   
-> > > Kim reported that perf-ftrace made his box unhappy. It turns out that
-> > > commit:
-> > > 
-> > >   ff5c4f5cad33 ("rcu/tree: Mark the idle relevant functions noinstr")
-> > > 
-> > > removed one too many notrace. Probably due to there not being a helpful
-> > > comment.
-> > > 
-> > > Reinstate the notrace and add a comment to avoid loosing it again.
-> > > 
-> > > Fixes: ff5c4f5cad33 ("rcu/tree: Mark the idle relevant functions noinstr")
-> > > Reported-by: Kim Phillips <kim.phillips@amd.com>
-> > > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> > > ---
-> > >  kernel/rcu/tree.c | 5 ++++-
-> > >  1 file changed, 4 insertions(+), 1 deletion(-)
-> > > 
-> > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > > index ee5e595501e8..33020d84ec6b 100644
-> > > --- a/kernel/rcu/tree.c
-> > > +++ b/kernel/rcu/tree.c
-> > > @@ -1098,8 +1098,11 @@ noinstr bool __rcu_is_watching(void)
-> > >   * CPU can safely enter RCU read-side critical sections.  In other words,
-> > >   * if the current CPU is not in its idle loop or is in an interrupt or
-> > >   * NMI handler, return true.
-> > > + *
-> > > + * Must be notrace because __ftrace_ops_list_func() / ftrace_ops_assist_func()
-> > > + * will call this (for every function) outside of recursion protection.
-> > >   */
-> > > -bool rcu_is_watching(void)
-> > > +notrace bool rcu_is_watching(void)
-> > >  {
-> > >  	bool ret;
-> > >    
-> > 
-> > I think the patch I suggested is more suitable.  
+s@must@should@
+
+> recalculated based on what is expected by khugepaged.  Currently
+> after hotplug, min_free_kbytes will be set to a lower default and higher
+> default set when THP enabled is lost.  This change restores min_free_kbytes
+> as expected for THP consumers.
 > 
-> OK, I will let you guys fight it out.  ;-)
+> Fixes: f000565adb77 ("thp: set recommended min free kbytes")
 > 
+> Signed-off-by: Vijay Balakrishna <vijayb@linux.microsoft.com>
+> Cc: stable@vger.kernel.org
+> Reviewed-by: Pavel Tatashin <pasha.tatashin@soleen.com>
+> Acked-by: Michal Hocko <mhocko@suse.com>
+> ---
+> v3 -> v4
+> - made changes to move khugepaged_min_free_kbytes_update into
+>   init_per_zone_wmark_min and rested changes
+>   [suggestion from Michal Hocko]
+> 
+> [v2 1/2]
+> - removed symptoms references from changelog
+> 
+> [v2 2/2]
+> - addressed following issues Michal Hocko raised:
+>   . nr_free_buffer_pages can oveflow in int on very large machines
+>   . min_free_kbytes can decrease the size theoretically
+> 
+> v1 -> v2
+> --------
+> - addressed issue Kirill A. Shutemov raised:
+>   . changes would override min_free_kbytes set by user
+> 
+>  include/linux/khugepaged.h |  5 +++++
+>  mm/khugepaged.c            | 13 +++++++++++--
+>  mm/page_alloc.c            |  3 +++
+>  3 files changed, 19 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/linux/khugepaged.h b/include/linux/khugepaged.h
+> index bc45ea1efbf7..c941b7377321 100644
+> --- a/include/linux/khugepaged.h
+> +++ b/include/linux/khugepaged.h
+> @@ -15,6 +15,7 @@ extern int __khugepaged_enter(struct mm_struct *mm);
+>  extern void __khugepaged_exit(struct mm_struct *mm);
+>  extern int khugepaged_enter_vma_merge(struct vm_area_struct *vma,
+>  				      unsigned long vm_flags);
+> +extern void khugepaged_min_free_kbytes_update(void);
+>  #ifdef CONFIG_SHMEM
+>  extern void collapse_pte_mapped_thp(struct mm_struct *mm, unsigned long addr);
+>  #else
+> @@ -85,6 +86,10 @@ static inline void collapse_pte_mapped_thp(struct mm_struct *mm,
+>  					   unsigned long addr)
+>  {
+>  }
+> +
+> +static inline void khugepaged_min_free_kbytes_update(void)
+> +{
+> +}
+>  #endif /* CONFIG_TRANSPARENT_HUGEPAGE */
+>  
+>  #endif /* _LINUX_KHUGEPAGED_H */
+> diff --git a/mm/khugepaged.c b/mm/khugepaged.c
+> index cfa0dba5fd3b..4f7107476a6f 100644
+> --- a/mm/khugepaged.c
+> +++ b/mm/khugepaged.c
+> @@ -56,6 +56,9 @@ enum scan_result {
+>  #define CREATE_TRACE_POINTS
+>  #include <trace/events/huge_memory.h>
+>  
+> +static struct task_struct *khugepaged_thread __read_mostly;
+> +static DEFINE_MUTEX(khugepaged_mutex);
+> +
+>  /* default scan 8*512 pte (or vmas) every 30 second */
+>  static unsigned int khugepaged_pages_to_scan __read_mostly;
+>  static unsigned int khugepaged_pages_collapsed;
+> @@ -2292,8 +2295,6 @@ static void set_recommended_min_free_kbytes(void)
+>  
+>  int start_stop_khugepaged(void)
+>  {
+> -	static struct task_struct *khugepaged_thread __read_mostly;
+> -	static DEFINE_MUTEX(khugepaged_mutex);
+>  	int err = 0;
+>  
+>  	mutex_lock(&khugepaged_mutex);
+> @@ -2320,3 +2321,11 @@ int start_stop_khugepaged(void)
+>  	mutex_unlock(&khugepaged_mutex);
+>  	return err;
+>  }
+> +
+> +void khugepaged_min_free_kbytes_update(void)
+> +{
+> +	mutex_lock(&khugepaged_mutex);
+> +	if (khugepaged_enabled() && khugepaged_thread)
+> +		set_recommended_min_free_kbytes();
+> +	mutex_unlock(&khugepaged_mutex);
+> +}
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index fab5e97dc9ca..ac25d3526fa5 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -69,6 +69,7 @@
+>  #include <linux/nmi.h>
+>  #include <linux/psi.h>
+>  #include <linux/padata.h>
+> +#include <linux/khugepaged.h>
+>  
+>  #include <asm/sections.h>
+>  #include <asm/tlbflush.h>
+> @@ -7891,6 +7892,8 @@ int __meminit init_per_zone_wmark_min(void)
+>  	setup_min_slab_ratio();
+>  #endif
+>  
+> +	khugepaged_min_free_kbytes_update();
+> +
+>  	return 0;
+>  }
+>  postcore_initcall(init_per_zone_wmark_min)
+> -- 
+> 2.28.0
 
-Well, I think we should actually apply both, but the comment needs to be
-updated, as it will no longer be outside recursion. And the comment is
-wrong now as well, as its only outside recursion protection for the
-assist_func(). 
-
-But it does prevent it from being always called for perf.
-
- * Make notrace because it can be called by the internal functions of
- * ftrace, and making this notrace removes unnecessary recursion calls.
-
-
--- Steve
+-- 
+Michal Hocko
+SUSE Labs
