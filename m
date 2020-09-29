@@ -2,92 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66F4527DA40
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 23:38:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F08027DA53
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 23:42:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728139AbgI2Vio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 17:38:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46944 "EHLO
+        id S1728132AbgI2Vmd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 17:42:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727740AbgI2Vin (ORCPT
+        with ESMTP id S1727922AbgI2Vmd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 17:38:43 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82606C0613D1;
-        Tue, 29 Sep 2020 14:33:23 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id u8so7325728lff.1;
-        Tue, 29 Sep 2020 14:33:23 -0700 (PDT)
+        Tue, 29 Sep 2020 17:42:33 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55792C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 14:42:33 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id 95so5936498ota.13
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 14:42:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=3dwCE+v0GZtE62h3ykTPVjBYnltbx4TcDziVD3ADHYA=;
-        b=UlhR/VAY11pK8/kOEEb2V2Sk7YVh2SsTM1fp5mhftb4GfVtcEep2R87RJMsy+h9OXL
-         krMeEYwjr4v0WBWrZqXAdmcg3CZCIG9y4UIwZNFmg532h1UGruvcpqixRcWbfObLKwUt
-         vzH6krIHv4D76CkP2FAYGIfF/z68FTakRAPjxd/yQxWIxysK+IyXFdY6+uQj0AnucBJj
-         xdiFInw/+bHarzuzrVaDGhHBGTV9QXfMUnQzjNu52Kmrz2sj4rGdnkJdqs8X3N7AFm4X
-         niM5GsUhSbL4JMLKy+YzgIxxfUeiDWyWPLQawpeJn0aloNvrFaZ276DtdHqjLZk2xpEn
-         oGcA==
+        bh=eMTnP36m1E+SZKGnieI0HqsItuKWPP95HDOa71tExHY=;
+        b=sqTAEiApfwK6y3dBXrTBGDsRMlig/5xp1blX9IQ1P9kPMe9P4XPvEmmiuFpI904VBK
+         EepRFdv1GLma0uBXS2VxsusDvYSf3+zz5PorEPpzKL62RY9uNsUSgeEXBGhHy7BqB1JS
+         rfJp+5szSw+GbzHbv9r/GHUtkSU346hnvdClgtCWjibRoqxArZg7yrb1mbw9Wh4s96vO
+         rPxCeWVoowsc1/baJQK4cdWayZC64thgRiD434vEglVOgAKZRDUc/4r3WBPrAxZTBXjP
+         aqtD8bnCHDfNMYGomCAJh3XibWqjMrRRNKGgKUbvCuRX5yQtr5fGqdeZM4I+yJGhSAtB
+         wh+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=3dwCE+v0GZtE62h3ykTPVjBYnltbx4TcDziVD3ADHYA=;
-        b=Z/VHcr1L48r2C0DPVyal3oAWNcRiUtQS5m1t2d8cXVbIuFDgnizzL09/f/X/Kfa+MV
-         dIJIARtg2kuuwIhWZVr6mEEVWAANsZ/hYyKOBN4q5kUkufsHXTgGy0CBVYFRhoKcOBD+
-         GUUfIiNAzyaChLxEWj11qIEQAFUvxFCFhdr8azjAl3crxM/7w74UQ7VFmd+m5qfo3a+7
-         jDh5gGJEX3qHsg5sKLiuoJNU31eccc/1di+7GWq9mkSqd4JlQ5cSVbRyHzGZZoybnBa3
-         Ga3jjb12ohOJ2PfvtrCLHdNN9f8cZGEPh2vLIkIlRehhEMHxYMFFsW7l/2Vcl8P/oXkt
-         BUsg==
-X-Gm-Message-State: AOAM532fXu4234U4q/oD95qU+dY90xv6WMnvUz6SXsESXw0xiYO8Eqhv
-        fVQHtyy+JD2cZ21xatWlgWK5/rkL9DuldEvRjuk=
-X-Google-Smtp-Source: ABdhPJwqS5IANoo/oW2mikNdyZRaSnTl1fqaWN9i8aZ6P3HTe46KWMXy8Z5Zke8FjOd/AxUwUa/m8bEkIpN9BvJhHr0=
-X-Received: by 2002:a19:e20b:: with SMTP id z11mr1939035lfg.440.1601415201947;
- Tue, 29 Sep 2020 14:33:21 -0700 (PDT)
+        bh=eMTnP36m1E+SZKGnieI0HqsItuKWPP95HDOa71tExHY=;
+        b=X8BaJcGV/MnZXkoHk1vdtidBe7A0ZQI7ZClb1d9z4B8fMIeBlp0oEWj8PCA2hnjjWV
+         a6zyjGm8IJwslfyb+08fTumYYnYv35018rgYJulkW09tFzrGBkPb2OfeA9nkwXkTolAR
+         8dEiwuq0bfhmFJIMnzEgCQUVVae4IkKrvcWZpW2lNkU2cnBagePggf1ZcRFmMj93m0wN
+         wBnYFpY6khGubAhqxnsfzgwyzNaY3QHwnKqO0FCfFHp8ikug+n4acszQNMG8f172PPqr
+         Oo1hAJkoSik9Er3jltEKVLDublQ9HwViW+48FavZVsfpUZhkCT1V095YUOBVKyELsIvA
+         c0mA==
+X-Gm-Message-State: AOAM530FSZZImrjbnClzV9ItxnZcIPm+ZLadXbHGknqw3woaf6bZ20UE
+        FwnwImqWhLKHFZ9+nKWUQpTncPX0bNOnc015Drf1Tw==
+X-Google-Smtp-Source: ABdhPJx8g4PsvrZ04THmOIZA5Pfv4k842ratMKMN/KX4T+3kFTxK7lR0xZLye4gsjw3mMz0xteoREAsuMU6FHRnds38=
+X-Received: by 2002:a05:6830:164e:: with SMTP id h14mr4048466otr.56.1601415752426;
+ Tue, 29 Sep 2020 14:42:32 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200929194318.548707-1-ndesaulniers@google.com>
-In-Reply-To: <20200929194318.548707-1-ndesaulniers@google.com>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Tue, 29 Sep 2020 23:33:10 +0200
-Message-ID: <CANiq72kHEhTm3-7WbZwmoKQV5Qn9fD_sk+yrVrdj_K0AqT6dNQ@mail.gmail.com>
-Subject: Re: [PATCH] compiler.h: avoid escaped section names
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        linux-sparse@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
+References: <1599731444-3525-1-git-send-email-wanpengli@tencent.com> <1599731444-3525-5-git-send-email-wanpengli@tencent.com>
+In-Reply-To: <1599731444-3525-5-git-send-email-wanpengli@tencent.com>
+From:   Jim Mattson <jmattson@google.com>
+Date:   Tue, 29 Sep 2020 14:42:21 -0700
+Message-ID: <CALMp9eRpo0pJ3sO-xGoEZf7ktWb07BvNoDJyaH0pQkE5EY_Yaw@mail.gmail.com>
+Subject: Re: [PATCH v2 4/9] KVM: VMX: Don't freeze guest when event delivery
+ causes an APIC-access exit
+To:     Wanpeng Li <kernellwp@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        kvm list <kvm@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nick,
-
-On Tue, Sep 29, 2020 at 9:43 PM Nick Desaulniers
-<ndesaulniers@google.com> wrote:
+On Thu, Sep 10, 2020 at 2:51 AM Wanpeng Li <kernellwp@gmail.com> wrote:
 >
-> The stringification operator, `#`, in the preprocessor escapes strings.
-> For example, `# "foo"` becomes `"\"foo\""`.  GCC and Clang differ in how
-> they treat section names that contain \".
+> From: Wanpeng Li <wanpengli@tencent.com>
 >
-> The portable solution is to not use a string literal with the
-> preprocessor stringification operator.
+> According to SDM 27.2.4, Event delivery causes an APIC-access VM exit.
+> Don't report internal error and freeze guest when event delivery causes
+> an APIC-access exit, it is handleable and the event will be re-injected
+> during the next vmentry.
 >
-> In this case, since __section unconditionally uses the stringification
-> operator, we actually want the more verbose
-> __attribute__((__section__())).
+> Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
 
-Let's add a comment about this in the code -- otherwise we/someone
-will convert it back without noticing. Also we could add another on
-`__section` itself warning about this.
-
-> Link: https://bugs.llvm.org/show_bug.cgi?id=42950
-
-Is there a link / have we opened a bug on GCC's side too?
-
-Thanks!
-
-Cheers,
-Miguel
+I'm curious if you have a test case for this.
