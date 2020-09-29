@@ -2,104 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8D9827BF31
+	by mail.lfdr.de (Postfix) with ESMTP id 4C6F627BF30
 	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 10:21:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727792AbgI2IVd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 04:21:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35796 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725765AbgI2IVc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 04:21:32 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BC54C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 01:21:32 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id c2so3514297qkf.10
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 01:21:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zAP7X0rOOI0UosoUeZ02aH7o5X/Sy/ck1ClnD+nPOqw=;
-        b=vjyUmTsNigRYAOAkrRcatzKXAQ4HEfJEr1N6XiQQGfEC2Wxn1nOhBeVW61CE2td+TK
-         7eZxO5rMLFbFsRSh/noMIh+A0CF/fuK4JmNsjw6JQJ/JaYIOKp51GPqPM2/uHZa/xd0g
-         ock53CGkWCav48kj/BCGiVzBXeyZsM252R49ltw99QcZhKTlZXLRd8hKclmsm5mgtdpB
-         F/al85WXWC25T/BHAanRjZUy3I2miQfbvK9QWg3g1XxNz2Zi5pByjjhtPMSPyWUEtbu0
-         s1qT5MtdPhzxGWv9nyBW/gkOXLT3sgvJtEHdorquUb9Ub2IuoRi9byj4VfUsD1rMZhHT
-         uB+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zAP7X0rOOI0UosoUeZ02aH7o5X/Sy/ck1ClnD+nPOqw=;
-        b=EKm1u0tPLff3QNEFoiDy0AqsoB3D/zKPat4tbWL6Xezcpc7OyKkqLDS0yvWW+rAMpc
-         SLCrHePlhd+HaFDMAP1X8dtdRVQBX/8xb5bYio7kfKzIunMIZLKqkjs5XSVyST32NKuc
-         I+YoRLvM8X1802n36lEi/RcUsEVXsV/+MmtJwNDOdTphqbJCENFL+vfrx64dPV5KdJwu
-         NwunhW4mcoVU8lq7oQq2bcAIEcAwMpEYHOBBatGeeu8pIFXOusQjKaLeWWisioUaXp7H
-         3/7KiMo0BnpKdVCFAlIVbrhnO9shVia9oZReTfgLnoxEh/7Ic+y/ryBo+PUagOuMBwKl
-         C6Jw==
-X-Gm-Message-State: AOAM530e7KYB7O2q9Z7nTyAM8xfBYuZfrGXulbvSgcp8cfJl1nHZXnaM
-        S13tYe2pQz9ga9nmUohwv+QkM0DJ7sz+KsM0isKCSw==
-X-Google-Smtp-Source: ABdhPJwdrAydprXheE4Jt57uzdpA/B8B2ZJpOg9sZoVkGJnseneACkcfeLMNQ9XV87QqY3OmR8PBrqySDl3N6zWgCPM=
-X-Received: by 2002:a37:a4c5:: with SMTP id n188mr3349446qke.8.1601367690935;
- Tue, 29 Sep 2020 01:21:30 -0700 (PDT)
+        id S1727782AbgI2IV1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 04:21:27 -0400
+Received: from mx2.suse.de ([195.135.220.15]:33218 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727653AbgI2IVY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 04:21:24 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1601367682;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=KFyfyEQCS1dcCR4BhfL+zwiQ3CuzyAy4x23tr+VkzjE=;
+        b=kYjuvZ+ilRICWeNF3tv+sX4B6qR0l26SNFX+2yuqmAbG6VZsVdy+/ab4DWFA/2mAPMzvho
+        sWiMi4hR4DtnoNBd3zA9aScladT2LR3g7zk3zp4xXinjBQFShKRtNv5abZ+aKM+mJdoLfs
+        LfJPGyvdVLHOxuKwI+4KWXzshc3e4XY=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 4162CACA3;
+        Tue, 29 Sep 2020 08:21:22 +0000 (UTC)
+Date:   Tue, 29 Sep 2020 10:21:21 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Daniel Vetter <daniel@ffwll.ch>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Ben Segall <bsegall@google.com>, Linux-MM <linux-mm@kvack.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, linux-hexagon@vger.kernel.org,
+        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@kernel.org>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Brian Cain <bcain@codeaurora.org>,
+        Richard Weinberger <richard@nod.at>,
+        Russell King <linux@armlinux.org.uk>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        Ingo Molnar <mingo@redhat.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Mel Gorman <mgorman@suse.de>,
+        intel-gfx <intel-gfx@lists.freedesktop.org>,
+        Matt Turner <mattst88@gmail.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        linux-xtensa@linux-xtensa.org, Shuah Khan <shuah@kernel.org>,
+        Jeff Dike <jdike@addtoit.com>,
+        linux-um <linux-um@lists.infradead.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>, rcu@vger.kernel.org,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        alpha <linux-alpha@vger.kernel.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [patch 00/13] preempt: Make preempt count unconditional
+Message-ID: <20200929081938.GC22035@dhcp22.suse.cz>
+References: <CAHk-=win80rdof8Pb=5k6gT9j_v+hz-TQzKPVastZDvBe9RimQ@mail.gmail.com>
+ <871rj4owfn.fsf@nanos.tec.linutronix.de>
+ <CAHk-=wj0eUuVQ=hRFZv_nY7g5ZLt7Fy3K7SMJL0ZCzniPtsbbg@mail.gmail.com>
+ <87bli75t7v.fsf@nanos.tec.linutronix.de>
+ <CAHk-=wht7kAeyR5xEW2ORj7m0hibVxZ3t+2ie8vNHLQfdbN2_g@mail.gmail.com>
+ <CAKMK7uHAk9-Vy2cof0ws=DrcD52GHiCDiyHbjLd19CgpBU2rKQ@mail.gmail.com>
+ <20200916152956.GV29330@paulmck-ThinkPad-P72>
+ <CAKMK7uGFyfhEyt=jmdk2jDO-hq0_Pf0ck+cKSELHjr2U3rPuYQ@mail.gmail.com>
+ <20200916205840.GD29330@paulmck-ThinkPad-P72>
+ <CAKMK7uHL2dMv80b8uBXr=BqHD2TQeODQQM1MGYhAfCYbX7sLrA@mail.gmail.com>
 MIME-Version: 1.0
-References: <000000000000da992305b02e9a51@google.com> <3b3de066852d4e30bd9d85bd28023100@AcuMS.aculab.com>
- <642ed0b4810d44ab97a7832ccb8b3e44@AcuMS.aculab.com> <20200928221441.GF1340@sol.localdomain>
- <20200929063815.GB1839@lst.de> <20200929064648.GA238449@sol.localdomain>
- <20200929065601.GA2095@lst.de> <e81e2721e8ce4612b0fc6098d311d378@AcuMS.aculab.com>
-In-Reply-To: <e81e2721e8ce4612b0fc6098d311d378@AcuMS.aculab.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Tue, 29 Sep 2020 10:21:19 +0200
-Message-ID: <CACT4Y+ax5YN5r=zL1NaxB_9S_7e6aUiL3tmBc6-8UMwuJpnn_Q@mail.gmail.com>
-Subject: Re: WARNING in __kernel_read (2)
-To:     David Laight <David.Laight@aculab.com>
-Cc:     Christoph Hellwig <hch@lst.de>, Eric Biggers <ebiggers@kernel.org>,
-        "syzbot+51177e4144d764827c45@syzkaller.appspotmail.com" 
-        <syzbot+51177e4144d764827c45@syzkaller.appspotmail.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "syzkaller-bugs@googlegroups.com" <syzkaller-bugs@googlegroups.com>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKMK7uHL2dMv80b8uBXr=BqHD2TQeODQQM1MGYhAfCYbX7sLrA@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 10:06 AM David Laight <David.Laight@aculab.com> wrote:
->
-> From: Christoph Hellwig
-> > Sent: 29 September 2020 07:56
-> >
-> > On Mon, Sep 28, 2020 at 11:46:48PM -0700, Eric Biggers wrote:
-> > > > Linus asked for it.  What is the call chain that we hit it with?
-> > >
-> > > Call Trace:
-> > >  kernel_read+0x52/0x70 fs/read_write.c:471
-> > >  kernel_read_file fs/exec.c:989 [inline]
-> > >  kernel_read_file+0x2e5/0x620 fs/exec.c:952
-> > >  kernel_read_file_from_fd+0x56/0xa0 fs/exec.c:1076
-> > >  __do_sys_finit_module+0xe6/0x190 kernel/module.c:4066
-> > >  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-> > >  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> > >
-> > > See the email from syzbot for the full details:
-> > > https://lkml.kernel.org/linux-fsdevel/000000000000da992305b02e9a51@google.com
-> >
-> > Passing a fs without read permissions definitively looks bogus for
-> > the finit_module syscall.  So I think all we need is an extra check
-> > to validate the fd.
->
-> The sysbot test looked like it didn't even have a regular file.
-> I thought I saw a test for that - but it might be in a different path.
->
-> You do need to ensure that 'exec' doesn't need read access.
+On Wed 16-09-20 23:43:02, Daniel Vetter wrote:
+> I can
+> then figure out whether it's better to risk not spotting issues with
+> call_rcu vs slapping a memalloc_noio_save/restore around all these
+> critical section which force-degrades any allocation to GFP_ATOMIC at
 
-The test tried to load a module from /dev/input/mouse
+did you mean memalloc_noreclaim_* here?
 
-r2 = syz_open_dev$mouse(&(0x7f0000000000)='/dev/input/mouse#\x00',
-0x101, 0x109887)
-finit_module(r2, 0x0, 0x0)
+> most, but has the risk that we run into code that assumes "GFP_KERNEL
+> never fails for small stuff" and has a decidedly less tested fallback
+> path than rcu code.
 
-because... why not? Everything is a file! :)
+Even if the above then please note that memalloc_noreclaim_* or
+PF_MEMALLOC should be used with an extreme care. Essentially only for
+internal memory reclaimers. It grants access to _all_ the available
+memory so any abuse can be detrimental to the overall system operation.
+Allocation failure in this mode means that we are out of memory and any
+code relying on such an allocation has to carefuly consider failure.
+This is not a random allocation mode.
+
+-- 
+Michal Hocko
+SUSE Labs
