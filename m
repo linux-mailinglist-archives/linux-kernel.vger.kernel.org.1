@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B69CB27C8C9
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:05:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB7E327C8C7
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:05:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731701AbgI2MEt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 08:04:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58522 "EHLO mail.kernel.org"
+        id S1731532AbgI2MEn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 08:04:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58606 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730294AbgI2Lhm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:37:42 -0400
+        id S1727985AbgI2Lho (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:37:44 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D995820848;
-        Tue, 29 Sep 2020 11:37:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2E37B21941;
+        Tue, 29 Sep 2020 11:37:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601379461;
-        bh=edvpvBXgzkA1HGw8xxSPpBS1Btl6werh9kXB01ts0TM=;
+        s=default; t=1601379463;
+        bh=1p0mPBYyP+5pGBfPtHVqw/Ox9V+qSduw8oc0iYUP1wk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uOYB5U8mTNpuu3vyRjH1pjWKvmOntmFiQic47Wm6os2SfCSEom3m6cA7RP8YFoNDa
-         sWJQO0bi3azCwkyGngP4NuzFhxW2h8WOxrPuXvAzVAj9duOWmVrF1RckM3/azVE9ql
-         xFac1vCiR417dt1zwnU2K8qHMsSA7FqgOVxGKrMI=
+        b=TgBQf4zsDwh8PnZIknCqwTaiUSpJH5XNeC3OfuKEQGsiTNhMv7+QsV8/fco+8OKdt
+         C3DpkRZMweYIbUbH0gZmZTppbcEv+RVOVRTl72DEtkUTARaGYp9xWIoeH+NRboOqoT
+         5Qweo6g7zSXHta2U++KNr6CfpNqBbMGkXSYkSRX4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        stable@vger.kernel.org, Gustavo Romero <gromero@linux.ibm.com>,
+        Segher Boessenkool <segher@kernel.crashing.org>,
+        Michael Neuling <mikey@neuling.org>,
+        Leonardo Bras <leonardo@linux.ibm.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 173/388] intel_th: Disallow multi mode on devices where its broken
-Date:   Tue, 29 Sep 2020 12:58:24 +0200
-Message-Id: <20200929110018.858657555@linuxfoundation.org>
+Subject: [PATCH 5.4 174/388] KVM: PPC: Book3S HV: Treat TM-related invalid form instructions on P9 like the valid ones
+Date:   Tue, 29 Sep 2020 12:58:25 +0200
+Message-Id: <20200929110018.905940534@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200929110010.467764689@linuxfoundation.org>
 References: <20200929110010.467764689@linuxfoundation.org>
@@ -44,121 +46,211 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+From: Gustavo Romero <gromero@linux.ibm.com>
 
-[ Upstream commit 397c7729665a3b07a7b4ce7215173df8e9112809 ]
+[ Upstream commit 1dff3064c764b5a51c367b949b341d2e38972bec ]
 
-Some versions of Intel TH have an issue that prevents the multi mode of
-MSU from working correctly, resulting in no trace data and potentially
-stuck MSU pipeline.
+On P9 DD2.2 due to a CPU defect some TM instructions need to be emulated by
+KVM. This is handled at first by the hardware raising a softpatch interrupt
+when certain TM instructions that need KVM assistance are executed in the
+guest. Althought some TM instructions per Power ISA are invalid forms they
+can raise a softpatch interrupt too. For instance, 'tresume.' instruction
+as defined in the ISA must have bit 31 set (1), but an instruction that
+matches 'tresume.' PO and XO opcode fields but has bit 31 not set (0), like
+0x7cfe9ddc, also raises a softpatch interrupt. Similarly for 'treclaim.'
+and 'trechkpt.' instructions with bit 31 = 0, i.e. 0x7c00075c and
+0x7c0007dc, respectively. Hence, if a code like the following is executed
+in the guest it will raise a softpatch interrupt just like a 'tresume.'
+when the TM facility is enabled ('tabort. 0' in the example is used only
+to enable the TM facility):
 
-Disable multi mode on such devices.
+int main() { asm("tabort. 0; .long 0x7cfe9ddc;"); }
 
-Signed-off-by: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Link: https://lore.kernel.org/r/20200317062215.15598-2-alexander.shishkin@linux.intel.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Currently in such a case KVM throws a complete trace like:
+
+[345523.705984] WARNING: CPU: 24 PID: 64413 at arch/powerpc/kvm/book3s_hv_tm.c:211 kvmhv_p9_tm_emulation+0x68/0x620 [kvm_hv]
+[345523.705985] Modules linked in: kvm_hv(E) xt_conntrack ipt_REJECT nf_reject_ipv4 xt_tcpudp ip6table_mangle ip6table_nat
+iptable_mangle iptable_nat nf_nat nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 ebtable_filter ebtables ip6table_filter
+ip6_tables iptable_filter bridge stp llc sch_fq_codel ipmi_powernv at24 vmx_crypto ipmi_devintf ipmi_msghandler
+ibmpowernv uio_pdrv_genirq kvm opal_prd uio leds_powernv ib_iser rdma_cm iw_cm ib_cm ib_core iscsi_tcp libiscsi_tcp
+libiscsi scsi_transport_iscsi ip_tables x_tables autofs4 btrfs blake2b_generic zstd_compress raid10 raid456
+async_raid6_recov async_memcpy async_pq async_xor async_tx libcrc32c xor raid6_pq raid1 raid0 multipath linear tg3
+crct10dif_vpmsum crc32c_vpmsum ipr [last unloaded: kvm_hv]
+[345523.706030] CPU: 24 PID: 64413 Comm: CPU 0/KVM Tainted: G        W   E     5.5.0+ #1
+[345523.706031] NIP:  c0080000072cb9c0 LR: c0080000072b5e80 CTR: c0080000085c7850
+[345523.706034] REGS: c000000399467680 TRAP: 0700   Tainted: G        W   E      (5.5.0+)
+[345523.706034] MSR:  900000010282b033 <SF,HV,VEC,VSX,EE,FP,ME,IR,DR,RI,LE,TM[E]>  CR: 24022428  XER: 00000000
+[345523.706042] CFAR: c0080000072b5e7c IRQMASK: 0
+                GPR00: c0080000072b5e80 c000000399467910 c0080000072db500 c000000375ccc720
+                GPR04: c000000375ccc720 00000003fbec0000 0000a10395dda5a6 0000000000000000
+                GPR08: 000000007cfe9ddc 7cfe9ddc000005dc 7cfe9ddc7c0005dc c0080000072cd530
+                GPR12: c0080000085c7850 c0000003fffeb800 0000000000000001 00007dfb737f0000
+                GPR16: c0002001edcca558 0000000000000000 0000000000000000 0000000000000001
+                GPR20: c000000001b21258 c0002001edcca558 0000000000000018 0000000000000000
+                GPR24: 0000000001000000 ffffffffffffffff 0000000000000001 0000000000001500
+                GPR28: c0002001edcc4278 c00000037dd80000 800000050280f033 c000000375ccc720
+[345523.706062] NIP [c0080000072cb9c0] kvmhv_p9_tm_emulation+0x68/0x620 [kvm_hv]
+[345523.706065] LR [c0080000072b5e80] kvmppc_handle_exit_hv.isra.53+0x3e8/0x798 [kvm_hv]
+[345523.706066] Call Trace:
+[345523.706069] [c000000399467910] [c000000399467940] 0xc000000399467940 (unreliable)
+[345523.706071] [c000000399467950] [c000000399467980] 0xc000000399467980
+[345523.706075] [c0000003994679f0] [c0080000072bd1c4] kvmhv_run_single_vcpu+0xa1c/0xb80 [kvm_hv]
+[345523.706079] [c000000399467ac0] [c0080000072bd8e0] kvmppc_vcpu_run_hv+0x5b8/0xb00 [kvm_hv]
+[345523.706087] [c000000399467b90] [c0080000085c93cc] kvmppc_vcpu_run+0x34/0x48 [kvm]
+[345523.706095] [c000000399467bb0] [c0080000085c582c] kvm_arch_vcpu_ioctl_run+0x244/0x420 [kvm]
+[345523.706101] [c000000399467c40] [c0080000085b7498] kvm_vcpu_ioctl+0x3d0/0x7b0 [kvm]
+[345523.706105] [c000000399467db0] [c0000000004adf9c] ksys_ioctl+0x13c/0x170
+[345523.706107] [c000000399467e00] [c0000000004adff8] sys_ioctl+0x28/0x80
+[345523.706111] [c000000399467e20] [c00000000000b278] system_call+0x5c/0x68
+[345523.706112] Instruction dump:
+[345523.706114] 419e0390 7f8a4840 409d0048 6d497c00 2f89075d 419e021c 6d497c00 2f8907dd
+[345523.706119] 419e01c0 6d497c00 2f8905dd 419e00a4 <0fe00000> 38210040 38600000 ebc1fff0
+
+and then treats the executed instruction as a 'nop'.
+
+However the POWER9 User's Manual, in section "4.6.10 Book II Invalid
+Forms", informs that for TM instructions bit 31 is in fact ignored, thus
+for the TM-related invalid forms ignoring bit 31 and handling them like the
+valid forms is an acceptable way to handle them. POWER8 behaves the same
+way too.
+
+This commit changes the handling of the cases here described by treating
+the TM-related invalid forms that can generate a softpatch interrupt
+just like their valid forms (w/ bit 31 = 1) instead of as a 'nop' and by
+gently reporting any other unrecognized case to the host and treating it as
+illegal instruction instead of throwing a trace and treating it as a 'nop'.
+
+Signed-off-by: Gustavo Romero <gromero@linux.ibm.com>
+Reviewed-by: Segher Boessenkool <segher@kernel.crashing.org>
+Acked-By: Michael Neuling <mikey@neuling.org>
+Reviewed-by: Leonardo Bras <leonardo@linux.ibm.com>
+Signed-off-by: Paul Mackerras <paulus@ozlabs.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hwtracing/intel_th/intel_th.h |  2 ++
- drivers/hwtracing/intel_th/msu.c      | 11 +++++++++--
- drivers/hwtracing/intel_th/pci.c      |  8 ++++++--
- 3 files changed, 17 insertions(+), 4 deletions(-)
+ arch/powerpc/include/asm/kvm_asm.h      |  3 +++
+ arch/powerpc/kvm/book3s_hv_tm.c         | 28 ++++++++++++++++++++-----
+ arch/powerpc/kvm/book3s_hv_tm_builtin.c | 16 ++++++++++++--
+ 3 files changed, 40 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/hwtracing/intel_th/intel_th.h b/drivers/hwtracing/intel_th/intel_th.h
-index 6f4f5486fe6dc..5fe694708b7a3 100644
---- a/drivers/hwtracing/intel_th/intel_th.h
-+++ b/drivers/hwtracing/intel_th/intel_th.h
-@@ -47,11 +47,13 @@ struct intel_th_output {
- /**
-  * struct intel_th_drvdata - describes hardware capabilities and quirks
-  * @tscu_enable:	device needs SW to enable time stamping unit
-+ * @multi_is_broken:	device has multiblock mode is broken
-  * @has_mintctl:	device has interrupt control (MINTCTL) register
-  * @host_mode_only:	device can only operate in 'host debugger' mode
+diff --git a/arch/powerpc/include/asm/kvm_asm.h b/arch/powerpc/include/asm/kvm_asm.h
+index 635fb154b33f9..a3633560493be 100644
+--- a/arch/powerpc/include/asm/kvm_asm.h
++++ b/arch/powerpc/include/asm/kvm_asm.h
+@@ -150,4 +150,7 @@
+ 
+ #define KVM_INST_FETCH_FAILED	-1
+ 
++/* Extract PO and XOP opcode fields */
++#define PO_XOP_OPCODE_MASK 0xfc0007fe
++
+ #endif /* __POWERPC_KVM_ASM_H__ */
+diff --git a/arch/powerpc/kvm/book3s_hv_tm.c b/arch/powerpc/kvm/book3s_hv_tm.c
+index 0db9374971697..cc90b8b823291 100644
+--- a/arch/powerpc/kvm/book3s_hv_tm.c
++++ b/arch/powerpc/kvm/book3s_hv_tm.c
+@@ -3,6 +3,8 @@
+  * Copyright 2017 Paul Mackerras, IBM Corp. <paulus@au1.ibm.com>
   */
- struct intel_th_drvdata {
- 	unsigned int	tscu_enable        : 1,
-+			multi_is_broken    : 1,
- 			has_mintctl        : 1,
- 			host_mode_only     : 1;
- };
-diff --git a/drivers/hwtracing/intel_th/msu.c b/drivers/hwtracing/intel_th/msu.c
-index 255f8f41c8ff7..3cd2489d398c5 100644
---- a/drivers/hwtracing/intel_th/msu.c
-+++ b/drivers/hwtracing/intel_th/msu.c
-@@ -157,7 +157,8 @@ struct msc {
- 	/* config */
- 	unsigned int		enabled : 1,
- 				wrap	: 1,
--				do_irq	: 1;
-+				do_irq	: 1,
-+				multi_is_broken : 1;
- 	unsigned int		mode;
- 	unsigned int		burst_len;
- 	unsigned int		index;
-@@ -1665,7 +1666,7 @@ static int intel_th_msc_init(struct msc *msc)
- {
- 	atomic_set(&msc->user_count, -1);
  
--	msc->mode = MSC_MODE_MULTI;
-+	msc->mode = msc->multi_is_broken ? MSC_MODE_SINGLE : MSC_MODE_MULTI;
- 	mutex_init(&msc->buf_mutex);
- 	INIT_LIST_HEAD(&msc->win_list);
- 	INIT_LIST_HEAD(&msc->iter_list);
-@@ -1877,6 +1878,9 @@ mode_store(struct device *dev, struct device_attribute *attr, const char *buf,
- 	return -EINVAL;
- 
- found:
-+	if (i == MSC_MODE_MULTI && msc->multi_is_broken)
-+		return -EOPNOTSUPP;
++#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 +
- 	mutex_lock(&msc->buf_mutex);
- 	ret = 0;
+ #include <linux/kvm_host.h>
  
-@@ -2083,6 +2087,9 @@ static int intel_th_msc_probe(struct intel_th_device *thdev)
- 	if (!res)
- 		msc->do_irq = 1;
+ #include <asm/kvm_ppc.h>
+@@ -44,7 +46,18 @@ int kvmhv_p9_tm_emulation(struct kvm_vcpu *vcpu)
+ 	u64 newmsr, bescr;
+ 	int ra, rs;
  
-+	if (INTEL_TH_CAP(to_intel_th(thdev), multi_is_broken))
-+		msc->multi_is_broken = 1;
+-	switch (instr & 0xfc0007ff) {
++	/*
++	 * rfid, rfebb, and mtmsrd encode bit 31 = 0 since it's a reserved bit
++	 * in these instructions, so masking bit 31 out doesn't change these
++	 * instructions. For treclaim., tsr., and trechkpt. instructions if bit
++	 * 31 = 0 then they are per ISA invalid forms, however P9 UM, in section
++	 * 4.6.10 Book II Invalid Forms, informs specifically that ignoring bit
++	 * 31 is an acceptable way to handle these invalid forms that have
++	 * bit 31 = 0. Moreover, for emulation purposes both forms (w/ and wo/
++	 * bit 31 set) can generate a softpatch interrupt. Hence both forms
++	 * are handled below for these instructions so they behave the same way.
++	 */
++	switch (instr & PO_XOP_OPCODE_MASK) {
+ 	case PPC_INST_RFID:
+ 		/* XXX do we need to check for PR=0 here? */
+ 		newmsr = vcpu->arch.shregs.srr1;
+@@ -105,7 +118,8 @@ int kvmhv_p9_tm_emulation(struct kvm_vcpu *vcpu)
+ 		vcpu->arch.shregs.msr = newmsr;
+ 		return RESUME_GUEST;
+ 
+-	case PPC_INST_TSR:
++	/* ignore bit 31, see comment above */
++	case (PPC_INST_TSR & PO_XOP_OPCODE_MASK):
+ 		/* check for PR=1 and arch 2.06 bit set in PCR */
+ 		if ((msr & MSR_PR) && (vcpu->arch.vcore->pcr & PCR_ARCH_206)) {
+ 			/* generate an illegal instruction interrupt */
+@@ -140,7 +154,8 @@ int kvmhv_p9_tm_emulation(struct kvm_vcpu *vcpu)
+ 		vcpu->arch.shregs.msr = msr;
+ 		return RESUME_GUEST;
+ 
+-	case PPC_INST_TRECLAIM:
++	/* ignore bit 31, see comment above */
++	case (PPC_INST_TRECLAIM & PO_XOP_OPCODE_MASK):
+ 		/* check for TM disabled in the HFSCR or MSR */
+ 		if (!(vcpu->arch.hfscr & HFSCR_TM)) {
+ 			/* generate an illegal instruction interrupt */
+@@ -176,7 +191,8 @@ int kvmhv_p9_tm_emulation(struct kvm_vcpu *vcpu)
+ 		vcpu->arch.shregs.msr &= ~MSR_TS_MASK;
+ 		return RESUME_GUEST;
+ 
+-	case PPC_INST_TRECHKPT:
++	/* ignore bit 31, see comment above */
++	case (PPC_INST_TRECHKPT & PO_XOP_OPCODE_MASK):
+ 		/* XXX do we need to check for PR=0 here? */
+ 		/* check for TM disabled in the HFSCR or MSR */
+ 		if (!(vcpu->arch.hfscr & HFSCR_TM)) {
+@@ -208,6 +224,8 @@ int kvmhv_p9_tm_emulation(struct kvm_vcpu *vcpu)
+ 	}
+ 
+ 	/* What should we do here? We didn't recognize the instruction */
+-	WARN_ON_ONCE(1);
++	kvmppc_core_queue_program(vcpu, SRR1_PROGILL);
++	pr_warn_ratelimited("Unrecognized TM-related instruction %#x for emulation", instr);
 +
- 	msc->index = thdev->id;
- 
- 	msc->thdev = thdev;
-diff --git a/drivers/hwtracing/intel_th/pci.c b/drivers/hwtracing/intel_th/pci.c
-index 0d26484d67955..21fdf0b935166 100644
---- a/drivers/hwtracing/intel_th/pci.c
-+++ b/drivers/hwtracing/intel_th/pci.c
-@@ -120,6 +120,10 @@ static void intel_th_pci_remove(struct pci_dev *pdev)
- 	pci_free_irq_vectors(pdev);
+ 	return RESUME_GUEST;
  }
+diff --git a/arch/powerpc/kvm/book3s_hv_tm_builtin.c b/arch/powerpc/kvm/book3s_hv_tm_builtin.c
+index 217246279dfae..fad931f224efd 100644
+--- a/arch/powerpc/kvm/book3s_hv_tm_builtin.c
++++ b/arch/powerpc/kvm/book3s_hv_tm_builtin.c
+@@ -23,7 +23,18 @@ int kvmhv_p9_tm_emulation_early(struct kvm_vcpu *vcpu)
+ 	u64 newmsr, msr, bescr;
+ 	int rs;
  
-+static const struct intel_th_drvdata intel_th_1x_multi_is_broken = {
-+	.multi_is_broken	= 1,
-+};
-+
- static const struct intel_th_drvdata intel_th_2x = {
- 	.tscu_enable	= 1,
- 	.has_mintctl	= 1,
-@@ -152,7 +156,7 @@ static const struct pci_device_id intel_th_pci_id_table[] = {
- 	{
- 		/* Kaby Lake PCH-H */
- 		PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0xa2a6),
--		.driver_data = (kernel_ulong_t)0,
-+		.driver_data = (kernel_ulong_t)&intel_th_1x_multi_is_broken,
- 	},
- 	{
- 		/* Denverton */
-@@ -207,7 +211,7 @@ static const struct pci_device_id intel_th_pci_id_table[] = {
- 	{
- 		/* Comet Lake PCH-V */
- 		PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0xa3a6),
--		.driver_data = (kernel_ulong_t)&intel_th_2x,
-+		.driver_data = (kernel_ulong_t)&intel_th_1x_multi_is_broken,
- 	},
- 	{
- 		/* Ice Lake NNPI */
+-	switch (instr & 0xfc0007ff) {
++	/*
++	 * rfid, rfebb, and mtmsrd encode bit 31 = 0 since it's a reserved bit
++	 * in these instructions, so masking bit 31 out doesn't change these
++	 * instructions. For the tsr. instruction if bit 31 = 0 then it is per
++	 * ISA an invalid form, however P9 UM, in section 4.6.10 Book II Invalid
++	 * Forms, informs specifically that ignoring bit 31 is an acceptable way
++	 * to handle TM-related invalid forms that have bit 31 = 0. Moreover,
++	 * for emulation purposes both forms (w/ and wo/ bit 31 set) can
++	 * generate a softpatch interrupt. Hence both forms are handled below
++	 * for tsr. to make them behave the same way.
++	 */
++	switch (instr & PO_XOP_OPCODE_MASK) {
+ 	case PPC_INST_RFID:
+ 		/* XXX do we need to check for PR=0 here? */
+ 		newmsr = vcpu->arch.shregs.srr1;
+@@ -73,7 +84,8 @@ int kvmhv_p9_tm_emulation_early(struct kvm_vcpu *vcpu)
+ 		vcpu->arch.shregs.msr = newmsr;
+ 		return 1;
+ 
+-	case PPC_INST_TSR:
++	/* ignore bit 31, see comment above */
++	case (PPC_INST_TSR & PO_XOP_OPCODE_MASK):
+ 		/* we know the MSR has the TS field = S (0b01) here */
+ 		msr = vcpu->arch.shregs.msr;
+ 		/* check for PR=1 and arch 2.06 bit set in PCR */
 -- 
 2.25.1
 
