@@ -2,97 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 098C527D689
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 21:12:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EE0A27D68D
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 21:12:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728689AbgI2TMj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 15:12:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52572 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728166AbgI2TMj (ORCPT
+        id S1728727AbgI2TM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 15:12:57 -0400
+Received: from mail-ot1-f68.google.com ([209.85.210.68]:46410 "EHLO
+        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728166AbgI2TM4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 15:12:39 -0400
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 635A0C061755;
-        Tue, 29 Sep 2020 12:12:39 -0700 (PDT)
-Received: by mail-il1-x142.google.com with SMTP id y2so6063943ila.0;
-        Tue, 29 Sep 2020 12:12:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bcP6TY5iCwC4Aoa9hwj7YacP7g0fXCBXP6lot9lXg7I=;
-        b=ustwV+rQiU+AfTkh65OgnJDZzP9M8ZI1CxVfUb0JYxtghu8VHXN/6YLxMbxlRrB0B/
-         tZAefFPj4E8Hyjk+P/4kJk8pqDOR3+TwogijtIOyah5RMu8gdowuu2+VdY16xA+7Q64L
-         mtaKRWSTeXbP2AS4i7wtDcqk5yWknpoJpjl97g8brg4D/vKRO7LmXXSy2dvllE04Teim
-         0xQiDG54qhMCwCxvES0IkqlOHVL3eoNp53wYh2Nw1I2KNYjY0xwUFkjV2WvGYZMzP0iZ
-         otTBbfUMfCf+XJuzTTvdR/62MQpwLtn2fHMlKWGT/UYSX3Mtv1z/k3zpDoTI+EjAZIKR
-         12Dw==
+        Tue, 29 Sep 2020 15:12:56 -0400
+Received: by mail-ot1-f68.google.com with SMTP id 95so5517115ota.13;
+        Tue, 29 Sep 2020 12:12:56 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bcP6TY5iCwC4Aoa9hwj7YacP7g0fXCBXP6lot9lXg7I=;
-        b=rkHCUiwkt93L1Z9LK46Sh9wPykeT1kQeNHt052vLt2TFfna8FrJ9W0Cvz94qhBp8tZ
-         EyY2XdnT7fDk3fR58j52N4JPpD/tr1anfJ8v5nYHLW6zUw3LkRbYeQtN/IV1KicyfTKf
-         aT9vs5ykMviTvw9b/ssqT0A3PbM7+TVEtqq4XQaHUGRI0Y5ZOUnXmjqWxB5khPIOVHlR
-         JGTdEabct9Z/5iGwCH6bCmE+AbPcdkAoITkgHknn7EfP0VAKTl4/iRJtVnARRtCdobPY
-         WpRaus+khoe7HU46TCoL5xhJPXoTTBpYju47wUPnGxE7fqbpAjviyfhUnp+jbKaYKd1B
-         fbww==
-X-Gm-Message-State: AOAM531L6yzhH2GeM8nMte1DFOjJRvB+7VE2S6TdjQ7TXhGnVuZyNlJH
-        ue/2JN6vk780Sfquca22vIfgEBLwOcTz0szTi2ZzRmScUcOFpg==
-X-Google-Smtp-Source: ABdhPJwyk6blmfn5pIjP/C9X1CZaW/UNM30nRQNP087xNYHB9CF9KavT7Uci512Yl24zVZ7QO9jgJLndkrhCBBY5hiw=
-X-Received: by 2002:a92:1591:: with SMTP id 17mr4486385ilv.237.1601406758621;
- Tue, 29 Sep 2020 12:12:38 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=GgjKuyQJoERzQMpEMuhlPCE13zkCByWUan2/5brhiCU=;
+        b=ahYCxdjGh6vc+8vs84tn5CP4iJMl3GXT6gnodJscDP47jLs032Q9ElcLIwO+I8Jhak
+         1JY1JC3kdcZG64eg2bthagAuxpjsdb6QYBpIxR4P868Z/vFK2ZxK5PgB6bpHEqoRk2Tb
+         7cWTxXlB/WOX8ZzIVXiHmYRwhhrvlG0IETfeNQW89H5zfo/4OYdwvkDMn8UssEr7o19s
+         QEmuYyuofv6LxHb+jCQ7xkqZoTUR6KPJi5L/AtQVM3LDtvnalXmREI4IhvVWvWxTZdMo
+         4+jAcS9I9PDCZ0Xa0pJfAV3aVLwTCfI+E9dyx7Goc+rBdttVadDZBzj+1kkXxTV5/gO8
+         V2Rg==
+X-Gm-Message-State: AOAM530zWxyi8/Lze2Sz758r9T28hoBRgu5hdo/GgP1k8SNaXVNgYpyJ
+        1dY9fGZgu4KWyINDEIzjvw==
+X-Google-Smtp-Source: ABdhPJzWyMYcV45E2qABB4g0dlueAf1l8Bg8xQxbnk8POFF0QM48+jRHidYaB2vtazxWKOyqiyLcMg==
+X-Received: by 2002:a05:6830:ca:: with SMTP id x10mr3612103oto.344.1601406775723;
+        Tue, 29 Sep 2020 12:12:55 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id k16sm1201190oij.56.2020.09.29.12.12.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Sep 2020 12:12:55 -0700 (PDT)
+Received: (nullmailer pid 987780 invoked by uid 1000);
+        Tue, 29 Sep 2020 19:12:54 -0000
+Date:   Tue, 29 Sep 2020 14:12:54 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     kholk11@gmail.com
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, kishon@ti.com,
+        marijns95@gmail.com, konradybcio@gmail.com,
+        martin.botka1@gmail.com, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, phone-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] phy: qcom-qusb2: Add support for SDM630/660
+Message-ID: <20200929191254.GA984478@bogus>
+References: <20200926131157.14633-1-kholk11@gmail.com>
 MIME-Version: 1.0
-References: <20200929005320.14739-1-david.e.box@linux.intel.com>
- <20200929005320.14739-4-david.e.box@linux.intel.com> <d6d59aad-a946-d780-b2d2-9c187fd8303c@infradead.org>
-In-Reply-To: <d6d59aad-a946-d780-b2d2-9c187fd8303c@infradead.org>
-From:   Alexander Duyck <alexander.duyck@gmail.com>
-Date:   Tue, 29 Sep 2020 12:12:27 -0700
-Message-ID: <CAKgT0Uc9LtFKnaHpzJhBLyeB_ycD74mb8wcaaO4KZBn+05Je5w@mail.gmail.com>
-Subject: Re: [PATCH V6 3/5] platform/x86: Intel PMT class driver
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     "David E. Box" <david.e.box@linux.intel.com>,
-        Lee Jones <lee.jones@linaro.org>, dvhart@infradead.org,
-        Andy Shevchenko <andy@infradead.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        platform-driver-x86@vger.kernel.org,
-        linux-pci <linux-pci@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200926131157.14633-1-kholk11@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 6:24 PM Randy Dunlap <rdunlap@infradead.org> wrote:
->
-> On 9/28/20 5:53 PM, David E. Box wrote:
-> > diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
-> > index 40219bba6801..093c43b63f48 100644
-> > --- a/drivers/platform/x86/Kconfig
-> > +++ b/drivers/platform/x86/Kconfig
-> > @@ -1360,6 +1360,15 @@ config INTEL_PMC_CORE
-> >               - LTR Ignore
-> >               - MPHY/PLL gating status (Sunrisepoint PCH only)
-> >
-> > +config INTEL_PMT_CLASS
-> > +     tristate "Intel Platform Monitoring Technology (PMT) Class driver"
-> > +     help
-> > +       The Intel Platform Monitoring Technology (PMT) class driver provides
-> > +       the basic sysfs interface and file heirarchy uses by PMT devices.
->
->                                              hierarchy
-> No "heir" involved.
+On Sat, Sep 26, 2020 at 03:11:57PM +0200, kholk11@gmail.com wrote:
+> From: Konrad Dybcio <konradybcio@gmail.com>
+> 
+> QUSB on these SoCs actually uses *almost* the same
+> configuration that msm8996 does, so we can reuse
+> the phy_cfg from there with just a single change
+> (se clock scheme).
+> 
+> Signed-off-by: Konrad Dybcio <konradybcio@gmail.com>
+> Signed-off-by: AngeloGioacchino Del Regno <kholk11@gmail.com>
+> ---
+>  Documentation/devicetree/bindings/phy/qcom,qusb2-phy.yaml | 1 +
+>  drivers/phy/qualcomm/phy-qcom-qusb2.c                     | 7 ++++++-
+>  2 files changed, 7 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/phy/qcom,qusb2-phy.yaml b/Documentation/devicetree/bindings/phy/qcom,qusb2-phy.yaml
+> index ccda92859eca..97dae24752b4 100644
+> --- a/Documentation/devicetree/bindings/phy/qcom,qusb2-phy.yaml
+> +++ b/Documentation/devicetree/bindings/phy/qcom,qusb2-phy.yaml
+> @@ -21,6 +21,7 @@ properties:
+>                - qcom,ipq8074-qusb2-phy
+>                - qcom,msm8996-qusb2-phy
+>                - qcom,msm8998-qusb2-phy
+> +              - qcom,sdm660-qusb2-phy
+>        - items:
+>            - enum:
+>                - qcom,sc7180-qusb2-phy
+> diff --git a/drivers/phy/qualcomm/phy-qcom-qusb2.c b/drivers/phy/qualcomm/phy-qcom-qusb2.c
+> index 557547dabfd5..a4d706b361b9 100644
+> --- a/drivers/phy/qualcomm/phy-qcom-qusb2.c
+> +++ b/drivers/phy/qualcomm/phy-qcom-qusb2.c
+> @@ -702,7 +702,8 @@ static int qusb2_phy_init(struct phy *phy)
+>  	usleep_range(150, 160);
+>  
+>  	/* Default is single-ended clock on msm8996 */
+> -	qphy->has_se_clk_scheme = true;
+> +	if (!of_device_is_compatible(phy->dev.of_node, "qcom,sdm660-qusb2-phy"))
+> +		qphy->has_se_clk_scheme = true;
 
-Knowing me I probably had class inheritance on the mind at the time
-when I was writing it up and it was just a thinko.. :-)
+You should just pull this from the driver data.
 
-Thanks for the review feedback. I'll work with David to make sure we
-address the formatting/spelling issues in this patch and the crashlog
-patch.
-
-- Alex
+>  	/*
+>  	 * read TCSR_PHY_CLK_SCHEME register to check if single-ended
+>  	 * clock scheme is selected. If yes, then disable differential
+> @@ -818,6 +819,10 @@ static const struct of_device_id qusb2_phy_of_match_table[] = {
+>  	}, {
+>  		.compatible	= "qcom,msm8998-qusb2-phy",
+>  		.data		= &msm8998_phy_cfg,
+> +	}, {
+> +		.compatible	= "qcom,sdm660-qusb2-phy",
+> +		/* sdm630/660 use the same config as msm8996. */
+> +		.data		= &msm8996_phy_cfg,
+>  	}, {
+>  		/*
+>  		 * Deprecated. Only here to support legacy device
+> -- 
+> 2.28.0
+> 
