@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CCF827C319
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:03:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB25327C4AE
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:16:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728370AbgI2LDK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:03:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38732 "EHLO mail.kernel.org"
+        id S1729542AbgI2LPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:15:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60090 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728314AbgI2LDH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:03:07 -0400
+        id S1729531AbgI2LPi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:15:38 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5834E21734;
-        Tue, 29 Sep 2020 11:03:06 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 01505206A5;
+        Tue, 29 Sep 2020 11:15:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601377386;
-        bh=oq4Ifd3K+fcOwKUUcipTw4Zh0R6ErPjG2I9+58wT2HU=;
+        s=default; t=1601378137;
+        bh=KEdDaj2rl9n492aoW3xE+uz9UJM/LdYdz/Y1IXG2eU0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=q74779taBiO/m0tjN7oaLkGDKhlHfrSbQ9S8WRBYd+tIZyLawNDIbxpzsx2sO0v4e
-         NS+ghvLlcFUGiHyqgpIvwvBIWtn/2wwVpjU8Uu6QiFyJfkKw1MV6f4wBs61XMa1ydu
-         AcKzCynp8mtzjG0OkK9zppfU03kp4Cy8qh0pcrlU=
+        b=ycaqUFsucIf6u3QHjOsyB5kT8sJsELs8OGVuxRg6URCTjuqsuvECULz2WrJcWSYtj
+         dfSfND/gwJwS7VoXszUUYYV8nbMKpWF80901R+XTcvEoPfHOgxO9WplKlH9tvKD2QO
+         ZO4/9Vl0jKzv9uVwCxXYMzfC5m6zKyDOFpb9WRa4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Wen Yang <wenyang@linux.alibaba.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 18/85] mfd: mfd-core: Protect against NULL call-back function pointer
-Date:   Tue, 29 Sep 2020 12:59:45 +0200
-Message-Id: <20200929105929.127851937@linuxfoundation.org>
+Subject: [PATCH 4.14 074/166] timekeeping: Prevent 32bit truncation in scale64_check_overflow()
+Date:   Tue, 29 Sep 2020 12:59:46 +0200
+Message-Id: <20200929105938.915539331@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929105928.198942536@linuxfoundation.org>
-References: <20200929105928.198942536@linuxfoundation.org>
+In-Reply-To: <20200929105935.184737111@linuxfoundation.org>
+References: <20200929105935.184737111@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,50 +43,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lee Jones <lee.jones@linaro.org>
+From: Wen Yang <wenyang@linux.alibaba.com>
 
-[ Upstream commit b195e101580db390f50b0d587b7f66f241d2bc88 ]
+[ Upstream commit 4cbbc3a0eeed675449b1a4d080008927121f3da3 ]
 
-If a child device calls mfd_cell_{en,dis}able() without an appropriate
-call-back being set, we are likely to encounter a panic.  Avoid this
-by adding suitable checking.
+While unlikely the divisor in scale64_check_overflow() could be >= 32bit in
+scale64_check_overflow(). do_div() truncates the divisor to 32bit at least
+on 32bit platforms.
 
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
-Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
-Reviewed-by: Mark Brown <broonie@kernel.org>
+Use div64_u64() instead to avoid the truncation to 32-bit.
+
+[ tglx: Massaged changelog ]
+
+Signed-off-by: Wen Yang <wenyang@linux.alibaba.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Link: https://lkml.kernel.org/r/20200120100523.45656-1-wenyang@linux.alibaba.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mfd/mfd-core.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ kernel/time/timekeeping.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/mfd/mfd-core.c b/drivers/mfd/mfd-core.c
-index 215bb5eeb5acf..c57e375fad6ed 100644
---- a/drivers/mfd/mfd-core.c
-+++ b/drivers/mfd/mfd-core.c
-@@ -31,6 +31,11 @@ int mfd_cell_enable(struct platform_device *pdev)
- 	const struct mfd_cell *cell = mfd_get_cell(pdev);
- 	int err = 0;
+diff --git a/kernel/time/timekeeping.c b/kernel/time/timekeeping.c
+index 1ce7c404d0b03..5b6f815a74ee3 100644
+--- a/kernel/time/timekeeping.c
++++ b/kernel/time/timekeeping.c
+@@ -988,9 +988,8 @@ static int scale64_check_overflow(u64 mult, u64 div, u64 *base)
+ 	    ((int)sizeof(u64)*8 - fls64(mult) < fls64(rem)))
+ 		return -EOVERFLOW;
+ 	tmp *= mult;
+-	rem *= mult;
  
-+	if (!cell->enable) {
-+		dev_dbg(&pdev->dev, "No .enable() call-back registered\n");
-+		return 0;
-+	}
-+
- 	/* only call enable hook if the cell wasn't previously enabled */
- 	if (atomic_inc_return(cell->usage_count) == 1)
- 		err = cell->enable(pdev);
-@@ -48,6 +53,11 @@ int mfd_cell_disable(struct platform_device *pdev)
- 	const struct mfd_cell *cell = mfd_get_cell(pdev);
- 	int err = 0;
- 
-+	if (!cell->disable) {
-+		dev_dbg(&pdev->dev, "No .disable() call-back registered\n");
-+		return 0;
-+	}
-+
- 	/* only disable if no other clients are using it */
- 	if (atomic_dec_return(cell->usage_count) == 0)
- 		err = cell->disable(pdev);
+-	do_div(rem, div);
++	rem = div64_u64(rem * mult, div);
+ 	*base = tmp + rem;
+ 	return 0;
+ }
 -- 
 2.25.1
 
