@@ -2,45 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00DC827CBB9
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:31:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3018027CBB8
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:31:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732916AbgI2M36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 08:29:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43284 "EHLO mail.kernel.org"
+        id S1732911AbgI2M34 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 08:29:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43262 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728970AbgI2LaX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1729315AbgI2LaX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 29 Sep 2020 07:30:23 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A6B2523AF8;
-        Tue, 29 Sep 2020 11:24:37 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D05FF23AFA;
+        Tue, 29 Sep 2020 11:24:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601378678;
-        bh=FeQYqQsSHPvxwXa7ydySBEf414GHhGDONhhCCY6olSE=;
+        s=default; t=1601378681;
+        bh=dsEVre5mahEKufw3QNy6wTxI/ryhoX5wYHAmIg65jyU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HwOmnNANi7sq1rURo4pkIYSn1N1inII691oponZUaa7uNBId3/vAQ1j02LdbVJlrQ
-         geTwc66+8DSepvKl/WFOhd1GQ116ccOP8JQL+6mhpgyGqcOXmwXmW4g1S23slEmof/
-         Rfd1ecBu+f7ntg7iSXFIhLDAR8cvHYYzlokXkDl0=
+        b=rLORgFCj7dTyOlERetT5f6IWhYwYHYTm/ueY6cZbdnD8RZk01TVpaMsmu/pGQUYaY
+         D9tD2ec3Fa0KxjStL927ZIuAQDzZKvpATSGNtsHvH8ruGU2ofXERIkll6gIbR5yAoC
+         efk+6FIQ/WLkQaLiZdYoTAKOCRScZKWWKQ/czJQ0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jiri Olsa <jolsa@redhat.com>,
-        John Garry <john.garry@huawei.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        James Clark <james.clark@arm.com>,
-        Joakim Zhang <qiangqing.zhang@nxp.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>, linuxarm@huawei.com,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        stable@vger.kernel.org, Jeff Moyer <jmoyer@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Justin He <Justin.He@arm.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 099/245] perf jevents: Fix leak of mapfile memory
-Date:   Tue, 29 Sep 2020 12:59:10 +0200
-Message-Id: <20200929105951.816051008@linuxfoundation.org>
+Subject: [PATCH 4.19 100/245] mm: avoid data corruption on CoW fault into PFN-mapped VMA
+Date:   Tue, 29 Sep 2020 12:59:11 +0200
+Message-Id: <20200929105951.867784718@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200929105946.978650816@linuxfoundation.org>
 References: <20200929105946.978650816@linuxfoundation.org>
@@ -52,81 +47,133 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: John Garry <john.garry@huawei.com>
+From: Kirill A. Shutemov <kirill@shutemov.name>
 
-[ Upstream commit 3f5777fbaf04c58d940526a22a2e0c813c837936 ]
+[ Upstream commit c3e5ea6ee574ae5e845a40ac8198de1fb63bb3ab ]
 
-The memory for global pointer is never freed during normal program
-execution, so let's do that in the main function exit as a good
-programming practice.
+Jeff Moyer has reported that one of xfstests triggers a warning when run
+on DAX-enabled filesystem:
 
-A stray blank line is also removed.
+	WARNING: CPU: 76 PID: 51024 at mm/memory.c:2317 wp_page_copy+0xc40/0xd50
+	...
+	wp_page_copy+0x98c/0xd50 (unreliable)
+	do_wp_page+0xd8/0xad0
+	__handle_mm_fault+0x748/0x1b90
+	handle_mm_fault+0x120/0x1f0
+	__do_page_fault+0x240/0xd70
+	do_page_fault+0x38/0xd0
+	handle_page_fault+0x10/0x30
 
-Reported-by: Jiri Olsa <jolsa@redhat.com>
-Signed-off-by: John Garry <john.garry@huawei.com>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Andi Kleen <ak@linux.intel.com>
-Cc: James Clark <james.clark@arm.com>
-Cc: Joakim Zhang <qiangqing.zhang@nxp.com>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Will Deacon <will@kernel.org>
-Cc: linuxarm@huawei.com
-Link: http://lore.kernel.org/lkml/1583406486-154841-2-git-send-email-john.garry@huawei.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+The warning happens on failed __copy_from_user_inatomic() which tries to
+copy data into a CoW page.
+
+This happens because of race between MADV_DONTNEED and CoW page fault:
+
+	CPU0					CPU1
+ handle_mm_fault()
+   do_wp_page()
+     wp_page_copy()
+       do_wp_page()
+					madvise(MADV_DONTNEED)
+					  zap_page_range()
+					    zap_pte_range()
+					      ptep_get_and_clear_full()
+					      <TLB flush>
+	 __copy_from_user_inatomic()
+	 sees empty PTE and fails
+	 WARN_ON_ONCE(1)
+	 clear_page()
+
+The solution is to re-try __copy_from_user_inatomic() under PTL after
+checking that PTE is matches the orig_pte.
+
+The second copy attempt can still fail, like due to non-readable PTE, but
+there's nothing reasonable we can do about, except clearing the CoW page.
+
+Reported-by: Jeff Moyer <jmoyer@redhat.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Tested-by: Jeff Moyer <jmoyer@redhat.com>
+Cc: <stable@vger.kernel.org>
+Cc: Justin He <Justin.He@arm.com>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Link: http://lkml.kernel.org/r/20200218154151.13349-1-kirill.shutemov@linux.intel.com
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/perf/pmu-events/jevents.c | 15 +++++++++------
- 1 file changed, 9 insertions(+), 6 deletions(-)
+ mm/memory.c | 35 +++++++++++++++++++++++++++--------
+ 1 file changed, 27 insertions(+), 8 deletions(-)
 
-diff --git a/tools/perf/pmu-events/jevents.c b/tools/perf/pmu-events/jevents.c
-index c17e594041712..6631970f96832 100644
---- a/tools/perf/pmu-events/jevents.c
-+++ b/tools/perf/pmu-events/jevents.c
-@@ -1064,10 +1064,9 @@ static int process_one_file(const char *fpath, const struct stat *sb,
-  */
- int main(int argc, char *argv[])
- {
--	int rc;
-+	int rc, ret = 0;
- 	int maxfds;
- 	char ldirname[PATH_MAX];
--
- 	const char *arch;
- 	const char *output_file;
- 	const char *start_dirname;
-@@ -1138,7 +1137,8 @@ int main(int argc, char *argv[])
- 		/* Make build fail */
- 		fclose(eventsfp);
- 		free_arch_std_events();
--		return 1;
-+		ret = 1;
-+		goto out_free_mapfile;
- 	} else if (rc) {
- 		goto empty_map;
- 	}
-@@ -1156,14 +1156,17 @@ int main(int argc, char *argv[])
- 		/* Make build fail */
- 		fclose(eventsfp);
- 		free_arch_std_events();
--		return 1;
-+		ret = 1;
- 	}
+diff --git a/mm/memory.c b/mm/memory.c
+index fcad8a0d943d3..eeae63bd95027 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -2353,7 +2353,7 @@ static inline bool cow_user_page(struct page *dst, struct page *src,
+ 	bool ret;
+ 	void *kaddr;
+ 	void __user *uaddr;
+-	bool force_mkyoung;
++	bool locked = false;
+ 	struct vm_area_struct *vma = vmf->vma;
+ 	struct mm_struct *mm = vma->vm_mm;
+ 	unsigned long addr = vmf->address;
+@@ -2378,11 +2378,11 @@ static inline bool cow_user_page(struct page *dst, struct page *src,
+ 	 * On architectures with software "accessed" bits, we would
+ 	 * take a double page fault, so mark it accessed here.
+ 	 */
+-	force_mkyoung = arch_faults_on_old_pte() && !pte_young(vmf->orig_pte);
+-	if (force_mkyoung) {
++	if (arch_faults_on_old_pte() && !pte_young(vmf->orig_pte)) {
+ 		pte_t entry;
  
--	return 0;
+ 		vmf->pte = pte_offset_map_lock(mm, vmf->pmd, addr, &vmf->ptl);
++		locked = true;
+ 		if (!likely(pte_same(*vmf->pte, vmf->orig_pte))) {
+ 			/*
+ 			 * Other thread has already handled the fault
+@@ -2406,18 +2406,37 @@ static inline bool cow_user_page(struct page *dst, struct page *src,
+ 	 * zeroes.
+ 	 */
+ 	if (__copy_from_user_inatomic(kaddr, uaddr, PAGE_SIZE)) {
++		if (locked)
++			goto warn;
 +
-+	goto out_free_mapfile;
++		/* Re-validate under PTL if the page is still mapped */
++		vmf->pte = pte_offset_map_lock(mm, vmf->pmd, addr, &vmf->ptl);
++		locked = true;
++		if (!likely(pte_same(*vmf->pte, vmf->orig_pte))) {
++			/* The PTE changed under us. Retry page fault. */
++			ret = false;
++			goto pte_unlock;
++		}
++
+ 		/*
+-		 * Give a warn in case there can be some obscure
+-		 * use-case
++		 * The same page can be mapped back since last copy attampt.
++		 * Try to copy again under PTL.
+ 		 */
+-		WARN_ON_ONCE(1);
+-		clear_page(kaddr);
++		if (__copy_from_user_inatomic(kaddr, uaddr, PAGE_SIZE)) {
++			/*
++			 * Give a warn in case there can be some obscure
++			 * use-case
++			 */
++warn:
++			WARN_ON_ONCE(1);
++			clear_page(kaddr);
++		}
+ 	}
  
- empty_map:
- 	fclose(eventsfp);
- 	create_empty_mapping(output_file);
- 	free_arch_std_events();
--	return 0;
-+out_free_mapfile:
-+	free(mapfile);
-+	return ret;
- }
+ 	ret = true;
+ 
+ pte_unlock:
+-	if (force_mkyoung)
++	if (locked)
+ 		pte_unmap_unlock(vmf->pte, vmf->ptl);
+ 	kunmap_atomic(kaddr);
+ 	flush_dcache_page(dst);
 -- 
 2.25.1
 
