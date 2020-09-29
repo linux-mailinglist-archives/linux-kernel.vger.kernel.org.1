@@ -2,139 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 073FA27C108
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 11:25:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B31A27C10B
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 11:25:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727932AbgI2JZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 05:25:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45724 "EHLO
+        id S1728011AbgI2JZX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 05:25:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727700AbgI2JZN (ORCPT
+        with ESMTP id S1727930AbgI2JZW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 05:25:13 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADEDEC061755
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 02:25:12 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id o8so13973600ejb.10
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 02:25:12 -0700 (PDT)
+        Tue, 29 Sep 2020 05:25:22 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2D0BC061755
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 02:25:21 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id o5so4490979wrn.13
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 02:25:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=lightnvm-io.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=Eo+z2/XPX9KqvAntC0eg29WykmGoGJYNJE8Hmye2bYI=;
-        b=MBlPipWPxjPPHW1M71myTFPsbocczwAG2AB9WC6x9p4BhG4Kh4w7mmvoiUQ9664nmu
-         GWAxoISBrizY7bBXj7NkjKeuTf3gf4c+ENy0nTO6AyuwraoFhqAIfetMbMX0U27MEHqz
-         BoX666NdU+M9Tr63H9y1Bn5e3TD2li30OpJe2wHnCfHcDXL/jSVpq4bRclBsyIs0Gr/0
-         jQqkSVEdJE/9JMmcvu14mZEdhG/1sFdnO7Cz8BiQmBv7R5y6JCfqAtWT8bvADjwxMsgM
-         iYyVpTYAFmpnl/acvSGzAqwzVHQwjnQMRYEutmqEhXZw6JijJC4bZMctEnxZEYZkekBO
-         elWQ==
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:autocrypt:organization:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=y3xolV07ydwiw9pUIR05O0Dg9ONWaFEj7NSliXEkK4k=;
+        b=09LRUYPf5E3HT1ePfqHdRNpFuhMBuHfzWoqQUrGt72jvG43leqeYwggHXQjbzZE2A0
+         I5lzoUN3tsKq3YrPdhOFdpIisJ0Z9FWuqEyHKn4A7uJDRW8z9eC3wR7coTScxPghduL0
+         J8XqR3zHsafTLvoQR0tjEbzBGstCy8r2am45QBrCuij8PdOqqo13E5bsxEn5Ymzb8hYO
+         oXbWRPuYJSFl7SB3NU5Y6gu2rLq0rP9byYVMqVtaESS39smsCzOmaPYHjdK3L3R3Bl5B
+         Vy+3FFX5t4BEYfzLOW52oZ1u7sH4MIAqN/wBzkxBH4NR3hjL5sw9N11b54X5t9qBsb4y
+         A/oQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=Eo+z2/XPX9KqvAntC0eg29WykmGoGJYNJE8Hmye2bYI=;
-        b=rQ7bbRsHirYbMFIFTh14UdopNvemG8Lm1HNdc/b/dfttB4AF1GOKD19lPOpZxxYOCt
-         T1D+2JDJzXd85ARvYlWG9htamcgE1v1BnIoqw8JeKrITrX85L6nnw8eiXfN1viZBlEuE
-         sc9HGOhU73BCBHYNvMAQxaD063cDyU6NDeaU+XQpJ7Wr1XknsuLXdffZI+3TEsHK2UpP
-         ++w52ZCVrcYxAUm6gRir9O+d50oKi7ENoL129znCaM0HZXOmR31Xsj6ElfJXzNCaYeWL
-         faTIaGUiBzgPeT6B1XVvI2FMeJqTx9OTN+J9UheGKYEjoptodDBMaQXzOAw9lchpMpN7
-         67OA==
-X-Gm-Message-State: AOAM532Sy0FogoZ5sFl+Xxm9LRi7OcE/T4Z4UfSId6m/XXBXQtFW8R0z
-        K5SbYRfaydM+mddEbBpHfg3Yzw==
-X-Google-Smtp-Source: ABdhPJwmUOq2dOapktMQ+kiOOey6ddV1sydIapnSqsDovRws4juNOXlmT+6CNJQT4sFSTE55bP9aaQ==
-X-Received: by 2002:a17:906:60d3:: with SMTP id f19mr3009634ejk.141.1601371511314;
-        Tue, 29 Sep 2020 02:25:11 -0700 (PDT)
-Received: from [10.0.0.6] (xb932c246.cust.hiper.dk. [185.50.194.70])
-        by smtp.gmail.com with ESMTPSA id q3sm5524721edt.1.2020.09.29.02.25.10
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :organization:message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=y3xolV07ydwiw9pUIR05O0Dg9ONWaFEj7NSliXEkK4k=;
+        b=hZn2OaC6U75wRHzoWmmwDLA9Pmalb2ed9Tgca5KJcsmRcq4sPKcCZOV0srHGhRVzv9
+         n6KRRVNyDCLo1FJa8TObs9Z8soo+hJzwzvtfQstQw0VwZGWJsJVRWmGGw1THLiq870aH
+         P6+fJXUuiaQ+PR0xGvfPiMB4rQcg9Rz7BPmI75Nle66Y1t+oeMboYPFPRlvUb0OjJsM+
+         m5c4pIqnLNQumIT4aE2jbkOvecVGwnb2g+hly/awWsQrUZfiWxMMWeDvhKI3mOG+2LZ5
+         k+gZW6YBuLfB+jvfCCfkzpe5NeWhdDDoahOnaeVg9b6MF3nGgaqhefANoC5k/0L2X5Gf
+         HEUw==
+X-Gm-Message-State: AOAM533JbCDV+EK2vpL9i6yYrL9MIGE+MmtkMb3vhUXvjVCKCK4LGq5a
+        c2GeLnejGW6/4wigt+mvcE3wLPOS6peh0cwO
+X-Google-Smtp-Source: ABdhPJywsO6BQatT62evnpEoaM/A8pOnCNGKmgU7+YSJiK4b0Bfq8OxEhegzFOq1ZHMLDX/5zZSB8A==
+X-Received: by 2002:adf:e802:: with SMTP id o2mr3097872wrm.309.1601371519895;
+        Tue, 29 Sep 2020 02:25:19 -0700 (PDT)
+Received: from ?IPv6:2a01:e35:2ec0:82b0:d50c:1ee4:fec5:ad12? ([2a01:e35:2ec0:82b0:d50c:1ee4:fec5:ad12])
+        by smtp.gmail.com with ESMTPSA id y68sm4800251wmd.39.2020.09.29.02.25.18
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 29 Sep 2020 02:25:10 -0700 (PDT)
-Subject: Re: [PATCH v3] null_blk: add support for max open/active zone limit
- for zoned devices
-To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        Niklas Cassel <nks@flawful.org>, Jens Axboe <axboe@kernel.dk>
-Cc:     Damien Le Moal <Damien.LeMoal@wdc.com>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Niklas Cassel <Niklas.Cassel@wdc.com>
-References: <20200828105400.80893-1-niklas.cassel@wdc.com>
- <20200907081824.GA260080@localhost.localdomain>
- <20200917075647.GA20845@flawful.org>
- <SN4PR0401MB359871B467B7F5FDB3115ADE9B380@SN4PR0401MB3598.namprd04.prod.outlook.com>
-From:   =?UTF-8?Q?Matias_Bj=c3=b8rling?= <mb@lightnvm.io>
-Message-ID: <d562372a-eeec-a0e8-cfff-9301cf0a8fb4@lightnvm.io>
-Date:   Tue, 29 Sep 2020 11:25:10 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Tue, 29 Sep 2020 02:25:18 -0700 (PDT)
+Subject: Re: [PATCH v4 0/4] drm: panel: add support for TDO tl070wsh30 panel
+To:     thierry.reding@gmail.com, sam@ravnborg.org
+Cc:     dri-devel@lists.freedesktop.org, linux-amlogic@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+References: <20200915121912.4347-1-narmstrong@baylibre.com>
+From:   Neil Armstrong <narmstrong@baylibre.com>
+Autocrypt: addr=narmstrong@baylibre.com; prefer-encrypt=mutual; keydata=
+ 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
+ ZaTUOEkgIor5losDrePdPgE=
+Organization: Baylibre
+Message-ID: <9f720791-2718-205f-d101-0811a679f54e@baylibre.com>
+Date:   Tue, 29 Sep 2020 11:25:17 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <SN4PR0401MB359871B467B7F5FDB3115ADE9B380@SN4PR0401MB3598.namprd04.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200915121912.4347-1-narmstrong@baylibre.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/09/2020 09.46, Johannes Thumshirn wrote:
-> On 17/09/2020 09:57, Niklas Cassel wrote:
->> On Mon, Sep 07, 2020 at 08:18:26AM +0000, Niklas Cassel wrote:
->>> On Fri, Aug 28, 2020 at 12:54:00PM +0200, Niklas Cassel wrote:
->>>> Add support for user space to set a max open zone and a max active zone
->>>> limit via configfs. By default, the default values are 0 == no limit.
->>>>
->>>> Call the block layer API functions used for exposing the configured
->>>> limits to sysfs.
->>>>
->>>> Add accounting in null_blk_zoned so that these new limits are respected.
->>>> Performing an operation that would exceed these limits results in a
->>>> standard I/O error.
->>>>
->>>> A max open zone limit exists in the ZBC standard.
->>>> While null_blk_zoned is used to test the Zoned Block Device model in
->>>> Linux, when it comes to differences between ZBC and ZNS, null_blk_zoned
->>>> mostly follows ZBC.
->>>>
->>>> Therefore, implement the manage open zone resources function from ZBC,
->>>> but additionally add support for max active zones.
->>>> This enables user space not only to test against a device with an open
->>>> zone limit, but also to test against a device with an active zone limit.
->>>>
->>>> Signed-off-by: Niklas Cassel <niklas.cassel@wdc.com>
->>>> Reviewed-by: Damien Le Moal <damien.lemoal@wdc.com>
->>>> ---
->>>> Changes since v2:
->>>> -Picked up Damien's Reviewed-by tag.
->>>> -Fixed a typo in the commit message.
->>>> -Renamed null_manage_zone_resources() to null_has_zone_resources().
->>>>
->>>>   drivers/block/null_blk.h       |   5 +
->>>>   drivers/block/null_blk_main.c  |  16 +-
->>>>   drivers/block/null_blk_zoned.c | 319 +++++++++++++++++++++++++++------
->>>>   3 files changed, 282 insertions(+), 58 deletions(-)
->>> Hello Jens,
->>>
->>> A gentle ping on this.
->>>
->>> As far as I can tell, there are no outstanding review comments.
->>
->> Hello Jens,
->>
->> Pinging you from another address, in case my corporate email is getting
->> stuck in your spam filter.
->>
->> Kind regards,
->> Niklas
->>
->
-> Jens,
->
-> Any chance we can get this queued up for 5.10? This is really helpful for e.g.
-> the zonefs test suite or xfstests when btrfs HMZONED support lands.
->
-> Thanks,
-> 	Johannes
+Hi Sam,
 
-Thanks, Niklas.
+Is there anything more to change ?
 
-Reviewed-by: Matias Bjørling <matias.bjorling@wdc.com>
+Thanks,
+Neil
+
+On 15/09/2020 14:19, Neil Armstrong wrote:
+> This adds support bindings and support for the TDO TL070WSH30 TFT-LCD panel
+> module shipped with the Amlogic S400 Development Kit.
+> The panel has a 1024×600 resolution and uses 24 bit RGB per pixel.
+> It provides a MIPI DSI interface to the host, a built-in LED backlight
+> and touch controller.
+> 
+> Changes since v3 at [3]:
+> - reordered tdo vendor prefix
+> 
+> Changes since v2 at [2]:
+> - added reset gpio to panel-simple-dsi bindings
+> - moved bindings to panel-simple
+> - re-ordered prepare/unprepare
+> - added back refresh print
+> - moved regulator/reset handling in prepare/unprepare
+> - aligned remove/shutdown with panel-simple
+> - added sentinel comment into dt match table
+> 
+> Changes since v1 at [1]:
+> - added missing vendor-prefixes patch
+> - removed vrefresh
+> - fixed warning on add_panel return
+> - removed DRM logging
+> 
+> [1] https://patchwork.freedesktop.org/series/81376/#rev1
+> [2] https://patchwork.freedesktop.org/series/81376/#rev2
+> [3] https://patchwork.freedesktop.org/series/81376/#rev3
+> 
+> Neil Armstrong (4):
+>   dt-bindings: vendor-prefixes: Add Shanghai Top Display
+>     Optolelectronics vendor prefix
+>   dt-bindings: display: panel-simple-dsi: add optional reset gpio
+>   dt-bindings: display: panel-simple-dsi: add TDO TL070WSH30 DSI panel
+>     bindings
+>   drm: panel: add TDO tl070wsh30 panel driver
+> 
+>  .../display/panel/panel-simple-dsi.yaml       |   3 +
+>  .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
+>  drivers/gpu/drm/panel/Kconfig                 |  11 +
+>  drivers/gpu/drm/panel/Makefile                |   1 +
+>  drivers/gpu/drm/panel/panel-tdo-tl070wsh30.c  | 250 ++++++++++++++++++
+>  5 files changed, 267 insertions(+)
+>  create mode 100644 drivers/gpu/drm/panel/panel-tdo-tl070wsh30.c
+> 
 
