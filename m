@@ -2,89 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFAC127D742
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 21:49:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0D6E27D74A
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 21:51:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728927AbgI2Ttk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 15:49:40 -0400
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:47040 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727700AbgI2Ttj (ORCPT
+        id S1728864AbgI2Tvo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 15:51:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58584 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728084AbgI2Tvo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 15:49:39 -0400
-Received: by mail-ot1-f66.google.com with SMTP id 95so5627197ota.13;
-        Tue, 29 Sep 2020 12:49:39 -0700 (PDT)
+        Tue, 29 Sep 2020 15:51:44 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28A9EC061755;
+        Tue, 29 Sep 2020 12:51:44 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id kk9so3270326pjb.2;
+        Tue, 29 Sep 2020 12:51:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=B2tedPUDtg6ntFKI3C/vWBukV2Pf/aNZvJUFKVIBAvk=;
+        b=YWsZggFLDJDw69LGfzr2iyd/yOwwPycGC9wz7mzB45/s1OrzfodhroaaS7iV07mEM0
+         kEU74MEVomSocvono+ZOSyckgk/+72FZSJWWsphc29l1VfZPLh2sThJyKmiYm8fOvLPk
+         68vvDxmj75i4/6pgf0HmUu2ty1pX7xJuXCaytsOCdatOGy/LLenmUXSTna1gwn1dDNrM
+         zzWL8xnFGviczKOGFzS2xKnZrcLHqFy953HXBGofXCWB0s6GoYNKHQXpJ7b3PXn3ErMv
+         7mJA+t1wYibgC5gxOYRDRdUfvP45jyNWhP6ZtpZLheSZKhKHPwRa+EI1C/x6vnMnQJfd
+         G3ug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=PzCaUNqysgEnTwvGeABBPTRtJRNx1R8CoMvMr2bX+p0=;
-        b=GijYO/JV/CRXFk7YcazOoIgLU48G4GmoV2TiUkxv5L7tdD5t4RIxovYGIfsFgsqhGe
-         2kJ7tlILSXH2/lTwARreFZyBt4tkLaAzBzFy0ZAxnF684UXvWf2DoznsEpef41k664/9
-         Rztm2DiBcmIrU5S+vqCSeTAb/Lr/N6nv2NaaW6dbbEUAQnbSA/S4pcvNXAQDESkLm+v2
-         1b9yJbsRd3Fabu5j9OUyIueDqWraQOBL8AutaYZzlb5e/JnuRz3DZ5aNQXcntUsRoZs8
-         M0xB3PiaaeIbXfyg4DasNHq65RJePYRgX8kX1q1grmntGVIx7I8/9erNkfhqSQZVYcuc
-         UhYA==
-X-Gm-Message-State: AOAM532TXi1SqcqwUx0XDvFBvg3UPFAgLZXgFJ3nvHOdtYa2M6yiKGa9
-        R8UU6neUhgYqTIlD7v3ur9oc/AhWJZPU
-X-Google-Smtp-Source: ABdhPJzbdNohssdId6Ay0RYezHnS3+x1bQ9iiytAaIkGHGjFfXlebmZ3QmzGhtq6BReC7gAAGlorYA==
-X-Received: by 2002:a05:6830:1e30:: with SMTP id t16mr3994469otr.18.1601408978854;
-        Tue, 29 Sep 2020 12:49:38 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id n13sm1248201oic.14.2020.09.29.12.49.38
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=B2tedPUDtg6ntFKI3C/vWBukV2Pf/aNZvJUFKVIBAvk=;
+        b=L798ALatGXnf+zg0VXSCmNyX2L7t7OmzgCWqmd3am6ZLnNIWesGbnoV5jXkUgAU/hF
+         b3ZrNj3yKsvXDh5rcv6jnVxMcSOndV7kDDfHGMxoJ/AssTdeHs1SHCFAw4sYIf5wAj+W
+         nQTWffcYsLPRlwjlQDcSdGlk9GlfFFCWXD1rIQ9QGcRCynxdCF6Y11D8eyB/sdjqBQYj
+         /IjrfR1Uo1WOk+uznzYOKfC0fDZ5py9yPzkOu+pIrccF6nEhBhRF3XkAXvItayQhSR2e
+         xrKR0mrpLhBhnfHtw6T2DAYSGZ+LY0AXUJh/TBiKgYfxHbQajm2XhsiJeDpUxGlyjSC+
+         UHuA==
+X-Gm-Message-State: AOAM5326y7TvnOqw80HJo4qU9i5/BxY0zpDKb9xeALKbaPo/vf4P+0XS
+        k7tKp4xbEQcZdvnuVmXBu0aYUJo6L4E=
+X-Google-Smtp-Source: ABdhPJz/m3sdH3kydcPyoaktgf/jyKIxAqkKkSGDgP3/bF4dYNkigpm3YGdLCoI/ivv/UbW+B1AYZQ==
+X-Received: by 2002:a17:90a:5588:: with SMTP id c8mr5188840pji.224.1601409103610;
+        Tue, 29 Sep 2020 12:51:43 -0700 (PDT)
+Received: from ubuntu-m3-large-x86 ([2604:1380:45e1:2200::1])
+        by smtp.gmail.com with ESMTPSA id nl10sm4632687pjb.11.2020.09.29.12.51.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Sep 2020 12:49:38 -0700 (PDT)
-Received: (nullmailer pid 1048006 invoked by uid 1000);
-        Tue, 29 Sep 2020 19:49:37 -0000
-Date:   Tue, 29 Sep 2020 14:49:37 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Biwen Li <biwen.li@oss.nxp.com>
-Cc:     jdelvare@suse.com, linux@roeck-us.net, mark.rutland@arm.com,
-        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Reinhard Pfau <pfau@gdsys.de>,
-        Biwen Li <biwen.li@nxp.com>
-Subject: Re: [PATCH] hwmon: add support for SMSC EMC2305/03/02/01 fan
- controller
-Message-ID: <20200929194937.GA1046240@bogus>
-References: <20200928104326.40386-1-biwen.li@oss.nxp.com>
+        Tue, 29 Sep 2020 12:51:42 -0700 (PDT)
+Date:   Tue, 29 Sep 2020 12:51:41 -0700
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ACPI Devel Mailing List <linux-acpi@vger.kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: Re: linux-next: Tree for Sep 29 (drivers/acpi/nfit/core.c)
+Message-ID: <20200929195141.GA917771@ubuntu-m3-large-x86>
+References: <20200929192941.3a93423c@canb.auug.org.au>
+ <8b5a54fc-39bc-ae2b-9710-f2493400cdf6@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200928104326.40386-1-biwen.li@oss.nxp.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <8b5a54fc-39bc-ae2b-9710-f2493400cdf6@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 06:43:26PM +0800, Biwen Li wrote:
-> From: Reinhard Pfau <pfau@gdsys.de>
+On Tue, Sep 29, 2020 at 12:47:42PM -0700, Randy Dunlap wrote:
+> On 9/29/20 2:29 AM, Stephen Rothwell wrote:
+> > Hi all,
+> > 
+> > Changes since 20200928:
+> > 
 > 
-> Add support for SMSC EMC2305, EMC2303, EMC2302, EMC2301 fan controller
-> chips.
-> The driver primary supports the EMC2305 chip which provides RPM-based
-> PWM control and monitoring for up to 5 fans.
+> on x86_64:
+> when CONFIG_ACPI_NUMA is not set/enabled:
 > 
-> According to the SMSC data sheets the EMC2303, EMC2302 and EMC2301 chips
-> have basically the same functionality and register layout, but support
-> less fans and (in case of EMC2302 and EMC2301) less possible I2C addresses.
-> The driver supports them, too.
+> ../drivers/acpi/nfit/core.c: In function ‘acpi_nfit_register_region’:
+>   CC      lib/ts_bm.o
+> ../drivers/acpi/nfit/core.c:3010:27: error: implicit declaration of function ‘pxm_to_node’; did you mean ‘xa_to_node’? [-Werror=implicit-function-declaration]
+>    ndr_desc->target_node = pxm_to_node(spa->proximity_domain);
+>                            ^~~~~~~~~~~
+>                            xa_to_node
 > 
-> The driver supports configuration via devicetree. This can also be used
-> to restrict the fans exposed via sysfs (see doc for details).
+> Full randconfig file is attached.
 > 
-> Signed-off-by: Reinhard Pfau <pfau@gdsys.de>
-> Signed-off-by: Biwen Li <biwen.li@nxp.com>
-> ---
->  .../devicetree/bindings/hwmon/emc2305.txt     |  33 +
+> -- 
+> ~Randy
+> Reported-by: Randy Dunlap <rdunlap@infradead.org>
 
-Split to a separate patch and should be in DT schema format. 
-checkpatch.pl will tell you both of these things.
+I independently found this and sent a patch:
 
->  Documentation/hwmon/emc2305.rst               |  34 +
->  MAINTAINERS                                   |   8 +
->  drivers/hwmon/Kconfig                         |  10 +
->  drivers/hwmon/Makefile                        |   1 +
->  drivers/hwmon/emc2305.c                       | 689 ++++++++++++++++++
->  6 files changed, 775 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/hwmon/emc2305.txt
->  create mode 100644 Documentation/hwmon/emc2305.rst
->  create mode 100644 drivers/hwmon/emc2305.c
+https://lore.kernel.org/lkml/20200928194554.3423466-1-natechancellor@gmail.com/
+
+Feel free to reply with a tag if it works for you as well.
+
+Cheers,
+Nathan
