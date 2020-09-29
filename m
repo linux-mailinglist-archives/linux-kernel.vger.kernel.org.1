@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 541D927CB6E
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:29:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A914E27C855
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:01:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732768AbgI2M1f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 08:27:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48452 "EHLO mail.kernel.org"
+        id S1731691AbgI2MBS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 08:01:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36584 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728305AbgI2LdO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:33:14 -0400
+        id S1730438AbgI2Lkn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:40:43 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0AB2C23B2F;
-        Tue, 29 Sep 2020 11:25:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8163C221E8;
+        Tue, 29 Sep 2020 11:40:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601378753;
-        bh=ZTL5jCG7jOOIjWhvX+LYQwkt2VOk6APcn1Oums1GkMI=;
+        s=default; t=1601379629;
+        bh=L8y+vhogEVvfm7O+1ESUJ6UPFy9sxfuBATpoB0bq7lY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lq6aW8Sw+2avMzG8Z2UU0sO7Sw5w61tEKa+fBcdySa5h7+Aqc8575eWoXhWZGZnuX
-         RfV+Q/MlCkr7Sk1XqXzCiviov22jNopWyFICt3FtRWPubGccwKOXc9IH/SKdgLVjLa
-         mPpekAThEDPpRp5gTo/mIQG1ME0lm91AwJPRx3Cs=
+        b=Bu9Ybwvtsk5WjzIN6YroHljACR1+v2s+IVaNtx6W7PAg8qZBf2HYwnBeDR6UtTIWD
+         kE1mfDktHv3MFAJRDiKytcHeL8CRLf9iXCfr2YK9qDDgVyQSXJ7nHiEnZ4jeqwnJvC
+         u2mTKvjtd9r1QN/jgIsrt5f+2MX/cuzF22M3WYbY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Gabriel Ravier <gabravier@gmail.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        stable@vger.kernel.org, Gengming Liu <l.dmxcsnsbh@gmail.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 126/245] tools: gpio-hammer: Avoid potential overflow in main
-Date:   Tue, 29 Sep 2020 12:59:37 +0200
-Message-Id: <20200929105953.119083992@linuxfoundation.org>
+Subject: [PATCH 5.4 247/388] atm: fix a memory leak of vcc->user_back
+Date:   Tue, 29 Sep 2020 12:59:38 +0200
+Message-Id: <20200929110022.438168149@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929105946.978650816@linuxfoundation.org>
-References: <20200929105946.978650816@linuxfoundation.org>
+In-Reply-To: <20200929110010.467764689@linuxfoundation.org>
+References: <20200929110010.467764689@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,57 +44,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gabriel Ravier <gabravier@gmail.com>
+From: Cong Wang <xiyou.wangcong@gmail.com>
 
-[ Upstream commit d1ee7e1f5c9191afb69ce46cc7752e4257340a31 ]
+[ Upstream commit 8d9f73c0ad2f20e9fed5380de0a3097825859d03 ]
 
-If '-o' was used more than 64 times in a single invocation of gpio-hammer,
-this could lead to an overflow of the 'lines' array. This commit fixes
-this by avoiding the overflow and giving a proper diagnostic back to the
-user
+In lec_arp_clear_vccs() only entry->vcc is freed, but vcc
+could be installed on entry->recv_vcc too in lec_vcc_added().
 
-Signed-off-by: Gabriel Ravier <gabravier@gmail.com>
-Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+This fixes the following memory leak:
+
+unreferenced object 0xffff8880d9266b90 (size 16):
+  comm "atm2", pid 425, jiffies 4294907980 (age 23.488s)
+  hex dump (first 16 bytes):
+    00 00 00 00 00 00 00 00 00 00 00 00 6b 6b 6b a5  ............kkk.
+  backtrace:
+    [<(____ptrval____)>] kmem_cache_alloc_trace+0x10e/0x151
+    [<(____ptrval____)>] lane_ioctl+0x4b3/0x569
+    [<(____ptrval____)>] do_vcc_ioctl+0x1ea/0x236
+    [<(____ptrval____)>] svc_ioctl+0x17d/0x198
+    [<(____ptrval____)>] sock_do_ioctl+0x47/0x12f
+    [<(____ptrval____)>] sock_ioctl+0x2f9/0x322
+    [<(____ptrval____)>] vfs_ioctl+0x1e/0x2b
+    [<(____ptrval____)>] ksys_ioctl+0x61/0x80
+    [<(____ptrval____)>] __x64_sys_ioctl+0x16/0x19
+    [<(____ptrval____)>] do_syscall_64+0x57/0x65
+    [<(____ptrval____)>] entry_SYSCALL_64_after_hwframe+0x49/0xb3
+
+Cc: Gengming Liu <l.dmxcsnsbh@gmail.com>
+Signed-off-by: Cong Wang <xiyou.wangcong@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/gpio/gpio-hammer.c | 17 ++++++++++++++++-
- 1 file changed, 16 insertions(+), 1 deletion(-)
+ net/atm/lec.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/tools/gpio/gpio-hammer.c b/tools/gpio/gpio-hammer.c
-index 4bcb234c0fcab..3da5462a0c7d3 100644
---- a/tools/gpio/gpio-hammer.c
-+++ b/tools/gpio/gpio-hammer.c
-@@ -138,7 +138,14 @@ int main(int argc, char **argv)
- 			device_name = optarg;
- 			break;
- 		case 'o':
--			lines[i] = strtoul(optarg, NULL, 10);
-+			/*
-+			 * Avoid overflow. Do not immediately error, we want to
-+			 * be able to accurately report on the amount of times
-+			 * '-o' was given to give an accurate error message
-+			 */
-+			if (i < GPIOHANDLES_MAX)
-+				lines[i] = strtoul(optarg, NULL, 10);
-+
- 			i++;
- 			break;
- 		case '?':
-@@ -146,6 +153,14 @@ int main(int argc, char **argv)
- 			return -1;
- 		}
+diff --git a/net/atm/lec.c b/net/atm/lec.c
+index 5a77c235a212f..3625a04a6c701 100644
+--- a/net/atm/lec.c
++++ b/net/atm/lec.c
+@@ -1269,6 +1269,12 @@ static void lec_arp_clear_vccs(struct lec_arp_table *entry)
+ 		entry->vcc = NULL;
  	}
+ 	if (entry->recv_vcc) {
++		struct atm_vcc *vcc = entry->recv_vcc;
++		struct lec_vcc_priv *vpriv = LEC_VCC_PRIV(vcc);
 +
-+	if (i >= GPIOHANDLES_MAX) {
-+		fprintf(stderr,
-+			"Only %d occurences of '-o' are allowed, %d were found\n",
-+			GPIOHANDLES_MAX, i + 1);
-+		return -1;
-+	}
++		kfree(vpriv);
++		vcc->user_back = NULL;
 +
- 	nlines = i;
- 
- 	if (!device_name || !nlines) {
+ 		entry->recv_vcc->push = entry->old_recv_push;
+ 		vcc_release_async(entry->recv_vcc, -EPIPE);
+ 		entry->recv_vcc = NULL;
 -- 
 2.25.1
 
