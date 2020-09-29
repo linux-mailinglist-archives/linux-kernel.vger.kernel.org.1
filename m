@@ -2,121 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F59027D231
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 17:10:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC7E227D22F
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 17:10:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731159AbgI2PKJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 11:10:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43320 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730042AbgI2PKJ (ORCPT
+        id S1731553AbgI2PKL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 11:10:11 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35747 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730033AbgI2PKJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 29 Sep 2020 11:10:09 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AD66C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 08:10:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=KeZOCAo/R/OdLryxm25aXe9nhhSa9seaaI8oOsIn/fg=; b=HfJr+OY78WcdzhEKy3gim4954p
-        tpsBm1f6ASoADm/JnXsYQuR7iaHENc3m8edfMdC3/HIgsEfqbViIhFJRsnFwmjs+5Ra/dQNFg8snn
-        ua+FuaTL5JFjJpxJ1f6zoRGulpZd4kuis+n2YhQwKEXSZqqKPr6ktN0u/cp4UdOMp6cqC9U4g/ZBg
-        gIHAQV7ae0Wv8oVMEgPlHMfcg+Ssff/O7gaUoVk4wzpnGOFVPnd78mD5kTtGao14uRdIGlhXmBCog
-        TaUZ7rJzh42i/6LzdOJhBMi253VeSqUIg30gAUbObm92jZJRfGymyflWDV/fd9L78LlRTJUNSlmJE
-        Jf2apDzg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kNHG3-0008BQ-44; Tue, 29 Sep 2020 15:09:35 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 90F2B300F7A;
-        Tue, 29 Sep 2020 17:09:33 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 73A6F210E84D0; Tue, 29 Sep 2020 17:09:33 +0200 (CEST)
-Date:   Tue, 29 Sep 2020 17:09:33 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Chengming Zhou <zhouchengming@bytedance.com>,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@linux.ie, daniel@ffwll.ch,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        sergey.senozhatsky@gmail.com, rostedt@goodmis.org,
-        mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        bsegall@google.com, mgorman@suse.de, songmuchun@bytedance.com,
-        john.ogness@linutronix.de
-Subject: Re: [External] Re: [PATCH 2/2] sched: mark
- PRINTK_DEFERRED_CONTEXT_MASK in __schedule()
-Message-ID: <20200929150933.GR2628@hirez.programming.kicks-ass.net>
-References: <20200927161130.33172-1-zhouchengming@bytedance.com>
- <20200927161130.33172-2-zhouchengming@bytedance.com>
- <20200928073202.GA2611@hirez.programming.kicks-ass.net>
- <40ab934e-5b8b-735b-da65-3043efab9fdc@bytedance.com>
- <20200928090143.GA2628@hirez.programming.kicks-ass.net>
- <688eadd7-4ca3-3e32-3520-25977ff059a6@bytedance.com>
- <20200928102559.GF2611@hirez.programming.kicks-ass.net>
- <20200929142750.GT6442@alley>
+Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601392208;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=xAend5D4n0puvrh6V/dnpWIor7tFXJ4ZRbs/LW8W9/Y=;
+        b=QGXpIkPwGivJ7R2BXNuUiV5UYVDGIBoYYyMWCKwS5Gg5fw5lR4/L+1ZGYD4qp1FbsLl4ui
+        0McIJGoVH3BxaOjAI7KHo5D6o0f31mWj9m5TEfOE9aWFT30SFt4n1zu8ED+FxVAws6KwfM
+        qK8XgOMr1xcwYEZn0XI4cDqDhaEMVuc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-61-QZ-9gau8Nt-qac9udG7_hQ-1; Tue, 29 Sep 2020 11:10:04 -0400
+X-MC-Unique: QZ-9gau8Nt-qac9udG7_hQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B145956B2C;
+        Tue, 29 Sep 2020 15:09:47 +0000 (UTC)
+Received: from vitty.brq.redhat.com (unknown [10.40.195.26])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 358C97366C;
+        Tue, 29 Sep 2020 15:09:45 +0000 (UTC)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Eduardo Habkost <ehabkost@redhat.com>,
+        Jon Doron <arilou@gmail.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 0/2] KVM: x86: hyper-v: make KVM_GET_SUPPORTED_HV_CPUID more useful
+Date:   Tue, 29 Sep 2020 17:09:42 +0200
+Message-Id: <20200929150944.1235688-1-vkuznets@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200929142750.GT6442@alley>
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 04:27:51PM +0200, Petr Mladek wrote:
+Changes since v2:
+- Keep vCPU version of the ioctl intact but make it 'deprecated' in
+  api.rst [Paolo Bonzini]
+- First two patches of v2 series already made it to kvm/queue
 
-> Upstreaming the console handling will be the next big step. I am sure
-> that there will be long discussion about it. But there might be
-> few things that would help removing printk_deferred().
-> 
-> 1. Messages will be printed on consoles by dedicated kthreads. It will
->    be safe context. No deadlocks.
+QEMU series using the feature:
+https://lists.gnu.org/archive/html/qemu-devel/2020-09/msg02017.html
 
-This, that's what I remember. With sane consoles having a
-->write_atomic() callback which is called in-line.
+Original description:
 
-Current -RT has a single kthread that's flushing the consoles.
+KVM_GET_SUPPORTED_HV_CPUID was initially implemented as a vCPU ioctl but
+this is not very useful when VMM is just trying to query which Hyper-V
+features are supported by the host prior to creating VM/vCPUs. The data
+in KVM_GET_SUPPORTED_HV_CPUID is mostly static with a few exceptions but
+it seems we can change this. Add support for KVM_GET_SUPPORTED_HV_CPUID as
+a system ioctl as well.
 
-> 2. The registration and unregistration of consoles should not longer
->    be handled by console_lock (semaphore). It should be possible to
->    call most consoles without a sleeping lock. It should remove all
->    these deadlocks between printk() and scheduler().
+QEMU specific description:
+In some cases QEMU needs to collect the information about which Hyper-V
+features are supported by KVM and pass it up the stack. For non-hyper-v
+features this is done with system-wide KVM_GET_SUPPORTED_CPUID/
+KVM_GET_MSRS ioctls but Hyper-V specific features don't get in the output
+(as Hyper-V CPUIDs intersect with KVM's). In QEMU, CPU feature expansion
+happens before any KVM vcpus are created so KVM_GET_SUPPORTED_HV_CPUID
+can't be used in its current shape.
 
-I'm confused, who cares about registation? That only happens once at
-boot, right?
+Vitaly Kuznetsov (2):
+  KVM: x86: hyper-v: allow KVM_GET_SUPPORTED_HV_CPUID as a system ioctl
+  KVM: selftests: test KVM_GET_SUPPORTED_HV_CPUID as a system ioctl
 
->    There might be problems with some consoles. For example, tty would
->    most likely still need a sleeping lock because it is using the console
->    semaphore also internally.
+ Documentation/virt/kvm/api.rst                | 16 ++--
+ arch/x86/kvm/hyperv.c                         |  6 +-
+ arch/x86/kvm/hyperv.h                         |  4 +-
+ arch/x86/kvm/vmx/evmcs.c                      |  3 +-
+ arch/x86/kvm/x86.c                            | 45 ++++++----
+ include/uapi/linux/kvm.h                      |  3 +-
+ .../testing/selftests/kvm/include/kvm_util.h  |  2 +
+ tools/testing/selftests/kvm/lib/kvm_util.c    | 26 ++++++
+ .../selftests/kvm/x86_64/hyperv_cpuid.c       | 87 +++++++++++--------
+ 9 files changed, 123 insertions(+), 69 deletions(-)
 
-But per 1) above, that's done from a kthread, so nobody cares.
-
-> 3. We will try harder to get the messages out immediately during
->    panic().
-
-As long as you guarantee to first write everything to consoles with
-->write_atomic() before attempting to flush others that should be fine.
-
-> It would take some time until the above reaches upstream. But it seems
-> to be the right way to go.
-
-Yep.
-
-> Finally, the deadlock happens "only" when someone is waiting on
-> console_lock() in parallel. Otherwise, the waitqueue for the semaphore
-> is empty and scheduler is not called.
-
-There's more deadlocks. In fact the one described earlier in this
-thread isn't the one you mention.
-
-> It means that there is quite a big change to see the WARN(). It might
-> be even bigger than with printk_deferred() because WARN() in scheduler
-> means that the scheduler is big troubles. Nobody guarantees that
-> the deferred messages will get handled later.
-
-I only care about ->write_atomic() :-) Anything else is a
-best-effort-loss anyway.
+-- 
+2.25.4
 
