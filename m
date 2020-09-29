@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F01B27CAA2
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:22:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94C2D27C932
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:08:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732189AbgI2MU1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 08:20:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50310 "EHLO mail.kernel.org"
+        id S1731395AbgI2MI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 08:08:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55996 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729870AbgI2Lfg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:35:36 -0400
+        id S1730231AbgI2Lhg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:37:36 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DB09323A33;
-        Tue, 29 Sep 2020 11:22:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3B11023B55;
+        Tue, 29 Sep 2020 11:36:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601378523;
-        bh=hjRy7BbaZwAQ81K0OJhnq6AqK6wLLvVmqiTJK/7v5aM=;
+        s=default; t=1601379374;
+        bh=SvIJh07UqMEX773ha9mfl9vjNO/Yk8dtySZJaD5i3jo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TfurkYLGFqS4hCvourSe+mraxZL6I6ww1W7LbAhd7uxXjRA8GxDgP+epgUjQQngHs
-         McT0GldH3yjVf6v5LTcLNsSbYkHSsyGi8JEvfUIamadZh80wEpEbq9llOqzNt/bRwa
-         e1T5w+DnNzi6jLqqCXP2Zo2c9kbSVrpjiWJJSVkE=
+        b=1HDimXehda9rwCuG/N9KmodIMxbQeokYGk8HdmnSzHrZUhJ5pcbREz2vZR+5lDJ6T
+         B/6efWVprhW4KyFQUeFBi8dc/tQVBYeD20hG+0yHyBVYMCr2I2Razd6Ab4cbB/B++5
+         WM7vUCoX1pOELJ2n8ZzdyialEWxOAMlXqnMFk9Rk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Joakim Tjernlund <joakim.tjernlund@infinera.com>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4.19 014/245] ALSA: usb-audio: Add delay quirk for H570e USB headsets
-Date:   Tue, 29 Sep 2020 12:57:45 +0200
-Message-Id: <20200929105947.682320567@linuxfoundation.org>
+        stable@vger.kernel.org, Dmitry Osipenko <digetx@gmail.com>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 135/388] dmaengine: tegra-apb: Prevent race conditions on channels freeing
+Date:   Tue, 29 Sep 2020 12:57:46 +0200
+Message-Id: <20200929110017.009426557@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929105946.978650816@linuxfoundation.org>
-References: <20200929105946.978650816@linuxfoundation.org>
+In-Reply-To: <20200929110010.467764689@linuxfoundation.org>
+References: <20200929110010.467764689@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,40 +43,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joakim Tjernlund <joakim.tjernlund@infinera.com>
+From: Dmitry Osipenko <digetx@gmail.com>
 
-commit 315c7ad7a701baba28c628c4c5426b3d9617ceed upstream.
+[ Upstream commit 8e84172e372bdca20c305d92d51d33640d2da431 ]
 
-Needs the same delay as H650e
+It's incorrect to check the channel's "busy" state without taking a lock.
+That shouldn't cause any real troubles, nevertheless it's always better
+not to have any race conditions in the code.
 
-Signed-off-by: Joakim Tjernlund <joakim.tjernlund@infinera.com>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20200910085328.19188-1-joakim.tjernlund@infinera.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+Acked-by: Jon Hunter <jonathanh@nvidia.com>
+Link: https://lore.kernel.org/r/20200209163356.6439-5-digetx@gmail.com
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/usb/quirks.c |    7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/dma/tegra20-apb-dma.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
---- a/sound/usb/quirks.c
-+++ b/sound/usb/quirks.c
-@@ -1338,12 +1338,13 @@ void snd_usb_ctl_msg_quirk(struct usb_de
- 	    && (requesttype & USB_TYPE_MASK) == USB_TYPE_CLASS)
- 		msleep(20);
+diff --git a/drivers/dma/tegra20-apb-dma.c b/drivers/dma/tegra20-apb-dma.c
+index 4a750e29bfb53..3fe27dbde5b2b 100644
+--- a/drivers/dma/tegra20-apb-dma.c
++++ b/drivers/dma/tegra20-apb-dma.c
+@@ -1287,8 +1287,7 @@ static void tegra_dma_free_chan_resources(struct dma_chan *dc)
  
--	/* Zoom R16/24, Logitech H650e, Jabra 550a, Kingston HyperX needs a tiny
--	 * delay here, otherwise requests like get/set frequency return as
--	 * failed despite actually succeeding.
-+	/* Zoom R16/24, Logitech H650e/H570e, Jabra 550a, Kingston HyperX
-+	 *  needs a tiny delay here, otherwise requests like get/set
-+	 *  frequency return as failed despite actually succeeding.
- 	 */
- 	if ((chip->usb_id == USB_ID(0x1686, 0x00dd) ||
- 	     chip->usb_id == USB_ID(0x046d, 0x0a46) ||
-+	     chip->usb_id == USB_ID(0x046d, 0x0a56) ||
- 	     chip->usb_id == USB_ID(0x0b0e, 0x0349) ||
- 	     chip->usb_id == USB_ID(0x0951, 0x16ad)) &&
- 	    (requesttype & USB_TYPE_MASK) == USB_TYPE_CLASS)
+ 	dev_dbg(tdc2dev(tdc), "Freeing channel %d\n", tdc->id);
+ 
+-	if (tdc->busy)
+-		tegra_dma_terminate_all(dc);
++	tegra_dma_terminate_all(dc);
+ 
+ 	spin_lock_irqsave(&tdc->lock, flags);
+ 	list_splice_init(&tdc->pending_sg_req, &sg_req_list);
+-- 
+2.25.1
+
 
 
