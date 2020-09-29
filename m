@@ -2,122 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83D3227BF90
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 10:33:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 333B027BF97
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 10:33:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727793AbgI2IdC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 04:33:02 -0400
-Received: from mga03.intel.com ([134.134.136.65]:28183 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727861AbgI2Ic7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 04:32:59 -0400
-IronPort-SDR: Bzm53Qv815IqFbYKkSqPJknws+FHB0QfUOZnuEpKlI16Ce3YWymc76Wg8HsCadCVr/q3qG5boP
- H39LM86/KQag==
-X-IronPort-AV: E=McAfee;i="6000,8403,9758"; a="162208087"
-X-IronPort-AV: E=Sophos;i="5.77,317,1596524400"; 
-   d="scan'208";a="162208087"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2020 01:32:55 -0700
-IronPort-SDR: ffF4X8xUM90uT9z1sAE6xYa7icy/8e2mMQp7+7pFB7Lq7fHgztXFbYrcO526yzj7DQFDC795bg
- RqssajENttnA==
-X-IronPort-AV: E=Sophos;i="5.77,317,1596524400"; 
-   d="scan'208";a="338542200"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2020 01:32:54 -0700
-Date:   Tue, 29 Sep 2020 01:32:53 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Lai Jiangshan <jiangshanlai@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
-        Lai Jiangshan <laijs@linux.alibaba.com>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
+        id S1727919AbgI2IdR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 04:33:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37622 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727893AbgI2IdN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 04:33:13 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED92EC0613D5;
+        Tue, 29 Sep 2020 01:33:11 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id e22so5418560edq.6;
+        Tue, 29 Sep 2020 01:33:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=HK41/qbPxO+SoGRXquqjP/gEh3I+38ZE+z63fzbFSAM=;
+        b=S8yJWuwRM6E6vG99yfmoQMLxY2mnpbYIcvbtstIvuN666T+YtUHi8dh3la0w5Yafct
+         PZ/XVQQn9ZDZjIkn4uGu2dWW1+YOT5H5gGswkiD/F5rQIANePpgPusGcvJ6YplN7IZfP
+         WshdCVcyQ4ipZgpJwuIkCAotuYHX/k7lKN4DNBdxG1vIVH5x0h00kep03tjP3ggBWszA
+         nj8BzeKlG4yfnwmTtrV1GJoGQDLgRRI1iVYvEBI9TD5nYieaMf8Np5G1atY+LEHy8GBo
+         tfAdIRvOSPfaa6A2tJ/HySv258TxNjiCkJvG4IwF6Pn8G83LykzK+q8vWwIbnOcYDMYZ
+         tH6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=HK41/qbPxO+SoGRXquqjP/gEh3I+38ZE+z63fzbFSAM=;
+        b=RBmB2+3xCKjVc9l35kLufYxUL/276DTJufkP+incWKuwnaQttEW/3kSGj+9RHHpusr
+         uW0Ny049s6cTT5jHV3e3pzMskAq4b/N3oiG8jFWE3zsjGvpIiB5TrIcY3Zop8Dx/CIqv
+         UButUDOe8bIDHJx/F+9T5uqqKy6vH8WucaoOOj/GY4dXVMFHwI0Wls5TkRrAwQafu4R/
+         9D2MKj6JnYwWkmH4feNvaDlknujHfNRYtcjjyyERGRTSsmtwQRczR3hnGRGti6VFSzRN
+         67M1drh3P980l53v/DCz5VFuqgwb8iYp+nkH8w+8o+o46p8kZ0XaqWYmfnTB6/Rudaps
+         HDcA==
+X-Gm-Message-State: AOAM532NCrt/OQaI/HcV326JdRWmLQhT6aZEA9rsdaSl0sYaf9OrmB08
+        wdxEqBgm8seE2D6uAePBDf4=
+X-Google-Smtp-Source: ABdhPJyYvViBHNSY5FE7CXdKUdCiD1GV8vYp3T3pZ0xf9ePqRUqG3AW2pTxyVkmCuZ7dASJFxLP47Q==
+X-Received: by 2002:aa7:d4d0:: with SMTP id t16mr2020758edr.83.1601368390650;
+        Tue, 29 Sep 2020 01:33:10 -0700 (PDT)
+Received: from felia ([2001:16b8:2d89:9100:1da1:773b:dbb4:3fc9])
+        by smtp.gmail.com with ESMTPSA id cn21sm5173410edb.14.2020.09.29.01.33.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Sep 2020 01:33:09 -0700 (PDT)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+X-Google-Original-From: Lukas Bulwahn <lukas@gmail.com>
+Date:   Tue, 29 Sep 2020 10:33:08 +0200 (CEST)
+X-X-Sender: lukas@felia
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Balbir Singh <sblbir@amazon.com>
+cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
         Thomas Gleixner <tglx@linutronix.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [RFC PATCH 1/2] kvm/x86: intercept guest changes to X86_CR4_LA57
-Message-ID: <20200929083250.GM353@linux.intel.com>
-References: <20200928083047.3349-1-jiangshanlai@gmail.com>
- <20200928162417.GA28825@linux.intel.com>
- <CAJhGHyAYXARENZ7OExenZO6tiWAaSQ=jzEG+7j0rjCsa9e5-dA@mail.gmail.com>
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        kernel-janitors@vger.kernel.org, linux-safety@lists.elisa.tech
+Subject: Re: [PATCH -next for tip:x86/pti] x86/tlb: drop unneeded local vars
+ in enable_l1d_flush_for_task()
+In-Reply-To: <20200929071211.GJ2628@hirez.programming.kicks-ass.net>
+Message-ID: <alpine.DEB.2.21.2009291022000.17656@felia>
+References: <20200928124457.27289-1-lukas.bulwahn@gmail.com> <20200929071211.GJ2628@hirez.programming.kicks-ass.net>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJhGHyAYXARENZ7OExenZO6tiWAaSQ=jzEG+7j0rjCsa9e5-dA@mail.gmail.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 01:32:45PM +0800, Lai Jiangshan wrote:
-> On Tue, Sep 29, 2020 at 12:24 AM Sean Christopherson
-> <sean.j.christopherson@intel.com> wrote:
-> >
-> > On Mon, Sep 28, 2020 at 04:30:46PM +0800, Lai Jiangshan wrote:
-> > > From: Lai Jiangshan <laijs@linux.alibaba.com>
-> > >
-> > > When shadowpaping is enabled, guest should not be allowed
-> > > to toggle X86_CR4_LA57. And X86_CR4_LA57 is a rarely changed
-> > > bit, so we can just intercept all the attempts to toggle it
-> > > no matter shadowpaping is in used or not.
-> > >
-> > > Fixes: fd8cb433734ee ("KVM: MMU: Expose the LA57 feature to VM.")
-> > > Cc: Sean Christopherson <sean.j.christopherson@intel.com>
-> > > Cc: Yu Zhang <yu.c.zhang@linux.intel.com>
-> > > Cc: Paolo Bonzini <pbonzini@redhat.com>
-> > > Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
-> > > ---
-> > >   No test to toggle X86_CR4_LA57 in guest since I can't access to
-> > >   any CPU supports it. Maybe it is not a real problem.
-> >
-> 
-> 
-> Hello
-> 
-> Thanks for reviewing.
-> 
-> > LA57 doesn't need to be intercepted.  It can't be toggled in 64-bit mode
-> > (causes a #GP), and it's ignored in 32-bit mode.  That means LA57 can only
-> > take effect when 64-bit mode is enabled, at which time KVM will update its
-> > MMU context accordingly.
-> >
-> 
-> Oh, I missed that part which is so obvious that the patch
-> seems impertinent.
-> 
-> But X86_CR4_LA57 is so fundamental that it makes me afraid to
-> give it over to guests. And it is rarely changed too. At least,
-> there is no better reason to give it to the guest than
-> intercepting it.
-> 
-> There might be another reason that this patch is still needed with
-> an updated changelog.
-> 
-> When a user (via VMM such as qemu) launches a VM with LA57 disabled
-> in its cpuid on a LA57 enabled host. The hypervisor, IMO, needs to
-> intercept guest's changes to X86_CR4_LA57 even when the guest is still
-> in the non-paging mode. Otherwise the hypervisor failed to detective
-> such combination when the guest changes paging mode later.
-> 
-> Anyway, maybe it is still not a real problem.
 
-Oof, the above is a KVM bug, though in a more generic manner.  All reserved
-bits should be intercepted, not just LA57.  LA57 is the only affected bit at
-the moment, but proper support is needed as the follow-on patch to let the
-guest toggle FSGSBASE would introduce the same bug.
 
-Sadly, fixing this is a bit of a mess.  Well, fixing LA57 is easy, e.g. this
-patch will do the trick.  But actually refreshing the CR4 guest/host mask when
-the guest's CPUID is updated is a pain, and that's what's needed for proper
-FSGSBASE support.
+On Tue, 29 Sep 2020, Peter Zijlstra wrote:
 
-I'll send a series, bookended by these two RFC patches, with patches to
-intercept CR4 reserved bits smushed in between.  I agree there's no point in
-letting the guest write LA57 directly, it's almost literally a once-per-boot
-thing.  I wouldn't be surprised if intercepting it is a net win (but still
-inconsequential), e.g. due to the MMU having to grab CR4 out of the VMCS.
+> On Mon, Sep 28, 2020 at 02:44:57PM +0200, Lukas Bulwahn wrote:
+> > diff --git a/arch/x86/mm/tlb.c b/arch/x86/mm/tlb.c
+> > index 6b0f4c88b07c..90515c04d90a 100644
+> > --- a/arch/x86/mm/tlb.c
+> > +++ b/arch/x86/mm/tlb.c
+> > @@ -316,7 +316,7 @@ EXPORT_SYMBOL_GPL(leave_mm);
+> >  
+> >  int enable_l1d_flush_for_task(struct task_struct *tsk)
+> >  {
+> > -	int cpu, ret = 0, i;
+> > +	int i;
+> >  
+> >  	/*
+> >  	 * Do not enable L1D_FLUSH_OUT if
+> > @@ -329,7 +329,7 @@ int enable_l1d_flush_for_task(struct task_struct *tsk)
+> >  			!static_cpu_has(X86_FEATURE_FLUSH_L1D))
+> >  		return -EINVAL;
+> >  
+> > -	cpu = get_cpu();
+> > +	get_cpu();
+> >  
+> >  	for_each_cpu(i, &tsk->cpus_mask) {
+> >  		if (cpu_data(i).smt_active == true) {
+> > @@ -340,7 +340,7 @@ int enable_l1d_flush_for_task(struct task_struct *tsk)
+> >  
+> >  	set_ti_thread_flag(&tsk->thread_info, TIF_SPEC_L1D_FLUSH);
+> >  	put_cpu();
+> > -	return ret;
+> > +	return 0;
+> >  }
+> 
+> If you don't use the return value of get_cpu(), then change it over to
+> preempt_{dis,en}able(), but this got me looking at the function, wtf is
+> that garbage supposed to do in the first place
+
+I also thought that preempt_{dis,en}able() would do, but thought maybe 
+Balbir just considered {get,put}_cpu stylistically nicer... so I stayed 
+with the functions as-is.
+
+> 
+> What do we need to disable preemption for?
+>
+
+I have no clue... not a good premise for touching the code, but I just 
+wanted to make clang-analyzer happy without modifying any semantics.
+
+Balbir, can you help out here? What was your intent?
+ 
+> Please explain the desired semantics against sched_setaffinity().
+> 
+
+I am happy to send a proper v2 once I understand if disabling preemption 
+is required and the preempt_{dis,en}able() function are preferred to the 
+{get,put}_cpu functions.
+
+Lukas
