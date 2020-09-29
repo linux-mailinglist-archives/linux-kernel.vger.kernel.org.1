@@ -2,134 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25BEB27BCB9
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 08:03:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15E1927BCB8
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 08:03:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727554AbgI2GDU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 02:03:20 -0400
-Received: from foss.arm.com ([217.140.110.172]:35436 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725283AbgI2GDU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 02:03:20 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 228D331B;
-        Mon, 28 Sep 2020 23:03:19 -0700 (PDT)
-Received: from [10.163.73.175] (unknown [10.163.73.175])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 29F053F6CF;
-        Mon, 28 Sep 2020 23:03:16 -0700 (PDT)
-Subject: Re: [RFC] mm/vmstat: Add events for HugeTLB migration
-To:     Mike Kravetz <mike.kravetz@oracle.com>, linux-mm@kvack.org
-Cc:     Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Zi Yan <ziy@nvidia.com>, John Hubbard <jhubbard@nvidia.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org
-References: <1601025149-13311-1-git-send-email-anshuman.khandual@arm.com>
- <78e77883-9ba9-159c-200a-e8303bbfc206@oracle.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <4b6a2b8b-5370-ac5d-dd41-38b800dd0e3a@arm.com>
-Date:   Tue, 29 Sep 2020 11:32:43 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        id S1727449AbgI2GDR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 02:03:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42870 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725283AbgI2GDQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 02:03:16 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97DAEC061755
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 23:03:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=48XgreAjZs4gur0K4ZOCA5DaxMVnkVf7Jp8MpcZsDas=; b=oXuJQuGq0ROHVISt/bjm7XwpEh
+        yG1nifrbWvewLtpXqRZ9xyNslwmyidUDLomZWW23JWBNnJAvP6eIetGY6HpbtslVV9oFUmTRnH492
+        7h7vO7W1sZ/atG+giK+SI9EcEpbQYGXCgsmL4XSnR+ZbjtLwmu5KeJ/Ix7yXEiFiDpu+mkJf8atJy
+        4pT+9vlpeuXzcjNoezx+i0Y6cm69s2ISSTlbkTndF1TyYZ/x/z9cmYxWBtKjDs8jj+kwYacrk8ILP
+        4Rqpb+UvBAghohjGOS1gwmSRuFahG2XBHC+chUMcdhvDJq5AdhdDc1x+gjpNddd7uzfIpZaHUHTfj
+        RAGa15Qg==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kN8jD-0001sZ-AE; Tue, 29 Sep 2020 06:03:07 +0000
+Date:   Tue, 29 Sep 2020 07:03:07 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Eric Auger <eric.auger@redhat.com>
+Cc:     eric.auger.pro@gmail.com, joro@8bytes.org,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        will.deacon@arm.com, robin.murphy@arm.com, dwmw2@infradead.org,
+        alex.williamson@redhat.com, jean-philippe.brucker@arm.com
+Subject: Re: [RFC 2/3] iommu: Account for dma_mask and iommu aperture in IOVA
+ reserved regions
+Message-ID: <20200929060307.GA6564@infradead.org>
+References: <20200928195037.22654-1-eric.auger@redhat.com>
+ <20200928195037.22654-3-eric.auger@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <78e77883-9ba9-159c-200a-e8303bbfc206@oracle.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200928195037.22654-3-eric.auger@redhat.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Sep 28, 2020 at 09:50:36PM +0200, Eric Auger wrote:
+> VFIO currently exposes the usable IOVA regions through the
+> VFIO_IOMMU_GET_INFO ioctl. However it fails to take into account
+> the dma_mask of the devices within the container. The top limit
+> currently is defined by the iommu aperture.
 
+Can we take a step back here?  The dma_mask only has a meaning for
+the DMA API, and not the iommu API, it should have no relevance here.
 
-On 09/29/2020 03:34 AM, Mike Kravetz wrote:
-> On 9/25/20 2:12 AM, Anshuman Khandual wrote:
->> Add following new vmstat events which will track HugeTLB page migration.
->>
->> 1. HUGETLB_MIGRATION_SUCCESS
->> 2. HUGETLB_MIGRATION_FAILURE
->>
->> It follows the existing semantics to accommodate HugeTLB subpages in total
->> page migration statistics. While here, this updates current trace event
->> "mm_migrate_pages" to accommodate now available HugeTLB based statistics.
-> 
-> Thanks.  This makes sense with recent THP changes.
-> 
->> diff --git a/mm/migrate.c b/mm/migrate.c
->> index 3ab965f83029..d53dd101ffff 100644
->> --- a/mm/migrate.c
->> +++ b/mm/migrate.c
->> @@ -1415,13 +1415,17 @@ int migrate_pages(struct list_head *from, new_page_t get_new_page,
->>  {
->>  	int retry = 1;
->>  	int thp_retry = 1;
->> +	int hugetlb_retry = 1;
->>  	int nr_failed = 0;
->>  	int nr_succeeded = 0;
->>  	int nr_thp_succeeded = 0;
->>  	int nr_thp_failed = 0;
->>  	int nr_thp_split = 0;
->> +	int nr_hugetlb_succeeded = 0;
->> +	int nr_hugetlb_failed = 0;
->>  	int pass = 0;
->>  	bool is_thp = false;
->> +	bool is_hugetlb = false;
->>  	struct page *page;
->>  	struct page *page2;
->>  	int swapwrite = current->flags & PF_SWAPWRITE;
->> @@ -1433,6 +1437,7 @@ int migrate_pages(struct list_head *from, new_page_t get_new_page,
->>  	for (pass = 0; pass < 10 && (retry || thp_retry); pass++) {
->>  		retry = 0;
->>  		thp_retry = 0;
->> +		hugetlb_retry = 0;
->>  
->>  		list_for_each_entry_safe(page, page2, from, lru) {
->>  retry:
->> @@ -1442,7 +1447,12 @@ int migrate_pages(struct list_head *from, new_page_t get_new_page,
->>  			 * during migration.
->>  			 */
->>  			is_thp = PageTransHuge(page) && !PageHuge(page);
->> +			is_hugetlb = PageTransHuge(page) && PageHuge(page);
-> 
-> PageHuge does not depend on PageTransHuge.  So, this could just be
-> 			is_hugetlb = PageHuge(page);
+More importantly if we are using vfio no dma_mask should be set to
+start with.
 
-Sure.
+> +		if (geo.aperture_end < ULLONG_MAX && geo.aperture_end != geo.aperture_start) {
 
-> 
-> Actually, the current version of PageHuge is more expensive than PageTransHuge.
-> So, the most optimal way to set these would be something like.
-> 			if (PageTransHuge(page))
-> 				if (PageHuge(page))
-> 					is_hugetlb = true;
-> 				else
-> 					is_thp = true;
-> 
-> Although, the compiler may be able to optimize.  I did not check.
-
-Both is_hugetlb and is_thp need to have either a true or false value
-during each iteration as they are not getting reset otherwise. Hence
-basically it should either be
-
-is_thp = PageTransHuge(page) && !PageHuge(page);
-is_hugetlb = PageHuge(page);
-
-OR
-
-is_hugetlb = false;
-is_thp = false;
-if (PageTransHuge(page))
-	if (PageHuge(page))
-		is_hugetlb = true;
-	else
-		is_thp = true;
-}
-
-> 
->> +
->>  			nr_subpages = thp_nr_pages(page);
->> +			if (is_hugetlb)
->> +				nr_subpages = pages_per_huge_page(page_hstate(page));
-> 
-> Can we just use compound_order() here for all cases?
-
-Sure but we could also directly use compound_nr().
+Please avoid pointlessly overlong lines.
