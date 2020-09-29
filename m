@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 729BB27C653
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:44:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B16C27C657
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:44:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730828AbgI2Ln5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:43:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42506 "EHLO mail.kernel.org"
+        id S1730855AbgI2LoM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:44:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42550 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730821AbgI2Lnx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:43:53 -0400
+        id S1730825AbgI2Lnz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:43:55 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 79F7B206E5;
-        Tue, 29 Sep 2020 11:43:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D168D206F7;
+        Tue, 29 Sep 2020 11:43:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601379833;
-        bh=LoAXF5XTR4w9T6a3sMyjEc6yieQF+GoGSbOwzvnNPLE=;
+        s=default; t=1601379835;
+        bh=h3nG408u8M5wAxaiEyktRjFXOeJbTF1fUnMhSBKMxi0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rWn9hdh+3Q/WXjgb8c9C+FoZN3Es4qR38ziFGuy3EFKbaRapwfjrztDAwcz8fyiI5
-         KF03xAb9zr2ReNCBGGgGdgu6jXMEuZiqcFVHE3dmp47KdYvg8k45xddMFJ6vwnayzI
-         5HHGoAmJxRPPepsX2ltICwQF1b6vIDqrQK/dxOEE=
+        b=KQmDAFhtuM7T+14YQE+llF2EO0IukpG9jrXAaNEgvhwmUIl9WUxiWptaOug8GABzR
+         vogk1PPf17tygF+KQ9eGdS5f8lesg49s4af41UojFKuUkDrWFHj5scPmQFkmYtaW7u
+         0l15M0IzntlchMOrBR5wGx7mGf3fPuqpZeE9Mrrs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Liu Jian <liujian56@huawei.com>,
+        stable@vger.kernel.org, Tom Rix <trix@redhat.com>,
+        Michael Hennerich <michael.hennerich@analog.com>,
         Stefan Schmidt <stefan@datenfreihafen.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 337/388] ieee802154: fix one possible memleak in ca8210_dev_com_init
-Date:   Tue, 29 Sep 2020 13:01:08 +0200
-Message-Id: <20200929110026.776642274@linuxfoundation.org>
+Subject: [PATCH 5.4 338/388] ieee802154/adf7242: check status of adf7242_read_reg
+Date:   Tue, 29 Sep 2020 13:01:09 +0200
+Message-Id: <20200929110026.823984980@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200929110010.467764689@linuxfoundation.org>
 References: <20200929110010.467764689@linuxfoundation.org>
@@ -43,32 +44,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Liu Jian <liujian56@huawei.com>
+From: Tom Rix <trix@redhat.com>
 
-[ Upstream commit 88f46b3fe2ac41c381770ebad9f2ee49346b57a2 ]
+[ Upstream commit e3914ed6cf44bfe1f169e26241f8314556fd1ac1 ]
 
-We should call destroy_workqueue to destroy mlme_workqueue in error branch.
+Clang static analysis reports this error
 
-Fixes: ded845a781a5 ("ieee802154: Add CA8210 IEEE 802.15.4 device driver")
-Signed-off-by: Liu Jian <liujian56@huawei.com>
-Link: https://lore.kernel.org/r/20200720143315.40523-1-liujian56@huawei.com
+adf7242.c:887:6: warning: Assigned value is garbage or undefined
+        len = len_u8;
+            ^ ~~~~~~
+
+len_u8 is set in
+       adf7242_read_reg(lp, 0, &len_u8);
+
+When this call fails, len_u8 is not set.
+
+So check the return code.
+
+Fixes: 7302b9d90117 ("ieee802154/adf7242: Driver for ADF7242 MAC IEEE802154")
+
+Signed-off-by: Tom Rix <trix@redhat.com>
+Acked-by: Michael Hennerich <michael.hennerich@analog.com>
+Link: https://lore.kernel.org/r/20200802142339.21091-1-trix@redhat.com
 Signed-off-by: Stefan Schmidt <stefan@datenfreihafen.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ieee802154/ca8210.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/ieee802154/adf7242.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ieee802154/ca8210.c b/drivers/net/ieee802154/ca8210.c
-index 430c937861534..25dbea302fb6d 100644
---- a/drivers/net/ieee802154/ca8210.c
-+++ b/drivers/net/ieee802154/ca8210.c
-@@ -2924,6 +2924,7 @@ static int ca8210_dev_com_init(struct ca8210_priv *priv)
- 	);
- 	if (!priv->irq_workqueue) {
- 		dev_crit(&priv->spi->dev, "alloc of irq_workqueue failed!\n");
-+		destroy_workqueue(priv->mlme_workqueue);
- 		return -ENOMEM;
- 	}
+diff --git a/drivers/net/ieee802154/adf7242.c b/drivers/net/ieee802154/adf7242.c
+index 8dbccec6ac866..5945ac5f38eea 100644
+--- a/drivers/net/ieee802154/adf7242.c
++++ b/drivers/net/ieee802154/adf7242.c
+@@ -882,7 +882,9 @@ static int adf7242_rx(struct adf7242_local *lp)
+ 	int ret;
+ 	u8 lqi, len_u8, *data;
+ 
+-	adf7242_read_reg(lp, 0, &len_u8);
++	ret = adf7242_read_reg(lp, 0, &len_u8);
++	if (ret)
++		return ret;
+ 
+ 	len = len_u8;
  
 -- 
 2.25.1
