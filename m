@@ -2,157 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF12A27D470
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 19:26:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BC5127D473
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 19:28:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728613AbgI2R0u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 13:26:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36118 "EHLO
+        id S1728403AbgI2R2P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 13:28:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727328AbgI2R0u (ORCPT
+        with ESMTP id S1725776AbgI2R2O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 13:26:50 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 589B3C061755;
-        Tue, 29 Sep 2020 10:26:48 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id a22so4674334ljp.13;
-        Tue, 29 Sep 2020 10:26:48 -0700 (PDT)
+        Tue, 29 Sep 2020 13:28:14 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E4F7C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 10:28:13 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id u24so4429861pgi.1
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 10:28:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vhk3MbInaaF/6croUvi+/zraDixQnx7wCrXOslWTtys=;
-        b=n4MkOq3UvJP9m0yc5Rtex4KtclxrWnItxqOpn6tZJzlS3ahY9sxrZ99wx/IIjkLyvA
-         K0GqFxQHjcFt79Rjzd/Zm9P8+hgfC0QYVVFBS3iB5TCojtSzbQJOyd0rGk4g2xAykhL1
-         Mpwh64dBzCzV9r1Za8avYcsDcrmErdyZmkPZ9kEoUIO8LDElIUZB0ATuZbnGDNr+fYQS
-         fMRGTlsGFAmcXPGzIlYRJpjM9y6G5KnSBPq844V0njnx82hXnbevNRGQZz0ZkAWsenvR
-         bKCofziWQTxGJfxBozUMNCYve9GC3OKOVWJ2cqK5v8FXJ+cKBVDwL7pzd68pvgwRMTG2
-         wnFw==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=1jCfCKOcdlkK7XQuavXEmMvj1/6I5JBU8+KoSiZtQZU=;
+        b=LLa3R+/+HG2BNoramYdoVFD5w4S2wH+28H3USQS+Uxio7PX9jQnsOdFyMnnpGcPg/O
+         rGzo0ext+Kcf1H4jV9ViYNviAZ1YMrW6g0I9Wv9TBeaRrQI1EEjZNiAoP9P3SLr6Rd6i
+         Jw66KWiroK0CYdpntvu7pG2bWsch/sD7x8i+8q4RijN9vfV9ZLpo8MC21YrZ8u2prFVA
+         dWAVs+sOxluhDcAWOGsT2vcwmQkDskU9rqkpszcEP6BsCe3iiol+OJnPrNd3nrrY8eYT
+         IKNgNSgD3bb6Dbm5V1UKA1aTvhvMLMKSCIadLUGgw/4mIJGX4b2tzLnb7FFx4a7UiyYD
+         pNdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vhk3MbInaaF/6croUvi+/zraDixQnx7wCrXOslWTtys=;
-        b=WfRKpf+xKr1jnku10q+LWizcTjobYgzqxwg/MsSTHoORCKk8U4zB7RTf4RSA17I1mC
-         6j907yyP/WpxcHxSU4oDDKJxMGaOhWSZAdbXQMlXOKr03tBVdm87wT7UDrwpQNpBrhgg
-         XN+QUXfiwFPiHupYV1lQoxDSPwar+sqKD29xFAzkz0VYIoACQC9f5lbcZUlU4S1RMH/w
-         NMIsQ0jOvMDfN0Tp75Ei02S4lft5jjHJI67km4uinwl4uhL4iqXtss58V0PQWRaHVSS7
-         aJaUBcxh0Af83tHbS/+Y41C/MaT9GUWyN9Npb5SFdpVekU/bPFMvZIqDrignIfeITfWO
-         sKcQ==
-X-Gm-Message-State: AOAM533e6CaU0nhZ/epOu1jmf6pUGOji4zQrTtOK2XQig8Ln9l2iknLI
-        FG4Igp8uYV8x0FEHqyLnasICk9Q7fz6lHn9Owgg=
-X-Google-Smtp-Source: ABdhPJwxqnsM76aGzSU8gOeBJXlMS/Kp47YaHZhDo+51LyfyeEh9/7V3IF/bZW3wgT6Vd6jz1IR+rbVD/zCvPQOIjpY=
-X-Received: by 2002:a2e:8988:: with SMTP id c8mr1422707lji.433.1601400406761;
- Tue, 29 Sep 2020 10:26:46 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=1jCfCKOcdlkK7XQuavXEmMvj1/6I5JBU8+KoSiZtQZU=;
+        b=UfCmAH9wUv+OjEjOfzuMfIr+zEMvi+bvNHEHd7CwIB31oZ2uBgiilvSFGTyBoR26dh
+         lhNiKV+hlRfoqk8X2Xk12/nz3NwRlv5yhk0U2416nZ3GHp1i4sIeX8nonnvz6mkv6cg0
+         veCwLC1ApM2xt3pBLqjZK0RP3+0wTV5Xg3IHvMfWb/7R2K9EVpm5gOKS3++ditJQOA7B
+         MdciDvxmzzmvSmHqW4dG9uuURWj72bP+V9KHHSRMQHIsoJR3/e2ysgJDlmcjepdMOkFM
+         0HPJJXn4Sl5huHFskuh1NQNnhXxs2JY+1Q2s+6Z0Aj7QmPYThlT498Ki2BxKLoI3p0s4
+         lEdA==
+X-Gm-Message-State: AOAM531981fGwGd/WsqddkXrRCDtqhpUsM7+r+PvqHAk5lKv+s+4C4wr
+        SonrZ7l9Usv+kJ8naV+yLnI=
+X-Google-Smtp-Source: ABdhPJwv2MmR7XFREsHxyilT3MOLMv0dmsPAwmNjSSqks27TMMrOL40kXvbffF6dEBzCFM5vQz2uTQ==
+X-Received: by 2002:a63:f84c:: with SMTP id v12mr4077213pgj.125.1601400492666;
+        Tue, 29 Sep 2020 10:28:12 -0700 (PDT)
+Received: from localhost.localdomain ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id f19sm5393006pfj.25.2020.09.29.10.28.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Sep 2020 10:28:11 -0700 (PDT)
+From:   Florian Fainelli <f.fainelli@gmail.com>
+To:     linux-mtd@lists.infradead.org
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
+        <noltari@gmail.com>, Jonas Gorski <jonas.gorski@gmail.com>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] mtd: parsers: bcm63xx: Do not make it modular
+Date:   Tue, 29 Sep 2020 10:27:21 -0700
+Message-Id: <20200929172726.30469-1-f.fainelli@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200928161617.2a1b2244@xps13>
+References: <20200928161617.2a1b2244@xps13>
 MIME-Version: 1.0
-References: <1600959521-24158-1-git-send-email-ross.philipson@oracle.com> <1600959521-24158-4-git-send-email-ross.philipson@oracle.com>
-In-Reply-To: <1600959521-24158-4-git-send-email-ross.philipson@oracle.com>
-From:   Jason Andryuk <jandryuk@gmail.com>
-Date:   Tue, 29 Sep 2020 13:26:34 -0400
-Message-ID: <CAKf6xpt=G_SJTGikXpQ36pfpSfXQZf0Upn9qTkf-F+mrY2SRDA@mail.gmail.com>
-Subject: Re: [PATCH 03/13] x86: Add early SHA support for Secure Launch early measurements
-To:     Ross Philipson <ross.philipson@oracle.com>
-Cc:     open list <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        iommu@lists.linux-foundation.org, linux-integrity@vger.kernel.org,
-        linux-doc@vger.kernel.org,
-        Daniel Smith <dpsmith@apertussolutions.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, luto@amacapital.net,
-        trenchboot-devel@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 11:00 AM Ross Philipson
-<ross.philipson@oracle.com> wrote:
->
-> The SHA algorithms are necessary to measure configuration information into
-> the TPM as early as possible before using the values. This implementation
-> uses the established approach of #including the SHA libraries directly in
-> the code since the compressed kernel is not uncompressed at this point.
->
-> The SHA code here has its origins in the code from the main kernel. That
-> code could not be pulled directly into the setup portion of the compressed
-> kernel because of other dependencies it pulls in. The result is this is a
-> modified copy of that code that still leverages the core SHA algorithms.
->
-> Signed-off-by: Daniel P. Smith <dpsmith@apertussolutions.com>
-> Signed-off-by: Ross Philipson <ross.philipson@oracle.com>
-> ---
->  arch/x86/boot/compressed/Makefile       |   4 +
->  arch/x86/boot/compressed/early_sha1.c   | 104 ++++++++++++++++
->  arch/x86/boot/compressed/early_sha1.h   |  17 +++
->  arch/x86/boot/compressed/early_sha256.c |   6 +
->  arch/x86/boot/compressed/early_sha512.c |   6 +
->  include/linux/sha512.h                  |  21 ++++
->  lib/sha1.c                              |   4 +
->  lib/sha512.c                            | 209 ++++++++++++++++++++++++++++++++
->  8 files changed, 371 insertions(+)
->  create mode 100644 arch/x86/boot/compressed/early_sha1.c
->  create mode 100644 arch/x86/boot/compressed/early_sha1.h
->  create mode 100644 arch/x86/boot/compressed/early_sha256.c
->  create mode 100644 arch/x86/boot/compressed/early_sha512.c
->  create mode 100644 include/linux/sha512.h
->  create mode 100644 lib/sha512.c
->
-> diff --git a/arch/x86/boot/compressed/Makefile b/arch/x86/boot/compressed/Makefile
-> index ff7894f..0fd84b9 100644
-> --- a/arch/x86/boot/compressed/Makefile
-> +++ b/arch/x86/boot/compressed/Makefile
-> @@ -96,6 +96,10 @@ vmlinux-objs-$(CONFIG_ACPI) += $(obj)/acpi.o
->  vmlinux-objs-$(CONFIG_EFI_MIXED) += $(obj)/efi_thunk_$(BITS).o
->  efi-obj-$(CONFIG_EFI_STUB) = $(objtree)/drivers/firmware/efi/libstub/lib.a
->
-> +vmlinux-objs-$(CONFIG_SECURE_LAUNCH) += $(obj)/early_sha1.o
-> +vmlinux-objs-$(CONFIG_SECURE_LAUNCH_SHA256) += $(obj)/early_sha256.o
-> +vmlinux-objs-$(CONFIG_SECURE_LAUNCH_SHA512) += $(obj)/early_sha512.o
-> +
->  # The compressed kernel is built with -fPIC/-fPIE so that a boot loader
->  # can place it anywhere in memory and it will still run. However, since
->  # it is executed as-is without any ELF relocation processing performed
-> diff --git a/arch/x86/boot/compressed/early_sha1.c b/arch/x86/boot/compressed/early_sha1.c
-> new file mode 100644
-> index 0000000..198c46d
-> --- /dev/null
-> +++ b/arch/x86/boot/compressed/early_sha1.c
-> @@ -0,0 +1,104 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (c) 2020, Oracle and/or its affiliates.
-> + * Copyright (c) 2020 Apertus Solutions, LLC.
-> + */
-> +
-> +#include <linux/init.h>
-> +#include <linux/linkage.h>
-> +#include <linux/string.h>
-> +#include <asm/boot.h>
-> +#include <asm/unaligned.h>
-> +
-> +#include "early_sha1.h"
-> +
-> +#define SHA1_DISABLE_EXPORT
-> +#include "../../../../lib/sha1.c"
-> +
-> +/* The SHA1 implementation in lib/sha1.c was written to get the workspace
-> + * buffer as a parameter. This wrapper function provides a container
-> + * around a temporary workspace that is cleared after the transform completes.
-> + */
-> +static void __sha_transform(u32 *digest, const char *data)
-> +{
-> +       u32 ws[SHA1_WORKSPACE_WORDS];
-> +
-> +       sha1_transform(digest, data, ws);
-> +
-> +       memset(ws, 0, sizeof(ws));
-> +       /*
-> +        * As this is cryptographic code, prevent the memset 0 from being
-> +        * optimized out potentially leaving secrets in memory.
-> +        */
-> +       wmb();
+With commit 91e81150d388 ("mtd: parsers: bcm63xx: simplify CFE
+detection"), we generate a reference to fw_arg3 which is the fourth
+firmware/command line argument on MIPS platforms. That symbol is not
+exported and would cause a linking failure.
 
-You can use memzero_explicit instead of open coding it.
+The parser is typically necessary to boot a BCM63xx-based system anyway
+so having it be part of the kernel image makes sense, therefore make it
+'bool' instead of 'tristate'.
 
-Regards,
-Jason
+Fixes: 91e81150d388 ("mtd: parsers: bcm63xx: simplify CFE detection")
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+---
+ drivers/mtd/parsers/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/parsers/Kconfig b/drivers/mtd/parsers/Kconfig
+index f98363c9b363..e72354322f62 100644
+--- a/drivers/mtd/parsers/Kconfig
++++ b/drivers/mtd/parsers/Kconfig
+@@ -12,7 +12,7 @@ config MTD_BCM47XX_PARTS
+ 	  boards.
+ 
+ config MTD_BCM63XX_PARTS
+-	tristate "BCM63XX CFE partitioning parser"
++	bool "BCM63XX CFE partitioning parser"
+ 	depends on BCM63XX || BMIPS_GENERIC || COMPILE_TEST
+ 	select CRC32
+ 	select MTD_PARSER_IMAGETAG
+-- 
+2.25.1
+
