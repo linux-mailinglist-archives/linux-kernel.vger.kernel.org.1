@@ -2,57 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31B3727BAF7
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 04:40:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B553E27BAF4
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 04:40:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727518AbgI2Ckj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 22:40:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40052 "EHLO
+        id S1727485AbgI2Ckf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 22:40:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727459AbgI2Ckb (ORCPT
+        with ESMTP id S1727441AbgI2Ckd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 22:40:31 -0400
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39317C0613CE
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 19:40:31 -0700 (PDT)
-Received: by mail-qv1-xf49.google.com with SMTP id dj20so1753094qvb.23
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 19:40:31 -0700 (PDT)
+        Mon, 28 Sep 2020 22:40:33 -0400
+Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26DC9C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 19:40:33 -0700 (PDT)
+Received: by mail-qv1-xf4a.google.com with SMTP id l1so1777941qvr.0
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 19:40:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=+8V9XbF+nrhvOeFjlq1gqGlcRl5hrQT9omJcJW0tz7E=;
-        b=eThgSYYws9kLpLHXJUFr8JlqfR0wyD59aDcTKSpqbsx6KIFxXcnLhU123aJufAG5WH
-         aDXDmzpTpskIbia0MgBBXSxSbn9D49hM95Y5gcdvk5KasouU/EUxaaOkgaLoA7gLHbBZ
-         mLFZyzCFBFplneMO5kRnVhmXU8OVM+0SxYVaiILHXuCSd5etox30tyBSlB1pyq8j7vnl
-         p+pt0YFFe0+KCPJNLCrOm6lKk/HCz3ASuUm/CgmjIvExOL/8MBztejPq9+WfTWQp84JX
-         EqRvZ+FPJAi8dDJwpQAygrOGlF2gYOv2HypGFKuUp3WW+ZQz0YWAss5U+aX+fjVmfCzW
-         QSWg==
+        bh=DpYrlP24J5CraOwXQAn3+QVtbA7BAicUcylVOWBiG/8=;
+        b=C5nCbrsWxtTuWbXYuTpsL6KGmbedWMp+NCjbUYcahBkficKt+LeeiDHhT2z9jqt1as
+         QR/GR2FgXDOar8a0JGLeuUykKz70MKJMagoqrlpH46GLyD0I86UI6Odt36010gmtKveE
+         tsFbJ06AYOsk9jCUR/KGW9uChhSDNqw0LKzo6xnrSrYb23v2xo21SAg89kljDgXkFPtc
+         N9SqoiCP2It2NVICjdX2ORRSj2n7dIvwiGXeQhOg3Bw3nkqmTXDhjHXSPlFHp34z/IvI
+         64yd4BGNhMo1KKheEFJFIFFkio4UduKbZ5BtGpai9L51fVPm6tj9dOz6l5yfUg9FKXgg
+         QnCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=+8V9XbF+nrhvOeFjlq1gqGlcRl5hrQT9omJcJW0tz7E=;
-        b=fTzopLtIfUKCz/naToXJR/jzkssu08Mpsef+/SqJpkzsLBbJRzhyDMdw7tsIMK3axG
-         HmepOmZwXusq2NhFIT54VJFsLSV7Cf3XGhH8YsBOr77TVr0NRdrzCF9Xgs7TFkGZPn+C
-         a/KO1gzMPop0H0b+lLd4B1zynDA7lMyuuh8yrXo637WJ3MHyD/hjHqnpTMnqDotr/Vzv
-         ZbjsopiuGEdu10Fjc6LVPrMkEpKshE1rwQjiN/HO+9xqtsIBQVRF8vq8RXuve9aJE+Pg
-         eC8NOABNsCkpdu+r6sbQjt4bmIu3K/+Da6OySmPC9E421TkRLKZkcyRleRUeLxppT8Ty
-         /nfg==
-X-Gm-Message-State: AOAM5326qny8mTgLvxB+LpdaVLTfbxv47+3JphXZzFl5I/Y8iVRa6612
-        8iRxGnLtHyeF9sVsSbY+T3/X3CG0u5U=
-X-Google-Smtp-Source: ABdhPJzwsg7Sc8wZ0WPfTkzvJTJdAdYy3e+MUHpTHIttV5fY2N8t9NGM6qfFCPHu+ad0WPdZNkpCdjyfmhM=
+        bh=DpYrlP24J5CraOwXQAn3+QVtbA7BAicUcylVOWBiG/8=;
+        b=MKJAm6aSqHxN0xe6umnOYLqnVMcZHz/PeimJsY57XIYlRhj46EhLfm2TYHt/wbp8wd
+         Tgh4ML7YO5F8nxMKvPNvpssAb7f3Kzhtm6PDvkE9ik1db2XoerRnHVG5xSv/KAnDs0J1
+         vBJ9xsJQ8UoDHJiHuCmFNbf3S/0Mlf6CHAoXDt4c8mHXe1MiNUWm7iSDal9ST4PE56Ly
+         NX+kSZCJnsx+uRdGOsRGfg5iD9NnlwFpFv5dGAC5wHegfgc+BDFqGc1bdEXg91CT5Viu
+         wYSAE3x01eB9q/IS5Qb4yovs1aJR6nMJ+lbVB+wetWp54R5mPh2bjLt6KaTH0Wfb7FJN
+         tDpA==
+X-Gm-Message-State: AOAM530fI4OskA3tCr1BGKz1BHzQRaGFDGJJ9YJPmA4TNHrq5ShW1yV5
+        pP4f9uVrVORcYEhPrK41yFxPNSBCBTw=
+X-Google-Smtp-Source: ABdhPJwyCSrYbt5uFqV2H0HZtZabMENM/4+pRH39aLKtpAzQok9AOR3sONJfhU94qP0BEFSzs+VElXyBoqE=
 Sender: "badhri via sendgmr" <badhri@badhri.mtv.corp.google.com>
 X-Received: from badhri.mtv.corp.google.com ([2620:15c:211:1:f292:1cff:fee0:66cf])
- (user=badhri job=sendgmr) by 2002:ad4:58c7:: with SMTP id dh7mr2723471qvb.20.1601347230306;
- Mon, 28 Sep 2020 19:40:30 -0700 (PDT)
-Date:   Mon, 28 Sep 2020 19:39:59 -0700
+ (user=badhri job=sendgmr) by 2002:a0c:b409:: with SMTP id u9mr2527426qve.9.1601347232286;
+ Mon, 28 Sep 2020 19:40:32 -0700 (PDT)
+Date:   Mon, 28 Sep 2020 19:40:00 -0700
 In-Reply-To: <20200929024004.244992-1-badhri@google.com>
-Message-Id: <20200929024004.244992-11-badhri@google.com>
+Message-Id: <20200929024004.244992-12-badhri@google.com>
 Mime-Version: 1.0
 References: <20200929024004.244992-1-badhri@google.com>
 X-Mailer: git-send-email 2.28.0.709.gb0816b6eb0-goog
-Subject: [PATCH v9 10/15] usb: typec: tcpci: frs sourcing vbus callback
+Subject: [PATCH v9 11/15] usb: typec: tcpci_max77759: Fix vbus stuck on upon
+ diconnecting sink
 From:   Badhri Jagan Sridharan <badhri@google.com>
 To:     Guenter Roeck <linux@roeck-us.net>,
         Heikki Krogerus <heikki.krogerus@linux.intel.com>,
@@ -72,68 +73,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-During FRS hardware autonomously starts to source vbus. Provide
-callback to perform chip specific operations.
+Occasionally, POWER_STATUS.sourcing_vbus takes a while to clear after
+writing to  MAX_BUCK_BOOST_OP register. This causes vbus to turn back
+on while disconnecting the sink. Overcome this issue by writing into
+MAX_BUCK_BOOST_OP during frs while sourcing vbu, instead of always
+into the register whenever POWER_STATUS.sourcing_vbus is set.
 
 Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
 ---
-v9 is the first version of this patch in the series. Added to fix
+v9 is the first version of this patch. Added to fix
 occasional bug of vbus turning back on when disconnecting the FRS accessory
 after disconnect.
 ---
- drivers/usb/typec/tcpm/tcpci.c | 9 +++++++++
- drivers/usb/typec/tcpm/tcpci.h | 4 ++++
- 2 files changed, 13 insertions(+)
+ drivers/usb/typec/tcpm/tcpci_maxim.c | 28 ++++++++++++++--------------
+ 1 file changed, 14 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/usb/typec/tcpm/tcpci.c b/drivers/usb/typec/tcpm/tcpci.c
-index f9f0af64da5f..f91688e43991 100644
---- a/drivers/usb/typec/tcpm/tcpci.c
-+++ b/drivers/usb/typec/tcpm/tcpci.c
-@@ -284,6 +284,14 @@ static int tcpci_enable_frs(struct tcpc_dev *dev, bool enable)
- 	return ret;
- }
+diff --git a/drivers/usb/typec/tcpm/tcpci_maxim.c b/drivers/usb/typec/tcpm/tcpci_maxim.c
+index 723d7dd38f75..43dcad95e897 100644
+--- a/drivers/usb/typec/tcpm/tcpci_maxim.c
++++ b/drivers/usb/typec/tcpm/tcpci_maxim.c
+@@ -238,23 +238,22 @@ static void process_power_status(struct max_tcpci_chip *chip)
+ 	if (ret < 0)
+ 		return;
  
-+static void tcpci_frs_sourcing_vbus(struct tcpc_dev *dev)
-+{
-+	struct tcpci *tcpci = tcpc_to_tcpci(dev);
-+
-+	if (tcpci->data->frs_sourcing_vbus)
-+		tcpci->data->frs_sourcing_vbus(tcpci, tcpci->data);
+-	if (pwr_status == 0xff) {
++	if (pwr_status == 0xff)
+ 		max_tcpci_init_regs(chip);
+-	} else if (pwr_status & TCPC_POWER_STATUS_SOURCING_VBUS) {
++	else if (pwr_status & TCPC_POWER_STATUS_SOURCING_VBUS)
+ 		tcpm_sourcing_vbus(chip->port);
+-		/*
+-		 * Alawys re-enable boost here.
+-		 * In normal case, when say an headset is attached, TCPM would
+-		 * have instructed to TCPC to enable boost, so the call is a
+-		 * no-op.
+-		 * But for Fast Role Swap case, Boost turns on autonomously without
+-		 * AP intervention, but, needs AP to enable source mode explicitly
+-		 * for AP to regain control.
+-		 */
+-		max_tcpci_set_vbus(chip->tcpci, &chip->data, true, false);
+-	} else {
++	else
+ 		tcpm_vbus_change(chip->port);
+-	}
 +}
 +
- static int tcpci_set_bist_data(struct tcpc_dev *tcpc, bool enable)
- {
- 	struct tcpci *tcpci = tcpc_to_tcpci(tcpc);
-@@ -628,6 +636,7 @@ struct tcpci *tcpci_register_port(struct device *dev, struct tcpci_data *data)
- 	tcpci->tcpc.pd_transmit = tcpci_pd_transmit;
- 	tcpci->tcpc.set_bist_data = tcpci_set_bist_data;
- 	tcpci->tcpc.enable_frs = tcpci_enable_frs;
-+	tcpci->tcpc.frs_sourcing_vbus = tcpci_frs_sourcing_vbus;
++static void max_tcpci_frs_sourcing_vbus(struct tcpci *tcpci, struct tcpci_data *tdata)
++{
++	/*
++	 * For Fast Role Swap case, Boost turns on autonomously without
++	 * AP intervention, but, needs AP to enable source mode explicitly
++	 * for AP to regain control.
++	 */
++	max_tcpci_set_vbus(tcpci, tdata, true, false);
+ }
  
- 	err = tcpci_parse_config(tcpci);
- 	if (err < 0)
-diff --git a/drivers/usb/typec/tcpm/tcpci.h b/drivers/usb/typec/tcpm/tcpci.h
-index 5ef07a56d67a..b418fe11b527 100644
---- a/drivers/usb/typec/tcpm/tcpci.h
-+++ b/drivers/usb/typec/tcpm/tcpci.h
-@@ -143,6 +143,9 @@
- /*
-  * @TX_BUF_BYTE_x_hidden
-  *		optional; Set when TX_BUF_BYTE_x can only be accessed through I2C_WRITE_BYTE_COUNT.
-+ * @frs_sourcing_vbus:
-+ *		Optional; Callback to perform chip specific operations when FRS
-+ *		is sourcing vbus.
-  */
- struct tcpci;
- struct tcpci_data {
-@@ -154,6 +157,7 @@ struct tcpci_data {
- 	int (*start_drp_toggling)(struct tcpci *tcpci, struct tcpci_data *data,
- 				  enum typec_cc_status cc);
- 	int (*set_vbus)(struct tcpci *tcpci, struct tcpci_data *data, bool source, bool sink);
-+	void (*frs_sourcing_vbus)(struct tcpci *tcpci, struct tcpci_data *data);
- };
+ static void process_tx(struct max_tcpci_chip *chip, u16 status)
+@@ -441,6 +440,7 @@ static int max_tcpci_probe(struct i2c_client *client, const struct i2c_device_id
+ 	chip->data.start_drp_toggling = max_tcpci_start_toggling;
+ 	chip->data.TX_BUF_BYTE_x_hidden = true;
+ 	chip->data.init = tcpci_init;
++	chip->data.frs_sourcing_vbus = max_tcpci_frs_sourcing_vbus;
  
- struct tcpci *tcpci_register_port(struct device *dev, struct tcpci_data *data);
+ 	max_tcpci_init_regs(chip);
+ 	chip->tcpci = tcpci_register_port(chip->dev, &chip->data);
 -- 
 2.28.0.709.gb0816b6eb0-goog
 
