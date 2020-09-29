@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6D7227C5C2
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:39:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95FE927C522
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:32:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730380AbgI2Lii (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:38:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60302 "EHLO mail.kernel.org"
+        id S1728489AbgI2LbV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:31:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36424 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729812AbgI2Lie (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:38:34 -0400
+        id S1729678AbgI2LYL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:24:11 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A8A5E221EF;
-        Tue, 29 Sep 2020 11:38:20 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 24EF823444;
+        Tue, 29 Sep 2020 11:21:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601379501;
-        bh=f8gRk8eAyptuVsstm1uPSzF0miGBAcPzNLfF8INKp44=;
+        s=default; t=1601378493;
+        bh=gQj01qDyAwAaQcwZQ5/a6f6D4fUtuinq65dyj/G7YxA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CQnCf0ylnvJVtNetMbSHsagO6gL5W2l2upzOqrPCojRfIw/G3lL+M2TVixIISG+om
-         TwKP2GNGgO/bMfWVPRW4heEnJyvc/NC12zpuOxz6Aos7v43Gi+0deDiDGrt9A1wDDl
-         K5QQRqq1qBhD+tziC4tJcYM9EOMXWqEbd6ii60VI=
+        b=lgZQ763Jw63ze/G7wqdTtvilHWn2dOUVwR3nBTVrjTgGw/zMbMitQADMWhT8ujToq
+         Qk5mE7OWapc6kJ3TCngNOMylRbKXGYDu5dz4nMFyj+DbAwCpUQzMCKrfm6DieNpaMs
+         0lHmN/BYeykBiPhNwzaECFnFiBPJb9S31Luw2s5c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hawking Zhang <Hawking.Zhang@amd.com>,
-        John Clements <john.clements@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org, Pan Bian <bianpan2016@163.com>,
+        Jason Gunthorpe <jgg@mellanox.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 152/388] drm/amdgpu: increase atombios cmd timeout
-Date:   Tue, 29 Sep 2020 12:58:03 +0200
-Message-Id: <20200929110017.828464979@linuxfoundation.org>
+Subject: [PATCH 4.19 033/245] RDMA/i40iw: Fix potential use after free
+Date:   Tue, 29 Sep 2020 12:58:04 +0200
+Message-Id: <20200929105948.617702186@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929110010.467764689@linuxfoundation.org>
-References: <20200929110010.467764689@linuxfoundation.org>
+In-Reply-To: <20200929105946.978650816@linuxfoundation.org>
+References: <20200929105946.978650816@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,35 +43,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: John Clements <john.clements@amd.com>
+From: Pan Bian <bianpan2016@163.com>
 
-[ Upstream commit 1b3460a8b19688ad3033b75237d40fa580a5a953 ]
+[ Upstream commit da046d5f895fca18d63b15ac8faebd5bf784e23a ]
 
-mitigates race condition on BACO reset between GPU bootcode and driver reload
+Release variable dst after logging dst->error to avoid possible use after
+free.
 
-Reviewed-by: Hawking Zhang <Hawking.Zhang@amd.com>
-Signed-off-by: John Clements <john.clements@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Link: https://lore.kernel.org/r/1573022651-37171-1-git-send-email-bianpan2016@163.com
+Signed-off-by: Pan Bian <bianpan2016@163.com>
+Reviewed-by: Jason Gunthorpe <jgg@mellanox.com>
+Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/amdgpu/atom.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/infiniband/hw/i40iw/i40iw_cm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/atom.c b/drivers/gpu/drm/amd/amdgpu/atom.c
-index dd30f4e61a8cd..cae426c7c0863 100644
---- a/drivers/gpu/drm/amd/amdgpu/atom.c
-+++ b/drivers/gpu/drm/amd/amdgpu/atom.c
-@@ -744,8 +744,8 @@ static void atom_op_jump(atom_exec_context *ctx, int *ptr, int arg)
- 			cjiffies = jiffies;
- 			if (time_after(cjiffies, ctx->last_jump_jiffies)) {
- 				cjiffies -= ctx->last_jump_jiffies;
--				if ((jiffies_to_msecs(cjiffies) > 5000)) {
--					DRM_ERROR("atombios stuck in loop for more than 5secs aborting\n");
-+				if ((jiffies_to_msecs(cjiffies) > 10000)) {
-+					DRM_ERROR("atombios stuck in loop for more than 10secs aborting\n");
- 					ctx->abort = true;
- 				}
- 			} else {
+diff --git a/drivers/infiniband/hw/i40iw/i40iw_cm.c b/drivers/infiniband/hw/i40iw/i40iw_cm.c
+index 4321b9e3dbb4b..0273d0404e740 100644
+--- a/drivers/infiniband/hw/i40iw/i40iw_cm.c
++++ b/drivers/infiniband/hw/i40iw/i40iw_cm.c
+@@ -2071,9 +2071,9 @@ static int i40iw_addr_resolve_neigh_ipv6(struct i40iw_device *iwdev,
+ 	dst = i40iw_get_dst_ipv6(&src_addr, &dst_addr);
+ 	if (!dst || dst->error) {
+ 		if (dst) {
+-			dst_release(dst);
+ 			i40iw_pr_err("ip6_route_output returned dst->error = %d\n",
+ 				     dst->error);
++			dst_release(dst);
+ 		}
+ 		return rc;
+ 	}
 -- 
 2.25.1
 
