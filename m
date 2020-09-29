@@ -2,305 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D654B27BE4D
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 09:45:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9B1B27BE57
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 09:47:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725791AbgI2HpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 03:45:23 -0400
-Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:65224 "EHLO
-        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725468AbgI2HpX (ORCPT
+        id S1727560AbgI2Hru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 03:47:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58856 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725535AbgI2Hrt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 03:45:23 -0400
-X-IronPort-AV: E=Sophos;i="5.77,317,1596492000"; 
-   d="scan'208";a="469986358"
-Received: from abo-173-121-68.mrs.modulonet.fr (HELO hadrien) ([85.68.121.173])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 29 Sep 2020 09:45:18 +0200
-Date:   Tue, 29 Sep 2020 09:45:17 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Joe Perches <joe@perches.com>
-cc:     Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH] scripts/most_common_subject_prefix.pl: Find the most
- common commit subject prefix
-In-Reply-To: <e949cb8f12caec813c22dc3791a92e9f87670a5b.1601356990.git.joe@perches.com>
-Message-ID: <alpine.DEB.2.22.394.2009290941260.2808@hadrien>
-References: <e949cb8f12caec813c22dc3791a92e9f87670a5b.1601356990.git.joe@perches.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        Tue, 29 Sep 2020 03:47:49 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79625C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 00:47:49 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id a9so3740451wmm.2
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 00:47:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=gTw8+Yfq2M+lgL6uz8tiJpeY2ZADAkzaEJEhPKyRCFI=;
+        b=IkT8QLC85j8yoqCUXeesrjQjdwYyMXKI+9pHr+gD194jy/JPlP7IULJjQBms6RfAcn
+         ngOpiL8YKxttlae/eW+ZSYsuN6fw22wjzPlxYz4CDVZQDW6jOe/fUpkTpZ06RqkrezNR
+         tZkf3oRsdTOWnYGJBVtyhGGF97Yrg4fEfY5ZIcZb811ljQIAJX1+o0YjTeWIaW1PBXE+
+         VLRgbDqUx1NexRNOfcMr8YML02icMyBzioqMZjt4FsQUuZccI2vjISzfstZ8Ll3CZL0X
+         uw2lFh1dlc98GFEzdezIO+4ogmKGDBjmkzMVNoNFeVIQxDwrMa1bVwb3S3R4Q7QIhlWk
+         BKJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=gTw8+Yfq2M+lgL6uz8tiJpeY2ZADAkzaEJEhPKyRCFI=;
+        b=KXlJqeZx8y2kb/prHAtl7tWmeYF9rihUNllVseSnSkTXnBt8a+R7g4KSMoAyT9gNYO
+         ga66OJFAVOEDtQ+bUfvNvo9pN2/XdO/j2bU+8dwXZiI55mPR5x55EPNCNyv5sMV9F3gC
+         AkWK8JmBTUk/ASX9KFregRJhGuFIOrPDVBjzcqu6tczJJ3Q2tN6ObZaOIF6j9MCpTwhv
+         6IlECIsi6qm28hpNl7eu8KtqHHAWlkLRHk51Rm5Ma3Mg+FQ0DRq9ywtvYFDjA4rjFbKt
+         F7B3axz2UY2VogJd++FMCyXwRuJra++5Qez1ahg/Al1/fRoJIFO0wo3xs5wLaItg8Hbq
+         3jgQ==
+X-Gm-Message-State: AOAM533LYjylMdcpmNKo4QUJTsYCVbOwtNPsZNiZ6jHH8Lsi+rkwwGMO
+        rCWfEtdbyh3sjHKmRWJDqbbN9g+klxJy8GzWsgRVo+ksgHFdyg==
+X-Google-Smtp-Source: ABdhPJwgE/V6GpmwpxCPRvRtwn4tPlyvUYF/SJiKYjaeXSNi83XanhC/KGLo6HVBvseR3RSGee42R6EPnZDFrupv9vs=
+X-Received: by 2002:a7b:cc17:: with SMTP id f23mr2888405wmh.166.1601365668191;
+ Tue, 29 Sep 2020 00:47:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <1601274460-7866-1-git-send-email-kevin3.tang@gmail.com>
+ <1601274460-7866-2-git-send-email-kevin3.tang@gmail.com> <20200928081726.hkh3rzbfr6m7jszt@gilmour.lan>
+ <CAL_JsqLUT9gBiVgSdcHM86vNLR_1MxEZ+x9MDBaFGdv2j9EtvA@mail.gmail.com> <CAFPSGXYbdeZuVKQWnU6kiPzn3zgm224O2uDkr-uuLBUUjufGsA@mail.gmail.com>
+In-Reply-To: <CAFPSGXYbdeZuVKQWnU6kiPzn3zgm224O2uDkr-uuLBUUjufGsA@mail.gmail.com>
+From:   Chunyan Zhang <zhang.lyra@gmail.com>
+Date:   Tue, 29 Sep 2020 15:47:12 +0800
+Message-ID: <CAAfSe-uncUhsN_MFWe2KiaWjBwmdyrXOSp32O3sTvbgwTJ+VRQ@mail.gmail.com>
+Subject: Re: [PATCH RFC v7 1/6] dt-bindings: display: add Unisoc's drm master bindings
+To:     Kevin Tang <kevin3.tang@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On Mon, 28 Sep 2020, Joe Perches wrote:
-
-> A common patch subject prefix for specific files is to use the
-> lowest level directory or just the basename of the file without the
-> file extension.  For patches that touch multiple files, it's common to
-> use the basename directory as the commit prefix.
+On Tue, 29 Sep 2020 at 14:35, Kevin Tang <kevin3.tang@gmail.com> wrote:
 >
-> For example, patches to files in drivers/net/ethernet/intel/igb/ are
-> most commonly prefixed with "igb: <then some description>".
+> Hi Rob,
+> Component framework include master and component, here is master subnode.
+> It seems that everyone else does it, why not me?
 >
-> But many subsystems have specific commit subject line prefixes that are
-> not simply the containing base directory.  For example, patches to
-> drivers/staging are most often prefixed with "staging: <basename dir>: "
-> then "<commit specific description>".
+> Your comments on v6:
+> "We generally try to avoid this virtual node as it doesn't represent
+> any h/w. Can't you bind the driver to the DPU directly?"
 >
-> So add a tool that can help find what prefix the subsystem or file most
-> commonly uses for patch commit subject lines.
->
-> This tool uses git log history in various ways to find the most common
-> prefix used in for a specific file or path.
->
-> $ ./scripts/most_common_subject_prefix.pl <file>
->
-> This will emit a single line that is the most commonly used commit
-> subject prefix up to and including the last colon of the commit subject
-> for commits that _only_ include the specific file and not any other file.
+> I'm sorry, maybe is my careless, I still don't understand why and how to =
+do it
 
-For the comma->semicolon patches, I noticed the need for a number of
-suject lines of the form:
+Devicetree is used to describe hardware rather than virtual things
+like "sprd,display-subsystem" which is not a real device.
+That's what I understand for Rob's comments here.
 
-hwrng: xxx - patch description
-
-So maybe other delimiters have to be taken into account.
-
-julia
-
-
+Chunyan
 
 >
-> For instance:
+> Rob Herring <robh+dt@kernel.org> =E4=BA=8E2020=E5=B9=B49=E6=9C=8829=E6=97=
+=A5=E5=91=A8=E4=BA=8C =E4=B8=8A=E5=8D=8812:28=E5=86=99=E9=81=93=EF=BC=9A
 >
-> $ ./scripts/most_common_subject_prefix.pl arch/arm/net/bpf_jit_32.c
-> ARM: net: bpf:
->
-> An optional flag is --details which by default shows up to the 5 most common
-> commit subject prefixes and will show commits with just the single file as
-> well as commits that include other files.
->
-> $ ./scripts/most_common_subject_prefix.pl arch/arm/net/bpf_jit_32.c --details
-> Single file commits:
->      24 ARM: net: bpf:
->       5 bpf, arm32:
->       3 bpf, arm:
->       2 arm, bpf:
->       1 ARM: net:
-> Multiple file commits:
->       4 ARM: net: bpf:
->       2 arm:
->       2 bpf:
->       1 ARM: net:
->       1 arm: bpf:
->
-> command-line options are currently:
->   --git-since=<date>         (default: 5-years-ago)
->     (use commits more recent than this date to find the typical subject prefix)
->   --details                  show subject prefix details (default: 0/off)
->   --detail_lines=<count>     lines of details to show (default: 5)
->   --root=PATH                PATH to the kernel tree root (default: ./)
->
-> Signed-off-by: Joe Perches <joe@perches.com>
-> ---
->  scripts/most_common_subject_prefix.pl | 183 ++++++++++++++++++++++++++
->  1 file changed, 183 insertions(+)
->  create mode 100755 scripts/most_common_subject_prefix.pl
->
-> diff --git a/scripts/most_common_subject_prefix.pl b/scripts/most_common_subject_prefix.pl
-> new file mode 100755
-> index 000000000000..c3ceeacbec2f
-> --- /dev/null
-> +++ b/scripts/most_common_subject_prefix.pl
-> @@ -0,0 +1,183 @@
-> +#!/usr/bin/env perl
-> +
-> +# Show possible patch subject prefixes for a file in git
-> +
-> +# use only commits that modify the file argument and
-> +# emit up to the 5 most common commit headers
-> +
-> +use warnings;
-> +use strict;
-> +
-> +my $P = $0;
-> +my $V = '0.1';
-> +
-> +my $git_command ='export LANGUAGE=en_US.UTF-8; git';
-> +my $root;
-> +my $gitroot = $ENV{'GIT_DIR'};
-> +$gitroot = ".git" if !defined($gitroot);
-> +my $git_since = "5-years-ago";
-> +my $details = 0;
-> +my $detail_lines = 5;
-> +my $version = 0;
-> +my $help = 0;
-> +
-> +sub usage {
-> +    print <<EOT;
-> +usage: $P [options] <file|path in git>
-> +version: $V
-> +
-> +Options:
-> +  --git-since=<date>         (default: $git_since)
-> +    (use commits more recent than this date to find the typical subject prefix)
-> +  --details                  show subject prefix details (default: $details)
-> +  --detail_lines=<count>     lines of details to show (default: $detail_lines)
-> +  --root=PATH                PATH to the kernel tree root (default: ./)
-> +
-> +EOT
-> +}
-> +
-> +use Getopt::Long qw(:config no_auto_abbrev);
-> +
-> +if (!GetOptions(
-> +		'git-since=s'	=> \$git_since,
-> +		'details!'	=> \$details,
-> +		'detail_lines=i'=> \$detail_lines,
-> +		'root=s'	=> \$root,
-> +		'v|version'	=> \$version,
-> +		'h|help|usage'	=> \$help,
-> +		)) {
-> +    die "$P: invalid argument - use --help if necessary\n";
-> +}
-> +
-> +if ($help != 0) {
-> +    usage();
-> +    exit 0;
-> +}
-> +
-> +if ($version != 0) {
-> +    print("${P} ${V}\n");
-> +    exit 0;
-> +}
-> +
-> +die "$P: Must have a single <file|path> argument\n" if ($#ARGV != 0);
-> +
-> +die "$P: git not found\n" if (which("git") eq "");
-> +die "$P: git directory not found\n" if (!(-e "$gitroot"));
-> +
-> +if (defined $root) {
-> +	if (!top_of_kernel_tree($root)) {
-> +		die "$P: $root: --root does not point at a valid kernel tree\n";
-> +	}
-> +} else {
-> +	if (top_of_kernel_tree('.')) {
-> +		$root = '.';
-> +	} elsif ($0 =~ m@(.*)/scripts/[^/]*$@ &&
-> +		     top_of_kernel_tree($1)) {
-> +		$root = $1;
-> +	}
-> +}
-> +
-> +if (!defined $root) {
-> +	print "$P: Must be run from the top-level dir of a kernel tree\n";
-> +	exit(2);
-> +}
-> +
-> +sub prefixes_from_subjects {
-> +	my ($array_ref) = @_;
-> +	my %lc;
-> +	my @subjects = ();
-> +
-> +	foreach my $line (@$array_ref) {
-> +		my $pos = rindex($line, ':');
-> +		if ($pos > 0) {
-> +			my $prefix = substr($line, 0, $pos + 1);
-> +			$lc{$prefix}++;
-> +		}
-> +	}
-> +
-> +	foreach my $subject (sort { $lc{$b} <=> $lc{$a} or $a cmp $b } keys %lc) {
-> +		push(@subjects, sprintf("%7u %s\n", $lc{$subject}, $subject));
-> +	}
-> +
-> +	return @subjects;
-> +}
-> +
-> +my @commit_desc = ();
-> +my $commit_count = 0;
-> +my @single_file_subjects = ();
-> +my @multi_file_subjects = ();
-> +
-> +my $output = `${git_command} log --no-merges --since=$git_since --format='%h' -- $ARGV[0]`;
-> +my @commits = split('\n', $output);
-> +
-> +foreach my $commit (@commits) {
-> +	$output = `${git_command} log --format='%s' --name-only -1 $commit`;
-> +	$commit_desc[$commit_count++] = $output;
-> +}
-> +
-> +for (my $i = 0; $i < $commit_count; $i++) {
-> +	my @lines = split('\n', $commit_desc[$i]);
-> +	if ($#lines == 2 && $lines[2] eq $ARGV[0]) {
-> +		push(@single_file_subjects, $lines[0]);
-> +	} elsif ($#lines >= 2) {
-> +		push(@multi_file_subjects, $lines[0]);
-> +	}
-> +}
-> +
-> +my @best_prefixes;
-> +
-> +if ($details) {
-> +	@best_prefixes = prefixes_from_subjects(\@single_file_subjects);
-> +	if ($#best_prefixes > 0) {
-> +		print("Single file commits:\n");
-> +		print(splice(@best_prefixes, 0, $detail_lines));
-> +	}
-> +	@best_prefixes = prefixes_from_subjects(\@multi_file_subjects);
-> +	if ($#best_prefixes > 0) {
-> +		print("Multiple file commits:\n");
-> +		print(splice(@best_prefixes, 0, $detail_lines));
-> +	}
-> +} else {
-> +	@best_prefixes = prefixes_from_subjects(\@single_file_subjects);
-> +	if ($#best_prefixes > 0) {
-> +		my $line = splice(@best_prefixes, 0, 1);
-> +		$line =~ s/^\s*\w+ //;
-> +		print("$line");
-> +	} else {
-> +		@best_prefixes = prefixes_from_subjects(\@multi_file_subjects);
-> +		if ($#best_prefixes > 0) {
-> +			my $line = splice(@best_prefixes, 0, 1);
-> +			$line =~ s/^\s*\w+ //;
-> +			print("$line");
-> +		}
-> +	}
-> +}
-> +
-> +sub which {
-> +	my ($bin) = @_;
-> +
-> +	foreach my $path (split(/:/, $ENV{PATH})) {
-> +		if (-e "$path/$bin") {
-> +			return "$path/$bin";
-> +		}
-> +	}
-> +
-> +	return "";
-> +}
-> +
-> +sub top_of_kernel_tree {
-> +	my ($root) = @_;
-> +
-> +	my @tree_check = (
-> +		"COPYING", "CREDITS", "Kbuild", "MAINTAINERS", "Makefile",
-> +		"README", "Documentation", "arch", "include", "drivers",
-> +		"fs", "init", "ipc", "kernel", "lib", "scripts",
-> +	);
-> +
-> +	foreach my $check (@tree_check) {
-> +		if (! -e $root . '/' . $check) {
-> +			return 0;
-> +		}
-> +	}
-> +	return 1;
-> +}
-> --
-> 2.26.0
->
->
+> >
+> > On Mon, Sep 28, 2020 at 3:17 AM Maxime Ripard <maxime@cerno.tech> wrote=
+:
+> > >
+> > > Hi!
+> > >
+> > > On Mon, Sep 28, 2020 at 02:27:35PM +0800, Kevin Tang wrote:
+> > > > From: Kevin Tang <kevin.tang@unisoc.com>
+> > > >
+> > > > The Unisoc DRM master device is a virtual device needed to list all
+> > > > DPU devices or other display interface nodes that comprise the
+> > > > graphics subsystem
+> > > >
+> > > > RFC v7:
+> > > >   - Fix DTC unit name warnings
+> > > >   - Fix the problem of maintainers
+> > > >
+> > > > Cc: Orson Zhai <orsonzhai@gmail.com>
+> > > > Cc: Chunyan Zhang <zhang.lyra@gmail.com>
+> > > > Signed-off-by: Kevin Tang <kevin.tang@unisoc.com>
+> > > > ---
+> > > >  .../display/sprd/sprd,display-subsystem.yaml       | 39 ++++++++++=
+++++++++++++
+> > > >  1 file changed, 39 insertions(+)
+> > > >  create mode 100644 Documentation/devicetree/bindings/display/sprd/=
+sprd,display-subsystem.yaml
+> > > >
+> > > > diff --git a/Documentation/devicetree/bindings/display/sprd/sprd,di=
+splay-subsystem.yaml b/Documentation/devicetree/bindings/display/sprd/sprd,=
+display-subsystem.yaml
+> > > > new file mode 100644
+> > > > index 0000000..9487a39
+> > > > --- /dev/null
+> > > > +++ b/Documentation/devicetree/bindings/display/sprd/sprd,display-s=
+ubsystem.yaml
+> > > > @@ -0,0 +1,39 @@
+> > > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > > > +%YAML 1.2
+> > > > +---
+> > > > +$id: http://devicetree.org/schemas/display/sprd/sprd,display-subsy=
+stem.yaml#
+> > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > > +
+> > > > +title: Unisoc DRM master device
+> > > > +
+> > > > +maintainers:
+> > > > +  - Kevin Tang <kevin.tang@unisoc.com>
+> > > > +
+> > > > +description: |
+> > > > +  The Unisoc DRM master device is a virtual device needed to list =
+all
+> > > > +  DPU devices or other display interface nodes that comprise the
+> > > > +  graphics subsystem.
+> > > > +
+> > > > +properties:
+> > > > +  compatible:
+> > > > +    const: sprd,display-subsystem
+> > > > +
+> > > > +  ports:
+> > > > +    $ref: /schemas/types.yaml#/definitions/phandle-array
+> > > > +    description:
+> > > > +      Should contain a list of phandles pointing to display interf=
+ace port
+> > > > +      of DPU devices.
+> > >
+> > > Generally speaking, driver-specific properties should be prefixed by =
+the
+> > > vendor name to avoid any conflict with generic properties (like the
+> > > OF-Graph ports subnode in this case)
+> >
+> > We try to avoid this virtual node altogether which I commented about
+> > on v6 which was ignored.
+> >
+> > Rob
