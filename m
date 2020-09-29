@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6724127C76F
+	by mail.lfdr.de (Postfix) with ESMTP id D75E627C770
 	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:54:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731463AbgI2Lx7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:53:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47380 "EHLO mail.kernel.org"
+        id S1731108AbgI2LyC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:54:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47386 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730986AbgI2Lqh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:46:37 -0400
+        id S1731020AbgI2Lqg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:46:36 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B860620848;
-        Tue, 29 Sep 2020 11:46:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1002721D46;
+        Tue, 29 Sep 2020 11:46:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601379989;
-        bh=puesQLL1vTui9u2CuuuBOVYfBiDNpon7FKU4BmliOZs=;
+        s=default; t=1601379991;
+        bh=2Ao+3uo09TXn/cGlZQBAejAX5HWSvH6VuBeV2hc5SQM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=stdF3KnU2vxiLNspN7g6keZ7R8ZGXrpINrUy0sVKwOu8z+6l1/qGCdwWF7y5WPV3a
-         JlqRC0hLYerTO81xAFwZaUMr2XBINDQkLpUUPNr9xyPT0aUbOzaD2hRJb1Y3YzUi2p
-         ZM7Gbc/dRwV7ND5OBYH67N3LoyX0ZEmySmGAjic4=
+        b=NuBbCOjmMUuXTQ8d6IEUZ1kDvi9oZN6hEFZVHBHU1YnWhH6+p48u43kmyEAVv/BCX
+         GwnyXBH9bnnQ7Yv3bHAEnGooHlUhrSirBaeYCzIPA8JDYphzNXa0/ZGFhZ/YRVgpZ8
+         6KYzL3ZI52n1g7gwK5jp+hIqGaCCwlGZ9wsdNikk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Borislav Petkov <bp@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 18/99] objtool: Fix noreturn detection for ignored functions
-Date:   Tue, 29 Sep 2020 13:01:01 +0200
-Message-Id: <20200929105930.615718036@linuxfoundation.org>
+        stable@vger.kernel.org, Qii Wang <qii.wang@mediatek.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.8 19/99] i2c: mediatek: Send i2c master code at more than 1MHz
+Date:   Tue, 29 Sep 2020 13:01:02 +0200
+Message-Id: <20200929105930.665868752@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200929105929.719230296@linuxfoundation.org>
 References: <20200929105929.719230296@linuxfoundation.org>
@@ -44,55 +43,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Josh Poimboeuf <jpoimboe@redhat.com>
+From: Qii Wang <qii.wang@mediatek.com>
 
-[ Upstream commit db6c6a0df840e3f52c84cc302cc1a08ba11a4416 ]
+[ Upstream commit b44658e755b5a733e9df04449facbc738df09170 ]
 
-When a function is annotated with STACK_FRAME_NON_STANDARD, objtool
-doesn't validate its code paths.  It also skips sibling call detection
-within the function.
+The master code needs to being sent when the speed is more than
+I2C_MAX_FAST_MODE_PLUS_FREQ, not I2C_MAX_FAST_MODE_FREQ in the
+latest I2C-bus specification and user manual.
 
-But sibling call detection is actually needed for the case where the
-ignored function doesn't have any return instructions.  Otherwise
-objtool naively marks the function as implicit static noreturn, which
-affects the reachability of its callers, resulting in "unreachable
-instruction" warnings.
-
-Fix it by just enabling sibling call detection for ignored functions.
-The 'insn->ignore' check in add_jump_destinations() is no longer needed
-after
-
-  e6da9567959e ("objtool: Don't use ignore flag for fake jumps").
-
-Fixes the following warning:
-
-  arch/x86/kvm/vmx/vmx.o: warning: objtool: vmx_handle_exit_irqoff()+0x142: unreachable instruction
-
-which triggers on an allmodconfig with CONFIG_GCOV_KERNEL unset.
-
-Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Acked-by: Linus Torvalds <torvalds@linux-foundation.org>
-Link: https://lkml.kernel.org/r/5b1e2536cdbaa5246b60d7791b76130a74082c62.1599751464.git.jpoimboe@redhat.com
+Signed-off-by: Qii Wang <qii.wang@mediatek.com>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Signed-off-by: Wolfram Sang <wsa@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/objtool/check.c | 2 +-
+ drivers/i2c/busses/i2c-mt65xx.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-index 5e0d70a89fb87..773e6c7ee5f93 100644
---- a/tools/objtool/check.c
-+++ b/tools/objtool/check.c
-@@ -619,7 +619,7 @@ static int add_jump_destinations(struct objtool_file *file)
- 		if (!is_static_jump(insn))
- 			continue;
+diff --git a/drivers/i2c/busses/i2c-mt65xx.c b/drivers/i2c/busses/i2c-mt65xx.c
+index b099139cbb91e..f9e62c958cf69 100644
+--- a/drivers/i2c/busses/i2c-mt65xx.c
++++ b/drivers/i2c/busses/i2c-mt65xx.c
+@@ -736,7 +736,7 @@ static int mtk_i2c_set_speed(struct mtk_i2c *i2c, unsigned int parent_clk)
+ 	for (clk_div = 1; clk_div <= max_clk_div; clk_div++) {
+ 		clk_src = parent_clk / clk_div;
  
--		if (insn->ignore || insn->offset == FAKE_JUMP_OFFSET)
-+		if (insn->offset == FAKE_JUMP_OFFSET)
- 			continue;
- 
- 		rela = find_rela_by_dest_range(file->elf, insn->sec,
+-		if (target_speed > I2C_MAX_FAST_MODE_FREQ) {
++		if (target_speed > I2C_MAX_FAST_MODE_PLUS_FREQ) {
+ 			/* Set master code speed register */
+ 			ret = mtk_i2c_calculate_speed(i2c, clk_src,
+ 						      I2C_MAX_FAST_MODE_FREQ,
 -- 
 2.25.1
 
