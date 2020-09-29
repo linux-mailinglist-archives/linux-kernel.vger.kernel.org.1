@@ -2,88 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECD5327D40D
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 18:59:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1519727D43A
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 19:15:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730153AbgI2Q67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 12:58:59 -0400
-Received: from mail-oo1-f66.google.com ([209.85.161.66]:35548 "EHLO
-        mail-oo1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728385AbgI2Q67 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 12:58:59 -0400
-Received: by mail-oo1-f66.google.com with SMTP id k13so1452588oor.2;
-        Tue, 29 Sep 2020 09:58:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=qL1+dUVZc7/FRZNXOFrFvDJ142erdjwjd9zJZIOHq50=;
-        b=kVMspgCJdV6RJBQBFVLKSqwnDd4ow6UmUS88IQSmj/T6JEm535U0ufv7U8De03EBQk
-         zBeevLojvW//waNuIG/0wYfHtWKJK0DTjdQ0H+WevT7vrWAyXYispXNciyDzhacbNoXP
-         DjtW3qb9a6tHKOJdbJZWfILprZZ2LPPeKM8mHKsxS2n+qyKPS3t0U+vsDd/PgItJ76Pm
-         KSDVbH+zarkHD0IlYTRWFVdw+y5NwMSfhK8OyETrQxQtSSq52CcBIYEJqS/o27y4USAV
-         /dDCLOeNTOLnAAjMcrp5b4ilkIehKTI1AJitJMjRUtHIokO3Alsk2tBIUo1NMytqXFXW
-         Spwg==
-X-Gm-Message-State: AOAM531t/y5fXBFcYyiFDua+PAc8SpxGrWkc5X9jzJZO1YGKAWKySnQu
-        aZlI3bN7tXHbecrEAvFgBg==
-X-Google-Smtp-Source: ABdhPJz+hm6g2H8hVGsLti0LBkjY2MyJFyjhR0LdDpUD3Zw8SCc4VQurzB6MLyErzsdi2oDudi+X4A==
-X-Received: by 2002:a4a:d80a:: with SMTP id f10mr5379686oov.76.1601398738179;
-        Tue, 29 Sep 2020 09:58:58 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id j16sm1118642ota.1.2020.09.29.09.58.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Sep 2020 09:58:57 -0700 (PDT)
-Received: (nullmailer pid 772313 invoked by uid 1000);
-        Tue, 29 Sep 2020 16:58:56 -0000
-Date:   Tue, 29 Sep 2020 11:58:56 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc:     Lars Povlsen <lars.povlsen@microchip.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        "wuxu . wu" <wuxu.wu@huawei.com>, Rob Herring <robh+dt@kernel.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        devicetree@vger.kernel.org,
-        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
-        linux-spi@vger.kernel.org, Feng Tang <feng.tang@intel.com>,
-        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
-        Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH 29/30] dt-bindings: spi: dw: Add Baikal-T1 SPI Controllers
-Message-ID: <20200929165856.GA772254@bogus>
-References: <20200920112914.26501-1-Sergey.Semin@baikalelectronics.ru>
- <20200920112914.26501-30-Sergey.Semin@baikalelectronics.ru>
+        id S1729167AbgI2RPX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 13:15:23 -0400
+Received: from m12-18.163.com ([220.181.12.18]:54565 "EHLO m12-18.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727650AbgI2RPW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 13:15:22 -0400
+X-Greylist: delayed 912 seconds by postgrey-1.27 at vger.kernel.org; Tue, 29 Sep 2020 13:15:22 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=Date:From:Subject:Message-ID:MIME-Version; bh=SxqWv
+        YTG1HpnORyZKr+/WGY6AozVe6bDTYbmS07ilB8=; b=ooZDTCzWH0Sfj1WLHM2yo
+        /RwRPUgB+MVj7tswi5sNwrPdT1/BrigKvl0Wm7526qKsWDHxbNk2umCcv1QhVcKC
+        uLF4BjZM1e/QgMjCa6jDEk/XeTJAP3FqBQGsrRoTiWB5j5ijrZ6lvkpjl05ZLUe7
+        nu1lVNDCcfAGkNtT2fA2n8=
+Received: from localhost (unknown [101.228.30.83])
+        by smtp14 (Coremail) with SMTP id EsCowAA3t7NIZ3NfsA1LQw--.63069S2;
+        Wed, 30 Sep 2020 00:56:40 +0800 (CST)
+Date:   Wed, 30 Sep 2020 00:56:40 +0800
+From:   Hui Su <sh_def@163.com>
+To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] sched/rt.c remove unnecessary parameter in
+ pick_next_rt_entity
+Message-ID: <20200929165640.GA28986@rlk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200920112914.26501-30-Sergey.Semin@baikalelectronics.ru>
+X-CM-TRANSID: EsCowAA3t7NIZ3NfsA1LQw--.63069S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7KryDKF1kuw45Cw47Jr18Krg_yoW8XF13p3
+        WDC34kZa15Ga1jgFWrAwsrurWfKrn8Jw4xWF1Dtw4FyF1YkrWFq3Wagr42vr1Y934UuFya
+        yr4jqw43Ka18ZFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jaNtcUUUUU=
+X-Originating-IP: [101.228.30.83]
+X-CM-SenderInfo: xvkbvvri6rljoofrz/1tbiMQiuX1UMVvtJOAAAsN
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 20 Sep 2020 14:29:13 +0300, Serge Semin wrote:
-> These controllers are based on the DW APB SSI IP-core and embedded into
-> the SoC, so two of them are equipped with IRQ, DMA, 64 words FIFOs and 4
-> native CS, while another one as being utilized by the Baikal-T1 System
-> Boot Controller has got a very limited resources: no IRQ, no DMA, only a
-> single native chip-select and just 8 bytes Tx/Rx FIFOs available. That's
-> why we have to mark the IRQ to be optional for the later interface.
-> 
-> The SPI controller embedded into the Baikal-T1 System Boot Controller can
-> be also used to directly access an external SPI flash by means of a
-> dedicated FSM. The corresponding MMIO region availability is switchable by
-> the embedded multiplexor, which phandle can be specified in the dts node.
-> 
-> * We added a new example to test out the non-standard Baikal-T1 System
-> Boot SPI Controller DT binding.
-> 
-> Co-developed-by: Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>
-> Signed-off-by: Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>
-> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> ---
->  .../bindings/spi/snps,dw-apb-ssi.yaml         | 33 +++++++++++++++++--
->  1 file changed, 31 insertions(+), 2 deletions(-)
-> 
+struct rq is not necessary for pick_next_rt_entity(),
+we can get next sched_rt_entity just from struct rt_rq.
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Hui Su <sh_def@163.com>
+---
+ kernel/sched/rt.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
+
+diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
+index f215eea6a966..113965e1952c 100644
+--- a/kernel/sched/rt.c
++++ b/kernel/sched/rt.c
+@@ -1593,11 +1593,9 @@ static inline void set_next_task_rt(struct rq *rq, struct task_struct *p, bool f
+ 	rt_queue_push_tasks(rq);
+ }
+ 
+-static struct sched_rt_entity *pick_next_rt_entity(struct rq *rq,
+-						   struct rt_rq *rt_rq)
++static struct sched_rt_entity *pick_next_rt_entity(struct rt_rq *rt_rq)
+ {
+ 	struct rt_prio_array *array = &rt_rq->active;
+-	struct sched_rt_entity *next = NULL;
+ 	struct list_head *queue;
+ 	int idx;
+ 
+@@ -1605,9 +1603,8 @@ static struct sched_rt_entity *pick_next_rt_entity(struct rq *rq,
+ 	BUG_ON(idx >= MAX_RT_PRIO);
+ 
+ 	queue = array->queue + idx;
+-	next = list_entry(queue->next, struct sched_rt_entity, run_list);
+ 
+-	return next;
++	return list_entry(queue->next, struct sched_rt_entity, run_list);
+ }
+ 
+ static struct task_struct *_pick_next_task_rt(struct rq *rq)
+@@ -1616,7 +1613,7 @@ static struct task_struct *_pick_next_task_rt(struct rq *rq)
+ 	struct rt_rq *rt_rq  = &rq->rt;
+ 
+ 	do {
+-		rt_se = pick_next_rt_entity(rq, rt_rq);
++		rt_se = pick_next_rt_entity(rt_rq);
+ 		BUG_ON(!rt_se);
+ 		rt_rq = group_rt_rq(rt_se);
+ 	} while (rt_rq);
+-- 
+2.25.1
+
+
