@@ -2,236 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 778F227C0CD
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 11:17:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36F0D27C0DD
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 11:19:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727966AbgI2JRN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 05:17:13 -0400
-Received: from mga03.intel.com ([134.134.136.65]:31792 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727468AbgI2JRN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 05:17:13 -0400
-IronPort-SDR: rfv/cNozREQ1CuhVHeAboTC1BbE7OMgijqB9oibH/EiO+jtzm0ukfqX26hhuz6ik5lXWfJ8PEq
- QDT/kFTCLjpA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9758"; a="162214006"
-X-IronPort-AV: E=Sophos;i="5.77,317,1596524400"; 
-   d="scan'208";a="162214006"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2020 02:17:10 -0700
-IronPort-SDR: dR0v/GG9iY2ps19waNZ0R24yxWfRp4kUM6WLHLR0zm2IpE7Huydwo4xp/yRTIGgy0/7NhYyCPp
- G85XSZjN5e/g==
-X-IronPort-AV: E=Sophos;i="5.77,317,1596524400"; 
-   d="scan'208";a="338555751"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2020 02:17:07 -0700
-Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
-        id 0B902204FD; Tue, 29 Sep 2020 12:17:05 +0300 (EEST)
-Date:   Tue, 29 Sep 2020 12:17:04 +0300
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 4/4] media: i2c: imx258: get clock from device
- properties and enable it via runtime PM
-Message-ID: <20200929091704.GG26842@paasikivi.fi.intel.com>
-References: <20200923152129.21736-1-krzk@kernel.org>
- <20200923152129.21736-4-krzk@kernel.org>
+        id S1728071AbgI2JSS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 05:18:18 -0400
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:37599 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727484AbgI2JSS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 05:18:18 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=richard.weiyang@linux.alibaba.com;NM=1;PH=DS;RN=17;SR=0;TI=SMTPD_---0UATyKVV_1601371083;
+Received: from localhost(mailfrom:richard.weiyang@linux.alibaba.com fp:SMTPD_---0UATyKVV_1601371083)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 29 Sep 2020 17:18:04 +0800
+Date:   Tue, 29 Sep 2020 17:18:03 +0800
+From:   Wei Yang <richard.weiyang@linux.alibaba.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-hyperv@vger.kernel.org, xen-devel@lists.xenproject.org,
+        linux-acpi@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Michal Hocko <mhocko@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Scott Cheloha <cheloha@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: Re: [PATCH v1 3/5] mm/page_alloc: always move pages to the tail of
+ the freelist in unset_migratetype_isolate()
+Message-ID: <20200929091803.GB36904@L-31X9LVDL-1304.local>
+Reply-To: Wei Yang <richard.weiyang@linux.alibaba.com>
+References: <20200928182110.7050-1-david@redhat.com>
+ <20200928182110.7050-4-david@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200923152129.21736-4-krzk@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200928182110.7050-4-david@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krzysztof,
+On Mon, Sep 28, 2020 at 08:21:08PM +0200, David Hildenbrand wrote:
+>Page isolation doesn't actually touch the pages, it simply isolates
+>pageblocks and moves all free pages to the MIGRATE_ISOLATE freelist.
+>
+>We already place pages to the tail of the freelists when undoing
+>isolation via __putback_isolated_page(), let's do it in any case
+>(e.g., if order <= pageblock_order) and document the behavior.
+>
+>Add a "to_tail" parameter to move_freepages_block() but introduce a
+>a new move_to_free_list_tail() - similar to add_to_free_list_tail().
+>
+>This change results in all pages getting onlined via online_pages() to
+>be placed to the tail of the freelist.
+>
+>Reviewed-by: Oscar Salvador <osalvador@suse.de>
+>Cc: Andrew Morton <akpm@linux-foundation.org>
+>Cc: Alexander Duyck <alexander.h.duyck@linux.intel.com>
+>Cc: Mel Gorman <mgorman@techsingularity.net>
+>Cc: Michal Hocko <mhocko@kernel.org>
+>Cc: Dave Hansen <dave.hansen@intel.com>
+>Cc: Vlastimil Babka <vbabka@suse.cz>
+>Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
+>Cc: Oscar Salvador <osalvador@suse.de>
+>Cc: Mike Rapoport <rppt@kernel.org>
+>Cc: Scott Cheloha <cheloha@linux.ibm.com>
+>Cc: Michael Ellerman <mpe@ellerman.id.au>
+>Signed-off-by: David Hildenbrand <david@redhat.com>
+>---
+> include/linux/page-isolation.h |  4 ++--
+> mm/page_alloc.c                | 35 +++++++++++++++++++++++-----------
+> mm/page_isolation.c            | 12 +++++++++---
+> 3 files changed, 35 insertions(+), 16 deletions(-)
+>
+>diff --git a/include/linux/page-isolation.h b/include/linux/page-isolation.h
+>index 572458016331..3eca9b3c5305 100644
+>--- a/include/linux/page-isolation.h
+>+++ b/include/linux/page-isolation.h
+>@@ -36,8 +36,8 @@ static inline bool is_migrate_isolate(int migratetype)
+> struct page *has_unmovable_pages(struct zone *zone, struct page *page,
+> 				 int migratetype, int flags);
+> void set_pageblock_migratetype(struct page *page, int migratetype);
+>-int move_freepages_block(struct zone *zone, struct page *page,
+>-				int migratetype, int *num_movable);
+>+int move_freepages_block(struct zone *zone, struct page *page, int migratetype,
+>+			 bool to_tail, int *num_movable);
+> 
+> /*
+>  * Changes migrate type in [start_pfn, end_pfn) to be MIGRATE_ISOLATE.
+>diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+>index 9e3ed4a6f69a..d5a5f528b8ca 100644
+>--- a/mm/page_alloc.c
+>+++ b/mm/page_alloc.c
+>@@ -905,6 +905,15 @@ static inline void move_to_free_list(struct page *page, struct zone *zone,
+> 	list_move(&page->lru, &area->free_list[migratetype]);
+> }
+> 
+>+/* Used for pages which are on another list */
+>+static inline void move_to_free_list_tail(struct page *page, struct zone *zone,
+>+					  unsigned int order, int migratetype)
+>+{
+>+	struct free_area *area = &zone->free_area[order];
+>+
+>+	list_move_tail(&page->lru, &area->free_list[migratetype]);
+>+}
+>+
 
-On Wed, Sep 23, 2020 at 05:21:29PM +0200, Krzysztof Kozlowski wrote:
-> The IMX258 sensor driver checked in device properties for a
-> clock-frequency property which actually does not mean that the clock is
-> really running such frequency or is it even enabled.
-> 
-> Get the provided clock and check it frequency.  If none is provided,
-> fall back to old property.
-> 
-> Enable the clock when accessing the IMX258 registers and when streaming
-> starts with runtime PM.
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> 
-> ---
-> 
-> Changes since v3:
-> 1. None
-> 
-> Changes since v2:
-> 1. Do not try to set drvdata, wrap lines.
-> 2. Use dev_dbg.
-> 
-> Changes since v1:
-> 1. Use runtime PM for clock toggling
-> ---
->  drivers/media/i2c/imx258.c | 71 +++++++++++++++++++++++++++++++++-----
->  1 file changed, 62 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/media/i2c/imx258.c b/drivers/media/i2c/imx258.c
-> index ae183b0dbba9..7bedbfe5c4d6 100644
-> --- a/drivers/media/i2c/imx258.c
-> +++ b/drivers/media/i2c/imx258.c
-> @@ -2,6 +2,7 @@
->  // Copyright (C) 2018 Intel Corporation
->  
->  #include <linux/acpi.h>
-> +#include <linux/clk.h>
->  #include <linux/delay.h>
->  #include <linux/i2c.h>
->  #include <linux/module.h>
-> @@ -68,6 +69,9 @@
->  #define REG_CONFIG_MIRROR_FLIP		0x03
->  #define REG_CONFIG_FLIP_TEST_PATTERN	0x02
->  
-> +/* Input clock frequency in Hz */
-> +#define IMX258_INPUT_CLOCK_FREQ		19200000
-> +
->  struct imx258_reg {
->  	u16 address;
->  	u8 val;
-> @@ -610,6 +614,8 @@ struct imx258 {
->  
->  	/* Streaming on/off */
->  	bool streaming;
-> +
-> +	struct clk *clk;
->  };
->  
->  static inline struct imx258 *to_imx258(struct v4l2_subdev *_sd)
-> @@ -972,6 +978,29 @@ static int imx258_stop_streaming(struct imx258 *imx258)
->  	return 0;
->  }
->  
-> +static int imx258_power_on(struct device *dev)
-> +{
-> +	struct v4l2_subdev *sd = dev_get_drvdata(dev);
-> +	struct imx258 *imx258 = to_imx258(sd);
-> +	int ret;
-> +
-> +	ret = clk_prepare_enable(imx258->clk);
-> +	if (ret)
-> +		dev_err(dev, "failed to enable clock\n");
-> +
-> +	return ret;
-> +}
-> +
-> +static int imx258_power_off(struct device *dev)
-> +{
-> +	struct v4l2_subdev *sd = dev_get_drvdata(dev);
-> +	struct imx258 *imx258 = to_imx258(sd);
-> +
-> +	clk_disable_unprepare(imx258->clk);
-> +
-> +	return 0;
-> +}
-> +
->  static int imx258_set_stream(struct v4l2_subdev *sd, int enable)
->  {
->  	struct imx258 *imx258 = to_imx258(sd);
-> @@ -1199,9 +1228,28 @@ static int imx258_probe(struct i2c_client *client)
->  	int ret;
->  	u32 val = 0;
->  
-> -	device_property_read_u32(&client->dev, "clock-frequency", &val);
-> -	if (val != 19200000)
-> -		return -EINVAL;
-> +	imx258 = devm_kzalloc(&client->dev, sizeof(*imx258), GFP_KERNEL);
-> +	if (!imx258)
-> +		return -ENOMEM;
-> +
-> +	imx258->clk = devm_clk_get_optional(&client->dev, NULL);
-> +	if (!imx258->clk) {
-> +		dev_dbg(&client->dev,
-> +			"no clock provided, using clock-frequency property\n");
-> +
-> +		device_property_read_u32(&client->dev, "clock-frequency", &val);
-> +		if (val != IMX258_INPUT_CLOCK_FREQ)
-> +			return -EINVAL;
-> +	} else if (IS_ERR(imx258->clk)) {
-> +		return dev_err_probe(&client->dev, PTR_ERR(imx258->clk),
-> +				     "error getting clock\n");
-> +	} else {
-> +		if (clk_get_rate(imx258->clk) != IMX258_INPUT_CLOCK_FREQ) {
-> +			dev_err(&client->dev,
-> +				"input clock frequency not supported\n");
-> +			return -EINVAL;
-> +		}
-> +	}
->  
->  	/*
->  	 * Check that the device is mounted upside down. The driver only
-> @@ -1211,24 +1259,25 @@ static int imx258_probe(struct i2c_client *client)
->  	if (ret || val != 180)
->  		return -EINVAL;
->  
-> -	imx258 = devm_kzalloc(&client->dev, sizeof(*imx258), GFP_KERNEL);
-> -	if (!imx258)
-> -		return -ENOMEM;
-> -
->  	/* Initialize subdev */
->  	v4l2_i2c_subdev_init(&imx258->sd, client, &imx258_subdev_ops);
->  
-> +	/* Will be powered off via pm_runtime_idle */
-> +	ret = imx258_power_on(&client->dev);
-> +	if (ret)
-> +		return ret;
-> +
->  	/* Check module identity */
->  	ret = imx258_identify_module(imx258);
->  	if (ret)
-> -		return ret;
-> +		goto error_identify;
->  
->  	/* Set default mode to max resolution */
->  	imx258->cur_mode = &supported_modes[0];
->  
->  	ret = imx258_init_controls(imx258);
->  	if (ret)
-> -		return ret;
-> +		goto error_identify;
->  
->  	/* Initialize subdev */
->  	imx258->sd.internal_ops = &imx258_internal_ops;
-> @@ -1258,6 +1307,9 @@ static int imx258_probe(struct i2c_client *client)
->  error_handler_free:
->  	imx258_free_controls(imx258);
->  
-> +error_identify:
-> +	imx258_power_off(&client->dev);
+Would it be better to pass the *to_tail* to move_to_free_list(), so we won't
+have a new function?
 
-You'll need this in remove callback, too.
+> static inline void del_page_from_free_list(struct page *page, struct zone *zone,
+> 					   unsigned int order)
+> {
+>@@ -2338,9 +2347,9 @@ static inline struct page *__rmqueue_cma_fallback(struct zone *zone,
+>  * Note that start_page and end_pages are not aligned on a pageblock
+>  * boundary. If alignment is required, use move_freepages_block()
+>  */
+>-static int move_freepages(struct zone *zone,
+>-			  struct page *start_page, struct page *end_page,
+>-			  int migratetype, int *num_movable)
+>+static int move_freepages(struct zone *zone, struct page *start_page,
+>+			  struct page *end_page, int migratetype,
+>+			  bool to_tail, int *num_movable)
+> {
+> 	struct page *page;
+> 	unsigned int order;
+>@@ -2371,7 +2380,10 @@ static int move_freepages(struct zone *zone,
+> 		VM_BUG_ON_PAGE(page_zone(page) != zone, page);
+> 
+> 		order = page_order(page);
+>-		move_to_free_list(page, zone, order, migratetype);
+>+		if (to_tail)
+>+			move_to_free_list_tail(page, zone, order, migratetype);
+>+		else
+>+			move_to_free_list(page, zone, order, migratetype);
 
-> +
->  	return ret;
->  }
->  
-> @@ -1278,6 +1330,7 @@ static int imx258_remove(struct i2c_client *client)
->  
->  static const struct dev_pm_ops imx258_pm_ops = {
->  	SET_SYSTEM_SLEEP_PM_OPS(imx258_suspend, imx258_resume)
-> +	SET_RUNTIME_PM_OPS(imx258_power_off, imx258_power_on, NULL)
->  };
->  
->  #ifdef CONFIG_ACPI
+And here, we just need to pass the *to_tail* to move_to_free_list().
+
+> 		page += 1 << order;
+> 		pages_moved += 1 << order;
+> 	}
+>@@ -2379,8 +2391,8 @@ static int move_freepages(struct zone *zone,
+> 	return pages_moved;
+> }
+> 
+>-int move_freepages_block(struct zone *zone, struct page *page,
+>-				int migratetype, int *num_movable)
+>+int move_freepages_block(struct zone *zone, struct page *page, int migratetype,
+>+			 bool to_tail, int *num_movable)
+> {
+> 	unsigned long start_pfn, end_pfn;
+> 	struct page *start_page, *end_page;
+>@@ -2401,7 +2413,7 @@ int move_freepages_block(struct zone *zone, struct page *page,
+> 		return 0;
+> 
+> 	return move_freepages(zone, start_page, end_page, migratetype,
+>-								num_movable);
+>+			      to_tail, num_movable);
+> }
+> 
+> static void change_pageblock_range(struct page *pageblock_page,
+>@@ -2526,8 +2538,8 @@ static void steal_suitable_fallback(struct zone *zone, struct page *page,
+> 	if (!whole_block)
+> 		goto single_page;
+> 
+>-	free_pages = move_freepages_block(zone, page, start_type,
+>-						&movable_pages);
+>+	free_pages = move_freepages_block(zone, page, start_type, false,
+>+					  &movable_pages);
+> 	/*
+> 	 * Determine how many pages are compatible with our allocation.
+> 	 * For movable allocation, it's the number of movable pages which
+>@@ -2635,7 +2647,8 @@ static void reserve_highatomic_pageblock(struct page *page, struct zone *zone,
+> 	    && !is_migrate_cma(mt)) {
+> 		zone->nr_reserved_highatomic += pageblock_nr_pages;
+> 		set_pageblock_migratetype(page, MIGRATE_HIGHATOMIC);
+>-		move_freepages_block(zone, page, MIGRATE_HIGHATOMIC, NULL);
+>+		move_freepages_block(zone, page, MIGRATE_HIGHATOMIC, false,
+>+				     NULL);
+> 	}
+> 
+> out_unlock:
+>@@ -2711,7 +2724,7 @@ static bool unreserve_highatomic_pageblock(const struct alloc_context *ac,
+> 			 */
+> 			set_pageblock_migratetype(page, ac->migratetype);
+> 			ret = move_freepages_block(zone, page, ac->migratetype,
+>-									NULL);
+>+						   false, NULL);
+> 			if (ret) {
+> 				spin_unlock_irqrestore(&zone->lock, flags);
+> 				return ret;
+>diff --git a/mm/page_isolation.c b/mm/page_isolation.c
+>index abfe26ad59fd..de44e1329706 100644
+>--- a/mm/page_isolation.c
+>+++ b/mm/page_isolation.c
+>@@ -45,7 +45,7 @@ static int set_migratetype_isolate(struct page *page, int migratetype, int isol_
+> 		set_pageblock_migratetype(page, MIGRATE_ISOLATE);
+> 		zone->nr_isolate_pageblock++;
+> 		nr_pages = move_freepages_block(zone, page, MIGRATE_ISOLATE,
+>-									NULL);
+>+						false, NULL);
+> 
+> 		__mod_zone_freepage_state(zone, -nr_pages, mt);
+> 		spin_unlock_irqrestore(&zone->lock, flags);
+>@@ -83,7 +83,7 @@ static void unset_migratetype_isolate(struct page *page, unsigned migratetype)
+> 	 * Because freepage with more than pageblock_order on isolated
+> 	 * pageblock is restricted to merge due to freepage counting problem,
+> 	 * it is possible that there is free buddy page.
+>-	 * move_freepages_block() doesn't care of merge so we need other
+>+	 * move_freepages_block() don't care about merging, so we need another
+> 	 * approach in order to merge them. Isolation and free will make
+> 	 * these pages to be merged.
+> 	 */
+>@@ -106,9 +106,15 @@ static void unset_migratetype_isolate(struct page *page, unsigned migratetype)
+> 	 * If we isolate freepage with more than pageblock_order, there
+> 	 * should be no freepage in the range, so we could avoid costly
+> 	 * pageblock scanning for freepage moving.
+>+	 *
+>+	 * We didn't actually touch any of the isolated pages, so place them
+>+	 * to the tail of the freelist. This is an optimization for memory
+>+	 * onlining - just onlined memory won't immediately be considered for
+>+	 * allocation.
+> 	 */
+> 	if (!isolated_page) {
+>-		nr_pages = move_freepages_block(zone, page, migratetype, NULL);
+>+		nr_pages = move_freepages_block(zone, page, migratetype, true,
+>+						NULL);
+> 		__mod_zone_freepage_state(zone, nr_pages, migratetype);
+> 	}
+> 	set_pageblock_migratetype(page, migratetype);
+>-- 
+>2.26.2
+
+Others looks good to me.
 
 -- 
-Kind regards,
-
-Sakari Ailus
+Wei Yang
+Help you, Help me
