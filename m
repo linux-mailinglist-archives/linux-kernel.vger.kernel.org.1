@@ -2,112 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40CC027C1A4
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 11:51:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66E5627C1A7
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 11:51:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727484AbgI2JvL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 05:51:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49756 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725497AbgI2JvK (ORCPT
+        id S1727883AbgI2JvY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 05:51:24 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49383 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725497AbgI2JvX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 05:51:10 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20811C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 02:51:10 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id d4so3959647wmd.5
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 02:51:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=g//3YKslqEEjdWy4bFstcnviEz8Yjtvb1bJDuqH9QfE=;
-        b=KM7/B/44Z4zZq5f25gu+hF+LJFGIUg+P2fUBeUj31s75he1XhFefiaqsnnrlYkEFQ1
-         qJF4E8TJvsIRWLsP1Ra7PniO2iEO3rnrIHT8/KB3j6xPXEiuEtTbKIX9KvB1WP2mMfTc
-         t5kgcG+AFHBgATTCK9oQ2AWJ7Ca424ekWbBz5tkuVdZ/UowL0pD7jdR8kTp9dICsvXuX
-         pn2K7X7tX3UeHUw3smf+XFRXrGtOaB8tyjOmeDw+nCqqEMPpWqX6kv8ash9LWYI9cZmz
-         3f/O2uzLqSrhixsOZJJM76YcK0eiOLfENJnMrowexKiRY5DtI0xob7XM7JeCPgt38Mwn
-         7l7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=g//3YKslqEEjdWy4bFstcnviEz8Yjtvb1bJDuqH9QfE=;
-        b=RaOK+9j9XS/ZJf0bm6JxjO871i2GxJzGjAIQmwTNoYm6h62Seg/8MB0kjFCqLyJ9Ue
-         BVJ/+LzpRs12T87HjezgbxLI+B59mwoINtipOasONMsFJWCvAdolEkJHzettwSbPrr7T
-         +9wOsScHjr+5QVkBNdIn0Bt/anP1KdheyCFSPyLKjQfZBySHeFlLYxFP7jNWr1s3OazM
-         n8L8pyONmDPck4QAGI5VkXpQKvzUfGZQils71Si1wSBsfuEwWbARUmGXIXy5Q3cea73v
-         oh6pedlqNWtdntcnXRXhpoFQ87OsPPCVRSFGsHWzYMSNfV8w/imsPracXsli6GDkaLLq
-         jfoA==
-X-Gm-Message-State: AOAM531XS34TeQRLSGmG0FUjjjizEg4nHctJy6dSWCv8KDdPBMZmuLRr
-        2vGEGJuLACYRZe66K5vITLf+1Q==
-X-Google-Smtp-Source: ABdhPJwCbmhF47JEAgld/dSPUltKiEKJn903XuyqkTkNAIZrfNzJbuSsAWeQttI0/PP713UsXqfi0g==
-X-Received: by 2002:a1c:ed19:: with SMTP id l25mr3654659wmh.49.1601373068677;
-        Tue, 29 Sep 2020 02:51:08 -0700 (PDT)
-Received: from dell ([91.110.221.236])
-        by smtp.gmail.com with ESMTPSA id r21sm6040568wrc.70.2020.09.29.02.51.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Sep 2020 02:51:07 -0700 (PDT)
-Date:   Tue, 29 Sep 2020 10:51:06 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     "David E. Box" <david.e.box@linux.intel.com>
-Cc:     dvhart@infradead.org, andy@infradead.org,
-        alexander.h.duyck@linux.intel.com, linux-kernel@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org
-Subject: Re: [PATCH 1/3] mfd: intel_pmt: Add OOBMSM device ID
-Message-ID: <20200929095106.GG6148@dell>
-References: <20200911194549.12780-1-david.e.box@linux.intel.com>
- <20200911194549.12780-2-david.e.box@linux.intel.com>
+        Tue, 29 Sep 2020 05:51:23 -0400
+Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601373082;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=dOFhihp3O6yUNPsRCUYiI+rVoBLv2+urmTDYQC56sUw=;
+        b=Wv8wK+xUi1HWnRoAqyBrr4RMa3eKVcNsBGRzNHHcvhouGiXfuuuex8Ue5EX+xHIh+AprzI
+        InpnDOXw84MLRWmQn76vFKLGWC0rf7gphAoEOokbn4HiDej2Pxa696TBcDMVGaCBNzjIv5
+        UOLNPTb3Ex6PaQxZOsEEQDtlMjVXn78=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-149-v25DKllBNGuGQCIdPBO00Q-1; Tue, 29 Sep 2020 05:51:20 -0400
+X-MC-Unique: v25DKllBNGuGQCIdPBO00Q-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4FD8A64080;
+        Tue, 29 Sep 2020 09:51:19 +0000 (UTC)
+Received: from sirius.home.kraxel.org (ovpn-112-56.ams2.redhat.com [10.36.112.56])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 544B65C1C4;
+        Tue, 29 Sep 2020 09:51:16 +0000 (UTC)
+Received: by sirius.home.kraxel.org (Postfix, from userid 1000)
+        id 6079D358096; Tue, 29 Sep 2020 11:51:15 +0200 (CEST)
+From:   Gerd Hoffmann <kraxel@redhat.com>
+To:     dri-devel@lists.freedesktop.org
+Cc:     Gerd Hoffmann <kraxel@redhat.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Dave Airlie <airlied@redhat.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        virtualization@lists.linux-foundation.org (open list:DRM DRIVER FOR QXL
+        VIRTUAL GPU),
+        spice-devel@lists.freedesktop.org (open list:DRM DRIVER FOR QXL VIRTUAL
+        GPU), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v2 1/4] drm/qxl: use drmm_mode_config_init
+Date:   Tue, 29 Sep 2020 11:51:12 +0200
+Message-Id: <20200929095115.24430-2-kraxel@redhat.com>
+In-Reply-To: <20200929095115.24430-1-kraxel@redhat.com>
+References: <20200929095115.24430-1-kraxel@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200911194549.12780-2-david.e.box@linux.intel.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 11 Sep 2020, David E. Box wrote:
+Signed-off-by: Gerd Hoffmann <kraxel@redhat.com>
+Reviewed-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+---
+ drivers/gpu/drm/qxl/qxl_display.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-> Add Out of Band Management Services Module device ID to Intel PMT driver.
-> 
-> Signed-off-by: Alexander Duyck <alexander.h.duyck@linux.intel.com>
-> Signed-off-by: David E. Box <david.e.box@linux.intel.com>
-> ---
->  drivers/mfd/intel_pmt.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/drivers/mfd/intel_pmt.c b/drivers/mfd/intel_pmt.c
-> index 0e572b105101..8f9970ab3026 100644
-> --- a/drivers/mfd/intel_pmt.c
-> +++ b/drivers/mfd/intel_pmt.c
-> @@ -55,6 +55,8 @@ struct pmt_platform_info {
->  	unsigned long quirks;
->  };
->  
-> +static const struct pmt_platform_info pmt_info;
-> +
->  static const struct pmt_platform_info tgl_info = {
->  	.quirks = PMT_QUIRK_NO_WATCHER | PMT_QUIRK_NO_CRASHLOG |
->  		  PMT_QUIRK_TABLE_SHIFT,
-> @@ -200,8 +202,10 @@ static void pmt_pci_remove(struct pci_dev *pdev)
->  	pm_runtime_get_sync(&pdev->dev);
->  }
->  
-> +#define PCI_DEVICE_ID_INTEL_PMT_OOBMSM	0x09a7
->  #define PCI_DEVICE_ID_INTEL_PMT_TGL	0x9a0d
->  static const struct pci_device_id pmt_pci_ids[] = {
-> +	{ PCI_DEVICE_DATA(INTEL, PMT_OOBMSM, &pmt_info) },
-
-Why are you supplying an empty struct?
-
->  	{ PCI_DEVICE_DATA(INTEL, PMT_TGL, &tgl_info) },
->  	{ }
->  };
-
+diff --git a/drivers/gpu/drm/qxl/qxl_display.c b/drivers/gpu/drm/qxl/qxl_display.c
+index 65de1f69af58..5bef8f121e54 100644
+--- a/drivers/gpu/drm/qxl/qxl_display.c
++++ b/drivers/gpu/drm/qxl/qxl_display.c
+@@ -1186,7 +1186,9 @@ int qxl_modeset_init(struct qxl_device *qdev)
+ 	int i;
+ 	int ret;
+ 
+-	drm_mode_config_init(&qdev->ddev);
++	ret = drmm_mode_config_init(&qdev->ddev);
++	if (ret)
++		return ret;
+ 
+ 	ret = qxl_create_monitors_object(qdev);
+ 	if (ret)
+@@ -1219,5 +1221,4 @@ int qxl_modeset_init(struct qxl_device *qdev)
+ void qxl_modeset_fini(struct qxl_device *qdev)
+ {
+ 	qxl_destroy_monitors_object(qdev);
+-	drm_mode_config_cleanup(&qdev->ddev);
+ }
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+2.27.0
+
