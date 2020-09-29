@@ -2,148 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04B6727DB78
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 00:09:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A41027DB7B
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 00:12:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728861AbgI2WJb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 18:09:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40670 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727922AbgI2WJb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 18:09:31 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 129842083B;
-        Tue, 29 Sep 2020 22:09:28 +0000 (UTC)
-Date:   Tue, 29 Sep 2020 18:09:27 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Axel Rasmussen <axelrasmussen@google.com>
-Cc:     Tom Zanussi <zanussi@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 3/3] tracing: Add support for dynamic strings to
- synthetic events
-Message-ID: <20200929180927.17b6b78f@gandalf.local.home>
-In-Reply-To: <CAJHvVch+VA4oHafZzf5HRAwW321hKJKsTYC8mr_89yGjnUx8aw@mail.gmail.com>
-References: <cover.1601410890.git.zanussi@kernel.org>
-        <a296c3ead3da5f55e29eda2f40d69847d745071b.1601410890.git.zanussi@kernel.org>
-        <CAJHvVch+VA4oHafZzf5HRAwW321hKJKsTYC8mr_89yGjnUx8aw@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1728357AbgI2WMq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 18:12:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52380 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727922AbgI2WMq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 18:12:46 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13C0AC061755
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 15:12:46 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id f15so6537914ilj.2
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 15:12:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=atishpatra.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=q5rZuNG2apCosJKlhEHrUGVcJLAmcdJlisM6/km9BsY=;
+        b=cgZF4707763NhXAo5cgeyeXCGk4m/CVAb7kaXk4vjMegAl8/fDo48iXC3wAUXrpLo/
+         d0eCel9G0LE/2b2V/x86mkuBTo2Zgkav5jnCQHadVPKZnNXTS7c0B0erhS4BnfBuzpVi
+         iXJ8CoMvszXAqjCfeDoDZgokej+dF0hmA46QY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=q5rZuNG2apCosJKlhEHrUGVcJLAmcdJlisM6/km9BsY=;
+        b=ChXedF0w0CZyNSqj+fdIhzzLXB9XsYLr7BMYi7ROZ7qgTdpEpQnnqgeeswTPeBkPLs
+         vm8XSoU+q40qrvKzN74U8t3ArCcll/A2syco4NfsCvC6SYYU/dlL8utj+hyT14HhxQT/
+         arF5ZuqKfFDtKm3O6lfX5Y21/WNw+id0W0EC7DxZHRdZ9hjI5sG28yIer9hzhINgW/qL
+         8A27RDWea7tkz87kbKYi/m8GfmRd5MLztVfdVpO2+Mt54iPd3YSV/c2pwbXPfRLnI81M
+         9y4cUIq2o0e1RnMZXD5qgFqkBcFk8aN2cEDAq9DR1eqWRulUn0MASecj0jJtVRYrGVcU
+         q2IQ==
+X-Gm-Message-State: AOAM532xmTy79O9hja362FCkqAz79ASAjcNtQFvjXeFsHo3YNxSqX9Vw
+        +yqzNIVm7jbPGm6WcSageyFZj5N0Wzeq1mvqp1+R
+X-Google-Smtp-Source: ABdhPJysY6J9rnXYsfREUHOiC+nMpH1IVzBdA0+w4kYMeCgHlOEXszC/A0gVNL0FPQVDY10Pdw33hk4VxU6+gWT07Og=
+X-Received: by 2002:a92:9ac7:: with SMTP id c68mr4818119ill.126.1601417565143;
+ Tue, 29 Sep 2020 15:12:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <1593266228-61125-1-git-send-email-guoren@kernel.org> <1593266228-61125-3-git-send-email-guoren@kernel.org>
+In-Reply-To: <1593266228-61125-3-git-send-email-guoren@kernel.org>
+From:   Atish Patra <atishp@atishpatra.org>
+Date:   Tue, 29 Sep 2020 15:12:33 -0700
+Message-ID: <CAOnJCUJ-Jdk2GCgvrHVCxVoekysFKZyDWWmSFjmKaJOEcczQSQ@mail.gmail.com>
+Subject: Re: [PATCH V2 2/3] riscv: Fixup lockdep_assert_held with wrong param cpu_running
+To:     Guo Ren <guoren@kernel.org>
+Cc:     Palmer Dabbelt <palmerdabbelt@google.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Anup Patel <anup@brainfault.org>,
+        Greentime Hu <greentime.hu@sifive.com>,
+        Zong Li <zong.li@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Thomas Gleixner <tglx@linutronix.de>, tycho@tycho.ws,
+        Nick Hu <nickhu@andestech.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Guo Ren <guoren@linux.alibaba.com>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        linux-csky@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 29 Sep 2020 15:01:59 -0700
-Axel Rasmussen <axelrasmussen@google.com> wrote:
+On Sat, Jun 27, 2020 at 6:58 AM <guoren@kernel.org> wrote:
+>
+> From: Zong Li <zong.li@sifive.com>
+>
+> The cpu_running is not a lock-class, it lacks the dep_map member in
+> completion. It causes the error as follow:
+>
+> arch/riscv/kernel/smpboot.c: In function '__cpu_up':
+> ./include/linux/lockdep.h:364:52: error: 'struct completion' has no member named 'dep_map'
+>   364 | #define lockdep_is_held(lock)  lock_is_held(&(lock)->dep_map)
+>       |                                                    ^~
+> ./include/asm-generic/bug.h:113:25: note: in definition of macro 'WARN_ON'
+>   113 |  int __ret_warn_on = !!(condition);    \
+>       |                         ^~~~~~~~~
+> ./include/linux/lockdep.h:390:27: note: in expansion of macro 'lockdep_is_held'
+>   390 |   WARN_ON(debug_locks && !lockdep_is_held(l)); \
+>       |                           ^~~~~~~~~~~~~~~
+> arch/riscv/kernel/smpboot.c:118:2: note: in expansion of macro 'lockdep_assert_held'
+>   118 |  lockdep_assert_held(&cpu_running);
+>
+> There are a lot of archs which use cpu_running in smpboot.c (arm,
+> arm64, openrisc, xtensa, s390, x86, mips), but none of them try
+> lockdep_assert_held(&cpu_running.wait.lock). So Just remove it.
+>
+> Signed-off-by: Zong Li <zong.li@sifive.com>
+> Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+> ---
+>  arch/riscv/kernel/smpboot.c | 1 -
+>  1 file changed, 1 deletion(-)
+>
+> diff --git a/arch/riscv/kernel/smpboot.c b/arch/riscv/kernel/smpboot.c
+> index 4e99227..defc4e1 100644
+> --- a/arch/riscv/kernel/smpboot.c
+> +++ b/arch/riscv/kernel/smpboot.c
+> @@ -121,7 +121,6 @@ int __cpu_up(unsigned int cpu, struct task_struct *tidle)
+>
+>         ret = start_secondary_cpu(cpu, tidle);
+>         if (!ret) {
+> -               lockdep_assert_held(&cpu_running);
+>                 wait_for_completion_timeout(&cpu_running,
+>                                             msecs_to_jiffies(1000));
+>
+> --
+> 2.7.4
+>
+>
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
 
-> >                 event->fields[i]->offset = n_u64;
-> >
-> > -               if (event->fields[i]->is_string) {
-> > +               if (event->fields[i]->is_string && !event->fields[i]->is_dynamic) {
-> >                         offset += STR_VAR_LEN_MAX;
-> >                         n_u64 += STR_VAR_LEN_MAX / sizeof(u64);
-> >                 } else {
-> > @@ -139,6 +139,9 @@ static int synth_field_string_size(char *type)
-> >         if (len > 3)
-> >                 return -EINVAL;
-> >
-> > +       if (len == 0)
-> > +               return 0; /* variable-length string */
-> > +
-> >         strncpy(buf, start, len);
-> >         buf[len] = '\0';
-> >
-> > @@ -290,10 +293,25 @@ static enum print_line_t print_synth_event(struct trace_iterator *iter,
-> >
-> >                 /* parameter values */
-> >                 if (se->fields[i]->is_string) {
-> > -                       trace_seq_printf(s, print_fmt, se->fields[i]->name,
-> > -                                        (char *)&entry->fields[n_u64],
-> > -                                        i == se->n_fields - 1 ? "" : " ");
-> > -                       n_u64 += STR_VAR_LEN_MAX / sizeof(u64);
-> > +                       if (se->fields[i]->is_dynamic) {
-> > +                               u32 offset, data_offset;
-> > +                               char *str_field;
-> > +
-> > +                               offset = (u32)entry->fields[n_u64];
-> > +                               data_offset = offset & 0xffff;
-> > +
-> > +                               str_field = (char *)entry + data_offset;  
-> 
-> Is it better to re-use __get_str from include/trace/trace_events.h
-> instead of writing this out directly?
-> 
-> > +
-> > +                               trace_seq_printf(s, print_fmt, se->fields[i]->name,
-> > +                                                str_field,
-> > +                                                i == se->n_fields - 1 ? "" : " ");
-> > +                               n_u64++;
-> > +                       } else {
-> > +                               trace_seq_printf(s, print_fmt, se->fields[i]->name,
-> > +                                                (char *)&entry->fields[n_u64],
-> > +                                                i == se->n_fields - 1 ? "" : " ");
-> > +                               n_u64 += STR_VAR_LEN_MAX / sizeof(u64);
-> > +                       }
-> >                 } else {
-> >                         struct trace_print_flags __flags[] = {
-> >                             __def_gfpflag_names, {-1, NULL} };
-> > @@ -325,16 +343,52 @@ static struct trace_event_functions synth_event_funcs = {
-> >         .trace          = print_synth_event
-> >  };
-> >
-> > +static unsigned int trace_string(struct synth_trace_event *entry,
-> > +                                struct synth_event *event,
-> > +                                char *str_val,
-> > +                                bool is_dynamic,
-> > +                                unsigned int data_size,
-> > +                                unsigned int *n_u64)
-> > +{
-> > +       unsigned int len = 0;
-> > +       char *str_field;
-> > +
-> > +       if (is_dynamic) {
-> > +               u32 data_offset;
-> > +
-> > +               data_offset = offsetof(typeof(*entry), fields);
-> > +               data_offset += event->n_u64 * sizeof(u64);
-> > +               data_offset += data_size;
-> > +
-> > +               str_field = (char *)entry + data_offset;
-> > +
-> > +               len = strlen(str_val) + 1;
-> > +               strscpy(str_field, str_val, len);
-> > +
-> > +               data_offset |= len << 16;
-> > +               *(u32 *)&entry->fields[*n_u64] = data_offset;  
-> 
-> Similar thing here, is it possible to reuse __dynamic_array or __string?
+Thanks for catching this.
 
-Interesting idea.
+Reviewed-by: Atish Patra <atish.patra@wdc.com>
 
-I'd prefer to keep it broken out for this patch set, and then we could look
-at incorporating this file to use the macros of <trace/trace_event.h>.
-
-But I much rather have that be a separate patch that does that as an
-enhancement than to include it in this file doing more work.
-
--- Steve
-
-
-> 
-> > +
-> > +               (*n_u64)++;
-> > +       } else {
-> > +               str_field = (char *)&entry->fields[*n_u64];
-> > +
-> > +               strscpy(str_field, str_val, STR_VAR_LEN_MAX);
-> > +               (*n_u64) += STR_VAR_LEN_MAX / sizeof(u64);
-> > +       }
-> > +
-> > +       return len;
-> > +}
-> > +
-> >  static n
+-- 
+Regards,
+Atish
