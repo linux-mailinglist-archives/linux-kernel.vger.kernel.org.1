@@ -2,96 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DADBD27C63C
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:43:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3572227C7E0
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:57:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730526AbgI2LnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:43:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39242 "EHLO
+        id S1731522AbgI2L5R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:57:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729962AbgI2Lmw (ORCPT
+        with ESMTP id S1730540AbgI2Ln0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:42:52 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB62FC061755;
-        Tue, 29 Sep 2020 04:42:51 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id b12so5105730lfp.9;
-        Tue, 29 Sep 2020 04:42:51 -0700 (PDT)
+        Tue, 29 Sep 2020 07:43:26 -0400
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C986C0613D0
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 04:43:26 -0700 (PDT)
+Received: by mail-ed1-x542.google.com with SMTP id k14so6003523edo.1
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 04:43:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        d=monstr-eu.20150623.gappssmtp.com; s=20150623;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=gtW6Ox/3tUcCMKN4N8mUtDGypoU61VjKgzz6aPgmqcA=;
-        b=Iqjn2aZlDpnRRfZsWasVKK2tWH7Kx/6zoFdoSRQry34hejCBL+DLEq5kpn21ybyjDN
-         Zx86B7ghjQk2nlXmyBDh3CDhhlun5ACLmB7FDKMcl3sck3TZzWoMI0elKE+uS+eA01ac
-         0UNV9sXEQc2/HtsDpBzgux2Ur4jQW7VwCLKxuSqaXIdjHWuKYGhSVgw50ajKcgTpZb0I
-         1Sgppf/q0fpwX1AmxciPjqA4t6QJmfHpoKMC/trevhXrZYwNT8WaGR+zJwWWGZ7HAyOb
-         asrx51fU4MZsa1RbfFI/OfxQldGyyCT7iTGJx5u19lgSP2Uz1v8VjctWF8eleAj7oxXA
-         aGZg==
+        bh=+dyqjEM4Nfg9QjzaQRM4PsDpBxhgsJm9EEpCrS6WSrk=;
+        b=O0++lOrlF2XUoAEtNzozVCcPXrdX7huM9vUeXKDytO2VKXxu0ZRnc0EpFX9PZxlNon
+         73iM1/M6/V7EO/ghCCnZUXpzvveURB9toTusdPOtKR2Eb9j8HH86IjGpK0ailyx/7glw
+         sXi+37IDeJVNn5EFAMVzb8P3AOFo+sFtKJgv4QutZ6WIHevlqEbNfI38T8LHa5hYJvkf
+         scNKi99pTqfzwaDwypeqtPpH7VurjDzn1VpCU/7YZbs+N5Bt03NBydp32SX8Y+BqK42G
+         HiF+zVFa7xVmOO5cgNo+ie30kvsz8/xinJ1pw7QC1NLzlMHAocQ3NO0eTzpyvSVeSo8o
+         Vspg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=gtW6Ox/3tUcCMKN4N8mUtDGypoU61VjKgzz6aPgmqcA=;
-        b=Jcd3bBQ3dAaA9jXJ9ZQFguuwZ4uH/5O0aEcgeaa7u6dm9Gqd0UA6WI4WuUl2yFLdq2
-         LAIm0PSyq47ajn33/D6v75H2QHVYVuKIKCEiBt1UZgavNGnYs5ofsokgEN5QxsXEwJhA
-         papWTiAAqM1yatKrHExp12Yz13h722QLDxDp9sFFo0r9xDuTV3I9YIG46pKJfw9MtWOX
-         idExtqbCOJHaq0LXS2PzJ8H12tTRIyFwo08byrrhfpvERR9WmSYRLvjR7euU/b5i4UuC
-         10T1woaf4+1dTYQi9k2q3i7FyossVCQrcUJobvaYAAVNT035oI470NU/4kLZnidWmLL8
-         L+Xg==
-X-Gm-Message-State: AOAM530sayWgPEjdsFbe5lcyMTZaUHgk+KhN6mHSSjDV6DrsVV1oCN0+
-        vUo3YHqFWvO75jEYHMkg0aQ=
-X-Google-Smtp-Source: ABdhPJy7h4tqQ3d4mYBYflORtUUy/5CjRN5eJiXyPb52nc6lCUyBtXJfPSXVfNEwwQygCrOsCUNl5g==
-X-Received: by 2002:a19:ee12:: with SMTP id g18mr1173677lfb.515.1601379770277;
-        Tue, 29 Sep 2020 04:42:50 -0700 (PDT)
-Received: from ?IPv6:2a00:1fa0:861:66d4:f163:48a3:b6d3:9d73? ([2a00:1fa0:861:66d4:f163:48a3:b6d3:9d73])
-        by smtp.gmail.com with ESMTPSA id w9sm3242107lfr.220.2020.09.29.04.42.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 29 Sep 2020 04:42:49 -0700 (PDT)
-Subject: Re: [PATCH v3 1/5] usb: dwc3: core: Host wake up support from system
- suspend
-To:     Sandeep Maheswaram <sanm@codeaurora.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Doug Anderson <dianders@chromium.org>,
-        Matthias Kaehlcke <mka@chromium.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Manu Gautam <mgautam@codeaurora.org>
-References: <1601376452-31839-1-git-send-email-sanm@codeaurora.org>
- <1601376452-31839-2-git-send-email-sanm@codeaurora.org>
-From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Organization: Brain-dead Software
-Message-ID: <84c8d18a-f339-b140-a784-1ad489d41a23@gmail.com>
-Date:   Tue, 29 Sep 2020 14:42:41 +0300
-User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=+dyqjEM4Nfg9QjzaQRM4PsDpBxhgsJm9EEpCrS6WSrk=;
+        b=sqqnioS1y63oT26w2K5sYMi3gmGbppicoap16ZjuA+Q2Z4CLjq7fVsMdz8E/UAkm2O
+         mf3M6KptcegPMlHJc/6/TZ4fhCIlHiTlE5q/vv0JxFa7zknYQRT92h6ZSejGZAMAo5z4
+         r5hUH3QXJFC9XKWMTgXyALWAhjvKTDk0q3SN9iP2r/TzEjBx3lfo2XMWVDTtJX3AVcJ3
+         lGIPlngkdMh7WnXRo0f3cjdtQ9mh86OE1bS1bycHjZCoZRbdMOeL2oM2q7JXl3mDokzk
+         0O3NutGf4SyUl4l8gx2kNpbP7NYcgs9D3Z+7Kr9yr4/skgUy9hBmHzzxqzUzQphp+MTc
+         G+dA==
+X-Gm-Message-State: AOAM533uGhgjw3X3jQ64mmBdDyOdZhAtDfK0lR/AfvPIJXRXAa/yFgnN
+        LKcw4dt5DfvwGmHNM0NwK4lkoHOdkc678Q==
+X-Google-Smtp-Source: ABdhPJwCkbYQryEp9zC575hahXkX43eYlCJKVmEK97uBI5MCJC/chZJXCBIYjPjwdb0tqSv08gc57A==
+X-Received: by 2002:a50:84e8:: with SMTP id 95mr2662684edq.99.1601379804636;
+        Tue, 29 Sep 2020 04:43:24 -0700 (PDT)
+Received: from localhost (nat-35.starnet.cz. [178.255.168.35])
+        by smtp.gmail.com with ESMTPSA id lc2sm1777629ejb.86.2020.09.29.04.43.23
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 29 Sep 2020 04:43:24 -0700 (PDT)
+Sender: Michal Simek <monstr@monstr.eu>
+From:   Michal Simek <michal.simek@xilinx.com>
+To:     linux-kernel@vger.kernel.org, monstr@monstr.eu,
+        michal.simek@xilinx.com, git@xilinx.com
+Cc:     Kalyani Akula <kalyani.akula@xilinx.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Manish Narani <manish.narani@xilinx.com>,
+        Michael Tretter <m.tretter@pengutronix.de>,
+        Nava kishore Manne <nava.manne@xilinx.com>,
+        Rajan Vaja <rajan.vaja@xilinx.com>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH] arm64: dts: zynqmp: Fix pcie ranges description
+Date:   Tue, 29 Sep 2020 13:43:22 +0200
+Message-Id: <f59a63d8cb941592de6d2dee8afa6f120b2e40c8.1601379794.git.michal.simek@xilinx.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <1601376452-31839-2-git-send-email-sanm@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29.09.2020 13:47, Sandeep Maheswaram wrote:
+DT schema is checking tuples which should be properly separated. The patch
+is doing this separation to avoid the following warning:
+..yaml: axi: pcie@fd0e0000:ranges: [[33554432, 0, 3758096384, 0,
+3758096384, 0, 268435456, 1124073472, 6, 0, 6, 0, 2, 0]] is not valid under
+any of the given schemas (Possible causes of the failure):
+...dt.yaml: axi: pcie@fd0e0000:ranges: True was expected
+...dt.yaml: axi: pcie@fd0e0000:ranges:0: [33554432, 0, 3758096384, 0,
+3758096384, 0, 268435456, 1124073472, 6, 0, 6, 0, 2, 0] is too long
 
-> Avoiding phy powerdown in host mode so that it can be wake up by devices.
+Signed-off-by: Michal Simek <michal.simek@xilinx.com>
+---
 
-    s/wake/woken/?
+I have seen one conversation about it but don't have link which I can point
+to.
+---
+ arch/arm64/boot/dts/xilinx/zynqmp.dtsi | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-> Added hs_phy_flags and ss_phy_flags to check connection status and
-> set phy mode and configure interrupts.
-> 
-> Signed-off-by: Sandeep Maheswaram <sanm@codeaurora.org>
-[...]
+diff --git a/arch/arm64/boot/dts/xilinx/zynqmp.dtsi b/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
+index 771f60e0346d..98073f3223e5 100644
+--- a/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
++++ b/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
+@@ -542,8 +542,8 @@ pcie: pcie@fd0e0000 {
+ 			      <0x0 0xfd480000 0x0 0x1000>,
+ 			      <0x80 0x00000000 0x0 0x1000000>;
+ 			reg-names = "breg", "pcireg", "cfg";
+-			ranges = <0x02000000 0x00000000 0xe0000000 0x00000000 0xe0000000 0x00000000 0x10000000	/* non-prefetchable memory */
+-				  0x43000000 0x00000006 0x00000000 0x00000006 0x00000000 0x00000002 0x00000000>;/* prefetchable memory */
++			ranges = <0x02000000 0x00000000 0xe0000000 0x00000000 0xe0000000 0x00000000 0x10000000>,/* non-prefetchable memory */
++				 <0x43000000 0x00000006 0x00000000 0x00000006 0x00000000 0x00000002 0x00000000>;/* prefetchable memory */
+ 			bus-range = <0x00 0xff>;
+ 			interrupt-map-mask = <0x0 0x0 0x0 0x7>;
+ 			interrupt-map = <0x0 0x0 0x0 0x1 &pcie_intc 0x1>,
+-- 
+2.28.0
 
-MBR, Sergei
