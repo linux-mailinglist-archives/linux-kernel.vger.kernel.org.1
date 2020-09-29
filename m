@@ -2,76 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AAEC27BE02
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 09:30:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBC3D27BE04
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 09:30:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726083AbgI2HaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 03:30:06 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:48558 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725468AbgI2HaG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 03:30:06 -0400
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 74A5FFD013689A496091;
-        Tue, 29 Sep 2020 15:30:04 +0800 (CST)
-Received: from [127.0.0.1] (10.57.60.129) by DGGEMS406-HUB.china.huawei.com
- (10.3.19.206) with Microsoft SMTP Server id 14.3.487.0; Tue, 29 Sep 2020
- 15:29:57 +0800
-Subject: Re: [PATCH] drm/hisilicon: Delete the unused macro
-To:     Thomas Zimmermann <tzimmermann@suse.de>,
-        Tian Tao <tiantao6@hisilicon.com>, <airlied@linux.ie>,
-        <daniel@ffwll.ch>, <kraxel@redhat.com>,
-        <alexander.deucher@amd.com>, <tglx@linutronix.de>,
-        <dri-devel@lists.freedesktop.org>, <xinliang.liu@linaro.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <linuxarm@huawei.com>
-References: <1601340326-14049-1-git-send-email-tiantao6@hisilicon.com>
- <b2e756df-a434-f60c-c5f5-0cbb43f00d5c@suse.de>
-From:   "tiantao (H)" <tiantao6@huawei.com>
-Message-ID: <e528f881-05bb-3ec0-c0cc-a254288c8c96@huawei.com>
-Date:   Tue, 29 Sep 2020 15:29:56 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1727440AbgI2HaQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 03:30:16 -0400
+Received: from mga12.intel.com ([192.55.52.136]:1576 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725710AbgI2HaP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 03:30:15 -0400
+IronPort-SDR: UwxE/3y0e3Y20HW5P009s5Hi/iJWNM4xWLYxopyuOVHaktvcmUMx3HngpTwjO6KUr69LkSARyl
+ cHEbpXggajGQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9758"; a="141539332"
+X-IronPort-AV: E=Sophos;i="5.77,317,1596524400"; 
+   d="scan'208";a="141539332"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2020 00:30:12 -0700
+IronPort-SDR: kCpdJM79QM6ljb1NM5zqFnI2IByWgGBnuQ9BQLRacgDFF6XRelJeGoADijH5BH/wMpHOLvlL4n
+ Zj5LH3ojEK3Q==
+X-IronPort-AV: E=Sophos;i="5.77,317,1596524400"; 
+   d="scan'208";a="489216932"
+Received: from dmcenean-mobl.ger.corp.intel.com (HELO localhost) ([10.252.31.147])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2020 00:30:08 -0700
+From:   Jani Nikula <jani.nikula@linux.intel.com>
+To:     Matt Roper <matthew.d.roper@intel.com>,
+        Lucas De Marchi <lucas.demarchi@intel.com>
+Cc:     "Surendrakumar Upadhyay\, TejaskumarX" 
+        <tejaskumarx.surendrakumar.upadhyay@intel.com>,
+        "Vivi\, Rodrigo" <rodrigo.vivi@intel.com>,
+        "airlied\@linux.ie" <airlied@linux.ie>,
+        "daniel\@ffwll.ch" <daniel@ffwll.ch>,
+        "intel-gfx\@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
+        "dri-devel\@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Ausmus\, James" <james.ausmus@intel.com>,
+        "Souza\, Jose" <jose.souza@intel.com>,
+        "ville.syrjala\@linux.intel.com" <ville.syrjala@linux.intel.com>,
+        "Pandey\, Hariom" <hariom.pandey@intel.com>
+Subject: Re: [Intel-gfx] [PATCH 2/2] drm/i915/edp/jsl: Update vswing table for HBR and HBR2
+In-Reply-To: <20200928231022.GF2157395@mdroper-desk1.amr.corp.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20200928080931.246347-1-tejaskumarx.surendrakumar.upadhyay@intel.com> <20200928080931.246347-3-tejaskumarx.surendrakumar.upadhyay@intel.com> <87a6xaow40.fsf@intel.com> <SN6PR11MB3421725FE60CC7930FC02AB6DF350@SN6PR11MB3421.namprd11.prod.outlook.com> <871rilq0um.fsf@intel.com> <20200928230739.vpj22bwebqhtehuk@ldmartin-desk1> <20200928231022.GF2157395@mdroper-desk1.amr.corp.intel.com>
+Date:   Tue, 29 Sep 2020 10:30:25 +0300
+Message-ID: <87mu19nipa.fsf@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <b2e756df-a434-f60c-c5f5-0cbb43f00d5c@suse.de>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.57.60.129]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 28 Sep 2020, Matt Roper <matthew.d.roper@intel.com> wrote:
+> On Mon, Sep 28, 2020 at 04:07:39PM -0700, Lucas De Marchi wrote:
+>> On Mon, Sep 28, 2020 at 08:15:29PM +0300, Jani Nikula wrote:
+>> > On Mon, 28 Sep 2020, "Surendrakumar Upadhyay, TejaskumarX"	<tejaskumarx.surendrakumar.upadhyay@intel.com> wrote:
+>> > > This is a good example of a potential trap that having
+>> > > IS_ELKHARTLAKE() cover both ELK and JSP creates. An unsuspecting coder
+>> > > might change the if ladder to have IS_ELKHARTLAKE() first, and the
+>> > > subsequent IS_JASPERLAKE() branch would never be taken.
+>> > > 
+>> > > BR,
+>> > > Jani.
+>> > > 
+>> > > Tejas : In that case I will put attention note in comment about
+>> > > platform checks such that ladder distrubance can be avoided. What you
+>> > > suggest?
+>> 
+>> > The solution is to make IS_ELKHARTLAKE() mean ELK and only ELK.
+>> 
+>> Since we are talking about the TLA for JSL in the other patch, for
+>> elkhartlake it is EHL, not ELK. ELK is something else, but I'm not sure
+>> what:
+>> 
+>> $ git grep -w ELK -- drivers/gpu/drm/
+>> drivers/gpu/drm/i915/gem/i915_gem_stolen.c:             IS_GM45(i915) ? "CTG" : "ELK", reg_val);
+>> drivers/gpu/drm/i915/gem/i915_gem_stolen.c:      * Whether ILK really reuses the ELK register for this is unclear.
+>> drivers/gpu/drm/i915/intel_pm.c:         * Not 100% sure which way ELK should go here as the
+>> drivers/gpu/drm/i915/intel_pm.c:         * assume ELK doesn't need this.
+>
+> Yeah, ELK = Eagle Lake, CTG = Cantiga.  Both are old gen5 platforms IIRC.
+
+Yeah, I know, my bad.
+
+BR,
+Jani.
 
 
-在 2020/9/29 15:24, Thomas Zimmermann 写道:
-> 
-> 
-> Am 29.09.20 um 02:45 schrieb Tian Tao:
->> The macro PADDING is no longer used. Delete it.
->>
->> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
-> 
-> Reviewed-by: Thomas Zimmermann <tzimmermann@suse.de>
-> 
-Thanks a lot for the timely help with the review code!
->> ---
->>   drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c | 2 --
->>   1 file changed, 2 deletions(-)
->>
->> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c
->> index 4d57ec6..b3a81da 100644
->> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c
->> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c
->> @@ -52,8 +52,6 @@ static const struct hibmc_dislay_pll_config hibmc_pll_table[] = {
->>   	{1920, 1200, CRT_PLL1_HS_193MHZ, CRT_PLL2_HS_193MHZ},
->>   };
->>   
->> -#define PADDING(align, data) (((data) + (align) - 1) & (~((align) - 1)))
->> -
->>   static int hibmc_plane_atomic_check(struct drm_plane *plane,
->>   				    struct drm_plane_state *state)
->>   {
->>
-> 
+>
+>
+> Matt
+>
+>> 
+>> Lucas De Marchi
+>> 
+>> > 
+>> > BR,
+>> > Jani.
+>> > 
+>> > 
+>> > -- 
+>> > Jani Nikula, Intel Open Source Graphics Center
 
+-- 
+Jani Nikula, Intel Open Source Graphics Center
