@@ -2,38 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D90EE27C593
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:38:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AF9527C6B2
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:47:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729407AbgI2Lgp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:36:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50310 "EHLO mail.kernel.org"
+        id S1731091AbgI2Lrm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:47:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47386 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729904AbgI2Lft (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:35:49 -0400
+        id S1730673AbgI2LrU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:47:20 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 98D5523A7A;
-        Tue, 29 Sep 2020 11:30:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7F29C221EF;
+        Tue, 29 Sep 2020 11:47:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601379037;
-        bh=ez46IoJNDAGC65ml+faJGea93+vPoJYzVOhvMr4ii6U=;
+        s=default; t=1601380038;
+        bh=TDdSIiZCaDyGLci7UFH3I71qBjES2rJYhUiba+C/GPo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SVj9mq78fHKUhrBQTKj87BR/wmmCvSjpq+MtQyKlXNrSr1FSd5u6R/ylHas+qn3GG
-         GBw1ci8mFCANgSdeJi2c7W7YL/v2ethTyL1sduw8IwInv5eLw+JVU7nUNxJ5UlLyZ/
-         T/hOOfUeVmC0DE9Fgc2n1GzPvDQzU31VwDS3KojM=
+        b=A4mXsbMMaBpKQDp0ebh+8lnSvjmnLy1t3CuCoTzMLLzKBa3Sn//tmPYmajpwRYJF2
+         K39Exqk7IQKt/scQmsBYJqCGWjr4Ddv009PZ+oH8YSvPXN/sa4y7b0J/K0T/Ll39Pl
+         9jxFRxdnKeQA9UPNdlDMcM6K3Jvbjg6jmP20o1fs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tom Rix <trix@redhat.com>,
-        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 231/245] ALSA: asihpi: fix iounmap in error handler
-Date:   Tue, 29 Sep 2020 13:01:22 +0200
-Message-Id: <20200929105958.230096004@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Vinicius Costa Gomes <vinicius.gomes@intel.com>,
+        Aaron Brown <aaron.f.brown@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.8 40/99] igc: Fix wrong timestamp latency numbers
+Date:   Tue, 29 Sep 2020 13:01:23 +0200
+Message-Id: <20200929105931.696666656@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929105946.978650816@linuxfoundation.org>
-References: <20200929105946.978650816@linuxfoundation.org>
+In-Reply-To: <20200929105929.719230296@linuxfoundation.org>
+References: <20200929105929.719230296@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,57 +45,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+From: Vinicius Costa Gomes <vinicius.gomes@intel.com>
 
-[ Upstream commit 472eb39103e885f302fd8fd6eff104fcf5503f1b ]
+[ Upstream commit f03369b9bfab8e23ac28ca7ab7e6631c374b7cbe ]
 
-clang static analysis flags this problem
-hpioctl.c:513:7: warning: Branch condition evaluates to
-  a garbage value
-                if (pci.ap_mem_base[idx]) {
-                    ^~~~~~~~~~~~~~~~~~~~
+The previous timestamping latency numbers were obtained by
+interpolating the i210 numbers with the i225 crystal clock value. That
+calculation was wrong.
 
-If there is a failure in the middle of the memory space loop,
-only some of the memory spaces need to be cleaned up.
+Use the correct values from real measurements.
 
-At the error handler, idx holds the number of successful
-memory spaces mapped.  So rework the handler loop to use the
-old idx.
-
-There is a second problem, the memory space loop conditionally
-iomaps()/sets the mem_base so it is necessay to initize pci.
-
-Fixes: 719f82d3987a ("ALSA: Add support of AudioScience ASI boards")
-Signed-off-by: Tom Rix <trix@redhat.com>
-Link: https://lore.kernel.org/r/20200913165230.17166-1-trix@redhat.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Fixes: 81b055205e8b ("igc: Add support for RX timestamping")
+Signed-off-by: Vinicius Costa Gomes <vinicius.gomes@intel.com>
+Tested-by: Aaron Brown <aaron.f.brown@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/asihpi/hpioctl.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/intel/igc/igc.h | 20 ++++++++------------
+ 1 file changed, 8 insertions(+), 12 deletions(-)
 
-diff --git a/sound/pci/asihpi/hpioctl.c b/sound/pci/asihpi/hpioctl.c
-index 7d049569012c1..3f06986fbecf8 100644
---- a/sound/pci/asihpi/hpioctl.c
-+++ b/sound/pci/asihpi/hpioctl.c
-@@ -350,7 +350,7 @@ int asihpi_adapter_probe(struct pci_dev *pci_dev,
- 	struct hpi_message hm;
- 	struct hpi_response hr;
- 	struct hpi_adapter adapter;
--	struct hpi_pci pci;
-+	struct hpi_pci pci = { 0 };
+diff --git a/drivers/net/ethernet/intel/igc/igc.h b/drivers/net/ethernet/intel/igc/igc.h
+index 5dbc5a156626a..206b73aa6d7a7 100644
+--- a/drivers/net/ethernet/intel/igc/igc.h
++++ b/drivers/net/ethernet/intel/igc/igc.h
+@@ -298,18 +298,14 @@ extern char igc_driver_version[];
+ #define IGC_RX_HDR_LEN			IGC_RXBUFFER_256
  
- 	memset(&adapter, 0, sizeof(adapter));
+ /* Transmit and receive latency (for PTP timestamps) */
+-/* FIXME: These values were estimated using the ones that i225 has as
+- * basis, they seem to provide good numbers with ptp4l/phc2sys, but we
+- * need to confirm them.
+- */
+-#define IGC_I225_TX_LATENCY_10		9542
+-#define IGC_I225_TX_LATENCY_100		1024
+-#define IGC_I225_TX_LATENCY_1000	178
+-#define IGC_I225_TX_LATENCY_2500	64
+-#define IGC_I225_RX_LATENCY_10		20662
+-#define IGC_I225_RX_LATENCY_100		2213
+-#define IGC_I225_RX_LATENCY_1000	448
+-#define IGC_I225_RX_LATENCY_2500	160
++#define IGC_I225_TX_LATENCY_10		240
++#define IGC_I225_TX_LATENCY_100		58
++#define IGC_I225_TX_LATENCY_1000	80
++#define IGC_I225_TX_LATENCY_2500	1325
++#define IGC_I225_RX_LATENCY_10		6450
++#define IGC_I225_RX_LATENCY_100		185
++#define IGC_I225_RX_LATENCY_1000	300
++#define IGC_I225_RX_LATENCY_2500	1485
  
-@@ -506,7 +506,7 @@ int asihpi_adapter_probe(struct pci_dev *pci_dev,
- 	return 0;
- 
- err:
--	for (idx = 0; idx < HPI_MAX_ADAPTER_MEM_SPACES; idx++) {
-+	while (--idx >= 0) {
- 		if (pci.ap_mem_base[idx]) {
- 			iounmap(pci.ap_mem_base[idx]);
- 			pci.ap_mem_base[idx] = NULL;
+ /* RX and TX descriptor control thresholds.
+  * PTHRESH - MAC will consider prefetch if it has fewer than this number of
 -- 
 2.25.1
 
