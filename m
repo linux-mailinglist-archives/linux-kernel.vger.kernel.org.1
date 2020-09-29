@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DF8927C398
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:07:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22C5927C47B
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:14:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728274AbgI2LHD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:07:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44842 "EHLO mail.kernel.org"
+        id S1729428AbgI2LOY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:14:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57056 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728552AbgI2LHA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:07:00 -0400
+        id S1729399AbgI2LOO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:14:14 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0F1FE21941;
-        Tue, 29 Sep 2020 11:06:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BC67A221E8;
+        Tue, 29 Sep 2020 11:14:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601377619;
-        bh=Id1n6rf2mWSjm9sPa5X++geLufjs9SgNuL3/iStXyaY=;
+        s=default; t=1601378051;
+        bh=BvrBulDWqskHunvqNXC5RxApFO6otqoEsmBN5M0rjEE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VR14s7OmYADZZ7vqByfU96H/327enHGIEd+ns/tipNtiorjjYe3Z8dBq+35uYa8F7
-         L3jzcAUHawSBoNmn9LeTIaVeuKdhmixgVxDytQeu+GZC5I37O6uo/FAQjaX3m1K/ke
-         pJGpiE8CerWB/MOmKNtgE/qRqA7l/Wg5L8wbu5mI=
+        b=Z/m5oJY9OlEB4Gi207493srkn2goY/0vmuu/Kn9NmhlsNLAjmius0hGCP4tuRDEy0
+         BDejMoxQVh5/bPqBCVG9uGIN3VfAXsBQR58CJFK6MiP6j+IBPp+P6exg98UeukNQYO
+         5x+VrGV6jrp9QbsdxnMROSmV4dyAS6n1ShRmaUzY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.9 012/121] net: add __must_check to skb_put_padto()
+        stable@vger.kernel.org, Vasily Averin <vvs@virtuozzo.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 044/166] rt_cpu_seq_next should increase position index
 Date:   Tue, 29 Sep 2020 12:59:16 +0200
-Message-Id: <20200929105930.790779331@linuxfoundation.org>
+Message-Id: <20200929105937.404309998@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929105930.172747117@linuxfoundation.org>
-References: <20200929105930.172747117@linuxfoundation.org>
+In-Reply-To: <20200929105935.184737111@linuxfoundation.org>
+References: <20200929105935.184737111@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,30 +43,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Vasily Averin <vvs@virtuozzo.com>
 
-[ Upstream commit 4a009cb04aeca0de60b73f37b102573354214b52 ]
+[ Upstream commit a3ea86739f1bc7e121d921842f0f4a8ab1af94d9 ]
 
-skb_put_padto() and __skb_put_padto() callers
-must check return values or risk use-after-free.
+if seq_file .next fuction does not change position index,
+read after some lseek can generate unexpected output.
 
-Signed-off-by: Eric Dumazet <edumazet@google.com>
+https://bugzilla.kernel.org/show_bug.cgi?id=206283
+Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/skbuff.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/ipv4/route.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/include/linux/skbuff.h
-+++ b/include/linux/skbuff.h
-@@ -2795,7 +2795,7 @@ static inline int skb_padto(struct sk_bu
-  *	is untouched. Otherwise it is extended. Returns zero on
-  *	success. The skb is freed on error.
-  */
--static inline int skb_put_padto(struct sk_buff *skb, unsigned int len)
-+static inline int __must_check skb_put_padto(struct sk_buff *skb, unsigned int len)
- {
- 	unsigned int size = skb->len;
+diff --git a/net/ipv4/route.c b/net/ipv4/route.c
+index ed835ca068798..6fcb12e083d99 100644
+--- a/net/ipv4/route.c
++++ b/net/ipv4/route.c
+@@ -276,6 +276,7 @@ static void *rt_cpu_seq_next(struct seq_file *seq, void *v, loff_t *pos)
+ 		*pos = cpu+1;
+ 		return &per_cpu(rt_cache_stat, cpu);
+ 	}
++	(*pos)++;
+ 	return NULL;
  
+ }
+-- 
+2.25.1
+
 
 
