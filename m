@@ -2,38 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B045E27C5C8
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:39:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8E4027C601
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:41:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730416AbgI2Liw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:38:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60930 "EHLO mail.kernel.org"
+        id S1730610AbgI2LlC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:41:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36916 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730406AbgI2Lis (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:38:48 -0400
+        id S1730578AbgI2Lkx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:40:53 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 69C2F2083B;
-        Tue, 29 Sep 2020 11:38:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8548B206A5;
+        Tue, 29 Sep 2020 11:23:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601379527;
-        bh=JrV5sVkueBazySqufptnzl7LsYTayQ3slafpTrUBHkw=;
+        s=default; t=1601378594;
+        bh=AZ8ZANYn2ayZhfHdgsNtX6pMLu7dDv5koNz1Gu18hNE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tiMxI4NsemrKce6iteJXNsF0yGtph1l1vtLDDpRYo0h9/lf1EFtaEq/kXp7TTyR2v
-         fsxbwluH3j1RS17abdaAVFDqnwi7FG3P1QvWkjDvRtDCKNSUqmMULnGBfwRRVoYi27
-         12ppU3+ZuulU5g+WDa4+KYUF5rq44SbQCeITXV3g=
+        b=d+KyULDQ1yh8UjJqc+f63Dp2t15HWrNGk3byIY4IuKKhhRdWQhqEHIu4BF0g2EFp0
+         5cwRh+0ILatEd04HgEbATFqVADB+Ek1/N3dMrijrMrR9KIB7Yw9Cz2cws8w3FeWxEB
+         iVPuRoJju6VPr3GaKuDWCy8KYx7mWrbMSmd2q9sA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vignesh Raghavendra <vigneshr@ti.com>,
+        stable@vger.kernel.org,
+        syzbot+c3c5bdea7863886115dc@syzkaller.appspotmail.com,
+        Manish Mandlik <mmandlik@google.com>,
+        Hillf Danton <hdanton@sina.com>,
+        Marcel Holtmann <marcel@holtmann.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 186/388] serial: 8250: 8250_omap: Terminate DMA before pushing data on RX timeout
-Date:   Tue, 29 Sep 2020 12:58:37 +0200
-Message-Id: <20200929110019.481118492@linuxfoundation.org>
+Subject: [PATCH 4.19 069/245] Bluetooth: prefetch channel before killing sock
+Date:   Tue, 29 Sep 2020 12:58:40 +0200
+Message-Id: <20200929105950.351532974@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929110010.467764689@linuxfoundation.org>
-References: <20200929110010.467764689@linuxfoundation.org>
+In-Reply-To: <20200929105946.978650816@linuxfoundation.org>
+References: <20200929105946.978650816@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,50 +46,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vignesh Raghavendra <vigneshr@ti.com>
+From: Hillf Danton <hdanton@sina.com>
 
-[ Upstream commit 7cf4df30a98175033e9849f7f16c46e96ba47f41 ]
+[ Upstream commit 2a154903cec20fb64ff4d7d617ca53c16f8fd53a ]
 
-Terminate and flush DMA internal buffers, before pushing RX data to
-higher layer. Otherwise, this will lead to data corruption, as driver
-would end up pushing stale buffer data to higher layer while actual data
-is still stuck inside DMA hardware and has yet not arrived at the
-memory.
-While at that, replace deprecated dmaengine_terminate_all() with
-dmaengine_terminate_async().
+Prefetch channel before killing sock in order to fix UAF like
 
-Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
-Link: https://lore.kernel.org/r/20200319110344.21348-2-vigneshr@ti.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+ BUG: KASAN: use-after-free in l2cap_sock_release+0x24c/0x290 net/bluetooth/l2cap_sock.c:1212
+ Read of size 8 at addr ffff8880944904a0 by task syz-fuzzer/9751
+
+Reported-by: syzbot+c3c5bdea7863886115dc@syzkaller.appspotmail.com
+Fixes: 6c08fc896b60 ("Bluetooth: Fix refcount use-after-free issue")
+Cc: Manish Mandlik <mmandlik@google.com>
+Signed-off-by: Hillf Danton <hdanton@sina.com>
+Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/serial/8250/8250_omap.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ net/bluetooth/l2cap_sock.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/tty/serial/8250/8250_omap.c b/drivers/tty/serial/8250/8250_omap.c
-index 2624b5d083366..f2c6d9d3bb28f 100644
---- a/drivers/tty/serial/8250/8250_omap.c
-+++ b/drivers/tty/serial/8250/8250_omap.c
-@@ -790,7 +790,10 @@ static void __dma_rx_do_complete(struct uart_8250_port *p)
- 	dmaengine_tx_status(dma->rxchan, dma->rx_cookie, &state);
+diff --git a/net/bluetooth/l2cap_sock.c b/net/bluetooth/l2cap_sock.c
+index d128750e47305..5572042f04531 100644
+--- a/net/bluetooth/l2cap_sock.c
++++ b/net/bluetooth/l2cap_sock.c
+@@ -1190,6 +1190,7 @@ static int l2cap_sock_release(struct socket *sock)
+ {
+ 	struct sock *sk = sock->sk;
+ 	int err;
++	struct l2cap_chan *chan;
  
- 	count = dma->rx_size - state.residue;
--
-+	if (count < dma->rx_size)
-+		dmaengine_terminate_async(dma->rxchan);
-+	if (!count)
-+		goto unlock;
- 	ret = tty_insert_flip_string(tty_port, dma->rx_buf, count);
+ 	BT_DBG("sock %p, sk %p", sock, sk);
  
- 	p->port.icount.rx += ret;
-@@ -852,7 +855,6 @@ static void omap_8250_rx_dma_flush(struct uart_8250_port *p)
- 	spin_unlock_irqrestore(&priv->rx_dma_lock, flags);
+@@ -1199,15 +1200,16 @@ static int l2cap_sock_release(struct socket *sock)
+ 	bt_sock_unlink(&l2cap_sk_list, sk);
  
- 	__dma_rx_do_complete(p);
--	dmaengine_terminate_all(dma->rxchan);
+ 	err = l2cap_sock_shutdown(sock, 2);
++	chan = l2cap_pi(sk)->chan;
+ 
+-	l2cap_chan_hold(l2cap_pi(sk)->chan);
+-	l2cap_chan_lock(l2cap_pi(sk)->chan);
++	l2cap_chan_hold(chan);
++	l2cap_chan_lock(chan);
+ 
+ 	sock_orphan(sk);
+ 	l2cap_sock_kill(sk);
+ 
+-	l2cap_chan_unlock(l2cap_pi(sk)->chan);
+-	l2cap_chan_put(l2cap_pi(sk)->chan);
++	l2cap_chan_unlock(chan);
++	l2cap_chan_put(chan);
+ 
+ 	return err;
  }
- 
- static int omap_8250_rx_dma(struct uart_8250_port *p)
 -- 
 2.25.1
 
