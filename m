@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FD5827C51A
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:30:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA93227C51D
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:31:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728297AbgI2Lap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:30:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36426 "EHLO mail.kernel.org"
+        id S1729341AbgI2Lay (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:30:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37648 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729676AbgI2LYM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1729665AbgI2LYM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 29 Sep 2020 07:24:12 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 377FA221EC;
-        Tue, 29 Sep 2020 11:21:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D26CA221EF;
+        Tue, 29 Sep 2020 11:21:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601378479;
-        bh=2Pt292oqTixcGNkUQASt3G7aRheBl8LC39QonaNofmg=;
+        s=default; t=1601378485;
+        bh=QhFI5RjnvOtiVFmTRah52LtDTIXOKHWPt8pSqGNJqGM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lcnX7DWVX5OsEyXKs+AyiFTThUq46k9m35yVmCV8J70D7WbM1f452tUPi6XWLbAq7
-         1h2LDIdKQbDvI7gi4KfLk8pTHdWp0wVh4HZ9IkxQOauIIReowHcYAPwzWx4QzktZLb
-         sjIOjkj6AbTRjHD9X8MUrx+icOQyNVRWwMeYwAUU=
+        b=cVBGEbYoQ8+KRgpFcNq+8GVKR9+QOuC+UaU58AHtc6oaBJI5y7EOthV0NCJeFuh2S
+         FYk5EY6DTQ2ZyIL2gHc7VgdOKWPgf8qSDPQ8xM2HFjnyv1Bvs8/Fz5t0oG3KK4iE/H
+         SJQ28L3vxAfw0McrMFzvG1LuiuRytatX12BhZUDE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ivan Lazeev <ivan.lazeev@gmail.com>,
-        Jerry Snitselaar <jsnitsel@redhat.com>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        stable@vger.kernel.org, Guoju Fang <fangguoju@gmail.com>,
+        Coly Li <colyli@suse.de>, Jens Axboe <axboe@kernel.dk>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 028/245] tpm_crb: fix fTPM on AMD Zen+ CPUs
-Date:   Tue, 29 Sep 2020 12:57:59 +0200
-Message-Id: <20200929105948.373916349@linuxfoundation.org>
+Subject: [PATCH 4.19 030/245] bcache: fix a lost wake-up problem caused by mca_cannibalize_lock
+Date:   Tue, 29 Sep 2020 12:58:01 +0200
+Message-Id: <20200929105948.472395216@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200929105946.978650816@linuxfoundation.org>
 References: <20200929105946.978650816@linuxfoundation.org>
@@ -44,267 +43,95 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ivan Lazeev <ivan.lazeev@gmail.com>
+From: Guoju Fang <fangguoju@gmail.com>
 
-[ Upstream commit 3ef193822b25e9ee629974f66dc1ff65167f770c ]
+[ Upstream commit 34cf78bf34d48dddddfeeadb44f9841d7864997a ]
 
-Bug link: https://bugzilla.kernel.org/show_bug.cgi?id=195657
+This patch fix a lost wake-up problem caused by the race between
+mca_cannibalize_lock and bch_cannibalize_unlock.
 
-cmd/rsp buffers are expected to be in the same ACPI region.
-For Zen+ CPUs BIOS's might report two different regions, some of
-them also report region sizes inconsistent with values from TPM
-registers.
+Consider two processes, A and B. Process A is executing
+mca_cannibalize_lock, while process B takes c->btree_cache_alloc_lock
+and is executing bch_cannibalize_unlock. The problem happens that after
+process A executes cmpxchg and will execute prepare_to_wait. In this
+timeslice process B executes wake_up, but after that process A executes
+prepare_to_wait and set the state to TASK_INTERRUPTIBLE. Then process A
+goes to sleep but no one will wake up it. This problem may cause bcache
+device to dead.
 
-Memory configuration on ASRock x470 ITX:
-
-db0a0000-dc59efff : Reserved
-        dc57e000-dc57efff : MSFT0101:00
-        dc582000-dc582fff : MSFT0101:00
-
-Work around the issue by storing ACPI regions declared for the
-device in a fixed array and adding an array for pointers to
-corresponding possibly allocated resources in crb_map_io function.
-This data was previously held for a single resource
-in struct crb_priv (iobase field) and local variable io_res in
-crb_map_io function. ACPI resources array is used to find index of
-corresponding region for each buffer and make the buffer size
-consistent with region's length. Array of pointers to allocated
-resources is used to map the region at most once.
-
-Signed-off-by: Ivan Lazeev <ivan.lazeev@gmail.com>
-Tested-by: Jerry Snitselaar <jsnitsel@redhat.com>
-Tested-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Reviewed-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Signed-off-by: Guoju Fang <fangguoju@gmail.com>
+Signed-off-by: Coly Li <colyli@suse.de>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/char/tpm/tpm_crb.c | 123 +++++++++++++++++++++++++++----------
- 1 file changed, 90 insertions(+), 33 deletions(-)
+ drivers/md/bcache/bcache.h |  1 +
+ drivers/md/bcache/btree.c  | 12 ++++++++----
+ drivers/md/bcache/super.c  |  1 +
+ 3 files changed, 10 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/char/tpm/tpm_crb.c b/drivers/char/tpm/tpm_crb.c
-index 763fc7e6c0058..20f27100708bd 100644
---- a/drivers/char/tpm/tpm_crb.c
-+++ b/drivers/char/tpm/tpm_crb.c
-@@ -26,6 +26,7 @@
- #include "tpm.h"
- 
- #define ACPI_SIG_TPM2 "TPM2"
-+#define TPM_CRB_MAX_RESOURCES 3
- 
- static const guid_t crb_acpi_start_guid =
- 	GUID_INIT(0x6BBF6CAB, 0x5463, 0x4714,
-@@ -95,7 +96,6 @@ enum crb_status {
- struct crb_priv {
- 	u32 sm;
- 	const char *hid;
--	void __iomem *iobase;
- 	struct crb_regs_head __iomem *regs_h;
- 	struct crb_regs_tail __iomem *regs_t;
- 	u8 __iomem *cmd;
-@@ -438,21 +438,27 @@ static const struct tpm_class_ops tpm_crb = {
- 
- static int crb_check_resource(struct acpi_resource *ares, void *data)
- {
--	struct resource *io_res = data;
-+	struct resource *iores_array = data;
- 	struct resource_win win;
- 	struct resource *res = &(win.res);
-+	int i;
- 
- 	if (acpi_dev_resource_memory(ares, res) ||
- 	    acpi_dev_resource_address_space(ares, &win)) {
--		*io_res = *res;
--		io_res->name = NULL;
-+		for (i = 0; i < TPM_CRB_MAX_RESOURCES + 1; ++i) {
-+			if (resource_type(iores_array + i) != IORESOURCE_MEM) {
-+				iores_array[i] = *res;
-+				iores_array[i].name = NULL;
-+				break;
-+			}
-+		}
- 	}
- 
- 	return 1;
- }
- 
--static void __iomem *crb_map_res(struct device *dev, struct crb_priv *priv,
--				 struct resource *io_res, u64 start, u32 size)
-+static void __iomem *crb_map_res(struct device *dev, struct resource *iores,
-+				 void __iomem **iobase_ptr, u64 start, u32 size)
- {
- 	struct resource new_res = {
- 		.start	= start,
-@@ -464,10 +470,16 @@ static void __iomem *crb_map_res(struct device *dev, struct crb_priv *priv,
- 	if (start != new_res.start)
- 		return (void __iomem *) ERR_PTR(-EINVAL);
- 
--	if (!resource_contains(io_res, &new_res))
-+	if (!iores)
- 		return devm_ioremap_resource(dev, &new_res);
- 
--	return priv->iobase + (new_res.start - io_res->start);
-+	if (!*iobase_ptr) {
-+		*iobase_ptr = devm_ioremap_resource(dev, iores);
-+		if (IS_ERR(*iobase_ptr))
-+			return *iobase_ptr;
-+	}
-+
-+	return *iobase_ptr + (new_res.start - iores->start);
- }
- 
- /*
-@@ -494,9 +506,13 @@ static u64 crb_fixup_cmd_size(struct device *dev, struct resource *io_res,
- static int crb_map_io(struct acpi_device *device, struct crb_priv *priv,
- 		      struct acpi_table_tpm2 *buf)
- {
--	struct list_head resources;
--	struct resource io_res;
-+	struct list_head acpi_resource_list;
-+	struct resource iores_array[TPM_CRB_MAX_RESOURCES + 1] = { {0} };
-+	void __iomem *iobase_array[TPM_CRB_MAX_RESOURCES] = {NULL};
- 	struct device *dev = &device->dev;
-+	struct resource *iores;
-+	void __iomem **iobase_ptr;
-+	int i;
- 	u32 pa_high, pa_low;
- 	u64 cmd_pa;
- 	u32 cmd_size;
-@@ -505,21 +521,41 @@ static int crb_map_io(struct acpi_device *device, struct crb_priv *priv,
- 	u32 rsp_size;
- 	int ret;
- 
--	INIT_LIST_HEAD(&resources);
--	ret = acpi_dev_get_resources(device, &resources, crb_check_resource,
--				     &io_res);
-+	INIT_LIST_HEAD(&acpi_resource_list);
-+	ret = acpi_dev_get_resources(device, &acpi_resource_list,
-+				     crb_check_resource, iores_array);
- 	if (ret < 0)
- 		return ret;
--	acpi_dev_free_resource_list(&resources);
-+	acpi_dev_free_resource_list(&acpi_resource_list);
- 
--	if (resource_type(&io_res) != IORESOURCE_MEM) {
-+	if (resource_type(iores_array) != IORESOURCE_MEM) {
- 		dev_err(dev, FW_BUG "TPM2 ACPI table does not define a memory resource\n");
- 		return -EINVAL;
-+	} else if (resource_type(iores_array + TPM_CRB_MAX_RESOURCES) ==
-+		IORESOURCE_MEM) {
-+		dev_warn(dev, "TPM2 ACPI table defines too many memory resources\n");
-+		memset(iores_array + TPM_CRB_MAX_RESOURCES,
-+		       0, sizeof(*iores_array));
-+		iores_array[TPM_CRB_MAX_RESOURCES].flags = 0;
- 	}
- 
--	priv->iobase = devm_ioremap_resource(dev, &io_res);
--	if (IS_ERR(priv->iobase))
--		return PTR_ERR(priv->iobase);
-+	iores = NULL;
-+	iobase_ptr = NULL;
-+	for (i = 0; resource_type(iores_array + i) == IORESOURCE_MEM; ++i) {
-+		if (buf->control_address >= iores_array[i].start &&
-+		    buf->control_address + sizeof(struct crb_regs_tail) - 1 <=
-+		    iores_array[i].end) {
-+			iores = iores_array + i;
-+			iobase_ptr = iobase_array + i;
-+			break;
-+		}
-+	}
-+
-+	priv->regs_t = crb_map_res(dev, iores, iobase_ptr, buf->control_address,
-+				   sizeof(struct crb_regs_tail));
-+
-+	if (IS_ERR(priv->regs_t))
-+		return PTR_ERR(priv->regs_t);
- 
- 	/* The ACPI IO region starts at the head area and continues to include
- 	 * the control area, as one nice sane region except for some older
-@@ -527,9 +563,10 @@ static int crb_map_io(struct acpi_device *device, struct crb_priv *priv,
+diff --git a/drivers/md/bcache/bcache.h b/drivers/md/bcache/bcache.h
+index 1cc6ae3e058c6..6a380ed4919a0 100644
+--- a/drivers/md/bcache/bcache.h
++++ b/drivers/md/bcache/bcache.h
+@@ -585,6 +585,7 @@ struct cache_set {
  	 */
- 	if ((priv->sm == ACPI_TPM2_COMMAND_BUFFER) ||
- 	    (priv->sm == ACPI_TPM2_MEMORY_MAPPED)) {
--		if (buf->control_address == io_res.start +
-+		if (iores &&
-+		    buf->control_address == iores->start +
- 		    sizeof(*priv->regs_h))
--			priv->regs_h = priv->iobase;
-+			priv->regs_h = *iobase_ptr;
- 		else
- 			dev_warn(dev, FW_BUG "Bad ACPI memory layout");
- 	}
-@@ -538,13 +575,6 @@ static int crb_map_io(struct acpi_device *device, struct crb_priv *priv,
- 	if (ret)
- 		return ret;
+ 	wait_queue_head_t	btree_cache_wait;
+ 	struct task_struct	*btree_cache_alloc_lock;
++	spinlock_t		btree_cannibalize_lock;
  
--	priv->regs_t = crb_map_res(dev, priv, &io_res, buf->control_address,
--				   sizeof(struct crb_regs_tail));
--	if (IS_ERR(priv->regs_t)) {
--		ret = PTR_ERR(priv->regs_t);
--		goto out_relinquish_locality;
--	}
--
  	/*
- 	 * PTT HW bug w/a: wake up the device to access
- 	 * possibly not retained registers.
-@@ -556,13 +586,26 @@ static int crb_map_io(struct acpi_device *device, struct crb_priv *priv,
- 	pa_high = ioread32(&priv->regs_t->ctrl_cmd_pa_high);
- 	pa_low  = ioread32(&priv->regs_t->ctrl_cmd_pa_low);
- 	cmd_pa = ((u64)pa_high << 32) | pa_low;
--	cmd_size = crb_fixup_cmd_size(dev, &io_res, cmd_pa,
--				      ioread32(&priv->regs_t->ctrl_cmd_size));
-+	cmd_size = ioread32(&priv->regs_t->ctrl_cmd_size);
-+
-+	iores = NULL;
-+	iobase_ptr = NULL;
-+	for (i = 0; iores_array[i].end; ++i) {
-+		if (cmd_pa >= iores_array[i].start &&
-+		    cmd_pa <= iores_array[i].end) {
-+			iores = iores_array + i;
-+			iobase_ptr = iobase_array + i;
-+			break;
-+		}
-+	}
-+
-+	if (iores)
-+		cmd_size = crb_fixup_cmd_size(dev, iores, cmd_pa, cmd_size);
+ 	 * When we free a btree node, we increment the gen of the bucket the
+diff --git a/drivers/md/bcache/btree.c b/drivers/md/bcache/btree.c
+index d320574b9a4c8..e388e7bb7b5db 100644
+--- a/drivers/md/bcache/btree.c
++++ b/drivers/md/bcache/btree.c
+@@ -876,15 +876,17 @@ out:
  
- 	dev_dbg(dev, "cmd_hi = %X cmd_low = %X cmd_size %X\n",
- 		pa_high, pa_low, cmd_size);
- 
--	priv->cmd = crb_map_res(dev, priv, &io_res, cmd_pa, cmd_size);
-+	priv->cmd = crb_map_res(dev, iores, iobase_ptr,	cmd_pa, cmd_size);
- 	if (IS_ERR(priv->cmd)) {
- 		ret = PTR_ERR(priv->cmd);
- 		goto out;
-@@ -570,11 +613,25 @@ static int crb_map_io(struct acpi_device *device, struct crb_priv *priv,
- 
- 	memcpy_fromio(&__rsp_pa, &priv->regs_t->ctrl_rsp_pa, 8);
- 	rsp_pa = le64_to_cpu(__rsp_pa);
--	rsp_size = crb_fixup_cmd_size(dev, &io_res, rsp_pa,
--				      ioread32(&priv->regs_t->ctrl_rsp_size));
-+	rsp_size = ioread32(&priv->regs_t->ctrl_rsp_size);
-+
-+	iores = NULL;
-+	iobase_ptr = NULL;
-+	for (i = 0; resource_type(iores_array + i) == IORESOURCE_MEM; ++i) {
-+		if (rsp_pa >= iores_array[i].start &&
-+		    rsp_pa <= iores_array[i].end) {
-+			iores = iores_array + i;
-+			iobase_ptr = iobase_array + i;
-+			break;
-+		}
-+	}
-+
-+	if (iores)
-+		rsp_size = crb_fixup_cmd_size(dev, iores, rsp_pa, rsp_size);
- 
- 	if (cmd_pa != rsp_pa) {
--		priv->rsp = crb_map_res(dev, priv, &io_res, rsp_pa, rsp_size);
-+		priv->rsp = crb_map_res(dev, iores, iobase_ptr,
-+					rsp_pa, rsp_size);
- 		ret = PTR_ERR_OR_ZERO(priv->rsp);
- 		goto out;
+ static int mca_cannibalize_lock(struct cache_set *c, struct btree_op *op)
+ {
+-	struct task_struct *old;
+-
+-	old = cmpxchg(&c->btree_cache_alloc_lock, NULL, current);
+-	if (old && old != current) {
++	spin_lock(&c->btree_cannibalize_lock);
++	if (likely(c->btree_cache_alloc_lock == NULL)) {
++		c->btree_cache_alloc_lock = current;
++	} else if (c->btree_cache_alloc_lock != current) {
+ 		if (op)
+ 			prepare_to_wait(&c->btree_cache_wait, &op->wait,
+ 					TASK_UNINTERRUPTIBLE);
++		spin_unlock(&c->btree_cannibalize_lock);
+ 		return -EINTR;
  	}
++	spin_unlock(&c->btree_cannibalize_lock);
+ 
+ 	return 0;
+ }
+@@ -919,10 +921,12 @@ static struct btree *mca_cannibalize(struct cache_set *c, struct btree_op *op,
+  */
+ static void bch_cannibalize_unlock(struct cache_set *c)
+ {
++	spin_lock(&c->btree_cannibalize_lock);
+ 	if (c->btree_cache_alloc_lock == current) {
+ 		c->btree_cache_alloc_lock = NULL;
+ 		wake_up(&c->btree_cache_wait);
+ 	}
++	spin_unlock(&c->btree_cannibalize_lock);
+ }
+ 
+ static struct btree *mca_alloc(struct cache_set *c, struct btree_op *op,
+diff --git a/drivers/md/bcache/super.c b/drivers/md/bcache/super.c
+index 825bfde10c694..7787ec42f81e1 100644
+--- a/drivers/md/bcache/super.c
++++ b/drivers/md/bcache/super.c
+@@ -1737,6 +1737,7 @@ struct cache_set *bch_cache_set_alloc(struct cache_sb *sb)
+ 	sema_init(&c->sb_write_mutex, 1);
+ 	mutex_init(&c->bucket_lock);
+ 	init_waitqueue_head(&c->btree_cache_wait);
++	spin_lock_init(&c->btree_cannibalize_lock);
+ 	init_waitqueue_head(&c->bucket_wait);
+ 	init_waitqueue_head(&c->gc_wait);
+ 	sema_init(&c->uuid_write_mutex, 1);
 -- 
 2.25.1
 
