@@ -2,122 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4941F27BC75
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 07:33:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9863827BC77
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 07:33:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725867AbgI2Fc6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 01:32:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38268 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725306AbgI2Fc5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 01:32:57 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3398C061755;
-        Mon, 28 Sep 2020 22:32:57 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id y13so3557917iow.4;
-        Mon, 28 Sep 2020 22:32:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UXa4y005IEeOvzIT3W6I4v2oKckcccuU1eVEnGaDAlc=;
-        b=uphl8BBgBXNgae9iRJPAk4R/297HosgOCKhG0E6oNc5io33fgnIlc6nrmkdqRYNMmD
-         0C9UtzAobhgYVT+oDb/IqPNbVtEC0DqT+jy7dzEp+8+R8FgZFqzNWY72i2OVGl9NVtkv
-         ZVgJtZ1iPG3po3nLLzJUZ2fDa3YFXEZES3lS+IHg6gD43BBQvEfXBktUQTGFi0Dcyga0
-         DxP+ymMj+0+oPv8SK7jAv+ntVx6MEhVTkHT0SRDgYdu/2AruZH4BAZUVdkIZb3We8/ZI
-         yfuA7zgc0rvPILREgae/Op4Eq1zLNRhWEFkcnO9Pv2Ev4D2cr7xHfrgn1iYYzHnbE0KH
-         RZqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UXa4y005IEeOvzIT3W6I4v2oKckcccuU1eVEnGaDAlc=;
-        b=geuc6lQbTId8B2EGQyIiahD04/k1hX0zKPVEtrusdcWELt1WpOn2XfzpjvfPm7Rf9V
-         HgLCX2TKRJtPyBW3eIeyDFfd8mWgh1WvADacL19mMGxqwRbqBKAAWLULDZ9pNsv2kDME
-         +/A2f2OAfy7258imJtApy2qjo3ApE0UyojvJaXUshM8n6JlG4DBWEy/mHoE4I1SLp/2p
-         INCJzqHUoe72tmm13ktnKvBkgm6BpwHplZO9CyBcUmPm9pEyUCIaR9ZgMXCs3MmfRskc
-         9EfXmjvowpecAC5kuNA6UrVbVYt92Q3636vJgbZ5uOTOHo7uYBSIZFg7ctuIOkjRCPPn
-         yJmg==
-X-Gm-Message-State: AOAM532YyNvJhmvIHPnyJn7RS1HdALK4kUsLnIbpXmdjSXM3L0xJMi1H
-        9PpbvTQ8jYIDa9bKdpqnc6ougprv3GzYUbinYkQ=
-X-Google-Smtp-Source: ABdhPJxZpHlrnLEIs/czxllBMNiG+x5bzGnVpX45Dsh326meI6e5PLAP1kjReMovSvCNhgrVhbKI1869DZfUOI6W0Wk=
-X-Received: by 2002:a02:8782:: with SMTP id t2mr1643382jai.56.1601357576879;
- Mon, 28 Sep 2020 22:32:56 -0700 (PDT)
+        id S1726602AbgI2Fdp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 01:33:45 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:33832 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725819AbgI2Fdo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 01:33:44 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4C0p2r3TPVz9txQw;
+        Tue, 29 Sep 2020 07:33:40 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id TIqEvTt6Jfz6; Tue, 29 Sep 2020 07:33:40 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4C0p2r28n5z9txQv;
+        Tue, 29 Sep 2020 07:33:40 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 4DC678B79F;
+        Tue, 29 Sep 2020 07:33:41 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id 3fyGxHwIxsx4; Tue, 29 Sep 2020 07:33:41 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 982908B76C;
+        Tue, 29 Sep 2020 07:33:40 +0200 (CEST)
+Subject: Re: [PATCH v2 23/25] powerpc/signal: Create 'unsafe' versions of
+ copy_[ck][fpr/vsx]_to_user()
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     "Christopher M. Riedl" <cmr@informatik.wtf>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+References: <C5ZHGD1JVX0H.1UI1PWMZN73UX@geist>
+ <a14a82a6-74c2-cc0a-8c6b-46e571cadb7d@csgroup.eu>
+Message-ID: <61bd2283-94bb-edff-5140-8be2b98a02e3@csgroup.eu>
+Date:   Tue, 29 Sep 2020 07:33:30 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-References: <20200928083047.3349-1-jiangshanlai@gmail.com> <20200928162417.GA28825@linux.intel.com>
-In-Reply-To: <20200928162417.GA28825@linux.intel.com>
-From:   Lai Jiangshan <jiangshanlai@gmail.com>
-Date:   Tue, 29 Sep 2020 13:32:45 +0800
-Message-ID: <CAJhGHyAYXARENZ7OExenZO6tiWAaSQ=jzEG+7j0rjCsa9e5-dA@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/2] kvm/x86: intercept guest changes to X86_CR4_LA57
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
-        Lai Jiangshan <laijs@linux.alibaba.com>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <a14a82a6-74c2-cc0a-8c6b-46e571cadb7d@csgroup.eu>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 12:24 AM Sean Christopherson
-<sean.j.christopherson@intel.com> wrote:
->
-> On Mon, Sep 28, 2020 at 04:30:46PM +0800, Lai Jiangshan wrote:
-> > From: Lai Jiangshan <laijs@linux.alibaba.com>
-> >
-> > When shadowpaping is enabled, guest should not be allowed
-> > to toggle X86_CR4_LA57. And X86_CR4_LA57 is a rarely changed
-> > bit, so we can just intercept all the attempts to toggle it
-> > no matter shadowpaping is in used or not.
-> >
-> > Fixes: fd8cb433734ee ("KVM: MMU: Expose the LA57 feature to VM.")
-> > Cc: Sean Christopherson <sean.j.christopherson@intel.com>
-> > Cc: Yu Zhang <yu.c.zhang@linux.intel.com>
-> > Cc: Paolo Bonzini <pbonzini@redhat.com>
-> > Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
-> > ---
-> >   No test to toggle X86_CR4_LA57 in guest since I can't access to
-> >   any CPU supports it. Maybe it is not a real problem.
->
 
 
-Hello
+Le 29/09/2020 à 07:22, Christophe Leroy a écrit :
+> 
+> 
+> Le 29/09/2020 à 04:04, Christopher M. Riedl a écrit :
+>> On Tue Aug 18, 2020 at 12:19 PM CDT, Christophe Leroy wrote:
+>>> For the non VSX version, that's trivial. Just use unsafe_copy_to_user()
+>>> instead of __copy_to_user().
+>>>
+>>> For the VSX version, remove the intermediate step through a buffer and
+>>> use unsafe_put_user() directly. This generates a far smaller code which
+>>> is acceptable to inline, see below:
+>>>
+>>>
+>>> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+>>> ---
+>>> arch/powerpc/kernel/signal.h | 53 ++++++++++++++++++++++++++++++++++++
+>>> 1 file changed, 53 insertions(+)
+>>>
+>>> diff --git a/arch/powerpc/kernel/signal.h b/arch/powerpc/kernel/signal.h
+>>> index f610cfafa478..2559a681536e 100644
+>>> --- a/arch/powerpc/kernel/signal.h
+>>> +++ b/arch/powerpc/kernel/signal.h
+>>> @@ -32,7 +32,54 @@ unsigned long copy_fpr_to_user(void __user *to,
+>>> struct task_struct *task);
+>>> unsigned long copy_ckfpr_to_user(void __user *to, struct task_struct
+>>> *task);
+>>> unsigned long copy_fpr_from_user(struct task_struct *task, void __user
+>>> *from);
+>>> unsigned long copy_ckfpr_from_user(struct task_struct *task, void __user
+>>> *from);
+>>> +
+>>> +#define unsafe_copy_fpr_to_user(to, task, label) do { \
+>>> + struct task_struct *__t = task; \
+>>> + u64 __user *buf = (u64 __user *)to; \
+>>> + int i; \
+>>> + \
+>>> + for (i = 0; i < ELF_NFPREG - 1 ; i++) \
+>>> + unsafe_put_user(__t->thread.TS_FPR(i), &buf[i], label); \
+>>> + unsafe_put_user(__t->thread.fp_state.fpscr, &buf[i], label); \
+>>> +} while (0)
+>>> +
+>>
+>> I've been working on the PPC64 side of this "unsafe" rework using this
+>> series as a basis. One question here - I don't really understand what
+>> the benefit of re-implementing this logic in macros (similarly for the
+>> other copy_* functions below) is?
+> 
+> Not sure either.
+> 
+> The whole purpose is to not manage the error through a local var but exclusively use labels.
+> However, GCC is probably smart enough to understand it and drop the local var while inlining.
+> 
+> One important thing however is to make sure we won't end up with an outline function, otherwise you 
+> completely loose the benefit of the label stuff. And you get a function call inside a user access, 
+> which is what we want to avoid.
+> 
+>>
+>> I am considering  a "__unsafe_copy_*" implementation in signal.c for
+>> each (just the original implementation w/ using the "unsafe_" variants
+>> of the uaccess stuff) which gets called by the "safe" functions w/ the
+>> appropriate "user_*_access_begin/user_*_access_end". Something like
+>> (pseudo-ish code):
+> 
+> Good idea, however ...
+> 
+>>
+>>     /* signal.c */
+>>     unsigned long __unsafe_copy_fpr_to_user(...)
+>>     {
+>>         ...
+>>         unsafe_copy_to_user(..., bad);
+>>         return 0;
+>>     bad:
+>>         return 1; /* -EFAULT? */
+>>     }
+> 
+> This __unsafe_copy_fpr_to_user() has to be in signal.h and must be tagged 'static __always_inline' 
+> for the reasons explained above.
+> 
+>>
+>>     unsigned long copy_fpr_to_user(...)
+>>     {
+>>         unsigned long err;
+>>         if (!user_write_access_begin(...))
+>>             return 1; /* -EFAULT? */
+>>
+>>         err = __unsafe_copy_fpr_to_user(...);
+>>
+>>         user_write_access_end();
+>>         return err;
+>>     }
 
-Thanks for reviewing.
+Also note that at the end (ie when both PPC32 and PPC64 signal code are using "unsafe" versions), 
+the "safe" version won't be used anymore and will be dropped.
 
-> LA57 doesn't need to be intercepted.  It can't be toggled in 64-bit mode
-> (causes a #GP), and it's ignored in 32-bit mode.  That means LA57 can only
-> take effect when 64-bit mode is enabled, at which time KVM will update its
-> MMU context accordingly.
->
-
-Oh, I missed that part which is so obvious that the patch
-seems impertinent.
-
-But X86_CR4_LA57 is so fundamental that it makes me afraid to
-give it over to guests. And it is rarely changed too. At least,
-there is no better reason to give it to the guest than
-intercepting it.
-
-There might be another reason that this patch is still needed with
-an updated changelog.
-
-When a user (via VMM such as qemu) launches a VM with LA57 disabled
-in its cpuid on a LA57 enabled host. The hypervisor, IMO, needs to
-intercept guest's changes to X86_CR4_LA57 even when the guest is still
-in the non-paging mode. Otherwise the hypervisor failed to detective
-such combination when the guest changes paging mode later.
-
-Anyway, maybe it is still not a real problem.
-
-Thanks
-Lai
+Christophe
