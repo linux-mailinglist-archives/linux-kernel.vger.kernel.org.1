@@ -2,49 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8823527C581
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:38:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF1A227C5B7
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:38:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729921AbgI2Lfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:35:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49162 "EHLO mail.kernel.org"
+        id S1730348AbgI2LiK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:38:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52840 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729872AbgI2Lfg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:35:36 -0400
+        id S1730229AbgI2Lhg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:37:36 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6840F23A9F;
-        Tue, 29 Sep 2020 11:21:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2BAA222207;
+        Tue, 29 Sep 2020 11:36:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601378517;
-        bh=zivPMAu8jkBPM8BZpt+TkETyOcRAQFI9etCUOvmfXVI=;
+        s=default; t=1601379372;
+        bh=66wCMHHAgYvFPF/NiM4KDxXT/ObaN+P40iilFXq/40w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XOhXb1+dB8Nwtdgrc79IkNknVRoxBa0/TjqiTnLRYpoLFLbr/QCktGnPHJV34znTE
-         g8ztpkRguu/kbcvICDnEeOVKMcy/+GGETOuqBku8QPnpgMzw5wzaQmi+bHbsW0whkJ
-         AiyQdsPH+UELmIn4NaO5I8Vvy86BZYjpSAvNT2A0=
+        b=IXfnKZtT7UBn4d88wVMOML/SKSmmSJRgwp2OqkedAIkK03O6Uygeg0/aKM6Jz/hAF
+         67J5f1stSYDqWu3XnJpmAq6BzRVJx64mI6Q7pJ9eXdWEt3+18ojQSLuFxHOpbP9aIm
+         lAWvke3CyxV9blW8kq75XwOpR1GgeAvH8FMLc8bc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mikulas Patocka <mpatocka@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dan Williams <dan.j.wiilliams@intel.com>,
-        Jan Kara <jack@suse.cz>, Jeff Moyer <jmoyer@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>, Christoph Hellwig <hch@lst.de>,
-        Toshi Kani <toshi.kani@hpe.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Matthew Wilcox <mawilcox@microsoft.com>,
-        Ross Zwisler <ross.zwisler@linux.intel.com>,
-        Ingo Molnar <mingo@elte.hu>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.19 012/245] arch/x86/lib/usercopy_64.c: fix __copy_user_flushcache() cache writeback
-Date:   Tue, 29 Sep 2020 12:57:43 +0200
-Message-Id: <20200929105947.589229658@linuxfoundation.org>
+        stable@vger.kernel.org, Amelie Delaunay <amelie.delaunay@st.com>,
+        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 134/388] dmaengine: stm32-dma: use vchan_terminate_vdesc() in .terminate_all
+Date:   Tue, 29 Sep 2020 12:57:45 +0200
+Message-Id: <20200929110016.959395797@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929105946.978650816@linuxfoundation.org>
-References: <20200929105946.978650816@linuxfoundation.org>
+In-Reply-To: <20200929110010.467764689@linuxfoundation.org>
+References: <20200929110010.467764689@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -53,49 +42,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mikulas Patocka <mpatocka@redhat.com>
+From: Amelie Delaunay <amelie.delaunay@st.com>
 
-commit a1cd6c2ae47ee10ff21e62475685d5b399e2ed4a upstream.
+[ Upstream commit d80cbef35bf89b763f06e03bb4ff8f933bf012c5 ]
 
-If we copy less than 8 bytes and if the destination crosses a cache
-line, __copy_user_flushcache would invalidate only the first cache line.
+To avoid race with vchan_complete, use the race free way to terminate
+running transfer.
 
-This patch makes it invalidate the second cache line as well.
+Move vdesc->node list_del in stm32_dma_start_transfer instead of in
+stm32_mdma_chan_complete to avoid another race in vchan_dma_desc_free_list.
 
-Fixes: 0aed55af88345b ("x86, uaccess: introduce copy_from_iter_flushcache for pmem / cache-bypass operations")
-Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Reviewed-by: Dan Williams <dan.j.wiilliams@intel.com>
-Cc: Jan Kara <jack@suse.cz>
-Cc: Jeff Moyer <jmoyer@redhat.com>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Christoph Hellwig <hch@lst.de>
-Cc: Toshi Kani <toshi.kani@hpe.com>
-Cc: "H. Peter Anvin" <hpa@zytor.com>
-Cc: Al Viro <viro@zeniv.linux.org.uk>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Matthew Wilcox <mawilcox@microsoft.com>
-Cc: Ross Zwisler <ross.zwisler@linux.intel.com>
-Cc: Ingo Molnar <mingo@elte.hu>
-Cc: <stable@vger.kernel.org>
-Link: https://lkml.kernel.org/r/alpine.LRH.2.02.2009161451140.21915@file01.intranet.prod.int.rdu2.redhat.com
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Amelie Delaunay <amelie.delaunay@st.com>
+Link: https://lore.kernel.org/r/20200129153628.29329-9-amelie.delaunay@st.com
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/lib/usercopy_64.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/dma/stm32-dma.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
---- a/arch/x86/lib/usercopy_64.c
-+++ b/arch/x86/lib/usercopy_64.c
-@@ -139,7 +139,7 @@ long __copy_user_flushcache(void *dst, c
- 	 */
- 	if (size < 8) {
- 		if (!IS_ALIGNED(dest, 4) || size != 4)
--			clean_cache_range(dst, 1);
-+			clean_cache_range(dst, size);
- 	} else {
- 		if (!IS_ALIGNED(dest, 8)) {
- 			dest = ALIGN(dest, boot_cpu_data.x86_clflush_size);
+diff --git a/drivers/dma/stm32-dma.c b/drivers/dma/stm32-dma.c
+index 5989b08935211..6c5771de32c67 100644
+--- a/drivers/dma/stm32-dma.c
++++ b/drivers/dma/stm32-dma.c
+@@ -488,8 +488,10 @@ static int stm32_dma_terminate_all(struct dma_chan *c)
+ 
+ 	spin_lock_irqsave(&chan->vchan.lock, flags);
+ 
+-	if (chan->busy) {
+-		stm32_dma_stop(chan);
++	if (chan->desc) {
++		vchan_terminate_vdesc(&chan->desc->vdesc);
++		if (chan->busy)
++			stm32_dma_stop(chan);
+ 		chan->desc = NULL;
+ 	}
+ 
+@@ -545,6 +547,8 @@ static void stm32_dma_start_transfer(struct stm32_dma_chan *chan)
+ 		if (!vdesc)
+ 			return;
+ 
++		list_del(&vdesc->node);
++
+ 		chan->desc = to_stm32_dma_desc(vdesc);
+ 		chan->next_sg = 0;
+ 	}
+@@ -622,7 +626,6 @@ static void stm32_dma_handle_chan_done(struct stm32_dma_chan *chan)
+ 		} else {
+ 			chan->busy = false;
+ 			if (chan->next_sg == chan->desc->num_sgs) {
+-				list_del(&chan->desc->vdesc.node);
+ 				vchan_cookie_complete(&chan->desc->vdesc);
+ 				chan->desc = NULL;
+ 			}
+-- 
+2.25.1
+
 
 
