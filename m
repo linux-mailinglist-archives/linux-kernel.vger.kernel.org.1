@@ -2,103 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43EDC27D4CE
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 19:46:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC5C727D4CD
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 19:46:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730244AbgI2Rq3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 13:46:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44780 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729113AbgI2Rq0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1729850AbgI2Rq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 29 Sep 2020 13:46:26 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B1485207F7;
-        Tue, 29 Sep 2020 17:46:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601401585;
-        bh=Eygb0b3lGWlgqkHSLZz5ftXfR6UVNqbZY53CkkEuGME=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ANSra6H4xGSHUFI7hYAnAt1P73+jiHWeE3tEvS93Fzj96VdhSDsD+vcopQcIBnEj2
-         njZKuVe2AWaCC63qSJT/rItjjfCKlWU+gpuBoHKnJHy3xWJ5zmaY2qyjFrIBOS/M9L
-         slpvSN2E7Mo9Vf01eUrE3jhf05OCf8mXPaUkBjBw=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <maz@kernel.org>)
-        id 1kNJhn-00FxNf-Tk; Tue, 29 Sep 2020 18:46:24 +0100
+Received: from mail-oi1-f195.google.com ([209.85.167.195]:33291 "EHLO
+        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728775AbgI2Rq0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 13:46:26 -0400
+Received: by mail-oi1-f195.google.com with SMTP id m7so6419363oie.0;
+        Tue, 29 Sep 2020 10:46:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=mVned4RG5QRYTOR8H15/jWkAsq+BBK7cREUkxd/Xiaw=;
+        b=LMpMfG0UJ4xsTyg0gkhmVP08BqFOES6kdnkAfYnsUhTmwWC8djNkK6Oa2j6Gt4qN6l
+         hFlaLhyf7pB+CUU7SzV1CbO9u07VEgRHv4bcgBdMPcOcseTFgn6KpDB6phFzcSNoXaxK
+         u/Ys9OTT4BX+mLyFUjXr9/gRVKfgCjVhKP3MSklHpupjj27AP7GDJ5oMxUCtcfEMqTAb
+         XnHWWF7n8Qo/lbv/5Lvk+/jg1m5pcoqYgFwFzZhDt8OmchKym2mrZXLzRTRbEjvdyhMz
+         s+a1pNuwQ2cX8/hK6NbIaK75G4xlf+wmUv2xgpxZb+WHdEajYnp1WNlQL2MhjIH8JHyD
+         jfrQ==
+X-Gm-Message-State: AOAM533VCytkNma3Cm1IS6AWYKCVaBtKK9DFnXpeAXuHdnk1M9Ejq1+7
+        5vjuXfeZUUwLE5ZeRNHL/lkuZLo8Q80f
+X-Google-Smtp-Source: ABdhPJzPinEAfFDFESHqHJK2pNpDC0q8yKXQiSUiTSjbR/vQnrIORvLad5CBhsZcQqwQ5wDx1PTgIA==
+X-Received: by 2002:aca:2106:: with SMTP id 6mr3418235oiz.115.1601401585622;
+        Tue, 29 Sep 2020 10:46:25 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id v76sm1138615oif.58.2020.09.29.10.46.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Sep 2020 10:46:25 -0700 (PDT)
+Received: (nullmailer pid 847532 invoked by uid 1000);
+        Tue, 29 Sep 2020 17:46:24 -0000
+Date:   Tue, 29 Sep 2020 12:46:24 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Sam Ravnborg <sam@ravnborg.org>
+Cc:     Guido =?iso-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v1 3/3] dt-binding: display: Require two rests on
+ mantix panel
+Message-ID: <20200929174624.GA832332@bogus>
+References: <cover.1600707235.git.agx@sigxcpu.org>
+ <71a9108f3472ba9af4bead01b1b770d1e73eb08e.1600707235.git.agx@sigxcpu.org>
+ <20200924193807.GA1223313@ravnborg.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 29 Sep 2020 18:46:23 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Will Deacon <will@kernel.org>
-Cc:     David Brazdil <dbrazdil@google.com>, kvmarm@lists.cs.columbia.edu,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Christoph Lameter <cl@linux.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel-team@android.com, Andrew Scull <ascull@google.com>
-Subject: Re: [PATCH v4 05/10] kvm: arm64: Remove hyp_adr/ldr_this_cpu
-In-Reply-To: <20200929173407.GC14317@willie-the-truck>
-References: <20200922204910.7265-1-dbrazdil@google.com>
- <20200922204910.7265-6-dbrazdil@google.com>
- <20200929173407.GC14317@willie-the-truck>
-User-Agent: Roundcube Webmail/1.4.8
-Message-ID: <2221d6a88c4077b7e0a4ce2ac5f50a45@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: will@kernel.org, dbrazdil@google.com, kvmarm@lists.cs.columbia.edu, catalin.marinas@arm.com, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, dennis@kernel.org, tj@kernel.org, cl@linux.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, kernel-team@android.com, ascull@google.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200924193807.GA1223313@ravnborg.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-09-29 18:34, Will Deacon wrote:
-> On Tue, Sep 22, 2020 at 09:49:05PM +0100, David Brazdil wrote:
->> The hyp_adr/ldr_this_cpu helpers were introduced for use in hyp code
->> because they always needed to use TPIDR_EL2 for base, while
->> adr/ldr_this_cpu from kernel proper would select between TPIDR_EL2 and
->> _EL1 based on VHE/nVHE.
->> 
->> Simplify this now that the hyp mode case can be handled using the
->> __KVM_VHE/NVHE_HYPERVISOR__ macros.
->> 
->> Acked-by: Andrew Scull <ascull@google.com>
->> Acked-by: Will Deacon <will@kernel.org>
->> Signed-off-by: David Brazdil <dbrazdil@google.com>
->> ---
->>  arch/arm64/include/asm/assembler.h | 29 +++++++++++++++++++----------
->>  arch/arm64/include/asm/kvm_asm.h   | 14 +-------------
->>  arch/arm64/kvm/hyp/hyp-entry.S     |  2 +-
->>  3 files changed, 21 insertions(+), 24 deletions(-)
->> 
->> diff --git a/arch/arm64/include/asm/assembler.h 
->> b/arch/arm64/include/asm/assembler.h
->> index 54d181177656..86e0ef79a799 100644
->> --- a/arch/arm64/include/asm/assembler.h
->> +++ b/arch/arm64/include/asm/assembler.h
->> @@ -218,6 +218,23 @@ lr	.req	x30		// link register
->>  	str	\src, [\tmp, :lo12:\sym]
->>  	.endm
->> 
->> +	/*
->> +	 * @dst: destination register (32 or 64 bit wide)
+On Thu, Sep 24, 2020 at 09:38:07PM +0200, Sam Ravnborg wrote:
+> Hi Guido.
 > 
-> nit: this comment is wrong as I don't think mrs can take a W register
-> as the destination argument. I'm assuming Marc can fix that up.
+> On Mon, Sep 21, 2020 at 06:55:52PM +0200, Guido Günther wrote:
+> > We need to reset both for the panel to show an image.
+> > 
+> > Signed-off-by: Guido Günther <agx@sigxcpu.org>
+> > ---
+> >  .../bindings/display/panel/mantix,mlaf057we51-x.yaml       | 7 +++++--
+> >  1 file changed, 5 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/display/panel/mantix,mlaf057we51-x.yaml b/Documentation/devicetree/bindings/display/panel/mantix,mlaf057we51-x.yaml
+> > index 937323cc9aaa..ba5a18fac9f9 100644
+> > --- a/Documentation/devicetree/bindings/display/panel/mantix,mlaf057we51-x.yaml
+> > +++ b/Documentation/devicetree/bindings/display/panel/mantix,mlaf057we51-x.yaml
+> > @@ -35,7 +35,9 @@ properties:
+> >    vddi-supply:
+> >      description: 1.8V I/O voltage supply
+> >  
+> > -  reset-gpios: true
+> > +  reset-gpios:
+> > +    minItems: 2
+> > +    maxItems: 2
+> 
+> reset-gpios is, as you already wrote, defined in panel-common.yaml.
+> Do not try to change it here.
+> It would be much better, I think, to introduce a mantix,reset-gpios
+> property.
 
-Indeed. I'll fix it locally.
+Yes.
 
-Another thing is that this patch is going to clash with the Ghostbuster
-branch (the hyp-entry.S hunk goes), but we can deal with that.
+You also need to define what each reset entry corresponds to as the 
+assertion/deassertion order could be important. You might just do 2 
+properties with <pinname>-gpios.
 
-         M.
--- 
-Jazz is not dead. It just smells funny...
+Rob
