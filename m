@@ -2,101 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BC0027BD42
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 08:46:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE96F27BD46
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 08:46:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725601AbgI2GqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 02:46:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49420 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725283AbgI2GqP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 02:46:15 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04324C061755
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 23:46:15 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id a4so2755712qth.0
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 23:46:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=xEac7XYS7Ngt5MwOzy7ceKxpo4W5ekfGGC6+CP++DZg=;
-        b=BXGARTTNhnDvN6+yx8fUbNfRk6oCA4PsGy8TrokK4PiImB02C9EbjuOTny9seKeMjX
-         eh3Lt/1EuPp1XV16cUlcOntWTn5Y/u/KHjZrFIkliWL8KCRqKuz6e/XU5rHWZ6o/Dsl7
-         iCGSgbmbHTMQ6n7NLTcleeNAEPxLZF1rVKVwMc1e8jeRfz4J1px72BDqpjrUSs1eSgRy
-         nQA4WRgpYerKwSPL6D540VcDbyFMVN+IcNLokiB5eM3tihyTrDA5oHOTfSlPXZCIWX8i
-         hJ0nrzXAaotnB1/1hQ3JRQBQaTDN0ze5cILwjzbSih1K5g8pKcZHng8udycm5FnP6ciK
-         0bCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=xEac7XYS7Ngt5MwOzy7ceKxpo4W5ekfGGC6+CP++DZg=;
-        b=AbnP3rJVLqM9NTL59d708C0s+WulmFgs1ZnG9O6B+QSpCRHHzWnBVnYZggOY4MMN94
-         E28sV6RtdGob0xaIJWI3OczQJkyc28VkLKwZSZb9KJCLfHTu0SYZYD7Kcst+Umsl39IT
-         QzPIzBaWrxyK9e060+Jyse/uZ29yKTzyBKScQeyBLPYBhUSGMv7AgYzUK/GsogoYt3wT
-         CWm8PvnwVWtRw1/wwdl6qqLBrni0L9BmU6Ahn46+E80RcUInCscGIqGgxoZiBCqqTRch
-         CG2QxAQ2Oj0zhsaK8UnCZJgaqSdhCqJzqDzoqrWXLXttuEBrRqtYU2YjczsR3V0BRcU1
-         TVxQ==
-X-Gm-Message-State: AOAM532te2Scwz25dp3ZRorTt1VjwOkMQ/2IanHl5HYvrl8E2p9AnhJX
-        kOQF6Qafmr8JtHRdJ2GXX3crPXOpgFTdFSTXkd7keG4UQ4s=
-X-Google-Smtp-Source: ABdhPJxT9VWbqcYNBXPlkfDppcO4eI4dGwKQZVXZ5MTHHmZ6tMPPVtdFMicHPMDvZPBMHR+s/4hLY4BIQKwwGojDeT4=
-X-Received: by 2002:ac8:44b5:: with SMTP id a21mr1866068qto.36.1601361974096;
- Mon, 28 Sep 2020 23:46:14 -0700 (PDT)
+        id S1726277AbgI2Gqv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 02:46:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58256 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725826AbgI2Gqu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 02:46:50 -0400
+Received: from sol.localdomain (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 198AC20C09;
+        Tue, 29 Sep 2020 06:46:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601362010;
+        bh=z1PlfEDRDNoBC/EsAjqTakw7ooTqgEMmSkPYuYZv2pM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=yJjvRLOBFLJxQfCjd5cyQuj05zAFGdn1bvzW/JZrxAB4k2LUn3sbWGAV23LAyIstn
+         eiMSvPkiz9LCD774QF64FHIghd8sPQaVcaqrpb64QsL8zZw32cyuvyefdbLS2qImuk
+         bEANYEu+rpLOGeCOVFGZGNg4K7RGo30bVqxAXf74=
+Date:   Mon, 28 Sep 2020 23:46:48 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     David Laight <David.Laight@aculab.com>,
+        syzbot+51177e4144d764827c45@syzkaller.appspotmail.com,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Subject: Re: WARNING in __kernel_read (2)
+Message-ID: <20200929064648.GA238449@sol.localdomain>
+References: <000000000000da992305b02e9a51@google.com>
+ <3b3de066852d4e30bd9d85bd28023100@AcuMS.aculab.com>
+ <642ed0b4810d44ab97a7832ccb8b3e44@AcuMS.aculab.com>
+ <20200928221441.GF1340@sol.localdomain>
+ <20200929063815.GB1839@lst.de>
 MIME-Version: 1.0
-References: <1601283046-15329-1-git-send-email-iamjoonsoo.kim@lge.com>
- <20200928165215.f46924bfff9a109131048f81@linux-foundation.org>
- <CAAmzW4OY7z+bF=aFOsNuadc8M_f1Pb7jifuxzQo5AL6mCuO5Ng@mail.gmail.com> <20200928215055.02ff9b3ff5e0c392b2403411@linux-foundation.org>
-In-Reply-To: <20200928215055.02ff9b3ff5e0c392b2403411@linux-foundation.org>
-From:   Joonsoo Kim <js1304@gmail.com>
-Date:   Tue, 29 Sep 2020 15:46:02 +0900
-Message-ID: <CAAmzW4NPv+mu5P9=jHf0XgcrPjbCKJZR1hQkUkPvcTHb-0q50g@mail.gmail.com>
-Subject: Re: [PATCH v2 for v5.9] mm/page_alloc: handle a missing case for
- memalloc_nocma_{save/restore} APIs
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Mel Gorman <mgorman@techsingularity.net>, kernel-team@lge.com,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200929063815.GB1839@lst.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-2020=EB=85=84 9=EC=9B=94 29=EC=9D=BC (=ED=99=94) =EC=98=A4=ED=9B=84 1:50, A=
-ndrew Morton <akpm@linux-foundation.org>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=
-=B1:
->
-> On Tue, 29 Sep 2020 10:28:05 +0900 Joonsoo Kim <js1304@gmail.com> wrote:
->
-> > > What about manually emptying the pcplists beforehand?
-> >
-> > It also increases the probability. schedule() or interrupt after emptyi=
-ng but
-> > before the allocation could invalidate the effect.
->
-> Keep local interrupts disabled across the pcp drain and the allocation
-> attempt.
+On Tue, Sep 29, 2020 at 08:38:15AM +0200, Christoph Hellwig wrote:
+> On Mon, Sep 28, 2020 at 03:14:41PM -0700, Eric Biggers wrote:
+> > On Sat, Sep 26, 2020 at 01:17:04PM +0000, David Laight wrote:
+> > > From: David Laight
+> > > > Sent: 26 September 2020 12:16
+> > > > To: 'syzbot' <syzbot+51177e4144d764827c45@syzkaller.appspotmail.com>; linux-fsdevel@vger.kernel.org;
+> > > > linux-kernel@vger.kernel.org; syzkaller-bugs@googlegroups.com; viro@zeniv.linux.org.uk
+> > > > Subject: RE: WARNING in __kernel_read (2)
+> > > > 
+> > > > > From: syzbot <syzbot+51177e4144d764827c45@syzkaller.appspotmail.com>
+> > > > > Sent: 26 September 2020 03:58
+> > > > > To: linux-fsdevel@vger.kernel.org; linux-kernel@vger.kernel.org; syzkaller-bugs@googlegroups.com;
+> > > > > viro@zeniv.linux.org.uk
+> > > > > Subject: WARNING in __kernel_read (2)
+> > > > 
+> > > > I suspect this is calling finit_module() on an fd
+> > > > that doesn't have read permissions.
+> > > 
+> > > Code inspection also seems to imply that the check means
+> > > the exec() also requires read permissions on the file.
+> > > 
+> > > This isn't traditionally true.
+> > > suid #! scripts are particularly odd without 'owner read'
+> > > (everyone except the owner can run them!).
+> > 
+> > Christoph, any thoughts here?  You added this WARN_ON_ONCE in:
+> > 
+> > 	commit 61a707c543e2afe3aa7e88f87267c5dafa4b5afa
+> > 	Author: Christoph Hellwig <hch@lst.de>
+> > 	Date:   Fri May 8 08:54:16 2020 +0200
+> > 
+> > 	    fs: add a __kernel_read helper
+> 
+> Linus asked for it.  What is the call chain that we hit it with?
 
-As said before, it's an allocation context API and actual allocation
-happens later.
-Doing such things there is not an easy job.
+Call Trace:
+ kernel_read+0x52/0x70 fs/read_write.c:471
+ kernel_read_file fs/exec.c:989 [inline]
+ kernel_read_file+0x2e5/0x620 fs/exec.c:952
+ kernel_read_file_from_fd+0x56/0xa0 fs/exec.c:1076
+ __do_sys_finit_module+0xe6/0x190 kernel/module.c:4066
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-> > > Or byassing the pcplists for this caller and calling __rmqueue() dire=
-ctly?
-> >
-> > What this patch does is this one.
->
-> I meant via a different function rather than by adding overhead to the
-> existing commonly-used function.
-
-Got it. One idea could be disabling/enabling pcp list on these APIs but
-it's overhead would not be appropriate on these APIs. I don't have
-another idea that doesn't touch the allocation path.
-
-Thanks.
+See the email from syzbot for the full details:
+https://lkml.kernel.org/linux-fsdevel/000000000000da992305b02e9a51@google.com
