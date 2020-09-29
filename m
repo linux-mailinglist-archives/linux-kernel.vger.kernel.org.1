@@ -2,135 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3D6227D573
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 20:08:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C665B27D576
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 20:08:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728150AbgI2SIb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 14:08:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42676 "EHLO
+        id S1728188AbgI2SI5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 14:08:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727657AbgI2SIb (ORCPT
+        with ESMTP id S1727360AbgI2SI4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 14:08:31 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10257C0613D0
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 11:08:31 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id v14so3083012pjd.4
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 11:08:31 -0700 (PDT)
+        Tue, 29 Sep 2020 14:08:56 -0400
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A172BC061755;
+        Tue, 29 Sep 2020 11:08:56 -0700 (PDT)
+Received: by mail-yb1-xb42.google.com with SMTP id f70so4289364ybg.13;
+        Tue, 29 Sep 2020 11:08:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=benyossef-com.20150623.gappssmtp.com; s=20150623;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=RpY12II94GhZux1obQ0BV8Lj0sqJ69KRMrKlaitzPlI=;
-        b=stlgmHoQTREWLp0zmktf289kqgC6AMUAk5GE9G/IHZtyXv8FdqnllkYATlpuzSFQTh
-         cpoMGi66gxfbYGr8EP1bMU5y5OA17RSR+lzJ/kbTO7uo2wiD05oKc5NtZ/9AF93ULclY
-         HiVgh3cYwH8OwrOuIDv0Or3kMuc9NKnz+l5uofAHIL+91eo3LgMhG+CdGBDO0v38nxHV
-         K/DQLh2uiSeHekBVIKfYFhJHYJ9yu6bkBKivYjIk8r4i6Ef1uoFf+5kIuYEtoyYuPpbD
-         +Ax9LV6D1r8CViqtQqr46cEU2wwxZjFxQo1RnKCWZEx1RSIQHvDogQEtyaHMZVEpIt25
-         ihtA==
+         :cc;
+        bh=r/5FPvYhuqZfk0XDpMFDxw6A2OzBlYL9CLRDtRf2rhA=;
+        b=rQt81c37keZPYHPBj0XiuhFgBpT/oSKiHgjr27BUzSAAsBGLYz8FCNFvmGT+NesLNK
+         EuBJWXFBdEqCFj3/LT2ucgtNyTJOB5xYr2jrkBMPT+y1Tyg795YrmWHnGijDo6LqX4E3
+         7ocId4WZG/ItlxhnPaldTGwhQLh9oNCTKyQ3Ns3tDxGk2BA+DwM08ZJMsn4+I2SgDWSm
+         pZKp7wBHYzW1kPqvqqTeOFn/0BC2MC+VFmaAqAG2wBmTQzBx+S/vobuD3h1XjOeVglfM
+         9prYNoLXrs0Wo782JU4Np3qVFrjmwGs8iy/IqwG+8XTqAAG7Pg3ipH6+Sn2fGSiMLStQ
+         ScNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=RpY12II94GhZux1obQ0BV8Lj0sqJ69KRMrKlaitzPlI=;
-        b=kLCq04rOukcg8/VznwqZ24zv3gVfJerxBgpH3G7HHudh8cLm5/yqQcU+k+l6kcIF5/
-         O+0b0ZTCtumtjzMEgKOn/66JayM+R8ucKQgrasIY6X/hvZXwPZCKJFp3n04Z0r/5FwVh
-         YVFEM8RpCAeFzegdGVPhBSBDjodzGde6OD7T17MhDfwkv59ekHEnpEyThFtO8ijvMwJO
-         Y4BqhJCz5nAC0LPqMamcYc82FQTayy1g0hO8VZxJvNdkz4Km8N0v2oZkw97YqwkLvPLW
-         ohJ9X2oYRxkBl1zz4WR22WBtN2urvSxnI6cmZBAnSE5KBDUCI8lOoTHgIVbPk+B4QPxW
-         yiPw==
-X-Gm-Message-State: AOAM533uFz7z8pCRk5IYbq2rMqYSmrIbAVtY9KhIyooof6j75kFnMR/S
-        JFMJ8U1/SA2RUlucqnZFTL2+hCWP17890/ruITb+aA==
-X-Google-Smtp-Source: ABdhPJzJ/x5xBKqbKvxq2XgXy6Nsp0HjIn+CoyO8Kd30x494FxQS7KkRIzPH3bqG6IqgKOigCMNe3z78HfF/wxyl7DQ=
-X-Received: by 2002:a17:90a:b387:: with SMTP id e7mr5157521pjr.228.1601402910497;
- Tue, 29 Sep 2020 11:08:30 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=r/5FPvYhuqZfk0XDpMFDxw6A2OzBlYL9CLRDtRf2rhA=;
+        b=GZK1GxJz4uTjVAOjvRePI4025AwxFh3/hILLdj07F9h3gW/TVKDGKCjbGtSsgJFRH9
+         vOSlwImCVxGGM5Rp1rOVjgiDSWpQ5UgWYq6XcS/Y4/v9soVx4izgZzNDqv+E1dqvInn5
+         0IJH48DAX4wBY6h7Xq4inRZdLErBDHvlNSfHHLvzDDWABnUzsu/bI8ttd1QpSZUAdgQ9
+         aCVOCbXoMsT2ASz+M80iUXO1KyHaKV8h2DVtT8i72Ud9JoORNsajoZ+jlK7Hbd5zpXoO
+         nmCc+TteV2i9yOGB8CcKqBO5DZGjzT0hJyetXRNSTcqH0VP0adKEvdIhKlEOzL1ky/Q+
+         CHXw==
+X-Gm-Message-State: AOAM532EtfQD6RYyVnxe/FJ5t+ApYdjMs/G8Dp/js6tSH3+KrOEZr4/x
+        zjHcSZTHlNvMl9vFEymJFHjhtDbKJan7HorqRW8=
+X-Google-Smtp-Source: ABdhPJxXB8fyxXE0wD9bPvz7K3AGTX1TCgre6QBJIWtahFJJwMpSLoHoCb03keT3HRyhgkoc+tPQDxBsi4XhqKJtNEo=
+X-Received: by 2002:a25:2d41:: with SMTP id s1mr7585585ybe.459.1601402935930;
+ Tue, 29 Sep 2020 11:08:55 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200916071950.1493-1-gilad@benyossef.com> <20200916071950.1493-2-gilad@benyossef.com>
- <20200923015702.GA3676455@bogus>
-In-Reply-To: <20200923015702.GA3676455@bogus>
-From:   Gilad Ben-Yossef <gilad@benyossef.com>
-Date:   Tue, 29 Sep 2020 21:08:19 +0300
-Message-ID: <CAOtvUMekoMjFij_xDnrwRj2PsfgO8tKx4Jk6d7C5vq-Vh+boWw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] dt-bindings: crypto: update ccree optional params
-To:     Rob Herring <robh@kernel.org>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Ofir Drang <ofir.drang@arm.com>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux kernel mailing list <linux-kernel@vger.kernel.org>
+References: <1601379151-21449-1-git-send-email-alan.maguire@oracle.com> <1601379151-21449-3-git-send-email-alan.maguire@oracle.com>
+In-Reply-To: <1601379151-21449-3-git-send-email-alan.maguire@oracle.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 29 Sep 2020 11:08:45 -0700
+Message-ID: <CAEf4Bzbj9ox+9jzf0ANjoMcygFN5k4dT=_28MPBFj5TEYKCb7A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: ensure snprintf_btf/bpf_iter
+ tests compatibility with old vmlinux.h
+To:     Alan Maguire <alan.maguire@oracle.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-H=D7=9F=D7=AA
-
-On Wed, Sep 23, 2020 at 4:57 AM Rob Herring <robh@kernel.org> wrote:
+On Tue, Sep 29, 2020 at 5:26 AM Alan Maguire <alan.maguire@oracle.com> wrote:
 >
-> On Wed, Sep 16, 2020 at 10:19:49AM +0300, Gilad Ben-Yossef wrote:
-> > Document ccree driver supporting new optional parameters allowing to
-> > customize the DMA transactions cache parameters and ACE bus sharability
-> > properties.
-> >
-> > Signed-off-by: Gilad Ben-Yossef <gilad@benyossef.com>
-> > ---
-> >  Documentation/devicetree/bindings/crypto/arm-cryptocell.txt | 4 ++++
-> >  1 file changed, 4 insertions(+)
-> >
-> > diff --git a/Documentation/devicetree/bindings/crypto/arm-cryptocell.tx=
-t b/Documentation/devicetree/bindings/crypto/arm-cryptocell.txt
-> > index 6130e6eb4af8..1a1603e457a8 100644
-> > --- a/Documentation/devicetree/bindings/crypto/arm-cryptocell.txt
-> > +++ b/Documentation/devicetree/bindings/crypto/arm-cryptocell.txt
-> > @@ -13,6 +13,10 @@ Required properties:
-> >  Optional properties:
-> >  - clocks: Reference to the crypto engine clock.
-> >  - dma-coherent: Present if dma operations are coherent.
-> > +- awcache: Set write transactions cache attributes
-> > +- arcache: Set read transactions cache attributes
+> Andrii reports that bpf selftests relying on "struct btf_ptr" and BTF_F_*
+> values will not build as vmlinux.h for older kernels will not include
+> "struct btf_ptr" or the BTF_F_* enum values.  Undefine and redefine
+> them to work around this.
 >
-> dma-coherent already implies these are 011x, 101x or 111x. In my limited
-> experience configuring these (Calxeda SATA and ethernet), writeback,
-> write-allocate was pretty much always optimal.
+> Fixes: b72091bd4ee4 ("selftests/bpf: Add test for bpf_seq_printf_btf helper")
+> Fixes: 076a95f5aff2 ("selftests/bpf: Add bpf_snprintf_btf helper tests")
+> Reported-by: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+> ---
 
-Indeed and these are the default. But not all SoC are born equal and
-we got a request to allow setting these.
+That works, thanks!
 
-Maybe instead of numerical values have three possible verbal setting
-would be better?
+Acked-by: Andrii Nakryiko <andriin@fb.com>
 
-
-> > +- awdomain: Set write transactions ACE sharability domain (712, 703, 7=
-13 only)
-> > +- ardomain: Set read transactions ACE sharability domain (712, 703, 71=
-3 only)
+>  tools/testing/selftests/bpf/progs/bpf_iter.h       | 23 ++++++++++++++++++
+>  tools/testing/selftests/bpf/progs/btf_ptr.h        | 27 ++++++++++++++++++++++
+>  .../selftests/bpf/progs/netif_receive_skb.c        |  2 +-
+>  3 files changed, 51 insertions(+), 1 deletion(-)
+>  create mode 100644 tools/testing/selftests/bpf/progs/btf_ptr.h
 >
-> This probably needs something common. We may need something for Mali,
-> too. I don't think different settings for read and write makes much
-> sense nor does anything beyond IS or OS.
 
-I agree. Maybe
-
-sharability_domain: either "IS" or "OS"?
-
->
-> These could also just be implied by the compatible string (and requiring
-> an SoC specific one).
-
-hm... we could do it but this will require us to know (and publicly
-acknowledge) of every SoC making use of this piece of hardware design.
-There is currently no other part of the driver that needs this.
-
-Gilad
-
-
-
-
---=20
-Gilad Ben-Yossef
-Chief Coffee Drinker
-
-values of =CE=B2 will give rise to dom!
+[...]
