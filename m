@@ -2,147 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C45CA27BEC5
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 10:04:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8516727BECA
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 10:05:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727706AbgI2IES (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 04:04:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33152 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726064AbgI2IES (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 04:04:18 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FFC1C061755;
-        Tue, 29 Sep 2020 01:04:18 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id nw23so13705799ejb.4;
-        Tue, 29 Sep 2020 01:04:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jms.id.au; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UUa+xvZy/7cB0wwXcdXBfj8jGK+yRtDAUkUhMRWpR4o=;
-        b=MjqLYoEE+qBSg/GzATHWw9GBatBo9v4SP5jOwtI0jwd2c5/87LSVOJPLIhWmJPu5Bb
-         BjV4QwVm6Hd8uRdNydG2qxRrHXeQVlOGphsDLJH0Jv976yNEovylTs9cm+rH5PA0+DVn
-         6w4vf14iFU+t7q3Hr95x8Z8N7SGTwg097ndN8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UUa+xvZy/7cB0wwXcdXBfj8jGK+yRtDAUkUhMRWpR4o=;
-        b=s0VELAV9NqfHacOB7EXnCzl+7Mk78UJ+Rg7jlByDA61PDa3cGxlkJ9cGetLoIeqiWu
-         RlFZ+NBWud7G1SSvu8CbMs+8e3be1ZY9/mWLdb0I++FmC1Th9ClVCXaKy9ic3i363Kvj
-         6dLR0Ywr5dI43iILD/joUpiZP3DHIwjZfX9Y5CNVfKqvUKb85LSgiEWwbpIGcro3bNMp
-         H2v4f5qCoQ5vXeJLA4L5aGfSKy1uuZWRBnj50ESw8XEB7ZRva9xW32cYBqKYadD6iZEd
-         vIOzxfu6k6Km/vg8QlrVfuSMEbtwnh8moGB49lQ6F93CkBzPM4LGZOHYpVApAJpkMZaz
-         iYGA==
-X-Gm-Message-State: AOAM531ZkPFFiH79/TcM1BcTzprb8n+9nitg30lNXkx+wa0LeATNNFqI
-        6y3UB7DLZB5Gk6vaKgSyDzWthJElN7J1SVdxJuqAqLufMCk=
-X-Google-Smtp-Source: ABdhPJxEODavPJEfXr23rNjBTzc8oqyeWOJt3o9hhYbv3h/UzopdrVvnBL6Foc1EMWfAe7OigZ3oD9sHc8JF/HOuqbc=
-X-Received: by 2002:a17:906:4cd6:: with SMTP id q22mr2567547ejt.139.1601366656755;
- Tue, 29 Sep 2020 01:04:16 -0700 (PDT)
+        id S1727719AbgI2IFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 04:05:02 -0400
+Received: from foss.arm.com ([217.140.110.172]:36732 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727709AbgI2IFB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 04:05:01 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F14781063;
+        Tue, 29 Sep 2020 01:05:00 -0700 (PDT)
+Received: from [10.163.73.175] (unknown [10.163.73.175])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2601B3F73B;
+        Tue, 29 Sep 2020 01:04:57 -0700 (PDT)
+Subject: Re: [PATCH] arm64/mm: Validate hotplug range before creating linear
+ mapping
+To:     Will Deacon <will@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, catalin.marinas@arm.com,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Steven Price <steven.price@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org
+References: <1600332402-30123-1-git-send-email-anshuman.khandual@arm.com>
+ <20200928203539.GA12218@willie-the-truck>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <09266aed-7eef-5b16-5d52-0dcb7dcb7246@arm.com>
+Date:   Tue, 29 Sep 2020 13:34:24 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-References: <20200928070108.14040-1-ryan_chen@aspeedtech.com> <20200928070108.14040-2-ryan_chen@aspeedtech.com>
-In-Reply-To: <20200928070108.14040-2-ryan_chen@aspeedtech.com>
-From:   Joel Stanley <joel@jms.id.au>
-Date:   Tue, 29 Sep 2020 08:04:04 +0000
-Message-ID: <CACPK8XcjmxBGUfDxE2WB3zBgG8OCoRMogfG=Fk5f+wNZu0pjMg@mail.gmail.com>
-Subject: Re: [PATCH 1/1] clk: aspeed: modify some default clks are critical
-To:     Ryan Chen <ryan_chen@aspeedtech.com>,
-        Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>,
-        Andrew Jeffery <andrew@aj.id.au>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, linux-clk@vger.kernel.org,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        bmc-sw@aspeedtech.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200928203539.GA12218@willie-the-truck>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 28 Sep 2020 at 07:01, Ryan Chen <ryan_chen@aspeedtech.com> wrote:
->
-> In ASPEED SoC LCLK is LPC clock for all SuperIO device, UART1/UART2 are
-> default for Host SuperIO UART device, eSPI clk for Host eSPI bus access
-> eSPI slave channel, those clks can't be disable should keep default,
-> otherwise will affect Host side access SuperIO and SPI slave device.
->
-> Signed-off-by: Ryan Chen <ryan_chen@aspeedtech.com>
-> ---
->  drivers/clk/clk-aspeed.c  | 8 ++++----
->  drivers/clk/clk-ast2600.c | 8 ++++----
->  2 files changed, 8 insertions(+), 8 deletions(-)
->
-> diff --git a/drivers/clk/clk-aspeed.c b/drivers/clk/clk-aspeed.c
-> index 411ff5fb2c07..d348c4fd3f9f 100644
-> --- a/drivers/clk/clk-aspeed.c
-> +++ b/drivers/clk/clk-aspeed.c
-> @@ -54,15 +54,15 @@ static const struct aspeed_gate_data aspeed_gates[] = {
->         [ASPEED_CLK_GATE_DCLK] =        {  5, -1, "dclk-gate",          NULL,   CLK_IS_CRITICAL }, /* DAC */
->         [ASPEED_CLK_GATE_REFCLK] =      {  6, -1, "refclk-gate",        "clkin", CLK_IS_CRITICAL },
->         [ASPEED_CLK_GATE_USBPORT2CLK] = {  7,  3, "usb-port2-gate",     NULL,   0 }, /* USB2.0 Host port 2 */
-> -       [ASPEED_CLK_GATE_LCLK] =        {  8,  5, "lclk-gate",          NULL,   0 }, /* LPC */
-> +       [ASPEED_CLK_GATE_LCLK] =        {  8,  5, "lclk-gate",          NULL,   CLK_IS_CRITICAL }, /* LPC */
->         [ASPEED_CLK_GATE_USBUHCICLK] =  {  9, 15, "usb-uhci-gate",      NULL,   0 }, /* USB1.1 (requires port 2 enabled) */
->         [ASPEED_CLK_GATE_D1CLK] =       { 10, 13, "d1clk-gate",         NULL,   0 }, /* GFX CRT */
->         [ASPEED_CLK_GATE_YCLK] =        { 13,  4, "yclk-gate",          NULL,   0 }, /* HAC */
->         [ASPEED_CLK_GATE_USBPORT1CLK] = { 14, 14, "usb-port1-gate",     NULL,   0 }, /* USB2 hub/USB2 host port 1/USB1.1 dev */
-> -       [ASPEED_CLK_GATE_UART1CLK] =    { 15, -1, "uart1clk-gate",      "uart", 0 }, /* UART1 */
-> -       [ASPEED_CLK_GATE_UART2CLK] =    { 16, -1, "uart2clk-gate",      "uart", 0 }, /* UART2 */
-> +       [ASPEED_CLK_GATE_UART1CLK] =    { 15, -1, "uart1clk-gate",      "uart", CLK_IS_CRITICAL }, /* UART1 */
-> +       [ASPEED_CLK_GATE_UART2CLK] =    { 16, -1, "uart2clk-gate",      "uart", CLK_IS_CRITICAL }, /* UART2 */
->         [ASPEED_CLK_GATE_UART5CLK] =    { 17, -1, "uart5clk-gate",      "uart", 0 }, /* UART5 */
-> -       [ASPEED_CLK_GATE_ESPICLK] =     { 19, -1, "espiclk-gate",       NULL,   0 }, /* eSPI */
-> +       [ASPEED_CLK_GATE_ESPICLK] =     { 19, -1, "espiclk-gate",       NULL,   CLK_IS_CRITICAL }, /* eSPI */
 
-This is fine for systems that have eSPI. For systems that do not use
-eSPI, the clocks are not "required".
 
-I was sent a similar patch by Jae some time ago:
+On 09/29/2020 02:05 AM, Will Deacon wrote:
+> On Thu, Sep 17, 2020 at 02:16:42PM +0530, Anshuman Khandual wrote:
+>> During memory hotplug process, the linear mapping should not be created for
+>> a given memory range if that would fall outside the maximum allowed linear
+>> range. Else it might cause memory corruption in the kernel virtual space.
+>>
+>> Maximum linear mapping region is [PAGE_OFFSET..(PAGE_END -1)] accommodating
+>> both its ends but excluding PAGE_END. Max physical range that can be mapped
+>> inside this linear mapping range, must also be derived from its end points.
+>>
+>> When CONFIG_ARM64_VA_BITS_52 is enabled, PAGE_OFFSET is computed with the
+>> assumption of 52 bits virtual address space. However, if the CPU does not
+>> support 52 bits, then it falls back using 48 bits instead and the PAGE_END
+>> is updated to reflect this using the vabits_actual. As for PAGE_OFFSET,
+>> bits [51..48] are ignored by the MMU and remain unchanged, even though the
+>> effective start address of linear map is now slightly different. Hence, to
+>> reliably check the physical address range mapped by the linear map, the
+>> start address should be calculated using vabits_actual. This ensures that
+>> arch_add_memory() validates memory hot add range for its potential linear
+>> mapping requirement, before creating it with __create_pgd_mapping().
+>>
+>> Cc: Catalin Marinas <catalin.marinas@arm.com>
+>> Cc: Will Deacon <will@kernel.org>
+>> Cc: Mark Rutland <mark.rutland@arm.com>
+>> Cc: Ard Biesheuvel <ardb@kernel.org>
+>> Cc: Steven Price <steven.price@arm.com>
+>> Cc: Robin Murphy <robin.murphy@arm.com>
+>> Cc: David Hildenbrand <david@redhat.com>
+>> Cc: Andrew Morton <akpm@linux-foundation.org>
+>> Cc: linux-arm-kernel@lists.infradead.org
+>> Cc: linux-kernel@vger.kernel.org
+>> Fixes: 4ab215061554 ("arm64: Add memory hotplug support")
+>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+>> ---
+>>  arch/arm64/mm/mmu.c | 27 +++++++++++++++++++++++++++
+>>  1 file changed, 27 insertions(+)
+>>
+>> diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
+>> index 75df62fea1b6..d59ffabb9c84 100644
+>> --- a/arch/arm64/mm/mmu.c
+>> +++ b/arch/arm64/mm/mmu.c
+>> @@ -1433,11 +1433,38 @@ static void __remove_pgd_mapping(pgd_t *pgdir, unsigned long start, u64 size)
+>>  	free_empty_tables(start, end, PAGE_OFFSET, PAGE_END);
+>>  }
+>>  
+>> +static bool inside_linear_region(u64 start, u64 size)
+>> +{
+>> +	/*
+>> +	 * Linear mapping region is the range [PAGE_OFFSET..(PAGE_END - 1)]
+>> +	 * accommodating both its ends but excluding PAGE_END. Max physical
+>> +	 * range which can be mapped inside this linear mapping range, must
+>> +	 * also be derived from its end points.
+>> +	 *
+>> +	 * With CONFIG_ARM64_VA_BITS_52 enabled, PAGE_OFFSET is defined with
+>> +	 * the assumption of 52 bits virtual address space. However, if the
+>> +	 * CPU does not support 52 bits, it falls back using 48 bits and the
+>> +	 * PAGE_END is updated to reflect this using the vabits_actual. As
+>> +	 * for PAGE_OFFSET, bits [51..48] are ignored by the MMU and remain
+>> +	 * unchanged, even though the effective start address of linear map
+>> +	 * is now slightly different. Hence, to reliably check the physical
+>> +	 * address range mapped by the linear map, the start address should
+>> +	 * be calculated using vabits_actual.
+>> +	 */
+>> +	return ((start >= __pa(_PAGE_OFFSET(vabits_actual)))
+>> +			&& ((start + size) <= __pa(PAGE_END - 1)));
+>> +}
+> 
+> Why isn't this implemented using the existing __is_lm_address()?
 
- https://lore.kernel.org/openbmc/697a184b-ef99-a46e-bf98-4d339b3aafd8@linux.intel.com/
+Not sure, if I understood your suggestion here. The physical address range
+[start..start + size] needs to be checked against maximum physical range
+that can be represented inside effective boundaries for the linear mapping
+i.e [__pa(_PAGE_OFFSET(vabits_actual)..__pa(PAGE_END - 1)].
 
-Better is to associate drivers with these clocks, and those drivers
-will ensure they are left enabled.
-
-Alternatively, we will need to come up with a device tree binding to
-describe the hardware requirement that these clocks are left on.
-
-Cheers,
-
-Joel
-
->         [ASPEED_CLK_GATE_MAC1CLK] =     { 20, 11, "mac1clk-gate",       "mac",  0 }, /* MAC1 */
->         [ASPEED_CLK_GATE_MAC2CLK] =     { 21, 12, "mac2clk-gate",       "mac",  0 }, /* MAC2 */
->         [ASPEED_CLK_GATE_RSACLK] =      { 24, -1, "rsaclk-gate",        NULL,   0 }, /* RSA */
-> diff --git a/drivers/clk/clk-ast2600.c b/drivers/clk/clk-ast2600.c
-> index bbacaccad554..6802a2d5bbe2 100644
-> --- a/drivers/clk/clk-ast2600.c
-> +++ b/drivers/clk/clk-ast2600.c
-> @@ -86,8 +86,8 @@ static const struct aspeed_gate_data aspeed_g6_gates[] = {
->         /* Reserved 26 */
->         [ASPEED_CLK_GATE_EMMCCLK]       = { 27, 16, "emmcclk-gate",     NULL,    0 },   /* For card clk */
->         /* Reserved 28/29/30 */
-> -       [ASPEED_CLK_GATE_LCLK]          = { 32, 32, "lclk-gate",        NULL,    0 }, /* LPC */
-> -       [ASPEED_CLK_GATE_ESPICLK]       = { 33, -1, "espiclk-gate",     NULL,    0 }, /* eSPI */
-> +       [ASPEED_CLK_GATE_LCLK]          = { 32, 32, "lclk-gate",        NULL,    CLK_IS_CRITICAL }, /* LPC */
-> +       [ASPEED_CLK_GATE_ESPICLK]       = { 33, -1, "espiclk-gate",     NULL,    CLK_IS_CRITICAL }, /* eSPI */
->         [ASPEED_CLK_GATE_REF1CLK]       = { 34, -1, "ref1clk-gate",     "clkin", CLK_IS_CRITICAL },
->         /* Reserved 35 */
->         [ASPEED_CLK_GATE_SDCLK]         = { 36, 56, "sdclk-gate",       NULL,    0 },   /* SDIO/SD */
-> @@ -102,8 +102,8 @@ static const struct aspeed_gate_data aspeed_g6_gates[] = {
->         [ASPEED_CLK_GATE_I3C5CLK]       = { 45,  45, "i3c5clk-gate",    NULL,    0 },   /* I3C5 */
->         [ASPEED_CLK_GATE_I3C6CLK]       = { 46,  46, "i3c6clk-gate",    NULL,    0 },   /* I3C6 */
->         [ASPEED_CLK_GATE_I3C7CLK]       = { 47,  47, "i3c7clk-gate",    NULL,    0 },   /* I3C7 */
-> -       [ASPEED_CLK_GATE_UART1CLK]      = { 48,  -1, "uart1clk-gate",   "uart",  0 },   /* UART1 */
-> -       [ASPEED_CLK_GATE_UART2CLK]      = { 49,  -1, "uart2clk-gate",   "uart",  0 },   /* UART2 */
-> +       [ASPEED_CLK_GATE_UART1CLK]      = { 48,  -1, "uart1clk-gate",   "uart",  CLK_IS_CRITICAL },     /* UART1 */
-> +       [ASPEED_CLK_GATE_UART2CLK]      = { 49,  -1, "uart2clk-gate",   "uart",  CLK_IS_CRITICAL },     /* UART2 */
->         [ASPEED_CLK_GATE_UART3CLK]      = { 50,  -1, "uart3clk-gate",   "uart",  0 },   /* UART3 */
->         [ASPEED_CLK_GATE_UART4CLK]      = { 51,  -1, "uart4clk-gate",   "uart",  0 },   /* UART4 */
->         [ASPEED_CLK_GATE_MAC3CLK]       = { 52,  52, "mac3clk-gate",    "mac34", 0 },   /* MAC3 */
-> --
-> 2.17.1
->
+Are you suggesting [start..start + size] should be first be converted into
+a virtual address range and then checked against __is_lm_addresses() ? But
+is not deriving the physical range from from know limits of linear mapping
+much cleaner ?
