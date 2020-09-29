@@ -2,89 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AF7E27C19E
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 11:48:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40CC027C1A4
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 11:51:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727933AbgI2JsX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 05:48:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49328 "EHLO
+        id S1727484AbgI2JvL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 05:51:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725497AbgI2JsV (ORCPT
+        with ESMTP id S1725497AbgI2JvK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 05:48:21 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0157C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 02:48:21 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id q9so3965309wmj.2
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 02:48:21 -0700 (PDT)
+        Tue, 29 Sep 2020 05:51:10 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20811C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 02:51:10 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id d4so3959647wmd.5
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 02:51:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=Fdw78sqmIZjRFiiGoYeaH8/l+grtKt5JqjIyTHzrRCE=;
-        b=L0x7zsAyjtHZLNzl6I6wyAR3Te0YtIRHzIMQo0zs/HsqKBPDtAyhe/SvzjGENd5o6B
-         LD+rqrkV3F3Xg95fgoTFdRiMCHYJD3NwpQ4hCbQ0B1qxTi97Zbvcj9cEXoOq1sZHdoqP
-         GMP5wbANsXwzs0BLTvpEJBzFXRG3vAcqLurY6OdO4N+NnJXMsEOwDt7ADgkZF3hl+sgX
-         BdlP5axXz4FEZrg/rfolgDMac3EQ81fOOyBxB8WzOHd8K338zi363Jq8UI3fHAYGhyen
-         MnRSd1xO3/z2/c1KPfS6lVHiJGo/S4+alOFCAlLpP6ZWC8m9ShM3L0LFYkl8QO+/xred
-         qnTw==
+        bh=g//3YKslqEEjdWy4bFstcnviEz8Yjtvb1bJDuqH9QfE=;
+        b=KM7/B/44Z4zZq5f25gu+hF+LJFGIUg+P2fUBeUj31s75he1XhFefiaqsnnrlYkEFQ1
+         qJF4E8TJvsIRWLsP1Ra7PniO2iEO3rnrIHT8/KB3j6xPXEiuEtTbKIX9KvB1WP2mMfTc
+         t5kgcG+AFHBgATTCK9oQ2AWJ7Ca424ekWbBz5tkuVdZ/UowL0pD7jdR8kTp9dICsvXuX
+         pn2K7X7tX3UeHUw3smf+XFRXrGtOaB8tyjOmeDw+nCqqEMPpWqX6kv8ash9LWYI9cZmz
+         3f/O2uzLqSrhixsOZJJM76YcK0eiOLfENJnMrowexKiRY5DtI0xob7XM7JeCPgt38Mwn
+         7l7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:content-transfer-encoding
          :in-reply-to;
-        bh=Fdw78sqmIZjRFiiGoYeaH8/l+grtKt5JqjIyTHzrRCE=;
-        b=oiRg5YO5SwGYwTH1cAIYfyfEjYl0693WFUhEe+N2lZkr0sNBfbI439+XVdH1vKJZzb
-         UgbBfIZW61LODk7rCuxegkUtIJJjNq2281OIsyIDZjidgWeMpyFe9Mzao3tjFuBSemdz
-         cxqhvdWvREyiNa9lZ1l9VR0+K0C3lWNwdvLcKohx9+maTenUckUAYXwe4kr0WxYE3Gzj
-         DPbhbKpCO/km4/KTvAuKmcRyzHoLbc0Iepp8JTu56x6ODaw2EG/NQEDNpmagMsEISpJ/
-         T1xXmZsLIrkBxqiMO0T4c7bS2mTASoe10v/c7Le2vclkKHLzxGxUDvMWGB/LWOf1e2wJ
-         r5Yg==
-X-Gm-Message-State: AOAM532oCVLWmwqVdjxF3IvFz4ndiwlUm3r/J8dtNdc6wVLoFyHCMdp8
-        03hUqdWJd6o1kpkY13jVgAv4zQ==
-X-Google-Smtp-Source: ABdhPJy8/VfZsThqju8D1wItGHyjGpjH9KZQIJKAnvUKhpHuo+NezaITAxPGQ1lQHzqDHLCVSBA3yg==
-X-Received: by 2002:a7b:cf30:: with SMTP id m16mr3626898wmg.0.1601372900362;
-        Tue, 29 Sep 2020 02:48:20 -0700 (PDT)
+        bh=g//3YKslqEEjdWy4bFstcnviEz8Yjtvb1bJDuqH9QfE=;
+        b=RaOK+9j9XS/ZJf0bm6JxjO871i2GxJzGjAIQmwTNoYm6h62Seg/8MB0kjFCqLyJ9Ue
+         BVJ/+LzpRs12T87HjezgbxLI+B59mwoINtipOasONMsFJWCvAdolEkJHzettwSbPrr7T
+         +9wOsScHjr+5QVkBNdIn0Bt/anP1KdheyCFSPyLKjQfZBySHeFlLYxFP7jNWr1s3OazM
+         n8L8pyONmDPck4QAGI5VkXpQKvzUfGZQils71Si1wSBsfuEwWbARUmGXIXy5Q3cea73v
+         oh6pedlqNWtdntcnXRXhpoFQ87OsPPCVRSFGsHWzYMSNfV8w/imsPracXsli6GDkaLLq
+         jfoA==
+X-Gm-Message-State: AOAM531XS34TeQRLSGmG0FUjjjizEg4nHctJy6dSWCv8KDdPBMZmuLRr
+        2vGEGJuLACYRZe66K5vITLf+1Q==
+X-Google-Smtp-Source: ABdhPJwCbmhF47JEAgld/dSPUltKiEKJn903XuyqkTkNAIZrfNzJbuSsAWeQttI0/PP713UsXqfi0g==
+X-Received: by 2002:a1c:ed19:: with SMTP id l25mr3654659wmh.49.1601373068677;
+        Tue, 29 Sep 2020 02:51:08 -0700 (PDT)
 Received: from dell ([91.110.221.236])
-        by smtp.gmail.com with ESMTPSA id p9sm2375565wmg.34.2020.09.29.02.48.19
+        by smtp.gmail.com with ESMTPSA id r21sm6040568wrc.70.2020.09.29.02.51.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Sep 2020 02:48:19 -0700 (PDT)
-Date:   Tue, 29 Sep 2020 10:48:17 +0100
+        Tue, 29 Sep 2020 02:51:07 -0700 (PDT)
+Date:   Tue, 29 Sep 2020 10:51:06 +0100
 From:   Lee Jones <lee.jones@linaro.org>
-To:     Marek =?iso-8859-1?Q?Beh=FAn?= <marek.behun@nic.cz>
-Cc:     linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org,
-        Dan Murphy <dmurphy@ti.com>, Pavel Machek <pavel@ucw.cz>,
-        Phil Blundell <pb@handhelds.org>,
-        Samuel Ortiz <sameo@openedhand.com>
-Subject: Re: [PATCH mfd] mfd: asic3: build if COMPILE_TEST=y
-Message-ID: <20200929094817.GE6148@dell>
-References: <20200917193140.5324-1-marek.behun@nic.cz>
+To:     "David E. Box" <david.e.box@linux.intel.com>
+Cc:     dvhart@infradead.org, andy@infradead.org,
+        alexander.h.duyck@linux.intel.com, linux-kernel@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org
+Subject: Re: [PATCH 1/3] mfd: intel_pmt: Add OOBMSM device ID
+Message-ID: <20200929095106.GG6148@dell>
+References: <20200911194549.12780-1-david.e.box@linux.intel.com>
+ <20200911194549.12780-2-david.e.box@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200917193140.5324-1-marek.behun@nic.cz>
+In-Reply-To: <20200911194549.12780-2-david.e.box@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 17 Sep 2020, Marek Behún wrote:
+On Fri, 11 Sep 2020, David E. Box wrote:
 
-> Build this driver on another platforms if COMPILE_TEST=y. Another
-> drivers may depend on this, for example leds-asic3.
+> Add Out of Band Management Services Module device ID to Intel PMT driver.
 > 
-> Signed-off-by: Marek Behún <marek.behun@nic.cz>
-> Cc: Lee Jones <lee.jones@linaro.org>
-> Cc: Pavel Machek <pavel@ucw.cz>
-> Cc: Phil Blundell <pb@handhelds.org>
-> Cc: Samuel Ortiz <sameo@openedhand.com>
+> Signed-off-by: Alexander Duyck <alexander.h.duyck@linux.intel.com>
+> Signed-off-by: David E. Box <david.e.box@linux.intel.com>
 > ---
->  drivers/mfd/Kconfig | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+>  drivers/mfd/intel_pmt.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/drivers/mfd/intel_pmt.c b/drivers/mfd/intel_pmt.c
+> index 0e572b105101..8f9970ab3026 100644
+> --- a/drivers/mfd/intel_pmt.c
+> +++ b/drivers/mfd/intel_pmt.c
+> @@ -55,6 +55,8 @@ struct pmt_platform_info {
+>  	unsigned long quirks;
+>  };
+>  
+> +static const struct pmt_platform_info pmt_info;
+> +
+>  static const struct pmt_platform_info tgl_info = {
+>  	.quirks = PMT_QUIRK_NO_WATCHER | PMT_QUIRK_NO_CRASHLOG |
+>  		  PMT_QUIRK_TABLE_SHIFT,
+> @@ -200,8 +202,10 @@ static void pmt_pci_remove(struct pci_dev *pdev)
+>  	pm_runtime_get_sync(&pdev->dev);
+>  }
+>  
+> +#define PCI_DEVICE_ID_INTEL_PMT_OOBMSM	0x09a7
+>  #define PCI_DEVICE_ID_INTEL_PMT_TGL	0x9a0d
+>  static const struct pci_device_id pmt_pci_ids[] = {
+> +	{ PCI_DEVICE_DATA(INTEL, PMT_OOBMSM, &pmt_info) },
 
-Seems fine.  At least on first blush.
+Why are you supplying an empty struct?
 
-Applied, thanks.
+>  	{ PCI_DEVICE_DATA(INTEL, PMT_TGL, &tgl_info) },
+>  	{ }
+>  };
 
 -- 
 Lee Jones [李琼斯]
