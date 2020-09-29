@@ -2,81 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFD7D27BC36
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 06:58:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C025027BC39
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 06:58:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725775AbgI2E6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 00:58:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32984 "EHLO
+        id S1725816AbgI2E6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 00:58:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
         with ESMTP id S1725355AbgI2E6W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 29 Sep 2020 00:58:22 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEB03C061755;
-        Mon, 28 Sep 2020 21:58:21 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id 7so2853906pgm.11;
-        Mon, 28 Sep 2020 21:58:21 -0700 (PDT)
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEFC3C061755;
+        Mon, 28 Sep 2020 21:58:22 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id fa1so2024412pjb.0;
+        Mon, 28 Sep 2020 21:58:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=WcAzkOGZ9dG56NRxUJHzwDEuHInbnX4+CA+UxuupEp0=;
-        b=jUW4NrwIs8MohyGXB00UM3IYkVbNLJrSbtsx+ak2jvFMxkiLP5OThwhdzydCBj+4aO
-         1A2JKQx6dZzPII++txHZexC0KSNT4RuG0ZnGi0swjX0iOGXQ6AV+qOjH28a6km+MrZnW
-         bGDhzvyiURSz2mk57bNFM8/Udd5Uq9q4pF8YdupE1uMC9NZnnXUEepv3KrSxObm0Xc+t
-         cKnufRpf2PwL17nfy2STHYbzqZPWJta+GGiFwIIMzIXtJ5cEjOXqpVQu2Pyyul00q44Z
-         Tf/zcCox22dqYsFFZF/mk9P8lm40WmPfNeL63PdIUAVbfqb1aC9YISt4c3/xrCci6mjJ
-         XuOA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=saP3o3/ZHmG3y2rYGxjiPv6CDY9HgD7NIJX7AD4zLNk=;
+        b=ijRT4nTYkzL+krkNzgBJBgV7Gtqxk57xn/BWwJrbRz57EwjDcNUNnTnEPN6MBfLHbM
+         cjED5iKz+1W3nOnIYuCSgObHcZJZtrK2gJL9psKylSctrKw+9xLbyxSHLx3/ES77BTet
+         beg4WJQYkuGpcj2VkN8/BBZZ6zM0Ri4JF+BbEyoOgFK9kbe5q5dMYmUPyDYlGRfLygjk
+         wzmXLKYI8RHT0SbqNxOtdjatrDiEnhZkTNuHbMrrMDwhcnurh7uzA7K4/sn4+xKYVM8L
+         BMjUTQI+6g0vB17wEGpjuDrCv88htF+afJCScFFXu4GAher9LnN0swvqxF/EXym+0zek
+         68gg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=WcAzkOGZ9dG56NRxUJHzwDEuHInbnX4+CA+UxuupEp0=;
-        b=ZuEfGtfQlV/tbNCCeVW8T2/OA0evwzA/Jw6ICyM4oG0WlSVQYDc+FoCUE5NR0levXj
-         vUje6CDIdgrzNXKjn3SclGquqFACLTw91JDTLW2QMC94Pj7U6c8g9ze40rWIv93BrCvO
-         43JDGS4eGBGtPWP8S/NYKOC5psI6Kr9lmRW5RBmWzmPoS0/w+sDw8HDLU2KWD3KnhdD3
-         HkzHAoijiS3OT2wMImfVAXCrLcGd5BZyaWaiABy7DGbi/FsJDZNNX4cFCOVmC/CSujr/
-         3LBfcu2wRDGt1v/PAZMMvbD3bCWvOxWJVtp+S1Bi3DdNvvFgb8pTcrBUkq+17Z7oEIlU
-         inYQ==
-X-Gm-Message-State: AOAM532bLauWC+Gfe/AgHDAlTEeYfhdg8dgJ112/pJxaxQz5afrjsceN
-        n3qE79MbM0DtVm4fTtm/CbA=
-X-Google-Smtp-Source: ABdhPJw1G14Ap4d06yym2CPFSTcMb1VvQeJfuKHlk49EQq1LAZ3bmf8jgRBcjURIS3ZDNqEAeHBSUQ==
-X-Received: by 2002:a63:1b57:: with SMTP id b23mr1806815pgm.81.1601355501207;
-        Mon, 28 Sep 2020 21:58:21 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=saP3o3/ZHmG3y2rYGxjiPv6CDY9HgD7NIJX7AD4zLNk=;
+        b=BTKOF9NncbHS50OTDfko7Zh21UgWTuYyu3hzhe1j5/ocwTdD461/rMRZn6myqiRQtf
+         fVNnk1ojgF6+WO/XemHMuWpVFaOIex9NfYGnS4q9rMJVII48fdshtthVdkN2jtkzzARN
+         K3c5ycEGENU/xusRrj89lvXEzyrfvZur+Am7PpQbEsgTv9pWC8R3gHtlHiq/EUjmvhyZ
+         5eM/38YFCG52fxv1rxStvdjKSYf3Yb2mVFxuI2CYCsjGNsYZAEkNyDvtyPhiiYDy5gCs
+         H5PFVrIc8jgtMvP0UMg+d3pJXAJeS9mOmP+AEaHDeZsw32658iLXAOB6G/V+5EqbJVtY
+         GncA==
+X-Gm-Message-State: AOAM533rYCofEew1ls+GLL/zqdWjt0U7eGaeBt0wbfjbKMunzqI0oOTf
+        4eP14wNbT72lAmiFwU4YCkk=
+X-Google-Smtp-Source: ABdhPJzihHuO7NA53SKJQEP1zPJvMkzlo0VSdnlGlqgUkP7Qocxjntpw+PhEqiDIB0fA0OC7aivJuQ==
+X-Received: by 2002:a17:90a:d311:: with SMTP id p17mr2264474pju.135.1601355502135;
+        Mon, 28 Sep 2020 21:58:22 -0700 (PDT)
 Received: from Asurada-Nvidia.nvidia.com (thunderhill.nvidia.com. [216.228.112.22])
-        by smtp.gmail.com with ESMTPSA id f207sm3739028pfa.54.2020.09.28.21.58.20
+        by smtp.gmail.com with ESMTPSA id f207sm3739028pfa.54.2020.09.28.21.58.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Sep 2020 21:58:20 -0700 (PDT)
+        Mon, 28 Sep 2020 21:58:21 -0700 (PDT)
 From:   Nicolin Chen <nicoleotsuka@gmail.com>
 To:     thierry.reding@gmail.com, joro@8bytes.org
 Cc:     vdumpa@nvidia.com, jonathanh@nvidia.com, digetx@gmail.com,
         linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v3 0/2] iommu/tegra-smmu: Two followup changes
-Date:   Mon, 28 Sep 2020 21:52:45 -0700
-Message-Id: <20200929045247.15596-1-nicoleotsuka@gmail.com>
+Subject: [PATCH v3 1/2] iommu/tegra-smmu: Unwrap tegra_smmu_group_get
+Date:   Mon, 28 Sep 2020 21:52:46 -0700
+Message-Id: <20200929045247.15596-2-nicoleotsuka@gmail.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200929045247.15596-1-nicoleotsuka@gmail.com>
+References: <20200929045247.15596-1-nicoleotsuka@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Two followup patches for tegra-smmu:
-PATCH-1 is a clean-up patch for the recently applied SWGROUP change.
-PATCH-2 fixes a potential race condition
+The tegra_smmu_group_get was added to group devices in different
+SWGROUPs and it'd return a NULL group pointer upon a mismatch at
+tegra_smmu_find_group(), so for most of clients/devices, it very
+likely would mismatch and need a fallback generic_device_group().
+
+But now tegra_smmu_group_get handles devices in same SWGROUP too,
+which means that it would allocate a group for every new SWGROUP
+or would directly return an existing one upon matching a SWGROUP,
+i.e. any device will go through this function.
+
+So possibility of having a NULL group pointer in device_group()
+is upon failure of either devm_kzalloc() or iommu_group_alloc().
+In either case, calling generic_device_group() no longer makes a
+sense. Especially for devm_kzalloc() failing case, it'd cause a
+problem if it fails at devm_kzalloc() yet succeeds at a fallback
+generic_device_group(), because it does not create a group->list
+for other devices to match.
+
+This patch simply unwraps the function to clean it up.
+
+Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
+---
 
 Changelog
 v2->v3:
- * PATCH-2: renamed "err_unlock" to "unlock"
+ * N/A
 v1->v2:
- * Separated first two changs of V1 so they may get applied first,
-   since the other three changes need some extra time to finalize.
+ * Changed type of swgroup to "unsigned int", following Thierry's
+   commnets.
 
-Nicolin Chen (2):
-  iommu/tegra-smmu: Unwrap tegra_smmu_group_get
-  iommu/tegra-smmu: Expend mutex protection range
+ drivers/iommu/tegra-smmu.c | 19 ++++---------------
+ 1 file changed, 4 insertions(+), 15 deletions(-)
 
- drivers/iommu/tegra-smmu.c | 53 ++++++++++++++++++--------------------
- 1 file changed, 25 insertions(+), 28 deletions(-)
-
+diff --git a/drivers/iommu/tegra-smmu.c b/drivers/iommu/tegra-smmu.c
+index 0becdbfea306..ec4c9dafff95 100644
+--- a/drivers/iommu/tegra-smmu.c
++++ b/drivers/iommu/tegra-smmu.c
+@@ -903,10 +903,12 @@ static void tegra_smmu_group_release(void *iommu_data)
+ 	mutex_unlock(&smmu->lock);
+ }
+ 
+-static struct iommu_group *tegra_smmu_group_get(struct tegra_smmu *smmu,
+-						unsigned int swgroup)
++static struct iommu_group *tegra_smmu_device_group(struct device *dev)
+ {
++	struct iommu_fwspec *fwspec = dev_iommu_fwspec_get(dev);
++	struct tegra_smmu *smmu = dev_iommu_priv_get(dev);
+ 	const struct tegra_smmu_group_soc *soc;
++	unsigned int swgroup = fwspec->ids[0];
+ 	struct tegra_smmu_group *group;
+ 	struct iommu_group *grp;
+ 
+@@ -950,19 +952,6 @@ static struct iommu_group *tegra_smmu_group_get(struct tegra_smmu *smmu,
+ 	return group->group;
+ }
+ 
+-static struct iommu_group *tegra_smmu_device_group(struct device *dev)
+-{
+-	struct iommu_fwspec *fwspec = dev_iommu_fwspec_get(dev);
+-	struct tegra_smmu *smmu = dev_iommu_priv_get(dev);
+-	struct iommu_group *group;
+-
+-	group = tegra_smmu_group_get(smmu, fwspec->ids[0]);
+-	if (!group)
+-		group = generic_device_group(dev);
+-
+-	return group;
+-}
+-
+ static int tegra_smmu_of_xlate(struct device *dev,
+ 			       struct of_phandle_args *args)
+ {
 -- 
 2.17.1
 
