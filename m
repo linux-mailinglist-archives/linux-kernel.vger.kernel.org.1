@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91C1527C315
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:03:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35EA227C31B
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:03:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728356AbgI2LDG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:03:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38516 "EHLO mail.kernel.org"
+        id S1728387AbgI2LDP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:03:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38568 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728314AbgI2LC7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:02:59 -0400
+        id S1728337AbgI2LDB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:03:01 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 09EEE21734;
-        Tue, 29 Sep 2020 11:02:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D6C4420C09;
+        Tue, 29 Sep 2020 11:03:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601377378;
-        bh=elhUuUYeitecFKv+HAQ6qup1d4TvLQjxSm9fmjbkcbE=;
+        s=default; t=1601377381;
+        bh=WI/pjt1weQQ7po3ewfU8oddQZDYZsLZAP0LT5WBgph8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RGm+j+uQWT2op1QkU3FbcTUxA/WESB+IPaBeA5sZT0Eemc4P/4k9LQbrpKiAs0/yk
-         Bmr/vSNO+j/Z4YRBWsQiaANquQ6Y4d4xDHMFofEIfij4lCa9qlO4JGNz1M51Hk/6gg
-         sG4g10LnpFnKtz4GJx9eVDc1fD53vCM5qvz7RQSM=
+        b=VLDIiV6u9ke1OEhFGi8t8L+kWQHZdWgOCPYEsgv4s62uUQtFxKLuD5yCDvEKfhiXA
+         Q6Y/N+NZSHpUGTH9SdQ6l5qXi6NdP3tU5h0H9xVypl7wBkeXM5VZtpvJb1Idljg+P2
+         FpzFMm7md/LD4rDWb1B3kcetQokhPmasdVKZp9aw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Russell King <rmk+kernel@armlinux.org.uk>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Chanwoo Choi <cw00.choi@samsung.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Dmitry Osipenko <digetx@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 15/85] ASoC: kirkwood: fix IRQ error handling
-Date:   Tue, 29 Sep 2020 12:59:42 +0200
-Message-Id: <20200929105928.976856810@linuxfoundation.org>
+Subject: [PATCH 4.4 16/85] PM / devfreq: tegra30: Fix integer overflow on CPUs freq max out
+Date:   Tue, 29 Sep 2020 12:59:43 +0200
+Message-Id: <20200929105929.026530952@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200929105928.198942536@linuxfoundation.org>
 References: <20200929105928.198942536@linuxfoundation.org>
@@ -43,34 +44,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Russell King <rmk+kernel@armlinux.org.uk>
+From: Dmitry Osipenko <digetx@gmail.com>
 
-[ Upstream commit 175fc928198236037174e5c5c066fe3c4691903e ]
+[ Upstream commit 53b4b2aeee26f42cde5ff2a16dd0d8590c51a55a ]
 
-Propagate the error code from request_irq(), rather than returning
--EBUSY.
+There is another kHz-conversion bug in the code, resulting in integer
+overflow. Although, this time the resulting value is 4294966296 and it's
+close to ULONG_MAX, which is okay in this case.
 
-Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
-Link: https://lore.kernel.org/r/E1iNIqh-0000tW-EZ@rmk-PC.armlinux.org.uk
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Reviewed-by: Chanwoo Choi <cw00.choi@samsung.com>
+Tested-by: Peter Geis <pgwipeout@gmail.com>
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+Signed-off-by: Chanwoo Choi <cw00.choi@samsung.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/kirkwood/kirkwood-dma.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/devfreq/tegra-devfreq.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/kirkwood/kirkwood-dma.c b/sound/soc/kirkwood/kirkwood-dma.c
-index dbfdfe99c69df..231c7d97333c7 100644
---- a/sound/soc/kirkwood/kirkwood-dma.c
-+++ b/sound/soc/kirkwood/kirkwood-dma.c
-@@ -136,7 +136,7 @@ static int kirkwood_dma_open(struct snd_pcm_substream *substream)
- 		err = request_irq(priv->irq, kirkwood_dma_irq, IRQF_SHARED,
- 				  "kirkwood-i2s", priv);
- 		if (err)
--			return -EBUSY;
-+			return err;
+diff --git a/drivers/devfreq/tegra-devfreq.c b/drivers/devfreq/tegra-devfreq.c
+index 64a2e02b87d78..0b0de6a049afb 100644
+--- a/drivers/devfreq/tegra-devfreq.c
++++ b/drivers/devfreq/tegra-devfreq.c
+@@ -79,6 +79,8 @@
  
- 		/*
- 		 * Enable Error interrupts. We're only ack'ing them but
+ #define KHZ							1000
+ 
++#define KHZ_MAX						(ULONG_MAX / KHZ)
++
+ /* Assume that the bus is saturated if the utilization is 25% */
+ #define BUS_SATURATION_RATIO					25
+ 
+@@ -179,7 +181,7 @@ struct tegra_actmon_emc_ratio {
+ };
+ 
+ static struct tegra_actmon_emc_ratio actmon_emc_ratios[] = {
+-	{ 1400000, ULONG_MAX },
++	{ 1400000,    KHZ_MAX },
+ 	{ 1200000,    750000 },
+ 	{ 1100000,    600000 },
+ 	{ 1000000,    500000 },
 -- 
 2.25.1
 
