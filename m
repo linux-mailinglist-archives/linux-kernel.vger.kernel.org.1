@@ -2,130 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB56127CE78
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 15:07:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FD8827CE83
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 15:08:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729185AbgI2NHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 09:07:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49550 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728241AbgI2NHo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 09:07:44 -0400
-Received: from kernel.org (unknown [87.71.73.56])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3D11420848;
-        Tue, 29 Sep 2020 13:07:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601384863;
-        bh=UZ0iM96aIv5qmIGrHFQ3nNuGd8q14qoW3IN+2hfXGCU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ff4cS6H09wsob6fG8dvSzyj1LvUQfBbkOpFxI0sSdU98FA9rPjkXt2iow0J8KbiXE
-         zb+Di1ti/4IJRmKz0SOIT14xl6TtZOwVL/UB+NG+rI/tt+P8xz5F0/dp4cG22+QEa+
-         PIvBVdUoENxn2sQrb9B2BEdjgzVtwRerxkMIPhoA=
-Date:   Tue, 29 Sep 2020 16:07:23 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Idan Yaniv <idan.yaniv@ibm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Shuah Khan <shuah@kernel.org>, Tycho Andersen <tycho@tycho.ws>,
-        Will Deacon <will@kernel.org>, linux-api@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org
-Subject: Re: [PATCH v6 5/6] mm: secretmem: use PMD-size pages to amortize
- direct map fragmentation
-Message-ID: <20200929130723.GH2142832@kernel.org>
-References: <20200924132904.1391-1-rppt@kernel.org>
- <20200924132904.1391-6-rppt@kernel.org>
- <20200925074125.GQ2628@hirez.programming.kicks-ass.net>
- <8435eff6-7fa9-d923-45e5-d8850e4c6d73@redhat.com>
- <20200925095029.GX2628@hirez.programming.kicks-ass.net>
+        id S1729406AbgI2NHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 09:07:54 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:55434 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728346AbgI2NHw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 09:07:52 -0400
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08TD1lhL087243;
+        Tue, 29 Sep 2020 09:07:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=ZcPwatVVGGsdrG5qoLd7oo/6QSYi4b7oVsRPZCVSCv0=;
+ b=hMBciB/e/paaxMbwOcrlTziWVDhjn90lQ4Nfk0ddWI9bPQxQSwqHBNNaKAxYLc7TkR3k
+ 6nVG2S1qN564KFhPtGTXSySMg5wRdNjl/9T0+4hrgQ34K6xoeLrOnY9cEpgSysxFVZtq
+ +BAEQBGF4GqebDLXOHIV0SeyfrahJkjmywx1iqqGGs1/KXC4SKGnWkEENVKIIOGNI+Tf
+ kgfXUbma9GXJirC9xwsSnaR5/Q97QbMbU7SB3kn05TnDe75W6TPGYu18Z6sr8aGAAM0A
+ /Knlf0ekf/B3hzY6vEa8YyjE0qe2t+jjBIinbJAQh8qUNr8eJUIfGKF1Cw769M/TAFHs jA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33v58ygs2t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 29 Sep 2020 09:07:48 -0400
+Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08TD3d1O097479;
+        Tue, 29 Sep 2020 09:07:47 -0400
+Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33v58ygs1r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 29 Sep 2020 09:07:47 -0400
+Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
+        by ppma04dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08TCw6Xu017060;
+        Tue, 29 Sep 2020 13:07:46 GMT
+Received: from b03cxnp08028.gho.boulder.ibm.com (b03cxnp08028.gho.boulder.ibm.com [9.17.130.20])
+        by ppma04dal.us.ibm.com with ESMTP id 33sw99395q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 29 Sep 2020 13:07:46 +0000
+Received: from b03ledav002.gho.boulder.ibm.com (b03ledav002.gho.boulder.ibm.com [9.17.130.233])
+        by b03cxnp08028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08TD7gTX24773098
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 29 Sep 2020 13:07:42 GMT
+Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C5FC9136067;
+        Tue, 29 Sep 2020 13:07:42 +0000 (GMT)
+Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2A267136055;
+        Tue, 29 Sep 2020 13:07:41 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.85.170.177])
+        by b03ledav002.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Tue, 29 Sep 2020 13:07:40 +0000 (GMT)
+Subject: Re: [PATCH v10 02/16] s390/vfio-ap: use new AP bus interface to
+ search for queue devices
+To:     Halil Pasic <pasic@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, freude@linux.ibm.com, borntraeger@de.ibm.com,
+        cohuck@redhat.com, mjrosato@linux.ibm.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com,
+        fiuczy@linux.ibm.com, frankja@linux.ibm.com, david@redhat.com,
+        imbrenda@linux.ibm.com, hca@linux.ibm.com, gor@linux.ibm.com,
+        kernel test robot <lkp@intel.com>
+References: <20200821195616.13554-1-akrowiak@linux.ibm.com>
+ <20200821195616.13554-3-akrowiak@linux.ibm.com>
+ <20200925042729.3b9d5704.pasic@linux.ibm.com>
+From:   Tony Krowiak <akrowiak@linux.ibm.com>
+Message-ID: <ed021f29-927d-5bd6-4f2c-466f502f49f4@linux.ibm.com>
+Date:   Tue, 29 Sep 2020 09:07:40 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200925095029.GX2628@hirez.programming.kicks-ass.net>
+In-Reply-To: <20200925042729.3b9d5704.pasic@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-29_04:2020-09-29,2020-09-29 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxlogscore=999
+ impostorscore=0 suspectscore=0 malwarescore=0 spamscore=0
+ priorityscore=1501 phishscore=0 lowpriorityscore=0 mlxscore=0
+ clxscore=1015 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009290111
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 11:50:29AM +0200, Peter Zijlstra wrote:
-> On Fri, Sep 25, 2020 at 11:00:30AM +0200, David Hildenbrand wrote:
-> > On 25.09.20 09:41, Peter Zijlstra wrote:
-> > > On Thu, Sep 24, 2020 at 04:29:03PM +0300, Mike Rapoport wrote:
-> > >> From: Mike Rapoport <rppt@linux.ibm.com>
-> > >>
-> > >> Removing a PAGE_SIZE page from the direct map every time such page is
-> > >> allocated for a secret memory mapping will cause severe fragmentation of
-> > >> the direct map. This fragmentation can be reduced by using PMD-size pages
-> > >> as a pool for small pages for secret memory mappings.
-> > >>
-> > >> Add a gen_pool per secretmem inode and lazily populate this pool with
-> > >> PMD-size pages.
-> > > 
-> > > What's the actual efficacy of this? Since the pmd is per inode, all I
-> > > need is a lot of inodes and we're in business to destroy the directmap,
-> > > no?
-> > > 
-> > > Afaict there's no privs needed to use this, all a process needs is to
-> > > stay below the mlock limit, so a 'fork-bomb' that maps a single secret
-> > > page will utterly destroy the direct map.
-> > > 
-> > > I really don't like this, at all.
-> > 
-> > As I expressed earlier, I would prefer allowing allocation of secretmem
-> > only from a previously defined CMA area. This would physically locally
-> > limit the pain.
-> 
-> Given that this thing doesn't have a migrate hook, that seems like an
-> eminently reasonable contraint. Because not only will it mess up the
-> directmap, it will also destroy the ability of the page-allocator /
-> compaction to re-form high order blocks by sprinkling holes throughout.
-> 
-> Also, this is all very close to XPFO, yet I don't see that mentioned
-> anywhere.
 
-It's close to XPFO in the sense it removes pages from the kernel page
-table. But unlike XPFO memfd_secret() does not mean allowing access to
-these pages in the kernel until they are freed by the user. And, unlike
-XPFO, it does not require TLB flushing all over the place.
 
-> Further still, it has this HAVE_SECRETMEM_UNCACHED nonsense which is
-> completely unused. I'm not at all sure exposing UNCACHED to random
-> userspace is a sane idea.
+On 9/24/20 10:27 PM, Halil Pasic wrote:
+> On Fri, 21 Aug 2020 15:56:02 -0400
+> Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+>
+>> --- a/drivers/s390/crypto/vfio_ap_ops.c
+>> +++ b/drivers/s390/crypto/vfio_ap_ops.c
+>> @@ -26,43 +26,26 @@
+>>   
+>>   static int vfio_ap_mdev_reset_queues(struct mdev_device *mdev);
+>>   
+>> -static int match_apqn(struct device *dev, const void *data)
+>> -{
+>> -	struct vfio_ap_queue *q = dev_get_drvdata(dev);
+>> -
+>> -	return (q->apqn == *(int *)(data)) ? 1 : 0;
+>> -}
+>> -
+>>   /**
+>> - * vfio_ap_get_queue: Retrieve a queue with a specific APQN from a list
+>> - * @matrix_mdev: the associated mediated matrix
+>> + * vfio_ap_get_queue: Retrieve a queue with a specific APQN.
+>>    * @apqn: The queue APQN
+>>    *
+>> - * Retrieve a queue with a specific APQN from the list of the
+>> - * devices of the vfio_ap_drv.
+>> - * Verify that the APID and the APQI are set in the matrix.
+>> + * Retrieve a queue with a specific APQN from the AP queue devices attached to
+>> + * the AP bus.
+>>    *
+>> - * Returns the pointer to the associated vfio_ap_queue
+>> + * Returns the pointer to the vfio_ap_queue with the specified APQN, or NULL.
+>>    */
+>> -static struct vfio_ap_queue *vfio_ap_get_queue(
+>> -					struct ap_matrix_mdev *matrix_mdev,
+>> -					int apqn)
+>> +static struct vfio_ap_queue *vfio_ap_get_queue(unsigned long apqn)
+>>   {
+>> +	struct ap_queue *queue;
+>>   	struct vfio_ap_queue *q;
+>> -	struct device *dev;
+>>   
+>> -	if (!test_bit_inv(AP_QID_CARD(apqn), matrix_mdev->matrix.apm))
+>> -		return NULL;
+>> -	if (!test_bit_inv(AP_QID_QUEUE(apqn), matrix_mdev->matrix.aqm))
+>> +	queue = ap_get_qdev(apqn);
+>> +	if (!queue)
+>>   		return NULL;
+>>   
+>> -	dev = driver_find_device(&matrix_dev->vfio_ap_drv->driver, NULL,
+>> -				 &apqn, match_apqn);
+>> -	if (!dev)
+>> -		return NULL;
+>> -	q = dev_get_drvdata(dev);
+>> -	q->matrix_mdev = matrix_mdev;
+>> -	put_device(dev);
+>> +	q = dev_get_drvdata(&queue->ap_dev.device);
+> Is this cast here safe? (I don't think it is.)
 
-The uncached mappings were originally proposed as a mean "... to prevent
-or considerably restrict speculation on such pages" [1] as a comment to
-my initial proposal to use mmap(MAP_EXCLUSIVE).
+In the probe, we execute:
+dev_set_drvdata(&queue->ap_dev.device, q);
 
-I've added the ability to create uncached mappings into the fd-based
-implementation of the exclusive mappings as it is indeed can reduce
-availability of side channels and the implementation was quite straight
-forward.
+I don't get any compile nor execution errors. Why wouldn't it be safe?
 
-[1] https://lore.kernel.org/linux-mm/2236FBA76BA1254E88B949DDB74E612BA4EEC0CE@IRSMSX102.ger.corp.intel.com/
+>
+>> +	put_device(&queue->ap_dev.device);
+>>   
+>>   	return q;
+>>   }
 
--- 
-Sincerely yours,
-Mike.
