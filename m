@@ -2,236 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E23E27CB29
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:27:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC55A27CAC1
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:22:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732666AbgI2MZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 08:25:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37802 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729134AbgI2Ldm (ORCPT
+        id S1732419AbgI2MVd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 08:21:33 -0400
+Received: from esa2.microchip.iphmx.com ([68.232.149.84]:11518 "EHLO
+        esa2.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728861AbgI2LfZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:33:42 -0400
-Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 248FFC0613DA
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 04:26:01 -0700 (PDT)
-Received: by mail-qt1-x849.google.com with SMTP id f5so2690691qtk.11
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 04:26:01 -0700 (PDT)
+        Tue, 29 Sep 2020 07:35:25 -0400
+X-Greylist: delayed 388 seconds by postgrey-1.27 at vger.kernel.org; Tue, 29 Sep 2020 07:35:24 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1601379324; x=1632915324;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=FFTSLuhmFvpQuYs6UlCDy77D/Y6zKTqphrofGrE53CQ=;
+  b=gp5axFftXnhzER2HH4cjZPGxA+slxVX9h8ZQjEVA6KuT+58zV57pgbPe
+   SC1owcKPFyeQwf1OZ+SNRMyUGdrEbhSiPJwGsEcm980AimGR+poUBWOfV
+   s4jOjtaNWsKNsaUhOrUWFe7owrD3aixfZLtlHw2MonmOg0cV0o3NkzoUv
+   SID8+oBBy9uFgE1DOROmdQENAsgSe9/ds7j3ULj16ILrBq279vQyLswwq
+   w5TuGt1ZCfOTY5OONFCTFWrfJZe7dKIdZFGRgwddYWVzvM/W4mKy0AqsT
+   EBLAL+6s6mD7SRePyLh5CWiSKkuA8LROAGbSlxjC+zQmyaFy8GDgKeXbZ
+   A==;
+IronPort-SDR: TdPzTCeSGanF/gZzft2eIpss/k9uVzETofAIHPWWz2LCC1QY9urvPdQHZDE0euXriVymJOwVrD
+ yq6O+Ylk3slSSMDEao8UhC/K82BVyr/UCiunK/ynFdHVQykCZjctDuJszXMerhEw4bLj5fDp2K
+ 4YTBt3w+R4CnVEpKlLfMNQmkVvMYrhzDj6oR73ublJF4DF7S2+JvGNYo7i+tHYwe71CVgZ9pmB
+ jcXBFpPL8R+UqlUY7JG2idt9t8pxnMA6lYt/s2otTfo53NeYjYXaSP9/7aI50Mpfh43gjmQ3s/
+ Hqk=
+X-IronPort-AV: E=Sophos;i="5.77,318,1596524400"; 
+   d="scan'208";a="90788854"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 29 Sep 2020 04:26:28 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 29 Sep 2020 04:26:27 -0700
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.72) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3 via Frontend
+ Transport; Tue, 29 Sep 2020 04:26:18 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=EIgSYfBTA+B1nIC+UMzZL6mMr5QPpEM2VPbuLBWSJYP7VffGQGPsv8FbPofVPmyFkCgu8CxcI4o33MH36xT8P8ga2Bh6pWsYyzH6BSkF8QikLhNXK3HNbiAQE70y1CRhYBreZFq35Hkc/EWxgjtHxKfTyAf4ZDblIsXQdUFu5nIfSPHaDuLYkshuU8WOFZ9Z0jeU1rOsWcJme5ZMcilUWGXt0B43laVXyWdUG3DGXnn/81ohZhUEnRTzdAp4GfF+i45vD5aPz0cKwH3VNWu7FMCrrajqT7UNs8SIW4odVC5rnkUzuED5i0re08FePFdDGa+c3lSfVlq0b1HDFPlgWw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FFTSLuhmFvpQuYs6UlCDy77D/Y6zKTqphrofGrE53CQ=;
+ b=ZcgVXji8d37GB3BG/M35/A667Ftrc3+k7Wsk/vLcwoDzL+lmEL08/o16fX3m23n7SNFinU27FX+R4x0gGWGFGups74fEMpkcigOk4B4p8pHdvXv/8IX/aLBEsCkC0WhO5S1IF8rcU81SvW4MKqEN8u2RoMz30obRjAwbIJwjSHN03eOlVLFSjqNYyPbgfqNKGLCyTOsPXNOgNL1OLvyU+NTwQ6KIB8huBb3RaegbIu0Xn1ijCVJVTS31kIo97wNy2sal8TDjr6YsdIosqBOuy3R/DtEXD6jG4Lw/M+9pFvokeNCeclpmeyXTIoU1/s8rHOxdm68QxZQSUmN2wKuwPQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=7yVE0hDJj9pKSNAQ+VSoIDhA2dHCIkPYxHfj7EtvuPc=;
-        b=W7CiVMjMHM5DUVf1tvFpAh8T7aM8jX8iIecVJoyqZtyn2ZSQ9jCz980tlMzkD8Mu93
-         Dw0yEcprM09SYdipQO+asMq7wE2zofDyw3+Vs0db+X6B2RVuMYLQ5cAAy3WAt6fxR4AO
-         kEIKIgV9VlsziNxX1kl2nXgMGz7/MmsTzER0clepM0MV2Ov/4w34URn61U655/ijmmFu
-         dwrrK1pKqyxZSJ1nk4vUnxWRlPWeixUH4qa7vTCm7d8NluQ7OeTrIv8UXEvV7Pn9/On2
-         ThAXrKYJsTc+VFb6FU+NdANb1dyiYOYI+tUqDg+K7qeFm2Zc1gtlxLvP1bNsieSjuxup
-         imMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=7yVE0hDJj9pKSNAQ+VSoIDhA2dHCIkPYxHfj7EtvuPc=;
-        b=OoPQglsaLED0jrp5HaRYX18KpfuXj6pziAEnYYWHUJCbmjMk4a3nvVmpWZzCmkb/v9
-         jqZNNukJlg6xQxob4hrZMIUrhDTDOHS5Rnw/Dc+852nvJTtkHtdO6uqyrwwR55nTKZVr
-         obPsZvtlufpzjRjxbsL8nbLHTGPBfoIRRDMfCV8u1Tr+6V17ue1XYsokOmtoDjsnTHZi
-         OePMn0AGHa+xMcsfrSKUPYbfpagaXF0BqxUtdv4PNmqf9Yd2aPeL+dgCy7OIGuJs3y6i
-         m6uAV4VnKxLTfbzG7J+5akV+HJbtsvfpXhVlwdeI+En55KB5sL8RE80P2ijGJMPz+F7E
-         kRSw==
-X-Gm-Message-State: AOAM530D4mC2adtA+Vreqf647QFxZdVvl8kiOZOecROvJPV9bBig+j56
-        fRvBSRlJU7fX1oOZK9LsmzCMA3RkVQ9Gl4iNzA==
-X-Google-Smtp-Source: ABdhPJypGMmrA0vpu0XbaNlkImYP9ncaoU6oLvtM1ZgHYrRLX27xgR7ILPDHjRuuk2xG5qYyYE0IIJWtXNg5o38jLw==
-Sender: "howardchung via sendgmr" 
-        <howardchung@howardchung-p920.tpe.corp.google.com>
-X-Received: from howardchung-p920.tpe.corp.google.com ([2401:fa00:1:10:f693:9fff:fef4:4e45])
- (user=howardchung job=sendgmr) by 2002:a0c:f0d1:: with SMTP id
- d17mr3995373qvl.34.1601378760125; Tue, 29 Sep 2020 04:26:00 -0700 (PDT)
-Date:   Tue, 29 Sep 2020 19:25:26 +0800
-In-Reply-To: <20200929192508.v7.1.Ib75f58e90c477f9b82c5598f00c59f0e95a1a352@changeid>
-Message-Id: <20200929192508.v7.4.I756c1fecc03bcc0cd94400b4992cd7e743f4b3e2@changeid>
-Mime-Version: 1.0
-References: <20200929192508.v7.1.Ib75f58e90c477f9b82c5598f00c59f0e95a1a352@changeid>
-X-Mailer: git-send-email 2.28.0.709.gb0816b6eb0-goog
-Subject: [PATCH v7 4/4] Bluetooth: Add toggle to switch off interleave scan
-From:   Howard Chung <howardchung@google.com>
-To:     linux-bluetooth@vger.kernel.org, marcel@holtmann.org,
-        luiz.dentz@gmail.com
-Cc:     mmandlik@chromium.org, alainm@chromium.org, mcchou@chromium.org,
-        Howard Chung <howardchung@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FFTSLuhmFvpQuYs6UlCDy77D/Y6zKTqphrofGrE53CQ=;
+ b=teOOf3KoXA1BtkyNr47jAGEbbUJms7KYKf5QE2xeRbt24k8LC/Yc2HONjlzan2m0xm7Q2zcm0twj5DOEuYK4ZIhVq41VJmub2K3p9L+GeXfJsXFY9A7L8CAYLMsjtrpexlOaS3N1nLUjxpb9F5cwhW3tMtkPV2oVqFSrPbt4HYk=
+Received: from DM5PR11MB1914.namprd11.prod.outlook.com (2603:10b6:3:112::12)
+ by DM5PR11MB1849.namprd11.prod.outlook.com (2603:10b6:3:111::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.25; Tue, 29 Sep
+ 2020 11:26:25 +0000
+Received: from DM5PR11MB1914.namprd11.prod.outlook.com
+ ([fe80::f44a:f58e:c13b:947a]) by DM5PR11MB1914.namprd11.prod.outlook.com
+ ([fe80::f44a:f58e:c13b:947a%4]) with mapi id 15.20.3433.032; Tue, 29 Sep 2020
+ 11:26:25 +0000
+From:   <Tudor.Ambarus@microchip.com>
+To:     <p.yadav@ti.com>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
+        <vigneshr@ti.com>, <linux-mtd@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <nsekhar@ti.com>, <boris.brezillon@collabora.com>
+Subject: Re: [PATCH v13 09/15] mtd: spi-nor: core: enable octal DTR mode when
+ possible
+Thread-Topic: [PATCH v13 09/15] mtd: spi-nor: core: enable octal DTR mode when
+ possible
+Thread-Index: AQHWllNcSEOJ06dulUeHo292BYv/qQ==
+Date:   Tue, 29 Sep 2020 11:26:25 +0000
+Message-ID: <feb046fd-a9ea-9ea3-55f7-bf823ed1e61f@microchip.com>
+References: <20200916124418.833-1-p.yadav@ti.com>
+ <20200916124418.833-10-p.yadav@ti.com>
+In-Reply-To: <20200916124418.833-10-p.yadav@ti.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+authentication-results: ti.com; dkim=none (message not signed)
+ header.d=none;ti.com; dmarc=none action=none header.from=microchip.com;
+x-originating-ip: [82.77.80.20]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 3bf59fcb-2ef5-4128-b14d-08d8646a8031
+x-ms-traffictypediagnostic: DM5PR11MB1849:
+x-microsoft-antispam-prvs: <DM5PR11MB1849BBBE7400B863F60030C8F0320@DM5PR11MB1849.namprd11.prod.outlook.com>
+x-bypassexternaltag: True
+x-ms-oob-tlc-oobclassifiers: OLM:4714;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: eMjoB/MyftwttX9GZg4LPedqPKaaQZ0pEeE+Y9ugOaJjH4vtJWNBDnxpw4shGKUOAcJIVaSYfSHdEDLlulXCHppktg58pgfPbeDwESRmpOZjyI8w9bZvEdgqknY9er/lxwTtp3aGUZYVvSbLLsXqugP//0cC7uv4zRF9RM0a9TKzKTDQjkVgsW8Zl4Z1Dsy36aSnvHJiAR8oGiHTVpxgOJkBF4J2pFqIl8aEzAzz4YkYc2l6Z5fTVEAr4tKRDaIXb35LBd6XUULHjEgCST4M6gvIbQ1k6pusblGfau2XKm2ZfwObvfPHZz4tp+mKRk9hjLCyaivPVp3K0d7R3fJpm/fRXCcAzURPgIeseBwCZw4wkcMN3lTq5bgzK9lhLkXRzZG/yi2euH8JmqVVs3WDcwipKcaSC+aZHbFHOgtoaxyiOUS73JcMgrmV479LAEJa
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR11MB1914.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(396003)(136003)(376002)(39860400002)(366004)(71200400001)(54906003)(5660300002)(86362001)(64756008)(66556008)(66476007)(66446008)(110136005)(76116006)(91956017)(36756003)(8936002)(2616005)(8676002)(66946007)(478600001)(26005)(2906002)(6512007)(53546011)(186003)(6506007)(31696002)(6486002)(31686004)(316002)(4326008)(43740500002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: l0Zm0EX3KBlJ34ZAaP5Pl86H6EpE2gs1xLw730arnaJdncfifnTELH/OYNvFmHhphCL98E07vxSMJw7Xk7p1NXiq5Lb+/85VjTntMTcOHndVKFEXvk6idDzflNFjgBKZ3NxkW1mGa4hxgTcQxlV/JYV9epMtLeHb0HYp1EeWVpFOrELXblYmNkjvVw71HRPaEAP26VPhT2Y40QFeqRLEwD9JBxyu+qhWLyiIn4DBFTvOBctMbWJVZfGtQ8+Wgz5D9OHNaj5Q/oag+Lwc+vb7jV1o2wogzCrqESoDKRjGCkovbl5mCrhtuBgirz3dPJLGl6R3AIReRlJ2CROB8d6GM3FT4lMxpbHYIWPk0v+xWgKgB49MJ0VLCTaHqZeZBdPhoIflSpkwpQnpzaqob8ZCrjJg3kF8pr7gHidgqW0wPzil3VIfQINjEikZPEP/rIz6uFsrbmUZTGKu1QiRDx6us5i/qaCG8tSR+6mg9WQchXUJV1LzlMB37Ysp+U5dHKSruLkagzVR74DkMzPspuW0V3hn0/gO7bGdbtNosNN8dvWoNME4uK+CiSt8S8PbkuMF9evUQeggu2Nnp6mAU6XXMTEYrn+Xz9PPIW+G8A2CA8SPWghg7ci5UZYao7Thh6pLeoCavurtL6BjDD9ol2EzOg==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <96ECCF50E8F47043A6775C52E20CB543@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR11MB1914.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3bf59fcb-2ef5-4128-b14d-08d8646a8031
+X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Sep 2020 11:26:25.1157
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Rkntc0fvetsthqsoBlFnkIlswmpkKDs3rwexkqmZBybgD4OURvmYr6uwTh8LocWl9CCE68uCim1c3/bWgICx8722t2F+vXzk+agFYJEjsWI=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR11MB1849
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch add a configurable parameter to switch off the interleave
-scan feature.
-
-Signed-off-by: Howard Chung <howardchung@google.com>
-Reviewed-by: Alain Michaud <alainm@chromium.org>
----
-
-Changes in v7:
-- Fix test bot warning
-
-Changes in v6:
-- Change the type of enable_advmon_interleave_scan to u8
-
-Changes in v4:
-- Set EnableAdvMonInterleaveScan default to Disable
-- Fix 80 chars limit in mgmt_config.c
-
- include/net/bluetooth/hci_core.h |  1 +
- net/bluetooth/hci_core.c         |  1 +
- net/bluetooth/hci_request.c      |  3 ++-
- net/bluetooth/mgmt_config.c      | 41 ++++++++++++++++++++++----------
- 4 files changed, 33 insertions(+), 13 deletions(-)
-
-diff --git a/include/net/bluetooth/hci_core.h b/include/net/bluetooth/hci_core.h
-index cfede18709d8f..63c6d656564a1 100644
---- a/include/net/bluetooth/hci_core.h
-+++ b/include/net/bluetooth/hci_core.h
-@@ -363,6 +363,7 @@ struct hci_dev {
- 	__u32		clock;
- 	__u16		advmon_allowlist_duration;
- 	__u16		advmon_no_filter_duration;
-+	__u8		enable_advmon_interleave_scan;
- 
- 	__u16		devid_source;
- 	__u16		devid_vendor;
-diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
-index 6c8850149265a..c37b2d5395abc 100644
---- a/net/bluetooth/hci_core.c
-+++ b/net/bluetooth/hci_core.c
-@@ -3595,6 +3595,7 @@ struct hci_dev *hci_alloc_dev(void)
- 	/* The default values will be chosen in the future */
- 	hdev->advmon_allowlist_duration = 300;
- 	hdev->advmon_no_filter_duration = 500;
-+	hdev->enable_advmon_interleave_scan = 0x00;	/* Default to disable */
- 
- 	hdev->sniff_max_interval = 800;
- 	hdev->sniff_min_interval = 80;
-diff --git a/net/bluetooth/hci_request.c b/net/bluetooth/hci_request.c
-index 4048c82d4257f..23381f263678b 100644
---- a/net/bluetooth/hci_request.c
-+++ b/net/bluetooth/hci_request.c
-@@ -1057,7 +1057,8 @@ void hci_req_add_le_passive_scan(struct hci_request *req)
- 				      &own_addr_type))
- 		return;
- 
--	if (__hci_update_interleaved_scan(hdev))
-+	if (hdev->enable_advmon_interleave_scan &&
-+	    __hci_update_interleaved_scan(hdev))
- 		return;
- 
- 	/* Adding or removing entries from the white list must
-diff --git a/net/bluetooth/mgmt_config.c b/net/bluetooth/mgmt_config.c
-index 2d3ad288c78ac..a9d580b4aaad1 100644
---- a/net/bluetooth/mgmt_config.c
-+++ b/net/bluetooth/mgmt_config.c
-@@ -14,7 +14,13 @@
- #define HDEV_PARAM_U16(_param_code_, _param_name_) \
- { \
- 	{ cpu_to_le16(_param_code_), sizeof(__u16) }, \
--	{ cpu_to_le16(hdev->_param_name_) } \
-+	{ .value_le16 = cpu_to_le16(hdev->_param_name_) } \
-+}
-+
-+#define HDEV_PARAM_U8(_param_code_, _param_name_) \
-+{ \
-+	{ (_param_code_), sizeof(__u8) }, \
-+	{ .value_u8 = hdev->_param_name_ } \
- }
- 
- #define HDEV_PARAM_U16_JIFFIES_TO_MSECS(_param_code_, _param_name_) \
-@@ -30,11 +36,12 @@ int read_def_system_config(struct sock *sk, struct hci_dev *hdev, void *data,
- 		struct mgmt_tlv entry;
- 		union {
- 			/* This is a simplification for now since all values
--			 * are 16 bits.  In the future, this code may need
-+			 * are fixed bits.  In the future, this code may need
- 			 * refactoring to account for variable length values
- 			 * and properly calculate the required buffer size.
- 			 */
--			__le16 value;
-+			__le16 value_le16;
-+			__u8 value_u8;
- 		};
- 	} __packed params[] = {
- 		/* Please see mgmt-api.txt for documentation of these values */
-@@ -69,6 +76,7 @@ int read_def_system_config(struct sock *sk, struct hci_dev *hdev, void *data,
- 						def_le_autoconnect_timeout),
- 		HDEV_PARAM_U16(0x001d, advmon_allowlist_duration),
- 		HDEV_PARAM_U16(0x001e, advmon_no_filter_duration),
-+		HDEV_PARAM_U8(0x001f, enable_advmon_interleave_scan),
- 	};
- 	struct mgmt_rp_read_def_system_config *rp = (void *)params;
- 
-@@ -81,7 +89,7 @@ int read_def_system_config(struct sock *sk, struct hci_dev *hdev, void *data,
- 
- #define TO_TLV(x)		((struct mgmt_tlv *)(x))
- #define TLV_GET_LE16(tlv)	le16_to_cpu(*((__le16 *)(TO_TLV(tlv)->value)))
--
-+#define TLV_GET_U8(tlv)		(*((__u8 *)(TO_TLV(tlv)->value)))
- int set_def_system_config(struct sock *sk, struct hci_dev *hdev, void *data,
- 			  u16 data_len)
- {
-@@ -100,6 +108,7 @@ int set_def_system_config(struct sock *sk, struct hci_dev *hdev, void *data,
- 		const u16 exp_len = sizeof(struct mgmt_tlv) +
- 				    len;
- 		const u16 type = le16_to_cpu(TO_TLV(buffer)->type);
-+		size_t exp_data_len = 0;
- 
- 		if (buffer_left < exp_len) {
- 			bt_dev_warn(hdev, "invalid len left %d, exp >= %d",
-@@ -142,20 +151,25 @@ int set_def_system_config(struct sock *sk, struct hci_dev *hdev, void *data,
- 		case 0x001b:
- 		case 0x001d:
- 		case 0x001e:
--			if (len != sizeof(u16)) {
--				bt_dev_warn(hdev, "invalid length %d, exp %zu for type %d",
--					    len, sizeof(u16), type);
--
--				return mgmt_cmd_status(sk, hdev->id,
--					MGMT_OP_SET_DEF_SYSTEM_CONFIG,
--					MGMT_STATUS_INVALID_PARAMS);
--			}
-+			exp_data_len = sizeof(u16);
-+			break;
-+		case 0x001f:
-+			exp_data_len = sizeof(u8);
- 			break;
- 		default:
- 			bt_dev_warn(hdev, "unsupported parameter %u", type);
- 			break;
- 		}
- 
-+		if (exp_data_len && len != exp_data_len) {
-+			bt_dev_warn(hdev, "invalid length %d, exp %zu for type %d",
-+				    len, exp_data_len, type);
-+
-+			return mgmt_cmd_status(sk, hdev->id,
-+				MGMT_OP_SET_DEF_SYSTEM_CONFIG,
-+				MGMT_STATUS_INVALID_PARAMS);
-+		}
-+
- 		buffer_left -= exp_len;
- 		buffer += exp_len;
- 	}
-@@ -261,6 +275,9 @@ int set_def_system_config(struct sock *sk, struct hci_dev *hdev, void *data,
- 		case 0x0001e:
- 			hdev->advmon_no_filter_duration = TLV_GET_LE16(buffer);
- 			break;
-+		case 0x0001f:
-+			hdev->enable_advmon_interleave_scan = TLV_GET_U8(buffer);
-+			break;
- 		default:
- 			bt_dev_warn(hdev, "unsupported parameter %u", type);
- 			break;
--- 
-2.28.0.709.gb0816b6eb0-goog
-
+SGksDQoNCk9uIDkvMTYvMjAgMzo0NCBQTSwgUHJhdHl1c2ggWWFkYXYgd3JvdGU6DQo+IEVYVEVS
+TkFMIEVNQUlMOiBEbyBub3QgY2xpY2sgbGlua3Mgb3Igb3BlbiBhdHRhY2htZW50cyB1bmxlc3Mg
+eW91IGtub3cgdGhlIGNvbnRlbnQgaXMgc2FmZQ0KPiANCj4gQWxsb3cgZmxhc2hlcyB0byBzcGVj
+aWZ5IGEgaG9vayB0byBlbmFibGUgb2N0YWwgRFRSIG1vZGUuIFVzZSB0aGlzIGhvb2sNCj4gd2hl
+bmV2ZXIgcG9zc2libGUgdG8gZ2V0IG9wdGltYWwgdHJhbnNmZXIgc3BlZWRzLg0KPiANCj4gU2ln
+bmVkLW9mZi1ieTogUHJhdHl1c2ggWWFkYXYgPHAueWFkYXZAdGkuY29tPg0KPiAtLS0NCj4gIGRy
+aXZlcnMvbXRkL3NwaS1ub3IvY29yZS5jIHwgMzUgKysrKysrKysrKysrKysrKysrKysrKysrKysr
+KysrKysrKysNCj4gIGRyaXZlcnMvbXRkL3NwaS1ub3IvY29yZS5oIHwgIDIgKysNCj4gIDIgZmls
+ZXMgY2hhbmdlZCwgMzcgaW5zZXJ0aW9ucygrKQ0KPiANCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMv
+bXRkL3NwaS1ub3IvY29yZS5jIGIvZHJpdmVycy9tdGQvc3BpLW5vci9jb3JlLmMNCj4gaW5kZXgg
+ODdjNTY4ZGViZjE0Li42ZWU5MzU0NGQ3MmYgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvbXRkL3Nw
+aS1ub3IvY29yZS5jDQo+ICsrKyBiL2RyaXZlcnMvbXRkL3NwaS1ub3IvY29yZS5jDQo+IEBAIC0z
+MDY5LDYgKzMwNjksMzUgQEAgc3RhdGljIGludCBzcGlfbm9yX2luaXRfcGFyYW1zKHN0cnVjdCBz
+cGlfbm9yICpub3IpDQo+ICAgICAgICAgcmV0dXJuIDA7DQo+ICB9DQo+IA0KPiArLyoqIHNwaV9u
+b3Jfb2N0YWxfZHRyX2VuYWJsZSgpIC0gZW5hYmxlIE9jdGFsIERUUiBJL08gaWYgbmVlZGVkDQo+
+ICsgKiBAbm9yOiAgICAgICAgICAgICAgICAgcG9pbnRlciB0byBhICdzdHJ1Y3Qgc3BpX25vcicN
+Cj4gKyAqIEBlbmFibGU6ICAgICAgICAgICAgICB3aGV0aGVyIHRvIGVuYWJsZSBvciBkaXNhYmxl
+IE9jdGFsIERUUg0KPiArICoNCj4gKyAqIFJldHVybjogMCBvbiBzdWNjZXNzLCAtZXJybm8gb3Ro
+ZXJ3aXNlLg0KPiArICovDQo+ICtzdGF0aWMgaW50IHNwaV9ub3Jfb2N0YWxfZHRyX2VuYWJsZShz
+dHJ1Y3Qgc3BpX25vciAqbm9yLCBib29sIGVuYWJsZSkNCj4gK3sNCj4gKyAgICAgICBpbnQgcmV0
+Ow0KPiArDQo+ICsgICAgICAgaWYgKCFub3ItPnBhcmFtcy0+b2N0YWxfZHRyX2VuYWJsZSkNCj4g
+KyAgICAgICAgICAgICAgIHJldHVybiAwOw0KPiArDQo+ICsgICAgICAgaWYgKCEobm9yLT5yZWFk
+X3Byb3RvID09IFNOT1JfUFJPVE9fOF84XzhfRFRSICYmDQo+ICsgICAgICAgICAgICAgbm9yLT53
+cml0ZV9wcm90byA9PSBTTk9SX1BST1RPXzhfOF84X0RUUikpDQo+ICsgICAgICAgICAgICAgICBy
+ZXR1cm4gMDsNCj4gKw0KPiArICAgICAgIHJldCA9IG5vci0+cGFyYW1zLT5vY3RhbF9kdHJfZW5h
+YmxlKG5vciwgZW5hYmxlKTsNCj4gKyAgICAgICBpZiAocmV0KQ0KPiArICAgICAgICAgICAgICAg
+cmV0dXJuIHJldDsNCj4gKw0KPiArICAgICAgIGlmIChlbmFibGUpDQo+ICsgICAgICAgICAgICAg
+ICBub3ItPnJlZ19wcm90byA9IFNOT1JfUFJPVE9fOF84XzhfRFRSOw0KPiArICAgICAgIGVsc2UN
+Cj4gKyAgICAgICAgICAgICAgIG5vci0+cmVnX3Byb3RvID0gU05PUl9QUk9UT18xXzFfMTsNCj4g
+Kw0KPiArICAgICAgIHJldHVybiAwOw0KPiArfQ0KPiArDQo+ICAvKioNCj4gICAqIHNwaV9ub3Jf
+cXVhZF9lbmFibGUoKSAtIGVuYWJsZS9kaXNhYmxlIFF1YWQgSS9PIGlmIG5lZWRlZC4NCj4gICAq
+IEBub3I6ICAgICAgICAgICAgICAgIHBvaW50ZXIgdG8gYSAnc3RydWN0IHNwaV9ub3InDQo+IEBA
+IC0zMTA5LDYgKzMxMzgsMTIgQEAgc3RhdGljIGludCBzcGlfbm9yX2luaXQoc3RydWN0IHNwaV9u
+b3IgKm5vcikNCj4gIHsNCj4gICAgICAgICBpbnQgZXJyOw0KPiANCj4gKyAgICAgICBlcnIgPSBz
+cGlfbm9yX29jdGFsX2R0cl9lbmFibGUobm9yLCB0cnVlKTsNCj4gKyAgICAgICBpZiAoZXJyKSB7
+DQo+ICsgICAgICAgICAgICAgICBkZXZfZGJnKG5vci0+ZGV2LCAib2N0YWwgbW9kZSBub3Qgc3Vw
+cG9ydGVkXG4iKTsNCj4gKyAgICAgICAgICAgICAgIHJldHVybiBlcnI7DQo+ICsgICAgICAgfQ0K
+PiArDQo+ICAgICAgICAgZXJyID0gc3BpX25vcl9xdWFkX2VuYWJsZShub3IsIHRydWUpOw0KDQpJ
+cyBpdCBwb3NzaWJsZSB0byBlbmFibGUgb2N0YWwgZHRyIGFuZCBxdWFkIGF0IHRoZSBzYW1lIHRp
+bWU/DQpNYXliZSBhbiAnaWYvZWxzZSBpZicgaGVyZSBkZXBlbmRpbmcgb24gdGhlIHZhbHVlcyBv
+ZiBub3ItPnJlYWRfcHJvdG8gYW5kDQpub3ItPndyaXRlX3Byb3RvDQoNCkNoZWVycywNCnRhDQo=
