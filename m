@@ -2,113 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 698B327C924
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:08:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B9AE27C926
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:08:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731766AbgI2MH7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1731956AbgI2MID (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 08:08:03 -0400
+Received: from mx2.suse.de ([195.135.220.15]:32784 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731232AbgI2MH7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 29 Sep 2020 08:07:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43070 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731957AbgI2MHf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 08:07:35 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 870D3C061755;
-        Tue, 29 Sep 2020 05:07:34 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id e17so4366217wme.0;
-        Tue, 29 Sep 2020 05:07:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=cc:subject:to:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=rf/0DA9A43B4u9HrFqYqsvp9POw7rCQFUx9GMVzOhJI=;
-        b=UBBNl7Lmm82WXtWOiANc/fbGX3kcqYiOLEghnO4QnkvRwSWPC0RlrMe+wUtINWuNds
-         iJ5BnHOJNor441pN9+mHmnvp0SySsUZumwy8n1ha8DlzBtuYfSyKxmPTEUNelrq+43/B
-         ikfnDStVVWmbIZFLkhaN7HC7sQngpGQmAhsyeinsyfBtjmRiwS2W4amVmcctD7u0qonA
-         ge/ZFw+tq57RiJ2CkAW8ELipmtU2JH95hsqu5R/mfys5cKRvurKFrvVn5c8a0SisfvmJ
-         s5EUQitzIfNljcOiM0HACsJXU8ZrPiZ14sU82Y0sGIwVZIVvsmBv+AKMoe7lBVA+sKXe
-         ZFgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:cc:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=rf/0DA9A43B4u9HrFqYqsvp9POw7rCQFUx9GMVzOhJI=;
-        b=jXPA7kJYjQtLb6JOyxAuCJBmTc7LsQM/brEloNSPf7YeUkkK6oof7Zi8WYdve2c2mk
-         YnVyVGs8pVFsrgc3dp0gn7qLYxR0dw0UIPjcytf1GmF+85rpme/Danag4JWhzEHAt0ak
-         6c/NvCcN26jVmT2LQFyQcJGgFXETqsA7QdzPkbl/JLuqctvG2x7RfAb5hmwU/KOZIsuD
-         B7gha193PoyxyIbyIAjz/RDWbGi63F46R8Z4TFvc72QkxkBHDRQWyRL7/V4wmZMEjf4o
-         UNG9Ofb5D3+LGcBwGVTIVtCC8jHReffiORmpWvdQ+ttYw4fPrsssTT/ECe7Zm2EbVCLF
-         +qdQ==
-X-Gm-Message-State: AOAM530C3Ms2PngdhMcvZW2sPFOCfGqzZrFSW3D4W9aTqJL+0K2nBPvp
-        eE61W/dByGSnuKq6uuMQ6GRG6mj5L/M=
-X-Google-Smtp-Source: ABdhPJx9FI3wdRF/iI+fS+clxFuYXuBe9OjgXWDES4lUutq3tiMLwlXj3fX56nGHieHD6SPqm9U7AQ==
-X-Received: by 2002:a05:600c:2189:: with SMTP id e9mr4233573wme.8.1601381252919;
-        Tue, 29 Sep 2020 05:07:32 -0700 (PDT)
-Received: from ?IPv6:2001:a61:2479:6801:d8fe:4132:9f23:7e8f? ([2001:a61:2479:6801:d8fe:4132:9f23:7e8f])
-        by smtp.gmail.com with ESMTPSA id u12sm5949457wrt.81.2020.09.29.05.07.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 29 Sep 2020 05:07:32 -0700 (PDT)
-Cc:     mtk.manpages@gmail.com, linux-kernel@vger.kernel.org,
-        linux-man@vger.kernel.org
-Subject: Re: [PATCH 22/24] membarrier.2: Note that glibc does not provide a
- wrapper
-To:     Alejandro Colomar <colomar.6.4.3@gmail.com>,
-        g.branden.robinson@gmail.com
-References: <20200927054657.ea2zaiesle6hwjit@localhost.localdomain>
- <562859fd-6740-1068-d9d0-9562140cec33@gmail.com>
-From:   "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-Message-ID: <c088e23e-6001-0e52-4538-ce4c22921a11@gmail.com>
-Date:   Tue, 29 Sep 2020 14:07:31 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1601381277;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=y+E7e9BmznoLWTangQs3/fCDuObjLg3n9HsSYF5tPCY=;
+        b=QSXmlLlHtFGfkDHnRvNJNA0fh8V8syNjnREqhSyW7+GYbGyFZm6fRhvPYhMfheHwqWxA6P
+        mejsVWf1rFvsfaUy414sZfMmuy7E33fv1PCFQ+MpEHP9sQy+D3DXGiHVCHH+ap5MJ2oa/b
+        xD8TCfYdiQ2Y+ma9MnoQ9+Dr8kcElfM=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 84435ADC5;
+        Tue, 29 Sep 2020 12:07:57 +0000 (UTC)
+Date:   Tue, 29 Sep 2020 14:07:56 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     paulmck@kernel.org
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
+        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
+        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
+        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
+        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
+        mgorman@techsingularity.net, torvalds@linux-foundation.org,
+        "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+Subject: Re: [PATCH tip/core/rcu 14/15] rcu/tree: Allocate a page when caller
+ is preemptible
+Message-ID: <20200929120756.GC2277@dhcp22.suse.cz>
+References: <20200928233041.GA23230@paulmck-ThinkPad-P72>
+ <20200928233102.24265-14-paulmck@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <562859fd-6740-1068-d9d0-9562140cec33@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200928233102.24265-14-paulmck@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/27/20 10:05 PM, Alejandro Colomar wrote:
-> Hi Branden,
-> 
-> * G. Branden Robinson via linux-man:
-> 
-> 1)
-> 
->  > .EX
->  > .B int fstat(int \c
->  > .IB fd , \~\c
->  > .B struct stat *\c
->  > .IB statbuf );
->  > .EE
-> 
-> 2)
-> 
->  > .EX
->  > .BI "int fstat(int " fd ", struct stat *" statbuf );
->  > .EE
-> 
-> 3)
-> 
->  > .EX
->  > .BI "int fstat(int\~" fd ", struct stat *" statbuf );
->  > .EE
-> 
-> I'd say number 2 is best.  Rationale: grep :)
-> I agree it's visually somewhat harder, but grepping is way easier.
+On Mon 28-09-20 16:31:01, paulmck@kernel.org wrote:
+[...]
+> This commit therefore uses preemptible() to determine whether allocation
+> is possible at all for double-argument kvfree_rcu().
 
-I'd say number 2 also. But, visually, it's the least difficult
-for me.
+This deserves a comment. Because GFP_ATOMIC is possible for many
+!preemptible() contexts. It is the raw_spin_lock, NMIs and likely few
+others that are a problem. You are taking a conservative approach which
+is fine but it would be good to articulate that explicitly.
 
-Thanks,
+> If !preemptible(),
+> then allocation is not possible, and kvfree_rcu() falls back to using
+> the less cache-friendly rcu_head approach.  Even when preemptible(),
+> the caller might be involved in reclaim, so the GFP_ flags used by
+> double-argument kvfree_rcu() must avoid invoking reclaim processing.
 
-Michael
+Could you be more specific? Is this about being called directly in the
+reclaim context and you want to prevent a recursion? If that is the
+case, do you really need to special case this in any way? Any memory
+reclaim will set PF_MEMALLOC so allocations called from that context
+will not perform reclaim. So if you are called from the reclaim directly
+then you might want to do GFP_KERNEL | __GFP_NOMEMALLOC | __GFP_NOWARN.
+That should handle both from-the-recalim and outside of reclaim contexts
+just fine (assuming you don't allocated from !preemptible()) context.
 
+> Note that single-argument kvfree_rcu() must be invoked in sleepable
+> contexts, and that its fallback is the relatively high latency
+> synchronize_rcu().  Single-argument kvfree_rcu() therefore uses
+> GFP_KERNEL|__GFP_RETRY_MAYFAIL to allow limited sleeping within the
+> memory allocator.
+[...]
+>  static inline bool
+> -kvfree_call_rcu_add_ptr_to_bulk(struct kfree_rcu_cpu *krcp, void *ptr)
+> +add_ptr_to_bulk_krc_lock(struct kfree_rcu_cpu **krcp,
+> +	unsigned long *flags, void *ptr, bool can_sleep)
+>  {
+>  	struct kvfree_rcu_bulk_data *bnode;
+> +	bool can_alloc_page = preemptible();
+> +	gfp_t gfp = (can_sleep ? GFP_KERNEL | __GFP_RETRY_MAYFAIL : GFP_ATOMIC) | __GFP_NOWARN;
 
+This is quite confusing IMHO. At least without a further explanation.
+can_sleep is not as much about sleeping as it is about the reclaim
+recursion AFAIU your changelog, right?
+
+>  	int idx;
+>  
+> -	if (unlikely(!krcp->initialized))
+> +	*krcp = krc_this_cpu_lock(flags);
+> +	if (unlikely(!(*krcp)->initialized))
+>  		return false;
+>  
+> -	lockdep_assert_held(&krcp->lock);
+>  	idx = !!is_vmalloc_addr(ptr);
+>  
+>  	/* Check if a new block is required. */
+> -	if (!krcp->bkvhead[idx] ||
+> -			krcp->bkvhead[idx]->nr_records == KVFREE_BULK_MAX_ENTR) {
+> -		bnode = get_cached_bnode(krcp);
+> -		if (!bnode) {
+> -			/*
+> -			 * To keep this path working on raw non-preemptible
+> -			 * sections, prevent the optional entry into the
+> -			 * allocator as it uses sleeping locks. In fact, even
+> -			 * if the caller of kfree_rcu() is preemptible, this
+> -			 * path still is not, as krcp->lock is a raw spinlock.
+> -			 * With additional page pre-allocation in the works,
+> -			 * hitting this return is going to be much less likely.
+> -			 */
+> -			if (IS_ENABLED(CONFIG_PREEMPT_RT))
+> -				return false;
+> -
+> -			/*
+> -			 * NOTE: For one argument of kvfree_rcu() we can
+> -			 * drop the lock and get the page in sleepable
+> -			 * context. That would allow to maintain an array
+> -			 * for the CONFIG_PREEMPT_RT as well if no cached
+> -			 * pages are available.
+> -			 */
+> -			bnode = (struct kvfree_rcu_bulk_data *)
+> -				__get_free_page(GFP_NOWAIT | __GFP_NOWARN);
+> +	if (!(*krcp)->bkvhead[idx] ||
+> +			(*krcp)->bkvhead[idx]->nr_records == KVFREE_BULK_MAX_ENTR) {
+> +		bnode = get_cached_bnode(*krcp);
+> +		if (!bnode && can_alloc_page) {
+> +			krc_this_cpu_unlock(*krcp, *flags);
+> +			bnode = kmalloc(PAGE_SIZE, gfp);
+
+What is the point of calling kmalloc  for a PAGE_SIZE object? Wouldn't
+using the page allocator directly be better?
 -- 
-Michael Kerrisk
-Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
-Linux/UNIX System Programming Training: http://man7.org/training/
+Michal Hocko
+SUSE Labs
