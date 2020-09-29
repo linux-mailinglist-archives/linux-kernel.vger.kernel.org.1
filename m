@@ -2,58 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B089F27B8B1
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 02:13:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AB4327B8B2
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 02:13:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727214AbgI2AM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 20:12:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45712 "EHLO
+        id S1727239AbgI2ANF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 20:13:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727077AbgI2AMz (ORCPT
+        with ESMTP id S1727077AbgI2AM7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 20:12:55 -0400
-Received: from mail-pl1-x661.google.com (mail-pl1-x661.google.com [IPv6:2607:f8b0:4864:20::661])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A937CC0613D3
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 17:12:55 -0700 (PDT)
-Received: by mail-pl1-x661.google.com with SMTP id y6so15375plt.9
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 17:12:55 -0700 (PDT)
+        Mon, 28 Sep 2020 20:12:59 -0400
+Received: from mail-pj1-x1063.google.com (mail-pj1-x1063.google.com [IPv6:2607:f8b0:4864:20::1063])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9BB3C0613D3
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 17:12:59 -0700 (PDT)
+Received: by mail-pj1-x1063.google.com with SMTP id md22so2916392pjb.0
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 17:12:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=broadcom.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=LuaS3R3f4CIeYqBRy9M4MHKWLUD6FjdXqFot5ZXR+QY=;
-        b=WM08oOPAYzObyYRZWsi8J93PbeDECEYSIe5lrNluDb53a5WyK/ZdHI/1+HkGkQ8Vvc
-         X1kJOAqwMMQT4A40z++4qBEi70YyAhz+UvEPiKei9FXFeSUyGppM1FqOpG9BxHx+0Y+L
-         mD04uA+fWU37/WGl+6ECa1FOG3Szona+kBhqg=
+        bh=nAlVsYeNqwn4BqRONXdvKvIvQ+/mvh/lMdzrxFVVa3s=;
+        b=FDWjslW66xA1bflf+j2+zlCJjdxP40PVbFcv+SjDOcfOALqUIDpFTadpdATJ5mCSCd
+         Fuz0EXlpO16r8M7CmFSXYci65t3fD6f5oE1VdZZ8w52vlTMMHpoQKSnT/c4pOUo2J+xm
+         BTQnmeUw/w9l40cWcy+o59Kf8xQWsDFMfztBs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=LuaS3R3f4CIeYqBRy9M4MHKWLUD6FjdXqFot5ZXR+QY=;
-        b=PJ6xSOaLPhJNFJwf8nUQkg1utVt07HhKCREaifA7uXalXZj7FM9FBTPvJpfKzWlK00
-         K7lSt9cibFDEjrHQtD3ImWv5unKYBMtxmG8vHAz2BWDV24yKUUS3q8kVWv7+p9Hj0rF9
-         VNCZa5T3fup6EFS3B94h9atur7vp/8Q7t0RRoarJSugDTFU/xIz34dx9+rSzx7E8q2Uk
-         KM0RkAHpbu1Wmhnc3ThnkDkqmIIzY8/2j6PtQyntpAH8jmHmWBaHswI1AAjV2ruw4LyT
-         ghdd+RLQs+yq4+5e4qRX3yjuDIC6Rzds7wkHal679Y+Jt/0abNR1m37MGTyZRACASEKZ
-         CO2Q==
-X-Gm-Message-State: AOAM53263ROrEaeryjt8zOxDz51XZaVJWCWnfkHbew9NfV2JaO/+3tGG
-        jUM9nA05DlWaHoch2y2TCYxtqcRwp99qVa8akP0FQuxnbgoF
-X-Google-Smtp-Source: ABdhPJx/09rAmDjlnsjCqcz9WBEz/n2rTJYSj+Uguy5Auxs9UZjQH/O7RcxkGxfp+VsRwrHpDBUxG+Iy4HC/
-X-Received: by 2002:a17:90a:9317:: with SMTP id p23mr1427481pjo.160.1601338375093;
-        Mon, 28 Sep 2020 17:12:55 -0700 (PDT)
+        bh=nAlVsYeNqwn4BqRONXdvKvIvQ+/mvh/lMdzrxFVVa3s=;
+        b=tt6Qx35kRNxZtkMcN9KZtg1LpelbRINRJsnYLpq7urp/QTZWjm+TDC8E0n6UoyjZp3
+         WVlu8Qdm4HQwgUDhO0W49+oWjnkpLGRQlX2I6OIR9hMuLuJ7Ylqi1Usij4pysjrANH/r
+         A+1g78Iv2BuiBbxmS8yxTd1/OCIwM7eMDDL8WuGQCy5IlLimFe0Jtypoxd4LZt1V3PZv
+         deKfqQchsbzhCCwdPY5itbIXpPSz2Rn2PS2TX3KwXo/rW4wpe5XOWB2yyU0jxpOqD0hr
+         a6RhF+vCwA/MID6nPv8G5NDUC6kVzR0VUbCMMdyeWp+UsB8fe3xSzUeFlpusa4SeZTHP
+         G+3w==
+X-Gm-Message-State: AOAM531vzdWJ9h/AIscBed8UiIqggSMLbpUKL9rrcSiZr/fgkESzTDfM
+        jIYtzoblKXhqN7t0cjjgfhEdw8Tj02Z4M2Zt4sTrEHLqn+xl
+X-Google-Smtp-Source: ABdhPJzOBrW1Jz2/wGrHAkts2WCn8bA1b6tbMg+zraaRhIVwxYR8q37mEtUo+eY/YAEIGyaY5jT/sDRs0wMd
+X-Received: by 2002:a17:902:7089:b029:d2:aa9a:beb7 with SMTP id z9-20020a1709027089b02900d2aa9abeb7mr90827plk.76.1601338379018;
+        Mon, 28 Sep 2020 17:12:59 -0700 (PDT)
 Received: from lbrmn-lnxub113.broadcom.net ([192.19.228.250])
-        by smtp-relay.gmail.com with ESMTPS id t1sm1047973pjr.8.2020.09.28.17.12.51
+        by smtp-relay.gmail.com with ESMTPS id t1sm1047973pjr.8.2020.09.28.17.12.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Sep 2020 17:12:55 -0700 (PDT)
+        Mon, 28 Sep 2020 17:12:58 -0700 (PDT)
 X-Relaying-Domain: broadcom.com
 From:   Scott Branden <scott.branden@broadcom.com>
 To:     Arnd Bergmann <arnd@arndb.de>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Scott Branden <scott.branden@broadcom.com>
 Cc:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com
-Subject: [PATCH v4 06/16] misc: bcm-vk: add ttyVK support
-Date:   Mon, 28 Sep 2020 17:11:59 -0700
-Message-Id: <20200929001209.16393-7-scott.branden@broadcom.com>
+        bcm-kernel-feedback-list@broadcom.com,
+        Desmond Yan <desmond.yan@broadcom.com>
+Subject: [PATCH v4 07/16] misc: bcm-vk: add open/release
+Date:   Mon, 28 Sep 2020 17:12:00 -0700
+Message-Id: <20200929001209.16393-8-scott.branden@broadcom.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200929001209.16393-1-scott.branden@broadcom.com>
 References: <20200929001209.16393-1-scott.branden@broadcom.com>
@@ -61,493 +62,322 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add ttyVK support to driver to allow console access to VK card from host.
+Add open/release to replace private data with context for other methods
+to use.  Reason for the context is because it is allowed for multiple
+sessions to open sysfs.  For each file open, when upper layer queries the
+response, only those that are tied to a specified open should be returned.
 
-Device node will be in the follow form /dev/bcm-vk.x_ttyVKy where:
-x is the instance of the VK card
-y is the tty device number on the VK card
-
+Co-developed-by: Desmond Yan <desmond.yan@broadcom.com>
+Signed-off-by: Desmond Yan <desmond.yan@broadcom.com>
 Signed-off-by: Scott Branden <scott.branden@broadcom.com>
 ---
- drivers/misc/bcm-vk/Makefile     |   4 +-
- drivers/misc/bcm-vk/bcm_vk.h     |  27 +++
- drivers/misc/bcm-vk/bcm_vk_dev.c |  14 +-
- drivers/misc/bcm-vk/bcm_vk_tty.c | 336 +++++++++++++++++++++++++++++++
- 4 files changed, 379 insertions(+), 2 deletions(-)
- create mode 100644 drivers/misc/bcm-vk/bcm_vk_tty.c
+ drivers/misc/bcm-vk/Makefile     |   1 +
+ drivers/misc/bcm-vk/bcm_vk.h     |  14 ++++
+ drivers/misc/bcm-vk/bcm_vk_dev.c |  23 ++++++
+ drivers/misc/bcm-vk/bcm_vk_msg.c | 126 +++++++++++++++++++++++++++++++
+ drivers/misc/bcm-vk/bcm_vk_msg.h |  31 ++++++++
+ 5 files changed, 195 insertions(+)
+ create mode 100644 drivers/misc/bcm-vk/bcm_vk_msg.c
+ create mode 100644 drivers/misc/bcm-vk/bcm_vk_msg.h
 
 diff --git a/drivers/misc/bcm-vk/Makefile b/drivers/misc/bcm-vk/Makefile
-index f8a7ac4c242f..e50aa3ca31e9 100644
+index e50aa3ca31e9..a2d1577663ec 100644
 --- a/drivers/misc/bcm-vk/Makefile
 +++ b/drivers/misc/bcm-vk/Makefile
-@@ -5,4 +5,6 @@
- 
+@@ -6,5 +6,6 @@
  obj-$(CONFIG_BCM_VK) += bcm_vk.o
  bcm_vk-objs := \
--	bcm_vk_dev.o
-+	bcm_vk_dev.o \
-+	bcm_vk_tty.o
-+
+ 	bcm_vk_dev.o \
++	bcm_vk_msg.o \
+ 	bcm_vk_tty.o
+ 
 diff --git a/drivers/misc/bcm-vk/bcm_vk.h b/drivers/misc/bcm-vk/bcm_vk.h
-index f428ad9a0c3d..b1408daa7261 100644
+index b1408daa7261..346508daa67f 100644
 --- a/drivers/misc/bcm-vk/bcm_vk.h
 +++ b/drivers/misc/bcm-vk/bcm_vk.h
-@@ -10,6 +10,8 @@
+@@ -7,12 +7,16 @@
+ #define BCM_VK_H
+ 
+ #include <linux/firmware.h>
++#include <linux/kref.h>
  #include <linux/miscdevice.h>
++#include <linux/mutex.h>
  #include <linux/pci.h>
  #include <linux/sched/signal.h>
-+#include <linux/tty.h>
-+#include <uapi/linux/misc/bcm_vk.h>
+ #include <linux/tty.h>
+ #include <uapi/linux/misc/bcm_vk.h>
  
++#include "bcm_vk_msg.h"
++
  #define DRV_MODULE_NAME		"bcm-vk"
  
-@@ -76,6 +78,9 @@
- #define CODEPUSH_BOOT2_ENTRY		0x60000000
+ /*
+@@ -242,6 +246,13 @@ struct bcm_vk {
+ 	struct workqueue_struct *tty_wq_thread;
+ 	struct work_struct tty_wq_work;
  
- #define BAR_CARD_STATUS			0x410
-+/* CARD_STATUS definitions */
-+#define CARD_STATUS_TTYVK0_READY	BIT(0)
-+#define CARD_STATUS_TTYVK1_READY	BIT(1)
- 
- #define BAR_BOOT1_STDALONE_PROGRESS	0x420
- #define BOOT1_STDALONE_SUCCESS		(BIT(13) | BIT(14))
-@@ -199,6 +204,19 @@ enum pci_barno {
- 
- #define BCM_VK_NUM_TTY 2
- 
-+struct bcm_vk_tty {
-+	struct tty_port port;
-+	u32 to_offset;	/* bar offset to use */
-+	u32 to_size;	/* to VK buffer size */
-+	u32 wr;		/* write offset shadow */
-+	u32 from_offset;	/* bar offset to use */
-+	u32 from_size;	/* from VK buffer size */
-+	u32 rd;		/* read offset shadow */
-+	pid_t pid;
-+	bool irq_enabled;
-+	bool is_opened;		/* tracks tty open/close */
-+};
++	/* Reference-counting to handle file operations */
++	struct kref kref;
 +
- /* DAUTH related info */
- struct bcm_vk_dauth_key {
- 	char store[VK_BAR1_DAUTH_STORE_SIZE];
-@@ -218,6 +236,12 @@ struct bcm_vk {
- 	struct miscdevice miscdev;
- 	int devid; /* dev id allocated */
- 
-+	struct tty_driver *tty_drv;
-+	struct timer_list serial_timer;
-+	struct bcm_vk_tty tty[BCM_VK_NUM_TTY];
-+	struct workqueue_struct *tty_wq_thread;
-+	struct work_struct tty_wq_work;
++	spinlock_t ctx_lock; /* Spinlock for component context */
++	struct bcm_vk_ctx ctx[VK_CMPT_CTX_MAX];
++	struct bcm_vk_ht_entry pid_ht[VK_PID_HT_SZ];
 +
  	struct workqueue_struct *wq_thread;
  	struct work_struct wq_work; /* work queue for deferred job */
  	unsigned long wq_offload[1]; /* various flags on wq requested */
-@@ -279,5 +303,8 @@ static inline bool bcm_vk_msgq_marker_valid(struct bcm_vk *vk)
+@@ -302,6 +313,9 @@ static inline bool bcm_vk_msgq_marker_valid(struct bcm_vk *vk)
+ 	return (rdy_marker == VK_BAR1_MSGQ_RDY_MARKER);
  }
  
++int bcm_vk_open(struct inode *inode, struct file *p_file);
++int bcm_vk_release(struct inode *inode, struct file *p_file);
++void bcm_vk_release_data(struct kref *kref);
  int bcm_vk_auto_load_all_images(struct bcm_vk *vk);
-+int bcm_vk_tty_init(struct bcm_vk *vk, char *name);
-+void bcm_vk_tty_exit(struct bcm_vk *vk);
-+void bcm_vk_tty_terminate_tty_user(struct bcm_vk *vk);
- 
- #endif
+ int bcm_vk_tty_init(struct bcm_vk *vk, char *name);
+ void bcm_vk_tty_exit(struct bcm_vk *vk);
 diff --git a/drivers/misc/bcm-vk/bcm_vk_dev.c b/drivers/misc/bcm-vk/bcm_vk_dev.c
-index 0782e2cff36d..dfef9546c5a7 100644
+index dfef9546c5a7..b9f095a7905b 100644
 --- a/drivers/misc/bcm-vk/bcm_vk_dev.c
 +++ b/drivers/misc/bcm-vk/bcm_vk_dev.c
-@@ -761,6 +761,11 @@ static int bcm_vk_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 		goto err_destroy_workqueue;
- 	}
- 
-+	snprintf(name, sizeof(name), KBUILD_MODNAME ".%d_ttyVK", id);
-+	err = bcm_vk_tty_init(vk, name);
-+	if (err)
-+		goto err_unregister_panic_notifier;
-+
- 	/*
- 	 * lets trigger an auto download.  We don't want to do it serially here
- 	 * because at probing time, it is not supposed to block for a long time.
-@@ -769,7 +774,7 @@ static int bcm_vk_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 	if (auto_load) {
- 		if ((boot_status & BOOT_STATE_MASK) == BROM_RUNNING) {
- 			if (bcm_vk_trigger_autoload(vk))
--				goto err_unregister_panic_notifier;
-+				goto err_bcm_vk_tty_exit;
- 		} else {
- 			dev_err(dev,
- 				"Auto-load skipped - BROM not in proper state (0x%x)\n",
-@@ -781,6 +786,9 @@ static int bcm_vk_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 
+@@ -8,6 +8,7 @@
+ #include <linux/firmware.h>
+ #include <linux/fs.h>
+ #include <linux/idr.h>
++#include <linux/kref.h>
+ #include <linux/module.h>
+ #include <linux/pci.h>
+ #include <linux/pci_regs.h>
+@@ -630,6 +631,12 @@ static int bcm_vk_trigger_reset(struct bcm_vk *vk)
  	return 0;
+ }
  
-+err_bcm_vk_tty_exit:
-+	bcm_vk_tty_exit(vk);
++static const struct file_operations bcm_vk_fops = {
++	.owner = THIS_MODULE,
++	.open = bcm_vk_open,
++	.release = bcm_vk_release,
++};
 +
- err_unregister_panic_notifier:
- 	atomic_notifier_chain_unregister(&panic_notifier_list,
- 					 &vk->panic_nb);
-@@ -836,6 +844,8 @@ static void bcm_vk_remove(struct pci_dev *pdev)
- 	atomic_notifier_chain_unregister(&panic_notifier_list,
- 					 &vk->panic_nb);
+ static int bcm_vk_on_panic(struct notifier_block *nb,
+ 			   unsigned long e, void *p)
+ {
+@@ -652,10 +659,13 @@ static int bcm_vk_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 	struct miscdevice *misc_device;
+ 	u32 boot_status;
  
-+	bcm_vk_tty_exit(vk);
++	/* allocate vk structure which is tied to kref for freeing */
+ 	vk = kzalloc(sizeof(*vk), GFP_KERNEL);
+ 	if (!vk)
+ 		return -ENOMEM;
+ 
++	kref_init(&vk->kref);
 +
- 	if (vk->tdma_vaddr)
- 		dma_free_coherent(&pdev->dev, nr_scratch_pages * PAGE_SIZE,
- 				  vk->tdma_vaddr, vk->tdma_addr);
-@@ -849,6 +859,8 @@ static void bcm_vk_remove(struct pci_dev *pdev)
+ 	err = pci_enable_device(pdev);
+ 	if (err) {
+ 		dev_err(dev, "Cannot enable PCI device\n");
+@@ -732,6 +742,7 @@ static int bcm_vk_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 		err = -ENOMEM;
+ 		goto err_ida_remove;
+ 	}
++	misc_device->fops = &bcm_vk_fops,
  
- 	cancel_work_sync(&vk->wq_work);
- 	destroy_workqueue(vk->wq_thread);
-+	cancel_work_sync(&vk->tty_wq_work);
-+	destroy_workqueue(vk->tty_wq_thread);
+ 	err = misc_register(misc_device);
+ 	if (err) {
+@@ -825,6 +836,16 @@ static int bcm_vk_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 	return err;
+ }
  
- 	for (i = 0; i < MAX_BAR; i++) {
- 		if (vk->bar[i])
-diff --git a/drivers/misc/bcm-vk/bcm_vk_tty.c b/drivers/misc/bcm-vk/bcm_vk_tty.c
++void bcm_vk_release_data(struct kref *kref)
++{
++	struct bcm_vk *vk = container_of(kref, struct bcm_vk, kref);
++	struct pci_dev *pdev = vk->pdev;
++
++	dev_dbg(&pdev->dev, "BCM-VK:%d release data 0x%p\n", vk->devid, vk);
++	pci_dev_put(pdev);
++	kfree(vk);
++}
++
+ static void bcm_vk_remove(struct pci_dev *pdev)
+ {
+ 	int i;
+@@ -872,6 +893,8 @@ static void bcm_vk_remove(struct pci_dev *pdev)
+ 	pci_release_regions(pdev);
+ 	pci_free_irq_vectors(pdev);
+ 	pci_disable_device(pdev);
++
++	kref_put(&vk->kref, bcm_vk_release_data);
+ }
+ 
+ static void bcm_vk_shutdown(struct pci_dev *pdev)
+diff --git a/drivers/misc/bcm-vk/bcm_vk_msg.c b/drivers/misc/bcm-vk/bcm_vk_msg.c
 new file mode 100644
-index 000000000000..7f71d1f9085b
+index 000000000000..eb261fb87c9d
 --- /dev/null
-+++ b/drivers/misc/bcm-vk/bcm_vk_tty.c
-@@ -0,0 +1,336 @@
++++ b/drivers/misc/bcm-vk/bcm_vk_msg.c
+@@ -0,0 +1,126 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
 + * Copyright 2018-2020 Broadcom.
 + */
 +
-+#include <linux/tty.h>
-+#include <linux/tty_driver.h>
-+#include <linux/tty_flip.h>
-+
 +#include "bcm_vk.h"
++#include "bcm_vk_msg.h"
 +
-+/* TTYVK base offset is 0x30000 into BAR1 */
-+#define BAR1_TTYVK_BASE_OFFSET	0x300000
-+/* Each TTYVK channel (TO or FROM) is 0x10000 */
-+#define BAR1_TTYVK_CHAN_OFFSET	0x100000
-+/* Each TTYVK channel has TO and FROM, hence the * 2 */
-+#define BAR1_TTYVK_BASE(index)	(BAR1_TTYVK_BASE_OFFSET + \
-+				 ((index) * BAR1_TTYVK_CHAN_OFFSET * 2))
-+/* TO TTYVK channel base comes before FROM for each index */
-+#define TO_TTYK_BASE(index)	BAR1_TTYVK_BASE(index)
-+#define FROM_TTYK_BASE(index)	(BAR1_TTYVK_BASE(index) + \
-+				 BAR1_TTYVK_CHAN_OFFSET)
-+
-+struct bcm_vk_tty_chan {
-+	u32 reserved;
-+	u32 size;
-+	u32 wr;
-+	u32 rd;
-+	u32 *data;
-+};
-+
-+#define VK_BAR_CHAN(v, DIR, e)	((v)->DIR##_offset \
-+				 + offsetof(struct bcm_vk_tty_chan, e))
-+#define VK_BAR_CHAN_SIZE(v, DIR)	VK_BAR_CHAN(v, DIR, size)
-+#define VK_BAR_CHAN_WR(v, DIR)		VK_BAR_CHAN(v, DIR, wr)
-+#define VK_BAR_CHAN_RD(v, DIR)		VK_BAR_CHAN(v, DIR, rd)
-+#define VK_BAR_CHAN_DATA(v, DIR, off)	(VK_BAR_CHAN(v, DIR, data) + (off))
-+
-+#define VK_BAR0_REGSEG_TTY_DB_OFFSET	0x86c
-+
-+/* Poll every 1/10 of second - temp hack till we use MSI interrupt */
-+#define SERIAL_TIMER_VALUE (HZ / 10)
-+
-+static void bcm_vk_tty_poll(struct timer_list *t)
++/*
++ * allocate a ctx per file struct
++ */
++static struct bcm_vk_ctx *bcm_vk_get_ctx(struct bcm_vk *vk, const pid_t pid)
 +{
-+	struct bcm_vk *vk = from_timer(vk, t, serial_timer);
++	u32 i;
++	struct bcm_vk_ctx *ctx = NULL;
++	u32 hash_idx = hash_32(pid, VK_PID_HT_SHIFT_BIT);
 +
-+	queue_work(vk->tty_wq_thread, &vk->tty_wq_work);
-+	mod_timer(&vk->serial_timer, jiffies + SERIAL_TIMER_VALUE);
-+}
++	spin_lock(&vk->ctx_lock);
 +
-+irqreturn_t bcm_vk_tty_irqhandler(int irq, void *dev_id)
-+{
-+	struct bcm_vk *vk = dev_id;
-+
-+	queue_work(vk->tty_wq_thread, &vk->tty_wq_work);
-+
-+	return IRQ_HANDLED;
-+}
-+
-+static void bcm_vk_tty_wq_handler(struct work_struct *work)
-+{
-+	struct bcm_vk *vk = container_of(work, struct bcm_vk, tty_wq_work);
-+	struct bcm_vk_tty *vktty;
-+	int card_status;
-+	int count;
-+	unsigned char c;
-+	int i;
-+	int wr;
-+
-+	card_status = vkread32(vk, BAR_0, BAR_CARD_STATUS);
-+	if (card_status == -1)
-+		return;
-+
-+	for (i = 0; i < BCM_VK_NUM_TTY; i++) {
-+		count = 0;
-+		/* Check the card status that the tty channel is ready */
-+		if ((card_status & BIT(i)) == 0)
-+			continue;
-+
-+		vktty = &vk->tty[i];
-+
-+		/* Don't increment read index if tty app is closed */
-+		if (!vktty->is_opened)
-+			continue;
-+
-+		/* Fetch the wr offset in buffer from VK */
-+		wr = vkread32(vk, BAR_1, VK_BAR_CHAN_WR(vktty, from));
-+
-+		/* safe to ignore until bar read gives proper size */
-+		if (vktty->from_size == 0)
-+			continue;
-+
-+		if (wr >= vktty->from_size) {
-+			dev_err(&vk->pdev->dev,
-+				"ERROR: wq handler ttyVK%d wr:0x%x > 0x%x\n",
-+				i, wr, vktty->from_size);
-+			/* Need to signal and close device in this case */
-+			continue;
-+		}
-+
-+		/*
-+		 * Simple read of circular buffer and
-+		 * insert into tty flip buffer
-+		 */
-+		while (vk->tty[i].rd != wr) {
-+			c = vkread8(vk, BAR_1,
-+				    VK_BAR_CHAN_DATA(vktty, from, vktty->rd));
-+			vktty->rd++;
-+			if (vktty->rd >= vktty->from_size)
-+				vktty->rd = 0;
-+			tty_insert_flip_char(&vktty->port, c, TTY_NORMAL);
-+			count++;
-+		}
-+
-+		if (count) {
-+			tty_flip_buffer_push(&vktty->port);
-+
-+			/* Update read offset from shadow register to card */
-+			vkwrite32(vk, vktty->rd, BAR_1,
-+				  VK_BAR_CHAN_RD(vktty, from));
++	for (i = 0; i < ARRAY_SIZE(vk->ctx); i++) {
++		if (!vk->ctx[i].in_use) {
++			vk->ctx[i].in_use = true;
++			ctx = &vk->ctx[i];
++			break;
 +		}
 +	}
++
++	if (!ctx) {
++		dev_err(&vk->pdev->dev, "All context in use\n");
++
++		goto all_in_use_exit;
++	}
++
++	/* set the pid and insert it to hash table */
++	ctx->pid = pid;
++	ctx->hash_idx = hash_idx;
++	list_add_tail(&ctx->node, &vk->pid_ht[hash_idx].head);
++
++	/* increase kref */
++	kref_get(&vk->kref);
++
++all_in_use_exit:
++	spin_unlock(&vk->ctx_lock);
++
++	return ctx;
 +}
 +
-+static int bcm_vk_tty_open(struct tty_struct *tty, struct file *file)
++static int bcm_vk_free_ctx(struct bcm_vk *vk, struct bcm_vk_ctx *ctx)
 +{
-+	int card_status;
-+	struct bcm_vk *vk;
-+	struct bcm_vk_tty *vktty;
-+	int index;
++	u32 idx;
++	u32 hash_idx;
++	pid_t pid;
++	struct bcm_vk_ctx *entry;
++	int count = 0;
 +
-+	/* initialize the pointer in case something fails */
-+	tty->driver_data = NULL;
-+
-+	vk = (struct bcm_vk *)dev_get_drvdata(tty->dev);
-+	index = tty->index;
-+
-+	if (index >= BCM_VK_NUM_TTY)
++	if (!ctx) {
++		dev_err(&vk->pdev->dev, "NULL context detected\n");
 +		return -EINVAL;
-+
-+	vktty = &vk->tty[index];
-+
-+	vktty->pid = task_pid_nr(current);
-+	vktty->to_offset = TO_TTYK_BASE(index);
-+	vktty->from_offset = FROM_TTYK_BASE(index);
-+
-+	/* Do not allow tty device to be opened if tty on card not ready */
-+	card_status = vkread32(vk, BAR_0, BAR_CARD_STATUS);
-+	if (card_status == -1)
-+		return -1;
-+
-+	if ((card_status & BIT(index)) == 0)
-+		return -1;
-+
-+	/*
-+	 * Get shadow registers of the buffer sizes and the "to" write offset
-+	 * and "from" read offset
-+	 */
-+	vktty->to_size = vkread32(vk, BAR_1, VK_BAR_CHAN_SIZE(vktty, to));
-+	vktty->wr = vkread32(vk, BAR_1,  VK_BAR_CHAN_WR(vktty, to));
-+	vktty->from_size = vkread32(vk, BAR_1, VK_BAR_CHAN_SIZE(vktty, from));
-+	vktty->rd = vkread32(vk, BAR_1,  VK_BAR_CHAN_RD(vktty, from));
-+	vktty->is_opened = true;
-+
-+	if (tty->count == 1 && !vktty->irq_enabled) {
-+		timer_setup(&vk->serial_timer, bcm_vk_tty_poll, 0);
-+		mod_timer(&vk->serial_timer, jiffies + SERIAL_TIMER_VALUE);
 +	}
-+	return 0;
-+}
++	idx = ctx->idx;
++	pid = ctx->pid;
 +
-+static void bcm_vk_tty_close(struct tty_struct *tty, struct file *file)
-+{
-+	struct bcm_vk *vk = dev_get_drvdata(tty->dev);
++	spin_lock(&vk->ctx_lock);
 +
-+	if (tty->index >= BCM_VK_NUM_TTY)
-+		return;
++	if (!vk->ctx[idx].in_use) {
++		dev_err(&vk->pdev->dev, "context[%d] not in use!\n", idx);
++	} else {
++		vk->ctx[idx].in_use = false;
++		vk->ctx[idx].miscdev = NULL;
 +
-+	vk->tty[tty->index].is_opened = false;
-+
-+	if (tty->count == 1)
-+		del_timer_sync(&vk->serial_timer);
-+}
-+
-+static void bcm_vk_tty_doorbell(struct bcm_vk *vk, u32 db_val)
-+{
-+	vkwrite32(vk, db_val, BAR_0,
-+		  VK_BAR0_REGSEG_DB_BASE + VK_BAR0_REGSEG_TTY_DB_OFFSET);
-+}
-+
-+static int bcm_vk_tty_write(struct tty_struct *tty,
-+			    const unsigned char *buffer,
-+			    int count)
-+{
-+	int index;
-+	struct bcm_vk *vk;
-+	struct bcm_vk_tty *vktty;
-+	int i;
-+
-+	index = tty->index;
-+	vk = dev_get_drvdata(tty->dev);
-+	vktty = &vk->tty[index];
-+
-+	/* Simple write each byte to circular buffer */
-+	for (i = 0; i < count; i++) {
-+		vkwrite8(vk, buffer[i], BAR_1,
-+			 VK_BAR_CHAN_DATA(vktty, to, vktty->wr));
-+		vktty->wr++;
-+		if (vktty->wr >= vktty->to_size)
-+			vktty->wr = 0;
++		/* Remove it from hash list and see if it is the last one. */
++		list_del(&ctx->node);
++		hash_idx = ctx->hash_idx;
++		list_for_each_entry(entry, &vk->pid_ht[hash_idx].head, node) {
++			if (entry->pid == pid)
++				count++;
++		}
 +	}
-+	/* Update write offset from shadow register to card */
-+	vkwrite32(vk, vktty->wr, BAR_1, VK_BAR_CHAN_WR(vktty, to));
-+	bcm_vk_tty_doorbell(vk, 0);
++
++	spin_unlock(&vk->ctx_lock);
 +
 +	return count;
 +}
-+
-+static int bcm_vk_tty_write_room(struct tty_struct *tty)
++int bcm_vk_open(struct inode *inode, struct file *p_file)
 +{
-+	struct bcm_vk *vk = dev_get_drvdata(tty->dev);
++	struct bcm_vk_ctx *ctx;
++	struct miscdevice *miscdev = (struct miscdevice *)p_file->private_data;
++	struct bcm_vk *vk = container_of(miscdev, struct bcm_vk, miscdev);
++	struct device *dev = &vk->pdev->dev;
++	int rc = 0;
 +
-+	return vk->tty[tty->index].to_size - 1;
++	/* get a context and set it up for file */
++	ctx = bcm_vk_get_ctx(vk, task_pid_nr(current));
++	if (!ctx) {
++		dev_err(dev, "Error allocating context\n");
++		rc = -ENOMEM;
++	} else {
++		/*
++		 * set up context and replace private data with context for
++		 * other methods to use.  Reason for the context is because
++		 * it is allowed for multiple sessions to open the sysfs, and
++		 * for each file open, when upper layer query the response,
++		 * only those that are tied to a specific open should be
++		 * returned.  The context->idx will be used for such binding
++		 */
++		ctx->miscdev = miscdev;
++		p_file->private_data = ctx;
++		dev_dbg(dev, "ctx_returned with idx %d, pid %d\n",
++			ctx->idx, ctx->pid);
++	}
++	return rc;
 +}
 +
-+static const struct tty_operations serial_ops = {
-+	.open = bcm_vk_tty_open,
-+	.close = bcm_vk_tty_close,
-+	.write = bcm_vk_tty_write,
-+	.write_room = bcm_vk_tty_write_room,
++int bcm_vk_release(struct inode *inode, struct file *p_file)
++{
++	int ret;
++	struct bcm_vk_ctx *ctx = p_file->private_data;
++	struct bcm_vk *vk = container_of(ctx->miscdev, struct bcm_vk, miscdev);
++
++	ret = bcm_vk_free_ctx(vk, ctx);
++
++	kref_put(&vk->kref, bcm_vk_release_data);
++
++	return ret;
++}
++
+diff --git a/drivers/misc/bcm-vk/bcm_vk_msg.h b/drivers/misc/bcm-vk/bcm_vk_msg.h
+new file mode 100644
+index 000000000000..32516abcaf89
+--- /dev/null
++++ b/drivers/misc/bcm-vk/bcm_vk_msg.h
+@@ -0,0 +1,31 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * Copyright 2018-2020 Broadcom.
++ */
++
++#ifndef BCM_VK_MSG_H
++#define BCM_VK_MSG_H
++
++/* context per session opening of sysfs */
++struct bcm_vk_ctx {
++	struct list_head node; /* use for linkage in Hash Table */
++	unsigned int idx;
++	bool in_use;
++	pid_t pid;
++	u32 hash_idx;
++	struct miscdevice *miscdev;
 +};
 +
-+int bcm_vk_tty_init(struct bcm_vk *vk, char *name)
-+{
-+	int i;
-+	int err;
-+	struct tty_driver *tty_drv;
-+	struct device *dev = &vk->pdev->dev;
++/* pid hash table entry */
++struct bcm_vk_ht_entry {
++	struct list_head head;
++};
 +
-+	tty_drv = tty_alloc_driver
-+				(BCM_VK_NUM_TTY,
-+				 TTY_DRIVER_REAL_RAW | TTY_DRIVER_DYNAMIC_DEV);
-+	if (IS_ERR(tty_drv))
-+		return PTR_ERR(tty_drv);
++/* total number of supported ctx, 32 ctx each for 5 components */
++#define VK_CMPT_CTX_MAX		(32 * 5)
 +
-+	/* Save struct tty_driver for uninstalling the device */
-+	vk->tty_drv = tty_drv;
++/* hash table defines to store the opened FDs */
++#define VK_PID_HT_SHIFT_BIT	7 /* 128 */
++#define VK_PID_HT_SZ		BIT(VK_PID_HT_SHIFT_BIT)
 +
-+	/* initialize the tty driver */
-+	tty_drv->driver_name = KBUILD_MODNAME;
-+	tty_drv->name = kstrdup(name, GFP_KERNEL);
-+	if (!tty_drv->name) {
-+		err = -ENOMEM;
-+		goto err_put_tty_driver;
-+	}
-+	tty_drv->type = TTY_DRIVER_TYPE_SERIAL;
-+	tty_drv->subtype = SERIAL_TYPE_NORMAL;
-+	tty_drv->init_termios = tty_std_termios;
-+	tty_set_operations(tty_drv, &serial_ops);
-+
-+	/* register the tty driver */
-+	err = tty_register_driver(tty_drv);
-+	if (err) {
-+		dev_err(dev, "tty_register_driver failed\n");
-+		goto err_kfree_tty_name;
-+	}
-+
-+	for (i = 0; i < BCM_VK_NUM_TTY; i++) {
-+		struct device *tty_dev;
-+
-+		tty_port_init(&vk->tty[i].port);
-+		tty_dev = tty_port_register_device(&vk->tty[i].port, tty_drv,
-+						   i, dev);
-+		if (IS_ERR(tty_dev)) {
-+			err = PTR_ERR(tty_dev);
-+			goto unwind;
-+		}
-+		dev_set_drvdata(tty_dev, vk);
-+		vk->tty[i].is_opened = false;
-+	}
-+
-+	INIT_WORK(&vk->tty_wq_work, bcm_vk_tty_wq_handler);
-+	vk->tty_wq_thread = create_singlethread_workqueue("tty");
-+	if (!vk->tty_wq_thread) {
-+		dev_err(dev, "Fail to create tty workqueue thread\n");
-+		err = -ENOMEM;
-+		goto unwind;
-+	}
-+	return 0;
-+
-+unwind:
-+	while (--i >= 0)
-+		tty_port_unregister_device(&vk->tty[i].port, tty_drv, i);
-+	tty_unregister_driver(tty_drv);
-+
-+err_kfree_tty_name:
-+	kfree(tty_drv->name);
-+	tty_drv->name = NULL;
-+
-+err_put_tty_driver:
-+	put_tty_driver(tty_drv);
-+
-+	return err;
-+}
-+
-+void bcm_vk_tty_exit(struct bcm_vk *vk)
-+{
-+	int i;
-+
-+	del_timer_sync(&vk->serial_timer);
-+	for (i = 0; i < BCM_VK_NUM_TTY; ++i) {
-+		tty_port_unregister_device(&vk->tty[i].port,
-+					   vk->tty_drv,
-+					   i);
-+		tty_port_destroy(&vk->tty[i].port);
-+	}
-+	tty_unregister_driver(vk->tty_drv);
-+
-+	kfree(vk->tty_drv->name);
-+	vk->tty_drv->name = NULL;
-+
-+	put_tty_driver(vk->tty_drv);
-+}
-+
-+void bcm_vk_tty_terminate_tty_user(struct bcm_vk *vk)
-+{
-+	struct bcm_vk_tty *vktty;
-+	int i;
-+
-+	for (i = 0; i < BCM_VK_NUM_TTY; ++i) {
-+		vktty = &vk->tty[i];
-+		if (vktty->pid)
-+			kill_pid(find_vpid(vktty->pid), SIGKILL, 1);
-+	}
-+}
++#endif
 -- 
 2.17.1
 
