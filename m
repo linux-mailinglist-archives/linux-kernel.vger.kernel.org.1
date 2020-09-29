@@ -2,216 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B880D27CF89
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 15:41:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19F4827CF7A
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 15:39:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730717AbgI2NlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 09:41:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57684 "EHLO
+        id S1730347AbgI2Nje (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 09:39:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730668AbgI2NlN (ORCPT
+        with ESMTP id S1730310AbgI2NjY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 09:41:13 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B559C0613D3
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 06:41:06 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id c18so5432370wrm.9
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 06:41:06 -0700 (PDT)
+        Tue, 29 Sep 2020 09:39:24 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05B4AC0613D0
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 06:39:24 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id x123so4557224pfc.7
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 06:39:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=S6koJJSggmSal63szAv1Wi+Rez3B6JEUgBs5HDL7mYM=;
-        b=kYwsCooOXLXjUhxpfPavg1BYBaX0xF/mO2M3pDmE4dRBWDJI5q+47/eeKiUYhOWC/c
-         ISztCpU66B6SnY3ZqwbFjBiwS3wh5cfbwrCeOJxvu0PvUirNeacUSQMWh3Bg1OB7FrDF
-         5Gad541gfv/NXxgC0kTLzicfqp7odvTpygA29JJ22F/ther8KblsR2L+udqKDIca8V89
-         6FbetCzVHTvw0pBHNZ2YxnuhTjRhDFbZ4LM6+aSW3Lg13JahZ9soGAzTk928QmwDVZHT
-         oQCUkrE0Ctxk/cdNS/SiSEyyI9Zv4toCLI0ORUmOEVan7Vo7VTDmQyno9etkPeoS2g9p
-         iHEA==
+        d=rajagiritech-edu-in.20150623.gappssmtp.com; s=20150623;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=0b0l8ZUG3zwXWMxWGQR/zxHkfGwj6nS7mjqC10ksX4g=;
+        b=fsG52lO+3Ej3Fej/RMLsGa8ytZSz2un10lwsZjlazPSe9cOsSJJ/ucPvOM6RC4cud/
+         mWwbPOSMxV3O8oivM4J4Z8QAfFfe6hWF90oPluVDZVeyXHrnCXR20nYTbPEUUY24Sslr
+         W5ZeELra4wcZtNLo9SNgHC8ExdGtelocjgPgg+pGAa/O4Ex3dSbfGo85uI3osUgYzCzc
+         WTaf4V7+dhflVxq5y4neiLJcxkrGkT+Ig2Igokh4k+lZyIVeuxZeNvNjMAcS5ov7s0Mg
+         5PBIakqZFmwXAgVn7FbsGMsLdPZbFWqTP81fu9ytG473dreLn5wvjVdh8M27Xv2ijOUc
+         ojsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=S6koJJSggmSal63szAv1Wi+Rez3B6JEUgBs5HDL7mYM=;
-        b=UefegLIcWD6RwIhbpPMUH9nhi9IHBUBbTvf8j39DlerYQIQtgXjDOD1ht9L4oLNuT7
-         ap8gA/u3UKub6w5SlLOwH3iMDDhK65t6sGhhDRHhtOBUcq0lyMmqpedTJLXeC7Qbb1eX
-         oov8e+Q5Q/7wZxF164LqrYKN6luwFaT+I12zDuVRbcmhYenKOiT85K9fEyXG0mS6f9AQ
-         ZQNSN0DytWPhgccCvNRCqWAUHPavxSAj5TeBMk8NI37t1MANOrMtn9AEw8YN/Vu5dZWf
-         8+4sUs8wF4i2RmJht42SWy+2uB/lpfTSJGfgrznLKHk49zNg3Keu3Qbsvn9QG3ykZoZT
-         3ppw==
-X-Gm-Message-State: AOAM533JNHaxjUMTkLFK2sfSz89laJMt/S1Yv4qMgZSmEh18dSB2ZBp3
-        vd7TfJyeVIG9ga71JHEpkqTzWg==
-X-Google-Smtp-Source: ABdhPJxyp8Oeq9HWvJ1/0pjWBLdyMKj3rrOq3micbuWzBxByyutnH0LAveN3J1hGAtDUVyS/FGiRvg==
-X-Received: by 2002:a5d:4c88:: with SMTP id z8mr4391621wrs.218.1601386864764;
-        Tue, 29 Sep 2020 06:41:04 -0700 (PDT)
-Received: from hackbox2.linaro.org ([81.128.185.34])
-        by smtp.gmail.com with ESMTPSA id q15sm5955314wrr.8.2020.09.29.06.41.03
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=0b0l8ZUG3zwXWMxWGQR/zxHkfGwj6nS7mjqC10ksX4g=;
+        b=lxrRH9tVLSKRhRGNRELLjxI1W/xAk2OOmxF2QF8xyFvkgtK/jf51/CvIkI6JiuDhYW
+         aR4/Yk8EVeAx9sUQqNY/tt8sUYjNsu6JHbxOfqsauqUyLVGte6/7vw8jhK0sSzwDcMPd
+         TBLXmFw0GbKeZDNXMhaz+AEZ2qPjJvPJE+tfPVF45i3O6X+2dolDUX0vEoadeIsnSTid
+         +TLTQuZRyHEz80jEyl90u/5DyEkObas2wCon35g13N76JQHkV8JS9EwfYIasNnW+Y8Bm
+         kcdUx5IPM6I2jxUYMyHZ4Xfx4D+yp6BelK9tx2dN5fwLgwAGirDfvvjm0RX3dhd6RPee
+         jjUw==
+X-Gm-Message-State: AOAM53371f99hzROez+3IteQaqLjXm3NbIKSKxr8vqUfK6xZomd+CEkX
+        r7fLMC5N+kk8EaLXHTJJNkobNg==
+X-Google-Smtp-Source: ABdhPJzWSHlUls723LLvd6jzpzhXgoAF/nY//8yL3Er8Ogb7M09BTqnoLSsgJ+32tZfmlCe3Zau8PQ==
+X-Received: by 2002:a63:801:: with SMTP id 1mr3396344pgi.48.1601386763471;
+        Tue, 29 Sep 2020 06:39:23 -0700 (PDT)
+Received: from debian ([122.164.218.24])
+        by smtp.gmail.com with ESMTPSA id g23sm5625895pfh.133.2020.09.29.06.39.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Sep 2020 06:41:04 -0700 (PDT)
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Wei Li <liwei391@huawei.com>,
-        James Clark <james.clark@arm.com>,
-        Andre Przywara <andre.przywara@arm.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        linux-kernel@vger.kernel.org, Al Grant <Al.Grant@arm.com>
-Cc:     Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH v2 14/14] perf arm-spe: Add support for ARMv8.3-SPE
-Date:   Tue, 29 Sep 2020 14:39:17 +0100
-Message-Id: <20200929133917.9224-15-leo.yan@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200929133917.9224-1-leo.yan@linaro.org>
-References: <20200929133917.9224-1-leo.yan@linaro.org>
+        Tue, 29 Sep 2020 06:39:22 -0700 (PDT)
+Message-ID: <666487600b77a8e59c737c33ac7acbbfff96a25c.camel@rajagiritech.edu.in>
+Subject: Re: [PATCH 5.8 00/99] 5.8.13-rc1 review
+From:   Jeffrin Jose T <jeffrin@rajagiritech.edu.in>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
+        pavel@denx.de, stable@vger.kernel.org
+Date:   Tue, 29 Sep 2020 19:09:18 +0530
+In-Reply-To: <20200929105929.719230296@linuxfoundation.org>
+References: <20200929105929.719230296@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.4-2 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wei Li <liwei391@huawei.com>
+On Tue, 2020-09-29 at 13:00 +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.8.13 release.
+> There are 99 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied,
+> please
+> let me know.
 
-This patch is to support Armv8.3 extension for SPE, it adds alignment
-field in the Events packet and it supports the Scalable Vector Extension
-(SVE) for Operation packet and Events packet with two additions:
 
-  - The vector length for SVE operations in the Operation Type packet;
-  - The incomplete predicate and empty predicate fields in the Events
-    packet.
+Compiled and booted 5.8.13-rc1+ .
+"dmesg -l err" did not report any error or errors.
 
-Signed-off-by: Wei Li <liwei391@huawei.com>
-Signed-off-by: Leo Yan <leo.yan@linaro.org>
----
- .../arm-spe-decoder/arm-spe-pkt-decoder.c     | 84 ++++++++++++++++++-
- .../arm-spe-decoder/arm-spe-pkt-decoder.h     |  6 ++
- 2 files changed, 87 insertions(+), 3 deletions(-)
+Tested-by: Jeffrin Jose T  <jeffrin@rajagiritech.edu.in>
 
-diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-index 05a4c74399d7..3ec381fddfcb 100644
---- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-+++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-@@ -342,14 +342,73 @@ int arm_spe_pkt_desc(const struct arm_spe_pkt *packet, char *buf,
- 					return ret;
- 			}
- 		}
-+		if (idx > 2) {
-+			if (payload & SPE_EVT_PKT_ALIGNMENT) {
-+				ret = snprintf(buf, buf_len, " ALIGNMENT");
-+				if (ret < 0)
-+					return ret;
-+				buf += ret;
-+				blen -= ret;
-+			}
-+			if (payload & SPE_EVT_PKT_SVE_PARTIAL_PREDICATE) {
-+				ret = snprintf(buf, buf_len, " SVE-PARTIAL-PRED");
-+				if (ret < 0)
-+					return ret;
-+				buf += ret;
-+				blen -= ret;
-+			}
-+			if (payload & SPE_EVT_PKT_SVE_EMPTY_PREDICATE) {
-+				ret = snprintf(buf, buf_len, " SVE-EMPTY-PRED");
-+				if (ret < 0)
-+					return ret;
-+				buf += ret;
-+				blen -= ret;
-+			}
-+		}
-+
- 		return buf_len - blen;
- 
- 	case ARM_SPE_OP_TYPE:
- 		switch (idx) {
- 		case SPE_OP_PKT_HDR_CLASS_OTHER:
--			return arm_spe_pkt_snprintf(&buf, &blen,
--					payload & SPE_OP_PKT_OTHER_SUBCLASS_COND ?
--					"COND-SELECT" : "INSN-OTHER");
-+			if ((payload & SPE_OP_PKT_OTHER_SVE_SUBCLASS_MASK) ==
-+					SPE_OP_PKT_OTHER_SUBCLASS_SVG_OP) {
-+
-+				ret = arm_spe_pkt_snprintf(&buf, &blen, "SVE-OTHER");
-+				if (ret < 0)
-+					return ret;
-+
-+				/* Effective vector length: step is 32 bits */
-+				ret = arm_spe_pkt_snprintf(&buf, &blen, " EVLEN %d",
-+					32 << ((payload & SPE_OP_PKT_SVE_EVL_MASK) >>
-+						SPE_OP_PKT_SVE_EVL_SHIFT));
-+				if (ret < 0)
-+					return ret;
-+
-+				if (payload & SPE_OP_PKT_SVE_FP) {
-+					ret = arm_spe_pkt_snprintf(&buf, &blen, " FP");
-+					if (ret < 0)
-+						return ret;
-+				}
-+				if (payload & SPE_OP_PKT_SVE_PRED) {
-+					ret = arm_spe_pkt_snprintf(&buf, &blen, " PRED");
-+					if (ret < 0)
-+						return ret;
-+				}
-+			} else {
-+				ret = arm_spe_pkt_snprintf(&buf, &blen, "OTHER");
-+				if (ret < 0)
-+					return ret;
-+
-+				ret = arm_spe_pkt_snprintf(&buf, &blen, " %s",
-+					       payload & SPE_OP_PKT_OTHER_SUBCLASS_COND ?
-+					       "COND-SELECT" : "UNCOND");
-+				if (ret < 0)
-+					return ret;
-+			}
-+
-+			return buf_len - blen;
-+
- 		case SPE_OP_PKT_HDR_CLASS_LD_ST_ATOMIC:
- 			ret = arm_spe_pkt_snprintf(&buf, &blen,
- 						   payload & SPE_OP_PKT_LDST ?
-@@ -394,6 +453,25 @@ int arm_spe_pkt_desc(const struct arm_spe_pkt *packet, char *buf,
- 				ret = arm_spe_pkt_snprintf(&buf, &blen, " NV-SYSREG");
- 				if (ret < 0)
- 					return ret;
-+			} else if ((payload & SPE_OP_PKT_LDST_SUBCLASS_SVE_MASK) ==
-+					SPE_OP_PKT_LDST_SUBCLASS_SVE) {
-+				/* Effective vector length: step is 32 bits */
-+				ret = arm_spe_pkt_snprintf(&buf, &blen, " EVLEN %d",
-+					32 << ((payload & SPE_OP_PKT_SVE_EVL_MASK) >>
-+						SPE_OP_PKT_SVE_EVL_SHIFT));
-+				if (ret < 0)
-+					return ret;
-+
-+				if (payload & SPE_OP_PKT_SVE_PRED) {
-+					ret = arm_spe_pkt_snprintf(&buf, &blen, " PRED");
-+					if (ret < 0)
-+						return ret;
-+				}
-+				if (payload & SPE_OP_PKT_SVE_SG) {
-+					ret = arm_spe_pkt_snprintf(&buf, &blen, " SG");
-+					if (ret < 0)
-+						return ret;
-+				}
- 			}
- 
- 			return buf_len - blen;
-diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h
-index 1847cad517db..80266bfebec2 100644
---- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h
-+++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h
-@@ -147,6 +147,12 @@ struct arm_spe_pkt {
- #define SPE_OP_PKT_LDST_SUBCLASS_SVE_MASK	(GENMASK_ULL(3, 3) | GENMASK_ULL(1, 1))
- #define SPE_OP_PKT_LDST_SUBCLASS_SVE		(0x8)
- 
-+#define SPE_OP_PKT_SVE_SG			BIT(7)
-+#define SPE_OP_PKT_SVE_EVL_MASK			GENMASK_ULL(6, 4)
-+#define SPE_OP_PKT_SVE_EVL_SHIFT		(4)
-+#define SPE_OP_PKT_SVE_PRED			BIT(2)
-+#define SPE_OP_PKT_SVE_FP			BIT(1)
-+
- #define SPE_OP_PKT_AR				BIT(4)
- #define SPE_OP_PKT_EXCL				BIT(3)
- #define SPE_OP_PKT_AT				BIT(2)
+
 -- 
-2.20.1
+software engineer
+rajagiri school of engineering and technology
 
