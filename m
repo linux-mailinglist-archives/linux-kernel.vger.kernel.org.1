@@ -2,116 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 284A027B8EC
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 02:35:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15B5A27B8ED
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 02:36:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727132AbgI2Af4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 20:35:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49224 "EHLO
+        id S1727179AbgI2AgZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 20:36:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726522AbgI2Afz (ORCPT
+        with ESMTP id S1726522AbgI2AgY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 20:35:55 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17E88C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 17:35:54 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id fa1so1731903pjb.0
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 17:35:54 -0700 (PDT)
+        Mon, 28 Sep 2020 20:36:24 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A817AC061755;
+        Mon, 28 Sep 2020 17:36:24 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id y20so51369pll.12;
+        Mon, 28 Sep 2020 17:36:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:in-reply-to:references:date:message-id
-         :mime-version;
-        bh=uaAgCWaphNg4XUpNx4joWU1xUSe7LvQcJOGZWvIHnHc=;
-        b=v69NAAkuCTEr7hg3phUdSwS/jRxtb9RhagIGnDoxmqRXRs2S6C/CmnrYbXfDPrKmM7
-         QKjikJoR6KEdqOFIQ0BMA2SDVoq2ov6NBMoBRH42AjSEXXz+zca8AQjnpe+FciLxsMNS
-         mTm0/iSB/gGJ4zkbRi+9IGT69J067NB76CdJmDnGwpZ/eZqCO8nZ6G77J0x6C6sZn2Tf
-         sarRvQVDFOV4eSjr1zdVf9CA+EwfAUiXpEjL+jpMGujhWiuo7JMxdHoy6SCk+CbR09Q3
-         u8QlDxiw3bRifR3UEMb1QX9f82B+GzxbIkCVeaMBS+mMYhLjSMIZFQFQCl6DcBSG+mhW
-         HwHQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LPW1bjFPvFAvn5HdwGhfvgueZwfxv91Vc8SJdeJ70Jo=;
+        b=ZvX/OjZryHffZLKS0bKedaFWzGebEzcj3SMLfHn8IbI+IdiHzKviJvcY0fG9z0xw2u
+         doxdelF/cJvjvI7k10Ad8WjTptX6OijoxFLklEJ2zpxRuxNKpB7Dw0jfDQ7vA0IRc+K9
+         fuuMDWj1lugXTlflY9gJJDVzK4rMnxqJ1Ifirl+lqrJ8jnOOJGA/zL6X9CZCjlx119jA
+         MQZ/ltpq7VliyO74k3dT/YDWVlwN3nxIz0GyVz6Feh4qFYIk7H+8cZfaSZiJi+zZTawo
+         yYCVdwXtMnYLq3tJTOJK82OVWBNPaFm7dXQGgHR4v7na36mBX3rWjM5Dh2oy4GwDWhNS
+         +4/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=uaAgCWaphNg4XUpNx4joWU1xUSe7LvQcJOGZWvIHnHc=;
-        b=kloNAV8rEswRdrkemXpdMbwnHIdcxhigZkyvXTWlmkmiVxAKOaX2zV9CdCG4niEjEU
-         kuJbrsDruvDyWslBv9YEdg/g0Tzh3mrIsb5EcUcvpsJ9edkdlpN7pSsb/Z+RPJXD3y9x
-         BLWketbIaPmbs6ZHpGuP+j8p3/YCwcROufIM6Do7/NaVkZ7PBwF1ocXTqEIxqj296ImB
-         swI9HqWj650DvLlCbkoLWvxK4McP2oPKZgsHmiKp19YYtVgvSVPabZHWy9sByQzz/Dpq
-         NT1TFECAjPn/pmv3iLvvMr93UWQkRXy8MeyNtpnFjBB87cjt0fxLYXvBnMNZeEHJC1zb
-         RvcQ==
-X-Gm-Message-State: AOAM530xofKDm12jolONlKKeKzw7+TwXcr6D1lg6J6WlMpnP0dXnPaE4
-        ZZPR685d2Q8rmMovzn4UgOjsZg==
-X-Google-Smtp-Source: ABdhPJw4qd17QzT6F2MmDcBshvhH/7FLRINF+lgsSnB4r4uMssLfw33w1g4TzP14kOgM0kQATT3GoA==
-X-Received: by 2002:a17:90a:fc1:: with SMTP id 59mr1653722pjz.156.1601339753340;
-        Mon, 28 Sep 2020 17:35:53 -0700 (PDT)
-Received: from localhost (c-71-197-186-152.hsd1.wa.comcast.net. [71.197.186.152])
-        by smtp.gmail.com with ESMTPSA id q16sm3127759pfj.117.2020.09.28.17.35.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Sep 2020 17:35:52 -0700 (PDT)
-From:   Kevin Hilman <khilman@baylibre.com>
-To:     Brad Harper <bjharper@gmail.com>,
-        linux-amlogic@lists.infradead.org, linux-mmc@vger.kernel.org
-Cc:     linux-rt-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Brad Harper <bjharper@gmail.com>
-Subject: Re: [PATCH v2 1/1] mmc: host: meson-gx-mmc: fix possible deadlock condition for preempt_rt
-In-Reply-To: <20200927025418.12382-2-bjharper@gmail.com>
-References: <20200927025418.12382-1-bjharper@gmail.com> <20200927025418.12382-2-bjharper@gmail.com>
-Date:   Mon, 28 Sep 2020 17:35:50 -0700
-Message-ID: <7hwo0dmnbt.fsf@baylibre.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LPW1bjFPvFAvn5HdwGhfvgueZwfxv91Vc8SJdeJ70Jo=;
+        b=fitIJytAXlAYK4jMVHjs3xhjpd8JPojYSNHP3QMMV3nykFcg4V/mBnzdwlEnMhPHga
+         5UhWXojklxDEAV/JmwoyKv8XKA5LC1Lk1/9uUjuF3yUb/MN3kdV1ez+rYcmKaLKoZbJi
+         PdYCQ1nOyGx6naN2QgFfY84HSabA8qS6r3IWqEkdna9jNKmgoVtG8bWywW7lbhO0yuzf
+         TaADE9zHxOlF1O0/blyEOKmpo4bS4zpOTi9oEUNJ0Z/iZ7jf4zCg/sgFdCeR+MzvJvSn
+         ekb3+nCvtaPyre5Vqqvwh8zj3JmRoaf7ZrTKBWDOuc+PbXFi5/xxlc2MnuKgNM1Xha6B
+         UNbA==
+X-Gm-Message-State: AOAM5336LFSACFTuJvnvWKlP5c0ebizgpzNf1ViEsLsAOjTSIm7dooyd
+        KKP6Gz9JWEwzgUqJOlWjEAHSS0NG/2ER6KLG2ZsQ0a2o
+X-Google-Smtp-Source: ABdhPJyNnYljuRKu6gbq+5K2vqFvql3svZ7X9SYS9KKRrFq2hft8gPM2r1NKNCkVrmXfzPYzhbSy3rH4P8LtWIywDxw=
+X-Received: by 2002:a17:90b:816:: with SMTP id bk22mr1554548pjb.66.1601339784308;
+ Mon, 28 Sep 2020 17:36:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20200926205610.21045-1-xie.he.0141@gmail.com> <20200928.155852.490566722532403628.davem@davemloft.net>
+In-Reply-To: <20200928.155852.490566722532403628.davem@davemloft.net>
+From:   Xie He <xie.he.0141@gmail.com>
+Date:   Mon, 28 Sep 2020 17:36:13 -0700
+Message-ID: <CAJht_EPs03cTh=6PQWasZknRXOzysW-X+dC+RPMu02RsC417LA@mail.gmail.com>
+Subject: Re: [PATCH net] drivers/net/wan/x25_asy: Keep the ldisc running even
+ when netif is down
+To:     David Miller <davem@davemloft.net>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Martin Schiller <ms@dev.tdt.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Brad Harper <bjharper@gmail.com> writes:
+On Mon, Sep 28, 2020 at 3:58 PM David Miller <davem@davemloft.net> wrote:
+>
+> It could also go back down and also back up again after you do this
+> test.  Maybe even 10 or 100 times over.
+>
+> You can't just leave things so incredibly racy like this, please apply
+> proper synchronization between netdev state changes and this TTY code.
+>
+> Thank you.
 
-> ---
->  drivers/mmc/host/meson-gx-mmc.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
+OK! Thanks!
 
-
-This patch still needs changelog summarizing the problem and what is
-being fixed by the patch.  Most of what's in the cover letter belongs
-here.
-
-The cover letter can be used to describe the history/background that you
-don't want in the patch itself.  Alternatviely, you could include that
-information in the a single patch email also because everything after
-the "---" line does not end up in git history.
-
-> diff --git a/drivers/mmc/host/meson-gx-mmc.c b/drivers/mmc/host/meson-gx-mmc.c
-> index 08a3b1c05..3ba8f988d 100644
-> --- a/drivers/mmc/host/meson-gx-mmc.c
-> +++ b/drivers/mmc/host/meson-gx-mmc.c
-> @@ -146,6 +146,7 @@ struct sd_emmc_desc {
->  };
->  
->  struct meson_host {
-> +	spinlock_t		lock;
->  	struct	device		*dev;
->  	struct	meson_mmc_data *data;
->  	struct	mmc_host	*mmc;
-> @@ -1051,6 +1052,7 @@ static int meson_mmc_probe(struct platform_device *pdev)
->  	host->mmc = mmc;
->  	host->dev = &pdev->dev;
->  	dev_set_drvdata(&pdev->dev, host);
-> +	spin_lock_init(&host->lock);
-
-I'm confused about what this lock is intended to do.  You init it here,
-but it's never used anywhere.  
-
->  	/* The G12A SDIO Controller needs an SRAM bounce buffer */
->  	host->dram_access_quirk = device_property_read_bool(&pdev->dev,
-> @@ -1139,7 +1141,7 @@ static int meson_mmc_probe(struct platform_device *pdev)
->  	       host->regs + SD_EMMC_IRQ_EN);
->  
->  	ret = request_threaded_irq(host->irq, meson_mmc_irq,
-> -				   meson_mmc_irq_thread, IRQF_ONESHOT,
-> +				   meson_mmc_irq_thread, 0,
->  				   dev_name(&pdev->dev), host);
->  	if (ret)
->  		goto err_init_clk;
-
-Kevin
+I'll try to ensure proper locking for the netif_running checks and re-submit.
