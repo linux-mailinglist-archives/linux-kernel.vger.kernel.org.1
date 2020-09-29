@@ -2,143 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14A3927B934
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 03:13:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A956327B938
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 03:14:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727255AbgI2BM6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 21:12:58 -0400
-Received: from www262.sakura.ne.jp ([202.181.97.72]:58403 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726944AbgI2BM5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 21:12:57 -0400
-Received: from fsav105.sakura.ne.jp (fsav105.sakura.ne.jp [27.133.134.232])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 08T1CtiK060830;
-        Tue, 29 Sep 2020 10:12:55 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav105.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav105.sakura.ne.jp);
- Tue, 29 Sep 2020 10:12:55 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav105.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 08T1CrW1060732
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO);
-        Tue, 29 Sep 2020 10:12:55 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Subject: Re: [PATCH] vt_ioctl: make VT_RESIZEX behave like VT_RESIZE
-To:     Martin Hostettler <textshell@uchuujin.de>
-Cc:     gregkh@linuxfoundation.org, jirislaby@kernel.org,
-        Peilin Ye <yepeilin.cs@gmail.com>,
-        syzbot <syzbot+b308f5fd049fbbc6e74f@syzkaller.appspotmail.com>,
-        b.zolnierkie@samsung.com, daniel.vetter@ffwll.ch, deller@gmx.de,
-        syzkaller-bugs@googlegroups.com,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        George Kennedy <george.kennedy@oracle.com>
-References: <000000000000226d3f05b02dd607@google.com>
- <bbcef674-4ac6-c933-b55d-8961ada97f4c@i-love.sakura.ne.jp>
- <47907f77-b14b-b433-45c6-a315193f0c1a@i-love.sakura.ne.jp>
- <494395bc-a7dd-fdb1-8196-a236a266ef54@i-love.sakura.ne.jp>
- <20200927092701.GA1037755@PWN>
- <4933b81b-9b1a-355b-df0e-9b31e8280ab9@i-love.sakura.ne.jp>
- <20200928175956.GF24673@neutronstar.dyndns.org>
-From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Message-ID: <100dfd3f-3415-80ae-a6cf-30d15f7ca49f@i-love.sakura.ne.jp>
-Date:   Tue, 29 Sep 2020 10:12:46 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1727007AbgI2BOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 21:14:43 -0400
+Received: from mga18.intel.com ([134.134.136.126]:4324 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726698AbgI2BOm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 21:14:42 -0400
+IronPort-SDR: 0VE6I+L1Fol83jxI6sTKxNeLjPrXI1miDj1xhAL+C+pXsUpiXHqhc4vxEFERovQhtoWZgKt20w
+ uL3BNOWoGHqQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9758"; a="149867893"
+X-IronPort-AV: E=Sophos;i="5.77,316,1596524400"; 
+   d="scan'208";a="149867893"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 18:14:42 -0700
+IronPort-SDR: pgtpNA+jtuvGoogfUXxiqFnRu841hblJguoLlGbttUi+kgiYHcNtBAOTadUTHJP2gwNzlDQWAZ
+ MIKAy04r32Pw==
+X-IronPort-AV: E=Sophos;i="5.77,316,1596524400"; 
+   d="scan'208";a="513656253"
+Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 18:14:41 -0700
+Date:   Mon, 28 Sep 2020 18:14:39 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Cc:     Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Jethro Beekman <jethro@fortanix.com>,
+        Jordan Hand <jorhand@linux.microsoft.com>,
+        Nathaniel McCallum <npmccallum@redhat.com>,
+        Chunyang Hui <sanqian.hcy@antfin.com>,
+        Seth Moore <sethmo@google.com>, akpm@linux-foundation.org,
+        andriy.shevchenko@linux.intel.com, asapek@google.com,
+        cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        dave.hansen@intel.com, haitao.huang@intel.com,
+        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, luto@kernel.org,
+        nhorman@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
+        tglx@linutronix.de, yaozhangx@google.com
+Subject: Re: [PATCH v38 16/24] x86/sgx: Add a page reclaimer
+Message-ID: <20200929011438.GA31167@linux.intel.com>
+References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
+ <20200915112842.897265-17-jarkko.sakkinen@linux.intel.com>
+ <20200922104538.GE22660@zn.tnic>
+ <20200922140314.GA164527@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20200928175956.GF24673@neutronstar.dyndns.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200922140314.GA164527@linux.intel.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/09/29 2:59, Martin Hostettler wrote:
-> On Sun, Sep 27, 2020 at 08:46:30PM +0900, Tetsuo Handa wrote:
->> VT_RESIZEX was introduced in Linux 1.3.3, but it is unclear that what
->> comes to the "+ more" part, and I couldn't find a user of VT_RESIZEX.
->>
-> 
-> It seems this is/was used by "svgatextmode" which seems to be at
-> http://www.ibiblio.org/pub/Linux/utils/console/
-> 
-> Not sure if that kind of software still has a chance to work nowadays.
-> 
+On Tue, Sep 22, 2020 at 05:03:23PM +0300, Jarkko Sakkinen wrote:
+> On Tue, Sep 22, 2020 at 12:45:38PM +0200, Borislav Petkov wrote:
+> > > +	spin_lock(&sgx_active_page_list_lock);
+> > > +	for (i = 0; i < SGX_NR_TO_SCAN; i++) {
+> > > +		if (list_empty(&sgx_active_page_list))
+> > 
+> > Isn't it enough to do this once, i.e., not in the loop? You're holding
+> > sgx_active_page_list_lock...
 
-Thanks for the information.
+Argh, I missed this until I looked at Jarkko's updated tree.
 
-It seems that v.v_vlin = curr_textmode->VDisplay / (MOFLG_ISSET(curr_textmode, ATTR_DOUBLESCAN) ? 2 : 1)
-and v.v_clin = curr_textmode->FontHeight . Thus, v.v_clin is font's height and seems to be non-zero.
-But according to https://bugs.gentoo.org/19485 , people are using kernel framebuffer instead.
+The reason for checking list_empty() on every iteration is that the loop is
+greedy, i.e. it tries to grab and reclaim up to 16 (SGX_NR_TO_SCAN) EPC pages
+at a time.
 
----------- SVGATextMode-1.10/SVGATextMode.c ----------
+> I think that would make sense. Distantly analogous to the EINIT
+> discussion. Too complex code for yet to be known problem workloads I'd
+> say.
 
-      /*
-       * Resize the screen. Still needs LOTS more error checking to avoid dropping out in the middle, leaving
-       * the user with a garbled screen.
-       *
-       * sresize will be TRUE when resizing tty's should be forced (due to the 2nd attempt do_VT_RESIZE will do
-       * when not enough memory is free).
-       *
-       */
+Nooooo.  Please no.
 
-        /*
-         * ALWAYS do a VT_RESIZE, even if we already did a VT_RESIZEX on a 1.3.3 or higher kernel,
-         * until those kernel programmers make this unambiguous
-         */
+This will most definitely impact workloads running a single large enclave, or a
+process running multiple enclaves, as we'll lose the batching of ETRACK and IPIs.
+ETRACK isn't a big deal, but the IPIs are painful and could thrash the system.
+E.g. in the current code, reclaiming 10 pages from an enclave with actively
+running threads will generate one round of IPIs to CPUs associated with the
+enclave (based on the mm struct).  Going to per-page reclaim will likely result
+in 10 rounds of IPIs as threads will reenter the enclave immediately after each
+IPI wave.
 
-       if (do_VT_RESIZE(curr_textmode->cols, curr_textmode->rows, resize1x1)) sresize=TRUE;
+Having to grab the section spinlock for every page is also (very) problematic.
+Reclaiming one page at a time makes it nigh impossible for the reclaimer to
+keep up as every allocation attempt acquires the spinlock.  I.e. the reclaimer
+has to contend with every CPU that is faulting in an EPC page or is adding a
+page to the enclave.  In my experiments with the EPC cgroup, even batching 16
+pages may be insufficient to make "forward progress".  That's not an apples to
+apples comparison, but it's a rough equivalent of what will happen with the
+reclaim thread versus EPC page faults.  We can (and should) play with scaling
+the number of reclaim threads, but at this stage, that's an exercise best left
+to post-upstreaming.
 
-       if (check_kernel_version(1,3,3, "VT_RESIZEX"))
-         {
-           /*
-            * VDisplay must de divided by 2 for DoubleScan modes,
-            * or VT_RESIZEX will fail -- until someone fixes the kernel
-            * so it understands about doublescan modes.
-            */
-           if (do_VT_RESIZEX(curr_textmode->cols,
-                             curr_textmode->rows,
-                             curr_textmode->VDisplay / (MOFLG_ISSET(curr_textmode, ATTR_DOUBLESCAN) ? 2 : 1),
-                             curr_textmode->FontHeight,
-                             curr_textmode->HDisplay/8*curr_textmode->FontWidth,
-                             curr_textmode->FontWidth, resize1x1)) sresize=TRUE;
-         }
-
----------- SVGATextMode-1.10/ttyresize.c ----------
-
-/*
- * if VT_RESIZEX not supported (i.e. when compiling on < 1.3.3 kernels), define it.
- * this is just te keep the compiler happy
- */
-
-#ifndef VT_RESIZEX
-#  define VT_RESIZEX  0x560A
-   typedef struct vt_consize {
-      ushort v_rows; ushort v_cols; ushort v_vlin; ushort v_clin; ushort v_vcol; ushort v_ccol;
-    } vt_consize;
-#endif
-
-
-int do_VT_RESIZEX(int cols, int rows, int vlin, int clin, int vcol, int ccol, int allow1x1)
-{
-  struct vt_consize my_vt_size;      /* passes the new screen size on to the kernel */
-  struct vt_consize dummy_vt_size = { 1 , 1 , 1 , 1 , 1 , 1 };
-  int ram_needed = cols * rows * 2 * MAX_NR_CONSOLES;
-
-  my_vt_size.v_rows = rows;
-  my_vt_size.v_cols = cols;
-  my_vt_size.v_vlin = vlin;
-  my_vt_size.v_clin = clin;
-  my_vt_size.v_vcol = vcol;
-  my_vt_size.v_ccol = ccol;
-
-  PDEBUG(("VT_RESIZEX(cols=%d,rows=%d,vlin=%d,clin=%d,vcol=%d,ccol=%d)\n",cols, rows, vlin, clin, vcol, ccol));
-
-  return(generic_VT_RESIZE(&my_vt_size, &dummy_vt_size, allow1x1, ram_needed, VT_RESIZEX, "VT_RESIZEX"));
-}
-
+I can't do A/B testing to provide numbers, because the changes in Jarkko's tree
+break basic reclaim.  Which is a nice segue into my last point: this is by far
+the most subtle code in the SGX code base; I really, really don't want to be
+making last minute changes in this area unless they are absolutely necessary or
+obviously benign.  Even if/when we get the basic reclaim functional again, and
+assuming it doesn't have performance issues, I wouldn't be comfortable merging
+the code without hammering it with the EPC cgroup tests for multiple days (on
+top of the 1+ days to rebased the EPC cgroup).  Past testing with the cgroup
+found multiple bugs with races between CPUs that required hitting a window that
+was open for less than 10 instructions.
