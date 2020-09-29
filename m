@@ -2,83 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B30DD27CE09
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:48:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E04127CDFB
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:48:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387521AbgI2Msb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 08:48:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49342 "EHLO
+        id S2387490AbgI2MsR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 08:48:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387491AbgI2MsT (ORCPT
+        with ESMTP id S1729646AbgI2MsP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 08:48:19 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F1A6C0613D0
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 05:48:18 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id b19so3895104lji.11
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 05:48:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=IMvMGHi3GydeVKLOrfC/vWyiwI8YwAhMbrnZw1cRxOs=;
-        b=peVIjQzaZ/pszoAnmZbBscUTAEFKGErn4WRK47+BgAKJqP6xS2c1xk6K7ZzWovbZf2
-         ti/cmwLcSSkQA1+F5ilOUDu+17EGfvIXoA7hKyUL9TUXK6n4amn0IS6lylrteOul7Mt/
-         byyqhv8G7Xs6tKXwZ5Yp5KyzWFjxCCPz+lqp8amlgOslfWgajcu7CXF1VwQpixq80y8G
-         jqjncbVXsxjra/Q9gEaOY+/Nrqodjlh5n4MVPGhnHLGNES/s5eiuNxjoDWwAeqYMeRiO
-         NWfelKACab2zTbAd8O8AonkYy7rhaiqEdBeXhl5ak+OGX5iVmsvqz8yelSf8ht+hiB1Y
-         Zr9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=IMvMGHi3GydeVKLOrfC/vWyiwI8YwAhMbrnZw1cRxOs=;
-        b=nZy2rNUGV1iXbE9xAhpKASR6ctXXqYCUe1MQTVj9gbm4TfLMf1D/jpOS4x/vJtdNh4
-         arZLHj86nEyc9rB+E7kKBsIhMzLR1hKwob8K58ykVDC9+OvdUlOL2sSEDe3IGUzePmYA
-         JX3t4afQEk55YyYstF4AwPmc6iWPW3O4OMH5663LQItFoEczooa5vt6OQydoT711h8z4
-         nCfFZL+ekXYLYwZn5mjuniFcdA4aZwPeEFKUtIjwllsh+RkvQpLX3dQXpebPtPsDGZ9m
-         HD1LYYbWf9E6KdwGQUK+haeGbyd3+uOF5xb2x4wa/UWP0OfaX8S59Pp4zeS3PiiE89Le
-         4LZQ==
-X-Gm-Message-State: AOAM531goxck18hJALA1s11WXdW3kO9EYu1Bj+kezUs2hmB1CQBQ7sAT
-        fSZJv34jDtcAZFpON+bTwXOgGYV6O+IoHg1CKvr5QA==
-X-Google-Smtp-Source: ABdhPJxnA3qRid3mM60XUEJepbYMl8mDolsQ9KdGO3C9GOZv0vZRhKfRr/vLKQSMNCCxJr+uBzpvSl9ICGCfbY+94Q4=
-X-Received: by 2002:a2e:9b15:: with SMTP id u21mr1193777lji.283.1601383696871;
- Tue, 29 Sep 2020 05:48:16 -0700 (PDT)
+        Tue, 29 Sep 2020 08:48:15 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 804B0C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 05:48:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=/97h64tIJwyLQyzv5Dro7vzAYTz4jYB25Nlue1WuQiU=; b=khvgauTxg+7IG6QAlN+P1O/0Os
+        7NkmsSgU4ivSgLJTK+vkAYTcBJ+Zfk2ZzbnQE/Gh3N/Wt3ZQtVF02Gh9dw6ECdcBqKVx2jrcA0NOR
+        FjALslkEAhVMevICUsFjDwv84emfeo9ERAJSwoKikNCkc1O17af3KVct76RECeTOPgLw+Z8t2OZQ7
+        GQfSF2Ax51kYj+H8DKkQzBZ+gcfDPjAMJkjnjbLzYVGRp7BZEycDbr7fTTffp2LUoeiyyDod/67ad
+        1obaXnbic+67x0Xd7QWmqhYPFRubMglg8Vn+u8CussEhkdUlrBdWCQ491pLi2X5PcjcTlUfzSw4/8
+        kh+0b2yQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kNF38-0006g3-OY; Tue, 29 Sep 2020 12:48:06 +0000
+Date:   Tue, 29 Sep 2020 13:48:06 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Jan Kara <jack@suse.cz>
+Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        William Kucharski <william.kucharski@oracle.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Dave Chinner <dchinner@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 05/12] mm: Add and use find_lock_entries
+Message-ID: <20200929124806.GC20115@casper.infradead.org>
+References: <20200914130042.11442-1-willy@infradead.org>
+ <20200914130042.11442-6-willy@infradead.org>
+ <20200929085855.GD10896@quack2.suse.cz>
 MIME-Version: 1.0
-References: <20200913065836.12156-1-zhouyanjie@wanyeetech.com>
-In-Reply-To: <20200913065836.12156-1-zhouyanjie@wanyeetech.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 29 Sep 2020 14:48:06 +0200
-Message-ID: <CACRpkda1B3LcGWc1PhXNgi-6JxapiKY4F_94c6dk4eBLgVGBJg@mail.gmail.com>
-Subject: Re: [PATCH v4 0/3] pinctrl: Ingenic: Add support for SSI and I2S pins.
-To:     =?UTF-8?B?5ZGo55Cw5p2wIChaaG91IFlhbmppZSk=?= 
-        <zhouyanjie@wanyeetech.com>
-Cc:     Paul Cercueil <paul@crapouillou.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
-        rick.tyliu@ingenic.com, yanfei.li@ingenic.com,
-        sernia.zhou@foxmail.com, zhenwenjin@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200929085855.GD10896@quack2.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 13, 2020 at 8:59 AM =E5=91=A8=E7=90=B0=E6=9D=B0 (Zhou Yanjie)
-<zhouyanjie@wanyeetech.com> wrote:
+On Tue, Sep 29, 2020 at 10:58:55AM +0200, Jan Kara wrote:
+> On Mon 14-09-20 14:00:35, Matthew Wilcox (Oracle) wrote:
+> > We have three functions (shmem_undo_range(), truncate_inode_pages_range()
+> > and invalidate_mapping_pages()) which want exactly this function, so
+> > add it to filemap.c.
+> > 
+> > Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> > diff --git a/mm/shmem.c b/mm/shmem.c
+> ...
+> > index b65263d9bb67..a73ce8ce28e3 100644
+> > --- a/mm/shmem.c
+> > +++ b/mm/shmem.c
+> > @@ -905,12 +905,8 @@ static void shmem_undo_range(struct inode *inode, loff_t lstart, loff_t lend,
+> >  
+> >  	pagevec_init(&pvec);
+> >  	index = start;
+> > -	while (index < end) {
+> > -		pvec.nr = find_get_entries(mapping, index,
+> > -			min(end - index, (pgoff_t)PAGEVEC_SIZE),
+> > -			pvec.pages, indices);
+> > -		if (!pvec.nr)
+> > -			break;
+> > +	while (index < end && find_lock_entries(mapping, index, end - 1,
+> > +			&pvec, indices)) {
+> >  		for (i = 0; i < pagevec_count(&pvec); i++) {
+> >  			struct page *page = pvec.pages[i];
+> >  
+> > @@ -925,18 +921,10 @@ static void shmem_undo_range(struct inode *inode, loff_t lstart, loff_t lend,
+> >  								index, page);
+> >  				continue;
+> >  			}
+> > +			index += thp_nr_pages(page) - 1;
+> >  
+> > -			VM_BUG_ON_PAGE(page_to_pgoff(page) != index, page);
+> > -
+> > -			if (!trylock_page(page))
+> > -				continue;
+> > -
+> > -			if ((!unfalloc || !PageUptodate(page)) &&
+> > -			    page_mapping(page) == mapping) {
+> > -				VM_BUG_ON_PAGE(PageWriteback(page), page);
+> > -				if (shmem_punch_compound(page, start, end))
+> > -					truncate_inode_page(mapping, page);
+> > -			}
+> > +			if (!unfalloc || !PageUptodate(page))
+> > +				truncate_inode_page(mapping, page);
+> 
+> Is dropping shmem_punch_compound() really safe? AFAICS it can also call
+> split_huge_page() which will try to split THP to be able to truncate it.
+> That being said there's another loop in shmem_undo_range() which will try
+> again so what you did might make a difference with performance but not much
+> else. But still it would be good to at least comment about this in the
+> changelog...
 
-> 1.Add SSI pins support for JZ4770 and JZ4780.
-> 2.Correct the pullup and pulldown parameters of JZ4780.
-> 3.Add I2S pins support for JZ4780, X1000, X1500, and X1830.
->
-> v2->v3:
-> 1.Add Paul Cercueil's Reviewed-by.
-> 2.Fix bug about PE15's pull-up parameter.
+OK, I need to provide better argumentation in the changelog.
 
-This v3 patch set applied!
-
-Thank you so much for your hard work!
-
-Yours,
-Linus Walleij
+shmem_punch_compound() handles partial THPs.  By the end of this series,
+we handle the partial pages in the next part of the function ... the
+part where we're handling partial PAGE_SIZE pages.  At this point in
+the series, it's safe to remove the shmem_punch_compound() call because
+the new find_lock_entries() loop will only return THPs that lie entirely
+within the range.
