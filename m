@@ -2,99 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B27027D9E1
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 23:23:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80FA527D9F0
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 23:23:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729510AbgI2VXM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 17:23:12 -0400
-Received: from mga18.intel.com ([134.134.136.126]:54184 "EHLO mga18.intel.com"
+        id S1729697AbgI2VXe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 17:23:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40976 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728494AbgI2VXL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 17:23:11 -0400
-IronPort-SDR: 8dGt573LrQC+pcuG38TOhesN0euRxAhyDsNcojf3dzozRgxJYbNVOOyUy7EbZRgwneXsQBEuGm
- +bSlcuzYjCAg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9759"; a="150074791"
-X-IronPort-AV: E=Sophos;i="5.77,319,1596524400"; 
-   d="scan'208";a="150074791"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2020 14:23:11 -0700
-IronPort-SDR: 7tUY3DboBHETRogyH1sFrj62m6Y8VtxQgP/jJoGMJCesEkvY79qK7nwn8t/2+YxuqB10HnXJne
- fBT+wUagxM2w==
-X-IronPort-AV: E=Sophos;i="5.77,319,1596524400"; 
-   d="scan'208";a="312355895"
-Received: from apickett-mobl.amr.corp.intel.com (HELO [10.255.228.142]) ([10.255.228.142])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2020 14:23:10 -0700
-Subject: Re: [PATCH v9 0/5] Simplify PCIe native ownership detection logic
-To:     bjorn@helgaas.com
-Cc:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.nkuppuswamy@gmail.com>,
-        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Raj, Ashok" <ashok.raj@intel.com>
-References: <cover.1600457297.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <b88d3549-717c-8208-0900-c85db8788618@linux.intel.com>
- <CABhMZUUBGuQjP5cBsFNxv3UGNPDVNPjjTm5CQfD9YnYBk9yVnA@mail.gmail.com>
-From:   "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Message-ID: <49fcf84b-7578-2716-cad1-67e6a5cb9c56@linux.intel.com>
-Date:   Tue, 29 Sep 2020 14:23:08 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1729555AbgI2VXY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 17:23:24 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6606F2075E;
+        Tue, 29 Sep 2020 21:23:22 +0000 (UTC)
+Date:   Tue, 29 Sep 2020 17:23:20 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+Cc:     arnaldo.melo@gmail.com, linux-trace-devel@vger.kernel.org,
+        ben@decadent.org.uk, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] tools lib traceevent: Hide non API functions
+Message-ID: <20200929172320.4adb4fc3@gandalf.local.home>
+In-Reply-To: <20200929173521.251934-1-tz.stoyanov@gmail.com>
+References: <20200929173521.251934-1-tz.stoyanov@gmail.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <CABhMZUUBGuQjP5cBsFNxv3UGNPDVNPjjTm5CQfD9YnYBk9yVnA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Tue, 29 Sep 2020 20:35:21 +0300
+"Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
 
-On 9/29/20 2:04 PM, Bjorn Helgaas wrote:
-> On Tue, Sep 29, 2020 at 4:00 PM Kuppuswamy, Sathyanarayanan
-> <sathyanarayanan.kuppuswamy@linux.intel.com> wrote:
->>
->> Hi Bjorn,
->>
->> On 9/27/20 6:11 PM, Kuppuswamy Sathyanarayanan wrote:
->>> Currently, PCIe capabilities ownership status is detected by
->>> verifying the status of pcie_ports_native, pcie_ports_dpc_native
->>> and _OSC negotiated results (cached in  struct pci_host_bridge
->>> ->native_* members). But this logic can be simplified, and we can
->>> use only struct pci_host_bridge ->native_* members to detect it.
->>>
->> Did you get this patch set or do I need to send it again?
+> There are internal library functions, which are not declared as a static.
+> They are used inside the library from different files. Hide them from
+> the library users, as they are not part of the API.
+> These functions are made hidden and are renamed without the prefix "tep_":
+>  tep_free_plugin_paths
+>  tep_peek_char
+>  tep_buffer_init
+>  tep_get_input_buf_ptr
+>  tep_get_input_buf
+>  tep_read_token
+>  tep_free_token
+>  tep_free_event
+>  tep_free_format_field
+
+I would mention in the change log about the __tep_parse_format() being made
+static.
+
 > 
-> I got it, thanks.  More importantly, it looks like linux-pci got it, too :)
-Thanks for the confirmation.
+> Link: https://lore.kernel.org/linux-trace-devel/e4afdd82deb5e023d53231bb13e08dca78085fb0.camel@decadent.org.uk/
+> Reported-by: Ben Hutchings <ben@decadent.org.uk>
+> Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
+> ---
+> v1 of the patch is here: https://lore.kernel.org/r/20200924070609.100771-2-tz.stoyanov@gmail.com
+> v2 changes (addressed Steven's comments):
+>   - Removed leading underscores from the names of newly hidden internal
+>     functions.
+> v3 changes (addressed Steven's comment):
+>   - Moved comments from removed APIs to internal functions.
+>   - Fixed a typo in patch description.
 > 
-> $ b4 am -om/ https://lore.kernel.org/r/a640e9043db50f5adee8e38f5c60ff8423f3f598.1600457297.git.sathyanarayanan.kuppuswamy@linux.intel.com
-> Looking up https://lore.kernel.org/r/a640e9043db50f5adee8e38f5c60ff8423f3f598.1600457297.git.sathyanarayanan.kuppuswamy%40linux.intel.com
-> Grabbing thread from lore.kernel.org/linux-pci
-> Reduced thread to strict matches only (18->10)
-> Analyzing 10 messages in the thread
-> ---
-> Writing m/v9_20200922_sathyanarayanan_kuppuswamy_simplify_pcie_native_ownership_detection_logic.mbx
->    [PATCH v9 1/5] PCI: Conditionally initialize host bridge native_* members
->    [PATCH v9 2/5] ACPI/PCI: Ignore _OSC negotiation result if
-> pcie_ports_native is set.
->    [PATCH v9 3/5] ACPI/PCI: Ignore _OSC DPC negotiation result if
-> pcie_ports_dpc_native is set.
->    [PATCH v9 4/5] PCI/portdrv: Remove redundant pci_aer_available()
-> check in DPC enable logic
->    [PATCH v9 5/5] PCI/DPC: Move AER/DPC dependency checks out of DPC driver
-> ---
-> Total patches: 5
-> ---
-> Cover: m/v9_20200922_sathyanarayanan_kuppuswamy_simplify_pcie_native_ownership_detection_logic.cover
->   Link: https://lore.kernel.org/r/cover.1600457297.git.sathyanarayanan.kuppuswamy@linux.intel.com
->   Base: not found (applies clean to current tree)
->         git am m/v9_20200922_sathyanarayanan_kuppuswamy_simplify_pcie_native_ownership_detection_logic.mbx
+>  tools/lib/traceevent/event-parse-api.c   |   8 +-
+>  tools/lib/traceevent/event-parse-local.h |  24 +++--
+>  tools/lib/traceevent/event-parse.c       | 125 ++++++++++-------------
+>  tools/lib/traceevent/event-parse.h       |   8 --
+>  tools/lib/traceevent/event-plugin.c      |   2 +-
+>  tools/lib/traceevent/parse-filter.c      |  23 ++---
+>  6 files changed, 83 insertions(+), 107 deletions(-)
 > 
 
--- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+>  /**
+> - * tep_peek_char - peek at the next character that will be read
+> + * peek_char - peek at the next character that will be read
+>   *
+>   * Returns the next character read, or -1 if end of buffer.
+>   */
+> -int tep_peek_char(void)
+> +__hidden  int peek_char(void)
+
+Nit, but there's two spaces between "__hidden" and "int", should only be
+one.
+
+>  {
+> -	return __peek_char();
+> +	if (input_buf_ptr >= input_buf_siz)
+> +		return -1;
+> +
+> +	return input_buf[input_buf_ptr];
+>  }
+>  
+
+>  /**
+> - * __tep_parse_format - parse the event format
+> + * __parse_format - parse the event format
+>   * @buf: the buffer storing the event format string
+>   * @size: the size of @buf
+>   * @sys: the system the event belongs to
+> @@ -6762,9 +6741,9 @@ static int find_event_handle(struct tep_handle *tep, struct tep_event *event)
+>   *
+>   * /sys/kernel/debug/tracing/events/.../.../format
+>   */
+> -enum tep_errno __tep_parse_format(struct tep_event **eventp,
+> -				  struct tep_handle *tep, const char *buf,
+> -				  unsigned long size, const char *sys)
+> +static enum tep_errno __parse_format(struct tep_event **eventp,
+
+Actually, we don't need the "__" prefix. Just call it "parse_format".
+
+
+> +					   struct tep_handle *tep, const char *buf,
+> +					   unsigned long size, const char *sys)
+>  {
+>  	struct tep_event *event;
+>  	int ret;
+
+> @@ -959,7 +954,7 @@ process_filter(struct tep_event *event, struct tep_filter_arg **parg,
+>  
+>  	do {
+>  		free(token);
+> -		type = read_token(&token);
+> +		type = filter_read_token(&token);
+
+Hmm, did you mean to change this from "read_token()" to
+"filter_read_token()"?
+
+-- Steve
+
+
+>  		switch (type) {
+>  		case TEP_EVENT_SQUOTE:
+>  		case TEP_EVENT_DQUOTE:
+> @@ -1185,7 +1180,7 @@ process_event(struct tep_event *event, const char *filter_str,
+>  {
+>  	int ret;
+>  
+> -	tep_buffer_init(filter_str, strlen(filter_str));
+> +	init_input_buf(filter_str, strlen(filter_str));
+>  
+>  	ret = process_filter(event, parg, error_str, 0);
+>  	if (ret < 0)
+> @@ -1243,7 +1238,7 @@ filter_event(struct tep_event_filter *filter, struct tep_event *event,
+>  static void filter_init_error_buf(struct tep_event_filter *filter)
+>  {
+>  	/* clear buffer to reset show error */
+> -	tep_buffer_init("", 0);
+> +	init_input_buf("", 0);
+>  	filter->error_buffer[0] = '\0';
+>  }
+>  
+
