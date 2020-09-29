@@ -2,141 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B251F27CA38
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:19:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DB7427CA62
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:19:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732316AbgI2MRR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 08:17:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44502 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730047AbgI2MQ7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 08:16:59 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B0FDC061755
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 05:16:59 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id t16so6087271edw.7
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 05:16:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=WmQ4HXFZOiQNgwplnNphS1aF43ZxufpXoarc3usGdEM=;
-        b=qpKdWznEoF0VXNEXTayLjtsb2T+jAgRhbs/Zn/wYm6lpxIzMUgO8OS1OwVkbrPgcjq
-         C64VyNgFzie4RdTaGZ5U03PUJ2/kRUJTZ/OI2HJi+dC8TWHvKyHQwBxig86wTzJsQntR
-         OGaWIeqcGWN7uiIhW4KY9EIF1VzVVFgTOeQLtVADHY+PkGNt69YEYEI7rif8U42S02Rt
-         i86vmYCPL3srS5mRbmElsm3INvC4TsXuCxmrqsJ6mM7TCAkJmIx52uSTmUZOl9lgAdcK
-         dwKHaRWJMXJ1pnq6hKGzJWm+apPp/zaAmZI31iGgF55sAAHqOWYJWAysdSABbAdLTsaQ
-         ic5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=WmQ4HXFZOiQNgwplnNphS1aF43ZxufpXoarc3usGdEM=;
-        b=WV0t97ONkvjG2pSjZh89M/p9rdr7uW3ENNf6l3+9Fiw6+oe5lpQac35xl4Art/xMwW
-         NQqgADe0Q2xacLbhW5s48q6xi5/WGKrITkD9tja1z04bU67ZOvmjoHtUrt//lsoinbl/
-         5gidJA1395NYD6R2TuP4C05ui3+tmTeGegN8bb0SEUP+F14bNjAtBhqH9CsMhZ5fwsUx
-         L3GZ8Lt0tpkfn4N9W4zmv1H6ksc2R7iWtZ3Y39rWxKPsDO/tNaMikJ8fZ53Fmh0gSPck
-         blBed0Rg7ici3yncxsa/wzscsBL7BHzWtDX4vZ5aphHR1Prdii3Uenvc4MU6aZM7+qGt
-         BdpA==
-X-Gm-Message-State: AOAM530t7sK2B+O4SOOAb9Thsh4d5V+gtQYoeI9lUNv2YWbadqOdc+8y
-        9uDqtrYkjw1vobvwPjHBLA1YcA==
-X-Google-Smtp-Source: ABdhPJzQa153E1Rkgt87UDJf1vE8rz6Hpi0RQZdQQDSXy+J5iH/wwvNOr9/UrScWq8FHFcEgYstltA==
-X-Received: by 2002:a05:6402:6c1:: with SMTP id n1mr2958666edy.215.1601381818107;
-        Tue, 29 Sep 2020 05:16:58 -0700 (PDT)
-Received: from [192.168.1.7] ([195.24.90.54])
-        by smtp.googlemail.com with ESMTPSA id r16sm5120171ejb.110.2020.09.29.05.16.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 29 Sep 2020 05:16:57 -0700 (PDT)
-Subject: Re: [RESEND v3 2/4] venus: core: vote for video-mem path
-To:     Mansur Alisha Shaik <mansur@codeaurora.org>,
-        linux-media@vger.kernel.org, stanimir.varbanov@linaro.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        vgarodia@codeaurora.org, swboyd@chromium.org
-References: <1601262496-27026-1-git-send-email-mansur@codeaurora.org>
- <1601262496-27026-3-git-send-email-mansur@codeaurora.org>
-From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Message-ID: <339d0c7e-a5ba-400d-e733-3ede8d20dc7f@linaro.org>
-Date:   Tue, 29 Sep 2020 15:16:55 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1732155AbgI2MSn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 08:18:43 -0400
+Received: from mail-eopbgr770078.outbound.protection.outlook.com ([40.107.77.78]:19398
+        "EHLO NAM02-SN1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729969AbgI2MSg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 08:18:36 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=n2Z+c2V4R4huwMNBMgbWxevxzarBi5yMGgik8689ut0K78YLlznaFKxSCh0tbFdmPoUTBhSOds2AuWF4UiOcIAtSQneSQg6+gkQVPVKrUMyyuSQpyQJTC5idzCxiWWjsu2GJeBhlnNj0zDDbPJJtsM/3hoo9BOQysetHVq+rqoi12xSBeCYuO61fon0IA6yDP8yrW+tjPML3PBVzt/wEx9755NjDzSWtokGPBIHsS3V88QYvVcV5gZX6dJrCOvfr4PjJPYT//cJCuZCU+1Rzije8Vp04dUOr+F5s53yxmOVayiX8okvTE3JjxIq9Ri0/CpNqKiOpvLwEujQxi5Ccyg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EA1BX21cFK26eil0VeitXapqX39jRnMOgI3OctH63Ms=;
+ b=ePw2rTP++5pwXj1QFWq9rA8Gw9Ene79iq8l0/efPD0bhoJlwotNhrmukShdCRHZouLe2pVbGbksE1m4Gb8Xx403tn3uUxve4XIFI2QvAXfl+yRtgCJZFhXjypZuoVszMuj/jeRLtBJz78dRd++3Be6VzWakBII3owi+P9SzvrWLqq1lKNY9Wtv99rCtC/HIEgW37L3XDLOGxv3qeVeLYkupd0TXcljMAxcx04rmUBTGDwfeL0i8iMFJmVRhn7xcns5PpZU+GXdryxx8aNr9FMQ+lcdhsMIyCrbU/Ix58aCs03vjus3CQ3SOZ5ijtVTsqaRvXEnc5Ha95Ir+ucEz2NA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=openfive.com; dmarc=pass action=none header.from=sifive.com;
+ dkim=pass header.d=sifive.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sifive.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EA1BX21cFK26eil0VeitXapqX39jRnMOgI3OctH63Ms=;
+ b=ahK30VuqjYd+fsiBVKIXKHqJwfhVSV3GWt/izqOgrm862TQ0y/4wrg0Fdau/IXTnAEfxxAkuKin2+oDHqSIOdTF7TY2Bdik65kPRpWmFQrbUIviifzH8WeIZWHj2egWkVPw5flqd2ejIqc6qrxHcinjp1KIxqbDmRhamPw+DrYA=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=sifive.com;
+Received: from DM6PR13MB3451.namprd13.prod.outlook.com (2603:10b6:5:1c3::10)
+ by DM6PR13MB4050.namprd13.prod.outlook.com (2603:10b6:5:2ae::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.20; Tue, 29 Sep
+ 2020 12:18:34 +0000
+Received: from DM6PR13MB3451.namprd13.prod.outlook.com
+ ([fe80::a48a:1f7c:267c:876]) by DM6PR13MB3451.namprd13.prod.outlook.com
+ ([fe80::a48a:1f7c:267c:876%7]) with mapi id 15.20.3433.032; Tue, 29 Sep 2020
+ 12:18:34 +0000
+From:   Sagar Kadam <sagar.kadam@sifive.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
+        robh+dt@kernel.org, palmer@dabbelt.com, paul.walmsley@sifive.com,
+        aou@eecs.berkeley.edu, yash.shah@sifive.com,
+        Sagar Kadam <sagar.kadam@sifive.com>
+Subject: [PATCH v4 0/1] convert l2 cache dt bindings to YAML format
+Date:   Tue, 29 Sep 2020 17:48:15 +0530
+Message-Id: <1601381896-29716-1-git-send-email-sagar.kadam@sifive.com>
+X-Mailer: git-send-email 2.7.4
+Content-Type: text/plain
+X-Originating-IP: [159.117.144.156]
+X-ClientProxiedBy: SG2PR03CA0149.apcprd03.prod.outlook.com
+ (2603:1096:4:c8::22) To DM6PR13MB3451.namprd13.prod.outlook.com
+ (2603:10b6:5:1c3::10)
 MIME-Version: 1.0
-In-Reply-To: <1601262496-27026-3-git-send-email-mansur@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from osubuntu003.open-silicon.com (159.117.144.156) by SG2PR03CA0149.apcprd03.prod.outlook.com (2603:1096:4:c8::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3433.20 via Frontend Transport; Tue, 29 Sep 2020 12:18:30 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 6c596193-eadd-413c-35c0-08d86471c889
+X-MS-TrafficTypeDiagnostic: DM6PR13MB4050:
+X-LD-Processed: 22f88e9d-ae0d-4ed9-b984-cdc9be1529f1,ExtAddr
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM6PR13MB40509BDDAA6B66225D8BDF3797320@DM6PR13MB4050.namprd13.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:364;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: pm/M4I0gGiNeXFzm2WlNMkRVxECufABEi3BQjjpd/HPS++6ri4iAZNTRxYZhx7fJUb8ysNvIor9J5HxUJ9MkOnnsa/wUmOyfWA13vk8gjsX3FUx+v7Mavl9HopkkEHCwtqKqx4KoM4BJD0RftVFXQ3MdGP5qQH9oeygafEjVIEu+KmKZGiQKOsA24rA4Gpis5h1nwCSUcHWxKe+ScSV1Nz0o5V5++qScvq47J714JAAadJ3YFZ6HUwY83DijUU8MoUFwkvz1vGGvNrn1vjZ9fySpm2ACtCpLwXRsYsO++9zBxfxRsaeUPLJL/8nTQjsvogg4VwbeUHWrsgTKSKcya+VAGtRiaALTJv38OEqzj2USTqu9JwIhF7QRa/K3ioHln4MRFJavwaeHWonYxIY0ZA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR13MB3451.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(39850400004)(396003)(346002)(366004)(376002)(8676002)(66476007)(66946007)(6506007)(966005)(66556008)(4326008)(107886003)(6486002)(83080400001)(52116002)(6916009)(83170400001)(83380400001)(316002)(2616005)(186003)(42882007)(26005)(36756003)(956004)(44832011)(6512007)(2906002)(478600001)(16526019)(6666004)(8936002)(5660300002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: RBEv0t01QITiuJ23O7lg3F7WujG6SgdqAqWymqk9QDrowVGSUZwcItzSKVAkk6+C0jZ/yzRNnPQ0dzVZ0HIG4XaL3rluSB55EEzGkudz1o/ONPfsgYojNrRh0Jxlmn1HuloHGHkIrz/zWOycqOfV+dioH15RdVAGNct3IFHJCW6LdbZAZINCNh4B0vE0HrN8AkC/tyc1fqQAlAEcxOT3sfT5GhFVB2JKDWpIdYtPcUBIE0Y0L7YHo50CwDdfZL5khyeNAmM4V7LcIpsMOhzCX6GZdRFhmi1bga4I2FF9myQhPHfv1YuWwkhZ+xMkdOpaPpjcAFi2ylnryhtpNILyKq6OSQIG8NZo1Vz9pDXYawtJvkuRGTbkjjYiij0v1JY5TDAi7CkPv4NimV1fyDhClVyXqC6PAiJPB1F7IHGTSkrdIaHcsAc5LZuGqIhzXIekiKbwDIOu8s41CB+iwci8BXGfOLb0NfCPHfnK/EuW797VmWdeIi75ck8sWBA9wVhuDb0wT19WSAuyY1gOS4n6GnPp/uWqt38BBqYkAe1BK5kF/G4mu9zlUyHOJm1RVYXP9+FIDa0AZpwRjWGLvTHXHqWRkjkSAYZ3QOiqUH2wcQRFgqGY8SIVBUlvmVXnEYz844eRJs+TdtxqtVXt4vh+7g==
+X-OriginatorOrg: sifive.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6c596193-eadd-413c-35c0-08d86471c889
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR13MB3451.namprd13.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Sep 2020 12:18:33.8738
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 22f88e9d-ae0d-4ed9-b984-cdc9be1529f1
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 9toO3JtxrdcU91j/G+uAhoABQSCpZEsHuqk2T5cJ2sbH5TeQQPkC4DLwBkW4xwxyGgqkuBek1oiEq8Kya654iQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR13MB4050
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mansur,
+This patch is created and tested on top of mainline linux 
+commit a1b8638ba132 ("Linux 5.9-rc7")
+Reference log of "make dt_binding_check" is available here[1].
 
-On 9/28/20 6:08 AM, Mansur Alisha Shaik wrote:
-> Currently video driver is voting for venus0-ebi path during buffer
-> processing with an average bandwidth of all the instances and
-> unvoting during session release.
-> 
-> While video streaming when we try to do XO-SD using the command
-> "echo mem > /sys/power/state command" , device is not entering
-> to suspend state and from interconnect summary seeing votes for venus0-ebi
-> 
-> Corrected this by voting for venus0-ebi path in venus_runtime_resume()
-> and unvote during venus_runtime_suspend().
-> 
-> Fixes: 7482a983d ("media: venus: redesign clocks and pm domains control")
+Just in case required, reference log of "make dt_binding_check"
+without this patch is available here[2].
 
-In fact all changes in this series are related to interconnect. The
-interconnect calls are moved to venus_runtime_suspend/resume by commit
-[1], that's why I think the Fixes: tag for all patches in this series
-should be [1].
+[1] https://paste.ubuntu.com/p/8TmWDZJs3g/
+[2] https://paste.ubuntu.com/p/ys5XNn38VP/
 
-[1] 07f8f22a33a9e ("media: venus: core: remove CNOC voting while device
-suspend")
+Change History:
+====================
+V4:
+-Incorporated changes as suggested by Rob Herring here[3]
+ [3] https://lkml.org/lkml/2020/9/22/929
+-Rebased patch on 5.9-rc7
 
-> Signed-off-by: Mansur Alisha Shaik <mansur@codeaurora.org>
-> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-> ---
->  drivers/media/platform/qcom/venus/core.c | 17 ++++++++++++++++-
->  1 file changed, 16 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/media/platform/qcom/venus/core.c b/drivers/media/platform/qcom/venus/core.c
-> index 52a3886..fa363b8 100644
-> --- a/drivers/media/platform/qcom/venus/core.c
-> +++ b/drivers/media/platform/qcom/venus/core.c
-> @@ -363,7 +363,18 @@ static __maybe_unused int venus_runtime_suspend(struct device *dev)
->  
->  	ret = icc_set_bw(core->cpucfg_path, 0, 0);
->  	if (ret)
-> -		return ret;
-> +		goto err_cpucfg_path;
-> +
-> +	ret = icc_set_bw(core->video_path, 0, 0);
-> +	if (ret)
-> +		goto err_video_path;
-> +
-> +	return ret;
-> +
-> +err_video_path:
-> +	icc_set_bw(core->cpucfg_path, kbps_to_icc(1000), 0);
-> +err_cpucfg_path:
-> +	pm_ops->core_power(dev, POWER_ON);
->  
->  	return ret;
->  }
-> @@ -374,6 +385,10 @@ static __maybe_unused int venus_runtime_resume(struct device *dev)
->  	const struct venus_pm_ops *pm_ops = core->pm_ops;
->  	int ret;
->  
-> +	ret = icc_set_bw(core->video_path, 0, kbps_to_icc(1000));
-> +	if (ret)
-> +		return ret;
-> +
->  	ret = icc_set_bw(core->cpucfg_path, 0, kbps_to_icc(1000));
->  	if (ret)
->  		return ret;
-> 
+V3:
+-Incorporated changes as suggested by Rob Herring here[3]
+ [3] https://lkml.org/lkml/2020/9/15/670
+-Rebased patch on 5.9-rc5
+
+V2:
+-Fixed bot failure mentioned by Rob Herring
+-Updated dt-schema and kernel as suggested
+
+V1:
+Base version
+
+Sagar Kadam (1):
+  dt-bindings: riscv: sifive-l2-cache: convert bindings to json-schema
+
+ .../devicetree/bindings/riscv/sifive-l2-cache.txt  | 51 -----------
+ .../devicetree/bindings/riscv/sifive-l2-cache.yaml | 98 ++++++++++++++++++++++
+ 2 files changed, 98 insertions(+), 51 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/riscv/sifive-l2-cache.txt
+ create mode 100644 Documentation/devicetree/bindings/riscv/sifive-l2-cache.yaml
 
 -- 
-regards,
-Stan
+2.7.4
+
