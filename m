@@ -2,84 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1A1927CEC2
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 15:14:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BA0B27CEC6
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 15:15:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729260AbgI2NOR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 09:14:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53392 "EHLO
+        id S1729635AbgI2NOZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 09:14:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728441AbgI2NOQ (ORCPT
+        with ESMTP id S1728441AbgI2NOS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 09:14:16 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27546C0613D0
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 06:14:16 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id q8so5439368lfb.6
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 06:14:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=piitBn56RFrmTdzxKCgKMNMaG7buUtqj3U42tB2+R4o=;
-        b=IyfH3BiA5+wCdKa78wiauvoqqjIP0kgktaFhQDORIlk135uvO+yH9+O759+Jh4KoVl
-         StMrJQzpS3a6Z/XwYLdCLO4BkX6S8cZOSHC3B9gjano+pB4G8s9l2Iu5m0upEISh1Zap
-         xJrWF04vvjmyzVD+UM54WcU1aWBeECKkm2WhIpLzfdHiVHX1N0me93/CWFaY5UzGJZ5+
-         lIuYDE881RWZJPCQ2RKIXXo5VoBb97bpEfOm0aZlLHeY/AIujZl5wtMDO8mRizVxB93o
-         irM667NOqXeL7MkxlmHDQiUPpdXYjSYmleUZpuUHASkyHUWGegY32wUO1tcPqSIobt2H
-         s1kQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=piitBn56RFrmTdzxKCgKMNMaG7buUtqj3U42tB2+R4o=;
-        b=FaDM9HOEIhoaWfJKCQJ42lTELkg72FFZXuuzCcEOChqgNWyqdaH1/FF45axBo6pYnh
-         INMqzhX1/7qukoK1xxkVRsyrauRxqn0SULAENk+1QIFg7rN1ux3YTPlM+K3PEAXVzK9C
-         nap+t8VZJyr3pT32eIrwoNkDqjAZKfJ/ouMrOZpy83lehC2rc5b9izbOoSos2/FSWmBM
-         xtS8vphGekrVCOqKu//Q38ReTGqGqtyvq8fVo9lqDz4kK5dSWyyaOLrgM6c1xhPFT1Cl
-         f4W3whDFvq9vbCPApi1qDwPu88l/Nr6NhwiMn0OqHLMfPtg7Vzq/3DFyJY1yrezWvyUL
-         Fp9g==
-X-Gm-Message-State: AOAM530UtJZqDMenpKK8DylVmRO0DBpTtX+lMAfVH8MJ2w0G75Ab/JTQ
-        Zj5XeG39E0x+pjZujRrKtsHriACHgmwHcJy2EK/fDQ==
-X-Google-Smtp-Source: ABdhPJxY4OEBdIMXAC+O0qUm0tc5dMP1R9SEC02dP2BrQkPZJ3RAutobx0kzrmLiGeQblFQgjQNjRRJWB1Z5bZVzZiY=
-X-Received: by 2002:a19:6419:: with SMTP id y25mr1128689lfb.333.1601385254443;
- Tue, 29 Sep 2020 06:14:14 -0700 (PDT)
+        Tue, 29 Sep 2020 09:14:18 -0400
+Received: from smtp1.goneo.de (smtp1.goneo.de [IPv6:2001:1640:5::8:30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE84EC061755
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 06:14:17 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by smtp1.goneo.de (Postfix) with ESMTP id 29B0E23F0C2;
+        Tue, 29 Sep 2020 15:14:15 +0200 (CEST)
+X-Virus-Scanned: by goneo
+X-Spam-Flag: NO
+X-Spam-Score: -2.99
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.99 tagged_above=-999 tests=[ALL_TRUSTED=-1,
+        AWL=-0.090, BAYES_00=-1.9] autolearn=ham
+Received: from smtp1.goneo.de ([127.0.0.1])
+        by localhost (smtp1.goneo.de [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id H0o0PylUI-AA; Tue, 29 Sep 2020 15:14:14 +0200 (CEST)
+Received: from lem-wkst-02.lemonage (hq.lemonage.de [87.138.178.34])
+        by smtp1.goneo.de (Postfix) with ESMTPSA id DC14323F0C4;
+        Tue, 29 Sep 2020 15:14:13 +0200 (CEST)
+Date:   Tue, 29 Sep 2020 15:14:09 +0200
+From:   Lars Poeschel <poeschel@lemonage.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] driver core: Remove double assignment
+Message-ID: <20200929131409.wfq663eb4yukvofg@lem-wkst-02.lemonage>
+References: <20200929115808.2815382-1-poeschel@lemonage.de>
+ <20200929122533.GA1193271@kroah.com>
 MIME-Version: 1.0
-References: <20200917223338.14164-1-marek.behun@nic.cz> <20200917223338.14164-21-marek.behun@nic.cz>
-In-Reply-To: <20200917223338.14164-21-marek.behun@nic.cz>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 29 Sep 2020 15:14:03 +0200
-Message-ID: <CACRpkdaQSQYNECsH=W4qsS2J3+iyWrgPxgC1jRpVMYRqyZaYkw@mail.gmail.com>
-Subject: Re: [PATCH leds v2 20/50] leds: pm8058: use struct led_init_data when registering
-To:     =?UTF-8?B?TWFyZWsgQmVow7pu?= <marek.behun@nic.cz>
-Cc:     Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
-        =?UTF-8?Q?Ond=C5=99ej_Jirman?= <megous@megous.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200929122533.GA1193271@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 18, 2020 at 12:33 AM Marek Beh=C3=BAn <marek.behun@nic.cz> wrot=
-e:
+On Tue, Sep 29, 2020 at 02:25:33PM +0200, Greg Kroah-Hartman wrote:
+> On Tue, Sep 29, 2020 at 01:58:08PM +0200, poeschel@lemonage.de wrote:
+> > From: Lars Poeschel <poeschel@lemonage.de>
+> > 
+> > This removes an assignment in device_add. It assigned the parent
+> > kobject to the kobject of the  new device. This is not necessary,
+> > because the call to kobject_add a few lines later also does this same
+> > assignment.
+> > 
+> > Signed-off-by: Lars Poeschel <poeschel@lemonage.de>
+> > ---
+> >  drivers/base/core.c | 4 +---
+> >  1 file changed, 1 insertion(+), 3 deletions(-)
+> > 
+> > diff --git a/drivers/base/core.c b/drivers/base/core.c
+> > index bb5806a2bd4c..03b5396cd192 100644
+> > --- a/drivers/base/core.c
+> > +++ b/drivers/base/core.c
+> > @@ -2847,8 +2847,6 @@ int device_add(struct device *dev)
+> >  		error = PTR_ERR(kobj);
+> >  		goto parent_error;
+> >  	}
+> > -	if (kobj)
+> > -		dev->kobj.parent = kobj;
+> >  
+> >  	/* use parent numa_node */
+> >  	if (parent && (dev_to_node(dev) == NUMA_NO_NODE))
+> > @@ -2856,7 +2854,7 @@ int device_add(struct device *dev)
+> >  
+> >  	/* first, register with generic layer. */
+> >  	/* we require the name to be set before, and pass NULL */
+> > -	error = kobject_add(&dev->kobj, dev->kobj.parent, NULL);
+> > +	error = kobject_add(&dev->kobj, kobj, NULL);
+> 
+> That's very subtle, and might not really be correct for all users, have
+> you checked?
 
-> By using struct led_init_data when registering we do not need to parse
-> `label` DT property. Moreover `label` is deprecated and if it is not
-> present but `color` and `function` are, LED core will compose a name
-> from these properties instead.
->
-> Signed-off-by: Marek Beh=C3=BAn <marek.behun@nic.cz>
-> Cc: Linus Walleij <linus.walleij@linaro.org>
-> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+Of course I have not checked for all users ;-), but I have checked this
+for my system and I did not notice any difference. My system is an arm
+based board that does several hundreds of calls to the device_add
+function per kernel bootup.
 
-For this and the other PM8058 patches:
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
+> Anyway, I'd rather leave this as-is if possible, as we know this works
+> correctly, and it is not going to save any time/energy to remove that
+> assignment, right?
 
-Yours,
-Linus Walleij
+Of course it's up to you to leave this as is.
+Pure binary size drops from 0x784 to 0x778 (12 bytes) with this patch
+for the device_add function on arm with gcc 10.2.0.
+So this saves a tiny amount of size and energy. If it's worth that, I
+don't know.
+And not to mention the time/energy you save when some time some random
+guy again stubles upon this, sends you a patch and then you have to
+reply. ;-)
+
+Ok, as said:Taking this is up to you. I can also live without this.
+
+Regards,
+Lars
+
