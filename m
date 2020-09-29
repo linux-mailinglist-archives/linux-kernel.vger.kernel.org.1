@@ -2,39 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9548727C3C6
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:09:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AF9627C49D
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:15:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728995AbgI2LIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:08:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46580 "EHLO mail.kernel.org"
+        id S1729507AbgI2LPN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:15:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59274 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728978AbgI2LHz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:07:55 -0400
+        id S1729495AbgI2LPG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:15:06 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 31BBA21D7F;
-        Tue, 29 Sep 2020 11:07:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8B46F206A5;
+        Tue, 29 Sep 2020 11:15:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601377674;
-        bh=36ND2MmTltSqR4U5avLiXByONROkFkTO7XP6GSV8vrA=;
+        s=default; t=1601378106;
+        bh=Bdw4Gf/zbgtoli5Jc54jGiAIGVO/73hzkRJdC83mhYc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PdhRIVhuDGwOUqJZJ3Cgra7n50GZn0x3bjxDOpuOq36d1kSd48u7BxRWacNljzqi3
-         XfyfdvZ2ix7KRd64aZAWIH8+WXE9JwRPPl2h3t2uOhkoAsF+ZlWK2j6QlkIWfz54Ks
-         M6Szsj5gjtO5hB6v414bQzA3hwyxngd4A/s16t74=
+        b=jvyIzJTLGET2hoZfUsKKwMKhRwK9hHYgq6i6KKYEKopzl9lTjts6cc0+qWDjWetTM
+         7ppuYRGthbnGCCPliMEft4zGO2PuaV+JAJ6Ljmxi6TOP/I0ekeeyWUoUJc4H9oEkuM
+         4r4RBfddWdC6MHdB6qpNzXl6JNQbkeIusfkDcj3I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vasily Averin <vvs@virtuozzo.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Wen Yang <wen.yang99@zte.com.cn>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mukesh Ojha <mojha@codeaurora.org>,
+        Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        dri-devel@lists.freedesktop.org,
+        Markus Elfring <Markus.Elfring@web.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 031/121] neigh_stat_seq_next() should increase position index
-Date:   Tue, 29 Sep 2020 12:59:35 +0200
-Message-Id: <20200929105931.722066488@linuxfoundation.org>
+Subject: [PATCH 4.14 064/166] drm/omap: fix possible object reference leak
+Date:   Tue, 29 Sep 2020 12:59:36 +0200
+Message-Id: <20200929105938.423829636@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929105930.172747117@linuxfoundation.org>
-References: <20200929105930.172747117@linuxfoundation.org>
+In-Reply-To: <20200929105935.184737111@linuxfoundation.org>
+References: <20200929105935.184737111@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,31 +50,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vasily Averin <vvs@virtuozzo.com>
+From: Wen Yang <wen.yang99@zte.com.cn>
 
-[ Upstream commit 1e3f9f073c47bee7c23e77316b07bc12338c5bba ]
+[ Upstream commit 47340e46f34a3b1d80e40b43ae3d7a8da34a3541 ]
 
-if seq_file .next fuction does not change position index,
-read after some lseek can generate unexpected output.
+The call to of_find_matching_node returns a node pointer with refcount
+incremented thus it must be explicitly decremented after the last
+usage.
 
-https://bugzilla.kernel.org/show_bug.cgi?id=206283
-Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Detected by coccinelle with the following warnings:
+drivers/gpu/drm/omapdrm/dss/omapdss-boot-init.c:212:2-8: ERROR: missing of_node_put; acquired a node pointer with refcount incremented on line 209, but without a corresponding object release within this function.
+drivers/gpu/drm/omapdrm/dss/omapdss-boot-init.c:237:1-7: ERROR: missing of_node_put; acquired a node pointer with refcount incremented on line 209, but without a corresponding object release within this function.
+
+Signed-off-by: Wen Yang <wen.yang99@zte.com.cn>
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Reviewed-by: Mukesh Ojha <mojha@codeaurora.org>
+Cc: Tomi Valkeinen <tomi.valkeinen@ti.com>
+Cc: David Airlie <airlied@linux.ie>
+Cc: Daniel Vetter <daniel@ffwll.ch>
+Cc: Sebastian Reichel <sebastian.reichel@collabora.com>
+Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc: dri-devel@lists.freedesktop.org
+Cc: linux-kernel@vger.kernel.org
+Cc: Markus Elfring <Markus.Elfring@web.de>
+Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ti.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/1554692313-28882-2-git-send-email-wen.yang99@zte.com.cn
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/core/neighbour.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/gpu/drm/omapdrm/dss/omapdss-boot-init.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/net/core/neighbour.c b/net/core/neighbour.c
-index 6578d1f8e6c4a..d267dc04d9f74 100644
---- a/net/core/neighbour.c
-+++ b/net/core/neighbour.c
-@@ -2797,6 +2797,7 @@ static void *neigh_stat_seq_next(struct seq_file *seq, void *v, loff_t *pos)
- 		*pos = cpu+1;
- 		return per_cpu_ptr(tbl->stats, cpu);
+diff --git a/drivers/gpu/drm/omapdrm/dss/omapdss-boot-init.c b/drivers/gpu/drm/omapdrm/dss/omapdss-boot-init.c
+index bf626acae2712..cd8e9b799b9a5 100644
+--- a/drivers/gpu/drm/omapdrm/dss/omapdss-boot-init.c
++++ b/drivers/gpu/drm/omapdrm/dss/omapdss-boot-init.c
+@@ -193,7 +193,7 @@ static int __init omapdss_boot_init(void)
+ 	dss = of_find_matching_node(NULL, omapdss_of_match);
+ 
+ 	if (dss == NULL || !of_device_is_available(dss))
+-		return 0;
++		goto put_node;
+ 
+ 	omapdss_walk_device(dss, true);
+ 
+@@ -218,6 +218,8 @@ static int __init omapdss_boot_init(void)
+ 		kfree(n);
  	}
-+	(*pos)++;
- 	return NULL;
+ 
++put_node:
++	of_node_put(dss);
+ 	return 0;
  }
  
 -- 
