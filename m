@@ -2,81 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C4F927D446
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 19:17:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7B0427D44D
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 19:18:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729923AbgI2RRG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 13:17:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53094 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727543AbgI2RRG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 13:17:06 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B100B20757;
-        Tue, 29 Sep 2020 17:17:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601399825;
-        bh=P/QhiYBumdpCaF4VgQUDRrSUPpdh2M7EfHQSsTjYSdg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hWKOe9F0l7ZFWsMN/l6VodfQMncPdF0Rn1xjGT//tXiTwUdtnFndsHBgkcR9Qym/q
-         4iqMT3Twn/PsWQiRlsT9eNGtwJbZRh3GBkqwHMBiGpCPgt6pX8kPkSyuhCHeoFb1WC
-         4CeK1eO5hi5IbxjghBagBskxkl2YcbPiGjgWa/NY=
-Date:   Tue, 29 Sep 2020 18:17:01 +0100
-From:   Will Deacon <will@kernel.org>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] perf: arm-cmn: Fix unsigned comparison to less
- than zero
-Message-ID: <20200929171700.GA14317@willie-the-truck>
-References: <20200929170835.GA15956@embeddedor>
+        id S1728699AbgI2RSl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 13:18:41 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:55004 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725554AbgI2RSk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 13:18:40 -0400
+Received: from pps.filterd (m0046037.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08THHOmW010687;
+        Tue, 29 Sep 2020 19:18:34 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=STMicroelectronics;
+ bh=KLsmjKeGsfFqyL6scwWy2f2Tm9641An3TKilO0TJJY0=;
+ b=dxsnGq8Kfk9KZqvg/n54r74Rp4v8YZUIVsXRk2pV1FgEeHXL/YJVgG13jRo8RzZLBv1h
+ SEM4zHrUpgCTFvPZBGCQHUSWTBu263EFkDG19w3lm8+7UbZ3HQ0QOaQIa2iU5yU06oVT
+ /YnWvzdHiJKsMyN6RQ7hBWQp+mD6iBmNtF/GqTVB6RmCy5Ik2iRI4kqTlWDERLp+SlVJ
+ q53d+cSPufDcs5Z2L5Aaw/2Ag6cvDS81c82h+1BnkP3+4mthgL+dtcMaSwd3lj8ixR04
+ ft7L8RaCheurd7zjy5p02WvVBdUxO2JFLeF201ROsbw3QGZzPAqtWHu+i35IhwnYYTFj lA== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 33v0dgu1n8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 29 Sep 2020 19:18:34 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 41BB510002A;
+        Tue, 29 Sep 2020 19:18:34 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag3node1.st.com [10.75.127.7])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 2EA752BE253;
+        Tue, 29 Sep 2020 19:18:34 +0200 (CEST)
+Received: from lmecxl0889.tpe.st.com (10.75.127.49) by SFHDAG3NODE1.st.com
+ (10.75.127.7) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 29 Sep
+ 2020 19:18:32 +0200
+Subject: Re: [PATCH v6 0/3] Move recovery/coredump configuration to sysfs
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+CC:     Rishabh Bhatnagar <rishabhb@codeaurora.org>,
+        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "tsoni@codeaurora.org" <tsoni@codeaurora.org>,
+        "psodagud@codeaurora.org" <psodagud@codeaurora.org>,
+        "sidgup@codeaurora.org" <sidgup@codeaurora.org>
+References: <1601331456-20432-1-git-send-email-rishabhb@codeaurora.org>
+ <8222f5fa-2acc-a765-a728-6aad9ed88068@st.com>
+ <20200929143357.GE10036@builder.lan>
+From:   Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Message-ID: <69aecefd-b8c9-ff99-ab91-f0dde5fcf3d5@st.com>
+Date:   Tue, 29 Sep 2020 19:18:31 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200929170835.GA15956@embeddedor>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200929143357.GE10036@builder.lan>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.49]
+X-ClientProxiedBy: SFHDAG4NODE3.st.com (10.75.127.12) To SFHDAG3NODE1.st.com
+ (10.75.127.7)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-29_11:2020-09-29,2020-09-29 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 12:08:35PM -0500, Gustavo A. R. Silva wrote:
-> Fix unsigned comparison to less than zero by assigning the returned
-> value of function platform_get_irq() to a new integer variable _ret_
-> and then make the comparison. In case the returned value is greater
-> than or equal to zero, assign it to dtc->irq.
+
+
+On 9/29/20 4:33 PM, Bjorn Andersson wrote:
+> On Tue 29 Sep 03:44 CDT 2020, Arnaud POULIQUEN wrote:
 > 
-> Addresses-Coverity-ID: 1497488 ("Unsigned compared against 0")
-> Fixes: 0ba64770a2f2 ("perf: Add Arm CMN-600 PMU driver")
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> ---
->  drivers/perf/arm-cmn.c | 8 +++++---
->  1 file changed, 5 insertions(+), 3 deletions(-)
+>>
+>>
+>> On 9/29/20 12:17 AM, Rishabh Bhatnagar wrote:
+>>> From Android R onwards Google has restricted access to debugfs in user
+>>> and user-debug builds. This restricts access to most of the features
+>>> exposed through debugfs. 'Coredump' and 'Recovery' are critical
+>>> interfaces that are required for remoteproc to work on Qualcomm Chipsets. 
+>>> Coredump configuration needs to be set to "inline" in debug/test builds
+>>> and "disabled" in production builds. Whereas recovery needs to be
+>>> "disabled" for debugging purposes and "enabled" on production builds.
+>>> This patch series removes the recovery/coredump entries from debugfs
+>>> and moves them to sysfs. Also, this disables the coredump collection
+>>> by default as this is a requirement for production devices.
+>>>
+>>> Changelog:
+>>>
+>>> v6 -> v5:
+>>> - Disable coredump collection by default
+>>> - Rename the "default" configuration to "enabled" to avoid confusion
+>>>
+>>> v5 -> v4:
+>>> - Fix the cover-letter of tha patch series.
+>>>
+>>> v4 -> v3:
+>>> - Remove the feature flag to expose recovery/coredump
+>>>
+>>> v3 -> v2:
+>>> - Remove the coredump/recovery entries from debugfs
+>>
+>> Sorry i missed this and some associated discussion in V2...
+>>
+>> I have also some concerns about the ABI breaks.
 > 
-> diff --git a/drivers/perf/arm-cmn.c b/drivers/perf/arm-cmn.c
-> index e824b5b83ea2..383b67042677 100644
-> --- a/drivers/perf/arm-cmn.c
-> +++ b/drivers/perf/arm-cmn.c
-> @@ -1246,11 +1246,13 @@ static int arm_cmn_init_dtc(struct arm_cmn *cmn, struct arm_cmn_node *dn, int id
->  {
->  	struct arm_cmn_dtc *dtc = cmn->dtc + idx;
->  	struct arm_cmn_node *xp;
-> +	int ret;
->  
->  	dtc->base = dn->pmu_base - CMN_PMU_OFFSET;
-> -	dtc->irq = platform_get_irq(to_platform_device(cmn->dev), idx);
-> -	if (dtc->irq < 0)
-> -		return dtc->irq;
-> +	ret = platform_get_irq(to_platform_device(cmn->dev), idx);
-> +	if (ret < 0)
-> +		return ret;
-> +	dtc->irq = ret;
+> Debugfs is not an ABI...
+> 
+>> In ST and I suppose in several companies we have some 
+>> test environments that use the debugfs to generate and/or get
+>> the core dump.
+>>
+> 
+> I do however acknowledge the inconvenience you're facing...
+> 
+>> Even if the stability of the debugfs is not guaranteed it would
+>> be nice to keep both interface.
+>>
+> 
+> ...and I wouldn't mind keeping the debugfs interface around, at least
+> for some time to allow people to transition their tools/muscle memory.
+> 
+>> It seems that it is possible to create symbolic link in the debugfs
+>> thanks to the "debugfs_create_symlink" function.
+>> This seems allowing to keep files in both place without duplicating the code.
+>> To be honest i have never used this function so I'm not 100% sure that this
+>> would do the job...
+>> But if you think that this could be a good compromise, i can test it.
+>>
+> 
+> The duplicated code is rather simple, so I don't mind the duplication -
+> for now.
+> 
+> 
+> So, how about we add the sysfs pieces of Rishabh's patches, leave out
+> the debugfs and then in a while (e.g. one LTS) we remove the debugfs
+> code?
 
-Why don't we just change the type of the 'irq' field in 'struct arm_cmn_dtc'
-to be 'int' instead of 'unsigned int'?
+This smooth transition seems to me a very good compromise.
 
-Robin?
+Thanks,
+Arnaud
 
-Will
+> 
+> Regards,
+> Bjorn
+> 
+>> Regards,
+>> Arnaud
+>>
+>>> - Expose recovery/coredump from sysfs under a feature flag
+>>>
+>>> v1 -> v2:
+>>> - Correct the contact name in the sysfs documentation.
+>>> - Remove the redundant write documentation for coredump/recovery sysfs
+>>> - Add a feature flag to make this interface switch configurable.
+>>>
+>>> Rishabh Bhatnagar (3):
+>>>   remoteproc: Move coredump configuration to sysfs
+>>>   remoteproc: Move recovery configuration to sysfs
+>>>   remoteproc: Change default dump configuration to "disabled"
+>>>
+>>>  Documentation/ABI/testing/sysfs-class-remoteproc |  46 +++++++
+>>>  drivers/remoteproc/remoteproc_coredump.c         |   6 +-
+>>>  drivers/remoteproc/remoteproc_debugfs.c          | 168 -----------------------
+>>>  drivers/remoteproc/remoteproc_sysfs.c            | 120 ++++++++++++++++
+>>>  include/linux/remoteproc.h                       |   8 +-
+>>>  5 files changed, 173 insertions(+), 175 deletions(-)
+>>>
