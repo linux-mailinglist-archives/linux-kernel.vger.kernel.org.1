@@ -2,198 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EC8B27D47C
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 19:30:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BD9727D47E
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 19:30:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728569AbgI2RaM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 13:30:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36626 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727328AbgI2RaM (ORCPT
+        id S1728836AbgI2RaX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 13:30:23 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:58486 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727328AbgI2RaX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 13:30:12 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C30A9C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 10:30:06 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id 5so4420122pgf.5
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 10:30:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=fFztEzSJ2rV1rMZN9OkJojf3DIgVoZo3w4SHkm4pQyk=;
-        b=aeynrkEnHlUKQBiPgnMNPHfg0Nz/g4+4y8462gVE1P3bPzk3sGsp1nXqWgmTcx537r
-         K7NYa5MGpJxLWQ/ElST1A5ZqgN+GdxSQwLJiXt3UDJIVJdAR/ChP3fkVCrpIRP+IdFXy
-         8Yjieyth0CDInMoo2PGaIxgNGd8tsKCbAjF6QurEsgKr5SrrhLO5GkOZgn/9ePtPy+Q4
-         /FAckVwJnbOUDfuknKlAEctofIK3BQaIJOd8FlKw0yn2dIZi0km/l7eBAEuvVvGSyBg7
-         FeCjLtaeZjT2Zy52Sjl4EUXfOEO1I6G6g0x3Wkq7HI+szuz9JNYZsByWB7AwNGc+Qz8Q
-         hmyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fFztEzSJ2rV1rMZN9OkJojf3DIgVoZo3w4SHkm4pQyk=;
-        b=PW2W+c2fMyVp4PRuKvLWOxAQ/BwOjBtAHUaVzBVyNlXx+GdIk8Tivf5AYIXh/dib1Y
-         GHMcl4iTmuZjHuWyuenn/CZSCgmws8b7wSUCM272ePbI7AlP+00c+vp3Vt1VQSfi8BV2
-         ksK3dFHLdJKE+GeDxQjI53KakTcLX0mRf9KS8h5HwJ8AHegP0Rn0zNRQj/wG50uSvTAN
-         jm05TGP/VQcYNigW1Ul4MtwDzupwtRWnhTkw3aHIa30VxD5o9IZxUIAoOzbfSgPQwMTH
-         m9lzxVVmvR63BgkNQFJfZVZFQTblE8yssjgTHPYzmDBLA6NLtk3rf7gu8mDxZWh94sbJ
-         nRkg==
-X-Gm-Message-State: AOAM532+zftnPOqcr9VHfTA07NTLvpLqLFHU4wDEj+SLnTnMuh1Jicvg
-        gGiKtEQe2kc8/La5exPAdwqgRg==
-X-Google-Smtp-Source: ABdhPJwYRq0qr3kl6y4PgVWlwBb8KVS0Fu4JKWsnWScQjJaKTexwp1yZHfnEDT2p1jBCWeNI6lFv2A==
-X-Received: by 2002:a62:26c1:0:b029:142:2501:35ef with SMTP id m184-20020a6226c10000b0290142250135efmr4783468pfm.79.1601400606139;
-        Tue, 29 Sep 2020 10:30:06 -0700 (PDT)
-Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
-        by smtp.gmail.com with ESMTPSA id n72sm6976829pfd.27.2020.09.29.10.30.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Sep 2020 10:30:05 -0700 (PDT)
-Date:   Tue, 29 Sep 2020 11:30:03 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Alexandre Bailon <abailon@baylibre.com>
-Cc:     ohad@wizery.com, bjorn.andersson@linaro.org, robh+dt@kernel.org,
-        matthias.bgg@gmail.com, linux-remoteproc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        stephane.leprovost@mediatek.com, gpain@baylibre.com
-Subject: Re: [PATCH v2 1/4] dt bindings: remoteproc: Add bindings for MT8183
- APU
-Message-ID: <20200929173003.GA124290@xps15>
-References: <20200910130148.8734-1-abailon@baylibre.com>
- <20200910130148.8734-2-abailon@baylibre.com>
+        Tue, 29 Sep 2020 13:30:23 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08THO5Tc000826;
+        Tue, 29 Sep 2020 17:30:15 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=x10vdcZygFwBhAQKwQ8d/UINuRe4BBcPPbo1w9Cq3eU=;
+ b=PveahHWiqwegGPiJW675ylIuI/iLJfewyMLwqXzBr/mDiAJDZc4KEcjnCGsDcvZzF52a
+ vfUaXxYJNBrV/c+iEVVvoEO/B5Or+uWmbpLgcemqMfSoY5WjY2Iiyo7PyuN0QtTrpBgR
+ ebCUhOBVBqo3jcoz1w3HZ1s4tTNdj1tv20+YZArZW0L0ZpxCROddjUiviVsvMsHh4RsP
+ phW73phmZSoI8iK2bF9+bmox9EbCHc+Fnq73dYzRVMemSnw2wq44CurSX7DmOhykHRZz
+ /Dz7VMkRp7t5n5HBkLN/P63BXjJQ53FwYoUYjtPpkQYRmqPM/WRVIergto8H+pqpkXKr 0Q== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 33swkkv8af-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 29 Sep 2020 17:30:15 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08THOsTQ073592;
+        Tue, 29 Sep 2020 17:30:15 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3030.oracle.com with ESMTP id 33uv2e7cd0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 29 Sep 2020 17:30:15 +0000
+Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 08THUAqZ031610;
+        Tue, 29 Sep 2020 17:30:10 GMT
+Received: from [10.154.161.108] (/10.154.161.108)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 29 Sep 2020 10:30:09 -0700
+Subject: Re: SPARC version of arch_validate_prot() looks broken (UAF read)
+To:     Jann Horn <jannh@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        sparclinux@vger.kernel.org, Linux-MM <linux-mm@kvack.org>,
+        Khalid Aziz <khalid@gonehiking.org>
+Cc:     kernel list <linux-kernel@vger.kernel.org>,
+        Anthony Yznaga <anthony.yznaga@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <CAG48ez3YsfTfOFKa-Po58e4PNp7FK54MFbkK3aUPSRt3LWtxQA@mail.gmail.com>
+From:   Khalid Aziz <khalid.aziz@oracle.com>
+Organization: Oracle Corp
+X-Pep-Version: 2.0
+Message-ID: <0fb905cc-77a2-4beb-dc9c-0c2849a6f0ae@oracle.com>
+Date:   Tue, 29 Sep 2020 11:30:07 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200910130148.8734-2-abailon@baylibre.com>
+In-Reply-To: <CAG48ez3YsfTfOFKa-Po58e4PNp7FK54MFbkK3aUPSRt3LWtxQA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9759 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0 adultscore=0
+ suspectscore=2 malwarescore=0 bulkscore=0 mlxlogscore=999 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009290148
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9759 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0 phishscore=0
+ suspectscore=2 mlxlogscore=999 clxscore=1011 priorityscore=1501
+ impostorscore=0 lowpriorityscore=0 bulkscore=0 spamscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009290148
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 10, 2020 at 03:01:45PM +0200, Alexandre Bailon wrote:
-> This adds dt bindings for the APU present in the MT8183.
-> 
-> Signed-off-by: Alexandre Bailon <abailon@baylibre.com>
-> ---
->  .../bindings/remoteproc/mtk,apu.yaml          | 107 ++++++++++++++++++
->  1 file changed, 107 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/remoteproc/mtk,apu.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/remoteproc/mtk,apu.yaml b/Documentation/devicetree/bindings/remoteproc/mtk,apu.yaml
-> new file mode 100644
-> index 000000000000..7a71d2f5c4e6
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/remoteproc/mtk,apu.yaml
-> @@ -0,0 +1,107 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +
-> +---
-> +$id: "http://devicetree.org/schemas/remoteproc/mtk,apu.yaml#"
-> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-> +
-> +title: MT8183 AI Processor Unit (APU) a.k.a. Vision Processor Unit (VPU)
-> +
-> +description:
-> +  This document defines the binding for the APU, a co-processor that could
-> +  offload the CPU for machine learning and neural network.
-> +
-> +maintainers:
-> +  - Alexandre Bailon <abailon@bayLibre.com>
-> +
-> +properties:
-> +  compatible:
-> +    const: mediatek,mt8183-apu
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    description:
-> +      Three clocks are expected for AXI, IPU and JTAG.
-> +      The JTAG clock seems to be required to run the DSP,
-> +      even when JTAG is not in use."
-> +    maxItems: 3
-> +
-> +  clock-names:
-> +    items:
-> +      - const: axi
-> +      - const: ipu
-> +      - const: jtag
-> +
-> +  iommus:
-> +    maxItems: 3
-> +
-> +  memory-region:
-> +    maxItems: 1
-> +
-> +  power-domains:
-> +    maxItems: 1
-> +
-> +  pinctrl:
-> +    description: pinctrl handles, required to configure pins for JTAG.
-> +
-> +  pinctrl-names:
-> +    items:
-> +      - const: jtag
-> +    maxItems: 1
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +  - clocks
-> +  - clock-names
-> +  - iommus
-> +  - memory-region
-> +  - power-domains
-> +
-> +additionalProperties: false
-> +
+On 9/28/20 6:14 AM, Jann Horn wrote:
+> From what I can tell from looking at the code:
+>=20
+> SPARC's arch_validate_prot() looks up the VMA and peeks at it; that's
+> not permitted though. do_mprotect_pkey() calls arch_validate_prot()
+> before taking the mmap lock, so we can hit use-after-free reads if
+> someone concurrently deletes a VMA we're looking at.
 
-What about the pintctrl for the JTAG part?
+That makes sense. It will be a good idea to encapsulate vma access
+inside sparc_validate_prot() between mmap_read_lock() and
+mmap_read_unlock().
 
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/mt8183-clk.h>
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +    #include <dt-bindings/memory/mt8183-larb-port.h>
-> +    #include <dt-bindings/power/mt8183-power.h>
-> +
-> +    reserved-memory {
-> +      #address-cells = <1>;
-> +      #size-cells = <1>;
-> +      ranges;
-> +
-> +      apu_ram: apu_ram@0x60000000 {
-> +        compatible = "shared-dma-pool";
-> +        reg = <0x60000000 0x040000000>;
-> +        no-map;
-> +        linux,cma-default;
-> +      };
-> +    };
-> +
-> +    apu0: apu@19100000 {
-> +      compatible = "mediatek,mt8183-apu";
-> +      reg = <0x19180000 0x14000>;
-> +      interrupts = <GIC_SPI 292 IRQ_TYPE_LEVEL_LOW>;
-> +
-> +      iommus = <&iommu M4U_PORT_IMG_IPUO>,
-> +         <&iommu M4U_PORT_IMG_IPU3O>,
-> +         <&iommu M4U_PORT_IMG_IPUI>;
-> +
-> +      clocks = <&ipu_core0 CLK_IPU_CORE0_AXI>,
-> +         <&ipu_core0 CLK_IPU_CORE0_IPU>,
-> +         <&ipu_core0 CLK_IPU_CORE0_JTAG>;
-> +
-> +      clock-names = "axi", "ipu", "jtag";
-> +
-> +      power-domains = <&scpsys MT8183_POWER_DOMAIN_VPU_CORE0>;
-> +      memory-region = <&apu_ram>;
-> +    };
-> +...
-> -- 
-> 2.26.2
-> 
+>=20
+> Additionally, arch_validate_prot() currently only accepts the start
+> address as a parameter, but the SPARC code probably should be checking
+> the entire given range, which might consist of multiple VMAs?
+>=20
+> I'm not sure what the best fix is here; it kinda seems like what SPARC
+> really wants is a separate hook that is called from inside the loop in
+> do_mprotect_pkey() that iterates over the VMAs? So maybe commit
+> 9035cf9a97e4 ("mm: Add address parameter to arch_validate_prot()")
+> should be reverted, and a separate hook should be created?
+>=20
+> (Luckily the ordering of the vmacache operations works out suIch that
+> AFAICS, despite calling find_vma() without holding the mmap_sem, we
+> can never end up establishing a vmacache entry with a dangling pointer
+> that might be considered valid on a subsequent call. So this should be
+> limited to a rather boring UAF data read, and not be exploitable for a
+> UAF write or UAF function pointer read.)
+>=20
+
+I think arch_validate_prot() is still the right hook to validate the
+protection bits. sparc_validate_prot() can iterate over VMAs with read
+lock. This will, of course, require range as well to be passed to
+arch_validate_prot().
+
+Thanks,
+Khalid
+
