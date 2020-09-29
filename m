@@ -2,87 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90A7D27BCE9
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 08:17:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDCBB27BCF7
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 08:19:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727524AbgI2GRM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 02:17:12 -0400
-Received: from coyote.holtmann.net ([212.227.132.17]:60596 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725601AbgI2GRM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 02:17:12 -0400
-Received: from [172.20.10.2] (x59cc8957.dyn.telefonica.de [89.204.137.87])
-        by mail.holtmann.org (Postfix) with ESMTPSA id DC336CED1B;
-        Tue, 29 Sep 2020 08:24:08 +0200 (CEST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.1\))
-Subject: Re: [PATCH v4] Bluetooth: btusb: Add Qualcomm Bluetooth SoC WCN6855
- support
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <20200929042351.2496-1-rjliao@codeaurora.org>
-Date:   Tue, 29 Sep 2020 08:17:07 +0200
-Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        linux-arm-msm@vger.kernel.org
-Content-Transfer-Encoding: 7bit
-Message-Id: <79611563-6F86-4B1D-AC27-4D55223794FD@holtmann.org>
-References: <20200925090829.3088-1-rjliao@codeaurora.org>
- <20200929042351.2496-1-rjliao@codeaurora.org>
-To:     Rocky Liao <rjliao@codeaurora.org>
-X-Mailer: Apple Mail (2.3608.120.23.2.1)
+        id S1727396AbgI2GTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 02:19:07 -0400
+Received: from z5.mailgun.us ([104.130.96.5]:10752 "EHLO z5.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725856AbgI2GTF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 02:19:05 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1601360344; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=3ZmhyJ+bnkMgvll9uWcnOHqot4LSzTj4yI0xK/E1JGk=; b=tu3JEP7Mcv2kHwHn3yVszBUOeyLm96orHdgJzid1hc7r7ztzc37o64kV1T5zROEh2W1elqyR
+ 9SoW8P6EjoxtcxyrLADHJS5lUklrfzyfqDSBlGzU6jL8Tx8VvOpv8agVoTPpKtSp9D+rXBe+
+ mG1FASk3iY+H2+TR4bB79JwELRI=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 5f72d1be2892e2043e47e445 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 29 Sep 2020 06:18:38
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 6CDA9C43385; Tue, 29 Sep 2020 06:18:37 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 67515C433C8;
+        Tue, 29 Sep 2020 06:18:34 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 67515C433C8
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Loic Poulain <loic.poulain@linaro.org>,
+        Networking <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        David Miller <davem@davemloft.net>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Govind Singh <govinds@codeaurora.org>,
+        ath11k@lists.infradead.org
+Subject: Re: linux-next: build failure after merge of the mhi tree
+References: <20200928184230.2d973291@canb.auug.org.au>
+        <20200928091035.GA11515@linux> <87eemmfdn3.fsf@codeaurora.org>
+        <20200928094704.GB11515@linux> <87a6x9g89a.fsf@codeaurora.org>
+        <20200928170403.GA2222@Mani-XPS-13-9360>
+Date:   Tue, 29 Sep 2020 09:18:30 +0300
+In-Reply-To: <20200928170403.GA2222@Mani-XPS-13-9360> (Manivannan Sadhasivam's
+        message of "Mon, 28 Sep 2020 22:34:04 +0530")
+Message-ID: <875z7xf6mh.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rocky,
+Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org> writes:
 
-> This patch add support for WCN6855 i.e. patch and nvm download
-> support.
-> 
-> T:  Bus=01 Lev=01 Prnt=01 Port=00 Cnt=01 Dev#=  2 Spd=12   MxCh= 0
-> D:  Ver= 1.10 Cls=e0(wlcon) Sub=01 Prot=01 MxPS=64 #Cfgs=  1
-> P:  Vendor=0cf3 ProdID=e600 Rev= 0.01
-> C:* #Ifs= 2 Cfg#= 1 Atr=e0 MxPwr=100mA
-> I:* If#= 0 Alt= 0 #EPs= 3 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-> E:  Ad=81(I) Atr=03(Int.) MxPS=  16 Ivl=1ms
-> E:  Ad=82(I) Atr=02(Bulk) MxPS=  64 Ivl=0ms
-> E:  Ad=02(O) Atr=02(Bulk) MxPS=  64 Ivl=0ms
-> I:* If#= 1 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-> E:  Ad=83(I) Atr=01(Isoc) MxPS=   0 Ivl=1ms
-> E:  Ad=03(O) Atr=01(Isoc) MxPS=   0 Ivl=1ms
-> I:  If#= 1 Alt= 1 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-> E:  Ad=83(I) Atr=01(Isoc) MxPS=   9 Ivl=1ms
-> E:  Ad=03(O) Atr=01(Isoc) MxPS=   9 Ivl=1ms
-> I:  If#= 1 Alt= 2 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-> E:  Ad=83(I) Atr=01(Isoc) MxPS=  17 Ivl=1ms
-> E:  Ad=03(O) Atr=01(Isoc) MxPS=  17 Ivl=1ms
-> I:  If#= 1 Alt= 3 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-> E:  Ad=83(I) Atr=01(Isoc) MxPS=  25 Ivl=1ms
-> E:  Ad=03(O) Atr=01(Isoc) MxPS=  25 Ivl=1ms
-> I:  If#= 1 Alt= 4 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-> E:  Ad=83(I) Atr=01(Isoc) MxPS=  33 Ivl=1ms
-> E:  Ad=03(O) Atr=01(Isoc) MxPS=  33 Ivl=1ms
-> I:  If#= 1 Alt= 5 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-> E:  Ad=83(I) Atr=01(Isoc) MxPS=  49 Ivl=1ms
-> E:  Ad=03(O) Atr=01(Isoc) MxPS=  49 Ivl=1ms
-> I:  If#= 1 Alt= 6 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-> E:  Ad=83(I) Atr=01(Isoc) MxPS=  63 Ivl=1ms
-> E:  Ad=03(O) Atr=01(Isoc) MxPS=  63 Ivl=1ms
-> I:  If#= 1 Alt= 7 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-> E:  Ad=83(I) Atr=01(Isoc) MxPS=  65 Ivl=1ms
-> E:  Ad=03(O) Atr=01(Isoc) MxPS=  65 Ivl=1ms
-> 
-> Signed-off-by: Rocky Liao <rjliao@codeaurora.org>
-> ---
-> drivers/bluetooth/btusb.c | 66 +++++++++++++++++++++++++++++++--------
-> 1 file changed, 53 insertions(+), 13 deletions(-)
+>> I was looking at commit ed39d7816885 ("bus: mhi: Remove auto-start
+>> option") and noticed this in the commit log:
+>> 
+>>     This is really up to the MHI device(channel) driver to manage the state
+>>     of its channels.
+>> 
+>> So does this mean we have to make changes in ath11k to accomodate this?
+>
+> Nope. The change is needed in the MHI client driver like qrtr which is already
+> taken care: https://lkml.org/lkml/2020/9/28/30
 
-patch has been applied to bluetooth-next tree.
+Ok, that's good.
 
-Regards
+> Will make sure to include ath11k list for any future API changes.
 
-Marcel
+Thanks!
 
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
