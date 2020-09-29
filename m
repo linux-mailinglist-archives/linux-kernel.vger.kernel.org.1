@@ -2,87 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7467127C109
+	by mail.lfdr.de (Postfix) with ESMTP id 073FA27C108
 	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 11:25:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727976AbgI2JZS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 05:25:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45740 "EHLO
+        id S1727932AbgI2JZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 05:25:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727700AbgI2JZS (ORCPT
+        with ESMTP id S1727700AbgI2JZN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 05:25:18 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5F73C061755;
-        Tue, 29 Sep 2020 02:25:17 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id j19so1175653pjl.4;
-        Tue, 29 Sep 2020 02:25:17 -0700 (PDT)
+        Tue, 29 Sep 2020 05:25:13 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADEDEC061755
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 02:25:12 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id o8so13973600ejb.10
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 02:25:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=lightnvm-io.20150623.gappssmtp.com; s=20150623;
         h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=zbW0HeVoQwcWNP2ANJpj9racJHJLkStbpDgZaBi6ul8=;
-        b=nGTtFOiGZGZEicHch+Scdl+5XHVvTFbsbUDlTVtIabcQ79pEsRHbWNthPU9ahqvGb7
-         IVVjBvUg1EiwW1nZ3TjGwUu0HTJsWyEbna11J0MttBfXvplioYELn8Y0H5A0fNzq6ygQ
-         OUtHNzeg7Ep5RqBnXj6m/B7yOJ3JnR6o2QhsaXa7s3QajIpkhPB/FQMMELhHkA8HShWj
-         LvCkkszlcI7h8qHfzB3BgmTLpiMqTJgej4+aIPK/101aUK+UEMzoDJLYnyXeLD2Y9MW4
-         MVMLlKAQy2oCjxN0JZf0hU9Vy+2tmtrZnwUhYJH2pdNAjF+lUUMvyhjvBDbi1LmMUUXT
-         WJDQ==
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=Eo+z2/XPX9KqvAntC0eg29WykmGoGJYNJE8Hmye2bYI=;
+        b=MBlPipWPxjPPHW1M71myTFPsbocczwAG2AB9WC6x9p4BhG4Kh4w7mmvoiUQ9664nmu
+         GWAxoISBrizY7bBXj7NkjKeuTf3gf4c+ENy0nTO6AyuwraoFhqAIfetMbMX0U27MEHqz
+         BoX666NdU+M9Tr63H9y1Bn5e3TD2li30OpJe2wHnCfHcDXL/jSVpq4bRclBsyIs0Gr/0
+         jQqkSVEdJE/9JMmcvu14mZEdhG/1sFdnO7Cz8BiQmBv7R5y6JCfqAtWT8bvADjwxMsgM
+         iYyVpTYAFmpnl/acvSGzAqwzVHQwjnQMRYEutmqEhXZw6JijJC4bZMctEnxZEYZkekBO
+         elWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=zbW0HeVoQwcWNP2ANJpj9racJHJLkStbpDgZaBi6ul8=;
-        b=POyFu8pUUXcOWEOJ+zDQ8Qwa+XPNB8aT84sMptFzfPeFZuD8nM9F+HNEc2hlm+Muh6
-         u22AGiP73TDPzPinIGDPOC36qa2e/w2NO/r7cSRzFAWrEjqTzGkvsy3Dv+gm05rY/3Lo
-         1jmCQPvFb+yc60TJa3nmv5VFMobPfqNrax+u7BUIDg/wOfpz0yiSd43YX/EVEQqW/kRG
-         45NYhQ8mgl9dICPMW+cSOnnFnkKfBOS1oThunV0to3ALdbKqznP7erNYrr4qeOr7MFD9
-         8kbyHI4XY7NkV+PgsxtHbCUF0btPfn7yCdWS3LQZkW6XrZ60swwkjctbj7ELg+hCUPwM
-         o3fQ==
-X-Gm-Message-State: AOAM531k41tj6bp0ISpnUdjOu+U0IJupGAA96qqCw507NwRQgWR28JBw
-        ffXOl2t4SI4MG8SzfVqoyA==
-X-Google-Smtp-Source: ABdhPJxa6giD4jtY2/Pj3zBWZAPrAKlHFxdIyQKU/FZqPeVGw3I0Sf4xFVxNbhFR3fJa4rMh0AXyJg==
-X-Received: by 2002:a17:90b:1b03:: with SMTP id nu3mr3066035pjb.148.1601371517456;
-        Tue, 29 Sep 2020 02:25:17 -0700 (PDT)
-Received: from [127.0.0.1] ([103.7.29.9])
-        by smtp.gmail.com with ESMTPSA id i62sm4719940pfe.140.2020.09.29.02.25.11
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=Eo+z2/XPX9KqvAntC0eg29WykmGoGJYNJE8Hmye2bYI=;
+        b=rQ7bbRsHirYbMFIFTh14UdopNvemG8Lm1HNdc/b/dfttB4AF1GOKD19lPOpZxxYOCt
+         T1D+2JDJzXd85ARvYlWG9htamcgE1v1BnIoqw8JeKrITrX85L6nnw8eiXfN1viZBlEuE
+         sc9HGOhU73BCBHYNvMAQxaD063cDyU6NDeaU+XQpJ7Wr1XknsuLXdffZI+3TEsHK2UpP
+         ++w52ZCVrcYxAUm6gRir9O+d50oKi7ENoL129znCaM0HZXOmR31Xsj6ElfJXzNCaYeWL
+         faTIaGUiBzgPeT6B1XVvI2FMeJqTx9OTN+J9UheGKYEjoptodDBMaQXzOAw9lchpMpN7
+         67OA==
+X-Gm-Message-State: AOAM532Sy0FogoZ5sFl+Xxm9LRi7OcE/T4Z4UfSId6m/XXBXQtFW8R0z
+        K5SbYRfaydM+mddEbBpHfg3Yzw==
+X-Google-Smtp-Source: ABdhPJwmUOq2dOapktMQ+kiOOey6ddV1sydIapnSqsDovRws4juNOXlmT+6CNJQT4sFSTE55bP9aaQ==
+X-Received: by 2002:a17:906:60d3:: with SMTP id f19mr3009634ejk.141.1601371511314;
+        Tue, 29 Sep 2020 02:25:11 -0700 (PDT)
+Received: from [10.0.0.6] (xb932c246.cust.hiper.dk. [185.50.194.70])
+        by smtp.gmail.com with ESMTPSA id q3sm5524721edt.1.2020.09.29.02.25.10
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 29 Sep 2020 02:25:16 -0700 (PDT)
-Subject: Re: [PATCH] KVM: x86: Add tracepoint for dr_write/dr_read
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org, x86@kernel.org,
-        pbonzini@redhat.com, sean.j.christopherson@intel.com,
-        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
-        joro@8bytes.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, hpa@zytor.com, Haiwei Li <lihaiwei@tencent.com>
-References: <20200929085515.24059-1-lihaiwei.kernel@gmail.com>
- <20200929090133.GI2611@hirez.programming.kicks-ass.net>
-From:   Haiwei Li <lihaiwei.kernel@gmail.com>
-Message-ID: <d28afb27-fc22-e467-0aab-5140e9f3c09a@gmail.com>
-Date:   Tue, 29 Sep 2020 17:25:04 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.2.2
+        Tue, 29 Sep 2020 02:25:10 -0700 (PDT)
+Subject: Re: [PATCH v3] null_blk: add support for max open/active zone limit
+ for zoned devices
+To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        Niklas Cassel <nks@flawful.org>, Jens Axboe <axboe@kernel.dk>
+Cc:     Damien Le Moal <Damien.LeMoal@wdc.com>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Niklas Cassel <Niklas.Cassel@wdc.com>
+References: <20200828105400.80893-1-niklas.cassel@wdc.com>
+ <20200907081824.GA260080@localhost.localdomain>
+ <20200917075647.GA20845@flawful.org>
+ <SN4PR0401MB359871B467B7F5FDB3115ADE9B380@SN4PR0401MB3598.namprd04.prod.outlook.com>
+From:   =?UTF-8?Q?Matias_Bj=c3=b8rling?= <mb@lightnvm.io>
+Message-ID: <d562372a-eeec-a0e8-cfff-9301cf0a8fb4@lightnvm.io>
+Date:   Tue, 29 Sep 2020 11:25:10 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <20200929090133.GI2611@hirez.programming.kicks-ass.net>
+In-Reply-To: <SN4PR0401MB359871B467B7F5FDB3115ADE9B380@SN4PR0401MB3598.namprd04.prod.outlook.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 20/9/29 17:01, Peter Zijlstra wrote:
-> On Tue, Sep 29, 2020 at 04:55:15PM +0800, lihaiwei.kernel@gmail.com wrote:
->> From: Haiwei Li <lihaiwei@tencent.com>
+On 23/09/2020 09.46, Johannes Thumshirn wrote:
+> On 17/09/2020 09:57, Niklas Cassel wrote:
+>> On Mon, Sep 07, 2020 at 08:18:26AM +0000, Niklas Cassel wrote:
+>>> On Fri, Aug 28, 2020 at 12:54:00PM +0200, Niklas Cassel wrote:
+>>>> Add support for user space to set a max open zone and a max active zone
+>>>> limit via configfs. By default, the default values are 0 == no limit.
+>>>>
+>>>> Call the block layer API functions used for exposing the configured
+>>>> limits to sysfs.
+>>>>
+>>>> Add accounting in null_blk_zoned so that these new limits are respected.
+>>>> Performing an operation that would exceed these limits results in a
+>>>> standard I/O error.
+>>>>
+>>>> A max open zone limit exists in the ZBC standard.
+>>>> While null_blk_zoned is used to test the Zoned Block Device model in
+>>>> Linux, when it comes to differences between ZBC and ZNS, null_blk_zoned
+>>>> mostly follows ZBC.
+>>>>
+>>>> Therefore, implement the manage open zone resources function from ZBC,
+>>>> but additionally add support for max active zones.
+>>>> This enables user space not only to test against a device with an open
+>>>> zone limit, but also to test against a device with an active zone limit.
+>>>>
+>>>> Signed-off-by: Niklas Cassel <niklas.cassel@wdc.com>
+>>>> Reviewed-by: Damien Le Moal <damien.lemoal@wdc.com>
+>>>> ---
+>>>> Changes since v2:
+>>>> -Picked up Damien's Reviewed-by tag.
+>>>> -Fixed a typo in the commit message.
+>>>> -Renamed null_manage_zone_resources() to null_has_zone_resources().
+>>>>
+>>>>   drivers/block/null_blk.h       |   5 +
+>>>>   drivers/block/null_blk_main.c  |  16 +-
+>>>>   drivers/block/null_blk_zoned.c | 319 +++++++++++++++++++++++++++------
+>>>>   3 files changed, 282 insertions(+), 58 deletions(-)
+>>> Hello Jens,
+>>>
+>>> A gentle ping on this.
+>>>
+>>> As far as I can tell, there are no outstanding review comments.
 >>
->> Add tracepoint trace_kvm_dr_write/trace_kvm_dr_read for x86 kvm.
-> 
-> This is a changelog in the: i++; /* increment i */, style. Totally
-> inadequate.
+>> Hello Jens,
+>>
+>> Pinging you from another address, in case my corporate email is getting
+>> stuck in your spam filter.
+>>
+>> Kind regards,
+>> Niklas
+>>
+>
+> Jens,
+>
+> Any chance we can get this queued up for 5.10? This is really helpful for e.g.
+> the zonefs test suite or xfstests when btrfs HMZONED support lands.
+>
+> Thanks,
+> 	Johannes
 
-I will improve the changelog and resend. Thanks.
+Thanks, Niklas.
 
-     Haiwei
+Reviewed-by: Matias Bjørling <matias.bjorling@wdc.com>
+
