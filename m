@@ -2,100 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7133527C0EE
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 11:20:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DF3227C056
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 11:02:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727991AbgI2JUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 05:20:52 -0400
-Received: from www62.your-server.de ([213.133.104.62]:36576 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727653AbgI2JUv (ORCPT
+        id S1727737AbgI2JCA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 05:02:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42056 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725776AbgI2JCA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 05:20:51 -0400
-X-Greylist: delayed 1772 seconds by postgrey-1.27 at vger.kernel.org; Tue, 29 Sep 2020 05:20:50 EDT
-Received: from sslproxy01.your-server.de ([78.46.139.224])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1kNBLf-00061o-Oa; Tue, 29 Sep 2020 10:50:59 +0200
-Received: from [178.196.57.75] (helo=pc-9.home)
-        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1kNBLf-0004qV-AC; Tue, 29 Sep 2020 10:50:59 +0200
-Subject: Re: [PATCH v7 bpf-next 4/8] selftests/bpf: add bpf_snprintf_btf
- helper tests
-To:     Alan Maguire <alan.maguire@oracle.com>, ast@kernel.org,
-        andriin@fb.com, yhs@fb.com
-Cc:     linux@rasmusvillemoes.dk, andriy.shevchenko@linux.intel.com,
-        pmladek@suse.com, kafai@fb.com, songliubraving@fb.com,
-        john.fastabend@gmail.com, kpsingh@chromium.org, shuah@kernel.org,
-        rdna@fb.com, scott.branden@broadcom.com, quentin@isovalent.com,
-        cneirabustos@gmail.com, jakub@cloudflare.com, mingo@redhat.com,
-        rostedt@goodmis.org, acme@kernel.org, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-References: <1601292670-1616-1-git-send-email-alan.maguire@oracle.com>
- <1601292670-1616-5-git-send-email-alan.maguire@oracle.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <30b2a441-9772-1662-ca03-13bfa0b37d46@iogearbox.net>
-Date:   Tue, 29 Sep 2020 10:50:57 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        Tue, 29 Sep 2020 05:02:00 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D04E6C061755;
+        Tue, 29 Sep 2020 02:01:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=5KNvUcSgp+Lvmv+qjj1zdke2aHNUW1BUoc+MUCQvxjE=; b=AP96ceqOEmxM6wO0nh0hPUEoLX
+        vIuH8jJzPpEMRoYZhYdPHgc7RELo0PtBxCUr2X/RF/P5ug/JntAt+8VbA6OJd4rFHtV+nRYqg0oXU
+        Z5JclqfAGLldmR9TFhIcxHeEphbifT9CnMCHNxIYe8+mFmTVyycb34p98cQd4kSX4ylTGsqjcAZO7
+        wcApx2C0OSQpd0KgJLrQuHzUoG/6vZvaQalO0krGZRcnKPJQ2X5lW3mgAulfWewKsIEPRPd17HYjS
+        hAOotp947BHDwE3i3S+MS2QIog8GuQYXIXQEUwyiOFFAGGCFKpdu1BkW2jMqAcsQepkGHBFoDDz9K
+        /hJSeU/A==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kNBVv-0006Db-Ou; Tue, 29 Sep 2020 09:01:35 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 36211300F7A;
+        Tue, 29 Sep 2020 11:01:33 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id E0E2520115B18; Tue, 29 Sep 2020 11:01:33 +0200 (CEST)
+Date:   Tue, 29 Sep 2020 11:01:33 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     lihaiwei.kernel@gmail.com
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org, x86@kernel.org,
+        pbonzini@redhat.com, sean.j.christopherson@intel.com,
+        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
+        joro@8bytes.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, hpa@zytor.com, Haiwei Li <lihaiwei@tencent.com>
+Subject: Re: [PATCH] KVM: x86: Add tracepoint for dr_write/dr_read
+Message-ID: <20200929090133.GI2611@hirez.programming.kicks-ass.net>
+References: <20200929085515.24059-1-lihaiwei.kernel@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1601292670-1616-5-git-send-email-alan.maguire@oracle.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.4/25941/Mon Sep 28 15:55:11 2020)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200929085515.24059-1-lihaiwei.kernel@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/28/20 1:31 PM, Alan Maguire wrote:
-> Tests verifying snprintf()ing of various data structures,
-> flags combinations using a tp_btf program. Tests are skipped
-> if __builtin_btf_type_id is not available to retrieve BTF
-> type ids.
+On Tue, Sep 29, 2020 at 04:55:15PM +0800, lihaiwei.kernel@gmail.com wrote:
+> From: Haiwei Li <lihaiwei@tencent.com>
 > 
-> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
-[...]
-> +void test_snprintf_btf(void)
-> +{
-> +	struct netif_receive_skb *skel;
-> +	struct netif_receive_skb__bss *bss;
-> +	int err, duration = 0;
-> +
-> +	skel = netif_receive_skb__open();
-> +	if (CHECK(!skel, "skel_open", "failed to open skeleton\n"))
-> +		return;
-> +
-> +	err = netif_receive_skb__load(skel);
-> +	if (CHECK(err, "skel_load", "failed to load skeleton: %d\n", err))
-> +		goto cleanup;
-> +
-> +	bss = skel->bss;
-> +
-> +	err = netif_receive_skb__attach(skel);
-> +	if (CHECK(err, "skel_attach", "skeleton attach failed: %d\n", err))
-> +		goto cleanup;
-> +
-> +	/* generate receive event */
-> +	system("ping -c 1 127.0.0.1 > /dev/null");
+> Add tracepoint trace_kvm_dr_write/trace_kvm_dr_read for x86 kvm.
 
-This generates the following new warning when compiling BPF selftests:
-
-   [...]
-   EXT-OBJ  [test_progs] cgroup_helpers.o
-   EXT-OBJ  [test_progs] trace_helpers.o
-   EXT-OBJ  [test_progs] network_helpers.o
-   EXT-OBJ  [test_progs] testing_helpers.o
-   TEST-OBJ [test_progs] snprintf_btf.test.o
-/root/bpf-next/tools/testing/selftests/bpf/prog_tests/snprintf_btf.c: In function ‘test_snprintf_btf’:
-/root/bpf-next/tools/testing/selftests/bpf/prog_tests/snprintf_btf.c:30:2: warning: ignoring return value of ‘system’, declared with attribute warn_unused_result [-Wunused-result]
-   system("ping -c 1 127.0.0.1 > /dev/null");
-   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   [...]
-
-Please fix, thx!
+This is a changelog in the: i++; /* increment i */, style. Totally
+inadequate.
