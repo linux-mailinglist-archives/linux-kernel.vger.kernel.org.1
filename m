@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48C9127C3F5
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:10:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A44BC27C35E
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:06:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729144AbgI2LKK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:10:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50776 "EHLO mail.kernel.org"
+        id S1728298AbgI2LFI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:05:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41156 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729132AbgI2LKH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:10:07 -0400
+        id S1728198AbgI2LEy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:04:54 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 05003221E7;
-        Tue, 29 Sep 2020 11:10:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AABEB21734;
+        Tue, 29 Sep 2020 11:04:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601377805;
-        bh=w5zD4/sYD58ge472newQ2R18n1rHD8DTbl5gRg+y7TI=;
+        s=default; t=1601377494;
+        bh=nYibujcRQpsv8CCI/+pEmS6ylsTI/XAJNTHgYKHpAu8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bLxRqQDxfwS3F/btxRZ45olfG6IUZGvFEqx85EZBRiB+qgID+k3dw1LtOnktv+vd9
-         nYa3Tc156p0b2XjcEDW92lr0oDC1ce41/GXcNUmsSRrU1HmRgo6anC27CeqeSs90WM
-         66sL6NK7Uek7PXOZKjOPEwl/F3gNTN0c7Alq7Rg0=
+        b=c5ZPzm7Wh205nuNkgZZB+3UzmF6zH1CyWivdNys5jlO0kGhKS58r13d2QeYSCesIq
+         g4NmLe5Gvy7gJUj9tL0y2OwOy3a3+T8trtUPl+Vshgf1l63mPPXmM0HP5AIypbhr3J
+         xh4fpW64eakp0IXxsjvavAkeIrwWb/ZEXwZN1Wd8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Douglas Anderson <dianders@chromium.org>,
-        Guenter Roeck <groeck@chromium.org>,
-        Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
+        stable@vger.kernel.org, Gengming Liu <l.dmxcsnsbh@gmail.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 078/121] bdev: Reduce time holding bd_mutex in sync in blkdev_close()
+Subject: [PATCH 4.4 55/85] atm: fix a memory leak of vcc->user_back
 Date:   Tue, 29 Sep 2020 13:00:22 +0200
-Message-Id: <20200929105934.045690711@linuxfoundation.org>
+Message-Id: <20200929105930.966110038@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929105930.172747117@linuxfoundation.org>
-References: <20200929105930.172747117@linuxfoundation.org>
+In-Reply-To: <20200929105928.198942536@linuxfoundation.org>
+References: <20200929105928.198942536@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,124 +44,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Douglas Anderson <dianders@chromium.org>
+From: Cong Wang <xiyou.wangcong@gmail.com>
 
-[ Upstream commit b849dd84b6ccfe32622988b79b7b073861fcf9f7 ]
+[ Upstream commit 8d9f73c0ad2f20e9fed5380de0a3097825859d03 ]
 
-While trying to "dd" to the block device for a USB stick, I
-encountered a hung task warning (blocked for > 120 seconds).  I
-managed to come up with an easy way to reproduce this on my system
-(where /dev/sdb is the block device for my USB stick) with:
+In lec_arp_clear_vccs() only entry->vcc is freed, but vcc
+could be installed on entry->recv_vcc too in lec_vcc_added().
 
-  while true; do dd if=/dev/zero of=/dev/sdb bs=4M; done
+This fixes the following memory leak:
 
-With my reproduction here are the relevant bits from the hung task
-detector:
+unreferenced object 0xffff8880d9266b90 (size 16):
+  comm "atm2", pid 425, jiffies 4294907980 (age 23.488s)
+  hex dump (first 16 bytes):
+    00 00 00 00 00 00 00 00 00 00 00 00 6b 6b 6b a5  ............kkk.
+  backtrace:
+    [<(____ptrval____)>] kmem_cache_alloc_trace+0x10e/0x151
+    [<(____ptrval____)>] lane_ioctl+0x4b3/0x569
+    [<(____ptrval____)>] do_vcc_ioctl+0x1ea/0x236
+    [<(____ptrval____)>] svc_ioctl+0x17d/0x198
+    [<(____ptrval____)>] sock_do_ioctl+0x47/0x12f
+    [<(____ptrval____)>] sock_ioctl+0x2f9/0x322
+    [<(____ptrval____)>] vfs_ioctl+0x1e/0x2b
+    [<(____ptrval____)>] ksys_ioctl+0x61/0x80
+    [<(____ptrval____)>] __x64_sys_ioctl+0x16/0x19
+    [<(____ptrval____)>] do_syscall_64+0x57/0x65
+    [<(____ptrval____)>] entry_SYSCALL_64_after_hwframe+0x49/0xb3
 
- INFO: task udevd:294 blocked for more than 122 seconds.
- ...
- udevd           D    0   294      1 0x00400008
- Call trace:
-  ...
-  mutex_lock_nested+0x40/0x50
-  __blkdev_get+0x7c/0x3d4
-  blkdev_get+0x118/0x138
-  blkdev_open+0x94/0xa8
-  do_dentry_open+0x268/0x3a0
-  vfs_open+0x34/0x40
-  path_openat+0x39c/0xdf4
-  do_filp_open+0x90/0x10c
-  do_sys_open+0x150/0x3c8
-  ...
-
- ...
- Showing all locks held in the system:
- ...
- 1 lock held by dd/2798:
-  #0: ffffff814ac1a3b8 (&bdev->bd_mutex){+.+.}, at: __blkdev_put+0x50/0x204
- ...
- dd              D    0  2798   2764 0x00400208
- Call trace:
-  ...
-  schedule+0x8c/0xbc
-  io_schedule+0x1c/0x40
-  wait_on_page_bit_common+0x238/0x338
-  __lock_page+0x5c/0x68
-  write_cache_pages+0x194/0x500
-  generic_writepages+0x64/0xa4
-  blkdev_writepages+0x24/0x30
-  do_writepages+0x48/0xa8
-  __filemap_fdatawrite_range+0xac/0xd8
-  filemap_write_and_wait+0x30/0x84
-  __blkdev_put+0x88/0x204
-  blkdev_put+0xc4/0xe4
-  blkdev_close+0x28/0x38
-  __fput+0xe0/0x238
-  ____fput+0x1c/0x28
-  task_work_run+0xb0/0xe4
-  do_notify_resume+0xfc0/0x14bc
-  work_pending+0x8/0x14
-
-The problem appears related to the fact that my USB disk is terribly
-slow and that I have a lot of RAM in my system to cache things.
-Specifically my writes seem to be happening at ~15 MB/s and I've got
-~4 GB of RAM in my system that can be used for buffering.  To write 4
-GB of buffer to disk thus takes ~4000 MB / ~15 MB/s = ~267 seconds.
-
-The 267 second number is a problem because in __blkdev_put() we call
-sync_blockdev() while holding the bd_mutex.  Any other callers who
-want the bd_mutex will be blocked for the whole time.
-
-The problem is made worse because I believe blkdev_put() specifically
-tells other tasks (namely udev) to go try to access the device at right
-around the same time we're going to hold the mutex for a long time.
-
-Putting some traces around this (after disabling the hung task detector),
-I could confirm:
- dd:    437.608600: __blkdev_put() right before sync_blockdev() for sdb
- udevd: 437.623901: blkdev_open() right before blkdev_get() for sdb
- dd:    661.468451: __blkdev_put() right after sync_blockdev() for sdb
- udevd: 663.820426: blkdev_open() right after blkdev_get() for sdb
-
-A simple fix for this is to realize that sync_blockdev() works fine if
-you're not holding the mutex.  Also, it's not the end of the world if
-you sync a little early (though it can have performance impacts).
-Thus we can make a guess that we're going to need to do the sync and
-then do it without holding the mutex.  We still do one last sync with
-the mutex but it should be much, much faster.
-
-With this, my hung task warnings for my test case are gone.
-
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
-Reviewed-by: Guenter Roeck <groeck@chromium.org>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Cc: Gengming Liu <l.dmxcsnsbh@gmail.com>
+Signed-off-by: Cong Wang <xiyou.wangcong@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/block_dev.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ net/atm/lec.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/fs/block_dev.c b/fs/block_dev.c
-index 06f7cbe201326..98b37e77683d3 100644
---- a/fs/block_dev.c
-+++ b/fs/block_dev.c
-@@ -1586,6 +1586,16 @@ static void __blkdev_put(struct block_device *bdev, fmode_t mode, int for_part)
- 	struct gendisk *disk = bdev->bd_disk;
- 	struct block_device *victim = NULL;
- 
-+	/*
-+	 * Sync early if it looks like we're the last one.  If someone else
-+	 * opens the block device between now and the decrement of bd_openers
-+	 * then we did a sync that we didn't need to, but that's not the end
-+	 * of the world and we want to avoid long (could be several minute)
-+	 * syncs while holding the mutex.
-+	 */
-+	if (bdev->bd_openers == 1)
-+		sync_blockdev(bdev);
+diff --git a/net/atm/lec.c b/net/atm/lec.c
+index e4afac94ff158..a38680e194436 100644
+--- a/net/atm/lec.c
++++ b/net/atm/lec.c
+@@ -1290,6 +1290,12 @@ static void lec_arp_clear_vccs(struct lec_arp_table *entry)
+ 		entry->vcc = NULL;
+ 	}
+ 	if (entry->recv_vcc) {
++		struct atm_vcc *vcc = entry->recv_vcc;
++		struct lec_vcc_priv *vpriv = LEC_VCC_PRIV(vcc);
 +
- 	mutex_lock_nested(&bdev->bd_mutex, for_part);
- 	if (for_part)
- 		bdev->bd_part_count--;
++		kfree(vpriv);
++		vcc->user_back = NULL;
++
+ 		entry->recv_vcc->push = entry->old_recv_push;
+ 		vcc_release_async(entry->recv_vcc, -EPIPE);
+ 		entry->recv_vcc = NULL;
 -- 
 2.25.1
 
