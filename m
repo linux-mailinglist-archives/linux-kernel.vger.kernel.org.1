@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFF7327C6C3
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:48:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15F6227C574
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:36:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731141AbgI2Ls1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:48:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49816 "EHLO mail.kernel.org"
+        id S1729911AbgI2Lfu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:35:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49132 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730747AbgI2Lry (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:47:54 -0400
+        id S1729854AbgI2Lff (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:35:35 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 36A60206F7;
-        Tue, 29 Sep 2020 11:47:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D684423D57;
+        Tue, 29 Sep 2020 11:30:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601380073;
-        bh=H4c31ZNlW0cn5fufbmATipIZwP5vLeuOu+F6uB91H2g=;
+        s=default; t=1601379002;
+        bh=n+IwIyHHJdmdb8M0LwCJ2kFB/kli4THbYdnvtMtaMDQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gpaU08QfdAGvoM9/VrGLeB/Sd0U7lMgZrFu/7MvgcXqDWQuxT/1UD6Sz5149ym7tt
-         kaS3mJco1o/LQHJLpNj2wJn+UCeZv0Cjn1wZucLaGdJhlsLoYsZ6YzNJP9QNhKsRfU
-         OkwB6Bv7/mIMbHhkFqv8qY5Cl6bG5ZYwm1oXwAjA=
+        b=2fxwDw5OFvP97OwIZQ4WfHxWL48U1AGA5FHjrCdUGpafGQ1BaaWgkClAkiFZFPioM
+         46iJhbBkBISx0muNWAVazfrS0X26+GXHy1RX7Yy/KChUIByC+gTe+mTUsYd/8Rni3Q
+         ntJbHzYqNCtabl++VNoUdMkot9v2SnqD9H3/vPQo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tony Ambardar <Tony.Ambardar@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Linus=20L=C3=BCssing?= <ll@simonwunderlich.de>,
+        Sven Eckelmann <sven@narfation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 26/99] libbpf: Fix build failure from uninitialized variable warning
-Date:   Tue, 29 Sep 2020 13:01:09 +0200
-Message-Id: <20200929105931.016376299@linuxfoundation.org>
+Subject: [PATCH 4.19 219/245] batman-adv: bla: fix type misuse for backbone_gw hash indexing
+Date:   Tue, 29 Sep 2020 13:01:10 +0200
+Message-Id: <20200929105957.635736871@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929105929.719230296@linuxfoundation.org>
-References: <20200929105929.719230296@linuxfoundation.org>
+In-Reply-To: <20200929105946.978650816@linuxfoundation.org>
+References: <20200929105946.978650816@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,50 +44,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tony Ambardar <tony.ambardar@gmail.com>
+From: Linus Lüssing <ll@simonwunderlich.de>
 
-[ Upstream commit 3168c158ad3535af1cd7423c9f8cd5ac549f2f9c ]
+[ Upstream commit 097930e85f90f252c44dc0d084598265dd44ca48 ]
 
-While compiling libbpf, some GCC versions (at least 8.4.0) have difficulty
-determining control flow and a emit warning for potentially uninitialized
-usage of 'map', which results in a build error if using "-Werror":
+It seems that due to a copy & paste error the void pointer
+in batadv_choose_backbone_gw() is cast to the wrong type.
 
-In file included from libbpf.c:56:
-libbpf.c: In function '__bpf_object__open':
-libbpf_internal.h:59:2: warning: 'map' may be used uninitialized in this function [-Wmaybe-uninitialized]
-  libbpf_print(level, "libbpf: " fmt, ##__VA_ARGS__); \
-  ^~~~~~~~~~~~
-libbpf.c:5032:18: note: 'map' was declared here
-  struct bpf_map *map, *targ_map;
-                  ^~~
+Fixing this by using "struct batadv_bla_backbone_gw" instead of "struct
+batadv_bla_claim" which better matches the caller's side.
 
-The warning/error is false based on code inspection, so silence it with a
-NULL initialization.
+For now it seems that we were lucky because the two structs both have
+their orig/vid and addr/vid in the beginning. However I stumbled over
+this issue when I was trying to add some debug variables in front of
+"orig" in batadv_backbone_gw, which caused hash lookups to fail.
 
-Fixes: 646f02ffdd49 ("libbpf: Add BTF-defined map-in-map support")
-Reference: 063e68813391 ("libbpf: Fix false uninitialized variable warning")
-Signed-off-by: Tony Ambardar <Tony.Ambardar@gmail.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Link: https://lore.kernel.org/bpf/20200831000304.1696435-1-Tony.Ambardar@gmail.com
+Fixes: 07568d0369f9 ("batman-adv: don't rely on positions in struct for hashing")
+Signed-off-by: Linus Lüssing <ll@simonwunderlich.de>
+Signed-off-by: Sven Eckelmann <sven@narfation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/lib/bpf/libbpf.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/batman-adv/bridge_loop_avoidance.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 3ac0094706b81..236c91aff48f8 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -5030,8 +5030,8 @@ static int bpf_object__collect_map_relos(struct bpf_object *obj,
- 	int i, j, nrels, new_sz;
- 	const struct btf_var_secinfo *vi = NULL;
- 	const struct btf_type *sec, *var, *def;
-+	struct bpf_map *map = NULL, *targ_map;
- 	const struct btf_member *member;
--	struct bpf_map *map, *targ_map;
- 	const char *name, *mname;
- 	Elf_Data *symbols;
- 	unsigned int moff;
+diff --git a/net/batman-adv/bridge_loop_avoidance.c b/net/batman-adv/bridge_loop_avoidance.c
+index 9b8bf06ccb613..e71a35a3950de 100644
+--- a/net/batman-adv/bridge_loop_avoidance.c
++++ b/net/batman-adv/bridge_loop_avoidance.c
+@@ -96,11 +96,12 @@ static inline u32 batadv_choose_claim(const void *data, u32 size)
+  */
+ static inline u32 batadv_choose_backbone_gw(const void *data, u32 size)
+ {
+-	const struct batadv_bla_claim *claim = (struct batadv_bla_claim *)data;
++	const struct batadv_bla_backbone_gw *gw;
+ 	u32 hash = 0;
+ 
+-	hash = jhash(&claim->addr, sizeof(claim->addr), hash);
+-	hash = jhash(&claim->vid, sizeof(claim->vid), hash);
++	gw = (struct batadv_bla_backbone_gw *)data;
++	hash = jhash(&gw->orig, sizeof(gw->orig), hash);
++	hash = jhash(&gw->vid, sizeof(gw->vid), hash);
+ 
+ 	return hash % size;
+ }
 -- 
 2.25.1
 
