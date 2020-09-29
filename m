@@ -2,86 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43B1727CE17
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:51:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 684B827CE1C
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:52:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728583AbgI2Mva (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 08:51:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49822 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725497AbgI2Mv3 (ORCPT
+        id S1728962AbgI2Mv6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 08:51:58 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:53764 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728447AbgI2Mv4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 08:51:29 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2806CC061755
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 05:51:29 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id u8so5391627lff.1
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 05:51:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4ptsriY4LqRV3GJ566RNPaiV+XmYiNhIg946yy5oC2g=;
-        b=C1oMWXhl/V1we8SiQv7MD3uFufVOKUTx1KFYS3ZI3EMF5mo4zflrkl/KNYXDL7r9Es
-         cFSk/006NTDo233joIyrpSe3WP/glDonquZa8lFyPbzHO5E9d3WRe5bWA0aQPHy9G2d3
-         CEGYDADd//aSSrN9Apffy5e0CZZArqxDe0t5Uk/MS+2HjOwUVsbW1xoL9plDoQ18dgD0
-         pmaCC9xpy/Q79VICJs1PIohTlMCuCIkdgrgbD5w5723sAQVXiNNVBT3WuuN2x1mt5pgr
-         zjtpTKBdj9DCIV5+jHZiGAGL9xlc7tQgITfuuZh8N08Kp1w07y96lBKAKzknr7TI6hoP
-         MKiw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4ptsriY4LqRV3GJ566RNPaiV+XmYiNhIg946yy5oC2g=;
-        b=YpiQSUamDxkqnUt5njoN8k9/PccsnMdU1vjFp2USZ3gfRcygxvGNr2FZbMUEi8gCLB
-         oqH8jVsMNZhr+ki3//atMFQxndevAR51gxyT0z3xZ8PPGwpOgGLo3fACv8n4OnyXYqmC
-         SmkTJPaPHhGolnORby2geRAmbdwrCGBHQ/kOxkMsxWhBKk+4fU26JNtA75gZx4lgNrhw
-         zIRVyb25BUFsl7raC6ne1eJo0frGrFXZMjjgEUmYVQrCR9icVLGAviQ8SSKYcQ1QXLjX
-         mJ7T/Em0PpziWOeVYVRfl3PFigHVfwlB3HEFADjK0g0PBBsfflpmhqpWi1zMyqnWTph2
-         laEQ==
-X-Gm-Message-State: AOAM530W0eiqG/G5+irS8yzjHWFBrPVj1O6zN/YOhnal1KQnAExQ6rFT
-        eHQgRLd0DVRV6Kmp4XgN+FuEwZogvtB3Xw8wpi2Efg==
-X-Google-Smtp-Source: ABdhPJzAklLFWTOhXE7N9aEIT8GTpcr3Umi0D1/nm0zTd6rrhgvTwNP0yZm6xyWGCQSyOiDqLPaAZ2G3phObiGG1cWk=
-X-Received: by 2002:a19:520b:: with SMTP id m11mr1033290lfb.502.1601383887479;
- Tue, 29 Sep 2020 05:51:27 -0700 (PDT)
+        Tue, 29 Sep 2020 08:51:56 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08TCpZaM007685;
+        Tue, 29 Sep 2020 07:51:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1601383895;
+        bh=hiA4CemB1Q1XHmbfcV4K/ZoN/+gJe0fRHuHo1omg+Iw=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=nldLH60DOVEXZTiyicdZzJO6aT3Dsh/lAA03+Dj91M60YCpEwZFmzq/14lMT9w/N2
+         8LPdf0X3fdHt+UNdsVH7HqUCEzcXBEG84U0hKM1BVBr4ugnZft2qy1qASbi+7PwlBv
+         7IohsaMfhB8PPWeTAQi37+VB6mWJ16v5SmkjH2yY=
+Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08TCpZUQ074329
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 29 Sep 2020 07:51:35 -0500
+Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 29
+ Sep 2020 07:51:34 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 29 Sep 2020 07:51:34 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08TCpXqV018648;
+        Tue, 29 Sep 2020 07:51:34 -0500
+Date:   Tue, 29 Sep 2020 18:21:33 +0530
+From:   Pratyush Yadav <p.yadav@ti.com>
+To:     <Tudor.Ambarus@microchip.com>
+CC:     <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <nsekhar@ti.com>, <boris.brezillon@collabora.com>
+Subject: Re: [PATCH v13 09/15] mtd: spi-nor: core: enable octal DTR mode when
+ possible
+Message-ID: <20200929125131.fmztz4rr2iuj6uof@ti.com>
+References: <20200916124418.833-1-p.yadav@ti.com>
+ <20200916124418.833-10-p.yadav@ti.com>
+ <feb046fd-a9ea-9ea3-55f7-bf823ed1e61f@microchip.com>
 MIME-Version: 1.0
-References: <20200913210825.2022552-1-drew@beagleboard.org>
-In-Reply-To: <20200913210825.2022552-1-drew@beagleboard.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 29 Sep 2020 14:51:16 +0200
-Message-ID: <CACRpkdZXu9g_Rq7707-6hXqPVfbxPBcrnR8KwLm+zOgS_EabAQ@mail.gmail.com>
-Subject: Re: [PATCH] pinctrl: single: check if #pinctrl-cells exceeds 3
-To:     Drew Fustini <drew@beagleboard.org>,
-        Tony Lindgren <tony@atomide.com>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linux-OMAP <linux-omap@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Haojian Zhuang <haojian.zhuang@linaro.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        =?UTF-8?Q?Beno=C3=AEt_Cousson?= <bcousson@baylibre.com>,
-        Jason Kridner <jkridner@beagleboard.org>,
-        Robert Nelson <robertcnelson@gmail.com>,
-        Trent Piepho <tpiepho@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <feb046fd-a9ea-9ea3-55f7-bf823ed1e61f@microchip.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 13, 2020 at 11:17 PM Drew Fustini <drew@beagleboard.org> wrote:
+On 29/09/20 11:26AM, Tudor.Ambarus@microchip.com wrote:
+> Hi,
+> 
+> On 9/16/20 3:44 PM, Pratyush Yadav wrote:
+> > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+> > 
+> > Allow flashes to specify a hook to enable octal DTR mode. Use this hook
+> > whenever possible to get optimal transfer speeds.
+> > 
+> > Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
+> > ---
+> >  drivers/mtd/spi-nor/core.c | 35 +++++++++++++++++++++++++++++++++++
+> >  drivers/mtd/spi-nor/core.h |  2 ++
+> >  2 files changed, 37 insertions(+)
+> > 
+> > diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+> > index 87c568debf14..6ee93544d72f 100644
+> > --- a/drivers/mtd/spi-nor/core.c
+> > +++ b/drivers/mtd/spi-nor/core.c
+> > @@ -3069,6 +3069,35 @@ static int spi_nor_init_params(struct spi_nor *nor)
+> >         return 0;
+> >  }
+> > 
+> > +/** spi_nor_octal_dtr_enable() - enable Octal DTR I/O if needed
+> > + * @nor:                 pointer to a 'struct spi_nor'
+> > + * @enable:              whether to enable or disable Octal DTR
+> > + *
+> > + * Return: 0 on success, -errno otherwise.
+> > + */
+> > +static int spi_nor_octal_dtr_enable(struct spi_nor *nor, bool enable)
+> > +{
+> > +       int ret;
+> > +
+> > +       if (!nor->params->octal_dtr_enable)
+> > +               return 0;
+> > +
+> > +       if (!(nor->read_proto == SNOR_PROTO_8_8_8_DTR &&
+> > +             nor->write_proto == SNOR_PROTO_8_8_8_DTR))
+> > +               return 0;
+> > +
+> > +       ret = nor->params->octal_dtr_enable(nor, enable);
+> > +       if (ret)
+> > +               return ret;
+> > +
+> > +       if (enable)
+> > +               nor->reg_proto = SNOR_PROTO_8_8_8_DTR;
+> > +       else
+> > +               nor->reg_proto = SNOR_PROTO_1_1_1;
+> > +
+> > +       return 0;
+> > +}
+> > +
+> >  /**
+> >   * spi_nor_quad_enable() - enable/disable Quad I/O if needed.
+> >   * @nor:                pointer to a 'struct spi_nor'
+> > @@ -3109,6 +3138,12 @@ static int spi_nor_init(struct spi_nor *nor)
+> >  {
+> >         int err;
+> > 
+> > +       err = spi_nor_octal_dtr_enable(nor, true);
+> > +       if (err) {
+> > +               dev_dbg(nor->dev, "octal mode not supported\n");
+> > +               return err;
+> > +       }
+> > +
+> >         err = spi_nor_quad_enable(nor, true);
+> 
+> Is it possible to enable octal dtr and quad at the same time?
+> Maybe an 'if/else if' here depending on the values of nor->read_proto and
+> nor->write_proto
 
-> The property #pinctrl-cells can either be 2 or 3.  There is currently
-> only a check to make sure that #pinctrl-cells is 2 or greater.  This
-> patch adds a check to make sure it is not greater than 3.
->
-> Fixes: a13395418888 ("pinctrl: single: parse #pinctrl-cells = 2")
-> Reported-by: Trent Piepho <tpiepho@gmail.com>
-> Link: https://lore.kernel.org/linux-omap/3139716.CMS8C0sQ7x@zen.local/
-> Signed-off-by: Drew Fustini <drew@beagleboard.org>
+No it is not. If you look inside spi_nor_octal_dtr_enable() and 
+spi_nor_quad_enable(), they both are a no-op if the protocol does not 
+match. spi_nor_quad_enable() was already doing it this way so I made 
+spi_nor_octal_dtr_enable() follow suit. So this is effectively an 
+if-else on the value of nor->read_proto. I don't think an explicit one 
+is needed.
 
-Tony, does this and the other patch look good to you?
-
-Yours,
-Linus Walleij
+-- 
+Regards,
+Pratyush Yadav
+Texas Instruments India
