@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 392F027C73A
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:52:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EEEB27C59A
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:38:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731372AbgI2LwX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:52:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49398 "EHLO mail.kernel.org"
+        id S1730046AbgI2LhA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:37:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49132 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731087AbgI2Lrl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:47:41 -0400
+        id S1729416AbgI2LgV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:36:21 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E6C1E2074A;
-        Tue, 29 Sep 2020 11:47:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A4CBE23E1C;
+        Tue, 29 Sep 2020 11:31:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601380060;
-        bh=seLnQgEUke0OmOsRUxxvD7/BgMvfJs1c99Qa1E7c+5E=;
+        s=default; t=1601379077;
+        bh=i7eIckC7xCZ6WpgoCxRS80uZO80NLNjN682rXocEHmc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OdL+TA1nZF1MpR+iAeOV5nvvxc6ruMBUm5XHF2VgyICnUH1Rl+2DXih0qQ0KpoTEE
-         Hdybqh/rfSspVGPSi7CmZmoLetjOpufkoQxcXZR7F2Lc7YWRnLnD4hemi4wjzi0PDF
-         dfdBhzsuAfidNI5ytAYvXmSQDxA6hNrtMvoPg5ls=
+        b=lZ6IpMwbtl7VcMeZT5oCLB7Ue9n7EW/UbwX/33EjlsWxaA8G0SOJVsDRULMyJHnxe
+         neUyso6Ex9wcTliulJz1Yi/39H3eCpFNbM91MmaH/+D6DebFtahNr32pJZTlHI+FJ7
+         xzCIaPGQd8TC5/O3Fyzdhet1Yg7ZJnvq1ookt7SY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Linus=20L=C3=BCssing?= <linus.luessing@c0d3.blue>,
-        Sven Eckelmann <sven@narfation.org>,
-        Simon Wunderlich <sw@simonwunderlich.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 49/99] batman-adv: mcast: fix duplicate mcast packets in BLA backbone from LAN
+        stable@vger.kernel.org, Stephen Rothwell <sfr@canb.auug.org.au>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Subject: [PATCH 4.19 241/245] kprobes: Fix compiler warning for !CONFIG_KPROBES_ON_FTRACE
 Date:   Tue, 29 Sep 2020 13:01:32 +0200
-Message-Id: <20200929105932.142214553@linuxfoundation.org>
+Message-Id: <20200929105958.724720484@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929105929.719230296@linuxfoundation.org>
-References: <20200929105929.719230296@linuxfoundation.org>
+In-Reply-To: <20200929105946.978650816@linuxfoundation.org>
+References: <20200929105946.978650816@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,202 +45,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linus Lüssing <linus.luessing@c0d3.blue>
+From: Muchun Song <songmuchun@bytedance.com>
 
-[ Upstream commit 3236d215ad38a3f5372e65cd1e0a52cf93d3c6a2 ]
+commit 10de795a5addd1962406796a6e13ba6cc0fc6bee upstream.
 
-Scenario:
-* Multicast frame send from a BLA backbone (multiple nodes with
-  their bat0 bridged together, with BLA enabled)
+Fix compiler warning(as show below) for !CONFIG_KPROBES_ON_FTRACE.
 
-Issue:
-* BLA backbone nodes receive the frame multiple times on bat0
+kernel/kprobes.c: In function 'kill_kprobe':
+kernel/kprobes.c:1116:33: warning: statement with no effect
+[-Wunused-value]
+ 1116 | #define disarm_kprobe_ftrace(p) (-ENODEV)
+      |                                 ^
+kernel/kprobes.c:2154:3: note: in expansion of macro
+'disarm_kprobe_ftrace'
+ 2154 |   disarm_kprobe_ftrace(p);
 
-For multicast frames received via batman-adv broadcast packets the
-originator of the broadcast packet is checked before decapsulating and
-forwarding the frame to bat0 (batadv_bla_is_backbone_gw()->
-batadv_recv_bcast_packet()). If it came from a node which shares the
-same BLA backbone with us then it is not forwarded to bat0 to avoid a
-loop.
+Link: https://lore.kernel.org/r/20200805142136.0331f7ea@canb.auug.org.au
+Link: https://lkml.kernel.org/r/20200805172046.19066-1-songmuchun@bytedance.com
 
-When sending a multicast frame in a non-4-address batman-adv unicast
-packet we are currently missing this check - and cannot do so because
-the batman-adv unicast packet has no originator address field.
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Fixes: 0cb2f1372baa ("kprobes: Fix NULL pointer dereference at kprobe_ftrace_handler")
+Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+Acked-by: John Fastabend <john.fastabend@gmail.com>
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-However, we can simply fix this on the sender side by only sending the
-multicast frame via unicasts to interested nodes which do not share the
-same BLA backbone with us. This also nicely avoids some unnecessary
-transmissions on mesh side.
-
-Note that no infinite loop was observed, probably because of dropping
-via batadv_interface_tx()->batadv_bla_tx(). However the duplicates still
-utterly confuse switches/bridges, ICMPv6 duplicate address detection and
-neighbor discovery and therefore leads to long delays before being able
-to establish TCP connections, for instance. And it also leads to the Linux
-bridge printing messages like:
-"br-lan: received packet on eth1 with own address as source address ..."
-
-Fixes: 2d3f6ccc4ea5 ("batman-adv: Modified forwarding behaviour for multicast packets")
-Signed-off-by: Linus Lüssing <linus.luessing@c0d3.blue>
-Signed-off-by: Sven Eckelmann <sven@narfation.org>
-Signed-off-by: Simon Wunderlich <sw@simonwunderlich.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/batman-adv/multicast.c      | 46 ++++++++++++++++++++++++++-------
- net/batman-adv/multicast.h      | 15 +++++++++++
- net/batman-adv/soft-interface.c |  5 ++--
- 3 files changed, 53 insertions(+), 13 deletions(-)
+ kernel/kprobes.c |   17 ++++++++++++++---
+ 1 file changed, 14 insertions(+), 3 deletions(-)
 
-diff --git a/net/batman-adv/multicast.c b/net/batman-adv/multicast.c
-index 9ebdc1e864b96..3aaa6612f8c9f 100644
---- a/net/batman-adv/multicast.c
-+++ b/net/batman-adv/multicast.c
-@@ -51,6 +51,7 @@
- #include <uapi/linux/batadv_packet.h>
- #include <uapi/linux/batman_adv.h>
- 
-+#include "bridge_loop_avoidance.h"
- #include "hard-interface.h"
- #include "hash.h"
- #include "log.h"
-@@ -1434,6 +1435,35 @@ batadv_mcast_forw_mode(struct batadv_priv *bat_priv, struct sk_buff *skb,
- 	return BATADV_FORW_ALL;
+--- a/kernel/kprobes.c
++++ b/kernel/kprobes.c
+@@ -1065,9 +1065,20 @@ static int disarm_kprobe_ftrace(struct k
+ 	return ret;
  }
- 
-+/**
-+ * batadv_mcast_forw_send_orig() - send a multicast packet to an originator
-+ * @bat_priv: the bat priv with all the soft interface information
-+ * @skb: the multicast packet to send
-+ * @vid: the vlan identifier
-+ * @orig_node: the originator to send the packet to
-+ *
-+ * Return: NET_XMIT_DROP in case of error or NET_XMIT_SUCCESS otherwise.
-+ */
-+int batadv_mcast_forw_send_orig(struct batadv_priv *bat_priv,
-+				struct sk_buff *skb,
-+				unsigned short vid,
-+				struct batadv_orig_node *orig_node)
+ #else	/* !CONFIG_KPROBES_ON_FTRACE */
+-#define prepare_kprobe(p)	arch_prepare_kprobe(p)
+-#define arm_kprobe_ftrace(p)	(-ENODEV)
+-#define disarm_kprobe_ftrace(p)	(-ENODEV)
++static inline int prepare_kprobe(struct kprobe *p)
 +{
-+	/* Avoid sending multicast-in-unicast packets to other BLA
-+	 * gateways - they already got the frame from the LAN side
-+	 * we share with them.
-+	 * TODO: Refactor to take BLA into account earlier, to avoid
-+	 * reducing the mcast_fanout count.
-+	 */
-+	if (batadv_bla_is_backbone_gw_orig(bat_priv, orig_node->orig, vid)) {
-+		dev_kfree_skb(skb);
-+		return NET_XMIT_SUCCESS;
-+	}
-+
-+	return batadv_send_skb_unicast(bat_priv, skb, BATADV_UNICAST, 0,
-+				       orig_node, vid);
++	return arch_prepare_kprobe(p);
 +}
 +
- /**
-  * batadv_mcast_forw_tt() - forwards a packet to multicast listeners
-  * @bat_priv: the bat priv with all the soft interface information
-@@ -1471,8 +1501,8 @@ batadv_mcast_forw_tt(struct batadv_priv *bat_priv, struct sk_buff *skb,
- 			break;
- 		}
- 
--		batadv_send_skb_unicast(bat_priv, newskb, BATADV_UNICAST, 0,
--					orig_entry->orig_node, vid);
-+		batadv_mcast_forw_send_orig(bat_priv, newskb, vid,
-+					    orig_entry->orig_node);
- 	}
- 	rcu_read_unlock();
- 
-@@ -1513,8 +1543,7 @@ batadv_mcast_forw_want_all_ipv4(struct batadv_priv *bat_priv,
- 			break;
- 		}
- 
--		batadv_send_skb_unicast(bat_priv, newskb, BATADV_UNICAST, 0,
--					orig_node, vid);
-+		batadv_mcast_forw_send_orig(bat_priv, newskb, vid, orig_node);
- 	}
- 	rcu_read_unlock();
- 	return ret;
-@@ -1551,8 +1580,7 @@ batadv_mcast_forw_want_all_ipv6(struct batadv_priv *bat_priv,
- 			break;
- 		}
- 
--		batadv_send_skb_unicast(bat_priv, newskb, BATADV_UNICAST, 0,
--					orig_node, vid);
-+		batadv_mcast_forw_send_orig(bat_priv, newskb, vid, orig_node);
- 	}
- 	rcu_read_unlock();
- 	return ret;
-@@ -1618,8 +1646,7 @@ batadv_mcast_forw_want_all_rtr4(struct batadv_priv *bat_priv,
- 			break;
- 		}
- 
--		batadv_send_skb_unicast(bat_priv, newskb, BATADV_UNICAST, 0,
--					orig_node, vid);
-+		batadv_mcast_forw_send_orig(bat_priv, newskb, vid, orig_node);
- 	}
- 	rcu_read_unlock();
- 	return ret;
-@@ -1656,8 +1683,7 @@ batadv_mcast_forw_want_all_rtr6(struct batadv_priv *bat_priv,
- 			break;
- 		}
- 
--		batadv_send_skb_unicast(bat_priv, newskb, BATADV_UNICAST, 0,
--					orig_node, vid);
-+		batadv_mcast_forw_send_orig(bat_priv, newskb, vid, orig_node);
- 	}
- 	rcu_read_unlock();
- 	return ret;
-diff --git a/net/batman-adv/multicast.h b/net/batman-adv/multicast.h
-index ebf825991ecd9..3e114bc5ca3bb 100644
---- a/net/batman-adv/multicast.h
-+++ b/net/batman-adv/multicast.h
-@@ -46,6 +46,11 @@ enum batadv_forw_mode
- batadv_mcast_forw_mode(struct batadv_priv *bat_priv, struct sk_buff *skb,
- 		       struct batadv_orig_node **mcast_single_orig);
- 
-+int batadv_mcast_forw_send_orig(struct batadv_priv *bat_priv,
-+				struct sk_buff *skb,
-+				unsigned short vid,
-+				struct batadv_orig_node *orig_node);
-+
- int batadv_mcast_forw_send(struct batadv_priv *bat_priv, struct sk_buff *skb,
- 			   unsigned short vid);
- 
-@@ -71,6 +76,16 @@ batadv_mcast_forw_mode(struct batadv_priv *bat_priv, struct sk_buff *skb,
- 	return BATADV_FORW_ALL;
- }
- 
-+static inline int
-+batadv_mcast_forw_send_orig(struct batadv_priv *bat_priv,
-+			    struct sk_buff *skb,
-+			    unsigned short vid,
-+			    struct batadv_orig_node *orig_node)
++static inline int arm_kprobe_ftrace(struct kprobe *p)
 +{
-+	kfree_skb(skb);
-+	return NET_XMIT_DROP;
++	return -ENODEV;
 +}
 +
- static inline int
- batadv_mcast_forw_send(struct batadv_priv *bat_priv, struct sk_buff *skb,
- 		       unsigned short vid)
-diff --git a/net/batman-adv/soft-interface.c b/net/batman-adv/soft-interface.c
-index f1f1c86f34193..d2183aea4e4ad 100644
---- a/net/batman-adv/soft-interface.c
-+++ b/net/batman-adv/soft-interface.c
-@@ -364,9 +364,8 @@ static netdev_tx_t batadv_interface_tx(struct sk_buff *skb,
- 				goto dropped;
- 			ret = batadv_send_skb_via_gw(bat_priv, skb, vid);
- 		} else if (mcast_single_orig) {
--			ret = batadv_send_skb_unicast(bat_priv, skb,
--						      BATADV_UNICAST, 0,
--						      mcast_single_orig, vid);
-+			ret = batadv_mcast_forw_send_orig(bat_priv, skb, vid,
-+							  mcast_single_orig);
- 		} else if (forw_mode == BATADV_FORW_SOME) {
- 			ret = batadv_mcast_forw_send(bat_priv, skb, vid);
- 		} else {
--- 
-2.25.1
-
++static inline int disarm_kprobe_ftrace(struct kprobe *p)
++{
++	return -ENODEV;
++}
+ #endif
+ 
+ /* Arm a kprobe with text_mutex */
 
 
