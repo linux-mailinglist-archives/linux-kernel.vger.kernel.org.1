@@ -2,125 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8516727BECA
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 10:05:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0082027BECB
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 10:05:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727719AbgI2IFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 04:05:02 -0400
-Received: from foss.arm.com ([217.140.110.172]:36732 "EHLO foss.arm.com"
+        id S1727726AbgI2IFG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 04:05:06 -0400
+Received: from z5.mailgun.us ([104.130.96.5]:20889 "EHLO z5.mailgun.us"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727709AbgI2IFB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 04:05:01 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F14781063;
-        Tue, 29 Sep 2020 01:05:00 -0700 (PDT)
-Received: from [10.163.73.175] (unknown [10.163.73.175])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2601B3F73B;
-        Tue, 29 Sep 2020 01:04:57 -0700 (PDT)
-Subject: Re: [PATCH] arm64/mm: Validate hotplug range before creating linear
- mapping
-To:     Will Deacon <will@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, catalin.marinas@arm.com,
-        Mark Rutland <mark.rutland@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Steven Price <steven.price@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org
-References: <1600332402-30123-1-git-send-email-anshuman.khandual@arm.com>
- <20200928203539.GA12218@willie-the-truck>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <09266aed-7eef-5b16-5d52-0dcb7dcb7246@arm.com>
-Date:   Tue, 29 Sep 2020 13:34:24 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        id S1726064AbgI2IFG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 04:05:06 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1601366705; h=In-Reply-To: Content-Type: MIME-Version:
+ References: Message-ID: Subject: Cc: To: From: Date: Sender;
+ bh=r+8Y1/iTY5V2CVTSF4MuhfKKHmbWKG8EGomgri5/hVc=; b=m1fhp81vurhowB+zg+FJdpWk37mnRaiHhrFXSRSOqOkX44fbfBfvtWLmK8NbH5KhD5GTQsC4
+ xJAeP3qgrvuhivVQLk5s/AYvKiMhb1NQsewJ1p5q8YIm0/auIFbSfPrboyNufDhYss03EJjk
+ v6HQB/RzUTr6sz3M+2ndwAe6W+k=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 5f72ea9559892db41f51d015 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 29 Sep 2020 08:04:37
+ GMT
+Sender: varada=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 9616AC4339C; Tue, 29 Sep 2020 08:04:36 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from codeaurora.org (blr-c-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.19.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: varada)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2D953C433CA;
+        Tue, 29 Sep 2020 08:04:30 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 2D953C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=varada@codeaurora.org
+Date:   Tue, 29 Sep 2020 13:34:26 +0530
+From:   Varadarajan Narayanan <varada@codeaurora.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     agross@kernel.org, robh+dt@kernel.org, mturquette@baylibre.com,
+        sboyd@kernel.org, linus.walleij@linaro.org,
+        catalin.marinas@arm.com, will@kernel.org, p.zabel@pengutronix.de,
+        nsekar@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, sricharan@codeaurora.org
+Subject: Re: [PATCH 5/7] pinctrl: qcom: Add IPQ5018 pinctrl driver
+Message-ID: <20200929080425.GA21805@codeaurora.org>
+References: <1601270140-4306-1-git-send-email-varada@codeaurora.org>
+ <1601270140-4306-6-git-send-email-varada@codeaurora.org>
+ <20200928184322.GB71055@builder.lan>
 MIME-Version: 1.0
-In-Reply-To: <20200928203539.GA12218@willie-the-truck>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200928184322.GB71055@builder.lan>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Sep 28, 2020 at 01:43:22PM -0500, Bjorn Andersson wrote:
+> On Mon 28 Sep 00:15 CDT 2020, Varadarajan Narayanan wrote:
+> > diff --git a/drivers/pinctrl/qcom/pinctrl-ipq5018.c b/drivers/pinctrl/qcom/pinctrl-ipq5018.c
+> [..]
+> > +static const struct msm_function ipq5018_functions[] = {
+> [..]
+> > +	FUNCTION(qspi_clk),
+> > +	FUNCTION(qspi_cs),
+> > +	FUNCTION(qspi0),
+> > +	FUNCTION(qspi1),
+> > +	FUNCTION(qspi2),
+> > +	FUNCTION(qspi3),
+>
+> Instead of having one function name per pin it typically leads to
+> cleaner DT if you group these under the same name (i.e. "qspi")
 
+Ok.
 
-On 09/29/2020 02:05 AM, Will Deacon wrote:
-> On Thu, Sep 17, 2020 at 02:16:42PM +0530, Anshuman Khandual wrote:
->> During memory hotplug process, the linear mapping should not be created for
->> a given memory range if that would fall outside the maximum allowed linear
->> range. Else it might cause memory corruption in the kernel virtual space.
->>
->> Maximum linear mapping region is [PAGE_OFFSET..(PAGE_END -1)] accommodating
->> both its ends but excluding PAGE_END. Max physical range that can be mapped
->> inside this linear mapping range, must also be derived from its end points.
->>
->> When CONFIG_ARM64_VA_BITS_52 is enabled, PAGE_OFFSET is computed with the
->> assumption of 52 bits virtual address space. However, if the CPU does not
->> support 52 bits, then it falls back using 48 bits instead and the PAGE_END
->> is updated to reflect this using the vabits_actual. As for PAGE_OFFSET,
->> bits [51..48] are ignored by the MMU and remain unchanged, even though the
->> effective start address of linear map is now slightly different. Hence, to
->> reliably check the physical address range mapped by the linear map, the
->> start address should be calculated using vabits_actual. This ensures that
->> arch_add_memory() validates memory hot add range for its potential linear
->> mapping requirement, before creating it with __create_pgd_mapping().
->>
->> Cc: Catalin Marinas <catalin.marinas@arm.com>
->> Cc: Will Deacon <will@kernel.org>
->> Cc: Mark Rutland <mark.rutland@arm.com>
->> Cc: Ard Biesheuvel <ardb@kernel.org>
->> Cc: Steven Price <steven.price@arm.com>
->> Cc: Robin Murphy <robin.murphy@arm.com>
->> Cc: David Hildenbrand <david@redhat.com>
->> Cc: Andrew Morton <akpm@linux-foundation.org>
->> Cc: linux-arm-kernel@lists.infradead.org
->> Cc: linux-kernel@vger.kernel.org
->> Fixes: 4ab215061554 ("arm64: Add memory hotplug support")
->> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
->> ---
->>  arch/arm64/mm/mmu.c | 27 +++++++++++++++++++++++++++
->>  1 file changed, 27 insertions(+)
->>
->> diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
->> index 75df62fea1b6..d59ffabb9c84 100644
->> --- a/arch/arm64/mm/mmu.c
->> +++ b/arch/arm64/mm/mmu.c
->> @@ -1433,11 +1433,38 @@ static void __remove_pgd_mapping(pgd_t *pgdir, unsigned long start, u64 size)
->>  	free_empty_tables(start, end, PAGE_OFFSET, PAGE_END);
->>  }
->>  
->> +static bool inside_linear_region(u64 start, u64 size)
->> +{
->> +	/*
->> +	 * Linear mapping region is the range [PAGE_OFFSET..(PAGE_END - 1)]
->> +	 * accommodating both its ends but excluding PAGE_END. Max physical
->> +	 * range which can be mapped inside this linear mapping range, must
->> +	 * also be derived from its end points.
->> +	 *
->> +	 * With CONFIG_ARM64_VA_BITS_52 enabled, PAGE_OFFSET is defined with
->> +	 * the assumption of 52 bits virtual address space. However, if the
->> +	 * CPU does not support 52 bits, it falls back using 48 bits and the
->> +	 * PAGE_END is updated to reflect this using the vabits_actual. As
->> +	 * for PAGE_OFFSET, bits [51..48] are ignored by the MMU and remain
->> +	 * unchanged, even though the effective start address of linear map
->> +	 * is now slightly different. Hence, to reliably check the physical
->> +	 * address range mapped by the linear map, the start address should
->> +	 * be calculated using vabits_actual.
->> +	 */
->> +	return ((start >= __pa(_PAGE_OFFSET(vabits_actual)))
->> +			&& ((start + size) <= __pa(PAGE_END - 1)));
->> +}
-> 
-> Why isn't this implemented using the existing __is_lm_address()?
+> Same seems to apply to sdc, wci, xfem at least.
+>
+> > +	FUNCTION(reset_out),
+> > +	FUNCTION(sdc1_clk),
+> > +	FUNCTION(sdc1_cmd),
+> > +	FUNCTION(sdc10),
+> > +	FUNCTION(sdc11),
+> > +	FUNCTION(sdc12),
+> > +	FUNCTION(sdc13),
+> > +	FUNCTION(wci0),
+> > +	FUNCTION(wci1),
+> > +	FUNCTION(wci2),
+> > +	FUNCTION(wci3),
+> > +	FUNCTION(wci4),
+> > +	FUNCTION(wci5),
+> > +	FUNCTION(wci6),
+> > +	FUNCTION(wci7),
+> > +	FUNCTION(wsa_swrm),
+> > +	FUNCTION(wsi_clk3),
+> > +	FUNCTION(wsi_data3),
+> > +	FUNCTION(wsis_reset),
+> > +	FUNCTION(xfem0),
+> > +	FUNCTION(xfem1),
+> > +	FUNCTION(xfem2),
+> > +	FUNCTION(xfem3),
+> > +	FUNCTION(xfem4),
+> > +	FUNCTION(xfem5),
+> > +	FUNCTION(xfem6),
+> > +	FUNCTION(xfem7),
+> > +};
 
-Not sure, if I understood your suggestion here. The physical address range
-[start..start + size] needs to be checked against maximum physical range
-that can be represented inside effective boundaries for the linear mapping
-i.e [__pa(_PAGE_OFFSET(vabits_actual)..__pa(PAGE_END - 1)].
+Ok.
 
-Are you suggesting [start..start + size] should be first be converted into
-a virtual address range and then checked against __is_lm_addresses() ? But
-is not deriving the physical range from from know limits of linear mapping
-much cleaner ?
+> > +static const struct msm_pingroup ipq5018_groups[] = {
+> > +	PINGROUP(0, atest_char0, _, qdss_cti_trig_out_a0, wci0, wci0, xfem0,
+>
+> What's up with wci0 being both function 4 and 5?
+
+Will check this.
+
+> > +		 _, _, _),
+> > +	PINGROUP(1, atest_char1, _, qdss_cti_trig_in_a0, wci1, wci1, xfem1,
+> > +		 _, _, _),
+>
+> Please don't like break these, better blow the line length limit in
+> favor or readability.
+>
+> > +	PINGROUP(2, atest_char2, _, qdss_cti_trig_out_a1, wci2, wci2, xfem2,
+> > +		 _, _, _),
+> > +	PINGROUP(3, atest_char3, _, qdss_cti_trig_in_a1, wci3, wci3, xfem3,
+> > +		 _, _, _),
+
+Ok.
+
+> Regards,
+> Bjorn
+
+Will post updated patches soon.
+
+Thanks
+Varada
+--
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
