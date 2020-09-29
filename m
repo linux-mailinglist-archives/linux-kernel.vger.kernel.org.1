@@ -2,111 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A090627D333
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 17:55:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 270C627D338
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 17:57:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730096AbgI2PzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 11:55:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45886 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725497AbgI2PzP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 11:55:15 -0400
-Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4615C20739;
-        Tue, 29 Sep 2020 15:55:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601394914;
-        bh=4c2Mck50Zj5krpxUPD1w5OVZoalSARiXRgZ617swfN4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ixMC0WYZ+l7Y9GX6J+s6soNUSKyUWbmrnTn8QrbzgM3voyyfMkihAalHIGLMtc4Hk
-         5PHgIB0kbxo6Ivf7CDzxC9qF8KAjhLTzoKQj6cMLhsfsBSlylNc/We3mFoLfy0LQkn
-         0r6a2yh5gK11aMm6kL4iPR3tiUEKvjKhes9je+go=
-Date:   Tue, 29 Sep 2020 16:55:10 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
-Cc:     <linux-iio@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <nicolas.ferre@microchip.com>,
-        <alexandre.belloni@bootlin.com>, <ludovic.desroches@microchip.com>
-Subject: Re: [PATCH 2/2] iio: adc: at91_adc: const-ify some driver data
-Message-ID: <20200929165510.1e609883@archlinux>
-In-Reply-To: <20200928125424.35921-2-alexandru.ardelean@analog.com>
-References: <20200928125424.35921-1-alexandru.ardelean@analog.com>
-        <20200928125424.35921-2-alexandru.ardelean@analog.com>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1730006AbgI2P5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 11:57:11 -0400
+Received: from smtp08.smtpout.orange.fr ([80.12.242.130]:57485 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728597AbgI2P5J (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 11:57:09 -0400
+Received: from [192.168.42.210] ([93.22.37.244])
+        by mwinf5d16 with ME
+        id Zrx32300w5G3HaM03rx48Y; Tue, 29 Sep 2020 17:57:08 +0200
+X-ME-Helo: [192.168.42.210]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Tue, 29 Sep 2020 17:57:08 +0200
+X-ME-IP: 93.22.37.244
+Subject: Re: [PATCH 04/20] media: saa7134: use semicolons rather than commas
+ to separate statements
+To:     Julia Lawall <Julia.Lawall@inria.fr>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     =?UTF-8?Q?Valdis_Kl=c4=93tnieks?= <valdis.kletnieks@vt.edu>,
+        Joe Perches <joe@perches.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        kernel-janitors@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1601385283-26144-1-git-send-email-Julia.Lawall@inria.fr>
+ <1601385283-26144-5-git-send-email-Julia.Lawall@inria.fr>
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Message-ID: <8a2e3c47-76d1-f959-fb7c-3a02641a57e2@wanadoo.fr>
+Date:   Tue, 29 Sep 2020 17:57:04 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <1601385283-26144-5-git-send-email-Julia.Lawall@inria.fr>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 28 Sep 2020 15:54:24 +0300
-Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
-
-> The main intent is to get rid of the cast for the void-pointer returned by
-> of_device_get_match_data().
+Le 29/09/2020 à 15:14, Julia Lawall a écrit :
+> Replace commas with semicolons.  Commas introduce unnecessary
+> variability in the code structure and are hard to see.  What is done
+> is essentially described by the following Coccinelle semantic patch
+> (http://coccinelle.lip6.fr/):
 > 
-> This requires const-ifying the 'caps' and 'registers' references on the
-> at91_adc_state struct.
+> // <smpl>
+> @@ expression e1,e2; @@
+> e1
+> -,
+> +;
+> e2
+> ... when any
+> // </smpl>
 > 
-> The caps can be obtained also from the old platform_data (in the
-> at91_adc_probe_pdata() function), but that cast is not touched in this
-> patch, since the old platform_data should be removed/cleaned-away.
-> Also, that cast deals with converting a kernel_ulong_t type to a pointer.
-> So, updating that cast doesn't yield any benefit.
+> Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
 > 
-> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
-Good change. I'll pick this up when patch 1 is ready.
-
-Thanks,
-
-Jonathan
-
 > ---
->  drivers/iio/adc/at91_adc.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
+>   drivers/media/pci/saa7134/saa7134-video.c |    7 +++++--
+>   1 file changed, 5 insertions(+), 2 deletions(-)
 > 
-> diff --git a/drivers/iio/adc/at91_adc.c b/drivers/iio/adc/at91_adc.c
-> index c9ec0a4a357e..7d846a2852a5 100644
-> --- a/drivers/iio/adc/at91_adc.c
-> +++ b/drivers/iio/adc/at91_adc.c
-> @@ -202,7 +202,7 @@ struct at91_adc_state {
->  	struct mutex		lock;
->  	u8			num_channels;
->  	void __iomem		*reg_base;
-> -	struct at91_adc_reg_desc *registers;
-> +	const struct at91_adc_reg_desc *registers;
->  	u32			startup_time;
->  	u8			sample_hold_time;
->  	bool			sleep_mode;
-> @@ -214,7 +214,7 @@ struct at91_adc_state {
->  	u32			res;		/* resolution used for convertions */
->  	bool			low_res;	/* the resolution corresponds to the lowest one */
->  	wait_queue_head_t	wq_data_avail;
-> -	struct at91_adc_caps	*caps;
-> +	const struct at91_adc_caps	*caps;
->  
->  	/*
->  	 * Following ADC channels are shared by touchscreen:
-> @@ -550,7 +550,7 @@ static int at91_adc_configure_trigger(struct iio_trigger *trig, bool state)
->  {
->  	struct iio_dev *idev = iio_trigger_get_drvdata(trig);
->  	struct at91_adc_state *st = iio_priv(idev);
-> -	struct at91_adc_reg_desc *reg = st->registers;
-> +	const struct at91_adc_reg_desc *reg = st->registers;
->  	u32 status = at91_adc_readl(st, reg->trigger_register);
->  	int value;
->  	u8 bit;
-> @@ -876,7 +876,7 @@ static int at91_adc_probe_dt(struct iio_dev *idev,
->  	if (!node)
->  		return -EINVAL;
->  
-> -	st->caps = (struct at91_adc_caps *)of_device_get_match_data(&pdev->dev);
-> +	st->caps = of_device_get_match_data(&pdev->dev);
->  
->  	st->use_external = of_property_read_bool(node, "atmel,adc-use-external-triggers");
->  
+> diff --git a/drivers/media/pci/saa7134/saa7134-video.c b/drivers/media/pci/saa7134/saa7134-video.c
+> index 9a6a6b68f8e3..2ca963b04b3f 100644
+> --- a/drivers/media/pci/saa7134/saa7134-video.c
+> +++ b/drivers/media/pci/saa7134/saa7134-video.c
+> @@ -868,8 +868,11 @@ static int buffer_activate(struct saa7134_dev *dev,
+>   		lines_uv = dev->height >> dev->fmt->vshift;
+>   		base2    = base + bpl * dev->height;
+>   		base3    = base2 + bpl_uv * lines_uv;
+> -		if (dev->fmt->uvswap)
+> -			tmp = base2, base2 = base3, base3 = tmp;
+> +		if (dev->fmt->uvswap) {
+> +			tmp = base2;
+> +			base2 = base3;
+> +			base3 = tmp;
+> +		}
+>   		video_dbg("uv: bpl=%ld lines=%ld base2/3=%ld/%ld\n",
+>   			bpl_uv,lines_uv,base2,base3);
+>   		if (V4L2_FIELD_HAS_BOTH(dev->field)) {
+> 
+> 
+Hi,
+this could be turned into a simpler:
+    swap(base2, base3);
 
+CJ
