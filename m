@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ADAC27C4E3
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:19:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4387427C3F3
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:10:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728734AbgI2LR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:17:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33998 "EHLO mail.kernel.org"
+        id S1729137AbgI2LKH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:10:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50548 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729624AbgI2LRI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:17:08 -0400
+        id S1728681AbgI2LJ6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:09:58 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0446921D7D;
-        Tue, 29 Sep 2020 11:17:06 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CA55121D7F;
+        Tue, 29 Sep 2020 11:09:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601378228;
-        bh=LTl5jy1HfdZaViFwcvCdmYJVjKxaG0vJezeAgYPRQpU=;
+        s=default; t=1601377797;
+        bh=HxKxLArqv0zTXU/qx0NU1qQYE/H9Vb0E6/1RbvoyXo4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=I/LaOguonNnBPwy9uqlAcykDpQoqBTRP0e4AQJxL4CpF1yXkweWqJZzfgpNFco1x1
-         kSr+1VXZVOoCPYAC+w0judxLe/HNnows7Ip8zSN1KDT2kbSpHO5PF0DetR8z28c3oV
-         HMO3yviDDKJSPA/xKGfyyiTfQXsYrsVZa/0gTKWg=
+        b=eHQL/P33+4CpusKumvsfrmzwGwQ1KFreK90RWdDqWMMrxsiBo3WcmvkqxO9yoFlhC
+         yX3jgvSjpleSqzL7NnvY9A+IeubO+s9NmaLm2V9OSDlbNd185DzRoQIT1pI6VsJG6i
+         VVH/7kgbrilUoihAbIOrEOEPQHmm4l+qaUa66TtA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 106/166] drivers: char: tlclk.c: Avoid data race between init and interrupt handler
-Date:   Tue, 29 Sep 2020 13:00:18 +0200
-Message-Id: <20200929105940.499721714@linuxfoundation.org>
+        Jean-Francois Dagenais <jeff.dagenais@gmail.com>,
+        Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>
+Subject: [PATCH 4.9 075/121] serial: uartps: Add a timeout to the tx empty wait
+Date:   Tue, 29 Sep 2020 13:00:19 +0200
+Message-Id: <20200929105933.897487544@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929105935.184737111@linuxfoundation.org>
-References: <20200929105935.184737111@linuxfoundation.org>
+In-Reply-To: <20200929105930.172747117@linuxfoundation.org>
+References: <20200929105930.172747117@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,77 +43,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
+From: Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>
 
-[ Upstream commit 44b8fb6eaa7c3fb770bf1e37619cdb3902cca1fc ]
+commit 277375b864e8147975b064b513f491e2a910e66a upstream.
 
-After registering character device the file operation callbacks can be
-called. The open callback registers interrupt handler.
-Therefore interrupt handler can execute in parallel with rest of the init
-function. To avoid such data race initialize telclk_interrupt variable
-and struct alarm_events before registering character device.
+In case the cable is not connected then the target gets into
+an infinite wait for tx empty.
+Add a timeout to the tx empty wait.
 
-Found by Linux Driver Verification project (linuxtesting.org).
-
-Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
-Link: https://lore.kernel.org/r/20200417153451.1551-1-madhuparnabhowmik10@gmail.com
+Reported-by: Jean-Francois Dagenais <jeff.dagenais@gmail.com>
+Signed-off-by: Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/char/tlclk.c | 17 ++++++++++-------
- 1 file changed, 10 insertions(+), 7 deletions(-)
+ drivers/tty/serial/xilinx_uartps.c |   14 ++++++++++----
+ 1 file changed, 10 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/char/tlclk.c b/drivers/char/tlclk.c
-index 6210bff46341e..52fadc46e7a97 100644
---- a/drivers/char/tlclk.c
-+++ b/drivers/char/tlclk.c
-@@ -777,17 +777,21 @@ static int __init tlclk_init(void)
- {
- 	int ret;
+--- a/drivers/tty/serial/xilinx_uartps.c
++++ b/drivers/tty/serial/xilinx_uartps.c
+@@ -30,6 +30,7 @@
+ #include <linux/io.h>
+ #include <linux/of.h>
+ #include <linux/module.h>
++#include <linux/iopoll.h>
  
-+	telclk_interrupt = (inb(TLCLK_REG7) & 0x0f);
-+
-+	alarm_events = kzalloc( sizeof(struct tlclk_alarms), GFP_KERNEL);
-+	if (!alarm_events) {
-+		ret = -ENOMEM;
-+		goto out1;
-+	}
-+
- 	ret = register_chrdev(tlclk_major, "telco_clock", &tlclk_fops);
- 	if (ret < 0) {
- 		printk(KERN_ERR "tlclk: can't get major %d.\n", tlclk_major);
-+		kfree(alarm_events);
- 		return ret;
+ #define CDNS_UART_TTY_NAME	"ttyPS"
+ #define CDNS_UART_NAME		"xuartps"
+@@ -38,6 +39,7 @@
+ #define CDNS_UART_NR_PORTS	2
+ #define CDNS_UART_FIFO_SIZE	64	/* FIFO size */
+ #define CDNS_UART_REGISTER_SPACE	0x1000
++#define TX_TIMEOUT		500000
+ 
+ /* Rx Trigger level */
+ static int rx_trigger_level = 56;
+@@ -681,16 +683,20 @@ static void cdns_uart_set_termios(struct
+ 	unsigned int cval = 0;
+ 	unsigned int baud, minbaud, maxbaud;
+ 	unsigned long flags;
+-	unsigned int ctrl_reg, mode_reg;
++	unsigned int ctrl_reg, mode_reg, val;
++	int err;
+ 
+ 	spin_lock_irqsave(&port->lock, flags);
+ 
+ 	/* Wait for the transmit FIFO to empty before making changes */
+ 	if (!(readl(port->membase + CDNS_UART_CR) &
+ 				CDNS_UART_CR_TX_DIS)) {
+-		while (!(readl(port->membase + CDNS_UART_SR) &
+-				CDNS_UART_SR_TXEMPTY)) {
+-			cpu_relax();
++		err = readl_poll_timeout(port->membase + CDNS_UART_SR,
++					 val, (val & CDNS_UART_SR_TXEMPTY),
++					 1000, TX_TIMEOUT);
++		if (err) {
++			dev_err(port->dev, "timed out waiting for tx empty");
++			return;
+ 		}
  	}
- 	tlclk_major = ret;
--	alarm_events = kzalloc( sizeof(struct tlclk_alarms), GFP_KERNEL);
--	if (!alarm_events) {
--		ret = -ENOMEM;
--		goto out1;
--	}
  
- 	/* Read telecom clock IRQ number (Set by BIOS) */
- 	if (!request_region(TLCLK_BASE, 8, "telco_clock")) {
-@@ -796,7 +800,6 @@ static int __init tlclk_init(void)
- 		ret = -EBUSY;
- 		goto out2;
- 	}
--	telclk_interrupt = (inb(TLCLK_REG7) & 0x0f);
- 
- 	if (0x0F == telclk_interrupt ) { /* not MCPBL0010 ? */
- 		printk(KERN_ERR "telclk_interrupt = 0x%x non-mcpbl0010 hw.\n",
-@@ -837,8 +840,8 @@ out3:
- 	release_region(TLCLK_BASE, 8);
- out2:
- 	kfree(alarm_events);
--out1:
- 	unregister_chrdev(tlclk_major, "telco_clock");
-+out1:
- 	return ret;
- }
- 
--- 
-2.25.1
-
 
 
