@@ -2,38 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47E7F27C669
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:44:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02B7427C59C
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:38:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729274AbgI2Lox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:44:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43910 "EHLO mail.kernel.org"
+        id S1730060AbgI2LhC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:37:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53442 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730900AbgI2Lon (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:44:43 -0400
+        id S1729951AbgI2LgR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:36:17 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E61A9206E5;
-        Tue, 29 Sep 2020 11:44:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id F413F23DC1;
+        Tue, 29 Sep 2020 11:31:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601379881;
-        bh=RsHOz24AamUalIT+Vh94hhCx8b+xThUBH6MW5GOnlXc=;
+        s=default; t=1601379072;
+        bh=NILrBnOPkVN5iyonzO+ga2gV1YV6v0LbTLzzix5IuS8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JJdM6zRdG/nYvRy4n2245GWXa/oRJYW6fiaUFeiTofcQyujr7JRY4su+lcwKSyAiP
-         Clml3pOCPUkdY2r/iirjp3M7Ew+8GH49CwM51lCA4DVTiif0OZ3mRNvgV53/MSGmoP
-         jpGt8B2OMxWokF7Lu7+tavvGMLSXMbAJ3UqVIq54=
+        b=a3FCSUpF0WaP2Ai5xaPeb9jSgNHJCoJgL38Bbwl7mKYcgCLNUnUgbg+TMid2WswGR
+         dsxzPzEM64kM7eE820+Jb8AORYYvFw/KrhV/5CjczLASxRM6cUzHQ4kV0f2otvVA5H
+         iiXsuqea9vL9VWQ5BuHT8P2KLVQSzgsy2UhTDx0U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tom Rix <trix@redhat.com>,
-        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 359/388] ALSA: asihpi: fix iounmap in error handler
+        stable@vger.kernel.org, Gao Xiang <hsiangkao@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Huang, Ying" <ying.huang@intel.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Rafael Aquini <aquini@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Carlos Maiolino <cmaiolino@redhat.com>,
+        Eric Sandeen <esandeen@redhat.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.19 239/245] mm, THP, swap: fix allocating cluster for swapfile by mistake
 Date:   Tue, 29 Sep 2020 13:01:30 +0200
-Message-Id: <20200929110027.842246203@linuxfoundation.org>
+Message-Id: <20200929105958.626004366@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929110010.467764689@linuxfoundation.org>
-References: <20200929110010.467764689@linuxfoundation.org>
+In-Reply-To: <20200929105946.978650816@linuxfoundation.org>
+References: <20200929105946.978650816@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,59 +50,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+From: Gao Xiang <hsiangkao@redhat.com>
 
-[ Upstream commit 472eb39103e885f302fd8fd6eff104fcf5503f1b ]
+commit 41663430588c737dd735bad5a0d1ba325dcabd59 upstream.
 
-clang static analysis flags this problem
-hpioctl.c:513:7: warning: Branch condition evaluates to
-  a garbage value
-                if (pci.ap_mem_base[idx]) {
-                    ^~~~~~~~~~~~~~~~~~~~
+SWP_FS is used to make swap_{read,write}page() go through the
+filesystem, and it's only used for swap files over NFS.  So, !SWP_FS
+means non NFS for now, it could be either file backed or device backed.
+Something similar goes with legacy SWP_FILE.
 
-If there is a failure in the middle of the memory space loop,
-only some of the memory spaces need to be cleaned up.
+So in order to achieve the goal of the original patch, SWP_BLKDEV should
+be used instead.
 
-At the error handler, idx holds the number of successful
-memory spaces mapped.  So rework the handler loop to use the
-old idx.
+FS corruption can be observed with SSD device + XFS + fragmented
+swapfile due to CONFIG_THP_SWAP=y.
 
-There is a second problem, the memory space loop conditionally
-iomaps()/sets the mem_base so it is necessay to initize pci.
+I reproduced the issue with the following details:
 
-Fixes: 719f82d3987a ("ALSA: Add support of AudioScience ASI boards")
-Signed-off-by: Tom Rix <trix@redhat.com>
-Link: https://lore.kernel.org/r/20200913165230.17166-1-trix@redhat.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Environment:
+
+  QEMU + upstream kernel + buildroot + NVMe (2 GB)
+
+Kernel config:
+
+  CONFIG_BLK_DEV_NVME=y
+  CONFIG_THP_SWAP=y
+
+Some reproducible steps:
+
+  mkfs.xfs -f /dev/nvme0n1
+  mkdir /tmp/mnt
+  mount /dev/nvme0n1 /tmp/mnt
+  bs="32k"
+  sz="1024m"    # doesn't matter too much, I also tried 16m
+  xfs_io -f -c "pwrite -R -b $bs 0 $sz" -c "fdatasync" /tmp/mnt/sw
+  xfs_io -f -c "pwrite -R -b $bs 0 $sz" -c "fdatasync" /tmp/mnt/sw
+  xfs_io -f -c "pwrite -R -b $bs 0 $sz" -c "fdatasync" /tmp/mnt/sw
+  xfs_io -f -c "pwrite -F -S 0 -b $bs 0 $sz" -c "fdatasync" /tmp/mnt/sw
+  xfs_io -f -c "pwrite -R -b $bs 0 $sz" -c "fsync" /tmp/mnt/sw
+
+  mkswap /tmp/mnt/sw
+  swapon /tmp/mnt/sw
+
+  stress --vm 2 --vm-bytes 600M   # doesn't matter too much as well
+
+Symptoms:
+ - FS corruption (e.g. checksum failure)
+ - memory corruption at: 0xd2808010
+ - segfault
+
+Fixes: f0eea189e8e9 ("mm, THP, swap: Don't allocate huge cluster for file backed swap device")
+Fixes: 38d8b4e6bdc8 ("mm, THP, swap: delay splitting THP during swap out")
+Signed-off-by: Gao Xiang <hsiangkao@redhat.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Reviewed-by: "Huang, Ying" <ying.huang@intel.com>
+Reviewed-by: Yang Shi <shy828301@gmail.com>
+Acked-by: Rafael Aquini <aquini@redhat.com>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Carlos Maiolino <cmaiolino@redhat.com>
+Cc: Eric Sandeen <esandeen@redhat.com>
+Cc: Dave Chinner <david@fromorbit.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lkml.kernel.org/r/20200820045323.7809-1-hsiangkao@redhat.com
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- sound/pci/asihpi/hpioctl.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ mm/swapfile.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/pci/asihpi/hpioctl.c b/sound/pci/asihpi/hpioctl.c
-index 496dcde9715d6..9790f5108a166 100644
---- a/sound/pci/asihpi/hpioctl.c
-+++ b/sound/pci/asihpi/hpioctl.c
-@@ -343,7 +343,7 @@ int asihpi_adapter_probe(struct pci_dev *pci_dev,
- 	struct hpi_message hm;
- 	struct hpi_response hr;
- 	struct hpi_adapter adapter;
--	struct hpi_pci pci;
-+	struct hpi_pci pci = { 0 };
- 
- 	memset(&adapter, 0, sizeof(adapter));
- 
-@@ -499,7 +499,7 @@ int asihpi_adapter_probe(struct pci_dev *pci_dev,
- 	return 0;
- 
- err:
--	for (idx = 0; idx < HPI_MAX_ADAPTER_MEM_SPACES; idx++) {
-+	while (--idx >= 0) {
- 		if (pci.ap_mem_base[idx]) {
- 			iounmap(pci.ap_mem_base[idx]);
- 			pci.ap_mem_base[idx] = NULL;
--- 
-2.25.1
-
+--- a/mm/swapfile.c
++++ b/mm/swapfile.c
+@@ -998,7 +998,7 @@ start_over:
+ 			goto nextsi;
+ 		}
+ 		if (size == SWAPFILE_CLUSTER) {
+-			if (!(si->flags & SWP_FILE))
++			if (si->flags & SWP_BLKDEV)
+ 				n_ret = swap_alloc_cluster(si, swp_entries);
+ 		} else
+ 			n_ret = scan_swap_map_slots(si, SWAP_HAS_CACHE,
 
 
