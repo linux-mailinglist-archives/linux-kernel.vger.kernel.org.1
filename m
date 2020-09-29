@@ -2,39 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB03327CD64
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:44:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A27227CDE2
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:47:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733156AbgI2Mns (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 08:43:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50316 "EHLO mail.kernel.org"
+        id S2387599AbgI2Mrb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 08:47:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40812 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729091AbgI2LJs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:09:48 -0400
+        id S1728605AbgI2LEi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:04:38 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 71605221EF;
-        Tue, 29 Sep 2020 11:09:45 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4DFDB21924;
+        Tue, 29 Sep 2020 11:04:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601377786;
-        bh=nV2hnbKtkB2BlDOC4qeSSeGMkvJWmVGMRnEvR21pAkU=;
+        s=default; t=1601377476;
+        bh=C169/HX/zDif2R0FRt3lQxZ7wq1l4U5sR/NacEP1e48=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DEQi5tvwkE0zJMiVhHqSqx9+ONE8qiEv6ppi01S6N29xA4vy/8UYmiACXBPHw3VpD
-         kuh0tqTpsX819O/EySuf7TpA7Lk7qYqJ8xbw+4R4XuprPJgJq8KjMZ6N5KTY7SIX88
-         MMNy4lRW0V0PCekp818kTeO4cmGxSXhey770slRI=
+        b=IBj4qV2UsrajqPMx+lPMWTHrPQxfqz70nuew+A+HDu7avChOgg3nWmVOD48j4Yr20
+         iITVFE6lNrCGmZ2j2ma4mBVwsohtvaMd67Fy2vVN2mUjGLWdQmLNlZqvU1LTf7/p2f
+         RkrfMTcKjsEQMGOil3K76KyfEbr88WqSZHOWasrw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Liu Song <liu.song11@zte.com.cn>,
-        Richard Weinberger <richard@nod.at>,
+        stable@vger.kernel.org, Xianting Tian <xianting_tian@126.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Jan Kara <jack@suse.cz>, yubin@h3c.com,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 071/121] ubifs: Fix out-of-bounds memory access caused by abnormal value of node_len
-Date:   Tue, 29 Sep 2020 13:00:15 +0200
-Message-Id: <20200929105933.693135346@linuxfoundation.org>
+Subject: [PATCH 4.4 49/85] mm/filemap.c: clear page error before actual read
+Date:   Tue, 29 Sep 2020 13:00:16 +0200
+Message-Id: <20200929105930.687626093@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929105930.172747117@linuxfoundation.org>
-References: <20200929105930.172747117@linuxfoundation.org>
+In-Reply-To: <20200929105928.198942536@linuxfoundation.org>
+References: <20200929105928.198942536@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,65 +46,145 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Liu Song <liu.song11@zte.com.cn>
+From: Xianting Tian <xianting_tian@126.com>
 
-[ Upstream commit acc5af3efa303d5f36cc8c0f61716161f6ca1384 ]
+[ Upstream commit faffdfa04fa11ccf048cebdde73db41ede0679e0 ]
 
-In “ubifs_check_node”, when the value of "node_len" is abnormal,
-the code will goto label of "out_len" for execution. Then, in the
-following "ubifs_dump_node", if inode type is "UBIFS_DATA_NODE",
-in "print_hex_dump", an out-of-bounds access may occur due to the
-wrong "ch->len".
+Mount failure issue happens under the scenario: Application forked dozens
+of threads to mount the same number of cramfs images separately in docker,
+but several mounts failed with high probability.  Mount failed due to the
+checking result of the page(read from the superblock of loop dev) is not
+uptodate after wait_on_page_locked(page) returned in function cramfs_read:
 
-Therefore, when the value of "node_len" is abnormal, data length
-should to be adjusted to a reasonable safe range. At this time,
-structured data is not credible, so dump the corrupted data directly
-for analysis.
+   wait_on_page_locked(page);
+   if (!PageUptodate(page)) {
+      ...
+   }
 
-Signed-off-by: Liu Song <liu.song11@zte.com.cn>
-Signed-off-by: Richard Weinberger <richard@nod.at>
+The reason of the checking result of the page not uptodate: systemd-udevd
+read the loopX dev before mount, because the status of loopX is Lo_unbound
+at this time, so loop_make_request directly trigger the calling of io_end
+handler end_buffer_async_read, which called SetPageError(page).  So It
+caused the page can't be set to uptodate in function
+end_buffer_async_read:
+
+   if(page_uptodate && !PageError(page)) {
+      SetPageUptodate(page);
+   }
+
+Then mount operation is performed, it used the same page which is just
+accessed by systemd-udevd above, Because this page is not uptodate, it
+will launch a actual read via submit_bh, then wait on this page by calling
+wait_on_page_locked(page).  When the I/O of the page done, io_end handler
+end_buffer_async_read is called, because no one cleared the page
+error(during the whole read path of mount), which is caused by
+systemd-udevd reading, so this page is still in "PageError" status, which
+can't be set to uptodate in function end_buffer_async_read, then caused
+mount failure.
+
+But sometimes mount succeed even through systemd-udeved read loopX dev
+just before, The reason is systemd-udevd launched other loopX read just
+between step 3.1 and 3.2, the steps as below:
+
+1, loopX dev default status is Lo_unbound;
+2, systemd-udved read loopX dev (page is set to PageError);
+3, mount operation
+   1) set loopX status to Lo_bound;
+   ==>systemd-udevd read loopX dev<==
+   2) read loopX dev(page has no error)
+   3) mount succeed
+
+As the loopX dev status is set to Lo_bound after step 3.1, so the other
+loopX dev read by systemd-udevd will go through the whole I/O stack, part
+of the call trace as below:
+
+   SYS_read
+      vfs_read
+          do_sync_read
+              blkdev_aio_read
+                 generic_file_aio_read
+                     do_generic_file_read:
+                        ClearPageError(page);
+                        mapping->a_ops->readpage(filp, page);
+
+here, mapping->a_ops->readpage() is blkdev_readpage.  In latest kernel,
+some function name changed, the call trace as below:
+
+   blkdev_read_iter
+      generic_file_read_iter
+         generic_file_buffered_read:
+            /*
+             * A previous I/O error may have been due to temporary
+             * failures, eg. mutipath errors.
+             * Pg_error will be set again if readpage fails.
+             */
+            ClearPageError(page);
+            /* Start the actual read. The read will unlock the page*/
+            error=mapping->a_ops->readpage(flip, page);
+
+We can see ClearPageError(page) is called before the actual read,
+then the read in step 3.2 succeed.
+
+This patch is to add the calling of ClearPageError just before the actual
+read of read path of cramfs mount.  Without the patch, the call trace as
+below when performing cramfs mount:
+
+   do_mount
+      cramfs_read
+         cramfs_blkdev_read
+            read_cache_page
+               do_read_cache_page:
+                  filler(data, page);
+                  or
+                  mapping->a_ops->readpage(data, page);
+
+With the patch, the call trace as below when performing mount:
+
+   do_mount
+      cramfs_read
+         cramfs_blkdev_read
+            read_cache_page:
+               do_read_cache_page:
+                  ClearPageError(page); <== new add
+                  filler(data, page);
+                  or
+                  mapping->a_ops->readpage(data, page);
+
+With the patch, mount operation trigger the calling of
+ClearPageError(page) before the actual read, the page has no error if no
+additional page error happen when I/O done.
+
+Signed-off-by: Xianting Tian <xianting_tian@126.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Cc: Jan Kara <jack@suse.cz>
+Cc: <yubin@h3c.com>
+Link: http://lkml.kernel.org/r/1583318844-22971-1-git-send-email-xianting_tian@126.com
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ubifs/io.c | 16 ++++++++++++++--
- 1 file changed, 14 insertions(+), 2 deletions(-)
+ mm/filemap.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/fs/ubifs/io.c b/fs/ubifs/io.c
-index 97be412153328..9213a9e046ae0 100644
---- a/fs/ubifs/io.c
-+++ b/fs/ubifs/io.c
-@@ -237,7 +237,7 @@ int ubifs_is_mapped(const struct ubifs_info *c, int lnum)
- int ubifs_check_node(const struct ubifs_info *c, const void *buf, int lnum,
- 		     int offs, int quiet, int must_chk_crc)
- {
--	int err = -EINVAL, type, node_len;
-+	int err = -EINVAL, type, node_len, dump_node = 1;
- 	uint32_t crc, node_crc, magic;
- 	const struct ubifs_ch *ch = buf;
- 
-@@ -290,10 +290,22 @@ int ubifs_check_node(const struct ubifs_info *c, const void *buf, int lnum,
- out_len:
- 	if (!quiet)
- 		ubifs_err(c, "bad node length %d", node_len);
-+	if (type == UBIFS_DATA_NODE && node_len > UBIFS_DATA_NODE_SZ)
-+		dump_node = 0;
- out:
- 	if (!quiet) {
- 		ubifs_err(c, "bad node at LEB %d:%d", lnum, offs);
--		ubifs_dump_node(c, buf);
-+		if (dump_node) {
-+			ubifs_dump_node(c, buf);
-+		} else {
-+			int safe_len = min3(node_len, c->leb_size - offs,
-+				(int)UBIFS_MAX_DATA_NODE_SZ);
-+			pr_err("\tprevent out-of-bounds memory access\n");
-+			pr_err("\ttruncated data node length      %d\n", safe_len);
-+			pr_err("\tcorrupted data node:\n");
-+			print_hex_dump(KERN_ERR, "\t", DUMP_PREFIX_OFFSET, 32, 1,
-+					buf, safe_len, 0);
-+		}
- 		dump_stack();
+diff --git a/mm/filemap.c b/mm/filemap.c
+index f217120973ebe..3d0a0e409cbf5 100644
+--- a/mm/filemap.c
++++ b/mm/filemap.c
+@@ -2313,6 +2313,14 @@ filler:
+ 		unlock_page(page);
+ 		goto out;
  	}
- 	return err;
++
++	/*
++	 * A previous I/O error may have been due to temporary
++	 * failures.
++	 * Clear page error before actual read, PG_error will be
++	 * set again if read page fails.
++	 */
++	ClearPageError(page);
+ 	goto filler;
+ 
+ out:
 -- 
 2.25.1
 
