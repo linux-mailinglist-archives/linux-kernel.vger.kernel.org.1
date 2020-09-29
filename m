@@ -2,147 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C35AA27BFAF
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 10:37:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD4B327BFAD
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 10:37:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727768AbgI2Ih2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 04:37:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38276 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727704AbgI2Ih2 (ORCPT
+        id S1727699AbgI2IhX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 04:37:23 -0400
+Received: from mail-io1-f77.google.com ([209.85.166.77]:39760 "EHLO
+        mail-io1-f77.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725554AbgI2IhX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 04:37:28 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B99E6C061755;
-        Tue, 29 Sep 2020 01:37:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=v5vnDoRc4ZKtko7VMYgaivypIuJCC2NRDarrflWRAvg=; b=wWOWiQjkvkGZA1s8deLmbxrNC8
-        pTcycx1AeIheWo8YKmtblar3DRLp4W61abEUjEJyP6RQBpMuYfWiHkySwLN/XA6JkCQXmj8t5s5H/
-        oFAZHBivV6j7ACxy+E4raYd9VO8ksiOruct0gnGWydfhvRUM+VdKBDXOamN5yEIv4NLtIiPcVUyMf
-        Lb0luWbwFDoxRIZ9VHp2TQDv7OMm2pYTdkcd9xZcVQn+IPU3jabWtekFvK3qKFJfpyUWhIOP/bGYN
-        spFFSPleU3snhac//usQJYmy4VJla5oUw7Oer4n+RZNQ5R+j5pcykZc+j4KpAHiH0jqHzccHH7L3D
-        gdzi9qwg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kNB8J-00031e-Pr; Tue, 29 Sep 2020 08:37:12 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 60639303F45;
-        Tue, 29 Sep 2020 10:37:09 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 42614211CC1CA; Tue, 29 Sep 2020 10:37:09 +0200 (CEST)
-Date:   Tue, 29 Sep 2020 10:37:09 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     Balbir Singh <sblbir@amazon.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
-        kernel-janitors@vger.kernel.org, linux-safety@lists.elisa.tech
-Subject: Re: [PATCH -next for tip:x86/pti] x86/tlb: drop unneeded local vars
- in enable_l1d_flush_for_task()
-Message-ID: <20200929083709.GC2651@hirez.programming.kicks-ass.net>
-References: <20200928124457.27289-1-lukas.bulwahn@gmail.com>
- <20200929071211.GJ2628@hirez.programming.kicks-ass.net>
+        Tue, 29 Sep 2020 04:37:23 -0400
+Received: by mail-io1-f77.google.com with SMTP id y16so2358944ioy.6
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 01:37:22 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=3LRSjGGqkPX5mBDw4mbslhAYvjhu1Sv4cLBuwz6kq00=;
+        b=NXL+nUwk6+vYO+Y3nxTMl0guO5HqYGo4mjQhaC2WW3HNyptfrWvnUZrA1Of6Y0/JzZ
+         p7zGd16f/CsCjbCt1g9yksJMKPVJ+oLjdrgSIZbbBEFgoqigc/2koLEKxSTA8UtTrbez
+         HE+iziZ2PpByj9/YH1Nf3K6kU8lwZBeMnUnJDH2gShsy+JFaRGch9/aA3amDLB/L3NK0
+         3e6uPxLkHtl2mqxGQpJp09YG4xi26L2tEhkVEhoFXeRXTNkS57BxScSGh3rhDgd100mp
+         tzd/YjCfXb2gBHuLu1yTF7bxCiwyv6U0L98LoRyl4uZGSJY9KEPsx+gsTpYYKdec56D8
+         KclA==
+X-Gm-Message-State: AOAM532GbRyBt6Aeg4qaCCBm2Ok0blV0ucmauWJJPwmHNyewFXVGkgOD
+        OEAXEnj3p5gkX8gfk0+EWDDzFaV9Yw8yMq3EYC8HkP3owNxE
+X-Google-Smtp-Source: ABdhPJxK8JK3IBXCwghWxVbHlJ1u3zVM53Aa44DCW7UrsCEywttQQPK4lIjQ6dtUlBiXblZ0SBPRMqTIDjD2GNwUkwHvrmYbtjj0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200929071211.GJ2628@hirez.programming.kicks-ass.net>
+X-Received: by 2002:a02:62c9:: with SMTP id d192mr2097122jac.59.1601368641644;
+ Tue, 29 Sep 2020 01:37:21 -0700 (PDT)
+Date:   Tue, 29 Sep 2020 01:37:21 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000000a315605b06fb13c@google.com>
+Subject: possible deadlock in io_uring_show_fdinfo
+From:   syzbot <syzbot+d8076141c9af9baf6304@syzkaller.appspotmail.com>
+To:     axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 09:12:11AM +0200, Peter Zijlstra wrote:
-> On Mon, Sep 28, 2020 at 02:44:57PM +0200, Lukas Bulwahn wrote:
-> > diff --git a/arch/x86/mm/tlb.c b/arch/x86/mm/tlb.c
-> > index 6b0f4c88b07c..90515c04d90a 100644
-> > --- a/arch/x86/mm/tlb.c
-> > +++ b/arch/x86/mm/tlb.c
-> > @@ -316,7 +316,7 @@ EXPORT_SYMBOL_GPL(leave_mm);
-> >  
-> >  int enable_l1d_flush_for_task(struct task_struct *tsk)
-> >  {
-> > -	int cpu, ret = 0, i;
-> > +	int i;
-> >  
-> >  	/*
-> >  	 * Do not enable L1D_FLUSH_OUT if
-> > @@ -329,7 +329,7 @@ int enable_l1d_flush_for_task(struct task_struct *tsk)
-> >  			!static_cpu_has(X86_FEATURE_FLUSH_L1D))
-> >  		return -EINVAL;
-> >  
-> > -	cpu = get_cpu();
-> > +	get_cpu();
-> >  
-> >  	for_each_cpu(i, &tsk->cpus_mask) {
-> >  		if (cpu_data(i).smt_active == true) {
-> > @@ -340,7 +340,7 @@ int enable_l1d_flush_for_task(struct task_struct *tsk)
-> >  
-> >  	set_ti_thread_flag(&tsk->thread_info, TIF_SPEC_L1D_FLUSH);
-> >  	put_cpu();
-> > -	return ret;
-> > +	return 0;
-> >  }
-> 
-> If you don't use the return value of get_cpu(), then change it over to
-> preempt_{dis,en}able(), but this got me looking at the function, wtf is
-> that garbage supposed to do in the first place
-> 
-> What do we need to disable preemption for?
-> 
-> Please explain the desired semantics against sched_setaffinity().
+Hello,
 
-Here, I fixed it..
+syzbot found the following issue on:
+
+HEAD commit:    fb0155a0 Merge tag 'nfs-for-5.9-3' of git://git.linux-nfs...
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=109bf9e3900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=adebb40048274f92
+dashboard link: https://syzkaller.appspot.com/bug?extid=d8076141c9af9baf6304
+compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+d8076141c9af9baf6304@syzkaller.appspotmail.com
+
+======================================================
+WARNING: possible circular locking dependency detected
+5.9.0-rc7-syzkaller #0 Not tainted
+------------------------------------------------------
+syz-executor.3/10475 is trying to acquire lock:
+ffff8880a1a23428 (&ctx->uring_lock){+.+.}-{3:3}, at: __io_uring_show_fdinfo fs/io_uring.c:8417 [inline]
+ffff8880a1a23428 (&ctx->uring_lock){+.+.}-{3:3}, at: io_uring_show_fdinfo+0x6c/0x790 fs/io_uring.c:8460
+
+but task is already holding lock:
+ffff888089039668 (&p->lock){+.+.}-{3:3}, at: seq_read+0x60/0xce0 fs/seq_file.c:155
+
+which lock already depends on the new lock.
+
+
+the existing dependency chain (in reverse order) is:
+
+-> #2 (&p->lock){+.+.}-{3:3}:
+       lock_acquire+0x148/0x720 kernel/locking/lockdep.c:5029
+       __mutex_lock_common+0x189/0x2fc0 kernel/locking/mutex.c:956
+       __mutex_lock kernel/locking/mutex.c:1103 [inline]
+       mutex_lock_nested+0x1a/0x20 kernel/locking/mutex.c:1118
+       seq_read+0x60/0xce0 fs/seq_file.c:155
+       do_loop_readv_writev fs/read_write.c:734 [inline]
+       do_iter_read+0x438/0x620 fs/read_write.c:955
+       vfs_readv+0xc2/0x120 fs/read_write.c:1073
+       kernel_readv fs/splice.c:355 [inline]
+       default_file_splice_read+0x579/0xa40 fs/splice.c:412
+       do_splice_to fs/splice.c:871 [inline]
+       splice_direct_to_actor+0x3de/0xb60 fs/splice.c:950
+       do_splice_direct+0x201/0x340 fs/splice.c:1059
+       do_sendfile+0x86d/0x1210 fs/read_write.c:1540
+       __do_sys_sendfile64 fs/read_write.c:1601 [inline]
+       __se_sys_sendfile64 fs/read_write.c:1587 [inline]
+       __x64_sys_sendfile64+0x164/0x1a0 fs/read_write.c:1587
+       do_syscall_64+0x31/0x70 arch/x86/entry/common.c:46
+       entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+-> #1 (sb_writers#4){.+.+}-{0:0}:
+       lock_acquire+0x148/0x720 kernel/locking/lockdep.c:5029
+       percpu_down_read include/linux/percpu-rwsem.h:51 [inline]
+       __sb_start_write+0x14b/0x400 fs/super.c:1672
+       io_write+0x50f/0x1230 fs/io_uring.c:3294
+       io_issue_sqe+0x34fe/0xc1a0 fs/io_uring.c:5722
+       __io_queue_sqe+0x297/0x1310 fs/io_uring.c:6178
+       io_submit_sqe fs/io_uring.c:6327 [inline]
+       io_submit_sqes+0x149f/0x2570 fs/io_uring.c:6521
+       __do_sys_io_uring_enter fs/io_uring.c:8349 [inline]
+       __se_sys_io_uring_enter+0x1af/0x1300 fs/io_uring.c:8308
+       do_syscall_64+0x31/0x70 arch/x86/entry/common.c:46
+       entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+-> #0 (&ctx->uring_lock){+.+.}-{3:3}:
+       check_prev_add kernel/locking/lockdep.c:2496 [inline]
+       check_prevs_add kernel/locking/lockdep.c:2601 [inline]
+       validate_chain+0x1b0c/0x88a0 kernel/locking/lockdep.c:3218
+       __lock_acquire+0x110b/0x2ae0 kernel/locking/lockdep.c:4441
+       lock_acquire+0x148/0x720 kernel/locking/lockdep.c:5029
+       __mutex_lock_common+0x189/0x2fc0 kernel/locking/mutex.c:956
+       __mutex_lock kernel/locking/mutex.c:1103 [inline]
+       mutex_lock_nested+0x1a/0x20 kernel/locking/mutex.c:1118
+       __io_uring_show_fdinfo fs/io_uring.c:8417 [inline]
+       io_uring_show_fdinfo+0x6c/0x790 fs/io_uring.c:8460
+       seq_show+0x567/0x620 fs/proc/fd.c:65
+       seq_read+0x41a/0xce0 fs/seq_file.c:208
+       do_loop_readv_writev fs/read_write.c:734 [inline]
+       do_iter_read+0x438/0x620 fs/read_write.c:955
+       vfs_readv+0xc2/0x120 fs/read_write.c:1073
+       kernel_readv fs/splice.c:355 [inline]
+       default_file_splice_read+0x579/0xa40 fs/splice.c:412
+       do_splice_to fs/splice.c:871 [inline]
+       splice_direct_to_actor+0x3de/0xb60 fs/splice.c:950
+       do_splice_direct+0x201/0x340 fs/splice.c:1059
+       do_sendfile+0x86d/0x1210 fs/read_write.c:1540
+       __do_sys_sendfile64 fs/read_write.c:1601 [inline]
+       __se_sys_sendfile64 fs/read_write.c:1587 [inline]
+       __x64_sys_sendfile64+0x164/0x1a0 fs/read_write.c:1587
+       do_syscall_64+0x31/0x70 arch/x86/entry/common.c:46
+       entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+other info that might help us debug this:
+
+Chain exists of:
+  &ctx->uring_lock --> sb_writers#4 --> &p->lock
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(&p->lock);
+                               lock(sb_writers#4);
+                               lock(&p->lock);
+  lock(&ctx->uring_lock);
+
+ *** DEADLOCK ***
+
+2 locks held by syz-executor.3/10475:
+ #0: ffff88821407a450 (sb_writers#4){.+.+}-{0:0}, at: file_start_write include/linux/fs.h:2783 [inline]
+ #0: ffff88821407a450 (sb_writers#4){.+.+}-{0:0}, at: do_sendfile+0x83b/0x1210 fs/read_write.c:1539
+ #1: ffff888089039668 (&p->lock){+.+.}-{3:3}, at: seq_read+0x60/0xce0 fs/seq_file.c:155
+
+stack backtrace:
+CPU: 0 PID: 10475 Comm: syz-executor.3 Not tainted 5.9.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x1d6/0x29e lib/dump_stack.c:118
+ print_circular_bug+0xc72/0xea0 kernel/locking/lockdep.c:1703
+ check_noncircular+0x1fb/0x3a0 kernel/locking/lockdep.c:1827
+ check_prev_add kernel/locking/lockdep.c:2496 [inline]
+ check_prevs_add kernel/locking/lockdep.c:2601 [inline]
+ validate_chain+0x1b0c/0x88a0 kernel/locking/lockdep.c:3218
+ __lock_acquire+0x110b/0x2ae0 kernel/locking/lockdep.c:4441
+ lock_acquire+0x148/0x720 kernel/locking/lockdep.c:5029
+ __mutex_lock_common+0x189/0x2fc0 kernel/locking/mutex.c:956
+ __mutex_lock kernel/locking/mutex.c:1103 [inline]
+ mutex_lock_nested+0x1a/0x20 kernel/locking/mutex.c:1118
+ __io_uring_show_fdinfo fs/io_uring.c:8417 [inline]
+ io_uring_show_fdinfo+0x6c/0x790 fs/io_uring.c:8460
+ seq_show+0x567/0x620 fs/proc/fd.c:65
+ seq_read+0x41a/0xce0 fs/seq_file.c:208
+ do_loop_readv_writev fs/read_write.c:734 [inline]
+ do_iter_read+0x438/0x620 fs/read_write.c:955
+ vfs_readv+0xc2/0x120 fs/read_write.c:1073
+ kernel_readv fs/splice.c:355 [inline]
+ default_file_splice_read+0x579/0xa40 fs/splice.c:412
+ do_splice_to fs/splice.c:871 [inline]
+ splice_direct_to_actor+0x3de/0xb60 fs/splice.c:950
+ do_splice_direct+0x201/0x340 fs/splice.c:1059
+ do_sendfile+0x86d/0x1210 fs/read_write.c:1540
+ __do_sys_sendfile64 fs/read_write.c:1601 [inline]
+ __se_sys_sendfile64 fs/read_write.c:1587 [inline]
+ __x64_sys_sendfile64+0x164/0x1a0 fs/read_write.c:1587
+ do_syscall_64+0x31/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x45dd99
+Code: 0d b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db b3 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007f3edfb2ec78 EFLAGS: 00000246 ORIG_RAX: 0000000000000028
+RAX: ffffffffffffffda RBX: 0000000000027ec0 RCX: 000000000045dd99
+RDX: 0000000000000000 RSI: 0000000000000009 RDI: 000000000000000a
+RBP: 000000000118bf68 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000208 R11: 0000000000000246 R12: 000000000118bf2c
+R13: 00007ffe7ad0078f R14: 00007f3edfb2f9c0 R15: 000000000118bf2c
+
 
 ---
- arch/x86/mm/tlb.c | 24 +++---------------------
- 1 file changed, 3 insertions(+), 21 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/arch/x86/mm/tlb.c b/arch/x86/mm/tlb.c
-index 6b0f4c88b07c..f02a2f1909da 100644
---- a/arch/x86/mm/tlb.c
-+++ b/arch/x86/mm/tlb.c
-@@ -316,31 +316,13 @@ EXPORT_SYMBOL_GPL(leave_mm);
- 
- int enable_l1d_flush_for_task(struct task_struct *tsk)
- {
--	int cpu, ret = 0, i;
--
--	/*
--	 * Do not enable L1D_FLUSH_OUT if
--	 * b. The CPU is not affected by the L1TF bug
--	 * c. The CPU does not have L1D FLUSH feature support
--	 * c. The task's affinity is on cores with SMT on.
--	 */
--
- 	if (!boot_cpu_has_bug(X86_BUG_L1TF) ||
--			!static_cpu_has(X86_FEATURE_FLUSH_L1D))
-+	    !boot_cpu_has(X86_FEATURE_FLUSH_L1D) ||
-+	    sched_smt_active());
- 		return -EINVAL;
- 
--	cpu = get_cpu();
--
--	for_each_cpu(i, &tsk->cpus_mask) {
--		if (cpu_data(i).smt_active == true) {
--			put_cpu();
--			return -EINVAL;
--		}
--	}
--
- 	set_ti_thread_flag(&tsk->thread_info, TIF_SPEC_L1D_FLUSH);
--	put_cpu();
--	return ret;
-+	return 0;
- }
- 
- int disable_l1d_flush_for_task(struct task_struct *tsk)
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
