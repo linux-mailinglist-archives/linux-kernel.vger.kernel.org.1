@@ -2,193 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3BE327CA6C
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:19:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8BD027C86B
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:02:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729972AbgI2MTJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 08:19:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50012 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729541AbgI2LgQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:36:16 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6A71123DB3;
-        Tue, 29 Sep 2020 11:31:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601379065;
-        bh=4bOM/5umy/McNnHJ8y++KVptj2uarf/mq8vOPBMm/es=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ntwjoOs3Sb5h/D0HWBbSHbNvfJFPYaoQGSia4Blh+SJl7kPXeeQpZKkknnwhkfvZD
-         p82tVvcTtCemOCBranGWCeJSx41+V5BOt5rZqWoyYlA+KQU+POiMrZLHdqbo/3wAUR
-         QiPuo1a1lHyVOvua54JJH+v1Ha858EYyXYJz785Y=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
-        Will Deacon <will@kernel.org>
-Subject: [PATCH 4.19 245/245] KVM: arm64: Assume write fault on S1PTW permission fault on instruction fetch
-Date:   Tue, 29 Sep 2020 13:01:36 +0200
-Message-Id: <20200929105958.927180749@linuxfoundation.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929105946.978650816@linuxfoundation.org>
-References: <20200929105946.978650816@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S1731320AbgI2MBv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 08:01:51 -0400
+Received: from mail-bn8nam12on2072.outbound.protection.outlook.com ([40.107.237.72]:53473
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728942AbgI2LkQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:40:16 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GQB2iGEwezsc8dOrpYNYg9YXPeIVnqqrOuUkU7TuDFkqRcV+HIhgEXHerk0Rqe9BS5CA3alnBskThoCq+GJEnalObRjZikcvKxRqHzfO8prK31NVDQ7lM763ySEk1UDFkx092RbiYxD6Axx4sOhu+/oWFNT6T8ebOI/UsQ51coznsPdJqvsVVoCCd4y1yO6X2zpD7zTr4d0d1yK416BnHt4FrLZVv6Lx22P28aEBSmKLm6VrXc73Xg8E970v9Egz1fOVPEATwZdSV6th3Rq3eC/0VDl9Zoi2JhY6qR+zVVrKmepaBZjVMBV3zXLkewXAZKOY3/soTzIp7Mf8Oa1W6w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5mktaV4/jslCqVv/N+3wkpvY0QLkq4vXs1tSWawvfHU=;
+ b=DiuOFAluH5yq2OdtHpU07zlFHdDMfIpOXn8VmZMcSYPZi+lQfJ6lswbGgAzRyN9MGH/eN6GuHZDbbFL3K5grTcpi6Fo8RAxHidem7i9M8PVB/FedbVIh+i4X+2zQii90TYV2vO6JxHABQTsbXcFMVRJj1PFHK9VwdOV3On+wG+fF3wdLXDgP2lSpGRCSJS1bmxdwV5yZajZVBZbO06MzxED/hwOqz3LCF7jOdujR50W8JMPs7AMQcHk5rug4NEDZNC7RwxmbDxEEVlX4+TgYjfhkFIIRoItiDwYZgxFVBOQB4HGLUIVsyTorxCsVq/anNqgGMN8i0qGoQLMOizivGA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5mktaV4/jslCqVv/N+3wkpvY0QLkq4vXs1tSWawvfHU=;
+ b=cwkNuRoWQTFQuUjx/FmFsvBFX8TT6jv2S21OIDJuPVZMDyROPPhaWBIQkCXLVv7UJvrSXgQiEvbx2mBoqYCXjZQd87As3gqyRvmj0yNRM+ZrO9wtFhbVEcLP07kzxYFBgTTq9iwdMEFDuHunv7+ol5lGbHK3BilliF1St0hFG60=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
+ by BL0PR12MB4930.namprd12.prod.outlook.com (2603:10b6:208:1c8::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.22; Tue, 29 Sep
+ 2020 11:24:11 +0000
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::f8f7:7403:1c92:3a60]) by MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::f8f7:7403:1c92:3a60%6]) with mapi id 15.20.3433.032; Tue, 29 Sep 2020
+ 11:24:11 +0000
+Subject: Re: [PATCH v2 4/4] drm/qxl: use qxl pin function
+To:     Gerd Hoffmann <kraxel@redhat.com>, dri-devel@lists.freedesktop.org,
+        Dave Airlie <airlied@redhat.com>,
+        David Airlie <airlied@linux.ie>, Huang Rui <ray.huang@amd.com>,
+        "open list:DRM DRIVER FOR QXL VIRTUAL GPU" 
+        <virtualization@lists.linux-foundation.org>,
+        "open list:DRM DRIVER FOR QXL VIRTUAL GPU" 
+        <spice-devel@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20200929095115.24430-1-kraxel@redhat.com>
+ <20200929095115.24430-5-kraxel@redhat.com>
+ <20200929105300.GM438822@phenom.ffwll.local>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+Message-ID: <52df08b0-e78d-3824-7a4f-02837ad0891d@amd.com>
+Date:   Tue, 29 Sep 2020 13:24:06 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <20200929105300.GM438822@phenom.ffwll.local>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [2a02:908:1252:fb60:be8a:bd56:1f94:86e7]
+X-ClientProxiedBy: AM4PR0202CA0021.eurprd02.prod.outlook.com
+ (2603:10a6:200:89::31) To MN2PR12MB3775.namprd12.prod.outlook.com
+ (2603:10b6:208:159::19)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2a02:908:1252:fb60:be8a:bd56:1f94:86e7] (2a02:908:1252:fb60:be8a:bd56:1f94:86e7) by AM4PR0202CA0021.eurprd02.prod.outlook.com (2603:10a6:200:89::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.22 via Frontend Transport; Tue, 29 Sep 2020 11:24:10 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 33411f93-4244-4396-17c3-08d8646a3084
+X-MS-TrafficTypeDiagnostic: BL0PR12MB4930:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BL0PR12MB49307D3DF198465FA351BB9083320@BL0PR12MB4930.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3826;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ID822Q39pvzfTzesG3nktD9f/Q6wT17R4JF078gzmKSJNdRC7Qm8WbvtC3NIa1JQyjF7eMwgMbUMjiukPhPuUhWZ9NB/EThY/BU3WQ3pzJsr/1a/Euxt89Jy9A3N+JA+oviv01JqfQoTjl44A+hL6upo8YSejt+5nEsbIqMqW4hgvqgevMmijQD2IjPY7Yky9eXaxYGy6wKn0AUAYZl0qxmryA2AsR0w0ccjeLV+yop8xP1t4HJwAm90EEULS6NYACa/F3RJDG95hZXOh+XrbNulw5PmDt1co3KWrQTqZWv2oN2E8FdOO6NJYeCB3/X1Hps7zmvXS7F1HSfBlxcOiYFrhU1Cv2Vn+J8TJTB5vBd2F3bsVEhh2kyJILqkwn3TzDMsAchGCnvkXx5+wcxQz/y2YS6mftGJJRLs4I0t8DbXtGFfd9oOnrOwQfRyNAev
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(396003)(376002)(346002)(136003)(39860400002)(6486002)(186003)(52116002)(66476007)(31696002)(316002)(66556008)(110136005)(66946007)(8676002)(8936002)(2906002)(16526019)(2616005)(83380400001)(31686004)(6666004)(86362001)(478600001)(36756003)(5660300002)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: lgdVkfWFdx+MB0HVTOavCOWoRM8j8uYVJtV8/9gr+GbaZEhmyJbHV+jmWxWBoe/yyRVLcj0644m6RdmE+blx+YnnVde9HAcsTX7Rx1JAp/8CBE+EpDudGBNxBL3iTRVV05uiksGpYpxsAnEjurUrHgFSR4LnfUGrK3Rt8yP5eDvm5kivEG9arYjM8XjLRVVsPx5bvFhP1Ya7JOaeq98cOLJ410kxKX9g0nO7EIt6TB0psyp5kG+b26Ea/m5Ui15jkLsPCgbz5bQkLIyOrcjcgrxZSi2INukPXFZr0bAAR62/eW+avdXU7tbmX6f0XJ7pNmVzpYNF6DWIK4vuZdrvjmB4LqMNZ5r5qmnaJJo7VWrJf7AKURize1cPVDTmMghW1y/aov3ySG2rNwcvdUvG47G7FMxJq7cHfq1BcVsO5lMOK5WQuzXEGteI0HX5oIyaE0qwMlZzohiUeMTUzMJ9P2ZVf8IZMHRC/qwNnB+xy3HOUPVtq8lwtEDakHt2mqt1oekDfR+JQ+szi8T3kYFcTqzldmJqDz5aEKQkn2jLRgEje9jqX5/CEMsRyGjkyqRkQqRs9JoWTFScvkgC7+VsKJXRqhrf9/cTloWbif/akmspUbOfwIiRzq46/O+yPtRzoe9yOHQduHAQrL2paY3UeshJBj5X9We1LYgTPuDVfXEJrExt6GQAlJJZIDqoGPjFl4d82WrTo7MLz/0NtY0N7w==
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 33411f93-4244-4396-17c3-08d8646a3084
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Sep 2020 11:24:11.7628
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: t17YhWHLJoB+VErSVdHGhI3uhwdHvLBoE86KR2EElmEhjrZPrX0w9AQB2BU0187b
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB4930
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marc Zyngier <maz@kernel.org>
+Am 29.09.20 um 12:53 schrieb Daniel Vetter:
+> On Tue, Sep 29, 2020 at 11:51:15AM +0200, Gerd Hoffmann wrote:
+>> Otherwise ttm throws a WARN because we try to pin without a reservation.
+>>
+>> Fixes: 9d36d4320462 ("drm/qxl: switch over to the new pin interface")
+>> Signed-off-by: Gerd Hoffmann <kraxel@redhat.com>
+>> ---
+>>   drivers/gpu/drm/qxl/qxl_object.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/gpu/drm/qxl/qxl_object.c b/drivers/gpu/drm/qxl/qxl_object.c
+>> index d3635e3e3267..eb45267d51db 100644
+>> --- a/drivers/gpu/drm/qxl/qxl_object.c
+>> +++ b/drivers/gpu/drm/qxl/qxl_object.c
+>> @@ -145,7 +145,7 @@ int qxl_bo_create(struct qxl_device *qdev,
+>>   		return r;
+>>   	}
+>>   	if (pinned)
+>> -		ttm_bo_pin(&bo->tbo);
+>> +		qxl_bo_pin(bo);
+> I think this is now after ttm_bo_init, and at that point the object is
+> visible to lru users and everything. So I do think you need to grab locks
+> here instead of just incrementing the pin count alone.
+>
+> It's also I think a bit racy, since ttm_bo_init drops the lock, so someone
+> might have snuck in and evicted the object already.
+>
+> I think what you need is to call ttm_bo_init_reserved, then ttm_bo_pin,
+> then ttm_bo_unreserve, all explicitly.
 
-commit c4ad98e4b72cb5be30ea282fce935248f2300e62 upstream.
+Ah, yes Daniel is right. I thought I've fixed that up, but looks like I 
+only did that for VMWGFX.
 
-KVM currently assumes that an instruction abort can never be a write.
-This is in general true, except when the abort is triggered by
-a S1PTW on instruction fetch that tries to update the S1 page tables
-(to set AF, for example).
+Sorry for the noise, fix to correctly address this is underway.
 
-This can happen if the page tables have been paged out and brought
-back in without seeing a direct write to them (they are thus marked
-read only), and the fault handling code will make the PT executable(!)
-instead of writable. The guest gets stuck forever.
+Regards,
+Christian.
 
-In these conditions, the permission fault must be considered as
-a write so that the Stage-1 update can take place. This is essentially
-the I-side equivalent of the problem fixed by 60e21a0ef54c ("arm64: KVM:
-Take S1 walks into account when determining S2 write faults").
-
-Update kvm_is_write_fault() to return true on IABT+S1PTW, and introduce
-kvm_vcpu_trap_is_exec_fault() that only return true when no faulting
-on a S1 fault. Additionally, kvm_vcpu_dabt_iss1tw() is renamed to
-kvm_vcpu_abt_iss1tw(), as the above makes it plain that it isn't
-specific to data abort.
-
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Reviewed-by: Will Deacon <will@kernel.org>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20200915104218.1284701-2-maz@kernel.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- arch/arm/include/asm/kvm_emulate.h   |   11 ++++++++---
- arch/arm64/include/asm/kvm_emulate.h |    9 +++++++--
- arch/arm64/kvm/hyp/switch.c          |    2 +-
- virt/kvm/arm/mmio.c                  |    2 +-
- virt/kvm/arm/mmu.c                   |    5 ++++-
- 5 files changed, 21 insertions(+), 8 deletions(-)
-
---- a/arch/arm/include/asm/kvm_emulate.h
-+++ b/arch/arm/include/asm/kvm_emulate.h
-@@ -216,7 +216,7 @@ static inline int kvm_vcpu_dabt_get_rd(s
- 	return (kvm_vcpu_get_hsr(vcpu) & HSR_SRT_MASK) >> HSR_SRT_SHIFT;
- }
- 
--static inline bool kvm_vcpu_dabt_iss1tw(struct kvm_vcpu *vcpu)
-+static inline bool kvm_vcpu_abt_iss1tw(const struct kvm_vcpu *vcpu)
- {
- 	return kvm_vcpu_get_hsr(vcpu) & HSR_DABT_S1PTW;
- }
-@@ -248,16 +248,21 @@ static inline bool kvm_vcpu_trap_il_is32
- 	return kvm_vcpu_get_hsr(vcpu) & HSR_IL;
- }
- 
--static inline u8 kvm_vcpu_trap_get_class(struct kvm_vcpu *vcpu)
-+static inline u8 kvm_vcpu_trap_get_class(const struct kvm_vcpu *vcpu)
- {
- 	return kvm_vcpu_get_hsr(vcpu) >> HSR_EC_SHIFT;
- }
- 
--static inline bool kvm_vcpu_trap_is_iabt(struct kvm_vcpu *vcpu)
-+static inline bool kvm_vcpu_trap_is_iabt(const struct kvm_vcpu *vcpu)
- {
- 	return kvm_vcpu_trap_get_class(vcpu) == HSR_EC_IABT;
- }
- 
-+static inline bool kvm_vcpu_trap_is_exec_fault(const struct kvm_vcpu *vcpu)
-+{
-+	return kvm_vcpu_trap_is_iabt(vcpu) && !kvm_vcpu_abt_iss1tw(vcpu);
-+}
-+
- static inline u8 kvm_vcpu_trap_get_fault(struct kvm_vcpu *vcpu)
- {
- 	return kvm_vcpu_get_hsr(vcpu) & HSR_FSC;
---- a/arch/arm64/include/asm/kvm_emulate.h
-+++ b/arch/arm64/include/asm/kvm_emulate.h
-@@ -303,7 +303,7 @@ static inline int kvm_vcpu_dabt_get_rd(c
- 	return (kvm_vcpu_get_hsr(vcpu) & ESR_ELx_SRT_MASK) >> ESR_ELx_SRT_SHIFT;
- }
- 
--static inline bool kvm_vcpu_dabt_iss1tw(const struct kvm_vcpu *vcpu)
-+static inline bool kvm_vcpu_abt_iss1tw(const struct kvm_vcpu *vcpu)
- {
- 	return !!(kvm_vcpu_get_hsr(vcpu) & ESR_ELx_S1PTW);
- }
-@@ -311,7 +311,7 @@ static inline bool kvm_vcpu_dabt_iss1tw(
- static inline bool kvm_vcpu_dabt_iswrite(const struct kvm_vcpu *vcpu)
- {
- 	return !!(kvm_vcpu_get_hsr(vcpu) & ESR_ELx_WNR) ||
--		kvm_vcpu_dabt_iss1tw(vcpu); /* AF/DBM update */
-+		kvm_vcpu_abt_iss1tw(vcpu); /* AF/DBM update */
- }
- 
- static inline bool kvm_vcpu_dabt_is_cm(const struct kvm_vcpu *vcpu)
-@@ -340,6 +340,11 @@ static inline bool kvm_vcpu_trap_is_iabt
- 	return kvm_vcpu_trap_get_class(vcpu) == ESR_ELx_EC_IABT_LOW;
- }
- 
-+static inline bool kvm_vcpu_trap_is_exec_fault(const struct kvm_vcpu *vcpu)
-+{
-+	return kvm_vcpu_trap_is_iabt(vcpu) && !kvm_vcpu_abt_iss1tw(vcpu);
-+}
-+
- static inline u8 kvm_vcpu_trap_get_fault(const struct kvm_vcpu *vcpu)
- {
- 	return kvm_vcpu_get_hsr(vcpu) & ESR_ELx_FSC;
---- a/arch/arm64/kvm/hyp/switch.c
-+++ b/arch/arm64/kvm/hyp/switch.c
-@@ -430,7 +430,7 @@ static bool __hyp_text fixup_guest_exit(
- 			kvm_vcpu_trap_get_fault_type(vcpu) == FSC_FAULT &&
- 			kvm_vcpu_dabt_isvalid(vcpu) &&
- 			!kvm_vcpu_dabt_isextabt(vcpu) &&
--			!kvm_vcpu_dabt_iss1tw(vcpu);
-+			!kvm_vcpu_abt_iss1tw(vcpu);
- 
- 		if (valid) {
- 			int ret = __vgic_v2_perform_cpuif_access(vcpu);
---- a/virt/kvm/arm/mmio.c
-+++ b/virt/kvm/arm/mmio.c
-@@ -142,7 +142,7 @@ static int decode_hsr(struct kvm_vcpu *v
- 	bool sign_extend;
- 	bool sixty_four;
- 
--	if (kvm_vcpu_dabt_iss1tw(vcpu)) {
-+	if (kvm_vcpu_abt_iss1tw(vcpu)) {
- 		/* page table accesses IO mem: tell guest to fix its TTBR */
- 		kvm_inject_dabt(vcpu, kvm_vcpu_get_hfar(vcpu));
- 		return 1;
---- a/virt/kvm/arm/mmu.c
-+++ b/virt/kvm/arm/mmu.c
-@@ -1282,6 +1282,9 @@ static bool transparent_hugepage_adjust(
- 
- static bool kvm_is_write_fault(struct kvm_vcpu *vcpu)
- {
-+	if (kvm_vcpu_abt_iss1tw(vcpu))
-+		return true;
-+
- 	if (kvm_vcpu_trap_is_iabt(vcpu))
- 		return false;
- 
-@@ -1496,7 +1499,7 @@ static int user_mem_abort(struct kvm_vcp
- 	unsigned long flags = 0;
- 
- 	write_fault = kvm_is_write_fault(vcpu);
--	exec_fault = kvm_vcpu_trap_is_iabt(vcpu);
-+	exec_fault = kvm_vcpu_trap_is_exec_fault(vcpu);
- 	VM_BUG_ON(write_fault && exec_fault);
- 
- 	if (fault_status == FSC_PERM && !write_fault && !exec_fault) {
-
+> -Daniel
+>
+>>   	*bo_ptr = bo;
+>>   	return 0;
+>>   }
+>> -- 
+>> 2.27.0
+>>
 
