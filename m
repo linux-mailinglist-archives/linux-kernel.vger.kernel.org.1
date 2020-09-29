@@ -2,131 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5D6927DB36
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 23:57:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FAC527DB40
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 23:59:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728336AbgI2V47 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 17:56:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54508 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728041AbgI2V46 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 17:56:58 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4AF78207F7;
-        Tue, 29 Sep 2020 21:56:57 +0000 (UTC)
-Date:   Tue, 29 Sep 2020 17:56:55 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
-Cc:     arnaldo.melo@gmail.com, linux-trace-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-Subject: Re: [PATCH 1/2] tools lib traceevent: Man page for
- tep_add_plugin_path() API
-Message-ID: <20200929175655.43c71137@gandalf.local.home>
-In-Reply-To: <20200929173632.252076-1-tz.stoyanov@gmail.com>
-References: <20200929173632.252076-1-tz.stoyanov@gmail.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1728469AbgI2V7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 17:59:31 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:50086 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728074AbgI2V7b (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 17:59:31 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08TLt6DF021214;
+        Tue, 29 Sep 2020 21:58:29 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=0SGyZSx2d5gFu9VCFrnHr0PbdBSEOfYbvoIkFctnKs8=;
+ b=EBEs/IhygzDjI9NzSZTWBL+jlpXdRSkIVKO3BR0PTnYj13j/KT+YnFdpHIyMWwHKtPw6
+ VdeeYVH42begstTcMHrPn7CjtPn3oB/ynSr0w5Xso4ukQstG8tMpGMZHofhFBqIk5P65
+ XrSnIkpFCP0bFO36b8n148hmKqy2HkW7Ily3u/mu1a6x/RaENFBf37j14i6k1gyFLrol
+ Lgp0N1e80RBQvfxng1lADe5bcUmNPgNhjD9zBQz8AYB2VfRQI68pntvE+QMw8Bnfd3sf
+ nJDZS4pMLOkNaFbaKgyEYxhYUeLumTtuNxNn94jWtcRsqN+N5gQPS6tzHUqaJma5csPx HA== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 33sx9n5bkt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 29 Sep 2020 21:58:29 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08TLuQ58152440;
+        Tue, 29 Sep 2020 21:58:28 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3020.oracle.com with ESMTP id 33tfhy882g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 29 Sep 2020 21:58:28 +0000
+Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 08TLwNJl026376;
+        Tue, 29 Sep 2020 21:58:23 GMT
+Received: from [192.168.2.112] (/50.38.35.18)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 29 Sep 2020 14:58:23 -0700
+Subject: Re: [RFC PATCH 00/24] mm/hugetlb: Free some vmemmap pages of hugetlb
+ page
+To:     Muchun Song <songmuchun@bytedance.com>, corbet@lwn.net,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, dave.hansen@linux.intel.com, luto@kernel.org,
+        peterz@infradead.org, viro@zeniv.linux.org.uk,
+        akpm@linux-foundation.org, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        rdunlap@infradead.org, oneukum@suse.com, anshuman.khandual@arm.com,
+        jroedel@suse.de, almasrymina@google.com, rientjes@google.com
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
+References: <20200915125947.26204-1-songmuchun@bytedance.com>
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+Message-ID: <31eac1d8-69ba-ed2f-8e47-d957d6bb908c@oracle.com>
+Date:   Tue, 29 Sep 2020 14:58:18 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20200915125947.26204-1-songmuchun@bytedance.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9759 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999 bulkscore=0
+ phishscore=0 malwarescore=0 adultscore=0 suspectscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009290188
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9759 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=0
+ phishscore=0 mlxscore=0 lowpriorityscore=0 adultscore=0 clxscore=1011
+ spamscore=0 impostorscore=0 malwarescore=0 bulkscore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009290188
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-[ Added Michael to the Cc ]
-
-On Tue, 29 Sep 2020 20:36:32 +0300
-"Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
-
-> Add documentation of tep_add_plugin_path() API in the libtraceevent plugin man page.
-
-
-Nit, but the above should be no more than 74 (I do 76) characters wide.
-
+On 9/15/20 5:59 AM, Muchun Song wrote:
+> Hi all,
 > 
-> Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
-> ---
->  .../Documentation/libtraceevent-plugins.txt   | 22 +++++++++++++++++--
->  1 file changed, 20 insertions(+), 2 deletions(-)
+> This patch series will free some vmemmap pages(struct page structures)
+> associated with each hugetlbpage when preallocated to save memory.
+...
+> The mapping of the first page(index 0) and the second page(index 1) is
+> unchanged. The remaining 6 pages are all mapped to the same page(index
+> 1). So we only need 2 pages for vmemmap area and free 6 pages to the
+> buddy system to save memory. Why we can do this? Because the content
+> of the remaining 7 pages are usually same except the first page.
 > 
-> diff --git a/tools/lib/traceevent/Documentation/libtraceevent-plugins.txt b/tools/lib/traceevent/Documentation/libtraceevent-plugins.txt
-> index 4d6394397d92..e584b8c777ad 100644
-> --- a/tools/lib/traceevent/Documentation/libtraceevent-plugins.txt
-> +++ b/tools/lib/traceevent/Documentation/libtraceevent-plugins.txt
-> @@ -3,7 +3,7 @@ libtraceevent(3)
->  
->  NAME
->  ----
-> -tep_load_plugins, tep_unload_plugins, tep_load_plugins_hook - Load / unload traceevent plugins.
-> +tep_load_plugins, tep_unload_plugins, tep_load_plugins_hook, tep_add_plugin_path - Load / unload traceevent plugins.
->  
->  SYNOPSIS
->  --------
-> @@ -19,6 +19,8 @@ void *tep_load_plugins_hook*(struct tep_handle pass:[*]_tep_, const char pass:[*
->  					       const char pass:[*]name,
->  					       void pass:[*]data),
->  			   void pass:[*]_data_);
-> +int *tep_add_plugin_path*(struct tep_handle pass:[*]tep, char pass:[*]path,
-> +			  enum tep_plugin_load_priority prio);
->  --
->  
->  DESCRIPTION
-> @@ -52,16 +54,30 @@ _tep_load_plugins()_. The _tep_ argument is trace event parser context. The
->  _plugin_list_ is the list of loaded plugins, returned by
->  the _tep_load_plugins()_ function.
->  
-> -The _tep_load_plugins_hook_ function walks through all directories with plugins
-> +The _tep_load_plugins_hook()_ function walks through all directories with plugins
->  and calls user specified _load_plugin()_ hook for each plugin file. Only files
->  with given _suffix_ are considered to be plugins. The _data_ is a user specified
->  context, passed to _load_plugin()_. Directories and the walk order are the same
->  as in _tep_load_plugins()_ API.
->  
-> +The _tep_add_plugin_path()_ functions adds additional directories with plugins in
-> +the _tep_->plugins_dir list. It must be called before _tep_load_plugins()_ in order
-> +the plugins from the new directories to be loaded. The _tep_ argument is trace event
+> When a hugetlbpage is freed to the buddy system, we should allocate 6
+> pages for vmemmap pages and restore the previous mapping relationship.
+> 
+> If we uses the 1G hugetlbpage, we can save 4095 pages. This is a very
+> substantial gain. On our server, run some SPDK applications which will
+> use 300GB hugetlbpage. With this feature enabled, we can save 4797MB
+> memory.
 
-"in order for the plugins" .. "is the trace event parser"
+At a high level this seems like a reasonable optimization for hugetlb
+pages.  It is possible because hugetlb pages are 'special' and mostly
+handled differently than pages in normal mm paths.
 
+The majority of the new code is hugetlb specific, so it should not be
+of too much concern for the general mm code paths.  I'll start looking
+closer at the series.  However, if someone has high level concerns please
+let us know.  The only 'potential' conflict I am aware of is discussion
+about support of double mapping hugetlb pages.
 
-> +parser context. The _path_ is the full path to the new plugin directory. The _prio_
-> +argument specifies the loading priority of plugins from the new directory. The loading
+https://lists.gnu.org/archive/html/qemu-devel/2017-03/msg02407.html
 
-"specifies the loading priority order for the new directory of plugins"
-
-> +priority is important in case of different versions of the same plugin located in
-> +multiple plugin directories.The last loaded plugin wins. The priority can be:
-> +[verse]
-> +--
-> +	_TEP_PLUGIN_FIRST_	- Load plugins from this directory first
-> +	_TEP_PLUGIN_LAST_	- Load plugins from this directory last
-> +--
-
-"Where the plugins in TEP_PLUGIN_LAST" will take precedence over the
-plugins in the other directories."
-
-> +
->  RETURN VALUE
->  ------------
->  The _tep_load_plugins()_ function returns a list of successfully loaded plugins,
->  or NULL in case no plugins are loaded.
-> +The _tep_add_plugin_path()_ function returns -1 in case of an error, 0 otherwise.
->  
-
--- Steve
-
->  EXAMPLE
->  -------
-> @@ -71,6 +87,8 @@ EXAMPLE
->  ...
->  struct tep_handle *tep = tep_alloc();
->  ...
-> +tep_add_plugin_path(tep, "~/dev_plugins", TEP_PLUGIN_LAST);
-> +...
->  struct tep_plugin_list *plugins = tep_load_plugins(tep);
->  if (plugins == NULL) {
->  	/* no plugins are loaded */
-
+More care/coordination would be needed to support double mapping with
+this new option.  However, this series provides a boot option to disable
+freeing of unneeded page structs.
+-- 
+Mike Kravetz
