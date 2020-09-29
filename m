@@ -2,80 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4536A27C4E1
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:19:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07DD927C4EC
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:21:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729445AbgI2LRW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:17:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33984 "EHLO mail.kernel.org"
+        id S1728998AbgI2LTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:19:03 -0400
+Received: from mga09.intel.com ([134.134.136.24]:50504 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729172AbgI2LRH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:17:07 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 603C821D46;
-        Tue, 29 Sep 2020 11:17:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601378226;
-        bh=hI0i6iq8KBS5xcshw5o5PCNNOwrKpBjtblqgVD/O5qM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VY/kRn0Rp9wtMetOMZ4H8POmNk61b2oBEA+1NnW8R44ms7F9G00+zw+oRYEYCjztx
-         M05XngGRuYBQetCW5IG9GanhpLUM8ObnGkrQ/vTbTbR7r/luK9pKTAzrybjLOoocGS
-         nBSBrhkNWDW/9KiMGxvepvMqSrtoHZfw5TmBxKIU=
-Date:   Tue, 29 Sep 2020 12:16:07 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: sound/soc/ti/j721e-evm.c:528:34: warning: unused variable
- 'j721e_audio_of_match'
-Message-ID: <20200929111607.GA4799@sirena.org.uk>
-References: <202009271553.4OjMpGkX%lkp@intel.com>
- <76cae106-b643-57a9-e82e-48e46ebf1b70@ti.com>
- <CAKwvOdnsQY6S+3zAH6_SD0ifbUaSDFj9mBdhF4GVq6VB=tjFsA@mail.gmail.com>
- <20200928180412.GA4827@sirena.org.uk>
- <c97e8363-1e8e-38fe-3214-cff47f09e459@ti.com>
+        id S1728836AbgI2LRg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:17:36 -0400
+IronPort-SDR: 8Lw8vzdGRWvfy6h7KMEL1Rv+/e0L7YHNF/1QbfxOYvkyVWyapgdXsjGUDwX6Kfc8VNd5S6SfwY
+ 8K0Q9z7iNJIw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9758"; a="163045192"
+X-IronPort-AV: E=Sophos;i="5.77,318,1596524400"; 
+   d="scan'208";a="163045192"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2020 04:17:32 -0700
+IronPort-SDR: omiAHThTU3ZeDKIQDfuT916WwsoRgpfWXyl06oi7vg5CPqn4JVx8R5cI7rOUtM2Hl4MFpO8Syb
+ NJSNzy1Kjifg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,318,1596524400"; 
+   d="scan'208";a="415347123"
+Received: from lkp-server02.sh.intel.com (HELO dda5aa0886d8) ([10.239.97.151])
+  by fmsmga001.fm.intel.com with ESMTP; 29 Sep 2020 04:17:31 -0700
+Received: from kbuild by dda5aa0886d8 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kNDdS-000098-Pe; Tue, 29 Sep 2020 11:17:30 +0000
+Date:   Tue, 29 Sep 2020 19:16:37 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [rcu:urezki-pcount.2020.09.28f] BUILD SUCCESS
+ fb6679eb5fbc57be470508f44642207a15d718c9
+Message-ID: <5f731795.fIWDMtQPbCl5OGtK%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="+HP7ph2BbKc20aGI"
-Content-Disposition: inline
-In-Reply-To: <c97e8363-1e8e-38fe-3214-cff47f09e459@ti.com>
-X-Cookie: I left my WALLET in the BATHROOM!!
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  urezki-pcount.2020.09.28f
+branch HEAD: fb6679eb5fbc57be470508f44642207a15d718c9  EXP Revert "KVM: Check the allocation of pv cpu mask"
 
---+HP7ph2BbKc20aGI
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+elapsed time: 758m
 
-On Tue, Sep 29, 2020 at 09:00:02AM +0300, Peter Ujfalusi wrote:
+configs tested: 131
+configs skipped: 2
 
-> The ifdef would be preferred if the driver could work in non DT boot (to
-> save few bytes) but since it is not the case here:
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-What I'd *really* like would be something in the of_match_ptr() that
-flagged that there's a reference to the table for the purposes of the
-warning but still lets the table be eliminated by the linker.
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arc                     haps_hs_smp_defconfig
+m68k                          amiga_defconfig
+ia64                         bigsur_defconfig
+sh                             shx3_defconfig
+m68k                        stmark2_defconfig
+powerpc                  mpc885_ads_defconfig
+nios2                            alldefconfig
+m68k                            q40_defconfig
+arm                       aspeed_g5_defconfig
+arm                         vf610m4_defconfig
+powerpc                     tqm8541_defconfig
+powerpc64                           defconfig
+csky                             alldefconfig
+riscv                          rv32_defconfig
+sh                          rsk7201_defconfig
+powerpc                    ge_imp3a_defconfig
+powerpc                      mgcoge_defconfig
+mips                        maltaup_defconfig
+powerpc                     tqm8548_defconfig
+arm                          simpad_defconfig
+riscv                    nommu_k210_defconfig
+sh                          landisk_defconfig
+sh                           se7712_defconfig
+sh                        dreamcast_defconfig
+ia64                      gensparse_defconfig
+i386                             alldefconfig
+sh                           se7724_defconfig
+riscv                    nommu_virt_defconfig
+arm                         mv78xx0_defconfig
+powerpc                     kilauea_defconfig
+mips                      malta_kvm_defconfig
+arm                         s5pv210_defconfig
+mips                       bmips_be_defconfig
+sh                           se7343_defconfig
+arm                           sunxi_defconfig
+m68k                          multi_defconfig
+powerpc                  storcenter_defconfig
+s390                             alldefconfig
+arm                       multi_v4t_defconfig
+powerpc                      pmac32_defconfig
+sh                           se7750_defconfig
+mips                           xway_defconfig
+arm                        cerfcube_defconfig
+arm                  colibri_pxa270_defconfig
+mips                      maltaaprp_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a006-20200928
+i386                 randconfig-a002-20200928
+i386                 randconfig-a003-20200928
+i386                 randconfig-a004-20200928
+i386                 randconfig-a005-20200928
+i386                 randconfig-a001-20200928
+x86_64               randconfig-a011-20200929
+x86_64               randconfig-a013-20200929
+x86_64               randconfig-a015-20200929
+x86_64               randconfig-a014-20200929
+x86_64               randconfig-a016-20200929
+x86_64               randconfig-a012-20200929
+i386                 randconfig-a012-20200928
+i386                 randconfig-a016-20200928
+i386                 randconfig-a014-20200928
+i386                 randconfig-a013-20200928
+i386                 randconfig-a015-20200928
+i386                 randconfig-a011-20200928
+x86_64               randconfig-a005-20200928
+x86_64               randconfig-a003-20200928
+x86_64               randconfig-a004-20200928
+x86_64               randconfig-a002-20200928
+x86_64               randconfig-a006-20200928
+x86_64               randconfig-a001-20200928
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
---+HP7ph2BbKc20aGI
-Content-Type: application/pgp-signature; name="signature.asc"
+clang tested configs:
+x86_64               randconfig-a005-20200929
+x86_64               randconfig-a003-20200929
+x86_64               randconfig-a004-20200929
+x86_64               randconfig-a002-20200929
+x86_64               randconfig-a006-20200929
+x86_64               randconfig-a001-20200929
+x86_64               randconfig-a005-20200927
+x86_64               randconfig-a003-20200927
+x86_64               randconfig-a004-20200927
+x86_64               randconfig-a002-20200927
+x86_64               randconfig-a006-20200927
+x86_64               randconfig-a001-20200927
+x86_64               randconfig-a011-20200928
+x86_64               randconfig-a013-20200928
+x86_64               randconfig-a015-20200928
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl9zF3QACgkQJNaLcl1U
-h9CZuAf+Ij3HfuLkZJWbEfxbfM3dYO8XiA5hlj+nrX9Ct5qyHSq3IpRbuvLK3AN1
-4dhUoXDHQlyDxLPLLQl6RRsJ6BkXj3ViS5shyt2TZKTSCMZ7FddMQeMB+n/GBonx
-F/cg06ab2e6+i+f79QnHMBveNqmqvG7CfJyjeHviR731da4H4a+n/ZCTnGor+oF0
-lccFHhSmWCQgT50CKcz+378ceVU2nESlTkgmCr+QNPKI3BHRmgZnt4OPDO3Ackvo
-6epGaQB0MuM4vNA1iUoBLQZXx4JX2C7smvLJijjqXhRwF2j9HT5/HLT6H56o/iXo
-EDYsLYxGZn8sycp08doT9QZyxjTxbQ==
-=Fm8B
------END PGP SIGNATURE-----
-
---+HP7ph2BbKc20aGI--
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
