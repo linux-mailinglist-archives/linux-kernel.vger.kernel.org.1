@@ -2,107 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF79627C710
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:51:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EFE127C743
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:52:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731312AbgI2LvN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:51:13 -0400
-Received: from mx2.suse.de ([195.135.220.15]:39912 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730256AbgI2LvK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:51:10 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1601380268;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=kqP+VKUP21zbmiPlzTiabxKdYjDjr6MWefWBXor11nI=;
-        b=RWzdT8HozkPtvNJIlHGAXaiiHv9RQOYyI2BSxbDTTODQn+7Bn/STSdQTiDrHOxUV488Iwa
-        pD/M93H81moz7S098/N8BeYKhHAayxocOVNWuCItftyESbmgBGoJnCtUoEEN5zb7K98K+2
-        taXW2fweQO8UWjGsTSq2kMl3xvqo2xo=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 4E921ACB8;
-        Tue, 29 Sep 2020 11:51:08 +0000 (UTC)
-Date:   Tue, 29 Sep 2020 13:51:07 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH next 1/2] printk: avoid and/or handle record truncation
-Message-ID: <20200929115107.GO6442@alley>
-References: <20200926015526.8921-1-john.ogness@linutronix.de>
- <20200926015526.8921-2-john.ogness@linutronix.de>
+        id S1730768AbgI2Lwn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:52:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40730 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731222AbgI2Lwe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:52:34 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DC62C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 04:52:34 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id 77so5183533lfj.0
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 04:52:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+tsxcTYlmIt7fvSKcCyMiXfnmpMUlkCmokvJqIWw/AQ=;
+        b=jjOWrjZ7uwCllS0OYNttixtOrGeXrQxJugCu2v3GwGaMU88Cbu9bKFfcGk4YgS8kA6
+         CsxTSPEhUEB3QIobkbv54/t2k1Apsnjom+7y/88PmGKC6hXYb23/zfW9e2NG9HFaTWH3
+         giuTVdl61v/yhftsQIkuKaAtvCQDNCkOPMMCmqk4P1QjWB1kaBJQopeN3vzmME+jkiMF
+         StGTEqKwiChGFx+SW7eOlWuhtGOUsgUvkCAYA8z9mGM0jiR9LJkVXCR2ev4BtHpPTdpD
+         4tg6P7tqtBhWeLx7A/5BU61hYP1khSLAlsN0wd4MfmqHTfV2chMeeo+BbvoDURpxfFpK
+         R8NQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+tsxcTYlmIt7fvSKcCyMiXfnmpMUlkCmokvJqIWw/AQ=;
+        b=XDWELO3hrYDucudSGr15IVFHD9FrzGw9L8jpZpRImhp7w8p1NmiTixOjzeIfmgLiTR
+         tahMzxBGFi+giK0bs2Bbvz+9UKpHDKKOyGurUMNo3qqIYx7oW3zrbqy4MqQIFVxLuLe7
+         LpcbNUnQ0A/Ov4PNdwUTj+lZI0WgA+P+d55JpnYdB9Yj8tlZs4oHKb1LxIChHQG4Nf+k
+         wYdOnTp5tJbV2wsoTB8y8AUDRgt3Vd79OqYmdHkgUkjqYgMLz1CpDMA+JcrCC7LK+O5o
+         xslg4dEpN3hSLSY6rACgiWq845HOsbbjonHBGWh5LsGIufldZgp7ZdeUHjFypD3hWXM0
+         Veig==
+X-Gm-Message-State: AOAM5337snr8aQkOIFBa9heYNSY9VM6/m7tjr5XB38+6jdNDY0793Z4C
+        GnhNXzkg5QSl/lTrRZdjdOAhhfIj7i3v6zteqMlnbA==
+X-Google-Smtp-Source: ABdhPJyz74jPaVUkdmhbwYZ2S+u3dSjvZvKxeT3Peh7LpsNsRgF1dUdYrIIkppHQ6YlpE4/57iHv2mOxCZjyaQ7fBcM=
+X-Received: by 2002:ac2:4c11:: with SMTP id t17mr1163049lfq.260.1601380352826;
+ Tue, 29 Sep 2020 04:52:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200926015526.8921-2-john.ogness@linutronix.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200920195848.27075-1-krzk@kernel.org>
+In-Reply-To: <20200920195848.27075-1-krzk@kernel.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 29 Sep 2020 13:52:22 +0200
+Message-ID: <CACRpkdb+7jX7LV0U9J74sQefgxzkwOMv5E+8uvjrmb2Vexv+SQ@mail.gmail.com>
+Subject: Re: [PATCH v3 1/4] dt-bindings: gpio: pl061: add gpio-line-names
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Anson Huang <Anson.Huang@nxp.com>,
+        Stefan Agner <stefan@agner.ch>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat 2020-09-26 04:01:25, John Ogness wrote:
-> If a reader provides a buffer that is smaller than the message text,
-> the @text_len field of @info will have a value larger than the buffer
-> size. If readers blindly read @text_len bytes of data without
-> checking the size, they will read beyond their buffer.
+On Sun, Sep 20, 2020 at 9:58 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
 
-Great catch!
+> Describe common "gpio-line-names" property to fix dtbs_check warnings
+> like:
+>
+>   arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dt.yaml: gpio@e8a0b000:
+>     'gpio-line-names' does not match any of the regexes: 'pinctrl-[0-9]+'
+>
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-> Add this check to record_print_text() to properly recognize when such
-> truncation needs to occur.
-> 
-> Add a maximum size argument to the ringbuffer function to extend
-> records so that records can not be created that are larger than the
-> buffer size of readers.
-> 
-> When extending records (LOG_CONT), do not extend records beyond
-> LOG_LINE_MAX since that is the maximum size available in the buffers
-> used by consoles and syslog.
-> 
-> Fixes: f5f022e53b87 ("printk: reimplement log_cont using record extension")
-> Signed-off-by: John Ogness <john.ogness@linutronix.de>
-> Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
+Patch applied.
 
-> ---
->  kernel/printk/printk.c            |  7 ++++++-
->  kernel/printk/printk_ringbuffer.c | 12 ++++++++++--
->  kernel/printk/printk_ringbuffer.h |  2 +-
->  3 files changed, 17 insertions(+), 4 deletions(-)
-> 
-> diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-> index 78f68b4830dc..270f19b60e6f 100644
-> --- a/kernel/printk/printk.c
-> +++ b/kernel/printk/printk.c
-> @@ -1357,6 +1357,11 @@ static size_t record_print_text(struct printk_record *r, bool syslog,
->  	size_t len = 0;
->  	char *next;
->  
-> +	if (text_len > buf_size) {
-> +		text_len = buf_size;
-> +		truncated = true;
-
-@truncate must not be set here. Otherwise, the prefix would not be
-added when there no '\n' in the entire string. It would call:
-
-			/* Drop truncated line(s). */
-			if (truncated)
-				break;
-
-before copying the prefix.
-
-It is enough to remove the line. It will be set in the very first
-cycle anyway. We need to add one prefix at all. It would require to
-truncate even more bytes.
-
-Otherwise, the patch looks good to me.
-
-Best Regards,
-Petr
+Yours,
+Linus Walleij
