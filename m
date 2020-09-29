@@ -2,295 +2,361 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BB6427BD19
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 08:26:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A20D27BD43
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 08:46:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725822AbgI2G0z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 02:26:55 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:33017 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725536AbgI2G0z (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 02:26:55 -0400
-Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601360812;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=zAJ0Fhk7Jl4WMMRBzRepRA1oVyxLNpVd5noydx074OE=;
-        b=NNfIACwPRPsjDcPZoreX565xFpATvLtU41YPuOG5lY0s7WOetYlC6MpQ3osHjSO5IZnhh2
-        ZyRYbJpiJg7lIKShBTxODRWKG8oS9YLMZwEPY4QXi+IjKeTehlI/pK7SFMtBlZxlkG73Fc
-        B703lFRQqrH/zmoSbL2bo6V7wmUH4v8=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-176-TadSL0zbNUi6EWxj0DXA7g-1; Tue, 29 Sep 2020 02:26:50 -0400
-X-MC-Unique: TadSL0zbNUi6EWxj0DXA7g-1
-Received: by mail-wr1-f71.google.com with SMTP id v5so1287675wrs.17
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 23:26:50 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=zAJ0Fhk7Jl4WMMRBzRepRA1oVyxLNpVd5noydx074OE=;
-        b=iktCRJGKSmVIe8ccFcsGdvS87QCtYmwa5UOrU83RfcWTiVs4cx9EDdneCDUgtzM4Gv
-         CBR+A1h22jwyluWwr4g/ggH1XC9fH36q3n73pW+4M+CLPPBxg5tA87Z5Ie1yh06ivSAq
-         aRCPS4wQe8b4QqP/ubaZQEdS3T2DyGkhwDdrUIHI4/rRV+TXxZCWMwp5RtlF5Kumi/xj
-         vUOotPfvgo2ogC1Cp6Xbv+F7ueWJESxzBJ4R5DrOYLFpcaTfT5RbmSrtNptcjjDw2+yb
-         QAe/FIPqQywcK795qyUGn552dsC3z7NulNSmTROKz3sXSEiTo/jYnUEw87Q47AEImwG5
-         AqQg==
-X-Gm-Message-State: AOAM5326ypE9wHl2vY4Vgb43+FXuU8ZVzg249HcTp43oTA0u5FdC12rj
-        NakdPNKUD5MDv/GPPRk5dJSijt0MmqzbVnToeoInTINmXx2rzgacnQ0w/BWEhoX9tOud/JZysas
-        /XBJXNpExF9+fC0AiqCokkAyg
-X-Received: by 2002:adf:f508:: with SMTP id q8mr2142003wro.233.1601360807934;
-        Mon, 28 Sep 2020 23:26:47 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxaRo89FVwBcd4BiGa68p1LJ6RIySLUwgNzydk7tIMGjs9Ues2dq5ud7qi3aGmXV3VXybEnKA==
-X-Received: by 2002:adf:f508:: with SMTP id q8mr2141983wro.233.1601360807655;
-        Mon, 28 Sep 2020 23:26:47 -0700 (PDT)
-Received: from redhat.com (bzq-79-179-71-128.red.bezeqint.net. [79.179.71.128])
-        by smtp.gmail.com with ESMTPSA id b11sm4393471wrt.38.2020.09.28.23.26.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Sep 2020 23:26:47 -0700 (PDT)
-Date:   Tue, 29 Sep 2020 02:26:44 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Eli Cohen <elic@nvidia.com>
-Cc:     jasowang@redhat.com, virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        eli@nvidia.com
-Subject: Re: [PATCH V1 vhost-next] vdpa/mlx5: Make vdpa core driver a
- distinct module
-Message-ID: <20200929022430-mutt-send-email-mst@kernel.org>
-References: <20200924143231.GA186492@mtl-vdi-166.wap.labs.mlnx>
- <20200928155448-mutt-send-email-mst@kernel.org>
- <20200929062026.GB120395@mtl-vdi-166.wap.labs.mlnx>
+        id S1725811AbgI2Gqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 02:46:46 -0400
+Received: from mga17.intel.com ([192.55.52.151]:13095 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725283AbgI2Gqq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 02:46:46 -0400
+IronPort-SDR: qE6bl83iLPl5aVvtLSxAl5tZ/RDvBeJjhDfdJMAbGMLd9FBrXGwpdBi2c6SKaDhNVjxWI3GN7E
+ VTH2QXtC9qSg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9758"; a="142146625"
+X-IronPort-AV: E=Sophos;i="5.77,317,1596524400"; 
+   d="scan'208";a="142146625"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 23:24:36 -0700
+IronPort-SDR: p+womoRydx1qfJZxZ3dHSFTCkXY8J6lVJSQmoCBG14H2f6nkU7m8O+CrlAM3945UvePDuF5sQQ
+ 79yv1VOY3t5g==
+X-IronPort-AV: E=Sophos;i="5.77,317,1596524400"; 
+   d="scan'208";a="338492660"
+Received: from likexu-mobl1.ccr.corp.intel.com (HELO [10.238.4.187]) ([10.238.4.187])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 23:24:33 -0700
+Reply-To: like.xu@intel.com
+Subject: Re: [PATCH] target/i386: add -cpu,lbr=true support to enable guest
+ LBR
+To:     Eduardo Habkost <ehabkost@redhat.com>
+Cc:     Like Xu <like.xu@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Jim Mattson <jmattson@google.com>, kvm@vger.kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>, linux-kernel@vger.kernel.org,
+        Richard Henderson <rth@twiddle.net>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Marcel Apfelbaum <marcel.apfelbaum@gmail.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>, qemu-devel@nongnu.org
+References: <20200726153229.27149-1-like.xu@linux.intel.com>
+ <20200726153229.27149-3-like.xu@linux.intel.com>
+ <20200924220523.GL3717385@habkost.net>
+ <958128c6-39e8-96fe-34d8-7be1888f4144@intel.com>
+ <20200928154107.GX3717385@habkost.net>
+From:   "Xu, Like" <like.xu@intel.com>
+Organization: Intel OTC
+Message-ID: <911adb63-ba05-ea93-c038-1c09cff15eda@intel.com>
+Date:   Tue, 29 Sep 2020 14:24:30 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200929062026.GB120395@mtl-vdi-166.wap.labs.mlnx>
+In-Reply-To: <20200928154107.GX3717385@habkost.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 09:20:26AM +0300, Eli Cohen wrote:
-> On Mon, Sep 28, 2020 at 03:55:09PM -0400, Michael S. Tsirkin wrote:
-> > On Thu, Sep 24, 2020 at 05:32:31PM +0300, Eli Cohen wrote:
-> > > Change core vdpa functionality into a loadbale module such that upcoming
-> > > block implementation will be able to use it.
-> > > 
-> > > Signed-off-by: Eli Cohen <elic@nvidia.com>
-> > 
-> > Why don't we merge this patch together with the block module?
-> > 
-> 
-> Since there are still not too many users of this driver, I would prefer
-> to merge this as early as possible so pepole get used to the involved
-> modules.
-> 
-> Anyways, I will send another version of the patch which makes use of
-> 'select' instead of 'depends'.
-> 
-> Hope you agree to merge this.
+Hi Eduardo,
 
-Are you quite sure there will be a block driver though?
-I'd like to avoid a situation in which we have infrastructure
-in place but no users.
+On 2020/9/28 23:41, Eduardo Habkost wrote:
+> On Mon, Sep 28, 2020 at 10:51:03PM +0800, Xu, Like wrote:
+>> Hi Eduardo,
+>>
+>> Thanks for your detailed review.
+>>
+>> On 2020/9/25 6:05, Eduardo Habkost wrote:
+>>> I've just noticed this on my review queue (apologies for the long
+>>> delay).  Comments below:
+>>>
+>>> On Sun, Jul 26, 2020 at 11:32:20PM +0800, Like Xu wrote:
+>>>> The LBR feature would be enabled on the guest if:
+>>>> - the KVM is enabled and the PMU is enabled and,
+>>>> - the msr-based-feature IA32_PERF_CAPABILITIES is supporterd and,
+>>>> - the supported returned value for lbr_fmt from this msr is not zero.
+>>>>
+>>>> The LBR feature would be disabled on the guest if:
+>>>> - the msr-based-feature IA32_PERF_CAPABILITIES is unsupporterd OR,
+>>>> - qemu set the IA32_PERF_CAPABILITIES msr feature without lbr_fmt values OR,
+>>>> - the requested guest vcpu model doesn't support PDCM.
+>>>>
+>>>> Cc: Paolo Bonzini <pbonzini@redhat.com>
+>>>> Cc: Richard Henderson <rth@twiddle.net>
+>>>> Cc: Eduardo Habkost <ehabkost@redhat.com>
+>>>> Cc: "Michael S. Tsirkin" <mst@redhat.com>
+>>>> Cc: Marcel Apfelbaum <marcel.apfelbaum@gmail.com>
+>>>> Cc: Marcelo Tosatti <mtosatti@redhat.com>
+>>>> Cc: qemu-devel@nongnu.org
+>>>> Signed-off-by: Like Xu <like.xu@linux.intel.com>
+>>>> ---
+>>>>    hw/i386/pc.c      |  1 +
+>>>>    target/i386/cpu.c | 24 ++++++++++++++++++++++--
+>>>>    target/i386/cpu.h |  2 ++
+>>>>    target/i386/kvm.c |  7 ++++++-
+>>>>    4 files changed, 31 insertions(+), 3 deletions(-)
+>>>>
+>>>> diff --git a/hw/i386/pc.c b/hw/i386/pc.c
+>>>> index 3d419d5991..857aff75bb 100644
+>>>> --- a/hw/i386/pc.c
+>>>> +++ b/hw/i386/pc.c
+>>>> @@ -318,6 +318,7 @@ GlobalProperty pc_compat_1_5[] = {
+>>>>        { "Nehalem-" TYPE_X86_CPU, "min-level", "2" },
+>>>>        { "virtio-net-pci", "any_layout", "off" },
+>>>>        { TYPE_X86_CPU, "pmu", "on" },
+>>>> +    { TYPE_X86_CPU, "lbr", "on" },
+>>> Why is this line here?
+>> I'll remove it.
+>>>>        { "i440FX-pcihost", "short_root_bus", "0" },
+>>>>        { "q35-pcihost", "short_root_bus", "0" },
+>>>>    };
+>>>> diff --git a/target/i386/cpu.c b/target/i386/cpu.c
+>>>> index 588f32e136..c803994887 100644
+>>>> --- a/target/i386/cpu.c
+>>>> +++ b/target/i386/cpu.c
+>>>> @@ -1142,8 +1142,8 @@ static FeatureWordInfo feature_word_info[FEATURE_WORDS] = {
+>>>>        [FEAT_PERF_CAPABILITIES] = {
+>>>>            .type = MSR_FEATURE_WORD,
+>>>>            .feat_names = {
+>>>> -            NULL, NULL, NULL, NULL,
+>>>> -            NULL, NULL, NULL, NULL,
+>>>> +            "lbr-fmt-bit-0", "lbr-fmt-bit-1", "lbr-fmt-bit-2", "lbr-fmt-bit-3",
+>>>> +            "lbr-fmt-bit-4", "lbr-fmt-bit-5", NULL, NULL,
+>>> What about a separate "lbr-fmt" int property instead of
+>>> individual bit properties?
+>> I'm not sure if you mean adding a "separate lbr-fmt int property"
+>> like "uint64_t tcg_features" to 'struct FeatureWordInfo'.
+>>
+>> Would you mind providing more implementation hints,
+>> considering the PEBS_FMT will be added later ?
+> You can add a regular uint8_t field to X86CPU, use
+> DEFINE_PROP_UINT8 at x86_cpu_properties[], and just validate/copy
+> the bits to cpu->features[FEAT_PERF_CAPABILITIES][bits 0:5] on
+> x86_cpu_realizefn().
+>
+Thanks, I'll apply it and enable "-cpu,lbr-fmt=*" from command line.
+>>> What happens if LBR_FMT on the host (returned by
+>>> kvm_arch_get_supported_msr_feature(MSR_IA32_PERF_CAPABILITIES) is
+>>> different than the one configured for the guest?
+>> To enable guest LBR, guest LBR_FMT must be the same as host LBR_FMT.
+>>> Can KVM emulate
+>>> a CPU with different LBR_FMT, or it must match the host?
+>> It must match the host since the LBR registers are model specified.
+> OK, this means the value set in cpu->features[] need to be
+> validated against the host in x86_cpu_filter_features().
+>
+> It can be similar to what's done for intel-pt bits, but instead
+> of comparing to constants (the intel-pt bits in CPUID are
+> constant today), you can compare the host value with
+> cpu->features[FEAT_PERF_CAPABILITIES].
+I assume you mean
+     env->features[FEAT_PERF_CAPABILITIES]
+for
+     cpu->features[FEAT_PERF_CAPABILITIES].
 
-> > > ---
-> > > V0 --> V1:
-> > > Removed "default n" for configu options as 'n' is the default
-> > > 
-> > >  drivers/vdpa/Kconfig               |  8 +++-----
-> > >  drivers/vdpa/Makefile              |  2 +-
-> > >  drivers/vdpa/mlx5/Makefile         |  7 +++++--
-> > >  drivers/vdpa/mlx5/core/core_main.c | 20 ++++++++++++++++++++
-> > >  drivers/vdpa/mlx5/core/mr.c        |  3 +++
-> > >  drivers/vdpa/mlx5/core/resources.c | 10 ++++++++++
-> > >  6 files changed, 42 insertions(+), 8 deletions(-)
-> > >  create mode 100644 drivers/vdpa/mlx5/core/core_main.c
-> > > 
-> > > diff --git a/drivers/vdpa/Kconfig b/drivers/vdpa/Kconfig
-> > > index 4271c408103e..57ff6a7f7401 100644
-> > > --- a/drivers/vdpa/Kconfig
-> > > +++ b/drivers/vdpa/Kconfig
-> > > @@ -29,10 +29,9 @@ config IFCVF
-> > >  	  To compile this driver as a module, choose M here: the module will
-> > >  	  be called ifcvf.
-> > >  
-> > > -config MLX5_VDPA
-> > > -	bool "MLX5 VDPA support library for ConnectX devices"
-> > > +config MLX5_VDPA_CORE
-> > > +	tristate "MLX5 VDPA support library for ConnectX devices"
-> > >  	depends on MLX5_CORE
-> > > -	default n
-> > >  	help
-> > >  	  Support library for Mellanox VDPA drivers. Provides code that is
-> > >  	  common for all types of VDPA drivers. The following drivers are planned:
-> > > @@ -40,8 +39,7 @@ config MLX5_VDPA
-> > >  
-> > >  config MLX5_VDPA_NET
-> > >  	tristate "vDPA driver for ConnectX devices"
-> > > -	depends on MLX5_VDPA
-> > > -	default n
-> > > +	depends on MLX5_VDPA_CORE
-> > >  	help
-> > >  	  VDPA network driver for ConnectX6 and newer. Provides offloading
-> > >  	  of virtio net datapath such that descriptors put on the ring will
-> > > diff --git a/drivers/vdpa/Makefile b/drivers/vdpa/Makefile
-> > > index d160e9b63a66..07353bbb9f8b 100644
-> > > --- a/drivers/vdpa/Makefile
-> > > +++ b/drivers/vdpa/Makefile
-> > > @@ -2,4 +2,4 @@
-> > >  obj-$(CONFIG_VDPA) += vdpa.o
-> > >  obj-$(CONFIG_VDPA_SIM) += vdpa_sim/
-> > >  obj-$(CONFIG_IFCVF)    += ifcvf/
-> > > -obj-$(CONFIG_MLX5_VDPA) += mlx5/
-> > > +obj-$(CONFIG_MLX5_VDPA_CORE) += mlx5/
-> > > diff --git a/drivers/vdpa/mlx5/Makefile b/drivers/vdpa/mlx5/Makefile
-> > > index 89a5bededc9f..9f50f7e8d889 100644
-> > > --- a/drivers/vdpa/mlx5/Makefile
-> > > +++ b/drivers/vdpa/mlx5/Makefile
-> > > @@ -1,4 +1,7 @@
-> > >  subdir-ccflags-y += -I$(srctree)/drivers/vdpa/mlx5/core
-> > >  
-> > > -obj-$(CONFIG_MLX5_VDPA_NET) += mlx5_vdpa.o
-> > > -mlx5_vdpa-$(CONFIG_MLX5_VDPA_NET) += net/main.o net/mlx5_vnet.o core/resources.o core/mr.o
-> > > +obj-$(CONFIG_MLX5_VDPA_CORE) += mlx5_vdpa_core.o
-> > > +mlx5_vdpa_core-$(CONFIG_MLX5_VDPA_CORE) += core/resources.o core/mr.o core/core_main.o
-> > > +
-> > > +obj-$(CONFIG_MLX5_VDPA_NET) += mlx5_vdpa_net.o
-> > > +mlx5_vdpa_net-$(CONFIG_MLX5_VDPA_NET) += net/main.o net/mlx5_vnet.o
-> > > diff --git a/drivers/vdpa/mlx5/core/core_main.c b/drivers/vdpa/mlx5/core/core_main.c
-> > > new file mode 100644
-> > > index 000000000000..4b39b55f57ab
-> > > --- /dev/null
-> > > +++ b/drivers/vdpa/mlx5/core/core_main.c
-> > > @@ -0,0 +1,20 @@
-> > > +// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
-> > > +/* Copyright (c) 2020 Mellanox Technologies Ltd. */
-> > > +
-> > > +#include <linux/module.h>
-> > > +
-> > > +MODULE_AUTHOR("Eli Cohen <elic@nvidia.com>");
-> > > +MODULE_DESCRIPTION("Mellanox VDPA core driver");
-> > > +MODULE_LICENSE("Dual BSD/GPL");
-> > > +
-> > > +static int __init mlx5_vdpa_core_init(void)
-> > > +{
-> > > +	return 0;
-> > > +}
-> > > +
-> > > +static void __exit mlx5_vdpa_core_exit(void)
-> > > +{
-> > > +}
-> > > +
-> > > +module_init(mlx5_vdpa_core_init);
-> > > +module_exit(mlx5_vdpa_core_exit);
-> > > diff --git a/drivers/vdpa/mlx5/core/mr.c b/drivers/vdpa/mlx5/core/mr.c
-> > > index ef1c550f8266..c093eab6c714 100644
-> > > --- a/drivers/vdpa/mlx5/core/mr.c
-> > > +++ b/drivers/vdpa/mlx5/core/mr.c
-> > > @@ -434,6 +434,7 @@ int mlx5_vdpa_create_mr(struct mlx5_vdpa_dev *mvdev, struct vhost_iotlb *iotlb)
-> > >  	mutex_unlock(&mr->mkey_mtx);
-> > >  	return err;
-> > >  }
-> > > +EXPORT_SYMBOL(mlx5_vdpa_create_mr);
-> > >  
-> > >  void mlx5_vdpa_destroy_mr(struct mlx5_vdpa_dev *mvdev)
-> > >  {
-> > > @@ -456,6 +457,7 @@ void mlx5_vdpa_destroy_mr(struct mlx5_vdpa_dev *mvdev)
-> > >  out:
-> > >  	mutex_unlock(&mr->mkey_mtx);
-> > >  }
-> > > +EXPORT_SYMBOL(mlx5_vdpa_destroy_mr);
-> > >  
-> > >  static bool map_empty(struct vhost_iotlb *iotlb)
-> > >  {
-> > > @@ -484,3 +486,4 @@ int mlx5_vdpa_handle_set_map(struct mlx5_vdpa_dev *mvdev, struct vhost_iotlb *io
-> > >  
-> > >  	return err;
-> > >  }
-> > > +EXPORT_SYMBOL(mlx5_vdpa_handle_set_map);
-> > > diff --git a/drivers/vdpa/mlx5/core/resources.c b/drivers/vdpa/mlx5/core/resources.c
-> > > index 96e6421c5d1c..89606a18e286 100644
-> > > --- a/drivers/vdpa/mlx5/core/resources.c
-> > > +++ b/drivers/vdpa/mlx5/core/resources.c
-> > > @@ -98,6 +98,7 @@ int mlx5_vdpa_create_tis(struct mlx5_vdpa_dev *mvdev, void *in, u32 *tisn)
-> > >  
-> > >  	return err;
-> > >  }
-> > > +EXPORT_SYMBOL(mlx5_vdpa_create_tis);
-> > >  
-> > >  void mlx5_vdpa_destroy_tis(struct mlx5_vdpa_dev *mvdev, u32 tisn)
-> > >  {
-> > > @@ -108,6 +109,7 @@ void mlx5_vdpa_destroy_tis(struct mlx5_vdpa_dev *mvdev, u32 tisn)
-> > >  	MLX5_SET(destroy_tis_in, in, tisn, tisn);
-> > >  	mlx5_cmd_exec_in(mvdev->mdev, destroy_tis, in);
-> > >  }
-> > > +EXPORT_SYMBOL(mlx5_vdpa_destroy_tis);
-> > >  
-> > >  int mlx5_vdpa_create_rqt(struct mlx5_vdpa_dev *mvdev, void *in, int inlen, u32 *rqtn)
-> > >  {
-> > > @@ -121,6 +123,7 @@ int mlx5_vdpa_create_rqt(struct mlx5_vdpa_dev *mvdev, void *in, int inlen, u32 *
-> > >  
-> > >  	return err;
-> > >  }
-> > > +EXPORT_SYMBOL(mlx5_vdpa_create_rqt);
-> > >  
-> > >  void mlx5_vdpa_destroy_rqt(struct mlx5_vdpa_dev *mvdev, u32 rqtn)
-> > >  {
-> > > @@ -131,6 +134,7 @@ void mlx5_vdpa_destroy_rqt(struct mlx5_vdpa_dev *mvdev, u32 rqtn)
-> > >  	MLX5_SET(destroy_rqt_in, in, rqtn, rqtn);
-> > >  	mlx5_cmd_exec_in(mvdev->mdev, destroy_rqt, in);
-> > >  }
-> > > +EXPORT_SYMBOL(mlx5_vdpa_destroy_rqt);
-> > >  
-> > >  int mlx5_vdpa_create_tir(struct mlx5_vdpa_dev *mvdev, void *in, u32 *tirn)
-> > >  {
-> > > @@ -144,6 +148,7 @@ int mlx5_vdpa_create_tir(struct mlx5_vdpa_dev *mvdev, void *in, u32 *tirn)
-> > >  
-> > >  	return err;
-> > >  }
-> > > +EXPORT_SYMBOL(mlx5_vdpa_create_tir);
-> > >  
-> > >  void mlx5_vdpa_destroy_tir(struct mlx5_vdpa_dev *mvdev, u32 tirn)
-> > >  {
-> > > @@ -154,6 +159,7 @@ void mlx5_vdpa_destroy_tir(struct mlx5_vdpa_dev *mvdev, u32 tirn)
-> > >  	MLX5_SET(destroy_tir_in, in, tirn, tirn);
-> > >  	mlx5_cmd_exec_in(mvdev->mdev, destroy_tir, in);
-> > >  }
-> > > +EXPORT_SYMBOL(mlx5_vdpa_destroy_tir);
-> > >  
-> > >  int mlx5_vdpa_alloc_transport_domain(struct mlx5_vdpa_dev *mvdev, u32 *tdn)
-> > >  {
-> > > @@ -170,6 +176,7 @@ int mlx5_vdpa_alloc_transport_domain(struct mlx5_vdpa_dev *mvdev, u32 *tdn)
-> > >  
-> > >  	return err;
-> > >  }
-> > > +EXPORT_SYMBOL(mlx5_vdpa_alloc_transport_domain);
-> > >  
-> > >  void mlx5_vdpa_dealloc_transport_domain(struct mlx5_vdpa_dev *mvdev, u32 tdn)
-> > >  {
-> > > @@ -180,6 +187,7 @@ void mlx5_vdpa_dealloc_transport_domain(struct mlx5_vdpa_dev *mvdev, u32 tdn)
-> > >  	MLX5_SET(dealloc_transport_domain_in, in, transport_domain, tdn);
-> > >  	mlx5_cmd_exec_in(mvdev->mdev, dealloc_transport_domain, in);
-> > >  }
-> > > +EXPORT_SYMBOL(mlx5_vdpa_dealloc_transport_domain);
-> > >  
-> > >  int mlx5_vdpa_create_mkey(struct mlx5_vdpa_dev *mvdev, struct mlx5_core_mkey *mkey, u32 *in,
-> > >  			  int inlen)
-> > > @@ -266,6 +274,7 @@ int mlx5_vdpa_alloc_resources(struct mlx5_vdpa_dev *mvdev)
-> > >  	mutex_destroy(&mvdev->mr.mkey_mtx);
-> > >  	return err;
-> > >  }
-> > > +EXPORT_SYMBOL(mlx5_vdpa_alloc_resources);
-> > >  
-> > >  void mlx5_vdpa_free_resources(struct mlx5_vdpa_dev *mvdev)
-> > >  {
-> > > @@ -282,3 +291,4 @@ void mlx5_vdpa_free_resources(struct mlx5_vdpa_dev *mvdev)
-> > >  	mutex_destroy(&mvdev->mr.mkey_mtx);
-> > >  	res->valid = false;
-> > >  }
-> > > +EXPORT_SYMBOL(mlx5_vdpa_free_resources);
-> > > -- 
-> > > 2.27.0
-> > 
+Thanks, I'll apply it.
+>
+> Maybe a FeatureWordInfo.validate_feature(X86CPU *, FeatureWord)
+> callback could be added, so we could just define separate
+> validation functions for each feature word, to be called
+> automatically by x86_cpu_filter_features().  This could be done
+> as a follow-up patch, though.
+Sure, let me see if there is extra value in adding separate
+verification functions for each feature word.
+>
+>
+>>> If LBR_FMT must always match the host, the feature needs to block
+>>> live migration.
+>> It's migrable enough of the perf cap LBR version matches,
+>> don't need full model number match.
+> As long as the requirements are validated inside
+> x86_cpu_filter_features(), it should be OK to make it migratable.
+Thanks.
+>
+>> For example it's fine to migrate from SKY to CLX.
+>>> I guess this is already the case because PDCM is
+>>> cleared if !cpu->enable_pmu.  Adding PDCM to .unmigratable_flags
+>>> is probably a good idea, though.
+>> I'm trying to make LBR migration-friendly as much as possible w/ your help.
+>>
+>> If Arch LBR is enabled for SPR guest, the situation will be different
+>> hence adding PDCM to .unmigratable_flags may not help it.
+> OK, in this case forget what I said about setting it on
+> .unmigratable_flags.  The constraints for making the feature
+> migratable should be same ones mentioned for intel-pt at:
+> https://lore.kernel.org/qemu-devel/20200923141502.GO2044576@habkost.net/
+Thanks for clarification.
+
+Please let me know if the v2 patch doesn't follow you guide:
+https://lore.kernel.org/qemu-devel/20200929061217.118440-1-like.xu@linux.intel.com/
+
+>
+>
+>>>
+>>>
+>>>>                NULL, NULL, NULL, NULL,
+>>>>                NULL, "full-width-write", NULL, NULL,
+>>>>                NULL, NULL, NULL, NULL,
+>>>> @@ -4224,6 +4224,12 @@ static bool lmce_supported(void)
+>>>>        return !!(mce_cap & MCG_LMCE_P);
+>>>>    }
+>>>> +static inline bool lbr_supported(void)
+>>>> +{
+>>>> +    return kvm_enabled() && (kvm_arch_get_supported_msr_feature(kvm_state,
+>>>> +        MSR_IA32_PERF_CAPABILITIES) & PERF_CAP_LBR_FMT);
+>>>> +}
+>>> You can rewrite this is an accelerator-independent way as:
+>>>     (x86_cpu_get_supported_feature_word(FEAT_PERF_CAPABILITIES) & PERF_CAP_LBR_FMT)
+>> Thanks, I'll apply it.
+>>> However, is this really supposed to return false if LBR_FMT is 000000?
+>> I think it's fine to return false if LBR_FMT is 000000.
+> Don't we want to support hosts that have PDCM
+> (CPUID[1].ECX[bit 15]) = 1 and
+> IA32_PERF_CAPABILITIES.LBR_FMT[bits 5:0] = 000000 ?
+Real hardware may always has PDCM and non-zero LBR_FMT.
+
+If we are talking about supporting guest with PDCM and zero LBR_FMT,
+it has been supported due to the present of "full-width-write" bit.
+>
+>>>> +
+>>>>    #define CPUID_MODEL_ID_SZ 48
+>>>>    /**
+>>>> @@ -4327,6 +4333,9 @@ static void max_x86_cpu_initfn(Object *obj)
+>>>>        }
+>>>>        object_property_set_bool(OBJECT(cpu), "pmu", true, &error_abort);
+>>>> +    if (lbr_supported()) {
+>>>> +        object_property_set_bool(OBJECT(cpu), "lbr", true, &error_abort);
+>>> Why is this necessary?
+>>>
+>>> If kvm_arch_get_supported_msr_feature(MSR_IA32_PERF_CAPABILITIES)
+>>> return the PERF_CAP_LBR_FMT bits set,
+>>> x86_cpu_get_supported_feature_word() will return those bits, and
+>>> they will be automatically set at
+>>> env->features[FEAT_PERF_CAPABILITIES].
+>> Thanks, I'll remove it.
+>>>> +    }
+>>>>    }
+>>>>    static const TypeInfo max_x86_cpu_type_info = {
+>>>> @@ -5535,6 +5544,10 @@ void cpu_x86_cpuid(CPUX86State *env, uint32_t index, uint32_t count,
+>>>>            }
+>>>>            if (!cpu->enable_pmu) {
+>>>>                *ecx &= ~CPUID_EXT_PDCM;
+>>>> +            if (cpu->enable_lbr) {
+>>>> +                warn_report("LBR is unsupported since guest PMU is disabled.");
+>>>> +                exit(1);
+>>>> +            }
+>>>>            }
+>>>>            break;
+>>>>        case 2:
+>>>> @@ -6553,6 +6566,12 @@ static void x86_cpu_realizefn(DeviceState *dev, Error **errp)
+>>>>            }
+>>>>        }
+>>>> +    if (!cpu->max_features && cpu->enable_lbr &&
+>>> Why do we need to check for !cpu->max_features here?
+>> I'll remove it.
+>>>> +        !(env->features[FEAT_1_ECX] & CPUID_EXT_PDCM)) {
+>>>> +        warn_report("requested vcpu model doesn't support PDCM for LBR.");
+>>>> +        exit(1);
+>>> Please report errors using error_setg(errp, ...) instead.
+>> I'll apply it.
+>>>> +    }
+>>>> +
+>>>>        if (cpu->ucode_rev == 0) {
+>>>>            /* The default is the same as KVM's.  */
+>>>>            if (IS_AMD_CPU(env)) {
+>>>> @@ -7187,6 +7206,7 @@ static Property x86_cpu_properties[] = {
+>>>>    #endif
+>>>>        DEFINE_PROP_INT32("node-id", X86CPU, node_id, CPU_UNSET_NUMA_NODE_ID),
+>>>>        DEFINE_PROP_BOOL("pmu", X86CPU, enable_pmu, false),
+>>>> +    DEFINE_PROP_BOOL("lbr", X86CPU, enable_lbr, false),
+>>> When exactly do we want to set lbr=off explicitly?  What's the
+>>> expected outcome when lbr=off?
+>> We set pmu=off explicitly, so does lbr=off.
+>>
+>> When set lbr=off, the LBR-related registers accesses from guest bring #GP
+>> and expected outcome is just like pmu=off.
+> How are those registers enumerated?  Maybe I'm looking at an
+> outdated version of the Intel SDM or I couldn't find the right
+> section.
+For model-specified LBR, please refer to:
+
+     17.4 LAST BRANCH, INTERRUPT, AND EXCEPTION RECORDING OVERVIEW
+
+For Architecture LBR, please refer to:
+
+CHAPTER 7 ARCHITECTURAL LAST BRANCH RECORDS (LBRS)
+
+     in the "JUNE 2020" of Intel® Architecture Instruction Set Extensions \
+     and Future Features Programming Reference
+
+Or, you can also ask me for any relevant details.
+
+Thanks,
+Like Xu
+
+>>>>        DEFINE_PROP_UINT32("hv-spinlocks", X86CPU, hyperv_spinlock_attempts,
+>>>>                           HYPERV_SPINLOCK_NEVER_RETRY),
+>>>> diff --git a/target/i386/cpu.h b/target/i386/cpu.h
+>>>> index e1a5c174dc..a059913e26 100644
+>>>> --- a/target/i386/cpu.h
+>>>> +++ b/target/i386/cpu.h
+>>>> @@ -357,6 +357,7 @@ typedef enum X86Seg {
+>>>>    #define ARCH_CAP_TSX_CTRL_MSR		(1<<7)
+>>>>    #define MSR_IA32_PERF_CAPABILITIES      0x345
+>>>> +#define PERF_CAP_LBR_FMT      0x3f
+>>>>    #define MSR_IA32_TSX_CTRL		0x122
+>>>>    #define MSR_IA32_TSCDEADLINE            0x6e0
+>>>> @@ -1702,6 +1703,7 @@ struct X86CPU {
+>>>>         * capabilities) directly to the guest.
+>>>>         */
+>>>>        bool enable_pmu;
+>>>> +    bool enable_lbr;
+>>> This is a good place to document what enable_lbr=true|false
+>>> means (see questions above).
+>>>
+>> I'll document it here.
+>>>>        /* LMCE support can be enabled/disabled via cpu option 'lmce=on/off'. It is
+>>>>         * disabled by default to avoid breaking migration between QEMU with
+>>>> diff --git a/target/i386/kvm.c b/target/i386/kvm.c
+>>>> index b8455c89ed..feb33d5472 100644
+>>>> --- a/target/i386/kvm.c
+>>>> +++ b/target/i386/kvm.c
+>>>> @@ -2690,8 +2690,10 @@ static void kvm_msr_entry_add_perf(X86CPU *cpu, FeatureWordArray f)
+>>>>        uint64_t kvm_perf_cap =
+>>>>            kvm_arch_get_supported_msr_feature(kvm_state,
+>>>>                                               MSR_IA32_PERF_CAPABILITIES);
+>>>> -
+>>>>        if (kvm_perf_cap) {
+>>>> +        if (!cpu->enable_lbr) {
+>>>> +            kvm_perf_cap &= ~PERF_CAP_LBR_FMT;
+>>>> +        }
+>>> Why is this necessary?  If enable_lbr is false,
+>>> f[FEAT_PERF_CAPABILITIES] should not have those bits set at all.
+>> I'll remove it.
+>>>>            kvm_msr_entry_add(cpu, MSR_IA32_PERF_CAPABILITIES,
+>>>>                            kvm_perf_cap & f[FEAT_PERF_CAPABILITIES]);
+>>>>        }
+>>>> @@ -2731,6 +2733,9 @@ static void kvm_init_msrs(X86CPU *cpu)
+>>>>        if (has_msr_perf_capabs && cpu->enable_pmu) {
+>>>>            kvm_msr_entry_add_perf(cpu, env->features);
+>>>> +    } else if (!has_msr_perf_capabs && cpu->enable_lbr) {
+>>>> +        warn_report("KVM doesn't support MSR_IA32_PERF_CAPABILITIES for LBR.");
+>>>> +        exit(1);
+>>> This is not the appropriate place to check for unsupported
+>>> features.  x86_cpu_realizefn() and/or x86_cpu_filter_features()
+>>> is.
+>> Thanks, I'll apply it in the x86_cpu_filter_features().
+>>
+>> Please let me if you have more comments.
+>>
+>> Thanks,
+>> Like Xu
+>>>>        }
+>>>>        if (has_msr_ucode_rev) {
+>>>> -- 
+>>>> 2.21.3
+>>>>
 
