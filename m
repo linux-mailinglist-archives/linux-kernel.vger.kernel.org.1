@@ -2,84 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ED7B27BA61
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 03:39:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2863D27BA66
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 03:41:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727520AbgI2Bjy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 21:39:54 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:14697 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727210AbgI2Bjx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 21:39:53 -0400
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 110F3634EDD56EEAA5B5;
-        Tue, 29 Sep 2020 09:39:51 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by DGGEMS409-HUB.china.huawei.com
- (10.3.19.209) with Microsoft SMTP Server id 14.3.487.0; Tue, 29 Sep 2020
- 09:39:41 +0800
-From:   Yu Kuai <yukuai3@huawei.com>
-To:     <robdclark@gmail.com>, <will@kernel.org>, <joro@8bytes.org>
-CC:     <iommu@lists.linux-foundation.org>,
-        <linux-arm-msm@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <yukuai3@huawei.com>,
-        <yi.zhang@huawei.com>
-Subject: [PATCH V2] iommu/qcom: add missing put_device() call in qcom_iommu_of_xlate()
-Date:   Tue, 29 Sep 2020 09:40:37 +0800
-Message-ID: <20200929014037.2436663-1-yukuai3@huawei.com>
-X-Mailer: git-send-email 2.25.4
+        id S1727397AbgI2Bl0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 21:41:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59194 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725272AbgI2Bl0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 21:41:26 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 613F2C061755;
+        Mon, 28 Sep 2020 18:41:25 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id u8so3605014lff.1;
+        Mon, 28 Sep 2020 18:41:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Abk1BbjdM00OPRd2uWXilrq7XrEyhsA1YlL5eIiAOQk=;
+        b=Ptvbu4P9DCSuekWRtfhjMZE06Me6IMHCoxGgTUCYPevR8cH5RNlW86knbQQDPhAtuI
+         M13rD57niMA36oBQACsQezC4knFkkAzwu6Gq1/trQaVmygY16yctQGLKOJ6XNEx9m4Iw
+         gIP0qKgLuam6QHnm5MyJQs55EbdANVKO3KlYfCs9mdXL4e6mshCAJV6nflznYI9ZgN0L
+         XfuXCJ1mfg98O9lUbExY1tK5tBlTpZVdGI6qv4I9shpI39mZxVQWHRm575ntMtreflLN
+         U6QTrkHIOOnWoJHDFQCZgxgO2K+kN+68UyXwYYTdc1GhMJAhNK0XA9lxS3sxgcPbTprS
+         FrFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Abk1BbjdM00OPRd2uWXilrq7XrEyhsA1YlL5eIiAOQk=;
+        b=jSkB3rWPRYJguh4H/DivRE3KC81x3PEXbJdJQhx++G2Jkq4pHTIQrPPw1TUSZmJVjN
+         MzB38DjY6Olsh1+ZWHyC+WodTI3eMXN6zLYoK21/BGiJ/OOBhQEXf1Hl5vtJ3C1sruNM
+         oiqYxW+Ji0HmOLRn3WiZplGhrghYHOdJFhHL0sqy3vVumDctMG06TAIner0lpUfuEX+q
+         5vvILDh+lGoQU+Nlk/IDOdIUEVZHhOhmmZTdHY5JOpWC/IBKGMxVWtxrFbyXWbKR+3Hy
+         b/fa5/mW9DBgmLlv8CG+iZeaKqcuCBWhRkdYOx2lv6q6H2CJCr++bBSgBzjA749prIwW
+         XsPw==
+X-Gm-Message-State: AOAM5325Z9AJGcNVv2WMrznQwh7Rc3GLbefhFWgH/Rcqv+Na8YQBekPr
+        5anrw0EWVLG+ITx6zEk5/kJM54HvWfXwR4xPv5I=
+X-Google-Smtp-Source: ABdhPJxxF3quQ4a9pf5J7PQ5Ts2VVam9GUZMb+6YyxfzFXvPphQaXipRI0kMcEUXYzR9EzjEflvD/4WvC+ouOCDl0Cw=
+X-Received: by 2002:a19:8606:: with SMTP id i6mr303196lfd.263.1601343681439;
+ Mon, 28 Sep 2020 18:41:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-CFilter-Loop: Reflected
+References: <1601292670-1616-1-git-send-email-alan.maguire@oracle.com>
+In-Reply-To: <1601292670-1616-1-git-send-email-alan.maguire@oracle.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Mon, 28 Sep 2020 18:41:10 -0700
+Message-ID: <CAADnVQ+Va+gZQb2ShMB3yS3SpW-2uuqe9GL+Hz0A8NZkiNhsEA@mail.gmail.com>
+Subject: Re: [PATCH v7 bpf-next 0/8] bpf: add helpers to support BTF-based
+ kernel data display
+To:     Alan Maguire <alan.maguire@oracle.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>, Shuah Khan <shuah@kernel.org>,
+        Andrey Ignatov <rdna@fb.com>, scott.branden@broadcom.com,
+        Quentin Monnet <quentin@isovalent.com>,
+        carlos antonio neira bustos <cneirabustos@gmail.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-if of_find_device_by_node() succeed, qcom_iommu_of_xlate() doesn't have
-a corresponding put_device(). Thus add put_device() to fix the exception
-handling for this function implementation.
+On Mon, Sep 28, 2020 at 4:33 AM Alan Maguire <alan.maguire@oracle.com> wrote:
+>
+> Default output for an sk_buff looks like this (zeroed fields
+> are omitted):
+>
+> (struct sk_buff){
+>  .transport_header = (__u16)65535,
+>  .mac_header = (__u16)65535,
+>  .end = (sk_buff_data_t)192,
+>  .head = (unsigned char *)0x000000007524fd8b,
+>  .data = (unsigned char *)0x000000007524fd8b,
+>  .truesize = (unsigned int)768,
+>  .users = (refcount_t){
+>   .refs = (atomic_t){
+>    .counter = (int)1,
+>   },
+>  },
+> }
+>
+> Flags can modify aspects of output format; see patch 3
+> for more details.
 
-Fixes: 0ae349a0f33fb ("iommu/qcom: Add qcom_iommu")
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
----
-
-Changes in V2:
- - Fix wrong 'Fixes'
- - add missing '{}' after if
-
- drivers/iommu/arm/arm-smmu/qcom_iommu.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/iommu/arm/arm-smmu/qcom_iommu.c b/drivers/iommu/arm/arm-smmu/qcom_iommu.c
-index 9535a6af7553..b30d6c966e2c 100644
---- a/drivers/iommu/arm/arm-smmu/qcom_iommu.c
-+++ b/drivers/iommu/arm/arm-smmu/qcom_iommu.c
-@@ -584,8 +584,10 @@ static int qcom_iommu_of_xlate(struct device *dev, struct of_phandle_args *args)
- 	 * index into qcom_iommu->ctxs:
- 	 */
- 	if (WARN_ON(asid < 1) ||
--	    WARN_ON(asid > qcom_iommu->num_ctxs))
-+	    WARN_ON(asid > qcom_iommu->num_ctxs)) {
-+		put_device(&iommu_pdev->dev);
- 		return -EINVAL;
-+	}
- 
- 	if (!dev_iommu_priv_get(dev)) {
- 		dev_iommu_priv_set(dev, qcom_iommu);
-@@ -594,8 +596,10 @@ static int qcom_iommu_of_xlate(struct device *dev, struct of_phandle_args *args)
- 		 * multiple different iommu devices.  Multiple context
- 		 * banks are ok, but multiple devices are not:
- 		 */
--		if (WARN_ON(qcom_iommu != dev_iommu_priv_get(dev)))
-+		if (WARN_ON(qcom_iommu != dev_iommu_priv_get(dev))) {
-+			put_device(&iommu_pdev->dev);
- 			return -EINVAL;
-+		}
- 	}
- 
- 	return iommu_fwspec_add_ids(dev, &asid, 1);
--- 
-2.25.4
-
+Applied. Thanks a lot.
