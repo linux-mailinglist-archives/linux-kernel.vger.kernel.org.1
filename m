@@ -2,182 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B18A327CB35
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:27:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EBFC27CB81
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:29:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729597AbgI2MZW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 08:25:22 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:39000 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728571AbgI2Ldc (ORCPT
+        id S1732491AbgI2M2R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 08:28:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37196 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728660AbgI2Lcv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:33:32 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08TBQ7Cq036419;
-        Tue, 29 Sep 2020 11:33:13 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=mime-version :
- message-id : date : from : to : cc : subject : references : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=5eiKz2brRks+GrpkHtsXF6Gc0uAMNWcrhtU8ADS/XBs=;
- b=DTVGzHKvq/YJJKjoGDdNlt+rnJGpXYffhyqcp3tBIbs7MIQYBcAv8nyTofK4BxvxIYrg
- MZjqnfgsaW7G+mr9nl2iMgH+6PgF8qzlrTZE5clmgu2NQe+z6kp6h+zMQPIxnZzLPxiR
- BI+JT2dFoJe7lHoh4WulGcduOR5wYbZoVpuYOtkTZnkGKQ2dleLycgp2csw5aSBZ1U4u
- i1+1OS7kclxjb2OTLZ4M5TwAx+HSN8maBjKGpX8APNv2FuC2UxbL+WWvgp6VgiSItdka
- Mr3Jc3lQscXbHCDmzYAXtqTrWxfP71Zo5UC6HfoYUoua435hW8ADWnvMeswh4dBet7PD bA== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 33swkkt5f2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 29 Sep 2020 11:33:13 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08TBTifZ052058;
-        Tue, 29 Sep 2020 11:33:12 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3030.oracle.com with ESMTP id 33tfjwj5ef-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 29 Sep 2020 11:33:12 +0000
-Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 08TBXACA028093;
-        Tue, 29 Sep 2020 11:33:10 GMT
-Received: from localhost.uk.oracle.com (/10.175.172.184) by default (Oracle
- Beehive Gateway v4.0) with ESMTP ; Tue, 29 Sep 2020 04:32:50 -0700
+        Tue, 29 Sep 2020 07:32:51 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5FF2C0613DF
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 04:32:49 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0ead007c081ed47b63bef9.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:ad00:7c08:1ed4:7b63:bef9])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 79C2A1EC037C;
+        Tue, 29 Sep 2020 13:32:47 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1601379167;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:references;
+        bh=/NTu5hd5HMffm2LYOAJjPbi5TKLhp6HAg2+yNArjdwc=;
+        b=ZJJcQs1U2r2k3yJYuocXMZobfMWzC7gDN33nUvPYFwC5qMHmAd0n8wUL1/CoSD6pFtnRx1
+        cOJgXY97eW2OaMpwcdgC7IXkNjp4uMJH8/Q7nDcEDhli2hxpkiD98rZBd+WRsg0Q6NdWIL
+        jYfwjTyEF5gNfR8xl+hFI4mDOTO59Nc=
+Date:   Tue, 29 Sep 2020 13:32:38 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Marc Zyngier <marc.zyngier@arm.com>,
+        Will Deacon <will.deacon@arm.com>, Rabin Vincent <rabin@rab.in>
+Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
+Subject: [RFC] Add RIP to scripts/decodecode
+Message-ID: <20200929113238.GC21110@zn.tnic>
 MIME-Version: 1.0
-Message-ID: <1601379151-21449-3-git-send-email-alan.maguire@oracle.com>
-Date:   Tue, 29 Sep 2020 04:32:31 -0700 (PDT)
-From:   Alan Maguire <alan.maguire@oracle.com>
-To:     ast@kernel.org, daniel@iogearbox.net, andriin@fb.com
-Cc:     kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@chromium.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: [PATCH bpf-next 2/2] selftests/bpf: ensure snprintf_btf/bpf_iter
- tests compatibility with old vmlinux.h
-References: <1601379151-21449-1-git-send-email-alan.maguire@oracle.com>
-In-Reply-To: <1601379151-21449-1-git-send-email-alan.maguire@oracle.com>
-X-Mailer: git-send-email 1.8.3.1
-Content-Type: text/plain; charset=ascii
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9758 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 spamscore=0 mlxscore=0
- phishscore=0 adultscore=0 bulkscore=0 mlxlogscore=999 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009290103
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9758 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0 phishscore=0
- suspectscore=0 mlxlogscore=999 clxscore=1015 priorityscore=1501
- impostorscore=0 lowpriorityscore=0 bulkscore=0 spamscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009290102
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Andrii reports that bpf selftests relying on "struct btf_ptr" and BTF_F_*
-values will not build as vmlinux.h for older kernels will not include
-"struct btf_ptr" or the BTF_F_* enum values.  Undefine and redefine
-them to work around this.
+Hi,
 
-Fixes: b72091bd4ee4 ("selftests/bpf: Add test for bpf_seq_printf_btf helper")
-Fixes: 076a95f5aff2 ("selftests/bpf: Add bpf_snprintf_btf helper tests")
-Reported-by: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+how about we add RIP to decodecode output? See below.
+
+I've added the couple of people to Cc who seem to use this thing. The
+patch is dirty and needs cleaning still but I think it would be cool to
+have the actual addresses in that output so that when you compare with
+objdump output in another window, you can find the code very quickly.
+
+You'd need to supply the rIP from the splat, though, as an env var:
+
+$ RIP=0xffffffff8329a927 ./scripts/decodecode < ~/tmp/syz/gfs2.splat
+[ 477.379104][T23917] Code: 48 83 ec 28 48 89 3c 24 48 89 54 24 08 e8 c1 b4 4a fe 48 8d bb 00 01 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 97 05 00 00 48 8b 9b 00 01 00 00 48 85 db 0f 84
+Cleaned: [48 83 ec 28 48 89 3c 24 48 89 54 24 08 e8 c1 b4 4a fe 48 8d bb 00 01 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 97 05 00 00 48 8b 9b 00 01 00 00 48 85 db 0f 84]
+Marker: 127
+rIP_sub: 42
+adj_vma: 0xffffffff8329a8fd
+All code
+========
+ffffffff8329a8fd:       48 83 ec 28             sub    $0x28,%rsp
+ffffffff8329a901:       48 89 3c 24             mov    %rdi,(%rsp)
+ffffffff8329a905:       48 89 54 24 08          mov    %rdx,0x8(%rsp)
+ffffffff8329a90a:       e8 c1 b4 4a fe          callq  0xffffffff81745dd0
+ffffffff8329a90f:       48 8d bb 00 01 00 00    lea    0x100(%rbx),%rdi
+ffffffff8329a916:       48 b8 00 00 00 00 00    movabs $0xdffffc0000000000,%rax
+ffffffff8329a91d:       fc ff df 
+ffffffff8329a920:       48 89 fa                mov    %rdi,%rdx
+ffffffff8329a923:       48 c1 ea 03             shr    $0x3,%rdx
+ffffffff8329a927:*      80 3c 02 00             cmpb   $0x0,(%rdx,%rax,1)               <-- trapping instruction
+ffffffff8329a92b:       0f 85 97 05 00 00       jne    0xffffffff8329aec8
+ffffffff8329a931:       48 8b 9b 00 01 00 00    mov    0x100(%rbx),%rbx
+ffffffff8329a938:       48 85 db                test   %rbx,%rbx
+ffffffff8329a93b:       0f                      .byte 0xf
+ffffffff8329a93c:       84                      .byte 0x84
+
+Code starting with the faulting instruction
+===========================================
+ffffffff8329a8fd:       80 3c 02 00             cmpb   $0x0,(%rdx,%rax,1)
+ffffffff8329a901:       0f 85 97 05 00 00       jne    0xffffffff8329ae9e
+ffffffff8329a907:       48 8b 9b 00 01 00 00    mov    0x100(%rbx),%rbx
+ffffffff8329a90e:       48 85 db                test   %rbx,%rbx
+ffffffff8329a911:       0f                      .byte 0xf
+ffffffff8329a912:       84                      .byte 0x84
+
 ---
- tools/testing/selftests/bpf/progs/bpf_iter.h       | 23 ++++++++++++++++++
- tools/testing/selftests/bpf/progs/btf_ptr.h        | 27 ++++++++++++++++++++++
- .../selftests/bpf/progs/netif_receive_skb.c        |  2 +-
- 3 files changed, 51 insertions(+), 1 deletion(-)
- create mode 100644 tools/testing/selftests/bpf/progs/btf_ptr.h
 
-diff --git a/tools/testing/selftests/bpf/progs/bpf_iter.h b/tools/testing/selftests/bpf/progs/bpf_iter.h
-index df682af..6a12554 100644
---- a/tools/testing/selftests/bpf/progs/bpf_iter.h
-+++ b/tools/testing/selftests/bpf/progs/bpf_iter.h
-@@ -14,6 +14,11 @@
- #define bpf_iter__bpf_map_elem bpf_iter__bpf_map_elem___not_used
- #define bpf_iter__bpf_sk_storage_map bpf_iter__bpf_sk_storage_map___not_used
- #define bpf_iter__sockmap bpf_iter__sockmap___not_used
-+#define btf_ptr btf_ptr___not_used
-+#define BTF_F_COMPACT BTF_F_COMPACT___not_used
-+#define BTF_F_NONAME BTF_F_NONAME___not_used
-+#define BTF_F_PTR_RAW BTF_F_PTR_RAW___not_used
-+#define BTF_F_ZERO BTF_F_ZERO___not_used
- #include "vmlinux.h"
- #undef bpf_iter_meta
- #undef bpf_iter__bpf_map
-@@ -28,6 +33,11 @@
- #undef bpf_iter__bpf_map_elem
- #undef bpf_iter__bpf_sk_storage_map
- #undef bpf_iter__sockmap
-+#undef btf_ptr
-+#undef BTF_F_COMPACT
-+#undef BTF_F_NONAME
-+#undef BTF_F_PTR_RAW
-+#undef BTF_F_ZERO
+diff --git a/scripts/decodecode b/scripts/decodecode
+index fbdb325cdf4f..f6b799e3e51a 100755
+--- a/scripts/decodecode
++++ b/scripts/decodecode
+@@ -6,6 +6,7 @@
+ # options: set env. variable AFLAGS=options to pass options to "as";
+ # e.g., to decode an i386 oops on an x86_64 system, use:
+ # AFLAGS=--32 decodecode < 386.oops
++# RIP=hex - the rIP the splat points to
  
- struct bpf_iter_meta {
- 	struct seq_file *seq;
-@@ -105,3 +115,16 @@ struct bpf_iter__sockmap {
- 	void *key;
- 	struct sock *sk;
- };
-+
-+struct btf_ptr {
-+	void *ptr;
-+	__u32 type_id;
-+	__u32 flags;
-+};
-+
-+enum {
-+	BTF_F_COMPACT	=	(1ULL << 0),
-+	BTF_F_NONAME	=	(1ULL << 1),
-+	BTF_F_PTR_RAW	=	(1ULL << 2),
-+	BTF_F_ZERO	=	(1ULL << 3),
-+};
-diff --git a/tools/testing/selftests/bpf/progs/btf_ptr.h b/tools/testing/selftests/bpf/progs/btf_ptr.h
-new file mode 100644
-index 0000000..c3c9797
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/btf_ptr.h
-@@ -0,0 +1,27 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/* Copyright (c) 2020, Oracle and/or its affiliates. */
-+/* "undefine" structs in vmlinux.h, because we "override" them below */
-+#define btf_ptr btf_ptr___not_used
-+#define BTF_F_COMPACT BTF_F_COMPACT___not_used
-+#define BTF_F_NONAME BTF_F_NONAME___not_used
-+#define BTF_F_PTR_RAW BTF_F_PTR_RAW___not_used
-+#define BTF_F_ZERO BTF_F_ZERO___not_used
-+#include "vmlinux.h"
-+#undef btf_ptr
-+#undef BTF_F_COMPACT
-+#undef BTF_F_NONAME
-+#undef BTF_F_PTR_RAW
-+#undef BTF_F_ZERO
-+
-+struct btf_ptr {
-+	void *ptr;
-+	__u32 type_id;
-+	__u32 flags;
-+};
-+
-+enum {
-+	BTF_F_COMPACT	=	(1ULL << 0),
-+	BTF_F_NONAME	=	(1ULL << 1),
-+	BTF_F_PTR_RAW	=	(1ULL << 2),
-+	BTF_F_ZERO	=	(1ULL << 3),
-+};
-diff --git a/tools/testing/selftests/bpf/progs/netif_receive_skb.c b/tools/testing/selftests/bpf/progs/netif_receive_skb.c
-index b873d80..6b67003 100644
---- a/tools/testing/selftests/bpf/progs/netif_receive_skb.c
-+++ b/tools/testing/selftests/bpf/progs/netif_receive_skb.c
-@@ -1,7 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0
- /* Copyright (c) 2020, Oracle and/or its affiliates. */
+ cleanup() {
+ 	rm -f $T $T.s $T.o $T.oo $T.aa $T.dis
+@@ -52,6 +53,8 @@ fi
+ echo $code
+ code=`echo $code | sed -e 's/.*Code: //'`
  
--#include "vmlinux.h"
-+#include "btf_ptr.h"
- #include <bpf/bpf_helpers.h>
- #include <bpf/bpf_tracing.h>
- #include <bpf/bpf_core_read.h>
++echo "Cleaned: [$code]"
++
+ width=`expr index "$code" ' '`
+ width=$((($width-1)/2))
+ case $width in
+@@ -67,15 +70,19 @@ if [ -z "$ARCH" ]; then
+     esac
+ fi
+ 
++# Params: (tmp_file, rip_sub)
+ disas() {
+-	${CROSS_COMPILE}as $AFLAGS -o $1.o $1.s > /dev/null 2>&1
++	t=$1
++	rip_sub=$2
++
++	${CROSS_COMPILE}as $AFLAGS -o $t.o $t.s > /dev/null 2>&1
+ 
+ 	if [ "$ARCH" = "arm" ]; then
+ 		if [ $width -eq 2 ]; then
+ 			OBJDUMPFLAGS="-M force-thumb"
+ 		fi
+ 
+-		${CROSS_COMPILE}strip $1.o
++		${CROSS_COMPILE}strip $t.o
+ 	fi
+ 
+ 	if [ "$ARCH" = "arm64" ]; then
+@@ -83,11 +90,19 @@ disas() {
+ 			type=inst
+ 		fi
+ 
+-		${CROSS_COMPILE}strip $1.o
++		${CROSS_COMPILE}strip $t.o
++	fi
++
++	if [ $rip_sub -ne 0 ]; then
++		if [ $RIP ]; then
++			adj_vma=$(( $RIP - $rip_sub ))
++			printf "adj_vma: 0x%lx\n" $adj_vma
++			OBJDUMPFLAGS="$OBJDUMPFLAGS --adjust-vma=$adj_vma"
++		fi
+ 	fi
+ 
+-	${CROSS_COMPILE}objdump $OBJDUMPFLAGS -S $1.o | \
+-		grep -v "/tmp\|Disassembly\|\.text\|^$" > $1.dis 2>&1
++	${CROSS_COMPILE}objdump $OBJDUMPFLAGS -S $t.o | \
++		grep -v "/tmp\|Disassembly\|\.text\|^$" > $t.dis 2>&1
+ }
+ 
+ marker=`expr index "$code" "\<"`
+@@ -95,14 +110,19 @@ if [ $marker -eq 0 ]; then
+ 	marker=`expr index "$code" "\("`
+ fi
+ 
++
+ touch $T.oo
+ if [ $marker -ne 0 ]; then
++	echo "Marker: $marker"
++	# 2 opcode bytes and a single space
++	rip_sub=$(( $marker / 3 ))
++	echo "rIP_sub: $rip_sub"
+ 	echo All code >> $T.oo
+ 	echo ======== >> $T.oo
+ 	beforemark=`echo "$code"`
+ 	echo -n "	.$type 0x" > $T.s
+ 	echo $beforemark | sed -e 's/ /,0x/g; s/[<>()]//g' >> $T.s
+-	disas $T
++	disas $T $rip_sub
+ 	cat $T.dis >> $T.oo
+ 	rm -f $T.o $T.s $T.dis
+ 
+@@ -114,7 +134,7 @@ echo =========================================== >> $T.aa
+ code=`echo $code | sed -e 's/ [<(]/ /;s/[>)] / /;s/ /,0x/g; s/[>)]$//'`
+ echo -n "	.$type 0x" > $T.s
+ echo $code >> $T.s
+-disas $T
++disas $T 0
+ cat $T.dis >> $T.aa
+ 
+ # (lines of whole $T.oo) - (lines of $T.aa, i.e. "Code starting") + 3,
+
 -- 
-1.8.3.1
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
