@@ -2,194 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30E8F27D5FD
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 20:44:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4669527D612
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 20:49:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728326AbgI2So1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 14:44:27 -0400
-Received: from mail-oo1-f66.google.com ([209.85.161.66]:37982 "EHLO
-        mail-oo1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728166AbgI2So1 (ORCPT
+        id S1728313AbgI2StM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 14:49:12 -0400
+Received: from mail-ot1-f67.google.com ([209.85.210.67]:37095 "EHLO
+        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727740AbgI2StL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 14:44:27 -0400
-Received: by mail-oo1-f66.google.com with SMTP id r10so1542225oor.5;
-        Tue, 29 Sep 2020 11:44:26 -0700 (PDT)
+        Tue, 29 Sep 2020 14:49:11 -0400
+Received: by mail-ot1-f67.google.com with SMTP id o8so5507790otl.4;
+        Tue, 29 Sep 2020 11:49:09 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=nY9+4lqo0MEowM9x/sIa8yC+J2rLn2r05J1zX+4+m4s=;
-        b=aQGDDNzbxJz6kJs4B5rEjz7c6L1ZXJJ/j6wLnid8JQpx6N5nkgsm+VMC/MFD/Dxuji
-         vcWM5bQNkZQL+yvswZ87m6dK2nPz9IXWBFKVao1xqpZ5Zs23kz9jO9ACzQHbag7BGjBA
-         kivhfTMxo2ugH3Tnqq6SXtj9ZoxenhxHHaATEv8EeIYCoEBKuEZfvXMi9CoBkKIXu5nY
-         bHv9FpLrRWPkT6A8wvLhmu6ueEWH658XAd7Unyr5wUsLM6kgCsTa09lIpS8YZ+pMS6ta
-         nFysqxc9M5+tsPU8ylVg4R8J9+yLx5OH/PyKMoinvgwmToMFmJmJ7iolqM9Y/24wqpAg
-         7g1Q==
-X-Gm-Message-State: AOAM5320QOcPIfVaMyyCf+XrarlA84PGCEzJ09TcCPGOn66ZbJZl6As9
-        VEcaZtXsIOecJZGAdYZ+FA==
-X-Google-Smtp-Source: ABdhPJxBmQ/k0EOFw/H4LYM2itNduFhHNo8ttvEQXf2Wi/Nv6QTqhg0BflBo9p1gchQuzxE/ckBrvg==
-X-Received: by 2002:a4a:d80a:: with SMTP id f10mr5709037oov.76.1601405065955;
-        Tue, 29 Sep 2020 11:44:25 -0700 (PDT)
+        bh=2dhtLQGXefJzd+tdjQfXtxZsg30gzHAt+hvhP7pFDE8=;
+        b=DT3HM0bgUvTtdJmK4Sff30uoVTNrPmT/t1gsQpuvJHLaTAB70X62ibQdwMzZ/MDVg3
+         0Tpcqsw4dyZT3QZFQGdt8OG195tMV4i3LrYo9vjmS7qR0PLQLk8qc1x49UaN8orDjZcM
+         siKw6e37qXg/qurDSgBdjWfJhdWAFrUFXbfcJ0KkKFMJt1Yb3qgd/BC4zRMhxkKbymIz
+         6NUrpO/RKYj94/puk32dLVwYMSZJW7C14Eu6uIJaGXEOU15OecOymYE0f4KabW8UG58L
+         +/j2jUjJQVRrdHuq4LZTpbXCqc3Oq4dk1ox3nCEY0F4WH7JG+oFnf1byvaNPTLwkL5Sw
+         hgLA==
+X-Gm-Message-State: AOAM533bzg6lnSKNWmpNKp4XvB0eLVvuABdif/+YDjnGHHp/+HUFhYdp
+        PWFM6Vd18m0bhHPsH4APow==
+X-Google-Smtp-Source: ABdhPJwTwGb1cNh7qPLO/bpNMCPhwNz2oDVlStKPD9KooQjEoEwCB5djQy3VGYkXlWUNwA52GDxFCQ==
+X-Received: by 2002:a9d:7cd2:: with SMTP id r18mr3965579otn.231.1601405349395;
+        Tue, 29 Sep 2020 11:49:09 -0700 (PDT)
 Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id f94sm1180147otb.29.2020.09.29.11.44.25
+        by smtp.gmail.com with ESMTPSA id d63sm1169958oig.53.2020.09.29.11.49.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Sep 2020 11:44:25 -0700 (PDT)
-Received: (nullmailer pid 940845 invoked by uid 1000);
-        Tue, 29 Sep 2020 18:44:24 -0000
-Date:   Tue, 29 Sep 2020 13:44:24 -0500
+        Tue, 29 Sep 2020 11:49:08 -0700 (PDT)
+Received: (nullmailer pid 948703 invoked by uid 1000);
+        Tue, 29 Sep 2020 18:49:07 -0000
+Date:   Tue, 29 Sep 2020 13:49:07 -0500
 From:   Rob Herring <robh@kernel.org>
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     dmaengine@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH v3 1/3] dt-bindings: dmaengine: Document qcom,gpi dma
- binding
-Message-ID: <20200929184424.GA935309@bogus>
-References: <20200923063410.3431917-1-vkoul@kernel.org>
- <20200923063410.3431917-2-vkoul@kernel.org>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     linux-can@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        netdev@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Kopp <thomas.kopp@microchip.com>,
+        devicetree@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>, kernel@pengutronix.de,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        mkl@pengutronix.de, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] dt-binding: can: mcp25xxfd: documentation fixes
+Message-ID: <20200929184907.GA948644@bogus>
+References: <20200923125301.27200-1-o.rempel@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200923063410.3431917-2-vkoul@kernel.org>
+In-Reply-To: <20200923125301.27200-1-o.rempel@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 12:04:08PM +0530, Vinod Koul wrote:
-> Add devicetree binding documentation for GPI DMA controller
-> implemented on Qualcomm SoCs
+On Wed, 23 Sep 2020 14:53:01 +0200, Oleksij Rempel wrote:
+> Apply following fixes:
+> - Use 'interrupts'. (interrupts-extended will automagically be supported
+>   by the tools)
+> - *-supply is always a single item. So, drop maxItems=1
+> - add "additionalProperties: false" flag to detect unneeded properties.
 > 
-> Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
 > ---
->  .../devicetree/bindings/dma/qcom,gpi.yaml     | 86 +++++++++++++++++++
->  include/dt-bindings/dma/qcom-gpi.h            | 11 +++
->  2 files changed, 97 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/dma/qcom,gpi.yaml
->  create mode 100644 include/dt-bindings/dma/qcom-gpi.h
+>  .../devicetree/bindings/net/can/microchip,mcp25xxfd.yaml  | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/dma/qcom,gpi.yaml b/Documentation/devicetree/bindings/dma/qcom,gpi.yaml
-> new file mode 100644
-> index 000000000000..82f404bc8745
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/dma/qcom,gpi.yaml
-> @@ -0,0 +1,86 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/dma/qcom,gpi.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Qualcomm Technologies Inc GPI DMA controller
-> +
-> +maintainers:
-> +  - Vinod Koul <vkoul@kernel.org>
-> +
-> +description: |
-> +  QCOM GPI DMA controller provides DMA capabilities for
-> +  peripheral buses such as I2C, UART, and SPI.
-> +
-> +allOf:
-> +  - $ref: "dma-controller.yaml#"
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - qcom,gpi-dma
 
-Should be SoC specific.
-
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    description:
-> +      Interrupt lines for each GPII instance
-
-GPII or GPI?
-
-> +    maxItems: 13
-> +
-> +  "#dma-cells":
-> +    const: 3
-> +    description: >
-> +      DMA clients must use the format described in dma.txt, giving a phandle
-> +      to the DMA controller plus the following 3 integer cells:
-> +      - channel: if set to 0xffffffff, any available channel will be allocated
-> +        for the client. Otherwise, the exact channel specified will be used.
-> +      - seid: serial id of the client as defined in the SoC documentation.
-> +      - client: type of the client as defined in dt-bindings/dma/qcom-gpi.h
-> +
-> +  iommus:
-> +    maxItems: 1
-> +
-> +  dma-channels:
-> +    maxItems: 1
-
-Not an array. Is there a maximum number of channels or 2^32 is valid?
-
-> +
-> +  dma-channel-mask:
-> +    maxItems: 1
-
-So up to 32 channels?
-
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +  - "#dma-cells"
-> +  - iommus
-> +  - dma-channels
-> +  - dma-channel-mask
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +    #include <dt-bindings/dma/qcom-gpi.h>
-> +    gpi_dma0: dma-controller@800000 {
-> +        compatible = "qcom,gpi-dma";
-> +        #dma-cells = <3>;
-> +        reg = <0x00800000 0x60000>;
-> +        iommus = <&apps_smmu 0x0016 0x0>;
-> +        dma-channels = <13>;
-> +        dma-channel-mask = <0xfa>;
-> +        interrupts = <GIC_SPI 244 IRQ_TYPE_LEVEL_HIGH>,
-> +                     <GIC_SPI 245 IRQ_TYPE_LEVEL_HIGH>,
-> +                     <GIC_SPI 246 IRQ_TYPE_LEVEL_HIGH>,
-> +                     <GIC_SPI 247 IRQ_TYPE_LEVEL_HIGH>,
-> +                     <GIC_SPI 248 IRQ_TYPE_LEVEL_HIGH>,
-> +                     <GIC_SPI 249 IRQ_TYPE_LEVEL_HIGH>,
-> +                     <GIC_SPI 250 IRQ_TYPE_LEVEL_HIGH>,
-> +                     <GIC_SPI 251 IRQ_TYPE_LEVEL_HIGH>,
-> +                     <GIC_SPI 252 IRQ_TYPE_LEVEL_HIGH>,
-> +                     <GIC_SPI 253 IRQ_TYPE_LEVEL_HIGH>,
-> +                     <GIC_SPI 254 IRQ_TYPE_LEVEL_HIGH>,
-> +                     <GIC_SPI 255 IRQ_TYPE_LEVEL_HIGH>,
-> +                     <GIC_SPI 256 IRQ_TYPE_LEVEL_HIGH>;
-> +    };
-> +
-> +...
-> diff --git a/include/dt-bindings/dma/qcom-gpi.h b/include/dt-bindings/dma/qcom-gpi.h
-> new file mode 100644
-> index 000000000000..71f79eb7614c
-> --- /dev/null
-> +++ b/include/dt-bindings/dma/qcom-gpi.h
-> @@ -0,0 +1,11 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/* Copyright (c) 2020, Linaro Ltd.  */
-> +
-> +#ifndef __DT_BINDINGS_DMA_QCOM_GPI_H__
-> +#define __DT_BINDINGS_DMA_QCOM_GPI_H__
-> +
-> +#define QCOM_GPI_SPI		1
-> +#define QCOM_GPI_UART		2
-> +#define QCOM_GPI_I2C		3
-> +
-> +#endif /* __DT_BINDINGS_DMA_QCOM_GPI_H__ */
-> -- 
-> 2.26.2
-> 
+Reviewed-by: Rob Herring <robh@kernel.org>
