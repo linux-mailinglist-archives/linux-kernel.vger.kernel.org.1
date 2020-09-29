@@ -2,112 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF66027B8CA
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 02:18:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01AF527B8D5
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 02:21:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727121AbgI2ASQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 20:18:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46546 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726379AbgI2ASP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 20:18:15 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B65B9C061755;
-        Mon, 28 Sep 2020 17:18:15 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id d6so2776364pfn.9;
-        Mon, 28 Sep 2020 17:18:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=oy1aXlDPXrReF1gBpu82DpN2M0nTMmLTwJqtxAH2mCA=;
-        b=gSZGDzL313qgnP9EOczNvz/gNDSAfTjbal1eD50rvCr3AiMcjMnYFcl0d0P5zY7clH
-         wIWgqQtLsZ8WRVQ88FbJ64AbDkRyJSc0KgYIMTCZfRjHyQh7TCmOKFQ32elgcbIVZjZV
-         XMAwl9JduHCTFpRahOlb5LODeoyTEftVTmgFCvMBq7Haef6PdNSrm9+o80fII+WcxCAT
-         51Ftexs7DNsOieK+sQFcphWmgJMV5RYLsdxQG9ze3Qt9MItWm3Uu5sUwVQZ4M/5Ol8v2
-         5bQmab8sY/LaxAZuaGWyIzHzaL1v3Utg1U8wG/H58rD7ohWpWATgZpSpnMaIApmoaaMq
-         1boA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=oy1aXlDPXrReF1gBpu82DpN2M0nTMmLTwJqtxAH2mCA=;
-        b=OZMIi9jXwo+Q2+5DpTTFEthIMP9CCMafFang2cFqHmF00IqYsqO37pOP7cDlxeYeIX
-         EK8DnEenowiAUeaL652RkeueOZX0njZYrIAoUYr465HSwioGpzqdAIeWYwIpQlb9/Cjo
-         w3l8I0Ev74SNzk+TlprvFVZ7++ABejcKG516WmWjURA1bZkXQzqTSXmiNAsTRjXA6WPk
-         tY1PxfcEbdDLh6zO9aW9NUXFPqneUIu9HkAuFOP9D9NaxqxYJ1jEgCBvZunVMCgoR2U7
-         IxBP3Gf49k7BNEAMMDs3AqM5Cil0WrqgSvppjNT1CGrJsElH6nYOpJjEnrd6/CXo4hkU
-         4TGQ==
-X-Gm-Message-State: AOAM5316oHHwxf1Fldk/O/SUZNb9ghV2w9hVpqRajTRwvvkDU7Ag4i8A
-        sqZc4GVfubqT+YOsrmeDHGw=
-X-Google-Smtp-Source: ABdhPJx9B+EigXOvBOeQtwn7+Eryj+DGPRHycZtoFvJRN16DN8hlDsLfqlEYL5HT43IpE3C2I1JwsA==
-X-Received: by 2002:aa7:9e4e:0:b029:13c:1611:6589 with SMTP id z14-20020aa79e4e0000b029013c16116589mr1765820pfq.6.1601338695189;
-        Mon, 28 Sep 2020 17:18:15 -0700 (PDT)
-Received: from localhost (c-73-25-156-94.hsd1.or.comcast.net. [73.25.156.94])
-        by smtp.gmail.com with ESMTPSA id a74sm2939486pfa.16.2020.09.28.17.18.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Sep 2020 17:18:14 -0700 (PDT)
-From:   Rob Clark <robdclark@gmail.com>
-To:     dri-devel@lists.freedesktop.org
-Cc:     Rob Clark <robdclark@chromium.org>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Brian Masney <masneyb@onstation.org>,
-        linux-arm-msm@vger.kernel.org (open list:DRM DRIVER FOR MSM ADRENO GPU),
-        freedreno@lists.freedesktop.org (open list:DRM DRIVER FOR MSM ADRENO
-        GPU), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] drm/msm: fix 32b build warns
-Date:   Mon, 28 Sep 2020 17:19:12 -0700
-Message-Id: <20200929001925.2916984-1-robdclark@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        id S1727072AbgI2AVb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 20:21:31 -0400
+Received: from z5.mailgun.us ([104.130.96.5]:59699 "EHLO z5.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727006AbgI2AVa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 20:21:30 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1601338888; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=gdRDTGNjGzMA3xOA1Rm4ex/Zq6b7V6kKOI12EhQVyiA=; b=HOkgV3LdG8dwJjtuaIrblBCQmQbjuNhFAk+C8Nw8VZ7i6lFrrlBFjf6k6ArspZncDbFg2oRO
+ SSForc3cnlE92Hkkullhjj+J11/jYz0E/q9GC0thYPg0yNqUTk5M2O0eMHcI9eJM4uBiXut/
+ qWnvwKW6/zb8EMsEGBUlYtBBznU=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 5f727df60f8c6dd7d2162299 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 29 Sep 2020 00:21:10
+ GMT
+Sender: wcheng=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 89885C433F1; Tue, 29 Sep 2020 00:21:10 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from wcheng-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: wcheng)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 01DBBC433C8;
+        Tue, 29 Sep 2020 00:21:08 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 01DBBC433C8
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=wcheng@codeaurora.org
+From:   Wesley Cheng <wcheng@codeaurora.org>
+To:     balbi@kernel.org, gregkh@linuxfoundation.org, thinhn@synopsys.com
+Cc:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        jackp@codeaurora.org, Wesley Cheng <wcheng@codeaurora.org>
+Subject: [PATCH v4] usb: dwc3: Stop active transfers before halting the controller
+Date:   Mon, 28 Sep 2020 17:20:59 -0700
+Message-Id: <20200929002059.26714-1-wcheng@codeaurora.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rob Clark <robdclark@chromium.org>
+In the DWC3 databook, for a device initiated disconnect or bus reset, the
+driver is required to send dependxfer commands for any pending transfers.
+In addition, before the controller can move to the halted state, the SW
+needs to acknowledge any pending events.  If the controller is not halted
+properly, there is a chance the controller will continue accessing stale or
+freed TRBs and buffers.
 
-Neither of these code-paths apply to older 32b devices, but it is rude
-to introduce warnings.
+Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
+Reviewed-by: Thinh Nguyen <thinhn@synopsys.com>
 
-Signed-off-by: Rob Clark <robdclark@chromium.org>
 ---
- drivers/gpu/drm/msm/adreno/adreno_gpu.c   | 2 +-
- drivers/gpu/drm/msm/dsi/pll/dsi_pll_7nm.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+Changes in v4:
+ - Updated comments to reference DWC3 databook sections and added direct
+   quotes.
+ - Changed the stop active transfer EP loop to use dwc->num_eps.
+ - Moved to using dwc3_gadget_disable_irq/synchronize_irq instead of
+   enable_irq/disable_irq for ensuring the interrupt handler is not pending.
 
-diff --git a/drivers/gpu/drm/msm/adreno/adreno_gpu.c b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
-index fd8f491f2e48..458b5b26d3c2 100644
---- a/drivers/gpu/drm/msm/adreno/adreno_gpu.c
-+++ b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
-@@ -209,7 +209,7 @@ adreno_iommu_create_address_space(struct msm_gpu *gpu,
- 	size = iommu->geometry.aperture_end - start + 1;
+Changes in v3:
+ - Removed DWC3_EP_ENABLED check from dwc3_gadget_stop_active_transfers()
+   as dwc3_stop_active_transfer() has a check already in place.
+ - Calling __dwc3_gadget_stop() which ensures that DWC3 interrupt events
+   are cleared, and ep0 eps are cleared for the pullup disabled case.  Not
+   required to call __dwc3_gadget_start() on pullup enable, as the
+   composite driver will execute udc_start() before calling pullup().
+
+Changes in v2:
+ - Moved cleanup code to the pullup() API to differentiate between device
+   disconnect and hibernation.
+ - Added cleanup code to the bus reset case as well.
+ - Verified the move to pullup() did not reproduce the problen using the
+   same test sequence.
+
+Verified fix by adding a check for ETIMEDOUT during the run stop call.
+Shell script writing to the configfs UDC file to trigger disconnect and
+connect.  Batch script to have PC execute data transfers over adb (ie adb
+push)  After a few iterations, we'd run into a scenario where the
+controller wasn't halted.  With the following change, no failed halts after
+many iterations.
+---
+ drivers/usb/dwc3/ep0.c    |  2 +-
+ drivers/usb/dwc3/gadget.c | 66 ++++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 66 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/usb/dwc3/ep0.c b/drivers/usb/dwc3/ep0.c
+index 59f2e8c31bd1..456aa87e8778 100644
+--- a/drivers/usb/dwc3/ep0.c
++++ b/drivers/usb/dwc3/ep0.c
+@@ -197,7 +197,7 @@ int dwc3_gadget_ep0_queue(struct usb_ep *ep, struct usb_request *request,
+ 	int				ret;
  
- 	aspace = msm_gem_address_space_create(mmu, "gpu",
--		start & GENMASK(48, 0), size);
-+		start & GENMASK_ULL(48, 0), size);
+ 	spin_lock_irqsave(&dwc->lock, flags);
+-	if (!dep->endpoint.desc) {
++	if (!dep->endpoint.desc || !dwc->pullups_connected) {
+ 		dev_err(dwc->dev, "%s: can't queue to disabled endpoint\n",
+ 				dep->name);
+ 		ret = -ESHUTDOWN;
+diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
+index 3ab6f118c508..5d879b7606d5 100644
+--- a/drivers/usb/dwc3/gadget.c
++++ b/drivers/usb/dwc3/gadget.c
+@@ -1516,7 +1516,7 @@ static int __dwc3_gadget_ep_queue(struct dwc3_ep *dep, struct dwc3_request *req)
+ {
+ 	struct dwc3		*dwc = dep->dwc;
  
- 	if (IS_ERR(aspace) && !IS_ERR(mmu))
- 		mmu->funcs->destroy(mmu);
-diff --git a/drivers/gpu/drm/msm/dsi/pll/dsi_pll_7nm.c b/drivers/gpu/drm/msm/dsi/pll/dsi_pll_7nm.c
-index 029cc8bf5a04..de0dfb815125 100644
---- a/drivers/gpu/drm/msm/dsi/pll/dsi_pll_7nm.c
-+++ b/drivers/gpu/drm/msm/dsi/pll/dsi_pll_7nm.c
-@@ -879,7 +879,7 @@ struct msm_dsi_pll *msm_dsi_pll_7nm_init(struct platform_device *pdev, int id)
- 	pll->max_rate = 3500000000UL;
- 	if (pll->type == MSM_DSI_PHY_7NM_V4_1) {
- 		pll->min_rate = 600000000UL;
--		pll->max_rate = 5000000000UL;
-+		pll->max_rate = (unsigned long)5000000000ULL;
- 		/* workaround for max rate overflowing on 32-bit builds: */
- 		pll->max_rate = max(pll->max_rate, 0xffffffffUL);
+-	if (!dep->endpoint.desc) {
++	if (!dep->endpoint.desc || !dwc->pullups_connected) {
+ 		dev_err(dwc->dev, "%s: can't queue to disabled endpoint\n",
+ 				dep->name);
+ 		return -ESHUTDOWN;
+@@ -1926,6 +1926,21 @@ static int dwc3_gadget_set_selfpowered(struct usb_gadget *g,
+ 	return 0;
+ }
+ 
++static void dwc3_stop_active_transfers(struct dwc3 *dwc)
++{
++	u32 epnum;
++
++	for (epnum = 2; epnum < dwc->num_eps; epnum++) {
++		struct dwc3_ep *dep;
++
++		dep = dwc->eps[epnum];
++		if (!dep)
++			continue;
++
++		dwc3_remove_requests(dwc, dep);
++	}
++}
++
+ static int dwc3_gadget_run_stop(struct dwc3 *dwc, int is_on, int suspend)
+ {
+ 	u32			reg;
+@@ -1971,6 +1986,9 @@ static int dwc3_gadget_run_stop(struct dwc3 *dwc, int is_on, int suspend)
+ 	return 0;
+ }
+ 
++static void dwc3_gadget_disable_irq(struct dwc3 *dwc);
++static void __dwc3_gadget_stop(struct dwc3 *dwc);
++
+ static int dwc3_gadget_pullup(struct usb_gadget *g, int is_on)
+ {
+ 	struct dwc3		*dwc = gadget_to_dwc(g);
+@@ -1994,7 +2012,46 @@ static int dwc3_gadget_pullup(struct usb_gadget *g, int is_on)
+ 		}
  	}
+ 
++	/*
++	 * Synchronize any pending event handling before executing the controller
++	 * halt routine.
++	 */
++	if (!is_on) {
++		dwc3_gadget_disable_irq(dwc);
++		synchronize_irq(dwc->irq_gadget);
++	}
++
+ 	spin_lock_irqsave(&dwc->lock, flags);
++
++	if (!is_on) {
++		u32 count;
++
++		/*
++		 * In the Synopsis DesignWare Cores USB3 Databook Rev. 3.30a
++		 * Section 4.1.8 Table 4-7, it states that for a device-initiated
++		 * disconnect, the SW needs to ensure that it sends "a DEPENDXFER
++		 * command for any active transfers" before clearing the RunStop
++		 * bit.
++		 */
++		dwc3_stop_active_transfers(dwc);
++		__dwc3_gadget_stop(dwc);
++
++		/*
++		 * In the Synopsis DesignWare Cores USB3 Databook Rev. 3.30a
++		 * Section 1.3.4, it mentions that for the DEVCTRLHLT bit, the
++		 * "software needs to acknowledge the events that are generated
++		 * (by writing to GEVNTCOUNTn) while it is waiting for this bit
++		 * to be set to '1'."
++		 */
++		count = dwc3_readl(dwc->regs, DWC3_GEVNTCOUNT(0));
++		count &= DWC3_GEVNTCOUNT_MASK;
++		if (count > 0) {
++			dwc3_writel(dwc->regs, DWC3_GEVNTCOUNT(0), count);
++			dwc->ev_buf->lpos = (dwc->ev_buf->lpos + count) %
++						dwc->ev_buf->length;
++		}
++	}
++
+ 	ret = dwc3_gadget_run_stop(dwc, is_on, false);
+ 	spin_unlock_irqrestore(&dwc->lock, flags);
+ 
+@@ -3100,6 +3157,13 @@ static void dwc3_gadget_reset_interrupt(struct dwc3 *dwc)
+ 	}
+ 
+ 	dwc3_reset_gadget(dwc);
++	/*
++	 * In the Synopsis DesignWare Cores USB3 Databook Rev. 3.30a
++	 * Section 4.1.2 Table 4-2, it states that during a USB reset, the SW
++	 * needs to ensure that it sends "a DEPENDXFER command for any active
++	 * transfers."
++	 */
++	dwc3_stop_active_transfers(dwc);
+ 
+ 	reg = dwc3_readl(dwc->regs, DWC3_DCTL);
+ 	reg &= ~DWC3_DCTL_TSTCTRL_MASK;
 -- 
-2.26.2
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
