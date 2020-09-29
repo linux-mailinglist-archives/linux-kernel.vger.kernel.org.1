@@ -2,126 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C331B27CAC3
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:22:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A29827C858
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:01:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732378AbgI2MVh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 08:21:37 -0400
-Received: from vps.xff.cz ([195.181.215.36]:51274 "EHLO vps.xff.cz"
+        id S1731686AbgI2MBX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 08:01:23 -0400
+Received: from mga12.intel.com ([192.55.52.136]:25205 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729822AbgI2LfW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:35:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=megous.com; s=mail;
-        t=1601379320; bh=NYesYDM0ZLiT5Nd37jm/2orVxg1+VI1tpstJHtB2iwc=;
-        h=Date:From:To:Cc:Subject:References:X-My-GPG-KeyId:From;
-        b=BXPssIoLK58jxGGdh3oWBFqmOG0oAUyMMFee7FzK7Pu/QztXqe05NKQJrYh/WoLjn
-         vDN8Kjnhi6zYRRuGUcAkdQN4y9t9/oCzXXv/nXdLUxYK6DAZA7YdPfRf+MEe1WRxZe
-         omGBFLhJSsKQfeSvkqfTFanXdGik98nq9QVznuIk=
-Date:   Tue, 29 Sep 2020 13:35:19 +0200
-From:   =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>
-To:     Roman Stratiienko <r.stratiienko@gmail.com>
-Cc:     linux-sunxi@googlegroups.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] RFC: arm64: arch_timer: Fix timer inconsistency test for
- A64
-Message-ID: <20200929113519.b2vydqmhcivvbwom@core.my.home>
-Mail-Followup-To: =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>,
-        Roman Stratiienko <r.stratiienko@gmail.com>,
-        linux-sunxi@googlegroups.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-References: <20200929111347.1967438-1-r.stratiienko@gmail.com>
+        id S1730569AbgI2MBH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 08:01:07 -0400
+IronPort-SDR: hzTq/ltIWtL0JFO+QutuA8jdYTRhSEwY2Yr9Lg1Y2Ldzax1rz3VCb4YXCU6u6bMzuK339sMpu7
+ RFVXvqmkvrfA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9758"; a="141576130"
+X-IronPort-AV: E=Sophos;i="5.77,318,1596524400"; 
+   d="scan'208";a="141576130"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2020 05:01:02 -0700
+IronPort-SDR: /yubeeYt08rvwowii5X+c0EBH3Ooe//H+IqTAgKmHHyX9W1xisYA6acACpiEovIGR0YiPigmeP
+ E1ga36RyPP3w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,318,1596524400"; 
+   d="scan'208";a="457252233"
+Received: from lkp-server02.sh.intel.com (HELO dda5aa0886d8) ([10.239.97.151])
+  by orsmga004.jf.intel.com with ESMTP; 29 Sep 2020 05:01:01 -0700
+Received: from kbuild by dda5aa0886d8 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kNEJY-0000A0-J3; Tue, 29 Sep 2020 12:01:00 +0000
+Date:   Tue, 29 Sep 2020 20:00:22 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [rcu:dev.2020.09.25b] BUILD SUCCESS
+ a7ba9904d1df259975dd4e532c7645c79cbe65eb
+Message-ID: <5f7321d6.H9WzjGI9yF+/Gci5%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200929111347.1967438-1-r.stratiienko@gmail.com>
-X-My-GPG-KeyId: EBFBDDE11FB918D44D1F56C1F9F0A873BE9777ED
- <https://xff.cz/key.txt>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Roman,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  dev.2020.09.25b
+branch HEAD: a7ba9904d1df259975dd4e532c7645c79cbe65eb  locktorture: Invoke percpu_free_rwsem() to do percpu-rwsem cleanup
 
-On Tue, Sep 29, 2020 at 02:13:47PM +0300, Roman Stratiienko wrote:
-> Fixes linux_kselftest:timers_inconsistency-check_arm_64
-> 
-> Test logs without the fix:
-> '''
-> binary returned non-zero. Exit code: 1, stderr: , stdout:
-> Consistent CLOCK_REALTIME
-> 1601335525:467086804
-> 1601335525:467087554
-> 1601335525:467088345
-> 1601335525:467089095
-> 1601335525:467089887
-> 1601335525:467090637
-> 1601335525:467091429
-> 1601335525:467092179
-> 1601335525:467092929
-> 1601335525:467093720
-> 1601335525:467094470
-> 1601335525:467095262
-> 1601335525:467096012
-> 1601335525:467096804
-> --------------------
-> 1601335525:467097554
-> 1601335525:467077012
-> --------------------
-> 1601335525:467099095
-> 1601335525:467099845
-> 1601335525:467100637
-> 1601335525:467101387
-> 1601335525:467102179
-> 1601335525:467102929
-> '''
+elapsed time: 723m
 
-Can you reproduce the issue with a fixed CPU frequency. I suspect the root
-cause is around CPU frequency scaling code on A64, and timer jumps happen when
-the kernel is changing CPU frequency.
+configs tested: 115
+configs skipped: 3
 
-I fixed a similar issue on H3 SoC just by changing the CPU frequency scaling
-code, without having to touch the timer readout code.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-https://megous.com/git/linux/commit/?h=ths-5.9&id=51ff1a6d80126f678efca42555f93efa611f50c4
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                       imx_v6_v7_defconfig
+powerpc                 mpc8560_ads_defconfig
+arm                      integrator_defconfig
+arm                            lart_defconfig
+um                             i386_defconfig
+sh                             shx3_defconfig
+arm                        oxnas_v6_defconfig
+powerpc                  mpc885_ads_defconfig
+openrisc                         alldefconfig
+arm                         at91_dt_defconfig
+arc                 nsimosci_hs_smp_defconfig
+sh                   sh7770_generic_defconfig
+arm                         assabet_defconfig
+sh                 kfr2r09-romimage_defconfig
+powerpc                   lite5200b_defconfig
+m68k                        m5272c3_defconfig
+riscv                            allmodconfig
+powerpc                    ge_imp3a_defconfig
+powerpc                       ebony_defconfig
+sh                ecovec24-romimage_defconfig
+powerpc                     taishan_defconfig
+sh                        edosk7705_defconfig
+powerpc                      ppc64e_defconfig
+powerpc                      katmai_defconfig
+mips                    maltaup_xpa_defconfig
+ia64                      gensparse_defconfig
+arm                         orion5x_defconfig
+arm                          pxa3xx_defconfig
+sh                           se7712_defconfig
+mips                     loongson1c_defconfig
+arm                      footbridge_defconfig
+arc                             nps_defconfig
+arm                         bcm2835_defconfig
+arc                     haps_hs_smp_defconfig
+mips                           xway_defconfig
+ia64                            zx1_defconfig
+arm                          pxa910_defconfig
+powerpc                  storcenter_defconfig
+s390                             alldefconfig
+arm                       multi_v4t_defconfig
+powerpc                      pmac32_defconfig
+arm                           sunxi_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a006-20200928
+i386                 randconfig-a002-20200928
+i386                 randconfig-a003-20200928
+i386                 randconfig-a004-20200928
+i386                 randconfig-a005-20200928
+i386                 randconfig-a001-20200928
+x86_64               randconfig-a011-20200929
+x86_64               randconfig-a013-20200929
+x86_64               randconfig-a015-20200929
+x86_64               randconfig-a014-20200929
+x86_64               randconfig-a016-20200929
+x86_64               randconfig-a012-20200929
+i386                 randconfig-a012-20200928
+i386                 randconfig-a016-20200928
+i386                 randconfig-a014-20200928
+i386                 randconfig-a013-20200928
+i386                 randconfig-a015-20200928
+i386                 randconfig-a011-20200928
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                    nommu_k210_defconfig
+riscv                    nommu_virt_defconfig
+riscv                          rv32_defconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
-regards,
-	o.
+clang tested configs:
+x86_64               randconfig-a005-20200929
+x86_64               randconfig-a003-20200929
+x86_64               randconfig-a004-20200929
+x86_64               randconfig-a002-20200929
+x86_64               randconfig-a006-20200929
+x86_64               randconfig-a001-20200929
 
-> Signed-off-by: Roman Stratiienko <r.stratiienko@gmail.com>
-> CC: linux-arm-kernel@lists.infradead.org
-> CC: linux-kernel@vger.kernel.org
-> CC: linux-sunxi@googlegroups.com
-> CC: megous@megous.com
-> ---
->  drivers/clocksource/arm_arch_timer.c | 9 +++++----
->  1 file changed, 5 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/clocksource/arm_arch_timer.c b/drivers/clocksource/arm_arch_timer.c
-> index 6c3e841801461..d50aa43cb654b 100644
-> --- a/drivers/clocksource/arm_arch_timer.c
-> +++ b/drivers/clocksource/arm_arch_timer.c
-> @@ -346,16 +346,17 @@ static u64 notrace arm64_858921_read_cntvct_el0(void)
->   * number of CPU cycles in 3 consecutive 24 MHz counter periods.
->   */
->  #define __sun50i_a64_read_reg(reg) ({					\
-> -	u64 _val;							\
-> +	u64 _val1, _val2;						\
->  	int _retries = 150;						\
->  									\
->  	do {								\
-> -		_val = read_sysreg(reg);				\
-> +		_val1 = read_sysreg(reg);				\
-> +		_val2 = read_sysreg(reg);				\
->  		_retries--;						\
-> -	} while (((_val + 1) & GENMASK(9, 0)) <= 1 && _retries);	\
-> +	} while (((_val2 - _val1) > 0x10) && _retries);			\
->  									\
->  	WARN_ON_ONCE(!_retries);					\
-> -	_val;								\
-> +	_val2;								\
->  })
->  
->  static u64 notrace sun50i_a64_read_cntpct_el0(void)
-> -- 
-> 2.25.1
-> 
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
