@@ -2,67 +2,273 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86A8627D798
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 22:07:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A129F27D78A
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 22:05:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728996AbgI2UH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 16:07:29 -0400
-Received: from services.gouders.net ([141.101.32.176]:38723 "EHLO
-        services.gouders.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728244AbgI2UH2 (ORCPT
+        id S1728812AbgI2UFo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 16:05:44 -0400
+Received: from mail-ot1-f66.google.com ([209.85.210.66]:38157 "EHLO
+        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727700AbgI2UFn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 16:07:28 -0400
-Received: from localhost (ltea-047-066-024-155.pools.arcor-ip.net [47.66.24.155])
-        (authenticated bits=0)
-        by services.gouders.net (8.14.8/8.14.8) with ESMTP id 08TK56Lj013849
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 29 Sep 2020 22:05:06 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gouders.net; s=gnet;
-        t=1601409906; bh=TprX+n1QBRqLlrxv922nLwYrqOO6Zfd16P1PDgRhyuo=;
-        h=From:To:Cc:Subject:Date;
-        b=g1AdLApNW3WPfloHCsRewA8GREKk6LRFSabbhTuKkXH1OggMzQGkxx1lJa/nR8nI9
-         ZkHWQP/YMR5d89VwxfdKf8Mklt7R6dqC5FuelYqYdbfB159OvHgsxbv0eI7AypWyaN
-         jFhz4K9YX73exCexMRQtrmKSjwlHLgzQgISY40ok=
-From:   Dirk Gouders <dirk@gouders.net>
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>
-Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ./Makefile: consider PAGER for `make help'
-Message-ID: <gh3630mk2o.fsf@gouders.net>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
-Date:   Tue, 29 Sep 2020 22:05:01 +0200
+        Tue, 29 Sep 2020 16:05:43 -0400
+Received: by mail-ot1-f66.google.com with SMTP id y5so5720845otg.5;
+        Tue, 29 Sep 2020 13:05:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=5O6/yiKa9W0am9X4z8PvdhY0AeOo2G7Nxi3IcgMPrLY=;
+        b=OxHo/fSsoUbHghjgnAYx+1rlJlmwNtfCMnFFH/fJ0LUTJqSKlTeAIgChEqr9hQ8Btw
+         EbBp1A/7EjWXN6nFNKi4Fd4b9Xdug/Rpb83PaH9lQBVcawSK1opFsouoUsmxnljdy9gk
+         HY5bSooRJVfsTELWMNqwnSFhxtOy4KJt1gIjXl5OXPS+9qvFPjQiMDnl6ezn7VXWp0MI
+         W4UZFdC1bSuG8+ehyxFjfhfzqLu0f96lNK0Ym7FQiNehX1D/PRcX1oos1U1Orx4HUojT
+         Ny0/Re5nX2bU0cY1L8b4I/EqF+bCj6+GkMImUnHiClZcuwkkMsoSYkDg0FsE0kWGIDjT
+         j2FA==
+X-Gm-Message-State: AOAM530ebpm4JgAPSyVl3Xs+ti4fPJ8kOx1kgohGwx/CnA7Oteev6WUY
+        YtOoY2aIiMlgtCzqiwiWw0MKXXwIEZ+z
+X-Google-Smtp-Source: ABdhPJztlT0j0a0jN6wipAi/qH4SpcVId83VVM6XK0PrviV73T9QkjU0nkO3vjApRAX8/kAkuw79xQ==
+X-Received: by 2002:a05:6830:196:: with SMTP id q22mr3762671ota.221.1601409942312;
+        Tue, 29 Sep 2020 13:05:42 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id w125sm1222799oia.57.2020.09.29.13.05.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Sep 2020 13:05:41 -0700 (PDT)
+Received: (nullmailer pid 1073610 invoked by uid 1000);
+        Tue, 29 Sep 2020 20:05:40 -0000
+Date:   Tue, 29 Sep 2020 15:05:40 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Wenbin Mei <wenbin.mei@mediatek.com>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Chaotian Jing <chaotian.jing@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-mmc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        srv_heupstream@mediatek.com
+Subject: Re: [PATCH v2 1/4] dt-bindings: mmc: Convert mtk-sd to json-schema
+Message-ID: <20200929200540.GA1051185@bogus>
+References: <20200928130918.32326-1-wenbin.mei@mediatek.com>
+ <20200928130918.32326-2-wenbin.mei@mediatek.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200928130918.32326-2-wenbin.mei@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-`make help' outputs more than a screenfull of lines.
+On Mon, Sep 28, 2020 at 09:09:15PM +0800, Wenbin Mei wrote:
+> Convert the mtk-sd binding to DT schema format using json-schema.
+> 
+> Signed-off-by: Wenbin Mei <wenbin.mei@mediatek.com>
+> Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
+> ---
+>  .../devicetree/bindings/mmc/mtk-sd.txt        |  75 --------
+>  .../devicetree/bindings/mmc/mtk-sd.yaml       | 165 ++++++++++++++++++
+>  2 files changed, 165 insertions(+), 75 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/mmc/mtk-sd.txt
+>  create mode 100644 Documentation/devicetree/bindings/mmc/mtk-sd.yaml
 
-In case a user has PAGER defined in his environment, she most likely
-wants it to be used in such situations.
 
-Signed-off-by: Dirk Gouders <dirk@gouders.net>
----
- Makefile | 7 +++++++
- 1 file changed, 7 insertions(+)
+> diff --git a/Documentation/devicetree/bindings/mmc/mtk-sd.yaml b/Documentation/devicetree/bindings/mmc/mtk-sd.yaml
+> new file mode 100644
+> index 000000000000..2d5ab1411cd5
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mmc/mtk-sd.yaml
+> @@ -0,0 +1,165 @@
+> +# MTK-License-Identifier: GPL-2.0
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/mmc/mtk-sd.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: MTK MSDC Storage Host Controller Binding
+> +
+> +maintainers:
+> +  - Ulf Hansson <ulf.hansson@linaro.org>
 
-diff --git a/Makefile b/Makefile
-index 992d24467ca0..ce1b7e83a4c8 100644
---- a/Makefile
-+++ b/Makefile
-@@ -1531,7 +1531,14 @@ board-dirs := $(dir $(wildcard $(srctree)/arch/$(SRCARCH)/configs/*/*_defconfig)
- board-dirs := $(sort $(notdir $(board-dirs:/=)))
- 
- PHONY += help
-+ifdef PAGER
-+PHONY += _help
- help:
-+	$(Q)$(MAKE) _help | $(PAGER)
-+_help:
-+else
-+help:
-+endif
- 	@echo  'Cleaning targets:'
- 	@echo  '  clean		  - Remove most generated files but keep the config and'
- 	@echo  '                    enough build support to build external modules'
+Usually this is the h/w block owner, not a subsystem maintainer.
+
+> +
+> +allOf:
+> +  - $ref: mmc-controller.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    oneOf:
+> +      - const: mediatek,mt8135-mmc
+> +      - const: mediatek,mt8173-mmc
+> +      - const: mediatek,mt8183-mmc
+> +      - const: mediatek,mt8516-mmc
+> +      - const: mediatek,mt6779-mmc
+> +      - const: mediatek,mt2701-mmc
+> +      - const: mediatek,mt2712-mmc
+> +      - const: mediatek,mt7622-mmc
+
+All these can be an enum. And sort please.
+
+> +      - items:
+> +        - const: mediatek,mt7623-mmc
+> +        - const: mediatek,mt2701-mmc
+> +      - const: mediatek,mt7620-mmc
+> +
+> +  reg:
+> +    description:
+> +      physical base address of the controller and length.
+
+Drop this.
+
+> +    minItems: 1
+> +    maxItems: 2
+
+If more than 1, need to say what each entry is:
+
+items:
+  - description: ...
+  - description: ...
+
+> +
+> +  interrupts:
+> +    description:
+> +      Should contain MSDC interrupt number.
+
+Drop.
+
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    description:
+> +      Should contain phandle for the clock feeding the MMC controller.
+> +    minItems: 2
+> +    maxItems: 4
+> +    items:
+> +      - description: source clock (required).
+> +      - description: HCLK which used for host (required).
+> +      - description: independent source clock gate (required for MT2712).
+> +      - description: bus clock used for internal register access (required for MT2712 MSDC0/3).
+> +
+> +  clock-names:
+> +    minItems: 2
+> +    maxItems: 4
+> +    items:
+> +      - const: source
+> +      - const: hclk
+> +      - const: source_cg
+> +      - const: bus_clk
+> +
+> +  pinctrl-names:
+> +    items:
+> +      - const: default
+> +      - const: state_uhs
+> +
+> +  pinctrl-0:
+> +    description:
+> +      should contain default/high speed pin ctrl.
+> +    maxItems: 1
+> +
+> +  pinctrl-1:
+> +    description:
+> +      should contain uhs mode pin ctrl.
+> +    maxItems: 1
+> +
+> +  vmmc-supply:
+> +    description:
+> +      power to the Core.
+> +
+> +  vqmmc-supply:
+> +    description:
+> +      power to the IO.
+> +
+> +  assigned-clocks:
+> +    description:
+> +      PLL of the source clock.
+
+How many (maxItems)?
+
+> +
+> +  assigned-clock-parents:
+> +    description:
+> +      parent of source clock, used for HS400 mode to get 400Mhz source clock.
+> +
+> +  hs400-ds-delay:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description:
+> +      HS400 DS delay setting.
+> +
+> +  mediatek,hs200-cmd-int-delay:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description:
+> +      HS200 command internal delay setting.
+> +      This field has total 32 stages.
+> +      The value is an integer from 0 to 31.
+
+minimum: 0
+maximum: 31
+
+Add any constraints on other properties too.
+
+> +
+> +  mediatek,hs400-cmd-int-delay:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description:
+> +      HS400 command internal delay setting.
+> +      This field has total 32 stages.
+> +      The value is an integer from 0 to 31.
+> +
+> +  mediatek,hs400-cmd-resp-sel-rising:
+> +    $ref: /schemas/types.yaml#/definitions/flag
+> +    description:
+> +      HS400 command response sample selection.
+> +      If present, HS400 command responses are sampled on rising edges.
+> +      If not present, HS400 command responses are sampled on falling edges.
+> +
+> +  mediatek,latch-ck:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description:
+> +      Some SoCs do not support enhance_rx, need set correct latch-ck to avoid
+> +      data crc error caused by stop clock(fifo full) Valid range = [0:0x7].
+> +      if not present, default value is 0.
+> +      applied to compatible "mediatek,mt2701-mmc".
+> +
+> +  resets:
+> +    maxItems: 1
+> +
+> +  reset-names:
+> +    const: hrst
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - clocks
+> +  - clock-names
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +    #include <dt-bindings/clock/mt8173-clk.h>
+> +    mmc0: mmc@11230000 {
+> +        compatible = "mediatek,mt8173-mmc";
+> +        reg = <0x11230000 0x1000>;
+> +        interrupts = <GIC_SPI 39 IRQ_TYPE_LEVEL_LOW>;
+> +        vmmc-supply = <&mt6397_vemc_3v3_reg>;
+> +        vqmmc-supply = <&mt6397_vio18_reg>;
+> +        clocks = <&pericfg CLK_PERI_MSDC30_0>,
+> +                 <&topckgen CLK_TOP_MSDC50_0_H_SEL>;
+> +        clock-names = "source", "hclk";
+> +        pinctrl-names = "default", "state_uhs";
+> +        pinctrl-0 = <&mmc0_pins_default>;
+> +        pinctrl-1 = <&mmc0_pins_uhs>;
+> +        assigned-clocks = <&topckgen CLK_TOP_MSDC50_0_SEL>;
+> +        assigned-clock-parents = <&topckgen CLK_TOP_MSDCPLL_D2>;
+> +        hs400-ds-delay = <0x14015>;
+> +        mediatek,hs200-cmd-int-delay = <26>;
+> +        mediatek,hs400-cmd-int-delay = <14>;
+> +        mediatek,hs400-cmd-resp-sel-rising;
+> +    };
+> +
+> +...
+> -- 
+> 2.18.0
