@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C689827C878
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:02:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3AE327C862
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:02:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731769AbgI2MCZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 08:02:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33808 "EHLO mail.kernel.org"
+        id S1731728AbgI2MBk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 08:01:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36574 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730463AbgI2LjR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:39:17 -0400
+        id S1730558AbgI2Lkm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:40:42 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3710120848;
-        Tue, 29 Sep 2020 11:39:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1959521D46;
+        Tue, 29 Sep 2020 11:40:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601379556;
-        bh=HcWzcq35jh/C3lXqHajszrBmo6BU0mltpavpAsqVF70=;
+        s=default; t=1601379624;
+        bh=QAiz8SSQum+uE9f5y9GhZrE1+yZc4mXaQiOQ4zrSM/I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yyo6TxEX1aGs4MrqGHbjmSo4C8flCZdLwgan6OHi5j/gNEXEttI0mBoYScG+/7jGb
-         Ky1uszDiJ/JgrCD9eOUeSSET0HAREIt+hjexkmes++jv9mYHLbYAHJiNm2dQEUUrB+
-         6ejEY1WVd8buZYAHf+xtzoQi/kJK6S3HKw8MDXjc=
+        b=gCegIyFT8y5ZbL5zDxWzZ2k+fa6Dp/mTDS+ZAoIxLRGF8wDvm63CTE4WGS1XU0k+z
+         bJY7sBtA0LC/D4dKTMgfa8gP3MnPH/c0i9kPJEzLDfJsKoERf/2jkuxei2Vxm9tbuu
+         iwgHXkT6ZxSB5IAeWPsah1jtBQmiO56ZZA3w0ZOg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stuart Hayes <stuart.w.hayes@gmail.com>,
-        Lukas Wunner <lukas@wunner.de>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Joerg Roedel <jroedel@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 215/388] PCI: pciehp: Fix MSI interrupt race
-Date:   Tue, 29 Sep 2020 12:59:06 +0200
-Message-Id: <20200929110020.879984396@linuxfoundation.org>
+        stable@vger.kernel.org, Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 219/388] mm/kmemleak.c: use address-of operator on section symbols
+Date:   Tue, 29 Sep 2020 12:59:10 +0200
+Message-Id: <20200929110021.073593237@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200929110010.467764689@linuxfoundation.org>
 References: <20200929110010.467764689@linuxfoundation.org>
@@ -44,113 +46,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stuart Hayes <stuart.w.hayes@gmail.com>
+From: Nathan Chancellor <natechancellor@gmail.com>
 
-[ Upstream commit 8edf5332c39340b9583cf9cba659eb7ec71f75b5 ]
+[ Upstream commit b0d14fc43d39203ae025f20ef4d5d25d9ccf4be1 ]
 
-Without this commit, a PCIe hotplug port can stop generating interrupts on
-hotplug events, so device adds and removals will not be seen:
+Clang warns:
 
-The pciehp interrupt handler pciehp_isr() reads the Slot Status register
-and then writes back to it to clear the bits that caused the interrupt.  If
-a different interrupt event bit gets set between the read and the write,
-pciehp_isr() returns without having cleared all of the interrupt event
-bits.  If this happens when the MSI isn't masked (which by default it isn't
-in handle_edge_irq(), and which it will never be when MSI per-vector
-masking is not supported), we won't get any more hotplug interrupts from
-that device.
+  mm/kmemleak.c:1955:28: warning: array comparison always evaluates to a constant [-Wtautological-compare]
+        if (__start_ro_after_init < _sdata || __end_ro_after_init > _edata)
+                                  ^
+  mm/kmemleak.c:1955:60: warning: array comparison always evaluates to a constant [-Wtautological-compare]
+        if (__start_ro_after_init < _sdata || __end_ro_after_init > _edata)
 
-That is expected behavior, according to the PCIe Base Spec r5.0, section
-6.7.3.4, "Software Notification of Hot-Plug Events".
+These are not true arrays, they are linker defined symbols, which are just
+addresses.  Using the address of operator silences the warning and does
+not change the resulting assembly with either clang/ld.lld or gcc/ld
+(tested with diff + objdump -Dr).
 
-Because the Presence Detect Changed and Data Link Layer State Changed event
-bits can both get set at nearly the same time when a device is added or
-removed, this is more likely to happen than it might seem.  The issue was
-found (and can be reproduced rather easily) by connecting and disconnecting
-an NVMe storage device on at least one system model where the NVMe devices
-were being connected to an AMD PCIe port (PCI device 0x1022/0x1483).
-
-Fix the issue by modifying pciehp_isr() to loop back and re-read the Slot
-Status register immediately after writing to it, until it sees that all of
-the event status bits have been cleared.
-
-[lukas: drop loop count limitation, write "events" instead of "status",
-don't loop back in INTx and poll modes, tweak code comment & commit msg]
-Link: https://lore.kernel.org/r/78b4ced5072bfe6e369d20e8b47c279b8c7af12e.1582121613.git.lukas@wunner.de
-Tested-by: Stuart Hayes <stuart.w.hayes@gmail.com>
-Signed-off-by: Stuart Hayes <stuart.w.hayes@gmail.com>
-Signed-off-by: Lukas Wunner <lukas@wunner.de>
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-Reviewed-by: Joerg Roedel <jroedel@suse.de>
+Suggested-by: Nick Desaulniers <ndesaulniers@google.com>
+Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+Link: https://github.com/ClangBuiltLinux/linux/issues/895
+Link: http://lkml.kernel.org/r/20200220051551.44000-1-natechancellor@gmail.com
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/hotplug/pciehp_hpc.c | 26 ++++++++++++++++++++------
- 1 file changed, 20 insertions(+), 6 deletions(-)
+ mm/kmemleak.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/pci/hotplug/pciehp_hpc.c b/drivers/pci/hotplug/pciehp_hpc.c
-index 356786a3b7f4b..88b996764ff95 100644
---- a/drivers/pci/hotplug/pciehp_hpc.c
-+++ b/drivers/pci/hotplug/pciehp_hpc.c
-@@ -529,7 +529,7 @@ static irqreturn_t pciehp_isr(int irq, void *dev_id)
- 	struct controller *ctrl = (struct controller *)dev_id;
- 	struct pci_dev *pdev = ctrl_dev(ctrl);
- 	struct device *parent = pdev->dev.parent;
--	u16 status, events;
-+	u16 status, events = 0;
- 
- 	/*
- 	 * Interrupts only occur in D3hot or shallower and only if enabled
-@@ -554,6 +554,7 @@ static irqreturn_t pciehp_isr(int irq, void *dev_id)
- 		}
- 	}
- 
-+read_status:
- 	pcie_capability_read_word(pdev, PCI_EXP_SLTSTA, &status);
- 	if (status == (u16) ~0) {
- 		ctrl_info(ctrl, "%s: no response from device\n", __func__);
-@@ -566,24 +567,37 @@ static irqreturn_t pciehp_isr(int irq, void *dev_id)
- 	 * Slot Status contains plain status bits as well as event
- 	 * notification bits; right now we only want the event bits.
- 	 */
--	events = status & (PCI_EXP_SLTSTA_ABP | PCI_EXP_SLTSTA_PFD |
--			   PCI_EXP_SLTSTA_PDC | PCI_EXP_SLTSTA_CC |
--			   PCI_EXP_SLTSTA_DLLSC);
-+	status &= PCI_EXP_SLTSTA_ABP | PCI_EXP_SLTSTA_PFD |
-+		  PCI_EXP_SLTSTA_PDC | PCI_EXP_SLTSTA_CC |
-+		  PCI_EXP_SLTSTA_DLLSC;
- 
- 	/*
- 	 * If we've already reported a power fault, don't report it again
- 	 * until we've done something to handle it.
- 	 */
- 	if (ctrl->power_fault_detected)
--		events &= ~PCI_EXP_SLTSTA_PFD;
-+		status &= ~PCI_EXP_SLTSTA_PFD;
- 
-+	events |= status;
- 	if (!events) {
- 		if (parent)
- 			pm_runtime_put(parent);
- 		return IRQ_NONE;
- 	}
- 
--	pcie_capability_write_word(pdev, PCI_EXP_SLTSTA, events);
-+	if (status) {
-+		pcie_capability_write_word(pdev, PCI_EXP_SLTSTA, events);
-+
-+		/*
-+		 * In MSI mode, all event bits must be zero before the port
-+		 * will send a new interrupt (PCIe Base Spec r5.0 sec 6.7.3.4).
-+		 * So re-read the Slot Status register in case a bit was set
-+		 * between read and write.
-+		 */
-+		if (pci_dev_msi_enabled(pdev) && !pciehp_poll_mode)
-+			goto read_status;
-+	}
-+
- 	ctrl_dbg(ctrl, "pending interrupts %#06x from Slot Status\n", events);
- 	if (parent)
- 		pm_runtime_put(parent);
+diff --git a/mm/kmemleak.c b/mm/kmemleak.c
+index 2446076633631..312942d784058 100644
+--- a/mm/kmemleak.c
++++ b/mm/kmemleak.c
+@@ -1947,7 +1947,7 @@ void __init kmemleak_init(void)
+ 	create_object((unsigned long)__bss_start, __bss_stop - __bss_start,
+ 		      KMEMLEAK_GREY, GFP_ATOMIC);
+ 	/* only register .data..ro_after_init if not within .data */
+-	if (__start_ro_after_init < _sdata || __end_ro_after_init > _edata)
++	if (&__start_ro_after_init < &_sdata || &__end_ro_after_init > &_edata)
+ 		create_object((unsigned long)__start_ro_after_init,
+ 			      __end_ro_after_init - __start_ro_after_init,
+ 			      KMEMLEAK_GREY, GFP_ATOMIC);
 -- 
 2.25.1
 
