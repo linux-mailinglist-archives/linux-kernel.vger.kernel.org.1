@@ -2,287 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 857C427BFEF
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 10:47:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A31127BFF4
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 10:49:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727901AbgI2Irm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 04:47:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48830 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727634AbgI2Irl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 04:47:41 -0400
-Received: from localhost (unknown [104.132.1.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5D73A2067D;
-        Tue, 29 Sep 2020 08:47:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601369260;
-        bh=DNYM/4w8rJN2/YfFtQoOXzGNmyAl1oeWtzYZe8JQWzk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=M3H8CT+JH+ZxnodLXx7dJj5v9l9WivGVF+iHmXvz0QXeY9CcpOhEhM41pDJ5ZLuKv
-         8yX0ngD+VGVy4jPKOoS/VMB/hBU167xZ09XM5aTw1GVqvIG+YLcJI6eKbYfGUpfHS5
-         jZb8+R09OkmJDDP5t1qtrMxVprlvln7MgBWn+Q4s=
-Date:   Tue, 29 Sep 2020 01:47:39 -0700
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     Chao Yu <yuchao0@huawei.com>
-Cc:     linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, chao@kernel.org
-Subject: Re: [PATCH v2 1/2] f2fs: compress: introduce page array slab cache
-Message-ID: <20200929084739.GB1567825@google.com>
-References: <20200914090514.50102-1-yuchao0@huawei.com>
- <20200929082306.GA1567825@google.com>
- <6e7639db-9120-d406-0a46-ec841845bb28@huawei.com>
+        id S1726944AbgI2Ir6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 04:47:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39892 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726064AbgI2Ir5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 04:47:57 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08970C0613D0
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 01:47:56 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id a9so3927344wmm.2
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 01:47:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=konsulko.com; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=04NOm1CcnqBFH1lFELuJnkJP2M/KCWXwaUl0Wh9OcUc=;
+        b=tO+PmyVtTbztmBizvLgCmAX4QG5q377A4oSC57bt1amxOb796KuKCoWdTtewoRDcFF
+         xrlMO6QZd6X8lLgT5lrb5eFLu/Ra6uCxW7NKQyYNS/LmWwu5V1WgG32EXm6FaXx+7TAo
+         7X1w7o6HRAWI6ZE9lvKdfCledlYDRck0hynQE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=04NOm1CcnqBFH1lFELuJnkJP2M/KCWXwaUl0Wh9OcUc=;
+        b=VY6aWdyXW4UaaKPATzHraEGXzkFUUSZ7K9fThQvUV8bKEpPEu9vJVsYDXKSz8zpvSX
+         9x5tNCqcUKxeBj8O/2iWDPrycveSAPgdPc5mzo4KQpRaXgofKN/Gk5PBOOZ5uizNntNj
+         8md4ahnoHBaJ6i6Y6q2E+EkmMPtoUM62C8cSBSzSupTMyhQs3jWmmOuJLkfmpukasOuo
+         kv8eOKOgiQB/chYOzjZn2BzpbM4qBW4f5M8zgRHja8WT6eVSnixWrET81Um4u8P91xBZ
+         emygZgCdLwxsaaOoE/vqs1uwfdjiIznZ/A+kq1sZY6lx9x8fTeQaTH55b4lrYkwRExTz
+         kXOg==
+X-Gm-Message-State: AOAM533mylEF5XkSwrjNmOHpfR2e3o1VDcBQpuZcXF6o+GHqTFq2YGCc
+        Q6EyVnCP1BLqtzTKS1nDpfWo3A==
+X-Google-Smtp-Source: ABdhPJzCaYhOmzZGYjtY3NFO+dcWZjeq7anc17VA56qyI4ndCuaOwSJMJVZxvCxDqgu253DyYg8FFg==
+X-Received: by 2002:a1c:f612:: with SMTP id w18mr3235574wmc.47.1601369274642;
+        Tue, 29 Sep 2020 01:47:54 -0700 (PDT)
+Received: from carbon ([94.26.108.4])
+        by smtp.gmail.com with ESMTPSA id m3sm5155328wrs.83.2020.09.29.01.47.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Sep 2020 01:47:54 -0700 (PDT)
+Date:   Tue, 29 Sep 2020 11:47:52 +0300
+From:   Petko Manolov <petko.manolov@konsulko.com>
+To:     Anant Thazhemadam <anant.thazhemadam@gmail.com>
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+abbc768b560c84d92fd3@syzkaller.appspotmail.com,
+        Petko Manolov <petkan@nucleusys.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-usb@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [Linux-kernel-mentees][PATCH] net: usb: rtl8150: prevent
+ set_ethernet_addr from setting uninit address
+Message-ID: <20200929084752.GA8101@carbon>
+Mail-Followup-To: Anant Thazhemadam <anant.thazhemadam@gmail.com>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+abbc768b560c84d92fd3@syzkaller.appspotmail.com,
+        Petko Manolov <petkan@nucleusys.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-usb@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200929082028.50540-1-anant.thazhemadam@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <6e7639db-9120-d406-0a46-ec841845bb28@huawei.com>
+In-Reply-To: <20200929082028.50540-1-anant.thazhemadam@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/29, Chao Yu wrote:
-> On 2020/9/29 16:23, Jaegeuk Kim wrote:
-> > I found a bug related to the number of page pointer allocation related to
-> > nr_cpages.
+On 20-09-29 13:50:28, Anant Thazhemadam wrote:
+> When get_registers() fails (which happens when usb_control_msg() fails)
+> in set_ethernet_addr(), the uninitialized value of node_id gets copied
+> as the address.
 > 
-> Jaegeuk,
+> Checking for the return values appropriately, and handling the case
+> wherein set_ethernet_addr() fails like this, helps in avoiding the
+> mac address being incorrectly set in this manner.
 > 
-> If I didn't miss anything, you mean that nr_cpages could be larger
-> than nr_rpages, right? the problematic case here is lzo/lzo-rle:
+> Reported-by: syzbot+abbc768b560c84d92fd3@syzkaller.appspotmail.com
+> Tested-by: syzbot+abbc768b560c84d92fd3@syzkaller.appspotmail.com
+> Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
+> ---
+>  drivers/net/usb/rtl8150.c | 24 ++++++++++++++++--------
+>  1 file changed, 16 insertions(+), 8 deletions(-)
 > 
-> cc->clen = lzo1x_worst_compress(PAGE_SIZE << cc->log_cluster_size);
-> 
-> As we can't limited clen as we did for lz4/zstd:
-> 
-> cc->clen = cc->rlen - PAGE_SIZE - COMPRESS_HEADER_SIZE;
+> diff --git a/drivers/net/usb/rtl8150.c b/drivers/net/usb/rtl8150.c
+> index 733f120c852b..e542a9ab2ff8 100644
+> --- a/drivers/net/usb/rtl8150.c
+> +++ b/drivers/net/usb/rtl8150.c
+> @@ -150,7 +150,7 @@ static const char driver_name [] = "rtl8150";
+>  **	device related part of the code
+>  **
+>  */
+> -static int get_registers(rtl8150_t * dev, u16 indx, u16 size, void *data)
+> +static int get_registers(rtl8150_t *dev, u16 indx, u16 size, void *data)
+>  {
+>  	void *buf;
+>  	int ret;
+> @@ -274,12 +274,17 @@ static int write_mii_word(rtl8150_t * dev, u8 phy, __u8 indx, u16 reg)
+>  		return 1;
+>  }
+>  
+> -static inline void set_ethernet_addr(rtl8150_t * dev)
+> +static bool set_ethernet_addr(rtl8150_t *dev)
+>  {
+>  	u8 node_id[6];
+> +	int ret;
+>  
+> -	get_registers(dev, IDR, sizeof(node_id), node_id);
+> -	memcpy(dev->netdev->dev_addr, node_id, sizeof(node_id));
+> +	ret = get_registers(dev, IDR, sizeof(node_id), node_id);
+> +	if (ret > 0 && ret <= sizeof(node_id)) {
 
-Yes, I've seen some memory corruption in lzo test. Here is another patch to fix
-mem leak.
+get_registers() was recently modified to use usb_control_msg_recv() which does
+not return partial reads.  IOW you'll either get negative value or
+sizeof(node_id).  Since it is good to be paranoid i'd convert the above check
+to:
 
-Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
----
- fs/f2fs/compress.c | 67 ++++++++++++++++++++++++++++------------------
- 1 file changed, 41 insertions(+), 26 deletions(-)
+	if (ret == sizeof(node_id)) {
 
-diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
-index f086ac43ca825..ba2d4897744d8 100644
---- a/fs/f2fs/compress.c
-+++ b/fs/f2fs/compress.c
-@@ -20,22 +20,20 @@
- static struct kmem_cache *cic_entry_slab;
- static struct kmem_cache *dic_entry_slab;
- 
--static void *page_array_alloc(struct inode *inode)
-+static void *page_array_alloc(struct inode *inode, int nr)
- {
- 	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
--	unsigned int size = sizeof(struct page *) <<
--				F2FS_I(inode)->i_log_cluster_size;
-+	unsigned int size = sizeof(struct page *) * nr;
- 
- 	if (likely(size == sbi->page_array_slab_size))
- 		return kmem_cache_zalloc(sbi->page_array_slab, GFP_NOFS);
- 	return f2fs_kzalloc(sbi, size, GFP_NOFS);
- }
- 
--static void page_array_free(struct inode *inode, void *pages)
-+static void page_array_free(struct inode *inode, void *pages, int nr)
- {
- 	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
--	unsigned int size = sizeof(struct page *) <<
--				F2FS_I(inode)->i_log_cluster_size;
-+	unsigned int size = sizeof(struct page *) * nr;
- 
- 	if (!pages)
- 		return;
-@@ -162,13 +160,13 @@ int f2fs_init_compress_ctx(struct compress_ctx *cc)
- 	if (cc->rpages)
- 		return 0;
- 
--	cc->rpages = page_array_alloc(cc->inode);
-+	cc->rpages = page_array_alloc(cc->inode, cc->cluster_size);
- 	return cc->rpages ? 0 : -ENOMEM;
- }
- 
- void f2fs_destroy_compress_ctx(struct compress_ctx *cc)
- {
--	page_array_free(cc->inode, cc->rpages);
-+	page_array_free(cc->inode, cc->rpages, cc->cluster_size);
- 	cc->rpages = NULL;
- 	cc->nr_rpages = 0;
- 	cc->nr_cpages = 0;
-@@ -602,7 +600,8 @@ static int f2fs_compress_pages(struct compress_ctx *cc)
- 	struct f2fs_inode_info *fi = F2FS_I(cc->inode);
- 	const struct f2fs_compress_ops *cops =
- 				f2fs_cops[fi->i_compress_algorithm];
--	unsigned int max_len, nr_cpages;
-+	unsigned int max_len, new_nr_cpages;
-+	struct page **new_cpages;
- 	int i, ret;
- 
- 	trace_f2fs_compress_pages_start(cc->inode, cc->cluster_idx,
-@@ -617,7 +616,7 @@ static int f2fs_compress_pages(struct compress_ctx *cc)
- 	max_len = COMPRESS_HEADER_SIZE + cc->clen;
- 	cc->nr_cpages = DIV_ROUND_UP(max_len, PAGE_SIZE);
- 
--	cc->cpages = page_array_alloc(cc->inode);
-+	cc->cpages = page_array_alloc(cc->inode, cc->nr_cpages);
- 	if (!cc->cpages) {
- 		ret = -ENOMEM;
- 		goto destroy_compress_ctx;
-@@ -659,16 +658,28 @@ static int f2fs_compress_pages(struct compress_ctx *cc)
- 	for (i = 0; i < COMPRESS_DATA_RESERVED_SIZE; i++)
- 		cc->cbuf->reserved[i] = cpu_to_le32(0);
- 
--	nr_cpages = DIV_ROUND_UP(cc->clen + COMPRESS_HEADER_SIZE, PAGE_SIZE);
-+	new_nr_cpages = DIV_ROUND_UP(cc->clen + COMPRESS_HEADER_SIZE, PAGE_SIZE);
-+
-+	/* Now we're going to cut unnecessary tail pages */
-+	new_cpages = page_array_alloc(cc->inode, new_nr_cpages);
-+	if (new_cpages) {
-+		ret = -ENOMEM;
-+		goto out_vunmap_cbuf;
-+	}
- 
- 	/* zero out any unused part of the last page */
- 	memset(&cc->cbuf->cdata[cc->clen], 0,
--	       (nr_cpages * PAGE_SIZE) - (cc->clen + COMPRESS_HEADER_SIZE));
-+			(new_nr_cpages * PAGE_SIZE) -
-+			(cc->clen + COMPRESS_HEADER_SIZE));
- 
- 	vm_unmap_ram(cc->cbuf, cc->nr_cpages);
- 	vm_unmap_ram(cc->rbuf, cc->cluster_size);
- 
--	for (i = nr_cpages; i < cc->nr_cpages; i++) {
-+	for (i = 0; i < cc->nr_cpages; i++) {
-+		if (i < new_nr_cpages) {
-+			new_cpages[i] = cc->cpages[i];
-+			continue;
-+		}
- 		f2fs_compress_free_page(cc->cpages[i]);
- 		cc->cpages[i] = NULL;
- 	}
-@@ -676,7 +687,9 @@ static int f2fs_compress_pages(struct compress_ctx *cc)
- 	if (cops->destroy_compress_ctx)
- 		cops->destroy_compress_ctx(cc);
- 
--	cc->nr_cpages = nr_cpages;
-+	page_array_free(cc->inode, cc->cpages, cc->nr_cpages);
-+	cc->cpages = new_cpages;
-+	cc->nr_cpages = new_nr_cpages;
- 
- 	trace_f2fs_compress_pages_end(cc->inode, cc->cluster_idx,
- 							cc->clen, ret);
-@@ -691,7 +704,7 @@ static int f2fs_compress_pages(struct compress_ctx *cc)
- 		if (cc->cpages[i])
- 			f2fs_compress_free_page(cc->cpages[i]);
- 	}
--	page_array_free(cc->inode, cc->cpages);
-+	page_array_free(cc->inode, cc->cpages, cc->nr_cpages);
- 	cc->cpages = NULL;
- destroy_compress_ctx:
- 	if (cops->destroy_compress_ctx)
-@@ -730,7 +743,7 @@ void f2fs_decompress_pages(struct bio *bio, struct page *page, bool verity)
- 		goto out_free_dic;
- 	}
- 
--	dic->tpages = page_array_alloc(dic->inode);
-+	dic->tpages = page_array_alloc(dic->inode, dic->cluster_size);
- 	if (!dic->tpages) {
- 		ret = -ENOMEM;
- 		goto out_free_dic;
-@@ -1203,7 +1216,7 @@ static int f2fs_write_compressed_pages(struct compress_ctx *cc,
- 	cic->magic = F2FS_COMPRESSED_PAGE_MAGIC;
- 	cic->inode = inode;
- 	atomic_set(&cic->pending_pages, cc->nr_cpages);
--	cic->rpages = page_array_alloc(cc->inode);
-+	cic->rpages = page_array_alloc(cc->inode, cc->cluster_size);
- 	if (!cic->rpages)
- 		goto out_put_cic;
- 
-@@ -1297,11 +1310,13 @@ static int f2fs_write_compressed_pages(struct compress_ctx *cc,
- 	spin_unlock(&fi->i_size_lock);
- 
- 	f2fs_put_rpages(cc);
-+	page_array_free(cc->inode, cc->cpages, cc->nr_cpages);
-+	cc->cpages = NULL;
- 	f2fs_destroy_compress_ctx(cc);
- 	return 0;
- 
- out_destroy_crypt:
--	page_array_free(cc->inode, cic->rpages);
-+	page_array_free(cc->inode, cic->rpages, cc->cluster_size);
- 
- 	for (--i; i >= 0; i--)
- 		fscrypt_finalize_bounce_page(&cc->cpages[i]);
-@@ -1310,6 +1325,8 @@ static int f2fs_write_compressed_pages(struct compress_ctx *cc,
- 			continue;
- 		f2fs_put_page(cc->cpages[i], 1);
- 	}
-+	page_array_free(cc->inode, cc->cpages, cc->nr_cpages);
-+	cc->cpages = NULL;
- out_put_cic:
- 	kmem_cache_free(cic_entry_slab, cic);
- out_put_dnode:
-@@ -1345,7 +1362,7 @@ void f2fs_compress_write_end_io(struct bio *bio, struct page *page)
- 		end_page_writeback(cic->rpages[i]);
- 	}
- 
--	page_array_free(cic->inode, cic->rpages);
-+	page_array_free(cic->inode, cic->rpages, cic->nr_rpages);
- 	kmem_cache_free(cic_entry_slab, cic);
- }
- 
-@@ -1442,8 +1459,6 @@ int f2fs_write_multi_pages(struct compress_ctx *cc,
- 
- 		err = f2fs_write_compressed_pages(cc, submitted,
- 							wbc, io_type);
--		page_array_free(cc->inode, cc->cpages);
--		cc->cpages = NULL;
- 		if (!err)
- 			return 0;
- 		f2fs_bug_on(F2FS_I_SB(cc->inode), err != -EAGAIN);
-@@ -1468,7 +1483,7 @@ struct decompress_io_ctx *f2fs_alloc_dic(struct compress_ctx *cc)
- 	if (!dic)
- 		return ERR_PTR(-ENOMEM);
- 
--	dic->rpages = page_array_alloc(cc->inode);
-+	dic->rpages = page_array_alloc(cc->inode, cc->cluster_size);
- 	if (!dic->rpages) {
- 		kmem_cache_free(dic_entry_slab, dic);
- 		return ERR_PTR(-ENOMEM);
-@@ -1487,7 +1502,7 @@ struct decompress_io_ctx *f2fs_alloc_dic(struct compress_ctx *cc)
- 		dic->rpages[i] = cc->rpages[i];
- 	dic->nr_rpages = cc->cluster_size;
- 
--	dic->cpages = page_array_alloc(dic->inode);
-+	dic->cpages = page_array_alloc(dic->inode, dic->nr_cpages);
- 	if (!dic->cpages)
- 		goto out_free;
- 
-@@ -1522,7 +1537,7 @@ void f2fs_free_dic(struct decompress_io_ctx *dic)
- 				continue;
- 			f2fs_compress_free_page(dic->tpages[i]);
- 		}
--		page_array_free(dic->inode, dic->tpages);
-+		page_array_free(dic->inode, dic->tpages, dic->cluster_size);
- 	}
- 
- 	if (dic->cpages) {
-@@ -1531,10 +1546,10 @@ void f2fs_free_dic(struct decompress_io_ctx *dic)
- 				continue;
- 			f2fs_compress_free_page(dic->cpages[i]);
- 		}
--		page_array_free(dic->inode, dic->cpages);
-+		page_array_free(dic->inode, dic->cpages, dic->nr_cpages);
- 	}
- 
--	page_array_free(dic->inode, dic->rpages);
-+	page_array_free(dic->inode, dic->rpages, dic->nr_rpages);
- 	kmem_cache_free(dic_entry_slab, dic);
- }
- 
--- 
-2.28.0.709.gb0816b6eb0-goog
+and fail in any other case.  Apart from this minor detail the rest of the patch 
+looks good to me.
 
+Acked-by: Petko Manolov
