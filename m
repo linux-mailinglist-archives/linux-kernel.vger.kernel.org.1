@@ -2,41 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D08E27C437
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:12:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAE2727C392
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:07:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728678AbgI2LML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:12:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53494 "EHLO mail.kernel.org"
+        id S1728862AbgI2LGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:06:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44074 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729283AbgI2LL7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:11:59 -0400
+        id S1728706AbgI2LGi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:06:38 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A1CD721D41;
-        Tue, 29 Sep 2020 11:11:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DBDCE22204;
+        Tue, 29 Sep 2020 11:06:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601377918;
-        bh=Q/lzbgeeIn5vRIrQzAfRoOEvuiHT7pVV4xIhawwJ3fk=;
+        s=default; t=1601377596;
+        bh=8HIRcnXdfiaktE+2rI70lY5J7W0g14untJq4q2lHd5k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lU37OfU0sfR0K+qia2bFi4Qk4Eeg0J24SgcBnArp0gsBRV4M0IDSuiXW6p9iCErAM
-         SM3McdpdvLT12VRrHOHGXTaaYQt5n0LMjyxwoAiGLWhC8RG6PqFtivHyJFLN7pkNxl
-         GoV0bywF0w7j6pqhQ5mpa0F3q4Y5cM/3nRXEFrIY=
+        b=r7KnwinzBK04WCbGrxCF+tgqdhsRwLRF7AV6JT8ylgyc5LdXZ+hWdsTgk/MpkZ2rZ
+         JvIA9HNke2WCCkOGLHKrW/UoF6MQ8czVodJVA04X7mfm/wzTg+iiE+c2h2Qfr2+Mvi
+         PR/WA1wq9O/tWUc+Ij9J7wD4B/AGbvbQ/nPJLeHQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Maxim Zhukov <mussitantesmortem@gmail.com>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        stable@vger.kernel.org, Adrian Hunter <adrian.hunter@intel.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Jiri Olsa <jolsa@redhat.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>, x86@kernel.org,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 089/121] e1000: Do not perform reset in reset_task if we are already down
+Subject: [PATCH 4.4 66/85] perf kcore_copy: Fix module map when there are no modules loaded
 Date:   Tue, 29 Sep 2020 13:00:33 +0200
-Message-Id: <20200929105934.589035998@linuxfoundation.org>
+Message-Id: <20200929105931.518052518@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929105930.172747117@linuxfoundation.org>
-References: <20200929105930.172747117@linuxfoundation.org>
+In-Reply-To: <20200929105928.198942536@linuxfoundation.org>
+References: <20200929105928.198942536@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,67 +52,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Duyck <alexander.h.duyck@linux.intel.com>
+From: Adrian Hunter <adrian.hunter@intel.com>
 
-[ Upstream commit 49ee3c2ab5234757bfb56a0b3a3cb422f427e3a3 ]
+[ Upstream commit 61f82e3fb697a8e85f22fdec786528af73dc36d1 ]
 
-We are seeing a deadlock in e1000 down when NAPI is being disabled. Looking
-over the kernel function trace of the system it appears that the interface
-is being closed and then a reset is hitting which deadlocks the interface
-as the NAPI interface is already disabled.
+In the absence of any modules, no "modules" map is created, but there
+are other executable pages to map, due to eBPF JIT, kprobe or ftrace.
+Map them by recognizing that the first "module" symbol is not
+necessarily from a module, and adjust the map accordingly.
 
-To prevent this from happening I am disabling the reset task when
-__E1000_DOWN is already set. In addition code has been added so that we set
-the __E1000_DOWN while holding the __E1000_RESET flag in e1000_close in
-order to guarantee that the reset task will not run after we have started
-the close call.
-
-Signed-off-by: Alexander Duyck <alexander.h.duyck@linux.intel.com>
-Tested-by: Maxim Zhukov <mussitantesmortem@gmail.com>
-Signed-off-by: Jeff Kirsher <jeffrey.t.kirsher@intel.com>
+Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: H. Peter Anvin <hpa@zytor.com>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: Leo Yan <leo.yan@linaro.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Cc: x86@kernel.org
+Link: http://lore.kernel.org/lkml/20200512121922.8997-10-adrian.hunter@intel.com
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/e1000/e1000_main.c | 18 ++++++++++++++----
- 1 file changed, 14 insertions(+), 4 deletions(-)
+ tools/perf/util/symbol-elf.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/drivers/net/ethernet/intel/e1000/e1000_main.c b/drivers/net/ethernet/intel/e1000/e1000_main.c
-index 3b16ee0de246e..c30792b761ee3 100644
---- a/drivers/net/ethernet/intel/e1000/e1000_main.c
-+++ b/drivers/net/ethernet/intel/e1000/e1000_main.c
-@@ -568,8 +568,13 @@ void e1000_reinit_locked(struct e1000_adapter *adapter)
- 	WARN_ON(in_interrupt());
- 	while (test_and_set_bit(__E1000_RESETTING, &adapter->flags))
- 		msleep(1);
--	e1000_down(adapter);
--	e1000_up(adapter);
-+
-+	/* only run the task if not already down */
-+	if (!test_bit(__E1000_DOWN, &adapter->flags)) {
-+		e1000_down(adapter);
-+		e1000_up(adapter);
-+	}
-+
- 	clear_bit(__E1000_RESETTING, &adapter->flags);
- }
+diff --git a/tools/perf/util/symbol-elf.c b/tools/perf/util/symbol-elf.c
+index 2070c02de3af5..ea55cb6b614f4 100644
+--- a/tools/perf/util/symbol-elf.c
++++ b/tools/perf/util/symbol-elf.c
+@@ -1390,6 +1390,7 @@ struct kcore_copy_info {
+ 	u64 first_symbol;
+ 	u64 last_symbol;
+ 	u64 first_module;
++	u64 first_module_symbol;
+ 	u64 last_module_symbol;
+ 	struct phdr_data kernel_map;
+ 	struct phdr_data modules_map;
+@@ -1404,6 +1405,8 @@ static int kcore_copy__process_kallsyms(void *arg, const char *name, char type,
+ 		return 0;
  
-@@ -1456,10 +1461,15 @@ int e1000_close(struct net_device *netdev)
- 	struct e1000_hw *hw = &adapter->hw;
- 	int count = E1000_CHECK_RESET_COUNT;
+ 	if (strchr(name, '[')) {
++		if (!kci->first_module_symbol || start < kci->first_module_symbol)
++			kci->first_module_symbol = start;
+ 		if (start > kci->last_module_symbol)
+ 			kci->last_module_symbol = start;
+ 		return 0;
+@@ -1528,6 +1531,10 @@ static int kcore_copy__calc_maps(struct kcore_copy_info *kci, const char *dir,
+ 		kci->etext += page_size;
+ 	}
  
--	while (test_bit(__E1000_RESETTING, &adapter->flags) && count--)
-+	while (test_and_set_bit(__E1000_RESETTING, &adapter->flags) && count--)
- 		usleep_range(10000, 20000);
++	if (kci->first_module_symbol &&
++	    (!kci->first_module || kci->first_module_symbol < kci->first_module))
++		kci->first_module = kci->first_module_symbol;
++
+ 	kci->first_module = round_down(kci->first_module, page_size);
  
--	WARN_ON(test_bit(__E1000_RESETTING, &adapter->flags));
-+	WARN_ON(count < 0);
-+
-+	/* signal that we're down so that the reset task will no longer run */
-+	set_bit(__E1000_DOWN, &adapter->flags);
-+	clear_bit(__E1000_RESETTING, &adapter->flags);
-+
- 	e1000_down(adapter);
- 	e1000_power_down_phy(adapter);
- 	e1000_free_irq(adapter);
+ 	if (kci->last_module_symbol) {
 -- 
 2.25.1
 
