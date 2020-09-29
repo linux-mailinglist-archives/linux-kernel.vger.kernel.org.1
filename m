@@ -2,146 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D68E27D200
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 16:59:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B68227D209
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 17:02:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730170AbgI2O7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 10:59:08 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:15448 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728983AbgI2O7I (ORCPT
+        id S1729900AbgI2PCI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 11:02:08 -0400
+Received: from esa3.hc3370-68.iphmx.com ([216.71.145.155]:4421 "EHLO
+        esa3.hc3370-68.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728630AbgI2PCI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 10:59:08 -0400
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08TEX8Dk016644;
-        Tue, 29 Sep 2020 10:58:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=esolzCLlTJEPeG6627hqWcv24P1GZzdpl1qowU+wiLA=;
- b=blMtUQ0t676Kma0/HQZ4K/xoewmRDbmMiDMRnwolwrmq0eLOO33nC1gr7BcmfqJPr3D8
- CAT+0MSu9Y3Qk/0cpLy/GrEB3baPQAqeZn/cDZ+0OzKo9mBcl0vbT4rmFchwut7ISJZa
- fQgwNK2lYd0i9yMnEMSnP+9Nas/BZi8HF3lyzkkbDrkqn4tFr9pKd/hKdrfFOA1TSMgO
- pS5DkH/PhjoJX7uRIwwAILmTZkQPX7TRM58d7bIbB/W6ZcsatSCovsvRZn1NgL9uJ401
- i5FM8ACSbSwRW44M2mQITd/5mjlEjlpe2ef7k+aNtYa/W79pxqU4aKM6ljbZGNT19oPG Og== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33v6mts9cd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 29 Sep 2020 10:58:25 -0400
-Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08TEXjtF019149;
-        Tue, 29 Sep 2020 10:58:24 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33v6mts9b8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 29 Sep 2020 10:58:24 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08TEmKSF023163;
-        Tue, 29 Sep 2020 14:58:22 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma06ams.nl.ibm.com with ESMTP id 33v6mgr0yg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 29 Sep 2020 14:58:21 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08TEwJVb28836272
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 29 Sep 2020 14:58:19 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7078D11C058;
-        Tue, 29 Sep 2020 14:58:19 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 17C1711C06E;
-        Tue, 29 Sep 2020 14:58:15 +0000 (GMT)
-Received: from linux.ibm.com (unknown [9.145.79.47])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Tue, 29 Sep 2020 14:58:14 +0000 (GMT)
-Date:   Tue, 29 Sep 2020 17:58:13 +0300
-From:   Mike Rapoport <rppt@linux.ibm.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Mike Rapoport <rppt@kernel.org>,
+        Tue, 29 Sep 2020 11:02:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=citrix.com; s=securemail; t=1601391728;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=XBRFpyrJEpRvy0QyVLarqAoZTQbT30+k+3nuuWCz/Iw=;
+  b=TsSA7kCUK0NptaTiWDOFaYIPvaRzcfj6Nvzv+Gh2v/nu77sgQF/v0Fed
+   7p8ukE+XIf2Ov7+3207i6uxAQTWHHolLFA02aYwsmw/anK7Y2NaW+96Cx
+   h90vTrllf/5batjFwp0AHLMLuVhjuBksEyJgbxqEoO++H9ijKfCQCaFHR
+   0=;
+Authentication-Results: esa3.hc3370-68.iphmx.com; dkim=none (message not signed) header.i=none
+IronPort-SDR: Jd2HVx8w/fgPfAhKp7DcsnFnYm5g5DfeQLHIgzBcGvwx0QI2eNU4djtRAcdl400sod5qVJgps0
+ Dksi2wWFfnImnrnR/AmZpYUpauh19L7tSHN2ST/P0EClIymfVPNcV4QnaeQ7Vftre3Fj/QDHyB
+ sCGGLudIhmEqsGcqC1d9VRpZE5aNdS/NdoU/GP8yFNjGC8zlmeDv0P+CMPwOTEsNd0oD6qCzvu
+ 71oZ0ntIwwNgz59YTyuMAd7UK6ko0zzyz6LwHlwoPPTecAeDBLMDgU2d7pjYf/jIwGhFkgTNBk
+ PJ0=
+X-SBRS: None
+X-MesageID: 27846890
+X-Ironport-Server: esa3.hc3370-68.iphmx.com
+X-Remote-IP: 162.221.158.21
+X-Policy: $RELAYED
+X-IronPort-AV: E=Sophos;i="5.77,319,1596513600"; 
+   d="scan'208";a="27846890"
+Subject: Re: [PATCH v38 21/24] x86/vdso: Implement a vDSO for Intel SGX
+ enclave call
+To:     Dave Hansen <dave.hansen@intel.com>,
+        Andy Lutomirski <luto@kernel.org>
+CC:     "H.J. Lu" <hjl.tools@gmail.com>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        <linux-sgx@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        "Sean Christopherson" <sean.j.christopherson@intel.com>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Cedric Xing <cedric.xing@intel.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Idan Yaniv <idan.yaniv@ibm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Shuah Khan <shuah@kernel.org>, Tycho Andersen <tycho@tycho.ws>,
-        Will Deacon <will@kernel.org>, linux-api@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org
-Subject: Re: [PATCH v6 5/6] mm: secretmem: use PMD-size pages to amortize
- direct map fragmentation
-Message-ID: <20200929145813.GA3226834@linux.ibm.com>
-References: <20200924132904.1391-1-rppt@kernel.org>
- <20200924132904.1391-6-rppt@kernel.org>
- <20200925074125.GQ2628@hirez.programming.kicks-ass.net>
- <20200929130529.GE2142832@kernel.org>
- <20200929141216.GO2628@hirez.programming.kicks-ass.net>
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        <asapek@google.com>, Borislav Petkov <bp@alien8.de>,
+        <chenalexchen@google.com>, Conrad Parker <conradparker@google.com>,
+        <cyhanish@google.com>, "Huang, Haitao" <haitao.huang@intel.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        "Huang, Kai" <kai.huang@intel.com>,
+        "Svahn, Kai" <kai.svahn@intel.com>, Keith Moyer <kmoy@google.com>,
+        Christian Ludloff <ludloff@google.com>,
+        Neil Horman <nhorman@redhat.com>,
+        Nathaniel McCallum <npmccallum@redhat.com>,
+        "Patrick Uiterwijk" <puiterwijk@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>, <yaozhangx@google.com>,
+        Yu-cheng Yu <yu-cheng.yu@intel.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
+ <20200915112842.897265-22-jarkko.sakkinen@linux.intel.com>
+ <721ca14e-21df-3df1-7bef-0b00d0ff90c3@citrix.com>
+ <20200928005842.GC6704@linux.intel.com>
+ <85bc15d5-93cd-e332-ae9a-1e1e66e1181d@citrix.com>
+ <CAMe9rOpzXW0cSD=9E7drGEHH=pcm_NqvPiaR0pBJzYLeAt0_3g@mail.gmail.com>
+ <CALCETrU4Rhc0fwzzKLSUgan2YmSovxVFYOZEmFnBHC4DbZ5RfQ@mail.gmail.com>
+ <20200928215635.GF2705@linux.intel.com>
+ <CAMe9rOoyxtf_kUCdb-TN+NmZsQNmFY8NLMObSdCB5bBVq1x+cQ@mail.gmail.com>
+ <24b9f250-0f75-1a7d-688d-787ca53b388c@intel.com>
+ <CALCETrViotikw5HcDnvuY8nm28bAcdMQjcVs88kXVf8sjb0C_w@mail.gmail.com>
+ <761f457d-bbb0-4b8f-e472-6705bc1d3cd1@citrix.com>
+ <f8a3826b-8e19-12a3-3280-21ba59616df8@intel.com>
+From:   Andrew Cooper <andrew.cooper3@citrix.com>
+Message-ID: <ac70e206-5ef8-b6c3-9a37-0e34b7c2f35d@citrix.com>
+Date:   Tue, 29 Sep 2020 16:01:54 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200929141216.GO2628@hirez.programming.kicks-ass.net>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-29_07:2020-09-29,2020-09-29 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 impostorscore=0
- mlxscore=0 malwarescore=0 priorityscore=1501 bulkscore=0
- lowpriorityscore=0 spamscore=0 adultscore=0 clxscore=1011 mlxlogscore=999
- suspectscore=1 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009290129
+In-Reply-To: <f8a3826b-8e19-12a3-3280-21ba59616df8@intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Content-Language: en-GB
+X-ClientProxiedBy: AMSPEX02CAS01.citrite.net (10.69.22.112) To
+ FTLPEX02CL05.citrite.net (10.13.108.178)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 04:12:16PM +0200, Peter Zijlstra wrote:
-> On Tue, Sep 29, 2020 at 04:05:29PM +0300, Mike Rapoport wrote:
-> > On Fri, Sep 25, 2020 at 09:41:25AM +0200, Peter Zijlstra wrote:
-> > > On Thu, Sep 24, 2020 at 04:29:03PM +0300, Mike Rapoport wrote:
-> > > > From: Mike Rapoport <rppt@linux.ibm.com>
-> > > > 
-> > > > Removing a PAGE_SIZE page from the direct map every time such page is
-> > > > allocated for a secret memory mapping will cause severe fragmentation of
-> > > > the direct map. This fragmentation can be reduced by using PMD-size pages
-> > > > as a pool for small pages for secret memory mappings.
-> > > > 
-> > > > Add a gen_pool per secretmem inode and lazily populate this pool with
-> > > > PMD-size pages.
-> > > 
-> > > What's the actual efficacy of this? Since the pmd is per inode, all I
-> > > need is a lot of inodes and we're in business to destroy the directmap,
-> > > no?
-> > > 
-> > > Afaict there's no privs needed to use this, all a process needs is to
-> > > stay below the mlock limit, so a 'fork-bomb' that maps a single secret
-> > > page will utterly destroy the direct map.
-> > 
-> > This indeed will cause 1G pages in the direct map to be split into 2M
-> > chunks, but I disagree with 'destroy' term here. Citing the cover letter
-> > of an earlier version of this series:
-> 
-> It will drop them down to 4k pages. Given enough inodes, and allocating
-> only a single sekrit page per pmd, we'll shatter the directmap into 4k.
+On 29/09/2020 15:10, Dave Hansen wrote:
+> On 9/28/20 4:38 PM, Andrew Cooper wrote:
+>>>> CET=y, BUG_SPECTRE_V2=y: does not exist
+>>>> CET=n, BUG_SPECTRE_V2=y: vulnerable, use retpoline
+>>>> CET=y, BUG_SPECTRE_V2=n: no retpoline, not vulnerable
+>>>> CET=n, BUG_SPECTRE_V2=n: no retpoline, not vulnerable
+>>> Just to confirm: does this mean that the CPU mitigates against user
+>>> code mistraining the branch predictors for CPL0?
+>> If (and only if) you have eIBRS enabled.
+>>
+>> eIBRS should be available on all CET-capable hardware, and Linux ought
+>> to use it by default.
+> You're totally right, of course.  I was (wrongly) thinking about this
+> VDSO retpoline as kernel code.
+>
+> There's another wrinkle here.  Let's say we're vulnerable to a
+> Spectre-v2-style attack and we want to mitigate it on CET hardware that
+> has enhanced IBRS.  I'm not sure how reliable of a mitigation retpolines
+> are on enhanced IBRS hardware.  Intel has recommended _against_ using
+> them in some cases:
+>
+>> https://software.intel.com/security-software-guidance/api-app/sites/default/files/Retpoline-A-Branch-Target-Injection-Mitigation.pdf
+> "On processors that support enhanced IBRS, it should be used for
+> mitigation instead of retpoline."
+> I actually authored that bit of the whitepaper, and I recall that this
+> was not simply a recommendation based on performance advantages of using
+> enhanced IBRS.  I can dig through some old email if we decide that we
+> want to explore using a retpoline on enhanced IBRS hardware.
 
-Why? Secretmem allocates PMD-size page per inode and uses it as a pool
-of 4K pages for that inode. This way it ensures that
-__kernel_map_pages() is always called on PMD boundaries.
+If only life were simple.
 
--- 
-Sincerely yours,
-Mike.
+In light of https://arxiv.org/abs/2008.02307 which managed to
+demonstrate that the original KAISER was actually a speculative attack
+and nothing to do with the prefetch instruction, a discussion about
+same-mode training happened.
+
+The updated recommendation given was to continue using retpoline as well
+as eIBRS to prevent same-mode training of the syscall indirect branch. 
+Josh (CC'd) has been doing a lot of work to find and fix other
+speculative leaks in this area.
+
+For Skylake uarch and later, even if an RSB underflow leads to a BTB
+lookup, it still requires an interrupt/NMI to hit one of two instruction
+boundaries to empty the RSB, and an attacker with that level of control
+probably has more interesting things to be trying to do.
+
+Without retpoline (or something even more expensive such as IRET-ing
+around), an attacker can still create speculative type confusion between
+different system calls, when eIBRS is active.
+
+Once you mix CET-SS in, this breaks, unless you're prepared to update
+the retpoline gadget to include a WRSS to modify the shadow stack
+alongside the regular stack.  Add this to the large pile of fun for
+whomever has the privileg^W chore of implementing supervisor CET support.
+
+>
+> But, let's take a step back.  The changelog for this patch needs to at
+> least have:
+>
+> 1. What is the attack being mitigated by the retpoline?
+> 2. Do we actually want to mitigate it?
+> 3. What options are there to mitigate it?
+> 4. Which option does this patch use and why?
+>
+> Right now, there's not even a comment about this.
+
+I agree.  The reason for using a retpoline here in the first place is
+unclear.
+
+~Andrew
