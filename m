@@ -2,39 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8A3927C46C
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:14:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A01527C3B0
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:09:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729164AbgI2LNy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:13:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56274 "EHLO mail.kernel.org"
+        id S1728939AbgI2LHj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:07:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45840 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729382AbgI2LNo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:13:44 -0400
+        id S1728907AbgI2LHT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:07:19 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 486032158C;
-        Tue, 29 Sep 2020 11:13:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4D0AF21D7F;
+        Tue, 29 Sep 2020 11:07:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601378023;
-        bh=3tj9D3iBel13R7XRBxV6h/SiKAhmR9ZkKdrn07qj9qU=;
+        s=default; t=1601377638;
+        bh=jt8kaNiT0P6AOmoKv7vrGo3LC5aLUBoR3wSm5qsxWFk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aUOpHW/5Cz+1CvEwBoXQXpHDAEBtf3ylWAh/gWSd7FWs1W52okh2FO8P6eVDccvWK
-         9+lxtsaEX16rBb0zYewwTR15Ot5gjVKQxucvSVJfvRvOYIh3xbb8+JmeS9wfexOw66
-         CX7OB2vpDd3/XPENRphn4W88aKSCEKCARnpFtJJM=
+        b=hhjdPAmJOfs/7/8G5eDkakIQTCfd5ceCFExG50mdIjH1ILWteHqYCd8rO2Q7wLos6
+         Wd+uiM99nmtApBG35jXiIBj0p79znVNqfMsg+3tIUmfKq4W76L8Lp5yzKLcE9ceSDc
+         OsTzy4d/RyRe6pZlovhuIbS5HI39ZGkH2L7SeMk4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pan Bian <bianpan2016@163.com>,
+        stable@vger.kernel.org,
+        Shamir Rabinovitch <shamir.rabinovitch@oracle.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
         Jason Gunthorpe <jgg@mellanox.com>,
+        "Nobuhiro Iwamatsu (CIP)" <nobuhiro1.iwamatsu@toshiba.co.jp>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 035/166] RDMA/i40iw: Fix potential use after free
-Date:   Tue, 29 Sep 2020 12:59:07 +0200
-Message-Id: <20200929105936.957107721@linuxfoundation.org>
+Subject: [PATCH 4.9 004/121] RDMA/ucma: ucma_context reference leak in error path
+Date:   Tue, 29 Sep 2020 12:59:08 +0200
+Message-Id: <20200929105930.406751493@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929105935.184737111@linuxfoundation.org>
-References: <20200929105935.184737111@linuxfoundation.org>
+In-Reply-To: <20200929105930.172747117@linuxfoundation.org>
+References: <20200929105930.172747117@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,37 +46,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pan Bian <bianpan2016@163.com>
+From: Shamir Rabinovitch <shamir.rabinovitch@oracle.com>
 
-[ Upstream commit da046d5f895fca18d63b15ac8faebd5bf784e23a ]
+commit ef95a90ae6f4f21990e1f7ced6719784a409e811 upstream.
 
-Release variable dst after logging dst->error to avoid possible use after
-free.
+Validating input parameters should be done before getting the cm_id
+otherwise it can leak a cm_id reference.
 
-Link: https://lore.kernel.org/r/1573022651-37171-1-git-send-email-bianpan2016@163.com
-Signed-off-by: Pan Bian <bianpan2016@163.com>
-Reviewed-by: Jason Gunthorpe <jgg@mellanox.com>
+Fixes: 6a21dfc0d0db ("RDMA/ucma: Limit possible option size")
+Signed-off-by: Shamir Rabinovitch <shamir.rabinovitch@oracle.com>
+Reviewed-by: Leon Romanovsky <leonro@mellanox.com>
 Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+[iwamatsu: Backported to 4.4, 4.9 and 4.14: adjust context]
+Signed-off-by: Nobuhiro Iwamatsu (CIP) <nobuhiro1.iwamatsu@toshiba.co.jp>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/i40iw/i40iw_cm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/infiniband/core/ucma.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/infiniband/hw/i40iw/i40iw_cm.c b/drivers/infiniband/hw/i40iw/i40iw_cm.c
-index 880c63579ba88..adec03412506d 100644
---- a/drivers/infiniband/hw/i40iw/i40iw_cm.c
-+++ b/drivers/infiniband/hw/i40iw/i40iw_cm.c
-@@ -2052,9 +2052,9 @@ static int i40iw_addr_resolve_neigh_ipv6(struct i40iw_device *iwdev,
- 	dst = i40iw_get_dst_ipv6(&src_addr, &dst_addr);
- 	if (!dst || dst->error) {
- 		if (dst) {
--			dst_release(dst);
- 			i40iw_pr_err("ip6_route_output returned dst->error = %d\n",
- 				     dst->error);
-+			dst_release(dst);
- 		}
- 		return rc;
- 	}
+diff --git a/drivers/infiniband/core/ucma.c b/drivers/infiniband/core/ucma.c
+index a4f4cd4932657..bb0d728f4b76f 100644
+--- a/drivers/infiniband/core/ucma.c
++++ b/drivers/infiniband/core/ucma.c
+@@ -1296,13 +1296,13 @@ static ssize_t ucma_set_option(struct ucma_file *file, const char __user *inbuf,
+ 	if (copy_from_user(&cmd, inbuf, sizeof(cmd)))
+ 		return -EFAULT;
+ 
++	if (unlikely(cmd.optlen > KMALLOC_MAX_SIZE))
++		return -EINVAL;
++
+ 	ctx = ucma_get_ctx(file, cmd.id);
+ 	if (IS_ERR(ctx))
+ 		return PTR_ERR(ctx);
+ 
+-	if (unlikely(cmd.optlen > KMALLOC_MAX_SIZE))
+-		return -EINVAL;
+-
+ 	optval = memdup_user((void __user *) (unsigned long) cmd.optval,
+ 			     cmd.optlen);
+ 	if (IS_ERR(optval)) {
 -- 
 2.25.1
 
