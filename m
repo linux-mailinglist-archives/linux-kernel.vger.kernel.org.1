@@ -2,183 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D90E827BA89
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 03:54:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE54527BA8C
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 03:57:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727280AbgI2Byz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 21:54:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33056 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726064AbgI2Byz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 21:54:55 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5674CC061755;
-        Mon, 28 Sep 2020 18:54:55 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id jw11so1806404pjb.0;
-        Mon, 28 Sep 2020 18:54:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=2SzB7isKAREqUjXH+YUlW/DpD7dRh0cjXqpB4hYOMVM=;
-        b=uJtjQGkwh05rX2CZ4v+Qn3bQAHgTuyU3oV3YAdRR/T8rsoyy9vp/a4bTakkZXv5SnR
-         c1EBCWjtRgJhSOanZueb+HOttgxiw4RMgWuFcw274b9ZmnsTGggpNfkITxraUKIlB5eu
-         qZ2U1PBEppaf58W354aroZvTjSBwC5uVn3wDwaovp/Jr0YwkjuDvhmi2U0eBLCHTNpzK
-         9+VFms2abgNGDGaFSXk9CSIa5vngmnlkCFBKBvg+0SOOpV+Gz24Y8qQ3RehnRLWQwiXx
-         bulFArQl2BcKMQimOHwhVoLMNG3UAmPP5HM5hnRA5mRVLykHo8PTi7PqvI10XLkVakr9
-         WJxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=2SzB7isKAREqUjXH+YUlW/DpD7dRh0cjXqpB4hYOMVM=;
-        b=M1DuJgEEgiAYDebQnLnvKDH/qBgkAilJiU4QhmLkMb1UjfrjicSRU79Rs+AIMfgRFG
-         h7Bs4fOgXneBVBvsv1Ynd/v9Pi+Y3duYEJUTfSPQdLvDbvmckTw4sjReWHb4AN8ooPK0
-         SLMDSNNHQilWDLwicGQ+lsPacdKF5QN/LOYrf3WHCkPSWOZiLR3FRH65BF9IC6+SzaLv
-         vTkRt1VIlySlXTrfm8xNTwPaYRdZ71QHV/Eyc8EgAn/hdQ6j/31ZBzip/mEmlT1jJ0s0
-         OFoI45I0lV7cHUAwayYmK3/Ox9ZDYIPG8S/mmViNqL/GZfyj1Ggu7EOrIAKzQYlzrlM+
-         Gq+w==
-X-Gm-Message-State: AOAM532UJsmD2eB8jkJMsphax8CcsOiFbhTPkndD7Y9WAMr+0pyQYE56
-        jnWfGupMGYol5fvtXnp5bew=
-X-Google-Smtp-Source: ABdhPJwCmZSmOLbppa1vFzQqfZJlJ7yfoINWoTLVTS9qpnpFboFlltQXt94V0opqudRriRPRFSg+Ew==
-X-Received: by 2002:a17:90b:4b8e:: with SMTP id lr14mr1817137pjb.100.1601344494769;
-        Mon, 28 Sep 2020 18:54:54 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:8e77])
-        by smtp.gmail.com with ESMTPSA id z7sm2674142pgc.35.2020.09.28.18.54.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Sep 2020 18:54:53 -0700 (PDT)
-Date:   Mon, 28 Sep 2020 18:54:50 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alan Maguire <alan.maguire@oracle.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        andriy.shevchenko@linux.intel.com, Petr Mladek <pmladek@suse.com>,
-        Martin Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, Shuah Khan <shuah@kernel.org>,
-        Andrey Ignatov <rdna@fb.com>, scott.branden@broadcom.com,
-        Quentin Monnet <quentin@isovalent.com>,
-        Carlos Neira <cneirabustos@gmail.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-Subject: Re: [PATCH v6 bpf-next 6/6] selftests/bpf: add test for
- bpf_seq_printf_btf helper
-Message-ID: <20200929015450.das2bxw4f3q7oyup@ast-mbp.dhcp.thefacebook.com>
-References: <1600883188-4831-1-git-send-email-alan.maguire@oracle.com>
- <1600883188-4831-7-git-send-email-alan.maguire@oracle.com>
- <20200925012611.jebtlvcttusk3hbx@ast-mbp.dhcp.thefacebook.com>
- <alpine.LRH.2.21.2009281500220.13299@localhost>
- <CAEf4Bzb2JE_V7cQ=LGto6jHbiKUAg+A5MuqQ0LGb9L8qTUk6yg@mail.gmail.com>
+        id S1727227AbgI2B46 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 21:56:58 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:14698 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726961AbgI2B46 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 21:56:58 -0400
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 4FDD9744063F9F4BD27E;
+        Tue, 29 Sep 2020 09:56:56 +0800 (CST)
+Received: from [10.136.114.67] (10.136.114.67) by smtp.huawei.com
+ (10.3.19.210) with Microsoft SMTP Server (TLS) id 14.3.487.0; Tue, 29 Sep
+ 2020 09:56:54 +0800
+Subject: Re: kernel BUG at fs/erofs/inode.c:LINE!
+To:     syzbot <syzbot+8afc256dce324523609d@syzkaller.appspotmail.com>
+CC:     Gao Xiang <hsiangkao@aol.com>, <chao@kernel.org>,
+        <devel@driverdev.osuosl.org>, <gregkh@linuxfoundation.org>,
+        <linux-erofs@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
+        <syzkaller-bugs@googlegroups.com>, <xiang@kernel.org>
+References: <0000000000000044ba05b05a9961@google.com>
+ <20200928203035.GA7770@hsiangkao-HP-ZHAN-66-Pro-G1>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <1026c918-9f08-6b0f-f3b0-3dd1016dbf71@huawei.com>
+Date:   Tue, 29 Sep 2020 09:56:53 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4Bzb2JE_V7cQ=LGto6jHbiKUAg+A5MuqQ0LGb9L8qTUk6yg@mail.gmail.com>
+In-Reply-To: <20200928203035.GA7770@hsiangkao-HP-ZHAN-66-Pro-G1>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.136.114.67]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 10:51:19AM -0700, Andrii Nakryiko wrote:
-> On Mon, Sep 28, 2020 at 7:14 AM Alan Maguire <alan.maguire@oracle.com> wrote:
-> >
-> >
-> >
-> > On Thu, 24 Sep 2020, Alexei Starovoitov wrote:
-> >
-> > > to whatever number, but printing single task_struct needs ~800 lines and
-> > > ~18kbytes. Humans can scroll through that much spam, but can we make it less
-> > > verbose by default somehow?
-> > > May be not in this patch set, but in the follow up?
-> > >
-> >
-> > One approach that might work would be to devote 4 bits or so of
-> > flag space to a "maximum depth" specifier; i.e. at depth 1,
-> > only base types are displayed, no aggregate types like arrays,
-> > structs and unions.  We've already got depth processing in the
-> > code to figure out if possibly zeroed nested data needs to be
-> > displayed, so it should hopefully be a simple follow-up.
+Hi syzbot administrator,
 
-That sounds great to me.
+CONFIG_EROFS_DEBUG was introduced for debug purpose during
+development, this should not be enabled on release version.
 
-Would it be possible to specify the depth from the other side as well?
-Like a lot of 'leaf' fields are struct list_head, struct lockdep_map,
-atomic_t, struct callback_head, etc.
-When printing a big struct I'm interested in the data that the
-struct provides, but many small inner structs are not that useful.
-So the data is at the top level and in few layers down,
-but depth is different at different fields.
-If I could tell printf to avoid printing the last depth I think
-it will make the output more concise.
-Whereas if I say print depth=2 from the top it will still print
-'struct list_head' that happened to be at the top level.
+Can you please turn off this config, and retest with erofs module?
 
-> >
-> > One way to express it would be to use "..." to denote field(s)
-> > were omitted. We could even use the number of "."s to denote
-> > cases where multiple fields were omitted, giving a visual sense
-> > of how much data was omitted.  So for example with
-> > BTF_F_MAX_DEPTH(1), task_struct looks like this:
-> >
-> > (struct task_struct){
-> >  .state = ()1,
-> >  .stack = ( *)0x00000000029d1e6f,
-> >  ...
-> >  .flags = (unsigned int)4194560,
-> >  ...
-> >  .cpu = (unsigned int)36,
-> >  .wakee_flips = (unsigned int)11,
-> >  .wakee_flip_decay_ts = (long unsigned int)4294914874,
-> >  .last_wakee = (struct task_struct *)0x000000006c7dfe6d,
-> >  .recent_used_cpu = (int)19,
-> >  .wake_cpu = (int)36,
-> >  .prio = (int)120,
-> >  .static_prio = (int)120,
-> >  .normal_prio = (int)120,
-> >  .sched_class = (struct sched_class *)0x00000000ad1561e6,
-> >  ...
-> >  .exec_start = (u64)674402577156,
-> >  .sum_exec_runtime = (u64)5009664110,
-> >  .vruntime = (u64)167038057,
-> >  .prev_sum_exec_runtime = (u64)5009578167,
-> >  .nr_migrations = (u64)54,
-> >  .depth = (int)1,
-> >  .parent = (struct sched_entity *)0x00000000cba60e7d,
-> >  .cfs_rq = (struct cfs_rq *)0x0000000014f353ed,
-> >  ...
-> >
-> > ...etc. What do you think?
+Thanks,
+
+On 2020/9/29 4:36, Gao Xiang wrote:
+> Hi,
 > 
-> It's not clear to me what exactly is omitted with ... ? Would it make
-> sense to still at least list a field name and "abbreviated" value.
-> E.g., for arrays:
+> On Mon, Sep 28, 2020 at 12:27:24AM -0700, syzbot wrote:
+>> Hello,
+>>
+>> syzbot found the following issue on:
+>>
+>> HEAD commit:    d1d2220c Add linux-next specific files for 20200924
+>> git tree:       linux-next
+>> console output: https://syzkaller.appspot.com/x/log.txt?x=166cb7d9900000
+>> kernel config:  https://syzkaller.appspot.com/x/.config?x=254e028a642027c
+>> dashboard link: https://syzkaller.appspot.com/bug?extid=8afc256dce324523609d
+>> compiler:       gcc (GCC) 10.1.0-syz 20200507
+>> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=127762c3900000
+>> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=124ccf3b900000
+>>
+>> The issue was bisected to:
+>>
+>> commit 382329a9d8553a98418a6f6e3425f0c288837897
+>> Author: Gao Xiang <gaoxiang25@huawei.com>
+>> Date:   Wed Aug 14 10:37:04 2019 +0000
+>>
+>>      staging: erofs: differentiate unsupported on-disk format
 > 
-> .array_field = (int[16]){ ... },
+> if CONFIG_EROFS_DEBUG=y, the kernel will also BUG_ON on
+> currupted images in order to check potential mkfs fault.
 > 
-> Similarly for struct:
+> So it's an expected behavior for now (if syzbot needs some more requirement,
+> e.g. differ from runtime error vs corrupted image error, I can do it if
+> needed.)
 > 
-> .struct_field = (struct my_struct){ ... },
-
-+1
-Something like this would be great.
-
-Another idea...
-If there is only one field in the struct can we omit it?
-Like instead of:
-   .refs = (atomic_t){
-    .counter = (int)2,
-   },
-print
-   .refs = (atomic_t){ 2 },
-
-From C point of view it is still a valid initializer and
-it's not ambiguous which field being inited, since there is only
-one field.
+> Thanks,
+> Gao Xiang
+> 
+>>
+>> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=149889e3900000
+>> final oops:     https://syzkaller.appspot.com/x/report.txt?x=169889e3900000
+>> console output: https://syzkaller.appspot.com/x/log.txt?x=129889e3900000
+>>
+>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+>> Reported-by: syzbot+8afc256dce324523609d@syzkaller.appspotmail.com
+>> Fixes: 382329a9d855 ("staging: erofs: differentiate unsupported on-disk format")
+>>
+>> erofs: (device loop0): erofs_read_inode: bogus i_mode (0) @ nid 36
+>> ------------[ cut here ]------------
+>> kernel BUG at fs/erofs/inode.c:182!
+>> invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+>> CPU: 1 PID: 6895 Comm: syz-executor894 Not tainted 5.9.0-rc6-next-20200924-syzkaller #0
+>> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+>> RIP: 0010:erofs_read_inode fs/erofs/inode.c:182 [inline]
+>> RIP: 0010:erofs_fill_inode fs/erofs/inode.c:235 [inline]
+>> RIP: 0010:erofs_iget+0xfd8/0x2390 fs/erofs/inode.c:322
+>> Code: 00 0f 85 aa 10 00 00 49 8b 7c 24 28 49 89 d8 44 89 e9 48 c7 c2 a0 9c ef 88 48 c7 c6 40 9f ef 88 e8 b5 df b0 04 e8 88 5a 07 fe <0f> 0b e8 81 5a 07 fe 4c 89 e7 4c 63 e3 e8 b6 61 5b fe e9 ed f0 ff
+>> RSP: 0018:ffffc90001017c10 EFLAGS: 00010293
+>> RAX: 0000000000000000 RBX: 0000000000000024 RCX: 0000000000000000
+>> RDX: ffff8880a172e480 RSI: ffffffff836dd6e8 RDI: fffff52000202f72
+>> RBP: ffff8880a8ca4480 R08: 0000000000000042 R09: ffff8880ae5319a7
+>> R10: 0000000000000000 R11: 0000000000000000 R12: ffff8880854fd9b8
+>> R13: 0000000000000000 R14: ffffea0002a32900 R15: 0000000000000000
+>> FS:  000000000108e880(0000) GS:ffff8880ae500000(0000) knlGS:0000000000000000
+>> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>> CR2: 000000000043eb80 CR3: 00000000a7edb000 CR4: 00000000001506e0
+>> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+>> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+>> Call Trace:
+>>   erofs_fc_fill_super+0xaa3/0x1010 fs/erofs/super.c:382
+>>   get_tree_bdev+0x421/0x740 fs/super.c:1342
+>>   vfs_get_tree+0x89/0x2f0 fs/super.c:1547
+>>   do_new_mount fs/namespace.c:2896 [inline]
+>>   path_mount+0x12ae/0x1e70 fs/namespace.c:3227
+>>   __do_sys_mount fs/namespace.c:3438 [inline]
+>>   __se_sys_mount fs/namespace.c:3411 [inline]
+>>   __x64_sys_mount+0x278/0x2f0 fs/namespace.c:3411
+>>   do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>>   entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>> RIP: 0033:0x446d6a
+>> Code: b8 08 00 00 00 0f 05 48 3d 01 f0 ff ff 0f 83 fd ad fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 0f 83 da ad fb ff c3 66 0f 1f 84 00 00 00 00 00
+>> RSP: 002b:00007fffa8ef9ef8 EFLAGS: 00000297 ORIG_RAX: 00000000000000a5
+>> RAX: ffffffffffffffda RBX: 00007fffa8ef9f50 RCX: 0000000000446d6a
+>> RDX: 0000000020000000 RSI: 0000000020000100 RDI: 00007fffa8ef9f10
+>> RBP: 00007fffa8ef9f10 R08: 00007fffa8ef9f50 R09: 00007fff00000015
+>> R10: 0000000000000000 R11: 0000000000000297 R12: 0000000000000001
+>> R13: 0000000000000004 R14: 0000000000000003 R15: 0000000000000003
+>> Modules linked in:
+>> ---[ end trace 66a5371a9bd8a3b2 ]---
+>> RIP: 0010:erofs_read_inode fs/erofs/inode.c:182 [inline]
+>> RIP: 0010:erofs_fill_inode fs/erofs/inode.c:235 [inline]
+>> RIP: 0010:erofs_iget+0xfd8/0x2390 fs/erofs/inode.c:322
+>> Code: 00 0f 85 aa 10 00 00 49 8b 7c 24 28 49 89 d8 44 89 e9 48 c7 c2 a0 9c ef 88 48 c7 c6 40 9f ef 88 e8 b5 df b0 04 e8 88 5a 07 fe <0f> 0b e8 81 5a 07 fe 4c 89 e7 4c 63 e3 e8 b6 61 5b fe e9 ed f0 ff
+>> RSP: 0018:ffffc90001017c10 EFLAGS: 00010293
+>> RAX: 0000000000000000 RBX: 0000000000000024 RCX: 0000000000000000
+>> RDX: ffff8880a172e480 RSI: ffffffff836dd6e8 RDI: fffff52000202f72
+>> RBP: ffff8880a8ca4480 R08: 0000000000000042 R09: ffff8880ae5319a7
+>> R10: 0000000000000000 R11: 0000000000000000 R12: ffff8880854fd9b8
+>> R13: 0000000000000000 R14: ffffea0002a32900 R15: 0000000000000000
+>> FS:  000000000108e880(0000) GS:ffff8880ae500000(0000) knlGS:0000000000000000
+>> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>> CR2: 000000000043eb80 CR3: 00000000a7edb000 CR4: 00000000001506e0
+>> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+>> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+>>
+>>
+>> ---
+>> This report is generated by a bot. It may contain errors.
+>> See https://goo.gl/tpsmEJ for more information about syzbot.
+>> syzbot engineers can be reached at syzkaller@googlegroups.com.
+>>
+>> syzbot will keep track of this issue. See:
+>> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+>> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+>> syzbot can test patches for this issue, for details see:
+>> https://goo.gl/tpsmEJ#testing-patches
+> .
+> 
