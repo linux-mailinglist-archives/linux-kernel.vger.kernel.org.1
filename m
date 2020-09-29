@@ -2,124 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF34027BD8B
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 09:05:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC56327BD8F
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 09:10:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725780AbgI2HF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 03:05:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52460 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725468AbgI2HF5 (ORCPT
+        id S1725818AbgI2HKA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 03:10:00 -0400
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:54976 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725535AbgI2HKA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 03:05:57 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CAC6C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 00:05:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=9kawJvAFm/r2cBtZDaKI8NZRqczi1W/P4nsVgilq4Ss=; b=qxjLXffFoddrO7D0GyZZy4syv7
-        FUM5lR8JmfuUE9i/gypoGTn59k541DQsgkstXQbDWmZfkhiz+ElJlldFMSiMldmKsFA5Ip0XsaLFz
-        /E+zuw/joubEIQp3OkSZJg6z4yTnxZn1/YHtOjX08KpQEWSRmBD9su87FD4LTG7KpcX20yDs7vlDa
-        4v+q8xBx+MjlTf9xgnfYFBh6i1qHsHoqvFgR7qanZwDdsRcNmjdOqPM23ose/aAsgENjYS0IMkvnG
-        LhOzRqTlzPbhTWjV3ktokRlr3a0rV4CN7pPIvvEQ/8pzN0u96TuMfGw/BwbXMFlsOXwGRTmh7GL24
-        k+O8cdHQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kN9hq-0008JL-9M; Tue, 29 Sep 2020 07:05:46 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 7F65B302753;
-        Tue, 29 Sep 2020 09:05:44 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 5B5D7200D4C43; Tue, 29 Sep 2020 09:05:44 +0200 (CEST)
-Date:   Tue, 29 Sep 2020 09:05:44 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Jann Horn <jannh@google.com>
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>, linux-kernel@vger.kernel.org,
-        x86@kernel.org, Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
-        Dan Williams <dan.j.williams@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>
-Subject: Re: [PATCH] objtool: Permit __kasan_check_{read,write} under UACCESS
-Message-ID: <20200929070544.GI2628@hirez.programming.kicks-ass.net>
-References: <20200928224916.2101563-1-jannh@google.com>
+        Tue, 29 Sep 2020 03:10:00 -0400
+Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08T77V25006662;
+        Tue, 29 Sep 2020 03:09:51 -0400
+Received: from nwd2mta4.analog.com ([137.71.173.58])
+        by mx0a-00128a01.pphosted.com with ESMTP id 33t2j4hyuy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 29 Sep 2020 03:09:51 -0400
+Received: from SCSQMBX11.ad.analog.com (scsqmbx11.ad.analog.com [10.77.17.10])
+        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 08T79noB049572
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
+        Tue, 29 Sep 2020 03:09:50 -0400
+Received: from SCSQMBX10.ad.analog.com (10.77.17.5) by SCSQMBX11.ad.analog.com
+ (10.77.17.10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1779.2; Tue, 29 Sep
+ 2020 00:09:42 -0700
+Received: from zeus.spd.analog.com (10.66.68.11) by SCSQMBX10.ad.analog.com
+ (10.77.17.5) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
+ Transport; Tue, 29 Sep 2020 00:09:42 -0700
+Received: from localhost.localdomain ([10.48.65.12])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 08T79hUj013506;
+        Tue, 29 Sep 2020 03:09:44 -0400
+From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
+To:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <jic23@kernel.org>, <eugen.hristev@microchip.com>,
+        <nicolas.ferre@microchip.com>, <ludovic.desroches@microchip.com>,
+        <bleung@chromium.org>, <enric.balletbo@collabora.com>,
+        <groeck@chromium.org>, <srinivas.pandruvada@linux.intel.com>,
+        <andy.shevchenko@gmail.com>, <gwendal@chromium.org>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>
+Subject: [PATCH v2 0/9] iio: remove iio_buffer_set_attrs() and assign buffer attrs during alloc
+Date:   Tue, 29 Sep 2020 10:08:59 +0300
+Message-ID: <20200929070908.10456-1-alexandru.ardelean@analog.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200928224916.2101563-1-jannh@google.com>
+Content-Type: text/plain
+X-ADIRoutedOnPrem: True
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-29_01:2020-09-29,2020-09-29 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ suspectscore=0 priorityscore=1501 phishscore=0 spamscore=0 malwarescore=0
+ bulkscore=0 clxscore=1011 mlxlogscore=943 mlxscore=0 adultscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009290065
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 12:49:16AM +0200, Jann Horn wrote:
-> Building linux-next with JUMP_LABEL=n and KASAN=y, I got this objtool
-> warning:
-> 
-> arch/x86/lib/copy_mc.o: warning: objtool: copy_mc_to_user()+0x22: call to
-> __kasan_check_read() with UACCESS enabled
-> 
-> What happens here is that copy_mc_to_user() branches on a static key in a
-> UACCESS region:
-> 
->         __uaccess_begin();
->         if (static_branch_unlikely(&copy_mc_fragile_key))
->                 ret = copy_mc_fragile(to, from, len);
->         ret = copy_mc_generic(to, from, len);
->         __uaccess_end();
-> 
-> and the !CONFIG_JUMP_LABEL version of static_branch_unlikely() uses
-> static_key_enabled(), which uses static_key_count(), which uses
-> atomic_read(), which calls instrument_atomic_read(), which uses
-> kasan_check_read(), which is __kasan_check_read().
-> 
-> Let's permit these KASAN helpers in UACCESS regions - static keys should
-> probably work under UACCESS, I think.
+This is a v2 for [1]:
+  https://lore.kernel.org/linux-iio/20200925083743.46469-1-alexandru.ardelean@analog.com/
 
-It's not a matter of permitting, it's a matter of being safe and
-correct. In this case it is, because it's a thin wrapper around
-check_memory_region() which was already marked safe.
+It also includes a at91-sama5d2_adc cleanup patch in this series:
+  https://lore.kernel.org/linux-iio/20200924102902.136169-1-alexandru.ardelean@analog.com/
+This patch is required, in order to make the removal of
+iio_buffer_set_attrs() a bit cleaner in the at91-sama5d2_adc driver.
 
-check_memory_region() is correct because the only thing it ends up
-calling is kasa_report() and that is also marked safe because that is
-annotated with user_access_save/restore() before it does anything else.
+Following the discussion from [1], this patchset implements the
+following:
 
-On top of that, all of KASAN is noinstr, so nothing in here will end up
-in tracing and/or call schedule() before the user_access_save().
+Changelog v1 -> v2:
+* rename '{devm_}iio_triggered_buffer_setup()' -> 
+         '{devm_}iio_triggered_buffer_setup_ext()'
+  - wrap with macros the new ext functions to preserve backwards
+    compatibility
+  - add a new parameter to the ext functions, which are the
+    buffer->attrs
+* split into separate patches the removal [from each driver] of
+  iio_buffer_set_attrs() and the switch to a
+  {devm_}iio_triggered_buffer_setup_ext variant
+* add patch to remove iio_buffer_set_attrs() from DMAEngine IIO buffer
+* remove the iio_buffer_set_attrs() helper in a final/separate patch
+* add 'at91-sama5d2_adc: merge buffer & trigger' patch in this series,
+  so that the removal of iio_buffer_set_attrs() is easier to view
 
-> Signed-off-by: Jann Horn <jannh@google.com>
+Alexandru Ardelean (9):
+  iio: buffer: dmaengine: unwrap the use of iio_buffer_set_attrs()
+  iio: adc: at91-sama5d2_adc: merge buffer & trigger init into a
+    function
+  iio: triggered-buffer: add {devm_}iio_triggered_buffer_setup_ext
+    variants
+  iio: accel: adxl372: use devm_iio_triggered_buffer_setup_ext()
+  iio: accel: bmc150: use iio_triggered_buffer_setup_ext()
+  iio: adc: at91-sama5d2_adc: use devm_iio_triggered_buffer_setup_ext()
+  iio: cros_ec: use devm_iio_triggered_buffer_setup_ext()
+  iio: hid-sensors: use iio_triggered_buffer_setup_ext()
+  iio: buffer: remove iio_buffer_set_attrs() helper
 
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+ drivers/iio/accel/adxl372.c                   | 11 ++-
+ drivers/iio/accel/bmc150-accel-core.c         | 25 +++---
+ drivers/iio/adc/at91-sama5d2_adc.c            | 82 +++++++++----------
+ .../buffer/industrialio-buffer-dmaengine.c    |  3 +-
+ .../buffer/industrialio-triggered-buffer.c    | 31 ++++---
+ .../cros_ec_sensors/cros_ec_sensors_core.c    | 15 ++--
+ .../common/hid-sensors/hid-sensor-trigger.c   | 22 ++---
+ drivers/iio/industrialio-buffer.c             | 12 ---
+ include/linux/iio/buffer.h                    |  3 -
+ include/linux/iio/triggered_buffer.h          | 23 ++++--
+ 10 files changed, 113 insertions(+), 114 deletions(-)
 
-> ---
-> Calling atomic_read() on a global under UACCESS should probably be fine,
-> right?
+-- 
+2.17.1
 
-Yes, per the above.
-
->  tools/objtool/check.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-> index a88fb05242d5..1141a8e26c1e 100644
-> --- a/tools/objtool/check.c
-> +++ b/tools/objtool/check.c
-> @@ -583,6 +583,8 @@ static const char *uaccess_safe_builtin[] = {
->  	"__asan_store4_noabort",
->  	"__asan_store8_noabort",
->  	"__asan_store16_noabort",
-> +	"__kasan_check_read",
-> +	"__kasan_check_write",
->  	/* KASAN in-line */
->  	"__asan_report_load_n_noabort",
->  	"__asan_report_load1_noabort",
-> 
-> base-commit: 0248dedd12d43035bf53c326633f0610a49d7134
-> -- 
-> 2.28.0.709.gb0816b6eb0-goog
-> 
