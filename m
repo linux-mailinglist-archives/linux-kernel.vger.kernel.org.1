@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5CE027D524
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 19:54:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E20027D525
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 19:54:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727831AbgI2Rxs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 13:53:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40352 "EHLO
+        id S1728079AbgI2Rxu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 13:53:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728330AbgI2Rxh (ORCPT
+        with ESMTP id S1728326AbgI2Rxl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 13:53:37 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F8F2C0613D0
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 10:53:37 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id 34so4437514pgo.13
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 10:53:37 -0700 (PDT)
+        Tue, 29 Sep 2020 13:53:41 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83257C0613D1
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 10:53:41 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id o20so5300809pfp.11
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 10:53:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=I4sYG/yonx2Z4e3j5HjpsSaE/IQcEPtF5lwUAPBhXso=;
-        b=VcUe4WF6dH2FXchwOaRd0598LuuqD1JkgolkZQFDXa81xOts4Z1XwgDAtSQuXm8b+B
-         27dUXBF35E13arQCKfjBGqrKUgbK3z7oSoSZfUC/Z5GExKrg1MXkNUyaijFfaHXzdnqC
-         L4mt9I/qfitl3NujaemogT5hIgYx2K9mmvWKzEpw0V/GMKsedYvUSdYWtSnNvf31ZxBw
-         iL4qS7zHVrJnpkF4CxsRNEb2/ZB2XmHeqJpEl4aUnYq4DV26a7lGzWTGYvEoioKZTlgl
-         +V+8ypQDw4Pl5lRVQZ+6/FzxW5zXeg6wq2bCZInDGNO26txhooYNzmSi43GRD2JmFvMx
-         i3Ug==
+        bh=d5NHMOfzoZtUI9mNkF0dRKXjszoqYK7ekBI5K8v9id0=;
+        b=HhWa9++EqlvSV1/AxY493KAUH2ktKFTjdgz6plENoEl5upE9fuV1zfwvRXB9C0mLaJ
+         QmupooH+E+lkgbOIaAJOn8xeYgUvPWVHG6IWXmDCngyVBUtdDcBY7H7g0QrkP0f0c32q
+         ucMwSb29Ewy6Vz8yn7GFHZrjbILJxJba/PtystV7CoWBAP8SqrxHNLA3Yu8ebfY42bRO
+         qad+sZaKR/Jqh+aAZ6c1CV5EGKd0NtXPXBEq8QEbDO0xP501oilRb0iEqLZ4+paP1Od7
+         8wU3F8lvVt5NV7TgGn8ejQEB0NMeZvFuEfhi/hAu21zS5gx/rSRehdt/Qwy682y1yk3h
+         h18w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=I4sYG/yonx2Z4e3j5HjpsSaE/IQcEPtF5lwUAPBhXso=;
-        b=iVsnS1lyI7a7iPWiz67QxUJ0Bt0U5kASq9HFkWIYsUB6myiNqJZ+waJAiWDvcW9TXs
-         MLSaVgaMjA1P9/Z7pLbfl3USwhGq7XmQU8Ap/FHBR63JChq+0fc/zRlGkHp8+8kb5p8X
-         Lz8kgrHOUXTDydaoqWKWNedibw8EYs9iVNz6Idj/Ig9TO+cq9RGSsibxvrtW/Up5jvDH
-         +bRDQk1uRH/GRHQJJZwrskIzHLkIv1lYmJQqVJIfa4xxX7g1wbjobtL9YDG0eRsNrmrA
-         xduV8GPs2PYjA1KO0BhVkSRiPriuNt+0dsgup0UonNdlGQnurvBeXwCtajM9LTUsCkQN
-         2fmw==
-X-Gm-Message-State: AOAM532HKVDCxg7np6d84QUR7NHEVsVzPJMBv/QA7TgATl4DiUtci8yV
-        R36Rhtom+zY9ZKHLheRRSTbh
-X-Google-Smtp-Source: ABdhPJwyv1MBf2jqrlH853GVV/DeEf2XXFzpFlnMa0Sr/YR4NjBPQBQ1mF2U67Trtcn8JqA1NTjbIg==
-X-Received: by 2002:aa7:9635:0:b029:142:2501:3980 with SMTP id r21-20020aa796350000b029014225013980mr5185745pfg.69.1601402016739;
-        Tue, 29 Sep 2020 10:53:36 -0700 (PDT)
+        bh=d5NHMOfzoZtUI9mNkF0dRKXjszoqYK7ekBI5K8v9id0=;
+        b=ovG5t4zZIzE5iqngqjjpvpmCSRiQDfJJ3c2SdQnQun+z8a8pFgzKYC67zGpM2/QhIv
+         7/TxyBOVfBY8rsF3YlOxL9cPybcmErd5AmAMuFuNtlRVCanmJpefpV7Skf/8Ogezc9hS
+         sZS+ZEq5JL02Cwzgl4ymkLMN3pSIShFjLKuKkqB3gGCDetLsgy4k+bFzB8B6Yg/oFtWr
+         DNHhSr35bFg4bTfR6crEIj9a0hQBZUSeg0BBQahMsObNJCaUw7bowtfadP7p9bzuyai/
+         CaKE/XxONqv4UzqHemMK6EomRfDZTJsjXThLcz1FkyUosXc1806DYOwwHQXk3fKAQ/gD
+         Z8Ag==
+X-Gm-Message-State: AOAM531tN0zZIMOC/BTzF6PP7mUFOAvzAYnDkrioLH/y5oTTU2dvuRBs
+        nW0qgVnX5jFi5lxgIFdXg1nibOESBVvzofk=
+X-Google-Smtp-Source: ABdhPJxBBwqWfMMoD+HnTfwjAWNt4UlJd3VoGL0BhhqEJ+dg+fNv2g4nWNaP5VKIpgMADXBlJR4EVw==
+X-Received: by 2002:aa7:9817:0:b029:13e:d13d:a139 with SMTP id e23-20020aa798170000b029013ed13da139mr5011278pfl.33.1601402020983;
+        Tue, 29 Sep 2020 10:53:40 -0700 (PDT)
 Received: from Mani-XPS-13-9360.localdomain ([103.59.133.81])
-        by smtp.gmail.com with ESMTPSA id r188sm6271046pfc.67.2020.09.29.10.53.32
+        by smtp.gmail.com with ESMTPSA id r188sm6271046pfc.67.2020.09.29.10.53.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Sep 2020 10:53:36 -0700 (PDT)
+        Tue, 29 Sep 2020 10:53:40 -0700 (PDT)
 From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 To:     gregkh@linuxfoundation.org
 Cc:     hemantk@codeaurora.org, bbhatt@codeaurora.org,
@@ -54,9 +54,9 @@ Cc:     hemantk@codeaurora.org, bbhatt@codeaurora.org,
         linux-kernel@vger.kernel.org,
         Loic Poulain <loic.poulain@linaro.org>,
         Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: [PATCH v3 16/19] bus: mhi: core: Allow shared IRQ for event rings
-Date:   Tue, 29 Sep 2020 23:22:15 +0530
-Message-Id: <20200929175218.8178-17-manivannan.sadhasivam@linaro.org>
+Subject: [PATCH v3 17/19] bus: mhi: Remove unused nr_irqs_req variable
+Date:   Tue, 29 Sep 2020 23:22:16 +0530
+Message-Id: <20200929175218.8178-18-manivannan.sadhasivam@linaro.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200929175218.8178-1-manivannan.sadhasivam@linaro.org>
 References: <20200929175218.8178-1-manivannan.sadhasivam@linaro.org>
@@ -66,53 +66,50 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Loic Poulain <loic.poulain@linaro.org>
 
-There is no requirement for using a dedicated IRQ per event ring.
-Some systems does not support multiple MSI vectors (e.g. intel
-without CONFIG_IRQ_REMAP), In that case the MHI controller can
-configure all the event rings to use the same interrupt (as fallback).
-
-Allow this by removing the nr_irqs = ev_ring test and add extra check
-in the irq_setup function.
+nr_irqs_req is unused in MHI stack.
 
 Signed-off-by: Loic Poulain <loic.poulain@linaro.org>
 Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 ---
- drivers/bus/mhi/core/init.c | 7 +++++++
- drivers/bus/mhi/core/pm.c   | 2 +-
- 2 files changed, 8 insertions(+), 1 deletion(-)
+ drivers/bus/mhi/core/init.c | 3 ---
+ include/linux/mhi.h         | 2 --
+ 2 files changed, 5 deletions(-)
 
 diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
-index a33665b7ee54..103d51f35e28 100644
+index 103d51f35e28..0ffdebde8265 100644
 --- a/drivers/bus/mhi/core/init.c
 +++ b/drivers/bus/mhi/core/init.c
-@@ -162,6 +162,13 @@ int mhi_init_irq_setup(struct mhi_controller *mhi_cntrl)
- 		if (mhi_event->offload_ev)
- 			continue;
+@@ -680,9 +680,6 @@ static int parse_ev_cfg(struct mhi_controller *mhi_cntrl,
+ 		mhi_event++;
+ 	}
  
-+		if (mhi_event->irq >= mhi_cntrl->nr_irqs) {
-+			dev_err(dev, "irq %d not available for event ring\n",
-+				mhi_event->irq);
-+			ret = -EINVAL;
-+			goto error_request;
-+		}
-+
- 		ret = request_irq(mhi_cntrl->irq[mhi_event->irq],
- 				  mhi_irq_handler,
- 				  IRQF_SHARED | IRQF_NO_SUSPEND,
-diff --git a/drivers/bus/mhi/core/pm.c b/drivers/bus/mhi/core/pm.c
-index ce4d969818b4..3de7b1639ec6 100644
---- a/drivers/bus/mhi/core/pm.c
-+++ b/drivers/bus/mhi/core/pm.c
-@@ -918,7 +918,7 @@ int mhi_async_power_up(struct mhi_controller *mhi_cntrl)
+-	/* We need IRQ for each event ring + additional one for BHI */
+-	mhi_cntrl->nr_irqs_req = mhi_cntrl->total_ev_rings + 1;
+-
+ 	return 0;
  
- 	dev_info(dev, "Requested to power ON\n");
- 
--	if (mhi_cntrl->nr_irqs < mhi_cntrl->total_ev_rings)
-+	if (mhi_cntrl->nr_irqs < 1)
- 		return -EINVAL;
- 
- 	/* Supply default wake routines if not provided by controller driver */
+ error_ev_cfg:
+diff --git a/include/linux/mhi.h b/include/linux/mhi.h
+index fb45a0ff9aa3..d4841e5a5f45 100644
+--- a/include/linux/mhi.h
++++ b/include/linux/mhi.h
+@@ -312,7 +312,6 @@ struct mhi_controller_config {
+  * @total_ev_rings: Total # of event rings allocated
+  * @hw_ev_rings: Number of hardware event rings
+  * @sw_ev_rings: Number of software event rings
+- * @nr_irqs_req: Number of IRQs required to operate (optional)
+  * @nr_irqs: Number of IRQ allocated by bus master (required)
+  * @family_number: MHI controller family number
+  * @device_number: MHI controller device number
+@@ -393,7 +392,6 @@ struct mhi_controller {
+ 	u32 total_ev_rings;
+ 	u32 hw_ev_rings;
+ 	u32 sw_ev_rings;
+-	u32 nr_irqs_req;
+ 	u32 nr_irqs;
+ 	u32 family_number;
+ 	u32 device_number;
 -- 
 2.17.1
 
