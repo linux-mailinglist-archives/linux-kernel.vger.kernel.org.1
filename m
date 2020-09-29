@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 980D927C8E6
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:06:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1DC727C84D
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:01:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730712AbgI2MFj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 08:05:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53440 "EHLO mail.kernel.org"
+        id S1731501AbgI2MAx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 08:00:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36828 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730272AbgI2Lhi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:37:38 -0400
+        id S1730568AbgI2Lkv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:40:51 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DEE54208FE;
-        Tue, 29 Sep 2020 11:37:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BAE7B23A5B;
+        Tue, 29 Sep 2020 11:23:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601379452;
-        bh=yvSfY/wFuXDNcZOalTPhO9jKbqjuz1HOllkdtnBtnqU=;
+        s=default; t=1601378622;
+        bh=YY+ZfcENL85GrpMPOlpneEkLKoX4t+9qxP2kAEQWV0U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BbznGHsD3l3XwKTR43lICtqDc39yn74CzUcrCUYnMjfn5BqJq739zRe4nylzsk/5A
-         P/b8joIcY6Cv0MruPV5SgBHd7IbjMaL3/rOjt0OiY+qMpVtslqIvA1l07GBKhsRIvw
-         2HTC7O5knSx0BIX+lSq5QrN3C48A6AJjUi2nAArs=
+        b=otmdhADwZQkwfXuaNeWzemjVgA7qx0AXp2toUEC0ldx4mGxuD+SRYZukjZpABPDRE
+         9gj5StVRXljDelUW7QRtJqVxWq+n152h++KvBmmc8Xl5654jUZ0iAVFoYErDyx4qQr
+         81ovppQavMbmo3MkcPUyA0BGTRMfER9zxTNpxW7A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        stable@vger.kernel.org, Marco Elver <elver@google.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 170/388] rtc: ds1374: fix possible race condition
+Subject: [PATCH 4.19 050/245] seqlock: Require WRITE_ONCE surrounding raw_seqcount_barrier
 Date:   Tue, 29 Sep 2020 12:58:21 +0200
-Message-Id: <20200929110018.710658201@linuxfoundation.org>
+Message-Id: <20200929105949.434726950@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929110010.467764689@linuxfoundation.org>
-References: <20200929110010.467764689@linuxfoundation.org>
+In-Reply-To: <20200929105946.978650816@linuxfoundation.org>
+References: <20200929105946.978650816@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,57 +43,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexandre Belloni <alexandre.belloni@bootlin.com>
+From: Marco Elver <elver@google.com>
 
-[ Upstream commit c11af8131a4e7ba1960faed731ee7e84c2c13c94 ]
+[ Upstream commit bf07132f96d426bcbf2098227fb680915cf44498 ]
 
-The RTC IRQ is requested before the struct rtc_device is allocated,
-this may lead to a NULL pointer dereference in the IRQ handler.
+This patch proposes to require marked atomic accesses surrounding
+raw_write_seqcount_barrier. We reason that otherwise there is no way to
+guarantee propagation nor atomicity of writes before/after the barrier
+[1]. For example, consider the compiler tears stores either before or
+after the barrier; in this case, readers may observe a partial value,
+and because readers are unaware that writes are going on (writes are not
+in a seq-writer critical section), will complete the seq-reader critical
+section while having observed some partial state.
+[1] https://lwn.net/Articles/793253/
 
-To fix this issue, allocating the rtc_device struct before requesting
-the RTC IRQ using devm_rtc_allocate_device, and use rtc_register_device
-to register the RTC device.
+This came up when designing and implementing KCSAN, because KCSAN would
+flag these accesses as data-races. After careful analysis, our reasoning
+as above led us to conclude that the best thing to do is to propose an
+amendment to the raw_seqcount_barrier usage.
 
-Link: https://lore.kernel.org/r/20200306073404.56921-1-alexandre.belloni@bootlin.com
-Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Signed-off-by: Marco Elver <elver@google.com>
+Acked-by: Paul E. McKenney <paulmck@kernel.org>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/rtc/rtc-ds1374.c | 15 +++++++++------
- 1 file changed, 9 insertions(+), 6 deletions(-)
+ include/linux/seqlock.h | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/rtc/rtc-ds1374.c b/drivers/rtc/rtc-ds1374.c
-index 367497914c100..28eb96cbaf98b 100644
---- a/drivers/rtc/rtc-ds1374.c
-+++ b/drivers/rtc/rtc-ds1374.c
-@@ -620,6 +620,10 @@ static int ds1374_probe(struct i2c_client *client,
- 	if (!ds1374)
- 		return -ENOMEM;
- 
-+	ds1374->rtc = devm_rtc_allocate_device(&client->dev);
-+	if (IS_ERR(ds1374->rtc))
-+		return PTR_ERR(ds1374->rtc);
-+
- 	ds1374->client = client;
- 	i2c_set_clientdata(client, ds1374);
- 
-@@ -641,12 +645,11 @@ static int ds1374_probe(struct i2c_client *client,
- 		device_set_wakeup_capable(&client->dev, 1);
- 	}
- 
--	ds1374->rtc = devm_rtc_device_register(&client->dev, client->name,
--						&ds1374_rtc_ops, THIS_MODULE);
--	if (IS_ERR(ds1374->rtc)) {
--		dev_err(&client->dev, "unable to register the class device\n");
--		return PTR_ERR(ds1374->rtc);
--	}
-+	ds1374->rtc->ops = &ds1374_rtc_ops;
-+
-+	ret = rtc_register_device(ds1374->rtc);
-+	if (ret)
-+		return ret;
- 
- #ifdef CONFIG_RTC_DRV_DS1374_WDT
- 	save_client = client;
+diff --git a/include/linux/seqlock.h b/include/linux/seqlock.h
+index bcf4cf26b8c89..a42a29952889c 100644
+--- a/include/linux/seqlock.h
++++ b/include/linux/seqlock.h
+@@ -243,6 +243,13 @@ static inline void raw_write_seqcount_end(seqcount_t *s)
+  * usual consistency guarantee. It is one wmb cheaper, because we can
+  * collapse the two back-to-back wmb()s.
+  *
++ * Note that, writes surrounding the barrier should be declared atomic (e.g.
++ * via WRITE_ONCE): a) to ensure the writes become visible to other threads
++ * atomically, avoiding compiler optimizations; b) to document which writes are
++ * meant to propagate to the reader critical section. This is necessary because
++ * neither writes before and after the barrier are enclosed in a seq-writer
++ * critical section that would ensure readers are aware of ongoing writes.
++ *
+  *      seqcount_t seq;
+  *      bool X = true, Y = false;
+  *
+@@ -262,11 +269,11 @@ static inline void raw_write_seqcount_end(seqcount_t *s)
+  *
+  *      void write(void)
+  *      {
+- *              Y = true;
++ *              WRITE_ONCE(Y, true);
+  *
+  *              raw_write_seqcount_barrier(seq);
+  *
+- *              X = false;
++ *              WRITE_ONCE(X, false);
+  *      }
+  */
+ static inline void raw_write_seqcount_barrier(seqcount_t *s)
 -- 
 2.25.1
 
