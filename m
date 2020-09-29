@@ -2,86 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3081F27CB07
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:24:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C331B27CAC3
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:22:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732445AbgI2MYG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 08:24:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38036 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729777AbgI2LfJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:35:09 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20518C0613DF
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 04:33:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Type:MIME-Version:Message-ID:
-        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=DjU0La5QsoHHU3N/iP5NR7BNOKT7gs7FCGIaZPbhNwc=; b=ZN5LjK5F3woZOpGU9pQh/O2ve3
-        JWUzoZJgYu4GzSvyFV4D18VOaTMJ3ROWWJkCwtngwCfJoFeDFN4rPd9Z9yzy3L44HtX7+Jd86Ivh1
-        HEaMAOwjb33cJHF0IGOqdzvfAsFaFetyp8sVi1ys5NVI7VGmqrajlzzgovz4rtzfay7nDMgLkbtnq
-        fJ18GtkTZNVEMGC8J8rL3skVJazmvD/xwQnBASZFMPamFaLpK4yBlmSxfX6RG29kMJoH/hUm5JbK2
-        OIwbbG0QTD0LbYNOMERsmkf5Y26/nchkZPEe9fosepwVCVpr4DOI2YpyGMRC/XsKyDKiaa9eSy7iY
-        08IFsEYg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kNDtA-00020q-IP; Tue, 29 Sep 2020 11:33:44 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id C97B23062BA;
-        Tue, 29 Sep 2020 13:33:40 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 81EF6200D4C48; Tue, 29 Sep 2020 13:33:40 +0200 (CEST)
-Date:   Tue, 29 Sep 2020 13:33:40 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Paul McKenney <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>, kim.phillips@amd.com
-Subject: [PATCH] rcu,ftrace: Fix ftrace recursion
-Message-ID: <20200929113340.GN2628@hirez.programming.kicks-ass.net>
+        id S1732378AbgI2MVh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 08:21:37 -0400
+Received: from vps.xff.cz ([195.181.215.36]:51274 "EHLO vps.xff.cz"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729822AbgI2LfW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:35:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=megous.com; s=mail;
+        t=1601379320; bh=NYesYDM0ZLiT5Nd37jm/2orVxg1+VI1tpstJHtB2iwc=;
+        h=Date:From:To:Cc:Subject:References:X-My-GPG-KeyId:From;
+        b=BXPssIoLK58jxGGdh3oWBFqmOG0oAUyMMFee7FzK7Pu/QztXqe05NKQJrYh/WoLjn
+         vDN8Kjnhi6zYRRuGUcAkdQN4y9t9/oCzXXv/nXdLUxYK6DAZA7YdPfRf+MEe1WRxZe
+         omGBFLhJSsKQfeSvkqfTFanXdGik98nq9QVznuIk=
+Date:   Tue, 29 Sep 2020 13:35:19 +0200
+From:   =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>
+To:     Roman Stratiienko <r.stratiienko@gmail.com>
+Cc:     linux-sunxi@googlegroups.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] RFC: arm64: arch_timer: Fix timer inconsistency test for
+ A64
+Message-ID: <20200929113519.b2vydqmhcivvbwom@core.my.home>
+Mail-Followup-To: =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>,
+        Roman Stratiienko <r.stratiienko@gmail.com>,
+        linux-sunxi@googlegroups.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+References: <20200929111347.1967438-1-r.stratiienko@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20200929111347.1967438-1-r.stratiienko@gmail.com>
+X-My-GPG-KeyId: EBFBDDE11FB918D44D1F56C1F9F0A873BE9777ED
+ <https://xff.cz/key.txt>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello Roman,
 
-Kim reported that perf-ftrace made his box unhappy. It turns out that
-commit:
+On Tue, Sep 29, 2020 at 02:13:47PM +0300, Roman Stratiienko wrote:
+> Fixes linux_kselftest:timers_inconsistency-check_arm_64
+> 
+> Test logs without the fix:
+> '''
+> binary returned non-zero. Exit code: 1, stderr: , stdout:
+> Consistent CLOCK_REALTIME
+> 1601335525:467086804
+> 1601335525:467087554
+> 1601335525:467088345
+> 1601335525:467089095
+> 1601335525:467089887
+> 1601335525:467090637
+> 1601335525:467091429
+> 1601335525:467092179
+> 1601335525:467092929
+> 1601335525:467093720
+> 1601335525:467094470
+> 1601335525:467095262
+> 1601335525:467096012
+> 1601335525:467096804
+> --------------------
+> 1601335525:467097554
+> 1601335525:467077012
+> --------------------
+> 1601335525:467099095
+> 1601335525:467099845
+> 1601335525:467100637
+> 1601335525:467101387
+> 1601335525:467102179
+> 1601335525:467102929
+> '''
 
-  ff5c4f5cad33 ("rcu/tree: Mark the idle relevant functions noinstr")
+Can you reproduce the issue with a fixed CPU frequency. I suspect the root
+cause is around CPU frequency scaling code on A64, and timer jumps happen when
+the kernel is changing CPU frequency.
 
-removed one too many notrace. Probably due to there not being a helpful
-comment.
+I fixed a similar issue on H3 SoC just by changing the CPU frequency scaling
+code, without having to touch the timer readout code.
 
-Reinstate the notrace and add a comment to avoid loosing it again.
+https://megous.com/git/linux/commit/?h=ths-5.9&id=51ff1a6d80126f678efca42555f93efa611f50c4
 
-Fixes: ff5c4f5cad33 ("rcu/tree: Mark the idle relevant functions noinstr")
-Reported-by: Kim Phillips <kim.phillips@amd.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- kernel/rcu/tree.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+regards,
+	o.
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index ee5e595501e8..33020d84ec6b 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -1098,8 +1098,11 @@ noinstr bool __rcu_is_watching(void)
-  * CPU can safely enter RCU read-side critical sections.  In other words,
-  * if the current CPU is not in its idle loop or is in an interrupt or
-  * NMI handler, return true.
-+ *
-+ * Must be notrace because __ftrace_ops_list_func() / ftrace_ops_assist_func()
-+ * will call this (for every function) outside of recursion protection.
-  */
--bool rcu_is_watching(void)
-+notrace bool rcu_is_watching(void)
- {
- 	bool ret;
- 
+> Signed-off-by: Roman Stratiienko <r.stratiienko@gmail.com>
+> CC: linux-arm-kernel@lists.infradead.org
+> CC: linux-kernel@vger.kernel.org
+> CC: linux-sunxi@googlegroups.com
+> CC: megous@megous.com
+> ---
+>  drivers/clocksource/arm_arch_timer.c | 9 +++++----
+>  1 file changed, 5 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/clocksource/arm_arch_timer.c b/drivers/clocksource/arm_arch_timer.c
+> index 6c3e841801461..d50aa43cb654b 100644
+> --- a/drivers/clocksource/arm_arch_timer.c
+> +++ b/drivers/clocksource/arm_arch_timer.c
+> @@ -346,16 +346,17 @@ static u64 notrace arm64_858921_read_cntvct_el0(void)
+>   * number of CPU cycles in 3 consecutive 24 MHz counter periods.
+>   */
+>  #define __sun50i_a64_read_reg(reg) ({					\
+> -	u64 _val;							\
+> +	u64 _val1, _val2;						\
+>  	int _retries = 150;						\
+>  									\
+>  	do {								\
+> -		_val = read_sysreg(reg);				\
+> +		_val1 = read_sysreg(reg);				\
+> +		_val2 = read_sysreg(reg);				\
+>  		_retries--;						\
+> -	} while (((_val + 1) & GENMASK(9, 0)) <= 1 && _retries);	\
+> +	} while (((_val2 - _val1) > 0x10) && _retries);			\
+>  									\
+>  	WARN_ON_ONCE(!_retries);					\
+> -	_val;								\
+> +	_val2;								\
+>  })
+>  
+>  static u64 notrace sun50i_a64_read_cntpct_el0(void)
+> -- 
+> 2.25.1
+> 
