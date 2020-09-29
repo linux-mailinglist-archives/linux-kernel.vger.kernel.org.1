@@ -2,235 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F6AF27D1BC
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 16:47:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EAB827D1C0
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 16:47:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731327AbgI2OrV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 10:47:21 -0400
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:42728 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728198AbgI2OrU (ORCPT
+        id S1731377AbgI2Orf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 10:47:35 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:26944 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728607AbgI2Orf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 10:47:20 -0400
-Received: by mail-oi1-f195.google.com with SMTP id x14so5706560oic.9;
-        Tue, 29 Sep 2020 07:47:18 -0700 (PDT)
+        Tue, 29 Sep 2020 10:47:35 -0400
+Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601390853;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=PtRKjvr2xKdnyYEHitFUee6d7Brs/dWCC9MF1YYO3xM=;
+        b=IksYDtnuZyRBSML19JirOJP6+HOk2rU69at/CKVG9PYJQ4JUIhC6ZcYpfdXg3+e0CXp6RM
+        B263CjemAjFMfUb6WiP2yJRNrTiQVCPvacxikZfF8S6OkGSOyAijkfYb+W9BqLrcDWX3Vh
+        jIINX5GqxNURNBZntH5E7z26Td0owm4=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-440-y0hbHeegPjmG-GeAtYHLgA-1; Tue, 29 Sep 2020 10:47:31 -0400
+X-MC-Unique: y0hbHeegPjmG-GeAtYHLgA-1
+Received: by mail-wm1-f69.google.com with SMTP id 73so68748wma.5
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 07:47:31 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=W+jkK+PPaaP5z1YbhSNZVLbX0jLjwvJDt+lXO77GaZE=;
-        b=AEu/oEMeqFidsv+EunfUEPC7ZSmsVe4pEidQzyjoGttDZYHZHza0+c1eyXcOt0jlTa
-         4OBpxtjaCDPoWxlSbx083pPbkbqFCRVa/6+4beGKwMrFhseuPDCXBnpeibti7I5e3r3o
-         WSSz19C6qJYo0nhdkDkQdkFPZaRF4kyjYT9ooNjsQv0uRK803nqUwpgBbdwqxczT+aSI
-         omkoHU4el+QnZFlX8b7Sev+MDQAS135dh1n2oWcEiRs1eqJhML9M73+C/Q/2fIR3TN/R
-         5CtMXgiKD+/x+zDDNMpcSFiGHPzjN1w7AZLieS+zU1WSSHpNtJype/GCq0ao8hGgtA5r
-         rgWw==
-X-Gm-Message-State: AOAM533EfIX6fQX186PmYc7AbSVql7iKF69gNuQ7kNIj2ASWfDZkRUOW
-        MAFaVXLSIjEGZEbtLH8VYQ==
-X-Google-Smtp-Source: ABdhPJxTB0sQwV+hE3Pv+aOyjWqdRJQeV7R0c0cGhfEWtJCKxBi7I2TmJx3HvZFdwx9fXCqrdoH7Hg==
-X-Received: by 2002:aca:ec53:: with SMTP id k80mr2729308oih.92.1601390837759;
-        Tue, 29 Sep 2020 07:47:17 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id d17sm1023033oth.73.2020.09.29.07.47.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Sep 2020 07:47:17 -0700 (PDT)
-Received: (nullmailer pid 565670 invoked by uid 1000);
-        Tue, 29 Sep 2020 14:47:16 -0000
-Date:   Tue, 29 Sep 2020 09:47:16 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     kholk11@gmail.com
-Cc:     bjorn.andersson@linaro.org, agross@kernel.org,
-        georgi.djakov@linaro.org, marijns95@gmail.com,
-        konradybcio@gmail.com, martin.botka1@gmail.com,
-        linux-arm-msm@vger.kernel.org, phone-devel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] dt-bindings: interconnect: Add bindings for
- Qualcomm SDM660 NoC
-Message-ID: <20200929144716.GB557822@bogus>
-References: <20200928195853.40084-1-kholk11@gmail.com>
- <20200928195853.40084-3-kholk11@gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=PtRKjvr2xKdnyYEHitFUee6d7Brs/dWCC9MF1YYO3xM=;
+        b=msdUZv3dOvTXMSuVgqQPWqry9gIDSKUCUCuK3DvlN/f02eUGJsrwsRky8KHfnhLJJL
+         3C7KZNMNbVW4l8ZC8QrjVH+vW9vMsNw1c+CeHqOvIrADFcnUGeRZCfFYptTbFa/SG6yW
+         oQ/uuYrWbScsDq3Ohpllxvh6FXURO6UOV5CI95DwiqWkUp6vDc11a2au5udPgGtxykm3
+         7Df3I9TJYCjoozqIJLWaoqDt5/2/vOsqpiluDPXISumwDm6ENVL/PKLUOuJKWK9/mUXT
+         1vuu+CaD6oLaXqMU4U8ClmV+yh9Zxr3SDV69wBfX0jAdpZgQ/Y1/IEk0CvPhOO+EAVFS
+         wRlg==
+X-Gm-Message-State: AOAM5321rztylaZK2lcn2XIPRdFLQjMpsruzkbVTGIb6+RnS/N7/lUJ9
+        phRHQoXV6sg105KzE5aWNl3nWg4qG9XXInP2p+GwTOQRjO5+JOK9l+zRA9qLscOESoUlz+rcp9x
+        QwLArXiWp5LtjVyoudAghVFJc
+X-Received: by 2002:a1c:9c4b:: with SMTP id f72mr4941945wme.188.1601390850361;
+        Tue, 29 Sep 2020 07:47:30 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwVvIsgRlLltuU7/F3qHNhZaYh3pEjgJZUzHs5Wbg6c+re1FxA/iDBgncxK9LACmKogcerxaw==
+X-Received: by 2002:a1c:9c4b:: with SMTP id f72mr4941915wme.188.1601390850039;
+        Tue, 29 Sep 2020 07:47:30 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:9dbe:2c91:3d1b:58c6? ([2001:b07:6468:f312:9dbe:2c91:3d1b:58c6])
+        by smtp.gmail.com with ESMTPSA id t17sm6687615wrx.82.2020.09.29.07.47.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 29 Sep 2020 07:47:28 -0700 (PDT)
+Subject: Re: [PATCH] KVM: x86: VMX: Make smaller physical guest address space
+ support user-configurable
+To:     Qian Cai <cai@redhat.com>, Mohammed Gamal <mgamal@redhat.com>,
+        kvm@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, sean.j.christopherson@intel.com,
+        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
+        joro@8bytes.org, Stephen Rothwell <sfr@canb.auug.org.au>,
+        linux-next@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>
+References: <20200903141122.72908-1-mgamal@redhat.com>
+ <1f42d8f084083cdf6933977eafbb31741080f7eb.camel@redhat.com>
+ <e1dee0fd2b4be9d8ea183d3cf6d601cf9566fde9.camel@redhat.com>
+ <ebcd39a5-364f-c4ac-f8c7-41057a3d84be@redhat.com>
+ <2063b592f82f680edf61dad575f7c092d11d8ba3.camel@redhat.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <c385b225-77fb-cf2a-fba3-c70a9b6d541d@redhat.com>
+Date:   Tue, 29 Sep 2020 16:47:26 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200928195853.40084-3-kholk11@gmail.com>
+In-Reply-To: <2063b592f82f680edf61dad575f7c092d11d8ba3.camel@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 09:58:53PM +0200, kholk11@gmail.com wrote:
-> From: AngeloGioacchino Del Regno <kholk11@gmail.com>
+On 29/09/20 15:39, Qian Cai wrote:
+> On Tue, 2020-09-29 at 14:26 +0200, Paolo Bonzini wrote:
+>> On 29/09/20 13:59, Qian Cai wrote:
+>>> WARN_ON_ONCE(!allow_smaller_maxphyaddr);
+>>>
+>>> I noticed the origin patch did not have this WARN_ON_ONCE(), but the
+>>> mainline
+>>> commit b96e6506c2ea ("KVM: x86: VMX: Make smaller physical guest address
+>>> space
+>>> support user-configurable") does have it for some reasons.
+>>
+>> Because that part of the code should not be reached.  The exception
+>> bitmap is set up with
+>>
+>>         if (!vmx_need_pf_intercept(vcpu))
+>>                 eb &= ~(1u << PF_VECTOR);
+>>
+>> where
+>>
+>> static inline bool vmx_need_pf_intercept(struct kvm_vcpu *vcpu)
+>> {
+>>         if (!enable_ept)
+>>                 return true;
+>>
+>>         return allow_smaller_maxphyaddr &&
+>> 		 cpuid_maxphyaddr(vcpu) < boot_cpu_data.x86_phys_bits;
+>> }
+>>
+>> We shouldn't get here if "enable_ept && !allow_smaller_maxphyaddr",
+>> which implies vmx_need_pf_intercept(vcpu) == false.  So the warning is
+>> genuine; I've sent a patch.
 > 
-> Add the bindings for the Qualcomm SDM660-class NoC, valid for
-> SDM630, SDM636, SDM660 and SDA variants.
+> Care to provide a link to the patch? Just curious.
 > 
-> Signed-off-by: AngeloGioacchino Del Regno <kholk11@gmail.com>
-> ---
->  .../bindings/interconnect/qcom,sdm660.yaml    | 147 ++++++++++++++++++
->  1 file changed, 147 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/interconnect/qcom,sdm660.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/interconnect/qcom,sdm660.yaml b/Documentation/devicetree/bindings/interconnect/qcom,sdm660.yaml
-> new file mode 100644
-> index 000000000000..440e9bc1382a
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/interconnect/qcom,sdm660.yaml
-> @@ -0,0 +1,147 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/interconnect/qcom,sdm660.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Qualcomm SDM660 Network-On-Chip interconnect
-> +
-> +maintainers:
-> +  - Georgi Djakov <georgi.djakov@linaro.org>
-> +
-> +description: |
-> +  The Qualcomm SDM660 interconnect providers support adjusting the
-> +  bandwidth requirements between the various NoC fabrics.
-> +
-> +properties:
-> +  reg:
-> +    maxItems: 1
-> +
-> +  compatible:
-> +    enum:
-> +      - qcom,sdm660-a2noc
-> +      - qcom,sdm660-bimc
-> +      - qcom,sdm660-cnoc
-> +      - qcom,sdm660-gnoc
-> +      - qcom,sdm660-mnoc
-> +      - qcom,sdm660-snoc
-> +
-> +  '#interconnect-cells':
-> +    const: 1
-> +
-> +  clocks:
-> +    minItems: 1
 
-Looks like 2 is the min?
+Ok, I haven't sent it yet. :)  But here it is:
 
-> +    maxItems: 3
-> +
-> +  clock-names:
-> +    minItems: 1
-> +    maxItems: 3
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - '#interconnect-cells'
-> +  - clock-names
-> +  - clocks
-> +
-> +additionalProperties: false
-> +
-> +allOf:
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            enum:
-> +              - qcom,sdm660-mnoc
-> +    then:
-> +      properties:
-> +        clocks:
-> +          items:
-> +            - description: Bus Clock.
-> +            - description: Bus A Clock.
-> +            - description: CPU-NoC High-performance Bus Clock.
-> +        clock-names:
-> +          items:
-> +            - const: bus
-> +            - const: bus_a
-> +            - const: iface
+commit 608e2791d7353e7d777bf32038ca3e7d548155a4 (HEAD -> kvm-master)
+Author: Paolo Bonzini <pbonzini@redhat.com>
+Date:   Tue Sep 29 08:31:32 2020 -0400
 
-Given both cases are the same except the 3rd clock, all this can be 
-moved to the main section. Then here you just need to restrict things 
-to 2 or 3 clocks.
+    KVM: VMX: update PFEC_MASK/PFEC_MATCH together with PF intercept
+    
+    The PFEC_MASK and PFEC_MATCH fields in the VMCS reverse the meaning of
+    the #PF intercept bit in the exception bitmap when they do not match.
+    This means that, if PFEC_MASK and/or PFEC_MATCH are set, the
+    hypervisor can get a vmexit for #PF exceptions even when the
+    corresponding bit is clear in the exception bitmap.
+    
+    This is unexpected and is promptly reported as a WARN_ON_ONCE.
+    To fix it, reset PFEC_MASK and PFEC_MATCH when the #PF intercept
+    is disabled (as is common with enable_ept && !allow_smaller_maxphyaddr).
+    
+    Reported-by: Qian Cai <cai@redhat.com>>
+    Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 
-> +
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            enum:
-> +              - qcom,sdm660-a2noc
-> +              - qcom,sdm660-bimc
-> +              - qcom,sdm660-cnoc
-> +              - qcom,sdm660-gnoc
-> +              - qcom,sdm660-snoc
-> +    then:
-> +      properties:
-> +        clocks:
-> +          items:
-> +            - description: Bus Clock.
-> +            - description: Bus A Clock.
-> +        clock-names:
-> +          items:
-> +            - const: bus
-> +            - const: bus_a
-> +
-> +examples:
-> +  - |
-> +      #include <dt-bindings/clock/qcom,rpmcc.h>
-> +      #include <dt-bindings/clock/qcom,mmcc-sdm660.h>
-> +
-> +      bimc: interconnect@1008000 {
-> +              compatible = "qcom,sdm660-bimc";
-> +              reg = <0x01008000 0x78000>;
-> +              #interconnect-cells = <1>;
-> +              clock-names = "bus", "bus_a";
-> +              clocks = <&rpmcc RPM_SMD_BIMC_CLK>,
-> +                       <&rpmcc RPM_SMD_BIMC_A_CLK>;
-> +      };
-> +
-> +      cnoc: interconnect@1500000 {
-> +              compatible = "qcom,sdm660-cnoc";
-> +              reg = <0x01500000 0x10000>;
-> +              #interconnect-cells = <1>;
-> +              clock-names = "bus", "bus_a";
-> +              clocks = <&rpmcc RPM_SMD_CNOC_CLK>,
-> +                       <&rpmcc RPM_SMD_CNOC_A_CLK>;
-> +      };
-> +
-> +      snoc: interconnect@1626000 {
-> +              compatible = "qcom,sdm660-snoc";
-> +              reg = <0x01626000 0x7090>;
-> +              #interconnect-cells = <1>;
-> +              clock-names = "bus", "bus_a";
-> +              clocks = <&rpmcc RPM_SMD_SNOC_CLK>,
-> +                       <&rpmcc RPM_SMD_SNOC_A_CLK>;
-> +      };
-> +
-> +      a2noc: interconnect@1704000 {
-> +              compatible = "qcom,sdm660-a2noc";
-> +              reg = <0x01704000 0xc100>;
-> +              #interconnect-cells = <1>;
-> +              clock-names = "bus", "bus_a";
-> +              clocks = <&rpmcc RPM_SMD_AGGR2_NOC_CLK>,
-> +                       <&rpmcc RPM_SMD_AGGR2_NOC_A_CLK>;
-> +      };
-> +
-> +      mnoc: interconnect@1745000 {
-> +              compatible = "qcom,sdm660-mnoc";
-> +              reg = <0x01745000 0xa010>;
-> +              #interconnect-cells = <1>;
-> +              clock-names = "bus", "bus_a", "iface";
-> +              clocks = <&rpmcc RPM_SMD_MMSSNOC_AXI_CLK>,
-> +                       <&rpmcc RPM_SMD_MMSSNOC_AXI_CLK_A>,
-> +                       <&mmcc AHB_CLK_SRC>;
-> +      };
-> +
-> +      gnoc: interconnect@17900000 {
-> +              compatible = "qcom,sdm660-gnoc";
-> +              reg = <0x17900000 0xe000>;
-> +              #interconnect-cells = <1>;
-> +              clock-names = "bus", "bus_a";
-> +              clocks = <&xo_board>, <&xo_board>;
-> +      };
-> -- 
-> 2.28.0
-> 
+diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+index f0384e93548a..f4e9c310032a 100644
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -794,6 +794,18 @@ void update_exception_bitmap(struct kvm_vcpu *vcpu)
+ 	 */
+ 	if (is_guest_mode(vcpu))
+ 		eb |= get_vmcs12(vcpu)->exception_bitmap;
++        else {
++		/*
++		 * If EPT is enabled, #PF is only trapped if MAXPHYADDR is mismatched
++		 * between guest and host.  In that case we only care about present
++		 * faults.  For vmcs02, however, PFEC_MASK and PFEC_MATCH are set in
++		 * prepare_vmcs02_rare.
++		 */
++		bool selective_pf_trap = enable_ept && (eb & (1u << PF_VECTOR));
++		int mask = selective_pf_trap ? PFERR_PRESENT_MASK : 0;
++		vmcs_write32(PAGE_FAULT_ERROR_CODE_MASK, mask);
++		vmcs_write32(PAGE_FAULT_ERROR_CODE_MATCH, mask);
++	}
+ 
+ 	vmcs_write32(EXCEPTION_BITMAP, eb);
+ }
+@@ -4355,16 +4367,6 @@ static void init_vmcs(struct vcpu_vmx *vmx)
+ 		vmx->pt_desc.guest.output_mask = 0x7F;
+ 		vmcs_write64(GUEST_IA32_RTIT_CTL, 0);
+ 	}
+-
+-	/*
+-	 * If EPT is enabled, #PF is only trapped if MAXPHYADDR is mismatched
+-	 * between guest and host.  In that case we only care about present
+-	 * faults.
+-	 */
+-	if (enable_ept) {
+-		vmcs_write32(PAGE_FAULT_ERROR_CODE_MASK, PFERR_PRESENT_MASK);
+-		vmcs_write32(PAGE_FAULT_ERROR_CODE_MATCH, PFERR_PRESENT_MASK);
+-	}
+ }
+ 
+ static void vmx_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
+
