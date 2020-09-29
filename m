@@ -2,119 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 134A027DB3D
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 23:57:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5D6927DB36
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 23:57:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728601AbgI2V5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 17:57:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49972 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728199AbgI2V5S (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 17:57:18 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98B35C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 14:57:16 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id s31so5030806pga.7
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 14:57:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0/OJ+hGul9V2Z4KJ9/Icrdv537pi3bbPLRFN0e0T6pk=;
-        b=UZdtN8Y/tGfQ/ZGzeOHsdwamEaty92m/di0YmBL75oxm6d3+rB/8/zyz1YDULbBVHR
-         dihKbPiWMG9bvNU7FVgSQAGmV3es5ez69hUVkSc3lPx0Bv5Mh2xI3C0iaXfW+HVzkzZr
-         w/h1MCrpvNZ9gRi4Z+1cweDfdT2UlNgS3r9JX+sR84HxBqm6rU2vLW+LhHaGfUVoQfPt
-         yDY+YiSsLQpT/UsBkUYFraIe3ZbE1k1e62DKXCAc8x6VnAYuaMhAXGz9d9c9BvQsY2Kn
-         G4fGkjUIYuggjBJ0zjKaBU8sDJ/MrAIhN1fYjCefHJmammumqMLQE4pxl+xVTiyHGHoU
-         S1lA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0/OJ+hGul9V2Z4KJ9/Icrdv537pi3bbPLRFN0e0T6pk=;
-        b=naL4F9USvzYiRB/+40RDWmQkHtSZdTcJjnIhIesKinFdvO9rhbaq2ePA9Ci8BZtqvw
-         UwpcOjkj7YKXX7I8vz8sTNjjbQQZZvXd2GH4GRrBFuDeGDY1npmh3cEmeb4aMVQrBCKW
-         QtlVGj4M1x6wvqg/xPcpfX8tgQsBZXXfpMF2RDKCTOgpiXANvpmqQA+IOqy50Oqn7yek
-         unkEv5lkAvDQ1ealayJmr5tpctXpNOncTzNDPnh5GxMQkz/hE2P0E86Fr2uLARdU/DlL
-         Bybmos88vFxJ99hxMLnBhcT6QXMCwYACbMAHkXLq3iLi9GPk/z4NXn9eZhpfEI1peJ2p
-         /feQ==
-X-Gm-Message-State: AOAM533S6M4CiezaXTZHR6YE9gJ5eww6izUPOnNIsP+xkR0GYElXYbhF
-        ad7VEJT5CAqwAT90UrA8xlYjsjq8vMK6+DZcqEZ8Bg==
-X-Google-Smtp-Source: ABdhPJznySVMu3FRv/BfC5/VB4y6if4/gxeGzjdGlFEx8wjx/oQC39BvAeUGTtvY6XZad6ReVUYR2lUVgORrGi9GGWw=
-X-Received: by 2002:a17:902:544:b029:d2:6379:a892 with SMTP id
- 62-20020a1709020544b02900d26379a892mr6646545plf.53.1601416635987; Tue, 29 Sep
- 2020 14:57:15 -0700 (PDT)
+        id S1728336AbgI2V47 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 17:56:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54508 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728041AbgI2V46 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 17:56:58 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4AF78207F7;
+        Tue, 29 Sep 2020 21:56:57 +0000 (UTC)
+Date:   Tue, 29 Sep 2020 17:56:55 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+Cc:     arnaldo.melo@gmail.com, linux-trace-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+Subject: Re: [PATCH 1/2] tools lib traceevent: Man page for
+ tep_add_plugin_path() API
+Message-ID: <20200929175655.43c71137@gandalf.local.home>
+In-Reply-To: <20200929173632.252076-1-tz.stoyanov@gmail.com>
+References: <20200929173632.252076-1-tz.stoyanov@gmail.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <cover.1601410890.git.zanussi@kernel.org> <834e9060c2e7e3272e25d8bfc6e7566639c18aa9.1601410890.git.zanussi@kernel.org>
-In-Reply-To: <834e9060c2e7e3272e25d8bfc6e7566639c18aa9.1601410890.git.zanussi@kernel.org>
-From:   Axel Rasmussen <axelrasmussen@google.com>
-Date:   Tue, 29 Sep 2020 14:56:39 -0700
-Message-ID: <CAJHvVcgBxBa_CHhRYGiwKEK=0RVzBFrNc3Z9YP+3M_N1PLXFTQ@mail.gmail.com>
-Subject: Re: [PATCH 2/3] tracing: Fix parse_synth_field() error handling
-To:     Tom Zanussi <zanussi@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 1:33 PM Tom Zanussi <zanussi@kernel.org> wrote:
->
-> synth_field_size() returns either the size or an error.  However, the
-> code assigns the return val to ssize_t which is unsigned, and then
-> tests whether it's less than 0, which it isn't so discards the error.
 
-I think the patch is correct, but the commit message is not.
-field->size is a size_t (unsigned), not an ssize_t (signed). I think
-this should say instead something like:
+[ Added Michael to the Cc ]
 
-synth_field_size() returns either a positive size or an error (zero or
-a negative value). However, the existing code assumes the only error
-value is 0. It doesn't handle negative error codes, as it assigns
-directly to field->size (a size_t; unsigned), thereby interpreting the
-error code as a valid size instead.
+On Tue, 29 Sep 2020 20:36:32 +0300
+"Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
 
->
-> Do the test before assignment to field->size.
->
-> Signed-off-by: Tom Zanussi <zanussi@kernel.org>
+> Add documentation of tep_add_plugin_path() API in the libtraceevent plugin man page.
+
+
+Nit, but the above should be no more than 74 (I do 76) characters wide.
+
+> 
+> Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 > ---
->  kernel/trace/trace_events_synth.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
->
-> diff --git a/kernel/trace/trace_events_synth.c b/kernel/trace/trace_events_synth.c
-> index a9cd7793f7ea..6e7282c7b530 100644
-> --- a/kernel/trace/trace_events_synth.c
-> +++ b/kernel/trace/trace_events_synth.c
-> @@ -465,6 +465,7 @@ static struct synth_field *parse_synth_field(int argc, const char **argv,
->         struct synth_field *field;
->         const char *prefix = NULL, *field_type = argv[0], *field_name, *array;
->         int len, ret = 0;
-> +       int size;
+>  .../Documentation/libtraceevent-plugins.txt   | 22 +++++++++++++++++--
+>  1 file changed, 20 insertions(+), 2 deletions(-)
+> 
+> diff --git a/tools/lib/traceevent/Documentation/libtraceevent-plugins.txt b/tools/lib/traceevent/Documentation/libtraceevent-plugins.txt
+> index 4d6394397d92..e584b8c777ad 100644
+> --- a/tools/lib/traceevent/Documentation/libtraceevent-plugins.txt
+> +++ b/tools/lib/traceevent/Documentation/libtraceevent-plugins.txt
+> @@ -3,7 +3,7 @@ libtraceevent(3)
+>  
+>  NAME
+>  ----
+> -tep_load_plugins, tep_unload_plugins, tep_load_plugins_hook - Load / unload traceevent plugins.
+> +tep_load_plugins, tep_unload_plugins, tep_load_plugins_hook, tep_add_plugin_path - Load / unload traceevent plugins.
+>  
+>  SYNOPSIS
+>  --------
+> @@ -19,6 +19,8 @@ void *tep_load_plugins_hook*(struct tep_handle pass:[*]_tep_, const char pass:[*
+>  					       const char pass:[*]name,
+>  					       void pass:[*]data),
+>  			   void pass:[*]_data_);
+> +int *tep_add_plugin_path*(struct tep_handle pass:[*]tep, char pass:[*]path,
+> +			  enum tep_plugin_load_priority prio);
+>  --
+>  
+>  DESCRIPTION
+> @@ -52,16 +54,30 @@ _tep_load_plugins()_. The _tep_ argument is trace event parser context. The
+>  _plugin_list_ is the list of loaded plugins, returned by
+>  the _tep_load_plugins()_ function.
+>  
+> -The _tep_load_plugins_hook_ function walks through all directories with plugins
+> +The _tep_load_plugins_hook()_ function walks through all directories with plugins
+>  and calls user specified _load_plugin()_ hook for each plugin file. Only files
+>  with given _suffix_ are considered to be plugins. The _data_ is a user specified
+>  context, passed to _load_plugin()_. Directories and the walk order are the same
+>  as in _tep_load_plugins()_ API.
+>  
+> +The _tep_add_plugin_path()_ functions adds additional directories with plugins in
+> +the _tep_->plugins_dir list. It must be called before _tep_load_plugins()_ in order
+> +the plugins from the new directories to be loaded. The _tep_ argument is trace event
 
-Why not make this an ssize_t
+"in order for the plugins" .. "is the trace event parser"
 
->
->         if (field_type[0] == ';')
->                 field_type++;
-> @@ -520,11 +521,12 @@ static struct synth_field *parse_synth_field(int argc, const char **argv,
->                         field->type[len - 1] = '\0';
->         }
->
-> -       field->size = synth_field_size(field->type);
-> -       if (!field->size) {
-> +       size = synth_field_size(field->type);
-> +       if (size < 0) {
->                 ret = -EINVAL;
->                 goto free;
->         }
-> +       field->size = size;
->
->         if (synth_field_is_string(field->type))
->                 field->is_string = true;
-> --
-> 2.17.1
->
+
+> +parser context. The _path_ is the full path to the new plugin directory. The _prio_
+> +argument specifies the loading priority of plugins from the new directory. The loading
+
+"specifies the loading priority order for the new directory of plugins"
+
+> +priority is important in case of different versions of the same plugin located in
+> +multiple plugin directories.The last loaded plugin wins. The priority can be:
+> +[verse]
+> +--
+> +	_TEP_PLUGIN_FIRST_	- Load plugins from this directory first
+> +	_TEP_PLUGIN_LAST_	- Load plugins from this directory last
+> +--
+
+"Where the plugins in TEP_PLUGIN_LAST" will take precedence over the
+plugins in the other directories."
+
+> +
+>  RETURN VALUE
+>  ------------
+>  The _tep_load_plugins()_ function returns a list of successfully loaded plugins,
+>  or NULL in case no plugins are loaded.
+> +The _tep_add_plugin_path()_ function returns -1 in case of an error, 0 otherwise.
+>  
+
+-- Steve
+
+>  EXAMPLE
+>  -------
+> @@ -71,6 +87,8 @@ EXAMPLE
+>  ...
+>  struct tep_handle *tep = tep_alloc();
+>  ...
+> +tep_add_plugin_path(tep, "~/dev_plugins", TEP_PLUGIN_LAST);
+> +...
+>  struct tep_plugin_list *plugins = tep_load_plugins(tep);
+>  if (plugins == NULL) {
+>  	/* no plugins are loaded */
+
