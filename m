@@ -2,390 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5F0F27BC8F
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 07:51:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EBE127BCA9
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 07:59:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727413AbgI2FvF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 01:51:05 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:34454 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725468AbgI2FvF (ORCPT
+        id S1727429AbgI2F7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 01:59:31 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:45850 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725300AbgI2F7a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 01:51:05 -0400
-Received: from [192.168.0.104] (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 4B58220B7178;
-        Mon, 28 Sep 2020 22:51:02 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 4B58220B7178
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1601358662;
-        bh=44m6rVhJghsWNI0el9CqVeQHZrvUjP1SHXQD4RCvnlw=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=JVyyAChZkCOaTjZqKK0zCoxaNAsvWPZCC3XILwQNlaQ4hhnY4cxfA+IRYgNQCcLFz
-         F8xV1FU3uKZpBNHBqBEoohIe2onQNftAvv0OZVLv2ECxeYl51Kr1X1s5A1sW75TfFj
-         yK13oGJ8tlS+1glpFGWAeBJM/AJKUNNNfUOqCJs0=
-Subject: Re: [PATCH 1/1] selinux: Measure state and hash of policy using IMA
-To:     Stephen Smalley <stephen.smalley.work@gmail.com>
-Cc:     Mimi Zohar <zohar@linux.ibm.com>, Paul Moore <paul@paul-moore.com>,
-        Ondrej Mosnacek <omosnace@redhat.com>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        tusharsu@linux.microsoft.com, Sasha Levin <sashal@kernel.org>,
-        linux-integrity@vger.kernel.org,
-        SElinux list <selinux@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <20200926164000.2926-1-nramas@linux.microsoft.com>
- <20200926164000.2926-2-nramas@linux.microsoft.com>
- <CAEjxPJ6yiFFG-NPapdPu68WdDKYCmyi222qFg_6+wG9Btya3gQ@mail.gmail.com>
-From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Message-ID: <260542b6-eac9-1588-2930-e9127c116393@linux.microsoft.com>
-Date:   Mon, 28 Sep 2020 22:50:58 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 29 Sep 2020 01:59:30 -0400
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08T5sBkM019987;
+        Mon, 28 Sep 2020 22:59:16 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=xn5yoK+w5zvVtBmK4MukckVBCA+NBSsMteEZDOtoJRI=;
+ b=fUWIzb23UPMFrt5iCo8ah9/YwN7p+5JXlbp3a0ArHhtvPpAlqmvHQ43TsTQILT2fEBJ8
+ Jq7HPfk9h6aTITjhpRIMo+1lnr4tYNPaXu79S0uLHEg0GsGicJn3kWJuyUsVgkpX5KdV
+ 5fcnI9H5tmh52hs+LblTAghgyaNrAMF7G5M= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 33tnfm0u63-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 28 Sep 2020 22:59:16 -0700
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Mon, 28 Sep 2020 22:59:13 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=E6UcwCNsyx51w/bjBsPzTF4vEu96fYRZQXSx+SMikdBvkhrWGSgcshHNJfZvVtue7I8dnboKCgbjn1UBK99TKxuqBufLkPCYDHTDDd9GSV1cqsZapDmL1kurOP8nZsSwjvgaHfc3nLSyZyzwvlZKaMSevqSxnODGFfFxVyywvxigBqN75f6qk5uTPnDD5nS0X+0Ib0y1vZrOVXLsQPZHju/rTUa0xUWC0QDmCZ8DO38pmHzanTt0XDH3c1S5M150RA0cDGZicVHSkZ2Q62ENjfVN0et2H5WTCVkFGtH2k1cAk2jZMYToDgoY/7sT/cX58N9N+Xv2cDx+hxebX7BqwQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xn5yoK+w5zvVtBmK4MukckVBCA+NBSsMteEZDOtoJRI=;
+ b=Gb37ybdHIphG7MbtkLntkjQEsyH7shSPNAfi4IXb2UY1c2j0U9kKgLMMdnwsIoE9RyI94DCXjQrb6Uq/9cNIOZCWH3y15BkV0Vh6LpJTRqAAIUJA3sK3TPSux3FnCFUiGE2lQzXU8gI3WAQuj5EzoCBVfsPEDjqDGxK91Fm8brW+BliraU0nVScYZXxV2g/r9MM6f4+BXl6gBsu++py7hKkvieIJLb4nYSjaODH8tfHQ2WKsVjcJmVTJc/28fAfHXBrCF+P7ns4H3jN8RUJTxWx7C1X6DsVMCpRGLH01eXoP6dl4RSOrnBX3U2CXbU6//iksTHCGZhBoluorMA/j9Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xn5yoK+w5zvVtBmK4MukckVBCA+NBSsMteEZDOtoJRI=;
+ b=F2xlqspkd3YUEf9KgZfgpneDRrAc0zIQsOKMF9k3+X8N/p2lavoIwsMThFcIIlqt146O1LYGJBQT9pky6cvTu2CdRmQYoeoFRqm54Hv0+M6WZHIx3Gc8xr/jFYp6w/lRT/xtjDNOUUCLEepzVaTSCH7S7qkbMbQUqnxBCrwsBvI=
+Authentication-Results: cloudflare.com; dkim=none (message not signed)
+ header.d=none;cloudflare.com; dmarc=none action=none header.from=fb.com;
+Received: from BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32)
+ by BYAPR15MB3207.namprd15.prod.outlook.com (2603:10b6:a03:101::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.20; Tue, 29 Sep
+ 2020 05:59:11 +0000
+Received: from BY5PR15MB3571.namprd15.prod.outlook.com
+ ([fe80::c13c:fca9:5e04:9bfb]) by BY5PR15MB3571.namprd15.prod.outlook.com
+ ([fe80::c13c:fca9:5e04:9bfb%3]) with mapi id 15.20.3412.029; Tue, 29 Sep 2020
+ 05:59:11 +0000
+Date:   Mon, 28 Sep 2020 22:59:05 -0700
+From:   Martin KaFai Lau <kafai@fb.com>
+To:     Lorenz Bauer <lmb@cloudflare.com>
+CC:     Shuah Khan <shuah@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        <kernel-team@cloudflare.com>, <linux-kselftest@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH bpf-next v2 2/4] selftests: bpf: Add helper to compare
+ socket cookies
+Message-ID: <20200929055851.n7fa3os7iu7grni3@kafai-mbp>
+References: <20200928090805.23343-1-lmb@cloudflare.com>
+ <20200928090805.23343-3-lmb@cloudflare.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200928090805.23343-3-lmb@cloudflare.com>
+X-Originating-IP: [2620:10d:c090:400::5:d609]
+X-ClientProxiedBy: CO1PR15CA0085.namprd15.prod.outlook.com
+ (2603:10b6:101:20::29) To BY5PR15MB3571.namprd15.prod.outlook.com
+ (2603:10b6:a03:1f6::32)
 MIME-Version: 1.0
-In-Reply-To: <CAEjxPJ6yiFFG-NPapdPu68WdDKYCmyi222qFg_6+wG9Btya3gQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from kafai-mbp (2620:10d:c090:400::5:d609) by CO1PR15CA0085.namprd15.prod.outlook.com (2603:10b6:101:20::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.22 via Frontend Transport; Tue, 29 Sep 2020 05:59:10 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 864bc275-3401-4845-d346-08d8643cc94f
+X-MS-TrafficTypeDiagnostic: BYAPR15MB3207:
+X-Microsoft-Antispam-PRVS: <BYAPR15MB3207356CA0CCE1A9114056C2D5320@BYAPR15MB3207.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:1079;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: wZdoL0sAaQRJ3l9nMlCATfanpKVn3a3MAMJuC2jir9K32eRxwsQ+I1H+MNTUj0QNzookxdBi5F0lo4SmG8XS7RpnbwGZLcf0C0QKsWKdth2XNd2CqpjQnyeqWEzxLduvl2lssBozC+rmYQaTzhIbJBksJXLHf3EtgacRk5m0abcofQWNhrsRJGl8HgWHrKiv/COqRV4lZ0mrZLnNgIRgGggcpTNBcccTd37pld25Ti9kbjgyeOuD2RqSkWgNUOBqbxSZjlGyvnceMERAhJepSkWTu3mOaqpCbzo5Dgz8sAzd9EyPzhXUQZ+T/Y7JSQ4q9S8nuFs4PmcyP8o4Ai0oqgog7klp3peYAPx3anAoK/s8Rx66oh22FRdocHcsPl3+
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3571.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(136003)(346002)(376002)(366004)(396003)(66946007)(66556008)(66476007)(4744005)(1076003)(4326008)(2906002)(86362001)(33716001)(8676002)(316002)(8936002)(478600001)(6666004)(6916009)(54906003)(52116002)(5660300002)(186003)(83380400001)(55016002)(9686003)(16526019)(6496006);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: TRIrg1HdjDoSHUFNE1+fprx0J0tLM4BeDS0leMD28a3nFYT/08fgskuU49T9R1Yazdn6Q39KHyutw87+QyVCH+cPfNvmUT5le2LrFlcLry9Qhpz5J9BVZrH99VEet2aUvE00ZyN0ESzrFfkekHNvFNi03yReXfsqdKcdwSTzqaopnawWuGsczJbvbEGBAF03VGiKORSajlmvWB/NSgFO/iMSAo3GyqNKdG7IX7D+L1QKscrRykXiYSDrtJKEvDl4ImlxhxmfxtPRv9/XeykIxV+RniwAJERXxPc0UUMEO2j6ScZMmsAT4rpQfjHSHZ27M2rnpl8SYVrxe0jwLP2ns8k0/zwD4w8+aFvjpT+FEwtNE1PomOU+bTsampepcSmoOEHHVc5k5J6NLqkS/aHFGIyYnlgJEL/Ub157Wedy6jC7+hKZ/pHRJhYSrIAnyQb9OMnO2E9HGkY6dQVCPvzOGCLyAoZl58H+rRe67nL77U0iqFZfmaOo8Nwf41tskHirtFPrRI4+lxoicr31ObDZoiSKxr6VRnH3ySw6qqBP3pCmw0LugiNY2XewpciPbwVq81TZE7kgYVuMJ5UsscPDEArW1fQj+tFobdSPIVVSJFpJgKMCX7sFAhfpG7xH2Bqz/lFUcUquLrXpzC8vxQSbrXPzWEjDRwBv/ezrZYprIp1AbjxOwoAggOUhd2r6OCXL
+X-MS-Exchange-CrossTenant-Network-Message-Id: 864bc275-3401-4845-d346-08d8643cc94f
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3571.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Sep 2020 05:59:11.6389
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: srlgCrocJeCKVxXHcYUKxLM7yIcb6thjMR9zmSILWNqcICNx72Dz+USbwLFpqbnl
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3207
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-29_01:2020-09-29,2020-09-29 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 spamscore=0
+ mlxlogscore=999 priorityscore=1501 adultscore=0 clxscore=1011
+ lowpriorityscore=0 malwarescore=0 suspectscore=1 impostorscore=0
+ bulkscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009290058
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/28/20 9:29 AM, Stephen Smalley wrote:
-> On Sat, Sep 26, 2020 at 12:40 PM Lakshmi Ramasubramanian
-> <nramas@linux.microsoft.com> wrote:
->>
->> Critical data structures of security modules are currently not measured.
->> Therefore an attestation service, for instance, would not be able to
->> attest whether the security modules are always operating with the policies
->> and configurations that the system administrator had setup. The policies
->> and configurations for the security modules could be tampered by rogue
->> user mode agents or modified through some inadvertent actions on
->> the system. Measuring such critical data would enable an attestation
->> service to reliably assess the security configuration of the system.
->>
->> SELinux configuration and policy are some of the critical data for this
->> security module that need to be measured. This measurement can be used
->> by an attestation service, for instance, to verify if the configurations
->> and policies have been setup correctly and that they haven't been
->> tampered at run-time.
->>
->> Measure SELinux configurations, policy capabilities settings, and
->> the hash of the loaded policy by calling the IMA hook
->> ima_measure_critical_data(). Since the size of the loaded policy can
->> be large (several MB), measure the hash of the policy instead of
->> the entire policy to avoid bloating the IMA log entry.
->>
->> Add "selinux" to the list of supported data sources maintained by IMA
->> to enable measuring SELinux data.
+On Mon, Sep 28, 2020 at 10:08:03AM +0100, Lorenz Bauer wrote:
+> We compare socket cookies to ensure that insertion into a sockmap worked.
+> Pull this out into a helper function for use in other tests.
 > 
-> Please provide an example /etc/ima/ima-policy snippet for enabling
-> this support, e.g.
-> measure func=CRITICAL_DATA data_sources=selinux template=ima-buf
-Will do.
-
+> Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
+> ---
+>  .../selftests/bpf/prog_tests/sockmap_basic.c  | 50 +++++++++++++------
+>  1 file changed, 36 insertions(+), 14 deletions(-)
 > 
->> Since SELinux calls the IMA hook to measure data before
->> a custom IMA policy is loaded, enable queuing if CONFIG_SECURITY_SELINUX
->> is enabled, to defer processing SELinux data until a custom IMA policy
->> is loaded.
->>
->> Sample measurement of SELinux state and hash of the policy:
->>
->> 10 e32e...5ac3 ima-buf sha256:86e8...4594 selinux-state-1595389364:287899386 696e697469616c697a65643d313b656e61626c65643d313b656e666f7263696e673d303b636865636b72657170726f743d313b6e6574776f726b5f706565725f636f6e74726f6c733d313b6f70656e5f7065726d733d313b657874656e6465645f736f636b65745f636c6173733d313b616c776179735f636865636b5f6e6574776f726b3d303b6367726f75705f7365636c6162656c3d313b6e6e705f6e6f737569645f7472616e736974696f6e3d313b67656e66735f7365636c6162656c5f73796d6c696e6b733d303
->> 10 9e81...0857 ima-buf sha256:4941...68fc selinux-policy-hash-1597335667:462051628 8d1d...1834
->>
->> To verify the measurement check the following:
->>
->> Execute the following command to extract the measured data
->> from the IMA log for SELinux configuration (selinux-state).
->>
->>    grep -m 1 "selinux-state" /sys/kernel/security/integrity/ima/ascii_runtime_measurements | cut -d' ' -f 6 | xxd -r -p
-> 
-> NB This will only extract the first such record, which will always be
-> prior to policy load (initialized=0) so that won't be terribly useful.
-> For real verification, they would want to check all such records or at
-> least the last/latest one (depending on their goal).
-Will update to fetch the latest measurement entry for selinux state.
-
-I have posted a patch that adds test in LTP to validate selinux 
-measurement made by IMA. That test extracts the latest selinux 
-measurement entry from the IMA log and validates. The link to that patch 
-is https://patchwork.kernel.org/patch/11804587/
-
-> 
->> The output should be the list of key-value pairs. For example,
->>   initialized=1;enabled=1;enforcing=0;checkreqprot=1;network_peer_controls=1;open_perms=1;extended_socket_class=1;always_check_network=0;cgroup_seclabel=1;nnp_nosuid_transition=1;genfs_seclabel_symlinks=0;
->>
->> To verify the measured data with the current SELinux state:
->>
->>   => enabled should be set to 1 if /sys/fs/selinux folder exists,
->>      0 otherwise
->>
->> For other entries, compare the integer value in the files
->>   => /sys/fs/selinux/enforce
->>   => /sys/fs/selinux/checkreqprot
->> And, each of the policy capabilities files under
->>   => /sys/fs/selinux/policy_capabilities
-> 
-> To be clear, actual verification would be against an expected state
-> and done on a system other than the measured system, typically
-> requiring "initialized=1; enabled=1;enforcing=1;checkreqprot=0;" for a
-> secure state and then whatever policy capabilities are actually set in
-> the expected policy (which can be extracted from the policy itself via
-> seinfo or the like).
-Agreed. The measurement of selinux state done by IMA would ideally be 
-validated by a remote attestation service against expected state.
-
-> 
->> For selinux-policy-hash, the hash of SELinux policy is included
->> in the IMA log entry.
->>
->> To verify the measured data with the current SELinux policy run
->> the following commands and verify the output hash values match.
->>
->>    sha256sum /sys/fs/selinux/policy | cut -d' ' -f 1
->>
->>    grep -m 1 "selinux-policy-hash" /sys/kernel/security/integrity/ima/ascii_runtime_measurements | cut -d' ' -f 6
-> 
-> As above, this will only extract the first policy load, whereas for
-> real verification they will want to check either all of them or at
-> least the latest/last one.  For actual verification, they would need
-> to load the expected policy into an identical kernel on a
-> pristine/known-safe system and run the sha256sum
-> /sys/kernel/selinux/policy there to get the expected hash.
-
-The test patch, for adding a test for validating selinux measurement, 
-extracts the latest entry for selinux policy measurement and validates
-against the policy read from /sys/kernel/selinux/policy.
-
-This is just to validate that the selinux policy was measured correctly 
-by selinux & IMA.
-
-Similar to selinux state verification, a remote attestation service 
-should validate the policy hash against an expected hash to validate 
-that the policy set by the administrator hasn't been tampered with.
-
-> 
->> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
->> Suggested-by: Stephen Smalley <stephen.smalley.work@gmail.com>
->> ---
-> 
->> diff --git a/security/selinux/measure.c b/security/selinux/measure.c
->> new file mode 100644
->> index 000000000000..b29baaa271f0
->> --- /dev/null
->> +++ b/security/selinux/measure.c
->> @@ -0,0 +1,154 @@
->> +// SPDX-License-Identifier: GPL-2.0-or-later
->> +/*
->> + * Measure SELinux state using IMA subsystem.
->> + */
->> +#include <linux/vmalloc.h>
->> +#include <linux/ktime.h>
->> +#include <linux/ima.h>
->> +#include "security.h"
->> +
->> +/*
->> + * This function creates a unique name by appending the timestamp to
->> + * the given string. This string is passed as "event_name" to the IMA
->> + * hook to measure the given SELinux data.
->> + *
->> + * The data provided by SELinux to the IMA subsystem for measuring may have
->> + * already been measured (for instance the same state existed earlier).
->> + * But for SELinux the current data represents a state change and hence
->> + * needs to be measured again. To enable this, pass a unique "event_name"
->> + * to the IMA hook so that IMA subsystem will always measure the given data.
->> + *
->> + * For example,
->> + * At time T0 SELinux data to be measured is "foo". IMA measures it.
->> + * At time T1 the data is changed to "bar". IMA measures it.
->> + * At time T2 the data is changed to "foo" again. IMA will not measure it
->> + * (since it was already measured) unless the event_name, for instance,
->> + * is different in this call.
->> + */
->> +static char *selinux_event_name(const char *name_prefix)
->> +{
->> +       char *event_name = NULL;
->> +       struct timespec64 cur_time;
->> +
->> +       ktime_get_real_ts64(&cur_time);
->> +       event_name = kasprintf(GFP_KERNEL, "%s-%lld:%09ld", name_prefix,
->> +                              cur_time.tv_sec, cur_time.tv_nsec);
->> +       if (!event_name) {
->> +               pr_err("%s: event name not allocated.\n", __func__);
->> +               return NULL;
->> +       }
->> +
->> +       return event_name;
->> +}
->> +
->> +static int read_selinux_state(char **state_str, int *state_str_len,
->> +                             struct selinux_state *state)
->> +{
->> +       char *buf, *str_fmt = "%s=%d;";
->> +       int i, buf_len, curr;
->> +       bool initialized = selinux_initialized(state);
->> +       bool enabled = !selinux_disabled(state);
->> +       bool enforcing = enforcing_enabled(state);
->> +       bool checkreqprot = checkreqprot_get(state);
->> +
->> +       buf_len = snprintf(NULL, 0, str_fmt, "initialized", initialized);
->> +       buf_len += snprintf(NULL, 0, str_fmt, "enabled", enabled);
->> +       buf_len += snprintf(NULL, 0, str_fmt, "enforcing", enforcing);
->> +       buf_len += snprintf(NULL, 0, str_fmt, "checkreqprot", checkreqprot);
->> +
->> +       for (i = 0; i < __POLICYDB_CAPABILITY_MAX; i++) {
->> +               buf_len += snprintf(NULL, 0, str_fmt,
->> +                                   selinux_policycap_names[i],
->> +                                   state->policycap[i]);
->> +       }
->> +       ++buf_len;
->> +
->> +       buf = kzalloc(buf_len, GFP_KERNEL);
->> +       if (!buf)
->> +               return -ENOMEM;
->> +
->> +       curr = snprintf(buf, buf_len, str_fmt,
->> +                       "initialized", initialized);
->> +       curr += snprintf((buf + curr), (buf_len - curr), str_fmt,
->> +                        "enabled", enabled);
->> +       curr += snprintf((buf + curr), (buf_len - curr), str_fmt,
->> +                        "enforcing", enforcing);
->> +       curr += snprintf((buf + curr), (buf_len - curr), str_fmt,
->> +                        "checkreqprot", checkreqprot);
-> 
-> Wondering if we should be using scnprintf() when writing to the buffer
-> instead of snprintf() to ensure it returns the actual length written.
-> Technically shouldn't be an issue since we just computed the length
-> above and allocated to that size but might be less prone to error in
-> the future.
-Agreed - will change it to scnprintf().
-
-> 
->> +
->> +       for (i = 0; i < __POLICYDB_CAPABILITY_MAX; i++) {
->> +               curr += snprintf((buf + curr), (buf_len - curr), str_fmt,
->> +                                selinux_policycap_names[i],
->> +                                state->policycap[i]);
-> 
-> Ditto
-Will use scnprintf here as well.
-
-> 
->> +       }
->> +
->> +       *state_str = buf;
->> +       *state_str_len = curr;
->> +
->> +       return 0;
->> +}
->> +
->> +/*
->> + * selinux_measure_state - Measure SELinux state configuration and hash of
->> + *                        the SELinux policy.
->> + * @state: selinux state struct
->> + *
->> + * NOTE: This function must be called with policy_mutex held.
->> + */
->> +void selinux_measure_state(struct selinux_state *state)
->> +{
->> +       void *policy = NULL;
->> +       char *state_event_name = NULL;
->> +       char *policy_event_name = NULL;
->> +       char *state_str = NULL;
->> +       size_t policy_len;
->> +       int state_str_len, rc = 0;
->> +       bool initialized = selinux_initialized(state);
->> +
->> +       rc = read_selinux_state(&state_str, &state_str_len, state);
->> +       if (rc) {
->> +               pr_err("%s: Failed to read selinux state.\n", __func__);
->> +               return;
->> +       }
->> +
->> +       /*
->> +        * Get a unique string for measuring the current SELinux state.
->> +        */
->> +       state_event_name = selinux_event_name("selinux-state");
->> +       if (!state_event_name) {
->> +               pr_err("%s: Event name for state not allocated.\n",
->> +                      __func__);
->> +               rc = -ENOMEM;
->> +               goto out;
->> +       }
-> 
-> Why get the event name after creating the state string?  If memory is
-> under sufficient pressure to cause the event name allocation to fail,
-> then we're going to fail on allocating the state string too and no
-> point in doing the work in that case.
-I will allocate event name and if that succeeds then read the state.
-
-> 
->> +
->> +       ima_measure_critical_data(state_event_name, "selinux",
->> +                                 state_str, state_str_len, false);
->> +
->> +       /*
->> +        * Measure SELinux policy only after initialization is completed.
->> +        */
->> +       if (!initialized)
->> +               goto out;
->> +
->> +       rc = security_read_policy_kernel(state, &policy, &policy_len);
->> +       if (rc)
->> +               goto out;
->> +
->> +       policy_event_name = selinux_event_name("selinux-policy-hash");
->> +       if (!policy_event_name) {
->> +               pr_err("%s: Event name for policy not allocated.\n",
->> +                      __func__);
->> +               rc = -ENOMEM;
->> +               goto out;
->> +       }
-> 
-> Ditto.
-Will do the same here as well - allocate event name and if that succeeds 
-then read the policy.
-
-> 
->> +
->> +       ima_measure_critical_data(policy_event_name, "selinux",
->> +                                 policy, policy_len, true);
->> +
->> +out:
->> +       kfree(state_event_name);
->> +       kfree(policy_event_name);
->> +       kfree(state_str);
->> +       vfree(policy);
-> 
-> Can you free them in the reverse order in which they were allocated?
-> And the vfree() likely can get moved before the out:
-> label if you reverse the order in which the event name and policy get allocated.
-> For some related discussion around error handling and freeing of
-> things, see https://lore.kernel.org/selinux/20200825125130.GA304650@mwanda/
-> and https://lore.kernel.org/selinux/20200826113148.GA393664@mwanda/.
-Will do.
-
-> 
->> +}
->> diff --git a/security/selinux/selinuxfs.c b/security/selinux/selinuxfs.c
->> index 4bde570d56a2..a4f1282f7178 100644
->> --- a/security/selinux/selinuxfs.c
->> +++ b/security/selinux/selinuxfs.c
->> @@ -182,6 +182,10 @@ static ssize_t sel_write_enforce(struct file *file, const char __user *buf,
->>                  selinux_status_update_setenforce(state, new_value);
->>                  if (!new_value)
->>                          call_blocking_lsm_notifier(LSM_POLICY_CHANGE, NULL);
->> +
->> +               mutex_lock(&state->policy_mutex);
->> +               selinux_measure_state(state);
->> +               mutex_unlock(&state->policy_mutex);
-> 
-> Side bar question for selinux maintainers: should we extend the scope
-> of this mutex to cover the entire operation (or at least everything
-> from reading the old value to setting the new value)?  It isn't
-> strictly necessary but might be nicer.  Ditto for disable and
-> checkreqprot, although both of those are being deprecated.
-> 
-
-thanks,
-  -lakshmi
+> diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
+> index 4b7a527e7e82..67d3301bdf81 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
+> @@ -50,6 +50,37 @@ static int connected_socket_v4(void)
+>  	return -1;
+>  }
+>  
+> +static void compare_cookies(struct bpf_map *src, struct bpf_map *dst)
+> +{
+> +	__u32 i, max_entries = bpf_map__max_entries(src);
+> +	int err, duration, src_fd, dst_fd;
+This should have a compiler warning.  "duration" is not initialized.
