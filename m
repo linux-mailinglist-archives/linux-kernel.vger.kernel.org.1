@@ -2,88 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFDEB27DA85
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 23:47:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23F4727DB1F
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 23:53:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728781AbgI2VrD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 17:47:03 -0400
-Received: from sauhun.de ([88.99.104.3]:34540 "EHLO pokefinder.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728658AbgI2Vq6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 17:46:58 -0400
-Received: from localhost (p54b3311a.dip0.t-ipconnect.de [84.179.49.26])
-        by pokefinder.org (Postfix) with ESMTPSA id C8D3C2C052F;
-        Tue, 29 Sep 2020 23:46:55 +0200 (CEST)
-Date:   Tue, 29 Sep 2020 23:46:55 +0200
-From:   Wolfram Sang <wsa@the-dreams.de>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        linux-i2c@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v8 12/32] i2c: tegra: Use clk-bulk helpers
-Message-ID: <20200929214655.GF2010@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@the-dreams.de>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        linux-i2c@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200922225155.10798-1-digetx@gmail.com>
- <20200922225155.10798-13-digetx@gmail.com>
- <20200929193322.GA2010@kunai>
- <fc8704c2-85bc-98ce-4765-c28ce8ac6be9@gmail.com>
+        id S1728438AbgI2VxJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 17:53:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49326 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728169AbgI2VxI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 17:53:08 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9DB8C0613D3
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 14:53:08 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id y14so4999276pgf.12
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 14:53:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=laptop-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=f/gWOu1TrRoNXxwTjONo7o5+Ij7ibEG5IfBYm/+HET8=;
+        b=E33XYTuKaxFZeZYJMW6eTtEGrlyGXTkwcx/zyYE4FwwLi+COEW+yWd/+0Cf95/WGtY
+         gA86BU5Drjiy9diRFKDvzElxjUhLaGUOgLxvPHqm4KrxiVokwNDSCtjIpcES/TpEIpc6
+         dVmJeB/tex75y/Bc/sY6UtXa0A77E3dRr5L+1KAoi+AbU1W6Vt9GYfXyFtcOrRf/wp6Q
+         D0a6jDjLfVX1kaG9HLQV63nTT6mPqCav4kqlRwsiC9ZYjBegbY+4NXor8wgJHhd2Y461
+         EpM2ZClNwNHNBuUJ9Q6GRMia0EL2Pv5QHFBk+FzsVmbnGLFb638dkqk6/2raUfpv9cRX
+         /G4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=f/gWOu1TrRoNXxwTjONo7o5+Ij7ibEG5IfBYm/+HET8=;
+        b=KjhUM4TCQC8zxdSV+rvZt4+HMfYh797tdjr72XoK0x5/gYJ6ZZD2k3jFoMaC0L1qv7
+         upxXGtLMK/wb1S2b6Et+qO8f7C3n1Si301iBz2R788/n29tHMUzVehS60pjRdPuVtj1Q
+         hfealjFkKEAQ/KisQZZZvHihhm9+fMV/aNQDHUiO7CZzcPdz6CZDGyKIAsm/xFqm59Dx
+         rUMp6kdBt1APa0zb8hjgkV4iYM2d04m0itcwM5iYHM/czfaRXuMzgR+iKT+CTragibaR
+         peQnZFjY5re2ew8h2VgCIyvMpbW9apYykzcjPslhe3zgk/weZFEMQT0+U1+OoaFGPhtb
+         A3zA==
+X-Gm-Message-State: AOAM533SXgVYExinVmF0fHc+J2+MEONsYPvfORFauGQhvh2p4m/P+Qxa
+        szIow1aT0c4lxjri2MzbvjlZWg==
+X-Google-Smtp-Source: ABdhPJzIeNXHHc94ebLFB9qkrPXXAtz33vlk/UqWEatHhLEUSYCsDM/sIDsnSGbSOH4e+0OMNyZK5g==
+X-Received: by 2002:a63:2845:: with SMTP id o66mr4631601pgo.77.1601416387878;
+        Tue, 29 Sep 2020 14:53:07 -0700 (PDT)
+Received: from esk ([1.129.134.212])
+        by smtp.gmail.com with ESMTPSA id l79sm6516011pfd.210.2020.09.29.14.53.06
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 29 Sep 2020 14:53:07 -0700 (PDT)
+Received: from james by esk with local (Exim 4.90_1)
+        (envelope-from <quozl@laptop.org>)
+        id 1kNNYV-0004eb-0z; Wed, 30 Sep 2020 07:53:03 +1000
+Date:   Wed, 30 Sep 2020 07:53:03 +1000
+From:   James Cameron <quozl@laptop.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
+        linux-doc@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
+        Chris Snook <chris.snook@gmail.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Christian Benvenuti <benve@cisco.com>,
+        Arend van Spriel <arend.vanspriel@broadcom.com>,
+        Govindarajulu Varadarajan <_govind@gmx.com>,
+        Vishal Kulkarni <vishal@chelsio.com>,
+        Luca Coelho <luciano.coelho@intel.com>,
+        Edward Cree <ecree@solarflare.com>,
+        libertas-dev@lists.infradead.org, brcm80211-dev-list@cypress.com,
+        brcm80211-dev-list.pdl@broadcom.com,
+        Ping-Ke Shih <pkshih@realtek.com>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Intel Linux Wireless <linuxwifi@intel.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Matthew Wilcox <willy@infradead.org>,
+        intel-wired-lan@lists.osuosl.org,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Martin Habets <mhabets@solarflare.com>,
+        Ulrich Kunitz <kune@deine-taler.de>,
+        Jay Cliburn <jcliburn@gmail.com>,
+        Paul McKenney <paulmck@kernel.org>,
+        Stanislaw Gruszka <stf_xl@wp.pl>, Jouni Malinen <j@w1.fi>,
+        Hante Meuleman <hante.meuleman@broadcom.com>,
+        Pascal Terjan <pterjan@google.com>,
+        Amitkumar Karwar <amitkarwar@gmail.com>,
+        Wright Feng <wright.feng@cypress.com>,
+        Daniel Drake <dsd@gentoo.org>,
+        Pensando Drivers <drivers@pensando.io>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Franky Lin <franky.lin@broadcom.com>,
+        Solarflare linux maintainers <linux-net-drivers@solarflare.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Chi-Hsien Lin <chi-hsien.lin@cypress.com>,
+        Xinming Hu <huxinming820@gmail.com>, netdev@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ganapathi Bhat <ganapathi.bhat@nxp.com>,
+        Stanislav Yakovlev <stas.yakovlev@gmail.com>,
+        Jon Mason <jdmason@kudzu.us>,
+        Shannon Nelson <snelson@pensando.io>,
+        Dave Miller <davem@davemloft.net>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>
+Subject: Re: [patch V2 33/36] net: libertas: Use netif_rx_any_context()
+Message-ID: <20200929215302.GB16571@laptop.org>
+References: <20200929202509.673358734@linutronix.de>
+ <20200929203502.769744809@linutronix.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="l+goss899txtYvYf"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <fc8704c2-85bc-98ce-4765-c28ce8ac6be9@gmail.com>
+In-Reply-To: <20200929203502.769744809@linutronix.de>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Sep 29, 2020 at 10:25:42PM +0200, Thomas Gleixner wrote:
+> From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> 
+> The usage of in_interrupt() in non-core code is phased out. Ideally the
+> information of the calling context should be passed by the callers or the
+> functions be split as appropriate.
+> 
+> libertas uses in_interupt() to select the netif_rx*() variant which matches
+> the calling context. The attempt to consolidate the code by passing an
+> arguemnt or by distangling it failed due lack of knowledge about this
+> driver and because the call chains are hard to follow.
+> 
+> As a stop gap use netif_rx_any_context() which invokes the correct code
+> path depending on context and confines the in_interrupt() usage to core
+> code.
+> 
+> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> Acked-by: Kalle Valo <kvalo@codeaurora.org>
 
---l+goss899txtYvYf
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Reviewed-by: James Cameron <quozl@laptop.org>
 
-
-> > Any comments here? I'll apply this series later this week if there are
-> > no objections coming up.
-> >=20
->=20
-> Please hold on, I just spotted a serious problem in patch 23 and v9
-> needs to be done.
-
-Ok, thanks for the heads up. An ack for this patch would still be nice
-:)
-
-
---l+goss899txtYvYf
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl9zq0sACgkQFA3kzBSg
-KbazJw//dor6zAvqnnJ4/3TpkwOQ73x4ZMaKkfzVRNGdig+/GuccXdwW0I0y7bmk
-Z6iye4ww67F2yD8sCdg315MDOOV5b40P7vs7zsvX+1EeM7qfZ5yP/OMIloRDIYo3
-AIBUX84PWUs598DPJhCcfMenF78c78W/eiNznMUFCrA1dW93B0viYR8CUs3R90sc
-mEJAS6IpRej7Hklp8ySh6eqouLrkB/1fptKNjbfVGE9SJ0kFztBte4sBr6GMiRpQ
-MPeKh6vd5JDuPupibXSslv5kX48TU06f5b3b+P9llk+BGHpDWc9ZYe5QRL2ThZPd
-A6ifxvhJ9FrL1/gQeeVDfsUVV7n4///byG3YngN/Wgr+qx6dLzHRfT/g6J18Cuo5
-wh3kS6jyB8d44d/MQYcSIPszRrui+IYvzlCItL1VbCbjP61McM55f5MtHCh9034Y
-ZfsT3pNioGTbI6pN/jifPnVca8tgXGhJKLRnJX+fXKTwSUu+CRph+KVDOj2yIDAM
-NbuecEZQlpTs/RskP33BinTCzJomBhP4ygDpKhhJUPm4N/UwntB8TQOlDp7mSSFf
-GhZEG+qxNVq9ei4oJTngeuXdBeEL6h0W+whXY5rX9HxvGAC+a/Q+QXodp2YZkTmc
-FWg6L2P1L0LwjuBu2amLOF1+mAXQfBpSKH2Ad3anDr9zgau6HRA=
-=NThJ
------END PGP SIGNATURE-----
-
---l+goss899txtYvYf--
+-- 
+James Cameron
+http://quozl.netrek.org/
