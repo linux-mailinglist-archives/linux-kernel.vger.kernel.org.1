@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12FF527C6C8
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:48:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 219EB27C71D
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:51:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731161AbgI2Lsh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:48:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51064 "EHLO mail.kernel.org"
+        id S1730771AbgI2Lv2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:51:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51130 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731155AbgI2Lsd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:48:33 -0400
+        id S1731158AbgI2Lsg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:48:36 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0E50920702;
-        Tue, 29 Sep 2020 11:48:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4B8002074A;
+        Tue, 29 Sep 2020 11:48:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601380113;
-        bh=xa36xPnLHfX5BA6IyyuvTBAULCDnywIqCGXLa7Flf8c=;
+        s=default; t=1601380115;
+        bh=By/MfqrZaIlikrU8qvl6DcvMLPb2g2ybPFQUJEjX+YI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1Hpz1+PM3PNtHnhgAjDopWTkVxeVa46ashd6koqW4Rxz0l+lbsXVCt/On/jvLJADX
-         BGhxMX4sXPAsqNfD3RDLXYgRK1JoIIco7NKjZjG8KWEgqGmMk/kWuMGyqPCElYblex
-         RJKcCR+4SJzqrUQ+D2ZYSI1aYWpxP02Xepkgr5sQ=
+        b=1iWAEFTAcuiqESTdnHxgxEy865zGu+1dZ1ZI03NmncQhF3AJuIie6204h3NRooyzE
+         +UdzJnLSRpsSIaVHocsrautQ9mlR6H5x3hyBXiUWAnTEAkhVT3UF+M1RAaqRDXh5I3
+         iCUfPmsgcJcFikQByQ++R++TcniobBWuPtJaIxwE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, p_c_chan@hotmail.com, ecm4@mail.com,
-        perdigao1@yahoo.com, matzes@users.sourceforge.net,
-        rvelascog@gmail.com, Thomas Gleixner <tglx@linutronix.de>
-Subject: [PATCH 5.8 73/99] x86/ioapic: Unbreak check_timer()
-Date:   Tue, 29 Sep 2020 13:01:56 +0200
-Message-Id: <20200929105933.324441260@linuxfoundation.org>
+        stable@vger.kernel.org, Dick Kennedy <dick.kennedy@broadcom.com>,
+        James Smart <james.smart@broadcom.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Subject: [PATCH 5.8 74/99] scsi: lpfc: Fix initial FLOGI failure due to BBSCN not supported
+Date:   Tue, 29 Sep 2020 13:01:57 +0200
+Message-Id: <20200929105933.374695071@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200929105929.719230296@linuxfoundation.org>
 References: <20200929105929.719230296@linuxfoundation.org>
@@ -43,72 +43,173 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+From: James Smart <james.smart@broadcom.com>
 
-commit 86a82ae0b5095ea24c55898a3f025791e7958b21 upstream.
+commit 7f04839ec4483563f38062b4dd90253e45447198 upstream.
 
-Several people reported in the kernel bugzilla that between v4.12 and v4.13
-the magic which works around broken hardware and BIOSes to find the proper
-timer interrupt delivery mode stopped working for some older affected
-platforms which need to fall back to ExtINT delivery mode.
+Initial FLOGIs are failing with the following message:
 
-The reason is that the core code changed to keep track of the masked and
-disabled state of an interrupt line more accurately to avoid the expensive
-hardware operations.
+ lpfc 0000:13:00.1: 1:(0):0820 FLOGI Failed (x300). BBCredit Not Supported
 
-That broke an assumption in i8259_make_irq() which invokes
+In a prior patch, the READ_SPARAM command was re-ordered to post after
+CONFIG_LINK as the driver is expected to update the driver's copy of the
+service parameters for the FLOGI payload. If the bb-credit recovery feature
+is enabled, this is fine. But on adapters were bb-credit recovery isn't
+enabled, it would cause the FLOGI to fail.
 
-     disable_irq_nosync();
-     irq_set_chip_and_handler();
-     enable_irq();
+Fix by restoring the original command order (READ_SPARAM before
+CONFIG_LINK), and after issuing CONFIG_LINK, detect bb-credit recovery
+support and reissuing READ_SPARAM to obtain the updated service parameters
+(effectively adding in the fix command order).
 
-Up to v4.12 this worked because enable_irq() unconditionally unmasked the
-interrupt line, but after the state tracking improvements this is not
-longer the case because the IO/APIC uses lazy disabling. So the line state
-is unmasked which means that enable_irq() does not call into the new irq
-chip to unmask it.
+[mkp: corrected SHA]
 
-In principle this is a shortcoming of the core code, but it's more than
-unclear whether the core code should try to reset state. At least this
-cannot be done unconditionally as that would break other existing use cases
-where the chip type is changed, e.g. when changing the trigger type, but
-the callers expect the state to be preserved.
-
-As the way how check_timer() is switching the delivery modes is truly
-unique, the obvious fix is to simply unmask the i8259 manually after
-changing the mode to ExtINT delivery and switching the irq chip to the
-legacy PIC.
-
-Note, that the fixes tag is not really precise, but identifies the commit
-which broke the assumptions in the IO/APIC and i8259 code and that's the
-kernel version to which this needs to be backported.
-
-Fixes: bf22ff45bed6 ("genirq: Avoid unnecessary low level irq function calls")
-Reported-by: p_c_chan@hotmail.com
-Reported-by: ecm4@mail.com
-Reported-by: perdigao1@yahoo.com
-Reported-by: matzes@users.sourceforge.net
-Reported-by: rvelascog@gmail.com
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Tested-by: p_c_chan@hotmail.com
-Tested-by: matzes@users.sourceforge.net
-Cc: stable@vger.kernel.org
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=197769
+Link: https://lore.kernel.org/r/20200911200147.110826-1-james.smart@broadcom.com
+Fixes: 835214f5d5f5 ("scsi: lpfc: Fix broken Credit Recovery after driver load")
+CC: <stable@vger.kernel.org> # v5.7+
+Co-developed-by: Dick Kennedy <dick.kennedy@broadcom.com>
+Signed-off-by: Dick Kennedy <dick.kennedy@broadcom.com>
+Signed-off-by: James Smart <james.smart@broadcom.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/x86/kernel/apic/io_apic.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/scsi/lpfc/lpfc_hbadisc.c |   76 ++++++++++++++++++++++++++-------------
+ 1 file changed, 52 insertions(+), 24 deletions(-)
 
---- a/arch/x86/kernel/apic/io_apic.c
-+++ b/arch/x86/kernel/apic/io_apic.c
-@@ -2243,6 +2243,7 @@ static inline void __init check_timer(vo
- 	legacy_pic->init(0);
- 	legacy_pic->make_irq(0);
- 	apic_write(APIC_LVT0, APIC_DM_EXTINT);
-+	legacy_pic->unmask(0);
+--- a/drivers/scsi/lpfc/lpfc_hbadisc.c
++++ b/drivers/scsi/lpfc/lpfc_hbadisc.c
+@@ -71,6 +71,7 @@ static void lpfc_disc_timeout_handler(st
+ static void lpfc_disc_flush_list(struct lpfc_vport *vport);
+ static void lpfc_unregister_fcfi_cmpl(struct lpfc_hba *, LPFC_MBOXQ_t *);
+ static int lpfc_fcf_inuse(struct lpfc_hba *);
++static void lpfc_mbx_cmpl_read_sparam(struct lpfc_hba *, LPFC_MBOXQ_t *);
  
- 	unlock_ExtINT_logic();
+ void
+ lpfc_terminate_rport_io(struct fc_rport *rport)
+@@ -1138,11 +1139,13 @@ out:
+ 	return;
+ }
  
+-
+ void
+ lpfc_mbx_cmpl_local_config_link(struct lpfc_hba *phba, LPFC_MBOXQ_t *pmb)
+ {
+ 	struct lpfc_vport *vport = pmb->vport;
++	LPFC_MBOXQ_t *sparam_mb;
++	struct lpfc_dmabuf *sparam_mp;
++	int rc;
+ 
+ 	if (pmb->u.mb.mbxStatus)
+ 		goto out;
+@@ -1167,12 +1170,42 @@ lpfc_mbx_cmpl_local_config_link(struct l
+ 	}
+ 
+ 	/* Start discovery by sending a FLOGI. port_state is identically
+-	 * LPFC_FLOGI while waiting for FLOGI cmpl. Check if sending
+-	 * the FLOGI is being deferred till after MBX_READ_SPARAM completes.
++	 * LPFC_FLOGI while waiting for FLOGI cmpl.
+ 	 */
+ 	if (vport->port_state != LPFC_FLOGI) {
+-		if (!(phba->hba_flag & HBA_DEFER_FLOGI))
++		/* Issue MBX_READ_SPARAM to update CSPs before FLOGI if
++		 * bb-credit recovery is in place.
++		 */
++		if (phba->bbcredit_support && phba->cfg_enable_bbcr &&
++		    !(phba->link_flag & LS_LOOPBACK_MODE)) {
++			sparam_mb = mempool_alloc(phba->mbox_mem_pool,
++						  GFP_KERNEL);
++			if (!sparam_mb)
++				goto sparam_out;
++
++			rc = lpfc_read_sparam(phba, sparam_mb, 0);
++			if (rc) {
++				mempool_free(sparam_mb, phba->mbox_mem_pool);
++				goto sparam_out;
++			}
++			sparam_mb->vport = vport;
++			sparam_mb->mbox_cmpl = lpfc_mbx_cmpl_read_sparam;
++			rc = lpfc_sli_issue_mbox(phba, sparam_mb, MBX_NOWAIT);
++			if (rc == MBX_NOT_FINISHED) {
++				sparam_mp = (struct lpfc_dmabuf *)
++						sparam_mb->ctx_buf;
++				lpfc_mbuf_free(phba, sparam_mp->virt,
++					       sparam_mp->phys);
++				kfree(sparam_mp);
++				sparam_mb->ctx_buf = NULL;
++				mempool_free(sparam_mb, phba->mbox_mem_pool);
++				goto sparam_out;
++			}
++
++			phba->hba_flag |= HBA_DEFER_FLOGI;
++		}  else {
+ 			lpfc_initial_flogi(vport);
++		}
+ 	} else {
+ 		if (vport->fc_flag & FC_PT2PT)
+ 			lpfc_disc_start(vport);
+@@ -1184,6 +1217,7 @@ out:
+ 			 "0306 CONFIG_LINK mbxStatus error x%x "
+ 			 "HBA state x%x\n",
+ 			 pmb->u.mb.mbxStatus, vport->port_state);
++sparam_out:
+ 	mempool_free(pmb, phba->mbox_mem_pool);
+ 
+ 	lpfc_linkdown(phba);
+@@ -3239,21 +3273,6 @@ lpfc_mbx_process_link_up(struct lpfc_hba
+ 	lpfc_linkup(phba);
+ 	sparam_mbox = NULL;
+ 
+-	if (!(phba->hba_flag & HBA_FCOE_MODE)) {
+-		cfglink_mbox = mempool_alloc(phba->mbox_mem_pool, GFP_KERNEL);
+-		if (!cfglink_mbox)
+-			goto out;
+-		vport->port_state = LPFC_LOCAL_CFG_LINK;
+-		lpfc_config_link(phba, cfglink_mbox);
+-		cfglink_mbox->vport = vport;
+-		cfglink_mbox->mbox_cmpl = lpfc_mbx_cmpl_local_config_link;
+-		rc = lpfc_sli_issue_mbox(phba, cfglink_mbox, MBX_NOWAIT);
+-		if (rc == MBX_NOT_FINISHED) {
+-			mempool_free(cfglink_mbox, phba->mbox_mem_pool);
+-			goto out;
+-		}
+-	}
+-
+ 	sparam_mbox = mempool_alloc(phba->mbox_mem_pool, GFP_KERNEL);
+ 	if (!sparam_mbox)
+ 		goto out;
+@@ -3274,7 +3293,20 @@ lpfc_mbx_process_link_up(struct lpfc_hba
+ 		goto out;
+ 	}
+ 
+-	if (phba->hba_flag & HBA_FCOE_MODE) {
++	if (!(phba->hba_flag & HBA_FCOE_MODE)) {
++		cfglink_mbox = mempool_alloc(phba->mbox_mem_pool, GFP_KERNEL);
++		if (!cfglink_mbox)
++			goto out;
++		vport->port_state = LPFC_LOCAL_CFG_LINK;
++		lpfc_config_link(phba, cfglink_mbox);
++		cfglink_mbox->vport = vport;
++		cfglink_mbox->mbox_cmpl = lpfc_mbx_cmpl_local_config_link;
++		rc = lpfc_sli_issue_mbox(phba, cfglink_mbox, MBX_NOWAIT);
++		if (rc == MBX_NOT_FINISHED) {
++			mempool_free(cfglink_mbox, phba->mbox_mem_pool);
++			goto out;
++		}
++	} else {
+ 		vport->port_state = LPFC_VPORT_UNKNOWN;
+ 		/*
+ 		 * Add the driver's default FCF record at FCF index 0 now. This
+@@ -3331,10 +3363,6 @@ lpfc_mbx_process_link_up(struct lpfc_hba
+ 		}
+ 		/* Reset FCF roundrobin bmask for new discovery */
+ 		lpfc_sli4_clear_fcf_rr_bmask(phba);
+-	} else {
+-		if (phba->bbcredit_support && phba->cfg_enable_bbcr &&
+-		    !(phba->link_flag & LS_LOOPBACK_MODE))
+-			phba->hba_flag |= HBA_DEFER_FLOGI;
+ 	}
+ 
+ 	/* Prepare for LINK up registrations */
 
 
