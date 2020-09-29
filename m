@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC97727C5FF
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:41:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD7F627C845
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:00:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730593AbgI2Lky (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:40:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36578 "EHLO mail.kernel.org"
+        id S1730583AbgI2MA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 08:00:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36912 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730559AbgI2Lkm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:40:42 -0400
+        id S1730579AbgI2Lkx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:40:53 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 13A7423A60;
-        Tue, 29 Sep 2020 11:23:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 88DF623A63;
+        Tue, 29 Sep 2020 11:23:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601378633;
-        bh=dQPUNc8vecNZt/Q9TRKBDUuZu+b6RB2o+cXiNyBIscY=;
+        s=default; t=1601378639;
+        bh=OOeHGkTyHf/xxJPobnQ823AgM3ilCrmnscfvk67GYOY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=M5hi8IYVj0y4tTFfLQ4HFNh+9ABxazoqme644OFlWcrIXTHYyGlsaprnjqiMJfyVP
-         eDj1633AK4N0WsGIB4vdSrAiLRPvr1/6Utmhvwh65k+MoO1MBIJKPHpGvVy7wmdLzf
-         wQSnARsS0Hci520boGPtHRHs1Zu1Y9rWzdm2VJig=
+        b=VeRsO/5a0ErEyORxOd9xzKgGJJ8iTS5pIJeJO0yIRTFNwiqqqB9N++SLVb8oajFvr
+         IDlmrAOvN/Eq+OzEjRxq0KIrCCAp8irn2We4Q9VBLfYuDrc8cbfejByuR65rdeiHHe
+         upcLf24ankRONwexGPAsBS8Cok9jgBE5AGD3ek+U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Steve Longerbeam <slongerbeam@gmail.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 084/245] KVM: x86: fix incorrect comparison in trace event
-Date:   Tue, 29 Sep 2020 12:58:55 +0200
-Message-Id: <20200929105951.083894238@linuxfoundation.org>
+Subject: [PATCH 4.19 086/245] media: staging/imx: Missing assignment in imx_media_capture_device_register()
+Date:   Tue, 29 Sep 2020 12:58:57 +0200
+Message-Id: <20200929105951.178054998@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200929105946.978650816@linuxfoundation.org>
 References: <20200929105946.978650816@linuxfoundation.org>
@@ -42,32 +45,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paolo Bonzini <pbonzini@redhat.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit 147f1a1fe5d7e6b01b8df4d0cbd6f9eaf6b6c73b ]
+[ Upstream commit ef0ed05dcef8a74178a8b480cce23a377b1de2b8 ]
 
-The "u" field in the event has three states, -1/0/1.  Using u8 however means that
-comparison with -1 will always fail, so change to signed char.
+There was supposed to be a "ret = " assignment here, otherwise the
+error handling on the next line won't work.
 
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Fixes: 64b5a49df486 ("[media] media: imx: Add Capture Device Interface")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Reviewed-by: Steve Longerbeam <slongerbeam@gmail.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kvm/mmutrace.h | 2 +-
+ drivers/staging/media/imx/imx-media-capture.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/kvm/mmutrace.h b/arch/x86/kvm/mmutrace.h
-index cb41b036eb264..7e0dc8c7da2c0 100644
---- a/arch/x86/kvm/mmutrace.h
-+++ b/arch/x86/kvm/mmutrace.h
-@@ -339,7 +339,7 @@ TRACE_EVENT(
- 		/* These depend on page entry type, so compute them now.  */
- 		__field(bool, r)
- 		__field(bool, x)
--		__field(u8, u)
-+		__field(signed char, u)
- 	),
- 
- 	TP_fast_assign(
+diff --git a/drivers/staging/media/imx/imx-media-capture.c b/drivers/staging/media/imx/imx-media-capture.c
+index 256039ce561e6..81a3370551dbc 100644
+--- a/drivers/staging/media/imx/imx-media-capture.c
++++ b/drivers/staging/media/imx/imx-media-capture.c
+@@ -678,7 +678,7 @@ int imx_media_capture_device_register(struct imx_media_video_dev *vdev)
+ 	/* setup default format */
+ 	fmt_src.pad = priv->src_sd_pad;
+ 	fmt_src.which = V4L2_SUBDEV_FORMAT_ACTIVE;
+-	v4l2_subdev_call(sd, pad, get_fmt, NULL, &fmt_src);
++	ret = v4l2_subdev_call(sd, pad, get_fmt, NULL, &fmt_src);
+ 	if (ret) {
+ 		v4l2_err(sd, "failed to get src_sd format\n");
+ 		goto unreg;
 -- 
 2.25.1
 
