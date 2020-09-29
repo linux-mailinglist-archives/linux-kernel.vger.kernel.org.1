@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 387ED27C596
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:38:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30FD427C73C
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:52:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730015AbgI2Lgy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:36:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53440 "EHLO mail.kernel.org"
+        id S1731283AbgI2Lwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:52:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49362 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729967AbgI2LgV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:36:21 -0400
+        id S1731082AbgI2Lri (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:47:38 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5917323DC4;
-        Tue, 29 Sep 2020 11:31:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B668120702;
+        Tue, 29 Sep 2020 11:47:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601379074;
-        bh=cMOMn+SFCJXlYxFMRSeaj8zBYzvgZpg3LElIdt4Okh0=;
+        s=default; t=1601380058;
+        bh=a+cN+gIUhdPZcV3j3N5s51FPo3tZbR21cGfXS6VKWhc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QYlmy5W2VqyUhfJ1vQ2iemKXLqxQMgbUkxKbWc/iEiBHPtXKT0c6xJpAms6VQv/sy
-         CQWtqD77au0faUGNItxQFYgK/5BDdiqwENZBAKuo2qIRKLRS4M3zfv+OJPGUPBREKY
-         XV9Euguw/aVITfwGb5M5Dj6siQNTluhPzLRvvIpM=
+        b=Z8JVY/kRNNFkR0I3njNV+5RhGXQyXshO+VKzX+CsgE5ElM5HN1c1mLAKMIOZw500A
+         dl5izuLbupC7/8b3Oa4lGgxk2gjVGRJiQin9NTUGwVHHyD4/6NhRS1VNNSMsYmuh/N
+         0ATPO3NVCz21+LPj4J020n1SB3Jis87UUBpG3r9I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Harald Freudenberger <freude@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>
-Subject: [PATCH 4.19 240/245] s390/zcrypt: Fix ZCRYPT_PERDEV_REQCNT ioctl
+        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.8 48/99] nvme-tcp: fix kconfig dependency warning when !CRYPTO
 Date:   Tue, 29 Sep 2020 13:01:31 +0200
-Message-Id: <20200929105958.675637750@linuxfoundation.org>
+Message-Id: <20200929105932.092189273@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929105946.978650816@linuxfoundation.org>
-References: <20200929105946.978650816@linuxfoundation.org>
+In-Reply-To: <20200929105929.719230296@linuxfoundation.org>
+References: <20200929105929.719230296@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,37 +44,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christian Borntraeger <borntraeger@de.ibm.com>
+From: Necip Fazil Yildiran <fazilyildiran@gmail.com>
 
-commit f7e80983f0cf470bb82036e73bff4d5a7daf8fc2 upstream.
+[ Upstream commit af5ad17854f96a6d3c9775e776bd01ab262672a1 ]
 
-reqcnt is an u32 pointer but we do copy sizeof(reqcnt) which is the
-size of the pointer. This means we only copy 8 byte. Let us copy
-the full monty.
+When NVME_TCP is enabled and CRYPTO is disabled, it results in the
+following Kbuild warning:
 
-Signed-off-by: Christian Borntraeger <borntraeger@de.ibm.com>
-Cc: Harald Freudenberger <freude@linux.ibm.com>
-Cc: stable@vger.kernel.org
-Fixes: af4a72276d49 ("s390/zcrypt: Support up to 256 crypto adapters.")
-Reviewed-by: Harald Freudenberger <freude@linux.ibm.com>
-Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+WARNING: unmet direct dependencies detected for CRYPTO_CRC32C
+  Depends on [n]: CRYPTO [=n]
+  Selected by [y]:
+  - NVME_TCP [=y] && INET [=y] && BLK_DEV_NVME [=y]
 
+The reason is that NVME_TCP selects CRYPTO_CRC32C without depending on or
+selecting CRYPTO while CRYPTO_CRC32C is subordinate to CRYPTO.
+
+Honor the kconfig menu hierarchy to remove kconfig dependency warnings.
+
+Fixes: 79fd751d61aa ("nvme: tcp: selects CRYPTO_CRC32C for nvme-tcp")
+Signed-off-by: Necip Fazil Yildiran <fazilyildiran@gmail.com>
+Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/s390/crypto/zcrypt_api.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/nvme/host/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/s390/crypto/zcrypt_api.c
-+++ b/drivers/s390/crypto/zcrypt_api.c
-@@ -915,7 +915,8 @@ static long zcrypt_unlocked_ioctl(struct
- 		if (!reqcnt)
- 			return -ENOMEM;
- 		zcrypt_perdev_reqcnt(reqcnt, AP_DEVICES);
--		if (copy_to_user((int __user *) arg, reqcnt, sizeof(reqcnt)))
-+		if (copy_to_user((int __user *) arg, reqcnt,
-+				 sizeof(u32) * AP_DEVICES))
- 			rc = -EFAULT;
- 		kfree(reqcnt);
- 		return rc;
+diff --git a/drivers/nvme/host/Kconfig b/drivers/nvme/host/Kconfig
+index 3ed9786b88d8e..a44d49d63968a 100644
+--- a/drivers/nvme/host/Kconfig
++++ b/drivers/nvme/host/Kconfig
+@@ -73,6 +73,7 @@ config NVME_TCP
+ 	depends on INET
+ 	depends on BLK_DEV_NVME
+ 	select NVME_FABRICS
++	select CRYPTO
+ 	select CRYPTO_CRC32C
+ 	help
+ 	  This provides support for the NVMe over Fabrics protocol using
+-- 
+2.25.1
+
 
 
