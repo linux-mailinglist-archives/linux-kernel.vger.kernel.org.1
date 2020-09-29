@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CE3C27C5DC
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:39:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 641A527C5E3
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:39:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729199AbgI2Ljl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:39:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34378 "EHLO mail.kernel.org"
+        id S1729242AbgI2Ljx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:39:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34388 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730438AbgI2Lje (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:39:34 -0400
+        id S1730483AbgI2Ljf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:39:35 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EB60221941;
-        Tue, 29 Sep 2020 11:39:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 33E2F21D41;
+        Tue, 29 Sep 2020 11:39:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601379563;
-        bh=HTY1zQoaAK6BEfTs3XHzI6+YJrvBSelh3jUsNGfhxW8=;
+        s=default; t=1601379565;
+        bh=E350A/ai66N1iyvBYmzJeu358jXKJGXYFP/kPyZJ50Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=B3wX/+0AHpuSKzUi8SyXVXrybeAi9s+SBOy9q6HCJ8zNhdQHNi9qiEsICMnU/bH4a
-         fygSDlMmQfBwlbzKFw7VJvGDN93oFBvCeXIPqj13a3wCp+Wxi0hQjCVTXTtSRsFZCx
-         ZhlTPOftJEYVv7eO/MqvdXTF8KCDystxuKNHDCUY=
+        b=B0OdK04ddE7eZRow+wUOdZ/k8WarO/QUpY7OsLg6y14kBp3NTCNP+JcqJQ2jUfO5Z
+         Ybs6PMaCbq49OYMM6bFrYpqUArwzVcHsBK99D08lYXPrBCuay69FMqYY/wjFIci/9C
+         Mr/g0+A6W+oBF3kRLc0YVENhCOMWq99gkXOkyRms=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Pratik Rajesh Sampat <psampat@linux.ibm.com>,
-        Daniel Axtens <dja@axtens.net>,
-        Michael Ellerman <mpe@ellerman.id.au>,
+        stable@vger.kernel.org, Gabriel Ravier <gabravier@gmail.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 190/388] cpufreq: powernv: Fix frame-size-overflow in powernv_cpufreq_work_fn
-Date:   Tue, 29 Sep 2020 12:58:41 +0200
-Message-Id: <20200929110019.678527867@linuxfoundation.org>
+Subject: [PATCH 5.4 191/388] tools: gpio-hammer: Avoid potential overflow in main
+Date:   Tue, 29 Sep 2020 12:58:42 +0200
+Message-Id: <20200929110019.725765758@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200929110010.467764689@linuxfoundation.org>
 References: <20200929110010.467764689@linuxfoundation.org>
@@ -45,55 +43,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pratik Rajesh Sampat <psampat@linux.ibm.com>
+From: Gabriel Ravier <gabravier@gmail.com>
 
-[ Upstream commit d95fe371ecd28901f11256c610b988ed44e36ee2 ]
+[ Upstream commit d1ee7e1f5c9191afb69ce46cc7752e4257340a31 ]
 
-The patch avoids allocating cpufreq_policy on stack hence fixing frame
-size overflow in 'powernv_cpufreq_work_fn'
+If '-o' was used more than 64 times in a single invocation of gpio-hammer,
+this could lead to an overflow of the 'lines' array. This commit fixes
+this by avoiding the overflow and giving a proper diagnostic back to the
+user
 
-Fixes: 227942809b52 ("cpufreq: powernv: Restore cpu frequency to policy->cur on unthrottling")
-Signed-off-by: Pratik Rajesh Sampat <psampat@linux.ibm.com>
-Reviewed-by: Daniel Axtens <dja@axtens.net>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20200316135743.57735-1-psampat@linux.ibm.com
+Signed-off-by: Gabriel Ravier <gabravier@gmail.com>
+Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/cpufreq/powernv-cpufreq.c | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
+ tools/gpio/gpio-hammer.c | 17 ++++++++++++++++-
+ 1 file changed, 16 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/cpufreq/powernv-cpufreq.c b/drivers/cpufreq/powernv-cpufreq.c
-index 1806b1da43665..3a2f022f6bde2 100644
---- a/drivers/cpufreq/powernv-cpufreq.c
-+++ b/drivers/cpufreq/powernv-cpufreq.c
-@@ -902,6 +902,7 @@ static struct notifier_block powernv_cpufreq_reboot_nb = {
- void powernv_cpufreq_work_fn(struct work_struct *work)
- {
- 	struct chip *chip = container_of(work, struct chip, throttle);
-+	struct cpufreq_policy *policy;
- 	unsigned int cpu;
- 	cpumask_t mask;
- 
-@@ -916,12 +917,14 @@ void powernv_cpufreq_work_fn(struct work_struct *work)
- 	chip->restore = false;
- 	for_each_cpu(cpu, &mask) {
- 		int index;
--		struct cpufreq_policy policy;
- 
--		cpufreq_get_policy(&policy, cpu);
--		index = cpufreq_table_find_index_c(&policy, policy.cur);
--		powernv_cpufreq_target_index(&policy, index);
--		cpumask_andnot(&mask, &mask, policy.cpus);
-+		policy = cpufreq_cpu_get(cpu);
-+		if (!policy)
-+			continue;
-+		index = cpufreq_table_find_index_c(policy, policy->cur);
-+		powernv_cpufreq_target_index(policy, index);
-+		cpumask_andnot(&mask, &mask, policy->cpus);
-+		cpufreq_cpu_put(policy);
+diff --git a/tools/gpio/gpio-hammer.c b/tools/gpio/gpio-hammer.c
+index 0e0060a6eb346..083399d276e4e 100644
+--- a/tools/gpio/gpio-hammer.c
++++ b/tools/gpio/gpio-hammer.c
+@@ -135,7 +135,14 @@ int main(int argc, char **argv)
+ 			device_name = optarg;
+ 			break;
+ 		case 'o':
+-			lines[i] = strtoul(optarg, NULL, 10);
++			/*
++			 * Avoid overflow. Do not immediately error, we want to
++			 * be able to accurately report on the amount of times
++			 * '-o' was given to give an accurate error message
++			 */
++			if (i < GPIOHANDLES_MAX)
++				lines[i] = strtoul(optarg, NULL, 10);
++
+ 			i++;
+ 			break;
+ 		case '?':
+@@ -143,6 +150,14 @@ int main(int argc, char **argv)
+ 			return -1;
+ 		}
  	}
- out:
- 	put_online_cpus();
++
++	if (i >= GPIOHANDLES_MAX) {
++		fprintf(stderr,
++			"Only %d occurences of '-o' are allowed, %d were found\n",
++			GPIOHANDLES_MAX, i + 1);
++		return -1;
++	}
++
+ 	nlines = i;
+ 
+ 	if (!device_name || !nlines) {
 -- 
 2.25.1
 
