@@ -2,92 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0800527B940
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 03:21:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A6DA27B93B
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 03:17:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727058AbgI2BVV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 21:21:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56132 "EHLO
+        id S1726897AbgI2BRY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 21:17:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725272AbgI2BVV (ORCPT
+        with ESMTP id S1725272AbgI2BRY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 21:21:21 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8544C061755;
-        Mon, 28 Sep 2020 18:21:20 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id y14so2447046pgf.12;
-        Mon, 28 Sep 2020 18:21:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=LJ2EaLyywMeQ220DXk/3m8ij2UCaXBFliElieIvVcWo=;
-        b=dB5AkSvgSsuC4jqhJi1Du6fOX/N7Xqa7co1RAVRI7k5jGv6Bykuo2tOZ/hkkel3qzY
-         CTS8a/Oal7MbkDg+kiT/tRhuH74Nl3g/7dKHJijJyXGtbC8AlTGjsR/d9vYzi2kf/nR1
-         4oizg3sYkVtgATl4O58g0KvM7Gi3/4ZWup+Dxtczp0wmPtnV6YAR/bIsw1Er0jVGTujr
-         NNzOmFB+JjELoSImcu53H6HFX6UmQpQGSgK396wSboSVx3JwNZhGUL6f5QLWlLhJ7BnP
-         +5ITYJYN8klNUwbH3449wW7mMwZp0FIU8cp32Es6bcaZnfwrQWbNiFOcq4eUzNCZ4vzR
-         wOgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=LJ2EaLyywMeQ220DXk/3m8ij2UCaXBFliElieIvVcWo=;
-        b=P0ViIyE0a9OKkXP4akBguDBhzAoXS+l+4pwXMv7AvMMF4747k6LyB/9qQiS1REfsO/
-         VW234KOQo4TClX05ShRyNMH3xlaA/CW0uvXlhvmtREXA4zC9xft1PjEB4k5REnFnZV3R
-         JLeZoxU7y9Fx1cqZOl9QkHTMizuh7ur1mq9K6dQTRdCUuZLUpVVNKUPAjSO5PkJS/k13
-         2usqoDXBwvJi5OPfQt/vDr4T3U587XVvlGEI8mmDyumnpeMShBEqpSXOHJIVLBxzQrIj
-         EDJ0IW5d/nk1xS1kUhWfROxPutSx31bMGMndtCWwxve5I3cWIgXWLLS+xFJ8LZiG9/+M
-         Yxhg==
-X-Gm-Message-State: AOAM530IQQ71Pq+LSCSDWyR5ux7UAAdQU2WNAzjXvkqAU3vvFzljZy8F
-        eTruV20cK2tklYrxbULYOSg=
-X-Google-Smtp-Source: ABdhPJyImG3w8frEfpcUQx/Q4jWtb4RC9mBhFFjza2RqlH0U2v8tnaw3/b8ogIZGHZf/614y9A889w==
-X-Received: by 2002:a17:902:b685:b029:d2:1e62:4cbe with SMTP id c5-20020a170902b685b02900d21e624cbemr2075538pls.58.1601342477766;
-        Mon, 28 Sep 2020 18:21:17 -0700 (PDT)
-Received: from Asurada-Nvidia (thunderhill.nvidia.com. [216.228.112.22])
-        by smtp.gmail.com with ESMTPSA id d25sm2589760pgl.23.2020.09.28.18.21.17
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 28 Sep 2020 18:21:17 -0700 (PDT)
-Date:   Mon, 28 Sep 2020 18:15:57 -0700
-From:   Nicolin Chen <nicoleotsuka@gmail.com>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     thierry.reding@gmail.com, joro@8bytes.org, vdumpa@nvidia.com,
-        jonathanh@nvidia.com, linux-tegra@vger.kernel.org,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] iommu/tegra-smmu: Expend mutex protection range
-Message-ID: <20200929011557.GA905@Asurada-Nvidia>
-References: <20200928235901.28337-1-nicoleotsuka@gmail.com>
- <20200928235901.28337-3-nicoleotsuka@gmail.com>
- <692b51fa-7a3e-dee7-b628-7cb2d2dc188d@gmail.com>
+        Mon, 28 Sep 2020 21:17:24 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F454C061755
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 18:17:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=milDVUuSmfsrFdAiaYla+xJb7Ck9lXAUrHzP+4VmmLU=; b=ZQdPo6H20LXu1iZOWIBNJa8yEH
+        uH3n4rP2XE4/AR9ONbmBuEIy496TgmygeYkD1I23N1f9tyJphyaMvsd1Zv1XrgNXdLYhk8/eYQ+ov
+        DzcSrIEhB2j+cSuhENWH5SZ2cXk8PEgknrtmU1fkv2yzgwpHhCyRscOr/icVpPqOrlUe+zk+QBTGi
+        oG3uda1pKDPTaajGAdui9H6LeinKU3/eYhZLxGBhf55M6mewss9Kh7yzsn/JGShzC6xdh3759Ebnx
+        C1VMhq3s91BkO0oeumwx6fqbPvwvheLykwLuwA/yj9bnuNuoiovjxJzZ20/rFw2VXCq8lqw4aKQVR
+        t93Mb1hw==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kN4Gd-0003UE-Sw; Tue, 29 Sep 2020 01:17:19 +0000
+Date:   Tue, 29 Sep 2020 02:17:19 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Nick Piggin <npiggin@gmail.com>, Hugh Dickins <hughd@google.com>,
+        Peter Zijlstra <peterz@infradead.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] page_alloc: Fix freeing non-compound pages
+Message-ID: <20200929011719.GD30994@casper.infradead.org>
+References: <20200926213919.26642-1-willy@infradead.org>
+ <20200928180307.7573f3b6128b5e3007dfc9f0@linux-foundation.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <692b51fa-7a3e-dee7-b628-7cb2d2dc188d@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200928180307.7573f3b6128b5e3007dfc9f0@linux-foundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 03:17:58AM +0300, Dmitry Osipenko wrote:
-> ...
-> >  static bool tegra_smmu_capable(enum iommu_cap cap)
-> > @@ -420,17 +413,21 @@ static int tegra_smmu_as_prepare(struct tegra_smmu *smmu,
-> >  				 struct tegra_smmu_as *as)
-> >  {
-> >  	u32 value;
-> > -	int err;
-> > +	int err = 0;
-> > +
-> > +	mutex_lock(&smmu->lock);
-> >  
-> >  	if (as->use_count > 0) {
-> >  		as->use_count++;
-> > -		return 0;
-> > +		goto err_unlock;
+On Mon, Sep 28, 2020 at 06:03:07PM -0700, Andrew Morton wrote:
+> On Sat, 26 Sep 2020 22:39:19 +0100 "Matthew Wilcox (Oracle)" <willy@infradead.org> wrote:
 > 
-> This looks a bit odd because it's not a error condition. Perhaps should
-> be better to "goto bump_usecount"?
+> > Here is a very rare race which leaks memory:
 > 
-> Or make it similar to tegra_smmu_as_unprepare()?
+> Not worth a cc:stable?
 
-Hmm...I think it's simple to just make it "goto unlock" then.
+Yes, it probably should have been.  I just assume the stablebot will
+pick up anything that has a Fixes: tag.
+
+> > Page P0 is allocated to the page cache.  Page P1 is free.
+> > 
+> > Thread A                Thread B                Thread C
+> > find_get_entry():
+> > xas_load() returns P0
+> > 						Removes P0 from page cache
+> > 						P0 finds its buddy P1
+> > 			alloc_pages(GFP_KERNEL, 1) returns P0
+> > 			P0 has refcount 1
+> > page_cache_get_speculative(P0)
+> > P0 has refcount 2
+> > 			__free_pages(P0)
+> 
+> 			__free_pages(P0, 1), I assume.
+
+Good catch.  That was what I meant to type.
+
+> > 			P0 has refcount 1
+> > put_page(P0)
+> 
+> but this is implicitly order 0
+
+Right, because it's not a compound page.
+
+> > P1 is not freed
+> 
+> huh.
+
+Yeah.  Nasty, and we'll never know how often it was hit.
+
+> > Fix this by freeing all the pages in __free_pages() that won't be freed
+> > by the call to put_page().  It's usually not a good idea to split a page,
+> > but this is a very unlikely scenario.
+> > 
+> > ...
+> >
+> > --- a/mm/page_alloc.c
+> > +++ b/mm/page_alloc.c
+> > @@ -4947,6 +4947,9 @@ void __free_pages(struct page *page, unsigned int order)
+> >  {
+> >  	if (put_page_testzero(page))
+> >  		free_the_page(page, order);
+> > +	else if (!PageHead(page))
+> > +		while (order-- > 0)
+> > +			free_the_page(page + (1 << order), order);
+> 
+> Well that's weird and scary looking.  `page' has non-zero refcount yet
+> we go and free random followon pages.  Methinks it merits an
+> explanatory comment?
+
+Well, poot.  I lost that comment in the shuffling of patches.  In a
+different tree, I have:
+
+@@ -4943,10 +4943,19 @@ static inline void free_the_page(struct page *page, unsi
+gned int order)
+                __free_pages_ok(page, order);
+ }
+ 
++/*
++ * If we free a non-compound allocation, another thread may have a
++ * speculative reference to the first page.  It has no way of knowing
++ * about the rest of the allocation, so we have to free all but the
++ * first page here.
++ */
+ void __free_pages(struct page *page, unsigned int order)
+ {
+        if (put_page_testzero(page))
+                free_the_page(page, order);
++       else if (!PageHead(page))
++               while (order-- > 0)
++                       free_the_page(page + (1 << order), order);
+ }
+ EXPORT_SYMBOL(__free_pages);
+ 
+
+Although I'm now thinking of making that comment into kernel-doc and
+turning it into advice to the caller rather than an internal note to
+other mm developers.
