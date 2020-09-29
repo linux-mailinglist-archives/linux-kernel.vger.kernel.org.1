@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41B4027CCB9
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:39:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2622A27CD2B
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:42:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733236AbgI2MiO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 08:38:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34778 "EHLO mail.kernel.org"
+        id S2387440AbgI2MmQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 08:42:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53300 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729226AbgI2LRn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:17:43 -0400
+        id S1729271AbgI2LLu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:11:50 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9558F20848;
-        Tue, 29 Sep 2020 11:17:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C9768208FE;
+        Tue, 29 Sep 2020 11:11:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601378263;
-        bh=UE/zt5ax6H4v0FXSLXqzggbfZMly0u9H1SyLBDH6LOw=;
+        s=default; t=1601377910;
+        bh=eiz7aoc8IANfM5Zam+W3qobqu1VmS3mANYdwlS2WVIc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Hlrw3xn0tDPTUWOecuaHe6dNJ/MHunJPIF/Z0vtIfGYyNVhCl9x2wBKq7ne13vfSu
-         FwEszoiErh32O5e2+UTv5M2h822ZNrFb9FrrMfw95l37bVHExzKquZK9VzUKEjPTh6
-         0okxc6mBqn8kF+VVzI4csqrMi4nnrPgt3FKKqAR4=
+        b=Eo+VT7aUGXyTZqFzZcZvbE08kUeWCeAcD456QkQG4ClN7LGQxcAS52ZrjgqbBYNp8
+         LH9OFNtt03ykKNxo1EOBtvYTvGLGSTVoj3qsHFwJuxXQBQDUlErWEm+blkcXM63eZa
+         zG+DSOfkR1NPpoEFTob6Xfp6/oijsUA9fPL0eEGA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 117/166] ALSA: hda: Fix potential race in unsol event handler
-Date:   Tue, 29 Sep 2020 13:00:29 +0200
-Message-Id: <20200929105941.030895517@linuxfoundation.org>
+Subject: [PATCH 4.9 086/121] ALSA: hda: Fix potential race in unsol event handler
+Date:   Tue, 29 Sep 2020 13:00:30 +0200
+Message-Id: <20200929105934.438541203@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929105935.184737111@linuxfoundation.org>
-References: <20200929105935.184737111@linuxfoundation.org>
+In-Reply-To: <20200929105930.172747117@linuxfoundation.org>
+References: <20200929105930.172747117@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -64,7 +64,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 4 insertions(+)
 
 diff --git a/sound/hda/hdac_bus.c b/sound/hda/hdac_bus.c
-index 714a51721a313..ab9236e4c157e 100644
+index 0e81ea89a5965..e3f68a76d90eb 100644
 --- a/sound/hda/hdac_bus.c
 +++ b/sound/hda/hdac_bus.c
 @@ -155,6 +155,7 @@ static void process_unsol_events(struct work_struct *work)
