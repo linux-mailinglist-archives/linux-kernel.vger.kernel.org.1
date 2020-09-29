@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09AD927C71F
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:51:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 912CC27C6D0
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:49:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730713AbgI2Lvg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:51:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50574 "EHLO mail.kernel.org"
+        id S1730625AbgI2Lsx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:48:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50674 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731124AbgI2LsV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:48:21 -0400
+        id S1731102AbgI2LsX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:48:23 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BA4D52075F;
-        Tue, 29 Sep 2020 11:48:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0B2B32158C;
+        Tue, 29 Sep 2020 11:48:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601380100;
-        bh=JWUZ9TvXHYgg36QPlpyBGEFi3X8ZSm9V9UphXQ3IXXs=;
+        s=default; t=1601380102;
+        bh=kNag7bcZORPmahzl4bMp2SoOdH/CkjNCD/6jHO8saZQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HWTDVDip9TAULr7bPl8i8Lq/h+KlYUVqgDjKR3pBr/HrGQ8AJheAPa7Hq8XyaCtag
-         w6e2FjEv1mDNpxhVfNcdNm0NuveMW8dMF2weC2sxxFKnGHxHyUTIHxIQHVixmdyvVw
-         g9GJTrYtxZM5yIX1qLV9JGbpVNK4YkECEqx9fcfY=
+        b=2Cll4CHglBqyqC4Svj3CXMnTlJsNz3a4fOR6dvjS3KIBhRijep/3naF2ZXsUT4PBv
+         4zUedalPdT0gnc+eWajh8wSNLE3rwDreFCw5mYo9JITctUBAgcoHxjal20GVVvXvfH
+         m8/Dp1pZNzRkUeDMNzBYS+v2ij8J6gKPABhECs3Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jim Mattson <jmattson@google.com>,
-        Peter Shier <pshier@google.com>,
-        Oliver Upton <oupton@google.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
+        stable@vger.kernel.org, Tom Lendacky <thomas.lendacky@amd.com>,
         Paolo Bonzini <pbonzini@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 68/99] KVM: x86: Reset MMU context if guest toggles CR4.SMAP or CR4.PKE
-Date:   Tue, 29 Sep 2020 13:01:51 +0200
-Message-Id: <20200929105933.073320085@linuxfoundation.org>
+Subject: [PATCH 5.8 69/99] KVM: SVM: Add a dedicated INVD intercept routine
+Date:   Tue, 29 Sep 2020 13:01:52 +0200
+Message-Id: <20200929105933.123827188@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200929105929.719230296@linuxfoundation.org>
 References: <20200929105929.719230296@linuxfoundation.org>
@@ -46,50 +43,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Christopherson <sean.j.christopherson@intel.com>
+From: Tom Lendacky <thomas.lendacky@amd.com>
 
-[ Upstream commit 8d214c481611b29458a57913bd786f0ac06f0605 ]
+[ Upstream commit 4bb05f30483fd21ea5413eaf1182768f251cf625 ]
 
-Reset the MMU context during kvm_set_cr4() if SMAP or PKE is toggled.
-Recent commits to (correctly) not reload PDPTRs when SMAP/PKE are
-toggled inadvertantly skipped the MMU context reset due to the mask
-of bits that triggers PDPTR loads also being used to trigger MMU context
-resets.
+The INVD instruction intercept performs emulation. Emulation can't be done
+on an SEV guest because the guest memory is encrypted.
 
-Fixes: 427890aff855 ("kvm: x86: Toggling CR4.SMAP does not load PDPTEs in PAE mode")
-Fixes: cb957adb4ea4 ("kvm: x86: Toggling CR4.PKE does not load PDPTEs in PAE mode")
-Cc: Jim Mattson <jmattson@google.com>
-Cc: Peter Shier <pshier@google.com>
-Cc: Oliver Upton <oupton@google.com>
-Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-Message-Id: <20200923215352.17756-1-sean.j.christopherson@intel.com>
+Provide a dedicated intercept routine for the INVD intercept. And since
+the instruction is emulated as a NOP, just skip it instead.
+
+Fixes: 1654efcbc431 ("KVM: SVM: Add KVM_SEV_INIT command")
+Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
+Message-Id: <a0b9a19ffa7fef86a3cc700c7ea01cb2731e04e5.1600972918.git.thomas.lendacky@amd.com>
 Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kvm/x86.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/x86/kvm/svm/svm.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index f5481ae588aff..a04f8abd0ead9 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -968,6 +968,7 @@ int kvm_set_cr4(struct kvm_vcpu *vcpu, unsigned long cr4)
- 	unsigned long old_cr4 = kvm_read_cr4(vcpu);
- 	unsigned long pdptr_bits = X86_CR4_PGE | X86_CR4_PSE | X86_CR4_PAE |
- 				   X86_CR4_SMEP;
-+	unsigned long mmu_role_bits = pdptr_bits | X86_CR4_SMAP | X86_CR4_PKE;
+diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+index f8ead44c3265e..10aba4b6df6ed 100644
+--- a/arch/x86/kvm/svm/svm.c
++++ b/arch/x86/kvm/svm/svm.c
+@@ -2169,6 +2169,12 @@ static int iret_interception(struct vcpu_svm *svm)
+ 	return 1;
+ }
  
- 	if (kvm_valid_cr4(vcpu, cr4))
- 		return 1;
-@@ -995,7 +996,7 @@ int kvm_set_cr4(struct kvm_vcpu *vcpu, unsigned long cr4)
- 	if (kvm_x86_ops.set_cr4(vcpu, cr4))
- 		return 1;
- 
--	if (((cr4 ^ old_cr4) & pdptr_bits) ||
-+	if (((cr4 ^ old_cr4) & mmu_role_bits) ||
- 	    (!(cr4 & X86_CR4_PCIDE) && (old_cr4 & X86_CR4_PCIDE)))
- 		kvm_mmu_reset_context(vcpu);
- 
++static int invd_interception(struct vcpu_svm *svm)
++{
++	/* Treat an INVD instruction as a NOP and just skip it. */
++	return kvm_skip_emulated_instruction(&svm->vcpu);
++}
++
+ static int invlpg_interception(struct vcpu_svm *svm)
+ {
+ 	if (!static_cpu_has(X86_FEATURE_DECODEASSISTS))
+@@ -2758,7 +2764,7 @@ static int (*const svm_exit_handlers[])(struct vcpu_svm *svm) = {
+ 	[SVM_EXIT_RDPMC]			= rdpmc_interception,
+ 	[SVM_EXIT_CPUID]			= cpuid_interception,
+ 	[SVM_EXIT_IRET]                         = iret_interception,
+-	[SVM_EXIT_INVD]                         = emulate_on_interception,
++	[SVM_EXIT_INVD]                         = invd_interception,
+ 	[SVM_EXIT_PAUSE]			= pause_interception,
+ 	[SVM_EXIT_HLT]				= halt_interception,
+ 	[SVM_EXIT_INVLPG]			= invlpg_interception,
 -- 
 2.25.1
 
