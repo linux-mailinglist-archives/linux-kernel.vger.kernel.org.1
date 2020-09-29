@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2619027D5D9
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 20:35:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBEF527D5DD
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 20:36:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728304AbgI2Sfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 14:35:52 -0400
-Received: from mail-wm1-f68.google.com ([209.85.128.68]:53648 "EHLO
-        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727841AbgI2Sfu (ORCPT
+        id S1728314AbgI2Sf6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 14:35:58 -0400
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:56216 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728288AbgI2Sfx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 14:35:50 -0400
-Received: by mail-wm1-f68.google.com with SMTP id x23so5637822wmi.3
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 11:35:48 -0700 (PDT)
+        Tue, 29 Sep 2020 14:35:53 -0400
+Received: by mail-wm1-f65.google.com with SMTP id d4so5628111wmd.5
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 11:35:52 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=MskjPp6ZpujaNwi4yQltgMjSnkxLjmoI3z/cZXeO2Hw=;
-        b=luY1GfD1B31Y+NiHMHZ+CiVUnjosmRwAZky2ubvWrZL0KrKpYYawDsNFW4JhE2o724
-         e6MbFYFGkKKFAwvmuTDbKMzHfh5yjdSueB1PWNi13dRWFlnhiKbNlemtYjT00CKbnoxk
-         JpwG8cH65lU+kPesaZwnqsLV8xZ3lCwZ/vrz6cnCRwu970OTZbKbMwo7uIhtQ6PGJ2/e
-         29cEjz2yr8neZGcQgHxoA8yDm6x1A8ggigrZcx9bZnYDXEpqK07tDMKYG+y6lIFvlosi
-         duv5DoztVd3k0lBwdL7Qf59ejfSdOERa4VjCzHFuEIOvY7QJ6Z2m27nCR0EQ4bFtPt5R
-         9DZQ==
-X-Gm-Message-State: AOAM530gPQuo87QMwqNNys07Q/QLBNSkTbB2rg+Ii5EwyJBqm3Yhflf9
-        NV1iL1c4xLS5Sn8E7E2+MRw=
-X-Google-Smtp-Source: ABdhPJwrwd83g7bnSyKaLf5bfDcLBH7k0W2piOgi8XJXLrVdkpCHESSboWm1QucjXR4ih++3BiFn+w==
-X-Received: by 2002:a05:600c:21c4:: with SMTP id x4mr6092766wmj.107.1601404547746;
-        Tue, 29 Sep 2020 11:35:47 -0700 (PDT)
+        bh=2bxuhq/r6r8osy7pzVzO/JXpG1ASc+MUIPI5gsA7kxI=;
+        b=ShXo7s6FrF+lqlmyCH1LeCFXoBs2gXd8lylPKvQeEHlePfju5RUP6bklCxnSallnbg
+         LDTAbFtJNUzpNasX+Gb3DE4dGNe+U00kUU+vPH/3eqam95CE7LvXNjp46FXY28wJXTBg
+         v30iZb1cSk+yoUXNW/eAgjvSgFsP7BQwtt6/hkgLHSE04tag/Zq9kiO1r4/bved6lQ2n
+         LcXTT+oM2LuURSI5KIPLu6UcXhYabuiqfCuhPT6wpvA9nzSkcQVhvpYW1+unqVsS7YwB
+         i+SmGZWl9D9uKwhQFM9Aif4Y5GqXXeezArl0vIWzVKKCbJdRqXUYdm3l2cigB6icnJRw
+         pupw==
+X-Gm-Message-State: AOAM533Uw6ARyJAO5PuDZzOol39o8SxY7tKqWQ80cr99iDBCI7Gggj3O
+        axkP5h2ieYE41agPgPelIjE=
+X-Google-Smtp-Source: ABdhPJy9A5JEn21mEASXT5hiuePaz0JL4sNUqlLTquEiKyft5GG7jNH5pWMw/hXwHiK/QazBvkyuwg==
+X-Received: by 2002:a1c:5685:: with SMTP id k127mr6197810wmb.135.1601404551593;
+        Tue, 29 Sep 2020 11:35:51 -0700 (PDT)
 Received: from localhost.localdomain ([185.248.161.177])
-        by smtp.gmail.com with ESMTPSA id b188sm12151271wmb.2.2020.09.29.11.35.42
+        by smtp.gmail.com with ESMTPSA id b188sm12151271wmb.2.2020.09.29.11.35.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Sep 2020 11:35:47 -0700 (PDT)
+        Tue, 29 Sep 2020 11:35:50 -0700 (PDT)
 From:   Alexander Popov <alex.popov@linux.com>
 To:     Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>,
         Will Deacon <will@kernel.org>,
@@ -66,9 +66,9 @@ To:     Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>,
         kernel-hardening@lists.openwall.com, linux-kernel@vger.kernel.org,
         Alexander Popov <alex.popov@linux.com>
 Cc:     notify@kernel.org
-Subject: [PATCH RFC v2 2/6] mm/slab: Perform init_on_free earlier
-Date:   Tue, 29 Sep 2020 21:35:09 +0300
-Message-Id: <20200929183513.380760-3-alex.popov@linux.com>
+Subject: [PATCH RFC v2 3/6] mm: Integrate SLAB_QUARANTINE with init_on_free
+Date:   Tue, 29 Sep 2020 21:35:10 +0300
+Message-Id: <20200929183513.380760-4-alex.popov@linux.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200929183513.380760-1-alex.popov@linux.com>
 References: <20200929183513.380760-1-alex.popov@linux.com>
@@ -78,38 +78,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently in CONFIG_SLAB init_on_free happens too late, and heap
-objects go to the heap quarantine being dirty. Lets move memory
-clearing before calling kasan_slab_free() to fix that.
+Having slab quarantine without memory erasing is harmful.
+If the quarantined objects are not cleaned and contain data, then:
+  1. they will be useful for use-after-free exploitation,
+  2. there is no chance to detect use-after-free access.
+So we want the quarantined objects to be erased.
+Enable init_on_free that cleans objects before placing them into
+the quarantine. CONFIG_PAGE_POISONING should be disabled since it
+cuts off init_on_free.
 
 Signed-off-by: Alexander Popov <alex.popov@linux.com>
 ---
- mm/slab.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ init/Kconfig    |  3 ++-
+ mm/page_alloc.c | 22 ++++++++++++++++++++++
+ 2 files changed, 24 insertions(+), 1 deletion(-)
 
-diff --git a/mm/slab.c b/mm/slab.c
-index 3160dff6fd76..5140203c5b76 100644
---- a/mm/slab.c
-+++ b/mm/slab.c
-@@ -3414,6 +3414,9 @@ static void cache_flusharray(struct kmem_cache *cachep, struct array_cache *ac)
- static __always_inline void __cache_free(struct kmem_cache *cachep, void *objp,
- 					 unsigned long caller)
- {
-+	if (unlikely(slab_want_init_on_free(cachep)))
-+		memset(objp, 0, cachep->object_size);
-+
- 	/* Put the object into the quarantine, don't touch it for now. */
- 	if (kasan_slab_free(cachep, objp, _RET_IP_))
- 		return;
-@@ -3432,8 +3435,6 @@ void ___cache_free(struct kmem_cache *cachep, void *objp,
- 	struct array_cache *ac = cpu_cache_get(cachep);
+diff --git a/init/Kconfig b/init/Kconfig
+index 358c8ce818f4..cd4cee71fd4e 100644
+--- a/init/Kconfig
++++ b/init/Kconfig
+@@ -1933,7 +1933,8 @@ config SLAB_FREELIST_HARDENED
  
- 	check_irq_off();
--	if (unlikely(slab_want_init_on_free(cachep)))
--		memset(objp, 0, cachep->object_size);
- 	kmemleak_free_recursive(objp, cachep->flags);
- 	objp = cache_free_debugcheck(cachep, objp, caller);
- 	memcg_slab_free_hook(cachep, virt_to_head_page(objp), objp);
+ config SLAB_QUARANTINE
+ 	bool "Enable slab freelist quarantine"
+-	depends on !KASAN && (SLAB || SLUB)
++	depends on !KASAN && (SLAB || SLUB) && !PAGE_POISONING
++	select INIT_ON_FREE_DEFAULT_ON
+ 	help
+ 	  Enable slab freelist quarantine to delay reusing of freed slab
+ 	  objects. If this feature is enabled, freed objects are stored
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index fab5e97dc9ca..f67118e88500 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -168,6 +168,27 @@ static int __init early_init_on_alloc(char *buf)
+ }
+ early_param("init_on_alloc", early_init_on_alloc);
+ 
++#ifdef CONFIG_SLAB_QUARANTINE
++static int __init early_init_on_free(char *buf)
++{
++	/*
++	 * Having slab quarantine without memory erasing is harmful.
++	 * If the quarantined objects are not cleaned and contain data, then:
++	 *  1. they will be useful for use-after-free exploitation,
++	 *  2. use-after-free access may not be detected.
++	 * So we want the quarantined objects to be erased.
++	 *
++	 * Enable init_on_free that cleans objects before placing them into
++	 * the quarantine. CONFIG_PAGE_POISONING should be disabled since it
++	 * cuts off init_on_free.
++	 */
++	BUILD_BUG_ON(!IS_ENABLED(CONFIG_INIT_ON_FREE_DEFAULT_ON));
++	BUILD_BUG_ON(IS_ENABLED(CONFIG_PAGE_POISONING));
++	pr_info("mem auto-init: init_on_free is on for CONFIG_SLAB_QUARANTINE\n");
++
++	return 0;
++}
++#else /* CONFIG_SLAB_QUARANTINE */
+ static int __init early_init_on_free(char *buf)
+ {
+ 	int ret;
+@@ -184,6 +205,7 @@ static int __init early_init_on_free(char *buf)
+ 		static_branch_disable(&init_on_free);
+ 	return ret;
+ }
++#endif /* CONFIG_SLAB_QUARANTINE */
+ early_param("init_on_free", early_init_on_free);
+ 
+ /*
 -- 
 2.26.2
 
