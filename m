@@ -2,78 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8068927CCA1
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:38:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABE9227CCC7
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:39:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729849AbgI2Mhx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 08:37:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48736 "EHLO mail.kernel.org"
+        id S1733274AbgI2Mik (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 08:38:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49778 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732170AbgI2MhT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 08:37:19 -0400
-Received: from localhost (unknown [213.57.247.131])
+        id S1732771AbgI2Mie (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 08:38:34 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5B9B92075F;
-        Tue, 29 Sep 2020 12:37:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 74C452075F;
+        Tue, 29 Sep 2020 12:38:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601383038;
-        bh=S4wNT1s618zBR49BGhVX+tQF2CHbKbCGsPdgXgyr3UY=;
+        s=default; t=1601383113;
+        bh=1agHRxXJKhB2RD26+gZ4x8RWV4EKhITxeEYpiuBbO3Y=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lmsXpnI7r0iwkDdjZ5+XzKl8hLcq4E7KTAWur2JExI4C/hTf9CpOt5hyaa0x7EoMJ
-         Pp1FqhwKzdYR9lulHDWiKIuXkZFw6mv9oQQXYWV2mVxtwLZiEnaW1tG7tQnKaIOiia
-         LkLIAxj7nlzosaz27eG8yAvY4EhGbsR8lzEMxgmA=
-Date:   Tue, 29 Sep 2020 15:37:13 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Alex Dewar <alex.dewar90@gmail.com>
-Cc:     Saeed Mahameed <saeedm@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Roi Dayan <roid@mellanox.com>, Oz Shlomo <ozsh@mellanox.com>,
-        Paul Blakey <paulb@mellanox.com>,
-        Eli Britstein <elibr@mellanox.com>,
-        Ariel Levkovich <lariel@nvidia.com>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] net/mlx5e: Fix use of freed pointer
-Message-ID: <20200929123713.GG3094@unreal>
-References: <20200928074301.GC3094@unreal>
- <20200929101554.8963-1-alex.dewar90@gmail.com>
+        b=DWmjA8UFdsFWnaqLQDJfMWuIbOP31zKYrwaHNjRkhgkkbyol6UJQNOL2g65mEmM7z
+         r3wh0aEAIXzhRSusZ2U0MLVqmtsLu8t/8GK56UP3hceV/6s4ECE+CCU/O8tZzN6Rvf
+         K42OX9LCLHmQUHnGEYx+BhHjmTGzPz+rvHs8rKnU=
+Date:   Tue, 29 Sep 2020 13:37:34 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Julia Lawall <julia.lawall@inria.fr>
+Cc:     Joe Perches <joe@perches.com>, linux-iio@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-crypto@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        linux-acpi@vger.kernel.org, David Lechner <david@lechnology.com>,
+        Valdis =?utf-8?Q?Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>,
+        kernel-janitors@vger.kernel.org, drbd-dev@lists.linbit.com,
+        openipmi-developer@lists.sourceforge.net,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        linux-ide@vger.kernel.org, linux-amlogic@lists.infradead.org,
+        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-wireless@vger.kernel.org,
+        Neil Armstrong <narmstrong@baylibre.com>
+Subject: Re: [PATCH 00/18] use semicolons rather than commas to separate
+ statements
+Message-ID: <20200929123734.GC4799@sirena.org.uk>
+References: <1601233948-11629-1-git-send-email-Julia.Lawall@inria.fr>
+ <160132172369.55460.9237357219623604216.b4-ty@kernel.org>
+ <b1174f9be2ce65f6b5ebefcba0b48e792926abbc.camel@perches.com>
+ <20200929113745.GB4799@sirena.org.uk>
+ <alpine.DEB.2.22.394.2009291344590.2808@hadrien>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="MnLPg7ZWsaic7Fhd"
 Content-Disposition: inline
-In-Reply-To: <20200929101554.8963-1-alex.dewar90@gmail.com>
+In-Reply-To: <alpine.DEB.2.22.394.2009291344590.2808@hadrien>
+X-Cookie: I left my WALLET in the BATHROOM!!
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 11:15:49AM +0100, Alex Dewar wrote:
-> If the call to mlx5_fc_create() fails, then shared_counter will be freed
-> before its member, shared_counter->counter, is accessed to retrieve the
-> error code. Fix by using an intermediate variable.
->
-> Addresses-Coverity: CID 1497153: Memory - illegal accesses (USE_AFTER_FREE)
-> Fixes: 1edae2335adf ("net/mlx5e: CT: Use the same counter for both directions")
-> Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
-> ---
-> v2:
-> 	- Add Fixes tag (Leon)
-> 	- Use ERR_CAST (Leon)
->
-> Hi Leon,
->
-> I've made the suggested changes. Let me know if there's anything else
-> you need :)
 
-Hi Alex,
+--MnLPg7ZWsaic7Fhd
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Saeed already picked Dan's patch.
-https://lore.kernel.org/linux-rdma/1017ab3724b83818c03dfa7661b3f31827a7f62f.camel@kernel.org/T/#t
+On Tue, Sep 29, 2020 at 01:46:19PM +0200, Julia Lawall wrote:
+> On Tue, 29 Sep 2020, Mark Brown wrote:
 
->
-> There is also this patch in the series which doesn't seem to have been
-> reviewed yet: https://lore.kernel.org/lkml/20200927113254.362480-4-alex.dewar90@gmail.com/
+> > Feel free to submit patches to b4.  Ideally things like this wouldn't be
+> > being sent as serieses in the first place, there's no dependencies or
+> > interactions between the patches.
 
-Ariel is handling this internally.
-https://lore.kernel.org/linux-rdma/64f6a3eaaac505c341f996df0b0877ee9af56c00.camel@kernel.org/T/#t
+> It was suggested (a long time ago, not with respect to this patch in
+> particular) that sending such patches in a series is useful because it
+> allows people who are not interested in the 18 patches to skip over them
+> more easily.  So there are two conflicting needs...
 
-Thanks
+I'm not convinced that there are huge numbers of people reading LKML as
+a list TBH, and if you are sending things as a series then the way
+you're doing it at the minute where you don't CC the cover letter to
+people makes things confusing as it's unclear if there are dependencies
+to worry about.
+
+--MnLPg7ZWsaic7Fhd
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEyBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl9zKo0ACgkQJNaLcl1U
+h9BJ9wf4mEIT3UglAONn9EPv4I6DolXuWfJHGs52mxyy1JeuXGyjVMYRuKfw8ZE5
+TbgRR0pAg1aZUsqI/T/PWSVDmUCNzL6QM4RbG8ZUSFw47v509iCABBidbK+PLnwo
+y5A+IrAPTDVviLFNJm2SfFN3XEgpsGmOqhyuhKiGNeLOryaPNvOmiRF6cwND7Vbq
+97kDmafX0KgHVsmK/br50D/XJpOJSR9T2hB5hjQRoVl44a6aV0eZWwDDZyH57kat
+KO59OyGGHDyWrsF9oHWajymCB1kMZZ4YLiwCyjx98g74uRLSiSaGwrsr4IeXGn66
+Mmpn90mfVDnP/Es10vbKsC+JZShG
+=qH7V
+-----END PGP SIGNATURE-----
+
+--MnLPg7ZWsaic7Fhd--
