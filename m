@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15F6227C574
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:36:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCA5C27C7BA
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:56:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729911AbgI2Lfu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:35:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49132 "EHLO mail.kernel.org"
+        id S1730848AbgI2LoK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:44:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42652 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729854AbgI2Lff (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:35:35 -0400
+        id S1730830AbgI2Ln6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:43:58 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D684423D57;
-        Tue, 29 Sep 2020 11:30:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 33C00206E5;
+        Tue, 29 Sep 2020 11:43:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601379002;
-        bh=n+IwIyHHJdmdb8M0LwCJ2kFB/kli4THbYdnvtMtaMDQ=;
+        s=default; t=1601379837;
+        bh=Q7PDz35zNEzU/WetldDS6SxJcYtRsWaGKywmCulC/WM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2fxwDw5OFvP97OwIZQ4WfHxWL48U1AGA5FHjrCdUGpafGQ1BaaWgkClAkiFZFPioM
-         46iJhbBkBISx0muNWAVazfrS0X26+GXHy1RX7Yy/KChUIByC+gTe+mTUsYd/8Rni3Q
-         ntJbHzYqNCtabl++VNoUdMkot9v2SnqD9H3/vPQo=
+        b=glEtBd0G39p42+t8IGPto4Qswq6XGRgnSDkUdScdUFGA1arHFMqlii42iDw5TnUs5
+         UxYYrj0BZz4kueoVVCdshF9sZS/Nt9LJswhWg87+m2tmIWyFYinGXJwI9ZlUDQIuYZ
+         5+hJL4zPj2Qp1odffgw9TPRfW++OBxybnvdpfr/4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Linus=20L=C3=BCssing?= <ll@simonwunderlich.de>,
-        Sven Eckelmann <sven@narfation.org>,
+        stable@vger.kernel.org, Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 219/245] batman-adv: bla: fix type misuse for backbone_gw hash indexing
+Subject: [PATCH 5.4 339/388] clocksource/drivers/h8300_timer8: Fix wrong return value in h8300_8timer_init()
 Date:   Tue, 29 Sep 2020 13:01:10 +0200
-Message-Id: <20200929105957.635736871@linuxfoundation.org>
+Message-Id: <20200929110026.872502814@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929105946.978650816@linuxfoundation.org>
-References: <20200929105946.978650816@linuxfoundation.org>
+In-Reply-To: <20200929110010.467764689@linuxfoundation.org>
+References: <20200929110010.467764689@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,49 +43,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linus Lüssing <ll@simonwunderlich.de>
+From: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
 
-[ Upstream commit 097930e85f90f252c44dc0d084598265dd44ca48 ]
+[ Upstream commit 400d033f5a599120089b5f0c54d14d198499af5a ]
 
-It seems that due to a copy & paste error the void pointer
-in batadv_choose_backbone_gw() is cast to the wrong type.
+In the init function, if the call to of_iomap() fails, the return
+value is ENXIO instead of -ENXIO.
 
-Fixing this by using "struct batadv_bla_backbone_gw" instead of "struct
-batadv_bla_claim" which better matches the caller's side.
+Change to the right negative errno.
 
-For now it seems that we were lucky because the two structs both have
-their orig/vid and addr/vid in the beginning. However I stumbled over
-this issue when I was trying to add some debug variables in front of
-"orig" in batadv_backbone_gw, which caused hash lookups to fail.
-
-Fixes: 07568d0369f9 ("batman-adv: don't rely on positions in struct for hashing")
-Signed-off-by: Linus Lüssing <ll@simonwunderlich.de>
-Signed-off-by: Sven Eckelmann <sven@narfation.org>
+Fixes: 691f8f878290f ("clocksource/drivers/h8300_timer8: Convert init function to return error")
+Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
+Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+Link: https://lore.kernel.org/r/20200802111541.5429-1-tianjia.zhang@linux.alibaba.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/batman-adv/bridge_loop_avoidance.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/clocksource/h8300_timer8.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/batman-adv/bridge_loop_avoidance.c b/net/batman-adv/bridge_loop_avoidance.c
-index 9b8bf06ccb613..e71a35a3950de 100644
---- a/net/batman-adv/bridge_loop_avoidance.c
-+++ b/net/batman-adv/bridge_loop_avoidance.c
-@@ -96,11 +96,12 @@ static inline u32 batadv_choose_claim(const void *data, u32 size)
-  */
- static inline u32 batadv_choose_backbone_gw(const void *data, u32 size)
- {
--	const struct batadv_bla_claim *claim = (struct batadv_bla_claim *)data;
-+	const struct batadv_bla_backbone_gw *gw;
- 	u32 hash = 0;
+diff --git a/drivers/clocksource/h8300_timer8.c b/drivers/clocksource/h8300_timer8.c
+index 1d740a8c42ab3..47114c2a7cb54 100644
+--- a/drivers/clocksource/h8300_timer8.c
++++ b/drivers/clocksource/h8300_timer8.c
+@@ -169,7 +169,7 @@ static int __init h8300_8timer_init(struct device_node *node)
+ 		return PTR_ERR(clk);
+ 	}
  
--	hash = jhash(&claim->addr, sizeof(claim->addr), hash);
--	hash = jhash(&claim->vid, sizeof(claim->vid), hash);
-+	gw = (struct batadv_bla_backbone_gw *)data;
-+	hash = jhash(&gw->orig, sizeof(gw->orig), hash);
-+	hash = jhash(&gw->vid, sizeof(gw->vid), hash);
- 
- 	return hash % size;
- }
+-	ret = ENXIO;
++	ret = -ENXIO;
+ 	base = of_iomap(node, 0);
+ 	if (!base) {
+ 		pr_err("failed to map registers for clockevent\n");
 -- 
 2.25.1
 
