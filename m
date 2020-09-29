@@ -2,79 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE5E627D285
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 17:16:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E279327D28C
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 17:16:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731721AbgI2PPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 11:15:53 -0400
-Received: from dispatch1-us1.ppe-hosted.com ([148.163.129.52]:49138 "EHLO
-        dispatch1-us1.ppe-hosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729069AbgI2PPw (ORCPT
+        id S1731491AbgI2PQV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 11:16:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44278 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729064AbgI2PQT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 11:15:52 -0400
-Received: from mx1-us1.ppe-hosted.com (unknown [10.7.65.61])
-        by dispatch1-us1.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTP id 0F2E36007A;
-        Tue, 29 Sep 2020 15:15:52 +0000 (UTC)
-Received: from us4-mdac16-60.ut7.mdlocal (unknown [10.7.66.51])
-        by mx1-us1.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTP id 09435800B0;
-        Tue, 29 Sep 2020 15:15:52 +0000 (UTC)
-X-Virus-Scanned: Proofpoint Essentials engine
-Received: from mx1-us1.ppe-hosted.com (unknown [10.7.65.175])
-        by mx1-us1.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTPS id 7503E80058;
-        Tue, 29 Sep 2020 15:15:51 +0000 (UTC)
-Received: from webmail.solarflare.com (uk.solarflare.com [193.34.186.16])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx1-us1.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTPS id 2AD85700084;
-        Tue, 29 Sep 2020 15:15:51 +0000 (UTC)
-Received: from [10.17.20.203] (10.17.20.203) by ukex01.SolarFlarecom.com
- (10.17.10.4) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 29 Sep
- 2020 16:15:43 +0100
-Subject: Re: [RFC PATCH net-next] sfc: replace in_interrupt() usage
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        <linux-net-drivers@solarflare.com>
-CC:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
-References: <168a1f9e-cba4-69a8-9b29-5c121295e960@solarflare.com>
- <e45d9556-2759-6f33-01a0-d1739ce5760d@solarflare.com>
- <87k0wdk5t2.fsf@nanos.tec.linutronix.de>
-From:   Edward Cree <ecree@solarflare.com>
-Message-ID: <d098eea1-6390-3900-b819-0c03e1872609@solarflare.com>
-Date:   Tue, 29 Sep 2020 16:15:39 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        Tue, 29 Sep 2020 11:16:19 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66F58C061755;
+        Tue, 29 Sep 2020 08:16:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=rt/gWACyTIQuj5nIeNUdzNcwr8s1YVFasvFCFOsspG0=; b=C1EjOj6Mt1xdWZh3XPn8rkOVq0
+        OxLNUps2Qyz7f+SRn0b0qVlwpJY3G1qjZJrXsr79+xSJN576WRyGRCJBvE33ahL+K3bAl6J52zeHS
+        wSJqYA3kcEN4r81o5iv8mrkQNdTtpmXlgU0m94t4jobUJQw63e2MEofWlPsisf6M5B5+P7V7uo9JR
+        L+B8gNbZ5jGR4O4c1ouioTzYDVNXI11/fjGCnBu9osfq4flDd/ZImbGrL1Nb/QcxcZUrcloACztpk
+        f+A0BvS7dJrAKnyy1KN+GuPecThd5yRmSmk4dIzSCm/hex1K24N5dt/nnCwUMW+yOhjXGoH3qt8AN
+        HBl2N0ng==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kNHMC-0000zG-2k; Tue, 29 Sep 2020 15:15:56 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 191E5300F7A;
+        Tue, 29 Sep 2020 17:15:53 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 004CF210E84D8; Tue, 29 Sep 2020 17:15:52 +0200 (CEST)
+Date:   Tue, 29 Sep 2020 17:15:52 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Mike Rapoport <rppt@linux.ibm.com>
+Cc:     Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Idan Yaniv <idan.yaniv@ibm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Shuah Khan <shuah@kernel.org>, Tycho Andersen <tycho@tycho.ws>,
+        Will Deacon <will@kernel.org>, linux-api@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org
+Subject: Re: [PATCH v6 5/6] mm: secretmem: use PMD-size pages to amortize
+ direct map fragmentation
+Message-ID: <20200929151552.GS2628@hirez.programming.kicks-ass.net>
+References: <20200924132904.1391-1-rppt@kernel.org>
+ <20200924132904.1391-6-rppt@kernel.org>
+ <20200925074125.GQ2628@hirez.programming.kicks-ass.net>
+ <20200929130529.GE2142832@kernel.org>
+ <20200929141216.GO2628@hirez.programming.kicks-ass.net>
+ <20200929145813.GA3226834@linux.ibm.com>
 MIME-Version: 1.0
-In-Reply-To: <87k0wdk5t2.fsf@nanos.tec.linutronix.de>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.17.20.203]
-X-ClientProxiedBy: ocex03.SolarFlarecom.com (10.20.40.36) To
- ukex01.SolarFlarecom.com (10.17.10.4)
-X-TM-AS-Product-Ver: SMEX-12.5.0.1300-8.6.1012-25674.003
-X-TM-AS-Result: No-3.520100-8.000000-10
-X-TMASE-MatchedRID: 9zTThWtzImvoSitJVour/fHkpkyUphL9SeIjeghh/zNPQiQvzFiGeI3E
-        a5VcsfoBkUx/UvKOwM2dwbgSqOKjW+kfPO9/GUD1SJA7ysb1rf4K+4pGZZRa9JHQtNioyyYF+CC
-        Bfq8pKQrZpqB/bcVZI9MzaqAqqM3Scgthx7QzyPq5kFk6DtF9f02ImrcnCMc2myiLZetSf8nJ4y
-        0wP1A6AAYnglAWdCYbFdA//ep4QUPdB/CxWTRRu+rAZ8KTspSzqRtRJdv3tn/+RkRCYiqBnVM6t
-        BgxcXQ8G6vRBJBVxNSw7vJErt5g6AbEQIfFpkwHBtlgFh29qnpKzBwu5JpklnOUuoTXM7r4Qwym
-        txuJ6y0=
-X-TM-AS-User-Approved-Sender: Yes
-X-TM-AS-User-Blocked-Sender: No
-X-TMASE-Result: 10--3.520100-8.000000
-X-TMASE-Version: SMEX-12.5.0.1300-8.6.1012-25674.003
-X-MDID: 1601392551-Q3SzIycjGKHr
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200929145813.GA3226834@linux.ibm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Mon, Sep 28 2020 at 21:05, Edward Cree wrote:
->> Only compile-tested so far, because I'm waiting for my kernel to
->>  finish rebuilding with CONFIG_DEBUG_ATOMIC_SLEEP
+On Tue, Sep 29, 2020 at 05:58:13PM +0300, Mike Rapoport wrote:
+> On Tue, Sep 29, 2020 at 04:12:16PM +0200, Peter Zijlstra wrote:
 
-I've now tested and confirmed that the might_sleep warning goes
- away with this patch.
+> > It will drop them down to 4k pages. Given enough inodes, and allocating
+> > only a single sekrit page per pmd, we'll shatter the directmap into 4k.
+> 
+> Why? Secretmem allocates PMD-size page per inode and uses it as a pool
+> of 4K pages for that inode. This way it ensures that
+> __kernel_map_pages() is always called on PMD boundaries.
 
-Thomas, do you want to pull it into v2 of your series, or should
- I submit it separately to David?
+Oh, you unmap the 2m page upfront? I read it like you did the unmap at
+the sekrit page alloc, not the pool alloc side of things.
 
--ed
+Then yes, but then you're wasting gobs of memory. Basically you can pin
+2M per inode while only accounting a single page.
