@@ -2,190 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D882F27D109
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 16:27:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3415E27D10B
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 16:27:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728925AbgI2O1N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 10:27:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39484 "EHLO mail.kernel.org"
+        id S1729208AbgI2O1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 10:27:54 -0400
+Received: from mx2.suse.de ([195.135.220.15]:41766 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727543AbgI2O1N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 10:27:13 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 276C220739;
-        Tue, 29 Sep 2020 14:27:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601389631;
-        bh=N22FwIdH98oW9vtKFTALgnJGDqMt/w7VFFG1kFRSiAY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NQb0lKqG2f8od92Iaa7rEiYe9W0Rr2XtetonmHgbG+COIsTqiayRP4KOpv6xAXgwk
-         22ax2NH7fETrDC4Jfb+jOWd/meTqThQLMiijTA9PEkP+REU8iwsbaCXmSdE5jRvKMV
-         bsxSVZQYdhnX7FUI4rzQp3G3dgIBKSGjHYOtwgeA=
-Date:   Tue, 29 Sep 2020 16:27:17 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     linux- stable <stable@vger.kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@redhat.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH 4.19 146/245] perf stat: Force error in fallback on :k
- events
-Message-ID: <20200929142717.GB1203131@kroah.com>
-References: <20200929105946.978650816@linuxfoundation.org>
- <20200929105954.090876288@linuxfoundation.org>
- <CA+G9fYs-gqkrwzFeMQ1NpV_BfYPrV2CCOKJv6QE7U3mhc56F9w@mail.gmail.com>
+        id S1727543AbgI2O1y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 10:27:54 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1601389672;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Cmghqqosv6TC+EEk46m5qn+kgDZqcMz3XHHlxEb5k7E=;
+        b=WswOj2YCAeSn4D+OcezhC8ARfAUfxI+Jifu5PcvKgjgcyorjPIkOcdFs5ZYUTpo7B4g4UN
+        +aO7xj1VuQ6CUpzcf1RVFOv5PBxkACN2awTasaa+AYhJ+TLwC0onzmCyYg0w+Q61TpHWST
+        r87iUgH+gZmdW9Jb/CvRMqSFfjPVxQY=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 38ED2B03D;
+        Tue, 29 Sep 2020 14:27:52 +0000 (UTC)
+Date:   Tue, 29 Sep 2020 16:27:51 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Chengming Zhou <zhouchengming@bytedance.com>,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@linux.ie, daniel@ffwll.ch,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        sergey.senozhatsky@gmail.com, rostedt@goodmis.org,
+        mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        bsegall@google.com, mgorman@suse.de, songmuchun@bytedance.com,
+        john.ogness@linutronix.de
+Subject: Re: [External] Re: [PATCH 2/2] sched: mark
+ PRINTK_DEFERRED_CONTEXT_MASK in __schedule()
+Message-ID: <20200929142750.GT6442@alley>
+References: <20200927161130.33172-1-zhouchengming@bytedance.com>
+ <20200927161130.33172-2-zhouchengming@bytedance.com>
+ <20200928073202.GA2611@hirez.programming.kicks-ass.net>
+ <40ab934e-5b8b-735b-da65-3043efab9fdc@bytedance.com>
+ <20200928090143.GA2628@hirez.programming.kicks-ass.net>
+ <688eadd7-4ca3-3e32-3520-25977ff059a6@bytedance.com>
+ <20200928102559.GF2611@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <CA+G9fYs-gqkrwzFeMQ1NpV_BfYPrV2CCOKJv6QE7U3mhc56F9w@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200928102559.GF2611@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 07:03:46PM +0530, Naresh Kamboju wrote:
-> On Tue, 29 Sep 2020 at 17:54, Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > From: Stephane Eranian <eranian@google.com>
-> >
-> > [ Upstream commit bec49a9e05db3dbdca696fa07c62c52638fb6371 ]
-> >
-> > When it is not possible for a non-privilege perf command to monitor at
-> > the kernel level (:k), the fallback code forces a :u. That works if the
-> > event was previously monitoring both levels.  But if the event was
-> > already constrained to kernel only, then it does not make sense to
-> > restrict it to user only.
-> >
-> > Given the code works by exclusion, a kernel only event would have:
-> >
-> >   attr->exclude_user = 1
-> >
-> > The fallback code would add:
-> >
-> >   attr->exclude_kernel = 1
-> >
-> > In the end the end would not monitor in either the user level or kernel
-> > level. In other words, it would count nothing.
-> >
-> > An event programmed to monitor kernel only cannot be switched to user
-> > only without seriously warning the user.
-> >
-> > This patch forces an error in this case to make it clear the request
-> > cannot really be satisfied.
-> >
-> > Behavior with paranoid 1:
-> >
-> >   $ sudo bash -c "echo 1 > /proc/sys/kernel/perf_event_paranoid"
-> >   $ perf stat -e cycles:k sleep 1
-> >
-> >    Performance counter stats for 'sleep 1':
-> >
-> >            1,520,413      cycles:k
-> >
-> >          1.002361664 seconds time elapsed
-> >
-> >          0.002480000 seconds user
-> >          0.000000000 seconds sys
-> >
-> > Old behavior with paranoid 2:
-> >
-> >   $ sudo bash -c "echo 2 > /proc/sys/kernel/perf_event_paranoid"
-> >   $ perf stat -e cycles:k sleep 1
-> >    Performance counter stats for 'sleep 1':
-> >
-> >                    0      cycles:ku
-> >
-> >          1.002358127 seconds time elapsed
-> >
-> >          0.002384000 seconds user
-> >          0.000000000 seconds sys
-> >
-> > New behavior with paranoid 2:
-> >
-> >   $ sudo bash -c "echo 2 > /proc/sys/kernel/perf_event_paranoid"
-> >   $ perf stat -e cycles:k sleep 1
-> >   Error:
-> >   You may not have permission to collect stats.
-> >
-> >   Consider tweaking /proc/sys/kernel/perf_event_paranoid,
-> >   which controls use of the performance events system by
-> >   unprivileged users (without CAP_PERFMON or CAP_SYS_ADMIN).
-> >
-> >   The current value is 2:
-> >
-> >     -1: Allow use of (almost) all events by all users
-> >         Ignore mlock limit after perf_event_mlock_kb without CAP_IPC_LOCK
-> >   >= 0: Disallow ftrace function tracepoint by users without CAP_PERFMON or CAP_SYS_ADMIN
-> >         Disallow raw tracepoint access by users without CAP_SYS_PERFMON or CAP_SYS_ADMIN
-> >   >= 1: Disallow CPU event access by users without CAP_PERFMON or CAP_SYS_ADMIN
-> >   >= 2: Disallow kernel profiling by users without CAP_PERFMON or CAP_SYS_ADMIN
-> >
-> >   To make this setting permanent, edit /etc/sysctl.conf too, e.g.:
-> >
-> >           kernel.perf_event_paranoid = -1
-> >
-> > v2 of this patch addresses the review feedback from jolsa@redhat.com.
-> >
-> > Signed-off-by: Stephane Eranian <eranian@google.com>
-> > Reviewed-by: Ian Rogers <irogers@google.com>
-> > Acked-by: Jiri Olsa <jolsa@redhat.com>
-> > Tested-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-> > Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-> > Cc: Jiri Olsa <jolsa@redhat.com>
-> > Cc: Mark Rutland <mark.rutland@arm.com>
-> > Cc: Namhyung Kim <namhyung@kernel.org>
-> > Cc: Peter Zijlstra <peterz@infradead.org>
-> > Link: http://lore.kernel.org/lkml/20200414161550.225588-1-irogers@google.com
-> > Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-> > Signed-off-by: Sasha Levin <sashal@kernel.org>
+On Mon 2020-09-28 12:25:59, Peter Zijlstra wrote:
+> On Mon, Sep 28, 2020 at 06:04:23PM +0800, Chengming Zhou wrote:
 > 
-> perf failed on stable rc branch 4.19 on all devices.
+> > Well, you are lucky. So it's a problem in our printk implementation.
 > 
-> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+> Not lucky; I just kicked it in the groin really hard:
 > 
-> build warning and errors,
-> -----------------------------------
-> In file included from util/evlist.h:15:0,
->                  from util/evsel.c:30:
-> util/evsel.c: In function 'perf_evsel__exit':
-> util/util.h:25:28: warning: passing argument 1 of 'free' discards
-> 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
->  #define zfree(ptr) ({ free(*ptr); *ptr = NULL; })
->                             ^
-> util/evsel.c:1293:2: note: in expansion of macro 'zfree'
->   zfree(&evsel->pmu_name);
->   ^~~~~
-> In file included from
-> /srv/oe/build/tmp-lkft-glibc/work/intel_corei7_64-linaro-linux/perf/1.0-r9/perf-1.0/tools/perf/arch/x86/include/perf_regs.h:5:0,
->                  from util/perf_regs.h:27,
->                  from util/event.h:11,
->                  from util/callchain.h:8,
->                  from util/evsel.c:26:
-> perf/1.0-r9/recipe-sysroot/usr/include/stdlib.h:563:13: note: expected
-> 'void *' but argument is of type 'const char *'
->  extern void free (void *__ptr) __THROW;
->              ^~~~
-> util/evsel.c: In function 'perf_evsel__fallback':
-> util/evsel.c:2802:14: error: 'struct perf_evsel' has no member named
-> 'core'; did you mean 'node'?
->    if (evsel->core.attr.exclude_user)
->               ^~~~
->               node
+>   git://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git debug/experimental
+> 
+> > The deadlock path is:
+> > 
+> > printk
+> >   vprintk_emit
+> >     console_unlock
+> >       vt_console_print
+> >         hide_cursor
+> >           bit_cursor
+> >             soft_cursor
+> >               queue_work_on
+> >                 __queue_work
+> >                   try_to_wake_up
+> >                     _raw_spin_lock
+> >                       native_queued_spin_lock_slowpath
+> > 
+> > Looks like it's introduced by this commit:
+> > 
+> > eaa434defaca1781fb2932c685289b610aeb8b4b
+> > 
+> > "drm/fb-helper: Add fb_deferred_io support"
+> 
+> Oh gawd, yeah, all the !serial consoles are utter batshit.
+> 
+> Please look at John's last printk rewrite, IIRC it farms all that off to
+> a kernel thread instead of doing it from the printk() caller's context.
+> 
+> I'm not sure where he hides his latests patches, but I'm sure he'll be
+> more than happy to tell you.
 
-I thought Sasha had dropped all of the offending patches.  I'll go drop
-this one and push out a new 4.19-rc release.
+AFAIK, John is just working on updating the patchset so that it will
+be based on the lockless ringbuffer that is finally in the queue
+for-5.10.
 
-But note, the latest 4.19.y tree doesn't even build perf for me, so I
-can't really check this locally :(
+Upstreaming the console handling will be the next big step. I am sure
+that there will be long discussion about it. But there might be
+few things that would help removing printk_deferred().
 
-thanks,
+1. Messages will be printed on consoles by dedicated kthreads. It will
+   be safe context. No deadlocks.
 
-greg k-h
+2. The registration and unregistration of consoles should not longer
+   be handled by console_lock (semaphore). It should be possible to
+   call most consoles without a sleeping lock. It should remove all
+   these deadlocks between printk() and scheduler().
+
+   There might be problems with some consoles. For example, tty would
+   most likely still need a sleeping lock because it is using the console
+   semaphore also internally.
+
+
+3. We will try harder to get the messages out immediately during
+   panic().
+
+
+It would take some time until the above reaches upstream. But it seems
+to be the right way to go.
+
+
+About printk_deferred():
+
+It is a whack a mole game. It is easy to miss printk() that might
+eventually cause the deadlock.
+
+printk deferred context is more safe. But it is still a what a mole
+game. The kthreads will do the same job for sure.
+
+Finally, the deadlock happens "only" when someone is waiting on
+console_lock() in parallel. Otherwise, the waitqueue for the semaphore
+is empty and scheduler is not called.
+
+It means that there is quite a big change to see the WARN(). It might
+be even bigger than with printk_deferred() because WARN() in scheduler
+means that the scheduler is big troubles. Nobody guarantees that
+the deferred messages will get handled later.
+
+Best Regards,
+Petr
