@@ -2,99 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8544727BEB3
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 10:01:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5058B27BEBE
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 10:03:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727561AbgI2IBZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 04:01:25 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:53640 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725283AbgI2IBZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 04:01:25 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08T7sSxD021216;
-        Tue, 29 Sep 2020 08:01:15 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=fS3sbliVrTas/8VSegnyz4QBH86Z2DLuW1uqKlImwtk=;
- b=UKijo+cC2Ku0I41FnXqYiG8QlG6AwNpBQ/Erc9zLcjBZGWNhbgxCm0+ucWSWKzpbPXtt
- GrxbAYQyEGYeSpH58fSaPYTyL65vfHFLDYTpXxwgnXWFKfZufAID8F7oe85BAWZRsRbu
- su/DZdwoqs35cxASqaxTz7L6fi8eT9cvr3ST5+h61hrlVn/jJcmshxTiNnmnP4qHmrpa
- i1FcEmLZ+4Z3eOv682d6JU5oWdBPSdRnnayegXR7VFq37tt3J1ywh+L+vtCa7zgSwueO
- hS3FhbZK6Td62Gq2TaWs+NtzC1nTOCWodznJ4DbEW1sA458h/bAKkp/WN3piYpKqkwWY xw== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 33swkks40t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 29 Sep 2020 08:01:15 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08T7uPbb185869;
-        Tue, 29 Sep 2020 08:01:15 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 33tfhx8dwc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 29 Sep 2020 08:01:15 +0000
-Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 08T81Er7000851;
-        Tue, 29 Sep 2020 08:01:14 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 29 Sep 2020 01:01:13 -0700
-Date:   Tue, 29 Sep 2020 11:01:07 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Jing Xiangfeng <jingxiangfeng@huawei.com>
-Cc:     mchehab+huawei@kernel.org, gregkh@linuxfoundation.org,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: mfd: hi6421-spmi-pmic: Fix error return in
- hi6421_spmi_pmic_probe()
-Message-ID: <20200929080107.GX4282@kadam>
-References: <20200929074847.47124-1-jingxiangfeng@huawei.com>
+        id S1727646AbgI2IDq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 04:03:46 -0400
+Received: from mail-eopbgr00041.outbound.protection.outlook.com ([40.107.0.41]:25707
+        "EHLO EUR02-AM5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725779AbgI2IDp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 04:03:45 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UiTWnyB76x511baebKNlD6RTSk6DzXqWbx55Km68B0IXxno1AW4JVan6InpAnjfrh4tEpuSJycat1tbapSrr/6/r2OwYdm2c3qOrPBejixApE6ycS105JmWhfKrXjz8pEU9ToMfVDG78vrQ/6bK6Dsvg8+dk8OILFKojR+X3Au6JgSTybPbo8e4Jo0iJLM/dblPt6Hq8YIOWFibRjZLLQV3Thu/WxyjHj4SBl8/075oXL5wQiBRJCYj2lq0XcCWS1YepwX6FKwEmoOEnWVGrE901OuUMXJ5GzNWLFIf1uXMaYuBdpx4TyVOLMAoSfjoCi327xdXfz0KmBvEsNjXLaw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=npLMllt8Z45U8hY+l0IJSSDI9kmyOK9gwCbvInSiTm4=;
+ b=EHT2c5Vk2KUIhwgUnrv15WCab3eSQobvOm7xYVCKOv5cUEl5N1l1Ht3TYvYnUyDKZklBj1dcLE2P85JJikYLsnTa1BRVmKrl8O/6THk2xCA1UeWDO7IyhS8qlN+lVVKpjh+KiEQdLyKgo491pomKoahVznJ74U0C0NjTiXlfGA0oliENYFAg1IsKMC1K6v+osVARglrK33fRLdBKfYcY72KzVNs/VrIOyQ59iKiWPUVOtjo0aOA0P5Rm2O3MyMVVsh0EKuYbc+PD214JzFVmxuVvN30BqaayKJcxDJAp14KhqNaM+WyujIv2DePDJxUVRwa7KKxh7IPjnk1uzzW2sQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=npLMllt8Z45U8hY+l0IJSSDI9kmyOK9gwCbvInSiTm4=;
+ b=LOpXQVBs5ePuRjukT1iK0f8awYOxE7V1BjjjnB//JJ0eH4gu/QFTeTeJUyQEVSsLVGHJxorv5jPk8fmupeuxZgb9urs9Z1CBAGBuxgFJ+UruIKiPaS8N1eE9IhK4pBqE09V7G1nCYFg8cS4da51z7ea4lBcY9GXkkeE36KutZCY=
+Authentication-Results: intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=none action=none header.from=nxp.com;
+Received: from VI1PR04MB4960.eurprd04.prod.outlook.com (2603:10a6:803:57::21)
+ by VI1PR04MB4255.eurprd04.prod.outlook.com (2603:10a6:803:3f::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.20; Tue, 29 Sep
+ 2020 08:03:42 +0000
+Received: from VI1PR04MB4960.eurprd04.prod.outlook.com
+ ([fe80::b178:a37b:1f9e:3a6]) by VI1PR04MB4960.eurprd04.prod.outlook.com
+ ([fe80::b178:a37b:1f9e:3a6%3]) with mapi id 15.20.3412.029; Tue, 29 Sep 2020
+ 08:03:42 +0000
+From:   Sherry Sun <sherry.sun@nxp.com>
+To:     sudeep.dutt@intel.com, ashutosh.dixit@intel.com, arnd@arndb.de,
+        gregkh@linuxfoundation.org, masahiroy@kernel.org,
+        michal.lkml@markovi.net, lee.jones@linaro.org
+Cc:     linux-kernel@vger.kernel.org, linux-imx@nxp.com,
+        linux-kbuild@vger.kernel.org
+Subject: [PATCH V2 0/2]  Add module autoloading support for vop and cosm driver 
+Date:   Tue, 29 Sep 2020 16:02:12 +0800
+Message-Id: <20200929080214.23553-1-sherry.sun@nxp.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-ClientProxiedBy: AM4PR07CA0002.eurprd07.prod.outlook.com
+ (2603:10a6:205:1::15) To VI1PR04MB4960.eurprd04.prod.outlook.com
+ (2603:10a6:803:57::21)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200929074847.47124-1-jingxiangfeng@huawei.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9758 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999 bulkscore=0
- phishscore=0 malwarescore=0 adultscore=0 suspectscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009290073
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9758 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0 phishscore=0
- suspectscore=0 mlxlogscore=999 clxscore=1015 priorityscore=1501
- impostorscore=0 lowpriorityscore=0 bulkscore=0 spamscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009290073
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from nxp.ap.freescale.net (119.31.174.71) by AM4PR07CA0002.eurprd07.prod.outlook.com (2603:10a6:205:1::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.13 via Frontend Transport; Tue, 29 Sep 2020 08:03:37 +0000
+X-Mailer: git-send-email 2.17.1
+X-Originating-IP: [119.31.174.71]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 85f2ba37-262d-4e72-108b-08d8644e2dff
+X-MS-TrafficTypeDiagnostic: VI1PR04MB4255:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR04MB4255E86C08D92FA52E1F50F092320@VI1PR04MB4255.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: hZZvF0a36tw5PjuWKzpDCZeWzoo3fvoOS0FjnBcoowciMM7Pog6du4p3CoV/iI8+qL1+8ieVomIRHET8wnqPgZWiOTNG7KeEmliy+gmbAPloViEb4ALHu6c/Kme0KlEbkrhaer73vKzTV4HnqGGCW3Rrzn/uKOs0K27Jxtwk4GGq/DM4A3PpRwwG0/JRxez3iSwVYpglFf+mYZv0vv/+aRsmqwYi2H7JouICmtGoWEcXiSPtO5qi5lWbwnvf0YKfUrtKKKCU1dxb/A9xciFnzFyIWJCbG8n+Zy4DjvZO8NvbflVNXOQYPrHfj0/wE25CoHNsZ7AE5jVsmYuxl3IFGbq5QobgnbS1sfaU86mf2UH7Ift/VStymzuU7BTQda+d
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB4960.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(39860400002)(136003)(376002)(366004)(396003)(66556008)(66476007)(4744005)(36756003)(1076003)(4326008)(2906002)(86362001)(316002)(2616005)(956004)(6486002)(6666004)(478600001)(8936002)(44832011)(8676002)(4743002)(66946007)(6506007)(52116002)(5660300002)(26005)(186003)(83380400001)(16526019)(6512007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: SYGDSI/hsdyC/gU0CysrkqhyziUhBLXf+QaTBC3LC/jw5LJ78IYfZAVGAnJfmoLcqdXrKbvVNmdPnOImHR59Fg/0JDCG/d1lwPLYZJBZyhe0RWrTVP5yZM+rikGn4cw6cyeTmU5eHdm0dzlK6ga7dDNAAu5zxKnnbVAQHPc16gLFV7YZujYUBFRLWyPeMuEGSVgtS1UlJIn1aNffR1RkviUC/2vXa1SHOJoJoIqjr5pvGozMKmWohclq3aJv46gdYt4OpoPtn38RT1YAcnRCVk12cu5yqbAEQA+GNMhXX5jGhiZ8tySv7NxyQVFy9LmQcnGio+fRm1SUVnN4zLgVqminEo9y8GemNugZEDLevfat6qYGwekxA3dmF1GJuRuNkvEfmpu2Dp34sy0eOxkqn//q2kDRBEOwPtc6588V9bdVCG9ntGpnT3B1nxTvAg60Xsj3F1HbqGLTqjLDBUJ/HvxDzmbWxxIUlZZVbCPtBBqs4luGvF9tALlkeBWO605SCyXDL8czChlFj3DjYw049L4ApP1fOMnaSL1mtCxR8CONEJny+IPl1jy/bbOwWXGNnHadOtwTUU6499Mxs1Tz8rY9hCsGJHYL1F4YGrCQ/N8JFdAUzqX/g2wGEFxsl4VdemCrJkDKmMqYTd6+Nqugug==
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 85f2ba37-262d-4e72-108b-08d8644e2dff
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB4960.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Sep 2020 08:03:42.0369
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 8zjac1jTe7R5u1v0wCaq1NLDrEAU5Fneo/nUTwUgukwvSXQMCfRXT5oO7n3dKgRqaKwIVCZ2fnV2KUmue7uWQQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB4255
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 03:48:47PM +0800, Jing Xiangfeng wrote:
-> Fix to return error code -ENOMEM from the error handling case instead
-> of 0.
-> 
-> Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
-> ---
->  drivers/staging/hikey9xx/hi6421-spmi-pmic.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/staging/hikey9xx/hi6421-spmi-pmic.c b/drivers/staging/hikey9xx/hi6421-spmi-pmic.c
-> index 64b30d263c8d..4f34a5282970 100644
-> --- a/drivers/staging/hikey9xx/hi6421-spmi-pmic.c
-> +++ b/drivers/staging/hikey9xx/hi6421-spmi-pmic.c
-> @@ -262,8 +262,10 @@ static int hi6421_spmi_pmic_probe(struct spmi_device *pdev)
->  	hi6421_spmi_pmic_irq_prc(pmic);
->  
->  	pmic->irqs = devm_kzalloc(dev, HISI_IRQ_NUM * sizeof(int), GFP_KERNEL);
-> -	if (!pmic->irqs)
-> +	if (!pmic->irqs) {
-> +		ret = -ENOMEM;
->  		goto irq_malloc;
+Changes in V2:
+1. Combine patch1 and patch2 in V1 together, as patch1 is a part of autoloading
+support for vop driver in patch2.
 
-It shouldn't do a goto, it should just return directly.  The goto
-releases an IRQ which isn't acquired until later in the function.
+Add module autoloading support for vop and cosm driver, when the vop/cosm device
+appears, the driver will be autoloaded.
 
-regards,
-dan carpenter
+Sherry Sun (2):
+  mic: vop: module autoprobing support for vop drivers
+  mic: cosm: module autoprobing support for cosm driver
+
+ drivers/misc/mic/bus/cosm_bus.c   |  8 ++++++++
+ drivers/misc/mic/bus/vop_bus.h    |  7 +------
+ drivers/misc/mic/cosm/cosm_main.c |  7 +++++++
+ drivers/misc/mic/vop/vop_main.c   |  2 +-
+ include/linux/mod_devicetable.h   | 15 +++++++++++++++
+ scripts/mod/devicetable-offsets.c |  7 +++++++
+ scripts/mod/file2alias.c          | 27 +++++++++++++++++++++++++++
+ 7 files changed, 66 insertions(+), 7 deletions(-)
+
+-- 
+2.17.1
 
