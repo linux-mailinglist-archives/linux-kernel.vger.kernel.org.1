@@ -2,119 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 417D627B956
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 03:26:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D845C27B959
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 03:27:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727174AbgI2B0M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 21:26:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56868 "EHLO
+        id S1727196AbgI2B1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 21:27:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725272AbgI2B0L (ORCPT
+        with ESMTP id S1726396AbgI2B1o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 21:26:11 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9467CC061755
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 18:26:11 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id n13so4493487edo.10
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 18:26:11 -0700 (PDT)
+        Mon, 28 Sep 2020 21:27:44 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5830BC061755;
+        Mon, 28 Sep 2020 18:27:44 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id u24so2502166pgi.1;
+        Mon, 28 Sep 2020 18:27:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9+IiWJjSCsa3H211qi8G/I3o2LKKqrVZtYC6QtTBudg=;
-        b=v+cmjGckHAAscgdJCKKcOpkZt5W7kj9wtG0S0i5i8CU6FJQsAKRy0mG7lHaKs9P1Rm
-         FNf09YyuhrUkfXx4LCs0rdVCfFh3rbzyi+htTSkyDUaG/YkwS8GYQKtWsV1awNRb1W0s
-         t//fBVM6GB2s48wH54hOLPGXPZ4cT3IIdMkWlARF50xs3TltKeawp1Ayud3KM/hxDUX5
-         tU86Mqd0N9i21fvekjDYLCyGHQEWMrbyk+RIjUQNURCFlJFqz+QcWU4IYXnECq82TNis
-         rXh05Iqs0TZGI2cm2EqJzQy8SyOTzs5asGQkpXRoUCQntEk2L9nPPkYQ2RttFm2HJV7b
-         Bk4w==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=haBHYNhGyPDlpdCEcHOoSLCHhaYXNjWfLyF4J9/wU0M=;
+        b=nqNVNfAc7trRJ8ELoXvA2l0ORldRE8sJpjt7nLGhGL+CWYopAosU/XnJuncU+gCN4v
+         c1O5D/gkag2cBPT5YkU6P5vxFFF9c6MOA6mpMdoFwWoIi7KpKtKlRMw8Y10a7FFdVmuA
+         xZD3kwUENIcV8odQSIfEy1ARotNtGjnK48OQmHcp68rMk3zH5JfjB6QFKIEvP1t+sodO
+         Ge661L9mb3P654FmmO8kw0BMx5XuUUoXSj9JkuamXBbeF5qlu//CKY2MGFF4dhSPf1hK
+         U31w9QriOFnlYwX86xeHiAxt2PJBnpIRrLqar2iKhDaa3YMA+kDW8/+neN9rpswpt1xR
+         7csg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9+IiWJjSCsa3H211qi8G/I3o2LKKqrVZtYC6QtTBudg=;
-        b=eFz6HZryglE5Cmaw0e1FYNL3xoCq5QCD8NkIaM+x2X7brh+EQSewTbknmWt3WwqjLx
-         PV3muhx91jZYX7zt+gVe7IA5TaSAuxzxk3gKBQUPRCZIJbWyIG8AcxNeW739NsDXEoVf
-         8J8YV8rG6EsF/2cZ71mWplmgYlalg3dt+XU3vwSf2IOgbrkzsqt1IbeDKtV8T2ea0ttw
-         TX2s6JNtBpomkIhIBAH/3cYNXYXOLDH1sMYmSpjkqQa8lC1F0iSxpB+AURGwqmI0lg1q
-         xgKzaqEDyyGdhOMBOPT8BvVew8ANTNm1OSh4twhANz+NOSr3hZcXqUc8N4seLSAPjYu5
-         1Z6w==
-X-Gm-Message-State: AOAM532ciaPRVTMS5kNDxNsssjwHGEah/qC3x31ezCOVwrSUkbCVjVYa
-        Hc7ZBGWs+TC1VJWPEMH96pRGMBmass107CEctcbZDw==
-X-Google-Smtp-Source: ABdhPJyukjgfeJlTRPeGdPIi9Phg1aw79cup8F0sTHp1XtOitP/5r3JajS/c5S9Voy8qaoMMFVj4pyr1k2fKkYLBhkg=
-X-Received: by 2002:a05:6402:3192:: with SMTP id di18mr783128edb.116.1601342768237;
- Mon, 28 Sep 2020 18:26:08 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=haBHYNhGyPDlpdCEcHOoSLCHhaYXNjWfLyF4J9/wU0M=;
+        b=PCc0ia2mCMEz/IZCi/P9z73JzN5JoR2R2O1dsu9n/hnEj8hpfO83pNbb4eKQ/j0Wge
+         4O6D/tWjFoA5nruMiHuJugROrzcdjuc6kKGXmP4WTJE3FK+vNLAxQUFtjXbgv74lQ2c7
+         NNacs0pKVZF9pVOfZ5CBK4eJZlI6CEZI/R5zmnpKMgS3Fix0eo97qTBUgIwixk6XovCz
+         9egbt2gwNMRmHnXTg7jc9+XNxnY3likUADz8reMG06RaeI53EMjhLDruQ9kOcXzWYW62
+         NODg9O9DuwXR/uRh8dFXRQxThf6GaAmq3hLt3goNxFZSG5xQBcHrerHJGSKTTOFiipE8
+         ZTgQ==
+X-Gm-Message-State: AOAM530qH+Til+IiOkViB8S2kFxzUdd7QB6qv0IGeLtj3ILgv4G4Os8l
+        inogv/wNtqOKbkJVsWHUNxY=
+X-Google-Smtp-Source: ABdhPJxAFUoStsPpjfspG7G2Tgct9zO/DSeQ4pDbiiKDUYg9tJO5ut3kzNKyDZpzsxD5QUpQUL5uiw==
+X-Received: by 2002:a63:121d:: with SMTP id h29mr1314164pgl.285.1601342863833;
+        Mon, 28 Sep 2020 18:27:43 -0700 (PDT)
+Received: from dhcp-12-153.nay.redhat.com ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id g9sm2502607pgm.79.2020.09.28.18.27.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Sep 2020 18:27:42 -0700 (PDT)
+Date:   Tue, 29 Sep 2020 09:27:31 +0800
+From:   Hangbin Liu <liuhangbin@gmail.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Shuah Khan <shuah@kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        linux-doc@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>, Tim.Bird@sony.com,
+        lkft-triage@lists.linaro.org,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Justin Cook <justin.cook@linaro.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: [PATCHv5 kselftest next] selftests/run_kselftest.sh: make each
+ test individually selectable
+Message-ID: <20200929012731.GE2531@dhcp-12-153.nay.redhat.com>
+References: <20200914021758.420874-1-liuhangbin@gmail.com/>
+ <20200914022227.437143-1-liuhangbin@gmail.com>
+ <CA+G9fYvT6Mw2BamoiVyw=wLUqD-3LB2oaDqcuabOyWfFxEN1qg@mail.gmail.com>
+ <202009251414.15274C0@keescook>
+ <20200927015334.GC2531@dhcp-12-153.nay.redhat.com>
+ <202009281305.E6F9595@keescook>
 MIME-Version: 1.0
-References: <d1b31586-426a-e0b1-803e-3eff30196c05@web.de> <20200926121402.GA7467@kadam>
- <20200926221720.GK9916@ziepe.ca> <20200928175237.6b3024fe6ad96d70c75d5de1@linux-foundation.org>
-In-Reply-To: <20200928175237.6b3024fe6ad96d70c75d5de1@linux-foundation.org>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Mon, 28 Sep 2020 18:25:57 -0700
-Message-ID: <CAPcyv4gnUrpGrrk=zq8_OTU6+448AMue+w93vB2dQM-uauR7RQ@mail.gmail.com>
-Subject: Re: [PATCH v3] mm/hmm/test: use after free in dmirror_allocate_chunk()
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Markus Elfring <Markus.Elfring@web.de>,
-        Wei Yongjun <weiyongjun1@huawei.com>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202009281305.E6F9595@keescook>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 5:52 PM Andrew Morton <akpm@linux-foundation.org> wrote:
->
-> On Sat, 26 Sep 2020 19:17:20 -0300 Jason Gunthorpe <jgg@ziepe.ca> wrote:
->
-> > On Sat, Sep 26, 2020 at 03:14:02PM +0300, Dan Carpenter wrote:
-> > > The error handling code does this:
-> > >
-> > > err_free:
-> > >     kfree(devmem);
-> > >         ^^^^^^^^^^^^^
-> > > err_release:
-> > >     release_mem_region(devmem->pagemap.range.start, range_len(&devmem->pagemap.range));
-> > >                            ^^^^^^^^
-> > > The problem is that when we use "devmem->pagemap.range.start" the
-> > > "devmem" pointer is either NULL or freed.
-> > >
-> > > Neither the allocation nor the call to request_free_mem_region() has to
-> > > be done under the lock so I moved those to the start of the function.
-> > >
-> > > Fixes: 1f9c4bb986d9 ("mm/memremap_pages: convert to 'struct range'")
-> > > Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-> > > Reviewed-by: Ralph Campbell <rcampbell@nvidia.com>
-> > > ---
-> > > v2: The first version introduced a locking bug
-> > > v3: Markus Elfring pointed out that the Fixes tag was wrong.  This bug
-> > > was in the original commit and then fixed and then re-introduced.  I was
-> > > quite bothered by how this bug lasted so long in the source code, but
-> > > now we know.  As soon as it is introduced we fixed it.
-> > >
-> > > One problem with the kernel QC process is that I think everyone marks
-> > > the bug as "old/dealt with" so it was only because I was added a new
-> > > check for resource leaks that it was found when it was re-introduced.
-> > >
-> > >  lib/test_hmm.c | 44 ++++++++++++++++++++++----------------------
-> > >  1 file changed, 22 insertions(+), 22 deletions(-)
-> >
-> > Hi Andrew,
-> >
-> > I don't have have any hmm related patches this cycle, can you take
-> > this into your tree?
-> >
-> > Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
->
-> Thanks.
->
-> It's actually a fix against Dan Williams' -mm patch "mm/memremap_pages:
-> convert to 'struct range'"
+On Mon, Sep 28, 2020 at 01:06:15PM -0700, Kees Cook wrote:
+> > I'm really sorry to make this trouble. And I'm OK to revert the patch.
+> > I just a little wondering how do you generate this script.
+> 
+> This issue is with which shell is used. I suspect your /bin/sh is full
+> /bin/bash, where as Naresh's, the CI's, and mine are /bin/dash (which
+> lacks "-e" support for the built-in "echo").
 
-Yes, sorry, for the fix:
+Ah, got it. Thanks for your explanation.
 
-Acked-by: Dan Williams <dan.j.williams@intel.com>
+Regards
+Hangbin
