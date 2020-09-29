@@ -2,39 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6554427C46F
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:14:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2361B27C3B2
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 13:09:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728896AbgI2LOB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 07:14:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56180 "EHLO mail.kernel.org"
+        id S1728633AbgI2LHl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 07:07:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45758 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727761AbgI2LNm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:13:42 -0400
+        id S1728531AbgI2LHQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:07:16 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8C65121924;
-        Tue, 29 Sep 2020 11:13:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2327221D7D;
+        Tue, 29 Sep 2020 11:07:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601378021;
-        bh=v9e5EIZg8+POtQz8j/8Qec6+wWcqAFirIwIHnPU3ILg=;
+        s=default; t=1601377636;
+        bh=Wb2GbvW6M0O8nQ8XEZKqP6wgNcnqbhsJbKcF/STvFEg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=g/m2UkMcxtYR+95tjASPYce3LHYK85k0YEwr81LR1GEWkQemVpZoiWAw0XFRkYm1H
-         5pao4llQ5aOcCluNuownCKdI5VtqNp0fWd1+Fav6DOtgcvT6I9H1psR9712GP+ZiO0
-         tL5MwYDAOGE0hChzbqfIoL/p9uV/eR7tvVEabd9U=
+        b=dRZfUJM4mrTwg0k20RIKtD5ieLdi6Hk4/aEkfeDVTHHlASuuH5aAbdZEqNgTOa2X3
+         nshxEMifWsCfbTnTydUPlfyr85Ah7cpBN66ZZRfd86Rej8OfvPHkVmXo6xpP9VGav7
+         xjZ3d6tqaM+6FaZYT+Ho4HdrF7/UUec3mDGfo7JA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Guoju Fang <fangguoju@gmail.com>,
-        Coly Li <colyli@suse.de>, Jens Axboe <axboe@kernel.dk>,
+        stable@vger.kernel.org, Muchun Song <songmuchun@bytedance.com>,
+        Chengming Zhou <zhouchengming@bytedance.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Song Liu <songliubraving@fb.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 034/166] bcache: fix a lost wake-up problem caused by mca_cannibalize_lock
-Date:   Tue, 29 Sep 2020 12:59:06 +0200
-Message-Id: <20200929105936.906396055@linuxfoundation.org>
+Subject: [PATCH 4.9 003/121] kprobes: fix kill kprobe which has been marked as gone
+Date:   Tue, 29 Sep 2020 12:59:07 +0200
+Message-Id: <20200929105930.354636159@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929105935.184737111@linuxfoundation.org>
-References: <20200929105935.184737111@linuxfoundation.org>
+In-Reply-To: <20200929105930.172747117@linuxfoundation.org>
+References: <20200929105930.172747117@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,95 +51,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guoju Fang <fangguoju@gmail.com>
+From: Muchun Song <songmuchun@bytedance.com>
 
-[ Upstream commit 34cf78bf34d48dddddfeeadb44f9841d7864997a ]
+[ Upstream commit b0399092ccebd9feef68d4ceb8d6219a8c0caa05 ]
 
-This patch fix a lost wake-up problem caused by the race between
-mca_cannibalize_lock and bch_cannibalize_unlock.
+If a kprobe is marked as gone, we should not kill it again.  Otherwise, we
+can disarm the kprobe more than once.  In that case, the statistics of
+kprobe_ftrace_enabled can unbalance which can lead to that kprobe do not
+work.
 
-Consider two processes, A and B. Process A is executing
-mca_cannibalize_lock, while process B takes c->btree_cache_alloc_lock
-and is executing bch_cannibalize_unlock. The problem happens that after
-process A executes cmpxchg and will execute prepare_to_wait. In this
-timeslice process B executes wake_up, but after that process A executes
-prepare_to_wait and set the state to TASK_INTERRUPTIBLE. Then process A
-goes to sleep but no one will wake up it. This problem may cause bcache
-device to dead.
-
-Signed-off-by: Guoju Fang <fangguoju@gmail.com>
-Signed-off-by: Coly Li <colyli@suse.de>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Fixes: e8386a0cb22f ("kprobes: support probing module __exit function")
+Co-developed-by: Chengming Zhou <zhouchengming@bytedance.com>
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>
+Cc: Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>
+Cc: David S. Miller <davem@davemloft.net>
+Cc: Song Liu <songliubraving@fb.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: <stable@vger.kernel.org>
+Link: https://lkml.kernel.org/r/20200822030055.32383-1-songmuchun@bytedance.com
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/md/bcache/bcache.h |  1 +
- drivers/md/bcache/btree.c  | 12 ++++++++----
- drivers/md/bcache/super.c  |  1 +
- 3 files changed, 10 insertions(+), 4 deletions(-)
+ kernel/kprobes.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/md/bcache/bcache.h b/drivers/md/bcache/bcache.h
-index e4a3f692057b8..a3763d664a67a 100644
---- a/drivers/md/bcache/bcache.h
-+++ b/drivers/md/bcache/bcache.h
-@@ -548,6 +548,7 @@ struct cache_set {
- 	 */
- 	wait_queue_head_t	btree_cache_wait;
- 	struct task_struct	*btree_cache_alloc_lock;
-+	spinlock_t		btree_cannibalize_lock;
- 
- 	/*
- 	 * When we free a btree node, we increment the gen of the bucket the
-diff --git a/drivers/md/bcache/btree.c b/drivers/md/bcache/btree.c
-index 9fca837d0b41e..fba0fff8040d6 100644
---- a/drivers/md/bcache/btree.c
-+++ b/drivers/md/bcache/btree.c
-@@ -840,15 +840,17 @@ out:
- 
- static int mca_cannibalize_lock(struct cache_set *c, struct btree_op *op)
+diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+index 9aa2dbe6a4568..6f63d78aceeca 100644
+--- a/kernel/kprobes.c
++++ b/kernel/kprobes.c
+@@ -2012,6 +2012,9 @@ static void kill_kprobe(struct kprobe *p)
  {
--	struct task_struct *old;
--
--	old = cmpxchg(&c->btree_cache_alloc_lock, NULL, current);
--	if (old && old != current) {
-+	spin_lock(&c->btree_cannibalize_lock);
-+	if (likely(c->btree_cache_alloc_lock == NULL)) {
-+		c->btree_cache_alloc_lock = current;
-+	} else if (c->btree_cache_alloc_lock != current) {
- 		if (op)
- 			prepare_to_wait(&c->btree_cache_wait, &op->wait,
- 					TASK_UNINTERRUPTIBLE);
-+		spin_unlock(&c->btree_cannibalize_lock);
- 		return -EINTR;
- 	}
-+	spin_unlock(&c->btree_cannibalize_lock);
+ 	struct kprobe *kp;
  
- 	return 0;
- }
-@@ -883,10 +885,12 @@ static struct btree *mca_cannibalize(struct cache_set *c, struct btree_op *op,
-  */
- static void bch_cannibalize_unlock(struct cache_set *c)
- {
-+	spin_lock(&c->btree_cannibalize_lock);
- 	if (c->btree_cache_alloc_lock == current) {
- 		c->btree_cache_alloc_lock = NULL;
- 		wake_up(&c->btree_cache_wait);
++	if (WARN_ON_ONCE(kprobe_gone(p)))
++		return;
++
+ 	p->flags |= KPROBE_FLAG_GONE;
+ 	if (kprobe_aggrprobe(p)) {
+ 		/*
+@@ -2154,7 +2157,10 @@ static int kprobes_module_callback(struct notifier_block *nb,
+ 	mutex_lock(&kprobe_mutex);
+ 	for (i = 0; i < KPROBE_TABLE_SIZE; i++) {
+ 		head = &kprobe_table[i];
+-		hlist_for_each_entry_rcu(p, head, hlist)
++		hlist_for_each_entry_rcu(p, head, hlist) {
++			if (kprobe_gone(p))
++				continue;
++
+ 			if (within_module_init((unsigned long)p->addr, mod) ||
+ 			    (checkcore &&
+ 			     within_module_core((unsigned long)p->addr, mod))) {
+@@ -2165,6 +2171,7 @@ static int kprobes_module_callback(struct notifier_block *nb,
+ 				 */
+ 				kill_kprobe(p);
+ 			}
++		}
  	}
-+	spin_unlock(&c->btree_cannibalize_lock);
- }
- 
- static struct btree *mca_alloc(struct cache_set *c, struct btree_op *op,
-diff --git a/drivers/md/bcache/super.c b/drivers/md/bcache/super.c
-index 7fcc1ba12bc01..6bf1559a1f0db 100644
---- a/drivers/md/bcache/super.c
-+++ b/drivers/md/bcache/super.c
-@@ -1510,6 +1510,7 @@ struct cache_set *bch_cache_set_alloc(struct cache_sb *sb)
- 	sema_init(&c->sb_write_mutex, 1);
- 	mutex_init(&c->bucket_lock);
- 	init_waitqueue_head(&c->btree_cache_wait);
-+	spin_lock_init(&c->btree_cannibalize_lock);
- 	init_waitqueue_head(&c->bucket_wait);
- 	init_waitqueue_head(&c->gc_wait);
- 	sema_init(&c->uuid_write_mutex, 1);
+ 	mutex_unlock(&kprobe_mutex);
+ 	return NOTIFY_DONE;
 -- 
 2.25.1
 
