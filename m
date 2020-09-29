@@ -2,135 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9B7B27BB3A
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 05:00:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7053927BB40
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 05:05:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727378AbgI2DAP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 23:00:15 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:39594 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727226AbgI2DAO (ORCPT
+        id S1727306AbgI2DFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 23:05:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43862 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726944AbgI2DFB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 23:00:14 -0400
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08T2WUxo170825;
-        Mon, 28 Sep 2020 22:59:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : reply-to : references : mime-version : content-type
- : in-reply-to; s=pp1; bh=5ZRM/KDpvesPWf69Rz9gnZHLps4Dc84U5HBJCv1mi6A=;
- b=Mkh8x/+u0Rgbksw7uC63ujkhldesHM6hn2XcZz8bcZoh510CmC+pzIgwgSSm5a6Ae4tQ
- bHyO8I8eDYFhKKKninC9aaN4kiRlYDJYQDFDqteltPLiEn/nOmvGEFOhUkB7PmuKzH6I
- M9Oj8DYTpDhuL32usmveCoZvifF6AjpiFKnObtTet4Z19gvWqpcibFfbLSNYAooPcuSi
- bUpjr9da/TnjQYV8Tvt2Tx8S1i+XbUGVCGMsYIPdg3w4cnlUQLh0nAgYBoVtxetlwBye
- 9RMyOdfzMeqbW46KMmeqKCIw/ZTq0rsI/8zbgWzFQ7dRbAtq2KLZsPkKwK/uxWZFhOFl oA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 33uuk2sc84-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 28 Sep 2020 22:59:52 -0400
-Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08T2xpXN044389;
-        Mon, 28 Sep 2020 22:59:51 -0400
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 33uuk2sc7m-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 28 Sep 2020 22:59:51 -0400
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08T2upkk019473;
-        Tue, 29 Sep 2020 02:59:49 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma02fra.de.ibm.com with ESMTP id 33sw981dw9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 29 Sep 2020 02:59:49 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08T2xljm26935674
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 29 Sep 2020 02:59:47 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 48D80A4053;
-        Tue, 29 Sep 2020 02:59:47 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 39DE8A4040;
-        Tue, 29 Sep 2020 02:59:44 +0000 (GMT)
-Received: from in.ibm.com (unknown [9.199.52.162])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Tue, 29 Sep 2020 02:59:44 +0000 (GMT)
-Date:   Tue, 29 Sep 2020 08:29:41 +0530
-From:   Bharata B Rao <bharata@linux.ibm.com>
-To:     Ralph Campbell <rcampbell@nvidia.com>
-Cc:     linux-mm@kvack.org, kvm-ppc@vger.kernel.org,
-        nouveau@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Dan Williams <dan.j.williams@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jerome Glisse <jglisse@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Jason Gunthorpe <jgg@nvidia.com>, Zi Yan <ziy@nvidia.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH 2/2] mm: remove extra ZONE_DEVICE struct page refcount
-Message-ID: <20200929025941.GA257792@in.ibm.com>
-Reply-To: bharata@linux.ibm.com
-References: <20200925204442.31348-1-rcampbell@nvidia.com>
- <20200925204442.31348-3-rcampbell@nvidia.com>
+        Mon, 28 Sep 2020 23:05:01 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64985C061755;
+        Mon, 28 Sep 2020 20:05:01 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C0klF3yGSz9s1t;
+        Tue, 29 Sep 2020 13:04:57 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1601348697;
+        bh=/QSIT6Tfgaxw+JmY9/F6hMsZ8bc6dWqVnIszkkrLOVE=;
+        h=Date:From:To:Cc:Subject:From;
+        b=IDAq7OZAH1PVcYkJ45gA2TXczwKRWwk3YQEl90qdwT7duObPUXBwYp5ggGZivY4RV
+         oSBm8wiwDC44i0p6cW3hiWBTiFEUmh4o3U1/F60kdKzgAHC1iVVkmCm7gmQdfHn/FK
+         MmD2gxkX2kgCRMXEbcMDhgM3AVKRVTPD/lUDPfoJWeUwoUJqDnMYbJQbMwpn17iAa+
+         D9xGbMqQYqm+uwv+cfbY6xcm/l6kL7/DYY4IRxPdV+58ndOO4QDyMCuA7njlx5TLLV
+         8EPKeHdrhDJx4cJv3sCwcP5NmB1kFeSrmNKERFr1eaSYB9tLts/17UM+ydpCU5dbOQ
+         bsUFlvs/JY53g==
+Date:   Tue, 29 Sep 2020 13:04:46 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>
+Cc:     Vadym Kochan <vadym.kochan@plvision.eu>,
+        Taehee Yoo <ap420073@gmail.com>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: linux-next: build failure after merge of the net-next tree
+Message-ID: <20200929130446.0c2630d2@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200925204442.31348-3-rcampbell@nvidia.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-28_25:2020-09-28,2020-09-28 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 adultscore=0
- bulkscore=0 clxscore=1011 malwarescore=0 phishscore=0 suspectscore=1
- priorityscore=1501 lowpriorityscore=0 impostorscore=0 spamscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009290019
+Content-Type: multipart/signed; boundary="Sig_/mIiG9H84CW6wa3if/A52zoG";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 01:44:42PM -0700, Ralph Campbell wrote:
-> ZONE_DEVICE struct pages have an extra reference count that complicates the
-> code for put_page() and several places in the kernel that need to check the
-> reference count to see that a page is not being used (gup, compaction,
-> migration, etc.). Clean up the code so the reference count doesn't need to
-> be treated specially for ZONE_DEVICE.
-> 
-> Signed-off-by: Ralph Campbell <rcampbell@nvidia.com>
-> ---
->  arch/powerpc/kvm/book3s_hv_uvmem.c     |  2 +-
->  drivers/gpu/drm/nouveau/nouveau_dmem.c |  2 +-
->  include/linux/dax.h                    |  2 +-
->  include/linux/memremap.h               |  7 ++-
->  include/linux/mm.h                     | 44 --------------
->  lib/test_hmm.c                         |  2 +-
->  mm/gup.c                               | 44 --------------
->  mm/internal.h                          |  8 +++
->  mm/memremap.c                          | 82 ++++++--------------------
->  mm/migrate.c                           |  5 --
->  mm/page_alloc.c                        |  3 +
->  mm/swap.c                              | 46 +++------------
->  12 files changed, 44 insertions(+), 203 deletions(-)
-> 
-> diff --git a/arch/powerpc/kvm/book3s_hv_uvmem.c b/arch/powerpc/kvm/book3s_hv_uvmem.c
-> index 7705d5557239..e6ec98325fab 100644
-> --- a/arch/powerpc/kvm/book3s_hv_uvmem.c
-> +++ b/arch/powerpc/kvm/book3s_hv_uvmem.c
-> @@ -711,7 +711,7 @@ static struct page *kvmppc_uvmem_get_page(unsigned long gpa, struct kvm *kvm)
->  
->  	dpage = pfn_to_page(uvmem_pfn);
->  	dpage->zone_device_data = pvt;
-> -	get_page(dpage);
-> +	init_page_count(dpage);
+--Sig_/mIiG9H84CW6wa3if/A52zoG
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-The powerpc change looks good. Passes a quick sanity test of
-booting/rebooting a secure guest on Power.
+Hi all,
 
-Tested-by: Bharata B Rao <bharata@linux.ibm.com>
+After merging the net-next tree, today's linux-next build (x86_64
+allmodconfig) failed like this:
 
-Regards,
-Bharata.
+drivers/net/ethernet/marvell/prestera/prestera_main.c: In function 'prester=
+a_port_dev_lower_find':
+drivers/net/ethernet/marvell/prestera/prestera_main.c:504:33: error: passin=
+g argument 2 of 'netdev_walk_all_lower_dev' from incompatible pointer type =
+[-Werror=3Dincompatible-pointer-types]
+  504 |  netdev_walk_all_lower_dev(dev, prestera_lower_dev_walk, &port);
+      |                                 ^~~~~~~~~~~~~~~~~~~~~~~
+      |                                 |
+      |                                 int (*)(struct net_device *, void *)
+In file included from include/linux/etherdevice.h:21,
+                 from drivers/net/ethernet/marvell/prestera/prestera_main.c=
+:4:
+include/linux/netdevice.h:4571:16: note: expected 'int (*)(struct net_devic=
+e *, struct netdev_nested_priv *)' but argument is of type 'int (*)(struct =
+net_device *, void *)'
+ 4571 |          int (*fn)(struct net_device *lower_dev,
+      |          ~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 4572 |      struct netdev_nested_priv *priv),
+      |      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/net/ethernet/marvell/prestera/prestera_main.c:504:58: error: passin=
+g argument 3 of 'netdev_walk_all_lower_dev' from incompatible pointer type =
+[-Werror=3Dincompatible-pointer-types]
+  504 |  netdev_walk_all_lower_dev(dev, prestera_lower_dev_walk, &port);
+      |                                                          ^~~~~
+      |                                                          |
+      |                                                          struct pre=
+stera_port **
+In file included from include/linux/etherdevice.h:21,
+                 from drivers/net/ethernet/marvell/prestera/prestera_main.c=
+:4:
+include/linux/netdevice.h:4573:37: note: expected 'struct netdev_nested_pri=
+v *' but argument is of type 'struct prestera_port **'
+ 4573 |          struct netdev_nested_priv *priv);
+      |          ~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+cc1: some warnings being treated as errors
+
+Caused by commit
+
+  eff7423365a6 ("net: core: introduce struct netdev_nested_priv for nested =
+interface infrastructure")
+
+interacting with commit
+
+  e1189d9a5fbe ("net: marvell: prestera: Add Switchdev driver implementatio=
+n")
+
+also in the net-next tree.
+
+I applied the following fix patch.
+
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Date: Tue, 29 Sep 2020 12:57:59 +1000
+Subject: [PATCH] fix up for "net: core: introduce struct netdev_nested_priv=
+ for nested interface infrastructure"
+
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+---
+ drivers/net/ethernet/marvell/prestera/prestera_main.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/net/ethernet/marvell/prestera/prestera_main.c b/driver=
+s/net/ethernet/marvell/prestera/prestera_main.c
+index 9bd57b89d1d0..633d8770be35 100644
+--- a/drivers/net/ethernet/marvell/prestera/prestera_main.c
++++ b/drivers/net/ethernet/marvell/prestera/prestera_main.c
+@@ -482,9 +482,10 @@ bool prestera_netdev_check(const struct net_device *de=
+v)
+ 	return dev->netdev_ops =3D=3D &prestera_netdev_ops;
+ }
+=20
+-static int prestera_lower_dev_walk(struct net_device *dev, void *data)
++static int prestera_lower_dev_walk(struct net_device *dev,
++				   struct netdev_nested_priv *priv)
+ {
+-	struct prestera_port **pport =3D data;
++	struct prestera_port **pport =3D (struct prestera_port **)priv->data;
+=20
+ 	if (prestera_netdev_check(dev)) {
+ 		*pport =3D netdev_priv(dev);
+@@ -497,11 +498,13 @@ static int prestera_lower_dev_walk(struct net_device =
+*dev, void *data)
+ struct prestera_port *prestera_port_dev_lower_find(struct net_device *dev)
+ {
+ 	struct prestera_port *port =3D NULL;
++	struct netdev_nested_priv priv;
+=20
+ 	if (prestera_netdev_check(dev))
+ 		return netdev_priv(dev);
+=20
+-	netdev_walk_all_lower_dev(dev, prestera_lower_dev_walk, &port);
++	priv.data =3D (void *)&port;
++	netdev_walk_all_lower_dev(dev, prestera_lower_dev_walk, &priv);
+=20
+ 	return port;
+ }
+--=20
+2.28.0
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/mIiG9H84CW6wa3if/A52zoG
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9ypE4ACgkQAVBC80lX
+0GyIhAgAg692cTGuoDdmBUZPumsXi8dzTcf+iDUqKKo8/cmfzDiOx/EQqZ09G8CO
+Y16VXoqXmbzqIG+X0DZq7MpR7Ul2kByk/2WSknS5xcNTBYFwWSTGGv4ooxX5zVYJ
+oGIcvBYdYt/H+TKIru34Vo0Ft7RbrSqkli1vrYjapxrK4VloHCaKtXOR73LLjKhv
+RgcHUYeNK33mTl9Ci+z+rpybPA5QV2RLdvu8TZ9oe77DN2WR9wrwyICZDKlnOe+9
+WgcrDRM9JuIPlov2e4/5ABgXBdaqDqSYGmsyvs5mpJLLqf2KN9WO5OIvVGJMayig
+CANz6GlDUsvHDgw21leSP76U0PvR0w==
+=LyoE
+-----END PGP SIGNATURE-----
+
+--Sig_/mIiG9H84CW6wa3if/A52zoG--
