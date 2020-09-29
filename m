@@ -2,83 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEA9427CB3A
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:27:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B13D627CB4B
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 14:27:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732713AbgI2MZm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 08:25:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38420 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732695AbgI2MZ2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 08:25:28 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 38DB92075F;
-        Tue, 29 Sep 2020 12:25:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601382327;
-        bh=vdV0cPfcuBlzJ8bZGMb5ArwZmErrYSk6dciDVr0yxG8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GNW/wMNW3TBN29OzymiX57VJRFRzW7OLdpBHVaye5aH28MC5iShFP1/0cs6qOpdfD
-         lNpxyZqB0D8A2oYtBtcGvl9QQ1m+At3IeSWTeNisGEOyX6FyWnc3p5z3zqsmyBKh3N
-         bwSnucX9F8d1YVo/3wYWDo6uIoajDWtEUQz2q5Iw=
-Date:   Tue, 29 Sep 2020 14:25:33 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     poeschel@lemonage.de
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] driver core: Remove double assignment
-Message-ID: <20200929122533.GA1193271@kroah.com>
-References: <20200929115808.2815382-1-poeschel@lemonage.de>
+        id S1732601AbgI2M02 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 08:26:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45912 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732216AbgI2M0H (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 08:26:07 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E6E7C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 05:26:07 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id p9so14711597ejf.6
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 05:26:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ilnc9lRErTLGwRUB4HFPyYF6CW3YVVZPYLQOJap/2CY=;
+        b=PBObQnKCeYlQmX+ppCXiidvlj5kZaNyn66HJEGKsSItxAJbS3f4GRWcCAoD/fkRc/s
+         TCyYZiJLpvbCFtAmAQp56BNedoYF5SviUf6TDZOtFmEB5iFyseDoU2k91pwdPNLBwMUM
+         cNWTZk/4coV1MHacUBz4iCe7YdfwSqWJDqB+fYEaWqAga/IvbqUfKXSIujqp4UaN+WjT
+         I0FqzAqAph41GOCzuGS1/iqee7tzcDYPZHtGhUqmRvBBjiiVkyYvkPg+nbetpkpe1IRu
+         Q1ByFC6ny7RLlg8hPDxQYEMMKGUIoh1uuIxaL8s/bBaqUngdWWBwNripByFqy5ha0xSV
+         kJlQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ilnc9lRErTLGwRUB4HFPyYF6CW3YVVZPYLQOJap/2CY=;
+        b=bZOQ3OncNG+AXWKKy7wdzVC+fPJvbC2L0+/cY1MOj7ZaeGrhqU9TLPmiNubSZIAUwi
+         q/QCRps6X19Q74g6P4k/WmmxdlFQZ7FdXO+LLtcsqlRzXBnFn4naYAtz6xlMH8MOs79e
+         NEOpIyDmgsAHZvVmj/Gw4yQttXC5r5M/lqhTIuszgKvFoujEHRuovQqES+n5Pd/fkQhP
+         AJA5OOqHuk9F1dwdj0JekRFjWmkOQsBz0B1VQGYBIq5B0LCmYaMC7n2BgmvUAV406mOa
+         Gak63qQAhTtBz15zpcCevkIgmD3oU4SF5hkwDr5KsGa0cVRSwmehpXEmpzMBneYVvWgo
+         lGZA==
+X-Gm-Message-State: AOAM5323tkp9wDyBJ+cawKn6EaJWUrF3tVBBP0CxJeuK7HN/xMN1hruf
+        1xP2IW5S9xeX8XVsK/kDEqvZsBQjqIdIyz0rCahayQ==
+X-Google-Smtp-Source: ABdhPJyLuBCaI/z76rq/ffz504IdUDE9QfTuJtstdyt9uN0hf5yxvpSQvQ54/CYy2BsZ9vpzh9BTavQ+/5oaPPvIETw=
+X-Received: by 2002:a17:906:c007:: with SMTP id e7mr894474ejz.55.1601382365730;
+ Tue, 29 Sep 2020 05:26:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200929115808.2815382-1-poeschel@lemonage.de>
+References: <20200909114312.2863675-1-andrew@aj.id.au>
+In-Reply-To: <20200909114312.2863675-1-andrew@aj.id.au>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 29 Sep 2020 14:25:54 +0200
+Message-ID: <CACRpkdaF7LaU_+4FrKGFYnKwLLe-iYkEzh4u3anv+16m6XUi4A@mail.gmail.com>
+Subject: Re: [PATCH 0/3] pinctrl: aspeed: AST2600 pinconf fixes
+To:     Andrew Jeffery <andrew@aj.id.au>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Joel Stanley <joel@jms.id.au>,
+        Johnny Huang <johnny_huang@aspeedtech.com>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 01:58:08PM +0200, poeschel@lemonage.de wrote:
-> From: Lars Poeschel <poeschel@lemonage.de>
-> 
-> This removes an assignment in device_add. It assigned the parent
-> kobject to the kobject of the  new device. This is not necessary,
-> because the call to kobject_add a few lines later also does this same
-> assignment.
-> 
-> Signed-off-by: Lars Poeschel <poeschel@lemonage.de>
-> ---
->  drivers/base/core.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
-> 
-> diff --git a/drivers/base/core.c b/drivers/base/core.c
-> index bb5806a2bd4c..03b5396cd192 100644
-> --- a/drivers/base/core.c
-> +++ b/drivers/base/core.c
-> @@ -2847,8 +2847,6 @@ int device_add(struct device *dev)
->  		error = PTR_ERR(kobj);
->  		goto parent_error;
->  	}
-> -	if (kobj)
-> -		dev->kobj.parent = kobj;
->  
->  	/* use parent numa_node */
->  	if (parent && (dev_to_node(dev) == NUMA_NO_NODE))
-> @@ -2856,7 +2854,7 @@ int device_add(struct device *dev)
->  
->  	/* first, register with generic layer. */
->  	/* we require the name to be set before, and pass NULL */
-> -	error = kobject_add(&dev->kobj, dev->kobj.parent, NULL);
-> +	error = kobject_add(&dev->kobj, kobj, NULL);
+On Wed, Sep 9, 2020 at 1:43 PM Andrew Jeffery <andrew@aj.id.au> wrote:
 
-That's very subtle, and might not really be correct for all users, have
-you checked?
+> The AST2600 pinctrl driver was missing support for bias control on the 1.8V
+> GPIO pins, and in the process of resolving that I discovered a couple of other
+> bugs that are fixed in the first two patches of the series.
 
-Anyway, I'd rather leave this as-is if possible, as we know this works
-correctly, and it is not going to save any time/energy to remove that
-assignment, right?
+All 3 patches applied.
 
-thanks,
-
-greg k-h
+Yours,
+Linus Walleij
