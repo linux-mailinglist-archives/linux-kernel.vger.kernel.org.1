@@ -2,263 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C575427D21C
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 17:06:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 459DC27D225
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 17:08:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731374AbgI2PG3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 11:06:29 -0400
-Received: from mail-oi1-f196.google.com ([209.85.167.196]:33697 "EHLO
-        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725710AbgI2PG3 (ORCPT
+        id S1731509AbgI2PIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 11:08:01 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:28953 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728953AbgI2PIB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 11:06:29 -0400
-Received: by mail-oi1-f196.google.com with SMTP id m7so5828487oie.0;
-        Tue, 29 Sep 2020 08:06:26 -0700 (PDT)
+        Tue, 29 Sep 2020 11:08:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601392079;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ATkTYcE6abvtZsnqbXxZ3DqrF8xItuHfBg8J1L8+iQ0=;
+        b=KbLfTZUttPjHoft9cPlBzU64BNvPXx1rfjNz6H1WpYmZ3M+Ti9MNelYfzcXVept0XIG3pV
+        2AFeegiK/sMYwTYvQv8g6FmtVjxFohB1TTIRkU0c5XLeidboO5FgGEo1mtrzVln6svzvAR
+        X5n1wk0Xp4TDm1uw5RmZ2DGu+bwr4EE=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-22-FoavBgmTMqa-QL2WW2iPJA-1; Tue, 29 Sep 2020 11:07:57 -0400
+X-MC-Unique: FoavBgmTMqa-QL2WW2iPJA-1
+Received: by mail-wm1-f69.google.com with SMTP id y18so1833805wma.4
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 08:07:57 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=q51+0kpKG++If96JY4iuqEBJznPYKCQMZac66BlnnGw=;
-        b=VqEy4ijeSzI1wMl6jymnVhR+T4Up90bWeS/k1nXIRvHCYeul4T8K6f/s+oFMA2pR8U
-         pxA+M7ftSrmOZtk5Izm7JM7ibmN5uGTNs8bV1y/46xPRb4dsSRzUXqI2YpcXNCJybFRd
-         J6zBC0axq8wlEGMwaCT3xI2Pdd9i8Oi46pQ/zKfPDw6yKnUmMd6rnu4gdVSQis6JeiIm
-         I83/Ln9pVCjscg3PP9QdXSih+3C0VkpuwYF7YT0/nRuj7hrYOpOQBX2s+6oK1FCf3sny
-         8xjb/KWavG0tteOuE5hwE13lAizyhpt6XG9LUbC59fl+AE57WJdr8kv/E2yy/BlTgfoi
-         Wg8g==
-X-Gm-Message-State: AOAM530QWFoEQb1+6JxlJ9KtsuLIC06DkN9UfnKwuOlSo1RUAbfy0+4R
-        iz4hwNK71h2L5XY48pwpPg==
-X-Google-Smtp-Source: ABdhPJzBjAHj06FvIaZPnGZgvzAtwqvCwwRaR5pjRc8W15jVZfnm3inQMHKlEFZ6EXKMgDXx0LYZdw==
-X-Received: by 2002:a54:4783:: with SMTP id o3mr2954476oic.89.1601391986131;
-        Tue, 29 Sep 2020 08:06:26 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id 17sm1034575oth.70.2020.09.29.08.06.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Sep 2020 08:06:25 -0700 (PDT)
-Received: (nullmailer pid 597943 invoked by uid 1000);
-        Tue, 29 Sep 2020 15:06:24 -0000
-Date:   Tue, 29 Sep 2020 10:06:24 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     cy_huang <u0084500@gmail.com>
-Cc:     lgirdwood@gmail.com, broonie@kernel.org,
-        linux-kernel@vger.kernel.org, cy_huang@richtek.com,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] regulator: rtmv20: Add DT-binding document for
- Richtek RTMV20
-Message-ID: <20200929150624.GA583524@bogus>
-References: <1601277584-5526-1-git-send-email-u0084500@gmail.com>
- <1601277584-5526-2-git-send-email-u0084500@gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ATkTYcE6abvtZsnqbXxZ3DqrF8xItuHfBg8J1L8+iQ0=;
+        b=Zd4xMCQpoT6jgZZojX4VEbv7Xlz3vxAZaeWg7QY7gKw6ZJKknEUZdDfEhEqlsQYpGn
+         LHTHpXKfhxZoebupO4pHakwil3QsW0U+DAJzKXK1/aV/4jkQJhgWY2i38dd0ipOIuCoA
+         hIHSlJvLuar4zp258N2+6npPnTw4brba4erYpxFeF+LxY7AlFB7sDbfuqY+EPRhmGw27
+         pYios+l6lJQVtEyfshpkbXbBK5JYItmJ2SMb9M88XcEgI78R11hjX1KJhV1k3HE8Rxl0
+         NtH1TwNtHqnNDoSxNN0lvvwGExQDentO6BbNxYq3fdtoLCVENLlN1M4YRXMSRPG15Jjk
+         n9/g==
+X-Gm-Message-State: AOAM531BmQOGxy2SaDVGdZrJ9tKb0jGiKEdcvVttXxg9D/MN39ZTlWWM
+        CodnhZlFVny636HAdNV9HEYEpO7aj5QehMuiyvb0JCQO3tDqj+hkkDpYSvfFs0E2npsowJA7eYE
+        EcX+AAA4RR/CB0SUEubx4MCQZ
+X-Received: by 2002:a1c:4b04:: with SMTP id y4mr5016158wma.111.1601392075955;
+        Tue, 29 Sep 2020 08:07:55 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJya48B0QW3dph1tb9JdX9nlLaz1scgdROIsHArpeP7pTdOKyw+sgYuIwp/ksbF821eJ3zw6Ww==
+X-Received: by 2002:a1c:4b04:: with SMTP id y4mr5016134wma.111.1601392075676;
+        Tue, 29 Sep 2020 08:07:55 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:9dbe:2c91:3d1b:58c6? ([2001:b07:6468:f312:9dbe:2c91:3d1b:58c6])
+        by smtp.gmail.com with ESMTPSA id 70sm6347471wmb.41.2020.09.29.08.07.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 29 Sep 2020 08:07:54 -0700 (PDT)
+Subject: Re: [PATCH 17/22] kvm: mmu: Support dirty logging for the TDP MMU
+To:     Ben Gardon <bgardon@google.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     Cannon Matthews <cannonmatthews@google.com>,
+        Peter Xu <peterx@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Peter Shier <pshier@google.com>,
+        Peter Feiner <pfeiner@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
+References: <20200925212302.3979661-1-bgardon@google.com>
+ <20200925212302.3979661-18-bgardon@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <aabb139e-6801-cd45-bf16-f698ce8e66e2@redhat.com>
+Date:   Tue, 29 Sep 2020 17:07:53 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1601277584-5526-2-git-send-email-u0084500@gmail.com>
+In-Reply-To: <20200925212302.3979661-18-bgardon@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 03:19:44PM +0800, cy_huang wrote:
-> From: ChiYuan Huang <cy_huang@richtek.com>
-> 
-> Add DT-binding document for Richtek RTMV20
-> 
-> Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
-> ---
->  .../regulator/richtek,rtmv20-regulator.yaml        | 168 +++++++++++++++++++++
->  1 file changed, 168 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/regulator/richtek,rtmv20-regulator.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/regulator/richtek,rtmv20-regulator.yaml b/Documentation/devicetree/bindings/regulator/richtek,rtmv20-regulator.yaml
-> new file mode 100644
-> index 00000000..4cb4b68
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/regulator/richtek,rtmv20-regulator.yaml
-> @@ -0,0 +1,168 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/regulator/richtek,rtmv20-regulator.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+On 25/09/20 23:22, Ben Gardon wrote:
+> +	for_each_tdp_pte_root(iter, root, start, end) {
+> +iteration_start:
+> +		if (!is_shadow_present_pte(iter.old_spte))
+> +			continue;
 > +
-> +title: Richtek RTMV20 laser diode regulator
-> +
-> +maintainers:
-> +  - ChiYuan Huang <cy_huang@richtek.com>
-> +
-> +description: |
-> +  Richtek RTMV20 is a load switch current regulator that can supply up to 6A.
-> +  It is used to drive laser diode. There're two signals for chip controls
-> +  (Enable/Fail), Enable pin to turn chip on, and Fail pin as fault indication.
-> +  There're still four pins for camera control, two inputs (strobe and vsync),
-> +  the others for outputs (fsin1 and fsin2). Strobe input to start the current
-> +  supply, vsync input from IR camera, and fsin1/fsin2 output for the optional.
-> +
-> +properties:
-> +  compatible:
-> +    const: richtek,rtmv20
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  wakeup-source: true
-> +
-> +  interrupts-extend:
+> +		/*
+> +		 * If this entry points to a page of 4K entries, and 4k entries
+> +		 * should be skipped, skip the whole page. If the non-leaf
+> +		 * entry is at a higher level, move on to the next,
+> +		 * (lower level) entry.
+> +		 */
+> +		if (!is_last_spte(iter.old_spte, iter.level)) {
+> +			if (skip_4k && iter.level == PG_LEVEL_2M) {
+> +				tdp_iter_next_no_step_down(&iter);
+> +				if (iter.valid && iter.gfn >= end)
+> +					goto iteration_start;
+> +				else
+> +					break;
 
-You mean interrupts-extended?
+The iteration_start label confuses me mightily. :)  That would be a case
+where iter.gfn >= end (so for_each_tdp_pte_root would exit) but you want
+to proceed anyway with the gfn that was found by
+tdp_iter_next_no_step_down.  Are you sure you didn't mean
 
-In any case, use 'interrupts' here and the tooling allows for either.
+	if (iter.valid && iter.gfn < end)
+		goto iteration_start;
+	else
+		break;
 
-> +    maxItems: 1
-> +
-> +  enable-gpios:
-> +    description: A connection of the 'enable' gpio line.
-> +    maxItems: 1
-> +
-> +  ld-pulse-delay-us:
-> +    description: |
-> +      load current pulse delay in microsecond after strobe pin pulse high.
-> +    $ref: "/schemas/types.yaml#/definitions/uint32"
+because that would make much more sense: basically a "continue" that
+skips the tdp_iter_next.  With the min_level change I suggested no
+Friday, it would become something like this:
 
-Don't need a type ref when you have a standard property unit suffix, so 
-drop.
+        for_each_tdp_pte_root_level(iter, root, start, end, min_level) {
+                if (!is_shadow_present_pte(iter.old_spte) ||
+                    !is_last_spte(iter.old_spte, iter.level))
+                        continue;
 
-This and all the following need a vendor prefix too.
+                new_spte = iter.old_spte & ~PT_WRITABLE_MASK;
 
-> +    minimum: 0
-> +    maximum: 100000
-> +    default: 0
-> +
-> +  ld-pulse-width-us:
-> +    description: |
-> +      Load current pulse width in microsecond after strobe pin pulse high.
-> +    $ref: "/schemas/types.yaml#/definitions/uint32"
-> +    minimum: 0
-> +    maximum: 10000
-> +    default: 1200
-> +
-> +  fsin1-delay-us:
-> +    description: |
-> +      Fsin1 pulse high delay in microsecond after vsync signal pulse high.
-> +    $ref: "/schemas/types.yaml#/definitions/uint32"
-> +    minimum: 0
-> +    maximum: 100000
-> +    default: 23000
-> +
-> +  fsin1-width-us:
-> +    description: |
-> +      Fsin1 pulse high width in microsecond after vsync signal pulse high.
-> +    $ref: "/schemas/types.yaml#/definitions/uint32"
-> +    minimum: 40
-> +    maximum: 10000
-> +    default: 160
-> +
-> +  fsin2-delay-us:
-> +    description: |
-> +      Fsin2 pulse high delay in microsecond after vsync signal pulse high.
-> +    $ref: "/schemas/types.yaml#/definitions/uint32"
-> +    minimum: 0
-> +    maximum: 100000
-> +    default: 23000
-> +
-> +  fsin2-width-us:
-> +    description: |
-> +      Fsin2 pulse high width in microsecond after vsync signal pulse high.
-> +    $ref: "/schemas/types.yaml#/definitions/uint32"
-> +    minimum: 40
-> +    maximum: 10000
-> +    default: 160
-> +
-> +  es-pulse-width-us:
-> +    description: Eye safety function pulse width limit in microsecond.
-> +    $ref: "/schemas/types.yaml#/definitions/uint32"
-> +    minimum: 0
-> +    maximum: 10000
-> +    default: 1200
-> +
-> +  es-ld-current-microamp:
-> +    description: Eye safety function load current limit in microamp.
-> +    $ref: "/schemas/types.yaml#/definitions/uint32"
-> +    minimum: 0
-> +    maximum: 6000000
-> +    default: 3000000
-> +
-> +  lbp-level-microvolt:
-> +    description: Low battery protection level in microvolt.
-> +    $ref: "/schemas/types.yaml#/definitions/uint32"
-> +    minimum: 2400000
-> +    maximum: 3700000
-> +    default: 2700000
-> +
-> +  lbp-enable:
-> +    description: Low battery protection function enable control.
-> +    type: boolean
-> +
-> +  strobe-polarity-high:
-> +    description: Strobe pin active polarity control.
-> +    type: boolean
-> +
-> +  vsync-polarity-high:
-> +    description: Vsync pin active polarity control.
-> +    type: boolean
-> +
-> +  fsin-enable:
-> +    description: Fsin function enable control.
-> +    type: boolean
-> +
-> +  fsin-output:
-> +    description: Fsin function output control.
-> +    type: boolean
-> +
-> +  es-enable:
-> +    description: Eye safety function enable control.
-> +    type: boolean
-> +
-> +patternProperties:
-> +  "lsw":
+		*iter.sptep = new_spte;
+                handle_change_spte(kvm, as_id, iter.gfn, iter.old_spte,
+				   new_spte, iter.level);
 
-This matches ".*lsw.*". What you wanted? If just 'lsw', then it's not a 
-pattern.
+                spte_set = true;
+                tdp_mmu_iter_cond_resched(kvm, &iter);
+        }
 
-> +    type: object
-> +    $ref: "regulator.yaml#"
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - wakeup-source
-> +  - interrupts-extend
-> +  - enable-gpios
-> +  - lsw
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/interrupt-controller/irq.h>
-> +    i2c {
-> +      #address-cells = <1>;
-> +      #size-cells = <0>;
-> +
-> +      rtmv20@34 {
-> +        compatible = "richtek,rtmv20";
-> +        reg = <0x34>;
-> +        wakeup-source;
-> +        interrupts-extend = <&gpio26 2 IRQ_TYPE_LEVEL_LOW>;
+which is all nice and understandable.
 
-2 wrongs make a right... But your driver interrupt probably doesn't work 
-too well.
+Also, related to this function, why ignore the return value of
+tdp_mmu_iter_cond_resched?  It does makes sense to assign spte_set =
+true since, just like in kvm_mmu_slot_largepage_remove_write_access's
+instance of slot_handle_large_level, you don't even need to flush on
+cond_resched.  However, in order to do that you would have to add some
+kind of "bool flush_on_resched" argument to tdp_mmu_iter_cond_resched,
+or have two separate functions tdp_mmu_iter_cond_{flush_and_,}resched.
 
-> +        enable-gpios = <&gpio26 3 0>;
-> +
-> +        strobe-polarity-high;
-> +        vsync-polarity-high;
-> +
-> +        lsw {
-> +                regulator-name = "rtmv20,lsw";
-> +                regulator-min-microamp = <0>;
-> +                regulator-max-microamp = <6000000>;
-> +        };
-> +      };
-> +    };
-> +...
-> -- 
-> 2.7.4
-> 
+The same is true of clear_dirty_gfn_range and set_dirty_gfn_range.
+
+Paolo
+
