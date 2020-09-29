@@ -2,96 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0BB727D0B9
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 16:13:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDE6A27D0CB
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 16:15:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730316AbgI2ONF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 10:13:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34498 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725554AbgI2ONF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 10:13:05 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38E2DC0613D0
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 07:13:05 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id y74so4912360iof.12
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 07:13:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=pIqAOqrn6h0sWTOG6HQcdrGe1pJQq2qqrnbCVqbIgK8=;
-        b=ewHwiI493jKey9fnPfl//AmXDX3kVu2s6HJz1Vb9Hu7z26kP0rDDqWys9IU7lcNE/k
-         JFHIG/W9k5nNwlEs/Wnw3qvTnuxuiI37gYGYowcIV6OR9eN+HLF5xx2vtMOR1d5t7ruA
-         2iVl4x/jzPtSh79NtDTrreBP8eCKty6KM4FLSf4zjvQKu3dIeZ6Zo3r//G5iMPbpZyJ4
-         Nmtd2028l9Dcxz8RUS+xiA1WV/iGQnd90OZLTtYvOLi1BXCVqyIlTLm/gzC0hTe5QKF9
-         mE5TC/xgZUtBWF3GeeKLmG8i85jts+BLh5mhgtciEtvHNT3wz08PEdagNVdzVRChRkLo
-         218A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=pIqAOqrn6h0sWTOG6HQcdrGe1pJQq2qqrnbCVqbIgK8=;
-        b=GKwhATd1wTZs/ntWVsL/F6ljoH1UtvTUyI4vwEMBbE2NEtavmMsUqbCfEmMwrK7Heb
-         k4e97gLdGKi1OMAFWM3y7Mzn1DgJz70orrD00vdJSqUciMgMDkZYqIOzkQ6q0gPwwks7
-         BkZ7TZ8T0bWtg20pX4BNcB5ZBFmdZJXfWA9q04/fToN/z1ZmqtpbIZDMqr9NY0SLUFcI
-         IJPzOpBJqlxoBvk3agPC1SV7lCKXefCs9wBnzvPRTABp/IfMz3qo7KqiaYe/NjZTwubY
-         Z5vIhMd+kOMXlSIo+catOpg0CyDzhLMbazt7B3gdPtNyfs7cvSQo/4dVOuJkPNtQxKlq
-         444Q==
-X-Gm-Message-State: AOAM531Y1t32JlMX8/sh4Mv8/dxocys3KIbF/10mQ9JwbUAOvAoBdDAs
-        Q3X2qksW5VJ3pGOnKvoO77dzJfMpZPdeog==
-X-Google-Smtp-Source: ABdhPJxQPOLCOgpVlhV5WKBv4IpAqB78vNhpqOcppe1fOObbXJynagNpVFBnb2oq44Wxf0zr3YAFjw==
-X-Received: by 2002:a5d:8b4a:: with SMTP id c10mr2629435iot.143.1601388784174;
-        Tue, 29 Sep 2020 07:13:04 -0700 (PDT)
-Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id l6sm2406115ilo.21.2020.09.29.07.13.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 29 Sep 2020 07:13:03 -0700 (PDT)
-Subject: Re: [PATCH v3] null_blk: add support for max open/active zone limit
- for zoned devices
-To:     Niklas Cassel <niklas.cassel@wdc.com>
-Cc:     damien.lemoal@wdc.com, johannes.thumshirn@wdc.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200828105400.80893-1-niklas.cassel@wdc.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <ea94a097-c5c1-1996-3398-a08d64503941@kernel.dk>
-Date:   Tue, 29 Sep 2020 08:13:02 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1731208AbgI2OPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 10:15:44 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:14781 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1730001AbgI2OPl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 10:15:41 -0400
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 7D915BBDD0B9E71D19F4;
+        Tue, 29 Sep 2020 22:15:19 +0800 (CST)
+Received: from thunder-town.china.huawei.com (10.174.177.253) by
+ DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 29 Sep 2020 22:15:10 +0800
+From:   Zhen Lei <thunder.leizhen@huawei.com>
+To:     Wei Xu <xuwei5@hisilicon.com>, Rob Herring <robh+dt@kernel.org>,
+        "Jonathan Cameron" <Jonathan.Cameron@Huawei.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+CC:     Zhen Lei <thunder.leizhen@huawei.com>,
+        Libin <huawei.libin@huawei.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>
+Subject: [PATCH v5 00/17] add support for Hisilicon SD5203 SoC
+Date:   Tue, 29 Sep 2020 22:14:37 +0800
+Message-ID: <20200929141454.2312-1-thunder.leizhen@huawei.com>
+X-Mailer: git-send-email 2.26.0.windows.1
 MIME-Version: 1.0
-In-Reply-To: <20200828105400.80893-1-niklas.cassel@wdc.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.177.253]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/28/20 4:54 AM, Niklas Cassel wrote:
-> Add support for user space to set a max open zone and a max active zone
-> limit via configfs. By default, the default values are 0 == no limit.
-> 
-> Call the block layer API functions used for exposing the configured
-> limits to sysfs.
-> 
-> Add accounting in null_blk_zoned so that these new limits are respected.
-> Performing an operation that would exceed these limits results in a
-> standard I/O error.
-> 
-> A max open zone limit exists in the ZBC standard.
-> While null_blk_zoned is used to test the Zoned Block Device model in
-> Linux, when it comes to differences between ZBC and ZNS, null_blk_zoned
-> mostly follows ZBC.
-> 
-> Therefore, implement the manage open zone resources function from ZBC,
-> but additionally add support for max active zones.
-> This enables user space not only to test against a device with an open
-> zone limit, but also to test against a device with an active zone limit.
+v4 --> v5:
+1. Drop the descriptions of the common properties, such as "reg".
+2. Add "additionalProperties: false" or "additionalProperties: type: object"
+   for each new yaml file.
+3. Group three Hi6220 domain controller into one yaml file, see Patch 15
+4. Remove the prefix "hisilicon," of each yaml file, all of them are under
+   hisilicon directory, no need to duplicated it.
+5. move four controllers into syscon.yaml, because they have no specific
+   properties, see Patch 1-2.
+6. Add the name of the board which based on sd5203, see Patch 5 and 8.
+7. Add Patch 9, all controller should contain "syscon" compatible string.
+8. Add property "ranges" and update the example, see Patch 16.
+9. Romove the labels in all examples.
+10. other trival fixes are not mentioned.
 
-Applied, thanks.
+Please review Patch 1-9 first, other patches are not urgent and each of them
+is independent.
+
+
+v3 --> v4:
+1. remove unexpected "\ No newline at end of file" of each new file.
+2. discard the subdirectory "hi3620" and "hipxx", all files in the two
+   directories are moved to the parent directory.
+3. add two spaces for the below cases:
+   - items:
+     - const: hisilicon,sysctrl.	//add two spaces
+4. only list the compatible of boards in hisilicon.yaml, that is:
+   1) a compatible of one board
+   2) a compatible of one board + a compatible of one SoC
+5. other trival fixes are not mentioned.
+
+
+v2 --> v3:
+1. Convert hisilicon.txt to hisilicon.yaml. Because there are many kinds
+   of Hisilicon controllers in it, so split each of them into a separate
+   file first. Then I convert all of them to DT schema format, and also
+   convert the other files in directory "../bindings/arm/hisilicon/".
+2. Add Patch 1: remove a unused compatible name in hip01-ca9x2.dts
+   This error is detected by hisilicon.yaml.
+
+   The merge window of 5.10 is narrow now, so please review Patch 1-7 first.
+
+
+v1 --> v2:
+1. add binding for SD5203 SoC, Patch 1
+2. select DW_APB_ICTL instead of HISILICON_SD5203_VIC in Patch 2.
+   Meanwhile, change the compatible of interrupt-controller to "snps,dw-apb-ictl" in Patch 4.
+3. Fix the errors detected by dtbs_check. For example: add "reg" for cpu node, use lowercase a-f
+   to describe address, add "baudclk" for "snps,dw-apb-uart".
+
+v1:
+Add SD5203 SoC config option and devicetree file, also enable its debug UART.
+
+
+Kefeng Wang (3):
+  ARM: hisi: add support for SD5203 SoC
+  ARM: debug: add UART early console support for SD5203
+  ARM: dts: add SD5203 dts
+
+Zhen Lei (14):
+  dt-bindings: mfd: syscon: add some compatible strings for Hisilicon
+  dt-bindings: arm: hisilicon: delete the descriptions of HiP05/HiP06
+    controllers
+  dt-bindings: arm: hisilicon: split the dt-bindings of each controller
+    into a separate file
+  dt-bindings: arm: hisilicon: convert Hisilicon board/soc bindings to
+    json-schema
+  dt-bindings: arm: hisilicon: add binding for SD5203 SoC
+  ARM: dts: hisilicon: fix ststem controller compatible node
+  dt-bindings: arm: hisilicon: convert system controller bindings to
+    json-schema
+  dt-bindings: arm: hisilicon: convert hisilicon,cpuctrl bindings to
+    json-schema
+  dt-bindings: arm: hisilicon: convert hisilicon,pctrl bindings to
+    json-schema
+  dt-bindings: arm: hisilicon: convert hisilicon,hip04-fabric bindings
+    to json-schema
+  dt-bindings: arm: hisilicon: convert hisilicon,hip04-bootwrapper
+    bindings to json-schema
+  dt-bindings: arm: hisilicon: convert Hi6220 domain controller bindings
+    to json-schema
+  dt-bindings: arm: hisilicon: convert hisilicon,hi3798cv200-perictrl
+    bindings to json-schema
+  dt-bindings: arm: hisilicon: convert LPC controller bindings to
+    json-schema
+
+ .../bindings/arm/hisilicon/controller/cpuctrl.yaml |  29 ++
+ .../hisilicon/controller/hi3798cv200-perictrl.yaml |  64 +++++
+ .../hisilicon/controller/hi6220-domain-ctrl.yaml   |  64 +++++
+ .../hisilicon/controller/hip04-bootwrapper.yaml    |  34 +++
+ .../arm/hisilicon/controller/hip04-fabric.yaml     |  27 ++
+ .../bindings/arm/hisilicon/controller/pctrl.yaml   |  34 +++
+ .../bindings/arm/hisilicon/controller/sysctrl.yaml | 110 +++++++
+ .../bindings/arm/hisilicon/hi3519-sysctrl.txt      |  14 -
+ .../arm/hisilicon/hisilicon-low-pin-count.txt      |  33 ---
+ .../bindings/arm/hisilicon/hisilicon.txt           | 319 ---------------------
+ .../bindings/arm/hisilicon/hisilicon.yaml          |  67 +++++
+ .../bindings/arm/hisilicon/low-pin-count.yaml      |  61 ++++
+ Documentation/devicetree/bindings/mfd/syscon.yaml  |   5 +-
+ arch/arm/Kconfig.debug                             |  11 +-
+ arch/arm/boot/dts/Makefile                         |   2 +
+ arch/arm/boot/dts/hi3620.dtsi                      |   2 +-
+ arch/arm/boot/dts/hip04.dtsi                       |   2 +-
+ arch/arm/boot/dts/sd5203.dts                       |  96 +++++++
+ arch/arm/mach-hisi/Kconfig                         |  16 +-
+ 19 files changed, 618 insertions(+), 372 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/cpuctrl.yaml
+ create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/hi3798cv200-perictrl.yaml
+ create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/hi6220-domain-ctrl.yaml
+ create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/hip04-bootwrapper.yaml
+ create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/hip04-fabric.yaml
+ create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/pctrl.yaml
+ create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/sysctrl.yaml
+ delete mode 100644 Documentation/devicetree/bindings/arm/hisilicon/hi3519-sysctrl.txt
+ delete mode 100644 Documentation/devicetree/bindings/arm/hisilicon/hisilicon-low-pin-count.txt
+ delete mode 100644 Documentation/devicetree/bindings/arm/hisilicon/hisilicon.txt
+ create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/hisilicon.yaml
+ create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/low-pin-count.yaml
+ create mode 100644 arch/arm/boot/dts/sd5203.dts
 
 -- 
-Jens Axboe
+1.8.3
+
 
