@@ -2,104 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5757427E1A1
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 08:48:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3AFE27E1A5
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 08:48:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726299AbgI3Gs0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 02:48:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46618 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725320AbgI3Gs0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 02:48:26 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 024EDC061755
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 23:48:25 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id g128so650456iof.11
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 23:48:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Gbz4zl+cX4IPzKJ6pFWDpkBc0o8tIwNiBdIHCS8F/tg=;
-        b=KCZTzVmGKZs6ZzUeiKCFfFb1HBTk9Up4xVNCJ3fFuYRrl+2Ul+YXKAQARER/3TSjyW
-         lEiHAOvE7NQxqYd3v1hObzpmfNLRa56e/sbIyCN0X5f8BITASnBdzHN9JJwgNex9GD+1
-         nZ5raPPlVYwg0jQYcpRQM9/amuTYKH6gaAMtBJnrl7iAMC/mv0RpTYfP8o1XBa4Ga8au
-         D3TbEYaKItQxqePazENNXgoZB/P3cc2gBH0nMo4Ez5vMMoSZxavt/7e9+TXUb/QSSQIo
-         8VBDdg3x3gcHEM38goEG2o3CLMHwFO00cNA5pCKtEnJzxcojZ2VFdneyxQxTQjfRSN5L
-         K7LQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Gbz4zl+cX4IPzKJ6pFWDpkBc0o8tIwNiBdIHCS8F/tg=;
-        b=kpN1r7w8R/LXbMWS1tkeh163WMZqaTT9izBwpez67+wU+I6G5bn5gwQqi2XicpZYkU
-         aISi7G+GemT5h1qf8lyl4ECJgZQh9sporhm+aBswGAfwm6tJhcaXrMT+LH3RBb9zNaIm
-         QEGHhGkOxZfeSuRb2RJO/6jJbDCka7k5SD/NNJtyaumRtTdb+rYVPWTTW+0gxJKi8lir
-         Lz0Xhxukrr7AarWv8sEqxdLI0h+XNiNjdqzJRrzS03vPbB4lDOeGKCAqoGBfhA5wJ4JG
-         pw4409t7rzQiI+UWQo/3bTR4Tw+ZTwQEqEYnI7e1BIQ+nhhxsZStwL5IQkexJ5Zx8PVl
-         4HZw==
-X-Gm-Message-State: AOAM530ngGoIioz2s9ZRvFfq5TZwY4O6NA3t9LtGAvCzeLxNrC9DTha4
-        w8X8/jBs0n4kGRjk7XpEJWfIyacT5OiSrq9uJlLcFA==
-X-Google-Smtp-Source: ABdhPJzC3cxXikF0eF7Q5jH1wUchyoBxn4H8NS3LLdJwKaMzk5yTvfidbqER2xnVMkozpPZR/2EDGelL4oskUVja3+U=
-X-Received: by 2002:a05:6638:1643:: with SMTP id a3mr861452jat.4.1601448505053;
- Tue, 29 Sep 2020 23:48:25 -0700 (PDT)
+        id S1728115AbgI3Gsg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 02:48:36 -0400
+Received: from z5.mailgun.us ([104.130.96.5]:15505 "EHLO z5.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725554AbgI3Gsf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 02:48:35 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1601448514; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=0Cg0ycDtO+B0XeEyD60ZAnUts/W0lzugMtbQ+pnKkhA=; b=v/d/IXaxAdCWHAPoTeTykshQIhW7UtZby/OjNcYE07UNW5l5PmUSyR+UBctPwkcBfAeo5uai
+ 3nfkRpryxO7Wlglfpj3KbxpmMtFTLjv54Zze4z4eGJdn9hU1cnjNI6pPLmaOiBCi2+IZnJia
+ cdBmQ91FMYTBEd+xv1Ib2yhYCZY=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 5f742a4259892db41fe3ff07 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 30 Sep 2020 06:48:34
+ GMT
+Sender: akashast=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id C399DC433FE; Wed, 30 Sep 2020 06:48:33 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.43.98] (unknown [47.8.99.116])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: akashast)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id B640FC433CA;
+        Wed, 30 Sep 2020 06:48:30 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B640FC433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=akashast@codeaurora.org
+Subject: Re: [PATCH V6] serial: qcom_geni_serial: To correct QUP Version
+ detection logic
+To:     Paras Sharma <parashar@codeaurora.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Jiri Slaby <jslaby@suse.com>, linux-arm-msm@vger.kernel.org,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1601445926-23673-1-git-send-email-parashar@codeaurora.org>
+From:   Akash Asthana <akashast@codeaurora.org>
+Message-ID: <a0a560c5-8ff5-6c5e-d313-fb77c2631a7e@codeaurora.org>
+Date:   Wed, 30 Sep 2020 12:18:14 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-References: <20200929235049.2533242-1-haoluo@google.com> <CAADnVQK8XbzDs9hWLYEqkJj+g=1HJ7nrar+0STY5CY8t5nrC=A@mail.gmail.com>
-In-Reply-To: <CAADnVQK8XbzDs9hWLYEqkJj+g=1HJ7nrar+0STY5CY8t5nrC=A@mail.gmail.com>
-From:   Hao Luo <haoluo@google.com>
-Date:   Tue, 29 Sep 2020 23:48:14 -0700
-Message-ID: <CA+khW7i4wpvOsJTH4AePVsm4cAOnFoxEwEqv27tEzJrwOWFqxw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 0/6] bpf: BTF support for ksyms
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1601445926-23673-1-git-send-email-parashar@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ah, this is the bug in pahole described in
-https://lkml.org/lkml/2020/8/20/1862. I proposed a fix [1] but it
-hasn't reached pahole's master branch. Let me ask Arnaldo to see if he
-is OK merging it.
 
-[1] https://www.spinics.net/lists/dwarves/msg00451.html
+On 9/30/2020 11:35 AM, Paras Sharma wrote:
+> For QUP IP versions 2.5 and above the oversampling rate is
+> halved from 32 to 16.
+>
+> Commit ce734600545f ("tty: serial: qcom_geni_serial: Update
+> the oversampling rate") is pushed to handle this scenario.
+> But the existing logic is failing to classify QUP Version 3.0
+> into the correct group ( 2.5 and above).
+>
+> As result Serial Engine clocks are not configured properly for
+> baud rate and garbage data is sampled to FIFOs from the line.
+>
+> So, fix the logic to detect QUP with versions 2.5 and above.
+>
+> Fixes: ce734600545f ("tty: serial: qcom_geni_serial: Update the oversampling rate")
+> Signed-off-by: Paras Sharma <parashar@codeaurora.org>
+Reviewed-by: Akash Asthana <akashast@codeaurora.org>
 
-On Tue, Sep 29, 2020 at 9:36 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Tue, Sep 29, 2020 at 4:50 PM Hao Luo <haoluo@google.com> wrote:
-> >
-> > v3 -> v4:
-> >  - Rebasing
-> >  - Cast bpf_[per|this]_cpu_ptr's parameter to void __percpu * before
-> >    passing into per_cpu_ptr.
->
-> Looks good, but doesn't work:
-> ./test_progs -t ksyms_btf
-> test_ksyms_btf:PASS:kallsyms_fopen 0 nsec
-> test_ksyms_btf:PASS:ksym_find 0 nsec
-> test_ksyms_btf:PASS:kallsyms_fopen 0 nsec
-> test_ksyms_btf:PASS:ksym_find 0 nsec
-> test_ksyms_btf:PASS:btf_exists 0 nsec
-> libbpf: extern (ksym) 'bpf_prog_active': incompatible types, expected
-> [4] int int, but kernel has [18729] var bpf_user_rnd_state
-> libbpf: failed to load object 'test_ksyms_btf'
-> libbpf: failed to load BPF skeleton 'test_ksyms_btf': -22
-> test_ksyms_btf:FAIL:skel_open failed to open and load skeleton
-> #43 ksyms_btf:FAIL
->
-> I have the latest pahole from master. Any ideas?
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,\na Linux Foundation Collaborative Project
+
