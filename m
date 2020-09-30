@@ -2,76 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F60827EA5C
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 15:55:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1FDA27EA60
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 15:55:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730240AbgI3NzP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 09:55:15 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:33442 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728149AbgI3NzP (ORCPT
+        id S1730375AbgI3Nzq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 09:55:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56056 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728149AbgI3Nzq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 09:55:15 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08UDtB6X002738;
-        Wed, 30 Sep 2020 08:55:11 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1601474111;
-        bh=StWWrPTnUQcmT40DliSiawGLS1Pn+/gYEmldYUZn+XU=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=jIMdTkA1hj8HY33ZsecW44gHBfJP+ITDnU6JeMxqX5vViv7AJIpfcodGjSJQrmekk
-         fodStaCL0uVTnvZxBWBC0psq0LURgpFtEGcgEpM4iyZ46PT1FvbtMAMZBCrC24OLCn
-         5frB/1yUKZuoRpZnUIUGUZ6Z4vtZJ3ZNJ78ZAJ2E=
-Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08UDtBr9084383
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 30 Sep 2020 08:55:11 -0500
-Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 30
- Sep 2020 08:55:11 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 30 Sep 2020 08:55:11 -0500
-Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08UDt9Tb101681;
-        Wed, 30 Sep 2020 08:55:10 -0500
-Subject: Re: [PATCH 08/11] soc: ti: k3-ringacc: Use the ti_sci set_cfg
- callback for ring configuration
-To:     Peter Ujfalusi <peter.ujfalusi@ti.com>, <nm@ti.com>,
-        <t-kristo@ti.com>, <ssantosh@kernel.org>, <lokeshvutla@ti.com>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20200928083429.17390-1-peter.ujfalusi@ti.com>
- <20200928083429.17390-9-peter.ujfalusi@ti.com>
-From:   Grygorii Strashko <grygorii.strashko@ti.com>
-Message-ID: <dd8dcbd8-c2b0-21c8-aaf0-4a3b409fdcd5@ti.com>
-Date:   Wed, 30 Sep 2020 16:55:08 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 30 Sep 2020 09:55:46 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E44EC061755;
+        Wed, 30 Sep 2020 06:55:46 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id d23so1073268pll.7;
+        Wed, 30 Sep 2020 06:55:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lkmWkLx+50LSvUth/jRPI7AGPelcJcdIBHooAnh4UZ8=;
+        b=XYVU4+CLhfLRo8EjLEtD42r80dI9L6KQa2htg/QTFXcQh+W2Rij3VlUpT7HFoCroz2
+         AUZgEbVhrHpl84EKJpQ4bK/opkla+EdRUaw/Qd2gDzOeSsnxvZ66gbXvwuz5pRqwfsbU
+         f1pso8uznGXGBZiL4OQa+UOpwUI6dAV3cZLDHk9EF0np1/myYV2BJKuVjbNLdFEK97EP
+         jAAUiFAcdpA3JVepu7w13Qv35lt62etUiymR6VCIgGvEORvQJT2vbWVJwu1eqcDWrmMW
+         QSxDVbdcWPf30epnB9nAaMfHySTv/1KHH6isXWB6dYT2dsJ2eaLVhpQdgulC6e3EeiN3
+         AF7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lkmWkLx+50LSvUth/jRPI7AGPelcJcdIBHooAnh4UZ8=;
+        b=mfkXLDd5Ptip49svb7EdBzfopdWCBj44JZIDSPui31zhHXrqi63WvFxPPm0TPRaSdi
+         JXHFYkSnkD5W1R2o7AR63/1advZUF/L8aJO9af0V+L7xNDSBb/Kztbgo2OmVKZox8EyV
+         zSzwhhWGpbAJrdUhYu/QitYPTY8E53ILb4AJRDpFBwLGeIJ6ehWcf4VhBoBcm9KXHzPN
+         Q80bSzFdEf8+TBeiWr5M2DYUubGqBb1/udWnYhJNsCs5Xxl4gSymTxg+ORkfu/tTZetA
+         e1R0AEkibEjeVnHJ9vLiybMZ5ncK8ezHSNB3gDFcgQnmT6fb+AROwtfLwD1xdN/4ZOxX
+         1Z8Q==
+X-Gm-Message-State: AOAM530k2RFS4AmNPfRioubtgtYOnNMPKGqANi7eTZSrc4tBetl9HEnc
+        uEWAC1bA+tXAt/4jBdo5YInsWKllM3WMnO8goR8=
+X-Google-Smtp-Source: ABdhPJxlkomiM9Fv0b2uYyfqXoAycR7ivW5AUzx/IzG/UXy64NwjVjsxIB3HJCY2IgFU9+TrWLFEdhbsctZWJnXvbC0=
+X-Received: by 2002:a17:90a:fd98:: with SMTP id cx24mr2577392pjb.181.1601474145833;
+ Wed, 30 Sep 2020 06:55:45 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200928083429.17390-9-peter.ujfalusi@ti.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20200929082025.51446-1-aaron.ma@canonical.com>
+In-Reply-To: <20200929082025.51446-1-aaron.ma@canonical.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 30 Sep 2020 16:55:27 +0300
+Message-ID: <CAHp75Vf2eCDHuqdtrCXqg7FNiDoSg5BDmtXLJ7AMuF8He9qy=w@mail.gmail.com>
+Subject: Re: [PATCH] platform/x86: thinkpad_acpi: re-initialize acpi buffer
+ size when reuse
+To:     Aaron Ma <aaron.ma@canonical.com>
+Cc:     mapengyu@gmail.com,
+        Henrique de Moraes Holschuh <ibm-acpi@hmh.eng.br>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Thinkpad-acpi devel ML <ibm-acpi-devel@lists.sourceforge.net>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Sep 29, 2020 at 11:20 AM Aaron Ma <aaron.ma@canonical.com> wrote:
+>
+> Evaluating acpi _BCL could be failed, then acpi buffer size will be set
 
+'could be failed' -> 'could fail'
 
-On 28/09/2020 11:34, Peter Ujfalusi wrote:
-> Switch to the new set_cfg to configure the ring.
-> 
-> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-> ---
->   drivers/soc/ti/k3-ringacc.c | 79 +++++++++++++++----------------------
->   1 file changed, 32 insertions(+), 47 deletions(-)
-> 
-Reviewed-by: Grygorii Strashko <grygorii.strashko@ti.com>
+> to 0. When reuse this acpi buffer, AE_BUFFER_OVERFLOW will be triggered.
+>
+> Re-initialize buffer size will make acpi evaluate successfully.
+
+acpi -> ACPI in all cases above.
+
+Fixes tag, please?
+
+> Signed-off-by: Aaron Ma <aaron.ma@canonical.com>
+
+Code is okay.
 
 -- 
-Best regards,
-grygorii
+With Best Regards,
+Andy Shevchenko
