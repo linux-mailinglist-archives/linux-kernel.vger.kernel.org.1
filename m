@@ -2,91 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8113627EA55
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 15:52:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E803B27EA5A
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 15:55:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730397AbgI3NwL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 09:52:11 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:35182 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728232AbgI3NwK (ORCPT
+        id S1730173AbgI3Ny4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 09:54:56 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:52454 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728149AbgI3Nyz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 09:52:10 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08UDnbT9006766;
-        Wed, 30 Sep 2020 13:52:03 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=DYvNZ24WcHe1KWr7V2ILrRL6telSJk6Mrq2Xp0T+C5Y=;
- b=saqa9v8TSfkZ7qeliqIy18/pBpeDpVTpF7hKL77aNLWruIdNUWz7/1moLn2oitcpk7TG
- RarCmEuzXPKWCM4Oyj4tLaO1Xfe5uBTPUYWLEI24AwZDA0+2mAOMPpkryltaj9sAygow
- 28zs+bRmVT/KYsFZ1XaosxdzEOe3ITB/52vuiufwEzr30CWQ0YRGS4VkEgPobGrqas/A
- SxSX6olqEElHve+elu36LOMa9CEg+3/yl3/5fTcRLqScj4ZCcHhM4ZtJAmyzpxLZNZ+K
- HuLtvsS3KAvePi/xZr2mk5dK4w6gjFEVoc/gRcIRDM6KbCfI9Wj2wNJnLvzBGYWRjKoQ XA== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2120.oracle.com with ESMTP id 33swkm0mc6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 30 Sep 2020 13:52:03 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08UDotT4030264;
-        Wed, 30 Sep 2020 13:52:02 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3030.oracle.com with ESMTP id 33uv2fd8am-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 30 Sep 2020 13:52:02 +0000
-Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 08UDq1Iq003108;
-        Wed, 30 Sep 2020 13:52:02 GMT
-Received: from [10.74.86.12] (/10.74.86.12)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 30 Sep 2020 06:52:01 -0700
-Subject: Re: [PATCH] xen/events: don't use chip_data for legacy IRQs
-To:     Juergen Gross <jgross@suse.com>, xen-devel@lists.xenproject.org,
-        linux-kernel@vger.kernel.org
-Cc:     Stefano Stabellini <sstabellini@kernel.org>, stable@vger.kernel.org
-References: <20200930091614.13660-1-jgross@suse.com>
-From:   boris.ostrovsky@oracle.com
-Organization: Oracle Corporation
-Message-ID: <c2faf646-ac77-1f36-fe01-cf39a56d5dc7@oracle.com>
-Date:   Wed, 30 Sep 2020 09:51:54 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.3.1
+        Wed, 30 Sep 2020 09:54:55 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08UDsqeS035821;
+        Wed, 30 Sep 2020 08:54:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1601474092;
+        bh=M20BOPS5H/G5NXkhn2m+algW/H3ixf6IQIcCKNdwnnI=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=jNhZu+zSF2osHh488EuubKtJLgPrOd3fNWvFx1q9SX6H3vWB/B4sidxsjhrR7WC8i
+         E3yiaNDuvWsSJIkqfb/GqkR8ewglTVjfQHzaMpjvW/RIiDxvwZG6ItD1Ns1dfitu02
+         RCvxMKtnvMOM3/jrAlwNVr/IZ75Z616HGOC6cUps=
+Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08UDsqv1127866
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 30 Sep 2020 08:54:52 -0500
+Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 30
+ Sep 2020 08:54:51 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE107.ent.ti.com
+ (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 30 Sep 2020 08:54:51 -0500
+Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08UDsodx101838;
+        Wed, 30 Sep 2020 08:54:50 -0500
+Subject: Re: [PATCH 07/11] firmware: ti_sci: rm: Add new ops for ring
+ configuration
+To:     Peter Ujfalusi <peter.ujfalusi@ti.com>, <nm@ti.com>,
+        <t-kristo@ti.com>, <ssantosh@kernel.org>, <lokeshvutla@ti.com>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20200928083429.17390-1-peter.ujfalusi@ti.com>
+ <20200928083429.17390-8-peter.ujfalusi@ti.com>
+From:   Grygorii Strashko <grygorii.strashko@ti.com>
+Message-ID: <e38f9096-8b12-309f-f910-b7fe0843c902@ti.com>
+Date:   Wed, 30 Sep 2020 16:54:49 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200930091614.13660-1-jgross@suse.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20200928083429.17390-8-peter.ujfalusi@ti.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9759 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0 adultscore=0
- suspectscore=0 malwarescore=0 bulkscore=0 mlxlogscore=999 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009300109
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9759 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0 phishscore=0
- suspectscore=0 mlxlogscore=999 clxscore=1015 priorityscore=1501
- impostorscore=0 lowpriorityscore=0 bulkscore=0 spamscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009300109
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 9/30/20 5:16 AM, Juergen Gross wrote:
-> Since commit c330fb1ddc0a ("XEN uses irqdesc::irq_data_common::handler_data to store a per interrupt XEN data pointer which contains XEN specific information.")
-> Xen is using the chip_data pointer for storing IRQ specific data. When
-> running as a HVM domain this can result in problems for legacy IRQs, as
-> those might use chip_data for their own purposes.
->
-> Use a local array for this purpose in case of legacy IRQs, avoiding the
-> double use.
->
-> Cc: stable@vger.kernel.org
-> Fixes: c330fb1ddc0a ("XEN uses irqdesc::irq_data_common::handler_data to store a per interrupt XEN data pointer which contains XEN specific information.")
-> Signed-off-by: Juergen Gross <jgross@suse.com>
 
+On 28/09/2020 11:34, Peter Ujfalusi wrote:
+> The sysfw ring configuration message has been extended to include virtid
+> and asel value for the ring.
+> Add the ASEL_VALID to TI_SCI_MSG_VALUE_RM_ALL_NO_ORDER as it is required
+> for DMA rings.
+> 
+> Instead of extending the current .config() ops - which would need same
+> patch change in the ringacc driver - add ti_sci_msg_rm_ring_cfg struct and
+> a new ops using it to configure the ring.
+> 
+> This will allow easy update path in case new members are added for the ring
+> configuration.
+> 
+> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+> ---
+>   drivers/firmware/ti_sci.c              | 63 ++++++++++++++++++++++++++
+>   drivers/firmware/ti_sci.h              |  7 +++
+>   include/linux/soc/ti/ti_sci_protocol.h | 31 ++++++++++++-
+>   3 files changed, 100 insertions(+), 1 deletion(-)
+> 
+Reviewed-by: Grygorii Strashko <grygorii.strashko@ti.com>
 
-Reviewed-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
-
-
+-- 
+Best regards,
+grygorii
