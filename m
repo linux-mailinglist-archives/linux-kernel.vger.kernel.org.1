@@ -2,185 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D886D27E127
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 08:36:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BF8127E13A
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 08:36:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725891AbgI3GgA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 02:36:00 -0400
-Received: from mga03.intel.com ([134.134.136.65]:17107 "EHLO mga03.intel.com"
+        id S1728344AbgI3Ggn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 02:36:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59274 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725535AbgI3Gf7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 02:35:59 -0400
-IronPort-SDR: fQTnIapm0dTvTlWDBeIQM8eEYdgRjr/KW4ua03+YMwTLyryGstKQG7abhD0fybfgXuzAdSsv6r
- 2OvA8U5Nzbcg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9759"; a="162436191"
-X-IronPort-AV: E=Sophos;i="5.77,321,1596524400"; 
-   d="scan'208";a="162436191"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2020 23:35:58 -0700
-IronPort-SDR: fafcu320OZH1ERuI4MiOsRdpfu4AXEkXKMnQ8UF7u/TiZMrnRwVs175i6bCgC6hxNNjHphzt4B
- /LzsoCl7bxnw==
-X-IronPort-AV: E=Sophos;i="5.77,321,1596524400"; 
-   d="scan'208";a="495887540"
-Received: from gliakhov-mobl2.ger.corp.intel.com (HELO ubuntu) ([10.252.32.32])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2020 23:35:57 -0700
+        id S1727599AbgI3GgH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 02:36:07 -0400
+Received: from mail.kernel.org (ip5f5ad5c4.dynamic.kabel-deutschland.de [95.90.213.196])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1DFD82075F;
+        Wed, 30 Sep 2020 06:36:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601447766;
+        bh=LhZCTorWgRAPqNW3nrFAAebOGXKRprPBrjQJqI6Zz6k=;
+        h=From:To:Cc:Subject:Date:From;
+        b=hLE55PtDImVghfSrFfBE9lp1evnzJjzixWmI31JLFMDkIJnDAiPB9SP6aUP7yXlKs
+         ug3BdE3FWXUP+nkA4lKqX29CQ/4HekMfx1fWDBYa2j6GMYPnxua1qMfroRQRYzXLng
+         ccSkxQBGr+vtF9UtGO347Ty2R4lazFf2mErLRjh8=
+Received: from mchehab by mail.kernel.org with local (Exim 4.94)
+        (envelope-from <mchehab@kernel.org>)
+        id 1kNVid-001QmM-P1; Wed, 30 Sep 2020 08:36:03 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Linux Media Mailing List <linux-media@vger.kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Antti Palosaari <crope@iki.fi>,
+        Bingbu Cao <bingbu.cao@intel.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Tianshu Qiu <tian.shu.qiu@intel.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 0/9] Address several issues when building media docs with Sphinx 3.x
 Date:   Wed, 30 Sep 2020 08:35:53 +0200
-From:   Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc:     ohad@wizery.com, bjorn.andersson@linaro.org, loic.pallardy@st.com,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 02/10] rpmsg: core: Add channel creation internal API
-Message-ID: <20200930063553.GB20683@ubuntu>
-References: <20200922001000.899956-1-mathieu.poirier@linaro.org>
- <20200922001000.899956-3-mathieu.poirier@linaro.org>
+Message-Id: <cover.1601447236.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200922001000.899956-3-mathieu.poirier@linaro.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 06:09:52PM -0600, Mathieu Poirier wrote:
-> From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-> 
-> Add the channel creation API as a first step to be able to define the
-> name service announcement as a rpmsg driver independent from the RPMsg
-> virtio bus.
-> 
-> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-> ---
->  drivers/rpmsg/rpmsg_core.c     | 45 ++++++++++++++++++++++++++++++++++
->  drivers/rpmsg/rpmsg_internal.h | 12 +++++++++
->  2 files changed, 57 insertions(+)
-> 
-> diff --git a/drivers/rpmsg/rpmsg_core.c b/drivers/rpmsg/rpmsg_core.c
-> index 91de940896e3..50a835eaf1ba 100644
-> --- a/drivers/rpmsg/rpmsg_core.c
-> +++ b/drivers/rpmsg/rpmsg_core.c
-> @@ -20,6 +20,51 @@
->  
->  #include "rpmsg_internal.h"
->  
-> +/**
-> + * rpmsg_create_channel() - create a new rpmsg channel
-> + * using its name and address info.
-> + * @rpdev: rpmsg driver
+The C domain parser was re-written on Sphinx 3.x.
 
-device
+It is now a lot more pedantic than on past versions, and has
+specific macros for addressing C namespaces and documenting
+data types, like c:struct, c:enum, c:macro, etc.
 
-> + * @chinfo: channel_info to bind
-> + *
-> + * Returns a pointer to the new rpmsg device on success, or NULL on error.
-> + */
-> +struct rpmsg_device *
-> +	rpmsg_create_channel(struct rpmsg_device *rpdev,
+I'm currently working on addressing the issues upstream,  as
+some changes at the documentation build system are needed
+(mainly kernel-doc and cdomain.py).
 
-You might call this nitpicking, but we already have two indentation styles for 
-functions:
+Yet, there are several simple issues at the media documentation 
+that can easily be fixed without requiring any changes at the
+documentation build system.
 
-return_type function(type1 arg1,
-			...)
+While Sphinx < 3.x doesn't print any warnings, I suspect that
+most issues addressed here will provide either duplicated
+cross-references and/or produce wrong output.
 
-(my personal preference, it also has sub-variants - depending on the aligning 
-of the second line and any following lines, and one more moving "type1 arg1" 
-to the second line)
+This series address those.
 
-return_type
-function(...
+As there's no change at the documentation content
+(just format tags were changed), my plan is to apply this series
+either later today or tomorrow. 
 
-and now you're also introducing the third style - with "function" indented... 
-Maybe we don't need more of those, particularly since now with 100 chars per 
-line in most cases the very first style can be used.
+Mauro Carvalho Chehab (9):
+  media: camera-sensor.rst: fix a doc build warning
+  media: glossary.rst: use the right case for glossary entries
+  media: docs: ipu3.rst: rely at automarkup extension
+  media: dvb-frontends: remove a clone of a kernel-doc markup at
+    zd1301_demod.h
+  media: v4l2-subdev.rst: get rid of a duplicatd kernel-doc markup
+  media: cec-core.rst: fix warnings with Sphinx 3.0+
+  media: v4l2-subdev.h: fix a kernel-doc markup
+  media: hist-v4l2.rst: remove struct duplication
+  media: hist-v4l2.rst: remove :c:`type` from structs and enums
 
-> +			     struct rpmsg_channel_info *chinfo)
-> +{
-> +	if (WARN_ON(!rpdev))
-> +		return NULL;
-> +	if (!rpdev->ops || !rpdev->ops->create_channel) {
-> +		dev_err(&rpdev->dev, "no create_channel ops found\n");
-> +		return NULL;
-> +	}
-> +
-> +	return rpdev->ops->create_channel(rpdev, chinfo);
-> +}
-> +EXPORT_SYMBOL(rpmsg_create_channel);
-> +
-> +/**
-> + * rpmsg_release_channel() - release a rpmsg channel
-> + * using its name and address info.
-> + * @rpdev: rpmsg driver
+ Documentation/admin-guide/media/ipu3.rst      |  38 +--
+ .../driver-api/media/camera-sensor.rst        |   2 +-
+ Documentation/driver-api/media/cec-core.rst   |  62 ++---
+ .../driver-api/media/v4l2-subdev.rst          |   2 -
+ .../userspace-api/media/glossary.rst          |  20 +-
+ .../userspace-api/media/v4l/hist-v4l2.rst     | 239 ++++++++----------
+ drivers/media/dvb-frontends/zd1301_demod.h    |   6 -
+ include/media/v4l2-subdev.h                   |   2 +-
+ 8 files changed, 162 insertions(+), 209 deletions(-)
 
-device
+-- 
+2.26.2
 
-> + * @chinfo: channel_info to bind
-> + *
-> + * Returns 0 on success or an appropriate error value.
-> + */
-> +int rpmsg_release_channel(struct rpmsg_device *rpdev,
-> +			  struct rpmsg_channel_info *chinfo)
-> +{
-> +	if (WARN_ON(!rpdev))
-> +		return -EINVAL;
-> +	if (!rpdev->ops || !rpdev->ops->release_channel) {
-> +		dev_err(&rpdev->dev, "no release_channel ops found\n");
-> +		return -EPERM;
 
-ENOSYS or EOPNOTSUPP? I'm never sure which one is appropriate for 
-this kind of errors.
-
-> +	}
-> +
-> +	return rpdev->ops->release_channel(rpdev, chinfo);
-> +}
-> +EXPORT_SYMBOL(rpmsg_release_channel);
-> +
->  /**
->   * rpmsg_create_ept() - create a new rpmsg_endpoint
->   * @rpdev: rpmsg channel device
-> diff --git a/drivers/rpmsg/rpmsg_internal.h b/drivers/rpmsg/rpmsg_internal.h
-> index 3fc83cd50e98..587f723757d4 100644
-> --- a/drivers/rpmsg/rpmsg_internal.h
-> +++ b/drivers/rpmsg/rpmsg_internal.h
-> @@ -20,6 +20,8 @@
->  
->  /**
->   * struct rpmsg_device_ops - indirection table for the rpmsg_device operations
-> + * @create_channel:	create backend-specific channel, optional
-> + * @release_channel:	release backend-specific channel, optional
-
-Are they really optional? You return errors if they aren't available.
-
->   * @create_ept:		create backend-specific endpoint, required
->   * @announce_create:	announce presence of new channel, optional
->   * @announce_destroy:	announce destruction of channel, optional
-> @@ -29,6 +31,11 @@
->   * advertise new channels implicitly by creating the endpoints.
->   */
->  struct rpmsg_device_ops {
-> +	struct rpmsg_device *(*create_channel)(struct rpmsg_device *rpdev,
-> +					     struct rpmsg_channel_info *chinfo);
-> +	int (*release_channel)(struct rpmsg_device *rpdev,
-> +			       struct rpmsg_channel_info *chinfo);
-> +
->  	struct rpmsg_endpoint *(*create_ept)(struct rpmsg_device *rpdev,
->  					    rpmsg_rx_cb_t cb, void *priv,
->  					    struct rpmsg_channel_info chinfo);
-> @@ -75,6 +82,11 @@ int rpmsg_unregister_device(struct device *parent,
->  struct device *rpmsg_find_device(struct device *parent,
->  				 struct rpmsg_channel_info *chinfo);
->  
-> +struct rpmsg_device *
-> +rpmsg_create_channel(struct rpmsg_device *rpdev,
-> +		     struct rpmsg_channel_info *chinfo);
-> +int rpmsg_release_channel(struct rpmsg_device *rpdev,
-> +			  struct rpmsg_channel_info *chinfo);
->  /**
->   * rpmsg_chrdev_register_device() - register chrdev device based on rpdev
->   * @rpdev:	prepared rpdev to be used for creating endpoints
-> -- 
-> 2.25.1
-> 
