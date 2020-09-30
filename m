@@ -2,131 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0357F27EB15
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 16:37:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B42227EB19
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 16:40:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730619AbgI3Ohv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 10:37:51 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:49368 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728149AbgI3Ohv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 10:37:51 -0400
-Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601476670;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=gvcoPWLZ/UXHXFLFR/AWxZXN9OnxSpqvTsQKFwNAyGQ=;
-        b=E4pQQ9AeIQxkH3s4GvX3H6/lmpmTJayc0qW3q83jdcuNy2J8JS1fvqaCmluOQpbtIXkK0L
-        y3W+hw3CPyhr5EbCUaWY3VGdh+dsgWo9OJZIyLUsthPOQHOJ4ieqvz4uq0OobVdJg0qn7D
-        yRsTvqZveqmzkGRkPIf9pnG9Lx7jlLA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-272-CBQgIOVjPnW1gt4xLqZ1UQ-1; Wed, 30 Sep 2020 10:37:47 -0400
-X-MC-Unique: CBQgIOVjPnW1gt4xLqZ1UQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F3AD785C732;
-        Wed, 30 Sep 2020 14:37:45 +0000 (UTC)
-Received: from starship (unknown [10.35.206.29])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 202E05579D;
-        Wed, 30 Sep 2020 14:37:41 +0000 (UTC)
-Message-ID: <58b7aa949cbdfefbb6149608ac0f45c8b25d5640.camel@redhat.com>
-Subject: Re: [PATCH v2 1/1] KVM: x86: fix MSR_IA32_TSC read for nested
- migration
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Jim Mattson <jmattson@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Borislav Petkov <bp@alien8.de>,
+        id S1730410AbgI3Oj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 10:39:56 -0400
+Received: from mx2.suse.de ([195.135.220.15]:34602 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728149AbgI3Ojz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 10:39:55 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id DC4CDABAD;
+        Wed, 30 Sep 2020 14:39:53 +0000 (UTC)
+Subject: Re: [RFC-PATCH 2/4] mm: Add __rcu_alloc_page_lockless() func.
+To:     Uladzislau Rezki <urezki@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Date:   Wed, 30 Sep 2020 17:37:41 +0300
-In-Reply-To: <a35f7d67-d01b-0b2a-2993-7d6e0ba4add6@redhat.com>
-References: <20200921103805.9102-1-mlevitsk@redhat.com>
-         <20200921103805.9102-2-mlevitsk@redhat.com>
-         <a35f7d67-d01b-0b2a-2993-7d6e0ba4add6@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.3 (3.36.3-1.fc32) 
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
+        Mel Gorman <mgorman@techsingularity.net>
+References: <20200918194817.48921-1-urezki@gmail.com>
+ <20200918194817.48921-3-urezki@gmail.com>
+ <38f42ca1-ffcd-04a6-bf11-618deffa897a@suse.cz> <20200929220742.GB8768@pc636>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <795d6aea-1846-6e08-ac1b-dbff82dd7133@suse.cz>
+Date:   Wed, 30 Sep 2020 16:39:53 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
+In-Reply-To: <20200929220742.GB8768@pc636>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-09-24 at 19:33 +0200, Paolo Bonzini wrote:
-> On 21/09/20 12:38, Maxim Levitsky wrote:
-> > MSR reads/writes should always access the L1 state, since the (nested)
-> > hypervisor should intercept all the msrs it wants to adjust, and these
-> > that it doesn't should be read by the guest as if the host had read it.
-> > 
-> > However IA32_TSC is an exception. Even when not intercepted, guest still
-> > reads the value + TSC offset.
-> > The write however does not take any TSC offset into account.
-> > 
-> > This is documented in Intel's SDM and seems also to happen on AMD as well.
-> > 
-> > This creates a problem when userspace wants to read the IA32_TSC value and then
-> > write it. (e.g for migration)
-> > 
-> > In this case it reads L2 value but write is interpreted as an L1 value.
-> > To fix this make the userspace initiated reads of IA32_TSC return L1 value
-> > as well.
-> > 
-> > Huge thanks to Dave Gilbert for helping me understand this very confusing
-> > semantic of MSR writes.
-> > 
-> > Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
-> > ---
-> >  arch/x86/kvm/x86.c | 16 ++++++++++++++--
-> >  1 file changed, 14 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> > index 17f4995e80a7e..ed4314641360e 100644
-> > --- a/arch/x86/kvm/x86.c
-> > +++ b/arch/x86/kvm/x86.c
-> > @@ -3219,9 +3219,21 @@ int kvm_get_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
-> >  	case MSR_IA32_POWER_CTL:
-> >  		msr_info->data = vcpu->arch.msr_ia32_power_ctl;
-> >  		break;
-> > -	case MSR_IA32_TSC:
-> > -		msr_info->data = kvm_scale_tsc(vcpu, rdtsc()) + vcpu->arch.tsc_offset;
-> > +	case MSR_IA32_TSC: {
-> > +		/*
-> > +		 * Intel SDM states that MSR_IA32_TSC read adds the TSC offset
-> > +		 * even when not intercepted. AMD manual doesn't explicitly
-> > +		 * state this but appears to behave the same.
-> > +		 *
-> > +		 * However when userspace wants to read this MSR, we should
-> > +		 * return it's real L1 value so that its restore will be correct.
-> > +		 */
-> > +		u64 tsc_offset = msr_info->host_initiated ? vcpu->arch.l1_tsc_offset :
-> > +							    vcpu->arch.tsc_offset;
-> > +
-> > +		msr_info->data = kvm_scale_tsc(vcpu, rdtsc()) + tsc_offset;
-> >  		break;
-> > +	}
-> >  	case MSR_MTRRcap:
-> >  	case 0x200 ... 0x2ff:
-> >  		return kvm_mtrr_get_msr(vcpu, msr_info->index, &msr_info->data);
-> > 
+On 9/30/20 12:07 AM, Uladzislau Rezki wrote:
+> On Tue, Sep 29, 2020 at 12:15:34PM +0200, Vlastimil Babka wrote:
+>> On 9/18/20 9:48 PM, Uladzislau Rezki (Sony) wrote:
+>> 
+>> After reading all the threads and mulling over this, I am going to deflect from
+>> Mel and Michal and not oppose the idea of lockless allocation. I would even
+>> prefer to do it via the gfp flag and not a completely separate path. Not using
+>> the exact code from v1, I think it could be done in a way that we don't actually
+>> look at the new flag until we find that pcplist is empty - which should not
+>> introduce overhead to the fast-fast path when pcpclist is not empty. It's more
+>> maintainable that adding new entry points, IMHO.
+>> 
+> Thanks for reading all that from the beginning! It must be tough due to the
+> fact there were lot of messages in the threads, so at least i was lost.
 > 
-> Applied the patch as it is doing the sanest possible thing for the
-> current semantics of host-initiated accesses.
+> I agree that adding a new entry or separate lock-less function can be considered
+> as something that is hard to maintain. I have a question here. I mean about your
+> different look at it:
 > 
-> Paolo
+> <snip>
+> bool is_pcp_cache_empty(gfp_t gfp)
+> {
+>     struct per_cpu_pages *pcp;
+>     struct zoneref *ref;
+>     unsigned long flags;
+>     bool empty;
 > 
-Thanks!
+>     ref = first_zones_zonelist(node_zonelist(
+>             numa_node_id(), gfp), gfp_zone(gfp), NULL);
+>     if (!ref->zone)
+>             return true;
+> 
+>     local_irq_save(flags);
+>     pcp = &this_cpu_ptr(ref->zone->pageset)->pcp;
+>     empty = list_empty(&pcp->lists[gfp_migratetype(gfp)]);
+>     local_irq_restore(flags);
+> 
+>     return empty;
+> }
+> 
+> disable_irq();
+> if (!is_pcp_cache_empty(GFP_NOWAIT))
+>     __get_free_page(GFP_NOWAIT);
+> enable_irq();
+> <snip>
+> 
+> Do you mean to have something like above? I mean some extra API
+> function that returns true or false if fast-fast allocation can
+> either occur or not. Above code works just fine and never touches
+> main zone->lock.
+> 
+> i.e. Instead of introducing an extra GFP_LOCKLESS flag or any new
+> extra lock-less function. We could have something that checks a
+> pcp page cache list, thus it can guarantee that a request would
+> be accomplish using fast-fast path.
 
-Best regards,
-	Maxim Levitsky
-
+No, I meant going back to idea of new gfp flag, but adjust the implementation in
+the allocator (different from what you posted in previous version) so that it
+only looks at the flag after it tries to allocate from pcplist and finds out
+it's empty. So, no inventing of new page allocator entry points or checks such
+as the one you wrote above, but adding the new gfp flag in a way that it doesn't
+affect existing fast paths.
