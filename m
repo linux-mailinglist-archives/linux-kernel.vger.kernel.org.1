@@ -2,84 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB4DF27E6F1
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 12:45:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25AB027E6FD
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 12:48:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729316AbgI3KpF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 06:45:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34250 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725776AbgI3KpE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 06:45:04 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 81E212074A;
-        Wed, 30 Sep 2020 10:45:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601462703;
-        bh=gGzRaDxmnzYQQAp4vf2ECSVh//FBu7bCpbe1lpzOsj0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FNMBVYGLa/mPrIp1u0ApI3K1m/Yfbp7KHz6L/PC12vti2RR0l8aTJzkm2c8uVooQH
-         +Dl0pN/nAql2WAYqQbc4QHlNRiiLBy1x7UJcxnygxkNU3pM76Qgal+OcvXwHY8KGG+
-         Pus+8wqfET9Ak1nVj+Sn/G5rnvGaYJTL/xD4aToI=
-Date:   Wed, 30 Sep 2020 13:44:59 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Johannes Berg <johannes@sipsolutions.net>
-Cc:     Kalle Valo <kvalo@codeaurora.org>,
-        Srinivasan Raju <srini.raju@purelifi.com>,
-        mostafa.afgani@purelifi.com,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH] [v2] wireless: Initial driver submission for pureLiFi
- devices
-Message-ID: <20200930104459.GO3094@unreal>
-References: <20200924151910.21693-1-srini.raju@purelifi.com>
- <20200928102008.32568-1-srini.raju@purelifi.com>
- <20200930051602.GJ3094@unreal>
- <87d023elrc.fsf@codeaurora.org>
- <20200930095526.GM3094@unreal>
- <1449cdbe49b428b7d16a199ebc4c9aef73d6564c.camel@sipsolutions.net>
+        id S1729220AbgI3Kse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 06:48:34 -0400
+Received: from mickerik.phytec.de ([195.145.39.210]:58334 "EHLO
+        mickerik.phytec.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725779AbgI3KsX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 06:48:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; d=phytec.de; s=a1; c=relaxed/simple;
+        q=dns/txt; i=@phytec.de; t=1601462900; x=1604054900;
+        h=From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=uHNgAUSRjIYpKONmOmxLzT0J1VwoWeIp8MW5HjRFusw=;
+        b=ncu8L3KWQXxdocX3s5NOtQyf+Q53qo8bIzUg9/Z7eKR7Du685o5KNq3cu5+jR9te
+        lh8L2lnuvk4etcqdb2emhsfW3bZPw6TLExRIEjqjKk0HU+PQm06q/UFpwGTVENOc
+        LDFrB7aJVy0mNNuTSsohXi7virYo+5aZAeNxnY7QRNw=;
+X-AuditID: c39127d2-269ff70000001c25-9e-5f746274219c
+Received: from idefix.phytec.de (Unknown_Domain [172.16.0.10])
+        by mickerik.phytec.de (PHYTEC Mail Gateway) with SMTP id F6.89.07205.472647F5; Wed, 30 Sep 2020 12:48:20 +0200 (CEST)
+Received: from [172.16.23.108] ([172.16.23.108])
+          by idefix.phytec.de (IBM Domino Release 9.0.1FP7)
+          with ESMTP id 2020093012481989-526280 ;
+          Wed, 30 Sep 2020 12:48:19 +0200 
+Subject: Re: [PATCH 1/5] media: mt9p031: Add support for 8 bit and 10 bit
+ formats
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Christian Hemp <c.hemp@phytec.de>,
+        Jan Luebbe <jlu@pengutronix.de>
+References: <20200925075029.32181-1-s.riedmueller@phytec.de>
+ <20200925201125.GX26842@paasikivi.fi.intel.com>
+From:   =?UTF-8?Q?Stefan_Riedm=c3=bcller?= <s.riedmueller@phytec.de>
+Message-ID: <2d96fe8a-cb68-9945-738c-b3d9b42591a8@phytec.de>
+Date:   Wed, 30 Sep 2020 12:48:19 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1449cdbe49b428b7d16a199ebc4c9aef73d6564c.camel@sipsolutions.net>
+In-Reply-To: <20200925201125.GX26842@paasikivi.fi.intel.com>
+X-MIMETrack: Itemize by SMTP Server on Idefix/Phytec(Release 9.0.1FP7|August  17, 2016) at
+ 30.09.2020 12:48:19,
+        Serialize by Router on Idefix/Phytec(Release 9.0.1FP7|August  17, 2016) at
+ 30.09.2020 12:48:20,
+        Serialize complete at 30.09.2020 12:48:20
+X-TNEFEvaluated: 1
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrKLMWRmVeSWpSXmKPExsWyRoCBS7ckqSTe4HErr8XXOfNYLTonLmG3
+        uLxrDptFz4atrBbLNv1hsvi05RuTA5vH7I6ZrB6bVnWyecw7GejR/9fA4/MmuQDWKC6blNSc
+        zLLUIn27BK6MF7uvMRVcUar4fLGugbFLpouRk0NCwERiy48DLF2MXBxCAtsYJfYd3ccO4Zxh
+        lPi+/QITSJWwQLDEipU9QFUcHCIC+hKTHpiB1DALPGaUWD7tDStIXEggT+LBPEmQcjYBJ4nF
+        5zvYQGxeARuJ3VcesILYLAKqElsu3mQHKRcViJTYucMSokRQ4uTMJ2DTOYHKr+xRBpkuIdDI
+        JPG7exYTxJ1CEqcXn2UGsZkF5CW2v50DZZtJzNv8EMoWl7j1ZD7TBEahWUjGzkLSMgtJyywk
+        LQsYWVYxCuVmJmenFmVm6xVkVJakJuulpG5iBEbF4Ynql3Yw9s3xOMTIxMF4iFGCg1lJhPdQ
+        Ykm8EG9KYmVValF+fFFpTmrxIUZpDhYlcd4NvCVhQgLpiSWp2ampBalFMFkmDk6pBsaJt11m
+        K0b3yZz9wnPjSVch78IEsbyTh+IupEbFLFPZdV7MwGcNqy/TYR0OowO2Va+XHc4pPeL4+aeX
+        qVyUi7KXxp0gvbPve0+f2MZ2+Zb7yWTWo0271txj7bG6dtbI2f9uRNrqK4nOBtVTd8xVnua8
+        Qc588XmunsPn5ufIT5nTFLUyc671wuNKLMUZiYZazEXFiQBD4OoUeAIAAA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 12:11:24PM +0200, Johannes Berg wrote:
-> On Wed, 2020-09-30 at 12:55 +0300, Leon Romanovsky wrote:
-> > On Wed, Sep 30, 2020 at 11:01:27AM +0300, Kalle Valo wrote:
-> > > Leon Romanovsky <leon@kernel.org> writes:
-> > >
-> > > > > diff --git a/drivers/net/wireless/purelifi/Kconfig
-> > > > b/drivers/net/wireless/purelifi/Kconfig
-> > > > > new file mode 100644
-> > > > > index 000000000000..ff05eaf0a8d4
-> > > > > --- /dev/null
-> > > > > +++ b/drivers/net/wireless/purelifi/Kconfig
-> > > > > @@ -0,0 +1,38 @@
-> > > > > +# SPDX-License-Identifier: GPL-2.0
-> > > > > +config WLAN_VENDOR_PURELIFI
-> > > > > +	bool "pureLiFi devices"
-> > > > > +	default y
-> > > >
-> > > > "N" is preferred default.
-> > >
-> > > In most cases that's true, but for WLAN_VENDOR_ configs 'default y'
-> > > should be used. It's the same as with NET_VENDOR_.
-> >
-> > I would like to challenge it, why is that?
-> > Why do I need to set "N", every time new vendor upstreams its code?
->
-> You don't. The WLAN_VENDOR_* settings are not supposed to affect the
-> build, just the Kconfig visibility.
+Hi Sakari,
 
-Which is important to me, I'm keeping .config as minimal as possible
-to simplify comparison between various builds.
+On 25.09.20 22:11, Sakari Ailus wrote:
+> Hi Stefan,
+> 
+> On Fri, Sep 25, 2020 at 09:50:25AM +0200, Stefan Riedmueller wrote:
+>> From: Christian Hemp <c.hemp@phytec.de>
+>>
+>> Aside from 12 bit monochrome or color format the sensor implicitly
+>> supports 10 and 8 bit formats as well by simply dropping the
+>> corresponding LSBs.
+>>
+>> Signed-off-by: Christian Hemp <c.hemp@phytec.de>
+>> [jlu@pengutronix.de: simplified by dropping v4l2_colorspace handling]
+>> Signed-off-by: Jan Luebbe <jlu@pengutronix.de>
+>> Signed-off-by: Stefan Riedmueller <s.riedmueller@phytec.de>
+>> ---
+>>   drivers/media/i2c/mt9p031.c | 50 +++++++++++++++++++++++++++++--------
+>>   1 file changed, 40 insertions(+), 10 deletions(-)
+>>
+>> diff --git a/drivers/media/i2c/mt9p031.c b/drivers/media/i2c/mt9p031.c
+>> index dc23b9ed510a..0002dd299ffa 100644
+>> --- a/drivers/media/i2c/mt9p031.c
+>> +++ b/drivers/media/i2c/mt9p031.c
+>> @@ -116,6 +116,18 @@ enum mt9p031_model {
+>>   	MT9P031_MODEL_MONOCHROME,
+>>   };
+>>   
+>> +static const u32 mt9p031_color_fmts[] = {
+>> +	MEDIA_BUS_FMT_SGRBG8_1X8,
+>> +	MEDIA_BUS_FMT_SGRBG10_1X10,
+>> +	MEDIA_BUS_FMT_SGRBG12_1X12,
+>> +};
+>> +
+>> +static const u32 mt9p031_monochrome_fmts[] = {
+>> +	MEDIA_BUS_FMT_Y8_1X8,
+>> +	MEDIA_BUS_FMT_Y10_1X10,
+>> +	MEDIA_BUS_FMT_Y12_1X12,
+>> +};
+>> +
+>>   struct mt9p031 {
+>>   	struct v4l2_subdev subdev;
+>>   	struct media_pad pad;
+>> @@ -138,6 +150,9 @@ struct mt9p031 {
+>>   	struct v4l2_ctrl *blc_auto;
+>>   	struct v4l2_ctrl *blc_offset;
+>>   
+>> +	const u32 *fmts;
+>> +	int num_fmts;
+> 
+> Unsigned int, please.
+> 
+>> +
+>>   	/* Registers cache */
+>>   	u16 output_control;
+>>   	u16 mode2;
+>> @@ -148,6 +163,17 @@ static struct mt9p031 *to_mt9p031(struct v4l2_subdev *sd)
+>>   	return container_of(sd, struct mt9p031, subdev);
+>>   }
+>>   
+>> +static const u32 mt9p031_find_datafmt(struct mt9p031 *mt9p031, u32 code)
+>> +{
+>> +	int i;
+> 
+> Same here.
 
-Thanks
+I'll fix it in v2.
+
+Thanks,
+Stefan
+
+> 
+>> +
+>> +	for (i = 0; i < mt9p031->num_fmts; i++)
+>> +		if (mt9p031->fmts[i] == code)
+>> +			return mt9p031->fmts[i];
+>> +
+>> +	return mt9p031->fmts[mt9p031->num_fmts-1];
+>> +}
+>> +
+>>   static int mt9p031_read(struct i2c_client *client, u8 reg)
+>>   {
+>>   	return i2c_smbus_read_word_swapped(client, reg);
+>> @@ -476,10 +502,11 @@ static int mt9p031_enum_mbus_code(struct v4l2_subdev *subdev,
+>>   {
+>>   	struct mt9p031 *mt9p031 = to_mt9p031(subdev);
+>>   
+>> -	if (code->pad || code->index)
+>> +	if (code->pad || code->index >= mt9p031->num_fmts)
+>>   		return -EINVAL;
+>>   
+>> -	code->code = mt9p031->format.code;
+>> +	code->code = mt9p031->fmts[code->index];
+>> +
+>>   	return 0;
+>>   }
+>>   
+>> @@ -573,6 +600,8 @@ static int mt9p031_set_format(struct v4l2_subdev *subdev,
+>>   	__format->width = __crop->width / hratio;
+>>   	__format->height = __crop->height / vratio;
+>>   
+>> +	__format->code = mt9p031_find_datafmt(mt9p031, format->format.code);
+>> +
+>>   	format->format = *__format;
+>>   
+>>   	return 0;
+>> @@ -951,10 +980,7 @@ static int mt9p031_open(struct v4l2_subdev *subdev, struct v4l2_subdev_fh *fh)
+>>   
+>>   	format = v4l2_subdev_get_try_format(subdev, fh->pad, 0);
+>>   
+>> -	if (mt9p031->model == MT9P031_MODEL_MONOCHROME)
+>> -		format->code = MEDIA_BUS_FMT_Y12_1X12;
+>> -	else
+>> -		format->code = MEDIA_BUS_FMT_SGRBG12_1X12;
+>> +	format->code = mt9p031_find_datafmt(mt9p031, 0);
+>>   
+>>   	format->width = MT9P031_WINDOW_WIDTH_DEF;
+>>   	format->height = MT9P031_WINDOW_HEIGHT_DEF;
+>> @@ -1121,10 +1147,14 @@ static int mt9p031_probe(struct i2c_client *client,
+>>   	mt9p031->crop.left = MT9P031_COLUMN_START_DEF;
+>>   	mt9p031->crop.top = MT9P031_ROW_START_DEF;
+>>   
+>> -	if (mt9p031->model == MT9P031_MODEL_MONOCHROME)
+>> -		mt9p031->format.code = MEDIA_BUS_FMT_Y12_1X12;
+>> -	else
+>> -		mt9p031->format.code = MEDIA_BUS_FMT_SGRBG12_1X12;
+>> +	if (mt9p031->model == MT9P031_MODEL_MONOCHROME) {
+>> +		mt9p031->fmts = mt9p031_monochrome_fmts;
+>> +		mt9p031->num_fmts = ARRAY_SIZE(mt9p031_monochrome_fmts);
+>> +	} else {
+>> +		mt9p031->fmts = mt9p031_color_fmts;
+>> +		mt9p031->num_fmts = ARRAY_SIZE(mt9p031_color_fmts);
+>> +	}
+>> +	mt9p031->format.code = mt9p031_find_datafmt(mt9p031, 0);
+>>   
+>>   	mt9p031->format.width = MT9P031_WINDOW_WIDTH_DEF;
+>>   	mt9p031->format.height = MT9P031_WINDOW_HEIGHT_DEF;
+> 
