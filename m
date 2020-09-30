@@ -2,108 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C699B27E0DE
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 08:10:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA54C27E0F4
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 08:21:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727416AbgI3GKt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 02:10:49 -0400
-Received: from mga17.intel.com ([192.55.52.151]:62796 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725320AbgI3GKt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 02:10:49 -0400
-IronPort-SDR: y7EZcNz/i3iqDRrc3wQwT34Y//32CCB6Rth6iqAr68tSUIYafL8AY+WIpWdkK0sljconsArvpy
- MiuZQvtASDvw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9759"; a="142378976"
-X-IronPort-AV: E=Sophos;i="5.77,321,1596524400"; 
-   d="scan'208";a="142378976"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2020 23:10:49 -0700
-IronPort-SDR: htIiZbeEJYeOClBSu8UNGbIhYy6kNFlK9nB0/jx+MBLivArZlXU555Vb7kVr6GcXV2v62qcCBJ
- DMEKzHF27pbw==
-X-IronPort-AV: E=Sophos;i="5.77,321,1596524400"; 
-   d="scan'208";a="350561475"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2020 23:10:48 -0700
-Date:   Tue, 29 Sep 2020 23:10:47 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Ben Gardon <bgardon@google.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Cannon Matthews <cannonmatthews@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
-        Peter Feiner <pfeiner@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
-Subject: Re: [PATCH 06/22] kvm: mmu: Make address space ID a property of
- memslots
-Message-ID: <20200930061047.GB29659@linux.intel.com>
-References: <20200925212302.3979661-1-bgardon@google.com>
- <20200925212302.3979661-7-bgardon@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200925212302.3979661-7-bgardon@google.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+        id S1725907AbgI3GVV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 02:21:21 -0400
+Received: from wnew3-smtp.messagingengine.com ([64.147.123.17]:45129 "EHLO
+        wnew3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725320AbgI3GVV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 02:21:21 -0400
+X-Greylist: delayed 556 seconds by postgrey-1.27 at vger.kernel.org; Wed, 30 Sep 2020 02:21:20 EDT
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.west.internal (Postfix) with ESMTP id 84FB5E89;
+        Wed, 30 Sep 2020 02:12:03 -0400 (EDT)
+Received: from imap2 ([10.202.2.52])
+  by compute4.internal (MEProxy); Wed, 30 Sep 2020 02:12:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type; s=fm3; bh=T6meKLBdgHnSi7cnfX0bFbEcbbDs7L2
+        SA1qc5xApdl0=; b=HFKL2AINwPy0keGvI+uk5fG4akN2h0jNqzfWclKI8u6+biO
+        V5Uph8OJXp4xhMe/yhnYTg2X16wmkNMcG1uwxYUWaCy5U1dbHqnnuWnHNkhVR0tn
+        9hqwjQy7XeGoZ+Fsc+8Wm/GxyAFs/Qo6yCPZS14PeAu6C9G81XitaLKfDSj3qDxl
+        twwgPmHc8jlk/jUTaSRqCBAzRWO9lnPWUR3wDbMDZp0k7Ya0AbnjIy6ytL/WNoZ/
+        bcT4UBQFZMc4rB83EDrdD0BV6TUhxVG3MofnY0mV7Tp4U+vIqdar5fFBaYv/BEzn
+        oAsxF0PkBcUGSV9lFFqvuRjQkC+tQN9ERJ6zo5w==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=T6meKL
+        BdgHnSi7cnfX0bFbEcbbDs7L2SA1qc5xApdl0=; b=bls+tThF56jpLjZROL4XAy
+        a8s3QfavxGKPQr1lm8KTz1erZjZ3h7HPLzX1i6kem42cCCZmQjoN8xDPDQSbgE3S
+        Lwd8INGT6c8xvf3pgGrChin1wMZJUXroU9iFF/On1w1abeG9SiaH4BwpHj1KiEHl
+        S/R6GBUzTNlYYN6rxYM8JMNeWITq/LC1mM2Acp6+UjsSXTxvqs4Tl44ojLSfk8fG
+        YD5ajUYxVoUBvzF6xwss3n4wrbpNfYHVSOhF2at9Qc6EIAO1gy0aDlO+KtzgTBVr
+        TnjmvuI0TFWOEcQO/kWvyPKEhAIhbugN1D1uNHXPtIsHfHYMNMnOLVIv1sNAriKg
+        ==
+X-ME-Sender: <xms:sSF0Xw9aiWB0TkXs5NoawmpRtYTxKQIFxBkO9fAgVbmkK6Qk_4f44A>
+    <xme:sSF0X4vuLtFazVRdaQEq5lvpIqZ59BL7pbnyytxnN9Sux0jzZi2eRAZNoSU008oJD
+    xLwwj2aDc22WmTsVA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrfedtgddutdegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreertdenucfhrhhomhepfdetnhgu
+    rhgvficulfgvfhhfvghrhidfuceorghnughrvgifsegrjhdrihgurdgruheqnecuggftrf
+    grthhtvghrnhephefhfeekgfekudevheffheeihedujeefjeevjeefudfgfeeutdeuvdeh
+    hfevueffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    eprghnughrvgifsegrjhdrihgurdgruh
+X-ME-Proxy: <xmx:sSF0X2DL0KSNdm1aUK_PFwxMLcU2oyW49LvvYB-t0mctII5cJTZ9TQ>
+    <xmx:sSF0XwdEAsVz_R5t_LPMyo9KpM4-HvRpAHC8A9IJkoSH7_uwXu9b1Q>
+    <xmx:sSF0X1MFze867YKvXvNurb1jzcnfSGm4Z8S7zbtipxIwWqLa58BYpA>
+    <xmx:syF0X2GSG5eyirPCtSDinBrYWu80RCmg-kE2Vg5r71i33_pvVaRZoBNjoXo>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 38A07E011E; Wed, 30 Sep 2020 02:12:00 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.3.0-382-ge235179-fm-20200928.002-ge2351794
+Mime-Version: 1.0
+Message-Id: <485ec282-568f-458c-a91e-14c89415b8e5@www.fastmail.com>
+In-Reply-To: <HK0PR06MB33800F282095AA96884B2FC0F2350@HK0PR06MB3380.apcprd06.prod.outlook.com>
+References: <20200911034631.8473-1-chiawei_wang@aspeedtech.com>
+ <CACPK8XcYvUj3W-CPzXKugp3wx7rcLEJ_8f2-Bi6V7QHZpopBbA@mail.gmail.com>
+ <551926fc-7bd4-4a0e-8fcf-4675dcdba22b@www.fastmail.com>
+ <HK0PR06MB37796D91EC7290A69F2655E491240@HK0PR06MB3779.apcprd06.prod.outlook.com>
+ <HK0PR06MB33800F282095AA96884B2FC0F2350@HK0PR06MB3380.apcprd06.prod.outlook.com>
+Date:   Wed, 30 Sep 2020 15:41:41 +0930
+From:   "Andrew Jeffery" <andrew@aj.id.au>
+To:     "Ryan Chen" <ryan_chen@aspeedtech.com>,
+        "Chia-Wei, Wang" <chiawei_wang@aspeedtech.com>,
+        "Joel Stanley" <joel@jms.id.au>
+Cc:     "Robert Lippert" <rlippert@google.com>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        "Corey Minyard" <minyard@acm.org>,
+        "Linus Walleij" <linus.walleij@linaro.org>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+        "OpenBMC Maillist" <openbmc@lists.ozlabs.org>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        "Linux ARM" <linux-arm-kernel@lists.infradead.org>,
+        "Cyril Bur" <cyrilbur@gmail.com>,
+        "Haiyue Wang" <haiyue.wang@linux.intel.com>
+Subject: Re: [PATCH 0/4] Remove LPC register partitioning
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 02:22:46PM -0700, Ben Gardon wrote:
-> Save address space ID as a field in each memslot so that functions that
-> do not use rmaps (which implicitly encode the id) can handle multiple
-> address spaces correctly.
-> 
-> Tested by running kvm-unit-tests and KVM selftests on an Intel Haswell
-> machine. This series introduced no new failures.
-> 
-> This series can be viewed in Gerrit at:
-> 	https://linux-review.googlesource.com/c/virt/kvm/kvm/+/2538
-> 
-> Signed-off-by: Ben Gardon <bgardon@google.com>
-> ---
->  include/linux/kvm_host.h | 1 +
->  virt/kvm/kvm_main.c      | 1 +
->  2 files changed, 2 insertions(+)
-> 
-> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-> index 05e3c2fb3ef78..a460bc712a81c 100644
-> --- a/include/linux/kvm_host.h
-> +++ b/include/linux/kvm_host.h
-> @@ -345,6 +345,7 @@ struct kvm_memory_slot {
->  	struct kvm_arch_memory_slot arch;
->  	unsigned long userspace_addr;
->  	u32 flags;
-> +	int as_id;
 
-Ha!  Peter Xu's dirtly ring also added this.  This should be a u16, it'll
-save 8 bytes per memslot (oooooooh).  Any chance you want to include Peter's
-patch[*]?  It has some nitpicking from Peter and I regarding what to do
-with as_id on deletion.  That would also avoid silent merge conflicts on
-Peter's end.
 
-[*] https://lkml.kernel.org/r/20200708193408.242909-2-peterx@redhat.com
+On Mon, 28 Sep 2020, at 17:13, Ryan Chen wrote:
+> Hello Joel & Andrew,
+> 	Those patches are more organize for ASPEED SOC LPC register layout. 
+> 	Does those patches have any feedback?
 
->  	short id;
->  };
->  
-> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-> index cf88233b819a0..f9c80351c9efd 100644
-> --- a/virt/kvm/kvm_main.c
-> +++ b/virt/kvm/kvm_main.c
-> @@ -1318,6 +1318,7 @@ int __kvm_set_memory_region(struct kvm *kvm,
->  	new.npages = mem->memory_size >> PAGE_SHIFT;
->  	new.flags = mem->flags;
->  	new.userspace_addr = mem->userspace_addr;
-> +	new.as_id = as_id;
->  
->  	if (new.npages > KVM_MEM_MAX_NR_PAGES)
->  		return -EINVAL;
-> -- 
-> 2.28.0.709.gb0816b6eb0-goog
-> 
+I support getting the problem fixed. However, the series also needs to fix the 
+LPC devicetree binding at
+ 
+Documentation/devicetree/bindings/mfd/aspeed-lpc.txt
+
+What's proposed isn't backwards compatible. We need to agree that a breaking 
+change is the way we want to go and get Rob's buy-in. Given the impact of the 
+change I'd prefer we don't try to maintain backwards compatibility. All known 
+users of the binding ship the dtb with the kernel.
+
+Can we get a v2 with the binding documentation fixed? That will probably need
+some review.
+
+Andrew
