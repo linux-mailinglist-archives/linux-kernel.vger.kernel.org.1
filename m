@@ -2,121 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 517CA27F022
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 19:17:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B221E27F023
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 19:18:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731552AbgI3RRY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 13:17:24 -0400
-Received: from crapouillou.net ([89.234.176.41]:34122 "EHLO crapouillou.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730984AbgI3RRX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 13:17:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
-        s=mail; t=1601486221; h=from:from:sender:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=MXd9FesjqBdfbqp1WDnMgZQG0KSCw8ALHirqsj8ZIvU=;
-        b=Q1M8TCreSMw4TEd/wVmYXUwXkzJWC/396oJNC4iYtdLXeXIX61dDCkObyoa5q4mgf1/JFq
-        tyix7UkRyRWzxk5pe34OdvxuB2Axya0XEnpgBhz8Oa8Bj0lZEwFc6LZ5n3yqpss4kAAzwE
-        rhzoJB7K3N5mZJenx1iM9S34L9Wg4tY=
-From:   Paul Cercueil <paul@crapouillou.net>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Dave Airlie <airlied@linux.ie>,
-        DRI <dri-devel@lists.freedesktop.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Paul Cercueil <paul@crapouillou.net>
-Subject: [PATCH 3/3] drm/ingenic: Alloc cached GEM buffers with dma_alloc_noncoherent
-Date:   Wed, 30 Sep 2020 19:16:44 +0200
-Message-Id: <20200930171644.299363-3-paul@crapouillou.net>
-In-Reply-To: <20200930165212.GA8833@lst.de>
-References: <20200930165212.GA8833@lst.de>
+        id S1731368AbgI3RRx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 13:17:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59214 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726476AbgI3RRx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 13:17:53 -0400
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E795C061755
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 10:17:53 -0700 (PDT)
+Received: by mail-yb1-xb43.google.com with SMTP id k18so1862455ybh.1
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 10:17:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pI0ZPii+Ef4ldfhEFgHhgreWPVL6YgxnLxQdaEvG2Ik=;
+        b=isfEgguRV45OV/H+5M2SDAvctmMWraDuCzYsMoO8ze1Td/qY/F+uDZSU0nJtauFyjN
+         otE+4YWFK4aHexsMLaipZFG7o4e0i5B06ejpd8HcEobH7VHAZNEuAfQD1cs58vT8ApFN
+         UCbRbnxnLy4sy483yEjRbrXSQKNeXSEyGQWe/LgAcokEYE2qvvn6VSIs8MLO9rKTPuTZ
+         NVGWUJ7DxqOTTx8ZMnM2Y0n/AKQFeoDofLQiokQyrqPlCCCsCmI+IEX4kiY2z6DtYQcH
+         bwLm92Tx8blyaNDjkR8Sc4D5EyN5JtQFsUsBG7QtFcdWQDD51Ywyd+mbzZdUug3Krtd8
+         gkFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pI0ZPii+Ef4ldfhEFgHhgreWPVL6YgxnLxQdaEvG2Ik=;
+        b=tv7lZ8J+HVxUQWHmwbwn2W5/VBuZvf2n5zK0LhN/vR+m0PHZlFO2jsHBtn7mcViIsd
+         Hd9e8VoVHb5ilbUpenGEHsjzpn1JX4dbv41txOfkbuiXEMxNIfK7mwXMkgV8Bw3pwKn+
+         SO84Hs3JPOQAZFPH339nUTB9KRxOo60aOn9REbTSisL3zmi4Wynp2uATDTOf+Lz6bI3x
+         kjfDhqEYAgpjRVwITqs/eoi/oViG857sLbidjQWcOBlT8D7j1qIbKScTh8iq/6aWlK/C
+         RhXptyVZLUclasC8UuB5gd4BKK+IF9+gdagvzhxZgd27PYNG5oA8HjrrjgZlr3x+9crt
+         0BzQ==
+X-Gm-Message-State: AOAM530Hlw+25RkGEJErJE8D5jOD1Q9U/bRa5ZzyjK1ewSQjUlk24alp
+        WL3KmCfawrpJKhT+vJHzorB9Lte/gZ724NCUw26UUA==
+X-Google-Smtp-Source: ABdhPJwT22pelbEjsgpX0X5cEEpTC7Z0gwLCPhFqu1W8xH5wnCc+JSIFEjJJ5rA3I0EGPbKDfud1mjhfYY9OpwVD2oQ=
+X-Received: by 2002:a25:bd93:: with SMTP id f19mr4130854ybh.155.1601486272356;
+ Wed, 30 Sep 2020 10:17:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200921152653.3924-1-kan.liang@linux.intel.com>
+ <20200921152653.3924-2-kan.liang@linux.intel.com> <CABPqkBRYzXH-76BZ3DdxYp7bdyPcr3_WxuxOsJw=1YPE9EwZaw@mail.gmail.com>
+ <4e974520-6d0f-68af-7eb8-fa52d95ba77b@linux.intel.com> <35e875ba-2c04-8452-5105-ccacf72840d8@intel.com>
+In-Reply-To: <35e875ba-2c04-8452-5105-ccacf72840d8@intel.com>
+From:   Stephane Eranian <eranian@google.com>
+Date:   Wed, 30 Sep 2020 10:17:41 -0700
+Message-ID: <CABPqkBTk6H0Wku8gGJeBD2naFU=WOqp42VSjFBhk_1Wy6bRzXQ@mail.gmail.com>
+Subject: Re: [PATCH V8 1/4] perf/core: Add PERF_SAMPLE_DATA_PAGE_SIZE
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     "Liang, Kan" <kan.liang@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>,
+        kirill.shutemov@linux.intel.com,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        benh@kernel.crashing.org, Paul Mackerras <paulus@samba.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It turns out that if you want to mmap GEM buffers fully cached, then
-they should be allocated as such as well. Who would have known?
+On Wed, Sep 30, 2020 at 7:48 AM Dave Hansen <dave.hansen@intel.com> wrote:
+>
+> On 9/30/20 7:42 AM, Liang, Kan wrote:
+> >> When I tested on my kernel, it panicked because I suspect
+> >> current->active_mm could be NULL. Adding a check for NULL avoided the
+> >> problem. But I suspect this is not the correct solution.
+> >
+> > I guess the NULL active_mm should be a rare case. If so, I think it's
+> > not bad to add a check and return 0 page size.
+>
+> I think it would be best to understand why ->active_mm is NULL instead
+> of just papering over the problem.  If it is papered over, and this is
+> common, you might end up effectively turning off your shiny new feature
+> inadvertently.
 
-Introduce a custom .dumb_create callback, that will behave just like
-drm_gem_cma_dumb_create(), except that it will allocate the GEM buffer
-using dma_alloc_noncoherent() if non-coherent memory is what we want.
-
-Signed-off-by: Paul Cercueil <paul@crapouillou.net>
----
- drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 48 ++++++++++++++++++++++-
- 1 file changed, 47 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-index 07a1da7266e4..8ece269c040f 100644
---- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-+++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-@@ -794,6 +794,52 @@ static int ingenic_drm_gem_cma_mmap(struct file *filp,
- 	return ingenic_drm_gem_mmap(vma->vm_private_data, vma);
- }
- 
-+static int ingenic_drm_gem_cma_dumb_create(struct drm_file *file_priv,
-+					   struct drm_device *drm,
-+					   struct drm_mode_create_dumb *args)
-+{
-+	/*
-+	 * This is basically a copy of drm_gem_cma_dumb_create, which supports
-+	 * creating fully cached GEM buffers.
-+	 */
-+	struct drm_gem_cma_object *cma_obj;
-+	struct drm_gem_object *gem_obj;
-+	size_t size;
-+	int ret;
-+
-+	args->pitch = DIV_ROUND_UP(args->width * args->bpp, 8);
-+	args->size = args->pitch * args->height;
-+
-+	size = PAGE_ALIGN(args->size);
-+
-+	cma_obj = drm_gem_cma_create_noalloc(drm, size);
-+	if (IS_ERR(cma_obj))
-+		return PTR_ERR(cma_obj);
-+
-+	if (ingenic_drm_cached_gem_buf) {
-+		cma_obj->vaddr = dma_alloc_noncoherent(drm->dev, size,
-+						       &cma_obj->paddr,
-+						       DMA_TO_DEVICE,
-+						       GFP_KERNEL | __GFP_NOWARN);
-+	} else {
-+		cma_obj->vaddr = dma_alloc_wc(drm->dev, size, &cma_obj->paddr,
-+					      GFP_KERNEL | __GFP_NOWARN);
-+	}
-+	if (!cma_obj->vaddr) {
-+		dev_err(drm->dev, "Failed to allocate buffer with size %zu\n", size);
-+		ret = -ENOMEM;
-+		goto out_gem_object_put;
-+	}
-+
-+	gem_obj = &cma_obj->base;
-+
-+	ret = drm_gem_handle_create(file_priv, gem_obj, &args->handle);
-+
-+out_gem_object_put:
-+	drm_gem_object_put(gem_obj);
-+	return ret;
-+}
-+
- static const struct file_operations ingenic_drm_fops = {
- 	.owner		= THIS_MODULE,
- 	.open		= drm_open,
-@@ -816,7 +862,7 @@ static struct drm_driver ingenic_drm_driver_data = {
- 	.patchlevel		= 0,
- 
- 	.fops			= &ingenic_drm_fops,
--	DRM_GEM_CMA_DRIVER_OPS,
-+	DRM_GEM_CMA_DRIVER_OPS_WITH_DUMB_CREATE(ingenic_drm_gem_cma_dumb_create),
- 
- 	.irq_handler		= ingenic_drm_irq_handler,
- };
--- 
-2.28.0
-
+I tried that on a backport of the patch to an older kernel. Maybe the
+behavior of active_mm has change compared to tip.git.
+I will try again with tip.git.
