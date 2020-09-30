@@ -2,103 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5577527EF02
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 18:22:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC02327EF06
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 18:23:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731182AbgI3QW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 12:22:57 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:51078 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725800AbgI3QW5 (ORCPT
+        id S1730833AbgI3QXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 12:23:33 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:36108 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725355AbgI3QXc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 12:22:57 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 0EE5A1C0B81; Wed, 30 Sep 2020 18:22:55 +0200 (CEST)
-Date:   Wed, 30 Sep 2020 18:22:54 +0200
-From:   Pavel Machek <pavel@denx.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Anton Eidelman <anton@lightbitslabs.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH 4.19 196/245] nvme: fix possible deadlock when I/O is
- blocked
-Message-ID: <20200930162254.GB23434@duo.ucw.cz>
-References: <20200929105946.978650816@linuxfoundation.org>
- <20200929105956.511527430@linuxfoundation.org>
+        Wed, 30 Sep 2020 12:23:32 -0400
+Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601483010;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=9S+BmjiS7UIOm1/vk3QmBdmFzkjQ9DHvoMiK/KH/PnQ=;
+        b=ZST0ESrkh9ta8CgcTqiQ7HDfA61qcTYn1EASWU99YQj32ulSaY8PB4scgL8DNL4+JitifO
+        GYuBix3+1LBpcwtmbMT104G/vGSC+USKAYH4H+NXY3wp5fjG6CoXWGT+n38wkj8uWErYTV
+        HYJPgxnzNjXx9LJ3X9XojbUwzCX41a4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-162-NjajD40hMg2GSghFOvXfkw-1; Wed, 30 Sep 2020 12:23:28 -0400
+X-MC-Unique: NjajD40hMg2GSghFOvXfkw-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 169F5188C126;
+        Wed, 30 Sep 2020 16:23:26 +0000 (UTC)
+Received: from [10.36.112.204] (ovpn-112-204.ams2.redhat.com [10.36.112.204])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A96215D9D3;
+        Wed, 30 Sep 2020 16:23:22 +0000 (UTC)
+Subject: Re: [PATCH v5 04/17] device-dax/kmem: replace release_resource() with
+ release_mem_region()
+To:     Dan Williams <dan.j.williams@intel.com>, akpm@linux-foundation.org
+Cc:     Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Brice Goglin <Brice.Goglin@inria.fr>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>, Jia He <justin.he@arm.com>,
+        Joao Martins <joao.m.martins@oracle.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        linux-mm@kvack.org, linux-nvdimm@lists.01.org,
+        linux-kernel@vger.kernel.org
+References: <160106109960.30709.7379926726669669398.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <160106112239.30709.15909567572288425294.stgit@dwillia2-desk3.amr.corp.intel.com>
+From:   David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat GmbH
+Message-ID: <86f450e7-d1a7-3d82-b486-afd6682c5942@redhat.com>
+Date:   Wed, 30 Sep 2020 18:23:21 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="9zSXsLTf0vkW971A"
-Content-Disposition: inline
-In-Reply-To: <20200929105956.511527430@linuxfoundation.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <160106112239.30709.15909567572288425294.stgit@dwillia2-desk3.amr.corp.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---9zSXsLTf0vkW971A
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi!
-
-> [ Upstream commit 3b4b19721ec652ad2c4fe51dfbe5124212b5f581 ]
->=20
-> Revert fab7772bfbcf ("nvme-multipath: revalidate nvme_ns_head gendisk
-> in nvme_validate_ns")
->=20
-> When adding a new namespace to the head disk (via nvme_mpath_set_live)
-> we will see partition scan which triggers I/O on the mpath device node.
-> This process will usually be triggered from the scan_work which holds
-> the scan_lock. If I/O blocks (if we got ana change currently have only
-> available paths but none are accessible) this can deadlock on the head
-> disk bd_mutex as both partition scan I/O takes it, and head disk revalida=
-tion
-> takes it to check for resize (also triggered from scan_work on a different
-> path). See trace [1].
->=20
-> The mpath disk revalidation was originally added to detect online disk
-> size change, but this is no longer needed since commit cb224c3af4df
-> ("nvme: Convert to use set_capacity_revalidate_and_notify") which already
-> updates resize info without unnecessarily revalidating the disk (the
-> mpath disk doesn't even implement .revalidate_disk fop).
-
-Commit cb224c3af4df ("nvme: Convert to use
-set_capacity_revalidate_and_notify") is not in 4.19-stable.
-
-Does that mean we'll no longer detect disk size changes after this?
-
-Best regards,
-									Pavel
-
-> index faa7feebb6095..84fcfcdb8ba5f 100644
-> --- a/drivers/nvme/host/core.c
-> +++ b/drivers/nvme/host/core.c
-> @@ -1599,7 +1599,6 @@ static void __nvme_revalidate_disk(struct gendisk *=
-disk, struct nvme_id_ns *id)
->  	if (ns->head->disk) {
->  		nvme_update_disk_info(ns->head->disk, ns, id);
->  		blk_queue_stack_limits(ns->head->disk->queue, ns->queue);
-> -		revalidate_disk(ns->head->disk);
+On 25.09.20 21:12, Dan Williams wrote:
+> Towards removing the mode specific @dax_kmem_res attribute from the
+> generic 'struct dev_dax', and preparing for multi-range support, change
+> the kmem driver to use the idiomatic release_mem_region() to pair with
+> the initial request_mem_region(). This also eliminates the need to open
+> code the release of the resource allocated by request_mem_region().
+> 
+> As there are no more dax_kmem_res users, delete this struct member.
+> 
+> Cc: David Hildenbrand <david@redhat.com>
+> Cc: Vishal Verma <vishal.l.verma@intel.com>
+> Cc: Dave Hansen <dave.hansen@linux.intel.com>
+> Cc: Pavel Tatashin <pasha.tatashin@soleen.com>
+> Cc: Brice Goglin <Brice.Goglin@inria.fr>
+> Cc: Dave Jiang <dave.jiang@intel.com>
+> Cc: David Hildenbrand <david@redhat.com>
+> Cc: Ira Weiny <ira.weiny@intel.com>
+> Cc: Jia He <justin.he@arm.com>
+> Cc: Joao Martins <joao.m.martins@oracle.com>
+> Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+> ---
+>  drivers/dax/dax-private.h |    3 ---
+>  drivers/dax/kmem.c        |   20 +++++++-------------
+>  2 files changed, 7 insertions(+), 16 deletions(-)
+> 
+> diff --git a/drivers/dax/dax-private.h b/drivers/dax/dax-private.h
+> index 6779f683671d..12a2dbc43b40 100644
+> --- a/drivers/dax/dax-private.h
+> +++ b/drivers/dax/dax-private.h
+> @@ -42,8 +42,6 @@ struct dax_region {
+>   * @dev - device core
+>   * @pgmap - pgmap for memmap setup / lifetime (driver owned)
+>   * @range: resource range for the instance
+> - * @dax_mem_res: physical address range of hotadded DAX memory
+> - * @dax_mem_name: name for hotadded DAX memory via add_memory_driver_managed()
+>   */
+>  struct dev_dax {
+>  	struct dax_region *region;
+> @@ -52,7 +50,6 @@ struct dev_dax {
+>  	struct device dev;
+>  	struct dev_pagemap *pgmap;
+>  	struct range range;
+> -	struct resource *dax_kmem_res;
+>  };
+>  
+>  static inline u64 range_len(struct range *range)
+> diff --git a/drivers/dax/kmem.c b/drivers/dax/kmem.c
+> index 6fe2cb1c5f7c..e56fc688bdc5 100644
+> --- a/drivers/dax/kmem.c
+> +++ b/drivers/dax/kmem.c
+> @@ -33,7 +33,7 @@ int dev_dax_kmem_probe(struct device *dev)
+>  {
+>  	struct dev_dax *dev_dax = to_dev_dax(dev);
+>  	struct range range = dax_kmem_range(dev_dax);
+> -	struct resource *new_res;
+> +	struct resource *res;
+>  	char *res_name;
+>  	int numa_node;
+>  	int rc;
+> @@ -56,8 +56,8 @@ int dev_dax_kmem_probe(struct device *dev)
+>  		return -ENOMEM;
+>  
+>  	/* Region is permanently reserved if hotremove fails. */
+> -	new_res = request_mem_region(range.start, range_len(&range), res_name);
+> -	if (!new_res) {
+> +	res = request_mem_region(range.start, range_len(&range), res_name);
+> +	if (!res) {
+>  		dev_warn(dev, "could not reserve region [%#llx-%#llx]\n", range.start, range.end);
+>  		kfree(res_name);
+>  		return -EBUSY;
+> @@ -69,23 +69,20 @@ int dev_dax_kmem_probe(struct device *dev)
+>  	 * inherit flags from the parent since it may set new flags
+>  	 * unknown to us that will break add_memory() below.
+>  	 */
+> -	new_res->flags = IORESOURCE_SYSTEM_RAM;
+> +	res->flags = IORESOURCE_SYSTEM_RAM;
+>  
+>  	/*
+>  	 * Ensure that future kexec'd kernels will not treat this as RAM
+>  	 * automatically.
+>  	 */
+> -	rc = add_memory_driver_managed(numa_node, new_res->start,
+> -				       resource_size(new_res), kmem_name);
+> +	rc = add_memory_driver_managed(numa_node, range.start, range_len(&range), kmem_name);
+>  	if (rc) {
+> -		release_resource(new_res);
+> -		kfree(new_res);
+> +		release_mem_region(range.start, range_len(&range));
+>  		kfree(res_name);
+>  		return rc;
 >  	}
->  #endif
->=20
+>  
+>  	dev_set_drvdata(dev, res_name);
+> -	dev_dax->dax_kmem_res = new_res;
+>  
+>  	return 0;
+>  }
+> @@ -95,7 +92,6 @@ static int dev_dax_kmem_remove(struct device *dev)
+>  {
+>  	struct dev_dax *dev_dax = to_dev_dax(dev);
+>  	struct range range = dax_kmem_range(dev_dax);
+> -	struct resource *res = dev_dax->dax_kmem_res;
+>  	const char *res_name = dev_get_drvdata(dev);
+>  	int rc;
+>  
+> @@ -114,10 +110,8 @@ static int dev_dax_kmem_remove(struct device *dev)
+>  	}
+>  
+>  	/* Release and free dax resources */
+> -	release_resource(res);
+> -	kfree(res);
+> +	release_mem_region(range.start, range_len(&range));
 
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
+Does that work? AFAIKs,
 
---9zSXsLTf0vkW971A
-Content-Type: application/pgp-signature; name="signature.asc"
+__release_region(&iomem_resource, (start), (n)) -> __release_region()
 
------BEGIN PGP SIGNATURE-----
+will only remove stuff that is IORESOURCE_BUSY.
 
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX3Sw3gAKCRAw5/Bqldv6
-8t4DAJ4rcxxp+UnUWIjiAXQB7wbfwWEb5QCePmHmhzP4Yk6dyrSZjnESc5/eNhk=
-=aSgn
------END PGP SIGNATURE-----
+Maybe storing it in drvdata is indeed the easiest way to remove it from
+struct dax_region.
 
---9zSXsLTf0vkW971A--
+-- 
+Thanks,
+
+David / dhildenb
+
