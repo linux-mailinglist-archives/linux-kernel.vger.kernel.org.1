@@ -2,175 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A63927E671
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 12:20:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92C6727E67D
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 12:23:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729265AbgI3KUs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 06:20:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38218 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725776AbgI3KUs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 06:20:48 -0400
-Received: from kernel.org (unknown [87.71.73.56])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BD4B3205F4;
-        Wed, 30 Sep 2020 10:20:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601461247;
-        bh=6oXQqyXoqD62Xsdx5psnVPQRRFcKJD7TzaHCNaM+cfo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jcekzk5dBYwe2jH5pSJRmExmxQTx5Y/sk708kFA+J4dcQopXM92llD+OqjWCXgKuT
-         dmrRBkYzNmmpQuJcEzNThsHaZcV+G7b6pQg9hev7AIEYe3G8ksdc6iTRWS4tzmiNvV
-         tQmVGE7L8Bxs8vTgd7E6jHGnxc1rUFFqUOmdsY+s=
-Date:   Wed, 30 Sep 2020 13:20:31 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Idan Yaniv <idan.yaniv@ibm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Shuah Khan <shuah@kernel.org>, Tycho Andersen <tycho@tycho.ws>,
-        Will Deacon <will@kernel.org>, linux-api@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org
-Subject: Re: [PATCH v6 5/6] mm: secretmem: use PMD-size pages to amortize
- direct map fragmentation
-Message-ID: <20200930102031.GJ2142832@kernel.org>
-References: <20200924132904.1391-1-rppt@kernel.org>
- <20200924132904.1391-6-rppt@kernel.org>
- <20200925074125.GQ2628@hirez.programming.kicks-ass.net>
- <20200929130529.GE2142832@kernel.org>
- <20200929141216.GO2628@hirez.programming.kicks-ass.net>
+        id S1728884AbgI3KXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 06:23:54 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:58040 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725776AbgI3KXy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 06:23:54 -0400
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08UA34eX132050;
+        Wed, 30 Sep 2020 06:23:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=YKyQ5xIGCX9cBGV7qWvKGTfjYt2RfE/ZUqLP41WpN9Y=;
+ b=OPQeB8/TXPU21NApO7Y8QRgvuvIU+4/Y2UVS6Z+jtk6vOr0lpUE9wiViWs791dgkEjQ0
+ 6M8uYI89+YiYJCD5sl8FkCGDQBytsUIsjC2+kWNhIXv9POSy/y6jNBmR5f8YlmHxK+5C
+ aE6fu8a/dBwTQR/FadpucrcCLqUmy+ks9tB4lBCVKamE6IFHGFJliVjl4vWTAKXDtSb9
+ iBKNDnioMGHTrYGLgaUjSdlIp08Zdfy1LDaVekq81KRhw3UooEobm72CXyMlSHcyxl7/
+ 7+lQugajvDkI2yJ/6eiZVuWFGxpQqMO/kGekxIm76WQnyxQ4Y/zWIw0bPeGK6ilZgoOZ pA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33vqa6spju-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 30 Sep 2020 06:23:46 -0400
+Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08UA3X99132864;
+        Wed, 30 Sep 2020 06:23:46 -0400
+Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33vqa6sphq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 30 Sep 2020 06:23:44 -0400
+Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
+        by ppma01fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08UAMufJ019373;
+        Wed, 30 Sep 2020 10:23:42 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma01fra.de.ibm.com with ESMTP id 33sw98a8kj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 30 Sep 2020 10:23:42 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08UANe1c30081390
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 30 Sep 2020 10:23:40 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2409A4203F;
+        Wed, 30 Sep 2020 10:23:40 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E9DE242042;
+        Wed, 30 Sep 2020 10:23:38 +0000 (GMT)
+Received: from oc8242746057.ibm.com.com (unknown [9.171.39.113])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 30 Sep 2020 10:23:38 +0000 (GMT)
+From:   Alexander Egorenkov <egorenar@linux.ibm.com>
+To:     dyoung@redhat.com, bhe@redhat.com, vgoyal@redhat.com,
+        lijiang@redhat.com
+Cc:     ebiederm@xmission.com, akpm@linux-foundation.org,
+        ktkhai@virtuozzo.com, keescook@chromium.org,
+        christian.brauner@ubuntu.com, kexec@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Alexander Egorenkov <egorenar@linux.ibm.com>
+Subject: [PATCH v3 1/1] kdump: append uts_namespace.name offset to VMCOREINFO
+Date:   Wed, 30 Sep 2020 12:23:28 +0200
+Message-Id: <20200930102328.396488-1-egorenar@linux.ibm.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200929141216.GO2628@hirez.programming.kicks-ass.net>
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-30_05:2020-09-29,2020-09-30 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
+ priorityscore=1501 suspectscore=0 spamscore=0 mlxscore=0 phishscore=0
+ adultscore=0 impostorscore=0 malwarescore=0 lowpriorityscore=0
+ mlxlogscore=999 bulkscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2006250000 definitions=main-2009300075
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 04:12:16PM +0200, Peter Zijlstra wrote:
-> On Tue, Sep 29, 2020 at 04:05:29PM +0300, Mike Rapoport wrote:
-> > On Fri, Sep 25, 2020 at 09:41:25AM +0200, Peter Zijlstra wrote:
-> > > On Thu, Sep 24, 2020 at 04:29:03PM +0300, Mike Rapoport wrote:
-> > > > From: Mike Rapoport <rppt@linux.ibm.com>
-> > > > 
-> > > > Removing a PAGE_SIZE page from the direct map every time such page is
-> > > > allocated for a secret memory mapping will cause severe fragmentation of
-> > > > the direct map. This fragmentation can be reduced by using PMD-size pages
-> > > > as a pool for small pages for secret memory mappings.
-> > > > 
-> > > > Add a gen_pool per secretmem inode and lazily populate this pool with
-> > > > PMD-size pages.
-> > > 
-> > > What's the actual efficacy of this? Since the pmd is per inode, all I
-> > > need is a lot of inodes and we're in business to destroy the directmap,
-> > > no?
-> > > 
-> > > Afaict there's no privs needed to use this, all a process needs is to
-> > > stay below the mlock limit, so a 'fork-bomb' that maps a single secret
-> > > page will utterly destroy the direct map.
-> > 
-> > This indeed will cause 1G pages in the direct map to be split into 2M
-> > chunks, but I disagree with 'destroy' term here. Citing the cover letter
-> > of an earlier version of this series:
-> 
-> It will drop them down to 4k pages. Given enough inodes, and allocating
-> only a single sekrit page per pmd, we'll shatter the directmap into 4k.
-> 
-> >   I've tried to find some numbers that show the benefit of using larger
-> >   pages in the direct map, but I couldn't find anything so I've run a
-> >   couple of benchmarks from phoronix-test-suite on my laptop (i7-8650U
-> >   with 32G RAM).
-> 
-> Existing benchmarks suck at this, but FB had a load that had a
+The offset of the field 'init_uts_ns.name' has changed
+since commit 9a56493f6942 ("uts: Use generic ns_common::count").
 
-I tried to dig the regression report in the mailing list, and the best I
-could find is
+Link: https://lore.kernel.org/r/159644978167.604812.1773586504374412107.stgit@localhost.localdomain
 
-https://lore.kernel.org/lkml/20190823052335.572133-1-songliubraving@fb.com/
+Make the offset of the field 'uts_namespace.name' available
+in VMCOREINFO because tools like 'crash-utility' and
+'makedumpfile' must be able to read it from crash dumps.
 
-which does not mention the actual performance regression but it only
-complaints about kernel text mapping being split into 4K pages.
+Signed-off-by: Alexander Egorenkov <egorenar@linux.ibm.com>
+---
 
-Any chance you have the regression report handy? 
+v2 -> v3:
+ * Added documentation to vmcoreinfo.rst
+ * Use the short form of the commit reference
 
-> deterministic enough performance regression to bisect to a directmap
-> issue, fixed by:
-> 
->   7af0145067bc ("x86/mm/cpa: Prevent large page split when ftrace flips RW on kernel text")
+v1 -> v2:
+ * Improved commit message
+ * Added link to the discussion of the uts namespace changes
 
-This commit talks about large page split for the text and mentions iTLB
-performance.
-Could it be that for data the behavoiur is different?
+ Documentation/admin-guide/kdump/vmcoreinfo.rst | 6 ++++++
+ kernel/crash_core.c                            | 1 +
+ 2 files changed, 7 insertions(+)
 
-> >   I've tested three variants: the default with 28G of the physical
-> >   memory covered with 1G pages, then I disabled 1G pages using
-> >   "nogbpages" in the kernel command line and at last I've forced the
-> >   entire direct map to use 4K pages using a simple patch to
-> >   arch/x86/mm/init.c.  I've made runs of the benchmarks with SSD and
-> >   tmpfs.
-> >   
-> >   Surprisingly, the results does not show huge advantage for large
-> >   pages. For instance, here the results for kernel build with
-> >   'make -j8', in seconds:
-> 
-> Your benchmark should stress the TLB of your uarch, such that additional
-> pressure added by the shattered directmap shows up.
-
-I understand that the benchmark should stress the TLB, but it's not that
-we can add something like random access to a large working set as a
-kernel module and insmod it. The userspace should do something that will
-cause the stress to the TLB so that entries corresponding to the direct
-map will be evicted frequently. And, frankly, 
-
-> And no, I don't have one either.
-> 
-> >                         |  1G    |  2M    |  4K
-> >   ----------------------+--------+--------+---------
-> >   ssd, mitigations=on	| 308.75 | 317.37 | 314.9
-> >   ssd, mitigations=off	| 305.25 | 295.32 | 304.92
-> >   ram, mitigations=on	| 301.58 | 322.49 | 306.54
-> >   ram, mitigations=off	| 299.32 | 288.44 | 310.65
-> 
-> These results lack error data, but assuming the reults are significant,
-> then this very much makes a case for 1G mappings. 5s on a kernel builds
-> is pretty good.
-
-The standard error for those are between 2.5 and 4.5 out of 3 runs for
-each variant. 
-
-For kernel build 1G mappings perform better, but here 5s is only 1.6% of
-300s and the direct map fragmentation was taken to the extreme here.
-I'm not saying that the direct map fragmentation comes with no cost, but
-the cost is not so big to dismiss features that cause the fragmentation
-out of hand.
-
-There were also benchmarks that actually performed better with 2M pages
-in the direct map, so I'm still not convinced that 1G pages in the
-direct map are the clear cut winner.
-
+diff --git a/Documentation/admin-guide/kdump/vmcoreinfo.rst b/Documentation/admin-guide/kdump/vmcoreinfo.rst
+index e44a6c01f336..3861a25faae1 100644
+--- a/Documentation/admin-guide/kdump/vmcoreinfo.rst
++++ b/Documentation/admin-guide/kdump/vmcoreinfo.rst
+@@ -39,6 +39,12 @@ call.
+ User-space tools can get the kernel name, host name, kernel release
+ number, kernel version, architecture name and OS type from it.
+ 
++(uts_namespace, name)
++---------------------
++
++Offset of the name's member. Crash Utility and Makedumpfile get
++the start address of the init_uts_ns.name from this.
++
+ node_online_map
+ ---------------
+ 
+diff --git a/kernel/crash_core.c b/kernel/crash_core.c
+index 106e4500fd53..173fdc261882 100644
+--- a/kernel/crash_core.c
++++ b/kernel/crash_core.c
+@@ -447,6 +447,7 @@ static int __init crash_save_vmcoreinfo_init(void)
+ 	VMCOREINFO_PAGESIZE(PAGE_SIZE);
+ 
+ 	VMCOREINFO_SYMBOL(init_uts_ns);
++	VMCOREINFO_OFFSET(uts_namespace, name);
+ 	VMCOREINFO_SYMBOL(node_online_map);
+ #ifdef CONFIG_MMU
+ 	VMCOREINFO_SYMBOL_ARRAY(swapper_pg_dir);
 -- 
-Sincerely yours,
-Mike.
+2.26.2
+
