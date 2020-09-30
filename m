@@ -2,93 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 761FF27DEF1
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 05:25:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 438EF27DEF5
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 05:25:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729926AbgI3DY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 23:24:59 -0400
-Received: from mga11.intel.com ([192.55.52.93]:40737 "EHLO mga11.intel.com"
+        id S1729962AbgI3DZ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 23:25:26 -0400
+Received: from ozlabs.org ([203.11.71.1]:46211 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726299AbgI3DY7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 23:24:59 -0400
-IronPort-SDR: wFnj2fDaCCqAAZ4VmeemyRgZQCA0xs2BJmxb3+zG7KVGBEZZSiYSq5DqiL9MLYuc2z8TFcwHiC
- sUuKV0DYSvrA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9759"; a="159684528"
-X-IronPort-AV: E=Sophos;i="5.77,320,1596524400"; 
-   d="scan'208";a="159684528"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2020 20:24:58 -0700
-IronPort-SDR: GT/qSFOvF4oYuTG2A/9XYSrD3W+UzzTNynL976fGHG/yA2DvfjNSOhO7QDqygJiupSkkx1jS4Y
- THWrgClUOKpQ==
-X-IronPort-AV: E=Sophos;i="5.77,320,1596524400"; 
-   d="scan'208";a="495110304"
-Received: from xinpan-mobl.ger.corp.intel.com (HELO localhost) ([10.249.35.239])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2020 20:24:54 -0700
-Date:   Wed, 30 Sep 2020 06:24:52 +0300
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     "Daniel P. Smith" <dpsmith@apertussolutions.com>
-Cc:     Ross Philipson <ross.philipson@oracle.com>,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        iommu@lists.linux-foundation.org, linux-integrity@vger.kernel.org,
-        linux-doc@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, hpa@zytor.com, luto@amacapital.net,
-        trenchboot-devel@googlegroups.com
-Subject: Re: [PATCH 05/13] x86: Add early TPM1.2/TPM2.0 interface support for
- Secure Launch
-Message-ID: <20200930032452.GA880758@linux.intel.com>
-References: <1600959521-24158-1-git-send-email-ross.philipson@oracle.com>
- <1600959521-24158-6-git-send-email-ross.philipson@oracle.com>
- <20200925054313.GB165011@linux.intel.com>
- <bf1d8df9-ec79-2cc6-534f-ce1f0a58f123@apertussolutions.com>
- <20200930031952.GA880396@linux.intel.com>
+        id S1726299AbgI3DZ0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 23:25:26 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C1M8L55npz9sSG;
+        Wed, 30 Sep 2020 13:25:22 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1601436323;
+        bh=u54S/ygKxoHQd93zauf7Zl/YQ7Ohsz0njaj6JvK12BQ=;
+        h=Date:From:To:Cc:Subject:From;
+        b=tZPbyFL/Un9ZbEW9flDKINmJehyEtp+G2Qmues8kfT/lzPpEznkgj9Gk6LDiJi7xS
+         d5eUt/COklLHEZ47jK5pmYNL53WNf1x36pwCqFolaRdOKet5H0Wvdr41mLrM83sH16
+         C97Q3gZGTjXhb8EyVgakNdbE0iyBOOa7p22ccPuxKUlWBqA1F8m1Gj9m9PlzNFUn1g
+         UU4csg2PLc98N/e/YEU4Y3qcumMTnCs5IgOSqHmEcIWA8vW3LbONvUFaai4CylDdFa
+         SbNqWFWBNPRnkD7asb8WX7hLzgvtizmuApGNlLM+NPzRYsRac4PvRcbl8SKuILYudo
+         Y9nW+SDGyIVtA==
+Date:   Wed, 30 Sep 2020 13:25:21 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>
+Cc:     Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
+        Willy Liu <willy.liu@realtek.com>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: linux-next: manual merge of the net-next tree with the net tree
+Message-ID: <20200930132521.41e5b00d@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200930031952.GA880396@linux.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: multipart/signed; boundary="Sig_/FdD.lH2B3/sg9QFvd1eebk_";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 06:19:57AM +0300, Jarkko Sakkinen wrote:
-> On Tue, Sep 29, 2020 at 07:47:52PM -0400, Daniel P. Smith wrote:
-> > TrenchBoot's AMD Secure Loader (LZ). The former is not well supported
-> > and the latter will be getting maintenance under TB. While this is not
-> > preferred, we had to weigh this versus trying to convince you and the
-> > other TPM driver maintainers on a significant refactoring of the TPM
-> > driver. It was elected for the reuse of a clean implementation that can
-> > be replaced later if/when the TPM driver was refactored. When we
-> > explained this during the RFC and it was not rejected, therefore we
-> > carried it forward into this submission.
-> 
-> What does it anyway mean when you say "RFC was not rejected"? I don't
-> get the semantics of that sentence. It probably neither was ack'd,
-> right? I do not really care what happened with the RFC. All I can say
-> is that in the current state this totally PoC from top to bottom.
-> 
-> > > How it is now is never going to fly.
-> > 
-> > We would gladly work with you and the other TPM maintainers on a
-> > refactoring of the TPM driver to separate core logic into standalone
-> > files that both the driver and the compressed kernel can share.
-> 
-> Yes, exactly. You have to refactor out the common parts. This is way too
-> big patch to spend time on giving any more specific advice. Should be in
-> way smaller chunks. For (almost) any possible, this is of unacceptable
-                                               ^ " patch"
-> size.
-> 
-> I think that it'd be best first to keep the common files in
-> drivers/char/tpm and include them your code with relative paths in the
-> Makefile. At least up until we have clear view what are the common
-> parts.
-> 
-> You might also want to refactor drivers/char/tpm/tpm.h and include/linux
-> TPM headers to move more stuff into include/linux.
-> 
-> If you are expecting a quick upstreaming process, please do not. This
-> will take considerable amount of time to get right.
+--Sig_/FdD.lH2B3/sg9QFvd1eebk_
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-/Jarkko
+Hi all,
+
+Today's linux-next merge of the net-next tree got a conflict in:
+
+  drivers/net/phy/realtek.c
+
+between commit:
+
+  bbc4d71d6354 ("net: phy: realtek: fix rtl8211e rx/tx delay config")
+
+from the net tree and commit:
+
+  66e22932eb79 ("net: phy: realtek: enable ALDPS to save power for RTL8211F=
+")
+
+from the net-next tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc drivers/net/phy/realtek.c
+index 0f0960971800,4bf54cded48a..000000000000
+--- a/drivers/net/phy/realtek.c
++++ b/drivers/net/phy/realtek.c
+@@@ -31,9 -33,13 +32,13 @@@
+  #define RTL8211F_TX_DELAY			BIT(8)
+  #define RTL8211F_RX_DELAY			BIT(3)
+ =20
++ #define RTL8211F_ALDPS_PLL_OFF			BIT(1)
++ #define RTL8211F_ALDPS_ENABLE			BIT(2)
++ #define RTL8211F_ALDPS_XTAL_OFF			BIT(12)
++=20
+ -#define RTL8211E_TX_DELAY			BIT(1)
+ -#define RTL8211E_RX_DELAY			BIT(2)
+ -#define RTL8211E_MODE_MII_GMII			BIT(3)
+ +#define RTL8211E_CTRL_DELAY			BIT(13)
+ +#define RTL8211E_TX_DELAY			BIT(12)
+ +#define RTL8211E_RX_DELAY			BIT(11)
+ =20
+  #define RTL8201F_ISR				0x1e
+  #define RTL8201F_IER				0x13
+
+--Sig_/FdD.lH2B3/sg9QFvd1eebk_
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9z+qEACgkQAVBC80lX
+0GyY9Qf/cXBMXSwNE2gVWs91tBnwk1S3Z8hmsbC/Kfg+lhU8x4NlvFIRLmw7hq14
+/4IueTPX1EuPDna9IlWyEKM3LtJlSIxvrLD1+rirH8v6L4pzvqWO5VNtjXONljvK
+w769jrD47MzrIOo8DrC0P8EpSJukr3KWqdHG1t0p0B8wwSvAXRQwBzSOVXwY1YkL
+GKrbytiDr8zePgcIS4FsnwieflJBuJ/0dqnfSAarVRseuhTdQecV1TtibNuCwuql
+5OO/d7jsPNoKSMaNvA0iMsdP2Nx2q1xRLlMqPCEDt0g9DHqVuQYzWvPV6nOcRcSQ
+uNgYkRLtUBgKyRiupZwLMyJhcaxc5Q==
+=8cSi
+-----END PGP SIGNATURE-----
+
+--Sig_/FdD.lH2B3/sg9QFvd1eebk_--
