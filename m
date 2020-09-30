@@ -2,96 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CA4B27ED82
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 17:41:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3273A27ED84
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 17:41:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731059AbgI3Pk0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 11:40:26 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:14186 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725893AbgI3Pk0 (ORCPT
+        id S1731025AbgI3Pks (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 11:40:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44056 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725837AbgI3Pkr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 11:40:26 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f74a6830001>; Wed, 30 Sep 2020 08:38:43 -0700
-Received: from [172.27.13.156] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 30 Sep
- 2020 15:40:18 +0000
-Subject: Re: [PATCH rdma-next v4 4/4] RDMA/umem: Move to allocate SG table
- from pages
-To:     Jason Gunthorpe <jgg@nvidia.com>
-CC:     Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        <dri-devel@lists.freedesktop.org>,
-        <intel-gfx@lists.freedesktop.org>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Roland Scheidegger <sroland@vmware.com>,
-        "Tvrtko Ursulin" <tvrtko.ursulin@intel.com>,
-        VMware Graphics <linux-graphics-maintainer@vmware.com>
-References: <20200927064647.3106737-1-leon@kernel.org>
- <20200927064647.3106737-5-leon@kernel.org>
- <20200929195929.GA803555@nvidia.com> <20200930095321.GL3094@unreal>
- <20200930114527.GE816047@nvidia.com>
- <80c49ff1-52c7-638f-553f-9de8130b188d@nvidia.com>
- <20200930115837.GF816047@nvidia.com>
- <7e09167f-c57a-cdfe-a842-c920e9421e53@nvidia.com>
- <20200930151406.GM816047@nvidia.com>
-From:   Maor Gottlieb <maorg@nvidia.com>
-Message-ID: <086a82d3-fd3a-7160-dba4-c7b223585b88@nvidia.com>
-Date:   Wed, 30 Sep 2020 18:40:15 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        Wed, 30 Sep 2020 11:40:47 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B9DFC0613D0
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 08:40:47 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id x14so2326700wrl.12
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 08:40:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxtx.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/Kl2Qd9DygVOpqWB4QvrjPtrBb/z+P5PDh0hUEj2+t8=;
+        b=KZrVCEC5/Wv+orMHsjVSmKr+y0GLZepxtFRVopYUKjsPsHSJZcZpbjRIy49UptMWRd
+         FB45fGhhZPN/QyFOG3ugTk/cslCBzTtUEA9ca+dvifnguUB3DRBk6lGDJOe/ephxgHAZ
+         zXPMsPerE9BfJZAQtQa914ki48jd/di3vfpEg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/Kl2Qd9DygVOpqWB4QvrjPtrBb/z+P5PDh0hUEj2+t8=;
+        b=OuPohpgKjs7uOyS4RN41i25gZfbddmvs8hT8cDHWmxF6fYvUeELdL4R2qVl82FHL2S
+         hLmpleZL9a1NeyXCK9qHkvuzyniUPvBS1PCTntG4Y+u69YwjU/tusdh2oLkLrusl0Kkd
+         MGrRkHVbUwctYDlIFvJtuvQkgX5c0OEpV/UnkgICrrvpN8nUbBE3ItWdxqQhtk2vesxm
+         +I7cehILRIxdQNqOv6uZoF1Pn7CJqSrF+U3PSv0V0Ea3WdCUD1sR7EQi+Fsw/O0ip1oB
+         6PW9hLSz6Ww/YqwrEKvzrcVuc17g9bSk8pCmx6mTAhi90xNM7UU+KoZB9lelFfQEQvIS
+         BDdg==
+X-Gm-Message-State: AOAM533aw2463jovUYVfZTBkakQeFSTy1btJ5iQqlNf6pbPzJzCpo8ys
+        vLVm2CHAao0IHJUAzS+Oe1m/eIZlXmDJVu33aMh0Lw==
+X-Google-Smtp-Source: ABdhPJyovthY6wL6WkzoBh46/ttwHT8LSDLHRz39NUSk95y8G78RCIWbtSvH4XGpkqyG0BfoG8t1cXgZCGMmIy/KDFo=
+X-Received: by 2002:adf:e9c1:: with SMTP id l1mr3876277wrn.68.1601480445753;
+ Wed, 30 Sep 2020 08:40:45 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200930151406.GM816047@nvidia.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Content-Language: en-US
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1601480324; bh=q/MX2HPw+Rl/oCY6oRvBsm/gn1tjQ5WhgRmOnWsAgQA=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-         Content-Language:X-Originating-IP:X-ClientProxiedBy;
-        b=WaVIxgyVk3b9bgUcy85wupDJhbbDtGuPqHhr8jyeRr1uTOTwPSn80cEQrT2VOHqgO
-         V22dizW+QUZgEduNkEJDaPoCQxGyxuLgvEVVDNSShG1qgWKQng8Nm/usd/GFlZRFfx
-         CnNMioOZOhW8AYxa+gyh+TiWnPzfJSgsIotUhHtpoxBcs2LEsS/xvvCBS441nIJT+9
-         jDa9BufMDv2CW7O5OP72rhLeXweRy1sB/RbvVFOvruWdozkaqS2TG6T5EAs+xAnf/a
-         uWEk9j6KrRowRZKFMYqnJXa6UqzUJr/iKZUhLABwhFOi4SxRKt8TxXB7eS2LlK/kWc
-         zJqt9g7z1xCJw==
+References: <20200929105929.719230296@linuxfoundation.org> <20200929105931.461063397@linuxfoundation.org>
+ <CAFxkdAoyenpdGV9XoFqtjEW02UVfa_i56NMKdmDFW89GSrZ5cg@mail.gmail.com> <CAPGftE9uCh9Wn2or+zBqu3212sfT+4R-FZA_GVxbYks8uJrsSQ@mail.gmail.com>
+In-Reply-To: <CAPGftE9uCh9Wn2or+zBqu3212sfT+4R-FZA_GVxbYks8uJrsSQ@mail.gmail.com>
+From:   Justin Forbes <jmforbes@linuxtx.org>
+Date:   Wed, 30 Sep 2020 10:40:33 -0500
+Message-ID: <CAFxkdAqNwLB6xs1c+0PveuWtj64BQVfsqkunufo0Kf8MNANMYQ@mail.gmail.com>
+Subject: Re: [PATCH 5.8 35/99] tools/libbpf: Avoid counting local symbols in
+ ABI check
+To:     Tony Ambardar <tony.ambardar@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Stable <stable@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 9/30/2020 6:14 PM, Jason Gunthorpe wrote:
-> On Wed, Sep 30, 2020 at 06:05:15PM +0300, Maor Gottlieb wrote:
->> This is right only for the last iteration. E.g. in the first iteration i=
-n
->> case that there are more pages (left_pages), then we allocate
->> SG_MAX_SINGLE_ALLOC.=C2=A0 We don't know how many pages from the second =
-iteration
->> will be squashed to the SGE from the first iteration.
-> Well, it is 0 or 1 SGE's. Check if the first page is mergable and
-> subtract one from the required length?
+On Wed, Sep 30, 2020 at 12:02 AM Tony Ambardar <tony.ambardar@gmail.com> wrote:
 >
-> I dislike this sg_mark_end() it is something that should be internal,
-> IMHO.
+> [adding Michael Ellerman, linux-ppc maintainer]
+>
+> Hello Justin,
+>
+> On Tue, 29 Sep 2020 at 14:54, Justin Forbes <jmforbes@linuxtx.org> wrote:
+> >
+> > On Tue, Sep 29, 2020 at 6:53 AM Greg Kroah-Hartman
+> > <gregkh@linuxfoundation.org> wrote:
+> > >
+> > > From: Tony Ambardar <tony.ambardar@gmail.com>
+> > >
+> > > [ Upstream commit 746f534a4809e07f427f7d13d10f3a6a9641e5c3 ]
+> > >
+> > > Encountered the following failure building libbpf from kernel 5.8.5 sources
+> > > with GCC 8.4.0 and binutils 2.34: (long paths shortened)
+> > >
+> > >   Warning: Num of global symbols in sharedobjs/libbpf-in.o (234) does NOT
+> > >   match with num of versioned symbols in libbpf.so (236). Please make sure
+> > >   all LIBBPF_API symbols are versioned in libbpf.map.
+> > > #  --- libbpf_global_syms.tmp    2020-09-02 07:30:58.920084380 +0000
+> > > #  +++ libbpf_versioned_syms.tmp 2020-09-02 07:30:58.924084388 +0000
+> > >   @@ -1,3 +1,5 @@
+> > >   +_fini
+> > >   +_init
+> > >    bpf_btf_get_fd_by_id
+> > >    bpf_btf_get_next_id
+> > >    bpf_create_map
+> > >   make[4]: *** [Makefile:210: check_abi] Error 1
+> > >
+> > > Investigation shows _fini and _init are actually local symbols counted
+> > > amongst global ones:
+> > >
+> > >   $ readelf --dyn-syms --wide libbpf.so|head -10
+> > >
+> > >   Symbol table '.dynsym' contains 343 entries:
+> > >      Num:    Value  Size Type    Bind   Vis      Ndx Name
+> > >        0: 00000000     0 NOTYPE  LOCAL  DEFAULT  UND
+> > >        1: 00004098     0 SECTION LOCAL  DEFAULT   11
+> > >        2: 00004098     8 FUNC    LOCAL  DEFAULT   11 _init@@LIBBPF_0.0.1
+> > >        3: 00023040     8 FUNC    LOCAL  DEFAULT   14 _fini@@LIBBPF_0.0.1
+> > >        4: 00000000     0 OBJECT  GLOBAL DEFAULT  ABS LIBBPF_0.0.4
+> > >        5: 00000000     0 OBJECT  GLOBAL DEFAULT  ABS LIBBPF_0.0.1
+> > >        6: 0000ffa4     8 FUNC    GLOBAL DEFAULT   12 bpf_object__find_map_by_offset@@LIBBPF_0.0.1
+> > >
+> > > A previous commit filtered global symbols in sharedobjs/libbpf-in.o. Do the
+> > > same with the libbpf.so DSO for consistent comparison.
+> > >
+> > > Fixes: 306b267cb3c4 ("libbpf: Verify versioned symbols")
+> > > Signed-off-by: Tony Ambardar <Tony.Ambardar@gmail.com>
+> > > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+> > > Acked-by: Andrii Nakryiko <andriin@fb.com>
+> > > Link: https://lore.kernel.org/bpf/20200905214831.1565465-1-Tony.Ambardar@gmail.com
+> > > Signed-off-by: Sasha Levin <sashal@kernel.org>
+> >
+> > This seems to work everywhere else, but breaks PPC64LE.
+> >
+>
+> I also ran into a PPC build error while working on some bpf problems,
+> but it seemed
+> like a pre-existing PPC issue. I did submit an upstream fix, which is
+> marked for stable
+> and being reviewed by Michael. See here for discussion and the patch:
+> https://lkml.org/lkml/2020/9/17/668.
+>
+> Is that the same problem you encountered? Does that patch address your issue?
 
-I can move it to __sg_alloc_table_from_pages:
+It is not, the issue I see is:
+Warning: Num of global symbols in sharedobjs/libbpf-in.o (259) does
+NOT match with num of versioned symbols in libbpf.so (50). Please make
+sure all LIBBPF_API symbols are versioned in libbpf.map.
 
- =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 sgt->nents =3D tmp_nents;
-+ if (!left_pages)
-+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 sg_mark_end(s);
- =C2=A0out:
- =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return s;
+I only see it on ppc64le with this patch, all other arch that Fedora
+builds are fine (x86_64, i686, aarch64, armv7, s390).  If I revert
+this patch, all builds succeed.  We are using gcc 10.2.1 though.
+
+Justin
 
 >
-> Jason
+> Thanks,
+> Tony
+>
+> > Justin
+> >
+> > > ---
+> > >  tools/lib/bpf/Makefile |    2 ++
+> > >  1 file changed, 2 insertions(+)
+> > >
+> > > --- a/tools/lib/bpf/Makefile
+> > > +++ b/tools/lib/bpf/Makefile
+> > > @@ -152,6 +152,7 @@ GLOBAL_SYM_COUNT = $(shell readelf -s --
+> > >                            awk '/GLOBAL/ && /DEFAULT/ && !/UND/ {print $$NF}' | \
+> > >                            sort -u | wc -l)
+> > >  VERSIONED_SYM_COUNT = $(shell readelf --dyn-syms --wide $(OUTPUT)libbpf.so | \
+> > > +                             awk '/GLOBAL/ && /DEFAULT/ && !/UND/ {print $$NF}' | \
+> > >                               grep -Eo '[^ ]+@LIBBPF_' | cut -d@ -f1 | sort -u | wc -l)
+> > >
+> > >  CMD_TARGETS = $(LIB_TARGET) $(PC_FILE)
+> > > @@ -219,6 +220,7 @@ check_abi: $(OUTPUT)libbpf.so
+> > >                     awk '/GLOBAL/ && /DEFAULT/ && !/UND/ {print $$NF}'|  \
+> > >                     sort -u > $(OUTPUT)libbpf_global_syms.tmp;           \
+> > >                 readelf --dyn-syms --wide $(OUTPUT)libbpf.so |           \
+> > > +                   awk '/GLOBAL/ && /DEFAULT/ && !/UND/ {print $$NF}'|  \
+> > >                     grep -Eo '[^ ]+@LIBBPF_' | cut -d@ -f1 |             \
+> > >                     sort -u > $(OUTPUT)libbpf_versioned_syms.tmp;        \
+> > >                 diff -u $(OUTPUT)libbpf_global_syms.tmp                  \
+> > >
+> > >
