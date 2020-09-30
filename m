@@ -2,133 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5465A27E4FF
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 11:21:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE86C27E503
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 11:21:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729060AbgI3JVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 05:21:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41980 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728877AbgI3JVG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 05:21:06 -0400
-Received: from smtp1.goneo.de (smtp1.goneo.de [IPv6:2001:1640:5::8:30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E213C061755;
-        Wed, 30 Sep 2020 02:21:05 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by smtp1.goneo.de (Postfix) with ESMTP id 9BEED23F11A;
-        Wed, 30 Sep 2020 11:21:02 +0200 (CEST)
-X-Virus-Scanned: by goneo
-X-Spam-Flag: NO
-X-Spam-Score: -2.989
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.989 tagged_above=-999 tests=[ALL_TRUSTED=-1,
-        AWL=-0.089, BAYES_00=-1.9] autolearn=ham
-Received: from smtp1.goneo.de ([127.0.0.1])
-        by localhost (smtp1.goneo.de [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 4AnRcm7mO10H; Wed, 30 Sep 2020 11:21:01 +0200 (CEST)
-Received: from lem-wkst-02.lemonage (hq.lemonage.de [87.138.178.34])
-        by smtp1.goneo.de (Postfix) with ESMTPSA id 487A123F15A;
-        Wed, 30 Sep 2020 11:21:01 +0200 (CEST)
-Date:   Wed, 30 Sep 2020 11:20:56 +0200
-From:   Lars Poeschel <poeschel@lemonage.de>
-To:     Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        "open list:PWM SUBSYSTEM" <linux-pwm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] pwm: sysfs: Set class on pwm devices
-Message-ID: <20200930092056.maz5biy2ugr6yc3p@lem-wkst-02.lemonage>
-References: <20200929121953.2817843-1-poeschel@lemonage.de>
- <20200930065726.fjcsm4pfh65medgl@pengutronix.de>
+        id S1729155AbgI3JVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 05:21:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36206 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727746AbgI3JV3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 05:21:29 -0400
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 687812075F;
+        Wed, 30 Sep 2020 09:21:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601457688;
+        bh=WW8CAJWhJonVz80Z15S+f0UfVSWGlcSR9+MnjppwNVE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=D7bKfqTk7NZn7bGGx6g9rjABSHMAKQj8oaGfnwaAOaVdGURo/0X//nj2bfySKoahv
+         kph+bbsNd6Ye+z9WtfBlwFUsWND1paKZ8FSYVDWv3xww1riXcp1E24Cqbn7nHQSkXL
+         1wKpyifb4znNf9O6wr+4d81oz24PuWbz//k+ptlQ=
+Received: by mail-ej1-f47.google.com with SMTP id u21so1777658eja.2;
+        Wed, 30 Sep 2020 02:21:28 -0700 (PDT)
+X-Gm-Message-State: AOAM531VUCLa24aurGD0LoZCUeFk1Fw0qz9/DFNdAI93tdD8+VWpYyxn
+        sbC5CbatMMrBwvBFr1uHTiw2c5XRTVugLovzDEc=
+X-Google-Smtp-Source: ABdhPJwdsZCPxNB8K7fSYTzc0yeFM/DWRSchSPzmJTZ1As6HEIyDEhVNDE4TT6Npkvzia8J28AdVSPLx8On9VyKD0u8=
+X-Received: by 2002:a17:906:1984:: with SMTP id g4mr1789347ejd.119.1601457686869;
+ Wed, 30 Sep 2020 02:21:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200930065726.fjcsm4pfh65medgl@pengutronix.de>
+References: <20200930084258.25493-1-nicoleotsuka@gmail.com> <20200930084258.25493-3-nicoleotsuka@gmail.com>
+In-Reply-To: <20200930084258.25493-3-nicoleotsuka@gmail.com>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Date:   Wed, 30 Sep 2020 11:21:14 +0200
+X-Gmail-Original-Message-ID: <CAJKOXPeF8D0A6PGVbi_7RedO-DFd70sjGcJOjx-gCJ7Cd8k0YQ@mail.gmail.com>
+Message-ID: <CAJKOXPeF8D0A6PGVbi_7RedO-DFd70sjGcJOjx-gCJ7Cd8k0YQ@mail.gmail.com>
+Subject: Re: [PATCH v3 2/3] iommu/tegra-smmu: Rework .probe_device and .attach_dev
+To:     Nicolin Chen <nicoleotsuka@gmail.com>
+Cc:     thierry.reding@gmail.com, joro@8bytes.org, digetx@gmail.com,
+        vdumpa@nvidia.com, jonathanh@nvidia.com,
+        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Uwe,
+On Wed, 30 Sep 2020 at 10:48, Nicolin Chen <nicoleotsuka@gmail.com> wrote:
+>
+> Previously the driver relies on bus_set_iommu() in .probe() to call
+> in .probe_device() function so each client can poll iommus property
+> in DTB to configure fwspec via tegra_smmu_configure(). According to
+> the comments in .probe(), this is a bit of a hack. And this doesn't
+> work for a client that doesn't exist in DTB, PCI device for example.
+>
+> Actually when a device/client gets probed, the of_iommu_configure()
+> will call in .probe_device() function again, with a prepared fwspec
+> from of_iommu_configure() that reads the SWGROUP id in DTB as we do
+> in tegra-smmu driver.
+>
+> Additionally, as a new helper devm_tegra_get_memory_controller() is
+> introduced, there's no need to poll the iommus property in order to
+> get mc->smmu pointers or SWGROUP id.
+>
+> This patch reworks .probe_device() and .attach_dev() by doing:
+> 1) Using fwspec to get swgroup id in .attach_dev/.dettach_dev()
+> 2) Removing DT polling code, tegra_smmu_find/tegra_smmu_configure()
+> 3) Calling devm_tegra_get_memory_controller() in .probe_device()
+> 4) Also dropping the hack in .probe() that's no longer needed.
+>
+> Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
+> ---
+>
+> Changelog
+> v2->v3
+>  * Used devm_tegra_get_memory_controller() to get mc pointer
+>  * Replaced IS_ERR_OR_NULL with IS_ERR in .probe_device()
+> v1->v2
+>  * Replaced in .probe_device() tegra_smmu_find/tegra_smmu_configure()
+>    with tegra_get_memory_controller call.
+>  * Dropped the hack in tegra_smmu_probe().
+>
+>  drivers/iommu/tegra-smmu.c | 144 ++++++++++---------------------------
+>  1 file changed, 36 insertions(+), 108 deletions(-)
+>
+> diff --git a/drivers/iommu/tegra-smmu.c b/drivers/iommu/tegra-smmu.c
+> index 6a3ecc334481..636dc3b89545 100644
+> --- a/drivers/iommu/tegra-smmu.c
+> +++ b/drivers/iommu/tegra-smmu.c
+> @@ -61,6 +61,8 @@ struct tegra_smmu_as {
+>         u32 attr;
+>  };
+>
+> +static const struct iommu_ops tegra_smmu_ops;
 
-thank you for your review!
+I cannot find in this patch where this is assigned.
 
-On Wed, Sep 30, 2020 at 08:57:26AM +0200, Uwe Kleine-König wrote:
-> Hello Lars,
-> 
-> On Tue, Sep 29, 2020 at 02:19:53PM +0200, poeschel@lemonage.de wrote:
-> > From: Lars Poeschel <poeschel@lemonage.de>
-> > 
-> > This adds a class to exported pwm devices.
-> > Exporting a pwm through sysfs did not yield udev events. The
-> 
-> I wonder what is your use-case here. This for sure also has a place to
-> be mentioned in the commit log. I suspect there is a better way to
-> accomplish you way.
-
-Use-case is to be able to use a pwm from a non-root userspace process.
-I use udev rules to adjust permissions.
-
-> > dev_uevent_filter function does filter-out devices without a bus or
-> > class.
-> > This was already addressed in commit
-> > commit 7e5d1fd75c3d ("pwm: Set class for exported channels in sysfs")
-> > but this did cause problems and the commit got reverted with
-> > commit c289d6625237 ("Revert "pwm: Set class for exported channels in
-> > sysfs"")
-> > 
-> > pwm's have to be local to its pwmchip, so we create an individual class
-> > for each pwmchip
-> 
-> This sounds conceptually wrong. 
-
-I suspect you mean the second part is wrong and we agree on the first
-part, that pwm's have to be local to its pwmchip.
-
-There seems to be a need for this as 7e5d1fd75c3d tried this already.
-Problem with this approach was, that the pwms where not local to their
-pwmchip and if you then have the same pwm number exported from different
-pwmchips this did collide.
-
-Ok, now the uevent_ops filter function blocks the uevent I want to see
-based on if device has a bus or a class set.
-
-Can you recommend a better solution ?
-Write a different filter function for this case ?
-
-> > and assign this class to the pwm belonging to the
-> > pwmchip. This does better map to structure that is also visible in
-> > sysfs.
-> > 
-> > Signed-off-by: Lars Poeschel <poeschel@lemonage.de>
-> > ---
-> >  drivers/pwm/sysfs.c | 6 +++++-
-> >  1 file changed, 5 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/pwm/sysfs.c b/drivers/pwm/sysfs.c
-> > index 449dbc0f49ed..e2dfbc335366 100644
-> > --- a/drivers/pwm/sysfs.c
-> > +++ b/drivers/pwm/sysfs.c
-> > @@ -259,7 +259,7 @@ static int pwm_export_child(struct device *parent, struct pwm_device *pwm)
-> >  	export->child.release = pwm_export_release;
-> >  	export->child.parent = parent;
-> >  	export->child.devt = MKDEV(0, 0);
-> > -	export->child.groups = pwm_groups;
-> > +	export->child.class = parent->class;
-> >  	dev_set_name(&export->child, "pwm%u", pwm->hwpwm);
-> >  
-> >  	ret = device_register(&export->child);
-> > @@ -499,6 +499,9 @@ void pwmchip_sysfs_export(struct pwm_chip *chip)
-> >  		dev_warn(chip->dev,
-> >  			 "device_create failed for pwm_chip sysfs export\n");
-> >  	}
-> > +
-> > +	parent->class = class_create(THIS_MODULE, parent->kobj.name);
-> 
-> This needs error handling.
-
-If this concept has a chance after discussion, I will change this.
-
-Thanks again,
-Lars
+Best regards,
+Krzysztof
