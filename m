@@ -2,90 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 320F327E41F
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 10:48:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7670227E425
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 10:49:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728839AbgI3Isx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 04:48:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36990 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725877AbgI3Isw (ORCPT
+        id S1728854AbgI3Itp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 04:49:45 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:54856 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725877AbgI3Itn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 04:48:52 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56086C061755
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 01:48:52 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id w11so1174819lfn.2
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 01:48:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LwsH4RNzM7M1YZuptel9pzVtCDIa+ZWwO2h5LWJGBOE=;
-        b=WiP+6TbsCK2Y5YTT5RJHL4rQtHQ9Atapoj/vpKrfxYU4qy9/48B0y0IwPfJT2Spbfb
-         4vpLswz7BfIvYDnM2tl4py33Wbu45yki8K6u2dmQi3IYnCoWBxxJh8Vi+cROnJW9bwuD
-         TSezmy3VfFlrI25skDsudj2l71nrUDtQTWOTw3gmcXNqyHwjfziUK6sGQQR8HNZINSLA
-         UAlo9M6y1StSHvcqHEC0IJ+NHNNOJSRN620b48DZxmSJeRxmK0vLD8KTCgJIOCoqLvaN
-         wLzOJRvsENpsPuBe3E6aoXbrmUp/riajJly+8g6+CZv1xK5L6GP0idVMa6US7ZnjDvnh
-         etaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LwsH4RNzM7M1YZuptel9pzVtCDIa+ZWwO2h5LWJGBOE=;
-        b=MNrqMXqcanfPwWDjIyqMo+gMeWuvUYHpjFHb0Awf0W/aHr90UsXF4F7/mgaLIGNRQD
-         cV7BNGxwLsbwxc8l9XAx6hhzOYQADIOaINAMri+Vo8sItVGpId+5kD/T8iB4Ke+8qfEU
-         YMNX5ixlrKXw22dzkA2scn1lyV7jNdcHzcZyN/epZmcsVlQZFeDXD2vkBu4uhcr+cfgt
-         K6L9KGinLlFVaD1pra73WpWsWL+Z0wnuScPB3Dcc3kZ5gGAE9uzaXgtW9mCpq/HMu/7o
-         48VrCbsTAp41ZKfzSM4mlm9VC6LLreP63tMM/0gEXdGl3BLZU6Kf1t+xIzljhCd1BCZo
-         Ynlw==
-X-Gm-Message-State: AOAM533nFPT/YFDyJ2ur0RHGNMLFoBVjAJg0Ir/K2M9DkYW8YyBBuYVR
-        VBqW6NONcEkVPR0+ViXiyaQdzUiRCVi48E0kV6qMag==
-X-Google-Smtp-Source: ABdhPJzwTQaHeKwf02xAiuAF5IJuYvnnkzJxA7qbMaCsOnrpapueh2yOo2TkZHTZ/fvDlwd2pS2bqGeQl2q/DBwNqkc=
-X-Received: by 2002:a19:1c8:: with SMTP id 191mr478715lfb.585.1601455730766;
- Wed, 30 Sep 2020 01:48:50 -0700 (PDT)
+        Wed, 30 Sep 2020 04:49:43 -0400
+Date:   Wed, 30 Sep 2020 08:49:40 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1601455782;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=UbvalvKA9ZIHtrktA2tmAl+rf92frhbBnwEuI+26Dvk=;
+        b=mo4vZinVyp888xMXSVEclttoYr2QKzVEJ0FsmJP3ZO6lhlH7dGqCvbyiGuPtBo6TXYZq7h
+        NDOirfGJYoBmzoRCcJOb6CGuadxOyNqsIdd8J/6An4/+JZ07E3LGQc27xvM51J0R+/27g7
+        pEV/H5SEuGMRtkl837/FiPEvtMn1u9dtoioEruRO99tIU160uuKsMZDeKYsulNIVfSBWzj
+        yS5DEVGVC4xqOgMLDoZBgMsxfha65NDWXO/wiMoczfVjwklF1YMNFo+IJMZSLOydfLUH2o
+        SEex1E3O90XrPRtyUIuEpTRI12ffdXJoNiaLamSTIiv/WHqz7h/wfn9lbG/jiA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1601455782;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=UbvalvKA9ZIHtrktA2tmAl+rf92frhbBnwEuI+26Dvk=;
+        b=RofG/ub5Pk37XuaIKOtFMJ38uUD2OscpYuBV2K845TzE/Wwz+nxb2yY+ydLYLvZxZ2cqdj
+        crhFMEXPd9wI33Cw==
+From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/urgent] x86/mce: Use idtentry_nmi_enter/exit()
+Cc:     Thomas Gleixner <tglx@linutronix.de>, Borislav Petkov <bp@suse.de>,
+        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <87mu17ism2.fsf@nanos.tec.linutronix.de>
+References: <87mu17ism2.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-References: <1597922546-29633-1-git-send-email-hanks.chen@mediatek.com>
-In-Reply-To: <1597922546-29633-1-git-send-email-hanks.chen@mediatek.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 30 Sep 2020 10:48:39 +0200
-Message-ID: <CACRpkdZiaSQdtW8QmoxvVyA+RvZoTh7h6CjsTidZrm+YddcADQ@mail.gmail.com>
-Subject: Re: [PATCH v2] pinctrl: mediatek: check mtk_is_virt_gpio input parameter
-To:     Hanks Chen <hanks.chen@mediatek.com>
-Cc:     Sean Wang <sean.wang@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        CC Hwang <cc.hwang@mediatek.com>,
-        sin_jieyang <sin_jieyang@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <160145578095.7002.16637144000710644354.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 20, 2020 at 1:22 PM Hanks Chen <hanks.chen@mediatek.com> wrote:
+The following commit has been merged into the x86/urgent branch of tip:
 
-> check mtk_is_virt_gpio input parameter,
-> virtual gpio need to support eint mode.
->
-> add error handler for the ko case
-> to fix this boot fail:
-> pc : mtk_is_virt_gpio+0x20/0x38 [pinctrl_mtk_common_v2]
-> lr : mtk_gpio_get_direction+0x44/0xb0 [pinctrl_paris]
->
-> Fixes: edd546465002 ("pinctrl: mediatek: avoid virtual gpio trying to set reg")
-> Singed-off-by: Jie Yang <sin_jieyang@mediatek.com>
-> Signed-off-by: Hanks Chen <hanks.chen@mediatek.com>
->
-> ---
-> Changes since v1:
-> - update Singed-off-by
-> - align with pinctrl/mediatek/pinctrl-mtk-mt*.h
+Commit-ID:     bc21a291fc11bbd60868c45b9f5a79ceed97fd4e
+Gitweb:        https://git.kernel.org/tip/bc21a291fc11bbd60868c45b9f5a79ceed97fd4e
+Author:        Thomas Gleixner <tglx@linutronix.de>
+AuthorDate:    Wed, 30 Sep 2020 10:19:49 +02:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Wed, 30 Sep 2020 10:41:56 +02:00
 
-Patch applied.
+x86/mce: Use idtentry_nmi_enter/exit()
 
-Yours,
-Linus Walleij
+The recent fix for NMI vs. IRQ state tracking missed to apply the cure
+to the MCE handler.
+
+Fixes: ba1f2b2eaa2a ("x86/entry: Fix NMI vs IRQ state tracking")
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/87mu17ism2.fsf@nanos.tec.linutronix.de
+---
+ arch/x86/kernel/cpu/mce/core.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
+index f43a78b..fc4f8c0 100644
+--- a/arch/x86/kernel/cpu/mce/core.c
++++ b/arch/x86/kernel/cpu/mce/core.c
+@@ -1904,6 +1904,8 @@ void (*machine_check_vector)(struct pt_regs *) = unexpected_machine_check;
+ 
+ static __always_inline void exc_machine_check_kernel(struct pt_regs *regs)
+ {
++	bool irq_state;
++
+ 	WARN_ON_ONCE(user_mode(regs));
+ 
+ 	/*
+@@ -1914,7 +1916,7 @@ static __always_inline void exc_machine_check_kernel(struct pt_regs *regs)
+ 	    mce_check_crashing_cpu())
+ 		return;
+ 
+-	nmi_enter();
++	irq_state = idtentry_enter_nmi(regs);
+ 	/*
+ 	 * The call targets are marked noinstr, but objtool can't figure
+ 	 * that out because it's an indirect call. Annotate it.
+@@ -1925,7 +1927,7 @@ static __always_inline void exc_machine_check_kernel(struct pt_regs *regs)
+ 	if (regs->flags & X86_EFLAGS_IF)
+ 		trace_hardirqs_on_prepare();
+ 	instrumentation_end();
+-	nmi_exit();
++	idtentry_exit_nmi(regs, irq_state);
+ }
+ 
+ static __always_inline void exc_machine_check_user(struct pt_regs *regs)
