@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 382F027DD73
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 02:35:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 862E527DD6C
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 02:35:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729413AbgI3Afz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 20:35:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46094 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729301AbgI3Afs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1729337AbgI3Afs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 29 Sep 2020 20:35:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46096 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728192AbgI3Afr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 20:35:47 -0400
 Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CAA1C061755;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAB22C0613D0;
         Tue, 29 Sep 2020 17:35:47 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id t14so5377997pgl.10;
+Received: by mail-pg1-x542.google.com with SMTP id 7so5378317pgm.11;
         Tue, 29 Sep 2020 17:35:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=0JKwq4xWqRDtKY/505TBB9qcW7wqaAmrqQLYgVgG3P8=;
-        b=Pxhfrzpqn07811bKPdiORj40VYqKBMUrQZAYaShO63bptEqeBCoDTq8ZXWpvtyAzlU
-         bEt0JLNwWs0qYndjSUJUVa364RMNEAolTMlQtIpVM28XO4n8HpjM7lFD0sk5KtCN/ral
-         8S0jk/Kr32HbXJ5lg8OC849/gxvM+2cZwixDvnZkT0iBtJnF1U78uYt1bfaoQPEySwsG
-         059weps1GxE7Q5B69fglKbTTWfp5rdRo6uM/oBGkAt3p+29GkdWvN0Zu78rNLu6D7xEZ
-         mUO+6h6zKfF2zQUJSQ4HJ1wTCwJfTotEFoEUWuJUTDbZzt6YgchtWc+OiFG7Yyf47McF
-         DQvg==
+        bh=T6RkMef4n6SDIVMgJJ8cgrOCjBvonOscs59BNDVkkmE=;
+        b=Czv7lJP2qKVAK/tsi9LxL5aMg7VImOQMCk30SvUz+hHVdh9QKVXkuaaoy6+rcTHyoh
+         we9uAPnlcF6UDiDXAXO36DSEtA5ZoQ0dJQSN8GIlkmLY9RW1/NB5NKVT4wLR8+fOuVpg
+         RqLMOmg5LqVDw9lEycOl2OxZ7zqbn/7Alcd03KhWPVLAscLsHtSb9S90cTAdBP040wUK
+         umSF4jHx4sWI6dTprEYB4r1cVhYYkmwxJxFzeAe/4gw1XDvNiexZghSJ4MeGE0pK6k0j
+         7Dd9CWl0B97PFhy3TcC4M3AB/59Wog+qhILI8nAB7L0n+FLU4uo2aGHZfSpy6WsTmO24
+         GIww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=0JKwq4xWqRDtKY/505TBB9qcW7wqaAmrqQLYgVgG3P8=;
-        b=ZufIb0jq1v3lSqfhcTBbsRKHd96rCeFgogoUWaFgGdqCIP4foSvXtUJiEvWMGo93Gm
-         5dRGk+xaKo3yfobAfsxcLF6vC641J1sNHG9kg4NOMdwiwSsKgONLfV3Y9hQM3/aC15my
-         zW83UDfmDEIv3GOyovzX6uMu5+VSQVpXuso3OUj/Lv2/ZBggNIgMnC1wsdftjXcpofsj
-         aNGUKZfYDk1ZsWLcmUCu5MLDrzPdTF90fV9uNqoOSPPMO8lz1DxRQM0E6aVFspWUZlE2
-         QHnLOSX47ke5M5EjC7dJh+TwSI/BgIDnRbYQHyxgsxV6Qf/gM954nuXUoqOwhIvfCEmx
-         uTvw==
-X-Gm-Message-State: AOAM530A8/+bohrOUeGiL+NjZcq5k/bWY6so3ErfzwnljT4VXgT+dC7X
-        qpHPabweBmDE+rlogMEgM6s=
-X-Google-Smtp-Source: ABdhPJwoJYNqTW64FEhXuMlCDahgdopeFsqNGFYmWOTHBylaP+JP0dayCAoR4EWqiGLAVSXU+IyTlA==
-X-Received: by 2002:a63:ff4e:: with SMTP id s14mr126562pgk.137.1601426146506;
-        Tue, 29 Sep 2020 17:35:46 -0700 (PDT)
+        bh=T6RkMef4n6SDIVMgJJ8cgrOCjBvonOscs59BNDVkkmE=;
+        b=D1NG+bcv/VmgphhSdr6qtQh2Cp5wjEem+oULAjpckb+dyt54pgouLOzjOp+TtFgByl
+         R/bI0iU4MgL46JS/g8ZTdGqAx7kFBy5WqeqIUsj0EyInVejh0fGS0BAdelewArK4Jw/U
+         f1y8xLtyH+mo2eDSwKAThOwWW6wPMnjtrzGKaJ0E20mxzsxTURBKyspW8i+kqExN9SGl
+         +ns6RE9x90HtO4i1LjmKndIfnxpo9oTWLpnfUrkuduLa/wpzIpenpoD65iFECgYALw0T
+         A2E9CI6FGGbc3Mo8piWHvqipmuZcAoR7pKs91JU+IpSJXKfl60SaaI+C+OVKn6K1O7GK
+         GCTg==
+X-Gm-Message-State: AOAM532vnLk5yHSI7oxlaYBDLgjarwu2WU93XLWYESUld51MaAHBHnBB
+        G9Fya6v3RVbxpTE9DJWD1tA=
+X-Google-Smtp-Source: ABdhPJx3OjYAAoX2wmhV2QVQyvwp3Xov47Mvenoy4exyCMLCnbfuteJNwE361RmUZHOZ1/YYW3fMAA==
+X-Received: by 2002:a63:de56:: with SMTP id y22mr152276pgi.166.1601426147352;
+        Tue, 29 Sep 2020 17:35:47 -0700 (PDT)
 Received: from Asurada-Nvidia.nvidia.com (thunderhill.nvidia.com. [216.228.112.22])
-        by smtp.gmail.com with ESMTPSA id x185sm6904738pfc.188.2020.09.29.17.35.45
+        by smtp.gmail.com with ESMTPSA id x185sm6904738pfc.188.2020.09.29.17.35.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Tue, 29 Sep 2020 17:35:46 -0700 (PDT)
 From:   Nicolin Chen <nicoleotsuka@gmail.com>
@@ -53,9 +53,9 @@ To:     thierry.reding@gmail.com, joro@8bytes.org, krzk@kernel.org,
 Cc:     vdumpa@nvidia.com, jonathanh@nvidia.com,
         linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/3] iommu/tegra-smmu: Rework .probe_device and .attach_dev
-Date:   Tue, 29 Sep 2020 17:30:12 -0700
-Message-Id: <20200930003013.31289-3-nicoleotsuka@gmail.com>
+Subject: [PATCH v2 3/3] iommu/tegra-smmu: Add PCI support
+Date:   Tue, 29 Sep 2020 17:30:13 -0700
+Message-Id: <20200930003013.31289-4-nicoleotsuka@gmail.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200930003013.31289-1-nicoleotsuka@gmail.com>
 References: <20200930003013.31289-1-nicoleotsuka@gmail.com>
@@ -63,245 +63,97 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Previously the driver relies on bus_set_iommu() in .probe() to call
-in .probe_device() function so each client can poll iommus property
-in DTB to configure fwspec via tegra_smmu_configure(). According to
-the comments in .probe(), this is a bit of a hack. And this doesn't
-work for a client that doesn't exist in DTB, PCI device for example.
-
-Actually when a device/client gets probed, the of_iommu_configure()
-will call in .probe_device() function again, with a prepared fwspec
-from of_iommu_configure() that reads the SWGROUP id in DTB as we do
-in tegra-smmu driver.
-
-Additionally, as new helper function tegra_get_memory_controller()
-is introduced, there's no need to poll the iommus property in order
-to get mc->smmu pointers or SWGROUP id.
-
-This patch reworks .probe_device() and .attach_dev() by doing:
-1) Using fwspec to get swgroup id in .attach_dev/.dettach_dev()
-2) Removing DT polling code, tegra_smmu_find/tegra_smmu_configure()
-3) Calling tegra_get_memory_controller() in .probe_device() instead
-4) Also dropping the hack in .probe() that's no longer needed.
+This patch simply adds support for PCI devices. Also reverses
+bus_set_iommu in tegra_smmu_remove().
 
 Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
 ---
 
 Changelog
 v1->v2
- * Replaced in .probe_device() tegra_smmu_find/tegra_smmu_configure()
-   with tegra_get_memory_controller call.
- * Dropped the hack in tegra_smmu_probe().
+ * Added error-out labels in tegra_smmu_probe()
+ * Dropped pci_request_acs() since IOMMU core would call it.
 
- drivers/iommu/tegra-smmu.c | 144 ++++++++++---------------------------
- 1 file changed, 36 insertions(+), 108 deletions(-)
+ drivers/iommu/tegra-smmu.c | 33 ++++++++++++++++++++++++---------
+ 1 file changed, 24 insertions(+), 9 deletions(-)
 
 diff --git a/drivers/iommu/tegra-smmu.c b/drivers/iommu/tegra-smmu.c
-index 6a3ecc334481..cf4981369828 100644
+index cf4981369828..74d84908679e 100644
 --- a/drivers/iommu/tegra-smmu.c
 +++ b/drivers/iommu/tegra-smmu.c
-@@ -61,6 +61,8 @@ struct tegra_smmu_as {
- 	u32 attr;
- };
+@@ -10,6 +10,7 @@
+ #include <linux/kernel.h>
+ #include <linux/of.h>
+ #include <linux/of_device.h>
++#include <linux/pci.h>
+ #include <linux/platform_device.h>
+ #include <linux/slab.h>
+ #include <linux/spinlock.h>
+@@ -856,6 +857,7 @@ static struct iommu_group *tegra_smmu_device_group(struct device *dev)
+ 	const struct tegra_smmu_group_soc *soc;
+ 	unsigned int swgroup = fwspec->ids[0];
+ 	struct tegra_smmu_group *group;
++	bool pci = dev_is_pci(dev);
+ 	struct iommu_group *grp;
  
-+static const struct iommu_ops tegra_smmu_ops;
-+
- static struct tegra_smmu_as *to_smmu_as(struct iommu_domain *dom)
- {
- 	return container_of(dom, struct tegra_smmu_as, domain);
-@@ -484,60 +486,50 @@ static void tegra_smmu_as_unprepare(struct tegra_smmu *smmu,
- static int tegra_smmu_attach_dev(struct iommu_domain *domain,
- 				 struct device *dev)
- {
-+	struct iommu_fwspec *fwspec = dev_iommu_fwspec_get(dev);
- 	struct tegra_smmu *smmu = dev_iommu_priv_get(dev);
- 	struct tegra_smmu_as *as = to_smmu_as(domain);
--	struct device_node *np = dev->of_node;
--	struct of_phandle_args args;
- 	unsigned int index = 0;
- 	int err = 0;
+ 	/* Find group_soc associating with swgroup */
+@@ -882,7 +884,7 @@ static struct iommu_group *tegra_smmu_device_group(struct device *dev)
+ 	group->smmu = smmu;
+ 	group->soc = soc;
  
--	while (!of_parse_phandle_with_args(np, "iommus", "#iommu-cells", index,
--					   &args)) {
--		unsigned int swgroup = args.args[0];
--
--		if (args.np != smmu->dev->of_node) {
--			of_node_put(args.np);
--			continue;
--		}
--
--		of_node_put(args.np);
-+	if (!fwspec || fwspec->ops != &tegra_smmu_ops)
-+		return -ENOENT;
+-	group->group = iommu_group_alloc();
++	group->group = pci ? pci_device_group(dev) : iommu_group_alloc();
+ 	if (IS_ERR(group->group)) {
+ 		devm_kfree(smmu->dev, group);
+ 		mutex_unlock(&smmu->lock);
+@@ -1079,26 +1081,39 @@ struct tegra_smmu *tegra_smmu_probe(struct device *dev,
+ 	iommu_device_set_fwnode(&smmu->iommu, dev->fwnode);
  
-+	for (index = 0; index < fwspec->num_ids; index++) {
- 		err = tegra_smmu_as_prepare(smmu, as);
--		if (err < 0)
--			return err;
-+		if (err)
-+			goto disable;
+ 	err = iommu_device_register(&smmu->iommu);
+-	if (err) {
+-		iommu_device_sysfs_remove(&smmu->iommu);
+-		return ERR_PTR(err);
+-	}
++	if (err)
++		goto err_sysfs;
  
--		tegra_smmu_enable(smmu, swgroup, as->id);
--		index++;
-+		tegra_smmu_enable(smmu, fwspec->ids[index], as->id);
- 	}
- 
- 	if (index == 0)
- 		return -ENODEV;
- 
- 	return 0;
-+
-+disable:
-+	while (index--) {
-+		tegra_smmu_disable(smmu, fwspec->ids[index], as->id);
-+		tegra_smmu_as_unprepare(smmu, as);
-+	}
-+
-+	return err;
- }
- 
- static void tegra_smmu_detach_dev(struct iommu_domain *domain, struct device *dev)
- {
-+	struct iommu_fwspec *fwspec = dev_iommu_fwspec_get(dev);
- 	struct tegra_smmu_as *as = to_smmu_as(domain);
--	struct device_node *np = dev->of_node;
- 	struct tegra_smmu *smmu = as->smmu;
--	struct of_phandle_args args;
- 	unsigned int index = 0;
- 
--	while (!of_parse_phandle_with_args(np, "iommus", "#iommu-cells", index,
--					   &args)) {
--		unsigned int swgroup = args.args[0];
--
--		if (args.np != smmu->dev->of_node) {
--			of_node_put(args.np);
--			continue;
--		}
--
--		of_node_put(args.np);
-+	if (!fwspec || fwspec->ops != &tegra_smmu_ops)
-+		return;
- 
--		tegra_smmu_disable(smmu, swgroup, as->id);
-+	for (index = 0; index < fwspec->num_ids; index++) {
-+		tegra_smmu_disable(smmu, fwspec->ids[index], as->id);
- 		tegra_smmu_as_unprepare(smmu, as);
--		index++;
- 	}
- }
- 
-@@ -807,80 +799,26 @@ static phys_addr_t tegra_smmu_iova_to_phys(struct iommu_domain *domain,
- 	return SMMU_PFN_PHYS(pfn) + SMMU_OFFSET_IN_PAGE(iova);
- }
- 
--static struct tegra_smmu *tegra_smmu_find(struct device_node *np)
--{
--	struct platform_device *pdev;
--	struct tegra_mc *mc;
--
--	pdev = of_find_device_by_node(np);
--	if (!pdev)
--		return NULL;
--
--	mc = platform_get_drvdata(pdev);
--	if (!mc)
--		return NULL;
--
--	return mc->smmu;
--}
--
--static int tegra_smmu_configure(struct tegra_smmu *smmu, struct device *dev,
--				struct of_phandle_args *args)
--{
--	const struct iommu_ops *ops = smmu->iommu.ops;
--	int err;
--
--	err = iommu_fwspec_init(dev, &dev->of_node->fwnode, ops);
+ 	err = bus_set_iommu(&platform_bus_type, &tegra_smmu_ops);
 -	if (err < 0) {
--		dev_err(dev, "failed to initialize fwspec: %d\n", err);
--		return err;
--	}
--
--	err = ops->of_xlate(dev, args);
--	if (err < 0) {
--		dev_err(dev, "failed to parse SW group ID: %d\n", err);
--		iommu_fwspec_free(dev);
--		return err;
--	}
--
--	return 0;
--}
--
- static struct iommu_device *tegra_smmu_probe_device(struct device *dev)
- {
--	struct device_node *np = dev->of_node;
--	struct tegra_smmu *smmu = NULL;
--	struct of_phandle_args args;
--	unsigned int index = 0;
--	int err;
--
--	while (of_parse_phandle_with_args(np, "iommus", "#iommu-cells", index,
--					  &args) == 0) {
--		smmu = tegra_smmu_find(args.np);
--		if (smmu) {
--			err = tegra_smmu_configure(smmu, dev, &args);
--			of_node_put(args.np);
--
--			if (err < 0)
--				return ERR_PTR(err);
--
--			/*
--			 * Only a single IOMMU master interface is currently
--			 * supported by the Linux kernel, so abort after the
--			 * first match.
--			 */
--			dev_iommu_priv_set(dev, smmu);
--
--			break;
--		}
-+	struct iommu_fwspec *fwspec = dev_iommu_fwspec_get(dev);
-+	struct tegra_mc *mc = tegra_get_memory_controller();
- 
--		of_node_put(args.np);
--		index++;
--	}
-+	/* An invalid mc pointer means mc and smmu drivers are not ready */
-+	if (IS_ERR_OR_NULL(mc))
-+		return ERR_PTR(-EPROBE_DEFER);
- 
--	if (!smmu)
-+	/*
-+	 * IOMMU core allows -ENODEV return to carry on. So bypass any call
-+	 * from bus_set_iommu() during tegra_smmu_probe(), as a device will
-+	 * call in again via of_iommu_configure when fwspec is prepared.
-+	 */
-+	if (!mc->smmu || !fwspec || fwspec->ops != &tegra_smmu_ops)
- 		return ERR_PTR(-ENODEV);
- 
--	return &smmu->iommu;
-+	dev_iommu_priv_set(dev, mc->smmu);
+-		iommu_device_unregister(&smmu->iommu);
+-		iommu_device_sysfs_remove(&smmu->iommu);
+-		return ERR_PTR(err);
++	if (err < 0)
++		goto err_unregister;
 +
-+	return &mc->smmu->iommu;
++#ifdef CONFIG_PCI
++	if (!iommu_present(&pci_bus_type)) {
++		err = bus_set_iommu(&pci_bus_type, &tegra_smmu_ops);
++		if (err < 0)
++			goto err_bus_set;
+ 	}
++#endif
+ 
+ 	if (IS_ENABLED(CONFIG_DEBUG_FS))
+ 		tegra_smmu_debugfs_init(smmu);
+ 
+ 	return smmu;
++
++err_bus_set:
++	bus_set_iommu(&platform_bus_type, NULL);
++err_unregister:
++	iommu_device_unregister(&smmu->iommu);
++err_sysfs:
++	iommu_device_sysfs_remove(&smmu->iommu);
++
++	return ERR_PTR(err);
  }
  
- static void tegra_smmu_release_device(struct device *dev)
-@@ -1089,16 +1027,6 @@ struct tegra_smmu *tegra_smmu_probe(struct device *dev,
- 	if (!smmu)
- 		return ERR_PTR(-ENOMEM);
+ void tegra_smmu_remove(struct tegra_smmu *smmu)
+ {
++	bus_set_iommu(&platform_bus_type, NULL);
+ 	iommu_device_unregister(&smmu->iommu);
+ 	iommu_device_sysfs_remove(&smmu->iommu);
  
--	/*
--	 * This is a bit of a hack. Ideally we'd want to simply return this
--	 * value. However the IOMMU registration process will attempt to add
--	 * all devices to the IOMMU when bus_set_iommu() is called. In order
--	 * not to rely on global variables to track the IOMMU instance, we
--	 * set it here so that it can be looked up from the .probe_device()
--	 * callback via the IOMMU device's .drvdata field.
--	 */
--	mc->smmu = smmu;
--
- 	size = BITS_TO_LONGS(soc->num_asids) * sizeof(long);
- 
- 	smmu->asids = devm_kzalloc(dev, size, GFP_KERNEL);
 -- 
 2.17.1
 
