@@ -2,84 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FDDE27DF3F
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 06:17:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6AA427DF90
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 06:36:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725887AbgI3ERN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 00:17:13 -0400
-Received: from mga18.intel.com ([134.134.136.126]:60796 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725839AbgI3ERF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 00:17:05 -0400
-IronPort-SDR: BamU55C/aaQPyjxkn/PoFetVVBwvj3fi0UMC9v4Of+/tMIAygAiIWlZtc6xuH+288BBkEd6E52
- T5KbvXBF7WBA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9759"; a="150137455"
-X-IronPort-AV: E=Sophos;i="5.77,321,1596524400"; 
-   d="scan'208";a="150137455"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2020 21:17:03 -0700
-IronPort-SDR: /saY0BVd/QPYHi2iRfhP+TIsXqXfC2ZUELIrQ5kKEmWXwWZ/Kt5OUuoP71JLRX3Tj3J2liN954
- uoWY0rpNQ4uw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,321,1596524400"; 
-   d="scan'208";a="415607871"
-Received: from sjchrist-coffee.jf.intel.com ([10.54.74.160])
-  by fmsmga001.fm.intel.com with ESMTP; 29 Sep 2020 21:17:03 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Lai Jiangshan <laijs@linux.alibaba.com>
-Subject: [PATCH 5/5] KVM: x86: Let the guest own CR4.FSGSBASE
-Date:   Tue, 29 Sep 2020 21:16:59 -0700
-Message-Id: <20200930041659.28181-6-sean.j.christopherson@intel.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200930041659.28181-1-sean.j.christopherson@intel.com>
-References: <20200930041659.28181-1-sean.j.christopherson@intel.com>
+        id S1725808AbgI3EgK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 00:36:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54586 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725320AbgI3EgJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 00:36:09 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7384C061755;
+        Tue, 29 Sep 2020 21:36:07 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id y11so495665lfl.5;
+        Tue, 29 Sep 2020 21:36:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HKYQFlbT5TVenNy6XGzu45AgS2brCmEgRl0H6KKi3w8=;
+        b=S5ml0Rgmv9Qyn7nUmfHMVkhCHyhK3Xz66encpUY3sJII8Y4SPyeVrwXfo0uptDn7EE
+         6QXr4AfpdyKz7JyvNgdUNDd4SP6IP8jJf2S1uGJQ6aeolQjB9r/Ne10Nowam6alPKc/5
+         ZnNMF5JHRnHUMp0FVNSGk7dI3wpDRHUrM9hyNOcdKhN3wfjoa5N90fKKZRjW06AnV6/g
+         6STO5Bp+W8NMpv+oFep1zLN9qXSsFuoW1YgvfZie2qpTZ2Ft597Ox37yVWY0+dH23i3x
+         ZH3LMo0OuPitDrhBO78e+C0zqamtXGxGLs+OcrDT0gDHAGDxijLGcN9IZdQHIEsZR85h
+         CAXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HKYQFlbT5TVenNy6XGzu45AgS2brCmEgRl0H6KKi3w8=;
+        b=Qdjwy5vIWkhfj3eakbAlmldNdrD61sT/UnyLPJUlBPgNi6eWJ2C2VKJ0CDmNTESgWe
+         OuLkmFVXXYWUHZj9mfA/pVpPWJImQx96NKyJLoBN2Pn0r6VFmsTqf6lAAWNZoDRhQ+8U
+         58q85gCkZbT/emAkq+pDnNEKon0C6c5/V3ta/rqtJhc/ZwTZyt4KwXnSQ8cU7vb3nbQ5
+         yU1OPdSAAYNtGv7KJKpgMXYaH72lefwroueFvlPoHLlF1Ff9EIpjdwttV+uCZIi860J2
+         jk7s3TfMnZBm8cRW+uXhOHAxfZG0WzrXrEmWzUjZl/kSGvlKY2ixhtwnECD0S/sY2q4A
+         LLAg==
+X-Gm-Message-State: AOAM531cHUlgW/bbaF3mcEdPAujtVm40hW3G+ffHj7Xi9J63FBM8OQgz
+        +l0ELTsW1ftn4ElJGMurPGhyElfKNsbCKkds9RQ=
+X-Google-Smtp-Source: ABdhPJxNJQYYcO8fOG6G6xY5a3ivJ0Mdpx0biwuXLKjVE7Zyu8fjQB3k64sqMZJQg2nfNV7fOyxmWf0zR2DWjVVikxg=
+X-Received: by 2002:a19:8089:: with SMTP id b131mr190567lfd.390.1601440566386;
+ Tue, 29 Sep 2020 21:36:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200929235049.2533242-1-haoluo@google.com>
+In-Reply-To: <20200929235049.2533242-1-haoluo@google.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 29 Sep 2020 21:35:55 -0700
+Message-ID: <CAADnVQK8XbzDs9hWLYEqkJj+g=1HJ7nrar+0STY5CY8t5nrC=A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 0/6] bpf: BTF support for ksyms
+To:     Hao Luo <haoluo@google.com>
+Cc:     Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lai Jiangshan <laijs@linux.alibaba.com>
+On Tue, Sep 29, 2020 at 4:50 PM Hao Luo <haoluo@google.com> wrote:
+>
+> v3 -> v4:
+>  - Rebasing
+>  - Cast bpf_[per|this]_cpu_ptr's parameter to void __percpu * before
+>    passing into per_cpu_ptr.
 
-Add FSGSBASE to the set of possible guest-owned CR4 bits, i.e. let the
-guest own it on VMX.  KVM never queries the guest's CR4.FSGSBASE value,
-thus there is no reason to force VM-Exit on FSGSBASE being toggled.
+Looks good, but doesn't work:
+./test_progs -t ksyms_btf
+test_ksyms_btf:PASS:kallsyms_fopen 0 nsec
+test_ksyms_btf:PASS:ksym_find 0 nsec
+test_ksyms_btf:PASS:kallsyms_fopen 0 nsec
+test_ksyms_btf:PASS:ksym_find 0 nsec
+test_ksyms_btf:PASS:btf_exists 0 nsec
+libbpf: extern (ksym) 'bpf_prog_active': incompatible types, expected
+[4] int int, but kernel has [18729] var bpf_user_rnd_state
+libbpf: failed to load object 'test_ksyms_btf'
+libbpf: failed to load BPF skeleton 'test_ksyms_btf': -22
+test_ksyms_btf:FAIL:skel_open failed to open and load skeleton
+#43 ksyms_btf:FAIL
 
-Note, because FSGSBASE is conditionally available, this is dependent on
-recent changes to intercept reserved CR4 bits and to update the CR4
-guest/host mask in response to guest CPUID changes.
-
-Cc: Paolo Bonzini <pbonzini@redhat.com>
-Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
-[sean: added justification in changelog]
-Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
----
- arch/x86/kvm/kvm_cache_regs.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/x86/kvm/kvm_cache_regs.h b/arch/x86/kvm/kvm_cache_regs.h
-index ca0781b41df9..a889563ad02d 100644
---- a/arch/x86/kvm/kvm_cache_regs.h
-+++ b/arch/x86/kvm/kvm_cache_regs.h
-@@ -7,7 +7,7 @@
- #define KVM_POSSIBLE_CR0_GUEST_BITS X86_CR0_TS
- #define KVM_POSSIBLE_CR4_GUEST_BITS				  \
- 	(X86_CR4_PVI | X86_CR4_DE | X86_CR4_PCE | X86_CR4_OSFXSR  \
--	 | X86_CR4_OSXMMEXCPT | X86_CR4_PGE | X86_CR4_TSD)
-+	 | X86_CR4_OSXMMEXCPT | X86_CR4_PGE | X86_CR4_TSD | X86_CR4_FSGSBASE)
- 
- #define BUILD_KVM_GPR_ACCESSORS(lname, uname)				      \
- static __always_inline unsigned long kvm_##lname##_read(struct kvm_vcpu *vcpu)\
--- 
-2.28.0
-
+I have the latest pahole from master. Any ideas?
