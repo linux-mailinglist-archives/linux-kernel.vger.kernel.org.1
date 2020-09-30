@@ -2,167 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A228627E053
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 07:28:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4086227E056
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 07:29:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727769AbgI3F2C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 01:28:02 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:53812 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725320AbgI3F14 (ORCPT
+        id S1727899AbgI3F3I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 01:29:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34482 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725306AbgI3F3H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 01:27:56 -0400
-Date:   Wed, 30 Sep 2020 05:27:52 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1601443673;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=zHuJBJyVEe4I5RoUUf2rEqqijN4uB8L+/ZP0p0P7Sb0=;
-        b=EC8ewSzvf8FLlJ8wN3M8+XaJwkQ8smdveNnqixWukEAGs6UEv/YEaBO+4S2QBrhUYSaAD5
-        mhayAu57NIPjzt8+oGRCjW6QICCnm5w2QQnDQPTunDkbKO2HlTOpslXZgwRVfaIzMh4ZXr
-        Z3idVS6lX1gczYPQCG73BpiRmMLTI80NuUJz0LM//K2QtFAWgB6h0rZUnOKToZKjvIYcHb
-        P/qza+OM0WSYbKYZ3bGRw03IlCFbYi7bn7/sbiJ8KM8D/1wUmOCeektWTkdX9sf4Kds+vM
-        p+d8G2p7ZZbDMK3ZuVADEOyQPZz9uF78tyzsCWDxTwou7LHqJsJDFBDRs1XhKQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1601443673;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=zHuJBJyVEe4I5RoUUf2rEqqijN4uB8L+/ZP0p0P7Sb0=;
-        b=tHYEbreyU6An/oxusUZrRdn+sq/Kw7nFsuToKG9o8B0DGaCtnFo2VJO4yvVRQ7PO1m9o/s
-        4eQXiBtAmTAN0xBA==
-From:   "tip-bot2 for Ard Biesheuvel" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: efi/urgent] efi: Add definition of EFI_MEMORY_CPU_CRYPTO and
- ability to report it
-Cc:     Laszlo Ersek <lersek@redhat.com>, Ard Biesheuvel <ardb@kernel.org>,
-        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+        Wed, 30 Sep 2020 01:29:07 -0400
+Received: from mail-oo1-xc42.google.com (mail-oo1-xc42.google.com [IPv6:2607:f8b0:4864:20::c42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA9D7C061755;
+        Tue, 29 Sep 2020 22:29:07 -0700 (PDT)
+Received: by mail-oo1-xc42.google.com with SMTP id r4so145435ooq.7;
+        Tue, 29 Sep 2020 22:29:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NIzuXn0cJGfjjlZNYmXAMtjJ7AdNZYIRMcgSkGHY+rw=;
+        b=DaXb/c/uDbu9CSoAs8w/y0E58HXd+mO8R1fcGDpAUuYnxqPec/lom+7KrQ9tw1q6JC
+         /FxiGbaTRTAUaVrU44GGj3E8nWDb6D0iWlKEji3XxnZaUKl33itQ3XSfVyg1jAxeAqda
+         fK62GtBotmLHs57UI5vi4XOuwuKI+5eHXe1L18hiFwaEFdQkkvLsLxbzrpnRm6VKBltm
+         a8qxbN4b9yTU4/9gwEzY8ygCCZba1ZfdwPa8PaHXR+tfbjXbXtobcIL0Vo0y8IqmPfSW
+         3hqTpX/X0F2UQ0lvEOaF7wTCTPIW0aBMhdGNQyVEq4Xfe7z9/tXcRbMiUAfUPjEq8FEo
+         bMJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NIzuXn0cJGfjjlZNYmXAMtjJ7AdNZYIRMcgSkGHY+rw=;
+        b=YOLRV/GrFwnnbDGp3LO84aVNqswsqULlPLW/7U6DAZbooa79a2swKOpX+RG37Bz9pc
+         U2vRnpcMJv74mObspCX0CYo7W4/zskRscSpHuwukVZZkqvYyOBgypj4/pCgUqwYyoM1a
+         7JqU5+TDNXO4sS4YmuuN9ItimumTTcxBVd44gkpy2njAKmwcjUbct2IjUQ3v8rES5oqv
+         RWGF9bPhDXekT3CvyeefQLl0wV8sAWKHvnQwtvgd6s1CXKxRjQ1VqkhCZxmkF3Zekr3J
+         OZHJE4D8djZvcSqK826dpV5hTul5Ekbe6NDcyVRXBjovTiX3dMkaajQwZiuUugdq0sbH
+         fW2w==
+X-Gm-Message-State: AOAM532ArTAYIjA7kwwfj+v/kUrpMFV0AtOL5NyLQH2XSO+s2LMOJPQu
+        A/jhfCYj7MpqAbxFvFcevCOeILalVf3nZkjksCU=
+X-Google-Smtp-Source: ABdhPJy9PS3Ws5Xyf5PrWCdK9NkNskxD+dVxzzrp5tTDmreXIRxin2vboMBh5hN1bzPZvgZ8i+Ahcc6oztR+49JbqUk=
+X-Received: by 2002:a4a:b982:: with SMTP id e2mr778351oop.0.1601443747011;
+ Tue, 29 Sep 2020 22:29:07 -0700 (PDT)
 MIME-Version: 1.0
-Message-ID: <160144367294.7002.834008798403063519.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+References: <20200928125424.35921-1-alexandru.ardelean@analog.com> <20200929165428.15ac9e4c@archlinux>
+In-Reply-To: <20200929165428.15ac9e4c@archlinux>
+From:   Alexandru Ardelean <ardeleanalex@gmail.com>
+Date:   Wed, 30 Sep 2020 08:28:56 +0300
+Message-ID: <CA+U=DsrKGTE3nC09NEHfksF=1WQaUrM1jV5zpw3u272+zEt1cQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] iio: adc: at91_adc: use of_device_get_match_data() helper
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        alexandre.belloni@bootlin.com,
+        Ludovic Desroches <ludovic.desroches@microchip.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the efi/urgent branch of tip:
+On Tue, Sep 29, 2020 at 6:55 PM Jonathan Cameron <jic23@kernel.org> wrote:
+>
+> On Mon, 28 Sep 2020 15:54:23 +0300
+> Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
+>
+> > This tries to solve a warning reported by the lkp bot:
+> >
+> > >> drivers/iio/adc/at91_adc.c:1439:34: warning: unused variable
+> > >> 'at91_adc_dt_ids' [-Wunused-const-variable]
+> >    static const struct of_device_id at91_adc_dt_ids[] = {
+> >                                     ^
+> >    1 warning generated.
+> >
+> > This shows up with 'compiler: clang version 12.0.0' and W=1 (as the bot
+> > mentions).
+> >
+> > Forward declarations for global variables can be a bit weird; forward
+> > function declarations are more common.
+> Hi,
+>
+> That's not the forward declaration that it is complaining about...
+>
+> It's a reasonable patch anyway, but doesn't fix that warning which is
+> about of_match_ptr and the lack of #ifdef CONFIG_OF around the
+> actual definition.
+>
+> For the bug warning, I'd add add a Kconfig dependency on OF.
+> It doesn't make any sense to allow building this driver without that.
+>
+> So resend this as a simple tidy up patch and another one adding
+> that build dependency.
+>
 
-Commit-ID:     6277e374b0b07c1a93c829f0a27e38739b3b7a1b
-Gitweb:        https://git.kernel.org/tip/6277e374b0b07c1a93c829f0a27e38739b3b7a1b
-Author:        Ard Biesheuvel <ardb@kernel.org>
-AuthorDate:    Thu, 24 Sep 2020 13:52:24 +02:00
-Committer:     Ard Biesheuvel <ardb@kernel.org>
-CommitterDate: Fri, 25 Sep 2020 23:29:04 +02:00
+At this point it might make sense to also remove the of_match_ptr() helper.
+If adding the OF build dependency, the of_match_ptr() would always
+return non-NULL.
 
-efi: Add definition of EFI_MEMORY_CPU_CRYPTO and ability to report it
-
-Incorporate the definition of EFI_MEMORY_CPU_CRYPTO from the UEFI
-specification v2.8, and wire it into our memory map dumping routine
-as well.
-
-To make a bit of space in the output buffer, which is provided by
-the various callers, shorten the descriptive names of the memory
-types.
-
-Reviewed-by: Laszlo Ersek <lersek@redhat.com>
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
----
- drivers/firmware/efi/efi.c | 47 ++++++++++++++++++-------------------
- include/linux/efi.h        |  1 +-
- 2 files changed, 25 insertions(+), 23 deletions(-)
-
-diff --git a/drivers/firmware/efi/efi.c b/drivers/firmware/efi/efi.c
-index 3aa07c3..ebb59e5 100644
---- a/drivers/firmware/efi/efi.c
-+++ b/drivers/firmware/efi/efi.c
-@@ -714,7 +714,7 @@ void __init efi_systab_report_header(const efi_table_hdr_t *systab_hdr,
- 		vendor);
- }
- 
--static __initdata char memory_type_name[][20] = {
-+static __initdata char memory_type_name[][13] = {
- 	"Reserved",
- 	"Loader Code",
- 	"Loader Data",
-@@ -722,14 +722,14 @@ static __initdata char memory_type_name[][20] = {
- 	"Boot Data",
- 	"Runtime Code",
- 	"Runtime Data",
--	"Conventional Memory",
--	"Unusable Memory",
--	"ACPI Reclaim Memory",
--	"ACPI Memory NVS",
--	"Memory Mapped I/O",
--	"MMIO Port Space",
-+	"Conventional",
-+	"Unusable",
-+	"ACPI Reclaim",
-+	"ACPI Mem NVS",
-+	"MMIO",
-+	"MMIO Port",
- 	"PAL Code",
--	"Persistent Memory",
-+	"Persistent",
- };
- 
- char * __init efi_md_typeattr_format(char *buf, size_t size,
-@@ -756,26 +756,27 @@ char * __init efi_md_typeattr_format(char *buf, size_t size,
- 	if (attr & ~(EFI_MEMORY_UC | EFI_MEMORY_WC | EFI_MEMORY_WT |
- 		     EFI_MEMORY_WB | EFI_MEMORY_UCE | EFI_MEMORY_RO |
- 		     EFI_MEMORY_WP | EFI_MEMORY_RP | EFI_MEMORY_XP |
--		     EFI_MEMORY_NV | EFI_MEMORY_SP |
-+		     EFI_MEMORY_NV | EFI_MEMORY_SP | EFI_MEMORY_CPU_CRYPTO |
- 		     EFI_MEMORY_RUNTIME | EFI_MEMORY_MORE_RELIABLE))
- 		snprintf(pos, size, "|attr=0x%016llx]",
- 			 (unsigned long long)attr);
- 	else
- 		snprintf(pos, size,
--			 "|%3s|%2s|%2s|%2s|%2s|%2s|%2s|%2s|%3s|%2s|%2s|%2s|%2s]",
--			 attr & EFI_MEMORY_RUNTIME ? "RUN" : "",
--			 attr & EFI_MEMORY_MORE_RELIABLE ? "MR" : "",
--			 attr & EFI_MEMORY_SP      ? "SP"  : "",
--			 attr & EFI_MEMORY_NV      ? "NV"  : "",
--			 attr & EFI_MEMORY_XP      ? "XP"  : "",
--			 attr & EFI_MEMORY_RP      ? "RP"  : "",
--			 attr & EFI_MEMORY_WP      ? "WP"  : "",
--			 attr & EFI_MEMORY_RO      ? "RO"  : "",
--			 attr & EFI_MEMORY_UCE     ? "UCE" : "",
--			 attr & EFI_MEMORY_WB      ? "WB"  : "",
--			 attr & EFI_MEMORY_WT      ? "WT"  : "",
--			 attr & EFI_MEMORY_WC      ? "WC"  : "",
--			 attr & EFI_MEMORY_UC      ? "UC"  : "");
-+			 "|%3s|%2s|%2s|%2s|%2s|%2s|%2s|%2s|%2s|%3s|%2s|%2s|%2s|%2s]",
-+			 attr & EFI_MEMORY_RUNTIME		? "RUN" : "",
-+			 attr & EFI_MEMORY_MORE_RELIABLE	? "MR"  : "",
-+			 attr & EFI_MEMORY_CPU_CRYPTO   	? "CC"  : "",
-+			 attr & EFI_MEMORY_SP			? "SP"  : "",
-+			 attr & EFI_MEMORY_NV			? "NV"  : "",
-+			 attr & EFI_MEMORY_XP			? "XP"  : "",
-+			 attr & EFI_MEMORY_RP			? "RP"  : "",
-+			 attr & EFI_MEMORY_WP			? "WP"  : "",
-+			 attr & EFI_MEMORY_RO			? "RO"  : "",
-+			 attr & EFI_MEMORY_UCE			? "UCE" : "",
-+			 attr & EFI_MEMORY_WB			? "WB"  : "",
-+			 attr & EFI_MEMORY_WT			? "WT"  : "",
-+			 attr & EFI_MEMORY_WC			? "WC"  : "",
-+			 attr & EFI_MEMORY_UC			? "UC"  : "");
- 	return buf;
- }
- 
-diff --git a/include/linux/efi.h b/include/linux/efi.h
-index 73db1ae..f216c02 100644
---- a/include/linux/efi.h
-+++ b/include/linux/efi.h
-@@ -122,6 +122,7 @@ typedef	struct {
- 				((u64)0x0000000000010000ULL)	/* higher reliability */
- #define EFI_MEMORY_RO		((u64)0x0000000000020000ULL)	/* read-only */
- #define EFI_MEMORY_SP		((u64)0x0000000000040000ULL)	/* soft reserved */
-+#define EFI_MEMORY_CPU_CRYPTO	((u64)0x0000000000080000ULL)	/* supports encryption */
- #define EFI_MEMORY_RUNTIME	((u64)0x8000000000000000ULL)	/* range requires runtime mapping */
- #define EFI_MEMORY_DESCRIPTOR_VERSION	1
- 
+> Thanks,
+>
+> Jonathan
+>
+> >
+> > Maybe another fix for this would have been to prefix with 'extern' the
+> > 'at91_adc_dt_ids' variable, thus making it more friendly as a forward
+> > declaration. It would look weird, but it would work.
+> >
+> > But, we can avoid that forward declaration altogether simply by obtaining
+> > the private data with of_device_get_match_data().
+> >
+> > This appeared after commit 4027860dcc4c ("iio: Kconfig: at91_adc: add
+> > COMPILE_TEST dependency to driver"), which put this driver on the lkp's bot
+> > radar.
+> >
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+> > ---
+> >  drivers/iio/adc/at91_adc.c | 5 +----
+> >  1 file changed, 1 insertion(+), 4 deletions(-)
+> >
+> > diff --git a/drivers/iio/adc/at91_adc.c b/drivers/iio/adc/at91_adc.c
+> > index 9b2c548fae95..c9ec0a4a357e 100644
+> > --- a/drivers/iio/adc/at91_adc.c
+> > +++ b/drivers/iio/adc/at91_adc.c
+> > @@ -829,8 +829,6 @@ static u32 calc_startup_ticks_9x5(u32 startup_time, u32 adc_clk_khz)
+> >       return ticks;
+> >  }
+> >
+> > -static const struct of_device_id at91_adc_dt_ids[];
+> > -
+> >  static int at91_adc_probe_dt_ts(struct device_node *node,
+> >       struct at91_adc_state *st, struct device *dev)
+> >  {
+> > @@ -878,8 +876,7 @@ static int at91_adc_probe_dt(struct iio_dev *idev,
+> >       if (!node)
+> >               return -EINVAL;
+> >
+> > -     st->caps = (struct at91_adc_caps *)
+> > -             of_match_device(at91_adc_dt_ids, &pdev->dev)->data;
+> > +     st->caps = (struct at91_adc_caps *)of_device_get_match_data(&pdev->dev);
+> >
+> >       st->use_external = of_property_read_bool(node, "atmel,adc-use-external-triggers");
+> >
+>
