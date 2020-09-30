@@ -2,174 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CDF227E33F
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 10:05:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1672627E344
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 10:05:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727879AbgI3IFG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 04:05:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58422 "EHLO
+        id S1728411AbgI3IFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 04:05:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725440AbgI3IFF (ORCPT
+        with ESMTP id S1728177AbgI3IFX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 04:05:05 -0400
-Received: from mail-vk1-xa41.google.com (mail-vk1-xa41.google.com [IPv6:2607:f8b0:4864:20::a41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81AA9C061755
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 01:05:05 -0700 (PDT)
-Received: by mail-vk1-xa41.google.com with SMTP id c25so223010vkm.1
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 01:05:05 -0700 (PDT)
+        Wed, 30 Sep 2020 04:05:23 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47955C0613D2
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 01:05:22 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id y2so748403ila.0
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 01:05:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=bJf9EcQGtx8i8vRwho8onBKbPOEqg4j6uiNOsbNhNao=;
-        b=yhm2JF3v2s0OcWI+WA4E9BjQwwpL1RqLpWbnJY3yiop7OZR8QsYWBgDqhekQEPC9g6
-         fxU2te0hgZ8h6FDQiQRiQOv3QSRjSYoK55HKp34koEYgnZNYGtI7R/qvFjc+2XzrZ6iT
-         LHwGclTbk5aHGot1W1MAhCjsNH0fA1jA6G6oWtExl9WOcEUp/VPQledOTaKmBx5FZc/k
-         RSwk8PIInhEclzY9+4huNuwRnLYwGJ7Y20WAYECC2eNR9sYnGrK+UNs01IpBzmXFtDzI
-         Zy0Ak52mWTUkrt4WaHfScuOBmw9CdDHRJhrOnCXR2qjZLwgXrd7JxJoIIaxcA6Te/CnP
-         GLvQ==
+         :cc;
+        bh=pKGcxP9oDE/Scs40mmFV3vtZyRz7YJAiQHhXReHdUHg=;
+        b=elI45khHftDyZJGrZINOJjv8vC4PvcXsRkTbuJQ80zUZqpW9FDSlh2a5WwALyJtwxV
+         k6PeGuIs+lN6IFi25iNzcEmVneBDvSCj63nkftpARbIF9XFgbfn+5HAXBfjo0TZvbKRt
+         YmrsanSewXhaWmu3gfQre7ioS7uQre8n4RmJ/8azB60QGrISpAn8F/AxqWa9vXLYBV0P
+         7mVuJncouenSVLeHbY0swJEBmWew2c+nYKZhXDjmf+ANcTrSMO113kbV8TbqaZpCb2Qj
+         XCydaivL8QGeRvkGJdgUXNnNj7x3PJWV0EILFYAoDAxEs/6s3WbG4kai5HXG9+iplvaw
+         Za+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=bJf9EcQGtx8i8vRwho8onBKbPOEqg4j6uiNOsbNhNao=;
-        b=kwqZyusqp/l7UaeeF5Aq9j6LOEqwm0jkxu7RhFRBiTvEEdvmniXpVEBYXZdAyA4L8A
-         DOT3H8vhyy54tbcjzDVcmTExqrKNhuMCM94/TmpskthkCDT7lxX7/ezjihg0Z7v5Erd2
-         2SJn57UgSJdAKAgi7YUpPKyWMVuz4s+tWeCQirvq054KyTcTajgvxrbbfLZq5DUtJ2F3
-         G09aVrAPRTNALlUuvPLPUisLSYIpcdp8J9S8hgvj9t7uDK3YR1Lg4GJEZ0KaQWaFZwej
-         LcwRe8wcSMESmY8Z+p9qV5m98OZVQhoANaMAzNNP8DTTt0FbIwOIU0++zCmI8YEmGjIV
-         aedA==
-X-Gm-Message-State: AOAM530Uii6sqFWY04u2wwFsaJKseFmjNQNUUZ0t+F+/Q95LW37g/hpO
-        HA9n0Zcv22hv5bX0PJOiUqsFTkBomSeKp8cS1Oq/Yw==
-X-Google-Smtp-Source: ABdhPJwfuBYnHEwK0CTYxYDHFchbWstcUrCB7pReooB//uy/Dl76Sy/fK27xYKCxzdOnyz/jNMUJgO0NPTv2ZnmDfYM=
-X-Received: by 2002:a1f:fec9:: with SMTP id l192mr605959vki.21.1601453104561;
- Wed, 30 Sep 2020 01:05:04 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=pKGcxP9oDE/Scs40mmFV3vtZyRz7YJAiQHhXReHdUHg=;
+        b=h6EMKudGsw/eeQRpP/eiDiyyvo28bsjORoRlE4rpPR2NIdfUWwgbc099J+B+FHPrQM
+         w5xBhcbStWdJIMhFeJYQFUDND5ZEtA+QryZSXhSTa/oFH95U7wLgqNcV6C/p4lbWG9bt
+         Ive3cF6HoRn0CdlgRUSCVUtDDrkUGb2BciH9al29jiooVKKPlOMqfUVuEq9YY5qAk1bc
+         oSaGJJmkD2gggvMGjE1tyS0RgDyEp+cRWjCE7Ozkc1iic09If36Znl4rKHdWxXwk52eS
+         iPPPBvEI2B/ZW18InVI8JOHfDBuXlR86cNvJD96DhcNM4XgH900ZvwImS9u1pmAdS0wQ
+         BJhQ==
+X-Gm-Message-State: AOAM5319qv7a6mZV0szZeifGsnpBTMR2PcArIrTjkyC6hycVh2W8ZjzM
+        5ymAIuJ8/dRpK9j33O3hKboXSrr6R9gCv50X2BYIgQ==
+X-Google-Smtp-Source: ABdhPJw8sBg7rxDdwXEr7u+Gvud+qzGZmvxlsxJ1JqPSzaw7uvPqJFBpCbkdnEP2+rrm7oJxJ9372EZRAwG+Wa2Ut00=
+X-Received: by 2002:a92:d8c5:: with SMTP id l5mr1009401ilo.287.1601453121514;
+ Wed, 30 Sep 2020 01:05:21 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200929110010.467764689@linuxfoundation.org>
-In-Reply-To: <20200929110010.467764689@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 30 Sep 2020 13:34:52 +0530
-Message-ID: <CA+G9fYveaJ147DokEVYPSJ2WZ0yeX=3soNnuak1LDC0Yzb_avw@mail.gmail.com>
-Subject: Re: [PATCH 5.4 000/388] 5.4.69-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org,
-        Ben Hutchings <ben.hutchings@codethink.co.uk>,
-        linux- stable <stable@vger.kernel.org>, pavel@denx.de,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
+References: <20200929101004.20288-1-brgl@bgdev.pl> <20200929101004.20288-8-brgl@bgdev.pl>
+ <20200929105320.GF3956970@smile.fi.intel.com>
+In-Reply-To: <20200929105320.GF3956970@smile.fi.intel.com>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Wed, 30 Sep 2020 10:05:10 +0200
+Message-ID: <CAMRc=MdfH7Nsq7L7sP0zPdfqcUxFfjn7FEb1_FNLRmng-qVjPA@mail.gmail.com>
+Subject: Re: [PATCH v3 07/10] gpio: mockup: increase the number of supported
+ device properties
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kent Gibson <warthog618@gmail.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-doc <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 29 Sep 2020 at 17:05, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+On Tue, Sep 29, 2020 at 12:53 PM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
 >
-> This is the start of the stable review cycle for the 5.4.69 release.
-> There are 388 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+> On Tue, Sep 29, 2020 at 12:10:01PM +0200, Bartosz Golaszewski wrote:
+> > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> >
+> > The driver actually supports 4 properties but we only ever set up up to
+> > three. This will change however in upcoming patches so increase the
+> > number of really (as in: the number the property array can hold)
+> > supported properties to 4.
 >
-> Responses should be made by Thu, 01 Oct 2020 10:59:03 +0000.
-> Anything received after that time might be too late.
+> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 >
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.4.69-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.4.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+> Reported-by ? (it does not imply the necessity of Fixes tag)
 
+I'll add it when applying.
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
-
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-Summary
-------------------------------------------------------------------------
-
-kernel: 5.4.69-rc1
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-5.4.y
-git commit: 256bdd45e196b3d68513dcd043370c3809a97654
-git describe: v5.4.68-389-g256bdd45e196
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.=
-y/build/v5.4.68-389-g256bdd45e196
-
-
-No regressions (compared to build v5.4.68)
-
-No fixes (compared to build v5.4.68)
-
-Ran 27670 total tests in the following environments and test suites.
-
-Environments
---------------
-- dragonboard-410c
-- hi6220-hikey
-- i386
-- juno-r2
-- nxp-ls2088
-- qemu_arm
-- qemu_arm64
-- qemu_i386
-- qemu_x86_64
-- x15
-- x86
-- x86-kasan
-
-Test Suites
------------
-* build
-* install-android-platform-tools-r2600
-* kselftest
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* perf
-* v4l2-compliance
-* ltp-cve-tests
-* ltp-sched-tests
-* network-basic-tests
-* ltp-fs-tests
-* ltp-ipc-tests
-* ltp-open-posix-tests
-* kselftest-vsyscall
-* kselftest-vsyscall-mode-native
-* kselftest-vsyscall-mode-none
-* ssuite
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
+Bartosz
