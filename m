@@ -2,64 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 716B227DDBB
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 03:27:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A87F027DDC6
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 03:30:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729599AbgI3B1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 21:27:07 -0400
-Received: from smtprelay0058.hostedemail.com ([216.40.44.58]:59788 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726689AbgI3B1H (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 21:27:07 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 24807100E7B46;
-        Wed, 30 Sep 2020 01:27:06 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1537:1566:1593:1594:1711:1714:1730:1747:1777:1792:2110:2393:2559:2562:2828:3138:3139:3140:3141:3142:3622:3865:3868:3874:4321:5007:10004:10400:10848:11232:11658:11914:12297:12740:12760:12895:13069:13255:13311:13357:13439:14659:14721:21080:21627:30054:30083:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: route17_40126172718e
-X-Filterd-Recvd-Size: 1691
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf20.hostedemail.com (Postfix) with ESMTPA;
-        Wed, 30 Sep 2020 01:27:04 +0000 (UTC)
-Message-ID: <723e89d8cce4fed905d11740d855c60b06be2595.camel@perches.com>
-Subject: Re: [PATCH 10/20] media: lmedm04: use semicolons rather than commas
- to separate statements
-From:   Joe Perches <joe@perches.com>
-To:     Julia Lawall <julia.lawall@inria.fr>
-Cc:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Malcolm Priestley <tvboxspy@gmail.com>,
-        Valdis =?UTF-8?Q?Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        kernel-janitors@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Tue, 29 Sep 2020 18:27:03 -0700
-In-Reply-To: <3b7457e4efd04865115152636ca65b5dc9cfe0e4.camel@perches.com>
-References: <1601385283-26144-1-git-send-email-Julia.Lawall@inria.fr>
-         <1601385283-26144-11-git-send-email-Julia.Lawall@inria.fr>
-         <8d73748e-be82-4c30-4550-b5f4eecb3055@wanadoo.fr>
-         <c79b36c12c978d38f3ad89b1c659871a@perches.com>
-         <alpine.DEB.2.22.394.2009291843560.2808@hadrien>
-         <3b7457e4efd04865115152636ca65b5dc9cfe0e4.camel@perches.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        id S1729652AbgI3BaR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 21:30:17 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:51166 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726689AbgI3BaR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 21:30:17 -0400
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id E8A7A46749E585AF801D;
+        Wed, 30 Sep 2020 09:30:14 +0800 (CST)
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 30 Sep 2020 09:30:09 +0800
+From:   Jing Xiangfeng <jingxiangfeng@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>,
+        <luc.vanoostenryck@gmail.com>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <jingxiangfeng@huawei.com>
+Subject: [PATCH] caif_virtio: Remove redundant initialization of variable err
+Date:   Wed, 30 Sep 2020 09:29:54 +0800
+Message-ID: <20200930012954.1355-1-jingxiangfeng@huawei.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.25]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-09-29 at 15:21 -0700, Joe Perches wrote:
-> I did not send a patch for this one.
+After commit a8c7687bf216 ("caif_virtio: Check that vringh_config is not
+null"), the variable err is being initialized with '-EINVAL' that is
+meaningless. So remove it.
 
-Well, I guess I did and forgot.
+Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
+---
+ drivers/net/caif/caif_virtio.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I thought this was about the braces and semicolons
-addition around multi-statement commas, and I
-didn't send a patch for this file for that.
-
-cheers, Joe
-
+diff --git a/drivers/net/caif/caif_virtio.c b/drivers/net/caif/caif_virtio.c
+index 80ea2e913c2b..47a6d62b7511 100644
+--- a/drivers/net/caif/caif_virtio.c
++++ b/drivers/net/caif/caif_virtio.c
+@@ -652,7 +652,7 @@ static int cfv_probe(struct virtio_device *vdev)
+ 	const char *cfv_netdev_name = "cfvrt";
+ 	struct net_device *netdev;
+ 	struct cfv_info *cfv;
+-	int err = -EINVAL;
++	int err;
+ 
+ 	netdev = alloc_netdev(sizeof(struct cfv_info), cfv_netdev_name,
+ 			      NET_NAME_UNKNOWN, cfv_netdev_setup);
+-- 
+2.17.1
 
