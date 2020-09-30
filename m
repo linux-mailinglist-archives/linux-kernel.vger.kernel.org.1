@@ -2,116 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83BE827F572
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 00:48:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C49F327F575
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 00:49:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731835AbgI3Ws6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 18:48:58 -0400
-Received: from ozlabs.org ([203.11.71.1]:57897 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730981AbgI3Ws5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 18:48:57 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C1ryt4D3vz9sSf;
-        Thu,  1 Oct 2020 08:48:54 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1601506134;
-        bh=IGJbmv5mcrkAA2X9zezbI36z8dO7q2w6agEZE4CGtvI=;
-        h=Date:From:To:Cc:Subject:From;
-        b=NjLpLjo07KfTbhqFICWl1G+mLumgIgWBFnhKtk+Nvb7eMbf/TE5b6xszvPZjsbvoW
-         8B43VGtphX9WjweZgwYp9ZX/CTpQ0qfHSYTxcM8ZBt1sCXNRzzPhNWMtfSiqj+hdxG
-         XOBBr7yVTLfx3YXBgr+DDixRDZPexHoFzjX7czg3rz+Hp/KF2ImArwXgfsg4wYL+9q
-         MlOYhGhB79zZSeslPQPAln4v7bis6AVZrG37CSPnYOF6xBgFfwZ/a0HvAZcQlz/2GF
-         Ax4NkihiVzN3kHZ88Y4HXYLxxvsqvvGEjRz/gYE06n5NDTwwjWJ9o70VZDSqZ8JRwI
-         RPui/lfMj8fkw==
-Date:   Thu, 1 Oct 2020 08:48:52 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Hariprasad Kelam <hkelam@marvell.com>,
-        Geetha sowjanya <gakula@marvell.com>,
-        Sunil Goutham <sgoutham@marvell.com>
-Subject: linux-next: Fixes tags need some work in the net tree
-Message-ID: <20201001084852.5bc93fca@canb.auug.org.au>
+        id S1731849AbgI3WtF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 18:49:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54038 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731839AbgI3WtD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 18:49:03 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61700C0613D0
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 15:49:03 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id 34so2194722pgo.13
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 15:49:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=VT2vDd9OB7uEL9vUlvmQWoFRKp72QNgXm7S/Mv4km2A=;
+        b=b9W9/WFAa7j9YD1PJAI4yFg7dus7W0r/MW7Dboua7FmO8kMbs1gKAajU9Q2CldMKVq
+         ScKuRCkr1vwZZCRbn/yF/6r9z2d5ANWOaT0AFusLzF4y5idwBkxeYt+G5BTv7KZAolR8
+         6SxxMXSjfujZ2U/hIWKv0FguBBnmAB5AcFqfE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=VT2vDd9OB7uEL9vUlvmQWoFRKp72QNgXm7S/Mv4km2A=;
+        b=RtjaEb4uRsjKWMZVi1lHgUknFZcrh6/NIvMI+opiV/r1tjy3y/2BMJApMP0X9nSev4
+         T3wDKAs3yMIGKegf0YdoLV6+p/POQavx5oyfivaTs4QCGmaLomhsfmmCXOVxqY9AJ4CY
+         TdE/O4k+ZL7hnW79YaafmDx2irc4+iMETs2LzpOd9zFyD+qzDVFIrw4SZkyAMTrdoc8d
+         qNFnJ6/E3huV36XmvRKRpzBCqnUhKJ8L72T0Awr8LeOSyqzzr0oDgVw4EaND/Voovuku
+         z+EtTilxSrTkSNJMeU0Z3rujf3i8VZVLrG79XnNVKuYS2RycoSr006LFwc/+w0zI9H0T
+         ReuQ==
+X-Gm-Message-State: AOAM533Qv/Ler+4oerL3OeVqMB4CaAWnCcm4XBn6m6S0ynlU/C4wBfww
+        ggDG/kv88TM48/+88AoUrxumTQ==
+X-Google-Smtp-Source: ABdhPJwfSK5iNpfj80w0dYS73zpvMdKZB8MpSp2GpAdsedr4h3Z0FZm0dB+5To7uEo0x/wrmF8Kkpw==
+X-Received: by 2002:a62:19c4:0:b029:13e:d13d:a0fd with SMTP id 187-20020a6219c40000b029013ed13da0fdmr4271918pfz.25.1601506142852;
+        Wed, 30 Sep 2020 15:49:02 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id u10sm3674241pfn.122.2020.09.30.15.49.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Sep 2020 15:49:02 -0700 (PDT)
+Date:   Wed, 30 Sep 2020 15:49:01 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Jann Horn <jannh@google.com>
+Cc:     YiFei Zhu <zhuyifei1999@gmail.com>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        David Laight <David.Laight@aculab.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Will Drewry <wad@chromium.org>
+Subject: Re: [PATCH v3 seccomp 2/5] seccomp/cache: Add "emulator" to check if
+ filter is constant allow
+Message-ID: <202009301546.6B7D648F57@keescook>
+References: <cover.1601478774.git.yifeifz2@illinois.edu>
+ <b16456e8dbc378c41b73c00c56854a3c30580833.1601478774.git.yifeifz2@illinois.edu>
+ <CAG48ez0Njm0oS+9k-cgUqzyUWXV=cHPope2Xe9vVNPUVZ1PB4w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/N+8f45KqlWeNX8c7Gt4=XzP";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAG48ez0Njm0oS+9k-cgUqzyUWXV=cHPope2Xe9vVNPUVZ1PB4w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/N+8f45KqlWeNX8c7Gt4=XzP
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Thu, Oct 01, 2020 at 12:24:32AM +0200, Jann Horn wrote:
+> On Wed, Sep 30, 2020 at 5:20 PM YiFei Zhu <zhuyifei1999@gmail.com> wrote:
+> > SECCOMP_CACHE_NR_ONLY will only operate on syscalls that do not
+> > access any syscall arguments or instruction pointer. To facilitate
+> > this we need a static analyser to know whether a filter will
+> > return allow regardless of syscall arguments for a given
+> > architecture number / syscall number pair. This is implemented
+> > here with a pseudo-emulator, and stored in a per-filter bitmap.
+> >
+> > Each common BPF instruction are emulated. Any weirdness or loading
+> > from a syscall argument will cause the emulator to bail.
+> >
+> > The emulation is also halted if it reaches a return. In that case,
+> > if it returns an SECCOMP_RET_ALLOW, the syscall is marked as good.
+> >
+> > Emulator structure and comments are from Kees [1] and Jann [2].
+> >
+> > Emulation is done at attach time. If a filter depends on more
+> > filters, and if the dependee does not guarantee to allow the
+> > syscall, then we skip the emulation of this syscall.
+> >
+> > [1] https://lore.kernel.org/lkml/20200923232923.3142503-5-keescook@chromium.org/
+> > [2] https://lore.kernel.org/lkml/CAG48ez1p=dR_2ikKq=xVxkoGg0fYpTBpkhJSv1w-6BG=76PAvw@mail.gmail.com/
+> [...]
+> > +static void seccomp_cache_prepare_bitmap(struct seccomp_filter *sfilter,
+> > +                                        void *bitmap, const void *bitmap_prev,
+> > +                                        size_t bitmap_size, int arch)
+> > +{
+> > +       struct sock_fprog_kern *fprog = sfilter->prog->orig_prog;
+> > +       struct seccomp_data sd;
+> > +       int nr;
+> > +
+> > +       for (nr = 0; nr < bitmap_size; nr++) {
+> > +               if (bitmap_prev && !test_bit(nr, bitmap_prev))
+> > +                       continue;
+> > +
+> > +               sd.nr = nr;
+> > +               sd.arch = arch;
+> > +
+> > +               if (seccomp_emu_is_const_allow(fprog, &sd))
+> > +                       set_bit(nr, bitmap);
+> 
+> set_bit() is atomic, but since we only do this at filter setup, before
+> the filter becomes globally visible, we don't need atomicity here. So
+> this should probably use __set_bit() instead.
 
-Hi all,
+Oh yes, excellent point! That will speed this up a bit. When you do
+this, please include a comment here describing why its safe to do it
+non-atomic. :)
 
-In commit
-
-  66a5209b5341 ("octeontx2-pf: Fix synchnorization issue in mbox")
-
-Fixes tag
-
-  Fixes: d424b6c02 ("octeontx2-pf: Enable SRIOV and added VF mbox handling")
-
-has these problem(s):
-
-  - SHA1 should be at least 12 digits long
-    Can be fixed by setting core.abbrev to 12 (or more) or (for git v2.11
-    or later) just making sure it is not set (or set to "auto").
-
-In commit
-
-  1ea0166da050 ("octeontx2-pf: Fix the device state on error")
-
-Fixes tag
-
-  Fixes: 50fe6c02e ("octeontx2-pf: Register and handle link notifications")
-
-has these problem(s):
-
-  - SHA1 should be at least 12 digits long
-    Can be fixed by setting core.abbrev to 12 (or more) or (for git v2.11
-    or later) just making sure it is not set (or set to "auto").
-
-In commit
-
-  89eae5e87b4f ("octeontx2-pf: Fix TCP/UDP checksum offload for IPv6 frames=
-")
-
-Fixes tag
-
-  Fixes: 3ca6c4c88 ("octeontx2-pf: Add packet transmission support")
-
-has these problem(s):
-
-  - SHA1 should be at least 12 digits long
-    Can be fixed by setting core.abbrev to 12 (or more) or (for git v2.11
-    or later) just making sure it is not set (or set to "auto").
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/N+8f45KqlWeNX8c7Gt4=XzP
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl91C1QACgkQAVBC80lX
-0Gw2SAf9F3XXldpShN9oWWZwD0T5/Dtu/hIxQlVMY8Fsz9P9ZLTqqdRs9NnO5del
-DRLITE6lxMLwqoZjOHruYavTupQGgwQLMJ78G2GWxKzDcwE4mbH4YF4Vfq0zhiiR
-xUJeSASbXhNSDReP/XAeKvsyiPYt90sl88seflM66FE6cS2541U2nBsO7WmWJoy+
-BF2cqmBIz5x75a/T3PBa2P57rQ+weiYVIAY01cOjNydiTyxTTBTVgAGy/Yz1LC9Q
-iL/GnpQOugPWhUnJPSvutipWVST0s3x44JHRZedGS5OAUoL2o3ShgeOQQtW6WTu3
-k30G4YBVd619RCHdO2IV0HWpxMwEqQ==
-=28NP
------END PGP SIGNATURE-----
-
---Sig_/N+8f45KqlWeNX8c7Gt4=XzP--
+-- 
+Kees Cook
