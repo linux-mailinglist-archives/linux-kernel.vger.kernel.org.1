@@ -2,89 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CD5627E958
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 15:19:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 958A327E953
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 15:18:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730193AbgI3NTU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 09:19:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52714 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730143AbgI3NTP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 09:19:15 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1730095AbgI3NS6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 09:18:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50408 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725771AbgI3NS6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 09:18:58 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFE83C061755;
+        Wed, 30 Sep 2020 06:18:57 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8E3AB2075F;
-        Wed, 30 Sep 2020 13:19:14 +0000 (UTC)
-Received: from rostedt by gandalf.local.home with local (Exim 4.94)
-        (envelope-from <rostedt@goodmis.org>)
-        id 1kNc0n-002M8A-EO; Wed, 30 Sep 2020 09:19:13 -0400
-Message-ID: <20200930131913.325857552@goodmis.org>
-User-Agent: quilt/0.66
-Date:   Wed, 30 Sep 2020 09:18:47 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        stable@vger.kernel.org, Paul McKenney <paulmck@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: [for-linus][PATCH 2/2] ftrace: Move RCU is watching check after recursion check
-References: <20200930131845.346190751@goodmis.org>
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C1cKC2CYTz9sSC;
+        Wed, 30 Sep 2020 23:18:55 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1601471935;
+        bh=FkDTgKkdMZkN5NHC27aOBiKvLMyBdJbffOKlNeZGAWg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=BPHaZKlYX732fbsVavb+Z7tCtAbp+DuQ0S9eM93tw8/rfbAwxp7OeJxukmTn0RtiW
+         mdCocFo8X3Pej083TSdLHKIzCwHhCsi1YD+I/3J6Jd286PgB1njy4ohvr67EaRg0P9
+         WsHk9jaeexOQuydeZQSSjkYbWHwFfPEjZc5uCBmMigcw3Xe4uwftcJ3bxyNjHPRXlK
+         6t24Mm0EfiX3plm5ADWpFzvugCs+Sf+Y7siic1UeRKs036pRAUIaoeTUt/LvObGoZJ
+         2N4d2EcwVT99uLv4LYKIZgSKtP9dIanUGTbAMfvdy4ZXAcC9Ypi9EovjDQ1lAiFbpv
+         7Hty9ys3DJ1KA==
+Date:   Wed, 30 Sep 2020 23:18:54 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Subject: Re: linux-next: Fixes tag needs some work in the pinctrl tree
+Message-ID: <20200930231854.0ce0de19@canb.auug.org.au>
+In-Reply-To: <20200930230119.4ca24210@canb.auug.org.au>
+References: <20200930230119.4ca24210@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-15
+Content-Type: multipart/signed; boundary="Sig_/rbalI3ONL5eX0sbd1CMFIJK";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+--Sig_/rbalI3ONL5eX0sbd1CMFIJK
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-The first thing that the ftrace function callback helper functions should do
-is to check for recursion. Peter Zijlstra found that when
-"rcu_is_watching()" had its notrace removed, it caused perf function tracing
-to crash. This is because the call of rcu_is_watching() is tested before
-function recursion is checked and and if it is traced, it will cause an
-infinite recursion loop.
+Hi all,
 
-rcu_is_watching() should still stay notrace, but to prevent this should
-never had crashed in the first place. The recursion prevention must be the
-first thing done in callback functions.
+On Wed, 30 Sep 2020 23:01:19 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>
+> Just use
+>=20
+> 	git log -1 --format=3D'Fixes: %h ("%s") <commit>'
 
-Link: https://lore.kernel.org/r/20200929112541.GM2628@hirez.programming.kicks-ass.net
+git log -1 --format=3D'Fixes: %h ("%s")' <commit>
 
-Cc: stable@vger.kernel.org
-Cc: Paul McKenney <paulmck@kernel.org>
-Fixes: c68c0fa293417 ("ftrace: Have ftrace_ops_get_func() handle RCU and PER_CPU flags too")
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reported-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
----
- kernel/trace/ftrace.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+sorry :-)
+--=20
+Cheers,
+Stephen Rothwell
 
-diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-index 603255f5f085..541453927c82 100644
---- a/kernel/trace/ftrace.c
-+++ b/kernel/trace/ftrace.c
-@@ -6993,16 +6993,14 @@ static void ftrace_ops_assist_func(unsigned long ip, unsigned long parent_ip,
- {
- 	int bit;
- 
--	if ((op->flags & FTRACE_OPS_FL_RCU) && !rcu_is_watching())
--		return;
--
- 	bit = trace_test_and_set_recursion(TRACE_LIST_START, TRACE_LIST_MAX);
- 	if (bit < 0)
- 		return;
- 
- 	preempt_disable_notrace();
- 
--	op->func(ip, parent_ip, op, regs);
-+	if (!(op->flags & FTRACE_OPS_FL_RCU) || rcu_is_watching())
-+		op->func(ip, parent_ip, op, regs);
- 
- 	preempt_enable_notrace();
- 	trace_clear_recursion(bit);
--- 
-2.28.0
+--Sig_/rbalI3ONL5eX0sbd1CMFIJK
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl90hb4ACgkQAVBC80lX
+0Gw5qwf+PQFnelYHkdtd/iykyRW9B8oDK53BDGDSjSBE0vHP1S2Km5ntImubM+4g
+6OLL9FrYBvXuZ98cTFF2aiFEBaxmkbK03Kdg1RNbmAI9+PNsu/suWPEz+uO++/hi
+n+2YZ4qPuXsyu2+tpcJWAJSdhT74hU+i4rLbSE+yprckWtCvveWi/G8b+ssxCvnc
+ulSqcNeCxqIryrkmnJhK//rJwmm/7bYu0WhfPWonlWZ6GGnB/BrfMUrKR8FPwrbK
+VYlo5otGP6114dnEzVqMCLlSWYRptLxnXPjdCuNENyxk9w6YddVX4lyF8DQH6Hxt
+wF8vnw6eJ2NUOhWMzSyICbuY3x2puQ==
+=gVIx
+-----END PGP SIGNATURE-----
+
+--Sig_/rbalI3ONL5eX0sbd1CMFIJK--
