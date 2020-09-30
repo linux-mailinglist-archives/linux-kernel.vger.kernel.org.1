@@ -2,195 +2,296 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ED2D27E80C
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 13:59:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3F3527E80D
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 13:59:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729606AbgI3L7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 07:59:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48930 "EHLO mail.kernel.org"
+        id S1729646AbgI3L7W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 07:59:22 -0400
+Received: from mx2.suse.de ([195.135.220.15]:38178 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727997AbgI3L7O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 07:59:14 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3967A2075F;
-        Wed, 30 Sep 2020 11:59:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601467152;
-        bh=j7TyWiQ46A8cgocAOXeM5f1+0eI0qyuI4IcopJ3Xq28=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=i8situxT7lHaqrW5D0ijbVCB0KIfk7XFB0RvE6AjJrbs5RQx3g7M6s91yj5s8zvx2
-         noAxcYVL7Uks2NrVIGmIHd18W2m90leiGA2lHQHXx2cR+U9MlQs7EYqahR89rQXa6j
-         dluo5/yAcjNy0jJjOzht9zpX+qLp3jcb0L87T61E=
-Date:   Wed, 30 Sep 2020 13:59:15 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     broonie@kernel.org, rafael@kernel.org, lgirdwood@gmail.com,
-        perex@perex.cz, tiwai@suse.com, linux-kernel@vger.kernel.org,
-        alsa-devel@alsa-project.org, srivasam@codeaurora.org,
-        rohitkr@codeaurora.org
-Subject: Re: [PATCH v2 1/2] regmap: add support to
- regmap_field_bulk_alloc/free apis
-Message-ID: <20200930115915.GB1611809@kroah.com>
-References: <20200925164856.10315-1-srinivas.kandagatla@linaro.org>
- <20200925164856.10315-2-srinivas.kandagatla@linaro.org>
+        id S1727997AbgI3L7W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 07:59:22 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 296CAADFE;
+        Wed, 30 Sep 2020 11:59:20 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 9BA101E0E76; Wed, 30 Sep 2020 13:59:19 +0200 (CEST)
+Date:   Wed, 30 Sep 2020 13:59:19 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        William Kucharski <william.kucharski@oracle.com>,
+        Johannes Weiner <hannes@cmpxchg.org>, Jan Kara <jack@suse.cz>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Dave Chinner <dchinner@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 11/12] mm/truncate,shmem: Handle truncates that split
+ THPs
+Message-ID: <20200930115919.GS10896@quack2.suse.cz>
+References: <20200914130042.11442-1-willy@infradead.org>
+ <20200914130042.11442-12-willy@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200925164856.10315-2-srinivas.kandagatla@linaro.org>
+In-Reply-To: <20200914130042.11442-12-willy@infradead.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 05:48:55PM +0100, Srinivas Kandagatla wrote:
-> Usage of regmap_field_alloc becomes much overhead when number of fields
-> exceed more than 3.
-> QCOM LPASS driver has extensively converted to use regmap_fields.
+On Mon 14-09-20 14:00:41, Matthew Wilcox (Oracle) wrote:
+> Handle THP splitting in the parts of the truncation functions which
+> already handle partial pages.  Factor all that code out into a new
+> function called truncate_inode_partial_page().
 > 
-> Using new bulk api to allocate fields makes it much more cleaner code to read!
+> We lose the easy 'bail out' path if a truncate or hole punch is entirely
+> within a single page.  We can add some more complex logic to restore
+> the optimisation if it proves to be worthwhile.
 > 
-> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> Tested-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-> ---
->  drivers/base/regmap/regmap.c | 100 +++++++++++++++++++++++++++++++++++
->  include/linux/regmap.h       |  11 ++++
->  2 files changed, 111 insertions(+)
-> 
-> diff --git a/drivers/base/regmap/regmap.c b/drivers/base/regmap/regmap.c
-> index aec3f26bf711..8d6aedce666d 100644
-> --- a/drivers/base/regmap/regmap.c
-> +++ b/drivers/base/regmap/regmap.c
-> @@ -1270,6 +1270,106 @@ struct regmap_field *devm_regmap_field_alloc(struct device *dev,
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+
+Overall this looks OK. Some smaller suggestions below...
+
+> @@ -931,33 +904,39 @@ static void shmem_undo_range(struct inode *inode, loff_t lstart, loff_t lend,
+>  		index++;
+>  	}
+>  
+> -	if (partial_start) {
+> -		struct page *page = NULL;
+> -		shmem_getpage(inode, start - 1, &page, SGP_READ);
+> -		if (page) {
+> -			unsigned int top = PAGE_SIZE;
+> -			if (start > end) {
+> -				top = partial_end;
+> -				partial_end = 0;
+> -			}
+> -			zero_user_segment(page, partial_start, top);
+> -			set_page_dirty(page);
+> -			unlock_page(page);
+> -			put_page(page);
+> +	index = -1;
+> +	if (end != -1 && ((lend + 1) % PAGE_SIZE))
+				    ^^
+Hum, is this guaranteed to compile properly on 32-bit archs without
+optimization? It would be 64-bit division... Maybe we don't care, it just
+caught my eye...
+
+BTW you could just drop end != -1 part because end == -1 iff lend == -1 so
+(lend + 1) % PAGE_SIZE is stronger.
+
+> +		index = lend >> PAGE_SHIFT;
+> +	page = NULL;
+> +	shmem_getpage(inode, lstart >> PAGE_SHIFT, &page, SGP_READ);
+> +	if (page) {
+> +		bool same_page;
+> +
+> +		page = thp_head(page);
+> +		same_page = lend + 1 < page_offset(page) + thp_size(page);
+			    ^^^^^^^^ Just lend here?
+
+> +		if (same_page)
+> +			index = -1;
+> +		set_page_dirty(page);
+> +		if (!truncate_inode_partial_page(page, lstart, lend)) {
+> +			start = page->index + thp_nr_pages(page);
+> +			if (same_page)
+> +				end = page->index;
+>  		}
+> +		unlock_page(page);
+> +		put_page(page);
+> +		page = NULL;
+>  	}
+> -	if (partial_end) {
+> -		struct page *page = NULL;
+> +
+> +	if (index != -1)
+>  		shmem_getpage(inode, end, &page, SGP_READ);
+> -		if (page) {
+> -			zero_user_segment(page, 0, partial_end);
+> -			set_page_dirty(page);
+> -			unlock_page(page);
+> -			put_page(page);
+> -		}
+> +	if (page) {
+> +		page = thp_head(page);
+> +		set_page_dirty(page);
+> +		if (!truncate_inode_partial_page(page, lstart, lend))
+> +			end = page->index;
+> +		unlock_page(page);
+> +		put_page(page);
+>  	}
+> -	if (start >= end)
+> -		return;
+
+You use 'index' effectively as bool in all of the above (only ever check
+index != -1). And effectively you only use it to communicate whether tail
+partial page got already handled or not. Maybe there's some less cryptic
+way to achieve that? Even separate bool just for that would be probably
+better that this.
+
+>  	index = start;
+>  	while (index < end) {
+
+> diff --git a/mm/truncate.c b/mm/truncate.c
+> index d62aeffbffcc..06ed2f93069d 100644
+> --- a/mm/truncate.c
+> +++ b/mm/truncate.c
+> @@ -224,6 +224,53 @@ int truncate_inode_page(struct address_space *mapping, struct page *page)
+>  	return 0;
 >  }
->  EXPORT_SYMBOL_GPL(devm_regmap_field_alloc);
 >  
-> +
-> +/**
-> + * regmap_field_bulk_alloc() - Allocate and initialise a bulk register field.
+> +/*
+> + * Handle partial (transparent) pages.  The page may be entirely within the
+> + * range if a split has raced with us.  If not, we zero the part of the
+> + * page that's within the (start, end] range, and then split the page if
+                             ^ '[' here - start is inclusive as well...
+
+> + * it's a THP.  split_page_range() will discard pages which now lie beyond
+> + * i_size, and we rely on the caller to discard pages which lie within a
+> + * newly created hole.
 > + *
-> + * @regmap: regmap bank in which this register field is located.
-> + * @rm_field: regmap register fields within the bank.
-> + * @reg_field: Register fields within the bank.
-> + * @num_fields: Number of register fields.
-> + *
-> + * The return value will be an -ENOMEM on error or zero for success.
-> + * Newly allocated regmap_fields should be freed by calling
-> + * regmap_field_bulk_free()
+> + * Returns false if THP splitting failed so the caller can can avoid
+							  ^^^^^^^ just 'can'
+
+> + * discarding the entire page which is stubbornly unsplit.
 > + */
-> +int regmap_field_bulk_alloc(struct regmap *regmap,
-> +			    struct regmap_field **rm_field,
-> +			    struct reg_field *reg_field,
-> +			    int num_fields)
+> +bool truncate_inode_partial_page(struct page *page, loff_t start, loff_t end)
 > +{
-> +	struct regmap_field *rf;
-> +	int i;
+> +	loff_t pos = page_offset(page);
+> +	unsigned int offset, length;
 > +
-> +	rf = kcalloc(num_fields, sizeof(*rf), GFP_KERNEL);
-> +	if (!rf)
-> +		return -ENOMEM;
+> +	if (pos < start)
+> +		offset = start - pos;
+> +	else
+> +		offset = 0;
+> +	length = thp_size(page);
+> +	if (pos + length <= (u64)end)
+> +		length = length - offset;
+> +	else
+> +		length = end + 1 - pos - offset;
 > +
-> +	for (i = 0; i < num_fields; i++) {
-> +		regmap_field_init(&rf[i], regmap, reg_field[i]);
-> +		rm_field[i] = &rf[i];
+> +	wait_on_page_writeback(page);
+> +	if (length == thp_size(page)) {
+> +		truncate_inode_page(page->mapping, page);
+> +		return true;
 > +	}
 > +
-> +	return 0;
+> +	/*
+> +	 * We may be zeroing pages we're about to discard, but it avoids
+> +	 * doing a complex calculation here, and then doing the zeroing
+> +	 * anyway if the page split fails.
+> +	 */
+> +	zero_user(page, offset, length);
+> +
+> +	cleancache_invalidate_page(page->mapping, page);
+> +	if (page_has_private(page))
+> +		do_invalidatepage(page, offset, length);
+> +	if (!PageTransHuge(page))
+> +		return true;
+> +	return split_huge_page(page) == 0;
 > +}
-> +EXPORT_SYMBOL_GPL(regmap_field_bulk_alloc);
 > +
-> +/**
-> + * devm_regmap_field_bulk_alloc() - Allocate and initialise a bulk register
-> + * fields.
-> + *
-> + * @dev: Device that will be interacted with
-> + * @regmap: regmap bank in which this register field is located.
-> + * @rm_field: regmap register fields within the bank.
-> + * @reg_field: Register fields within the bank.
-> + * @num_fields: Number of register fields.
-> + *
-> + * The return value will be an -ENOMEM on error or zero for success.
-> + * Newly allocated regmap_fields will be automatically freed by the
-> + * device management code.
-> + */
-> +int devm_regmap_field_bulk_alloc(struct device *dev,
-> +				 struct regmap *regmap,
-> +				 struct regmap_field **rm_field,
-> +				 struct reg_field *reg_field,
-> +				 int num_fields)
-> +{
-> +	struct regmap_field *rf;
-> +	int i;
-> +
-> +	rf = devm_kcalloc(dev, num_fields, sizeof(*rf), GFP_KERNEL);
-> +	if (!rf)
-> +		return -ENOMEM;
-> +
-> +	for (i = 0; i < num_fields; i++) {
-> +		regmap_field_init(&rf[i], regmap, reg_field[i]);
-> +		rm_field[i] = &rf[i];
-> +	}
-> +
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(devm_regmap_field_bulk_alloc);
-> +
-> +/**
-> + * regmap_field_bulk_free() - Free register field allocated using
-> + *                       regmap_field_bulk_alloc.
-> + *
-> + * @field: regmap fields which should be freed.
-> + */
-> +void regmap_field_bulk_free(struct regmap_field *field)
-> +{
-> +	kfree(field);
-> +}
-> +EXPORT_SYMBOL_GPL(regmap_field_bulk_free);
-> +
-> +/**
-> + * devm_regmap_field_bulk_free() - Free a bulk register field allocated using
-> + *                            devm_regmap_field_bulk_alloc.
-> + *
-> + * @dev: Device that will be interacted with
-> + * @field: regmap field which should be freed.
-> + *
-> + * Free register field allocated using devm_regmap_field_bulk_alloc(). Usually
-> + * drivers need not call this function, as the memory allocated via devm
-> + * will be freed as per device-driver life-cycle.
-> + */
-> +void devm_regmap_field_bulk_free(struct device *dev,
-> +				 struct regmap_field *field)
-> +{
-> +	devm_kfree(dev, field);
-> +}
-> +EXPORT_SYMBOL_GPL(devm_regmap_field_bulk_free);
-> +
->  /**
->   * devm_regmap_field_free() - Free a register field allocated using
->   *                            devm_regmap_field_alloc.
-> diff --git a/include/linux/regmap.h b/include/linux/regmap.h
-> index 0c49d59168b5..a35ec0a0d6e0 100644
-> --- a/include/linux/regmap.h
-> +++ b/include/linux/regmap.h
-> @@ -1189,6 +1189,17 @@ struct regmap_field *devm_regmap_field_alloc(struct device *dev,
->  		struct regmap *regmap, struct reg_field reg_field);
->  void devm_regmap_field_free(struct device *dev,	struct regmap_field *field);
+>  /*
+>   * Used to get rid of pages on hardware memory corruption.
+>   */
+> @@ -288,20 +335,15 @@ void truncate_inode_pages_range(struct address_space *mapping,
+>  {
+>  	pgoff_t		start;		/* inclusive */
+>  	pgoff_t		end;		/* exclusive */
+> -	unsigned int	partial_start;	/* inclusive */
+> -	unsigned int	partial_end;	/* exclusive */
+>  	struct pagevec	pvec;
+>  	pgoff_t		indices[PAGEVEC_SIZE];
+>  	pgoff_t		index;
+>  	int		i;
+> +	struct page *	page;
 >  
-> +int regmap_field_bulk_alloc(struct regmap *regmap,
-> +			     struct regmap_field **rm_field,
-> +			     struct reg_field *reg_field,
-> +			     int num_fields);
-> +void regmap_field_bulk_free(struct regmap_field *field);
-> +int devm_regmap_field_bulk_alloc(struct device *dev, struct regmap *regmap,
-> +				 struct regmap_field **field,
-> +				 struct reg_field *reg_field, int num_fields);
-> +void devm_regmap_field_bulk_free(struct device *dev,
-> +				 struct regmap_field *field);
+>  	if (mapping->nrpages == 0 && mapping->nrexceptional == 0)
+>  		goto out;
+>  
+> -	/* Offsets within partial pages */
+> -	partial_start = lstart & (PAGE_SIZE - 1);
+> -	partial_end = (lend + 1) & (PAGE_SIZE - 1);
+> -
+>  	/*
+>  	 * 'start' and 'end' always covers the range of pages to be fully
+>  	 * truncated. Partial pages are covered with 'partial_start' at the
+> @@ -334,48 +376,37 @@ void truncate_inode_pages_range(struct address_space *mapping,
+>  		cond_resched();
+>  	}
+>  
+> -	if (partial_start) {
+> -		struct page *page = find_lock_page(mapping, start - 1);
+> -		if (page) {
+> -			unsigned int top = PAGE_SIZE;
+> -			if (start > end) {
+> -				/* Truncation within a single page */
+> -				top = partial_end;
+> -				partial_end = 0;
+> -			}
+> -			wait_on_page_writeback(page);
+> -			zero_user_segment(page, partial_start, top);
+> -			cleancache_invalidate_page(mapping, page);
+> -			if (page_has_private(page))
+> -				do_invalidatepage(page, partial_start,
+> -						  top - partial_start);
+> -			unlock_page(page);
+> -			put_page(page);
+> +	index = -1;
+> +	if (end != -1 && ((lend + 1) % PAGE_SIZE))
+            ^^^^^^^^^ Again this is unnecessary...
+
+> +		index = lend >> PAGE_SHIFT;
+> +	page = find_lock_head(mapping, lstart >> PAGE_SHIFT);
+> +	if (page) {
+> +		bool same_page = lend + 1 < page_offset(page) + thp_size(page);
+				  ^^^^^^^ Again why +1 here?
+
+> +		if (same_page)
+> +			index = -1;
+> +		if (!truncate_inode_partial_page(page, lstart, lend)) {
+> +			start = page->index + thp_nr_pages(page);
+> +			if (same_page)
+> +				end = page->index;
+>  		}
+> +		unlock_page(page);
+> +		put_page(page);
+> +		page = NULL;
+>  	}
+> -	if (partial_end) {
+> -		struct page *page = find_lock_page(mapping, end);
+> -		if (page) {
+> -			wait_on_page_writeback(page);
+> -			zero_user_segment(page, 0, partial_end);
+> -			cleancache_invalidate_page(mapping, page);
+> -			if (page_has_private(page))
+> -				do_invalidatepage(page, 0,
+> -						  partial_end);
+> -			unlock_page(page);
+> -			put_page(page);
+> -		}
 > +
+> +	if (index != -1)
+> +		page = find_lock_head(mapping, index);
 
-You only have a patch that uses these last two functions, so why add all
-4?  We don't add infrastructure to the kernel without users.
+Similarly to shmem the use of index is a bit confusing here but it at least
+gets used in this case so OK. But I'd still find something like:
 
-thanks,
+	if (!tail_page_already_truncated)
+		page = find_lock_head(mapping, lend >> PAGE_SHIFT);
 
-greg k-h
+easier to grasp.
+
+> +	if (page) {
+> +		if (!truncate_inode_partial_page(page, lstart, lend))
+> +			end = page->index;
+> +		unlock_page(page);
+> +		put_page(page);
+>  	}
+
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
