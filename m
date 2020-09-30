@@ -2,209 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D679A27F591
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 00:56:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C3B827F594
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 00:58:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731933AbgI3W4K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 18:56:10 -0400
-Received: from smtprelay0222.hostedemail.com ([216.40.44.222]:43440 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1731870AbgI3W4K (ORCPT
+        id S1731954AbgI3W6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 18:58:23 -0400
+Received: from mout.kundenserver.de ([212.227.126.134]:36785 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731925AbgI3W6X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 18:56:10 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay07.hostedemail.com (Postfix) with ESMTP id 45BDB181D330D;
-        Wed, 30 Sep 2020 22:56:08 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:2:41:152:355:379:599:800:857:960:967:968:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1535:1593:1594:1605:1730:1747:1777:1792:1801:1981:2194:2198:2199:2200:2393:2525:2553:2560:2563:2682:2685:2859:2902:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3622:3865:3866:3867:3868:3870:3871:3872:3873:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4049:4119:4321:4384:4605:5007:6119:6120:6742:7875:7903:9010:9025:9108:9121:10004:10394:10848:11026:11232:11473:11658:11914:12043:12296:12297:12438:12555:12740:12895:12986:13255:13894:14659:21080:21433:21451:21627:21740:21773:21789:21811:21939:30025:30054:30070:30089:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: home48_220463127196
-X-Filterd-Recvd-Size: 8288
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf14.hostedemail.com (Postfix) with ESMTPA;
-        Wed, 30 Sep 2020 22:56:06 +0000 (UTC)
-Message-ID: <46040e2776a4848add06126ce1cb8f846709294f.camel@perches.com>
-Subject: Re: [RFC PATCH next-20200930] treewide: Convert macro and uses of
- __section(foo) to __section("foo")
-From:   Joe Perches <joe@perches.com>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Sedat Dilek <sedat.dilek@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Kees Cook <keescook@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>, rcu@vger.kernel.org,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Date:   Wed, 30 Sep 2020 15:56:05 -0700
-In-Reply-To: <aefe941251d5d58062d06099afb58dea1d1d4e17.camel@perches.com>
-References: <CAKwvOd=s+N4+X94sTams_hKn8uV5Hc6QyCc7OHyOGC-JFesS8A@mail.gmail.com>
-         <20200929192549.501516-1-ndesaulniers@google.com>
-         <CA+icZUVgfnVQ1=zjUGhGKnJAs9g3Q06sWN3ffNdrfZMZLCEkbA@mail.gmail.com>
-         <133589afbe999347454dfcc46ae782897bf9e3a2.camel@perches.com>
-         <46f69161e60b802488ba8c8f3f8bbf922aa3b49b.camel@perches.com>
-         <CAKwvOdkhyvTpY6pHT+CLSsBFuKRWsXucjbwN_tyJAsryZXvG1A@mail.gmail.com>
-         <417ffa3fd3fba5d4a481db6a0b0c9b48cbbb17c4.camel@perches.com>
-         <CAKwvOd=P+j0RaQfHsXPfB0EL3oRgAu8Q0+spUOn_v-p2+3=3pw@mail.gmail.com>
-         <aefe941251d5d58062d06099afb58dea1d1d4e17.camel@perches.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Wed, 30 Sep 2020 18:58:23 -0400
+Received: from methusalix.internal.home.lespocky.de ([92.117.51.117]) by
+ mrelayeu.kundenserver.de (mreue010 [212.227.15.167]) with ESMTPSA (Nemesis)
+ id 1MS43X-1jzvgu1kiJ-00TUaQ; Thu, 01 Oct 2020 00:58:03 +0200
+Received: from falbala.internal.home.lespocky.de ([192.168.243.94])
+        by methusalix.internal.home.lespocky.de with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <post@lespocky.de>)
+        id 1kNl2t-00062K-Cz; Thu, 01 Oct 2020 00:58:01 +0200
+Date:   Thu, 1 Oct 2020 00:57:58 +0200
+From:   Alexander Dahl <post@lespocky.de>
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     Alexander Dahl <ada@thorsis.com>,
+        Alexander Dahl <post@lespocky.de>, linux-leds@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        Dan Murphy <dmurphy@ti.com>, Rob Herring <robh+dt@kernel.org>,
+        linux-kernel@vger.kernel.org,
+        Peter Ujfalusi <peter.ujfalusi@ti.com>,
+        Marek =?iso-8859-1?Q?Beh=FAn?= <marek.behun@nic.cz>,
+        Denis Osterland-Heim <denis.osterland@diehl.com>
+Subject: Re: [PATCH v5 1/3] leds: pwm: Remove platform_data support
+Message-ID: <20200930225757.wqz5x4th5ywfeduv@falbala.internal.home.lespocky.de>
+Mail-Followup-To: Pavel Machek <pavel@ucw.cz>,
+        Alexander Dahl <ada@thorsis.com>, linux-leds@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        Dan Murphy <dmurphy@ti.com>, Rob Herring <robh+dt@kernel.org>,
+        linux-kernel@vger.kernel.org,
+        Peter Ujfalusi <peter.ujfalusi@ti.com>,
+        Marek =?iso-8859-1?Q?Beh=FAn?= <marek.behun@nic.cz>,
+        Denis Osterland-Heim <denis.osterland@diehl.com>
+References: <20200919053145.7564-1-post@lespocky.de>
+ <20200919053145.7564-2-post@lespocky.de>
+ <20200919094418.GC12294@duo.ucw.cz>
+ <11962635.BNa8PrgvAO@ada>
+ <20200930172441.GI27760@duo.ucw.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="yyt47db2zqsrg6sc"
+Content-Disposition: inline
+In-Reply-To: <20200930172441.GI27760@duo.ucw.cz>
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-Scan-Signature: 9f5b2199e4483c1fbb1603fea470fc05
+X-Spam-Score: -2.8 (--)
+X-Provags-ID: V03:K1:BbHs86uXUlbtpHhm3N6xgNNBJ9jn1cuANeBXAoc43eRN+FfZ/pl
+ xlgt+1HGwWRwqAyv8vPzIVe4EHeKciFA8cSC2k3a5TIyEP1mSgxphLGOhMckxpr2lwXIrop
+ VcRhpIquFnd0igPfmjvRWa0nlvgDIDf9A3hXHm0eyJp/X9RUgSpkKKB6O/Rv3rJ8pyp+Yz+
+ 1PU2xDQWLZ4fseTz6PMhA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:+g/Ed80ychI=:5/vUrYqICbytgufhV/8ABl
+ zhAfAA8rlFarFaf4+GP+20m5ezDKn+0HwJgAi5Mp6GISK8pHLVmtQjrcLnDgVe1tsDFJh6Cf1
+ qpgVzZQLICs3VOmu3tBELlBS/LvBmbIdlZEdr2wDutIILkypialwdjOpleo0L3+myXxQ5yt7M
+ RUyqnxE7o1GAx205olStgUYEQH3WpTQDYBTwY7VUP3630TWWmgCIH3dL+2IBMv9UJTRVYJUkI
+ f35t6IzVqpShnL1kOi+csuq9ZUDk+gMXLUs7xW2Da3wELslgSJXUHtmL40TJYGZqeSAJMNWg1
+ TMaNIWYYTGlJrwKspACymXOesEyTpxlVCYOom8GADQsK08qP90+SvljiEz7xO4mO2iT7TcbKm
+ B+HoBwBQlCOoNpbJAquUGp0R6K8MMo2LCS/K/dGrVn+WWfLzvvONu+RQUXlwJ1La4AZaZXg+I
+ bXyxz+dYk128ArKPv2B79eLmky3H550U6yQuarlGHGNebwxQDXFAJD1tb8KM7ulv+pCb3Pgq7
+ laOC9rFTL2A4I0fxNi1rYP3d1UcQzLkXnWCIgwPVqX00rj/65ysbtXYOxcR6q7r43tdLynf60
+ XWCbwkM+qwfmgyAcaWwevD9zGPwnolJ78wmRN1hciss/K1p6sLDEuW7cz73riMngUWz6624YH
+ INxE1eP96QKU+6evU6TnF+jh1nHTcmsk3SEhIMsm7fGCBefIWpknNh0luCJ/ArvbzaSrV+8Uj
+ rf4TBQJxM/LR5VT2Yx7vn7RC8MHQypINe3GgkL7EgTsB3hcuCbox5J7tBxFyBF3RLqydcQDPt
+ EYs8e1diX9CvjNgDCVAEy+PZLs8oDypZIBfoeFMfnRvNHfCLYQUP0dfFlpX8nq1m3WRENQM
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-09-30 at 15:25 -0700, Joe Perches wrote:
-> On Wed, 2020-09-30 at 15:20 -0700, Nick Desaulniers wrote:
-> > On Wed, Sep 30, 2020 at 3:06 PM Joe Perches <joe@perches.com> wrote:
-> > > On Wed, 2020-09-30 at 14:40 -0700, Nick Desaulniers wrote:
-> > > > On Wed, Sep 30, 2020 at 12:16 PM Joe Perches <joe@perches.com> wrote:
-> > > > > Use a more generic form for __section that requires quotes to avoid
-> > > > > complications with clang and gcc differences.
-> > > > > 
-> > > > > Remove the quote operator # from compiler_attributes.h __section macro.
-> > > > > 
-> > > > > Convert all unquoted __section(foo) uses to quoted __section("foo").
-> > > > > Also convert __attribute__((section("foo"))) uses to __section("foo")
-> > > > > even if the __attribute__ has multiple list entry forms.
-> > > > > 
-> > > > > Signed-off-by: Joe Perches <joe@perches.com>
-> > > > > ---
-> > > > > 
-> > > > > This is the current output from the script against next-20200930
-> > > > > attached in this link:
-> > > > > 
-> > > > > https://lore.kernel.org/lkml/0e582a7f5144a33f465978d97701f9b3dcc377f3.camel@perches.com/
-> > > > > 
-> > > > > It might be useful to run the script immediately before
-> > > > > the next -rc1.
-> > > > 
-> > > > $ ARCH=powerpc CROSS_COMPILE=powerpc64le-linux-gnu- make CC=clang -j71
-> > > > powernv_defconfig
-> > > > $ ARCH=powerpc CROSS_COMPILE=powerpc64le-linux-gnu- make CC=clang -j71
-> > > > ...
-> > > > arch/powerpc/boot/main.c:193:44: error: expected ';' after top level declarator
-> > > > static char cmdline[BOOT_COMMAND_LINE_SIZE]
-> > > 
-> > > The script does not convert files in
-> > > 
-> > >         scripts/
-> > >         tools/
-> > >         uapi/
-> > >         and include/linux/compiler_attributes.h
-> > > 
-> > > It otherwise assumes that any __attribute__((__section__
-> > > use should be converted to __section.
-> > > 
-> > > If this ppc file is the only file outside of the
-> > > listed exclusions, I can either exclude it directly
-> > > or add compiler.h to it.
-> > > 
-> > > You have a preference?
-> > 
-> > If compiler_types.h which includes compiler_attributes.h is being
-> > implicitly including by Kbuild add `-include` flags to most
-> > translation units in the kernel, it would be nice to be able to use it
-> > everywhere.  I consider open coded __attribute__'s a portability bug.
-> > So including the header in arch/powerpc/boot/*.c would be my
-> > preference.
-> > 
-> > > Perhaps these are also possible files that need exclusions:
-> > > 
-> > > ./arch/x86/boot/video.h:#define __videocard struct card_info __section(".videocards") __attribute__((used))
-> > > ./arch/x86/boot/compressed/pgtable_64.c:unsigned long *trampoline_32bit __section(".data");
-> > > ./arch/x86/boot/tty.c:static void __section(".inittext") serial_putchar(int ch)
-> > > ./arch/x86/boot/tty.c:static void __section(".inittext") bios_putchar(int ch)
-> > > ./arch/x86/boot/tty.c:void __section(".inittext") putchar(int ch)
-> > > ./arch/x86/boot/tty.c:void __section(".inittext") puts(const char *str)
-> > > ./arch/s390/boot/startup.c:static struct diag210 _diag210_tmp_dma __section(".dma.data");
-> > > ./arch/powerpc/boot/main.c:     __section("__builtin_cmdline");
-> > > ./arch/powerpc/boot/ps3.c:      __section("__builtin_cmdline");
-> > > 
-> > > 
-> 
-> no ppc cross compiler here, so can't test but maybe:
-> ---
->  arch/powerpc/boot/main.c | 2 ++
->  arch/powerpc/boot/ps3.c  | 2 ++
->  2 files changed, 4 insertions(+)
-> 
-> diff --git a/arch/powerpc/boot/main.c b/arch/powerpc/boot/main.c
-> index 6a5b937a7f5c..ce6e27798f79 100644
-> --- a/arch/powerpc/boot/main.c
-> +++ b/arch/powerpc/boot/main.c
-> @@ -6,6 +6,8 @@
->   */
->  #include <stdarg.h>
->  #include <stddef.h>
-> +#include <linux/compiler.h>
-> +
->  #include "elf.h"
->  #include "page.h"
->  #include "string.h"
-> diff --git a/arch/powerpc/boot/ps3.c b/arch/powerpc/boot/ps3.c
-> index a71714b454b1..86ca9c30562a 100644
-> --- a/arch/powerpc/boot/ps3.c
-> +++ b/arch/powerpc/boot/ps3.c
-> @@ -8,6 +8,8 @@
->  
->  #include <stdarg.h>
->  #include <stddef.h>
-> +#include <linux/compiler.h>
-> +
->  #include "types.h"
->  #include "elf.h"
->  #include "string.h"
-> 
-> 
 
-So I installed the powerpc cross compiler, and
-nope, that doesn't work, it makes a mess.
+--yyt47db2zqsrg6sc
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-So it looks like the best option is to exclude these
-2 files from conversion.
+Hello Pavel,
 
-  BOOTCC  arch/powerpc/boot/main.o
-In file included from ./include/linux/kcsan-checks.h:7,
-                 from ./include/asm-generic/rwonce.h:27,
-                 from ./arch/powerpc/include/generated/asm/rwonce.h:1,
-                 from ./include/linux/compiler.h:232,
-                 from arch/powerpc/boot/main.c:9:
-./include/linux/compiler_attributes.h:64: warning: "__always_inline" redefined
-   64 | #define __always_inline                 inline __attribute__((__always_inline__))
-      | 
-In file included from ./include/linux/stddef.h:5,
-                 from ./include/uapi/linux/posix_types.h:5,
-                 from ./include/uapi/linux/types.h:14,
-                 from ./include/linux/types.h:6,
-                 from ./include/linux/kasan-checks.h:5,
-                 from ./include/asm-generic/rwonce.h:26,
-                 from ./arch/powerpc/include/generated/asm/rwonce.h:1,
-                 from ./include/linux/compiler.h:232,
-                 from arch/powerpc/boot/main.c:9:
-./include/uapi/linux/stddef.h:5: note: this is the location of the previous definition
-    5 | #define __always_inline inline
-      | 
-In file included from ./arch/powerpc/include/generated/asm/rwonce.h:1,
-                 from ./include/linux/compiler.h:232,
-                 from arch/powerpc/boot/main.c:9:
-./include/asm-generic/rwonce.h:64:31: error: expected ‘;’ before ‘unsigned’
-   64 | static __no_sanitize_or_inline
-      |                               ^
-      |                               ;
-   65 | unsigned long __read_once_word_nocheck(const void *addr)
-      | ~~~~~~~~                       
-./include/asm-generic/rwonce.h:82:28: error: expected ‘;’ before ‘unsigned’
-   82 | static __no_kasan_or_inline
-      |                            ^
-      |                            ;
-   83 | unsigned long read_word_at_a_time(const void *addr)
-      | ~~~~~~~~                    
-In file included from arch/powerpc/boot/ops.h:15,
-                 from arch/powerpc/boot/main.c:15:
+On Wed, Sep 30, 2020 at 07:24:41PM +0200, Pavel Machek wrote:
+> Hi!
+>=20
+> > > > +__attribute__((nonnull))
+> > > >=20
+> > > >  static int led_pwm_add(struct device *dev, struct led_pwm_priv *pr=
+iv,
+> > > > =20
+> > > >  		       struct led_pwm *led, struct fwnode_handle *fwnode)
+> > > > =20
+> > > >  {
+> > >=20
+> > > This normally goes elsewhere -- right? I'd expect:
+> > >=20
+> > >=20
+> > >   static int led_pwm_add(struct device *dev, struct led_pwm_priv *pri=
+v,
+> > >   		       struct led_pwm *led, struct fwnode_handle *fwnode)
+> > > 	  __attribute__((nonnull))
+> >=20
+> > I found both variants in kernel code.  I can live with both variants an=
+d have=20
+> > no strong preference.
+> >=20
+> > My initial intention to add it was to get a compiler warning in case so=
+meone=20
+> > does not pass a fwnode here, e.g. when using that old platform_data app=
+roach=20
+> > (which is supposed to be removed with this patch).  You might call it a=
+ self=20
+> > check on my own changes.  I can also drop that attribute if you don't w=
+ant=20
+> > that kind of stuff in linux-leds.
+>=20
+> I'm okay with it at the second place :-).
 
+Should have tried this before, but I actually did now. O:-)
 
+If I move the attribute behind, I get this on a W=3D1 build:
+
+    CC      drivers/leds/leds-pwm.o
+  /home/alex/src/linux/leds/drivers/leds/leds-pwm.c:58:1: error: attributes=
+ should be specified before the declarator in a function definition
+   static int led_pwm_add(struct device *dev, struct led_pwm_priv *priv,
+   ^~~~~~
+
+Because it won't build then, I'll keep it where it is.  Meanwhile I
+worked on all the DT remarks by Rob and I will send v6 soon.
+
+Greets
+Alex
+
+--=20
+/"\ ASCII RIBBON | =BBWith the first link, the chain is forged. The first
+\ / CAMPAIGN     | speech censured, the first thought forbidden, the
+ X  AGAINST      | first freedom denied, chains us all irrevocably.=AB
+/ \ HTML MAIL    | (Jean-Luc Picard, quoting Judge Aaron Satie)
+
+--yyt47db2zqsrg6sc
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEwo7muQJjlc+Prwj6NK3NAHIhXMYFAl91DXAACgkQNK3NAHIh
+XMbnyA/8C5bD2L1pLqdwj6Of8uEyInGIK9CDLliDYd1SJ3oDuwkteuAORXEkZWod
+43jAPGXfVJq7nOnCGWifWKvIJ2u4u3sW/HFHfDjOM72VCC2KVZb5y9zYEo8yhIBG
+iQRs1DCsgw/aZRX/Zd0aIwLY1T3XIM+t+HRQoDetKAodgzdrYgRTPYwPgSo8eXUW
+u+MVnhwRtmvHAwkWfLG620RoRRqp0k9ycxYoTJjhKWIztoUx/QlAzZMrO7B9rXgL
+YsuKQo/98Hwf1QiJH55hGon+ZmwhbwVyR7O/ogMcCyHWBMX2cMZc+nX1EdzymeXK
+RZh5rIKR5iY7Y439g6UKz7Dm249zJkngzArlkHxw0DJpYLyFdD5WPWXTf2znmwMY
+Kpyjbi2yR4qpHUFfP4vE3x7fCJ/3oBOHWG03Cd8mjZI7v43CbdVDW1gqVTrt+SSE
+aN8fzPedHXmjXfsiVtkE49pvvWLSPiINCNBEYE3e3M/iokFoeY+UMJbX2qu3GgSV
+6pR+Nophk0nK3YMLTBf99KGxrCWdF6lzu4poBlzNEfGuI1FWKNo1hTHOYAboWzGB
++Q8SLJ+2vDGl/p1g9usJVZjT43lSgOwHuSc1GaHhvSLGQaQ2dm9StWLBLCBOk94M
+FkdBxvaOurmxD10fDTPBM8xEyFYGJalizYXifNjOL9CqAJJc6x0=
+=lkEV
+-----END PGP SIGNATURE-----
+
+--yyt47db2zqsrg6sc--
