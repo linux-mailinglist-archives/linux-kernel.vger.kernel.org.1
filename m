@@ -2,107 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91BDE27F5C1
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 01:15:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3485F27F5BA
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 01:12:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732089AbgI3XMB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 19:12:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57634 "EHLO
+        id S1732112AbgI3XM2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 19:12:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730528AbgI3XMB (ORCPT
+        with ESMTP id S1730528AbgI3XMN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 19:12:01 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0AEBC061755
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 16:12:00 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id g4so3685920edk.0
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 16:12:00 -0700 (PDT)
+        Wed, 30 Sep 2020 19:12:13 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97F42C0613D0
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 16:12:11 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id g128so4409631iof.11
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 16:12:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=5xNLcu2ZBibcOX9eRdIGOJeEwkJ0lfgOo9QwHDvHXzQ=;
-        b=Qj7K/vkx1A15tnnaZGTfZl+ftwHdXkr1sOL1XvvbJjxZt6685kUiCjB86O17zRpzT+
-         fjB3agEdH+lpJttlavg86WCDK/CZ/w8oa+3tm66zd471+mfvUnVBT4hdtV9fr6yowepg
-         +X46wdd3diEHymNJT8fTyl2VcCe6QysxchzK/I0DHPed+T2YFKyVudi6rWQpwhEcD3et
-         sd6uMoaB9fxNujxXaN2i+lH8Mzxt31C5S20E50O40rHcNBtvsXjvgoQYX09+AQJ5Z0i6
-         m98jq1Z/UM0SauyOxFb+wrxUMwuh71pRjyiDIAwjbJtiW/Y3Mc80NcR6gKB3CqeK9jM1
-         /Btg==
+         :cc;
+        bh=MR1J/wCcy9hPIA8a165EobJ1iSvsAYHQOKsxcC0t/ZM=;
+        b=ZPx2WhLMEsL+yYluidhwYyEFpZN/TyaUEwO8sRM63oQOYIGVvUOWXjFMKP0VqrXwAq
+         mzB5kdZF0W9dEZ8UBcur7v0adPsyrmNyZGl81iLAIwMxekR23Fd6wFB/yI1nzm9QmE+A
+         8oK19FFbc4ooWqrN3POUzW22gnn2WQvXNPfXPsNINqv57TwhshXkrcRpT4Z6q58lGM+/
+         jhBSSQGxxVLtbx+q0yRyaf1M0YsuPGLgIP19vuDKXZVs9DpsHzjN0ff08PYX6m3CKTKL
+         QTSXdoPWQt7G7LDZLpPaKkyuJZK+MFEdwKRJEUoo7u9sFzMQV5bozmTnRk+uOzGJ/lqN
+         S/CA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=5xNLcu2ZBibcOX9eRdIGOJeEwkJ0lfgOo9QwHDvHXzQ=;
-        b=Qq2qXt48ZxW9aFLTMSS/vgSsAPXdJYT7hA9LJkQnz0j1Vvy/TPYlg5BjU3j2dRdhfw
-         3QfhCPSTtNAS+wJDirb45DQNTF1/o+RCmr7mv1O/w4PV7SJwDljzZCgaQ3gER5FRYdWr
-         72aynM2M7gnBRmaqPr3ht/RcitI+8ZaaUwmjqUxduGbAlpt49Iueb7hOhA04kk8GquOG
-         u2MRmDZUX9tbSFvPv0TunQev9b3MCegYPiEsg12AWIfu4HHcRwWKM5wqMrSy/nOjAu4F
-         wKPO5GuwywLn+Q/uq3ifPJAKFF6lLTfUTAE6EGvUYMbE++yJgDwfm7np8HFoBIcqDvfm
-         Vgdg==
-X-Gm-Message-State: AOAM532Snb+b8PyQ/GBayZJscYOc51UDD+2sEuu9KG7eTLjLyk2b3drR
-        w8SfyRbpbXfy6hOQdC/oup0PrNqtLjj6eVpmPYJOgQ==
-X-Google-Smtp-Source: ABdhPJwrGlHwTQPZ++L0mLOF85y9/7LbEqNJ1w3mzMjO76tBkyLKmj9U5lGPSOwZW9qqkPLK2MLrOgZEPPp5jfWkAiQ=
-X-Received: by 2002:a50:e807:: with SMTP id e7mr5401960edn.84.1601507519254;
- Wed, 30 Sep 2020 16:11:59 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=MR1J/wCcy9hPIA8a165EobJ1iSvsAYHQOKsxcC0t/ZM=;
+        b=Iecj0pUktXYRAvDHe4mw3eobhX9YspLIkJSzRm5hDvH9iKg1tPfT6VaHRWqDWcBWBL
+         prRRDp1/e8CmXPaHSmwdttFydA3kAiwlK83vJ00NfK5XSGYZD6otVHy5VLfnQcAR3jb+
+         v8M6UTgFMe7UB6QIfKwPBrmJCjgaKfsdUOrIIq1F6zj7iaPabaEY8vohO5NpkfZnPN5N
+         O8kncKsiGf0GbEXhlXRKRPsUkoJfK9Z4mLo/wvNFcMKMWbFlYafT/MHVa/1rxlj84PVt
+         WNHTRiL8vmCqaJ0xnR40dNWUr1hkOrF5tDLCtJ74bPLf5b7ryRWuzbYlaIOlLYn6WTqu
+         Em9w==
+X-Gm-Message-State: AOAM532twsj0MMdQjf3A4a15cXEm1LYM+5gbwoHFeSlK6fALGCRDsiUV
+        XhrBeUIu7swCbZJKY3+DaGU1nYR5O0zhCO2ELGnhFw==
+X-Google-Smtp-Source: ABdhPJwshOH3BplNx3wbsv2/KZX/xMddVCbwS6IPwGnVnWVW23j4+xqef3UnuHpAOtbj9dRLiD6aYHBzOdklq0RIdQQ=
+X-Received: by 2002:a6b:610d:: with SMTP id v13mr3313692iob.189.1601507530756;
+ Wed, 30 Sep 2020 16:12:10 -0700 (PDT)
 MIME-Version: 1.0
-References: <45f07f17-18b6-d187-0914-6f341fe90857@gmail.com>
- <20200930150330.GC284424@cisco> <8bcd956f-58d2-d2f0-ca7c-0a30f3fcd5b8@gmail.com>
- <20200930230327.GA1260245@cisco>
-In-Reply-To: <20200930230327.GA1260245@cisco>
-From:   Jann Horn <jannh@google.com>
-Date:   Thu, 1 Oct 2020 01:11:33 +0200
-Message-ID: <CAG48ez1VOUEHVQyo-2+uO7J+-jN5rh7=KmrMJiPaFjwCbKR1Sg@mail.gmail.com>
-Subject: Re: For review: seccomp_user_notif(2) manual page
-To:     Tycho Andersen <tycho@tycho.pizza>
-Cc:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
-        Sargun Dhillon <sargun@sargun.me>,
-        Kees Cook <keescook@chromium.org>,
-        Christian Brauner <christian@brauner.io>,
-        linux-man <linux-man@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Will Drewry <wad@chromium.org>, bpf <bpf@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Robert Sesek <rsesek@google.com>
+References: <20200925212302.3979661-1-bgardon@google.com> <20200925212302.3979661-7-bgardon@google.com>
+ <20200930061047.GB29659@linux.intel.com>
+In-Reply-To: <20200930061047.GB29659@linux.intel.com>
+From:   Ben Gardon <bgardon@google.com>
+Date:   Wed, 30 Sep 2020 16:11:59 -0700
+Message-ID: <CANgfPd8EbGu8GAY++yHmURO_1i0OEO9QogoD3WpNUrysX5Ba5w@mail.gmail.com>
+Subject: Re: [PATCH 06/22] kvm: mmu: Make address space ID a property of memslots
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
+        Cannon Matthews <cannonmatthews@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
+        Peter Feiner <pfeiner@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVGh1LCBPY3QgMSwgMjAyMCBhdCAxOjAzIEFNIFR5Y2hvIEFuZGVyc2VuIDx0eWNob0B0eWNo
-by5waXp6YT4gd3JvdGU6DQo+IE9uIFdlZCwgU2VwIDMwLCAyMDIwIGF0IDEwOjM0OjUxUE0gKzAy
-MDAsIE1pY2hhZWwgS2VycmlzayAobWFuLXBhZ2VzKSB3cm90ZToNCj4gPiBPbiA5LzMwLzIwIDU6
-MDMgUE0sIFR5Y2hvIEFuZGVyc2VuIHdyb3RlOg0KPiA+ID4gT24gV2VkLCBTZXAgMzAsIDIwMjAg
-YXQgMDE6MDc6MzhQTSArMDIwMCwgTWljaGFlbCBLZXJyaXNrIChtYW4tcGFnZXMpIHdyb3RlOg0K
-PiA+ID4+ICAgICAgICDilIzilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDi
-lIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDi
-lIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDi
-lIDilIDilJANCj4gPiA+PiAgICAgICAg4pSCRklYTUUgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICDilIINCj4gPiA+PiAgICAgICAg4pSc4pSA4pSA4pSA4pSA
-4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA
-4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA
-4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSkDQo+ID4gPj4gICAgICAgIOKUgkZy
-b20gbXkgZXhwZXJpbWVudHMsICBpdCAgYXBwZWFycyAgdGhhdCAgaWYgIGEgIFNFQ+KAkCDilIIN
-Cj4gPiA+PiAgICAgICAg4pSCQ09NUF9JT0NUTF9OT1RJRl9SRUNWICAgaXMgIGRvbmUgIGFmdGVy
-ICB0aGUgIHRhcmdldCDilIINCj4gPiA+PiAgICAgICAg4pSCcHJvY2VzcyB0ZXJtaW5hdGVzLCB0
-aGVuIHRoZSBpb2N0bCgpICBzaW1wbHkgIGJsb2NrcyDilIINCj4gPiA+PiAgICAgICAg4pSCKHJh
-dGhlciB0aGFuIHJldHVybmluZyBhbiBlcnJvciB0byBpbmRpY2F0ZSB0aGF0IHRoZSDilIINCj4g
-PiA+PiAgICAgICAg4pSCdGFyZ2V0IHByb2Nlc3Mgbm8gbG9uZ2VyIGV4aXN0cykuICAgICAgICAg
-ICAgICAgICAgICDilIINCj4gPiA+DQo+ID4gPiBZZWFoLCBJIHRoaW5rIENocmlzdGlhbiB3YW50
-ZWQgdG8gZml4IHRoaXMgYXQgc29tZSBwb2ludCwNCj4gPg0KPiA+IERvIHlvdSBoYXZlIGEgcG9p
-bnRlciB0aGF0IGRpc2N1c3Npb24/IEkgY291bGQgbm90IGZpbmQgaXQgd2l0aCBhDQo+ID4gcXVp
-Y2sgc2VhcmNoLg0KPiA+DQo+ID4gPiBidXQgaXQncyBhDQo+ID4gPiBiaXQgc3RpY2t5IHRvIGRv
-Lg0KPiA+DQo+ID4gQ2FuIHlvdSBzYXkgYSBmZXcgd29yZHMgYWJvdXQgdGhlIG5hdHVyZSBvZiB0
-aGUgcHJvYmxlbT8NCj4NCj4gSSByZW1lbWJlcmVkIHdyb25nLCBpdCdzIGFjdHVhbGx5IGluIHRo
-ZSB0cmVlOiA5OWNkYjhiOWE1NzMgKCJzZWNjb21wOg0KPiBub3RpZnkgYWJvdXQgdW51c2VkIGZp
-bHRlciIpLiBTbyBtYXliZSB0aGVyZSdzIGEgYnVnIGhlcmU/DQoNClRoYXQgdGhpbmcgb25seSBu
-b3RpZmllcyBvbiAtPnBvbGwsIGl0IGRvZXNuJ3QgdW5ibG9jayBpb2N0bHM7IGFuZA0KTWljaGFl
-bCdzIHNhbXBsZSBjb2RlIHVzZXMgU0VDQ09NUF9JT0NUTF9OT1RJRl9SRUNWIHRvIHdhaXQuIFNv
-IHRoYXQNCmNvbW1pdCBkb2Vzbid0IGhhdmUgYW55IGVmZmVjdCBvbiB0aGlzIGtpbmQgb2YgdXNh
-Z2UuDQo=
+On Tue, Sep 29, 2020 at 11:11 PM Sean Christopherson
+<sean.j.christopherson@intel.com> wrote:
+>
+> On Fri, Sep 25, 2020 at 02:22:46PM -0700, Ben Gardon wrote:
+> > Save address space ID as a field in each memslot so that functions that
+> > do not use rmaps (which implicitly encode the id) can handle multiple
+> > address spaces correctly.
+> >
+> > Tested by running kvm-unit-tests and KVM selftests on an Intel Haswell
+> > machine. This series introduced no new failures.
+> >
+> > This series can be viewed in Gerrit at:
+> >       https://linux-review.googlesource.com/c/virt/kvm/kvm/+/2538
+> >
+> > Signed-off-by: Ben Gardon <bgardon@google.com>
+> > ---
+> >  include/linux/kvm_host.h | 1 +
+> >  virt/kvm/kvm_main.c      | 1 +
+> >  2 files changed, 2 insertions(+)
+> >
+> > diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+> > index 05e3c2fb3ef78..a460bc712a81c 100644
+> > --- a/include/linux/kvm_host.h
+> > +++ b/include/linux/kvm_host.h
+> > @@ -345,6 +345,7 @@ struct kvm_memory_slot {
+> >       struct kvm_arch_memory_slot arch;
+> >       unsigned long userspace_addr;
+> >       u32 flags;
+> > +     int as_id;
+>
+> Ha!  Peter Xu's dirtly ring also added this.  This should be a u16, it'll
+> save 8 bytes per memslot (oooooooh).  Any chance you want to include Peter's
+> patch[*]?  It has some nitpicking from Peter and I regarding what to do
+> with as_id on deletion.  That would also avoid silent merge conflicts on
+> Peter's end.
+>
+> [*] https://lkml.kernel.org/r/20200708193408.242909-2-peterx@redhat.com
+
+Oh that's great! Yes, let's use Peter's patch in place of this one.
+
+
+>
+> >       short id;
+> >  };
+> >
+> > diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> > index cf88233b819a0..f9c80351c9efd 100644
+> > --- a/virt/kvm/kvm_main.c
+> > +++ b/virt/kvm/kvm_main.c
+> > @@ -1318,6 +1318,7 @@ int __kvm_set_memory_region(struct kvm *kvm,
+> >       new.npages = mem->memory_size >> PAGE_SHIFT;
+> >       new.flags = mem->flags;
+> >       new.userspace_addr = mem->userspace_addr;
+> > +     new.as_id = as_id;
+> >
+> >       if (new.npages > KVM_MEM_MAX_NR_PAGES)
+> >               return -EINVAL;
+> > --
+> > 2.28.0.709.gb0816b6eb0-goog
+> >
