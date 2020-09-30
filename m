@@ -2,111 +2,340 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 864F927EE19
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 18:00:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DA0127EE1D
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 18:01:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728107AbgI3QAT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 12:00:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47132 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725799AbgI3QAS (ORCPT
+        id S1728358AbgI3QBN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 12:01:13 -0400
+Received: from mail-lf1-f68.google.com ([209.85.167.68]:39529 "EHLO
+        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725355AbgI3QBM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 12:00:18 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A16EEC061755;
-        Wed, 30 Sep 2020 09:00:18 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id 16so1909036qkf.4;
-        Wed, 30 Sep 2020 09:00:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=zQMyHMOAK54x4+Uu0bs0SlOT+nNZwBpL0SWANYBUJNg=;
-        b=YytXHlNdF+nbBmCq922bGTx4NeGtuVVvY0yg/maoWqaaDDRj/imxKF2PG5hh9u2Xsw
-         XF1bMUz5hBGqcNlt/j6mHy/mF3DU4lGpiJwe1E1ahrQaE2m8imRLe/8qmebaC2mXDxS9
-         gjnbKivF6byMitg0ctKj66DFD6v1giHWLpBRNINxz2tw0EuNCpw7Gj/1HMnKtKsbtCMt
-         0egzRG3ZhRJJSUo5G6enKYYg9zHgk6sDmYmpqu7Fz/5YbDi4z/zAV9p2njge7DLSF4hN
-         EYej8UjrsmdwKgibi4Xli1mBx50G9kh/cofzCn8lWdC5+f6GLJ8Nw0vMV9cUNSseuuZm
-         oKZA==
+        Wed, 30 Sep 2020 12:01:12 -0400
+Received: by mail-lf1-f68.google.com with SMTP id q8so2795129lfb.6
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 09:01:08 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=zQMyHMOAK54x4+Uu0bs0SlOT+nNZwBpL0SWANYBUJNg=;
-        b=GqeU4QgqHz6bHfLRZ2Byiv8de6I4iTkorNY1sHYoi1JHd8LgPrRpK5A02JY0vjVIIm
-         sKccI3hs1lmq7mKBFxUQDKEXDE+qC9g6zmakI6nEB9gxAxvNDbK1iVSpL3TwQZi0wj3f
-         D5D+XcN6v16QF9F0do1KqzChwhsHTgxlJY6bny7Tgn3U+bUhuwAlOPi2U4YKI9okY0dJ
-         htDroUYaQbmi0p/9r1zOQXGM8GoGPQ8rXf64edfuXHc61DK5JaKMtWs6C2u2u37eBRc4
-         oJxSV9RnwBeq7TDtlqSKisvXHZsKP/cS6WxEwdKb3aFjs+s6SInWEKkd7o+yLidwIUY+
-         YW0Q==
-X-Gm-Message-State: AOAM532TT7EEheXLeVVVggV3gKMidpj2oaoXpsGabrGOcJnZyRhZ+16M
-        0I7SMLOmjN3YJoXGpg2JBquuqBDMok4CSQ==
-X-Google-Smtp-Source: ABdhPJyPBbryGKffuKw3sEBOxrZ7x8f9e3t1HWMOBZDsQkD/TXFE7IUk1pWI8uHHEI+KDgoPH5hkWw==
-X-Received: by 2002:a05:620a:11b1:: with SMTP id c17mr3220219qkk.94.1601481617659;
-        Wed, 30 Sep 2020 09:00:17 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:e9fa])
-        by smtp.gmail.com with ESMTPSA id g14sm2542009qkk.38.2020.09.30.09.00.16
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=ycDxrhlZbMZ3QAe5FRdISwHYI96aiWhTWEOCVCIV1mY=;
+        b=q24vq3BLuwmtw4rY9ioFuyFBORNNqsm6tH2/5ws2zv8rkSaOQEqmqMlJrU0NI9YM9j
+         eBNLufvdlHJ+JsSWH05LWy3VDG+eJRzOmSUc5fecJatEnhRvE8FFBzJ/xYrJtLVzfOun
+         0UCxhOH+efV+Y9a5fNPFKG9YX9oqT/i+rBXIhPcdmOTQ3JL0dH3r6LUcCr+5eVhDVItv
+         mdyU5U5hrxQET+Qr1rBdRurpiZ8Oes7r6BImA/x4lH0tpDq2gCpt2YfiiIXQI5H+uKn4
+         uUmxiiT5i9b3Zc3RS6Hoxo6EBzHQDE4s4YQTD4nk8GBZxFwAlvAhLvo0YSzKr442LiTC
+         Rc1Q==
+X-Gm-Message-State: AOAM533VV8T9rcV+HpcrYjY3qXJRZTG3Uo8ppJQinYV2XpN2T8IXsY63
+        nZr44Vb9T3je8vE6DMwsLxY=
+X-Google-Smtp-Source: ABdhPJyxotBYkge4LIgChQyvbG7H74KmdrtQx+Ra7kF49AzbAQIBUykQKgNZodD/EQEl9gN/s+J4sw==
+X-Received: by 2002:a19:614b:: with SMTP id m11mr1222865lfk.6.1601481667344;
+        Wed, 30 Sep 2020 09:01:07 -0700 (PDT)
+Received: from localhost.localdomain (broadband-37-110-38-130.ip.moscow.rt.ru. [37.110.38.130])
+        by smtp.googlemail.com with ESMTPSA id c1sm194909ljd.105.2020.09.30.09.01.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Sep 2020 09:00:16 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Wed, 30 Sep 2020 12:00:15 -0400
-From:   Tejun Heo <tj@kernel.org>
-To:     Ming Lei <ming.lei@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        Veronika Kabatova <vkabatov@redhat.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>, Jens Axboe <axboe@kernel.dk>,
-        Bart Van Assche <bvanassche@acm.org>
-Subject: Re: [PATCH V6 1/2] percpu_ref: reduce memory footprint of percpu_ref
- in fast path
-Message-ID: <20200930160015.GC4441@mtj.duckdns.org>
-References: <20200930082657.3305143-1-ming.lei@redhat.com>
- <20200930082657.3305143-2-ming.lei@redhat.com>
+        Wed, 30 Sep 2020 09:01:06 -0700 (PDT)
+From:   Denis Efremov <efremov@linux.com>
+To:     julia.lawall@inria.fr
+Cc:     Denis Efremov <efremov@linux.com>, cocci@systeme.lip6.fr,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v4] coccinelle: api: add kvmalloc script
+Date:   Wed, 30 Sep 2020 19:00:46 +0300
+Message-Id: <20200930160046.726661-1-efremov@linux.com>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200804063245.8383-1-efremov@linux.com>
+References: <20200804063245.8383-1-efremov@linux.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200930082657.3305143-2-ming.lei@redhat.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 04:26:56PM +0800, Ming Lei wrote:
-> diff --git a/include/linux/percpu-refcount.h b/include/linux/percpu-refcount.h
-> index 87d8a38bdea1..1d6ed9ca23dd 100644
-> --- a/include/linux/percpu-refcount.h
-> +++ b/include/linux/percpu-refcount.h
-> @@ -92,18 +92,23 @@ enum {
->  	PERCPU_REF_ALLOW_REINIT	= 1 << 2,
->  };
->  
-> -struct percpu_ref {
-> +struct percpu_ref_data {
->  	atomic_long_t		count;
-> -	/*
-> -	 * The low bit of the pointer indicates whether the ref is in percpu
-> -	 * mode; if set, then get/put will manipulate the atomic_t.
-> -	 */
-> -	unsigned long		percpu_count_ptr;
->  	percpu_ref_func_t	*release;
->  	percpu_ref_func_t	*confirm_switch;
->  	bool			force_atomic:1;
->  	bool			allow_reinit:1;
->  	struct rcu_head		rcu;
-> +	struct percpu_ref	*ref;
-> +};
-> +
-> +struct percpu_ref {
-> +	/*
-> +	 * The low bit of the pointer indicates whether the ref is in percpu
-> +	 * mode; if set, then get/put will manipulate the atomic_t.
-> +	 */
-> +	unsigned long		percpu_count_ptr;
-> +	struct percpu_ref_data  *data;
->  };
+Suggest kvmalloc, kvfree instead of opencoded patterns.
 
-Can you please add a comment explaining why the two structs are split?
+Signed-off-by: Denis Efremov <efremov@linux.com>
+---
+Changes in v2:
+ - binary operator cmp added
+ - NULL comparisions simplified
+ - "T x" case added to !patch mode
+Changes in v3:
+ - kvfree rules added
+Changes in v4:
+ - pattern updated to match only GFP_KERNEL/__GFP_NOWARN flags
+   to avoid possible false-positives
 
-Thanks.
+All patches are sent:
+[1] https://lore.kernel.org/patchwork/patch/1296428/
+[2] https://lore.kernel.org/patchwork/patch/1296636/
+[3] https://lore.kernel.org/patchwork/patch/1282895/
+[4] https://lore.kernel.org/patchwork/patch/1296631/
 
+ scripts/coccinelle/api/kvmalloc.cocci | 256 ++++++++++++++++++++++++++
+ 1 file changed, 256 insertions(+)
+ create mode 100644 scripts/coccinelle/api/kvmalloc.cocci
+
+diff --git a/scripts/coccinelle/api/kvmalloc.cocci b/scripts/coccinelle/api/kvmalloc.cocci
+new file mode 100644
+index 000000000000..c30dab718a49
+--- /dev/null
++++ b/scripts/coccinelle/api/kvmalloc.cocci
+@@ -0,0 +1,256 @@
++// SPDX-License-Identifier: GPL-2.0-only
++///
++/// Find if/else condition with kmalloc/vmalloc calls.
++/// Suggest to use kvmalloc instead. Same for kvfree.
++///
++// Confidence: High
++// Copyright: (C) 2020 Denis Efremov ISPRAS
++// Options: --no-includes --include-headers
++//
++
++virtual patch
++virtual report
++virtual org
++virtual context
++
++@initialize:python@
++@@
++filter = frozenset(['kvfree'])
++
++def relevant(p):
++    return not (filter & {el.current_element for el in p})
++
++@kvmalloc depends on !patch@
++expression E, E1, size;
++identifier flags;
++binary operator cmp = {<=, <, ==, >, >=};
++identifier x;
++type T;
++position p;
++@@
++
++(
++* if (size cmp E1 || ...)@p {
++    ...
++*    E = \(kmalloc\|kzalloc\|kcalloc\|kmalloc_node\|kzalloc_node\|
++*          kmalloc_array\|kmalloc_array_node\|kcalloc_node\)
++*          (..., size, \(flags\|GFP_KERNEL\|\(GFP_KERNEL\|flags\)|__GFP_NOWARN\), ...)
++    ...
++  } else {
++    ...
++*    E = \(vmalloc\|vzalloc\|vmalloc_node\|vzalloc_node\)(..., size, ...)
++    ...
++  }
++|
++* E = \(kmalloc\|kzalloc\|kcalloc\|kmalloc_node\|kzalloc_node\|
++*       kmalloc_array\|kmalloc_array_node\|kcalloc_node\)
++*       (..., size, \(flags\|GFP_KERNEL\|\(GFP_KERNEL\|flags\)|__GFP_NOWARN\), ...)
++  ... when != E = E1
++      when != size = E1
++      when any
++* if (E == NULL)@p {
++    ...
++*   E = \(vmalloc\|vzalloc\|vmalloc_node\|vzalloc_node\)(..., size, ...)
++    ...
++  }
++|
++* T x = \(kmalloc\|kzalloc\|kcalloc\|kmalloc_node\|kzalloc_node\|
++*         kmalloc_array\|kmalloc_array_node\|kcalloc_node\)
++*         (..., size, \(flags\|GFP_KERNEL\|\(GFP_KERNEL\|flags\)|__GFP_NOWARN\), ...);
++  ... when != x = E1
++      when != size = E1
++      when any
++* if (x == NULL)@p {
++    ...
++*   x = \(vmalloc\|vzalloc\|vmalloc_node\|vzalloc_node\)(..., size, ...)
++    ...
++  }
++)
++
++@kvfree depends on !patch@
++expression E;
++position p : script:python() { relevant(p) };
++@@
++
++* if (is_vmalloc_addr(E))@p {
++    ...
++*   vfree(E)
++    ...
++  } else {
++    ... when != krealloc(E, ...)
++        when any
++*   \(kfree\|kzfree\)(E)
++    ...
++  }
++
++@depends on patch@
++expression E, E1, size, node;
++binary operator cmp = {<=, <, ==, >, >=};
++identifier flags, x;
++type T;
++@@
++
++(
++- if (size cmp E1)
++-    E = kmalloc(size, flags);
++- else
++-    E = vmalloc(size);
+++ E = kvmalloc(size, flags);
++|
++- if (size cmp E1)
++-    E = kmalloc(size, \(GFP_KERNEL\|GFP_KERNEL|__GFP_NOWARN\));
++- else
++-    E = vmalloc(size);
+++ E = kvmalloc(size, GFP_KERNEL);
++|
++- E = kmalloc(size, flags | __GFP_NOWARN);
++- if (E == NULL)
++-   E = vmalloc(size);
+++ E = kvmalloc(size, flags);
++|
++- E = kmalloc(size, \(GFP_KERNEL\|GFP_KERNEL|__GFP_NOWARN\));
++- if (E == NULL)
++-   E = vmalloc(size);
+++ E = kvmalloc(size, GFP_KERNEL);
++|
++- T x = kmalloc(size, flags | __GFP_NOWARN);
++- if (x == NULL)
++-   x = vmalloc(size);
+++ T x = kvmalloc(size, flags);
++|
++- T x = kmalloc(size, \(GFP_KERNEL\|GFP_KERNEL|__GFP_NOWARN\));
++- if (x == NULL)
++-   x = vmalloc(size);
+++ T x = kvmalloc(size, GFP_KERNEL);
++|
++- if (size cmp E1)
++-    E = kzalloc(size, flags);
++- else
++-    E = vzalloc(size);
+++ E = kvzalloc(size, flags);
++|
++- if (size cmp E1)
++-    E = kzalloc(size, \(GFP_KERNEL\|GFP_KERNEL|__GFP_NOWARN\));
++- else
++-    E = vzalloc(size);
+++ E = kvzalloc(size, GFP_KERNEL);
++|
++- E = kzalloc(size, flags | __GFP_NOWARN);
++- if (E == NULL)
++-   E = vzalloc(size);
+++ E = kvzalloc(size, flags);
++|
++- E = kzalloc(size, \(GFP_KERNEL\|GFP_KERNEL|__GFP_NOWARN\));
++- if (E == NULL)
++-   E = vzalloc(size);
+++ E = kvzalloc(size, GFP_KERNEL);
++|
++- T x = kzalloc(size, flags | __GFP_NOWARN);
++- if (x == NULL)
++-   x = vzalloc(size);
+++ T x = kvzalloc(size, flags);
++|
++- T x = kzalloc(size, \(GFP_KERNEL\|GFP_KERNEL|__GFP_NOWARN\));
++- if (x == NULL)
++-   x = vzalloc(size);
+++ T x = kvzalloc(size, GFP_KERNEL);
++|
++- if (size cmp E1)
++-    E = kmalloc_node(size, flags, node);
++- else
++-    E = vmalloc_node(size, node);
+++ E = kvmalloc_node(size, flags, node);
++|
++- if (size cmp E1)
++-    E = kmalloc_node(size, \(GFP_KERNEL\|GFP_KERNEL|__GFP_NOWARN\), node);
++- else
++-    E = vmalloc_node(size, node);
+++ E = kvmalloc_node(size, GFP_KERNEL, node);
++|
++- E = kmalloc_node(size, flags | __GFP_NOWARN, node);
++- if (E == NULL)
++-   E = vmalloc_node(size, node);
+++ E = kvmalloc_node(size, flags, node);
++|
++- E = kmalloc_node(size, \(GFP_KERNEL\|GFP_KERNEL|__GFP_NOWARN\), node);
++- if (E == NULL)
++-   E = vmalloc_node(size, node);
+++ E = kvmalloc_node(size, GFP_KERNEL, node);
++|
++- T x = kmalloc_node(size, flags | __GFP_NOWARN, node);
++- if (x == NULL)
++-   x = vmalloc_node(size, node);
+++ T x = kvmalloc_node(size, flags, node);
++|
++- T x = kmalloc_node(size, \(GFP_KERNEL\|GFP_KERNEL|__GFP_NOWARN\), node);
++- if (x == NULL)
++-   x = vmalloc_node(size, node);
+++ T x = kvmalloc_node(size, GFP_KERNEL, node);
++|
++- if (size cmp E1)
++-    E = kvzalloc_node(size, flags, node);
++- else
++-    E = vzalloc_node(size, node);
+++ E = kvzalloc_node(size, flags, node);
++|
++- if (size cmp E1)
++-    E = kvzalloc_node(size, \(GFP_KERNEL\|GFP_KERNEL|__GFP_NOWARN\), node);
++- else
++-    E = vzalloc_node(size, node);
+++ E = kvzalloc_node(size, GFP_KERNEL, node);
++|
++- E = kvzalloc_node(size, flags | __GFP_NOWARN, node);
++- if (E == NULL)
++-   E = vzalloc_node(size, node);
+++ E = kvzalloc_node(size, flags, node);
++|
++- E = kvzalloc_node(size, \(GFP_KERNEL\|GFP_KERNEL|__GFP_NOWARN\), node);
++- if (E == NULL)
++-   E = vzalloc_node(size, node);
+++ E = kvzalloc_node(size, GFP_KERNEL, node);
++|
++- T x = kvzalloc_node(size, flags | __GFP_NOWARN, node);
++- if (x == NULL)
++-   x = vzalloc_node(size, node);
+++ T x = kvzalloc_node(size, flags, node);
++|
++- T x = kvzalloc_node(size, \(GFP_KERNEL\|GFP_KERNEL|__GFP_NOWARN\), node);
++- if (x == NULL)
++-   x = vzalloc_node(size, node);
+++ T x = kvzalloc_node(size, GFP_KERNEL, node);
++)
++
++@depends on patch@
++expression E;
++position p : script:python() { relevant(p) };
++@@
++
++- if (is_vmalloc_addr(E))@p
++-   vfree(E);
++- else
++-   kfree(E);
+++ kvfree(E);
++
++@script: python depends on report@
++p << kvmalloc.p;
++@@
++
++coccilib.report.print_report(p[0], "WARNING opportunity for kvmalloc")
++
++@script: python depends on org@
++p << kvmalloc.p;
++@@
++
++coccilib.org.print_todo(p[0], "WARNING opportunity for kvmalloc")
++
++@script: python depends on report@
++p << kvfree.p;
++@@
++
++coccilib.report.print_report(p[0], "WARNING opportunity for kvfree")
++
++@script: python depends on org@
++p << kvfree.p;
++@@
++
++coccilib.org.print_todo(p[0], "WARNING opportunity for kvfree")
 -- 
-tejun
+2.26.2
+
