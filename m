@@ -2,154 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92AAE27E86F
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 14:21:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1603E27E874
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 14:24:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729957AbgI3MVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 08:21:43 -0400
-Received: from mail-oo1-f67.google.com ([209.85.161.67]:35138 "EHLO
-        mail-oo1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728232AbgI3MVm (ORCPT
+        id S1729382AbgI3MYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 08:24:39 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:19434 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725776AbgI3MYj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 08:21:42 -0400
-Received: by mail-oo1-f67.google.com with SMTP id k13so418082oor.2;
-        Wed, 30 Sep 2020 05:21:42 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YEgxCdX3rAH5lHUw3+UUAJ162eHWPCVqP8JIftX6FNo=;
-        b=XKaWO/TEs0oTtYOkL7FNQj7CnOEFzXWviQIxyYNljVSBKdnmyY4IJdTNCZ50g1YgUB
-         PkqwDTk3tp6UlEXA9C1qb3sGIcxe+GHLu7CtnPnbVprI10PWHiOUpxJ4gfFwhEqJ1NGi
-         JPNKLSvAjJIvqOj/PHq0zsiJEHwMUNDXTeVGpH0iFnC8uv3+LjwhroFOV31Tv8+eaCaC
-         TacX88j28aZQQJlC2HYajJLTwH8c1Eou4saRj27fSchBuPc2SdWLkEQ743IOgWMo1WYK
-         MIke4RHCtkj5LpH/QP9lgMdTkVMB9bIEqGvNSOu188dzw36pqUb24krPE09Lo08e0IZO
-         cp7A==
-X-Gm-Message-State: AOAM530PXjGsi0ZOL75tT3B3zTe8NGA3dG2rpyv74A6OLQiUfvjYMNdI
-        CuHvIdpahKBjfk95OJaXEnHEFtXPK9dlmR5J2cY=
-X-Google-Smtp-Source: ABdhPJzLMUeyo2RdooHxaEgwwg50UkkbVNr+eZ+KLROrYvzc91lw1WbUar+pXFO9w5zVt/YCWTbDkUNDfpGlaFIHPS8=
-X-Received: by 2002:a4a:e616:: with SMTP id f22mr1799785oot.11.1601468501619;
- Wed, 30 Sep 2020 05:21:41 -0700 (PDT)
+        Wed, 30 Sep 2020 08:24:39 -0400
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08UC4bFZ172696;
+        Wed, 30 Sep 2020 08:24:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ content-transfer-encoding : in-reply-to; s=pp1;
+ bh=EhXUprzlfh/Y0khfBPpxT03eBLRVmg2xP/3X6vV5QpA=;
+ b=bRy3Km0PMwJ3R6mTrG+HkLcHQ4iAgxvDr3sTJffoJGFr60zbWoTAn1qRsZFbqWTGUwhE
+ cMIPLM5d6mJzs3gq2GzUfaRigmGGD5WONe/grpY5+TsoBl5Sgm4giBhuJvI26hEG0oda
+ 9KpslTbGJXTZfOZezZzjVDzwDqsm0jT99ixjkQKdBrqKLMPjkXDPwQrvDRr1XV7xNrM1
+ aoAPbc/pkCo5kDQ61b0S370cB7vZRo90o+3jXdyGXqQFZYLdtNfVUK+kOu2zgoE1bOGJ
+ hmwN9f7RVgjKeqWPFw1S0Iyar6+y1IYbsXiaq2UJddHYz6V0T2/I5WvbyXq40HXrPFlV Qw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 33vq8ndqkp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 30 Sep 2020 08:24:23 -0400
+Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08UC4ub5174049;
+        Wed, 30 Sep 2020 08:24:23 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 33vq8ndqjx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 30 Sep 2020 08:24:23 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08UCCSxn005107;
+        Wed, 30 Sep 2020 12:24:21 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma06ams.nl.ibm.com with ESMTP id 33v6mgrybm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 30 Sep 2020 12:24:21 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08UCOIlu31654176
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 30 Sep 2020 12:24:18 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D648B42041;
+        Wed, 30 Sep 2020 12:24:18 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3C44342042;
+        Wed, 30 Sep 2020 12:24:18 +0000 (GMT)
+Received: from localhost (unknown [9.145.18.215])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Wed, 30 Sep 2020 12:24:18 +0000 (GMT)
+Date:   Wed, 30 Sep 2020 14:24:16 +0200
+From:   Vasily Gorbik <gor@linux.ibm.com>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Julien Thierry <jthierry@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: [RFC PATCH v2 0/2] objtool and cross compilation
+Message-ID: <cover.thread-ca645c.your-ad-here.call-01601468251-ext-3723@work.hours>
+References: <20200930101251.GX2628@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <20200917135707.12563-1-geert+renesas@glider.be>
-In-Reply-To: <20200917135707.12563-1-geert+renesas@glider.be>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 30 Sep 2020 14:21:30 +0200
-Message-ID: <CAMuHMdU2k5MmUe2_g7a9268XG2=9phiWoaSTeQ9ZbxoAs3QFfw@mail.gmail.com>
-Subject: Re: [PATCH net-next v4 0/5] net/ravb: Add support for explicit
- internal clock delay configuration
-To:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        Philippe Schenker <philippe.schenker@toradex.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Dan Murphy <dmurphy@ti.com>,
-        Kazuya Mizuguchi <kazuya.mizuguchi.ks@renesas.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        netdev <netdev@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200930101251.GX2628@hirez.programming.kicks-ass.net>
+X-Patchwork-Bot: notify
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-30_07:2020-09-30,2020-09-30 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ suspectscore=1 bulkscore=0 priorityscore=1501 phishscore=0 spamscore=0
+ impostorscore=0 clxscore=1015 adultscore=0 mlxlogscore=999 mlxscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009300099
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi David, Jakub,
+rfc v1 - rfc v2:
+ - rebased onto tip/objtool/core
+ - reformatted couple of lines
 
-On Thu, Sep 17, 2020 at 3:57 PM Geert Uytterhoeven
-<geert+renesas@glider.be> wrote:
-> Some Renesas EtherAVB variants support internal clock delay
-> configuration, which can add larger delays than the delays that are
-> typically supported by the PHY (using an "rgmii-*id" PHY mode, and/or
-> "[rt]xc-skew-ps" properties).
->
-> Historically, the EtherAVB driver configured these delays based on the
-> "rgmii-*id" PHY mode.  This caused issues with PHY drivers that
-> implement PHY internal delays properly[1].  Hence a backwards-compatible
-> workaround was added by masking the PHY mode[2].
->
-> This patch series implements the next step of the plan outlined in [3],
-> and adds proper support for explicit configuration of the MAC internal
-> clock delays using new "[rt]x-internal-delay-ps" properties.  If none of
-> these properties is present, the driver falls back to the old handling.
->
-> This can be considered the MAC counterpart of commit 9150069bf5fc0e86
-> ("dt-bindings: net: Add tx and rx internal delays"), which applies to
-> the PHY.  Note that unlike commit 92252eec913b2dd5 ("net: phy: Add a
-> helper to return the index for of the internal delay"), no helpers are
-> provided to parse the DT properties, as so far there is a single user
-> only, which supports only zero or a single fixed value.  Of course such
-> helpers can be added later, when the need arises, or when deemed useful
-> otherwise.
->
-> This series consists of 3 parts:
->   1. DT binding updates documenting the new properties, for both the
->      generic ethernet-controller and the EtherAVB-specific bindings,
->   2. Conversion to json-schema of the Renesas EtherAVB DT bindings.
->      Technically, the conversion is independent of all of the above.
->      I included it in this series, as it shows how all sanity checks on
->      "[rt]x-internal-delay-ps" values are implemented as DT binding
->      checks,
->   3. EtherAVB driver update implementing support for the new properties.
->
-> Given Rob has provided his acks for the DT binding updates, all of this
-> can be merged through net-next.
->
-> Changes compared to v3[4]:
->   - Add Reviewed-by,
->   - Drop the DT updates, as they will be merged through renesas-devel and
->     arm-soc, and have a hard dependency on this series.
->
-> Changes compared to v2[5]:
->   - Update recently added board DTS files,
->   - Add Reviewed-by.
->
-> Changes compared to v1[6]:
->   - Added "[PATCH 1/7] dt-bindings: net: ethernet-controller: Add
->     internal delay properties",
->   - Replace "renesas,[rt]xc-delay-ps" by "[rt]x-internal-delay-ps",
->   - Incorporated EtherAVB DT binding conversion to json-schema,
->   - Add Reviewed-by.
->
-> Impacted, tested:
->   - Salvator-X(S) with R-Car H3 ES1.0 and ES2.0, M3-W, and M3-N.
->
-> Not impacted, tested:
->   - Ebisu with R-Car E3.
->
-> Impacted, not tested:
->   - Salvator-X(S) with other SoC variants,
->   - ULCB with R-Car H3/M3-W/M3-N variants,
->   - V3MSK and Eagle with R-Car V3M,
->   - Draak with R-Car V3H,
->   - HiHope RZ/G2[MN] with RZ/G2M or RZ/G2N,
->   - Beacon EmbeddedWorks RZ/G2M Development Kit.
->
-> To ease testing, I have pushed this series and the DT updates to the
-> topic/ravb-internal-clock-delays-v4 branch of my renesas-drivers
-> repository at
-> git://git.kernel.org/pub/scm/linux/kernel/git/geert/renesas-drivers.git.
->
-> Thanks for applying!
+Currently objtool seems to be the only tool from build tools needed
+which breaks x86 cross compilation on big endian systems.
 
-Is there anything still blocking this series?
+But besides x86 cross compilation, endianness awareness is also needed
+for big endian architectures objtool support in general.
 
-Thanks!
+We have working prototype of objtool support and orc unwinder for s390
+made originally by Martin Schwidefsky. I'm trying to bring it in shape
+again and refactor to share more code with "generic" part.
 
-Gr{oetje,eeting}s,
+But first things first. These 2 patches point to endianness problems
+which should be addressed. And I'd be glad to get any ideas how to make
+them less ugly.
 
-                        Geert
+New "other architectures support" patches currently move only some
+problematic parts into x86 arch specific folder. But the main problem
+is that arch/x86/lib/insn.c and arch/x86/include/asm/insn.h are shared
+across the kernel source and the tools, and there is no common way to
+address endianness problems.
+
+Since big endian stuff is only needed for the objtool and not for the
+kernel I can try to hide alternative big endian definitions in tools
+only header which is included only if __KERNEL__ is not defined. But
+that kind of defeats the idea of sharing those files 1 to 1 with tools.
+
+Thoughts? Any suggestions are welcome.
+
+Martin Schwidefsky (1):
+  objtool: x86 instruction decoder and big endian cross compiles
+
+Vasily Gorbik (1):
+  objtool: fix x86 orc generation on big endian cross compiles
+
+ arch/x86/include/asm/insn.h            | 42 ++++++++++++
+ arch/x86/include/asm/orc_types.h       | 24 +++++++
+ arch/x86/lib/insn.c                    | 95 +++++++++++---------------
+ tools/arch/x86/include/asm/insn.h      | 42 ++++++++++++
+ tools/arch/x86/include/asm/orc_types.h | 24 +++++++
+ tools/arch/x86/lib/insn.c              | 95 +++++++++++---------------
+ tools/objtool/arch/x86/special.c       |  2 +-
+ tools/objtool/check.c                  |  4 +-
+ tools/objtool/elf.c                    | 34 +++++----
+ tools/objtool/orc_dump.c               |  4 +-
+ tools/objtool/orc_gen.c                |  2 +
+ 11 files changed, 240 insertions(+), 128 deletions(-)
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+⣿⣿⣿⣿⢋⡀⣀⠹⣿⣿⣿⣿
+⣿⣿⣿⣿⠠⣶⡦⠀⣿⣿⣿⣿
+⣿⣿⣿⠏⣴⣮⣴⣧⠈⢿⣿⣿
+⣿⣿⡏⢰⣿⠖⣠⣿⡆⠈⣿⣿
+⣿⢛⣵⣄⠙⣶⣶⡟⣅⣠⠹⣿
+⣿⣜⣛⠻⢎⣉⣉⣀⠿⣫⣵⣿
