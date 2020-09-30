@@ -2,125 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0C3027E3F7
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 10:41:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FD5627E3F9
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 10:42:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728429AbgI3Ilx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 04:41:53 -0400
-Received: from mx2.suse.de ([195.135.220.15]:41804 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725535AbgI3Ilx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 04:41:53 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1601455310;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=gwGgMRR34sznVsdus5CtHuBnVhfV73MLfqJxGlaOrwU=;
-        b=BB1G0PjroOEwFKoOVkvbCSuD7UNEL7i5xYleWMjhioIukbpxTB74hbDaohh0IOiImUStD7
-        QwPoxkkGoMW+cjdGlpyHm+wl9AZB7czhyvWAe7gKCLHEvEiA2n/Xqp1/MY0xB8OwUTx3YA
-        6HzNGOiKeyOeoz1XEczQlExBaDhnFcE=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id A170CAB0E;
-        Wed, 30 Sep 2020 08:41:50 +0000 (UTC)
-Date:   Wed, 30 Sep 2020 10:41:39 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
-        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
-        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        mgorman@techsingularity.net, torvalds@linux-foundation.org,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-Subject: Re: [PATCH tip/core/rcu 14/15] rcu/tree: Allocate a page when caller
- is preemptible
-Message-ID: <20200930084139.GN2277@dhcp22.suse.cz>
-References: <20200928233041.GA23230@paulmck-ThinkPad-P72>
- <20200928233102.24265-14-paulmck@kernel.org>
- <20200929120756.GC2277@dhcp22.suse.cz>
- <20200930015327.GX29330@paulmck-ThinkPad-P72>
+        id S1728530AbgI3ImK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 04:42:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35928 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728439AbgI3ImK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 04:42:10 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F3CDC061755
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 01:42:08 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id w1so937311edr.3
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 01:42:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=iD+QRHVRU6u1+rD8tFvnIfeMmBl5eerGMBaWYTeY2Dw=;
+        b=hb7bY8ElUVvhPpsRUuoKkcY8k5s6gQhB3SHVhxpmhZdBsFWWwV8E5EVnpO7+ssO7GJ
+         5bYBFr/WAyQYJtfw+lHEqI+mnRA44A/1RTDCvMoR4PukmgsvhkMXAZvhqu8NJp0TjfbT
+         emD5kVAWTfxhwIIE/Nbm0UD59m4heZWLX03XtI0ab8m6GXSzSvLRBALNdjOGaeJZfle+
+         r+tmIlJLvzbDOmbfM9BASD0uXQzgsg3QsYn9U3nKTnkY8Sy6KK3Sw+surbFpN0AxSGF2
+         xbkly4d1fgWxfmgAVadEAQI4WckyhNpzy2zTmTwqABzZVNJfi6mzLwuM+WHDOQqNRg5J
+         Fbww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iD+QRHVRU6u1+rD8tFvnIfeMmBl5eerGMBaWYTeY2Dw=;
+        b=VaR6/thNYsh487X4XeGzatPmBCJsau//XpOatVi0SO+O9wjHOf+v/tHGUPNHfB9ur3
+         kI/sd8rddYKJLeSMThLlcWnxr4zDgBcboL3TvCDYF+qK/K+3NZT7cgLT1tbG6Ohfnnog
+         LybLcffrIQFKz7JG5Kje9NCJ3mAQE17vxhYflFttkquBn1I5xQWc5WvUOoquy92vCYps
+         t5QHfLSj7yPRpA2JEbG4LXULUDmr5DD2aeqGRfkDKmuRHiosF/mypM0qOSy0GmFGSmKY
+         9enJJOHgC5eBw1SmbBTcpsx2RgXwXwoTmS8oe5GBlDux8zP5DyAk/LErU0DQG+o753HA
+         6/hg==
+X-Gm-Message-State: AOAM530WK4bESeZCOSaxhwfLDu8GBnb7MsyxCyGkd+kQG0a9rkeuLgRL
+        QHU4Zu38jQEMkE/7ZPI+94TJCZa+v1SH1bh3468n6z7dZS8=
+X-Google-Smtp-Source: ABdhPJzMTuQs57fGeFNaSTqCbGJbitH1AyrupA9dPqPv7eqa93L7lPWy87Dm5XFIXyqmSx2bMIZYNi8NMRMcv41+JLk=
+X-Received: by 2002:a50:99d5:: with SMTP id n21mr1557090edb.88.1601455326930;
+ Wed, 30 Sep 2020 01:42:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200930015327.GX29330@paulmck-ThinkPad-P72>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200930074211.30886-1-michael@walle.cc>
+In-Reply-To: <20200930074211.30886-1-michael@walle.cc>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Wed, 30 Sep 2020 10:41:56 +0200
+Message-ID: <CAMpxmJXm5DB8hcJ7-sUWM6vNq_D59xN=QKc_EtGKkq_DZ5tMUQ@mail.gmail.com>
+Subject: Re: [PATCH] gpio: mpc8xxx: simplify ls1028a/ls1088a support
+To:     Michael Walle <michael@walle.cc>
+Cc:     linux-gpio <linux-gpio@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 29-09-20 18:53:27, Paul E. McKenney wrote:
-> On Tue, Sep 29, 2020 at 02:07:56PM +0200, Michal Hocko wrote:
-> > On Mon 28-09-20 16:31:01, paulmck@kernel.org wrote:
-> > [...]
-> 
-> Apologies for the delay, but today has not been boring.
-> 
-> > > This commit therefore uses preemptible() to determine whether allocation
-> > > is possible at all for double-argument kvfree_rcu().
-> > 
-> > This deserves a comment. Because GFP_ATOMIC is possible for many
-> > !preemptible() contexts. It is the raw_spin_lock, NMIs and likely few
-> > others that are a problem. You are taking a conservative approach which
-> > is fine but it would be good to articulate that explicitly.
-> 
-> Good point, and so I have added the following as a header comment to
-> the add_ptr_to_bulk_krc_lock() function:
-> 
-> // Record ptr in a page managed by krcp, with the pre-krc_this_cpu_lock()
-> // state specified by flags.  If can_sleep is true, the caller must
-> // be schedulable and not be holding any locks or mutexes that might be
-> // acquired by the memory allocator or anything that it might invoke.
-> // If !can_sleep, then if !preemptible() no allocation will be undertaken,
-> // otherwise the allocation will use GFP_ATOMIC to avoid the remainder of
-> // the aforementioned deadlock possibilities.  Returns true iff ptr was
-> // successfully recorded, else the caller must use a fallback.
+On Wed, Sep 30, 2020 at 9:42 AM Michael Walle <michael@walle.cc> wrote:
+>
+> Some Layerscape/QoriQ SoCs have input buffers which needs to be enabled
+> first. This was done in two different ways in the driver. Unify it.
+>
+> This was tested on a LS1028A SoC.
+>
+> Signed-off-by: Michael Walle <michael@walle.cc>
+> ---
 
-OK, not trivial to follow but at least verbose enough to understand the
-intention after some mulling. Definitely an improvement, thanks!
+Looks good, applied.
 
-[...]
-> > > -kvfree_call_rcu_add_ptr_to_bulk(struct kfree_rcu_cpu *krcp, void *ptr)
-> > > +add_ptr_to_bulk_krc_lock(struct kfree_rcu_cpu **krcp,
-> > > +	unsigned long *flags, void *ptr, bool can_sleep)
-> > >  {
-> > >  	struct kvfree_rcu_bulk_data *bnode;
-> > > +	bool can_alloc_page = preemptible();
-> > > +	gfp_t gfp = (can_sleep ? GFP_KERNEL | __GFP_RETRY_MAYFAIL : GFP_ATOMIC) | __GFP_NOWARN;
-> > 
-> > This is quite confusing IMHO. At least without a further explanation.
-> > can_sleep is not as much about sleeping as it is about the reclaim
-> > recursion AFAIU your changelog, right?
-> 
-> No argument on it being confusing, and I hope that the added header
-> comment helps.  But specifically, can_sleep==true is a promise by the
-> caller to be schedulable and not to be holding any lock/mutex/whatever
-> that might possibly be acquired by the memory allocator or by anything
-> else that the memory allocator might invoke, to your point, including
-> for but one example the reclaim logic.
-> 
-> The only way that can_sleep==true is if this function was invoked due
-> to a call to single-argument kvfree_rcu(), which must be schedulable
-> because its fallback is to invoke synchronize_rcu().
-
-OK. I have to say that it is still not clear to me whether this call
-path can be called from the memory reclaim context. If yes then you need
-__GFP_NOMEMALLOC as well.
-
-[...]
-
-> > What is the point of calling kmalloc  for a PAGE_SIZE object? Wouldn't
-> > using the page allocator directly be better?
-> 
-> Well, you guys gave me considerable heat about abusing internal allocator
-> interfaces, and kmalloc() and kfree() seem to be about as non-internal
-> as you can get and still be invoking the allocator.  ;-)
-
-alloc_pages resp. __get_free_pages is a normal page allocator interface
-to use for page size granular allocations. kmalloc is for more fine
-grained allocations.
--- 
-Michal Hocko
-SUSE Labs
+Thanks!
+Bartosz
