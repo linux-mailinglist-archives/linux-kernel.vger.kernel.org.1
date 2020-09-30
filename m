@@ -2,262 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39A3227EA4E
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 15:51:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C7DF27EA51
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 15:51:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730298AbgI3Nvb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 09:51:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55408 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728149AbgI3Nvb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 09:51:31 -0400
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E312EC061755
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 06:51:30 -0700 (PDT)
-Received: by mail-qt1-x834.google.com with SMTP id o21so1206937qtp.2
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 06:51:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=eclypsium.com; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4I3uX02Igjq18E7APS347132GnIV7mVYlpb51la7dFw=;
-        b=dXXQG14tcvVm2kKeVN19uxT1NXyXk372I+SN2SbWmOSH6FNdHz9xSt/amFtaLvQamC
-         NDMQs/570CKp7eNV3qS/KB+FgBpcHe2NzZDRQm14UmslFXj6mQTJw9pUI/OTg71SRGdW
-         CQkXewCO3VBKh3piQZVuMPq4hcys/HQTTm+K0qsiTxQsjZ5eD4Keyq0ZbGifn2vVIyG7
-         Nx+TXyse1zqtke907Q0YU2+Sg0PCJkya0bcHzaaVsjhYRy481a+gpNWY4Yex4cauXGFo
-         KSxqXe9WrynCD3aVeWHfN9WOslFxn9ZQzg6MY0q8RdtckEU1PkaT1vJsd/PHqZ7z+ZFT
-         Dj4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4I3uX02Igjq18E7APS347132GnIV7mVYlpb51la7dFw=;
-        b=kT7ut4YcEJ4CNVeLyROFPrvarPs+OPkKnMIskGafuA5oqCU/0K6/h93879fI6xG+Sc
-         FJWx4Kkzix4I4ZYvXkuTnKW4ZuJX1NT7AdsQ8g/MWHA4dg27yzE0iavvcBhig269E1Mp
-         XfTc4o0ZD5NGpeQyxwBI7sCa9U7nKi9un0AxKXtwJyoLbt0lmBFDr3A7eGp/aZTWkebJ
-         F3Q8MtTPX48rovf9i/7NAb2Cdp9eX6fTm6ShwBnxqUBWRGmPCk+QzGpq3auY4bSmL1sl
-         Jdm+N010kLEuE6EKXd44nI04kN7qiLIJTYHsVJtzlep1isIpXsvdBH40xq+7mVOabpL3
-         30hA==
-X-Gm-Message-State: AOAM530tIUTSS7mx1mHlhXqTGOTjs4MZx4Cy8yv5gfXwZl0GLP0L8jNH
-        vmIncnwce0Pw2cHQlaeG31VqvQ==
-X-Google-Smtp-Source: ABdhPJxw5FvmBoDmwJKiVyHp2IapB/dsg3Zs+mG5QzBpmJvucHtKYh3JgWwKPcg55xirNwOX0Vjq9w==
-X-Received: by 2002:ac8:5194:: with SMTP id c20mr2382493qtn.344.1601473889967;
-        Wed, 30 Sep 2020 06:51:29 -0700 (PDT)
-Received: from localhost ([190.190.138.51])
-        by smtp.gmail.com with ESMTPSA id d10sm2028290qko.32.2020.09.30.06.51.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 30 Sep 2020 06:51:29 -0700 (PDT)
-From:   Daniel Gutson <daniel.gutson@eclypsium.com>
-To:     Daniel Gutson <daniel.gutson@eclypsium.com>,
-        Derek Kiernan <derek.kiernan@xilinx.com>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-kernel@vger.kernel.org, Richard Hughes <hughsient@gmail.com>,
-        Alex Bazhaniuk <alex@eclypsium.com>,
-        linux-mtd@lists.infradead.org
-Cc:     Richard Hughes <richard@hughsie.com>
-Subject: [PATCH 1/2] Platform integrity information in sysfs (version 9)
-Date:   Wed, 30 Sep 2020 10:51:22 -0300
-Message-Id: <20200930135122.5566-1-daniel.gutson@eclypsium.com>
-X-Mailer: git-send-email 2.25.1
+        id S1730327AbgI3Nvn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 09:51:43 -0400
+Received: from mga11.intel.com ([192.55.52.93]:28619 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730273AbgI3Nvm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 09:51:42 -0400
+IronPort-SDR: f5sraDvg6CJ/Xpns2itLT8vB4oMaCwAPw9ROcRw9FpPuPQ++pewJTrFed4xjYxF4dJPvXKfQGb
+ Wc75wZ5mdS/w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9759"; a="159787382"
+X-IronPort-AV: E=Sophos;i="5.77,322,1596524400"; 
+   d="scan'208";a="159787382"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2020 06:51:39 -0700
+IronPort-SDR: 7HR1W53DDbuBvI6KL+DvSwiZJc/6tu6ukrWAacRGhysPLoG/gLwERM2MIrx6/2oYw7GnBynZCm
+ 8tdk06rxDjMQ==
+X-IronPort-AV: E=Sophos;i="5.77,322,1596524400"; 
+   d="scan'208";a="308164089"
+Received: from mdioury-mobl.amr.corp.intel.com (HELO [10.213.184.164]) ([10.213.184.164])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2020 06:51:36 -0700
+Subject: Re: [PATCH V8 1/4] perf/core: Add PERF_SAMPLE_DATA_PAGE_SIZE
+To:     Stephane Eranian <eranian@google.com>,
+        "Liang, Kan" <kan.liang@linux.intel.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>,
+        kirill.shutemov@linux.intel.com,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        benh@kernel.crashing.org, Paul Mackerras <paulus@samba.org>
+References: <20200921152653.3924-1-kan.liang@linux.intel.com>
+ <20200921152653.3924-2-kan.liang@linux.intel.com>
+ <CABPqkBRYzXH-76BZ3DdxYp7bdyPcr3_WxuxOsJw=1YPE9EwZaw@mail.gmail.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <96c37bf7-7dc9-5895-be76-cc52a032709f@intel.com>
+Date:   Wed, 30 Sep 2020 06:51:35 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <CABPqkBRYzXH-76BZ3DdxYp7bdyPcr3_WxuxOsJw=1YPE9EwZaw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch provides a driver and an API for exporting
-information about the platform integrity
-firmware configuration in the sysfs filesystem.
+On 9/30/20 12:15 AM, Stephane Eranian wrote:
+>> +       /*
+>> +        * Software page-table walkers must disable IRQs,
+>> +        * which prevents any tear down of the page tables.
+>> +        */
+>> +       local_irq_save(flags);
+>> +
+>> +       size = __perf_get_page_size(current->active_mm, addr);
+>> +
+> When I tested on my kernel, it panicked because I suspect
+> current->active_mm could be NULL. Adding a check for NULL avoided the
+> problem. But I suspect this is not the correct solution.
 
-The goal is that the attributes are avilable to fwupd.
-
-Signed-off-by: Daniel Gutson <daniel.gutson@eclypsium.com>
-Tested-by: Richard Hughes <richard@hughsie.com>
----
- .../ABI/stable/sysfs-class-platform-integrity | 23 ++++++++
- MAINTAINERS                                   |  7 +++
- drivers/misc/Kconfig                          | 11 ++++
- drivers/misc/Makefile                         |  1 +
- drivers/misc/platform-integrity.c             | 56 +++++++++++++++++++
- include/linux/platform-integrity.h            | 19 +++++++
- 6 files changed, 117 insertions(+)
- create mode 100644 Documentation/ABI/stable/sysfs-class-platform-integrity
- create mode 100644 drivers/misc/platform-integrity.c
- create mode 100644 include/linux/platform-integrity.h
-
-diff --git a/Documentation/ABI/stable/sysfs-class-platform-integrity b/Documentation/ABI/stable/sysfs-class-platform-integrity
-new file mode 100644
-index 000000000000..0978079bde50
---- /dev/null
-+++ b/Documentation/ABI/stable/sysfs-class-platform-integrity
-@@ -0,0 +1,23 @@
-+What:		/sys/class/platform-integrity/intel-spi/bioswe
-+Date:		September 2020
-+KernelVersion:	5.10
-+Contact:	Daniel Gutson <daniel.gutson@eclypsium.com>
-+Description:	If the system firmware set BIOS Write Enable.
-+		0: writes disabled, 1: writes enabled.
-+Users:		https://github.com/fwupd/fwupd
-+
-+What:		/sys/class/platform-integrity/intel-spi/biosle
-+Date:		September 2020
-+KernelVersion:	5.10
-+Contact:	Daniel Gutson <daniel.gutson@eclypsium.com>
-+Description:	If the system firmware set BIOS Lock Enable.
-+		0: SMM lock disabled, 1: SMM lock enabled.
-+Users:		https://github.com/fwupd/fwupd
-+
-+What:		/sys/class/platform-integrity/intel-spi/smm_bioswp
-+Date:		September 2020
-+KernelVersion:	5.10
-+Contact:	Daniel Gutson <daniel.gutson@eclypsium.com>
-+Description:	If the system firmware set SMM BIOS Write Protect.
-+		0: writes disabled unless in SMM, 1: writes enabled.
-+Users:		https://github.com/fwupd/fwupd
-diff --git a/MAINTAINERS b/MAINTAINERS
-index d746519253c3..98bd26cd1adc 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -13774,6 +13774,13 @@ S:	Maintained
- F:	Documentation/devicetree/bindings/iio/chemical/plantower,pms7003.yaml
- F:	drivers/iio/chemical/pms7003.c
- 
-+PLATFORM INTEGRITY DATA MODULE
-+M:	Daniel Gutson <daniel.gutson@eclypsium.com>
-+S:	Supported
-+F:	Documentation/ABI/sysfs-class-platform-integrity
-+F:	drivers/misc/platform-integrity.c
-+F:	include/linux/platform-integrity.h
-+
- PLDMFW LIBRARY
- M:	Jacob Keller <jacob.e.keller@intel.com>
- S:	Maintained
-diff --git a/drivers/misc/Kconfig b/drivers/misc/Kconfig
-index ce136d685d14..8602049bd0ad 100644
---- a/drivers/misc/Kconfig
-+++ b/drivers/misc/Kconfig
-@@ -456,6 +456,17 @@ config PVPANIC
- 	  a paravirtualized device provided by QEMU; it lets a virtual machine
- 	  (guest) communicate panic events to the host.
- 
-+config PLATFORM_INTEGRITY_DATA
-+	bool "Platform integrity information in the sysfs"
-+	depends on SYSFS
-+	help
-+	  This kernel module is a helper driver to provide information about
-+	  platform integrity settings and configuration.
-+	  This module is used by other device drivers -such as the intel-spi-
-+	  to publish the information in /sys/class/platform-integrity which is
-+	  consumed by software such as fwupd which can verify the platform
-+	  has been configured in a secure way.
-+
- source "drivers/misc/c2port/Kconfig"
- source "drivers/misc/eeprom/Kconfig"
- source "drivers/misc/cb710/Kconfig"
-diff --git a/drivers/misc/Makefile b/drivers/misc/Makefile
-index c7bd01ac6291..97ebb997fc47 100644
---- a/drivers/misc/Makefile
-+++ b/drivers/misc/Makefile
-@@ -57,3 +57,4 @@ obj-$(CONFIG_PVPANIC)   	+= pvpanic.o
- obj-$(CONFIG_HABANA_AI)		+= habanalabs/
- obj-$(CONFIG_UACCE)		+= uacce/
- obj-$(CONFIG_XILINX_SDFEC)	+= xilinx_sdfec.o
-+obj-$(CONFIG_PLATFORM_INTEGRITY_DATA)	+= platform-integrity.o
-diff --git a/drivers/misc/platform-integrity.c b/drivers/misc/platform-integrity.c
-new file mode 100644
-index 000000000000..e17d27850a3b
---- /dev/null
-+++ b/drivers/misc/platform-integrity.c
-@@ -0,0 +1,56 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Platform integrity data kernel module
-+ *
-+ * Copyright (C) 2020 Daniel Gutson <daniel.gutson@eclypsium.com>
-+ * Copyright (C) 2020 Eclypsium Inc.
-+ */
-+#include <linux/sysfs.h>
-+#include <linux/module.h>
-+#include <linux/init.h>
-+#include <linux/kdev_t.h>
-+#include <linux/platform-integrity.h>
-+
-+static struct class platform_integrity_class = {
-+	.name = "platform-integrity",
-+	.owner = THIS_MODULE,
-+};
-+
-+struct device *
-+create_platform_integrity_device(struct device *parent, const char *name,
-+				 const struct attribute_group **groups)
-+{
-+	return device_create_with_groups(&platform_integrity_class, parent,
-+					 MKDEV(0, 0), groups, groups, "%s",
-+					 name);
-+}
-+EXPORT_SYMBOL_GPL(create_platform_integrity_device);
-+
-+void destroy_platform_integrity_device(struct device *pi_device)
-+{
-+	device_remove_groups(pi_device,
-+		(const struct attribute_group **)dev_get_drvdata(pi_device));
-+	device_unregister(pi_device);
-+}
-+EXPORT_SYMBOL_GPL(destroy_platform_integrity_device);
-+
-+static int __init platform_integrity_init(void)
-+{
-+	int status;
-+
-+	status = class_register(&platform_integrity_class);
-+	if (status < 0)
-+		return status;
-+
-+	return 0;
-+}
-+
-+static void __exit platform_integrity_exit(void)
-+{
-+	class_unregister(&platform_integrity_class);
-+}
-+
-+module_init(platform_integrity_init);
-+module_exit(platform_integrity_exit);
-+MODULE_LICENSE("GPL v2");
-+MODULE_AUTHOR("Daniel Gutson <daniel.gutson@eclypsium.com>");
-diff --git a/include/linux/platform-integrity.h b/include/linux/platform-integrity.h
-new file mode 100644
-index 000000000000..56eb1a1190e8
---- /dev/null
-+++ b/include/linux/platform-integrity.h
-@@ -0,0 +1,19 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Platform integrity data kernel module
-+ *
-+ * Copyright (C) 2020 Daniel Gutson <daniel.gutson@eclypsium.com>
-+ * Copyright (C) 2020 Eclypsium Inc.
-+ */
-+#ifndef PLATFORM_INTEGRITY_H
-+#define PLATFORM_INTEGRITY_H
-+
-+#include <linux/device.h>
-+
-+struct device *
-+create_platform_integrity_device(struct device *parent, const char *name,
-+				 const struct attribute_group **groups);
-+
-+extern void destroy_platform_integrity_device(struct device *pi_device);
-+
-+#endif /* PLATFORM_INTEGRITY_H */
--- 
-2.25.1
-
+Did you happen to capture the oops?  I can _imagine_ scenarios where
+current->active_mm could be NULL, I just can't find any obvious ones in
+the code.
