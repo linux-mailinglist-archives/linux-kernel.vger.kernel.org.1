@@ -2,123 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AE1527E933
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 15:08:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62EC527E936
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 15:08:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730076AbgI3NIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 09:08:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48738 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725771AbgI3NIS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 09:08:18 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BE63C061755
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 06:08:18 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id l15so1239091wmh.1
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 06:08:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=sUcX7CIsrhuza3QEfhaZv/H1JCPr/l4RGV3Smep/FWY=;
-        b=QI2/iCHqdIsZTJ6zEQraRYPFQWVuus9tecHYWTJgOKiuD130Eof+7xKCu0vGlMQ3Ju
-         Ee/3x/bQb83e9MgCgW+918RPRDWlLO6S3BR6d0TTee62iJyuU4zLDavq7rUyQfxpvELU
-         X1Ebury36YwAu7MVuL1pE/uePaDnkG3zUxXCVMJRc4FY7oYXhb7t1ckhrXdzUQxjSc7B
-         PpCgIENHzJavkDy8g92whDpSBFef94mZEpr/eLTUACF1Wzf78Qy8n66JQAFbu+LAZ21f
-         ZjUMqlKBk03pW/DT1zraaHa9s5hpHStbuvGFimD+B9ktsMJm7Hh1UOCE/7YMEdKSUf8B
-         33bw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=sUcX7CIsrhuza3QEfhaZv/H1JCPr/l4RGV3Smep/FWY=;
-        b=kILXv+1t0BnR459u8D/onaNEJOE/YvOG2vo28OfrRrL3zHO7eYWWEs9KScliXwxaW/
-         7zBcyQ+MPVlfsLN0KTuEuq/mTzxZiCEkjU3roSQ77i+eh+qay1ikdIzfzoE43hSiISA4
-         1xTJdj1SPr89Jg6euuuHQ06v5a/xCsjjN3roIexdqGeb3ZmNeqkLhlmaP1PIpFhnROsV
-         94PzLxUS7rSP2zzNaFfNNuk7rRiUW2T+H8pbpLbAdDrK79A5GsvFeDyBEMGcT8lxei/A
-         AorSQugrL9EKaoQJUqI0Ac2ePc4B3M9MWAvjAtcD4SMjYQizPJBZ6u+iu3gBcGIzERax
-         lQMQ==
-X-Gm-Message-State: AOAM532UzppD8bRZa03/ji5DdztYE+L2eFVLN9Xo1iQG8SRFzjQvRP5X
-        uAIQ1o0CQSdWeuvFP8MIds7/GJcS4RmlKdj4nhY=
-X-Google-Smtp-Source: ABdhPJyPJ7pbucWJRPEB1dBokbX/SeV627p6Vg47Awi5xr3txHGP1YyNdLlCn45H+M6xR3MxgSG1UnuJxBteUK8mAe8=
-X-Received: by 2002:a1c:35c5:: with SMTP id c188mr3063744wma.11.1601471297090;
- Wed, 30 Sep 2020 06:08:17 -0700 (PDT)
+        id S1730112AbgI3NIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 09:08:30 -0400
+Received: from mga14.intel.com ([192.55.52.115]:4048 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727997AbgI3NIa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 09:08:30 -0400
+IronPort-SDR: +Wso0RloPbEgnNBHl2XmoS53z1e0tyEAJmL3ClISb14O9I0oCT6V1ETop5MUYBV7KmqmmEaexj
+ 9TtQwjyOReiA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9759"; a="161663924"
+X-IronPort-AV: E=Sophos;i="5.77,322,1596524400"; 
+   d="scan'208";a="161663924"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2020 06:08:29 -0700
+IronPort-SDR: 7s2UjCbfKUqBwDv/XvMW3S47VDpzGckwYBowePWDcL41i65KVN689X/0oxm6L0Yb63h8tgLizY
+ Uxws7zv6TMRg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,322,1596524400"; 
+   d="scan'208";a="457649639"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+  by orsmga004.jf.intel.com with ESMTP; 30 Sep 2020 06:08:28 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Wed, 30 Sep 2020 06:08:28 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Wed, 30 Sep 2020 06:08:27 -0700
+Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
+ fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.1713.004;
+ Wed, 30 Sep 2020 06:08:27 -0700
+From:   "Derrick, Jonathan" <jonathan.derrick@intel.com>
+To:     "jgg@nvidia.com" <jgg@nvidia.com>
+CC:     "tglx@linutronix.de" <tglx@linutronix.de>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        "sivanich@hpe.com" <sivanich@hpe.com>,
+        "jgross@suse.com" <jgross@suse.com>,
+        "haiyangz@microsoft.com" <haiyangz@microsoft.com>,
+        "Dey, Megha" <megha.dey@intel.com>,
+        "kys@microsoft.com" <kys@microsoft.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        "Lu, Baolu" <baolu.lu@intel.com>,
+        "sstabellini@kernel.org" <sstabellini@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "rafael@kernel.org" <rafael@kernel.org>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "maz@kernel.org" <maz@kernel.org>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "konrad.wilk@oracle.com" <konrad.wilk@oracle.com>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "steve.wahl@hpe.com" <steve.wahl@hpe.com>,
+        "boris.ostrovsky@oracle.com" <boris.ostrovsky@oracle.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "rja@hpe.com" <rja@hpe.com>, "joro@8bytes.org" <joro@8bytes.org>,
+        "Pan, Jacob jun" <jacob.jun.pan@intel.com>,
+        "sthemmin@microsoft.com" <sthemmin@microsoft.com>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
+        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>
+Subject: Re: [patch V2 24/46] PCI: vmd: Mark VMD irqdomain with
+ DOMAIN_BUS_VMD_MSI
+Thread-Topic: [patch V2 24/46] PCI: vmd: Mark VMD irqdomain with
+ DOMAIN_BUS_VMD_MSI
+Thread-Index: AQHWe6Ci+RtSrJb+okaPJR2eu/FJZalSxzQAgC8GCICAAANhgIAAAwyA
+Date:   Wed, 30 Sep 2020 13:08:27 +0000
+Message-ID: <97a8605902a7ee9f17af471458d1fe3029f2ad20.camel@intel.com>
+References: <20200826111628.794979401@linutronix.de>
+         <20200826112333.047315047@linutronix.de>
+         <20200831143940.GA1152540@nvidia.com>
+         <1d284a478d4e5bf4a247ee83afa1b8b45f9e1b3f.camel@intel.com>
+         <20200930125733.GI816047@nvidia.com>
+In-Reply-To: <20200930125733.GI816047@nvidia.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.1.200.100]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <B8974402C8B105498508BBB556348F59@intel.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20200930024712.88258-1-qianjun.kernel@gmail.com>
- <20200930081953.GU2628@hirez.programming.kicks-ass.net> <CAKc596Jc6H5qFxrzSp_fGhqTZt-5ORLoP=E4bwG-QzkpRiL2bA@mail.gmail.com>
- <20200930095719.GW2628@hirez.programming.kicks-ass.net>
-In-Reply-To: <20200930095719.GW2628@hirez.programming.kicks-ass.net>
-From:   jun qian <qianjun.kernel@gmail.com>
-Date:   Wed, 30 Sep 2020 21:08:05 +0800
-Message-ID: <CAKc596L6vzf=C7BvzWQH7kObSM_kGSxuf7idY6fr722sguNykA@mail.gmail.com>
-Subject: Re: [PATCH 1/1] sched/fair: Fix the wrong sched_stat_wait time
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     mingo@redhat.com, Vincent Guittot <vincent.guittot@linaro.org>,
-        juri.lelli@redhat.com, linux-kernel@vger.kernel.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org,
-        Benjamin Segall <bsegall@google.com>, mgorman@suse.de,
-        Yafang Shao <laoar.shao@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Peter Zijlstra <peterz@infradead.org> =E4=BA=8E2020=E5=B9=B49=E6=9C=8830=E6=
-=97=A5=E5=91=A8=E4=B8=89 =E4=B8=8B=E5=8D=885:57=E5=86=99=E9=81=93=EF=BC=9A
->
-> On Wed, Sep 30, 2020 at 05:16:29PM +0800, jun qian wrote:
-> > Peter Zijlstra <peterz@infradead.org> =E4=BA=8E2020=E5=B9=B49=E6=9C=883=
-0=E6=97=A5=E5=91=A8=E4=B8=89 =E4=B8=8B=E5=8D=884:20=E5=86=99=E9=81=93=EF=BC=
-=9A
-> > >
-> > > On Wed, Sep 30, 2020 at 10:47:12AM +0800, qianjun.kernel@gmail.com wr=
-ote:
-> > > > From: jun qian <qianjun.kernel@gmail.com>
-> > > >
-> > > > When the sched_schedstat changes from 0 to 1, some sched se maybe
-> > > > already in the runqueue, the se->statistics.wait_start will be 0.
-> > > > So it will let the (rq_of(cfs_rq)) - se->statistics.wait_start)
-> > > > wrong. We need to avoid this scenario.
-> > >
-> > > Is this really the only problem there? Did you do a full audit of tha=
-t
-> > > schedstat nonsense?
-> > >
-> >
-> > Did you mean that the sched_stat_xxx's xxx_start(sched_stat_sleep
-> > sched_stat_iowait sched_stat_blocked
-> > sched_stat_runtime) may be also depend the schedstat_enabled?
->
-> Yeah, this runtime schedstat_enabled thing is fairly recent, it used to
-> be an always on/off kinda thing.
->
-> At the time we figured inconsistencies from dynamically
-> enabling/disabling it were okay, it's just stats after all.
->
-> But if you now want to 'fix' that, then a full audit might be nice.
->
-> > I have searched the codes, and found that these sched_stat_xxx's
-> > xxx_start don't depend the schedstat_enabled
-> > except the wait_start.
->
-> OK, so you did the audit and only found this one issue? That's good
-> Changelog material :-)
->
-
-I found another problem, when the sched_schedstat changes from 1 to 0,
-the sched se
-which is already in the runqueue, the statistics.wait_start already
-has a value. At this moment
-sched_schedstat changes from 0 to 1 again, the (rq_of(cfs_rq)) -
-se->statistics.wait_start)
-will not be 0 and the wait time will be bigger than the real one. So
-we need to modify the  patch
-to resolve the problem with this scenario.
-
-So I really need a full audit might, =EF=BC=9A-)
-
-Thanks
-
-> Thanks!
+K01lZ2hhDQoNCk9uIFdlZCwgMjAyMC0wOS0zMCBhdCAwOTo1NyAtMDMwMCwgSmFzb24gR3VudGhv
+cnBlIHdyb3RlOg0KPiBPbiBXZWQsIFNlcCAzMCwgMjAyMCBhdCAxMjo0NTozMFBNICswMDAwLCBE
+ZXJyaWNrLCBKb25hdGhhbiB3cm90ZToNCj4gPiBIaSBKYXNvbg0KPiA+IA0KPiA+IE9uIE1vbiwg
+MjAyMC0wOC0zMSBhdCAxMTozOSAtMDMwMCwgSmFzb24gR3VudGhvcnBlIHdyb3RlOg0KPiA+ID4g
+T24gV2VkLCBBdWcgMjYsIDIwMjAgYXQgMDE6MTY6NTJQTSArMDIwMCwgVGhvbWFzIEdsZWl4bmVy
+IHdyb3RlOg0KPiA+ID4gPiBGcm9tOiBUaG9tYXMgR2xlaXhuZXIgPHRnbHhAbGludXRyb25peC5k
+ZT4NCj4gPiA+ID4gDQo+ID4gPiA+IERldmljZXMgb24gdGhlIFZNRCBidXMgdXNlIHRoZWlyIG93
+biBNU0kgaXJxIGRvbWFpbiwgYnV0IGl0IGlzIG5vdA0KPiA+ID4gPiBkaXN0aW5ndWlzaGFibGUg
+ZnJvbSByZWd1bGFyIFBDSS9NU0kgaXJxIGRvbWFpbnMuIFRoaXMgaXMgcmVxdWlyZWQNCj4gPiA+
+ID4gdG8gZXhjbHVkZSBWTUQgZGV2aWNlcyBmcm9tIGdldHRpbmcgdGhlIGlycSBkb21haW4gcG9p
+bnRlciBzZXQgYnkNCj4gPiA+ID4gaW50ZXJydXB0IHJlbWFwcGluZy4NCj4gPiA+ID4gDQo+ID4g
+PiA+IE92ZXJyaWRlIHRoZSBkZWZhdWx0IGJ1cyB0b2tlbi4NCj4gPiA+ID4gDQo+ID4gPiA+IFNp
+Z25lZC1vZmYtYnk6IFRob21hcyBHbGVpeG5lciA8dGdseEBsaW51dHJvbml4LmRlPg0KPiA+ID4g
+PiBBY2tlZC1ieTogQmpvcm4gSGVsZ2FhcyA8YmhlbGdhYXNAZ29vZ2xlLmNvbT4NCj4gPiA+ID4g
+IGRyaXZlcnMvcGNpL2NvbnRyb2xsZXIvdm1kLmMgfCAgICA2ICsrKysrKw0KPiA+ID4gPiAgMSBm
+aWxlIGNoYW5nZWQsIDYgaW5zZXJ0aW9ucygrKQ0KPiA+ID4gPiANCj4gPiA+ID4gKysrIGIvZHJp
+dmVycy9wY2kvY29udHJvbGxlci92bWQuYw0KPiA+ID4gPiBAQCAtNTc5LDYgKzU3OSwxMiBAQCBz
+dGF0aWMgaW50IHZtZF9lbmFibGVfZG9tYWluKHN0cnVjdCB2bWRfDQo+ID4gPiA+ICAJCXJldHVy
+biAtRU5PREVWOw0KPiA+ID4gPiAgCX0NCj4gPiA+ID4gIA0KPiA+ID4gPiArCS8qDQo+ID4gPiA+
+ICsJICogT3ZlcnJpZGUgdGhlIGlycSBkb21haW4gYnVzIHRva2VuIHNvIHRoZSBkb21haW4gY2Fu
+IGJlIGRpc3Rpbmd1aXNoZWQNCj4gPiA+ID4gKwkgKiBmcm9tIGEgcmVndWxhciBQQ0kvTVNJIGRv
+bWFpbi4NCj4gPiA+ID4gKwkgKi8NCj4gPiA+ID4gKwlpcnFfZG9tYWluX3VwZGF0ZV9idXNfdG9r
+ZW4odm1kLT5pcnFfZG9tYWluLCBET01BSU5fQlVTX1ZNRF9NU0kpOw0KPiA+ID4gPiArDQo+ID4g
+PiANCj4gPiA+IEhhdmluZyB0aGUgbm9uLXRyYW5zcGFyZW50LWJyaWRnZSBob2xkIGEgTVNJIHRh
+YmxlIGFuZA0KPiA+ID4gbXVsdGlwbGV4L2RlLW11bHRpcGxleCBJUlFzIGxvb2tzIGxpa2UgYW5v
+dGhlciBnb29kIHVzZSBjYXNlIGZvcg0KPiA+ID4gc29tZXRoaW5nIGNsb3NlIHRvIHBjaV9zdWJk
+ZXZpY2VfbXNpX2NyZWF0ZV9pcnFfZG9tYWluKCk/DQo+ID4gPiANCj4gPiA+IElmIGVhY2ggZGV2
+aWNlIGNvdWxkIGhhdmUgaXRzIG93biBpbnRlcm5hbCBNU0ktWCB0YWJsZSBwcm9ncmFtbWVkDQo+
+ID4gPiBwcm9wZXJseSB0aGluZ3Mgd291bGQgd29yayBhbG90IGJldHRlci4gRGlzYWJsZSBjYXB0
+dXJlL3JlbWFwIG9mIHRoZQ0KPiA+ID4gTVNJIHJhbmdlIGluIHRoZSBOVEIuDQo+ID4gV2UgY2Fu
+IGRpc2FibGUgdGhlIGNhcHR1cmUgYW5kIHJlbWFwIGluIG5ld2VyIGRldmljZXMgc28gd2UgZG9u
+J3QgZXZlbg0KPiA+IG5lZWQgdGhlIGlycSBkb21haW4uDQo+IA0KPiBZb3UnZCBzdGlsbCBuZWVk
+IGFuIGlycSBkb21haW4sIGl0IGp1c3QgY29tZXMgZnJvbQ0KPiBwY2lfc3ViZGV2aWNlX21zaV9j
+cmVhdGVfaXJxX2RvbWFpbigpIGluc3RlYWQgb2YgaW50ZXJuYWwgdG8gdGhpcw0KPiBkcml2ZXIu
+DQpJIGhhdmUgdGhpcyBzZXQgd2hpY2ggZGlzYWJsZXMgcmVtYXBwaW5nIGFuZCBieXBhc3NlcyB0
+aGUgY3JlYXRpb24gb2YNCnRoZSBJUlEgZG9tYWluOg0KaHR0cHM6Ly9wYXRjaHdvcmsub3psYWJz
+Lm9yZy9wcm9qZWN0L2xpbnV4LXBjaS9saXN0Lz9zZXJpZXM9MTkyOTM2DQoNCkl0IGFsbG93cyB0
+aGUgZW5kLWRldmljZXMgbGlrZSBOVk1lIHRvIGRpcmVjdGx5IG1hbmFnZXIgdGhlaXIgb3duDQpp
+bnRlcnJ1cHRzIGFuZCBlbGltaW5hdGVzIHRoZSBWTUQgaW50ZXJydXB0IGNvbXBsZXRlbHkuIFRo
+ZSBvbmx5IHF1aXJrDQp3YXMgdGhhdCBrZXJuZWwgaGFzIHRvIHByb2dyYW0gSVJURSB3aXRoIHRo
+ZSBWTUQgZGV2aWNlIElEIGFzIGl0IHN0aWxsDQpyZW1hcHMgUmVxdWVzdGVyLUlEIGZyb20gc3Vi
+ZGV2aWNlcy4NCg0KPiANCj4gPiBJIHdvdWxkIGhvd2V2ZXIgbGlrZSB0byBkZXRlcm1pbmUgaWYg
+dGhlIE1TSSBkYXRhIGJpdHMgY291bGQgYmUgdXNlZA0KPiA+IGZvciBpbmRpdmlkdWFsIGRldmlj
+ZXMgdG8gaGF2ZSB0aGUgSVJRIGRvbWFpbiBzdWJzeXN0ZW0gZGVtdWx0aXBsZXggdGhlDQo+ID4g
+dmlycSBmcm9tIHRoYXQgYW5kIGVsaW1pbmF0ZSB0aGUgSVJRIGxpc3QgaXRlcmF0aW9uLg0KPiAN
+Cj4gWWVzLCBleGFjdGx5LiBUaGlzIG5ldyBwY2lfc3ViZGV2aWNlX21zaV9jcmVhdGVfaXJxX2Rv
+bWFpbigpIGNyZWF0ZXMNCj4gKnByb3BlciogZnVsbHkgZnVuY3Rpb25hbCBpbnRlcnJ1cHRzLCBu
+byBuZWVkIGZvciBhbnkgSVJRIGhhbmRsZXIgaW4NCj4gdGhpcyBkcml2ZXIuDQo+IA0KPiA+IEEg
+Y29uY2VybiBJIGhhdmUgYWJvdXQgdGhhdCBzY2hlbWUgaXMgdmlydHVhbGl6YXRpb24gYXMgSSB0
+aGluayB0aG9zZQ0KPiA+IGJpdHMgYXJlIHVzZWQgdG8gcm91dGUgdG8gdGhlIHZpcnR1YWwgdmVj
+dG9yLg0KPiANCj4gSXQgc2hvdWxkIGJlIGZpbmUgd2l0aCB0aGlzIHBhdGNoIHNlcmllcywgY29u
+c3VsdCB3aXRoIE1lZ2hhIGhvdw0KPiB2aXJ0dWFsaXphdGlvbiBpcyB3b3JraW5nIHdpdGggSURY
+RC9ldGMNCj4gDQo+IEphc29uDQo=
