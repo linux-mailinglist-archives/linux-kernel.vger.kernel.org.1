@@ -2,74 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7240127F4E4
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 00:12:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D328E27F4E9
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 00:13:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731082AbgI3WMg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 18:12:36 -0400
-Received: from smtprelay0074.hostedemail.com ([216.40.44.74]:44260 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728721AbgI3WMf (ORCPT
+        id S1731213AbgI3WND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 18:13:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48370 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731000AbgI3WNC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 18:12:35 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay03.hostedemail.com (Postfix) with ESMTP id 92DD9837F253;
-        Wed, 30 Sep 2020 22:12:34 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:857:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1540:1593:1594:1711:1714:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3350:3622:3865:3866:3868:3872:3874:4321:4384:5007:6120:6742:10004:10400:10471:11232:11658:11914:12043:12296:12297:12740:12760:12895:13069:13255:13311:13357:13439:14096:14097:14181:14659:14721:21080:21433:21451:21627:21773:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: spade98_570bff827196
-X-Filterd-Recvd-Size: 2684
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf02.hostedemail.com (Postfix) with ESMTPA;
-        Wed, 30 Sep 2020 22:12:32 +0000 (UTC)
-Message-ID: <a17099ea2a4c673993a8beafd6cf2915006c9074.camel@perches.com>
-Subject: Re: [RFC PATCH next-20200930] treewide: Convert macro and uses of
- __section(foo) to __section("foo")
-From:   Joe Perches <joe@perches.com>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Sedat Dilek <sedat.dilek@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Kees Cook <keescook@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>, rcu@vger.kernel.org,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Date:   Wed, 30 Sep 2020 15:12:31 -0700
-In-Reply-To: <417ffa3fd3fba5d4a481db6a0b0c9b48cbbb17c4.camel@perches.com>
-References: <CAKwvOd=s+N4+X94sTams_hKn8uV5Hc6QyCc7OHyOGC-JFesS8A@mail.gmail.com>
-         <20200929192549.501516-1-ndesaulniers@google.com>
-         <CA+icZUVgfnVQ1=zjUGhGKnJAs9g3Q06sWN3ffNdrfZMZLCEkbA@mail.gmail.com>
-         <133589afbe999347454dfcc46ae782897bf9e3a2.camel@perches.com>
-         <46f69161e60b802488ba8c8f3f8bbf922aa3b49b.camel@perches.com>
-         <CAKwvOdkhyvTpY6pHT+CLSsBFuKRWsXucjbwN_tyJAsryZXvG1A@mail.gmail.com>
-         <417ffa3fd3fba5d4a481db6a0b0c9b48cbbb17c4.camel@perches.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Wed, 30 Sep 2020 18:13:02 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D199FC0613D2
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 15:13:01 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id b12so3530557edz.11
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 15:13:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/5JyINSMzWB8voXWZyV8ASlSh5pqRDmgZFl229b53xc=;
+        b=vIRIWKYp7RTSUGB8ntUgtpTfuIX9PNECXrtz7OF4WuzjxaB6ucqKe+labxFFw91k3e
+         QxLYAkxotsyYRcimIeAn7Z8xictu3hpLg464s+yhLPGoBBznroXq6KWSnvggTT+OKc+4
+         aDiohWxi2bv6qcv/jsb8X6MLhFKoc5VlhLVAgI9mvRP+ESLwvXgjzFulM/aycHPXZ43C
+         1PZWgQU//0UlvKQQQTsVxdhKKn2R1cZHSse1ucxAjFxlIjoTBB5mxWh5AjLIfsBpQ8Qr
+         kwHSrW70qM469yHzjDZCiyJ6JH0YYN8N5o79By5EDLYjMuAR2Pr4Z/ShSwy2ytzZ+9o+
+         xxNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/5JyINSMzWB8voXWZyV8ASlSh5pqRDmgZFl229b53xc=;
+        b=MDr9odjs6qdHC+j/Dox8kTfnZzvlcAaykNzqFzZSLTC9PnCYmtF6+mqcCQRLXUTrY3
+         6aNz51DJMAKDCdecDOY4tOrshGCAsw3ZdAkauJYgB9DFIXgjxTvQU/H5F7b0gGjaGBWd
+         SSluSO7V5Nfpk07k7n29Zc9tQsiEYHLMEuKFuE6V3GlnUPGZFB2cj4bZpKArN+Wzsfyr
+         m344co0DXr0k/U+iyYSziD6fnrT48h1DQ4y2m7Wq7C4YsVAnm2F96ZbHrRaFsQwGbbUs
+         fKV+z8TvmCn9DXeFfyfo6SkFY1HM2i9jn+2w4OpOE45r4xYXn9jEhl09W+iLCacOSIpM
+         xlBg==
+X-Gm-Message-State: AOAM531RERFRAfDoi3+e+79X5W09P4JMjlbQ6UANGuaY8+8LGEWGgRW7
+        1zILTMz0jr6zcU6XP1HerowjIObcBP2PpIAyiUBktQ==
+X-Google-Smtp-Source: ABdhPJzjWahTDCS64Nwdg2Qz+9IkGNUdbgNKy/rFx3FC7CVjfHrBmMTaxElMCOz9QatJ5KolJbRCcmnwy3926ope18M=
+X-Received: by 2002:aa7:c0d3:: with SMTP id j19mr5304520edp.40.1601503980129;
+ Wed, 30 Sep 2020 15:13:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <20200929214631.3516445-1-samitolvanen@google.com> <CAKwvOdnYBkUx9YpY9XLONbNYFD7JrOfGbRFQ8ZTf-sa2GTgQdQ@mail.gmail.com>
+In-Reply-To: <CAKwvOdnYBkUx9YpY9XLONbNYFD7JrOfGbRFQ8ZTf-sa2GTgQdQ@mail.gmail.com>
+From:   Sami Tolvanen <samitolvanen@google.com>
+Date:   Wed, 30 Sep 2020 15:12:49 -0700
+Message-ID: <CABCJKufUU=s6GcRCRcmuKnANtyyKEBNJVuaPw416C1OPNgywEQ@mail.gmail.com>
+Subject: Re: [PATCH v4 00/29] Add support for Clang LTO
+To:     Nick Desaulniers <ndesaulniers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, linux-pci@vger.kernel.org,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-09-30 at 15:06 -0700, Joe Perches wrote:
-> Perhaps these are also possible files that need exclusions:
-> 
-> ./arch/x86/boot/video.h:#define __videocard struct card_info __section(".videocards") __attribute__((used))
-> ./arch/x86/boot/compressed/pgtable_64.c:unsigned long *trampoline_32bit __section(".data");
-> ./arch/x86/boot/tty.c:static void __section(".inittext") serial_putchar(int ch)
-> ./arch/x86/boot/tty.c:static void __section(".inittext") bios_putchar(int ch)
-> ./arch/x86/boot/tty.c:void __section(".inittext") putchar(int ch)
-> ./arch/x86/boot/tty.c:void __section(".inittext") puts(const char *str)
-> ./arch/s390/boot/startup.c:static struct diag210 _diag210_tmp_dma __section(".dma.data");
-> ./arch/powerpc/boot/main.c:	__section("__builtin_cmdline");
-> ./arch/powerpc/boot/ps3.c:	__section("__builtin_cmdline");
+On Wed, Sep 30, 2020 at 2:58 PM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
+>
+> On Tue, Sep 29, 2020 at 2:46 PM Sami Tolvanen <samitolvanen@google.com> wrote:
+> >
+> > This patch series adds support for building x86_64 and arm64 kernels
+> > with Clang's Link Time Optimization (LTO).
+> >
+> > In addition to performance, the primary motivation for LTO is
+> > to allow Clang's Control-Flow Integrity (CFI) to be used in the
+> > kernel. Google has shipped millions of Pixel devices running three
+> > major kernel versions with LTO+CFI since 2018.
+> >
+> > Most of the patches are build system changes for handling LLVM
+> > bitcode, which Clang produces with LTO instead of ELF object files,
+> > postponing ELF processing until a later stage, and ensuring initcall
+> > ordering.
+>
+> Sami, thanks for continuing to drive the series. I encourage you to
+> keep resending with fixes accumulated or dropped on a weekly cadence.
+>
+> The series worked well for me on arm64, but for x86_64 on mainline I
+> saw a stream of new objtool warnings:
+[...]
 
-It looks like all of the arch/x86, and arch/s390 files are fine
-but both of the arch/powerpc/boot files need modification.
+Objtool normally won't print out these warnings when run on vmlinux.o,
+but we can't pass --vmlinux to objtool as that also implies noinstr
+validation right now. I think we'd have to split that from --vmlinux
+to avoid these. I can include a patch to add a --noinstr flag in v5.
+Peter, any thoughts about this?
 
+> I think those should be resolved before I provide any kind of tested
+> by tag.  My other piece of feedback was that I like the default
+> ThinLTO, but I think the help text in the Kconfig which is visible
+> during menuconfig could be improved by informing the user the
+> tradeoffs.  For example, if CONFIG_THINLTO is disabled, it should be
+> noted that full LTO will be used instead.  Also, that full LTO may
+> produce slightly better optimized binaries than ThinLTO, at the cost
+> of not utilizing multiple cores when linking and thus significantly
+> slower to link.
+>
+> Maybe explaining that setting it to "n" implies a full LTO build,
+> which will be much slower to link but possibly slightly faster would
+> be good?  It's not visible unless LTO_CLANG and ARCH_SUPPORTS_THINLTO
+> is enabled, so I don't think you need to explain that THINLTO without
+> those is *not* full LTO.  I'll leave the precise wording to you. WDYT?
 
+Sure, sounds good. I'll update the help text in the next version.
+
+> Also, when I look at your treewide DISABLE_LTO patch, I think "does
+> that need to be a part of this series, or is it a cleanup that can
+> stand on its own?"  I think it may be the latter?  Maybe it would help
+> shed one more patch than to have to carry it to just send it?  Or did
+> I miss something as to why it should remain a part of this series?
+
+I suppose it could be stand-alone, but as these patches are also
+disabling LTO by filtering out flags in some of the same files,
+removing the unused DISABLE_LTO flags first would reduce confusion.
+But I'm fine with sending it separately too if that's preferred.
+
+Sami
