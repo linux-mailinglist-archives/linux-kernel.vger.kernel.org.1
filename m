@@ -2,84 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF64C27F699
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 02:21:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FCFC27F669
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 02:05:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731720AbgJAAVV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 20:21:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40234 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730268AbgJAAVV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 20:21:21 -0400
-X-Greylist: delayed 1453 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 30 Sep 2020 17:21:20 PDT
-Received: from yawp.biot.com (yawp.biot.com [IPv6:2a01:4f8:10a:8e::fce2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DBD4C061755
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 17:21:20 -0700 (PDT)
-Received: from debian-spamd by yawp.biot.com with sa-checked (Exim 4.93)
-        (envelope-from <bert@biot.com>)
-        id 1kNly5-00Dh7y-Cd
-        for linux-kernel@vger.kernel.org; Thu, 01 Oct 2020 01:57:05 +0200
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on yawp
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,RDNS_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.4
-Received: from [2a02:578:460c:1:1e1b:dff:fe91:1af5] (helo=sumner.biot.com)
-        by yawp.biot.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <bert@biot.com>)
-        id 1kNlxj-00Dh79-6T; Thu, 01 Oct 2020 01:56:43 +0200
-Received: from bert by sumner.biot.com with local (Exim 4.90_1)
-        (envelope-from <bert@biot.com>)
-        id 1kNlxi-0001fX-U8; Thu, 01 Oct 2020 01:56:42 +0200
-From:   Bert Vermeulen <bert@biot.com>
-To:     tudor.ambarus@microchip.com, miquel.raynal@bootlin.com,
-        richard@nod.at, vigneshr@ti.com, linux-mtd@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Cc:     Bert Vermeulen <bert@biot.com>
-Subject: [PATCH] mtd: spi-nor: Fix 3-or-4 address byte mode logic
-Date:   Thu,  1 Oct 2020 01:56:11 +0200
-Message-Id: <20200930235611.6355-1-bert@biot.com>
-X-Mailer: git-send-email 2.17.1
+        id S1730640AbgJAAFJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 20:05:09 -0400
+Received: from gate.crashing.org ([63.228.1.57]:39026 "EHLO gate.crashing.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725372AbgJAAFJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 20:05:09 -0400
+Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
+        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 08UNwnIc011325;
+        Wed, 30 Sep 2020 18:58:49 -0500
+Received: (from segher@localhost)
+        by gate.crashing.org (8.14.1/8.14.1/Submit) id 08UNwmH7011324;
+        Wed, 30 Sep 2020 18:58:48 -0500
+X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
+Date:   Wed, 30 Sep 2020 18:58:48 -0500
+From:   Segher Boessenkool <segher@kernel.crashing.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        shuo.a.liu@intel.com, LKML <linux-kernel@vger.kernel.org>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Yu Wang <yu1.wang@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Yakui Zhao <yakui.zhao@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Fengwei Yin <fengwei.yin@intel.com>,
+        Zhi Wang <zhi.a.wang@intel.com>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>
+Subject: Re: [PATCH v4 04/17] x86/acrn: Introduce hypercall interfaces
+Message-ID: <20200930235848.GD28786@gate.crashing.org>
+References: <20200922114311.38804-1-shuo.a.liu@intel.com> <20200922114311.38804-5-shuo.a.liu@intel.com> <20200927105152.GG88650@kroah.com> <6f9a2b83-6904-2290-6c4f-526672390beb@intel.com> <20200930111612.GZ2628@hirez.programming.kicks-ass.net> <20200930161036.GY28786@gate.crashing.org> <20200930171346.GC2628@hirez.programming.kicks-ass.net> <CAKwvOdnpU=w4uStcP+UUr9wfoE5U-hW0cMt1bizcX4zQ4=-gOg@mail.gmail.com> <20200930194240.GH2628@hirez.programming.kicks-ass.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200930194240.GH2628@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.4.2.3i
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Flash chips that announce BFPT_DWORD1_ADDRESS_BYTES_3_OR_4 capability
-get an addr_width of 3. This breaks when the flash chip is actually
-larger than 16MB, since that requires a 4-byte address. The MX25L25635F
-does exactly this, breaking anything over 16MB.
+On Wed, Sep 30, 2020 at 09:42:40PM +0200, Peter Zijlstra wrote:
+> > Looks like yes. You can even check different GCC versions via the
+> > dropdown in the top right.
+> 
+> That only tells me it compiles it, not if that (IMO) weird construct is
+> actually guaranteed to work as expected.
+> 
+> I'd almost dive into the GCC archives to read the back-story to this
+> 'feature', it just seems to weird to me. A well, for another day that.
 
-spi-nor only enables 4-byte opcodes or 4-byte address mode if addr_width
-is 4, so no 4-byte mode is ever enabled. The > 16MB check in
-spi_nor_set_addr_width() only works if addr_width wasn't already set
-by the SFDP, which it was.
+It was documented in 1996 (<https://gcc.gnu.org/g:c1f7febfcb10>), the
+feature is older than that though.
 
-It could be fixed in a post_bfpt fixup for the MX25L25635F, but setting
-addr_width to 4 when BFPT_DWORD1_ADDRESS_BYTES_3_OR_4 is found fixes the
-problem for all such cases.
+In 2004 (in <https://gcc.gnu.org/g:805c33df1366>) the documentation for
+this was made more explicit (it has been rewritten since, but it still
+says the same thing).
 
-Signed-off-by: Bert Vermeulen <bert@biot.com>
----
- drivers/mtd/spi-nor/sfdp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
-index e2a43d39eb5f..6fedc425bcf7 100644
---- a/drivers/mtd/spi-nor/sfdp.c
-+++ b/drivers/mtd/spi-nor/sfdp.c
-@@ -456,10 +456,10 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
- 	/* Number of address bytes. */
- 	switch (bfpt.dwords[BFPT_DWORD(1)] & BFPT_DWORD1_ADDRESS_BYTES_MASK) {
- 	case BFPT_DWORD1_ADDRESS_BYTES_3_ONLY:
--	case BFPT_DWORD1_ADDRESS_BYTES_3_OR_4:
- 		nor->addr_width = 3;
- 		break;
- 
-+	case BFPT_DWORD1_ADDRESS_BYTES_3_OR_4:
- 	case BFPT_DWORD1_ADDRESS_BYTES_4_ONLY:
- 		nor->addr_width = 4;
- 		break;
--- 
-2.17.1
-
+Segher
