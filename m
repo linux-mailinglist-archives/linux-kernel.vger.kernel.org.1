@@ -2,173 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 333B127EF36
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 18:30:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B42A27EF80
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 18:44:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730931AbgI3QaF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 12:30:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56624 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725355AbgI3QaF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 12:30:05 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7B21D2072E;
-        Wed, 30 Sep 2020 16:30:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601483404;
-        bh=qketN4nyZfHvvlISolUEi+CSP4tyVK+mFyh8Vn+nxd4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hDQy28rVViaAkJIRUkfAcNWgG3ZdDunNlU8KdafATOwWyELlcdzqOFw9GWTNkpkyp
-         L81vyNvRESV/Ppsiix+EKkeCWmunG9VlpkmO8wA6YLLVUCVucjxA8KrO62bTrzAjR5
-         ODaP9UB/TT4lAamUUTDu+oy8oxSgFu1dPGQ6A76k=
-Date:   Wed, 30 Sep 2020 18:30:07 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     Lars Poeschel <poeschel@lemonage.de>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        "open list:PWM SUBSYSTEM" <linux-pwm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] pwm: sysfs: Set class on pwm devices
-Message-ID: <20200930163007.GA1673764@kroah.com>
-References: <20200930065726.fjcsm4pfh65medgl@pengutronix.de>
- <20200930092056.maz5biy2ugr6yc3p@lem-wkst-02.lemonage>
- <20200930094146.73s3qzvf5ekjeavc@pengutronix.de>
- <20200930095204.GA1585476@kroah.com>
- <20200930100126.rtjfnmbc54m7vrwd@pengutronix.de>
- <20200930105238.GA1592367@kroah.com>
- <20200930112720.xiff3xwmfu3gjypk@lem-wkst-02.lemonage>
- <20200930115106.GB1603625@kroah.com>
- <20200930141352.kt6bpudj2t57ogp3@lem-wkst-02.lemonage>
- <20200930150302.n3kcw3lzepug53za@pengutronix.de>
+        id S1731070AbgI3QoD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 12:44:03 -0400
+Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:59090 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725355AbgI3QoD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 12:44:03 -0400
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+        by mx0a-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08UGfLRd023424;
+        Wed, 30 Sep 2020 09:44:01 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=pfpt0220;
+ bh=1UGaJPzTfyB8nPYo1hRE692Gb3T/PR+4SYCr720aunA=;
+ b=etGS+zFf4qM8mO2aLza6uJ6/LBgd4uMPYbnJwPqlEtik9DS5pLdSlYD3sQy3khJC9p1V
+ xLvAl/FVLiyL+hNu6uF/PPxgMoL6k+IJTS3caxNXS24mJB+0b1Osh8p73ZReJfhx92k8
+ j5s5YeEXBQR1nfxnUHCFeyeG0IJIVRyR8dO8oachLS+WMkLPckPrCN3NSCnRd1pgsq8a
+ 0XZm3TbcDRJxsTYq9IERwEomaLwzFAhTrxRRX2PRAWNAAzn/E1mq4Z8bPij4niNXOwdT
+ FZ6UGAySUPXkaBMJ6zqNjn4YEG3eZWzxhOz7JIT2PFBZ+LyXIyuVOHy2J9vvhUeVHd1u Qg== 
+Received: from sc-exch03.marvell.com ([199.233.58.183])
+        by mx0a-0016f401.pphosted.com with ESMTP id 33teemh54m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Wed, 30 Sep 2020 09:44:01 -0700
+Received: from DC5-EXCH02.marvell.com (10.69.176.39) by SC-EXCH03.marvell.com
+ (10.93.176.83) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 30 Sep
+ 2020 09:44:00 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 30 Sep 2020 09:44:00 -0700
+Received: from cavium.com.marvell.com (unknown [10.29.8.35])
+        by maili.marvell.com (Postfix) with ESMTP id DFAA63F703F;
+        Wed, 30 Sep 2020 09:43:58 -0700 (PDT)
+From:   Geetha sowjanya <gakula@marvell.com>
+To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <sgoutham@marvell.com>, <lcherian@marvell.com>,
+        <davem@davemloft.net>, Geetha sowjanya <gakula@marvell.com>
+Subject: [net PATCH v2 0/4] Fix bugs in Octeontx2 netdev driver
+Date:   Wed, 30 Sep 2020 21:38:10 +0530
+Message-ID: <1601482090-14906-1-git-send-email-gakula@marvell.com>
+X-Mailer: git-send-email 1.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200930150302.n3kcw3lzepug53za@pengutronix.de>
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-30_09:2020-09-30,2020-09-30 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 05:03:02PM +0200, Uwe Kleine-König wrote:
-> On Wed, Sep 30, 2020 at 04:13:52PM +0200, Lars Poeschel wrote:
-> > On Wed, Sep 30, 2020 at 01:51:06PM +0200, Greg Kroah-Hartman wrote:
-> > > On Wed, Sep 30, 2020 at 01:27:20PM +0200, Lars Poeschel wrote:
-> > > > On Wed, Sep 30, 2020 at 12:52:38PM +0200, Greg Kroah-Hartman wrote:
-> > > > > On Wed, Sep 30, 2020 at 12:01:26PM +0200, Uwe Kleine-König wrote:
-> > > > > > On Wed, Sep 30, 2020 at 11:52:04AM +0200, Greg Kroah-Hartman wrote:
-> > > > > > > On Wed, Sep 30, 2020 at 11:41:46AM +0200, Uwe Kleine-König wrote:
-> > > > > > > > Hello,
-> > > > > > > > 
-> > > > > > > > I added Greg Kroah-Hartman who I discussed this with via irc a bit to
-> > > > > > > > Cc:.
-> > > > > > > > 
-> > > > > > > > On Wed, Sep 30, 2020 at 11:20:56AM +0200, Lars Poeschel wrote:
-> > > > > > > > > thank you for your review!
-> > > > > > > > > 
-> > > > > > > > > On Wed, Sep 30, 2020 at 08:57:26AM +0200, Uwe Kleine-König wrote:
-> > > > > > > > > > On Tue, Sep 29, 2020 at 02:19:53PM +0200, poeschel@lemonage.de wrote:
-> > > > > > > > > > > From: Lars Poeschel <poeschel@lemonage.de>
-> > > > > > > > > > > 
-> > > > > > > > > > > This adds a class to exported pwm devices.
-> > > > > > > > > > > Exporting a pwm through sysfs did not yield udev events. The
-> > > > > > > > > > 
-> > > > > > > > > > I wonder what is your use-case here. This for sure also has a place to
-> > > > > > > > > > be mentioned in the commit log. I suspect there is a better way to
-> > > > > > > > > > accomplish you way.
-> > > > > > > > > 
-> > > > > > > > > Use-case is to be able to use a pwm from a non-root userspace process.
-> > > > > > > > > I use udev rules to adjust permissions.
-> > > > > > > > 
-> > > > > > > > Hmm, how do you trigger the export? Without being aware of all the
-> > > > > > > > details in the sysfs code I would expect that the exported stuff is
-> > > > > > > > available instantly once the write used to export the PWM is completed.
-> > > > > > > > So changing the permissions can be done directly after triggering the
-> > > > > > > > export in the same process.
-> > > > > > > 
-> > > > > > > It looks like userspace wants to see when a pwmX device shows up, right?
-> > > > > > > 
-> > > > > > > And it's not because those devices do not belong to any class or bus, so
-> > > > > > > they are just "floating" out there (they might show up under
-> > > > > > > /sys/bus/virtual, if you set things up right, which I don't think is
-> > > > > > > happening here...)
-> > > > > > > 
-> > > > > > > So yes, you need to create a class, or assign this to a bus, which is
-> > > > > > > fine, but it looks like no one is doing that.  Don't create new classes
-> > > > > > > dynamically, but rather, just assign this to the existing pwm class.
-> > > > > > > What's wrong with that?  I saw an older patch that did that, what did
-> > > > > > > that break?
-> > > > > > 
-> > > > > > Are you refering to 7e5d1fd75c3dde9fc10c4472b9368089d1b81d00? Did you
-> > > > > > read the reverting commit's log message? (i.e.
-> > > > > > c289d6625237aa785b484b4e94c23b3b91ea7e60)
-> > > > > > 
-> > > > > > I guess the breakage is that the resulting name then is:
-> > > > > > 
-> > > > > > 	"pwm%d", pwm->id
-> > > > > > 
-> > > > > > where pwm->id is a number unique to the pwmchip. So doing
-> > > > > > 
-> > > > > > 	echo 0 > pwmchip1/export
-> > > > > > 	echo 0 > pwmchip2/export
-> > > > > > 
-> > > > > > breaks because both want to create pwm0 in the class directory.
-> > > > > 
-> > > > > Ah, that makes more sense why that didn't work.
-> > > > > 
-> > > > > Ok, can the "name" of the new export chip be changed?  Is that
-> > > > > hard-coded somewhere in userspace tools already?  Depending on that, the
-> > > > > solution for this will change...
-> > > > 
-> > > > I know that back then, when sysfs for pwm was created, Thierry didn't
-> > > > want to have one global namespace like gpio sysfs has. What you ask for
-> > > > is something like:
-> > > > 	pwm-{chipnumber}-{pwmnumber}
-> > > > Right ? Can that be considered non-global ?
-> > > 
-> > > Yes, and that's just "global" for the pwm class namespace.
-> > > 
-> > > > Thierry's mail from back then is here:
-> > > > https://lore.kernel.org/lkml/20130408081745.GA21392@avionic-0098.mockup.avionic-design.de/
-> > > > 
-> > > > A short search on github I found this:
-> > > > https://github.com/vsergeev/c-periphery/blob/d34077d7ee45fa7d1947cc0174919452fac31597/src/pwm.c#L74
-> > > > 
-> > > > Seems to match your hardcoded criteria ?
-> > > 
-> > > Yes, ugh :(
-> > > 
-> > > Ok, now I see why the "lots of pwm classes!" patch was proposed.
-> > > 
-> > > And maybe that's really the only way forward here, as the chip namespace
-> > > is the only unique thing.
-> > > 
-> > > But wow, it feels wrong...
-> > 
-> > Would the following feel better:
-> > * use the new naming scheme you proposed for pwm's :
-> >   pwm-{chipnumber}-{pwmnumber}
-> > * assign the normal pwm class to the exported pwm devices. That lets
-> >   them appear in the global /sys/class/pwm directory as e.g. pwm-0-0
-> > * maintain backward compatibility through symlinks e.g.:
-> >   pwmchip0/pwm0 -> ../pwm-0-0
-> 
-> My preferred way forward is: Create a proper device (i.e. something like
-> /dev/pwmchipX) and make that usable with atomic operations. Then we
-> don't need to go through sysfs and can modify more than one property at
-> a time.
+In existing Octeontx2 network drivers code has issues
+like stale entries in broadcast replication list, missing
+L3TYPE for IPv6 frames, running tx queues on error and 
+race condition in mbox reset.
+This patch set fixes the above issues.
 
-Kind of like what gpio did with the move to a char device node instead
-of sysfs files?  That's fine with me if you all want to do that.
+Geethe sowjanya (1):
+  octeontx2-pf: Fix TCP/UDP checksum offload for IPv6 frames
 
-> But other than that your suggestion sounds better than one class per
-> chip.
+Hariprasad Kelam (2):
+  octeontx2-pf: Fix the device state on error
+  octeontx2-pf: Fix synchnorization issue in mbox
 
-I agree, that seems sane.  Well, semi-sane, symlinks are "fun" :)
+Subbaraya Sundeep (1):
+  octeontx2-af: Fix enable/disable of default NPC entries
 
-thanks,
+ drivers/net/ethernet/marvell/octeontx2/af/mbox.c   | 12 ++++++++--
+ drivers/net/ethernet/marvell/octeontx2/af/mbox.h   |  1 +
+ drivers/net/ethernet/marvell/octeontx2/af/rvu.h    |  3 ++-
+ .../net/ethernet/marvell/octeontx2/af/rvu_nix.c    |  5 ++---
+ .../net/ethernet/marvell/octeontx2/af/rvu_npc.c    | 26 ++++++++++++++++------
+ .../net/ethernet/marvell/octeontx2/nic/otx2_pf.c   | 16 ++++++++-----
+ .../net/ethernet/marvell/octeontx2/nic/otx2_txrx.c |  1 +
+ .../net/ethernet/marvell/octeontx2/nic/otx2_vf.c   |  4 ++--
+ 8 files changed, 47 insertions(+), 21 deletions(-)
 
-greg k-h
+-- 
+2.7.4
+
