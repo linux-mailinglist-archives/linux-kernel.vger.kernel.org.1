@@ -2,38 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EECD327E9A9
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 15:27:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9779B27E98D
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 15:26:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730589AbgI3N07 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 09:26:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39308 "EHLO mail.kernel.org"
+        id S1730452AbgI3N0R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 09:26:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39164 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730252AbgI3NZW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 09:25:22 -0400
+        id S1730275AbgI3NZX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 09:25:23 -0400
 Received: from mail.kernel.org (unknown [95.90.213.196])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 674F423A59;
+        by mail.kernel.org (Postfix) with ESMTPSA id A4DC323A69;
         Wed, 30 Sep 2020 13:25:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1601472321;
-        bh=J74G5kQSa0vkKhBu17975/ADBNsJSxOJrcSKfNRKnzY=;
+        bh=M1VGTHk8BLaW4v48n5cCYFm+g0FFa67u3wYgBuflCQw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wxGgsHwXeXTaXkiV7JB5mez6CDXAp0V2tE93kNoEahHC3IxDdQqOsnofJ0YBrdBfY
-         sP1OwxUliY/qkay9AG7Ub8C1RYURI9oa7Q9+g2FNADjmzDL8rs8jf9IpgRfkFcv4FN
-         CfW4e4Fq6LfV4EImOg/YBPgUFX5lTdp4JqLha5Eg=
+        b=qSfGHHIJw6X3wEIno05gneQ4WBYcrHAUngS4AZyihCxenuy7FvkfFU2YTbufAjCSw
+         Ui+08ntxMFq4/oIo/u4CZynST+DqPIRlt4j0zADfrcZmYqVCKkl6x1T5AEU+Q8PuZk
+         57AQ4W6n5kiSA7AESQqSE4TcyEiQ0x/pevO5MvII=
 Received: from mchehab by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1kNc6h-001XKr-LK; Wed, 30 Sep 2020 15:25:19 +0200
+        id 1kNc6h-001XKt-Ml; Wed, 30 Sep 2020 15:25:19 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
         Jonathan Corbet <corbet@lwn.net>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v4 43/52] docs: infrastructure.rst: don't include firmware kernel-doc
-Date:   Wed, 30 Sep 2020 15:25:06 +0200
-Message-Id: <eaca248efdc9ef7a2bccde8bf4ddbc13223f333d.1601467849.git.mchehab+huawei@kernel.org>
+Subject: [PATCH v4 44/52] docs: gpu: i915.rst: Fix several C duplication warnings
+Date:   Wed, 30 Sep 2020 15:25:07 +0200
+Message-Id: <582d22c1ab6f2f6ca19963179dcde182c91d7c8b.1601467849.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1601467849.git.mchehab+huawei@kernel.org>
 References: <cover.1601467849.git.mchehab+huawei@kernel.org>
@@ -44,46 +53,109 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Those are already documented at:
+As reported by Sphinx:
 
-	Documentation/driver-api/firmware/request_firmware.rst
+	./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:1147: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
+	Declaration is 'i915_oa_wait_unlocked'.
+	./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:1169: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
+	Declaration is 'i915_oa_poll_wait'.
+	./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:1189: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
+	Declaration is 'i915_oa_read'.
+	./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:2669: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
+	Declaration is 'i915_oa_stream_enable'.
+	./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:2734: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
+	Declaration is 'i915_oa_stream_disable'.
+	./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:2820: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
+	Declaration is 'i915_oa_stream_init'.
+	./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:3010: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
+	Declaration is 'i915_perf_read'.
+	./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:3098: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
+	Declaration is 'i915_perf_poll_locked'.
+	./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:3129: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
+	Declaration is 'i915_perf_poll'.
+	./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:3152: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
+	Declaration is 'i915_perf_enable_locked'.
+	./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:3181: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
+	Declaration is 'i915_perf_disable_locked'.
+	./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:3273: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
+	Declaration is 'i915_perf_ioctl'.
+	./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:3296: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
+	Declaration is 'i915_perf_destroy_locked'.
+	./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:3321: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
+	Declaration is 'i915_perf_release'.
+	./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:3379: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
+	Declaration is 'i915_perf_open_ioctl_locked'.
+	./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:3534: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
+	Declaration is 'read_properties_unlocked'.
+	./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:3717: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
+	Declaration is 'i915_perf_open_ioctl'.
+	./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:3760: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
+	Declaration is 'i915_perf_register'.
+	./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:3789: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
+	Declaration is 'i915_perf_unregister'.
+	./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:4009: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
+	Declaration is 'i915_perf_add_config_ioctl'.
+	./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:4162: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
+	Declaration is 'i915_perf_remove_config_ioctl'.
+	./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:4260: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
+	Declaration is 'i915_perf_init'.
+	./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:4423: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
+	Declaration is 'i915_perf_fini'.
 
-Including it twice is causing lots of warnings:
-
-	./Documentation/driver-api/infrastructure.rst: WARNING: Duplicate C declaration, also defined in 'driver-api/firmware/request_firmware'.
-	Declaration is 'request_firmware'.
-	./Documentation/driver-api/infrastructure.rst: WARNING: Duplicate C declaration, also defined in 'driver-api/firmware/request_firmware'.
-	Declaration is 'firmware_request_nowarn'.
-	./Documentation/driver-api/infrastructure.rst: WARNING: Duplicate C declaration, also defined in 'driver-api/firmware/request_firmware'.
-	Declaration is 'request_firmware_direct'.
-	./Documentation/driver-api/infrastructure.rst: WARNING: Duplicate C declaration, also defined in 'driver-api/firmware/request_firmware'.
-	Declaration is 'firmware_request_platform'.
-	./Documentation/driver-api/infrastructure.rst: WARNING: Duplicate C declaration, also defined in 'driver-api/firmware/request_firmware'.
-	Declaration is 'firmware_request_cache'.
-	./Documentation/driver-api/infrastructure.rst: WARNING: Duplicate C declaration, also defined in 'driver-api/firmware/request_firmware'.
-	Declaration is 'request_firmware_into_buf'.
-	./Documentation/driver-api/infrastructure.rst: WARNING: Duplicate C declaration, also defined in 'driver-api/firmware/request_firmware'.
-	Declaration is 'request_firmware_nowait'.
+With Sphinx 3, C declarations can't be duplicated anymore,
+so let's exclude those from the other internals found on
+i915_perf.c file.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- Documentation/driver-api/infrastructure.rst | 3 ---
- 1 file changed, 3 deletions(-)
+ Documentation/gpu/i915.rst | 29 +++++++++++++++++++++++++----
+ 1 file changed, 25 insertions(+), 4 deletions(-)
 
-diff --git a/Documentation/driver-api/infrastructure.rst b/Documentation/driver-api/infrastructure.rst
-index 06d98c4526df..e38d79be4e16 100644
---- a/Documentation/driver-api/infrastructure.rst
-+++ b/Documentation/driver-api/infrastructure.rst
-@@ -28,9 +28,6 @@ Device Drivers Base
- .. kernel-doc:: drivers/base/node.c
+diff --git a/Documentation/gpu/i915.rst b/Documentation/gpu/i915.rst
+index 33cc6ddf8f64..cff1f154b473 100644
+--- a/Documentation/gpu/i915.rst
++++ b/Documentation/gpu/i915.rst
+@@ -636,15 +636,36 @@ i915 Perf Observation Architecture Stream
+ .. kernel-doc:: drivers/gpu/drm/i915/i915_perf.c
+    :functions: i915_oa_poll_wait
+ 
+-All i915 Perf Internals
+------------------------
++Other i915 Perf Internals
++-------------------------
+ 
+-This section simply includes all currently documented i915 perf internals, in
+-no particular order, but may include some more minor utilities or platform
++This section simply includes all other currently documented i915 perf internals,
++in no particular order, but may include some more minor utilities or platform
+ specific details than found in the more high-level sections.
+ 
+ .. kernel-doc:: drivers/gpu/drm/i915/i915_perf.c
     :internal:
++   :no-identifiers:
++       i915_perf_init
++       i915_perf_fini
++       i915_perf_register
++       i915_perf_unregister
++       i915_perf_open_ioctl
++       i915_perf_release
++       i915_perf_add_config_ioctl
++       i915_perf_remove_config_ioctl
++       read_properties_unlocked
++       i915_perf_open_ioctl_locked
++       i915_perf_destroy_locked
++       i915_perf_read i915_perf_ioctl
++       i915_perf_enable_locked
++       i915_perf_disable_locked
++       i915_perf_poll i915_perf_poll_locked
++       i915_oa_stream_init i915_oa_read
++       i915_oa_stream_enable
++       i915_oa_stream_disable
++       i915_oa_wait_unlocked
++       i915_oa_poll_wait
  
--.. kernel-doc:: drivers/base/firmware_loader/main.c
--   :export:
--
- .. kernel-doc:: drivers/base/transport_class.c
-    :export:
- 
+ Style
+ =====
 -- 
 2.26.2
 
