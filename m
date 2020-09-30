@@ -2,112 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C391A27F663
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 01:54:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9100427F664
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 01:57:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731716AbgI3XyC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 19:54:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45086 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730192AbgI3XyB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 19:54:01 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1730548AbgI3X5S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 19:57:18 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60359 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725372AbgI3X5S (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 19:57:18 -0400
+Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601510236;
+        h=from:from:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=MqeVbgO+69UtQ2bq/YXHdjvaVDsQdVwLEYXLr3MlZpM=;
+        b=RbTnj8Eyo6ZdqCGfVGBpXl02eG9KAVFwLhcoMHgAw9T/nTKp07100gSEDIXV69p+h4bGgD
+        pz/BvmB4zXCtXIvHqchNMMvNTDdj88UJJaunrswDDLoq7nqCqXwVfaiE2BY1Q0fqsfGz/H
+        /yFrTIyU/hq/W2AKeDFHT7ssgHbF98o=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-179-rhfhO-T1PEiTVQZMdag88A-1; Wed, 30 Sep 2020 19:57:12 -0400
+X-MC-Unique: rhfhO-T1PEiTVQZMdag88A-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B9DEB206FA;
-        Wed, 30 Sep 2020 23:54:00 +0000 (UTC)
-Date:   Wed, 30 Sep 2020 19:53:59 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: [GIT PULL] tracing: A couple of fixes
-Message-ID: <20200930195359.01d9f770@oasis.local.home>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C691B8030B6;
+        Wed, 30 Sep 2020 23:57:10 +0000 (UTC)
+Received: from [10.64.54.133] (vpn2-54-133.bne.redhat.com [10.64.54.133])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 5408E5578D;
+        Wed, 30 Sep 2020 23:57:08 +0000 (UTC)
+Reply-To: Gavin Shan <gshan@redhat.com>
+Subject: Re: [PATCH V4 2/3] arm64/mm/hotplug: Enable MEM_OFFLINE event
+ handling
+To:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        linux-arm-kernel@lists.infradead.org
+Cc:     catalin.marinas@arm.com, will@kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Steve Capper <steve.capper@arm.com>,
+        Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org
+References: <1601387687-6077-1-git-send-email-anshuman.khandual@arm.com>
+ <1601387687-6077-3-git-send-email-anshuman.khandual@arm.com>
+From:   Gavin Shan <gshan@redhat.com>
+Message-ID: <b51676eb-eb22-41be-5ff9-de63100d2201@redhat.com>
+Date:   Thu, 1 Oct 2020 09:57:04 +1000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <1601387687-6077-3-git-send-email-anshuman.khandual@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Anshuman,
 
-Linus,
+On 9/29/20 11:54 PM, Anshuman Khandual wrote:
+> This enables MEM_OFFLINE memory event handling. It will help intercept any
+> possible error condition such as if boot memory some how still got offlined
+> even after an explicit notifier failure, potentially by a future change in
+> generic hot plug framework. This would help detect such scenarios and help
+> debug further. While here, also call out the first section being attempted
+> for offline or got offlined.
+> 
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: Marc Zyngier <maz@kernel.org>
+> Cc: Steve Capper <steve.capper@arm.com>
+> Cc: Mark Brown <broonie@kernel.org>
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-kernel@vger.kernel.org
+> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> ---
+>   arch/arm64/mm/mmu.c | 29 +++++++++++++++++++++++++++--
+>   1 file changed, 27 insertions(+), 2 deletions(-)
+> 
 
-Two tracing fixes:
+This looks good to me except a nit and it can be improved if
+that looks reasonable and only when you get a chance for
+respin.
 
-- Fix temp buffer accounting that caused a WARNING for
-  ftrace_dump_on_opps()
+Reviewed-by: Gavin Shan <gshan@redhat.com>
 
-- Move the recursion check in one of the function callback helpers to the
-  beginning of the function, as if the rcu_is_watching() gets traced, it
-  will cause a recursive loop that will crash the kernel.
+> diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
+> index 4e70f4fea06c..90a30f5ebfc0 100644
+> --- a/arch/arm64/mm/mmu.c
+> +++ b/arch/arm64/mm/mmu.c
+> @@ -1482,13 +1482,38 @@ static int prevent_bootmem_remove_notifier(struct notifier_block *nb,
+>   	unsigned long end_pfn = arg->start_pfn + arg->nr_pages;
+>   	unsigned long pfn = arg->start_pfn;
+>   
+> -	if (action != MEM_GOING_OFFLINE)
+> +	if ((action != MEM_GOING_OFFLINE) && (action != MEM_OFFLINE))
+>   		return NOTIFY_OK;
+>   
+>   	for (; pfn < end_pfn; pfn += PAGES_PER_SECTION) {
+> +		unsigned long start = PFN_PHYS(pfn);
+> +		unsigned long end = start + (1UL << PA_SECTION_SHIFT);
+> +
+>   		ms = __pfn_to_section(pfn);
+> -		if (early_section(ms))
+> +		if (!early_section(ms))
+> +			continue;
+> +
 
+The discussion here is irrelevant to this patch itself. It seems
+early_section() is coarse, which means all memory detected during
+boot time won't be hotpluggable?
 
-Please pull the latest trace-v5.9-rc6 tree, which can be found at:
+> +		if (action == MEM_GOING_OFFLINE) {
+> +			pr_warn("Boot memory [%lx %lx] offlining attempted\n", start, end);
+>   			return NOTIFY_BAD;
+> +		} else if (action == MEM_OFFLINE) {
+> +			/*
+> +			 * This should have never happened. Boot memory
+> +			 * offlining should have been prevented by this
+> +			 * very notifier. Probably some memory removal
+> +			 * procedure might have changed which would then
+> +			 * require further debug.
+> +			 */
+> +			pr_err("Boot memory [%lx %lx] offlined\n", start, end);
+> +
+> +			/*
+> +			 * Core memory hotplug does not process a return
+> +			 * code from the notifier for MEM_OFFLINE event.
+> +			 * Error condition has been reported. Report as
+> +			 * ignored.
+> +			 */
+> +			return NOTIFY_DONE;
+> +		}
+>   	}
+>   	return NOTIFY_OK;
+>   }
+> 
 
+I think NOTIFY_BAD is returned for MEM_OFFLINE wouldn't be a
+bad idea, even the core isn't handling the errno. With this,
+the code can be simplified. However, it's not a big deal and
+you probably evaluate and change when you need another respin:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git
-trace-v5.9-rc6
+     pr_warn("Boot memory [%lx %lx] %s\n",
+             (action == MEM_GOING_OFFLINE) ? "offlining attempted" : "offlined",
+             start, end);
+     return NOTIFY_BAD;
 
-Tag SHA1: 87d55eca1585b1bd70fe7de33cd5ea2957628027
-Head SHA1: b40341fad6cc2daa195f8090fd3348f18fff640a
+Cheers,
+Gavin
+         
 
-
-Steven Rostedt (VMware) (2):
-      tracing: Fix trace_find_next_entry() accounting of temp buffer size
-      ftrace: Move RCU is watching check after recursion check
-
-----
- kernel/trace/ftrace.c |  6 ++----
- kernel/trace/trace.c  | 10 ++++++----
- 2 files changed, 8 insertions(+), 8 deletions(-)
----------------------------
-diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-index 603255f5f085..541453927c82 100644
---- a/kernel/trace/ftrace.c
-+++ b/kernel/trace/ftrace.c
-@@ -6993,16 +6993,14 @@ static void ftrace_ops_assist_func(unsigned long ip, unsigned long parent_ip,
- {
- 	int bit;
- 
--	if ((op->flags & FTRACE_OPS_FL_RCU) && !rcu_is_watching())
--		return;
--
- 	bit = trace_test_and_set_recursion(TRACE_LIST_START, TRACE_LIST_MAX);
- 	if (bit < 0)
- 		return;
- 
- 	preempt_disable_notrace();
- 
--	op->func(ip, parent_ip, op, regs);
-+	if (!(op->flags & FTRACE_OPS_FL_RCU) || rcu_is_watching())
-+		op->func(ip, parent_ip, op, regs);
- 
- 	preempt_enable_notrace();
- 	trace_clear_recursion(bit);
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index 2a7c26345e83..d3e5de717df2 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -3546,13 +3546,15 @@ struct trace_entry *trace_find_next_entry(struct trace_iterator *iter,
- 	if (iter->ent && iter->ent != iter->temp) {
- 		if ((!iter->temp || iter->temp_size < iter->ent_size) &&
- 		    !WARN_ON_ONCE(iter->temp == static_temp_buf)) {
--			kfree(iter->temp);
--			iter->temp = kmalloc(iter->ent_size, GFP_KERNEL);
--			if (!iter->temp)
-+			void *temp;
-+			temp = kmalloc(iter->ent_size, GFP_KERNEL);
-+			if (!temp)
- 				return NULL;
-+			kfree(iter->temp);
-+			iter->temp = temp;
-+			iter->temp_size = iter->ent_size;
- 		}
- 		memcpy(iter->temp, iter->ent, iter->ent_size);
--		iter->temp_size = iter->ent_size;
- 		iter->ent = iter->temp;
- 	}
- 	entry = __find_next_entry(iter, ent_cpu, NULL, ent_ts);
