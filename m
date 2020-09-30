@@ -2,90 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05CEB27EBB9
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 17:02:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84A8E27EBAE
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 17:01:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730793AbgI3PCT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 11:02:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57820 "EHLO mail.kernel.org"
+        id S1730681AbgI3PBZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 11:01:25 -0400
+Received: from mx2.suse.de ([195.135.220.15]:35026 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730774AbgI3PCS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 11:02:18 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BAD8B2076B;
-        Wed, 30 Sep 2020 15:02:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601478138;
-        bh=wgtBREp7GX7jbTg82MpTBnYDUzeeak3Og8bQ30VgTOo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Smk8kFJMwkYcCnbVbtfFFoTNbayV3wRb26dNEP8swsoz8DiuQYekD50RLqfuTno3G
-         82Z/0H6CU5WFRTM3FHCxYjJaedyNojyqkU4xV73tmkekTG6l1l67tsDldfTpLc0IVN
-         1IYQd0/oSlcy7XbPHi+ljZh5kXnsmRazfaegMRJo=
-Date:   Wed, 30 Sep 2020 16:01:17 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc:     Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
-        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        "wuxu . wu" <wuxu.wu@huawei.com>, Feng Tang <feng.tang@intel.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-spi@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 02/30] spi: dw: Use ternary op to init set_cs callback
-Message-ID: <20200930150117.GK4974@sirena.org.uk>
-References: <20200920112914.26501-1-Sergey.Semin@baikalelectronics.ru>
- <20200920112914.26501-3-Sergey.Semin@baikalelectronics.ru>
- <20200929131153.GD4799@sirena.org.uk>
- <20200929215553.xgst2v5ssweymlpw@mobilestation>
- <20200930145759.7djm5xijhg6mjtg3@mobilestation>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="jITzwD3HDGXid3BE"
-Content-Disposition: inline
-In-Reply-To: <20200930145759.7djm5xijhg6mjtg3@mobilestation>
-X-Cookie: Doing gets it done.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1725799AbgI3PBZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 11:01:25 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 6426AAB92;
+        Wed, 30 Sep 2020 15:01:23 +0000 (UTC)
+Date:   Wed, 30 Sep 2020 17:01:21 +0200
+Message-ID: <s5h7dsbgvge.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        =?UTF-8?B?QW5kcsOp?= Almeida <andrealmeid@collabora.com>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>, Jens Axboe <axboe@kernel.dk>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Moritz Fischer <mdf@kernel.org>,
+        Puranjay Mohan <puranjay12@gmail.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Satya Tangirala <satyat@google.com>,
+        Takashi Iwai <tiwai@suse.com>, Tom Rix <trix@redhat.com>,
+        alsa-devel@alsa-project.org, linux-fpga@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH v4 22/52] docs: get rid of :c:type explicit declarations for structs
+In-Reply-To: <f74a2b4e1c8c475b5a053f5edd9da5a818be4b1f.1601467849.git.mchehab+huawei@kernel.org>
+References: <cover.1601467849.git.mchehab+huawei@kernel.org>
+        <f74a2b4e1c8c475b5a053f5edd9da5a818be4b1f.1601467849.git.mchehab+huawei@kernel.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 30 Sep 2020 15:24:45 +0200,
+Mauro Carvalho Chehab wrote:
+> 
+> The :c:type:`foo` only works properly with structs before
+> Sphinx 3.x.
+> 
+> On Sphinx 3.x, structs should now be declared using the
+> .. c:struct, and referenced via :c:struct tag.
+> 
+> As we now have the automarkup.py macro, that automatically
+> convert:
+> 	struct foo
+> 
+> into cross-references, let's get rid of that, solving
+> several warnings when building docs with Sphinx 3.x.
+> 
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
---jITzwD3HDGXid3BE
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+For the sound part:
+  Reviewed-by: Takashi Iwai <tiwai@suse.de>
 
-On Wed, Sep 30, 2020 at 05:57:59PM +0300, Serge Semin wrote:
-> On Wed, Sep 30, 2020 at 12:55:55AM +0300, Serge Semin wrote:
 
-> > +	if (dws->set_cs)
-> > +		master->set_cs = dws->set_cs;
-> > +	else
-> > +		master->set_cs = dw_spi_set_cs;
+thanks,
 
-> Judging by having your comment on this patch you obviously didn't like the
-> ternary operator used to assign a default value to the set_cs callback. So I
-> suggested a solution, which may suit you. What do you think about it? Agree,
-> disagree, insist on leaving this part of the code along, etc.
-
-That looks fine.
-
---jITzwD3HDGXid3BE
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl90nbwACgkQJNaLcl1U
-h9ASfgf/QMr+QBDA7a6p663htW8/oE/VfyDebGfO+9YvBL8at6ceQjbrmSFPIY+Y
-p6UxWjJYM8gqayOZmJDOLwHHqs+EF56WKVfLJk2qM9vKqsDBPS99Z+Nt1G7Ufzay
-nqYReurEdo4zXbdbq+0yLcI6P6pBwUJOVzOcqwwxW+7gCQzWOvG+YJUawvkLscT6
-cizglDz2zEc3CJCltivU6jWUcLKWSukbPQFLrxt8aYQtMZs4zu350iL/4d0aFIa1
-/McGgJYh7XCVgQFioPn7IFocfrlCJETL1vz5Jdnkdr3EooihGbo+nuSDHlqk5TPW
-inCxg0N+muJngYfr4HY3g4VU4qzO0Q==
-=Pczo
------END PGP SIGNATURE-----
-
---jITzwD3HDGXid3BE--
+Takashi
