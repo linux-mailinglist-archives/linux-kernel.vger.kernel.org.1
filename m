@@ -2,84 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E7C427DFFC
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 07:12:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5553F27DFFF
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 07:15:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725890AbgI3FMO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 01:12:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60118 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725320AbgI3FMN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 01:12:13 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7124AC061755;
-        Tue, 29 Sep 2020 22:12:13 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id w11so577782lfn.2;
-        Tue, 29 Sep 2020 22:12:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=WnFP8lnfHJgOPmmswyB1oqxtTdFe5yGHV9kG5nGP1I4=;
-        b=bZ2qFS69/vWFPYql8daXf4N+6wro+5xZYyVsqEffhxC47wWH+8i0zGZyc6e8bskZU+
-         rOgj+WMdVjB3jb61M29438T3GD2zcBc2MY6mxg3XHjD/wuJYOVpl5N6fUyY6SLGJoNW3
-         fYhyhcNWCV+QEXo5mQWxgI/0lp8PI2g3dLcHy20/UEQP7zVVoYlr9k4+ipbFxlViJesF
-         c1khISIBWAqPPQQDzhe6Ka4eGmvSclZQFK4wHHEGdk+MAlg/FSmoDJiRVJHseZRi7iS9
-         OFcH+2YCmYZKJD1pMMeyfMK+CFNJs+wYm1raLJXbxLxwJ7KkCU4umuodpn9eYCymeNe2
-         eefQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=WnFP8lnfHJgOPmmswyB1oqxtTdFe5yGHV9kG5nGP1I4=;
-        b=VJPSxtEq4aqId1RGk2trPbCRZys7PSyFU2qGnUJxSpu4D0DhBOPG0o03+NqhmZP8Jo
-         fYoyNOFNL4Y6kOMda6aN4EC6hBV5V7L6ftSKeyfVzQIuTctK4vL9IVM4P0efouKtc1SR
-         NrELPPjaEBBeztZba5iAyeAoCR8qRdnU5EsMsGxg0V42cy3riwBlFKOLTLkSrt5L/pCW
-         B4KPWAsuZBlSipO2+nsEo4Bd1KvUKmbFqVUDpHwo11pV/toVYvbmbWx/8hYooskJ6Y9F
-         gYPhAqzeVCtl9AO/glMbj6vh6wioAqhRkw+erNYXrFxSQPv2Jozdp5fpTQl5PEBdmTGT
-         wDRA==
-X-Gm-Message-State: AOAM533hBxCJ2P5cLAEfthOsta5Jyj76ikWa6f8MmsiRQsLClyCe8cCW
-        X8cmpsUJ5OMlpb4m7LQqfy8leZ9xKSQ=
-X-Google-Smtp-Source: ABdhPJwj3hG5D4s4X9cvpm66sPqDZ0OHtsu9PITFwy9p2nU9IKOvdUk/0r+Ie5zIY3pz0VFv8jfcKw==
-X-Received: by 2002:a19:e54:: with SMTP id 81mr280338lfo.178.1601442731681;
-        Tue, 29 Sep 2020 22:12:11 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
-        by smtp.googlemail.com with ESMTPSA id n8sm49566lji.1.2020.09.29.22.12.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 29 Sep 2020 22:12:11 -0700 (PDT)
-Subject: Re: [PATCH v2 1/3] memory: tegra: Add helper function
- tegra_get_memory_controller
-To:     Nicolin Chen <nicoleotsuka@gmail.com>, thierry.reding@gmail.com,
-        joro@8bytes.org, krzk@kernel.org
-Cc:     vdumpa@nvidia.com, jonathanh@nvidia.com,
-        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-References: <20200930003013.31289-1-nicoleotsuka@gmail.com>
- <20200930003013.31289-2-nicoleotsuka@gmail.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <93803d8b-9863-e977-fa87-a03e877b095d@gmail.com>
-Date:   Wed, 30 Sep 2020 08:12:10 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1725788AbgI3FP2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 01:15:28 -0400
+Received: from muru.com ([72.249.23.125]:45674 "EHLO muru.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725320AbgI3FP1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 01:15:27 -0400
+Received: from atomide.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id D6B1580BF;
+        Wed, 30 Sep 2020 05:15:27 +0000 (UTC)
+Date:   Wed, 30 Sep 2020 08:15:21 +0300
+From:   Tony Lindgren <tony@atomide.com>
+To:     Trent Piepho <tpiepho@gmail.com>
+Cc:     Drew Fustini <drew@beagleboard.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jason Kridner <jkridner@beagleboard.org>,
+        Robert Nelson <robertcnelson@gmail.com>,
+        linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        Christina Quast <cquast@hanoverdisplays.com>
+Subject: Re: [PATCH] ARM: dts: document pinctrl-single,pins when
+ #pinctrl-cells = 2
+Message-ID: <20200930051521.GN9471@atomide.com>
+References: <CA+7tXihwHbcuxZ10jGZrQkET9+Dbs31SfsYDt_6XB+-JM99gqA@mail.gmail.com>
+ <20200917103942.GA2477958@x1>
+ <20200923065755.GR7101@atomide.com>
+ <CA+7tXigeNhQQVuAu0toZrvBKvMYkDU-8EWTpJR29HLTAMgoOBA@mail.gmail.com>
+ <20200924054324.GB9471@atomide.com>
+ <CA+7tXigg+h3v61AVMaYRKa_ZwznehOUPEESMqXKsNDNCrFph3w@mail.gmail.com>
+ <20200924060645.GD9471@atomide.com>
+ <CA+7tXijkS8UMFk4t=DuKjZZNnThbRarPQvxwxjg-uJFTKJRsXA@mail.gmail.com>
+ <20200924070443.GF9471@atomide.com>
+ <CA+7tXihBdw9AOGL7Hp2cH9+ii8fUXaaZZDUP3icyeOkMuGm4qA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200930003013.31289-2-nicoleotsuka@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+7tXihBdw9AOGL7Hp2cH9+ii8fUXaaZZDUP3icyeOkMuGm4qA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-30.09.2020 03:30, Nicolin Chen пишет:
-...
->  int tegra_mc_write_emem_configuration(struct tegra_mc *mc, unsigned long rate);
->  unsigned int tegra_mc_get_emem_device_count(struct tegra_mc *mc);
-> +struct tegra_mc *tegra_get_memory_controller(void);
->  
->  #endif /* __SOC_TEGRA_MC_H__ */
+* Trent Piepho <tpiepho@gmail.com> [200929 20:16]:
+> On Thu, Sep 24, 2020 at 12:04 AM Tony Lindgren <tony@atomide.com> wrote:
+> > Certainly different compatible strings can be used as needed.
+> > But pinctrl-single is not going to be am335x specific though :)
+> > We have quite a few SoCs using it:
 > 
+> So what doesn't make sense to me, is to put something am335x specific
+> like two cells for conf and mux, into a generic driver like pinctrl
+> single.
 
-This will conflict with the tegra20-devfreq driver, you should change it
-as well.
+Treating conf and mux separately is not am335x specific. Linux treats
+them separately because the conf options typically can be described
+in a generic way while the mux is just signal routing.
+
+Sure the conf values are currently not generic, but that could be
+done if wanted to and added some property to specify that the
+controller uses generic conf values.
+
+> This series adds two cells ORed into one.  Ok, that's generic, other
+> platforms could use it.  But it also accomplishes nothing, so what's
+> the point?  You've hinted there is more to come, which will accomplish
+> something, but what is it?  That can be:
+> Used by platforms other than am335x
+> Can't already be done with the pinctrl single pinconf features
+> Needs more than one data cell per pin
+
+For SoCs using #pinctrl-cells = <2> we now have conf and mux values
+separated in the dtb. Certainly that's a better place to be compared
+to earlier for any further pinconf changes.
+
+> Interrupt controllers have different numbers of cells, but they are
+> all platform specific, and the cells have defined platform specific
+> meanings.  pci-host-cam-generic is a somewhat generic interrupt
+> controller and it uses 1 cell, since it lacks device specific fields
+> to put into additional cells.
+
+With interrupts the IRQ_TYPE flags are generic and separate from the
+hardware specific cells. If we wanted to, we could have something
+similar for pinctrl framework.
+
+> Consider also that any future changes to the pinctrl-single bindings
+> would need to be backward compatible with a device tree binary where
+> two cells get combined.  So if the bindings being added here aren't
+> done, then adding them now creates an unnecessary additional version
+> to deal with for backward compatibility.
+
+I don't see issues with backward compabilty. If we specify that the
+controller uses #pinctrl-cells = <2>, and some additional property
+for specifying generic conf flags, we'd have a similar generic binding
+to the interrupt binding.
+
+Regards,
+
+Tony
