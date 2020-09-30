@@ -2,107 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2635127EB27
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 16:41:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C09E27EB2C
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 16:42:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730629AbgI3Olq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 10:41:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34858 "EHLO
+        id S1730550AbgI3Omj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 10:42:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728149AbgI3Olp (ORCPT
+        with ESMTP id S1727426AbgI3Omj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 10:41:45 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37162C061755;
-        Wed, 30 Sep 2020 07:41:45 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id b22so2426686lfs.13;
-        Wed, 30 Sep 2020 07:41:45 -0700 (PDT)
+        Wed, 30 Sep 2020 10:42:39 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD02AC0613D0
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 07:42:38 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id m6so2129083wrn.0
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 07:42:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=d/fQGHk0RGcvSyO7Alc7YxaloLPaa9kMj4sfJ/VwT08=;
-        b=BEMQ+z3XJa7zab6wRr0sP48ke26xdy1Qs34DjaVa2NyLiI6OoDNLwVTaZbwtlln4+j
-         9BNKM1M/hsNreK7GTRJAjEwM247uejaFNZ1YNM/d7MYlrFpsUY2HFvdfQ3D27d8xf7o7
-         foD10cJWXgKmctzfd4cPQfrcmTOP08/w1eoIj9i8dSkVQ/lL6OuNRNWUA8QS6OzWD4WA
-         4ntbzOLMZ4oJ4YIpe44MfXvvt1iyc3TVsHnlP4t4lpd2711WAVoeTkaD0MHIxRfs60uV
-         o+N6BXFrLW2UvkMOcTuFSk44rQoFu5r/rfKkjHdy26g17bstyasiIhctIEE8MNMdB5Zg
-         FAtw==
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=6v1rod49sRpblgnIYaytswYlCAQtFHY9+INnLpwKsRI=;
+        b=cQOkFdHu0n/gK2VC6Pw53HVVFr+sMRhn6/aFzrYNCe7zizsTi+kfwlLL93pj2OdVwl
+         ZvTEecxM05FWuhS8VL6yi10EmnLuVLatUgQxHjdXdPAyWlrIK+mfFFhOTLpn2J0GsJ5+
+         SbO0juaAokzo/rGx78kvVzx0sykPLmcAbvJKk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=d/fQGHk0RGcvSyO7Alc7YxaloLPaa9kMj4sfJ/VwT08=;
-        b=lRaTUNkxU9+et8IzRzf4PN7xT69jxB3z7eixO4t+peowxo862/HZyl0Hv1OVto/SG5
-         8nHK5gc6fMXMOoc1Cf5ZfkcJVfSLVgfqSNGASbxUK39QM9Aab6KcNtQRAyO/MxH/BKDS
-         ab1i+aKbRzFjhuvYBu7P0MMo64K2mlCl+zCvULEUqITol4gnaOmQd1lrGYDVTYylRsWK
-         00HkiRxc4GrAtfIFQ4xUl//Hel+vdnO/3dedb8sMgTYHxTo18pTwiFbpXpmyHzUsDsj2
-         7EwAqUX6SKNPc4YY5ITsZJ+99TFoOKOwT2vKIL5fIGV6lbXuAqBp2+7h6+bz0DOd/2CY
-         bPHg==
-X-Gm-Message-State: AOAM530S6e6tFp1mMBvydoa0KIqh1Klf4IRy6JaeTzJNXdXR44lNIDlX
-        32Th1Y/DvMr5FEtED0iNM2bg9OGqt5g=
-X-Google-Smtp-Source: ABdhPJxyN664IN3UyNlM/y7PUcbpe0h2+VOfS9ltqOMC7lfWQIEr88+UNPiqe6pRxBZTt8xbZqdrjg==
-X-Received: by 2002:a19:12:: with SMTP id 18mr1001563lfa.237.1601476903445;
-        Wed, 30 Sep 2020 07:41:43 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
-        by smtp.googlemail.com with ESMTPSA id q6sm176381ljg.115.2020.09.30.07.41.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 30 Sep 2020 07:41:42 -0700 (PDT)
-Subject: Re: [PATCH v3 2/3] iommu/tegra-smmu: Rework .probe_device and
- .attach_dev
-To:     Nicolin Chen <nicoleotsuka@gmail.com>, thierry.reding@gmail.com,
-        joro@8bytes.org, krzk@kernel.org
-Cc:     vdumpa@nvidia.com, jonathanh@nvidia.com,
-        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-References: <20200930084258.25493-1-nicoleotsuka@gmail.com>
- <20200930084258.25493-3-nicoleotsuka@gmail.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <01728f61-df0c-291d-5589-4468be25f00c@gmail.com>
-Date:   Wed, 30 Sep 2020 17:41:42 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=6v1rod49sRpblgnIYaytswYlCAQtFHY9+INnLpwKsRI=;
+        b=pPFavoZfd1yqj/Al/Z0TFbX2XFkaZJ1bVA5QNh6eSBRbFDqk+oaoL070H/FdanDB1r
+         07Gf2Gr6InEMvSaXnuQ/NTfhj2VPh9g753+J5hXFF/RR08uZLHCvIttBC5aTXOgmnfc7
+         57gaWtDsh2/rYUQanOlwxtG8bdTPIEI6T6ND1h75pThoigGW9sH7nta8BKBFKcVaP4br
+         uwiMchdsFhOqnKa7c6y6ktkOaLffQl9kaxf7SDMEhFN/DJawS07o82IG7AufNJEsrhC/
+         zGUIVY/helvPpg1ZTFDZfITbNWjDXp1D6T4yDzKyDQXGegJRdAtxbHKlgbAYMZZ1rxXk
+         yd9w==
+X-Gm-Message-State: AOAM5334oOlRDX9pD7M6D5PG+ihEhjPmR4V14mLUH8RlKjt+yrh2mdef
+        +KfGKPRGfhrOgdCFCBQY2SlQ2g==
+X-Google-Smtp-Source: ABdhPJz2nZa1l1VvlRHa6DFjVS+WIE6DInmcSNTyofAfBcbUicZpM6IVdQGrOIGPOy4g2tCaX7c+2g==
+X-Received: by 2002:adf:dccc:: with SMTP id x12mr3619286wrm.241.1601476957326;
+        Wed, 30 Sep 2020 07:42:37 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id k5sm3369463wmb.19.2020.09.30.07.42.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Sep 2020 07:42:36 -0700 (PDT)
+Date:   Wed, 30 Sep 2020 16:42:34 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 20/52] drm: drm_dsc.h: fix a kernel-doc markup
+Message-ID: <20200930144234.GB438822@phenom.ffwll.local>
+Mail-Followup-To: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>, David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <cover.1601467849.git.mchehab+huawei@kernel.org>
+ <3d467022325e15bba8dcb13da8fb730099303266.1601467849.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20200930084258.25493-3-nicoleotsuka@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3d467022325e15bba8dcb13da8fb730099303266.1601467849.git.mchehab+huawei@kernel.org>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-...
-> +	struct tegra_mc *mc = devm_tegra_get_memory_controller(dev);
-> +	struct iommu_fwspec *fwspec = dev_iommu_fwspec_get(dev);
->  
-> -		of_node_put(args.np);
-> -		index++;
-> -	}
-> +	/* An invalid mc pointer means mc and smmu drivers are not ready */
-> +	if (IS_ERR(mc))
-> +		return ERR_PTR(-EPROBE_DEFER);
->  
-> -	if (!smmu)
-> +	/*
-> +	 * IOMMU core allows -ENODEV return to carry on. So bypass any call
-> +	 * from bus_set_iommu() during tegra_smmu_probe(), as a device will
-> +	 * call in again via of_iommu_configure when fwspec is prepared.
-> +	 */
-> +	if (!mc->smmu || !fwspec || fwspec->ops != &tegra_smmu_ops)
->  		return ERR_PTR(-ENODEV);
->  
-> -	return &smmu->iommu;
-> +	dev_iommu_priv_set(dev, mc->smmu);
-> +
-> +	return &mc->smmu->iommu;
->  }
+On Wed, Sep 30, 2020 at 03:24:43PM +0200, Mauro Carvalho Chehab wrote:
+> As warned by Sphinx:
+> 
+> 	./Documentation/gpu/drm-kms-helpers:305: ./include/drm/drm_dsc.h:587: WARNING: Unparseable C cross-reference: 'struct'
+> 	Invalid C declaration: Expected identifier in nested name, got keyword: struct [error at 6]
+> 	  struct
+> 	  ------^
+> 
+> The markup for one struct is wrong, as struct is used twice.
+> 
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-Is it really okay to use devm_tegra_get_memory_controller() here?
+Applied to drm-misc-fixes, thanks for your patch.
+-Daniel
 
-I assume it should be more preferred to do it only for devices that have
-fwspec->ops == &tegra_smmu_ops.
+> ---
+>  include/drm/drm_dsc.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/include/drm/drm_dsc.h b/include/drm/drm_dsc.h
+> index 887954cbfc60..732f32740c86 100644
+> --- a/include/drm/drm_dsc.h
+> +++ b/include/drm/drm_dsc.h
+> @@ -588,7 +588,7 @@ struct drm_dsc_picture_parameter_set {
+>   * This structure represents the DSC PPS infoframe required to send the Picture
+>   * Parameter Set metadata required before enabling VESA Display Stream
+>   * Compression. This is based on the DP Secondary Data Packet structure and
+> - * comprises of SDP Header as defined &struct struct dp_sdp_header in drm_dp_helper.h
+> + * comprises of SDP Header as defined &struct dp_sdp_header in drm_dp_helper.h
+>   * and PPS payload defined in &struct drm_dsc_picture_parameter_set.
+>   *
+>   * @pps_header: Header for PPS as per DP SDP header format of type
+> -- 
+> 2.26.2
+> 
 
-Secondly, it also looks to me that a non-devm variant should be more
-appropriate here because tegra_smmu_probe_device() isn't invoked by the
-devices themselves.
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
