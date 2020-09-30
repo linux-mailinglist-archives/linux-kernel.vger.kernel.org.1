@@ -2,96 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DCEE27E9B2
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 15:27:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CBA727E9BA
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 15:27:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730422AbgI3N1S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 09:27:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38786 "EHLO mail.kernel.org"
+        id S1730667AbgI3N1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 09:27:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39018 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730243AbgI3NZW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1730240AbgI3NZW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 30 Sep 2020 09:25:22 -0400
 Received: from mail.kernel.org (unknown [95.90.213.196])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5F5CA23A52;
+        by mail.kernel.org (Postfix) with ESMTPSA id 5BFCA23A51;
         Wed, 30 Sep 2020 13:25:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1601472321;
-        bh=BA0rUNfQv2vTH4SLnc/FqbEBD7kAUkAlpsHlup8dym8=;
+        bh=nm9qJomKwVXcljIx0Ng6FM4B6A36zuOApRHbFINo3A4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SoZX0js5gUXgcROd/wYy5mIzlvUKaoE8hTeskV/UPb/swsJr3psniP3jvJRXjaOgw
-         t9YYCe/tq2Tjiphika3JjZD7BZL/y93nz668ZTqdpoJJGSLxGLICR31gqeWtesTQ5A
-         o1p2bGl7hBSP/a27mck8xIA9+CDenCO4TW904dhI=
+        b=VYhTrFDMlQ8GXf61TAS9LNhpFwZS+A9+i4k6ZaWE8BkybGFIXvLJZU6A/0wPGqajy
+         2/WMXr1jRiKny7/oGQ+wtMbyDkzocB0gvoxZjl5CUskD609gnqgwvMvt17iBObYEL6
+         pITFyee7P37o+7wRjrjkZ9hnoA8IzN7LCyoz6BJ0=
 Received: from mchehab by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1kNc6h-001XKf-Eh; Wed, 30 Sep 2020 15:25:19 +0200
+        id 1kNc6h-001XKi-Gb; Wed, 30 Sep 2020 15:25:19 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
         Jonathan Corbet <corbet@lwn.net>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Julia Lawall <Julia.Lawall@inria.fr>,
-        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v4 39/52] docs: writing-an-alsa-driver.rst: fix some bad c:func: markups
-Date:   Wed, 30 Sep 2020 15:25:02 +0200
-Message-Id: <9c68c182ae5aa978d68b64695b1e3292fcf58e76.1601467849.git.mchehab+huawei@kernel.org>
+        Moritz Fischer <mdf@kernel.org>, Tom Rix <trix@redhat.com>,
+        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v4 40/52] docs: fpga: replace :c:member: macros
+Date:   Wed, 30 Sep 2020 15:25:03 +0200
+Message-Id: <720b01d37a7d6f50721d95988cfd9a9e463f43cd.1601467849.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1601467849.git.mchehab+huawei@kernel.org>
 References: <cover.1601467849.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some such markups are invalid, as reported by Sphinx:
+Those macros are not doing the right thing with Sphinx 3,
+causing parse errors:
 
-	./Documentation/sound/kernel-api/writing-an-alsa-driver.rst:3317: WARNING: Unparseable C cross-reference: 'snd_rawmidi_transmit*'
-	Invalid C declaration: Expected end of definition. [error at 20]
-	  snd_rawmidi_transmit*
-	  --------------------^
-	./Documentation/sound/kernel-api/writing-an-alsa-driver.rst:3917: WARNING: Unparseable C cross-reference: 'copy_from/to_user'
-	Invalid C declaration: Expected end of definition. [error at 9]
-	  copy_from/to_user
-	  ---------^
+	./Documentation/driver-api/fpga/fpga-mgr.rst:104: WARNING: Unparseable C cross-reference: 'fpga_manager->state'
+	Invalid C declaration: Expected end of definition. [error at 12]
+	  fpga_manager->state
+	  ------------^
+	./Documentation/driver-api/fpga/fpga-programming.rst:18: WARNING: Unparseable C cross-reference: 'fpga_region->info'
+	Invalid C declaration: Expected end of definition. [error at 11]
+	  fpga_region->info
+	  -----------^
+	./Documentation/driver-api/fpga/fpga-region.rst:62: WARNING: Unparseable C cross-reference: 'fpga_region->bridge_list'
+	Invalid C declaration: Expected end of definition. [error at 11]
+	  fpga_region->bridge_list
+	  -----------^
+	./Documentation/driver-api/fpga/fpga-region.rst:62: WARNING: Unparseable C cross-reference: 'fpga_region->get_bridges'
+	Invalid C declaration: Expected end of definition. [error at 11]
+	  fpga_region->get_bridges
+	  -----------^
 
-The first case seems to be better replaced by a literal.
-
-For the second one, let's generate cross-references, by
-spliting it in two.
+Replace them by :c:expr:, with does what's desired.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- Documentation/sound/kernel-api/writing-an-alsa-driver.rst | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ Documentation/driver-api/fpga/fpga-mgr.rst         | 2 +-
+ Documentation/driver-api/fpga/fpga-programming.rst | 2 +-
+ Documentation/driver-api/fpga/fpga-region.rst      | 4 ++--
+ 3 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/Documentation/sound/kernel-api/writing-an-alsa-driver.rst b/Documentation/sound/kernel-api/writing-an-alsa-driver.rst
-index 85d6e9c643ef..73bbd59afc33 100644
---- a/Documentation/sound/kernel-api/writing-an-alsa-driver.rst
-+++ b/Documentation/sound/kernel-api/writing-an-alsa-driver.rst
-@@ -3315,8 +3315,7 @@ data and removes them from the buffer at once:
-   }
+diff --git a/Documentation/driver-api/fpga/fpga-mgr.rst b/Documentation/driver-api/fpga/fpga-mgr.rst
+index 22f7885b32c9..917ee22db429 100644
+--- a/Documentation/driver-api/fpga/fpga-mgr.rst
++++ b/Documentation/driver-api/fpga/fpga-mgr.rst
+@@ -101,7 +101,7 @@ in state.
+ API for implementing a new FPGA Manager driver
+ ----------------------------------------------
  
- If you know beforehand how many bytes you can accept, you can use a
--buffer size greater than one with the
--:c:func:`snd_rawmidi_transmit\*()` functions.
-+buffer size greater than one with the ``snd_rawmidi_transmit*()`` functions.
+-* ``fpga_mgr_states`` —  Values for :c:member:`fpga_manager->state`.
++* ``fpga_mgr_states`` —  Values for :c:expr:`fpga_manager->state`.
+ * struct fpga_manager —  the FPGA manager struct
+ * struct fpga_manager_ops —  Low level FPGA manager driver ops
+ * devm_fpga_mgr_create() —  Allocate and init a manager struct
+diff --git a/Documentation/driver-api/fpga/fpga-programming.rst b/Documentation/driver-api/fpga/fpga-programming.rst
+index f487ad64dfb9..002392dab04f 100644
+--- a/Documentation/driver-api/fpga/fpga-programming.rst
++++ b/Documentation/driver-api/fpga/fpga-programming.rst
+@@ -15,7 +15,7 @@ the FPGA manager and bridges.  It will:
+  * lock the mutex of the region's FPGA manager
+  * build a list of FPGA bridges if a method has been specified to do so
+  * disable the bridges
+- * program the FPGA using info passed in :c:member:`fpga_region->info`.
++ * program the FPGA using info passed in :c:expr:`fpga_region->info`.
+  * re-enable the bridges
+  * release the locks
  
- The ``trigger`` callback must not sleep. If the hardware FIFO is full
- before the substream buffer has been emptied, you have to continue
-@@ -3916,7 +3915,7 @@ the maximum size of the proc file access.
+diff --git a/Documentation/driver-api/fpga/fpga-region.rst b/Documentation/driver-api/fpga/fpga-region.rst
+index 3e52be7e2968..363a8171ab0a 100644
+--- a/Documentation/driver-api/fpga/fpga-region.rst
++++ b/Documentation/driver-api/fpga/fpga-region.rst
+@@ -61,9 +61,9 @@ during the region's probe function.
  
- The read/write callbacks of raw mode are more direct than the text mode.
- You need to use a low-level I/O functions such as
--:c:func:`copy_from/to_user()` to transfer the data.
-+:c:func:`copy_from_user()` and :c:func:`copy_to_user()` to transfer the data.
+ The FPGA region will need to specify which bridges to control while programming
+ the FPGA.  The region driver can build a list of bridges during probe time
+-(:c:member:`fpga_region->bridge_list`) or it can have a function that creates
++(:c:expr:`fpga_region->bridge_list`) or it can have a function that creates
+ the list of bridges to program just before programming
+-(:c:member:`fpga_region->get_bridges`).  The FPGA bridge framework supplies the
++(:c:expr:`fpga_region->get_bridges`).  The FPGA bridge framework supplies the
+ following APIs to handle building or tearing down that list.
  
- ::
- 
+ * fpga_bridge_get_to_list() — Get a ref of an FPGA bridge, add it to a
 -- 
 2.26.2
 
