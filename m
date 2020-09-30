@@ -2,160 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9980C27E307
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 09:51:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC23027E310
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 09:54:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728362AbgI3Hvl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 03:51:41 -0400
-Received: from esa6.microchip.iphmx.com ([216.71.154.253]:60075 "EHLO
-        esa6.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725440AbgI3Hvk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 03:51:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1601452299; x=1632988299;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=ZAjli6RJSPscFkZUAzuDpLjDdXPQTsrWnUM+VQjgggU=;
-  b=2UmZTu1UfFyI2gn8RhpG1alKdX+YPWpV8Ti8ztZH6rqsdgiwVHDDrt4v
-   yvmtad/3i5eLORDcDH54tQ2s/z/xXiocc9S0x72WPt6wZDeYoeJXJi8bh
-   xIJfLGTRUO7rLanyLHvE1OBKhkIreQiBn7Yfi6mlXmYgpVQmkjiylc9gE
-   9cc68NxSYPWLHtIH9jppchFFbgoVP3O2v2Ehe9/4HRy1MSTJnbu+nure+
-   RyNAsOOQfZC7kk3i5J06/9UBb8bOHEtbsqr7CniKpWHyPXZpcq0kNouYa
-   6g2y2k8X+xc+vYly+vRiHF52yy8O2FGnzZkk8CkwPyGwh3Lvf+/x54wTI
-   A==;
-IronPort-SDR: EyF74EnMl7M4LgizkIWVdDtKWqHIReAAePCtYw8fx+QDSGRxJyqoTb1YEokn/cPNANmhAHuoHf
- o5/RQh1EPx9IPjiWj/UmsYEQamAjJp1gT9ka173wB7hRaidsLRiQo4hTkEdjcSwOjiGnODCPNN
- NTD2TCE9DHADBgqBswDB9r+Ue+rLtJRS3JvfXHQmEwZVv8ijMGlW2qjAkhg4WYOgh56buHjaWo
- UWh2bpgLRvTlBQcvNkvRPwfrWgcZKCs5gDKTeJB/Zs3Lx5gqhgG7D0/EJXyjEQYmI74zs9F/sQ
- bFY=
-X-IronPort-AV: E=Sophos;i="5.77,321,1596524400"; 
-   d="scan'208";a="28191639"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 30 Sep 2020 00:51:39 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 30 Sep 2020 00:51:23 -0700
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.72) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3 via Frontend
- Transport; Wed, 30 Sep 2020 00:51:22 -0700
+        id S1727761AbgI3Hyf convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 30 Sep 2020 03:54:35 -0400
+Received: from mail-eopbgr1300114.outbound.protection.outlook.com ([40.107.130.114]:2128
+        "EHLO APC01-HK2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725535AbgI3Hyf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 03:54:35 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=P63+iR61rmr9feKrRAEzfZjDRa/4/Pxofjdnp10k4PxUef861H5LV3h4o76G3SLrCUHFtxv0xabm8jCwg7xsXzQCe+EBmxeMI8yeIl/u816aOgv7Po0yLdj2UCmrqCVJ7eB8T5y8kZUoklEGc6n0FslALXtSoFA985QtyRqCwMpk21sbzQCIJK5njavgt1H/Ba/1bMge+Oflg+4Iccp/NcDSU0cUphIepyMe1BfZGt61e5rkpba2Fo2Jf4HI4yprcQw0SGfKOIe9hIz11qjq6T4+dKRp9tyOV+gopfuiT1apGpnix2Mpn8IsvISFBW0aWzbUAciHy1gcFCtBxZPmfw==
+ b=EJaQOh+aXE8OSBSQnPavTIJCYqpFF6EWDTjDLz4kYPL5DiYKuI0COS8qqV9LFBBoIDGn9s9p6zjgiqm2U97QIID+KSPwQ2a16lRJJxHBAhAGI0Eil9ycxL9jKaU1vwn80aofHPYerecYMQB7+JOAZlOaW7rmfFeKuLm4nGR7njsMZPZULn2dX48JEO4i/g2vDRr4FZ3GxymzCA7GPgZQKr9lcxcS0oXxZXSUHM0iEhNfHvBdzah36AQYHShNf2F3yUqBPIK4KUZtS4xVAmToWfHa9yFuj2O9lS6miPJiWdp+OsNtayfFMqXj2w9DutKLb+4Us8k8g34G3+ebKNFFFg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZAjli6RJSPscFkZUAzuDpLjDdXPQTsrWnUM+VQjgggU=;
- b=kdfeRixH/tcT5koax2MC3albCdqEexSi5lvFXMlUAaXHmquEp/lrF+QIO1Q2FUu5yc9sp1MJXbzHOiuk0PwCQNP1x3W3oiCiFctMBE/enmH/Qyxmc0707lXIf5UoX4wCdUHg6KnBiBuHdWIRCoj0FGPZK/TEY1onnJSof6OFAexE0RzafIkWYJ18fq4EkvlXtQRullaaZtP2p9RIHBlCZr4TZ6nuzqvbxn6zbH1X1jOlhxJKyaD9FrXXxdX7Yeqiln2B8lYwK4lcLUYMH6Gr0U/aGoMCmg1UCfRmDmgPv8iThJm9z3TWZ3tyS56sqC5GZ33b8AgyjMFBkuD+M/OJIg==
+ bh=ERRxUTKJihBaa/SaMpYpK+TMzP5Zda+RfvqmF6EOYv4=;
+ b=E+if8Hggsw4MMigSsew92am/mfXtlUDdbObme4vrqZcXSNoSLBtMnM6oI8U2C2vZ8wRbiF4CquHktkQEaiWpaL/UJHdC2gCQiNQPrCIVmKs5IA6fPq8YlK85mucrSdb7QJELf7LyVA/3x0vdfZApXK98bpmqmSSVMqeSgcX/jmPlmzVMnRh1PDj4Y7x98cSZe4qBdGzAM8BBz+W9fCgPpmod0yhJxT1em0zPfHBOwjkB/TqeJ2DLN0VA6jk6lXa1QQt2sLiKbi0mMOePlpv8LRy0UOdIwZUrr1NSrarLTCjd24NG7TzJ4lxLtVjtVpnX+H0sLwRdBG8NwVCFx+RS/Q==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector2-microchiptechnology-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZAjli6RJSPscFkZUAzuDpLjDdXPQTsrWnUM+VQjgggU=;
- b=B1zo3aTFZK9+bVcXMyawm71X01sHZz84z8EcMm6yIt9rlO07/fiSMeCFlxAYrgeIc7gtStlTeyUh56Dzf8QtSW2CTzBxbtFgc+wmfBYyQsfue96zUSdIbjvaj/5xephPXSxCF/oFwJeS6nobL7QrPLJX1gISMwRDYUmXachcgiY=
-Received: from DM5PR11MB1914.namprd11.prod.outlook.com (10.175.91.12) by
- DM6PR11MB2650.namprd11.prod.outlook.com (20.176.98.18) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3433.32; Wed, 30 Sep 2020 07:51:37 +0000
-Received: from DM5PR11MB1914.namprd11.prod.outlook.com
- ([fe80::f44a:f58e:c13b:947a]) by DM5PR11MB1914.namprd11.prod.outlook.com
- ([fe80::f44a:f58e:c13b:947a%4]) with mapi id 15.20.3433.032; Wed, 30 Sep 2020
- 07:51:37 +0000
-From:   <Tudor.Ambarus@microchip.com>
-To:     <p.yadav@ti.com>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
-        <vigneshr@ti.com>, <linux-mtd@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <nsekhar@ti.com>, <boris.brezillon@collabora.com>
-Subject: Re: [PATCH v13 13/15] mtd: spi-nor: core: expose
- spi_nor_default_setup() in core.h
-Thread-Topic: [PATCH v13 13/15] mtd: spi-nor: core: expose
- spi_nor_default_setup() in core.h
-Thread-Index: AQHWlv6Gc8Ir4MjTDkiKaIPwKqe4Ew==
-Date:   Wed, 30 Sep 2020 07:51:37 +0000
-Message-ID: <ef62bf4e-1b2c-aa3e-39b7-fd8d118e582d@microchip.com>
-References: <20200916124418.833-1-p.yadav@ti.com>
- <20200916124418.833-14-p.yadav@ti.com>
-In-Reply-To: <20200916124418.833-14-p.yadav@ti.com>
-Accept-Language: en-US
-Content-Language: en-US
+ smtp.mailfrom=aspeedtech.com; dmarc=pass action=none
+ header.from=aspeedtech.com; dkim=pass header.d=aspeedtech.com; arc=none
+Received: from HK0PR06MB3779.apcprd06.prod.outlook.com (2603:1096:203:b8::10)
+ by HK2PR0601MB2004.apcprd06.prod.outlook.com (2603:1096:202:e::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.25; Wed, 30 Sep
+ 2020 07:54:30 +0000
+Received: from HK0PR06MB3779.apcprd06.prod.outlook.com
+ ([fe80::a1a1:8859:d07a:2473]) by HK0PR06MB3779.apcprd06.prod.outlook.com
+ ([fe80::a1a1:8859:d07a:2473%3]) with mapi id 15.20.3433.034; Wed, 30 Sep 2020
+ 07:54:30 +0000
+From:   ChiaWei Wang <chiawei_wang@aspeedtech.com>
+To:     Andrew Jeffery <andrew@aj.id.au>,
+        Ryan Chen <ryan_chen@aspeedtech.com>,
+        Joel Stanley <joel@jms.id.au>
+CC:     Robert Lippert <rlippert@google.com>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        Corey Minyard <minyard@acm.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Cyril Bur <cyrilbur@gmail.com>,
+        Haiyue Wang <haiyue.wang@linux.intel.com>
+Subject: RE: [PATCH 0/4] Remove LPC register partitioning
+Thread-Topic: [PATCH 0/4] Remove LPC register partitioning
+Thread-Index: AQHWh+7F/kBF9JQr+U229w2dj+FSMali0RCAgAAL8QCAABZ/UIAa0rqAgAMLCICAABvgwA==
+Date:   Wed, 30 Sep 2020 07:54:30 +0000
+Message-ID: <HK0PR06MB37793A5D2B57972AFFFBAA0E91330@HK0PR06MB3779.apcprd06.prod.outlook.com>
+References: <20200911034631.8473-1-chiawei_wang@aspeedtech.com>
+ <CACPK8XcYvUj3W-CPzXKugp3wx7rcLEJ_8f2-Bi6V7QHZpopBbA@mail.gmail.com>
+ <551926fc-7bd4-4a0e-8fcf-4675dcdba22b@www.fastmail.com>
+ <HK0PR06MB37796D91EC7290A69F2655E491240@HK0PR06MB3779.apcprd06.prod.outlook.com>
+ <HK0PR06MB33800F282095AA96884B2FC0F2350@HK0PR06MB3380.apcprd06.prod.outlook.com>
+ <485ec282-568f-458c-a91e-14c89415b8e5@www.fastmail.com>
+In-Reply-To: <485ec282-568f-458c-a91e-14c89415b8e5@www.fastmail.com>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-authentication-results: ti.com; dkim=none (message not signed)
- header.d=none;ti.com; dmarc=none action=none header.from=microchip.com;
-x-originating-ip: [5.13.1.187]
+authentication-results: aj.id.au; dkim=none (message not signed)
+ header.d=none;aj.id.au; dmarc=none action=none header.from=aspeedtech.com;
+x-originating-ip: [211.20.114.70]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: e8aab031-89e8-4bf0-97c3-08d86515a901
-x-ms-traffictypediagnostic: DM6PR11MB2650:
-x-microsoft-antispam-prvs: <DM6PR11MB2650108AC37460BD8D6FC235F0330@DM6PR11MB2650.namprd11.prod.outlook.com>
-x-bypassexternaltag: True
-x-ms-oob-tlc-oobclassifiers: OLM:7691;
+x-ms-office365-filtering-correlation-id: a80fb44c-eec7-483b-f197-08d865161022
+x-ms-traffictypediagnostic: HK2PR0601MB2004:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <HK2PR0601MB20045BC807C343B58E6389DA91330@HK2PR0601MB2004.apcprd06.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
 x-ms-exchange-senderadcheck: 1
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: +GgR61jbGE6kmT2M8EjrS8iXaqq5OGUYLfyAqiwEXL6yn5VXB1oJZH+zeQxexJZ7a+CwmZDIGs7QoQaNLwFc1W0av9YWOniXDfcZdKK+kjBjt2xyG6zKhUB72YOHsST/hkEBOB8C1TG+TNXo4qv1zS0JsUx0AXXLnL62hUcGxMzEKV21CM6ueaS33p+wyWt/L2EdT3N1fGABrDmA1t5hxHY9iIIuqv1oWuEw2UYnsgdut+e7ir1sR0I1d+VPZoeP7CPNj5VIps1mdhTHYzWUc5e3h+3gs+pfWre8riWGg3OvlhMh7Me8Tzt0TXQ+tlvoa4nwOxvlOO+cucM5+n9HWilZs17bLsHyayom/xZJukX1rMXbUog8lSHJ47MeyGW8
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR11MB1914.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(396003)(376002)(39860400002)(136003)(366004)(110136005)(316002)(86362001)(54906003)(478600001)(76116006)(91956017)(66946007)(71200400001)(66446008)(64756008)(66556008)(66476007)(6506007)(26005)(36756003)(186003)(53546011)(5660300002)(2906002)(8676002)(4326008)(31696002)(6512007)(2616005)(6486002)(8936002)(31686004)(83380400001)(43740500002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: QYyIw0i9DUoiQMjHcTvzHYotHyekF5AM4KyJNYJjS5Fi8B0O1WEIPBdXivVShRfv/xunesT/5vY1JeE1K/M/wkZsz2lS3BXfiTMiuDv6jfLCa8dkmevs6B6LpyfW1REM6Oy0o8Sng/tjhSOjt+Vs4gBEA2rGN+sc9IJKeFFlt2bLmdaUTU3GjnryKsSdbv0DKj+RpatBPJ5VYds2yBSJbSMMIsuUynvtZDJQy4Ra44nI/4BEIcDyDafL/++aXS2j5OV/MjFMewutAxbyV1wyx8HsGecdUu2wzIyndyrqKWyWDrYfOhkZryYiR+mcQGbjVxZlQa+iwC93qf1xZzU50hxyI26eMzWPSgPR6bk+7S5uT8IbRv/vyZULBxKS9IzskBY7E0xCNzRWOINqR2PBFaZhv1/E/JXpmWbw8LPYpV06NoQuOS5nKeKJ6y0h4Y9ffbYTaim8Zy4wALQpB+kmkR1EMWi67wJj3Xvn++Ft3BVJrgkL3vZroq48mYP9nYqBzTARq+UEw/ux9iacboDe1SJYJOk9QSYn+1xUWBgeXPgmhom5dFpgONGxqn7PcWR6I2l7nHHOi/yhfDSicgkiL2FWWMHklT8LamTFMHiBqUtlN7OB/0sIgHbWjj68JZuJY1dutrgei301M/5o4GMuqg==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <6A07D6BE49333240B4F98E6332ED62C6@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+x-microsoft-antispam-message-info: KHciGghVJ9yQc5/N6L+jLpx90RdO9EE2myO7eojaCfHsPsC6CT6gyIufNWbV03BPKQKJCgwWJGkdonhvDSzitvyb5ChtN57ZEaTTN2xZlf5W9kU8IFJeg88F7zApDgeWbGYSJGV6An4iA2iddcOD+79w2/bMncVeq7Z3Njd3M8NAflwS8T2ssRY+EjrmyR9VciSpRz8gbM9gzbmTErRh/BgM8V+7eax9oJhn5RaKBLq1qexVns1nxiUIxy2zzSQpFPh7wKh3tOAmLvH0oXoYw4t4/xl6FeEgmN18FJQBjS8GwhM+vSpdYeHTeYo+NOmFpVjRjkuGntQhh/9SnbuhGpDxE+dCivE6XRdKPhZDKxZh1b0n6gdZH58BWs5U08I5
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HK0PR06MB3779.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(136003)(376002)(396003)(39840400004)(346002)(33656002)(54906003)(110136005)(8936002)(7416002)(8676002)(66946007)(86362001)(83380400001)(186003)(26005)(71200400001)(9686003)(2906002)(5660300002)(76116006)(66476007)(55016002)(66446008)(64756008)(66556008)(316002)(4326008)(478600001)(7696005)(55236004)(53546011)(52536014)(6506007);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: i734jfUz7n393aVbssWjmeITEI1wtdfgnc9BaCtzzmFm6L/8GJpgNzcv+hiT1tyx0sfU9KhPPqTt/yuTpCZVihUjTbcZIOnqyEJ7SttuJMKC2uFVHwSUdp1Ni3s7x68Hhztfw+aL+GOctQVuC+FnXjcjqdUwDQTBfJBEvUIEZrzsf1eRoZYm8OBeXIk8GdN+F9yVSEcDWIZSin0lDG1sz3objDXQxiEPTf9bTGiuDhV62Eq0B2BId6ZHh1lHs5N4542Uis2JgcUNEKQQnshNn8p1raGfT7JeCxf3yoXIgIVSLj5Kkl6TnF/Sv/IZpzLI8zBevJa1QibIOtM5NVwahKbIOqW7swPFmtJu6P035fZlcxUUAV8AISFl0oxcmPhvRatvXAzXPiMvG+K1Ywl97dENjGe2QF5NjyWtGqqUsrMgMhi9f/TZvX06oDXQNWPXKfkhuWJtTc1/RJLq2pi821dke4dPu/SypaRfAuwMByxlbO9dLIUZgAdbCt2tL2GTk2C7K6/TKbTg1x1/0fQ4rMNNjWcXqBzkkYdlxTNv7BUP0tsDEv2WNVJtT6Z9989wUto6uwlfPtJqu5Gs9qCiDWX0A+dBMOwD71ET0F4zPIIbCh548YcCIv1UZijwETAkKsJylpEvaLSXXpWvOPI/0Q==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
+X-OriginatorOrg: aspeedtech.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR11MB1914.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e8aab031-89e8-4bf0-97c3-08d86515a901
-X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Sep 2020 07:51:37.5328
+X-MS-Exchange-CrossTenant-AuthSource: HK0PR06MB3779.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a80fb44c-eec7-483b-f197-08d865161022
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Sep 2020 07:54:30.4568
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-id: 43d4aa98-e35b-4575-8939-080e90d5a249
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: rb3oSyJ67whgwvLPdXCVA53iyeUwjNHmg5KxD0cyyvTELKswCnCHe0vDhDrs+R8hNeAtHNp9BuFdFlMwnkmmOtKqj+rHg/CR+r8Bj3AQAPs=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB2650
+X-MS-Exchange-CrossTenant-userprincipalname: 4XQCKOGyJnSVE+5Wtaoj5oHecppH9Jxq5SinO2lidtG+pY0/LyVAlQ6hjmG/SgvYf6Dc3c+JdUdrpWdif5O2CNGMD3Z4jYfzNL3v6l81no8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: HK2PR0601MB2004
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gOS8xNi8yMCAzOjQ0IFBNLCBQcmF0eXVzaCBZYWRhdiB3cm90ZToNCj4gRVhURVJOQUwgRU1B
-SUw6IERvIG5vdCBjbGljayBsaW5rcyBvciBvcGVuIGF0dGFjaG1lbnRzIHVubGVzcyB5b3Uga25v
-dyB0aGUgY29udGVudCBpcyBzYWZlDQo+IA0KPiBGbGFzaGVzIG1pZ2h0IHdhbnQgdG8gYWRkIGEg
-Y3VzdG9tIHNldHVwIGhvb2sgdG8gY29uZmlndXJlIHRoZSBmbGFzaCBpbg0KPiB0aGUgcHJvcGVy
-IG1vZGUgZm9yIG9wZXJhdGlvbi4gQnV0IGFmdGVyIHRoYXQsIHRoZXkgd291bGQgc3RpbGwgd2Fu
-dCB0bw0KPiBydW4gdGhlIGRlZmF1bHQgc2V0dXAgaG9vayBiZWNhdXNlIGl0IHNlbGVjdHMgdGhl
-IHJlYWQsIHByb2dyYW0sIGFuZA0KPiBlcmFzZSBvcGVyYXRpb25zLiBTaW5jZSB0aGVyZSBpcyBs
-aXR0bGUgcG9pbnQgaW4gcmVwZWF0aW5nIGFsbCB0aGF0DQo+IGNvZGUsIGV4cG9zZSB0aGUgc3Bp
-X25vcl9kZWZhdWx0X3NldHVwKCkgaW4gY29yZS5oIHRvDQo+IG1hbnVmYWN0dXJlci1zcGVjaWZp
-YyBmaWxlcy4NCg0KQnV0IHlvdSBkb24ndCB1c2UgaXQgaW4gdGhlIGZvbGxvd2luZyBwYXRjaGVz
-LiBDYW4gd2UgZHJvcCB0aGlzIG9uZSBmb3Igbm93Pw0KPiANCj4gU2lnbmVkLW9mZi1ieTogUHJh
-dHl1c2ggWWFkYXYgPHAueWFkYXZAdGkuY29tPg0KPiAtLS0NCj4gIGRyaXZlcnMvbXRkL3NwaS1u
-b3IvY29yZS5jIHwgNCArKy0tDQo+ICBkcml2ZXJzL210ZC9zcGktbm9yL2NvcmUuaCB8IDMgKysr
-DQo+ICAyIGZpbGVzIGNoYW5nZWQsIDUgaW5zZXJ0aW9ucygrKSwgMiBkZWxldGlvbnMoLSkNCj4g
-DQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9zcGktbm9yL2NvcmUuYyBiL2RyaXZlcnMvbXRk
-L3NwaS1ub3IvY29yZS5jDQo+IGluZGV4IGQ1YzkyYzljNzMwNy4uMzRlZGZjZjMzMTcyIDEwMDY0
-NA0KPiAtLS0gYS9kcml2ZXJzL210ZC9zcGktbm9yL2NvcmUuYw0KPiArKysgYi9kcml2ZXJzL210
-ZC9zcGktbm9yL2NvcmUuYw0KPiBAQCAtMjc1OSw4ICsyNzU5LDggQEAgc3RhdGljIGludCBzcGlf
-bm9yX3NlbGVjdF9lcmFzZShzdHJ1Y3Qgc3BpX25vciAqbm9yKQ0KPiAgICAgICAgIHJldHVybiAw
-Ow0KPiAgfQ0KPiANCj4gLXN0YXRpYyBpbnQgc3BpX25vcl9kZWZhdWx0X3NldHVwKHN0cnVjdCBz
-cGlfbm9yICpub3IsDQo+IC0gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNvbnN0IHN0
-cnVjdCBzcGlfbm9yX2h3Y2FwcyAqaHdjYXBzKQ0KPiAraW50IHNwaV9ub3JfZGVmYXVsdF9zZXR1
-cChzdHJ1Y3Qgc3BpX25vciAqbm9yLA0KPiArICAgICAgICAgICAgICAgICAgICAgICAgIGNvbnN0
-IHN0cnVjdCBzcGlfbm9yX2h3Y2FwcyAqaHdjYXBzKQ0KPiAgew0KPiAgICAgICAgIHN0cnVjdCBz
-cGlfbm9yX2ZsYXNoX3BhcmFtZXRlciAqcGFyYW1zID0gbm9yLT5wYXJhbXM7DQo+ICAgICAgICAg
-dTMyIGlnbm9yZWRfbWFzaywgc2hhcmVkX21hc2s7DQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210
-ZC9zcGktbm9yL2NvcmUuaCBiL2RyaXZlcnMvbXRkL3NwaS1ub3IvY29yZS5oDQo+IGluZGV4IGUy
-YzczMjRkOTk3ZS4uMTBkYzAzNTA2ZjkzIDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL210ZC9zcGkt
-bm9yL2NvcmUuaA0KPiArKysgYi9kcml2ZXJzL210ZC9zcGktbm9yL2NvcmUuaA0KPiBAQCAtNDUz
-LDYgKzQ1Myw5IEBAIGludCBzcGlfbm9yX3Bvc3RfYmZwdF9maXh1cHMoc3RydWN0IHNwaV9ub3Ig
-Km5vciwNCj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjb25zdCBzdHJ1Y3Qgc2ZkcF9i
-ZnB0ICpiZnB0LA0KPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHN0cnVjdCBzcGlfbm9y
-X2ZsYXNoX3BhcmFtZXRlciAqcGFyYW1zKTsNCj4gDQo+ICtpbnQgc3BpX25vcl9kZWZhdWx0X3Nl
-dHVwKHN0cnVjdCBzcGlfbm9yICpub3IsDQo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgY29u
-c3Qgc3RydWN0IHNwaV9ub3JfaHdjYXBzICpod2NhcHMpOw0KPiArDQo+ICBzdGF0aWMgc3RydWN0
-IHNwaV9ub3IgX19tYXliZV91bnVzZWQgKm10ZF90b19zcGlfbm9yKHN0cnVjdCBtdGRfaW5mbyAq
-bXRkKQ0KPiAgew0KPiAgICAgICAgIHJldHVybiBtdGQtPnByaXY7DQo+IC0tDQo+IDIuMjguMA0K
-PiANCg0K
+Hi Andrew,
+
+> -----Original Message-----
+> From: Andrew Jeffery <andrew@aj.id.au>
+> Sent: Wednesday, September 30, 2020 2:12 PM
+> To: Ryan Chen <ryan_chen@aspeedtech.com>; ChiaWei Wang
+> <chiawei_wang@aspeedtech.com>; Joel Stanley <joel@jms.id.au>
+> Subject: Re: [PATCH 0/4] Remove LPC register partitioning
+> 
+> 
+> 
+> On Mon, 28 Sep 2020, at 17:13, Ryan Chen wrote:
+> > Hello Joel & Andrew,
+> > 	Those patches are more organize for ASPEED SOC LPC register layout.
+> > 	Does those patches have any feedback?
+> 
+> I support getting the problem fixed. However, the series also needs to fix the
+> LPC devicetree binding at
+> 
+> Documentation/devicetree/bindings/mfd/aspeed-lpc.txt
+> 
+> What's proposed isn't backwards compatible. We need to agree that a
+> breaking change is the way we want to go and get Rob's buy-in. Given the
+> impact of the change I'd prefer we don't try to maintain backwards
+> compatibility. All known users of the binding ship the dtb with the kernel.
+> 
+> Can we get a v2 with the binding documentation fixed? That will probably need
+> some review.
+Yes, I will fix the binding documentation and resend the v2 patch for the review.
+Thanks.
