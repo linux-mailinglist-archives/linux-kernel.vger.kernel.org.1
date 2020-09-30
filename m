@@ -2,51 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F096B27E861
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 14:20:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D639327E863
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 14:20:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729801AbgI3MUr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 08:20:47 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:40358 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728149AbgI3MUo (ORCPT
+        id S1729862AbgI3MUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 08:20:50 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:59050 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727997AbgI3MUn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 08:20:44 -0400
+        Wed, 30 Sep 2020 08:20:43 -0400
 Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08UCKcw7096039;
-        Wed, 30 Sep 2020 07:20:38 -0500
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08UCKf4f128557;
+        Wed, 30 Sep 2020 07:20:41 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1601468438;
-        bh=SwwadW+HjZlVs3CRFD9ulpOZslq4ShS+RCbFScps8S4=;
+        s=ti-com-17Q1; t=1601468441;
+        bh=muATlceegl7rW+Y48+UewNylVwCEYRL88iKL7UdJCaI=;
         h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=K1pUMZUN4JkLn2KL0FztPxaOe4n4kwrZzapsRG73jntbNAYKAqgzi2J0EzgpNLnnD
-         iJCX3UNBMtXAHpbxBA/9bpckYHw9xndFhuVlvx1fiVE4aWYt4s+tvCdgv9JFA8QLQC
-         lxkDiaAqEEzeO67f5krwjkQDZ9GzmFHqmecfBpKg=
+        b=vCsaySSR9ZTrDksqt58PgpljzB7YP7yilVx7MARvi9Rnq2QX4CO0XhVknjmfVor+0
+         lhx7+N8hw7kN0ilJLR2k7GrQ9WU/gO+fv2e0IWZP5MtK1HuEVDk2heyGBXDTMg/lYX
+         WglBKfWJWlRoTE9iAlJamvTfjMcq7Y/mUt4+uQ6E=
 Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08UCKcfc107614
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08UCKe4c107631
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 30 Sep 2020 07:20:38 -0500
-Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE103.ent.ti.com
+        Wed, 30 Sep 2020 07:20:40 -0500
+Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE103.ent.ti.com
  (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 30
- Sep 2020 07:20:38 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE107.ent.ti.com
- (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
+ Sep 2020 07:20:40 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE101.ent.ti.com
+ (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 30 Sep 2020 07:20:38 -0500
+ Frontend Transport; Wed, 30 Sep 2020 07:20:40 -0500
 Received: from lta0400828a.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08UCKXr3049132;
-        Wed, 30 Sep 2020 07:20:36 -0500
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08UCKXr4049132;
+        Wed, 30 Sep 2020 07:20:38 -0500
 From:   Roger Quadros <rogerq@ti.com>
 To:     <nm@ti.com>
 CC:     <t-kristo@ti.com>, <nsekhar@ti.com>, <kishon@ti.com>,
         <devicetree@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, Roger Quadros <rogerq@ti.com>,
-        Peter Rosin <peda@axentia.se>
-Subject: [PATCH v5 1/6] dt-bindings: ti-serdes-mux: Add defines for J7200 SoC
-Date:   Wed, 30 Sep 2020 15:20:27 +0300
-Message-ID: <20200930122032.23481-2-rogerq@ti.com>
+        <linux-kernel@vger.kernel.org>, Roger Quadros <rogerq@ti.com>
+Subject: [PATCH v5 2/6] arm64: dts: ti: k3-j7200-main: Add SERDES lane control mux
+Date:   Wed, 30 Sep 2020 15:20:28 +0300
+Message-ID: <20200930122032.23481-3-rogerq@ti.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200930122032.23481-1-rogerq@ti.com>
 References: <20200930122032.23481-1-rogerq@ti.com>
@@ -57,49 +56,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are 4 lanes in each J7200 SERDES. Each SERDES lane mux can
-select upto 4 different IPs. Define all the possible functions.
+The SERDES lane control mux registers are present in the
+CTRLMMR space.
 
-Cc: Peter Rosin <peda@axentia.se>
 Signed-off-by: Roger Quadros <rogerq@ti.com>
 Reviewed-by: Vignesh Raghavendra <vigneshr@ti.com>
-Acked-by: Rob Herring <robh@kernel.org>
-Acked-by: Peter Rosin <peda@axentia.se>
 ---
- include/dt-bindings/mux/ti-serdes.h | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
+ arch/arm64/boot/dts/ti/k3-j7200-main.dtsi | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
-diff --git a/include/dt-bindings/mux/ti-serdes.h b/include/dt-bindings/mux/ti-serdes.h
-index 146d0685a925..9047ec6bd3cf 100644
---- a/include/dt-bindings/mux/ti-serdes.h
-+++ b/include/dt-bindings/mux/ti-serdes.h
-@@ -68,4 +68,26 @@
- #define J721E_SERDES4_LANE3_QSGMII_LANE8	0x2
- #define J721E_SERDES4_LANE3_IP4_UNUSED		0x3
+diff --git a/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi b/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
+index 4a4fcd24f852..8997276158ca 100644
+--- a/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
+@@ -18,6 +18,21 @@
+ 		};
+ 	};
  
-+/* J7200 */
++	scm_conf: scm-conf@100000 {
++		compatible = "ti,j721e-system-controller", "syscon", "simple-mfd";
++		reg = <0x00 0x00100000 0x00 0x1c000>;
++		#address-cells = <1>;
++		#size-cells = <1>;
++		ranges = <0x00 0x00 0x00100000 0x1c000>;
 +
-+#define J7200_SERDES0_LANE0_QSGMII_LANE3	0x0
-+#define J7200_SERDES0_LANE0_PCIE1_LANE0		0x1
-+#define J7200_SERDES0_LANE0_IP3_UNUSED		0x2
-+#define J7200_SERDES0_LANE0_IP4_UNUSED		0x3
++		serdes_ln_ctrl: serdes-ln-ctrl@4080 {
++			compatible = "mmio-mux";
++			#mux-control-cells = <1>;
++			mux-reg-masks = <0x4080 0x3>, <0x4084 0x3>, /* SERDES0 lane0/1 select */
++					<0x4088 0x3>, <0x408c 0x3>; /* SERDES0 lane2/3 select */
++		};
++	};
 +
-+#define J7200_SERDES0_LANE1_QSGMII_LANE4	0x0
-+#define J7200_SERDES0_LANE1_PCIE1_LANE1		0x1
-+#define J7200_SERDES0_LANE1_IP3_UNUSED		0x2
-+#define J7200_SERDES0_LANE1_IP4_UNUSED		0x3
-+
-+#define J7200_SERDES0_LANE2_QSGMII_LANE1	0x0
-+#define J7200_SERDES0_LANE2_PCIE1_LANE2		0x1
-+#define J7200_SERDES0_LANE2_IP3_UNUSED		0x2
-+#define J7200_SERDES0_LANE2_IP4_UNUSED		0x3
-+
-+#define J7200_SERDES0_LANE3_QSGMII_LANE2	0x0
-+#define J7200_SERDES0_LANE3_PCIE1_LANE3		0x1
-+#define J7200_SERDES0_LANE3_USB			0x2
-+#define J7200_SERDES0_LANE3_IP4_UNUSED		0x3
-+
- #endif /* _DT_BINDINGS_MUX_TI_SERDES */
+ 	gic500: interrupt-controller@1800000 {
+ 		compatible = "arm,gic-v3";
+ 		#address-cells = <2>;
 -- 
 Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
 Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
