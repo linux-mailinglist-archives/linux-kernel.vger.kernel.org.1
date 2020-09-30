@@ -2,96 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C740C27E83B
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 14:09:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B6C427E839
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 14:09:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729620AbgI3MJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 08:09:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39300 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729568AbgI3MJt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 08:09:49 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3F6072076B;
-        Wed, 30 Sep 2020 12:09:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601467788;
-        bh=1GTC8SRCnNrTosWqqklpAjzX1/ju1u6RMterROWEPhM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SoqqiXYYtCbZwLv4CBr6ywp70susjjkAUuCRez4RifJf9NOx43xODsr4FFvhprY8w
-         lspN1oYnnMMrdX5SmSKCgxUH4oKweQRBBPjFQq8qxuq62RG9Tn+xRNHpBhRcYY5+ZZ
-         ZkQrBxFE+djGs0NuF0qGLuRjhzr2t27n26maZdD4=
-Date:   Wed, 30 Sep 2020 13:08:49 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        rafael@kernel.org, lgirdwood@gmail.com, perex@perex.cz,
-        tiwai@suse.com, linux-kernel@vger.kernel.org,
-        alsa-devel@alsa-project.org, srivasam@codeaurora.org,
-        rohitkr@codeaurora.org
-Subject: Re: [PATCH v2 1/2] regmap: add support to
- regmap_field_bulk_alloc/free apis
-Message-ID: <20200930120849.GG4974@sirena.org.uk>
-References: <20200925164856.10315-1-srinivas.kandagatla@linaro.org>
- <20200925164856.10315-2-srinivas.kandagatla@linaro.org>
- <20200930115915.GB1611809@kroah.com>
+        id S1729534AbgI3MJT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 08:09:19 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:57240 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725776AbgI3MJT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 08:09:19 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08UC9B9L125240;
+        Wed, 30 Sep 2020 07:09:11 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1601467751;
+        bh=R+Qlfq/XvKdsTKt62UazgZacJVr+bQyOr5bxAS3WZNQ=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=CMGz56eIB3hwfmwOAI1/YHIGnLrE2UA2i5SlOHCwr2rIPIHmT45uygLo5isbw37VM
+         ar+WWoJduHw7d2AAQTyznADuf58OH1Dlb+2uHPP7VuPvSkitzzZWFtFaFnSSLy/wh9
+         Cw3+f4Mwst4EJbMgvMIEr/rvlxUsilOStCEK0egU=
+Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08UC9BgT091195
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 30 Sep 2020 07:09:11 -0500
+Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 30
+ Sep 2020 07:09:10 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 30 Sep 2020 07:09:11 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08UC9Av6029555;
+        Wed, 30 Sep 2020 07:09:10 -0500
+Date:   Wed, 30 Sep 2020 07:09:10 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Roger Quadros <rogerq@ti.com>
+CC:     <peda@axentia.se>, <t-kristo@ti.com>, <nsekhar@ti.com>,
+        <kishon@ti.com>, <robh+dt@kernel.org>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 0/6] arm64: dts: ti: Add USB support for J7200 EVM
+Message-ID: <20200930120910.7qfoesml2icjgxkf@akan>
+References: <20200921143941.13905-1-rogerq@ti.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="sClP8c1IaQxyux9v"
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20200930115915.GB1611809@kroah.com>
-X-Cookie: Doing gets it done.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200921143941.13905-1-rogerq@ti.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 17:39-20200921, Roger Quadros wrote:
+> Hi Tero/Nishanth,
+> 
+> This series adds USB2.0 support for the J7200 EVM.
+> 
+> Series is based on top of:
+> 
+>     Faiz's MMC/SD support series
+>     https://lore.kernel.org/lkml/20200907090520.25313-1-faiz_abbas@ti.com/
+>     Lokesh's initial support series
+>     https://patchwork.kernel.org/cover/11740039/
+>     Vignesh's I2C support series
+>     https://lore.kernel.org/patchwork/cover/1282152/
+>     Vignesh's Hyperflash series
+>     https://lore.kernel.org/patchwork/cover/1285326/
+>     MUX binding cleanup
+>     https://lore.kernel.org/lkml/20200918165930.2031-1-rogerq@ti.com/
+> 
+> cheers,
+> -roger
 
---sClP8c1IaQxyux9v
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Sep 30, 2020 at 01:59:15PM +0200, Greg KH wrote:
-> On Fri, Sep 25, 2020 at 05:48:55PM +0100, Srinivas Kandagatla wrote:
-
-> > +int devm_regmap_field_bulk_alloc(struct device *dev, struct regmap *re=
-gmap,
-> > +				 struct regmap_field **field,
-> > +				 struct reg_field *reg_field, int num_fields);
-> > +void devm_regmap_field_bulk_free(struct device *dev,
-> > +				 struct regmap_field *field);
-> > +
->=20
-> You only have a patch that uses these last two functions, so why add all
-> 4?  We don't add infrastructure to the kernel without users.
-
-We have managed versions of the other regmap allocation functions, it
-makes sense for consistency to have managed versions of these too.  I
-think there's a meaningful difference between a simple and expected
-wrapper like these and infrastructure which hasn't been proved out by
-users.
-
-Please delete unneeded context from mails when replying.  Doing this
-makes it much easier to find your reply in the message, helping ensure
-it won't be missed by people scrolling through the irrelevant quoted
-material.
-
---sClP8c1IaQxyux9v
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl90dVEACgkQJNaLcl1U
-h9DqdAf/UwybsAE2LFW9S9QqUszk6U+MXn6TU63FjYLKKYN8rOlIXL/H0VTyKO9D
-SXNaLaMKOXyfzUoyYJ53fGbGGBMJ8EiNVusJGslDmGdr7kvIS7t65hkk0Jp5eiRc
-By20kZf/SWuk1ZHXyXKPUCZcBebj3bHxLkZkhsA4X89FXELPFc6NlzYbZrUF4MXg
-mMqyYwJXfU16KZYKoZ1yWz7SOoRTra3ytNhk/z/nEFpXqgwfQwL3CaSVubGanNkw
-AjX61+6+Qmh/K6MuXqnj6DxdmxdxqdgwXqKleDOkGbBPV9ExnQH9gcdswvqcxwB2
-NhCtpDOmDdsXMWFKgJBsKLSNefUrQQ==
-=QsFr
------END PGP SIGNATURE-----
-
---sClP8c1IaQxyux9v--
+Your series does'nt apply on my tree anymore - even after merging
+ti-k3-dt-fixes-for-v5.9 . Could you rebase your patches on top of
+next-20200930 ?
+-- 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
