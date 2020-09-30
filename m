@@ -2,75 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D452227E781
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 13:15:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A563727E77F
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 13:15:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729338AbgI3LPY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 07:15:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39620 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729285AbgI3LPY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 07:15:24 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 66393206F7;
-        Wed, 30 Sep 2020 11:15:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601464523;
-        bh=Dx48eemxBOQq/y7doof3FJxv2soD2ItY88WYKLl7ITk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=1Oe4uM4eipo/DeLJjz2v9ndUi5zs5jO6Lss9YfbM+zC6WkHdKl3eqfDs2bdotyKRK
-         iyOIBd1wukCk5zzoj+TduPUnaFFCDK1MrHslNQYCz2fBHm1ycrS2idRqio0h/r7zcU
-         X0v9pt/5s4Env9ZEM6g8k6NpLER1Mni9idoHfhvA=
-Date:   Wed, 30 Sep 2020 12:14:24 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     ChiYuan Huang <u0084500@gmail.com>
-Cc:     robh+dt@kernel.org, lgirdwood@gmail.com,
-        cy_huang <cy_huang@richtek.com>, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH] regulator: rtmv20: Update DT binding document and
- property name parsing
-Message-ID: <20200930111424.GF4974@sirena.org.uk>
-References: <1601460480-4259-1-git-send-email-u0084500@gmail.com>
- <20200930110508.GE4974@sirena.org.uk>
- <CADiBU39Y-WVCy=8p80fGupB+=68exAY-Oik5Kwap1_jyCR=PTA@mail.gmail.com>
+        id S1729243AbgI3LPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 07:15:03 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:57990 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725776AbgI3LPD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 07:15:03 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08UBEwiw075667;
+        Wed, 30 Sep 2020 06:14:58 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1601464498;
+        bh=cEjevU+tABlcZLSiAqUyr3WIL0O1JBNJ5d3k5kiw3Mw=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=W3kmVr46sIcwEgCPhx12HxuNMziz+dmuJy2eXm8Z7d6rxpeVAceLiMCVwYmsnSgGR
+         MKBUlqD1p6oX00sihWL78HczfaNNAczBiPs+q0FhtzVDUgDw1hy9Q8fzUBi8NX0MSN
+         IwofYoKQbMkswFlrGsn0Ntssh5JIFn286AM7Y2os=
+Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08UBEwkW033474;
+        Wed, 30 Sep 2020 06:14:58 -0500
+Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 30
+ Sep 2020 06:14:58 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 30 Sep 2020 06:14:58 -0500
+Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08UBEqf9128800;
+        Wed, 30 Sep 2020 06:14:54 -0500
+Subject: Re: [PATCH 06/11] firmware: ti_sci: rm: Remove ring_get_config
+ support
+To:     Peter Ujfalusi <peter.ujfalusi@ti.com>, <nm@ti.com>,
+        <t-kristo@ti.com>, <ssantosh@kernel.org>, <lokeshvutla@ti.com>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20200928083429.17390-1-peter.ujfalusi@ti.com>
+ <20200928083429.17390-7-peter.ujfalusi@ti.com>
+From:   Grygorii Strashko <grygorii.strashko@ti.com>
+Message-ID: <58b90ef1-8fa4-50de-b8aa-911346b45576@ti.com>
+Date:   Wed, 30 Sep 2020 14:14:51 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="s5/bjXLgkIwAv6Hi"
-Content-Disposition: inline
-In-Reply-To: <CADiBU39Y-WVCy=8p80fGupB+=68exAY-Oik5Kwap1_jyCR=PTA@mail.gmail.com>
-X-Cookie: Doing gets it done.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200928083429.17390-7-peter.ujfalusi@ti.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---s5/bjXLgkIwAv6Hi
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-On Wed, Sep 30, 2020 at 07:11:51PM +0800, ChiYuan Huang wrote:
+On 28/09/2020 11:34, Peter Ujfalusi wrote:
+> The ring_get_cfg (0x1111 message) is not used and it is not supported by
+> sysfw for a long time.
+> 
+> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+> ---
+>   drivers/firmware/ti_sci.c              | 80 --------------------------
+>   drivers/firmware/ti_sci.h              | 44 --------------
+>   include/linux/soc/ti/ti_sci_protocol.h |  6 --
+>   3 files changed, 130 deletions(-)
+> 
 
-> Do you want me to divided the patch into binding document update and
-> driver update?
+Reviewed-by: Grygorii Strashko <grygorii.strashko@ti.com>
 
-You should've done this but it's OK, I'll apply.
-
---s5/bjXLgkIwAv6Hi
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl90aJAACgkQJNaLcl1U
-h9C4bwf/T+MaxzKkzwTV4whDVkZ+jMPzfHI6XKViK1LRoULRwF/G8Zf9uxNxyUig
-A8VcmaKY2PzesWpJTf4AJdKMQdAYsTv7l0YwDJ/tK8GNiq5eN1fCCTK1lzl0qTqP
-FLmmxPj7NRR6A07+2Sxkj/PJlQpZFUmByUu3V8ACRf6iOvgtkO5huWiX7BTIpfjL
-/8TQxKtpzMb0lC29hUUtBqumnQtKjhmyN7ba/OnTumoqlKwLVVW1cop4erhwRKQ5
-6G6nA2IxkRL+BC2NlGU8Pn5yvbXs9DOmUF7PwxPtpeowwwqYqxUY4oUCt+/LrqDW
-abURa7CIvrmibirJwb1sbrGiNpZPPw==
-=TYra
------END PGP SIGNATURE-----
-
---s5/bjXLgkIwAv6Hi--
+-- 
+Best regards,
+grygorii
