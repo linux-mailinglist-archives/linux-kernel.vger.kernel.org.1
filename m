@@ -2,104 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0778227F10D
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 20:09:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73BD927F110
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 20:10:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728808AbgI3SJA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 14:09:00 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24303 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725372AbgI3SI7 (ORCPT
+        id S1728729AbgI3SKk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 14:10:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39114 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725355AbgI3SKk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 14:08:59 -0400
-Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601489338;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=bwVgHNsMicX6xX4N2svSFj0C/kV9MVkeyeZ49ASRmfs=;
-        b=GpYJcp3u4rsVbe7aMfD8u1z4pO+WNPJa90BmjH0jXOG9v5kol0W9eVt0bhYQtMIKHdd7m0
-        lq6ni9rLeHxis7Ehv5VEfbWpA7S+xJDxpMp/LDf9aRcqlw5rYx6KxbGS/czXz3Qa9lm012
-        VoHcLwHCjJbFEKHMCAfk5HCADHyCIrA=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-493-b06x7rBwOk-dYoPolTgoGg-1; Wed, 30 Sep 2020 14:08:56 -0400
-X-MC-Unique: b06x7rBwOk-dYoPolTgoGg-1
-Received: by mail-wr1-f70.google.com with SMTP id 33so895470wrk.12
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 11:08:56 -0700 (PDT)
+        Wed, 30 Sep 2020 14:10:40 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EA9AC061755;
+        Wed, 30 Sep 2020 11:10:38 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id g128so2904299iof.11;
+        Wed, 30 Sep 2020 11:10:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eNF2DTAtjoh3BWytNcKCrhLvx2bkbI2XntobJ3hyrNY=;
+        b=u7Fj0kyDbe8b4vltpaXVO+Bu1yIpy8egL4l6CgUBF3S6/7kayVhmXnEevPag6oHo4i
+         ZhUkQGNPbzXmHB0WIlv5YsewUrNR0iNi3+0QepmYl0cikVu6EJ0S2nSXULfqaKe7xJSW
+         JWN7qlB3tQhNb4HpYtQielFwGgsOTarignKY/qWKUuiR7sc5PI+AeOsI8kq9bR1kvq3P
+         ln0BnYWdYtCzj6pLO2IEcPVfqPeUZ+2urgjLqmaU+eCadqG+aVe7XHLIetCoYDpr8k2G
+         6VIFBlbgi4nqVcdyWxxZHZsHPrjYNd/rYhnUKjBNxmRf96JTVKS9Rq5AcCNIZ4spqdi3
+         mkuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=bwVgHNsMicX6xX4N2svSFj0C/kV9MVkeyeZ49ASRmfs=;
-        b=dnXLhswsHZvAeLluSTPb9OiT4V0469ltWaMq8hPxHsYZ0+eQkE+PWcpAIQPwJhvtW7
-         PNTZck5wz5FCeh8K+sIhCyqf+7+IKRAA912SLTskIJ6Qdjwty8poy4HN3iVDHTM1BL+O
-         MOvvJAUKmtutgxTIsgN4zPliimc2q/vK2rYSmSJZU6EUrYC8Drt1HkQXHUivI+kQ89bt
-         r6/stIJ4ETuTWeeELq0bdsUZLWtVP5ctrb1DX3ReZXxM9nRjUYvLtrzPIvdL6fo9KxtE
-         +I6iQh9bQzTGntThcFUR1kq3hmr8s31/wGbtAR9Rs3y8wbGV2vgk1sjj03fOPK/9TZGi
-         0u+w==
-X-Gm-Message-State: AOAM531TN9MMz+D6u1K7jIcOrDH3byUamoddpnUfvqtbHtLPdjW53JTm
-        6xCVSgRCJwQcbenkTyjYHJCcDVlXkveEq2jeFIksupo3k7MWFzN9v2I60lnz2KlR8vatRP1io8w
-        cDz0ypIQkTo/mC59ffQ4F198N
-X-Received: by 2002:a1c:4e08:: with SMTP id g8mr4270292wmh.53.1601489335604;
-        Wed, 30 Sep 2020 11:08:55 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwWKG5rLY3U++IuIbw2Titxqz2g0w5Mzxk9AjMYWUD881FXfHgUI1n2X0h2mDVzIUr5SDpUvw==
-X-Received: by 2002:a1c:4e08:: with SMTP id g8mr4270275wmh.53.1601489335412;
-        Wed, 30 Sep 2020 11:08:55 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:75e3:aaa7:77d6:f4e4? ([2001:b07:6468:f312:75e3:aaa7:77d6:f4e4])
-        by smtp.gmail.com with ESMTPSA id u66sm4113015wme.12.2020.09.30.11.08.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 30 Sep 2020 11:08:54 -0700 (PDT)
-Subject: Re: [PATCH 17/22] kvm: mmu: Support dirty logging for the TDP MMU
-To:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Ben Gardon <bgardon@google.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Cannon Matthews <cannonmatthews@google.com>,
-        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
-        Peter Feiner <pfeiner@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
-References: <20200925212302.3979661-1-bgardon@google.com>
- <20200925212302.3979661-18-bgardon@google.com>
- <20200930180438.GH32672@linux.intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <48c927aa-5902-138a-eb93-891325976edd@redhat.com>
-Date:   Wed, 30 Sep 2020 20:08:52 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eNF2DTAtjoh3BWytNcKCrhLvx2bkbI2XntobJ3hyrNY=;
+        b=NO8sxuQk+qDlwe3+A7MkiQKFB2tzZnSbxhVS+cfRf3IrhRyBoXMh4fLz5iMDidZrWv
+         3QdN3xuwJj6uWWSF8MQXepxAhRdaNliBySunkSf0aTTv6IoAfJwuILGB4YIgK/C/BDvJ
+         61erg2zpLGDd+oKVjQrpXbbUa1C+0wcmsoS+ew3arzvi01xBA1CLx48yk+G+RQmAdIrp
+         UiWtFpE3lHol7SOAARRIc7Pee5bLjpU1GX8qzv/xe/VstkKz8ilUu1j+9iXVWLab1/3W
+         35xykf++MbsXw9QZr5b68piEoNTdMmB+9sxFVCyGjDGkcobpkETR0iIM2ACGoNKyR/sM
+         D0hQ==
+X-Gm-Message-State: AOAM530bJHrJGzYaGBkcFcdK5O3E1aGeaNALE6sm701DnbvylrlImB/c
+        BikmK/0kHFTRnH7vq74qQUZdGKaTBZuNFLRoWw4=
+X-Google-Smtp-Source: ABdhPJyhbEH3tt7cxKslGSE2sIZ6aUT8Ly08g3MB5w+Sumr9vImjHzqJ3LlhuE+fBPWW4FuLgBSHEL9n+orugS10nII=
+X-Received: by 2002:a02:2b04:: with SMTP id h4mr2456439jaa.49.1601489437588;
+ Wed, 30 Sep 2020 11:10:37 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200930180438.GH32672@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <0000000000009dac0205b05ab52a@google.com> <000000000000c4d11a05b08b6b56@google.com>
+In-Reply-To: <000000000000c4d11a05b08b6b56@google.com>
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+Date:   Wed, 30 Sep 2020 11:10:25 -0700
+Message-ID: <CAM_iQpU+aq5XPmeyvWHhgi9Xc=thhtvqbYQ4GSLB227JmRPayw@mail.gmail.com>
+Subject: Re: general protection fault in tcf_generic_walker
+To:     syzbot <syzbot+b47bc4f247856fb4d9e1@syzkaller.appspotmail.com>
+Cc:     David Miller <davem@davemloft.net>,
+        Jamal Hadi Salim <jhs@mojatatu.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        Jakub Kicinski <kuba@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/09/20 20:04, Sean Christopherson wrote:
->> +	for_each_tdp_mmu_root(kvm, root) {
->> +		root_as_id = kvm_mmu_page_as_id(root);
->> +		if (root_as_id != slot->as_id)
->> +			continue;
-> This pattern pops up quite a few times, probably worth adding
-> 
-> #define for_each_tdp_mmu_root_using_memslot(...)	\
-> 	for_each_tdp_mmu_root(...)			\
-> 		if (kvm_mmu_page_as_id(root) != slot->as_id) {
-> 		} else
-> 
+On Wed, Sep 30, 2020 at 10:42 AM syzbot
+<syzbot+b47bc4f247856fb4d9e1@syzkaller.appspotmail.com> wrote:
+>
+> syzbot has found a reproducer for the following issue on:
+>
+> HEAD commit:    2b3e981a Merge branch 'mptcp-Fix-for-32-bit-DATA_FIN'
+> git tree:       net
+> console output: https://syzkaller.appspot.com/x/log.txt?x=16537247900000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=99a7c78965c75e07
+> dashboard link: https://syzkaller.appspot.com/bug?extid=b47bc4f247856fb4d9e1
+> compiler:       gcc (GCC) 10.1.0-syz 20200507
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1412a5a7900000
+>
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+b47bc4f247856fb4d9e1@syzkaller.appspotmail.com
+>
+> general protection fault, probably for non-canonical address 0xdffffc0000000004: 0000 [#1] PREEMPT SMP KASAN
+> KASAN: null-ptr-deref in range [0x0000000000000020-0x0000000000000027]
+> CPU: 0 PID: 8855 Comm: syz-executor.1 Not tainted 5.9.0-rc6-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> RIP: 0010:tcf_dump_walker net/sched/act_api.c:240 [inline]
+> RIP: 0010:tcf_generic_walker+0x367/0xba0 net/sched/act_api.c:343
+> Code: 24 31 ff 48 89 de e8 c8 55 eb fa 48 85 db 74 3f e8 3e 59 eb fa 48 8d 7d 30 48 b9 00 00 00 00 00 fc ff df 48 89 f8 48 c1 e8 03 <80> 3c 08 00 0f 85 26 07 00 00 48 8b 5d 30 31 ff 48 2b 1c 24 48 89
+> RSP: 0018:ffffc9000b6ff3a8 EFLAGS: 00010202
+> RAX: 0000000000000004 RBX: c0000000ffffaae4 RCX: dffffc0000000000
+> RDX: ffff8880a82aa140 RSI: ffffffff868ae502 RDI: 0000000000000020
+> RBP: fffffffffffffff0 R08: 0000000000000000 R09: ffff8880a8c41e07
+> R10: 0000000000000000 R11: 0000000000000000 R12: ffff88809f226340
+> R13: 0000000000000000 R14: 00000000ffffffff R15: 0000000000000000
+> FS:  00007f156f7fa700(0000) GS:ffff8880ae400000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 000055d25128b348 CR3: 00000000a7d3d000 CR4: 00000000001506f0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>  tc_dump_action+0x6d5/0xe60 net/sched/act_api.c:1609
 
-It's not really relevant that it's a memslot, but
 
-	for_each_tdp_mmu_root_using_as_id
+Probably just need another IS_ERR() check on the dump path.
+I will take a second look.
 
-makes sense too.
-
-Paolo
-
+Thanks.
