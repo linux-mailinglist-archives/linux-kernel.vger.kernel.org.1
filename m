@@ -2,269 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA80127E441
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 10:55:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 810EC27E44E
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 10:56:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728908AbgI3IzG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 04:55:06 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:54878 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725776AbgI3IzG (ORCPT
+        id S1729001AbgI3I4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 04:56:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38114 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728723AbgI3I4G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 04:55:06 -0400
-Date:   Wed, 30 Sep 2020 08:55:02 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1601456103;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6N0iaelY4ikmLve5Or3fzn/VZ/Vl1cVoe+8BBCXOFTM=;
-        b=h7hTG9RrmTfegh+K4gCmEoF5eEHWbSXTw6kdx9Pzx6T0bmzut3PXQbCeHFjyQVUvYgeXiS
-        dytOU2gnqwcUHge4X9fq2wtn9VxvLX+Acz5vVJ7V01C3U0KdKiFq7Ar7Noek6dg7qjVUnu
-        QgCP1Qn85JTFRO/FHA69TgIPCCTlf8Yg6Om+fpKIqG2TNfBz9pMohhGv6LY/6vOLLfFWIp
-        5csO/eXTSjbF8qtHEexa+So/+/VqKkCG56GX2RemAP67sT/nFhWonSYFWRJIzeTHt0hgyM
-        5Pyb0lkSrC1Y1AQmvt4jSPRSR3o8AOS8U737MUk08auxgJGbIbK11uUCaGlH4A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1601456103;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6N0iaelY4ikmLve5Or3fzn/VZ/Vl1cVoe+8BBCXOFTM=;
-        b=nVuiATD3IJo5CJJLYrF8UfkLuiNFXJtwzjJKmBZcuDWqaPrrt7h4kduSdDmrKiS6oBnPDb
-        yCWI1I8ktootd7CA==
-From:   "tip-bot2 for Boqun Feng" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/core] lockdep: Optimize the memory usage of circular queue
-Cc:     Qian Cai <cai@redhat.com>,
-        syzbot+62ebe501c1ce9a91f68c@syzkaller.appspotmail.com,
-        Boqun Feng <boqun.feng@gmail.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200917080210.108095-1-boqun.feng@gmail.com>
-References: <20200917080210.108095-1-boqun.feng@gmail.com>
+        Wed, 30 Sep 2020 04:56:06 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA634C0613D1;
+        Wed, 30 Sep 2020 01:56:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=Hc4ZwUam31VwnraGp3u9+lkEQz3nnsxSY58s3rx8EN0=; b=GUmCkkS5M+DSSMVNpa1ARhdAOA
+        xO1GX/XB3fZ+wQwodHpr/baxLfM1+ws4Gny5Pxmnfo3SlUOIvRDrw39kG2TLkTY5ygx0ry4qqSeGJ
+        IPWIRMCwy3u3fH/caphz5js/VXACSaObZ5Bfp+MoemoiCRqD5eQCtYvXVlyzBXwIAOZ+dQV8nHd4k
+        JmW/GH/dHH8+I20mR3g4P/17KMvXn0UuDKyD8IfOTCnG0K5pB8msoYd5hKoxs0zxM5HADDe6wGyWA
+        1h3S1M0SgisK5DoRE9WkQVgagY0SFWqcncFM8t6V8sgMAtAVbeQJ8CmDT5lLkrTJP4gWCrpZ69Cwo
+        VSXIwEqw==;
+Received: from [2001:4bb8:180:7b62:c70:4a89:bc61:4] (helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kNXtv-0003s2-OW; Wed, 30 Sep 2020 08:55:52 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     iommu@lists.linux-foundation.org
+Cc:     Russell King <linux@armlinux.org.uk>, Sekhar Nori <nsekhar@ti.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-arch@vger.kernel.org
+Subject: clean up the DMA mapping headers
+Date:   Wed, 30 Sep 2020 10:55:39 +0200
+Message-Id: <20200930085548.920261-1-hch@lst.de>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Message-ID: <160145610239.7002.7023986646655063041.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the locking/core branch of tip:
+Hi all,
 
-Commit-ID:     6d1823ccc480866e571ab1206665d693aeb600cf
-Gitweb:        https://git.kernel.org/tip/6d1823ccc480866e571ab1206665d693aeb600cf
-Author:        Boqun Feng <boqun.feng@gmail.com>
-AuthorDate:    Thu, 17 Sep 2020 16:01:50 +08:00
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Tue, 29 Sep 2020 09:56:59 +02:00
+this series cleans up the dma-mapping headers by moving everything not
+required by normal drivers out of <linux/dma-mapping.h> into a new
+<linux/dma-map-ops.h> and then folding most other DMA mapping related
+headers either into the new dma-map-ops.h one, or by moving them to
+kernel/dma/ and thus out of the global scope.  A bunch of cleanups
+for the DMA CMA code are thrown in as well, as they help keeping the
+exposed bits in the header small.
 
-lockdep: Optimize the memory usage of circular queue
-
-Qian Cai reported a BFS_EQUEUEFULL warning [1] after read recursive
-deadlock detection merged into tip tree recently. Unlike the previous
-lockep graph searching, which iterate every lock class (every node in
-the graph) exactly once, the graph searching for read recurisve deadlock
-detection needs to iterate every lock dependency (every edge in the
-graph) once, as a result, the maximum memory cost of the circular queue
-changes from O(V), where V is the number of lock classes (nodes or
-vertices) in the graph, to O(E), where E is the number of lock
-dependencies (edges), because every lock class or dependency gets
-enqueued once in the BFS. Therefore we hit the BFS_EQUEUEFULL case.
-
-However, actually we don't need to enqueue all dependencies for the BFS,
-because every time we enqueue a dependency, we almostly enqueue all
-other dependencies in the same dependency list ("almostly" is because
-we currently check before enqueue, so if a dependency doesn't pass the
-check stage we won't enqueue it, however, we can always do in reverse
-ordering), based on this, we can only enqueue the first dependency from
-a dependency list and every time we want to fetch a new dependency to
-work, we can either:
-
-  1)	fetch the dependency next to the current dependency in the
-	dependency list
-or
-
-  2)	if the dependency in 1) doesn't exist, fetch the dependency from
-	the queue.
-
-With this approach, the "max bfs queue depth" for a x86_64_defconfig +
-lockdep and selftest config kernel can get descreased from:
-
-        max bfs queue depth:                   201
-
-to (after apply this patch)
-
-        max bfs queue depth:                   61
-
-While I'm at it, clean up the code logic a little (e.g. directly return
-other than set a "ret" value and goto the "exit" label).
-
-[1]: https://lore.kernel.org/lkml/17343f6f7f2438fc376125384133c5ba70c2a681.camel@redhat.com/
-
-Reported-by: Qian Cai <cai@redhat.com>
-Reported-by: syzbot+62ebe501c1ce9a91f68c@syzkaller.appspotmail.com
-Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20200917080210.108095-1-boqun.feng@gmail.com
----
- kernel/locking/lockdep.c |  99 +++++++++++++++++++++++---------------
- 1 file changed, 60 insertions(+), 39 deletions(-)
-
-diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
-index cccf4bc..9560a4e 100644
---- a/kernel/locking/lockdep.c
-+++ b/kernel/locking/lockdep.c
-@@ -1606,6 +1606,15 @@ static inline void bfs_init_rootb(struct lock_list *lock,
- 	lock->only_xr = (hlock->read != 0);
- }
- 
-+static inline struct lock_list *__bfs_next(struct lock_list *lock, int offset)
-+{
-+	if (!lock || !lock->parent)
-+		return NULL;
-+
-+	return list_next_or_null_rcu(get_dep_list(lock->parent, offset),
-+				     &lock->entry, struct lock_list, entry);
-+}
-+
- /*
-  * Breadth-First Search to find a strong path in the dependency graph.
-  *
-@@ -1639,36 +1648,25 @@ static enum bfs_result __bfs(struct lock_list *source_entry,
- 			     struct lock_list **target_entry,
- 			     int offset)
- {
-+	struct circular_queue *cq = &lock_cq;
-+	struct lock_list *lock = NULL;
- 	struct lock_list *entry;
--	struct lock_list *lock;
- 	struct list_head *head;
--	struct circular_queue *cq = &lock_cq;
--	enum bfs_result ret = BFS_RNOMATCH;
-+	unsigned int cq_depth;
-+	bool first;
- 
- 	lockdep_assert_locked();
- 
--	if (match(source_entry, data)) {
--		*target_entry = source_entry;
--		ret = BFS_RMATCH;
--		goto exit;
--	}
--
--	head = get_dep_list(source_entry, offset);
--	if (list_empty(head))
--		goto exit;
--
- 	__cq_init(cq);
- 	__cq_enqueue(cq, source_entry);
- 
--	while ((lock = __cq_dequeue(cq))) {
--		bool prev_only_xr;
--
--		if (!lock->class) {
--			ret = BFS_EINVALIDNODE;
--			goto exit;
--		}
-+	while ((lock = __bfs_next(lock, offset)) || (lock = __cq_dequeue(cq))) {
-+		if (!lock->class)
-+			return BFS_EINVALIDNODE;
- 
- 		/*
-+		 * Step 1: check whether we already finish on this one.
-+		 *
- 		 * If we have visited all the dependencies from this @lock to
- 		 * others (iow, if we have visited all lock_list entries in
- 		 * @lock->class->locks_{after,before}) we skip, otherwise go
-@@ -1680,13 +1678,13 @@ static enum bfs_result __bfs(struct lock_list *source_entry,
- 		else
- 			mark_lock_accessed(lock);
- 
--		head = get_dep_list(lock, offset);
--
--		prev_only_xr = lock->only_xr;
--
--		list_for_each_entry_rcu(entry, head, entry) {
--			unsigned int cq_depth;
--			u8 dep = entry->dep;
-+		/*
-+		 * Step 2: check whether prev dependency and this form a strong
-+		 *         dependency path.
-+		 */
-+		if (lock->parent) { /* Parent exists, check prev dependency */
-+			u8 dep = lock->dep;
-+			bool prev_only_xr = lock->parent->only_xr;
- 
- 			/*
- 			 * Mask out all -(S*)-> if we only have *R in previous
-@@ -1701,26 +1699,49 @@ static enum bfs_result __bfs(struct lock_list *source_entry,
- 				continue;
- 
- 			/* If there are only -(*R)-> left, set that for the next step */
--			entry->only_xr = !(dep & (DEP_SN_MASK | DEP_EN_MASK));
-+			lock->only_xr = !(dep & (DEP_SN_MASK | DEP_EN_MASK));
-+		}
- 
-+		/*
-+		 * Step 3: we haven't visited this and there is a strong
-+		 *         dependency path to this, so check with @match.
-+		 */
-+		if (match(lock, data)) {
-+			*target_entry = lock;
-+			return BFS_RMATCH;
-+		}
-+
-+		/*
-+		 * Step 4: if not match, expand the path by adding the
-+		 *         forward or backwards dependencis in the search
-+		 *
-+		 */
-+		first = true;
-+		head = get_dep_list(lock, offset);
-+		list_for_each_entry_rcu(entry, head, entry) {
- 			visit_lock_entry(entry, lock);
--			if (match(entry, data)) {
--				*target_entry = entry;
--				ret = BFS_RMATCH;
--				goto exit;
--			}
- 
--			if (__cq_enqueue(cq, entry)) {
--				ret = BFS_EQUEUEFULL;
--				goto exit;
--			}
-+			/*
-+			 * Note we only enqueue the first of the list into the
-+			 * queue, because we can always find a sibling
-+			 * dependency from one (see __bfs_next()), as a result
-+			 * the space of queue is saved.
-+			 */
-+			if (!first)
-+				continue;
-+
-+			first = false;
-+
-+			if (__cq_enqueue(cq, entry))
-+				return BFS_EQUEUEFULL;
-+
- 			cq_depth = __cq_get_elem_count(cq);
- 			if (max_bfs_queue_depth < cq_depth)
- 				max_bfs_queue_depth = cq_depth;
- 		}
- 	}
--exit:
--	return ret;
-+
-+	return BFS_RNOMATCH;
- }
- 
- static inline enum bfs_result
+Diffstat:
+ arch/arm/include/asm/dma-contiguous.h             |   15 
+ b/Documentation/admin-guide/kernel-parameters.txt |    2 
+ b/MAINTAINERS                                     |    2 
+ b/arch/alpha/kernel/pci_iommu.c                   |    2 
+ b/arch/arc/mm/dma.c                               |    2 
+ b/arch/arm/common/dmabounce.c                     |    1 
+ b/arch/arm/include/asm/dma-iommu.h                |    1 
+ b/arch/arm/include/asm/dma-mapping.h              |    1 
+ b/arch/arm/mach-davinci/devices-da8xx.c           |   18 -
+ b/arch/arm/mach-highbank/highbank.c               |    2 
+ b/arch/arm/mach-imx/mach-imx27_visstrim_m10.c     |    2 
+ b/arch/arm/mach-imx/mach-mx31moboard.c            |    2 
+ b/arch/arm/mach-mvebu/coherency.c                 |    2 
+ b/arch/arm/mach-shmobile/setup-rcar-gen2.c        |    2 
+ b/arch/arm/mm/dma-mapping-nommu.c                 |    1 
+ b/arch/arm/mm/dma-mapping.c                       |    5 
+ b/arch/arm/mm/init.c                              |    2 
+ b/arch/arm/xen/mm.c                               |    2 
+ b/arch/arm64/mm/dma-mapping.c                     |    2 
+ b/arch/arm64/mm/init.c                            |    3 
+ b/arch/c6x/mm/dma-coherent.c                      |    2 
+ b/arch/csky/kernel/setup.c                        |    2 
+ b/arch/csky/mm/dma-mapping.c                      |    4 
+ b/arch/hexagon/kernel/dma.c                       |    2 
+ b/arch/ia64/hp/common/sba_iommu.c                 |    2 
+ b/arch/ia64/kernel/dma-mapping.c                  |    2 
+ b/arch/ia64/mm/init.c                             |    2 
+ b/arch/m68k/kernel/dma.c                          |    2 
+ b/arch/microblaze/kernel/dma.c                    |    3 
+ b/arch/microblaze/mm/consistent.c                 |    2 
+ b/arch/microblaze/mm/init.c                       |    2 
+ b/arch/mips/jazz/jazzdma.c                        |    2 
+ b/arch/mips/kernel/setup.c                        |    2 
+ b/arch/mips/mm/dma-noncoherent.c                  |    3 
+ b/arch/nds32/kernel/dma.c                         |    2 
+ b/arch/openrisc/kernel/dma.c                      |    2 
+ b/arch/parisc/kernel/drivers.c                    |    1 
+ b/arch/parisc/kernel/pci-dma.c                    |    2 
+ b/arch/powerpc/include/asm/iommu.h                |    2 
+ b/arch/powerpc/include/asm/pci.h                  |    2 
+ b/arch/powerpc/mm/dma-noncoherent.c               |    2 
+ b/arch/powerpc/platforms/ps3/system-bus.c         |    2 
+ b/arch/powerpc/platforms/pseries/ibmebus.c        |    2 
+ b/arch/powerpc/platforms/pseries/vio.c            |    2 
+ b/arch/s390/kernel/setup.c                        |    2 
+ b/arch/s390/pci/pci_dma.c                         |    2 
+ b/arch/sh/boards/mach-ap325rxa/setup.c            |    1 
+ b/arch/sh/boards/mach-ecovec24/setup.c            |    1 
+ b/arch/sh/boards/mach-kfr2r09/setup.c             |    2 
+ b/arch/sh/boards/mach-migor/setup.c               |    2 
+ b/arch/sh/boards/mach-se/7724/setup.c             |    1 
+ b/arch/sh/drivers/pci/fixups-dreamcast.c          |    2 
+ b/arch/sh/drivers/pci/pci.c                       |    1 
+ b/arch/sh/kernel/dma-coherent.c                   |    2 
+ b/arch/sparc/kernel/iommu.c                       |    2 
+ b/arch/sparc/kernel/ioport.c                      |    2 
+ b/arch/sparc/kernel/pci_sun4v.c                   |    1 
+ b/arch/sparc/mm/io-unit.c                         |    2 
+ b/arch/sparc/mm/iommu.c                           |    2 
+ b/arch/x86/include/asm/dma-mapping.h              |    2 
+ b/arch/x86/kernel/amd_gart_64.c                   |    1 
+ b/arch/x86/kernel/pci-dma.c                       |    2 
+ b/arch/x86/kernel/setup.c                         |    2 
+ b/arch/x86/xen/pci-swiotlb-xen.c                  |    2 
+ b/arch/xtensa/kernel/pci-dma.c                    |    3 
+ b/arch/xtensa/mm/init.c                           |    2 
+ b/drivers/acpi/arm64/iort.c                       |    2 
+ b/drivers/acpi/scan.c                             |    2 
+ b/drivers/base/dd.c                               |    2 
+ b/drivers/dma-buf/heaps/cma_heap.c                |    2 
+ b/drivers/gpu/drm/exynos/exynos_drm_dma.c         |    2 
+ b/drivers/gpu/drm/msm/msm_gem.c                   |    1 
+ b/drivers/iommu/amd/iommu.c                       |    3 
+ b/drivers/iommu/dma-iommu.c                       |    3 
+ b/drivers/iommu/intel/iommu.c                     |    4 
+ b/drivers/media/platform/exynos4-is/fimc-is.c     |    1 
+ b/drivers/misc/mic/bus/mic_bus.c                  |    1 
+ b/drivers/misc/mic/bus/scif_bus.c                 |    2 
+ b/drivers/misc/mic/bus/scif_bus.h                 |    2 
+ b/drivers/misc/mic/bus/vop_bus.c                  |    2 
+ b/drivers/misc/mic/host/mic_boot.c                |    1 
+ b/drivers/of/device.c                             |    1 
+ b/drivers/parisc/ccio-dma.c                       |    1 
+ b/drivers/parisc/sba_iommu.c                      |    1 
+ b/drivers/pci/pci-driver.c                        |    1 
+ b/drivers/pci/xen-pcifront.c                      |    1 
+ b/drivers/remoteproc/remoteproc_core.c            |    1 
+ b/drivers/remoteproc/remoteproc_virtio.c          |    2 
+ b/drivers/vdpa/vdpa_sim/vdpa_sim.c                |    2 
+ b/drivers/xen/swiotlb-xen.c                       |    2 
+ b/include/asm-generic/Kbuild                      |    1 
+ b/include/linux/dma-direct.h                      |  108 -------
+ b/include/linux/dma-map-ops.h                     |  339 ++++++++++++++++++++++
+ b/include/linux/dma-mapping.h                     |  172 -----------
+ b/kernel/dma/Kconfig                              |    2 
+ b/kernel/dma/coherent.c                           |    1 
+ b/kernel/dma/contiguous.c                         |   42 ++
+ b/kernel/dma/debug.c                              |    5 
+ b/kernel/dma/debug.h                              |   44 --
+ b/kernel/dma/direct.c                             |    4 
+ b/kernel/dma/direct.h                             |  119 +++++++
+ b/kernel/dma/dummy.c                              |    2 
+ b/kernel/dma/mapping.c                            |    5 
+ b/kernel/dma/ops_helpers.c                        |    3 
+ b/kernel/dma/pool.c                               |    3 
+ b/kernel/dma/swiotlb.c                            |    2 
+ b/kernel/dma/virt.c                               |    2 
+ b/mm/memory.c                                     |    1 
+ include/asm-generic/dma-contiguous.h              |   10 
+ include/linux/dma-contiguous.h                    |  182 -----------
+ include/linux/dma-noncoherent.h                   |  109 -------
+ 111 files changed, 620 insertions(+), 737 deletions(-)
