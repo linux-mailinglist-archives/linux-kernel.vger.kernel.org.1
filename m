@@ -2,93 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9922227E378
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 10:17:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76A4727E36E
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 10:16:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728656AbgI3IRK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 04:17:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60268 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727746AbgI3IRJ (ORCPT
+        id S1728557AbgI3IQn convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 30 Sep 2020 04:16:43 -0400
+Received: from coyote.holtmann.net ([212.227.132.17]:44910 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725535AbgI3IQn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 04:17:09 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27138C0613D0
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 01:17:08 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id o8so564147pll.4
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 01:17:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=/cvEEeM/Z0ruOyi2iZix2HZSBL+TU1UmTGUs1ZgCyb0=;
-        b=JCEThkzLTx4ooLRLiBbmFPfIsWDAfs5Lm6Wr+sO7vDFbjgeA7+dvgsGcDvbmukrfj1
-         VML8KgePgNcp+0EhJeDpNdZsmigMk6O5ZLFgYxlcTRTDDthNCCBRB9goQ9kJmIQb0xKj
-         4VgPMljdHIDfcSeYeuhJdQx79LnjTuqu6+HFjWeq+3krfjgrZhy1uwMXDICa1Co4ZjlS
-         Xe+Vn3jLjqRsKfHtlLaM01AhqMEtHqHsI0phr9hELf6C25SEEds6Ank5DqKwtMKi8JFu
-         ioZClvoh3+xcoT0nS2FVcwpYfAX0zM0yDeuULhfDLjo8hln5dHhL9y6hX5bVCTHKkKtP
-         K+JQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=/cvEEeM/Z0ruOyi2iZix2HZSBL+TU1UmTGUs1ZgCyb0=;
-        b=BdKUsVZEH5WYx+eXyKFrlbdG2ia8E0bIAV82ah6hN8XIg2uKTtFjPCytksR6tkIWks
-         w7+dYv2TzTkdtVzP+qSMQutpv6SsUbCI36s6F7m/Q3gwp38MaHQQsOHGHNIlgfPsm04a
-         o1Q2566XaRhaaG3e5o/cBSKy9vzGtL48SywY0/+AqxxknqK0RnhkdDWqSP0NYisUpqtv
-         ePxzXvm1SFfL+2S1rW7ksQ8sEmoKSGjzC30sowK7bWcthZCvqjJPyFQWXTKjejMRD0PI
-         R0909tC/A04Zr7AX3KSSJq7DMKajlImhXv1quwsGlot4pQpoSSJzDue2K7Frg9wsmJqR
-         BB8w==
-X-Gm-Message-State: AOAM5324+diDFPC1oZ4tgBVqaZ0avsU5x7CNowGKOjsXnW3plVy5h0iz
-        K2UiRn+qR115NbbxdkgZ+yX8hQ==
-X-Google-Smtp-Source: ABdhPJw6zqfzW5NM53QibTPT4D+nBqiYb2YZ7SPWAWrKED2U+JVnR9RY/gc0qz2xe57Gx3sileGsCQ==
-X-Received: by 2002:a17:902:768a:b029:d2:ac2f:8945 with SMTP id m10-20020a170902768ab02900d2ac2f8945mr1261857pll.61.1601453827631;
-        Wed, 30 Sep 2020 01:17:07 -0700 (PDT)
-Received: from localhost.localdomain (li519-153.members.linode.com. [66.175.222.153])
-        by smtp.gmail.com with ESMTPSA id q15sm1385345pje.29.2020.09.30.01.17.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Sep 2020 01:17:07 -0700 (PDT)
-From:   Jun Nie <jun.nie@linaro.org>
-To:     devicetree@vger.kernel.org, georgi.djakov@linaro.org,
-        bjorn.andersson@linaro.org, agross@kernel.org,
-        linux-pm@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, robh@kernel.org
-Cc:     shawn.guo@linaro.org, Jun Nie <jun.nie@linaro.org>
-Subject: [PATCH 0/5] Consolidate RPM interconnect and support to MSM8939
-Date:   Wed, 30 Sep 2020 16:16:40 +0800
-Message-Id: <20200930081645.3434-1-jun.nie@linaro.org>
-X-Mailer: git-send-email 2.17.1
+        Wed, 30 Sep 2020 04:16:43 -0400
+Received: from marcel-macpro.fritz.box (p4fefc7f4.dip0.t-ipconnect.de [79.239.199.244])
+        by mail.holtmann.org (Postfix) with ESMTPSA id 18024CECB0;
+        Wed, 30 Sep 2020 10:23:41 +0200 (CEST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.1\))
+Subject: Re: Removal of HCI commands, userspace bluetooth regression?
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <20200930080205.GA1571308@kroah.com>
+Date:   Wed, 30 Sep 2020 10:16:40 +0200
+Cc:     =?utf-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Pavel Machek <pavel@ucw.cz>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Sebastian Reichel <sre@kernel.org>,
+        David Heidelberg <david@ixit.cz>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8BIT
+Message-Id: <B9D64012-BF9A-4C2A-8D3D-D789533DFAD0@holtmann.org>
+References: <20191228171212.56anj4d4kvjeqhms@pali>
+ <45BB2908-4E16-4C74-9DB4-8BAD93B42A21@holtmann.org>
+ <20200104102436.bhqagqrfwupj6hkm@pali> <20200209132137.7pi4pgnassosh3ax@pali>
+ <20200414225618.zgh5h4jexahfukdl@pali> <20200808132747.4byefjg5ysddgkel@pali>
+ <20200929213254.difivzrhapk766xp@pali> <20200930080205.GA1571308@kroah.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+X-Mailer: Apple Mail (2.3608.120.23.2.1)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch set split shared RPM based interconnect operation code and add
-support to MSM8939 interconnect.
+Hi Greg,
 
-Jun Nie (5):
-  interconnect: qcom: Consolidate interconnect RPM support
-  interconnect: qcom: qcs404: use shared code
-  dt-bindings: interconnect: single yaml file for RPM interconnect
-    drivers
-  dt-bindings: interconnect: Add Qualcomm MSM8939 DT bindings
-  interconnect: qcom: Add MSM8939 interconnect provider driver
+>>>>>>>> I wrote a simple script "sco_features.pl" which show all supported
+>>>>>>>> codecs by local HCI bluetooth adapter. Script is available at:
+>>>>>>>> 
+>>>>>>>> https://github.com/pali/hsphfpd-prototype/blob/prototype/sco_features.pl
+>>>>>>>> 
+>>>>>>>> And I found out that OCF_READ_LOCAL_CODECS HCI command cannot be send by
+>>>>>>>> non-root user. Kernel returns "Operation not permitted" error.
+>>>>>>>> 
+>>>>>>>> What is reason that kernel blocks OCF_READ_LOCAL_CODECS command for
+>>>>>>>> non-root users? Without it (audio) application does not know which
+>>>>>>>> codecs local bluetooth adapter supports.
+>>>>>>>> 
+>>>>>>>> E.g. OCF_READ_LOCAL_EXT_FEATURES or OCF_READ_VOICE_SETTING commands can
+>>>>>>>> be send also by non-root user and kernel does not block them.
+>>>>>>> 
+>>>>>>> actually the direct access to HCI commands is being removed. So we have no plans to add new commands into the list since that it what the kernel is suppose to handle. If we wanted to expose this, then it has to be via mgmt.
+>>>>>> 
+>>>>>> Hi Marcel! Thank you for information. I have not know that this API is
+>>>>>> "deprecated" and is going to be removed. But userspace audio
+>>>>>> applications need to know what bluetooth adapter supports, so can you
+>>>>>> export result of these commands to userspace? My script linked above
+>>>>>> calls: OCF_READ_VOICE_SETTING, OCF_READ_LOCAL_COMMANDS,
+>>>>>> OCF_READ_LOCAL_EXT_FEATURES, OCF_READ_LOCAL_CODECS
+>>>>> 
+>>>>> Hello! Just a gently reminder for this question. How to retrieve
+>>>>> information about supported codecs from userspace by non-root user?
+>>>>> Because running all bluetooth audio applications by root is not really a
+>>>>> solution. Plus if above API for root user is going to be removed, what
+>>>>> is a replacement?
+>>>> 
+>>>> Hello!
+>>>> 
+>>>> I have not got any answer to my email from Marcel for months, so I'm
+>>>> adding other developers to loop. Could somebody tell me that is the
+>>>> replacement API if above one is going to be removed?
+>>>> 
+>>>> I was not able to find any documentation where could be described this
+>>>> API nor information about deprecation / removal.
+>>>> 
+>>>> And are you aware of the fact that removing of API could potentially
+>>>> break existing applications?
+>>>> 
+>>>> I really need to know which API should I use, because when I use API
+>>>> which is going to be removed, then my application stops working. And I
+>>>> really want to avoid it.
+>>>> 
+>>>> Also I have not got any response yet, how can I read list of supported
+>>>> codecs by bluetooth adapter by ordinary non-root user? Audio application
+>>>> needs to know list of supported codecs and it is really insane to run it
+>>>> as root.
+>>> 
+>>> Hello! This is just another reminder that I have not got any reply to
+>>> this email.
+>>> 
+>>> Does silence mean that audio applications are expected to work only
+>>> under root account and ordinary users are not able to use audio and list
+>>> supported codecs?
+>> 
+>> Hello! I have not got any reply for this issue for 10 months and if you
+>> are going to remove (or after these 10 months you already did it?)
+>> existing HCI API from kernel it would break existing and working
+>> userspace application. How do you want to handle such regressions?
+> 
+> What git commit caused this regression?
 
- .../bindings/interconnect/qcom,qcs404.yaml    |  77 ----
- .../{qcom,msm8916.yaml => qcom,rpm.yaml}      |  28 +-
- drivers/interconnect/qcom/Kconfig             |   9 +
- drivers/interconnect/qcom/Makefile            |   5 +-
- drivers/interconnect/qcom/icc-rpm.c           | 194 ++++++++++
- drivers/interconnect/qcom/icc-rpm.h           |  73 ++++
- drivers/interconnect/qcom/msm8916.c           | 241 +-----------
- drivers/interconnect/qcom/msm8939.c           | 355 ++++++++++++++++++
- drivers/interconnect/qcom/qcs404.c            | 242 +-----------
- .../dt-bindings/interconnect/qcom,msm8939.h   | 105 ++++++
- 10 files changed, 776 insertions(+), 553 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/interconnect/qcom,qcs404.yaml
- rename Documentation/devicetree/bindings/interconnect/{qcom,msm8916.yaml => qcom,rpm.yaml} (72%)
- create mode 100644 drivers/interconnect/qcom/icc-rpm.c
- create mode 100644 drivers/interconnect/qcom/icc-rpm.h
- create mode 100644 drivers/interconnect/qcom/msm8939.c
- create mode 100644 include/dt-bindings/interconnect/qcom,msm8939.h
+there is no regression!
 
--- 
-2.17.1
+New Bluetooth standards added new HCI commands that are just not exposed to unprivileged users.
+
+Regards
+
+Marcel
 
