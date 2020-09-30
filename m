@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BADCE27F4F5
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 00:18:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 647C427F4F3
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 00:17:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731362AbgI3WSB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 18:18:01 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:27164 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730090AbgI3WR4 (ORCPT
+        id S1731258AbgI3WRz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 18:17:55 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:33552 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730090AbgI3WRy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 18:17:56 -0400
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08UM1s8V036353;
-        Wed, 30 Sep 2020 18:17:36 -0400
+        Wed, 30 Sep 2020 18:17:54 -0400
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08UM1vpc141181;
+        Wed, 30 Sep 2020 18:17:40 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
  subject : message-id : references : mime-version : content-type :
  content-transfer-encoding : in-reply-to; s=pp1;
- bh=vFMZTjfglZghT+DVaeJGAUx1EnEkxjAxPyqdKGGrdvI=;
- b=M9sKJRW0z04WVJb9E6S4bZL+X9Q162RrMt9oen9WcENulV5fj2/aIhSdSclEYvhpoe5p
- FGVsDrQvHJiEcSfBW6zpVnMRlIXZansdkViIskoMvuSF+42LVvnFUB15qLhwRdAaBFXW
- kxnkZItgwAkWt986Chtp/mK4KwhogBI7SQEqhqJxPmrbR1xMI2m7BfrbnmRwb4C0Pc2s
- Kz+9/mqknzJ5BUefHqzmlK+5BxbFLRbHYa4YCd+k5IFTFJYKT9p+0qClKwSvMERLHYpn
- A9jgdDBxQkuzSwpRdsHIK6BXWoKb8jRXNd0OvwY7Tz+HGYP6fWBEEESnbDO31OKTIQ+P 7w== 
+ bh=Sybct/5QDQ7imifqCkn0qDmhU6a/bbTlvdUNqREFLUo=;
+ b=qI4Gb2mzvW1Wdi8f36hi9KrdpJqliMcQojqHmGLWrwMAwJLlIo75fpmwSK5zsbfydli4
+ JaQDXNv+eUxqImuRM5yIlzlKY2iYvc8sRXsdem3y2X5OlwIB2WKZ9faFfozSfOhuOUC4
+ kf3UslN2JR4OxxCu7iJVXathZSn9yabG/GTvbZQ89kZiNWCvHHCjerKceylKOhUCzWii
+ SYmbQaTRY4/2vIuW9OdXOrvg/gM6NwjvtexHV2Q8ol5x6fg3UygdYwY9CeURH7VV73+E
+ B9iwK3YNzZT4DqeUmyf+o0TZkbBGnlFBBTyq64M43Zpz2KFcy03lKJUyRBdYsopnVtsO 7w== 
 Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 33w1vhh54r-1
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33vxxqe92m-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 30 Sep 2020 18:17:36 -0400
-Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08UM4BqS047099;
-        Wed, 30 Sep 2020 18:17:35 -0400
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 33w1vhh54a-1
+        Wed, 30 Sep 2020 18:17:39 -0400
+Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08UM3KMX144836;
+        Wed, 30 Sep 2020 18:17:39 -0400
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33vxxqe91y-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 30 Sep 2020 18:17:35 -0400
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08UMCGJm002264;
-        Wed, 30 Sep 2020 22:17:33 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma03fra.de.ibm.com with ESMTP id 33v5kg0sra-1
+        Wed, 30 Sep 2020 18:17:39 -0400
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+        by ppma02fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08UMHbMb005712;
+        Wed, 30 Sep 2020 22:17:37 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma02fra.de.ibm.com with ESMTP id 33sw982j69-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 30 Sep 2020 22:17:33 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08UMHVJ520644174
+        Wed, 30 Sep 2020 22:17:36 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08UMHYck31523314
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 30 Sep 2020 22:17:31 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4A27AAE045;
-        Wed, 30 Sep 2020 22:17:31 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 92AA0AE056;
-        Wed, 30 Sep 2020 22:17:30 +0000 (GMT)
+        Wed, 30 Sep 2020 22:17:34 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7EA0E11C04A;
+        Wed, 30 Sep 2020 22:17:34 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C689411C04C;
+        Wed, 30 Sep 2020 22:17:33 +0000 (GMT)
 Received: from localhost (unknown [9.145.18.215])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Wed, 30 Sep 2020 22:17:30 +0000 (GMT)
-Date:   Thu, 1 Oct 2020 00:17:29 +0200
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Wed, 30 Sep 2020 22:17:33 +0000 (GMT)
+Date:   Thu, 1 Oct 2020 00:17:32 +0200
 From:   Vasily Gorbik <gor@linux.ibm.com>
 To:     Josh Poimboeuf <jpoimboe@redhat.com>,
         Peter Zijlstra <peterz@infradead.org>,
@@ -68,8 +68,9 @@ Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
         Alexandre Chartre <alexandre.chartre@oracle.com>,
         Julien Thierry <jthierry@redhat.com>,
         linux-kernel@vger.kernel.org
-Subject: [RFC PATCH v3 3/4] objtool: correct rebuilding of reloc sections
-Message-ID: <patch-3.thread-6ec90b.git-496db2d006dc.your-ad-here.call-01601502173-ext-7769@work.hours>
+Subject: [RFC PATCH v3 4/4] objtool: fix x86 orc generation on big endian
+ cross compiles
+Message-ID: <patch-4.thread-6ec90b.git-6ec90b880ce6.your-ad-here.call-01601502173-ext-7769@work.hours>
 References: <cover.thread-6ec90b.your-ad-here.call-01601502173-ext-7769@work.hours>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
@@ -80,112 +81,158 @@ X-Patchwork-Bot: notify
 X-TM-AS-GCONF: 00
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
  definitions=2020-09-30_13:2020-09-30,2020-09-30 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 phishscore=0
- impostorscore=0 suspectscore=1 malwarescore=0 mlxlogscore=999 mlxscore=0
- lowpriorityscore=0 spamscore=0 priorityscore=1501 adultscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009300174
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 malwarescore=0
+ clxscore=1015 impostorscore=0 suspectscore=2 adultscore=0 mlxlogscore=999
+ priorityscore=1501 spamscore=0 mlxscore=0 lowpriorityscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009300174
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Martin Schwidefsky <schwidefsky@de.ibm.com>
+Correct objtool orc generation endianness problems to enable fully
+functional x86 cross compiles on big endian hardware.
 
-Currently relocations generated in elf_rebuild_rel_reloc_section/
-elf_rebuild_rela_reloc_section functions are broken if the objtool is
-built and run on big endian system. E.g. the following errors pop up
-during x86 cross compilation:
-x86_64-9.1.0-ld: fs/efivarfs/inode.o: bad reloc symbol index (0x2000000 >=
-		0x22) for offset 0 in section `.orc_unwind_ip'
-x86_64-9.1.0-ld: final link failed: bad value
-
-To address that convert those functions to do things similar to
-elf_write_reloc(), reuse gelf_update_rel/gelf_update_rela libelf library
-functions.
-
-Signed-off-by: Martin Schwidefsky <schwidefsky@de.ibm.com>
-Co-developed-by: Vasily Gorbik <gor@linux.ibm.com>
 Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
 ---
- tools/objtool/elf.c | 34 +++++++++++++++++++---------------
- 1 file changed, 19 insertions(+), 15 deletions(-)
+ arch/x86/include/asm/orc_types.h       | 10 ++++++++++
+ tools/arch/x86/include/asm/orc_types.h | 10 ++++++++++
+ tools/objtool/arch/x86/special.c       |  2 +-
+ tools/objtool/check.c                  |  4 ++--
+ tools/objtool/orc_dump.c               |  4 ++--
+ tools/objtool/orc_gen.c                |  2 ++
+ 6 files changed, 27 insertions(+), 5 deletions(-)
 
-diff --git a/tools/objtool/elf.c b/tools/objtool/elf.c
-index 4e1d7460574b..5c0341b0cde3 100644
---- a/tools/objtool/elf.c
-+++ b/tools/objtool/elf.c
-@@ -829,25 +829,27 @@ static int elf_rebuild_rel_reloc_section(struct section *sec, int nr)
+diff --git a/arch/x86/include/asm/orc_types.h b/arch/x86/include/asm/orc_types.h
+index fdbffec4cfde..5a2baf28a1dc 100644
+--- a/arch/x86/include/asm/orc_types.h
++++ b/arch/x86/include/asm/orc_types.h
+@@ -40,6 +40,8 @@
+ #define ORC_REG_MAX			15
+ 
+ #ifndef __ASSEMBLY__
++#include <asm/byteorder.h>
++
+ /*
+  * This struct is more or less a vastly simplified version of the DWARF Call
+  * Frame Information standard.  It contains only the necessary parts of DWARF
+@@ -51,10 +53,18 @@
+ struct orc_entry {
+ 	s16		sp_offset;
+ 	s16		bp_offset;
++#if defined(__LITTLE_ENDIAN_BITFIELD)
+ 	unsigned	sp_reg:4;
+ 	unsigned	bp_reg:4;
+ 	unsigned	type:2;
+ 	unsigned	end:1;
++#elif defined(__BIG_ENDIAN_BITFIELD)
++	unsigned	bp_reg:4;
++	unsigned	sp_reg:4;
++	unsigned	unused:5;
++	unsigned	end:1;
++	unsigned	type:2;
++#endif
+ } __packed;
+ 
+ #endif /* __ASSEMBLY__ */
+diff --git a/tools/arch/x86/include/asm/orc_types.h b/tools/arch/x86/include/asm/orc_types.h
+index fdbffec4cfde..5a2baf28a1dc 100644
+--- a/tools/arch/x86/include/asm/orc_types.h
++++ b/tools/arch/x86/include/asm/orc_types.h
+@@ -40,6 +40,8 @@
+ #define ORC_REG_MAX			15
+ 
+ #ifndef __ASSEMBLY__
++#include <asm/byteorder.h>
++
+ /*
+  * This struct is more or less a vastly simplified version of the DWARF Call
+  * Frame Information standard.  It contains only the necessary parts of DWARF
+@@ -51,10 +53,18 @@
+ struct orc_entry {
+ 	s16		sp_offset;
+ 	s16		bp_offset;
++#if defined(__LITTLE_ENDIAN_BITFIELD)
+ 	unsigned	sp_reg:4;
+ 	unsigned	bp_reg:4;
+ 	unsigned	type:2;
+ 	unsigned	end:1;
++#elif defined(__BIG_ENDIAN_BITFIELD)
++	unsigned	bp_reg:4;
++	unsigned	sp_reg:4;
++	unsigned	unused:5;
++	unsigned	end:1;
++	unsigned	type:2;
++#endif
+ } __packed;
+ 
+ #endif /* __ASSEMBLY__ */
+diff --git a/tools/objtool/arch/x86/special.c b/tools/objtool/arch/x86/special.c
+index fd4af88c0ea5..8349842aac82 100644
+--- a/tools/objtool/arch/x86/special.c
++++ b/tools/objtool/arch/x86/special.c
+@@ -9,7 +9,7 @@
+ 
+ void arch_handle_alternative(unsigned short feature, struct special_alt *alt)
  {
- 	struct reloc *reloc;
- 	int idx = 0, size;
--	GElf_Rel *relocs;
-+	void *buf;
+-	switch (feature) {
++	switch (le16_to_cpu(feature)) {
+ 	case X86_FEATURE_SMAP:
+ 		/*
+ 		 * If UACCESS validation is enabled; force that alternative;
+diff --git a/tools/objtool/check.c b/tools/objtool/check.c
+index 2df9f769412e..f20a4be2fb22 100644
+--- a/tools/objtool/check.c
++++ b/tools/objtool/check.c
+@@ -1370,7 +1370,7 @@ static int read_unwind_hints(struct objtool_file *file)
+ 		cfa = &insn->cfi.cfa;
  
- 	/* Allocate a buffer for relocations */
--	size = nr * sizeof(*relocs);
--	relocs = malloc(size);
--	if (!relocs) {
-+	size = nr * sizeof(GElf_Rel);
-+	buf = malloc(size);
-+	if (!buf) {
- 		perror("malloc");
- 		return -1;
+ 		if (hint->type == UNWIND_HINT_TYPE_RET_OFFSET) {
+-			insn->ret_offset = hint->sp_offset;
++			insn->ret_offset = le16_to_cpu(hint->sp_offset);
+ 			continue;
+ 		}
+ 
+@@ -1382,7 +1382,7 @@ static int read_unwind_hints(struct objtool_file *file)
+ 			return -1;
+ 		}
+ 
+-		cfa->offset = hint->sp_offset;
++		cfa->offset = le16_to_cpu(hint->sp_offset);
+ 		insn->cfi.type = hint->type;
+ 		insn->cfi.end = hint->end;
  	}
+diff --git a/tools/objtool/orc_dump.c b/tools/objtool/orc_dump.c
+index 5e6a95368d35..4cea20520ca7 100644
+--- a/tools/objtool/orc_dump.c
++++ b/tools/objtool/orc_dump.c
+@@ -197,11 +197,11 @@ int orc_dump(const char *_objname)
  
--	sec->data->d_buf = relocs;
-+	sec->data->d_buf = buf;
- 	sec->data->d_size = size;
-+	sec->data->d_type = ELF_T_REL;
+ 		printf(" sp:");
  
- 	sec->sh.sh_size = size;
+-		print_reg(orc[i].sp_reg, orc[i].sp_offset);
++		print_reg(orc[i].sp_reg, (s16)le16_to_cpu(orc[i].sp_offset));
  
- 	idx = 0;
- 	list_for_each_entry(reloc, &sec->reloc_list, list) {
--		relocs[idx].r_offset = reloc->offset;
--		relocs[idx].r_info = GELF_R_INFO(reloc->sym->idx, reloc->type);
-+		reloc->rel.r_offset = reloc->offset;
-+		reloc->rel.r_info = GELF_R_INFO(reloc->sym->idx, reloc->type);
-+		gelf_update_rel(sec->data, idx, &reloc->rel);
- 		idx++;
- 	}
+ 		printf(" bp:");
  
-@@ -858,26 +860,28 @@ static int elf_rebuild_rela_reloc_section(struct section *sec, int nr)
- {
- 	struct reloc *reloc;
- 	int idx = 0, size;
--	GElf_Rela *relocs;
-+	void *buf;
+-		print_reg(orc[i].bp_reg, orc[i].bp_offset);
++		print_reg(orc[i].bp_reg, (s16)le16_to_cpu(orc[i].bp_offset));
  
- 	/* Allocate a buffer for relocations with addends */
--	size = nr * sizeof(*relocs);
--	relocs = malloc(size);
--	if (!relocs) {
-+	size = nr * sizeof(GElf_Rela);
-+	buf = malloc(size);
-+	if (!buf) {
- 		perror("malloc");
- 		return -1;
- 	}
+ 		printf(" type:%s end:%d\n",
+ 		       orc_type_name(orc[i].type), orc[i].end);
+diff --git a/tools/objtool/orc_gen.c b/tools/objtool/orc_gen.c
+index 235663b96adc..123fd718ea9a 100644
+--- a/tools/objtool/orc_gen.c
++++ b/tools/objtool/orc_gen.c
+@@ -96,6 +96,8 @@ static int create_orc_entry(struct elf *elf, struct section *u_sec, struct secti
+ 	/* populate ORC data */
+ 	orc = (struct orc_entry *)u_sec->data->d_buf + idx;
+ 	memcpy(orc, o, sizeof(*orc));
++	orc->sp_offset = cpu_to_le16(orc->sp_offset);
++	orc->bp_offset = cpu_to_le16(orc->bp_offset);
  
--	sec->data->d_buf = relocs;
-+	sec->data->d_buf = buf;
- 	sec->data->d_size = size;
-+	sec->data->d_type = ELF_T_RELA;
- 
- 	sec->sh.sh_size = size;
- 
- 	idx = 0;
- 	list_for_each_entry(reloc, &sec->reloc_list, list) {
--		relocs[idx].r_offset = reloc->offset;
--		relocs[idx].r_addend = reloc->addend;
--		relocs[idx].r_info = GELF_R_INFO(reloc->sym->idx, reloc->type);
-+		reloc->rela.r_offset = reloc->offset;
-+		reloc->rela.r_addend = reloc->addend;
-+		reloc->rela.r_info = GELF_R_INFO(reloc->sym->idx, reloc->type);
-+		gelf_update_rela(sec->data, idx, &reloc->rela);
- 		idx++;
- 	}
- 
+ 	/* populate reloc for ip */
+ 	reloc = malloc(sizeof(*reloc));
 -- 
 ⣿⣿⣿⣿⢋⡀⣀⠹⣿⣿⣿⣿
 ⣿⣿⣿⣿⠠⣶⡦⠀⣿⣿⣿⣿
@@ -193,4 +240,3 @@ index 4e1d7460574b..5c0341b0cde3 100644
 ⣿⣿⡏⢰⣿⠖⣠⣿⡆⠈⣿⣿
 ⣿⢛⣵⣄⠙⣶⣶⡟⣅⣠⠹⣿
 ⣿⣜⣛⠻⢎⣉⣉⣀⠿⣫⣵⣿
-
