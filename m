@@ -2,182 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6BBD27E0C6
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 07:59:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37AF327E0C9
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 07:59:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727659AbgI3F7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 01:59:20 -0400
-Received: from m42-4.mailgun.net ([69.72.42.4]:45551 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725306AbgI3F7U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 01:59:20 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1601445559; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: References: Cc: To: From:
- Subject: Sender; bh=Z7oAfbjIbqFuJZ2OPG4jTiveLuRD86cSV3+ivLnS8Yw=; b=ER5MlaP1HliNoFPFvoC80G1rVUsbdyl13COXNGtP7+PO+yWkDZe+xyt3fojU5WauVPtOPl8Y
- Hau0mAyNN8Zs2ebKi2JGCC1tTHpmvj7lVrkanr6WvOt/qggj6ICsvyhEslyqoN/AVIv6rQml
- yQALy1MHXXZE6cFoLG7/bXsH4KE=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 5f741eb797ca3ed0fbb6199b (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 30 Sep 2020 05:59:19
- GMT
-Sender: vjitta=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 69D5EC433FE; Wed, 30 Sep 2020 05:59:18 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.0.101] (unknown [103.248.210.206])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: vjitta)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 76B32C433F1;
-        Wed, 30 Sep 2020 05:59:15 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 76B32C433F1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=vjitta@codeaurora.org
-Subject: Re: [PATCH v2 2/2] iommu/iova: Free global iova rcache on iova alloc
- failure
-From:   Vijayanand Jitta <vjitta@codeaurora.org>
-To:     Robin Murphy <robin.murphy@arm.com>, joro@8bytes.org,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-Cc:     vinmenon@codeaurora.org, kernel-team@android.com
-References: <1597927761-24441-1-git-send-email-vjitta@codeaurora.org>
- <1597927761-24441-2-git-send-email-vjitta@codeaurora.org>
- <2f20160a-b9da-4fa3-3796-ed90c6175ebe@arm.com>
- <9dac89a4-553a-efe2-08a1-6a3a5fbc97a8@codeaurora.org>
-Message-ID: <bb4c4fe4-50b6-5218-0cb5-43bcba9e9bff@codeaurora.org>
-Date:   Wed, 30 Sep 2020 11:29:12 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1727922AbgI3F7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 01:59:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39186 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725306AbgI3F7t (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 01:59:49 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC830C061755;
+        Tue, 29 Sep 2020 22:59:48 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id u21so527713ljl.6;
+        Tue, 29 Sep 2020 22:59:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=zkMB/eTwbcDzYeUwkqLNVNuszypf0t87/4bsgTKRRuU=;
+        b=RPF8llp248AgypY2MDIt38FMjCeEktMKGAvFPgRAS74txcADz9b2RB898dHJD+jyUz
+         gk3BsWnBugATRj56mpDo7PoS08IV9lhQq3i4uAfkjnq/EJqlQryaXwgizazIO90GbWwZ
+         dWKKhae0LLo6fuammyCIHgh6Fs2UmZzPqnpf0dddlgf8bai642B37F9Zwzbtvu/POoPA
+         7WOuBvfgTH21Y+zlRvbCA1WXfXp4IPdnvO1+sO0EgtSsuRdxODBCSDa2hQrjMkg8riIb
+         Y3Xv1YvM22yDN17EcvSGaffQbiIZ7/HlP0Ste0nwMip2GOTQqnm3r5CMLZPdRq5VDQov
+         Xaew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=zkMB/eTwbcDzYeUwkqLNVNuszypf0t87/4bsgTKRRuU=;
+        b=qpBTqIN4uK+8/fp/zu6l26U5uOlx6U/QfnXIymJs6HaEM0mdc0swFX38+5w4aIR2Do
+         Nd/LKuYax2ot7XmOXMenUdfgXnmiWom81aumOCtV9+oviYyhnSMYLHDkKr1c48Bq0ibR
+         YwrBM2ZxztcMssbyurHKq3X0OOo0qGY50pUrIhRcvV1jaD7meobLPN3uFrSQdgcorrz6
+         lq9jcpXmhl083Kvn/YhgrOc1WMQ+r6sNUumh5+Y16hGz55fuH++5dwnEM1DqI9OlFmBt
+         yPdvETshU87aLF8+pS80K/n34I5vP5mpHpaLkMc0UmmCwxSWtR2K8Rh0maykyohUO3bM
+         QpwQ==
+X-Gm-Message-State: AOAM5313QLPSjDuM/EfdpZkR3xTrZKrKbtD+1ekU5hFLzcZnJk3GTyiE
+        Ul2iB8rNyU06khet9Pe4F+KHDIw5ST0=
+X-Google-Smtp-Source: ABdhPJxF1455iHEGS/+ljUe+sSI1+drgugHd5KUrICCLN/cqPa5Q80B/1k8DFj9gwt2F7Fj6kfnq3A==
+X-Received: by 2002:a2e:8782:: with SMTP id n2mr397178lji.262.1601445586969;
+        Tue, 29 Sep 2020 22:59:46 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
+        by smtp.googlemail.com with ESMTPSA id x5sm67196lfd.119.2020.09.29.22.59.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 29 Sep 2020 22:59:46 -0700 (PDT)
+Subject: Re: [PATCH v2 2/3] iommu/tegra-smmu: Rework .probe_device and
+ .attach_dev
+To:     Nicolin Chen <nicoleotsuka@gmail.com>
+Cc:     thierry.reding@gmail.com, joro@8bytes.org, krzk@kernel.org,
+        vdumpa@nvidia.com, jonathanh@nvidia.com,
+        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+References: <20200930003013.31289-1-nicoleotsuka@gmail.com>
+ <20200930003013.31289-3-nicoleotsuka@gmail.com>
+ <e557a09b-bcc3-11cb-9529-096aafb42051@gmail.com>
+ <20200930054119.GE31821@Asurada-Nvidia>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <68c13611-bc3d-5ba6-70ec-29786d69ff9a@gmail.com>
+Date:   Wed, 30 Sep 2020 08:59:45 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <9dac89a4-553a-efe2-08a1-6a3a5fbc97a8@codeaurora.org>
+In-Reply-To: <20200930054119.GE31821@Asurada-Nvidia>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 9/28/2020 6:11 PM, Vijayanand Jitta wrote:
-> 
-> 
-> On 9/18/2020 8:11 PM, Robin Murphy wrote:
->> On 2020-08-20 13:49, vjitta@codeaurora.org wrote:
->>> From: Vijayanand Jitta <vjitta@codeaurora.org>
->>>
->>> When ever an iova alloc request fails we free the iova
->>> ranges present in the percpu iova rcaches and then retry
->>> but the global iova rcache is not freed as a result we could
->>> still see iova alloc failure even after retry as global
->>> rcache is holding the iova's which can cause fragmentation.
->>> So, free the global iova rcache as well and then go for the
->>> retry.
->>>
->>> Signed-off-by: Vijayanand Jitta <vjitta@codeaurora.org>
->>> ---
->>>   drivers/iommu/iova.c | 23 +++++++++++++++++++++++
->>>   include/linux/iova.h |  6 ++++++
->>>   2 files changed, 29 insertions(+)
->>>
->>> diff --git a/drivers/iommu/iova.c b/drivers/iommu/iova.c
->>> index 4e77116..5836c87 100644
->>> --- a/drivers/iommu/iova.c
->>> +++ b/drivers/iommu/iova.c
->>> @@ -442,6 +442,7 @@ struct iova *find_iova(struct iova_domain *iovad,
->>> unsigned long pfn)
->>>           flush_rcache = false;
->>>           for_each_online_cpu(cpu)
->>>               free_cpu_cached_iovas(cpu, iovad);
->>> +        free_global_cached_iovas(iovad);
->>>           goto retry;
->>>       }
->>>   @@ -1055,5 +1056,27 @@ void free_cpu_cached_iovas(unsigned int cpu,
->>> struct iova_domain *iovad)
->>>       }
->>>   }
->>>   +/*
->>> + * free all the IOVA ranges of global cache
->>> + */
->>> +void free_global_cached_iovas(struct iova_domain *iovad)
+30.09.2020 08:41, Nicolin Chen пишет:
+> On Wed, Sep 30, 2020 at 08:39:54AM +0300, Dmitry Osipenko wrote:
+>> 30.09.2020 03:30, Nicolin Chen пишет:
+>>>  static int tegra_smmu_attach_dev(struct iommu_domain *domain,
+>>>  				 struct device *dev)
+>>>  {
+>>> +	struct iommu_fwspec *fwspec = dev_iommu_fwspec_get(dev);
+>>>  	struct tegra_smmu *smmu = dev_iommu_priv_get(dev);
+>>>  	struct tegra_smmu_as *as = to_smmu_as(domain);
+>>> -	struct device_node *np = dev->of_node;
+>>> -	struct of_phandle_args args;
+>>>  	unsigned int index = 0;
+>>>  	int err = 0;
+>>>  
+>>> -	while (!of_parse_phandle_with_args(np, "iommus", "#iommu-cells", index,
+>>> -					   &args)) {
+>>> -		unsigned int swgroup = args.args[0];
+>>> -
+>>> -		if (args.np != smmu->dev->of_node) {
+>>> -			of_node_put(args.np);
+>>> -			continue;
+>>> -		}
+>>> -
+>>> -		of_node_put(args.np);
+>>> +	if (!fwspec || fwspec->ops != &tegra_smmu_ops)
+>>> +		return -ENOENT;
 >>
->> As John pointed out last time, this should be static and the header
->> changes dropped.
+>> s/&tegra_smmu_ops/smmu->iommu.ops/
 >>
->> (TBH we should probably register our own hotplug notifier instance for a
->> flush queue, so that external code has no need to poke at the per-CPU
->> caches either)
->>
->> Robin.
->>
+>> Secondly, is it even possible that fwspec could be NULL here or that
+>> fwspec->ops != smmu->ops?
 > 
-> Right, I have made it static and dropped header changes in v3.
-> can you please review that.
-> 
-> Thanks,
-> Vijay
-
-Please review v4 instead of v3, I have updated other patch as well in v4.
-
-Thanks,
-Vijay
->>> +{
->>> +    struct iova_rcache *rcache;
->>> +    unsigned long flags;
->>> +    int i, j;
->>> +
->>> +    for (i = 0; i < IOVA_RANGE_CACHE_MAX_SIZE; ++i) {
->>> +        rcache = &iovad->rcaches[i];
->>> +        spin_lock_irqsave(&rcache->lock, flags);
->>> +        for (j = 0; j < rcache->depot_size; ++j) {
->>> +            iova_magazine_free_pfns(rcache->depot[j], iovad);
->>> +            iova_magazine_free(rcache->depot[j]);
->>> +            rcache->depot[j] = NULL;
->>> +        }
->>> +        rcache->depot_size = 0;
->>> +        spin_unlock_irqrestore(&rcache->lock, flags);
->>> +    }
->>> +}
->>> +
->>>   MODULE_AUTHOR("Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>");
->>>   MODULE_LICENSE("GPL");
->>> diff --git a/include/linux/iova.h b/include/linux/iova.h
->>> index a0637ab..a905726 100644
->>> --- a/include/linux/iova.h
->>> +++ b/include/linux/iova.h
->>> @@ -163,6 +163,7 @@ int init_iova_flush_queue(struct iova_domain *iovad,
->>>   struct iova *split_and_remove_iova(struct iova_domain *iovad,
->>>       struct iova *iova, unsigned long pfn_lo, unsigned long pfn_hi);
->>>   void free_cpu_cached_iovas(unsigned int cpu, struct iova_domain
->>> *iovad);
->>> +void free_global_cached_iovas(struct iova_domain *iovad);
->>>   #else
->>>   static inline int iova_cache_get(void)
->>>   {
->>> @@ -270,6 +271,11 @@ static inline void free_cpu_cached_iovas(unsigned
->>> int cpu,
->>>                        struct iova_domain *iovad)
->>>   {
->>>   }
->>> +
->>> +static inline void free_global_cached_iovas(struct iova_domain *iovad)
->>> +{
->>> +}
->>> +
->>>   #endif
->>>     #endif
->>>
+> I am following what's in the arm-smmu driver, as I think it'd be
+> a common practice to do such a check in such a way.
 > 
 
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
-member of Code Aurora Forum, hosted by The Linux Foundation
+Please check whether it's really needed. It looks like it was needed
+sometime ago, but that's not true anymore.
