@@ -2,66 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2679327EAA1
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 16:09:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 562FA27EAAD
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 16:11:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730450AbgI3OJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 10:09:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58128 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730198AbgI3OJV (ORCPT
+        id S1730461AbgI3OLL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 10:11:11 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:57368 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730188AbgI3OLK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 10:09:21 -0400
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2F40C061755
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 07:09:19 -0700 (PDT)
-Received: by mail-oi1-x242.google.com with SMTP id c13so1819795oiy.6
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 07:09:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=ujiHBwaaGNuMhzojZ2C69RM25MjRj77aVtoAsKFcXTM=;
-        b=B4L8gPHjEyxgpIGH/2vz/1fizDdUnk3flOOLXxlVyzKD2fVCnVtjjSbENw6EJgV1/Q
-         I7Wfv+yPflPUtpZh8pCAKHkGCXMGztnmYcJP9mbYWM3F265lHd+hYLW/qaRxzJU1DY22
-         dln7bJfmH/KLsEV1c7MqoYYXgtGRgcy7IcKDGY8JBSCTvQs1/srbgnJw1CnRfH8/cNda
-         AYGKEafcckN23focGfFFqJ4sOqnPDdPVQPRQv4lXx+sAccjBc9JcWghL9wL6piN12pot
-         Vu+bdxZcAuXCNVQWnDw7zEcXyoB/oSsq/y2tzsTl1Gi/vN9lAWwF3ZWfyzu0PpkCwR43
-         ZzaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=ujiHBwaaGNuMhzojZ2C69RM25MjRj77aVtoAsKFcXTM=;
-        b=l5npllVuSQezARrJaBnHeVUmAHvNYHvXXsw0egvubdRfStJT7wcBRTvGw1xHNj2lxn
-         W7G17Arq03R5GhjxdTmxVKwg2J7gRtjLVqS7vka24w206YMLPpNN7xfbt/hXQjsaGq3n
-         OepWNF3uUGmAygFoR+2esEIXeWCzyJ79sTTt3YFaqMj7hBf2+DgpeMFfFT/387OoO2RH
-         BZHwM5uXK2WBR0NmPqtT9M/PN6qj73OejFwsLaqQJovZBstYGZy8E4dOe14oLSeeRX5i
-         gCBXrKgMNtC3fM4dJShmj/UyCBuyXx/TOeRkb+Ak+VlVu0lA4hSRC7bW8BQNgKm+sXaX
-         p98w==
-X-Gm-Message-State: AOAM532tCX15J/Zyqbcgb3QtaIR5xT7eWH1C5UMf6QLN00Eezxtyhy2s
-        NUWub7uQsW6/y/JhjWY59kw+nXFzN81LreAigOc=
-X-Google-Smtp-Source: ABdhPJyoTn8sVcx7cWi6HoknqSpikElHhE+UISyvaYQfWelGI9iMPkt66ff4l1rjPuulOgResl0S+tyIRwFtcE4BS3E=
-X-Received: by 2002:aca:b287:: with SMTP id b129mr1584470oif.85.1601474959338;
- Wed, 30 Sep 2020 07:09:19 -0700 (PDT)
+        Wed, 30 Sep 2020 10:11:10 -0400
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08UE41ir152392;
+        Wed, 30 Sep 2020 14:11:00 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=vzEB3YJL3N7wUcPuw7796PUa/Oe8OTJqZE6lGZWzKqY=;
+ b=hvDPSp5EhGQJBANchZKLY9BN/2RajUpy7MAOl1FT0qS96URst14atzsaQLLhOVBEkgie
+ Ife4/GwLspGlEAynhNApm5lGyMegsZbhvnf0akBK3ufi6ekM3s8sPmRIxxma9zqNaih5
+ fJN68a9WI3Tzk/Q/XeawZyZMpUgII6nSHcF5m2176cXHwJvTuunYua0sEaLNkwYARGmp
+ i43Th00WXm/PpFfGHAz5i97/ysflCIx52mGX9uHrl0kdxppPpkS4QE5QE55n9ce/c4sE
+ oIQFiqlX/LWn+liIGnSE7GRnb51oNQCx2PSJLJP3yX6SCH9rtP+rSmBWBoAbEq0d5O8l Lw== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2130.oracle.com with ESMTP id 33su5b0t1n-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 30 Sep 2020 14:10:59 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08UEAngu185133;
+        Wed, 30 Sep 2020 14:10:59 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3020.oracle.com with ESMTP id 33tfdtyuu6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 30 Sep 2020 14:10:58 +0000
+Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08UEAviB028625;
+        Wed, 30 Sep 2020 14:10:57 GMT
+Received: from [10.74.86.12] (/10.74.86.12)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 30 Sep 2020 07:10:57 -0700
+Subject: Re: [PATCH 2/2] xen/gntdev.c: Convert get_user_pages*() to
+ pin_user_pages*()
+To:     Souptick Joarder <jrdr.linux@gmail.com>
+Cc:     Juergen Gross <jgross@suse.com>, sstabellini@kernel.org,
+        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
+        John Hubbard <jhubbard@nvidia.com>
+References: <1599375114-32360-1-git-send-email-jrdr.linux@gmail.com>
+ <1599375114-32360-2-git-send-email-jrdr.linux@gmail.com>
+ <8a608871-af25-fee6-24ea-24d78010cd6c@oracle.com>
+ <CAFqt6zbKdzFDq6TTadQqQhwZPsZKJLW0LE9ER-qTHm7y3raw9w@mail.gmail.com>
+ <a3df6cac-4d29-a5cf-2bb2-35a8834aef64@oracle.com>
+ <CAFqt6za1JzbnxK1nuYZhGaj_MxRc33cbTXo7MyP+CgXTfYRXfg@mail.gmail.com>
+From:   boris.ostrovsky@oracle.com
+Organization: Oracle Corporation
+Message-ID: <e4a103cd-d244-8f9c-b717-ca3795f6b8dc@oracle.com>
+Date:   Wed, 30 Sep 2020 10:10:55 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.3.1
 MIME-Version: 1.0
-Received: by 2002:a05:6838:3044:0:0:0:0 with HTTP; Wed, 30 Sep 2020 07:09:19
- -0700 (PDT)
-Reply-To: jessicavail020@gmail.com
-From:   Jessica Vail <edward.eden300@gmail.com>
-Date:   Wed, 30 Sep 2020 14:09:19 +0000
-Message-ID: <CAJuBQMZ-OkOV1XkVwdDJ786+yH602HyidmsWp_saiR2TrPo91g@mail.gmail.com>
-Subject: hi
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAFqt6za1JzbnxK1nuYZhGaj_MxRc33cbTXo7MyP+CgXTfYRXfg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9759 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 phishscore=0
+ adultscore=0 malwarescore=0 spamscore=0 mlxscore=0 bulkscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009300113
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9759 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=0
+ lowpriorityscore=0 spamscore=0 clxscore=1015 mlxscore=0 impostorscore=0
+ malwarescore=0 phishscore=0 adultscore=0 bulkscore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009300112
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi dear,
 
-I'm Jessica Vail, from the United States,please i wish to have a
-communication with you.
 
-I wait for your answer.
+On 9/29/20 10:14 PM, Souptick Joarder wrote:
+> On Tue, Sep 29, 2020 at 6:00 PM <boris.ostrovsky@oracle.com> wrote:
+>>
+>>
+>> On 9/29/20 8:09 AM, Souptick Joarder wrote:
+>>> On Fri, Sep 11, 2020 at 8:12 PM <boris.ostrovsky@oracle.com> wrote:
+>>>>
+>>>> On 9/6/20 2:51 AM, Souptick Joarder wrote:
+>>>>> In 2019, we introduced pin_user_pages*() and now we are converting
+>>>>> get_user_pages*() to the new API as appropriate. [1] & [2] could
+>>>>> be referred for more information. This is case 5 as per document [1].
+>>>>>
+>>>>> [1] Documentation/core-api/pin_user_pages.rst
+>>>>>
+>>>>> [2] "Explicit pinning of user-space pages":
+>>>>>         https://lwn.net/Articles/807108/
+>>>>>
+>>>>> Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
+>>>>> Cc: John Hubbard <jhubbard@nvidia.com>
+>>>>> Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+>>>>> Cc: Juergen Gross <jgross@suse.com>
+>>>>> Cc: David Vrabel <david.vrabel@citrix.com>
+>>>>
+>>>> Reviewed-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+>>> Are these 2 patches queued for 5.10-rc1 ?
+>>
+>>
+>> Yes, I am preparing the branch. (BTW, your second patch appears to have been either manually edited or not generated on top of the first patch. Please don't do this next time)
+> 
+> I created it on top of the first one and didn't edit manually.
+> I was able to apply it in my local repository.
+> What was the error ?
+> 
 
-Jessica Vail.
+
+Patch 1:
+
++		if (batch->writeable && !PageDirty(batch->pages[i]))
+
+
+Patch 2:
+
+-		if(batch->writeable && !PageDirty(batch->pages[i]))
+
+
+
+This doesn't look to me like usual whitespace damage in-flight. Anyway, this has been applied to for-linus-5.10
+
+
+-boris
