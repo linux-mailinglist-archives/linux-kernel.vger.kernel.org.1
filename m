@@ -2,107 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BB6C27F36A
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 22:39:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8AA427F370
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 22:40:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729893AbgI3UjO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 16:39:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33854 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725355AbgI3UjN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 16:39:13 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB593C061755;
-        Wed, 30 Sep 2020 13:39:11 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id c18so3221232wrm.9;
-        Wed, 30 Sep 2020 13:39:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=kWgkpLvm1cT61Rwr6FQTOx9p/15lipPZOguXw9B3gcE=;
-        b=TtuDbyrsSzGi1v5+uNy0CWKqSpJT9aR3qVX9OOQBPqZtEY5U/sHGUi1z+29bLfNhIM
-         ehcO6AnVvdu6OUK4NE5yxK9gJ2sEUABOUu8ovtKz4fwrim+TvobYqho/kQgaFibGNGir
-         kZnGPEOfV9bxOnlMOUjY59qvpGxWznq7p8GRtccLsfpteWEHRCIM/j8tN6jLr8AK9DYf
-         HAOoT7oZKHFXU+hT4P9i1hwEOp/OE3lT4YOzh6noYm+hz/yKMqTk3cI5umSREubQGTd7
-         GowbC+f5BFrnmtTp3C2LLb4m3GBSDJnjI6Nyc7LCqtllDQPoGFHwVBNUH9oSV1pTFBgn
-         P4Yg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=kWgkpLvm1cT61Rwr6FQTOx9p/15lipPZOguXw9B3gcE=;
-        b=KzDTbm+KcaaTjoOrKabbKdGyMx3Np8H0LSUco29AGGkX10+GoMg8cSM2oVmTn17U0i
-         C6YTWlmCZ3LPjvD1tAjJYd0Aw18EtNJDhNgSISYYLZUMVIWCxlZsyIaaYELHNSCyn0uc
-         4tOa1PrD5UnsDcRAmzR8LgHqbVlpFZ40iZbLMfHV7ffL5tA1tGuX0L2tejdxbr8JSyYs
-         bid9UCHJxfATzTPQn6/D+xlkxFj52twaC+QUrfbdY0/ZhGGwNCASoUd00aUhHx/Kc+Rb
-         TxgVRB5wgEE8UIReHeaPhDJ2sMJtVsXFd+nl/rH3lc5b+Dp86HR50faKjGPCOuWA13vt
-         uHkA==
-X-Gm-Message-State: AOAM530K/pfqEJoAvpf8Hqptyi+yg/6bvom4zVdSjPHA2zTkDEAEOw3S
-        uJXmkkLyHvPsmCVdO25dW6s=
-X-Google-Smtp-Source: ABdhPJw1OSxW7RcC5F1qKcBNiu0MTANVE7Gw91f0BVpkosa/xgfaEZbWs29UYvv9oakSHmqOB+46HA==
-X-Received: by 2002:adf:f4c6:: with SMTP id h6mr4911812wrp.310.1601498350284;
-        Wed, 30 Sep 2020 13:39:10 -0700 (PDT)
-Received: from [192.168.1.143] ([170.253.60.68])
-        by smtp.gmail.com with ESMTPSA id w5sm4667132wmg.42.2020.09.30.13.39.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 30 Sep 2020 13:39:09 -0700 (PDT)
-Subject: Re: Expose 'array_length()' macro in <sys/cdefs.h> or <sys/param.h>
-To:     Joseph Myers <joseph@codesourcery.com>
-Cc:     libc-alpha@sourceware.org, libc-coord@lists.openwall.com,
-        libstdc++ <libstdc++@gcc.gnu.org>, gcc@gcc.gnu.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-man <linux-man@vger.kernel.org>,
-        Jonathan Wakely <jwakely@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        Ville Voutilainen <ville.voutilainen@gmail.com>,
-        enh@google.com, Rusty Russell <rusty@rustcorp.com.au>,
-        Alejandro Colomar <colomar.6.4.3@gmail.com>
-References: <946e9377-0558-3adf-3eb9-38c507afe2d0@gmail.com>
- <alpine.DEB.2.21.2009301557590.5720@digraph.polyomino.org.uk>
-From:   Alejandro Colomar <colomar.6.4.3@gmail.com>
-Message-ID: <1aa963ec-0f44-4948-d862-7808b0b86a7a@gmail.com>
-Date:   Wed, 30 Sep 2020 22:39:08 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1730104AbgI3Ukq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 16:40:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50016 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725355AbgI3Ukp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 16:40:45 -0400
+Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 119C72064E;
+        Wed, 30 Sep 2020 20:40:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601498445;
+        bh=HSIi+z4+6zDGtzfYvkCV+4MaQTyMOGFoRZ7A/A6Oyg4=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=gztbrPbSLZIkeo8dERp62j9vvJ2n/MCPlJPGdHNtanlazsTNRh8bLUb/hYT0uThkj
+         6fO82z+ztvFeUEYJqSg6OC/rz9ttIVJ2dLBcDLFaKleNzS/N85t/cZTEu5R0AjXLt0
+         lnCi21u3u/J+7tJL4E6GqdPaXX6cYNMmNN7h4S/g=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id BBB6C352303E; Wed, 30 Sep 2020 13:40:44 -0700 (PDT)
+Date:   Wed, 30 Sep 2020 13:40:44 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Kees Cook <keescook@chromium.org>,
+        linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: Re: [PATCH v2] srcu: avoid escaped section names
+Message-ID: <20200930204044.GZ29330@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <CAKwvOd=s+N4+X94sTams_hKn8uV5Hc6QyCc7OHyOGC-JFesS8A@mail.gmail.com>
+ <20200929192549.501516-1-ndesaulniers@google.com>
 MIME-Version: 1.0
-In-Reply-To: <alpine.DEB.2.21.2009301557590.5720@digraph.polyomino.org.uk>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200929192549.501516-1-ndesaulniers@google.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2020-09-30 17:58, Joseph Myers wrote:
-> For some reason http://www.open-std.org/jtc1/sc22/wg14/www/docs/n2529.pdf
-> doesn't seem to have reached the agenda of a WG14 meeting yet, but adding
-> a language feature like that to the standard would be another approach.
+On Tue, Sep 29, 2020 at 12:25:49PM -0700, Nick Desaulniers wrote:
+> The stringification operator, `#`, in the preprocessor escapes strings.
+> For example, `# "foo"` becomes `"\"foo\""`.  GCC and Clang differ in how
+> they treat section names that contain \".
 > 
+> The portable solution is to not use a string literal with the
+> preprocessor stringification operator.
+> 
+> Link: https://bugs.llvm.org/show_bug.cgi?id=42950
+> Fixes: commit fe15b50cdeee ("srcu: Allocate per-CPU data for DEFINE_SRCU() in modules")
+> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
 
-Hi Joseph,
+I am guessing that this needs to go up with other patches.  If so:
 
-Yes, that would be great!
+Acked-by: Paul E. McKenney <paulmck@kernel.org>
 
-I hope they add that to the language. When/if that happens, nitems() 
-could be `#define nitems(arr) _Lengthof(arr)` for std >= c2x.
+If not, let me know and I will queue it.
 
-In the meantime, I would add this macro to libc.
+							Thanx, Paul
 
-Maybe gcc could add such a great feature as an extension even before the 
-standard does...
-
-Too many wishes :)
-
-BTW, I sent a PATCH v4 that I should've sent --in-reply-to PATCH v3 in 
-this thread (but I forgot to do so); I'll link to it here:
-
-https://sourceware.org/pipermail/libc-alpha/2020-September/117986.html
-
-Thanks,
-
-Alex
+> ---
+> Changes V1->V2:
+> * drop unrelated Kconfig changes accidentally committed in v1.
+> 
+>  include/linux/srcutree.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/include/linux/srcutree.h b/include/linux/srcutree.h
+> index 9cfcc8a756ae..9de652f4e1bd 100644
+> --- a/include/linux/srcutree.h
+> +++ b/include/linux/srcutree.h
+> @@ -124,7 +124,7 @@ struct srcu_struct {
+>  # define __DEFINE_SRCU(name, is_static)					\
+>  	is_static struct srcu_struct name;				\
+>  	struct srcu_struct * const __srcu_struct_##name			\
+> -		__section("___srcu_struct_ptrs") = &name
+> +		__section(___srcu_struct_ptrs) = &name
+>  #else
+>  # define __DEFINE_SRCU(name, is_static)					\
+>  	static DEFINE_PER_CPU(struct srcu_data, name##_srcu_data);	\
+> -- 
+> 2.28.0.709.gb0816b6eb0-goog
+> 
