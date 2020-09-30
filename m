@@ -2,158 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 862E527DD6C
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 02:35:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3898227DD76
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 02:37:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729337AbgI3Afs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 20:35:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46096 "EHLO
+        id S1729457AbgI3AhA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 20:37:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728192AbgI3Afr (ORCPT
+        with ESMTP id S1729159AbgI3Ag7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 20:35:47 -0400
+        Tue, 29 Sep 2020 20:36:59 -0400
 Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAB22C0613D0;
-        Tue, 29 Sep 2020 17:35:47 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id 7so5378317pgm.11;
-        Tue, 29 Sep 2020 17:35:47 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CCCEC061755;
+        Tue, 29 Sep 2020 17:36:58 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id y14so5371862pgf.12;
+        Tue, 29 Sep 2020 17:36:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=T6RkMef4n6SDIVMgJJ8cgrOCjBvonOscs59BNDVkkmE=;
-        b=Czv7lJP2qKVAK/tsi9LxL5aMg7VImOQMCk30SvUz+hHVdh9QKVXkuaaoy6+rcTHyoh
-         we9uAPnlcF6UDiDXAXO36DSEtA5ZoQ0dJQSN8GIlkmLY9RW1/NB5NKVT4wLR8+fOuVpg
-         RqLMOmg5LqVDw9lEycOl2OxZ7zqbn/7Alcd03KhWPVLAscLsHtSb9S90cTAdBP040wUK
-         umSF4jHx4sWI6dTprEYB4r1cVhYYkmwxJxFzeAe/4gw1XDvNiexZghSJ4MeGE0pK6k0j
-         7Dd9CWl0B97PFhy3TcC4M3AB/59Wog+qhILI8nAB7L0n+FLU4uo2aGHZfSpy6WsTmO24
-         GIww==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=/XM/k7ZAi/BqVvVYF0L63/UmQsPEgJkkXUJGypFWKDU=;
+        b=P47UtA2v2KZFC8OmtrYRr+RubNI8j0poiQBEl27RUSlqIZHvxvXNaZJrOgUAt3/rWy
+         /DrUlRu5ajujzTy0QpXVoLjbs2pOC0qhJd653+erbItYweTiAKAnQB8KKlMn4SFVekMk
+         1Z7bmEmGI3lWhJNa9nnlVv5ZnONiRgJtdr8ska/of3UrsFUIq8qoHWUiyEUf7T1Y2/Rl
+         ge/fmwFRy/8aPHgtq99cltj7Ozh1bZ69w9dOrtzODGETl+Dn2WXyKY6PWaKvpR7CIYUN
+         jCoBB0//a8qx2Z0WH3B6FPIIzX5Wl1onxeB/XUmRchXFN2/ZQnJnIdd6o/07215abDG8
+         c9TQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=T6RkMef4n6SDIVMgJJ8cgrOCjBvonOscs59BNDVkkmE=;
-        b=D1NG+bcv/VmgphhSdr6qtQh2Cp5wjEem+oULAjpckb+dyt54pgouLOzjOp+TtFgByl
-         R/bI0iU4MgL46JS/g8ZTdGqAx7kFBy5WqeqIUsj0EyInVejh0fGS0BAdelewArK4Jw/U
-         f1y8xLtyH+mo2eDSwKAThOwWW6wPMnjtrzGKaJ0E20mxzsxTURBKyspW8i+kqExN9SGl
-         +ns6RE9x90HtO4i1LjmKndIfnxpo9oTWLpnfUrkuduLa/wpzIpenpoD65iFECgYALw0T
-         A2E9CI6FGGbc3Mo8piWHvqipmuZcAoR7pKs91JU+IpSJXKfl60SaaI+C+OVKn6K1O7GK
-         GCTg==
-X-Gm-Message-State: AOAM532vnLk5yHSI7oxlaYBDLgjarwu2WU93XLWYESUld51MaAHBHnBB
-        G9Fya6v3RVbxpTE9DJWD1tA=
-X-Google-Smtp-Source: ABdhPJx3OjYAAoX2wmhV2QVQyvwp3Xov47Mvenoy4exyCMLCnbfuteJNwE361RmUZHOZ1/YYW3fMAA==
-X-Received: by 2002:a63:de56:: with SMTP id y22mr152276pgi.166.1601426147352;
-        Tue, 29 Sep 2020 17:35:47 -0700 (PDT)
-Received: from Asurada-Nvidia.nvidia.com (thunderhill.nvidia.com. [216.228.112.22])
-        by smtp.gmail.com with ESMTPSA id x185sm6904738pfc.188.2020.09.29.17.35.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Sep 2020 17:35:46 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=/XM/k7ZAi/BqVvVYF0L63/UmQsPEgJkkXUJGypFWKDU=;
+        b=U7uuXAw79pMotu5v1JABc/vGKUTEB/P2lFvJueBfMtnuKGijzTW1Kj8VIuguAaFQF/
+         PFZCnwkqbARVlhMWsQVXU9C4/w9twTf/4tkyqBCwzlPc3g1toB76bKOAfw0pl5vJgfpP
+         gv0XdwIkRQqYXDcR5dHopxE1t9mtGHL+XA6J8BWScldfvFUxzptQJ0umqas0XQvr8LzR
+         rNWZxVwSv9DG5CTbDIA3+T857B4yr+PBnR9tiQR4h37MgBjl9UAqMiBE8KbXwzaqk12a
+         NRUsQEfO6kfdrqqRO5fsHqoQrDjskETs8FzACL75s3J61jhHvKxEglZRpGQYTcCnZYNT
+         y8iw==
+X-Gm-Message-State: AOAM530WpCl2mJ7FF2bdO2z1zoiNe9eZY+3eUvHlYSFsLSA7+YqOT07a
+        bz1ymxaWOYgkYBSxip/V/yw=
+X-Google-Smtp-Source: ABdhPJwtlJ5IyFYYsulqOxLUs9xgA8O8lmGoTtkpvPfrVi3PJDI3ugbs1A/OyAlKFTrYWeSawD1Bog==
+X-Received: by 2002:a62:6044:0:b029:151:1a04:895 with SMTP id u65-20020a6260440000b02901511a040895mr249217pfb.34.1601426217687;
+        Tue, 29 Sep 2020 17:36:57 -0700 (PDT)
+Received: from Asurada-Nvidia (thunderhill.nvidia.com. [216.228.112.22])
+        by smtp.gmail.com with ESMTPSA id v205sm7268836pfc.110.2020.09.29.17.36.56
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 29 Sep 2020 17:36:57 -0700 (PDT)
+Date:   Tue, 29 Sep 2020 17:31:27 -0700
 From:   Nicolin Chen <nicoleotsuka@gmail.com>
-To:     thierry.reding@gmail.com, joro@8bytes.org, krzk@kernel.org,
-        digetx@gmail.com
-Cc:     vdumpa@nvidia.com, jonathanh@nvidia.com,
-        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 3/3] iommu/tegra-smmu: Add PCI support
-Date:   Tue, 29 Sep 2020 17:30:13 -0700
-Message-Id: <20200930003013.31289-4-nicoleotsuka@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200930003013.31289-1-nicoleotsuka@gmail.com>
-References: <20200930003013.31289-1-nicoleotsuka@gmail.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     thierry.reding@gmail.com, joro@8bytes.org, vdumpa@nvidia.com,
+        jonathanh@nvidia.com, linux-tegra@vger.kernel.org,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        hch@infradead.org
+Subject: Re: [PATCH v4 2/2] iommu/tegra-smmu: Expand mutex protection range
+Message-ID: <20200930003126.GA31332@Asurada-Nvidia>
+References: <20200929061325.10197-1-nicoleotsuka@gmail.com>
+ <20200929061325.10197-3-nicoleotsuka@gmail.com>
+ <184163e9-01d4-dcc5-0adf-a3d175e56f16@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <184163e9-01d4-dcc5-0adf-a3d175e56f16@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch simply adds support for PCI devices. Also reverses
-bus_set_iommu in tegra_smmu_remove().
+On Tue, Sep 29, 2020 at 08:42:52PM +0300, Dmitry Osipenko wrote:
+> 29.09.2020 09:13, Nicolin Chen пишет:
+> > This is used to protect potential race condition at use_count.
+> > since probes of client drivers, calling attach_dev(), may run
+> > concurrently.
+> > 
+> > Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
+> > ---
+> 
+> It's always better not to mix success and error code paths in order to
+> keep code readable, but not a big deal in the case of this particular
+> patch since the changed code is quite simple. Please try to avoid doing
+> this in the future patches.
+> 
+> Also, please note that in general it's better to use locked/unlocked
+> versions for the functions like it's already done for
+> tegra_smmu_map/unmap, this will remove the need to maintain lockings in
+> the code. The code touched by this patch doesn't have complicated code
+> paths, so it's good enough to me.
+> 
+> Reviewed-by: Dmitry Osipenko <digetx@gmail.com>
 
-Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
----
-
-Changelog
-v1->v2
- * Added error-out labels in tegra_smmu_probe()
- * Dropped pci_request_acs() since IOMMU core would call it.
-
- drivers/iommu/tegra-smmu.c | 33 ++++++++++++++++++++++++---------
- 1 file changed, 24 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/iommu/tegra-smmu.c b/drivers/iommu/tegra-smmu.c
-index cf4981369828..74d84908679e 100644
---- a/drivers/iommu/tegra-smmu.c
-+++ b/drivers/iommu/tegra-smmu.c
-@@ -10,6 +10,7 @@
- #include <linux/kernel.h>
- #include <linux/of.h>
- #include <linux/of_device.h>
-+#include <linux/pci.h>
- #include <linux/platform_device.h>
- #include <linux/slab.h>
- #include <linux/spinlock.h>
-@@ -856,6 +857,7 @@ static struct iommu_group *tegra_smmu_device_group(struct device *dev)
- 	const struct tegra_smmu_group_soc *soc;
- 	unsigned int swgroup = fwspec->ids[0];
- 	struct tegra_smmu_group *group;
-+	bool pci = dev_is_pci(dev);
- 	struct iommu_group *grp;
- 
- 	/* Find group_soc associating with swgroup */
-@@ -882,7 +884,7 @@ static struct iommu_group *tegra_smmu_device_group(struct device *dev)
- 	group->smmu = smmu;
- 	group->soc = soc;
- 
--	group->group = iommu_group_alloc();
-+	group->group = pci ? pci_device_group(dev) : iommu_group_alloc();
- 	if (IS_ERR(group->group)) {
- 		devm_kfree(smmu->dev, group);
- 		mutex_unlock(&smmu->lock);
-@@ -1079,26 +1081,39 @@ struct tegra_smmu *tegra_smmu_probe(struct device *dev,
- 	iommu_device_set_fwnode(&smmu->iommu, dev->fwnode);
- 
- 	err = iommu_device_register(&smmu->iommu);
--	if (err) {
--		iommu_device_sysfs_remove(&smmu->iommu);
--		return ERR_PTR(err);
--	}
-+	if (err)
-+		goto err_sysfs;
- 
- 	err = bus_set_iommu(&platform_bus_type, &tegra_smmu_ops);
--	if (err < 0) {
--		iommu_device_unregister(&smmu->iommu);
--		iommu_device_sysfs_remove(&smmu->iommu);
--		return ERR_PTR(err);
-+	if (err < 0)
-+		goto err_unregister;
-+
-+#ifdef CONFIG_PCI
-+	if (!iommu_present(&pci_bus_type)) {
-+		err = bus_set_iommu(&pci_bus_type, &tegra_smmu_ops);
-+		if (err < 0)
-+			goto err_bus_set;
- 	}
-+#endif
- 
- 	if (IS_ENABLED(CONFIG_DEBUG_FS))
- 		tegra_smmu_debugfs_init(smmu);
- 
- 	return smmu;
-+
-+err_bus_set:
-+	bus_set_iommu(&platform_bus_type, NULL);
-+err_unregister:
-+	iommu_device_unregister(&smmu->iommu);
-+err_sysfs:
-+	iommu_device_sysfs_remove(&smmu->iommu);
-+
-+	return ERR_PTR(err);
- }
- 
- void tegra_smmu_remove(struct tegra_smmu *smmu)
- {
-+	bus_set_iommu(&platform_bus_type, NULL);
- 	iommu_device_unregister(&smmu->iommu);
- 	iommu_device_sysfs_remove(&smmu->iommu);
- 
--- 
-2.17.1
-
+Okay. Thanks for the review!
