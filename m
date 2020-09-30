@@ -2,86 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 733A427E01F
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 07:21:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F37927E027
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 07:23:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725832AbgI3FUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 01:20:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33214 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725306AbgI3FUx (ORCPT
+        id S1727428AbgI3FW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 01:22:28 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:53708 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725306AbgI3FWW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 01:20:53 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BB16C061755;
-        Tue, 29 Sep 2020 22:20:53 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id z19so590754lfr.4;
-        Tue, 29 Sep 2020 22:20:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=/vquZx1A3iluTEUeE59wLilR4MqylWrQ+TBuI0tvfkQ=;
-        b=Zv9Fa3zqpk+N0YQ0z9cb0GU+O+b/3HX7q7p7JtJBxw88h1Z3Gh9kNKxU89jNs6Xcwr
-         f2hxCnYi8ucVK3VjDxwohagnbSNv2epSHbt3iBVw1nzW/ECu/iUzvD48cF+lG+hz3Fw/
-         clukDexDUQNteNUcfXzOFMMtMqxioHuHrXFOlX0+a4FQmn4XV6dVYewKQoPnDAyMayiX
-         l00YvljfkiEN5cSh9xyJ0BvbsI4bgc055dCh6xktc1FdXif9hvs1+1rbKPmSHhQBv/yv
-         ij4Rb1FibJVjyU4TVML21msMmuKjim+Fedhe/qdDTFbIdt1goIJVysyQZhQCdLdCbFTi
-         /pNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=/vquZx1A3iluTEUeE59wLilR4MqylWrQ+TBuI0tvfkQ=;
-        b=KeOQbSFYOvCyafsNOi6DXadCkwwQkfn17biI/JY0+DIrmPaYCHQO1FHcuGXdi5l3iX
-         pMmDiT4ERFtLnFl88MKEpiZPOLKA/VKiMgy+jfcghcS0JlggP/bbgDfVpoJU771bAZep
-         GlKfBsCWMI6isS2Zjb0j5bnTELt8kfGvEXT0R+kRnSB5Bn43/1yKhPnX8/+37yunBmGe
-         mKH9XxHiGmucjP6PM2vpzRwMMRFx9U8whRjFZ9wT2X7EBFfd1/FXbPXLIgeG+6R7p9lF
-         EMJj4BIhXZ6MeR2n6gob66xJ0lxLB+Xp8pPP+b96VVwazQIHQQ98Bn4HZr6SEq2WRrRM
-         bcIg==
-X-Gm-Message-State: AOAM530p3cabkfc5JaNwkqHrD6aWuHcE7oSWNzIlLXT3fsI4UI4syuKp
-        KkA+5AsB/+gOhQqqBd3AazfuwLwDO/0=
-X-Google-Smtp-Source: ABdhPJz82QlO70fJl2vNtlSBQ8vbMM7nm+VNivgOHxtah8c167tZ1uRj7xH7oN+Usj5eoVq0Yd2Msw==
-X-Received: by 2002:a19:3c8:: with SMTP id 191mr227547lfd.549.1601443251483;
-        Tue, 29 Sep 2020 22:20:51 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
-        by smtp.googlemail.com with ESMTPSA id e14sm50128ljp.15.2020.09.29.22.20.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 29 Sep 2020 22:20:50 -0700 (PDT)
-Subject: Re: [PATCH v2 2/3] iommu/tegra-smmu: Rework .probe_device and
- .attach_dev
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Nicolin Chen <nicoleotsuka@gmail.com>, thierry.reding@gmail.com,
-        joro@8bytes.org, krzk@kernel.org
-Cc:     vdumpa@nvidia.com, jonathanh@nvidia.com,
-        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-References: <20200930003013.31289-1-nicoleotsuka@gmail.com>
- <20200930003013.31289-3-nicoleotsuka@gmail.com>
- <db183fdf-d566-599a-94ff-cfab0e08aa7a@gmail.com>
-Message-ID: <931eb16b-4529-2c20-c696-c57a9138aded@gmail.com>
-Date:   Wed, 30 Sep 2020 08:20:50 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 30 Sep 2020 01:22:22 -0400
+Date:   Wed, 30 Sep 2020 05:22:19 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1601443340;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=obVoNHU3UZZp3B75TvjkMBf0KbKUXkpQ/j0DHA4V64M=;
+        b=KV0dQLkiKFMQrVyDJUZWfS4qgPC67JqjTOylU8AYnUvHZDNvzpmwl2Hizl/5at96stm/gb
+        w7g/Fe1qNlB9TEv3yks3H1i1tTeLK2SP3/M3ZcWupVAiBwk7KXhJ25poZUV622W2WkpyWj
+        ywDqYqM2XQvnZlhm5VLpAEDC2ggAFyp+IMwVbOUvcsvKyNTLyx0HdPa/F4S2XPqJBdjPEM
+        jHNdjUFnjfBH/h+P0h03l5yUByaKJv1fcilmRE95J7djHySkdz0pM9isK8nzHSk8BaYWOY
+        kVaib8kJdSQ9Ga2C6Jz8rkCWxW5QytAtkhLr5ZXX4EvhSE78nmtR8UVqceOZYA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1601443340;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=obVoNHU3UZZp3B75TvjkMBf0KbKUXkpQ/j0DHA4V64M=;
+        b=m6tUonM5Q5X3pXDHC3IPn2wBnsg2GbGGTmkqovsddIU7aiKgFba44W//q5Nq1QiiYy5xPT
+        Nyt5TE7pwLoXCTAQ==
+From:   "tip-bot2 for Ard Biesheuvel" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: efi/core] efi: efivars: limit availability to X86 builds
+Cc:     Ard Biesheuvel <ardb@kernel.org>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <db183fdf-d566-599a-94ff-cfab0e08aa7a@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Message-ID: <160144333917.7002.9382870354458127638.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-30.09.2020 08:10, Dmitry Osipenko пишет:
-> 30.09.2020 03:30, Nicolin Chen пишет:
->>  static void tegra_smmu_release_device(struct device *dev)
-> 
-> The tegra_get_memory_controller() uses of_find_device_by_node(), hence
-> tegra_smmu_release_device() should put_device(mc) in order to balance
-> back the refcounting.
-> 
+The following commit has been merged into the efi/core branch of tip:
 
-Actually, the put_device(mc) should be right after
-tegra_get_memory_controller() in tegra_smmu_probe_device() because SMMU
-is a part of MC, hence MC can't just go away.
+Commit-ID:     963fabf37f6a94214a823df0a785e653cb8ad6ea
+Gitweb:        https://git.kernel.org/tip/963fabf37f6a94214a823df0a785e653cb8ad6ea
+Author:        Ard Biesheuvel <ardb@kernel.org>
+AuthorDate:    Wed, 23 Sep 2020 10:20:10 +02:00
+Committer:     Ard Biesheuvel <ardb@kernel.org>
+CommitterDate: Tue, 29 Sep 2020 19:40:57 +02:00
+
+efi: efivars: limit availability to X86 builds
+
+CONFIG_EFI_VARS controls the code that exposes EFI variables via
+sysfs entries, which was deprecated before support for non-Intel
+architectures was added to EFI. So let's limit its availability
+to Intel architectures for the time being, and hopefully remove
+it entirely in the not too distant future.
+
+While at it, let's remove the module alias so that the module is
+no longer loaded automatically.
+
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+---
+ Documentation/arm/uefi.rst     |  2 +-
+ drivers/firmware/efi/Kconfig   | 13 ++++---------
+ drivers/firmware/efi/efivars.c |  1 -
+ 3 files changed, 5 insertions(+), 11 deletions(-)
+
+diff --git a/Documentation/arm/uefi.rst b/Documentation/arm/uefi.rst
+index f868330..f732f95 100644
+--- a/Documentation/arm/uefi.rst
++++ b/Documentation/arm/uefi.rst
+@@ -23,7 +23,7 @@ makes it possible for the kernel to support additional features:
+ For actually enabling [U]EFI support, enable:
+ 
+ - CONFIG_EFI=y
+-- CONFIG_EFI_VARS=y or m
++- CONFIG_EFIVAR_FS=y or m
+ 
+ The implementation depends on receiving information about the UEFI environment
+ in a Flattened Device Tree (FDT) - so is only available with CONFIG_OF.
+diff --git a/drivers/firmware/efi/Kconfig b/drivers/firmware/efi/Kconfig
+index 80f5c67..da1887f 100644
+--- a/drivers/firmware/efi/Kconfig
++++ b/drivers/firmware/efi/Kconfig
+@@ -4,20 +4,15 @@ menu "EFI (Extensible Firmware Interface) Support"
+ 
+ config EFI_VARS
+ 	tristate "EFI Variable Support via sysfs"
+-	depends on EFI
++	depends on EFI && (X86 || IA64)
+ 	default n
+ 	help
+ 	  If you say Y here, you are able to get EFI (Extensible Firmware
+ 	  Interface) variable information via sysfs.  You may read,
+ 	  write, create, and destroy EFI variables through this interface.
+-
+-	  Note that using this driver in concert with efibootmgr requires
+-	  at least test release version 0.5.0-test3 or later, which is
+-	  available from:
+-	  <http://linux.dell.com/efibootmgr/testing/efibootmgr-0.5.0-test3.tar.gz>
+-
+-	  Subsequent efibootmgr releases may be found at:
+-	  <http://github.com/vathpela/efibootmgr>
++	  Note that this driver is only retained for compatibility with
++	  legacy users: new users should use the efivarfs filesystem
++	  instead.
+ 
+ config EFI_ESRT
+ 	bool
+diff --git a/drivers/firmware/efi/efivars.c b/drivers/firmware/efi/efivars.c
+index a76f50e..e6b16b3 100644
+--- a/drivers/firmware/efi/efivars.c
++++ b/drivers/firmware/efi/efivars.c
+@@ -22,7 +22,6 @@ MODULE_AUTHOR("Matt Domsch <Matt_Domsch@Dell.com>");
+ MODULE_DESCRIPTION("sysfs interface to EFI Variables");
+ MODULE_LICENSE("GPL");
+ MODULE_VERSION(EFIVARS_VERSION);
+-MODULE_ALIAS("platform:efivars");
+ 
+ static LIST_HEAD(efivar_sysfs_list);
+ 
