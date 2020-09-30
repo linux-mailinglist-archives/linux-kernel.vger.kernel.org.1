@@ -2,141 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7249527EE36
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 18:04:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1762A27EE3C
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 18:05:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730959AbgI3QEA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 12:04:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47696 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725355AbgI3QD7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 12:03:59 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3640C061755;
-        Wed, 30 Sep 2020 09:03:59 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id qp15so2685999ejb.3;
-        Wed, 30 Sep 2020 09:03:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=HkhKHMINiSKqraOzIt5AxpBzpOhikgq//AotPkRaIHM=;
-        b=PA0vKez2xLCTX95LNGOxIfgXhECvVxQWPz9lTjS8LRwfyNeNFGu2aC9k+fWUANP5i+
-         CyfIiWv03oxjhmcTPAvXyWnDS1ElIY5rdfxye5KC89MQ2zgRxyuXu2nlJwv7J9YjH5KO
-         TVSjIndlsxvUCj0CIhqDSsK/ymQ0sy4WZE7/cqs9VS42PGAOSeWCv0GzGC+ZxOYdwhFr
-         /NpIG/X/n3SxrRiz6H4rVNLiBgv51Kzg19FK4QMlz0KWA7I0pbBrGUUw80Kzo/VV6bSq
-         TPtGtqRRdSY5Hfeuo1f+8eqd3CT95PUoXBvKNv/z+qsFzgIocPu8CTQvcnhKUkz0Jy+E
-         YDOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=HkhKHMINiSKqraOzIt5AxpBzpOhikgq//AotPkRaIHM=;
-        b=H2DHzzIEiQ66DdltnlTqDBdSox2/9dSFaqLWfVZlcMfhxO6oJF1dKl/dGV+1DeY8Og
-         iVw52Vq02VIrvDzRsOtEtLfpJJJdYI/sFjwZobva58RIcY6sECGd6us4Hes5GFVG9O0+
-         xvOr/ZdyX9sLLbpohV2uvDOoCgI8Rj3uzhwTCNN86YW5g3dYlcQvdEwU/js7uO+43Ujn
-         Lty6bQjJAsh8h3cRFESEIiT/XmA9x4ralBx8a3+57VI5dFadEnhxqufthnVK5jLcztUw
-         C7Dyjo5wkcnyCysyt/3mbpAQqXtLdoT36eLjmbYDxBwB6IWmtpPFCeATmbyPyNrHf9qO
-         iM0Q==
-X-Gm-Message-State: AOAM532V3iDwPebvJXF2ZO4ngrxwB4LrjHBm8c6cVWu5HWJZDKEiB/JX
-        NIk4Y1Pk60Jd68YckEg1Nw0=
-X-Google-Smtp-Source: ABdhPJztk+9riNAmQmBHmoVtNpIQJe2sCTHfApl0Io1rReAg/lC07AvYf4F+aedZqiTec8nxyuiHAQ==
-X-Received: by 2002:a17:906:c10c:: with SMTP id do12mr3442838ejc.527.1601481838354;
-        Wed, 30 Sep 2020 09:03:58 -0700 (PDT)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id va25sm1535615ejb.72.2020.09.30.09.03.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Sep 2020 09:03:56 -0700 (PDT)
-Date:   Wed, 30 Sep 2020 18:03:55 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Nicolin Chen <nicoleotsuka@gmail.com>, joro@8bytes.org,
-        krzk@kernel.org, vdumpa@nvidia.com, jonathanh@nvidia.com,
-        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/3] memory: tegra: Add
- devm_tegra_get_memory_controller()
-Message-ID: <20200930160355.GC3833404@ulmo>
-References: <20200930084258.25493-1-nicoleotsuka@gmail.com>
- <20200930084258.25493-2-nicoleotsuka@gmail.com>
- <20200930152320.GA3833404@ulmo>
- <ed7b4375-d06e-2750-e6fa-603ef2b60d36@gmail.com>
+        id S1730890AbgI3QFe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 12:05:34 -0400
+Received: from mail-am6eur05on2071.outbound.protection.outlook.com ([40.107.22.71]:40544
+        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725355AbgI3QFd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 12:05:33 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=O/7smms0sQtVS1Wo3ozYcYoE1XYuF9zcCT7txo9nfogmLOzwjhFxvIkxRqY7s93PRJR31A5ADc5YQewr2qnQwhqYjIvrW3GnVsW+MIzHIbEg0PW0TKzcdd9t4ep/guysW11fxsN+F6KYxj2h5+W/EvtGTkVgwv4nEw/GjQotkJTPWHBT5KZ1oX1iZMy5ciaMhF6GXIdrba1sNBtos0jpKB9g7rgGvsVfI2D/GPtHi0YsZTKzmCHnCXEvfes3XTwFHuFqxWLAB2CGaEgXLj+LZMVTmPEmGdmKls7xg6eNLiLFLYLaCHxW/BInFy/UmffivaBjxAZ92EIeST4I3KGKKQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DdUY6ypKBM+uPWgn/FdgTu1+zSc8SiKtX13Gx1uuIBs=;
+ b=odvFxtCY77xK1sGHocwN+nIYqqxdO0GXseS8j239+VVqpYyG1qM63fqnc8iAxnKZXH5QBzeSFgIYVpBWnMcGkX6DodRwMKpqSEBg3zVX0y/7mNyGM0OlcnQpEt6ECBR58mJ+2UQusb6IQWJSGB9KFCYckV3ZD3gXHXuOIp+WQXe28mJvrPVrpXdfYNQ7bUPlXAoKZ1s29Ua7WgrhYDxkx5CazW4c0ms0RgsTg3eVlR5y26NtQ6CJf16AIYu63NmOARfHubq1zj4dATTRmXyc28oLLoRKv3UeTItwfnoOm2RzcxcALJKf+UoEPRCud7LCcZkOhLd5KxfbKjSIMCnPhw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector2-NXP1-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DdUY6ypKBM+uPWgn/FdgTu1+zSc8SiKtX13Gx1uuIBs=;
+ b=jPclxXE1GnLXiH9ZG80xmq726HqxFs12eNhgP02Me6PTRATTgFXm0ZD6+s+MJZz6O/0V9ddzvAqvb10dKkJ/1BJE2Kgx1Xx7p6riFzAaOVBDWrKoFdL3w/OMWRuFgdcR2nM5mAkBRm+rwAokGbjAKbj5VIc+92SDUudU/uwPYAw=
+Authentication-Results: arm.com; dkim=none (message not signed)
+ header.d=none;arm.com; dmarc=none action=none header.from=oss.nxp.com;
+Received: from AM0PR04MB5636.eurprd04.prod.outlook.com (2603:10a6:208:130::22)
+ by AM0PR04MB4385.eurprd04.prod.outlook.com (2603:10a6:208:74::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.25; Wed, 30 Sep
+ 2020 16:05:29 +0000
+Received: from AM0PR04MB5636.eurprd04.prod.outlook.com
+ ([fe80::a997:35ae:220c:14ef]) by AM0PR04MB5636.eurprd04.prod.outlook.com
+ ([fe80::a997:35ae:220c:14ef%7]) with mapi id 15.20.3433.032; Wed, 30 Sep 2020
+ 16:05:29 +0000
+From:   Calvin Johnson <calvin.johnson@oss.nxp.com>
+To:     Grant Likely <grant.likely@arm.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Jeremy Linton <jeremy.linton@arm.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
+        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Madalin Bucur <madalin.bucur@oss.nxp.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org, linux.cj@gmail.com,
+        netdev@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Diana Madalina Craciun <diana.craciun@nxp.com>,
+        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
+        Calvin Johnson <calvin.johnson@oss.nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Ioana Radulescu <ruxandra.radulescu@nxp.com>,
+        Jakub Kicinski <kuba@kernel.org>, Len Brown <lenb@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Subject: [net-next PATCH v1 0/7] ACPI support for dpaa2 driver
+Date:   Wed, 30 Sep 2020 21:34:23 +0530
+Message-Id: <20200930160430.7908-1-calvin.johnson@oss.nxp.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-Originating-IP: [14.142.151.118]
+X-ClientProxiedBy: SG2PR03CA0168.apcprd03.prod.outlook.com
+ (2603:1096:4:c9::23) To AM0PR04MB5636.eurprd04.prod.outlook.com
+ (2603:10a6:208:130::22)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="Md/poaVZ8hnGTzuv"
-Content-Disposition: inline
-In-Reply-To: <ed7b4375-d06e-2750-e6fa-603ef2b60d36@gmail.com>
-User-Agent: Mutt/1.14.7 (2020-08-29)
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from lsv03152.swis.in-blr01.nxp.com (14.142.151.118) by SG2PR03CA0168.apcprd03.prod.outlook.com (2603:1096:4:c9::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.16 via Frontend Transport; Wed, 30 Sep 2020 16:05:23 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 38e8447b-0868-460f-d979-08d8655aa699
+X-MS-TrafficTypeDiagnostic: AM0PR04MB4385:
+X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <AM0PR04MB43853D7C3E67DF413EEAA48ED2330@AM0PR04MB4385.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2958;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: KZP2xu+nbMq6bMAqzeIQgKtNcFkO5fXHk6jvSc5oAlpMn1nbnoyyKRyUxyABHcjOroneXDFiK/88879tioRYyfv8f+OSzC3ujALiPwLu4U+/OQVGRhXCFtjHyF53rb13vwGOE1xPvAR3qtoD7yGMHPo6bI9Dh4Nyp5/D5a6/T1uE2C1tUnu2c+2+3V3htjNrWjjGguf7Q5npoW/UmAeZ14mJW698y8reURHKuQ4eImc2243ri3k3HfZq7U1JZDtAnNNcB9/aA+PPCuaB/Z9HBSAuWdG4oMf+CDdOjJcEB7SECc0PcRrrTbnQVM2o+15M8KoFJJbzthcLcNThNBeFpA506zE0Av1B/lvgJchknRtFVmn7S6cuPGMjz2wlmWIZDorRMzA2nCTTKex1mkrYTTEVbwM2zGWh9XxTu2YuXC6CPqKTasqNIbqb25CZp3Bv
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB5636.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(376002)(346002)(39860400002)(396003)(366004)(4326008)(2906002)(16526019)(186003)(956004)(2616005)(86362001)(8936002)(55236004)(44832011)(7416002)(66556008)(66476007)(1076003)(26005)(66946007)(8676002)(1006002)(478600001)(52116002)(6486002)(6512007)(5660300002)(83380400001)(54906003)(110136005)(316002)(6506007)(110426005)(921003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: vk3SZn7xJaVfePJU954DgNaC17X8czr7ThqItsFlGo8leQyPs7cdDPIVNbvlMggr8vCnTMKymov+Z3R71FBCLLcA+wvoFoKF79JZkyYYGt5Bl2RQ/GZNSR3sPzZkg3kMBWlLMGGsgCMB4uu92Wbv95P64ugKkn0+SGNV/UGY/mG83U5HLzon0h6MtUIwPI3If35Yue9zofICEM/lZkrawlhGTM984IL1qb0a6sHDw3bDz7rH21QL2JMJeXtE/54dEns812/dteKdGwu0B32QCNmeZqBx97y6D1nInlmxoadKLQfHxRu8F5t8djthQpABvY+21SbhjQPxuS3hq1ot8Xw0Ci3YeROIxH7P72NUtoOncGG5UMfIFnn+xOSYWee+dUMl3z4fllQFaac84HoWr67DnkQFYnhz0ev3ojC9kJmQNpc/Vp3TUDXMGF46iq1cJQZ6D5ksK7ay3SFFb5baSUIHL+03xwMTrEvJtmtbdZJuvRf1KUTMEXih6WpWpiOgpjoenA3MCwnwZkfu5CRn0Ym1j7bFh2zQyfjVNnhzjmEWsr9Pmgk/NrWxhsGb/kM/T6RTcaVuILRGuBegKintBTn6Q94AOmzFPs2fAL6lqXCjSqaJOhbZVWkpWNESsjOs4lx8SQDyFfS6DWPAzXh/OA==
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 38e8447b-0868-460f-d979-08d8655aa699
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB5636.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Sep 2020 16:05:29.1656
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 1r2V3hmrPC5tCQv3Fe55xszoUJnFmtokix2JTMonFBEWFhA+LaPUvlmH8DeY6gm3r2Wqr1lgDIlJUsDVfpvAZA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR04MB4385
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---Md/poaVZ8hnGTzuv
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This patch set provides ACPI support to DPAA2 network drivers.
 
-On Wed, Sep 30, 2020 at 06:53:06PM +0300, Dmitry Osipenko wrote:
-> 30.09.2020 18:23, Thierry Reding =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> > On Wed, Sep 30, 2020 at 01:42:56AM -0700, Nicolin Chen wrote:
-> >> From: Dmitry Osipenko <digetx@gmail.com>
-> >>
-> >> Multiple Tegra drivers need to retrieve Memory Controller and hence th=
-ere
-> >> is quite some duplication of the retrieval code among the drivers. Let=
-'s
-> >> add a new common helper for the retrieval of the MC.
-> >>
-> >> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> >> Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
-> >> ---
-> >>
-> >> Changelog
-> >> v2->v3:
-> >>  * Replaced with Dimtry's devm_tegra_get_memory_controller()
-> >> v1->v2:
-> >>  * N/A
-> >>
-> >>  drivers/memory/tegra/mc.c | 39 +++++++++++++++++++++++++++++++++++++++
-> >>  include/soc/tegra/mc.h    | 17 +++++++++++++++++
-> >>  2 files changed, 56 insertions(+)
-> >=20
-> > Let's not add this helper, please. If a device needs a reference to the
-> > memory controller, it should have a phandle to the memory controller in
-> > device tree so that it can be looked up explicitly.
-> >=20
-> > Adding this helper is officially sanctioning that it's okay not to have
-> > that reference and that's a bad idea.
->=20
-> And please explain why it's a bad idea, I don't see anything bad here at
-> all.
+It also introduces new fwnode based APIs to support phylink and phy layers
+Following functions are defined:
+  phylink_fwnode_phy_connect()
+  fwnode_mdiobus_register_phy()
+  fwnode_get_phy_id()
+  fwnode_phy_find_device()
+  device_phy_find_device()
+  fwnode_get_phy_node()
 
-Well, you said yourself in a recent comment that we should avoid global
-variables. devm_tegra_get_memory_controller() is nothing but a glorified
-global variable.
+First one helps in connecting phy to phylink instance.
+Next two helps in getting phy_id and registering phy to mdiobus
+Next two help in finding a phy on a mdiobus.
+Next one helps in getting phy_node from a fwnode.
 
-Thierry
 
---Md/poaVZ8hnGTzuv
-Content-Type: application/pgp-signature; name="signature.asc"
+Calvin Johnson (7):
+  Documentation: ACPI: DSD: Document MDIO PHY
+  net: phy: Introduce phy related fwnode functions
+  net: phy: Introduce fwnode_get_phy_id()
+  net: mdiobus: Introduce fwnode_mdiobus_register_phy()
+  phylink: introduce phylink_fwnode_phy_connect()
+  net: dpaa2-mac: Add ACPI support for DPAA2 MAC driver
+  net/fsl: Use _ADR ACPI object to register PHYs
 
------BEGIN PGP SIGNATURE-----
+ Documentation/firmware-guide/acpi/dsd/phy.rst | 78 ++++++++++++++++++
+ .../net/ethernet/freescale/dpaa2/dpaa2-mac.c  | 79 +++++++++++-------
+ drivers/net/ethernet/freescale/xgmac_mdio.c   | 48 ++++++++++-
+ drivers/net/phy/mdio_bus.c                    | 40 +++++++++
+ drivers/net/phy/phy_device.c                  | 82 +++++++++++++++++++
+ drivers/net/phy/phylink.c                     | 51 ++++++++++++
+ include/linux/mdio.h                          |  2 +
+ include/linux/phy.h                           | 25 ++++++
+ include/linux/phylink.h                       |  3 +
+ 9 files changed, 375 insertions(+), 33 deletions(-)
+ create mode 100644 Documentation/firmware-guide/acpi/dsd/phy.rst
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl90rGgACgkQ3SOs138+
-s6GNCA//RmVL3YPvq5/wzuzC1PrFzor/z7ya4L8jXrY6RgwgFYvK0hZnd6ahOBf9
-DZIzr/0k5igUwAL7vrDTk3tJKvQDLf1Eqwg7QtEuEC4KXJcZbjynCcZsUepoaQFz
-S2EQK7GfB21xSjCwhbIzOPgiqY2XajMbsjlDheK5qey7L2HASK1YxdIRyxPoHOHB
-ixLUH1IAi+LQjnv8j8HZqiEaod0X2r28NvUdFPH1Ch2UbCqR8peyfScJIfM4ZoKo
-u4s0G2Yi8znwKlU8YQ5aNjHc0LBlgH3kDvhB6p2ShK5o9w8oq7XiY5NMIHWrH7yI
-HNGOhsppRt/qQXh1aoqOyKv1VVqFwqTfq/meCETwIuOpeV0OQPcDFHS6alg+unvS
-E3jQPojcULvadHcWqStW5GnkomQC47VCB+1h71vfUQIPZkdd1XfaxohfsXMleSrN
-6hKlnsTl6Y1cDDx6BMfHpgGGEOfv3GGUX9gq5eD9FoSzRTs497eazwClGHxSiHTp
-fixSVclWwdwLDt0RtpMw9KE2T69sUrhwhxihjXzZ6RawvJNfRLE1GvHgJJnaZo+Y
-0p+o5WVy+Rzsyg5CvFkYE8XMr/dwtyociFCSZmSYj9L+QywvKot5eFB0MCZJinwd
-aKoG26J4OB3vJbtiYZDiNOlnjxRRG45ha6wivOJML11+viSNyII=
-=Bu7G
------END PGP SIGNATURE-----
+-- 
+2.17.1
 
---Md/poaVZ8hnGTzuv--
