@@ -2,81 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4498127EFA9
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 18:51:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0388F27EFAB
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 18:52:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731240AbgI3Qvr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 12:51:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49650 "EHLO mail.kernel.org"
+        id S1731266AbgI3QwQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 12:52:16 -0400
+Received: from verein.lst.de ([213.95.11.211]:45437 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725355AbgI3Qvr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 12:51:47 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1FD65206C9;
-        Wed, 30 Sep 2020 16:51:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601484706;
-        bh=MwdJW4mqrWOrBCkHeReFHIvPIJHWwvzq0/1WZ3thz34=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=0QiwqGrru7E0hnFByyf199zgzY5HfiHmMto2K2DP2GQaRpF+SQylW3LD64x0jYywQ
-         GcH0r71FBZ2SrN2dwCGbIV3fjNBJqBLpm/gW0SCLI6mvVwTGAH152XfnjfVFnYbu9N
-         wSMSXIznFZBAd5pNwXWXfAuppEMtLhJPcm6C38Ms=
-Date:   Wed, 30 Sep 2020 19:51:42 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Maor Gottlieb <maorg@nvidia.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Roland Scheidegger <sroland@vmware.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
-        VMware Graphics <linux-graphics-maintainer@vmware.com>
-Subject: Re: [PATCH rdma-next v4 4/4] RDMA/umem: Move to allocate SG table
- from pages
-Message-ID: <20200930165142.GS3094@unreal>
-References: <20200927064647.3106737-1-leon@kernel.org>
- <20200927064647.3106737-5-leon@kernel.org>
- <20200929195929.GA803555@nvidia.com>
- <20200930095321.GL3094@unreal>
- <20200930114527.GE816047@nvidia.com>
- <80c49ff1-52c7-638f-553f-9de8130b188d@nvidia.com>
- <20200930115837.GF816047@nvidia.com>
- <7e09167f-c57a-cdfe-a842-c920e9421e53@nvidia.com>
- <20200930151406.GM816047@nvidia.com>
+        id S1725355AbgI3QwP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 12:52:15 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id C38086736F; Wed, 30 Sep 2020 18:52:12 +0200 (CEST)
+Date:   Wed, 30 Sep 2020 18:52:12 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Dave Airlie <airlied@linux.ie>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the drm tree
+Message-ID: <20200930165212.GA8833@lst.de>
+References: <20200928113415.GA555@lst.de> <72ADHQ.T6LL1SHQF0RG3@crapouillou.net> <20200928121002.GA3219@lst.de> <GWEDHQ.HNERRUK8XXOM2@crapouillou.net> <20200930090252.GA9357@lst.de> <DB4HHQ.1KMN8GNWYJLC1@crapouillou.net> <20200930161124.GA6859@lst.de> <IXCHHQ.XHZEBJ42HOEJ1@crapouillou.net> <20200930164023.GA8645@lst.de> <27DHHQ.SLESFBOY1GXP1@crapouillou.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200930151406.GM816047@nvidia.com>
+In-Reply-To: <27DHHQ.SLESFBOY1GXP1@crapouillou.net>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 12:14:06PM -0300, Jason Gunthorpe wrote:
-> On Wed, Sep 30, 2020 at 06:05:15PM +0300, Maor Gottlieb wrote:
-> > This is right only for the last iteration. E.g. in the first iteration in
-> > case that there are more pages (left_pages), then we allocate
-> > SG_MAX_SINGLE_ALLOC.  We don't know how many pages from the second iteration
-> > will be squashed to the SGE from the first iteration.
+On Wed, Sep 30, 2020 at 06:45:02PM +0200, Paul Cercueil wrote:
+>> We don't have such a thing in the Linux API at all.
 >
-> Well, it is 0 or 1 SGE's. Check if the first page is mergable and
-> subtract one from the required length?
+> dma_pgprot(dev, vma->vm_page_prot, DMA_ATTR_NON_CONSISTENT);
 >
-> I dislike this sg_mark_end() it is something that should be internal,
-> IMHO.
+> That was giving me non-coherent cached memory, and now I don't have an 
+> alternative.
 
-I don't think so, but Maor provided possible solution.
-Can you take the patches?
+Looking at Linux 5.9-rc dma_pgprot is defined as:
 
-Thanks
+pgprot_t dma_pgprot(struct device *dev, pgprot_t prot, unsigned long attrs)
+{
+	if (force_dma_unencrypted(dev))
+		prot = pgprot_decrypted(prot);
+	if (dev_is_dma_coherent(dev) ||
+	    (IS_ENABLED(CONFIG_DMA_NONCOHERENT_CACHE_SYNC) &&
+             (attrs & DMA_ATTR_NON_CONSISTENT)))
+		return prot;
+#ifdef CONFIG_ARCH_HAS_DMA_WRITE_COMBINE
+	if (attrs & DMA_ATTR_WRITE_COMBINE)
+		return pgprot_writecombine(prot);
+#endif
+	return pgprot_dmacoherent(prot);
+}
 
->
-> Jason
+so it doesn't change vma->vm_page_prot at all.
+
+The only place that uses _CACHE_CACHABLE_NONCOHERENT is the MIPS specific
+kmap_noncoherent which ha sa single caller that doesn't leak anywhere
+into driver code.
