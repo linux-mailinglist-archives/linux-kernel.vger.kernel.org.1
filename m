@@ -2,121 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29AF127E33C
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 10:03:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CDF227E33F
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 10:05:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728529AbgI3IDf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 04:03:35 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:47492 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728367AbgI3IDe (ORCPT
+        id S1727879AbgI3IFG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 04:05:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58422 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725440AbgI3IFF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 04:03:34 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08U83Mjc007039;
-        Wed, 30 Sep 2020 03:03:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1601453002;
-        bh=TURRr3OYeVMlDnx4zpyv8iXB01n2XSC3osa95n3/QHU=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=W4ta0/Hu0YjOYM7k7PyeWgcqO6DWV+GDnWC9uLyEK3sS4F1oFvo1zDOvHvZEBL7it
-         PHPWRCKCx1kz/RyN9/nilOOG2+xho0OB8YLkt6zIzzP7V+m0K1B6NlSSy9VnccDu/t
-         FobHBe49TgPCvIoj+/+KelexPYJE0qk9hcfz82YA=
-Received: from DLEE110.ent.ti.com (dlee110.ent.ti.com [157.170.170.21])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08U83LTi062209
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 30 Sep 2020 03:03:21 -0500
-Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE110.ent.ti.com
- (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 30
- Sep 2020 03:03:21 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 30 Sep 2020 03:03:21 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08U83KLX034362;
-        Wed, 30 Sep 2020 03:03:20 -0500
-Date:   Wed, 30 Sep 2020 13:33:19 +0530
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     <Tudor.Ambarus@microchip.com>
-CC:     <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
-        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <nsekhar@ti.com>, <boris.brezillon@collabora.com>
-Subject: Re: [PATCH v13 13/15] mtd: spi-nor: core: expose
- spi_nor_default_setup() in core.h
-Message-ID: <20200930080317.hy2h6hlkbaxqea3f@ti.com>
-References: <20200916124418.833-1-p.yadav@ti.com>
- <20200916124418.833-14-p.yadav@ti.com>
- <ef62bf4e-1b2c-aa3e-39b7-fd8d118e582d@microchip.com>
+        Wed, 30 Sep 2020 04:05:05 -0400
+Received: from mail-vk1-xa41.google.com (mail-vk1-xa41.google.com [IPv6:2607:f8b0:4864:20::a41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81AA9C061755
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 01:05:05 -0700 (PDT)
+Received: by mail-vk1-xa41.google.com with SMTP id c25so223010vkm.1
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 01:05:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=bJf9EcQGtx8i8vRwho8onBKbPOEqg4j6uiNOsbNhNao=;
+        b=yhm2JF3v2s0OcWI+WA4E9BjQwwpL1RqLpWbnJY3yiop7OZR8QsYWBgDqhekQEPC9g6
+         fxU2te0hgZ8h6FDQiQRiQOv3QSRjSYoK55HKp34koEYgnZNYGtI7R/qvFjc+2XzrZ6iT
+         LHwGclTbk5aHGot1W1MAhCjsNH0fA1jA6G6oWtExl9WOcEUp/VPQledOTaKmBx5FZc/k
+         RSwk8PIInhEclzY9+4huNuwRnLYwGJ7Y20WAYECC2eNR9sYnGrK+UNs01IpBzmXFtDzI
+         Zy0Ak52mWTUkrt4WaHfScuOBmw9CdDHRJhrOnCXR2qjZLwgXrd7JxJoIIaxcA6Te/CnP
+         GLvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=bJf9EcQGtx8i8vRwho8onBKbPOEqg4j6uiNOsbNhNao=;
+        b=kwqZyusqp/l7UaeeF5Aq9j6LOEqwm0jkxu7RhFRBiTvEEdvmniXpVEBYXZdAyA4L8A
+         DOT3H8vhyy54tbcjzDVcmTExqrKNhuMCM94/TmpskthkCDT7lxX7/ezjihg0Z7v5Erd2
+         2SJn57UgSJdAKAgi7YUpPKyWMVuz4s+tWeCQirvq054KyTcTajgvxrbbfLZq5DUtJ2F3
+         G09aVrAPRTNALlUuvPLPUisLSYIpcdp8J9S8hgvj9t7uDK3YR1Lg4GJEZ0KaQWaFZwej
+         LcwRe8wcSMESmY8Z+p9qV5m98OZVQhoANaMAzNNP8DTTt0FbIwOIU0++zCmI8YEmGjIV
+         aedA==
+X-Gm-Message-State: AOAM530Uii6sqFWY04u2wwFsaJKseFmjNQNUUZ0t+F+/Q95LW37g/hpO
+        HA9n0Zcv22hv5bX0PJOiUqsFTkBomSeKp8cS1Oq/Yw==
+X-Google-Smtp-Source: ABdhPJwfuBYnHEwK0CTYxYDHFchbWstcUrCB7pReooB//uy/Dl76Sy/fK27xYKCxzdOnyz/jNMUJgO0NPTv2ZnmDfYM=
+X-Received: by 2002:a1f:fec9:: with SMTP id l192mr605959vki.21.1601453104561;
+ Wed, 30 Sep 2020 01:05:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <ef62bf4e-1b2c-aa3e-39b7-fd8d118e582d@microchip.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20200929110010.467764689@linuxfoundation.org>
+In-Reply-To: <20200929110010.467764689@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Wed, 30 Sep 2020 13:34:52 +0530
+Message-ID: <CA+G9fYveaJ147DokEVYPSJ2WZ0yeX=3soNnuak1LDC0Yzb_avw@mail.gmail.com>
+Subject: Re: [PATCH 5.4 000/388] 5.4.69-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>,
+        linux- stable <stable@vger.kernel.org>, pavel@denx.de,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/09/20 07:51AM, Tudor.Ambarus@microchip.com wrote:
-> On 9/16/20 3:44 PM, Pratyush Yadav wrote:
-> > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
-> > 
-> > Flashes might want to add a custom setup hook to configure the flash in
-> > the proper mode for operation. But after that, they would still want to
-> > run the default setup hook because it selects the read, program, and
-> > erase operations. Since there is little point in repeating all that
-> > code, expose the spi_nor_default_setup() in core.h to
-> > manufacturer-specific files.
-> 
-> But you don't use it in the following patches. Can we drop this one for now?
+On Tue, 29 Sep 2020 at 17:05, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.4.69 release.
+> There are 388 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Thu, 01 Oct 2020 10:59:03 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.4.69-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.4.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-I used it for earlier versions but not for the latest ones. This can be 
-dropped for now.
 
-> > 
-> > Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
-> > ---
-> >  drivers/mtd/spi-nor/core.c | 4 ++--
-> >  drivers/mtd/spi-nor/core.h | 3 +++
-> >  2 files changed, 5 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-> > index d5c92c9c7307..34edfcf33172 100644
-> > --- a/drivers/mtd/spi-nor/core.c
-> > +++ b/drivers/mtd/spi-nor/core.c
-> > @@ -2759,8 +2759,8 @@ static int spi_nor_select_erase(struct spi_nor *nor)
-> >         return 0;
-> >  }
-> > 
-> > -static int spi_nor_default_setup(struct spi_nor *nor,
-> > -                                const struct spi_nor_hwcaps *hwcaps)
-> > +int spi_nor_default_setup(struct spi_nor *nor,
-> > +                         const struct spi_nor_hwcaps *hwcaps)
-> >  {
-> >         struct spi_nor_flash_parameter *params = nor->params;
-> >         u32 ignored_mask, shared_mask;
-> > diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-> > index e2c7324d997e..10dc03506f93 100644
-> > --- a/drivers/mtd/spi-nor/core.h
-> > +++ b/drivers/mtd/spi-nor/core.h
-> > @@ -453,6 +453,9 @@ int spi_nor_post_bfpt_fixups(struct spi_nor *nor,
-> >                              const struct sfdp_bfpt *bfpt,
-> >                              struct spi_nor_flash_parameter *params);
-> > 
-> > +int spi_nor_default_setup(struct spi_nor *nor,
-> > +                         const struct spi_nor_hwcaps *hwcaps);
-> > +
-> >  static struct spi_nor __maybe_unused *mtd_to_spi_nor(struct mtd_info *mtd)
-> >  {
-> >         return mtd->priv;
-> > --
-> > 2.28.0
-> > 
-> 
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
--- 
-Regards,
-Pratyush Yadav
-Texas Instruments India
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+Summary
+------------------------------------------------------------------------
+
+kernel: 5.4.69-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-5.4.y
+git commit: 256bdd45e196b3d68513dcd043370c3809a97654
+git describe: v5.4.68-389-g256bdd45e196
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.=
+y/build/v5.4.68-389-g256bdd45e196
+
+
+No regressions (compared to build v5.4.68)
+
+No fixes (compared to build v5.4.68)
+
+Ran 27670 total tests in the following environments and test suites.
+
+Environments
+--------------
+- dragonboard-410c
+- hi6220-hikey
+- i386
+- juno-r2
+- nxp-ls2088
+- qemu_arm
+- qemu_arm64
+- qemu_i386
+- qemu_x86_64
+- x15
+- x86
+- x86-kasan
+
+Test Suites
+-----------
+* build
+* install-android-platform-tools-r2600
+* kselftest
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* perf
+* v4l2-compliance
+* ltp-cve-tests
+* ltp-sched-tests
+* network-basic-tests
+* ltp-fs-tests
+* ltp-ipc-tests
+* ltp-open-posix-tests
+* kselftest-vsyscall
+* kselftest-vsyscall-mode-native
+* kselftest-vsyscall-mode-none
+* ssuite
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
