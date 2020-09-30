@@ -2,56 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50D9827DFA7
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 06:43:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C933F27DFAD
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 06:46:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725792AbgI3Enx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 00:43:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58512 "EHLO mail.kernel.org"
+        id S1725817AbgI3Eqh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 00:46:37 -0400
+Received: from z5.mailgun.us ([104.130.96.5]:10627 "EHLO z5.mailgun.us"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725385AbgI3Enx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 00:43:53 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1725385AbgI3Eqh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 00:46:37 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1601441196; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=A3rhz6VOuxhz1gApk6ziXDpUvE+cY9p88hAOu1BpWd4=;
+ b=BcoJJZkGca/NFSIu0KGBhS/Z/93Chl++RQDTxMWoy32IwqvL4EQ4XhTSTKThPNNGW2H1JRNm
+ Sppkx9SyWOS4ViR1IuWs2DPxojdynDLVdfY+WDxXSg0ds5Z4Aa1kJLtDp8H8SyDOthU1xL+G
+ 09CSjf+vek8LMKmAZWl6gaQN1cU=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 5f740da019fe605f25eb03f3 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 30 Sep 2020 04:46:24
+ GMT
+Sender: cgoldswo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 35D6DC43385; Wed, 30 Sep 2020 04:46:24 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4B3D1207C3;
-        Wed, 30 Sep 2020 04:43:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601441033;
-        bh=h58pJFcKP4r8aT6h57Ez4737D/9ar4XMTYyKKr2cRac=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=A6guEv9oRYoozKMxCXy0DH03Ja9rtrFTWxWGHLEDPLQtAwILKw6qbK5g7DRAuq4G7
-         zr6DJak+xAZUZtWMyhMQZMN04Cd1yBgSP8gJlAk6N/X94q2OhizoDBWCODU0dOUTfV
-         hmJouBs2OqfLEN6/vXwk515tm3HqiiZLcuDHtqiI=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 073E03523039; Tue, 29 Sep 2020 21:43:53 -0700 (PDT)
-Date:   Tue, 29 Sep 2020 21:43:52 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: linux-next: Signed-off-by missing for commit in the rcu tree
-Message-ID: <20200930044352.GY29330@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200930083717.0b8e7139@canb.auug.org.au>
+        (Authenticated sender: cgoldswo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id BAD36C433C8;
+        Wed, 30 Sep 2020 04:46:22 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200930083717.0b8e7139@canb.auug.org.au>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date:   Tue, 29 Sep 2020 21:46:22 -0700
+From:   Chris Goldsworthy <cgoldswo@codeaurora.org>
+To:     John Stultz <john.stultz@linaro.org>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Liam Mark <lmark@codeaurora.org>,
+        Laura Abbott <labbott@kernel.org>,
+        Brian Starkey <Brian.Starkey@arm.com>,
+        Hridya Valsaraju <hridya@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Sandeep Patil <sspatil@google.com>,
+        =?UTF-8?Q?=C3=98rjan_Eide?= <orjan.eide@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Simon Ser <contact@emersion.fr>,
+        James Jones <jajones@nvidia.com>, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [RFC][PATCH 5/6] dma-buf: system_heap: Add pagepool support to
+ system heap
+In-Reply-To: <20200926042453.67517-6-john.stultz@linaro.org>
+References: <20200926042453.67517-1-john.stultz@linaro.org>
+ <20200926042453.67517-6-john.stultz@linaro.org>
+Message-ID: <1e109a138c86be7b06e20cb30a243fc7@codeaurora.org>
+X-Sender: cgoldswo@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 08:37:17AM +1000, Stephen Rothwell wrote:
-> Hi all,
+On 2020-09-25 21:24, John Stultz wrote:
+> Reuse/abuse the pagepool code from the network code to speed
+> up allocation performance.
 > 
-> Commit
+> This is similar to the ION pagepool usage, but tries to
+> utilize generic code instead of a custom implementation.
 > 
->   5f5f44ca646f ("EXP Revert "KVM: Check the allocation of pv cpu mask"")
+> Cc: Sumit Semwal <sumit.semwal@linaro.org>
+> Cc: Liam Mark <lmark@codeaurora.org>
+> Cc: Laura Abbott <labbott@kernel.org>
+> Cc: Brian Starkey <Brian.Starkey@arm.com>
+> Cc: Hridya Valsaraju <hridya@google.com>
+> Cc: Suren Baghdasaryan <surenb@google.com>
+> Cc: Sandeep Patil <sspatil@google.com>
+> Cc: Ørjan Eide <orjan.eide@arm.com>
+> Cc: Robin Murphy <robin.murphy@arm.com>
+> Cc: Ezequiel Garcia <ezequiel@collabora.com>
+> Cc: Simon Ser <contact@emersion.fr>
+> Cc: James Jones <jajones@nvidia.com>
+> Cc: linux-media@vger.kernel.org
+> Cc: dri-devel@lists.freedesktop.org
+> Signed-off-by: John Stultz <john.stultz@linaro.org>
+> ---
+>  drivers/dma-buf/heaps/Kconfig       |  1 +
+>  drivers/dma-buf/heaps/system_heap.c | 32 +++++++++++++++++++++++++----
+>  2 files changed, 29 insertions(+), 4 deletions(-)
 > 
-> is missing a Signed-off-by from its committer.
+> diff --git a/drivers/dma-buf/heaps/Kconfig 
+> b/drivers/dma-buf/heaps/Kconfig
+> index a5eef06c4226..f13cde4321b1 100644
+> --- a/drivers/dma-buf/heaps/Kconfig
+> +++ b/drivers/dma-buf/heaps/Kconfig
+> @@ -1,6 +1,7 @@
+>  config DMABUF_HEAPS_SYSTEM
+>  	bool "DMA-BUF System Heap"
+>  	depends on DMABUF_HEAPS
+> +	select PAGE_POOL
+>  	help
+>  	  Choose this option to enable the system dmabuf heap. The system 
+> heap
+>  	  is backed by pages from the buddy allocator. If in doubt, say Y.
+> diff --git a/drivers/dma-buf/heaps/system_heap.c
+> b/drivers/dma-buf/heaps/system_heap.c
+> index 882a632e9bb7..9f57b4c8ae69 100644
+> --- a/drivers/dma-buf/heaps/system_heap.c
+> +++ b/drivers/dma-buf/heaps/system_heap.c
+> @@ -20,6 +20,7 @@
+>  #include <linux/scatterlist.h>
+>  #include <linux/slab.h>
+>  #include <linux/vmalloc.h>
+> +#include <net/page_pool.h>
+> 
+>  struct dma_heap *sys_heap;
+> 
+> @@ -46,6 +47,7 @@ struct dma_heap_attachment {
+>  static gfp_t order_flags[] = {HIGH_ORDER_GFP, LOW_ORDER_GFP, 
+> LOW_ORDER_GFP};
+>  static const unsigned int orders[] = {8, 4, 0};
+>  #define NUM_ORDERS ARRAY_SIZE(orders)
+> +struct page_pool *pools[NUM_ORDERS];
+> 
+>  static struct sg_table *dup_sg_table(struct sg_table *table)
+>  {
+> @@ -264,13 +266,17 @@ static void system_heap_dma_buf_release(struct
+> dma_buf *dmabuf)
+>  	struct system_heap_buffer *buffer = dmabuf->priv;
+>  	struct sg_table *table;
+>  	struct scatterlist *sg;
+> -	int i;
+> +	int i, j;
+> 
+>  	table = &buffer->sg_table;
+>  	for_each_sg(table->sgl, sg, table->nents, i) {
+>  		struct page *page = sg_page(sg);
+> 
+> -		__free_pages(page, compound_order(page));
+> +		for (j = 0; j < NUM_ORDERS; j++) {
+> +			if (compound_order(page) == orders[j])
+> +				break;
+> +		}
+> +		page_pool_put_full_page(pools[j], page, false);
+>  	}
+>  	sg_free_table(table);
+>  	kfree(buffer);
+> @@ -300,8 +306,7 @@ static struct page
+> *alloc_largest_available(unsigned long size,
+>  			continue;
+>  		if (max_order < orders[i])
+>  			continue;
+> -
+> -		page = alloc_pages(order_flags[i], orders[i]);
+> +		page = page_pool_alloc_pages(pools[i], order_flags[i]);
+>  		if (!page)
+>  			continue;
+>  		return page;
+> @@ -406,6 +411,25 @@ static const struct dma_heap_ops system_heap_ops = 
+> {
+>  static int system_heap_create(void)
+>  {
+>  	struct dma_heap_export_info exp_info;
+> +	int i;
+> +
+> +	for (i = 0; i < NUM_ORDERS; i++) {
+> +		struct page_pool_params pp;
+> +
+> +		memset(&pp, 0, sizeof(pp));
+> +		pp.order = orders[i];
+> +		pp.dma_dir = DMA_BIDIRECTIONAL;
+> +		pools[i] = page_pool_create(&pp);
+> +
+> +		if (IS_ERR(pools[i])) {
+> +			int j;
+> +
+> +			pr_err("%s: page pool creation failed!\n", __func__);
+> +			for (j = 0; j < i; j++)
+> +				page_pool_destroy(pools[j]);
+> +			return PTR_ERR(pools[i]);
+> +		}
+> +	}
+> 
+>  	exp_info.name = "system";
+>  	exp_info.ops = &system_heap_ops;
 
-Good catch, fixed in current rcu/next, and apologies for the bother!
+This is cool, I didn't know about this pooling code under /net/core.  
+Nice and compact.
 
-							Thanx, Paul
+-- 
+The Qualcomm Innovation Center, Inc.
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+Forum,
+a Linux Foundation Collaborative Project
