@@ -2,85 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADB2327E891
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 14:30:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABBEC27E89A
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 14:32:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729753AbgI3MaD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 08:30:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42844 "EHLO
+        id S1729514AbgI3Mb6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 08:31:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725776AbgI3MaD (ORCPT
+        with ESMTP id S1725776AbgI3Mb6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 08:30:03 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77316C061755
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 05:30:03 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id x201so1129099qkb.11
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 05:30:03 -0700 (PDT)
+        Wed, 30 Sep 2020 08:31:58 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03737C061755;
+        Wed, 30 Sep 2020 05:31:58 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id 77so1941878lfj.0;
+        Wed, 30 Sep 2020 05:31:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=pIB/BrnCARLplACqwVj4jzjc3q+0k51FVNXxV4ATL1Q=;
-        b=MvP7h294xIEbRHpFMRAX5vBZbkFqX2uFaWtrhCH6eX4KSMS97KAXAyzrEK9Y7dAk97
-         d1uxAZNy/tuonY70eOgM1fZWbPqoeBYIavErYPCC7+FKagXuF7XNmBYGw6QQfdOjpmOi
-         809awPQYYMG/MuwcBs8wWJslB81H0ivECWC0DoUSrpphZGPYX83LuP320LWXV5aiFsHu
-         2lQsbIkXsp67vfIgWZU0kefMmfdtqS+CFe3cA7ILCU1kEEWHKoAbf02NAEDTQCozWjV3
-         JHaa3/S+SpW375p7xJ7mBvlHh15RjIquOGbLI2c33cKvs1ywJ6pOHKT5z83WOX4FazI3
-         C0VA==
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=j9/oKsXJpZXyeQKTaev3w4RNfmHS79ATahAgjioXXp8=;
+        b=hnfGmHDRjYYcWgcCiPre31p22gIiWSjZ0GHw3fhfe/80Osu8GClQ20Qq/ITsw9UViy
+         HBAyJJkvH2MEWJdV4+k3QiaIUicORMhBuo4QcMpRSlQMej9KJ9xc7WhtDRr1U5aY/SRo
+         jxQ+IlSNiZ8GNSfXfrFCBqQKLoxUxNfGc8taXyfs5JcdVbosSplkw+uizOMRV1fJNq8d
+         gshFllAdOsumUJa37H28NvTFx64B9sXm9LNwdUE+yAN7UZVq3+ZxC/n8yvG3R0bu0wjJ
+         sLiuWDExobjIw45d5myMBkG0M7XJzb4wEkF9dvsNgeFEhy83qcpikSw9qkfBmdmSqyEn
+         H8Lw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=pIB/BrnCARLplACqwVj4jzjc3q+0k51FVNXxV4ATL1Q=;
-        b=R2L263I+q9URXxBdfG5KUiYq8ggRBQttVqfm4T/nTBSrKnukSH4Q0NoBZBGRMG+gQq
-         orCJ3kWCapOaCTmWbeTRsCsfXM62HW6g3Z+m9obfSQnHEXdoNi4H6Qi4lHtiDX34YI45
-         lUB8lZe8/k/+lO6kNNshEOuqbIwS+ySfqxqZZog/Yd63wZmfEy6pi8bvplmCMGohqsOS
-         1IwZSQUU2B0srWsgfjWDHLkI3C+3QDeVBbtB4dXu0byx39pyl85duXoyBvn9tmMrLaqs
-         owfTkX7I0Q9Mzm/qG4dWatcD2p17UvaqgFWs4fvhyVXT371m7gq1asZc6J/tKDUaD49o
-         rA7A==
-X-Gm-Message-State: AOAM530NhilBk+Hf9aHiD9qMXYGGydd1XIeskSYkGXkmA1MdP9RlZRyw
-        2pjOR4h3rSJD9plsCZIMnWCdMg==
-X-Google-Smtp-Source: ABdhPJy/rI7ioygbhkFzpvP77x46x3rVWfmjQBGcdZUXw4jxZDfPULCzx7I+MFCan2zB+xWmpExw5A==
-X-Received: by 2002:a37:9301:: with SMTP id v1mr2372108qkd.350.1601469002489;
-        Wed, 30 Sep 2020 05:30:02 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id 196sm1857233qkm.49.2020.09.30.05.30.01
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=j9/oKsXJpZXyeQKTaev3w4RNfmHS79ATahAgjioXXp8=;
+        b=kyoy5c6Wf2a86h9kFaMw1gy4w5o9e5lyP3f28NjlD0dcj/ZePq1klYqj5vrcOLlpsB
+         2DuJimKjklxKJZa4d207GLRzzdX9wv5LMr+j1ON9k7BrzB8DzTylAliYFIBtYqPA2EZX
+         lal+luTva/VwjkQPukZwf01JH6nY+TbBlSUfL31YtJ/jpX7TSryDOv/0N74Ac8ASmhin
+         e+pdjjXdy9e13GqRHYiOhnP7aH0SGYDWp+wHdrx+qIcaM9IZNWlOG4bmGDsdJtdbsOD7
+         YcbIpzoqS+N7GYe4oXGZLl0fEqakuRT3nkhmLXS9DhaqbNvdXlkXaWJ7+sqeOaf9lLVq
+         0dtA==
+X-Gm-Message-State: AOAM532ulEOuQFj7Cjp10zZLF66Ztuet3NbeKtZPHiY8JYmARyWzcghv
+        BSUa+ZK8b2vP+5Vgs2Oh8tQ=
+X-Google-Smtp-Source: ABdhPJyCZ8m6KQq4ClhP/w3GzOj4X/CJUyeqaWBcxG4DuKG+WkXUsib/D1j9ZyageT9ImNl4jNgY8A==
+X-Received: by 2002:a19:640b:: with SMTP id y11mr755623lfb.373.1601469116418;
+        Wed, 30 Sep 2020 05:31:56 -0700 (PDT)
+Received: from pc636 (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
+        by smtp.gmail.com with ESMTPSA id l4sm176231lfg.296.2020.09.30.05.31.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Sep 2020 05:30:01 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kNbFA-003w5a-MC; Wed, 30 Sep 2020 09:30:00 -0300
-Date:   Wed, 30 Sep 2020 09:30:00 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Jann Horn <jannh@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Michel Lespinasse <walken@google.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>
-Subject: Re: [PATCH 3/4] mmap locking API: Don't check locking if the mm
- isn't live yet
-Message-ID: <20200930123000.GC9916@ziepe.ca>
-References: <20200930011944.19869-1-jannh@google.com>
- <CAG48ez03YJG9JU_6tGiMcaVjuTyRE_o4LEQ7901b5ZoCnNAjcg@mail.gmail.com>
+        Wed, 30 Sep 2020 05:31:55 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date:   Wed, 30 Sep 2020 14:31:53 +0200
+To:     Michal Hocko <mhocko@suse.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
+        jiangshanlai@gmail.com, akpm@linux-foundation.org,
+        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
+        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
+        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
+        oleg@redhat.com, joel@joelfernandes.org,
+        mgorman@techsingularity.net, torvalds@linux-foundation.org,
+        "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+Subject: Re: [PATCH tip/core/rcu 14/15] rcu/tree: Allocate a page when caller
+ is preemptible
+Message-ID: <20200930123153.GA18005@pc636>
+References: <20200928233041.GA23230@paulmck-ThinkPad-P72>
+ <20200928233102.24265-14-paulmck@kernel.org>
+ <20200929120756.GC2277@dhcp22.suse.cz>
+ <20200930015327.GX29330@paulmck-ThinkPad-P72>
+ <20200930084139.GN2277@dhcp22.suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAG48ez03YJG9JU_6tGiMcaVjuTyRE_o4LEQ7901b5ZoCnNAjcg@mail.gmail.com>
+In-Reply-To: <20200930084139.GN2277@dhcp22.suse.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 06:20:00PM -0700, Jann Horn wrote:
-> In preparation for adding a mmap_assert_locked() check in
-> __get_user_pages(), teach the mmap_assert_*locked() helpers that it's fine
-> to operate on an mm without locking in the middle of execve() as long as
-> it hasn't been installed on a process yet.
+>
+> > > What is the point of calling kmalloc  for a PAGE_SIZE object? Wouldn't
+> > > using the page allocator directly be better?
+> > 
+> > Well, you guys gave me considerable heat about abusing internal allocator
+> > interfaces, and kmalloc() and kfree() seem to be about as non-internal
+> > as you can get and still be invoking the allocator.  ;-)
+> 
+> alloc_pages resp. __get_free_pages is a normal page allocator interface
+> to use for page size granular allocations. kmalloc is for more fine
+> grained allocations.
+>
+I do not have a strong opinion here but i would tend to using of the page
+allocator directly. Because we operate on a page level where the page
+allocator is supposed to be used. From the other hand i saw a slightly
+better performance in case of SLAB only. I think that is because of
+a) slab caches; b) more objects which can be cached. But i have one more
+concern about using of kmalloc(). That is about fragmentations it can
+cause with PAGE_SIZE requests.
 
-I'm happy to see lockdep being added here, but can you elaborate on
-why add this mmap_locked_required instead of obtaining the lock in the
-execv path?
+As for SLUB it was identical whereas the SLOB i din not check.
 
-Jason
+--
+Vlad Rezki
