@@ -2,119 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD32427E100
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 08:25:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9691227E0F7
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 08:22:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727961AbgI3GZG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 02:25:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43048 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725320AbgI3GZG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 02:25:06 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9180EC061755;
-        Tue, 29 Sep 2020 23:25:06 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id l126so462485pfd.5;
-        Tue, 29 Sep 2020 23:25:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=kaEkSViWbjYB0RH9ZyEW8r5tVkb02wtxnjkae2cXiGU=;
-        b=uiFR6MaTCXKc54vDlDXKTz1jvt4Fhu0qB6H5jQi1oliL6ap+OfSGineMREv4zbbGXn
-         XjXLqruGSTMRn6tiTzSFuISucJznAxSpYoa7Pgg9XaY1Fdj3UMF7fmnLpjgIHbg2OXjE
-         SUmcl0J2NPKxYmsNnJV+47xzw5SaPj6OG4Onsx6OmzGaIjHbz/yTmztDFUk/KQC0HjXT
-         E+LBY4gdhTaiATRhI1ZlGdftj/ZqDRgXmHjN5REdPogg7Ir7UB9+5csXiwD9/wWFnTbS
-         GRsh3j6EvriK4oFXnWktQMJ/9RKl0dEUGVzO1XitHw3LwWqjLPFij97lRUpszDlChu6Y
-         uNAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=kaEkSViWbjYB0RH9ZyEW8r5tVkb02wtxnjkae2cXiGU=;
-        b=jzQp5yHSQKbJBAkpisnqKiwUtGAuWoyD7MJJMkdfqnKUpHBQOmVRP1DL5DI9a+BsLN
-         C/X7eahumptHGsJKrZQvbm/KhnR7Il/qkh2Ra/0CCc1HzFMJ0LmcrgEpqavDtAN34HF9
-         9JglLDTA5kxjUu+11EquB1Hta/q6t44KpZru53HUfVfr18Jkx4u4eNZTvJRRypsWTz+Z
-         hL7OU50XsrNAXnyuOb0m+xkUlw271zczk0GqI+qFpjZlUCcALPStSKwC6oEKxuspuzJR
-         nvDjA/gEh7heQer5f/+c5ghS7XHHp24ZTLd5wk+UZDOLlFQRcxq7oDe8AoCOcHSeoKRl
-         U1WQ==
-X-Gm-Message-State: AOAM533Bw+r02ujrq9MFZATsFTIAoMJKgGE4h5s745596d5SVjtRZPha
-        Nb26uOrbLSet7jF68SsZdT4=
-X-Google-Smtp-Source: ABdhPJyFgo9fQifkjD9mCyIrvhywze1TLPeRflkvCdNjJL3rK/yZVlXe9GkrQjEpe26+1L6Faqadow==
-X-Received: by 2002:a63:fa45:: with SMTP id g5mr976137pgk.448.1601447106094;
-        Tue, 29 Sep 2020 23:25:06 -0700 (PDT)
-Received: from Asurada-Nvidia (thunderhill.nvidia.com. [216.228.112.22])
-        by smtp.gmail.com with ESMTPSA id t3sm895690pje.43.2020.09.29.23.25.05
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 29 Sep 2020 23:25:05 -0700 (PDT)
-Date:   Tue, 29 Sep 2020 23:19:35 -0700
-From:   Nicolin Chen <nicoleotsuka@gmail.com>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     thierry.reding@gmail.com, joro@8bytes.org, krzk@kernel.org,
-        vdumpa@nvidia.com, jonathanh@nvidia.com,
-        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/3] iommu/tegra-smmu: Rework .probe_device and
- .attach_dev
-Message-ID: <20200930061935.GB16460@Asurada-Nvidia>
-References: <20200930003013.31289-1-nicoleotsuka@gmail.com>
- <20200930003013.31289-3-nicoleotsuka@gmail.com>
- <e557a09b-bcc3-11cb-9529-096aafb42051@gmail.com>
- <20200930054119.GE31821@Asurada-Nvidia>
- <68c13611-bc3d-5ba6-70ec-29786d69ff9a@gmail.com>
+        id S1727799AbgI3GWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 02:22:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47976 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725320AbgI3GWz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 02:22:55 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2E6772075A;
+        Wed, 30 Sep 2020 06:22:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601446974;
+        bh=EXxvDUn4XGcHD/Ca0uIvwF+PRWacJD69F4bcem0AxSw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cehjbcseNzUjHSH9H/NUjRZOIUzHKfq3q9Ty7fj3LwMusdc294CGdNFS7gdzKtiiK
+         WI3Y6zw4SOZB4Y+SdZFlplaofN7HquwtrvQZ+Gb1v7JjPvLnN0MAysxbZB2TYeExGL
+         zOFWw3q77zfFM0MabdV5ksP31I3MmAp6bGMxarjQ=
+Date:   Wed, 30 Sep 2020 08:22:58 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Paul McKenney <paulmck@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Christian Benvenuti <benve@cisco.com>,
+        Govindarajulu Varadarajan <_govind@gmx.com>,
+        Dave Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-doc@vger.kernel.org,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Jay Cliburn <jcliburn@gmail.com>,
+        Chris Snook <chris.snook@gmail.com>,
+        Vishal Kulkarni <vishal@chelsio.com>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        intel-wired-lan@lists.osuosl.org,
+        Shannon Nelson <snelson@pensando.io>,
+        Pensando Drivers <drivers@pensando.io>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Solarflare linux maintainers <linux-net-drivers@solarflare.com>,
+        Edward Cree <ecree@solarflare.com>,
+        Martin Habets <mhabets@solarflare.com>,
+        Jon Mason <jdmason@kudzu.us>, Daniel Drake <dsd@gentoo.org>,
+        Ulrich Kunitz <kune@deine-taler.de>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        linux-wireless@vger.kernel.org, linux-usb@vger.kernel.org,
+        Arend van Spriel <arend.vanspriel@broadcom.com>,
+        Franky Lin <franky.lin@broadcom.com>,
+        Hante Meuleman <hante.meuleman@broadcom.com>,
+        Chi-Hsien Lin <chi-hsien.lin@cypress.com>,
+        Wright Feng <wright.feng@cypress.com>,
+        brcm80211-dev-list.pdl@broadcom.com,
+        brcm80211-dev-list@cypress.com,
+        Stanislav Yakovlev <stas.yakovlev@gmail.com>,
+        Stanislaw Gruszka <stf_xl@wp.pl>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
+        Luca Coelho <luciano.coelho@intel.com>,
+        Intel Linux Wireless <linuxwifi@intel.com>,
+        Jouni Malinen <j@w1.fi>,
+        Amitkumar Karwar <amitkarwar@gmail.com>,
+        Ganapathi Bhat <ganapathi.bhat@nxp.com>,
+        Xinming Hu <huxinming820@gmail.com>,
+        libertas-dev@lists.infradead.org,
+        Pascal Terjan <pterjan@google.com>,
+        Ping-Ke Shih <pkshih@realtek.com>
+Subject: Re: [patch V2 21/36] net: usb: kaweth: Replace kaweth_control() with
+ usb_control_msg()
+Message-ID: <20200930062258.GA1471881@kroah.com>
+References: <20200929202509.673358734@linutronix.de>
+ <20200929203501.588965483@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <68c13611-bc3d-5ba6-70ec-29786d69ff9a@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200929203501.588965483@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 08:59:45AM +0300, Dmitry Osipenko wrote:
-> 30.09.2020 08:41, Nicolin Chen пишет:
-> > On Wed, Sep 30, 2020 at 08:39:54AM +0300, Dmitry Osipenko wrote:
-> >> 30.09.2020 03:30, Nicolin Chen пишет:
-> >>>  static int tegra_smmu_attach_dev(struct iommu_domain *domain,
-> >>>  				 struct device *dev)
-> >>>  {
-> >>> +	struct iommu_fwspec *fwspec = dev_iommu_fwspec_get(dev);
-> >>>  	struct tegra_smmu *smmu = dev_iommu_priv_get(dev);
-> >>>  	struct tegra_smmu_as *as = to_smmu_as(domain);
-> >>> -	struct device_node *np = dev->of_node;
-> >>> -	struct of_phandle_args args;
-> >>>  	unsigned int index = 0;
-> >>>  	int err = 0;
-> >>>  
-> >>> -	while (!of_parse_phandle_with_args(np, "iommus", "#iommu-cells", index,
-> >>> -					   &args)) {
-> >>> -		unsigned int swgroup = args.args[0];
-> >>> -
-> >>> -		if (args.np != smmu->dev->of_node) {
-> >>> -			of_node_put(args.np);
-> >>> -			continue;
-> >>> -		}
-> >>> -
-> >>> -		of_node_put(args.np);
-> >>> +	if (!fwspec || fwspec->ops != &tegra_smmu_ops)
-> >>> +		return -ENOENT;
-> >>
-> >> s/&tegra_smmu_ops/smmu->iommu.ops/
-> >>
-> >> Secondly, is it even possible that fwspec could be NULL here or that
-> >> fwspec->ops != smmu->ops?
-> > 
-> > I am following what's in the arm-smmu driver, as I think it'd be
-> > a common practice to do such a check in such a way.
-> > 
+On Tue, Sep 29, 2020 at 10:25:30PM +0200, Thomas Gleixner wrote:
+> From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 > 
-> Please check whether it's really needed. It looks like it was needed
-> sometime ago, but that's not true anymore.
+> kaweth_control() is almost the same as usb_control_msg() except for the
+> memory allocation mode (GFP_ATOMIC vs GFP_NOIO) and the in_interrupt()
+> check.
+> 
+> All the invocations of kaweth_control() are within the probe function in
+> fully preemtible context so there is no reason to use atomic allocations,
+> GFP_NOIO which is used by usb_control_msg() is perfectly fine.
+> 
+> Replace kaweth_control() invocations from probe with usb_control_msg().
+> 
+> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 
-Given that most iommu drivers have ->ops check, I'd like to
-have it also for safety. If someday that's not true anymore,
-I'd expect someone to update all existing drivers.
+Note, the usb_control_msg_send/recv() new functions that will show up in
+5.10-rc1 will help a bit with this logic, but for what you have now,
+this is fine, nice cleanups.
+
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
