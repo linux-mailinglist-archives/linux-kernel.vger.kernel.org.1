@@ -2,104 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85A9627E7F9
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 13:54:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E983027E7FC
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 13:55:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729790AbgI3LyL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 07:54:11 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:12551 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727997AbgI3LyK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 07:54:10 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f74717c0003>; Wed, 30 Sep 2020 04:52:28 -0700
-Received: from [172.27.13.156] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 30 Sep
- 2020 11:54:01 +0000
-Subject: Re: [PATCH rdma-next v4 4/4] RDMA/umem: Move to allocate SG table
- from pages
-To:     Jason Gunthorpe <jgg@nvidia.com>, Leon Romanovsky <leon@kernel.org>
-CC:     Doug Ledford <dledford@redhat.com>, Christoph Hellwig <hch@lst.de>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        <dri-devel@lists.freedesktop.org>,
-        <intel-gfx@lists.freedesktop.org>,
-        "Jani Nikula" <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        "Roland Scheidegger" <sroland@vmware.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
-        VMware Graphics <linux-graphics-maintainer@vmware.com>
-References: <20200927064647.3106737-1-leon@kernel.org>
- <20200927064647.3106737-5-leon@kernel.org>
- <20200929195929.GA803555@nvidia.com> <20200930095321.GL3094@unreal>
- <20200930114527.GE816047@nvidia.com>
-From:   Maor Gottlieb <maorg@nvidia.com>
-Message-ID: <80c49ff1-52c7-638f-553f-9de8130b188d@nvidia.com>
-Date:   Wed, 30 Sep 2020 14:53:58 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.2.2
+        id S1729295AbgI3LzI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 07:55:08 -0400
+Received: from mx2.suse.de ([195.135.220.15]:36816 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725776AbgI3LzI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 07:55:08 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1601466906;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ejKNHE0UFyqEBk7h2uyf05l7nr1RUgj4PZw1uir7ohM=;
+        b=O8pXse5o8S+FxLSPFYMYcfq2SlzbpWZEp3RD4tOpHDzwYYNe731ThPPRGT2xhrVQiLy//v
+        YbeJKQiuOAbDh5o6K1grN9ZErKnERRIiE0bxiHF4Sx9zl+8Q+ljsb7sQiv64MHAI+MV1kQ
+        wi8eoc+3cMeYlejinBpW3Q8HOpA0kuk=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 3E255AE1B;
+        Wed, 30 Sep 2020 11:55:06 +0000 (UTC)
+Date:   Wed, 30 Sep 2020 13:55:05 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Zi Yan <ziy@nvidia.com>
+Cc:     linux-mm@kvack.org,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        David Hildenbrand <david@redhat.com>,
+        William Kucharski <william.kucharski@oracle.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        David Nellans <dnellans@nvidia.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v2 00/30] 1GB PUD THP support on x86_64
+Message-ID: <20200930115505.GT2277@dhcp22.suse.cz>
+References: <20200928175428.4110504-1-zi.yan@sent.com>
 MIME-Version: 1.0
-In-Reply-To: <20200930114527.GE816047@nvidia.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1601466748; bh=JrI2d4YXJ+ZJzjvNkbDB4ae47+R0rDj3IRn0QrupftE=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-         Content-Language:X-Originating-IP:X-ClientProxiedBy;
-        b=DjIqutJWn/y5vqmm+F2zgD3Ixz/8fSMX3REWMs9bRFv3zCf7HHOv860pefzmHelab
-         IwuLVcprYTQ7cnNyelJq0g3Qt63DXytSdX6pRVHwOYeq3Dl+XeYFqFCp+T/LQzlLQr
-         GGWGWlVCcNJCaTgBB+V67t6kiaOoAOv5ELsu9N/zXPclP/Ado1L8nCrjRNb+I2ImiI
-         c5s5FZTmrFLTsFRphu+wdQsTw2eTd5XeZWPlKJJHx+1e7T1KAcX+GKHfbNCkCI5j7O
-         y6JYiuNVKDNS6zEYGFaMswMBr0QOxCqJJcoffkt9MZm4eULAdfxZiR5wHB0851d8LS
-         dJDsIwJ3rGjZA==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200928175428.4110504-1-zi.yan@sent.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon 28-09-20 13:53:58, Zi Yan wrote:
+> From: Zi Yan <ziy@nvidia.com>
+> 
+> Hi all,
+> 
+> This patchset adds support for 1GB PUD THP on x86_64. It is on top of
+> v5.9-rc5-mmots-2020-09-18-21-23. It is also available at:
+> https://github.com/x-y-z/linux-1gb-thp/tree/1gb_thp_v5.9-rc5-mmots-2020-09-18-21-23
+> 
+> Other than PUD THP, we had some discussion on generating THPs and contiguous
+> physical memory via a synchronous system call [0]. I am planning to send out a
+> separate patchset on it later, since I feel that it can be done independently of
+> PUD THP support.
 
-On 9/30/2020 2:45 PM, Jason Gunthorpe wrote:
-> On Wed, Sep 30, 2020 at 12:53:21PM +0300, Leon Romanovsky wrote:
->> On Tue, Sep 29, 2020 at 04:59:29PM -0300, Jason Gunthorpe wrote:
->>> On Sun, Sep 27, 2020 at 09:46:47AM +0300, Leon Romanovsky wrote:
->>>> @@ -296,11 +223,17 @@ static struct ib_umem *__ib_umem_get(struct ib_device *device,
->>>>   			goto umem_release;
->>>>
->>>>   		cur_base += ret * PAGE_SIZE;
->>>> -		npages   -= ret;
->>>> -
->>>> -		sg = ib_umem_add_sg_table(sg, page_list, ret,
->>>> -			dma_get_max_seg_size(device->dma_device),
->>>> -			&umem->sg_nents);
->>>> +		npages -= ret;
->>>> +		sg = __sg_alloc_table_from_pages(
->>>> +			&umem->sg_head, page_list, ret, 0, ret << PAGE_SHIFT,
->>>> +			dma_get_max_seg_size(device->dma_device), sg, npages,
->>>> +			GFP_KERNEL);
->>>> +		umem->sg_nents = umem->sg_head.nents;
->>>> +		if (IS_ERR(sg)) {
->>>> +			unpin_user_pages_dirty_lock(page_list, ret, 0);
->>>> +			ret = PTR_ERR(sg);
->>>> +			goto umem_release;
->>>> +		}
->>>>   	}
->>>>
->>>>   	sg_mark_end(sg);
->>> Does it still need the sg_mark_end?
->> It is preserved here for correctness, the release logic doesn't rely on
->> this marker, but it is better to leave it.
-> I mean, my read of __sg_alloc_table_from_pages() is that it already
-> placed it, the final __alloc_table() does it?
->
-> Jason
-
-
-It marks the last allocated sge, but not the last populated sge (with page).
-
+While the technical challenges for the kernel implementation can be
+discussed before the user API is decided I believe we cannot simply add
+something now and then decide about a proper interface. I have raised
+few basic questions we should should find answers for before the any
+interface is added. Let me copy them here for easier reference
+- THP allocation time - #PF and/or madvise context
+- lazy/sync instantiation
+- huge page sizes controllable by the userspace?
+- aggressiveness - how hard to try
+- internal fragmentation - allow to create THPs on sparsely or unpopulated
+  ranges
+- do we need some sort of access control or privilege check as some THPs
+  would be a really scarce (like those that require pre-reservation).
+-- 
+Michal Hocko
+SUSE Labs
