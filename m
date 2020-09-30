@@ -2,112 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E03D027E2D7
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 09:45:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFB2D27E2F9
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 09:50:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728366AbgI3HpF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 03:45:05 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:42970 "EHLO
+        id S1727982AbgI3Hux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 03:50:53 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:44200 "EHLO
         fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725440AbgI3HpF (ORCPT
+        with ESMTP id S1725440AbgI3Hux (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 03:45:05 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08U7is5E129606;
-        Wed, 30 Sep 2020 02:44:54 -0500
+        Wed, 30 Sep 2020 03:50:53 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08U7jkwu129932;
+        Wed, 30 Sep 2020 02:45:46 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1601451894;
-        bh=YQoym++Sx485ijHB6h7Qf7noUsG0wxw/BtlAQa7xaZI=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=WAgaX7zyEUTrUm190dhZFg4fgSdm9GuQ96HDPiY56QqH+UyZc9PRfvGZ3L7UEHTsp
-         EMy68wGwmlocNUZcCGAqsMAmuCBG9lEK5BnY/ezd86vDDkYjFoRf1Czi5RQNbm9SoV
-         Ooj4pXbxjdvwEJWlC4zYpKkUaD2w6w3gMEjNo1I0=
-Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08U7isfW092457
+        s=ti-com-17Q1; t=1601451946;
+        bh=DTXXTj1Mafi3gwJC2/FQqwnIq0rxpMOZgmEr9nsz2AU=;
+        h=From:To:CC:Subject:Date;
+        b=tmShxBe2COkLPuOjxTG4/yE5I4QjHIBXBD3Zo+WE7U49OcFhBbCp1wVxUDevrmJMn
+         TMqVIMr9sxxQkZrlcs5d+uPnaAGuXyPwublWeZtSey+k6LD7+FbItQ2aYfMXowAL8E
+         6kR5kK5Ny2Mq6+BvFNM44LXGtQ33W2f1zRu3XIp0=
+Received: from DFLE107.ent.ti.com (dfle107.ent.ti.com [10.64.6.28])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08U7jkXf085957
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 30 Sep 2020 02:44:54 -0500
-Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+        Wed, 30 Sep 2020 02:45:46 -0500
+Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE107.ent.ti.com
+ (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 30
- Sep 2020 02:44:54 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE111.ent.ti.com
- (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
+ Sep 2020 02:45:46 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 30 Sep 2020 02:44:54 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08U7irPY078049;
-        Wed, 30 Sep 2020 02:44:54 -0500
-Date:   Wed, 30 Sep 2020 13:14:53 +0530
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     <Tudor.Ambarus@microchip.com>
-CC:     <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
-        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <nsekhar@ti.com>, <boris.brezillon@collabora.com>
-Subject: Re: [PATCH v13 12/15] mtd: spi-nor: core: disable Octal DTR mode on
- suspend.
-Message-ID: <20200930074451.exudmq4p7isdwhwd@ti.com>
-References: <20200916124418.833-1-p.yadav@ti.com>
- <20200916124418.833-13-p.yadav@ti.com>
- <83e9675b-e60b-6fe4-619d-9e81b26632ec@microchip.com>
+ Frontend Transport; Wed, 30 Sep 2020 02:45:46 -0500
+Received: from feketebors.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08U7jhDl078449;
+        Wed, 30 Sep 2020 02:45:43 -0500
+From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
+To:     <nm@ti.com>, <t-kristo@ti.com>, <ssantosh@kernel.org>,
+        <tglx@linutronix.de>, <jason@lakedaemon.net>, <maz@kernel.org>,
+        <robh+dt@kernel.org>, <lokeshvutla@ti.com>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
+Subject: [PATCH v2 0/2] irqchip/ti-sci-inta: Support for unmapped events
+Date:   Wed, 30 Sep 2020 10:45:57 +0300
+Message-ID: <20200930074559.18028-1-peter.ujfalusi@ti.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <83e9675b-e60b-6fe4-619d-9e81b26632ec@microchip.com>
-User-Agent: NeoMutt/20171215
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/09/20 07:40AM, Tudor.Ambarus@microchip.com wrote:
-> On 9/16/20 3:44 PM, Pratyush Yadav wrote:
-> > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
-> > 
-> > On resume, the init procedure will be run that will re-enable it.
-> > 
-> > Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
-> 
-> > ---
-> >  drivers/mtd/spi-nor/core.c | 18 ++++++++++++++++++
-> >  1 file changed, 18 insertions(+)
-> > 
-> > diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-> > index 853dfa02f0de..d5c92c9c7307 100644
-> > --- a/drivers/mtd/spi-nor/core.c
-> > +++ b/drivers/mtd/spi-nor/core.c
-> > @@ -3212,6 +3212,23 @@ static void spi_nor_soft_reset(struct spi_nor *nor)
-> >         usleep_range(SPI_NOR_SRST_SLEEP_MIN, SPI_NOR_SRST_SLEEP_MAX);
-> >  }
-> > 
-> > +/* mtd suspend handler */
-> > +static int spi_nor_suspend(struct mtd_info *mtd)
-> > +{
-> > +       struct spi_nor *nor = mtd_to_spi_nor(mtd);
-> > +       struct device *dev = nor->dev;
-> > +       int ret;
-> > +
-> > +       /* Disable octal DTR mode if we enabled it. */
-> > +       ret = spi_nor_octal_dtr_enable(nor, false);
-> > +       if (ret) {
-> > +               dev_err(dev, "suspend() failed\n");
-> 
-> we can get rid of dev local variable as it is used only once. you can use
-> nor->dev directly
+Hi,
 
-Ok.
- 
-> > +               return ret;
-> > +       }
-> 
-> and maybe just return ret; directly. spi_nor_octal_dtr_enable() returns 0 on
-> success.
+Changes since v1:
+- Reviewed-by added to the first patch from Rob
+- return 0 if ti,unmapped-event-sources is not present in DT
 
-Ok.
- 
-> Looks good.
->  
+The version of INTA within DMSS (in AM64) changed how the events from the DMAs
+are handled and how sysfw is presenting these events to be used for interrupts.
+
+The DMA related events are directly mapped within INTA as unmapped events in
+contrast to previous devices with NAVSS where the events were tied to their
+source devices (UDMAP, ringacc).
+
+This series adds support for handling the new version of INTA by introducing a
+new property: ti,unmapped-event-sources which should hold a list of phandles
+pointing to the sources of these unmapped events.
+
+Regards,
+Peter
+---
+Peter Ujfalusi (2):
+  dt-bindings: irqchip: ti,sci-inta: Update for unmapped event handling
+  irqchip/ti-sci-inta: Add support for unmapped event handling
+
+ .../interrupt-controller/ti,sci-inta.yaml     |  5 ++
+ drivers/irqchip/irq-ti-sci-inta.c             | 72 +++++++++++++++++--
+ 2 files changed, 73 insertions(+), 4 deletions(-)
 
 -- 
-Regards,
-Pratyush Yadav
-Texas Instruments India
+Peter
+
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+
