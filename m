@@ -2,101 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C3A427F586
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 00:52:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3805627F58B
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 00:54:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731910AbgI3Wv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 18:51:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59750 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731808AbgI3Wv4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 18:51:56 -0400
-Received: from localhost (170.sub-72-107-125.myvzw.com [72.107.125.170])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C272F20719;
-        Wed, 30 Sep 2020 22:51:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601506316;
-        bh=KFmouRsvBVZ3Y/PYT9xJnwdLHua2k27n0cu1H9BZ6l8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=ErCOiYuE3T/ukx2QVvOYx3P0p85+8zd+cviA6M2gceIzSfDLjPA9npAn6qBYwnZ64
-         D8WZF8dQV6bbmloxOP+jC9nRt+BSSIUUmr/oIZ34jAPvXpKNwOIl5kUOFbSrvWE/mR
-         Z4k8wm4xr98IWOFHxbMljjMiI7xM95LPcjIeY/qk=
-Date:   Wed, 30 Sep 2020 17:51:54 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Niklas =?iso-8859-1?Q?S=F6derlund?= 
-        <niklas.soderlund@ragnatech.se>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Marc Zyngier <maz@kernel.org>, devicetree@vger.kernel.org,
-        PCI <linux-pci@vger.kernel.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Shawn Lin <shawn.lin@rock-chips.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Android Kernel Team <kernel-team@android.com>,
-        Samuel Dionne-Riel <samuel@dionne-riel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] of: address: Work around missing device_type property
- in pcie nodes
-Message-ID: <20200930225154.GA2631019@bjorn-Precision-5520>
+        id S1731911AbgI3Wx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 18:53:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54818 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731870AbgI3Wx5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 18:53:57 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84FFDC0613D0
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 15:53:57 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id t7so767787pjd.3
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 15:53:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=xT7z4KWpY1tW0DUzf7kauPlyM86hsIyuR+DbyM/kIF4=;
+        b=dJSvn+nVMHOhyyebiONq5L1qo38q1OX51JVgtEQrhaCb9Ko8DFOcatX2GGKv2OpzZr
+         sIvN3Ky6KPhHJRJx//ba2NE4yw/9fp3TyA2uoDw7vHOSexKqne+cqwQpImU41Lyz31Bo
+         HucnSHirKztZuVWWFld/RQCHHttbmiGQcpaww=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xT7z4KWpY1tW0DUzf7kauPlyM86hsIyuR+DbyM/kIF4=;
+        b=MMwCU/dMrXHGjXaLFqlNcoPDsATSxBwhPmlYfdQP6lkjxoRblXEsw8JAuDEJD6loU+
+         XGZlGEkM+C7IYQ/tLWxaN93kF8iVEhZZbeFwfgirl8pox7TdkGiANUG5arfSbPUBNlWE
+         +NSitDfvxdxxcH3jCEuLv6ckXkry4wxALw5eWBM/Q77/x321t9xB+9pdXOCxzuSEWAvM
+         7Wwu2n5Kcu6wvb/OyaCbWdup1G5dQU9+Sat7yLinODW9sYN39YEgF4d/0xID0oxPKCNP
+         xcXToQGQgIOExDeseFVHWKdbEfHVrVsyOJjDnwdClMH9bo9Ve4Vx/hcpPKjTtSHzbFPp
+         MQPQ==
+X-Gm-Message-State: AOAM530L8gTUTV2q1KxNF+I/BI8jIbYr3Iyw/cP6sHNc9eOXwzBB/9PN
+        J50lsPl2EeincyBj0/Lfx6pWUQ==
+X-Google-Smtp-Source: ABdhPJym9XGRJgUPD0aK76nCGJgVfLs8G5aI0UXZOOiThurScckwIjdLNnP4Mp59y5rMZ/XCz74uUA==
+X-Received: by 2002:a17:90b:ecf:: with SMTP id gz15mr4360289pjb.126.1601506436994;
+        Wed, 30 Sep 2020 15:53:56 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id 1sm3974626pfx.126.2020.09.30.15.53.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Sep 2020 15:53:56 -0700 (PDT)
+Date:   Wed, 30 Sep 2020 15:53:55 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Jann Horn <jannh@google.com>
+Cc:     YiFei Zhu <zhuyifei1999@gmail.com>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        David Laight <David.Laight@aculab.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Will Drewry <wad@chromium.org>
+Subject: Re: [PATCH v3 seccomp 1/5] x86: Enable seccomp architecture tracking
+Message-ID: <202009301549.17D3DE5@keescook>
+References: <cover.1601478774.git.yifeifz2@illinois.edu>
+ <484392624b475cc25d90a787525ede70df9f7d51.1601478774.git.yifeifz2@illinois.edu>
+ <202009301418.20BA0CE33@keescook>
+ <CAG48ez3039B+w_D7SJBaGGXw9sd1_SzWO+qUnhMs6tcweGa-+w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAL_Jsq+xBKbYXWipwmZ=ZidorsMUFDw2NpUyxobx4FCTn+8Hmg@mail.gmail.com>
+In-Reply-To: <CAG48ez3039B+w_D7SJBaGGXw9sd1_SzWO+qUnhMs6tcweGa-+w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 03:34:10PM -0500, Rob Herring wrote:
-> On Wed, Sep 30, 2020 at 12:37 PM Niklas Söderlund
-> <niklas.soderlund@ragnatech.se> wrote:
-> >
-> > Hi Marc,
-> >
-> > On 2020-09-30 18:23:21 +0100, Marc Zyngier wrote:
-> > > Hi Niklas,
+On Wed, Sep 30, 2020 at 11:33:15PM +0200, Jann Horn wrote:
+> On Wed, Sep 30, 2020 at 11:21 PM Kees Cook <keescook@chromium.org> wrote:
+> > On Wed, Sep 30, 2020 at 10:19:12AM -0500, YiFei Zhu wrote:
+> > > From: Kees Cook <keescook@chromium.org>
 > > >
-> > > [+ Samuel]
+> > > Provide seccomp internals with the details to calculate which syscall
+> > > table the running kernel is expecting to deal with. This allows for
+> > > efficient architecture pinning and paves the way for constant-action
+> > > bitmaps.
 > > >
-> > > On 2020-09-30 17:27, Niklas Söderlund wrote:
-> > > > Hi Marc,
-> > > >
-> > > > I'm afraid this commit breaks booting my rk3399 device.
-> > > >
-> > > > I bisected the problem to this patch merged as [1]. I'm testing on a
-> > > > Scarlet device and I'm using the unmodified upstream
-> > > > rk3399-gru-scarlet-inx.dtb for my tests.
-> > > >
-> > > > The problem I'm experience is a black screen after the bootloader and
-> > > > the device is none responsive over the network. I have no serial console
-> > > > to this device so I'm afraid I can't tell you if there is anything
-> > > > useful on to aid debugging there.
-> > > >
-> > > > If I try to test one commit earlier [2] the system boots as expected and
-> > > > everything works as it did for me in v5.8 and earlier. I have worked
-> > > > little with this device and have no clue about what is really on the PCI
-> > > > buss. But running from [2] I have this info about PCI if it's helpful,
-> > > > please ask if somethings missing.
-> > >
-> > > Please see the thread at [1]. The problem was reported a few weeks back
-> > > by Samuel, and I was expecting Rob and Lorenzo to push a fix for this.
+> > > Signed-off-by: Kees Cook <keescook@chromium.org>
+> > > [YiFei: Removed x32, added macro for nr_syscalls]
+> > > Signed-off-by: YiFei Zhu <yifeifz2@illinois.edu>
+> [...]
+> > But otherwise, yes, looks good to me. For this patch, I think the S-o-b chain is probably more
+> > accurately captured as:
 > >
-> > Thanks for providing a solution.
-> >
-> > >
-> > > Rob, Lorenzo, any update on this?
+> > Signed-off-by: Kees Cook <keescook@chromium.org>
+> > Co-developed-by: YiFei Zhu <yifeifz2@illinois.edu>
+> > Signed-off-by: YiFei Zhu <yifeifz2@illinois.edu>
 > 
-> The fix is in Bjorn's tree[1].
-> 
-> Bjorn, going to send this to Linus before v5.9 is out?
+> (Technically, https://www.kernel.org/doc/html/latest/process/submitting-patches.html#when-to-use-acked-by-cc-and-co-developed-by
+> says that "every Co-developed-by: must be immediately followed by a
+> Signed-off-by: of the associated co-author" (and has an example of how
+> that should look).)
 
-Definitely, thanks for the reminder.  I'm assuming the fix in question
-is https://git.kernel.org/pub/scm/linux/kernel/git/helgaas/pci.git/commit/?h=for-linus&id=e338eecf3fe79054e8a31b8c39a1234b5acfdabe
+Right, but it is not needed for the commit author (here, the From:),
+the second example given in the docs shows this:
 
-> [1] https://git.kernel.org/pub/scm/linux/kernel/git/helgaas/pci.git/log/?h=for-linus
+	From: From Author <from@author.example.org>
+
+	<changelog>
+
+	Co-developed-by: Random Co-Author <random@coauthor.example.org>
+	Signed-off-by: Random Co-Author <random@coauthor.example.org>
+	Signed-off-by: From Author <from@author.example.org>
+	Co-developed-by: Submitting Co-Author <sub@coauthor.example.org>
+	Signed-off-by: Submitting Co-Author <sub@coauthor.example.org>
+
+and there is no third co-developer, so it's:
+
+	From: From Author <from@author.example.org>
+
+	<changelog>
+
+	Signed-off-by: From Author <from@author.example.org>
+	Co-developed-by: Submitting Co-Author <sub@coauthor.example.org>
+	Signed-off-by: Submitting Co-Author <sub@coauthor.example.org>
+
+If I'm the From, and YiFei Zhu is the submitting co-developer, then
+it's:
+
+	From: Kees Cook <keescook@chromium.org>
+
+	<changelog>
+
+	Signed-off-by: Kees Cook <keescook@chromium.org>
+	Co-developed-by: YiFei Zhu <yifeifz2@illinois.edu>
+	Signed-off-by: YiFei Zhu <yifeifz2@illinois.edu>
+
+which is what I suggested.
+
+-- 
+Kees Cook
