@@ -2,52 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B99E27F42D
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 23:25:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 610A427F437
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 23:29:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730407AbgI3VZQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 17:25:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43778 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725814AbgI3VZP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 17:25:15 -0400
-Subject: Re: [GIT PULL] clk fixes for v5.9-rc7
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601501115;
-        bh=IPmfasutbeRBO7EQPty94YQ8ASvFaxE2VNLEXAUvknQ=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=e3/2fufX0JXB22vBKRYiEnNuftbBZM8UKNQ+iqHnIKjmZd77lTyzeEqQqtLv5vSRz
-         RDOd6Z0hZRFio9v19wDLM8ZOJGGGaAk7ml01HBxr/qGEwum7PNX6Us64dUv8hwL+3b
-         lxoZVgQsfTfkfQMbxxkQq29E29fUQQKadJUHatu8=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20200930185742.4044166-1-sboyd@kernel.org>
-References: <20200930185742.4044166-1-sboyd@kernel.org>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20200930185742.4044166-1-sboyd@kernel.org>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git tags/clk-fixes-for-linus
-X-PR-Tracked-Commit-Id: b02cf0c4736c65c6667f396efaae6b5521e82abf
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 60e720931556fc1034d0981460164dcf02697679
-Message-Id: <160150111550.18084.9295712272651735321.pr-tracker-bot@kernel.org>
-Date:   Wed, 30 Sep 2020 21:25:15 +0000
-To:     Stephen Boyd <sboyd@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
+        id S1730626AbgI3V3n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 17:29:43 -0400
+Received: from [157.25.102.26] ([157.25.102.26]:35754 "EHLO orcam.me.uk"
+        rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725814AbgI3V3n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 17:29:43 -0400
+Received: from bugs.linux-mips.org (eddie.linux-mips.org [IPv6:2a01:4f8:201:92aa::3])
+        by orcam.me.uk (Postfix) with ESMTPS id ED5F42BE086;
+        Wed, 30 Sep 2020 22:29:39 +0100 (BST)
+Date:   Wed, 30 Sep 2020 22:29:36 +0100 (BST)
+From:   "Maciej W. Rozycki" <macro@linux-mips.org>
+To:     Adam Borowski <kilobyte@angband.pl>
+cc:     Pavel Machek <pavel@ucw.cz>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Yuan Ming <yuanmingbuaa@gmail.com>, Willy Tarreau <w@1wt.eu>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        NopNop Nop <nopitydays@gmail.com>,
+        =?UTF-8?B?5byg5LqR5rW3?= <zhangyunhai@nsfocus.com>,
+        Andy Lutomirski <luto@amacapital.net>
+Subject: Re: fbcon: remove soft scrollback code (missing Doc. patch)
+In-Reply-To: <20200918102750.GA27828@angband.pl>
+Message-ID: <alpine.LFD.2.21.2009302216230.333514@eddie.linux-mips.org>
+References: <git-mailbomb-linux-master-50145474f6ef4a9c19205b173da6264a644c7489@kernel.org> <c9cd22ec-60dc-d761-b488-d3a1392708c0@infradead.org> <CAHk-=wiNTWpqUF0HgzoyPGEaaAjxD-Bor+EE3DbJ52S30cfCWg@mail.gmail.com> <20200916205434.GA10389@duo.ucw.cz>
+ <20200918102750.GA27828@angband.pl>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Wed, 30 Sep 2020 11:57:42 -0700:
+On Fri, 18 Sep 2020, Adam Borowski wrote:
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git tags/clk-fixes-for-linus
+> > > Note that scrollback hasn't actually gone away entirely - the original
+> > > scrollback supported by _hardware_ still exists.
+> > > 
+> > > Of course, that's really just the old-fashioned text VGA console, but
+> > > that one actually scrolls not by moving any bytes around, but by
+> > > moving the screen start address. And the scrollback similarly isn't
+> > > about any software buffering, but about the ability of moving back
+> > > that screen start address.
+> 
+> > Could we pause this madness? Scrollback is still useful. I needed it
+> > today... it was too small, so command results I was looking for
+> > already scrolled away, but... life will be really painful with 0 scrollback.
+> > 
+> > You'll need it, too... as soon as you get oops and will want to see
+> > errors just prior to that oops.
+> 
+> I concur -- this a serious usability regression for regular users.  Linus:
+> you have a serial cable on your main dev machine, so do I, but hardly any
+> regular people do -- that's restricted to mostly IPMI and such.
+> 
+> And without some kind of scrollback, there's no way of knowing why eg.
+> your rootfs failed to mount (there was some oops, but its reason was at
+> the beginning...).  Or, any other problem the user would be able to solve,
+> or pass the error messages to someone more knowledgeable.
+> 
+> I also wonder why did you choose to remove softscrollback which is actually
+> useful, yet leave hardscrollback which doesn't come to use on any
+> non-ancient hardware:
+> * on !x86 there's no vgacon at all
+> * on x86, in-tree drivers for GPUs by Intel, nVidia and AMD (others are
+>   dead) default to switching away from vgacon
+> * EFI wants its own earlycon
+> ... thus, the only niche left is nVidia proprietary drivers which, the last
+> time I looked, still used CGA text mode.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/60e720931556fc1034d0981460164dcf02697679
+ For the record I keep using the console scrollback all the time, and FWIW 
+I have gone through all the hoops required to keep using VGA hardware 
+emulation and its console text mode with my most recent laptop, which is a 
+ThinkPad P51; no longer manufactured, but still hardly an obsolete device 
+by today's standards I believe.  Sadly this video adapter setup has its 
+shortcomings which used not to be there with my older hardware, which I 
+find a functional regression to be blamed on the manufacturer, but I have 
+learnt to live with that as I found no alternative I would find 
+comfortable to work with.
 
-Thank you!
+ So no, it's not that nobody uses that stuff anymore, and not with 
+obsolete hardware either.
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+  Maciej
