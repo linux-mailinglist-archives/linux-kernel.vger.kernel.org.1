@@ -2,195 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C129E27E95E
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 15:20:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFBB227E963
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 15:22:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730205AbgI3NUC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 09:20:02 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:47528 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725776AbgI3NUC (ORCPT
+        id S1729999AbgI3NVu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 09:21:50 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41532 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728043AbgI3NVt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 09:20:02 -0400
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08UD32EZ196315;
-        Wed, 30 Sep 2020 09:19:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=+4wBy/rox5ENbH0r0Oww+Ct1SMgUWQQGqCAqvAC6+iQ=;
- b=PnTIrywY9Eed6aEoOv7QKRJKB8NOttlJBiS6x4qo4UhgpBeF6st5pcd+TmTexXX8q876
- xiiOiVLcTnQmA+pSk5wGUStweGmaW0z+IPzE1yN1POsQUqMZYz63bOS3U+fUqJ2+zVZN
- vCNOyG+GZn+1/KVmtSyoQWy56hjCpYbtKqQgkw0MKQMclQW+qbOpD3xfIaS5Z3YQbKu8
- TtopAXFRwCMI+d7DTAolsEVShK5Ls4hWCSz5ij9B279owFKOYBRm9SOFJOfj38+TTi00
- QIpPIFc9X43bjKTkZ/3EkeUAyUbGiVLdXBLuCbYpJExKOC2jcuWg/5w7Ur4yZdECaEPT 5A== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 33vq8nfmrh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 30 Sep 2020 09:19:59 -0400
-Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08UD3psJ004325;
-        Wed, 30 Sep 2020 09:19:59 -0400
-Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 33vq8nfmr9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 30 Sep 2020 09:19:59 -0400
-Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
-        by ppma03dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08UDHDHu007694;
-        Wed, 30 Sep 2020 13:19:58 GMT
-Received: from b03cxnp08027.gho.boulder.ibm.com (b03cxnp08027.gho.boulder.ibm.com [9.17.130.19])
-        by ppma03dal.us.ibm.com with ESMTP id 33sw99pw7s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 30 Sep 2020 13:19:58 +0000
-Received: from b03ledav005.gho.boulder.ibm.com (b03ledav005.gho.boulder.ibm.com [9.17.130.236])
-        by b03cxnp08027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08UDJoTU27198074
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 30 Sep 2020 13:19:50 GMT
-Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0BDB0BE053;
-        Wed, 30 Sep 2020 13:19:55 +0000 (GMT)
-Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id AA2F7BE04F;
-        Wed, 30 Sep 2020 13:19:51 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.85.170.177])
-        by b03ledav005.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Wed, 30 Sep 2020 13:19:51 +0000 (GMT)
-Subject: Re: [PATCH v10 10/16] s390/vfio-ap: allow configuration of matrix
- mdev in use by a KVM guest
-To:     Halil Pasic <pasic@linux.ibm.com>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, freude@linux.ibm.com, borntraeger@de.ibm.com,
-        cohuck@redhat.com, mjrosato@linux.ibm.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com,
-        fiuczy@linux.ibm.com, frankja@linux.ibm.com, david@redhat.com,
-        imbrenda@linux.ibm.com, hca@linux.ibm.com, gor@linux.ibm.com
-References: <20200821195616.13554-1-akrowiak@linux.ibm.com>
- <20200821195616.13554-11-akrowiak@linux.ibm.com>
- <20200927020316.38bf3fa1.pasic@linux.ibm.com>
-From:   Tony Krowiak <akrowiak@linux.ibm.com>
-Message-ID: <d854afee-51bc-997b-26fc-72b9560f3a0f@linux.ibm.com>
-Date:   Wed, 30 Sep 2020 09:19:50 -0400
+        Wed, 30 Sep 2020 09:21:49 -0400
+Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601472108;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=SIUeHCg4ObFBTzNeRmXqLyzNztGL/qF7cJVPSEqtDtU=;
+        b=LX8VSr7OHBIvsFqoe9zoPF9yyYkjZWhMH3oCkEQysBpAaJ7hanFOjzQ7O5yYbmVabpdKl0
+        4XjQwWrAy9fZvmHh22baeNWpZq0ZqwuZXDVGnTYAMhDn3RKltaqP+l+D7asd3OUZYfABLO
+        aN1+F8eE2Bf3rWY5QqHh4CUx0ZNDWTQ=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-479-yLKuudrBOjCsxRmfYjiLtA-1; Wed, 30 Sep 2020 09:21:33 -0400
+X-MC-Unique: yLKuudrBOjCsxRmfYjiLtA-1
+Received: by mail-ej1-f72.google.com with SMTP id i14so804130ejc.0
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 06:21:31 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=SIUeHCg4ObFBTzNeRmXqLyzNztGL/qF7cJVPSEqtDtU=;
+        b=ormXcoM4BNE3Rzcb1gYhESbHo38g0nlzh2Wno7L26GB1F4yKupWIUmGn4/xI667HYy
+         wm1LaiaOGMm+uGFD+b5lSeLYDZi73/ACwV621hi/hE1p9LaHPQ/f53LPMdWMsBWjIad0
+         qwR5v5AioBbIVMpFD59tNEdLUwupbjh5R1qANKxNO0NbXg8ZMG/tCB36EpAnnMyAzgGx
+         4KQ/2q043twlSG/ld5s/qCJxbZhtYh8QOPNrdoBNf4uDHfJGQeK8tFLniXcQdUncMqD0
+         I5zxiowlAPm77N/Ff7kv8c4lMuGVcXfTTiBbyU6dzW5hTOJJ8616n6K0iQPc+5Ks4zty
+         4JkQ==
+X-Gm-Message-State: AOAM533HzsSeAcx/Pz8r2ai57Jhx3XJLcGIJAuqvUlIuR53FX7bfkiMz
+        SqKOq/sHkE4UJD1TA6CiZ31EMsrQVNLnuz2byTDogeEbd8xAYYH3rqKYiQZBcaNWqfMuZLoDb6Y
+        7ZlZyJJ91ykVEwzYJ0YIYxo9m
+X-Received: by 2002:a17:906:d9c3:: with SMTP id qk3mr2738277ejb.207.1601472090482;
+        Wed, 30 Sep 2020 06:21:30 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwU0z5x3UIZ7XSqZzFVFHBydKV2JxTLnRCowJqy0RsogsLlCJfIjc8uzEUjl4oT2cTC5M0WFA==
+X-Received: by 2002:a17:906:d9c3:: with SMTP id qk3mr2738260ejb.207.1601472090294;
+        Wed, 30 Sep 2020 06:21:30 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
+        by smtp.gmail.com with ESMTPSA id m10sm1537087edf.11.2020.09.30.06.21.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 30 Sep 2020 06:21:26 -0700 (PDT)
+Subject: Re: Keyboard regression by intel-vbtn
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     Andy Shevchenko <andy@infradead.org>,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <s5hft71klxl.wl-tiwai@suse.de>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <036dbbe8-dbf9-76c6-d8f7-9761bee58a8f@redhat.com>
+Date:   Wed, 30 Sep 2020 15:21:26 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200927020316.38bf3fa1.pasic@linux.ibm.com>
+In-Reply-To: <s5hft71klxl.wl-tiwai@suse.de>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-30_07:2020-09-30,2020-09-30 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- suspectscore=0 bulkscore=0 priorityscore=1501 phishscore=0 spamscore=0
- impostorscore=0 clxscore=1015 adultscore=0 mlxlogscore=999 mlxscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009300104
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
+On 9/29/20 10:48 AM, Takashi Iwai wrote:
+> Hi Hans,
+> 
+> it seems that the recent update of intel-vtn broke the keyboard input
+> on some laptops with libinput:
+>    https://bugzilla.opensuse.org/show_bug.cgi?id=1175599
+> 
+> Blacklisting intel-vtn fixes the issue, so it's likely the falsely
+> reported tablet mode switch that leads libinput misbehaving.  The
+> affected machines are Acer E5-511 and ASUS X756UX laptops, and they
+> shouldn't have the tablet mode at all, AFAIK.
+> 
+> Could you take a look?  I guess it's the commit cfae58ed681c that
+> broke.  The chassis type is Notebook on those, and this type should be
+> excluded as well as Laptop.
+> 
+> The dmidecode outputs and other info are found in the bugzilla above:
+>    https://bugzilla.opensuse.org/attachment.cgi?id=841999
+>    https://bugzilla.opensuse.org/attachment.cgi?id=842039
+> 
+> The one for ASUS is embedded in hwinfo outpt:
+>    https://bugzilla.opensuse.org/attachment.cgi?id=841157
 
-On 9/26/20 8:03 PM, Halil Pasic wrote:
-> On Fri, 21 Aug 2020 15:56:10 -0400
-> Tony Krowiak <akrowiak@linux.ibm.com> wrote:
->
->> The current support for pass-through crypto adapters does not allow
->> configuration of a matrix mdev when it is in use by a KVM guest. Let's
->> allow AP resources - i.e., adapters, domains and control domains - to be
->> assigned to or unassigned from a matrix mdev while it is in use by a guest.
->> This is in preparation for the introduction of support for dynamic
->> configuration of the AP matrix for a running KVM guest.
-> AFAIU this will let the user do the assign, which will however only take
-> effect if the same mdev is re-used with a freshly constructed VM, or?
->
-> This is however supposed to change real soon (in patch 11). From the
-> perspective of bisectability we would end up with a single commit that
-> acts funny.
->
-> How about switching up patches 10 and 11. This way the changes you have
-> in the current 11 would remain dormant until the changes in the current
-> 10 enable the complete new feature (hotplug)?
+Ok, you should have just received a patch fixing this, sorry
+that creating it took a bit longer then I had hoped.
 
-I can do that, but maybe it makes more sense to squash patches 10
-and 11 since they are completely dependent on each other. What say
-you?
+Andy, can you drop the:
 
->
->
->> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
->> ---
->>   drivers/s390/crypto/vfio_ap_ops.c | 24 ------------------------
->>   1 file changed, 24 deletions(-)
->>
->> diff --git a/drivers/s390/crypto/vfio_ap_ops.c b/drivers/s390/crypto/vfio_ap_ops.c
->> index 24fd47e43b80..cf3321eb239b 100644
->> --- a/drivers/s390/crypto/vfio_ap_ops.c
->> +++ b/drivers/s390/crypto/vfio_ap_ops.c
->> @@ -773,10 +773,6 @@ static ssize_t assign_adapter_store(struct device *dev,
->>   	struct mdev_device *mdev = mdev_from_dev(dev);
->>   	struct ap_matrix_mdev *matrix_mdev = mdev_get_drvdata(mdev);
->>   
->> -	/* If the guest is running, disallow assignment of adapter */
->> -	if (matrix_mdev->kvm)
->> -		return -EBUSY;
->> -
->>   	ret = kstrtoul(buf, 0, &apid);
->>   	if (ret)
->>   		return ret;
->> @@ -828,10 +824,6 @@ static ssize_t unassign_adapter_store(struct device *dev,
->>   	struct mdev_device *mdev = mdev_from_dev(dev);
->>   	struct ap_matrix_mdev *matrix_mdev = mdev_get_drvdata(mdev);
->>   
->> -	/* If the guest is running, disallow un-assignment of adapter */
->> -	if (matrix_mdev->kvm)
->> -		return -EBUSY;
->> -
->>   	ret = kstrtoul(buf, 0, &apid);
->>   	if (ret)
->>   		return ret;
->> @@ -891,10 +883,6 @@ static ssize_t assign_domain_store(struct device *dev,
->>   	struct ap_matrix_mdev *matrix_mdev = mdev_get_drvdata(mdev);
->>   	unsigned long max_apqi = matrix_mdev->matrix.aqm_max;
->>   
->> -	/* If the guest is running, disallow assignment of domain */
->> -	if (matrix_mdev->kvm)
->> -		return -EBUSY;
->> -
->>   	ret = kstrtoul(buf, 0, &apqi);
->>   	if (ret)
->>   		return ret;
->> @@ -946,10 +934,6 @@ static ssize_t unassign_domain_store(struct device *dev,
->>   	struct mdev_device *mdev = mdev_from_dev(dev);
->>   	struct ap_matrix_mdev *matrix_mdev = mdev_get_drvdata(mdev);
->>   
->> -	/* If the guest is running, disallow un-assignment of domain */
->> -	if (matrix_mdev->kvm)
->> -		return -EBUSY;
->> -
->>   	ret = kstrtoul(buf, 0, &apqi);
->>   	if (ret)
->>   		return ret;
->> @@ -991,10 +975,6 @@ static ssize_t assign_control_domain_store(struct device *dev,
->>   	struct mdev_device *mdev = mdev_from_dev(dev);
->>   	struct ap_matrix_mdev *matrix_mdev = mdev_get_drvdata(mdev);
->>   
->> -	/* If the guest is running, disallow assignment of control domain */
->> -	if (matrix_mdev->kvm)
->> -		return -EBUSY;
->> -
->>   	ret = kstrtoul(buf, 0, &id);
->>   	if (ret)
->>   		return ret;
->> @@ -1036,10 +1016,6 @@ static ssize_t unassign_control_domain_store(struct device *dev,
->>   	struct ap_matrix_mdev *matrix_mdev = mdev_get_drvdata(mdev);
->>   	unsigned long max_domid =  matrix_mdev->matrix.adm_max;
->>   
->> -	/* If the guest is running, disallow un-assignment of control domain */
->> -	if (matrix_mdev->kvm)
->> -		return -EBUSY;
->> -
->>   	ret = kstrtoul(buf, 0, &domid);
->>   	if (ret)
->>   		return ret;
+"platform/x86: intel-vbtn: Fix SW_TABLET_MODE always reporting 1 on the HP Pavilion 11 x360"
+
+Patch from your review-andy branch, plug in the new one and
+then send it out to Linus for merging into 5.9 please ?
+
+Regards,
+
+Hans
 
