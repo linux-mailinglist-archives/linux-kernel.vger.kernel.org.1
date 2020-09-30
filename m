@@ -2,225 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A98727EEAF
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 18:14:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61BED27EEB2
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 18:15:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728819AbgI3QO3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 12:14:29 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46038 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725468AbgI3QO3 (ORCPT
+        id S1730503AbgI3QPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 12:15:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49432 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725468AbgI3QPH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 12:14:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601482466;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=1ZdFMTh+VxHRozNY6CY6rpIDlXCySIQIP+2aaYHRy+g=;
-        b=IVxUWK3LH0ln4qcuSGp2FEtnqUJv0K53l9LR0WiPS3fLA3gcpjA7LTyT5VUl5T/I2qdSPX
-        N9bdB2dwgp+e8XPUPsO0HOQeVfKyV13Lfa8MqRkYpD+Wire9fwU6aLZfk4Bfwu93/8kmi9
-        DGbuH88bsyp5eI/UbBkAvffp3/dwvXo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-101-gJyuNpaPPVCSn-B_4-INLg-1; Wed, 30 Sep 2020 12:14:24 -0400
-X-MC-Unique: gJyuNpaPPVCSn-B_4-INLg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8B21010BBED0;
-        Wed, 30 Sep 2020 16:14:20 +0000 (UTC)
-Received: from [10.36.112.204] (ovpn-112-204.ams2.redhat.com [10.36.112.204])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 757CD5D9D3;
-        Wed, 30 Sep 2020 16:14:16 +0000 (UTC)
-Subject: Re: [PATCH v5 02/17] device-dax/kmem: introduce dax_kmem_range()
-To:     Dan Williams <dan.j.williams@intel.com>, akpm@linux-foundation.org
-Cc:     Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Brice Goglin <Brice.Goglin@inria.fr>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>, Jia He <justin.he@arm.com>,
-        Joao Martins <joao.m.martins@oracle.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        linux-mm@kvack.org, linux-nvdimm@lists.01.org,
+        Wed, 30 Sep 2020 12:15:07 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C80AC061755;
+        Wed, 30 Sep 2020 09:15:07 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id j11so3717718ejk.0;
+        Wed, 30 Sep 2020 09:15:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=kE8pUQeSQicwQZVIKpx0wVouaS5mSuVoVumXEb40dpU=;
+        b=vEs2gDaVZYsmIz2uXHTT7F2ngJyj01YBJq55PGeSXgHDmGf/n4UsDeXaDm46ygSWl+
+         efw+9lrPs9eWvVHSNSjyZ7+KtwpVID96yPPy22qiPjtn/2ACxIo71CkXzJJRBTlmUYgw
+         9CfR7CbsUp5mxsRO3P2DCZAoMUE5FhgulKrYIhghlfpFIDnbLClNbrTClv0RIYlF+074
+         s8bk2o2ttzVL1idJ8S2+KbWwCgIOI95Gc/j9/yJHMHPTIgmm7Itlvgzwso/5V8W42TxM
+         Sbm2Tm2Sv67JwEY7KgLv25inXUuN+0wIeVhUg7esxLG4Pavb4sbI7oyAvM8uRqZKoTPu
+         YcQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=kE8pUQeSQicwQZVIKpx0wVouaS5mSuVoVumXEb40dpU=;
+        b=UFnKY+w4esU4S7J9RT/YxfERDPAcXxRJkhHS57ikesKPCPjelglr58RK9n2GMiGUo7
+         OMq6zuA7nyrgP4B3Xi/CidOoln7Yu4dOz//pSnBucqsHtdlH/fYxyA1C6h2B6vS3J2r6
+         WXxvmu5wTNx6eRSSVZIN1qF6M48BmzzEwvXhMoPclvM6a9+YiupJ4Npcb0TyxpAV4HVy
+         9r5PYZZpyT6pmhd5fen8fk7AEXFyNgml2WFV6e9sQzUETbs4jY7Iuwb4omFQ+uCydO61
+         GdHCcV9+lGkvE+JsxWo1CDS9W51tYsnADgp/OiCkg7uU/obUSvfTlpq178olm/1pEoDJ
+         3vZg==
+X-Gm-Message-State: AOAM53209bq/m+jsqLtA504p9VmBqJ50tvA8CDjEsdZpOew6YSXV7OpY
+        mzfCnOzpbwfAs12yStsO7gELvtRuM1o=
+X-Google-Smtp-Source: ABdhPJw6+D6kvpNUGSeOdQb4MLX0XxcMPxQ+Z1guG4ri+sfmREV9+TL9tPln+WLbWcuDblAdz9OWFQ==
+X-Received: by 2002:a17:906:f110:: with SMTP id gv16mr3078005ejb.257.1601482506094;
+        Wed, 30 Sep 2020 09:15:06 -0700 (PDT)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id dv25sm1977144ejb.69.2020.09.30.09.15.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Sep 2020 09:15:04 -0700 (PDT)
+Date:   Wed, 30 Sep 2020 18:15:03 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Nicolin Chen <nicoleotsuka@gmail.com>, joro@8bytes.org,
+        krzk@kernel.org, vdumpa@nvidia.com, jonathanh@nvidia.com,
+        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
         linux-kernel@vger.kernel.org
-References: <160106109960.30709.7379926726669669398.stgit@dwillia2-desk3.amr.corp.intel.com>
- <160106111109.30709.3173462396758431559.stgit@dwillia2-desk3.amr.corp.intel.com>
-From:   David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat GmbH
-Message-ID: <2c2bc46e-573c-4e8c-db9b-605559144432@redhat.com>
-Date:   Wed, 30 Sep 2020 18:14:15 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+Subject: Re: [PATCH v3 1/3] memory: tegra: Add
+ devm_tegra_get_memory_controller()
+Message-ID: <20200930161503.GF3833404@ulmo>
+References: <20200930084258.25493-1-nicoleotsuka@gmail.com>
+ <20200930084258.25493-2-nicoleotsuka@gmail.com>
+ <20200930152320.GA3833404@ulmo>
+ <ed7b4375-d06e-2750-e6fa-603ef2b60d36@gmail.com>
+ <20200930160355.GC3833404@ulmo>
+ <839df5d6-513f-3d77-ba5f-a1afe5d0883a@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <160106111109.30709.3173462396758431559.stgit@dwillia2-desk3.amr.corp.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="eDB11BtaWSyaBkpc"
+Content-Disposition: inline
+In-Reply-To: <839df5d6-513f-3d77-ba5f-a1afe5d0883a@gmail.com>
+User-Agent: Mutt/1.14.7 (2020-08-29)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25.09.20 21:11, Dan Williams wrote:
-> Towards removing the mode specific @dax_kmem_res attribute from the
-> generic 'struct dev_dax', and preparing for multi-range support, teach
-> the driver to calculate the hotplug range from the device range. The
-> hotplug range is the trivially calculated memory-block-size aligned
-> version of the device range.
-> 
-> Cc: David Hildenbrand <david@redhat.com>
-> Cc: Vishal Verma <vishal.l.verma@intel.com>
-> Cc: Dave Hansen <dave.hansen@linux.intel.com>
-> Cc: Pavel Tatashin <pasha.tatashin@soleen.com>
-> Cc: Brice Goglin <Brice.Goglin@inria.fr>
-> Cc: Dave Jiang <dave.jiang@intel.com>
-> Cc: David Hildenbrand <david@redhat.com>
-> Cc: Ira Weiny <ira.weiny@intel.com>
-> Cc: Jia He <justin.he@arm.com>
-> Cc: Joao Martins <joao.m.martins@oracle.com>
-> Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> Signed-off-by: Dan Williams <dan.j.williams@intel.com>
-> ---
->  drivers/dax/kmem.c |   40 +++++++++++++++++-----------------------
->  1 file changed, 17 insertions(+), 23 deletions(-)
-> 
-> diff --git a/drivers/dax/kmem.c b/drivers/dax/kmem.c
-> index 5bb133df147d..b0d6a99cf12d 100644
-> --- a/drivers/dax/kmem.c
-> +++ b/drivers/dax/kmem.c
-> @@ -19,13 +19,20 @@ static const char *kmem_name;
->  /* Set if any memory will remain added when the driver will be unloaded. */
->  static bool any_hotremove_failed;
->  
-> +static struct range dax_kmem_range(struct dev_dax *dev_dax)
-> +{
-> +	struct range range;
-> +
-> +	/* memory-block align the hotplug range */
-> +	range.start = ALIGN(dev_dax->range.start, memory_block_size_bytes());
-> +	range.end = ALIGN_DOWN(dev_dax->range.end + 1, memory_block_size_bytes()) - 1;
-> +	return range;
-> +}
-> +
->  int dev_dax_kmem_probe(struct device *dev)
->  {
->  	struct dev_dax *dev_dax = to_dev_dax(dev);
-> -	struct range *range = &dev_dax->range;
-> -	resource_size_t kmem_start;
-> -	resource_size_t kmem_size;
-> -	resource_size_t kmem_end;
-> +	struct range range = dax_kmem_range(dev_dax);
->  	struct resource *new_res;
->  	const char *new_res_name;
->  	int numa_node;
-> @@ -44,25 +51,14 @@ int dev_dax_kmem_probe(struct device *dev)
->  		return -EINVAL;
->  	}
->  
-> -	/* Hotplug starting at the beginning of the next block: */
-> -	kmem_start = ALIGN(range->start, memory_block_size_bytes());
-> -
-> -	kmem_size = range_len(range);
-> -	/* Adjust the size down to compensate for moving up kmem_start: */
-> -	kmem_size -= kmem_start - range->start;
-> -	/* Align the size down to cover only complete blocks: */
-> -	kmem_size &= ~(memory_block_size_bytes() - 1);
-> -	kmem_end = kmem_start + kmem_size;
-> -
->  	new_res_name = kstrdup(dev_name(dev), GFP_KERNEL);
->  	if (!new_res_name)
->  		return -ENOMEM;
->  
->  	/* Region is permanently reserved if hotremove fails. */
-> -	new_res = request_mem_region(kmem_start, kmem_size, new_res_name);
-> +	new_res = request_mem_region(range.start, range_len(&range), new_res_name);
->  	if (!new_res) {
-> -		dev_warn(dev, "could not reserve region [%pa-%pa]\n",
-> -			 &kmem_start, &kmem_end);
-> +		dev_warn(dev, "could not reserve region [%#llx-%#llx]\n", range.start, range.end);
->  		kfree(new_res_name);
->  		return -EBUSY;
->  	}
-> @@ -96,9 +92,8 @@ int dev_dax_kmem_probe(struct device *dev)
->  static int dev_dax_kmem_remove(struct device *dev)
->  {
->  	struct dev_dax *dev_dax = to_dev_dax(dev);
-> +	struct range range = dax_kmem_range(dev_dax);
->  	struct resource *res = dev_dax->dax_kmem_res;
-> -	resource_size_t kmem_start = res->start;
-> -	resource_size_t kmem_size = resource_size(res);
->  	const char *res_name = res->name;
->  	int rc;
->  
-> @@ -108,12 +103,11 @@ static int dev_dax_kmem_remove(struct device *dev)
->  	 * there is no way to hotremove this memory until reboot because device
->  	 * unbind will succeed even if we return failure.
->  	 */
-> -	rc = remove_memory(dev_dax->target_node, kmem_start, kmem_size);
-> +	rc = remove_memory(dev_dax->target_node, range.start, range_len(&range));
->  	if (rc) {
->  		any_hotremove_failed = true;
-> -		dev_err(dev,
-> -			"DAX region %pR cannot be hotremoved until the next reboot\n",
-> -			res);
-> +		dev_err(dev, "%#llx-%#llx cannot be hotremoved until the next reboot\n",
-> +				range.start, range.end);
->  		return rc;
->  	}
->  
-> 
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
+--eDB11BtaWSyaBkpc
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
--- 
-Thanks,
+On Wed, Sep 30, 2020 at 07:06:27PM +0300, Dmitry Osipenko wrote:
+> 30.09.2020 19:03, Thierry Reding =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> > On Wed, Sep 30, 2020 at 06:53:06PM +0300, Dmitry Osipenko wrote:
+> >> 30.09.2020 18:23, Thierry Reding =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> >>> On Wed, Sep 30, 2020 at 01:42:56AM -0700, Nicolin Chen wrote:
+> >>>> From: Dmitry Osipenko <digetx@gmail.com>
+> >>>>
+> >>>> Multiple Tegra drivers need to retrieve Memory Controller and hence =
+there
+> >>>> is quite some duplication of the retrieval code among the drivers. L=
+et's
+> >>>> add a new common helper for the retrieval of the MC.
+> >>>>
+> >>>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> >>>> Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
+> >>>> ---
+> >>>>
+> >>>> Changelog
+> >>>> v2->v3:
+> >>>>  * Replaced with Dimtry's devm_tegra_get_memory_controller()
+> >>>> v1->v2:
+> >>>>  * N/A
+> >>>>
+> >>>>  drivers/memory/tegra/mc.c | 39 ++++++++++++++++++++++++++++++++++++=
++++
+> >>>>  include/soc/tegra/mc.h    | 17 +++++++++++++++++
+> >>>>  2 files changed, 56 insertions(+)
+> >>>
+> >>> Let's not add this helper, please. If a device needs a reference to t=
+he
+> >>> memory controller, it should have a phandle to the memory controller =
+in
+> >>> device tree so that it can be looked up explicitly.
+> >>>
+> >>> Adding this helper is officially sanctioning that it's okay not to ha=
+ve
+> >>> that reference and that's a bad idea.
+> >>
+> >> And please explain why it's a bad idea, I don't see anything bad here =
+at
+> >> all.
+> >=20
+> > Well, you said yourself in a recent comment that we should avoid global
+> > variables. devm_tegra_get_memory_controller() is nothing but a glorified
+> > global variable.
+>=20
+> This is not a variable, but a common helper function which will remove
+> the duplicated code and will help to avoid common mistakes like a missed
+> put_device().
 
-David / dhildenb
+Yeah, you're right: this is actually much worse than a global variable.
+It's a helper function that needs 50+ lines in order to effectively
+access a global variable.
 
+You could write this much simpler by doing something like this:
+
+	static struct tegra_mc *global_mc;
+
+	int tegra_mc_probe(...)
+	{
+		...
+
+		global_mc =3D mc;
+
+		...
+	}
+
+	struct tegra_mc *tegra_get_memory_controller(void)
+	{
+		return global_mc;
+	}
+
+The result is *exactly* the same, except that this is actually more
+honest. Nicolin's patch *pretends* that it isn't using a global variable
+by wrapping a lot of complicated code around it.
+
+But that doesn't change the fact that this accesses a singleton object
+without actually being able to tie it to the device in the first place.
+
+Thierry
+
+--eDB11BtaWSyaBkpc
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl90rwcACgkQ3SOs138+
+s6EaixAAqbOV/ijTS5FkR08q2KCQomBCj0Q4t0RdougoBkbNGOffkJbO06l69JQP
+S1o6d+r6P1rpZj/2K6/7VyzCqLCa5zpA19R7/GDyBJ+DO0TSQ93WxBIf4XgVoprP
+igWzDkJiEFISjKNl3MP2KjxkYFDMC/ZQy4GF3bJvRpjFq4tVCYggaAAU7aeMutxa
+DnChwV37zJvFT/6bIFu4gI+VJaBjfxzn36ahS4iGUQkOgF8z7dKcXK9tUwheomYb
+sdayQ1WlKlrQQ8SnrodoFDNooEhBPZeLC3O4iNonxnetZbgmoZ8xt0M0OaMnFi/M
+/xSqK1eJSn7RVL0+x1hajlsuJdYYhrnKPzUzLZIdBWFcJCIXrMIZ08dpwnkTbzjv
+45JoaaQlyOg4HQgSuWi/p0p709nzuY9lJID+/2R4HwkKDgVC/NdCtHJHgoZBHqyF
+khK3kGeXhfQfsNjPfjbbZoADbymdTAt7W5VebFpIjtXooXmeyTX1uBVGRgrpnBD/
+WIi1Z8GO3slDFlGk7RukIUqgvzwy/YJopV/E7oLsg/4V6SloATkgVCPNUrGiBmVu
+5x3n9/ES2Uye/ALQa1TPJ4Jg155hqPrnxA6EYicSiVfHOjfMsECZGXinGiAIo6rX
+4JKNpEcoJan0+1BcPKjTfXVMzU6pZcjbqgBbTi4qViDSxtYKkGQ=
+=u6UA
+-----END PGP SIGNATURE-----
+
+--eDB11BtaWSyaBkpc--
