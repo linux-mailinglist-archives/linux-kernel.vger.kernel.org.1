@@ -2,85 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3062B27E8FF
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 14:54:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCF2127E905
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 14:55:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729898AbgI3MyB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 08:54:01 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:34113 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725776AbgI3MyB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 08:54:01 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C1bmP0n28z9sS8;
-        Wed, 30 Sep 2020 22:53:57 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1601470439;
-        bh=ITAoACACOSJwNRhRYeETTT4Trm8gFpFR4fLNuGG80tw=;
-        h=Date:From:To:Cc:Subject:From;
-        b=jqj4a3HifSMPPGsulHv5ZcBzJD6+IL+d+awd/QwMFyHIBPvkgSLWaB9C+GeBVRdvJ
-         r0N3hp+lCRY4W1w3DVEUs+1kZ9pUimFIr3uzSxRUvZBKvDm2da6iexIaqykfXd4hf5
-         ItvB4f/9WP9EGYPJxI65r4xV6v4ZzkerCAEyWzwWqS1It/Vc6Oyx+r6P219C/U288M
-         ebWp51VTQRK1d1SGa9uCwPmko1rX6PwCz0/qXH1w4AYENVs+Sy4KQRznOeq8dTlWPD
-         g+6+slM71eXBpMLEmvTHFFhB2aCHytffbqaVvV2Yn4+wPbsxvphEVV3xLD5zKUfXd/
-         +spHx9KBidLiQ==
-Date:   Wed, 30 Sep 2020 22:53:56 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Xunlei Pang <xlpang@linux.alibaba.com>
-Subject: linux-next: Fixes tag needs some work in the tip tree
-Message-ID: <20200930225356.714b1235@canb.auug.org.au>
+        id S1730005AbgI3MzS convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 30 Sep 2020 08:55:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46736 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725771AbgI3MzR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 08:55:17 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1057C061755
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 05:55:17 -0700 (PDT)
+Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1kNbdW-0000jY-5o; Wed, 30 Sep 2020 14:55:10 +0200
+Received: from pza by lupine with local (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1kNbdV-0003uN-JB; Wed, 30 Sep 2020 14:55:09 +0200
+Message-ID: <eb0d1aa14e3269f80bc8a92645e9198cbee0c91c.camel@pengutronix.de>
+Subject: Re: [PATCH] ARM: prima2: Constify static sirfsoc_rstc_ops
+From:   Philipp Zabel <p.zabel@pengutronix.de>
+To:     Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        Barry Song <baohua@kernel.org>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Date:   Wed, 30 Sep 2020 14:55:09 +0200
+In-Reply-To: <20200929201738.349465-1-rikard.falkeborn@gmail.com>
+References: <20200929201738.349465-1-rikard.falkeborn@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.30.5-1.1 
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/bPq+/dM18VJ/a.oJTsDHfMC";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
+X-SA-Exim-Mail-From: p.zabel@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/bPq+/dM18VJ/a.oJTsDHfMC
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi Rikard,
 
-Hi all,
+On Tue, 2020-09-29 at 22:17 +0200, Rikard Falkeborn wrote:
+> The only usage of sirfsoc_rstc_ops is to assign its address to the ops
+> field in the reset_controller_dev struct, which is a const pointer. Make
+> it const to allow the compiler to put it in read-only memory.
+> 
+> Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
 
-In commit
+Reviewed-by: Philipp Zabel <p.zabel@pengutronix.de>
 
-  df3cb4ea1fb6 ("sched/fair: Fix wrong cpu selecting from isolated domain")
+> ---
+>  arch/arm/mach-prima2/rstc.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm/mach-prima2/rstc.c b/arch/arm/mach-prima2/rstc.c
+> index 9d56606ac87f..1ee405e2dde9 100644
+> --- a/arch/arm/mach-prima2/rstc.c
+> +++ b/arch/arm/mach-prima2/rstc.c
+> @@ -53,7 +53,7 @@ static int sirfsoc_reset_module(struct reset_controller_dev *rcdev,
+>  	return 0;
+>  }
+>  
+> -static struct reset_control_ops sirfsoc_rstc_ops = {
+> +static const struct reset_control_ops sirfsoc_rstc_ops = {
+>  	.reset = sirfsoc_reset_module,
+>  };
+>  
 
-Fixes tag
-
-  Fixes: 10e2f1acd010 ("sched/core: Rewrite and improve select_idle_sibling=
-s())
-
-has these problem(s):
-
-  - Subject has leading but no trailing quotes
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/bPq+/dM18VJ/a.oJTsDHfMC
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl90f+QACgkQAVBC80lX
-0Gwp3Af/UpF5ruXRpSy9XLzGE0KX/NNQ5Zj6fE1Qkpi49stWHmQlHXC8Ub4PSamb
-Vr12kGl0IwdsvdVtWCQ9C3Mw4pIdo7B8m0BxITKjTTfNyssqCuyDqkAWmCJ+GoUy
-Q3fOY9+UC5ZLCphRa63qsCobsED8CymIOdqL0/6j3dwfshV7IoBlGYzo/2zSJzXB
-CTzolsv9kjLgCeJjlXpeIMBwg7GDYoSH7Lao64fv+akGsGOEZoTYTXJMi0iEOhaC
-GZEJLoaa8EUgVCiUGhJ50ARO4Lc5bYST8t5rZ9tncFG1gkhtTVR/D/NFHXUY9wrS
-cvq8p6GH0ambkYlKFSX7fey9qZzEYA==
-=eV8N
------END PGP SIGNATURE-----
-
---Sig_/bPq+/dM18VJ/a.oJTsDHfMC--
+regards
+Philipp
