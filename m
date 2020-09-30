@@ -2,95 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA02F27E3A7
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 10:25:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC51F27E3AB
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 10:25:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728590AbgI3IZ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 04:25:26 -0400
-Received: from foss.arm.com ([217.140.110.172]:59372 "EHLO foss.arm.com"
+        id S1728688AbgI3IZl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 04:25:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55226 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728563AbgI3IZZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 04:25:25 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 456A2D6E;
-        Wed, 30 Sep 2020 01:25:25 -0700 (PDT)
-Received: from [10.57.54.5] (unknown [10.57.54.5])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D99613F6CF;
-        Wed, 30 Sep 2020 01:25:22 -0700 (PDT)
-Subject: Re: [PATCH 1/2] docs: Clarify abstract scale usage for power values
- in Energy Model
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>, linux-doc@vger.kernel.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Dietmar.Eggemann@arm.com, Quentin Perret <qperret@google.com>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Rajendra Nayak <rnayak@codeaurora.org>
-References: <20200929121610.16060-1-lukasz.luba@arm.com>
- <CAD=FV=UnNkjMiOc0DZE7+OM3-Kr1ZRynxSerdA=ifbyGiRa2Zw@mail.gmail.com>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <a1d1fe2a-485f-a21e-2f91-9b609223aa5a@arm.com>
-Date:   Wed, 30 Sep 2020 09:25:21 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S1728563AbgI3IZl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 04:25:41 -0400
+Received: from pali.im (unknown [31.31.79.79])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5611021734;
+        Wed, 30 Sep 2020 08:25:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601454340;
+        bh=h12YRtace030+4IgK0t+oBgFypBtI4JrBGHJTaTeLTw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MeJnceBJMi3J8d4ZY4wOKANV2K6VqbiJPu9yK0Of/wIwdE0rcYfzeRMCg84uLRP9+
+         DAPQAHSpjkAizklVLj5l/B+2e3AFv5bpEgY7njpftZzABiwJa+s4rJeAXXaUMTem9Z
+         Wo5I1LZaqRfByGW5iJdztmNhDKslMeazyrEfPUAQ=
+Received: by pali.im (Postfix)
+        id 58F8E9D2; Wed, 30 Sep 2020 10:25:34 +0200 (CEST)
+Date:   Wed, 30 Sep 2020 10:25:34 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Pavel Machek <pavel@ucw.cz>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Sebastian Reichel <sre@kernel.org>,
+        David Heidelberg <david@ixit.cz>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: Removal of HCI commands, userspace bluetooth regression?
+Message-ID: <20200930082534.rrck6qb3fntm25wz@pali>
+References: <20191228171212.56anj4d4kvjeqhms@pali>
+ <45BB2908-4E16-4C74-9DB4-8BAD93B42A21@holtmann.org>
+ <20200104102436.bhqagqrfwupj6hkm@pali>
+ <20200209132137.7pi4pgnassosh3ax@pali>
+ <20200414225618.zgh5h4jexahfukdl@pali>
+ <20200808132747.4byefjg5ysddgkel@pali>
+ <20200929213254.difivzrhapk766xp@pali>
+ <20200930080205.GA1571308@kroah.com>
 MIME-Version: 1.0
-In-Reply-To: <CAD=FV=UnNkjMiOc0DZE7+OM3-Kr1ZRynxSerdA=ifbyGiRa2Zw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200930080205.GA1571308@kroah.com>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Douglas,
-
-On 9/30/20 12:53 AM, Doug Anderson wrote:
-> Hi,
+On Wednesday 30 September 2020 10:02:05 Greg Kroah-Hartman wrote:
+> On Tue, Sep 29, 2020 at 11:32:54PM +0200, Pali Rohár wrote:
+> > CCing other lists and maintainers, hopefully, somebody would have a time to look at it...
+> > 
+> > On Saturday 08 August 2020 15:27:47 Pali Rohár wrote:
+> > > On Wednesday 15 April 2020 00:56:18 Pali Rohár wrote:
+> > > > On Sunday 09 February 2020 14:21:37 Pali Rohár wrote:
+> > > > > On Saturday 04 January 2020 11:24:36 Pali Rohár wrote:
+> > > > > > On Saturday 04 January 2020 10:44:52 Marcel Holtmann wrote:
+> > > > > > > Hi Pali,
+> > > > > > > 
+> > > > > > > > I wrote a simple script "sco_features.pl" which show all supported
+> > > > > > > > codecs by local HCI bluetooth adapter. Script is available at:
+> > > > > > > > 
+> > > > > > > > https://github.com/pali/hsphfpd-prototype/blob/prototype/sco_features.pl
+> > > > > > > > 
+> > > > > > > > And I found out that OCF_READ_LOCAL_CODECS HCI command cannot be send by
+> > > > > > > > non-root user. Kernel returns "Operation not permitted" error.
+> > > > > > > > 
+> > > > > > > > What is reason that kernel blocks OCF_READ_LOCAL_CODECS command for
+> > > > > > > > non-root users? Without it (audio) application does not know which
+> > > > > > > > codecs local bluetooth adapter supports.
+> > > > > > > > 
+> > > > > > > > E.g. OCF_READ_LOCAL_EXT_FEATURES or OCF_READ_VOICE_SETTING commands can
+> > > > > > > > be send also by non-root user and kernel does not block them.
+> > > > > > > 
+> > > > > > > actually the direct access to HCI commands is being removed. So we have no plans to add new commands into the list since that it what the kernel is suppose to handle. If we wanted to expose this, then it has to be via mgmt.
+> > > > > > 
+> > > > > > Hi Marcel! Thank you for information. I have not know that this API is
+> > > > > > "deprecated" and is going to be removed. But userspace audio
+> > > > > > applications need to know what bluetooth adapter supports, so can you
+> > > > > > export result of these commands to userspace? My script linked above
+> > > > > > calls: OCF_READ_VOICE_SETTING, OCF_READ_LOCAL_COMMANDS,
+> > > > > > OCF_READ_LOCAL_EXT_FEATURES, OCF_READ_LOCAL_CODECS
+> > > > > 
+> > > > > Hello! Just a gently reminder for this question. How to retrieve
+> > > > > information about supported codecs from userspace by non-root user?
+> > > > > Because running all bluetooth audio applications by root is not really a
+> > > > > solution. Plus if above API for root user is going to be removed, what
+> > > > > is a replacement?
+> > > > 
+> > > > Hello!
+> > > > 
+> > > > I have not got any answer to my email from Marcel for months, so I'm
+> > > > adding other developers to loop. Could somebody tell me that is the
+> > > > replacement API if above one is going to be removed?
+> > > > 
+> > > > I was not able to find any documentation where could be described this
+> > > > API nor information about deprecation / removal.
+> > > > 
+> > > > And are you aware of the fact that removing of API could potentially
+> > > > break existing applications?
+> > > > 
+> > > > I really need to know which API should I use, because when I use API
+> > > > which is going to be removed, then my application stops working. And I
+> > > > really want to avoid it.
+> > > > 
+> > > > Also I have not got any response yet, how can I read list of supported
+> > > > codecs by bluetooth adapter by ordinary non-root user? Audio application
+> > > > needs to know list of supported codecs and it is really insane to run it
+> > > > as root.
+> > > 
+> > > Hello! This is just another reminder that I have not got any reply to
+> > > this email.
+> > > 
+> > > Does silence mean that audio applications are expected to work only
+> > > under root account and ordinary users are not able to use audio and list
+> > > supported codecs?
+> > 
+> > Hello! I have not got any reply for this issue for 10 months and if you
+> > are going to remove (or after these 10 months you already did it?)
+> > existing HCI API from kernel it would break existing and working
+> > userspace application. How do you want to handle such regressions?
 > 
-> On Tue, Sep 29, 2020 at 5:16 AM Lukasz Luba <lukasz.luba@arm.com> wrote:
->>
->> The Energy Model (EM) can store power values in milli-Watts or in abstract
->> scale. This might cause issues in the subsystems which use the EM for
->> estimating the device power, such as:
->> - mixing of different scales in a subsystem which uses multiple
->>    (cooling) devices (e.g. thermal Intelligent Power Allocation (IPA))
->> - assuming that energy [milli-Joules] can be derived from the EM power
->>    values which might not be possible since the power scale doesn't have to
->>    be in milli-Watts
->>
->> To avoid misconfiguration add the needed documentation to the EM and
->> related subsystems: EAS and IPA.
->>
->> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
->> ---
->>   .../driver-api/thermal/power_allocator.rst          |  8 ++++++++
->>   Documentation/power/energy-model.rst                | 13 +++++++++++++
->>   Documentation/scheduler/sched-energy.rst            |  5 +++++
->>   3 files changed, 26 insertions(+)
-> 
-> I haven't read through these files in massive detail, but the quick
-> skim makes me believe that your additions seem sane.  In general, I'm
-> happy with documenting reality, thus:
-> 
-> Reviewed-by: Douglas Anderson <dianders@chromium.org>
+> What git commit caused this regression?
 
-Thank you for the review.
-
-> 
-> I will note: you haven't actually updated the device tree bindings.
-> Thus, presumably, anyone who is specifying these numbers in the device
-> tree is still supposed to specify them in a way that mW can be
-> recovered, right?  Said another way: nothing about your patches makes
-> it OK to specify numbers in device trees using an "abstract scale",
-> right?
-
-For completeness, we are talking here about the binding from:
-Documentation/devicetree/bindings/arm/cpus.yaml
-which is 'dynamic-power-coefficient'. Yes, it stays untouched, also the
-unit (uW/MHz/V^2) which then allows to have mW in the power
-values in the EM.
-
-Regards,
-Lukasz
+Hello! Marcel in January wrote that access for HCI commands is being
+removed from kernel. I do not know if he managed to do it in since
+January, but I'm going to check it...
