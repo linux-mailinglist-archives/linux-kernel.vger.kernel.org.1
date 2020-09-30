@@ -2,182 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F4EC27E78C
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 13:20:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AA0527E79B
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 13:25:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729442AbgI3LUj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 07:20:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60462 "EHLO
+        id S1728500AbgI3LZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 07:25:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729268AbgI3LUj (ORCPT
+        with ESMTP id S1725779AbgI3LZ1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 07:20:39 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1E1FC061755;
-        Wed, 30 Sep 2020 04:20:38 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id e16so1364916wrm.2;
-        Wed, 30 Sep 2020 04:20:38 -0700 (PDT)
+        Wed, 30 Sep 2020 07:25:27 -0400
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 875FBC0613D0
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 04:25:27 -0700 (PDT)
+Received: by mail-ot1-x342.google.com with SMTP id a2so1412801otr.11
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 04:25:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=aWakhOKPKz2znU9O5s7AkKsRQAEAed3GLRNCcxW+1kw=;
-        b=MvLdxP7qR07tHcwn/U9tovrPst13k0lc4hWyk0Zadwzu11NUatr5+T2KdXMqg66zsF
-         2Ob9GvxRo2dUuGEnoOQVAzgRaHP6OJCAOaZGFwzgT1h2dEzonad/ac7MwuR8n8Xp16v3
-         DAcPiZn+RxTfwG/4llBL5s8Mk/M5Ttzp9UYdzTYVPtGHPsGdRwOKYRHrMCFF0L6M5Y8U
-         D6YSXAcRi7IF6Y/5J8MGe6PE9Fy7vo9S4Gm1GCf3r7U6nt/Y9V6rzvAsxX9yxAyuZZR8
-         rV/P9tB5iGhndalpDI8lp1jmDWgrfoP6nE93Egf8mePpqilJI0X51NtvWg6ktbI8RhRh
-         7ntg==
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XPhNhgXjvXmO6qMe12Ico/ebR2/givwfQj61bckl1Qw=;
+        b=ilt2tbwC7TC34+YDgjBCThqgVJBSTbEAwVvPYe1QHXusF6Z5z6Qhipdawxa2ueUHc/
+         Z29fDYlSSnSdMgyHlZLEHRHHCCrU1VXxd0D4yc1r5I1TFQ8HqE4YbmwyD3qvfYnx7QeP
+         4NwAkOjWuoMBi53qM8r+48EmM0QeY7MrIr5Fs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=aWakhOKPKz2znU9O5s7AkKsRQAEAed3GLRNCcxW+1kw=;
-        b=XnSlKl/nbc+TRvcKA/jGkepTkHHOW1QUkArETzW1EG5b1VImo7bB+2qtBcXq5IjCE9
-         zK7WBucrA8x4zoqioKkpNxR090zKC1387In84CygRTENs7Xtdy5gjK+fyRB5I1fnJ4lj
-         QXjh98sdEKuUByCuJHsOzzQBKinaR00kEkLdi/BG1QbieOijFBU5xYxI6UzdL07NRYTe
-         W4047iCMtJACyGcUAtJaiJjuCj/iAJrMX4JZt4Gyi4WvwbRhWKpFCRhXK6vFnCfJ3I4P
-         Hcv9/rz7DvFeEKuN+ZEY3TcV/QU3e4sAik+J0XQsg8WZ6+VFKqlruEY9Iel1uGiyDZPq
-         8JYg==
-X-Gm-Message-State: AOAM530BgD9zSD8bJwHKlotTZnSH6SbwZ+ZdiNQFzgCiVKGbGBjZgmnB
-        IrkGN3pUezNszgCOhDviq/g=
-X-Google-Smtp-Source: ABdhPJxWbuEkKLpDBnEhzMLnI+C16F+pwjR4st/g8a0IWVUiWgawaAI/yqL9f57WMcejjFi/kFzqtg==
-X-Received: by 2002:a5d:40c4:: with SMTP id b4mr2583546wrq.151.1601464837599;
-        Wed, 30 Sep 2020 04:20:37 -0700 (PDT)
-Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id k6sm2195594wmf.30.2020.09.30.04.20.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Sep 2020 04:20:36 -0700 (PDT)
-From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
-To:     arnaldo.melo@gmail.com
-Cc:     rostedt@goodmis.org, mtk.manpages@gmail.com,
-        linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/2] tools lib traceevent: Man page libtraceevent debug APIs
-Date:   Wed, 30 Sep 2020 14:20:35 +0300
-Message-Id: <20200930112035.282039-1-tz.stoyanov@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XPhNhgXjvXmO6qMe12Ico/ebR2/givwfQj61bckl1Qw=;
+        b=L3xsWELfKCaPVzwYwbWqLM1PvErGemovWlAPw23GhrlpoFQahuRIRiiPPbK+wnfO73
+         3vN9dHFb7DyzUqDreFLh19lGszNMZ+DEqg/dj3ZzxkXfG0gJ0QPEF2iSeb47D0wlTVWT
+         e77pVEZaCkdxF/JsnFnOG+YFtC3ppZv/orYHk11r8bCNd7hcPF6R9bKBiDqZ2bvFsPot
+         4S2fWuQfkw8/Lbur6wCJmeE7u1cY+21lMbPubqW/z3XadetuLPXJv3ELkmrFar0QI4d4
+         Ri8ZNJAwZQe66fZ5HZ5xblQNhjLH2i65iyNP90KaOaIDDjOzIhK2JUNOtwCDpkIXOPYq
+         m3OQ==
+X-Gm-Message-State: AOAM5306GRKEFCvPqHnL8laRqdgYuQ/IGFXf6HJNeIaYTzld3tenSIj/
+        G1FtRV31EbX/hgqhAMXAeO6mkC5nI0OPFleDKtKGBw==
+X-Google-Smtp-Source: ABdhPJxEgm74LL2epdjXJXLLzINvmmFbGywbDO4Fc87teAZPaKspdA7yDK4a1Y64+ZE5t7m/SLjyxrDFnCEfpchc8Ko=
+X-Received: by 2002:a05:6830:1e56:: with SMTP id e22mr1190431otj.303.1601465125944;
+ Wed, 30 Sep 2020 04:25:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <0000000000006b9e8d059952095e@google.com> <cover.1600953813.git.yepeilin.cs@gmail.com>
+ <3f754d60-1d35-899c-4418-147d922e29af@kernel.org> <20200925101300.GA890211@PWN>
+ <20200925132551.GF438822@phenom.ffwll.local> <20200929123420.GA1143575@PWN>
+ <CAKMK7uFY2zv0adjKJ_ORVFT7Zzwn075MaU0rEU7_FuqENLR=UA@mail.gmail.com>
+ <20200930071151.GA1152145@PWN> <20200930095317.GX438822@phenom.ffwll.local> <20200930105553.GA1154238@PWN>
+In-Reply-To: <20200930105553.GA1154238@PWN>
+From:   Daniel Vetter <daniel@ffwll.ch>
+Date:   Wed, 30 Sep 2020 13:25:14 +0200
+Message-ID: <CAKMK7uFzWZgs4rvqSXqn_ifr8utG_rNw54+y6CWjdV=Epak-iQ@mail.gmail.com>
+Subject: Re: [PATCH 0/3] Prevent out-of-bounds access for built-in font data buffers
+To:     Peilin Ye <yepeilin.cs@gmail.com>
+Cc:     Jiri Slaby <jirislaby@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a new libtraceevent man page with documentation of these debug APIs:
- 	 tep_print_printk
- 	 tep_print_funcs
-	 tep_set_test_filters
-	 tep_plugin_print_options
+On Wed, Sep 30, 2020 at 12:56 PM Peilin Ye <yepeilin.cs@gmail.com> wrote:
+>
+> On Wed, Sep 30, 2020 at 11:53:17AM +0200, Daniel Vetter wrote:
+> > On Wed, Sep 30, 2020 at 03:11:51AM -0400, Peilin Ye wrote:
+> > > On Tue, Sep 29, 2020 at 04:38:49PM +0200, Daniel Vetter wrote:
+> > > > On Tue, Sep 29, 2020 at 2:34 PM Peilin Ye <yepeilin.cs@gmail.com> wrote:
+> > > > > Ah, and speaking of built-in fonts, see fbcon_startup():
+> > > > >
+> > > > >         /* Setup default font */
+> > > > >                 [...]
+> > > > >                 vc->vc_font.charcount = 256; /* FIXME  Need to support more fonts */
+> > > > >                             ^^^^^^^^^^^^^^^
+> > > > >
+> > > > > This is because find_font() and get_default_font() return a `struct
+> > > > > font_desc *`, but `struct font_desc` doesn't contain `charcount`. I
+> > > > > think we also need to add a `charcount` field to `struct font_desc`.
+> > > >
+> > > > Hm yeah ... I guess maybe struct font_desc should be the starting
+> > > > point for the kernel internal font structure. It's at least there
+> > > > already ...
+> > >
+> > > I see, that will also make handling built-in fonts much easier!
+> >
+> > I think the only downside with starting with font_desc as the internal
+> > font represenation is that there's a few fields we don't need/have for
+> > userspace fonts (like the id/name stuff). So any helpers to e.g. print out
+> > font information need to make sure they don't trip over that
+> >
+> > But otherwise I don't see a problem with this, I think.
+>
+> Yes, and built-in fonts don't use refcount. Or maybe we can let
+> find_font() and get_default_font() kmalloc() a copy of built-in font
+> data, then keep track of refcount for both user and built-in fonts, but
+> that will waste a few K of memory for each built-in font we use...
 
-Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
----
-v2 changes:
- - Removed an extra interval from the example's code.
+A possible trick for this would be to make sure built-in fonts start
+out with a refcount of 1. So never get freed. Plus maybe a check that
+if the name is set, then it's a built-in font and if we ever underflow
+the refcount we just WARN, but don't free anything.
 
- .../Documentation/libtraceevent-debug.txt     | 95 +++++++++++++++++++
- 1 file changed, 95 insertions(+)
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-debug.txt
+Another trick would be kern_font_get/put wrappers (we'd want those
+anyway if the userspace fonts are refcounted) and if kern_font->name
+!= NULL (i.e. built-in font with name) then we simply don't call
+kref_get/put.
+-Daniel
 
-diff --git a/tools/lib/traceevent/Documentation/libtraceevent-debug.txt b/tools/lib/traceevent/Documentation/libtraceevent-debug.txt
-new file mode 100644
-index 000000000000..a0be84fe8990
---- /dev/null
-+++ b/tools/lib/traceevent/Documentation/libtraceevent-debug.txt
-@@ -0,0 +1,95 @@
-+libtraceevent(3)
-+================
-+
-+NAME
-+----
-+tep_print_printk, tep_print_funcs, tep_set_test_filters, tep_plugin_print_options -
-+Print libtraceevent internal information.
-+
-+SYNOPSIS
-+--------
-+[verse]
-+--
-+*#include <event-parse.h>*
-+*#include <trace-seq.h>*
-+
-+void *tep_print_printk*(struct tep_handle pass:[*]tep);
-+void *tep_print_funcs*(struct tep_handle pass:[*]tep);
-+void *tep_set_test_filters*(struct tep_handle pass:[*]tep, int test_filters);
-+void *tep_plugin_print_options*(struct trace_seq pass:[*]s);
-+--
-+
-+DESCRIPTION
-+-----------
-+The _tep_print_printk()_ function prints the printk string formats that were
-+stored for this tracing session. The _tep_ argument is trace event parser context.
-+
-+The _tep_print_funcs()_ function prints the stored function name to address mapping
-+for this tracing session. The _tep_ argument is trace event parser context.
-+
-+The _tep_set_test_filters()_ function sets a flag to test a filter string. If this
-+flag is set, when _tep_filter_add_filter_str()_ API as called, it will print the filter
-+string instead of adding it. The _tep_ argument is trace event parser context.
-+The _test_filters_ argument is the test flag that will be set.
-+
-+The _tep_plugin_print_options()_ function writes a list of the registered plugin options
-+into _s_.
-+
-+EXAMPLE
-+-------
-+[source,c]
-+--
-+#include <event-parse.h>
-+#include <trace-seq.h>
-+...
-+struct tep_handle *tep = tep_alloc();
-+...
-+	tep_print_printk(tep);
-+...
-+	tep_print_funcs(tep);
-+...
-+struct tep_event_filter *filter = tep_filter_alloc(tep);
-+	tep_set_test_filters(tep, 1);
-+	tep_filter_add_filter_str(filter, "sched/sched_wakeup:target_cpu==1");
-+	tep_set_test_filters(tep, 0);
-+	tep_filter_free(filter);
-+...
-+struct trace_seq seq;
-+trace_seq_init(&seq);
-+
-+	tep_plugin_print_options(&s);
-+...
-+--
-+
-+FILES
-+-----
-+[verse]
-+--
-+*event-parse.h*
-+	Header file to include in order to have access to the library APIs.
-+*-ltraceevent*
-+	Linker switch to add when building a program that uses the library.
-+--
-+
-+SEE ALSO
-+--------
-+_libtraceevent(3)_, _trace-cmd(1)_
-+
-+AUTHOR
-+------
-+[verse]
-+--
-+*Steven Rostedt* <rostedt@goodmis.org>, author of *libtraceevent*.
-+*Tzvetomir Stoyanov* <tz.stoyanov@gmail.com>, author of this man page.
-+--
-+REPORTING BUGS
-+--------------
-+Report bugs to  <linux-trace-devel@vger.kernel.org>
-+
-+LICENSE
-+-------
-+libtraceevent is Free Software licensed under the GNU LGPL 2.1
-+
-+RESOURCES
-+---------
-+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+> > > > I think for vc_date->vc_font we might need a multi-step approach:
+> > > > - first add a new helper function which sets the font for a vc using
+> > > > an uapi console_font struct (and probably hard-coded assumes cnt ==
+> > > > 256.
+> > >
+> > > But user fonts may have a charcount different to 256... But yes I'll try
+> > > to figure out how.
+> >
+> > Hm yeah, maybe we need a helper to give us the charcount then, which by
+> > default is using the magic negative offset.
+>
+> Ah, I see! :)
+>
+> > Then once we've converted everything over to explicitly passing charcount
+> > around, we can switch that helper. So something like
+> >
+> > int kern_font_charcount(struct kern_font *font);
+> >
+> > Feel free to bikeshed the struct name however you see fit :-)
+>
+> I think both `kern_font` and `font_desc` makes sense, naming is so
+> hard...
+>
+> > > > For first steps I'd start with demidlayering some of the internal
+> > > > users of uapi structs, like the console_font_op really shouldn't be
+> > > > used anywhere in any function, except in the ioctl handler that
+> > > > converts it into the right function call. You'll probably discover a
+> > > > few other places like this on the go.
+> > >
+> > > Sure, I'll start from this, then cleaning up these dummy functions, then
+> > > `vc_data`. Thank you for the insights!
+> >
+> > Please don't take this rough plan as fixed, it's just where I'd start from
+> > browsing the code and your analysis a bit. We'll probably have to adapt as
+> > we go and more nasty things turn up ...
+>
+> Sure, I'll first give it a try and see. Thank you!
+>
+> Peilin Ye
+>
+
+
 -- 
-2.26.2
-
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
