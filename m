@@ -2,152 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD00E27E2CC
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 09:42:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD1D927E2CE
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 09:43:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728206AbgI3Hm3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 03:42:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54954 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725440AbgI3Hm2 (ORCPT
+        id S1728104AbgI3HnX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 03:43:23 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:60966 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725440AbgI3HnW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 03:42:28 -0400
-Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2367C061755;
-        Wed, 30 Sep 2020 00:42:28 -0700 (PDT)
-Received: from mwalle01.sab.local. (unknown [213.135.10.150])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id AE1AC22EE4;
-        Wed, 30 Sep 2020 09:42:23 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1601451744;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=wREVuR0VUOhJ3xpNDbVmV4j1U+OQ13zuW05abB1I6ao=;
-        b=My7t1g50eH9yqI8IM79EAaLc0NKAK6GSpZx+glMJd+vay8RQCgka/qGWQr5yiFKw8nlVK+
-        IPWaZSryPrpuZCTgbZ+TENeZquVIZVLfYvhXyEyBCVPWcDEzvSqS1etG/VHJ5j0fdslRNi
-        6Ib6QyD7rYXXVZPpgPwemIm6sUKMGm4=
-From:   Michael Walle <michael@walle.cc>
-To:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Michael Walle <michael@walle.cc>
-Subject: [PATCH] gpio: mpc8xxx: simplify ls1028a/ls1088a support
-Date:   Wed, 30 Sep 2020 09:42:11 +0200
-Message-Id: <20200930074211.30886-1-michael@walle.cc>
-X-Mailer: git-send-email 2.20.1
+        Wed, 30 Sep 2020 03:43:22 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08U7hB0T032138;
+        Wed, 30 Sep 2020 02:43:11 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1601451791;
+        bh=ZF9wqdv0lxa8bwgZCPJ8AXia4qC5XXcG4E2TUV5895o=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=PGUux8Zj+mGgWNFAn1ICugJ1fZnuQkOnAuLTjeRLzHiA1jROPsP90+p3uOCbdpXit
+         K9lMyuZq0/gvgEfd3QwhkC/YfXNt7Wp3F3xQvAuuVWJdD+Qpx4akO2toUIIIiRbRZ4
+         mxxS6mLKUaULAVGTWwBL2KRIJycakc//Of/yC9E0=
+Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08U7hBWD090407
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 30 Sep 2020 02:43:11 -0500
+Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 30
+ Sep 2020 02:43:11 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 30 Sep 2020 02:43:11 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08U7hAoo074277;
+        Wed, 30 Sep 2020 02:43:11 -0500
+Date:   Wed, 30 Sep 2020 13:13:09 +0530
+From:   Pratyush Yadav <p.yadav@ti.com>
+To:     <Tudor.Ambarus@microchip.com>
+CC:     <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <nsekhar@ti.com>, <boris.brezillon@collabora.com>
+Subject: Re: [PATCH v13 11/15] mtd: spi-nor: core: perform a Soft Reset on
+ shutdown
+Message-ID: <20200930074307.rdi6352fy3is6gjq@ti.com>
+References: <20200916124418.833-1-p.yadav@ti.com>
+ <20200916124418.833-12-p.yadav@ti.com>
+ <20200929130838.4hfa2y3qoxissdus@ti.com>
+ <a32450dc-8db3-597c-34b0-68632ac27184@microchip.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <a32450dc-8db3-597c-34b0-68632ac27184@microchip.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some Layerscape/QoriQ SoCs have input buffers which needs to be enabled
-first. This was done in two different ways in the driver. Unify it.
+On 30/09/20 07:32AM, Tudor.Ambarus@microchip.com wrote:
+> On 9/29/20 4:08 PM, Pratyush Yadav wrote:
+> > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+> > 
+> > On 16/09/20 06:14PM, Pratyush Yadav wrote:
+> >> Perform a Soft Reset on shutdown on flashes that support it so that the
+> >> flash can be reset to its initial state and any configurations made by
+> >> spi-nor (given that they're only done in volatile registers) will be
+> >> reset. This will hand back the flash in pristine state for any further
+> >> operations on it.
+> >>
+> >> Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
+> >> ---
+> >>  drivers/mtd/spi-nor/core.c  | 41 +++++++++++++++++++++++++++++++++++++
+> >>  include/linux/mtd/spi-nor.h |  2 ++
+> >>  2 files changed, 43 insertions(+)
+> >>
+> >> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+> >> index 6ee93544d72f..853dfa02f0de 100644
+> >> --- a/drivers/mtd/spi-nor/core.c
+> >> +++ b/drivers/mtd/spi-nor/core.c
+> >> @@ -40,6 +40,9 @@
+> >>
+> >>  #define SPI_NOR_MAX_ADDR_WIDTH       4
+> >>
+> >> +#define SPI_NOR_SRST_SLEEP_MIN 200
+> >> +#define SPI_NOR_SRST_SLEEP_MAX 400
+> >> +
+> >>  /**
+> >>   * spi_nor_get_cmd_ext() - Get the command opcode extension based on the
+> >>   *                      extension type.
+> >> @@ -3174,6 +3177,41 @@ static int spi_nor_init(struct spi_nor *nor)
+> >>       return 0;
+> >>  }
+> >>
+> >> +static void spi_nor_soft_reset(struct spi_nor *nor)
+> >> +{
+> >> +     struct spi_mem_op op;
+> >> +     int ret;
+> >> +
+> >> +     op = (struct spi_mem_op)SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_SRSTEN, 8),
+> 
+> can we avoid the cast?
 
-This was tested on a LS1028A SoC.
+No. The compiler complains about "expected expression before '{' token". 
+We can avoid it if the assignment is with the declaration but then we 
+can't re-use the variable op for the second command.
 
-Signed-off-by: Michael Walle <michael@walle.cc>
----
- drivers/gpio/gpio-mpc8xxx.c | 45 ++++++++++---------------------------
- 1 file changed, 12 insertions(+), 33 deletions(-)
+I like the cast better than using separate variables for the two (or 
+more in other cases) commands we execute.
+ 
+> > 
+> > The buswidth used here should be 1 instead of 8. It makes no difference
+> > in practice because the call to spi_nor_spimem_setup_op() immediately
+> > after will over-write it to the correct value anyway, but let's follow
+> > the style followed throughout the rest of the codebase. Will fix in the
+> > next version.
+> 
+> or you can just set the buswidth to 0 so that the reader rises his eyebrow
+> and search for where it is updated. If you like it better you'll have to change
+> throughout the entire code base, maybe in 4/15 where setup_op is introduced.
 
-diff --git a/drivers/gpio/gpio-mpc8xxx.c b/drivers/gpio/gpio-mpc8xxx.c
-index 1e866524a4bd..6dfca83bcd90 100644
---- a/drivers/gpio/gpio-mpc8xxx.c
-+++ b/drivers/gpio/gpio-mpc8xxx.c
-@@ -47,27 +47,6 @@ struct mpc8xxx_gpio_chip {
- 	unsigned int irqn;
- };
+Ok. Will change it.
  
--/* The GPIO Input Buffer Enable register(GPIO_IBE) is used to
-- * control the input enable of each individual GPIO port.
-- * When an individual GPIO port’s direction is set to
-- * input (GPIO_GPDIR[DRn=0]), the associated input enable must be
-- * set (GPIOxGPIE[IEn]=1) to propagate the port value to the GPIO
-- * Data Register.
-- */
--static int ls1028a_gpio_dir_in_init(struct gpio_chip *gc)
--{
--	unsigned long flags;
--	struct mpc8xxx_gpio_chip *mpc8xxx_gc = gpiochip_get_data(gc);
--
--	spin_lock_irqsave(&gc->bgpio_lock, flags);
--
--	gc->write_reg(mpc8xxx_gc->regs + GPIO_IBE, 0xffffffff);
--
--	spin_unlock_irqrestore(&gc->bgpio_lock, flags);
--
--	return 0;
--}
--
- /*
-  * This hardware has a big endian bit assignment such that GPIO line 0 is
-  * connected to bit 31, line 1 to bit 30 ... line 31 to bit 0.
-@@ -283,7 +262,6 @@ static const struct irq_domain_ops mpc8xxx_gpio_irq_ops = {
- };
+> > 
+> >> +                     SPI_MEM_OP_NO_DUMMY,
+> >> +                     SPI_MEM_OP_NO_ADDR,
+> >> +                     SPI_MEM_OP_NO_DATA);
+> >> +     spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
+> 
+> Still not a big fan of this, but we can update the op init later on. How
+> about some new lines around spi_nor_spimem_setup_op()? First time I read
+> the code I haven't seen it.
+
+Ok.
  
- struct mpc8xxx_gpio_devtype {
--	int (*gpio_dir_in_init)(struct gpio_chip *chip);
- 	int (*gpio_dir_out)(struct gpio_chip *, unsigned int, int);
- 	int (*gpio_get)(struct gpio_chip *, unsigned int);
- 	int (*irq_set_type)(struct irq_data *, unsigned int);
-@@ -294,11 +272,6 @@ static const struct mpc8xxx_gpio_devtype mpc512x_gpio_devtype = {
- 	.irq_set_type = mpc512x_irq_set_type,
- };
- 
--static const struct mpc8xxx_gpio_devtype ls1028a_gpio_devtype = {
--	.gpio_dir_in_init = ls1028a_gpio_dir_in_init,
--	.irq_set_type = mpc8xxx_irq_set_type,
--};
--
- static const struct mpc8xxx_gpio_devtype mpc5125_gpio_devtype = {
- 	.gpio_dir_out = mpc5125_gpio_dir_out,
- 	.irq_set_type = mpc512x_irq_set_type,
-@@ -319,8 +292,8 @@ static const struct of_device_id mpc8xxx_gpio_ids[] = {
- 	{ .compatible = "fsl,mpc5121-gpio", .data = &mpc512x_gpio_devtype, },
- 	{ .compatible = "fsl,mpc5125-gpio", .data = &mpc5125_gpio_devtype, },
- 	{ .compatible = "fsl,pq3-gpio",     },
--	{ .compatible = "fsl,ls1028a-gpio", .data = &ls1028a_gpio_devtype, },
--	{ .compatible = "fsl,ls1088a-gpio", .data = &ls1028a_gpio_devtype, },
-+	{ .compatible = "fsl,ls1028a-gpio", },
-+	{ .compatible = "fsl,ls1088a-gpio", },
- 	{ .compatible = "fsl,qoriq-gpio",   },
- 	{}
- };
-@@ -389,7 +362,16 @@ static int mpc8xxx_probe(struct platform_device *pdev)
- 
- 	gc->to_irq = mpc8xxx_gpio_to_irq;
- 
--	if (of_device_is_compatible(np, "fsl,qoriq-gpio"))
-+	/*
-+	 * The GPIO Input Buffer Enable register(GPIO_IBE) is used to control
-+	 * the input enable of each individual GPIO port.  When an individual
-+	 * GPIO port’s direction is set to input (GPIO_GPDIR[DRn=0]), the
-+	 * associated input enable must be set (GPIOxGPIE[IEn]=1) to propagate
-+	 * the port value to the GPIO Data Register.
-+	 */
-+	if (of_device_is_compatible(np, "fsl,qoriq-gpio") ||
-+	    of_device_is_compatible(np, "fsl,ls1028a-gpio") ||
-+	    of_device_is_compatible(np, "fsl,ls1088a-gpio"))
- 		gc->write_reg(mpc8xxx_gc->regs + GPIO_IBE, 0xffffffff);
- 
- 	ret = gpiochip_add_data(gc, mpc8xxx_gc);
-@@ -411,9 +393,6 @@ static int mpc8xxx_probe(struct platform_device *pdev)
- 	/* ack and mask all irqs */
- 	gc->write_reg(mpc8xxx_gc->regs + GPIO_IER, 0xffffffff);
- 	gc->write_reg(mpc8xxx_gc->regs + GPIO_IMR, 0);
--	/* enable input buffer  */
--	if (devtype->gpio_dir_in_init)
--		devtype->gpio_dir_in_init(gc);
- 
- 	ret = devm_request_irq(&pdev->dev, mpc8xxx_gc->irqn,
- 			       mpc8xxx_gpio_irq_cascade,
+> >> +     ret = spi_mem_exec_op(nor->spimem, &op);
+> >> +     if (ret) {
+> >> +             dev_warn(nor->dev, "Software reset failed: %d\n", ret);
+> >> +             return;
+> >> +     }
+> >> +
+> >> +     op = (struct spi_mem_op)SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_SRST, 8),
+> > 
+> > Same here.
+> > 
+> >> +                     SPI_MEM_OP_NO_DUMMY,
+> >> +                     SPI_MEM_OP_NO_ADDR,
+> >> +                     SPI_MEM_OP_NO_DATA);
+> >> +     spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
+> >> +     ret = spi_mem_exec_op(nor->spimem, &op);
+> >> +     if (ret) {
+> >> +             dev_warn(nor->dev, "Software reset failed: %d\n", ret);
+> >> +             return;
+> >> +     }
+> >> +
+> >> +     /*
+> >> +      * Software Reset is not instant, and the delay varies from flash to
+> >> +      * flash. Looking at a few flashes, most range somewhere below 100
+> >> +      * microseconds. So, sleep for a range of 200-400 us.
+> >> +      */
+> >> +     usleep_range(SPI_NOR_SRST_SLEEP_MIN, SPI_NOR_SRST_SLEEP_MAX);
+> >> +}
+> >> +
+> >>  /* mtd resume handler */
+> >>  static void spi_nor_resume(struct mtd_info *mtd)
+> >>  {
+
 -- 
-2.20.1
-
+Regards,
+Pratyush Yadav
+Texas Instruments India
