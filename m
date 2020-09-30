@@ -2,179 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B86AD27E581
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 11:47:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 478EB27E56C
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 11:42:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729038AbgI3JrT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 05:47:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46040 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728858AbgI3JrS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 05:47:18 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CB1EC0613D0;
-        Wed, 30 Sep 2020 02:47:18 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id o20so796352pfp.11;
-        Wed, 30 Sep 2020 02:47:18 -0700 (PDT)
+        id S1728966AbgI3Jm4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 05:42:56 -0400
+Received: from mail-bn8nam12on2088.outbound.protection.outlook.com ([40.107.237.88]:26975
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728169AbgI3Jm4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 05:42:56 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lox455orh66GhBlkADNFM5ZWzqFS5nbAn54+pZllsKLj/ptKB6XC3/l/mYTY5dyHnffbVoRCotrN6QNeuat8RXKvzVqocISx3pg5sSejhPab1LHNSCdLlTUB96XW/pkmgZrLGVAJjgUDJOVduoQYZo1WJb14wvFPkceiSXveLZABBZ798cB0wjrGsRRCgH6eBpugJam0PeuvqPI7Qukixh+c8/MemV0QJ/RqqkYi4EQJnAU/CGNU7PXIQ8/MyXnG4rWd7OBmJk8umnzJUM/tDfu5MwZnLWHKHUqGaLBTL/+RUmXSdy78s5Ji3oN7oghXz8TEUWnpbBi8qxQ4z+3DkQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QUEPLJ8SdwlTT6VK9LWpgsEbDIcrBWUQbXqvbu+GcDw=;
+ b=HVTjkHVHw1Q/UYUSxx9S2ag8lD8vF3+XBQaq81b4d35N7ru04vCVZTj9XMICBYfteiOTXGyFQkmqc4TWFC5SZ36hwac3U7CUJWj2QerNB9nG+JblU7J/k9/s5t6wE0Q+eFQ9szj0wnJFzN4OCLf/aJzQz0N8puPCCPKf/7AWXa/trxZ8h4KJGVRm0sQV5lg8flnJ/3CA02KPDVYUVlB6xG+527cVRYVUEWmIcbU3OfSiw3NQ67zXQS7o2wdHZ2jLVYe99zF4fLlGaXOXYIlRDNROlVopJbcv8y/Du9du2mrEy7N1n+g1z/OcN/o7nlyMFqfiintqvBWgvo8CUOr+ww==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=tw.synaptics.com; dmarc=pass action=none
+ header.from=tw.synaptics.com; dkim=pass header.d=tw.synaptics.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=kqDQyIHjT82uvPQJz0UJBc/gjbOXF+Ap9JLzTI1InVE=;
-        b=WX6MDeQIcu42mUtXNmJPg2odpit0HfgRwRnczXZ4F7gRtFazY3NB8x7bV01butrRAw
-         dJYw9Vxi6+XpQ1hohR93530/FXfD1PwDwMfU+7qApodYCL23+dsjmvbJ86irZWvaf0/2
-         5xtAfg0MwmmaglesDco6a8+Jw7XyxYRCX5SPMA/+a05+DUIgim1Ie0dHlDkEvJKqsSsu
-         6wlYoEgAymm7oDkku5vcJ1Rp/Bia0cRwIF/KQkiAvL5SfUjQwvchhH6QOJIZqYcmLpl9
-         tqH5Rr8bmTj+EBKI/RCOC16DZ3+Lu9fVW5WbpA3npcsvSvR2DfILjOKzrLd5fs81jd9x
-         GVSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=kqDQyIHjT82uvPQJz0UJBc/gjbOXF+Ap9JLzTI1InVE=;
-        b=OzZOP6ojhmouQxrx8ytqr8srSddqGxUYdhcjCksSVNBppusSIBw/bmu8HOPbYLfrdb
-         qp8oz2Zi1upxAM/GQPR6cBuBMZdLlEH2GRPcATIs1i1EXDVsyL1dYACsdZBO9Y8qn1D8
-         tyFgygDRgxcH7GEPV2Fk3Dl7UT7eF/wGNdBTuzoYUM/7DaPEF/4GY8Lp+nnzgoTwxund
-         F6CmnmcAGHFY8tenVII1keyXUXBTeCDdCIP3vhYIBghQP+34ZCErYeSNLw41ev04zB15
-         k3w9sxs1gnyXWRjIP3A82WNqQ4bP4cdqTZpSk7OFF4kJ0sI3uleFvgbZWMf1/jxOrOs5
-         Mo8A==
-X-Gm-Message-State: AOAM533GCkeAhCIc7MZS9jeAWFrwMgbyKa+KjYxe0JjiKKJScBRJXyJB
-        zXh+4sXcmL06NPohF7JeWgvOnfs8wFw=
-X-Google-Smtp-Source: ABdhPJzBQ8d87ceNZY/OyWVcnfRw6WF84tw2SDVtxruJphPiHwE4rWpiiLDIA2EfccMlvBvjJtcpqg==
-X-Received: by 2002:a63:4e5e:: with SMTP id o30mr1491523pgl.324.1601459237933;
-        Wed, 30 Sep 2020 02:47:17 -0700 (PDT)
-Received: from Asurada-Nvidia (thunderhill.nvidia.com. [216.228.112.22])
-        by smtp.gmail.com with ESMTPSA id k14sm1710193pjd.45.2020.09.30.02.47.17
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 30 Sep 2020 02:47:17 -0700 (PDT)
-Date:   Wed, 30 Sep 2020 02:41:45 -0700
-From:   Nicolin Chen <nicoleotsuka@gmail.com>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     thierry.reding@gmail.com, joro@8bytes.org, digetx@gmail.com,
-        vdumpa@nvidia.com, jonathanh@nvidia.com,
-        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 1/3] memory: tegra: Add
- devm_tegra_get_memory_controller()
-Message-ID: <20200930094145.GB6686@Asurada-Nvidia>
-References: <20200930084258.25493-1-nicoleotsuka@gmail.com>
- <20200930084258.25493-2-nicoleotsuka@gmail.com>
- <CAJKOXPd7XSAty_2_6i3bEcoRwJ9HdoE+TKGu1G6ozZ9xYC7M6Q@mail.gmail.com>
+ d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QUEPLJ8SdwlTT6VK9LWpgsEbDIcrBWUQbXqvbu+GcDw=;
+ b=EiNnPlsI9ZCH1tpikMQ9agB+TmhhC13ECwrNIpGwXNBQ9fvwCnAtBBzdB8xTPPAGXZBG77vcRx1LNEo5jnV6Evk/WNw+O/0HPKvkkGXNcbP/leZdP2eJdBA+Q3QVYRpdGukUV22Fu65134gyu71fviyDl7KLaWMFefzKCjmF8TE=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none
+ header.from=tw.synaptics.com;
+Received: from SN6PR03MB3952.namprd03.prod.outlook.com (2603:10b6:805:75::26)
+ by SN2PR03MB2173.namprd03.prod.outlook.com (2603:10b6:804:d::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.32; Wed, 30 Sep
+ 2020 09:42:52 +0000
+Received: from SN6PR03MB3952.namprd03.prod.outlook.com
+ ([fe80::3c54:f5cf:3148:407e]) by SN6PR03MB3952.namprd03.prod.outlook.com
+ ([fe80::3c54:f5cf:3148:407e%7]) with mapi id 15.20.3433.035; Wed, 30 Sep 2020
+ 09:42:52 +0000
+From:   Vincent Huang <vincent.huang@tw.synaptics.com>
+To:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Vincent Huang <vincent.huang@tw.synaptics.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Andrew Duggan <aduggan@synaptics.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Benjamin Tissoires <btissoir@redhat.com>,
+        Lyude Paul <lyude@redhat.com>,
+        Chris Heiny <chris.heiny@synaptics.com>
+Subject: [PATCH v3 0/2] Add support for F3A
+Date:   Wed, 30 Sep 2020 17:41:45 +0800
+Message-Id: <20200930094147.635556-1-vincent.huang@tw.synaptics.com>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [60.250.40.146]
+X-ClientProxiedBy: HK2PR06CA0020.apcprd06.prod.outlook.com
+ (2603:1096:202:2e::32) To SN6PR03MB3952.namprd03.prod.outlook.com
+ (2603:10b6:805:75::26)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJKOXPd7XSAty_2_6i3bEcoRwJ9HdoE+TKGu1G6ozZ9xYC7M6Q@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from test-ThinkPad.synaptics-inc.local (60.250.40.146) by HK2PR06CA0020.apcprd06.prod.outlook.com (2603:1096:202:2e::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.32 via Frontend Transport; Wed, 30 Sep 2020 09:42:49 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 10e16f93-95fd-4720-dbf2-08d865253313
+X-MS-TrafficTypeDiagnostic: SN2PR03MB2173:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SN2PR03MB21738DBE7631BB6E79C9FEC0D6330@SN2PR03MB2173.namprd03.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: iQzYIa71zgeSwoFuI/vN3kN0idQ06Nx0L7RsbQMEM83BZQW5TSmOAb8XoVdiMfOT8e7xcslpP8k0PbIjhwVuTp+lZ3dxE47ZP1s4xXEwJ3pJ13z/fuojrZaAHYdUE3DsepkNYabDJDiLK2n+sH38c+ZxjFos1Fzr3RSE0ezoF0CAqjTnhTEKJ71yoXgXncLc7sB9HuAjEOrZ2sBFqaHYRewC5+fKY2Y75gmcmMO6JKHyL6d9niXY/M9l9KR6uEaPL1cC18BOTqGmQWflqrK38ujSWs2u7BdhSGU4qmCmczLTwjTsij7g7+yAVliQS/sQzEEVfuP4hkqvbsbNWH7tow==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR03MB3952.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(39860400002)(366004)(396003)(346002)(376002)(8676002)(4326008)(6512007)(107886003)(2906002)(83380400001)(6486002)(8936002)(2616005)(956004)(44832011)(478600001)(316002)(86362001)(54906003)(16526019)(26005)(186003)(6506007)(6666004)(52116002)(5660300002)(4744005)(66946007)(66556008)(66476007)(1076003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: u6wza4H57Ud81qpq2oOgY/fkZOUguqXqljQ/Ljqzknh/WMGvFK6QhPb3M/I7os8Pd3pvouwfLMbdbl4kZ3dQS/0+BmAPGTUd92ghZtDzDSCh4BMWYsJiZ3rnUpT5NBxqbKqc+T9NbVWGcAf0nRR/nNrp5E9Eq+dvy3DSf2Mf1sj1AuxZD1RzLcYretFz1ACYdphLia8wpFFY1B6KdLbRTdU94FGK8V9QQ4TQ9kTivAdk0+kSq04D2Y4bfr4EFwtjtjO9flB9zsau9O4YI5aVJ+2g72eFED+AfMUbL5SJcL81HQTtNfZifIOWD+ErF7EGzqVvABkQRH/HIe5fWFHdLmJ72EMMv4HakyesvFJ/tsyAWu2ct6lNdiUZOusFb+/V/kGUWRoDuP9N3IiHoFcwHlEJR/+Rp/5eKEs0dJQacgEeJqWB0eW7t+4kSjgRJ4C7L9Lx7A/W4kzx600WiXEeny6IL/8CfNGd2g1dSYWqaOu1BRlYVlm8U5qHBtH8vlItu/PzUOKWkMM2tgpbcd6kRcrxQiCkk9mB6F8y9Hw2itL0c+0zdOhxsmgqZynJSwrs0DkYrOJCTLTlc0iDxiHcSej9reraWaHaFGDTnv5fLLvco/AGM+PvnbitvWeozw3s5GAn8ejIQghCh3LeVuAvLw==
+X-OriginatorOrg: tw.synaptics.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 10e16f93-95fd-4720-dbf2-08d865253313
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR03MB3952.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Sep 2020 09:42:52.2717
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 8J6D+xK6ojAh3Kzv38+901vLIKsbM+fw2k5UnI57ogLGfDdHgmL5/wFiwE5oBfJGXN0V9Dr7lQgWdwIq1LnPdA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN2PR03MB2173
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 11:07:32AM +0200, Krzysztof Kozlowski wrote:
-> "On Wed, 30 Sep 2020 at 10:48, Nicolin Chen <nicoleotsuka@gmail.com> wrote:
-> >
-> > From: Dmitry Osipenko <digetx@gmail.com>
-> >
-> > Multiple Tegra drivers need to retrieve Memory Controller and hence there
-> > is quite some duplication of the retrieval code among the drivers. Let's
-> > add a new common helper for the retrieval of the MC.
-> >
-> > Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> > Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
-> > ---
-> >
-> > Changelog
-> > v2->v3:
-> >  * Replaced with Dimtry's devm_tegra_get_memory_controller()
-> > v1->v2:
-> >  * N/A
-> >
-> >  drivers/memory/tegra/mc.c | 39 +++++++++++++++++++++++++++++++++++++++
-> >  include/soc/tegra/mc.h    | 17 +++++++++++++++++
-> >  2 files changed, 56 insertions(+)
-> >
-> > diff --git a/drivers/memory/tegra/mc.c b/drivers/memory/tegra/mc.c
-> > index ec8403557ed4..dd691dc3738e 100644
-> > --- a/drivers/memory/tegra/mc.c
-> > +++ b/drivers/memory/tegra/mc.c
-> > @@ -42,6 +42,45 @@ static const struct of_device_id tegra_mc_of_match[] = {
-> >  };
-> >  MODULE_DEVICE_TABLE(of, tegra_mc_of_match);
-> >
-> > +static void tegra_mc_devm_action_put_device(void *data)
-> 
-> devm_tegra_memory_controller_put()
-> 
-> > +{
-> > +       struct tegra_mc *mc = data;
-> > +
-> > +       put_device(mc->dev);
-> > +}
-> > +
-> > +struct tegra_mc *devm_tegra_get_memory_controller(struct device *dev)
-> 
-> Usually 'get' is a suffix (e.g. clk, gpiod, iio, led), so:
-> devm_tegra_memory_controller_get()
-> 
-> > +{
-> > +       struct platform_device *pdev;
-> > +       struct device_node *np;
-> > +       struct tegra_mc *mc;
-> > +       int err;
-> > +
-> > +       np = of_find_matching_node_and_match(NULL, tegra_mc_of_match, NULL);
-> > +       if (!np)
-> > +               return ERR_PTR(-ENOENT);
-> > +
-> > +       pdev = of_find_device_by_node(np);
-> > +       of_node_put(np);
-> > +       if (!pdev)
-> > +               return ERR_PTR(-ENODEV);
-> > +
-> > +       mc = platform_get_drvdata(pdev);
-> > +       if (!mc) {
-> > +               put_device(mc->dev);
-> > +               return ERR_PTR(-EPROBE_DEFER);
-> > +       }
-> > +
-> > +       err = devm_add_action(dev, tegra_mc_devm_action_put_device, mc);
-> > +       if (err) {
-> > +               put_device(mc->dev);
-> > +               return ERR_PTR(err);
-> > +       }
-> > +
-> > +       return mc;
-> > +}
-> > +EXPORT_SYMBOL_GPL(devm_tegra_get_memory_controller);
-> > +
-> >  static int tegra_mc_block_dma_common(struct tegra_mc *mc,
-> >                                      const struct tegra_mc_reset *rst)
-> >  {
-> > diff --git a/include/soc/tegra/mc.h b/include/soc/tegra/mc.h
-> > index 1238e35653d1..c05142e3e244 100644
-> > --- a/include/soc/tegra/mc.h
-> > +++ b/include/soc/tegra/mc.h
-> > @@ -184,4 +184,21 @@ struct tegra_mc {
-> >  int tegra_mc_write_emem_configuration(struct tegra_mc *mc, unsigned long rate);
-> >  unsigned int tegra_mc_get_emem_device_count(struct tegra_mc *mc);
-> >
-> > +#ifdef CONFIG_TEGRA_MC
-> > +/**
-> > + * devm_tegra_get_memory_controller() - Get the tegra_mc pointer.
-> > + * @dev: Device that will be interacted with
-> 
-> This is not precise enough and there is no interaction with 'dev' in
-> devm_tegra_get_memory_controller(). Something like: "Device that owns
-> the pointer to tegra memory controller"
-> 
-> > + *
-> > + * Return: ERR_PTR() on error or a valid pointer to a struct tegra_mc.
-> > + *
-> > + * The mc->dev counter will be automatically put by the device management code.
-> 
-> 1. s/mc/tegra_mc/ (it's the first occurence of word mc here)
-> 2. "kerneldoc goes to the C file". Not to the header.
+RMI4 F3A supports the touchpad GPIO function, it's designed to support
+more GPIOs and used on newer touchpads. The patches add support of
+touchpad buttons and rename f30_data to avoid confusion.
 
-I will send v4 after changing all of the places.
+Changes in v2:
+- Combined patch 1 and 2 of v1 to fix bisectability.
 
-Thanks for the comments!
+Changes in v3:
+- Fix indentations pointed out by Lyude Paul.
+
+Vincent Huang (2):
+  Input: synaptics-rmi4 - rename f30_data to gpio_data
+  Input: synaptics-rmi4 - add support for F3A
+
+ drivers/hid/hid-rmi.c           |   2 +-
+ drivers/input/mouse/synaptics.c |   2 +-
+ drivers/input/rmi4/Kconfig      |   8 ++
+ drivers/input/rmi4/Makefile     |   1 +
+ drivers/input/rmi4/rmi_bus.c    |   3 +
+ drivers/input/rmi4/rmi_driver.h |   1 +
+ drivers/input/rmi4/rmi_f30.c    |  14 +-
+ drivers/input/rmi4/rmi_f3a.c    | 240 ++++++++++++++++++++++++++++++++
+ include/linux/rmi.h             |  11 +-
+ 9 files changed, 268 insertions(+), 14 deletions(-)
+ create mode 100644 drivers/input/rmi4/rmi_f3a.c
+
+-- 
+2.25.1
+
