@@ -2,123 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A00C027E0FE
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 08:24:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72A0B27E104
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 08:26:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727929AbgI3GYY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 02:24:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:37910 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725320AbgI3GYX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 02:24:23 -0400
-Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601447061;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=sQlVHYMhn8vBG9J1bK/w3aggY2ujDQ0L8SzsncwRqMk=;
-        b=VuxG861R5+rZHpSXlYQNvOIwz4/8nVM2NkCsa3t90XjGJIHEFMPhk4ENViGanXTtPCR+0Z
-        zPRw0pd1HdTFP8EFBHQqA9h/Y/g8QsYhHOQo3xkdp+4Z1CjtN4/djIRwXrC+3W7MJe0gsd
-        GcOsI8HE7s/QUn3taH52w7JuGeuG0sc=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-258-i2dY4SpqPy-PD_T6LPM6fw-1; Wed, 30 Sep 2020 02:24:19 -0400
-X-MC-Unique: i2dY4SpqPy-PD_T6LPM6fw-1
-Received: by mail-wr1-f70.google.com with SMTP id a10so202034wrw.22
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 23:24:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=sQlVHYMhn8vBG9J1bK/w3aggY2ujDQ0L8SzsncwRqMk=;
-        b=r3u+EKKxkHEKTPI4DGPJbsWS2lPV8UCDG62orsbEFUqUmgdyqdcBXufKfzUqHeHFNG
-         lTJVB1hKsOpshzBO59y5GpdQ5lYel/xY2BHLirEINZrv/2LcVdDpzBhzPf4ZBhL+vaqV
-         KSQtjabSfBFijXuB7lNWaqK9Irkgu9XW8CuHz+f3Fwp0kvd603UyWieTOTsxk+so4iPx
-         B3xmt1F7MrUy9HogeBbAWT/nfQ2f68U8tIpr64hiNJDb89Br6vS5yAucrTuWOD61XMPP
-         fLdVofm75JrffbRTolw4aYskBKVIuk7cXdz8fsGhCkX+oL0x+svSYe18zAkRUVMuS5Xk
-         zx9A==
-X-Gm-Message-State: AOAM530GjRg+UboWUw13RZdvsSxPB7fH1CZ85sYb2zJYV1fkJjhrJhze
-        bIiSGfjGKHFFQ9L1drT/ms/zKILWU1G6L+PSr2z6LAeLGa8vMoQ8uX7gGZExhQn5G5B1mZ3+fES
-        Di2EIL7ELOESf8QTgKSFUV0QL
-X-Received: by 2002:a5d:66c1:: with SMTP id k1mr1256571wrw.34.1601447058643;
-        Tue, 29 Sep 2020 23:24:18 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzGcdxJdjm9pMwDJq9hEe59B3jvrWEmZgnX+vF1hzorRoj7r5nqs307SpW+Di5YlvUMjSDFTA==
-X-Received: by 2002:a5d:66c1:: with SMTP id k1mr1256535wrw.34.1601447058417;
-        Tue, 29 Sep 2020 23:24:18 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:75e3:aaa7:77d6:f4e4? ([2001:b07:6468:f312:75e3:aaa7:77d6:f4e4])
-        by smtp.gmail.com with ESMTPSA id 63sm1246438wrc.63.2020.09.29.23.24.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 29 Sep 2020 23:24:17 -0700 (PDT)
-Subject: Re: [PATCH 02/22] kvm: mmu: Introduce tdp_iter
-To:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Ben Gardon <bgardon@google.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Cannon Matthews <cannonmatthews@google.com>,
-        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
-        Peter Feiner <pfeiner@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
-References: <20200925212302.3979661-1-bgardon@google.com>
- <20200925212302.3979661-3-bgardon@google.com>
- <20200930052336.GD29405@linux.intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <61d23bc0-771d-9110-6528-3658a55ccba6@redhat.com>
-Date:   Wed, 30 Sep 2020 08:24:17 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1726643AbgI3G0T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 02:26:19 -0400
+Received: from ozlabs.org ([203.11.71.1]:40469 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725320AbgI3G0S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 02:26:18 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C1R941KJQz9sPB;
+        Wed, 30 Sep 2020 16:26:15 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1601447176;
+        bh=LftkZ/m8oZW3Npf0tEoMzEu//RKVOrunMVWCyKL6JgA=;
+        h=Date:From:To:Cc:Subject:From;
+        b=kh05fbeGlAFGJ+GDVKioNo+KLvQU7aOeLj31HErdNgahbPwy74IQRkw7hNmOjsjp2
+         VdQgqcHlgzkLYMZqXdhKNAYnWZk3LukLvLNfYbI8+SAslpjGDMC+UmJ/zSaC5B8JaV
+         H96Cve9QRTqn50L4UxsCsyger0m2ZoqhKOo45G9MXHTDQ2kwf9nD3Kash3LkA9nFf5
+         AdGvR5itJudAWkdxcc9qtfu+aKUIv3pZkwgFUoJm+0VUYE7ELHVs/AbvLQb8YMgU9P
+         jDGLx3GULg7qCK948vwm4ucIoCRALhF2IvmFjEzjlolf0zC9VkvUcClh5JzjzpMBKL
+         VHT5D0365j7Rw==
+Date:   Wed, 30 Sep 2020 16:26:13 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Christoffer Dall <cdall@cs.columbia.edu>,
+        Marc Zyngier <maz@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: linux-next: manual merge of the kvm-arm tree with the arm64 tree
+Message-ID: <20200930162613.28d0b620@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <20200930052336.GD29405@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/DpZ/QBqO7QnhHll2hS5Zh_+";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/09/20 07:24, Sean Christopherson wrote:
-> Maybe use the params, if only to avoid the line wrap?
-> 
-> 	iter->gfn = goal_gfn - (goal_gfn % KVM_PAGES_PER_HPAGE(root_level));
-> 
-> Actually, peeking further into the file, this calculation is repeated in both
-> try_step_up and try_step_down,  probably worth adding a helper of some form.
+--Sig_/DpZ/QBqO7QnhHll2hS5Zh_+
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Also it's written more concisely as
+Hi all,
 
-	iter->gfn = goal_gfn & -KVM_PAGES_PER_HPAGE(iter->level);
+Today's linux-next merge of the kvm-arm tree got a conflict in:
 
-> 
-> 
-> 	bool done;
-> 
-> 	if (try_step_down(iter))
-> 		return;
-> 
-> 	do {
-> 		done = try_step_side(iter);
-> 	} while (!done && try_step_up(iter));
-> 
-> 	iter->valid = done;
+  arch/arm64/kvm/hyp/Makefile
 
-I pointed out something similar in my review, my version was
+between commit:
 
-	bool done;
+  5359a87d5bda ("KVM: arm64: Replace CONFIG_KVM_INDIRECT_VECTORS with CONFI=
+G_RANDOMIZE_BASE")
+  9ef2b48be9bb ("KVM: arm64: Allow patching EL2 vectors even with KASLR is =
+not enabled")
 
-	if (try_step_down(iter))
-		return;
+from the arm64 tree and commit:
 
-	do {
-		if (try_step_side(iter))
-			return;
-	} while (try_step_up(iter));
-	iter->valid = false;
+  b1e57de62cfb ("KVM: arm64: Add stand-alone page-table walker infrastructu=
+re")
 
-Paolo
+from the kvm-arm tree.
 
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc arch/arm64/kvm/hyp/Makefile
+index d898f0da5802,607b8a898826..000000000000
+--- a/arch/arm64/kvm/hyp/Makefile
++++ b/arch/arm64/kvm/hyp/Makefile
+@@@ -10,4 -10,5 +10,4 @@@ subdir-ccflags-y :=3D -I$(incdir)			=09
+  		    -DDISABLE_BRANCH_PROFILING		\
+  		    $(DISABLE_STACKLEAK_PLUGIN)
+ =20
+- obj-$(CONFIG_KVM) +=3D vhe/ nvhe/ smccc_wa.o
+ -obj-$(CONFIG_KVM) +=3D vhe/ nvhe/ pgtable.o
+ -obj-$(CONFIG_KVM_INDIRECT_VECTORS) +=3D smccc_wa.o
+++obj-$(CONFIG_KVM) +=3D vhe/ nvhe/ smccc_wa.o pgtable.o
+
+--Sig_/DpZ/QBqO7QnhHll2hS5Zh_+
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl90JQUACgkQAVBC80lX
+0GzxAgf9Hoxb5CRB4ss0W2b1WmZb59p1g4xMaLzx9f3Cx4HN8VJhIOe+DAkxiP5+
+tlTySmvuvrPMwLZ42sNJQlwXqstk2I7QpHz5Jr2FZJSQ23u8Kp9+7xcD3eBDWF4E
+kgznTOp3je3KMRZnOpjXtc007TV145OqSm43VFf5I5Hrwino6NnoxOrQy6LxZ1v2
+1vOqPusdB+kZC81Rf6J4GkClt93j4XIUAW9j/7KTnhPygVb4huTks4mcDwvHBGYy
+GBV5y6CVaAcgXH3N2qXgeNFDDH07At+2PSJlH5cjNnVsf5HU6XYaTPMZX7EewNZA
+R8dZfy4NTrwqkWZiVQtl5e410S5Mcg==
+=PRR0
+-----END PGP SIGNATURE-----
+
+--Sig_/DpZ/QBqO7QnhHll2hS5Zh_+--
