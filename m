@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D1A627E9B8
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 15:27:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9856C27E9B0
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 15:27:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730677AbgI3N1b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 09:27:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39176 "EHLO mail.kernel.org"
+        id S1730623AbgI3N1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 09:27:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38766 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729205AbgI3NZW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1730239AbgI3NZW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 30 Sep 2020 09:25:22 -0400
 Received: from mail.kernel.org (unknown [95.90.213.196])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1944B239CF;
+        by mail.kernel.org (Postfix) with ESMTPSA id 2E97E239EE;
         Wed, 30 Sep 2020 13:25:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1601472321;
-        bh=VDfOGlsJYZesR9L6Qb+5QlSLDI9X9oF0Ascq4FkKHDo=;
+        bh=gircHDTmaOYdmAjX4GqQkC9md45Fenmq59SXCI2xF+A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=F0FBxMn4+P5Z72lHFfZUAHW5hPwAXdPu4svvl8ksUqkp4316yV6bOeK96NtiOgMOA
-         YYNME6DxXKrDlsS4kcuvlBoEkFnp7yvXmCLMWW8CcWgi7u08ttESxwRHSWMgTZTiyf
-         /xKMEwmUgSDErDNll8Xb0h0QEYLRMa5tAUAbp/MI=
+        b=us5FxKzKqEdze1ILLTZ2aH83ekt+zNpPhjHqN7ThMKiju8UiDYu2NPR1q4AFw8t8i
+         M9f/V1s9teHzKdOoCn2Kp8kBKq0+6mcGp1il/bO+0foJMeSvKRCSYDTxc/wn1JpW3o
+         ZxWEItpZEnZDTgCtdvv1dOjjjz430Mlc+Q9TG/NQ=
 Received: from mchehab by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1kNc6h-001XKR-77; Wed, 30 Sep 2020 15:25:19 +0200
+        id 1kNc6h-001XKV-96; Wed, 30 Sep 2020 15:25:19 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
         Jonathan Corbet <corbet@lwn.net>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        linux-fscrypt@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v4 35/52] docs: fs: fscrypt.rst: get rid of :c:type: tags
-Date:   Wed, 30 Sep 2020 15:24:58 +0200
-Message-Id: <689d790237b64fc7d81fcf97ac303cc1dbdd33d4.1601467849.git.mchehab+huawei@kernel.org>
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Wolfram Sang <wsa@kernel.org>, linux-kernel@vger.kernel.org
+Subject: [PATCH v4 36/52] docs: devices.rst: get rid of :c:type macros
+Date:   Wed, 30 Sep 2020 15:24:59 +0200
+Message-Id: <505a7a6cc60dabc5b1d022acbb964866047815d2.1601467849.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1601467849.git.mchehab+huawei@kernel.org>
 References: <cover.1601467849.git.mchehab+huawei@kernel.org>
@@ -47,135 +47,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The :c:type: tag has problems with Sphinx 3.x, as structs
-there should be declared with c:struct.
+There's no need to use macros to use :c:type on this file,
+as automarkup.py should do this automatically.
 
-So, remove them, relying at automarkup.py extension to
-convert them into cross-references.
+Also, this breaks compatibility with Sphinx 3.x, as there,
+structs should be declared using .. c:struct.
+
+So, get rid of them.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- Documentation/filesystems/fscrypt.rst | 51 ++++++++++++---------------
- 1 file changed, 23 insertions(+), 28 deletions(-)
+ Documentation/driver-api/pm/devices.rst | 24 ++++++++----------------
+ 1 file changed, 8 insertions(+), 16 deletions(-)
 
-diff --git a/Documentation/filesystems/fscrypt.rst b/Documentation/filesystems/fscrypt.rst
-index 4f858b38a412..46a9d1bd2ab5 100644
---- a/Documentation/filesystems/fscrypt.rst
-+++ b/Documentation/filesystems/fscrypt.rst
-@@ -437,8 +437,7 @@ FS_IOC_SET_ENCRYPTION_POLICY
- The FS_IOC_SET_ENCRYPTION_POLICY ioctl sets an encryption policy on an
- empty directory or verifies that a directory or regular file already
- has the specified encryption policy.  It takes in a pointer to a
--struct fscrypt_policy_v1 or a :c:type:`struct
--fscrypt_policy_v2`, defined as follows::
-+struct fscrypt_policy_v1 or a struct fscrypt_policy_v2, defined as follows::
+diff --git a/Documentation/driver-api/pm/devices.rst b/Documentation/driver-api/pm/devices.rst
+index 946ad0b94e31..4bda8a21f5d1 100644
+--- a/Documentation/driver-api/pm/devices.rst
++++ b/Documentation/driver-api/pm/devices.rst
+@@ -1,14 +1,6 @@
+ .. SPDX-License-Identifier: GPL-2.0
+ .. include:: <isonum.txt>
  
-     #define FSCRYPT_POLICY_V1               0
-     #define FSCRYPT_KEY_DESCRIPTOR_SIZE     8
-@@ -464,11 +463,10 @@ fscrypt_policy_v2`, defined as follows::
+-.. |struct dev_pm_ops| replace:: :c:type:`struct dev_pm_ops <dev_pm_ops>`
+-.. |struct dev_pm_domain| replace:: :c:type:`struct dev_pm_domain <dev_pm_domain>`
+-.. |struct bus_type| replace:: :c:type:`struct bus_type <bus_type>`
+-.. |struct device_type| replace:: :c:type:`struct device_type <device_type>`
+-.. |struct class| replace:: :c:type:`struct class <class>`
+-.. |struct wakeup_source| replace:: :c:type:`struct wakeup_source <wakeup_source>`
+-.. |struct device| replace:: :c:type:`struct device <device>`
+-
+ .. _driverapi_pm_devices:
  
- This structure must be initialized as follows:
+ ==============================
+@@ -107,7 +99,7 @@ Device Power Management Operations
  
--- ``version`` must be FSCRYPT_POLICY_V1 (0) if the struct is
--  :c:type:`fscrypt_policy_v1` or FSCRYPT_POLICY_V2 (2) if the struct
--  is :c:type:`fscrypt_policy_v2`.  (Note: we refer to the original
--  policy version as "v1", though its version code is really 0.)  For
--  new encrypted directories, use v2 policies.
-+- ``version`` must be FSCRYPT_POLICY_V1 (0) if struct fscrypt_policy_v1
-+  is used or FSCRYPT_POLICY_V2 (2) if struct fscrypt_policy_v2 is used.
-+  (Note: we refer to the original policy version as "v1", though its
-+  version code is really 0.)  For new encrypted directories, use v2 policies.
+ Device power management operations, at the subsystem level as well as at the
+ device driver level, are implemented by defining and populating objects of type
+-|struct dev_pm_ops| defined in :file:`include/linux/pm.h`.  The roles of the
++struct dev_pm_ops defined in :file:`include/linux/pm.h`.  The roles of the
+ methods included in it will be explained in what follows.  For now, it should be
+ sufficient to remember that the last three methods are specific to runtime power
+ management while the remaining ones are used during system-wide power
+@@ -115,7 +107,7 @@ transitions.
  
- - ``contents_encryption_mode`` and ``filenames_encryption_mode`` must
-   be set to constants from ``<linux/fscrypt.h>`` which identify the
-@@ -509,8 +507,7 @@ This structure must be initialized as follows:
-   be arbitrarily chosen.  Instead, the key must first be added using
-   `FS_IOC_ADD_ENCRYPTION_KEY`_.  Then, the ``key_spec.u.identifier``
-   the kernel returned in the struct fscrypt_add_key_arg must
--  be used as the ``master_key_identifier`` in the :c:type:`struct
--  fscrypt_policy_v2`.
-+  be used as the ``master_key_identifier`` in struct fscrypt_policy_v2.
+ There also is a deprecated "old" or "legacy" interface for power management
+ operations available at least for some subsystems.  This approach does not use
+-|struct dev_pm_ops| objects and it is suitable only for implementing system
++struct dev_pm_ops objects and it is suitable only for implementing system
+ sleep power management methods in a limited way.  Therefore it is not described
+ in this document, so please refer directly to the source code for more
+ information about it.
+@@ -125,9 +117,9 @@ Subsystem-Level Methods
+ -----------------------
  
- If the file is not yet encrypted, then FS_IOC_SET_ENCRYPTION_POLICY
- verifies that the file is an empty directory.  If so, the specified
-@@ -637,9 +634,8 @@ The FS_IOC_GET_ENCRYPTION_POLICY ioctl can also retrieve the
- encryption policy, if any, for a directory or regular file.  However,
- unlike `FS_IOC_GET_ENCRYPTION_POLICY_EX`_,
- FS_IOC_GET_ENCRYPTION_POLICY only supports the original policy
--version.  It takes in a pointer directly to a :c:type:`struct
--fscrypt_policy_v1` rather than a :c:type:`struct
--fscrypt_get_policy_ex_arg`.
-+version.  It takes in a pointer directly to struct fscrypt_policy_v1
-+rather than struct fscrypt_get_policy_ex_arg.
+ The core methods to suspend and resume devices reside in
+-|struct dev_pm_ops| pointed to by the :c:member:`ops` member of
+-|struct dev_pm_domain|, or by the :c:member:`pm` member of |struct bus_type|,
+-|struct device_type| and |struct class|.  They are mostly of interest to the
++struct dev_pm_ops pointed to by the :c:member:`ops` member of
++struct dev_pm_domain, or by the :c:member:`pm` member of struct bus_type,
++struct device_type and struct class.  They are mostly of interest to the
+ people writing infrastructure for platforms and buses, like PCI or USB, or
+ device type and device class drivers.  They also are relevant to the writers of
+ device drivers whose subsystems (PM domains, device types, device classes and
+@@ -156,7 +148,7 @@ The :c:member:`power.can_wakeup` flag just records whether the device (and its
+ driver) can physically support wakeup events.  The
+ :c:func:`device_set_wakeup_capable()` routine affects this flag.  The
+ :c:member:`power.wakeup` field is a pointer to an object of type
+-|struct wakeup_source| used for controlling whether or not the device should use
++struct wakeup_source used for controlling whether or not the device should use
+ its system wakeup mechanism and for notifying the PM core of system wakeup
+ events signaled by the device.  This object is only present for wakeup-capable
+ devices (i.e. devices whose :c:member:`can_wakeup` flags are set) and is created
+@@ -713,8 +705,8 @@ nested inside another power domain. The nested domain is referred to as the
+ sub-domain of the parent domain.
  
- The error codes for FS_IOC_GET_ENCRYPTION_POLICY are the same as those
- for FS_IOC_GET_ENCRYPTION_POLICY_EX, except that
-@@ -717,10 +713,9 @@ as follows:
-   ``key_spec.type`` must contain FSCRYPT_KEY_SPEC_TYPE_DESCRIPTOR, and
-   ``key_spec.u.descriptor`` must contain the descriptor of the key
-   being added, corresponding to the value in the
--  ``master_key_descriptor`` field of :c:type:`struct
--  fscrypt_policy_v1`.  To add this type of key, the calling process
--  must have the CAP_SYS_ADMIN capability in the initial user
--  namespace.
-+  ``master_key_descriptor`` field of struct fscrypt_policy_v1.
-+  To add this type of key, the calling process must have the
-+  CAP_SYS_ADMIN capability in the initial user namespace.
- 
-   Alternatively, if the key is being added for use by v2 encryption
-   policies, then ``key_spec.type`` must contain
-@@ -737,8 +732,8 @@ as follows:
- 
- - ``key_id`` is 0 if the raw key is given directly in the ``raw``
-   field.  Otherwise ``key_id`` is the ID of a Linux keyring key of
--  type "fscrypt-provisioning" whose payload is a :c:type:`struct
--  fscrypt_provisioning_key_payload` whose ``raw`` field contains the
-+  type "fscrypt-provisioning" whose payload is
-+  struct fscrypt_provisioning_key_payload whose ``raw`` field contains the
-   raw key and whose ``type`` field matches ``key_spec.type``.  Since
-   ``raw`` is variable-length, the total size of this key's payload
-   must be ``sizeof(struct fscrypt_provisioning_key_payload)`` plus the
-@@ -956,8 +951,8 @@ FS_IOC_GET_ENCRYPTION_KEY_STATUS
- The FS_IOC_GET_ENCRYPTION_KEY_STATUS ioctl retrieves the status of a
- master encryption key.  It can be executed on any file or directory on
- the target filesystem, but using the filesystem's root directory is
--recommended.  It takes in a pointer to a :c:type:`struct
--fscrypt_get_key_status_arg`, defined as follows::
-+recommended.  It takes in a pointer to struct fscrypt_get_key_status_arg,
-+defined as follows::
- 
-     struct fscrypt_get_key_status_arg {
-             /* input */
-@@ -1148,12 +1143,12 @@ Implementation details
- Encryption context
- ------------------
- 
--An encryption policy is represented on-disk by a :c:type:`struct
--fscrypt_context_v1` or a struct fscrypt_context_v2.  It is
--up to individual filesystems to decide where to store it, but normally
--it would be stored in a hidden extended attribute.  It should *not* be
--exposed by the xattr-related system calls such as getxattr() and
--setxattr() because of the special semantics of the encryption xattr.
-+An encryption policy is represented on-disk by struct fscrypt_context_v1
-+or struct fscrypt_context_v2.  It is up to individual filesystems to decide
-+where to store it, but normally it would be stored in a hidden extended
-+attribute.  It should *not* be exposed by the xattr-related system calls
-+such as getxattr() and setxattr() because of the special semantics of the
-+encryption xattr.
- (In particular, there would be much confusion if an encryption policy
- were to be added to or removed from anything other than an empty
- directory.)  These structs are defined as follows::
-@@ -1249,8 +1244,8 @@ a strong "hash" of the ciphertext filename, along with the optional
- filesystem-specific hash(es) needed for directory lookups.  This
- allows the filesystem to still, with a high degree of confidence, map
- the filename given in ->lookup() back to a particular directory entry
--that was previously listed by readdir().  See :c:type:`struct
--fscrypt_nokey_name` in the source for more details.
-+that was previously listed by readdir().  See struct fscrypt_nokey_name
-+in the source for more details.
- 
- Note that the precise way that filenames are presented to userspace
- without the key is subject to change in the future.  It is only meant
+ Support for power domains is provided through the :c:member:`pm_domain` field of
+-|struct device|.  This field is a pointer to an object of type
+-|struct dev_pm_domain|, defined in :file:`include/linux/pm.h`, providing a set
++struct device.  This field is a pointer to an object of type
++struct dev_pm_domain, defined in :file:`include/linux/pm.h`, providing a set
+ of power management callbacks analogous to the subsystem-level and device driver
+ callbacks that are executed for the given device during all power transitions,
+ instead of the respective subsystem-level callbacks.  Specifically, if a
 -- 
 2.26.2
 
