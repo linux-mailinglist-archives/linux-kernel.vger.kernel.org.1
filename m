@@ -2,84 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47E4827E202
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 09:07:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D9DC27E1F4
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 09:07:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728388AbgI3HHu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 03:07:50 -0400
-Received: from mga07.intel.com ([134.134.136.100]:34497 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728348AbgI3HHq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 03:07:46 -0400
-IronPort-SDR: rsS3GsyM1bnnCY4F3Qk/IoieBUhwjGw8jUkrwYZJALxACMWOfzxXcKeQBCRBwBmrTOhKknsXJ+
- PeZVSBohV6yw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9759"; a="226533047"
-X-IronPort-AV: E=Sophos;i="5.77,321,1596524400"; 
-   d="scan'208";a="226533047"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2020 00:07:45 -0700
-IronPort-SDR: LiERPO1+tll/6J6HuXgQ4AgKdFukn06B4YZvMthJCs/89/8F1HXQO7OxhlkPgRmGLEsxatbt9q
- 9vTQ3RfH6zMw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,321,1596524400"; 
-   d="scan'208";a="496014288"
-Received: from shskylake.sh.intel.com ([10.239.48.137])
-  by orsmga005.jf.intel.com with ESMTP; 30 Sep 2020 00:07:42 -0700
-From:   Ethan Zhao <haifeng.zhao@intel.com>
-To:     bhelgaas@google.com, oohall@gmail.com, ruscur@russell.cc,
-        lukas@wunner.de, andriy.shevchenko@linux.intel.com,
-        stuart.w.hayes@gmail.com, mr.nuke.me@gmail.com,
-        mika.westerberg@linux.intel.com
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ashok.raj@linux.intel.com, sathyanarayanan.kuppuswamy@intel.com,
-        xerces.zhao@gmail.com, Ethan Zhao <haifeng.zhao@intel.com>
-Subject: [PATCH v6 5/5] PCI/ERR: don't mix io state not changed and no driver together
-Date:   Wed, 30 Sep 2020 03:05:37 -0400
-Message-Id: <20200930070537.30982-6-haifeng.zhao@intel.com>
-X-Mailer: git-send-email 2.18.4
-In-Reply-To: <20200930070537.30982-1-haifeng.zhao@intel.com>
-References: <20200930070537.30982-1-haifeng.zhao@intel.com>
+        id S1725888AbgI3HHN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 03:07:13 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:39247 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725535AbgI3HHN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 03:07:13 -0400
+X-UUID: 7c63cc7630224a1093afc71d9ffaa0d1-20200930
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=5AhZKEIC00gKIcL6HX6plzcjVbB5Hhhvugp+KrpFUY8=;
+        b=Gzf172xm5DRoi6pR40TKKua2P7MVsWMJQ8MN3GuAHNUljrmE2QXCSfIoF0inyBnKXEmXDVfPniw/Cn6gVK4mXiu+DXhIkq/S0LgYbWVBDqVjwaky6rTl9IfMAf4Z4Sch9EAU+p+EYTpus9Ve+sNziDifNHveY750PDvqaMq6a64=;
+X-UUID: 7c63cc7630224a1093afc71d9ffaa0d1-20200930
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
+        (envelope-from <yong.wu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 679787247; Wed, 30 Sep 2020 15:07:02 +0800
+Received: from mtkcas08.mediatek.inc (172.21.101.126) by
+ mtkmbs08n2.mediatek.inc (172.21.101.56) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 30 Sep 2020 15:06:59 +0800
+Received: from localhost.localdomain (10.17.3.153) by mtkcas08.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 30 Sep 2020 15:06:57 +0800
+From:   Yong Wu <yong.wu@mediatek.com>
+To:     Joerg Roedel <joro@8bytes.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Will Deacon <will@kernel.org>
+CC:     Evan Green <evgreen@chromium.org>, Tomasz Figa <tfiga@google.com>,
+        <linux-mediatek@lists.infradead.org>,
+        <srv_heupstream@mediatek.com>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <iommu@lists.linux-foundation.org>, <yong.wu@mediatek.com>,
+        <youlin.pei@mediatek.com>, Nicolas Boichat <drinkcat@chromium.org>,
+        <anan.sun@mediatek.com>, <chao.hao@mediatek.com>,
+        <ming-fan.chen@mediatek.com>,
+        Greg Kroah-Hartman <gregkh@google.com>,
+        <kernel-team@android.com>
+Subject: [PATCH v3 00/24] MT8192 IOMMU support
+Date:   Wed, 30 Sep 2020 15:06:23 +0800
+Message-ID: <20200930070647.10188-1-yong.wu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+MIME-Version: 1.0
+Content-Type: text/plain
+X-TM-SNTS-SMTP: FBF17A1314FE8431647D3158E921C25AFB5DE37D010C6932888B9B9AC638F2252000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When we see 'can't recover (no error_detected callback)' on console,
-Maybe the reason is io state is not changed by calling
-pci_dev_set_io_state(), that is confused. fix it.
-
-Signed-off-by: Ethan Zhao <haifeng.zhao@intel.com>
-Tested-by: Wen Jin <wen.jin@intel.com>
-Tested-by: Shanshan Zhang <ShanshanX.Zhang@intel.com>
----
-Chagnes:
- v2: no change.
- v3: no change.
- v4: no change.
- v5: no change.
- v6: no change.
-
- drivers/pci/pcie/err.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/pci/pcie/err.c b/drivers/pci/pcie/err.c
-index e35c4480c86b..d85f27c90c26 100644
---- a/drivers/pci/pcie/err.c
-+++ b/drivers/pci/pcie/err.c
-@@ -55,8 +55,10 @@ static int report_error_detected(struct pci_dev *dev,
- 	if (!pci_dev_get(dev))
- 		return 0;
- 	device_lock(&dev->dev);
--	if (!pci_dev_set_io_state(dev, state) ||
--		!dev->driver ||
-+	if (!pci_dev_set_io_state(dev, state)) {
-+		pci_dbg(dev, "Device might already being in error handling ...\n");
-+		vote = PCI_ERS_RESULT_NONE;
-+	} else if (!dev->driver ||
- 		!dev->driver->err_handler ||
- 		!dev->driver->err_handler->error_detected) {
- 		/*
--- 
-2.18.4
+VGhpcyBwYXRjaCBtYWlubHkgYWRkcyBzdXBwb3J0IGZvciBtdDgxOTIgSU9NTVUgYW5kIFNNSS4N
+Cg0KbXQ4MTkyIGFsc28gaXMgTVRLIElPTU1VIGdlbjIgd2hpY2ggdXNlcyBBUk0gU2hvcnQtRGVz
+Y3JpcHRvciB0cmFuc2xhdGlvbg0KdGFibGUgZm9ybWF0LiBUaGUgTTRVLVNNSSBIVyBkaWFncmFt
+IGlzIGFzIGJlbG93Og0KDQogICAgICAgICAgICAgICAgICAgICAgICAgIEVNSQ0KICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgfA0KICAgICAgICAgICAgICAgICAgICAgICAgICBNNFUNCiAgICAg
+ICAgICAgICAgICAgICAgICAgICAgIHwNCiAgICAgICAgICAgICAgICAgICAgICAtLS0tLS0tLS0t
+LS0NCiAgICAgICAgICAgICAgICAgICAgICAgU01JIENvbW1vbg0KICAgICAgICAgICAgICAgICAg
+ICAgIC0tLS0tLS0tLS0tLQ0KICAgICAgICAgICAgICAgICAgICAgICAgICAgfA0KICArLS0tLS0t
+LSstLS0tLS0rLS0tLS0tKy0tLS0tLS0tLS0tLS0tLS0tLS0tLS0rLS0tLS0tLSsNCiAgfCAgICAg
+ICB8ICAgICAgfCAgICAgIHwgICAgICAgLi4uLi4uICAgICAgICAgfCAgICAgICB8DQogIHwgICAg
+ICAgfCAgICAgIHwgICAgICB8ICAgICAgICAgICAgICAgICAgICAgIHwgICAgICAgfA0KbGFyYjAg
+ICBsYXJiMSAgbGFyYjIgIGxhcmI0ICAgICAuLi4uLi4gICAgICBsYXJiMTkgICBsYXJiMjANCmRp
+c3AwICAgZGlzcDEgICBtZHAgICAgdmRlYyAgICAgICAgICAgICAgICAgICBJUEUgICAgICBJUEUN
+Cg0KQWxsIHRoZSBjb25uZWN0aW9ucyBhcmUgSFcgZml4ZWQsIFNXIGNhbiBOT1QgYWRqdXN0IGl0
+Lg0KDQpDb21wYXJpbmcgd2l0aCB0aGUgcHJldmlldyBTb0MsIHRoaXMgcGF0Y2hzZXQgbWFpbmx5
+IGFkZHMgdHdvIG5ldyBmdW5jdGlvbnM6DQphKSBhZGQgaW92YSAzNCBiaXRzIHN1cHBvcnQuDQpi
+KSBhZGQgbXVsdGkgZG9tYWlucyBzdXBwb3J0IHNpbmNlIHNldmVyYWwgSFcgaGFzIHRoZSBzcGVj
+aWFsIGlvdmENCnJlZ2lvbiByZXF1aXJlbWVudC4NCg0KdGhpcyBwYXRjaHNldCBkZXBlbmQgb24g
+djUuOS1yYzEuDQoNCmNoYW5nZSBub3RlOg0KdjM6DQogIGEpIEZpeCBEVCBzY2hlbWEgaXNzdWUg
+Y29tbWVudGVkIGZyb20gUm9iLg0KICBiKSBGaXggYSB2N3MgaXNzdWUuIFVzZSAiX2x2bCIgaW5z
+dGVhZCBvZiAiX2wiIGluIHRoZSBtYWNybyhBUk1fVjdTX1BURVNfUEVSX0xWTCkgc2luY2UgDQog
+IGl0IGlzIGNhbGxlZCBpbiBBUk1fVjdTX0xWTF9JRFggd2hpY2ggaGFzIGFscmVhZHkgdXNlZCAi
+X2wiLg0KICBjKSBGaXggYSBQTSBzdXNwZW5kIGlzc3VlOiBBdm9pZCBwbSBzdXNwZW5kIGluIHBt
+IHJ1bnRpbWUgY2FzZS4NCg0KdjI6IGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2xpbnV4LWlvbW11
+LzIwMjAwOTA1MDgwOTIwLjEzMzk2LTEteW9uZy53dUBtZWRpYXRlay5jb20vDQogIGEpIENvbnZl
+cnQgSU9NTVUvU01JIGR0LWJpbmRpbmcgdG8gRFQgc2NoZW1hLg0KICBiKSBGaXggc29tZSBjb21t
+ZW50IGZyb20gUGktSHN1biBhbmQgTmljb2xhcy4gbGlrZSB1c2UNCiAgZ2VuZXJpY19pb21tdV9w
+dXRfcmVzdl9yZWdpb25zLg0KICBjKSBSZXdvcmQgc29tZSBjb21tZW50LCBsaWtlIGFkZCBob3cg
+dG8gdXNlIGRvbWFpbi1pZC4NCg0KdjE6IGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2xpbnV4LWlv
+bW11LzIwMjAwNzExMDY0ODQ2LjE2MDA3LTEteW9uZy53dUBtZWRpYXRlay5jb20vDQoNCllvbmcg
+V3UgKDI0KToNCiAgZHQtYmluZGluZ3M6IGlvbW11OiBtZWRpYXRlazogQ29udmVydCBJT01NVSB0
+byBEVCBzY2hlbWENCiAgZHQtYmluZGluZ3M6IG1lbW9yeTogbWVkaWF0ZWs6IENvbnZlcnQgU01J
+IHRvIERUIHNjaGVtYQ0KICBkdC1iaW5kaW5nczogbWVtb3J5OiBtZWRpYXRlazogQWRkIGEgY29t
+bW9uIGxhcmItcG9ydCBoZWFkZXIgZmlsZQ0KICBkdC1iaW5kaW5nczogbWVtb3J5OiBtZWRpYXRl
+azogRXh0ZW5kIExBUkJfTlJfTUFYIHRvIDMyDQogIGR0LWJpbmRpbmdzOiBtZW1vcnk6IG1lZGlh
+dGVrOiBBZGQgZG9tYWluIGRlZmluaXRpb24NCiAgZHQtYmluZGluZ3M6IG1lZGlhdGVrOiBBZGQg
+YmluZGluZyBmb3IgbXQ4MTkyIElPTU1VDQogIGlvbW11L21lZGlhdGVrOiBVc2UgdGhlIGNvbW1v
+biBtdGstc21pLWxhcmItcG9ydC5oDQogIGlvbW11L2lvLXBndGFibGUtYXJtLXY3czogVXNlIGlh
+cyB0byBjaGVjayB0aGUgdmFsaWQgaW92YSBpbiB1bm1hcA0KICBpb21tdS9pby1wZ3RhYmxlLWFy
+bS12N3M6IEV4dGVuZCBQQTM0IGZvciBNZWRpYVRlaw0KICBpb21tdS9pby1wZ3RhYmxlLWFybS12
+N3M6IEFkZCBjZmcgYXMgYSBwYXJhbSBpbiBzb21lIG1hY3Jvcw0KICBpb21tdS9pby1wZ3RhYmxl
+LWFybS12N3M6IFF1YWQgbHZsMSBwZ3RhYmxlIGZvciBNZWRpYVRlaw0KICBpb21tdS9tZWRpYXRl
+azogTW92ZSBod19pbml0IGludG8gYXR0YWNoX2RldmljZQ0KICBpb21tdS9tZWRpYXRlazogQWRk
+IGRldmljZSBsaW5rIGZvciBzbWktY29tbW9uIGFuZCBtNHUNCiAgaW9tbXUvbWVkaWF0ZWs6IEFk
+ZCBwbSBydW50aW1lIGNhbGxiYWNrDQogIGlvbW11L21lZGlhdGVrOiBBZGQgcG93ZXItZG9tYWlu
+IG9wZXJhdGlvbg0KICBpb21tdS9tZWRpYXRlazogQWRkIGlvdmEgcmVzZXJ2ZWQgZnVuY3Rpb24N
+CiAgaW9tbXUvbWVkaWF0ZWs6IEFkZCBzaW5nbGUgZG9tYWluDQogIGlvbW11L21lZGlhdGVrOiBT
+dXBwb3J0IG1hc3RlciB1c2UgaW92YSBvdmVyIDMyYml0DQogIGlvbW11L21lZGlhdGVrOiBTdXBw
+b3J0IHVwIHRvIDM0Yml0IGlvdmEgaW4gdGxiIGZsdXNoDQogIGlvbW11L21lZGlhdGVrOiBTdXBw
+b3J0IHJlcG9ydCBpb3ZhIDM0Yml0IHRyYW5zbGF0aW9uIGZhdWx0IGluIElTUg0KICBpb21tdS9t
+ZWRpYXRlazogQWRkIHN1cHBvcnQgZm9yIG11bHRpIGRvbWFpbg0KICBpb21tdS9tZWRpYXRlazog
+QWRqdXN0IHRoZSBzdHJ1Y3R1cmUNCiAgaW9tbXUvbWVkaWF0ZWs6IEFkZCBtdDgxOTIgc3VwcG9y
+dA0KICBtZW1vcnk6IG10ay1zbWk6IEFkZCBtdDgxOTIgc3VwcG9ydA0KDQogLi4uL2JpbmRpbmdz
+L2lvbW11L21lZGlhdGVrLGlvbW11LnR4dCAgICAgICAgIHwgMTAzIC0tLS0tLS0NCiAuLi4vYmlu
+ZGluZ3MvaW9tbXUvbWVkaWF0ZWssaW9tbXUueWFtbCAgICAgICAgfCAxNTkgKysrKysrKysrKysN
+CiAuLi4vbWVkaWF0ZWssc21pLWNvbW1vbi50eHQgICAgICAgICAgICAgICAgICAgfCAgNDkgLS0t
+LQ0KIC4uLi9tZWRpYXRlayxzbWktY29tbW9uLnlhbWwgICAgICAgICAgICAgICAgICB8IDEwMSAr
+KysrKysrDQogLi4uL21lbW9yeS1jb250cm9sbGVycy9tZWRpYXRlayxzbWktbGFyYi50eHQgIHwg
+IDQ5IC0tLS0NCiAuLi4vbWVtb3J5LWNvbnRyb2xsZXJzL21lZGlhdGVrLHNtaS1sYXJiLnlhbWwg
+fCAgOTIgKysrKysrKw0KIGRyaXZlcnMvaW9tbXUvaW8tcGd0YWJsZS1hcm0tdjdzLmMgICAgICAg
+ICAgICB8ICA1NyArKy0tDQogZHJpdmVycy9pb21tdS9tdGtfaW9tbXUuYyAgICAgICAgICAgICAg
+ICAgICAgIHwgMjU2ICsrKysrKysrKysrKysrKy0tLQ0KIGRyaXZlcnMvaW9tbXUvbXRrX2lvbW11
+LmggICAgICAgICAgICAgICAgICAgICB8ICAxMSArLQ0KIGRyaXZlcnMvbWVtb3J5L210ay1zbWku
+YyAgICAgICAgICAgICAgICAgICAgICB8ICAyNyArKw0KIGluY2x1ZGUvZHQtYmluZGluZ3MvbWVt
+b3J5L210MjcxMi1sYXJiLXBvcnQuaCB8ICAgMiArLQ0KIGluY2x1ZGUvZHQtYmluZGluZ3MvbWVt
+b3J5L210Njc3OS1sYXJiLXBvcnQuaCB8ICAgMiArLQ0KIGluY2x1ZGUvZHQtYmluZGluZ3MvbWVt
+b3J5L210ODE3My1sYXJiLXBvcnQuaCB8ICAgMiArLQ0KIGluY2x1ZGUvZHQtYmluZGluZ3MvbWVt
+b3J5L210ODE4My1sYXJiLXBvcnQuaCB8ICAgMiArLQ0KIGluY2x1ZGUvZHQtYmluZGluZ3MvbWVt
+b3J5L210ODE5Mi1sYXJiLXBvcnQuaCB8IDIzOSArKysrKysrKysrKysrKysrDQogLi4uL2R0LWJp
+bmRpbmdzL21lbW9yeS9tdGstc21pLWxhcmItcG9ydC5oICAgIHwgIDIyICsrDQogaW5jbHVkZS9s
+aW51eC9pby1wZ3RhYmxlLmggICAgICAgICAgICAgICAgICAgIHwgICA0ICstDQogaW5jbHVkZS9z
+b2MvbWVkaWF0ZWsvc21pLmggICAgICAgICAgICAgICAgICAgIHwgICAzICstDQogMTggZmlsZXMg
+Y2hhbmdlZCwgOTAzIGluc2VydGlvbnMoKyksIDI3NyBkZWxldGlvbnMoLSkNCiBkZWxldGUgbW9k
+ZSAxMDA2NDQgRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2lvbW11L21lZGlhdGVr
+LGlvbW11LnR4dA0KIGNyZWF0ZSBtb2RlIDEwMDY0NCBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUv
+YmluZGluZ3MvaW9tbXUvbWVkaWF0ZWssaW9tbXUueWFtbA0KIGRlbGV0ZSBtb2RlIDEwMDY0NCBE
+b2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbWVtb3J5LWNvbnRyb2xsZXJzL21lZGlh
+dGVrLHNtaS1jb21tb24udHh0DQogY3JlYXRlIG1vZGUgMTAwNjQ0IERvY3VtZW50YXRpb24vZGV2
+aWNldHJlZS9iaW5kaW5ncy9tZW1vcnktY29udHJvbGxlcnMvbWVkaWF0ZWssc21pLWNvbW1vbi55
+YW1sDQogZGVsZXRlIG1vZGUgMTAwNjQ0IERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5n
+cy9tZW1vcnktY29udHJvbGxlcnMvbWVkaWF0ZWssc21pLWxhcmIudHh0DQogY3JlYXRlIG1vZGUg
+MTAwNjQ0IERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tZW1vcnktY29udHJvbGxl
+cnMvbWVkaWF0ZWssc21pLWxhcmIueWFtbA0KIGNyZWF0ZSBtb2RlIDEwMDY0NCBpbmNsdWRlL2R0
+LWJpbmRpbmdzL21lbW9yeS9tdDgxOTItbGFyYi1wb3J0LmgNCiBjcmVhdGUgbW9kZSAxMDA2NDQg
+aW5jbHVkZS9kdC1iaW5kaW5ncy9tZW1vcnkvbXRrLXNtaS1sYXJiLXBvcnQuaA0KDQotLSANCjIu
+MTguMA0KDQoNCg==
 
