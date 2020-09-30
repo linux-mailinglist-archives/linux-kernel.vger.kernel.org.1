@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A775427E9E7
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 15:29:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BC7827E9D3
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 15:28:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730426AbgI3N2w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 09:28:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38572 "EHLO mail.kernel.org"
+        id S1730810AbgI3N2Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 09:28:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38752 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728232AbgI3NZU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 09:25:20 -0400
-Received: from mail.kernel.org (unknown [95.90.213.196])
+        id S1730104AbgI3NZV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 09:25:21 -0400
+Received: from mail.kernel.org (ip5f5ad5c4.dynamic.kabel-deutschland.de [95.90.213.196])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A311520759;
+        by mail.kernel.org (Postfix) with ESMTPSA id CC9522085B;
         Wed, 30 Sep 2020 13:25:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601472319;
-        bh=pjtLSShGVJ4I7BmxpKk6Me+K3EVo/+mLjtcA7g+j7Yc=;
+        s=default; t=1601472320;
+        bh=0+EnP3ZDT+KyhPuJqAeV8ARJRg4AwySdCsA/hCoxFaU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=R57g7AaMmZxV6Fk3hYcYEse3OV9eItrHtNoG9aZ5fDR4iTcb9cErZBfCFuE4kVSZk
-         lmnPuIWDtzpGvN4PcCqtf3exxIl7sIcfnDHJuWOnPQRqw4eh+Dp5/+GrD7LGCajG9R
-         DnMIAxyvDMZLDUW9zYXOplQw9ooS2MQporC0zbdc=
+        b=FWF0j2dndVvWbHwfw9+pgQI2o3ygiMwAtVE7Xj0Jp5FEkxTZyiyfbRZd0aI1BxSSL
+         G7SQPdipCr017pjyVThLeh/rcLfPl6qw3nFbJpwlkeb++RfyT/qmeB9vYAsoaN4rur
+         1MTrZOHUYdJN+ZfhjYIENZsp1U/rjGh0pK62sNEs=
 Received: from mchehab by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1kNc6f-001XJ8-Q2; Wed, 30 Sep 2020 15:25:17 +0200
+        id 1kNc6f-001XJB-Qu; Wed, 30 Sep 2020 15:25:17 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
         Jonathan Corbet <corbet@lwn.net>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v4 08/52] scripts: kernel-doc: fix typedef identification
-Date:   Wed, 30 Sep 2020 15:24:31 +0200
-Message-Id: <f74e49b8eb75b9b20da2710f861d3f84fe1ece56.1601467849.git.mchehab+huawei@kernel.org>
+Subject: [PATCH v4 09/52] scripts: kernel-doc: don't mangle with parameter list
+Date:   Wed, 30 Sep 2020 15:24:32 +0200
+Message-Id: <7fcbd109b395c0f31031257a52dcd508850e15a6.1601467849.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1601467849.git.mchehab+huawei@kernel.org>
 References: <cover.1601467849.git.mchehab+huawei@kernel.org>
@@ -44,93 +44,130 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some typedef expressions are output as normal functions.
+While kernel-doc needs to parse parameters in order to
+identify its name, it shouldn't be touching the type,
+as parsing it is very difficult, and errors happen.
 
-As we need to be clearer about the type with Sphinx 3.x,
-detect such cases.
+One current error is when parsing this parameter:
 
-While here, fix a wrongly-indented block.
+	const u32 (*tab)[256]
+
+Found at ./lib/crc32.c, on this function:
+
+	u32 __pure crc32_be_generic (u32 crc, unsigned char const *p, size_t len, const u32 (*tab)[256], u32 polynomial);
+
+The current logic mangles it, producing this output:
+
+	const u32 ( *tab
+
+That's something that it is not recognizeable.
+
+So, instead, let's push the argument as-is, and use it
+when printing the function prototype and when describing
+each argument.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- scripts/kernel-doc | 62 ++++++++++++++++++++++++++++++----------------
- 1 file changed, 40 insertions(+), 22 deletions(-)
+ scripts/kernel-doc | 26 ++++++++++++++------------
+ 1 file changed, 14 insertions(+), 12 deletions(-)
 
 diff --git a/scripts/kernel-doc b/scripts/kernel-doc
-index 6588a0d27fe4..a0344c78c641 100755
+index a0344c78c641..f549837d874d 100755
 --- a/scripts/kernel-doc
 +++ b/scripts/kernel-doc
-@@ -1741,30 +1741,48 @@ sub dump_function($$) {
- 	return;
+@@ -655,10 +655,10 @@ sub output_function_man(%) {
+ 	$type = $args{'parametertypes'}{$parameter};
+ 	if ($type =~ m/([^\(]*\(\*)\s*\)\s*\(([^\)]*)\)/) {
+ 	    # pointer-to-function
+-	    print ".BI \"" . $parenth . $1 . "\" " . $parameter . " \") (" . $2 . ")" . $post . "\"\n";
++	    print ".BI \"" . $parenth . $1 . "\" " . " \") (" . $2 . ")" . $post . "\"\n";
+ 	} else {
+ 	    $type =~ s/([^\*])$/$1 /;
+-	    print ".BI \"" . $parenth . $type . "\" " . $parameter . " \"" . $post . "\"\n";
++	    print ".BI \"" . $parenth . $type . "\" " . " \"" . $post . "\"\n";
+ 	}
+ 	$count++;
+ 	$parenth = "";
+@@ -929,7 +929,7 @@ sub output_function_rst(%) {
+ 	    # pointer-to-function
+ 	    print $1 . $parameter . ") (" . $2 . ")";
+ 	} else {
+-	    print $type . " " . $parameter;
++	    print $type;
+ 	}
      }
+     if ($args{'typedef'}) {
+@@ -954,7 +954,7 @@ sub output_function_rst(%) {
+ 	$type = $args{'parametertypes'}{$parameter};
  
--	my $prms = join " ", @parameterlist;
--	check_sections($file, $declaration_name, "function", $sectcheck, $prms);
-+    my $prms = join " ", @parameterlist;
-+    check_sections($file, $declaration_name, "function", $sectcheck, $prms);
- 
--        # This check emits a lot of warnings at the moment, because many
--        # functions don't have a 'Return' doc section. So until the number
--        # of warnings goes sufficiently down, the check is only performed in
--        # verbose mode.
--        # TODO: always perform the check.
--        if ($verbose && !$noret) {
--                check_return_section($file, $declaration_name, $return_type);
--        }
-+    # This check emits a lot of warnings at the moment, because many
-+    # functions don't have a 'Return' doc section. So until the number
-+    # of warnings goes sufficiently down, the check is only performed in
-+    # verbose mode.
-+    # TODO: always perform the check.
-+    if ($verbose && !$noret) {
-+	    check_return_section($file, $declaration_name, $return_type);
-+    }
- 
--    output_declaration($declaration_name,
--		       'function',
--		       {'function' => $declaration_name,
--			'module' => $modulename,
--			'functiontype' => $return_type,
--			'parameterlist' => \@parameterlist,
--			'parameterdescs' => \%parameterdescs,
--			'parametertypes' => \%parametertypes,
--			'sectionlist' => \@sectionlist,
--			'sections' => \%sections,
--			'purpose' => $declaration_purpose
--		       });
-+    # The function parser can be called with a typedef parameter.
-+    # Handle it.
-+    if ($return_type =~ /typedef/) {
-+	output_declaration($declaration_name,
-+			   'function',
-+			   {'function' => $declaration_name,
-+			    'typedef' => 1,
-+			    'module' => $modulename,
-+			    'functiontype' => $return_type,
-+			    'parameterlist' => \@parameterlist,
-+			    'parameterdescs' => \%parameterdescs,
-+			    'parametertypes' => \%parametertypes,
-+			    'sectionlist' => \@sectionlist,
-+			    'sections' => \%sections,
-+			    'purpose' => $declaration_purpose
-+			   });
-+    } else {
-+	output_declaration($declaration_name,
-+			   'function',
-+			   {'function' => $declaration_name,
-+			    'module' => $modulename,
-+			    'functiontype' => $return_type,
-+			    'parameterlist' => \@parameterlist,
-+			    'parameterdescs' => \%parameterdescs,
-+			    'parametertypes' => \%parametertypes,
-+			    'sectionlist' => \@sectionlist,
-+			    'sections' => \%sections,
-+			    'purpose' => $declaration_purpose
-+			   });
-+    }
+ 	if ($type ne "") {
+-	    print "``$type $parameter``\n";
++	    print "``$type``\n";
+ 	} else {
+ 	    print "``$parameter``\n";
+ 	}
+@@ -1472,7 +1472,7 @@ sub create_parameterlist($$$$) {
+ 	    # Treat preprocessor directive as a typeless variable just to fill
+ 	    # corresponding data structures "correctly". Catch it later in
+ 	    # output_* subs.
+-	    push_parameter($arg, "", $file);
++	    push_parameter($arg, "", "", $file);
+ 	} elsif ($arg =~ m/\(.+\)\s*\(/) {
+ 	    # pointer-to-function
+ 	    $arg =~ tr/#/,/;
+@@ -1481,7 +1481,7 @@ sub create_parameterlist($$$$) {
+ 	    $type = $arg;
+ 	    $type =~ s/([^\(]+\(\*?)\s*$param/$1/;
+ 	    save_struct_actual($param);
+-	    push_parameter($param, $type, $file, $declaration_name);
++	    push_parameter($param, $type, $arg, $file, $declaration_name);
+ 	} elsif ($arg) {
+ 	    $arg =~ s/\s*:\s*/:/g;
+ 	    $arg =~ s/\s*\[/\[/g;
+@@ -1506,26 +1506,28 @@ sub create_parameterlist($$$$) {
+ 	    foreach $param (@args) {
+ 		if ($param =~ m/^(\*+)\s*(.*)/) {
+ 		    save_struct_actual($2);
+-		    push_parameter($2, "$type $1", $file, $declaration_name);
++
++		    push_parameter($2, "$type $1", $arg, $file, $declaration_name);
+ 		}
+ 		elsif ($param =~ m/(.*?):(\d+)/) {
+ 		    if ($type ne "") { # skip unnamed bit-fields
+ 			save_struct_actual($1);
+-			push_parameter($1, "$type:$2", $file, $declaration_name)
++			push_parameter($1, "$type:$2", $arg, $file, $declaration_name)
+ 		    }
+ 		}
+ 		else {
+ 		    save_struct_actual($param);
+-		    push_parameter($param, $type, $file, $declaration_name);
++		    push_parameter($param, $type, $arg, $file, $declaration_name);
+ 		}
+ 	    }
+ 	}
+     }
  }
  
- sub reset_state {
+-sub push_parameter($$$$) {
++sub push_parameter($$$$$) {
+ 	my $param = shift;
+ 	my $type = shift;
++	my $org_arg = shift;
+ 	my $file = shift;
+ 	my $declaration_name = shift;
+ 
+@@ -1589,8 +1591,8 @@ sub push_parameter($$$$) {
+ 	# "[blah" in a parameter string;
+ 	###$param =~ s/\s*//g;
+ 	push @parameterlist, $param;
+-	$type =~ s/\s\s+/ /g;
+-	$parametertypes{$param} = $type;
++	$org_arg =~ s/\s\s+/ /g;
++	$parametertypes{$param} = $org_arg;
+ }
+ 
+ sub check_sections($$$$$) {
 -- 
 2.26.2
 
