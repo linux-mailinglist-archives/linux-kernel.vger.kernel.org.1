@@ -2,88 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72F4D27EA08
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 15:33:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B743F27EA0B
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 15:35:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730191AbgI3Nd2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 09:33:28 -0400
-Received: from crapouillou.net ([89.234.176.41]:57212 "EHLO crapouillou.net"
+        id S1730098AbgI3Nfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 09:35:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33646 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729663AbgI3Nd1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 09:33:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
-        s=mail; t=1601472804; h=from:from:sender:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ecNy/ZxFnTbjbqIO9nlUei1JR0PPL4AarFwXzFKz9CI=;
-        b=lxYQCYkS2XdyqSqq16yw9/T40tnQonUGTBT6Sv19anGho7VUp97RwFz4qhnHgq1E9+MtLF
-        v08Kd9A3oakGolE3MCiGYlzZpXxo5iHj5FyOzgqTweF97cPa8pGejg52DFJ5KEOpNBHrog
-        e+Js9L8qS1uQsNBoXvJoJRJUqwxI91Y=
-Date:   Wed, 30 Sep 2020 15:33:13 +0200
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: linux-next: build failure after merge of the drm tree
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Dave Airlie <airlied@linux.ie>,
-        DRI <dri-devel@lists.freedesktop.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Message-Id: <DB4HHQ.1KMN8GNWYJLC1@crapouillou.net>
-In-Reply-To: <20200930090252.GA9357@lst.de>
-References: <20200928135405.73404219@canb.auug.org.au>
-        <20200928060427.GA15041@lst.de> <KU5DHQ.C9RVOLP69UO81@crapouillou.net>
-        <20200928113415.GA555@lst.de> <72ADHQ.T6LL1SHQF0RG3@crapouillou.net>
-        <20200928121002.GA3219@lst.de> <GWEDHQ.HNERRUK8XXOM2@crapouillou.net>
-        <20200930090252.GA9357@lst.de>
+        id S1727997AbgI3Nfz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 09:35:55 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6B28A206B7;
+        Wed, 30 Sep 2020 13:35:54 +0000 (UTC)
+Date:   Wed, 30 Sep 2020 09:35:52 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Rasmus Villemoes <rasmus.villemoes@prevas.dk>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH printk 3/5] printk: use buffer pool for sprint buffers
+Message-ID: <20200930093552.3684aee1@gandalf.local.home>
+In-Reply-To: <4e36f308-a435-f9c1-2d4f-362e797c764e@prevas.dk>
+References: <20200922153816.5883-1-john.ogness@linutronix.de>
+        <20200922153816.5883-4-john.ogness@linutronix.de>
+        <20200923151129.GC6442@alley>
+        <aef3626f-56a0-9040-fc0e-224ada032d02@prevas.dk>
+        <2c95c16b-03e7-eadd-d3af-bedc6b0b471e@prevas.dk>
+        <20200925082822.GL29288@alley>
+        <4e36f308-a435-f9c1-2d4f-362e797c764e@prevas.dk>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christoph,
+On Wed, 30 Sep 2020 10:06:24 +0200
+Rasmus Villemoes <rasmus.villemoes@prevas.dk> wrote:
 
-Le mer. 30 sept. 2020 =E0 11:02, Christoph Hellwig <hch@lst.de> a =E9crit=20
-:
-> On Mon, Sep 28, 2020 at 03:31:28PM +0200, Paul Cercueil wrote:
->>  It's allocated with dma_alloc_wc, but then it's only accessed as
->>  non-coherent.
->>=20
->>  Anyway, for the time being I guess you could revert 37054fc81443.=20
->> But I
->>  have patches on top of it in drm-misc-next so it's going to be a=20
->> mess.
->>=20
->>  If we have time I can come up with a custom dumb_create() fonction,=20
->> to make
->>  sure that the GEM buffers are allocated with=20
->> dma_alloc_noncoherent(). Is
->>  there a dma_mmap_noncoherent() too?
->=20
-> Please use the lower-level dma_alloc_pages and then just insert the
-> pages directly using remap_pfn_range.  Although it might make sense
-> to eventually create a wrapper around remap_pfn_range for all the
-> vma sizing sanity checks.
+> True. But remember that printk is called from _everywhere_, with all
+> sorts of locks held and/or preemption disabled or whatnot, and every
+> cycle spent in printk makes those windows wider. Doubling the cost of
+> every single printk by unconditionally doing vsnprintf() twice is a bad
+> idea.
 
-One thing missing for remap_pfn_range(), I have no alternative for this:
+But the console output is usually magnitudes more expensive than the
+vsnprintf(), would doing it twice really make a difference?
 
-vma->vm_page_prot =3D dma_pgprot(dev, vma->vm_page_prot,=20
-DMA_ATTR_NON_CONSISTENT);
-
-So I have to do:
-
-vma->vm_page_prot =3D pgprot_noncached(vma->vm_page_prot);
-pgprot_val(vma->vm_page_prot) &=3D ~_CACHE_MASK;
-pgprot_val(vma->vm_page_prot) |=3D _CACHE_CACHABLE_NONCOHERENT;
-
-And that will only compile on MIPS, because these _CACHE_* macros are=20
-only defined there.
-
-I would need something like a pgprot_noncoherent(), I think.
-
--Paul
-
-
+-- Steve
