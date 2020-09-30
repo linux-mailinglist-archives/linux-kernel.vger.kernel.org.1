@@ -2,93 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2B9027F08A
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 19:31:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2F5327F094
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 19:32:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728744AbgI3RbA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 13:31:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33010 "EHLO
+        id S1731389AbgI3Rcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 13:32:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725355AbgI3RbA (ORCPT
+        with ESMTP id S1725355AbgI3Rcl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 13:31:00 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34F12C061755
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 10:31:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=H/zddBw5k8rRBltxjmAh+W4FcRk20ISTJSk1L1Vh3e8=; b=CUAyCeifPauQ9JnJsE3BU2OT5L
-        jkALRWP1iK0oLH7Pxa/zMy16Y/I9jBxDE0yvzSFSmWurL3Tmu2xnuLIcwtoGS2Si0L81AFlEZ/6Cf
-        7rzvUuD+mH4nQbhF2kfLLQo33NliZCY0hTLilpHsSnDVkNySBeLAyK2jM88+Q1NgXmWEmdKY0FCJV
-        U1alxKhIPIttGmo99XCbs9Hec1uy7flhPCRJNfLR8fM/T8PzUBqc3QnXV3yVimWo7Ak+RA2aajo0L
-        pmhIm6vc5E9YpOzC0bzifgIXkDKEaWjD0PwHjh08OjmPvmZg/sGA/ykKWRqR4dUqr8akZzvphBsWD
-        T45MO74A==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kNfwC-0006Or-9Y; Wed, 30 Sep 2020 17:30:44 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 64B4E301179;
-        Wed, 30 Sep 2020 19:30:42 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 2B65C2026833C; Wed, 30 Sep 2020 19:30:42 +0200 (CEST)
-Date:   Wed, 30 Sep 2020 19:30:42 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     "Liang, Kan" <kan.liang@linux.intel.com>,
-        Stephane Eranian <eranian@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>,
-        kirill.shutemov@linux.intel.com,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        benh@kernel.crashing.org, Paul Mackerras <paulus@samba.org>
-Subject: Re: [PATCH V8 1/4] perf/core: Add PERF_SAMPLE_DATA_PAGE_SIZE
-Message-ID: <20200930173042.GD2628@hirez.programming.kicks-ass.net>
-References: <20200921152653.3924-1-kan.liang@linux.intel.com>
- <20200921152653.3924-2-kan.liang@linux.intel.com>
- <CABPqkBRYzXH-76BZ3DdxYp7bdyPcr3_WxuxOsJw=1YPE9EwZaw@mail.gmail.com>
- <4e974520-6d0f-68af-7eb8-fa52d95ba77b@linux.intel.com>
- <35e875ba-2c04-8452-5105-ccacf72840d8@intel.com>
+        Wed, 30 Sep 2020 13:32:41 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2F1AC061755;
+        Wed, 30 Sep 2020 10:32:40 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id b12so3132735lfp.9;
+        Wed, 30 Sep 2020 10:32:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=JE7rBNz3fAbpVUCcAxjlxKk3sByhl6O4kPv4ljqcvpY=;
+        b=VHnIsVkQF0lihwBssQWLf+Pu7tPzC5QONVf4BUB+G5RTnlAHTWw5N5qTkvNLp7MPTE
+         bCIHXVJJMCzFKau9nV4c+2S/eDcN5dfZKm769aSNghPSLhtsqJSGhM5b9Ar6j6XVZ+2y
+         pln4yC4J+s7/eWGYMqxmF0eAU65EQPQcVSGvWd988rolq5qSJaNR0CGWS6OMg0sFP8oP
+         PP0qcPUoUEEukz8wv14j6RRgmWENL4pwl9MFbUS13EmkcQvYERWXM4CDVtl0PzLc56NE
+         CTQXzFyYiC6FhufdWkkoaFF3bCB/PZLWNSE0PYmfDgInVwF2MNu1UAHmN0okPUUtmbry
+         RfLg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=JE7rBNz3fAbpVUCcAxjlxKk3sByhl6O4kPv4ljqcvpY=;
+        b=HSJSFaTNSxWqFKLcGarHROpA9PMBraYN+gHBWSHlVdTPHZBp5/MM1x4Up2/E+0El3E
+         A4/0Z9F24TiXEmyzOsX5jFzCGiDJjxeT3qnkJYqWYoiMr0ed59mkXGKMdmN8QtxR31Di
+         sLqUxiD6lHqfIQ6BLnE7ME3pVmFORFFA/7egfr2zJH0bBUa7Y+WcJsQEdhv2N0iSDZoi
+         5548SJ2hJNvistj1br3X+RVlShvRAkIIRnI28GIPdTpYf2zhfNyWeQbFXltzQhU5Y+3Y
+         34lp6w5vswfhc5i97LuraY5GemDSS4p2ACLziU5HQiKbt7kc2koD05ydMOqjYx/Ill8k
+         YWvA==
+X-Gm-Message-State: AOAM531eU7BT63j1tIqoqT9rGAtY5wdK/ShacensE0k2rlYGqF2aofSX
+        /5xUJHvt6/v9vfQVPw+F4+6HAVj9T8M=
+X-Google-Smtp-Source: ABdhPJzUASOVFi/Kk4L8m9nUPQoSa4qijLEjRQ8iUhedNTqvM198PrBOsczLmapI0GqjFz/R5pD1Sg==
+X-Received: by 2002:ac2:4301:: with SMTP id l1mr1148884lfh.389.1601487158733;
+        Wed, 30 Sep 2020 10:32:38 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
+        by smtp.googlemail.com with ESMTPSA id j23sm214983ljh.96.2020.09.30.10.32.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 30 Sep 2020 10:32:38 -0700 (PDT)
+Subject: Re: [PATCH v3 1/3] memory: tegra: Add
+ devm_tegra_get_memory_controller()
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Nicolin Chen <nicoleotsuka@gmail.com>, joro@8bytes.org,
+        krzk@kernel.org, vdumpa@nvidia.com, jonathanh@nvidia.com,
+        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+References: <20200930084258.25493-1-nicoleotsuka@gmail.com>
+ <20200930084258.25493-2-nicoleotsuka@gmail.com>
+ <20200930152320.GA3833404@ulmo>
+ <ed7b4375-d06e-2750-e6fa-603ef2b60d36@gmail.com>
+ <20200930160355.GC3833404@ulmo>
+ <839df5d6-513f-3d77-ba5f-a1afe5d0883a@gmail.com>
+ <20200930161503.GF3833404@ulmo>
+ <29a989b3-a8cc-5c1f-ba12-47ed0d667e8e@gmail.com>
+ <20200930163842.GA3852280@ulmo>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <eacbcce4-4574-6b24-9f06-02349ec3092f@gmail.com>
+Date:   Wed, 30 Sep 2020 20:32:37 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <35e875ba-2c04-8452-5105-ccacf72840d8@intel.com>
+In-Reply-To: <20200930163842.GA3852280@ulmo>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 07:48:48AM -0700, Dave Hansen wrote:
-> On 9/30/20 7:42 AM, Liang, Kan wrote:
-> >> When I tested on my kernel, it panicked because I suspect
-> >> current->active_mm could be NULL. Adding a check for NULL avoided the
-> >> problem. But I suspect this is not the correct solution.
-> > 
-> > I guess the NULL active_mm should be a rare case. If so, I think it's
-> > not bad to add a check and return 0 page size.
+...
+>> I don't think that the MC driver will stay built-in forever, although
+>> its modularization is complicated right now. Hence something shall keep
+>> the reference to the MC device resources while they are in use and this
+>> patch takes care of doing that.
 > 
-> I think it would be best to understand why ->active_mm is NULL instead
-> of just papering over the problem.  If it is papered over, and this is
-> common, you might end up effectively turning off your shiny new feature
-> inadvertently.
+> It looks to me like all the other places where we get a reference to the
+> MC also keep a reference to the device. That's obviously not going to be
+> enough once the code is turned into a module. At that point we need to
+> make sure to also grab a reference to the module. But that's orthogonal
+> to this discussion.
+> 
+>> Secondly, the Nicolin's patch doesn't pretend on anything, but rather
+> 
+> Yes, the patch does pretend to "look up" the memory controller device,
+> but in reality it will always return a singleton object, which can just
+> as easily be achieved by using a global variable.
+> 
+>> brings the already existing duplicated code to a single common place.
+> 
+> Where exactly is that duplicated code? The only places I see where we
+> get a reference to the memory controller are from the EMC drivers and
+> they properly look up the MC via the nvidia,memory-controller device
+> tree property.
 
-context_switch() can set prev->active_mm to NULL when it transfers it to
-@next. It does this before @current is updated. So an NMI that comes in
-between this active_mm swizzling and updating @current will see
-!active_mm.
+Yours observation is correct, all the drivers *do the lookup*. My point
+is that the nvidia,memory-controller usage isn't strictly necessary.
 
-In general though; I think using ->active_mm is a mistake though. That
-code should be doing something like:
+The tegra20-devfreq driver doesn't use the phandle lookup because
+Tegra20 DTs don't have it, instead it uses the compatible lookup. Hence
+this patch doesn't really change the already existing behaviour for the
+drivers. The phandle usage is optional.
 
+This patch adds a common API that is usable by *all* the already
+existing drivers, starting from the Tegra20 drivers.
 
-	mm = current->mm;
-	if (!mm)
-		mm = &init_mm;
+> But that's not what this new helper does. This code will use the OF
+> lookup table to find any match and then returns that, completely
+> ignoring any links established by the device tree.
 
+As I already said in the other reply, it should be fine to add lookup by
+the phandle and then fall back to the compatible matching. On the other
+hand, this is not strictly necessary because we always have only a
+single MC device at a time.
 
+Please note that I don't have any objections to improving this patch. In
+the end either way will work, so we just need to choose the best option.
+I was merely explaining the rationale behind this patch and not trying
+to defend it.
+
+Yours suggestion about using static mc variable is also good to me since
+currently MC driver is built-in and at least that won't be a
+globally-visible kernel variable, which doesn't feel great to have.
+
+I think we can follow approach of the static mc variable for the starter
+and improve it once there will be a real need. This should be the
+simplest option right now.
+
+But again, we may slightly future-proof the API by adding the
+resource-managed variant. Either way will be good, IMO :) Currently I
+don't have a strong preference.
