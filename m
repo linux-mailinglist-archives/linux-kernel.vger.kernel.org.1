@@ -2,128 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06F3427EF33
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 18:29:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 333B127EF36
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 18:30:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731291AbgI3Q3l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 12:29:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51744 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725355AbgI3Q3k (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 12:29:40 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B92FC061755
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 09:29:39 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id q5so2025515qkc.2
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 09:29:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JY0B2dX8EdNzyATXC+SxwmmN5kC9QsWUQGW5TuYSORs=;
-        b=MThnJ+rhumDXS1ZLsDOZ+uKc2/OXzs+dnTOMT1+OO/9TWRDP1g1lp1CDbXA7SjFK1w
-         H3xW/CnUY86XbIVAiYT25jOajftlryNyXpvOgAyCxcdLhjYloHoSfVnJpY/+l1vdqJP1
-         MVkcm06LwOVqgkj/gMUMDRBYBdXLKxM8Dgj3NEz+aeNb5xIvskXINGKmJ3qs5I5USZie
-         NSKh08MZQnZMyV/LrzgFchhjPkdy4m6FCBscLaqw/xuC5bJucT8EiDEZBBHgof8pEvO1
-         0MiFEEDN1OtDZsHJs6Ah2SnmiwCd0/bTA7CNJTz5glgIHhc3P/Vpn/M1Yli5yPKQowNS
-         CDDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JY0B2dX8EdNzyATXC+SxwmmN5kC9QsWUQGW5TuYSORs=;
-        b=avH6FcPH3ftp8RAW82DuCHiKGG6Yz92ENskYnXUnWm6r09dPktUb2C1/v7FAiXM6eZ
-         nEvUzXNkapop9c9Gt8jxt1pKA6AFoKIr2TBcjiiMCsFOFTtfcrQOpil5JOHHIqxEkpAK
-         IDasLkcqr6pugJBNwW/prJ7jgnDulDKV285eG0LHMR5Jj7+ItSH6/yU68TtD1h4fFiGi
-         lPAbr2jQcwJ2QHvLkYvpIuVAjdkw/7j4sqCk3W9dRjUlHWbatx0r2rmQIlHqb/Hzkvq4
-         Qe4aUt9LdLI4KDkmGHFtOARfVMKd6dKRDt3TO8mrt1vwT9Wtb+XdwEMY2ZSDXkC77Mg4
-         MXOw==
-X-Gm-Message-State: AOAM530UE1fXtQGGw1r/jNaRF6gcvGzrHZ+l9WXuD8pMt3OJuiuWSFeV
-        vh74g7RFyT+lElmMHHKuJrpl54yi5RDR19mA8HFai14iOVQbYg==
-X-Google-Smtp-Source: ABdhPJyaeEh3TQvllo5L56bOkb/doAinZo32EZaQ1AQwl/Gae7WYD8Zb0RLpM3UwlzjZTDfKEB+zFyGYLUCRpyRhpuQ=
-X-Received: by 2002:a37:9c4f:: with SMTP id f76mr3481549qke.250.1601483378431;
- Wed, 30 Sep 2020 09:29:38 -0700 (PDT)
+        id S1730931AbgI3QaF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 12:30:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56624 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725355AbgI3QaF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 12:30:05 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7B21D2072E;
+        Wed, 30 Sep 2020 16:30:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601483404;
+        bh=qketN4nyZfHvvlISolUEi+CSP4tyVK+mFyh8Vn+nxd4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hDQy28rVViaAkJIRUkfAcNWgG3ZdDunNlU8KdafATOwWyELlcdzqOFw9GWTNkpkyp
+         L81vyNvRESV/Ppsiix+EKkeCWmunG9VlpkmO8wA6YLLVUCVucjxA8KrO62bTrzAjR5
+         ODaP9UB/TT4lAamUUTDu+oy8oxSgFu1dPGQ6A76k=
+Date:   Wed, 30 Sep 2020 18:30:07 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     Lars Poeschel <poeschel@lemonage.de>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        "open list:PWM SUBSYSTEM" <linux-pwm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] pwm: sysfs: Set class on pwm devices
+Message-ID: <20200930163007.GA1673764@kroah.com>
+References: <20200930065726.fjcsm4pfh65medgl@pengutronix.de>
+ <20200930092056.maz5biy2ugr6yc3p@lem-wkst-02.lemonage>
+ <20200930094146.73s3qzvf5ekjeavc@pengutronix.de>
+ <20200930095204.GA1585476@kroah.com>
+ <20200930100126.rtjfnmbc54m7vrwd@pengutronix.de>
+ <20200930105238.GA1592367@kroah.com>
+ <20200930112720.xiff3xwmfu3gjypk@lem-wkst-02.lemonage>
+ <20200930115106.GB1603625@kroah.com>
+ <20200930141352.kt6bpudj2t57ogp3@lem-wkst-02.lemonage>
+ <20200930150302.n3kcw3lzepug53za@pengutronix.de>
 MIME-Version: 1.0
-References: <20200927145737.GA4746@zn.tnic> <CACT4Y+Zxt3-Dj6r53mEkwv24PazPzTxQ7usV1O+RB0bk2FzO8g@mail.gmail.com>
- <CACT4Y+ZZH76qg810RzGp6FDLTxJWVqZgkrXSxqgq7AjpPYG9XQ@mail.gmail.com>
- <20200928083819.GD1685@zn.tnic> <CACT4Y+bPFASnmFRKpQ=KY1z+RnTbGmkPU3aikzdXZpKkV03D9A@mail.gmail.com>
- <20200928085401.GE1685@zn.tnic> <CACT4Y+Z4Y6SJJ6iYBhVRiknrWBAD6gGhQXiXLhxPniDNBFJGsA@mail.gmail.com>
- <20200928202353.GI1685@zn.tnic> <20200929083336.GA21110@zn.tnic>
- <CACT4Y+bfKwoZe3SC-BKJkOET1GxGp9tCpLzkae8q1sjWYnmgmw@mail.gmail.com>
- <20200930161711.GH6810@zn.tnic> <CACT4Y+Zc7kD431Aed49U4R6cqzWGAWqEXevnheRHKQRQoEnh7w@mail.gmail.com>
-In-Reply-To: <CACT4Y+Zc7kD431Aed49U4R6cqzWGAWqEXevnheRHKQRQoEnh7w@mail.gmail.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Wed, 30 Sep 2020 18:29:26 +0200
-Message-ID: <CACT4Y+ZKp9z90a9xF5cC-X5_7D8zZOoB+337Hh1rt5PysLfbJw@mail.gmail.com>
-Subject: Re: general protection fault in perf_misc_flags
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        syzbot <syzbot+ce179bc99e64377c24bc@syzkaller.appspotmail.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Jiri Olsa <jolsa@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        syzkaller <syzkaller@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200930150302.n3kcw3lzepug53za@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 6:23 PM Dmitry Vyukov <dvyukov@google.com> wrote:
-> > Hi,
-> >
-> > one more thing I just spotted. The default install of syzkaller here
-> > runs the guest with this on the kernel command line:
-> >
-> > 2020/09/30 17:56:18 running command: qemu-system-x86_64 []string{"-m", "2048",
-> > "-smp", "2", "-display", ... "-append", "earlyprintk=serial oops=panic ...
-> >  nmi_watchdog=panic panic_on_warn=1 panic=1 ftrace_dump_on_oops=orig_cpu rodata=n
-> >                                                                         ^^^^^^^^^^
-> >
-> > which basically leaves guest kernel's memory RW and it gets caught
-> > immediately on vm boot by CONFIG_DEBUG_WX.
-> >
-> > This pretty much explains why kernel text can get corrupted with a stray
-> > pointer write or so. So what's the use case for rodata=n?
-> >
-> > [    2.478136] Kernel memory protection disabled.
-> >                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
->
->
-> Ha!
->
-> Here is the answer:
-> https://github.com/google/syzkaller/blob/master/tools/create-gce-image.sh#L189
->
-> # rodata=n: mark_rodata_ro becomes very slow with KASAN (lots of PGDs)
->
-> I have some vague memory that there was some debug double checking
-> that pages are indeed read-only and that debug check was slow, but it
-> was always executed without rodata=n.
+On Wed, Sep 30, 2020 at 05:03:02PM +0200, Uwe Kleine-König wrote:
+> On Wed, Sep 30, 2020 at 04:13:52PM +0200, Lars Poeschel wrote:
+> > On Wed, Sep 30, 2020 at 01:51:06PM +0200, Greg Kroah-Hartman wrote:
+> > > On Wed, Sep 30, 2020 at 01:27:20PM +0200, Lars Poeschel wrote:
+> > > > On Wed, Sep 30, 2020 at 12:52:38PM +0200, Greg Kroah-Hartman wrote:
+> > > > > On Wed, Sep 30, 2020 at 12:01:26PM +0200, Uwe Kleine-König wrote:
+> > > > > > On Wed, Sep 30, 2020 at 11:52:04AM +0200, Greg Kroah-Hartman wrote:
+> > > > > > > On Wed, Sep 30, 2020 at 11:41:46AM +0200, Uwe Kleine-König wrote:
+> > > > > > > > Hello,
+> > > > > > > > 
+> > > > > > > > I added Greg Kroah-Hartman who I discussed this with via irc a bit to
+> > > > > > > > Cc:.
+> > > > > > > > 
+> > > > > > > > On Wed, Sep 30, 2020 at 11:20:56AM +0200, Lars Poeschel wrote:
+> > > > > > > > > thank you for your review!
+> > > > > > > > > 
+> > > > > > > > > On Wed, Sep 30, 2020 at 08:57:26AM +0200, Uwe Kleine-König wrote:
+> > > > > > > > > > On Tue, Sep 29, 2020 at 02:19:53PM +0200, poeschel@lemonage.de wrote:
+> > > > > > > > > > > From: Lars Poeschel <poeschel@lemonage.de>
+> > > > > > > > > > > 
+> > > > > > > > > > > This adds a class to exported pwm devices.
+> > > > > > > > > > > Exporting a pwm through sysfs did not yield udev events. The
+> > > > > > > > > > 
+> > > > > > > > > > I wonder what is your use-case here. This for sure also has a place to
+> > > > > > > > > > be mentioned in the commit log. I suspect there is a better way to
+> > > > > > > > > > accomplish you way.
+> > > > > > > > > 
+> > > > > > > > > Use-case is to be able to use a pwm from a non-root userspace process.
+> > > > > > > > > I use udev rules to adjust permissions.
+> > > > > > > > 
+> > > > > > > > Hmm, how do you trigger the export? Without being aware of all the
+> > > > > > > > details in the sysfs code I would expect that the exported stuff is
+> > > > > > > > available instantly once the write used to export the PWM is completed.
+> > > > > > > > So changing the permissions can be done directly after triggering the
+> > > > > > > > export in the same process.
+> > > > > > > 
+> > > > > > > It looks like userspace wants to see when a pwmX device shows up, right?
+> > > > > > > 
+> > > > > > > And it's not because those devices do not belong to any class or bus, so
+> > > > > > > they are just "floating" out there (they might show up under
+> > > > > > > /sys/bus/virtual, if you set things up right, which I don't think is
+> > > > > > > happening here...)
+> > > > > > > 
+> > > > > > > So yes, you need to create a class, or assign this to a bus, which is
+> > > > > > > fine, but it looks like no one is doing that.  Don't create new classes
+> > > > > > > dynamically, but rather, just assign this to the existing pwm class.
+> > > > > > > What's wrong with that?  I saw an older patch that did that, what did
+> > > > > > > that break?
+> > > > > > 
+> > > > > > Are you refering to 7e5d1fd75c3dde9fc10c4472b9368089d1b81d00? Did you
+> > > > > > read the reverting commit's log message? (i.e.
+> > > > > > c289d6625237aa785b484b4e94c23b3b91ea7e60)
+> > > > > > 
+> > > > > > I guess the breakage is that the resulting name then is:
+> > > > > > 
+> > > > > > 	"pwm%d", pwm->id
+> > > > > > 
+> > > > > > where pwm->id is a number unique to the pwmchip. So doing
+> > > > > > 
+> > > > > > 	echo 0 > pwmchip1/export
+> > > > > > 	echo 0 > pwmchip2/export
+> > > > > > 
+> > > > > > breaks because both want to create pwm0 in the class directory.
+> > > > > 
+> > > > > Ah, that makes more sense why that didn't work.
+> > > > > 
+> > > > > Ok, can the "name" of the new export chip be changed?  Is that
+> > > > > hard-coded somewhere in userspace tools already?  Depending on that, the
+> > > > > solution for this will change...
+> > > > 
+> > > > I know that back then, when sysfs for pwm was created, Thierry didn't
+> > > > want to have one global namespace like gpio sysfs has. What you ask for
+> > > > is something like:
+> > > > 	pwm-{chipnumber}-{pwmnumber}
+> > > > Right ? Can that be considered non-global ?
+> > > 
+> > > Yes, and that's just "global" for the pwm class namespace.
+> > > 
+> > > > Thierry's mail from back then is here:
+> > > > https://lore.kernel.org/lkml/20130408081745.GA21392@avionic-0098.mockup.avionic-design.de/
+> > > > 
+> > > > A short search on github I found this:
+> > > > https://github.com/vsergeev/c-periphery/blob/d34077d7ee45fa7d1947cc0174919452fac31597/src/pwm.c#L74
+> > > > 
+> > > > Seems to match your hardcoded criteria ?
+> > > 
+> > > Yes, ugh :(
+> > > 
+> > > Ok, now I see why the "lots of pwm classes!" patch was proposed.
+> > > 
+> > > And maybe that's really the only way forward here, as the chip namespace
+> > > is the only unique thing.
+> > > 
+> > > But wow, it feels wrong...
+> > 
+> > Would the following feel better:
+> > * use the new naming scheme you proposed for pwm's :
+> >   pwm-{chipnumber}-{pwmnumber}
+> > * assign the normal pwm class to the exported pwm devices. That lets
+> >   them appear in the global /sys/class/pwm directory as e.g. pwm-0-0
+> > * maintain backward compatibility through symlinks e.g.:
+> >   pwmchip0/pwm0 -> ../pwm-0-0
+> 
+> My preferred way forward is: Create a proper device (i.e. something like
+> /dev/pwmchipX) and make that usable with atomic operations. Then we
+> don't need to go through sysfs and can modify more than one property at
+> a time.
 
+Kind of like what gpio did with the move to a char device node instead
+of sysfs files?  That's fine with me if you all want to do that.
 
-I don't see this is still the case. Diff between 2 boots:
+> But other than that your suggestion sounds better than one class per
+> chip.
 
-[   11.985152][    T1] Freeing unused kernel image (initmem) memory: 3432K
-[   11.986129][    T1] Write protecting the kernel read-only data: 147456k
-[   11.990863][    T1] Freeing unused kernel image (text/rodata gap)
-memory: 2012K
-[   11.992797][    T1] Freeing unused kernel image (rodata/data gap)
-memory: 1324K
-[   11.993895][    T1] Run /sbin/init as init process
+I agree, that seems sane.  Well, semi-sane, symlinks are "fun" :)
 
-[   11.910396][    T1] Freeing unused kernel image (initmem) memory: 3432K
-[   11.911277][    T1] Kernel memory protection disabled.
-[   11.911984][    T1] Run /sbin/init as init process
+thanks,
 
-Was it fixed at some point? Was it backported to stable?
+greg k-h
