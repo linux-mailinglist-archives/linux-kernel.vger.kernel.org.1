@@ -2,90 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F61A27F1A4
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 20:54:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F46127F1EF
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 20:58:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726476AbgI3SyB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 14:54:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45780 "EHLO
+        id S1729916AbgI3S4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 14:56:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725355AbgI3SyB (ORCPT
+        with ESMTP id S1730345AbgI3S4F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 14:54:01 -0400
-Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49A7DC061755
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 11:54:01 -0700 (PDT)
-Received: by mail-il1-x141.google.com with SMTP id e5so2936515ils.10
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 11:54:01 -0700 (PDT)
+        Wed, 30 Sep 2020 14:56:05 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BD0EC061755;
+        Wed, 30 Sep 2020 11:56:03 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id d4so546427wmd.5;
+        Wed, 30 Sep 2020 11:56:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xTNb6k0KTUZX28SgX8/5ctYvSHWMCeVd2LxNdQK0xQ4=;
-        b=mNVt7KwILbHTFKGN8sOmwybaVaBebXwgaoyhB8MY7W8UJSmfh8sYHOBYfD7qMeXpeq
-         yHCgziCffMDqBY3VlGTYRmx99EMIRzHyzouWCV2ElzliV7zYyCK9F4aHtTe54od5qSvc
-         hNsNXScsb5Pr9iUr5vlqdD5LI6T4v3gTcDMAFwT5XQevBh6GTq6RzNOPTKxCXH2ITh8S
-         LgQwitquZXQP8QMrdxDhr4/OFAyviHNGvplWZpsZdaWHbbxannDN5sWcFeJojzYGBn6U
-         mEk5Vqw/BILqfV49RJEwgQTD/tadT3zUg3/Wn2whqB2XV9LH5gXDf05cOh02o2ApdJSK
-         1ghQ==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=IDr2wAtXJx0+neOn7cIZ0lFnMnpEYiTBO0RQFY8qdSQ=;
+        b=b6EwAUV3SBWbRyEjBvMGJI9Yw3atuhQNUSec5P8hjLals34oO9CFdQiRZgnkfJ1wtH
+         otRiPul539u1KKN6M8HJSdyooIa5xm8J/l4j/+asjrSuh0ASDjsUiuFpiSH7u//KrGxt
+         IpbSs3HbVIOnia45FmBky++0lyy7uRk/7PZucZreLMHDVH4Rlm3hDirzHYzD7eqktHel
+         8+y+hEbRp4TReaG6eb8EHhTvFX6w9kEDqW6+/qTvHBZvLX+tGbalBssPYao5opgjTCRW
+         hC+XXXhLZGy6pR0MeGqhjgwQvoOPRo+bflcGw1sJFWamnHCtf416BFJ/6rVGmnUMTdGv
+         1VDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xTNb6k0KTUZX28SgX8/5ctYvSHWMCeVd2LxNdQK0xQ4=;
-        b=k9KYbCP3bATvwDVpoB+iRjrq7zLUxiZO/1PKLe2XXiijXf7ivYPtVzYjdBJ3j6OjBy
-         ycMx5CRiUfDWaMFB3qlJPVuOBwX/YP0IJyOoCBKQh5956byjoi0oSDE9DmFW88gaRXGI
-         4kuJ/f0jFl14efSdyuHZTN+S05j1hQ9aPuWfjOw8RGClhqJv/JH+LwbXOOMk56YbVqro
-         n86UKqhBdhihtUfn984pL1z3Fm/cXt+P1aKZ4e3hmvLf9ckqeFaoFw+q4PrBS4trtO/x
-         SlOSNqJFvt9YVoitREmuhgYCK9Phm0FXeETA95lsQ+PI6szirX2uoptTydoQbJtSkVCM
-         /6Ug==
-X-Gm-Message-State: AOAM530cd+wY0sY8aaVOhsemhVFqryi4RKD/OixNUn5caby7kc+jZPyl
-        vJCJxfRBgnqd3r2m68WJUpV4MFHGGaLojyAFD2mqgg==
-X-Google-Smtp-Source: ABdhPJy6gFwSvJfYUnaQReXTw7OFukqCdbfGFdk4FOB5w1igPVzF3wcyMnYrwZVkhHIYJcIv0oDqmukb8rucUACJtxE=
-X-Received: by 2002:a92:cbcd:: with SMTP id s13mr3111986ilq.306.1601492040319;
- Wed, 30 Sep 2020 11:54:00 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200925212302.3979661-1-bgardon@google.com> <20200925212302.3979661-12-bgardon@google.com>
- <66db4185-d794-4b3e-89c2-c07f4f2b5f2a@redhat.com>
-In-Reply-To: <66db4185-d794-4b3e-89c2-c07f4f2b5f2a@redhat.com>
-From:   Ben Gardon <bgardon@google.com>
-Date:   Wed, 30 Sep 2020 11:53:49 -0700
-Message-ID: <CANgfPd8A4VS0Mq-QR7wgzNDMd_UYwxja=Vn7oW0KMoce8RXVww@mail.gmail.com>
-Subject: Re: [PATCH 11/22] kvm: mmu: Factor out allocating a new tdp_mmu_page
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
-        Cannon Matthews <cannonmatthews@google.com>,
-        Peter Xu <peterx@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Peter Shier <pshier@google.com>,
-        Peter Feiner <pfeiner@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=IDr2wAtXJx0+neOn7cIZ0lFnMnpEYiTBO0RQFY8qdSQ=;
+        b=ftSnXS4/QEf8b5yJq8Hw76wXt/zU314c/otdScUNCmP9S+vgz22fRF2ugPSiY4/HtI
+         Ub2apznYkdjZkLWKrbaUO9rOQVYUY8kSU3n5p1w7/8weNt1DqFSZOvzZ24jZyE3uBe95
+         BUN2hd3cBLOObopphgsHsxlWUnc0vZkdjtdBvUDfS4IrmuAGbLF+eBzJtRjlr1UhL4/R
+         uojO1geTzZ5GKGaB76wEPReQzZQ89/ETEhoeWjTqTvnnwdgdAVZBNZPiF93eVgz3MABv
+         BAA2N3LCDlCmgeJT736Oqs/C/6ggSReMBixFq0V1S8sFlo6lcbXqgAji7HpJqY9UO87R
+         51oA==
+X-Gm-Message-State: AOAM533zi3C6YuzY27xlm+xIaPPDJU+WIqSBFQ9GKSqUfCk/WHF0Tj8W
+        sBc0u3B6pYfytHxxREGtredslbIM8wTsSg==
+X-Google-Smtp-Source: ABdhPJz6jU82fHCmCavBCON5X8sKCcNR+NtXto749V07XtSAdZscMEHkP3ri32LD70Ul2sC3h2itBQ==
+X-Received: by 2002:a7b:c750:: with SMTP id w16mr4594827wmk.16.1601492162236;
+        Wed, 30 Sep 2020 11:56:02 -0700 (PDT)
+Received: from localhost.localdomain (host-92-5-241-147.as43234.net. [92.5.241.147])
+        by smtp.gmail.com with ESMTPSA id u12sm4544040wrt.81.2020.09.30.11.56.00
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 30 Sep 2020 11:56:01 -0700 (PDT)
+From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+To:     Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-safety@lists.elisa.tech,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Subject: [PATCH] proc: remove a pointless assignment
+Date:   Wed, 30 Sep 2020 19:53:59 +0100
+Message-Id: <20200930185359.27526-1-sudipm.mukherjee@gmail.com>
+X-Mailer: git-send-email 2.11.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 5:22 PM Paolo Bonzini <pbonzini@redhat.com> wrote:
->
-> On 25/09/20 23:22, Ben Gardon wrote:
-> > Move the code to allocate a struct kvm_mmu_page for the TDP MMU out of the
-> > root allocation code to support allocating a struct kvm_mmu_page for every
-> > page of page table memory used by the TDP MMU, in the next commit.
-> >
-> > Tested by running kvm-unit-tests and KVM selftests on an Intel Haswell
-> > machine. This series introduced no new failures.
-> >
-> > This series can be viewed in Gerrit at:
-> >       https://linux-review.googlesource.com/c/virt/kvm/kvm/+/2538
->
-> Maybe worth squashing into the earlier patch.
->
-> Paolo
->
+The variable 'env_start' has only been used for the if condition before
+this assignment and is never read after this.
+So, remove the assignement.
 
-That sounds good to me. Definitely reduces churn in the series.
+Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+---
+ fs/proc/base.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fs/proc/base.c b/fs/proc/base.c
+index aa69c35d904c..238925ff3a80 100644
+--- a/fs/proc/base.c
++++ b/fs/proc/base.c
+@@ -279,7 +279,7 @@ static ssize_t get_mm_cmdline(struct mm_struct *mm, char __user *buf,
+ 	 * only when it overflows into the environment area.
+ 	 */
+ 	if (env_start != arg_end || env_end < env_start)
+-		env_start = env_end = arg_end;
++		env_end = arg_end;
+ 	len = env_end - arg_start;
+ 
+ 	/* We're not going to care if "*ppos" has high bits set */
+-- 
+2.11.0
+
