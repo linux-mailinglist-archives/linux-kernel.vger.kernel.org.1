@@ -2,250 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0AC927EF10
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 18:25:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C48C27EF15
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 18:25:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730980AbgI3QZI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 12:25:08 -0400
-Received: from m42-4.mailgun.net ([69.72.42.4]:24025 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725355AbgI3QZI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 12:25:08 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1601483106; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=jjwXbMwHhIuNgHWIpJci+mOICpDxoypRVYnKqXx1W/A=; b=emM+ZxhtUDMap+z+PEla+LBID1lx75zkSu3CdQ4/n2n+ER3fi72A0WxIHnGxY5S6fVLK+a+g
- ibHPPot2a2HeXCeHi7NDvcGOwIOnVRmkVk31XxrAXOC0MGzKVNRMwEBCw19SC4F4gKPmrFRf
- 0UcUkDYxfofTm80fnoheYYJcpSI=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 5f74b1619025c3a7976631e2 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 30 Sep 2020 16:25:05
- GMT
-Sender: rnayak=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 048DCC433FF; Wed, 30 Sep 2020 16:25:05 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.0.118] (unknown [49.207.198.93])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: rnayak)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id F3100C433CA;
-        Wed, 30 Sep 2020 16:24:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org F3100C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=rnayak@codeaurora.org
-Subject: Re: [PATCH] drm/msm/dp: add voltage corners voting support base on dp
- link rate
-To:     Stephen Boyd <swboyd@chromium.org>,
-        Kuogee Hsieh <khsieh@codeaurora.org>, robdclark@gmail.com,
-        sean@poorly.run
-Cc:     tanmay@codeaurora.org, abhinavk@codeaurora.org,
-        aravindh@codeaurora.org, airlied@linux.ie, daniel@ffwll.ch,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20200929171026.30551-1-khsieh@codeaurora.org>
- <160145429763.310579.786737478429183087@swboyd.mtv.corp.google.com>
-From:   Rajendra Nayak <rnayak@codeaurora.org>
-Message-ID: <01467014-1190-6e1b-8120-472719861a5e@codeaurora.org>
-Date:   Wed, 30 Sep 2020 21:54:57 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1731072AbgI3QZp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 12:25:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51114 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725355AbgI3QZp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 12:25:45 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4AEEC061755;
+        Wed, 30 Sep 2020 09:25:44 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id c2so2108720ljj.12;
+        Wed, 30 Sep 2020 09:25:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=eyUZYRPbpEe8Xucnlf6VT0i7AdXH7hbbrA44nxtiGcs=;
+        b=T+KQ1WugVPRaX8Oz2opiwH3BBdNvtzqut2uC9HwY8ZKQH/OmXc2yqrDJ4mB3coJAur
+         NYbu4kQe85gxMWot76j1r6+IjNXXUylNt0TuJJWVTrO2yNDkFE7HmU+Y22Uw72axKXEx
+         xS59j2a+4HCVNkrGQugCvUV3WQmasSY8kUCskOBGhvtz8893s9eHZtjtWUipzQ02+VF8
+         V5m4WVZR3DybUuEwvmHnbCQyy3OelFRNwnfZKCa5Ve2Y4/jfrOAxtYQ5MyhxJRoTsudS
+         h3Tl3lEzQaPCqSm6fiz8mLDFejnCcoYVmO3RRyvLmajHEMAxBaSS1rUBxZZZFQFnfgsM
+         VXyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=eyUZYRPbpEe8Xucnlf6VT0i7AdXH7hbbrA44nxtiGcs=;
+        b=qBd1t95gFy8USOuoiwhRBiYAo+uXl70TCjRFaMn0KfX/ZH02Nf7pSD0zh9J8avBVIm
+         FQD2Zsu2JYwinhdFIAjp36J+yLfTiJBmphezC9eU8OZ0pxIUiRS8TAT0iPBXJ9EFsjgb
+         yozy2+3VI169b+o6CBw48CMIBd/2H7Pe+ij5lGUF5/jtvV8FBke3pRrnVIA7s3eCYxhz
+         1KWZVw5bE9tO7UMz/3E8tIWLTGSGNXFeoXYGMPFVzvHCHwiNAWaEw47xapSAM5sdKZs6
+         rnPzNacZcHAraJolVfQGUrYYveZLJ1nXYW/IKfTS3S+BtQMIRKoMwwicNOII61BNUJj2
+         Xo3w==
+X-Gm-Message-State: AOAM530j/dvgJSvnRaS9hbDKvZxi6Ec2BfKRhkUMBmEy6Wlj6qXZoWHa
+        Rx1iPISoS56IB14VLyfDhalnISkZRQY=
+X-Google-Smtp-Source: ABdhPJzISBhhY0DYwhpMSG3iAvAG8GJXBj4u1poszj5WLUWEX2TwbwUe1hDFPGPXltlCSMgrEb76BQ==
+X-Received: by 2002:a2e:b5d9:: with SMTP id g25mr1015028ljn.335.1601483143047;
+        Wed, 30 Sep 2020 09:25:43 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
+        by smtp.googlemail.com with ESMTPSA id l3sm243635lfc.34.2020.09.30.09.25.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 30 Sep 2020 09:25:42 -0700 (PDT)
+Subject: Re: [PATCH v3 2/3] iommu/tegra-smmu: Rework .probe_device and
+ .attach_dev
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Nicolin Chen <nicoleotsuka@gmail.com>, joro@8bytes.org,
+        krzk@kernel.org, vdumpa@nvidia.com, jonathanh@nvidia.com,
+        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+References: <20200930084258.25493-1-nicoleotsuka@gmail.com>
+ <20200930084258.25493-3-nicoleotsuka@gmail.com>
+ <20200930153131.GB3833404@ulmo>
+ <ece615ad-8d6b-96ae-d8b4-9667aef17281@gmail.com>
+ <20200930160626.GD3833404@ulmo>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <f11d7d8a-8ce6-a53c-6219-ceec05432002@gmail.com>
+Date:   Wed, 30 Sep 2020 19:25:41 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <160145429763.310579.786737478429183087@swboyd.mtv.corp.google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20200930160626.GD3833404@ulmo>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 9/30/2020 1:54 PM, Stephen Boyd wrote:
-> Quoting Kuogee Hsieh (2020-09-29 10:10:26)
->> Set link rate by using OPP set rate api so that CX level will be set
->> accordingly base on the link rate.
-> 
-> s/base/based/
-> 
+30.09.2020 19:06, Thierry Reding пишет:
+> On Wed, Sep 30, 2020 at 06:36:52PM +0300, Dmitry Osipenko wrote:
+>>  I'...
+>>>> +	struct tegra_mc *mc = devm_tegra_get_memory_controller(dev);
+>>>> +	struct iommu_fwspec *fwspec = dev_iommu_fwspec_get(dev);
+>>>
+>>> It looks to me like the only reason why you need this new global API is
+>>> because PCI devices may not have a device tree node with a phandle to
+>>> the IOMMU. However, SMMU support for PCI will only be enabled if the
+>>> root complex has an iommus property, right? In that case, can't we
+>>> simply do something like this:
+>>>
+>>> 	if (dev_is_pci(dev))
+>>> 		np = find_host_bridge(dev)->of_node;
+>>> 	else
+>>> 		np = dev->of_node;
+>>>
+>>> ? I'm not sure exactly what find_host_bridge() is called, but I'm pretty
+>>> sure that exists.
+>>>
+>>> Once we have that we can still iterate over the iommus property and do
+>>> not need to rely on this global variable.
 >>
->> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
->> ---
->> diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.c b/drivers/gpu/drm/msm/dp/dp_ctrl.c
->> index 2e3e1917351f..e1595d829e04 100644
->> --- a/drivers/gpu/drm/msm/dp/dp_ctrl.c
->> +++ b/drivers/gpu/drm/msm/dp/dp_ctrl.c
->> @@ -1849,6 +1853,21 @@ struct dp_ctrl *dp_ctrl_get(struct device *dev, struct dp_link *link,
->>                  return ERR_PTR(-ENOMEM);
->>          }
->>   
->> +       ctrl->opp_table = dev_pm_opp_set_clkname(dev, "ctrl_link");
-
-I see that downstream has multiple DP clocks which end up voting on CX, we don't have a
-way of associating multiple OPP tables with a device upstream, so whats usually done is
-(assuming all the clocks get scaled in lock step, which I assume is the case here) we pick
-the clock with the 'highest' CX requirement and associate that with the OPP table.
-I haven't looked but I am hoping thats how we have decided to associate "ctrl_link" clock
-here?
-
->> +
->> +       if (IS_ERR(ctrl->opp_table)) {
->> +               dev_err(dev, "invalid DP OPP table in device tree\n");
->> +               ctrl->opp_table = NULL;
->> +       } else {
->> +               /* OPP table is optional */
->> +               ret = dev_pm_opp_of_add_table(dev);
->> +               if (ret && ret != -ENODEV) {
->> +                       dev_err(dev, "add DP OPP table\n");
-> 
-> This is debug noise right?
-> 
->> +                       dev_pm_opp_put_clkname(ctrl->opp_table);
->> +                       ctrl->opp_table = NULL;
->> +               }
->> +       }
->> +
->>          init_completion(&ctrl->idle_comp);
->>          init_completion(&ctrl->video_comp);
->>   
->> @@ -1864,6 +1883,18 @@ struct dp_ctrl *dp_ctrl_get(struct device *dev, struct dp_link *link,
->>          return &ctrl->dp_ctrl;
->>   }
->>   
->> -void dp_ctrl_put(struct dp_ctrl *dp_ctrl)
->> +void dp_ctrl_put(struct device *dev, struct dp_ctrl *dp_ctrl)
->>   {
->> +       struct dp_ctrl_private *ctrl;
->> +
->> +       if (!dp_ctrl)
-> 
-> Can this happen?
-> 
->> +               return;
->> +
->> +       ctrl = container_of(dp_ctrl, struct dp_ctrl_private, dp_ctrl);
->> +
->> +       if (ctrl->opp_table != NULL) {
-> 
-> This is usually written as
-> 
-> 	if (ctrl->opp_table)
-> 
->> +               dev_pm_opp_of_remove_table(dev);
->> +               dev_pm_opp_put_clkname(ctrl->opp_table);
->> +               ctrl->opp_table = NULL;
->> +       }
->>   }
->> diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.h b/drivers/gpu/drm/msm/dp/dp_ctrl.h
->> index f60ba93c8678..19b412a93e02 100644
->> --- a/drivers/gpu/drm/msm/dp/dp_ctrl.h
->> +++ b/drivers/gpu/drm/msm/dp/dp_ctrl.h
->> @@ -31,6 +31,6 @@ struct dp_ctrl *dp_ctrl_get(struct device *dev, struct dp_link *link,
->>                          struct dp_panel *panel, struct drm_dp_aux *aux,
->>                          struct dp_power *power, struct dp_catalog *catalog,
->>                          struct dp_parser *parser);
->> -void dp_ctrl_put(struct dp_ctrl *dp_ctrl);
->> +void dp_ctrl_put(struct device *dev, struct dp_ctrl *dp_ctrl);
-> 
-> Is 'dev' not inside 'dp_ctrl'?
-> 
->>   
->>   #endif /* _DP_CTRL_H_ */
->> diff --git a/drivers/gpu/drm/msm/dp/dp_power.c b/drivers/gpu/drm/msm/dp/dp_power.c
->> index 17c1fc6a2d44..3d75bf09e38f 100644
->> --- a/drivers/gpu/drm/msm/dp/dp_power.c
->> +++ b/drivers/gpu/drm/msm/dp/dp_power.c
->> @@ -8,12 +8,14 @@
->>   #include <linux/clk.h>
->>   #include <linux/clk-provider.h>
->>   #include <linux/regulator/consumer.h>
->> +#include <linux/pm_opp.h>
->>   #include "dp_power.h"
->>   #include "msm_drv.h"
->>   
->>   struct dp_power_private {
->>          struct dp_parser *parser;
->>          struct platform_device *pdev;
->> +       struct device *dev;
->>          struct clk *link_clk_src;
->>          struct clk *pixel_provider;
->>          struct clk *link_provider;
->> @@ -148,18 +150,49 @@ static int dp_power_clk_deinit(struct dp_power_private *power)
->>          return 0;
->>   }
->>   
->> +static int dp_power_clk_set_link_rate(struct dp_power_private *power,
->> +                       struct dss_clk *clk_arry, int num_clk, int enable)
->> +{
->> +       u32 rate;
->> +       int i, rc = 0;
->> +
->> +       for (i = 0; i < num_clk; i++) {
->> +               if (clk_arry[i].clk) {
->> +                       if (clk_arry[i].type == DSS_CLK_PCLK) {
->> +                               if (enable)
->> +                                       rate = clk_arry[i].rate;
->> +                               else
->> +                                       rate = 0;
->> +
->> +                               rc = dev_pm_opp_set_rate(power->dev, rate);
-> 
-> Why do we keep going if rc is non-zero?
-> 
->> +                       }
->> +
->> +               }
->> +       }
->> +       return rc;
->> +}
->> +
->>   static int dp_power_clk_set_rate(struct dp_power_private *power,
->>                  enum dp_pm_type module, bool enable)
->>   {
->>          int rc = 0;
->>          struct dss_module_power *mp = &power->parser->mp[module];
->>   
->> -       if (enable) {
->> -               rc = msm_dss_clk_set_rate(mp->clk_config, mp->num_clk);
->> +       if (module == DP_CTRL_PM) {
->> +               rc = dp_power_clk_set_link_rate(power, mp->clk_config, mp->num_clk, enable);
->>                  if (rc) {
->> -                       DRM_ERROR("failed to set clks rate.\n");
->> +                       DRM_ERROR("failed to set link clks rate.\n");
->>                          return rc;
->>                  }
->> +       } else {
->> +
->> +               if (enable) {
->> +                       rc = msm_dss_clk_set_rate(mp->clk_config, mp->num_clk);
->> +                       if (rc) {
->> +                               DRM_ERROR("failed to set clks rate.\n");
-> 
-> Not sure we need the period on these error messages.
-> 
->> +                               return rc;
->> +                       }
->> +               }
->>          }
->>   
->>          rc = msm_dss_enable_clk(mp->clk_config, mp->num_clk, enable);
+>> This sounds more complicated than the current variant.
 >>
->> base-commit: 3c0f462da069af12211901ddf26f7e16e6951d9b
->> prerequisite-patch-id: a109eaf08147f50149ad661a58122b6745a52445
+>> Secondly, I'm already about to use the new tegra_get_memory_controller()
+>> API for all the T20/30/124/210 EMC and devfreq drivers.
 > 
-> Can you rebase this on Rob's msm-next tree
-> (https://gitlab.freedesktop.org/drm/msm.git) and test? It doesn't apply
-> for me because I have the dp phy patch from there.
-> 
+> Why do we need it there? They seem to work fine without it right now.
 
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
+All the Tegra30/124/210 EMC drivers are already duplicating that MC
+lookup code and only the recent T210 driver does it properly.
+
+> If it is required for new functionality, we can always make the dependent
+> on a DT reference via phandle without breaking any existing code.
+
+That's correct, it will be also needed for the new functionality as
+well, hence even more drivers will need to perform the MC lookup.
+
+I don't quite understand why you're asking for the phandle reference,
+it's absolutely not needed for the MC lookup and won't work for the
+older DTs if DT change will be needed. Please give a detailed explanation.
