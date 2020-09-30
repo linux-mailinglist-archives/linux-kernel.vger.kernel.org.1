@@ -2,106 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60BA427F034
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 19:23:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5987727F071
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 19:25:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731434AbgI3RXf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 13:23:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60074 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725837AbgI3RXe (ORCPT
+        id S1731606AbgI3RYp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 13:24:45 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:60648 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725823AbgI3RYp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 13:23:34 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FF62C061755
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 10:23:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=no00GtEvC4Ccb0AEQA7+4iXCIrB4UVLH9f7Oc/XUFOU=; b=tdiUgSZNbCCmbgDvEq3BZxq+BA
-        uGnRWZer6nIii7KYunB1Um9AZ3kaqp+YgXZ2JbEcnFc6QV+QDn/dy7QxrttKcgEs+XntYKgzGnFsX
-        5aGX5xC/GyMGrI5jIEbxaoAdfZ6762CpmX2eSc1BOw1Z0n+7bRvOwh0UBezYuNkf+VyPx5/eznh6H
-        uOUKfYXsy5C6MIkB3OtVO8oQr40a63qqQ6PshXcgero1BwXhApigDH3l61R69wcE6Ac5ZgshXC1bY
-        0KmqhLj8FHCOClLRFPMG+KrkpyVkCtUvu3D8MIqQyKagc/u9/KluR+hMVBoxr0S9viPv3cJqoVn1+
-        fUPvBE7A==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kNfp4-00082g-49; Wed, 30 Sep 2020 17:23:22 +0000
-Date:   Wed, 30 Sep 2020 18:23:21 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Jan Kara <jack@suse.cz>
-Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        William Kucharski <william.kucharski@oracle.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Dave Chinner <dchinner@redhat.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 12/12] mm/filemap: Return only head pages from
- find_get_entries
-Message-ID: <20200930172321.GS20115@casper.infradead.org>
-References: <20200914130042.11442-1-willy@infradead.org>
- <20200914130042.11442-13-willy@infradead.org>
- <20200930121512.GT10896@quack2.suse.cz>
- <20200930123637.GP20115@casper.infradead.org>
- <20200930170807.GA15977@quack2.suse.cz>
+        Wed, 30 Sep 2020 13:24:45 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 144EF1C0B76; Wed, 30 Sep 2020 19:24:42 +0200 (CEST)
+Date:   Wed, 30 Sep 2020 19:24:41 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Alexander Dahl <ada@thorsis.com>
+Cc:     Alexander Dahl <post@lespocky.de>, linux-leds@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        Dan Murphy <dmurphy@ti.com>, Rob Herring <robh+dt@kernel.org>,
+        linux-kernel@vger.kernel.org,
+        Peter Ujfalusi <peter.ujfalusi@ti.com>,
+        Marek =?iso-8859-1?Q?Beh=FAn?= <marek.behun@nic.cz>,
+        Denis Osterland-Heim <denis.osterland@diehl.com>
+Subject: Re: [PATCH v5 1/3] leds: pwm: Remove platform_data support
+Message-ID: <20200930172441.GI27760@duo.ucw.cz>
+References: <20200919053145.7564-1-post@lespocky.de>
+ <20200919053145.7564-2-post@lespocky.de>
+ <20200919094418.GC12294@duo.ucw.cz>
+ <11962635.BNa8PrgvAO@ada>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="J+eNKFoVC4T1DV3f"
 Content-Disposition: inline
-In-Reply-To: <20200930170807.GA15977@quack2.suse.cz>
+In-Reply-To: <11962635.BNa8PrgvAO@ada>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 07:08:07PM +0200, Jan Kara wrote:
-> On Wed 30-09-20 13:36:37, Matthew Wilcox wrote:
-> > On Wed, Sep 30, 2020 at 02:15:12PM +0200, Jan Kara wrote:
-> > > On Mon 14-09-20 14:00:42, Matthew Wilcox (Oracle) wrote:
-> > > > All callers now expect head (and base) pages, and can handle multiple
-> > > > head pages in a single batch, so make find_get_entries() behave that way.
-> > > > Also take the opportunity to make it use the pagevec infrastructure
-> > > > instead of open-coding how pvecs behave.  This has the side-effect of
-> > > > being able to append to a pagevec with existing contents, although we
-> > > > don't make use of that functionality anywhere yet.
-> > > > 
-> > > > Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> > > 
-> > > Looks good to me. You can add:
-> > > 
-> > > Reviewed-by: Jan Kara <jack@suse.cz>
-> > > 
-> > > I'm just curious: What has happened to pagevec_lookup_entries() call in
-> > > invalidate_inode_pages2_range()? Your series appears to be based on a tree
-> > > where the call already does not exist...
-> > 
-> > That went away in patch 10 of this series.
-> 
-> Ah, I see. Thanks. Then I'm somewhat wondering is really
-> invalidate_inode_pages2_range() safe for THP head pages? At least the:
-> 
-> 	unmap_mapping_pages(mapping, index, 1, false);
-> 
-> doesn't look adequate for THP head pages... do_launder_page() is also
-> doubtful but probably currently OK because THPs cannot be dirty at this
-> moment. But how about THPs that are partialy inside start-end range? So far
-> the function didn't care because it was operating on page basis so it
-> didn't care but now it is probably relevant... At least it would warrant a
-> comment in some changelog if you are convinced everything is safe.
 
-You're right, it's inadequate.  It's safe to apply this series to the
-mainline as-is because the only filesystem which creates THP today
-is tmpfs and it won't call invalidate_inode_pages2_range() (afaics).
-I have a followup patch which isn't part of this series which fixes it:
+--J+eNKFoVC4T1DV3f
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-http://git.infradead.org/users/willy/pagecache.git/commitdiff/364283163847d1c106463223b858308c730592a1
+Hi!
 
-There are other similar fixes which are also needed before we get to
-allowing THPs to be added to the page cache for normal filesystems,
-but I think I'm out of time for this merge window.  My plan is to submit
-everything that's in this tree for the next merge window; the page cache
-pieces through Andrew and the filesystem/iomap/XFS pieces through Darrick.
-With good luck, all of this will be in place for 5.11.  I have about 50
-patches in flight for 5.10 and it'll be about another 50 for 5.11.
+> > > +__attribute__((nonnull))
+> > >=20
+> > >  static int led_pwm_add(struct device *dev, struct led_pwm_priv *priv,
+> > > =20
+> > >  		       struct led_pwm *led, struct fwnode_handle *fwnode)
+> > > =20
+> > >  {
+> >=20
+> > This normally goes elsewhere -- right? I'd expect:
+> >=20
+> >=20
+> >   static int led_pwm_add(struct device *dev, struct led_pwm_priv *priv,
+> >   		       struct led_pwm *led, struct fwnode_handle *fwnode)
+> > 	  __attribute__((nonnull))
+>=20
+> I found both variants in kernel code.  I can live with both variants and =
+have=20
+> no strong preference.
+>=20
+> My initial intention to add it was to get a compiler warning in case some=
+one=20
+> does not pass a fwnode here, e.g. when using that old platform_data appro=
+ach=20
+> (which is supposed to be removed with this patch).  You might call it a s=
+elf=20
+> check on my own changes.  I can also drop that attribute if you don't wan=
+t=20
+> that kind of stuff in linux-leds.
 
-Reviewer bandwidth is probably the biggest issue right now, and I
-really appreciate your thoughtful comments.
+I'm okay with it at the second place :-).
+
+Thanks,
+									Pavel
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--J+eNKFoVC4T1DV3f
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX3S/WQAKCRAw5/Bqldv6
+8rDKAKCNDbu5Rgb8esUqr42ANlpnrNDlzgCgotvZMGrIVuUyMCrK5Q++5jbr4BE=
+=XHap
+-----END PGP SIGNATURE-----
+
+--J+eNKFoVC4T1DV3f--
