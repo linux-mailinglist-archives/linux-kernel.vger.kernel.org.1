@@ -2,263 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D4DC27F4EF
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 00:15:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E842127F4F1
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 00:17:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730941AbgI3WPl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 18:15:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48778 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730258AbgI3WPl (ORCPT
+        id S1730992AbgI3WRq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 18:17:46 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:56146 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730258AbgI3WRq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 18:15:41 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3726CC0613D0
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 15:15:41 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id d13so2122145pgl.6
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 15:15:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=IWHKwPVIVcemGc90Z3hO6SXFiJGRIxohxqpgqu+BDQQ=;
-        b=gJ/7u5pCaguTSJVI/m5PGfLSSeWSoVDx7vy1UpGyoQ7pwlTCtttUSj5HGR/+F8Cksc
-         tOjyhH4jyVwNT70X005zV5RS4hDbW3FlcUHR+87Io5OqCzHxgYNRxOFqmX3+FkECICTW
-         qzMMuaMqYak9bVgcWyLvkedlQPX04KF2jLp/zU5wHFwqovp/H8CsZHjgWRlvaPRV7sQ4
-         sj6TLlWek1h4wK4bKwKAmivgU6awM3NTSjTpUdvvCJH+4BDZiIMyg6MzgYrXlEntkHIe
-         yWLT4AaXl1RSKWLcH0Dy68BYSktw2GPm2kTrUq1h5fpTwZimBNnEeprBLP++5sxHUT1E
-         MeGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=IWHKwPVIVcemGc90Z3hO6SXFiJGRIxohxqpgqu+BDQQ=;
-        b=fIcOafnDQPyuqoMzgWVGx45NBoXxhYDDjR9nds2W2ejB9egAc+Ye6pFmF/ieUIKvaj
-         C0tB9ezl1lSZrXUVPIloK2yU/xpoxI/oOprT2UhvxoQ3qGP1b5yzUgD5L4uyZmX73IhP
-         hYgdcY5BoFCdslIYIxsnnI9qVW7mPhPg7GQahmEW/4Yohmltt8ipnPLteAoCTeBh4BdM
-         d31Wv4J7aB6IhyRYtvEn8DLfr98/eYLrz4DBjowL4LFzpArVYT2CvR0o69XZU0nZc7FO
-         MeFn0JZ1G7KcO5rnGQBlKr/zERMW7fHjC6SPo2EZRxdX+CG7dwn3oOHRONP9rpqHAkrE
-         hKeg==
-X-Gm-Message-State: AOAM532cKnZCEfcGWUxRTMu9ienQQmBeSbZQq5DLXfOhlk/zLJIGriW/
-        XYoFnbO2an00CgCAEhFRTTlMfM4WQEfQLg==
-X-Google-Smtp-Source: ABdhPJyvRxRvtFTD0F5SDQByJMS5583bWfh8XuJnv06pKbHckMxby2B1VSunAcrin2ZooNsQBPvTXw==
-X-Received: by 2002:a17:902:70c9:b029:d2:950a:d82e with SMTP id l9-20020a17090270c9b02900d2950ad82emr4395419plt.26.1601504140590;
-        Wed, 30 Sep 2020 15:15:40 -0700 (PDT)
-Received: from [10.212.76.164] (fmdmzpr04-ext.fm.intel.com. [192.55.55.39])
-        by smtp.gmail.com with ESMTPSA id c1sm3596523pfj.219.2020.09.30.15.15.38
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 30 Sep 2020 15:15:39 -0700 (PDT)
-From:   "Sean V Kelley" <sean.v.kelley@intel.com>
-To:     "Sean V Kelley" <seanvk.dev@oregontracks.org>
-Cc:     bhelgaas@google.com, Jonathan.Cameron@huawei.com,
-        rafael.j.wysocki@intel.com, ashok.raj@intel.com,
-        tony.luck@intel.com, sathyanarayanan.kuppuswamy@intel.com,
-        qiuxu.zhuo@intel.com, linux-pci@vger.kernel.org,
+        Wed, 30 Sep 2020 18:17:46 -0400
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08UM2rcA141596;
+        Wed, 30 Sep 2020 18:17:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : mime-version : content-type :
+ content-transfer-encoding; s=pp1;
+ bh=RPID6nDqz5YL8qrkZmiJU5uCwJ07iotV4+4+6zp7Xug=;
+ b=lbHSa0JoYJSLg/iXLmKjZsDyMN+bolJGxCAyt1n3X9m0D05ducSZksRAfcFk+NJIxCjU
+ VGIzpcd8Hj4XyaK4PFu5mIgYyILyNsD+2SuVMrOHlDNgMMm86rdiAxJ42jWgWurBPjDj
+ VTjBa4BF6xfcSRmnFZxf3VddOYZYbo/Nt8K34sFyQORLQANow/WamNTVqB5PdnfElVHs
+ Bx5thItCPva/dOl/kYE8J8mF5FJN7wyVFCPCg5lAdPTml0xAQeM0pxlB2ln8fiohtoeB
+ Chtl4gfcun2q4Zqq2MiGXdH9S8RczXiWqBvNPWvKgLvyqn8Qs9JriPUVJi+wO7sI4yNr Bw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33w1ra1dgg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 30 Sep 2020 18:17:26 -0400
+Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08UMBsf3025900;
+        Wed, 30 Sep 2020 18:17:26 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33w1ra1dfs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 30 Sep 2020 18:17:26 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08UMHNO0008296;
+        Wed, 30 Sep 2020 22:17:23 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma04ams.nl.ibm.com with ESMTP id 33sw97vv9c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 30 Sep 2020 22:17:23 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08UMHLOw27394398
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 30 Sep 2020 22:17:21 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9B0F2A404D;
+        Wed, 30 Sep 2020 22:17:21 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DBBFDA4040;
+        Wed, 30 Sep 2020 22:17:20 +0000 (GMT)
+Received: from localhost (unknown [9.145.18.215])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Wed, 30 Sep 2020 22:17:20 +0000 (GMT)
+Date:   Thu, 1 Oct 2020 00:17:19 +0200
+From:   Vasily Gorbik <gor@linux.ibm.com>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        David Laight <David.Laight@aculab.com>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Julien Thierry <jthierry@redhat.com>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 03/13] PCI/RCEC: Cache RCEC capabilities in
- pci_init_capabilities()
-Date:   Wed, 30 Sep 2020 15:15:36 -0700
-X-Mailer: MailMate (1.13.2r5673)
-Message-ID: <C878940D-0AAC-48D1-99C5-28D7A5E98ACA@intel.com>
-In-Reply-To: <20200930215820.1113353-4-seanvk.dev@oregontracks.org>
-References: <20200930215820.1113353-1-seanvk.dev@oregontracks.org>
- <20200930215820.1113353-4-seanvk.dev@oregontracks.org>
+Subject: [RFC PATCH v3 0/4] objtool and cross compilation
+Message-ID: <cover.thread-6ec90b.your-ad-here.call-01601502173-ext-7769@work.hours>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+X-Patchwork-Bot: notify
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-30_13:2020-09-30,2020-09-30 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 impostorscore=0
+ malwarescore=0 spamscore=0 mlxscore=0 lowpriorityscore=0 bulkscore=0
+ mlxlogscore=999 suspectscore=1 adultscore=0 phishscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009300176
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30 Sep 2020, at 14:58, Sean V Kelley wrote:
+rfc v1 - rfc v2:
+ - rebased onto tip/objtool/core
+ - reformatted couple of lines
 
-> From: Sean V Kelley <sean.v.kelley@intel.com>
->
-> Extend support for Root Complex Event Collectors by decoding and
-> caching the RCEC Endpoint Association Extended Capabilities when
-> enumerating. Use that cached information for later error source
-> reporting. See PCI Express Base Specification, version 5.0-1,
-> section 7.9.10.
->
-> Suggested-by: Bjorn Helgaas <bhelgaas@google.com>
-> Co-developed-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
-> Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
-> Signed-off-by: Sean V Kelley <sean.v.kelley@intel.com>
-> ---
->  drivers/pci/pci.h         | 17 +++++++++++
->  drivers/pci/pcie/Makefile |  2 +-
->  drivers/pci/pcie/rcec.c   | 59 
-> +++++++++++++++++++++++++++++++++++++++
->  drivers/pci/probe.c       |  2 ++
->  include/linux/pci.h       |  4 +++
->  5 files changed, 83 insertions(+), 1 deletion(-)
->  create mode 100644 drivers/pci/pcie/rcec.c
->
-> diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
-> index fa12f7cbc1a0..88e27a98def5 100644
-> --- a/drivers/pci/pci.h
-> +++ b/drivers/pci/pci.h
-> @@ -449,6 +449,15 @@ int aer_get_device_error_info(struct pci_dev 
-> *dev, struct aer_err_info *info);
->  void aer_print_error(struct pci_dev *dev, struct aer_err_info *info);
->  #endif	/* CONFIG_PCIEAER */
->
-> +#ifdef CONFIG_PCIEPORTBUS
-> +/* Cached RCEC Endpoint Association */
-> +struct rcec_ea {
-> +	u8		nextbusn;
-> +	u8		lastbusn;
-> +	u32		bitmap;
-> +};
-> +#endif
-> +
->  #ifdef CONFIG_PCIE_DPC
->  void pci_save_dpc_state(struct pci_dev *dev);
->  void pci_restore_dpc_state(struct pci_dev *dev);
-> @@ -461,6 +470,14 @@ static inline void pci_restore_dpc_state(struct 
-> pci_dev *dev) {}
->  static inline void pci_dpc_init(struct pci_dev *pdev) {}
->  #endif
->
-> +#ifdef CONFIG_PCIEPORTBUS
-> +int pci_rcec_init(struct pci_dev *dev);
-> +void pci_rcec_exit(struct pci_dev *dev);
-> +#else
-> +static inline int pci_rcec_init(struct pci_dev *dev) {return 0;}
+rfc v2 - rfc v3:
+ - reused __*_ENDIAN_BITFIELD and dropped unneeded byteswap if __KERNEL__
+   is defined following David's suggestions,
+ - re-splitted changes and made x86 instruction decoder a separate patch,
+ - extra patch to add -Wno-nested-externs build flag to enable BUILD_BUG()
+   usage,
+ - added a safer and more readable leXX_to_cpu macro in x86 instruction
+   decoder,
+ - simplified includes. Switched to using leXX_to_cpu/cpu_to_leXX in
+   the objtool and x86 instruction decoder since
+   <linux/kernel.h> is included in the objtool already.
 
-Will fix the spacing here on the inline. That’s what I get for a last 
-minute change of void to int for return…
+Currently objtool seems to be the only tool from all the build tools
+needed for x86 build which breaks x86 cross compilation on big endian
+systems.
 
-Sean
+But besides x86 cross compilation, endianness awareness is also needed
+for big endian architectures objtool support in general.
 
-> +static inline void pci_rcec_exit(struct pci_dev *dev) {}
-> +#endif
-> +
->  #ifdef CONFIG_PCI_ATS
->  /* Address Translation Service */
->  void pci_ats_init(struct pci_dev *dev);
-> diff --git a/drivers/pci/pcie/Makefile b/drivers/pci/pcie/Makefile
-> index 68da9280ff11..d9697892fa3e 100644
-> --- a/drivers/pci/pcie/Makefile
-> +++ b/drivers/pci/pcie/Makefile
-> @@ -2,7 +2,7 @@
->  #
->  # Makefile for PCI Express features and port driver
->
-> -pcieportdrv-y			:= portdrv_core.o portdrv_pci.o err.o
-> +pcieportdrv-y			:= portdrv_core.o portdrv_pci.o err.o rcec.o
->
->  obj-$(CONFIG_PCIEPORTBUS)	+= pcieportdrv.o
->
-> diff --git a/drivers/pci/pcie/rcec.c b/drivers/pci/pcie/rcec.c
-> new file mode 100644
-> index 000000000000..da02b0af442d
-> --- /dev/null
-> +++ b/drivers/pci/pcie/rcec.c
-> @@ -0,0 +1,59 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Root Complex Event Collector Support
-> + *
-> + * Authors:
-> + *  Sean V Kelley <sean.v.kelley@intel.com>
-> + *  Qiuxu Zhuo <qiuxu.zhuo@intel.com>
-> + *
-> + * Copyright (C) 2020 Intel Corp.
-> + */
-> +
-> +#include <linux/kernel.h>
-> +#include <linux/pci.h>
-> +#include <linux/pci_regs.h>
-> +
-> +#include "../pci.h"
-> +
-> +int pci_rcec_init(struct pci_dev *dev)
-> +{
-> +	struct rcec_ea *rcec_ea;
-> +	u32 rcec, hdr, busn;
-> +	u8 ver;
-> +
-> +	/* Only for Root Complex Event Collectors */
-> +	if (pci_pcie_type(dev) != PCI_EXP_TYPE_RC_EC)
-> +		return 0;
-> +
-> +	rcec = pci_find_ext_capability(dev, PCI_EXT_CAP_ID_RCEC);
-> +	if (!rcec)
-> +		return 0;
-> +
-> +	rcec_ea = kzalloc(sizeof(*rcec_ea), GFP_KERNEL);
-> +	if (!rcec_ea)
-> +		return -ENOMEM;
-> +	dev->rcec_ea = rcec_ea;
-> +
-> +	pci_read_config_dword(dev, rcec + PCI_RCEC_RCIEP_BITMAP, 
-> &rcec_ea->bitmap);
-> +
-> +	/* Check whether RCEC BUSN register is present */
-> +	pci_read_config_dword(dev, rcec, &hdr);
-> +	ver = PCI_EXT_CAP_VER(hdr);
-> +	if (ver < PCI_RCEC_BUSN_REG_VER) {
-> +		/* Avoid later ver check by setting nextbusn */
-> +		rcec_ea->nextbusn = 0xff;
-> +		return 0;
-> +	}
-> +
-> +	pci_read_config_dword(dev, rcec + PCI_RCEC_BUSN, &busn);
-> +	rcec_ea->nextbusn = PCI_RCEC_BUSN_NEXT(busn);
-> +	rcec_ea->lastbusn = PCI_RCEC_BUSN_LAST(busn);
-> +
-> +	return 0;
-> +}
-> +
-> +void pci_rcec_exit(struct pci_dev *dev)
-> +{
-> +	kfree(dev->rcec_ea);
-> +	dev->rcec_ea = NULL;
-> +}
-> diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
-> index 03d37128a24f..25f01f841f2d 100644
-> --- a/drivers/pci/probe.c
-> +++ b/drivers/pci/probe.c
-> @@ -2201,6 +2201,7 @@ static void pci_configure_device(struct pci_dev 
-> *dev)
->  static void pci_release_capabilities(struct pci_dev *dev)
->  {
->  	pci_aer_exit(dev);
-> +	pci_rcec_exit(dev);
->  	pci_vpd_release(dev);
->  	pci_iov_release(dev);
->  	pci_free_cap_save_buffers(dev);
-> @@ -2400,6 +2401,7 @@ static void pci_init_capabilities(struct pci_dev 
-> *dev)
->  	pci_ptm_init(dev);		/* Precision Time Measurement */
->  	pci_aer_init(dev);		/* Advanced Error Reporting */
->  	pci_dpc_init(dev);		/* Downstream Port Containment */
-> +	pci_rcec_init(dev);		/* Root Complex Event Collector */
->
->  	pcie_report_downtraining(dev);
->
-> diff --git a/include/linux/pci.h b/include/linux/pci.h
-> index 835530605c0d..2290439e8bc0 100644
-> --- a/include/linux/pci.h
-> +++ b/include/linux/pci.h
-> @@ -304,6 +304,7 @@ struct pcie_link_state;
->  struct pci_vpd;
->  struct pci_sriov;
->  struct pci_p2pdma;
-> +struct rcec_ea;
->
->  /* The pci_dev structure describes PCI devices */
->  struct pci_dev {
-> @@ -326,6 +327,9 @@ struct pci_dev {
->  #ifdef CONFIG_PCIEAER
->  	u16		aer_cap;	/* AER capability offset */
->  	struct aer_stats *aer_stats;	/* AER stats for this device */
-> +#endif
-> +#ifdef CONFIG_PCIEPORTBUS
-> +	struct rcec_ea	*rcec_ea;	/* RCEC cached endpoint association */
->  #endif
->  	u8		pcie_cap;	/* PCIe capability offset */
->  	u8		msi_cap;	/* MSI capability offset */
-> -- 
-> 2.28.0
+We have working prototype of objtool support and orc unwinder for s390
+made originally by Martin Schwidefsky. I'm trying to bring it in shape
+again and refactor to share more code with "generic" part.
+
+But first things first. This patch series points to endianness problems
+which should be addressed. Recent "other architectures support" patches
+currently moved only some problematic parts into x86 arch specific folder.
+Besides that even though big endian stuff is only needed for the objtool
+arch/x86/lib/insn.c and arch/x86/include/asm/insn.h are shared across
+the kernel source and the tools, so changes are applied to both.
+
+Any suggestions how to make patches more acceptable are welcome.
+
+Martin Schwidefsky (2):
+  objtool: x86 instruction decoder and big endian cross compiles
+  objtool: correct rebuilding of reloc sections
+
+Vasily Gorbik (2):
+  objtool: allow nested externs to enable BUILD_BUG()
+  objtool: fix x86 orc generation on big endian cross compiles
+
+ arch/x86/include/asm/insn.h            |  35 ++++++++
+ arch/x86/include/asm/orc_types.h       |  10 +++
+ arch/x86/lib/insn.c                    | 108 ++++++++++++-------------
+ tools/arch/x86/include/asm/insn.h      |  35 ++++++++
+ tools/arch/x86/include/asm/orc_types.h |  10 +++
+ tools/arch/x86/lib/insn.c              | 108 ++++++++++++-------------
+ tools/objtool/Makefile                 |   2 +-
+ tools/objtool/arch/x86/special.c       |   2 +-
+ tools/objtool/check.c                  |   4 +-
+ tools/objtool/elf.c                    |  34 ++++----
+ tools/objtool/orc_dump.c               |   4 +-
+ tools/objtool/orc_gen.c                |   2 +
+ 12 files changed, 225 insertions(+), 129 deletions(-)
+
+-- 
+⣿⣿⣿⣿⢋⡀⣀⠹⣿⣿⣿⣿
+⣿⣿⣿⣿⠠⣶⡦⠀⣿⣿⣿⣿
+⣿⣿⣿⠏⣴⣮⣴⣧⠈⢿⣿⣿
+⣿⣿⡏⢰⣿⠖⣠⣿⡆⠈⣿⣿
+⣿⢛⣵⣄⠙⣶⣶⡟⣅⣠⠹⣿
+⣿⣜⣛⠻⢎⣉⣉⣀⠿⣫⣵⣿
