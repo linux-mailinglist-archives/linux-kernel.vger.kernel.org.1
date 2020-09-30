@@ -2,79 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F10B027E144
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 08:38:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E487027E193
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 08:43:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728211AbgI3Gh7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 02:37:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59996 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725786AbgI3Gh7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 02:37:59 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7CD042075F;
-        Wed, 30 Sep 2020 06:37:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601447879;
-        bh=aUeSXzjVFtMG4x8dh311yA0nBhGA2MwjJn6twEOju38=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MaSpRDICsclE/SvX67Lp9K0qt/WHzUETeVkskQuL6z4RV7YnPcDUh7Yupo+wHIkgR
-         I3iTQVHwYmxGzGNIRASR5fY5OWFbRfDeYujj1FDDlMBObHup5HpbNypJz4Nt1caUe2
-         zUq1uf3KM/MJHMUS+85IF+08IkgbBgGudvQv95mY=
-Date:   Wed, 30 Sep 2020 08:38:03 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Oded Gabbay <oded.gabbay@gmail.com>
-Cc:     "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] habanalabs/gaudi: use correct define for qman init
-Message-ID: <20200930063803.GB1490382@kroah.com>
-References: <20200925171415.25663-1-oded.gabbay@gmail.com>
- <CAFCwf12jX9sg8xjh4AGQvzyJaCu=bZaf+HjBqeauxV4Ry0A5qQ@mail.gmail.com>
+        id S1728262AbgI3Gnw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 02:43:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45924 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725535AbgI3Gnv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 02:43:51 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 992E8C061755;
+        Tue, 29 Sep 2020 23:43:51 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id y6so411405plt.9;
+        Tue, 29 Sep 2020 23:43:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=3+GU4zxm0Td/KM5SRNzPIJUthrCnvW7q6ZorJHiP25c=;
+        b=akm+iSr6qnW70fDV3jaZfWWqU3vhS6CWumvkgTeR4+hpoVUb0TeAiyfFFvEkvbtzxQ
+         zC1uH6jgIW84OTxKT7una4YVN8x6wz4G/sXdWo9hfFVQvxk4LO1WecENt87rFgQWIbk8
+         H6VlRIPVbU+gNgkEBskDrRNbNdd2a8Nf2mlFx2MPnVsoHx3FRVu6x1YwRxM00WlZ+3tm
+         GG3TaAO4baKb/luzBXlXkJdrM7FxNgItX4udQZeZMXqNdq536ikZ7sjO+iKUL6SsmAF1
+         HqVN8uyev/WaKIM6BQu63zKW1781GcZyyP/5khDrckTMqCyQT0MxUVLI80zVGySFacnt
+         l2sQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=3+GU4zxm0Td/KM5SRNzPIJUthrCnvW7q6ZorJHiP25c=;
+        b=QZGQaVSEdvlV9Q9zZNnmBAfWa/ecSFedFBzy2BCH5vFE1nPXEMFbBFkmWB+kNfLcNz
+         JdeqIMdYpD+ZREN10IUPbEDa/KEg3PT7PxSiGdspR6HGZgkJaYPO0VI7Xm3hvQPxBfUa
+         asr3rfzM1bEeveHOkOHL+goEVnS6QkFv7986cUXqxC7lHZZiMxgnr8ksVpRMe383Kofi
+         BMn69fGbjVCmBRj7uH4kAG2zxJaugRR0N1eEXecBDLGyugF507tiAgJl/NPD8LL2EOud
+         huYJPgP2HNCBNPTLRLAgDyw5cGaZJAR0gwr8wlSDCzJqB9FRPtCmcWQBEF80uZYfNZjV
+         LxPw==
+X-Gm-Message-State: AOAM533uMy6peR9B3Aenghx4QeJFiSdktFDcCopjdOSoGOxOiFrxGyo7
+        wM+C2Kvah9X2U6MB0uM0Ipg=
+X-Google-Smtp-Source: ABdhPJwysfEAZOo8P4hlopqTLpZc4kTN+he7jDU+vAlyRRSPVRDKHWaVI9riTckyYU663STgPg5MNQ==
+X-Received: by 2002:a17:90a:f001:: with SMTP id bt1mr1179816pjb.116.1601448231098;
+        Tue, 29 Sep 2020 23:43:51 -0700 (PDT)
+Received: from Asurada-Nvidia (thunderhill.nvidia.com. [216.228.112.22])
+        by smtp.gmail.com with ESMTPSA id z9sm1023556pfk.118.2020.09.29.23.43.50
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 29 Sep 2020 23:43:50 -0700 (PDT)
+Date:   Tue, 29 Sep 2020 23:38:20 -0700
+From:   Nicolin Chen <nicoleotsuka@gmail.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     thierry.reding@gmail.com, joro@8bytes.org, krzk@kernel.org,
+        vdumpa@nvidia.com, jonathanh@nvidia.com,
+        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] memory: tegra: Add helper function
+ tegra_get_memory_controller
+Message-ID: <20200930063820.GD16460@Asurada-Nvidia>
+References: <20200930003013.31289-1-nicoleotsuka@gmail.com>
+ <20200930003013.31289-2-nicoleotsuka@gmail.com>
+ <93803d8b-9863-e977-fa87-a03e877b095d@gmail.com>
+ <20200930054455.GF31821@Asurada-Nvidia>
+ <2f752179-5ad3-c000-8794-494c79f7b21f@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAFCwf12jX9sg8xjh4AGQvzyJaCu=bZaf+HjBqeauxV4Ry0A5qQ@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <2f752179-5ad3-c000-8794-494c79f7b21f@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 11:58:22PM +0300, Oded Gabbay wrote:
-> On Fri, Sep 25, 2020 at 8:14 PM Oded Gabbay <oded.gabbay@gmail.com> wrote:
-> >
-> > There was a copy-paste error, and the wrong define was used for
-> > initializing the QMAN.
-> >
-> > Signed-off-by: Oded Gabbay <oded.gabbay@gmail.com>
-> > ---
-> >  drivers/misc/habanalabs/gaudi/gaudi.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/misc/habanalabs/gaudi/gaudi.c b/drivers/misc/habanalabs/gaudi/gaudi.c
-> > index a227806be328..5f65a1691551 100644
-> > --- a/drivers/misc/habanalabs/gaudi/gaudi.c
-> > +++ b/drivers/misc/habanalabs/gaudi/gaudi.c
-> > @@ -2039,7 +2039,7 @@ static void gaudi_init_hbm_dma_qman(struct hl_device *hdev, int dma_id,
-> >                 WREG32(mmDMA0_QM_CP_LDMA_SRC_BASE_LO_OFFSET_0 + q_off,
-> >                                                         QMAN_LDMA_SRC_OFFSET);
-> >                 WREG32(mmDMA0_QM_CP_LDMA_DST_BASE_LO_OFFSET_0 + q_off,
-> > -                                                       QMAN_LDMA_SIZE_OFFSET);
-> > +                                                       QMAN_LDMA_DST_OFFSET);
-> >
-> >                 /* Configure RAZWI IRQ */
-> >                 dma_qm_err_cfg = HBM_DMA_QMAN_GLBL_ERR_CFG_MSG_EN_MASK;
-> > --
-> > 2.17.1
-> >
+On Wed, Sep 30, 2020 at 09:32:20AM +0300, Dmitry Osipenko wrote:
+> 30.09.2020 08:44, Nicolin Chen пишет:
+> > On Wed, Sep 30, 2020 at 08:12:10AM +0300, Dmitry Osipenko wrote:
+> >> 30.09.2020 03:30, Nicolin Chen пишет:
+> >> ...
+> >>>  int tegra_mc_write_emem_configuration(struct tegra_mc *mc, unsigned long rate);
+> >>>  unsigned int tegra_mc_get_emem_device_count(struct tegra_mc *mc);
+> >>> +struct tegra_mc *tegra_get_memory_controller(void);
+> >>>  
+> >>>  #endif /* __SOC_TEGRA_MC_H__ */
+> >>>
+> >>
+> >> This will conflict with the tegra20-devfreq driver, you should change it
+> >> as well.
+> > 
+> > Will remove that in v3.
+> > 
+> > Thanks
+> > 
 > 
-> Hi Greg,
-> Do you think you can apply this patch directly to your char-misc-next
-> branch before the merge window opens ?
-> I don't have anything pending and I don't want to send a pull request
-> for a single patch.
+> Please also consider to add a resource-managed variant, similar to what
+> I did here:
+> 
+> https://github.com/grate-driver/linux/commit/2105e7664063772d72fefe9696bdab0b688b9de2
+> 
+> I was going to use it in the next iteration of the memory interconnect
+> series.
+> 
+> But now it also will be good if you could add the devm variant to yours
+> SMMU patchset since you're already about to touch the tegra20-devfreq
+> driver. I'll then rebase my patches on top of yours patch.
 
-Sure, I'll be glad to queue it up now.
-
-thanks,
-
-greg k-h
+Just saw this reply. Yea, I think this'd be better. Thanks
