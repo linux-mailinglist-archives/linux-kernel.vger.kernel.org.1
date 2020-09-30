@@ -2,88 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4168327E8FB
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 14:52:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC56927E8CC
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 14:48:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729975AbgI3MwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 08:52:10 -0400
-Received: from ozlabs.org ([203.11.71.1]:34887 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725776AbgI3MwK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 08:52:10 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C1bkG0VVJz9sS8;
-        Wed, 30 Sep 2020 22:52:05 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1601470328;
-        bh=5uDqlMF7QMOoneOmZeOfQS1ttR1WOO7xw/PHqMk8yVU=;
-        h=Date:From:To:Cc:Subject:From;
-        b=hmlcrVmApJdPd8+xE8bpq0M43F/hU/dJBNrdcSUZ28dmb68vrdDhGp1XoQYK/hUoo
-         bHvlAcQRUTPEQptJPQNdMf38zG0H5td7x1cSg+3eHgdgW3sAdN+3pA6BCxGMhUPgHL
-         Vw29AuTt0BM8Pj6I7iAVMqx2P0eGRt8+23IXI+X8XAqNNtIOkaRZ1AuMHkNmcejwG9
-         BSMAhv/tIk/hUbbRH851nSCqRkBY2s+zSEIXxQ8J6e6qNQMqjQ+gimus9EUu40t+qu
-         y+MoTpv73R3eYQBMzvn1ID0TBcUd2BvWII/9UabKQS9y5SZ4m/w9bYxmxTAUzFW7qj
-         +GIdu+lk7Y9qA==
-Date:   Wed, 30 Sep 2020 22:52:04 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Barry Song <song.bao.hua@hisilicon.com>
-Subject: linux-next: Fixes tag needs some work in the tip tree
-Message-ID: <20200930225204.6a02d9a0@canb.auug.org.au>
+        id S1729977AbgI3MsD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 08:48:03 -0400
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:60632 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725776AbgI3MsD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 08:48:03 -0400
+Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08UClcHM013986;
+        Wed, 30 Sep 2020 08:47:57 -0400
+Received: from nwd2mta4.analog.com ([137.71.173.58])
+        by mx0a-00128a01.pphosted.com with ESMTP id 33t2j4q8t3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 30 Sep 2020 08:47:57 -0400
+Received: from SCSQMBX11.ad.analog.com (scsqmbx11.ad.analog.com [10.77.17.10])
+        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 08UClt9f035950
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
+        Wed, 30 Sep 2020 08:47:55 -0400
+Received: from SCSQCASHYB6.ad.analog.com (10.77.17.132) by
+ SCSQMBX11.ad.analog.com (10.77.17.10) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Wed, 30 Sep 2020 05:47:47 -0700
+Received: from SCSQMBX11.ad.analog.com (10.77.17.10) by
+ SCSQCASHYB6.ad.analog.com (10.77.17.132) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Wed, 30 Sep 2020 05:47:36 -0700
+Received: from zeus.spd.analog.com (10.66.68.11) by SCSQMBX11.ad.analog.com
+ (10.77.17.10) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
+ Transport; Wed, 30 Sep 2020 05:47:46 -0700
+Received: from localhost.localdomain ([10.48.65.12])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 08UCloll023959;
+        Wed, 30 Sep 2020 08:47:50 -0400
+From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
+To:     <linux-iio@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>
+CC:     <linux-kernel@vger.kernel.org>, <jic23@kernel.org>,
+        <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
+        <ludovic.desroches@microchip.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>
+Subject: [PATCH v3 0/4] iio: adc: at91: misc driver cleanups
+Date:   Wed, 30 Sep 2020 15:52:12 +0300
+Message-ID: <20200930125216.90424-1-alexandru.ardelean@analog.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/VDja9WA2r_K.PpQq0NRgshM";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain
+X-ADIRoutedOnPrem: True
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-30_07:2020-09-30,2020-09-30 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ suspectscore=0 priorityscore=1501 phishscore=0 spamscore=0 malwarescore=0
+ bulkscore=0 clxscore=1015 mlxlogscore=965 mlxscore=0 adultscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009300103
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/VDja9WA2r_K.PpQq0NRgshM
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+This whole thing started because the lkp bot haunted me for a while with
+this build warning:
 
-Hi all,
+>> drivers/iio/adc/at91_adc.c:1439:34: warning: unused variable
+>> 'at91_adc_dt_ids' [-Wunused-const-variable]
+   static const struct of_device_id at91_adc_dt_ids[] = {
+                                    ^
+   1 warning generated.
 
-In commit
+The fix may likely be patch 'iio: adc: at91_adc: add Kconfig dependency
+on the OF symbol'; was pointed out by Jonathan.
 
-  233e7aca4c8a ("sched/fair: Use dst group while checking imbalance for NUM=
-A balancer")
+Changelog v2 -> v3:
+- https://lore.kernel.org/linux-iio/20200930060008.42134-1-alexandru.ardelean@analog.com/T/#t
+- added 'Reviewed-by: Alexandre Belloni <alexandre.belloni@bootlin.com>'
+  for patches:
+     iio: adc: at91_adc: use of_device_get_match_data() helper
+     iio: adc: at91_adc: const-ify some driver data
+- fixed description for patch 'iio: adc: at91_adc: add Kconfig dependency on the OF symbol'
+- squash patches:
+     iio: adc: at91_adc: add Kconfig dependency on the OF symbol
+     iio: adc: at91_adc: remove of_match_ptr() usage
+- added patch: 'iio: adc: at91_adc: remove platform data and move defs in driver file'
 
-Fixes tag
+Changelog v1 -> v2:
+- https://lore.kernel.org/linux-iio/CA+U=Dspd11N-pXXnnY_5CSzNp50iRr7h16zXTCxo8Fk+v48F7g@mail.gmail.com/T/#m7c0efef4dc623776fe8bafdb5f734b0eaca50f82
+- for patch 'iio: adc: at91_adc: use of_device_get_match_data() helper'
+  changed description; it's just tidy-up patch, not a fix
+- added 2 more patches:
+  - iio: adc: at91_adc: add Kconfig dependency on the OF symbol
+  - iio: adc: at91_adc: remove of_match_ptr() usage
 
-  Fixes: fb86f5b211 ("sched/numa: Use similar logic to the load balancer fo=
-r moving between domains with spare capacity")
+Alexandru Ardelean (4):
+  iio: adc: at91_adc: use of_device_get_match_data() helper
+  iio: adc: at91_adc: const-ify some driver data
+  iio: adc: at91_adc: add Kconfig dep on the OF symbol and remove
+    of_match_ptr()
+  iio: adc: at91_adc: remove platform data and move defs in driver file
 
-has these problem(s):
+ drivers/iio/adc/Kconfig                |  2 +-
+ drivers/iio/adc/at91_adc.c             | 64 ++++++++++----------------
+ include/linux/platform_data/at91_adc.h | 49 --------------------
+ 3 files changed, 26 insertions(+), 89 deletions(-)
+ delete mode 100644 include/linux/platform_data/at91_adc.h
 
-  - SHA1 should be at least 12 digits long
-    Can be fixed by setting core.abbrev to 12 (or more) or (for git v2.11
-    or later) just making sure it is not set (or set to "auto").
+-- 
+2.17.1
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/VDja9WA2r_K.PpQq0NRgshM
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl90f3QACgkQAVBC80lX
-0Gwjnwf/WqAmTyah3Ts8LrraXSTm5iNzKaFnjOpav93RKLLuaEIldOpwVECyxJaV
-HPDb53YhHLdZaFIVwBNxfwK9WWgBzJ7uzl3uyW3h6jEfdBcu0eQnFxwaWFICXtE7
-vRtDKtHhDbREhC2NvQcwZvFXdWPHg/T4cxInGacU9bw8Nq4SURmOpVpex3Aifgoz
-ae+nLvK37HWhr3sc5aC0uNA1db4ZmepEMit4/ajm7M3na16zpKmEvTtjUVUlxe51
-i5wyr5feVKfNKkDWMI27FUr89y+N3aKRAubfiYdXJFBVXrDPhz0l2aMQrXY5829P
-83CqW7+I0vcDUdoJvSdp3U6AQxBN7g==
-=TG9w
------END PGP SIGNATURE-----
-
---Sig_/VDja9WA2r_K.PpQq0NRgshM--
