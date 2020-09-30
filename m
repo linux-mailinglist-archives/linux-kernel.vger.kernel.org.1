@@ -2,249 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAF5227E0E7
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 08:15:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F0A127E0EB
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 08:17:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725847AbgI3GPg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 02:15:36 -0400
-Received: from mga03.intel.com ([134.134.136.65]:15587 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725320AbgI3GPg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 02:15:36 -0400
-IronPort-SDR: AdMQP1z8BV3i+Z7Ss3pQbqzwZ1pP0Q+Cyp9rS2rkFyx885sKaqmngGQIKWs9cTyrytR+6XcwDv
- oyJi2LMy8GYg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9759"; a="162434207"
+        id S1727758AbgI3GRG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 02:17:06 -0400
+Received: from esa4.microchip.iphmx.com ([68.232.154.123]:53037 "EHLO
+        esa4.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725440AbgI3GRG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 02:17:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1601446625; x=1632982625;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=h2dqXd+6+GhMdKUZmlFiHQKroTtaKxnoNCqqny0u5y0=;
+  b=HvlPR7tz6d/9AjHOjcRab2K52kh/9qWQZfyaNo6yH5kh5u6fNfP2YzwY
+   P5GEcL4g1xrgS2YDqVZ1MXk4QSL73VzdAFDjH9HMD/qtwjOs7Omi7QmVw
+   euohomCFTs7oCRcUk+LiOQJbMxBOGLn2PuGtaziiD2ldOAz2g7RsIOlnY
+   1swmrCgPS5XAtGfh/aNBWugaTTG3OLJoUrYRo1Zja7eYvRx+76kzVM+EQ
+   vWuZerjvYpqfslU8ROZXB9J60GjmPhhm4JVeToCt/0X0r+ti17A1an74I
+   iPvPACOj9+mfyt3ZIWFR6TKkGR0a/oW4YDvKwfK7wR4xRhtJbANS8bge9
+   Q==;
+IronPort-SDR: c59upbEy+1vNHWArxoWS2UqZcx52EX2FhEXgoZtSgf/dkiP6mPXsU289edjzH5Kg4EWcfnUq9D
+ IB47aBmy6iGIHsjzM1zIYT56x0nje12dnR+uWa7acNUEQqjXyKEU+BjcfhRPAPxw2URvIkAYJ1
+ mSyWRa14SXrKO/UBXzX+t4+U5UbJfQYJ7q7UuAWTe5ogdLQQjeY0rR11MT7UeVYBawss3laTVl
+ aWSPOyM9DZ0GXlVH1nE03YCutGBVffj7r2QVZ+3dgDTvuP+jI4UUp9RZjlkRH53ATiBDwtpSuW
+ xUY=
 X-IronPort-AV: E=Sophos;i="5.77,321,1596524400"; 
-   d="scan'208";a="162434207"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2020 23:15:35 -0700
-IronPort-SDR: sBn7bCvEv6gW72S7mx/s5Qekpo+g8ugzx7CJOh103DwTiEOj6dwlVt8yqs2U7QaM+20wKNHrmM
- mrCmMq1pvxJA==
-X-IronPort-AV: E=Sophos;i="5.77,321,1596524400"; 
-   d="scan'208";a="308046642"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2020 23:15:34 -0700
-Date:   Tue, 29 Sep 2020 23:15:33 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Ben Gardon <bgardon@google.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Cannon Matthews <cannonmatthews@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
-        Peter Feiner <pfeiner@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
-Subject: Re: [PATCH 07/22] kvm: mmu: Support zapping SPTEs in the TDP MMU
-Message-ID: <20200930061533.GC29659@linux.intel.com>
-References: <20200925212302.3979661-1-bgardon@google.com>
- <20200925212302.3979661-8-bgardon@google.com>
+   d="scan'208";a="88626517"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 29 Sep 2020 23:17:05 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 29 Sep 2020 23:16:49 -0700
+Received: from NAM02-BL2-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3
+ via Frontend Transport; Tue, 29 Sep 2020 23:17:04 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=R08/SGk62tzwbOTgic4ALFXH6ucBuoslBSBYKWGcBwQOSKSOWFvfbLuW+M97LWtCYnnFzsW+HZxe9b7b11Eq9lC8JjidO6BqggqNNamwoI/T7Pupv2koF3wlwBGSEfdrFDEKunm1MiRIpZwmPosh4tOSay3IWaAqo/skbvhY2wt+3aCEmpucg1sOq81hMrR8lmXp7s7zhcmawFI7LqDm81CeZtIExvTvrXkPPhO7ma6kWAr4c543fD6QW7ulqxvXrDXC1k3czBu2n5CBk2ezyDHOKiLK9ugsLcich4uDb3OpAxigNFtH6W33ezckSCyhSRuU0CQeIXDgVIsvBc/NZA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=h2dqXd+6+GhMdKUZmlFiHQKroTtaKxnoNCqqny0u5y0=;
+ b=im6VvTx/3hgBQ2u5AcwwViIdYDVqV1p8egxZho1lQswZfrsb1WR0l+Zqf6QNk3Lzwm8+a/73RNuPTf+ye2aTs3cLsrBM8EeQjMMp+c7RM/r3fD0b5kNdbbj9r+kRPrmsATB3SXLG3tCXbobtadl2TILAHJrA7v2zZW8XqkprQRDVjP04OWh82zhp+6tizjy4NDtcOqmF7/uUUGgi5KPWzPUyFZqZX9qHZsThUN/VMGQrF6WA0FNgXVZtSW9LRUABEymiSVZGnsgyCEcYooz01HHQVpi/68IqnOtblDdWNEUgDAxA3URrUwwHcrTTLxsyrAxCBtrKCDv06Uf1s4km0w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=h2dqXd+6+GhMdKUZmlFiHQKroTtaKxnoNCqqny0u5y0=;
+ b=l50mPkLxABVJPtlMfriZzWcaokxzGi71bMg/adFM7oFVgzNWbZU/Q2wgkuTEmie9ZixKzvyZ2AR+HipUg6CsWXzKRH9y1Fh6NVKUUz10TkFpOdYlSVyp08ueltfZEvKbzZJc/6DTNmkoYnnZ7UTS2OiMkeY6KfBqQLittBVd7hs=
+Received: from DM5PR11MB1914.namprd11.prod.outlook.com (2603:10b6:3:112::12)
+ by DM5PR11MB1946.namprd11.prod.outlook.com (2603:10b6:3:10c::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.28; Wed, 30 Sep
+ 2020 06:17:02 +0000
+Received: from DM5PR11MB1914.namprd11.prod.outlook.com
+ ([fe80::f44a:f58e:c13b:947a]) by DM5PR11MB1914.namprd11.prod.outlook.com
+ ([fe80::f44a:f58e:c13b:947a%4]) with mapi id 15.20.3433.032; Wed, 30 Sep 2020
+ 06:17:02 +0000
+From:   <Tudor.Ambarus@microchip.com>
+To:     <p.yadav@ti.com>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
+        <vigneshr@ti.com>, <linux-mtd@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <nsekhar@ti.com>, <boris.brezillon@collabora.com>
+Subject: Re: [PATCH v13 05/15] mtd: spi-nor: sfdp: get command opcode
+ extension type from BFPT
+Thread-Topic: [PATCH v13 05/15] mtd: spi-nor: sfdp: get command opcode
+ extension type from BFPT
+Thread-Index: AQHWlvFPRAFvCXk6P0+9D5vQWa5FOg==
+Date:   Wed, 30 Sep 2020 06:17:01 +0000
+Message-ID: <db90b212-cbf9-a675-024d-11a4969b9a6b@microchip.com>
+References: <20200916124418.833-1-p.yadav@ti.com>
+ <20200916124418.833-6-p.yadav@ti.com>
+In-Reply-To: <20200916124418.833-6-p.yadav@ti.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+authentication-results: ti.com; dkim=none (message not signed)
+ header.d=none;ti.com; dmarc=none action=none header.from=microchip.com;
+x-originating-ip: [5.13.1.187]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 59f07913-fa0a-45d7-0c00-08d86508720c
+x-ms-traffictypediagnostic: DM5PR11MB1946:
+x-microsoft-antispam-prvs: <DM5PR11MB1946C513BED5F90D411FE471F0330@DM5PR11MB1946.namprd11.prod.outlook.com>
+x-bypassexternaltag: True
+x-ms-oob-tlc-oobclassifiers: OLM:1332;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: L0nHXuX6UsgYVPtbJlTRGSEl1ib3KfSmuUx1CmS05SIvKu82ZK8WBbH5w02tdybtnRgzlT7Ge9UkFY0ox5MReEcqTvfbv9Nz7yfGALVpukGe4cxitv8fD07rtLu57Yefkj0AcZ4LHI61GMUP1gEi298+M3bZF9pgKWOSU5A0oTMw7//v4GUA7AHwq3rhnklrxtLF0LlvLqWiopAO2gcgS3DwFhLeZLIlF+ifwAiP4T7ZOnru9pNY1fBET9Kg+jvLfqzJ+BS2ZRP0vRvfmySarGqExZvkJtY7M6QiXEP9OWenskGqbZ285+33Ou4CiYBVKVNjj37IzknZozI3qLYCfcIYZS3HpvFHOcvjvAt78v3tVzipsp87FR9+AP8YlulJS0PLAIyAhBFAM5Wgd6sZN4ZWH5jMJcyLYJxFo34IcyUWUrMhXBOOmfUX0lYTacpn
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR11MB1914.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(39860400002)(396003)(346002)(136003)(376002)(8936002)(2906002)(71200400001)(4326008)(6486002)(86362001)(26005)(186003)(31696002)(53546011)(6506007)(2616005)(8676002)(478600001)(5660300002)(6512007)(316002)(36756003)(31686004)(91956017)(110136005)(66556008)(76116006)(54906003)(66476007)(66446008)(64756008)(66946007)(43740500002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: /KHjwtnR11HX+DLvAEIME0l1N6VW88vJkTUrQyfQ/KCg2dXneW4Zq7RH3ApZ+sV4zkEpY3rqBE4OvJhMe+OssHmbE2O2jP9aT14pFXbeYcUQ2qq204lw6tFBr+FZk1oJeKapVKsIulZG4vNKAQFfdSZvd0Z/fjBRwqsS5k94uJfySwg2t6VVE5zuJdItlyy4I48RGKhjfZRZczsDPOVS5vpYtpNl4VvgCYCq1dZLYdYHd4U+y2+oGIDF7sYbpvu3u5Td1e1P9PMXHukgck4FMHboo5Tr30v9I1KxttNN4+vm6XRGsHxJOFE+IJ3CW+E5R1lvO8/GFXf3u6Wlv1CTsy5wiaXiMams/YqL0LZSxTTUA3zDrtQLIfelQ4Q9EL9IeL6hRqX9+ZIAOQxJSoR3FbicO4/aDhwerFngBqkJoJ3ulemIVu0gQGbTZA7fO5m+H2856Y6pRSHuyk0bkeN1G1okhIffEDD82C/6UrcPBTCxC8sTWjpjWu8n8gZrlEfYFkh1UDE2N5AunsxxWkujYJmi6gLfHlw+E9Vt8CuRqh6kUwhtpV1A5ejRCgB9Ylnhgs1usoD364z7rzO/+A359N2ghEe0ugc1QBVaKxfCop7Zm2ck2N9z58wlDZXN5aBvFh5Ekx86X2gCC5y9MCwFRA==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <BEC2888EC55E9B4FAF5B781BB72F0150@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200925212302.3979661-8-bgardon@google.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR11MB1914.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 59f07913-fa0a-45d7-0c00-08d86508720c
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Sep 2020 06:17:01.9041
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: xMdqz5aYBywd5QOZmITgKP3og6GVuPxzGKGdqMqVmaAIH1kLNjyy0Z0fcYq6r8qop2E2E/1Wg4xkJQ0jrdGfqrEVScT2Unc1twZRFkAMHL0=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR11MB1946
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 02:22:47PM -0700, Ben Gardon wrote:
-> Add functions to zap SPTEs to the TDP MMU. These are needed to tear down
-> TDP MMU roots properly and implement other MMU functions which require
-> tearing down mappings. Future patches will add functions to populate the
-> page tables, but as for this patch there will not be any work for these
-> functions to do.
-> 
-> Tested by running kvm-unit-tests and KVM selftests on an Intel Haswell
-> machine. This series introduced no new failures.
-> 
-> This series can be viewed in Gerrit at:
-> 	https://linux-review.googlesource.com/c/virt/kvm/kvm/+/2538
-> 
-> Signed-off-by: Ben Gardon <bgardon@google.com>
-> ---
->  arch/x86/kvm/mmu/mmu.c      |  15 +++++
->  arch/x86/kvm/mmu/tdp_iter.c |  17 ++++++
->  arch/x86/kvm/mmu/tdp_iter.h |   1 +
->  arch/x86/kvm/mmu/tdp_mmu.c  | 106 ++++++++++++++++++++++++++++++++++++
->  arch/x86/kvm/mmu/tdp_mmu.h  |   2 +
->  5 files changed, 141 insertions(+)
-> 
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index f09081f9137b0..7a17cca19b0c1 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -5852,6 +5852,10 @@ static void kvm_mmu_zap_all_fast(struct kvm *kvm)
->  	kvm_reload_remote_mmus(kvm);
->  
->  	kvm_zap_obsolete_pages(kvm);
-> +
-> +	if (kvm->arch.tdp_mmu_enabled)
-> +		kvm_tdp_mmu_zap_all(kvm);
-
-Haven't looked into how this works; is kvm_tdp_mmu_zap_all() additive to
-what is done by the legacy zapping, or is it a replacement?
-
-> +
->  	spin_unlock(&kvm->mmu_lock);
->  }
-> @@ -57,8 +58,13 @@ bool is_tdp_mmu_root(struct kvm *kvm, hpa_t hpa)
->  	return root->tdp_mmu_page;
->  }
->  
-> +static bool zap_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
-> +			  gfn_t start, gfn_t end);
-> +
->  static void free_tdp_mmu_root(struct kvm *kvm, struct kvm_mmu_page *root)
->  {
-> +	gfn_t max_gfn = 1ULL << (boot_cpu_data.x86_phys_bits - PAGE_SHIFT);
-
-BIT_ULL(...)
-
-> +
->  	lockdep_assert_held(&kvm->mmu_lock);
->  
->  	WARN_ON(root->root_count);
-> @@ -66,6 +72,8 @@ static void free_tdp_mmu_root(struct kvm *kvm, struct kvm_mmu_page *root)
->  
->  	list_del(&root->link);
->  
-> +	zap_gfn_range(kvm, root, 0, max_gfn);
-> +
->  	free_page((unsigned long)root->spt);
->  	kmem_cache_free(mmu_page_header_cache, root);
->  }
-> @@ -193,6 +201,11 @@ hpa_t kvm_tdp_mmu_get_vcpu_root_hpa(struct kvm_vcpu *vcpu)
->  static void handle_changed_spte(struct kvm *kvm, int as_id, gfn_t gfn,
->  				u64 old_spte, u64 new_spte, int level);
->  
-> +static int kvm_mmu_page_as_id(struct kvm_mmu_page *sp)
-> +{
-> +	return sp->role.smm ? 1 : 0;
-> +}
-> +
->  /**
->   * handle_changed_spte - handle bookkeeping associated with an SPTE change
->   * @kvm: kvm instance
-> @@ -294,3 +307,96 @@ static void handle_changed_spte(struct kvm *kvm, int as_id, gfn_t gfn,
->  		free_page((unsigned long)pt);
->  	}
->  }
-> +
-> +#define for_each_tdp_pte_root(_iter, _root, _start, _end) \
-> +	for_each_tdp_pte(_iter, _root->spt, _root->role.level, _start, _end)
-> +
-> +/*
-> + * If the MMU lock is contended or this thread needs to yield, flushes
-> + * the TLBs, releases, the MMU lock, yields, reacquires the MMU lock,
-> + * restarts the tdp_iter's walk from the root, and returns true.
-> + * If no yield is needed, returns false.
-> + */
-> +static bool tdp_mmu_iter_cond_resched(struct kvm *kvm, struct tdp_iter *iter)
-> +{
-> +	if (need_resched() || spin_needbreak(&kvm->mmu_lock)) {
-> +		kvm_flush_remote_tlbs(kvm);
-> +		cond_resched_lock(&kvm->mmu_lock);
-> +		tdp_iter_refresh_walk(iter);
-> +		return true;
-> +	} else {
-> +		return false;
-> +	}
-
-Kernel style is to not bother with an "else" if the "if" returns.
-
-> +}
-> +
-> +/*
-> + * Tears down the mappings for the range of gfns, [start, end), and frees the
-> + * non-root pages mapping GFNs strictly within that range. Returns true if
-> + * SPTEs have been cleared and a TLB flush is needed before releasing the
-> + * MMU lock.
-> + */
-> +static bool zap_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
-> +			  gfn_t start, gfn_t end)
-> +{
-> +	struct tdp_iter iter;
-> +	bool flush_needed = false;
-> +	int as_id = kvm_mmu_page_as_id(root);
-> +
-> +	for_each_tdp_pte_root(iter, root, start, end) {
-> +		if (!is_shadow_present_pte(iter.old_spte))
-> +			continue;
-> +
-> +		/*
-> +		 * If this is a non-last-level SPTE that covers a larger range
-> +		 * than should be zapped, continue, and zap the mappings at a
-> +		 * lower level.
-> +		 */
-> +		if ((iter.gfn < start ||
-> +		     iter.gfn + KVM_PAGES_PER_HPAGE(iter.level) > end) &&
-> +		    !is_last_spte(iter.old_spte, iter.level))
-> +			continue;
-> +
-> +		*iter.sptep = 0;
-> +		handle_changed_spte(kvm, as_id, iter.gfn, iter.old_spte, 0,
-> +				    iter.level);
-> +
-> +		flush_needed = !tdp_mmu_iter_cond_resched(kvm, &iter);
-> +	}
-> +	return flush_needed;
-> +}
-> +
-> +/*
-> + * Tears down the mappings for the range of gfns, [start, end), and frees the
-> + * non-root pages mapping GFNs strictly within that range. Returns true if
-> + * SPTEs have been cleared and a TLB flush is needed before releasing the
-> + * MMU lock.
-> + */
-> +bool kvm_tdp_mmu_zap_gfn_range(struct kvm *kvm, gfn_t start, gfn_t end)
-> +{
-> +	struct kvm_mmu_page *root;
-> +	bool flush = false;
-> +
-> +	for_each_tdp_mmu_root(kvm, root) {
-> +		/*
-> +		 * Take a reference on the root so that it cannot be freed if
-> +		 * this thread releases the MMU lock and yields in this loop.
-> +		 */
-> +		get_tdp_mmu_root(kvm, root);
-> +
-> +		flush = zap_gfn_range(kvm, root, start, end) || flush;
-> +
-> +		put_tdp_mmu_root(kvm, root);
-> +	}
-> +
-> +	return flush;
-> +}
-> +
-> +void kvm_tdp_mmu_zap_all(struct kvm *kvm)
-> +{
-> +	gfn_t max_gfn = 1ULL << (boot_cpu_data.x86_phys_bits - PAGE_SHIFT);
-
-BIT_ULL
-
-> +	bool flush;
-> +
-> +	flush = kvm_tdp_mmu_zap_gfn_range(kvm, 0, max_gfn);
-> +	if (flush)
-> +		kvm_flush_remote_tlbs(kvm);
-> +}
-> diff --git a/arch/x86/kvm/mmu/tdp_mmu.h b/arch/x86/kvm/mmu/tdp_mmu.h
-> index 9274debffeaa1..cb86f9fe69017 100644
-> --- a/arch/x86/kvm/mmu/tdp_mmu.h
-> +++ b/arch/x86/kvm/mmu/tdp_mmu.h
-> @@ -12,4 +12,6 @@ bool is_tdp_mmu_root(struct kvm *kvm, hpa_t root);
->  hpa_t kvm_tdp_mmu_get_vcpu_root_hpa(struct kvm_vcpu *vcpu);
->  void kvm_tdp_mmu_put_root_hpa(struct kvm *kvm, hpa_t root_hpa);
->  
-> +bool kvm_tdp_mmu_zap_gfn_range(struct kvm *kvm, gfn_t start, gfn_t end);
-> +void kvm_tdp_mmu_zap_all(struct kvm *kvm);
->  #endif /* __KVM_X86_MMU_TDP_MMU_H */
-> -- 
-> 2.28.0.709.gb0816b6eb0-goog
-> 
+T24gOS8xNi8yMCAzOjQ0IFBNLCBQcmF0eXVzaCBZYWRhdiB3cm90ZToNCj4gRVhURVJOQUwgRU1B
+SUw6IERvIG5vdCBjbGljayBsaW5rcyBvciBvcGVuIGF0dGFjaG1lbnRzIHVubGVzcyB5b3Uga25v
+dyB0aGUgY29udGVudCBpcyBzYWZlDQo+IA0KPiBTb21lIGRldmljZXMgaW4gRFRSIG1vZGUgZXhw
+ZWN0IGFuIGV4dHJhIGNvbW1hbmQgYnl0ZSBjYWxsZWQgdGhlDQo+IGV4dGVuc2lvbi4gVGhlIGV4
+dGVuc2lvbiBjYW4gZWl0aGVyIGJlIHNhbWUgYXMgdGhlIG9wY29kZSwgYml0d2lzZQ0KPiBpbnZl
+cnNlIG9mIHRoZSBvcGNvZGUsIG9yIGFub3RoZXIgYWRkaXRpb25hbCBieXRlIGZvcm1pbmcgYSAx
+Ni1ieXRlDQo+IG9wY29kZS4gR2V0IHRoZSBleHRlbnNpb24gdHlwZSBmcm9tIHRoZSBCRlBULiBG
+b3Igbm93LCBvbmx5IGZsYXNoZXMgd2l0aA0KPiAicmVwZWF0IiBhbmQgImludmVyc2UiIGV4dGVu
+c2lvbnMgYXJlIHN1cHBvcnRlZC4NCj4gDQo+IFNpZ25lZC1vZmYtYnk6IFByYXR5dXNoIFlhZGF2
+IDxwLnlhZGF2QHRpLmNvbT4NCg0KUmV2aWV3ZWQtYnk6IFR1ZG9yIEFtYmFydXMgPHR1ZG9yLmFt
+YmFydXNAbWljcm9jaGlwLmNvbT4NCg0KPiAtLS0NCj4gIGRyaXZlcnMvbXRkL3NwaS1ub3Ivc2Zk
+cC5jIHwgMTggKysrKysrKysrKysrKysrKysrDQo+ICBkcml2ZXJzL210ZC9zcGktbm9yL3NmZHAu
+aCB8ICA2ICsrKysrKw0KPiAgMiBmaWxlcyBjaGFuZ2VkLCAyNCBpbnNlcnRpb25zKCspDQo+IA0K
+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvc3BpLW5vci9zZmRwLmMgYi9kcml2ZXJzL210ZC9z
+cGktbm9yL3NmZHAuYw0KPiBpbmRleCAyMWZhOWFiNzhlYWUuLmM3NzY1NTk2OGY4MCAxMDA2NDQN
+Cj4gLS0tIGEvZHJpdmVycy9tdGQvc3BpLW5vci9zZmRwLmMNCj4gKysrIGIvZHJpdmVycy9tdGQv
+c3BpLW5vci9zZmRwLmMNCj4gQEAgLTYwNiw2ICs2MDYsMjQgQEAgc3RhdGljIGludCBzcGlfbm9y
+X3BhcnNlX2JmcHQoc3RydWN0IHNwaV9ub3IgKm5vciwNCj4gICAgICAgICBpZiAoYmZwdF9oZWFk
+ZXItPmxlbmd0aCA9PSBCRlBUX0RXT1JEX01BWF9KRVNEMjE2QikNCj4gICAgICAgICAgICAgICAg
+IHJldHVybiBzcGlfbm9yX3Bvc3RfYmZwdF9maXh1cHMobm9yLCBiZnB0X2hlYWRlciwgJmJmcHQs
+DQo+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHBhcmFt
+cyk7DQo+ICsgICAgICAgLyogOEQtOEQtOEQgY29tbWFuZCBleHRlbnNpb24uICovDQo+ICsgICAg
+ICAgc3dpdGNoIChiZnB0LmR3b3Jkc1tCRlBUX0RXT1JEKDE4KV0gJiBCRlBUX0RXT1JEMThfQ01E
+X0VYVF9NQVNLKSB7DQo+ICsgICAgICAgY2FzZSBCRlBUX0RXT1JEMThfQ01EX0VYVF9SRVA6DQo+
+ICsgICAgICAgICAgICAgICBub3ItPmNtZF9leHRfdHlwZSA9IFNQSV9OT1JfRVhUX1JFUEVBVDsN
+Cj4gKyAgICAgICAgICAgICAgIGJyZWFrOw0KPiArDQo+ICsgICAgICAgY2FzZSBCRlBUX0RXT1JE
+MThfQ01EX0VYVF9JTlY6DQo+ICsgICAgICAgICAgICAgICBub3ItPmNtZF9leHRfdHlwZSA9IFNQ
+SV9OT1JfRVhUX0lOVkVSVDsNCj4gKyAgICAgICAgICAgICAgIGJyZWFrOw0KPiArDQo+ICsgICAg
+ICAgY2FzZSBCRlBUX0RXT1JEMThfQ01EX0VYVF9SRVM6DQo+ICsgICAgICAgICAgICAgICBkZXZf
+ZGJnKG5vci0+ZGV2LCAiUmVzZXJ2ZWQgY29tbWFuZCBleHRlbnNpb24gdXNlZFxuIik7DQo+ICsg
+ICAgICAgICAgICAgICBicmVhazsNCj4gKw0KPiArICAgICAgIGNhc2UgQkZQVF9EV09SRDE4X0NN
+RF9FWFRfMTZCOg0KPiArICAgICAgICAgICAgICAgZGV2X2RiZyhub3ItPmRldiwgIjE2LWJpdCBv
+cGNvZGVzIG5vdCBzdXBwb3J0ZWRcbiIpOw0KPiArICAgICAgICAgICAgICAgcmV0dXJuIC1FT1BO
+T1RTVVBQOw0KPiArICAgICAgIH0NCj4gDQo+ICAgICAgICAgcmV0dXJuIHNwaV9ub3JfcG9zdF9i
+ZnB0X2ZpeHVwcyhub3IsIGJmcHRfaGVhZGVyLCAmYmZwdCwgcGFyYW1zKTsNCj4gIH0NCj4gZGlm
+ZiAtLWdpdCBhL2RyaXZlcnMvbXRkL3NwaS1ub3Ivc2ZkcC5oIGIvZHJpdmVycy9tdGQvc3BpLW5v
+ci9zZmRwLmgNCj4gaW5kZXggN2Y5ODQ2YjNhMWFkLi42ZDcyNDMwNjcyNTIgMTAwNjQ0DQo+IC0t
+LSBhL2RyaXZlcnMvbXRkL3NwaS1ub3Ivc2ZkcC5oDQo+ICsrKyBiL2RyaXZlcnMvbXRkL3NwaS1u
+b3Ivc2ZkcC5oDQo+IEBAIC05MCw2ICs5MCwxMiBAQCBzdHJ1Y3Qgc2ZkcF9iZnB0IHsNCj4gICNk
+ZWZpbmUgQkZQVF9EV09SRDE1X1FFUl9TUjJfQklUMV9OT19SRCAgICAgICAgICAgICAgICAoMHg0
+VUwgPDwgMjApDQo+ICAjZGVmaW5lIEJGUFRfRFdPUkQxNV9RRVJfU1IyX0JJVDEgICAgICAgICAg
+ICAgICgweDVVTCA8PCAyMCkgLyogU3BhbnNpb24gKi8NCj4gDQo+ICsjZGVmaW5lIEJGUFRfRFdP
+UkQxOF9DTURfRVhUX01BU0sgICAgICAgICAgICAgIEdFTk1BU0soMzAsIDI5KQ0KPiArI2RlZmlu
+ZSBCRlBUX0RXT1JEMThfQ01EX0VYVF9SRVAgICAgICAgICAgICAgICAoMHgwVUwgPDwgMjkpIC8q
+IFJlcGVhdCAqLw0KPiArI2RlZmluZSBCRlBUX0RXT1JEMThfQ01EX0VYVF9JTlYgICAgICAgICAg
+ICAgICAoMHgxVUwgPDwgMjkpIC8qIEludmVydCAqLw0KPiArI2RlZmluZSBCRlBUX0RXT1JEMThf
+Q01EX0VYVF9SRVMgICAgICAgICAgICAgICAoMHgyVUwgPDwgMjkpIC8qIFJlc2VydmVkICovDQo+
+ICsjZGVmaW5lIEJGUFRfRFdPUkQxOF9DTURfRVhUXzE2QiAgICAgICAgICAgICAgICgweDNVTCA8
+PCAyOSkgLyogMTYtYml0IG9wY29kZSAqLw0KPiArDQo+ICBzdHJ1Y3Qgc2ZkcF9wYXJhbWV0ZXJf
+aGVhZGVyIHsNCj4gICAgICAgICB1OCAgICAgICAgICAgICAgaWRfbHNiOw0KPiAgICAgICAgIHU4
+ICAgICAgICAgICAgICBtaW5vcjsNCj4gLS0NCj4gMi4yOC4wDQo+IA0KDQo=
