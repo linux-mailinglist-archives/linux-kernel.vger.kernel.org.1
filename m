@@ -2,127 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E36A27F4D2
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 00:06:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AECB727F4D4
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 00:06:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731316AbgI3WGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 18:06:41 -0400
-Received: from wout1-smtp.messagingengine.com ([64.147.123.24]:57963 "EHLO
-        wout1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730269AbgI3WGl (ORCPT
+        id S1731279AbgI3WG4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 18:06:56 -0400
+Received: from smtprelay0109.hostedemail.com ([216.40.44.109]:49994 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730269AbgI3WG4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 18:06:41 -0400
-Received: from compute7.internal (compute7.nyi.internal [10.202.2.47])
-        by mailout.west.internal (Postfix) with ESMTP id 408A0E02;
-        Wed, 30 Sep 2020 18:06:40 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute7.internal (MEProxy); Wed, 30 Sep 2020 18:06:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        oregontracks.org; h=from:to:cc:subject:date:message-id
-        :mime-version:content-transfer-encoding; s=fm1; bh=Dl0bQCDDUwenL
-        KwYEIseGLFy/a/7FZofVNps7JlV2rY=; b=MkTqjLthiqAvW2AGDy0meBMsvLUMa
-        HZphneUUA+8UoyiyKSw9TUtmQfjwO1ApxjqgRcVlc+6I/NlooWYocB1O+Y5W3ua2
-        rbmnhYsaY0Ad/bf/lhtiPIxk2UrCCxwUk0kmvbiOKyOX78YLU2XSyzGvqWcIhY7F
-        FhFX0q5J6HdY+dJ7M4NF/z3jTv1qeiSeqpqaX1kIc2yYN6Ffno765UI3sjxpKOuq
-        FU447eQ2jzchi+XUwloVKEDgMMvDuNRSIB8cQey1vNhyRWZo7+G3z0L4wdHi4Lq7
-        nFk0CWBqM56Js1ShUbrUjMKpDJmFWbwf5ETZSNsr6JkpiXqSnBKyzErOg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=Dl0bQCDDUwenLKwYE
-        IseGLFy/a/7FZofVNps7JlV2rY=; b=bJ1czuR/Vyo7fTAR+QEa7o9b8Nh7U2T8L
-        CEheC2/e6airAy1X/6w+REp8vQ5/uLrtfXkCEuEns1w9dBkPqNg6k2qz8kjew8Fp
-        qn8ZKz8slwH//fObH9scKASgDBRvcUeIw/22WdB3RhzJK0UEeau1aOUdBn/rWQ7a
-        rafQCNwWdqEm7R8hE7NxkksUfgYDY/txIWk9qt1VAxEBBjxFF7FJiZs+epNP5SaC
-        BIpySbRjRsVg4EiB7Ej6L3woG1x1VBCE5+He3XsYEuMk0YUmdJggvi30saSV9q6s
-        gVeTPvgz+L4JghBrdh15hVuvj6eozWQ5bhEtbY35/35tedM05kUcw==
-X-ME-Sender: <xms:bwF1X9qtjbvnBZcjBnqhrMH0-ugRSTIx_3DnMzCi8Ad2xhO5FWPVYQ>
-    <xme:bwF1X_r9cr60rrElurgLDpPDp8rQHnhGm13sPvNl-DMVsJezIGHl9BWqtMvRELUV9
-    WfFbGFOUOdZZZlJ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrfeefgddtjecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffoggfgsedtkeertdertd
-    dtnecuhfhrohhmpefuvggrnhcuggcumfgvlhhlvgihuceoshgvrghnvhhkrdguvghvseho
-    rhgvghhonhhtrhgrtghkshdrohhrgheqnecuggftrfgrthhtvghrnhepffeltdeuiefhhe
-    elhfegfeehjeevgfetvefhfeehfffhueduvdduffefkeetiedunecukfhppedvgedrvddt
-    rddugeekrdegleenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfh
-    hrohhmpehsvggrnhhvkhdruggvvhesohhrvghgohhnthhrrggtkhhsrdhorhhg
-X-ME-Proxy: <xmx:bwF1X6MX_UxI96efPmRj6WjZozTTkVZiqsuOyDTALDQ53mH-OLxD4g>
-    <xmx:bwF1X47uJpT3zkbtGw6O6q3KJhAoLvQM4OBzauRb6sy8KiATYrBlog>
-    <xmx:bwF1X87qEloXwmA9XnXOJd0x0I9U0wbVTPL7EStL5zR8YePv-pxYWA>
-    <xmx:bwF1X7b63wiIakqi2lyiMDEUE005mWHWQyvXMvOSNCUlp_gVk0eUVA>
-Received: from arch-ashland-svkelley.hsd1.or.comcast.net (c-24-20-148-49.hsd1.or.comcast.net [24.20.148.49])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 138973280059;
-        Wed, 30 Sep 2020 18:06:36 -0400 (EDT)
-From:   Sean V Kelley <seanvk.dev@oregontracks.org>
-To:     bhelgaas@google.com, Jonathan.Cameron@huawei.com,
-        rafael.j.wysocki@intel.com, ashok.raj@intel.com,
-        tony.luck@intel.com, sathyanarayanan.kuppuswamy@intel.com,
-        qiuxu.zhuo@intel.com
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sean V Kelley <sean.v.kelley@intel.com>
-Subject: [PATCH v7 04/13] PCI/ERR: Rename reset_link() to reset_subordinate_device()
-Date:   Wed, 30 Sep 2020 15:06:30 -0700
-Message-Id: <20200930220630.1113939-1-seanvk.dev@oregontracks.org>
-X-Mailer: git-send-email 2.28.0
+        Wed, 30 Sep 2020 18:06:56 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay01.hostedemail.com (Postfix) with ESMTP id B223A100E7B43;
+        Wed, 30 Sep 2020 22:06:54 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:857:960:967:968:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:1981:2194:2198:2199:2200:2393:2525:2553:2560:2563:2682:2685:2828:2859:2902:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3353:3622:3865:3866:3867:3868:3870:3871:3872:3873:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:4384:5007:6119:6120:6742:7875:7903:9010:9025:10004:10394:10400:10471:10848:11026:11232:11473:11658:11914:12043:12296:12297:12438:12555:12740:12760:12895:12986:13161:13172:13229:13255:13439:14096:14097:14181:14659:14721:21080:21433:21451:21627:21773:21789:21811:21939:30054:30070:30089:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: river77_3d14b8027196
+X-Filterd-Recvd-Size: 4026
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf04.hostedemail.com (Postfix) with ESMTPA;
+        Wed, 30 Sep 2020 22:06:52 +0000 (UTC)
+Message-ID: <417ffa3fd3fba5d4a481db6a0b0c9b48cbbb17c4.camel@perches.com>
+Subject: Re: [RFC PATCH next-20200930] treewide: Convert macro and uses of
+ __section(foo) to __section("foo")
+From:   Joe Perches <joe@perches.com>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Sedat Dilek <sedat.dilek@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Kees Cook <keescook@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>, rcu@vger.kernel.org,
+        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Date:   Wed, 30 Sep 2020 15:06:51 -0700
+In-Reply-To: <CAKwvOdkhyvTpY6pHT+CLSsBFuKRWsXucjbwN_tyJAsryZXvG1A@mail.gmail.com>
+References: <CAKwvOd=s+N4+X94sTams_hKn8uV5Hc6QyCc7OHyOGC-JFesS8A@mail.gmail.com>
+         <20200929192549.501516-1-ndesaulniers@google.com>
+         <CA+icZUVgfnVQ1=zjUGhGKnJAs9g3Q06sWN3ffNdrfZMZLCEkbA@mail.gmail.com>
+         <133589afbe999347454dfcc46ae782897bf9e3a2.camel@perches.com>
+         <46f69161e60b802488ba8c8f3f8bbf922aa3b49b.camel@perches.com>
+         <CAKwvOdkhyvTpY6pHT+CLSsBFuKRWsXucjbwN_tyJAsryZXvG1A@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean V Kelley <sean.v.kelley@intel.com>
+On Wed, 2020-09-30 at 14:40 -0700, Nick Desaulniers wrote:
+> On Wed, Sep 30, 2020 at 12:16 PM Joe Perches <joe@perches.com> wrote:
+> > Use a more generic form for __section that requires quotes to avoid
+> > complications with clang and gcc differences.
+> > 
+> > Remove the quote operator # from compiler_attributes.h __section macro.
+> > 
+> > Convert all unquoted __section(foo) uses to quoted __section("foo").
+> > Also convert __attribute__((section("foo"))) uses to __section("foo")
+> > even if the __attribute__ has multiple list entry forms.
+> > 
+> > Signed-off-by: Joe Perches <joe@perches.com>
+> > ---
+> > 
+> > This is the current output from the script against next-20200930
+> > attached in this link:
+> > 
+> > https://lore.kernel.org/lkml/0e582a7f5144a33f465978d97701f9b3dcc377f3.camel@perches.com/
+> > 
+> > It might be useful to run the script immediately before
+> > the next -rc1.
+> 
+> $ ARCH=powerpc CROSS_COMPILE=powerpc64le-linux-gnu- make CC=clang -j71
+> powernv_defconfig
+> $ ARCH=powerpc CROSS_COMPILE=powerpc64le-linux-gnu- make CC=clang -j71
+> ...
+> arch/powerpc/boot/main.c:193:44: error: expected ';' after top level declarator
+> static char cmdline[BOOT_COMMAND_LINE_SIZE]
 
-reset_link() appears to be misnamed. The point is to really
-reset any devices below a given bridge. So rename it to
-reset_subordinate_devices() to make it clear that we are
-passing a bridge with the intent to reset the devices below it.
+The script does not convert files in
 
-Suggested-by: Bjorn Helgaas <bhelgaas@google.com>
-Signed-off-by: Sean V Kelley <sean.v.kelley@intel.com>
----
- drivers/pci/pci.h      | 2 +-
- drivers/pci/pcie/err.c | 6 +++---
- 2 files changed, 4 insertions(+), 4 deletions(-)
+	scripts/
+	tools/
+	uapi/
+	and include/linux/compiler_attributes.h
 
-diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
-index 88e27a98def5..efea170805fa 100644
---- a/drivers/pci/pci.h
-+++ b/drivers/pci/pci.h
-@@ -574,7 +574,7 @@ static inline int pci_dev_specific_disable_acs_redir(struct pci_dev *dev)
- /* PCI error reporting and recovery */
- pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
- 			pci_channel_state_t state,
--			pci_ers_result_t (*reset_link)(struct pci_dev *pdev));
-+			pci_ers_result_t (*reset_subordinate_devices)(struct pci_dev *pdev));
+It otherwise assumes that any __attribute__((__section__
+use should be converted to __section.
 
- bool pcie_wait_for_link(struct pci_dev *pdev, bool active);
- #ifdef CONFIG_PCIEASPM
-diff --git a/drivers/pci/pcie/err.c b/drivers/pci/pcie/err.c
-index c543f419d8f9..950612342f1c 100644
---- a/drivers/pci/pcie/err.c
-+++ b/drivers/pci/pcie/err.c
-@@ -148,7 +148,7 @@ static int report_resume(struct pci_dev *dev, void *data)
+If this ppc file is the only file outside of the
+listed exclusions, I can either exclude it directly
+or add compiler.h to it.
 
- pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
- 			pci_channel_state_t state,
--			pci_ers_result_t (*reset_link)(struct pci_dev *pdev))
-+			pci_ers_result_t (*reset_subordinate_devices)(struct pci_dev *pdev))
- {
- 	pci_ers_result_t status = PCI_ERS_RESULT_CAN_RECOVER;
- 	struct pci_bus *bus;
-@@ -165,9 +165,9 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
- 	pci_dbg(dev, "broadcast error_detected message\n");
- 	if (state == pci_channel_io_frozen) {
- 		pci_walk_bus(bus, report_frozen_detected, &status);
--		status = reset_link(dev);
-+		status = reset_subordinate_device(dev);
- 		if (status != PCI_ERS_RESULT_RECOVERED) {
--			pci_warn(dev, "link reset failed\n");
-+			pci_warn(dev, "subordinate device reset failed\n");
- 			goto failed;
- 		}
- 	} else {
---
-2.28.0
+You have a preference?
+
+Perhaps these are also possible files that need exclusions:
+
+./arch/x86/boot/video.h:#define __videocard struct card_info __section(".videocards") __attribute__((used))
+./arch/x86/boot/compressed/pgtable_64.c:unsigned long *trampoline_32bit __section(".data");
+./arch/x86/boot/tty.c:static void __section(".inittext") serial_putchar(int ch)
+./arch/x86/boot/tty.c:static void __section(".inittext") bios_putchar(int ch)
+./arch/x86/boot/tty.c:void __section(".inittext") putchar(int ch)
+./arch/x86/boot/tty.c:void __section(".inittext") puts(const char *str)
+./arch/s390/boot/startup.c:static struct diag210 _diag210_tmp_dma __section(".dma.data");
+./arch/powerpc/boot/main.c:	__section("__builtin_cmdline");
+./arch/powerpc/boot/ps3.c:	__section("__builtin_cmdline");
+
 
