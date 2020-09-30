@@ -2,75 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1847227F0A0
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 19:37:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5896127F0A3
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 19:37:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728232AbgI3Rhe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 13:37:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34012 "EHLO
+        id S1731448AbgI3Rht (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 13:37:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725355AbgI3Rhe (ORCPT
+        with ESMTP id S1731335AbgI3Rht (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 13:37:34 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2F62C061755;
-        Wed, 30 Sep 2020 10:37:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=A5KlBjNa4UamexPhFOAub/bWTs9pyBwcLEyxvvIWw8w=; b=a5mZR239rglFQpTcimGDn6jZUT
-        3HrKqS1yl7rsjG1KodsVisgoPSpSc7VWKMINY0jHydjiwigtJqS0q8DuRO2mSWgDk2TlkfetdmZSC
-        SZ8uoJr8We0XqbfbrR1QZR1RG0JbSfA3079s37jPhcbguH/dvAVWUW0wROfcpS8r7IzHaGWtBmuvO
-        H0C7V1qW2p1sUivcoIvo36C1tOmz0GEkCwSE7rFJzleV08KFLeOFtzA79GVXgzKNEs0PwMNRbM+ov
-        +xqcNK8SxfMiBwbPltQ7PxHh6//jXspS9m6WWPWA7dsA0z58ahL26pOpcCfW4OL/tFQqVxnzjS4CE
-        hbc60LoQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kNg2a-0000TW-IU; Wed, 30 Sep 2020 17:37:20 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3E4A6301179;
-        Wed, 30 Sep 2020 19:37:19 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 22CAF20115B0E; Wed, 30 Sep 2020 19:37:19 +0200 (CEST)
-Date:   Wed, 30 Sep 2020 19:37:19 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Kees Cook <keescook@chromium.org>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Nick Clifton <nickc@redhat.com>,
-        =?utf-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>,
-        Segher Boessenkool <segher@kernel.crashing.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>, postmaster@vger.kernel.org,
-        David Miller <davem@davemloft.net>
-Subject: Re: linux tooling mailing list
-Message-ID: <20200930173719.GE2628@hirez.programming.kicks-ass.net>
-References: <CAKwvOdkHzbPjw71n+RVXuM6Wt6PNO6fiy+14QTzthF7MCkewwg@mail.gmail.com>
- <CA+icZUWvEzUhCjkMYAK22pkjshKmfE4a2y_W0sPPuqRtzXOtNw@mail.gmail.com>
- <CAFP8O3LQSS4BufLEPQKOk62T0d8HoZq0kQAU8+K4d4gpY4CPag@mail.gmail.com>
- <CA+icZUU44tbsmGfTc-2OO42V42Z02dRSs7AZCJBnXL65vJDz-Q@mail.gmail.com>
- <664e5923-d65e-0a3a-1320-8b6635146676@redhat.com>
- <CAKwvOdkiSLidxNxWUxCrJ_rPogORt=aGDHTkbO=yJn0FPevbpw@mail.gmail.com>
- <CAKwvOdmFm9-FPrqt42NsusWRbDzNx6NF1GeSJhz_9kaAGV8eOA@mail.gmail.com>
+        Wed, 30 Sep 2020 13:37:49 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C3E4C0613D0
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 10:37:47 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id y4so2316721ljk.8
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 10:37:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ragnatech-se.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=nbODIVmtMlo+oLH9Hrd8YGZI1ZfekrJ3et3L9IP3emw=;
+        b=XMWwh4Nz6o2C7++lYVkhjkwC5h4Fg1CtBXKYaVfnuMN0DhI1MS18W9JzZHWGJ190qC
+         3Yn6DG46RbfYlASND+TtT+IOlnxrJmcLcxSLeHwbkQyZdViuFmTwIWAZBeD8IoS0NgJU
+         9/iu6348F5EBEQr0YdW3SqexfZcYhbP+g0Ce9IocdnoKHCkTPkissYZFeY5D/HkbZaUV
+         s9mlzqY4RyugivLGjSCtbpu4TEyGPKucmg/Kefjoa7DrChvJ+I+QfArOGA35WACDbwal
+         gY6BbBKRqovl/O0BCwOEWFasJnokCoS90w4YSuXv4Xd+jcRUCcQt1litY3yaF4F5TaZU
+         Qiug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=nbODIVmtMlo+oLH9Hrd8YGZI1ZfekrJ3et3L9IP3emw=;
+        b=j4TUbdEOVyGgER/E54z8dGgqQhSFJLpHcZ0IoqCL3OpyuIfg9jV7sEx+aJGK4x4PLK
+         BCKqi4bKUUuMmGtsW3n+FBoAaG/A87+bXRNKjNkelFl9WlJ/J1j7Enz8al9xal27M87B
+         GoNoH2h8cL89o28VuiX4gKAMuN4t572ajSN2QlNCAuvyrw1QXKdaIDmh64tog5zVMpMH
+         72DXi76pW6NXMx7bXzYN5OaOpRg47H9QFMMX/S+7XnrIYa9p0Qj3ZvvU44F38TNLmKB+
+         WwkrtlIVkuIMVoFHVBzZLBYQ4HUOWWmv+yI4LuiGDgX/WmmvugzwBWFcgCxmS/Y5fGAu
+         aufA==
+X-Gm-Message-State: AOAM530f2SFFqP/xACgC+3aIGGeU2a4uqAqESxpSQJSybOWZUSYIW9X9
+        FI9yDhoreKLMBKbQN7iAFOV5mw==
+X-Google-Smtp-Source: ABdhPJyqDCDXp1ZYRf9156ssXFOuXiNaysi5BzWkXQEbMYcWMwfcZgmysMuz722U1SrRArZ4ULE7OA==
+X-Received: by 2002:a2e:89ca:: with SMTP id c10mr1263859ljk.223.1601487465710;
+        Wed, 30 Sep 2020 10:37:45 -0700 (PDT)
+Received: from localhost (h-209-203.A463.priv.bahnhof.se. [155.4.209.203])
+        by smtp.gmail.com with ESMTPSA id 77sm261464lfg.199.2020.09.30.10.37.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Sep 2020 10:37:45 -0700 (PDT)
+Date:   Wed, 30 Sep 2020 19:37:44 +0200
+From:   Niklas =?iso-8859-1?Q?S=F6derlund?= 
+        <niklas.soderlund@ragnatech.se>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Rob Herring <robh@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Shawn Lin <shawn.lin@rock-chips.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>, kernel-team@android.com,
+        samuel@dionne-riel.com
+Subject: Re: [PATCH v2] of: address: Work around missing device_type property
+ in pcie nodes
+Message-ID: <20200930173744.GG1516931@oden.dyn.berto.se>
+References: <20200819094255.474565-1-maz@kernel.org>
+ <20200930162722.GF1516931@oden.dyn.berto.se>
+ <977f60f07a4cb5c59f0e5f8a9dfb3993@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <CAKwvOdmFm9-FPrqt42NsusWRbDzNx6NF1GeSJhz_9kaAGV8eOA@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <977f60f07a4cb5c59f0e5f8a9dfb3993@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 10:25:40AM -0700, Nick Desaulniers wrote:
-> Does anyone know who's behind postmaster@vger.kernel.org?  Maybe I can
-> email them directly if perhaps they don't check this email often?
-> (Benefit of the doubt)
+Hi Marc,
 
-davem iirc.
+On 2020-09-30 18:23:21 +0100, Marc Zyngier wrote:
+> Hi Niklas,
+> 
+> [+ Samuel]
+> 
+> On 2020-09-30 17:27, Niklas Söderlund wrote:
+> > Hi Marc,
+> > 
+> > I'm afraid this commit breaks booting my rk3399 device.
+> > 
+> > I bisected the problem to this patch merged as [1]. I'm testing on a
+> > Scarlet device and I'm using the unmodified upstream
+> > rk3399-gru-scarlet-inx.dtb for my tests.
+> > 
+> > The problem I'm experience is a black screen after the bootloader and
+> > the device is none responsive over the network. I have no serial console
+> > to this device so I'm afraid I can't tell you if there is anything
+> > useful on to aid debugging there.
+> > 
+> > If I try to test one commit earlier [2] the system boots as expected and
+> > everything works as it did for me in v5.8 and earlier. I have worked
+> > little with this device and have no clue about what is really on the PCI
+> > buss. But running from [2] I have this info about PCI if it's helpful,
+> > please ask if somethings missing.
+> 
+> Please see the thread at [1]. The problem was reported a few weeks back
+> by Samuel, and I was expecting Rob and Lorenzo to push a fix for this.
+
+Thanks for providing a solution.
+
+> 
+> Rob, Lorenzo, any update on this?
+> 
+>         M.
+> 
+> [1]
+> https://lore.kernel.org/linux-devicetree/20200829164920.7d28e01a@DUFFMAN/
+> -- 
+> Jazz is not dead. It just smells funny...
+
+-- 
+Regards,
+Niklas Söderlund
