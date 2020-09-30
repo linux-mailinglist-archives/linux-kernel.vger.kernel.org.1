@@ -2,78 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF78D27E356
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 10:07:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E76F27E359
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 10:10:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728531AbgI3IHv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 04:07:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58862 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725440AbgI3IHv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 04:07:51 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C206C061755;
-        Wed, 30 Sep 2020 01:07:51 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: eballetbo)
-        with ESMTPSA id 28B3929AF81
-Subject: Re: DT warnings in Cros EC
-To:     Rob Herring <robh@kernel.org>, Benson Leung <bleung@chromium.org>,
-        Guenter Roeck <groeck@chromium.org>
-Cc:     devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Lee Jones <lee.jones@linaro.org>
-References: <CAL_JsqJQDgGVwhc9JFuoG7-_cvV3fhLvd95k=0qKgxM+UsMm-g@mail.gmail.com>
-From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Message-ID: <1defbf05-33da-c251-7c2c-6f7ec7ec8999@collabora.com>
-Date:   Wed, 30 Sep 2020 10:07:46 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1725908AbgI3IKJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 04:10:09 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:42090 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725535AbgI3IKI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 04:10:08 -0400
+Received: from zn.tnic (p200300ec2f092a00509dd0059ac29c82.dip0.t-ipconnect.de [IPv6:2003:ec:2f09:2a00:509d:d005:9ac2:9c82])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A3D361EC04B9;
+        Wed, 30 Sep 2020 10:10:07 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1601453407;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=ueW1Vj+4C0xsdqtECsj5PcHsL94AM3OeuF4oGmr3Elw=;
+        b=oRrT6G0LlpHr0sk03CoiBYrbuekPXujmkMzeuida31QBq3DUaGYmhv4cb9o7Zc3aHFNRId
+        cHqAYt+mgwoUZwS7rM1j+Alm773/iVI8aUKm9CjFR/9t3VGKF0NfxmVLeoEA+jy9h8CR2G
+        wOwlQM7xokiGtU9wIwOSFUlLndzl9ho=
+Date:   Wed, 30 Sep 2020 10:09:59 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     shuo.a.liu@intel.com
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Yu Wang <yu1.wang@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Yin Fengwei <fengwei.yin@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Zhi Wang <zhi.a.wang@intel.com>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>
+Subject: Re: [PATCH v4 03/17] x86/acrn: Introduce an API to check if a VM is
+ privileged
+Message-ID: <20200930080959.GD6810@zn.tnic>
+References: <20200922114311.38804-1-shuo.a.liu@intel.com>
+ <20200922114311.38804-4-shuo.a.liu@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <CAL_JsqJQDgGVwhc9JFuoG7-_cvV3fhLvd95k=0qKgxM+UsMm-g@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20200922114311.38804-4-shuo.a.liu@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+On Tue, Sep 22, 2020 at 07:42:57PM +0800, shuo.a.liu@intel.com wrote:
+> +static u32 acrn_cpuid_base(void)
+> +{
+> +	static u32 acrn_cpuid_base;
+> +
+> +	if (!acrn_cpuid_base && boot_cpu_has(X86_FEATURE_HYPERVISOR))
+> +		acrn_cpuid_base = hypervisor_cpuid_base("ACRNACRNACRN", 0);
+> +
+> +	return acrn_cpuid_base;
+> +}
+> +
+> +bool acrn_is_privileged_vm(void)
+> +{
+> +	return cpuid_eax(acrn_cpuid_base() | ACRN_CPUID_FEATURES) &
 
-On 28/9/20 18:49, Rob Herring wrote:
-> There's a bunch of warnings in the Cros EC schemas. They stem from
-> child node names needing to be defined. I started fixing, but it's
-> kind of a mess as there's a mixture of no unit addresses and different
-> unit address spaces (regulators and codec). And is type-C and extcon
-> mutually exclusive? I gave up, so please fix these:
-> 
-> /builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/extcon/extcon-usbc-cros-ec.example.dt.yaml:
-> cros-ec@0: 'extcon0', 'extcon1' do not match any of the regexes:
-> 'pinctrl-[0-9]+'
-> From schema: /builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/mfd/google,cros-ec.yaml
-> bindings/Documentation/devicetree/bindings/pwm/google,cros-ec-pwm.example.dt.yaml:
-> cros-ec@0: 'ec-pwm' does not match any of the regexes:
-> 'pinctrl-[0-9]+'
-> From schema: /builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/mfd/google,cros-ec.yaml
-> /builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/regulator/google,cros-ec-regulator.example.dt.yaml:
-> ec@0: '#address-cells', '#size-cells', 'regulator@0' do not match any
-> of the regexes: 'pinctrl-[0-9]+'
-> From schema: /builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/mfd/google,cros-ec.yaml
-> /builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/chrome/google,cros-ec-typec.example.dt.yaml:
-> ec@0: 'typec' does not match any of the regexes: 'pinctrl-[0-9]+'
-> From schema: /builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/mfd/google,cros-ec.yaml
-> /builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/google,cros-ec-codec.example.dt.yaml:
-> cros-ec@0: '#address-cells', '#size-cells', 'ec-codec@10500000' do not
-> match any of the regexes: 'pinctrl-[0-9]+'
-> From schema: /builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/mfd/google,cros-ec.yaml
-> 
+What's that dance and acrn_cpuid_base static thing needed for? Why not
+simply:
 
-We will take a look soon and send patches to fix it.
+	cpuid_eax(ACRN_CPUID_FEATURES) & ...
 
-Thanks,
-  Enric
+?
 
-> 
-> Rob
-> 
+> +			 ACRN_FEATURE_PRIVILEGED_VM;
+> +}
+> +EXPORT_SYMBOL_GPL(acrn_is_privileged_vm);
+
+Also, if you're going to need more of those bit checkers acrn_is_<something>
+which look at ACRN_CPUID_FEATURES, just stash CPUID_0x40000001_EAX locally and
+use a
+
+	acrn_has(ACRN_FEATURE_PRIVILEGED_VM)
+
+which does the bit testing.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
