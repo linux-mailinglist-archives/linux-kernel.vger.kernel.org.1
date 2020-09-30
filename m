@@ -2,90 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8856C27E0A4
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 07:50:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 843DE27E092
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 07:46:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725881AbgI3Fu2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 01:50:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37750 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725440AbgI3Fu2 (ORCPT
+        id S1725852AbgI3Fqu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 01:46:50 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:38628 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725306AbgI3Fqu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 01:50:28 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4819C061755;
-        Tue, 29 Sep 2020 22:50:26 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id x16so412135pgj.3;
-        Tue, 29 Sep 2020 22:50:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=KDJI1UdfvDBL6Dg4S57KOoqth3ucuI3HS03X3SOn/zY=;
-        b=VIcmcdskQ86AfRy89+em/AsOvDdok8Z+IL0i4KLjiMwhMF7QDAYv2GtcenPvQ2mMdx
-         JFx7ooYChVxbFy6b7zIyHOxkRiS1EH0vDUnAcwYhmrqSJ4+IuS9WGFqGqdfYF9X+NCGH
-         EAZA1PcF1Ue2GxlWOIWAhWnyvAIGda7RiOz5GbHhJjgPZz3idbyMywGnK8Qf8hC/OSoK
-         7pqn+e7IfY8D2KXS76PGtdpfZxyBPhsDAQPrYCkR75R2NWdRy33VVyZD/dIRSFwTUIc/
-         ZXZPiebSHjBgOZTu8iNnAGmpOYJhVQ51em87vn3K6ADXNwtz0xhTo9HWY9PNPbL6sXjd
-         1nrA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=KDJI1UdfvDBL6Dg4S57KOoqth3ucuI3HS03X3SOn/zY=;
-        b=K7CPl4cPKKCL+mP2dhrPw4d+dzNJ2oa42Pr5tu7UPVdN6+Y3ne9r4wTcrCKjeQK0NF
-         1++I/NHb4R4i6hdCJnn/8h5y4hYgi7ptpdtpa3Dq1iz1VcdMTMLuGRfO2kE1jz1wn5pE
-         foPFxqJPZVQCBXd3hI9RfDQQ4L8RhuuLGCr0TCicEy9uZcEiiHfMHFEHR3zQr6RvdjkZ
-         tOabbYG9DjmFSBwbXepygLOGT4VovWP9O3mn5lbSWV0L9BmZpKIKI7lSlhlzB9KsRLCf
-         +mMzqpsLpf1leMOwCqMr/TJ10VdxaoaJSHnpNrZDGL5vp5oy/k6lyqFcP9rs3nbCUJSJ
-         gAXA==
-X-Gm-Message-State: AOAM533sK2QN8lL6bxhOV9Mk7rENfD+ErAc3OMqjzk1qe55m6BvItURD
-        xJyw54bI9312xM3TMxvT5Sw=
-X-Google-Smtp-Source: ABdhPJz/L1MMK7NVUm1Vf+MPoZ/cbNAxRDW8TWSdQwxfslFWRQDLLzBAv75iqpbC41ReCW3RWdLh7A==
-X-Received: by 2002:a63:161e:: with SMTP id w30mr873994pgl.255.1601445026190;
-        Tue, 29 Sep 2020 22:50:26 -0700 (PDT)
-Received: from Asurada-Nvidia (thunderhill.nvidia.com. [216.228.112.22])
-        by smtp.gmail.com with ESMTPSA id g206sm724587pfb.178.2020.09.29.22.50.25
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 29 Sep 2020 22:50:26 -0700 (PDT)
-Date:   Tue, 29 Sep 2020 22:44:55 -0700
-From:   Nicolin Chen <nicoleotsuka@gmail.com>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     thierry.reding@gmail.com, joro@8bytes.org, krzk@kernel.org,
-        vdumpa@nvidia.com, jonathanh@nvidia.com,
-        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] memory: tegra: Add helper function
- tegra_get_memory_controller
-Message-ID: <20200930054455.GF31821@Asurada-Nvidia>
-References: <20200930003013.31289-1-nicoleotsuka@gmail.com>
- <20200930003013.31289-2-nicoleotsuka@gmail.com>
- <93803d8b-9863-e977-fa87-a03e877b095d@gmail.com>
+        Wed, 30 Sep 2020 01:46:50 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08U5kldp121649;
+        Wed, 30 Sep 2020 00:46:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1601444807;
+        bh=IcGXwcmno1GcBhj0sPJ2RIbIjTWcrrKuQT9aId1ObFU=;
+        h=Subject:From:To:CC:References:Date:In-Reply-To;
+        b=SMtFQgid/ACN2r2E6N9nXv45AdHeDw6Vzts/AsWt3j1DwBMmskpNtdPaGGIum2CCl
+         /SruN+o0/yy97tiTQ16PZFZ51ROV6VycRgECT97f5XMrp2lyZSvY/Yt4BLuLmvedDt
+         llBFlIhf3Xq/H0NtTBZAzZIIdU/lxob9tKZ2E/lE=
+Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08U5klFl036470
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 30 Sep 2020 00:46:47 -0500
+Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 30
+ Sep 2020 00:46:47 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 30 Sep 2020 00:46:47 -0500
+Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08U5kjjQ047716;
+        Wed, 30 Sep 2020 00:46:45 -0500
+Subject: Re: [PATCH v3 2/3] dmaengine: add peripheral configuration
+From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
+To:     Vinod Koul <vkoul@kernel.org>, <dmaengine@vger.kernel.org>
+CC:     Rob Herring <robh+dt@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20200923063410.3431917-1-vkoul@kernel.org>
+ <20200923063410.3431917-3-vkoul@kernel.org>
+ <29f95fff-c484-0131-d1fe-b06e3000fb9f@ti.com>
+X-Pep-Version: 2.0
+Message-ID: <aaa3f7df-3625-1b65-aeaa-33dc43566c99@ti.com>
+Date:   Wed, 30 Sep 2020 08:47:01 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <93803d8b-9863-e977-fa87-a03e877b095d@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <29f95fff-c484-0131-d1fe-b06e3000fb9f@ti.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 08:12:10AM +0300, Dmitry Osipenko wrote:
-> 30.09.2020 03:30, Nicolin Chen пишет:
-> ...
-> >  int tegra_mc_write_emem_configuration(struct tegra_mc *mc, unsigned long rate);
-> >  unsigned int tegra_mc_get_emem_device_count(struct tegra_mc *mc);
-> > +struct tegra_mc *tegra_get_memory_controller(void);
-> >  
-> >  #endif /* __SOC_TEGRA_MC_H__ */
-> > 
-> 
-> This will conflict with the tegra20-devfreq driver, you should change it
-> as well.
+Hi Vinod,
 
-Will remove that in v3.
+On 29/09/2020 11.06, Peter Ujfalusi wrote:
+>=20
+> I know that you want this to be as generic as much as it is possible,
+> but do we really want to?
+> GPIv2 will also handle I2S peripheral, other vendor's similar solution
+> would require different sets of parameters unique to their IPs?
+>=20
+> How we are going to handle similar setups for DMA which is used for
+> networking, SPI/I2C/I2S/NAND/display/capture, etc?
+>=20
+> Imho these settings are really part of the peripheral's domain and not
+> the DMA. It is just a small detail that instead of direct register
+> writes, your setup is using the DMA descriptors to write.
+> It is similar to what I use as metadata (part of the descriptor belongs=
 
-Thanks
+> and owned by the client driver).
+>=20
+> I think it would be better to have:
+>=20
+> enum dmaengine_peripheral {
+> 	DMAENGINE_PERIPHERAL_GPI_SPI =3D 1,
+> 	DMAENGINE_PERIPHERAL_GPI_UART,
+> 	DMAENGINE_PERIPHERAL_GPI_I2C,
+> 	DMAENGINE_PERIPHERAL_XYZ_SPI,
+> 	DMAENGINE_PERIPHERAL_XYZ_AASRC,
+> 	DMAENGINE_PERIPHERAL_ABC_CAM,
+> 	...
+> 	DMAENGINE_PERIPHERAL_LAST,
+> };
+>=20
+> enum dmaengine_peripheral peripheral_type;
+> void *peripheral_config;
+
+TI have an AASRC (Audio Asynchronous Sample Rate Converted) in j721e and
+to configure the DMA side (AASRC_PDMA) we need special configuration
+parameters passed from the AASRC driver to the DMA channel.
+This peripheral config extension would be perfect for it, but the
+parameters I would need is not generic in any ways.
+
+The other thing which might need to be considered is to have src/dst
+pair of this. When we do DMA_DEV_TO_DEV, it would help to figure out
+which side we should apply which config (if you have the same type of
+device on both ends with different config?).
+
+
+> and that's it. The set_config is specific to GPI.
+> It can be debated where the structs should be defined, in the generic
+> dmaengine.h or in include/linux/dma/ as controller specific
+> (gpi_peripheral.h) or a generic one, like dmaengine_peripheral.h
+>=20
+> The SPI/I2C/UART client of yours would pass the GPI specific struct as
+> in any case it has to know what is the DMA it is serviced by.
+>=20
+>> +};
+>>  /**
+>>   * struct dma_slave_config - dma slave channel runtime config
+>>   * @direction: whether the data shall go in or out on this slave
+>> @@ -418,6 +506,8 @@ enum dma_slave_buswidth {
+>>   * @slave_id: Slave requester id. Only valid for slave channels. The =
+dma
+>>   * slave peripheral will have unique id as dma requester which need t=
+o be
+>>   * pass as slave config.
+>> + * @peripheral: peripheral configuration for programming peripheral f=
+or
+>> + * dmaengine transfer
+>>   *
+>>   * This struct is passed in as configuration data to a DMA engine
+>>   * in order to set up a certain channel for DMA transport at runtime.=
+
+>> @@ -443,6 +533,7 @@ struct dma_slave_config {
+>>  	u32 dst_port_window_size;
+>>  	bool device_fc;
+>>  	unsigned int slave_id;
+>> +	struct dmaengine_peripheral_config *peripheral;
+>>  };
+>> =20
+>>  /**
+>>
+>=20
+> - P=C3=A9ter
+>=20
+> Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+> Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+>=20
+
+- P=C3=A9ter
+
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+
