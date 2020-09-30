@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9417627E978
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 15:26:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F25927E9EB
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 15:29:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730282AbgI3NZX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 09:25:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38590 "EHLO mail.kernel.org"
+        id S1730839AbgI3N24 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 09:28:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38556 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729663AbgI3NZU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1725776AbgI3NZU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 30 Sep 2020 09:25:20 -0400
-Received: from mail.kernel.org (ip5f5ad5c4.dynamic.kabel-deutschland.de [95.90.213.196])
+Received: from mail.kernel.org (unknown [95.90.213.196])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C1BFD2076B;
+        by mail.kernel.org (Postfix) with ESMTPSA id 9F11820754;
         Wed, 30 Sep 2020 13:25:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1601472319;
-        bh=8Ugy8JtQBg0iQvd2yN/ML4tDaHJflxT3n0hmWb/m5F8=;
+        bh=8Wg4J7Lyd/Va8b7XV8z9jXdPVZ/IrSKHVEYF1TFbuSY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oqIeJxyQYobjA5o7g3G9SDFWz971KWMTcxHzPCWwW7ApDhE+lN+PLnqUq3fpuYnTn
-         tLSOQKBGU8SvKcbwFqt2D7i8hX/JHZqyybDF/aGYMpkTwLHXRIW87VUI/tcl1b4LOf
-         N+dp548vOMQtLgcKlJbRIvvxH8FfiViOPwm0DiU0=
+        b=BCanuSxcc/ikhDINlc/qIR5yo//gtqQ9HzjwgCwXQL6qh0AfRSxsvigycZJjze5Lr
+         GXpGNcfSscthQWopSwJhjAe6Dny3BuMInbntwdE2b0usTgae7mv8zbDdzvVvWpAaI7
+         gyrITZNcOYca1eBLAPYjXR1LRoiz71bSPWz1UFqI=
 Received: from mchehab by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1kNc6f-001XIs-JN; Wed, 30 Sep 2020 15:25:17 +0200
+        id 1kNc6f-001XIu-KS; Wed, 30 Sep 2020 15:25:17 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
         Jonathan Corbet <corbet@lwn.net>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v4 01/52] docs: cdomain.py: add support for a new Sphinx 3.1+ tag
-Date:   Wed, 30 Sep 2020 15:24:24 +0200
-Message-Id: <afd4c5d96e52c9d27abe0184af25add02d9ad9f6.1601467849.git.mchehab+huawei@kernel.org>
+Subject: [PATCH v4 02/52] docs: cdomain.py: extend it to handle new Sphinx 3.x tags
+Date:   Wed, 30 Sep 2020 15:24:25 +0200
+Message-Id: <9c56ddb12976ec0f5a04cb3ce5e1e28ed22ff88c.1601467849.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1601467849.git.mchehab+huawei@kernel.org>
 References: <cover.1601467849.git.mchehab+huawei@kernel.org>
@@ -44,128 +44,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since Sphinx 3.0, the C domain code was rewritten, but only
-after version 3.1 it got support for setting namespaces on
-C domains, with is something that it is required, in order to
-document system calls, like ioctl() and others.
+While most of the C domain parsing is done via kernel-doc,
+some RST files use C domain tags directly.
 
-As part of changing the documentation subsystem to properly
-build with Sphinx 3.1+, add support for such new tag:
+While several of them can be removed for Sphinx < 3.0, due
+to automarkup.py, and several others that could be
+converted into kernel-doc markups, changes like that are
+time-consuming, and may not fit all cases.
 
-	.. c:namespace::"
+As we already have the cdomain.py for handing backward
+compatibility with Sphinx versions below 3.0, let's
+make it more complete, in order to cover any usage of the
+newer tags outside kernel-doc.
 
-Such tag optionally replaces the optional "name" tag for functions,
-setting a single namespace domain for all C references found
-at the file.
+This way, it should be feasible to use the new tags inside
+the Kernel tree, without losing backward compatibility.
 
-With that, it should be possible to convert existing
-documentation to be compatible with both Sphinx 1.x/2.x and
-3.1+.
+This should allow fixing the remaining warnings with
+the Kernel tags.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- Documentation/sphinx/cdomain.py | 55 ++++++++++++++++++++++++++++++++-
- 1 file changed, 54 insertions(+), 1 deletion(-)
+ Documentation/sphinx/cdomain.py | 40 ++++++++++++++++++++++++++++++++-
+ 1 file changed, 39 insertions(+), 1 deletion(-)
 
 diff --git a/Documentation/sphinx/cdomain.py b/Documentation/sphinx/cdomain.py
-index cbac8e608dc4..35805c44a4fc 100644
+index 35805c44a4fc..014a5229e57a 100644
 --- a/Documentation/sphinx/cdomain.py
 +++ b/Documentation/sphinx/cdomain.py
-@@ -40,14 +40,56 @@ from sphinx import addnodes
- from sphinx.domains.c import c_funcptr_sig_re, c_sig_re
- from sphinx.domains.c import CObject as Base_CObject
- from sphinx.domains.c import CDomain as Base_CDomain
-+from itertools import chain
-+import re
+@@ -54,7 +54,7 @@ namespace = None
+ #
+ # Handle trivial newer c domain tags that are part of Sphinx 3.1 c domain tags
+ # - Store the namespace if ".. c:namespace::" tag is found
+-
++#
+ RE_namespace = re.compile(r'^\s*..\s*c:namespace::\s*(\S+)\s*$')
  
--__version__  = '1.0'
-+__version__  = '1.1'
+ def markup_namespace(match):
+@@ -64,10 +64,48 @@ def markup_namespace(match):
  
- # Get Sphinx version
- major, minor, patch = sphinx.version_info[:3]
+     return ""
  
-+# Namespace to be prepended to the full name
-+namespace = None
++#
++# Handle c:macro for function-style declaration
++#
++RE_macro = re.compile(r'^\s*..\s*c:macro::\s*(\S+)\s+(\S.*)\s*$')
++def markup_macro(match):
++    return ".. c:function:: " + match.group(1) + ' ' + match.group(2)
 +
 +#
-+# Handle trivial newer c domain tags that are part of Sphinx 3.1 c domain tags
-+# - Store the namespace if ".. c:namespace::" tag is found
++# Handle newer c domain tags that are evaluated as .. c:type: for
++# backward-compatibility with Sphinx < 3.0
++#
++RE_ctype = re.compile(r'^\s*..\s*c:(struct|union|enum|enumerator|alias)::\s*(.*)$')
 +
-+RE_namespace = re.compile(r'^\s*..\s*c:namespace::\s*(\S+)\s*$')
-+
-+def markup_namespace(match):
-+    global namespace
-+
-+    namespace = match.group(1)
-+
-+    return ""
-+
-+def c_markups(app, docname, source):
-+    result = ""
-+    markup_func = {
-+        RE_namespace: markup_namespace,
-+    }
-+
-+    lines = iter(source[0].splitlines(True))
-+    for n in lines:
-+        match_iterators = [regex.finditer(n) for regex in markup_func]
-+        matches = sorted(chain(*match_iterators), key=lambda m: m.start())
-+        for m in matches:
-+            n = n[:m.start()] + markup_func[m.re](m) + n[m.end():]
-+
-+        result = result + n
-+
-+    source[0] = result
++def markup_ctype(match):
++    return ".. c:type:: " + match.group(2)
 +
 +#
-+# Now implements support for the cdomain namespacing logic
++# Handle newer c domain tags that are evaluated as :c:type: for
++# backward-compatibility with Sphinx < 3.0
 +#
++RE_ctype_refs = re.compile(r':c:(var|struct|union|enum|enumerator)::`([^\`]+)`')
++def markup_ctype_refs(match):
++    return ":c:type:`" + match.group(2) + '`'
 +
- def setup(app):
- 
-+    # Handle easy Sphinx 3.1+ simple new tags: :c:expr and .. c:namespace::
-+    app.connect('source-read', c_markups)
++#
++# Simply convert :c:expr: and :c:texpr: into a literal block.
++#
++RE_expr = re.compile(r':c:(expr|texpr):`([^\`]+)`')
++def markup_c_expr(match):
++    return '\ ``' + match.group(2) + '``\ '
 +
-     if (major == 1 and minor < 8):
-         app.override_domain(CDomain)
-     else:
-@@ -75,6 +117,8 @@ class CObject(Base_CObject):
-         function-like macro, the name of the macro is returned. Otherwise
-         ``False`` is returned.  """
++#
++# Parse Sphinx 3.x C markups, replacing them by backward-compatible ones
++#
+ def c_markups(app, docname, source):
+     result = ""
+     markup_func = {
+         RE_namespace: markup_namespace,
++        RE_expr: markup_c_expr,
++        RE_macro: markup_macro,
++        RE_ctype: markup_ctype,
++        RE_ctype_refs: markup_ctype_refs,
+     }
  
-+        global namespace
-+
-         if not self.objtype == 'function':
-             return False
- 
-@@ -107,11 +151,16 @@ class CObject(Base_CObject):
-             param += nodes.emphasis(argname, argname)
-             paramlist += param
- 
-+        if namespace:
-+            fullname = namespace + "." + fullname
-+
-         return fullname
- 
-     def handle_signature(self, sig, signode):
-         """Transform a C signature into RST nodes."""
- 
-+        global namespace
-+
-         fullname = self.handle_func_like_macro(sig, signode)
-         if not fullname:
-             fullname = super(CObject, self).handle_signature(sig, signode)
-@@ -122,6 +171,10 @@ class CObject(Base_CObject):
-             else:
-                 # FIXME: handle :name: value of other declaration types?
-                 pass
-+        else:
-+            if namespace:
-+                fullname = namespace + "." + fullname
-+
-         return fullname
- 
-     def add_target_and_index(self, name, sig, signode):
+     lines = iter(source[0].splitlines(True))
 -- 
 2.26.2
 
