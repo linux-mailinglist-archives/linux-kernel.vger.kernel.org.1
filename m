@@ -2,91 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A468727EF3D
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 18:31:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 893CC27EF47
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 18:33:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731101AbgI3QbZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 12:31:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52012 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725355AbgI3QbY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 12:31:24 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 923CCC061755
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 09:31:24 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f092a00869c7b979af15d7f.dip0.t-ipconnect.de [IPv6:2003:ec:2f09:2a00:869c:7b97:9af1:5d7f])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1727681AbgI3Qdy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 12:33:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33014 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725355AbgI3Qdy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 12:33:54 -0400
+Received: from mail-il1-f177.google.com (mail-il1-f177.google.com [209.85.166.177])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 161D51EC0445;
-        Wed, 30 Sep 2020 18:31:23 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1601483483;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=Dx1aQOyK27/HcHW28nNDA9Vv+UI+LGYZbrAVg6hlBNU=;
-        b=WbG9D0/S4P0UhShhqC9MRCNUOGYilohzf2HkpJ/Alj9K8N/LHWblgOtEluODfrBPQxbPda
-        C5L6HMe1zsOGC0yzYL14TP5RvWT9j0kMZnbgAYgYFWzg7/r4sWuITBR/8gyoJZ2JKOIKqc
-        lKe8uDPCSIFsNes3ukIwx4aaoRje+Co=
-Date:   Wed, 30 Sep 2020 18:31:20 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        syzbot <syzbot+ce179bc99e64377c24bc@syzkaller.appspotmail.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Jiri Olsa <jolsa@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        syzkaller <syzkaller@googlegroups.com>
-Subject: Re: general protection fault in perf_misc_flags
-Message-ID: <20200930163120.GJ6810@zn.tnic>
-References: <CACT4Y+ZZH76qg810RzGp6FDLTxJWVqZgkrXSxqgq7AjpPYG9XQ@mail.gmail.com>
- <20200928083819.GD1685@zn.tnic>
- <CACT4Y+bPFASnmFRKpQ=KY1z+RnTbGmkPU3aikzdXZpKkV03D9A@mail.gmail.com>
- <20200928085401.GE1685@zn.tnic>
- <CACT4Y+Z4Y6SJJ6iYBhVRiknrWBAD6gGhQXiXLhxPniDNBFJGsA@mail.gmail.com>
- <20200928202353.GI1685@zn.tnic>
- <20200929083336.GA21110@zn.tnic>
- <CACT4Y+bfKwoZe3SC-BKJkOET1GxGp9tCpLzkae8q1sjWYnmgmw@mail.gmail.com>
- <20200930161711.GH6810@zn.tnic>
- <CACT4Y+Zc7kD431Aed49U4R6cqzWGAWqEXevnheRHKQRQoEnh7w@mail.gmail.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id 4EE232087D;
+        Wed, 30 Sep 2020 16:33:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601483633;
+        bh=1O4lOqfyVB4oTb4crlwIc0lAP0SUUw2QidU8mzgA6Xw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=TO8SqM/ZFmVTJLnCSlBppXbSIh9FIrsJ9XgLZstk7U9AvTy3zxi4LgiUe2rxc6gxT
+         7QMpdjpMM6inMlenW85XE3Xdo0uJaVLwuPoo54Nv053Pc+2qdo7dqUEU96q6ND3V1A
+         kinSJ4UzVFWvs6B6a+RrbPokLvdIHNwmefMYHqEw=
+Received: by mail-il1-f177.google.com with SMTP id f15so2339709ilj.2;
+        Wed, 30 Sep 2020 09:33:53 -0700 (PDT)
+X-Gm-Message-State: AOAM532YW5LXa9/nkbgJUfk3x8k1qezK5J+Uiu7qw6/frFDCtxGw1Y7z
+        RL4MScu50XGWIV2gv1H2jp+kGO/UddQlMGnPeGU=
+X-Google-Smtp-Source: ABdhPJxXM2Kr0C/YtBqYVYU1FPUtTxS5zLOfFi5/zR5/xuZTLomxJNlDGyhFBdcKLMwwtM+l7Fs8uZnNR9LuUdTsFF0=
+X-Received: by 2002:a92:d842:: with SMTP id h2mr3008966ilq.176.1601483632564;
+ Wed, 30 Sep 2020 09:33:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CACT4Y+Zc7kD431Aed49U4R6cqzWGAWqEXevnheRHKQRQoEnh7w@mail.gmail.com>
+References: <20200821075452.1543610-1-enric.balletbo@collabora.com>
+ <99821f85-9a38-7591-f982-872603b6ce8a@collabora.com> <CAGp9Lzq-15xjvSVaEJ=2o18o-8ESGWsHf-LNAXXwKfxu4V-0NQ@mail.gmail.com>
+ <CACRpkdYPoZX1+rfJb925_+H6YXiwO26cKLpZae=_j=RQKGA0Wg@mail.gmail.com>
+In-Reply-To: <CACRpkdYPoZX1+rfJb925_+H6YXiwO26cKLpZae=_j=RQKGA0Wg@mail.gmail.com>
+From:   Sean Wang <sean.wang@kernel.org>
+Date:   Wed, 30 Sep 2020 09:33:41 -0700
+X-Gmail-Original-Message-ID: <CAGp9LzqGwvxGF_bhuyGXu1R2516x=twv1j5e0Wx0EQ7GZ4b-yQ@mail.gmail.com>
+Message-ID: <CAGp9LzqGwvxGF_bhuyGXu1R2516x=twv1j5e0Wx0EQ7GZ4b-yQ@mail.gmail.com>
+Subject: Re: [PATCH v2] pinctrl: mediatek: Free eint data on failure
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Collabora Kernel ML <kernel@collabora.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Nicolas Boichat <drinkcat@chromium.org>, hsinyi@chromium.org,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 06:23:44PM +0200, Dmitry Vyukov wrote:
-> Here is the answer:
-> https://github.com/google/syzkaller/blob/master/tools/create-gce-image.sh#L189
-> 
-> # rodata=n: mark_rodata_ro becomes very slow with KASAN (lots of PGDs)
-> 
-> I have some vague memory that there was some debug double checking
-> that pages are indeed read-only and that debug check was slow, but it
-> was always executed without rodata=n.
+On Wed, Sep 30, 2020 at 1:47 AM Linus Walleij <linus.walleij@linaro.org> wrote:
+>
+> On Sun, Sep 27, 2020 at 7:57 PM Sean Wang <sean.wang@kernel.org> wrote:
+>
+> > v2 seems the same with v1 or I was missing something.
+> >
+> > I just thought we call devm_ioremap_release to explicitly to free
+> > resource when a certain failure occurs after
+> > devm_ioremap_resource?
+>
+> What is the semantics around mtk_build_eint()?
+>
 
-Sounds like debug_checkwx() which is disabled by turning off
-CONFIG_DEBUG_WX.
+mtk_build_eint is to add external interrupt function to the
+corresponding bound pins.
+mtk pinctrl driver still can work (than means probe() successfully) to
+keep pinctrl functional even with there is an error in mtk_build_eint.
+So the patch is used to explicitly free those data on failure in
+mtk_build_eint to let unused data is being free:ed immediately.
 
-You could either disable it in your .configs or, provided there's even
-such an option, disable KASAN checking around it until that one-time
-boot test completes and then reenable KASAN.
+thanks,
+Sean
 
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+> If it is called on the probe path no explicit free:ing is
+> necessary: anytime probe() exits with an error code,
+> any devm* resources will be free:ed.
+>
+> Yours,
+> Linus Walleij
