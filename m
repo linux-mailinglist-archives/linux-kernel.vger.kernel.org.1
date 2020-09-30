@@ -2,85 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 893CC27EF47
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 18:33:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD21F27EF4C
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 18:34:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727681AbgI3Qdy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 12:33:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33014 "EHLO mail.kernel.org"
+        id S1729343AbgI3Qep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 12:34:45 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:36400 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725355AbgI3Qdy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 12:33:54 -0400
-Received: from mail-il1-f177.google.com (mail-il1-f177.google.com [209.85.166.177])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4EE232087D;
-        Wed, 30 Sep 2020 16:33:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601483633;
-        bh=1O4lOqfyVB4oTb4crlwIc0lAP0SUUw2QidU8mzgA6Xw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=TO8SqM/ZFmVTJLnCSlBppXbSIh9FIrsJ9XgLZstk7U9AvTy3zxi4LgiUe2rxc6gxT
-         7QMpdjpMM6inMlenW85XE3Xdo0uJaVLwuPoo54Nv053Pc+2qdo7dqUEU96q6ND3V1A
-         kinSJ4UzVFWvs6B6a+RrbPokLvdIHNwmefMYHqEw=
-Received: by mail-il1-f177.google.com with SMTP id f15so2339709ilj.2;
-        Wed, 30 Sep 2020 09:33:53 -0700 (PDT)
-X-Gm-Message-State: AOAM532YW5LXa9/nkbgJUfk3x8k1qezK5J+Uiu7qw6/frFDCtxGw1Y7z
-        RL4MScu50XGWIV2gv1H2jp+kGO/UddQlMGnPeGU=
-X-Google-Smtp-Source: ABdhPJxXM2Kr0C/YtBqYVYU1FPUtTxS5zLOfFi5/zR5/xuZTLomxJNlDGyhFBdcKLMwwtM+l7Fs8uZnNR9LuUdTsFF0=
-X-Received: by 2002:a92:d842:: with SMTP id h2mr3008966ilq.176.1601483632564;
- Wed, 30 Sep 2020 09:33:52 -0700 (PDT)
+        id S1725355AbgI3Qeo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 12:34:44 -0400
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1kNf3w-00GvXT-6Z; Wed, 30 Sep 2020 18:34:40 +0200
+Date:   Wed, 30 Sep 2020 18:34:40 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Calvin Johnson <calvin.johnson@oss.nxp.com>
+Cc:     Grant Likely <grant.likely@arm.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Jeremy Linton <jeremy.linton@arm.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
+        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Madalin Bucur <madalin.bucur@oss.nxp.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux.cj@gmail.com,
+        netdev@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Diana Madalina Craciun <diana.craciun@nxp.com>,
+        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: Re: [net-next PATCH v1 3/7] net: phy: Introduce fwnode_get_phy_id()
+Message-ID: <20200930163440.GR3996795@lunn.ch>
+References: <20200930160430.7908-1-calvin.johnson@oss.nxp.com>
+ <20200930160430.7908-4-calvin.johnson@oss.nxp.com>
 MIME-Version: 1.0
-References: <20200821075452.1543610-1-enric.balletbo@collabora.com>
- <99821f85-9a38-7591-f982-872603b6ce8a@collabora.com> <CAGp9Lzq-15xjvSVaEJ=2o18o-8ESGWsHf-LNAXXwKfxu4V-0NQ@mail.gmail.com>
- <CACRpkdYPoZX1+rfJb925_+H6YXiwO26cKLpZae=_j=RQKGA0Wg@mail.gmail.com>
-In-Reply-To: <CACRpkdYPoZX1+rfJb925_+H6YXiwO26cKLpZae=_j=RQKGA0Wg@mail.gmail.com>
-From:   Sean Wang <sean.wang@kernel.org>
-Date:   Wed, 30 Sep 2020 09:33:41 -0700
-X-Gmail-Original-Message-ID: <CAGp9LzqGwvxGF_bhuyGXu1R2516x=twv1j5e0Wx0EQ7GZ4b-yQ@mail.gmail.com>
-Message-ID: <CAGp9LzqGwvxGF_bhuyGXu1R2516x=twv1j5e0Wx0EQ7GZ4b-yQ@mail.gmail.com>
-Subject: Re: [PATCH v2] pinctrl: mediatek: Free eint data on failure
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Collabora Kernel ML <kernel@collabora.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Nicolas Boichat <drinkcat@chromium.org>, hsinyi@chromium.org,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200930160430.7908-4-calvin.johnson@oss.nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 1:47 AM Linus Walleij <linus.walleij@linaro.org> wrote:
->
-> On Sun, Sep 27, 2020 at 7:57 PM Sean Wang <sean.wang@kernel.org> wrote:
->
-> > v2 seems the same with v1 or I was missing something.
-> >
-> > I just thought we call devm_ioremap_release to explicitly to free
-> > resource when a certain failure occurs after
-> > devm_ioremap_resource?
->
-> What is the semantics around mtk_build_eint()?
->
+> +/* Extract the phy ID from the compatible string of the form
+> + * ethernet-phy-idAAAA.BBBB.
+> + */
+> +int fwnode_get_phy_id(struct fwnode_handle *fwnode, u32 *phy_id)
+> +{
+> +	unsigned int upper, lower;
+> +	const char *cp;
+> +	int ret;
+> +
+> +	ret = fwnode_property_read_string(fwnode, "compatible", &cp);
+> +	if (ret)
+> +		return ret;
+> +
+> +	if (sscanf(cp, "ethernet-phy-id%4x.%4x", &upper, &lower) == 2) {
+> +		*phy_id = ((upper & 0xFFFF) << 16) | (lower & 0xFFFF);
+> +		return 0;
+> +	}
+> +	return -EINVAL;
+> +}
+> +EXPORT_SYMBOL(fwnode_get_phy_id);
 
-mtk_build_eint is to add external interrupt function to the
-corresponding bound pins.
-mtk pinctrl driver still can work (than means probe() successfully) to
-keep pinctrl functional even with there is an error in mtk_build_eint.
-So the patch is used to explicitly free those data on failure in
-mtk_build_eint to let unused data is being free:ed immediately.
+Hi Calvin
 
-thanks,
-Sean
+Do you really need this? Do you have a board with a broken PHY ID?
 
-> If it is called on the probe path no explicit free:ing is
-> necessary: anytime probe() exits with an error code,
-> any devm* resources will be free:ed.
->
-> Yours,
-> Linus Walleij
+>  /**
+>   * get_phy_device - reads the specified PHY device and returns its @phy_device
+>   *		    struct
+> @@ -2866,7 +2888,15 @@ EXPORT_SYMBOL_GPL(device_phy_find_device);
+>   */
+>  struct fwnode_handle *fwnode_get_phy_node(struct fwnode_handle *fwnode)
+>  {
+> -	return fwnode_find_reference(fwnode, "phy-handle", 0);
+> +	struct fwnode_handle *phy_node;
+> +
+> +	phy_node = fwnode_find_reference(fwnode, "phy-handle", 0);
+> +	if (is_acpi_node(fwnode) || !IS_ERR(phy_node))
+> +		return phy_node;
+> +	phy_node = fwnode_find_reference(fwnode, "phy", 0);
+> +	if (IS_ERR(phy_node))
+> +		phy_node = fwnode_find_reference(fwnode, "phy-device", 0);
+> +	return phy_node;
+
+Why do you have three different ways to reference a PHY?
+
+    Andrew
