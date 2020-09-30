@@ -2,141 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 606C027EED6
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 18:19:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC0C027EED9
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 18:20:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731191AbgI3QTd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 12:19:33 -0400
-Received: from mga05.intel.com ([192.55.52.43]:64644 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726335AbgI3QTd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 12:19:33 -0400
-IronPort-SDR: mOZd7KleMWX1bWkYpmxHerA/bGtKYtk99CN90aQ6XBtj2hS2Oa+ZFfrumUaVWqCQimlpUHy2Qd
- ABtbL4aQKWRw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9760"; a="247209205"
-X-IronPort-AV: E=Sophos;i="5.77,322,1596524400"; 
-   d="scan'208";a="247209205"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2020 09:19:32 -0700
-IronPort-SDR: lQy4sSjZBrZDO0a9o6LdwCZ21ZukBxqKhZBO5e7oLF/nV7J5z3SgDsfiSxErnPIZO12UbAtp32
- +PVk782tYz/A==
-X-IronPort-AV: E=Sophos;i="5.77,322,1596524400"; 
-   d="scan'208";a="350718946"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2020 09:19:31 -0700
-Date:   Wed, 30 Sep 2020 09:19:30 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Ben Gardon <bgardon@google.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Cannon Matthews <cannonmatthews@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
-        Peter Feiner <pfeiner@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
-Subject: Re: [PATCH 09/22] kvm: mmu: Remove disallowed_hugepage_adjust
- shadow_walk_iterator arg
-Message-ID: <20200930161929.GC32672@linux.intel.com>
-References: <20200925212302.3979661-1-bgardon@google.com>
- <20200925212302.3979661-10-bgardon@google.com>
+        id S1731200AbgI3QT5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 12:19:57 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50227 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726574AbgI3QT4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 12:19:56 -0400
+Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601482793;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=uKHuH9gfvnBJHwuaFiorJLnujaRINjTiPs8W+xg/oe8=;
+        b=AE/1mRfDwqWr8kkEqDjcTR2bcyfgXyCy/VfdZhWkW+KKowaBW7W94z1kCBIT4MJv7bvp8o
+        rt4PBCTDjSE6apLvuKOHWzwiqYZS2VSpLkBawKC62vG6fxpFxCEMvLic5kxt0quKeqHl3O
+        gBDQ4PtQJwulRfvWPI0ePZ0cgZlpFgo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-253-fC1XBErsOAOFrforCjbAhA-1; Wed, 30 Sep 2020 12:19:51 -0400
+X-MC-Unique: fC1XBErsOAOFrforCjbAhA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6495C807344;
+        Wed, 30 Sep 2020 16:19:49 +0000 (UTC)
+Received: from [10.36.112.204] (ovpn-112-204.ams2.redhat.com [10.36.112.204])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1CB4878833;
+        Wed, 30 Sep 2020 16:19:45 +0000 (UTC)
+Subject: Re: [PATCH v5 03/17] device-dax/kmem: move resource name tracking to
+ drvdata
+To:     Dan Williams <dan.j.williams@intel.com>, akpm@linux-foundation.org
+Cc:     Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Brice Goglin <Brice.Goglin@inria.fr>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>, Jia He <justin.he@arm.com>,
+        Joao Martins <joao.m.martins@oracle.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        linux-mm@kvack.org, linux-nvdimm@lists.01.org,
+        linux-kernel@vger.kernel.org
+References: <160106109960.30709.7379926726669669398.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <160106111639.30709.17624822766862009183.stgit@dwillia2-desk3.amr.corp.intel.com>
+From:   David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat GmbH
+Message-ID: <316f7227-caf9-f207-1dd9-45bb4a6d0fde@redhat.com>
+Date:   Wed, 30 Sep 2020 18:19:45 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200925212302.3979661-10-bgardon@google.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <160106111639.30709.17624822766862009183.stgit@dwillia2-desk3.amr.corp.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 02:22:49PM -0700, Ben Gardon wrote:
-> In order to avoid creating executable hugepages in the TDP MMU PF
-> handler, remove the dependency between disallowed_hugepage_adjust and
-> the shadow_walk_iterator. This will open the function up to being used
-> by the TDP MMU PF handler in a future patch.
+On 25.09.20 21:11, Dan Williams wrote:
+> Towards removing the mode specific @dax_kmem_res attribute from the
+> generic 'struct dev_dax', and preparing for multi-range support, move
+> resource name tracking to driver data.  The memory for the resource name
+> needs to have its own lifetime separate from the device bind lifetime
+> for cases where the driver is unbound, but the kmem range could not be
+> unplugged from the page allocator.
 > 
-> Tested by running kvm-unit-tests and KVM selftests on an Intel Haswell
-> machine. This series introduced no new failures.
-> 
-> This series can be viewed in Gerrit at:
-> 	https://linux-review.googlesource.com/c/virt/kvm/kvm/+/2538
-> 
-> Signed-off-by: Ben Gardon <bgardon@google.com>
+> Cc: David Hildenbrand <david@redhat.com>
+> Cc: Vishal Verma <vishal.l.verma@intel.com>
+> Cc: Dave Hansen <dave.hansen@linux.intel.com>
+> Cc: Pavel Tatashin <pasha.tatashin@soleen.com>
+> Cc: Brice Goglin <Brice.Goglin@inria.fr>
+> Cc: Dave Jiang <dave.jiang@intel.com>
+> Cc: David Hildenbrand <david@redhat.com>
+> Cc: Ira Weiny <ira.weiny@intel.com>
+> Cc: Jia He <justin.he@arm.com>
+> Cc: Joao Martins <joao.m.martins@oracle.com>
+> Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> Signed-off-by: Dan Williams <dan.j.williams@intel.com>
 > ---
->  arch/x86/kvm/mmu/mmu.c         | 17 +++++++++--------
->  arch/x86/kvm/mmu/paging_tmpl.h |  3 ++-
->  2 files changed, 11 insertions(+), 9 deletions(-)
+>  drivers/dax/kmem.c |   16 +++++++++-------
+>  1 file changed, 9 insertions(+), 7 deletions(-)
 > 
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index 6344e7863a0f5..f6e6fc9959c04 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -3295,13 +3295,12 @@ static int kvm_mmu_hugepage_adjust(struct kvm_vcpu *vcpu, gfn_t gfn,
->  	return level;
->  }
+> diff --git a/drivers/dax/kmem.c b/drivers/dax/kmem.c
+> index b0d6a99cf12d..6fe2cb1c5f7c 100644
+> --- a/drivers/dax/kmem.c
+> +++ b/drivers/dax/kmem.c
+> @@ -34,7 +34,7 @@ int dev_dax_kmem_probe(struct device *dev)
+>  	struct dev_dax *dev_dax = to_dev_dax(dev);
+>  	struct range range = dax_kmem_range(dev_dax);
+>  	struct resource *new_res;
+> -	const char *new_res_name;
+> +	char *res_name;
+
+I wonder why that change ...
+
+>  	int numa_node;
+>  	int rc;
 >  
-> -static void disallowed_hugepage_adjust(struct kvm_shadow_walk_iterator it,
-> -				       gfn_t gfn, kvm_pfn_t *pfnp, int *levelp)
-> +static void disallowed_hugepage_adjust(u64 spte, gfn_t gfn, int cur_level,
-> +					kvm_pfn_t *pfnp, int *goal_levelp)
->  {
-> -	int level = *levelp;
-> -	u64 spte = *it.sptep;
-> +	int goal_level = *goal_levelp;
-
-More bikeshedding...  Can we keep 'level' and 'levelp' instead of prepending
-'goal_'?  I get the intent, but goal_level isn't necessarily accurate as the
-original requested level (referred to as req_level in the caller in kvm/queue)
-may be different than goal_level, i.e. this helper may have already decremented
-the level.  IMO it's more accurate/correct to keep the plain 'level'.
-
-> -	if (it.level == level && level > PG_LEVEL_4K &&
-> +	if (cur_level == goal_level && goal_level > PG_LEVEL_4K &&
->  	    is_nx_huge_page_enabled() &&
->  	    is_shadow_present_pte(spte) &&
->  	    !is_large_pte(spte)) {
-> @@ -3312,9 +3311,10 @@ static void disallowed_hugepage_adjust(struct kvm_shadow_walk_iterator it,
->  		 * patching back for them into pfn the next 9 bits of
->  		 * the address.
->  		 */
-> -		u64 page_mask = KVM_PAGES_PER_HPAGE(level) - KVM_PAGES_PER_HPAGE(level - 1);
-> +		u64 page_mask = KVM_PAGES_PER_HPAGE(goal_level) -
-> +				KVM_PAGES_PER_HPAGE(goal_level - 1);
->  		*pfnp |= gfn & page_mask;
-> -		(*levelp)--;
-> +		(*goal_levelp)--;
+> @@ -51,15 +51,15 @@ int dev_dax_kmem_probe(struct device *dev)
+>  		return -EINVAL;
 >  	}
->  }
 >  
-> @@ -3339,7 +3339,8 @@ static int __direct_map(struct kvm_vcpu *vcpu, gpa_t gpa, int write,
->  		 * We cannot overwrite existing page tables with an NX
->  		 * large page, as the leaf could be executable.
->  		 */
-> -		disallowed_hugepage_adjust(it, gfn, &pfn, &level);
-> +		disallowed_hugepage_adjust(*it.sptep, gfn, it.level,
-> +					   &pfn, &level);
+> -	new_res_name = kstrdup(dev_name(dev), GFP_KERNEL);
+> -	if (!new_res_name)
+> +	res_name = kstrdup(dev_name(dev), GFP_KERNEL);
+> +	if (!res_name)
+>  		return -ENOMEM;
 >  
->  		base_gfn = gfn & ~(KVM_PAGES_PER_HPAGE(it.level) - 1);
->  		if (it.level == level)
-> diff --git a/arch/x86/kvm/mmu/paging_tmpl.h b/arch/x86/kvm/mmu/paging_tmpl.h
-> index 4dd6b1e5b8cf7..6a8666cb0d24b 100644
-> --- a/arch/x86/kvm/mmu/paging_tmpl.h
-> +++ b/arch/x86/kvm/mmu/paging_tmpl.h
-> @@ -690,7 +690,8 @@ static int FNAME(fetch)(struct kvm_vcpu *vcpu, gpa_t addr,
->  		 * We cannot overwrite existing page tables with an NX
->  		 * large page, as the leaf could be executable.
->  		 */
-> -		disallowed_hugepage_adjust(it, gw->gfn, &pfn, &hlevel);
-> +		disallowed_hugepage_adjust(*it.sptep, gw->gfn, it.level,
-> +					   &pfn, &hlevel);
+>  	/* Region is permanently reserved if hotremove fails. */
+> -	new_res = request_mem_region(range.start, range_len(&range), new_res_name);
+> +	new_res = request_mem_region(range.start, range_len(&range), res_name);
+>  	if (!new_res) {
+>  		dev_warn(dev, "could not reserve region [%#llx-%#llx]\n", range.start, range.end);
+> -		kfree(new_res_name);
+> +		kfree(res_name);
+>  		return -EBUSY;
+>  	}
 >  
->  		base_gfn = gw->gfn & ~(KVM_PAGES_PER_HPAGE(it.level) - 1);
->  		if (it.level == hlevel)
-> -- 
-> 2.28.0.709.gb0816b6eb0-goog
+> @@ -80,9 +80,11 @@ int dev_dax_kmem_probe(struct device *dev)
+>  	if (rc) {
+>  		release_resource(new_res);
+>  		kfree(new_res);
+> -		kfree(new_res_name);
+> +		kfree(res_name);
+>  		return rc;
+>  	}
+> +
+> +	dev_set_drvdata(dev, res_name);
+>  	dev_dax->dax_kmem_res = new_res;
+>  
+>  	return 0;
+> @@ -94,7 +96,7 @@ static int dev_dax_kmem_remove(struct device *dev)
+>  	struct dev_dax *dev_dax = to_dev_dax(dev);
+>  	struct range range = dax_kmem_range(dev_dax);
+>  	struct resource *res = dev_dax->dax_kmem_res;
+> -	const char *res_name = res->name;
+> +	const char *res_name = dev_get_drvdata(dev);
+
+... because here you're back to "const".
+
+>  	int rc;
+>  
+>  	/*
 > 
+
+I do wonder if it wouldn't all be easier to just have some
+
+struct {
+	const char *res_name;
+	struct resource *res;
+};
+
+allocating that and storing it as drvdata. But let's see what the next
+patch brings :)
+
+-- 
+Thanks,
+
+David / dhildenb
+
