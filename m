@@ -2,84 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0FB627F12D
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 20:17:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABA9B27F10F
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 20:09:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728496AbgI3SR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 14:17:57 -0400
-Received: from mail-oi1-f196.google.com ([209.85.167.196]:41151 "EHLO
-        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725355AbgI3SR5 (ORCPT
+        id S1728200AbgI3SJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 14:09:28 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:45712 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726476AbgI3SJ2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 14:17:57 -0400
-Received: by mail-oi1-f196.google.com with SMTP id x69so2726712oia.8;
-        Wed, 30 Sep 2020 11:17:55 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=nyVHCEZSb4xAzOTonu3fC1754/xWgp4JRFM8+C/J4m4=;
-        b=oJ8b6SEUln5CUgCVZM9WdFJyp+ISEwHcFRJ2ofBfMe2p9dgWOoj1jzky6D1mpvFCDX
-         nKG+fBMxcgglxc49EsgZNIqL5I4UcEI/OmdQHdxtiCWjJrFfJ16MQ2nR0xZ7LEqRuH8I
-         lbzM2Ly6jakdMUbRczXL3g3eQWyLONVIL9VRiD8VOOTlScj7VD3zJuDGcUV8chCIfpZr
-         VD8Z/4kTmVn6uObjNYeClVWWJCF10pvXWoU5EsY3cQwEZnjGeDBst5q869yTcHf01aTR
-         jH0GfG9DbM77bE5S4XsBpCDxsdbZLSHnpZafexwzjT5GSwywVDUppFQFvzozTGU8E0R7
-         7ngg==
-X-Gm-Message-State: AOAM5335oKPr4Tyfbuhl9MKSgrGPPNQvveqkCcEZjyj7pK8SCevne9bE
-        I0nGA89gv2WlGL5pRe2HBA==
-X-Google-Smtp-Source: ABdhPJw3WF6ewaZyUPa2K9FB5ROq3VPG9k/hedYrUzbsxjGrH/jCmJv84HB9KQVTHE3M3Y/gLXEwcw==
-X-Received: by 2002:aca:f412:: with SMTP id s18mr2181254oih.100.1601489874677;
-        Wed, 30 Sep 2020 11:17:54 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id m22sm539978otf.52.2020.09.30.11.17.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Sep 2020 11:17:53 -0700 (PDT)
-Received: (nullmailer pid 3170463 invoked by uid 1000);
-        Wed, 30 Sep 2020 18:17:53 -0000
-Date:   Wed, 30 Sep 2020 13:17:53 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
-Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Vinod Koul <vkoul@kernel.org>,
-        Tomasz Maciej Nowak <tmn505@gmail.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Marek =?iso-8859-1?Q?Beh=FAn?= <marek.behun@nic.cz>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kishon Vijay Abraham I <kishon@ti.com>
-Subject: Re: [PATCH 2/2] PCI: aardvark: Fix initialization with old Marvell's
- Arm Trusted Firmware
-Message-ID: <20200930181753.GA3170411@bogus>
-References: <20200902144344.16684-1-pali@kernel.org>
- <20200902144344.16684-3-pali@kernel.org>
+        Wed, 30 Sep 2020 14:09:28 -0400
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08UI01dV050533;
+        Wed, 30 Sep 2020 18:09:18 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=UEaRiYRBxUeUBHTLs10lcQvjesJtGuVb0ziBQ7IPbec=;
+ b=VarIvOdWDEDO1H8/IlOUyZWRpyoJ8CieyKlwQ/sjnuOx1B9Yf78LOfRaU0dePDiKmWvp
+ VgbV0kYlAsSLIJmD0RMzMLEvAAO4/GoRIeKGt6S9JY5VDeNB4Oun901CojDxE2l1r1sN
+ MRHq5UdnbGazZs6J/EVhSbHbTXn0fqq1quQoWHBFhvvD+HT3vjuUi9BcxmB9XzIE3RDS
+ jvDHXijWiqjDBDkEdaaBAtxlRCAku9LYyPKy/mnAtLRCuI7YqXPUVuGE+O+vkMzR4MI0
+ kYOmWJX4rki+sbBWr4Ct1pUyk95olzCtu3w+dD40gnx+Wf4jdNvh4ty6chXJI++VSA+b gA== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2130.oracle.com with ESMTP id 33su5b24b2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 30 Sep 2020 18:09:17 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08UI4tNl093183;
+        Wed, 30 Sep 2020 18:09:17 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3030.oracle.com with ESMTP id 33uv2frmdk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 30 Sep 2020 18:09:17 +0000
+Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 08UI9Gc7025354;
+        Wed, 30 Sep 2020 18:09:16 GMT
+Received: from ca-dmjordan1.us.oracle.com (/10.211.9.48)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 30 Sep 2020 11:09:16 -0700
+Date:   Wed, 30 Sep 2020 14:18:23 -0400
+From:   Daniel Jordan <daniel.m.jordan@oracle.com>
+To:     Corentin Labbe <clabbe.montjoie@gmail.com>
+Cc:     Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Will Deacon <will@kernel.org>, tj@kernel.org,
+        jiangshanlai@gmail.com, mark.rutland@arm.com,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-crypto@vger.kernel.org, Robin Murphy <robin.murphy@arm.com>
+Subject: Re: WARNING: at kernel/workqueue.c:1473 __queue_work+0x3b8/0x3d0
+Message-ID: <20200930181823.vq3up3vcxau7nf3y@ca-dmjordan1.us.oracle.com>
+References: <20200218163504.y5ofvaejleuf5tbh@ca-dmjordan1.us.oracle.com>
+ <20200220090350.GA19858@Red>
+ <20200221174223.r3y6tugavp3k5jdl@ca-dmjordan1.us.oracle.com>
+ <20200228123311.GE3275@willie-the-truck>
+ <20200228153331.uimy62rat2tdxxod@ca-dmjordan1.us.oracle.com>
+ <20200301175351.GA11684@Red>
+ <20200302172510.fspofleipqjcdxak@ca-dmjordan1.us.oracle.com>
+ <20200303074819.GB9935@Red>
+ <20200303213111.op2vtxfmwtn7i6db@ca-dmjordan1.us.oracle.com>
+ <20200925181203.GA26463@Red>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200902144344.16684-3-pali@kernel.org>
+In-Reply-To: <20200925181203.GA26463@Red>
+User-Agent: NeoMutt/20180716
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9760 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0 adultscore=0
+ suspectscore=0 malwarescore=0 bulkscore=0 mlxlogscore=999 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009300144
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9760 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=0
+ lowpriorityscore=0 spamscore=0 clxscore=1011 mlxscore=0 impostorscore=0
+ malwarescore=0 phishscore=0 adultscore=0 bulkscore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009300143
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 02 Sep 2020 16:43:44 +0200, Pali Rohár wrote:
-> Old ATF automatically power on pcie phy and does not provide SMC call for
-> phy power on functionality which leads to aardvark initialization failure:
+On Fri, Sep 25, 2020 at 08:12:03PM +0200, Corentin Labbe wrote:
+> On Tue, Mar 03, 2020 at 04:31:11PM -0500, Daniel Jordan wrote:
+> > On Tue, Mar 03, 2020 at 08:48:19AM +0100, Corentin Labbe wrote:
+> > > The patch fix the issue. Thanks!
+> > 
+> > Thanks for trying it!
+> > 
+> > > So you could add:
+> > > Reported-by: Corentin Labbe <clabbe.montjoie@gmail.com>
+> > > Tested-by: Corentin Labbe <clabbe.montjoie@gmail.com>
+> > > Tested-on: sun50i-h6-pine-h64
+> > > Tested-on: imx8mn-ddr4-evk
+> > > Tested-on: sun50i-a64-bananapi-m64
+> > 
+> > I definitely will if the patch turns out to be the right fix.
+> > 
+> > thanks,
+> > Daniel
 > 
-> [    0.330134] mvebu-a3700-comphy d0018300.phy: unsupported SMC call, try updating your firmware
-> [    0.338846] phy phy-d0018300.phy.1: phy poweron failed --> -95
-> [    0.344753] advk-pcie d0070000.pcie: Failed to initialize PHY (-95)
-> [    0.351160] advk-pcie: probe of d0070000.pcie failed with error -95
+> Hello
 > 
-> This patch fixes above failure by ignoring 'not supported' error in
-> aardvark driver. In this case it is expected that phy is already power on.
-> 
-> Signed-off-by: Pali Rohár <pali@kernel.org>
-> Fixes: 366697018c9a ("PCI: aardvark: Add PHY support")
-> ---
->  drivers/pci/controller/pci-aardvark.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
+> I forgot about this problem since the patch is in my branch since.
+> But a co-worker hit this problem recently and without this patch my CI still have it.
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Hi,
+
+Sure, I'm happy to help get a fix merged, but let's nail down what the problem
+is first.  It'd be useful to have the things requested here:
+
+https://lore.kernel.org/linux-crypto/20200303213017.tanczhqd3nhpeeak@ca-dmjordan1.us.oracle.com/
+
+thanks,
+Daniel
