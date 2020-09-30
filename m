@@ -2,113 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7532727E260
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 09:13:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D383027E262
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 09:14:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728268AbgI3HNi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 03:13:38 -0400
-Received: from mga11.intel.com ([192.55.52.93]:58566 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725777AbgI3HNi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 03:13:38 -0400
-IronPort-SDR: dZExfxSzhfoay5wjGTkJsluQo3h+LxLvNsK5EHpIT7Pn44EzVZqfucmCB+X1CDlBkiNwPk19PT
- JFZcQhtgomfA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9759"; a="159718663"
-X-IronPort-AV: E=Sophos;i="5.77,321,1596524400"; 
-   d="scan'208";a="159718663"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2020 00:13:32 -0700
-IronPort-SDR: 0eVKIvdJYnys5eG7EL7geLBzpBXRZBYMoVWTjiAOjMpjonTK4PU+qhO/a8pwAH+B80mYHFudQk
- Bg8dy4uuK4SQ==
-X-IronPort-AV: E=Sophos;i="5.77,321,1596524400"; 
-   d="scan'208";a="294522431"
-Received: from gliakhov-mobl2.ger.corp.intel.com (HELO ubuntu) ([10.252.32.32])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2020 00:13:30 -0700
-Date:   Wed, 30 Sep 2020 09:13:27 +0200
-From:   Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc:     ohad@wizery.com, bjorn.andersson@linaro.org, loic.pallardy@st.com,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 10/10] rpmsg: ns: Make Name service module transport
- agnostic
-Message-ID: <20200930071327.GG20683@ubuntu>
-References: <20200922001000.899956-1-mathieu.poirier@linaro.org>
- <20200922001000.899956-11-mathieu.poirier@linaro.org>
+        id S1728243AbgI3HOx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 03:14:53 -0400
+Received: from 212.199.177.27.static.012.net.il ([212.199.177.27]:56347 "EHLO
+        herzl.nuvoton.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725777AbgI3HOx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 03:14:53 -0400
+Received: from taln60.nuvoton.co.il (ntil-fw [212.199.177.25])
+        by herzl.nuvoton.co.il (8.13.8/8.13.8) with ESMTP id 08U7DuH7016068;
+        Wed, 30 Sep 2020 10:13:56 +0300
+Received: by taln60.nuvoton.co.il (Postfix, from userid 20088)
+        id D7798639D5; Wed, 30 Sep 2020 10:13:55 +0300 (IDT)
+From:   Tali Perry <tali.perry1@gmail.com>
+To:     wsa@kernel.org, andriy.shevchenko@linux.intel.com, xqiu@google.com,
+        kunyi@google.com, benjaminfair@google.com, avifishman70@gmail.com,
+        joel@jms.id.au, tmaimon77@gmail.com
+Cc:     linux-i2c@vger.kernel.org, openbmc@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, Tali Perry <tali.perry1@gmail.com>
+Subject: [PATCH v1] i2c: npcm7xx: Support changing bus speed using debugfs.
+Date:   Wed, 30 Sep 2020 10:13:42 +0300
+Message-Id: <20200930071342.98691-1-tali.perry1@gmail.com>
+X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200922001000.899956-11-mathieu.poirier@linaro.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 06:10:00PM -0600, Mathieu Poirier wrote:
-> Make name service module transport agnostic by using the rpmsg
-> device specific byte conversion routine.
-> 
-> Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-> ---
->  drivers/rpmsg/rpmsg_ns.c | 10 ++++------
->  include/linux/rpmsg_ns.h |  4 ++--
->  2 files changed, 6 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/rpmsg/rpmsg_ns.c b/drivers/rpmsg/rpmsg_ns.c
-> index b3318bf84433..1df3aaadfe10 100644
-> --- a/drivers/rpmsg/rpmsg_ns.c
-> +++ b/drivers/rpmsg/rpmsg_ns.c
-> @@ -18,9 +18,7 @@ static int rpmsg_ns_cb(struct rpmsg_device *rpdev, void *data, int len,
->  	struct rpmsg_ns_msg *msg = data;
->  	struct rpmsg_device *newch;
->  	struct rpmsg_channel_info chinfo;
-> -	struct virtio_rpmsg_channel *vch = to_virtio_rpmsg_channel(rpdev);
-> -	struct virtproc_info *vrp = vch->vrp;
-> -	struct device *dev = &vrp->vdev->dev;
-> +	struct device *dev = &rpdev->dev;
->  	int ret;
->  
->  #if defined(CONFIG_DYNAMIC_DEBUG)
-> @@ -38,13 +36,13 @@ static int rpmsg_ns_cb(struct rpmsg_device *rpdev, void *data, int len,
->  
->  	strncpy(chinfo.name, msg->name, sizeof(chinfo.name));
->  	chinfo.src = RPMSG_ADDR_ANY;
-> -	chinfo.dst = virtio32_to_cpu(vrp->vdev, msg->addr);
-> +	chinfo.dst = rpmsg32_to_cpu(rpdev, msg->addr);
->  
->  	dev_info(dev, "%sing channel %s addr 0x%x\n",
-> -		 virtio32_to_cpu(vrp->vdev, msg->flags) & RPMSG_NS_DESTROY ?
-> +		 rpmsg32_to_cpu(rpdev, msg->flags) & RPMSG_NS_DESTROY ?
->  		 "destroy" : "creat", msg->name, chinfo.dst);
->  
-> -	if (virtio32_to_cpu(vrp->vdev, msg->flags) & RPMSG_NS_DESTROY) {
-> +	if (rpmsg32_to_cpu(rpdev, msg->flags) & RPMSG_NS_DESTROY) {
->  		ret = rpmsg_release_channel(rpdev, &chinfo);
->  		if (ret)
->  			dev_err(dev, "rpmsg_destroy_channel failed: %d\n", ret);
-> diff --git a/include/linux/rpmsg_ns.h b/include/linux/rpmsg_ns.h
-> index aabc6c3c0d6d..9f3030b2145b 100644
-> --- a/include/linux/rpmsg_ns.h
-> +++ b/include/linux/rpmsg_ns.h
-> @@ -41,8 +41,8 @@ struct rpmsg_hdr {
->   */
->  struct rpmsg_ns_msg {
->  	char name[RPMSG_NAME_SIZE];
-> -	__virtio32 addr;
-> -	__virtio32 flags;
-> +	u32 addr;
-> +	u32 flags;
+Systems that can dinamically add and remove slave devices
+often need to change the bus speed in runtime.
+This patch exposes the bus frequency to the user.
+This feature can also be used for test automation.
 
-These aren't (necessarily) native endianness, right? Don't they deserve a 
-separate type? __rpmsg32?
+Fixes: 56a1485b102e (i2c: npcm7xx: Add Nuvoton NPCM I2C controller driver)
+Signed-off-by: Tali Perry <tali.perry1@gmail.com>
+---
+ drivers/i2c/busses/i2c-npcm7xx.c | 36 ++++++++++++++++++++++++++++++++
+ 1 file changed, 36 insertions(+)
 
-Thanks
-Guennadi
+diff --git a/drivers/i2c/busses/i2c-npcm7xx.c b/drivers/i2c/busses/i2c-npcm7xx.c
+index 2ad166355ec9..44e2340c1893 100644
+--- a/drivers/i2c/busses/i2c-npcm7xx.c
++++ b/drivers/i2c/busses/i2c-npcm7xx.c
+@@ -2208,6 +2208,41 @@ static const struct i2c_algorithm npcm_i2c_algo = {
+ /* i2c debugfs directory: used to keep health monitor of i2c devices */
+ static struct dentry *npcm_i2c_debugfs_dir;
+ 
++static int i2c_speed_get(void *data, u64 *val)
++{
++	struct npcm_i2c *bus = data;
++
++	*val = (u64)bus->bus_freq;
++	return 0;
++}
++
++static int i2c_speed_set(void *data, u64 val)
++{
++	struct npcm_i2c *bus = data;
++	int ret;
++
++	if (val < (u64)I2C_FREQ_MIN_HZ || val > (u64)I2C_FREQ_MAX_HZ)
++		return -EINVAL;
++
++	if (val == (u64)bus->bus_freq)
++		return 0;
++
++	i2c_lock_bus(&bus->adap, I2C_LOCK_ROOT_ADAPTER);
++
++	npcm_i2c_int_enable(bus, false);
++
++	ret = npcm_i2c_init_module(bus, I2C_MASTER, (u32)val);
++
++	i2c_unlock_bus(&bus->adap, I2C_LOCK_ROOT_ADAPTER);
++
++	if (ret)
++		return -EAGAIN;
++
++	return 0;
++}
++
++DEFINE_DEBUGFS_ATTRIBUTE(i2c_clock_ops, i2c_speed_get, i2c_speed_set, "%lld\n");
++
+ static void npcm_i2c_init_debugfs(struct platform_device *pdev,
+ 				  struct npcm_i2c *bus)
+ {
+@@ -2223,6 +2258,7 @@ static void npcm_i2c_init_debugfs(struct platform_device *pdev,
+ 	debugfs_create_u64("rec_succ_cnt", 0444, d, &bus->rec_succ_cnt);
+ 	debugfs_create_u64("rec_fail_cnt", 0444, d, &bus->rec_fail_cnt);
+ 	debugfs_create_u64("timeout_cnt", 0444, d, &bus->timeout_cnt);
++	debugfs_create_file("i2c_speed", 0644, d, bus, &i2c_clock_ops);
+ 
+ 	bus->debugfs = d;
+ }
 
->  } __packed;
->  
->  /**
-> -- 
-> 2.25.1
-> 
+base-commit: 06d56c38d7d411c162e4d406a9864bed32e30e61
+-- 
+2.22.0
+
