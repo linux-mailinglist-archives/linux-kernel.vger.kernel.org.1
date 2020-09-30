@@ -2,93 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9ED027EB2D
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 16:42:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7ECE27EB37
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 16:44:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730641AbgI3Omn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 10:42:43 -0400
-Received: from mga05.intel.com ([192.55.52.43]:53894 "EHLO mga05.intel.com"
+        id S1730538AbgI3Oot (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 10:44:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46676 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727426AbgI3Omn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 10:42:43 -0400
-IronPort-SDR: jcRoI6q5SGmoDIK/6abdi1VB7I6Kh25udhnZq4yTEJqJ3If5t4ZiOrdzgQQt7QjkCim6j6gpGK
- ZrgMgUr6UZbw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9759"; a="247188301"
-X-IronPort-AV: E=Sophos;i="5.77,322,1596524400"; 
-   d="scan'208";a="247188301"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2020 07:42:42 -0700
-IronPort-SDR: UoY+gP3YeAAFCcBqgTkKLX15Btld3HEbt6FeqVgXAaTx0FHtAsUUmMXWae7kd7cAYBwZsAlTl2
- CqM8ZjKSfolA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,322,1596524400"; 
-   d="scan'208";a="339111960"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga004.fm.intel.com with ESMTP; 30 Sep 2020 07:42:42 -0700
-Received: from [10.255.228.167] (kliang2-MOBL.ccr.corp.intel.com [10.255.228.167])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1726680AbgI3Ooo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 10:44:44 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by linux.intel.com (Postfix) with ESMTPS id 9670B58033E;
-        Wed, 30 Sep 2020 07:42:40 -0700 (PDT)
-Subject: Re: [PATCH V8 1/4] perf/core: Add PERF_SAMPLE_DATA_PAGE_SIZE
-To:     Stephane Eranian <eranian@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        kirill.shutemov@linux.intel.com,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        benh@kernel.crashing.org, Paul Mackerras <paulus@samba.org>
-References: <20200921152653.3924-1-kan.liang@linux.intel.com>
- <20200921152653.3924-2-kan.liang@linux.intel.com>
- <CABPqkBRYzXH-76BZ3DdxYp7bdyPcr3_WxuxOsJw=1YPE9EwZaw@mail.gmail.com>
-From:   "Liang, Kan" <kan.liang@linux.intel.com>
-Message-ID: <4e974520-6d0f-68af-7eb8-fa52d95ba77b@linux.intel.com>
-Date:   Wed, 30 Sep 2020 10:42:38 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        by mail.kernel.org (Postfix) with ESMTPSA id 63C3C206FC;
+        Wed, 30 Sep 2020 14:44:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601477083;
+        bh=qt7pfXhhMPetwSOE19ksOBdlPYEQgZvgP2oT8Ll9FWI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=wDnGt683QhtK7gZSqDOgZ5zdJ+MlWU+hNiGXg0fuHDa/C/Te5hWFf5b9kXC1qbay3
+         HzVcB6rR3eUFAW2m9hG8O//OxXOtVP2B7k3E90Tq6w7J/WeCepjlsttp/f8yosuPjS
+         BPbO0/i4rJo/GNqZ/w+aQ6ZHNLUlgrShAlWJzwdk=
+Date:   Wed, 30 Sep 2020 15:43:44 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc:     Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        "wuxu . wu" <wuxu.wu@huawei.com>, Feng Tang <feng.tang@intel.com>,
+        Rob Herring <robh+dt@kernel.org>, linux-spi@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 00/30] spi: dw: Add full Baikal-T1 SPI Controllers support
+Message-ID: <20200930144344.GJ4974@sirena.org.uk>
+References: <20200920112914.26501-1-Sergey.Semin@baikalelectronics.ru>
+ <20200929144351.GH4799@sirena.org.uk>
+ <20200929224303.65awobe5dzwc2p4f@mobilestation>
+ <20200930110403.GD4974@sirena.org.uk>
+ <20200930131115.2lizge2ff64jbgpn@mobilestation>
 MIME-Version: 1.0
-In-Reply-To: <CABPqkBRYzXH-76BZ3DdxYp7bdyPcr3_WxuxOsJw=1YPE9EwZaw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="zOcTNEe3AzgCmdo9"
+Content-Disposition: inline
+In-Reply-To: <20200930131115.2lizge2ff64jbgpn@mobilestation>
+X-Cookie: Doing gets it done.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--zOcTNEe3AzgCmdo9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On 9/30/2020 3:15 AM, Stephane Eranian wrote:
->> +static u64 perf_get_page_size(unsigned long addr)
->> +{
->> +       unsigned long flags;
->> +       u64 size;
->> +
->> +       if (!addr)
->> +               return 0;
->> +
->> +       /*
->> +        * Software page-table walkers must disable IRQs,
->> +        * which prevents any tear down of the page tables.
->> +        */
->> +       local_irq_save(flags);
->> +
->> +       size = __perf_get_page_size(current->active_mm, addr);
->> +
-> When I tested on my kernel, it panicked because I suspect
-> current->active_mm could be NULL. Adding a check for NULL avoided the
-> problem. But I suspect this is not the correct solution.
-> 
+On Wed, Sep 30, 2020 at 04:11:15PM +0300, Serge Semin wrote:
+> On Wed, Sep 30, 2020 at 12:04:04PM +0100, Mark Brown wrote:
 
-I guess the NULL active_mm should be a rare case. If so, I think it's 
-not bad to add a check and return 0 page size.
+> > Not all of the first 9, IIRC I skipped one I had comments on.
 
+> Yes, you skipped one and I've already given you my response on your comment
+> about it: [PATCH 02/30] spi: dw: Use ternary op to init set_cs callback
+> So have I responded to your comment on another patch:
+> [PATCH 11/30] spi: dw: Add DWC SSI capability .
 
-Thanks,
-Kan
+> I will need a response from you about them to go further with this patchset.
+
+I'm not sure I saw any concrete questions with those?
+
+--zOcTNEe3AzgCmdo9
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl90maAACgkQJNaLcl1U
+h9BkJQf/YxSDENRYeU12odA8T9vIC5Bx+tNv9uayK8uZGOrRDPNOsnb+w0gvuCP4
+s+zg6vQ5GVqZ5er1c4w7fUT7OGvj0EV+ofIEcpc3bBcWMFxxvCb0nXr2269jWYxU
+1ACB6DM/GRz7JUXxTIiIvfWa0JPJSY3ynnhf5Ke2mpDeGZmx3gXTqu8tyKJUy1sC
+H7VpYtc8ZpiQZJ9U0XvtTfj9P/VqQTuzV+7Ha//yf0nGpWcMRWjTsCvxNoXbD4GR
+ecDq7NDfZY2q+iW5ao9YrCAeyGiDStUpBS/a375LeHY796IpiIn1tsi9jvvtfIIa
+U9JXWH2OujGDhptZwqh4uN7nFV/BEw==
+=FgSu
+-----END PGP SIGNATURE-----
+
+--zOcTNEe3AzgCmdo9--
