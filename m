@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01BD427E9A7
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 15:27:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0562C27E9A1
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 15:27:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730571AbgI3N0y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 09:26:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38716 "EHLO mail.kernel.org"
+        id S1730541AbgI3N0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 09:26:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39342 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730262AbgI3NZW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1730270AbgI3NZW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 30 Sep 2020 09:25:22 -0400
 Received: from mail.kernel.org (unknown [95.90.213.196])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A19DD23A63;
+        by mail.kernel.org (Postfix) with ESMTPSA id B87D423A8B;
         Wed, 30 Sep 2020 13:25:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1601472321;
-        bh=d71iacXbZw2ABLpWaZX1uaqcv45PDLhlX1j5I6cVz50=;
+        bh=WjAErSinh3LCU2cyrsPuXTAB9dQw/nctDKJlUq9y1yo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=N3GN4woodmpXnRqWfgLz7iGwqQXaLzpsZpksIC2ylsHonzj+OEZZd4kSi0+E/VkpY
-         CzfsvRiQxOEW2eWH+0SLbYDN2x9EF3vjlIDRXyTwvBskVF/YXWawXcaG4YyfbO47aJ
-         jRePkCVVACedym/XUk1zX5IcEflV9U0g7Om9/QNk=
+        b=ibA2bI3nOwDT+lt0wCMC/1YzEu4Xcz/gcvT2ZVN1wQTcfjSAD5/WAGf6mRyUKrtq0
+         TrBBJ5N/eYBJbt34yZNu//6s7DdOvX/nJcPogNE+OMJjbInydwR/YlVTSaC54woTwX
+         VgjHKHy/efAx5DDSUXCxKmXIg4EwrFeH0lMUOp0o=
 Received: from mchehab by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1kNc6h-001XLC-Rr; Wed, 30 Sep 2020 15:25:19 +0200
+        id 1kNc6h-001XLE-Sz; Wed, 30 Sep 2020 15:25:19 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
         Jonathan Corbet <corbet@lwn.net>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v4 48/52] docs: basics.rst: avoid duplicated C function declaration
-Date:   Wed, 30 Sep 2020 15:25:11 +0200
-Message-Id: <de59e69f1a140c6cf74623d7c5d27b7fbc5a1305.1601467849.git.mchehab+huawei@kernel.org>
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Tejun Heo <tj@kernel.org>, linux-kernel@vger.kernel.org
+Subject: [PATCH v4 49/52] workqueue: fix a kernel-doc warning
+Date:   Wed, 30 Sep 2020 15:25:12 +0200
+Message-Id: <1d025719a6f6a55fcb5f8a9c382ed846cec9a4d9.1601467849.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1601467849.git.mchehab+huawei@kernel.org>
 References: <cover.1601467849.git.mchehab+huawei@kernel.org>
@@ -44,55 +45,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-pci_device_id is already documented at pci.rst:
+As warned by Sphinx:
 
-	./Documentation/driver-api/basics.rst: WARNING: Duplicate C declaration, also defined in 'PCI/pci'.
-	Declaration is 'pci_device_id'.
+	./Documentation/core-api/workqueue:400: ./kernel/workqueue.c:1218: WARNING: Unexpected indentation.
 
-The kstrtol and kstrtoul are already at kernel-api:
-
-	./Documentation/driver-api/basics.rst: WARNING: Duplicate C declaration, also defined in 'core-api/kernel-api'.
-	Declaration is 'kstrtoul'.
-	./Documentation/driver-api/basics.rst: WARNING: Duplicate C declaration, also defined in 'core-api/kernel-api'.
-	Declaration is 'kstrtol'.
-
-And the printk is already defined at printk-basics:
-
-	./Documentation/driver-api/basics.rst: WARNING: Duplicate C declaration, also defined in 'core-api/printk-basics'.
-	Declaration is 'printk'.
-
-So, exclude those identifiers from basirs.rst.
+the return code table is currently not recognized, as it lacks
+markups.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- Documentation/driver-api/basics.rst | 4 ++++
- 1 file changed, 4 insertions(+)
+ kernel/workqueue.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/Documentation/driver-api/basics.rst b/Documentation/driver-api/basics.rst
-index 63bbe3ed5e76..3e2dae954898 100644
---- a/Documentation/driver-api/basics.rst
-+++ b/Documentation/driver-api/basics.rst
-@@ -12,6 +12,8 @@ Driver device table
- 
- .. kernel-doc:: include/linux/mod_devicetable.h
-    :internal:
-+   :no-identifiers: pci_device_id
-+
- 
- Delaying, scheduling, and timer routines
- ----------------------------------------
-@@ -96,9 +98,11 @@ Kernel utility functions
- 
- .. kernel-doc:: include/linux/kernel.h
-    :internal:
-+   :no-identifiers: kstrtol kstrtoul
- 
- .. kernel-doc:: kernel/printk/printk.c
-    :export:
-+   :no-identifiers: printk
- 
- .. kernel-doc:: kernel/panic.c
-    :export:
+diff --git a/kernel/workqueue.c b/kernel/workqueue.c
+index c41c3c17b86a..e07d37396dfe 100644
+--- a/kernel/workqueue.c
++++ b/kernel/workqueue.c
+@@ -1212,11 +1212,14 @@ static void pwq_dec_nr_in_flight(struct pool_workqueue *pwq, int color)
+  * stable state - idle, on timer or on worklist.
+  *
+  * Return:
++ *
++ *  ========	================================================================
+  *  1		if @work was pending and we successfully stole PENDING
+  *  0		if @work was idle and we claimed PENDING
+  *  -EAGAIN	if PENDING couldn't be grabbed at the moment, safe to busy-retry
+  *  -ENOENT	if someone else is canceling @work, this state may persist
+  *		for arbitrarily long
++ *  ========	================================================================
+  *
+  * Note:
+  * On >= 0 return, the caller owns @work's PENDING bit.  To avoid getting
 -- 
 2.26.2
 
