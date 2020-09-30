@@ -2,153 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A417727EEBD
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 18:17:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68CE127EEC2
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 18:17:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728991AbgI3QRV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 12:17:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49812 "EHLO
+        id S1731022AbgI3QRp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 12:17:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725800AbgI3QRV (ORCPT
+        with ESMTP id S1725800AbgI3QRp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 12:17:21 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 471F6C061755
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 09:17:21 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f092a00869c7b979af15d7f.dip0.t-ipconnect.de [IPv6:2003:ec:2f09:2a00:869c:7b97:9af1:5d7f])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id C2CE41EC0434;
-        Wed, 30 Sep 2020 18:17:19 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1601482639;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=Q/B7AUvp/TsC2+O6Nnel6C03UUi8HMFCMeMJsOJ3dPY=;
-        b=D5HccgaqJ80MY32/8LwOL5NPvPB59P5PTMnp37c6TY4Tdx3J7r03G3LNjTPpB2tFp9Vlg2
-        uj7o9Qp8V7OuXYX2hoB1tATCbqGX12X4xMU+zi6AB1uGTtbIqEcF/u2qXAIwdGGfpJguk0
-        cobHtYeHlRVwtrPgNrBA/SxFwjdyBPA=
-Date:   Wed, 30 Sep 2020 18:17:11 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        syzbot <syzbot+ce179bc99e64377c24bc@syzkaller.appspotmail.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Jiri Olsa <jolsa@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        syzkaller <syzkaller@googlegroups.com>
-Subject: Re: general protection fault in perf_misc_flags
-Message-ID: <20200930161711.GH6810@zn.tnic>
-References: <20200927145737.GA4746@zn.tnic>
- <CACT4Y+Zxt3-Dj6r53mEkwv24PazPzTxQ7usV1O+RB0bk2FzO8g@mail.gmail.com>
- <CACT4Y+ZZH76qg810RzGp6FDLTxJWVqZgkrXSxqgq7AjpPYG9XQ@mail.gmail.com>
- <20200928083819.GD1685@zn.tnic>
- <CACT4Y+bPFASnmFRKpQ=KY1z+RnTbGmkPU3aikzdXZpKkV03D9A@mail.gmail.com>
- <20200928085401.GE1685@zn.tnic>
- <CACT4Y+Z4Y6SJJ6iYBhVRiknrWBAD6gGhQXiXLhxPniDNBFJGsA@mail.gmail.com>
- <20200928202353.GI1685@zn.tnic>
- <20200929083336.GA21110@zn.tnic>
- <CACT4Y+bfKwoZe3SC-BKJkOET1GxGp9tCpLzkae8q1sjWYnmgmw@mail.gmail.com>
+        Wed, 30 Sep 2020 12:17:45 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F77FC061755;
+        Wed, 30 Sep 2020 09:17:45 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id d1so1646197qtr.6;
+        Wed, 30 Sep 2020 09:17:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=W/Hkl9GFIJfxfeMpU//nmP4ISzumsOYvRtgWyW3bzsw=;
+        b=Zu7583FLPnLVk2W7IwechryeUFMKXKRxYi4bjyon/ez2PDMjPBGoc6aa+yX8MxHF/y
+         3RIPLiYOlIJfH6j8sXrnQusWZ9Q3bbhIG3+qO5bXXPWkRv/x6y7WegTM/ZD8uABw2Rno
+         XfMCyau5o1G8eUlk3M0LmyRKActBQkotAm9D1VqTqTo3M0uBmFgOUuW6xPkW0XnJvFZT
+         j3nIrng7UNU9LahUWLhownPwtqlVSwZKiKWyxGoj5mvoHIB2Pge3jrqUCoLQqpRbXXMu
+         srw1PsL5fTzTMxrL8RXGq1Q9Zx58OEHZufZfJqZjT8FkOiSl767ULIUDx6h0VUSENXDA
+         KMiw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=W/Hkl9GFIJfxfeMpU//nmP4ISzumsOYvRtgWyW3bzsw=;
+        b=ZoKFab7B8wqO5YttiAyuz8NXywlA3PYnnmJ6c3yl1Nw9akOqa0jAZAT+H5VZM7InpT
+         f5Z9KIzSXtQNdqvfweyPWUo7XCmpXlzIg+AnDT3yLt0rmUlMc/kuD4qekrH9WrYIKoC3
+         xyKeIx/lPbcnw6/LXWIc7M27iPzCo5ojP0ME3G/KltGEPObDtAQo6HD6hRbHGwUDXjxG
+         Uw/AAGn5ra6F5fk7o1AF4N5q9pl5s5A3RBKkaP1uPwSTYoHg71Z+fFr5G0j+mtPrTWaP
+         IMvbJA8YsPUarzfAzR2ClsVq5jhHl7sa0v+i5Vpmjmeey4ADwIQ/Ce3kk9JpSwglFaXE
+         6zMg==
+X-Gm-Message-State: AOAM5323zK0Dz7GRm4RR9BPpPvKAFLLvXlQGr4pRPQ0kVKMbU36WOvFg
+        8uNGtnwP+ZNtNCmU+rc2jLA=
+X-Google-Smtp-Source: ABdhPJw0TgZ5mKhFLZ+syDtkW1lFUgKFwa6w0NbBcz85VahxcBypNFNzyK7OZe3EZB+fpLleb7T/KQ==
+X-Received: by 2002:aed:34c1:: with SMTP id x59mr3123308qtd.374.1601482664189;
+        Wed, 30 Sep 2020 09:17:44 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:e9fa])
+        by smtp.gmail.com with ESMTPSA id z2sm2606770qkg.40.2020.09.30.09.17.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Sep 2020 09:17:43 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Wed, 30 Sep 2020 12:17:42 -0400
+From:   Tejun Heo <tj@kernel.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
+        Minho Ban <mhban@samsung.com>, cgroups@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Subject: Re: RFC: sort out get_gendisk abuses
+Message-ID: <20200930161742.GF4441@mtj.duckdns.org>
+References: <20200925161447.1486883-1-hch@lst.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CACT4Y+bfKwoZe3SC-BKJkOET1GxGp9tCpLzkae8q1sjWYnmgmw@mail.gmail.com>
+In-Reply-To: <20200925161447.1486883-1-hch@lst.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hello, Christoph.
 
-one more thing I just spotted. The default install of syzkaller here
-runs the guest with this on the kernel command line:
+On Fri, Sep 25, 2020 at 06:14:45PM +0200, Christoph Hellwig wrote:
+> this series tries to remove two abuses of the get_gendisk API.
+> The first one is fairly straigt forward and switched the blk-cgroup
+> configuration API to properly open the block device, but I'd love to see
+> it reviewed and tested by the cgroup maintainers, as I don't really know
+> how this code is actually used.
 
-2020/09/30 17:56:18 running command: qemu-system-x86_64 []string{"-m", "2048",
-"-smp", "2", "-display", ... "-append", "earlyprintk=serial oops=panic ...
- nmi_watchdog=panic panic_on_warn=1 panic=1 ftrace_dump_on_oops=orig_cpu rodata=n
-									^^^^^^^^^^
+I'm a bit worried that requiring fully opening the device for configuration
+can lead to surprising behaviors. A now-unlikely but still possible case
+would be trying to configure IO parameters for a device w/ removeable media.
+All that the user is trying to do is configuring a bunch of parameters but
+the kernel would try to spin up the media and fail configuration and so on.
 
-which basically leaves guest kernel's memory RW and it gets caught
-immediately on vm boot by CONFIG_DEBUG_WX.
+The use case of needing to access the associated data structures without
+fully activating the IO device seems valid to me. Whether that interface is
+blkdev_get() or something better abstracted, I don't really care.
 
-This pretty much explains why kernel text can get corrupted with a stray
-pointer write or so. So what's the use case for rodata=n?
-
-[    2.478136] Kernel memory protection disabled.
-		^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-[    2.478689] x86/mm: Checking user space page tables
-[    2.550163] ------------[ cut here ]------------
-[    2.550736] x86/mm: Found insecure W+X mapping at address entry_SYSCALL_64+0x0/0x29
-[    2.551612] WARNING: CPU: 1 PID: 1 at arch/x86/mm/dump_pagetables.c:246 note_page+0x81f/0x13a0
-[    2.552577] Kernel panic - not syncing: panic_on_warn set ...
-[    2.553240] CPU: 1 PID: 1 Comm: swapper/0 Not tainted 5.9.0-rc7+ #5
-[    2.553953] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-1 04/01/2014
-[    2.554922] Call Trace:
-[    2.555233]  dump_stack+0x9c/0xcf
-[    2.555633]  panic+0x250/0x5a0
-[    2.556004]  ? __warn_printk+0xf8/0xf8
-[    2.556450]  ? console_trylock+0xb0/0xb0
-[    2.556914]  ? __warn.cold+0x5/0x44
-[    2.557332]  ? note_page+0x81f/0x13a0
-[    2.557768]  __warn.cold+0x20/0x44
-[    2.558176]  ? note_page+0x81f/0x13a0
-[    2.558641]  report_bug+0x168/0x1b0
-[    2.559059]  handle_bug+0x3c/0x60
-[    2.559458]  exc_invalid_op+0x14/0x40
-[    2.559894]  asm_exc_invalid_op+0x12/0x20
-[    2.560368] RIP: 0010:note_page+0x81f/0x13a0
-[    2.560870] Code: 26 00 80 3d 9a d0 7f 02 00 0f 85 82 f9 ff ff e8 47 3c 26 00 4c 89 e6 48 c7 c7 40 aff
-[    2.562951] RSP: 0000:ffff88800e9f7a90 EFLAGS: 00010282
-[    2.563554] RAX: 0000000000000000 RBX: ffff88800e9f7e00 RCX: 0000000000000000
-[    2.564361] RDX: ffff88800e9edb80 RSI: 0000000000000004 RDI: ffffed1001d3ef44
-[    2.565167] RBP: 0000000000000200 R08: 0000000000000001 R09: 0000000000000003
-[    2.565973] R10: ffffed1001d3eefd R11: 0000000000000001 R12: ffffffff96e00000
-[    2.566780] R13: 00000000000001e3 R14: 0000000000000000 R15: ffff88800e9f7e58
-[    2.567587]  ? __kprobes_text_end+0xb3598/0xb3598
-[    2.568122]  ? __entry_text_end+0x1fea85/0x1fea85
-[    2.568754]  ? __entry_text_end+0x1fea85/0x1fea85
-[    2.569288]  ? __entry_text_end+0x1fea85/0x1fea85
-[    2.569821]  ptdump_hole+0x61/0x90
-[    2.570212]  ? ptdump_pte_entry+0x100/0x100
-[    2.570712]  walk_pgd_range+0xdb8/0x15f0
-[    2.571178]  walk_page_range_novma+0xd9/0x140
-[    2.571689]  ? walk_page_range+0x2b0/0x2b0
-[    2.572171]  ? console_unlock+0x58f/0xb10
-[    2.572644]  ptdump_walk_pgd+0xcd/0x180
-[    2.573099]  ptdump_walk_pgd_level_core+0x13c/0x1b0
-[    2.573663]  ? effective_prot+0xb0/0xb0
-[    2.574117]  ? vprintk_emit+0x214/0x380
-[    2.574601]  ? ptdump_walk_pgd_level_core+0x1b0/0x1b0
-[    2.575186]  ? memtype_copy_nth_element+0x1a0/0x1a0
-[    2.575752]  ? __kprobes_text_end+0xb3598/0xb3598
-[    2.576300]  ? pti_user_pagetable_walk_pmd+0x130/0x460
-[    2.576894]  ? __kprobes_text_end+0xb3598/0xb3598
-[    2.577441]  ? __kprobes_text_end+0xb3598/0xb3598
-[    2.577988]  ? __kprobes_text_end+0xb3598/0xb3598
-[    2.578564]  ? rest_init+0xdd/0xdd
-[    2.578972]  ptdump_walk_user_pgd_level_checkwx.cold+0x31/0x36
-[    2.579640]  pti_finalize+0x7b/0x170
-[    2.580066]  kernel_init+0x5b/0x183
-[    2.580484]  ret_from_fork+0x22/0x30
-[    2.581010] Dumping ftrace buffer:
-[    2.581456]    (ftrace buffer empty)
-ffffffffbfffffff)
-[    2.583137] Rebooting in 1 seconds..
-2020/09/30 17:56:23 failed to create instance: failed to read from qemu: EOF
+Thanks.
 
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+tejun
