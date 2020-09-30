@@ -2,114 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49E2427E406
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 10:44:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66EB027E414
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 10:48:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728622AbgI3IoZ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 30 Sep 2020 04:44:25 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2929 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725776AbgI3IoZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 04:44:25 -0400
-Received: from lhreml710-chm.china.huawei.com (unknown [172.18.7.106])
-        by Forcepoint Email with ESMTP id B202F8CDE30D2099234E;
-        Wed, 30 Sep 2020 09:44:23 +0100 (IST)
-Received: from localhost (10.52.127.162) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1913.5; Wed, 30 Sep
- 2020 09:44:23 +0100
-Date:   Wed, 30 Sep 2020 09:42:41 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Randy Dunlap <rdunlap@infradead.org>
-CC:     Nathan Chancellor <natechancellor@gmail.com>,
-        Robert Moore <robert.moore@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Len Brown <lenb@kernel.org>, <linux-acpi@vger.kernel.org>,
-        <devel@acpica.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] ACPI / NUMA: Add stub function for pxm_to_node
-Message-ID: <20200930094241.00002949@Huawei.com>
-In-Reply-To: <c313dcd3-7fab-00eb-15f2-65a3a51f7bd5@infradead.org>
-References: <20200928194554.3423466-1-natechancellor@gmail.com>
-        <c313dcd3-7fab-00eb-15f2-65a3a51f7bd5@infradead.org>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8BIT
-X-Originating-IP: [10.52.127.162]
-X-ClientProxiedBy: lhreml707-chm.china.huawei.com (10.201.108.56) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+        id S1728439AbgI3Ise (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 04:48:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36932 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725779AbgI3Isd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 04:48:33 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2269C061755;
+        Wed, 30 Sep 2020 01:48:33 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id x16so698140pgj.3;
+        Wed, 30 Sep 2020 01:48:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=OeUNQJgXL6ADU3aSWn4q3FZBak46MGLmLY/1uCciSlU=;
+        b=tawEvSKl8fLarJ1MeDSqmrrB/ZZe6NOzks0sfiE+mDFUB2q1PI8ELw4CMfK37xlB/v
+         T7CrKPQCCmiF4B7QQo2pMjnsZnie39Dd68KkXI5D/SB5Hji+uS/WchCI55AqLMIX/8ho
+         WF3dWY3NOSFG2wrauz2uncIiX6D1Z+lGsMQXUUHGPZsU5wZmKpgkTd5/0ymzw9aRXyOL
+         qfnn//KXvnbALaAhVLxZzgoZppuWF7GDB7AaZyo0sF4ewSyJxMIfN7XXYYm+FHzUC+7I
+         bEG2Cxp95EAuTKob8qMWY7p+ojNYO+BJ6kIBm0HNC5o8A4+4uD0ArOXBhWtKfqbQxoSW
+         EHyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=OeUNQJgXL6ADU3aSWn4q3FZBak46MGLmLY/1uCciSlU=;
+        b=h9WPe4ZHJkyVDE+P12vbYuHaq9WFlEUqgdxTZoEXWjTWOv8TU24ygxsMA7IFtF8jBE
+         8pzl2kme/B+WAbAiBjhgiCi5GIxjHmFU7KsSNG4Q0cvEid6b4UKMUFUjb2UABQAc7Q8Y
+         QiazUxF8gnTgc3RnMul5ckk9qjXB39DYUg72eurg3usLeWTfwYh0MZWAmoaACMDMyqCz
+         /KHLr5c+mRuflRJwjPBKis5347LmiZ7lzn9wcs8eIEB6yS1mZ5Pfhif1cfeNN4yv3d+R
+         qJc2gvIaiFF1TniMqPldb2Mq4hYCihzUqVsVTdapXqpo9GVIHQ7arGQxOMrOCqBa8Is4
+         9eEQ==
+X-Gm-Message-State: AOAM533OLTAZlXiP2gXt8KrAjE7bGF+ujAMXAQ/UA/j3oQNPVQAs8wDm
+        l9kHPL2lwEOcqBRfpQVdke4=
+X-Google-Smtp-Source: ABdhPJybvq/YLDpzffptolcGtF/N5En8KDtDWjqMjJ0PrfoI6Iuyksm+pPyBWDUvgijpRC7zcN6x3Q==
+X-Received: by 2002:a62:301:0:b029:13c:1611:6528 with SMTP id 1-20020a6203010000b029013c16116528mr1365997pfd.8.1601455713095;
+        Wed, 30 Sep 2020 01:48:33 -0700 (PDT)
+Received: from Asurada-Nvidia.nvidia.com (thunderhill.nvidia.com. [216.228.112.22])
+        by smtp.gmail.com with ESMTPSA id d17sm1505830pfq.157.2020.09.30.01.48.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Sep 2020 01:48:32 -0700 (PDT)
+From:   Nicolin Chen <nicoleotsuka@gmail.com>
+To:     thierry.reding@gmail.com, joro@8bytes.org, krzk@kernel.org,
+        digetx@gmail.com
+Cc:     vdumpa@nvidia.com, jonathanh@nvidia.com,
+        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3 0/3] iommu/tegra-smmu: Add PCI support
+Date:   Wed, 30 Sep 2020 01:42:55 -0700
+Message-Id: <20200930084258.25493-1-nicoleotsuka@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 29 Sep 2020 13:13:24 -0700
-Randy Dunlap <rdunlap@infradead.org> wrote:
+This series is to add PCI support with three changes:
+PATCH-1 adds a helper function to get mc pointer
+PATCH-2 adds support for clients that don't exist in DTB
+PATCH-3 adds PCI support accordingly
 
-> On 9/28/20 12:45 PM, Nathan Chancellor wrote:
-> > After commit 01feba590cd6 ("ACPI: Do not create new NUMA domains from
-> > ACPI static tables that are not SRAT"):
-> > 
-> > $ scripts/config --file arch/x86/configs/x86_64_defconfig -d NUMA -e ACPI_NFIT
-> > 
-> > $ make -skj"$(nproc)" distclean defconfig drivers/acpi/nfit/
-> > drivers/acpi/nfit/core.c: In function ‘acpi_nfit_register_region’:
-> > drivers/acpi/nfit/core.c:3010:27: error: implicit declaration of
-> > function ‘pxm_to_node’; did you mean ‘xa_to_node’?
-> > [-Werror=implicit-function-declaration]
-> >  3010 |   ndr_desc->target_node = pxm_to_node(spa->proximity_domain);
-> >       |                           ^~~~~~~~~~~
-> >       |                           xa_to_node
-> > cc1: some warnings being treated as errors
-> > ...
-> > 
-> > Add a stub function like acpi_map_pxm_to_node had so that the build
-> > continues to work.
-> > 
-> > Fixes: 01feba590cd6 ("ACPI: Do not create new NUMA domains from ACPI static tables that are not SRAT")
-> > Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
-> > ---
-> > 
-> > I am not sure if this is the right place or value for this. It looks
-> > like there is going to be another stub function added here, which is
-> > going through -mm:
-> > 
-> > https://lkml.kernel.org/r/159643094925.4062302.14979872973043772305.stgit@dwillia2-desk3.amr.corp.intel.com
-> > 
-> >  include/acpi/acpi_numa.h | 5 +++++
-> >  1 file changed, 5 insertions(+)
-> > 
-> > diff --git a/include/acpi/acpi_numa.h b/include/acpi/acpi_numa.h
-> > index fdebcfc6c8df..09eb3bc20ff5 100644
-> > --- a/include/acpi/acpi_numa.h
-> > +++ b/include/acpi/acpi_numa.h
-> > @@ -22,5 +22,10 @@ extern int acpi_numa __initdata;
-> >  extern void bad_srat(void);
-> >  extern int srat_disabled(void);
-> >  
-> > +#else				/* CONFIG_ACPI_NUMA */
-> > +static inline int pxm_to_node(int pxm)
-> > +{
-> > +	return 0;
-> > +}
-> >  #endif				/* CONFIG_ACPI_NUMA */
-> >  #endif				/* __ACP_NUMA_H */
-> > 
-> > base-commit: eb6335b68ce3fc85a93c4c6cd3bb6bc5ac490efe  
-> 
-> OK, that works/builds. It doesn't quite apply cleanly to linux-next-20200929
-> but that's a minor detail and easy to get around.
-> 
-> Thanks.
-> 
-> Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
->
+Changelog (Detail in each patch)
+v2->v3
+ * Replaced with devm_tegra_get_memory_controller
+ * Updated changes by following Dmitry's comments
+v1->v2
+ * Added PATCH-1 suggested by Dmitry
+ * Reworked PATCH-2 to unify certain code
 
-Looks correct to me.  Thanks!
+Dmitry Osipenko (1):
+  memory: tegra: Add devm_tegra_get_memory_controller()
 
-Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Nicolin Chen (2):
+  iommu/tegra-smmu: Rework .probe_device and .attach_dev
+  iommu/tegra-smmu: Add PCI support
 
+ drivers/iommu/tegra-smmu.c | 179 +++++++++++++------------------------
+ drivers/memory/tegra/mc.c  |  39 ++++++++
+ include/soc/tegra/mc.h     |  17 ++++
+ 3 files changed, 118 insertions(+), 117 deletions(-)
 
+-- 
+2.17.1
 
