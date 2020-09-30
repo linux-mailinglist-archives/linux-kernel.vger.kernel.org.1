@@ -2,137 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3731627E8C2
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 14:45:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A1EE27E8CA
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 14:47:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729913AbgI3Mph (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 08:45:37 -0400
-Received: from mga04.intel.com ([192.55.52.120]:26145 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728043AbgI3Mph (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 08:45:37 -0400
-IronPort-SDR: 8OHDvIjFuD7atQWyPXdDAQbjOL25xdLNAaKcDUpN7hQ9UzKrDB5wxndMu+oIufGUTmnhGuV9V4
- 28AhQHxJgO6w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9759"; a="159822159"
-X-IronPort-AV: E=Sophos;i="5.77,322,1596524400"; 
-   d="scan'208";a="159822159"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2020 05:45:36 -0700
-IronPort-SDR: eCF4X5a/gfpkch1z+Gghm8I69LMoYqlXRHSy3U79/H0p9P+ssLwnq/P9qK4gAmUKusgR7QnBwT
- 59rJ3VZLCcBA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,322,1596524400"; 
-   d="scan'208";a="294597999"
-Received: from fmsmsx604.amr.corp.intel.com ([10.18.126.84])
-  by fmsmga008.fm.intel.com with ESMTP; 30 Sep 2020 05:45:36 -0700
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx604.amr.corp.intel.com (10.18.126.84) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Wed, 30 Sep 2020 05:45:36 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Wed, 30 Sep 2020 05:45:35 -0700
-Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
- fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.1713.004;
- Wed, 30 Sep 2020 05:45:30 -0700
-From:   "Derrick, Jonathan" <jonathan.derrick@intel.com>
-To:     "tglx@linutronix.de" <tglx@linutronix.de>,
-        "jgg@nvidia.com" <jgg@nvidia.com>
-CC:     "Williams, Dan J" <dan.j.williams@intel.com>,
-        "sivanich@hpe.com" <sivanich@hpe.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        "haiyangz@microsoft.com" <haiyangz@microsoft.com>,
-        "Dey, Megha" <megha.dey@intel.com>,
-        "Lu, Baolu" <baolu.lu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        "jgross@suse.com" <jgross@suse.com>,
-        "kys@microsoft.com" <kys@microsoft.com>,
-        "sstabellini@kernel.org" <sstabellini@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "rafael@kernel.org" <rafael@kernel.org>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "maz@kernel.org" <maz@kernel.org>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "konrad.wilk@oracle.com" <konrad.wilk@oracle.com>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "steve.wahl@hpe.com" <steve.wahl@hpe.com>,
-        "boris.ostrovsky@oracle.com" <boris.ostrovsky@oracle.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "rja@hpe.com" <rja@hpe.com>, "joro@8bytes.org" <joro@8bytes.org>,
-        "sthemmin@microsoft.com" <sthemmin@microsoft.com>,
-        "Pan, Jacob jun" <jacob.jun.pan@intel.com>,
-        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>
-Subject: Re: [patch V2 24/46] PCI: vmd: Mark VMD irqdomain with
- DOMAIN_BUS_VMD_MSI
-Thread-Topic: [patch V2 24/46] PCI: vmd: Mark VMD irqdomain with
- DOMAIN_BUS_VMD_MSI
-Thread-Index: AQHWe6Ci+RtSrJb+okaPJR2eu/FJZalSxzQAgC8GCIA=
-Date:   Wed, 30 Sep 2020 12:45:30 +0000
-Message-ID: <1d284a478d4e5bf4a247ee83afa1b8b45f9e1b3f.camel@intel.com>
-References: <20200826111628.794979401@linutronix.de>
-         <20200826112333.047315047@linutronix.de>
-         <20200831143940.GA1152540@nvidia.com>
-In-Reply-To: <20200831143940.GA1152540@nvidia.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.1.200.100]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <90C7529B4211014189DA743BA8288574@intel.com>
-Content-Transfer-Encoding: base64
+        id S1729928AbgI3Mro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 08:47:44 -0400
+Received: from mail-ed1-f67.google.com ([209.85.208.67]:41774 "EHLO
+        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725771AbgI3Mrn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 08:47:43 -0400
+Received: by mail-ed1-f67.google.com with SMTP id l24so1674869edj.8;
+        Wed, 30 Sep 2020 05:47:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=nR4ZvBqW38g9myLM2SaZTe6ALIuOu3sHwnGk2K3Vh4w=;
+        b=Woy6bUj/QOUOqnYvEjR8850AVdy5kge9J6F2iulhl+VXfrnUtRAV8jzGjcyO7/e7HF
+         q8+CX3DVh82/xyH3evID/GDMBVaqUbh1nYNZwIq4Mv2C3z+/rzhpP1fO8r3hlC0xiDU1
+         Dr/kZReOjujwfcP5KkFRH7F4CQKYSkLUmONebrLo3OmibG8Fo+11SpKXqyFu5mWVWUCu
+         +qKY5MV9pAJ6Zr+dClGw8bcVsgRCHacbHTEEgmBVVXTnQKU2e3ebjPPZe+DclaN9unB5
+         unmdn+PRrAIYD5kAZhnV3oUcdduI6ARLjdVgmSZgifbz/H9N6KIdOHsuc7v8eQuxui4Y
+         nVqg==
+X-Gm-Message-State: AOAM533nTS86pP6Nm9QLcd1HmQdpiqyaGV3R4Eub9po/AlP3DGNLva9V
+        IuFwrPBlw1j8vCNf6UACZZw=
+X-Google-Smtp-Source: ABdhPJwqOvXOi0ySltgqwksx/J262p4Kzaqs6MMnRyrjQFzbwkyXP3jmMmkkcDreQE5eNEamVC9B4w==
+X-Received: by 2002:a50:ef0c:: with SMTP id m12mr2482092eds.264.1601470061400;
+        Wed, 30 Sep 2020 05:47:41 -0700 (PDT)
+Received: from pi3 ([194.230.155.194])
+        by smtp.googlemail.com with ESMTPSA id b20sm1563495ejv.9.2020.09.30.05.47.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Sep 2020 05:47:40 -0700 (PDT)
+Date:   Wed, 30 Sep 2020 14:47:37 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Stefan Riedmueller <s.riedmueller@phytec.de>,
+        Robert Jones <rjones@gateworks.com>,
+        Li Yang <leoyang.li@nxp.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 10/14] dt-bindings: arm: fsl: document i.MX6DL boards
+Message-ID: <20200930124737.GA1410@pi3>
+References: <20200926162811.5335-1-krzk@kernel.org>
+ <20200926162811.5335-10-krzk@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200926162811.5335-10-krzk@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgSmFzb24NCg0KT24gTW9uLCAyMDIwLTA4LTMxIGF0IDExOjM5IC0wMzAwLCBKYXNvbiBHdW50
-aG9ycGUgd3JvdGU6DQo+IE9uIFdlZCwgQXVnIDI2LCAyMDIwIGF0IDAxOjE2OjUyUE0gKzAyMDAs
-IFRob21hcyBHbGVpeG5lciB3cm90ZToNCj4gPiBGcm9tOiBUaG9tYXMgR2xlaXhuZXIgPHRnbHhA
-bGludXRyb25peC5kZT4NCj4gPiANCj4gPiBEZXZpY2VzIG9uIHRoZSBWTUQgYnVzIHVzZSB0aGVp
-ciBvd24gTVNJIGlycSBkb21haW4sIGJ1dCBpdCBpcyBub3QNCj4gPiBkaXN0aW5ndWlzaGFibGUg
-ZnJvbSByZWd1bGFyIFBDSS9NU0kgaXJxIGRvbWFpbnMuIFRoaXMgaXMgcmVxdWlyZWQNCj4gPiB0
-byBleGNsdWRlIFZNRCBkZXZpY2VzIGZyb20gZ2V0dGluZyB0aGUgaXJxIGRvbWFpbiBwb2ludGVy
-IHNldCBieQ0KPiA+IGludGVycnVwdCByZW1hcHBpbmcuDQo+ID4gDQo+ID4gT3ZlcnJpZGUgdGhl
-IGRlZmF1bHQgYnVzIHRva2VuLg0KPiA+IA0KPiA+IFNpZ25lZC1vZmYtYnk6IFRob21hcyBHbGVp
-eG5lciA8dGdseEBsaW51dHJvbml4LmRlPg0KPiA+IEFja2VkLWJ5OiBCam9ybiBIZWxnYWFzIDxi
-aGVsZ2Fhc0Bnb29nbGUuY29tPg0KPiA+ICBkcml2ZXJzL3BjaS9jb250cm9sbGVyL3ZtZC5jIHwg
-ICAgNiArKysrKysNCj4gPiAgMSBmaWxlIGNoYW5nZWQsIDYgaW5zZXJ0aW9ucygrKQ0KPiA+IA0K
-PiA+ICsrKyBiL2RyaXZlcnMvcGNpL2NvbnRyb2xsZXIvdm1kLmMNCj4gPiBAQCAtNTc5LDYgKzU3
-OSwxMiBAQCBzdGF0aWMgaW50IHZtZF9lbmFibGVfZG9tYWluKHN0cnVjdCB2bWRfDQo+ID4gIAkJ
-cmV0dXJuIC1FTk9ERVY7DQo+ID4gIAl9DQo+ID4gIA0KPiA+ICsJLyoNCj4gPiArCSAqIE92ZXJy
-aWRlIHRoZSBpcnEgZG9tYWluIGJ1cyB0b2tlbiBzbyB0aGUgZG9tYWluIGNhbiBiZSBkaXN0aW5n
-dWlzaGVkDQo+ID4gKwkgKiBmcm9tIGEgcmVndWxhciBQQ0kvTVNJIGRvbWFpbi4NCj4gPiArCSAq
-Lw0KPiA+ICsJaXJxX2RvbWFpbl91cGRhdGVfYnVzX3Rva2VuKHZtZC0+aXJxX2RvbWFpbiwgRE9N
-QUlOX0JVU19WTURfTVNJKTsNCj4gPiArDQo+IA0KPiBIYXZpbmcgdGhlIG5vbi10cmFuc3BhcmVu
-dC1icmlkZ2UgaG9sZCBhIE1TSSB0YWJsZSBhbmQNCj4gbXVsdGlwbGV4L2RlLW11bHRpcGxleCBJ
-UlFzIGxvb2tzIGxpa2UgYW5vdGhlciBnb29kIHVzZSBjYXNlIGZvcg0KPiBzb21ldGhpbmcgY2xv
-c2UgdG8gcGNpX3N1YmRldmljZV9tc2lfY3JlYXRlX2lycV9kb21haW4oKT8NCj4gDQo+IElmIGVh
-Y2ggZGV2aWNlIGNvdWxkIGhhdmUgaXRzIG93biBpbnRlcm5hbCBNU0ktWCB0YWJsZSBwcm9ncmFt
-bWVkDQo+IHByb3Blcmx5IHRoaW5ncyB3b3VsZCB3b3JrIGFsb3QgYmV0dGVyLiBEaXNhYmxlIGNh
-cHR1cmUvcmVtYXAgb2YgdGhlDQo+IE1TSSByYW5nZSBpbiB0aGUgTlRCLg0KV2UgY2FuIGRpc2Fi
-bGUgdGhlIGNhcHR1cmUgYW5kIHJlbWFwIGluIG5ld2VyIGRldmljZXMgc28gd2UgZG9uJ3QgZXZl
-bg0KbmVlZCB0aGUgaXJxIGRvbWFpbi4gTGVnYWN5IFZNRCB3aWxsIGF1dG9tYXRpY2FsbHkgcmVt
-YXAgYmFzZWQgb24gdGhlDQpBUElDIGRlc3QgYml0cyBpbiB0aGUgTVNJIGFkZHJlc3MuDQoNCkkg
-d291bGQgaG93ZXZlciBsaWtlIHRvIGRldGVybWluZSBpZiB0aGUgTVNJIGRhdGEgYml0cyBjb3Vs
-ZCBiZSB1c2VkDQpmb3IgaW5kaXZpZHVhbCBkZXZpY2VzIHRvIGhhdmUgdGhlIElSUSBkb21haW4g
-c3Vic3lzdGVtIGRlbXVsdGlwbGV4IHRoZQ0KdmlycSBmcm9tIHRoYXQgYW5kIGVsaW1pbmF0ZSB0
-aGUgSVJRIGxpc3QgaXRlcmF0aW9uLg0KDQpBIGNvbmNlcm4gSSBoYXZlIGFib3V0IHRoYXQgc2No
-ZW1lIGlzIHZpcnR1YWxpemF0aW9uIGFzIEkgdGhpbmsgdGhvc2UNCmJpdHMgYXJlIHVzZWQgdG8g
-cm91dGUgdG8gdGhlIHZpcnR1YWwgdmVjdG9yLg0KDQo+IA0KPiBUaGVuIGVhY2ggZGV2aWNlIGNv
-dWxkIGhhdmUgYSBwcm9wZXIgbm9uLW11bHRpcGxleGVkIGludGVycnVwdA0KPiBkZWxpdmVyZWQg
-dG8gdGhlIENQVS4uIEFmZmluaXR5IHdvdWxkIHdvcmsgcHJvcGVybHksIG5vIG5lZWQgdG8gc2hh
-cmUNCj4gSVJRcyAoZWcgdm1kX2lycSgpIGdvZXMgYXdheSkvZXRjLg0KPiANCj4gU29tZXRoaW5n
-IGZvciB0aGUgVk1EIG1haW50YWluZXJzIHRvIHRoaW5rIGFib3V0IGF0IGxlYXN0Lg0KPiANCj4g
-QXMgSSBoZWFyIG1vcmUgYWJvdXQgTlRCIHRoZXNlIGRheXMgYSBmdWxsIE1TSSBzY2hlbWUgZm9y
-IE5UQiBzZWVtcw0KPiBpbnRlcmVzdGluZyB0byBoYXZlIGluIHRoZSBQQ0ktRSBjb3JlIGNvZGUu
-Lg0KPiANCj4gSmFzb24NCg0KDQo=
+On Sat, Sep 26, 2020 at 06:28:07PM +0200, Krzysztof Kozlowski wrote:
+> Document and adjust the compatibles for i.MX6DL based boards.
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> ---
+>  .../devicetree/bindings/arm/fsl.yaml          | 27 +++++++++++++++++--
+>  1 file changed, 25 insertions(+), 2 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
+> index d9c430bfe37e..24c79cecd815 100644
+> --- a/Documentation/devicetree/bindings/arm/fsl.yaml
+> +++ b/Documentation/devicetree/bindings/arm/fsl.yaml
+> @@ -257,16 +257,25 @@ properties:
+>        - description: i.MX6DL based Boards
+>          items:
+>            - enum:
+> -              - armadeus,imx6dl-apf6      # APF6 (Solo) SoM
+> -              - armadeus,imx6dl-apf6dev   # APF6 (Solo) SoM on APF6Dev board
+> +              - boundary,imx6dl-nit6xlite     # Boundary Devices Nitrogen6 Lite
+> +              - boundary,imx6dl-nitrogen6x    # Boundary Devices Nitrogen6x
+> +              - bticino,imx6dl-mamoj      # BTicino i.MX6DL Mamoj
+>                - eckelmann,imx6dl-ci4x10
+>                - emtrion,emcon-mx6         # emCON-MX6S or emCON-MX6DL SoM
+>                - emtrion,emcon-mx6-avari   # emCON-MX6S or emCON-MX6DL SoM on Avari Base
+> +              - engicam,imx6-icore        # Engicam i.CoreM6 Starter Kit
+> +              - engicam,imx6-icore-rqs    # Engicam i.CoreM6 RQS Starter Kit
+>                - fsl,imx6dl-sabreauto      # i.MX6 DualLite/Solo SABRE Automotive Board
+> +              - fsl,imx6dl-sabrelite      # i.MX6 DualLite SABRE Lite Board
+>                - fsl,imx6dl-sabresd        # i.MX6 DualLite SABRE Smart Device Board
+> +              - karo,imx6dl-tx6dl         # Ka-Ro electronics TX6U Modules
+>                - kontron,imx6dl-samx6i     # Kontron i.MX6 Solo SMARC Module
+> +              - poslab,imx6dl-savageboard # Poslab SavageBoard Dual
+>                - prt,prtrvt                # Protonic RVT board
+>                - prt,prtvt7                # Protonic VT7 board
+> +              - rex,imx6dl-rex-basic      # Rex Basic i.MX6 Dual Lite Board
+> +              - riot,imx6s-riotboard      # RIoTboard i.MX6S
+> +              - solidrun,hummingboard/dl
+>                - technexion,imx6dl-pico-dwarf   # TechNexion i.MX6DL Pico-Dwarf
+>                - technexion,imx6dl-pico-hobbit  # TechNexion i.MX6DL Pico-Hobbit
+>                - technexion,imx6dl-pico-nymph   # TechNexion i.MX6DL Pico-Nymph
+> @@ -277,12 +286,26 @@ properties:
+>                - toradex,colibri_imx6dl-v1_1     # Colibri iMX6 Module V1.1
+>                - toradex,colibri_imx6dl-eval-v3  # Colibri iMX6 Module on Colibri Evaluation Board V3
+>                - toradex,colibri_imx6dl-v1_1-eval-v3 # Colibri iMX6 Module V1.1 on Colibri Evaluation Board V3
+
+I need to add here two solidrun boards and fix up the Toradex boards.
+I will send a v2.
+
+Best regards,
+Krzysztof
