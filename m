@@ -2,75 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51B4527E4E1
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 11:15:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6E6127E4E2
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 11:16:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729533AbgI3JPi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 05:15:38 -0400
-Received: from muru.com ([72.249.23.125]:45746 "EHLO muru.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729470AbgI3JPe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 05:15:34 -0400
-Received: from atomide.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTPS id 59D8C810D;
-        Wed, 30 Sep 2020 09:15:33 +0000 (UTC)
-Date:   Wed, 30 Sep 2020 12:15:26 +0300
-From:   Tony Lindgren <tony@atomide.com>
-To:     Trent Piepho <tpiepho@gmail.com>
-Cc:     Drew Fustini <drew@beagleboard.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jason Kridner <jkridner@beagleboard.org>,
-        Robert Nelson <robertcnelson@gmail.com>,
-        linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        Christina Quast <cquast@hanoverdisplays.com>
-Subject: Re: [PATCH] ARM: dts: document pinctrl-single,pins when
- #pinctrl-cells = 2
-Message-ID: <20200930091526.GQ9471@atomide.com>
-References: <20200923065755.GR7101@atomide.com>
- <CA+7tXigeNhQQVuAu0toZrvBKvMYkDU-8EWTpJR29HLTAMgoOBA@mail.gmail.com>
- <20200924054324.GB9471@atomide.com>
- <CA+7tXigg+h3v61AVMaYRKa_ZwznehOUPEESMqXKsNDNCrFph3w@mail.gmail.com>
- <20200924060645.GD9471@atomide.com>
- <CA+7tXijkS8UMFk4t=DuKjZZNnThbRarPQvxwxjg-uJFTKJRsXA@mail.gmail.com>
- <20200924070443.GF9471@atomide.com>
- <CA+7tXihBdw9AOGL7Hp2cH9+ii8fUXaaZZDUP3icyeOkMuGm4qA@mail.gmail.com>
- <20200930051521.GN9471@atomide.com>
- <CA+7tXig=3hbFXfmYMC5Hd1Zc2n-6uGXbMePPw_Cr4bOsyt7QQA@mail.gmail.com>
+        id S1729291AbgI3JQV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 05:16:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41252 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728126AbgI3JQU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 05:16:20 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57813C061755
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 02:16:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=M6aSBYvGHo03lIPgNtm+kwvXZmpfk2pg59CPFNzwty0=; b=icH7K6VMYF8vH0gXWgUsJCKLBp
+        ReBrW3MdQyvFtCIJ2sKmgaqRvE7vhLwcx953JndM4hh7maATNfVZWCcSe4QNpU1bmFA8bvrR7Qtbg
+        gnWTxHpQ1xEjkclWjdGCPsmFUmzKpko87A3YI93R8IxMeu25cvEoKsAahS3e9V6tprV5oXcdu13tc
+        zdfTgOsZRmmlqgJ4WZVRNPiEjHjoawaLLYbnQOto7XsYxUm1/dTM2sLPwJzsesx0DXgCwplhgNEuF
+        F7yPRH6FTGtJhr7tPXZi0tmJY9TPnXAoddTOkQCTBXT6yw2Ufp72OwSnJgg9mGMLKAXs1khU3KyXe
+        7NYb97lQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kNYDc-0005XO-Cc; Wed, 30 Sep 2020 09:16:12 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 1850A3077B1;
+        Wed, 30 Sep 2020 11:16:11 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 052E52022B66B; Wed, 30 Sep 2020 11:16:11 +0200 (CEST)
+Date:   Wed, 30 Sep 2020 11:16:10 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Boqun Feng <boqun.feng@gmail.com>,
+        g@hirez.programming.kicks-ass.net
+Cc:     Qian Cai <cai@redhat.com>, Waiman Long <longman@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: lockdep null-ptr-deref
+Message-ID: <20200930091610.GV2628@hirez.programming.kicks-ass.net>
+References: <5fd046115645daa00f8841f5467da4c4d960ca92.camel@redhat.com>
+ <20200929230823.GC17810@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CA+7tXig=3hbFXfmYMC5Hd1Zc2n-6uGXbMePPw_Cr4bOsyt7QQA@mail.gmail.com>
+In-Reply-To: <20200929230823.GC17810@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Trent Piepho <tpiepho@gmail.com> [200930 08:35]:
-> The closest thing would be the generic pin config type bindings, which
-> go in the pinctrl driver's nodes, and look like this:
-> &am335x_pinmux {
->     pinctrl_yoyo_reset: yoyogrp {
->         pins = "foo";
->         function = "gpio";
->         bias-pull-up;
->     };
-> };
+On Wed, Sep 30, 2020 at 07:08:23AM +0800, Boqun Feng wrote:
+> I think there are two problems here:
+> 
+> 1) the "(null)" means we don't have the "usage_str" for a usage bit,
+> which I think is the LOCK_USED_READ bit introduced by Peter at
+> 23870f122768 ('locking/lockdep: Fix "USED" <- "IN-NMI" inversions').
+> 
+> 2) the next null-ptr-deref, and I think this is also caused by
+> LOCK_USED_READ bit, because in the loop inside
+> print_lock_class_header(), we iterate from 0 to LOCK_USAGE_STATES (which
+> is 4*2 + 3), however the class->usage_traces[] only has
+> XXX_LOCK_USAGE_STATES (which is 4*2 + 1) elements, so if we have
+> LOCK_USED_READ bit set in ->usage_mask, we will try to access an element
+> out of the ->usage_traces[] array.
+> 
+> Probably the following helps? And another possible fix is to enlarge the
+> ->usage_trace[] array and record the call trace of LOCK_READ_USED.
 
-There's a bit of a dtb size and boot time issue for adding properties
-for each pin where that needs to be done for several hundred pins :)
+Urgh.. yeah, I wanted to avoid saving that trace; it's pretty useless :/
+The existing USED trace is already mostly pointless, the consistent
+thing would be to remove both but that might be too radical.
 
-> Is "some additional property for specifying generic conf flags"
-> different from the existing pinctrl-single,bias-pullup, etc.
-> properties?  Because splitting the data cell into two parts doesn't
-> make any difference to those.
+But you're right in that I made a right mess of it. Not sure what's
+best here.
 
-So with an interrupt style binding with generic pinconf flags we can
-leave out the parsing of multiple properties for each pin. Sure the
-pin is only referenced by the controller like you pointed out but the
-pinconf flags could be generic.
-
-Regards,
-
-Tony
+Let me have a play.
