@@ -2,73 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1C4627E8E9
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 14:50:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 209F727E8EE
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 14:51:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730131AbgI3Mtn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 08:49:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34936 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729762AbgI3Mtn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 08:49:43 -0400
-Received: from mail-ot1-f53.google.com (mail-ot1-f53.google.com [209.85.210.53])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A66EF20936;
-        Wed, 30 Sep 2020 12:49:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601470182;
-        bh=07hSLMQoSpJSnvfViRt2er9D+38nJ1S81f1pw8lhyYI=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=TgzEXMtQYCQ4hji7DOmdTnfI2lS3zxPnvm2KRDJwzG0XLgpzd0IJ97uLGmzQcoiQO
-         Wd16HXQmPuh+vW9xDcMTBtL92NfjBHi97PdgUhKt+CrWruep/gPrasN/4kXkuDpSAl
-         c/sO48ID8ZeZHagmOjeXESh3YeF+x5PprxgexAro=
-Received: by mail-ot1-f53.google.com with SMTP id y5so1667507otg.5;
-        Wed, 30 Sep 2020 05:49:42 -0700 (PDT)
-X-Gm-Message-State: AOAM532Q4TwoigQSatjyiOws96T3YFJuPWUcH38NErt46dWA9eauyBYm
-        gA/YshH8PXnu+14XpOOLfublX4nnfvH1WQsB6w==
-X-Google-Smtp-Source: ABdhPJyR5QEMfsRPmsJEZQZKhpIiC7BJ0ZReMqLzMNDvpzBCR4FJ4JQzuiKDWDYNYA1PrgT9fFAZmU47iuzjUTHfy/s=
-X-Received: by 2002:a9d:6b0d:: with SMTP id g13mr1499160otp.129.1601470182041;
- Wed, 30 Sep 2020 05:49:42 -0700 (PDT)
+        id S1729997AbgI3Mu5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 08:50:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46060 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729898AbgI3Mu5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 08:50:57 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3C19C061755
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 05:50:56 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id nw23so2639298ejb.4
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 05:50:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2oyhULf73PbSRNA3Qsr0tiDBEcqWN9KNz6Hu/4QKeuw=;
+        b=U+CynULl3FdR3YB/IUVSRlkvgJEzMr2/jA76c1mc1t7baIc/ZBAJIQpEH+d/N9kwgG
+         EBK/jUHXxXVq5snRZOX2WgdZo8IQ1D2oypmsdwf9iUSnNLMz/Qas4ZcQRTh1P+vv+uMO
+         6dBT1nhqX2C6eSZrh6NlHP2qZGUPhK7t3axRQKZ+l4YUYlweCQNsCKvwJn92QvdY89Fa
+         +GC8spCxEOdulImMXe00oUFBIFVJnPdotyyGbKUsOdn4UbnVwi4Pg0jdTM8Q6FdrzlK8
+         lcR/RhauyTxrK6KOSDt07FQpgSs4missXaEdj5dhIboZQ0z9dxy9fKLmKQPN9/4uXwQK
+         Mo+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2oyhULf73PbSRNA3Qsr0tiDBEcqWN9KNz6Hu/4QKeuw=;
+        b=uMI/px3va/sm5oYbih1P1zIHr1JOLcTRgVesyLG8eomH12ek/nrbErJePk5dBU2ESl
+         PjyBaYgPS8T5hK/sq2+Le9xYPmFfwN2iytZLvZ0A94G7ouKKqkD8xbLtb5f3ugw6yVwH
+         ugD0XCtoGiIB3Jq91vPR9B7a7myZTjrG3g+qSZiAiD5DWTIhb5M5qNXniDtE9nz1BEK2
+         iuvp8JkjaVb1IjCPRtVWx+IfptfPsIEw/PJvAz7oldLt3Acb3z/Vt6169lhY7VsMDR1W
+         I9OPNE1zVRptC8Oa1JwKnG1WVIuJur0AHDvJ/qmW9LSMRx2uvXvJnorLCOsU0A/fcHwh
+         F1MA==
+X-Gm-Message-State: AOAM533Yz0kSuJS12XmuZw1uP/Mg+xWzQ+Cfi8liJfQu6i6gUPU7t6IU
+        RkFw8qhsaFkeqi6JsLzVahMwlXAHDQ8W6ALyhWSKIA==
+X-Google-Smtp-Source: ABdhPJwQ4TGMb5KzsAnZJ0zAu9KSAa3TQc+xsd/dxqDV/OmiFTAxg0DppfxNBpruoSZcCLTXEv29YwSq8MtYfcOEGC0=
+X-Received: by 2002:a17:906:f917:: with SMTP id lc23mr2594183ejb.233.1601470255231;
+ Wed, 30 Sep 2020 05:50:55 -0700 (PDT)
 MIME-Version: 1.0
-References: <1601444167-11316-1-git-send-email-hayashi.kunihiko@socionext.com> <1601444167-11316-4-git-send-email-hayashi.kunihiko@socionext.com>
-In-Reply-To: <1601444167-11316-4-git-send-email-hayashi.kunihiko@socionext.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Wed, 30 Sep 2020 07:49:30 -0500
-X-Gmail-Original-Message-ID: <CAL_Jsq+e+krj9xvOKdYNAGYFxPvRUsTQ=OzNvKg1D5_LherKvA@mail.gmail.com>
-Message-ID: <CAL_Jsq+e+krj9xvOKdYNAGYFxPvRUsTQ=OzNvKg1D5_LherKvA@mail.gmail.com>
-Subject: Re: [PATCH v3 3/4] PCI: dwc: Add common iATU register support
-To:     Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Murali Karicheri <m-karicheri2@ti.com>,
-        PCI <linux-pci@vger.kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Masami Hiramatsu <masami.hiramatsu@linaro.org>,
-        Jassi Brar <jaswinder.singh@linaro.org>
+References: <20200930011944.19869-1-jannh@google.com> <CAG48ez03YJG9JU_6tGiMcaVjuTyRE_o4LEQ7901b5ZoCnNAjcg@mail.gmail.com>
+ <20200930123000.GC9916@ziepe.ca>
+In-Reply-To: <20200930123000.GC9916@ziepe.ca>
+From:   Jann Horn <jannh@google.com>
+Date:   Wed, 30 Sep 2020 14:50:28 +0200
+Message-ID: <CAG48ez2z1R8MLS0_pjhBSGnJC8RwaHMpiGdv8GhJUCrwtsLOPg@mail.gmail.com>
+Subject: Re: [PATCH 3/4] mmap locking API: Don't check locking if the mm isn't
+ live yet
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        Michel Lespinasse <walken@google.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 12:36 AM Kunihiko Hayashi
-<hayashi.kunihiko@socionext.com> wrote:
+On Wed, Sep 30, 2020 at 2:30 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> On Tue, Sep 29, 2020 at 06:20:00PM -0700, Jann Horn wrote:
+> > In preparation for adding a mmap_assert_locked() check in
+> > __get_user_pages(), teach the mmap_assert_*locked() helpers that it's fine
+> > to operate on an mm without locking in the middle of execve() as long as
+> > it hasn't been installed on a process yet.
 >
-> This gets iATU register area from reg property that has reg-names "atu".
-> In Synopsys DWC version 4.80 or later, since iATU register area is
-> separated from core register area, this area is necessary to get from
-> DT independently.
->
-> Cc: Murali Karicheri <m-karicheri2@ti.com>
-> Cc: Jingoo Han <jingoohan1@gmail.com>
-> Cc: Gustavo Pimentel <gustavo.pimentel@synopsys.com>
-> Suggested-by: Rob Herring <robh@kernel.org>
-> Signed-off-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
-> ---
->  drivers/pci/controller/dwc/pcie-designware.c | 5 +++++
->  1 file changed, 5 insertions(+)
+> I'm happy to see lockdep being added here, but can you elaborate on
+> why add this mmap_locked_required instead of obtaining the lock in the
+> execv path?
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+My thinking was: At that point, we're logically still in the
+single-owner initialization phase of the mm_struct. Almost any object
+has initialization and teardown steps that occur in a context where
+the object only has a single owner, and therefore no locking is
+required. It seems to me that adding locking in places like
+get_arg_page() would be confusing because it would suggest the
+existence of concurrency where there is no actual concurrency, and it
+might be annoying in terms of lockdep if someone tries to use
+something like get_arg_page() while holding the mmap_sem of the
+calling process. It would also mean that we'd be doing extra locking
+in normal kernel builds that isn't actually logically required.
+
+Hmm, on the other hand, dup_mmap() already locks the child mm (with
+mmap_write_lock_nested()), so I guess it wouldn't be too bad to also
+do it in get_arg_page() and tomoyo_dump_page(), with comments that
+note that we're doing this for lockdep consistency... I guess I can go
+change this in v2.
