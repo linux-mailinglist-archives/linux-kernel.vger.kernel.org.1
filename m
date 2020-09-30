@@ -2,158 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA06027E6C2
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 12:35:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 730E827E6BB
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 12:35:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729261AbgI3Kfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 06:35:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36792 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725776AbgI3Kf0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 06:35:26 -0400
-Received: from kernel.org (unknown [87.71.73.56])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7F6D62071E;
-        Wed, 30 Sep 2020 10:35:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601462125;
-        bh=SzkDe746rX0ODWGVw7fDdaVyUZrEV+gM3E8swkXbMbU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uKhmviR7RakW6A11UWNT5ZnPb8uwHbZGJ7h8lD3kaL9kXhV36bE4HhoR+/vz33Mhg
-         MZsGnqTwp+vEmRtvpupcTHKJZOyDerAKfWNGjQ5XLmLmvO7wymY3GajpjZH4do/Pa4
-         U6C3rjeog953uQ4NSrLfTOZ44e0M4M9L8g8QNuUE=
-Date:   Wed, 30 Sep 2020 13:35:07 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-Cc:     "mark.rutland@arm.com" <mark.rutland@arm.com>,
-        "david@redhat.com" <david@redhat.com>,
-        "cl@linux.com" <cl@linux.com>, "hpa@zytor.com" <hpa@zytor.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "will@kernel.org" <will@kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "idan.yaniv@ibm.com" <idan.yaniv@ibm.com>,
-        "kirill@shutemov.name" <kirill@shutemov.name>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "rppt@linux.ibm.com" <rppt@linux.ibm.com>,
-        "Williams, Dan J" <dan.j.williams@intel.com>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "willy@infradead.org" <willy@infradead.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "luto@kernel.org" <luto@kernel.org>,
-        "shuah@kernel.org" <shuah@kernel.org>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "linux-nvdimm@lists.01.org" <linux-nvdimm@lists.01.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "Reshetova, Elena" <elena.reshetova@intel.com>,
-        "palmer@dabbelt.com" <palmer@dabbelt.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "mtk.manpages@gmail.com" <mtk.manpages@gmail.com>,
-        "tycho@tycho.ws" <tycho@tycho.ws>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>
-Subject: Re: [PATCH v6 3/6] mm: introduce memfd_secret system call to create
- "secret" memory areas
-Message-ID: <20200930103507.GK2142832@kernel.org>
-References: <20200924132904.1391-1-rppt@kernel.org>
- <20200924132904.1391-4-rppt@kernel.org>
- <d466e1f13ff615332fe1f513f6c1d763db28bd9a.camel@intel.com>
- <20200929130602.GF2142832@kernel.org>
- <839fbb26254dc9932dcff3c48a3a4ab038c016ea.camel@intel.com>
+        id S1729121AbgI3KfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 06:35:25 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:51674 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725776AbgI3KfY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 06:35:24 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08UAZDj3063753;
+        Wed, 30 Sep 2020 05:35:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1601462113;
+        bh=W3tHgrOnXpMaWWgD0wlfrfSuQNfKi2zpaLt3SGvhb5o=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=bOGg4TpkJccZJ6NABfzDiococTta9DWyHMKTlzdxfdGjeWc3X8oAOoX31nEKKjVgo
+         QRCwueP5WRmzVykkoTJ4657SRmeO18pi2DzPRpXZdS/CBJ5LcohXxfrNTuIHMlLeni
+         dZLpDMjYsgueH93ZB5+KaA6zvbNp9QmEFVstuOFM=
+Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08UAZDax110293;
+        Wed, 30 Sep 2020 05:35:13 -0500
+Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 30
+ Sep 2020 05:35:12 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 30 Sep 2020 05:35:12 -0500
+Received: from [10.250.235.166] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08UAZAoM003708;
+        Wed, 30 Sep 2020 05:35:10 -0500
+Subject: Re: [PATCH v3] mtd: spi-nor: keep lock bits if they are non-volatile
+To:     Michael Walle <michael@walle.cc>, <linux-mtd@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>
+References: <20200327155939.13153-1-michael@walle.cc>
+From:   Vignesh Raghavendra <vigneshr@ti.com>
+Message-ID: <523c3645-e37d-5d86-ba91-5c1be9e3881e@ti.com>
+Date:   Wed, 30 Sep 2020 16:05:09 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <839fbb26254dc9932dcff3c48a3a4ab038c016ea.camel@intel.com>
+In-Reply-To: <20200327155939.13153-1-michael@walle.cc>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 08:06:03PM +0000, Edgecombe, Rick P wrote:
-> On Tue, 2020-09-29 at 16:06 +0300, Mike Rapoport wrote:
-> > On Tue, Sep 29, 2020 at 04:58:44AM +0000, Edgecombe, Rick P wrote:
-> > > On Thu, 2020-09-24 at 16:29 +0300, Mike Rapoport wrote:
-> > > > Introduce "memfd_secret" system call with the ability to create
-> > > > memory
-> > > > areas visible only in the context of the owning process and not
-> > > > mapped not
-> > > > only to other processes but in the kernel page tables as well.
-> > > > 
-> > > > The user will create a file descriptor using the memfd_secret()
-> > > > system call
-> > > > where flags supplied as a parameter to this system call will
-> > > > define
-> > > > the
-> > > > desired protection mode for the memory associated with that file
-> > > > descriptor.
-> > > > 
-> > > >   Currently there are two protection modes:
-> > > > 
-> > > > * exclusive - the memory area is unmapped from the kernel direct
-> > > > map
-> > > > and it
-> > > >                is present only in the page tables of the owning
-> > > > mm.
-> > > 
-> > > Seems like there were some concerns raised around direct map
-> > > efficiency, but in case you are going to rework this...how does
-> > > this
-> > > memory work for the existing kernel functionality that does things
-> > > like
-> > > this?
-> > > 
-> > > get_user_pages(, &page);
-> > > ptr = kmap(page);
-> > > foo = *ptr;
-> > > 
-> > > Not sure if I'm missing something, but I think apps could cause the
-> > > kernel to access a not-present page and oops.
-> > 
-> > The idea is that this memory should not be accessible by the kernel,
-> > so
-> > the sequence you describe should indeed fail.
-> > 
-> > Probably oops would be to noisy and in this case the report needs to
-> > be
-> > less verbose.
+
+
+On 3/27/20 9:29 PM, Michael Walle wrote:
+> Traditionally, linux unlocks the whole flash because there are legacy
+> devices which has the write protections bits set by default at startup.
+> If you actually want to use the flash protection bits, eg. because there
+> is a read-only part for a bootloader, this automatic unlocking is
+> harmful. If there is no hardware write protection in place (usually
+> called WP#), a startup of the kernel just discards this protection.
 > 
-> I was more concerned that it could cause kernel instabilities.
-
-I think kernel recovers nicely from such sort of page fault, at least on
-x86.
-
-> I see, so it should not be accessed even at the userspace address? I
-> wonder if it should be prevented somehow then. At least
-> get_user_pages() should be prevented I think. Blocking copy_*_user()
-> access might not be simple.
+[...]
+> Further, the commit 3e0930f109e76 ("mtd: spi-nor: Rework the disabling of
+> block write protection") expanded the unlock_all() feature to ANY flash
+> which supports locking.
 > 
-> I'm also not so sure that a user would never have any possible reason
-> to copy data from this memory into the kernel, even if it's just
-> convenience. In which case a user setup could break if a specific
-> kernel implementation switched to get_user_pages()/kmap() from using
-> copy_*_user(). So seems maybe a bit thorny without fully blocking
-> access from the kernel, or deprecating that pattern.
+
+Appreciate the detail commit log.
+
+> Signed-off-by: Michael Walle <michael@walle.cc>
+> ---
+> changes since v2:
+>  - add Kconfig option to be able to retain legacy behaviour
+>  - rebased the patch due to the spi-nor rewrite
+>  - dropped the Fixes: tag, it doens't make sense after the spi-nor rewrite
+>  - mention commit 3e0930f109e76 which further modified the unlock
+>    behaviour.
 > 
-> You should probably call out these "no passing data to/from the kernel"
-> expectations, unless I missed them somewhere.
+> changes since v1:
+>  - completely rewrote patch, the first version used a device tree flag
+> 
+>  drivers/mtd/spi-nor/Kconfig | 35 +++++++++++++++++++++++++++++
+>  drivers/mtd/spi-nor/atmel.c | 24 +++++++++++++-------
+>  drivers/mtd/spi-nor/core.c  | 44 ++++++++++++++++++++++++++++---------
+>  drivers/mtd/spi-nor/core.h  |  6 +++++
+>  drivers/mtd/spi-nor/esmt.c  |  6 ++---
+>  drivers/mtd/spi-nor/intel.c |  6 ++---
+>  drivers/mtd/spi-nor/sst.c   | 21 +++++++++---------
+>  include/linux/mtd/spi-nor.h |  6 +++++
+>  8 files changed, 114 insertions(+), 34 deletions(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
+> index 6e816eafb312..647de17c81e2 100644
+> --- a/drivers/mtd/spi-nor/Kconfig
+> +++ b/drivers/mtd/spi-nor/Kconfig
+> @@ -24,6 +24,41 @@ config MTD_SPI_NOR_USE_4K_SECTORS
+>  	  Please note that some tools/drivers/filesystems may not work with
+>  	  4096 B erase size (e.g. UBIFS requires 15 KiB as a minimum).
+>  
+> +choice
+> +	prompt "Write protection at boot"
+> +	default MTD_SPI_NOR_WP_DISABLE
 
-You are right, I should have been more explicit in the description of
-the expected behavoir. 
+These choice control how BP0-X bits are manipulated on boot. Hence, to
+be consistent should use Block Protection (BP) terminology throughout.
 
-Our thinking was that copy_*user() would work in the context of the
-process that "owns" the secretmem and gup() would not allow access in
-general, unless requested with certail (yet another) FOLL_ flag.
+This would also be inline with most flash datasheets which also use term BP
 
--- 
-Sincerely yours,
-Mike.
+> +
+> +config MTD_SPI_NOR_WP_DISABLE
+> +	bool "Disable WP on any flashes (legacy behaviour)"
+> +	help
+> +	  This option disables the write protection on any SPI flashes at
+> +	  boot-up.
+> +
+> +	  Don't use this if you intent to use the write protection of your
+> +	  SPI flash. This is only to keep backwards compatibility.
+> +
+> +config MTD_SPI_NOR_WP_DISABLE_ON_VOLATILE
+> +	bool "Disable WP on flashes w/ volatile protection bits"
+> +	help
+> +	  Some SPI flashes have volatile block protection bits, ie. after a
+> +	  power-up or a reset the flash is write protected by default.
+> +
+> +	  This option disables the write protection for these kind of flashes
+> +	  while keeping it enabled for any other SPI flashes which have
+> +	  non-volatile block protection bits.
+> +
+> +	  If you are unsure, select this option.
+> +
+> +config MTD_SPI_NOR_WP_KEEP
+> +	bool "Keep write protection as is"
+> +	help
+> +	  If you select this option the write protection of any SPI flashes
+> +	  will not be changed. If your flash is write protected or will be
+> +	  automatically write protected after power-up you have to manually
+> +	  unlock it before you are able to write to it.
+> +
+> +endchoice
+> +
+>  source "drivers/mtd/spi-nor/controllers/Kconfig"
+>  
+>  endif # MTD_SPI_NOR
+
+[...]
+
+> diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+> index 6f2f6b27173f..9a33c023717f 100644
+> --- a/drivers/mtd/spi-nor/core.h
+> +++ b/drivers/mtd/spi-nor/core.h
+> @@ -26,6 +26,7 @@ enum spi_nor_option_flags {
+>  	SNOR_F_HAS_SR_TB_BIT6	= BIT(11),
+>  	SNOR_F_HAS_4BIT_BP      = BIT(12),
+>  	SNOR_F_HAS_SR_BP3_BIT6  = BIT(13),
+> +	SNOR_F_NEED_UNPROTECT	= BIT(14),
+>  };
+>  
+>  struct spi_nor_read_command {
+> @@ -311,6 +312,11 @@ struct flash_info {
+>  					 * BP3 is bit 6 of status register.
+>  					 * Must be used with SPI_NOR_4BIT_BP.
+>  					 */
+> +#define SPI_NOR_UNPROTECT	BIT(19)	/*
+> +					 * Flash is write-protected after
+> +					 * power-up and needs a global
+> +					 * unprotect.
+> +					 */
+>  
+
+It would be better to name the flag to indicate BP bits are volatile or
+powers up locked instead of SPI_NOR_UNPROTECT. This makes it easier to
+understand what this flag means wrt flash HW feature. Maybe:
+
+SPI_NOR_LOCKED_ON_POWER_UP or SPI_NOR_BP_IS_VOLATILE
+
+Reset looks fine to me
+
+[...]
+
+Regards
+Vignesh
