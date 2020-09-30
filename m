@@ -2,166 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE1D427F51B
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 00:28:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E08F027F522
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 00:29:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731588AbgI3W2i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 18:28:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50754 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730958AbgI3W2C (ORCPT
+        id S1731613AbgI3W30 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 18:29:26 -0400
+Received: from mail-il1-f205.google.com ([209.85.166.205]:49320 "EHLO
+        mail-il1-f205.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731598AbgI3W3X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 18:28:02 -0400
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1ACCC0613D0
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 15:28:00 -0700 (PDT)
-Received: by mail-il1-x144.google.com with SMTP id z5so3994203ilq.5
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 15:28:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wkN3WnPe8Q74Bq/fxwpUdgVX4tK0nQ0EycCSxHmpFCc=;
-        b=iltQRbF9ZGmvROU2UUfhSc5Lwtbxc8i7aFmLFsxPZMz4vcDQZZfI6qQPyDKVmhDWDM
-         YiJ+x53+ELioQmMxs1iHvFgl9Z5UGCAhaUbX9kmaCpnLhKft0uWTDC01AupHysxVbdcd
-         Y+CZfB+PbyV/xCeH1FuIugwjgPFzNYiTWQTjsJgTUSB1HiBtzLZeTzDJkvuO1AaxnxSz
-         eFs0KI4T/4Cv/WdKKCabBHM7w+KNDNqR/4x9C5nVPYl5jfQzY1vKMZaYfVqAX3vzQyc3
-         xkXy+OTieIwj1ZCiOwG2m9F3V+HA1LwDB3gcwFmhi8UvqucmbIUZwKzB/PHA4fy/kvpG
-         OHWw==
+        Wed, 30 Sep 2020 18:29:23 -0400
+Received: by mail-il1-f205.google.com with SMTP id o18so2798226ilm.16
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 15:29:21 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wkN3WnPe8Q74Bq/fxwpUdgVX4tK0nQ0EycCSxHmpFCc=;
-        b=avBT5k8jdUovOvRN3d6OEbBCe+UV4jXWAFtWaJOI209pPfUEED+33N4zerwzI+qopa
-         2fw/ab6LlLzvEXga0POPfVYGjvnQOKZsxm91+cckgkd5T6FqOEfode3uomnNHfRWXilN
-         CK5m49jrQ8X/tyEp+6J6XG/32gAxB8Mro8sVAQvnJPD7hIhUX46ZnLlN5sw74BukqRE4
-         7Q8KDUmGa2MAGBis0Tgkr4Ysc9PqmZZOCtPRDVB9gzv7zc4WTAbe4OAFwRo4ECQ5fNMf
-         XaWxW7glmYenv5U3QgfpN106zER2X2e9Q2UXe7Vj7+IFLRTZZuJdtreKkdSKdZUxIi/Y
-         sAzw==
-X-Gm-Message-State: AOAM532Qygi1ImuHiRJhlbqGPNIGlmFVv5otHBvs/P8H3TXrad1CmJWs
-        9Qj8Bh9hjZu0vmO6EfK6ZVHP81zo+7eLLHo0Ola3UhMpZ7OJTA77
-X-Google-Smtp-Source: ABdhPJzBNxsrt2nz+I/MkKIokvF9hK7rFYqdCRoU83A5pz3PHlgyss/IOLMeUM6A/j4dZualxzQHhQo0niv2zOO2cR4=
-X-Received: by 2002:a92:cbcd:: with SMTP id s13mr84761ilq.306.1601504879965;
- Wed, 30 Sep 2020 15:27:59 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=+0VlvcNRUBLPwYY+/l3iWps8TddUUFMalUbSMxo1nMc=;
+        b=JoGslo6sQxvI60ezTW7/3KtHZggrNo3x9SGHts2w4ctLzw2zEgEv3QA3ccRLG64qv2
+         JVSkg7s0Nl3K8KjZRO87W/HqL+Fu4XAN2THzK+QaChGuwBddNRrvInJbFLT/y4QZw5vB
+         zeCFiO6AJsTSrjMjPcWhO7Ymdf3rZmCYfkopwozCIACH9L4lMx1nPh+Bq9Rkkx716dQl
+         r87cT/iGYhd+I2ayEWdT67R6G/OqZR9jhvpRo+j5DfOJP0In4mi6iJ7i/xQq0iCGMAnI
+         VURfVR5rkk7goH48O/DYEffAi4uCqy/1iEFAJYxT8SynuwaXInKCtjLXnQ+UJo+C3FzY
+         ViGg==
+X-Gm-Message-State: AOAM531rWJxMf1Nt0cj8C1pugHmkl5RfJpsb1obwK9XriHvr8yMQUZjx
+        4vzcikL8kSrj6l4oa0FEFF5tsTF5OnY4J2D6pgCyZBPVbN3S
+X-Google-Smtp-Source: ABdhPJxQ53hwefKNF6WE9W0GG8xHlmhPERFSu7t/v13Oo8rcSYfID9pDQh/morvR5iOb+/sczzfKsSw84sYfzhDoi8jBLmnKOSv5
 MIME-Version: 1.0
-References: <20200925212302.3979661-1-bgardon@google.com> <20200925212302.3979661-21-bgardon@google.com>
- <20200930181556.GJ32672@linux.intel.com>
-In-Reply-To: <20200930181556.GJ32672@linux.intel.com>
-From:   Ben Gardon <bgardon@google.com>
-Date:   Wed, 30 Sep 2020 15:27:48 -0700
-Message-ID: <CANgfPd-A0gvBxpjYo3L5vZcv6xaxG92zkBUiLJA8ddJ+B5NJuA@mail.gmail.com>
-Subject: Re: [PATCH 20/22] kvm: mmu: NX largepage recovery for TDP MMU
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
-        Cannon Matthews <cannonmatthews@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
-        Peter Feiner <pfeiner@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
+X-Received: by 2002:a92:de4b:: with SMTP id e11mr89152ilr.101.1601504961330;
+ Wed, 30 Sep 2020 15:29:21 -0700 (PDT)
+Date:   Wed, 30 Sep 2020 15:29:21 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000053864e05b08f6e58@google.com>
+Subject: WARNING in kthread_park
+From:   syzbot <syzbot+e7eea402700c6db193be@syzkaller.appspotmail.com>
+To:     axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 11:16 AM Sean Christopherson
-<sean.j.christopherson@intel.com> wrote:
->
-> On Fri, Sep 25, 2020 at 02:23:00PM -0700, Ben Gardon wrote:
-> > +/*
-> > + * Clear non-leaf SPTEs and free the page tables they point to, if those SPTEs
-> > + * exist in order to allow execute access on a region that would otherwise be
-> > + * mapped as a large page.
-> > + */
-> > +void kvm_tdp_mmu_recover_nx_lpages(struct kvm *kvm)
-> > +{
-> > +     struct kvm_mmu_page *sp;
-> > +     bool flush;
-> > +     int rcu_idx;
-> > +     unsigned int ratio;
-> > +     ulong to_zap;
-> > +     u64 old_spte;
-> > +
-> > +     rcu_idx = srcu_read_lock(&kvm->srcu);
-> > +     spin_lock(&kvm->mmu_lock);
-> > +
-> > +     ratio = READ_ONCE(nx_huge_pages_recovery_ratio);
-> > +     to_zap = ratio ? DIV_ROUND_UP(kvm->stat.nx_lpage_splits, ratio) : 0;
->
-> This is broken, and possibly related to Paolo's INIT_LIST_HEAD issue.  The TDP
-> MMU never increments nx_lpage_splits, it instead has its own counter,
-> tdp_mmu_lpage_disallowed_page_count.  Unless I'm missing something, to_zap is
-> guaranteed to be zero and thus this is completely untested.
+Hello,
 
-Good catch, I should write some NX reclaim selftests.
+syzbot found the following issue on:
 
->
-> I don't see any reason for a separate tdp_mmu_lpage_disallowed_page_count,
-> a single VM can't have both a legacy MMU and a TDP MMU, so it's not like there
-> will be collisions with other code incrementing nx_lpage_splits.   And the TDP
-> MMU should be updating stats anyways.
+HEAD commit:    d1d2220c Add linux-next specific files for 20200924
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=15b1918d900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=254e028a642027c
+dashboard link: https://syzkaller.appspot.com/bug?extid=e7eea402700c6db193be
+compiler:       gcc (GCC) 10.1.0-syz 20200507
 
-A VM actually can have both the legacy MMU and TDP MMU, by design. The
-legacy MMU handles nested. Eventually I'd like the TDP MMU to be
-responsible for building nested shadow TDP tables, but haven't
-implemented it.
+Unfortunately, I don't have any reproducer for this issue yet.
 
->
-> > +
-> > +     while (to_zap &&
-> > +            !list_empty(&kvm->arch.tdp_mmu_lpage_disallowed_pages)) {
-> > +             /*
-> > +              * We use a separate list instead of just using active_mmu_pages
-> > +              * because the number of lpage_disallowed pages is expected to
-> > +              * be relatively small compared to the total.
-> > +              */
-> > +             sp = list_first_entry(&kvm->arch.tdp_mmu_lpage_disallowed_pages,
-> > +                                   struct kvm_mmu_page,
-> > +                                   lpage_disallowed_link);
-> > +
-> > +             old_spte = *sp->parent_sptep;
-> > +             *sp->parent_sptep = 0;
-> > +
-> > +             list_del(&sp->lpage_disallowed_link);
-> > +             kvm->arch.tdp_mmu_lpage_disallowed_page_count--;
-> > +
-> > +             handle_changed_spte(kvm, kvm_mmu_page_as_id(sp), sp->gfn,
-> > +                                 old_spte, 0, sp->role.level + 1);
-> > +
-> > +             flush = true;
-> > +
-> > +             if (!--to_zap || need_resched() ||
-> > +                 spin_needbreak(&kvm->mmu_lock)) {
-> > +                     flush = false;
-> > +                     kvm_flush_remote_tlbs(kvm);
-> > +                     if (to_zap)
-> > +                             cond_resched_lock(&kvm->mmu_lock);
-> > +             }
-> > +     }
-> > +
-> > +     if (flush)
-> > +             kvm_flush_remote_tlbs(kvm);
-> > +
-> > +     spin_unlock(&kvm->mmu_lock);
-> > +     srcu_read_unlock(&kvm->srcu, rcu_idx);
-> > +}
-> > +
-> > diff --git a/arch/x86/kvm/mmu/tdp_mmu.h b/arch/x86/kvm/mmu/tdp_mmu.h
-> > index 2ecb047211a6d..45ea2d44545db 100644
-> > --- a/arch/x86/kvm/mmu/tdp_mmu.h
-> > +++ b/arch/x86/kvm/mmu/tdp_mmu.h
-> > @@ -43,4 +43,6 @@ void kvm_tdp_mmu_zap_collapsible_sptes(struct kvm *kvm,
-> >
-> >  bool kvm_tdp_mmu_write_protect_gfn(struct kvm *kvm,
-> >                                  struct kvm_memory_slot *slot, gfn_t gfn);
-> > +
-> > +void kvm_tdp_mmu_recover_nx_lpages(struct kvm *kvm);
-> >  #endif /* __KVM_X86_MMU_TDP_MMU_H */
-> > --
-> > 2.28.0.709.gb0816b6eb0-goog
-> >
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+e7eea402700c6db193be@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 28162 at kernel/kthread.c:547 kthread_park+0x17c/0x1b0 kernel/kthread.c:547
+Modules linked in:
+CPU: 1 PID: 28162 Comm: syz-executor.3 Not tainted 5.9.0-rc6-next-20200924-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:kthread_park+0x17c/0x1b0 kernel/kthread.c:547
+Code: 2a 04 27 00 0f 0b e9 fb fe ff ff e8 1e 04 27 00 0f 0b e8 17 04 27 00 41 bc da ff ff ff 5b 44 89 e0 5d 41 5c c3 e8 04 04 27 00 <0f> 0b 41 bc f0 ff ff ff eb be e8 f5 03 27 00 0f 0b eb b2 e8 bc 74
+RSP: 0018:ffffc90017ebfd50 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffff888092c0ca00 RCX: ffffffff814e2ccf
+RDX: ffff88804f30a040 RSI: ffffffff814e2d6c RDI: 0000000000000007
+RBP: ffff88804f46c440 R08: 0000000000000000 R09: ffff888092c0ca07
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000001
+R13: 0000000000000000 R14: ffff888096f7d000 R15: 0000000000000000
+FS:  0000000002a7e940(0000) GS:ffff8880ae500000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000001590004 CR3: 000000020a32f000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ io_sq_thread_park fs/io_uring.c:7145 [inline]
+ io_sq_thread_park fs/io_uring.c:7139 [inline]
+ io_uring_flush+0x10a6/0x1640 fs/io_uring.c:8596
+ filp_close+0xb4/0x170 fs/open.c:1276
+ __close_fd+0x2f/0x50 fs/file.c:671
+ __do_sys_close fs/open.c:1295 [inline]
+ __se_sys_close fs/open.c:1293 [inline]
+ __x64_sys_close+0x69/0x100 fs/open.c:1293
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x417901
+Code: 75 14 b8 03 00 00 00 0f 05 48 3d 01 f0 ff ff 0f 83 a4 1a 00 00 c3 48 83 ec 08 e8 0a fc ff ff 48 89 04 24 b8 03 00 00 00 0f 05 <48> 8b 3c 24 48 89 c2 e8 53 fc ff ff 48 89 d0 48 83 c4 08 48 3d 01
+RSP: 002b:00007fffe4c281e0 EFLAGS: 00000293 ORIG_RAX: 0000000000000003
+RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 0000000000417901
+RDX: 0000000000000000 RSI: ffffffff8840e309 RDI: 0000000000000003
+RBP: 0000000000000001 R08: ffffffff8134e496 R09: 0000000092f8bb6d
+R10: 00007fffe4c282d0 R11: 0000000000000293 R12: 000000000118d9c0
+R13: 000000000118d9c0 R14: ffffffffffffffff R15: 000000000118cf4c
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
