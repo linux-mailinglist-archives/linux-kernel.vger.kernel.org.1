@@ -2,85 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ABB127DF0A
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 05:37:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E22D027DF0D
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 05:37:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727971AbgI3DhI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 23:37:08 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:50656 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725320AbgI3DhI (ORCPT
+        id S1728046AbgI3Dh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 23:37:26 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:42652 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725320AbgI3Dh0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 23:37:08 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08U3O6oC146628;
-        Wed, 30 Sep 2020 03:36:57 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=corp-2020-01-29;
- bh=sdwiHpsg0mtuzYoRYPEdkF1mlWyxeqhFFuNURHlyQZo=;
- b=jm5k0/c39pJLie3wK9LW52avPCpQubRezMNchTeOFqpc8Z9RiLQ21wFWZleVayQsCKsV
- EDczJUzMXlcUXri9SegSLaUOm6Twdur7Z+t3yBVwPqGIMHX6J080IbypwD3vhYu5t3de
- O5BxiuKdewNV1IDcU5tGR6OAOmWzAIa+PNoFmWnI/7MZGFU772hxUXcVjwLEZfyGNU5b
- 5v9B/jIeAvzn53Jt1Yf00SprsHJ2OHMsApov+0/xWuG5oPcFGznRWHqrwsddpaMRSNOT
- 2QT0pSpxF1MsTROW8abFSSe2dbsWWbUx2G+YPq5xAxaVBD+LDxI/Rc/whI86xXZudE0+ 4Q== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2130.oracle.com with ESMTP id 33su5axc7v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 30 Sep 2020 03:36:57 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08U3QVGQ064737;
-        Wed, 30 Sep 2020 03:34:57 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 33tfhygkx5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 30 Sep 2020 03:34:57 +0000
-Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 08U3YuWG027463;
-        Wed, 30 Sep 2020 03:34:56 GMT
-Received: from ca-mkp.ca.oracle.com (/10.156.108.201)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 29 Sep 2020 20:34:56 -0700
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-To:     Manish Rangankar <mrangankar@marvell.com>,
-        GR-QLogic-Storage-Upstream@marvell.com,
-        Nilesh Javali <njavali@marvell.com>,
-        Qinglang Miao <miaoqinglang@huawei.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>
-Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] scsi: bnx2i: remove unnecessary mutex_init()
-Date:   Tue, 29 Sep 2020 23:34:49 -0400
-Message-Id: <160143685413.27701.17988094324324512937.b4-ty@oracle.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200916062133.191000-1-miaoqinglang@huawei.com>
-References: <20200916062133.191000-1-miaoqinglang@huawei.com>
+        Tue, 29 Sep 2020 23:37:26 -0400
+X-UUID: fcb3a0e8fcff4d4ea64a39c99de5a5b7-20200930
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=nFjY+65HkqTIZS8cgP/4xc/0uFaZraXhLQV67OqTdbo=;
+        b=jLzGBIU/L7LxLBmXWaLGR2ayRZugR9e0ab3xyA5D9N2DlC+m38PdbbP2GCwMlN/Fb4ubVyrgmX3c8dAybi3aHg2Tp670nrUo+Pmx2uu90Bq3pWxRJ7XnUde3TLrDgb5w/smviMP3LgAyjaKvmZf3VFZB29AO8LJAfbE6UIwHpOQ=;
+X-UUID: fcb3a0e8fcff4d4ea64a39c99de5a5b7-20200930
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
+        (envelope-from <weiyi.lu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1300487384; Wed, 30 Sep 2020 11:37:20 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 30 Sep 2020 11:37:15 +0800
+Received: from [172.21.77.4] (172.21.77.4) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 30 Sep 2020 11:37:19 +0800
+Message-ID: <1601437039.28469.3.camel@mtksdaap41>
+Subject: Re: [PATCH v17 06/12] soc: mediatek: Add support for hierarchical
+ scpsys device node
+From:   Weiyi Lu <weiyi.lu@mediatek.com>
+To:     Nicolas Boichat <drinkcat@chromium.org>
+CC:     Enric Balletbo Serra <eballetbo@gmail.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Herring <robh@kernel.org>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        James Liao <jamesjj.liao@mediatek.com>,
+        Fan Chen <fan.chen@mediatek.com>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        srv_heupstream <srv_heupstream@mediatek.com>
+Date:   Wed, 30 Sep 2020 11:37:19 +0800
+In-Reply-To: <CANMq1KByYjeD0D81sPzDxx5SzrPvpGxPgm+xvLWcFsmfUJDWBQ@mail.gmail.com>
+References: <1596705715-15320-1-git-send-email-weiyi.lu@mediatek.com>
+         <1596705715-15320-7-git-send-email-weiyi.lu@mediatek.com>
+         <CANMq1KByYjeD0D81sPzDxx5SzrPvpGxPgm+xvLWcFsmfUJDWBQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9759 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999 bulkscore=0
- phishscore=0 malwarescore=0 adultscore=0 suspectscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009300023
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9759 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=0
- lowpriorityscore=0 spamscore=0 clxscore=1015 mlxscore=0 impostorscore=0
- malwarescore=0 phishscore=0 adultscore=0 bulkscore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009300023
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 16 Sep 2020 14:21:33 +0800, Qinglang Miao wrote:
+T24gTW9uLCAyMDIwLTA5LTI4IGF0IDE1OjE0ICswODAwLCBOaWNvbGFzIEJvaWNoYXQgd3JvdGU6
+DQo+IE9uIFRodSwgQXVnIDYsIDIwMjAgYXQgNToyMiBQTSBXZWl5aSBMdSA8d2VpeWkubHVAbWVk
+aWF0ZWsuY29tPiB3cm90ZToNCj4gPg0KPiA+IFRyeSB0byBsaXN0IGFsbCB0aGUgcG93ZXIgZG9t
+YWlucyBvZiB1bmRlciBwb3dlciBjb250cm9sbGVyDQo+ID4gbm9kZSB0byBzaG93IHRoZSBkZXBl
+bmRlbmN5IGJldHdlZW4gZWFjaCBwb3dlciBkb21haW4gZGlyZWN0bHkNCj4gPiBpbnN0ZWFkIG9m
+IGZpbGxpbmcgdGhlIGRlcGVuZGVuY3kgaW4gc2NwX3NvY19kYXRhLg0KPiA+IEFuZCBjb3VsZCBi
+ZSBtb3JlIGNsZWFybHkgdG8gZ3JvdXAgc3Vic3lzIGNsb2NrcyBpbnRvIHBvd2VyIGRvbWFpbg0K
+PiA+IHN1YiBub2RlIHRvIGludHJvZHVjZSBzdWJzeXMgY2xvY2tzIG9mIGJ1cyBwcm90ZWN0aW9u
+IGluIG5leHQgcGF0Y2guDQo+ID4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBXZWl5aSBMdSA8d2VpeWku
+bHVAbWVkaWF0ZWsuY29tPg0KPiA+IC0tLQ0KPiBbc25pcF0NCj4gPiArc3RhdGljIGludCB0cmF2
+ZXJzZV9zY3Aoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldiwgc3RydWN0IHNjcCAqc2NwLA0K
+PiA+ICsgICAgICAgICAgICAgICAgICAgICAgIGNvbnN0IHN0cnVjdCBzY3BfZG9tYWluX2RhdGEg
+KnNjcF9kb21haW5fZGF0YSkNCj4gPiArew0KPiA+ICsgICAgICAgc3RydWN0IGRldmljZSAqZGV2
+ID0gJnBkZXYtPmRldjsNCj4gPiArICAgICAgIHN0cnVjdCBkZXZpY2Vfbm9kZSAqbnAgPSBkZXYt
+Pm9mX25vZGU7DQo+ID4gKyAgICAgICBzdHJ1Y3QgZGV2aWNlX25vZGUgKnN1YjsNCj4gPiArICAg
+ICAgIGludCByZXQ7DQo+ID4gKw0KPiA+ICsgICAgICAgSU5JVF9MSVNUX0hFQUQoJnNjcC0+ZGVw
+X2xpbmtzKTsNCj4gPiArDQo+ID4gKyAgICAgICBmb3JfZWFjaF9hdmFpbGFibGVfY2hpbGRfb2Zf
+bm9kZShucCwgc3ViKSB7DQo+ID4gKyAgICAgICAgICAgICAgIHJldCA9IHNjcHN5c19nZXRfZG9t
+YWluKHBkZXYsIHNjcCwgc3ViLCBzY3BfZG9tYWluX2RhdGEpOw0KPiA+ICsgICAgICAgICAgICAg
+ICBpZiAocmV0KSB7DQo+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgZGV2X2VycigmcGRldi0+
+ZGV2LCAiZmFpbGVkIHRvIGhhbmRsZSBub2RlICVwT0ZuOiAlZFxuIiwgc3ViLCByZXQpOw0KPiAN
+Cj4gbWlub3IgY29tbWVudDogdGhpcyBlcnJvciBzaG91bGQgbm90IGJlIHByaW50ZWQgaWYgcmV0
+ID09DQo+IC1FUFJPQkVfREVGRVIgKHVzZSB0aGUgbmV3IGRldl9lcnJfcHJvYmU/KQ0KPiANCg0K
+WW91J3JlIHJpZ2h0ISBJJ2xsIHVzZSBkZXZfZXJyX3Byb2JlKCkgaW5zdGVhZCBpZiBhbnlvbmUg
+aXMgaW50ZXJlc3RlZA0KaW4gdGhpcyBzZXJpZXMuIFRoYW5rIHlvdSENCg0KPiA+ICsgICAgICAg
+ICAgICAgICAgICAgICAgIGdvdG8gZXJyOw0KPiA+ICsgICAgICAgICAgICAgICB9DQo+ID4gKyAg
+ICAgICB9DQo+ID4gKw0KPiA+ICsgICAgICAgcmV0dXJuIDA7DQo+ID4gKw0KPiA+ICtlcnI6DQo+
+ID4gKyAgICAgICBvZl9ub2RlX3B1dChzdWIpOw0KPiA+ICsgICAgICAgcmV0dXJuIHJldDsNCj4g
+PiArfQ0KPiBbc25pcF0NCg0K
 
-> The mutex bnx2i_dev_lock is initialized statically. It is
-> unnecessary to initialize by mutex_init().
-
-Applied to 5.10/scsi-queue, thanks!
-
-[1/1] scsi: bnx2i: Remove unnecessary mutex_init()
-      https://git.kernel.org/mkp/scsi/c/97d0e04d38b4
-
--- 
-Martin K. Petersen	Oracle Linux Engineering
