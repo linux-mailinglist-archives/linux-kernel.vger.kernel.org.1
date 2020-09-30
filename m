@@ -2,95 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6A4527E0DC
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 08:10:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C699B27E0DE
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 08:10:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725864AbgI3GKm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 02:10:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40840 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725320AbgI3GKm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 02:10:42 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2687C061755;
-        Tue, 29 Sep 2020 23:10:41 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id s205so546187lja.7;
-        Tue, 29 Sep 2020 23:10:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=tF1+/MycUx+KyCDTvsvj5n8w93b7S9PxVTTODrbJLlQ=;
-        b=srdnNQg2feKgQJzm9RAwg47hsQoXa0Hg/Q3ues2KB66TP8x8y/5A3LJCtSuayucJbD
-         VBaWOcAD68TRSQvWDlG605UftlLRtya4qHG2obIaz64msOSgSGsbGnoKlqxgjeDctpaN
-         G0+e+LmR1IeSvoLVsE+68lLoYFw97769Mb+ZSLkToZ6kD5FM4TRt/jpe0S5J2cLHs8P8
-         U7s1lXwu01mPPV7GlfREG12eBepSCdePirmn9d1LqlcJQ08CebrEpsNtM/DC/Q2oK/7R
-         vPhUVkrrfuPYfFGKMHLZEzOre3MnxfNiiw6KXOIamClZZZz6z1DOw87Mgm8yhmlVTmpr
-         4UIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=tF1+/MycUx+KyCDTvsvj5n8w93b7S9PxVTTODrbJLlQ=;
-        b=HAjHy8Nm48zBdGtTJahMlDeSi5lfI+O64LafJA5B8ggHd69q0F+OSKRmi0Aadsgfls
-         qBJYR1M83UXwLKl0XgC8Lx1NGQdpJ2Fc7e1GbZ4wpeOy6uAcPvSQOTLoftVXihqS7GVL
-         hDcbO9Gcwmz9WiZ3Ydi7jDMJNix45kKQt0J6/4jqAtEehugwUbWy3y3tZaOzeBgcT3Ld
-         8xUn/UQeJ/wSlBNzWdbUb0H2hiQiJs1uxyVBqahqu/ckQ0UtizVZ4DZ7Uhd+JNZrQKMC
-         ix5tb8W+2JDg9CXJa2YP3LPu8QkOYsLik8w2XombpsKj4+QiHtkJ2TW183wtF5cevBOj
-         qbdA==
-X-Gm-Message-State: AOAM533c3Jj/pcXlvhwKENoiWk5myaDA2I8UfpSeWsd8CeGlHPoueQmP
-        SuAJlg5WKQa3Bzj+PvlYC0H2MjPMGfk=
-X-Google-Smtp-Source: ABdhPJwQtAdUuITXXpykkxgwWFhu2CUYJjNGKst4ciCzx9dSlJJoZPdAALZZNafTQuN9U8PB3hKmcA==
-X-Received: by 2002:a05:651c:227:: with SMTP id z7mr352115ljn.99.1601446239924;
-        Tue, 29 Sep 2020 23:10:39 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
-        by smtp.googlemail.com with ESMTPSA id t13sm61057ljc.70.2020.09.29.23.10.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 29 Sep 2020 23:10:39 -0700 (PDT)
-Subject: Re: [PATCH v2 2/3] iommu/tegra-smmu: Rework .probe_device and
- .attach_dev
-To:     Nicolin Chen <nicoleotsuka@gmail.com>
-Cc:     thierry.reding@gmail.com, joro@8bytes.org, krzk@kernel.org,
-        vdumpa@nvidia.com, jonathanh@nvidia.com,
-        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-References: <20200930003013.31289-1-nicoleotsuka@gmail.com>
- <20200930003013.31289-3-nicoleotsuka@gmail.com>
- <75514da5-e63a-9e51-8376-abbd12c324d1@gmail.com>
- <20200930054900.GG31821@Asurada-Nvidia>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <b74f96cf-0edc-c7f2-3a0e-2a4fe51e3b2e@gmail.com>
-Date:   Wed, 30 Sep 2020 09:10:38 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1727416AbgI3GKt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 02:10:49 -0400
+Received: from mga17.intel.com ([192.55.52.151]:62796 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725320AbgI3GKt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 02:10:49 -0400
+IronPort-SDR: y7EZcNz/i3iqDRrc3wQwT34Y//32CCB6Rth6iqAr68tSUIYafL8AY+WIpWdkK0sljconsArvpy
+ MiuZQvtASDvw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9759"; a="142378976"
+X-IronPort-AV: E=Sophos;i="5.77,321,1596524400"; 
+   d="scan'208";a="142378976"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2020 23:10:49 -0700
+IronPort-SDR: htIiZbeEJYeOClBSu8UNGbIhYy6kNFlK9nB0/jx+MBLivArZlXU555Vb7kVr6GcXV2v62qcCBJ
+ DMEKzHF27pbw==
+X-IronPort-AV: E=Sophos;i="5.77,321,1596524400"; 
+   d="scan'208";a="350561475"
+Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2020 23:10:48 -0700
+Date:   Tue, 29 Sep 2020 23:10:47 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Ben Gardon <bgardon@google.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Cannon Matthews <cannonmatthews@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
+        Peter Feiner <pfeiner@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
+Subject: Re: [PATCH 06/22] kvm: mmu: Make address space ID a property of
+ memslots
+Message-ID: <20200930061047.GB29659@linux.intel.com>
+References: <20200925212302.3979661-1-bgardon@google.com>
+ <20200925212302.3979661-7-bgardon@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20200930054900.GG31821@Asurada-Nvidia>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200925212302.3979661-7-bgardon@google.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-30.09.2020 08:49, Nicolin Chen пишет:
-> On Wed, Sep 30, 2020 at 08:11:52AM +0300, Dmitry Osipenko wrote:
->> 30.09.2020 03:30, Nicolin Chen пишет:
->>> +	/* An invalid mc pointer means mc and smmu drivers are not ready */
->>> +	if (IS_ERR_OR_NULL(mc))
->>
->> tegra_get_memory_controller() doesn't return NULL.
+On Fri, Sep 25, 2020 at 02:22:46PM -0700, Ben Gardon wrote:
+> Save address space ID as a field in each memslot so that functions that
+> do not use rmaps (which implicitly encode the id) can handle multiple
+> address spaces correctly.
 > 
-> Well, I don't want to assume that it'd do that forever, and the
-> NULL check of IS_ERR_OR_NULL is marked "unlikely" so it doesn't
-> hurt to have.
+> Tested by running kvm-unit-tests and KVM selftests on an Intel Haswell
+> machine. This series introduced no new failures.
 > 
+> This series can be viewed in Gerrit at:
+> 	https://linux-review.googlesource.com/c/virt/kvm/kvm/+/2538
+> 
+> Signed-off-by: Ben Gardon <bgardon@google.com>
+> ---
+>  include/linux/kvm_host.h | 1 +
+>  virt/kvm/kvm_main.c      | 1 +
+>  2 files changed, 2 insertions(+)
+> 
+> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+> index 05e3c2fb3ef78..a460bc712a81c 100644
+> --- a/include/linux/kvm_host.h
+> +++ b/include/linux/kvm_host.h
+> @@ -345,6 +345,7 @@ struct kvm_memory_slot {
+>  	struct kvm_arch_memory_slot arch;
+>  	unsigned long userspace_addr;
+>  	u32 flags;
+> +	int as_id;
 
-I don't see any reasons why it won't do that forever.
+Ha!  Peter Xu's dirtly ring also added this.  This should be a u16, it'll
+save 8 bytes per memslot (oooooooh).  Any chance you want to include Peter's
+patch[*]?  It has some nitpicking from Peter and I regarding what to do
+with as_id on deletion.  That would also avoid silent merge conflicts on
+Peter's end.
 
-Secondly, public function can't be changed randomly without updating all
-the callers.
+[*] https://lkml.kernel.org/r/20200708193408.242909-2-peterx@redhat.com
 
-Hence there is no need to handle cases that can't ever happen and it
-hurts readability of the code + original error code is missed.
+>  	short id;
+>  };
+>  
+> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> index cf88233b819a0..f9c80351c9efd 100644
+> --- a/virt/kvm/kvm_main.c
+> +++ b/virt/kvm/kvm_main.c
+> @@ -1318,6 +1318,7 @@ int __kvm_set_memory_region(struct kvm *kvm,
+>  	new.npages = mem->memory_size >> PAGE_SHIFT;
+>  	new.flags = mem->flags;
+>  	new.userspace_addr = mem->userspace_addr;
+> +	new.as_id = as_id;
+>  
+>  	if (new.npages > KVM_MEM_MAX_NR_PAGES)
+>  		return -EINVAL;
+> -- 
+> 2.28.0.709.gb0816b6eb0-goog
+> 
