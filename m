@@ -2,108 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5D0427EC0F
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 17:14:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CF4727EC2C
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 17:18:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730887AbgI3POS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 11:14:18 -0400
-Received: from nat-hk.nvidia.com ([203.18.50.4]:24075 "EHLO nat-hk.nvidia.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728480AbgI3POP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 11:14:15 -0400
-Received: from HKMAIL101.nvidia.com (Not Verified[10.18.92.9]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f74a0c40000>; Wed, 30 Sep 2020 23:14:12 +0800
-Received: from HKMAIL103.nvidia.com (10.18.16.12) by HKMAIL101.nvidia.com
- (10.18.16.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 30 Sep
- 2020 15:14:11 +0000
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.176)
- by HKMAIL103.nvidia.com (10.18.16.12) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Wed, 30 Sep 2020 15:14:11 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=oZssfSeVRejFr8QQLFZ8LgbSRmObinCMPlvtEli95uOgaQNGhiHXT4Acd0fBYG8s6qDGILP5isF5zAJGbGZmkrSw6zciDvPWk9Eu9+WhiU00h+VP2s8zpJsb9uhHGBm+zPEsHyJUo145Jru5+W2omvo0nMC0CWii6sipt9ELUAFo4+1t5HwMyGVziyufwrIR9xmDGcAp9xdSRdDx/Jb2qf1avUloc+MikLfQPgyfzBR8A27PqEBd1a2ToNOYYl+5i/ICLUnwUTMb5e9BSYnSRaPGJCRbh+JDfOp04LkrQ20J4v/fJ/O6Ab3y1yNznoPZ57ncM7IiS3IBdaprghj/1g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=s25BWvSSYFaWscZEV8dpG8j2WBhhANw0myZWj3gyy+8=;
- b=oVeSBv9FhYSnFhZ0Z5cjiG+hHzpYWH3sgPE0kFPlR8AtCXqyK6CO+EVDsFMve9bkSXQSIOLwvq337Y7ybkoin47hTEkkqJMFD+j/IfGs/2vc7wPDIWBZBbJnzbcotM1Dt7E66kW2Z6pOXet90d4ypu8znaFZPoRbSiSPahlzO7c5wKo+LWXkkfPQSGdgcE7Gr4AwwMEWDW2/rqFDOMIKyJK3gewg8P1n/8Sfs0lVet2jTriGOA24ngGgPlplFnm7R4osKjSp++utHSfOZa6J5JtCO8BATjfAFr4i0ykv7e3BCAv+pkinJ9B0GtfxFm9SuPFyeivtfZVQy2Ws3J7ROA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB3929.namprd12.prod.outlook.com (2603:10b6:5:148::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.20; Wed, 30 Sep
- 2020 15:14:08 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3433.032; Wed, 30 Sep 2020
- 15:14:08 +0000
-Date:   Wed, 30 Sep 2020 12:14:06 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Maor Gottlieb <maorg@nvidia.com>
-CC:     Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        <dri-devel@lists.freedesktop.org>,
-        <intel-gfx@lists.freedesktop.org>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Roland Scheidegger <sroland@vmware.com>,
-        "Tvrtko Ursulin" <tvrtko.ursulin@intel.com>,
-        VMware Graphics <linux-graphics-maintainer@vmware.com>
-Subject: Re: [PATCH rdma-next v4 4/4] RDMA/umem: Move to allocate SG table
- from pages
-Message-ID: <20200930151406.GM816047@nvidia.com>
-References: <20200927064647.3106737-1-leon@kernel.org>
- <20200927064647.3106737-5-leon@kernel.org>
- <20200929195929.GA803555@nvidia.com> <20200930095321.GL3094@unreal>
- <20200930114527.GE816047@nvidia.com>
- <80c49ff1-52c7-638f-553f-9de8130b188d@nvidia.com>
- <20200930115837.GF816047@nvidia.com>
- <7e09167f-c57a-cdfe-a842-c920e9421e53@nvidia.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <7e09167f-c57a-cdfe-a842-c920e9421e53@nvidia.com>
-X-ClientProxiedBy: BL1PR13CA0038.namprd13.prod.outlook.com
- (2603:10b6:208:257::13) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S1730444AbgI3PSG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 11:18:06 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:14574 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725799AbgI3PSF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 11:18:05 -0400
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08UF3MFk094686;
+        Wed, 30 Sep 2020 11:17:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : reply-to : to : cc : date : in-reply-to : references : content-type
+ : mime-version : content-transfer-encoding; s=pp1;
+ bh=gp+WQ9ZEESIZMduD1c/QEJUgwqbbB7WxwcV1dg1RrNA=;
+ b=GTNk/CkCAv8Qo5GFZrNEkX9tOKw5DaIu8rRYo+l9dGFjJ2UhDLmAbhff9Viw5MTvKmQS
+ HhXE4TScz4/FbOYj0KrSBua1OE0Q4JHcYzQ4eP4qEl7wPgFMhEIzaY5h5/RKFjJVLKpZ
+ P+oymzU4uwjVrMxsaCs5urUeI8oCtdeqsPAcudm72WEfn+cnCEo4RgpHYCBC9bEr7Wpt
+ YqCO+/lRbY6ky/64BS7J6+KIrKyCLDyXEIYhC8VnsO6FvNz6hUZuuxoaKon+qApQVV2c
+ mq/WI6NjDg7OG63/7oboppyBDscb0Myb6e/QbiPtc1ufBfPfgCZMolIVoIjVKMVBS23W Mg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33vv1q195j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 30 Sep 2020 11:17:25 -0400
+Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08UF3VKV095830;
+        Wed, 30 Sep 2020 11:17:25 -0400
+Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33vv1q194k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 30 Sep 2020 11:17:24 -0400
+Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
+        by ppma03dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08UFDA0t032299;
+        Wed, 30 Sep 2020 15:17:22 GMT
+Received: from b03cxnp08028.gho.boulder.ibm.com (b03cxnp08028.gho.boulder.ibm.com [9.17.130.20])
+        by ppma03dal.us.ibm.com with ESMTP id 33sw99qx7k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 30 Sep 2020 15:17:22 +0000
+Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
+        by b03cxnp08028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08UFHLxG41681302
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 30 Sep 2020 15:17:21 GMT
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1C2B478064;
+        Wed, 30 Sep 2020 15:17:21 +0000 (GMT)
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1A8C07805F;
+        Wed, 30 Sep 2020 15:17:13 +0000 (GMT)
+Received: from jarvis (unknown [9.85.129.253])
+        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Wed, 30 Sep 2020 15:17:12 +0000 (GMT)
+Message-ID: <ba7fbd31b37363c002318f633d7cc47d9ef46822.camel@linux.ibm.com>
+Subject: Re: [PATCH v6 5/6] mm: secretmem: use PMD-size pages to amortize
+ direct map fragmentation
+From:   James Bottomley <jejb@linux.ibm.com>
+Reply-To: jejb@linux.ibm.com
+To:     David Hildenbrand <david@redhat.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Idan Yaniv <idan.yaniv@ibm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Shuah Khan <shuah@kernel.org>, Tycho Andersen <tycho@tycho.ws>,
+        Will Deacon <will@kernel.org>, linux-api@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org
+Date:   Wed, 30 Sep 2020 08:17:11 -0700
+In-Reply-To: <6568383f-4e43-2fe4-ecf1-8a55e306440b@redhat.com>
+References: <20200924132904.1391-1-rppt@kernel.org>
+         <20200924132904.1391-6-rppt@kernel.org>
+         <20200925074125.GQ2628@hirez.programming.kicks-ass.net>
+         <20200929130529.GE2142832@kernel.org>
+         <20200929141216.GO2628@hirez.programming.kicks-ass.net>
+         <20200929145813.GA3226834@linux.ibm.com>
+         <20200929151552.GS2628@hirez.programming.kicks-ass.net>
+         <20200930102745.GC3226834@linux.ibm.com>
+         <371c27d97067654171e5c1019340b56cffadae7a.camel@linux.ibm.com>
+         <6568383f-4e43-2fe4-ecf1-8a55e306440b@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by BL1PR13CA0038.namprd13.prod.outlook.com (2603:10b6:208:257::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.18 via Frontend Transport; Wed, 30 Sep 2020 15:14:07 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kNdny-0048L3-Hh; Wed, 30 Sep 2020 12:14:06 -0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1601478852; bh=hF+5rGDA7BuDnHsRnPwRle+nLbbEACSot6NWeuDv2dw=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:Content-Transfer-Encoding:In-Reply-To:
-         X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=LXlkWM9QtDp96AciBbt2qrmve0czMpV3ul45q3cTlFlKk6uNa5Z/S1Mqv/qKrR/Le
-         i3y5F1fxft1U/RzbfKbojNtTB0X7hMtuUuQ3WsYepRQecx5FHP0Wr4IHaeXF8TNFpq
-         9EYOJwwVEx5cnlfoKJAmmsPhsdRv6jK9T87WTXr0+4yh0LQ1E4SkuYP/l9vIP0lBfl
-         uavIda64znHsvaAd1VDEhRzTH2exRbVSp0GtNnoiypXJbSeu4WeWp5OrPF9r6FOrbn
-         3PiSDM+GSHOO1P2+mkYByeIQKd0G3IvgjXokBFmFZ/v0KtcJfUxTXrmHv1HTt8twHA
-         LRjNePO7Sdv5A==
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-30_08:2020-09-30,2020-09-30 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ mlxlogscore=838 impostorscore=0 suspectscore=2 clxscore=1015 mlxscore=0
+ spamscore=0 bulkscore=0 priorityscore=1501 adultscore=0 phishscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009300121
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 06:05:15PM +0300, Maor Gottlieb wrote:
-> This is right only for the last iteration. E.g. in the first iteration in
-> case that there are more pages (left_pages), then we allocate
-> SG_MAX_SINGLE_ALLOC.=C2=A0 We don't know how many pages from the second i=
-teration
-> will be squashed to the SGE from the first iteration.
+On Wed, 2020-09-30 at 16:45 +0200, David Hildenbrand wrote:
+> On 30.09.20 16:39, James Bottomley wrote:
+> > On Wed, 2020-09-30 at 13:27 +0300, Mike Rapoport wrote:
+> > > On Tue, Sep 29, 2020 at 05:15:52PM +0200, Peter Zijlstra wrote:
+> > > > On Tue, Sep 29, 2020 at 05:58:13PM +0300, Mike Rapoport wrote:
+> > > > > On Tue, Sep 29, 2020 at 04:12:16PM +0200, Peter Zijlstra
+> > > > > wrote:
+> > > > > > It will drop them down to 4k pages. Given enough inodes,
+> > > > > > and allocating only a single sekrit page per pmd, we'll
+> > > > > > shatter the directmap into 4k.
+> > > > > 
+> > > > > Why? Secretmem allocates PMD-size page per inode and uses it
+> > > > > as a pool of 4K pages for that inode. This way it ensures
+> > > > > that __kernel_map_pages() is always called on PMD boundaries.
+> > > > 
+> > > > Oh, you unmap the 2m page upfront? I read it like you did the
+> > > > unmap at the sekrit page alloc, not the pool alloc side of
+> > > > things.
+> > > > 
+> > > > Then yes, but then you're wasting gobs of memory. Basically you
+> > > > can pin 2M per inode while only accounting a single page.
+> > > 
+> > > Right, quite like THP :)
+> > > 
+> > > I considered using a global pool of 2M pages for secretmem and
+> > > handing 4K pages to each inode from that global pool. But I've
+> > > decided to waste memory in favor of simplicity.
+> > 
+> > I can also add that the user space consumer of this we wrote does
+> > its user pool allocation at a 2M granularity, so nothing is
+> > actually wasted.
+> 
+> ... for that specific user space consumer. (or am I missing
+> something?)
 
-Well, it is 0 or 1 SGE's. Check if the first page is mergable and
-subtract one from the required length?
+I'm not sure I understand what you mean?  It's designed to be either
+the standard wrapper or an example of how to do the standard wrapper
+for the syscall.  It uses the same allocator system glibc uses for
+malloc/free ... which pretty much everyone uses instead of calling
+sys_brk directly.  If you look at the granularity glibc uses for
+sys_brk, it's not 4k either.
 
-I dislike this sg_mark_end() it is something that should be internal,
-IMHO.
+James
 
-Jason
+
