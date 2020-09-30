@@ -2,104 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A3E627F2CE
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 22:00:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74EE527F2D0
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 22:00:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730013AbgI3UAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 16:00:09 -0400
-Received: from mail-co1nam11on2062.outbound.protection.outlook.com ([40.107.220.62]:15585
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725799AbgI3UAJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 16:00:09 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kt9WEdTH+mKHKx99cQ9/jOcU8JjSyb4wJ5VdPr1hSq1IaGFUyB2+G8gW1gWsABWnP4AKjh4+3RIP8BfBWt01CvPopa+5G+W5qMjL6BYSBHOtAB9Wc+nN18gm9+kyhoeOCrlBzM6vt89CoAzgiSq4F6ynJyYBGJAwQAgPc618ypeq2BwAvaZLDtlXQzum7XaOrAPDbh7Y/nIuaozgpKFHLUVkrXubGhLSpVq60vpNmCyJhXJ7t76S7EfEOvOIw65tg8u1IcY1rA1YrQLIUcJuh4N52ntRFIjf3ooZHPZtD5e3jpSrsETzceCaAm6N4rd6r+bqajYpF9QxBOxQy5pVgA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XS0EqSIbRvhHf02ES3DP1MYUjHDpTDJIztV5UUySz7A=;
- b=ocwqKyg4rz8QoUk0JF9MIRduZFKwg4NbNsllXLTx2JA7CWM7utZIaZr53Cc2rE/0Lv+CqaaTCabZkc6hNLdwJB6Vpnf2Xn5PnH3KnjCYDuPyRdPWCSmZKKI7uE22IeURb7ix6gNikjB8OTImq/45v26J8vw78yATI387XegfULJg8kZoQ5PEB9vJ0ZHtNHwKJ+WqaPUfcy8VA2wvxxCp2IDFrUGlZhPZFkoWje1PuaJ1Bsj9k54xtj3zLCMEVatdw6b6sv1QvpyWaRQO/Dbs7F19JH392zlylD9zuwplVaTF2t8gMDAjJODYNJoZvHeRUY4neEMQCKf+rqsAlI+YVA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=micron.com; dmarc=pass action=none header.from=micron.com;
- dkim=pass header.d=micron.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=micron.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XS0EqSIbRvhHf02ES3DP1MYUjHDpTDJIztV5UUySz7A=;
- b=Sy0HR9ahGIlpZ3EMgD3oOzTp7Hx+KpketaJUMNd/VbxEXpu/c9/4X3LXJPnz+AmAmJj8My+8YfmjG76ObvCiIjJHk7KZZoz9JsAstvTaGoip0QVSdVnmEfjIa4B4YPwJH7A6eR9dKyD6qH0TrCrDjdcvKly4TlcfOzegHQIilC8=
-Received: from SN6PR08MB4208.namprd08.prod.outlook.com (2603:10b6:805:3b::21)
- by SN6PR08MB4623.namprd08.prod.outlook.com (2603:10b6:805:9c::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.21; Wed, 30 Sep
- 2020 20:00:06 +0000
-Received: from SN6PR08MB4208.namprd08.prod.outlook.com
- ([fe80::f459:dd7f:5b2:effa]) by SN6PR08MB4208.namprd08.prod.outlook.com
- ([fe80::f459:dd7f:5b2:effa%7]) with mapi id 15.20.3433.035; Wed, 30 Sep 2020
- 20:00:06 +0000
-From:   "Nabeel Meeramohideen Mohamed (nmeeramohide)" 
-        <nmeeramohide@micron.com>
-To:     Randy Dunlap <rdunlap@infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-nvdimm@lists.01.org" <linux-nvdimm@lists.01.org>
-CC:     "Steve Moyer (smoyer)" <smoyer@micron.com>,
-        "Greg Becker (gbecker)" <gbecker@micron.com>,
-        "Pierre Labat (plabat)" <plabat@micron.com>,
-        "John Groves (jgroves)" <jgroves@micron.com>
-Subject: RE: [EXT] Re: [PATCH 17/22] mpool: add mpool lifecycle management
- ioctls
-Thread-Topic: [EXT] Re: [PATCH 17/22] mpool: add mpool lifecycle management
- ioctls
-Thread-Index: AQHWlbcLPnsRCBRfHEK8v2KQZl9QlqmAUZwAgAFG53A=
-Date:   Wed, 30 Sep 2020 20:00:06 +0000
-Message-ID: <SN6PR08MB420825E40A88DBDFE66C5E13B3330@SN6PR08MB4208.namprd08.prod.outlook.com>
-References: <20200928164534.48203-1-nmeeramohide@micron.com>
- <20200928164534.48203-18-nmeeramohide@micron.com>
- <43f24e68-2625-36ce-1727-fcf981955b17@infradead.org>
-In-Reply-To: <43f24e68-2625-36ce-1727-fcf981955b17@infradead.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: infradead.org; dkim=none (message not signed)
- header.d=none;infradead.org; dmarc=none action=none header.from=micron.com;
-x-originating-ip: [104.129.198.89]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: dd8972c7-5afe-4341-8fd4-08d8657b6d54
-x-ms-traffictypediagnostic: SN6PR08MB4623:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <SN6PR08MB4623FB781AC4642D5249E1B0B3330@SN6PR08MB4623.namprd08.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:3513;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 4zrnwoW9XzFV1vnyzqopa3Tja1Ofr+HikE47t5qySZlBjDynzHZc+WvovD/7eTf/7qwZmkKQlEfjQODHeerByxQKia0gmAPTaXLrfWU7gXpOiKfMNJh+Rv9fX9JBEefoZ+rR1VFUhobJTIA/3AMFdvPStHau1D0Rhir9JCx6E3Aggi1wZjZw3sGvfx8UEIJGdCgMyps2nbyhE0LyRUd+E8aRQKvyJ2P3VkpFXrr58jnL5WAxrVBWUr8oYFXOj8VTpsq4WxTRCMN0p7fZfs3P1LCKBvUYUUQXmAHjXCzMXJl7xoAwRqVkAyft63j+dPnRax2an1lwwUYL9y1EVMgwwh7XgeLsDPX0NfJL4nxqwWj0MOe6hzbzEjf2TYkI5gV+
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR08MB4208.namprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(136003)(346002)(376002)(39860400002)(366004)(9686003)(52536014)(55236004)(76116006)(66476007)(64756008)(66556008)(66446008)(86362001)(316002)(53546011)(5660300002)(6506007)(186003)(54906003)(55016002)(2906002)(8676002)(8936002)(66946007)(7696005)(4326008)(4744005)(33656002)(478600001)(110136005)(26005)(71200400001)(107886003);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: B5J51C/gFl99K26sQ+RFIZ9HUliHC/50xSIYkve2BeI7hjOF35y6KnzxcP6wRacR+22uKJgZUvE6h+YJA1ttmNZJKEJOtLK2z2RQYrWVMZ8YFOWmWntlvQsAMUtRNGxs1acJuwvxJIm8gjRJtNxaYnlj1V5k6z5cxGxRnOl7ARMsHn6HAJD0BHKK4hGmuAFhHPiTEt6pg6Uqh3ATXUVUxYKkIpGPSZEG2S9/MK1ifSYfXteSaom7EYZ8i30UZCEMmGQRDeH0M0GUn6rYYN+eVyVm9SZyItbaya71x7D2udnww8N91fXPY/R3MhBCYxQe8QIkTK5e7zVK7hiifqdw8t/1CeuG0JN9fux7oo8mzd+PYToJciZmvjffprZqj+GuIo38mtjMAnO7Z2KWrEXMNJAB1B4b4fQXcMxM30LPjm0u4c/A66lKwJlnnLnbCt30tjtcKEj5B6lFhztV4fdpLbEgB+ix+amlhO6T3Qp7lO/fMpT7x3X+JNfbX7vsjp2d2YW0rM69vTQSp04wSBWDfZ4CtURng4Hul6V8fWSekSH+TjHNCbVQi3Yuz+gh2T+CMZTknR++YrUUqbAckXUlquq2hwGkePlTp2eBlTRTHOuytJJyfS896Up7E6mx9hvDkD/gMG+ZOsWB7CyxwG2pIw==
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1730052AbgI3UA2 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 30 Sep 2020 16:00:28 -0400
+Received: from mout.kundenserver.de ([212.227.126.135]:47479 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725355AbgI3UA2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 16:00:28 -0400
+Received: from mail-qv1-f47.google.com ([209.85.219.47]) by
+ mrelayeu.kundenserver.de (mreue012 [212.227.15.129]) with ESMTPSA (Nemesis)
+ id 1MrOq7-1kjHaP1ozn-00oZRE; Wed, 30 Sep 2020 22:00:26 +0200
+Received: by mail-qv1-f47.google.com with SMTP id q10so1606685qvs.1;
+        Wed, 30 Sep 2020 13:00:26 -0700 (PDT)
+X-Gm-Message-State: AOAM530GCJaz7LV70OaTyWlu9gUefXZeo61PyxdY5XAj761Wk1fLSBxp
+        HrlCbTR5JsB5b2+ennTCzp1UxtSCUVpQ/24GnSQ=
+X-Google-Smtp-Source: ABdhPJyWWzEsXMV+slu96RS1qTkNBFb/0nnpZW+XtD+lfJd3MrcE3uu0eFCwIRrOZ9OSXzKQaZzQk9XaiBVgiCB1pIc=
+X-Received: by 2002:a0c:b39a:: with SMTP id t26mr4299788qve.19.1601496025174;
+ Wed, 30 Sep 2020 13:00:25 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: micron.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR08MB4208.namprd08.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: dd8972c7-5afe-4341-8fd4-08d8657b6d54
-X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Sep 2020 20:00:06.0917
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: f38a5ecd-2813-4862-b11b-ac1d563c806f
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: QKKRe6Af0gaKqt4adsv/b14kpxVyq6mUF0mfiVrOV4an5Kxj8qoKYciCvYS2/BzFLRDR4CXzVL05qMd12loU5A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR08MB4623
+References: <20200930105442.3f642f6c@aktux> <20200930164446.GB219887@roeck-us.net>
+In-Reply-To: <20200930164446.GB219887@roeck-us.net>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Wed, 30 Sep 2020 22:00:09 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a2CbhJT+B-F+cnX+uiJep9oiLM28n045-ATaVaU41u2hw@mail.gmail.com>
+Message-ID: <CAK8P3a2CbhJT+B-F+cnX+uiJep9oiLM28n045-ATaVaU41u2hw@mail.gmail.com>
+Subject: Re: [REGRESSION] hwmon: (applesmc) avoid overlong udelay()
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Andreas Kemnade <andreas@kemnade.info>, rydberg@bitmath.org,
+        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Provags-ID: V03:K1:l33NlXdtX+Mu6Oa+/YyShoCbG5gauRlL/D2D1spm6U9gdRS4jm4
+ nsioQqsufdyTQidCoTcKA6iMExJ9qqihKtcbtpC+Zmopwxf59Q+y44OJuLupivEyIZAPvAD
+ 7qtZKRPLWIW0JdxwnU+Qq+2OhJuuqc3OFYKCtBuscCjn/HFA3yGiCIScBRWkAagAcvvH6Ew
+ ofBwTX2eN7s/jKtGrEe+A==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:T3J0tC7JDik=:n5a3p4ioCXTRafvfk2bmNi
+ D/U8ka8ivWGqPvrt3EGWssn7Wb8vTirN2ogOzye797aJxeLSJDaIKdKP3LvEaluPS8u9vdwbh
+ H2fctfw0Ta5wfnbENBFGor4ThmqQF6S/Vm6gmLesMglVOcE3b5mvlix8kMliHPNHUzkYss+Gx
+ BFGOQhwL11nd+7SjsY9l3VC49j5iScJxN5WaPysgiDzkefWV57ojyR6VPiTRFJVaDD8uXIEIL
+ BKwFsFa7yYRGuxXN5DU7DIRAXgJpmYQy7ww4em1sevMe/JzAw8/o7HrimiYdLUwYCe3aVwYic
+ Ly77p3p/25sIJPnNpfhIEz1fWtQxMqFBzMgz4zsDSEKRjwxKJmKPmgsHmEDNnFRDE7H3mMd7A
+ fku/yEyuC2D7/G0gwHHD1m9eWHPRqUKl0YI+UCkGqBj+BOFfle2/Dd8Z0TzVt7c3efribqfh2
+ UUL1dMhhP66/RQyW+kRVTH9VMY8Q+yZpyup4sIlFROL1h0iJt2y/to2E4aJOnN9q3ZN8RYGc2
+ dpFeQjnDz4LeVR6QPU/9zBqbXK5WXTAvTJNp9rj062UokKUzV2hJtXgaLZMiI93KJenI1yy42
+ y3Sii4jivj0eXdMJNT0DMEeHb1yx07E2MTt2Bai2AxstZEAU63jEg0vxmFANPVqCkFEw6T0x5
+ aW8U0FKXG1Ls3ZDH6Gn+4D/27Fjrg+Na1Qkfh6eDv3O8U0P0zEDczklIwb3WgJVO0dIA6d+0M
+ RtN68AKklqwCm8BB3IJcNZv24NFmaPayAniuWNaHAv2efstMRDForzymdPTFrcDpFKC87q/Gk
+ qo8a9oczVI0TctLqcX+62koiqy8+pAFeC38HJLPblf2AgCx8gb85n4ykKGvdSIlDfxLjg8n
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgUmFuZHksDQoNCk9uIFR1ZXNkYXksIFNlcHRlbWJlciAyOSwgMjAyMCA2OjEzIFBNLCBSYW5k
-eSBEdW5sYXAgPHJkdW5sYXBAaW5mcmFkZWFkLm9yZz4gd3JvdGU6DQo+IE9uIDkvMjgvMjAgOTo0
-NSBBTSwgbm1lZXJhbW9oaWRlQG1pY3Jvbi5jb20gd3JvdGU6DQo+ID4gKwlpZiAoX0lPQ19UWVBF
-KGNtZCkgIT0gTVBJT0NfTUFHSUMpDQo+IEhpLA0KPiANCj4gTVBJT0NfTUFHSUMgaXMgZGVmaW5l
-ZCBpbiBwYXRjaCAwMS8yMi4NCj4gSXQgc2hvdWxkIGFsc28gYmUgYWRkZWQgdG8gRG9jdW1lbnRh
-dGlvbi91c2Vyc3BhY2UtYXBpL2lvY3RsL2lvY3RsLW51bWJlci5yc3QuDQo+IA0KDQpTdXJlLCB0
-aGFua3MhIEkndmUgbWFkZSBhIG5vdGUgb2YgdGhpcyBhbmQgd2lsbCBhZGRyZXNzIGl0IGluIHYy
-Lg0KDQpUaGFua3MsDQpOYWJlZWwNCg==
+On Wed, Sep 30, 2020 at 6:44 PM Guenter Roeck <linux@roeck-us.net> wrote:
+>
+> On Wed, Sep 30, 2020 at 10:54:42AM +0200, Andreas Kemnade wrote:
+> > Hi,
+> >
+> > after the $subject patch I get lots of errors like this:
+>
+> For reference, this refers to commit fff2d0f701e6 ("hwmon: (applesmc)
+> avoid overlong udelay()").
+>
+> > [  120.378614] applesmc: send_byte(0x00, 0x0300) fail: 0x40
+> > [  120.378621] applesmc: LKSB: write data fail
+> > [  120.512782] applesmc: send_byte(0x00, 0x0300) fail: 0x40
+> > [  120.512787] applesmc: LKSB: write data fail
+> >
+> > CPU sticks at low speed and no fan is turning on.
+> > Reverting this patch on top of 5.9-rc6 solves this problem.
+> >
+> > Some information from dmidecode:
+> >
+> > Base Board Information
+> >         Manufacturer: Apple Inc.
+> >         Product Name: Mac-7DF21CB3ED6977E5
+> >         Version: MacBookAir6,2
+> >
+> > Handle 0x0020, DMI type 11, 5 bytes OEM Strings         String 1: Apple ROM Version.  Model:       …,
+> > Handle 0x0020, DMI type 11, 5 bytes
+> > OEM Strings
+> >         String 1: Apple ROM Version.  Model:        MBA61.  EFI Version:  122.0.0
+> >         String 2: .0.0.  Built by:     root@saumon.  Date:         Wed Jun 10 18:
+> >         String 3: 10:36 PDT 2020.  Revision:     122 (B&I).  ROM Version:  F000_B
+> >         String 4: 00.  Build Type:   Official Build, Release.  Compiler:     Appl
+> >         String 5: e clang version 3.0 (tags/Apple/clang-211.10.1) (based on LLVM
+> >         String 6: 3.0svn).
+> >
+> > Writing to things in /sys/devices/platform/applesmc.768 gives also the
+> > said errors.
+> > But writing 1 to fan1_maunal and 5000 to fan1_output turns the fan on
+> > despite error messages.
+> >
+> Not really sure what to do here. I could revert the patch, but then we'd gain
+> clang compile failures. Arnd, any idea ?
+
+It seems that either I made a mistake in the conversion and it sleeps for
+less time than before, or my assumption was wrong that converting a delay to
+a sleep is safe here.
+
+The error message indicates that the write fails, not the read, so that
+is what I'd look at first. Right away I can see that the maximum time to
+retry is only half of what it used to be, as we used to wait for
+0x10, 0x20, 0x40, 0x80, ..., 0x20000 microseconds for a total of
+0x3fff0 microseconds (262ms), while my patch went with the 131ms
+total delay based on the comment saying "/* wait up to 128 ms for a
+status change. */".
+
+Since there is sleeping wait, I see no reason the timeout couldn't
+be extended a lot, e.g. to a second, as in
+
+#define APPLESMC_MAX_WAIT 0x100000
+
+If that doesn't work, I'd try using mdelay() in place of
+usleep_range(), such as
+
+           mdelay(DIV_ROUND_UP(us, USEC_PER_MSEC)));
+
+This adds back a really nasty latency, but it should avoid the
+compile-time problem.
+
+Andreas, can you try those two things? (one at a time,
+not both)
+
+       Arnd
