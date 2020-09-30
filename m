@@ -2,141 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30B6B27F561
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 00:47:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83BE827F572
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 00:48:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731811AbgI3WrI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 18:47:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53728 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731791AbgI3WrI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 18:47:08 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7565BC061755
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 15:47:06 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id q5so3330868qkc.2
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 15:47:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=eTCFS3cfNEjOOKerZt+01daLGyP2fALUEUrJKhPYQ6w=;
-        b=Q60Wco9+qfTN9GN/1gnoYEIQQnEJVS2L83J5fgMwYnhnkv7Iv+r7c6Vgvp8vKtK8q9
-         rEM+N2vD7SVboMi/LAS8n2Zi+bj/nEN/JUkRTbILPg4KptgS/sai/DwC/U+BaUsCAibi
-         Iz8o1www1zeq5WMk+xVPn7qtQ5kkq14mC4HBugMazodVeXKe4YLW1pFY+APoOet0ttnU
-         3M0aPOwOD9YdezoRsvacCrR+i5YHVPSpDjasMZPxu4qszz5MxkWLRmMxDqV4KqH0bN7U
-         qmHzpDNrLbiB0ndVTWpRvW6+vtA0FVgaxwlLdLxhMOO7cs9+iaxRlVuPu+79VoLAnuUQ
-         X1gw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=eTCFS3cfNEjOOKerZt+01daLGyP2fALUEUrJKhPYQ6w=;
-        b=M6tiGxdFtil6Tq5eFVICEB1bDpELCqgz6yYaD927j2nEDB0E4YqkrdDmq2U05M1jVV
-         YpvbYZFw5Q3H2f6IQk78vmMT5ccT3UVcA1C/HU+nJY184Zf6weNwROpX2ce2j/cUZYuQ
-         GKm0RN7AJaU86gVh583bm4y7qbkz/fTKzBMj9tA0aE3tTW2zFmQ6qoXX16SUE/6Vtb2L
-         aIUwXXjROKUA9AmboN3+dBoHuvlBAIspKPpwTdiXGoCqRMUx5ctqSQTQY7XI4bQVj+ok
-         fv0ONVsoTA9sTcc9G8HbPuQ/NPuIVYti7iBFm3YwsYMigRMWrhhkpX+8MDoUDqCCBFWl
-         oV4Q==
-X-Gm-Message-State: AOAM533FTvePVkeXwbx3SBwKpafz/GGY18nIvBRpDuHI1F9Yg9AALTlg
-        CqkRUarK5E/PwE47EMuRM/QlHDYV2vzduhqiVKc6ng==
-X-Google-Smtp-Source: ABdhPJyjwVPl2fhViaAT3lHMvkqOwO/mNzNLjDWv6IL9TDeuZgJgld0fPPUBd37HpyVU3t+KqnNcAnOFdiMzfYOyhes=
-X-Received: by 2002:a05:620a:1367:: with SMTP id d7mr4910010qkl.20.1601506025306;
- Wed, 30 Sep 2020 15:47:05 -0700 (PDT)
+        id S1731835AbgI3Ws6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 18:48:58 -0400
+Received: from ozlabs.org ([203.11.71.1]:57897 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730981AbgI3Ws5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 18:48:57 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C1ryt4D3vz9sSf;
+        Thu,  1 Oct 2020 08:48:54 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1601506134;
+        bh=IGJbmv5mcrkAA2X9zezbI36z8dO7q2w6agEZE4CGtvI=;
+        h=Date:From:To:Cc:Subject:From;
+        b=NjLpLjo07KfTbhqFICWl1G+mLumgIgWBFnhKtk+Nvb7eMbf/TE5b6xszvPZjsbvoW
+         8B43VGtphX9WjweZgwYp9ZX/CTpQ0qfHSYTxcM8ZBt1sCXNRzzPhNWMtfSiqj+hdxG
+         XOBBr7yVTLfx3YXBgr+DDixRDZPexHoFzjX7czg3rz+Hp/KF2ImArwXgfsg4wYL+9q
+         MlOYhGhB79zZSeslPQPAln4v7bis6AVZrG37CSPnYOF6xBgFfwZ/a0HvAZcQlz/2GF
+         Ax4NkihiVzN3kHZ88Y4HXYLxxvsqvvGEjRz/gYE06n5NDTwwjWJ9o70VZDSqZ8JRwI
+         RPui/lfMj8fkw==
+Date:   Thu, 1 Oct 2020 08:48:52 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Hariprasad Kelam <hkelam@marvell.com>,
+        Geetha sowjanya <gakula@marvell.com>,
+        Sunil Goutham <sgoutham@marvell.com>
+Subject: linux-next: Fixes tags need some work in the net tree
+Message-ID: <20201001084852.5bc93fca@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20200930222130.4175584-1-kaleshsingh@google.com>
- <20200930223207.5xepuvu6wr6xw5bb@black.fi.intel.com> <CA+EESO5ABYANQuynOs57UGYMcOaMjKN9TQdv4T2PObY5ng_1nw@mail.gmail.com>
-In-Reply-To: <CA+EESO5ABYANQuynOs57UGYMcOaMjKN9TQdv4T2PObY5ng_1nw@mail.gmail.com>
-From:   Joel Fernandes <joelaf@google.com>
-Date:   Wed, 30 Sep 2020 18:46:54 -0400
-Message-ID: <CAJWu+oo7R6qQWz0_TnrTk_tmCfK2LgvLM-3PvhHv1wq2EyD_qg@mail.gmail.com>
-Subject: Re: [PATCH 0/5] Speed up mremap on large regions
-To:     Lokesh Gidra <lokeshgidra@google.com>
-Cc:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Kalesh Singh <kaleshsingh@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Minchan Kim <minchan@google.com>,
-        "Cc: Android Kernel" <kernel-team@android.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Kees Cook <keescook@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Hassan Naveed <hnaveed@wavecomp.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@kernel.org>, Gavin Shan <gshan@redhat.com>,
-        Zhenyu Ye <yezhenyu2@huawei.com>, Jia He <justin.he@arm.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        William Kucharski <william.kucharski@oracle.com>,
-        Sandipan Das <sandipan@linux.ibm.com>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        Mina Almasry <almasrymina@google.com>,
-        Ram Pai <linuxram@us.ibm.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Kamalesh Babulal <kamalesh@linux.vnet.ibm.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Brian Geffon <bgeffon@google.com>,
-        SeongJae Park <sjpark@amazon.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM64 PORT (AARCH64 ARCHITECTURE)" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/N+8f45KqlWeNX8c7Gt4=XzP";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 6:42 PM Lokesh Gidra <lokeshgidra@google.com> wrote:
->
-> On Wed, Sep 30, 2020 at 3:32 PM Kirill A. Shutemov
-> <kirill.shutemov@linux.intel.com> wrote:
-> >
-> > On Wed, Sep 30, 2020 at 10:21:17PM +0000, Kalesh Singh wrote:
-> > > mremap time can be optimized by moving entries at the PMD/PUD level if
-> > > the source and destination addresses are PMD/PUD-aligned and
-> > > PMD/PUD-sized. Enable moving at the PMD and PUD levels on arm64 and
-> > > x86. Other architectures where this type of move is supported and known to
-> > > be safe can also opt-in to these optimizations by enabling HAVE_MOVE_PMD
-> > > and HAVE_MOVE_PUD.
-> > >
-> > > Observed Performance Improvements for remapping a PUD-aligned 1GB-sized
-> > > region on x86 and arm64:
-> > >
-> > >     - HAVE_MOVE_PMD is already enabled on x86 : N/A
-> > >     - Enabling HAVE_MOVE_PUD on x86   : ~13x speed up
-> > >
-> > >     - Enabling HAVE_MOVE_PMD on arm64 : ~ 8x speed up
-> > >     - Enabling HAVE_MOVE_PUD on arm64 : ~19x speed up
-> > >
-> > >           Altogether, HAVE_MOVE_PMD and HAVE_MOVE_PUD
-> > >           give a total of ~150x speed up on arm64.
-> >
-> > Is there a *real* workload that benefit from HAVE_MOVE_PUD?
-> >
-> We have a Java garbage collector under development which requires
-> moving physical pages of multi-gigabyte heap using mremap. During this
-> move, the application threads have to be paused for correctness. It is
-> critical to keep this pause as short as possible to avoid jitters
-> during user interaction. This is where HAVE_MOVE_PUD will greatly
-> help.
+--Sig_/N+8f45KqlWeNX8c7Gt4=XzP
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-And that detail should totally have gone into the commit message :-/
+Hi all,
 
-Thanks,
+In commit
 
- - Joel
+  66a5209b5341 ("octeontx2-pf: Fix synchnorization issue in mbox")
+
+Fixes tag
+
+  Fixes: d424b6c02 ("octeontx2-pf: Enable SRIOV and added VF mbox handling")
+
+has these problem(s):
+
+  - SHA1 should be at least 12 digits long
+    Can be fixed by setting core.abbrev to 12 (or more) or (for git v2.11
+    or later) just making sure it is not set (or set to "auto").
+
+In commit
+
+  1ea0166da050 ("octeontx2-pf: Fix the device state on error")
+
+Fixes tag
+
+  Fixes: 50fe6c02e ("octeontx2-pf: Register and handle link notifications")
+
+has these problem(s):
+
+  - SHA1 should be at least 12 digits long
+    Can be fixed by setting core.abbrev to 12 (or more) or (for git v2.11
+    or later) just making sure it is not set (or set to "auto").
+
+In commit
+
+  89eae5e87b4f ("octeontx2-pf: Fix TCP/UDP checksum offload for IPv6 frames=
+")
+
+Fixes tag
+
+  Fixes: 3ca6c4c88 ("octeontx2-pf: Add packet transmission support")
+
+has these problem(s):
+
+  - SHA1 should be at least 12 digits long
+    Can be fixed by setting core.abbrev to 12 (or more) or (for git v2.11
+    or later) just making sure it is not set (or set to "auto").
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/N+8f45KqlWeNX8c7Gt4=XzP
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl91C1QACgkQAVBC80lX
+0Gw2SAf9F3XXldpShN9oWWZwD0T5/Dtu/hIxQlVMY8Fsz9P9ZLTqqdRs9NnO5del
+DRLITE6lxMLwqoZjOHruYavTupQGgwQLMJ78G2GWxKzDcwE4mbH4YF4Vfq0zhiiR
+xUJeSASbXhNSDReP/XAeKvsyiPYt90sl88seflM66FE6cS2541U2nBsO7WmWJoy+
+BF2cqmBIz5x75a/T3PBa2P57rQ+weiYVIAY01cOjNydiTyxTTBTVgAGy/Yz1LC9Q
+iL/GnpQOugPWhUnJPSvutipWVST0s3x44JHRZedGS5OAUoL2o3ShgeOQQtW6WTu3
+k30G4YBVd619RCHdO2IV0HWpxMwEqQ==
+=28NP
+-----END PGP SIGNATURE-----
+
+--Sig_/N+8f45KqlWeNX8c7Gt4=XzP--
