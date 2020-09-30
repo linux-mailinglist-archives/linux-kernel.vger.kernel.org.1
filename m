@@ -2,76 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0785427E99D
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 15:27:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60D0227E9B6
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 15:27:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730514AbgI3N0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 09:26:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39354 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730269AbgI3NZW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 09:25:22 -0400
-Received: from mail.kernel.org (unknown [95.90.213.196])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CE6CD20936;
-        Wed, 30 Sep 2020 13:25:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601472322;
-        bh=FAz68Gpz6mwGMLMcTnrOG5cmfJRovbY6MFVW9r+Stmw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rXDXuFXw2e8jXnlLKe0ZWDgyHUoGQdH4iHlVMSEDRUc7Ht4c4oSwsC17qwD+ylUDJ
-         smwLU/KmuZxZwehuAw3VP7GBVrhW6pFpRPB1UOX2CPULPoq8uUkhLVYG+9BkVcP/sg
-         PFx0kPg0u3166iYNZmackBN/awxK1c7SWDGyN5I4=
-Received: from mchehab by mail.kernel.org with local (Exim 4.94)
-        (envelope-from <mchehab@kernel.org>)
-        id 1kNc6i-001XLO-0R; Wed, 30 Sep 2020 15:25:20 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v4 52/52] docs: conf.py: change the Sphinx 3.x+ text
-Date:   Wed, 30 Sep 2020 15:25:15 +0200
-Message-Id: <5ac34fa5793a3b97ea0df50312d76d6ccade9efd.1601467849.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <cover.1601467849.git.mchehab+huawei@kernel.org>
-References: <cover.1601467849.git.mchehab+huawei@kernel.org>
+        id S1730639AbgI3N10 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 09:27:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51586 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730272AbgI3N0m (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 09:26:42 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8781C0613D1
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 06:26:41 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id l24so1818769edj.8
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 06:26:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloud.ionos.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+zvRa+T4/5HBz5Nz536SOot7ApFyuegrF7jZyGB7kD0=;
+        b=c/lysZ/i748ltsbqxeT4ny6BWPXHd1Z7BjJlNexuZhAdDpxe7kzrldHjOvCGPrvPbF
+         6YYf0rL9Ea3kR775oDxqtqUjgFzp2ei0UM9px+655bVIHw1GuXSZLJsTyvcefxVC7ed6
+         z3oeZR7uHRFGHXxJpXKMeTh90a8ksK562ryzH1siFuhKcvCWpNg0zMokg6hL8hlpQ6eQ
+         FvVPumKF414x33h/vTAcIQ3Kwte/WA7s08Y9YwHLsnJeH7Y0QNlPV81pgS0zBcb/dwEO
+         Ngkfy79U/ik//rH5filpvv4GmqQUS3Ks36I10EJLxBBa0YTO1UwP+jQV9ufW0N0tIQ25
+         dfvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+zvRa+T4/5HBz5Nz536SOot7ApFyuegrF7jZyGB7kD0=;
+        b=WZL1Nphe2VcgcakM8jN2xmDO18beDghhjSlj3Wq+H3AxJwqwQw0MJEucvqYflrgkWx
+         vgjRtirMtedN0UP4m+QJkYozs7ZBlyOz/dIu2RwWEH+5VAHx7pCtOyCbfLMVQVBHgAz3
+         3EVL6oHI0DWun0DIZRJ4xAy4QPjdNfMC63aRma6a4XdUPi7OcgbzubZWD4QuE9lra+V0
+         BmAGyDP/b44jcugg+e4IvswbZp/yXsx+lOKlGzz8jq6+1dtfdKPqbWMc2Ds9kjvEn2F+
+         ubriCVV28BlxA1/GK5om+57jrcUoGRCbR2QbAWUqK1Nt0xIqxRkp0DGP7BvE1KiyWOBS
+         n4/g==
+X-Gm-Message-State: AOAM530WCvPuI1cgBG40allwCKhfWUJ+hwLos/QWvmF4DAd0XUfoV7uD
+        H59vMWfIdmZZ1TIToZM7Rf6jnyfS+jK4ttIO3JNj0OxLbcBIhw==
+X-Google-Smtp-Source: ABdhPJwqfuZ/gn/kXu2Yp713TZ3/bhXfQqJsygNIRG4Xz6JO/2PRv4wOpEvfTbXBNxeRuuHdUQr/AU4h0E1L7MoCxJI=
+X-Received: by 2002:a50:eb0a:: with SMTP id y10mr2795362edp.89.1601472400531;
+ Wed, 30 Sep 2020 06:26:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
+References: <20200930131407.6438-1-gi-oh.kim@clous.ionos.com>
+In-Reply-To: <20200930131407.6438-1-gi-oh.kim@clous.ionos.com>
+From:   Jinpu Wang <jinpu.wang@cloud.ionos.com>
+Date:   Wed, 30 Sep 2020 15:26:29 +0200
+Message-ID: <CAMGffEktjxkWYByRknjF2mA-8DqkOJzC4zLKMChvR43SHeYZXQ@mail.gmail.com>
+Subject: Re: [PATCH] RDMA/rtrs: remove unused field of rtrs_iu
+To:     Gioh Kim <gi-oh.kim@cloud.ionos.com>
+Cc:     Danil Kipnis <danil.kipnis@cloud.ionos.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After the build fix patches, it is believed that the output
-with Sphinx 3.x won't be a problem. Still, the C domain
-support was re-written, and this can have caused hidden
-issues.
-
-So, let's keep the warning, changing it to a lighter
-warning text.
-
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- Documentation/conf.py | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/Documentation/conf.py b/Documentation/conf.py
-index b402bd8f6f71..4f5d15abd047 100644
---- a/Documentation/conf.py
-+++ b/Documentation/conf.py
-@@ -47,8 +47,8 @@ extensions = ['kerneldoc', 'rstFlatTable', 'kernel_include',
- #
- if major >= 3:
-     sys.stderr.write('''WARNING: The kernel documentation build process
--        does not work correctly with Sphinx v3.0 and above.  Expect errors
--        in the generated output.
-+        support for Sphinx v3.0 and above is brand new. Be prepared for
-+        possible issues in the generated output.
-         ''')
-     if minor > 0 or patch >= 2:
-         # Sphinx c function parser is more pedantic with regards to type
--- 
-2.26.2
-
+On Wed, Sep 30, 2020 at 3:14 PM Gioh Kim <gi-oh.kim@cloud.ionos.com> wrote:
+>
+> From: Gioh Kim <gi-oh.kim@cloud.ionos.com>
+>
+> list field is not used anywhere
+>
+> Signed-off-by: Gioh Kim <gi-oh.kim@cloud.ionos.com>
+thanks, Gioh!
+Acked-by: Jack Wang <jinpu.wang@cloud.ionos.com>
+> ---
+>  drivers/infiniband/ulp/rtrs/rtrs-pri.h | 1 -
+>  1 file changed, 1 deletion(-)
+>
+> diff --git a/drivers/infiniband/ulp/rtrs/rtrs-pri.h b/drivers/infiniband/ulp/rtrs/rtrs-pri.h
+> index 0a93c87ef92b..b8e43dc4d95a 100644
+> --- a/drivers/infiniband/ulp/rtrs/rtrs-pri.h
+> +++ b/drivers/infiniband/ulp/rtrs/rtrs-pri.h
+> @@ -115,7 +115,6 @@ struct rtrs_sess {
+>
+>  /* rtrs information unit */
+>  struct rtrs_iu {
+> -       struct list_head        list;
+>         struct ib_cqe           cqe;
+>         dma_addr_t              dma_addr;
+>         void                    *buf;
+> --
+> 2.20.1
+>
