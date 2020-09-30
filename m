@@ -2,66 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17FB827EF9D
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 18:50:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFAF027EFA1
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 18:51:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731036AbgI3Qub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 12:50:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48608 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725355AbgI3Qua (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 12:50:30 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8ECDA2076B;
-        Wed, 30 Sep 2020 16:50:29 +0000 (UTC)
-Date:   Wed, 30 Sep 2020 12:50:27 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
-Cc:     arnaldo.melo@gmail.com, linux-trace-devel@vger.kernel.org,
-        ben@decadent.org.uk, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4] tools lib traceevent: Hide non API functions
-Message-ID: <20200930125027.7e54b71c@gandalf.local.home>
-In-Reply-To: <20200930110733.280534-1-tz.stoyanov@gmail.com>
-References: <20200930110733.280534-1-tz.stoyanov@gmail.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1731224AbgI3Qu7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 12:50:59 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:51136 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725355AbgI3Qu7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 12:50:59 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: tonyk)
+        with ESMTPSA id 4FDA729CD77
+Subject: Re: [PATCH v4 22/52] docs: get rid of :c:type explicit declarations
+ for structs
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>
+Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>, Jens Axboe <axboe@kernel.dk>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Moritz Fischer <mdf@kernel.org>,
+        Puranjay Mohan <puranjay12@gmail.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Satya Tangirala <satyat@google.com>,
+        Takashi Iwai <tiwai@suse.com>, Tom Rix <trix@redhat.com>,
+        alsa-devel@alsa-project.org, linux-fpga@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-mm@kvack.org
+References: <cover.1601467849.git.mchehab+huawei@kernel.org>
+ <f74a2b4e1c8c475b5a053f5edd9da5a818be4b1f.1601467849.git.mchehab+huawei@kernel.org>
+From:   =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@collabora.com>
+Message-ID: <fd8bf973-3c22-a492-39e5-2164ce6724db@collabora.com>
+Date:   Wed, 30 Sep 2020 13:50:46 -0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <f74a2b4e1c8c475b5a053f5edd9da5a818be4b1f.1601467849.git.mchehab+huawei@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 30 Sep 2020 14:07:33 +0300
-"Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
-
-> There are internal library functions, which are not declared as a static.
-> They are used inside the library from different files. Hide them from
-> the library users, as they are not part of the API.
-> These functions are made hidden and are renamed without the prefix "tep_":
->  tep_free_plugin_paths
->  tep_peek_char
->  tep_buffer_init
->  tep_get_input_buf_ptr
->  tep_get_input_buf
->  tep_read_token
->  tep_free_token
->  tep_free_event
->  tep_free_format_field
->  __tep_parse_format
+On 9/30/20 10:24 AM, Mauro Carvalho Chehab wrote:
+> The :c:type:`foo` only works properly with structs before
+> Sphinx 3.x.
 > 
-> Link: https://lore.kernel.org/linux-trace-devel/e4afdd82deb5e023d53231bb13e08dca78085fb0.camel@decadent.org.uk/
-> Reported-by: Ben Hutchings <ben@decadent.org.uk>
-> Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
+> On Sphinx 3.x, structs should now be declared using the
+> .. c:struct, and referenced via :c:struct tag.
+> 
+> As we now have the automarkup.py macro, that automatically
+> convert:
+> 	struct foo
+> 
+> into cross-references, let's get rid of that, solving
+> several warnings when building docs with Sphinx 3.x.
+> 
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 > ---
+>  Documentation/block/blk-mq.rst                |  8 +++----
 
-Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Regarding blk-mq.rst:
 
-Arnaldo,
-
-Can you pull this in?
-
-Thanks!
-
--- Steve
+Reviewed-by: André Almeida <andrealmeid@collabora.com>
