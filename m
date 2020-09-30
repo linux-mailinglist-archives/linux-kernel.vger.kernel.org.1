@@ -2,245 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 054AF27E15A
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 08:40:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2868427E167
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 08:41:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728327AbgI3Gkk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 02:40:40 -0400
-Received: from m42-4.mailgun.net ([69.72.42.4]:10542 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728268AbgI3Gki (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 02:40:38 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1601448036; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=fEiNiE7WcOtOuwWFNUUBWC5/RBsAGoYkHCbf1P9TbYE=; b=mo3sHk2Xg0yB92esPUvKh6KYGz7m6DzW6sv6V49o1Vk6bErFQ1gNROXO87Mmyj1AmtTZZJN4
- 5IWwkqPf3wOXfQPZcerko5du/znOMjj7+C8ESdAzKNDMWP7tRT8T5fjLOehcLn53jrQCOjQl
- SWOf8WO4TH+MGxDcQ94nMoUoaZ0=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 5f742864f38f205ebcb8e95b (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 30 Sep 2020 06:40:36
- GMT
-Sender: srivasam=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 47D55C433C8; Wed, 30 Sep 2020 06:40:35 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from hyd-lnxbld210.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: srivasam)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6B322C43385;
-        Wed, 30 Sep 2020 06:40:28 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 6B322C43385
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=srivasam@codeaurora.org
-From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
-        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
-        srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     V Sujith Kumar Reddy <vsujithk@codeaurora.org>,
-        Srinivasa Rao <srivasam@codeaurora.org>
-Subject: [PATCH v8 7/7] ASoC: qcom: sc7180: Add support for audio over DP
-Date:   Wed, 30 Sep 2020 12:09:37 +0530
-Message-Id: <1601447977-18115-8-git-send-email-srivasam@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1601447977-18115-1-git-send-email-srivasam@codeaurora.org>
-References: <1601447977-18115-1-git-send-email-srivasam@codeaurora.org>
+        id S1727894AbgI3Glv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 02:41:51 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:54218 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725440AbgI3Glv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 02:41:51 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1601448108;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=EJKrDPg1zMcLHTJ9psmGJPskafubkx5uuA4rv00RWvE=;
+        b=3b6vWZ3FYwgK0uGd/jHNKkzf932WR9YVcHqnMSL9hHtR4FHsBZC07JwnVnqMJT9Jed2laM
+        sOmj+DtePTxNt1wmjH5DZ6o2s5opDsc8D9ifXyqbFVzXOdAfouLp4tTZLVGyMM1xzNgVNF
+        SiFdV8l6tmYAgTktBPpm/Iadr8yO4O7oHnUbbnOIztDfkFXFDnrym1ArBAMUmD2E46aShM
+        CD+CVsD5I4NZ1O1jmOVTRGe6+5R2FDp5MP/BP/FjqJPOUfRmKvz3lfIp+HuQ1y5Tb6Yo6V
+        QtpSVxjdk4qgFUFhEUdh5DLZfdeQVjrBT9YrrBtUq7PiKVvMzZoW945MxWorVA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1601448108;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=EJKrDPg1zMcLHTJ9psmGJPskafubkx5uuA4rv00RWvE=;
+        b=4oScqGVN58GGowfuDE4TlRtr/G0yJIGU+gi/diGlZDZu0wervLchyWESUEEFxWNHdARjHI
+        QIrbJgszY1bnCuAA==
+To:     "Dey\, Megha" <megha.dey@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, Joerg Roedel <joro@8bytes.org>,
+        iommu@lists.linux-foundation.org, linux-hyperv@vger.kernel.org,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Jon Derrick <jonathan.derrick@intel.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Steve Wahl <steve.wahl@hpe.com>,
+        Dimitri Sivanich <sivanich@hpe.com>,
+        Russ Anderson <rja@hpe.com>, linux-pci@vger.kernel.org,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        xen-devel@lists.xenproject.org, Juergen Gross <jgross@suse.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Jacob Pan <jacob.jun.pan@intel.com>,
+        Baolu Lu <baolu.lu@intel.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>, dave.jiang@intel.com,
+        ravi.v.shankar@intel.com
+Subject: Re: [patch V2 00/46] x86, PCI, XEN, genirq ...: Prepare for device MSI
+In-Reply-To: <10b5d933-f104-7699-341a-0afb16640d54@intel.com>
+References: <20200826111628.794979401@linutronix.de> <10b5d933-f104-7699-341a-0afb16640d54@intel.com>
+Date:   Wed, 30 Sep 2020 08:41:48 +0200
+Message-ID: <87v9fvix5f.fsf@nanos.tec.linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
+On Tue, Sep 29 2020 at 16:03, Megha Dey wrote:
+> On 8/26/2020 4:16 AM, Thomas Gleixner wrote:
+>> #9	is obviously just for the folks interested in IMS
+>>
+>
+> I see that the tip tree (as of 9/29) has most of these patches but 
+> notice that the DEV_MSI related patches
+>
+> haven't made it. I have tested the tip tree(x86/irq branch) with your
+> DEV_MSI infra patches and our IMS patches with the IDXD driver and was
 
-Add support for audio playback over DP in lpass
-sc7180 platform driver. Update lpass_variant
-structure for hdmi data configuaration.
+Your IMS patches? Why do you need something special again?
 
-Signed-off-by: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
-Signed-off-by: Srinivasa Rao <srivasam@codeaurora.org>
----
- sound/soc/qcom/lpass-sc7180.c | 116 +++++++++++++++++++++++++++++++++++++-----
- 1 file changed, 102 insertions(+), 14 deletions(-)
+> wondering if we should push out those patches as part of our patchset?
 
-diff --git a/sound/soc/qcom/lpass-sc7180.c b/sound/soc/qcom/lpass-sc7180.c
-index a8a3d8f..c6292f9e 100644
---- a/sound/soc/qcom/lpass-sc7180.c
-+++ b/sound/soc/qcom/lpass-sc7180.c
-@@ -60,38 +60,65 @@ static struct snd_soc_dai_driver sc7180_lpass_cpu_dai_driver[] = {
- 		.probe	= &asoc_qcom_lpass_cpu_dai_probe,
- 		.ops    = &asoc_qcom_lpass_cpu_dai_ops,
- 	},
-+	[LPASS_DP_RX] = {
-+		.id = LPASS_DP_RX,
-+		.name = "Hdmi",
-+		.playback = {
-+			.stream_name = "Hdmi Playback",
-+			.formats	= SNDRV_PCM_FMTBIT_S24,
-+			.rates = SNDRV_PCM_RATE_48000,
-+			.rate_min	= 48000,
-+			.rate_max	= 48000,
-+			.channels_min	= 2,
-+			.channels_max	= 2,
-+		},
-+		.ops    = &asoc_qcom_lpass_hdmi_dai_ops,
-+	},
- };
- 
- static int sc7180_lpass_alloc_dma_channel(struct lpass_data *drvdata,
--					   int direction)
-+					   int direction, unsigned int dai_id)
- {
- 	struct lpass_variant *v = drvdata->variant;
- 	int chan = 0;
- 
--	if (direction == SNDRV_PCM_STREAM_PLAYBACK) {
--		chan = find_first_zero_bit(&drvdata->dma_ch_bit_map,
--					v->rdma_channels);
-+	if (dai_id == LPASS_DP_RX) {
-+		if (direction == SNDRV_PCM_STREAM_PLAYBACK) {
-+			chan = find_first_zero_bit(&drvdata->hdmi_dma_ch_bit_map,
-+						v->hdmi_rdma_channels);
-+
-+			if (chan >= v->hdmi_rdma_channels)
-+				return -EBUSY;
-+		}
-+		set_bit(chan, &drvdata->hdmi_dma_ch_bit_map);
-+	} else {
-+		if (direction == SNDRV_PCM_STREAM_PLAYBACK) {
-+			chan = find_first_zero_bit(&drvdata->dma_ch_bit_map,
-+						v->rdma_channels);
- 
- 		if (chan >= v->rdma_channels)
- 			return -EBUSY;
--	} else {
--		chan = find_next_zero_bit(&drvdata->dma_ch_bit_map,
-+		} else {
-+			chan = find_next_zero_bit(&drvdata->dma_ch_bit_map,
- 					v->wrdma_channel_start +
- 					v->wrdma_channels,
- 					v->wrdma_channel_start);
- 
--		if (chan >=  v->wrdma_channel_start + v->wrdma_channels)
--			return -EBUSY;
--	}
--
--	set_bit(chan, &drvdata->dma_ch_bit_map);
-+			if (chan >=  v->wrdma_channel_start + v->wrdma_channels)
-+				return -EBUSY;
-+		}
- 
-+		set_bit(chan, &drvdata->dma_ch_bit_map);
-+	}
- 	return chan;
- }
- 
--static int sc7180_lpass_free_dma_channel(struct lpass_data *drvdata, int chan)
-+static int sc7180_lpass_free_dma_channel(struct lpass_data *drvdata, int chan, unsigned int dai_id)
- {
--	clear_bit(chan, &drvdata->dma_ch_bit_map);
-+	if (dai_id == LPASS_DP_RX)
-+		clear_bit(chan, &drvdata->hdmi_dma_ch_bit_map);
-+	else
-+		clear_bit(chan, &drvdata->dma_ch_bit_map);
- 
- 	return 0;
- }
-@@ -144,6 +171,9 @@ static struct lpass_variant sc7180_data = {
- 	.rdma_reg_base		= 0xC000,
- 	.rdma_reg_stride	= 0x1000,
- 	.rdma_channels		= 5,
-+	.hdmi_rdma_reg_base		= 0x64000,
-+	.hdmi_rdma_reg_stride	= 0x1000,
-+	.hdmi_rdma_channels		= 4,
- 	.dmactl_audif_start	= 1,
- 	.wrdma_reg_base		= 0x18000,
- 	.wrdma_reg_stride	= 0x1000,
-@@ -163,7 +193,7 @@ static struct lpass_variant sc7180_data = {
- 	.rdma_dyncclk		= REG_FIELD_ID(0xC000, 21, 21, 5, 0x1000),
- 	.rdma_bursten		= REG_FIELD_ID(0xC000, 20, 20, 5, 0x1000),
- 	.rdma_wpscnt		= REG_FIELD_ID(0xC000, 16, 19, 5, 0x1000),
--	.rdma_intf		= REG_FIELD_ID(0xC000, 12, 15, 5, 0x1000),
-+	.rdma_intf			= REG_FIELD_ID(0xC000, 12, 15, 5, 0x1000),
- 	.rdma_fifowm		= REG_FIELD_ID(0xC000, 1, 5, 5, 0x1000),
- 	.rdma_enable		= REG_FIELD_ID(0xC000, 0, 0, 5, 0x1000),
- 
-@@ -174,6 +204,64 @@ static struct lpass_variant sc7180_data = {
- 	.wrdma_fifowm		= REG_FIELD_ID(0x18000, 1, 5, 4, 0x1000),
- 	.wrdma_enable		= REG_FIELD_ID(0x18000, 0, 0, 4, 0x1000),
- 
-+	.hdmi_tx_ctl_addr	= 0x1000,
-+	.hdmi_legacy_addr	= 0x1008,
-+	.hdmi_vbit_addr		= 0x610c0,
-+	.hdmi_ch_lsb_addr	= 0x61048,
-+	.hdmi_ch_msb_addr	= 0x6104c,
-+	.ch_stride		= 0x8,
-+	.hdmi_parity_addr	= 0x61034,
-+	.hdmi_dmactl_addr	= 0x61038,
-+	.hdmi_dma_stride	= 0x4,
-+	.hdmi_DP_addr		= 0x610c8,
-+	.hdmi_sstream_addr	= 0x6101c,
-+	.hdmi_irq_reg_base		= 0x63000,
-+	.hdmi_irq_ports		= 1,
-+
-+	.hdmi_rdma_dyncclk		= REG_FIELD_ID(0x64000, 14, 14, 4, 0x1000),
-+	.hdmi_rdma_bursten		= REG_FIELD_ID(0x64000, 13, 13, 4, 0x1000),
-+	.hdmi_rdma_burst8		= REG_FIELD_ID(0x64000, 15, 15, 4, 0x1000),
-+	.hdmi_rdma_burst16		= REG_FIELD_ID(0x64000, 16, 16, 4, 0x1000),
-+	.hdmi_rdma_dynburst		= REG_FIELD_ID(0x64000, 18, 18, 4, 0x1000),
-+	.hdmi_rdma_wpscnt		= REG_FIELD_ID(0x64000, 10, 12, 4, 0x1000),
-+	.hdmi_rdma_fifowm		= REG_FIELD_ID(0x64000, 1, 5, 4, 0x1000),
-+	.hdmi_rdma_enable		= REG_FIELD_ID(0x64000, 0, 0, 4, 0x1000),
-+
-+	.sstream_en		= REG_FIELD(0x6101c, 0, 0),
-+	.dma_sel			= REG_FIELD(0x6101c, 1, 2),
-+	.auto_bbit_en	= REG_FIELD(0x6101c, 3, 3),
-+	.layout			= REG_FIELD(0x6101c, 4, 4),
-+	.layout_sp		= REG_FIELD(0x6101c, 5, 8),
-+	.set_sp_on_en	= REG_FIELD(0x6101c, 10, 10),
-+	.dp_audio		= REG_FIELD(0x6101c, 11, 11),
-+	.dp_staffing_en	= REG_FIELD(0x6101c, 12, 12),
-+	.dp_sp_b_hw_en	= REG_FIELD(0x6101c, 13, 13),
-+
-+	.mute			= REG_FIELD(0x610c8, 0, 0),
-+	.as_sdp_cc		= REG_FIELD(0x610c8, 1, 3),
-+	.as_sdp_ct		= REG_FIELD(0x610c8, 4, 7),
-+	.aif_db4			= REG_FIELD(0x610c8, 8, 15),
-+	.frequency		= REG_FIELD(0x610c8, 16, 21),
-+	.mst_index		= REG_FIELD(0x610c8, 28, 29),
-+	.dptx_index		= REG_FIELD(0x610c8, 30, 31),
-+
-+	.soft_reset		= REG_FIELD(0x1000, 31, 31),
-+	.force_reset	= REG_FIELD(0x1000, 30, 30),
-+
-+	.use_hw_chs		= REG_FIELD(0x61038, 0, 0),
-+	.use_hw_usr		= REG_FIELD(0x61038, 1, 1),
-+	.hw_chs_sel		= REG_FIELD(0x61038, 2, 4),
-+	.hw_usr_sel		= REG_FIELD(0x61038, 5, 6),
-+
-+	.replace_vbit	= REG_FIELD(0x610c0, 0, 0),
-+	.vbit_stream	= REG_FIELD(0x610c0, 1, 1),
-+
-+	.legacy_en		=  REG_FIELD(0x1008, 0, 0),
-+	.calc_en		=  REG_FIELD(0x61034, 0, 0),
-+	.lsb_bits		=  REG_FIELD(0x61048, 0, 31),
-+	.msb_bits		=  REG_FIELD(0x6104c, 0, 31),
-+
-+
- 	.clk_name		= (const char*[]) {
- 				   "pcnoc-sway-clk",
- 				   "audio-core",
--- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+As I don't have any hardware to test that, I was waiting for you and
+Jason to confirm that this actually works for the two different IMS
+implementations.
 
+Thanks,
+
+        tglx
