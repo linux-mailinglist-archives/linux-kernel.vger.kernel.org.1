@@ -2,101 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE53427F44C
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 23:38:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64FC027F441
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 23:33:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730831AbgI3Vi1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 17:38:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42938 "EHLO
+        id S1730404AbgI3Vct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 17:32:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725814AbgI3Vi0 (ORCPT
+        with ESMTP id S1728721AbgI3Vcs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 17:38:26 -0400
+        Wed, 30 Sep 2020 17:32:48 -0400
 Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22B7CC061755;
-        Wed, 30 Sep 2020 14:38:25 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id y14so1993796pgf.12;
-        Wed, 30 Sep 2020 14:38:25 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6833C0613D0
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 14:32:48 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id u24so2017491pgi.1
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 14:32:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=chromium.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=/7M+m304EbzXdELkQvrts+2IAKCx+eNRKpz9TTnYchQ=;
-        b=PDP8U5qqzZT05fUVILGe3OnV05AlxULeVzaTbmN1blGKkX8i6n1on2U6MydWDO5quS
-         zrhZs1QYBik1BH4Q4pCkt4DU4gDJQR4zW11H3ez3LNY+iC+DoXgepPqmPYzOaxuLs14R
-         F/pWFEgIhfK1/XDf5gsZ0ixXUGPjJGp7eCaWWa3ZocUFhdBTOfzY1SYBJoryhatsNiLT
-         uWaEIyB/eoGFDiZyotYwehpYYRZy3Ip7NtanSfKye5TLi986z0zRISfLquwLIwl4fNfA
-         ApJIOXe9m00Oe4b7vdp3M4KlquPDyB/vXaKzhGy8zlGGmUJlf6AKBhKHv5yj3VZ/JY9O
-         4xWg==
+         :content-disposition:in-reply-to;
+        bh=o420e7m3IZbrqieFDO0g3Vbb/K2chBl3Ks/YWgHiNOw=;
+        b=KJ+eWGv91AIz2+/v9kMs/VQl1R9zZsmavTp7VpHUz2rt2f9L/NffkF/5WluUYnzSnj
+         7sPW5vVGvMSfLA4aeQXS+W7lcReo95gKT2p3BfmU2AREeaIfQcUFRa04KlDcPT0npPYL
+         2ykxJdLnXqzphZIpU6TUFo3ijdAv7ruc4KXsk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=/7M+m304EbzXdELkQvrts+2IAKCx+eNRKpz9TTnYchQ=;
-        b=D/JuTKaWOhIaLqvH/qZuIp2dC1iixcAfNi9QKdWrap1v4a5xUKaWqwcyrp3dwEwq9Y
-         dxQ3dQ7DZmJD7BXTdO5UBE/G9INrLnbRklLWtBozUsUhmuR01FzZ7+cFjW+YJ9nywFFD
-         ZVHCxlOjyE0HDXbpdcHKXwRj55p4ZyMObWFpMm+0WH4mBUUjydACdRzlxpvYIpqHtcAz
-         Np+sWzMvDYGI5FlDaxtoakst8gIBf/WDahwCAmitRa7Wtmue/EWu7vHPqjnZLr8LSYWb
-         nm0iwlIjPStQM1a8apIP2GBXACVO9VFcMO3Bc0HzadTmfi645DIFkAQYH13OtecPs4kn
-         1SXg==
-X-Gm-Message-State: AOAM532cWVcXUw0ZPtYr1P8iI9t3u9phA167hVIQ62bssPe2/cgyD+S8
-        Fs1gf33LKzfSTg2j+E22QZUvwpQWXZg=
-X-Google-Smtp-Source: ABdhPJw1hLq5lcWj28hcW5D/VbiXUDwlCYD9+XODjgXVO027DtJlObOk4ThtLe0DNXKOmM4EGrrtmA==
-X-Received: by 2002:a63:c64f:: with SMTP id x15mr3547807pgg.135.1601501904553;
-        Wed, 30 Sep 2020 14:38:24 -0700 (PDT)
-Received: from Asurada-Nvidia (thunderhill.nvidia.com. [216.228.112.22])
-        by smtp.gmail.com with ESMTPSA id h12sm3490699pfo.68.2020.09.30.14.38.24
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 30 Sep 2020 14:38:24 -0700 (PDT)
-Date:   Wed, 30 Sep 2020 14:32:44 -0700
-From:   Nicolin Chen <nicoleotsuka@gmail.com>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>, joro@8bytes.org,
-        krzk@kernel.org, vdumpa@nvidia.com, jonathanh@nvidia.com,
-        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 2/3] iommu/tegra-smmu: Rework .probe_device and
- .attach_dev
-Message-ID: <20200930213244.GA10573@Asurada-Nvidia>
-References: <20200930084258.25493-1-nicoleotsuka@gmail.com>
- <20200930084258.25493-3-nicoleotsuka@gmail.com>
- <20200930153131.GB3833404@ulmo>
- <20200930203618.GC2110@Asurada-Nvidia>
- <13746922-0253-cda7-e9ac-2bd20bf1a17f@gmail.com>
+         :mime-version:content-disposition:in-reply-to;
+        bh=o420e7m3IZbrqieFDO0g3Vbb/K2chBl3Ks/YWgHiNOw=;
+        b=H4LEqYa41quujlsNn2pczRKthN9Aews4heSflm6XCIIe+HzHZr9Hsqd2LFoapBNlpj
+         49oPrcASbIIosRojOsuxn/3VSy4ZnYJjfZ0XHmLMphiDF6gQlfAQF/X5ckT4b6F7lUE/
+         Y2jOd8BVGfQQ5RL3fIWktNOHcM4gi4V7nBy8YCsqM8OUIxyz/B5zOnVZoe2jaYZe5cBL
+         zFZ63ZoSAIJbPGAWvBpTCn+cjBsI4BViMtJP+K8MBtZ7nrT4HsC6rO5v9Mu5iE3YFc1a
+         bpM5mr3YF5gjExLz2Dg7SBJkb3VMILpj9KNSn2MGEAmiT5tslsnpu6u7NxLfTqtakNhX
+         kTjw==
+X-Gm-Message-State: AOAM532jyVsfJwODQHPRomFF92m+BWzRliL9Cf/glEKo/kica7Yj1lCF
+        gK7Yc20dyGDLCDmOpdO0wn5JFA==
+X-Google-Smtp-Source: ABdhPJxFywfjRUgJLANfHOyPeH+0Smh8BUvdparFVzlNNYHCvLQNaP+SUaw0rvKQOr1CntN7Htfrkg==
+X-Received: by 2002:a63:703:: with SMTP id 3mr3557549pgh.159.1601501568307;
+        Wed, 30 Sep 2020 14:32:48 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id e17sm3658037pff.6.2020.09.30.14.32.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Sep 2020 14:32:47 -0700 (PDT)
+Date:   Wed, 30 Sep 2020 14:32:46 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     YiFei Zhu <zhuyifei1999@gmail.com>
+Cc:     containers@lists.linux-foundation.org,
+        YiFei Zhu <yifeifz2@illinois.edu>, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Aleksa Sarai <cyphar@cyphar.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        David Laight <David.Laight@aculab.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Jann Horn <jannh@google.com>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Will Drewry <wad@chromium.org>
+Subject: Re: [PATCH v3 seccomp 3/5] seccomp/cache: Lookup syscall allowlist
+ for fast path
+Message-ID: <202009301422.D9F6E6A@keescook>
+References: <cover.1601478774.git.yifeifz2@illinois.edu>
+ <83c72471f9f79fa982508bd4db472686a67b8320.1601478774.git.yifeifz2@illinois.edu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <13746922-0253-cda7-e9ac-2bd20bf1a17f@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <83c72471f9f79fa982508bd4db472686a67b8320.1601478774.git.yifeifz2@illinois.edu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 01, 2020 at 12:24:25AM +0300, Dmitry Osipenko wrote:
-> ...
-> >> It looks to me like the only reason why you need this new global API is
-> >> because PCI devices may not have a device tree node with a phandle to
-> >> the IOMMU. However, SMMU support for PCI will only be enabled if the
-> >> root complex has an iommus property, right? In that case, can't we
-> >> simply do something like this:
-> >>
-> >> 	if (dev_is_pci(dev))
-> >> 		np = find_host_bridge(dev)->of_node;
-> >> 	else
-> >> 		np = dev->of_node;
-> >>
-> >> ? I'm not sure exactly what find_host_bridge() is called, but I'm pretty
-> >> sure that exists.
-> >>
-> >> Once we have that we can still iterate over the iommus property and do
-> >> not need to rely on this global variable.
-> > 
-> > I agree that it'd work. But I was hoping to simplify the code
-> > here if it's possible. Looks like we have an argument on this
-> > so I will choose to go with your suggestion above for now.
+On Wed, Sep 30, 2020 at 10:19:14AM -0500, YiFei Zhu wrote:
+> From: YiFei Zhu <yifeifz2@illinois.edu>
 > 
-> This patch removed more lines than were added. If this will be opposite
-> for the Thierry's suggestion, then it's probably not a great suggestion.
+> The fast (common) path for seccomp should be that the filter permits
+> the syscall to pass through, and failing seccomp is expected to be
+> an exceptional case; it is not expected for userspace to call a
+> denylisted syscall over and over.
+> 
+> This first finds the current allow bitmask by iterating through
+> syscall_arches[] array and comparing it to the one in struct
+> seccomp_data; this loop is expected to be unrolled. It then
+> does a test_bit against the bitmask. If the bit is set, then
+> there is no need to run the full filter; it returns
+> SECCOMP_RET_ALLOW immediately.
+> 
+> Co-developed-by: Dimitrios Skarlatos <dskarlat@cs.cmu.edu>
+> Signed-off-by: Dimitrios Skarlatos <dskarlat@cs.cmu.edu>
+> Signed-off-by: YiFei Zhu <yifeifz2@illinois.edu>
 
-Sorry, I don't quite understand this comments. Would you please
-elaborate what's this "it" being "not a great suggestion"?
+I'd like the content/ordering of this and the emulator patch to be reorganized a bit.
+I'd like to see the infrastructure of the cache added first (along with
+the "always allow" test logic in this patch), with the emulator missing:
+i.e. the patch is a logical no-op: no behavior changes because nothing
+ever changes the cache bits, but all the operational logic, structure
+changes, etc, is in place. Then the next patch would be replacing the
+no-op with the emulator.
+
+> ---
+>  kernel/seccomp.c | 52 ++++++++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 52 insertions(+)
+> 
+> diff --git a/kernel/seccomp.c b/kernel/seccomp.c
+> index f09c9e74ae05..bed3b2a7f6c8 100644
+> --- a/kernel/seccomp.c
+> +++ b/kernel/seccomp.c
+> @@ -172,6 +172,12 @@ struct seccomp_cache_filter_data { };
+>  static inline void seccomp_cache_prepare(struct seccomp_filter *sfilter)
+>  {
+>  }
+> +
+> +static inline bool seccomp_cache_check(const struct seccomp_filter *sfilter,
+
+bikeshedding: "cache check" doesn't tell me anything about what it's
+actually checking for. How about calling this seccomp_is_constant_allow() or
+something that reflects both the "bool" return ("is") and what that bool
+means ("should always be allowed").
+
+> +				       const struct seccomp_data *sd)
+> +{
+> +	return false;
+> +}
+>  #endif /* CONFIG_SECCOMP_CACHE_NR_ONLY */
+>  
+>  /**
+> @@ -331,6 +337,49 @@ static int seccomp_check_filter(struct sock_filter *filter, unsigned int flen)
+>  	return 0;
+>  }
+>  
+> +#ifdef CONFIG_SECCOMP_CACHE_NR_ONLY
+> +static bool seccomp_cache_check_bitmap(const void *bitmap, size_t bitmap_size,
+
+Please also mark as "inline".
+
+> +				       int syscall_nr)
+> +{
+> +	if (unlikely(syscall_nr < 0 || syscall_nr >= bitmap_size))
+> +		return false;
+> +	syscall_nr = array_index_nospec(syscall_nr, bitmap_size);
+> +
+> +	return test_bit(syscall_nr, bitmap);
+> +}
+> +
+> +/**
+> + * seccomp_cache_check - lookup seccomp cache
+> + * @sfilter: The seccomp filter
+> + * @sd: The seccomp data to lookup the cache with
+> + *
+> + * Returns true if the seccomp_data is cached and allowed.
+> + */
+> +static bool seccomp_cache_check(const struct seccomp_filter *sfilter,
+
+inline too.
+
+> +				const struct seccomp_data *sd)
+> +{
+> +	int syscall_nr = sd->nr;
+> +	const struct seccomp_cache_filter_data *cache = &sfilter->cache;
+> +
+> +#ifdef SECCOMP_ARCH_DEFAULT
+> +	if (likely(sd->arch == SECCOMP_ARCH_DEFAULT))
+> +		return seccomp_cache_check_bitmap(cache->syscall_allow_default,
+> +						  SECCOMP_ARCH_DEFAULT_NR,
+> +						  syscall_nr);
+> +#endif /* SECCOMP_ARCH_DEFAULT */
+> +
+> +#ifdef SECCOMP_ARCH_COMPAT
+> +	if (likely(sd->arch == SECCOMP_ARCH_COMPAT))
+> +		return seccomp_cache_check_bitmap(cache->syscall_allow_compat,
+> +						  SECCOMP_ARCH_COMPAT_NR,
+> +						  syscall_nr);
+> +#endif /* SECCOMP_ARCH_COMPAT */
+> +
+> +	WARN_ON_ONCE(true);
+> +	return false;
+> +}
+> +#endif /* CONFIG_SECCOMP_CACHE_NR_ONLY */
+> +
+>  /**
+>   * seccomp_run_filters - evaluates all seccomp filters against @sd
+>   * @sd: optional seccomp data to be passed to filters
+> @@ -353,6 +402,9 @@ static u32 seccomp_run_filters(const struct seccomp_data *sd,
+>  	if (WARN_ON(f == NULL))
+>  		return SECCOMP_RET_KILL_PROCESS;
+>  
+> +	if (seccomp_cache_check(f, sd))
+> +		return SECCOMP_RET_ALLOW;
+> +
+>  	/*
+>  	 * All filters in the list are evaluated and the lowest BPF return
+>  	 * value always takes priority (ignoring the DATA).
+> -- 
+> 2.28.0
+> 
+
+Otherwise, yup, looks good.
+
+-- 
+Kees Cook
