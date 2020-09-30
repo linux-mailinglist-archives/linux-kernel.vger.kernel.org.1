@@ -2,83 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51CD727E54C
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 11:38:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C13827E553
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 11:39:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729037AbgI3JiH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 05:38:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44600 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728638AbgI3JiG (ORCPT
+        id S1728764AbgI3JjM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 05:39:12 -0400
+Received: from mail.netline.ch ([148.251.143.178]:48793 "EHLO
+        netline-mail3.netline.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725779AbgI3JjM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 05:38:06 -0400
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75224C0613D1
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 02:38:06 -0700 (PDT)
-Received: by mail-ot1-x32d.google.com with SMTP id s66so1196461otb.2
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 02:38:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TfzEw5x0NiRRju3CPhetGru5/pRnoeNXGN+8SqIx2Xg=;
-        b=xSNlabK0wj27CX+1Qcx2VTudu5ZW9FuibpTZ0nWLnP7KiZc1Y26yZKB8Eh31WGDcm6
-         8swxBpO09W7KLsdWCfcJLGpNOa9gUdbATUzXP1GsumP4vcMrlnAxEcLj8eox2M6rO4QT
-         LYOYeyB9ved5GDo1QpgQlQh7SernXIJ3tBNMc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TfzEw5x0NiRRju3CPhetGru5/pRnoeNXGN+8SqIx2Xg=;
-        b=q09rRFihgCdEkisYWtJ9e//CMnVmtaoc9GnPIJDatUH2fnd8P33uhyXxC6X7dUK/zU
-         jz25o4s38VlV30qyrTFWasOQA1L2WkXICcAuEGV2limNJTAfpWkkaN2J1bS4QXcQ5Gao
-         t9kSe6R3+JihlcSeBDm4EzxcK6D+5RhgNTM/VgNLsxV77eP6Fl/sybRl9ckjRhlPSyi+
-         jDk0aRee7cI9JvpH4ro0v+MbW7BNy+O3aRPIaYWX6u6Mb9DjQ1M70OZYc95bKIOTKYTD
-         orzuqm/WyjgyhK4lCXxyIXxp9JS7eKMGXtYNc+IASuiVgwTSflG5s/ZBbDILtmHjtcZN
-         yHoA==
-X-Gm-Message-State: AOAM530dTt2IYZcXshCPJD+lXqhpGgk+IZEATl7mCweL7PeUthRn04D+
-        UOnMem6CyW4Z7RetQfaX7KNbk+lbVB5mX8X6etDZIQ==
-X-Google-Smtp-Source: ABdhPJyEFIY605VtSWbEn3ZkRUtaTSsucUs4nlzLVLBbPX+b1HdTLS14fXU+7V2yAvC7hyiex42j1bUzvOLQo1flGe0=
-X-Received: by 2002:a9d:6e90:: with SMTP id a16mr962799otr.132.1601458684868;
- Wed, 30 Sep 2020 02:38:04 -0700 (PDT)
+        Wed, 30 Sep 2020 05:39:12 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by netline-mail3.netline.ch (Postfix) with ESMTP id 4C1A92A6042;
+        Wed, 30 Sep 2020 11:39:08 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at netline-mail3.netline.ch
+Received: from netline-mail3.netline.ch ([127.0.0.1])
+        by localhost (netline-mail3.netline.ch [127.0.0.1]) (amavisd-new, port 10024)
+        with LMTP id uXVtVzCDHncF; Wed, 30 Sep 2020 11:39:07 +0200 (CEST)
+Received: from thor (212.174.63.188.dynamic.wline.res.cust.swisscom.ch [188.63.174.212])
+        by netline-mail3.netline.ch (Postfix) with ESMTPSA id 7000B2A6016;
+        Wed, 30 Sep 2020 11:39:07 +0200 (CEST)
+Received: from [::1]
+        by thor with esmtp (Exim 4.94)
+        (envelope-from <michel@daenzer.net>)
+        id 1kNYZq-000pFt-Ja; Wed, 30 Sep 2020 11:39:06 +0200
+To:     Jason Ekstrand <jason@jlekstrand.net>
+Cc:     Chenbo Feng <fengc@google.com>, daniels@collabora.com,
+        daniel.vetter@ffwll.ch, jajones@nvidia.com,
+        linux-kernel@vger.kernel.org, Greg Hackmann <ghackmann@google.com>,
+        linaro-mm-sig@lists.linaro.org, hoegsberg@google.com,
+        dri-devel@lists.freedesktop.org, jessehall@google.com,
+        airlied@redhat.com, christian.koenig@amd.com,
+        linux-media@vger.kernel.org
+References: <20200311034351.1275197-3-jason@jlekstrand.net>
+ <20200317212115.419358-1-jason@jlekstrand.net>
+From:   =?UTF-8?Q?Michel_D=c3=a4nzer?= <michel@daenzer.net>
+Subject: Re: [PATCH 3/3] RFC: dma-buf: Add an API for importing and exporting
+ sync files (v5)
+Message-ID: <64eed158-22a8-10a7-7686-c972f8542649@daenzer.net>
+Date:   Wed, 30 Sep 2020 11:39:06 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.2.2
 MIME-Version: 1.0
-References: <20200928090805.23343-1-lmb@cloudflare.com> <20200928090805.23343-5-lmb@cloudflare.com>
- <20200929060619.psnobg3cz3zbfx6u@kafai-mbp> <CACAyw9-hSfaxfHHMaVMVqBU7MHLoqgPyo55UwQ3w7NKREHcCxw@mail.gmail.com>
- <20200929172340.hogj6zficvhkpibx@kafai-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20200929172340.hogj6zficvhkpibx@kafai-mbp.dhcp.thefacebook.com>
-From:   Lorenz Bauer <lmb@cloudflare.com>
-Date:   Wed, 30 Sep 2020 10:37:53 +0100
-Message-ID: <CACAyw9_wfD39OCKR5zMN4g=GjcYH31Dg7skoyhPVHVTspgvarA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 4/4] selftest: bpf: Test copying a sockmap and sockhash
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     Shuah Khan <shuah@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        kernel-team <kernel-team@cloudflare.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200317212115.419358-1-jason@jlekstrand.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-CA
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 29 Sep 2020 at 18:23, Martin KaFai Lau <kafai@fb.com> wrote:
+On 2020-03-17 10:21 p.m., Jason Ekstrand wrote:
+> Explicit synchronization is the future.  At least, that seems to be what
+> most userspace APIs are agreeing on at this point.  However, most of our
+> Linux APIs (both userspace and kernel UAPI) are currently built around
+> implicit synchronization with dma-buf.  While work is ongoing to change
+> many of the userspace APIs and protocols to an explicit synchronization
+> model, switching over piecemeal is difficult due to the number of
+> potential components involved.  On the kernel side, many drivers use
+> dma-buf including GPU (3D/compute), display, v4l, and others.  In
+> userspace, we have X11, several Wayland compositors, 3D drivers, compute
+> drivers (OpenCL etc.), media encode/decode, and the list goes on.
+> 
+> This patch provides a path forward by allowing userspace to manually
+> manage the fences attached to a dma-buf.  Alternatively, one can think
+> of this as making dma-buf's implicit synchronization simply a carrier
+> for an explicit fence.  This is accomplished by adding two IOCTLs to
+> dma-buf for importing and exporting a sync file to/from the dma-buf.
+> This way a userspace component which is uses explicit synchronization,
+> such as a Vulkan driver, can manually set the write fence on a buffer
+> before handing it off to an implicitly synchronized component such as a
+> Wayland compositor or video encoder.  In this way, each of the different
+> components can be upgraded to an explicit synchronization model one at a
+> time as long as the userspace pieces connecting them are aware of it and
+> import/export fences at the right times.
+> 
+> There is a potential race condition with this API if userspace is not
+> careful.  A typical use case for implicit synchronization is to wait for
+> the dma-buf to be ready, use it, and then signal it for some other
+> component.  Because a sync_file cannot be created until it is guaranteed
+> to complete in finite time, userspace can only signal the dma-buf after
+> it has already submitted the work which uses it to the kernel and has
+> received a sync_file back.  There is no way to atomically submit a
+> wait-use-signal operation.  This is not, however, really a problem with
+> this API so much as it is a problem with explicit synchronization
+> itself.  The way this is typically handled is to have very explicit
+> ownership transfer points in the API or protocol which ensure that only
+> one component is using it at any given time.  Both X11 (via the PRESENT
+> extension) and Wayland provide such ownership transfer points via
+> explicit present and idle messages.
+> 
+> The decision was intentionally made in this patch to make the import and
+> export operations IOCTLs on the dma-buf itself rather than as a DRM
+> IOCTL.  This makes it the import/export operation universal across all
+> components which use dma-buf including GPU, display, v4l, and others.
+> It also means that a userspace component can do the import/export
+> without access to the DRM fd which may be tricky to get in cases where
+> the client communicates with DRM via a userspace API such as OpenGL or
+> Vulkan.  At a future date we may choose to add direct import/export APIs
+> to components such as drm_syncobj to avoid allocating a file descriptor
+> and going through two ioctls.  However, that seems to be something of a
+> micro-optimization as import/export operations are likely to happen at a
+> rate of a few per frame of rendered or decoded video.
+> 
+> v2 (Jason Ekstrand):
+>   - Use a wrapper dma_fence_array of all fences including the new one
+>     when importing an exclusive fence.
+> 
+> v3 (Jason Ekstrand):
+>   - Lock around setting shared fences as well as exclusive
+>   - Mark SIGNAL_SYNC_FILE as a read-write ioctl.
+>   - Initialize ret to 0 in dma_buf_wait_sync_file
+> 
+> v4 (Jason Ekstrand):
+>   - Use the new dma_resv_get_singleton helper
+> 
+> v5 (Jason Ekstrand):
+>   - Rename the IOCTLs to import/export rather than wait/signal
+>   - Drop the WRITE flag and always get/set the exclusive fence
+> 
+> Signed-off-by: Jason Ekstrand <jason@jlekstrand.net>
 
-...
+What's the status of this? DMA_BUF_IOCTL_EXPORT_SYNC_FILE would be 
+useful for Wayland compositors to wait for client buffers to become 
+ready without being prone to getting delayed by later HW access to them, 
+so it would be nice to merge that at least (if 
+DMA_BUF_IOCTL_IMPORT_SYNC_FILE is still controversial).
 
-> > Yeah, I think so. We'd need to do something similar to your
-> > sock_common work for PTR_TO_RDONLY_BUF_OR_NULL. The fact that the
-> > pointer is read only makes it a bit more difficult I think. After
-> I thought the key arg should be used as read-only in the map's helper.
-> or there is map type's helper that modifies the key?
-
-I don't know, that's what I meant by more difficult. If map keys are
-always read-only like you say this would be straight forward to do
-(famous last words).
 
 -- 
-Lorenz Bauer  |  Systems Engineer
-6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
-
-www.cloudflare.com
+Earthling Michel Dänzer               |               https://redhat.com
+Libre software enthusiast             |             Mesa and X developer
