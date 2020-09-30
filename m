@@ -2,102 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19BC627E087
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 07:40:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB82E27E093
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 07:46:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725903AbgI3FkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 01:40:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36150 "EHLO
+        id S1725885AbgI3Fqw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 01:46:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725320AbgI3Fj6 (ORCPT
+        with ESMTP id S1725306AbgI3Fqv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 01:39:58 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AB95C061755;
-        Tue, 29 Sep 2020 22:39:57 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id 197so12966lfo.11;
-        Tue, 29 Sep 2020 22:39:57 -0700 (PDT)
+        Wed, 30 Sep 2020 01:46:51 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27FC9C061755;
+        Tue, 29 Sep 2020 22:46:51 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id t14so383695pgl.10;
+        Tue, 29 Sep 2020 22:46:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=sO7Z6Ebp01z2sW5Kfe6IDDgdgco/uSCVRH76uI5YHC0=;
-        b=Pb5O4ATP4Nrcn7RwitJpHiIkFKleHhVyVqhRyCu5njAH7ln3zA+KGp9q594NfHP2e6
-         Kj7htrUZvLTx85NHXXlpBlvoS/zD7tKGmpeq8JIBvCA/CS5CyfgYkwbRyZuRM76CllvX
-         RXECp0Q8GrUJwLRIUgDO81HuzKKxV/MHQYCbs33OAzHIvv27euBGjo1nKLm6rvh8kibz
-         H3Ki+ZE5D1MHSuANdSKJwntj9SaPgjDQHzBe/kbUFmhIk8Lj0zB+0TDOQpHYKGKOMRrR
-         M9ZNPlvHWgkbcMcapSIcLRf5MQFIGwV3LUVI25f+URnYw4lHRb0RHPMAc7HZfup4t+xq
-         78kw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=YTntM7CoJaV8IezMsAd4LGcSeXceEkxjfopvkjTdjsU=;
+        b=nEbhdnxyzhDE0kOHHmSlYHi0f4zsO7yr9B4e+Yozh7cqTvGvD9a0EZhp7Ir1N/chk4
+         NjKk+Am1QSFrHwhJcidg+R0DcNMCUOjirA/v14DVt9FC/dVeO73JLVTLTxGT4CLvZ1dT
+         RG5SrWDhkCvTQ/7NwZ/+Ma9NkpCi8YNwAUXLbQZDHK5BAdM4gau1lLC/Zgfr62497o+e
+         8skSGjaSs5h4QPdvROAGV8twcjPzLpXz1YXDYaUm1DbgnhENGLpAPZR6HMGZGcD5Mj28
+         hn7jBzjMy+wnTnH+kRYbabVaW1EP9FjcE671mEiXgV3VKHGupwWVAad4PITp83QTF1mC
+         hsKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=sO7Z6Ebp01z2sW5Kfe6IDDgdgco/uSCVRH76uI5YHC0=;
-        b=pILJTr5p9h3xB9oVk5LDIifl4eeTMVUxeC+a6j5AN8E/Z8HpwMuF2+ec6IC9C9QeAt
-         NsYGn4IGrVqDGldHUp0EUwHqGgtkSBuJkmGUNqS6cu40I9bH4PZKcuhsKZlNFTf5PKPm
-         H+ttLTctnnD456CW+K1hT8l/ZIxFyeqL0sATLNxgJ9Ww8e5WQSa+7IGbdaHwgn4CvD0M
-         jt9z9Bxzj5627whmFadqSms8iEHHvoHvqT3/3nZ+qR8UtvP1MacRIS+Y8Ps9ewsynerH
-         x6B+xbr05+OdKCbw1sc0KJ0+zbgpsWxhiQJdqk1IGDatVRY8Dxe7VHgI1QoruFDfq54k
-         oGWQ==
-X-Gm-Message-State: AOAM532ClwnGc1IUHmviYjDgBZlmDe4bkXNEyg20dyfI0qXTLY3mTWfB
-        p6b+TosBhJJKsdQXSuXMH0varxgraIs=
-X-Google-Smtp-Source: ABdhPJx8X6I4Cwc+xBI4BDjcDu14RLHDatsF/H3cqbI/6oc/O9NxV5GSdAK1Cwy9h4z0cKK6PHHBxQ==
-X-Received: by 2002:a19:4bc8:: with SMTP id y191mr289347lfa.491.1601444395768;
-        Tue, 29 Sep 2020 22:39:55 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
-        by smtp.googlemail.com with ESMTPSA id z7sm62625lfc.59.2020.09.29.22.39.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 29 Sep 2020 22:39:55 -0700 (PDT)
-Subject: Re: [PATCH v2 2/3] iommu/tegra-smmu: Rework .probe_device and
- .attach_dev
-To:     Nicolin Chen <nicoleotsuka@gmail.com>, thierry.reding@gmail.com,
-        joro@8bytes.org, krzk@kernel.org
-Cc:     vdumpa@nvidia.com, jonathanh@nvidia.com,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=YTntM7CoJaV8IezMsAd4LGcSeXceEkxjfopvkjTdjsU=;
+        b=Xc7vs2D/SsDb3gi6um1xmtf/e6V4KonFAwhPyN2bVrgWMcV+oK4lXzgZopxmt/fc4O
+         PMalhz+BMkIdKvl0JtqxlFpQjKkKTbKYMvV3P04SQ7Q9c1xOs05+LqRCiyR1J4Nw4jnw
+         0F3+6Zhq48nVap7BOObKdaPyZTQXmVckQtWaaxHkUJbWsrMqLhirJHO745jJu3vh2Ca5
+         BFMUrBHgpJw1znztCvOK6PJMfhjAGDNDpcEKJXV3+0xTDh9+N7pLYlV6qd1jKjDUeOe6
+         hyHwZhOWuWRwOiexw4uR6Y/gosJc18zFViKLWQMhBvPsBMAC7Hi0xD4dKiBPrGVvaVvi
+         asCw==
+X-Gm-Message-State: AOAM533IXy8dwTpdEksS9gymbz+OrGpi5VRXejLCvNz1keQWWHD4yKQK
+        dkQACEmMkoZMvtfn5gsHhSs=
+X-Google-Smtp-Source: ABdhPJzkXK6Lv65fdf9edZA4EeNgXlSsNPrn8Q0WXCu/aqssic2rq6TvSREyvyuzymXIAoh771xnnA==
+X-Received: by 2002:a63:ce47:: with SMTP id r7mr888011pgi.360.1601444810709;
+        Tue, 29 Sep 2020 22:46:50 -0700 (PDT)
+Received: from Asurada-Nvidia (thunderhill.nvidia.com. [216.228.112.22])
+        by smtp.gmail.com with ESMTPSA id v13sm728237pjr.12.2020.09.29.22.46.49
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 29 Sep 2020 22:46:50 -0700 (PDT)
+Date:   Tue, 29 Sep 2020 22:41:20 -0700
+From:   Nicolin Chen <nicoleotsuka@gmail.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     thierry.reding@gmail.com, joro@8bytes.org, krzk@kernel.org,
+        vdumpa@nvidia.com, jonathanh@nvidia.com,
         linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
         linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/3] iommu/tegra-smmu: Rework .probe_device and
+ .attach_dev
+Message-ID: <20200930054119.GE31821@Asurada-Nvidia>
 References: <20200930003013.31289-1-nicoleotsuka@gmail.com>
  <20200930003013.31289-3-nicoleotsuka@gmail.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <e557a09b-bcc3-11cb-9529-096aafb42051@gmail.com>
-Date:   Wed, 30 Sep 2020 08:39:54 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ <e557a09b-bcc3-11cb-9529-096aafb42051@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200930003013.31289-3-nicoleotsuka@gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <e557a09b-bcc3-11cb-9529-096aafb42051@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-30.09.2020 03:30, Nicolin Chen пишет:
->  static int tegra_smmu_attach_dev(struct iommu_domain *domain,
->  				 struct device *dev)
->  {
-> +	struct iommu_fwspec *fwspec = dev_iommu_fwspec_get(dev);
->  	struct tegra_smmu *smmu = dev_iommu_priv_get(dev);
->  	struct tegra_smmu_as *as = to_smmu_as(domain);
-> -	struct device_node *np = dev->of_node;
-> -	struct of_phandle_args args;
->  	unsigned int index = 0;
->  	int err = 0;
->  
-> -	while (!of_parse_phandle_with_args(np, "iommus", "#iommu-cells", index,
-> -					   &args)) {
-> -		unsigned int swgroup = args.args[0];
-> -
-> -		if (args.np != smmu->dev->of_node) {
-> -			of_node_put(args.np);
-> -			continue;
-> -		}
-> -
-> -		of_node_put(args.np);
-> +	if (!fwspec || fwspec->ops != &tegra_smmu_ops)
-> +		return -ENOENT;
+On Wed, Sep 30, 2020 at 08:39:54AM +0300, Dmitry Osipenko wrote:
+> 30.09.2020 03:30, Nicolin Chen пишет:
+> >  static int tegra_smmu_attach_dev(struct iommu_domain *domain,
+> >  				 struct device *dev)
+> >  {
+> > +	struct iommu_fwspec *fwspec = dev_iommu_fwspec_get(dev);
+> >  	struct tegra_smmu *smmu = dev_iommu_priv_get(dev);
+> >  	struct tegra_smmu_as *as = to_smmu_as(domain);
+> > -	struct device_node *np = dev->of_node;
+> > -	struct of_phandle_args args;
+> >  	unsigned int index = 0;
+> >  	int err = 0;
+> >  
+> > -	while (!of_parse_phandle_with_args(np, "iommus", "#iommu-cells", index,
+> > -					   &args)) {
+> > -		unsigned int swgroup = args.args[0];
+> > -
+> > -		if (args.np != smmu->dev->of_node) {
+> > -			of_node_put(args.np);
+> > -			continue;
+> > -		}
+> > -
+> > -		of_node_put(args.np);
+> > +	if (!fwspec || fwspec->ops != &tegra_smmu_ops)
+> > +		return -ENOENT;
+> 
+> s/&tegra_smmu_ops/smmu->iommu.ops/
+> 
+> Secondly, is it even possible that fwspec could be NULL here or that
+> fwspec->ops != smmu->ops?
 
-s/&tegra_smmu_ops/smmu->iommu.ops/
-
-Secondly, is it even possible that fwspec could be NULL here or that
-fwspec->ops != smmu->ops?
+I am following what's in the arm-smmu driver, as I think it'd be
+a common practice to do such a check in such a way.
