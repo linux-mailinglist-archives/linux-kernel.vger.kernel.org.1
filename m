@@ -2,168 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E0E627E6B5
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 12:34:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA06027E6C2
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 12:35:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729018AbgI3KeR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 06:34:17 -0400
-Received: from foss.arm.com ([217.140.110.172]:33708 "EHLO foss.arm.com"
+        id S1729261AbgI3Kfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 06:35:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36792 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725776AbgI3KeR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 06:34:17 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6F9C8D6E;
-        Wed, 30 Sep 2020 03:34:16 -0700 (PDT)
-Received: from arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3C41B3F70D;
-        Wed, 30 Sep 2020 03:34:14 -0700 (PDT)
-Date:   Wed, 30 Sep 2020 11:34:11 +0100
-From:   Dave Martin <Dave.Martin@arm.com>
-To:     Leo Yan <leo.yan@linaro.org>
-Cc:     Mark Rutland <mark.rutland@arm.com>, Al Grant <Al.Grant@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        =?iso-8859-1?Q?Andr=E9?= Przywara <andre.przywara@arm.com>,
-        Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        James Clark <james.clark@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Wei Li <liwei391@huawei.com>,
-        Tan Xiaojun <tanxiaojun@huawei.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 5/5] perf: arm_spe: Decode SVE events
-Message-ID: <20200930103409.GP6642@arm.com>
-References: <20200922101225.183554-1-andre.przywara@arm.com>
- <20200922101225.183554-6-andre.przywara@arm.com>
- <20200928132114.GF6642@arm.com>
- <8efd63eb-5ae7-0f9a-6c37-ef5e68af4e6c@arm.com>
- <20200928144755.GI6642@arm.com>
- <20200929021902.GA16749@leoy-ThinkPad-X240s>
+        id S1725776AbgI3Kf0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 06:35:26 -0400
+Received: from kernel.org (unknown [87.71.73.56])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7F6D62071E;
+        Wed, 30 Sep 2020 10:35:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601462125;
+        bh=SzkDe746rX0ODWGVw7fDdaVyUZrEV+gM3E8swkXbMbU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=uKhmviR7RakW6A11UWNT5ZnPb8uwHbZGJ7h8lD3kaL9kXhV36bE4HhoR+/vz33Mhg
+         MZsGnqTwp+vEmRtvpupcTHKJZOyDerAKfWNGjQ5XLmLmvO7wymY3GajpjZH4do/Pa4
+         U6C3rjeog953uQ4NSrLfTOZ44e0M4M9L8g8QNuUE=
+Date:   Wed, 30 Sep 2020 13:35:07 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
+Cc:     "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "david@redhat.com" <david@redhat.com>,
+        "cl@linux.com" <cl@linux.com>, "hpa@zytor.com" <hpa@zytor.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "idan.yaniv@ibm.com" <idan.yaniv@ibm.com>,
+        "kirill@shutemov.name" <kirill@shutemov.name>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "rppt@linux.ibm.com" <rppt@linux.ibm.com>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "willy@infradead.org" <willy@infradead.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "luto@kernel.org" <luto@kernel.org>,
+        "shuah@kernel.org" <shuah@kernel.org>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "linux-nvdimm@lists.01.org" <linux-nvdimm@lists.01.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "Reshetova, Elena" <elena.reshetova@intel.com>,
+        "palmer@dabbelt.com" <palmer@dabbelt.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "mtk.manpages@gmail.com" <mtk.manpages@gmail.com>,
+        "tycho@tycho.ws" <tycho@tycho.ws>,
+        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>
+Subject: Re: [PATCH v6 3/6] mm: introduce memfd_secret system call to create
+ "secret" memory areas
+Message-ID: <20200930103507.GK2142832@kernel.org>
+References: <20200924132904.1391-1-rppt@kernel.org>
+ <20200924132904.1391-4-rppt@kernel.org>
+ <d466e1f13ff615332fe1f513f6c1d763db28bd9a.camel@intel.com>
+ <20200929130602.GF2142832@kernel.org>
+ <839fbb26254dc9932dcff3c48a3a4ab038c016ea.camel@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200929021902.GA16749@leoy-ThinkPad-X240s>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <839fbb26254dc9932dcff3c48a3a4ab038c016ea.camel@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 10:19:02AM +0800, Leo Yan wrote:
-> On Mon, Sep 28, 2020 at 03:47:56PM +0100, Dave Martin wrote:
-> > On Mon, Sep 28, 2020 at 02:59:34PM +0100, André Przywara wrote:
-> > > On 28/09/2020 14:21, Dave Martin wrote:
-> > > 
-> > > Hi Dave,
-> > > 
-> > > > On Tue, Sep 22, 2020 at 11:12:25AM +0100, Andre Przywara wrote:
-> > > >> The Scalable Vector Extension (SVE) is an ARMv8 architecture extension
-> > > >> that introduces very long vector operations (up to 2048 bits).
+On Tue, Sep 29, 2020 at 08:06:03PM +0000, Edgecombe, Rick P wrote:
+> On Tue, 2020-09-29 at 16:06 +0300, Mike Rapoport wrote:
+> > On Tue, Sep 29, 2020 at 04:58:44AM +0000, Edgecombe, Rick P wrote:
+> > > On Thu, 2020-09-24 at 16:29 +0300, Mike Rapoport wrote:
+> > > > Introduce "memfd_secret" system call with the ability to create
+> > > > memory
+> > > > areas visible only in the context of the owning process and not
+> > > > mapped not
+> > > > only to other processes but in the kernel page tables as well.
 > > > > 
-> > > > (8192, in fact, though don't expect to see that on real hardware any
-> > > > time soon...  qemu and the Arm fast model can do it, though.)
+> > > > The user will create a file descriptor using the memfd_secret()
+> > > > system call
+> > > > where flags supplied as a parameter to this system call will
+> > > > define
+> > > > the
+> > > > desired protection mode for the memory associated with that file
+> > > > descriptor.
 > > > > 
-> > > >> The SPE profiling feature can tag SVE instructions with additional
-> > > >> properties like predication or the effective vector length.
-> > > >>
-> > > >> Decode the new operation type bits in the SPE decoder to allow the perf
-> > > >> tool to correctly report about SVE instructions.
+> > > >   Currently there are two protection modes:
 > > > > 
-> > > > 
-> > > > I don't know anything about SPE, so just commenting on a few minor
-> > > > things that catch my eye here.
+> > > > * exclusive - the memory area is unmapped from the kernel direct
+> > > > map
+> > > > and it
+> > > >                is present only in the page tables of the owning
+> > > > mm.
 > > > 
-> > > Many thanks for taking a look!
-> > > Please note that I actually missed a prior submission by Wei, so the
-> > > code changes here will end up in:
-> > > https://lore.kernel.org/patchwork/patch/1288413/
+> > > Seems like there were some concerns raised around direct map
+> > > efficiency, but in case you are going to rework this...how does
+> > > this
+> > > memory work for the existing kernel functionality that does things
+> > > like
+> > > this?
 > > > 
-> > > But your two points below magically apply to his patch as well, so....
+> > > get_user_pages(, &page);
+> > > ptr = kmap(page);
+> > > foo = *ptr;
 > > > 
-> > > > 
-> > > >> Signed-off-by: Andre Przywara <andre.przywara@arm.com>
-> > > >> ---
-> > > >>  .../arm-spe-decoder/arm-spe-pkt-decoder.c     | 48 ++++++++++++++++++-
-> > > >>  1 file changed, 47 insertions(+), 1 deletion(-)
-> > > >>
-> > > >> diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-> > > >> index a033f34846a6..f0c369259554 100644
-> > > >> --- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-> > > >> +++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-> > > >> @@ -372,8 +372,35 @@ int arm_spe_pkt_desc(const struct arm_spe_pkt *packet, char *buf,
-> > > >>  	}
-> > > >>  	case ARM_SPE_OP_TYPE:
-> > > >>  		switch (idx) {
-> > > >> -		case 0:	return snprintf(buf, buf_len, "%s", payload & 0x1 ?
-> > > >> +		case 0: {
-> > > >> +			size_t blen = buf_len;
-> > > >> +
-> > > >> +			if ((payload & 0x89) == 0x08) {
-> > > >> +				ret = snprintf(buf, buf_len, "SVE");
-> > > >> +				buf += ret;
-> > > >> +				blen -= ret;
-> > > > 
-> > > > (Nit: can ret be < 0 ?  I've never been 100% clear on this myself for
-> > > > the s*printf() family -- if this assumption is widespread in perf tool
-> > > > a lready that I guess just go with the flow.)
-> > > 
-> > > Yeah, some parts of the code in here check for -1, actually, but doing
-> > > this on every call to snprintf would push this current code over the
-> > > edge - and I cowardly avoided a refactoring ;-)
-> > > 
-> > > Please note that his is perf userland, and also we are printing constant
-> > > strings here.
-> > > Although admittedly this starts to sounds like an excuse now ...
-> > > 
-> > > > I wonder if this snprintf+increment+decrement sequence could be wrapped
-> > > > up as a helper, rather than having to be repeated all over the place.
-> > > 
-> > > Yes, I was hoping nobody would notice ;-)
+> > > Not sure if I'm missing something, but I think apps could cause the
+> > > kernel to access a not-present page and oops.
 > > 
-> > It's probably not worth losing sleep over.
+> > The idea is that this memory should not be accessible by the kernel,
+> > so
+> > the sequence you describe should indeed fail.
 > > 
-> > snprintf(3) says, under NOTES:
-> > 
-> > 	Until glibc 2.0.6, they would return -1 when the output was
-> > 	truncated.
-> > 
-> > which is probably ancient enough history that we don't care.  C11 does
-> > say that a negative return value can happen "if an encoding error
-> > occurred".  _Probably_ not a problem if perf tool never calls
-> > setlocale(), but ...
+> > Probably oops would be to noisy and in this case the report needs to
+> > be
+> > less verbose.
 > 
-> I have one patch which tried to fix the snprintf+increment sequence
-> [1], to be honest, the change seems urgly for me.  I agree it's better
-> to use a helper to wrap up.
+> I was more concerned that it could cause kernel instabilities.
+
+I think kernel recovers nicely from such sort of page fault, at least on
+x86.
+
+> I see, so it should not be accessed even at the userspace address? I
+> wonder if it should be prevented somehow then. At least
+> get_user_pages() should be prevented I think. Blocking copy_*_user()
+> access might not be simple.
 > 
-> [1] https://lore.kernel.org/patchwork/patch/1288410/
+> I'm also not so sure that a user would never have any possible reason
+> to copy data from this memory into the kernel, even if it's just
+> convenience. In which case a user setup could break if a specific
+> kernel implementation switched to get_user_pages()/kmap() from using
+> copy_*_user(). So seems maybe a bit thorny without fully blocking
+> access from the kernel, or deprecating that pattern.
+> 
+> You should probably call out these "no passing data to/from the kernel"
+> expectations, unless I missed them somewhere.
 
-Sure, putting explicit checks all over the place makes a lot of noise in
-the code.
+You are right, I should have been more explicit in the description of
+the expected behavoir. 
 
-I was wondering whether something along the following lines would work:
+Our thinking was that copy_*user() would work in the context of the
+process that "owns" the secretmem and gup() would not allow access in
+general, unless requested with certail (yet another) FOLL_ flag.
 
-	/* ... */
-
-	if (payload & SVE_EVT_PKT_GEN_EXCEPTION)
-		buf_appendf_err(&buf, &buf_len, &ret, " EXCEPTION-GEN");
-	if (payload & SVE_EVT_PKT_ARCH_RETIRED)
-		buf_appendf_err(&buf, &buf_len, &ret, " RETIRED");
-	if (payload & SVE_EVT_PKT_L1D_ACCESS)
-		buf_appendf_err(&buf, &buf_len, &ret, " L1D-ACCESS");
-
-	/* ... */
-
-	if (ret)
-		return ret;
-
-[...]
-
-Best to keep such refactoring independent of this series though.
-
-Cheers
----Dave
+-- 
+Sincerely yours,
+Mike.
