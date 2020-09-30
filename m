@@ -2,183 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACE0327F59E
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 01:00:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BB0B27F59A
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 01:00:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731966AbgI3W7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 18:59:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55720 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730424AbgI3W7l (ORCPT
+        id S1731981AbgI3XAF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 19:00:05 -0400
+Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:26701 "EHLO
+        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731968AbgI3XAD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 18:59:41 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8394AC061755
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 15:59:40 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id j19so774497pjl.4
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 15:59:40 -0700 (PDT)
+        Wed, 30 Sep 2020 19:00:03 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=mA4RbbGe3ZFZ8RcnTkMkNKoVYtjAYSExGb4WNfYO9TM=;
-        b=RvEzwWeJN2a6gRlpZth2o25ndD+auCau4MS6DEJl7FxRP73WxgWlIWhGFYT4nMj4ax
-         rwqmJHWUhezeYTftYK3nZPt4GWWUr4r0+VwQ5Mo0/P62KBQLjDwPqasCuvps4S30EzsK
-         sQi5G0JVL9ITJDfSI/8aqYEeY5u3nyKSGfggs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=mA4RbbGe3ZFZ8RcnTkMkNKoVYtjAYSExGb4WNfYO9TM=;
-        b=alNpcrK6oxqVBDENxKXv+M657BdsmO8Khsx3kmr4R+ocA2PaWhuwKB1W9b/4P8DoKh
-         YFeFfibF0BNbV4kEEYFVjaPT8hE808gc3NLVRbBqujPJpffevgAnB8QqS1FZN1cl/N6/
-         kaWqlJXfT1ceMd1odQ8xzorJVcWQh1HbQPPqSmM3JZVuDTMnQsvViPtS2EAS9u0xehGE
-         gVXWMmL8KWXA3pWWRZwge+kvVwXr090Nu7CqYTNO9YDf13+si5vwPn/BLrHkJnLE8yWJ
-         FjjDuO8JCOW9eZEAUA+EexaUXsLmDsLCEK6zQy8+bIcolTfcw/KmE21P97zVfOz5/cwp
-         IA9g==
-X-Gm-Message-State: AOAM531f0pE5QJvHtKdnaaKYRoETcx2QfDG+M0YdYmQ9bsQoXlPegrCv
-        p7bC5yQ5M3t96gxGXF4CblgdSg==
-X-Google-Smtp-Source: ABdhPJz64CmLzcbic8Oz26Aoz/WnP6GPlfiVb7QsHaknqk8NVQHnMJKg1SPPBWVyqQNBYFHVFM/jpw==
-X-Received: by 2002:a17:90b:1083:: with SMTP id gj3mr4559450pjb.126.1601506780048;
-        Wed, 30 Sep 2020 15:59:40 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id b20sm3775348pfb.198.2020.09.30.15.59.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Sep 2020 15:59:38 -0700 (PDT)
-Date:   Wed, 30 Sep 2020 15:59:37 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     YiFei Zhu <zhuyifei1999@gmail.com>
-Cc:     containers@lists.linux-foundation.org,
-        YiFei Zhu <yifeifz2@illinois.edu>, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Aleksa Sarai <cyphar@cyphar.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        David Laight <David.Laight@aculab.com>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Jack Chen <jianyan2@illinois.edu>,
-        Jann Horn <jannh@google.com>,
-        Josep Torrellas <torrella@illinois.edu>,
-        Tianyin Xu <tyxu@illinois.edu>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Valentin Rothberg <vrothber@redhat.com>,
-        Will Drewry <wad@chromium.org>
-Subject: Re: [PATCH v3 seccomp 5/5] seccomp/cache: Report cache data through
- /proc/pid/seccomp_cache
-Message-ID: <202009301554.590642EBE@keescook>
-References: <cover.1601478774.git.yifeifz2@illinois.edu>
- <d3d1c05ea0be2b192f480ec52ad64bffbb22dc9d.1601478774.git.yifeifz2@illinois.edu>
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1601506802; x=1633042802;
+  h=to:cc:references:from:message-id:date:mime-version:
+   in-reply-to:content-transfer-encoding:subject;
+  bh=ERi0Pf4HQMHPa9rJT2IBPZJNeA9YKjn1VuAaepvxx8k=;
+  b=JO9t2mv7JrFwm9y+28HvtjF92xDCorKAfnz3D5svaoQTuIoGiNCVptym
+   PNBbfqPJcLWKYs31Fa6ssDc4H9BTvMyws/+RF8C3zsks5pEViKnS2cw2k
+   yyL6DxQWuErjkglPq2bWdLp1529pjY7sK35NcDS1D4nNzS55/yuVPFN2+
+   w=;
+X-IronPort-AV: E=Sophos;i="5.77,322,1596499200"; 
+   d="scan'208";a="57321998"
+Subject: Re: [PATCH -next for tip:x86/pti] x86/tlb: drop unneeded local vars in
+ enable_l1d_flush_for_task()
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1d-16425a8d.us-east-1.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-out-4101.iad4.amazon.com with ESMTP; 30 Sep 2020 23:00:01 +0000
+Received: from EX13MTAUWB001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
+        by email-inbound-relay-1d-16425a8d.us-east-1.amazon.com (Postfix) with ESMTPS id 06073100F6F;
+        Wed, 30 Sep 2020 22:59:55 +0000 (UTC)
+Received: from EX13D01UWB002.ant.amazon.com (10.43.161.136) by
+ EX13MTAUWB001.ant.amazon.com (10.43.161.207) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 30 Sep 2020 22:59:54 +0000
+Received: from f8ffc2228008.ant.amazon.com (10.43.161.237) by
+ EX13d01UWB002.ant.amazon.com (10.43.161.136) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 30 Sep 2020 22:59:51 +0000
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>
+CC:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "clang-built-linux@googlegroups.com" 
+        <clang-built-linux@googlegroups.com>,
+        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
+        "linux-safety@lists.elisa.tech" <linux-safety@lists.elisa.tech>
+References: <20200928124457.27289-1-lukas.bulwahn@gmail.com>
+ <20200929071211.GJ2628@hirez.programming.kicks-ass.net>
+ <20200929083709.GC2651@hirez.programming.kicks-ass.net>
+ <87eemji887.fsf@nanos.tec.linutronix.de>
+ <20200930170316.GB2628@hirez.programming.kicks-ass.net>
+ <87blhni1pg.fsf@nanos.tec.linutronix.de>
+ <20200930183552.GG2628@hirez.programming.kicks-ass.net>
+ <87k0wbgd2s.fsf@nanos.tec.linutronix.de>
+From:   "Singh, Balbir" <sblbir@amazon.com>
+Message-ID: <9b700b03-6bbd-b969-abb8-a004c813446d@amazon.com>
+Date:   Thu, 1 Oct 2020 08:59:48 +1000
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.1.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d3d1c05ea0be2b192f480ec52ad64bffbb22dc9d.1601478774.git.yifeifz2@illinois.edu>
+In-Reply-To: <87k0wbgd2s.fsf@nanos.tec.linutronix.de>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.43.161.237]
+X-ClientProxiedBy: EX13D36UWB002.ant.amazon.com (10.43.161.149) To
+ EX13d01UWB002.ant.amazon.com (10.43.161.136)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 10:19:16AM -0500, YiFei Zhu wrote:
-> From: YiFei Zhu <yifeifz2@illinois.edu>
+On 1/10/20 7:38 am, Thomas Gleixner wrote:
+> CAUTION: This email originated from outside of the organization. Do not click links or open attachments unless you can confirm the sender and know the content is safe.
 > 
-> Currently the kernel does not provide an infrastructure to translate
-> architecture numbers to a human-readable name. Translating syscall
-> numbers to syscall names is possible through FTRACE_SYSCALL
-> infrastructure but it does not provide support for compat syscalls.
 > 
-> This will create a file for each PID as /proc/pid/seccomp_cache.
-> The file will be empty when no seccomp filters are loaded, or be
-> in the format of:
-> <arch name> <decimal syscall number> <ALLOW | FILTER>
-> where ALLOW means the cache is guaranteed to allow the syscall,
-> and filter means the cache will pass the syscall to the BPF filter.
 > 
-> For the docker default profile on x86_64 it looks like:
-> x86_64 0 ALLOW
-> x86_64 1 ALLOW
-> x86_64 2 ALLOW
-> x86_64 3 ALLOW
-> [...]
-> x86_64 132 ALLOW
-> x86_64 133 ALLOW
-> x86_64 134 FILTER
-> x86_64 135 FILTER
-> x86_64 136 FILTER
-> x86_64 137 ALLOW
-> x86_64 138 ALLOW
-> x86_64 139 FILTER
-> x86_64 140 ALLOW
-> x86_64 141 ALLOW
-> [...]
+> On Wed, Sep 30 2020 at 20:35, Peter Zijlstra wrote:
+>> On Wed, Sep 30, 2020 at 08:00:59PM +0200, Thomas Gleixner wrote:
+>>> On Wed, Sep 30 2020 at 19:03, Peter Zijlstra wrote:
+>>>> On Wed, Sep 30, 2020 at 05:40:08PM +0200, Thomas Gleixner wrote:
+>>>> Also, that preempt_disable() in there doesn't actually do anything.
+>>>> Worse, preempt_disable(); for_each_cpu(); is an anti-pattern. It mixes
+>>>> static_cpu_has() and boot_cpu_has() in the same bloody condition and has
+>>>> a pointless ret variable.
+>>
+>> Also, I forgot to add, it accesses ->cpus_mask without the proper
+>> locking, so it could be reading intermediate state from whatever cpumask
+>> operation that's in progress.
 > 
-> This file is guarded by CONFIG_DEBUG_SECCOMP_CACHE with a default
-> of N because I think certain users of seccomp might not want the
-> application to know which syscalls are definitely usable. For
-> the same reason, it is also guarded by CAP_SYS_ADMIN.
+> Yes. I saw that after hitting send. :(
 > 
-> Suggested-by: Jann Horn <jannh@google.com>
-> Link: https://lore.kernel.org/lkml/CAG48ez3Ofqp4crXGksLmZY6=fGrF_tWyUCg7PBkAetvbbOPeOA@mail.gmail.com/
-> Signed-off-by: YiFei Zhu <yifeifz2@illinois.edu>
-> ---
->  arch/Kconfig                   | 15 +++++++++++
->  arch/x86/include/asm/seccomp.h |  3 +++
->  fs/proc/base.c                 |  3 +++
->  include/linux/seccomp.h        |  5 ++++
->  kernel/seccomp.c               | 46 ++++++++++++++++++++++++++++++++++
->  5 files changed, 72 insertions(+)
+>>> I absolutely agree and I really missed it when looking at it before
+>>> merging. cpus_read_lock()/unlock() is the right thing to do if at all.
+>>>
+>>>> It's shoddy code, that only works if you align the planets right. We
+>>>> really shouldn't provide interfaces that are this bad.
+>>>>
+>>>> It's correct operation is only by accident.
+>>>
+>>> True :(
+>>>
+>>> I understand Balbirs problem and it makes some sense to provide a
+>>> solution. We can:
+>>>
+>>>     1) reject set_affinity() if the task has that flush muck enabled
+>>>        and user space tries to move it to a SMT enabled core
+>>>
+>>>     2) disable the muck if if detects that it is runs on a SMT enabled
+>>>        core suddenly (hotplug says hello)
+>>>
+>>>        This one is nasty because there is no feedback to user space
+>>>        about the wreckage.
+>>
+>> That's and, right, not or. because 1) deals with sched_setffinity()
+>> and 2) deals wit hotplug.
 > 
-> diff --git a/arch/Kconfig b/arch/Kconfig
-> index ca867b2a5d71..b840cadcc882 100644
-> --- a/arch/Kconfig
-> +++ b/arch/Kconfig
-> @@ -478,6 +478,7 @@ config HAVE_ARCH_SECCOMP_CACHE_NR_ONLY
->  	  - all the requirements for HAVE_ARCH_SECCOMP_FILTER
->  	  - SECCOMP_ARCH_DEFAULT
->  	  - SECCOMP_ARCH_DEFAULT_NR
-> +	  - SECCOMP_ARCH_DEFAULT_NAME
->  
->  config SECCOMP
->  	prompt "Enable seccomp to safely execute untrusted bytecode"
-> @@ -532,6 +533,20 @@ config SECCOMP_CACHE_NR_ONLY
->  
->  endchoice
->  
-> +config DEBUG_SECCOMP_CACHE
+> It was meant as AND of course.
+> 
+>> Now 1) requires an arch hook in sched_setaffinity(), something I'm not
+>> keen on providing, once we provide it, who knows what strange and
+>> wonderful things archs will dream up.
+> 
+> I don't think so. We can have that magic in core:
+> 
+> #ifdef CONFIG_HAS_PARANOID_L1D_FLUSH
+> static bool paranoid_l1d_valid(struct task_struct *tsk,
+>                                const struct cpumask *msk)
+> {
+>         if (!test_tsk_thread_flag(tsk, TIF_SPEC_L1D_FLUSH))
+>                 return true;
+>         /* Do magic stuff */
+>         return res;
+> }
+> #else
+> static bool paranoid_l1d_valid(struct task_struct *tsk,
+>                                const struct cpumask *msk)
+> {
+>         return true;
+> }
+> #endif
+> 
+> It's a pretty well defined problem and having the magic in core code
+> prevents an arch hook which allows abuse of all sorts.
+> 
+> And the same applies to enable_l1d_flush_for_task(). The only
+> architecture specific nonsense are the checks whether the CPU bug is
+> there and whether the hardware supports L1D flushing.
+> 
+> So we can have:
+> 
+> #ifdef CONFIG_HAS_PARANOID_L1D_FLUSH
+> int paranoid_l1d_enable(struct task_struct *tsk)
+> {
+>         /* Do the SMT validation under the proper locks */
+>         if (!res)
+>                 set_task_thread_flag(tsk, TIF_SPEC_L1D_FLUSH);
+>         return res;
+> }
+> #endif
+> 
+>> And 2) also happens on hot-un-plug, when the task's affinity gets
+>> forced because it became empty. No user feedback there either, and
+>> information is lost.
+> 
+> Of course. It's both that suddenly SMT gets enabled on a core which was
+> isolated and when the last isolated core in the tasks CPU mask goes
+> offline.
+> 
+>> I suppose we can do 2) but send a signal. That would cover all cases and
+>> keep it in arch code. But yes, that's pretty terrible too.
+> 
+> Bah. I just looked at the condition to flush:
+> 
+>         if (sched_smt_active() && !this_cpu_read(cpu_info.smt_active) &&
+>                 (prev_mm & LAST_USER_MM_L1D_FLUSH))
+>                 l1d_flush_hw();
+> 
+> That fails to flush when SMT is disabled globally. Balbir?
 
-naming nit: I prefer where what how order, so SECCOMP_CACHE_DEBUG.
+It should have been 
 
-> +	bool "Show seccomp filter cache status in /proc/pid/seccomp_cache"
-> +	depends on SECCOMP_CACHE_NR_ONLY
-> +	depends on PROC_FS
-> +	help
-> +	  This is enables /proc/pid/seccomp_cache interface to monitor
-> +	  seccomp cache data. The file format is subject to change. Reading
-> +	  the file requires CAP_SYS_ADMIN.
-> +
-> +	  This option is for debugging only. Enabling present the risk that
-> +	  an adversary may be able to infer the seccomp filter logic.
-> +
-> +	  If unsure, say N.
-> +
->  config HAVE_ARCH_STACKLEAK
->  	bool
->  	help
-> diff --git a/arch/x86/include/asm/seccomp.h b/arch/x86/include/asm/seccomp.h
-> index 7b3a58271656..33ccc074be7a 100644
-> --- a/arch/x86/include/asm/seccomp.h
-> +++ b/arch/x86/include/asm/seccomp.h
-> @@ -19,13 +19,16 @@
->  #ifdef CONFIG_X86_64
->  # define SECCOMP_ARCH_DEFAULT			AUDIT_ARCH_X86_64
->  # define SECCOMP_ARCH_DEFAULT_NR		NR_syscalls
-> +# define SECCOMP_ARCH_DEFAULT_NAME		"x86_64"
->  # ifdef CONFIG_COMPAT
->  #  define SECCOMP_ARCH_COMPAT			AUDIT_ARCH_I386
->  #  define SECCOMP_ARCH_COMPAT_NR		IA32_NR_syscalls
-> +#  define SECCOMP_ARCH_COMPAT_NAME		"x86_32"
+!sched_smt_active() || (cond)
 
-I think this should be "ia32"? Is there a good definitive guide on this
-naming convention?
+and not
 
--- 
-Kees Cook
+sched_smt_active && (cond)
+
+I'll fix that up, but your simplification below works as well.
+
+
+
+
+> 
+> Of course this should be:
+> 
+>         if (!this_cpu_read(cpu_info.smt_active) && (prev_mm & LAST_USER_MM_L1D_FLUSH))
+>                 l1d_flush_hw();
+> 
+> Now we can make this:
+> 
+>         if (unlikely(prev_mm & LAST_USER_MM_L1D_FLUSH)) {
+>                 if (!this_cpu_read(cpu_info.smt_active))
+>                         l1d_flush_hw();
+>                 else
+>                         task_work_add(...);
+> 
+> And that task work clears the flag and sends a signal. We're not going
+> to send a signal from switch_mm() ....
+> 
+
+Yes, I see MCE handling uses a similar pattern, so SIGBUS for a task that migrates/moves
+to a SMT disabled core?
+
+Thanks,
+Balbir
+
