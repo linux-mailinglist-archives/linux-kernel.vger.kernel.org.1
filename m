@@ -2,84 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C6AC27E40F
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 10:47:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2E7C27E411
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 10:47:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728492AbgI3Irb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 04:47:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36762 "EHLO
+        id S1728606AbgI3Ir4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 04:47:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725779AbgI3Irb (ORCPT
+        with ESMTP id S1725779AbgI3Ir4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 04:47:31 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B72F6C0613D0
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 01:47:30 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id y17so1150695lfa.8
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 01:47:30 -0700 (PDT)
+        Wed, 30 Sep 2020 04:47:56 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C3CBC061755;
+        Wed, 30 Sep 2020 01:47:56 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id m13so1047727otl.9;
+        Wed, 30 Sep 2020 01:47:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=cr4F0zeDS/obqT3hxezbEXoAuNHnHKvlXLl42w4NaIs=;
-        b=uvnIFiV7FZ+zzxcN3L+fCOcCWuTR9m5Qa6z3OabpBiheRDK7oh62P0AGiTJ6XmPIb/
-         LbyEdCxFU83nObD/1diqJRWJlStu0Z5jC8YKKXrNm/btn67XGWCMhOkviYDGeFTih0lr
-         tPMt6Whw+O1h3ZbA2rZ5mimAi8PWwVpQy4ek4HBScVoprn0iLZoVa0t7Netjtmmiil/V
-         REimQjACKl1DgKtpQ4Yt7dPbJTE0au96lQDi/QUkdIMgVoR80ZwpE1cTIF8nKW0ss8ix
-         AOKNfOOB7C9QqYFsUjoqnadPe2jn4unxwRkIBRv3NkTXHBsNHuJzF4m8hRO5E7+PmYO0
-         svaw==
+        bh=M6/fD/ws2aB3vrNVkLIayTVczz7s8A639840tTt+7MA=;
+        b=qV54GwsH//FF7a/jDVo4dW5AZWss/+1CgW4VHSBtPMXelyll4eAJZK06hmTAg+M02p
+         YdTp28LKyhb8tImkxQzs/8c2rJ4612qG8m/nLqE0He+aMUuvYqsj6YGlCQ9RsRe4i7q8
+         XpDM6MdGrtkfNtQbJr0dM2npiBVHPYF1cpE9a+pRTWZBfbqyBqFwJERXo2t/v391Eoj6
+         IKOk1ERYJL054EmPkLFQ4xCRepTbFf+DwKXGDZcGlUBjfTdBvvP7s+3hRFOCtIdwKXKG
+         qj9QHCf4vQz+s5AtJiYajEd1p/ezRteEORFk1KKVgtR5lrwn5cc03WlQNwhzc0U5+Nuh
+         +Ezw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=cr4F0zeDS/obqT3hxezbEXoAuNHnHKvlXLl42w4NaIs=;
-        b=Vm/GQiCB8hxN1s1LxAbKijNyJjnT2+Wmi+Eu4ukx4mlj7+eDuFvxcrlLud8l1j+sOG
-         4ZejypDWdwiiGSmvj+7mgMDIIDfqGVJ/tufoPrsQ3vI1ikNMgKLs9d93bCApEUlI94AN
-         85s0RZt49t7LzWjF9F99o407XXAcEdZ44sOiR3GTsa+TzW5JpNPhblCFAoBxltS7ppqE
-         ix5cTA9+99skmNQJLOtGTtzrPXhXVdW0e4N2cNQwz0a3uch+MeQQyXnzWw/LQQNTzt1z
-         qWDFskz9bVtUiPcYqfqxpETICsGPNVFG8h2E++yoyW2Us7TEba4T1Oxtbj/gtW5JGvID
-         F+cw==
-X-Gm-Message-State: AOAM531Y++nwJykXIcpiXAdsd5HJAhq5MnGnEySc1rkmBfDJ8SfPn26e
-        KVeoF/JO6lA+XOOtF5mKS7zvRDAFHYbCZKJxNEp+CA==
-X-Google-Smtp-Source: ABdhPJxOpTPzyw1+Tet95je7SIFAGeXemd7JxYndbFKN8UuWccBXA0YLrbqMLAAR6lN3f0fEFaZho/Y4cHjNa8sCDj0=
-X-Received: by 2002:a05:6512:20c3:: with SMTP id u3mr473893lfr.572.1601455649061;
- Wed, 30 Sep 2020 01:47:29 -0700 (PDT)
+        bh=M6/fD/ws2aB3vrNVkLIayTVczz7s8A639840tTt+7MA=;
+        b=cFIyw/XLFexWkv9QH7OwuZqp3NysmxHLSsEH/FuvWszyhgkw3jQPcVy7US+IHn7Gqd
+         PLc1uUvby4mq0FOpXhXewwclxOlECZz2zqCN5eVNWCQ71S6ZhaBQa8qI8S316ftTADYo
+         AskOV+lfRp45bgoMSNAxG5lbf0Jqu9KYX2XIn2WcpTLddboVQSZL2lr2vxBFypYo13Ok
+         /oIt/DmesuuxHNTop+oYU86Ybk1IGdRnBpoQfkLKkVP5Fe/LNNj7XSzJ7XHh/DEafGfA
+         JiHIq0W3305YV40nUmvb3seh9TZAReJffCwQ8o/gNVb7T1667zjDaLrlv9xi1lTsgSDx
+         98bQ==
+X-Gm-Message-State: AOAM53210A4tcWlg1nRNGczQQmcxaKakSx1NEm1qGhkZ4xVJpQc+IVhR
+        U7J9cGgLs0aBPHd8/MQfXBoMdDqPcJ3zgcIiRn4FYU/0pBZHGw==
+X-Google-Smtp-Source: ABdhPJykpfyzYCxYNo9YM8F32H2Kq2PtOnT6utFOoLcrBo6wkRHkIp+Gq90hRG+NUNj9pThL5IZJ9Qi9Z7ZsLAivASA=
+X-Received: by 2002:a9d:4d0:: with SMTP id 74mr910764otm.119.1601455675619;
+ Wed, 30 Sep 2020 01:47:55 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200821075452.1543610-1-enric.balletbo@collabora.com>
- <99821f85-9a38-7591-f982-872603b6ce8a@collabora.com> <CAGp9Lzq-15xjvSVaEJ=2o18o-8ESGWsHf-LNAXXwKfxu4V-0NQ@mail.gmail.com>
-In-Reply-To: <CAGp9Lzq-15xjvSVaEJ=2o18o-8ESGWsHf-LNAXXwKfxu4V-0NQ@mail.gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 30 Sep 2020 10:47:17 +0200
-Message-ID: <CACRpkdYPoZX1+rfJb925_+H6YXiwO26cKLpZae=_j=RQKGA0Wg@mail.gmail.com>
-Subject: Re: [PATCH v2] pinctrl: mediatek: Free eint data on failure
-To:     Sean Wang <sean.wang@kernel.org>
-Cc:     Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Collabora Kernel ML <kernel@collabora.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Nicolas Boichat <drinkcat@chromium.org>, hsinyi@chromium.org,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
+References: <20200930060008.42134-1-alexandru.ardelean@analog.com>
+ <20200930060008.42134-4-alexandru.ardelean@analog.com> <20200930073727.GC2804081@piout.net>
+In-Reply-To: <20200930073727.GC2804081@piout.net>
+From:   Alexandru Ardelean <ardeleanalex@gmail.com>
+Date:   Wed, 30 Sep 2020 11:47:44 +0300
+Message-ID: <CA+U=Dsq9Gu6Ayo9k0pzzCD4vA0+4YbfL+HEHSmxDzEZs35g21w@mail.gmail.com>
+Subject: Re: [PATCH v2 3/4] iio: adc: at91_adc: add Kconfig dependency on the
+ OF symbol
+To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 27, 2020 at 7:57 PM Sean Wang <sean.wang@kernel.org> wrote:
-
-> v2 seems the same with v1 or I was missing something.
+On Wed, Sep 30, 2020 at 10:39 AM Alexandre Belloni
+<alexandre.belloni@bootlin.com> wrote:
 >
-> I just thought we call devm_ioremap_release to explicitly to free
-> resource when a certain failure occurs after
-> devm_ioremap_resource?
+> Hi,
+>
+> On 30/09/2020 09:00:07+0300, Alexandru Ardelean wrote:
+> > This tries to solve a warning reported by the lkp bot:
+> >
+> > >> drivers/iio/adc/at91_adc.c:1439:34: warning: unused variable
+> > >> 'at91_adc_dt_ids' [-Wunused-const-variable]
+> >    static const struct of_device_id at91_adc_dt_ids[] = {
+> >                                     ^
+> >    1 warning generated.
+> >
+> > This shows up with 'compiler: clang version 12.0.0' and W=1 (as the bot
+> > mentions).
+> >
+> > Forward declarations for global variables can be a bit weird; forward
+> > function declarations are more common.
+> >
+> > Maybe another fix for this would have been to prefix with 'extern' the
+> > 'at91_adc_dt_ids' variable, thus making it more friendly as a forward
+> > declaration. It would look weird, but it would work.
+> >
+> > But, we can avoid that forward declaration altogether simply by obtaining
+> > the private data with of_device_get_match_data().
+> >
+> > This appeared after commit 4027860dcc4c ("iio: Kconfig: at91_adc: add
+> > COMPILE_TEST dependency to driver"), which put this driver on the lkp's bot
+> > radar.
+> >
+>
+> Shouldn't all of that be part of the commit message for 1/4? This
+> doesn't explicitly explain why you add a dependency on OF.
 
-What is the semantics around mtk_build_eint()?
+Hmm, I think I did this patch before drinking my morning coffee.
+Looks like it's also a bad commit description.
 
-If it is called on the probe path no explicit free:ing is
-necessary: anytime probe() exits with an error code,
-any devm* resources will be free:ed.
-
-Yours,
-Linus Walleij
+>
+> > Fixes: 4027860dcc4c ("iio: Kconfig: at91_adc: add COMPILE_TEST dependency to driver")
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+> > ---
+> >  drivers/iio/adc/Kconfig | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/iio/adc/Kconfig b/drivers/iio/adc/Kconfig
+> > index 91ae90514aff..17e9ceb9c6c4 100644
+> > --- a/drivers/iio/adc/Kconfig
+> > +++ b/drivers/iio/adc/Kconfig
+> > @@ -295,7 +295,7 @@ config ASPEED_ADC
+> >  config AT91_ADC
+> >       tristate "Atmel AT91 ADC"
+> >       depends on ARCH_AT91 || COMPILE_TEST
+> > -     depends on INPUT && SYSFS
+> > +     depends on INPUT && SYSFS && OF
+> >       select IIO_BUFFER
+> >       select IIO_TRIGGERED_BUFFER
+> >       help
+> > --
+> > 2.17.1
+> >
+>
+> --
+> Alexandre Belloni, Bootlin
+> Embedded Linux and Kernel engineering
+> https://bootlin.com
