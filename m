@@ -2,92 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B587027F297
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 21:29:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D47A27F2A7
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 21:36:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730048AbgI3T3v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 15:29:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51346 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725799AbgI3T3v (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 15:29:51 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 527B1C061755
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 12:29:51 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id k13so1879124pfg.1
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 12:29:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0718eD61RtZrDelH388/EGBdg02t0E8sAAnK4wHaLTI=;
-        b=XLf6gHO1NEA8tmhQdg/7LF50kkq87X1dKWBSUbU6r9YOOHiLJoZSo8ZC3Qat4EK6pN
-         Ow8xmF575JzqXL9u2lQi1F2UmHBYc0ovrnvqh665n+mtCx9OKeYRWrj4cHEJG6U179tB
-         iC+dxSN/WWoe2jKHf6v5ztUg1vWmBbcku9eNgiF3OaLkd0aaRzl3GtWel2E/IX61khLs
-         elht9zbiQKJJnBy8yMoKI7jmRrKRLWUwUWl7a/ipPw7cPH8VkpzPrb3kBRy4057rhl5B
-         UA6Ib6/oNz2Z916Z1WAcXNowkZiFEi3XV8sC4YqFNQpNdL+p6/YU1Z/qOScpq5ScYhTA
-         YQUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0718eD61RtZrDelH388/EGBdg02t0E8sAAnK4wHaLTI=;
-        b=CQiT41e4EthYoven8Xce2Mq/d91hAYN1o8xH2SulGdv7kEeUS3En4M0iwf7TPwzS17
-         CnM9HQ3FgTVvzm3hLqXlUSvy6YS5OQi4/kckoMxP/GDoug6BrTavRl7PphafuTL9f0pw
-         vLT7UG6Df6ZbumweVIz7HuMiZ21PVk7gpP/c0mfz10Q36N/av/3IxvfVmLL9MuuRyFOf
-         3JDx2ckz8MXlOmD0q4qs0N/S3zTRjB1EiCO5WxBLbGt0coo+SLCDTVZgQvLKPVLBrFOc
-         3DVC7NBAv+Lc7s/u54n86b2bK7Z4lF7Ugr1nCkUUAlS3hS6XyUzVlm/5wEEqGF9IesM+
-         MuUA==
-X-Gm-Message-State: AOAM531OAD5Qte+lo5VyG9klqyCoKyhB5C+nD68m/lFXu+KoDwj3KK4D
-        oabveLVCyHOvHCQGfsKbZ9FKhQejeKaGTLsykDl/dQ==
-X-Google-Smtp-Source: ABdhPJxAB7toVvdC7oK/mMFS3ytWoP2zt6f0LxsAgfKuz6QoNhpIwoXK9VpFzFoMYDBOQM3BuCiu1C3jcZRMANl5aak=
-X-Received: by 2002:aa7:99c2:0:b029:142:440b:fa28 with SMTP id
- v2-20020aa799c20000b0290142440bfa28mr4215825pfi.30.1601494190534; Wed, 30 Sep
- 2020 12:29:50 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAKwvOdkHzbPjw71n+RVXuM6Wt6PNO6fiy+14QTzthF7MCkewwg@mail.gmail.com>
- <CA+icZUWvEzUhCjkMYAK22pkjshKmfE4a2y_W0sPPuqRtzXOtNw@mail.gmail.com>
- <CAFP8O3LQSS4BufLEPQKOk62T0d8HoZq0kQAU8+K4d4gpY4CPag@mail.gmail.com>
- <CA+icZUU44tbsmGfTc-2OO42V42Z02dRSs7AZCJBnXL65vJDz-Q@mail.gmail.com>
- <664e5923-d65e-0a3a-1320-8b6635146676@redhat.com> <CAKwvOdkiSLidxNxWUxCrJ_rPogORt=aGDHTkbO=yJn0FPevbpw@mail.gmail.com>
- <CAKwvOdmFm9-FPrqt42NsusWRbDzNx6NF1GeSJhz_9kaAGV8eOA@mail.gmail.com> <20200930173719.GE2628@hirez.programming.kicks-ass.net>
-In-Reply-To: <20200930173719.GE2628@hirez.programming.kicks-ass.net>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Wed, 30 Sep 2020 12:29:38 -0700
-Message-ID: <CAKwvOdk+Rp0QGJmX07XxD8L7WVgco98LHFTu-R_2R22+UMVerQ@mail.gmail.com>
-Subject: Re: linux tooling mailing list
-To:     David Miller <davem@davemloft.net>
-Cc:     Sedat Dilek <sedat.dilek@gmail.com>,
-        Nick Clifton <nickc@redhat.com>,
-        =?UTF-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>,
-        Segher Boessenkool <segher@kernel.crashing.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>, postmaster@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Behan Webster <behanw@converseincode.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1730382AbgI3TCR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 15:02:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38065 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729847AbgI3TCO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 15:02:14 -0400
+Received: from localhost.localdomain (unknown [194.230.155.194])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4229D2084C;
+        Wed, 30 Sep 2020 19:02:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601492534;
+        bh=M1Py9/Gso3DHX3547W9Q4e08jxv1PRRFTnSFck+jJrI=;
+        h=From:To:Subject:Date:In-Reply-To:References:From;
+        b=mv/nxmzc+7RBFNMMCxupzUyGjeA+37+Egsuwm2b78SvKRtBU31SYJylX0p+9N6L1+
+         YbEWkacCiKHqmahyqwwD1CZuOKrftKN5jnmZRhCcGPwVwQ8DWgVHpHHQlIpelA53pS
+         qdzvHx74CwGMvmlIBgTrAJucicPtEitzCZ+FFkN8=
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Anson Huang <Anson.Huang@nxp.com>,
+        Andreas Kemnade <andreas@kemnade.info>,
+        Stefan Riedmueller <s.riedmueller@phytec.de>,
+        Robert Jones <rjones@gateworks.com>,
+        Li Yang <leoyang.li@nxp.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: [PATCH v2 06/12] dt-bindings: arm: fsl: document VF boards
+Date:   Wed, 30 Sep 2020 21:01:37 +0200
+Message-Id: <20200930190143.27032-7-krzk@kernel.org>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200930190143.27032-1-krzk@kernel.org>
+References: <20200930190143.27032-1-krzk@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi David,
-Apologies if this request has crossed your desk already; I know my
-unreads in my inbox seems to have doubled this week somehow...(should
-I send them all to /dev/null? I think I should.)
+Document and adjust the compatibles for VF500 and VF600 based boards.
+The Toradex Colibri Evaluation Boards use multiple compatibles.
 
-From Linux Plumbers conf Binutils BoF, Peter had the idea of setting a
-toolchain agnostic email list, and from the thread folks seem content
-with linux-toolchains@vger.kernel.org.  Is this something you would be
-able to help set up for us?  If not, is this something you can help
-delegate to someone else to set up (any pointers who I should talk to
-in that regard)?
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Reviewed-by: Rob Herring <robh@kernel.org>
 
-The full thread:
-https://groups.google.com/g/clang-built-linux/c/GLEkFKlDXfo (sorry I
-didn't cc lkml sooner for a proper lore link; I myself am ~1 more bug
-away from switching away from google groups forever).
+---
+
+Changes since v1:
+1. Fix VF610 Toradex compatibles.
+2. Add Review (assuming changes are not significant so keep the review).
+---
+ .../devicetree/bindings/arm/fsl.yaml          | 24 +++++++++++++++----
+ 1 file changed, 20 insertions(+), 4 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
+index e96af40bf22d..cec7818c51f9 100644
+--- a/Documentation/devicetree/bindings/arm/fsl.yaml
++++ b/Documentation/devicetree/bindings/arm/fsl.yaml
+@@ -571,10 +571,26 @@ properties:
+               - fsl,vf600
+               - fsl,vf610
+               - fsl,vf610m4
+-              - toradex,vf500-colibri_vf50              # Colibri VF50 Module
+-              - toradex,vf500-colibri_vf50-on-eval      # Colibri VF50 Module on Colibri Evaluation Board
+-              - toradex,vf610-colibri_vf61              # Colibri VF61 Module
+-              - toradex,vf610-colibri_vf61-on-eval      # Colibri VF61 Module on Colibri Evaluation Board
++
++      - description: Toradex Colibri VF50 Module on Colibri Evaluation Board
++        items:
++          - const: toradex,vf500-colibri_vf50-on-eval
++          - const: toradex,vf500-colibri_vf50
++          - const: fsl,vf500
++
++      - description: VF610 based Boards
++        items:
++          - enum:
++              - lwn,bk4                   # Liebherr BK4 controller
++              - phytec,vf610-cosmic       # PHYTEC Cosmic/Cosmic+ Board
++              - fsl,vf610-twr             # VF610 Tower Board
++          - const: fsl,vf610
++
++      - description: Toradex Colibri VF61 Module on Colibri Evaluation Board
++        items:
++          - const: toradex,vf610-colibri_vf61-on-eval
++          - const: toradex,vf610-colibri_vf61
++          - const: fsl,vf610
+ 
+       - description: ZII's VF610 based Boards
+         items:
 -- 
-Thanks,
-~Nick Desaulniers
+2.17.1
+
