@@ -2,160 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F369E27F514
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 00:25:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90D0927F515
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 00:25:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731424AbgI3WZB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 18:25:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50274 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731067AbgI3WZA (ORCPT
+        id S1731576AbgI3WZg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 18:25:36 -0400
+Received: from smtprelay0125.hostedemail.com ([216.40.44.125]:35730 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1731067AbgI3WZd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 18:25:00 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EBB4C0613D0
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 15:25:00 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id o8so5111722ejb.10
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 15:25:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KwjzYmhHb/l5tPkyGm+gWxyB3dKnDLT96damvVDsJ2o=;
-        b=TaMaeVg9pan0BW7Akk6/bQquEKr7WnaOhi8gWvSoFshHON6Z74AABiNZztSTaCTogI
-         qcX7baxYxrulvGyDRZTM4bOhqpi0Sqza7QEDiz2rMZJ1EO73ptKJa4+1P98+vP6Ew7xK
-         LEzbLI+LRCtpYBYt9ofUPwxVymoVTFDdpGnSucOjI7Zacw1Gco3t6vRlLt9OuQja6AMJ
-         OjLIUusdonw9sNDn7NsiKujPO7Y/Fh6L89W3AWXDeWbLe7fsimcVZuFyFq3IziQnjhG2
-         +lGUtU2S6fhEnlpGkuF+RMWZl0Jg3W5ZGxhNGSCKsM26TJaMdAznAWum0J+/CdK6Dcc0
-         Q/Uw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KwjzYmhHb/l5tPkyGm+gWxyB3dKnDLT96damvVDsJ2o=;
-        b=fnbHLKktPgm1i9uThBBCvRbaWS40E4XbF0gB+ipvyEhHmhfuqhdJIDrtZk4JvC0XKV
-         BpAwDtK0xYrXcKQHmlUeyOh3YxfiXJJKFmIG6LsrhCRRgUFGZ02Q+jewlJszegAC+v7T
-         6ccv+iNlpJfotgcszzSqhD9RkT7+aw3/tzW61tm4u/TA6u5mIe8A5uhMG5HjV36/Uu7W
-         k3tMOra928dW9BpNfQkODG3ws7EisMCKXKs9BRn1Myl62spUL0vqAvIvcW46ISX8fyop
-         A1taZ0PLfS8G86dzBxbAGLMIxdREjMWemD2DQkhoXynMQssY6xV1sdXcTsO8glJ6ehCG
-         mtcA==
-X-Gm-Message-State: AOAM531PUsiPv5ICUBcqnM4BI6gKrpbfibigXilpX6eiWcHbmnKcCQoo
-        J6eN2NydH8JHl68zIwfGLylN9dzbXJfrLvQOjFjQXA==
-X-Google-Smtp-Source: ABdhPJwf2Ih9sOkNH0XKF+uPNFVAplx37AhDqvFCkipTk5tzsR8+wlzRLDPvzToK+HK8NAJ25kPUij91WMm94qh9eCg=
-X-Received: by 2002:a17:906:9389:: with SMTP id l9mr5200759ejx.537.1601504698740;
- Wed, 30 Sep 2020 15:24:58 -0700 (PDT)
-MIME-Version: 1.0
-References: <cover.1601478774.git.yifeifz2@illinois.edu> <b16456e8dbc378c41b73c00c56854a3c30580833.1601478774.git.yifeifz2@illinois.edu>
-In-Reply-To: <b16456e8dbc378c41b73c00c56854a3c30580833.1601478774.git.yifeifz2@illinois.edu>
-From:   Jann Horn <jannh@google.com>
-Date:   Thu, 1 Oct 2020 00:24:32 +0200
-Message-ID: <CAG48ez0Njm0oS+9k-cgUqzyUWXV=cHPope2Xe9vVNPUVZ1PB4w@mail.gmail.com>
-Subject: Re: [PATCH v3 seccomp 2/5] seccomp/cache: Add "emulator" to check if
- filter is constant allow
-To:     YiFei Zhu <zhuyifei1999@gmail.com>
-Cc:     Linux Containers <containers@lists.linux-foundation.org>,
-        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        David Laight <David.Laight@aculab.com>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Jack Chen <jianyan2@illinois.edu>,
-        Josep Torrellas <torrella@illinois.edu>,
+        Wed, 30 Sep 2020 18:25:33 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 56D1B18224519;
+        Wed, 30 Sep 2020 22:25:31 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:857:960:967:968:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1535:1543:1593:1594:1605:1711:1730:1747:1777:1792:1981:2194:2198:2199:2200:2393:2525:2553:2560:2563:2682:2685:2828:2859:2902:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3622:3865:3866:3867:3868:3870:3871:3872:3873:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:4384:4605:5007:6119:6120:6742:7875:7903:9010:9025:10004:10394:10400:10471:10848:11026:11232:11473:11658:11914:12043:12296:12297:12438:12555:12740:12760:12895:12986:13019:13255:13439:14096:14097:14181:14659:14721:21080:21433:21451:21627:21773:21789:21811:21939:30054:30070:30089:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: watch95_3a0f65f27196
+X-Filterd-Recvd-Size: 5748
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf01.hostedemail.com (Postfix) with ESMTPA;
+        Wed, 30 Sep 2020 22:25:29 +0000 (UTC)
+Message-ID: <aefe941251d5d58062d06099afb58dea1d1d4e17.camel@perches.com>
+Subject: Re: [RFC PATCH next-20200930] treewide: Convert macro and uses of
+ __section(foo) to __section("foo")
+From:   Joe Perches <joe@perches.com>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Sedat Dilek <sedat.dilek@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Josh Triplett <josh@joshtriplett.org>,
         Kees Cook <keescook@chromium.org>,
-        Tianyin Xu <tyxu@illinois.edu>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Valentin Rothberg <vrothber@redhat.com>,
-        Will Drewry <wad@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+        LKML <linux-kernel@vger.kernel.org>, rcu@vger.kernel.org,
+        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Date:   Wed, 30 Sep 2020 15:25:28 -0700
+In-Reply-To: <CAKwvOd=P+j0RaQfHsXPfB0EL3oRgAu8Q0+spUOn_v-p2+3=3pw@mail.gmail.com>
+References: <CAKwvOd=s+N4+X94sTams_hKn8uV5Hc6QyCc7OHyOGC-JFesS8A@mail.gmail.com>
+         <20200929192549.501516-1-ndesaulniers@google.com>
+         <CA+icZUVgfnVQ1=zjUGhGKnJAs9g3Q06sWN3ffNdrfZMZLCEkbA@mail.gmail.com>
+         <133589afbe999347454dfcc46ae782897bf9e3a2.camel@perches.com>
+         <46f69161e60b802488ba8c8f3f8bbf922aa3b49b.camel@perches.com>
+         <CAKwvOdkhyvTpY6pHT+CLSsBFuKRWsXucjbwN_tyJAsryZXvG1A@mail.gmail.com>
+         <417ffa3fd3fba5d4a481db6a0b0c9b48cbbb17c4.camel@perches.com>
+         <CAKwvOd=P+j0RaQfHsXPfB0EL3oRgAu8Q0+spUOn_v-p2+3=3pw@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 5:20 PM YiFei Zhu <zhuyifei1999@gmail.com> wrote:
-> SECCOMP_CACHE_NR_ONLY will only operate on syscalls that do not
-> access any syscall arguments or instruction pointer. To facilitate
-> this we need a static analyser to know whether a filter will
-> return allow regardless of syscall arguments for a given
-> architecture number / syscall number pair. This is implemented
-> here with a pseudo-emulator, and stored in a per-filter bitmap.
->
-> Each common BPF instruction are emulated. Any weirdness or loading
-> from a syscall argument will cause the emulator to bail.
->
-> The emulation is also halted if it reaches a return. In that case,
-> if it returns an SECCOMP_RET_ALLOW, the syscall is marked as good.
->
-> Emulator structure and comments are from Kees [1] and Jann [2].
->
-> Emulation is done at attach time. If a filter depends on more
-> filters, and if the dependee does not guarantee to allow the
-> syscall, then we skip the emulation of this syscall.
->
-> [1] https://lore.kernel.org/lkml/20200923232923.3142503-5-keescook@chromium.org/
-> [2] https://lore.kernel.org/lkml/CAG48ez1p=dR_2ikKq=xVxkoGg0fYpTBpkhJSv1w-6BG=76PAvw@mail.gmail.com/
-[...]
-> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-> index 1ab22869a765..ff5289228ea5 100644
-> --- a/arch/x86/Kconfig
-> +++ b/arch/x86/Kconfig
-> @@ -150,6 +150,7 @@ config X86
->         select HAVE_ARCH_COMPAT_MMAP_BASES      if MMU && COMPAT
->         select HAVE_ARCH_PREL32_RELOCATIONS
->         select HAVE_ARCH_SECCOMP_FILTER
-> +       select HAVE_ARCH_SECCOMP_CACHE_NR_ONLY
->         select HAVE_ARCH_THREAD_STRUCT_WHITELIST
->         select HAVE_ARCH_STACKLEAK
->         select HAVE_ARCH_TRACEHOOK
+On Wed, 2020-09-30 at 15:20 -0700, Nick Desaulniers wrote:
+> On Wed, Sep 30, 2020 at 3:06 PM Joe Perches <joe@perches.com> wrote:
+> > On Wed, 2020-09-30 at 14:40 -0700, Nick Desaulniers wrote:
+> > > On Wed, Sep 30, 2020 at 12:16 PM Joe Perches <joe@perches.com> wrote:
+> > > > Use a more generic form for __section that requires quotes to avoid
+> > > > complications with clang and gcc differences.
+> > > > 
+> > > > Remove the quote operator # from compiler_attributes.h __section macro.
+> > > > 
+> > > > Convert all unquoted __section(foo) uses to quoted __section("foo").
+> > > > Also convert __attribute__((section("foo"))) uses to __section("foo")
+> > > > even if the __attribute__ has multiple list entry forms.
+> > > > 
+> > > > Signed-off-by: Joe Perches <joe@perches.com>
+> > > > ---
+> > > > 
+> > > > This is the current output from the script against next-20200930
+> > > > attached in this link:
+> > > > 
+> > > > https://lore.kernel.org/lkml/0e582a7f5144a33f465978d97701f9b3dcc377f3.camel@perches.com/
+> > > > 
+> > > > It might be useful to run the script immediately before
+> > > > the next -rc1.
+> > > 
+> > > $ ARCH=powerpc CROSS_COMPILE=powerpc64le-linux-gnu- make CC=clang -j71
+> > > powernv_defconfig
+> > > $ ARCH=powerpc CROSS_COMPILE=powerpc64le-linux-gnu- make CC=clang -j71
+> > > ...
+> > > arch/powerpc/boot/main.c:193:44: error: expected ';' after top level declarator
+> > > static char cmdline[BOOT_COMMAND_LINE_SIZE]
+> > 
+> > The script does not convert files in
+> > 
+> >         scripts/
+> >         tools/
+> >         uapi/
+> >         and include/linux/compiler_attributes.h
+> > 
+> > It otherwise assumes that any __attribute__((__section__
+> > use should be converted to __section.
+> > 
+> > If this ppc file is the only file outside of the
+> > listed exclusions, I can either exclude it directly
+> > or add compiler.h to it.
+> > 
+> > You have a preference?
+> 
+> If compiler_types.h which includes compiler_attributes.h is being
+> implicitly including by Kbuild add `-include` flags to most
+> translation units in the kernel, it would be nice to be able to use it
+> everywhere.  I consider open coded __attribute__'s a portability bug.
+> So including the header in arch/powerpc/boot/*.c would be my
+> preference.
+> 
+> > Perhaps these are also possible files that need exclusions:
+> > 
+> > ./arch/x86/boot/video.h:#define __videocard struct card_info __section(".videocards") __attribute__((used))
+> > ./arch/x86/boot/compressed/pgtable_64.c:unsigned long *trampoline_32bit __section(".data");
+> > ./arch/x86/boot/tty.c:static void __section(".inittext") serial_putchar(int ch)
+> > ./arch/x86/boot/tty.c:static void __section(".inittext") bios_putchar(int ch)
+> > ./arch/x86/boot/tty.c:void __section(".inittext") putchar(int ch)
+> > ./arch/x86/boot/tty.c:void __section(".inittext") puts(const char *str)
+> > ./arch/s390/boot/startup.c:static struct diag210 _diag210_tmp_dma __section(".dma.data");
+> > ./arch/powerpc/boot/main.c:     __section("__builtin_cmdline");
+> > ./arch/powerpc/boot/ps3.c:      __section("__builtin_cmdline");
+> > 
+> > 
+> 
 
-If you did the architecture enablement for X86 later in the series,
-you could move this part over into that patch, that'd be cleaner.
+no ppc cross compiler here, so can't test but maybe:
+---
+ arch/powerpc/boot/main.c | 2 ++
+ arch/powerpc/boot/ps3.c  | 2 ++
+ 2 files changed, 4 insertions(+)
 
-> diff --git a/kernel/seccomp.c b/kernel/seccomp.c
-> index ae6b40cc39f4..f09c9e74ae05 100644
-> --- a/kernel/seccomp.c
-> +++ b/kernel/seccomp.c
-> @@ -143,6 +143,37 @@ struct notification {
->         struct list_head notifications;
->  };
->
-> +#ifdef CONFIG_SECCOMP_CACHE_NR_ONLY
-> +/**
-> + * struct seccomp_cache_filter_data - container for cache's per-filter data
-> + *
-> + * Tis struct is ordered to minimize padding holes.
+diff --git a/arch/powerpc/boot/main.c b/arch/powerpc/boot/main.c
+index 6a5b937a7f5c..ce6e27798f79 100644
+--- a/arch/powerpc/boot/main.c
++++ b/arch/powerpc/boot/main.c
+@@ -6,6 +6,8 @@
+  */
+ #include <stdarg.h>
+ #include <stddef.h>
++#include <linux/compiler.h>
++
+ #include "elf.h"
+ #include "page.h"
+ #include "string.h"
+diff --git a/arch/powerpc/boot/ps3.c b/arch/powerpc/boot/ps3.c
+index a71714b454b1..86ca9c30562a 100644
+--- a/arch/powerpc/boot/ps3.c
++++ b/arch/powerpc/boot/ps3.c
+@@ -8,6 +8,8 @@
+ 
+ #include <stdarg.h>
+ #include <stddef.h>
++#include <linux/compiler.h>
++
+ #include "types.h"
+ #include "elf.h"
+ #include "string.h"
 
-I think this comment can probably go away, there isn't really much
-trickery around padding holes in the struct as it is now.
 
-> + * @syscall_allow_default: A bitmap where each bit represents whether the
-> + *                        filter willalways allow the syscall, for the
 
-nit: s/willalways/will always/
-
-[...]
-> +static void seccomp_cache_prepare_bitmap(struct seccomp_filter *sfilter,
-> +                                        void *bitmap, const void *bitmap_prev,
-> +                                        size_t bitmap_size, int arch)
-> +{
-> +       struct sock_fprog_kern *fprog = sfilter->prog->orig_prog;
-> +       struct seccomp_data sd;
-> +       int nr;
-> +
-> +       for (nr = 0; nr < bitmap_size; nr++) {
-> +               if (bitmap_prev && !test_bit(nr, bitmap_prev))
-> +                       continue;
-> +
-> +               sd.nr = nr;
-> +               sd.arch = arch;
-> +
-> +               if (seccomp_emu_is_const_allow(fprog, &sd))
-> +                       set_bit(nr, bitmap);
-
-set_bit() is atomic, but since we only do this at filter setup, before
-the filter becomes globally visible, we don't need atomicity here. So
-this should probably use __set_bit() instead.
