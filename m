@@ -2,108 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA86B27EAC2
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 16:18:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4377027EAC8
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 16:19:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730250AbgI3OS1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 10:18:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59520 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728149AbgI3OS0 (ORCPT
+        id S1730491AbgI3OTQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 10:19:16 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:45375 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730417AbgI3OTO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 10:18:26 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC469C061755;
-        Wed, 30 Sep 2020 07:18:26 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id t13so1114044plb.10;
-        Wed, 30 Sep 2020 07:18:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=TwJdx0lIfhHir6Nqx17GvuwpEA6xq9365oCpCop+vGs=;
-        b=VGn/rFmLYPyMEMwlJDY0UTwwEY0T48qfEF3k+SblEi1HXQFUc4gB314tq8+0SCK+ty
-         +0qmpjsXwfWbRflf2ym2DBnbqiIaJnJdj1fqwwQ8Obl9Hn+PpXhvl2ccyZDFSN0KxVrl
-         0wYcNfXqPQS7NB7QPRT7LnEGHXxRUOVS/l7BLECFMP4PIF7uhstzuYY1IpaGE0iczKhx
-         Y0H5RhMs04NrIMJaG1HYIGK7JiUk4AAIBUvvjN7j4xaRBSX5T78mFLKCT7Ss4GPwJy6a
-         /OYW5BFqpPECa8BfLJEFm/m+yMknHQcZZP72LylqFoHHhQ4o6Sm2v1v/0SWMUiAbTLVP
-         0zeQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=TwJdx0lIfhHir6Nqx17GvuwpEA6xq9365oCpCop+vGs=;
-        b=dHihiQvHWTlrpfltj0y1zt72/9sm6KnShz8SAJZe1pVqIRW+yBK/qzGHUrvl9Jt8ts
-         cGQPsmbhSK0oy76Gr48DMtmyitt7DSBs+jS4M7vNHeUc0t7/1CgQsjAqzPPYDCv82GP5
-         S39OFFN0qIk4JH6egNABMKnPW4P6+XNxi5ER0XlBagdemB1PfmoEyFn1QBjz5V0H/Eft
-         A7o87kllGD1yJdQKiQD1HrO1vbGGmbHG4xfyFq/HqDVbNkuFFsJOVGIuVWlbIe9Ynfi2
-         snknMQ5Jhm1tsiwD3tSmAZ95Webd+9+Jbw6w6y2sAmkq1zFzWwxioOuL+3Iy2IRdeHxm
-         csIg==
-X-Gm-Message-State: AOAM533VCYK/DMLC/Onz1v8An6W0MjIIW54wmIP/iVbzutEow0ohxWEg
-        3cQb7O9j5D3Qrd7cdFYNDyg=
-X-Google-Smtp-Source: ABdhPJyU3iDeeonfLrCyZS8ZegFFDuTux5IsDvMQ8QoTTjVYYmJpmE38dykd4LCzMzGk2yDNKMIRRA==
-X-Received: by 2002:a17:90a:d18b:: with SMTP id fu11mr2678375pjb.203.1601475505953;
-        Wed, 30 Sep 2020 07:18:25 -0700 (PDT)
-Received: from localhost.localdomain ([45.118.167.204])
-        by smtp.googlemail.com with ESMTPSA id 34sm2460770pgp.5.2020.09.30.07.18.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Sep 2020 07:18:24 -0700 (PDT)
-From:   Anmol Karn <anmol.karan123@gmail.com>
-To:     marcel@holtmann.org, johan.hedberg@gmail.com
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        netdev@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-        kuba@kernel.org, davem@davemloft.net, anmol.karan123@gmail.com,
-        syzbot+0bef568258653cff272f@syzkaller.appspotmail.com
-Subject: [PATCH] net: bluetooth: Fix null pointer dereference in hci_event_packet()
-Date:   Wed, 30 Sep 2020 19:48:13 +0530
-Message-Id: <20200930141813.410209-1-anmol.karan123@gmail.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929173231.396261-1-anmol.karan123@gmail.com>
-References: <20200929173231.396261-1-anmol.karan123@gmail.com>
+        Wed, 30 Sep 2020 10:19:14 -0400
+Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601475552;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=QYjbBMQ83eaNacfVtQ9f2FcgQ6pnWOwYQXbTX02y2e4=;
+        b=B9QfmTcoKbneAPajkA1z8PmgemcT2sOOPrcHmtowP5gOrLpI2ohI4/NWrBbHruWqbASslW
+        eZt+5ofConZiNtRVINQb1lmQSBb3169PekJq2EvZshqnmWHBwAGONT2LgUQ8Z5OCGaaqMh
+        CqQj/mXE8VlEaPNfTBIzys8L9b3uebY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-500-tyGoVakaPwKhU6o5Vi0YtQ-1; Wed, 30 Sep 2020 10:18:55 -0400
+X-MC-Unique: tyGoVakaPwKhU6o5Vi0YtQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DBAC118B9ECB;
+        Wed, 30 Sep 2020 14:18:54 +0000 (UTC)
+Received: from [10.33.36.138] (unknown [10.33.36.138])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id DB0B81002D42;
+        Wed, 30 Sep 2020 14:18:49 +0000 (UTC)
+Subject: Re: general protection fault in gfs2_withdraw
+To:     syzbot <syzbot+50a8a9cf8127f2c6f5df@syzkaller.appspotmail.com>,
+        agruenba@redhat.com, cluster-devel@redhat.com,
+        linux-kernel@vger.kernel.org, rpeterso@redhat.com,
+        syzkaller-bugs@googlegroups.com
+References: <000000000000a7770405b06d21ac@google.com>
+From:   Andrew Price <anprice@redhat.com>
+Message-ID: <e00203bd-5ee9-d265-5c2d-9b2bca0c72ca@redhat.com>
+Date:   Wed, 30 Sep 2020 15:18:48 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <000000000000a7770405b06d21ac@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-AMP_MGR is getting derefernced in hci_phy_link_complete_evt(), when called from hci_event_packet() and there is a possibility, that hcon->amp_mgr may not be found when accessing after initialization of hcon.
+On 29/09/2020 06:34, syzbot wrote:
+> syzbot has bisected this issue to:
+> 
+> commit 601ef0d52e9617588fcff3df26953592f2eb44ac
+> Author: Bob Peterson <rpeterso@redhat.com>
+> Date:   Tue Jan 28 19:23:45 2020 +0000
+> 
+>      gfs2: Force withdraw to replay journals and wait for it to finish
+> 
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=151d25e3900000
+> start commit:   7c7ec322 Merge tag 'for-linus' of git://git.kernel.org/pub..
+> git tree:       upstream
+> final oops:     https://syzkaller.appspot.com/x/report.txt?x=171d25e3900000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=131d25e3900000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=6184b75aa6d48d66
+> dashboard link: https://syzkaller.appspot.com/bug?extid=50a8a9cf8127f2c6f5df
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13c6a109900000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15d45ed3900000
+> 
+> Reported-by: syzbot+50a8a9cf8127f2c6f5df@syzkaller.appspotmail.com
+> Fixes: 601ef0d52e96 ("gfs2: Force withdraw to replay journals and wait for it to finish")
+> 
+> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+> 
 
-- net/bluetooth/hci_event.c:4945
-The bug seems to get triggered in this line:
+Bug filed for this one:
 
-bredr_hcon = hcon->amp_mgr->l2cap_conn->hcon;
+https://bugzilla.redhat.com/show_bug.cgi?id=1883932
 
-Fix it by adding a NULL check for the hcon->amp_mgr before checking the ev-status.
-
-Fixes: d5e911928bd8 ("Bluetooth: AMP: Process Physical Link Complete evt")
-Reported-and-tested-by: syzbot+0bef568258653cff272f@syzkaller.appspotmail.com 
-Link: https://syzkaller.appspot.com/bug?extid=0bef568258653cff272f 
-Signed-off-by: Anmol Karn <anmol.karan123@gmail.com>
----
-Change in v3:
-  - changed return o; to return; (Reported-by: kernel test robot <lkp@intel.com>
-)
-
- net/bluetooth/hci_event.c | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
-index 4b7fc430793c..bbe0ca42cad2 100644
---- a/net/bluetooth/hci_event.c
-+++ b/net/bluetooth/hci_event.c
-@@ -4936,6 +4936,11 @@ static void hci_phy_link_complete_evt(struct hci_dev *hdev,
- 		return;
- 	}
- 
-+	if (!hcon->amp_mgr) {
-+		hci_dev_unlock(hdev);
-+		return;
-+	}
-+
- 	if (ev->status) {
- 		hci_conn_del(hcon);
- 		hci_dev_unlock(hdev);
--- 
-2.28.0
+Andy
 
