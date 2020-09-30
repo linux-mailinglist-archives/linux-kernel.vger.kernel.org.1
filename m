@@ -2,89 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B221E27F023
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 19:18:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6722227F02A
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 19:22:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731368AbgI3RRx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 13:17:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59214 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726476AbgI3RRx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 13:17:53 -0400
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E795C061755
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 10:17:53 -0700 (PDT)
-Received: by mail-yb1-xb43.google.com with SMTP id k18so1862455ybh.1
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 10:17:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pI0ZPii+Ef4ldfhEFgHhgreWPVL6YgxnLxQdaEvG2Ik=;
-        b=isfEgguRV45OV/H+5M2SDAvctmMWraDuCzYsMoO8ze1Td/qY/F+uDZSU0nJtauFyjN
-         otE+4YWFK4aHexsMLaipZFG7o4e0i5B06ejpd8HcEobH7VHAZNEuAfQD1cs58vT8ApFN
-         UCbRbnxnLy4sy483yEjRbrXSQKNeXSEyGQWe/LgAcokEYE2qvvn6VSIs8MLO9rKTPuTZ
-         NVGWUJ7DxqOTTx8ZMnM2Y0n/AKQFeoDofLQiokQyrqPlCCCsCmI+IEX4kiY2z6DtYQcH
-         bwLm92Tx8blyaNDjkR8Sc4D5EyN5JtQFsUsBG7QtFcdWQDD51Ywyd+mbzZdUug3Krtd8
-         gkFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pI0ZPii+Ef4ldfhEFgHhgreWPVL6YgxnLxQdaEvG2Ik=;
-        b=tv7lZ8J+HVxUQWHmwbwn2W5/VBuZvf2n5zK0LhN/vR+m0PHZlFO2jsHBtn7mcViIsd
-         Hd9e8VoVHb5ilbUpenGEHsjzpn1JX4dbv41txOfkbuiXEMxNIfK7mwXMkgV8Bw3pwKn+
-         SO84Hs3JPOQAZFPH339nUTB9KRxOo60aOn9REbTSisL3zmi4Wynp2uATDTOf+Lz6bI3x
-         kjfDhqEYAgpjRVwITqs/eoi/oViG857sLbidjQWcOBlT8D7j1qIbKScTh8iq/6aWlK/C
-         RhXptyVZLUclasC8UuB5gd4BKK+IF9+gdagvzhxZgd27PYNG5oA8HjrrjgZlr3x+9crt
-         0BzQ==
-X-Gm-Message-State: AOAM530Hlw+25RkGEJErJE8D5jOD1Q9U/bRa5ZzyjK1ewSQjUlk24alp
-        WL3KmCfawrpJKhT+vJHzorB9Lte/gZ724NCUw26UUA==
-X-Google-Smtp-Source: ABdhPJwT22pelbEjsgpX0X5cEEpTC7Z0gwLCPhFqu1W8xH5wnCc+JSIFEjJJ5rA3I0EGPbKDfud1mjhfYY9OpwVD2oQ=
-X-Received: by 2002:a25:bd93:: with SMTP id f19mr4130854ybh.155.1601486272356;
- Wed, 30 Sep 2020 10:17:52 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200921152653.3924-1-kan.liang@linux.intel.com>
- <20200921152653.3924-2-kan.liang@linux.intel.com> <CABPqkBRYzXH-76BZ3DdxYp7bdyPcr3_WxuxOsJw=1YPE9EwZaw@mail.gmail.com>
- <4e974520-6d0f-68af-7eb8-fa52d95ba77b@linux.intel.com> <35e875ba-2c04-8452-5105-ccacf72840d8@intel.com>
-In-Reply-To: <35e875ba-2c04-8452-5105-ccacf72840d8@intel.com>
-From:   Stephane Eranian <eranian@google.com>
-Date:   Wed, 30 Sep 2020 10:17:41 -0700
-Message-ID: <CABPqkBTk6H0Wku8gGJeBD2naFU=WOqp42VSjFBhk_1Wy6bRzXQ@mail.gmail.com>
-Subject: Re: [PATCH V8 1/4] perf/core: Add PERF_SAMPLE_DATA_PAGE_SIZE
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     "Liang, Kan" <kan.liang@linux.intel.com>,
+        id S1731356AbgI3RWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 13:22:08 -0400
+Received: from mx2.suse.de ([195.135.220.15]:42558 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726540AbgI3RWI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 13:22:08 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1601486526;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4JoyM1WcMGgZXIw9gw4Exp5gsg0i/SR2yP+vZX8kElM=;
+        b=FSDwYdCZbuyQbWwctDAQH5cDdse6mMuBHf1qQIVi76Tay1fWLHO2hCgx2TYq6S/BIIwmbw
+        DD3NPUO6/BDWK58fJSFDHXBwWZkTaMJpk1YzcjRNxNvXj6UtOF1XbAufCcY03UHv5SjOEu
+        eZ659X4lrCSdYUZz+PugtmqNPbo5Tqw=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 1ABB5ABE3;
+        Wed, 30 Sep 2020 17:22:06 +0000 (UTC)
+Date:   Wed, 30 Sep 2020 19:22:05 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Uladzislau Rezki <urezki@gmail.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
         Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>,
-        kirill.shutemov@linux.intel.com,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        benh@kernel.crashing.org, Paul Mackerras <paulus@samba.org>
-Content-Type: text/plain; charset="UTF-8"
+        Vlastimil Babka <vbabka@suse.cz>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
+        Mel Gorman <mgorman@suse.de>
+Subject: Re: [RFC-PATCH 2/4] mm: Add __rcu_alloc_page_lockless() func.
+Message-ID: <20200930172205.GY2277@dhcp22.suse.cz>
+References: <20200923103706.GJ3179@techsingularity.net>
+ <20200923154105.GO29330@paulmck-ThinkPad-P72>
+ <20200923232251.GK3179@techsingularity.net>
+ <20200924081614.GA14819@pc636>
+ <20200925080503.GC3389@dhcp22.suse.cz>
+ <20200925153129.GB25350@pc636>
+ <20200925154741.GI3389@dhcp22.suse.cz>
+ <20200930152517.GA1470428@google.com>
+ <20200930164822.GX2277@dhcp22.suse.cz>
+ <CAEXW_YSLhXR=7Asa19v7z2Aj=AqDiehHQLych3B7S+qxgPEWzQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEXW_YSLhXR=7Asa19v7z2Aj=AqDiehHQLych3B7S+qxgPEWzQ@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 7:48 AM Dave Hansen <dave.hansen@intel.com> wrote:
->
-> On 9/30/20 7:42 AM, Liang, Kan wrote:
-> >> When I tested on my kernel, it panicked because I suspect
-> >> current->active_mm could be NULL. Adding a check for NULL avoided the
-> >> problem. But I suspect this is not the correct solution.
+On Wed 30-09-20 13:03:29, Joel Fernandes wrote:
+> On Wed, Sep 30, 2020 at 12:48 PM Michal Hocko <mhocko@suse.com> wrote:
 > >
-> > I guess the NULL active_mm should be a rare case. If so, I think it's
-> > not bad to add a check and return 0 page size.
->
-> I think it would be best to understand why ->active_mm is NULL instead
-> of just papering over the problem.  If it is papered over, and this is
-> common, you might end up effectively turning off your shiny new feature
-> inadvertently.
+> > On Wed 30-09-20 11:25:17, Joel Fernandes wrote:
+> > > On Fri, Sep 25, 2020 at 05:47:41PM +0200, Michal Hocko wrote:
+> > > > On Fri 25-09-20 17:31:29, Uladzislau Rezki wrote:
+> > > > > > > > >
+> > > > > > > > > All good points!
+> > > > > > > > >
+> > > > > > > > > On the other hand, duplicating a portion of the allocator functionality
+> > > > > > > > > within RCU increases the amount of reserved memory, and needlessly most
+> > > > > > > > > of the time.
+> > > > > > > > >
+> > > > > > > >
+> > > > > > > > But it's very similar to what mempools are for.
+> > > > > > > >
+> > > > > > > As for dynamic caching or mempools. It requires extra logic on top of RCU
+> > > > > > > to move things forward and it might be not efficient way. As a side
+> > > > > > > effect, maintaining of the bulk arrays in the separate worker thread
+> > > > > > > will introduce other drawbacks:
+> > > > > >
+> > > > > > This is true but it is also true that it is RCU to require this special
+> > > > > > logic and we can expect that we might need to fine tune this logic
+> > > > > > depending on the RCU usage. We definitely do not want to tune the
+> > > > > > generic page allocator for a very specific usecase, do we?
+> > > > > >
+> > > > > I look at it in scope of GFP_ATOMIC/GFP_NOWAIT issues, i.e. inability
+> > > > > to provide a memory service for contexts which are not allowed to
+> > > > > sleep, RCU is part of them. Both flags used to provide such ability
+> > > > > before but not anymore.
+> > > > >
+> > > > > Do you agree with it?
+> > > >
+> > > > Yes this sucks. But this is something that we likely really want to live
+> > > > with. We have to explicitly _document_ that really atomic contexts in RT
+> > > > cannot use the allocator. From the past discussions we've had this is
+> > > > likely the most reasonable way forward because we do not really want to
+> > > > encourage anybody to do something like that and there should be ways
+> > > > around that. The same is btw. true also for !RT. The allocator is not
+> > > > NMI safe and while we should be able to make it compatible I am not
+> > > > convinced we really want to.
+> > > >
+> > > > Would something like this be helpful wrt documentation?
+> > > >
+> > > > diff --git a/include/linux/gfp.h b/include/linux/gfp.h
+> > > > index 67a0774e080b..9fcd47606493 100644
+> > > > --- a/include/linux/gfp.h
+> > > > +++ b/include/linux/gfp.h
+> > > > @@ -238,7 +238,9 @@ struct vm_area_struct;
+> > > >   * %__GFP_FOO flags as necessary.
+> > > >   *
+> > > >   * %GFP_ATOMIC users can not sleep and need the allocation to succeed. A lower
+> > > > - * watermark is applied to allow access to "atomic reserves"
+> > > > + * watermark is applied to allow access to "atomic reserves".
+> > > > + * The current implementation doesn't support NMI and other non-preemptive context
+> > > > + * (e.g. raw_spin_lock).
+> > >
+> > > I think documenting is useful.
+> > >
+> > > Could it be more explicit in what the issue is? Something like:
+> > >
+> > > * Even with GFP_ATOMIC, calls to the allocator can sleep on PREEMPT_RT
+> > > systems. Therefore, the current low-level allocator implementation does not
+> > > support being called from special contexts that are atomic on RT - such as
+> > > NMI and raw_spin_lock. Due to these constraints and considering calling code
+> > > usually has no control over the PREEMPT_RT configuration, callers of the
+> > > allocator should avoid calling the allocator from these cotnexts even in
+> > > non-RT systems.
+> >
+> > I do not mind documenting RT specific behavior but as mentioned in other
+> > reply, this should likely go via RT tree for now. There is likely more
+> > to clarify about atomicity for PREEMPT_RT.
+> 
+> I am sorry, I did not understand what you meant by something missing
+> in Linus Tree. CONFIG_PREEMPT_RT is there.
 
-I tried that on a backport of the patch to an older kernel. Maybe the
-behavior of active_mm has change compared to tip.git.
-I will try again with tip.git.
+OK, I was not aware we already CONFIG_PREEMPT_RT in the three. There is
+still a lot from the RT patchset including sleeping spin locks that make
+a real difference. Or maybe I haven't checked properly.
+
+> Could you clarify? Also the CONFIG_PREEMPT_RT is the only thing
+> driving this requirement for GFP_ATOMIC right? Or are there non-RT
+> reasons why GFP_ATOMIC allocation cannot be done from
+> NMI/raw_spin_lock ?
+
+I have already sent a clarification patch [1]. NMI is not supported
+regardless of the preemption mode. Hope this clarifies it a bit.
+
+[1] http://lkml.kernel.org/r/20200929123010.5137-1-mhocko@kernel.org
+
+-- 
+Michal Hocko
+SUSE Labs
