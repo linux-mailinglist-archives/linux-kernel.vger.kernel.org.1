@@ -2,96 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7201027E397
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 10:20:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C65227E39A
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 10:22:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728494AbgI3IUI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 04:20:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60772 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725776AbgI3IUI (ORCPT
+        id S1728322AbgI3IV7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 04:21:59 -0400
+Received: from mail-ej1-f68.google.com ([209.85.218.68]:36625 "EHLO
+        mail-ej1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725535AbgI3IV6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 04:20:08 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33C49C061755
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 01:20:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=dGo6Hzacst8W3YunzMcZXx1pw1z/iSKi8zRtqxheYh4=; b=lUoU4wJqMwIpwnF1QejJF6fTK+
-        iyyG1aTqCIwLo2K5kIgDtkUjMC6bAV3zPR3C0KCG5z3ZlVkdMzBWX2wOAjog5RJc7k09D6KOStO+u
-        uWewCLhvV07JtTr3cukXKOO1C93gzV1wsjwjfnvAeTeXid4RR+m+A50mzy8/cgNXFhtDwk9wnIio0
-        aHrRVBrJ4q3JA4tM2oVJRenhQarbj7eENJd/jVnq42+ehbR6bnKi0NADqGfgvcCNOi/xigghqrcFz
-        UkmTFc+16oJ+Ko3NeHS02ZMYfTLeqG9goLy9EpxtOsCogr3+D6RRZzeYSzU5CRmoxl0FyJeE8HR0L
-        Yojj4sdg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kNXLC-00011O-02; Wed, 30 Sep 2020 08:19:58 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 71607303A02;
-        Wed, 30 Sep 2020 10:19:53 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 543ED202A40A0; Wed, 30 Sep 2020 10:19:53 +0200 (CEST)
-Date:   Wed, 30 Sep 2020 10:19:53 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     qianjun.kernel@gmail.com
-Cc:     mingo@redhat.com, vincent.guittot@linaro.org,
-        juri.lelli@redhat.com, linux-kernel@vger.kernel.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, Yafang Shao <laoar.shao@gmail.com>
-Subject: Re: [PATCH 1/1] sched/fair: Fix the wrong sched_stat_wait time
-Message-ID: <20200930081953.GU2628@hirez.programming.kicks-ass.net>
-References: <20200930024712.88258-1-qianjun.kernel@gmail.com>
+        Wed, 30 Sep 2020 04:21:58 -0400
+Received: by mail-ej1-f68.google.com with SMTP id qp15so596118ejb.3;
+        Wed, 30 Sep 2020 01:21:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=AnmAiSuhryQgiuxCIfxiMUZ49Ib7mZfhe2r0FxsXtiE=;
+        b=GtKPAZXKGPXwppctpag5iZuRloh9/fyKcCxqy4bhe9U3jwXoNYsg5Tf5eX+2C2/P+b
+         pjE+J7kPwywHNqZhPcTyalxi13yyxu7JNFykkthO5gTsGYMiLgjru/jOi75nMVTSq27K
+         +RB63Vt+HXFvYFMne0zFXXXRPPsq0XsshdNXtQA8p0m5oUUSXYDGy5ZCTa6dtfD+0nau
+         lPFHSfLdbc0lyInXtduUU2z0ImQKN90ub/FARlximRnQpiEpAjPua846XF9HF57c8kK9
+         LLdlhd8agzd6NKc/WhhqSpKhYkAbHPwWh1D3Blj03Iy5yA5/kiacPT4/cgws+sZCHcP5
+         mitg==
+X-Gm-Message-State: AOAM532c4HnvWZzTGrvg8u72paR6RvtmCYEdzn9jC1tzYKZUapwqfNvl
+        8ue0wxECtjsbcedQQMjU/vA=
+X-Google-Smtp-Source: ABdhPJw6bec972tmVwZG7C2+NMX7qUMnT5frUQjSPPMYma2uOjjVneMUDze1KIu5PUu2+7riorwpWw==
+X-Received: by 2002:a17:906:7f15:: with SMTP id d21mr1674985ejr.470.1601454116954;
+        Wed, 30 Sep 2020 01:21:56 -0700 (PDT)
+Received: from ?IPv6:2a0b:e7c0:0:107::70f? ([2a0b:e7c0:0:107::70f])
+        by smtp.gmail.com with ESMTPSA id j15sm925412ejs.5.2020.09.30.01.21.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 30 Sep 2020 01:21:56 -0700 (PDT)
+Subject: Re: [PATCH] tty: serial: mvebu-uart: Remove unused variable 'ret'
+To:     Pujin Shi <shipujin.t@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        hankinsea@gmail.com
+References: <20200930081459.1269-1-shipujin.t@gmail.com>
+From:   Jiri Slaby <jirislaby@kernel.org>
+Message-ID: <bfa595ba-52a1-aab7-d6c8-8af7607b3281@kernel.org>
+Date:   Wed, 30 Sep 2020 10:21:55 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200930024712.88258-1-qianjun.kernel@gmail.com>
+In-Reply-To: <20200930081459.1269-1-shipujin.t@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 10:47:12AM +0800, qianjun.kernel@gmail.com wrote:
-> From: jun qian <qianjun.kernel@gmail.com>
+On 30. 09. 20, 10:14, Pujin Shi wrote:
+> 'ret' variable is now defined but not used in mvebu_uart_probe(),
+> causing this warning:
 > 
-> When the sched_schedstat changes from 0 to 1, some sched se maybe
-> already in the runqueue, the se->statistics.wait_start will be 0.
-> So it will let the (rq_of(cfs_rq)) - se->statistics.wait_start)
-> wrong. We need to avoid this scenario.
+>   drivers/tty/serial/mvebu-uart.c: In function ‘mvebu_uart_probe’:
+>   drivers/tty/serial/mvebu-uart.c:806:6: warning: unused variable ‘ret’ [-Wunused-variable]
+> 
+> Signed-off-by: Pujin Shi <shipujin.t@gmail.com>
 
-Is this really the only problem there? Did you do a full audit of that
-schedstat nonsense?
+Reviewed-by: Jiri Slaby <jirislaby@kernel.org>
 
-> Signed-off-by: jun qian <qianjun.kernel@gmail.com>
-> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
 > ---
->  kernel/sched/fair.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
+>  drivers/tty/serial/mvebu-uart.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 658aa7a..dd7c3bb 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -908,6 +908,14 @@ static void update_curr_fair(struct rq *rq)
-
-your git-diff is 'funny', it got the function ^ wrong.
-
->  	if (!schedstat_enabled())
->  		return;
+> diff --git a/drivers/tty/serial/mvebu-uart.c b/drivers/tty/serial/mvebu-uart.c
+> index 7443c0506eb4..118b29912289 100644
+> --- a/drivers/tty/serial/mvebu-uart.c
+> +++ b/drivers/tty/serial/mvebu-uart.c
+> @@ -803,7 +803,7 @@ static int mvebu_uart_probe(struct platform_device *pdev)
+>  							   &pdev->dev);
+>  	struct uart_port *port;
+>  	struct mvebu_uart *mvuart;
+> -	int ret, id, irq;
+> +	int id, irq;
 >  
-> +	/*
-> +	 * When the sched_schedstat changes from 0 to 1, some sched se maybe
-> +	 * already in the runqueue, the se->statistics.wait_start will be 0.
-> +	 * So it will let the delta wrong. We need to avoid this scenario.
-> +	 */
-> +	if (unlikely(!schedstat_val(se->statistics.wait_start)))
-> +		return;
-> +
->  	delta = rq_clock(rq_of(cfs_rq)) - schedstat_val(se->statistics.wait_start);
->  
->  	if (entity_is_task(se)) {
-> -- 
-> 1.8.3.1
+>  	if (!reg) {
+>  		dev_err(&pdev->dev, "no registers defined\n");
 > 
+
+thanks,
+-- 
+js
+suse labs
