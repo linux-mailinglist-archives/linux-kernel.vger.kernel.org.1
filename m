@@ -2,141 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0A5E27EC05
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 17:13:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5D0427EC0F
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 17:14:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730852AbgI3PNf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 11:13:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37642 "EHLO mail.kernel.org"
+        id S1730887AbgI3POS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 11:14:18 -0400
+Received: from nat-hk.nvidia.com ([203.18.50.4]:24075 "EHLO nat-hk.nvidia.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725823AbgI3PNc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 11:13:32 -0400
-Received: from coco.lan (ip5f5ad5c4.dynamic.kabel-deutschland.de [95.90.213.196])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 90CAE20657;
-        Wed, 30 Sep 2020 15:13:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601478811;
-        bh=tu8ftrC/0bjq3PeLZIRfKTlpvOojwl1EwbHoEDNIvgQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=zSART5+VxnaxSywTcYKJlwI5Q7jOjrzdig/Ri5UB6XV0cGLTo/PQ2wQ3Pvkfu5Q8N
-         WxHXppc1DC+2Z7ZSlyG5UFS6o/AU24cfIcuz7+wKywKwaRNQIumKEV2w9trVeEK90V
-         uxQ+K2wn3gRH32bIrLWXe6E0ItLA8gLyEEQiI05Q=
-Date:   Wed, 30 Sep 2020 17:13:27 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH v4 19/52] memblock: get rid of a :c:type leftover
-Message-ID: <20200930171327.509ee344@coco.lan>
-In-Reply-To: <20200930142323.GL2142832@kernel.org>
-References: <cover.1601467849.git.mchehab+huawei@kernel.org>
-        <0aab04f62bc3dfa82394e20d61c05c6efbfb4859.1601467849.git.mchehab+huawei@kernel.org>
-        <20200930142323.GL2142832@kernel.org>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        id S1728480AbgI3POP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 11:14:15 -0400
+Received: from HKMAIL101.nvidia.com (Not Verified[10.18.92.9]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f74a0c40000>; Wed, 30 Sep 2020 23:14:12 +0800
+Received: from HKMAIL103.nvidia.com (10.18.16.12) by HKMAIL101.nvidia.com
+ (10.18.16.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 30 Sep
+ 2020 15:14:11 +0000
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.176)
+ by HKMAIL103.nvidia.com (10.18.16.12) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Wed, 30 Sep 2020 15:14:11 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=oZssfSeVRejFr8QQLFZ8LgbSRmObinCMPlvtEli95uOgaQNGhiHXT4Acd0fBYG8s6qDGILP5isF5zAJGbGZmkrSw6zciDvPWk9Eu9+WhiU00h+VP2s8zpJsb9uhHGBm+zPEsHyJUo145Jru5+W2omvo0nMC0CWii6sipt9ELUAFo4+1t5HwMyGVziyufwrIR9xmDGcAp9xdSRdDx/Jb2qf1avUloc+MikLfQPgyfzBR8A27PqEBd1a2ToNOYYl+5i/ICLUnwUTMb5e9BSYnSRaPGJCRbh+JDfOp04LkrQ20J4v/fJ/O6Ab3y1yNznoPZ57ncM7IiS3IBdaprghj/1g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=s25BWvSSYFaWscZEV8dpG8j2WBhhANw0myZWj3gyy+8=;
+ b=oVeSBv9FhYSnFhZ0Z5cjiG+hHzpYWH3sgPE0kFPlR8AtCXqyK6CO+EVDsFMve9bkSXQSIOLwvq337Y7ybkoin47hTEkkqJMFD+j/IfGs/2vc7wPDIWBZBbJnzbcotM1Dt7E66kW2Z6pOXet90d4ypu8znaFZPoRbSiSPahlzO7c5wKo+LWXkkfPQSGdgcE7Gr4AwwMEWDW2/rqFDOMIKyJK3gewg8P1n/8Sfs0lVet2jTriGOA24ngGgPlplFnm7R4osKjSp++utHSfOZa6J5JtCO8BATjfAFr4i0ykv7e3BCAv+pkinJ9B0GtfxFm9SuPFyeivtfZVQy2Ws3J7ROA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB3929.namprd12.prod.outlook.com (2603:10b6:5:148::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.20; Wed, 30 Sep
+ 2020 15:14:08 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3433.032; Wed, 30 Sep 2020
+ 15:14:08 +0000
+Date:   Wed, 30 Sep 2020 12:14:06 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Maor Gottlieb <maorg@nvidia.com>
+CC:     Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        <dri-devel@lists.freedesktop.org>,
+        <intel-gfx@lists.freedesktop.org>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Roland Scheidegger <sroland@vmware.com>,
+        "Tvrtko Ursulin" <tvrtko.ursulin@intel.com>,
+        VMware Graphics <linux-graphics-maintainer@vmware.com>
+Subject: Re: [PATCH rdma-next v4 4/4] RDMA/umem: Move to allocate SG table
+ from pages
+Message-ID: <20200930151406.GM816047@nvidia.com>
+References: <20200927064647.3106737-1-leon@kernel.org>
+ <20200927064647.3106737-5-leon@kernel.org>
+ <20200929195929.GA803555@nvidia.com> <20200930095321.GL3094@unreal>
+ <20200930114527.GE816047@nvidia.com>
+ <80c49ff1-52c7-638f-553f-9de8130b188d@nvidia.com>
+ <20200930115837.GF816047@nvidia.com>
+ <7e09167f-c57a-cdfe-a842-c920e9421e53@nvidia.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <7e09167f-c57a-cdfe-a842-c920e9421e53@nvidia.com>
+X-ClientProxiedBy: BL1PR13CA0038.namprd13.prod.outlook.com
+ (2603:10b6:208:257::13) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (156.34.48.30) by BL1PR13CA0038.namprd13.prod.outlook.com (2603:10b6:208:257::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.18 via Frontend Transport; Wed, 30 Sep 2020 15:14:07 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kNdny-0048L3-Hh; Wed, 30 Sep 2020 12:14:06 -0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1601478852; bh=hF+5rGDA7BuDnHsRnPwRle+nLbbEACSot6NWeuDv2dw=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:Content-Transfer-Encoding:In-Reply-To:
+         X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType;
+        b=LXlkWM9QtDp96AciBbt2qrmve0czMpV3ul45q3cTlFlKk6uNa5Z/S1Mqv/qKrR/Le
+         i3y5F1fxft1U/RzbfKbojNtTB0X7hMtuUuQ3WsYepRQecx5FHP0Wr4IHaeXF8TNFpq
+         9EYOJwwVEx5cnlfoKJAmmsPhsdRv6jK9T87WTXr0+4yh0LQ1E4SkuYP/l9vIP0lBfl
+         uavIda64znHsvaAd1VDEhRzTH2exRbVSp0GtNnoiypXJbSeu4WeWp5OrPF9r6FOrbn
+         3PiSDM+GSHOO1P2+mkYByeIQKd0G3IvgjXokBFmFZ/v0KtcJfUxTXrmHv1HTt8twHA
+         LRjNePO7Sdv5A==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, 30 Sep 2020 17:23:23 +0300
-Mike Rapoport <rppt@kernel.org> escreveu:
+On Wed, Sep 30, 2020 at 06:05:15PM +0300, Maor Gottlieb wrote:
+> This is right only for the last iteration. E.g. in the first iteration in
+> case that there are more pages (left_pages), then we allocate
+> SG_MAX_SINGLE_ALLOC.=C2=A0 We don't know how many pages from the second i=
+teration
+> will be squashed to the SGE from the first iteration.
 
-> Hello Mauro,
-> 
-> On Wed, Sep 30, 2020 at 03:24:42PM +0200, Mauro Carvalho Chehab wrote:
-> > chanseset b3a7bb1851c8 ("docs: get rid of :c:type explicit declarations for structs")
-> > removed several :c:type: markups, except by one.
-> > 
-> > Now, Sphinx 3.x complains about it:
-> > 
-> > 	.../Documentation/core-api/boot-time-mm:26: ../mm/memblock.c:51: WARNING: Unparseable C cross-reference: 'struct\nmemblock_type'
-> > 	Invalid C declaration: Expected identifier in nested name, got keyword: struct [error at 6]
-> > 	  struct
-> > 	memblock_type
-> > 	  ------^  
-> 
-> Maybe this warning is caused by '\n' between struct and memblock_type?
-> There are two more occurences of :c:type: around and they do not seem to
-> cause warnings.
+Well, it is 0 or 1 SGE's. Check if the first page is mergable and
+subtract one from the required length?
 
-Yeah, maybe. Yet, according with:
+I dislike this sg_mark_end() it is something that should be internal,
+IMHO.
 
-	https://www.sphinx-doc.org/en/master/usage/restructuredtext/domains.html#c-roles
-
-c:type: should only be used together with ".. c:type", and this
-doesn't work anymore for declaring structs, as the only valid
-ways of using it after Sphinx 3.0 are:
-
-	.. c:type:: typedef-like declaration
-	.. c:type:: name
-
-So, the old syntax generated by kernel doc:
-
-	.. c:type:: struct foo
-
-Doesn't work anymore. Kernel-doc now uses, instead:
-
-	.. c:struct:: foo
-
-(if version >= 3.0)
-
-So, the right tag would be: :c:struct`foo`, if Sphinx > 3
-or c:type:`foo` for older versions.
-
-Better to rely on having the automarkup solving this for
-us.
-
--
-
-> 
-> > As, on Sphinx 3.x, the right markup is c:struct:`foo`.
-> > 
-> > So, let's remove it, relying on automarkup.py to convert it.
-> > 
-> > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> > ---
-> >  mm/memblock.c | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/mm/memblock.c b/mm/memblock.c
-> > index 165f40a8a254..326c6b3fec1d 100644
-> > --- a/mm/memblock.c
-> > +++ b/mm/memblock.c
-> > @@ -50,8 +50,8 @@
-> >   *
-> >   * Each region is represented by :c:type:`struct memblock_region` that  
-> 
-> Can you please also convert this one?
-> 
-> >   * defines the region extents, its attributes and NUMA node id on NUMA
-> > - * systems. Every memory type is described by the :c:type:`struct
-> > - * memblock_type` which contains an array of memory regions along with
-> > + * systems. Every memory type is described by the struct memblock_type
-> > + * which contains an array of memory regions along with
-> >   * the allocator metadata. The "memory" and "reserved" types are nicely
-> >   * wrapped with :c:type:`struct memblock`. This structure is statically  
-> 
-> And this?
-
-Good point.
-
-I'll change those too for the next version.
-
-
-> 
-> >   * initialized at build time. The region arrays are initially sized to
-> > -- 
-> > 2.26.2
-> >   
-> 
-
-
-
-Thanks,
-Mauro
+Jason
