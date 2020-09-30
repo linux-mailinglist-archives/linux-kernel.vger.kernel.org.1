@@ -2,354 +2,274 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CE5827F5C2
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 01:15:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7FBE27F5CA
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 01:18:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732126AbgI3XPJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 19:15:09 -0400
-Received: from mga12.intel.com ([192.55.52.136]:64574 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730528AbgI3XPF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 19:15:05 -0400
-IronPort-SDR: u1vZVQlWz7HZynlifmOg5/NMGYoxmoRR5JE0x7dSc9h5n+0l8BSawKWKu4oYaUpBOwA+bfYg+G
- 84SIYkTNDbIg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9760"; a="141979532"
-X-IronPort-AV: E=Sophos;i="5.77,322,1596524400"; 
-   d="scan'208";a="141979532"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2020 16:15:00 -0700
-IronPort-SDR: FZOqjJpvoRQ6lNxSfQC3MwU1qu3Y/XWGAsjC2Ks/rtMvSN1W0pvAYKQ2SeDV7HHMu4eM6dMrr2
- HJ1ydeTEmQFQ==
-X-IronPort-AV: E=Sophos;i="5.77,322,1596524400"; 
-   d="scan'208";a="457854717"
-Received: from rhweight-mobl2.amr.corp.intel.com (HELO [10.0.2.15]) ([10.212.91.128])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2020 16:14:59 -0700
-Subject: Re: [PATCH v1 02/12] fpga: create intel max10 bmc security engine
-To:     Moritz Fischer <mdf@kernel.org>
-Cc:     lee.jones@linaro.org, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org, trix@redhat.com, lgoncalv@redhat.com,
-        yilun.xu@intel.com, hao.wu@intel.com, matthew.gerlach@intel.com
-References: <20200904235305.6254-1-russell.h.weight@intel.com>
- <20200904235305.6254-3-russell.h.weight@intel.com>
- <20200916203320.GB1076460@epycbox.lan>
-From:   Russ Weight <russell.h.weight@intel.com>
-Message-ID: <46e190e6-88cc-6d76-0078-441faa6c8b9f@intel.com>
-Date:   Wed, 30 Sep 2020 16:14:58 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1732141AbgI3XPh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 19:15:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58178 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732131AbgI3XPa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 19:15:30 -0400
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84DFCC0613D1
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 16:15:29 -0700 (PDT)
+Received: by mail-il1-x141.google.com with SMTP id t12so4161229ilh.3
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 16:15:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ziKIfU8vAVPMot5eNP2rJCYqSKd8W1jYnncCawSVC4k=;
+        b=sNIUgBiX8VjUnFjvQu6mWmODrgvc3PS6B3WbHDRu/bvwK6yZkGJB/JE6tTBwBbDdp+
+         7PiR/NVNqXNOIy2exNIBm4w0b+jK1AUYkILUiYH7EhuFCbZdAarKCz9Il4cF5pDffG+J
+         iTbd+JhF/vdPZ6JIV9RRcKssPQ+tVYS2Nz0n+ePWkJ1A5z4qr5FSd5RdwPogbJfbhFHa
+         Xqc7G/25yo4GvDiif0dlJtBBPbYPAgpVH5pUh1MIQ3FhvQI4I89Ij2x0W5vKELB6KdOt
+         qdsyxt9d3I525xkjH3r0Vdm9aFjLQf9DkpreLVcaPfHcdpZNYWC45caUCLRPib9fLNbb
+         l0Sg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ziKIfU8vAVPMot5eNP2rJCYqSKd8W1jYnncCawSVC4k=;
+        b=IwVakpW0Nt22JZcMGUC95czKgwBeLDtkfbmrGjWcl4/Du0QMazdtCoQBVfsaH0F+sT
+         ib/8gYNiJS5yj/ir1cM3I8MHTiK6RTX8BmMV/dZpUJkfB94TK/KncS7VpGkWcSKG0SXx
+         UzA5HEn78Pw5GQohgIgGaUnuF+f/7T3kGVKxY50rj/E1IKlFv5kVydYV/fotFa9A//Yw
+         Nj8Or6iDMLionArMSJTdFL5AaiKwBI6DEbtlllMcENQ1QdfNs03ansQOrEV8OBRmagrw
+         QuBUr1HsUP9iQEWO2xZktNu/oHYedCYxYLO0MiFkNWppLs/0gHTnR7Vs4+qCqqsBsCDw
+         DcMw==
+X-Gm-Message-State: AOAM532l5pwzThuEMRn+6Tt0+MDyjr6Ej6OXxT8wEGsdcj3DcL08oGqf
+        WdR4kGCkQpCdRyK4kbRJ68Y69KbJlYP0mBitAQD7Rg==
+X-Google-Smtp-Source: ABdhPJwRmseqt72krYvVnpFdh2oLD6cRu0btU4XTLtqHd04bjRbM2vZgcV+RxuwraUqav9cqZtSYiOOPfRelA1kqXA0=
+X-Received: by 2002:a92:1e07:: with SMTP id e7mr194208ile.154.1601507728477;
+ Wed, 30 Sep 2020 16:15:28 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200916203320.GB1076460@epycbox.lan>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <20200925212302.3979661-1-bgardon@google.com> <20200925212302.3979661-14-bgardon@google.com>
+ <20200930170354.GF32672@linux.intel.com>
+In-Reply-To: <20200930170354.GF32672@linux.intel.com>
+From:   Ben Gardon <bgardon@google.com>
+Date:   Wed, 30 Sep 2020 16:15:17 -0700
+Message-ID: <CANgfPd8mH7XpNzCbObD-XO_Pzc0TK6oNQpTw9rgSdqBV-4trFw@mail.gmail.com>
+Subject: Re: [PATCH 13/22] kvm: mmu: Support invalidate range MMU notifier for
+ TDP MMU
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
+        Cannon Matthews <cannonmatthews@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
+        Peter Feiner <pfeiner@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Moritz,
-
-On 9/16/20 1:33 PM, Moritz Fischer wrote:
-> Russ,
+On Wed, Sep 30, 2020 at 10:04 AM Sean Christopherson
+<sean.j.christopherson@intel.com> wrote:
 >
-> On Fri, Sep 04, 2020 at 04:52:55PM -0700, Russ Weight wrote:
->> Create a platform driver that can be invoked as a sub
->> driver for the Intel MAX10 BMC in order to support
->> secure updates. This sub-driver will invoke an
->> instance of the Intel FPGA Security Manager class driver
->> in order to expose sysfs interfaces for managing and
->> monitoring secure updates to FPGA and BMC images.
->>
->> This patch creates the MAX10 BMC Security Engine driver and
->> provides support for displaying the current root entry hashes
->> for the FPGA static region, the FPGA PR region, and the MAX10
->> BMC.
->>
->> Signed-off-by: Russ Weight <russell.h.weight@intel.com>
->> Reviewed-by: Wu Hao <hao.wu@intel.com>
->> ---
->>  drivers/fpga/Kconfig                |  11 ++
->>  drivers/fpga/Makefile               |   3 +
->>  drivers/fpga/intel-m10-bmc-secure.c | 170 ++++++++++++++++++++++++++++
->>  include/linux/mfd/intel-m10-bmc.h   |  15 +++
->>  4 files changed, 199 insertions(+)
->>  create mode 100644 drivers/fpga/intel-m10-bmc-secure.c
->>
->> diff --git a/drivers/fpga/Kconfig b/drivers/fpga/Kconfig
->> index 97c0a6cc2ba7..0f0bed68e618 100644
->> --- a/drivers/fpga/Kconfig
->> +++ b/drivers/fpga/Kconfig
->> @@ -244,4 +244,15 @@ config IFPGA_SEC_MGR
->>  	  region and for the BMC. Select this option to enable
->>  	  updates for secure FPGA devices.
->>  
->> +config IFPGA_M10_BMC_SECURE
->> +        tristate "Intel MAX10 BMC security engine"
->> +	depends on MFD_INTEL_M10_BMC && IFPGA_SEC_MGR
->> +        help
->> +          Secure update support for the Intel MAX10 board management
->> +	  controller.
->> +
->> +	  This is a subdriver of the Intel MAX10 board management controller
->> +	  (BMC) and provides support for secure updates for the BMC image,
->> +	  the FPGA image, the Root Entry Hashes, etc.
->> +
->>  endif # FPGA
->> diff --git a/drivers/fpga/Makefile b/drivers/fpga/Makefile
->> index ec9fbacdedd8..451a23ec3168 100644
->> --- a/drivers/fpga/Makefile
->> +++ b/drivers/fpga/Makefile
->> @@ -24,6 +24,9 @@ obj-$(CONFIG_ALTERA_PR_IP_CORE_PLAT)    += altera-pr-ip-core-plat.o
->>  # Intel FPGA Security Manager Framework
->>  obj-$(CONFIG_IFPGA_SEC_MGR)		+= ifpga-sec-mgr.o
->>  
->> +# Intel Security Manager Drivers
->> +obj-$(CONFIG_IFPGA_M10_BMC_SECURE)	+= intel-m10-bmc-secure.o
->> +
->>  # FPGA Bridge Drivers
->>  obj-$(CONFIG_FPGA_BRIDGE)		+= fpga-bridge.o
->>  obj-$(CONFIG_SOCFPGA_FPGA_BRIDGE)	+= altera-hps2fpga.o altera-fpga2sdram.o
->> diff --git a/drivers/fpga/intel-m10-bmc-secure.c b/drivers/fpga/intel-m10-bmc-secure.c
->> new file mode 100644
->> index 000000000000..1f86bfb694b4
->> --- /dev/null
->> +++ b/drivers/fpga/intel-m10-bmc-secure.c
->> @@ -0,0 +1,170 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +/*
->> + * Intel Max10 Board Management Controller Security Engine Driver
->> + *
->> + * Copyright (C) 2019-2020 Intel Corporation. All rights reserved.
->> + *
->> + */
->> +#include <linux/device.h>
->> +#include <linux/fpga/ifpga-sec-mgr.h>
->> +#include <linux/mfd/intel-m10-bmc.h>
->> +#include <linux/module.h>
->> +#include <linux/platform_device.h>
->> +#include <linux/vmalloc.h>
->> +
->> +struct m10bmc_sec {
->> +	struct device *dev;
->> +	struct intel_m10bmc *m10bmc;
->> +	struct ifpga_sec_mgr *imgr;
->> +};
->> +
->> +#define SHA256_REH_SIZE		32
->> +#define SHA384_REH_SIZE		48
->> +
->> +static int get_reh_size(struct ifpga_sec_mgr *imgr,
->> +			u32 exp_magic, u32 prog_addr)
->> +{
->> +	struct m10bmc_sec *sec = imgr->priv;
->> +	int sha_num_bytes, ret;
->> +	u32 magic;
->> +
->> +	ret = m10bmc_raw_read(sec->m10bmc, prog_addr, &magic);
->> +	if (ret)
->> +		return ret;
->> +
->> +	dev_dbg(sec->dev, "%s magic 0x%08x\n", __func__, magic);
->> +
->> +	if ((magic & 0xffff) != exp_magic)
-> Consider using GENMASK() here.
-Yes - will do.
->> +		return 0;
->> +
->> +	sha_num_bytes = ((magic >> 16) & 0xffff) / 8;
-> And here.
-Yes
->> +
->> +	if (sha_num_bytes != SHA256_REH_SIZE &&
->> +	    sha_num_bytes != SHA384_REH_SIZE)   {
->> +		dev_err(sec->dev, "%s bad sha num bytes %d\n", __func__,
->> +			sha_num_bytes);
->> +		return -EINVAL;
->> +	}
->> +
->> +	return sha_num_bytes;
->> +}
->> +
->> +#define BMC_REH_ADDR 0x17ffc004
->> +#define BMC_PROG_ADDR 0x17ffc000
->> +#define BMC_PROG_MAGIC 0x5746
->> +
->> +#define SR_REH_ADDR 0x17ffd004
->> +#define SR_PROG_ADDR 0x17ffd000
->> +#define SR_PROG_MAGIC 0x5253
->> +
->> +#define PR_REH_ADDR 0x17ffe004
->> +#define PR_PROG_ADDR 0x17ffe000
->> +#define PR_PROG_MAGIC 0x5250
->> +
->> +#define SYSFS_GET_REH_SIZE(_name, _exp_magic, _prog_addr) \
->> +static int get_##_name##_reh_size(struct ifpga_sec_mgr *imgr) \
->> +{ \
->> +	return get_reh_size(imgr, _exp_magic, _prog_addr); \
->> +}
->> +
->> +SYSFS_GET_REH_SIZE(bmc, BMC_PROG_MAGIC, BMC_PROG_ADDR)
->> +SYSFS_GET_REH_SIZE(sr, SR_PROG_MAGIC, SR_PROG_ADDR)
->> +SYSFS_GET_REH_SIZE(pr, PR_PROG_MAGIC, PR_PROG_ADDR)
->> +
->> +static int get_root_entry_hash(struct ifpga_sec_mgr *imgr,
->> +			       u32 hash_addr, u8 *hash,
->> +			       unsigned int size)
->> +{
->> +	struct m10bmc_sec *sec = imgr->priv;
->> +	unsigned int stride = regmap_get_reg_stride(sec->m10bmc->regmap);
->> +	int ret;
->> +
->> +	ret = m10bmc_raw_bulk_read(sec->m10bmc, hash_addr,
->> +				   hash, size / stride);
->> +	if (ret)
->> +		dev_err(sec->dev, "bulk_read of 0x%x failed %d",
->> +			hash_addr, ret);
->> +
->> +	return ret;
->> +}
->> +
->> +#define SYSFS_GET_REH(_name, _hash_addr) \
->> +static int get_##_name##_root_entry_hash(struct ifpga_sec_mgr *imgr, \
->> +					 u8 *hash, unsigned int size) \
->> +{ \
->> +	return get_root_entry_hash(imgr, _hash_addr, hash, size); \
->> +}
->> +
->> +SYSFS_GET_REH(bmc, BMC_REH_ADDR)
->> +SYSFS_GET_REH(sr, SR_REH_ADDR)
->> +SYSFS_GET_REH(pr, PR_REH_ADDR)
-> Tbh, I'd drop the macro and just have the functions as one liners,
-> and yes, please add the prefix.
-OK - I'll drop the macros and add the prefixes.
-
->> +
->> +static const struct ifpga_sec_mgr_ops m10bmc_iops = {
->> +	.bmc_root_entry_hash = get_bmc_root_entry_hash,
->> +	.sr_root_entry_hash = get_sr_root_entry_hash,
->> +	.pr_root_entry_hash = get_pr_root_entry_hash,
->> +	.bmc_reh_size = get_bmc_reh_size,
->> +	.sr_reh_size = get_sr_reh_size,
->> +	.pr_reh_size = get_pr_reh_size,
->> +};
->> +
->> +static void ifpga_sec_mgr_uinit(struct m10bmc_sec *sec)
->> +{
->> +	ifpga_sec_mgr_unregister(sec->imgr);
->> +}
-> Consider dropping this function (see below).
-Sure - I can drop the init and uinit functions.
->> +
->> +static int ifpga_sec_mgr_init(struct m10bmc_sec *sec)
->> +{
->> +	struct ifpga_sec_mgr *imgr;
->> +
->> +	imgr = ifpga_sec_mgr_register(sec->dev, "Max10 BMC Security Manager",
->> +				      &m10bmc_iops, sec);
->> +	if (IS_ERR(imgr))
->> +		return PTR_ERR(imgr);
->> +
->> +	sec->imgr = imgr;
->> +	return 0;
->> +}
->> +
->> +static int m10bmc_secure_probe(struct platform_device *pdev)
->> +{
->> +	struct m10bmc_sec *sec;
->> +	int ret;
->> +
->> +	sec = devm_kzalloc(&pdev->dev, sizeof(*sec), GFP_KERNEL);
->> +	if (!sec)
->> +		return -ENOMEM;
->> +
->> +	sec->dev = &pdev->dev;
->> +	sec->m10bmc = dev_get_drvdata(pdev->dev.parent);
->> +	dev_set_drvdata(&pdev->dev, sec);
-> If you implement the devm_ versions then this could be:
+> On Fri, Sep 25, 2020 at 02:22:53PM -0700, Ben Gardon wrote:
+> > In order to interoperate correctly with the rest of KVM and other Linux
+> > subsystems, the TDP MMU must correctly handle various MMU notifiers. Add
+> > hooks to handle the invalidate range family of MMU notifiers.
+> >
+> > Tested by running kvm-unit-tests and KVM selftests on an Intel Haswell
+> > machine. This series introduced no new failures.
+> >
+> > This series can be viewed in Gerrit at:
+> >       https://linux-review.googlesource.com/c/virt/kvm/kvm/+/2538
+> >
+> > Signed-off-by: Ben Gardon <bgardon@google.com>
+> > ---
+> >  arch/x86/kvm/mmu/mmu.c     |  9 ++++-
+> >  arch/x86/kvm/mmu/tdp_mmu.c | 80 +++++++++++++++++++++++++++++++++++---
+> >  arch/x86/kvm/mmu/tdp_mmu.h |  3 ++
+> >  3 files changed, 86 insertions(+), 6 deletions(-)
+> >
+> > diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> > index 52d661a758585..0ddfdab942554 100644
+> > --- a/arch/x86/kvm/mmu/mmu.c
+> > +++ b/arch/x86/kvm/mmu/mmu.c
+> > @@ -1884,7 +1884,14 @@ static int kvm_handle_hva(struct kvm *kvm, unsigned long hva,
+> >  int kvm_unmap_hva_range(struct kvm *kvm, unsigned long start, unsigned long end,
+> >                       unsigned flags)
+> >  {
+> > -     return kvm_handle_hva_range(kvm, start, end, 0, kvm_unmap_rmapp);
+> > +     int r;
+> > +
+> > +     r = kvm_handle_hva_range(kvm, start, end, 0, kvm_unmap_rmapp);
+> > +
+> > +     if (kvm->arch.tdp_mmu_enabled)
+> > +             r |= kvm_tdp_mmu_zap_hva_range(kvm, start, end);
 >
-> 	imgr = devm_ifpga_sec_mgr_create(&pdev->dev, "Max10 BMC Security
-> 					Manager", &m10bmc_ips, sec);
-> 	if (IS_ERR(imgr))
-> 		return PTR_ERR(imgr);
-> 	sec->imgr = imgr;
+> Similar to an earlier question, is this intentionally additive, or can this
+> instead by:
 >
-> 	return ifpga_sec_mgr_register(imgr);
-If ifpga_sec_mgr_register fails, I think it would be necessary to call
-"put_device(&imgr->dev)" here to release the device created by
-devm_ifpga_sec_mgr_create()?
-
-Thanks,
-- Russ
+>         if (kvm->arch.tdp_mmu_enabled)
+>                 r = kvm_tdp_mmu_zap_hva_range(kvm, start, end);
+>         else
+>                 r = kvm_handle_hva_range(kvm, start, end, 0, kvm_unmap_rmapp);
 >
->> +
->> +	ret = ifpga_sec_mgr_init(sec);
->> +	if (ret)
->> +		dev_err(&pdev->dev,
->> +			"Security manager failed to start: %d\n", ret);
->> +
->> +	return ret;
->> +}
->> +
->> +static int m10bmc_secure_remove(struct platform_device *pdev)
->> +{
->> +	struct m10bmc_sec *sec = dev_get_drvdata(&pdev->dev);
->> +
->> +	ifpga_sec_mgr_uinit(sec);
-> If you drop the above:
-> 	ifpga_sec_mgr_remove(sec->imgr);
->> +	return 0;
->> +}
->> +
->> +static struct platform_driver intel_m10bmc_secure_driver = {
->> +	.probe = m10bmc_secure_probe,
->> +	.remove = m10bmc_secure_remove,
->> +	.driver = {
->> +		.name = "n3000bmc-secure",
->> +	},
->> +};
->> +module_platform_driver(intel_m10bmc_secure_driver);
->> +
->> +MODULE_ALIAS("platform:n3000bmc-secure");
->> +MODULE_AUTHOR("Intel Corporation");
->> +MODULE_DESCRIPTION("Intel MAX10 BMC secure engine");
->> +MODULE_LICENSE("GPL v2");
->> diff --git a/include/linux/mfd/intel-m10-bmc.h b/include/linux/mfd/intel-m10-bmc.h
->> index d4cb01b73357..7fe465c320c2 100644
->> --- a/include/linux/mfd/intel-m10-bmc.h
->> +++ b/include/linux/mfd/intel-m10-bmc.h
->> @@ -63,6 +63,7 @@ struct intel_m10bmc {
->>   * register access helper functions.
->>   *
->>   * m10bmc_raw_read - read m10bmc register per addr
->> + * m10bmc_raw_bulk_read - bulk_read max10 registers per addr
->>   * m10bmc_sys_read - read m10bmc system register per offset
->>   */
->>  static inline int
->> @@ -79,6 +80,20 @@ m10bmc_raw_read(struct intel_m10bmc *m10bmc, unsigned int addr,
->>  	return ret;
->>  }
->>  
->> +static inline int
->> +m10bmc_raw_bulk_read(struct intel_m10bmc *m10bmc, unsigned int addr,
->> +		     void *val, size_t cnt)
->> +{
->> +	int ret;
->> +
->> +	ret = regmap_bulk_read(m10bmc->regmap, addr, val, cnt);
->> +	if (ret)
->> +		dev_err(m10bmc->dev, "fail to read raw reg %x cnt %zx: %d\n",
->> +			addr, cnt, ret);
->> +
->> +	return ret;
->> +}
->> +
->>  #define m10bmc_sys_read(m10bmc, offset, val) \
->>  	m10bmc_raw_read(m10bmc, M10BMC_SYS_BASE + (offset), val)
->>  
->> -- 
->> 2.17.1
->>
-> Thanks,
-> Moritz
 
+It is intentionally additive so the legacy/shadow MMU can handle nested.
+
+> > +
+> > +     return r;
+> >  }
+> >
+> >  int kvm_set_spte_hva(struct kvm *kvm, unsigned long hva, pte_t pte)
+> > diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+> > index 557e780bdf9f9..1cea58db78a13 100644
+> > --- a/arch/x86/kvm/mmu/tdp_mmu.c
+> > +++ b/arch/x86/kvm/mmu/tdp_mmu.c
+> > @@ -60,7 +60,7 @@ bool is_tdp_mmu_root(struct kvm *kvm, hpa_t hpa)
+> >  }
+> >
+> >  static bool zap_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
+> > -                       gfn_t start, gfn_t end);
+> > +                       gfn_t start, gfn_t end, bool can_yield);
+> >
+> >  static void free_tdp_mmu_root(struct kvm *kvm, struct kvm_mmu_page *root)
+> >  {
+> > @@ -73,7 +73,7 @@ static void free_tdp_mmu_root(struct kvm *kvm, struct kvm_mmu_page *root)
+> >
+> >       list_del(&root->link);
+> >
+> > -     zap_gfn_range(kvm, root, 0, max_gfn);
+> > +     zap_gfn_range(kvm, root, 0, max_gfn, false);
+> >
+> >       free_page((unsigned long)root->spt);
+> >       kmem_cache_free(mmu_page_header_cache, root);
+> > @@ -361,9 +361,14 @@ static bool tdp_mmu_iter_cond_resched(struct kvm *kvm, struct tdp_iter *iter)
+> >   * non-root pages mapping GFNs strictly within that range. Returns true if
+> >   * SPTEs have been cleared and a TLB flush is needed before releasing the
+> >   * MMU lock.
+> > + * If can_yield is true, will release the MMU lock and reschedule if the
+> > + * scheduler needs the CPU or there is contention on the MMU lock. If this
+> > + * function cannot yield, it will not release the MMU lock or reschedule and
+> > + * the caller must ensure it does not supply too large a GFN range, or the
+> > + * operation can cause a soft lockup.
+> >   */
+> >  static bool zap_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
+> > -                       gfn_t start, gfn_t end)
+> > +                       gfn_t start, gfn_t end, bool can_yield)
+> >  {
+> >       struct tdp_iter iter;
+> >       bool flush_needed = false;
+> > @@ -387,7 +392,10 @@ static bool zap_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
+> >               handle_changed_spte(kvm, as_id, iter.gfn, iter.old_spte, 0,
+> >                                   iter.level);
+> >
+> > -             flush_needed = !tdp_mmu_iter_cond_resched(kvm, &iter);
+> > +             if (can_yield)
+> > +                     flush_needed = !tdp_mmu_iter_cond_resched(kvm, &iter);
+>
+>                 flush_needed = !can_yield || !tdp_mmu_iter_cond_resched(kvm, &iter);
+>
+> > +             else
+> > +                     flush_needed = true;
+> >       }
+> >       return flush_needed;
+> >  }
+> > @@ -410,7 +418,7 @@ bool kvm_tdp_mmu_zap_gfn_range(struct kvm *kvm, gfn_t start, gfn_t end)
+> >                */
+> >               get_tdp_mmu_root(kvm, root);
+> >
+> > -             flush = zap_gfn_range(kvm, root, start, end) || flush;
+> > +             flush = zap_gfn_range(kvm, root, start, end, true) || flush;
+> >
+> >               put_tdp_mmu_root(kvm, root);
+> >       }
+> > @@ -551,3 +559,65 @@ int kvm_tdp_mmu_page_fault(struct kvm_vcpu *vcpu, int write, int map_writable,
+> >
+> >       return ret;
+> >  }
+> > +
+> > +static int kvm_tdp_mmu_handle_hva_range(struct kvm *kvm, unsigned long start,
+> > +             unsigned long end, unsigned long data,
+> > +             int (*handler)(struct kvm *kvm, struct kvm_memory_slot *slot,
+> > +                            struct kvm_mmu_page *root, gfn_t start,
+> > +                            gfn_t end, unsigned long data))
+> > +{
+> > +     struct kvm_memslots *slots;
+> > +     struct kvm_memory_slot *memslot;
+> > +     struct kvm_mmu_page *root;
+> > +     int ret = 0;
+> > +     int as_id;
+> > +
+> > +     for_each_tdp_mmu_root(kvm, root) {
+> > +             /*
+> > +              * Take a reference on the root so that it cannot be freed if
+> > +              * this thread releases the MMU lock and yields in this loop.
+> > +              */
+> > +             get_tdp_mmu_root(kvm, root);
+> > +
+> > +             as_id = kvm_mmu_page_as_id(root);
+> > +             slots = __kvm_memslots(kvm, as_id);
+> > +             kvm_for_each_memslot(memslot, slots) {
+> > +                     unsigned long hva_start, hva_end;
+> > +                     gfn_t gfn_start, gfn_end;
+> > +
+> > +                     hva_start = max(start, memslot->userspace_addr);
+> > +                     hva_end = min(end, memslot->userspace_addr +
+> > +                                   (memslot->npages << PAGE_SHIFT));
+> > +                     if (hva_start >= hva_end)
+> > +                             continue;
+> > +                     /*
+> > +                      * {gfn(page) | page intersects with [hva_start, hva_end)} =
+> > +                      * {gfn_start, gfn_start+1, ..., gfn_end-1}.
+> > +                      */
+> > +                     gfn_start = hva_to_gfn_memslot(hva_start, memslot);
+> > +                     gfn_end = hva_to_gfn_memslot(hva_end + PAGE_SIZE - 1, memslot);
+> > +
+> > +                     ret |= handler(kvm, memslot, root, gfn_start,
+> > +                                    gfn_end, data);
+>
+> Eh, I'd say let this one poke out, the above hva_to_gfn_memslot() already
+> overruns 80 chars.  IMO it's more readable without the wraps.
+
+Will do.
+
+>
+> > +             }
+> > +
+> > +             put_tdp_mmu_root(kvm, root);
+> > +     }
+> > +
+> > +     return ret;
+> > +}
+> > +
+> > +static int zap_gfn_range_hva_wrapper(struct kvm *kvm,
+> > +                                  struct kvm_memory_slot *slot,
+> > +                                  struct kvm_mmu_page *root, gfn_t start,
+> > +                                  gfn_t end, unsigned long unused)
+> > +{
+> > +     return zap_gfn_range(kvm, root, start, end, false);
+> > +}
+> > +
+> > +int kvm_tdp_mmu_zap_hva_range(struct kvm *kvm, unsigned long start,
+> > +                           unsigned long end)
+> > +{
+> > +     return kvm_tdp_mmu_handle_hva_range(kvm, start, end, 0,
+> > +                                         zap_gfn_range_hva_wrapper);
+> > +}
+> > diff --git a/arch/x86/kvm/mmu/tdp_mmu.h b/arch/x86/kvm/mmu/tdp_mmu.h
+> > index abf23dc0ab7ad..ce804a97bfa1d 100644
+> > --- a/arch/x86/kvm/mmu/tdp_mmu.h
+> > +++ b/arch/x86/kvm/mmu/tdp_mmu.h
+> > @@ -18,4 +18,7 @@ void kvm_tdp_mmu_zap_all(struct kvm *kvm);
+> >  int kvm_tdp_mmu_page_fault(struct kvm_vcpu *vcpu, int write, int map_writable,
+> >                          int level, gpa_t gpa, kvm_pfn_t pfn, bool prefault,
+> >                          bool lpage_disallowed);
+> > +
+> > +int kvm_tdp_mmu_zap_hva_range(struct kvm *kvm, unsigned long start,
+> > +                           unsigned long end);
+> >  #endif /* __KVM_X86_MMU_TDP_MMU_H */
+> > --
+> > 2.28.0.709.gb0816b6eb0-goog
+> >
