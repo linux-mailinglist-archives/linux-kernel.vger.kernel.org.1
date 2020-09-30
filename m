@@ -2,60 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3A2027EF2B
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 18:28:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9B9327EF31
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 18:29:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731268AbgI3Q2i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 12:28:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55328 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728149AbgI3Q2h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 12:28:37 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B5D0C2072E;
-        Wed, 30 Sep 2020 16:28:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601483316;
-        bh=A/LaFBNm69fgtLEE6uxXcOS8lLCnslN506CQsSMOD2A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=d5GE0J60khqPqCPoixVlcVVizCgkbhU3fbNnB8Kf9jQw9DayjANwVC/Ur3wUcwZRz
-         3SoFTCK9XSeScHfawCerW2dT0VNmN3oXK6MJfx4NVV2+bkGdgZLL7kRumQQ58k3UNa
-         1jRr4bXN1r7SiyzpDa3FrBJWann7moytB9VT2Svo=
-Date:   Wed, 30 Sep 2020 18:28:39 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] MAINTAINERS: exclude char maintainers from things they
- do not maintain
-Message-ID: <20200930162839.GB1672130@kroah.com>
-References: <20200930121007.GA1615300@kroah.com>
- <CAK8P3a3FX=uuqG6KW7b4Zsh0xiCea_6B2sE3DChQx-e8EUF43g@mail.gmail.com>
+        id S1731281AbgI3Q3R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 12:29:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51686 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725355AbgI3Q3Q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 12:29:16 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE5ACC061755;
+        Wed, 30 Sep 2020 09:29:15 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id q8so2909059lfb.6;
+        Wed, 30 Sep 2020 09:29:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=EzyR/YDvIXijh7swdghsNAKpiZabsqY73hYX4hLjUIE=;
+        b=T1T+AylV3LaBdXGum8XogqJ5vyJFo3xWcikbcOxdE0TLIX6SqttUe4NyGt/ld4prn9
+         8wTS1+lPzoSyQqJVYd+HqpB4JBxQ/ICiaxplsEHSaXOXT8mqHyamcwo0JfwEFU+FQDci
+         sQ4TznKGY+WOj2jETSBczukppjIvT4m1nI1rQvL6Aa2knn5Q+6WO3mVFHZjY44MINvOU
+         w6ERL8FnhVgRkkG53TqEECvrTxdyPO5GSbpjZAoeRKhoR8HlxsqVeh+01ZvFTeFHmArJ
+         ljFohIBGkNZk8M12rb3XcqY4dxULnZEiR1M4R/STY3QS8sfvB6BgZRi4/IFeWNOb90uj
+         uW3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=EzyR/YDvIXijh7swdghsNAKpiZabsqY73hYX4hLjUIE=;
+        b=leeXdyTdIrRFl6/DuP2w8Y+4n7oIKfVAXaZ/7cS5NdoFnkOX8Gfdquktvo7upCKwBs
+         88Y3vMPWHT0dy1KsKZmzfG+badffM7xphugF11ypIp8VQcOD5o+HgBGuiPThlcGVBaPN
+         FO63aV/E7dsP2VqB53Tx64b30lVKMBnmvpG8/VrB4bQHsz73+pRJs00Y49lyFIWK71mQ
+         4lvV8qOaOhDA23jypeL5Cm3z7XC7k0ZnVF2au/391oeP8oWQfL2Tb/wudkyTd3XambHm
+         pcLey8arperDOl5GhtS+3PF9Q6COWwNl6cWKChyV4DgWPSh5GpKSF2PMzST8XIKLZHyy
+         akkA==
+X-Gm-Message-State: AOAM532/rV9Ownm/AjCZz//B1XShIYegCJRNErn0/eYrCSAPHM60aOTi
+        9DGN/a62S5ts20U14FQ8mzBSGOqDnVI=
+X-Google-Smtp-Source: ABdhPJy/XbDWHR4hfmk8+U5h3ZueC5w/GyTS/H7hzhmzAV+DwLsuai3Wmfi3eX7rtx5fxS75BHBHTw==
+X-Received: by 2002:ac2:489b:: with SMTP id x27mr1242052lfc.242.1601483353973;
+        Wed, 30 Sep 2020 09:29:13 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
+        by smtp.googlemail.com with ESMTPSA id m1sm245883lfr.32.2020.09.30.09.29.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 30 Sep 2020 09:29:13 -0700 (PDT)
+Subject: Re: [PATCH v3 2/3] iommu/tegra-smmu: Rework .probe_device and
+ .attach_dev
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Nicolin Chen <nicoleotsuka@gmail.com>, joro@8bytes.org,
+        krzk@kernel.org, vdumpa@nvidia.com, jonathanh@nvidia.com,
+        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+References: <20200930084258.25493-1-nicoleotsuka@gmail.com>
+ <20200930084258.25493-3-nicoleotsuka@gmail.com>
+ <20200930153131.GB3833404@ulmo>
+ <ece615ad-8d6b-96ae-d8b4-9667aef17281@gmail.com>
+ <20200930161033.GE3833404@ulmo>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <36946786-38c5-54d4-07f5-2407c39aa01c@gmail.com>
+Date:   Wed, 30 Sep 2020 19:29:12 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK8P3a3FX=uuqG6KW7b4Zsh0xiCea_6B2sE3DChQx-e8EUF43g@mail.gmail.com>
+In-Reply-To: <20200930161033.GE3833404@ulmo>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 03:19:09PM +0200, Arnd Bergmann wrote:
-> On Wed, Sep 30, 2020 at 2:10 PM Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > There are a number of subdirectories and files in drivers/char/ that
-> > have their own maintainers and developers and ways of getting patches to
-> > Linus.  This includes random.c, IPMI, hardware random drivers, TPM
-> > drivers, and agp drivers.  Instead of sending those patches to Arnd and
-> > myself, who can't do anything with them, send them to the proper
-> > developers instead.
-> >
-> > Cc: Arnd Bergmann <arnd@arndb.de>
-> > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+...
+>> Secondly, I'm already about to use the new tegra_get_memory_controller()
+>> API for all the T20/30/124/210 EMC and devfreq drivers.
 > 
-> Good idea,
-> 
-> Acked-by: Arnd Bergmann <arnd@arndb.de>
+> Also, this really proves the point I was trying to make about how this
+> is going to proliferate...
 
-Now our inboxes will be a tiny bit smaller :)
+Sorry, I'm probably totally missing yours point.. "what" exactly will
+proliferate?
