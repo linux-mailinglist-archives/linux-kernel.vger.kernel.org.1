@@ -2,177 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 179CC27E7D6
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 13:45:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E10727E7E0
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 13:51:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729570AbgI3Lpw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 07:45:52 -0400
-Received: from foss.arm.com ([217.140.110.172]:34684 "EHLO foss.arm.com"
+        id S1728514AbgI3LvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 07:51:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34898 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729424AbgI3Lpv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 07:45:51 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0A8E730E;
-        Wed, 30 Sep 2020 04:45:51 -0700 (PDT)
-Received: from [192.168.0.110] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 170DA3F6CF;
-        Wed, 30 Sep 2020 04:45:48 -0700 (PDT)
-Subject: Re: [PATCH v7 5/7] KVM: arm64: pmu: Make overflow handler NMI safe
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        mark.rutland@arm.com, sumit.garg@linaro.org, swboyd@chromium.org,
-        catalin.marinas@arm.com, will@kernel.org,
-        Julien Thierry <julien.thierry@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Marc Zyngier <marc.zyngier@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Pouloze <suzuki.poulose@arm.com>,
-        kvm@vger.kernel.org, kvmarm@lists.cs.columbia.edu
-References: <20200924110706.254996-1-alexandru.elisei@arm.com>
- <20200924110706.254996-6-alexandru.elisei@arm.com>
- <14a0562fee95d5c7aa5bc6b67d213858@kernel.org>
-From:   Alexandru Elisei <alexandru.elisei@arm.com>
-Message-ID: <3379a8af-67ae-f71f-316d-3baa5fadc6dd@arm.com>
-Date:   Wed, 30 Sep 2020 12:46:52 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1725776AbgI3LvD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 07:51:03 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0AA062076B;
+        Wed, 30 Sep 2020 11:51:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601466662;
+        bh=Rph12rkPGMYsgVf8hQ7uVrlwk5Hrr5aRGDcoCNiMOAs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=uGaRvxCjjJkQB5egryX3YLnhH/hxduSMU7MO9MnHEGkdy1fpWMoPuH6wK/0yDHUFB
+         12OCren5YTBdc/s65ZziTyKxVfsh7Wye0uZSrGVR6gofem0lvTKu0Drb1GI6UpEGs5
+         60CnmyQxiF6WucCNa6zvvR+jOCuxceher0Zfd96g=
+Date:   Wed, 30 Sep 2020 13:51:06 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Lars Poeschel <poeschel@lemonage.de>
+Cc:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        "open list:PWM SUBSYSTEM" <linux-pwm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] pwm: sysfs: Set class on pwm devices
+Message-ID: <20200930115106.GB1603625@kroah.com>
+References: <20200929121953.2817843-1-poeschel@lemonage.de>
+ <20200930065726.fjcsm4pfh65medgl@pengutronix.de>
+ <20200930092056.maz5biy2ugr6yc3p@lem-wkst-02.lemonage>
+ <20200930094146.73s3qzvf5ekjeavc@pengutronix.de>
+ <20200930095204.GA1585476@kroah.com>
+ <20200930100126.rtjfnmbc54m7vrwd@pengutronix.de>
+ <20200930105238.GA1592367@kroah.com>
+ <20200930112720.xiff3xwmfu3gjypk@lem-wkst-02.lemonage>
 MIME-Version: 1.0
-In-Reply-To: <14a0562fee95d5c7aa5bc6b67d213858@kernel.org>
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+In-Reply-To: <20200930112720.xiff3xwmfu3gjypk@lem-wkst-02.lemonage>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Wed, Sep 30, 2020 at 01:27:20PM +0200, Lars Poeschel wrote:
+> On Wed, Sep 30, 2020 at 12:52:38PM +0200, Greg Kroah-Hartman wrote:
+> > On Wed, Sep 30, 2020 at 12:01:26PM +0200, Uwe Kleine-K�nig wrote:
+> > > On Wed, Sep 30, 2020 at 11:52:04AM +0200, Greg Kroah-Hartman wrote:
+> > > > On Wed, Sep 30, 2020 at 11:41:46AM +0200, Uwe Kleine-K�nig wrote:
+> > > > > Hello,
+> > > > > 
+> > > > > I added Greg Kroah-Hartman who I discussed this with via irc a bit to
+> > > > > Cc:.
+> > > > > 
+> > > > > On Wed, Sep 30, 2020 at 11:20:56AM +0200, Lars Poeschel wrote:
+> > > > > > thank you for your review!
+> > > > > > 
+> > > > > > On Wed, Sep 30, 2020 at 08:57:26AM +0200, Uwe Kleine-K�nig wrote:
+> > > > > > > On Tue, Sep 29, 2020 at 02:19:53PM +0200, poeschel@lemonage.de wrote:
+> > > > > > > > From: Lars Poeschel <poeschel@lemonage.de>
+> > > > > > > > 
+> > > > > > > > This adds a class to exported pwm devices.
+> > > > > > > > Exporting a pwm through sysfs did not yield udev events. The
+> > > > > > > 
+> > > > > > > I wonder what is your use-case here. This for sure also has a place to
+> > > > > > > be mentioned in the commit log. I suspect there is a better way to
+> > > > > > > accomplish you way.
+> > > > > > 
+> > > > > > Use-case is to be able to use a pwm from a non-root userspace process.
+> > > > > > I use udev rules to adjust permissions.
+> > > > > 
+> > > > > Hmm, how do you trigger the export? Without being aware of all the
+> > > > > details in the sysfs code I would expect that the exported stuff is
+> > > > > available instantly once the write used to export the PWM is completed.
+> > > > > So changing the permissions can be done directly after triggering the
+> > > > > export in the same process.
+> > > > 
+> > > > It looks like userspace wants to see when a pwmX device shows up, right?
+> > > > 
+> > > > And it's not because those devices do not belong to any class or bus, so
+> > > > they are just "floating" out there (they might show up under
+> > > > /sys/bus/virtual, if you set things up right, which I don't think is
+> > > > happening here...)
+> > > > 
+> > > > So yes, you need to create a class, or assign this to a bus, which is
+> > > > fine, but it looks like no one is doing that.  Don't create new classes
+> > > > dynamically, but rather, just assign this to the existing pwm class.
+> > > > What's wrong with that?  I saw an older patch that did that, what did
+> > > > that break?
+> > > 
+> > > Are you refering to 7e5d1fd75c3dde9fc10c4472b9368089d1b81d00? Did you
+> > > read the reverting commit's log message? (i.e.
+> > > c289d6625237aa785b484b4e94c23b3b91ea7e60)
+> > > 
+> > > I guess the breakage is that the resulting name then is:
+> > > 
+> > > 	"pwm%d", pwm->id
+> > > 
+> > > where pwm->id is a number unique to the pwmchip. So doing
+> > > 
+> > > 	echo 0 > pwmchip1/export
+> > > 	echo 0 > pwmchip2/export
+> > > 
+> > > breaks because both want to create pwm0 in the class directory.
+> > 
+> > Ah, that makes more sense why that didn't work.
+> > 
+> > Ok, can the "name" of the new export chip be changed?  Is that
+> > hard-coded somewhere in userspace tools already?  Depending on that, the
+> > solution for this will change...
+> 
+> I know that back then, when sysfs for pwm was created, Thierry didn't
+> want to have one global namespace like gpio sysfs has. What you ask for
+> is something like:
+> 	pwm-{chipnumber}-{pwmnumber}
+> Right ? Can that be considered non-global ?
 
-On 9/29/20 9:11 AM, Marc Zyngier wrote:
-> On 2020-09-24 12:07, Alexandru Elisei wrote:
->> From: Julien Thierry <julien.thierry@arm.com>
->>
->> kvm_vcpu_kick() is not NMI safe. When the overflow handler is called from
->> NMI context, defer waking the vcpu to an irq_work queue.
->>
->> A vcpu can be freed while it's not running by kvm_destroy_vm(). Prevent
->> running the irq_work for a non-existent vcpu by calling irq_work_sync() on
->> the PMU destroy path.
->>
->> Cc: Julien Thierry <julien.thierry.kdev@gmail.com>
->> Cc: Marc Zyngier <marc.zyngier@arm.com>
->> Cc: Will Deacon <will.deacon@arm.com>
->> Cc: Mark Rutland <mark.rutland@arm.com>
->> Cc: Catalin Marinas <catalin.marinas@arm.com>
->> Cc: James Morse <james.morse@arm.com>
->> Cc: Suzuki K Pouloze <suzuki.poulose@arm.com>
->> Cc: kvm@vger.kernel.org
->> Cc: kvmarm@lists.cs.columbia.edu
->> Signed-off-by: Julien Thierry <julien.thierry@arm.com>
->> Tested-by: Sumit Garg <sumit.garg@linaro.org> (Developerbox)
->> [Alexandru E.: Added irq_work_sync()]
->> Signed-off-by: Alexandru Elisei <alexandru.elisei@arm.com>
->> ---
->> I suggested in v6 that I will add an irq_work_sync() to
->> kvm_pmu_vcpu_reset(). It turns out it's not necessary: a vcpu reset is done
->> by the vcpu being reset with interrupts enabled, which means all the work
->> has had a chance to run before the reset takes place.
->
-> I don't understand your argument about interrupts being enabled. The real
-> reason for not needing any synchronization is that all that the queued work
-> does is to kick the vcpu. Given that the vcpu is resetting, no amount of
-> kicking is going to change anything (it is already outside of the guest).
->
-> Things are obviously different on destroy, where the vcpu is actively going
-> away and we need to make sure we don't use stale data.
+Yes, and that's just "global" for the pwm class namespace.
 
-Like you and Will noticed, the above really doesn't make much sense. The reason we
-don't need to wait for the irq_work to be finished on reset is indeed that the
-vcpu isn't freed, so we will never trigger a use-after-free bug.
+> Thierry's mail from back then is here:
+> https://lore.kernel.org/lkml/20130408081745.GA21392@avionic-0098.mockup.avionic-design.de/
+> 
+> A short search on github I found this:
+> https://github.com/vsergeev/c-periphery/blob/d34077d7ee45fa7d1947cc0174919452fac31597/src/pwm.c#L74
+> 
+> Seems to match your hardcoded criteria ?
 
->
->>
->>  arch/arm64/kvm/pmu-emul.c | 26 +++++++++++++++++++++++++-
->>  include/kvm/arm_pmu.h     |  1 +
->>  2 files changed, 26 insertions(+), 1 deletion(-)
->>
->> diff --git a/arch/arm64/kvm/pmu-emul.c b/arch/arm64/kvm/pmu-emul.c
->> index f0d0312c0a55..81916e360b1e 100644
->> --- a/arch/arm64/kvm/pmu-emul.c
->> +++ b/arch/arm64/kvm/pmu-emul.c
->> @@ -269,6 +269,7 @@ void kvm_pmu_vcpu_destroy(struct kvm_vcpu *vcpu)
->>
->>      for (i = 0; i < ARMV8_PMU_MAX_COUNTERS; i++)
->>          kvm_pmu_release_perf_event(&pmu->pmc[i]);
->> +    irq_work_sync(&vcpu->arch.pmu.overflow_work);
->>  }
->>
->>  u64 kvm_pmu_valid_counter_mask(struct kvm_vcpu *vcpu)
->> @@ -433,6 +434,22 @@ void kvm_pmu_sync_hwstate(struct kvm_vcpu *vcpu)
->>      kvm_pmu_update_state(vcpu);
->>  }
->>
->> +/**
->> + * When perf interrupt is an NMI, we cannot safely notify the vcpu
->> corresponding
->> + * to the event.
->> + * This is why we need a callback to do it once outside of the NMI context.
->> + */
->> +static void kvm_pmu_perf_overflow_notify_vcpu(struct irq_work *work)
->> +{
->> +    struct kvm_vcpu *vcpu;
->> +    struct kvm_pmu *pmu;
->> +
->> +    pmu = container_of(work, struct kvm_pmu, overflow_work);
->> +    vcpu = kvm_pmc_to_vcpu(pmu->pmc);
->> +
->> +    kvm_vcpu_kick(vcpu);
->> +}
->> +
->>  /**
->>   * When the perf event overflows, set the overflow status and inform the vcpu.
->>   */
->> @@ -465,7 +482,11 @@ static void kvm_pmu_perf_overflow(struct
->> perf_event *perf_event,
->>
->>      if (kvm_pmu_overflow_status(vcpu)) {
->>          kvm_make_request(KVM_REQ_IRQ_PENDING, vcpu);
->> -        kvm_vcpu_kick(vcpu);
->> +
->> +        if (!in_nmi())
->> +            kvm_vcpu_kick(vcpu);
->> +        else
->> +            irq_work_queue(&vcpu->arch.pmu.overflow_work);
->>      }
->>
->>      cpu_pmu->pmu.start(perf_event, PERF_EF_RELOAD);
->> @@ -764,6 +785,9 @@ static int kvm_arm_pmu_v3_init(struct kvm_vcpu *vcpu)
->>              return ret;
->>      }
->>
->> +    init_irq_work(&vcpu->arch.pmu.overflow_work,
->> +              kvm_pmu_perf_overflow_notify_vcpu);
->> +
->>      vcpu->arch.pmu.created = true;
->>      return 0;
->>  }
->> diff --git a/include/kvm/arm_pmu.h b/include/kvm/arm_pmu.h
->> index 6db030439e29..dbf4f08d42e5 100644
->> --- a/include/kvm/arm_pmu.h
->> +++ b/include/kvm/arm_pmu.h
->> @@ -27,6 +27,7 @@ struct kvm_pmu {
->>      bool ready;
->>      bool created;
->>      bool irq_level;
->> +    struct irq_work overflow_work;
->
-> Nit: placing this new field right after the pmc array would avoid creating
-> an unnecessary padding in the structure. Not a big deal, and definitely
-> something we can sort out when applying the patch.
+Yes, ugh :(
 
-That makes sense, overflow_work must be aligned to 8 bytes, and there are 16
-elements in the pmc array, which means no padding is required for the
-overflow_work field.
+Ok, now I see why the "lots of pwm classes!" patch was proposed.
 
-Thanks,
-Alex
+And maybe that's really the only way forward here, as the chip namespace
+is the only unique thing.
+
+But wow, it feels wrong...
+
+greg k-h
