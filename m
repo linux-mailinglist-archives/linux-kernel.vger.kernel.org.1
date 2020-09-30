@@ -2,343 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8482827F5AB
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 01:07:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB03727F5B2
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 01:09:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732056AbgI3XHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 19:07:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56890 "EHLO
+        id S1732065AbgI3XId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 19:08:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732012AbgI3XHM (ORCPT
+        with ESMTP id S1732012AbgI3XId (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 19:07:12 -0400
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EEB8C061755
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 16:07:12 -0700 (PDT)
-Received: by mail-ot1-x342.google.com with SMTP id a2so3513809otr.11
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 16:07:12 -0700 (PDT)
+        Wed, 30 Sep 2020 19:08:33 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2A58C061755
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 16:08:31 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id z23so5201495ejr.13
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 16:08:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kali.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=Qs5V8/HF0CuXqSYMyn+PhUaoHWeJ0sbIik6Dnu+LcL4=;
-        b=VSMtGINb//BRejynJ20cZCnyfWBRooaLG8BGi7NaXBImNsHZje4sQXvaq8gtd2Mahw
-         EBf7CAmxXHekWGxIcT7nmGu/PiBd9dITCDqx+Zg4X33subKBvUnTPdku0MaSwPOJcO1t
-         ln2ljNj41JJyMo6IkBWOASbJqyfxFaczJNKxv6E6ufaJAlkJVm4Gr61XC1usGxzFDeG3
-         cF//Hec0Q2ckXNHbKKllxgLJirEaPmQEsFaTxwOdH6dbK9HAor7NXMiQupbiHE1KZhp4
-         HrWp8NbDHfoJ3zawp21JgDHRJU5nVNPiKGiHW3//HUlarE4JQdIMRGBIxTcwl3++O0/j
-         o/8Q==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=oSjyCndmSDw71eE/BIT10kmAi2CWzQm4Fdkl0rDwsVs=;
+        b=HIKXee3AjLR1yKNiCxpi/lY3cYYCKNhBnzExJFzXfKnsypgwzwfgjzM0tb17O4Vgyp
+         lhgXkKM9j2PeIgZpOnVu++oMi7gJvxIjizwMo703OTz8iXPRoqS8aax65sRSbVXVQhaN
+         tvjeuhg5mYZ8mUI0vBLvW61A38C6uccE8YKBXI8V0m4NvbBCXtfIlsDBT4jZHcnedOEg
+         PO51mrwjnCCJ8TSH0ZBojL0RZxbyHtHcw2Xb7KRra7wZgBheblTerBSatg5051UvvYcT
+         ITGkQ01vRidlmaOwJA9wdrUJhVLTQwm8L4zEsmgVhT/kFZfXhq9Mntu4wkm3OmlCTSg/
+         IPLQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=Qs5V8/HF0CuXqSYMyn+PhUaoHWeJ0sbIik6Dnu+LcL4=;
-        b=DaL+LnVPAMvSSFK6EAxg3EHsboWWIE1BuVLCXXT3CrJF/vTG541E5NLmc5jMvNtdcv
-         61ewKoT2exUk31tu/y1yf8oJRO2F2C4kPGfWmwhWZuuq/CoRDOX7T1BHLK/PV9e7WevI
-         jAUHo2gd35e4kH9uo4ut9pZ4JxDymPV38Do4Zz5jYLIWRVHAmKDy+4ZXxhdDrUFoYX3Q
-         jnxmF6Jq3v2CpBOwSxAbTqRbF0KH1G6S+KLsgeC/bjZnD8duBy7VGQecMaGBmnI4newF
-         e0Mux+OhIaN6wi+ZQghaI0gavXICsDqjCpQY/6mLLdJfZuzDZigtgJHWRnNg20idZPPo
-         lWjw==
-X-Gm-Message-State: AOAM533n3Pfi15YZ7K44L/l4/jz3KY8pYqCW272R3siGXVEOJvyLoe4L
-        ZOXsoESjm9hIl5qN+aYRK/tCeQ==
-X-Google-Smtp-Source: ABdhPJzzFqulT+LjmyZ/QfPntG9KhFyN8TsSuhGAsi+qowPkNy8PekJGIUe8WrR95kHtbAqmWoWW3w==
-X-Received: by 2002:a05:6830:20d5:: with SMTP id z21mr3172113otq.110.1601507231480;
-        Wed, 30 Sep 2020 16:07:11 -0700 (PDT)
-Received: from Steevs-MBP.hackershack.net (cpe-173-175-113-3.satx.res.rr.com. [173.175.113.3])
-        by smtp.gmail.com with ESMTPSA id x15sm799711oor.33.2020.09.30.16.07.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 30 Sep 2020 16:07:10 -0700 (PDT)
-Subject: Re: [PATCH 2/2] drm/bridge: ti-sn65dsi86: Expose backlight controls
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Douglas Anderson <dianders@chromium.org>
-Cc:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
-References: <20200930223532.77755-1-bjorn.andersson@linaro.org>
- <20200930223532.77755-3-bjorn.andersson@linaro.org>
-From:   Steev Klimaszewski <steev@kali.org>
-Message-ID: <cee77d68-262e-e39b-bab4-a3bfbd1de6fe@kali.org>
-Date:   Wed, 30 Sep 2020 18:07:09 -0500
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=oSjyCndmSDw71eE/BIT10kmAi2CWzQm4Fdkl0rDwsVs=;
+        b=bseGmL09bfYvfzV1MAh+WRXvsGz1vt5EKDDMXdwTXSj3kWVpWthUX7QAnNUEmom+rK
+         eaUQe/izC+ODKEkOt6WZKLXvhv0mQXXZ3ojmDLXuiL4YoWUN8mjcYc10hJ0gZN7VhACP
+         0dvPgILFTNMd3ALydVBFnBBzlaJbzOMi9MWITpBucyPJ2V7Ces64a2T664ynYNXIZDci
+         dGI6Cem38V9a4F59VsKHf+MYBq4WHt8JFv7pEW693/NZo+cZpfskpZ/YhvhbinGI1/Fr
+         J/PjF9QESjjCbHDzY+t0DiN3M7+7dMQPbqcBdU56j70/WHjcDtsSqpdWSwT2XwY57IOP
+         pJjw==
+X-Gm-Message-State: AOAM530KDP0I2NaDzvw27LrubCx0TvasDd+CLy8Bxr+c14u3IQ3bNl+o
+        BRRVuh4HQUT1+VJxfFiX2b1T6Hd4+q/H8rYeCF7XuQ==
+X-Google-Smtp-Source: ABdhPJyC+4DouNB+AJFTmGjbAtJDvRkfFxZToj/svy2V/efpofZpBJvCX/A3ee/XkublfA579qMlv91dBfLYJ/TEfyE=
+X-Received: by 2002:a17:906:33c8:: with SMTP id w8mr574212eja.233.1601507310348;
+ Wed, 30 Sep 2020 16:08:30 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200930223532.77755-3-bjorn.andersson@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <cover.1601478774.git.yifeifz2@illinois.edu> <d3d1c05ea0be2b192f480ec52ad64bffbb22dc9d.1601478774.git.yifeifz2@illinois.edu>
+ <202009301554.590642EBE@keescook>
+In-Reply-To: <202009301554.590642EBE@keescook>
+From:   Jann Horn <jannh@google.com>
+Date:   Thu, 1 Oct 2020 01:08:04 +0200
+Message-ID: <CAG48ez077wMkh-sJebjxd3nAmBsNRCF2U8Vmmy-Fc7dr8KRyqw@mail.gmail.com>
+Subject: Re: [PATCH v3 seccomp 5/5] seccomp/cache: Report cache data through /proc/pid/seccomp_cache
+To:     Kees Cook <keescook@chromium.org>
+Cc:     YiFei Zhu <zhuyifei1999@gmail.com>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        David Laight <David.Laight@aculab.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Will Drewry <wad@chromium.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "the arch/x86 maintainers" <x86@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+[adding x86 folks to enhance bikeshedding]
 
-On 9/30/20 5:35 PM, Bjorn Andersson wrote:
-> The TI SN65DSI86 can be configured to generate a PWM pulse on GPIO4,
-> to be used to drive a backlight driver.
+On Thu, Oct 1, 2020 at 12:59 AM Kees Cook <keescook@chromium.org> wrote:
+> On Wed, Sep 30, 2020 at 10:19:16AM -0500, YiFei Zhu wrote:
+> > From: YiFei Zhu <yifeifz2@illinois.edu>
+> >
+> > Currently the kernel does not provide an infrastructure to translate
+> > architecture numbers to a human-readable name. Translating syscall
+> > numbers to syscall names is possible through FTRACE_SYSCALL
+> > infrastructure but it does not provide support for compat syscalls.
+> >
+> > This will create a file for each PID as /proc/pid/seccomp_cache.
+> > The file will be empty when no seccomp filters are loaded, or be
+> > in the format of:
+> > <arch name> <decimal syscall number> <ALLOW | FILTER>
+> > where ALLOW means the cache is guaranteed to allow the syscall,
+> > and filter means the cache will pass the syscall to the BPF filter.
+> >
+> > For the docker default profile on x86_64 it looks like:
+> > x86_64 0 ALLOW
+> > x86_64 1 ALLOW
+> > x86_64 2 ALLOW
+> > x86_64 3 ALLOW
+> > [...]
+> > x86_64 132 ALLOW
+> > x86_64 133 ALLOW
+> > x86_64 134 FILTER
+> > x86_64 135 FILTER
+> > x86_64 136 FILTER
+> > x86_64 137 ALLOW
+> > x86_64 138 ALLOW
+> > x86_64 139 FILTER
+> > x86_64 140 ALLOW
+> > x86_64 141 ALLOW
+[...]
+> > diff --git a/arch/x86/include/asm/seccomp.h b/arch/x86/include/asm/seccomp.h
+> > index 7b3a58271656..33ccc074be7a 100644
+> > --- a/arch/x86/include/asm/seccomp.h
+> > +++ b/arch/x86/include/asm/seccomp.h
+> > @@ -19,13 +19,16 @@
+> >  #ifdef CONFIG_X86_64
+> >  # define SECCOMP_ARCH_DEFAULT                        AUDIT_ARCH_X86_64
+> >  # define SECCOMP_ARCH_DEFAULT_NR             NR_syscalls
+> > +# define SECCOMP_ARCH_DEFAULT_NAME           "x86_64"
+> >  # ifdef CONFIG_COMPAT
+> >  #  define SECCOMP_ARCH_COMPAT                        AUDIT_ARCH_I386
+> >  #  define SECCOMP_ARCH_COMPAT_NR             IA32_NR_syscalls
+> > +#  define SECCOMP_ARCH_COMPAT_NAME           "x86_32"
 >
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> ---
->  drivers/gpu/drm/bridge/Kconfig        |   1 +
->  drivers/gpu/drm/bridge/ti-sn65dsi86.c | 143 +++++++++++++++++++++++++-
->  2 files changed, 140 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/gpu/drm/bridge/Kconfig b/drivers/gpu/drm/bridge/Kconfig
-> index 43271c21d3fc..eea310bd88e1 100644
-> --- a/drivers/gpu/drm/bridge/Kconfig
-> +++ b/drivers/gpu/drm/bridge/Kconfig
-> @@ -195,6 +195,7 @@ config DRM_TI_SN65DSI86
->  	select REGMAP_I2C
->  	select DRM_PANEL
->  	select DRM_MIPI_DSI
-> +	select BACKLIGHT_CLASS_DEVICE
->  	help
->  	  Texas Instruments SN65DSI86 DSI to eDP Bridge driver
->  
-> diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> index 5b6e19ecbc84..41e24d0dbd18 100644
-> --- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> +++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> @@ -68,6 +68,7 @@
->  #define  SN_GPIO_MUX_OUTPUT			1
->  #define  SN_GPIO_MUX_SPECIAL			2
->  #define  SN_GPIO_MUX_MASK			0x3
-> +#define  SN_GPIO_MUX_SHIFT(gpio)		((gpio) * 2)
->  #define SN_AUX_WDATA_REG(x)			(0x64 + (x))
->  #define SN_AUX_ADDR_19_16_REG			0x74
->  #define SN_AUX_ADDR_15_8_REG			0x75
-> @@ -86,6 +87,12 @@
->  #define SN_ML_TX_MODE_REG			0x96
->  #define  ML_TX_MAIN_LINK_OFF			0
->  #define  ML_TX_NORMAL_MODE			BIT(0)
-> +#define SN_PWM_PRE_DIV_REG			0xA0
-> +#define SN_BACKLIGHT_SCALE_REG			0xA1
-> +#define SN_BACKLIGHT_REG			0xA3
-> +#define SN_PWM_CTL_REG				0xA5
-> +#define  SN_PWM_ENABLE				BIT(1)
-> +#define  SN_PWM_INVERT				BIT(0)
->  #define SN_AUX_CMD_STATUS_REG			0xF4
->  #define  AUX_IRQ_STATUS_AUX_RPLY_TOUT		BIT(3)
->  #define  AUX_IRQ_STATUS_AUX_SHORT		BIT(5)
-> @@ -155,6 +162,8 @@ struct ti_sn_bridge {
->  	struct gpio_chip		gchip;
->  	DECLARE_BITMAP(gchip_output, SN_NUM_GPIOS);
->  #endif
-> +	u32				brightness;
-> +	u32				max_brightness;
->  };
->  
->  static const struct regmap_range ti_sn_bridge_volatile_ranges[] = {
-> @@ -173,6 +182,18 @@ static const struct regmap_config ti_sn_bridge_regmap_config = {
->  	.cache_type = REGCACHE_NONE,
->  };
->  
-> +static void ti_sn_bridge_read_u16(struct ti_sn_bridge *pdata,
-> +				  unsigned int reg, u16 *val)
-> +{
-> +	unsigned int high;
-> +	unsigned int low;
-> +
-> +	regmap_read(pdata->regmap, reg, &low);
-> +	regmap_read(pdata->regmap, reg + 1, &high);
-> +
-> +	*val = high << 8 | low;
-> +}
-> +
->  static void ti_sn_bridge_write_u16(struct ti_sn_bridge *pdata,
->  				   unsigned int reg, u16 val)
->  {
-> @@ -180,6 +201,50 @@ static void ti_sn_bridge_write_u16(struct ti_sn_bridge *pdata,
->  	regmap_write(pdata->regmap, reg + 1, val >> 8);
->  }
->  
-> +static int ti_sn_backlight_update(struct ti_sn_bridge *pdata)
-> +{
-> +	unsigned int pre_div;
-> +
-> +	if (!pdata->max_brightness)
-> +		return 0;
-> +
-> +	/* Enable PWM on GPIO4 */
-> +	regmap_update_bits(pdata->regmap, SN_GPIO_CTRL_REG,
-> +			   SN_GPIO_MUX_MASK << SN_GPIO_MUX_SHIFT(4 - 1),
-> +			   SN_GPIO_MUX_SPECIAL << SN_GPIO_MUX_SHIFT(4 - 1));
-> +
-> +	if (pdata->brightness) {
-> +		/* Set max brightness */
-> +		ti_sn_bridge_write_u16(pdata, SN_BACKLIGHT_SCALE_REG, pdata->max_brightness);
-> +
-> +		/* Set brightness */
-> +		ti_sn_bridge_write_u16(pdata, SN_BACKLIGHT_REG, pdata->brightness);
-> +
-> +		/*
-> +		 * The PWM frequency is derived from the refclk as:
-> +		 * PWM_FREQ = REFCLK_FREQ / (PWM_PRE_DIV * BACKLIGHT_SCALE + 1)
-> +		 *
-> +		 * A hand wavy estimate based on 12MHz refclk and 500Hz desired
-> +		 * PWM frequency gives us a pre_div resulting in a PWM
-> +		 * frequency of between 500 and 1600Hz, depending on the actual
-> +		 * refclk rate.
-> +		 *
-> +		 * One is added to avoid high BACKLIGHT_SCALE values to produce
-> +		 * a pre_div of 0 - which cancels out the large BACKLIGHT_SCALE
-> +		 * value.
-> +		 */
-> +		pre_div = 12000000 / (500 * pdata->max_brightness) + 1;
-> +		regmap_write(pdata->regmap, SN_PWM_PRE_DIV_REG, pre_div);
-> +
-> +		/* Enable PWM */
-> +		regmap_update_bits(pdata->regmap, SN_PWM_CTL_REG, SN_PWM_ENABLE, SN_PWM_ENABLE);
-> +	} else {
-> +		regmap_update_bits(pdata->regmap, SN_PWM_CTL_REG, SN_PWM_ENABLE, 0);
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->  static int __maybe_unused ti_sn_bridge_resume(struct device *dev)
->  {
->  	struct ti_sn_bridge *pdata = dev_get_drvdata(dev);
-> @@ -193,7 +258,7 @@ static int __maybe_unused ti_sn_bridge_resume(struct device *dev)
->  
->  	gpiod_set_value(pdata->enable_gpio, 1);
->  
-> -	return ret;
-> +	return ti_sn_backlight_update(pdata);
->  }
->  
->  static int __maybe_unused ti_sn_bridge_suspend(struct device *dev)
-> @@ -1010,7 +1075,7 @@ static int ti_sn_bridge_gpio_direction_input(struct gpio_chip *chip,
->  					     unsigned int offset)
->  {
->  	struct ti_sn_bridge *pdata = gpiochip_get_data(chip);
-> -	int shift = offset * 2;
-> +	int shift = SN_GPIO_MUX_SHIFT(offset);
->  	int ret;
->  
->  	if (!test_and_clear_bit(offset, pdata->gchip_output))
-> @@ -1038,7 +1103,7 @@ static int ti_sn_bridge_gpio_direction_output(struct gpio_chip *chip,
->  					      unsigned int offset, int val)
->  {
->  	struct ti_sn_bridge *pdata = gpiochip_get_data(chip);
-> -	int shift = offset * 2;
-> +	int shift = SN_GPIO_MUX_SHIFT(offset);
->  	int ret;
->  
->  	if (test_and_set_bit(offset, pdata->gchip_output))
-> @@ -1073,12 +1138,17 @@ static const char * const ti_sn_bridge_gpio_names[SN_NUM_GPIOS] = {
->  
->  static int ti_sn_setup_gpio_controller(struct ti_sn_bridge *pdata)
->  {
-> +	int ngpio = SN_NUM_GPIOS;
->  	int ret;
->  
->  	/* Only init if someone is going to use us as a GPIO controller */
->  	if (!of_property_read_bool(pdata->dev->of_node, "gpio-controller"))
->  		return 0;
->  
-> +	/* If GPIO4 is used for backlight, reduce number of gpios */
-> +	if (pdata->max_brightness)
-> +		ngpio--;
-> +
->  	pdata->gchip.label = dev_name(pdata->dev);
->  	pdata->gchip.parent = pdata->dev;
->  	pdata->gchip.owner = THIS_MODULE;
-> @@ -1092,7 +1162,7 @@ static int ti_sn_setup_gpio_controller(struct ti_sn_bridge *pdata)
->  	pdata->gchip.set = ti_sn_bridge_gpio_set;
->  	pdata->gchip.can_sleep = true;
->  	pdata->gchip.names = ti_sn_bridge_gpio_names;
-> -	pdata->gchip.ngpio = SN_NUM_GPIOS;
-> +	pdata->gchip.ngpio = ngpio;
->  	pdata->gchip.base = -1;
->  	ret = devm_gpiochip_add_data(pdata->dev, &pdata->gchip, pdata);
->  	if (ret)
-> @@ -1159,6 +1229,65 @@ static void ti_sn_bridge_parse_lanes(struct ti_sn_bridge *pdata,
->  	pdata->ln_polrs = ln_polrs;
->  }
->  
-> +static int ti_sn_backlight_update_status(struct backlight_device *bl)
-> +{
-> +	struct ti_sn_bridge *pdata = bl_get_data(bl);
-> +	int brightness = bl->props.brightness;
-> +
-> +	if (bl->props.power != FB_BLANK_UNBLANK ||
-> +	    bl->props.fb_blank != FB_BLANK_UNBLANK ||
-> +	    bl->props.state & BL_CORE_FBBLANK) {
-> +		pdata->brightness = 0;
-> +	}
-> +
-> +	pdata->brightness = brightness;
-> +
-> +	return ti_sn_backlight_update(pdata);
-> +}
-> +
-> +static int ti_sn_backlight_get_brightness(struct backlight_device *bl)
-> +{
-> +	struct ti_sn_bridge *pdata = bl_get_data(bl);
-> +	u16 val;
-> +
-> +	ti_sn_bridge_read_u16(pdata, SN_BACKLIGHT_REG, &val);
-> +
-> +	return val;
-> +}
-> +
-> +const struct backlight_ops ti_sn_backlight_ops = {
-> +	.update_status = ti_sn_backlight_update_status,
-> +	.get_brightness = ti_sn_backlight_get_brightness,
-> +};
-> +
-> +static int ti_sn_backlight_init(struct ti_sn_bridge *pdata)
-> +{
-> +	struct backlight_properties props = {};
-> +	struct backlight_device	*bl;
-> +	struct device *dev = pdata->dev;
-> +	struct device_node *np = dev->of_node;
-> +	int ret;
-> +
-> +	ret = of_property_read_u32(np, "ti,backlight-scale", &pdata->max_brightness);
-> +	if (ret == -EINVAL) {
-> +		return 0;
-> +	} else if (ret || pdata->max_brightness >= 0xffff) {
-> +		DRM_ERROR("invalid max-brightness\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	props.type = BACKLIGHT_RAW;
-> +	props.max_brightness = pdata->max_brightness;
-> +	bl = devm_backlight_device_register(dev, "sn65dsi86", dev, pdata,
-> +					    &ti_sn_backlight_ops, &props);
-> +	if (IS_ERR(bl)) {
-> +		DRM_ERROR("failed to register backlight device\n");
-> +		return PTR_ERR(bl);
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->  static int ti_sn_bridge_probe(struct i2c_client *client,
->  			      const struct i2c_device_id *id)
->  {
-> @@ -1224,6 +1353,12 @@ static int ti_sn_bridge_probe(struct i2c_client *client,
->  
->  	pm_runtime_enable(pdata->dev);
->  
-> +	ret = ti_sn_backlight_init(pdata);
-> +	if (ret) {
-> +		pm_runtime_disable(pdata->dev);
-> +		return ret;
-> +	}
-> +
->  	ret = ti_sn_setup_gpio_controller(pdata);
->  	if (ret) {
->  		pm_runtime_disable(pdata->dev);
+> I think this should be "ia32"? Is there a good definitive guide on this
+> naming convention?
 
+"man 2 syscall" calls them "x86-64" and "i386". The syscall table
+files use ABI names "i386" and "64". The syscall stub prefixes use
+"x64" and "ia32".
 
-Tested-By: Steev Klimaszewski <steev@kali.org>
-
+I don't think we have a good consistent naming strategy here. :P
