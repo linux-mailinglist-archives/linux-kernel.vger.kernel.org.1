@@ -2,131 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C39327DEA5
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 04:57:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A1EE27DEA8
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 05:00:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729860AbgI3C5X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 22:57:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39536 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729446AbgI3C5V (ORCPT
+        id S1729827AbgI3DAE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 23:00:04 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:4218 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729446AbgI3DAD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 22:57:21 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59707C0613D1
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 19:57:19 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id s19so129721plp.3
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 19:57:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CdiVN4MoIYXNti+D+K08kG5fvyK/5dVLiPfaQfAKwuc=;
-        b=st7S9SNAhg2fIivqpQzhvrmcfW5mzGTGWG1LtzKvUjHGTdp9KEpCjllhjbUkwx8WMn
-         p+cm1bIZEbYMfWgnoa4eAa+w8rrpDyy6EioF5U9eOyqidEfxrmln7sdWs2yOwSMV3nO/
-         Pay10GF4e4N7hV0bKa6EAtxlwraP7NZsceZJljRUjsjHPwwAe2sMnECuiu4rO9lbmXQ7
-         /w5bVInm5XamYfffGzqU1JfC/KFvZBOXUYsy+0bmp1AGwShCNSodR80vnTfEYSwkh8VB
-         j07h44UWD3b/JibpXDuqHYCJgEh7xtwuiZfR5xl7OPdxhe5PT9k493K2YrBfb/zTdEi3
-         IhSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CdiVN4MoIYXNti+D+K08kG5fvyK/5dVLiPfaQfAKwuc=;
-        b=ZYp4FN1S92dxk1a+WE/zsvu7NsmZf2/dZt5lhUlPe8W18K3RZei6x2w+2FiEYJR6LL
-         /yzlt36E0MNlhAILwFKe5z5Jb70vw5B5vi0Mm3MJ/xVc6RXatOkHycvBL//mftym8vx/
-         xVauzorTn+Iy8Zpu6E0oBLW50EZfCyWa2nwJtjPZWfSP9Ardi4fTvHr3lPi1HyEiN8zr
-         aFtVLPmW8UbRHNT3387pTpR73DaX5tlzXRrgc1cyhTv/uXdW8gIazlQsr2UNwiqxaVaI
-         gKiJkbx4+ANtYfw/D9jibJrt/XD9V6ZeeIYw53/jW1u2l3V13f4KDaBMcVAGnVHweTHm
-         2VBg==
-X-Gm-Message-State: AOAM530oJgEjjndVAUb0HgJN2V7mNJyWgrMVOAGeVPYz3vnAw5SvmQOB
-        yRQdEfgpcGRmkanOLOOWtMvo3aeTRh+iKjWV9O6dgw==
-X-Google-Smtp-Source: ABdhPJzX8idHqOKVy8umpqeXFwxgXNk3IKXSzqUAsXAqoXS95sel9yV5OAk2sSs+jMNGas6VmwSpjHHlG7L1C4y7lw4=
-X-Received: by 2002:a17:90a:bc8d:: with SMTP id x13mr550726pjr.229.1601434638340;
- Tue, 29 Sep 2020 19:57:18 -0700 (PDT)
+        Tue, 29 Sep 2020 23:00:03 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f73f44e0002>; Tue, 29 Sep 2020 19:58:22 -0700
+Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 30 Sep
+ 2020 03:00:02 +0000
+Received: from skomatineni-linux.nvidia.com (10.124.1.5) by mail.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
+ Transport; Wed, 30 Sep 2020 03:00:02 +0000
+From:   Sowjanya Komatineni <skomatineni@nvidia.com>
+To:     <skomatineni@nvidia.com>, <thierry.reding@gmail.com>,
+        <jonathanh@nvidia.com>, <hverkuil@xs4all.nl>
+CC:     <linux-media@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-tegra@vger.kernel.org>
+Subject: [PATCH v1 0/2] Allow building Tegra video driver with COMPILE_TEST
+Date:   Tue, 29 Sep 2020 20:02:36 -0700
+Message-ID: <1601434958-29305-1-git-send-email-skomatineni@nvidia.com>
+X-Mailer: git-send-email 2.7.4
+X-NVConfidentiality: public
 MIME-Version: 1.0
-References: <20200915125947.26204-1-songmuchun@bytedance.com>
- <20200915125947.26204-4-songmuchun@bytedance.com> <07e7d497-e800-be28-dfea-047579c3b27d@oracle.com>
-In-Reply-To: <07e7d497-e800-be28-dfea-047579c3b27d@oracle.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Wed, 30 Sep 2020 10:56:42 +0800
-Message-ID: <CAMZfGtWZ739Qd+9WZYtBTbQLjEqJa2BRa=5NBP9QMJQjsJS0mg@mail.gmail.com>
-Subject: Re: [External] Re: [RFC PATCH 03/24] mm/hugetlb: Introduce a new
- config HUGETLB_PAGE_FREE_VMEMMAP
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1601434702; bh=1nqr4ua6fcvL3/8a5eNm1SxuTO2CagaFTIPMzrgRzIU=;
+        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:X-NVConfidentiality:
+         MIME-Version:Content-Type;
+        b=OA+S7Bz99oAUP1W4RSA4rm04dSnO1ZYsNukV/Sdf7T0N5Cfq8fFT81x4AP0I6khUv
+         kdATBkrRQf0TDr0CtvlytiUZQfKj+17MKifgG9lOkkYNKOrqqv/wekMa6Xb//Ai0Zu
+         tQlvVpqmcE4++srxiSK2dWBvfRKpTP1jbSL/aDRSsThDaVAeGJTsxb8EasmB+cw9H2
+         dcdtVyh3dOeST4eZkT/yrYf+tdBHzMCJeJfCmFDDNFok1DjspausWcHC2mF0lMNmzr
+         1wvQxv0KNKtjXVJeO7xXuGToU3uQ6dwYziwAwL3hhp4F2GZbfEXkH1L4RJ2qjAQan3
+         8VUmdpXgAMrzw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 7:41 AM Mike Kravetz <mike.kravetz@oracle.com> wrote:
->
-> On 9/15/20 5:59 AM, Muchun Song wrote:
-> > The purpose of introducing HUGETLB_PAGE_FREE_VMEMMAP is to configure
-> > whether to enable the feature of freeing unused vmemmap associated
-> > with HugeTLB pages.
-> >
-> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> > ---
-> >  fs/Kconfig | 15 +++++++++++++++
-> >  1 file changed, 15 insertions(+)
-> >
-> > diff --git a/fs/Kconfig b/fs/Kconfig
-> > index 976e8b9033c4..61e9c08096ca 100644
-> > --- a/fs/Kconfig
-> > +++ b/fs/Kconfig
-> > @@ -245,6 +245,21 @@ config HUGETLBFS
-> >  config HUGETLB_PAGE
-> >       def_bool HUGETLBFS
-> >
-> > +config HUGETLB_PAGE_FREE_VMEMMAP
-> > +     bool "Free unused vmemmap associated with HugeTLB pages"
-> > +     default n
-> > +     depends on HUGETLB_PAGE
-> > +     depends on SPARSEMEM_VMEMMAP
-> > +     depends on HAVE_BOOTMEM_INFO_NODE
-> > +     help
-> > +       There are many struct page structure associated with each HugeTLB
-> > +       page. But we only use a few struct page structure. In this case,
-> > +       it waste some memory. It is better to free the unused struct page
-> > +       structures to buddy system which can save some memory. For
-> > +       architectures that support it, say Y here.
-> > +
-> > +       If unsure, say N.
-> > +
->
-> I could be wrong, but I believe the convention is introduce the config
-> option at the same time code which depends on the option is introduced.
-> Therefore, it might be better to combine with the next patch.
+This series enables COMPILE_TEST for Tegra video driver.
 
-Yeah, great. Will do that. Thanks.
+Tegra video driver has dependency on host1x driver. So this series also
+includes a patch to allow building host1x driver with COMPILE_TEST for
+all platforms.
 
->
-> Also, it looks like most of your development was done on x86.  Should
-> this option be limited to x86 only for now?
+Sowjanya Komatineni (2):
+  gpu: host1x: Allow COMPILE_TEST to build host1x driver on all
+    platforms
+  media: tegra-video: Allow building driver with COMPILE_TEST
 
-Now only the x86 has the HAVE_BOOTMEM_INFO_NODE option. So
-maybe this is enough :)
-
-> --
-> Mike Kravetz
-
-
+ drivers/gpu/host1x/Kconfig                | 2 +-
+ drivers/staging/media/tegra-video/Kconfig | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
 -- 
-Yours,
-Muchun
+2.7.4
+
