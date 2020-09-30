@@ -2,90 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02A7527E8BD
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 14:43:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D494827E8C7
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 14:47:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729888AbgI3Mno (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 08:43:44 -0400
-Received: from mail-ed1-f67.google.com ([209.85.208.67]:36265 "EHLO
-        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725771AbgI3Mnn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 08:43:43 -0400
-Received: by mail-ed1-f67.google.com with SMTP id w1so1689428edr.3;
-        Wed, 30 Sep 2020 05:43:42 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0Cg7FivcS7H1NBHoHG94ZTrqhSjBiBXvF64iDStcR1M=;
-        b=tih6L+dGfrfbysoPVaWpd3jbsBa/TBaJjJoewRqDRzP7AkvntQzXHdeJYwT9VIH5Rg
-         KejeFvcHhJWqbPmfTzQ6zPBuIdkCyM1lvmAmjFDw6jZ/kf0t6kouWc7vqQ0zM4tm0jHS
-         xci8xahwr6Uz86F31HxyBc9h3pQ0jUJNi1G/4qctH62jMWuUsXS5GHhwmh07thkD1D0f
-         bP3KStzW35lMVJzuBtGpO3pvUIkY8keoFqFgFGKZTh25V/HCYg4WwOaGbq8uDnwVweDF
-         Ak5woo2AwmSaOMBC6ys/JFZ0PshY4X36bNMuDyAjW7QqcydmusGUtj5CyZnKme6IObOw
-         5n7Q==
-X-Gm-Message-State: AOAM531qHj/QTmBPPVc3A4gBgugxdh+8CCKXrUD5EgV652qg0tSr4pws
-        qp+ZsgpfEcCccG873aH47wI=
-X-Google-Smtp-Source: ABdhPJyaYhT+JDglD8EISNiLrkqaJKZpQv/UaWsk5W8/iVfeuccCOVcQ6IlsG4oRdN/TsVfvI1Z40A==
-X-Received: by 2002:a05:6402:187:: with SMTP id r7mr2402133edv.360.1601469821955;
-        Wed, 30 Sep 2020 05:43:41 -0700 (PDT)
-Received: from pi3 ([194.230.155.194])
-        by smtp.googlemail.com with ESMTPSA id jp7sm1489468ejb.76.2020.09.30.05.43.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Sep 2020 05:43:40 -0700 (PDT)
-Date:   Wed, 30 Sep 2020 14:43:38 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Stefan Riedmueller <s.riedmueller@phytec.de>,
-        Robert Jones <rjones@gateworks.com>,
-        Li Yang <leoyang.li@nxp.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 08/14] dt-bindings: arm: fsl: document i.MX53 boards
-Message-ID: <20200930124338.GB1368@pi3>
-References: <20200926162811.5335-1-krzk@kernel.org>
- <20200926162811.5335-8-krzk@kernel.org>
+        id S1729591AbgI3MrH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 08:47:07 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2932 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725771AbgI3MrH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 08:47:07 -0400
+Received: from lhreml724-chm.china.huawei.com (unknown [172.18.7.106])
+        by Forcepoint Email with ESMTP id 8488828AD1ADABFA29E5;
+        Wed, 30 Sep 2020 13:47:04 +0100 (IST)
+Received: from J00310691.china.huawei.com (10.47.4.201) by
+ lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1913.5; Wed, 30 Sep 2020 13:47:03 +0100
+From:   John Garry <john.garry@huawei.com>
+To:     <rjw@rjwysocki.net>, <lenb@kernel.org>
+CC:     <linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <chenxiang66@hisilicon.com>, John Garry <john.garry@huawei.com>
+Subject: [PATCH] drivers/acpi: Make acpi_evaluate_dsm() prototype consistent
+Date:   Wed, 30 Sep 2020 13:43:50 +0100
+Message-ID: <20200930124350.1176-1-john.garry@huawei.com>
+X-Mailer: git-send-email 2.25.1.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200926162811.5335-8-krzk@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.47.4.201]
+X-ClientProxiedBy: lhreml719-chm.china.huawei.com (10.201.108.70) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 26, 2020 at 06:28:05PM +0200, Krzysztof Kozlowski wrote:
-> Document and adjust the compatibles for i.MX53 based boards.
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> ---
->  Documentation/devicetree/bindings/arm/fsl.yaml | 9 +++++++++
->  1 file changed, 9 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
-> index b6e5691ddbd1..812e8d8babd8 100644
-> --- a/Documentation/devicetree/bindings/arm/fsl.yaml
-> +++ b/Documentation/devicetree/bindings/arm/fsl.yaml
-> @@ -164,7 +164,16 @@ properties:
->                - fsl,imx53-evk
->                - fsl,imx53-qsb
->                - fsl,imx53-smd
-> +              - ge,imx53-cpuvo                # General Electric CS ONE
-> +              - inversepath,imx53-usbarmory   # Inverse Path USB armory
->                - menlo,m53menlo
-> +              - voipac,imx53-dmm-668          # Voipac i.MX53 X53-DMM-668
-> +          - const: fsl,imx53
-> +
-> +      - description: i.MX53 based TQ MBa53 Board
-> +        items:
-> +          - const: tq,mba53
-> +          - const: tq,tqma53
->            - const: fsl,imx53
+When compiling a driver which includes both include/linux/acpi.h and
+include/acpi/acpi_bus.h for when CONFIG_ACPI=n for i386, I get this:
 
-I missed few i.MX53 boards, so there will be a v2 for this one.
+/include/acpi/acpi_bus.h:53:20: error: conflicting types for ‘acpi_evaluate_dsm’
+ union acpi_object *acpi_evaluate_dsm(acpi_handle handle, const guid_t *guid,
+                    ^~~~~~~~~~~~~~~~~
+In file included from drivers/scsi/hisi_sas/hisi_sas.h:10:0,
+                 from drivers/scsi/hisi_sas/hisi_sas_main.c:7:
+./include/linux/acpi.h:866:34: note: previous definition of ‘acpi_evaluate_dsm’ was here
+ static inline union acpi_object *acpi_evaluate_dsm(acpi_handle handle,
+                                  ^~~~~~~~~~~~~~~~~
+Fix by making prototype in include/linux/acpi.h consistent.
 
-Best regards,
-Krzysztof
+Signed-off-by: John Garry <john.garry@huawei.com>
+
+diff --git a/include/linux/acpi.h b/include/linux/acpi.h
+index 3eb4cb88e8a6..72a696ceba8d 100644
+--- a/include/linux/acpi.h
++++ b/include/linux/acpi.h
+@@ -866,7 +866,7 @@ static inline bool acpi_driver_match_device(struct device *dev,
+ 
+ static inline union acpi_object *acpi_evaluate_dsm(acpi_handle handle,
+ 						   const guid_t *guid,
+-						   int rev, int func,
++						   u64 rev, u64 func,
+ 						   union acpi_object *argv4)
+ {
+ 	return NULL;
+-- 
+2.26.2
+
+
