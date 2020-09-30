@@ -2,145 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 551C527E59A
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 11:49:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C28F27E5A3
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 11:50:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729062AbgI3Jtq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 05:49:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47130 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728169AbgI3Jtp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 05:49:45 -0400
-Received: from pali.im (pali.im [31.31.79.79])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C875A2074A;
-        Wed, 30 Sep 2020 09:49:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601459384;
-        bh=cHSFXS41w8oFpswI3VS5Z5WrSsnh0a8uQnu5Kb5Tf4Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pFmWuF73SCuCGjl2B0YAaeGlXrTJwYpa9TCHKlbkx5CyeveuVkN8hgTCApthJLvUl
-         V2n1/l0WiL2GCVNemvESjuD4cFc3w9AtaCv2THlYAwNjBGL3XjL9sfR92VNM4mysrL
-         nLrk4AyhZ9SFe+4ewWsqa+LcJCFJXH1kjjmxePYY=
-Received: by pali.im (Postfix)
-        id 7ECC79D2; Wed, 30 Sep 2020 11:49:42 +0200 (CEST)
-Date:   Wed, 30 Sep 2020 11:49:42 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Pavel Machek <pavel@ucw.cz>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        Sebastian Reichel <sre@kernel.org>,
-        David Heidelberg <david@ixit.cz>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: Removal of HCI commands, userspace bluetooth regression?
-Message-ID: <20200930094942.33njkbrvuq735ysf@pali>
-References: <20191228171212.56anj4d4kvjeqhms@pali>
- <45BB2908-4E16-4C74-9DB4-8BAD93B42A21@holtmann.org>
- <20200104102436.bhqagqrfwupj6hkm@pali>
- <20200209132137.7pi4pgnassosh3ax@pali>
- <20200414225618.zgh5h4jexahfukdl@pali>
- <20200808132747.4byefjg5ysddgkel@pali>
- <20200929213254.difivzrhapk766xp@pali>
- <20200930080205.GA1571308@kroah.com>
- <B9D64012-BF9A-4C2A-8D3D-D789533DFAD0@holtmann.org>
- <20200930092020.GA1580803@kroah.com>
+        id S1728885AbgI3Juv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 05:50:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46588 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725836AbgI3Juv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 05:50:51 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1928C0613D1
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 02:50:50 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id y11so1364919lfl.5
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 02:50:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4kDE8wrBm+qziaG4g1g/VJGmcusF/BRkFisBqvCmFDc=;
+        b=iB9qiHLogQUzM7o9zQ0HZSYyL+GiBm7AI8MvcXqzE0jGilJA0KZYljsZ8m9uKTTCQc
+         R1njFwaJF0vK63FD5OBjwsuSnFdkTGxq798Au1eMT7JiYmwoqa0pwiHjvkaiSwV0ikqN
+         RtmufQ+1PQox26UJ7CET8s54aSa4d1keVad5xLbcKEAKG+6H33cNjCWBYqwgxnLbyBq8
+         XABwbLDKig7zrWK55uisXFhtb6jUAbChmHI6iQKy/MB+qAvXuIePzXWoGh9+DC1FGvFJ
+         3S8LXpJdpL9q5RR+PEkKs4oeML1VVrza/35HZGGZwS5SnkZkSoNFX8lJJhpDxwnnuDQa
+         QY3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4kDE8wrBm+qziaG4g1g/VJGmcusF/BRkFisBqvCmFDc=;
+        b=tRhqedhIIJ7qXCZclNjgFAch/1zCc1F+FnKhSzqfVvsYYYYdCKadjq5Xn2lKRIhCwU
+         T5YtiHsMYw+sYUHkIdUKATqwGmEiFB1QjVPXmte0LIJboLeuXOCo/ELROAJcgSewdq21
+         cleo58QGMGuMCmPgVk2GkRieIFnnUWrT0cGnlJmvEwhag9+6SqicBHENPH7a/8xT+xFZ
+         XYUX1XcGoJN0X7E0+ByNdFNPNfP/gm8DBKaNxhLOZD2o48LeZeg2489lGodCm8C8BioT
+         a6CucR2BCB6fcRCg2MWcKTfeoziuhohKNsDqZ9WEhXmq3R+lz90wdrMAy/8CPnmZBQab
+         9iZw==
+X-Gm-Message-State: AOAM532II7beP7+WtuZWYTXDmAn1gpgosWax7bY44pWZxReoYoBGHmIi
+        Mp2NSmqI8prElMwEjE/oPUSPkP/eFiy3t4QBA6zYS0fTGrDjlw==
+X-Google-Smtp-Source: ABdhPJxm7dZ5605/6k4XUptX9QM1RtmPezAq+DEnqYIEsde95WBlbJgEIx/rubuQiw8SILz7iUX4fADZC23QYKW2izE=
+X-Received: by 2002:ac2:4c11:: with SMTP id t17mr641852lfq.260.1601459449318;
+ Wed, 30 Sep 2020 02:50:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200930092020.GA1580803@kroah.com>
-User-Agent: NeoMutt/20180716
+References: <20200930092053.2114-1-mike.looijmans@topic.nl>
+In-Reply-To: <20200930092053.2114-1-mike.looijmans@topic.nl>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 30 Sep 2020 11:50:38 +0200
+Message-ID: <CACRpkdbsYcmv9m2EiQNgPDZ0MdjPnWTxXvnqATVPvWpB=8Oqkw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] dt-bindings: gpio: pca953x: Add support for the
+ NXP PCAL9554B/C
+To:     Mike Looijmans <mike.looijmans@topic.nl>
+Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday 30 September 2020 11:20:20 Greg Kroah-Hartman wrote:
-> On Wed, Sep 30, 2020 at 10:16:40AM +0200, Marcel Holtmann wrote:
-> > Hi Greg,
-> > 
-> > >>>>>>>> I wrote a simple script "sco_features.pl" which show all supported
-> > >>>>>>>> codecs by local HCI bluetooth adapter. Script is available at:
-> > >>>>>>>> 
-> > >>>>>>>> https://github.com/pali/hsphfpd-prototype/blob/prototype/sco_features.pl
-> > >>>>>>>> 
-> > >>>>>>>> And I found out that OCF_READ_LOCAL_CODECS HCI command cannot be send by
-> > >>>>>>>> non-root user. Kernel returns "Operation not permitted" error.
-> > >>>>>>>> 
-> > >>>>>>>> What is reason that kernel blocks OCF_READ_LOCAL_CODECS command for
-> > >>>>>>>> non-root users? Without it (audio) application does not know which
-> > >>>>>>>> codecs local bluetooth adapter supports.
-> > >>>>>>>> 
-> > >>>>>>>> E.g. OCF_READ_LOCAL_EXT_FEATURES or OCF_READ_VOICE_SETTING commands can
-> > >>>>>>>> be send also by non-root user and kernel does not block them.
-> > >>>>>>> 
-> > >>>>>>> actually the direct access to HCI commands is being removed. So we have no plans to add new commands into the list since that it what the kernel is suppose to handle. If we wanted to expose this, then it has to be via mgmt.
-> > >>>>>> 
-> > >>>>>> Hi Marcel! Thank you for information. I have not know that this API is
-> > >>>>>> "deprecated" and is going to be removed. But userspace audio
-> > >>>>>> applications need to know what bluetooth adapter supports, so can you
-> > >>>>>> export result of these commands to userspace? My script linked above
-> > >>>>>> calls: OCF_READ_VOICE_SETTING, OCF_READ_LOCAL_COMMANDS,
-> > >>>>>> OCF_READ_LOCAL_EXT_FEATURES, OCF_READ_LOCAL_CODECS
-> > >>>>> 
-> > >>>>> Hello! Just a gently reminder for this question. How to retrieve
-> > >>>>> information about supported codecs from userspace by non-root user?
-> > >>>>> Because running all bluetooth audio applications by root is not really a
-> > >>>>> solution. Plus if above API for root user is going to be removed, what
-> > >>>>> is a replacement?
-> > >>>> 
-> > >>>> Hello!
-> > >>>> 
-> > >>>> I have not got any answer to my email from Marcel for months, so I'm
-> > >>>> adding other developers to loop. Could somebody tell me that is the
-> > >>>> replacement API if above one is going to be removed?
-> > >>>> 
-> > >>>> I was not able to find any documentation where could be described this
-> > >>>> API nor information about deprecation / removal.
-> > >>>> 
-> > >>>> And are you aware of the fact that removing of API could potentially
-> > >>>> break existing applications?
-> > >>>> 
-> > >>>> I really need to know which API should I use, because when I use API
-> > >>>> which is going to be removed, then my application stops working. And I
-> > >>>> really want to avoid it.
-> > >>>> 
-> > >>>> Also I have not got any response yet, how can I read list of supported
-> > >>>> codecs by bluetooth adapter by ordinary non-root user? Audio application
-> > >>>> needs to know list of supported codecs and it is really insane to run it
-> > >>>> as root.
-> > >>> 
-> > >>> Hello! This is just another reminder that I have not got any reply to
-> > >>> this email.
-> > >>> 
-> > >>> Does silence mean that audio applications are expected to work only
-> > >>> under root account and ordinary users are not able to use audio and list
-> > >>> supported codecs?
-> > >> 
-> > >> Hello! I have not got any reply for this issue for 10 months and if you
-> > >> are going to remove (or after these 10 months you already did it?)
-> > >> existing HCI API from kernel it would break existing and working
-> > >> userspace application. How do you want to handle such regressions?
-> > > 
-> > > What git commit caused this regression?
-> > 
-> > there is no regression!
-> > 
-> > New Bluetooth standards added new HCI commands that are just not
-> > exposed to unprivileged users.
-> 
-> Ok, that makes sense.  What tool takes advantage of these new HCI
-> commands?
+On Wed, Sep 30, 2020 at 11:21 AM Mike Looijmans <mike.looijmans@topic.nl> wrote:
 
-sco_features as written above (in quoted part).
+> The NXP PCAL9554B is a variant of the PCA953x GPIO expander,
+> with 8 GPIOs, latched interrupts and some advanced configuration
+> options. The "C" version only differs in I2C address.
+>
+> This adds the entry to the devicetree bindings.
+>
+> Signed-off-by: Mike Looijmans <mike.looijmans@topic.nl>
+> ---
+> v2: Split devicetree and code into separate patches
 
-And today also main daemon in that repository.
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-> thanks,
-> 
-> greg k-h
+This patch 1/2 does not apply to my tree, I suppose Rob has
+to apply it?
+
+I will try to apply 2/2.
+
+Yours,
+Linus Walleij
