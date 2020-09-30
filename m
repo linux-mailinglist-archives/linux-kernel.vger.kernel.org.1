@@ -2,140 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81F8127E033
+	by mail.lfdr.de (Postfix) with ESMTP id EFEE727E034
 	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 07:23:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728020AbgI3FWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 01:22:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33446 "EHLO
+        id S1728068AbgI3FWm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 01:22:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725911AbgI3FWY (ORCPT
+        with ESMTP id S1727886AbgI3FWf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 01:22:24 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7945DC061755;
-        Tue, 29 Sep 2020 22:22:24 -0700 (PDT)
-Date:   Wed, 30 Sep 2020 05:22:22 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1601443342;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=jy5b1wg3OghCmoWsYdbTHwTWU6JWlycf5iEZ71QbAkU=;
-        b=hYa6+bWpE33ISj6KlNVPr4m9qM61S259A26A5ycZaV+E5jHasmSNk9/mhaX4PAD2cma4Fb
-        iMBjXA2Zp9o+1GX6dP4zbQRVyMopChByDK5ON9JouDjYgDev33JKvt4CpM/4YijtqoupVV
-        +cq2gVKPJjKzVLnG6YsFMAiux3ZpSycnutjcC+q2ursMsOdPGIvlg0UizOQVBihqrf/L6d
-        ot1QVXj1dq//bJfnC6JKOehoFksf1LOlaMQJKJNxms0dKRQGGZEQg64nOaIJJla7d4L0P/
-        0aaO9YJUTkSVmyG8ix6FP11LOJZ4tHlJbhi7hPzE9TzkjHg9ENE/spiyLshNiw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1601443342;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=jy5b1wg3OghCmoWsYdbTHwTWU6JWlycf5iEZ71QbAkU=;
-        b=20TP8yG76hwNBifFlRzACf1ft/z3fenF/gm+3hraf0yno5pt2LWeCwR33DvcpdegBtHet1
-        KGfIqovso8ioHjDw==
-From:   "tip-bot2 for Ard Biesheuvel" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: efi/core] efi: mokvar-table: fix some issues in new code
-Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
-        Lenny Szubowicz <lszubowi@redhat.com>,
-        Borislav Petkov <bp@suse.de>, Ard Biesheuvel <ardb@kernel.org>,
-        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+        Wed, 30 Sep 2020 01:22:35 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B0DDC061755;
+        Tue, 29 Sep 2020 22:22:35 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id m13so619906otl.9;
+        Tue, 29 Sep 2020 22:22:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gXPEpCD36sORdHbXZaBk37GGY2DgwKqMqWNlWUiThV0=;
+        b=MJa0DHcym7G8SLtVvKLUWyYzBKKXwal5ikzIWF8XcrY5tKOsoMaNDg/YQ6mHSz3zJS
+         nvFw6D/l4LQgF3mYg1ZH1/kFianO8Byd8jpfK5Ua4H3ocHzyiiYXE/pwmaXrmnpfJkND
+         ldWdw5SVZOfKq5fRMlIKP1l2sgbh5RnR0M02pEP94Fhnli9azdqKjbCpSgdpRJoYdBYI
+         vTPCSFSnSuO59oFYjhecepEJZUdFD26jCVpvbeST6SItueppyKNxn0xKrDdHq0rnZdtN
+         UvbD4KX+ijnZCAD9eoMuRBw6IEdUwzve3LNR0SVUJzopOiX/S/nM5hjg74WvxGOP3Pdl
+         8+0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gXPEpCD36sORdHbXZaBk37GGY2DgwKqMqWNlWUiThV0=;
+        b=PtPgJk81PKBnptNth/aV23KoGg4lzf4Js+gEQtzCd/L1VGGk5Qw4Ohum+c/KVvftnJ
+         /PDtbmhUmAgAXBW+4uR4V3kj+1B55S44ZnAFvFHmJNTSxtJKHPynzPi6W6Bwk/sSQNrp
+         wX8PViLK640KKgQ9VZ0j/bbH2FPxQNbUV8PQj+acDm1T1R8pf4R8vt9YFFrI/Wy6al0/
+         d5I8O/QbZtmhgZtY5XQIHpVKAiEJ5RuIxsr0g/e4/ByK5KQsJIpDUF3/0Ln8Rch/4lG7
+         a+ORKEuUufaGpb2txqGRUJSqTPFLAJWVWXJOJsZLRN8PfXtfcWmZaaowx6NwV+zZU82b
+         Bf5A==
+X-Gm-Message-State: AOAM5326FHfbuh8IF8KbSBHMtUEmQLVPR0ZGqGXngbdqCA2EcCYADq8W
+        u7dVCSeGUQBZtfDF6jMIVYKeoPp7Cm+nyXLtZToll/M/4m0W9Q==
+X-Google-Smtp-Source: ABdhPJwFekZ0Kpb6Lv1MevPdUo1YKW82lNzB0hjf/yn+1Rt8PvejB0HHsTEtV6yEmg+LJNN5QRAPY5AEZdMQ7SJmYIo=
+X-Received: by 2002:a9d:7095:: with SMTP id l21mr514266otj.224.1601443354767;
+ Tue, 29 Sep 2020 22:22:34 -0700 (PDT)
 MIME-Version: 1.0
-Message-ID: <160144334216.7002.203694548595798921.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+References: <20200929144417.89816-1-alexandru.ardelean@analog.com>
+ <20200929144417.89816-14-alexandru.ardelean@analog.com> <20200929153040.GA114067@archbook>
+In-Reply-To: <20200929153040.GA114067@archbook>
+From:   Alexandru Ardelean <ardeleanalex@gmail.com>
+Date:   Wed, 30 Sep 2020 08:22:23 +0300
+Message-ID: <CA+U=DspZ8cZzDDJWdbS=RkLifJRr7sjwQ9-ytMWkCqpfoCX6=w@mail.gmail.com>
+Subject: Re: [PATCH v4 5/7] clk: axi-clkgen: Respect ZYNQMP PFD/VCO frequency limits
+To:     Moritz Fischer <mdf@kernel.org>
+Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        linux-clk@vger.kernel.org, linux-fpga@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Mathias Tausen <mta@gomspace.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the efi/core branch of tip:
+On Tue, Sep 29, 2020 at 6:30 PM Moritz Fischer <mdf@kernel.org> wrote:
+>
+> Hi Alexandru,
+>
+> On Tue, Sep 29, 2020 at 05:44:15PM +0300, Alexandru Ardelean wrote:
+> > From: Mathias Tausen <mta@gomspace.com>
+> >
+> > Since axi-clkgen is now supported on ZYNQMP, make sure the max/min
+> > frequencies of the PFD and VCO are respected.
+> >
+> > Signed-off-by: Mathias Tausen <mta@gomspace.com>
+> > Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+>
+> This patch still does not cover the PCIe Zynq plugged into ZynqMP linux
+> machine case.
+>
+> > ---
+> >  drivers/clk/clk-axi-clkgen.c | 9 +++++++++
+> >  1 file changed, 9 insertions(+)
+> >
+> > diff --git a/drivers/clk/clk-axi-clkgen.c b/drivers/clk/clk-axi-clkgen.c
+> > index 4342b7735590..2319bb1c5c08 100644
+> > --- a/drivers/clk/clk-axi-clkgen.c
+> > +++ b/drivers/clk/clk-axi-clkgen.c
+> > @@ -108,12 +108,21 @@ static uint32_t axi_clkgen_lookup_lock(unsigned int m)
+> >       return 0x1f1f00fa;
+> >  }
+> >
+> > +#ifdef ARCH_ZYNQMP
+> > +static const struct axi_clkgen_limits axi_clkgen_default_limits = {
+> > +     .fpfd_min = 10000,
+> > +     .fpfd_max = 450000,
+> > +     .fvco_min = 800000,
+> > +     .fvco_max = 1600000,
+> > +};
+> > +#else
+> >  static const struct axi_clkgen_limits axi_clkgen_default_limits = {
+> >       .fpfd_min = 10000,
+> >       .fpfd_max = 300000,
+> >       .fvco_min = 600000,
+> >       .fvco_max = 1200000,
+> >  };
+> > +#endif
+>
+> I still don't understand this. You have a way to determine which fabric
+> you are looking at with the FPGA info. Why not:
+>
+> [..] axi_clkgen_zynqmp_default_limits = {
+> };
+>
+> [..] axi_clkgen_default_limits = {
+> };
+>
+> Set them based on what you read back, i.e. determine which fabric you
+> are looking at *per clock gen* and use that info, rather than making a
+> compile time decision to support only one of them.
+>
+> Generally speaking #ifdef $ARCH should be a last resort solution.
 
-Commit-ID:     b89114cd018cffa5deb7def1844ce1891efd4f96
-Gitweb:        https://git.kernel.org/tip/b89114cd018cffa5deb7def1844ce1891efd4f96
-Author:        Ard Biesheuvel <ardb@kernel.org>
-AuthorDate:    Thu, 24 Sep 2020 17:58:22 +02:00
-Committer:     Ard Biesheuvel <ardb@kernel.org>
-CommitterDate: Tue, 29 Sep 2020 19:40:57 +02:00
+The support for reading back the fabric parameters is implemented in
+the AXI CLKGEN PCORE version starting with 5.0.a
+Links:
+https://github.com/analogdevicesinc/hdl/commits/master/library/common/up_clkgen.v
+https://github.com/analogdevicesinc/hdl/commit/66823682b63c1037abdc3fc1dd4d4e63d3cfbc1a
+https://github.com/analogdevicesinc/hdl/commit/7dcb2050c7946fab5ea5a273eda7c53ea7b969a6
 
-efi: mokvar-table: fix some issues in new code
+Before that version, these details aren't there, so the best you can
+do is assume compile-time ARCH defaults.
 
-Fix a couple of issues in the new mokvar-table handling code, as
-pointed out by Arvind and Boris:
-- don't bother checking the end of the physical region against the start
-  address of the mokvar table,
-- ensure that we enter the loop with err = -EINVAL,
-- replace size_t with unsigned long to appease pedantic type equality
-  checks.
+Looking at patch 7 [in this series], the axi_clkgen only updates these
+defaults if the PCORE version is above version 4.x.x
+https://lore.kernel.org/linux-clk/20200929144417.89816-16-alexandru.ardelean@analog.com/T/#u
 
-Reviewed-by: Arvind Sankar <nivedita@alum.mit.edu>
-Reviewed-by: Lenny Szubowicz <lszubowi@redhat.com>
-Tested-by: Borislav Petkov <bp@suse.de>
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
----
- drivers/firmware/efi/mokvar-table.c | 25 +++++++++++--------------
- 1 file changed, 11 insertions(+), 14 deletions(-)
+Now, the question would be: do we still support PCORE versions before 5.0.a?
+Depending on the answer to this question, I would be fine with the
+proposed change here.
 
-diff --git a/drivers/firmware/efi/mokvar-table.c b/drivers/firmware/efi/mokvar-table.c
-index b1cd498..72a9e17 100644
---- a/drivers/firmware/efi/mokvar-table.c
-+++ b/drivers/firmware/efi/mokvar-table.c
-@@ -98,15 +98,14 @@ static struct kobject *mokvar_kobj;
- void __init efi_mokvar_table_init(void)
- {
- 	efi_memory_desc_t md;
--	u64 end_pa;
- 	void *va = NULL;
--	size_t cur_offset = 0;
--	size_t offset_limit;
--	size_t map_size = 0;
--	size_t map_size_needed = 0;
--	size_t size;
-+	unsigned long cur_offset = 0;
-+	unsigned long offset_limit;
-+	unsigned long map_size = 0;
-+	unsigned long map_size_needed = 0;
-+	unsigned long size;
- 	struct efi_mokvar_table_entry *mokvar_entry;
--	int err = -EINVAL;
-+	int err;
- 
- 	if (!efi_enabled(EFI_MEMMAP))
- 		return;
-@@ -122,18 +121,16 @@ void __init efi_mokvar_table_init(void)
- 		pr_warn("EFI MOKvar config table is not within the EFI memory map\n");
- 		return;
- 	}
--	end_pa = efi_mem_desc_end(&md);
--	if (efi.mokvar_table >= end_pa) {
--		pr_err("EFI memory descriptor containing MOKvar config table is invalid\n");
--		return;
--	}
--	offset_limit = end_pa - efi.mokvar_table;
-+
-+	offset_limit = efi_mem_desc_end(&md) - efi.mokvar_table;
-+
- 	/*
- 	 * Validate the MOK config table. Since there is no table header
- 	 * from which we could get the total size of the MOK config table,
- 	 * we compute the total size as we validate each variably sized
- 	 * entry, remapping as necessary.
- 	 */
-+	err = -EINVAL;
- 	while (cur_offset + sizeof(*mokvar_entry) <= offset_limit) {
- 		mokvar_entry = va + cur_offset;
- 		map_size_needed = cur_offset + sizeof(*mokvar_entry);
-@@ -150,7 +147,7 @@ void __init efi_mokvar_table_init(void)
- 				       offset_limit);
- 			va = early_memremap(efi.mokvar_table, map_size);
- 			if (!va) {
--				pr_err("Failed to map EFI MOKvar config table pa=0x%lx, size=%zu.\n",
-+				pr_err("Failed to map EFI MOKvar config table pa=0x%lx, size=%lu.\n",
- 				       efi.mokvar_table, map_size);
- 				return;
- 			}
+> >
+> >  static void axi_clkgen_calc_params(const struct axi_clkgen_limits *limits,
+> >       unsigned long fin, unsigned long fout,
+> > --
+> > 2.17.1
+> >
+>
+> Cheers,
+> Moritz
