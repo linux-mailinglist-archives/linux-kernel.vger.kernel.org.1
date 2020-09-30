@@ -2,108 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B42227EB19
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 16:40:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4FBE27EB1C
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 16:40:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730410AbgI3Oj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 10:39:56 -0400
-Received: from mx2.suse.de ([195.135.220.15]:34602 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728149AbgI3Ojz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 10:39:55 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id DC4CDABAD;
-        Wed, 30 Sep 2020 14:39:53 +0000 (UTC)
-Subject: Re: [RFC-PATCH 2/4] mm: Add __rcu_alloc_page_lockless() func.
-To:     Uladzislau Rezki <urezki@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
+        id S1730559AbgI3Okx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 10:40:53 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:7438 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728149AbgI3Okw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 10:40:52 -0400
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08UEXn0h002260;
+        Wed, 30 Sep 2020 10:40:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : reply-to : to : cc : date : in-reply-to : references : content-type
+ : mime-version : content-transfer-encoding; s=pp1;
+ bh=TOhFRkH6eBrNvZOnRv3vltvV9RWcAvaYO4zGgzF6rYA=;
+ b=V6DwgTAKxpxWbmkbUs+va5rzIxR+lCshyKHzDJTztxt1Hk13G4unr60eZMYIJnN4V2nq
+ /jEkjdRudg7CAzTYrBENRqt8sHleTLsYAiL8SdB1aCk1NfjtQWhrSGCd4WgBzHKX3W+/
+ htaiTmMRRzk9Izsiz8TbNboGeepzjBW1wDZ4Rm4UDs6BeYGHkgijKGyl5/2Vc9dKgt5M
+ joTxP4/HYR3U/jMJFF9VaYNuGVLX0x0CLFiJX90UgMw/ZTYxe7OSJhgvoG0dEbOCj/Uo
+ JMtTSmu1uVj0Nyo/Cew9CAVzfjzQgDiHlHMhc76YsmWCR9xbt08JW2T2lE9OscEE5eMz hw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33vtprt807-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 30 Sep 2020 10:40:14 -0400
+Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08UEY9wX003413;
+        Wed, 30 Sep 2020 10:40:09 -0400
+Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33vtprt7wm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 30 Sep 2020 10:40:08 -0400
+Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
+        by ppma05wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08UEcK6A011409;
+        Wed, 30 Sep 2020 14:40:03 GMT
+Received: from b03cxnp08027.gho.boulder.ibm.com (b03cxnp08027.gho.boulder.ibm.com [9.17.130.19])
+        by ppma05wdc.us.ibm.com with ESMTP id 33sw99e3uh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 30 Sep 2020 14:40:03 +0000
+Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
+        by b03cxnp08027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08UEdweH34472466
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 30 Sep 2020 14:39:58 GMT
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 45B5D78072;
+        Wed, 30 Sep 2020 14:40:02 +0000 (GMT)
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3FEF578060;
+        Wed, 30 Sep 2020 14:39:56 +0000 (GMT)
+Received: from jarvis (unknown [9.85.129.253])
+        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Wed, 30 Sep 2020 14:39:55 +0000 (GMT)
+Message-ID: <371c27d97067654171e5c1019340b56cffadae7a.camel@linux.ibm.com>
+Subject: Re: [PATCH v6 5/6] mm: secretmem: use PMD-size pages to amortize
+ direct map fragmentation
+From:   James Bottomley <jejb@linux.ibm.com>
+Reply-To: jejb@linux.ibm.com
+To:     Mike Rapoport <rppt@linux.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Idan Yaniv <idan.yaniv@ibm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
-        Mel Gorman <mgorman@techsingularity.net>
-References: <20200918194817.48921-1-urezki@gmail.com>
- <20200918194817.48921-3-urezki@gmail.com>
- <38f42ca1-ffcd-04a6-bf11-618deffa897a@suse.cz> <20200929220742.GB8768@pc636>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <795d6aea-1846-6e08-ac1b-dbff82dd7133@suse.cz>
-Date:   Wed, 30 Sep 2020 16:39:53 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Shuah Khan <shuah@kernel.org>, Tycho Andersen <tycho@tycho.ws>,
+        Will Deacon <will@kernel.org>, linux-api@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org
+Date:   Wed, 30 Sep 2020 07:39:54 -0700
+In-Reply-To: <20200930102745.GC3226834@linux.ibm.com>
+References: <20200924132904.1391-1-rppt@kernel.org>
+         <20200924132904.1391-6-rppt@kernel.org>
+         <20200925074125.GQ2628@hirez.programming.kicks-ass.net>
+         <20200929130529.GE2142832@kernel.org>
+         <20200929141216.GO2628@hirez.programming.kicks-ass.net>
+         <20200929145813.GA3226834@linux.ibm.com>
+         <20200929151552.GS2628@hirez.programming.kicks-ass.net>
+         <20200930102745.GC3226834@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-In-Reply-To: <20200929220742.GB8768@pc636>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-30_07:2020-09-30,2020-09-30 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 impostorscore=0
+ priorityscore=1501 lowpriorityscore=0 phishscore=0 malwarescore=0
+ adultscore=0 bulkscore=0 mlxlogscore=690 spamscore=0 clxscore=1015
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009300112
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/30/20 12:07 AM, Uladzislau Rezki wrote:
-> On Tue, Sep 29, 2020 at 12:15:34PM +0200, Vlastimil Babka wrote:
->> On 9/18/20 9:48 PM, Uladzislau Rezki (Sony) wrote:
->> 
->> After reading all the threads and mulling over this, I am going to deflect from
->> Mel and Michal and not oppose the idea of lockless allocation. I would even
->> prefer to do it via the gfp flag and not a completely separate path. Not using
->> the exact code from v1, I think it could be done in a way that we don't actually
->> look at the new flag until we find that pcplist is empty - which should not
->> introduce overhead to the fast-fast path when pcpclist is not empty. It's more
->> maintainable that adding new entry points, IMHO.
->> 
-> Thanks for reading all that from the beginning! It must be tough due to the
-> fact there were lot of messages in the threads, so at least i was lost.
+On Wed, 2020-09-30 at 13:27 +0300, Mike Rapoport wrote:
+> On Tue, Sep 29, 2020 at 05:15:52PM +0200, Peter Zijlstra wrote:
+> > On Tue, Sep 29, 2020 at 05:58:13PM +0300, Mike Rapoport wrote:
+> > > On Tue, Sep 29, 2020 at 04:12:16PM +0200, Peter Zijlstra wrote:
+> > > > It will drop them down to 4k pages. Given enough inodes, and
+> > > > allocating only a single sekrit page per pmd, we'll shatter the
+> > > > directmap into 4k.
+> > > 
+> > > Why? Secretmem allocates PMD-size page per inode and uses it as a
+> > > pool of 4K pages for that inode. This way it ensures that
+> > > __kernel_map_pages() is always called on PMD boundaries.
+> > 
+> > Oh, you unmap the 2m page upfront? I read it like you did the unmap
+> > at the sekrit page alloc, not the pool alloc side of things.
+> > 
+> > Then yes, but then you're wasting gobs of memory. Basically you can
+> > pin 2M per inode while only accounting a single page.
 > 
-> I agree that adding a new entry or separate lock-less function can be considered
-> as something that is hard to maintain. I have a question here. I mean about your
-> different look at it:
+> Right, quite like THP :)
 > 
-> <snip>
-> bool is_pcp_cache_empty(gfp_t gfp)
-> {
->     struct per_cpu_pages *pcp;
->     struct zoneref *ref;
->     unsigned long flags;
->     bool empty;
-> 
->     ref = first_zones_zonelist(node_zonelist(
->             numa_node_id(), gfp), gfp_zone(gfp), NULL);
->     if (!ref->zone)
->             return true;
-> 
->     local_irq_save(flags);
->     pcp = &this_cpu_ptr(ref->zone->pageset)->pcp;
->     empty = list_empty(&pcp->lists[gfp_migratetype(gfp)]);
->     local_irq_restore(flags);
-> 
->     return empty;
-> }
-> 
-> disable_irq();
-> if (!is_pcp_cache_empty(GFP_NOWAIT))
->     __get_free_page(GFP_NOWAIT);
-> enable_irq();
-> <snip>
-> 
-> Do you mean to have something like above? I mean some extra API
-> function that returns true or false if fast-fast allocation can
-> either occur or not. Above code works just fine and never touches
-> main zone->lock.
-> 
-> i.e. Instead of introducing an extra GFP_LOCKLESS flag or any new
-> extra lock-less function. We could have something that checks a
-> pcp page cache list, thus it can guarantee that a request would
-> be accomplish using fast-fast path.
+> I considered using a global pool of 2M pages for secretmem and
+> handing 4K pages to each inode from that global pool. But I've
+> decided to waste memory in favor of simplicity.
 
-No, I meant going back to idea of new gfp flag, but adjust the implementation in
-the allocator (different from what you posted in previous version) so that it
-only looks at the flag after it tries to allocate from pcplist and finds out
-it's empty. So, no inventing of new page allocator entry points or checks such
-as the one you wrote above, but adding the new gfp flag in a way that it doesn't
-affect existing fast paths.
+I can also add that the user space consumer of this we wrote does its
+user pool allocation at a 2M granularity, so nothing is actually
+wasted.
+
+https://git.kernel.org/pub/scm/linux/kernel/git/jejb/secret-memory-preloader.git/
+
+James
+
+
