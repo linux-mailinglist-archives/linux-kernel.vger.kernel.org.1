@@ -2,221 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 602E827F0B7
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 19:49:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D6C927F0DB
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 19:52:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731469AbgI3RtD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 13:49:03 -0400
-Received: from mga05.intel.com ([192.55.52.43]:9702 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726992AbgI3RtC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 13:49:02 -0400
-IronPort-SDR: lbnM/WN/KQEqH/INyCO70FRuluVReZBOUfNYRkVeksiDrhzBvD5NhGmkR1QdMloKyWH94YcXrY
- TKBhQl2WNRMA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9760"; a="247229391"
-X-IronPort-AV: E=Sophos;i="5.77,322,1596524400"; 
-   d="scan'208";a="247229391"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2020 10:49:01 -0700
-IronPort-SDR: YObUFLCMlpQRUAtFRw7Nv3r+9L0tp72d+DGCASSdgLMUc82Htp1BVRhFbUl5oHY9Y/bKk3ilvy
- MvF5p1GoKv6g==
-X-IronPort-AV: E=Sophos;i="5.77,322,1596524400"; 
-   d="scan'208";a="308245900"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2020 10:49:00 -0700
-Date:   Wed, 30 Sep 2020 10:48:59 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Ben Gardon <bgardon@google.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Cannon Matthews <cannonmatthews@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
-        Peter Feiner <pfeiner@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
-Subject: Re: [PATCH 14/22] kvm: mmu: Add access tracking for tdp_mmu
-Message-ID: <20200930174858.GG32672@linux.intel.com>
-References: <20200925212302.3979661-1-bgardon@google.com>
- <20200925212302.3979661-15-bgardon@google.com>
+        id S1731581AbgI3RwO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 13:52:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36242 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731483AbgI3Rv7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 13:51:59 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B03A1C0613D0
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 10:51:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=07YiCh12zxNb+LfRUHOuc0cOw1/oVX+fVA/5cFMfxTE=; b=S0V1ilHwkGgbbTo2M350wdoI3C
+        7lLk66poahAwcksIO1u1LSSIxtPdZ4ajUF7mmZOuiAy4VKWO2BOkh4jmJEgoz+vYl+pxKKmn1L62/
+        cR5OxZR0ZcX8CtFM/89ZjqDZ90kkZgAZeV5ujQjb8OMvbUfBgu6ZTJ+NIRxRgtKUnqSF7fUiBFUNQ
+        fR4r0qk8dSD+qYuIsfTRM+UXKnS/TE4Da87IJGDT47CsLpsTEzDQLDabopXoZRINzBGFNcHo0bZYh
+        hOkxAjzXXVDPEnTyi8auHmOSpSvIRbGjcSC4yKDNp4s2Ir9GCQHS7afLyB8VzQkH75/ca3S3ZtESd
+        mLLKt94A==;
+Received: from [2001:4bb8:180:7b62:c70:4a89:bc61:4] (helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kNgGM-0001Ax-Rh; Wed, 30 Sep 2020 17:51:35 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Matthew Auld <matthew.auld@intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Nitin Gupta <ngupta@vflare.org>, x86@kernel.org,
+        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-mm@kvack.org
+Subject: remove alloc_vm_area v3
+Date:   Wed, 30 Sep 2020 19:51:23 +0200
+Message-Id: <20200930175133.1252382-1-hch@lst.de>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200925212302.3979661-15-bgardon@google.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 02:22:54PM -0700, Ben Gardon wrote:
-> @@ -1945,12 +1944,24 @@ static void rmap_recycle(struct kvm_vcpu *vcpu, u64 *spte, gfn_t gfn)
->  
->  int kvm_age_hva(struct kvm *kvm, unsigned long start, unsigned long end)
->  {
-> -	return kvm_handle_hva_range(kvm, start, end, 0, kvm_age_rmapp);
-> +	int young = false;
-> +
-> +	young = kvm_handle_hva_range(kvm, start, end, 0, kvm_age_rmapp);
-> +	if (kvm->arch.tdp_mmu_enabled)
+Hi Andrew,
 
-If we end up with a per-VM flag, would it make sense to add a static key
-wrapper similar to the in-kernel lapic?  I assume once this lands the vast
-majority of VMs will use the TDP MMU.
+this series removes alloc_vm_area, which was left over from the big
+vmalloc interface rework.  It is a rather arkane interface, basicaly
+the equivalent of get_vm_area + actually faulting in all PTEs in
+the allocated area.  It was originally addeds for Xen (which isn't
+modular to start with), and then grew users in zsmalloc and i915
+which seems to mostly qualify as abuses of the interface, especially
+for i915 as a random driver should not set up PTE bits directly.
 
-> +		young |= kvm_tdp_mmu_age_hva_range(kvm, start, end);
-> +
-> +	return young;
->  }
+A git tree is also available here:
 
-...
+    git://git.infradead.org/users/hch/misc.git alloc_vm_area
 
-> +
-> +/*
-> + * Mark the SPTEs range of GFNs [start, end) unaccessed and return non-zero
-> + * if any of the GFNs in the range have been accessed.
-> + */
-> +static int age_gfn_range(struct kvm *kvm, struct kvm_memory_slot *slot,
-> +			 struct kvm_mmu_page *root, gfn_t start, gfn_t end,
-> +			 unsigned long unused)
-> +{
-> +	struct tdp_iter iter;
-> +	int young = 0;
-> +	u64 new_spte = 0;
-> +	int as_id = kvm_mmu_page_as_id(root);
-> +
-> +	for_each_tdp_pte_root(iter, root, start, end) {
+Gitweb:
 
-Ah, I think we should follow the existing shadow iterates by naming this
+    http://git.infradead.org/users/hch/misc.git/shortlog/refs/heads/alloc_vm_area
 
-	for_each_tdp_pte_using_root()
+Changes since v2:
+ - add another missing i initialization
+ - rebased to mainline instead of drm-tip again
 
-My first reaction was that this was iterating over TDP roots, which was a bit
-confusing.  I suspect others will make the same mistake unless they look at the
-implementation of for_each_tdp_pte_root().
+Changes since v1:
+ - fix a bug in the zsmalloc changes
+ - fix a bug and rebase to include the recent changes in i915
+ - add a new vmap flag that allows to free the page array and pages
+   using vfree
+ - add a vfree documentation updated from Matthew
 
-Similar comments on the _vcpu() variant.  For that one I think it'd be
-preferable to take the struct kvm_mmu, i.e. have for_each_tdp_pte_using_mmu(),
-as both kvm_tdp_mmu_page_fault() and kvm_tdp_mmu_get_walk() explicitly
-reference vcpu->arch.mmu in the surrounding code.
-
-E.g. I find this more intuitive
-
-	struct kvm_mmu *mmu = vcpu->arch.mmu;
-	int leaf = mmu->shadow_root_level;
-
-	for_each_tdp_pte_using_mmu(iter, mmu, gfn, gfn + 1) {
-		leaf = iter.level;
-		sptes[leaf - 1] = iter.old_spte;
-	}
-
-	return leaf
-
-versus this, which makes me want to look at the implementation of for_each().
-
-
-	int leaf = vcpu->arch.mmu->shadow_root_level;
-
-	for_each_tdp_pte_vcpu(iter, vcpu, gfn, gfn + 1) {
-		...
-	}
-
-> +		if (!is_shadow_present_pte(iter.old_spte) ||
-> +		    !is_last_spte(iter.old_spte, iter.level))
-> +			continue;
-> +
-> +		/*
-> +		 * If we have a non-accessed entry we don't need to change the
-> +		 * pte.
-> +		 */
-> +		if (!is_accessed_spte(iter.old_spte))
-> +			continue;
-> +
-> +		new_spte = iter.old_spte;
-> +
-> +		if (spte_ad_enabled(new_spte)) {
-> +			clear_bit((ffs(shadow_accessed_mask) - 1),
-> +				  (unsigned long *)&new_spte);
-> +		} else {
-> +			/*
-> +			 * Capture the dirty status of the page, so that it doesn't get
-> +			 * lost when the SPTE is marked for access tracking.
-> +			 */
-> +			if (is_writable_pte(new_spte))
-> +				kvm_set_pfn_dirty(spte_to_pfn(new_spte));
-> +
-> +			new_spte = mark_spte_for_access_track(new_spte);
-> +		}
-> +
-> +		*iter.sptep = new_spte;
-> +		__handle_changed_spte(kvm, as_id, iter.gfn, iter.old_spte,
-> +				      new_spte, iter.level);
-> +		young = true;
-
-young is an int, not a bool.  Not really your fault as KVM has a really bad
-habit of using ints instead of bools.
-
-> +	}
-> +
-> +	return young;
-> +}
-> +
-> +int kvm_tdp_mmu_age_hva_range(struct kvm *kvm, unsigned long start,
-> +			      unsigned long end)
-> +{
-> +	return kvm_tdp_mmu_handle_hva_range(kvm, start, end, 0,
-> +					    age_gfn_range);
-> +}
-> +
-> +static int test_age_gfn(struct kvm *kvm, struct kvm_memory_slot *slot,
-> +			struct kvm_mmu_page *root, gfn_t gfn, gfn_t unused,
-> +			unsigned long unused2)
-> +{
-> +	struct tdp_iter iter;
-> +	int young = 0;
-> +
-> +	for_each_tdp_pte_root(iter, root, gfn, gfn + 1) {
-> +		if (!is_shadow_present_pte(iter.old_spte) ||
-> +		    !is_last_spte(iter.old_spte, iter.level))
-> +			continue;
-> +
-> +		if (is_accessed_spte(iter.old_spte))
-> +			young = true;
-
-Same bool vs. int weirdness here.  Also, |= doesn't short circuit for ints
-or bools, so this can be
-
-		young |= is_accessed_spte(...)
-
-Actually, can't we just return true immediately?
-
-> +	}
-> +
-> +	return young;
-> +}
-> +
-> +int kvm_tdp_mmu_test_age_hva(struct kvm *kvm, unsigned long hva)
-> +{
-> +	return kvm_tdp_mmu_handle_hva_range(kvm, hva, hva + 1, 0,
-> +					    test_age_gfn);
-> +}
-> diff --git a/arch/x86/kvm/mmu/tdp_mmu.h b/arch/x86/kvm/mmu/tdp_mmu.h
-> index ce804a97bfa1d..f316773b7b5a8 100644
-> --- a/arch/x86/kvm/mmu/tdp_mmu.h
-> +++ b/arch/x86/kvm/mmu/tdp_mmu.h
-> @@ -21,4 +21,8 @@ int kvm_tdp_mmu_page_fault(struct kvm_vcpu *vcpu, int write, int map_writable,
->  
->  int kvm_tdp_mmu_zap_hva_range(struct kvm *kvm, unsigned long start,
->  			      unsigned long end);
-> +
-> +int kvm_tdp_mmu_age_hva_range(struct kvm *kvm, unsigned long start,
-> +			      unsigned long end);
-> +int kvm_tdp_mmu_test_age_hva(struct kvm *kvm, unsigned long hva);
->  #endif /* __KVM_X86_MMU_TDP_MMU_H */
-> -- 
-> 2.28.0.709.gb0816b6eb0-goog
-> 
+Diffstat:
+ arch/x86/xen/grant-table.c                |   27 ++++--
+ drivers/gpu/drm/i915/Kconfig              |    1 
+ drivers/gpu/drm/i915/gem/i915_gem_pages.c |  131 +++++++++++++-----------------
+ drivers/gpu/drm/i915/gt/shmem_utils.c     |   76 ++++-------------
+ drivers/xen/xenbus/xenbus_client.c        |   30 +++---
+ include/linux/vmalloc.h                   |    7 -
+ mm/Kconfig                                |    3 
+ mm/memory.c                               |   16 ++-
+ mm/nommu.c                                |    7 -
+ mm/vmalloc.c                              |  123 ++++++++++++++--------------
+ mm/zsmalloc.c                             |   10 +-
+ 11 files changed, 200 insertions(+), 231 deletions(-)
