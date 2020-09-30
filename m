@@ -2,78 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E83527E5A8
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 11:51:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E59227E5AB
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 11:52:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729158AbgI3JvO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 05:51:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46646 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728695AbgI3JvO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 05:51:14 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5D1FC061755
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 02:51:13 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id z17so1344120lfi.12
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 02:51:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wO+8kMzgsuDmMLo7G30wB5sG1xa3BEBZziOy+MymYXk=;
-        b=tUtX71vy9tkoqQ62geyvq12wiO77un7b6TRqnG+ENxpQHgnumjwFS1bqF0b8mGULdD
-         qInUR3CpLEeBM4dgrl/3ul/9IlRnkO4q9zFRlQNDNSLCVpLi0lZkCrRyGfzHjA5Jv1VW
-         jx7ntT36DDdF28gnuPM2gKhPec0JeXdYV8LbDPwv63C+KjoiNrYc/ViOpSQ5XWuxbiRn
-         fHeUb0O9TRsm1Ep6K22wzYmpL3ef0WwA2c3A4VsC42k5P52eW1h9nyiwPuae58mZyjax
-         /6Km/DXxFYce3s8evh3zagKef08Z7LG9pAzqKPk5O49thHu645PLmf2mEVq+uRdARX3W
-         dkKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wO+8kMzgsuDmMLo7G30wB5sG1xa3BEBZziOy+MymYXk=;
-        b=ffeE1OvOf852VCVjQ6MQasmkX/K/igmOoR8yedtiLK/t1JfKRUbBDpophlVCoUZNAp
-         QOvgnRxArCXlQhvg7oXhfpWPrh/z40/h1LFxFL3mcpGIkuv2DQSXTlJyAflGzs7smZAm
-         joiEWeNU+szJPZYkP+U6I6jI7It0g4FGhmZu5qf5HKJq5RmIjNJ5Xe+TLfXw32u91X3J
-         FbbONGbIWGRtcF6uVvgIAqRE7l+waH+7Q0qJ6azmUsoDKpDLyOwjMET/cJ5hwMpTfbzw
-         6y+DB8EytkFqGzfm0muEyPeva133TgrMiERQLPNwp7VKr4B4m6Dw62Hn3YukL28g1H8U
-         8Ddw==
-X-Gm-Message-State: AOAM532WNlDmjpzlztopZbV6GP/uDj9o8jCExzxKXlkboZlN2CEss32a
-        6nagfPb0s4EhucknV/BjFOCryhI6D96sYFp0ocJyAw==
-X-Google-Smtp-Source: ABdhPJwVN/b8vttgt3uOMaBEvUr+oplFF2B0xPQJVcc+yGWSBU4xGd0qF/xKmXqUhsenbuPNWV0rGcf2C9xSeYz4Yoo=
-X-Received: by 2002:a19:6c2:: with SMTP id 185mr545793lfg.441.1601459471538;
- Wed, 30 Sep 2020 02:51:11 -0700 (PDT)
+        id S1728851AbgI3JwC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 05:52:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47914 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725779AbgI3JwB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 05:52:01 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9B0732074A;
+        Wed, 30 Sep 2020 09:52:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601459521;
+        bh=sc+AQYG1RYfRu1GfD0zZ2JdLkx36ONLoOSKxzRGYl+U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nHevHf2ZIyWvAhviCcNO55bnfgd3PWWLS4IM5QDsNQptwb5yVfs3UBqH94RksgG/M
+         ejK2dCh9w93TmYYKlpIiZuoHr4ZkAI19oHVti/kLS+zEV0lzmvEQnjtQqWKqJARHtE
+         Y0zqD9CWTpDxGNJKY/mtjFih/iK/31Std6MpAGjE=
+Date:   Wed, 30 Sep 2020 11:52:04 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     Lars Poeschel <poeschel@lemonage.de>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        "open list:PWM SUBSYSTEM" <linux-pwm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] pwm: sysfs: Set class on pwm devices
+Message-ID: <20200930095204.GA1585476@kroah.com>
+References: <20200929121953.2817843-1-poeschel@lemonage.de>
+ <20200930065726.fjcsm4pfh65medgl@pengutronix.de>
+ <20200930092056.maz5biy2ugr6yc3p@lem-wkst-02.lemonage>
+ <20200930094146.73s3qzvf5ekjeavc@pengutronix.de>
 MIME-Version: 1.0
-References: <20200930092053.2114-1-mike.looijmans@topic.nl> <20200930092053.2114-2-mike.looijmans@topic.nl>
-In-Reply-To: <20200930092053.2114-2-mike.looijmans@topic.nl>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 30 Sep 2020 11:51:00 +0200
-Message-ID: <CACRpkdbfqGsvHX_O21oLaCWim=A-OpBV-NzvSvbt5SfjxXN+oQ@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] gpio: pca953x: Add support for the NXP PCAL9554B/C
-To:     Mike Looijmans <mike.looijmans@topic.nl>
-Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200930094146.73s3qzvf5ekjeavc@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 11:21 AM Mike Looijmans <mike.looijmans@topic.nl> wrote:
+On Wed, Sep 30, 2020 at 11:41:46AM +0200, Uwe Kleine-König wrote:
+> Hello,
+> 
+> I added Greg Kroah-Hartman who I discussed this with via irc a bit to
+> Cc:.
+> 
+> On Wed, Sep 30, 2020 at 11:20:56AM +0200, Lars Poeschel wrote:
+> > thank you for your review!
+> > 
+> > On Wed, Sep 30, 2020 at 08:57:26AM +0200, Uwe Kleine-König wrote:
+> > > On Tue, Sep 29, 2020 at 02:19:53PM +0200, poeschel@lemonage.de wrote:
+> > > > From: Lars Poeschel <poeschel@lemonage.de>
+> > > > 
+> > > > This adds a class to exported pwm devices.
+> > > > Exporting a pwm through sysfs did not yield udev events. The
+> > > 
+> > > I wonder what is your use-case here. This for sure also has a place to
+> > > be mentioned in the commit log. I suspect there is a better way to
+> > > accomplish you way.
+> > 
+> > Use-case is to be able to use a pwm from a non-root userspace process.
+> > I use udev rules to adjust permissions.
+> 
+> Hmm, how do you trigger the export? Without being aware of all the
+> details in the sysfs code I would expect that the exported stuff is
+> available instantly once the write used to export the PWM is completed.
+> So changing the permissions can be done directly after triggering the
+> export in the same process.
 
-> The NXP PCAL9554B is a variant of the PCA953x GPIO expander,
-> with 8 GPIOs, latched interrupts and some advanced configuration
-> options. The "C" version only differs in I2C address.
->
-> Signed-off-by: Mike Looijmans <mike.looijmans@topic.nl>
-> ---
-> v2: Split devicetree and code into separate patches
+It looks like userspace wants to see when a pwmX device shows up, right?
 
-Patch applied.
+And it's not because those devices do not belong to any class or bus, so
+they are just "floating" out there (they might show up under
+/sys/bus/virtual, if you set things up right, which I don't think is
+happening here...)
 
-Yours,
-Linus Walleij
+So yes, you need to create a class, or assign this to a bus, which is
+fine, but it looks like no one is doing that.  Don't create new classes
+dynamically, but rather, just assign this to the existing pwm class.
+What's wrong with that?  I saw an older patch that did that, what did
+that break?
+
+thanks,
+
+greg k-h
