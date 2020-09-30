@@ -2,115 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B9A927E2A9
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 09:31:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9417727E2AA
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 09:31:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728479AbgI3Hbl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 03:31:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53306 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725535AbgI3Hbk (ORCPT
+        id S1728506AbgI3Hb4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 03:31:56 -0400
+Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:51982 "EHLO
+        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725535AbgI3Hb4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 03:31:40 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DABAC061755;
-        Wed, 30 Sep 2020 00:31:39 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id b22so892150lfs.13;
-        Wed, 30 Sep 2020 00:31:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=SGO2NZQ83mZVSNOizDUSniAn+rBNIh90Przur6itDd8=;
-        b=Fan3qd6TBFqgoYlbCgxq0HtITaSK4cpNUMlfGMYYKjbDmxl0TkLyPLN2/vE8s6eq3S
-         Vt18W2ziFdKm6w5eDliw9VY+x4t5Wx69zEMPX6V6XoTMcAFKQ3GffIt6Dtku32O1SkQw
-         91mYdUvIww+E63p2SWh9CU4ZGt8q2JD/3c5Er6UNnSTNvAPmlJu+9o/HEi+MymPUKlXs
-         LGEKj3votjVHLNZ2agZ/xnMMlG14ch92/p8PnN9f0PFcbl/2kJTiHRyHmliAc5V3ZM3X
-         bZ9xUtW0HcAHOi/ZQ69j4GD08yRJz0HVWrsVR/u5kQ5eIEfpJT1nGnVjfguSeopXXF05
-         n3zQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=SGO2NZQ83mZVSNOizDUSniAn+rBNIh90Przur6itDd8=;
-        b=RQfBxjCAjpnTOBfpfDDK5U/DTNPXU5Kf8qdEWOSaWWIJ5LhRsEeVY+97H6Fr340Aed
-         ZVzMj4Ip8juBp+DDpndmZJ+9SEY8mokbVuvo52byGIoRgFcI7/hg/0P3AfFmLZjBw5aw
-         Ksed0X5e9X6nPVHjhm2sejFhlkG8nPJMbLW+mDxBH8lhtnr8FIO4/UniwJuz/9E0VwnY
-         BuYtvx1uFQ52uPEj3H8hfxrn4m+2WQkE9axjF0avfY5XFzlwu7uOMYlFZ0AeAmLYlmJt
-         1QAzMnUOzqmg48enNOyMRcanyvvsE6YVEiVuY5yz+DBj3I0BbFzkD9rJrrLNDMOQ7bYN
-         6NNw==
-X-Gm-Message-State: AOAM532FftpF24+KcY0c90upkf0i3C2IkOvDS6zTHiuj8k5bSubENerQ
-        w79tkrp4KEZG4WFYhO3tT4cpLYXwWMA=
-X-Google-Smtp-Source: ABdhPJyQqUXR6tmLauIulzo2x4C8Vf0e5lddBc1ZH/i32Csp4UkDO+xG7Ug15AKoPIN4RwmY0CgLgA==
-X-Received: by 2002:a19:402:: with SMTP id 2mr397312lfe.279.1601451097259;
-        Wed, 30 Sep 2020 00:31:37 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
-        by smtp.googlemail.com with ESMTPSA id h124sm90415lfd.151.2020.09.30.00.31.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 30 Sep 2020 00:31:36 -0700 (PDT)
-Subject: Re: [PATCH v2 1/3] memory: tegra: Add helper function
- tegra_get_memory_controller
-To:     Nicolin Chen <nicoleotsuka@gmail.com>
-Cc:     thierry.reding@gmail.com, joro@8bytes.org, krzk@kernel.org,
-        vdumpa@nvidia.com, jonathanh@nvidia.com,
-        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-References: <20200930003013.31289-1-nicoleotsuka@gmail.com>
- <20200930003013.31289-2-nicoleotsuka@gmail.com>
- <93803d8b-9863-e977-fa87-a03e877b095d@gmail.com>
- <20200930054455.GF31821@Asurada-Nvidia>
- <2f752179-5ad3-c000-8794-494c79f7b21f@gmail.com>
- <20200930063820.GD16460@Asurada-Nvidia>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <a613dac4-1a7e-54b3-02da-4aedc673ecfb@gmail.com>
-Date:   Wed, 30 Sep 2020 10:31:36 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 30 Sep 2020 03:31:56 -0400
+Received: from dread.disaster.area (pa49-195-191-192.pa.nsw.optusnet.com.au [49.195.191.192])
+        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id 4D5008282AC;
+        Wed, 30 Sep 2020 17:31:53 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1kNWae-0002Ke-HS; Wed, 30 Sep 2020 17:31:52 +1000
+Date:   Wed, 30 Sep 2020 17:31:52 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Yang Shi <shy828301@gmail.com>
+Cc:     Linux MM <linux-mm@kvack.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH 0/2] Remove shrinker's nr_deferred
+Message-ID: <20200930073152.GH12096@dread.disaster.area>
+References: <20200916185823.5347-1-shy828301@gmail.com>
+ <20200917023742.GT12096@dread.disaster.area>
+ <CAHbLzkrGB_=KBgD1sMpW33QjWSGTXNnLy3JtVUyHc2Omsa3gWA@mail.gmail.com>
+ <20200921003231.GZ12096@dread.disaster.area>
+ <CAHbLzkqAWiO4uhGBmbUjgs6EmQazYQXHPxR2-MWo4X8zxZ7gfQ@mail.gmail.com>
+ <CAHbLzkoidoBWtLtd_3DjuSvm7dAJV1gSJAMmWY95=e8N7Hy=TQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200930063820.GD16460@Asurada-Nvidia>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHbLzkoidoBWtLtd_3DjuSvm7dAJV1gSJAMmWY95=e8N7Hy=TQ@mail.gmail.com>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=Ubgvt5aN c=1 sm=1 tr=0 cx=a_idp_d
+        a=vvDRHhr1aDYKXl+H6jx2TA==:117 a=vvDRHhr1aDYKXl+H6jx2TA==:17
+        a=kj9zAlcOel0A:10 a=reM5J-MqmosA:10 a=7-415B0cAAAA:8
+        a=UfYygaMNmWWEh68mB8UA:9 a=CjuIK1q_8ugA:10 a=-RoEEKskQ1sA:10
+        a=biEYGPWJfzWAr4FL6Ov7:22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-30.09.2020 09:38, Nicolin Chen пишет:
-> On Wed, Sep 30, 2020 at 09:32:20AM +0300, Dmitry Osipenko wrote:
->> 30.09.2020 08:44, Nicolin Chen пишет:
->>> On Wed, Sep 30, 2020 at 08:12:10AM +0300, Dmitry Osipenko wrote:
->>>> 30.09.2020 03:30, Nicolin Chen пишет:
->>>> ...
->>>>>  int tegra_mc_write_emem_configuration(struct tegra_mc *mc, unsigned long rate);
->>>>>  unsigned int tegra_mc_get_emem_device_count(struct tegra_mc *mc);
->>>>> +struct tegra_mc *tegra_get_memory_controller(void);
->>>>>  
->>>>>  #endif /* __SOC_TEGRA_MC_H__ */
->>>>>
->>>>
->>>> This will conflict with the tegra20-devfreq driver, you should change it
->>>> as well.
->>>
->>> Will remove that in v3.
->>>
->>> Thanks
->>>
->>
->> Please also consider to add a resource-managed variant, similar to what
->> I did here:
->>
->> https://github.com/grate-driver/linux/commit/2105e7664063772d72fefe9696bdab0b688b9de2
->>
->> I was going to use it in the next iteration of the memory interconnect
->> series.
->>
->> But now it also will be good if you could add the devm variant to yours
->> SMMU patchset since you're already about to touch the tegra20-devfreq
->> driver. I'll then rebase my patches on top of yours patch.
+On Sat, Sep 26, 2020 at 01:31:36PM -0700, Yang Shi wrote:
+> Hi Dave,
 > 
-> Just saw this reply. Yea, I think this'd be better. Thanks
+> I was exploring to make the "nr_deferred" per memcg. I looked into and
+> had some prototypes for two approaches so far:
+> 1. Have per memcg data structure for each memcg aware shrinker, just
+> like what shrinker_map does.
+> 2. Have "nr_deferred" on list_lru_one for memcg aware lists.
 > 
+> Both seem feasible, however the latter one looks much cleaner, I just
+> need to add two new APIs for shrinker which gets and sets
+> "nr_deferred" respectively. And, just memcg aware shrinkers need
+> define those two callouts. We just need to care about memcg aware
+> shrinkers, and the most memcg aware shrinkers (inode/dentry, nfs and
+> workingset) use list_lru, so I'd prefer the latter one.
 
-Please don't forget to add a stub for !MC as well since devfreq drivers
-use COMPILE_TEST and don't directly depend on the MC driver.
+The list_lru is completely separate from the shrinker context. The
+structure that tracks objects in a subsystem is not visible or aware
+of how the high level shrinker scanning algorithms work. Not to
+mention that subsystem shrinkers can be memcg aware without using
+list_lru structures to index objects owned by a given memcg. Hence I
+really don't like the idea of tying the shrinker control data deeply
+into subsystem cache indexing....
+
+
+> But there are two memcg aware shrinkers are not that straightforward
+> to deal with:
+> 1. The deferred split THP. It doesn't use list_lru, but actually I
+> don't worry about this one, since it is not cache just some partial
+> unmapped THPs. I could try to convert it to use list_lru later on or
+> just kill deferred split by making vmscan split partial unmapped THPs.
+> So TBH I don't think it is a blocker.
+
+What a fantastic abuse of the reclaim infrastructure. :/
+
+First it was just defered work. Then it became NUMA_AWARE. THen it
+became MEMCG_AWARE and....
+
+Oh, man what a nasty hack that SHRINKER_NONSLAB flag is so that it
+runs through shrink_slab_memcg() even when memcgs are configured in
+but kmem tracking disabled. We have heaps of shrinkers that reclaim
+from things that aren't slab caches, but this one is just nuts.
+
+> 2. The fs_objects. This one looks weird. It shares the same shrinker
+> with inode/dentry. The only user is XFS currently. But it looks it is
+> not really memcg aware at all, right?
+
+It most definitely is.
+
+The VFS dentry and inode cache reclaim are memcg aware. The
+fs_objects callout is for filesystem level object garbage collection
+that can be done as a result of the dentry and inode caches being
+reclaimed.
+
+i.e. once the VFS has reclaimed the inode attached to the memcg, it
+is no longer attached and accounted to the memcg anymore. It is
+owned by the filesystem at this point, and it is entirely up to the
+filesytem to when it can then be freed. Most filesystems do it in
+the inode cache reclaim via the ->destroy method. XFS, OTOH, tags
+freeable inodes in it's internal radix trees rather than freeing
+them immediately because it still may have to clean the inode before
+it can be freed. Hence we defer freeing of inodes until the
+->fs_objects pass....
+
+> They are managed by radix tree
+> which is not per memcg by looking into xfs code, so the "per list_lru
+> nr_deferred" can't work for it.  I thought of a couple of ways to
+> tackle it off the top of my head:
+>     A. Just ignore it. If the amount of fs_objects are negligible
+> comparing to inode/dentry, then I think it can be just ignored and
+> kept it as is.
+
+Ah, no, they are not negliable. Under memory pressure, the number of
+objects is typically 1/3rd dentries, 1/3rd VFS inodes, 1/3rd fs
+objects to be reclaimed. The dentries and VFS inodes are owned by
+VFS level caches and associated with memcgs, the fs_objects are only
+visible to the filesystem.
+
+>     B. Move it out of inode/dentry shrinker. Add a dedicated shrinker
+> for it, for example, sb->s_fs_obj_shrink.
+
+No, they are there because the reclaim has to be kept in exact
+proportion to the dentry and inode reclaim quantities. That's the
+reason I put that code there in the first place: a separate inode
+filesystem cache shrinker just didn't work well at all.
+
+>     C. Make it really memcg aware and use list_lru.
+
+Two things. Firstly, objects are owned by the filesystem at this
+point, not memcgs. Memcgs were detatched at the VFS inode reclaim
+layer.
+
+Secondly, list-lru does not scale well enough for the use needed by
+XFS. We use radix trees so we can do lockless batch lookups and
+IO-efficient inode-order reclaim passes. We also have concurrent
+reclaim capabilities because of the lockless tag lookup walks.
+Using a list_lru for this substantially reduces reclaim performance
+and greatly increases CPU usage of reclaim because of contention on
+the internal list lru locks. Been there, measured that....
+
+> I don't have any experience on XFS code, #C seems the most optimal,
+> but should be the most time consuming, I'm not sure if it is worth it
+> or not. So, #B sounds more preferred IMHO.
+
+I think you're going completely in the wrong direction. The problem
+that needs solving is integrating shrinker scanning control state
+with memcgs more tightly, not force every memcg aware shrinker to
+use list_lru for their subsystem shrinker implementations....
+
+Cheers,
+
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
