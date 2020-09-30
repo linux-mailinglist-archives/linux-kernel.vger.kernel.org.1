@@ -2,142 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC99B27E741
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 12:56:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FA7F27E744
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 12:56:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729344AbgI3Kz7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 06:55:59 -0400
-Received: from m42-4.mailgun.net ([69.72.42.4]:15058 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727426AbgI3Kz7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 06:55:59 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1601463358; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=23IxMnrq2Jp59pR7Ft4ivJfH7caZwKcP3O3ByLp+9OU=; b=bJY+fLZtdkNeE2S84wSJGNZyHn1txx4HWZLn05Ee7y5VKtB4u4gSifZDpbik+Yiv/C8KWgNe
- fFO4OecGjp5iO6xd2ZvJIkZq2jffXpWYCysbw9m47WLqML90ZmyRobM868SKBeFk2c/otUNa
- uR/L8JuaHT7qgBGIT+uo0zXTeQM=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 5f74642919fe605f254d928b (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 30 Sep 2020 10:55:37
- GMT
-Sender: rnayak=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id B2836C433F1; Wed, 30 Sep 2020 10:55:37 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.0.118] (unknown [49.207.198.93])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: rnayak)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7F36EC433CA;
-        Wed, 30 Sep 2020 10:55:33 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 7F36EC433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=rnayak@codeaurora.org
-Subject: Re: [PATCH 1/2] docs: Clarify abstract scale usage for power values
- in Energy Model
-To:     Lukasz Luba <lukasz.luba@arm.com>,
-        Doug Anderson <dianders@chromium.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>, linux-doc@vger.kernel.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Dietmar.Eggemann@arm.com, Quentin Perret <qperret@google.com>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>
-References: <20200929121610.16060-1-lukasz.luba@arm.com>
- <CAD=FV=UnNkjMiOc0DZE7+OM3-Kr1ZRynxSerdA=ifbyGiRa2Zw@mail.gmail.com>
- <a1d1fe2a-485f-a21e-2f91-9b609223aa5a@arm.com>
-From:   Rajendra Nayak <rnayak@codeaurora.org>
-Message-ID: <62540312-65a2-b6d9-86ce-b4deaaa913c1@codeaurora.org>
-Date:   Wed, 30 Sep 2020 16:25:30 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1729381AbgI3K4F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 06:56:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56712 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727426AbgI3K4D (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 06:56:03 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ACD5C061755;
+        Wed, 30 Sep 2020 03:56:03 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id 34so866140pgo.13;
+        Wed, 30 Sep 2020 03:56:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=oHjy/cJNfXXtogE/EOScxb15VZyxV8RmFzlm1RVW7+4=;
+        b=ST3Kd8NsgI00gcwe++TnkB9yoG7CcnwaH1PhFE7KHu2q8pACXvMlCKfgfMR4yCUOJu
+         ADghrfvzWjSlgIUCxoJM7ZQjtPtxlo33UaHnhi+3+Y8DpDYs9PHoW5N3sZrZ4AtsxomX
+         mFlkpo3duTlRy6LZnvVCEyrnEIoRNBO7X87egzV14m7epsPyc/6Jab9yI502MgaWlQae
+         2rIIV140OVnyhadXYHdTmEAXDspwTby8A0pU8fE3wJMaoN+2rkgMMdLhX1vm6wpplv37
+         0K806v7DDEPK3d+/Gj2NiaXqsYvDUrExl7lmpaOGK+r0m4Qo9ruZgkAAOfZldREf7KOn
+         Bihg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=oHjy/cJNfXXtogE/EOScxb15VZyxV8RmFzlm1RVW7+4=;
+        b=gt10II51fM9K8psn3wyjUzwPXQYN6rTPVfodAmlNks6pufJNbdquKfvPaAJRZCZRZ5
+         wxZNKbunYp/50yHF68n/fBpZJAUQxXVyrEUNFKNx0yYLgd4Lofs4iDvz5micGjFmVRA+
+         Z8gnpjZfPQg/ytl56prZlJyZz7k0t+ZOG0AgWteVygnTiOt2StQRHLLLgNj6sddrpzx5
+         6BoNKV7TsNFwX79wNmCgU3NCTjhnZYPfwBY+OvnfTImcA27CNeBHJno3muTcwx9AXLe+
+         RNCXO2HM48Q0a5HIU39eDzfcnLMUDgFQlVThJKO7NzxyPmI9vHCiunwEhC+3FubyUTxE
+         KZfA==
+X-Gm-Message-State: AOAM53295aMGEtRORTNWI0SQCZyXPqzF6Q939QTjl9lhDbTRT2YpT1O+
+        nl/0fjvaL0ohi7R3eTZ9sA==
+X-Google-Smtp-Source: ABdhPJxwDjg9fu9SIBa0weczPWatPsktZqfGJP54jLXM6mwLCAozwhwqJF1pVlQk2zADetgfH2HP7w==
+X-Received: by 2002:a63:4e0a:: with SMTP id c10mr1671562pgb.369.1601463362849;
+        Wed, 30 Sep 2020 03:56:02 -0700 (PDT)
+Received: from PWN ([161.117.80.159])
+        by smtp.gmail.com with ESMTPSA id l14sm1837033pfc.170.2020.09.30.03.55.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Sep 2020 03:56:02 -0700 (PDT)
+Date:   Wed, 30 Sep 2020 06:55:53 -0400
+From:   Peilin Ye <yepeilin.cs@gmail.com>
+To:     Daniel Vetter <daniel@ffwll.ch>
+Cc:     Jiri Slaby <jirislaby@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 0/3] Prevent out-of-bounds access for built-in font data
+ buffers
+Message-ID: <20200930105553.GA1154238@PWN>
+References: <0000000000006b9e8d059952095e@google.com>
+ <cover.1600953813.git.yepeilin.cs@gmail.com>
+ <3f754d60-1d35-899c-4418-147d922e29af@kernel.org>
+ <20200925101300.GA890211@PWN>
+ <20200925132551.GF438822@phenom.ffwll.local>
+ <20200929123420.GA1143575@PWN>
+ <CAKMK7uFY2zv0adjKJ_ORVFT7Zzwn075MaU0rEU7_FuqENLR=UA@mail.gmail.com>
+ <20200930071151.GA1152145@PWN>
+ <20200930095317.GX438822@phenom.ffwll.local>
 MIME-Version: 1.0
-In-Reply-To: <a1d1fe2a-485f-a21e-2f91-9b609223aa5a@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200930095317.GX438822@phenom.ffwll.local>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 9/30/2020 1:55 PM, Lukasz Luba wrote:
-> Hi Douglas,
+On Wed, Sep 30, 2020 at 11:53:17AM +0200, Daniel Vetter wrote:
+> On Wed, Sep 30, 2020 at 03:11:51AM -0400, Peilin Ye wrote:
+> > On Tue, Sep 29, 2020 at 04:38:49PM +0200, Daniel Vetter wrote:
+> > > On Tue, Sep 29, 2020 at 2:34 PM Peilin Ye <yepeilin.cs@gmail.com> wrote:
+> > > > Ah, and speaking of built-in fonts, see fbcon_startup():
+> > > >
+> > > >         /* Setup default font */
+> > > >                 [...]
+> > > >                 vc->vc_font.charcount = 256; /* FIXME  Need to support more fonts */
+> > > >                             ^^^^^^^^^^^^^^^
+> > > >
+> > > > This is because find_font() and get_default_font() return a `struct
+> > > > font_desc *`, but `struct font_desc` doesn't contain `charcount`. I
+> > > > think we also need to add a `charcount` field to `struct font_desc`.
+> > > 
+> > > Hm yeah ... I guess maybe struct font_desc should be the starting
+> > > point for the kernel internal font structure. It's at least there
+> > > already ...
+> > 
+> > I see, that will also make handling built-in fonts much easier!
 > 
-> On 9/30/20 12:53 AM, Doug Anderson wrote:
->> Hi,
->>
->> On Tue, Sep 29, 2020 at 5:16 AM Lukasz Luba <lukasz.luba@arm.com> wrote:
->>>
->>> The Energy Model (EM) can store power values in milli-Watts or in abstract
->>> scale. This might cause issues in the subsystems which use the EM for
->>> estimating the device power, such as:
->>> - mixing of different scales in a subsystem which uses multiple
->>>    (cooling) devices (e.g. thermal Intelligent Power Allocation (IPA))
->>> - assuming that energy [milli-Joules] can be derived from the EM power
->>>    values which might not be possible since the power scale doesn't have to
->>>    be in milli-Watts
->>>
->>> To avoid misconfiguration add the needed documentation to the EM and
->>> related subsystems: EAS and IPA.
->>>
->>> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
->>> ---
->>>   .../driver-api/thermal/power_allocator.rst          |  8 ++++++++
->>>   Documentation/power/energy-model.rst                | 13 +++++++++++++
->>>   Documentation/scheduler/sched-energy.rst            |  5 +++++
->>>   3 files changed, 26 insertions(+)
->>
->> I haven't read through these files in massive detail, but the quick
->> skim makes me believe that your additions seem sane.  In general, I'm
->> happy with documenting reality, thus:
->>
->> Reviewed-by: Douglas Anderson <dianders@chromium.org>
+> I think the only downside with starting with font_desc as the internal
+> font represenation is that there's a few fields we don't need/have for
+> userspace fonts (like the id/name stuff). So any helpers to e.g. print out
+> font information need to make sure they don't trip over that
 > 
-> Thank you for the review.
+> But otherwise I don't see a problem with this, I think.
+
+Yes, and built-in fonts don't use refcount. Or maybe we can let
+find_font() and get_default_font() kmalloc() a copy of built-in font
+data, then keep track of refcount for both user and built-in fonts, but
+that will waste a few K of memory for each built-in font we use...
+
+> > > I think for vc_date->vc_font we might need a multi-step approach:
+> > > - first add a new helper function which sets the font for a vc using
+> > > an uapi console_font struct (and probably hard-coded assumes cnt ==
+> > > 256.
+> > 
+> > But user fonts may have a charcount different to 256... But yes I'll try
+> > to figure out how.
 > 
->>
->> I will note: you haven't actually updated the device tree bindings.
->> Thus, presumably, anyone who is specifying these numbers in the device
->> tree is still supposed to specify them in a way that mW can be
->> recovered, right?  Said another way: nothing about your patches makes
->> it OK to specify numbers in device trees using an "abstract scale",
->> right?
+> Hm yeah, maybe we need a helper to give us the charcount then, which by
+> default is using the magic negative offset.
+
+Ah, I see! :)
+
+> Then once we've converted everything over to explicitly passing charcount
+> around, we can switch that helper. So something like
 > 
-> For completeness, we are talking here about the binding from:
-> Documentation/devicetree/bindings/arm/cpus.yaml
-> which is 'dynamic-power-coefficient'. Yes, it stays untouched, also the
-> unit (uW/MHz/V^2) which then allows to have mW in the power
-> values in the EM.
+> int kern_font_charcount(struct kern_font *font);
+> 
+> Feel free to bikeshed the struct name however you see fit :-)
 
-So for platforms where 'dynamic-power-coefficient' is specified in device tree,
-its always expected to be derived from 'real' power numbers on these platforms in
-'real' mW?
+I think both `kern_font` and `font_desc` makes sense, naming is so
+hard...
 
-Atleast on Qualcomm platforms we have these numbers scaled, so in essence it
-can't be used to derive 'real' mW values. That said we also do not have any of
-the 'platform might face potential issue of mixing devices in one thermal zone
-of two scales' problem.
+> > > For first steps I'd start with demidlayering some of the internal
+> > > users of uapi structs, like the console_font_op really shouldn't be
+> > > used anywhere in any function, except in the ioctl handler that
+> > > converts it into the right function call. You'll probably discover a
+> > > few other places like this on the go.
+> > 
+> > Sure, I'll start from this, then cleaning up these dummy functions, then
+> > `vc_data`. Thank you for the insights!
+> 
+> Please don't take this rough plan as fixed, it's just where I'd start from
+> browsing the code and your analysis a bit. We'll probably have to adapt as
+> we go and more nasty things turn up ...
 
-So the question is, can such platforms still use 'dynamic-power-coefficient'
-in device tree and create an abstract scale? The other way of doing this would
-be to *not* specify this value in device tree and have these values stored in the
-cpufreq driver and register a custom callback to do the math.
+Sure, I'll first give it a try and see. Thank you!
 
-It just feels like jumping through hoops just to deal with the fact that the
-device tree bindings say its expected to be in mW and can't be abstract.
+Peilin Ye
 
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
