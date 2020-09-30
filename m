@@ -2,81 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DA6527F189
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 20:45:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81A4927F18B
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 20:47:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729143AbgI3SpW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 14:45:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44440 "EHLO
+        id S1729372AbgI3SrD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 14:47:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725771AbgI3SpW (ORCPT
+        with ESMTP id S1725771AbgI3SrC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 14:45:22 -0400
-Received: from mail-vk1-xa44.google.com (mail-vk1-xa44.google.com [IPv6:2607:f8b0:4864:20::a44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8075DC061755
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 11:45:20 -0700 (PDT)
-Received: by mail-vk1-xa44.google.com with SMTP id e5so584191vkm.2
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 11:45:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SGzLtpbRpyaKc9iOQICUykGsO9umWBAinEJFBiGHtng=;
-        b=dJWhnJzXxyoPQfBVXBIJ6EVktE1NPNjYtegiVBmX4eTfTGsrPOjp5EyLKMMmwl+XYz
-         qCk7f27p1Y3t5oTP3QfoCu9E4CVXj1U0WvHKmU3L3AFbOX8s+yKHzILQu/C7dRI9GsW5
-         riM9Yhn5kFjDJRXBflBP/Gap/RA2diJTzgevM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SGzLtpbRpyaKc9iOQICUykGsO9umWBAinEJFBiGHtng=;
-        b=fIUIZImh61OwSHoTOEXvu0O3ZvQiZSacM/FB4B3324wq25Kr9ni1EGLKiW9WFkvsP/
-         /qEuMSv6JFsPLHeOeIAJt/uRBTCAEAUkExoJeVZZER4Kg6QI1xfwGLmFlDrx2eOH3e3b
-         yX/pNogAND+Ypl6Gx0YRi4qE7Jb9zEtRHuCUmh4LuOQ8TM6tOajzabiPo8yt36kaRCWH
-         RW4ySdNEvNh9a8qli5VR3d0QhaGojM3TgsmaXbW5xPBv2Olv1Hdcaa+NOijwgNMtMrYs
-         6AWH1XndTX/pjokAL8el11FM79bfQfoTk3zAKI1apFjjzpF/ghz/M4C3nCb4ohvezAa7
-         FUIA==
-X-Gm-Message-State: AOAM533EnphlC2xg2o/2gBxNVWlbNNhCaPNH6Oye0c1ZfMKijOarrRDP
-        AXM8l5/Rxk3F8fFVxvK0VnurKK1rcwnl8WrMVJllUw==
-X-Google-Smtp-Source: ABdhPJx4T7kOH+8bLfRu9O7gr7DxvvWi/8nfIaGCxMLRUEsx6s1rZzg4WbdXu1inmEObaBZd5SAPkEXfL95gJGKuOiM=
-X-Received: by 2002:a05:6122:45e:: with SMTP id f30mr2504191vkk.15.1601491519617;
- Wed, 30 Sep 2020 11:45:19 -0700 (PDT)
+        Wed, 30 Sep 2020 14:47:02 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5971BC061755;
+        Wed, 30 Sep 2020 11:47:02 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1601491620;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kiz7/SWQLMON7gelenhbRoI004ot0P3TXeRig/vUtf8=;
+        b=FnBUQwSBNvrI0nokrDqg6i8UJatcEh036RkTZftkYPnd2WIKqBzrsdUP1wORktBjNMDR2o
+        YrTGjAGBipUeFG06yagvJu9lP+aMvez434GltolhXeWVrGIAzLaCAEcLBs9m8KxcKQ3l7A
+        fEEXY3Ikr3vxVKzOZbYkOaRNLLYbv79OmzDmAnz2CAZMJkRFOW/PaJk5/3lXvUX40yIH5g
+        Ne9by9mNNv3HLF+djsUjj0Gjns82LIZ2QSlw2S1GEl/07VTkmA56t2ObMfGpQUNgHUcbNV
+        00tBd1nmnPvhPoXPMCFbeTD2amaijF4tv/Iu1IzW943AKVvNBOrjo5naso1VCA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1601491620;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kiz7/SWQLMON7gelenhbRoI004ot0P3TXeRig/vUtf8=;
+        b=t7u3wtm+0S4OfXWOLfbXFH8pT3Q3dCWAWR0ow5pLJjaiqxW/1k0yT6cjYpzur6UxGibU2x
+        Aa+28214OubJyNAA==
+To:     Dave Jiang <dave.jiang@intel.com>, vkoul@kernel.org,
+        megha.dey@intel.com, maz@kernel.org, bhelgaas@google.com,
+        alex.williamson@redhat.com, jacob.jun.pan@intel.com,
+        ashok.raj@intel.com, jgg@mellanox.com, yi.l.liu@intel.com,
+        baolu.lu@intel.com, kevin.tian@intel.com, sanjay.k.kumar@intel.com,
+        tony.luck@intel.com, jing.lin@intel.com, dan.j.williams@intel.com,
+        kwankhede@nvidia.com, eric.auger@redhat.com, parav@mellanox.com,
+        jgg@mellanox.com, rafael@kernel.org, netanelg@mellanox.com,
+        shahafs@mellanox.com, yan.y.zhao@linux.intel.com,
+        pbonzini@redhat.com, samuel.ortiz@intel.com, mona.hossain@intel.com
+Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+        x86@kernel.org, linux-pci@vger.kernel.org, kvm@vger.kernel.org
+Subject: Re: [PATCH v3 05/18] dmaengine: idxd: add IMS support in base driver
+In-Reply-To: <160021248979.67751.3799965857372703876.stgit@djiang5-desk3.ch.intel.com>
+References: <160021207013.67751.8220471499908137671.stgit@djiang5-desk3.ch.intel.com> <160021248979.67751.3799965857372703876.stgit@djiang5-desk3.ch.intel.com>
+Date:   Wed, 30 Sep 2020 20:47:00 +0200
+Message-ID: <87sgazgl0b.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-References: <20200924131318.2654747-1-balsini@android.com> <20200924131318.2654747-3-balsini@android.com>
-In-Reply-To: <20200924131318.2654747-3-balsini@android.com>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Wed, 30 Sep 2020 20:45:08 +0200
-Message-ID: <CAJfpegvvf4MfO4Jw5A=TJJfrxN_1xFTmwBJ2bb9UfzYBgkhzzQ@mail.gmail.com>
-Subject: Re: [PATCH V9 2/4] fuse: Trace daemon creds
-To:     Alessio Balsini <balsini@android.com>
-Cc:     Akilesh Kailash <akailash@google.com>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Antonio SJ Musumeci <trapexit@spawn.link>,
-        David Anderson <dvander@google.com>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
-        Martijn Coenen <maco@android.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Lawrence <paullawrence@google.com>,
-        Stefano Duo <stefanoduo@google.com>,
-        Zimuzo Ezeozue <zezeozue@google.com>,
-        fuse-devel <fuse-devel@lists.sourceforge.net>,
-        kernel-team <kernel-team@android.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 3:13 PM Alessio Balsini <balsini@android.com> wrote:
->
-> Add a reference to the FUSE daemon credentials, so that they can be used to
-> temporarily raise the user credentials when accessing lower file system
-> files in passthrough.
+On Tue, Sep 15 2020 at 16:28, Dave Jiang wrote:
+>  struct idxd_device {
+> @@ -170,6 +171,7 @@ struct idxd_device {
+>  
+>  	int num_groups;
+>  
+> +	u32 ims_offset;
+>  	u32 msix_perm_offset;
+>  	u32 wqcfg_offset;
+>  	u32 grpcfg_offset;
+> @@ -177,6 +179,7 @@ struct idxd_device {
+>  
+>  	u64 max_xfer_bytes;
+>  	u32 max_batch_size;
+> +	int ims_size;
+>  	int max_groups;
+>  	int max_engines;
+>  	int max_tokens;
+> @@ -196,6 +199,7 @@ struct idxd_device {
+>  	struct work_struct work;
+>  
+>  	int *int_handles;
+> +	struct sbitmap ims_sbmap;
 
-Hmm, I think it would be better to store the creds of the ioctl()
-caller together with the open file.   The mounter may deliberately
-have different privileges from the process doing the actual I/O.
+This bitmap is needed for what?
+
+> --- a/drivers/dma/idxd/init.c
+> +++ b/drivers/dma/idxd/init.c
+> @@ -231,10 +231,51 @@ static void idxd_read_table_offsets(struct idxd_device *idxd)
+>  	idxd->msix_perm_offset = offsets.msix_perm * 0x100;
+>  	dev_dbg(dev, "IDXD MSIX Permission Offset: %#x\n",
+>  		idxd->msix_perm_offset);
+> +	idxd->ims_offset = offsets.ims * 0x100;
+
+Magic constant pulled out of thin air. #define ....
+
+> +	dev_dbg(dev, "IDXD IMS Offset: %#x\n", idxd->ims_offset);
+>  	idxd->perfmon_offset = offsets.perfmon * 0x100;
+>  	dev_dbg(dev, "IDXD Perfmon Offset: %#x\n", idxd->perfmon_offset);
+>  }
+>  
+> +#define PCI_DEVSEC_CAP		0x23
+> +#define SIOVDVSEC1(offset)	((offset) + 0x4)
+> +#define SIOVDVSEC2(offset)	((offset) + 0x8)
+> +#define DVSECID			0x5
+> +#define SIOVCAP(offset)		((offset) + 0x14)
+> +
+> +static void idxd_check_siov(struct idxd_device *idxd)
+> +{
+> +	struct pci_dev *pdev = idxd->pdev;
+> +	struct device *dev = &pdev->dev;
+> +	int dvsec;
+> +	u16 val16;
+> +	u32 val32;
+> +
+> +	dvsec = pci_find_ext_capability(pdev, PCI_DEVSEC_CAP);
+> +	pci_read_config_word(pdev, SIOVDVSEC1(dvsec), &val16);
+> +	if (val16 != PCI_VENDOR_ID_INTEL) {
+> +		dev_dbg(&pdev->dev, "DVSEC vendor id is not Intel\n");
+> +		return;
+> +	}
+> +
+> +	pci_read_config_word(pdev, SIOVDVSEC2(dvsec), &val16);
+> +	if (val16 != DVSECID) {
+> +		dev_dbg(&pdev->dev, "DVSEC ID is not SIOV\n");
+> +		return;
+> +	}
+> +
+> +	pci_read_config_dword(pdev, SIOVCAP(dvsec), &val32);
+> +	if ((val32 & 0x1) && idxd->hw.gen_cap.max_ims_mult) {
+> +		idxd->ims_size = idxd->hw.gen_cap.max_ims_mult * 256ULL;
+> +		dev_dbg(dev, "IMS size: %u\n", idxd->ims_size);
+> +		set_bit(IDXD_FLAG_SIOV_SUPPORTED, &idxd->flags);
+> +		dev_dbg(&pdev->dev, "IMS supported for device\n");
+> +		return;
+> +	}
+> +
+> +	dev_dbg(&pdev->dev, "SIOV unsupported for device\n");
+
+It's really hard to find the code inside all of this dev_dbg()
+noise. But why is this capability check done in this driver? Is this
+capability stuff really IDXD specific or is the next device which
+supports this going to copy and pasta the above?
+
+>  static void idxd_read_caps(struct idxd_device *idxd)
+>  {
+>  	struct device *dev = &idxd->pdev->dev;
+> @@ -253,6 +294,7 @@ static void idxd_read_caps(struct idxd_device *idxd)
+>  	dev_dbg(dev, "max xfer size: %llu bytes\n", idxd->max_xfer_bytes);
+>  	idxd->max_batch_size = 1U << idxd->hw.gen_cap.max_batch_shift;
+>  	dev_dbg(dev, "max batch size: %u\n", idxd->max_batch_size);
+> +	idxd_check_siov(idxd);
+>  	if (idxd->hw.gen_cap.config_en)
+>  		set_bit(IDXD_FLAG_CONFIGURABLE, &idxd->flags);
+>  
+> @@ -347,9 +389,19 @@ static int idxd_probe(struct idxd_device *idxd)
+>  
+>  	idxd->major = idxd_cdev_get_major(idxd);
+>  
+> +	if (idxd->ims_size) {
+> +		rc = sbitmap_init_node(&idxd->ims_sbmap, idxd->ims_size, -1,
+> +				       GFP_KERNEL, dev_to_node(dev));
+> +		if (rc < 0)
+> +			goto sbitmap_fail;
+> +	}
+
+Ah, here the bitmap is allocated, but it's still completely unclear what
+it is used for.
+
+The subject line is misleading as hell. This does not add support, it's
+doing some magic capability checks and allocates stuff which nobody
+knows what it is used for.
 
 Thanks,
-Miklos
+
+        tglx
+
+
