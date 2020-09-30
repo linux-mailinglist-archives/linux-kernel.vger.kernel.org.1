@@ -2,129 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5816627E82B
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 14:04:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CA3E27E82F
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 14:04:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729548AbgI3MEj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 08:04:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59174 "EHLO mail.kernel.org"
+        id S1729623AbgI3MEv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 08:04:51 -0400
+Received: from smtp.asem.it ([151.1.184.197]:63339 "EHLO smtp.asem.it"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728270AbgI3MEj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 08:04:39 -0400
-Received: from localhost.localdomain (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4218C2076B;
-        Wed, 30 Sep 2020 12:04:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601467478;
-        bh=GykIBSaiDmEJ3XNEf9HGHAkoXZDo5xF4J1k3EoMvwoQ=;
-        h=From:To:Cc:Subject:Date:From;
-        b=f99KUqvqfomYjYMNPm/3zHNXcASLOTXscOvNPPIepLguIQ9EHBo0TzXHorvKVdW8b
-         QnkTrmvJoFqz2kBpm/RZr9+GXmKYNQ6aytmUsTT88cUsNDZlkW6Et5y9Q/+6ghXzHM
-         YrAcx89aIlNjuUc4MshU5oVeSU+CL2El+eM9NEk8=
-From:   Will Deacon <will@kernel.org>
-To:     linux-serial@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Peter Zijlstra <peterz@infradead.org>, stable@vger.kernel.org,
-        Russell King <linux@armlinux.org.uk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Will Deacon <will@kernel.org>
-Subject: [PATCH] serial: pl011: Fix lockdep splat when handling magic-sysrq interrupt
-Date:   Wed, 30 Sep 2020 13:04:32 +0100
-Message-Id: <20200930120432.16551-1-will@kernel.org>
-X-Mailer: git-send-email 2.20.1
+        id S1729561AbgI3MEu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 08:04:50 -0400
+Received: from webmail.asem.it
+        by asem.it (smtp.asem.it)
+        (SecurityGateway 6.5.2)
+        with ESMTP id SG000514340.MSG 
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 14:04:45 +0200S
+Received: from ASAS044.asem.intra (172.16.16.44) by ASAS044.asem.intra
+ (172.16.16.44) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 30
+ Sep 2020 14:04:43 +0200
+Received: from ASAS044.asem.intra ([::1]) by ASAS044.asem.intra ([::1]) with
+ mapi id 15.01.1979.003; Wed, 30 Sep 2020 14:04:43 +0200
+From:   Flavio Suligoi <f.suligoi@asem.it>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+CC:     Bartosz Golaszewski <brgl@bgdev.pl>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: How to use an ACPI declared GPIO in a userspace ...
+Thread-Topic: How to use an ACPI declared GPIO in a userspace ...
+Thread-Index: AdaWdniTedAZ6+9wQdyYYgE5sQ27yP//4UoAgAAGTYD//91o0IAAJ14A//6Yg1A=
+Date:   Wed, 30 Sep 2020 12:04:43 +0000
+Message-ID: <22753b53cd7d4dfba4ef3610f71cc462@asem.it>
+References: <9152bb8be33e4192a7766eb53c6ca9af@asem.it>
+ <CAMRc=McnsSkg-7UMp7pKaGX2wSqsZC2jQZV2zRepxm9UxGg=YA@mail.gmail.com>
+ <CAHp75VfgEGydXN1A+Y=wn3iX1MbLhN8F9kYyfQwTZBJydr+0+Q@mail.gmail.com>
+ <feb8567c830748c483c8c66dd4717003@asem.it>
+ <CAHp75Vdd2QjvJvLGHa1x=RaSknEG+O+YB4eJA6+2htnZ=Gf52g@mail.gmail.com>
+In-Reply-To: <CAHp75Vdd2QjvJvLGHa1x=RaSknEG+O+YB4eJA6+2htnZ=Gf52g@mail.gmail.com>
+Accept-Language: it-IT, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.16.17.208]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-SGHeloLookup-Result: pass smtp.helo=webmail.asem.it (ip=172.16.16.44)
+X-SGSPF-Result: none (smtp.asem.it)
+X-SGOP-RefID: str=0001.0A09020E.5F74745C.0040,ss=1,re=0.000,recu=0.000,reip=0.000,cl=1,cld=1,fgs=0 (_st=1 _vt=0 _iwf=0)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Zijlstra <peterz@infradead.org>
-
-Issuing a magic-sysrq via the PL011 causes the following lockdep splat,
-which is easily reproducible under QEMU:
-
-  | sysrq: Changing Loglevel
-  | sysrq: Loglevel set to 9
-  |
-  | ======================================================
-  | WARNING: possible circular locking dependency detected
-  | 5.9.0-rc7 #1 Not tainted
-  | ------------------------------------------------------
-  | systemd-journal/138 is trying to acquire lock:
-  | ffffab133ad950c0 (console_owner){-.-.}-{0:0}, at: console_lock_spinning_enable+0x34/0x70
-  |
-  | but task is already holding lock:
-  | ffff0001fd47b098 (&port_lock_key){-.-.}-{2:2}, at: pl011_int+0x40/0x488
-  |
-  | which lock already depends on the new lock.
-
-  [...]
-
-  |  Possible unsafe locking scenario:
-  |
-  |        CPU0                    CPU1
-  |        ----                    ----
-  |   lock(&port_lock_key);
-  |                                lock(console_owner);
-  |                                lock(&port_lock_key);
-  |   lock(console_owner);
-  |
-  |  *** DEADLOCK ***
-
-The issue being that CPU0 takes 'port_lock' on the irq path in pl011_int()
-before taking 'console_owner' on the printk() path, whereas CPU1 takes
-the two locks in the opposite order on the printk() path due to setting
-the "console_owner" prior to calling into into the actual console driver.
-
-Fix this in the same way as the msm-serial driver by dropping 'port_lock'
-before handling the sysrq.
-
-Cc: <stable@vger.kernel.org> # 4.19+
-Cc: Russell King <linux@armlinux.org.uk>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Jiri Slaby <jirislaby@kernel.org>
-Link: https://lore.kernel.org/r/20200811101313.GA6970@willie-the-truck
-Signed-off-by: Peter Zijlstra <peterz@infradead.org>
-Tested-by: Will Deacon <will@kernel.org>
-Signed-off-by: Will Deacon <will@kernel.org>
----
- drivers/tty/serial/amba-pl011.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/tty/serial/amba-pl011.c b/drivers/tty/serial/amba-pl011.c
-index 67498594d7d7..87dc3fc15694 100644
---- a/drivers/tty/serial/amba-pl011.c
-+++ b/drivers/tty/serial/amba-pl011.c
-@@ -308,8 +308,9 @@ static void pl011_write(unsigned int val, const struct uart_amba_port *uap,
-  */
- static int pl011_fifo_to_tty(struct uart_amba_port *uap)
- {
--	u16 status;
- 	unsigned int ch, flag, fifotaken;
-+	int sysrq;
-+	u16 status;
- 
- 	for (fifotaken = 0; fifotaken != 256; fifotaken++) {
- 		status = pl011_read(uap, REG_FR);
-@@ -344,10 +345,12 @@ static int pl011_fifo_to_tty(struct uart_amba_port *uap)
- 				flag = TTY_FRAME;
- 		}
- 
--		if (uart_handle_sysrq_char(&uap->port, ch & 255))
--			continue;
-+		spin_unlock(&uap->port.lock);
-+		sysrq = uart_handle_sysrq_char(&uap->port, ch & 255);
-+		spin_lock(&uap->port.lock);
- 
--		uart_insert_char(&uap->port, ch, UART011_DR_OE, ch, flag);
-+		if (!sysrq)
-+			uart_insert_char(&uap->port, ch, UART011_DR_OE, ch, flag);
- 	}
- 
- 	return fifotaken;
--- 
-2.28.0.709.gb0816b6eb0-goog
-
+SGkgQW5keSwNCg0KPiA+ID4gPiA+IEkgd2FzIHdvbmRlcmluZyBpZiB0aGVyZSBpcyBhIGdlbmVy
+aWMgR1BJTyBkcml2ZXIgdGhhdCBJIGNhbiB1c2UNCj4gTWF5YmUgSSB3YXMgbm90IHNvIGNsZWFy
+LCBidXQgYXMgQmFydCBtZW50aW9uZWQgdGhlIGxlYXN0IHlvdSBjYW4gZG8NCj4gaXMgc2ltcGx5
+IGRlZmluZSBsaW5lIG5hbWUgdmlhICJncGlvLWxpbmUtbmFtZXMiIHByb3BlcnR5LiBUaGUgcHJv
+YmxlbQ0KPiBoZXJlIGlzIHdoZW4gYW5kIGhvdyB5b3Ugd291bGQgbGlrZSB0byBoYXZlIHRoZW0g
+aW5jb3Jwb3JhdGVkLg0KDQpJIGFscmVhZHkgdHJpZWQgYWRkaW5nIHRoZSAiZ3Bpby1saW5lLW5h
+bWVzIiBwcm9wZXJ0eSwgYnV0IHRoZSBwcm9ibGVtDQppcyB0aGUgc2FtZTogbm8gZHJpdmVyIGFz
+a3MgZm9yIHRoaXMgR1BJTywgYXMgc2hvd24gYnkgdGhlIGZvbGxvd2luZw0Ka2VybmVsIG1lc3Nh
+Z2VzOg0KDQpBQ1BJOiBIb3N0LWRpcmVjdGVkIER5bmFtaWMgQUNQSSBUYWJsZSBMb2FkOg0KQUNQ
+STogU1NEVCAweEZGRkY5OTQwMzRENDJBMDAgMDAwMEU4ICh2MDUgQVNFTXNwIEdQSU9fQlROIDAw
+MDAwMDAxIElOVEwgMjAyMDA3MTcpDQpBQ1BJOiBcX1NCXy5HUE8xLkJUTlM6IFBSUDAwMDEgcmVx
+dWlyZXMgJ2NvbXBhdGlibGUnIHByb3BlcnR5DQoNClNvIEknbGwgc3RhcnQgdG8gd3JpdGUgYSBz
+aW1wbGUgZGV2aWNlIGRyaXZlciB0byB1c2UgdGhpcyBHUElPLg0KSSdsbCBrZWVwIHlvdSBpbmZv
+cm1lZCENCiANCj4gV2hlbjogaWYgQUNQSSB0YWJsZXMgYXJlIGJlaW5nIHByb3ZpZGVkIGJ5IGZp
+cm13YXJlIHdoaWNoIHlvdSBtYXkgbm90DQo+IGFsdGVyLCB0aGVuIHlvdSBtdXN0IHVzZSBpbml0
+cmFtZnMgdHlwZSBvZiBzb2x1dGlvbiAobm8gY29uZmlnZnMsDQo+IGRvbid0IGtub3cgYWJvdXQg
+RUZJIHZhciB0aG91Z2gpLiBIb3c6IEluIHRoYXQgY2FzZSB5b3UgbWlnaHQgaGF2ZSBhDQo+IGNo
+YW5jZSB0byBpbmNvcnBvcmF0ZSBfRFNEKCkgbWV0aG9kIGludG8gKmV4aXN0aW5nKiBfQ1JTKCkg
+b25lLg0KPiBQb3NzaWJsZSBpbXBlZGltZW50czogaWYgQUNQSSB0YWJsZSBmcm9tIGZpcm13YXJl
+IGFscmVhZHkgaGFzIGEgX0RTRCgpDQo+IGRlZmluZWQgb3IgYWJvdmUgaXMgbm90IHdvcmtpbmcg
+Zm9yIHNvbWUgcmVhc29uLiBJbiBzdWNoIGEgY2FzZSB5b3UNCj4gbXVzdCB1cGdyYWRlIGVudGly
+ZSBEU0RUIHZpYSBpbml0cmFtZnMuDQo+IA0KPiA+ID4gPiBBZGRpbmcgQW5keSB3aG8ga25vd3Mg
+QUNQSSBHUElPIHdlbGwuDQo+ID4gPg0KPiA+ID4gVGhhbmtzLg0KPiA+ID4NCj4gPiA+ID4gSW4g
+Z2VuZXJhbCwgdGhlICJncGlvLWxpbmUtbmFtZXMiIHByb3BlcnR5IGlzIHVzZWQgZm9yIHRoYXQg
+YW5kIGl0J3MNCj4gPiA+ID4gc3VwcG9ydGVkIGJvdGggZm9yIGRldmljZSB0cmVlIGFzIHdlbGwg
+YXMgQUNQSSwgYWx0aG91Z2ggSSBoYXZlIG9ubHkNCj4gPiA+ID4gZXZlciB1c2VkIHRoZSBmb3Jt
+ZXIuDQo+ID4gPg0KPiA+ID4gUmlnaHQuIEFDUEkgc3VwcG9ydHMgcHJvcGVydGllcyB2aWEgX0RT
+RCgpIG1ldGhvZC4NCj4gDQo+IC0tDQo+IFdpdGggQmVzdCBSZWdhcmRzLA0KPiBBbmR5IFNoZXZj
+aGVua28NCg0KVGhhbmtzIEFuZHkgYW5kIEJhcnRvc3ogZm9yIHlvdXIgc3VwcG9ydCENCkJlc3Qg
+cmVnYXJkcywNCg0KRmxhdmlvDQo=
