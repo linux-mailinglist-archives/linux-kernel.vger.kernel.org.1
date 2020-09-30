@@ -2,105 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2CF927F247
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 21:04:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1287427F24A
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 21:04:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730742AbgI3TCr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 15:02:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47138 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730220AbgI3TCp (ORCPT
+        id S1730769AbgI3TDG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 15:03:06 -0400
+Received: from mail-io1-f78.google.com ([209.85.166.78]:34539 "EHLO
+        mail-io1-f78.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729792AbgI3TDF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 15:02:45 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16A5DC061755
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 12:02:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=tY2dQ+bDPBila3vv/T4/RYgLtz2foLuXryJAx7SCMDU=; b=xCBJcH6iFcC9HmMNErCe5ChKS8
-        wd9Sahi8mVuNf3r4HUEFiMYBDcwhShuReMXf17UEa9GXBVYkf4QA/nvgv9ki8DN4IF2ZPpw1GTs1F
-        XOzmcT93sDI0LsZb+o2CJV+il+0gF1fBsndOlGIpZ2FX8S4A849DXL5PEdLw7IMCiTNm9GCwo0z4n
-        xDJPeBedAql/lcZHq2CHy28Z21gxKtXYv7e857eMZ1+J95vsBBHXH77igUBCo+5gajHpi+ujShqFu
-        TU0Uan8GE6IzbN7haV39bMWdijMhaQhlqiiKMCpf7OzMjNEEM7Stx1ySmpUyW0aVEEOKb6KOvU7vV
-        V0CSJR7A==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kNhN1-0002Gx-HQ; Wed, 30 Sep 2020 19:02:32 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 1A05C30705A;
-        Wed, 30 Sep 2020 21:02:29 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 03A9620244EC3; Wed, 30 Sep 2020 21:02:28 +0200 (CEST)
-Date:   Wed, 30 Sep 2020 21:02:28 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Boqun Feng <boqun.feng@gmail.com>
-Cc:     g@hirez.programming.kicks-ass.net, Qian Cai <cai@redhat.com>,
-        Waiman Long <longman@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: lockdep null-ptr-deref
-Message-ID: <20200930190228.GL2611@hirez.programming.kicks-ass.net>
-References: <5fd046115645daa00f8841f5467da4c4d960ca92.camel@redhat.com>
- <20200929230823.GC17810@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net>
- <20200930091610.GV2628@hirez.programming.kicks-ass.net>
- <20200930094937.GE2651@hirez.programming.kicks-ass.net>
- <20200930121818.GD17810@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net>
+        Wed, 30 Sep 2020 15:03:05 -0400
+Received: by mail-io1-f78.google.com with SMTP id i1so1882804iom.1
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 12:03:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=4BsGJwLCSmtEpgZ5Z5TL9+bN9hykq9gqd70JSnuK+q4=;
+        b=RhwMqGTrzTGtQCfiC2/JHCmMncuYroWLkBiF5vtZdigHeO4Rz5fY0nh186B+Z5tsbj
+         GkhkOFfS0X05g7jdu+W4+0s6gqY7oQ/uMYlBK+Bph67GMhovn3NdFVnAAPiw2/wTNgu3
+         l9oOcZ4MbBqZE6qh2/PRnZXlzd7Y93s8+B2qx3nLRrZmHmbnPd+icNr+OciPSu3EOnsR
+         LqR+E+AaNDI16/plcPwLi/HoSDRMFHfZrEvPOjZTy5EJHFNmeJjozf/ro46Ttq0u1827
+         GJwUl+6v0Vi//PvlPrT6WOSFXAY3It4uNygyL+n0OWxVHHA9E7IUPawkxLLsY6cskiOh
+         LufA==
+X-Gm-Message-State: AOAM532CzRgRoSaaMIFYOoPDM/0ei9i+K2SYAW110I8SNqQ3tUUvAdZG
+        3aBl5C5ITd0pkjHdlw+eKpe6NTH4Y+t9IfY41Q6UHTr2UmYO
+X-Google-Smtp-Source: ABdhPJxT/TNj9sdzI1Jlqa8xdgNr1o/U4WTpEAMAVh5Rh6fkvvL6SudGSXDHlQCQ7DGsgEXq2bYAjTIEJDAHSbWWWWn5XGCRZh0F
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200930121818.GD17810@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net>
+X-Received: by 2002:a05:6602:121c:: with SMTP id y28mr2845266iot.156.1601492584835;
+ Wed, 30 Sep 2020 12:03:04 -0700 (PDT)
+Date:   Wed, 30 Sep 2020 12:03:04 -0700
+In-Reply-To: <000000000000e82e1a05afd0605d@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a1321d05b08c8c9b@google.com>
+Subject: Re: KASAN: use-after-free Read in afs_deactivate_cell (2)
+From:   syzbot <syzbot+a5e4946b04d6ca8fa5f3@syzkaller.appspotmail.com>
+To:     dhowells@redhat.com, linux-afs@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 08:18:18PM +0800, Boqun Feng wrote:
+syzbot has bisected this issue to:
 
-> For one thing, I do think that LOCK_READ_USED trace is helpful for
-> better reporting, because if there is a read lock in the dependency path
-> which causes the deadlock, it's better to have the LOCK_READ_USED trace
-> to know at least the initial READ usage. For example, if we have
-> 
-> 	void f1(...)
-> 	{
-> 		write_lock(&A);
-> 		spin_lock(&C);
-> 		// A -> C
-> 		...
-> 	}
-> 
-> 	void g(...)
-> 	{
-> 		read_lock(&A);
-> 		...
-> 	}
-> 	void f2(...)
-> 	{
-> 		spin_lock(&B);
-> 		g(...);
-> 		// B -> A
-> 	}
-> 
-> 	void f3(...) {
-> 		spin_lock(&C);
-> 		spin_lock(&B);
-> 		// C -> B, trigger lockdep splat
-> 	}
-> 
-> when lockdep reports the deadlock (at the time f3() is called), it will
-> be useful if we have a trace like:
-> 
-> 	INITIAL READ usage at:
-> 	g+0x.../0x...
-> 	f2+0x.../0x...
-> 
-> Thoughts?
+commit 13fcc6837049f1bd76d57e9abc217a91fdbad764
+Author: David Howells <dhowells@redhat.com>
+Date:   Thu Nov 1 23:07:27 2018 +0000
 
-Wouldn't that also be in LOCK_ENABLED_*_READ ?
+    afs: Add fs_context support
 
-That is, with PROVE_LOCKING on, the initial usage is bound to set more
-states, except for !check||trylock usage, and those aren't really all
-that interesting.
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13ea9ea7900000
+start commit:   49e7e3e9 Add linux-next specific files for 20200929
+git tree:       linux-next
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=101a9ea7900000
+console output: https://syzkaller.appspot.com/x/log.txt?x=17ea9ea7900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=b823d07e241e7aee
+dashboard link: https://syzkaller.appspot.com/bug?extid=a5e4946b04d6ca8fa5f3
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=173c446d900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14ba5be3900000
+
+Reported-by: syzbot+a5e4946b04d6ca8fa5f3@syzkaller.appspotmail.com
+Fixes: 13fcc6837049 ("afs: Add fs_context support")
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
