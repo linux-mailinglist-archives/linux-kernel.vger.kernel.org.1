@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A26BA27E109
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 08:26:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7B9D27E112
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 08:28:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728010AbgI3G0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 02:26:36 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:24418 "EHLO
+        id S1727347AbgI3G2e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 02:28:34 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:43079 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725320AbgI3G0g (ORCPT
+        by vger.kernel.org with ESMTP id S1725776AbgI3G2d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 02:26:36 -0400
-Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601447194;
+        Wed, 30 Sep 2020 02:28:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601447312;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=3WeK/ai1FaE8kljJN83SJh1WLATx3v+i63KVrGQh/Os=;
-        b=CW3WCiAJKJSvRZvtKYs5b2s/TEPXWZbz67w/Rku9hEFPbYa/Siv0NiLTGW29HKXJkzFMPr
-        k6s26cFDOioVtZNKPq27FaL7+Q2C+F10vHCRaI+QhbkhYZwdsthH3qvurrj1Uf1BvwWlyP
-        Z1r5c2HRl94dS9YSNi00bJrbZj3wYGs=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-402-4r2A_ufDPjOHwsw9gxEoRg-1; Wed, 30 Sep 2020 02:26:31 -0400
-X-MC-Unique: 4r2A_ufDPjOHwsw9gxEoRg-1
-Received: by mail-wr1-f70.google.com with SMTP id v12so216881wrm.9
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 23:26:30 -0700 (PDT)
+        bh=+BwOGlT03+O2Qxwll2h+vS4+zjJZTv/yunKOwB1Myxg=;
+        b=Up6iKoB8XzlDs1XuAnAgYJcm13JND16hB9AjR0ZshKBzyQue85SdXg1zkrmTTCL45Czejh
+        ah/NSDeEGqiTpTv640hu4/bncCww7O2A4lm1ENptaeSsr7vn7Q769LP3zBRmczPKfQnZcB
+        QTzQA1edJunieCje9CtoJNiMxT0syEY=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-34-YfMI-TXoOHuezkS5UTWvbg-1; Wed, 30 Sep 2020 02:28:30 -0400
+X-MC-Unique: YfMI-TXoOHuezkS5UTWvbg-1
+Received: by mail-wr1-f72.google.com with SMTP id a12so215347wrg.13
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 23:28:29 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=3WeK/ai1FaE8kljJN83SJh1WLATx3v+i63KVrGQh/Os=;
-        b=jkAbmlzS2D9rHr5taAMXOl0Atny7cQKm7ujsSS7rZq4oS04uoLBc+oamy/uPEkMh3Y
-         gV9JHQd2lwi96I9WoEakr3oT5HcWn//7qw7CkdQsdBnEQ+XF/7XXYEfiEhdC5BcaTT9t
-         jqNYzUCz0C4jecMsKJib+zWABnSh8BvF39SSvVdYxuetwGJdNK6Kj/d3EwaNjrhmFDYe
-         LFsB9CIP6Nd5v99805KunEVvfbr4V9HuIsH1cs6EYpHJNt6J1GgIutyI8a7vZtfii5SG
-         GHZFkyjt+yLVAGeIrZHRvgZqSGVM8OZUuiVWA8ws6lx+4GKDCE94zaMrYG9p3woNunzj
-         6rwg==
-X-Gm-Message-State: AOAM530+AJpLH6N0BkTn+DgZzIReqtm6cxw3znePvgmuyPi/lwoMUAw6
-        /NBLIw2X5OTtPjp5scG+93zR6Xl5EN3y6MjTFEJ5KNq79xTfJY4Jts5lB2WPZiQ4FBlCS00+Zan
-        L6T+rq0pMJi1tOt6w/iV83KUL
-X-Received: by 2002:a1c:9885:: with SMTP id a127mr1162562wme.8.1601447189774;
-        Tue, 29 Sep 2020 23:26:29 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzvqjiUpMIJOhKv2tvSdAmxKGq42O+mBn//u3munwVFfgyW0xatKeVN7IEGsjIATANn7hHwOQ==
-X-Received: by 2002:a1c:9885:: with SMTP id a127mr1162537wme.8.1601447189543;
-        Tue, 29 Sep 2020 23:26:29 -0700 (PDT)
+        bh=+BwOGlT03+O2Qxwll2h+vS4+zjJZTv/yunKOwB1Myxg=;
+        b=j1QGB/5FoTKdPr8FA2ySDUu4UnQBxSurGx14XMoUWoBNfM64T3wsOyfXrRgVd852dY
+         0sZXEi31Ol8MLF+bX0MfbwYRAjWzr759/FakqP+0GATidLSW108L9sDmyoBDocVOltdT
+         P59yDEzFcEWXAl7t6ZxO1Mj+qcPKHyUagOFa62IbkOxmfJVZUb1JDzkrNYa0gKICugj7
+         IdacS/iQ4PM1f0m28KqIx4tczW3l0ryyp3/JeOzYWKk3/kQ13SwmMJCARDJs2l7yWTj3
+         ufKITKs9ousPf/6mPO5O1SuHOaJ5mYFNfXKlF1PfMEIj50e4ytC1OM/raQ9W+b+NKFa5
+         aoag==
+X-Gm-Message-State: AOAM531Nzxu7fukEgaDM1GUSjDT0eUf+Q85eedgvPn3F4jX40qaK4O9Y
+        xUI8KP7tUTIBHTvXtZx+j1MfWmVgy4yqnIQOhYL0gT1NC7ugg9tvgVV8oWwdRWP1yUzYQDYVdMH
+        EHQA47LH2ERY5r/JE1S6mkyFc
+X-Received: by 2002:adf:a4cc:: with SMTP id h12mr1216869wrb.123.1601447308821;
+        Tue, 29 Sep 2020 23:28:28 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzxVRJxA5m+5/To7h+eAmeCUoez+96/AozIpkb01wEXPjw2ON1nW5nd6ZJBCmTeix6Z9rTReA==
+X-Received: by 2002:adf:a4cc:: with SMTP id h12mr1216853wrb.123.1601447308585;
+        Tue, 29 Sep 2020 23:28:28 -0700 (PDT)
 Received: from ?IPv6:2001:b07:6468:f312:75e3:aaa7:77d6:f4e4? ([2001:b07:6468:f312:75e3:aaa7:77d6:f4e4])
-        by smtp.gmail.com with ESMTPSA id y18sm728527wmc.24.2020.09.29.23.26.28
+        by smtp.gmail.com with ESMTPSA id d18sm1146388wrm.10.2020.09.29.23.28.27
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 29 Sep 2020 23:26:28 -0700 (PDT)
-Subject: Re: [PATCH 04/22] kvm: mmu: Allocate and free TDP MMU roots
+        Tue, 29 Sep 2020 23:28:27 -0700 (PDT)
+Subject: Re: [PATCH 07/22] kvm: mmu: Support zapping SPTEs in the TDP MMU
 To:     Sean Christopherson <sean.j.christopherson@intel.com>,
         Ben Gardon <bgardon@google.com>
 Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
@@ -66,15 +66,15 @@ Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
         Vitaly Kuznetsov <vkuznets@redhat.com>,
         Xiao Guangrong <xiaoguangrong.eric@gmail.com>
 References: <20200925212302.3979661-1-bgardon@google.com>
- <20200925212302.3979661-5-bgardon@google.com>
- <20200930060610.GA29659@linux.intel.com>
+ <20200925212302.3979661-8-bgardon@google.com>
+ <20200930061533.GC29659@linux.intel.com>
 From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <6a5b78f8-0fbe-fbec-8313-f7759e2483b0@redhat.com>
-Date:   Wed, 30 Sep 2020 08:26:28 +0200
+Message-ID: <40a793f9-c58f-7b0e-5835-d83eed9f6ba0@redhat.com>
+Date:   Wed, 30 Sep 2020 08:28:26 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.11.0
 MIME-Version: 1.0
-In-Reply-To: <20200930060610.GA29659@linux.intel.com>
+In-Reply-To: <20200930061533.GC29659@linux.intel.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -82,98 +82,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/09/20 08:06, Sean Christopherson wrote:
->> +static struct kvm_mmu_page *alloc_tdp_mmu_root(struct kvm_vcpu *vcpu,
->> +					       union kvm_mmu_page_role role)
->> +{
->> +	struct kvm_mmu_page *new_root;
->> +	struct kvm_mmu_page *root;
+On 30/09/20 08:15, Sean Christopherson wrote:
+>>  	kvm_zap_obsolete_pages(kvm);
 >> +
->> +	new_root = kvm_mmu_memory_cache_alloc(
->> +			&vcpu->arch.mmu_page_header_cache);
->> +	new_root->spt = kvm_mmu_memory_cache_alloc(
->> +			&vcpu->arch.mmu_shadow_page_cache);
->> +	set_page_private(virt_to_page(new_root->spt), (unsigned long)new_root);
->> +
->> +	new_root->role.word = role.word;
->> +	new_root->root_count = 1;
->> +	new_root->gfn = 0;
->> +	new_root->tdp_mmu_page = true;
->> +
->> +	spin_lock(&vcpu->kvm->mmu_lock);
->> +
->> +	/* Check that no matching root exists before adding this one. */
->> +	root = find_tdp_mmu_root_with_role(vcpu->kvm, role);
->> +	if (root) {
->> +		get_tdp_mmu_root(vcpu->kvm, root);
->> +		spin_unlock(&vcpu->kvm->mmu_lock);
-> Hrm, I'm not a big fan of dropping locks in the middle of functions, but the
-> alternatives aren't great.  :-/  Best I can come up with is
+>> +	if (kvm->arch.tdp_mmu_enabled)
+>> +		kvm_tdp_mmu_zap_all(kvm);
 > 
-> 	if (root)
-> 		get_tdp_mmu_root()
-> 	else
-> 		list_add();
-> 
-> 	spin_unlock();
-> 
-> 	if (root) {
-> 		free_page()
-> 		kmem_cache_free()
-> 	} else {
-> 		root = new_root;
-> 	}
-> 
-> 	return root;
-> 
-> Not sure that's any better.
-> 
->> +		free_page((unsigned long)new_root->spt);
->> +		kmem_cache_free(mmu_page_header_cache, new_root);
->> +		return root;
->> +	}
->> +
->> +	list_add(&new_root->link, &vcpu->kvm->arch.tdp_mmu_roots);
->> +	spin_unlock(&vcpu->kvm->mmu_lock);
->> +
->> +	return new_root;
->> +}
->> +
->> +static struct kvm_mmu_page *get_tdp_mmu_vcpu_root(struct kvm_vcpu *vcpu)
->> +{
->> +	struct kvm_mmu_page *root;
->> +	union kvm_mmu_page_role role;
->> +
->> +	role = vcpu->arch.mmu->mmu_role.base;
->> +	role.level = vcpu->arch.mmu->shadow_root_level;
->> +	role.direct = true;
->> +	role.gpte_is_8_bytes = true;
->> +	role.access = ACC_ALL;
->> +
->> +	spin_lock(&vcpu->kvm->mmu_lock);
->> +
->> +	/* Search for an already allocated root with the same role. */
->> +	root = find_tdp_mmu_root_with_role(vcpu->kvm, role);
->> +	if (root) {
->> +		get_tdp_mmu_root(vcpu->kvm, root);
->> +		spin_unlock(&vcpu->kvm->mmu_lock);
-> Rather than manually unlock and return, this can be
-> 
-> 	if (root)
-> 		get_tdp_mmju_root();
-> 
-> 	spin_unlock()
-> 
-> 	if (!root)
-> 		root = alloc_tdp_mmu_root();
-> 
-> 	return root;
-> 
-> You could also add a helper to do the "get" along with the "find".  Not sure
-> if that's worth the code.
+> Haven't looked into how this works; is kvm_tdp_mmu_zap_all() additive to
+> what is done by the legacy zapping, or is it a replacement?
 
-All in all I don't think it's any clearer than Ben's code.  At least in
-his case the "if"s clearly point at the double-checked locking pattern.
+It's additive because the shadow MMU is still used for nesting.
+
+>> +
+>>  	spin_unlock(&kvm->mmu_lock);
+>>  }
+>> @@ -57,8 +58,13 @@ bool is_tdp_mmu_root(struct kvm *kvm, hpa_t hpa)
+>>  	return root->tdp_mmu_page;
+>>  }
+>>  
+>> +static bool zap_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
+>> +			  gfn_t start, gfn_t end);
+>> +
+>>  static void free_tdp_mmu_root(struct kvm *kvm, struct kvm_mmu_page *root)
+>>  {
+>> +	gfn_t max_gfn = 1ULL << (boot_cpu_data.x86_phys_bits - PAGE_SHIFT);
+> 
+> BIT_ULL(...)
+
+Not sure about that.  Here the point is not to have a single bit, but to
+do a power of two.  Same for the version below.
+
+>> + * If the MMU lock is contended or this thread needs to yield, flushes
+>> + * the TLBs, releases, the MMU lock, yields, reacquires the MMU lock,
+>> + * restarts the tdp_iter's walk from the root, and returns true.
+>> + * If no yield is needed, returns false.
+>> + */
+>> +static bool tdp_mmu_iter_cond_resched(struct kvm *kvm, struct tdp_iter *iter)
+>> +{
+>> +	if (need_resched() || spin_needbreak(&kvm->mmu_lock)) {
+>> +		kvm_flush_remote_tlbs(kvm);
+>> +		cond_resched_lock(&kvm->mmu_lock);
+>> +		tdp_iter_refresh_walk(iter);
+>> +		return true;
+>> +	} else {
+>> +		return false;
+>> +	}
+> 
+> Kernel style is to not bother with an "else" if the "if" returns.
+
+I have rewritten all of this in my version anyway. :)
 
 Paolo
 
