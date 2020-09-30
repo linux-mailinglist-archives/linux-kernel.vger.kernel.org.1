@@ -2,134 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1514327F4CD
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 00:06:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A47327F4BF
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 00:01:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731267AbgI3WGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 18:06:11 -0400
-Received: from wnew1-smtp.messagingengine.com ([64.147.123.26]:54099 "EHLO
-        wnew1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730470AbgI3WGL (ORCPT
+        id S1730889AbgI3WBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 18:01:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46558 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728721AbgI3WBO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 18:06:11 -0400
-X-Greylist: delayed 452 seconds by postgrey-1.27 at vger.kernel.org; Wed, 30 Sep 2020 18:06:10 EDT
-Received: from compute7.internal (compute7.nyi.internal [10.202.2.47])
-        by mailnew.west.internal (Postfix) with ESMTP id 6332CFA8;
-        Wed, 30 Sep 2020 17:58:37 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute7.internal (MEProxy); Wed, 30 Sep 2020 17:58:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        oregontracks.org; h=from:to:cc:subject:date:message-id
-        :in-reply-to:references:mime-version:content-transfer-encoding;
-         s=fm1; bh=/xGcW+2xAAEsf/UaEloN+2L6gVCe1zrPoKRx2oQPxk8=; b=obg8P
-        sTD4cEaJF/WeqYFoFH5ceVw1F2SukZeG1AtgtaB29wUUzG84cqyG8wU7eagagsD2
-        uQ0UL2XohXn4LnLIhMdvpQkbhQR9ux992wLeDmhNmTi1aPCp7nk669BwYiQvz6su
-        SpB9uwLZqJ4W1Few4MupkzvJDm6SONjotSXyWgm17VIySDsUt0o0yfh2YRTMWVrB
-        TT320xRSZYJUk4mXR5P0wsW9BnZZ8tZYBkpTU9mW0H+T19xT2HXXdpo1quY7cKFD
-        +MEfyvA+AOxcTafDutl5Om06FEqgVxFKP9mrKw4wZj1vi+ekElhVW8a31Ec++y3d
-        UmUF5Vv/ySXCaBg4A==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=/xGcW+2xAAEsf/UaEloN+2L6gVCe1zrPoKRx2oQPxk8=; b=t5/QPJIi
-        eWPAhsxdFoMd178j9GIjuhsnF5IHegtY3EEiYf6SYjq/tlasZ+gvod/Lw5/91fVF
-        pBEMjmEH/eZdUWaJqsHNn0qazwBvBWukWYmep46aoJ8bp+dY7RqL4PiBT6rMOEnV
-        U/eD5y5ZY97F5mZlxMijyNaT6v4yToxO1WmDETEO8SQ76sZXn3dW3aut9+JKBJX2
-        jAsn5A+eQdosxaq39zv8Xzba0K6AnKVJ06sAMPp8/B2wmO2R1RaZzpIOc5wkFmRX
-        B3e3hkvxaMf4C34dEy1pOoqazdQJXp47m5cCQOqEX8NS5EJSvxSPBRs+lGVi/DM/
-        dcu6fOQzXsdYLw==
-X-ME-Sender: <xms:jP90X6HhbIHIxWoLLYEitb9qoTjiFt7oVI6xouProFFjqBoIm6axGA>
-    <xme:jP90X7XTdNT5XmweJKIswdTWRLlGjjeFDlQ1eoostjJkBlfqZLO7CPdDpdpYt_eUG
-    xaaYaDMJjvngCUx>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrfeefgddthecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefhvffufffkofgjfhgggfestdekredtredttdenucfhrhhomhepufgvrghnucgg
-    ucfmvghllhgvhicuoehsvggrnhhvkhdruggvvhesohhrvghgohhnthhrrggtkhhsrdhorh
-    hgqeenucggtffrrghtthgvrhhnpeehkeffteeiudeiffelkeelvefftdelhfeitdeigeff
-    leeufedvgfegvdefvedtteenucfkphepvdegrddvtddrudegkedrgeelnecuvehluhhsth
-    gvrhfuihiivgepudenucfrrghrrghmpehmrghilhhfrhhomhepshgvrghnvhhkrdguvghv
-    sehorhgvghhonhhtrhgrtghkshdrohhrgh
-X-ME-Proxy: <xmx:jP90X0IaL4SSnS3BB7RqlwfwgeNFHj-MCnfY9a2mZEcafgVW0JAnoA>
-    <xmx:jP90X0HmYE_0zM-VNdBClVy8lr0DtA03m9xBwNmEjvN-cQV2NgXdcw>
-    <xmx:jP90XwU0ULk2pHo0zpdJ4sB6yB1Rkr15izmbu-fn8CuEyhAsrgAxqw>
-    <xmx:jf90X0oXwcu4y8JrV53hSFUKLUnslfTgczV-rXRne3twEy3AH5IZ-vWj_RE>
-Received: from arch-ashland-svkelley.hsd1.or.comcast.net (c-24-20-148-49.hsd1.or.comcast.net [24.20.148.49])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 7B4B13280059;
-        Wed, 30 Sep 2020 17:58:35 -0400 (EDT)
-From:   Sean V Kelley <seanvk.dev@oregontracks.org>
-To:     bhelgaas@google.com, Jonathan.Cameron@huawei.com,
-        rafael.j.wysocki@intel.com, ashok.raj@intel.com,
-        tony.luck@intel.com, sathyanarayanan.kuppuswamy@intel.com,
-        qiuxu.zhuo@intel.com
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sean V Kelley <sean.v.kelley@intel.com>,
-        Bjorn Helgaas <helgaas@google.com>
-Subject: [PATCH v7 04/13] PCI/ERR: Rename reset_link() to reset_subordinate_device()
-Date:   Wed, 30 Sep 2020 14:58:11 -0700
-Message-Id: <20200930215820.1113353-5-seanvk.dev@oregontracks.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200930215820.1113353-1-seanvk.dev@oregontracks.org>
-References: <20200930215820.1113353-1-seanvk.dev@oregontracks.org>
+        Wed, 30 Sep 2020 18:01:14 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF8DFC061755
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 15:01:13 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id i1so3543015edv.2
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 15:01:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=y4YL+lNdGMsghFiiyVXUFYKr+d1Y4X0K0yYZxdRVN+Q=;
+        b=nsRbXiOR1d5uOkP2Hn3WDkdiWl4FaafECWJk0Z0LoZJOdD4x9ju+bYpc03KEpkHcOP
+         rNxeoWyFWXQKqM3JfgZE3Lgs8ZCa507m90YbFDJ1wlkj3LjbHj2Ar1OdxFJR8jxVEYhU
+         lMqszQp89VwZ7BwQM+cnG427o+9/H4/nlbdxFPw2AwRRdc8xrPoNRv5Q/Prwpdg5PwR2
+         7oWU4S9IDHEw5p40xcMbz47y8E5xLgug1W8vr8kTd1oIRGwRTHCHugrN4M9Zmn139XVk
+         d0DU2DdpnThlnlZscBJgqBcghKwckBJQ21qz8AnqGSRjKsbsFL3FoaEiybGKfrqMpXzW
+         FxiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=y4YL+lNdGMsghFiiyVXUFYKr+d1Y4X0K0yYZxdRVN+Q=;
+        b=QAEgEO9zzdCgSJBDnd28kWgCRw76CwoPyxIOM4WvGGUWy8Kqj+MhsctqYDQxyQfZXW
+         4i/tWY7kHCecZywosV/8iiw4Nv2tjZAGd3r7IhjF6P04f16OE9cWp+G0Cf6PHSAr4D/Q
+         KxXbPhhrJXUlM5PvaACfYdEM82hZLsg0ik2Iz2qqjP89vVExaUoPKJRjqi1cAXWNF/EW
+         F9EQwHqNO3QHJZc66Y4TQjq/KSnzQPAHUSNWVfZ/Rw1vvwlGTKXTxMHYFpyQFlqz1NlX
+         y6KWA95UKYXukaIAw07BnXimW3ObXqY9OJHZMgVHYdefPzXVNODpRClEPpKoYU+mPaFG
+         1Psw==
+X-Gm-Message-State: AOAM533Ih8MHp8S7Ac5w+CENRVKIUl03QWkuZYGQz8o1MArjwglghAGv
+        At9TOhMeLBzzmgCYOZix8lJTljHDJ1H2R0OwlPzhTA==
+X-Google-Smtp-Source: ABdhPJx+r3ymqn4NTjaCSnTfnu9MJPet1q8fE2eAOfbo/VZn36pDDUmIF7542A/F5sgR+LytFnb9dd+ClgVFQzScsmw=
+X-Received: by 2002:a50:fe98:: with SMTP id d24mr4937741edt.223.1601503272085;
+ Wed, 30 Sep 2020 15:01:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <cover.1601478774.git.yifeifz2@illinois.edu> <d3d1c05ea0be2b192f480ec52ad64bffbb22dc9d.1601478774.git.yifeifz2@illinois.edu>
+In-Reply-To: <d3d1c05ea0be2b192f480ec52ad64bffbb22dc9d.1601478774.git.yifeifz2@illinois.edu>
+From:   Jann Horn <jannh@google.com>
+Date:   Thu, 1 Oct 2020 00:00:46 +0200
+Message-ID: <CAG48ez0whaSTobwnoJHW+Eyqg5a8H4JCO-KHrgsuNiEg0qbD3w@mail.gmail.com>
+Subject: Re: [PATCH v3 seccomp 5/5] seccomp/cache: Report cache data through /proc/pid/seccomp_cache
+To:     YiFei Zhu <zhuyifei1999@gmail.com>
+Cc:     Linux Containers <containers@lists.linux-foundation.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        David Laight <David.Laight@aculab.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Kees Cook <keescook@chromium.org>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Will Drewry <wad@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean V Kelley <sean.v.kelley@intel.com>
+On Wed, Sep 30, 2020 at 5:20 PM YiFei Zhu <zhuyifei1999@gmail.com> wrote:
+> Currently the kernel does not provide an infrastructure to translate
+> architecture numbers to a human-readable name. Translating syscall
+> numbers to syscall names is possible through FTRACE_SYSCALL
+> infrastructure but it does not provide support for compat syscalls.
+>
+> This will create a file for each PID as /proc/pid/seccomp_cache.
+> The file will be empty when no seccomp filters are loaded, or be
+> in the format of:
+> <arch name> <decimal syscall number> <ALLOW | FILTER>
+> where ALLOW means the cache is guaranteed to allow the syscall,
+> and filter means the cache will pass the syscall to the BPF filter.
+>
+> For the docker default profile on x86_64 it looks like:
+> x86_64 0 ALLOW
+> x86_64 1 ALLOW
+> x86_64 2 ALLOW
+> x86_64 3 ALLOW
+> [...]
+> x86_64 132 ALLOW
+> x86_64 133 ALLOW
+> x86_64 134 FILTER
+> x86_64 135 FILTER
+> x86_64 136 FILTER
+> x86_64 137 ALLOW
+> x86_64 138 ALLOW
+> x86_64 139 FILTER
+> x86_64 140 ALLOW
+> x86_64 141 ALLOW
+> [...]
 
-reset_link() appears to be misnamed. The point is to really
-reset any devices below a given bridge. So rename it to
-reset_subordinate_devices() to make it clear that we are
-passing a bridge with the intent to reset the devices below it.
+Oooh, neat! :) Thanks!
 
-Suggested-by: Bjorn Helgaas <helgaas@google.com>
-Signed-off-by: Sean V Kelley <sean.v.kelley@intel.com>
----
- drivers/pci/pci.h      | 2 +-
- drivers/pci/pcie/err.c | 6 +++---
- 2 files changed, 4 insertions(+), 4 deletions(-)
+> Suggested-by: Jann Horn <jannh@google.com>
+> Link: https://lore.kernel.org/lkml/CAG48ez3Ofqp4crXGksLmZY6=fGrF_tWyUCg7PBkAetvbbOPeOA@mail.gmail.com/
+> Signed-off-by: YiFei Zhu <yifeifz2@illinois.edu>
+> ---
+>  arch/Kconfig                   | 15 +++++++++++
+>  arch/x86/include/asm/seccomp.h |  3 +++
+>  fs/proc/base.c                 |  3 +++
+>  include/linux/seccomp.h        |  5 ++++
+>  kernel/seccomp.c               | 46 ++++++++++++++++++++++++++++++++++
+>  5 files changed, 72 insertions(+)
+>
+> diff --git a/arch/Kconfig b/arch/Kconfig
+> index ca867b2a5d71..b840cadcc882 100644
+> --- a/arch/Kconfig
+> +++ b/arch/Kconfig
+> @@ -478,6 +478,7 @@ config HAVE_ARCH_SECCOMP_CACHE_NR_ONLY
+>           - all the requirements for HAVE_ARCH_SECCOMP_FILTER
+>           - SECCOMP_ARCH_DEFAULT
+>           - SECCOMP_ARCH_DEFAULT_NR
+> +         - SECCOMP_ARCH_DEFAULT_NAME
+>
+>  config SECCOMP
+>         prompt "Enable seccomp to safely execute untrusted bytecode"
+> @@ -532,6 +533,20 @@ config SECCOMP_CACHE_NR_ONLY
+>
+>  endchoice
+>
+> +config DEBUG_SECCOMP_CACHE
+> +       bool "Show seccomp filter cache status in /proc/pid/seccomp_cache"
+> +       depends on SECCOMP_CACHE_NR_ONLY
+> +       depends on PROC_FS
+> +       help
+> +         This is enables /proc/pid/seccomp_cache interface to monitor
 
-diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
-index 88e27a98def5..efea170805fa 100644
---- a/drivers/pci/pci.h
-+++ b/drivers/pci/pci.h
-@@ -574,7 +574,7 @@ static inline int pci_dev_specific_disable_acs_redir(struct pci_dev *dev)
- /* PCI error reporting and recovery */
- pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
- 			pci_channel_state_t state,
--			pci_ers_result_t (*reset_link)(struct pci_dev *pdev));
-+			pci_ers_result_t (*reset_subordinate_devices)(struct pci_dev *pdev));
- 
- bool pcie_wait_for_link(struct pci_dev *pdev, bool active);
- #ifdef CONFIG_PCIEASPM
-diff --git a/drivers/pci/pcie/err.c b/drivers/pci/pcie/err.c
-index c543f419d8f9..950612342f1c 100644
---- a/drivers/pci/pcie/err.c
-+++ b/drivers/pci/pcie/err.c
-@@ -148,7 +148,7 @@ static int report_resume(struct pci_dev *dev, void *data)
- 
- pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
- 			pci_channel_state_t state,
--			pci_ers_result_t (*reset_link)(struct pci_dev *pdev))
-+			pci_ers_result_t (*reset_subordinate_devices)(struct pci_dev *pdev))
- {
- 	pci_ers_result_t status = PCI_ERS_RESULT_CAN_RECOVER;
- 	struct pci_bus *bus;
-@@ -165,9 +165,9 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
- 	pci_dbg(dev, "broadcast error_detected message\n");
- 	if (state == pci_channel_io_frozen) {
- 		pci_walk_bus(bus, report_frozen_detected, &status);
--		status = reset_link(dev);
-+		status = reset_subordinate_device(dev);
- 		if (status != PCI_ERS_RESULT_RECOVERED) {
--			pci_warn(dev, "link reset failed\n");
-+			pci_warn(dev, "subordinate device reset failed\n");
- 			goto failed;
- 		}
- 	} else {
--- 
-2.28.0
+nit: s/is enables/enables/
 
+> +         seccomp cache data. The file format is subject to change. Reading
+> +         the file requires CAP_SYS_ADMIN.
+> +
+> +         This option is for debugging only. Enabling present the risk that
+> +         an adversary may be able to infer the seccomp filter logic.
+> +
+> +         If unsure, say N.
+> +
+[...]
+> diff --git a/kernel/seccomp.c b/kernel/seccomp.c
+[...]
+> +int proc_pid_seccomp_cache(struct seq_file *m, struct pid_namespace *ns,
+> +                          struct pid *pid, struct task_struct *task)
+> +{
+> +       struct seccomp_filter *f;
+> +
+> +       /*
+> +        * We don't want some sandboxed process know what their seccomp
+> +        * filters consist of.
+> +        */
+> +       if (!file_ns_capable(m->file, &init_user_ns, CAP_SYS_ADMIN))
+> +               return -EACCES;
+> +
+> +       f = READ_ONCE(task->seccomp.filter);
+> +       if (!f)
+> +               return 0;
+
+Hmm, this won't work, because the task could be exiting, and seccomp
+filters are detached in release_task() (using
+seccomp_filter_release()). And at the moment, seccomp_filter_release()
+just locklessly NULLs out the tsk->seccomp.filter pointer and drops
+the reference.
+
+The locking here is kind of gross, but basically I think you can
+change this code to use lock_task_sighand() / unlock_task_sighand()
+(see the other examples in fs/proc/base.c), and bail out if
+lock_task_sighand() returns NULL. And in seccomp_filter_release(), add
+something like this:
+
+/* We are effectively holding the siglock by not having any sighand. */
+WARN_ON(tsk->sighand != NULL);
+
+> +#ifdef SECCOMP_ARCH_DEFAULT
+> +       proc_pid_seccomp_cache_arch(m, SECCOMP_ARCH_DEFAULT_NAME,
+> +                                   f->cache.syscall_allow_default,
+> +                                   SECCOMP_ARCH_DEFAULT_NR);
+> +#endif /* SECCOMP_ARCH_DEFAULT */
+> +
+> +#ifdef SECCOMP_ARCH_COMPAT
+> +       proc_pid_seccomp_cache_arch(m, SECCOMP_ARCH_COMPAT_NAME,
+> +                                   f->cache.syscall_allow_compat,
+> +                                   SECCOMP_ARCH_COMPAT_NR);
+> +#endif /* SECCOMP_ARCH_COMPAT */
+> +       return 0;
+> +}
+> +#endif /* CONFIG_DEBUG_SECCOMP_CACHE */
+> --
+> 2.28.0
+>
