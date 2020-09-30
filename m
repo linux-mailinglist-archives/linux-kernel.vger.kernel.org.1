@@ -2,191 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B67A827E66A
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 12:19:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A63927E671
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 12:20:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729196AbgI3KTY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 06:19:24 -0400
-Received: from new3-smtp.messagingengine.com ([66.111.4.229]:41119 "EHLO
-        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725872AbgI3KTY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 06:19:24 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 85A535803DF;
-        Wed, 30 Sep 2020 06:19:20 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Wed, 30 Sep 2020 06:19:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=51hsmLqz9/nNSWtqEjjDNGJdPsf
-        EI5fyVu8+ZU5LqF8=; b=WASw4mxJEzKv4bds0eEWxanJSnI/2TKzJEUgsQAGns3
-        K+soucfi0bPYbyYRo3hhV+xWYaT33ApNtXXs0Nwba1F8Zksphw19wtwMpkEsRBg9
-        lfpEtRSCKY4/T9hUOJsdx6p5qqsl6mwJEHx+wL0hv8ZsLItEPeRPGfttTYL76Wun
-        vp9EGkBesq3JUdmRxSllCZxfVr79dt1jIxQ5LXt1qgIMbkifknSO0OHRhTaIxMkQ
-        Z62wwYaL6kNA80yXBYi7bMK/F7LamFV4YvBfBxITQqsorF32KBBxwp1eUVvAPNkK
-        qrVY1iYj9S7tG1DV6Wu589+KH8z47or6lWkQ2ZMBp9g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=51hsmL
-        qz9/nNSWtqEjjDNGJdPsfEI5fyVu8+ZU5LqF8=; b=crhmRSvelGLaAGFWUJPjgv
-        uKnov9mX1EL8WL3DMWP4wGDzRygCbY+R3BBNyNp8e6SZ5YyDlmaBdHd7pRLVSexy
-        uf1uy4/HahQgkbJtTVqAXk1MW8OFvbd5jW+fqwG8q4CslwHXdhnh0eJMcLU2g8hl
-        QNJifjA98V9QC4UF2Dj2S+BxJ1MwwLhQz0dqAh18KUiKRk33ZRekQexvjFRvU6JY
-        lqIAseNkZv1gUIoj5tdvF9Zd7K+VxNePb6JCHDU6J+/h5N1Qd29hTAKKt2lYcY0T
-        osQNm6Pngnm0e8/OvFhJgEnNkjwhpwv8akNAfEXMnArnqwOlolFb1CWgoUi8lc2A
-        ==
-X-ME-Sender: <xms:pFt0X4Wd3qhT-TZ9qhPg1BHxHw5GZnFD-mu5cJuwUNnFxliKqpP_Tw>
-    <xme:pFt0X8mr4LxPywLl8iEgImh4u6YQ24Z_WBREKKhrYQs5O-mtuMcfMt54-mXbYC5tt
-    ce1coA8CNO0u9W3_F0>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrfedvgddvvdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesghdtreertddtjeenucfhrhhomhepofgrgihimhgv
-    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
-    gvrhhnpeeutdfgjeeuudehvefgvedvtedtudelfffgffekledtffekgedukeejueevieeg
-    udenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurf
-    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:pFt0X8YSrOhdFUqfBftZwAhGIXgEEZ8MDTkZ_uSwZUYh06GHd5LYlw>
-    <xmx:pFt0X3VOjfFbtLGDHhxUKGnbzDG8fI_0kK79xe_6SvsU4o1RsdQmQw>
-    <xmx:pFt0XylKx9OjYan_RZVkAEgxf2-wJhuoDE2P1M_S3lBLa3LemWj8CA>
-    <xmx:qFt0X0cYfcm7CApF1P6Xth7KOw2Aw1dfv1k0FyBcsce4IyYa2QbvNA>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id A2C33306467E;
-        Wed, 30 Sep 2020 06:19:16 -0400 (EDT)
-Date:   Wed, 30 Sep 2020 12:19:15 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     =?utf-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
-Cc:     Jernej =?utf-8?Q?=C5=A0krabec?= <jernej.skrabec@siol.net>,
-        Chen-Yu Tsai <wens@csie.org>, Rob Herring <robh+dt@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Marcus Cooper <codekipper@gmail.com>,
-        Linux-ALSA <alsa-devel@alsa-project.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-sunxi <linux-sunxi@googlegroups.com>
-Subject: Re: [PATCH v4 09/22] arm64: dts: allwinner: h6: Add HDMI audio node
-Message-ID: <20200930101915.sultshdvxgu5u2rs@gilmour.lan>
-References: <20200921102731.747736-1-peron.clem@gmail.com>
- <20200921135925.q7mde2cnt5jtzkb5@gilmour.lan>
- <CAJiuCcfz9A_Vmzq=s3LK2kGB_1tZPkC9Ux+Brdocp9py0fovAg@mail.gmail.com>
- <59286578.E0qSRroNqr@kista>
- <20200928084308.eipnvlfqe3c5lfmg@gilmour.lan>
- <CAJiuCceHXr_5PvG-FW+hRNV7Q33hGrp8kLbO0EgfqqBxF7wbqQ@mail.gmail.com>
+        id S1729265AbgI3KUs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 06:20:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38218 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725776AbgI3KUs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 06:20:48 -0400
+Received: from kernel.org (unknown [87.71.73.56])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BD4B3205F4;
+        Wed, 30 Sep 2020 10:20:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601461247;
+        bh=6oXQqyXoqD62Xsdx5psnVPQRRFcKJD7TzaHCNaM+cfo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jcekzk5dBYwe2jH5pSJRmExmxQTx5Y/sk708kFA+J4dcQopXM92llD+OqjWCXgKuT
+         dmrRBkYzNmmpQuJcEzNThsHaZcV+G7b6pQg9hev7AIEYe3G8ksdc6iTRWS4tzmiNvV
+         tQmVGE7L8Bxs8vTgd7E6jHGnxc1rUFFqUOmdsY+s=
+Date:   Wed, 30 Sep 2020 13:20:31 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Idan Yaniv <idan.yaniv@ibm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Shuah Khan <shuah@kernel.org>, Tycho Andersen <tycho@tycho.ws>,
+        Will Deacon <will@kernel.org>, linux-api@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org
+Subject: Re: [PATCH v6 5/6] mm: secretmem: use PMD-size pages to amortize
+ direct map fragmentation
+Message-ID: <20200930102031.GJ2142832@kernel.org>
+References: <20200924132904.1391-1-rppt@kernel.org>
+ <20200924132904.1391-6-rppt@kernel.org>
+ <20200925074125.GQ2628@hirez.programming.kicks-ass.net>
+ <20200929130529.GE2142832@kernel.org>
+ <20200929141216.GO2628@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="we3fv24y4dnxqond"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAJiuCceHXr_5PvG-FW+hRNV7Q33hGrp8kLbO0EgfqqBxF7wbqQ@mail.gmail.com>
+In-Reply-To: <20200929141216.GO2628@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Sep 29, 2020 at 04:12:16PM +0200, Peter Zijlstra wrote:
+> On Tue, Sep 29, 2020 at 04:05:29PM +0300, Mike Rapoport wrote:
+> > On Fri, Sep 25, 2020 at 09:41:25AM +0200, Peter Zijlstra wrote:
+> > > On Thu, Sep 24, 2020 at 04:29:03PM +0300, Mike Rapoport wrote:
+> > > > From: Mike Rapoport <rppt@linux.ibm.com>
+> > > > 
+> > > > Removing a PAGE_SIZE page from the direct map every time such page is
+> > > > allocated for a secret memory mapping will cause severe fragmentation of
+> > > > the direct map. This fragmentation can be reduced by using PMD-size pages
+> > > > as a pool for small pages for secret memory mappings.
+> > > > 
+> > > > Add a gen_pool per secretmem inode and lazily populate this pool with
+> > > > PMD-size pages.
+> > > 
+> > > What's the actual efficacy of this? Since the pmd is per inode, all I
+> > > need is a lot of inodes and we're in business to destroy the directmap,
+> > > no?
+> > > 
+> > > Afaict there's no privs needed to use this, all a process needs is to
+> > > stay below the mlock limit, so a 'fork-bomb' that maps a single secret
+> > > page will utterly destroy the direct map.
+> > 
+> > This indeed will cause 1G pages in the direct map to be split into 2M
+> > chunks, but I disagree with 'destroy' term here. Citing the cover letter
+> > of an earlier version of this series:
+> 
+> It will drop them down to 4k pages. Given enough inodes, and allocating
+> only a single sekrit page per pmd, we'll shatter the directmap into 4k.
+> 
+> >   I've tried to find some numbers that show the benefit of using larger
+> >   pages in the direct map, but I couldn't find anything so I've run a
+> >   couple of benchmarks from phoronix-test-suite on my laptop (i7-8650U
+> >   with 32G RAM).
+> 
+> Existing benchmarks suck at this, but FB had a load that had a
 
---we3fv24y4dnxqond
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I tried to dig the regression report in the mailing list, and the best I
+could find is
 
-On Mon, Sep 28, 2020 at 04:27:42PM +0200, Cl=C3=A9ment P=C3=A9ron wrote:
-> On Mon, 28 Sep 2020 at 10:43, Maxime Ripard <maxime@cerno.tech> wrote:
-> >
-> > On Mon, Sep 21, 2020 at 08:37:09PM +0200, Jernej =C5=A0krabec wrote:
-> > > Dne ponedeljek, 21. september 2020 ob 19:23:49 CEST je Cl=C3=A9ment P=
-=C3=A9ron
-> > > napisal(a):
-> > > > Hi Maxime,
-> > > >
-> > > > On Mon, 21 Sep 2020 at 15:59, Maxime Ripard <maxime@cerno.tech> wro=
-te:
-> > > > >
-> > > > > On Mon, Sep 21, 2020 at 12:27:18PM +0200, Cl=C3=A9ment P=C3=A9ron=
- wrote:
-> > > > > > From: Jernej Skrabec <jernej.skrabec@siol.net>
-> > > > > >
-> > > > > > Add a simple-soundcard to link audio between HDMI and I2S.
-> > > > > >
-> > > > > > Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
-> > > > > > Signed-off-by: Marcus Cooper <codekipper@gmail.com>
-> > > > > > Signed-off-by: Cl=C3=A9ment P=C3=A9ron <peron.clem@gmail.com>
-> > > > > > ---
-> > > > > >  arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi | 33 ++++++++++++=
-++++++++
-> > > > > >  1 file changed, 33 insertions(+)
-> > > > > >
-> > > > > > diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi b/arc=
-h/arm64/
-> > > boot/dts/allwinner/sun50i-h6.dtsi
-> > > > > > index 28c77d6872f6..a8853ee7885a 100644
-> > > > > > --- a/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
-> > > > > > +++ b/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
-> > > > > > @@ -67,6 +67,25 @@ de: display-engine {
-> > > > > >               status =3D "disabled";
-> > > > > >       };
-> > > > > >
-> > > > > > +     hdmi_sound: hdmi-sound {
-> > > > > > +             compatible =3D "simple-audio-card";
-> > > > > > +             simple-audio-card,format =3D "i2s";
-> > > > > > +             simple-audio-card,name =3D "sun50i-h6-hdmi";
-> > > > > > +             simple-audio-card,mclk-fs =3D <128>;
-> > > > > > +             simple-audio-card,frame-inversion;
-> > > > > > +             status =3D "disabled";
-> > > > > > +
-> > > > > > +             simple-audio-card,codec {
-> > > > > > +                     sound-dai =3D <&hdmi>;
-> > > > > > +             };
-> > > > > > +
-> > > > > > +             simple-audio-card,cpu {
-> > > > > > +                     sound-dai =3D <&i2s1>;
-> > > > > > +                     dai-tdm-slot-num =3D <2>;
-> > > > > > +                     dai-tdm-slot-width =3D <32>;
-> > > > >
-> > > > > It looks weird to have both some TDM setup here, and yet the form=
-at in
-> > > > > i2s?
-> > > >
-> > > > Yes, I agree I will check if it's really needed.
-> > >
-> > > I think this was explained before.
-> >
-> > Possibly, but this should be in a comment or at least the commit log
-> >
-> > > Anyway, this is needed to force width to 32, no matter actual sample
-> > > width. That's a requirement of HDMI codec. I believe Marcus Cooper
-> > > have another codec which also needs fixed width.
-> > >
-> > > There is no similar property for I2S, so TDM one is used here.
-> >
-> > Except it's really dedicated to the TDM mode and doesn't really make
-> > much sense here.
-> >
-> > If we have special requirements like this on the codec setup, that
-> > sounds like a good justification for creating a custom codec instead of
-> > shoehorning it into simple-card
->=20
-> When all the remarks are fixed would it be possible to merge the rest
-> of the series without the dts changes ?
->=20
-> I will propose another series to introduce a dedicated codec for that.
+https://lore.kernel.org/lkml/20190823052335.572133-1-songliubraving@fb.com/
 
-Yeah, sure
+which does not mention the actual performance regression but it only
+complaints about kernel text mapping being split into 4K pages.
 
-Maxime
+Any chance you have the regression report handy? 
 
---we3fv24y4dnxqond
-Content-Type: application/pgp-signature; name="signature.asc"
+> deterministic enough performance regression to bisect to a directmap
+> issue, fixed by:
+> 
+>   7af0145067bc ("x86/mm/cpa: Prevent large page split when ftrace flips RW on kernel text")
 
------BEGIN PGP SIGNATURE-----
+This commit talks about large page split for the text and mentions iTLB
+performance.
+Could it be that for data the behavoiur is different?
 
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX3RbogAKCRDj7w1vZxhR
-xQ1TAQCXyCe5QVWRsk4Xo0kYUfS4nqr+j6X8lC7NGSFSHCXQbQD/fNe30ApybdwS
-uWFA5qC2rFHZegZ7IFIgsScWh32Hag0=
-=Tk4P
------END PGP SIGNATURE-----
+> >   I've tested three variants: the default with 28G of the physical
+> >   memory covered with 1G pages, then I disabled 1G pages using
+> >   "nogbpages" in the kernel command line and at last I've forced the
+> >   entire direct map to use 4K pages using a simple patch to
+> >   arch/x86/mm/init.c.  I've made runs of the benchmarks with SSD and
+> >   tmpfs.
+> >   
+> >   Surprisingly, the results does not show huge advantage for large
+> >   pages. For instance, here the results for kernel build with
+> >   'make -j8', in seconds:
+> 
+> Your benchmark should stress the TLB of your uarch, such that additional
+> pressure added by the shattered directmap shows up.
 
---we3fv24y4dnxqond--
+I understand that the benchmark should stress the TLB, but it's not that
+we can add something like random access to a large working set as a
+kernel module and insmod it. The userspace should do something that will
+cause the stress to the TLB so that entries corresponding to the direct
+map will be evicted frequently. And, frankly, 
+
+> And no, I don't have one either.
+> 
+> >                         |  1G    |  2M    |  4K
+> >   ----------------------+--------+--------+---------
+> >   ssd, mitigations=on	| 308.75 | 317.37 | 314.9
+> >   ssd, mitigations=off	| 305.25 | 295.32 | 304.92
+> >   ram, mitigations=on	| 301.58 | 322.49 | 306.54
+> >   ram, mitigations=off	| 299.32 | 288.44 | 310.65
+> 
+> These results lack error data, but assuming the reults are significant,
+> then this very much makes a case for 1G mappings. 5s on a kernel builds
+> is pretty good.
+
+The standard error for those are between 2.5 and 4.5 out of 3 runs for
+each variant. 
+
+For kernel build 1G mappings perform better, but here 5s is only 1.6% of
+300s and the direct map fragmentation was taken to the extreme here.
+I'm not saying that the direct map fragmentation comes with no cost, but
+the cost is not so big to dismiss features that cause the fragmentation
+out of hand.
+
+There were also benchmarks that actually performed better with 2M pages
+in the direct map, so I'm still not convinced that 1G pages in the
+direct map are the clear cut winner.
+
+-- 
+Sincerely yours,
+Mike.
