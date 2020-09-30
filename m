@@ -2,53 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F38527E812
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 14:00:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3BA427E814
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 14:00:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729668AbgI3L74 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 07:59:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50726 "EHLO mail.kernel.org"
+        id S1729718AbgI3MAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 08:00:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51048 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725776AbgI3L7z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 07:59:55 -0400
+        id S1725776AbgI3MAB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 08:00:01 -0400
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0584A2075F;
-        Wed, 30 Sep 2020 11:59:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 189F82085B;
+        Wed, 30 Sep 2020 12:00:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601467195;
-        bh=ISbLEyVRJ3YYEaL+4amU3UcxHwOFBV2/mqHOS1AZfTI=;
+        s=default; t=1601467201;
+        bh=tPyi4D21RiURMJWDucXjDO/EZbD/x7miq1tO9VmMKvg=;
         h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=Y0YyWw8CNbpdLpMe9jELYNndvNBCi6BJ6iNkKosLBzcdgYLgxa52QqbefuxM4C38U
-         DF5IjxxYkZVeAEN+2DPN0RL42nd7IEpt4BjtgCmdFNA2A0u4lAITSRUxIVffdERbaK
-         vjttzXi8Gn4MD1G72UdvXWZnCjRi7iFd3ywEIn38=
-Date:   Wed, 30 Sep 2020 12:58:56 +0100
+        b=SG/bM/tKH3xnTCBdCfLR9YSqM/qlTILABApvDm3JJPIelitQJiqRHsNdfw+26k36n
+         wkOijEwwhkACIvOWLCPORU8pta9tn9076GYhhZUc+NW9L+xI2KZyK9beylM2QquMp3
+         qJL4zGkXRNJuQU0KRZbJB2EumB6Oj4EP4tnWFc9o=
+Date:   Wed, 30 Sep 2020 12:59:03 +0100
 From:   Mark Brown <broonie@kernel.org>
-To:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        Qinglang Miao <miaoqinglang@huawei.com>,
-        Liam Girdwood <lgirdwood@gmail.com>
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20200929112933.46977-1-miaoqinglang@huawei.com>
-References: <20200929112933.46977-1-miaoqinglang@huawei.com>
-Subject: Re: [PATCH -next] ASoC: soc-core: use devm_snd_soc_register_card()
-Message-Id: <160146713690.40065.6936378045479268404.b4-ty@kernel.org>
+To:     cy_huang <u0084500@gmail.com>, robh+dt@kernel.org
+Cc:     lgirdwood@gmail.com, cy_huang@richtek.com,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+In-Reply-To: <1601461132-15251-1-git-send-email-u0084500@gmail.com>
+References: <1601461132-15251-1-git-send-email-u0084500@gmail.com>
+Subject: Re: [PATCH] regulator: rtmv20: Add missing regcache cache only before marked as dirty
+Message-Id: <160146714296.40216.4391757251549778678.b4-ty@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 29 Sep 2020 19:29:33 +0800, Qinglang Miao wrote:
-> Using devm_snd_soc_register_card() can make the code
-> shorter and cleaner.
+On Wed, 30 Sep 2020 18:18:52 +0800, cy_huang wrote:
+> Add missing regcache cache only before masked as dirty.
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
 
 Thanks!
 
-[1/1] ASoC: soc-core: use devm_snd_soc_register_card()
-      commit: ad61b78ea8913e5cf9c91f5527428eed1bd2a862
+[1/1] regulator: rtmv20: Add missing regcache cache only before marked as dirty
+      commit: 6228cc8aed9e51afa56727b11001b37913e4dda6
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
