@@ -2,291 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70DC127E1DE
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 08:54:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BC2727E1E0
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 08:54:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728195AbgI3GyM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 02:54:12 -0400
-Received: from mga14.intel.com ([192.55.52.115]:36130 "EHLO mga14.intel.com"
+        id S1728260AbgI3Gyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 02:54:44 -0400
+Received: from mga02.intel.com ([134.134.136.20]:43531 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725320AbgI3GyM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 02:54:12 -0400
-IronPort-SDR: LVry4tHQMpfGR8oYMHB0a2ubiPCIJZVlwkjpc0US7i2RYW1zBwQ4g6glRbikOhrRiY4Jezs26j
- 4UQdl33SpzwQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9759"; a="161601632"
+        id S1725320AbgI3Gyo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 02:54:44 -0400
+IronPort-SDR: XwhjWoHnujRo0JJkWMKVp5R/207w+qf+Z6QXtr38LgNGi4qBXPzFS/6Fl9dfxcTtCaacR9bHbt
+ CZOQswWZKEtQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9759"; a="150038965"
 X-IronPort-AV: E=Sophos;i="5.77,321,1596524400"; 
-   d="scan'208";a="161601632"
+   d="scan'208";a="150038965"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2020 23:54:10 -0700
-IronPort-SDR: xSkpQV6xIhK2vT7Fm6WBbYLuFypbN90iCEi8ktgy1b72y9Lq0jStwJL3R9A5otkcMctT42+6uc
- cFnvBGpKz5Bg==
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2020 23:54:43 -0700
+IronPort-SDR: Gfpdp7Y9dMlx7b+VHP8NAWeVpmdwsnI1FQZmFMYAmSi2kInT4nF7ARrT3sm3njgd5TV4+i88SB
+ KVj0xEirhEsw==
+X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.77,321,1596524400"; 
-   d="scan'208";a="495953614"
-Received: from gliakhov-mobl2.ger.corp.intel.com (HELO ubuntu) ([10.252.32.32])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2020 23:54:08 -0700
-Date:   Wed, 30 Sep 2020 08:54:05 +0200
-From:   Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc:     ohad@wizery.com, bjorn.andersson@linaro.org, loic.pallardy@st.com,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 04/10] rpmsg: Move common structures and defines to
- headers
-Message-ID: <20200930065404.GC20683@ubuntu>
-References: <20200922001000.899956-1-mathieu.poirier@linaro.org>
- <20200922001000.899956-5-mathieu.poirier@linaro.org>
+   d="scan'208";a="294518632"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by fmsmga008.fm.intel.com with ESMTP; 29 Sep 2020 23:54:42 -0700
+Received: from hasmsx603.ger.corp.intel.com (10.184.107.143) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Tue, 29 Sep 2020 23:54:41 -0700
+Received: from [10.251.178.101] (10.184.70.1) by HASMSX603.ger.corp.intel.com
+ (10.184.107.143) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5; Wed, 30 Sep
+ 2020 09:54:39 +0300
+Subject: Re: [Intel-wired-lan] [PATCH v4] e1000e: Increase polling timeout on
+ MDIC ready bit
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        "Neftin, Sasha" <sasha.neftin@intel.com>
+CC:     Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:INTEL ETHERNET DRIVERS" 
+        <intel-wired-lan@lists.osuosl.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>
+References: <20200924164542.19906-1-kai.heng.feng@canonical.com>
+ <20200928083658.8567-1-kai.heng.feng@canonical.com>
+ <469c71d5-93ac-e6c7-f85c-342b0df78a45@intel.com>
+ <30761C6B-28B8-4464-8615-55EF3E090E07@canonical.com>
+ <345fffcd-e9f1-5881-fba1-d7313876e943@intel.com>
+ <3DA721C5-F656-4085-9113-A0407CDF90FB@canonical.com>
+From:   Vitaly Lifshits <vitaly.lifshits@intel.com>
+Message-ID: <adb2f604-8c98-8799-6ed1-b8889b8cd0f6@intel.com>
+Date:   Wed, 30 Sep 2020 09:54:34 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200922001000.899956-5-mathieu.poirier@linaro.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <3DA721C5-F656-4085-9113-A0407CDF90FB@canonical.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.184.70.1]
+X-ClientProxiedBy: lcsmsx601.ger.corp.intel.com (10.109.210.10) To
+ HASMSX603.ger.corp.intel.com (10.184.107.143)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 06:09:54PM -0600, Mathieu Poirier wrote:
-> From: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-> 
-> virtio_rpmsg_bus.c keeps RPMsg protocol structure declarations and
-> common defines like the ones, needed for name-space announcements,
-> internal. Move them to common headers instead.
-> 
-> Signed-off-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-> [Renamed header file from linux/rpmsg/rpmsg_virtio.h to linux/rpmsg_ns.h]
+On 9/29/2020 18:08, Kai-Heng Feng wrote:
 
-No, this isn't only for the name-service, the message header is common 
-for all RPMsg messages.
-
-Thanks
-Guennadi
-
-> Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-> ---
->  drivers/rpmsg/virtio_rpmsg_bus.c | 78 +-----------------------------
->  include/linux/rpmsg_ns.h         | 83 ++++++++++++++++++++++++++++++++
->  include/uapi/linux/rpmsg.h       |  3 ++
->  3 files changed, 88 insertions(+), 76 deletions(-)
->  create mode 100644 include/linux/rpmsg_ns.h
+Hello Kai-Heng,
 > 
-> diff --git a/drivers/rpmsg/virtio_rpmsg_bus.c b/drivers/rpmsg/virtio_rpmsg_bus.c
-> index e87cf0b79542..eaf3b2c012c8 100644
-> --- a/drivers/rpmsg/virtio_rpmsg_bus.c
-> +++ b/drivers/rpmsg/virtio_rpmsg_bus.c
-> @@ -19,6 +19,7 @@
->  #include <linux/mutex.h>
->  #include <linux/of_device.h>
->  #include <linux/rpmsg.h>
-> +#include <linux/rpmsg_ns.h>
->  #include <linux/scatterlist.h>
->  #include <linux/slab.h>
->  #include <linux/sched.h>
-> @@ -27,6 +28,7 @@
->  #include <linux/virtio_ids.h>
->  #include <linux/virtio_config.h>
->  #include <linux/wait.h>
-> +#include <uapi/linux/rpmsg.h>
->  
->  #include "rpmsg_internal.h"
->  
-> @@ -70,58 +72,6 @@ struct virtproc_info {
->  	struct rpmsg_endpoint *ns_ept;
->  };
->  
-> -/* The feature bitmap for virtio rpmsg */
-> -#define VIRTIO_RPMSG_F_NS	0 /* RP supports name service notifications */
-> -
-> -/**
-> - * struct rpmsg_hdr - common header for all rpmsg messages
-> - * @src: source address
-> - * @dst: destination address
-> - * @reserved: reserved for future use
-> - * @len: length of payload (in bytes)
-> - * @flags: message flags
-> - * @data: @len bytes of message payload data
-> - *
-> - * Every message sent(/received) on the rpmsg bus begins with this header.
-> - */
-> -struct rpmsg_hdr {
-> -	__virtio32 src;
-> -	__virtio32 dst;
-> -	__virtio32 reserved;
-> -	__virtio16 len;
-> -	__virtio16 flags;
-> -	u8 data[];
-> -} __packed;
-> -
-> -/**
-> - * struct rpmsg_ns_msg - dynamic name service announcement message
-> - * @name: name of remote service that is published
-> - * @addr: address of remote service that is published
-> - * @flags: indicates whether service is created or destroyed
-> - *
-> - * This message is sent across to publish a new service, or announce
-> - * about its removal. When we receive these messages, an appropriate
-> - * rpmsg channel (i.e device) is created/destroyed. In turn, the ->probe()
-> - * or ->remove() handler of the appropriate rpmsg driver will be invoked
-> - * (if/as-soon-as one is registered).
-> - */
-> -struct rpmsg_ns_msg {
-> -	char name[RPMSG_NAME_SIZE];
-> -	__virtio32 addr;
-> -	__virtio32 flags;
-> -} __packed;
-> -
-> -/**
-> - * enum rpmsg_ns_flags - dynamic name service announcement flags
-> - *
-> - * @RPMSG_NS_CREATE: a new remote service was just created
-> - * @RPMSG_NS_DESTROY: a known remote service was just destroyed
-> - */
-> -enum rpmsg_ns_flags {
-> -	RPMSG_NS_CREATE		= 0,
-> -	RPMSG_NS_DESTROY	= 1,
-> -};
-> -
->  /**
->   * struct virtio_rpmsg_channel - rpmsg channel descriptor
->   * @rpdev: the rpmsg channel device
-> @@ -139,27 +89,6 @@ struct virtio_rpmsg_channel {
->  #define to_virtio_rpmsg_channel(_rpdev) \
->  	container_of(_rpdev, struct virtio_rpmsg_channel, rpdev)
->  
-> -/*
-> - * We're allocating buffers of 512 bytes each for communications. The
-> - * number of buffers will be computed from the number of buffers supported
-> - * by the vring, upto a maximum of 512 buffers (256 in each direction).
-> - *
-> - * Each buffer will have 16 bytes for the msg header and 496 bytes for
-> - * the payload.
-> - *
-> - * This will utilize a maximum total space of 256KB for the buffers.
-> - *
-> - * We might also want to add support for user-provided buffers in time.
-> - * This will allow bigger buffer size flexibility, and can also be used
-> - * to achieve zero-copy messaging.
-> - *
-> - * Note that these numbers are purely a decision of this driver - we
-> - * can change this without changing anything in the firmware of the remote
-> - * processor.
-> - */
-> -#define MAX_RPMSG_NUM_BUFS	(512)
-> -#define MAX_RPMSG_BUF_SIZE	(512)
-> -
->  /*
->   * Local addresses are dynamically allocated on-demand.
->   * We do not dynamically assign addresses from the low 1024 range,
-> @@ -167,9 +96,6 @@ struct virtio_rpmsg_channel {
->   */
->  #define RPMSG_RESERVED_ADDRESSES	(1024)
->  
-> -/* Address 53 is reserved for advertising remote services */
-> -#define RPMSG_NS_ADDR			(53)
-> -
->  static void virtio_rpmsg_destroy_ept(struct rpmsg_endpoint *ept);
->  static int virtio_rpmsg_send(struct rpmsg_endpoint *ept, void *data, int len);
->  static int virtio_rpmsg_sendto(struct rpmsg_endpoint *ept, void *data, int len,
-> diff --git a/include/linux/rpmsg_ns.h b/include/linux/rpmsg_ns.h
-> new file mode 100644
-> index 000000000000..aabc6c3c0d6d
-> --- /dev/null
-> +++ b/include/linux/rpmsg_ns.h
-> @@ -0,0 +1,83 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +
-> +#ifndef _LINUX_RPMSG_NS_H
-> +#define _LINUX_RPMSG_NS_H
-> +
-> +#include <linux/mod_devicetable.h>
-> +#include <linux/types.h>
-> +#include <linux/virtio_types.h>
-> +
-> +/**
-> + * struct rpmsg_hdr - common header for all rpmsg messages
-> + * @src: source address
-> + * @dst: destination address
-> + * @reserved: reserved for future use
-> + * @len: length of payload (in bytes)
-> + * @flags: message flags
-> + * @data: @len bytes of message payload data
-> + *
-> + * Every message sent(/received) on the rpmsg bus begins with this header.
-> + */
-> +struct rpmsg_hdr {
-> +	__virtio32 src;
-> +	__virtio32 dst;
-> +	__virtio32 reserved;
-> +	__virtio16 len;
-> +	__virtio16 flags;
-> +	u8 data[];
-> +} __packed;
-> +
-> +/**
-> + * struct rpmsg_ns_msg - dynamic name service announcement message
-> + * @name: name of remote service that is published
-> + * @addr: address of remote service that is published
-> + * @flags: indicates whether service is created or destroyed
-> + *
-> + * This message is sent across to publish a new service, or announce
-> + * about its removal. When we receive these messages, an appropriate
-> + * rpmsg channel (i.e device) is created/destroyed. In turn, the ->probe()
-> + * or ->remove() handler of the appropriate rpmsg driver will be invoked
-> + * (if/as-soon-as one is registered).
-> + */
-> +struct rpmsg_ns_msg {
-> +	char name[RPMSG_NAME_SIZE];
-> +	__virtio32 addr;
-> +	__virtio32 flags;
-> +} __packed;
-> +
-> +/**
-> + * enum rpmsg_ns_flags - dynamic name service announcement flags
-> + *
-> + * @RPMSG_NS_CREATE: a new remote service was just created
-> + * @RPMSG_NS_DESTROY: a known remote service was just destroyed
-> + */
-> +enum rpmsg_ns_flags {
-> +	RPMSG_NS_CREATE		= 0,
-> +	RPMSG_NS_DESTROY	= 1,
-> +};
-> +
-> +/*
-> + * We're allocating buffers of 512 bytes each for communications. The
-> + * number of buffers will be computed from the number of buffers supported
-> + * by the vring, upto a maximum of 512 buffers (256 in each direction).
-> + *
-> + * Each buffer will have 16 bytes for the msg header and 496 bytes for
-> + * the payload.
-> + *
-> + * This will utilize a maximum total space of 256KB for the buffers.
-> + *
-> + * We might also want to add support for user-provided buffers in time.
-> + * This will allow bigger buffer size flexibility, and can also be used
-> + * to achieve zero-copy messaging.
-> + *
-> + * Note that these numbers are purely a decision of this driver - we
-> + * can change this without changing anything in the firmware of the remote
-> + * processor.
-> + */
-> +#define MAX_RPMSG_NUM_BUFS	512
-> +#define MAX_RPMSG_BUF_SIZE	512
-> +
-> +/* Address 53 is reserved for advertising remote services */
-> +#define RPMSG_NS_ADDR		53
-> +
-> +#endif
-> diff --git a/include/uapi/linux/rpmsg.h b/include/uapi/linux/rpmsg.h
-> index e14c6dab4223..d669c04ef289 100644
-> --- a/include/uapi/linux/rpmsg.h
-> +++ b/include/uapi/linux/rpmsg.h
-> @@ -24,4 +24,7 @@ struct rpmsg_endpoint_info {
->  #define RPMSG_CREATE_EPT_IOCTL	_IOW(0xb5, 0x1, struct rpmsg_endpoint_info)
->  #define RPMSG_DESTROY_EPT_IOCTL	_IO(0xb5, 0x2)
->  
-> +/* The feature bitmap for virtio rpmsg */
-> +#define VIRTIO_RPMSG_F_NS	0 /* RP supports name service notifications */
-> +
->  #endif
-> -- 
-> 2.25.1
 > 
+>> On Sep 29, 2020, at 21:46, Neftin, Sasha <sasha.neftin@intel.com> wrote:
+>>
+>> Hello Kai-Heng,
+>> On 9/29/2020 16:31, Kai-Heng Feng wrote:
+>>> Hi Sasha,
+>>>> On Sep 29, 2020, at 21:08, Neftin, Sasha <sasha.neftin@intel.com> wrote:
+>>>>
+>>>> On 9/28/2020 11:36, Kai-Heng Feng wrote:
+>>>>> We are seeing the following error after S3 resume:
+>>>>> [  704.746874] e1000e 0000:00:1f.6 eno1: Setting page 0x6020
+>>>>> [  704.844232] e1000e 0000:00:1f.6 eno1: MDI Write did not complete
+>>>>> [  704.902817] e1000e 0000:00:1f.6 eno1: Setting page 0x6020
+>>>>> [  704.903075] e1000e 0000:00:1f.6 eno1: reading PHY page 769 (or 0x6020 shifted) reg 0x17
+>>>>> [  704.903281] e1000e 0000:00:1f.6 eno1: Setting page 0x6020
+>>>>> [  704.903486] e1000e 0000:00:1f.6 eno1: writing PHY page 769 (or 0x6020 shifted) reg 0x17
+>>>>> [  704.943155] e1000e 0000:00:1f.6 eno1: MDI Error
+>>>>> ...
+>>>>> [  705.108161] e1000e 0000:00:1f.6 eno1: Hardware Error
+>>>>> As Andrew Lunn pointed out, MDIO has nothing to do with phy, and indeed
+>>>>> increase polling iteration can resolve the issue.
+>>>>> This patch only papers over the symptom, as we don't really know the
+>>>>> root cause of the issue. The most possible culprit is Intel ME, which
+>>>>> may do its own things that conflict with software.
+>>>>> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+>>>>> ---
+>>>>> v4:
+>>>>>   - States that this patch just papers over the symptom.
+>>>>> v3:
+>>>>>   - Moving delay to end of loop doesn't save anytime, move it back.
+>>>>>   - Point out this is quitely likely caused by Intel ME.
+>>>>> v2:
+>>>>>   - Increase polling iteration instead of powering down the phy.
+>>>>>   drivers/net/ethernet/intel/e1000e/phy.c | 2 +-
+>>>>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>> diff --git a/drivers/net/ethernet/intel/e1000e/phy.c b/drivers/net/ethernet/intel/e1000e/phy.c
+>>>>> index e11c877595fb..e6d4acd90937 100644
+>>>>> --- a/drivers/net/ethernet/intel/e1000e/phy.c
+>>>>> +++ b/drivers/net/ethernet/intel/e1000e/phy.c
+>>>>> @@ -203,7 +203,7 @@ s32 e1000e_write_phy_reg_mdic(struct e1000_hw *hw, u32 offset, u16 data)
+>>>>>   	 * Increasing the time out as testing showed failures with
+>>>>>   	 * the lower time out
+>>>>>   	 */
+>>>>> -	for (i = 0; i < (E1000_GEN_POLL_TIMEOUT * 3); i++) {
+>>>>> +	for (i = 0; i < (E1000_GEN_POLL_TIMEOUT * 10); i++) {
+>>>> As we discussed (many threads) - AMT/ME systems not supported on Linux as properly. I do not think increasing polling iteration will solve the problem. Rather mask it.
+>>> I am aware of the status quo of no proper support on Intel ME.
+>>>> I prefer you check option to disable ME vi BIOS on your system.
+>>> We can't ask user to change the BIOS to accommodate Linux. So before a proper solution comes out, masking the problem is good enough for me.
+>>> Until then, I'll carry it as a downstream distro patch.
+>> What will you do with system that even after increasing polling time will run into HW error?
+> 
+> Hope we finally have proper ME support under Linux?
+> 
+> Kai-Heng
+> 
+>>> Kai-Heng
+>>>>>   		udelay(50);
+>>>>>   		mdic = er32(MDIC);
+>>>>>   		if (mdic & E1000_MDIC_READY)
+>>>> Thanks,
+>>>> Sasha
+>> Thanks,
+>> Sasha
+> 
+
+On which device ID/platform do you see the issue? What is the Firmware 
+version on your platform? What is the ME firmware version that you have?
+
+I am asking these questions, since I know there is supposed to be a fix 
+in the firmware to many issues that are related to ME and device 
+interoperability.
+
+Thanks,
+
+Vitaly
