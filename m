@@ -2,152 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BC2727E1E0
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 08:54:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D037327E1E3
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 08:55:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728260AbgI3Gyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 02:54:44 -0400
-Received: from mga02.intel.com ([134.134.136.20]:43531 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725320AbgI3Gyo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 02:54:44 -0400
-IronPort-SDR: XwhjWoHnujRo0JJkWMKVp5R/207w+qf+Z6QXtr38LgNGi4qBXPzFS/6Fl9dfxcTtCaacR9bHbt
- CZOQswWZKEtQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9759"; a="150038965"
-X-IronPort-AV: E=Sophos;i="5.77,321,1596524400"; 
-   d="scan'208";a="150038965"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2020 23:54:43 -0700
-IronPort-SDR: Gfpdp7Y9dMlx7b+VHP8NAWeVpmdwsnI1FQZmFMYAmSi2kInT4nF7ARrT3sm3njgd5TV4+i88SB
- KVj0xEirhEsw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,321,1596524400"; 
-   d="scan'208";a="294518632"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by fmsmga008.fm.intel.com with ESMTP; 29 Sep 2020 23:54:42 -0700
-Received: from hasmsx603.ger.corp.intel.com (10.184.107.143) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Tue, 29 Sep 2020 23:54:41 -0700
-Received: from [10.251.178.101] (10.184.70.1) by HASMSX603.ger.corp.intel.com
- (10.184.107.143) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5; Wed, 30 Sep
- 2020 09:54:39 +0300
-Subject: Re: [Intel-wired-lan] [PATCH v4] e1000e: Increase polling timeout on
- MDIC ready bit
-To:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        "Neftin, Sasha" <sasha.neftin@intel.com>
-CC:     Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:INTEL ETHERNET DRIVERS" 
-        <intel-wired-lan@lists.osuosl.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>
-References: <20200924164542.19906-1-kai.heng.feng@canonical.com>
- <20200928083658.8567-1-kai.heng.feng@canonical.com>
- <469c71d5-93ac-e6c7-f85c-342b0df78a45@intel.com>
- <30761C6B-28B8-4464-8615-55EF3E090E07@canonical.com>
- <345fffcd-e9f1-5881-fba1-d7313876e943@intel.com>
- <3DA721C5-F656-4085-9113-A0407CDF90FB@canonical.com>
-From:   Vitaly Lifshits <vitaly.lifshits@intel.com>
-Message-ID: <adb2f604-8c98-8799-6ed1-b8889b8cd0f6@intel.com>
-Date:   Wed, 30 Sep 2020 09:54:34 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1725884AbgI3GzZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 02:55:25 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:33128 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725320AbgI3GzZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 02:55:25 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08U6tH3S111524;
+        Wed, 30 Sep 2020 01:55:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1601448917;
+        bh=SjwzTMQn23wkJCILPpI4P6hiSeNglvKKYyq3k2vlQng=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=t3QoV6nRSNnRHIAcSrC7Zz5zfRkl/uPdPNQ/2iZhNQaDFdugJWy9g1OS1pfcTQGLP
+         usYqIX146qqvqtOZgw7b2pyoqdiiQozpUUncbN/WqHJcX0uMNDKJu5Yi1jcnY89eed
+         j+dQGrrxFrmRiP7cQuTgPCkGDbWKmYHsEcoJsUEA=
+Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08U6tH3r004249
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 30 Sep 2020 01:55:17 -0500
+Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 30
+ Sep 2020 01:55:17 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 30 Sep 2020 01:55:17 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08U6tGxX115213;
+        Wed, 30 Sep 2020 01:55:17 -0500
+Date:   Wed, 30 Sep 2020 12:25:15 +0530
+From:   Pratyush Yadav <p.yadav@ti.com>
+To:     <Tudor.Ambarus@microchip.com>
+CC:     <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <nsekhar@ti.com>, <boris.brezillon@collabora.com>
+Subject: Re: [PATCH v13 08/15] mtd: spi-nor: core: do 2 byte reads for SR and
+ FSR in DTR mode
+Message-ID: <20200930065513.bwieuiyt4hwwgods@ti.com>
+References: <20200916124418.833-1-p.yadav@ti.com>
+ <20200916124418.833-9-p.yadav@ti.com>
+ <6198a69a-2800-d14f-1d29-9511ba6a3f5f@microchip.com>
 MIME-Version: 1.0
-In-Reply-To: <3DA721C5-F656-4085-9113-A0407CDF90FB@canonical.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.184.70.1]
-X-ClientProxiedBy: lcsmsx601.ger.corp.intel.com (10.109.210.10) To
- HASMSX603.ger.corp.intel.com (10.184.107.143)
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <6198a69a-2800-d14f-1d29-9511ba6a3f5f@microchip.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/29/2020 18:08, Kai-Heng Feng wrote:
+On 30/09/20 06:50AM, Tudor.Ambarus@microchip.com wrote:
+> On 9/16/20 3:44 PM, Pratyush Yadav wrote:
+> > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+> > 
+> > Some controllers, like the cadence qspi controller, have trouble reading
+> > only 1 byte in DTR mode. So, do 2 byte reads for SR and FSR commands in
+> 
+> did you get garbage when reading only one byte?
 
-Hello Kai-Heng,
+Yes.
+ 
+> > DTR mode, and then discard the second byte.
+> > 
+> > Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
+> > ---
+> >  drivers/mtd/spi-nor/core.c | 15 +++++++++++++--
+> >  1 file changed, 13 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+> > index 88c9e18067f4..87c568debf14 100644
+> > --- a/drivers/mtd/spi-nor/core.c
+> > +++ b/drivers/mtd/spi-nor/core.c
+> > @@ -368,7 +368,7 @@ int spi_nor_write_disable(struct spi_nor *nor)
+> >   * spi_nor_read_sr() - Read the Status Register.
+> >   * @nor:       pointer to 'struct spi_nor'.
+> >   * @sr:                pointer to a DMA-able buffer where the value of the
+> > - *              Status Register will be written.
+> > + *              Status Register will be written. Should be at least 2 bytes.
+> >   *
+> >   * Return: 0 on success, -errno otherwise.
+> >   */
+> > @@ -386,6 +386,11 @@ static int spi_nor_read_sr(struct spi_nor *nor, u8 *sr)
+> >                 if (spi_nor_protocol_is_dtr(nor->reg_proto)) {
+> >                         op.addr.nbytes = nor->params->rdsr_addr_nbytes;
+> >                         op.dummy.nbytes = nor->params->rdsr_dummy;
+> > +                       /*
+> > +                        * We don't want to read only one byte in DTR mode. So,
+> > +                        * read 2 and then discard the second byte.
+> > +                        */
+> > +                       op.data.nbytes = 2;
 > 
-> 
->> On Sep 29, 2020, at 21:46, Neftin, Sasha <sasha.neftin@intel.com> wrote:
->>
->> Hello Kai-Heng,
->> On 9/29/2020 16:31, Kai-Heng Feng wrote:
->>> Hi Sasha,
->>>> On Sep 29, 2020, at 21:08, Neftin, Sasha <sasha.neftin@intel.com> wrote:
->>>>
->>>> On 9/28/2020 11:36, Kai-Heng Feng wrote:
->>>>> We are seeing the following error after S3 resume:
->>>>> [  704.746874] e1000e 0000:00:1f.6 eno1: Setting page 0x6020
->>>>> [  704.844232] e1000e 0000:00:1f.6 eno1: MDI Write did not complete
->>>>> [  704.902817] e1000e 0000:00:1f.6 eno1: Setting page 0x6020
->>>>> [  704.903075] e1000e 0000:00:1f.6 eno1: reading PHY page 769 (or 0x6020 shifted) reg 0x17
->>>>> [  704.903281] e1000e 0000:00:1f.6 eno1: Setting page 0x6020
->>>>> [  704.903486] e1000e 0000:00:1f.6 eno1: writing PHY page 769 (or 0x6020 shifted) reg 0x17
->>>>> [  704.943155] e1000e 0000:00:1f.6 eno1: MDI Error
->>>>> ...
->>>>> [  705.108161] e1000e 0000:00:1f.6 eno1: Hardware Error
->>>>> As Andrew Lunn pointed out, MDIO has nothing to do with phy, and indeed
->>>>> increase polling iteration can resolve the issue.
->>>>> This patch only papers over the symptom, as we don't really know the
->>>>> root cause of the issue. The most possible culprit is Intel ME, which
->>>>> may do its own things that conflict with software.
->>>>> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
->>>>> ---
->>>>> v4:
->>>>>   - States that this patch just papers over the symptom.
->>>>> v3:
->>>>>   - Moving delay to end of loop doesn't save anytime, move it back.
->>>>>   - Point out this is quitely likely caused by Intel ME.
->>>>> v2:
->>>>>   - Increase polling iteration instead of powering down the phy.
->>>>>   drivers/net/ethernet/intel/e1000e/phy.c | 2 +-
->>>>>   1 file changed, 1 insertion(+), 1 deletion(-)
->>>>> diff --git a/drivers/net/ethernet/intel/e1000e/phy.c b/drivers/net/ethernet/intel/e1000e/phy.c
->>>>> index e11c877595fb..e6d4acd90937 100644
->>>>> --- a/drivers/net/ethernet/intel/e1000e/phy.c
->>>>> +++ b/drivers/net/ethernet/intel/e1000e/phy.c
->>>>> @@ -203,7 +203,7 @@ s32 e1000e_write_phy_reg_mdic(struct e1000_hw *hw, u32 offset, u16 data)
->>>>>   	 * Increasing the time out as testing showed failures with
->>>>>   	 * the lower time out
->>>>>   	 */
->>>>> -	for (i = 0; i < (E1000_GEN_POLL_TIMEOUT * 3); i++) {
->>>>> +	for (i = 0; i < (E1000_GEN_POLL_TIMEOUT * 10); i++) {
->>>> As we discussed (many threads) - AMT/ME systems not supported on Linux as properly. I do not think increasing polling iteration will solve the problem. Rather mask it.
->>> I am aware of the status quo of no proper support on Intel ME.
->>>> I prefer you check option to disable ME vi BIOS on your system.
->>> We can't ask user to change the BIOS to accommodate Linux. So before a proper solution comes out, masking the problem is good enough for me.
->>> Until then, I'll carry it as a downstream distro patch.
->> What will you do with system that even after increasing polling time will run into HW error?
-> 
-> Hope we finally have proper ME support under Linux?
-> 
-> Kai-Heng
-> 
->>> Kai-Heng
->>>>>   		udelay(50);
->>>>>   		mdic = er32(MDIC);
->>>>>   		if (mdic & E1000_MDIC_READY)
->>>> Thanks,
->>>> Sasha
->> Thanks,
->> Sasha
-> 
+> just for octal dtr, but should be fine if you update the previous patch
 
-On which device ID/platform do you see the issue? What is the Firmware 
-version on your platform? What is the ME firmware version that you have?
+Ok.
 
-I am asking these questions, since I know there is supposed to be a fix 
-in the firmware to many issues that are related to ME and device 
-interoperability.
-
-Thanks,
-
-Vitaly
+-- 
+Regards,
+Pratyush Yadav
+Texas Instruments India
