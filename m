@@ -2,87 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A40627DD6A
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 02:35:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE85A27DD72
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 02:35:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729237AbgI3Afr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 20:35:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46084 "EHLO
+        id S1729106AbgI3Afq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 20:35:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
         with ESMTP id S1728192AbgI3Afq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 29 Sep 2020 20:35:46 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 581E1C061755;
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0BFCC0613D0;
         Tue, 29 Sep 2020 17:35:45 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id m34so5381120pgl.9;
+Received: by mail-pf1-x443.google.com with SMTP id o20so6533287pfp.11;
         Tue, 29 Sep 2020 17:35:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=LQdI0KJeifkWmziJ1KKn/3OkC7DNIF2gUIHKqRdQ2No=;
-        b=COpFGQAUJ3szg36uk+5qopcDl+hjq6PhY+7+jCoz1ihc2jigTeQyhRxgHGeL5BcDhg
-         2kEKVntCA3nl+RMU046/O/2qBso/6JJua47NOu9yi/gI3TUhG8CE4mCD+MLABEV6gXho
-         8EtBVmpUc0EOmjeoOjg2SM7z95mdP2zz8gi/5wQZPRDwSNE5/eNLb88zg8OHqo1N0oO4
-         XHN0XTpjxG/Rfe6mEDX43ti5n5+e+Zsf/4qbVysWUXnQPT8uLj/QiLgW3xZbSiU/9bTF
-         G8ouAw0zzuiN/jrH7n41AFC4Z1X1btFsUNZZvmI82Zxu0dTTorjFmCOTyWJar5krdem3
-         lxtw==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=ieGK1piaFJ3x1ASrTXBWUe7WNEu41fomUmQ319XUfAE=;
+        b=cYP6dVXNanrhoQbRMFkC7pgWEOb7q+vMr9eSN4XWX6HagPZa0wvlfWLzA8lupcwtLQ
+         V/yoEtJFQc0kTloP6A1xP8yBzOJdcVKK5Z9m4dsv5KXqnUz88bQN5iXBda31HpDCb5HL
+         wHI8YKMrgRI+SMHJFDhtfdsSH6KQ/PcmSNUJnwQFi0gCZJ7unpT7SdfqRCMSYy3nUQqj
+         tP4U4MvpUTgaXpW09OzOLhTP59DyETshquEFbu2mNAEjrIKRPMq0ff0vAikVdtUdXSh1
+         296EggXRHUSldGpN2NfQAB+1ERoYKZDVa5sqkJzLEBZmPaLAodaft02H+ICGMdPMx71M
+         zXCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=LQdI0KJeifkWmziJ1KKn/3OkC7DNIF2gUIHKqRdQ2No=;
-        b=emoeJ1jg0bbXyb+tY8UGgboc7jlFt8dOPYZK6wl4hDFeIbJP9kMgRMCqs9kI8CpqIx
-         UG2p4HmvzAj6vXxF90SUYi3oK8Ah+4w4p84sGXvrQ4ulNb5lwAzNqtxWgMZb/dYOTINE
-         Ght6o4LmKYqv1BYu4uaRT0tMsKhV8tb9oyn66CxbUKNHQLh/91v+PejSFI3ZnhFDvDoS
-         3E0y3S0ZHqMA4lr/cVrrM4ambj4Qqt6RbENyahuMMekSm8urAJ8U6kfIahtd4vraeEnN
-         zh0Ket17Alf3yL6sfRCSRLlno9GW1dWV2C3MuMuu0SXbGfnghkFmCisv/jit08W8dIkF
-         J0sA==
-X-Gm-Message-State: AOAM530bDpPOtDAcdW3f8gYwlkx5EDBQxVVOwJElZenVdsvmFtUjRZsC
-        Chx7DaNbESw2RYMv9WVhRi6EiY++Npc=
-X-Google-Smtp-Source: ABdhPJwUklEQdqfwvZZtfMtagP7cPb6ScYPheOd9v+vPXqgLW6Q0BFn78D4uerB2Nem22xypmGh3GQ==
-X-Received: by 2002:a63:8f18:: with SMTP id n24mr125903pgd.209.1601426144665;
-        Tue, 29 Sep 2020 17:35:44 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=ieGK1piaFJ3x1ASrTXBWUe7WNEu41fomUmQ319XUfAE=;
+        b=HFuPwRxYoXIJ9HQ2myCfzl+35aSdrjZ+FlV+DFHxGePCD1WQaS0PFLxlqN+qbrrFmy
+         IxykAmtKt/MqeHgnzpoDFlG2zIcKnWjy/xlFAwblV2bt0OysgIgvsCXIVbg1oI42anRV
+         X4o8W7wm1C4lvQhNXlPcWJmpPdhiqKoDuQ39tlm5hl77vknjuHLUdGsxck5BTjAuzNqO
+         gnBjiANyqEfciXfyquANmo15fyTZQ2AHgFkMGVxRd6Q9aceIB6nBdbpoq7rhR2U0BzMo
+         n6bgG8HXmyIfvWBUrc+LBJoT6ZQJZZMPsn4Zj4o4WYaFxpjOUg4ikb0FH3jpfVDtV2sY
+         /ubw==
+X-Gm-Message-State: AOAM532NdNfVZhZSE+YAlUzMnCskv5+G4mcZComdhfd1d53Ocjp2UFFX
+        lYErAllZHFTQxa5+rhHpUxg=
+X-Google-Smtp-Source: ABdhPJz3X5UmoZnmvzXt9ned7FDpg71Qagha65Tza0ya481tSpAeKXhOV1ieT6Vvsli7UvTn1d84xA==
+X-Received: by 2002:a17:902:8643:b029:d1:920c:c1db with SMTP id y3-20020a1709028643b02900d1920cc1dbmr134821plt.42.1601426145485;
+        Tue, 29 Sep 2020 17:35:45 -0700 (PDT)
 Received: from Asurada-Nvidia.nvidia.com (thunderhill.nvidia.com. [216.228.112.22])
-        by smtp.gmail.com with ESMTPSA id x185sm6904738pfc.188.2020.09.29.17.35.43
+        by smtp.gmail.com with ESMTPSA id x185sm6904738pfc.188.2020.09.29.17.35.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Sep 2020 17:35:44 -0700 (PDT)
+        Tue, 29 Sep 2020 17:35:45 -0700 (PDT)
 From:   Nicolin Chen <nicoleotsuka@gmail.com>
 To:     thierry.reding@gmail.com, joro@8bytes.org, krzk@kernel.org,
         digetx@gmail.com
 Cc:     vdumpa@nvidia.com, jonathanh@nvidia.com,
         linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v2 0/3] iommu/tegra-smmu: Add PCI support
-Date:   Tue, 29 Sep 2020 17:30:10 -0700
-Message-Id: <20200930003013.31289-1-nicoleotsuka@gmail.com>
+Subject: [PATCH v2 1/3] memory: tegra: Add helper function tegra_get_memory_controller
+Date:   Tue, 29 Sep 2020 17:30:11 -0700
+Message-Id: <20200930003013.31289-2-nicoleotsuka@gmail.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200930003013.31289-1-nicoleotsuka@gmail.com>
+References: <20200930003013.31289-1-nicoleotsuka@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series is to add PCI support with three changes:
-PATCH-1 adds a helper function to get mc pointer
-PATCH-2 adds support for clients that don't exist in DTB
-PATCH-3 adds PCI support accordingly
+This can be used by both tegra-smmu and tegra20-devfreq drivers.
+
+Suggested-by: Dmitry Osipenko <digetx@gmail.com>
+Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
+---
 
 Changelog
 v1->v2
- * Added PATCH-1 suggested by Dmitry
- * Reworked PATCH-2 to unify certain code
+ * N/A
 
-Prvious versions
-v1: https://lkml.org/lkml/2020/9/26/66
+ drivers/memory/tegra/mc.c | 23 +++++++++++++++++++++++
+ include/soc/tegra/mc.h    |  1 +
+ 2 files changed, 24 insertions(+)
 
-Nicolin Chen (3):
-  memory: tegra: Add helper function tegra_get_memory_controller
-  iommu/tegra-smmu: Rework .probe_device and .attach_dev
-  iommu/tegra-smmu: Add PCI support
-
- drivers/iommu/tegra-smmu.c | 177 +++++++++++++------------------------
- drivers/memory/tegra/mc.c  |  23 +++++
- include/soc/tegra/mc.h     |   1 +
- 3 files changed, 84 insertions(+), 117 deletions(-)
-
+diff --git a/drivers/memory/tegra/mc.c b/drivers/memory/tegra/mc.c
+index ec8403557ed4..09352ad66dcc 100644
+--- a/drivers/memory/tegra/mc.c
++++ b/drivers/memory/tegra/mc.c
+@@ -42,6 +42,29 @@ static const struct of_device_id tegra_mc_of_match[] = {
+ };
+ MODULE_DEVICE_TABLE(of, tegra_mc_of_match);
+ 
++struct tegra_mc *tegra_get_memory_controller(void)
++{
++	struct platform_device *pdev;
++	struct device_node *np;
++	struct tegra_mc *mc;
++
++	np = of_find_matching_node_and_match(NULL, tegra_mc_of_match, NULL);
++	if (!np)
++		return ERR_PTR(-ENOENT);
++
++	pdev = of_find_device_by_node(np);
++	of_node_put(np);
++	if (!pdev)
++		return ERR_PTR(-ENODEV);
++
++	mc = platform_get_drvdata(pdev);
++	if (!mc)
++		return ERR_PTR(-EPROBE_DEFER);
++
++	return mc;
++}
++EXPORT_SYMBOL_GPL(tegra_get_memory_controller);
++
+ static int tegra_mc_block_dma_common(struct tegra_mc *mc,
+ 				     const struct tegra_mc_reset *rst)
+ {
+diff --git a/include/soc/tegra/mc.h b/include/soc/tegra/mc.h
+index 1238e35653d1..c72718fd589f 100644
+--- a/include/soc/tegra/mc.h
++++ b/include/soc/tegra/mc.h
+@@ -183,5 +183,6 @@ struct tegra_mc {
+ 
+ int tegra_mc_write_emem_configuration(struct tegra_mc *mc, unsigned long rate);
+ unsigned int tegra_mc_get_emem_device_count(struct tegra_mc *mc);
++struct tegra_mc *tegra_get_memory_controller(void);
+ 
+ #endif /* __SOC_TEGRA_MC_H__ */
 -- 
 2.17.1
 
