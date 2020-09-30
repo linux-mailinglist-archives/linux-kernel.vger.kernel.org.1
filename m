@@ -2,218 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C0F927EA91
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 16:06:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30A9327EA98
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 16:08:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730329AbgI3OGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 10:06:00 -0400
-Received: from relay9-d.mail.gandi.net ([217.70.183.199]:40431 "EHLO
-        relay9-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728149AbgI3OF7 (ORCPT
+        id S1730294AbgI3OID (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 10:08:03 -0400
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:35419 "EHLO
+        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728149AbgI3OID (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 10:05:59 -0400
-X-Originating-IP: 90.65.88.165
-Received: from localhost (lfbn-lyo-1-1908-165.w90-65.abo.wanadoo.fr [90.65.88.165])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 3E34DFF802;
-        Wed, 30 Sep 2020 14:05:56 +0000 (UTC)
-Date:   Wed, 30 Sep 2020 16:05:55 +0200
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
-Cc:     linux-iio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, jic23@kernel.org,
-        nicolas.ferre@microchip.com, ludovic.desroches@microchip.com
-Subject: Re: [PATCH v4 4/4] iio: adc: at91_adc: remove platform data and move
- defs in driver file
-Message-ID: <20200930140555.GI2804081@piout.net>
-References: <20200930135048.11530-1-alexandru.ardelean@analog.com>
- <20200930135048.11530-5-alexandru.ardelean@analog.com>
+        Wed, 30 Sep 2020 10:08:03 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.nyi.internal (Postfix) with ESMTP id DE1435803A5;
+        Wed, 30 Sep 2020 10:08:01 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Wed, 30 Sep 2020 10:08:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=4CHUtjs8mTgMe07nNzKeBnPZaAj
+        ouHv1QvsW52wUJnY=; b=QvysVhAr1anAS+8xcvEpN4LnvWRvzv9xsYLawfZy3j+
+        i1a57pdELNNICdEnaOD5MlN2hd1AvZLcKcNsLEDpUFts0P9pG64b35Xz52YHhKeG
+        oNPzniULzux5UL78pjAdGYQ8b3cqaDue/CmaZA0OfHmK61Uowj6ZKwYSyDOh1Dpl
+        BMmUoIxatxxOauWvuphSwAI6sY4yx9wOqjhHJoi5jxAjXYbaZRCQHJXyb11hTk3F
+        HV1k8sgDN4oxWr89a+m6NGqpFabUlhshQGN6Vbfzd8itCkBxKGGEg/Sf2qZPB1x3
+        rfp1MBj6cKRK2KdXAjY5JZz97UN/8Jpwbc600WZboQQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=4CHUtj
+        s8mTgMe07nNzKeBnPZaAjouHv1QvsW52wUJnY=; b=oPTj1pq76Ldo2+cGdIN+ib
+        rZXITHKW/cK4VeorcMv99OHlFFmd7JmK2Urf1c42EDrujnm0scKQQm7X2dn9VKkO
+        bt7mIG190HIoOKtp5Po2KLuRXhGbBtBU/WqIon0Rj0Po0YjinAPoLVYEvamhiU2x
+        Ch667bcmVfdJELn6VW35RXQVMAuvBt4XCjv5VfQwIbP8xTj1gaFjJvcOTWj6mLQZ
+        vMth0Peibm4faJYkyzmLOzZPrpK6BN+1vrZBWix/1dYxHvyrcjXMOJThoH1ufjQB
+        NcFhzPUe7HRi8O2g0tmzwIoJD2xog/MKcfZ9yIwjTCkczHfcaptz3g5zt65buZdA
+        ==
+X-ME-Sender: <xms:QJF0X0LLAvg0NVn075J81KHsVYstEul1Mj8FNzugQauMcZpNwcHiEA>
+    <xme:QJF0X0LzmwAo40g9_SgXbANShQorA0CFVANg0oQ5NAAPF5D4jq7MY7Db_ttNMffzo
+    y20D_a0bDERqL4HzOw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrfedvgdeilecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
+    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
+    gvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeg
+    udenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurf
+    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:QJF0X0s3LNPP7OoFaVhMBl7W7Ezld7UXKzWxRd9asmOrTBPfOE8KNw>
+    <xmx:QJF0XxZZiOurhk2ei2IJbNrM0yNaajW6pyGpFGupYQiQ6rg0Eh74aA>
+    <xmx:QJF0X7Z2ozlN9wg44ynRnvbHMqWy2VqyvXlqNmDNo2EcRErseIQ2kQ>
+    <xmx:QZF0X5BSCCBq8SdTYH93oBvlNYAoa2AA4uqUMAm9Q6w-IKpJ6fkj9Q>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 5C9A53280059;
+        Wed, 30 Sep 2020 10:08:00 -0400 (EDT)
+Date:   Wed, 30 Sep 2020 16:07:58 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Nathan Chancellor <natechancellor@gmail.com>
+Cc:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Eric Anholt <eric@anholt.net>,
+        Stefan Wahren <stefan.wahren@i2se.com>,
+        Tim Gover <tim.gover@raspberrypi.com>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Hoegeun Kwon <hoegeun.kwon@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-rpi-kernel@lists.infradead.org,
+        Phil Elwell <phil@raspberrypi.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v5 80/80] ARM: dts: bcm2711: Enable the display pipeline
+Message-ID: <20200930140758.gummt3umouva3wyu@gilmour.lan>
+References: <cover.dddc064d8bb83e46744336af67dcb13139e5747d.1599120059.git-series.maxime@cerno.tech>
+ <cfce2276d172d3d9c4d34d966b58fd47f77c4e46.1599120059.git-series.maxime@cerno.tech>
+ <20200929221526.GA1370981@ubuntu-m3-large-x86>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="nmd2zrhuwo3r2vsl"
 Content-Disposition: inline
-In-Reply-To: <20200930135048.11530-5-alexandru.ardelean@analog.com>
+In-Reply-To: <20200929221526.GA1370981@ubuntu-m3-large-x86>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/09/2020 16:50:48+0300, Alexandru Ardelean wrote:
-> The AT91 ADC driver no longer uses the 'at91_add_device_adc' platform data
-> type. This is no longer used (at least in mainline boards).
-> 
-> This change removes the platform-data initialization from the driver, since
-> it is mostly dead code now.
-> 
-> Some definitions [from the platform data at91_adc.h include] have been
-> moved in the driver, since they are needed in the driver.
-> 
-> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
-Reviewed-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
 
-> ---
->  drivers/iio/adc/at91_adc.c             | 60 ++++++++++----------------
->  include/linux/platform_data/at91_adc.h | 49 ---------------------
->  2 files changed, 22 insertions(+), 87 deletions(-)
->  delete mode 100644 include/linux/platform_data/at91_adc.h
-> 
-> diff --git a/drivers/iio/adc/at91_adc.c b/drivers/iio/adc/at91_adc.c
-> index 473bffe84fbd..be6abf739881 100644
-> --- a/drivers/iio/adc/at91_adc.c
-> +++ b/drivers/iio/adc/at91_adc.c
-> @@ -22,8 +22,6 @@
->  #include <linux/slab.h>
->  #include <linux/wait.h>
->  
-> -#include <linux/platform_data/at91_adc.h>
-> -
->  #include <linux/iio/iio.h>
->  #include <linux/iio/buffer.h>
->  #include <linux/iio/trigger.h>
-> @@ -153,6 +151,25 @@
->  #define TOUCH_SHTIM                    0xa
->  #define TOUCH_SCTIM_US		10		/* 10us for the Touchscreen Switches Closure Time */
->  
-> +enum atmel_adc_ts_type {
-> +	ATMEL_ADC_TOUCHSCREEN_NONE = 0,
-> +	ATMEL_ADC_TOUCHSCREEN_4WIRE = 4,
-> +	ATMEL_ADC_TOUCHSCREEN_5WIRE = 5,
-> +};
-> +
-> +/**
-> + * struct at91_adc_trigger - description of triggers
-> + * @name:		name of the trigger advertised to the user
-> + * @value:		value to set in the ADC's trigger setup register
-> +			to enable the trigger
-> + * @is_external:	Does the trigger rely on an external pin?
-> + */
-> +struct at91_adc_trigger {
-> +	const char	*name;
-> +	u8		value;
-> +	bool		is_external;
-> +};
-> +
->  /**
->   * struct at91_adc_reg_desc - Various informations relative to registers
->   * @channel_base:	Base offset for the channel data registers
-> @@ -873,9 +890,6 @@ static int at91_adc_probe_dt(struct iio_dev *idev,
->  	int i = 0, ret;
->  	u32 prop;
->  
-> -	if (!node)
-> -		return -EINVAL;
-> -
->  	st->caps = of_device_get_match_data(&pdev->dev);
->  
->  	st->use_external = of_property_read_bool(node, "atmel,adc-use-external-triggers");
-> @@ -957,30 +971,6 @@ static int at91_adc_probe_dt(struct iio_dev *idev,
->  	return ret;
->  }
->  
-> -static int at91_adc_probe_pdata(struct at91_adc_state *st,
-> -				struct platform_device *pdev)
-> -{
-> -	struct at91_adc_data *pdata = pdev->dev.platform_data;
-> -
-> -	if (!pdata)
-> -		return -EINVAL;
-> -
-> -	st->caps = (struct at91_adc_caps *)
-> -			platform_get_device_id(pdev)->driver_data;
-> -
-> -	st->use_external = pdata->use_external_triggers;
-> -	st->vref_mv = pdata->vref;
-> -	st->channels_mask = pdata->channels_used;
-> -	st->num_channels = st->caps->num_channels;
-> -	st->startup_time = pdata->startup_time;
-> -	st->trigger_number = pdata->trigger_number;
-> -	st->trigger_list = pdata->trigger_list;
-> -	st->registers = &st->caps->registers;
-> -	st->touchscreen_type = pdata->touchscreen_type;
-> -
-> -	return 0;
-> -}
-> -
->  static const struct iio_info at91_adc_info = {
->  	.read_raw = &at91_adc_read_raw,
->  };
-> @@ -1157,15 +1147,9 @@ static int at91_adc_probe(struct platform_device *pdev)
->  
->  	st = iio_priv(idev);
->  
-> -	if (pdev->dev.of_node)
-> -		ret = at91_adc_probe_dt(idev, pdev);
-> -	else
-> -		ret = at91_adc_probe_pdata(st, pdev);
-> -
-> -	if (ret) {
-> -		dev_err(&pdev->dev, "No platform data available.\n");
-> -		return -EINVAL;
-> -	}
-> +	ret = at91_adc_probe_dt(idev, pdev);
-> +	if (ret)
-> +		return ret;
->  
->  	platform_set_drvdata(pdev, idev);
->  
-> diff --git a/include/linux/platform_data/at91_adc.h b/include/linux/platform_data/at91_adc.h
-> deleted file mode 100644
-> index f20eaeb827ce..000000000000
-> --- a/include/linux/platform_data/at91_adc.h
-> +++ /dev/null
-> @@ -1,49 +0,0 @@
-> -/* SPDX-License-Identifier: GPL-2.0-or-later */
-> -/*
-> - * Copyright (C) 2011 Free Electrons
-> - */
-> -
-> -#ifndef _AT91_ADC_H_
-> -#define _AT91_ADC_H_
-> -
-> -enum atmel_adc_ts_type {
-> -	ATMEL_ADC_TOUCHSCREEN_NONE = 0,
-> -	ATMEL_ADC_TOUCHSCREEN_4WIRE = 4,
-> -	ATMEL_ADC_TOUCHSCREEN_5WIRE = 5,
-> -};
-> -
-> -/**
-> - * struct at91_adc_trigger - description of triggers
-> - * @name:		name of the trigger advertised to the user
-> - * @value:		value to set in the ADC's trigger setup register
-> -			to enable the trigger
-> - * @is_external:	Does the trigger rely on an external pin?
-> - */
-> -struct at91_adc_trigger {
-> -	const char	*name;
-> -	u8		value;
-> -	bool		is_external;
-> -};
-> -
-> -/**
-> - * struct at91_adc_data - platform data for ADC driver
-> - * @channels_used:		channels in use on the board as a bitmask
-> - * @startup_time:		startup time of the ADC in microseconds
-> - * @trigger_list:		Triggers available in the ADC
-> - * @trigger_number:		Number of triggers available in the ADC
-> - * @use_external_triggers:	does the board has external triggers availables
-> - * @vref:			Reference voltage for the ADC in millivolts
-> - * @touchscreen_type:		If a touchscreen is connected, its type (4 or 5 wires)
-> - */
-> -struct at91_adc_data {
-> -	unsigned long			channels_used;
-> -	u8				startup_time;
-> -	struct at91_adc_trigger		*trigger_list;
-> -	u8				trigger_number;
-> -	bool				use_external_triggers;
-> -	u16				vref;
-> -	enum atmel_adc_ts_type		touchscreen_type;
-> -};
-> -
-> -extern void __init at91_add_device_adc(struct at91_adc_data *data);
-> -#endif
-> -- 
-> 2.17.1
-> 
+--nmd2zrhuwo3r2vsl
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
--- 
-Alexandre Belloni, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Hi Nathan,
+
+On Tue, Sep 29, 2020 at 03:15:26PM -0700, Nathan Chancellor wrote:
+> On Thu, Sep 03, 2020 at 10:01:52AM +0200, Maxime Ripard wrote:
+> > Now that all the drivers have been adjusted for it, let's bring in the
+> > necessary device tree changes.
+> >=20
+> > The VEC and PV3 are left out for now, since it will require a more spec=
+ific
+> > clock setup.
+> >=20
+> > Reviewed-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
+> > Tested-by: Chanwoo Choi <cw00.choi@samsung.com>
+> > Tested-by: Hoegeun Kwon <hoegeun.kwon@samsung.com>
+> > Tested-by: Stefan Wahren <stefan.wahren@i2se.com>
+> > Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+>=20
+> Apologies if this has already been reported or have a solution but this
+> patch (and presumably series) breaks output to the serial console after
+> a certain point during init. On Raspbian, I see systemd startup messages
+> then the output just turns into complete garbage. It looks like this
+> patch is merged first in linux-next, which is why my bisect fell on the
+> DRM merge. I am happy to provide whatever information could be helpful
+> for debugging this. I am on the latest version of the firmware
+> (currently 26620cc9a63c6cb9965374d509479b4ee2c30241).
+
+Unfortunately, the miniUART is in the same clock tree than the core
+clock and will thus have those kind of issues when the core clock is
+changed (which is also something that one should expect when using the
+DRM or other drivers).
+
+The only real workaround there would be to switch to one of the PL011
+UARTs. I guess we can also somehow make the UART react to the core clock
+frequency changes, but that's going to require some effort
+
+Maxime
+
+--nmd2zrhuwo3r2vsl
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX3SRPgAKCRDj7w1vZxhR
+xSt+AP0ayZmAvs/uQrHYd/JCYiYkSNEVkD1lmyO4nYjMymxRSwEA8vrzDPVI/xKN
+0eYP8+ZWTkPuacJT4sSnKcZCYSzHcwE=
+=YIDd
+-----END PGP SIGNATURE-----
+
+--nmd2zrhuwo3r2vsl--
