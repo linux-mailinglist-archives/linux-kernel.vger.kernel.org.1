@@ -2,77 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F0FC27EA20
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 15:42:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52E0527EA25
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 15:43:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730185AbgI3Nmo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 09:42:44 -0400
-Received: from mga14.intel.com ([192.55.52.115]:7212 "EHLO mga14.intel.com"
+        id S1730209AbgI3Nnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 09:43:45 -0400
+Received: from foss.arm.com ([217.140.110.172]:36532 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728235AbgI3Nmn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 09:42:43 -0400
-IronPort-SDR: 7A5AX6e+74KKSOr0bpw+rZmQ8qwzgB0dRDn3yZdceg/hmGq1vzl2xiZT8aUbwxfW9yR4sg9KyK
- DgWsUgL+FMAg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9759"; a="161672041"
-X-IronPort-AV: E=Sophos;i="5.77,322,1596524400"; 
-   d="scan'208";a="161672041"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2020 06:42:43 -0700
-IronPort-SDR: wcvB+fCVQuUZkeFuBwdZGojT2EKhvugyjDD5JkoQrX9tXypikCH60coxFhkEd2u1jOJyZ2R6Pu
- ZWC5Raw7iKaA==
-X-IronPort-AV: E=Sophos;i="5.77,322,1596524400"; 
-   d="scan'208";a="515081031"
-Received: from pmajewsk-mobl1.ger.corp.intel.com (HELO [10.249.153.66]) ([10.249.153.66])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2020 06:42:42 -0700
-Subject: Re: [PATCH 0/2] PCI/PM: Fix D2 transition delay
-To:     Bjorn Helgaas <helgaas@kernel.org>, linux-pci@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
-        Bjorn Helgaas <bhelgaas@google.com>
-References: <20200929194748.2566828-1-helgaas@kernel.org>
-From:   "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Organization: Intel Technology Poland Sp. z o. o., KRS 101882, ul. Slowackiego
- 173, 80-298 Gdansk
-Message-ID: <58f3629e-1564-2202-ac49-3ccb683260e1@intel.com>
-Date:   Wed, 30 Sep 2020 15:42:40 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1728235AbgI3Nno (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 09:43:44 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C4DE430E;
+        Wed, 30 Sep 2020 06:43:43 -0700 (PDT)
+Received: from [10.37.12.68] (unknown [10.37.12.68])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E67053F6CF;
+        Wed, 30 Sep 2020 06:43:41 -0700 (PDT)
+Subject: Re: [PATCH v4 18/52] math64.h: kernel-docs: Convert some markups into
+ normal comments
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>
+Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Chunyan Zhang <chunyan.zhang@unisoc.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org
+References: <cover.1601467849.git.mchehab+huawei@kernel.org>
+ <97e7afe71713d70c2399a7277a114c071e54a8e0.1601467849.git.mchehab+huawei@kernel.org>
+From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
+Message-ID: <31fd707b-7122-21bc-2656-d4fc5f50a7ac@arm.com>
+Date:   Wed, 30 Sep 2020 14:46:16 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200929194748.2566828-1-helgaas@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <97e7afe71713d70c2399a7277a114c071e54a8e0.1601467849.git.mchehab+huawei@kernel.org>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/29/2020 9:47 PM, Bjorn Helgaas wrote:
-> From: Bjorn Helgaas <bhelgaas@google.com>
->
-> Remove an unused #define.
->
-> Fix the D2 transition delay.  I changed this a year ago to conform to the
-> PCIe r5.0 spec, but I think the number I relied on is a typo in the spec.
-> I asked the PCI-SIG to fix the typo.  Hopefully I'll get a response before
-> the merge window.
->
-> Bjorn Helgaas (2):
->    PCI/PM: Remove unused PCI_PM_BUS_WAIT
->    PCI/PM: Revert "PCI/PM: Apply D2 delay as milliseconds, not
->      microseconds"
->
->   drivers/pci/pci.c | 2 +-
->   drivers/pci/pci.h | 7 +++----
->   2 files changed, 4 insertions(+), 5 deletions(-)
->
-Please add
-
-Reviewed-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-
-to both patches.
-
-Cheers!
 
 
+On 9/30/20 2:24 PM, Mauro Carvalho Chehab wrote:
+> There are several functions at math64.h that are also
+> defined at div64.c. As both are included at kernel-api.rst,
+> Sphinx 3.x complains about symbol duplication:
+> 
+> 	./lib/math/div64.c:73: WARNING: Duplicate C declaration, also defined in 'core-api/kernel-api'.
+> 	Declaration is 'div_s64_rem'.
+> 	./lib/math/div64.c:104: WARNING: Duplicate C declaration, also defined in 'core-api/kernel-api'.
+> 	Declaration is 'div64_u64_rem'.
+> 	./lib/math/div64.c:144: WARNING: Duplicate C declaration, also defined in 'core-api/kernel-api'.
+> 	Declaration is 'div64_u64'.
+> 	./lib/math/div64.c:172: WARNING: Duplicate C declaration, also defined in 'core-api/kernel-api'.
+> 	Declaration is 'div64_s64'.
+> 
+> In order to avoid Sphinx warnings about duplication, change the kernel-doc
+> markups to just comments at math64.h.
+>
+
+Reviewed-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
+>  include/linux/math64.h | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/include/linux/math64.h b/include/linux/math64.h
+> index 3381d9e33c4e..66deb1fdc2ef 100644
+> --- a/include/linux/math64.h
+> +++ b/include/linux/math64.h
+> @@ -28,7 +28,7 @@ static inline u64 div_u64_rem(u64 dividend, u32 divisor, u32 *remainder)
+>  	return dividend / divisor;
+>  }
+>  
+> -/**
+> +/*
+>   * div_s64_rem - signed 64bit divide with 32bit divisor with remainder
+>   * @dividend: signed 64bit dividend
+>   * @divisor: signed 32bit divisor
+> @@ -42,7 +42,7 @@ static inline s64 div_s64_rem(s64 dividend, s32 divisor, s32 *remainder)
+>  	return dividend / divisor;
+>  }
+>  
+> -/**
+> +/*
+>   * div64_u64_rem - unsigned 64bit divide with 64bit divisor and remainder
+>   * @dividend: unsigned 64bit dividend
+>   * @divisor: unsigned 64bit divisor
+> @@ -56,7 +56,7 @@ static inline u64 div64_u64_rem(u64 dividend, u64 divisor, u64 *remainder)
+>  	return dividend / divisor;
+>  }
+>  
+> -/**
+> +/*
+>   * div64_u64 - unsigned 64bit divide with 64bit divisor
+>   * @dividend: unsigned 64bit dividend
+>   * @divisor: unsigned 64bit divisor
+> @@ -68,7 +68,7 @@ static inline u64 div64_u64(u64 dividend, u64 divisor)
+>  	return dividend / divisor;
+>  }
+>  
+> -/**
+> +/*
+>   * div64_s64 - signed 64bit divide with 64bit divisor
+>   * @dividend: signed 64bit dividend
+>   * @divisor: signed 64bit divisor
+> 
+
+-- 
+Regards,
+Vincenzo
