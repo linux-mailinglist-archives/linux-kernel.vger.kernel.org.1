@@ -2,99 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0108827DF27
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 06:07:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2A5B27DF2A
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 06:09:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725795AbgI3EHX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 00:07:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50190 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725306AbgI3EHW (ORCPT
+        id S1725834AbgI3EJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 00:09:11 -0400
+Received: from twspam01.aspeedtech.com ([211.20.114.71]:30675 "EHLO
+        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725385AbgI3EJL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 00:07:22 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE3FAC061755;
-        Tue, 29 Sep 2020 21:07:21 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C1N4h32B4z9sS8;
-        Wed, 30 Sep 2020 14:07:15 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1601438837;
-        bh=NDvKx2m8FPj+G+l2Zwz8LrjqP4/PZi2OytndnhSYMoU=;
-        h=Date:From:To:Cc:Subject:From;
-        b=E5enepypdsG7fFF98lToN7to3c71QT+mKH5TdL74kJSxsX+WYknOB0pSwkYqbMGFw
-         V88YxeNWRxyBtXEvOx7rDL59dzhI6uXGRChjUIyFufajqmAh7yBfPKKalQ2H1LFULA
-         td+/5/IHLc5V3qWoBIfPL0DebwU2al8sP9/o0dOOcg9p4HHOuTjkaxDCArjLsD2xYc
-         D5T3U500JmyjQh47wf1F7vS9hhwWkgXrkUtbo0oEL0bb336aPo627+usUbAH0+XXhF
-         PgUaefav22bq6UbIYsMR7anPVvnxuuP/9zt6hJIvRHn1jBeFWiyfDMZqf0IAQtcQny
-         oze+NzVpLWNmg==
-Date:   Wed, 30 Sep 2020 14:07:15 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Networking <netdev@vger.kernel.org>
-Cc:     Andrii Nakryiko <andriin@fb.com>,
-        Tony Ambardar <tony.ambardar@gmail.com>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: linux-next: manual merge of the bpf-next tree with the bpf tree
-Message-ID: <20200930140715.68af921b@canb.auug.org.au>
+        Wed, 30 Sep 2020 00:09:11 -0400
+Received: from mail.aspeedtech.com ([192.168.0.24])
+        by twspam01.aspeedtech.com with ESMTP id 08U3n6vl071701;
+        Wed, 30 Sep 2020 11:49:06 +0800 (GMT-8)
+        (envelope-from ryan_chen@aspeedtech.com)
+Received: from localhost.localdomain (192.168.10.9) by TWMBX02.aspeed.com
+ (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 30 Sep
+ 2020 12:08:29 +0800
+From:   Ryan Chen <ryan_chen@aspeedtech.com>
+To:     Joel Stanley <joel@jms.id.au>, Andrew Jeffery <andrew@aj.id.au>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
+        <linux-usb@vger.kernel.org>, <bmc-sw@aspeedtech.com>
+CC:     Ryan Chen <ryan_chen@aspeedtech.com>
+Subject: [PATCH 0/3] Enable USB host for AST2600
+Date:   Wed, 30 Sep 2020 12:08:20 +0800
+Message-ID: <20200930040823.26065-1-ryan_chen@aspeedtech.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/zXI4ITNXdmg6bHRqZA/rPoA";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain
+X-Originating-IP: [192.168.10.9]
+X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
+ (192.168.0.24)
+X-DNSRBL: 
+X-MAIL: twspam01.aspeedtech.com 08U3n6vl071701
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/zXI4ITNXdmg6bHRqZA/rPoA
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+The patches enable UHCI driver in AST2600 and also enable
+USB host in aspeed-ast2600-evb.dts.
 
-Hi all,
+Ryan Chen (3):
+  configs: aspeed: enable UHCI driver in defconfig
+  usb: host: add uhci compatible support for ast2600-uhci
+  ARM: dts: add ehci uhci enable in evb dts
 
-Today's linux-next merge of the bpf-next tree got a conflict in:
+ arch/arm/boot/dts/aspeed-ast2600-evb.dts | 8 ++++++++
+ arch/arm/configs/aspeed_g5_defconfig     | 1 +
+ drivers/usb/host/uhci-platform.c         | 3 ++-
+ 3 files changed, 11 insertions(+), 1 deletion(-)
 
-  tools/lib/bpf/btf.c
+-- 
+2.17.1
 
-between commit:
-
-  1245008122d7 ("libbpf: Fix native endian assumption when parsing BTF")
-
-from the bpf tree and commit:
-
-  3289959b97ca ("libbpf: Support BTF loading and raw data output in both en=
-dianness")
-
-from the bpf-next tree.
-
-I fixed it up (I used the latter version) and can carry the fix as
-necessary. This is now fixed as far as linux-next is concerned, but any
-non trivial conflicts should be mentioned to your upstream maintainer
-when your tree is submitted for merging.  You may also want to consider
-cooperating with the maintainer of the conflicting tree to minimise any
-particularly complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/zXI4ITNXdmg6bHRqZA/rPoA
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl90BHMACgkQAVBC80lX
-0GzCdAf/RM50Zx8iRKRR+BVzRuGw/RSmA4W6TtiBufcI5YdYHjQgL1la3O3347lb
-dKf4tZoCqcXCbIxq61tSkFvYBxOB3AmX3IGXgC9NlxNyFarXwUbcLFHjueZ9WzEi
-rKyhfKWDLMh8TxGpKZREkyy4WurkvSJyeVp7OMV/YxPxmJ/gNlrbEc2b1k+LbIzp
-LTZK2XY4phYuhw/plr8eqphwU6CcDTbNjF+j5yQf/K296y5A3WhjTMf+pZNOf2Dp
-UzAHpvauy0hjIlSAcxXfHkSTfyuLeKID4W3NL8m1suiTuRs7Vkgc4HrJT1xqh7u4
-90mC5dGd/PT8q8T9JcxDw3KahZwMag==
-=pT5I
------END PGP SIGNATURE-----
-
---Sig_/zXI4ITNXdmg6bHRqZA/rPoA--
