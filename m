@@ -2,149 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A449227F50C
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 00:22:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3FE727F50F
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 00:23:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731570AbgI3WW3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 18:22:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49874 "EHLO
+        id S1731481AbgI3WXu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 18:23:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731322AbgI3WW2 (ORCPT
+        with ESMTP id S1730201AbgI3WXu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 18:22:28 -0400
-Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B154EC061755
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 15:22:28 -0700 (PDT)
-Received: by mail-qv1-xf4a.google.com with SMTP id bo17so1902865qvb.2
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 15:22:28 -0700 (PDT)
+        Wed, 30 Sep 2020 18:23:50 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B82BC061755
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 15:23:50 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id y74so4234121iof.12
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 15:23:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:cc;
-        bh=Mra73tAqzotShWNgSXv1vhLyePg3f0HjrcFvwMDeq9o=;
-        b=jDIKOMNUrsBzgzsboYR6brg4WOYp4kCRZqrCWAvAZbpkekxYpp5uwWu1VMa3jBM1D4
-         qePDAkhwPaS7ozmJhvpiPn8rqjAEru5rJyPx6RWU/8Ay/7inrR7CHVJ77p9zaJZ1IwI9
-         Dy5ixhsQoV7e7t6GjskB9KRoGi6vhUEOJIOmUECHIHMNA/6dx0Mfp5sk/qPevZgAIWJD
-         dSDgUoz8vPO96wn0mRJrwb6JU+kn6sz1n4gmMp04q1wpnavCaWjLkLkQER3ZYnT7jxHz
-         JbrMiGc+vRmaiWx7InwR9v7+c9MnvzgX9b4pL1qHoSDq+DWQYdeR0dkqLDkbjTEQELIk
-         LT7A==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=stcuGU/AmuexDn/xDJU4W3SgmvykF2WxUHKZBjdx8/Q=;
+        b=pB7B3hpbwzKCM8OLwFLMu657QencM4uNHvjZw2pf8j8HF9GyE4GLREYAIWJI8nVhVZ
+         sTBV8LBK6dZr6t9MG5fmrIsc1R9KeV50VjzoFfjzFrqjcGmXvbKFi+V6YpFWGkNfuZ+7
+         HYxsJT8/0LGMNo4ODcISOBKsB1tRFVeDKjWoOOo5GOv6HhDP8G41kzPTCmxNx9DBmURu
+         kTQXB7BqeAoRY+/HIF7uDMajjEghf3uT9eSD3rB9AVQj3bvdrP/zKGRyhXKRhY6rKj4Z
+         y+B3Ym97axaNjv4BO3MmGzmOKs2OrUf5OwCvGivIR4q2MNBWElHSj6n1M5Gwk4RhaRy4
+         9cOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:cc;
-        bh=Mra73tAqzotShWNgSXv1vhLyePg3f0HjrcFvwMDeq9o=;
-        b=ukcJR1XKh+8eVGFgXHzuOosv7FIHHxrxBmDW5rQOm0NX+He/A5jL1LUFXfefEbGcF/
-         wxb7MLfnlUt67J0DYfEjG/8FhnGRULRg0CI0Nm8ewx0rGamLLGvvGmcMqtxEwIlGwHoo
-         1zrIBvg3Eqv9ti+NJ5/OUFfUj0WqyZSDT4pO/y1AKHWvH6mETH84ZGO3vhPG50Sx9H4i
-         LIGUDlEt5rd35dKbpoixZpq93zO6g818GJ4E7dcDPHOYhLfR4NkFvECwGU4LL0+yFyZl
-         K4ygrK6XWLmegGSiqhhlLuggyPIWJ5r/1AXuqsnb24M684lZhBrisDTULYGT+WSzpJ+/
-         OWyg==
-X-Gm-Message-State: AOAM533/7kzUw3I/g1ot2tW44GhuWy9xHtde2pImUMWRvluSRj4NPal9
-        by1+1kWt/j+TJL+9ezzhUwAx7SwkuS/hOqHCCg==
-X-Google-Smtp-Source: ABdhPJyLR6MYlSTS4XQqoJzvYxjrHwSWIVNtfhqTdtx45lsRl3oJwBhgd7X3m6yDztZJ8ANUp7tpdCXWxqNC36OyAw==
-Sender: "kaleshsingh via sendgmr" <kaleshsingh@kaleshsingh.c.googlers.com>
-X-Received: from kaleshsingh.c.googlers.com ([fda3:e722:ac3:10:14:4d90:c0a8:2145])
- (user=kaleshsingh job=sendgmr) by 2002:a0c:b39a:: with SMTP id
- t26mr4865208qve.19.1601504547782; Wed, 30 Sep 2020 15:22:27 -0700 (PDT)
-Date:   Wed, 30 Sep 2020 22:21:22 +0000
-In-Reply-To: <20200930222130.4175584-1-kaleshsingh@google.com>
-Message-Id: <20200930222130.4175584-6-kaleshsingh@google.com>
-Mime-Version: 1.0
-References: <20200930222130.4175584-1-kaleshsingh@google.com>
-X-Mailer: git-send-email 2.28.0.709.gb0816b6eb0-goog
-Subject: [PATCH 5/5] x86: mremap speedup - Enable HAVE_MOVE_PUD
-From:   Kalesh Singh <kaleshsingh@google.com>
-Cc:     surenb@google.com, minchan@google.com, joelaf@google.com,
-        lokeshgidra@google.com, kaleshsingh@google.com,
-        kernel-team@android.com, Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Hassan Naveed <hnaveed@wavecomp.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mark Brown <broonie@kernel.org>,
-        Mike Rapoport <rppt@kernel.org>, Gavin Shan <gshan@redhat.com>,
-        Steven Price <steven.price@arm.com>,
-        Zhenyu Ye <yezhenyu2@huawei.com>, Jia He <justin.he@arm.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Ram Pai <linuxram@us.ibm.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        Mina Almasry <almasrymina@google.com>,
-        Sandipan Das <sandipan@linux.ibm.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Brian Geffon <bgeffon@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        SeongJae Park <sjpark@amazon.de>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=stcuGU/AmuexDn/xDJU4W3SgmvykF2WxUHKZBjdx8/Q=;
+        b=LwzIkZu8rdaPdJnxPEEBtVJCg2Ul6Ks1/ng6KxHRpg2Wz7vRSF0szCXlt823lpWd8j
+         XrichKnj+tJ+qUNy9bLm8IxOxtxpHiCilW9RcGvEtA53NdumC2LrLuaNzuvmv74wITDo
+         xedwny56B9rH4pqWDeJEhl47k2x3joEwgs3HaSrw/WZdkPutv7dnZLiqMRd46W8f8Sji
+         5RzdWdVvrocx6RAzOCSzXs5jOi7iaf89sKYrwMuEGEomUXN7EH2S8UvZntQT9bcKJVuT
+         TnYjviogWJmRVHOmQ/j7WqFht6f7JFzHOBHL6ZpF8MLL/sn91PD0mQlj7WtyJEaSVRZd
+         +cmQ==
+X-Gm-Message-State: AOAM531gzhJHSRT1TAFNb/OcWt18SXv+MI/Vjtm2fIIX21hMeUwNoZGj
+        KwpxFsC0bERDzOmQsRtSLsD44TcZ8YDPvld/lx4RTw==
+X-Google-Smtp-Source: ABdhPJw0s5dS3pBRaUkk/qRn8bsc/omxtWg+5h0+w6X5DYeRtzrIGMmq2LI5GLLwlzDTjlOJnkTCzRRbMIFCUkaybtY=
+X-Received: by 2002:a05:6638:f07:: with SMTP id h7mr3619834jas.25.1601504629460;
+ Wed, 30 Sep 2020 15:23:49 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200925212302.3979661-1-bgardon@google.com> <20200925212302.3979661-21-bgardon@google.com>
+ <aa7752b0-d2d2-f387-602f-fbf3f0edf450@redhat.com>
+In-Reply-To: <aa7752b0-d2d2-f387-602f-fbf3f0edf450@redhat.com>
+From:   Ben Gardon <bgardon@google.com>
+Date:   Wed, 30 Sep 2020 15:23:38 -0700
+Message-ID: <CANgfPd89WzcDV+DTxvkqfobCdCXHwtkFwpy90H4oNRftDOVrnA@mail.gmail.com>
+Subject: Re: [PATCH 20/22] kvm: mmu: NX largepage recovery for TDP MMU
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
+        Cannon Matthews <cannonmatthews@google.com>,
+        Peter Xu <peterx@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Peter Shier <pshier@google.com>,
+        Peter Feiner <pfeiner@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-HAVE_MOVE_PUD enables remapping pages at the PUD level if both the
-source and destination addresses are PUD-aligned.
+On Fri, Sep 25, 2020 at 6:15 PM Paolo Bonzini <pbonzini@redhat.com> wrote:
+>
+> On 25/09/20 23:23, Ben Gardon wrote:
+> > +
+> > +     if (!kvm->arch.tdp_mmu_enabled)
+> > +             return err;
+> > +
+> > +     err = kvm_vm_create_worker_thread(kvm, kvm_nx_lpage_recovery_worker, 1,
+> > +                     "kvm-nx-lpage-tdp-mmu-recovery",
+> > +                     &kvm->arch.nx_lpage_tdp_mmu_recovery_thread);
+>
+> Any reason to have two threads?
+>
+> Paolo
 
-With HAVE_MOVE_PUD enabled it can be inferred that there is approximately
-a 13x improvement in performance on x86. (See data below).
+At some point it felt cleaner. In this patch set NX reclaim is pretty
+similar between the "shadow MMU" and TDP MMU so they don't really need
+to be separate threads.
 
-------- Test Results ---------
-
-The following results were obtained using a 5.4 kernel, by remapping
-a PUD-aligned, 1GB sized region to a PUD-aligned destination.
-The results from 10 iterations of the test are given below:
-
-Total mremap times for 1GB data on x86. All times are in nanoseconds.
-
-Control        HAVE_MOVE_PUD
-
-180394         15089
-235728         14056
-238931         25741
-187330         13838
-241742         14187
-177925         14778
-182758         14728
-160872         14418
-205813         15107
-245722         13998
-
-205721.5       15594    <-- Mean time in nanoseconds
-
-A 1GB mremap completion time drops from ~205 microseconds
-to ~15 microseconds on x86. (~13x speed up).
-
-Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
----
- arch/x86/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 7101ac64bb20..ff6e2755cab8 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -198,6 +198,7 @@ config X86
- 	select HAVE_MIXED_BREAKPOINTS_REGS
- 	select HAVE_MOD_ARCH_SPECIFIC
- 	select HAVE_MOVE_PMD
-+	select HAVE_MOVE_PUD
- 	select HAVE_NMI
- 	select HAVE_OPROFILE
- 	select HAVE_OPTPROBES
--- 
-2.28.0.709.gb0816b6eb0-goog
-
+>
