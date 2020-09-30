@@ -2,91 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCF0727E92A
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 15:04:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AE1527E933
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 15:08:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730062AbgI3NEG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 09:04:06 -0400
-Received: from mta-02.yadro.com ([89.207.88.252]:48894 "EHLO mta-01.yadro.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725771AbgI3NED (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 09:04:03 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mta-01.yadro.com (Postfix) with ESMTP id E7FD14130F;
-        Wed, 30 Sep 2020 13:04:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=yadro.com; h=
-        content-transfer-encoding:mime-version:user-agent:content-type
-        :content-type:organization:references:in-reply-to:date:date:from
-        :from:subject:subject:message-id:received:received:received; s=
-        mta-01; t=1601471040; x=1603285441; bh=njVa9cplwqkKacO5snuH36/Bo
-        YnsXd9WkIp7KVh22W4=; b=DzYrn8U4Ujk/W1+h6DsWmSjEeguylOsSX2hS2dMPA
-        4ePHPgmlTkpCQF+NH1q3Iw+7GyPrYCJ6eCIYl8MAwTRX/RdYCn0BPQ88qWRQfk/T
-        bD3pdGK35uKUIu0XgL88EZpNNjKCoB6unKJ5qvJnAxbqgKDY2XFzTJwtfcoeHV3B
-        +U=
-X-Virus-Scanned: amavisd-new at yadro.com
-Received: from mta-01.yadro.com ([127.0.0.1])
-        by localhost (mta-01.yadro.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id dvIGsKiEPSWw; Wed, 30 Sep 2020 16:04:00 +0300 (MSK)
-Received: from T-EXCH-04.corp.yadro.com (t-exch-04.corp.yadro.com [172.17.100.104])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mta-01.yadro.com (Postfix) with ESMTPS id C084041207;
-        Wed, 30 Sep 2020 16:04:00 +0300 (MSK)
-Received: from localhost.localdomain (10.199.2.122) by
- T-EXCH-04.corp.yadro.com (172.17.100.104) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P384) id
- 15.1.669.32; Wed, 30 Sep 2020 16:04:00 +0300
-Message-ID: <4a5945534f7b41cb799c044ec8c9d31c61d5beda.camel@yadro.com>
-Subject: Re: [RESEND PATCH 1/2] mtd: spi-nor: do not touch TB bit without
- SPI_NOR_HAS_TB
-From:   Ivan Mikhaylov <i.mikhaylov@yadro.com>
-To:     Vignesh Raghavendra <vigneshr@ti.com>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>
-CC:     <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Date:   Wed, 30 Sep 2020 16:07:53 +0300
-In-Reply-To: <9bfb10df-64d8-4a5e-b0ad-a8b5f4efc56f@ti.com>
-References: <20200921112450.4824-1-i.mikhaylov@yadro.com>
-         <20200921112450.4824-2-i.mikhaylov@yadro.com>
-         <9bfb10df-64d8-4a5e-b0ad-a8b5f4efc56f@ti.com>
-Organization: YADRO
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.32.5 (3.32.5-1.fc30) 
+        id S1730076AbgI3NIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 09:08:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48738 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725771AbgI3NIS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 09:08:18 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BE63C061755
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 06:08:18 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id l15so1239091wmh.1
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 06:08:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=sUcX7CIsrhuza3QEfhaZv/H1JCPr/l4RGV3Smep/FWY=;
+        b=QI2/iCHqdIsZTJ6zEQraRYPFQWVuus9tecHYWTJgOKiuD130Eof+7xKCu0vGlMQ3Ju
+         Ee/3x/bQb83e9MgCgW+918RPRDWlLO6S3BR6d0TTee62iJyuU4zLDavq7rUyQfxpvELU
+         X1Ebury36YwAu7MVuL1pE/uePaDnkG3zUxXCVMJRc4FY7oYXhb7t1ckhrXdzUQxjSc7B
+         PpCgIENHzJavkDy8g92whDpSBFef94mZEpr/eLTUACF1Wzf78Qy8n66JQAFbu+LAZ21f
+         ZjUMqlKBk03pW/DT1zraaHa9s5hpHStbuvGFimD+B9ktsMJm7Hh1UOCE/7YMEdKSUf8B
+         33bw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=sUcX7CIsrhuza3QEfhaZv/H1JCPr/l4RGV3Smep/FWY=;
+        b=kILXv+1t0BnR459u8D/onaNEJOE/YvOG2vo28OfrRrL3zHO7eYWWEs9KScliXwxaW/
+         7zBcyQ+MPVlfsLN0KTuEuq/mTzxZiCEkjU3roSQ77i+eh+qay1ikdIzfzoE43hSiISA4
+         1xTJdj1SPr89Jg6euuuHQ06v5a/xCsjjN3roIexdqGeb3ZmNeqkLhlmaP1PIpFhnROsV
+         94PzLxUS7rSP2zzNaFfNNuk7rRiUW2T+H8pbpLbAdDrK79A5GsvFeDyBEMGcT8lxei/A
+         AorSQugrL9EKaoQJUqI0Ac2ePc4B3M9MWAvjAtcD4SMjYQizPJBZ6u+iu3gBcGIzERax
+         lQMQ==
+X-Gm-Message-State: AOAM532UzppD8bRZa03/ji5DdztYE+L2eFVLN9Xo1iQG8SRFzjQvRP5X
+        uAIQ1o0CQSdWeuvFP8MIds7/GJcS4RmlKdj4nhY=
+X-Google-Smtp-Source: ABdhPJyPJ7pbucWJRPEB1dBokbX/SeV627p6Vg47Awi5xr3txHGP1YyNdLlCn45H+M6xR3MxgSG1UnuJxBteUK8mAe8=
+X-Received: by 2002:a1c:35c5:: with SMTP id c188mr3063744wma.11.1601471297090;
+ Wed, 30 Sep 2020 06:08:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.199.2.122]
-X-ClientProxiedBy: T-EXCH-01.corp.yadro.com (172.17.10.101) To
- T-EXCH-04.corp.yadro.com (172.17.100.104)
+References: <20200930024712.88258-1-qianjun.kernel@gmail.com>
+ <20200930081953.GU2628@hirez.programming.kicks-ass.net> <CAKc596Jc6H5qFxrzSp_fGhqTZt-5ORLoP=E4bwG-QzkpRiL2bA@mail.gmail.com>
+ <20200930095719.GW2628@hirez.programming.kicks-ass.net>
+In-Reply-To: <20200930095719.GW2628@hirez.programming.kicks-ass.net>
+From:   jun qian <qianjun.kernel@gmail.com>
+Date:   Wed, 30 Sep 2020 21:08:05 +0800
+Message-ID: <CAKc596L6vzf=C7BvzWQH7kObSM_kGSxuf7idY6fr722sguNykA@mail.gmail.com>
+Subject: Re: [PATCH 1/1] sched/fair: Fix the wrong sched_stat_wait time
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     mingo@redhat.com, Vincent Guittot <vincent.guittot@linaro.org>,
+        juri.lelli@redhat.com, linux-kernel@vger.kernel.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org,
+        Benjamin Segall <bsegall@google.com>, mgorman@suse.de,
+        Yafang Shao <laoar.shao@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-09-30 at 15:06 +0530, Vignesh Raghavendra wrote:
-> 
-> On 9/21/20 4:54 PM, Ivan Mikhaylov wrote:
-> > Some chips like macronix don't have TB(Top/Bottom protection)
-> > bit in the status register. Do not write tb_mask inside status
-> > register, unless SPI_NOR_HAS_TB is present for the chip.
-> > 
-> 
-> Not entirely accurate.. Macronix chips have TB bit in config register
-> and is OTP and hence should not be touched ideally...
-> 
-> You still need to "read" that bit to determine actual scheme (Top vs
-> Bottom). This is needs to be done before 2/2 enables SPI_NOR_HAS_LOCK
-> flag for macronix flashes.
+Peter Zijlstra <peterz@infradead.org> =E4=BA=8E2020=E5=B9=B49=E6=9C=8830=E6=
+=97=A5=E5=91=A8=E4=B8=89 =E4=B8=8B=E5=8D=885:57=E5=86=99=E9=81=93=EF=BC=9A
+>
+> On Wed, Sep 30, 2020 at 05:16:29PM +0800, jun qian wrote:
+> > Peter Zijlstra <peterz@infradead.org> =E4=BA=8E2020=E5=B9=B49=E6=9C=883=
+0=E6=97=A5=E5=91=A8=E4=B8=89 =E4=B8=8B=E5=8D=884:20=E5=86=99=E9=81=93=EF=BC=
+=9A
+> > >
+> > > On Wed, Sep 30, 2020 at 10:47:12AM +0800, qianjun.kernel@gmail.com wr=
+ote:
+> > > > From: jun qian <qianjun.kernel@gmail.com>
+> > > >
+> > > > When the sched_schedstat changes from 0 to 1, some sched se maybe
+> > > > already in the runqueue, the se->statistics.wait_start will be 0.
+> > > > So it will let the (rq_of(cfs_rq)) - se->statistics.wait_start)
+> > > > wrong. We need to avoid this scenario.
+> > >
+> > > Is this really the only problem there? Did you do a full audit of tha=
+t
+> > > schedstat nonsense?
+> > >
+> >
+> > Did you mean that the sched_stat_xxx's xxx_start(sched_stat_sleep
+> > sched_stat_iowait sched_stat_blocked
+> > sched_stat_runtime) may be also depend the schedstat_enabled?
+>
+> Yeah, this runtime schedstat_enabled thing is fairly recent, it used to
+> be an always on/off kinda thing.
+>
+> At the time we figured inconsistencies from dynamically
+> enabling/disabling it were okay, it's just stats after all.
+>
+> But if you now want to 'fix' that, then a full audit might be nice.
+>
+> > I have searched the codes, and found that these sched_stat_xxx's
+> > xxx_start don't depend the schedstat_enabled
+> > except the wait_start.
+>
+> OK, so you did the audit and only found this one issue? That's good
+> Changelog material :-)
+>
 
-Vignesh, that's the point about this commit to generalize this part about TB bit
-plus there is already exist SPI_NOR_HAS_TB flag which representing state of TB
-existence. I didn't add any support for macronix's TB bit, that's true but
-that's enough to make macronix chips able to use lock mechanism with default
-'use_top' or any other chips which doesn't have TB bit.
+I found another problem, when the sched_schedstat changes from 1 to 0,
+the sched se
+which is already in the runqueue, the statistics.wait_start already
+has a value. At this moment
+sched_schedstat changes from 0 to 1 again, the (rq_of(cfs_rq)) -
+se->statistics.wait_start)
+will not be 0 and the wait time will be bigger than the real one. So
+we need to modify the  patch
+to resolve the problem with this scenario.
 
-> I guess macronix does not support SR_SRWD right? This needs special
-> treatment as well.
+So I really need a full audit might, =EF=BC=9A-)
 
-It does support SR_SRWD as well. No need any special treatment here.
+Thanks
 
-Thanks.
-
+> Thanks!
