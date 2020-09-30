@@ -2,94 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E44E727E0CD
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 08:01:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BE5A27E0D3
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 08:05:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727474AbgI3GBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 02:01:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39406 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725306AbgI3GBN (ORCPT
+        id S1725879AbgI3GFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 02:05:45 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:4091 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725306AbgI3GFp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 02:01:13 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E972C061755;
-        Tue, 29 Sep 2020 23:01:13 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id q8so670132lfb.6;
-        Tue, 29 Sep 2020 23:01:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=UZRiEJBWDysqXykX7LZJIMVz3EmdkbeX5DELEMvvroE=;
-        b=jEL/fBpb5jUlSXs3zKi99e3d538DZXOvDY+2fRaejkHKoNwIsuKc3cyvVXr9Vw4yf7
-         vcX964+N4Aibf0zlaYMx1lOUUZ0HSsO+2LlL8Uru3KMtYR1pfzTo5CbUd5IOYBNeTMAF
-         JfoUkQOQl5L4MATHkwtBxRzzg6AAnBgL94WcM2N/JoxmgntavMT7RRwq0QsMGlhV8y1V
-         HGApcAF8HmrHp1XQ2Q6Z6Uzvi1LogcisN0LOBd60Fbxh08GX44FDvixlO6o03/T+Ri5+
-         p+oqU2n+ZzH2o5bWt95tjWGnvuN4ULR2p/5sqXwyPFBnWyDf8F17iAXlk1dCtOroOALl
-         dZrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=UZRiEJBWDysqXykX7LZJIMVz3EmdkbeX5DELEMvvroE=;
-        b=cM08zhS5wMHtVG1Slfb8umelWGyLvV3hmkMfdABPHyqNeF78GRgnKJ9u1W4aOtJgZD
-         3pv4dbjlsuyrGzU78Cc5TmbURAEJAGVSrj9GuE4K+I1fAMd5rikuFRBeVk/sM80C3e5l
-         d6CXKqhn9grVW0sm9AuQjMoWLsnln2or3sGvfZu4iukpp2mShxufitM6AbkOzX0eQ9DU
-         Paw9Lj2vXXRtMiPqFD0upqHygckFV/hkWCUDo3rg40oQRIvT1RTo/9Eh23xASw61osq0
-         jWz1CXqjw1YbKeLSm7H9pkppFLnlVKrHMkjXLUSfrmX4m5jrdLZCF7xGGs4cgb0kP3J9
-         P0Dg==
-X-Gm-Message-State: AOAM533zTlfdznf3PRN+mFh99Evi0RLGRPHqrDdCuHhViq7O6Owwe7b7
-        hUX/5UPU5plZVpwcqkSzMLu6uzSg9oc=
-X-Google-Smtp-Source: ABdhPJyLJ0f8T4q/c6ARPYSGllUwWK9lma/QaD6GqKd7zu3KRujUgBTZhdD5fY+D0Zln64L58p4X7g==
-X-Received: by 2002:a19:c154:: with SMTP id r81mr303719lff.424.1601445671172;
-        Tue, 29 Sep 2020 23:01:11 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
-        by smtp.googlemail.com with ESMTPSA id m19sm57798lji.112.2020.09.29.23.01.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 29 Sep 2020 23:01:10 -0700 (PDT)
-Subject: Re: [PATCH v2 3/3] iommu/tegra-smmu: Add PCI support
-To:     Nicolin Chen <nicoleotsuka@gmail.com>
-Cc:     thierry.reding@gmail.com, joro@8bytes.org, krzk@kernel.org,
-        vdumpa@nvidia.com, jonathanh@nvidia.com,
-        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-References: <20200930003013.31289-1-nicoleotsuka@gmail.com>
- <20200930003013.31289-4-nicoleotsuka@gmail.com>
- <5a91f07c-bc27-7607-915c-e98a7a0c4b24@gmail.com>
- <20200930053425.GC31821@Asurada-Nvidia>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <84f05ebd-1123-5dfb-94fe-62564a21706f@gmail.com>
-Date:   Wed, 30 Sep 2020 09:01:09 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20200930053425.GC31821@Asurada-Nvidia>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        Wed, 30 Sep 2020 02:05:45 -0400
+Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
+  by alexa-out.qualcomm.com with ESMTP; 29 Sep 2020 23:05:44 -0700
+X-QCInternal: smtphost
+Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
+  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 29 Sep 2020 23:05:42 -0700
+X-QCInternal: smtphost
+Received: from parashar-linux.qualcomm.com ([10.206.13.63])
+  by ironmsg01-blr.qualcomm.com with ESMTP; 30 Sep 2020 11:35:29 +0530
+Received: by parashar-linux.qualcomm.com (Postfix, from userid 2363307)
+        id 03CE1213D0; Wed, 30 Sep 2020 11:35:27 +0530 (IST)
+From:   Paras Sharma <parashar@codeaurora.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Jiri Slaby <jslaby@suse.com>, linux-arm-msm@vger.kernel.org,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        akashast@codeaurora.org, Paras Sharma <parashar@codeaurora.org>
+Subject: [PATCH V6] serial: qcom_geni_serial: To correct QUP Version detection logic
+Date:   Wed, 30 Sep 2020 11:35:26 +0530
+Message-Id: <1601445926-23673-1-git-send-email-parashar@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-30.09.2020 08:34, Nicolin Chen пишет:
-> On Wed, Sep 30, 2020 at 08:10:35AM +0300, Dmitry Osipenko wrote:
->> 30.09.2020 03:30, Nicolin Chen пишет:
->>>  void tegra_smmu_remove(struct tegra_smmu *smmu)
->>>  {
->>> +	bus_set_iommu(&platform_bus_type, NULL);
->>
->> Why only platform_bus? Is this really needed at all?
-> 
-> I see qcom_iommu.c file set to NULL in remove(), Probably should
-> have added pci_bus_type too though.
-> 
-> Or are you sure that there's no need at all?
-> 
+For QUP IP versions 2.5 and above the oversampling rate is
+halved from 32 to 16.
 
-It wasn't here before this patch and platform_bus is unrelated to the
-topic of this patch. But it probably should be there.
+Commit ce734600545f ("tty: serial: qcom_geni_serial: Update
+the oversampling rate") is pushed to handle this scenario.
+But the existing logic is failing to classify QUP Version 3.0
+into the correct group ( 2.5 and above).
 
-On the other hand, the tegra_smmu_remove() is unused and maybe it could
-be better to get rid of this unused function at all.
+As result Serial Engine clocks are not configured properly for
+baud rate and garbage data is sampled to FIFOs from the line.
+
+So, fix the logic to detect QUP with versions 2.5 and above.
+
+Fixes: ce734600545f ("tty: serial: qcom_geni_serial: Update the oversampling rate")
+Signed-off-by: Paras Sharma <parashar@codeaurora.org>
+---
+Changes in V6:
+Removed newline unneeded change
+
+Changes in V5:
+Moved QUP_SE_VERSION_2_5 to common header file qcom-geni-se.h
+
+Changes in V4:
+Created a new #define QUP_SE_VERSION_2_5 for Qup serial engine having version 2.5
+
+Changes in V3:
+Replaced the condition for detecting Qup version(2.5 or greater) with value 0x20050000
+
+Changes in V2:
+Changed subject line and logic for checking Qup version
+
+ drivers/tty/serial/qcom_geni_serial.c | 2 +-
+ include/linux/qcom-geni-se.h          | 3 +++
+ 2 files changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/tty/serial/qcom_geni_serial.c b/drivers/tty/serial/qcom_geni_serial.c
+index f0b1b47..464ffc9 100644
+--- a/drivers/tty/serial/qcom_geni_serial.c
++++ b/drivers/tty/serial/qcom_geni_serial.c
+@@ -1000,7 +1000,7 @@ static void qcom_geni_serial_set_termios(struct uart_port *uport,
+ 	sampling_rate = UART_OVERSAMPLING;
+ 	/* Sampling rate is halved for IP versions >= 2.5 */
+ 	ver = geni_se_get_qup_hw_version(&port->se);
+-	if (GENI_SE_VERSION_MAJOR(ver) >= 2 && GENI_SE_VERSION_MINOR(ver) >= 5)
++	if (ver >= QUP_SE_VERSION_2_5)
+ 		sampling_rate /= 2;
+ 
+ 	clk_rate = get_clk_div_rate(baud, sampling_rate, &clk_div);
+diff --git a/include/linux/qcom-geni-se.h b/include/linux/qcom-geni-se.h
+index 8f385fb..1c31f26 100644
+--- a/include/linux/qcom-geni-se.h
++++ b/include/linux/qcom-geni-se.h
+@@ -248,6 +248,9 @@ struct geni_se {
+ #define GENI_SE_VERSION_MINOR(ver) ((ver & HW_VER_MINOR_MASK) >> HW_VER_MINOR_SHFT)
+ #define GENI_SE_VERSION_STEP(ver) (ver & HW_VER_STEP_MASK)
+ 
++/* QUP SE VERSION value for major number 2 and minor number 5 */
++#define QUP_SE_VERSION_2_5                  0x20050000
++
+ /*
+  * Define bandwidth thresholds that cause the underlying Core 2X interconnect
+  * clock to run at the named frequency. These baseline values are recommended
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
+of Code Aurora Forum, hosted by The Linux Foundation
+
