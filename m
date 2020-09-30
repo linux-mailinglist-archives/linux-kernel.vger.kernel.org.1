@@ -2,168 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC64427DD8F
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 02:59:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9DE027DD8C
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 02:58:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729471AbgI3A7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 20:59:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49650 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729179AbgI3A7F (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 20:59:05 -0400
-X-Greylist: delayed 351 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 29 Sep 2020 17:59:05 PDT
-Received: from achernar.gro-tsen.net (achernar6.gro-tsen.net [IPv6:2001:bc8:30e8::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6200BC061755
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 17:59:05 -0700 (PDT)
-Received: by achernar.gro-tsen.net (Postfix, from userid 500)
-        id 4F9682140517; Wed, 30 Sep 2020 02:53:09 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=madore.org;
-        s=achernar; t=1601427189;
-        bh=JARLd7ygBm66sDOXMr+Zt8YZRTUWjQER5orpvTYTFts=;
-        h=Date:From:To:Subject:From;
-        b=XHohDYDVnrdH4qJ/gIHsnDfLKRE1Jwr/hYzJ1Nb0Qgf9EJyaTDIfPZYHf9fIbtJkT
-         Ggt0wyMnF+9zG7cqStX+TsCh2Z3n2tmxDlreD53FlW1Lh3tA6keN9QwMUPvCPdvCaJ
-         rCEdyViztQilVGLMZ16BchWJeyostc7IQ/SV5cMI=
-Date:   Wed, 30 Sep 2020 02:53:09 +0200
-From:   David Madore <david+ml@madore.org>
-To:     Linux Kernel mailing-list <linux-kernel@vger.kernel.org>
-Subject: RAID5->RAID6 reshape remains stuck at 0% (does nothing, not even
- start)
-Message-ID: <20200930005309.cl5ankdzfe6pxkgq@achernar.gro-tsen.net>
+        id S1729270AbgI3A5e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 20:57:34 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:44364 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726806AbgI3A5e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 20:57:34 -0400
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 6C585FCF18B047A22E37
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 08:57:32 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 30 Sep 2020 08:57:30 +0800
+From:   Tian Tao <tiantao6@hisilicon.com>
+To:     <p.zabel@pengutronix.de>, <Sergey.Semin@baikalelectronics.ru>,
+        <arnd@arndb.de>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] bus: bt1-apb: Fix duplicate included clk.h
+Date:   Wed, 30 Sep 2020 08:54:59 +0800
+Message-ID: <1601427299-29410-1-git-send-email-tiantao6@hisilicon.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: NeoMutt/20170113 (1.7.2)
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear list,
+linux/clk.h is included more than once, Remove the one that isn't
+necessary.
 
-I'm trying to reshape a 3-disk RAID5 array to a 4-disk RAID6 array (of
-the same total size and per-device size) using linux kernel 4.9.237 on
-x86_64.  I understand that this reshaping operation is supposed to be
-supported.  But it appears perpetually stuck at 0% with no operation
-taking place whatsoever (the slices are unchanged apart from their
-metadata, the backup file contains only zeroes, and nothing happens).
-I wonder if this is a know kernel bug, or what else could explain it,
-and I have no idea how to debug this sort of thing.
+Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+Acked-by: Serge Semin <fancer.lancer@gmail.com>
+---
+ drivers/bus/bt1-apb.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-Here are some details on exactly what I've been doing.  I'll be using
-loopbacks to illustrate, but I've done this on real partitions and
-there was no difference.
-
-## Create some empty loop devices:
-for i in 0 1 2 3 ; do dd if=/dev/zero of=test-${i} bs=1024k count=16 ; done
-for i in 0 1 2 3 ; do losetup /dev/loop${i} test-${i} ; done
-## Make a RAID array out of the first three:
-mdadm --create /dev/md/test --level=raid5 --chunk=256 --name=test \
-  --metadata=1.0 --raid-devices=3 /dev/loop{0,1,2}
-## Populate it with some content, just to see what's going on:
-for i in $(seq 0 63) ; do printf "This is chunk %d (0x%x).\n" $i $i \
-  | dd of=/dev/md/test bs=256k seek=$i ; done
-## Now try to reshape the array from 3-way RAID5 to 4-way RAID6:
-mdadm --manage /dev/md/test --add-spare /dev/loop3
-mdadm --grow /dev/md/test --level=6 --raid-devices=4 \
-  --backup-file=test-reshape.backup
-
-...and then nothing happens.  /proc/mdstat reports no progress
-whatsoever:
-
-md112 : active raid6 loop3[4] loop2[3] loop1[1] loop0[0]
-      32256 blocks super 1.0 level 6, 256k chunk, algorithm 18 [4/3] [UUU_]
-      [>....................]  reshape =  0.0% (1/16128) finish=1.0min speed=244K/sec
-
-The loop file contents are unchanged except for the metadata
-superblock, the backup file is entirely empty, and no activity
-whatsoever is happening.
-
-Actually, further investigation shows that the array is in fact
-operational as a RAID6 array, but one where the Q-syndrome is stuck in
-the last device: writing data to the md device (e.g., by repopulating
-it with the same command as above) does cause loop3 to be updated as
-expected for such a layout.  It's just the reshaping which doesn't
-take place (or indeed begin).
-
-For completeness, here's what mdadm --detail /dev/md/test looks like
-before the reshape, in my example:
-
-/dev/md/test:
-        Version : 1.0
-  Creation Time : Wed Sep 30 02:42:30 2020
-     Raid Level : raid5
-     Array Size : 32256 (31.50 MiB 33.03 MB)
-  Used Dev Size : 16128 (15.75 MiB 16.52 MB)
-   Raid Devices : 3
-  Total Devices : 4
-    Persistence : Superblock is persistent
-
-    Update Time : Wed Sep 30 02:44:21 2020
-          State : clean 
- Active Devices : 3
-Working Devices : 4
- Failed Devices : 0
-  Spare Devices : 1
-
-         Layout : left-symmetric
-     Chunk Size : 256K
-
-           Name : vega.stars:test  (local to host vega.stars)
-           UUID : 30f40e34:b9a52ff0:75c8b063:77234832
-         Events : 20
-
-    Number   Major   Minor   RaidDevice State
-       0       7        0        0      active sync   /dev/loop0
-       1       7        1        1      active sync   /dev/loop1
-       3       7        2        2      active sync   /dev/loop2
-
-       4       7        3        -      spare   /dev/loop3
-
-- and here's what it looks like after the attempted reshape has
-started (or rather, refused to start):
-
-/dev/md/test:
-        Version : 1.0
-  Creation Time : Wed Sep 30 02:42:30 2020
-     Raid Level : raid6
-     Array Size : 32256 (31.50 MiB 33.03 MB)
-  Used Dev Size : 16128 (15.75 MiB 16.52 MB)
-   Raid Devices : 4
-  Total Devices : 4
-    Persistence : Superblock is persistent
-
-    Update Time : Wed Sep 30 02:44:54 2020
-          State : clean, degraded, reshaping 
- Active Devices : 3
-Working Devices : 4
- Failed Devices : 0
-  Spare Devices : 1
-
-         Layout : left-symmetric-6
-     Chunk Size : 256K
-
- Reshape Status : 0% complete
-     New Layout : left-symmetric
-
-           Name : vega.stars:test  (local to host vega.stars)
-           UUID : 30f40e34:b9a52ff0:75c8b063:77234832
-         Events : 22
-
-    Number   Major   Minor   RaidDevice State
-       0       7        0        0      active sync   /dev/loop0
-       1       7        1        1      active sync   /dev/loop1
-       3       7        2        2      active sync   /dev/loop2
-       4       7        3        3      spare rebuilding   /dev/loop3
-
-I also tried writing "frozen" and then "resync" to the
-/sys/block/md112/md/sync_action file with no further results.
-
-I welcome any suggestions on how to investigate, work around, or fix
-this problem.
-
-Happy hacking,
-
+diff --git a/drivers/bus/bt1-apb.c b/drivers/bus/bt1-apb.c
+index b25ff94..e9e196c 100644
+--- a/drivers/bus/bt1-apb.c
++++ b/drivers/bus/bt1-apb.c
+@@ -19,7 +19,6 @@
+ #include <linux/nmi.h>
+ #include <linux/of.h>
+ #include <linux/regmap.h>
+-#include <linux/clk.h>
+ #include <linux/reset.h>
+ #include <linux/time64.h>
+ #include <linux/clk.h>
 -- 
-     David A. Madore
-   ( http://www.madore.org/~david/ )
+2.7.4
+
