@@ -2,88 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4080927E946
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 15:14:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EB5227E950
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 15:18:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730089AbgI3NOR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 09:14:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49676 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728043AbgI3NOR (ORCPT
+        id S1729995AbgI3NSQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 09:18:16 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:54104 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725771AbgI3NSQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 09:14:17 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 033C5C0613D0
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 06:14:17 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id gr14so2790500ejb.1
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 06:14:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloud.ionos.com; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=9c1NFhfwrwDPfx3wDNeBI3/9qOQnMvfv5KFBA5mSm6s=;
-        b=imVfrSmnrqBOkthuTB26kRLGTmiQpg+emHIvdSBj3nu75G9IwnXD4chxU1KFDFa6wE
-         QHmGCkvBRaqJvw63VRfLPfC/WTaE1on/8dX2RvD2PBwGLglwrEc5Gud/9sZ6KbECM+dA
-         StSohkY0f6wCUAfStY3buu7VqMOY5zZqdQSjZJ56Ur1OXbibo5CXwLhnU1f11UlNNg+W
-         Lof03PjmxOu47cNdOKRMEyN22saog9vMpZh3P0vZwh6lac0mr9kXwnKDzq4KHvCFV1B/
-         WiruGMpCo9NsOsc4WqWIyIjq4RIwubuiB0G/j5guU1KJonlF2iGttYLw5S5k1iAiRTML
-         Z3Lg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=9c1NFhfwrwDPfx3wDNeBI3/9qOQnMvfv5KFBA5mSm6s=;
-        b=szALxhEU4fHZ6PLm/xbUC3YzVUz5uaGZo3jtaql0/fkyrtabW+3XVuPFFEpk+UeTU+
-         DyODP6HN03XNao6IeybErL251m/sgCj515Oor0r8CGD2/T6LCXX2pbD5mwyQPmDlMSYA
-         OWQujFjXJrYSbZguB/fUMNh1Kj1A0y8202QPm5/k9AC+OsnAlftnFfKPfCttV+YRAeB0
-         gdzGL82+qCeUOltCVb75o/vzxb08iFb0rbMAvtKBRct/n8aq6+gcgDnyjk6uC8ltP4zj
-         4/VYOdoLOzmbwgDSIy2uswuzaFBV1C5boVjsFTsXyZekPtwSoTTH1EXzBkRwfsngguof
-         U4uQ==
-X-Gm-Message-State: AOAM531Sz0q6RgWhR1oIr5qBeCqkLBwyRj81zxCoyix17WvJNEy8owu6
-        OBqxnwWpYMOD+YOih3WLM7yITw==
-X-Google-Smtp-Source: ABdhPJzNbHLFxX23PuvRE1jB1jYD/twldM5qfs1CVswIdqsxmkMXb88cv28lHemXM/Lnz3M/zrHK9g==
-X-Received: by 2002:a17:906:d78d:: with SMTP id pj13mr2807388ejb.15.1601471655676;
-        Wed, 30 Sep 2020 06:14:15 -0700 (PDT)
-Received: from gkim-laptop.pb.local ([2001:1438:4010:2558:f1f0:c5ce:3610:b341])
-        by smtp.googlemail.com with ESMTPSA id e15sm1431103eds.5.2020.09.30.06.14.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Sep 2020 06:14:15 -0700 (PDT)
-From:   Gioh Kim <gi-oh.kim@cloud.ionos.com>
-X-Google-Original-From: Gioh Kim <gi-oh.kim@clous.ionos.com>
-To:     danil.kipnis@cloud.ionos.com, jinpu.wang@cloud.ionos.com
-Cc:     linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Gioh Kim <gi-oh.kim@cloud.ionos.com>
-Subject: [PATCH] RDMA/rtrs: remove unused field of rtrs_iu
-Date:   Wed, 30 Sep 2020 15:14:07 +0200
-Message-Id: <20200930131407.6438-1-gi-oh.kim@clous.ionos.com>
-X-Mailer: git-send-email 2.20.1
+        Wed, 30 Sep 2020 09:18:16 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08UDICOZ119204;
+        Wed, 30 Sep 2020 08:18:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1601471892;
+        bh=g3P+tTvRBhBJ0CqML1eeeCRB2CNFF8mL6TWF/a+RuYY=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References;
+        b=r/iZui1Uao/T0zSrfNupfdtdwPlPxLaKcCMwA3EfcC8gN574tSresLkOSVv+u8ary
+         Od8NCCQ9vX8wa2urAlf1aFrWZVYiyAKv0gsQMQZm08vGCefNxPgTMbCO/XaB0YS39V
+         gHq8BD4bP+bzGdQZ3kfHSjkp15oY11whsKaBbaFA=
+Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08UDICEn072783
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 30 Sep 2020 08:18:12 -0500
+Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 30
+ Sep 2020 08:18:12 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 30 Sep 2020 08:18:12 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08UDICZj087889;
+        Wed, 30 Sep 2020 08:18:12 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Roger Quadros <rogerq@ti.com>
+CC:     Nishanth Menon <nm@ti.com>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <kishon@ti.com>,
+        <t-kristo@ti.com>, <devicetree@vger.kernel.org>, <nsekhar@ti.com>
+Subject: Re: [PATCH v5 0/6] arm64: dts: ti: Add USB support for J7200 EVM
+Date:   Wed, 30 Sep 2020 08:18:11 -0500
+Message-ID: <160147173534.23544.3459300161168133887.b4-ty@ti.com>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200930122032.23481-1-rogerq@ti.com>
+References: <20200930122032.23481-1-rogerq@ti.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gioh Kim <gi-oh.kim@cloud.ionos.com>
+On Wed, 30 Sep 2020 15:20:26 +0300, Roger Quadros wrote:
+> This series adds USB2.0 support for the J7200 EVM.
+> 
+> Series is based on top of: linux-next next-20200930
+> 
+> cheers,
+> -roger
+> 
+> [...]
 
-list field is not used anywhere
+Hi Roger Quadros,
 
-Signed-off-by: Gioh Kim <gi-oh.kim@cloud.ionos.com>
----
- drivers/infiniband/ulp/rtrs/rtrs-pri.h | 1 -
- 1 file changed, 1 deletion(-)
+I have applied the following to branch ti-k3-dts-next on [1] along with
+ti-k3-dt-fixes-for-v5.9.
 
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-pri.h b/drivers/infiniband/ulp/rtrs/rtrs-pri.h
-index 0a93c87ef92b..b8e43dc4d95a 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-pri.h
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-pri.h
-@@ -115,7 +115,6 @@ struct rtrs_sess {
- 
- /* rtrs information unit */
- struct rtrs_iu {
--	struct list_head        list;
- 	struct ib_cqe           cqe;
- 	dma_addr_t              dma_addr;
- 	void                    *buf;
+Thank you!
+
+[1/6] dt-bindings: ti-serdes-mux: Add defines for J7200 SoC
+      commit: ba90e0c92666979298a2c42ca396ac56d00cf33e
+[2/6] arm64: dts: ti: k3-j7200-main: Add SERDES lane control mux
+      commit: 1509295295c03c570bd65c3e393b334c188218cd
+[3/6] arm64: dts: ti: k3-j7200-main.dtsi: Add USB to SERDES lane MUX
+      commit: 9a09e6e9cfcf5424e78636e9b9585de5c07407bc
+[4/6] arm64: dts: ti: k3-j7200-main: Add USB controller
+      commit: 6197d7139d128d3391a94bfad467ffe349a869a6
+[5/6] arm64: dts: ti: k3-j7200-common-proc-board: Configure the SERDES lane function
+      commit: e38a45b0192c4562e610c9c81e4c742b48fa69f0
+[6/6] arm64: dts: ti: k3-j7200-common-proc-board: Add USB support
+      commit: bbcb0522ae0cea0f2561e7dad243f8a3d5ab5559
+
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent up the chain during
+the next merge window (or sooner if it is a relevant bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+[1] git://git.kernel.org/pub/scm/linux/kernel/git/nmenon/linux.git
 -- 
-2.20.1
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
 
