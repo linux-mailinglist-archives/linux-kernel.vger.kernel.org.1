@@ -2,87 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 837F527E292
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 09:27:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8677C27E297
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 09:29:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728401AbgI3H1O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 03:27:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52614 "EHLO
+        id S1727886AbgI3H3G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 03:29:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725440AbgI3H1M (ORCPT
+        with ESMTP id S1725440AbgI3H3F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 03:27:12 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55482C061755
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 00:27:12 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id f142so470671qke.13
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 00:27:12 -0700 (PDT)
+        Wed, 30 Sep 2020 03:29:05 -0400
+Received: from mail-ua1-x942.google.com (mail-ua1-x942.google.com [IPv6:2607:f8b0:4864:20::942])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4849C061755
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 00:29:05 -0700 (PDT)
+Received: by mail-ua1-x942.google.com with SMTP id z1so202204uaa.6
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 00:29:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Tkcbfirt6lOr/xu+zEVH3EdEDPye2U06vImmpvkSJlo=;
-        b=HPKZDL7cCxBF3pQBzZdSbz8LtnkTdMbU5yewGA9iEGkrzWERgIjXOCOLAQP89nwBSl
-         EAkL/J+coYtbKyUqsCuVST+Vs7WXdsuCr4zV500KB+6vqrc6g6VVhrp0zmU9VAGlycKX
-         GvobJY+/B0XVFatvaCbJp9JYgOIb+1/PiZDDKSV4QboOliUrgsICy7QRhpZQYe8EBooc
-         NYKnuuGSSi1/IG/0uZNvj8CG0NtGeOo+su87NSBbRs/df4OEXvfJqW7fHCfBNMioNdVN
-         QPY3cnhR4bx89r62C/7P5kkRJLljQGCCm4cWbQBoQv/YAcNXYVQdbIdgLGykpyQM+bat
-         GrYA==
+         :cc:content-transfer-encoding;
+        bh=KV1Q/MN5muoTcUd7+lmEw4N8e3qVtX7Gu1utQ2M1RL8=;
+        b=pqWvYsSzJ8j/tigIi8DO2D5dPlcBy+QSZqFMzydltWXfPTXmMnzF/si+xhIekKYFvH
+         GrN7eDLDXPzq3WbqvARxbm+v9muvFUMvqf0NkWnzIiQ7+jsXxxRpLh1XqhV5cL5Pkwfe
+         FDKG7Z/MeQGb+pXtM+Tx+aiHExj8l7UpgM5rxdaxcH2VfNmjiTfsoAI5wid5zkPRE8m4
+         2NzQmJ2h+yTi+B8ktk13bQ1AIj/1KXmhhniyN1iNM5ZijSxroaRDuQGdtOGUGWwMIiFw
+         5aZxd6KNeX1JdacJcEgqrCWX1KdgFosvAQ97PhesFn7/fCC8g8hJx1VnGxhqGA74xFjO
+         xg/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Tkcbfirt6lOr/xu+zEVH3EdEDPye2U06vImmpvkSJlo=;
-        b=h11nASefHHzgVfM1wNwCXBfad9w/VXGOFaaHIqUswdql2ZrCoBu+jKADNzqwKyAzWd
-         jPdLt2nc7O4fOyEW6w5+unRLcqmerBcvUOuROYq+YtHoPQ7r2Cc51DjkrNWcdrYnanM9
-         FBI0dUCfqGlG3n4M/ixhcO4Vdz5i0qMlhcyNH96O/VXw/ERINN6zxMPlINxz0Qi4c8HX
-         eZWqblv3WZ577tSZmlcFZ9AVS+mpu/JnHAi3pSjfOgWblQW43yaIt2/Ro78Prr+E36hR
-         ADiWFTH3cTnSyk/HvubSl+2J9uRQRDX+bZhkyiJw2kqdOCPrB26TU/cA9VZRqx9Mjqoo
-         0B6g==
-X-Gm-Message-State: AOAM530k3QoIe7Im7e390WwEsSn5PO+qtMfPofR+5r3HDVI5IJ9D8W1F
-        L5+rZQBXUZi6HsM0itihlvKYFiXam3KkmmP/aDdUyQ==
-X-Google-Smtp-Source: ABdhPJyokJozgeex+KombyrHqLIWdBjNiz+o9gEvlB8/83Yp0XDsBIuKRBju6TshVVpZXyEfp4dM8k5BiHXcSBNgCPk=
-X-Received: by 2002:a37:a4c5:: with SMTP id n188mr1330469qke.8.1601450831240;
- Wed, 30 Sep 2020 00:27:11 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=KV1Q/MN5muoTcUd7+lmEw4N8e3qVtX7Gu1utQ2M1RL8=;
+        b=Hk0DASqYAKPLMUs5/+2jLrXBPZhWlvqPbmy9/LfHCyrMcRZ2VgJUzYu9Seh2c55Wkk
+         efPC6v2pmgBG3oHQ+kM5sJrPSwwBwcHiwwafyZ6E8JT+on3GhFuM6SjjqyyQ1DvF83MS
+         qo699IBOubzQxm19Cpo7L01ReC59/HtmM16BZON6a8zOeiNV928PcJWpwz8Klf8GbK+a
+         I0y+G/xJdX0dzZWgIRLXjU6fIr1k4K8DDy2kK0C/OZT6XFMne/NjU7hlRaGRtTEPXgrz
+         Wfls0FSqwcxSC4BjGFaRi/YDiVzhD5l2mEAHZndsGsn1vrUhWeG7fo5IRlNhY2zUKVYn
+         wAJg==
+X-Gm-Message-State: AOAM530734QNPkoytF6O/L0EzZqcZWFJbuGwCY8nzbuzgRzGRsmNL5S3
+        4g/Er0VsN0N5g5Aps3SGpgxmL1ZYc3jmWZb49k6gmQ==
+X-Google-Smtp-Source: ABdhPJyEQ1/By5zp2yDuSY5ClkiLYd+NbFfY6toW9ssCJ7zCVujczXMnxV8J0D5GdsX717RAUJWeJBMDVjUtvom3uxg=
+X-Received: by 2002:ab0:1450:: with SMTP id c16mr591737uae.27.1601450944865;
+ Wed, 30 Sep 2020 00:29:04 -0700 (PDT)
 MIME-Version: 1.0
-References: <0000000000007d5ec805b04c5fc8@google.com> <20200928171137.16804-1-hdanton@sina.com>
- <87mu19kaup.fsf@nanos.tec.linutronix.de>
-In-Reply-To: <87mu19kaup.fsf@nanos.tec.linutronix.de>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Wed, 30 Sep 2020 09:26:59 +0200
-Message-ID: <CACT4Y+YMTiR5bKKEV2vfSfrqSjoGjjsfWfhreBsNdxQ+yDpS2g@mail.gmail.com>
-Subject: Re: WARNING in hrtimer_forward
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Hillf Danton <hdanton@sina.com>,
-        syzbot <syzbot+ca740b95a16399ceb9a5@syzkaller.appspotmail.com>,
-        David Miller <davem@davemloft.net>, hchunhui@mail.ustc.edu.cn,
-        Julian Anastasov <ja@ssi.bg>, James Morris <jmorris@namei.org>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Johannes Berg <johannes.berg@intel.com>
+References: <20200929105929.719230296@linuxfoundation.org>
+In-Reply-To: <20200929105929.719230296@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Wed, 30 Sep 2020 12:58:53 +0530
+Message-ID: <CA+G9fYsPwAy-GSD504dt7ooe_ZntZT8esuHvJ8yFdW4tUg-bSQ@mail.gmail.com>
+Subject: Re: [PATCH 5.8 00/99] 5.8.13-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>,
+        lkft-triage@lists.linaro.org, pavel@denx.de,
+        linux- stable <stable@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 8:36 PM Thomas Gleixner <tglx@linutronix.de> wrote:
+On Tue, 29 Sep 2020 at 17:23, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
 >
-> On Tue, Sep 29 2020 at 01:11, Hillf Danton wrote:
-> > On Mon, 28 Sep 2020 18:13:42 +0200 Thomas Gleixner wrote:
-> >> So the timer was armed at some point and then the expiry which does the
-> >> forward races with the ioctl which starts the timer. Lack of
-> >> serialization or such ...
-> >
-> > To make syzbot happy, s/hrtimer_is_queued/hrtimer_active/ can close
-> > that race but this warning looks benign.
+> This is the start of the stable review cycle for the 5.8.13 release.
+> There are 99 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 >
-> Why only make sysbot happy? It's clearly an issue and the warning is not
-> benign simply because forwarding a queued timer is an absolute NONO.
-> timers (both timer_list and hrtimer) need external synchronization.
+> Responses should be made by Thu, 01 Oct 2020 10:59:03 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.8.13-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.8.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Oh, Thomas, it's so nice to hear this interpretation of things among
-all the cases where people only fixing tools and making them happy :)
-Don't make my tools happy! They don't need that! :)
+[Sorry earlier email was in Non-plain text so re-sending]
+
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
+
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+Summary
+------------------------------------------------------------------------
+
+kernel: 5.8.13-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-5.8.y
+git commit: 2bea8b771966a8b5b009c261dfb9c97df1c62af4
+git describe: v5.8.12-100-g2bea8b771966
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.8.=
+y/build/v5.8.12-100-g2bea8b771966
+
+No regressions (compared to build v5.8.12)
+
+No fixes (compared to build v5.8.12)
+
+Ran 38153 total tests in the following environments and test suites.
+
+Environments
+--------------
+- dragonboard-410c
+- hi6220-hikey
+- i386
+- juno-r2
+- juno-r2-compat
+- juno-r2-kasan
+- nxp-ls2088
+- qemu_arm
+- qemu_arm64
+- qemu_i386
+- qemu_x86_64
+- x15
+- x86
+- x86-kasan
+
+Test Suites
+-----------
+* build
+* install-android-platform-tools-r2600
+* kselftest
+* libhugetlbfs
+* linux-log-parser
+* ltp-containers-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* perf
+* ltp-commands-tests
+* ltp-controllers-tests
+* ltp-math-tests
+* network-basic-tests
+* v4l2-compliance
+* ltp-cap_bounds-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-open-posix-tests
+* kselftest-vsyscall-mode-native
+* kselftest-vsyscall-mode-none
+* ssuite
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
