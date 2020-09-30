@@ -2,89 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 571C027E9F6
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 15:31:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72F4D27EA08
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 15:33:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730248AbgI3Na6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 09:30:58 -0400
-Received: from mx2.suse.de ([195.135.220.15]:43042 "EHLO mx2.suse.de"
+        id S1730191AbgI3Nd2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 09:33:28 -0400
+Received: from crapouillou.net ([89.234.176.41]:57212 "EHLO crapouillou.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728043AbgI3Na6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 09:30:58 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1601472656;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        id S1729663AbgI3Nd1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 09:33:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
+        s=mail; t=1601472804; h=from:from:sender:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=w5l3298h/W9/vnTUaZ61CRdnwpEmCubNJa9uFrQVNgI=;
-        b=Pztg8LU1pXMAeUTodDs+P1OjYWPTevX8KIF4wRSsw8fngOVMg5ZSP4X/1tMFdTS3E+jBdz
-        4/tfgEYzcLu0vp5wKM6Vmi6XPfVuatZ2jslTPCSH3zIBL1s35Cp9ErhCq2qo8dJDFTebYl
-        hmOF0swva3Csjzcm0GMFAPaqrgBNZj8=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 39EA2ABCC;
-        Wed, 30 Sep 2020 13:30:56 +0000 (UTC)
-Date:   Wed, 30 Sep 2020 15:30:55 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH next v2 0/2] printk: fix reading beyond buffer
-Message-ID: <20200930133055.GG29288@alley>
-References: <20200930090134.8723-1-john.ogness@linutronix.de>
+        bh=ecNy/ZxFnTbjbqIO9nlUei1JR0PPL4AarFwXzFKz9CI=;
+        b=lxYQCYkS2XdyqSqq16yw9/T40tnQonUGTBT6Sv19anGho7VUp97RwFz4qhnHgq1E9+MtLF
+        v08Kd9A3oakGolE3MCiGYlzZpXxo5iHj5FyOzgqTweF97cPa8pGejg52DFJ5KEOpNBHrog
+        e+Js9L8qS1uQsNBoXvJoJRJUqwxI91Y=
+Date:   Wed, 30 Sep 2020 15:33:13 +0200
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: linux-next: build failure after merge of the drm tree
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Dave Airlie <airlied@linux.ie>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Message-Id: <DB4HHQ.1KMN8GNWYJLC1@crapouillou.net>
+In-Reply-To: <20200930090252.GA9357@lst.de>
+References: <20200928135405.73404219@canb.auug.org.au>
+        <20200928060427.GA15041@lst.de> <KU5DHQ.C9RVOLP69UO81@crapouillou.net>
+        <20200928113415.GA555@lst.de> <72ADHQ.T6LL1SHQF0RG3@crapouillou.net>
+        <20200928121002.GA3219@lst.de> <GWEDHQ.HNERRUK8XXOM2@crapouillou.net>
+        <20200930090252.GA9357@lst.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200930090134.8723-1-john.ogness@linutronix.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 2020-09-30 11:07:32, John Ogness wrote:
-> Hello,
-> 
-> Marek Szyprowski reported [0] a problem with a particular printk
-> usage. This particular usage performs thousands of LOG_CONT calls.
-> The printk.c implementation was only limiting the growing record by
-> the maximum size available in the ringbuffer, thus creating a record
-> that was several kilobytes in size. This in and of itself is not
-> a problem.
-> 
-> However, the various readers used buffers that were about 1KB in
-> size. The ringbuffer would only fill the reader's 1KB buffer, but the
-> meta data stated that the message was actually much larger. The
-> reader code was not checking this and assumed its buffer contained
-> the full message.
-> 
-> I have solved this problem by adding the necessary check to the
-> functions where the situation can occur and also adding an argument
-> when extending records so that a maximum size is specified. This
-> will prevent the records from growing beyond the size that we know
-> our readers are using.
-> 
-> I did not add the check where it is certain that the reader's
-> buffer is large enough to contain the largest possible message.
-> 
-> The 2nd patch in this series reduces the size of the initial setup
-> buffer. I noticed it was too big while verifying all the sizes for
-> this series.
-> 
-> John Ogness
-> 
-> [0] https://lkml.kernel.org/r/f1651593-3579-5820-6863-5f4973d2bfdc@samsung.com
-> 
-> John Ogness (2):
->   printk: avoid and/or handle record truncation
->   printk: reduce setup_text_buf size to LOG_LINE_MAX
+Hi Christoph,
 
-The patchset is committed in printk/linux.git, branch printk-rework.
+Le mer. 30 sept. 2020 =E0 11:02, Christoph Hellwig <hch@lst.de> a =E9crit=20
+:
+> On Mon, Sep 28, 2020 at 03:31:28PM +0200, Paul Cercueil wrote:
+>>  It's allocated with dma_alloc_wc, but then it's only accessed as
+>>  non-coherent.
+>>=20
+>>  Anyway, for the time being I guess you could revert 37054fc81443.=20
+>> But I
+>>  have patches on top of it in drm-misc-next so it's going to be a=20
+>> mess.
+>>=20
+>>  If we have time I can come up with a custom dumb_create() fonction,=20
+>> to make
+>>  sure that the GEM buffers are allocated with=20
+>> dma_alloc_noncoherent(). Is
+>>  there a dma_mmap_noncoherent() too?
+>=20
+> Please use the lower-level dma_alloc_pages and then just insert the
+> pages directly using remap_pfn_range.  Although it might make sense
+> to eventually create a wrapper around remap_pfn_range for all the
+> vma sizing sanity checks.
 
-Best Regards,
-Petr
+One thing missing for remap_pfn_range(), I have no alternative for this:
+
+vma->vm_page_prot =3D dma_pgprot(dev, vma->vm_page_prot,=20
+DMA_ATTR_NON_CONSISTENT);
+
+So I have to do:
+
+vma->vm_page_prot =3D pgprot_noncached(vma->vm_page_prot);
+pgprot_val(vma->vm_page_prot) &=3D ~_CACHE_MASK;
+pgprot_val(vma->vm_page_prot) |=3D _CACHE_CACHABLE_NONCOHERENT;
+
+And that will only compile on MIPS, because these _CACHE_* macros are=20
+only defined there.
+
+I would need something like a pgprot_noncoherent(), I think.
+
+-Paul
+
+
