@@ -2,95 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD21F27EF4C
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 18:34:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B5B327EF4E
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 18:34:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729343AbgI3Qep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 12:34:45 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:36400 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725355AbgI3Qeo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 12:34:44 -0400
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1kNf3w-00GvXT-6Z; Wed, 30 Sep 2020 18:34:40 +0200
-Date:   Wed, 30 Sep 2020 18:34:40 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Calvin Johnson <calvin.johnson@oss.nxp.com>
-Cc:     Grant Likely <grant.likely@arm.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Jeremy Linton <jeremy.linton@arm.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
-        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Madalin Bucur <madalin.bucur@oss.nxp.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux.cj@gmail.com,
-        netdev@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Diana Madalina Craciun <diana.craciun@nxp.com>,
-        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: Re: [net-next PATCH v1 3/7] net: phy: Introduce fwnode_get_phy_id()
-Message-ID: <20200930163440.GR3996795@lunn.ch>
-References: <20200930160430.7908-1-calvin.johnson@oss.nxp.com>
- <20200930160430.7908-4-calvin.johnson@oss.nxp.com>
+        id S1730654AbgI3Qew (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 12:34:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52538 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725355AbgI3Qev (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 12:34:51 -0400
+Received: from mail-oo1-xc42.google.com (mail-oo1-xc42.google.com [IPv6:2607:f8b0:4864:20::c42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8C52C061755;
+        Wed, 30 Sep 2020 09:34:51 -0700 (PDT)
+Received: by mail-oo1-xc42.google.com with SMTP id c4so654252oou.6;
+        Wed, 30 Sep 2020 09:34:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=VWWAGJm9rimHcsRFoodpvDtDTUyjS3Guu3yZDjccOI0=;
+        b=ovVfb3ISieuyDlTmMMwXDOXmKs73RVvNAJMp1MVbGfx/CHPT8OpNP5WP3AZj2nn5yV
+         9zBXz1ZkCUkJHM1YNJFjZ/DnqXU5X4FODf5di7hdrrC/7uq7XfgFClP1IB3SpG32LGBc
+         4X22SAD3gSuUYZ5pT06uU6otVhBwiMIHX1Xqyc+NWsZHlZKKdDmh0vDGXjiJg+fh4UGA
+         bIe735ziO2vdRk45j2RlElPMXTMLOkAFOIjlhYIX3EUaO5CgD7d3bhJlxbCxYbE++WbL
+         s0Ynl65K7EU4C0jWL7Vmx9Pugab2fQVBkst+yyS6qoXRi24EqtMQ4GAEBHtvbBxu4KR+
+         jQUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to:user-agent;
+        bh=VWWAGJm9rimHcsRFoodpvDtDTUyjS3Guu3yZDjccOI0=;
+        b=oLPqfacMM6wjjQYzzUSThMvpaOA3z5CqacOt7hgskPFvT89V8ZjZnAD3H6v2sjezFc
+         OT+ER06Vdlok9oFqogIKorORy5El/OxAm7P/qn20ff1q2gAVapcnWgNu46oBcshtrVjf
+         rPpdOH3MHNz2//KyrXqPXGZFCM/J/vLb3IOUTQB6B66s2wCBokLmBq0OVQNUwO98UOYS
+         0J7gzKden/sF8kKgEylykweVDyjtDQaSSxzarL6jm4/tBaZERZxi9CAlFHgiV+bV/iHV
+         e2uVTfo4fWoT+GXW088KhN0eZvBWnyMGIPvfN3E5ZdAc5nwq3vEJ6pGA8eK0WFDojboz
+         RinQ==
+X-Gm-Message-State: AOAM532y0LBzBt7f12HWGogL9hxplmeeyX6iddXJwHeTfAFNiVUt6ePg
+        Vj0JMYJQ5RuIQWIB6rb4R5w=
+X-Google-Smtp-Source: ABdhPJwDfhoBLez1J/Xuq76KiOW9S/g/WU5LnzTpfDwWEDSsgBRcd8d/pop7/bvttThEL1mEGGFZ8w==
+X-Received: by 2002:a4a:dc06:: with SMTP id p6mr2586915oov.10.1601483691155;
+        Wed, 30 Sep 2020 09:34:51 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id u9sm508246otq.54.2020.09.30.09.34.49
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 30 Sep 2020 09:34:50 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Wed, 30 Sep 2020 09:34:48 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>,
+        lkft-triage@lists.linaro.org, pavel@denx.de,
+        linux- stable <stable@vger.kernel.org>
+Subject: Re: [PATCH 4.19 000/244] 4.19.149-rc2 review
+Message-ID: <20200930163448.GA219887@roeck-us.net>
+References: <20200929142826.951084251@linuxfoundation.org>
+ <CA+G9fYup1i8WnQpcg28hkq9jgQTTkuiiEfOVSnm_3wS-1sijiA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200930160430.7908-4-calvin.johnson@oss.nxp.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CA+G9fYup1i8WnQpcg28hkq9jgQTTkuiiEfOVSnm_3wS-1sijiA@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +/* Extract the phy ID from the compatible string of the form
-> + * ethernet-phy-idAAAA.BBBB.
-> + */
-> +int fwnode_get_phy_id(struct fwnode_handle *fwnode, u32 *phy_id)
-> +{
-> +	unsigned int upper, lower;
-> +	const char *cp;
-> +	int ret;
-> +
-> +	ret = fwnode_property_read_string(fwnode, "compatible", &cp);
-> +	if (ret)
-> +		return ret;
-> +
-> +	if (sscanf(cp, "ethernet-phy-id%4x.%4x", &upper, &lower) == 2) {
-> +		*phy_id = ((upper & 0xFFFF) << 16) | (lower & 0xFFFF);
-> +		return 0;
-> +	}
-> +	return -EINVAL;
-> +}
-> +EXPORT_SYMBOL(fwnode_get_phy_id);
+On Wed, Sep 30, 2020 at 09:26:48PM +0530, Naresh Kamboju wrote:
+> On Tue, 29 Sep 2020 at 19:59, Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > This is the start of the stable review cycle for the 4.19.149 release.
+> > There are 244 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> >
+> > Responses should be made by Thu, 01 Oct 2020 14:27:43 +0000.
+> > Anything received after that time might be too late.
+> >
+> > The whole patch series can be found in one patch at:
+> >         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.149-rc2.gz
+> > or in the git tree and branch at:
+> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
+> > and the diffstat can be found below.
+> >
+> > thanks,
+> >
+> > greg k-h
+> >
+> 
+> Results from Linaro’s test farm.
+> No regressions on arm64, arm, x86_64, and i386.
+> 
+No perf build failure ? I just tried again, with a simple
 
-Hi Calvin
+make defconfig
+make tools/perf
 
-Do you really need this? Do you have a board with a broken PHY ID?
+on my test system, and it fails to build reliably with
 
->  /**
->   * get_phy_device - reads the specified PHY device and returns its @phy_device
->   *		    struct
-> @@ -2866,7 +2888,15 @@ EXPORT_SYMBOL_GPL(device_phy_find_device);
->   */
->  struct fwnode_handle *fwnode_get_phy_node(struct fwnode_handle *fwnode)
->  {
-> -	return fwnode_find_reference(fwnode, "phy-handle", 0);
-> +	struct fwnode_handle *phy_node;
-> +
-> +	phy_node = fwnode_find_reference(fwnode, "phy-handle", 0);
-> +	if (is_acpi_node(fwnode) || !IS_ERR(phy_node))
-> +		return phy_node;
-> +	phy_node = fwnode_find_reference(fwnode, "phy", 0);
-> +	if (IS_ERR(phy_node))
-> +		phy_node = fwnode_find_reference(fwnode, "phy-device", 0);
-> +	return phy_node;
+util/evsel.c: In function ‘perf_evsel__exit’:
+util/util.h:25:28: error: passing argument 1 of ‘free’ discards ‘const’ qualifier from pointer target type
 
-Why do you have three different ways to reference a PHY?
+as reported. The culprit is commit d22b67e7dae9 ("perf parse-events: Fix 3
+use after frees found with clang ASAN"). That is not a problem upstream because
+of commit 7f7c536f23e6af ("tools lib: Adopt zalloc()/zfree() from tools/perf"),
+but that is just hiding a problem with commit d22b67e7dae9 (which assigns a
+pointer allocated with strdup() to a const * and then frees that const *). 
 
-    Andrew
+Anyway, how comes that only I seem to see that problem ?
+
+Guenter
