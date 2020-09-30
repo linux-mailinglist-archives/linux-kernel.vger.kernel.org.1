@@ -2,118 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1166B27E667
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 12:19:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B67A827E66A
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 12:19:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729078AbgI3KTQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 06:19:16 -0400
-Received: from mail-ed1-f67.google.com ([209.85.208.67]:38969 "EHLO
-        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727657AbgI3KTP (ORCPT
+        id S1729196AbgI3KTY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 06:19:24 -0400
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:41119 "EHLO
+        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725872AbgI3KTY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 06:19:15 -0400
-Received: by mail-ed1-f67.google.com with SMTP id e22so1209363edq.6;
-        Wed, 30 Sep 2020 03:19:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=OfTJRaa/8TAarxg+Kx9m69UamnCj7/6BcDzFIhg9imE=;
-        b=FyUpcyJyQm+4awJGoUSBawM/rT7jILBrD3lX+Dd2qKzf/k5RT2IaDEdyEthGm2H5wk
-         nvML8Rw/NsqahYc9oupAVGveRiriky/aVn+mcrR+HSpRWpTnR7upbCXv/XMlNQXcpYwT
-         eDOi3g+kHZdgZ9k2qNIea6ItVxOMXQeIeF65o8BD0rqKNJFkR2/ikv0fJ0n9zXME4PhD
-         YRjMElPoSjK6ak5g+7fzOxxpVEHXa7B3dsuvGygRA27FLoMW+AH+noRaDUgUHsPfj/yd
-         Ixp6M9JorNlYtLRRxET3cq30F3QK5UWwX0Tygb8C3f+8YpGnovpR5KI3Nmr3JTg+T/hR
-         LRHA==
-X-Gm-Message-State: AOAM533azbibP5kUJSyOFCDQQQ2E+T6lCbejUAPY6e5IOW+Smyts/Ll7
-        XnNseVki89ZMy17r9TDreo8=
-X-Google-Smtp-Source: ABdhPJxI9G3fz0Hy5adUFLWMdVySYAPVnzVYqZbp+i4LqrLXxP4uBbfGGky5VyDcqZvwZvjDV53EMw==
-X-Received: by 2002:a50:cc8d:: with SMTP id q13mr1857004edi.298.1601461153186;
-        Wed, 30 Sep 2020 03:19:13 -0700 (PDT)
-Received: from pi3 ([194.230.155.194])
-        by smtp.googlemail.com with ESMTPSA id g11sm1032053edj.85.2020.09.30.03.19.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Sep 2020 03:19:12 -0700 (PDT)
-Date:   Wed, 30 Sep 2020 12:19:09 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Nicolin Chen <nicoleotsuka@gmail.com>
-Cc:     thierry.reding@gmail.com, joro@8bytes.org, digetx@gmail.com,
-        vdumpa@nvidia.com, jonathanh@nvidia.com,
-        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 2/3] iommu/tegra-smmu: Rework .probe_device and
- .attach_dev
-Message-ID: <20200930101909.GA1147@pi3>
-References: <20200930084258.25493-1-nicoleotsuka@gmail.com>
- <20200930084258.25493-3-nicoleotsuka@gmail.com>
- <CAJKOXPeF8D0A6PGVbi_7RedO-DFd70sjGcJOjx-gCJ7Cd8k0YQ@mail.gmail.com>
- <20200930094032.GA6686@Asurada-Nvidia>
+        Wed, 30 Sep 2020 06:19:24 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 85A535803DF;
+        Wed, 30 Sep 2020 06:19:20 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Wed, 30 Sep 2020 06:19:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=51hsmLqz9/nNSWtqEjjDNGJdPsf
+        EI5fyVu8+ZU5LqF8=; b=WASw4mxJEzKv4bds0eEWxanJSnI/2TKzJEUgsQAGns3
+        K+soucfi0bPYbyYRo3hhV+xWYaT33ApNtXXs0Nwba1F8Zksphw19wtwMpkEsRBg9
+        lfpEtRSCKY4/T9hUOJsdx6p5qqsl6mwJEHx+wL0hv8ZsLItEPeRPGfttTYL76Wun
+        vp9EGkBesq3JUdmRxSllCZxfVr79dt1jIxQ5LXt1qgIMbkifknSO0OHRhTaIxMkQ
+        Z62wwYaL6kNA80yXBYi7bMK/F7LamFV4YvBfBxITQqsorF32KBBxwp1eUVvAPNkK
+        qrVY1iYj9S7tG1DV6Wu589+KH8z47or6lWkQ2ZMBp9g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=51hsmL
+        qz9/nNSWtqEjjDNGJdPsfEI5fyVu8+ZU5LqF8=; b=crhmRSvelGLaAGFWUJPjgv
+        uKnov9mX1EL8WL3DMWP4wGDzRygCbY+R3BBNyNp8e6SZ5YyDlmaBdHd7pRLVSexy
+        uf1uy4/HahQgkbJtTVqAXk1MW8OFvbd5jW+fqwG8q4CslwHXdhnh0eJMcLU2g8hl
+        QNJifjA98V9QC4UF2Dj2S+BxJ1MwwLhQz0dqAh18KUiKRk33ZRekQexvjFRvU6JY
+        lqIAseNkZv1gUIoj5tdvF9Zd7K+VxNePb6JCHDU6J+/h5N1Qd29hTAKKt2lYcY0T
+        osQNm6Pngnm0e8/OvFhJgEnNkjwhpwv8akNAfEXMnArnqwOlolFb1CWgoUi8lc2A
+        ==
+X-ME-Sender: <xms:pFt0X4Wd3qhT-TZ9qhPg1BHxHw5GZnFD-mu5cJuwUNnFxliKqpP_Tw>
+    <xme:pFt0X8mr4LxPywLl8iEgImh4u6YQ24Z_WBREKKhrYQs5O-mtuMcfMt54-mXbYC5tt
+    ce1coA8CNO0u9W3_F0>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrfedvgddvvdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesghdtreertddtjeenucfhrhhomhepofgrgihimhgv
+    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
+    gvrhhnpeeutdfgjeeuudehvefgvedvtedtudelfffgffekledtffekgedukeejueevieeg
+    udenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurf
+    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:pFt0X8YSrOhdFUqfBftZwAhGIXgEEZ8MDTkZ_uSwZUYh06GHd5LYlw>
+    <xmx:pFt0X3VOjfFbtLGDHhxUKGnbzDG8fI_0kK79xe_6SvsU4o1RsdQmQw>
+    <xmx:pFt0XylKx9OjYan_RZVkAEgxf2-wJhuoDE2P1M_S3lBLa3LemWj8CA>
+    <xmx:qFt0X0cYfcm7CApF1P6Xth7KOw2Aw1dfv1k0FyBcsce4IyYa2QbvNA>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id A2C33306467E;
+        Wed, 30 Sep 2020 06:19:16 -0400 (EDT)
+Date:   Wed, 30 Sep 2020 12:19:15 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     =?utf-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
+Cc:     Jernej =?utf-8?Q?=C5=A0krabec?= <jernej.skrabec@siol.net>,
+        Chen-Yu Tsai <wens@csie.org>, Rob Herring <robh+dt@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Marcus Cooper <codekipper@gmail.com>,
+        Linux-ALSA <alsa-devel@alsa-project.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-sunxi <linux-sunxi@googlegroups.com>
+Subject: Re: [PATCH v4 09/22] arm64: dts: allwinner: h6: Add HDMI audio node
+Message-ID: <20200930101915.sultshdvxgu5u2rs@gilmour.lan>
+References: <20200921102731.747736-1-peron.clem@gmail.com>
+ <20200921135925.q7mde2cnt5jtzkb5@gilmour.lan>
+ <CAJiuCcfz9A_Vmzq=s3LK2kGB_1tZPkC9Ux+Brdocp9py0fovAg@mail.gmail.com>
+ <59286578.E0qSRroNqr@kista>
+ <20200928084308.eipnvlfqe3c5lfmg@gilmour.lan>
+ <CAJiuCceHXr_5PvG-FW+hRNV7Q33hGrp8kLbO0EgfqqBxF7wbqQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="we3fv24y4dnxqond"
 Content-Disposition: inline
-In-Reply-To: <20200930094032.GA6686@Asurada-Nvidia>
+In-Reply-To: <CAJiuCceHXr_5PvG-FW+hRNV7Q33hGrp8kLbO0EgfqqBxF7wbqQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 02:40:32AM -0700, Nicolin Chen wrote:
-> On Wed, Sep 30, 2020 at 11:21:14AM +0200, Krzysztof Kozlowski wrote:
-> > On Wed, 30 Sep 2020 at 10:48, Nicolin Chen <nicoleotsuka@gmail.com> wrote:
-> > >
-> > > Previously the driver relies on bus_set_iommu() in .probe() to call
-> > > in .probe_device() function so each client can poll iommus property
-> > > in DTB to configure fwspec via tegra_smmu_configure(). According to
-> > > the comments in .probe(), this is a bit of a hack. And this doesn't
-> > > work for a client that doesn't exist in DTB, PCI device for example.
-> > >
-> > > Actually when a device/client gets probed, the of_iommu_configure()
-> > > will call in .probe_device() function again, with a prepared fwspec
-> > > from of_iommu_configure() that reads the SWGROUP id in DTB as we do
-> > > in tegra-smmu driver.
-> > >
-> > > Additionally, as a new helper devm_tegra_get_memory_controller() is
-> > > introduced, there's no need to poll the iommus property in order to
-> > > get mc->smmu pointers or SWGROUP id.
-> > >
-> > > This patch reworks .probe_device() and .attach_dev() by doing:
-> > > 1) Using fwspec to get swgroup id in .attach_dev/.dettach_dev()
-> > > 2) Removing DT polling code, tegra_smmu_find/tegra_smmu_configure()
-> > > 3) Calling devm_tegra_get_memory_controller() in .probe_device()
-> > > 4) Also dropping the hack in .probe() that's no longer needed.
-> > >
-> > > Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
-> > > ---
-> > >
-> > > Changelog
-> > > v2->v3
-> > >  * Used devm_tegra_get_memory_controller() to get mc pointer
-> > >  * Replaced IS_ERR_OR_NULL with IS_ERR in .probe_device()
-> > > v1->v2
-> > >  * Replaced in .probe_device() tegra_smmu_find/tegra_smmu_configure()
-> > >    with tegra_get_memory_controller call.
-> > >  * Dropped the hack in tegra_smmu_probe().
-> > >
-> > >  drivers/iommu/tegra-smmu.c | 144 ++++++++++---------------------------
-> > >  1 file changed, 36 insertions(+), 108 deletions(-)
-> > >
-> > > diff --git a/drivers/iommu/tegra-smmu.c b/drivers/iommu/tegra-smmu.c
-> > > index 6a3ecc334481..636dc3b89545 100644
-> > > --- a/drivers/iommu/tegra-smmu.c
-> > > +++ b/drivers/iommu/tegra-smmu.c
-> > > @@ -61,6 +61,8 @@ struct tegra_smmu_as {
-> > >         u32 attr;
-> > >  };
-> > >
-> > > +static const struct iommu_ops tegra_smmu_ops;
-> > 
-> > I cannot find in this patch where this is assigned.
-> 
-> Because it's already set in probe():
-> https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/tree/drivers/iommu/tegra-smmu.c#n1162
-> 
-> And my PATCH-3 sets it for PCI bus also.
 
-OK, good point. Thanks for explanation.
+--we3fv24y4dnxqond
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Best regards,
-Krzysztof
+On Mon, Sep 28, 2020 at 04:27:42PM +0200, Cl=C3=A9ment P=C3=A9ron wrote:
+> On Mon, 28 Sep 2020 at 10:43, Maxime Ripard <maxime@cerno.tech> wrote:
+> >
+> > On Mon, Sep 21, 2020 at 08:37:09PM +0200, Jernej =C5=A0krabec wrote:
+> > > Dne ponedeljek, 21. september 2020 ob 19:23:49 CEST je Cl=C3=A9ment P=
+=C3=A9ron
+> > > napisal(a):
+> > > > Hi Maxime,
+> > > >
+> > > > On Mon, 21 Sep 2020 at 15:59, Maxime Ripard <maxime@cerno.tech> wro=
+te:
+> > > > >
+> > > > > On Mon, Sep 21, 2020 at 12:27:18PM +0200, Cl=C3=A9ment P=C3=A9ron=
+ wrote:
+> > > > > > From: Jernej Skrabec <jernej.skrabec@siol.net>
+> > > > > >
+> > > > > > Add a simple-soundcard to link audio between HDMI and I2S.
+> > > > > >
+> > > > > > Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
+> > > > > > Signed-off-by: Marcus Cooper <codekipper@gmail.com>
+> > > > > > Signed-off-by: Cl=C3=A9ment P=C3=A9ron <peron.clem@gmail.com>
+> > > > > > ---
+> > > > > >  arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi | 33 ++++++++++++=
+++++++++
+> > > > > >  1 file changed, 33 insertions(+)
+> > > > > >
+> > > > > > diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi b/arc=
+h/arm64/
+> > > boot/dts/allwinner/sun50i-h6.dtsi
+> > > > > > index 28c77d6872f6..a8853ee7885a 100644
+> > > > > > --- a/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
+> > > > > > +++ b/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
+> > > > > > @@ -67,6 +67,25 @@ de: display-engine {
+> > > > > >               status =3D "disabled";
+> > > > > >       };
+> > > > > >
+> > > > > > +     hdmi_sound: hdmi-sound {
+> > > > > > +             compatible =3D "simple-audio-card";
+> > > > > > +             simple-audio-card,format =3D "i2s";
+> > > > > > +             simple-audio-card,name =3D "sun50i-h6-hdmi";
+> > > > > > +             simple-audio-card,mclk-fs =3D <128>;
+> > > > > > +             simple-audio-card,frame-inversion;
+> > > > > > +             status =3D "disabled";
+> > > > > > +
+> > > > > > +             simple-audio-card,codec {
+> > > > > > +                     sound-dai =3D <&hdmi>;
+> > > > > > +             };
+> > > > > > +
+> > > > > > +             simple-audio-card,cpu {
+> > > > > > +                     sound-dai =3D <&i2s1>;
+> > > > > > +                     dai-tdm-slot-num =3D <2>;
+> > > > > > +                     dai-tdm-slot-width =3D <32>;
+> > > > >
+> > > > > It looks weird to have both some TDM setup here, and yet the form=
+at in
+> > > > > i2s?
+> > > >
+> > > > Yes, I agree I will check if it's really needed.
+> > >
+> > > I think this was explained before.
+> >
+> > Possibly, but this should be in a comment or at least the commit log
+> >
+> > > Anyway, this is needed to force width to 32, no matter actual sample
+> > > width. That's a requirement of HDMI codec. I believe Marcus Cooper
+> > > have another codec which also needs fixed width.
+> > >
+> > > There is no similar property for I2S, so TDM one is used here.
+> >
+> > Except it's really dedicated to the TDM mode and doesn't really make
+> > much sense here.
+> >
+> > If we have special requirements like this on the codec setup, that
+> > sounds like a good justification for creating a custom codec instead of
+> > shoehorning it into simple-card
+>=20
+> When all the remarks are fixed would it be possible to merge the rest
+> of the series without the dts changes ?
+>=20
+> I will propose another series to introduce a dedicated codec for that.
+
+Yeah, sure
+
+Maxime
+
+--we3fv24y4dnxqond
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX3RbogAKCRDj7w1vZxhR
+xQ1TAQCXyCe5QVWRsk4Xo0kYUfS4nqr+j6X8lC7NGSFSHCXQbQD/fNe30ApybdwS
+uWFA5qC2rFHZegZ7IFIgsScWh32Hag0=
+=Tk4P
+-----END PGP SIGNATURE-----
+
+--we3fv24y4dnxqond--
