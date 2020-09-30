@@ -2,151 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFEE727E034
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 07:23:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C3B127E030
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 07:23:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728068AbgI3FWm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 01:22:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33476 "EHLO
+        id S1727913AbgI3FWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 01:22:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727886AbgI3FWf (ORCPT
+        with ESMTP id S1726064AbgI3FWZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 01:22:35 -0400
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B0DDC061755;
-        Tue, 29 Sep 2020 22:22:35 -0700 (PDT)
-Received: by mail-ot1-x343.google.com with SMTP id m13so619906otl.9;
-        Tue, 29 Sep 2020 22:22:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gXPEpCD36sORdHbXZaBk37GGY2DgwKqMqWNlWUiThV0=;
-        b=MJa0DHcym7G8SLtVvKLUWyYzBKKXwal5ikzIWF8XcrY5tKOsoMaNDg/YQ6mHSz3zJS
-         nvFw6D/l4LQgF3mYg1ZH1/kFianO8Byd8jpfK5Ua4H3ocHzyiiYXE/pwmaXrmnpfJkND
-         ldWdw5SVZOfKq5fRMlIKP1l2sgbh5RnR0M02pEP94Fhnli9azdqKjbCpSgdpRJoYdBYI
-         vTPCSFSnSuO59oFYjhecepEJZUdFD26jCVpvbeST6SItueppyKNxn0xKrDdHq0rnZdtN
-         UvbD4KX+ijnZCAD9eoMuRBw6IEdUwzve3LNR0SVUJzopOiX/S/nM5hjg74WvxGOP3Pdl
-         8+0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gXPEpCD36sORdHbXZaBk37GGY2DgwKqMqWNlWUiThV0=;
-        b=PtPgJk81PKBnptNth/aV23KoGg4lzf4Js+gEQtzCd/L1VGGk5Qw4Ohum+c/KVvftnJ
-         /PDtbmhUmAgAXBW+4uR4V3kj+1B55S44ZnAFvFHmJNTSxtJKHPynzPi6W6Bwk/sSQNrp
-         wX8PViLK640KKgQ9VZ0j/bbH2FPxQNbUV8PQj+acDm1T1R8pf4R8vt9YFFrI/Wy6al0/
-         d5I8O/QbZtmhgZtY5XQIHpVKAiEJ5RuIxsr0g/e4/ByK5KQsJIpDUF3/0Ln8Rch/4lG7
-         a+ORKEuUufaGpb2txqGRUJSqTPFLAJWVWXJOJsZLRN8PfXtfcWmZaaowx6NwV+zZU82b
-         Bf5A==
-X-Gm-Message-State: AOAM5326FHfbuh8IF8KbSBHMtUEmQLVPR0ZGqGXngbdqCA2EcCYADq8W
-        u7dVCSeGUQBZtfDF6jMIVYKeoPp7Cm+nyXLtZToll/M/4m0W9Q==
-X-Google-Smtp-Source: ABdhPJwFekZ0Kpb6Lv1MevPdUo1YKW82lNzB0hjf/yn+1Rt8PvejB0HHsTEtV6yEmg+LJNN5QRAPY5AEZdMQ7SJmYIo=
-X-Received: by 2002:a9d:7095:: with SMTP id l21mr514266otj.224.1601443354767;
- Tue, 29 Sep 2020 22:22:34 -0700 (PDT)
+        Wed, 30 Sep 2020 01:22:25 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AFF6C0613D0;
+        Tue, 29 Sep 2020 22:22:25 -0700 (PDT)
+Date:   Wed, 30 Sep 2020 05:22:23 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1601443343;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/ktoE9HIQRkjQ8Uk2grnAdlixIkQr4pzMLC20cg3DSg=;
+        b=YgimaRX4N+GP5nX+KCrzc97Pd2bQ4ZrSwhCDMF3oJWerWWxjC3vGg5ATOAn7HRsaxahFSg
+        fnPgj4KS+WXk+UT+ekJJh9gqT542bZgDpYkkXYhLb/mjoUYthalRns0GRQhuhm7ZBN5L0I
+        MKo9xN1nRVMmQ/mTvZTVQrdNR4U7kdiAxzuR5ZOfq5R5GSburhrCsmjZx5nDWS9ldc/fV0
+        I8VyUM7qwnncHBwSHW18wZ1jtrI6TdfL8bWbPd8I9FkZOvP++9UkJt0nZq5lo9bIn2pKsj
+        /Ets9V9kHWaM9+rcqP6p0JbqjcudCtFWrOEcz7T8ezx2cQV+qcfo5aZYZgGdeA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1601443343;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/ktoE9HIQRkjQ8Uk2grnAdlixIkQr4pzMLC20cg3DSg=;
+        b=fcw57bFFcmPditNrAi9L/u993gkAjrrpgu4qXSgd7ho93dqjbVGSfwCHPWUnkKe93BSEYI
+        RiWvHj5r6C18LdBg==
+From:   "tip-bot2 for Alex Kluver" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: efi/core] edac,ghes,cper: Add Row Extension to Memory Error Record
+Cc:     Alex Kluver <alex.kluver@hpe.com>,
+        Russ Anderson <russ.anderson@hpe.com>,
+        Steve Wahl <steve.wahl@hpe.com>,
+        Kyle Meyer <kyle.meyer@hpe.com>, Borislav Petkov <bp@suse.de>,
+        Ard Biesheuvel <ardb@kernel.org>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200819143544.155096-2-alex.kluver@hpe.com>
+References: <20200819143544.155096-2-alex.kluver@hpe.com>
 MIME-Version: 1.0
-References: <20200929144417.89816-1-alexandru.ardelean@analog.com>
- <20200929144417.89816-14-alexandru.ardelean@analog.com> <20200929153040.GA114067@archbook>
-In-Reply-To: <20200929153040.GA114067@archbook>
-From:   Alexandru Ardelean <ardeleanalex@gmail.com>
-Date:   Wed, 30 Sep 2020 08:22:23 +0300
-Message-ID: <CA+U=DspZ8cZzDDJWdbS=RkLifJRr7sjwQ9-ytMWkCqpfoCX6=w@mail.gmail.com>
-Subject: Re: [PATCH v4 5/7] clk: axi-clkgen: Respect ZYNQMP PFD/VCO frequency limits
-To:     Moritz Fischer <mdf@kernel.org>
-Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        linux-clk@vger.kernel.org, linux-fpga@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Mathias Tausen <mta@gomspace.com>
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <160144334312.7002.4729772508224882553.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 6:30 PM Moritz Fischer <mdf@kernel.org> wrote:
->
-> Hi Alexandru,
->
-> On Tue, Sep 29, 2020 at 05:44:15PM +0300, Alexandru Ardelean wrote:
-> > From: Mathias Tausen <mta@gomspace.com>
-> >
-> > Since axi-clkgen is now supported on ZYNQMP, make sure the max/min
-> > frequencies of the PFD and VCO are respected.
-> >
-> > Signed-off-by: Mathias Tausen <mta@gomspace.com>
-> > Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
->
-> This patch still does not cover the PCIe Zynq plugged into ZynqMP linux
-> machine case.
->
-> > ---
-> >  drivers/clk/clk-axi-clkgen.c | 9 +++++++++
-> >  1 file changed, 9 insertions(+)
-> >
-> > diff --git a/drivers/clk/clk-axi-clkgen.c b/drivers/clk/clk-axi-clkgen.c
-> > index 4342b7735590..2319bb1c5c08 100644
-> > --- a/drivers/clk/clk-axi-clkgen.c
-> > +++ b/drivers/clk/clk-axi-clkgen.c
-> > @@ -108,12 +108,21 @@ static uint32_t axi_clkgen_lookup_lock(unsigned int m)
-> >       return 0x1f1f00fa;
-> >  }
-> >
-> > +#ifdef ARCH_ZYNQMP
-> > +static const struct axi_clkgen_limits axi_clkgen_default_limits = {
-> > +     .fpfd_min = 10000,
-> > +     .fpfd_max = 450000,
-> > +     .fvco_min = 800000,
-> > +     .fvco_max = 1600000,
-> > +};
-> > +#else
-> >  static const struct axi_clkgen_limits axi_clkgen_default_limits = {
-> >       .fpfd_min = 10000,
-> >       .fpfd_max = 300000,
-> >       .fvco_min = 600000,
-> >       .fvco_max = 1200000,
-> >  };
-> > +#endif
->
-> I still don't understand this. You have a way to determine which fabric
-> you are looking at with the FPGA info. Why not:
->
-> [..] axi_clkgen_zynqmp_default_limits = {
-> };
->
-> [..] axi_clkgen_default_limits = {
-> };
->
-> Set them based on what you read back, i.e. determine which fabric you
-> are looking at *per clock gen* and use that info, rather than making a
-> compile time decision to support only one of them.
->
-> Generally speaking #ifdef $ARCH should be a last resort solution.
+The following commit has been merged into the efi/core branch of tip:
 
-The support for reading back the fabric parameters is implemented in
-the AXI CLKGEN PCORE version starting with 5.0.a
-Links:
-https://github.com/analogdevicesinc/hdl/commits/master/library/common/up_clkgen.v
-https://github.com/analogdevicesinc/hdl/commit/66823682b63c1037abdc3fc1dd4d4e63d3cfbc1a
-https://github.com/analogdevicesinc/hdl/commit/7dcb2050c7946fab5ea5a273eda7c53ea7b969a6
+Commit-ID:     9baf68cc4544056f33797b78ec09388f54ecc8f0
+Gitweb:        https://git.kernel.org/tip/9baf68cc4544056f33797b78ec09388f54ecc8f0
+Author:        Alex Kluver <alex.kluver@hpe.com>
+AuthorDate:    Wed, 19 Aug 2020 09:35:43 -05:00
+Committer:     Ard Biesheuvel <ardb@kernel.org>
+CommitterDate: Thu, 17 Sep 2020 10:19:52 +03:00
 
-Before that version, these details aren't there, so the best you can
-do is assume compile-time ARCH defaults.
+edac,ghes,cper: Add Row Extension to Memory Error Record
 
-Looking at patch 7 [in this series], the axi_clkgen only updates these
-defaults if the PCORE version is above version 4.x.x
-https://lore.kernel.org/linux-clk/20200929144417.89816-16-alexandru.ardelean@analog.com/T/#u
+Memory errors could be printed with incorrect row values since the DIMM
+size has outgrown the 16 bit row field in the CPER structure. UEFI
+Specification Version 2.8 has increased the size of row by allowing it to
+use the first 2 bits from a previously reserved space within the structure.
 
-Now, the question would be: do we still support PCORE versions before 5.0.a?
-Depending on the answer to this question, I would be fine with the
-proposed change here.
+When needed, add the extension bits to the row value printed.
 
-> >
-> >  static void axi_clkgen_calc_params(const struct axi_clkgen_limits *limits,
-> >       unsigned long fin, unsigned long fout,
-> > --
-> > 2.17.1
-> >
->
-> Cheers,
-> Moritz
+Based on UEFI 2.8 Table 299. Memory Error Record
+
+Signed-off-by: Alex Kluver <alex.kluver@hpe.com>
+Tested-by: Russ Anderson <russ.anderson@hpe.com>
+Reviewed-by: Steve Wahl <steve.wahl@hpe.com>
+Reviewed-by: Kyle Meyer <kyle.meyer@hpe.com>
+Acked-by: Borislav Petkov <bp@suse.de>
+Link: https://lore.kernel.org/r/20200819143544.155096-2-alex.kluver@hpe.com
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+---
+ drivers/edac/ghes_edac.c    |  8 ++++++--
+ drivers/firmware/efi/cper.c |  9 +++++++--
+ include/linux/cper.h        | 16 ++++++++++++++--
+ 3 files changed, 27 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/edac/ghes_edac.c b/drivers/edac/ghes_edac.c
+index da60c29..741e760 100644
+--- a/drivers/edac/ghes_edac.c
++++ b/drivers/edac/ghes_edac.c
+@@ -372,8 +372,12 @@ void ghes_edac_report_mem_error(int sev, struct cper_sec_mem_err *mem_err)
+ 		p += sprintf(p, "rank:%d ", mem_err->rank);
+ 	if (mem_err->validation_bits & CPER_MEM_VALID_BANK)
+ 		p += sprintf(p, "bank:%d ", mem_err->bank);
+-	if (mem_err->validation_bits & CPER_MEM_VALID_ROW)
+-		p += sprintf(p, "row:%d ", mem_err->row);
++	if (mem_err->validation_bits & (CPER_MEM_VALID_ROW | CPER_MEM_VALID_ROW_EXT)) {
++		u32 row = mem_err->row;
++
++		row |= cper_get_mem_extension(mem_err->validation_bits, mem_err->extended);
++		p += sprintf(p, "row:%d ", row);
++	}
+ 	if (mem_err->validation_bits & CPER_MEM_VALID_COLUMN)
+ 		p += sprintf(p, "col:%d ", mem_err->column);
+ 	if (mem_err->validation_bits & CPER_MEM_VALID_BIT_POSITION)
+diff --git a/drivers/firmware/efi/cper.c b/drivers/firmware/efi/cper.c
+index f564e15..a60acd1 100644
+--- a/drivers/firmware/efi/cper.c
++++ b/drivers/firmware/efi/cper.c
+@@ -234,8 +234,12 @@ static int cper_mem_err_location(struct cper_mem_err_compact *mem, char *msg)
+ 		n += scnprintf(msg + n, len - n, "bank: %d ", mem->bank);
+ 	if (mem->validation_bits & CPER_MEM_VALID_DEVICE)
+ 		n += scnprintf(msg + n, len - n, "device: %d ", mem->device);
+-	if (mem->validation_bits & CPER_MEM_VALID_ROW)
+-		n += scnprintf(msg + n, len - n, "row: %d ", mem->row);
++	if (mem->validation_bits & (CPER_MEM_VALID_ROW | CPER_MEM_VALID_ROW_EXT)) {
++		u32 row = mem->row;
++
++		row |= cper_get_mem_extension(mem->validation_bits, mem->extended);
++		n += scnprintf(msg + n, len - n, "row: %d ", row);
++	}
+ 	if (mem->validation_bits & CPER_MEM_VALID_COLUMN)
+ 		n += scnprintf(msg + n, len - n, "column: %d ", mem->column);
+ 	if (mem->validation_bits & CPER_MEM_VALID_BIT_POSITION)
+@@ -292,6 +296,7 @@ void cper_mem_err_pack(const struct cper_sec_mem_err *mem,
+ 	cmem->requestor_id = mem->requestor_id;
+ 	cmem->responder_id = mem->responder_id;
+ 	cmem->target_id = mem->target_id;
++	cmem->extended = mem->extended;
+ 	cmem->rank = mem->rank;
+ 	cmem->mem_array_handle = mem->mem_array_handle;
+ 	cmem->mem_dev_handle = mem->mem_dev_handle;
+diff --git a/include/linux/cper.h b/include/linux/cper.h
+index 8537e92..bd2d8a7 100644
+--- a/include/linux/cper.h
++++ b/include/linux/cper.h
+@@ -230,6 +230,10 @@ enum {
+ #define CPER_MEM_VALID_RANK_NUMBER		0x8000
+ #define CPER_MEM_VALID_CARD_HANDLE		0x10000
+ #define CPER_MEM_VALID_MODULE_HANDLE		0x20000
++#define CPER_MEM_VALID_ROW_EXT			0x40000
++
++#define CPER_MEM_EXT_ROW_MASK			0x3
++#define CPER_MEM_EXT_ROW_SHIFT			16
+ 
+ #define CPER_PCIE_VALID_PORT_TYPE		0x0001
+ #define CPER_PCIE_VALID_VERSION			0x0002
+@@ -443,7 +447,7 @@ struct cper_sec_mem_err_old {
+ 	u8	error_type;
+ };
+ 
+-/* Memory Error Section (UEFI >= v2.3), UEFI v2.7 sec N.2.5 */
++/* Memory Error Section (UEFI >= v2.3), UEFI v2.8 sec N.2.5 */
+ struct cper_sec_mem_err {
+ 	u64	validation_bits;
+ 	u64	error_status;
+@@ -461,7 +465,7 @@ struct cper_sec_mem_err {
+ 	u64	responder_id;
+ 	u64	target_id;
+ 	u8	error_type;
+-	u8	reserved;
++	u8	extended;
+ 	u16	rank;
+ 	u16	mem_array_handle;	/* "card handle" in UEFI 2.4 */
+ 	u16	mem_dev_handle;		/* "module handle" in UEFI 2.4 */
+@@ -483,8 +487,16 @@ struct cper_mem_err_compact {
+ 	u16	rank;
+ 	u16	mem_array_handle;
+ 	u16	mem_dev_handle;
++	u8      extended;
+ };
+ 
++static inline u32 cper_get_mem_extension(u64 mem_valid, u8 mem_extended)
++{
++	if (!(mem_valid & CPER_MEM_VALID_ROW_EXT))
++		return 0;
++	return (mem_extended & CPER_MEM_EXT_ROW_MASK) << CPER_MEM_EXT_ROW_SHIFT;
++}
++
+ /* PCI Express Error Section, UEFI v2.7 sec N.2.7 */
+ struct cper_sec_pcie {
+ 	u64		validation_bits;
