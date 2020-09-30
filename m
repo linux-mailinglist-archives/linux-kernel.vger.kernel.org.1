@@ -2,113 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3B1527F53B
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 00:39:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D643627F540
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 00:40:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731648AbgI3WjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 18:39:05 -0400
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:11318 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730876AbgI3WjE (ORCPT
+        id S1731665AbgI3WkN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 18:40:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52644 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731626AbgI3WkN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 18:39:04 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f7508d50000>; Wed, 30 Sep 2020 15:38:13 -0700
-Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 30 Sep
- 2020 22:39:00 +0000
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.175)
- by HQMAIL101.nvidia.com (172.20.187.10) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Wed, 30 Sep 2020 22:39:00 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HHNjCtTX3mFHtyiYBu1pC8WPH2ZOYRD2I7AeraUzrwSBbwzNRMZ8jKFBx7q7V/H+KZ77qvtq/0NhvH8M/SUR6LdJFrkjFlA4bAF7ooiBgsYb/cbVqeQys9pQludF3au1VuiuB2lG4Ywpgk3DblkJEHjn5MCBW92+c0NBi/7VxSMvpmAmWDPDjYg4r1xA31nLB4UqtYXghgoX/J2POZwTQQrG0+kcCUSjhcwsVMRCm62QjXuV6ikKIoWsP/LR2HpCXxsA2ASop0gyvhZR/HU5fSczFkCyyrc6WvViOXITDH+s98WbaCw072frdCn/FuE3E/DGWgtbIFroi7I10ChiOQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6ai6Omny5JKBWcNpwYiVu/UDutJhsSBmTMmzj6la7f8=;
- b=gCmSolI0LabELxiEp1s3gqmB33cMmz79abHorzvJzV2VyMgM4MAhZ8oE+olL2TmUVfJZmk3+4aAsO18d3iEQN/A+eEH4QKtXRAgfmJE2AaULbhxHadR/zWUqT5h9sMXOPpw931Bls5wyCDdIaxnjfK5k2oBIPsIVZAKCiUIDaVb9t6FKTtPZDeMraEHDciv2Xo4oR/ccgvq1ClJ1gmgTSmnk4Ls5RWs4JBnwi9MhvvoBLR/+/kWaHfdAmMBvvZd3roOt1L4EcfAdB3nHBQFYtimX9wZD0fDAMJveTKKWJ9uKy3GoLPMjbN3dWDfxZpbtPrqHax+LLzpXYfCJF1eSag==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM5PR12MB1548.namprd12.prod.outlook.com (2603:10b6:4:a::23) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3433.35; Wed, 30 Sep 2020 22:38:59 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3433.032; Wed, 30 Sep 2020
- 22:38:59 +0000
-Date:   Wed, 30 Sep 2020 19:38:57 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     "Raj, Ashok" <ashok.raj@intel.com>
-CC:     Thomas Gleixner <tglx@linutronix.de>,
-        Dave Jiang <dave.jiang@intel.com>, <vkoul@kernel.org>,
-        <megha.dey@intel.com>, <maz@kernel.org>, <bhelgaas@google.com>,
-        <alex.williamson@redhat.com>, <jacob.jun.pan@intel.com>,
-        <yi.l.liu@intel.com>, <baolu.lu@intel.com>, <kevin.tian@intel.com>,
-        <sanjay.k.kumar@intel.com>, <tony.luck@intel.com>,
-        <jing.lin@intel.com>, <dan.j.williams@intel.com>,
-        <kwankhede@nvidia.com>, <eric.auger@redhat.com>,
-        <parav@mellanox.com>, <rafael@kernel.org>, <netanelg@mellanox.com>,
-        <shahafs@mellanox.com>, <yan.y.zhao@linux.intel.com>,
-        <pbonzini@redhat.com>, <samuel.ortiz@intel.com>,
-        <mona.hossain@intel.com>, <dmaengine@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <x86@kernel.org>,
-        <linux-pci@vger.kernel.org>, <kvm@vger.kernel.org>
-Subject: Re: [PATCH v3 05/18] dmaengine: idxd: add IMS support in base driver
-Message-ID: <20200930223857.GV816047@nvidia.com>
-References: <160021207013.67751.8220471499908137671.stgit@djiang5-desk3.ch.intel.com>
- <160021248979.67751.3799965857372703876.stgit@djiang5-desk3.ch.intel.com>
- <87sgazgl0b.fsf@nanos.tec.linutronix.de> <20200930185103.GT816047@nvidia.com>
- <20200930214941.GB26492@otc-nc-03>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20200930214941.GB26492@otc-nc-03>
-X-ClientProxiedBy: MN2PR14CA0025.namprd14.prod.outlook.com
- (2603:10b6:208:23e::30) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        Wed, 30 Sep 2020 18:40:13 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A953C061755;
+        Wed, 30 Sep 2020 15:40:12 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id y17so4131795lfa.8;
+        Wed, 30 Sep 2020 15:40:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Fhe1z9jtwJP0VpHDTUygA4zqKTE6joOsqm3YtyILkpA=;
+        b=hakMyYZMu0di6yGMZyDRgNav9ssN5aczE/zS2vkg+jDQ/mLSEiWSn8UsWSzkEcE6fN
+         eFHBb/VhpBaPFEcr6ei83OPTG/sxsI6ALVYtKCSebWuAwX38f/Z732d29XDwGwvXbGEH
+         unKbil+Ttr/BsRXA7COs+xvNm9+D6jbh5MUuOl3kWYWfO3wA4B330eCWNyDPVoDarrTi
+         tcBf/t+1pDLGYR5vtSK1u0qsUSuc+Ju153ijAzCXof/0DvpV2KjGjoJirxnDi+ALH5+P
+         B9CM4Zwijp+JPNB4m9ZOaiujnrsUC8jT9LzLQNGFESQhgwSuv+0gGvfSuLJTiKH2pihb
+         7WXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Fhe1z9jtwJP0VpHDTUygA4zqKTE6joOsqm3YtyILkpA=;
+        b=TuLby4m0cvkHn1p7qxZdKSL0AK3qFFrN9bTZO4ABNnqvrB+lsn7M2PzJ7ck054v90o
+         +6UA/YdZPwJJ/FqPeaQrAxWRrA7iPMIjeKJReIcqY6OUGKumvq1Wwwve/WbwNz/0Vnbz
+         DKqxSZ8n+CHfRWW9Twxg2KskVhh1hSjgolbAf6hXVxF+8xcf3KejH/6lHtAiO8M+OLsZ
+         RbU2qySaL6CkSAEyU1rS9bIL5ASBuih9IBmnk9OBlhhfu1L7SkqwPr58tIBLG9nTon0G
+         /2TZrcB/JmLBZy7GDvcpkVfILioRUTRdfop/JfUxv0qfAp8YKL4aSUQ8Acn47lt/8pg2
+         dOWQ==
+X-Gm-Message-State: AOAM533fzlVgcGbBH+TirSEdr4mdlXkLmwuSohWG42MVFzZTq3Yf8BvD
+        J4BTUu52+k1kR3T6pwR0n50=
+X-Google-Smtp-Source: ABdhPJwexhyLpNfeNSaxynwqCF4RGK0ul3NCeYu5UXmNr+HzgPShXRkB9fg8JIxwDBTMLiBxlIfcsg==
+X-Received: by 2002:a05:6512:2101:: with SMTP id q1mr1732072lfr.157.1601505611142;
+        Wed, 30 Sep 2020 15:40:11 -0700 (PDT)
+Received: from localhost.localdomain (h-98-128-229-94.NA.cust.bahnhof.se. [98.128.229.94])
+        by smtp.gmail.com with ESMTPSA id p10sm330893lfh.294.2020.09.30.15.40.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Sep 2020 15:40:10 -0700 (PDT)
+From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
+To:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        Jack Wang <jinpu.wang@cloud.ionos.com>,
+        Danil Kipnis <danil.kipnis@cloud.ionos.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Kamal Heib <kamalheib1@gmail.com>, Qiushi Wu <wu000273@umn.edu>
+Subject: [PATCH rdma-next 0/2] RDMA: Constify static struct attribute_group
+Date:   Thu,  1 Oct 2020 00:40:02 +0200
+Message-Id: <20200930224004.24279-1-rikard.falkeborn@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR14CA0025.namprd14.prod.outlook.com (2603:10b6:208:23e::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.36 via Frontend Transport; Wed, 30 Sep 2020 22:38:58 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kNkkT-004OLW-IM; Wed, 30 Sep 2020 19:38:57 -0300
-X-LD-Processed: 43083d15-7273-40c1-b7db-39efd9ccc17a,ExtAddr
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1601505493; bh=6ai6Omny5JKBWcNpwYiVu/UDutJhsSBmTMmzj6la7f8=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType:X-LD-Processed;
-        b=ChI8qzlu7isZS2cgzXXjWILwfGDRYNyLmuP91JcxzU8ptCIBFxhVd79xfGmSLKsWt
-         q7PGrzqPo8Xd+XK0joJnkA/iYk66b8VdM+bLOaG4WUZOkcDDdLjfOGdf6/ijxq6+y5
-         UwqeHXrJBzT029P+eVfHXlpgIwVfV0ifPiN5Cpely9zUH5n69YU3o8WZvIm4oOPWpK
-         du4lZhBYJV56C4qgDxvmuLabhYNMnn2LqTBzMwzT02auQu4qz2Uf1sGye15Z6I3POk
-         tFKu7md7l1eDhoDbW4y/tYK/Bcdg62fc6F9CA/5j1Hvne33gIh94Epz5KMRkVwJekp
-         /hk2RK1hQ7h/w==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 02:49:41PM -0700, Raj, Ashok wrote:
+Constify a couple of static struct attribute_group that are never
+modified to allow the compiler to put them in read-only memory.
 
-> One of the parameters it has is the "supported system page-sizes" which is
-> usually there in the SRIOV properties. So it needed a place holder for
-> that. 
+Rikard Falkeborn (2):
+  RDMA/core: Constify struct attribute_group
+  RDMA/rtrs: Constify static struct attribute_group
 
-No idea why this would be a PCI cap. It is certainly not something so
-universal it needs standardizing. There are many ways a device can
-manage a BAR to match a required protection granularity.
+ drivers/infiniband/core/sysfs.c              | 12 ++++++------
+ drivers/infiniband/ulp/rtrs/rtrs-clt-sysfs.c |  6 +++---
+ drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c |  4 ++--
+ 3 files changed, 11 insertions(+), 11 deletions(-)
 
-> When we provision an entire PCI device that is IMS capable. The guest
-> driver does know it can update the IMS entries directly without going to
-> the host. But in order to do remapping we need something like how we manage
-> PASID allocation from guest, so an IRTE entry can be allocated and the host
-> driver can write the proper values for IMS.
+-- 
+2.28.0
 
-Look at the architecture we ended up with.
-
-You need to make pci_subdevice_msi_create_irq_domain() fail if the
-platform can't provide the functionality.
-
-Working around that with PCI caps is pretty gross.
-
-Jason
