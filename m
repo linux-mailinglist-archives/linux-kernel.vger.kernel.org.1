@@ -2,241 +2,317 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C50FA27E832
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 14:06:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99FE827E837
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 14:08:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729021AbgI3MGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 08:06:40 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:37613 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725776AbgI3MGk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 08:06:40 -0400
-Received: from 1.general.smb.uk.vpn ([10.172.193.28])
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <stefan.bader@canonical.com>)
-        id 1kNasX-0004Q9-1y; Wed, 30 Sep 2020 12:06:37 +0000
-Subject: Re: [PATCH] xen/events: don't use chip_data for legacy IRQs
-To:     Juergen Gross <jgross@suse.com>, xen-devel@lists.xenproject.org,
-        linux-kernel@vger.kernel.org
-Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        stable@vger.kernel.org
-References: <20200930091614.13660-1-jgross@suse.com>
-From:   Stefan Bader <stefan.bader@canonical.com>
-Autocrypt: addr=stefan.bader@canonical.com; prefer-encrypt=mutual; keydata=
- mQINBE5mmXEBEADoM0yd6ERIuH2sQjbCGtrt0SFCbpAuOgNy7LSDJw2vZHkZ1bLPtpojdQId
- 258o/4V+qLWaWLjbQdadzodnVUsvb+LUKJhFRB1kmzVYNxiu7AtxOnNmUn9dl1oS90IACo1B
- BpaMIunnKu1pp7s3sfzWapsNMwHbYVHXyJeaPFtMqOxd1V7bNEAC9uNjqJ3IG15f5/50+N+w
- LGkd5QJmp6Hs9RgCXQMDn989+qFnJga390C9JPWYye0sLjQeZTuUgdhebP0nvciOlKwaOC8v
- K3UwEIbjt+eL18kBq4VBgrqQiMupmTP9oQNYEgk2FiW3iAQ9BXE8VGiglUOF8KIe/2okVjdO
- nl3VgOHumV+emrE8XFOB2pgVmoklYNvOjaIV7UBesO5/16jbhGVDXskpZkrP/Ip+n9XD/EJM
- ismF8UcvcL4aPwZf9J03fZT4HARXuig/GXdK7nMgCRChKwsAARjw5f8lUx5iR1wZwSa7HhHP
- rAclUzjFNK2819/Ke5kM1UuT1X9aqL+uLYQEDB3QfJmdzVv5vHON3O7GOfaxBICo4Z5OdXSQ
- SRetiJ8YeUhKpWSqP59PSsbJg+nCKvWfkl/XUu5cFO4V/+NfivTttnoFwNhi/4lrBKZDhGVm
- 6Oo/VytPpGHXt29npHb8x0NsQOsfZeam9Z5ysmePwH/53Np8NQARAQABtDVTdGVmYW4gQmFk
- ZXIgKENhbm9uaWNhbCkgPHN0ZWZhbi5iYWRlckBjYW5vbmljYWwuY29tPokCVwQTAQoAQQIb
- AwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgAIZARYhBNtdfMrzmU4zldpNPuhnXe7L7s6jBQJd
- 7mXwBQkRwqX/AAoJEOhnXe7L7s6jwpgQALEz54XvgIhYi8qCwqkopEZXq2fYttMFMEMkW3dA
- 7Y/m5fnmPs/QYsfpn7LtQcmDGBz4W9YDL/KD+1YF1W1+vzo8NQTeR02DJksaTx2riyzI+zS9
- YY/c0EvyauOWa8s9YvI9lzN+gWgOKyEK415nybXjU5FEMAF6jAjJ70T+DPeZjGBgkoDPKBRK
- O3DBgOV23rrAiMx9UXqAbcSUU4i1me6PTZaAbSeIiOPOdJfPgJP8ki3QuGF3ct23dLLlPame
- cCCgH4ZBMGb8ZQLhRfLNYao0dbDXcqQ+OSFl2pGToiC19MJj1im1Ca8Dc97JRuzkxOFKRfXA
- 9rYsVy7AV//pfVy3x5tT0fJQtz4UFU4Qzhi/08U2wgl9tsJxP2LCtcoXa7D+3ehe92cQNsrQ
- Xo6XKNzvOFoXzDBzoVU9SYTv12Y97zECJG11F+QmDiogudy+ioq+R9aKgMUIugnCh45LuZuR
- yj9quASYn5vf/YywML5vSVKNQ1+0jcO/vkwja4bMU0intA0se8ujjVMV/XXJb80PtghZVVL/
- +xqnApGilIda5+QEbjdPO8XjNlFO8cIhez81+8m68ybnq5svfee/PJOEZ6jlxG5XIyb3B/ky
- gZY6kimPLeLcjxK4FVH5teiSB0IfpEMnQNLrjDzXWgmA/Bk7VNycPYOKvZnYuBNgA7wEuQIN
- BE5mmXEBEADCkRfuS1cAx02yTsk9gyAapcQnpb6EBay40Ch/IPrMF2iG4F0CX6puKubjjVbq
- L6jEKyksqPb57Vu9WAufy4Rlv3OwzaymmWk00CROCVSuEV+3bikBTnF/l+VVCvccNlpHsADM
- LncaATvSOj1iCXeikxNAk2LA3g9H8uz7lQUhjni05ixBZGDGbaxB6Odmh58q8k/iooREHyqf
- leSg1zpuBxYGKVug2daXLSvQI7w59eYO/L1YpLtu1sMzqRyYdSUyCiNcXDO/Ko221o2NfdqQ
- 9KET1az8QTsBnZeTsjsk4VnYwjc9ZEYN7LATWrhz8vgI2eP80lXxXm9kx81NubnOPxna5vg9
- DhxZEjo8A+zE4c5bQuSCJ3GTnOalXsAz0Lwk1H1nFwizUqvmPI8eAqZGeZoJ409uDcNi2BrR
- +W7MjXxPM5k4M2zMiNfIvNBjclBLE/m7nrcxNLOk1z/KQiFVZQhtHXoOTUWmINZ+E3GIJT2D
- ToFxUoaEW2GdX0rjqEerbUaoo6SBX7HxmjAzseND9IatGTxgN+EhJUiIWK4UOH343erB7Hga
- 98WeEzZTq7W2NvwnqOVAq2ElnPhHrD98nWIBZPOEu6xgiyvVFfXJGmRBMRBR+8hBjfX0643n
- Lq3wYOrZbNfP8dJVQZ4GxI6OLTcwYNgifqp/SIJzE1tgkwARAQABiQI8BBgBCgAmAhsMFiEE
- 2118yvOZTjOV2k0+6Gdd7svuzqMFAl3uZkUFCRGHUtQACgkQ6Gdd7svuzqMZ8A/+OOxzg8PT
- 7B9o/YvbBuKfnc3WK2xFpYPsiqlRk+7NnV1BXOMpCe9jrKGy1erJg0WBD7BXg7mbQj6KH58o
- MslCZCkb4N1igwD2JiJo/Lf98DFdw6hUR8Ja/DOVhjpNjfbhF5EIIzkkV8K/pIrkRPOL6uld
- i2IPowtMky2yoIJ1cQdtREEUL/WcpRoLrW6ZqITx4RxL2nnUSp0kpr3sdsYmUoGKWAfBSO/W
- TCsypW4Ymd4tWST4NVFYOW2/pkROX8saRdznaCRFnn8QeTSb2WgDmXLLjGKancYmZPNRcdr9
- OsFcWN2R3ljo6+frW58GoR1To4E7Jr2MucDK8wmvkf08NlnhqOzfaRvgdLLK5l5tv6LZOGCH
- 17imKDu6cH0qf0EVCCd3Oq8SIosKzcvYJRqwc6CJGJSaz9CNUHCnDUzMZq1Pi+C4FuK2i2jz
- X+xJRAvEX6xZ0BhfuKnum7KtZmBYACeL4V27Bes6r2YGEf4ZQq9kyNVZ6r+pmcyRS495Y+8r
- Vgixzb39xyLAzwOFCBpCcsT6MsdsqIx9ir+Dx3aVpU9kxzFLXmj1JnlqCvDx4g8q1kEU9ffD
- 6bmoRYuE45/feIEQGr1QueKac1rpRHhfohCTZNG2Jx1c6VwZCYvBKkOJMWpQwRtyEcShcX1j
- quuXTQgSgLXYhq37J+O42GU0Amw=
-Message-ID: <1bf20485-3dd2-109f-5c8a-d2c971e1f6d6@canonical.com>
-Date:   Wed, 30 Sep 2020 14:06:36 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20200930091614.13660-1-jgross@suse.com>
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="4ZWfbxMYEuYb9WBQDNT49jdPyGV9G7x6T"
+        id S1729353AbgI3MIq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 08:08:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37054 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725776AbgI3MIq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 08:08:46 -0400
+Received: from tzanussi-mobl (c-98-220-232-140.hsd1.il.comcast.net [98.220.232.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D9D1F2076B;
+        Wed, 30 Sep 2020 12:08:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601467725;
+        bh=0+wJEJzsMDzaOb63pHSR29TUDgwIuxo6vhixrFyQ+Fs=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=ZBLpWfUvvlirGhIv3f+51zpUh+JEGp+EZ562iyp/HfBGHBVG2T6o3Dxluk+nRYz8/
+         +3X8B2br9gtE3C3v27wQFqf1JI04TtZSbkZ9PXadZiDa/p1DQUaoUMN41wmL/5yT++
+         qya5d9HS3duPEwjlM1OVviqod0WQALagNbBNh7js=
+Message-ID: <3a2caee2ef69fd1e3306bbed62d3eef299a42fb7.camel@kernel.org>
+Subject: Re: [PATCH 0/3] tracing: Add dynamic strings for synthetic events
+From:   Tom Zanussi <zanussi@kernel.org>
+To:     Axel Rasmussen <axelrasmussen@google.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Date:   Wed, 30 Sep 2020 07:08:43 -0500
+In-Reply-To: <CAJHvVchE91tpR2QtyB3NmiaRoDBgiQ-D7g7NCp0viEQ9H0G76g@mail.gmail.com>
+References: <cover.1601410890.git.zanussi@kernel.org>
+         <CAJHvVchE91tpR2QtyB3NmiaRoDBgiQ-D7g7NCp0viEQ9H0G76g@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---4ZWfbxMYEuYb9WBQDNT49jdPyGV9G7x6T
-Content-Type: multipart/mixed; boundary="eo46LUkwhYPCjazyhGffTGoSf3IEADHzU"
+Hi Axel,
 
---eo46LUkwhYPCjazyhGffTGoSf3IEADHzU
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+On Tue, 2020-09-29 at 15:19 -0700, Axel Rasmussen wrote:
+> On Tue, Sep 29, 2020 at 1:33 PM Tom Zanussi <zanussi@kernel.org>
+> wrote:
+> > 
+> > Hi,
+> > 
+> > This patchset adds support for dynamic strings for synthetic
+> > events,
+> > as requested by Axel Rasmussen.
+> > 
+> > Actually, the first two patches should be applied in any case - the
+> > first just changes the current max string length and the second
+> > fixes
+> > a bug I found while testing.
+> > 
+> > It works fine for my simple test cases, but I still need to do a
+> > lot
+> > more testing, especially of the in-kernel API parts, which don't
+> > affect Axel's use case.
+> > 
+> > Anyway, Axel, please try it out and send me your Tested-by: if it
+> > works for you, and your broken testcase(s) if it doesn't. ;-)
+> 
+> Thanks for working on this!
+> 
+> Capturing a histogram with a histogram trigger on the synthetic
+> event[1] seems to work as expected for me.
+> 
+> However, I tried creating the synthetic event, and then capturing a
+> histogram from it using bpftrace [2], and this doesn't seem to work.
+> It's completely possible I'm just doing something wrong, or the
+> bpftrace I'm using is buggy (getting it to work with __data_loc
+> fields
+> at all requires a super bleeding edge bpftrace [3]). bpftrace reports
+> that it fails to attach to the synthetic event, and I hit some
+> WARN_ONs [4].
+> 
+> Does it seem possible this issue is related? If not, feel free to
+> disregard. :) I'll spend some more time digging into this tomorrow.
+> 
 
-On 30.09.20 11:16, Juergen Gross wrote:
-> Since commit c330fb1ddc0a ("XEN uses irqdesc::irq_data_common::handler_=
-data to store a per interrupt XEN data pointer which contains XEN specifi=
-c information.")
-> Xen is using the chip_data pointer for storing IRQ specific data. When
-> running as a HVM domain this can result in problems for legacy IRQs, as=
+It's possible, if the bpf stuff is using the in-kernel trace events
+API, the part that I mentioned I hadn't tested yet :-/.  There's one
+important piece missing for that in this patch - I'll be working on
+adding it and posting a v2 today.
 
-> those might use chip_data for their own purposes.
->=20
-> Use a local array for this purpose in case of legacy IRQs, avoiding the=
+Tom
 
-> double use.
->=20
-> Cc: stable@vger.kernel.org
-> Fixes: c330fb1ddc0a ("XEN uses irqdesc::irq_data_common::handler_data t=
-o store a per interrupt XEN data pointer which contains XEN specific info=
-rmation.")
-> Signed-off-by: Juergen Gross <jgross@suse.com>
-Tested-by: Stefan Bader <stefan.bader@canonical.com>
-> ---
->  drivers/xen/events/events_base.c | 29 +++++++++++++++++++++--------
->  1 file changed, 21 insertions(+), 8 deletions(-)
->=20
-> diff --git a/drivers/xen/events/events_base.c b/drivers/xen/events/even=
-ts_base.c
-> index 90b8f56fbadb..6f02c18fa65c 100644
-> --- a/drivers/xen/events/events_base.c
-> +++ b/drivers/xen/events/events_base.c
-> @@ -92,6 +92,8 @@ static bool (*pirq_needs_eoi)(unsigned irq);
->  /* Xen will never allocate port zero for any purpose. */
->  #define VALID_EVTCHN(chn)	((chn) !=3D 0)
-> =20
-> +static struct irq_info *legacy_info_ptrs[NR_IRQS_LEGACY];
-> +
->  static struct irq_chip xen_dynamic_chip;
->  static struct irq_chip xen_percpu_chip;
->  static struct irq_chip xen_pirq_chip;
-> @@ -156,7 +158,18 @@ int get_evtchn_to_irq(evtchn_port_t evtchn)
->  /* Get info for IRQ */
->  struct irq_info *info_for_irq(unsigned irq)
->  {
-> -	return irq_get_chip_data(irq);
-> +	if (irq < nr_legacy_irqs())
-> +		return legacy_info_ptrs[irq];
-> +	else
-> +		return irq_get_chip_data(irq);
-> +}
-> +
-> +static void set_info_for_irq(unsigned int irq, struct irq_info *info)
-> +{
-> +	if (irq < nr_legacy_irqs())
-> +		legacy_info_ptrs[irq] =3D info;
-> +	else
-> +		irq_set_chip_data(irq, info);
->  }
-> =20
->  /* Constructors for packed IRQ information. */
-> @@ -377,7 +390,7 @@ static void xen_irq_init(unsigned irq)
->  	info->type =3D IRQT_UNBOUND;
->  	info->refcnt =3D -1;
-> =20
-> -	irq_set_chip_data(irq, info);
-> +	set_info_for_irq(irq, info);
-> =20
->  	list_add_tail(&info->list, &xen_irq_list_head);
->  }
-> @@ -426,14 +439,14 @@ static int __must_check xen_allocate_irq_gsi(unsi=
-gned gsi)
-> =20
->  static void xen_free_irq(unsigned irq)
->  {
-> -	struct irq_info *info =3D irq_get_chip_data(irq);
-> +	struct irq_info *info =3D info_for_irq(irq);
-> =20
->  	if (WARN_ON(!info))
->  		return;
-> =20
->  	list_del(&info->list);
-> =20
-> -	irq_set_chip_data(irq, NULL);
-> +	set_info_for_irq(irq, NULL);
-> =20
->  	WARN_ON(info->refcnt > 0);
-> =20
-> @@ -603,7 +616,7 @@ EXPORT_SYMBOL_GPL(xen_irq_from_gsi);
->  static void __unbind_from_irq(unsigned int irq)
->  {
->  	evtchn_port_t evtchn =3D evtchn_from_irq(irq);
-> -	struct irq_info *info =3D irq_get_chip_data(irq);
-> +	struct irq_info *info =3D info_for_irq(irq);
-> =20
->  	if (info->refcnt > 0) {
->  		info->refcnt--;
-> @@ -1108,7 +1121,7 @@ int bind_ipi_to_irqhandler(enum ipi_vector ipi,
-> =20
->  void unbind_from_irqhandler(unsigned int irq, void *dev_id)
->  {
-> -	struct irq_info *info =3D irq_get_chip_data(irq);
-> +	struct irq_info *info =3D info_for_irq(irq);
-> =20
->  	if (WARN_ON(!info))
->  		return;
-> @@ -1142,7 +1155,7 @@ int evtchn_make_refcounted(evtchn_port_t evtchn)
->  	if (irq =3D=3D -1)
->  		return -ENOENT;
-> =20
-> -	info =3D irq_get_chip_data(irq);
-> +	info =3D info_for_irq(irq);
-> =20
->  	if (!info)
->  		return -ENOENT;
-> @@ -1170,7 +1183,7 @@ int evtchn_get(evtchn_port_t evtchn)
->  	if (irq =3D=3D -1)
->  		goto done;
-> =20
-> -	info =3D irq_get_chip_data(irq);
-> +	info =3D info_for_irq(irq);
-> =20
->  	if (!info)
->  		goto done;
->=20
+> 
+> 
+> [1]:
+> echo 'mmap_lock_latency u64 time; char memcg_path[], bool write' > \
+>         /sys/kernel/tracing/synthetic_events
+> 
+> echo 'hist:keys=memcg_path,write:ts0=common_timestamp.usecs' > \
+>         /sys/kernel/tracing/events/mmap_lock/mmap_lock_start_locking/
+> trigger
+> 
+> echo 'hist:keys=memcg_path,write:latency=common_timestamp.usecs-
+> $ts0:onmatch(mmap_lock.mmap_lock_start_locking).mmap_lock_latency($la
+> tency,memcg_path,write)'
+> > \
+> 
+>         /sys/kernel/tracing/events/mmap_lock/mmap_lock_acquire_return
+> ed/trigger
+> 
+> echo 'hist:keys=memcg_path,write:values=time' > \
+>         /sys/kernel/tracing/events/synthetic/mmap_lock_latency/trigge
+> r
+> 
+> [2]:
+> (Same setup of the synthetic event as [1], except adding the
+> histogram
+> trigger...)
+> 
+> cat <<EOF > /root/bpftypes.h
+> #include <stdbool.h>
+> #include <stdint.h>
+> typedef uint64_t u64;
+> typedef int64_t s64;
+> EOF
+> 
+> cat <<EOF > /root/mmap-lock-per-memcg.bpf
+> tracepoint:synthetic:mmap_lock_latency {
+>         @latency[args->memcg_path] = hist(args->time);
+> }
+> EOF
+> 
+> /home/axelrasmussen/bpftrace/build/src/bpftrace \
+>         -v \
+>         -I "/usr/lib/gcc/x86_64-pc-linux-gnu/10.2.0/include" \
+>         --include "/root/bpftypes.h" \
+>         /root/mmap-lock-per-memcg.bpf
+> 
+> [3]: https://github.com/iovisor/bpftrace/pull/1542
+> 
+> [4]:
+> [   31.361814] kauditd_printk_skb: 6 callbacks suppressed
+> [   31.361815] audit: type=1334 audit(1601414765.236:34): prog-id=11
+> op=LOAD
+> 
+> From `WARN_ON(!tp_func->func)`:
+> 
+> [   31.365310] ------------[ cut here ]------------
+> [   31.365316] WARNING: CPU: 0 PID: 235 at kernel/tracepoint.c:136
+> tracepoint_add_func+0x2ad/0x300
+> [   31.366594] Modules linked in: xhci_pci xhci_hcd virtio_net
+> net_failover failover virtio_crypto crypto_engine virtio_console
+> virtio_blk virtio_balloon uhci_hcd ohci_pci ohci_ht
+> [   31.366603] CPU: 0 PID: 235 Comm: bpftrace Not tainted 5.9.0-smp-
+> DEV #1
+> [   31.366604] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
+> BIOS 1.13.0-1 04/01/2014
+> [   31.366606] RIP: 0010:tracepoint_add_func+0x2ad/0x300
+> [   31.366607] Code: 17 ff ff ff 4c 89 ff e8 e1 0c 0a 00 e9 22 ff ff
+> ff 41 ff 57 18 85 c0 4c 8b 04 24 8b 54 24 08 0f 89 9c fd ff ff e9 31
+> ff ff ff <0f> 0b b8 ea ff ff ff e9 f9 fd5
+> [   31.366607] RSP: 0018:ffff911554fdbc50 EFLAGS: 00010246
+> [   31.366608] RAX: 0000000000000000 RBX: ffff9115583c1200 RCX:
+> 0000000000000000
+> [   31.366609] RDX: 000000000000000a RSI: 0000000000000000 RDI:
+> ffff9115583c1200
+> [   31.366609] RBP: ffff911554fdbc90 R08: ffff911554fdbca0 R09:
+> ffffcaabffdb5018
+> [   31.366610] R10: 0000000000000080 R11: 0000000000000080 R12:
+> ffff911558013c90
+> [   31.366610] R13: 0000000000000000 R14: ffff911554f84d10 R15:
+> ffff9115583c1200
+> [   31.366611] FS:  00007f9bdf8f0c00(0000) GS:ffff91155fc00000(0000)
+> knlGS:0000000000000000
+> [   31.366612] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [   31.366614] CR2: 00007f9bdefbc000 CR3: 0000000814fe0006 CR4:
+> 0000000000370ef0
+> [   31.366615] DR0: 0000000000000000 DR1: 0000000000000000 DR2:
+> 0000000000000000
+> [   31.366615] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7:
+> 0000000000000400
+> [   31.366616] Call Trace:
+> [   31.366620]  tracepoint_probe_register+0x58/0x90
+> [   31.366625]  trace_event_reg+0x56/0xa0
+> [   31.366626]  perf_trace_event_reg.isra.2+0xba/0x130
+> [   31.366627]  perf_trace_event_init+0x32/0x70
+> [   31.366628]  perf_trace_init+0x6e/0xa0
+> [   31.366631]  perf_tp_event_init+0x28/0x40
+> [   31.366632]  perf_try_init_event+0xe7/0x130
+> [   31.366633]  perf_event_alloc+0x4ba/0xdc0
+> [   31.366635]  ? __alloc_fd+0x40/0x160
+> [   31.366637]  __do_sys_perf_event_open+0x2bb/0xe90
+> [   31.366638]  __x64_sys_perf_event_open+0x20/0x30
+> [   31.366641]  do_syscall_64+0x31/0x40
+> [   31.366644]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> [   31.366645] RIP: 0033:0x7f9be4886d5d
+> [   31.366646] Code: 00 c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e
+> fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24
+> 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 488
+> [   31.366646] RSP: 002b:00007ffdcf6e4d68 EFLAGS: 00000246 ORIG_RAX:
+> 000000000000012a
+> [   31.366647] RAX: ffffffffffffffda RBX: 00007ffdcf6e5e6c RCX:
+> 00007f9be4886d5d
+> [   31.366647] RDX: 0000000000000000 RSI: 00000000ffffffff RDI:
+> 00007ffdcf6e4d80
+> [   31.366648] RBP: 00007ffdcf6e4d80 R08: 0000000000000008 R09:
+> 000056095c148578
+> [   31.366651] R10: 00000000ffffffff R11: 0000000000000246 R12:
+> 000000000000000b
+> [   31.366652] R13: 00000000ffffffff R14: 00007ffdcf6e5e70 R15:
+> 00007ffdcf6e4e00
+> [   31.366653] ---[ end trace 25e0e681c1442c93 ]---
+> 
+> From `WARN_ON_ONCE(PTR_ERR(old) != -ENOMEM);`:
+> 
+> [   31.367345] ------------[ cut here ]------------
+> [   31.367347] WARNING: CPU: 0 PID: 235 at kernel/tracepoint.c:243
+> tracepoint_add_func+0xb2/0x300
+> [   31.368612] Modules linked in: xhci_pci xhci_hcd virtio_net
+> net_failover failover virtio_crypto crypto_engine virtio_console
+> virtio_blk virtio_balloon uhci_hcd ohci_pci ohci_ht
+> [   31.368615] CPU: 0 PID: 235 Comm: bpftrace Tainted: G        W
+>    5.9.0-smp-DEV #1
+> [   31.368615] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
+> BIOS 1.13.0-1 04/01/2014
+> [   31.368617] RIP: 0010:tracepoint_add_func+0xb2/0x300
+> [   31.368617] Code: c6 48 8b 01 48 85 c0 74 28 41 83 fd ff 75 df 3b
+> 51 10 44 0f 4f eb 48 39 c6 75 d8 49 8b 40 08 48 39 41 08 75 ce b8 ef
+> ff ff ff <0f> 0b e9 25 01 00 00 8d 43 02d
+> [   31.368618] RSP: 0018:ffff911554fdbc50 EFLAGS: 00010246
+> [   31.368618] RAX: 00000000ffffffea RBX: ffff9115583c1200 RCX:
+> 0000000000000000
+> [   31.368619] RDX: 000000000000000a RSI: 0000000000000000 RDI:
+> ffff9115583c1200
+> [   31.368619] RBP: ffff911554fdbc90 R08: ffff911554fdbca0 R09:
+> ffffcaabffdb5018
+> [   31.368620] R10: 0000000000000080 R11: 0000000000000080 R12:
+> ffff911558013c90
+> [   31.368620] R13: 0000000000000000 R14: ffff911554f84d10 R15:
+> ffff9115583c1200
+> [   31.368621] FS:  00007f9bdf8f0c00(0000) GS:ffff91155fc00000(0000)
+> knlGS:0000000000000000
+> [   31.368621] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [   31.368623] CR2: 00007f9bdefbc000 CR3: 0000000814fe0006 CR4:
+> 0000000000370ef0
+> [   31.368624] DR0: 0000000000000000 DR1: 0000000000000000 DR2:
+> 0000000000000000
+> [   31.368624] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7:
+> 0000000000000400
+> [   31.368625] Call Trace:
+> [   31.368626]  tracepoint_probe_register+0x58/0x90
+> [   31.368627]  trace_event_reg+0x56/0xa0
+> [   31.368628]  perf_trace_event_reg.isra.2+0xba/0x130
+> [   31.368629]  perf_trace_event_init+0x32/0x70
+> [   31.368630]  perf_trace_init+0x6e/0xa0
+> [   31.368631]  perf_tp_event_init+0x28/0x40
+> [   31.368632]  perf_try_init_event+0xe7/0x130
+> [   31.368632]  perf_event_alloc+0x4ba/0xdc0
+> [   31.368634]  ? __alloc_fd+0x40/0x160
+> [   31.368635]  __do_sys_perf_event_open+0x2bb/0xe90
+> [   31.368636]  __x64_sys_perf_event_open+0x20/0x30
+> [   31.368637]  do_syscall_64+0x31/0x40
+> [   31.368638]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> [   31.368639] RIP: 0033:0x7f9be4886d5d
+> [   31.368639] Code: 00 c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e
+> fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24
+> 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 488
+> [   31.368640] RSP: 002b:00007ffdcf6e4d68 EFLAGS: 00000246 ORIG_RAX:
+> 000000000000012a
+> [   31.368640] RAX: ffffffffffffffda RBX: 00007ffdcf6e5e6c RCX:
+> 00007f9be4886d5d
+> [   31.368641] RDX: 0000000000000000 RSI: 00000000ffffffff RDI:
+> 00007ffdcf6e4d80
+> [   31.368641] RBP: 00007ffdcf6e4d80 R08: 0000000000000008 R09:
+> 000056095c148578
+> [   31.368642] R10: 00000000ffffffff R11: 0000000000000246 R12:
+> 000000000000000b
+> [   31.368642] R13: 00000000ffffffff R14: 00007ffdcf6e5e70 R15:
+> 00007ffdcf6e4e00
+> [   31.368643] ---[ end trace 25e0e681c1442c94 ]---
+> [   31.377271] audit: type=1334 audit(1601414765.252:35): prog-id=11
+> op=UNLOAD
+> 
+> > 
+> > Thanks,
+> > 
+> > Tom
+> > 
+> > The following changes since commit
+> > 106c076d23cca67c959a6fd1ccadb5b3ef01ddc9:
+> > 
+> >   mmap_lock: add tracepoints around lock acquisition (2020-09-23
+> > 08:48:08 -0500)
+> > 
+> > are available in the Git repository at:
+> > 
+> >   git://git.kernel.org/pub/scm/linux/kernel/git/zanussi/linux-
+> > trace.git ftrace/synth-dynstring-v0
+> > 
+> > Tom Zanussi (3):
+> >   tracing: Change STR_VAR_MAX_LEN
+> >   tracing: Fix parse_synth_field() error handling
+> >   tracing: Add support for dynamic strings to synthetic events
+> > 
+> >  Documentation/trace/events.rst    |  15 ++-
+> >  Documentation/trace/histogram.rst |  18 ++++
+> >  kernel/trace/trace_events_hist.c  |   9 ++
+> >  kernel/trace/trace_events_synth.c | 163
+> > ++++++++++++++++++++++++++----
+> >  kernel/trace/trace_synth.h        |   6 +-
+> >  5 files changed, 186 insertions(+), 25 deletions(-)
+> > 
+> > --
+> > 2.17.1
+> > 
 
-
-
---eo46LUkwhYPCjazyhGffTGoSf3IEADHzU--
-
---4ZWfbxMYEuYb9WBQDNT49jdPyGV9G7x6T
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCgAdFiEE2118yvOZTjOV2k0+6Gdd7svuzqMFAl90dMwACgkQ6Gdd7svu
-zqPQ/A//RDI4BshHv9YGjjm0Nxa2eS5HXqyE3rPLWF+ppy1GjdxTI1X6uPJ5q6Tq
-iQxLlb5X+VILKwYN1VK8pz3Jl/rexaQZEsTOvxswLpGs2CaHWLpBf3GVziewCq6u
-V/JXLRFmgCRq+DQ0IgWnl7FJk/kkUp4mLbdsVBpZxayrinXmdCnSsiCIhEAnOJIm
-ooiiyc7x1OqzmrfJiwFgRchdc3qBGcaXUzZZkJJYT++y/SigfyXY5JUk/fK3VzLi
-RjZ7HqRo19h0SKOn2WA46fqKxHVLkpINt5ixOvGXn5eaUkLmq9GUaejhf0ABuk+y
-gMwSgUYAA08w5VkWOch9Tc+YR8LxlfjTelQWpoGL6DYYIAiavyyNAso6RJwf/bN1
-XcFg+NBYi4XCWAyi77IqPWjIdmMqHMeMzP/PuUe5QOOr2xT0IJbXU1solq9DblqF
-/dcvaUkIOKxS9vhD+n+jPGjDzl3KEhyczQv5M7LwtmcLqh1n3DqTMlZzgu1VhwLH
-XEmZMZTV0QAYuEIhhUePtsivw1RnKxd84nVYF/lx9tDcdqORtLOy9h9IfdF7tBPv
-anROrXIdL2ktJr1k2SjrENmRipmKOeisYE1LOjmaReUi/PiV+SgVmh0132C0Fnih
-FTgJYBZYKyuB/kJKDT0Dyf3h5FuAWlKTK1iR5q9jo4FFEHjME7M=
-=/vXP
------END PGP SIGNATURE-----
-
---4ZWfbxMYEuYb9WBQDNT49jdPyGV9G7x6T--
