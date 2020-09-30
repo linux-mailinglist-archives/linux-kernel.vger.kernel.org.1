@@ -2,148 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12A2227E3E7
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 10:37:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A98627E3EC
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 10:38:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728728AbgI3IhO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 04:37:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35160 "EHLO
+        id S1728585AbgI3Ii0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 04:38:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728608AbgI3IhN (ORCPT
+        with ESMTP id S1725836AbgI3Ii0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 04:37:13 -0400
-Received: from mail-wm1-x363.google.com (mail-wm1-x363.google.com [IPv6:2a00:1450:4864:20::363])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70FC4C0613D0
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 01:37:13 -0700 (PDT)
-Received: by mail-wm1-x363.google.com with SMTP id x23so758078wmi.3
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 01:37:13 -0700 (PDT)
+        Wed, 30 Sep 2020 04:38:26 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 227BAC0613D0
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 01:38:26 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id y2so1115206lfy.10
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 01:38:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=flowbird.group; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=umCDvoHS92WYFRuwfVxZMNhfWaiHknS4wbUC7gryG04=;
-        b=UnmVqInnkaIedrnmIPkE3QV6FeOhxdSjDbkePDyLRzfUyZCDG1+6b2Vq5YV+dPQ3Zg
-         83rICFA1CLGhiTCzGhceNh9uHrcdfw3zbRgv587hL6LtebVwX2v8fSjNTy7fAKGqAzG9
-         FY0vmojfLITQc6+byDY+UGkgCVTlYM5+qL7zPHU0Zf38g4yX1Cbz5EwAqMLxb6ZUq0pl
-         tXQQRSjg0BzdbMi5Ocrb+G0QSNh1SR1F/SY3WrfGCvGQ3XNmygsf76Tnq5740PuRTQM9
-         6/1jWdkt14KboXqNQamKpra/5UnyFK13T5M4X0+724YfRdEsnIRYYIgKGM3kNmcxF0ng
-         fezA==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=abOoDQJ0/sKiOBVIFY6wCFerTXB/Q9XBjrmQHnpcYh8=;
+        b=Ss8bDq8yX/Ssw3M91BPR3cT0NQTIbu4s04flH1V3zjVAHyLShsXc8oXK+CcMds1Gkm
+         0+7Ktr6f4ZbKsREon0Ur9pBGkGBGT0PBK8Xty9Pq39P/vfmAw+ZuAsI4JjrCWb00mGx3
+         5G2YLmXkBEnzBYBOn9sqCSLs1IbMr0hlVw8M8SljDVyYWPtiGlKqbyIt9rSwjGAZHKXH
+         rI2x6VeBkaE+M4EOPqsQpHK53mE54ICspP5h6m1DnMZudK6SL3R4b95E/hnjkgzqw8SU
+         lGFTlMSkiFjyoYQSJ+Gi8NplEA2k03G+tshg70ntsG2PI9N0eEelS22ry92ZFo/atVnE
+         90aA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=umCDvoHS92WYFRuwfVxZMNhfWaiHknS4wbUC7gryG04=;
-        b=es5i787IkZPTflpA7ken6UO+rx3x+fYbHjgYcqjU/mQRDZOMXb7W2eT7lipLbuZ+5k
-         x/skxikVvIUdkGAkzsKLVlFqJiBw1UYddogzhmovsZ6eE9PK2463sPBSxFld1z7DRYP6
-         pDxUsS1a+3N72ZG0q1TumM6ENkEU+4S+1tEqH7miPjC0E+wCmMTJxvKIijwUxJs9IHgD
-         8mZ77kT70ASCyHsUWk7kBNTL8UByTEtz5lpJ5BzEG1cThOUd3Qm02LCw4gy4tQr34LOF
-         /6cvs6EFbSvqWfssRPpAoLFNjuwHwi34n9Jyqj/qWtFbt28UV1sn0bkgdSsfdXHvVHwm
-         haXQ==
-X-Gm-Message-State: AOAM531yX3YIOkMAf+2ozdUo12xMNhgkNW0nPyG+Kmrm8juzr/9qf9DJ
-        y75AMT2q/bG8DtM1D4UMnF4drsl9s8+QQSGtqOzWzajjGORb
-X-Google-Smtp-Source: ABdhPJys3IhSkM2Rv8Biqm47gfDDqB/yJ5bLf77N891hmn24e2/nLFDTU2zvT5DIvWoQ3vaYQPOHD2crF8uq
-X-Received: by 2002:a1c:dd87:: with SMTP id u129mr1718447wmg.172.1601455031053;
-        Wed, 30 Sep 2020 01:37:11 -0700 (PDT)
-Received: from mta1.parkeon.com ([185.149.63.251])
-        by smtp-relay.gmail.com with ESMTPS id m7sm25035wrn.45.2020.09.30.01.37.10
-        (version=TLS1 cipher=AES128-SHA bits=128/128);
-        Wed, 30 Sep 2020 01:37:11 -0700 (PDT)
-X-Relaying-Domain: flowbird.group
-Received: from [172.16.12.34] (port=47850 helo=PC12445-BES.dynamic.besancon.parkeon.com)
-        by mta1.parkeon.com with esmtp (Exim 4.71)
-        (envelope-from <martin.fuzzey@flowbird.group>)
-        id 1kNXbq-0003VN-LL; Wed, 30 Sep 2020 10:37:10 +0200
-From:   Martin Fuzzey <martin.fuzzey@flowbird.group>
-To:     Evgeniy Polyakov <zbr@ioremap.net>
-Cc:     Alexander Shiyan <shc_work@mail.ru>,
-        stable <stable@vger.kernel.org>, linux-kernel@vger.kernel.org
-Subject: [PATCH] w1: mxc_w1: Fix timeout resolution problem leading to bus error
-Date:   Wed, 30 Sep 2020 10:36:46 +0200
-Message-Id: <1601455030-6607-1-git-send-email-martin.fuzzey@flowbird.group>
-X-Mailer: git-send-email 1.9.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=abOoDQJ0/sKiOBVIFY6wCFerTXB/Q9XBjrmQHnpcYh8=;
+        b=OFip2CO9XMLrr2ReFK2UW7Mk4rgPA9lDyAUTdnS/0S2Lpfz1mC659LQDcXVpqBHHME
+         lXZP+E7kPLlwW8GH+BSsL+SyPyyZrgLpzH75nr3FweIlFn4nsdZ0ZXAU7JUyfZhy11ha
+         /e1s4swavIq3fuDibefwsN1aFYUiU/pvr/HR8hh2QP4XyP4wiX94HQBlFbUfn7PpgKdI
+         jSdAnXzv1NCehRwzgk5liB3b3RBpIjQt8kksM+zhwOnadq1WhEb46DMJE8fMCMCh3DIr
+         76HGaF4e1yezeUp5VeMqlvIF5Xpw7pPO7CO1ueJnWFTVOYkN0qS98dCaNtPrI7Jqc3Wy
+         rGfQ==
+X-Gm-Message-State: AOAM533GsIkAj507kG8CWCMKYSH3w1hCuemZbtOpO/7HN/VA1EWVmS+Z
+        6grxCaTWKs75Ltm3vUXDttGGjxUjgRjw9iN84l4gVQ==
+X-Google-Smtp-Source: ABdhPJwbE0nuDuIrHeUYVu6c/TVrY5zaEkNuDBuZ75a1nBDcadvmYts3OOwWTPEUNh69LppZiaJfcwW4p7jmARUJlGQ=
+X-Received: by 2002:a19:1c8:: with SMTP id 191mr466913lfb.585.1601455104600;
+ Wed, 30 Sep 2020 01:38:24 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200926202342.31014-1-rikard.falkeborn@gmail.com>
+In-Reply-To: <20200926202342.31014-1-rikard.falkeborn@gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 30 Sep 2020 10:38:13 +0200
+Message-ID: <CACRpkdY5m25aFoYqWq7jQNtAAD++0DEmKKk0ztW8tX62=UCnEQ@mail.gmail.com>
+Subject: Re: [PATCH] pinctrl: nuvoton: npcm7xx: Constify static ops structs
+To:     Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Cc:     Avi Fishman <avifishman70@gmail.com>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Tali Perry <tali.perry1@gmail.com>,
+        Patrick Venture <venture@google.com>,
+        Nancy Yuen <yuenn@google.com>,
+        Benjamin Fair <benjaminfair@google.com>,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On my platform (i.MX53) bus access sometimes fails with
-	w1_search: max_slave_count 64 reached, will continue next search.
+On Sat, Sep 26, 2020 at 10:23 PM Rikard Falkeborn
+<rikard.falkeborn@gmail.com> wrote:
 
-The reason is the use of jiffies to implement a 200us timeout in
-mxc_w1_ds2_touch_bit().
-On some platforms the jiffies timer resolution is insufficient for this.
+> The only usage of these structs is to assign their address to various
+> ops fields in the pinctrl_desc struct, which are const pointers. Make
+> them const to allow the compiler to put them in read-only memory.
+>
+> Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
 
-Fix by replacing jiffies by ktime_get().
+Patch applied.
 
-For consistency apply the same change to the other use of jiffies in
-mxc_w1_ds2_reset_bus().
-
-Fixes: f80b2581a706 ("w1: mxc_w1: Optimize mxc_w1_ds2_touch_bit()")
-Cc: stable <stable@vger.kernel.org>
-
-Signed-off-by: Martin Fuzzey <martin.fuzzey@flowbird.group>
----
- drivers/w1/masters/mxc_w1.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/w1/masters/mxc_w1.c b/drivers/w1/masters/mxc_w1.c
-index 1ca880e..090cbbf 100644
---- a/drivers/w1/masters/mxc_w1.c
-+++ b/drivers/w1/masters/mxc_w1.c
-@@ -7,7 +7,7 @@
- #include <linux/clk.h>
- #include <linux/delay.h>
- #include <linux/io.h>
--#include <linux/jiffies.h>
-+#include <linux/ktime.h>
- #include <linux/module.h>
- #include <linux/mod_devicetable.h>
- #include <linux/platform_device.h>
-@@ -40,12 +40,12 @@ struct mxc_w1_device {
- static u8 mxc_w1_ds2_reset_bus(void *data)
- {
- 	struct mxc_w1_device *dev = data;
--	unsigned long timeout;
-+	ktime_t timeout;
- 
- 	writeb(MXC_W1_CONTROL_RPP, dev->regs + MXC_W1_CONTROL);
- 
- 	/* Wait for reset sequence 511+512us, use 1500us for sure */
--	timeout = jiffies + usecs_to_jiffies(1500);
-+	timeout = ktime_add_us(ktime_get(), 1500);
- 
- 	udelay(511 + 512);
- 
-@@ -55,7 +55,7 @@ static u8 mxc_w1_ds2_reset_bus(void *data)
- 		/* PST bit is valid after the RPP bit is self-cleared */
- 		if (!(ctrl & MXC_W1_CONTROL_RPP))
- 			return !(ctrl & MXC_W1_CONTROL_PST);
--	} while (time_is_after_jiffies(timeout));
-+	} while (ktime_before(ktime_get(), timeout));
- 
- 	return 1;
- }
-@@ -68,12 +68,12 @@ static u8 mxc_w1_ds2_reset_bus(void *data)
- static u8 mxc_w1_ds2_touch_bit(void *data, u8 bit)
- {
- 	struct mxc_w1_device *dev = data;
--	unsigned long timeout;
-+	ktime_t timeout;
- 
- 	writeb(MXC_W1_CONTROL_WR(bit), dev->regs + MXC_W1_CONTROL);
- 
- 	/* Wait for read/write bit (60us, Max 120us), use 200us for sure */
--	timeout = jiffies + usecs_to_jiffies(200);
-+	timeout = ktime_add_us(ktime_get(), 200);
- 
- 	udelay(60);
- 
-@@ -83,7 +83,7 @@ static u8 mxc_w1_ds2_touch_bit(void *data, u8 bit)
- 		/* RDST bit is valid after the WR1/RD bit is self-cleared */
- 		if (!(ctrl & MXC_W1_CONTROL_WR(bit)))
- 			return !!(ctrl & MXC_W1_CONTROL_RDST);
--	} while (time_is_after_jiffies(timeout));
-+	} while (ktime_before(ktime_get(), timeout));
- 
- 	return 0;
- }
--- 
-1.9.1
-
+Yours,
+Linus Walleij
