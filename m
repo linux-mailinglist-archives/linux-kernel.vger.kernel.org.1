@@ -2,113 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 565D127E51E
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 11:27:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F95F27E51F
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 11:28:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728843AbgI3J1k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 05:27:40 -0400
-Received: from mx2.suse.de ([195.135.220.15]:58478 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725823AbgI3J1k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 05:27:40 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1601458057;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=qbc8B6vU59oEG9W3JMzEwnRNloOF/cIBuPfCLo3VkAE=;
-        b=vUcdbq2QIKk5C/VB0n77/zrg1g7OE2ROYhA+Wb4h9EX9/s20mWtx4DVMGhtFUbS6uBzKWd
-        FrGJCAsVIT+v+Aj659DEKVq45+wMd+mRgy/xjte/xNJBdW7Loyo4elhjeGNqytBkQ3CfFA
-        KrJB2dONzz0Epcmz0/GFnVP3ZN2e89o=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id AB788ACDF;
-        Wed, 30 Sep 2020 09:27:37 +0000 (UTC)
-Date:   Wed, 30 Sep 2020 11:27:32 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Uladzislau Rezki <urezki@gmail.com>
-Cc:     Mel Gorman <mgorman@techsingularity.net>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
-        Mel Gorman <mgorman@suse.de>
-Subject: Re: [RFC-PATCH 2/4] mm: Add __rcu_alloc_page_lockless() func.
-Message-ID: <20200930092732.GP2277@dhcp22.suse.cz>
-References: <20200922075002.GU12990@dhcp22.suse.cz>
- <20200922131257.GA29241@pc636>
- <20200923103706.GJ3179@techsingularity.net>
- <20200923154105.GO29330@paulmck-ThinkPad-P72>
- <20200923232251.GK3179@techsingularity.net>
- <20200924081614.GA14819@pc636>
- <20200925080503.GC3389@dhcp22.suse.cz>
- <20200925153129.GB25350@pc636>
- <20200925154741.GI3389@dhcp22.suse.cz>
- <20200929162514.GA8768@pc636>
+        id S1728451AbgI3J2q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 05:28:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43156 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725776AbgI3J2p (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 05:28:45 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CA12C0613D1
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 02:28:45 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id o8so1164776otl.4
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 02:28:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=FCLVZ13s2A1DgySuwXRnxGS7cpstquPbJaPgNjBvO64=;
+        b=Nf+iXt9Q+W3wuykljBC0zdhMYnMqxjUojtb8TRh4984evIAub+t9Qi9FyokxlZVkz1
+         JgGp1og7inZFVLDQee/ePVlah3cclhQZicb4KltFZ3hGwtbIsFDjlm1QCDOfy4+Y9eE3
+         CSrLDPdSvfT1RcbZ/GbrmHhOxXlminFXHfhXE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=FCLVZ13s2A1DgySuwXRnxGS7cpstquPbJaPgNjBvO64=;
+        b=AB8zerptgi51hdJgCef5TkLMtHud37q6InU59ugd0fbevz0c2Mb6CE+f2VJc77jPGM
+         Z56dziwI7POzppBlR3mqTVGlewCCzZE4kkyKjRW7CGVDK3VbLhE3jEr5z6Y1PHmAfiJr
+         ARDnn1cEaFMzNwE/Dn6q8uLMbQGwF0hNlEqmFMeSEGo7+jgLftC+kzeFhrmc98MMupK4
+         OC1h4egZAQ+w3+IUSrm9bzS4OxMooEZKlBGQXWkeffDmKX+/1r4C7jEhUMIu7IKurHHD
+         xOhGFjMVF8V+7kKKBpL1brQZsd2yAtYL9edVXS4rjGJSXNuZHr8E9GmjQEXWTBMus8M6
+         yCVQ==
+X-Gm-Message-State: AOAM531xJ0X0QjG4wMgztZu6SNznxnYtEqCahoBMDfpR+w7Xn1cBABsp
+        qWghH1Il0ybaXTIqeQNWRbviB+RugY3AsmGDL5xLYA==
+X-Google-Smtp-Source: ABdhPJySlEuKD+GqJiylXHWVvB1hpaCEqGmXDnomoKNWIy72Tv+613MZTN7zgjkgfOZu3h1OhisP/gWLBIPZs6kr928=
+X-Received: by 2002:a05:6830:12c7:: with SMTP id a7mr1025005otq.334.1601458124389;
+ Wed, 30 Sep 2020 02:28:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200929162514.GA8768@pc636>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200928090805.23343-1-lmb@cloudflare.com> <20200928090805.23343-3-lmb@cloudflare.com>
+ <20200929055851.n7fa3os7iu7grni3@kafai-mbp> <CAADnVQLwpWMea1rbFAwvR_k+GzOphaOW-kUGORf90PJ-Ezxm4w@mail.gmail.com>
+In-Reply-To: <CAADnVQLwpWMea1rbFAwvR_k+GzOphaOW-kUGORf90PJ-Ezxm4w@mail.gmail.com>
+From:   Lorenz Bauer <lmb@cloudflare.com>
+Date:   Wed, 30 Sep 2020 10:28:33 +0100
+Message-ID: <CACAyw98WzZGcFnnr7ELvbCziz2axJA_7x2mcoQTf2DYWDYJ=KA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 2/4] selftests: bpf: Add helper to compare
+ socket cookies
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Martin KaFai Lau <kafai@fb.com>, Shuah Khan <shuah@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        kernel-team <kernel-team@cloudflare.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 29-09-20 18:25:14, Uladzislau Rezki wrote:
-> > > I look at it in scope of GFP_ATOMIC/GFP_NOWAIT issues, i.e. inability
-> > > to provide a memory service for contexts which are not allowed to
-> > > sleep, RCU is part of them. Both flags used to provide such ability
-> > > before but not anymore.
-> > > 
-> > > Do you agree with it?
-> > 
-> > Yes this sucks. But this is something that we likely really want to live
-> > with. We have to explicitly _document_ that really atomic contexts in RT
-> > cannot use the allocator. From the past discussions we've had this is
-> > likely the most reasonable way forward because we do not really want to
-> > encourage anybody to do something like that and there should be ways
-> > around that. The same is btw. true also for !RT. The allocator is not
-> > NMI safe and while we should be able to make it compatible I am not
-> > convinced we really want to.
-> > 
-> > Would something like this be helpful wrt documentation?
-> > 
-> > diff --git a/include/linux/gfp.h b/include/linux/gfp.h
-> > index 67a0774e080b..9fcd47606493 100644
-> > --- a/include/linux/gfp.h
-> > +++ b/include/linux/gfp.h
-> > @@ -238,7 +238,9 @@ struct vm_area_struct;
-> >   * %__GFP_FOO flags as necessary.
-> >   *
-> >   * %GFP_ATOMIC users can not sleep and need the allocation to succeed. A lower
-> > - * watermark is applied to allow access to "atomic reserves"
-> > + * watermark is applied to allow access to "atomic reserves".
-> > + * The current implementation doesn't support NMI and other non-preemptive context
-> > + * (e.g. raw_spin_lock).
-> >   *
-> >   * %GFP_KERNEL is typical for kernel-internal allocations. The caller requires
-> >   * %ZONE_NORMAL or a lower zone for direct access but can direct reclaim.
-> > 
-> To me it is clear. But also above conflicting statement:
-> 
-> <snip>
-> %GFP_ATOMIC users can not sleep and need the allocation to succeed. A %lower
-> <snip>
-> 
-> should be rephrased, IMHO.
+On Tue, 29 Sep 2020 at 16:48, Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 
-Any suggestions? Or more specifics about which part is conflicting? It
-tries to say that there is a higher demand to succeed even though the
-context cannot sleep to take active measures to achieve that. So the
-only way to achieve that is to break the watermakrs to a certain degree
-which is making them more "higher class" than other allocations.
+...
 
--- 
-Michal Hocko
-SUSE Labs
+> There was a warning. I noticed it while applying and fixed it up.
+> Lorenz, please upgrade your compiler. This is not the first time such
+> warning has been missed.
+
+I tried reproducing this on latest bpf-next (b0efc216f577997) with gcc
+9.3.0 by removing the initialization of duration:
+
+make: Entering directory '/home/lorenz/dev/bpf-next/tools/testing/selftests=
+/bpf'
+  TEST-OBJ [test_progs] sockmap_basic.test.o
+  TEST-HDR [test_progs] tests.h
+  EXT-OBJ  [test_progs] test_progs.o
+  EXT-OBJ  [test_progs] cgroup_helpers.o
+  EXT-OBJ  [test_progs] trace_helpers.o
+  EXT-OBJ  [test_progs] network_helpers.o
+  EXT-OBJ  [test_progs] testing_helpers.o
+  BINARY   test_progs
+make: Leaving directory '/home/lorenz/dev/bpf-next/tools/testing/selftests/=
+bpf'
+
+So, gcc doesn't issue a warning. Jakub did the following little experiment:
+
+jkbs@toad ~/tmp $ cat warning.c
+#include <stdio.h>
+
+int main(void)
+{
+        int duration;
+
+        fprintf(stdout, "%d", duration);
+
+        return 0;
+}
+jkbs@toad ~/tmp $ gcc -Wall -o /dev/null warning.c
+warning.c: In function =E2=80=98main=E2=80=99:
+warning.c:7:2: warning: =E2=80=98duration=E2=80=99 is used uninitialized in=
+ this
+function [-Wuninitialized]
+    7 |  fprintf(stdout, "%d", duration);
+      |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+The simple case seems to work. However, adding the macro breaks things:
+
+jkbs@toad ~/tmp $ cat warning.c
+#include <stdio.h>
+
+#define _CHECK(duration) \
+        ({                                                      \
+                fprintf(stdout, "%d", duration);                \
+        })
+#define CHECK() _CHECK(duration)
+
+int main(void)
+{
+        int duration;
+
+        CHECK();
+
+        return 0;
+}
+jkbs@toad ~/tmp $ gcc -Wall -o /dev/null warning.c
+jkbs@toad ~/tmp $
+
+Maybe this is https://gcc.gnu.org/bugzilla/show_bug.cgi?id=3D18501 ? The
+problem is still there on gcc 10. Compiling test_progs with clang does
+issue a warning FWIW, but it seems like other things break when doing
+that.
+
+--
+Lorenz Bauer  |  Systems Engineer
+6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
+
+www.cloudflare.com
