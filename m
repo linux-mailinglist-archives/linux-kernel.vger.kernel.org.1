@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C85DD27F20B
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 20:58:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67DDA27F202
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 20:58:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730175AbgI3S6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 14:58:16 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:44674 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730117AbgI3S57 (ORCPT
+        id S1730776AbgI3S55 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 14:57:57 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:35696 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730117AbgI3S5y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 14:57:59 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08UIveSq118396;
-        Wed, 30 Sep 2020 13:57:40 -0500
+        Wed, 30 Sep 2020 14:57:54 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08UIvhEQ021987;
+        Wed, 30 Sep 2020 13:57:43 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1601492260;
-        bh=c1weCoMApOeCE10zye/e6XnzSfDakoocDIvkXnDYsBQ=;
+        s=ti-com-17Q1; t=1601492263;
+        bh=JGPLS10UBtCIyuq4ig+JT5RNpERlIxlNHjtUo73Fbj8=;
         h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=d60O26AhTRlH0FzWvFtjdKAuy9JcekZFIUenf0Km40UwN0xHikrJMcpXX22cy562g
-         Ls+K32XXZxqnhZveOFFGSah6wCxm08EH/ni2XQuyKkDkMp883iDkLOoaugLY9k8ieb
-         6awfM8zop1R80rMK9Qh36ByoiYFnzg8HNoXZq56A=
-Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08UIve5N064984
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 30 Sep 2020 13:57:40 -0500
-Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+        b=J01SDhomcZbYiSZj4CW3igoOLN1tVYWhelP3a+fJ95K+rKGG1p8BiKZ0+HSfj/Q6S
+         4EuJ2NZU8L4l57bv+FYdBygoTsg0Yke7VAqRm59I8A4uJZT0Dr2W2FpTzdpXRx+zs0
+         K7rA94uTDRQ9vUZcL7mzcJ0qwyKonQ6zY0KCMCzM=
+Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08UIvhjK064488;
+        Wed, 30 Sep 2020 13:57:43 -0500
+Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 30
- Sep 2020 13:57:40 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ Sep 2020 13:57:42 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE111.ent.ti.com
+ (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 30 Sep 2020 13:57:39 -0500
+ Frontend Transport; Wed, 30 Sep 2020 13:57:42 -0500
 Received: from pratyush-OptiPlex-790.dhcp.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08UIvX3A007008;
-        Wed, 30 Sep 2020 13:57:37 -0500
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08UIvX3B007008;
+        Wed, 30 Sep 2020 13:57:40 -0500
 From:   Pratyush Yadav <p.yadav@ti.com>
 To:     Tudor Ambarus <tudor.ambarus@microchip.com>,
         Miquel Raynal <miquel.raynal@bootlin.com>,
@@ -45,9 +44,9 @@ To:     Tudor Ambarus <tudor.ambarus@microchip.com>,
         <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
 CC:     Pratyush Yadav <p.yadav@ti.com>, Sekhar Nori <nsekhar@ti.com>,
         Boris Brezillon <boris.brezillon@collabora.com>
-Subject: [PATCH v14 01/15] mtd: spi-nor: core: use EOPNOTSUPP instead of ENOTSUPP
-Date:   Thu, 1 Oct 2020 00:27:18 +0530
-Message-ID: <20200930185732.6201-2-p.yadav@ti.com>
+Subject: [PATCH v14 02/15] mtd: spi-nor: add spi_nor_controller_ops_{read_reg,write_reg,erase}()
+Date:   Thu, 1 Oct 2020 00:27:19 +0530
+Message-ID: <20200930185732.6201-3-p.yadav@ti.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200930185732.6201-1-p.yadav@ti.com>
 References: <20200930185732.6201-1-p.yadav@ti.com>
@@ -59,61 +58,234 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ENOTSUPP is not a SUSV4 error code. Using EOPNOTSUPP is preferred
-in its stead.
+They are thin wrappers around
+nor->controller_ops->{read_reg,write_reg,erase}(). In a future commit
+DTR support will be added. These ops can not be supported by the
+controller_ops hooks and these helpers will make it easier to reject
+those calls.
 
-Reviewed-by: Tudor Ambarus <tudor.ambarus@microchip.com>
 Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
 ---
- drivers/mtd/spi-nor/core.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/mtd/spi-nor/core.c | 87 +++++++++++++++++++++++---------------
+ 1 file changed, 53 insertions(+), 34 deletions(-)
 
 diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 0369d98b2d12..4d0f8d165544 100644
+index 4d0f8d165544..7a3bf460a2fa 100644
 --- a/drivers/mtd/spi-nor/core.c
 +++ b/drivers/mtd/spi-nor/core.c
-@@ -2281,7 +2281,7 @@ static int spi_nor_hwcaps_pp2cmd(u32 hwcaps)
-  *@nor:        pointer to a 'struct spi_nor'
-  *@op:         pointer to op template to be checked
-  *
-- * Returns 0 if operation is supported, -ENOTSUPP otherwise.
-+ * Returns 0 if operation is supported, -EOPNOTSUPP otherwise.
-  */
- static int spi_nor_spimem_check_op(struct spi_nor *nor,
- 				   struct spi_mem_op *op)
-@@ -2295,12 +2295,12 @@ static int spi_nor_spimem_check_op(struct spi_nor *nor,
- 	op->addr.nbytes = 4;
- 	if (!spi_mem_supports_op(nor->spimem, op)) {
- 		if (nor->mtd.size > SZ_16M)
--			return -ENOTSUPP;
-+			return -EOPNOTSUPP;
+@@ -82,6 +82,23 @@ static int spi_nor_spimem_exec_op(struct spi_nor *nor, struct spi_mem_op *op)
+ 	return spi_mem_exec_op(nor->spimem, op);
+ }
  
- 		/* If flash size <= 16MB, 3 address bytes are sufficient */
- 		op->addr.nbytes = 3;
- 		if (!spi_mem_supports_op(nor->spimem, op))
--			return -ENOTSUPP;
-+			return -EOPNOTSUPP;
++static int spi_nor_controller_ops_read_reg(struct spi_nor *nor, u8 opcode,
++					   u8 *buf, size_t len)
++{
++	return nor->controller_ops->read_reg(nor, opcode, buf, len);
++}
++
++static int spi_nor_controller_ops_write_reg(struct spi_nor *nor, u8 opcode,
++					    const u8 *buf, size_t len)
++{
++	return nor->controller_ops->write_reg(nor, opcode, buf, len);
++}
++
++static int spi_nor_controller_ops_erase(struct spi_nor *nor, loff_t offs)
++{
++	return nor->controller_ops->erase(nor, offs);
++}
++
+ /**
+  * spi_nor_spimem_read_data() - read data from flash's memory region via
+  *                              spi-mem
+@@ -229,8 +246,8 @@ int spi_nor_write_enable(struct spi_nor *nor)
+ 
+ 		ret = spi_mem_exec_op(nor->spimem, &op);
+ 	} else {
+-		ret = nor->controller_ops->write_reg(nor, SPINOR_OP_WREN,
+-						     NULL, 0);
++		ret = spi_nor_controller_ops_write_reg(nor, SPINOR_OP_WREN,
++						       NULL, 0);
  	}
  
- 	return 0;
-@@ -2312,7 +2312,7 @@ static int spi_nor_spimem_check_op(struct spi_nor *nor,
-  *@nor:         pointer to a 'struct spi_nor'
-  *@read:        pointer to op template to be checked
-  *
-- * Returns 0 if operation is supported, -ENOTSUPP otherwise.
-+ * Returns 0 if operation is supported, -EOPNOTSUPP otherwise.
-  */
- static int spi_nor_spimem_check_readop(struct spi_nor *nor,
- 				       const struct spi_nor_read_command *read)
-@@ -2338,7 +2338,7 @@ static int spi_nor_spimem_check_readop(struct spi_nor *nor,
-  *@nor:         pointer to a 'struct spi_nor'
-  *@pp:          pointer to op template to be checked
-  *
-- * Returns 0 if operation is supported, -ENOTSUPP otherwise.
-+ * Returns 0 if operation is supported, -EOPNOTSUPP otherwise.
-  */
- static int spi_nor_spimem_check_pp(struct spi_nor *nor,
- 				   const struct spi_nor_pp_command *pp)
+ 	if (ret)
+@@ -258,8 +275,8 @@ int spi_nor_write_disable(struct spi_nor *nor)
+ 
+ 		ret = spi_mem_exec_op(nor->spimem, &op);
+ 	} else {
+-		ret = nor->controller_ops->write_reg(nor, SPINOR_OP_WRDI,
+-						     NULL, 0);
++		ret = spi_nor_controller_ops_write_reg(nor, SPINOR_OP_WRDI,
++						       NULL, 0);
+ 	}
+ 
+ 	if (ret)
+@@ -289,8 +306,8 @@ static int spi_nor_read_sr(struct spi_nor *nor, u8 *sr)
+ 
+ 		ret = spi_mem_exec_op(nor->spimem, &op);
+ 	} else {
+-		ret = nor->controller_ops->read_reg(nor, SPINOR_OP_RDSR,
+-						    sr, 1);
++		ret = spi_nor_controller_ops_read_reg(nor, SPINOR_OP_RDSR, sr,
++						      1);
+ 	}
+ 
+ 	if (ret)
+@@ -320,8 +337,8 @@ static int spi_nor_read_fsr(struct spi_nor *nor, u8 *fsr)
+ 
+ 		ret = spi_mem_exec_op(nor->spimem, &op);
+ 	} else {
+-		ret = nor->controller_ops->read_reg(nor, SPINOR_OP_RDFSR,
+-						    fsr, 1);
++		ret = spi_nor_controller_ops_read_reg(nor, SPINOR_OP_RDFSR, fsr,
++						      1);
+ 	}
+ 
+ 	if (ret)
+@@ -352,7 +369,8 @@ static int spi_nor_read_cr(struct spi_nor *nor, u8 *cr)
+ 
+ 		ret = spi_mem_exec_op(nor->spimem, &op);
+ 	} else {
+-		ret = nor->controller_ops->read_reg(nor, SPINOR_OP_RDCR, cr, 1);
++		ret = spi_nor_controller_ops_read_reg(nor, SPINOR_OP_RDCR, cr,
++						      1);
+ 	}
+ 
+ 	if (ret)
+@@ -385,10 +403,10 @@ int spi_nor_set_4byte_addr_mode(struct spi_nor *nor, bool enable)
+ 
+ 		ret = spi_mem_exec_op(nor->spimem, &op);
+ 	} else {
+-		ret = nor->controller_ops->write_reg(nor,
+-						     enable ? SPINOR_OP_EN4B :
+-							      SPINOR_OP_EX4B,
+-						     NULL, 0);
++		ret = spi_nor_controller_ops_write_reg(nor,
++						       enable ? SPINOR_OP_EN4B :
++								SPINOR_OP_EX4B,
++						       NULL, 0);
+ 	}
+ 
+ 	if (ret)
+@@ -421,8 +439,8 @@ static int spansion_set_4byte_addr_mode(struct spi_nor *nor, bool enable)
+ 
+ 		ret = spi_mem_exec_op(nor->spimem, &op);
+ 	} else {
+-		ret = nor->controller_ops->write_reg(nor, SPINOR_OP_BRWR,
+-						     nor->bouncebuf, 1);
++		ret = spi_nor_controller_ops_write_reg(nor, SPINOR_OP_BRWR,
++						       nor->bouncebuf, 1);
+ 	}
+ 
+ 	if (ret)
+@@ -453,8 +471,8 @@ int spi_nor_write_ear(struct spi_nor *nor, u8 ear)
+ 
+ 		ret = spi_mem_exec_op(nor->spimem, &op);
+ 	} else {
+-		ret = nor->controller_ops->write_reg(nor, SPINOR_OP_WREAR,
+-						     nor->bouncebuf, 1);
++		ret = spi_nor_controller_ops_write_reg(nor, SPINOR_OP_WREAR,
++						       nor->bouncebuf, 1);
+ 	}
+ 
+ 	if (ret)
+@@ -484,8 +502,8 @@ int spi_nor_xread_sr(struct spi_nor *nor, u8 *sr)
+ 
+ 		ret = spi_mem_exec_op(nor->spimem, &op);
+ 	} else {
+-		ret = nor->controller_ops->read_reg(nor, SPINOR_OP_XRDSR,
+-						    sr, 1);
++		ret = spi_nor_controller_ops_read_reg(nor, SPINOR_OP_XRDSR, sr,
++						      1);
+ 	}
+ 
+ 	if (ret)
+@@ -529,8 +547,8 @@ static void spi_nor_clear_sr(struct spi_nor *nor)
+ 
+ 		ret = spi_mem_exec_op(nor->spimem, &op);
+ 	} else {
+-		ret = nor->controller_ops->write_reg(nor, SPINOR_OP_CLSR,
+-						     NULL, 0);
++		ret = spi_nor_controller_ops_write_reg(nor, SPINOR_OP_CLSR,
++						       NULL, 0);
+ 	}
+ 
+ 	if (ret)
+@@ -593,8 +611,8 @@ static void spi_nor_clear_fsr(struct spi_nor *nor)
+ 
+ 		ret = spi_mem_exec_op(nor->spimem, &op);
+ 	} else {
+-		ret = nor->controller_ops->write_reg(nor, SPINOR_OP_CLFSR,
+-						     NULL, 0);
++		ret = spi_nor_controller_ops_write_reg(nor, SPINOR_OP_CLFSR,
++						       NULL, 0);
+ 	}
+ 
+ 	if (ret)
+@@ -737,8 +755,8 @@ static int spi_nor_write_sr(struct spi_nor *nor, const u8 *sr, size_t len)
+ 
+ 		ret = spi_mem_exec_op(nor->spimem, &op);
+ 	} else {
+-		ret = nor->controller_ops->write_reg(nor, SPINOR_OP_WRSR,
+-						     sr, len);
++		ret = spi_nor_controller_ops_write_reg(nor, SPINOR_OP_WRSR, sr,
++						       len);
+ 	}
+ 
+ 	if (ret) {
+@@ -939,8 +957,8 @@ static int spi_nor_write_sr2(struct spi_nor *nor, const u8 *sr2)
+ 
+ 		ret = spi_mem_exec_op(nor->spimem, &op);
+ 	} else {
+-		ret = nor->controller_ops->write_reg(nor, SPINOR_OP_WRSR2,
+-						     sr2, 1);
++		ret = spi_nor_controller_ops_write_reg(nor, SPINOR_OP_WRSR2,
++						       sr2, 1);
+ 	}
+ 
+ 	if (ret) {
+@@ -973,8 +991,8 @@ static int spi_nor_read_sr2(struct spi_nor *nor, u8 *sr2)
+ 
+ 		ret = spi_mem_exec_op(nor->spimem, &op);
+ 	} else {
+-		ret = nor->controller_ops->read_reg(nor, SPINOR_OP_RDSR2,
+-						    sr2, 1);
++		ret = spi_nor_controller_ops_read_reg(nor, SPINOR_OP_RDSR2, sr2,
++						      1);
+ 	}
+ 
+ 	if (ret)
+@@ -1004,8 +1022,9 @@ static int spi_nor_erase_chip(struct spi_nor *nor)
+ 
+ 		ret = spi_mem_exec_op(nor->spimem, &op);
+ 	} else {
+-		ret = nor->controller_ops->write_reg(nor, SPINOR_OP_CHIP_ERASE,
+-						     NULL, 0);
++		ret = spi_nor_controller_ops_write_reg(nor,
++						       SPINOR_OP_CHIP_ERASE,
++						       NULL, 0);
+ 	}
+ 
+ 	if (ret)
+@@ -1146,7 +1165,7 @@ static int spi_nor_erase_sector(struct spi_nor *nor, u32 addr)
+ 
+ 		return spi_mem_exec_op(nor->spimem, &op);
+ 	} else if (nor->controller_ops->erase) {
+-		return nor->controller_ops->erase(nor, addr);
++		return spi_nor_controller_ops_erase(nor, addr);
+ 	}
+ 
+ 	/*
+@@ -1158,8 +1177,8 @@ static int spi_nor_erase_sector(struct spi_nor *nor, u32 addr)
+ 		addr >>= 8;
+ 	}
+ 
+-	return nor->controller_ops->write_reg(nor, nor->erase_opcode,
+-					      nor->bouncebuf, nor->addr_width);
++	return spi_nor_controller_ops_write_reg(nor, nor->erase_opcode,
++						nor->bouncebuf, nor->addr_width);
+ }
+ 
+ /**
 -- 
 2.28.0
 
