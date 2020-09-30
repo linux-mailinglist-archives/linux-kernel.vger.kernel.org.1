@@ -2,215 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70F6D27E303
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 09:51:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B03027E2DC
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 09:46:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728341AbgI3HvF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 03:51:05 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:34294 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728149AbgI3HvF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 03:51:05 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08U7jqn2033060;
-        Wed, 30 Sep 2020 02:45:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1601451952;
-        bh=5qtanVzEh28bAg4VGE9ykZDe066N0zlhLSP+cichi6I=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=u175Yo/sEOm7/nUdXMgESf64UzD1Hxoij0nf8sFKAbu9RRIWWX1DyEtAMWcDana/9
-         SB4TyQy9Knl16NP+OcokesecL7KsjKKb3+xU3xhi1gLsH+oGmAVvgciuz5NI8WfB2X
-         qVc5JfbJUUjkuUALxQPCJZLqG9n71M/20/1eUipw=
-Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08U7jqB7094542
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 30 Sep 2020 02:45:52 -0500
-Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 30
- Sep 2020 02:45:51 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 30 Sep 2020 02:45:51 -0500
-Received: from feketebors.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08U7jhDn078449;
-        Wed, 30 Sep 2020 02:45:49 -0500
-From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
-To:     <nm@ti.com>, <t-kristo@ti.com>, <ssantosh@kernel.org>,
-        <tglx@linutronix.de>, <jason@lakedaemon.net>, <maz@kernel.org>,
-        <robh+dt@kernel.org>, <lokeshvutla@ti.com>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
-Subject: [PATCH v2 2/2] irqchip/ti-sci-inta: Add support for unmapped event handling
-Date:   Wed, 30 Sep 2020 10:45:59 +0300
-Message-ID: <20200930074559.18028-3-peter.ujfalusi@ti.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200930074559.18028-1-peter.ujfalusi@ti.com>
-References: <20200930074559.18028-1-peter.ujfalusi@ti.com>
+        id S1727599AbgI3Hqt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 03:46:49 -0400
+Received: from mx2.suse.de ([195.135.220.15]:48440 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725440AbgI3Hqt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 03:46:49 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 70B59ACE3;
+        Wed, 30 Sep 2020 07:46:48 +0000 (UTC)
+Date:   Wed, 30 Sep 2020 09:46:46 +0200
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Anshuman Khandual <anshuman.khandual@arm.com>
+Cc:     linux-mm@kvack.org, Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Zi Yan <ziy@nvidia.com>, John Hubbard <jhubbard@nvidia.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC V2] mm/vmstat: Add events for HugeTLB migration
+Message-ID: <20200930074639.GA26786@linux>
+References: <1601445649-22163-1-git-send-email-anshuman.khandual@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1601445649-22163-1-git-send-email-anshuman.khandual@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The DMA (BCDMA/PKTDMA and their rings/flows) events are under the INTA's
-supervision as unmapped events in AM64.
+On Wed, Sep 30, 2020 at 11:30:49AM +0530, Anshuman Khandual wrote:
+> -			is_thp = PageTransHuge(page) && !PageHuge(page);
+> -			nr_subpages = thp_nr_pages(page);
+> +			is_thp = false;
+> +			is_hugetlb = false;
+> +			if (PageTransHuge(page)) {
+> +				if (PageHuge(page))
+> +					is_hugetlb = true;
+> +				else
+> +					is_thp = true;
+> +			}
 
-In order to keep the current SW stack working, the INTA driver must replace
-the dev_id with it's own when a request comes for BCDMA or PKTDMA
-resources.
+Since PageHuge only returns true for hugetlb pages, I think the following is
+more simple?
 
-Implement parsing of the optional "ti,unmapped-event-sources" phandle array
-to get the sci-dev-ids of the devices where the unmapped events originate.
+	if (PageHuge(page))
+		is_hugetlb = true;
+	else if (PageTransHuge(page))
+		is_thp = true
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
----
- drivers/irqchip/irq-ti-sci-inta.c | 72 +++++++++++++++++++++++++++++--
- 1 file changed, 68 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/irqchip/irq-ti-sci-inta.c b/drivers/irqchip/irq-ti-sci-inta.c
-index bc863ef7998d..00f5b34863c5 100644
---- a/drivers/irqchip/irq-ti-sci-inta.c
-+++ b/drivers/irqchip/irq-ti-sci-inta.c
-@@ -85,6 +85,8 @@ struct ti_sci_inta_vint_desc {
-  * @base:		Base address of the memory mapped IO registers
-  * @pdev:		Pointer to platform device.
-  * @ti_sci_id:		TI-SCI device identifier
-+ * @difu_cnt:		Number of TI-SCI device identifiers for unmapped events
-+ * @dev_ids_for_unmapped: Pointer to an array of TI-SCI device identifiers
-  */
- struct ti_sci_inta_irq_domain {
- 	const struct ti_sci_handle *sci;
-@@ -96,11 +98,33 @@ struct ti_sci_inta_irq_domain {
- 	void __iomem *base;
- 	struct platform_device *pdev;
- 	u32 ti_sci_id;
-+
-+	int difu_cnt;
-+	u32 *dev_ids_for_unmapped;
- };
- 
- #define to_vint_desc(e, i) container_of(e, struct ti_sci_inta_vint_desc, \
- 					events[i])
- 
-+static u16 ti_sci_inta_get_dev_id(struct ti_sci_inta_irq_domain *inta,
-+				  u32 hwirq)
-+{
-+	u16 dev_id = HWIRQ_TO_DEVID(hwirq);
-+	int i;
-+
-+	if (inta->difu_cnt == 0)
-+		return dev_id;
-+
-+	for (i = 0; i < inta->difu_cnt; i++) {
-+		if (dev_id == inta->dev_ids_for_unmapped[i]) {
-+			dev_id = inta->ti_sci_id;
-+			break;
-+		}
-+	}
-+
-+	return dev_id;
-+}
-+
- /**
-  * ti_sci_inta_irq_handler() - Chained IRQ handler for the vint irqs
-  * @desc:	Pointer to irq_desc corresponding to the irq
-@@ -251,7 +275,7 @@ static struct ti_sci_inta_event_desc *ti_sci_inta_alloc_event(struct ti_sci_inta
- 	u16 dev_id, dev_index;
- 	int err;
- 
--	dev_id = HWIRQ_TO_DEVID(hwirq);
-+	dev_id = ti_sci_inta_get_dev_id(inta, hwirq);
- 	dev_index = HWIRQ_TO_IRQID(hwirq);
- 
- 	event_desc = &vint_desc->events[free_bit];
-@@ -352,14 +376,15 @@ static void ti_sci_inta_free_irq(struct ti_sci_inta_event_desc *event_desc,
- {
- 	struct ti_sci_inta_vint_desc *vint_desc;
- 	struct ti_sci_inta_irq_domain *inta;
-+	u16 dev_id;
- 
- 	vint_desc = to_vint_desc(event_desc, event_desc->vint_bit);
- 	inta = vint_desc->domain->host_data;
-+	dev_id = ti_sci_inta_get_dev_id(inta, hwirq);
- 	/* free event irq */
- 	mutex_lock(&inta->vint_mutex);
- 	inta->sci->ops.rm_irq_ops.free_event_map(inta->sci,
--						 HWIRQ_TO_DEVID(hwirq),
--						 HWIRQ_TO_IRQID(hwirq),
-+						 dev_id, HWIRQ_TO_IRQID(hwirq),
- 						 inta->ti_sci_id,
- 						 vint_desc->vint_id,
- 						 event_desc->global_event,
-@@ -562,7 +587,6 @@ static void ti_sci_inta_msi_set_desc(msi_alloc_info_t *arg,
- 	arg->desc = desc;
- 	arg->hwirq = TO_HWIRQ(pdev->id, desc->inta.dev_index);
- }
--
- static struct msi_domain_ops ti_sci_inta_msi_ops = {
- 	.set_desc	= ti_sci_inta_msi_set_desc,
- };
-@@ -574,6 +598,42 @@ static struct msi_domain_info ti_sci_inta_msi_domain_info = {
- 	.chip	= &ti_sci_inta_msi_irq_chip,
- };
- 
-+static int ti_sci_inta_get_unmapped_sources(struct ti_sci_inta_irq_domain *inta)
-+{
-+	struct device *dev = &inta->pdev->dev;
-+	struct device_node *node = dev_of_node(dev);
-+	struct of_phandle_iterator it;
-+	int count, err, ret, i;
-+
-+	count = of_count_phandle_with_args(node, "ti,unmapped-event-sources",
-+					   NULL);
-+	if (count <= 0)
-+		return 0;
-+
-+	inta->dev_ids_for_unmapped = devm_kcalloc(dev, count,
-+					sizeof(*inta->dev_ids_for_unmapped),
-+					GFP_KERNEL);
-+	if (!inta->dev_ids_for_unmapped)
-+		return -ENOMEM;
-+
-+	i = 0;
-+	of_for_each_phandle(&it, err, node, "ti,unmapped-event-sources",
-+			    NULL, 0) {
-+		ret = of_property_read_u32(it.node, "ti,sci-dev-id",
-+					   &inta->dev_ids_for_unmapped[i++]);
-+		if (ret) {
-+			dev_err(dev, "ti,sci-dev-id read failure for %s\n",
-+				of_node_full_name(it.node));
-+			of_node_put(it.node);
-+			return ret;
-+		}
-+	}
-+
-+	inta->difu_cnt = count;
-+
-+	return 0;
-+}
-+
- static int ti_sci_inta_irq_domain_probe(struct platform_device *pdev)
- {
- 	struct irq_domain *parent_domain, *domain, *msi_domain;
-@@ -629,6 +689,10 @@ static int ti_sci_inta_irq_domain_probe(struct platform_device *pdev)
- 	if (IS_ERR(inta->base))
- 		return PTR_ERR(inta->base);
- 
-+	ret = ti_sci_inta_get_unmapped_sources(inta);
-+	if (ret)
-+		return ret;
-+
- 	domain = irq_domain_add_linear(dev_of_node(dev),
- 				       ti_sci_get_num_resources(inta->vint),
- 				       &ti_sci_inta_irq_domain_ops, inta);
+Besides that, it looks good to me:
+
+Reviewed-by: Oscar Salvador <osalvador@suse.de>
+
 -- 
-Peter
-
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
-
+Oscar Salvador
+SUSE L3
