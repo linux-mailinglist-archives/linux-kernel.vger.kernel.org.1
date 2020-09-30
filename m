@@ -2,91 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 701AF27E25C
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 09:12:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B265027E270
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 09:17:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728907AbgI3HML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 03:12:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45714 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727657AbgI3HML (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 03:12:11 -0400
-Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 939922076E;
-        Wed, 30 Sep 2020 07:12:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601449930;
-        bh=VUeL5dJxtNCQIqEJ5JCk1LwvGeF5Hdo5GKlpgMiOp/c=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=YfrqBuAuonZXtO62eiTaf2qTghzXzsnl98KkC/6QTrSlap5SGGUHVuo3CRPv/VDeL
-         myh43nOmnp+WIIna2e5Pm8uZ9Zcq+KEvuRGVL04dp+ZKTJaZQTyg3fdXhLNGruZMNX
-         FVg0gJjQhIwa2GK1vA6XfDOFbkZnFgu+D4mXs3es=
-Received: by mail-ej1-f50.google.com with SMTP id dd13so1265877ejb.5;
-        Wed, 30 Sep 2020 00:12:10 -0700 (PDT)
-X-Gm-Message-State: AOAM531ae0h/WUtFojb2EUuqS1PTLuOA+Jqi4hbwjLWlW0AmPVxrmInR
-        p7/4tw76Yo3Cg/1D7Ha7r3Ci6NyOVYFm/+cRlbk=
-X-Google-Smtp-Source: ABdhPJyFS0R7Z+kb+bmnJUwvBv7Vreo7IzgUZoxCPLIZ5IXQoBbjinkmIkcvf9yxQF+aiKJlDOcE4VZOgMlOO6j9YxI=
-X-Received: by 2002:a17:906:1984:: with SMTP id g4mr1379084ejd.119.1601449929176;
- Wed, 30 Sep 2020 00:12:09 -0700 (PDT)
+        id S1728334AbgI3HRs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 03:17:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51186 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725440AbgI3HRs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 03:17:48 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 748EAC061755;
+        Wed, 30 Sep 2020 00:17:48 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id y14so515457pgf.12;
+        Wed, 30 Sep 2020 00:17:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=SATX+yBCLXXjqiez9Tnf9l7cIDz62fOgQbhS4ETQ5yQ=;
+        b=uVAsy1IP7fkjUycX+Ge5M2rkDhVaWrw6jrYanW0tg5N6L/WPjZe7zqXCg6aCRS6Vko
+         sJadbahrKxhzzQKrXczU0Egn+pdH4aE7Qh2NHwCM7gOBg2TgBEi6tzngrTDkkc/D0P2R
+         AYewwzO1+AxcABTCvw3EGOmcQoLMqEeL0zrGGI6Yi2J1PEc6xumer+jum8cwcztq3ISJ
+         4YrfyTzmNGZsJvR7lXFLmawc00eQUVs0cJhf9bwbiniv0RF21CYtCyeSl/Bmmo0zwygg
+         y4X4vb+Xq50bBSLJEi67ALoAZew2RVCa3+08Uz3+KYCCVXePJ1lKY0bq5ae9SVmUBfxI
+         CsmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=SATX+yBCLXXjqiez9Tnf9l7cIDz62fOgQbhS4ETQ5yQ=;
+        b=CqyaMIXn9ey+gQ+H2ibTxxAriF5712dFfVYbBPuUBj+sU+fl2+RtcBx6oz44zDHRv1
+         fqDPon6DiwkqLiCy0PtJ1K8sDoubNe86M0DoMoT/s9doXN7/7aw35P24cwOjHG6dkNoC
+         /S1+rmc+0Xrek2ObeDBIIQTqYQjGNV6ojcRGtR1JZBA/tnxrefZhJDITzFuk2ShqDOoe
+         OW2g81qkXJpBvW8ve5XJ53wmFh4BwauxGbEnrNSJAXRZiyO3BfUDnU3jKZHtidE6CKfr
+         JX5Jccj6VQ48KkiBj/wPukCGP66kkohjDmSVPRH4eEKtvPIh0VivgI+dG7BaGDMyvpRB
+         G3pQ==
+X-Gm-Message-State: AOAM5331z3sfElMlx5cDyjJDOlCVLQAIkgE1flEmcqDkOY0AW0GWSzsI
+        a7F9YMDCYlNLj3TRxQGJeeI=
+X-Google-Smtp-Source: ABdhPJznBREyrIM8kWonCXk01Di+K4rbkU4w4E5kpyQV5G7rxm4yz+Ji8inYERq2GeDN2G0bJgxz4A==
+X-Received: by 2002:a62:62c3:0:b029:151:223b:3ba0 with SMTP id w186-20020a6262c30000b0290151223b3ba0mr1157265pfb.28.1601450267941;
+        Wed, 30 Sep 2020 00:17:47 -0700 (PDT)
+Received: from Asurada-Nvidia (thunderhill.nvidia.com. [216.228.112.22])
+        by smtp.gmail.com with ESMTPSA id 9sm1088537pgx.76.2020.09.30.00.17.47
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 30 Sep 2020 00:17:47 -0700 (PDT)
+Date:   Wed, 30 Sep 2020 00:12:14 -0700
+From:   Nicolin Chen <nicoleotsuka@gmail.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     thierry.reding@gmail.com, joro@8bytes.org, krzk@kernel.org,
+        vdumpa@nvidia.com, jonathanh@nvidia.com,
+        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/3] iommu/tegra-smmu: Add PCI support
+Message-ID: <20200930071213.GA13876@Asurada-Nvidia>
+References: <20200930003013.31289-1-nicoleotsuka@gmail.com>
+ <20200930003013.31289-4-nicoleotsuka@gmail.com>
+ <5a91f07c-bc27-7607-915c-e98a7a0c4b24@gmail.com>
+ <20200930053425.GC31821@Asurada-Nvidia>
+ <84f05ebd-1123-5dfb-94fe-62564a21706f@gmail.com>
 MIME-Version: 1.0
-References: <20200926162811.5335-1-krzk@kernel.org> <20200926162811.5335-12-krzk@kernel.org>
- <2a329c9b-8bfc-fbd8-62a3-759f608347d6@denx.de> <686af5e6-d16a-7750-e47f-1ced9cb6c34a@denx.de>
-In-Reply-To: <686af5e6-d16a-7750-e47f-1ced9cb6c34a@denx.de>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Date:   Wed, 30 Sep 2020 09:11:56 +0200
-X-Gmail-Original-Message-ID: <CAJKOXPe7XOQspzTFDRtb=y79mwXEZSGiYiQP3J58JMjCkVRSCQ@mail.gmail.com>
-Message-ID: <CAJKOXPe7XOQspzTFDRtb=y79mwXEZSGiYiQP3J58JMjCkVRSCQ@mail.gmail.com>
-Subject: Re: [RFC 12/14] dt-bindings: vendor-prefixes: add Aristainetos
-To:     hs@denx.de, Rob Herring <robh+dt@kernel.org>
-Cc:     Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Stefan Riedmueller <s.riedmueller@phytec.de>,
-        Robert Jones <rjones@gateworks.com>,
-        Li Yang <leoyang.li@nxp.com>, devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <84f05ebd-1123-5dfb-94fe-62564a21706f@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 30 Sep 2020 at 06:16, Heiko Schocher <hs@denx.de> wrote:
->
-> Hello Krzysztof,
->
-> Am 28.09.2020 um 06:04 schrieb Heiko Schocher:
-> > Hello Krzysztof,
-> >
-> > Am 26.09.2020 um 18:28 schrieb Krzysztof Kozlowski:
-> >> Document binding for an unknown entity Aristainetos with few boards
-> >> mainlined.
+On Wed, Sep 30, 2020 at 09:01:09AM +0300, Dmitry Osipenko wrote:
+> 30.09.2020 08:34, Nicolin Chen пишет:
+> > On Wed, Sep 30, 2020 at 08:10:35AM +0300, Dmitry Osipenko wrote:
+> >> 30.09.2020 03:30, Nicolin Chen пишет:
+> >>>  void tegra_smmu_remove(struct tegra_smmu *smmu)
+> >>>  {
+> >>> +	bus_set_iommu(&platform_bus_type, NULL);
 > >>
-> >> Cc: Heiko Schocher <hs@denx.de>
-> >> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> >>
-> >> ---
-> >>
-> >> I tried to Google but except the patches from Heiko Schocher, I could
-> >> not find any meaningful data.
-> >>
-> >> Heiko, you posted this. Do you know what is it?
-> >
-> > aristainetos is the name of the board, so it is not the vendor name.
-> >
-> > I just asked the customer if we can add a valid vendor name...
->
-> Ok, it is not easy to get an okay from the customer to publish
-> his name.
->
-> Is there a dummy or unknown entry for vendor?
+> >> Why only platform_bus? Is this really needed at all?
+> > 
+> > I see qcom_iommu.c file set to NULL in remove(), Probably should
+> > have added pci_bus_type too though.
+> > 
+> > Or are you sure that there's no need at all?
+> > 
+> 
+> It wasn't here before this patch and platform_bus is unrelated to the
+> topic of this patch. But it probably should be there.
+> 
+> On the other hand, the tegra_smmu_remove() is unused and maybe it could
+> be better to get rid of this unused function at all.
 
-We could use "denx" as it was done as part of your work or "linux".
-Rob, any hints here?
-
-Best regards,
-Krzysztof
+I will drop this line then, since no one is calling it. And maybe
+we can submit a clean up patch later.
