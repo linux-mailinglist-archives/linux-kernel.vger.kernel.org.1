@@ -2,123 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6988627F037
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 19:23:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F125427F031
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 19:23:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731456AbgI3RX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 13:23:57 -0400
-Received: from mga02.intel.com ([134.134.136.20]:38534 "EHLO mga02.intel.com"
+        id S1731409AbgI3RX3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 13:23:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38196 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725837AbgI3RX4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 13:23:56 -0400
-IronPort-SDR: PAuC9TzZNqSxdIWFpc4DYuc8i63cdVGdB1gZ/FsnMVCYAqFhd0YTRlDaQsqrxAY36mCLOf4wAs
- ZAJQ2N60/nPg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9760"; a="150157847"
-X-IronPort-AV: E=Sophos;i="5.77,322,1596524400"; 
-   d="scan'208";a="150157847"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2020 10:23:56 -0700
-IronPort-SDR: i/Wr/vMjVXkZ5qogz7WZNWTib8KiEGRz3nH8oSSMXjiat3fjS8SP+4r76rLDlC36IzFZqUs5N6
- 0O98strF7WMw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,322,1596524400"; 
-   d="scan'208";a="457741574"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.190]) ([10.237.72.190])
-  by orsmga004.jf.intel.com with ESMTP; 30 Sep 2020 10:23:52 -0700
-Subject: Re: [PATCH] mmc: core: don't set limits.discard_granularity as 0
-To:     Coly Li <colyli@suse.de>, linux-mmc@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        Vicente Bergas <vicencb@gmail.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-References: <20200930160854.65710-1-colyli@suse.de>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <5178b9e0-6b95-45ef-80f1-862de554e625@intel.com>
-Date:   Wed, 30 Sep 2020 20:23:19 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1731385AbgI3RXY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 13:23:24 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 63992207C3;
+        Wed, 30 Sep 2020 17:23:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601486603;
+        bh=8a6SbQSDDDVVdYYlKR/FBtkSry+2l0Ey8N1zPkLZdNQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=byIxjrxAeXmtNUM1CoZLHrJAJ74QDa2UJwYIaMDuDomv00UUHVD07EDgjbyRMesQi
+         DPDuiOxS9U62ca8hKdQUBTsrwy+CDoXCvw4YdU3DS/Up/mv2ADjxgbl9ZMw5QvByXQ
+         hf+4CJVZHSrCVt7QtAEcPZxT+KYzatZisScwrfqo=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <maz@kernel.org>)
+        id 1kNfp3-00GDws-J7; Wed, 30 Sep 2020 18:23:21 +0100
 MIME-Version: 1.0
-In-Reply-To: <20200930160854.65710-1-colyli@suse.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date:   Wed, 30 Sep 2020 18:23:21 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     =?UTF-8?Q?Niklas_S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>
+Cc:     devicetree@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Rob Herring <robh@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Shawn Lin <shawn.lin@rock-chips.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>, kernel-team@android.com,
+        samuel@dionne-riel.com
+Subject: Re: [PATCH v2] of: address: Work around missing device_type property
+ in pcie nodes
+In-Reply-To: <20200930162722.GF1516931@oden.dyn.berto.se>
+References: <20200819094255.474565-1-maz@kernel.org>
+ <20200930162722.GF1516931@oden.dyn.berto.se>
+User-Agent: Roundcube Webmail/1.4.8
+Message-ID: <977f60f07a4cb5c59f0e5f8a9dfb3993@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: niklas.soderlund@ragnatech.se, devicetree@vger.kernel.org, linux-pci@vger.kernel.org, linux-rockchip@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, robh@kernel.org, lorenzo.pieralisi@arm.com, heiko@sntech.de, frowand.list@gmail.com, shawn.lin@rock-chips.com, jiaxun.yang@flygoat.com, robh+dt@kernel.org, bhelgaas@google.com, kernel-team@android.com, samuel@dionne-riel.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/09/20 7:08 pm, Coly Li wrote:
-> In mmc_queue_setup_discard() the mmc driver queue's discard_granularity
-> might be set as 0 (when card->pref_erase > max_discard) while the mmc
-> device still declares to support discard operation. This is buggy and
-> triggered the following kernel warning message,
+Hi Niklas,
+
+[+ Samuel]
+
+On 2020-09-30 17:27, Niklas Söderlund wrote:
+> Hi Marc,
 > 
-> WARNING: CPU: 0 PID: 135 at __blkdev_issue_discard+0x200/0x294
-> CPU: 0 PID: 135 Comm: f2fs_discard-17 Not tainted 5.9.0-rc6 #1
-> Hardware name: Google Kevin (DT)
-> pstate: 00000005 (nzcv daif -PAN -UAO BTYPE=--)
-> pc : __blkdev_issue_discard+0x200/0x294
-> lr : __blkdev_issue_discard+0x54/0x294
-> sp : ffff800011dd3b10
-> x29: ffff800011dd3b10 x28: 0000000000000000 x27: ffff800011dd3cc4 x26: ffff800011dd3e18 x25: 000000000004e69b x24: 0000000000000c40 x23: ffff0000f1deaaf0 x22: ffff0000f2849200 x21: 00000000002734d8 x20: 0000000000000008 x19: 0000000000000000 x18: 0000000000000000 x17: 0000000000000000 x16: 0000000000000000 x15: 0000000000000000 x14: 0000000000000394 x13: 0000000000000000 x12: 0000000000000000 x11: 0000000000000000 x10: 00000000000008b0 x9 : ffff800011dd3cb0 x8 : 000000000004e69b x7 : 0000000000000000 x6 : ffff0000f1926400 x5 : ffff0000f1940800 x4 : 0000000000000000 x3 : 0000000000000c40 x2 : 0000000000000008 x1 : 00000000002734d8 x0 : 0000000000000000 Call trace:
-> __blkdev_issue_discard+0x200/0x294
-> __submit_discard_cmd+0x128/0x374
-> __issue_discard_cmd_orderly+0x188/0x244
-> __issue_discard_cmd+0x2e8/0x33c
-> issue_discard_thread+0xe8/0x2f0
-> kthread+0x11c/0x120
-> ret_from_fork+0x10/0x1c
-> ---[ end trace e4c8023d33dfe77a ]---
+> I'm afraid this commit breaks booting my rk3399 device.
 > 
-> This patch fixes the issue by setting discard_granularity as SECTOR_SIZE
-> instead of 0 when (card->pref_erase > max_discard) is true. Now no more
-> complain from __blkdev_issue_discard() for the improper value of discard
-> granularity.
+> I bisected the problem to this patch merged as [1]. I'm testing on a
+> Scarlet device and I'm using the unmodified upstream
+> rk3399-gru-scarlet-inx.dtb for my tests.
 > 
-> Fixes: commit e056a1b5b67b ("mmc: queue: let host controllers specify maximum discard timeout")
-
-That "Fixes" tag is a bit misleading.  For some time, the block layer had
-no problem with discard_granularity of zero, and blk_bio_discard_split()
-still doesn't (see below).
-
-static struct bio *blk_bio_discard_split(struct request_queue *q,
-					 struct bio *bio,
-					 struct bio_set *bs,
-					 unsigned *nsegs)
-{
-	unsigned int max_discard_sectors, granularity;
-	int alignment;
-	sector_t tmp;
-	unsigned split_sectors;
-
-	*nsegs = 1;
-
-	/* Zero-sector (unknown) and one-sector granularities are the same.  */
-	granularity = max(q->limits.discard_granularity >> 9, 1U);
-
-
-> Reported-by: Vicente Bergas <vicencb@gmail.com>
-> Signed-off-by: Coly Li <colyli@suse.de>
-> Cc: Adrian Hunter <adrian.hunter@intel.com>
-> Cc: Ulf Hansson <ulf.hansson@linaro.org>
-> ---
->  drivers/mmc/core/queue.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> The problem I'm experience is a black screen after the bootloader and
+> the device is none responsive over the network. I have no serial 
+> console
+> to this device so I'm afraid I can't tell you if there is anything
+> useful on to aid debugging there.
 > 
-> diff --git a/drivers/mmc/core/queue.c b/drivers/mmc/core/queue.c
-> index 6c022ef0f84d..350d0cc4ee62 100644
-> --- a/drivers/mmc/core/queue.c
-> +++ b/drivers/mmc/core/queue.c
-> @@ -190,7 +190,7 @@ static void mmc_queue_setup_discard(struct request_queue *q,
->  	q->limits.discard_granularity = card->pref_erase << 9;
->  	/* granularity must not be greater than max. discard */
->  	if (card->pref_erase > max_discard)
-> -		q->limits.discard_granularity = 0;
-> +		q->limits.discard_granularity = SECTOR_SIZE;
->  	if (mmc_can_secure_erase_trim(card))
->  		blk_queue_flag_set(QUEUE_FLAG_SECERASE, q);
->  }
-> 
+> If I try to test one commit earlier [2] the system boots as expected 
+> and
+> everything works as it did for me in v5.8 and earlier. I have worked
+> little with this device and have no clue about what is really on the 
+> PCI
+> buss. But running from [2] I have this info about PCI if it's helpful,
+> please ask if somethings missing.
 
+Please see the thread at [1]. The problem was reported a few weeks back
+by Samuel, and I was expecting Rob and Lorenzo to push a fix for this.
+
+Rob, Lorenzo, any update on this?
+
+         M.
+
+[1] 
+https://lore.kernel.org/linux-devicetree/20200829164920.7d28e01a@DUFFMAN/
+-- 
+Jazz is not dead. It just smells funny...
