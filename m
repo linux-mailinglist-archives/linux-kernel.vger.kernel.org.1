@@ -2,119 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B25D527EF9B
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 18:50:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8958427EF9E
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 18:50:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730034AbgI3QuR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 12:50:17 -0400
-Received: from mga14.intel.com ([192.55.52.115]:26966 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725815AbgI3QuQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 12:50:16 -0400
-IronPort-SDR: aN1wGeLA+aeDar5oKadN3ZfoxG3Eowspzt1lihENPdSWi/rUXGultcI7etEtlUhh39EWaWkRff
- i9f8TfPFyz9w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9760"; a="161722144"
-X-IronPort-AV: E=Sophos;i="5.77,322,1596524400"; 
-   d="scan'208";a="161722144"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2020 09:50:16 -0700
-IronPort-SDR: tKGfD5O3mCHK23VKErmBNC6CAvp2WNrGSQ1hUKWZUGkin+21CXJED6SZxnWegYhV3r9hiwujla
- lgtNmmEQii8w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,322,1596524400"; 
-   d="scan'208";a="294088143"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga007.fm.intel.com with ESMTP; 30 Sep 2020 09:50:16 -0700
-Received: from debox1-desk1.jf.intel.com (debox1-desk1.jf.intel.com [10.7.201.137])
-        by linux.intel.com (Postfix) with ESMTP id E802958033E;
-        Wed, 30 Sep 2020 09:50:15 -0700 (PDT)
-Message-ID: <47276f4aacbf4ec3729e674a573a28cd6399cfd6.camel@linux.intel.com>
-Subject: Re: [PATCH 1/3] mfd: intel_pmt: Add OOBMSM device ID
-From:   "David E. Box" <david.e.box@linux.intel.com>
-Reply-To: david.e.box@linux.intel.com
-To:     Lee Jones <lee.jones@linaro.org>, hdegoede@redhat.com,
-        andriy.shevchenko@linux.intel.com
-Cc:     dvhart@infradead.org, andy@infradead.org,
-        alexander.h.duyck@linux.intel.com, linux-kernel@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org
-Date:   Wed, 30 Sep 2020 09:50:15 -0700
-In-Reply-To: <20200930071250.GI6148@dell>
-References: <20200911194549.12780-1-david.e.box@linux.intel.com>
-         <20200911194549.12780-2-david.e.box@linux.intel.com>
-         <20200929095106.GG6148@dell>
-         <e23b255493c78d80558b9226920b3c7d54d7c84f.camel@linux.intel.com>
-         <20200930071250.GI6148@dell>
-Organization: David E. Box
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+        id S1731132AbgI3Quf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 12:50:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54992 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725355AbgI3Quf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 12:50:35 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B027C061755;
+        Wed, 30 Sep 2020 09:50:35 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id x5so1375839plo.6;
+        Wed, 30 Sep 2020 09:50:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=dKUmQimuyUfWYYZALCDrxF2spAstQLetC2caJRkHLbU=;
+        b=bxfX2WXaLI7r3kKW4dqdisvqp0UQJGmnwhZC2f4dkUMbAZklfzVNyDad0QTV6VPtQw
+         nkeNCSjihjo+bl3y8ubQQES4iz/ydW6rmWkLmI2us2JcBHKFWPhdMpbVCBLd+bQ+sTGq
+         VB085mGZz0psCRnNnxmXepWSlYsOmBhu+Us8E/lI9v4zoYYlG1aX2T1TETopKjiUNUWF
+         mg0fnrEfwJcm8p6scbpevS9Nt8EpckVvI9Mid/q0Hgj/5MncLnMMlstnncdcu6oT/qac
+         YhGKuDMnNh8AH0MRDUaxqEyhjdJIW0kqgenJvj6Zy55EbI4M1xoorogtN4WbfcuQFG3H
+         QiTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=dKUmQimuyUfWYYZALCDrxF2spAstQLetC2caJRkHLbU=;
+        b=ovwVLo3SrthnVf1piRI4ionxGwKy4OQSeziVd3K9M0SY7AFLStYV8pWO67nlUHMYQu
+         IxCpOQ8LfFq4BYzlWdY2v+ueWuBh4AOkwM3wfmPlmshmqaNJ0qafPnc/gPSMsY+5lmxI
+         6FRoWgn9CyeNlCgYEUeCQfEz9xDI3Xpt9OIZ9hSAQ0Yp+6E0sUbMmV/SxwPWcav2HFsV
+         Xy0h3ZQFM1ekobemtB9ywCCEghOiravwQGyIs18hGF6Mq8Ac37498OztJxZzooPDyF7G
+         NMQHQyZpufiifJBD/thN0smXxSloiByY3RJPUXDfEPlE2VpJSxUMqd2qj0rPZUlFl8Zd
+         G1SA==
+X-Gm-Message-State: AOAM531xKLR/HIAW62bLQmcusOtyPn5MSTl0UzbB2nGEpnICGbJev9N+
+        23BOUUnSWKHH0XdhhWJBuUJ10RzpBdq/JA==
+X-Google-Smtp-Source: ABdhPJxb5ZsqjleYncIIGOOsfMHsY1UWGm4TiJhG13FTOiOTB6Uwwtchv9dwWXYWqs9FOP7vH9alyA==
+X-Received: by 2002:a17:90a:7bcd:: with SMTP id d13mr3525260pjl.18.1601484634451;
+        Wed, 30 Sep 2020 09:50:34 -0700 (PDT)
+Received: from taoren-ubuntu-R90MNF91 (c-73-252-146-110.hsd1.ca.comcast.net. [73.252.146.110])
+        by smtp.gmail.com with ESMTPSA id b11sm2973831pfo.15.2020.09.30.09.50.32
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 30 Sep 2020 09:50:33 -0700 (PDT)
+Date:   Wed, 30 Sep 2020 09:50:26 -0700
+From:   Tao Ren <rentao.bupt@gmail.com>
+To:     Ryan Chen <ryan_chen@aspeedtech.com>
+Cc:     Joel Stanley <joel@jms.id.au>, Andrew Jeffery <andrew@aj.id.au>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, bmc-sw@aspeedtech.com
+Subject: Re: [PATCH 1/3] configs: aspeed: enable UHCI driver in defconfig
+Message-ID: <20200930165025.GA25872@taoren-ubuntu-R90MNF91>
+References: <20200930040823.26065-1-ryan_chen@aspeedtech.com>
+ <20200930040823.26065-2-ryan_chen@aspeedtech.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200930040823.26065-2-ryan_chen@aspeedtech.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-09-30 at 08:12 +0100, Lee Jones wrote:
-> On Tue, 29 Sep 2020, David E. Box wrote:
+On Wed, Sep 30, 2020 at 12:08:21PM +0800, Ryan Chen wrote:
+> Enable UHCI driver in aspeed_g5_defconfig.
 > 
-> > On Tue, 2020-09-29 at 10:51 +0100, Lee Jones wrote:
-> > > On Fri, 11 Sep 2020, David E. Box wrote:
-> > > 
-> > > > Add Out of Band Management Services Module device ID to Intel
-> > > > PMT
-> > > > driver.
-> > > > 
-> > > > Signed-off-by: Alexander Duyck <
-> > > > alexander.h.duyck@linux.intel.com>
-> > > > Signed-off-by: David E. Box <david.e.box@linux.intel.com>
-> > > > ---
-> > > >  drivers/mfd/intel_pmt.c | 4 ++++
-> > > >  1 file changed, 4 insertions(+)
-> > > > 
-> > > > diff --git a/drivers/mfd/intel_pmt.c b/drivers/mfd/intel_pmt.c
-> > > > index 0e572b105101..8f9970ab3026 100644
-> > > > --- a/drivers/mfd/intel_pmt.c
-> > > > +++ b/drivers/mfd/intel_pmt.c
-> > > > @@ -55,6 +55,8 @@ struct pmt_platform_info {
-> > > >  	unsigned long quirks;
-> > > >  };
-> > > >  
-> > > > +static const struct pmt_platform_info pmt_info;
-> > > > +
-> > > >  static const struct pmt_platform_info tgl_info = {
-> > > >  	.quirks = PMT_QUIRK_NO_WATCHER | PMT_QUIRK_NO_CRASHLOG
-> > > > |
-> > > >  		  PMT_QUIRK_TABLE_SHIFT,
-> > > > @@ -200,8 +202,10 @@ static void pmt_pci_remove(struct pci_dev
-> > > > *pdev)
-> > > >  	pm_runtime_get_sync(&pdev->dev);
-> > > >  }
-> > > >  
-> > > > +#define PCI_DEVICE_ID_INTEL_PMT_OOBMSM	0x09a7
-> > > >  #define PCI_DEVICE_ID_INTEL_PMT_TGL	0x9a0d
-> > > >  static const struct pci_device_id pmt_pci_ids[] = {
-> > > > +	{ PCI_DEVICE_DATA(INTEL, PMT_OOBMSM, &pmt_info) },
-> > > 
-> > > Why are you supplying an empty struct?
-> > 
-> > Because the OOBMSM device doesn't need code provided driver data,
-> > but
-> > info is dereferenced in several areas. We also use kmemdup to copy
-> > driver_data under the assumption that it was provided. We could
-> > allow
-> > for NULL if driver_data is referenced directly.
-> 
-> Just check for NULL.  No need to create and send bogus data.
+> Signed-off-by: Ryan Chen <ryan_chen@aspeedtech.com>
 
-Sure. If you haven't already, please note that this patch was pulled
-into the V6 series in the link below. You accepted V5 but Hans
-suggested some late changes after reviewing the new crashlog driver in
-this patchset. So rather than have separate patchsets with a
-dependency, we bundled them all into the original. We'll make these
-changes in V7 now.
-
-https://lore.kernel.org/patchwork/patch/1313166/
-
-David
-
+Reviewed-by: Tao Ren <rentao.bupt@gmail.com>
