@@ -2,192 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1221627F4B2
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 23:59:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1514327F4CD
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 00:06:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731569AbgI3V7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 17:59:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46212 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731525AbgI3V7D (ORCPT
+        id S1731267AbgI3WGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 18:06:11 -0400
+Received: from wnew1-smtp.messagingengine.com ([64.147.123.26]:54099 "EHLO
+        wnew1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730470AbgI3WGL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 17:59:03 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D255C0613D1;
-        Wed, 30 Sep 2020 14:59:02 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id j2so3407063wrx.7;
-        Wed, 30 Sep 2020 14:59:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uqE6Mh2sYfo4tgUmRr6sl/PAIoTS+UVdNxwJsWBXCU4=;
-        b=NvPRKn3dA6l5RXbq3WkESW1+d5iP4vGq17jekovdpqMe+QrbYVpt6WmoZ8hIBN+FxA
-         q1NcObA43tepNKn55MilClNznaVqsjp7ObayNJlmEQsWBnDyZ+QiuBZzHIgb0vnWH1bi
-         igZKyyLIoXVmgBxkmmtxzMsTtZBeURJRvNQDaiw9vWI68jmN4SAo7nfkksRAucT8O85D
-         HqXfHQe8/7nca0lL+62hMaW73yw8wMBl9NuGsPQ342Lpu69bHkUUbU2jcguWU2YHApwm
-         ApcrFhO6oPSrA1A9D9FiJ6xlxkGkuNdXQU8b5MlJnj8MZ/TlNvw9cQyJQF9azXlrwYll
-         jm/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uqE6Mh2sYfo4tgUmRr6sl/PAIoTS+UVdNxwJsWBXCU4=;
-        b=qTBGPAmeFjpPYq6AQsXbMic7ChMTJD8e5/xaiclfT3pBQK6xcmGQRIHb0RQN9Pd3Hn
-         Edypc5YqHtBq/+NIkSm7D0gchH2mPZzXVFSs+ETDNxpopPtBdBaQILv36xV1lc9KO9rK
-         1XpLJAWFtL1Snlh9fjXKH3gZf2o6auFEr0GTmOp0tcrwwpS6WEzdIxMGLRE6FPbX6t1v
-         Jx/lsS47oxPEbeh3S0myGfHMajkdqGRcFiw5lOgkM2mi74dUBqCzp2A1skmFrwxdCnnf
-         mHEwCRn5+q6Nyf7Vc0mYvQnK7Yzg9gnRlcUy2k5vu6h+BhfUxVciab+v/DEr4Jg1tALS
-         jy/A==
-X-Gm-Message-State: AOAM531zc59F3TQe/PSanXHmk9iin2eX+0/qG75OVrjL+01ffdH7f9dX
-        yEuwuI52DL2SXayxIgNCPsu2+7vEAmyw6UKUWCs=
-X-Google-Smtp-Source: ABdhPJxGOJ9Mo51pAxsUuGGzPRDK0ZK+E5vDcUhEuPDOJE1I5nQKZVq7jb50KzcoIVBZIqqPpakJuCTdZ7GXgw7Z3wY=
-X-Received: by 2002:adf:eb86:: with SMTP id t6mr5163555wrn.411.1601503141172;
- Wed, 30 Sep 2020 14:59:01 -0700 (PDT)
+        Wed, 30 Sep 2020 18:06:11 -0400
+X-Greylist: delayed 452 seconds by postgrey-1.27 at vger.kernel.org; Wed, 30 Sep 2020 18:06:10 EDT
+Received: from compute7.internal (compute7.nyi.internal [10.202.2.47])
+        by mailnew.west.internal (Postfix) with ESMTP id 6332CFA8;
+        Wed, 30 Sep 2020 17:58:37 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute7.internal (MEProxy); Wed, 30 Sep 2020 17:58:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        oregontracks.org; h=from:to:cc:subject:date:message-id
+        :in-reply-to:references:mime-version:content-transfer-encoding;
+         s=fm1; bh=/xGcW+2xAAEsf/UaEloN+2L6gVCe1zrPoKRx2oQPxk8=; b=obg8P
+        sTD4cEaJF/WeqYFoFH5ceVw1F2SukZeG1AtgtaB29wUUzG84cqyG8wU7eagagsD2
+        uQ0UL2XohXn4LnLIhMdvpQkbhQR9ux992wLeDmhNmTi1aPCp7nk669BwYiQvz6su
+        SpB9uwLZqJ4W1Few4MupkzvJDm6SONjotSXyWgm17VIySDsUt0o0yfh2YRTMWVrB
+        TT320xRSZYJUk4mXR5P0wsW9BnZZ8tZYBkpTU9mW0H+T19xT2HXXdpo1quY7cKFD
+        +MEfyvA+AOxcTafDutl5Om06FEqgVxFKP9mrKw4wZj1vi+ekElhVW8a31Ec++y3d
+        UmUF5Vv/ySXCaBg4A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :in-reply-to:message-id:mime-version:references:subject:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm3; bh=/xGcW+2xAAEsf/UaEloN+2L6gVCe1zrPoKRx2oQPxk8=; b=t5/QPJIi
+        eWPAhsxdFoMd178j9GIjuhsnF5IHegtY3EEiYf6SYjq/tlasZ+gvod/Lw5/91fVF
+        pBEMjmEH/eZdUWaJqsHNn0qazwBvBWukWYmep46aoJ8bp+dY7RqL4PiBT6rMOEnV
+        U/eD5y5ZY97F5mZlxMijyNaT6v4yToxO1WmDETEO8SQ76sZXn3dW3aut9+JKBJX2
+        jAsn5A+eQdosxaq39zv8Xzba0K6AnKVJ06sAMPp8/B2wmO2R1RaZzpIOc5wkFmRX
+        B3e3hkvxaMf4C34dEy1pOoqazdQJXp47m5cCQOqEX8NS5EJSvxSPBRs+lGVi/DM/
+        dcu6fOQzXsdYLw==
+X-ME-Sender: <xms:jP90X6HhbIHIxWoLLYEitb9qoTjiFt7oVI6xouProFFjqBoIm6axGA>
+    <xme:jP90X7XTdNT5XmweJKIswdTWRLlGjjeFDlQ1eoostjJkBlfqZLO7CPdDpdpYt_eUG
+    xaaYaDMJjvngCUx>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrfeefgddthecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefhvffufffkofgjfhgggfestdekredtredttdenucfhrhhomhepufgvrghnucgg
+    ucfmvghllhgvhicuoehsvggrnhhvkhdruggvvhesohhrvghgohhnthhrrggtkhhsrdhorh
+    hgqeenucggtffrrghtthgvrhhnpeehkeffteeiudeiffelkeelvefftdelhfeitdeigeff
+    leeufedvgfegvdefvedtteenucfkphepvdegrddvtddrudegkedrgeelnecuvehluhhsth
+    gvrhfuihiivgepudenucfrrghrrghmpehmrghilhhfrhhomhepshgvrghnvhhkrdguvghv
+    sehorhgvghhonhhtrhgrtghkshdrohhrgh
+X-ME-Proxy: <xmx:jP90X0IaL4SSnS3BB7RqlwfwgeNFHj-MCnfY9a2mZEcafgVW0JAnoA>
+    <xmx:jP90X0HmYE_0zM-VNdBClVy8lr0DtA03m9xBwNmEjvN-cQV2NgXdcw>
+    <xmx:jP90XwU0ULk2pHo0zpdJ4sB6yB1Rkr15izmbu-fn8CuEyhAsrgAxqw>
+    <xmx:jf90X0oXwcu4y8JrV53hSFUKLUnslfTgczV-rXRne3twEy3AH5IZ-vWj_RE>
+Received: from arch-ashland-svkelley.hsd1.or.comcast.net (c-24-20-148-49.hsd1.or.comcast.net [24.20.148.49])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 7B4B13280059;
+        Wed, 30 Sep 2020 17:58:35 -0400 (EDT)
+From:   Sean V Kelley <seanvk.dev@oregontracks.org>
+To:     bhelgaas@google.com, Jonathan.Cameron@huawei.com,
+        rafael.j.wysocki@intel.com, ashok.raj@intel.com,
+        tony.luck@intel.com, sathyanarayanan.kuppuswamy@intel.com,
+        qiuxu.zhuo@intel.com
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sean V Kelley <sean.v.kelley@intel.com>,
+        Bjorn Helgaas <helgaas@google.com>
+Subject: [PATCH v7 04/13] PCI/ERR: Rename reset_link() to reset_subordinate_device()
+Date:   Wed, 30 Sep 2020 14:58:11 -0700
+Message-Id: <20200930215820.1113353-5-seanvk.dev@oregontracks.org>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200930215820.1113353-1-seanvk.dev@oregontracks.org>
+References: <20200930215820.1113353-1-seanvk.dev@oregontracks.org>
 MIME-Version: 1.0
-References: <20200926130306.13843-5-kholk11@gmail.com> <202010010458.1600JqDl-lkp@intel.com>
-In-Reply-To: <202010010458.1600JqDl-lkp@intel.com>
-From:   AngeloGioacchino Del Regno <kholk11@gmail.com>
-Date:   Wed, 30 Sep 2020 23:58:50 +0200
-Message-ID: <CAK7fi1Yvaj+Emad8GboLHSu6v-E81pX=GmCtmwm=utzQEtu2Cg@mail.gmail.com>
-Subject: Re: [PATCH 4/5] clk: qcom: Add SDM660 GPU Clock Controller (GPUCC) driver
-To:     kernel test robot <lkp@intel.com>
-Cc:     Andy Gross <agross@kernel.org>, kbuild-all@lists.01.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>, marijns95@gmail.com,
-        konradybcio@gmail.com, martin.botka1@gmail.com,
-        MSM <linux-arm-msm@vger.kernel.org>, phone-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The kernel test robot is wrong: this commit builds fine by
-merging in the required patch series (464958) named
-"Qualcomm clock fixes and preparation for SDM660"
-https://lore.kernel.org/patchwork/project/lkml/list/?series=464958
+From: Sean V Kelley <sean.v.kelley@intel.com>
 
-In that series there is a commit that generalizes the MSM8996-only
-gfx3d clock ops and introduces the definition of clk_rcg2_gfx3d.
+reset_link() appears to be misnamed. The point is to really
+reset any devices below a given bridge. So rename it to
+reset_subordinate_devices() to make it clear that we are
+passing a bridge with the intent to reset the devices below it.
 
-Il giorno mer 30 set 2020 alle ore 22:46 kernel test robot
-<lkp@intel.com> ha scritto:
->
-> Hi,
->
-> Thank you for the patch! Yet something to improve:
->
-> [auto build test ERROR on clk/clk-next]
-> [also build test ERROR on robh/for-next linux/master linus/master v5.9-rc7 next-20200930]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch]
->
-> url:    https://github.com/0day-ci/linux/commits/kholk11-gmail-com/SDM630-660-Multimedia-and-GPU-clock-controllers/20200926-210437
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git clk-next
-> config: m68k-allmodconfig (attached as .config)
-> compiler: m68k-linux-gcc (GCC) 9.3.0
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # https://github.com/0day-ci/linux/commit/0551514b1ab723837163a8c4cd84d22831e38019
->         git remote add linux-review https://github.com/0day-ci/linux
->         git fetch --no-tags linux-review kholk11-gmail-com/SDM630-660-Multimedia-and-GPU-clock-controllers/20200926-210437
->         git checkout 0551514b1ab723837163a8c4cd84d22831e38019
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=m68k
->
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
->
-> All errors (new ones prefixed by >>):
->
-> >> drivers/clk/qcom/gpucc-sdm660.c:106:15: error: variable 'gfx3d_clk_src' has initializer but incomplete type
->      106 | static struct clk_rcg2_gfx3d gfx3d_clk_src = {
->          |               ^~~~~~~~~~~~~~
-> >> drivers/clk/qcom/gpucc-sdm660.c:107:3: error: 'struct clk_rcg2_gfx3d' has no member named 'div'
->      107 |  .div = 2,
->          |   ^~~
->    drivers/clk/qcom/gpucc-sdm660.c:107:9: warning: excess elements in struct initializer
->      107 |  .div = 2,
->          |         ^
->    drivers/clk/qcom/gpucc-sdm660.c:107:9: note: (near initialization for 'gfx3d_clk_src')
-> >> drivers/clk/qcom/gpucc-sdm660.c:108:3: error: 'struct clk_rcg2_gfx3d' has no member named 'rcg'
->      108 |  .rcg = {
->          |   ^~~
-> >> drivers/clk/qcom/gpucc-sdm660.c:108:9: error: extra brace group at end of initializer
->      108 |  .rcg = {
->          |         ^
->    drivers/clk/qcom/gpucc-sdm660.c:108:9: note: (near initialization for 'gfx3d_clk_src')
->    drivers/clk/qcom/gpucc-sdm660.c:108:9: warning: excess elements in struct initializer
->    drivers/clk/qcom/gpucc-sdm660.c:108:9: note: (near initialization for 'gfx3d_clk_src')
-> >> drivers/clk/qcom/gpucc-sdm660.c:121:3: error: 'struct clk_rcg2_gfx3d' has no member named 'hws'
->      121 |  .hws = (struct clk_hw*[]){
->          |   ^~~
->    drivers/clk/qcom/gpucc-sdm660.c:121:9: warning: excess elements in struct initializer
->      121 |  .hws = (struct clk_hw*[]){
->          |         ^
->    drivers/clk/qcom/gpucc-sdm660.c:121:9: note: (near initialization for 'gfx3d_clk_src')
-> >> drivers/clk/qcom/gpucc-sdm660.c:139:25: error: invalid use of undefined type 'struct clk_rcg2_gfx3d'
->      139 |     .hw = &gfx3d_clk_src.rcg.clkr.hw,
->          |                         ^
->    drivers/clk/qcom/gpucc-sdm660.c:257:45: error: 'NO_RET_PERIPH' undeclared here (not in a function)
->      257 |  .flags = CLAMP_IO | SW_RESET | AON_RESET | NO_RET_PERIPH,
->          |                                             ^~~~~~~~~~~~~
->    drivers/clk/qcom/gpucc-sdm660.c:277:34: error: invalid use of undefined type 'struct clk_rcg2_gfx3d'
->      277 |  [GFX3D_CLK_SRC] = &gfx3d_clk_src.rcg.clkr,
->          |                                  ^
-> >> drivers/clk/qcom/gpucc-sdm660.c:106:30: error: storage size of 'gfx3d_clk_src' isn't known
->      106 | static struct clk_rcg2_gfx3d gfx3d_clk_src = {
->          |                              ^~~~~~~~~~~~~
->
-> vim +/gfx3d_clk_src +106 drivers/clk/qcom/gpucc-sdm660.c
->
->    105
->  > 106  static struct clk_rcg2_gfx3d gfx3d_clk_src = {
->  > 107          .div = 2,
->  > 108          .rcg = {
->    109                  .cmd_rcgr = 0x1070,
->    110                  .mnd_width = 0,
->    111                  .hid_width = 5,
->    112                  .parent_map = gpucc_parent_map_1,
->    113                  .clkr.hw.init = &(struct clk_init_data){
->    114                          .name = "gfx3d_clk_src",
->    115                          .parent_data = gpucc_parent_data_1,
->    116                          .num_parents = 4,
->    117                          .ops = &clk_gfx3d_ops,
->    118                          .flags = CLK_SET_RATE_PARENT | CLK_OPS_PARENT_ENABLE,
->    119                  },
->    120          },
->  > 121          .hws = (struct clk_hw*[]){
->    122                  &gpucc_cxo_clk.clkr.hw,
->    123                  &gpu_pll0_pll_out_main.clkr.hw,
->    124                  &gpu_pll1_pll_out_main.clkr.hw,
->    125          }
->    126  };
->    127
->    128  static struct clk_branch gpucc_gfx3d_clk = {
->    129          .halt_reg = 0x1098,
->    130          .halt_check = BRANCH_HALT,
->    131          .hwcg_reg = 0x1098,
->    132          .hwcg_bit = 1,
->    133          .clkr = {
->    134                  .enable_reg = 0x1098,
->    135                  .enable_mask = BIT(0),
->    136                  .hw.init = &(struct clk_init_data){
->    137                          .name = "gpucc_gfx3d_clk",
->    138                          .parent_data = &(const struct clk_parent_data){
->  > 139                                  .hw = &gfx3d_clk_src.rcg.clkr.hw,
->    140                          },
->    141                          .num_parents = 1,
->    142                          .ops = &clk_branch2_ops,
->    143                          .flags = CLK_SET_RATE_PARENT,
->    144                  },
->    145          },
->    146  };
->    147
->
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Suggested-by: Bjorn Helgaas <helgaas@google.com>
+Signed-off-by: Sean V Kelley <sean.v.kelley@intel.com>
+---
+ drivers/pci/pci.h      | 2 +-
+ drivers/pci/pcie/err.c | 6 +++---
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
+index 88e27a98def5..efea170805fa 100644
+--- a/drivers/pci/pci.h
++++ b/drivers/pci/pci.h
+@@ -574,7 +574,7 @@ static inline int pci_dev_specific_disable_acs_redir(struct pci_dev *dev)
+ /* PCI error reporting and recovery */
+ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
+ 			pci_channel_state_t state,
+-			pci_ers_result_t (*reset_link)(struct pci_dev *pdev));
++			pci_ers_result_t (*reset_subordinate_devices)(struct pci_dev *pdev));
+ 
+ bool pcie_wait_for_link(struct pci_dev *pdev, bool active);
+ #ifdef CONFIG_PCIEASPM
+diff --git a/drivers/pci/pcie/err.c b/drivers/pci/pcie/err.c
+index c543f419d8f9..950612342f1c 100644
+--- a/drivers/pci/pcie/err.c
++++ b/drivers/pci/pcie/err.c
+@@ -148,7 +148,7 @@ static int report_resume(struct pci_dev *dev, void *data)
+ 
+ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
+ 			pci_channel_state_t state,
+-			pci_ers_result_t (*reset_link)(struct pci_dev *pdev))
++			pci_ers_result_t (*reset_subordinate_devices)(struct pci_dev *pdev))
+ {
+ 	pci_ers_result_t status = PCI_ERS_RESULT_CAN_RECOVER;
+ 	struct pci_bus *bus;
+@@ -165,9 +165,9 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
+ 	pci_dbg(dev, "broadcast error_detected message\n");
+ 	if (state == pci_channel_io_frozen) {
+ 		pci_walk_bus(bus, report_frozen_detected, &status);
+-		status = reset_link(dev);
++		status = reset_subordinate_device(dev);
+ 		if (status != PCI_ERS_RESULT_RECOVERED) {
+-			pci_warn(dev, "link reset failed\n");
++			pci_warn(dev, "subordinate device reset failed\n");
+ 			goto failed;
+ 		}
+ 	} else {
+-- 
+2.28.0
+
