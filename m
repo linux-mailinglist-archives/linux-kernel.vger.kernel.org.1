@@ -2,138 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC51F27E3AB
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 10:25:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2AB627E3AD
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 10:27:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728688AbgI3IZl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 04:25:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55226 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728563AbgI3IZl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 04:25:41 -0400
-Received: from pali.im (unknown [31.31.79.79])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1728257AbgI3I1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 04:27:15 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:20440 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725776AbgI3I1O (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 04:27:14 -0400
+Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601454433;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=So1PY8jPTdIwMmm/vJdMMvuvDwVqCQp99DADaypxakQ=;
+        b=WQfR4Jx2APUQw8IdFnZwt0z6siL5rf0FEu2cXbK8PbEhvHLU7j2AwMGQwfuqL3p97P8H5P
+        yXJrKBrs++PiJEqXlKcwkAi+vsTI11mbm5y+QzC5+UVjAwdp4J3QdIk0pMdh+dPGhM/NzH
+        JE/eVjAniOY5Q3NwAXaDztU6O63+QXE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-288-XZwO8XIIOcWSs1erZltgOw-1; Wed, 30 Sep 2020 04:27:10 -0400
+X-MC-Unique: XZwO8XIIOcWSs1erZltgOw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5611021734;
-        Wed, 30 Sep 2020 08:25:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601454340;
-        bh=h12YRtace030+4IgK0t+oBgFypBtI4JrBGHJTaTeLTw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MeJnceBJMi3J8d4ZY4wOKANV2K6VqbiJPu9yK0Of/wIwdE0rcYfzeRMCg84uLRP9+
-         DAPQAHSpjkAizklVLj5l/B+2e3AFv5bpEgY7njpftZzABiwJa+s4rJeAXXaUMTem9Z
-         Wo5I1LZaqRfByGW5iJdztmNhDKslMeazyrEfPUAQ=
-Received: by pali.im (Postfix)
-        id 58F8E9D2; Wed, 30 Sep 2020 10:25:34 +0200 (CEST)
-Date:   Wed, 30 Sep 2020 10:25:34 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Pavel Machek <pavel@ucw.cz>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        Sebastian Reichel <sre@kernel.org>,
-        David Heidelberg <david@ixit.cz>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: Removal of HCI commands, userspace bluetooth regression?
-Message-ID: <20200930082534.rrck6qb3fntm25wz@pali>
-References: <20191228171212.56anj4d4kvjeqhms@pali>
- <45BB2908-4E16-4C74-9DB4-8BAD93B42A21@holtmann.org>
- <20200104102436.bhqagqrfwupj6hkm@pali>
- <20200209132137.7pi4pgnassosh3ax@pali>
- <20200414225618.zgh5h4jexahfukdl@pali>
- <20200808132747.4byefjg5ysddgkel@pali>
- <20200929213254.difivzrhapk766xp@pali>
- <20200930080205.GA1571308@kroah.com>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4858E8030B7;
+        Wed, 30 Sep 2020 08:27:09 +0000 (UTC)
+Received: from localhost (ovpn-12-34.pek2.redhat.com [10.72.12.34])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 23D1E19D7D;
+        Wed, 30 Sep 2020 08:27:03 +0000 (UTC)
+From:   Ming Lei <ming.lei@redhat.com>
+To:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org
+Cc:     Ming Lei <ming.lei@redhat.com>,
+        Veronika Kabatova <vkabatov@redhat.com>,
+        Sagi Grimberg <sagi@grimberg.me>, Tejun Heo <tj@kernel.org>,
+        Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
+        Bart Van Assche <bvanassche@acm.org>
+Subject: [PATCH V6 0/2] percpu_ref & block: reduce memory footprint of percpu_ref in fast path
+Date:   Wed, 30 Sep 2020 16:26:55 +0800
+Message-Id: <20200930082657.3305143-1-ming.lei@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200930080205.GA1571308@kroah.com>
-User-Agent: NeoMutt/20180716
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday 30 September 2020 10:02:05 Greg Kroah-Hartman wrote:
-> On Tue, Sep 29, 2020 at 11:32:54PM +0200, Pali Rohár wrote:
-> > CCing other lists and maintainers, hopefully, somebody would have a time to look at it...
-> > 
-> > On Saturday 08 August 2020 15:27:47 Pali Rohár wrote:
-> > > On Wednesday 15 April 2020 00:56:18 Pali Rohár wrote:
-> > > > On Sunday 09 February 2020 14:21:37 Pali Rohár wrote:
-> > > > > On Saturday 04 January 2020 11:24:36 Pali Rohár wrote:
-> > > > > > On Saturday 04 January 2020 10:44:52 Marcel Holtmann wrote:
-> > > > > > > Hi Pali,
-> > > > > > > 
-> > > > > > > > I wrote a simple script "sco_features.pl" which show all supported
-> > > > > > > > codecs by local HCI bluetooth adapter. Script is available at:
-> > > > > > > > 
-> > > > > > > > https://github.com/pali/hsphfpd-prototype/blob/prototype/sco_features.pl
-> > > > > > > > 
-> > > > > > > > And I found out that OCF_READ_LOCAL_CODECS HCI command cannot be send by
-> > > > > > > > non-root user. Kernel returns "Operation not permitted" error.
-> > > > > > > > 
-> > > > > > > > What is reason that kernel blocks OCF_READ_LOCAL_CODECS command for
-> > > > > > > > non-root users? Without it (audio) application does not know which
-> > > > > > > > codecs local bluetooth adapter supports.
-> > > > > > > > 
-> > > > > > > > E.g. OCF_READ_LOCAL_EXT_FEATURES or OCF_READ_VOICE_SETTING commands can
-> > > > > > > > be send also by non-root user and kernel does not block them.
-> > > > > > > 
-> > > > > > > actually the direct access to HCI commands is being removed. So we have no plans to add new commands into the list since that it what the kernel is suppose to handle. If we wanted to expose this, then it has to be via mgmt.
-> > > > > > 
-> > > > > > Hi Marcel! Thank you for information. I have not know that this API is
-> > > > > > "deprecated" and is going to be removed. But userspace audio
-> > > > > > applications need to know what bluetooth adapter supports, so can you
-> > > > > > export result of these commands to userspace? My script linked above
-> > > > > > calls: OCF_READ_VOICE_SETTING, OCF_READ_LOCAL_COMMANDS,
-> > > > > > OCF_READ_LOCAL_EXT_FEATURES, OCF_READ_LOCAL_CODECS
-> > > > > 
-> > > > > Hello! Just a gently reminder for this question. How to retrieve
-> > > > > information about supported codecs from userspace by non-root user?
-> > > > > Because running all bluetooth audio applications by root is not really a
-> > > > > solution. Plus if above API for root user is going to be removed, what
-> > > > > is a replacement?
-> > > > 
-> > > > Hello!
-> > > > 
-> > > > I have not got any answer to my email from Marcel for months, so I'm
-> > > > adding other developers to loop. Could somebody tell me that is the
-> > > > replacement API if above one is going to be removed?
-> > > > 
-> > > > I was not able to find any documentation where could be described this
-> > > > API nor information about deprecation / removal.
-> > > > 
-> > > > And are you aware of the fact that removing of API could potentially
-> > > > break existing applications?
-> > > > 
-> > > > I really need to know which API should I use, because when I use API
-> > > > which is going to be removed, then my application stops working. And I
-> > > > really want to avoid it.
-> > > > 
-> > > > Also I have not got any response yet, how can I read list of supported
-> > > > codecs by bluetooth adapter by ordinary non-root user? Audio application
-> > > > needs to know list of supported codecs and it is really insane to run it
-> > > > as root.
-> > > 
-> > > Hello! This is just another reminder that I have not got any reply to
-> > > this email.
-> > > 
-> > > Does silence mean that audio applications are expected to work only
-> > > under root account and ordinary users are not able to use audio and list
-> > > supported codecs?
-> > 
-> > Hello! I have not got any reply for this issue for 10 months and if you
-> > are going to remove (or after these 10 months you already did it?)
-> > existing HCI API from kernel it would break existing and working
-> > userspace application. How do you want to handle such regressions?
-> 
-> What git commit caused this regression?
+Hi,
 
-Hello! Marcel in January wrote that access for HCI commands is being
-removed from kernel. I do not know if he managed to do it in since
-January, but I'm going to check it...
+The 1st patch removes memory footprint of percpu_ref in fast path
+from 7 words to 2 words, since it is often used in fast path and
+embedded in user struct.
+
+The 2nd patch moves .q_usage_counter to 1st cacheline of
+'request_queue'.
+
+Simple test on null_blk shows ~2% IOPS boost on one 16cores(two threads
+per core) machine, dual socket/numa.
+
+V6:
+	- drop the 1st patch which adds percpu_ref_is_initialized() for MD
+	only, since Christoph doesn't like it
+
+V5:
+	- fix memory leak on ref->data, only percpu_ref_exit() of patch 2
+	is modified.
+
+V4:
+	- rename percpu_ref_inited as percpu_ref_is_initialized
+
+V3:
+	- fix kernel oops on MD
+	- add patch for avoiding to use percpu-refcount internal from md
+	  code
+	- pass Red Hat CKI test which is done by Veronika Kabatova
+
+V2:
+	- pass 'gfp' to kzalloc() for fixing block/027 failure reported by
+	kernel test robot
+	- protect percpu_ref_is_zero() with destroying percpu-refcount by
+	spin lock  
+
+
+
+Ming Lei (2):
+  percpu_ref: reduce memory footprint of percpu_ref in fast path
+  block: move 'q_usage_counter' into front of 'request_queue'
+
+ drivers/infiniband/sw/rdmavt/mr.c |   2 +-
+ include/linux/blkdev.h            |   3 +-
+ include/linux/percpu-refcount.h   |  45 ++++------
+ lib/percpu-refcount.c             | 131 ++++++++++++++++++++++--------
+ 4 files changed, 118 insertions(+), 63 deletions(-)
+
+Cc: Veronika Kabatova <vkabatov@redhat.com>
+Cc: Sagi Grimberg <sagi@grimberg.me>
+Cc: Tejun Heo <tj@kernel.org>
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: Jens Axboe <axboe@kernel.dk>
+Cc: Bart Van Assche <bvanassche@acm.org>
+-- 
+2.25.2
+
