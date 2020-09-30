@@ -2,305 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55BC827E263
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 09:15:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9950927E265
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 09:15:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728318AbgI3HP0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 03:15:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50824 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725535AbgI3HP0 (ORCPT
+        id S1728310AbgI3HPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 03:15:40 -0400
+Received: from mailout2.w1.samsung.com ([210.118.77.12]:60223 "EHLO
+        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725535AbgI3HPk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 03:15:26 -0400
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3737DC061755
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 00:15:26 -0700 (PDT)
-Received: by mail-yb1-xb41.google.com with SMTP id f70so489179ybg.13
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 00:15:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qqhw0OCG4g9ihi2GTmXgcfQ40syiccIWHtyWu1apJtM=;
-        b=XpXQUcSxPOOTnUnom8mWWgUU1kpvZkTr0iviPVeh1j/x+SEwe9pmGriNIzL5DsfU2k
-         Gc5tm9acczBi5ybFhGQOka/AapgX7Me1E61RV7eXpaH474I3kpqW8I1nZZdKouA4uadq
-         sdYiuhYqi+5nA+bso2NWBkDsBB1FeQe0mExqTnr1sDvzP1AWusTaVXjoQfVdQQI+n1x6
-         qExIF3TnOBSV0t/VwAmBkbbABERIFJEUUVW3eFmXhOTADDxl86vlwGUSe1L/C/teqUiw
-         HZWWwpxxmL2j3rpTrUEeMZ5GNreJXLjQwiVW9KMBVwOL2Rwm5ipq3anX5Pe5R9LWkDPq
-         4A6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qqhw0OCG4g9ihi2GTmXgcfQ40syiccIWHtyWu1apJtM=;
-        b=Eq8zX5n+ECiwAIgpB4uyMeug68sLSr06TpMmXlrXypdUFlbG2B88ilJV7unSVwugfR
-         K/TtRcAgAOnpzFY2adC+pKvLBS4KOaL501B8PJx38nTnrTf9hcaHOHYUhn2Q+qYWAZoI
-         QzEM2fXRBB4vIbwKEi2TLXGW/qIrinUuvSsdEHVlOmvVBTrqqj/gCpavlBL5ecsMKUke
-         ngapa3LARj0Q9P27OWFvR+altoXfkst3uoBzLsvfm1GKiX5oB2/OawNqG+oSnAk6Taq4
-         EZIjKtA79dPbQLajowCbtWYk+DNnbcCe4bigyli+ry/6fot8o52XctMDb0t/RZsirUwz
-         TeBA==
-X-Gm-Message-State: AOAM532ry2fm9j7jG5uoICA11LqeGkF77lFeQDGU87WvLgD2AOnX6WP5
-        QcRb3MTBNJH3e3womDeU/byEj4OZtVEBBPpEKo+EoTjj8dfGRQ==
-X-Google-Smtp-Source: ABdhPJyoG7jb67Iv3SESbLm2EL1R4lUqtiLQzOZr+FkRNSA/oMYsB41XL5uKYKRHje9P9uK1IfApX1Ab83xmQe5eEIU=
-X-Received: by 2002:a25:ab8e:: with SMTP id v14mr1528329ybi.465.1601450125087;
- Wed, 30 Sep 2020 00:15:25 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200921152653.3924-1-kan.liang@linux.intel.com> <20200921152653.3924-2-kan.liang@linux.intel.com>
-In-Reply-To: <20200921152653.3924-2-kan.liang@linux.intel.com>
-From:   Stephane Eranian <eranian@google.com>
-Date:   Wed, 30 Sep 2020 00:15:13 -0700
-Message-ID: <CABPqkBRYzXH-76BZ3DdxYp7bdyPcr3_WxuxOsJw=1YPE9EwZaw@mail.gmail.com>
-Subject: Re: [PATCH V8 1/4] perf/core: Add PERF_SAMPLE_DATA_PAGE_SIZE
-To:     "Liang, Kan" <kan.liang@linux.intel.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Wed, 30 Sep 2020 03:15:40 -0400
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20200930071537euoutp0253d4c6eb911a8a7dba4aec4479e3c908~5fmpZKHPh1263312633euoutp02G
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 07:15:37 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20200930071537euoutp0253d4c6eb911a8a7dba4aec4479e3c908~5fmpZKHPh1263312633euoutp02G
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1601450137;
+        bh=0cB3Oahr4FGEYxGAhCJARGenVdml6D5Dll5LWqSlJqc=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=ayEiOBC314ec5/1PhB7S/kbpZoES9VAoaZt7Ouup9WcqqNi0y2xo08nr9YBSsfyC8
+         tF4Y8aH/oMwIs4pnVB+a4ybI4H88zaC9OTHxkvbb7k+q5M9rwJOskrGkrYeXYHwRi5
+         Ca2OR2eF6op8E3TtWiii60T76sGJ9A26jNYE+//Y=
+Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20200930071537eucas1p1fc4912e5d8938177812b7389325e25a9~5fmo_tch31618416184eucas1p1o;
+        Wed, 30 Sep 2020 07:15:37 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges3new.samsung.com (EUCPMTA) with SMTP id 61.EA.06318.990347F5; Wed, 30
+        Sep 2020 08:15:37 +0100 (BST)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20200930071536eucas1p2fe055287ddf0e1bb75815ac758582eb2~5fmomJ1Wy1336613366eucas1p2q;
+        Wed, 30 Sep 2020 07:15:36 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20200930071536eusmtrp2de88a91384581702e9b0ccc5d2cf54c8~5fmolV88w1670616706eusmtrp2f;
+        Wed, 30 Sep 2020 07:15:36 +0000 (GMT)
+X-AuditID: cbfec7f5-371ff700000018ae-1a-5f7430991af9
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id 48.5E.06314.890347F5; Wed, 30
+        Sep 2020 08:15:36 +0100 (BST)
+Received: from [106.210.88.143] (unknown [106.210.88.143]) by
+        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20200930071536eusmtip1a6c08742afc79eda5eca2317382b1471~5fmnzjGB82121921219eusmtip1g;
+        Wed, 30 Sep 2020 07:15:35 +0000 (GMT)
+Subject: Re: [Linaro-mm-sig] [PATCH v5 05/38] drm: prime: use sgtable
+ iterators in drm_prime_sg_to_page_addr_arrays()
+To:     Alex Deucher <alexdeucher@gmail.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Maxime Ripard <mripard@kernel.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Cc:     Alex Goins <agoins@nvidia.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        David Airlie <airlied@linux.ie>,
         LKML <linux-kernel@vger.kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        kirill.shutemov@linux.intel.com,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        benh@kernel.crashing.org, Paul Mackerras <paulus@samba.org>
-Content-Type: text/plain; charset="UTF-8"
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        iommu@lists.linux-foundation.org,
+        Robin Murphy <robin.murphy@arm.com>,
+        Christoph Hellwig <hch@lst.de>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+From:   Marek Szyprowski <m.szyprowski@samsung.com>
+Message-ID: <d004633a-401b-b94d-123c-486185c8905a@samsung.com>
+Date:   Wed, 30 Sep 2020 09:15:29 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+        Thunderbird/68.12.0
+MIME-Version: 1.0
+In-Reply-To: <CADnq5_OP4pEg7Cg9E=TUB0viSX8rTALQoFck=ueTh=phTtUfEA@mail.gmail.com>
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0hTYRjHec85Ozta0+OsfLtQtFBMKY2sThhhNzj0qX0J6aKtPGrkpux4
+        yYIcGpFL7aKmnmReKM1LaWtqTkwntWHmFDdMy8rLikrXEp1gyKrtUPnt93+u7//hJVCxCl9H
+        nFekMkqFLEmCe2OtxkXztrLw1Njw4n5f6sPCPirf3ItQY0uckHpS2iSgrE4HTtU1vESoyq5I
+        Kvdes5Cat04glHZqWEBZ9OU4VTXbglHXcmsElOGHTUDpZm4Lonxpm0GD0I2aRkC3c++FtLY+
+        F6fbFsYFtKZXSn+8YULop/ez6HeuKZQuHKkFdMeoCqfzc77jdIGuHtBP+y7Tc9qNx3xPeO+L
+        Y5LOpzPKsP1nvBNfdcwIU3R+F5051bgKaH3UwIuAZATs7r+LqIE3ISYfAlhinRTyYh7ACpUF
+        58UcgJo6p0ANCE/LQHEQH68FMGcpD+OFA8BPow7EPdefzICdlhYPryKb/3RzWe4ilOzCoMMw
+        4Eng5A6otqtxN4vI/bBGM+thjAyEdcMGzM2ryRhofDWJ8TV+sLfM5mEvUgor9VoPo+Qm2GYv
+        R3kOgG9tFR5DkNQRUNftwnmnh6E5vwHh2R9+M+mEPG+Av9r/NuQAOGF+JORFHoCW7FLAV0XC
+        MfNP3H0AlNwKm/Rh/C0OwBeFQTz6wBG7H/8GH3intQTlwyJ4/ZqYnxEEOdPjf1sNg0PoLSDh
+        ljnjlrnhlrnh/q+tBFg9CGDSWHkCw+5UMBnbWZmcTVMkbD+XLNeCP/+yz2VyPgPPl872AJIA
+        kpUiYg0bKxbI0tlMeQ+ABCpZJTrY3xcjFsXJMi8xyuRYZVoSw/aA9QQmCRDtrP56WkwmyFKZ
+        CwyTwij/ZhHCa50KXAo1DnJj9LROPrp6xRbDy6lg4yhb9WVFUfpcZnxdZ9WhYzcy+utBd3Da
+        m6Ilk8XuIBvFR/1dEXvyP8fI7SNHon9mXonUvx06/gsr1kfdfDD4Qeac3h2KucI2r21MGg9R
+        7Cp4LQ2siY+rTr5z0npGmt3VFJa992r0YnOvNZkqOCXB2ETZjhBUycp+AxrVr/aTAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprIKsWRmVeSWpSXmKPExsVy+t/xu7ozDEriDc73G1vc+2Zj0XvuJJPF
+        nT+z2C02zljPanHl63s2i5WrjzJZLNhvbdE5ewO7xZcrD5ksNj2+xmpxedccNouFH7eyWLR1
+        LmO1OPjhCavFljcTWR34PZ4cnMfksWbeGkaPnbPusntsWtXJ5rH92wNWj3knAz3udx9n8ti8
+        pN7j9r/HzB6Tbyxn9Nh9s4HNo7f5HZtH35ZVjB6bT1d7fN4kF8AfpWdTlF9akqqQkV9cYqsU
+        bWhhpGdoaaFnZGKpZ2hsHmtlZKqkb2eTkpqTWZZapG+XoJdxavcb9oItghVfmxexNTBu4uti
+        5OCQEDCROD9VrYuRk0NIYCmjxPXOGBBbQkBG4uS0BlYIW1jiz7Uuti5GLqCat4wSn9b8YgRJ
+        CAuUS+y9vJUJxBYR2MAosXVKPojNLHCQRaLvaylEwwpmiWtrfoMVsQkYSnS9BZnEycErYCex
+        bN5HMJtFQFVi5bWDLCC2qECcxJmeF1A1ghInZz4Bi3MKBEos2LWJBWKBmcS8zQ+ZIWx5ie1v
+        50DZ4hK3nsxnmsAoNAtJ+ywkLbOQtMxC0rKAkWUVo0hqaXFuem6xoV5xYm5xaV66XnJ+7iZG
+        YHLYduzn5h2MlzYGH2IU4GBU4uFNkCiOF2JNLCuuzD3EKMHBrCTC63T2dJwQb0piZVVqUX58
+        UWlOavEhRlOg5yYyS4km5wMTV15JvKGpobmFpaG5sbmxmYWSOG+HwMEYIYH0xJLU7NTUgtQi
+        mD4mDk6pBsbwoqCQ+sowlVNamULNm6ZOSnq/S4bpA2fMLc/Huhsv56R9OhOcYP30U/OlZa9f
+        ZsjznTsYJC/WLvDV4tPTqQ/WRguwsXk4iRneFt2ZvMBevdHEOOOze9W6z1oiPFM4Hh65E5Wy
+        tMkho38K4/Xrrmc4rLjFw/Z+XvXrG1vBqWlf1kncEV0yy1aJpTgj0VCLuag4EQB5rjW3JAMA
+        AA==
+X-CMS-MailID: 20200930071536eucas1p2fe055287ddf0e1bb75815ac758582eb2
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20200513133259eucas1p273f0e05005b7b1158d884295d35745fd
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20200513133259eucas1p273f0e05005b7b1158d884295d35745fd
+References: <20200513132114.6046-1-m.szyprowski@samsung.com>
+        <20200513133245.6408-1-m.szyprowski@samsung.com>
+        <CGME20200513133259eucas1p273f0e05005b7b1158d884295d35745fd@eucas1p2.samsung.com>
+        <20200513133245.6408-5-m.szyprowski@samsung.com>
+        <alpine.DEB.2.20.2009211803580.19454@agoins-DiGiTS>
+        <afb59d1b-1fcf-fd6d-2b48-e078e129f1eb@samsung.com>
+        <CADnq5_OP4pEg7Cg9E=TUB0viSX8rTALQoFck=ueTh=phTtUfEA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 8:29 AM <kan.liang@linux.intel.com> wrote:
->
-> From: Kan Liang <kan.liang@linux.intel.com>
->
-> Current perf can report both virtual addresses and physical addresses,
-> but not the MMU page size. Without the MMU page size information of the
-> utilized page, users cannot decide whether to promote/demote large pages
-> to optimize memory usage.
->
-> Add a new sample type for the data MMU page size.
->
-> Current perf already has a facility to collect data virtual addresses.
-> A page walker is required to walk the pages tables and calculate the
-> MMU page size from a given virtual address.
->
-> On some platforms, e.g., X86, the page walker is invoked in an NMI
-> handler. So the page walker must be NMI-safe and low overhead. Besides,
-> the page walker should work for both user and kernel virtual address.
-> The existing generic page walker, e.g., walk_page_range_novma(), is a
-> little bit complex and doesn't guarantee the NMI-safe. The follow_page()
-> is only for user-virtual address.
->
-> Add a new function perf_get_page_size() to walk the page tables and
-> calculate the MMU page size. In the function:
-> - Interrupts have to be disabled to prevent any teardown of the page
->   tables.
-> - The active_mm is used for the page walker. Compared with mm, the
->   active_mm is a better choice. It's always non-NULL. For the user
->   thread, it always points to the real address space. For the kernel
->   thread, it "take over" the mm of the threads that switched to it,
->   so it's not using all of the page tables from the init_mm all the
->   time.
-> - The MMU page size is calculated from the page table level.
->
-> The method should work for all architectures, but it has only been
-> verified on X86. Should there be some architectures, which support perf,
-> where the method doesn't work, it can be fixed later separately.
-> Reporting the wrong page size would not be fatal for the architecture.
->
-> Some under discussion features may impact the method in the future.
-> Quote from Dave Hansen,
->   "There are lots of weird things folks are trying to do with the page
->    tables, like Address Space Isolation.  For instance, if you get a
->    perf NMI when running userspace, current->mm->pgd is *different* than
->    the PGD that was in use when userspace was running. It's close enough
->    today, but it might not stay that way."
-> If the case happens later, lots of consecutive page walk errors will
-> happen. The worst case is that lots of page-size '0' are returned, which
-> would not be fatal.
-> In the perf tool, a check is implemented to detect this case. Once it
-> happens, a kernel patch could be implemented accordingly then.
->
-> Suggested-by: Peter Zijlstra <peterz@infradead.org>
-> Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
-> ---
->  include/linux/perf_event.h      |  1 +
->  include/uapi/linux/perf_event.h |  4 +-
->  kernel/events/core.c            | 93 +++++++++++++++++++++++++++++++++
->  3 files changed, 97 insertions(+), 1 deletion(-)
->
-> diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
-> index 0c19d279b97f..7e3785dd27d9 100644
-> --- a/include/linux/perf_event.h
-> +++ b/include/linux/perf_event.h
-> @@ -1034,6 +1034,7 @@ struct perf_sample_data {
->
->         u64                             phys_addr;
->         u64                             cgroup;
-> +       u64                             data_page_size;
->  } ____cacheline_aligned;
->
->  /* default value for data source */
-> diff --git a/include/uapi/linux/perf_event.h b/include/uapi/linux/perf_event.h
-> index 077e7ee69e3d..cc6ea346e9f9 100644
-> --- a/include/uapi/linux/perf_event.h
-> +++ b/include/uapi/linux/perf_event.h
-> @@ -143,8 +143,9 @@ enum perf_event_sample_format {
->         PERF_SAMPLE_PHYS_ADDR                   = 1U << 19,
->         PERF_SAMPLE_AUX                         = 1U << 20,
->         PERF_SAMPLE_CGROUP                      = 1U << 21,
-> +       PERF_SAMPLE_DATA_PAGE_SIZE              = 1U << 22,
->
-> -       PERF_SAMPLE_MAX = 1U << 22,             /* non-ABI */
-> +       PERF_SAMPLE_MAX = 1U << 23,             /* non-ABI */
->
->         __PERF_SAMPLE_CALLCHAIN_EARLY           = 1ULL << 63, /* non-ABI; internal use */
->  };
-> @@ -896,6 +897,7 @@ enum perf_event_type {
->          *      { u64                   phys_addr;} && PERF_SAMPLE_PHYS_ADDR
->          *      { u64                   size;
->          *        char                  data[size]; } && PERF_SAMPLE_AUX
-> +        *      { u64                   data_page_size;} && PERF_SAMPLE_DATA_PAGE_SIZE
->          * };
->          */
->         PERF_RECORD_SAMPLE                      = 9,
-> diff --git a/kernel/events/core.c b/kernel/events/core.c
-> index 45edb85344a1..dd329a8f99f7 100644
-> --- a/kernel/events/core.c
-> +++ b/kernel/events/core.c
-> @@ -51,6 +51,7 @@
->  #include <linux/proc_ns.h>
->  #include <linux/mount.h>
->  #include <linux/min_heap.h>
-> +#include <linux/highmem.h>
->
->  #include "internal.h"
->
-> @@ -1894,6 +1895,9 @@ static void __perf_event_header_size(struct perf_event *event, u64 sample_type)
->         if (sample_type & PERF_SAMPLE_CGROUP)
->                 size += sizeof(data->cgroup);
->
-> +       if (sample_type & PERF_SAMPLE_DATA_PAGE_SIZE)
-> +               size += sizeof(data->data_page_size);
-> +
->         event->header_size = size;
->  }
->
-> @@ -6937,6 +6941,9 @@ void perf_output_sample(struct perf_output_handle *handle,
->         if (sample_type & PERF_SAMPLE_CGROUP)
->                 perf_output_put(handle, data->cgroup);
->
-> +       if (sample_type & PERF_SAMPLE_DATA_PAGE_SIZE)
-> +               perf_output_put(handle, data->data_page_size);
-> +
->         if (sample_type & PERF_SAMPLE_AUX) {
->                 perf_output_put(handle, data->aux_size);
->
-> @@ -6994,6 +7001,84 @@ static u64 perf_virt_to_phys(u64 virt)
->         return phys_addr;
->  }
->
-> +#ifdef CONFIG_MMU
-> +
-> +/*
-> + * Return the MMU page size of a given virtual address
-> + */
-> +static u64 __perf_get_page_size(struct mm_struct *mm, unsigned long addr)
-> +{
-> +       pgd_t *pgd;
-> +       p4d_t *p4d;
-> +       pud_t *pud;
-> +       pmd_t *pmd;
-> +       pte_t *pte;
-> +
-> +       pgd = pgd_offset(mm, addr);
-> +       if (pgd_none(*pgd))
-> +               return 0;
-> +
-> +       p4d = p4d_offset(pgd, addr);
-> +       if (!p4d_present(*p4d))
-> +               return 0;
-> +
-> +       if (p4d_leaf(*p4d))
-> +               return 1ULL << P4D_SHIFT;
-> +
-> +       pud = pud_offset(p4d, addr);
-> +       if (!pud_present(*pud))
-> +               return 0;
-> +
-> +       if (pud_leaf(*pud))
-> +               return 1ULL << PUD_SHIFT;
-> +
-> +       pmd = pmd_offset(pud, addr);
-> +       if (!pmd_present(*pmd))
-> +               return 0;
-> +
-> +       if (pmd_leaf(*pmd))
-> +               return 1ULL << PMD_SHIFT;
-> +
-> +       pte = pte_offset_map(pmd, addr);
-> +       if (!pte_present(*pte)) {
-> +               pte_unmap(pte);
-> +               return 0;
-> +       }
-> +
-> +       pte_unmap(pte);
-> +       return PAGE_SIZE;
-> +}
-> +
-> +#else
-> +
-> +static u64 __perf_get_page_size(struct mm_struct *mm, unsigned long addr)
-> +{
-> +       return 0;
-> +}
-> +
-> +#endif
-> +
-> +static u64 perf_get_page_size(unsigned long addr)
-> +{
-> +       unsigned long flags;
-> +       u64 size;
-> +
-> +       if (!addr)
-> +               return 0;
-> +
-> +       /*
-> +        * Software page-table walkers must disable IRQs,
-> +        * which prevents any tear down of the page tables.
-> +        */
-> +       local_irq_save(flags);
-> +
-> +       size = __perf_get_page_size(current->active_mm, addr);
-> +
+Hi All,
 
-When I tested on my kernel, it panicked because I suspect
-current->active_mm could be NULL. Adding a check for NULL avoided the
-problem. But I suspect this is not the correct solution.
+On 25.09.2020 23:23, Alex Deucher wrote:
+> On Tue, Sep 22, 2020 at 2:28 AM Marek Szyprowski
+> <m.szyprowski@samsung.com> wrote:
+>> On 22.09.2020 01:15, Alex Goins wrote:
+>>> Tested-by: Alex Goins <agoins@nvidia.com>
+>>>
+>>> This change fixes a regression with drm_prime_sg_to_page_addr_arrays() and
+>>> AMDGPU in v5.9.
+>> Thanks for testing!
+>>
+>>> Commit 39913934 similarly revamped AMDGPU to use sgtable helper functions. When
+>>> it changed from dma_map_sg_attrs() to dma_map_sgtable(), as a side effect it
+>>> started correctly updating sgt->nents to the return value of dma_map_sg_attrs().
+>>> However, drm_prime_sg_to_page_addr_arrays() incorrectly uses sgt->nents to
+>>> iterate over pages, rather than sgt->orig_nents, resulting in it now returning
+>>> the incorrect number of pages on AMDGPU.
+>>>
+>>> I had written a patch that changes drm_prime_sg_to_page_addr_arrays() to use
+>>> for_each_sgtable_sg() instead of for_each_sg(), iterating using sgt->orig_nents:
+>>>
+>>> -       for_each_sg(sgt->sgl, sg, sgt->nents, count) {
+>>> +       for_each_sgtable_sg(sgt, sg, count) {
+>>>
+>>> This patch takes it further, but still has the effect of fixing the number of
+>>> pages that drm_prime_sg_to_page_addr_arrays() returns. Something like this
+>>> should be included in v5.9 to prevent a regression with AMDGPU.
+>> Probably the easiest way to handle a fix for v5.9 would be to simply
+>> merge the latest version of this patch also to v5.9-rcX:
+>> https://lore.kernel.org/dri-devel/20200904131711.12950-3-m.szyprowski@samsung.com/
+>>
+>>
+>> This way we would get it fixed and avoid possible conflict in the -next.
+>> Do you have any AMDGPU fixes for v5.9 in the queue? Maybe you can add
+>> that patch to the queue? Dave: would it be okay that way?
+> I think this should go into drm-misc for 5.9 since it's an update to
+> drm_prime.c.  Is that patch ready to merge?
+> Acked-by: Alex Deucher <alexander.deucher@amd.com>
 
->
-> +       local_irq_restore(flags);
-> +
-> +       return size;
-> +}
-> +
->  static struct perf_callchain_entry __empty_callchain = { .nr = 0, };
->
->  struct perf_callchain_entry *
-> @@ -7149,6 +7234,14 @@ void perf_prepare_sample(struct perf_event_header *header,
->         }
->  #endif
->
-> +       /*
-> +        * PERF_DATA_PAGE_SIZE requires PERF_SAMPLE_ADDR. If the user doesn't
-> +        * require PERF_SAMPLE_ADDR, kernel implicitly retrieve the data->addr,
-> +        * but the value will not dump to the userspace.
-> +        */
-> +       if (sample_type & PERF_SAMPLE_DATA_PAGE_SIZE)
-> +               data->data_page_size = perf_get_page_size(data->addr);
-> +
->         if (sample_type & PERF_SAMPLE_AUX) {
->                 u64 size;
->
-> --
-> 2.17.1
->
+Maarten, Maxime or Thomas: could you take this one:
+
+https://lore.kernel.org/dri-devel/20200904131711.12950-3-m.szyprowski@samsung.com/
+
+also to drm-misc-fixes for v5.9-rc?
+
+Best regards
+
+-- 
+Marek Szyprowski, PhD
+Samsung R&D Institute Poland
+
