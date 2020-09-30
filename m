@@ -2,109 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D037327E1E3
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 08:55:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B709E27E1E6
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 08:57:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725884AbgI3GzZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 02:55:25 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:33128 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725320AbgI3GzZ (ORCPT
+        id S1727903AbgI3G5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 02:57:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48022 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725320AbgI3G5a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 02:55:25 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08U6tH3S111524;
-        Wed, 30 Sep 2020 01:55:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1601448917;
-        bh=SjwzTMQn23wkJCILPpI4P6hiSeNglvKKYyq3k2vlQng=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=t3QoV6nRSNnRHIAcSrC7Zz5zfRkl/uPdPNQ/2iZhNQaDFdugJWy9g1OS1pfcTQGLP
-         usYqIX146qqvqtOZgw7b2pyoqdiiQozpUUncbN/WqHJcX0uMNDKJu5Yi1jcnY89eed
-         j+dQGrrxFrmRiP7cQuTgPCkGDbWKmYHsEcoJsUEA=
-Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08U6tH3r004249
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 30 Sep 2020 01:55:17 -0500
-Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 30
- Sep 2020 01:55:17 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 30 Sep 2020 01:55:17 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08U6tGxX115213;
-        Wed, 30 Sep 2020 01:55:17 -0500
-Date:   Wed, 30 Sep 2020 12:25:15 +0530
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     <Tudor.Ambarus@microchip.com>
-CC:     <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
-        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <nsekhar@ti.com>, <boris.brezillon@collabora.com>
-Subject: Re: [PATCH v13 08/15] mtd: spi-nor: core: do 2 byte reads for SR and
- FSR in DTR mode
-Message-ID: <20200930065513.bwieuiyt4hwwgods@ti.com>
-References: <20200916124418.833-1-p.yadav@ti.com>
- <20200916124418.833-9-p.yadav@ti.com>
- <6198a69a-2800-d14f-1d29-9511ba6a3f5f@microchip.com>
+        Wed, 30 Sep 2020 02:57:30 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A85AC061755
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 23:57:30 -0700 (PDT)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1kNW3L-0004zy-JM; Wed, 30 Sep 2020 08:57:27 +0200
+Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1kNW3K-000771-Mv; Wed, 30 Sep 2020 08:57:26 +0200
+Date:   Wed, 30 Sep 2020 08:57:26 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     poeschel@lemonage.de
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        "open list:PWM SUBSYSTEM" <linux-pwm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] pwm: sysfs: Set class on pwm devices
+Message-ID: <20200930065726.fjcsm4pfh65medgl@pengutronix.de>
+References: <20200929121953.2817843-1-poeschel@lemonage.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="yd7x7geskr4c23jo"
 Content-Disposition: inline
-In-Reply-To: <6198a69a-2800-d14f-1d29-9511ba6a3f5f@microchip.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <20200929121953.2817843-1-poeschel@lemonage.de>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/09/20 06:50AM, Tudor.Ambarus@microchip.com wrote:
-> On 9/16/20 3:44 PM, Pratyush Yadav wrote:
-> > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
-> > 
-> > Some controllers, like the cadence qspi controller, have trouble reading
-> > only 1 byte in DTR mode. So, do 2 byte reads for SR and FSR commands in
-> 
-> did you get garbage when reading only one byte?
 
-Yes.
- 
-> > DTR mode, and then discard the second byte.
-> > 
-> > Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
-> > ---
-> >  drivers/mtd/spi-nor/core.c | 15 +++++++++++++--
-> >  1 file changed, 13 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-> > index 88c9e18067f4..87c568debf14 100644
-> > --- a/drivers/mtd/spi-nor/core.c
-> > +++ b/drivers/mtd/spi-nor/core.c
-> > @@ -368,7 +368,7 @@ int spi_nor_write_disable(struct spi_nor *nor)
-> >   * spi_nor_read_sr() - Read the Status Register.
-> >   * @nor:       pointer to 'struct spi_nor'.
-> >   * @sr:                pointer to a DMA-able buffer where the value of the
-> > - *              Status Register will be written.
-> > + *              Status Register will be written. Should be at least 2 bytes.
-> >   *
-> >   * Return: 0 on success, -errno otherwise.
-> >   */
-> > @@ -386,6 +386,11 @@ static int spi_nor_read_sr(struct spi_nor *nor, u8 *sr)
-> >                 if (spi_nor_protocol_is_dtr(nor->reg_proto)) {
-> >                         op.addr.nbytes = nor->params->rdsr_addr_nbytes;
-> >                         op.dummy.nbytes = nor->params->rdsr_dummy;
-> > +                       /*
-> > +                        * We don't want to read only one byte in DTR mode. So,
-> > +                        * read 2 and then discard the second byte.
-> > +                        */
-> > +                       op.data.nbytes = 2;
-> 
-> just for octal dtr, but should be fine if you update the previous patch
+--yd7x7geskr4c23jo
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Ok.
+Hello Lars,
 
--- 
-Regards,
-Pratyush Yadav
-Texas Instruments India
+On Tue, Sep 29, 2020 at 02:19:53PM +0200, poeschel@lemonage.de wrote:
+> From: Lars Poeschel <poeschel@lemonage.de>
+>=20
+> This adds a class to exported pwm devices.
+> Exporting a pwm through sysfs did not yield udev events. The
+
+I wonder what is your use-case here. This for sure also has a place to
+be mentioned in the commit log. I suspect there is a better way to
+accomplish you way.
+
+> dev_uevent_filter function does filter-out devices without a bus or
+> class.
+> This was already addressed in commit
+> commit 7e5d1fd75c3d ("pwm: Set class for exported channels in sysfs")
+> but this did cause problems and the commit got reverted with
+> commit c289d6625237 ("Revert "pwm: Set class for exported channels in
+> sysfs"")
+>=20
+> pwm's have to be local to its pwmchip, so we create an individual class
+> for each pwmchip
+
+This sounds conceptually wrong.=20
+
+> and assign this class to the pwm belonging to the
+> pwmchip. This does better map to structure that is also visible in
+> sysfs.
+>=20
+> Signed-off-by: Lars Poeschel <poeschel@lemonage.de>
+> ---
+>  drivers/pwm/sysfs.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/pwm/sysfs.c b/drivers/pwm/sysfs.c
+> index 449dbc0f49ed..e2dfbc335366 100644
+> --- a/drivers/pwm/sysfs.c
+> +++ b/drivers/pwm/sysfs.c
+> @@ -259,7 +259,7 @@ static int pwm_export_child(struct device *parent, st=
+ruct pwm_device *pwm)
+>  	export->child.release =3D pwm_export_release;
+>  	export->child.parent =3D parent;
+>  	export->child.devt =3D MKDEV(0, 0);
+> -	export->child.groups =3D pwm_groups;
+> +	export->child.class =3D parent->class;
+>  	dev_set_name(&export->child, "pwm%u", pwm->hwpwm);
+> =20
+>  	ret =3D device_register(&export->child);
+> @@ -499,6 +499,9 @@ void pwmchip_sysfs_export(struct pwm_chip *chip)
+>  		dev_warn(chip->dev,
+>  			 "device_create failed for pwm_chip sysfs export\n");
+>  	}
+> +
+> +	parent->class =3D class_create(THIS_MODULE, parent->kobj.name);
+
+This needs error handling.
+
+> +	parent->class->dev_groups =3D pwm_groups;
+>  }
+> =20
+>  void pwmchip_sysfs_unexport(struct pwm_chip *chip)
+> @@ -518,6 +521,7 @@ void pwmchip_sysfs_unexport(struct pwm_chip *chip)
+>  			pwm_unexport_child(parent, pwm);
+>  	}
+> =20
+> +	class_destroy(parent->class);
+>  	put_device(parent);
+>  	device_unregister(parent);
+>  }
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--yd7x7geskr4c23jo
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl90LFMACgkQwfwUeK3K
+7AkqLgf9HNGFermHCvQAxPAEhrUdVsZTfc2YRwG+g9Xh0kqUvSiE4qXkK4bdKVbY
+NJpWm6pkZDty7dWarbqLCDs/mBccqrakGhe8ksoXtstzISQwHJoVssWv/11nLX1c
+1HfngchkgTIIV3Nkm9LYe7gETxjCgyhxFkv8DSqFxAH1EprvXZe1i1FUJvxq6DJX
+LfrO+760NTI/Hm21j5rJQlllBa0KYfBOB13PfTO51KK/WoljjdAXUnG1g+L6ArmK
+HKChAxHk9VRPZpy+8hHQ7sMEqto3obsCaCXv6resbR2JPQvaKIZSBoKDIky3xJyA
+Iq4rywxLRTWn/qxQhJ8fgwFyouwlKw==
+=Brmu
+-----END PGP SIGNATURE-----
+
+--yd7x7geskr4c23jo--
