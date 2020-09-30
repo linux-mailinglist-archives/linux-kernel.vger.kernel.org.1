@@ -2,141 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A165127F079
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 19:25:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44EC027F07C
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 19:26:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731286AbgI3RZi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 13:25:38 -0400
-Received: from mga02.intel.com ([134.134.136.20]:38694 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725355AbgI3RZi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 13:25:38 -0400
-IronPort-SDR: 7PxRitwFbX+8mNPFj14EOLf6TlCjZkO+jnW3uSQD7yYurwkz7EN8d61XkS/1x6hLV3ZPA4uc1y
- lYTg2KBi2Egg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9760"; a="150158533"
-X-IronPort-AV: E=Sophos;i="5.77,322,1596524400"; 
-   d="scan'208";a="150158533"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2020 10:25:37 -0700
-IronPort-SDR: FK7/wIJBisXTMuj6iqUnpiUpF0sHZmEXgWujctvoBj/uFfZp+PCakKD8gDd4Smm5TFBZfQyr6i
- CR1IGgnmqLIQ==
-X-IronPort-AV: E=Sophos;i="5.77,322,1596524400"; 
-   d="scan'208";a="308240091"
-Received: from meghadey-mobl1.amr.corp.intel.com (HELO [10.255.88.197]) ([10.255.88.197])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2020 10:25:34 -0700
-Subject: Re: [patch V2 00/46] x86, PCI, XEN, genirq ...: Prepare for device
- MSI
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        Joerg Roedel <joro@8bytes.org>,
-        iommu@lists.linux-foundation.org, linux-hyperv@vger.kernel.org,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Jon Derrick <jonathan.derrick@intel.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Steve Wahl <steve.wahl@hpe.com>,
-        Dimitri Sivanich <sivanich@hpe.com>,
-        Russ Anderson <rja@hpe.com>, linux-pci@vger.kernel.org,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        xen-devel@lists.xenproject.org, Juergen Gross <jgross@suse.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Jacob Pan <jacob.jun.pan@intel.com>,
-        Baolu Lu <baolu.lu@intel.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        ravi.v.shankar@intel.com
-References: <20200826111628.794979401@linutronix.de>
- <10b5d933-f104-7699-341a-0afb16640d54@intel.com>
- <87v9fvix5f.fsf@nanos.tec.linutronix.de> <20200930114301.GD816047@nvidia.com>
- <87k0wbi94b.fsf@nanos.tec.linutronix.de>
-From:   "Dey, Megha" <megha.dey@intel.com>
-Message-ID: <e07aa723-12cd-7eb7-392a-642f96b98f79@intel.com>
-Date:   Wed, 30 Sep 2020 10:25:33 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1731414AbgI3RZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 13:25:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60462 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725355AbgI3RZw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 13:25:52 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5343AC0613D0
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 10:25:52 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id x22so1607953pfo.12
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 10:25:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0nfehHdUPTyFK6XAv2rP7KrvsGMS/er2RZ8KJpBo5Yc=;
+        b=Ey0Oc7klaeUxyEKTAIUl26BnK80EH68bvF8nfKE4xeNamFC2OcklPOlhknQy3v1Pnq
+         w0Ye1S2ZW7nXXV8UmqJZ1F4gLLia+npAjNi5ZjpoZVUOa/nt+6uaboX09rCTLh/BPAZa
+         u4PknGxYHr39Wa+qoDVRY+YsAPf3YouOFmwHrnUQODBEhQoftQRXvNdNLNktx4M0UXI9
+         crFy3OPf97GDsQqnp1p6bn9/iPlM0eI9EDwdS68lnu1FdG0KByISHfuPqvvdfHsHewIO
+         d+DHVq3EqIUmH/7k5xu0Liv6SLMjeirYFUVOTFpYKV9JOiXCEDVziCFC+9BZZMLFuxRp
+         9JfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0nfehHdUPTyFK6XAv2rP7KrvsGMS/er2RZ8KJpBo5Yc=;
+        b=TtA3UQ27fktqFv8C0d/TllAxPgVZhZQJrESpuLIW45Sd+UiGTUI+d9wIU6cJB2IBj/
+         e7H/edfZD5NyXj9z61NF1YdORtl0gmgUwlee3kGmy36QnannfBFVVfImO9ySsG7z6kAm
+         ZYgjV3EnQgKt39FraG+aLwHLBst89bDK7MRcRX+cdYQ1bersgbEGNmDxoCEjdC3rxpfr
+         8AiFc91BM4vsbBhrSEGCN0JqZL0KB5deWUdkFqvIEPaKSEJ3krgYBNg0oxn2XZK2bein
+         K7tBpEsz1zy3yYqoxXevUSgGgN0XH9dElcq1IC+NAR/9xFh+i9/qMhwH6oP6zK2V+UDt
+         DnNg==
+X-Gm-Message-State: AOAM531RahCICC0kQ5SO/bw9YzDK3TVzvOODv+fG8d125G1f+B0g+8PT
+        p1JSFAgPP2w7Mila8tdHwVKMpqBkO38VVFh7bq/OPw==
+X-Google-Smtp-Source: ABdhPJyGGvMZbaWLjGNvCwq/htmj/g6cZhOsPNY2TlA1j09zWlwE6vmsaVIDEY26ogWxIvIKGTJaJKsK0fDPHQRsVJ4=
+X-Received: by 2002:a62:d44e:0:b029:13c:1611:652f with SMTP id
+ u14-20020a62d44e0000b029013c1611652fmr3293347pfl.15.1601486751602; Wed, 30
+ Sep 2020 10:25:51 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <87k0wbi94b.fsf@nanos.tec.linutronix.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <CAKwvOdkHzbPjw71n+RVXuM6Wt6PNO6fiy+14QTzthF7MCkewwg@mail.gmail.com>
+ <CA+icZUWvEzUhCjkMYAK22pkjshKmfE4a2y_W0sPPuqRtzXOtNw@mail.gmail.com>
+ <CAFP8O3LQSS4BufLEPQKOk62T0d8HoZq0kQAU8+K4d4gpY4CPag@mail.gmail.com>
+ <CA+icZUU44tbsmGfTc-2OO42V42Z02dRSs7AZCJBnXL65vJDz-Q@mail.gmail.com>
+ <664e5923-d65e-0a3a-1320-8b6635146676@redhat.com> <CAKwvOdkiSLidxNxWUxCrJ_rPogORt=aGDHTkbO=yJn0FPevbpw@mail.gmail.com>
+In-Reply-To: <CAKwvOdkiSLidxNxWUxCrJ_rPogORt=aGDHTkbO=yJn0FPevbpw@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Wed, 30 Sep 2020 10:25:40 -0700
+Message-ID: <CAKwvOdmFm9-FPrqt42NsusWRbDzNx6NF1GeSJhz_9kaAGV8eOA@mail.gmail.com>
+Subject: Re: linux tooling mailing list
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Kees Cook <keescook@chromium.org>
+Cc:     Sedat Dilek <sedat.dilek@gmail.com>,
+        Nick Clifton <nickc@redhat.com>,
+        =?UTF-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Segher Boessenkool <segher@kernel.crashing.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>, postmaster@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thomas/Jason,
+Does anyone know who's behind postmaster@vger.kernel.org?  Maybe I can
+email them directly if perhaps they don't check this email often?
+(Benefit of the doubt)
 
-On 9/30/2020 8:20 AM, Thomas Gleixner wrote:
-> On Wed, Sep 30 2020 at 08:43, Jason Gunthorpe wrote:
->> On Wed, Sep 30, 2020 at 08:41:48AM +0200, Thomas Gleixner wrote:
->>> On Tue, Sep 29 2020 at 16:03, Megha Dey wrote:
->>>> On 8/26/2020 4:16 AM, Thomas Gleixner wrote:
->>>>> #9	is obviously just for the folks interested in IMS
->>>>>
->>>> I see that the tip tree (as of 9/29) has most of these patches but
->>>> notice that the DEV_MSI related patches
->>>>
->>>> haven't made it. I have tested the tip tree(x86/irq branch) with your
->>>> DEV_MSI infra patches and our IMS patches with the IDXD driver and was
->>> Your IMS patches? Why do you need something special again?
-
-By IMS patches, I meant your IMS driver patch that was updated (as it 
-was untested, it had some compile
-
-errors and we removed the IMS_QUEUE parts) :
-
-https://lore.kernel.org/lkml/160021246221.67751.16280230469654363209.stgit@djiang5-desk3.ch.intel.com/
-
-and some iommu related changes required by IMS.
-
-https://lore.kernel.org/lkml/160021246905.67751.1674517279122764758.stgit@djiang5-desk3.ch.intel.com/
-
-The whole patchset can be found here:
-
-https://lore.kernel.org/lkml/f4a085f1-f6de-2539-12fe-c7308d243a4a@intel.com/
-
-It would be great if you could review the IMS patches :)
-
->>>
->>>> wondering if we should push out those patches as part of our patchset?
->>> As I don't have any hardware to test that, I was waiting for you and
->>> Jason to confirm that this actually works for the two different IMS
->>> implementations.
->> How urgently do you need this? The code looked good from what I
->> understood. It will be a while before we have all the parts to send an
->> actual patch though.
-> I personally do not need it at all :) Megha might have different
-> thoughts...
-
-I have tested these patches and it works fine (I had to add a couple of 
-EXPORT_SYMBOLS).
-
-We were hoping to get IMS in the 5.10 merge window :)
-
+On Tue, Sep 15, 2020 at 1:49 PM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
 >
->> We might be able to put together a mockup just to prove it
-> If that makes Megha's stuff going that would of course be appreciated,
-> but we can defer the IMS_QUEUE part for later. It's orthogonal to the
-> IMS_ARRAY stuff.
-
-In our patch series, we have removed the IMS_QUEUE stuff and retained 
-only the IMS_ARRAY parts
-
-as that was sufficient for us.
-
+> Hello postmaster,
+> Any thoughts on linux-toolchains@vger.kernel.org?
 >
+> On Wed, Aug 26, 2020 at 3:14 AM Nick Clifton <nickc@redhat.com> wrote:
+> >
+> > Hi Guys,
+> >
+> > >>>> Would it be possible to setup:
+> > >>>> linux-tooling@vger.kernel.org
+> >
+> > >>> s/linux-tooling/linux-toolchains (better plural toolchains)
+> >
+> > >> FWIW FreeBSD names it "freebsd-toolchain".
+> > >> NetBSD names it "tech-toolchain".
+> > >>
+> > >> I'd slightly prefer the singular form.
+> >
+> > > OK with singular form.
+> > >
+> > > I was thinking of GNU and LLVM toolchain*s* - that's why the plural.
+> >
+> > Personally I prefer the plural too, but it is not a big issue.
+> >
+> > I am however delighted that it looks like this idea will go ahead.
+>
+> --
 > Thanks,
->
->          tglx
+> ~Nick Desaulniers
+
+
+
+-- 
+Thanks,
+~Nick Desaulniers
