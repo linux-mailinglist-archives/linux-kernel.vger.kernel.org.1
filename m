@@ -2,125 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D8DB27F5BD
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 01:13:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B08A927F5BE
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 01:14:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732102AbgI3XM2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 19:12:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57710 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732094AbgI3XM1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 19:12:27 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10C79C0613D0
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 16:12:27 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id t7so800850pjd.3
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 16:12:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=GcGfH7kHx9j3QvyhQc4NcbAnPXZ+xitJlnC9m04nhjQ=;
-        b=gm5u2PcQKPEnnJP1IJQaMsMKmuVSqh4mDV+SE3B7HkfYd1s4DfKRJ5JPUSmnYUHwJ8
-         a+XP4WcTYmVhx04y548/+0CYzCszHMJsUlfqTuWHhOFXsePMVlmUXi21FLje4PBXRm98
-         Jo1/sYLM65/hhSixFbPryuAHtryh7BTjsn8Us=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=GcGfH7kHx9j3QvyhQc4NcbAnPXZ+xitJlnC9m04nhjQ=;
-        b=fphYKNjOJafcmHj7T9cLadtMZE5G0cXR04q4XtUtWdgotrHGpcPbSFIDLTOUX44BB2
-         +ox5TbFJmcCEmQHVZKHG+1x/7vc6iTLktLAWo8IIpPHKoGHkZ+94perxEQvbr1yHYZip
-         su2w1fgYfhIQ+DM3b9JFXJxDgeRwcjrodEFdJuBQu8ba94hrSEbG5uiu+K6/eQ2ZZQi9
-         +celFgSEoCwcwnGKqyr+zcQrh3zEJUgk1WSMHJojA68WLgcPl9gz18bSzuYgEpmmqUTA
-         2ZXMHL2AxJimMohYqldTeRmtN6qLPpaBj+Rnu6+kbxeDlcXDFnNB2TbTEuZ7rfEZ4Pdm
-         hDyw==
-X-Gm-Message-State: AOAM532XGt9YQTFIWCes12vbdR47C5MOQooUQs4sStZYiCv5WknwUtlz
-        VIEv+y4a03QEOuPOwZ5+gVLOXg==
-X-Google-Smtp-Source: ABdhPJzERV8mYc2Hm3YRyOthOTUpcKBJEFFaKP6HXJWxaQaOtJgHHdz5S1SjWX7xipFAAf48W71nEw==
-X-Received: by 2002:a17:90a:cf13:: with SMTP id h19mr941884pju.88.1601507546488;
-        Wed, 30 Sep 2020 16:12:26 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id q15sm1321933pjp.26.2020.09.30.16.12.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Sep 2020 16:12:25 -0700 (PDT)
-Date:   Wed, 30 Sep 2020 16:12:24 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Jann Horn <jannh@google.com>
-Cc:     YiFei Zhu <zhuyifei1999@gmail.com>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        David Laight <David.Laight@aculab.com>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Jack Chen <jianyan2@illinois.edu>,
-        Josep Torrellas <torrella@illinois.edu>,
-        Tianyin Xu <tyxu@illinois.edu>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Valentin Rothberg <vrothber@redhat.com>,
-        Will Drewry <wad@chromium.org>
-Subject: Re: [PATCH v3 seccomp 5/5] seccomp/cache: Report cache data through
- /proc/pid/seccomp_cache
-Message-ID: <202009301559.49BEDB79D@keescook>
-References: <cover.1601478774.git.yifeifz2@illinois.edu>
- <d3d1c05ea0be2b192f480ec52ad64bffbb22dc9d.1601478774.git.yifeifz2@illinois.edu>
- <CAG48ez0whaSTobwnoJHW+Eyqg5a8H4JCO-KHrgsuNiEg0qbD3w@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAG48ez0whaSTobwnoJHW+Eyqg5a8H4JCO-KHrgsuNiEg0qbD3w@mail.gmail.com>
+        id S1731307AbgI3XN6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 19:13:58 -0400
+Received: from z5.mailgun.us ([104.130.96.5]:63853 "EHLO z5.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730528AbgI3XNl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 19:13:41 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1601507621; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=chQsnKkXPtaojJj7PnZJx3rfUwTJoltXNgUX/5BFAZ8=; b=Fey9Q5CG+BXuflgIhsKHFFOb0N/SoVzWVQGO0v1PfWSI+2VGNnsME8ULSO/RRpLGUBqS/ANG
+ v929WGVbt/Fn+pGNS0ih0eJMHyu703MSIn4Fiira0WUporAsS5RrpS3sI9mb09sN3CjHShRT
+ L5AYv/mzfqNgR0EVWN/SBzjW7jo=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 5f75112325e92f5003056f22 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 30 Sep 2020 23:13:39
+ GMT
+Sender: sudaraja=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 84769C433CA; Wed, 30 Sep 2020 23:13:39 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from th-lint-014.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: sudaraja)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 02F86C433C8;
+        Wed, 30 Sep 2020 23:13:38 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 02F86C433C8
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=sudaraja@codeaurora.org
+From:   Sudarshan Rajagopalan <sudaraja@codeaurora.org>
+To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Sudarshan Rajagopalan <sudaraja@codeaurora.org>
+Subject: [PATCH v2] arm64/mm: add fallback option to allocate virtually
+Date:   Wed, 30 Sep 2020 16:13:24 -0700
+Message-Id: <cover.1601506266.git.sudaraja@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 01, 2020 at 12:00:46AM +0200, Jann Horn wrote:
-> On Wed, Sep 30, 2020 at 5:20 PM YiFei Zhu <zhuyifei1999@gmail.com> wrote:
-> [...]
-> > diff --git a/kernel/seccomp.c b/kernel/seccomp.c
-> [...]
-> > +int proc_pid_seccomp_cache(struct seq_file *m, struct pid_namespace *ns,
-> > +                          struct pid *pid, struct task_struct *task)
-> > +{
-> > +       struct seccomp_filter *f;
-> > +
-> > +       /*
-> > +        * We don't want some sandboxed process know what their seccomp
-> > +        * filters consist of.
-> > +        */
-> > +       if (!file_ns_capable(m->file, &init_user_ns, CAP_SYS_ADMIN))
-> > +               return -EACCES;
-> > +
-> > +       f = READ_ONCE(task->seccomp.filter);
-> > +       if (!f)
-> > +               return 0;
-> 
-> Hmm, this won't work, because the task could be exiting, and seccomp
-> filters are detached in release_task() (using
-> seccomp_filter_release()). And at the moment, seccomp_filter_release()
-> just locklessly NULLs out the tsk->seccomp.filter pointer and drops
-> the reference.
+V1: The initial patch used the approach to abort at the first instance of PMD_SIZE
+allocation failure, unmaps all previously mapped sections using vmemmap_free
+and maps the entire request with vmemmap_populate_basepages to allocate
+virtually contiguous memory.
+https://lkml.org/lkml/2020/9/10/66
 
-Oh nice catch. Yeah, this would only happen if it was the only filter
-remaining on a process with no children, etc.
+V2: Allocates virtually contiguous memory only for sections that failed
+PMD_SIZE allocation, and continues to allocate physically contiguous
+memory for other sections.
 
-> 
-> The locking here is kind of gross, but basically I think you can
-> change this code to use lock_task_sighand() / unlock_task_sighand()
-> (see the other examples in fs/proc/base.c), and bail out if
-> lock_task_sighand() returns NULL. And in seccomp_filter_release(), add
-> something like this:
-> 
-> /* We are effectively holding the siglock by not having any sighand. */
-> WARN_ON(tsk->sighand != NULL);
+Sudarshan Rajagopalan (1):
+  arm64/mm: add fallback option to allocate virtually contiguous memory
 
-Yeah, good idea.
+ arch/arm64/mm/mmu.c | 14 ++++++++++++--
+ 1 file changed, 12 insertions(+), 2 deletions(-)
 
 -- 
-Kees Cook
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
