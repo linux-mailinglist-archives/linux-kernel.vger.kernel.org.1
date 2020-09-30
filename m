@@ -2,109 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E487027E193
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 08:43:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CE8127E148
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 08:39:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728262AbgI3Gnw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 02:43:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45924 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725535AbgI3Gnv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 02:43:51 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 992E8C061755;
-        Tue, 29 Sep 2020 23:43:51 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id y6so411405plt.9;
-        Tue, 29 Sep 2020 23:43:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=3+GU4zxm0Td/KM5SRNzPIJUthrCnvW7q6ZorJHiP25c=;
-        b=akm+iSr6qnW70fDV3jaZfWWqU3vhS6CWumvkgTeR4+hpoVUb0TeAiyfFFvEkvbtzxQ
-         zC1uH6jgIW84OTxKT7una4YVN8x6wz4G/sXdWo9hfFVQvxk4LO1WecENt87rFgQWIbk8
-         H6VlRIPVbU+gNgkEBskDrRNbNdd2a8Nf2mlFx2MPnVsoHx3FRVu6x1YwRxM00WlZ+3tm
-         GG3TaAO4baKb/luzBXlXkJdrM7FxNgItX4udQZeZMXqNdq536ikZ7sjO+iKUL6SsmAF1
-         HqVN8uyev/WaKIM6BQu63zKW1781GcZyyP/5khDrckTMqCyQT0MxUVLI80zVGySFacnt
-         l2sQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=3+GU4zxm0Td/KM5SRNzPIJUthrCnvW7q6ZorJHiP25c=;
-        b=QZGQaVSEdvlV9Q9zZNnmBAfWa/ecSFedFBzy2BCH5vFE1nPXEMFbBFkmWB+kNfLcNz
-         JdeqIMdYpD+ZREN10IUPbEDa/KEg3PT7PxSiGdspR6HGZgkJaYPO0VI7Xm3hvQPxBfUa
-         asr3rfzM1bEeveHOkOHL+goEVnS6QkFv7986cUXqxC7lHZZiMxgnr8ksVpRMe383Kofi
-         BMn69fGbjVCmBRj7uH4kAG2zxJaugRR0N1eEXecBDLGyugF507tiAgJl/NPD8LL2EOud
-         huYJPgP2HNCBNPTLRLAgDyw5cGaZJAR0gwr8wlSDCzJqB9FRPtCmcWQBEF80uZYfNZjV
-         LxPw==
-X-Gm-Message-State: AOAM533uMy6peR9B3Aenghx4QeJFiSdktFDcCopjdOSoGOxOiFrxGyo7
-        wM+C2Kvah9X2U6MB0uM0Ipg=
-X-Google-Smtp-Source: ABdhPJwysfEAZOo8P4hlopqTLpZc4kTN+he7jDU+vAlyRRSPVRDKHWaVI9riTckyYU663STgPg5MNQ==
-X-Received: by 2002:a17:90a:f001:: with SMTP id bt1mr1179816pjb.116.1601448231098;
-        Tue, 29 Sep 2020 23:43:51 -0700 (PDT)
-Received: from Asurada-Nvidia (thunderhill.nvidia.com. [216.228.112.22])
-        by smtp.gmail.com with ESMTPSA id z9sm1023556pfk.118.2020.09.29.23.43.50
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 29 Sep 2020 23:43:50 -0700 (PDT)
-Date:   Tue, 29 Sep 2020 23:38:20 -0700
-From:   Nicolin Chen <nicoleotsuka@gmail.com>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     thierry.reding@gmail.com, joro@8bytes.org, krzk@kernel.org,
-        vdumpa@nvidia.com, jonathanh@nvidia.com,
-        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] memory: tegra: Add helper function
- tegra_get_memory_controller
-Message-ID: <20200930063820.GD16460@Asurada-Nvidia>
-References: <20200930003013.31289-1-nicoleotsuka@gmail.com>
- <20200930003013.31289-2-nicoleotsuka@gmail.com>
- <93803d8b-9863-e977-fa87-a03e877b095d@gmail.com>
- <20200930054455.GF31821@Asurada-Nvidia>
- <2f752179-5ad3-c000-8794-494c79f7b21f@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <2f752179-5ad3-c000-8794-494c79f7b21f@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S1727936AbgI3Gj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 02:39:56 -0400
+Received: from z5.mailgun.us ([104.130.96.5]:12283 "EHLO z5.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725836AbgI3Gjz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 02:39:55 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1601447995; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=wLH8zQ0NW7Ibp+2QyAKze5Jui0juOUuUFVPPoOCJrq8=; b=jeHwsoUHAGiMMnDaNNqP6H/DB9GbZkWYAarn/EKQzE7EfshzAtHdqdOx/obnq0ZffK3f3+dM
+ Vv5PtCy58VVLj1rK78Jx1gKMmN1vt5Xtq5f1xRZZ+l5+qomx8I7AzLsBuyAYYLPoVLe11yli
+ nayFLECD8if/qbWh8wZTAnNDUlI=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 5f74283a83f5ac99db453997 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 30 Sep 2020 06:39:54
+ GMT
+Sender: srivasam=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 96BDFC433FF; Wed, 30 Sep 2020 06:39:54 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from hyd-lnxbld210.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: srivasam)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id A143EC433CA;
+        Wed, 30 Sep 2020 06:39:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A143EC433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=srivasam@codeaurora.org
+From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
+        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
+        srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+Subject: [PATCH v8 0/7] Qualcomm's lpass-hdmi ASoC driver to support audio over dp port
+Date:   Wed, 30 Sep 2020 12:09:30 +0530
+Message-Id: <1601447977-18115-1-git-send-email-srivasam@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 09:32:20AM +0300, Dmitry Osipenko wrote:
-> 30.09.2020 08:44, Nicolin Chen пишет:
-> > On Wed, Sep 30, 2020 at 08:12:10AM +0300, Dmitry Osipenko wrote:
-> >> 30.09.2020 03:30, Nicolin Chen пишет:
-> >> ...
-> >>>  int tegra_mc_write_emem_configuration(struct tegra_mc *mc, unsigned long rate);
-> >>>  unsigned int tegra_mc_get_emem_device_count(struct tegra_mc *mc);
-> >>> +struct tegra_mc *tegra_get_memory_controller(void);
-> >>>  
-> >>>  #endif /* __SOC_TEGRA_MC_H__ */
-> >>>
-> >>
-> >> This will conflict with the tegra20-devfreq driver, you should change it
-> >> as well.
-> > 
-> > Will remove that in v3.
-> > 
-> > Thanks
-> > 
-> 
-> Please also consider to add a resource-managed variant, similar to what
-> I did here:
-> 
-> https://github.com/grate-driver/linux/commit/2105e7664063772d72fefe9696bdab0b688b9de2
-> 
-> I was going to use it in the next iteration of the memory interconnect
-> series.
-> 
-> But now it also will be good if you could add the devm variant to yours
-> SMMU patchset since you're already about to touch the tegra20-devfreq
-> driver. I'll then rebase my patches on top of yours patch.
+These patches are to support audio over DP port on Qualcomm's SC7180 LPASS
+Asoc. It includes machine driver, cpu driver, platform driver updates for 
+HDMI path support, device tree documention, lpass variant structure 
+optimization and configuration changes.
+These patches depends on the DP patch series
+https://patchwork.kernel.org/project/dri-devel/list/?series=332029
+https://lore.kernel.org/patchwork/project/lkml/list/?series=464856
 
-Just saw this reply. Yea, I think this'd be better. Thanks
+changes since V7:
+    -- Fixed typo errors
+    -- Separated buffer size change patche
+changes since V6:
+    -- Removed compile time define flag, which used for enabling
+     HDMI code, based on corresponding config param is included.
+    -- Updated reg map alloc API with reg map bulk API.
+    -- Removed unnecessary line splits
+changes since V5:
+    -- Removed unused struct regmap *map in lpass_platform_alloc_hdmidmactl_fields.
+    -- DMA alloc and free API signature change in lpass-apq8016.c, lpass-ipq806x.c 
+    -- Keeping API "irqreturn_t lpass_platform_hdmiif_irq" under ifdef macro
+Changes Since v4:
+    -- Updated with single compatible node for both I2S and HDMI.
+Changes Since v3:
+    -- Removed id in lpass variant structure and used snd_soc_dai_driver id.
+Changes Since v2:
+    -- Audio buffer size(i.e. LPASS_PLATFORM_BUFFER_SIZE) in lpass-platform.c increased.
+Changes Since v1:
+    -- Commit messages are updated
+    -- Addressed Rob Herring review comments
+
+V Sujith Kumar Reddy (8):
+  ASoC: Add sc7180-lpass binding header hdmi define
+  ASoC: dt-bindings: Add dt binding for lpass hdmi
+  Asoc:qcom:lpass-cpu:Update dts property read API
+  Asoc: qcom: lpass:Update lpaif_dmactl members order
+  ASoC: qcom: Add support for lpass hdmi driver
+  Asoc: qcom: lpass-platform : Increase buffer size
+  ASoC: qcom: sc7180: Add support for audio over DP
+
+ .../devicetree/bindings/sound/qcom,lpass-cpu.yaml  |  74 +++-
+ include/dt-bindings/sound/sc7180-lpass.h           |   1 +
+ sound/soc/qcom/Kconfig                             |   5 +
+ sound/soc/qcom/Makefile                            |   2 +
+ sound/soc/qcom/lpass-apq8016.c                     |   4 +-
+ sound/soc/qcom/lpass-cpu.c                         |  53 ++-
+ sound/soc/qcom/lpass-hdmi.c                        | 470 +++++++++++++++++++++
+ sound/soc/qcom/lpass-hdmi.h                        | 122 ++++++
+ sound/soc/qcom/lpass-ipq806x.c                     |   4 +-
+ sound/soc/qcom/lpass-lpaif-reg.h                   |  52 ++-
+ sound/soc/qcom/lpass-platform.c                    | 403 ++++++++++++++----
+ sound/soc/qcom/lpass-sc7180.c                      | 116 ++++-
+ sound/soc/qcom/lpass.h                             | 119 +++++-
+ 13 files changed, 1280 insertions(+), 145 deletions(-)
+ create mode 100644 sound/soc/qcom/lpass-hdmi.c
+ create mode 100644 sound/soc/qcom/lpass-hdmi.h
+
+-- 
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+
