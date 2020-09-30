@@ -2,84 +2,274 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA20A27E0BE
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 07:56:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBB1327E0CF
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 08:01:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728074AbgI3F4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 01:56:09 -0400
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:2004 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725535AbgI3F4F (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 01:56:05 -0400
-Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08U5pVZm032509;
-        Wed, 30 Sep 2020 01:56:01 -0400
-Received: from nwd2mta4.analog.com ([137.71.173.58])
-        by mx0a-00128a01.pphosted.com with ESMTP id 33t2j4p1dg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 30 Sep 2020 01:56:01 -0400
-Received: from SCSQMBX11.ad.analog.com (scsqmbx11.ad.analog.com [10.77.17.10])
-        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 08U5txel004205
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
-        Wed, 30 Sep 2020 01:55:59 -0400
-Received: from SCSQMBX11.ad.analog.com (10.77.17.10) by
- SCSQMBX11.ad.analog.com (10.77.17.10) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Tue, 29 Sep 2020 22:55:50 -0700
-Received: from zeus.spd.analog.com (10.66.68.11) by SCSQMBX11.ad.analog.com
- (10.77.17.10) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
- Transport; Tue, 29 Sep 2020 22:55:50 -0700
-Received: from localhost.localdomain ([10.48.65.12])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 08U5tkgk031934;
-        Wed, 30 Sep 2020 01:55:54 -0400
-From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
-To:     <linux-iio@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>
-CC:     <linux-kernel@vger.kernel.org>, <jic23@kernel.org>,
-        <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
-        <ludovic.desroches@microchip.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>
-Subject: [PATCH v2 4/4] iio: adc: at91_adc: remove of_match_ptr() usage
-Date:   Wed, 30 Sep 2020 09:00:08 +0300
-Message-ID: <20200930060008.42134-5-alexandru.ardelean@analog.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200930060008.42134-1-alexandru.ardelean@analog.com>
-References: <20200930060008.42134-1-alexandru.ardelean@analog.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-ADIRoutedOnPrem: True
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-30_03:2020-09-29,2020-09-30 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- suspectscore=0 priorityscore=1501 phishscore=0 spamscore=0 malwarescore=0
- bulkscore=0 clxscore=1015 mlxlogscore=999 mlxscore=0 adultscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009300047
+        id S1727864AbgI3GBp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 02:01:45 -0400
+Received: from foss.arm.com ([217.140.110.172]:57098 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725306AbgI3GBo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 02:01:44 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9525330E;
+        Tue, 29 Sep 2020 23:01:43 -0700 (PDT)
+Received: from p8cg001049571a15.arm.com (unknown [10.163.73.166])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id AE00D3F70D;
+        Tue, 29 Sep 2020 23:01:40 -0700 (PDT)
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+To:     linux-mm@kvack.org
+Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Zi Yan <ziy@nvidia.com>, John Hubbard <jhubbard@nvidia.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org
+Subject: [RFC V2] mm/vmstat: Add events for HugeTLB migration
+Date:   Wed, 30 Sep 2020 11:30:49 +0530
+Message-Id: <1601445649-22163-1-git-send-email-anshuman.khandual@arm.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since the driver should be allowed to build without OF support, the
-of_match_ptr() is redundant.
+Add following new vmstat events which will track HugeTLB page migration.
 
-Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+1. HUGETLB_MIGRATION_SUCCESS
+2. HUGETLB_MIGRATION_FAILURE
+
+It follows the existing semantics to accommodate HugeTLB subpages in total
+page migration statistics. While here, this updates current trace event
+'mm_migrate_pages' to accommodate now available HugeTLB based statistics.
+
+Cc: Daniel Jordan <daniel.m.jordan@oracle.com>
+Cc: Zi Yan <ziy@nvidia.com>
+Cc: John Hubbard <jhubbard@nvidia.com>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Oscar Salvador <osalvador@suse.de>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-mm@kvack.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 ---
- drivers/iio/adc/at91_adc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Applies on linux-next and v5.9-rc7.
 
-diff --git a/drivers/iio/adc/at91_adc.c b/drivers/iio/adc/at91_adc.c
-index 7d846a2852a5..473bffe84fbd 100644
---- a/drivers/iio/adc/at91_adc.c
-+++ b/drivers/iio/adc/at91_adc.c
-@@ -1466,7 +1466,7 @@ static struct platform_driver at91_adc_driver = {
- 	.id_table = at91_adc_ids,
- 	.driver = {
- 		   .name = DRIVER_NAME,
--		   .of_match_table = of_match_ptr(at91_adc_dt_ids),
-+		   .of_match_table = at91_adc_dt_ids,
- 		   .pm = &at91_adc_pm_ops,
- 	},
- };
+Changes in RFC V2:
+
+- Added the missing hugetlb_retry in the loop per Oscar
+- Changed HugeTLB and THP detection sequence per Mike
+- Changed nr_subpages fetch from compound_nr() instead per Mike
+
+Changes in RFC V1: (https://patchwork.kernel.org/patch/11799395/)
+
+ include/linux/vm_event_item.h  |  2 ++
+ include/trace/events/migrate.h | 13 ++++++---
+ mm/migrate.c                   | 48 +++++++++++++++++++++++++++++-----
+ mm/vmstat.c                    |  2 ++
+ 4 files changed, 56 insertions(+), 9 deletions(-)
+
+diff --git a/include/linux/vm_event_item.h b/include/linux/vm_event_item.h
+index 18e75974d4e3..d1ddad835c19 100644
+--- a/include/linux/vm_event_item.h
++++ b/include/linux/vm_event_item.h
+@@ -60,6 +60,8 @@ enum vm_event_item { PGPGIN, PGPGOUT, PSWPIN, PSWPOUT,
+ 		THP_MIGRATION_SUCCESS,
+ 		THP_MIGRATION_FAIL,
+ 		THP_MIGRATION_SPLIT,
++		HUGETLB_MIGRATION_SUCCESS,
++		HUGETLB_MIGRATION_FAIL,
+ #endif
+ #ifdef CONFIG_COMPACTION
+ 		COMPACTMIGRATE_SCANNED, COMPACTFREE_SCANNED,
+diff --git a/include/trace/events/migrate.h b/include/trace/events/migrate.h
+index 4d434398d64d..f8ffb8aece48 100644
+--- a/include/trace/events/migrate.h
++++ b/include/trace/events/migrate.h
+@@ -47,10 +47,11 @@ TRACE_EVENT(mm_migrate_pages,
+ 
+ 	TP_PROTO(unsigned long succeeded, unsigned long failed,
+ 		 unsigned long thp_succeeded, unsigned long thp_failed,
+-		 unsigned long thp_split, enum migrate_mode mode, int reason),
++		 unsigned long thp_split, unsigned long hugetlb_succeeded,
++		 unsigned long hugetlb_failed, enum migrate_mode mode, int reason),
+ 
+ 	TP_ARGS(succeeded, failed, thp_succeeded, thp_failed,
+-		thp_split, mode, reason),
++		thp_split, hugetlb_succeeded, hugetlb_failed, mode, reason),
+ 
+ 	TP_STRUCT__entry(
+ 		__field(	unsigned long,		succeeded)
+@@ -58,6 +59,8 @@ TRACE_EVENT(mm_migrate_pages,
+ 		__field(	unsigned long,		thp_succeeded)
+ 		__field(	unsigned long,		thp_failed)
+ 		__field(	unsigned long,		thp_split)
++		__field(	unsigned long,		hugetlb_succeeded)
++		__field(	unsigned long,		hugetlb_failed)
+ 		__field(	enum migrate_mode,	mode)
+ 		__field(	int,			reason)
+ 	),
+@@ -68,16 +71,20 @@ TRACE_EVENT(mm_migrate_pages,
+ 		__entry->thp_succeeded	= thp_succeeded;
+ 		__entry->thp_failed	= thp_failed;
+ 		__entry->thp_split	= thp_split;
++		__entry->hugetlb_succeeded	= hugetlb_succeeded;
++		__entry->hugetlb_failed		= hugetlb_failed;
+ 		__entry->mode		= mode;
+ 		__entry->reason		= reason;
+ 	),
+ 
+-	TP_printk("nr_succeeded=%lu nr_failed=%lu nr_thp_succeeded=%lu nr_thp_failed=%lu nr_thp_split=%lu mode=%s reason=%s",
++	TP_printk("nr_succeeded=%lu nr_failed=%lu nr_thp_succeeded=%lu nr_thp_failed=%lu nr_thp_split=%lu nr_hugetlb_succeeded=%lu nr_hugetlb_failed=%lu mode=%s reason=%s",
+ 		__entry->succeeded,
+ 		__entry->failed,
+ 		__entry->thp_succeeded,
+ 		__entry->thp_failed,
+ 		__entry->thp_split,
++		__entry->hugetlb_succeeded,
++		__entry->hugetlb_failed,
+ 		__print_symbolic(__entry->mode, MIGRATE_MODE),
+ 		__print_symbolic(__entry->reason, MIGRATE_REASON))
+ );
+diff --git a/mm/migrate.c b/mm/migrate.c
+index 5ca5842df5db..0aac9d39778c 100644
+--- a/mm/migrate.c
++++ b/mm/migrate.c
+@@ -1415,13 +1415,17 @@ int migrate_pages(struct list_head *from, new_page_t get_new_page,
+ {
+ 	int retry = 1;
+ 	int thp_retry = 1;
++	int hugetlb_retry = 1;
+ 	int nr_failed = 0;
+ 	int nr_succeeded = 0;
+ 	int nr_thp_succeeded = 0;
+ 	int nr_thp_failed = 0;
+ 	int nr_thp_split = 0;
++	int nr_hugetlb_succeeded = 0;
++	int nr_hugetlb_failed = 0;
+ 	int pass = 0;
+ 	bool is_thp = false;
++	bool is_hugetlb = false;
+ 	struct page *page;
+ 	struct page *page2;
+ 	int swapwrite = current->flags & PF_SWAPWRITE;
+@@ -1430,9 +1434,10 @@ int migrate_pages(struct list_head *from, new_page_t get_new_page,
+ 	if (!swapwrite)
+ 		current->flags |= PF_SWAPWRITE;
+ 
+-	for (pass = 0; pass < 10 && (retry || thp_retry); pass++) {
++	for (pass = 0; pass < 10 && (retry || thp_retry || hugetlb_retry); pass++) {
+ 		retry = 0;
+ 		thp_retry = 0;
++		hugetlb_retry = 0;
+ 
+ 		list_for_each_entry_safe(page, page2, from, lru) {
+ retry:
+@@ -1441,11 +1446,19 @@ int migrate_pages(struct list_head *from, new_page_t get_new_page,
+ 			 * Capture required information that might get lost
+ 			 * during migration.
+ 			 */
+-			is_thp = PageTransHuge(page) && !PageHuge(page);
+-			nr_subpages = thp_nr_pages(page);
++			is_thp = false;
++			is_hugetlb = false;
++			if (PageTransHuge(page)) {
++				if (PageHuge(page))
++					is_hugetlb = true;
++				else
++					is_thp = true;
++			}
++			nr_subpages = compound_nr(page);
++
+ 			cond_resched();
+ 
+-			if (PageHuge(page))
++			if (is_hugetlb)
+ 				rc = unmap_and_move_huge_page(get_new_page,
+ 						put_new_page, private, page,
+ 						pass > 2, mode, reason);
+@@ -1481,6 +1494,11 @@ int migrate_pages(struct list_head *from, new_page_t get_new_page,
+ 					nr_failed += nr_subpages;
+ 					goto out;
+ 				}
++				if (is_hugetlb) {
++					nr_hugetlb_failed++;
++					nr_failed += nr_subpages;
++					goto out;
++				}
+ 				nr_failed++;
+ 				goto out;
+ 			case -EAGAIN:
+@@ -1488,6 +1506,10 @@ int migrate_pages(struct list_head *from, new_page_t get_new_page,
+ 					thp_retry++;
+ 					break;
+ 				}
++				if (is_hugetlb) {
++					hugetlb_retry++;
++					break;
++				}
+ 				retry++;
+ 				break;
+ 			case MIGRATEPAGE_SUCCESS:
+@@ -1496,6 +1518,11 @@ int migrate_pages(struct list_head *from, new_page_t get_new_page,
+ 					nr_succeeded += nr_subpages;
+ 					break;
+ 				}
++				if (is_hugetlb) {
++					nr_hugetlb_succeeded++;
++					nr_succeeded += nr_subpages;
++					break;
++				}
+ 				nr_succeeded++;
+ 				break;
+ 			default:
+@@ -1510,13 +1537,19 @@ int migrate_pages(struct list_head *from, new_page_t get_new_page,
+ 					nr_failed += nr_subpages;
+ 					break;
+ 				}
++				if (is_hugetlb) {
++					nr_hugetlb_failed++;
++					nr_failed += nr_subpages;
++					break;
++				}
+ 				nr_failed++;
+ 				break;
+ 			}
+ 		}
+ 	}
+-	nr_failed += retry + thp_retry;
++	nr_failed += retry + thp_retry + hugetlb_retry;
+ 	nr_thp_failed += thp_retry;
++	nr_hugetlb_failed += hugetlb_retry;
+ 	rc = nr_failed;
+ out:
+ 	count_vm_events(PGMIGRATE_SUCCESS, nr_succeeded);
+@@ -1524,8 +1557,11 @@ int migrate_pages(struct list_head *from, new_page_t get_new_page,
+ 	count_vm_events(THP_MIGRATION_SUCCESS, nr_thp_succeeded);
+ 	count_vm_events(THP_MIGRATION_FAIL, nr_thp_failed);
+ 	count_vm_events(THP_MIGRATION_SPLIT, nr_thp_split);
++	count_vm_events(HUGETLB_MIGRATION_SUCCESS, nr_hugetlb_succeeded);
++	count_vm_events(HUGETLB_MIGRATION_FAIL, nr_hugetlb_failed);
+ 	trace_mm_migrate_pages(nr_succeeded, nr_failed, nr_thp_succeeded,
+-			       nr_thp_failed, nr_thp_split, mode, reason);
++			       nr_thp_failed, nr_thp_split, nr_hugetlb_succeeded,
++			       nr_hugetlb_failed, mode, reason);
+ 
+ 	if (!swapwrite)
+ 		current->flags &= ~PF_SWAPWRITE;
+diff --git a/mm/vmstat.c b/mm/vmstat.c
+index 79e5cd0abd0e..12fd35ba135f 100644
+--- a/mm/vmstat.c
++++ b/mm/vmstat.c
+@@ -1286,6 +1286,8 @@ const char * const vmstat_text[] = {
+ 	"thp_migration_success",
+ 	"thp_migration_fail",
+ 	"thp_migration_split",
++	"hugetlb_migration_success",
++	"hugetlb_migration_fail",
+ #endif
+ #ifdef CONFIG_COMPACTION
+ 	"compact_migrate_scanned",
 -- 
-2.17.1
+2.20.1
 
