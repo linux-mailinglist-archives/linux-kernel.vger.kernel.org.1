@@ -2,149 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4FBE27EB1C
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 16:40:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CF8E27EB21
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 16:41:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730559AbgI3Okx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 10:40:53 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:7438 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728149AbgI3Okw (ORCPT
+        id S1730588AbgI3OlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 10:41:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34732 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728496AbgI3Ok6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 10:40:52 -0400
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08UEXn0h002260;
-        Wed, 30 Sep 2020 10:40:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : reply-to : to : cc : date : in-reply-to : references : content-type
- : mime-version : content-transfer-encoding; s=pp1;
- bh=TOhFRkH6eBrNvZOnRv3vltvV9RWcAvaYO4zGgzF6rYA=;
- b=V6DwgTAKxpxWbmkbUs+va5rzIxR+lCshyKHzDJTztxt1Hk13G4unr60eZMYIJnN4V2nq
- /jEkjdRudg7CAzTYrBENRqt8sHleTLsYAiL8SdB1aCk1NfjtQWhrSGCd4WgBzHKX3W+/
- htaiTmMRRzk9Izsiz8TbNboGeepzjBW1wDZ4Rm4UDs6BeYGHkgijKGyl5/2Vc9dKgt5M
- joTxP4/HYR3U/jMJFF9VaYNuGVLX0x0CLFiJX90UgMw/ZTYxe7OSJhgvoG0dEbOCj/Uo
- JMtTSmu1uVj0Nyo/Cew9CAVzfjzQgDiHlHMhc76YsmWCR9xbt08JW2T2lE9OscEE5eMz hw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33vtprt807-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 30 Sep 2020 10:40:14 -0400
-Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08UEY9wX003413;
-        Wed, 30 Sep 2020 10:40:09 -0400
-Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33vtprt7wm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 30 Sep 2020 10:40:08 -0400
-Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
-        by ppma05wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08UEcK6A011409;
-        Wed, 30 Sep 2020 14:40:03 GMT
-Received: from b03cxnp08027.gho.boulder.ibm.com (b03cxnp08027.gho.boulder.ibm.com [9.17.130.19])
-        by ppma05wdc.us.ibm.com with ESMTP id 33sw99e3uh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 30 Sep 2020 14:40:03 +0000
-Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
-        by b03cxnp08027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08UEdweH34472466
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 30 Sep 2020 14:39:58 GMT
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 45B5D78072;
-        Wed, 30 Sep 2020 14:40:02 +0000 (GMT)
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3FEF578060;
-        Wed, 30 Sep 2020 14:39:56 +0000 (GMT)
-Received: from jarvis (unknown [9.85.129.253])
-        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Wed, 30 Sep 2020 14:39:55 +0000 (GMT)
-Message-ID: <371c27d97067654171e5c1019340b56cffadae7a.camel@linux.ibm.com>
-Subject: Re: [PATCH v6 5/6] mm: secretmem: use PMD-size pages to amortize
- direct map fragmentation
-From:   James Bottomley <jejb@linux.ibm.com>
-Reply-To: jejb@linux.ibm.com
-To:     Mike Rapoport <rppt@linux.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Idan Yaniv <idan.yaniv@ibm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Shuah Khan <shuah@kernel.org>, Tycho Andersen <tycho@tycho.ws>,
-        Will Deacon <will@kernel.org>, linux-api@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org
-Date:   Wed, 30 Sep 2020 07:39:54 -0700
-In-Reply-To: <20200930102745.GC3226834@linux.ibm.com>
-References: <20200924132904.1391-1-rppt@kernel.org>
-         <20200924132904.1391-6-rppt@kernel.org>
-         <20200925074125.GQ2628@hirez.programming.kicks-ass.net>
-         <20200929130529.GE2142832@kernel.org>
-         <20200929141216.GO2628@hirez.programming.kicks-ass.net>
-         <20200929145813.GA3226834@linux.ibm.com>
-         <20200929151552.GS2628@hirez.programming.kicks-ass.net>
-         <20200930102745.GC3226834@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        Wed, 30 Sep 2020 10:40:58 -0400
+Received: from mail-oo1-xc43.google.com (mail-oo1-xc43.google.com [IPv6:2607:f8b0:4864:20::c43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B694AC0613D0
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 07:40:56 -0700 (PDT)
+Received: by mail-oo1-xc43.google.com with SMTP id h8so539226ooc.12
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 07:40:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=6b9hnX2G64nHYkcKgImBn4GO3JVZ67n72WKYlTb2dHo=;
+        b=TI1JCTbQ3khiLx83bo4E/5ZO+zmnG0wY9cboKI1lf75VgdrzTXY96vLxA69hrZ6YkD
+         btjzbbfcRpU7EEenzLRF4NFLTUk5D5qp63ht+XtjpOlWYzW0ExesLAuLyxA+kigYmit4
+         f+mLpKXVVuT6GlWU5eYa9BaLldgNTLMgq0h4A=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=6b9hnX2G64nHYkcKgImBn4GO3JVZ67n72WKYlTb2dHo=;
+        b=E0Q3S9HldqOxBrL285dziyDx6gw5IHx9X8wBFNBP5hJhCt9lo3bc23kkPhMbZb+58N
+         8MsNYChpWvWpGqFAfmQ36Fb/GOhr3VGcTiaReSsUEFdBzBBDNhJM+NuOxiCsw3NFdBjx
+         Fq7mCjh4o21/gwzwfzYNue3lToyYAMikBxZhQuGlPFVhxQOiZqNKHkxFTn2RAgCgAs21
+         0P0OcEXnzJXJXRFmg9MbE2szESyGu0H0xIvtS/7N2JZAcaribhNpqMTXccv+54G4QkyO
+         VTxIv785fCGCz13+Z76a8KawSEpaJBZIYnl2C3DDsM4akqzsZeurTMmYbAnLmUXtS1EX
+         T5bA==
+X-Gm-Message-State: AOAM532ktQ3CaAG/9AXGgGF+wmo3lug1OpbvjYEf8sM9gsShRC7zCP45
+        u/50H3s2FBXsn1Mj6gNlEB0iCA==
+X-Google-Smtp-Source: ABdhPJw1xZpxdN63OUNapjBcs1g5g2FNUEnh07FiIh26wCC6X0cPU9sAHQAFTeWbOgF+o5DoLObLFA==
+X-Received: by 2002:a4a:91db:: with SMTP id e27mr2177639ooh.59.1601476855757;
+        Wed, 30 Sep 2020 07:40:55 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id w7sm438188oon.2.2020.09.30.07.40.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 30 Sep 2020 07:40:55 -0700 (PDT)
+Subject: Re: [PATCH 4.9 000/121] 4.9.238-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
+        pavel@denx.de, stable@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20200929105930.172747117@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <6e6c8d4a-2d21-294a-38d3-0f97f9986387@linuxfoundation.org>
+Date:   Wed, 30 Sep 2020 08:40:54 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <20200929105930.172747117@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-30_07:2020-09-30,2020-09-30 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 impostorscore=0
- priorityscore=1501 lowpriorityscore=0 phishscore=0 malwarescore=0
- adultscore=0 bulkscore=0 mlxlogscore=690 spamscore=0 clxscore=1015
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009300112
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-09-30 at 13:27 +0300, Mike Rapoport wrote:
-> On Tue, Sep 29, 2020 at 05:15:52PM +0200, Peter Zijlstra wrote:
-> > On Tue, Sep 29, 2020 at 05:58:13PM +0300, Mike Rapoport wrote:
-> > > On Tue, Sep 29, 2020 at 04:12:16PM +0200, Peter Zijlstra wrote:
-> > > > It will drop them down to 4k pages. Given enough inodes, and
-> > > > allocating only a single sekrit page per pmd, we'll shatter the
-> > > > directmap into 4k.
-> > > 
-> > > Why? Secretmem allocates PMD-size page per inode and uses it as a
-> > > pool of 4K pages for that inode. This way it ensures that
-> > > __kernel_map_pages() is always called on PMD boundaries.
-> > 
-> > Oh, you unmap the 2m page upfront? I read it like you did the unmap
-> > at the sekrit page alloc, not the pool alloc side of things.
-> > 
-> > Then yes, but then you're wasting gobs of memory. Basically you can
-> > pin 2M per inode while only accounting a single page.
+On 9/29/20 4:59 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.9.238 release.
+> There are 121 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> Right, quite like THP :)
+> Responses should be made by Thu, 01 Oct 2020 10:59:03 +0000.
+> Anything received after that time might be too late.
 > 
-> I considered using a global pool of 2M pages for secretmem and
-> handing 4K pages to each inode from that global pool. But I've
-> decided to waste memory in favor of simplicity.
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.238-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.9.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-I can also add that the user space consumer of this we wrote does its
-user pool allocation at a 2M granularity, so nothing is actually
-wasted.
+Compiled and booted on my test system. No dmesg regressions.
 
-https://git.kernel.org/pub/scm/linux/kernel/git/jejb/secret-memory-preloader.git/
+Tested-by: Shuah Khan <skhan@linuxfoundation.org>
 
-James
-
-
+thanks,
+-- Shuah
