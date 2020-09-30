@@ -2,110 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B544527E545
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 11:37:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51CD727E54C
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 11:38:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728955AbgI3Jg7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 05:36:59 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:39526 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728570AbgI3Jg7 (ORCPT
+        id S1729037AbgI3JiH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 05:38:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44600 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728638AbgI3JiG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 05:36:59 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08U9aoRt042843;
-        Wed, 30 Sep 2020 04:36:50 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1601458610;
-        bh=sFPkPqeYpg9a/lBkzRRN9aDvogNT35tbuNNhoeQ3PUU=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=KQ+ZYMwV6+HJ1lCuvzMY5WXUE/oXOqZquFSNDODvW5SOpcJgRScxuCiuOoKEhsnv+
-         Q8q/1DK/36wA+mbjnYkLzytOld13HuRcCPvlGQW3GpdvNJ/xQN5u5SIkj5s8lDUOU+
-         TSi3fPvxS9WvihLdmihwR/SrmsXFnlMyvu4jbih4=
-Received: from DLEE106.ent.ti.com (dlee106.ent.ti.com [157.170.170.36])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08U9aoHg026202;
-        Wed, 30 Sep 2020 04:36:50 -0500
-Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE106.ent.ti.com
- (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 30
- Sep 2020 04:36:49 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 30 Sep 2020 04:36:49 -0500
-Received: from [10.250.235.166] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08U9akFP083973;
-        Wed, 30 Sep 2020 04:36:47 -0500
-Subject: Re: [RESEND PATCH 1/2] mtd: spi-nor: do not touch TB bit without
- SPI_NOR_HAS_TB
-To:     Ivan Mikhaylov <i.mikhaylov@yadro.com>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>
-CC:     <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-References: <20200921112450.4824-1-i.mikhaylov@yadro.com>
- <20200921112450.4824-2-i.mikhaylov@yadro.com>
-From:   Vignesh Raghavendra <vigneshr@ti.com>
-Message-ID: <9bfb10df-64d8-4a5e-b0ad-a8b5f4efc56f@ti.com>
-Date:   Wed, 30 Sep 2020 15:06:46 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 30 Sep 2020 05:38:06 -0400
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75224C0613D1
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 02:38:06 -0700 (PDT)
+Received: by mail-ot1-x32d.google.com with SMTP id s66so1196461otb.2
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 02:38:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TfzEw5x0NiRRju3CPhetGru5/pRnoeNXGN+8SqIx2Xg=;
+        b=xSNlabK0wj27CX+1Qcx2VTudu5ZW9FuibpTZ0nWLnP7KiZc1Y26yZKB8Eh31WGDcm6
+         8swxBpO09W7KLsdWCfcJLGpNOa9gUdbATUzXP1GsumP4vcMrlnAxEcLj8eox2M6rO4QT
+         LYOYeyB9ved5GDo1QpgQlQh7SernXIJ3tBNMc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TfzEw5x0NiRRju3CPhetGru5/pRnoeNXGN+8SqIx2Xg=;
+        b=q09rRFihgCdEkisYWtJ9e//CMnVmtaoc9GnPIJDatUH2fnd8P33uhyXxC6X7dUK/zU
+         jz25o4s38VlV30qyrTFWasOQA1L2WkXICcAuEGV2limNJTAfpWkkaN2J1bS4QXcQ5Gao
+         t9kSe6R3+JihlcSeBDm4EzxcK6D+5RhgNTM/VgNLsxV77eP6Fl/sybRl9ckjRhlPSyi+
+         jDk0aRee7cI9JvpH4ro0v+MbW7BNy+O3aRPIaYWX6u6Mb9DjQ1M70OZYc95bKIOTKYTD
+         orzuqm/WyjgyhK4lCXxyIXxp9JS7eKMGXtYNc+IASuiVgwTSflG5s/ZBbDILtmHjtcZN
+         yHoA==
+X-Gm-Message-State: AOAM530dTt2IYZcXshCPJD+lXqhpGgk+IZEATl7mCweL7PeUthRn04D+
+        UOnMem6CyW4Z7RetQfaX7KNbk+lbVB5mX8X6etDZIQ==
+X-Google-Smtp-Source: ABdhPJyEFIY605VtSWbEn3ZkRUtaTSsucUs4nlzLVLBbPX+b1HdTLS14fXU+7V2yAvC7hyiex42j1bUzvOLQo1flGe0=
+X-Received: by 2002:a9d:6e90:: with SMTP id a16mr962799otr.132.1601458684868;
+ Wed, 30 Sep 2020 02:38:04 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200921112450.4824-2-i.mikhaylov@yadro.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20200928090805.23343-1-lmb@cloudflare.com> <20200928090805.23343-5-lmb@cloudflare.com>
+ <20200929060619.psnobg3cz3zbfx6u@kafai-mbp> <CACAyw9-hSfaxfHHMaVMVqBU7MHLoqgPyo55UwQ3w7NKREHcCxw@mail.gmail.com>
+ <20200929172340.hogj6zficvhkpibx@kafai-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20200929172340.hogj6zficvhkpibx@kafai-mbp.dhcp.thefacebook.com>
+From:   Lorenz Bauer <lmb@cloudflare.com>
+Date:   Wed, 30 Sep 2020 10:37:53 +0100
+Message-ID: <CACAyw9_wfD39OCKR5zMN4g=GjcYH31Dg7skoyhPVHVTspgvarA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 4/4] selftest: bpf: Test copying a sockmap and sockhash
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     Shuah Khan <shuah@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        kernel-team <kernel-team@cloudflare.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 29 Sep 2020 at 18:23, Martin KaFai Lau <kafai@fb.com> wrote:
 
+...
 
-On 9/21/20 4:54 PM, Ivan Mikhaylov wrote:
-> Some chips like macronix don't have TB(Top/Bottom protection)
-> bit in the status register. Do not write tb_mask inside status
-> register, unless SPI_NOR_HAS_TB is present for the chip.
-> 
+> > Yeah, I think so. We'd need to do something similar to your
+> > sock_common work for PTR_TO_RDONLY_BUF_OR_NULL. The fact that the
+> > pointer is read only makes it a bit more difficult I think. After
+> I thought the key arg should be used as read-only in the map's helper.
+> or there is map type's helper that modifies the key?
 
-Not entirely accurate.. Macronix chips have TB bit in config register
-and is OTP and hence should not be touched ideally...
+I don't know, that's what I meant by more difficult. If map keys are
+always read-only like you say this would be straight forward to do
+(famous last words).
 
-You still need to "read" that bit to determine actual scheme (Top vs
-Bottom). This is needs to be done before 2/2 enables SPI_NOR_HAS_LOCK
-flag for macronix flashes.
+-- 
+Lorenz Bauer  |  Systems Engineer
+6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
 
-> Signed-off-by: Ivan Mikhaylov <i.mikhaylov@yadro.com>
-> ---
->  drivers/mtd/spi-nor/core.c | 22 ++++++++++++++++------
->  1 file changed, 16 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-> index 0369d98b2d12..f9853dd566dc 100644
-> --- a/drivers/mtd/spi-nor/core.c
-> +++ b/drivers/mtd/spi-nor/core.c
-> @@ -1735,13 +1735,18 @@ static int spi_nor_sr_lock(struct spi_nor *nor, loff_t ofs, uint64_t len)
->  			return -EINVAL;
->  	}
->  
-> -	status_new = (status_old & ~mask & ~tb_mask) | val;
-> +	if (nor->flags & SNOR_F_HAS_SR_TB)
-> +		status_new = (status_old & ~mask & ~tb_mask) | val;
-> +	else
-> +		status_new = (status_old & ~mask) | val;
->  
->  	/* Disallow further writes if WP pin is asserted */
->  	status_new |= SR_SRWD;
->  
-
-I guess macronix does not support SR_SRWD right? This needs special
-treatment as well.
-
-So either, macronix.c should implements its own locking ops or convert
-this function in to more generic library so that its suitable to be
-called from macronix.c file while hiding vendor specific stuff in that
-driver,
-
-Regards
-Vignesh
-
+www.cloudflare.com
