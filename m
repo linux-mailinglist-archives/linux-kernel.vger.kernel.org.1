@@ -2,305 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F46927E5D6
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 11:59:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B1B427E5E2
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 12:01:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729272AbgI3J7Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 05:59:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44192 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729220AbgI3J7W (ORCPT
+        id S1728951AbgI3KBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 06:01:00 -0400
+Received: from relay12.mail.gandi.net ([217.70.178.232]:49073 "EHLO
+        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725776AbgI3KA7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 05:59:22 -0400
-Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601459960;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=c8DnijzxhXI/xRDwRFSJZzsrdBCsEQl6sE7zrZb1dP8=;
-        b=fs3jS3d57jWSJ1iKZeofM+BkW+5ju/EJ8Ici6wzApBfNmg6kyxAYYPMR3++ik5Viy55k+6
-        ULgqUuiJwQ7ReNatpVzKfPvhwc3FwVOZxinR0/ufezRUr0Ah75O/46wtgb3W1wFILiKNUL
-        PTHcfewxEnYDrOdNsp/XV6gflseA3cU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-359-t1j6DdRAOjigaq6QF2tuaQ-1; Wed, 30 Sep 2020 05:59:17 -0400
-X-MC-Unique: t1j6DdRAOjigaq6QF2tuaQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 18E1D1019626;
-        Wed, 30 Sep 2020 09:59:15 +0000 (UTC)
-Received: from [10.36.113.210] (ovpn-113-210.ams2.redhat.com [10.36.113.210])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id DDF8810013C0;
-        Wed, 30 Sep 2020 09:59:08 +0000 (UTC)
-Subject: Re: [RFC 0/3] iommu: Reserved regions for IOVAs beyond dma_mask and
- iommu aperture
-To:     Alex Williamson <alex.williamson@redhat.com>
-Cc:     joro@8bytes.org, iommu@lists.linux-foundation.org,
-        robin.murphy@arm.com, dwmw2@infradead.org,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        eric.auger.pro@gmail.com, linux-kernel@vger.kernel.org,
-        Will Deacon <will@kernel.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        shameerali.kolothum.thodi@huawei.com,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>
-References: <20200928195037.22654-1-eric.auger@redhat.com>
- <20200928164224.12350d84@w520.home>
- <1cbaf3e7-cf88-77f6-4cc4-46dcd60eb649@redhat.com>
- <20200929121849.455af184@w520.home>
-From:   Auger Eric <eric.auger@redhat.com>
-Message-ID: <30bea49b-c3d4-3926-c8bf-5d6794fce185@redhat.com>
-Date:   Wed, 30 Sep 2020 11:59:07 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        Wed, 30 Sep 2020 06:00:59 -0400
+Received: from localhost (lfbn-lyo-1-1908-165.w90-65.abo.wanadoo.fr [90.65.88.165])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay12.mail.gandi.net (Postfix) with ESMTPSA id 09FF3200011;
+        Wed, 30 Sep 2020 10:00:55 +0000 (UTC)
+Date:   Wed, 30 Sep 2020 12:00:55 +0200
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/4] dt-bindings: microchip: atmel,at91rm9200-tcb: add
+ atmel,tcb-pwm
+Message-ID: <20200930100055.GF2804081@piout.net>
+References: <20200820225546.2246517-1-alexandre.belloni@bootlin.com>
+ <20200820225546.2246517-2-alexandre.belloni@bootlin.com>
+ <20200908204834.GA886652@bogus>
 MIME-Version: 1.0
-In-Reply-To: <20200929121849.455af184@w520.home>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200908204834.GA886652@bogus>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alex,
-
-On 9/29/20 8:18 PM, Alex Williamson wrote:
-> On Tue, 29 Sep 2020 09:18:22 +0200
-> Auger Eric <eric.auger@redhat.com> wrote:
+On 08/09/2020 14:48:34-0600, Rob Herring wrote:
+> On Fri, Aug 21, 2020 at 12:55:43AM +0200, Alexandre Belloni wrote:
+> > Move the TCB pwm nodes under their parent and move its documentation to the
+> > main file.
+> > 
+> > Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+> > ---
+> > Cc: Rob Herring <robh+dt@kernel.org>
+> > 
+> >  .../devicetree/bindings/pwm/atmel-tcb-pwm.txt | 16 ----------
+> >  .../soc/microchip/atmel,at91rm9200-tcb.yaml   | 31 ++++++++++++++++++-
+> >  2 files changed, 30 insertions(+), 17 deletions(-)
+> >  delete mode 100644 Documentation/devicetree/bindings/pwm/atmel-tcb-pwm.txt
+> > 
+> > diff --git a/Documentation/devicetree/bindings/pwm/atmel-tcb-pwm.txt b/Documentation/devicetree/bindings/pwm/atmel-tcb-pwm.txt
+> > deleted file mode 100644
+> > index 985fcc65f8c4..000000000000
+> > --- a/Documentation/devicetree/bindings/pwm/atmel-tcb-pwm.txt
+> > +++ /dev/null
+> > @@ -1,16 +0,0 @@
+> > -Atmel TCB PWM controller
+> > -
+> > -Required properties:
+> > -- compatible: should be "atmel,tcb-pwm"
+> > -- #pwm-cells: should be 3. See pwm.yaml in this directory for a description of
+> > -  the cells format. The only third cell flag supported by this binding is
+> > -  PWM_POLARITY_INVERTED.
+> > -- tc-block: The Timer Counter block to use as a PWM chip.
 > 
->> Hi all,
->>
->> [also correcting some outdated email addresses + adding Lorenzo in cc]
->>
->> On 9/29/20 12:42 AM, Alex Williamson wrote:
->>> On Mon, 28 Sep 2020 21:50:34 +0200
->>> Eric Auger <eric.auger@redhat.com> wrote:
->>>   
->>>> VFIO currently exposes the usable IOVA regions through the
->>>> VFIO_IOMMU_GET_INFO ioctl / VFIO_IOMMU_TYPE1_INFO_CAP_IOVA_RANGE
->>>> capability. However it fails to take into account the dma_mask
->>>> of the devices within the container. The top limit currently is
->>>> defined by the iommu aperture.  
->>>
->>> I think that dma_mask is traditionally a DMA API interface for a device
->>> driver to indicate to the DMA layer which mappings are accessible to the
->>> device.  On the other hand, vfio makes use of the IOMMU API where the
->>> driver is in userspace.  That userspace driver has full control of the
->>> IOVA range of the device, therefore dma_mask is mostly irrelevant to
->>> vfio.  I think the issue you're trying to tackle is that the IORT code
->>> is making use of the dma_mask to try to describe a DMA address
->>> limitation imposed by the PCI root bus, living between the endpoint
->>> device and the IOMMU.  Therefore, if the IORT code is exposing a
->>> topology or system imposed device limitation, this seems much more akin
->>> to something like an MSI reserved range, where it's not necessarily the
->>> device or the IOMMU with the limitation, but something that sits
->>> between them.  
->>
->> First I think I failed to explain the context. I worked on NVMe
->> passthrough on ARM. The QEMU NVMe backend uses VFIO to program the
->> physical device. The IOVA allocator there currently uses an IOVA range
->> within [0x10000, 1ULL << 39]. This IOVA layout rather is arbitrary if I
->> understand correctly.
+> What happened to 'tc-block'? Commit message should mention why it is 
+> gone.
 > 
-> 39 bits is the minimum available on some VT-d systems, so it was
-> probably considered a reasonable minimum address width to consider.
-OK
+> > -
+> > -Example:
+> > -
+> > -pwm {
+> > -	compatible = "atmel,tcb-pwm";
+> > -	#pwm-cells = <3>;
+> > -	tc-block = <1>;
+> > -};
+> > diff --git a/Documentation/devicetree/bindings/soc/microchip/atmel,at91rm9200-tcb.yaml b/Documentation/devicetree/bindings/soc/microchip/atmel,at91rm9200-tcb.yaml
+> > index 55fffae05dcf..a51adfdb58f6 100644
+> > --- a/Documentation/devicetree/bindings/soc/microchip/atmel,at91rm9200-tcb.yaml
+> > +++ b/Documentation/devicetree/bindings/soc/microchip/atmel,at91rm9200-tcb.yaml
+> > @@ -59,6 +59,7 @@ patternProperties:
+> >          items:
+> >            - enum:
+> >                - atmel,tcb-timer
+> > +              - atmel,tcb-pwm
+> >                - microchip,tcb-capture
+> >        reg:
+> >          description:
+> > @@ -68,11 +69,33 @@ patternProperties:
+> >  
+> >          minItems: 1
+> >          maxItems: 3
+> > +    required:
+> > +      - compatible
+> > +      - reg
+> > +
+> > +  "^pwm@[0-2]$":
+> > +    description: The timer block channels that are used as PWMs.
+> > +    $ref: ../../pwm/pwm.yaml#
+> > +    type: object
+> > +    properties:
+> > +      compatible:
+> > +        const: atmel,tcb-pwm
+> > +      reg:
+> > +        description:
+> > +          TCB channel to use for this PWM.
 > 
->> I noticed we rapidly get some VFIO MAP DMA
->> failures because the allocated IOVA collide with the ARM MSI reserved
->> IOVA window [0x8000000, 0x8100000]. Since  9b77e5c79840 ("vfio/type1:
->> Check reserved region conflict and update iova list"), such VFIO MAP DMA
->> attempts to map IOVAs belonging to host reserved IOVA windows fail. So,
->> by using the VFIO_IOMMU_GET_INFO ioctl /
->> VFIO_IOMMU_TYPE1_INFO_CAP_IOVA_RANGE I can change the IOVA allocator to
->> avoid allocating within this range and others. While working on this, I
->> tried to automatically compute the min/max IOVAs and change the
->> arbitrary [0x10000, 1ULL << 39]. My SMMUv2 supports up to 48b so
->> naturally the max IOVA was computed as 1ULL << 48. The QEMU NVMe backend
->> allocates at the bottom and at the top of the range. I noticed the use
->> case was not working as soon as the top IOVA was more than 1ULL << 42.
->> And then we noticed the dma_mask was set to 42 by using
->> cat  /sys/bus/pci/devices/0005:01:00.0/dma_mask_bits. So my
->> interpretation is the dma_mask was somehow containing the info the
->> device couldn't handle IOVAs beyond a certain limit.
-> 
-> I see that there are both OF and ACPI hooks in pci_dma_configure() and
-> both modify dev->dma_mask, which is what pci-sysfs is exposing here,
-> but I'm not convinced this even does what it's intended to do.  The
-> driver core calls this via the bus->dma_configure callback before
-> probing a driver, but then what happens when the driver calls
-> pci_set_dma_mask()?  This is just a wrapper for dma_set_mask() and I
-> don't see anywhere that would take into account the existing
-> dev->dma_mask.  It seems for example that pci_dma_configure() could
-> produce a 42 bit mask as we have here, then the driver could override
-> that with anything that the dma_ops.dma_supported() callback finds
-> acceptable, and I don't see any instances where the current
-> dev->dma_mask is considered.  Am I overlooking something? 
-
-I don't see it either. So the dma_mask set by the driver would never be
-checked against the dma_mask limited found when parsing OF/ACPI?
->  
->> In my case the 42b limit is computed in iort_dma_setup() by
->> acpi_dma_get_range(dev, &dmaaddr, &offset, &size);
->>
->> Referring to the comment, it does "Evaluate DMA regions and return
->> respectively DMA region start, offset and size in dma_addr, offset and
->> size on parsing success". This parses the ACPI table, looking for ACPI
->> companions with _DMA methods.
->>
->> But as Alex mentioned, the IORT also allows to define limits on "the
->> number of address bits, starting from the least significant bit that can
->> be generated by a device when it accesses memory". See Named component
->> node.Device Memory Address Size limit or PCI root complex node. Memory
->> address size limit.
->>
->>         ret = acpi_dma_get_range(dev, &dmaaddr, &offset, &size);
->>         if (ret == -ENODEV)
->>                 ret = dev_is_pci(dev) ? rc_dma_get_range(dev, &size)
->>                                       : nc_dma_get_range(dev, &size);
->>
->> So eventually those info collected from the ACPI tables which do impact
->> the usable IOVA range seem to be stored in the dma_mask, hence that
->> proposal.
-> 
-> As above, it's not clear to me that anyone other than the driver and
-> the dma_supported() callback on dma_ops have any input on the value of
-> dma_mask, so I'm a little baffled by the current operation.
-
-me too
-> 
->>>> So, for instance, if the IOMMU supports up to 48bits, it may give
->>>> the impression the max IOVA is 48b while a device may have a
->>>> dma_mask of 42b. So this API cannot really be used to compute
->>>> the max usable IOVA.
->>>>
->>>> This patch removes the IOVA region beyond the dma_mask's.  
->>>
->>> Rather it adds a reserved region accounting for the range above the
->>> device's dma_mask.  
->>
->> Yep. It adds new reserved regions in
->> /sys/kernel/iommu_groups/<n>/reserved_regions and remove those from the
->> usable regions exposed by VFIO GET_INFO.
->>
->>   I don't think the IOMMU API should be consuming
->>> dma_mask like this though.  For example, what happens in
->>> pci_dma_configure() when there are no OF or ACPI DMA restrictions?  
->> My guess was that the dma_mask was set to the max range but I did not
->> test it.
-> 
-> Still, we're making use of a driver configured property for the
-> purposes of using the DMA API and consuming it in the IOMMU API,
-> specifically to satisfy a userspace driver where the in-kernel meta-
-> driver can't make any assumptions about the device DMA mask.  It's all
-> rather convoluted.
-
-I can't object here. Still we are missing missing consolidated info
-about max IOVA range. I interpreted the dma_mask as the info missing to
-get it consolidated but now we are not even sure it does the job and
-even I would hijack its original goal.
->>   It
->>> appears to me that the dma_mask from whatever previous driver had the
->>> device carries over to the new driver.  That's generally ok for the DMA
->>> API because a driver is required to set the device's DMA mask.  It
->>> doesn't make sense however to blindly consume that dma_mask and export
->>> it via an IOMMU API.  For example I would expect to see different
->>> results depending on whether a host driver has been bound to a device.
->>> It seems the correct IOMMU API approach would be for the IORT code to
->>> specifically register reserved ranges for the device.  
->>
->> Is it only specific to IORT table? acpi_dma_get_range() in
->> drivers/acpi/scan.c is generic.
-> 
-> Yes, anything trying to implement similar restrictions.  It appears to
-> me that platform code is stepping on a driver owned field used by
-> dma_ops already here.  Maybe reserved regions should be consumed by
-> dma_ops to understand restrictions between the device and the IOMMU.
-> 
->>>> As we start to expose this reserved region in the sysfs file
->>>> /sys/kernel/iommu_groups/<n>/reserved_regions, we also need to
->>>> handle the IOVA range beyond the IOMMU aperture to handle the case
->>>> where the dma_mask would have a higher number of bits than the iommu
->>>> max input address.  
->>>
->>> Why?  The IOMMU geometry already describes this and vfio combines both
->>> the IOMMU geometry and the device reserved regions when generating the
->>> IOVA ranges?   
->> Yes VFIO layer does add the info about the topology but
->> /sys/kernel/iommu_groups/<n>/reserved_regions, generated by the IOMMU
->> code, does not. this latter only exposes reserved regions. Assume the
->> dma_mask is 48b and the IOMMU aperture is 42b (assuming it is possible),
->> if you only take into account the "dma_mask" limitation, the end-user
->> will interpret this as: I can use up to 48b.
-> 
-> What end user?
-Anyone who reads /sys/kernel/iommu_groups/<n>/reserved_regions. A user
-application could use that info. Anyway I think I indeed wants this file
-to do more than it was originally meant for, enumerating *some* of the
-reserved regions. That's a bit frustrating though (same for the VFIO ioctl).
-
-  The DMA API is allocating within the address space of
-> the IOMMU, so it will simply never encounter the issue.  Within the
-> IOMMU API we can already query the geometry of the IOMMU to know its
-> width.  It seems like reserved regions is trying to take on new
-> responsibilities here.
->  
->>  Who is going to consume this information?  Additionally
->>> it appears that reserved regions will report different information
->>> depending on whether a device is attached to a domain.  
->> yes that's correct. Well at some point we decided to expose (some)
->> reserved regions through sysfs. Only printing a reduced set of those
->> also can be misleading, hence my attempt to be more comprehensive.
-> 
-> Seems it further blurs the lines of what reserved regions is intended
-> to report.  Is it trying to replace the IOMMU API geometry interface?
-> 
->>>> This is a change to the ABI as this reserved region was not yet
->>>> exposed in sysfs /sys/kernel/iommu_groups/<n>/reserved_regions or
->>>> through the VFIO ioctl. At VFIO level we increment the version of
->>>> the VFIO_IOMMU_TYPE1_INFO_CAP_IOVA_RANGE capability to advertise
->>>> that change.  
->>>
->>> Is this really an ABI change?  The original entry for reserved regions
->>> includes:
->>>
->>>   Not necessarily all reserved regions are listed. This is typically
->>>   used to output direct-mapped, MSI, non mappable regions.  
->>
->> I agree. That's not really a change in the ABI but I wanted to make
->> things clear about the induced changes for the end-user. On the other
->> end there will be a change in the number of reported resv regions.
->>>
->>> I imagine the intention here was non-mappable relative to the IOMMU,
->>> but non-mappable to the device is essentially what we're including
->>> here.
->>>
->>> I'm also concerned about bumping the vfio interface version for the
->>> IOVA range.  We're not changing the interface, we're modifying the
->>> result, and even then only for a fraction of users.  How many users are
->>> potentially broken by that change?  Are we going to bump the version
->>> for everyone any time the result changes on any platform?  Thanks,  
->>
->> The userspace needs to know if the GET_INFO is reliable to compute the
->> min/max IOVAs. If we do not change the version, it cannot know and must
->> assume it is not. Wasn't the version field meant for that somehow?
-> 
-> Our IOVA RANGE is correct to the best of our knowledge, but I don't
-> think we can or should rev the version every time we find something
-> incorrect.  For instance, we wouldn't do the same for a firmware
-> induced range that was missing or incorrect.  I think the version field
-> is for creating a new data structure to replace or expand the existing
-> one, not to simply say the returned data might be different.  I
-> understand the userspace dilemma, but this doesn't seem like the right
-> solution.  Thanks,
-understood
-
-Thanks
-
-Eric
-> 
-> Alex
+> enum: [ 0, 1, 2 ]
 > 
 
+This does not work:
+Documentation/devicetree/bindings/soc/microchip/atmel,at91rm9200-tcb.yaml: patternProperties:^pwm@[0-2]$:properties:reg:enum: False schema does not allow [0, 1, 2]
+
+I guess it is because reg is of type uint32-matrix.
+
+I'm not sure there is a point in adding it in the first place since the
+unit-address is already limited to [0-2] and so reg will also be [0-2]
+
+> > +
+> > +        maxItems: 1
+> > +      "#pwm-cells":
+> > +        description:
+> > +          The only third cell flag supported by this binding is
+> > +          PWM_POLARITY_INVERTED.
+> > +        const: 3
+> >  
+> >      required:
+> >        - compatible
+> >        - reg
+> 
+>        additionalProperties: false
+> 
+> >  
+> > +
+> >  allOf:
+> >    - if:
+> >        properties:
+> > @@ -158,7 +181,13 @@ examples:
+> >                          compatible = "atmel,tcb-timer";
+> >                          reg = <1>;
+> >                  };
+> > -        };
+> > +
+> > +                pwm@2 {
+> > +                        compatible = "atmel,tcb-pwm";
+> > +                        reg = <2>;
+> > +                        #pwm-cells = <3>;
+> > +                };
+> > +         };
+> >      /* TCB0 Capture with QDEC: */
+> >          timer@f800c000 {
+> >                  compatible = "atmel,at91rm9200-tcb", "simple-mfd", "syscon";
+> > -- 
+> > 2.26.2
+> > 
+
+-- 
+Alexandre Belloni, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
