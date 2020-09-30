@@ -2,144 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C280827DE93
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 04:49:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5992327DE98
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 04:50:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729777AbgI3Ctf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 22:49:35 -0400
-Received: from mga04.intel.com ([192.55.52.120]:42724 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729446AbgI3Ctf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 22:49:35 -0400
-IronPort-SDR: ndhiDGJTxZjxf4YdrsuPqv3CMEiwp2zgXnhpqK2scDHO1OX6tdrhWhnfgm4eNbbfySjsxnCfbo
- 29OnTjhKI7MA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9759"; a="159728460"
-X-IronPort-AV: E=Sophos;i="5.77,320,1596524400"; 
-   d="scan'208";a="159728460"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2020 19:49:33 -0700
-IronPort-SDR: spis1oSx1F7YFD3eIP15/vaNC0KRWPa8nEFs1uHkZCRixULSY5PPiAA3Yb/Xti72dfEKZahoCz
- uYH63akBls9w==
-X-IronPort-AV: E=Sophos;i="5.77,320,1596524400"; 
-   d="scan'208";a="494945791"
-Received: from shuo-intel.sh.intel.com (HELO localhost) ([10.239.154.30])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2020 19:49:29 -0700
-Date:   Wed, 30 Sep 2020 10:49:27 +0800
-From:   Shuo A Liu <shuo.a.liu@intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Yu Wang <yu1.wang@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Zhi Wang <zhi.a.wang@intel.com>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>
-Subject: Re: [PATCH v4 06/17] virt: acrn: Introduce VM management interfaces
-Message-ID: <20200930024927.GH1057@shuo-intel.sh.intel.com>
-References: <20200922114311.38804-1-shuo.a.liu@intel.com>
- <20200922114311.38804-7-shuo.a.liu@intel.com>
- <20200927104702.GE88650@kroah.com>
- <20200928035030.GD1057@shuo-intel.sh.intel.com>
- <20200928052516.GD767987@kroah.com>
- <20200928062934.GF1057@shuo-intel.sh.intel.com>
- <20200928122602.GB682772@kroah.com>
+        id S1729807AbgI3Cue (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 22:50:34 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:14731 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729446AbgI3Cud (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 22:50:33 -0400
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 8F2B331F9658EF0A7C8F;
+        Wed, 30 Sep 2020 10:50:28 +0800 (CST)
+Received: from [127.0.0.1] (10.174.177.253) by DGGEMS410-HUB.china.huawei.com
+ (10.3.19.210) with Microsoft SMTP Server id 14.3.487.0; Wed, 30 Sep 2020
+ 10:50:20 +0800
+Subject: Re: [PATCH v5 15/17] dt-bindings: arm: hisilicon: convert Hi6220
+ domain controller bindings to json-schema
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+To:     Wei Xu <xuwei5@hisilicon.com>, Rob Herring <robh+dt@kernel.org>,
+        "Jonathan Cameron" <Jonathan.Cameron@Huawei.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+CC:     Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Libin <huawei.libin@huawei.com>
+References: <20200929141454.2312-1-thunder.leizhen@huawei.com>
+ <20200929141454.2312-16-thunder.leizhen@huawei.com>
+ <5a6a9cd5-e235-e610-bbca-6d2d4547f051@huawei.com>
+Message-ID: <91ae61b2-4bb0-e322-f231-325b7ee08e66@huawei.com>
+Date:   Wed, 30 Sep 2020 10:50:18 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20200928122602.GB682772@kroah.com>
-User-Agent: Mutt/1.8.3 (2017-05-23)
+In-Reply-To: <5a6a9cd5-e235-e610-bbca-6d2d4547f051@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.177.253]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 28.Sep'20 at 14:26:02 +0200, Greg Kroah-Hartman wrote:
->On Mon, Sep 28, 2020 at 02:29:34PM +0800, Shuo A Liu wrote:
->> On Mon 28.Sep'20 at  7:25:16 +0200, Greg Kroah-Hartman wrote:
->> > On Mon, Sep 28, 2020 at 11:50:30AM +0800, Shuo A Liu wrote:
->> > > > > +	write_lock_bh(&acrn_vm_list_lock);
->> > > > > +	list_add(&vm->list, &acrn_vm_list);
->> > > > > +	write_unlock_bh(&acrn_vm_list_lock);
->> > > >
->> > > > Why are the _bh() variants being used here?
->> > > >
->> > > > You are only accessing this list from userspace context in this patch.
->> > > >
->> > > > Heck, you aren't even reading from the list, only writing to it...
->> > >
->> > > acrn_vm_list is read in a tasklet which dispatch I/O requests and is wrote
->> > > in VM creation ioctl. Use the rwlock mechanism to protect it.
->> > > The reading operation is introduced in the following patches of this
->> > > series. So i keep the lock type at the moment of introduction.
->> >
->> > Ok, but think about someone trying to review this code.  Does this lock
->> > actually make sense here?  No, it does not.  How am I supposed to know
->> > to look at future patches to determine that it changes location and
->> > usage to require this?
+
+
+On 2020/9/30 9:38, Leizhen (ThunderTown) wrote:
+> Hi, Rob:
+>   I'm so glad to see you applied my patches in this morning. However, this patch
+> is not applied and without any comment. Did you miss it?
+
+Oh, I got it, missed the property "#reset-cells". What a shame! I will post the new one.
+
+> 
+> 
+> On 2020/9/29 22:14, Zhen Lei wrote:
+>> Convert the Hisilicon Hi6220 domain controllers binding to DT schema
+>> format using json-schema. All of them are grouped into one yaml file, to
+>> help users understand differences and avoid repeated descriptions.
 >>
->> OK. May i know how to handle such kind of code submission? Or which way
->> following do you prefer?
->>  1) Use a mutex lock here, then change it to rwlock in a later patch
->>     of this series.
->
->Wouldn't this make more sense if you had to read these one after
->another?
-
-OK. I will change to mutex firstly for more readable. 
-
->
->>  2) Add more comments in changelog about the lock. (Now, there is
->>     comment around the acrn_vm_list_lock)
->
->It's hard to verify a comment's statement without digging through other
->patches in the series, right?  You want the reviewer to just trust you?
->:)
->
->Again, what would _YOU_ want to see if you had to review this?
->
->> > That's just not fair, would you want to review something like this?
->> >
->> > And a HUGE meta-comment, again, why am I the only one reviewing this
->> > stuff?  Why do you have a ton of Intel people on the Cc: yet it is, once
->> > again, my job to do this?
+>> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+>> ---
+>>  .../hisilicon/controller/hi6220-domain-ctrl.yaml   | 64 ++++++++++++++++++++++
+>>  .../controller/hisilicon,hi6220-aoctrl.txt         | 18 ------
+>>  .../controller/hisilicon,hi6220-mediactrl.txt      | 18 ------
+>>  .../controller/hisilicon,hi6220-pmctrl.txt         | 18 ------
+>>  4 files changed, 64 insertions(+), 54 deletions(-)
+>>  create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/hi6220-domain-ctrl.yaml
+>>  delete mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hi6220-aoctrl.txt
+>>  delete mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hi6220-mediactrl.txt
+>>  delete mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hi6220-pmctrl.txt
 >>
->> The patchset has been reviewed in Intel's internal mailist several
->> rounds and got Reviewed-by: before send out. That's why i Cced many
->> Intel people as well.
->
->Then why didn't any of those intel people on the cc: actually review it
->after you have sent it out?  Why is it only me?  Do I need to wait
->longer for them to get to this?  I'll gladly do so next time...
->
->> This patchset is all about a common driver for the ACRN hypervisor
->> support. I put the code in drivers/virt/ and found you are one of the
->> maintainer of vboxguest driver which is in the same subdirectory. I
->> thought you should be the right person to be Cced when i submitted this
->> series.
->
->I am, I'm not complaining about that.  I'm complaining that it seems to
->be _only_ me reviewing this here, and not any of the people you are cc:ing
->from intel.  Most of those people should be giving you this same type of
->review comments and not forcing an external person to do so, right?
->
->> Certainly, any comments are welcome. And really appreciate your review
->> and help. I have little experience to submit a new driver to the
->> community, my apologies if thing goes wrong.
->
->You didn't do anything wrong, I'm arguing about the larger meta-issue I
->have right now with Intel and the lack of reviews that seems to happen
->from other Intel people on their co-workers patches.
->
->Anyway, you are doing fine, it's an iterative process, hopefully you can
->also review other people's patches in this area that are being posted as
->well.
+>> diff --git a/Documentation/devicetree/bindings/arm/hisilicon/controller/hi6220-domain-ctrl.yaml b/Documentation/devicetree/bindings/arm/hisilicon/controller/hi6220-domain-ctrl.yaml
+>> new file mode 100644
+>> index 000000000000000..32c562720d877c9
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/arm/hisilicon/controller/hi6220-domain-ctrl.yaml
+>> @@ -0,0 +1,64 @@
+>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>> +%YAML 1.2
+>> +---
+>> +$id: http://devicetree.org/schemas/arm/hisilicon/controller/hi6220-domain-ctrl.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: Hisilicon Hi6220 domain controller
+>> +
+>> +maintainers:
+>> +  - Wei Xu <xuwei5@hisilicon.com>
+>> +
+>> +description: |
+>> +  Hisilicon designs some special domain controllers for mobile platform,
+>> +  such as: the power Always On domain controller, the Media domain
+>> +  controller(e.g. codec, G3D ...) and the Power Management domain
+>> +  controller.
+>> +
+>> +  The compatible names of each domain controller are as follows:
+>> +  Power Always ON domain controller  --> hisilicon,hi6220-aoctrl
+>> +  Media domain controller            --> hisilicon,hi6220-mediactrl
+>> +  Power Management domain controller --> hisilicon,hi6220-pmctrl
+>> +
+>> +properties:
+>> +  compatible:
+>> +    items:
+>> +      - enum:
+>> +          - hisilicon,hi6220-aoctrl
+>> +          - hisilicon,hi6220-mediactrl
+>> +          - hisilicon,hi6220-pmctrl
+>> +      - const: syscon
+>> +
+>> +  reg:
+>> +    maxItems: 1
+>> +
+>> +  '#clock-cells':
+>> +    const: 1
+>> +
+>> +required:
+>> +  - compatible
+>> +  - reg
+>> +  - '#clock-cells'
+>> +
+>> +additionalProperties: false
+>> +
+>> +examples:
+>> +  - |
+>> +    ao_ctrl@f7800000 {
+>> +        compatible = "hisilicon,hi6220-aoctrl", "syscon";
+>> +        reg = <0xf7800000 0x2000>;
+>> +        #clock-cells = <1>;
+>> +    };
+>> +
+>> +    media_ctrl@f4410000 {
+>> +        compatible = "hisilicon,hi6220-mediactrl", "syscon";
+>> +        reg = <0xf4410000 0x1000>;
+>> +        #clock-cells = <1>;
+>> +    };
+>> +
+>> +    pm_ctrl@f7032000 {
+>> +        compatible = "hisilicon,hi6220-pmctrl", "syscon";
+>> +        reg = <0xf7032000 0x1000>;
+>> +        #clock-cells = <1>;
+>> +    };
+>> +...
+>> diff --git a/Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hi6220-aoctrl.txt b/Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hi6220-aoctrl.txt
+>> deleted file mode 100644
+>> index 5a723c1d45f4a17..000000000000000
+>> --- a/Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hi6220-aoctrl.txt
+>> +++ /dev/null
+>> @@ -1,18 +0,0 @@
+>> -Hisilicon Hi6220 Power Always ON domain controller
+>> -
+>> -Required properties:
+>> -- compatible : "hisilicon,hi6220-aoctrl"
+>> -- reg : Register address and size
+>> -- #clock-cells: should be set to 1, many clock registers are defined
+>> -  under this controller and this property must be present.
+>> -
+>> -Hisilicon designs this system controller to control the power always
+>> -on domain for mobile platform.
+>> -
+>> -Example:
+>> -	/*for Hi6220*/
+>> -	ao_ctrl: ao_ctrl@f7800000 {
+>> -		compatible = "hisilicon,hi6220-aoctrl", "syscon";
+>> -		reg = <0x0 0xf7800000 0x0 0x2000>;
+>> -		#clock-cells = <1>;
+>> -	};
+>> diff --git a/Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hi6220-mediactrl.txt b/Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hi6220-mediactrl.txt
+>> deleted file mode 100644
+>> index dcfdcbcb6455771..000000000000000
+>> --- a/Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hi6220-mediactrl.txt
+>> +++ /dev/null
+>> @@ -1,18 +0,0 @@
+>> -Hisilicon Hi6220 Media domain controller
+>> -
+>> -Required properties:
+>> -- compatible : "hisilicon,hi6220-mediactrl"
+>> -- reg : Register address and size
+>> -- #clock-cells: should be set to 1, many clock registers are defined
+>> -  under this controller and this property must be present.
+>> -
+>> -Hisilicon designs this system controller to control the multimedia
+>> -domain(e.g. codec, G3D ...) for mobile platform.
+>> -
+>> -Example:
+>> -	/*for Hi6220*/
+>> -	media_ctrl: media_ctrl@f4410000 {
+>> -		compatible = "hisilicon,hi6220-mediactrl", "syscon";
+>> -		reg = <0x0 0xf4410000 0x0 0x1000>;
+>> -		#clock-cells = <1>;
+>> -	};
+>> diff --git a/Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hi6220-pmctrl.txt b/Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hi6220-pmctrl.txt
+>> deleted file mode 100644
+>> index 972842f07b5a2ce..000000000000000
+>> --- a/Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hi6220-pmctrl.txt
+>> +++ /dev/null
+>> @@ -1,18 +0,0 @@
+>> -Hisilicon Hi6220 Power Management domain controller
+>> -
+>> -Required properties:
+>> -- compatible : "hisilicon,hi6220-pmctrl"
+>> -- reg : Register address and size
+>> -- #clock-cells: should be set to 1, some clock registers are define
+>> -  under this controller and this property must be present.
+>> -
+>> -Hisilicon designs this system controller to control the power management
+>> -domain for mobile platform.
+>> -
+>> -Example:
+>> -	/*for Hi6220*/
+>> -	pm_ctrl: pm_ctrl@f7032000 {
+>> -		compatible = "hisilicon,hi6220-pmctrl", "syscon";
+>> -		reg = <0x0 0xf7032000 0x0 0x1000>;
+>> -		#clock-cells = <1>;
+>> -	};
+>>
+> 
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+> 
+> .
+> 
 
-Sorry, i have no answer about some of your question above. :(
-However, i will try my best to help review other people's patches in
-this area.
-
-Thanks
-shuo
