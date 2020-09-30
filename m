@@ -2,140 +2,276 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60F8727F646
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 01:49:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9551827F64A
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 01:49:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732174AbgI3XtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 19:49:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35196 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731202AbgI3XtA (ORCPT
+        id S1732204AbgI3Xtn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 19:49:43 -0400
+Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:58048 "EHLO
+        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730326AbgI3Xtn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 19:49:00 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 615A4C0613D0
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 16:49:00 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id u4so3058591ljd.10
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 16:49:00 -0700 (PDT)
+        Wed, 30 Sep 2020 19:49:43 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ragnatech-se.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=1K6GZ5cts7m5+dPoKFk/BNjOtI5JoHWgjjAufBHq48Y=;
-        b=tRyeEN3nhgw2RRiORdqa8mpKabxwtR2R8hUhmoETiBpNETmt2SnVpE5e0nP7yROGy9
-         tMHSmwiXfQxTXWC44UEShc2AgHdCjJS5UaQCxQi9+e7M5Ga5b0iOtCt7qjgRkMxxBPfH
-         3rJCakAOPi3yqMGC+Dp6OUPQBUNmhzbPk0YHNp7nTvYw5jQZX8GU1fAh4CfMPrViGxmb
-         kzUaTEpstRZnM9P6CEIfcsWNvfaEdZVwRQWg1L2EvrHPobqfO0VfvBAf/oyFuTzlyW4Z
-         DrqR/BYHu+yofs46Dxey5ewEqwVuVeyADzoGUH208xPIe160j3zc+ebPnE3YNFuxcUhv
-         c8ZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=1K6GZ5cts7m5+dPoKFk/BNjOtI5JoHWgjjAufBHq48Y=;
-        b=hQGKZNM2kmAQOke0wwkEdxqV8pAtYkvh4kWZ0CvKUb9nDo6tUuLavPcE6wXDe5VCFL
-         UKgQ0r/2FqnuGBLr4tmst97ma+Lp/cKSz4mXHXpn36l/ok/aFyQrdk8DZO6KfeS8QCl1
-         jX6O2YE5aoyZD1BvWv6FA3YDzYpET2ANTicgF+vYVkSau3NChGnBwJKjH8PtPxJJztqG
-         1UF88v9VBhecKu5HDoRsoiazpXINt+5u0B3xykgHfV7xDEyS03QZiKJL4h8OAIbuCvBP
-         hxVR26JF9g7kFiuX/5MoB4q4q+shr7Q/4wV45nS23UWOB4303iao2/oTBogjxrNcjZtS
-         hSkw==
-X-Gm-Message-State: AOAM533QAJFW9YkTNWMlgsoSq8NQyriE2nmJuUqw0zijRI9kivmdW/Bj
-        sjNdZgjkA8TASaON5rWt0jisRA==
-X-Google-Smtp-Source: ABdhPJxf7ZY83Qyw/h83m+REyH2P0HviHDKEwswK3B/J5Q6hMpcTf1FtPONgOIKku3H2miUH7CQbUg==
-X-Received: by 2002:a2e:80d2:: with SMTP id r18mr1585556ljg.98.1601509738794;
-        Wed, 30 Sep 2020 16:48:58 -0700 (PDT)
-Received: from localhost (h-209-203.A463.priv.bahnhof.se. [155.4.209.203])
-        by smtp.gmail.com with ESMTPSA id q18sm346450lfr.138.2020.09.30.16.48.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Sep 2020 16:48:58 -0700 (PDT)
-Date:   Thu, 1 Oct 2020 01:48:57 +0200
-From:   Niklas =?utf-8?Q?S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-        Marc Zyngier <maz@kernel.org>, devicetree@vger.kernel.org,
-        PCI <linux-pci@vger.kernel.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Shawn Lin <shawn.lin@rock-chips.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Android Kernel Team <kernel-team@android.com>,
-        Samuel Dionne-Riel <samuel@dionne-riel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] of: address: Work around missing device_type property
- in pcie nodes
-Message-ID: <20200930234857.g2gxdablzaewvwfq@oden.dyn.berto.se>
-References: <CAL_Jsq+xBKbYXWipwmZ=ZidorsMUFDw2NpUyxobx4FCTn+8Hmg@mail.gmail.com>
- <20200930225154.GA2631019@bjorn-Precision-5520>
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1601509781; x=1633045781;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=AJFpIp3jITAY2+9sf/YO0MqfUMeF7dTVt+ABEg4hfxs=;
+  b=R5Kvqf3AGMwlftkVU1goh79B4ASPq54Ks/RSUxWUykGfSyTn4yb/0SCk
+   SoSiWL6ART7K3WYkSAPyzYA170svyzOgWrdMyYOqhHdFU+XygRYzO6+I4
+   AJ9SPamyBCx9W1nTFqVWZTqunDOFxETnJ+vofD8GDy+2WfhBvcG+xlQff
+   o=;
+X-IronPort-AV: E=Sophos;i="5.77,322,1596499200"; 
+   d="scan'208";a="57304423"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2a-90c42d1d.us-west-2.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-out-6002.iad6.amazon.com with ESMTP; 30 Sep 2020 23:49:38 +0000
+Received: from EX13MTAUWB001.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan3.pdx.amazon.com [10.170.41.166])
+        by email-inbound-relay-2a-90c42d1d.us-west-2.amazon.com (Postfix) with ESMTPS id 9B3BEA1CF3;
+        Wed, 30 Sep 2020 23:49:36 +0000 (UTC)
+Received: from EX13D01UWB002.ant.amazon.com (10.43.161.136) by
+ EX13MTAUWB001.ant.amazon.com (10.43.161.249) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 30 Sep 2020 23:49:36 +0000
+Received: from f8ffc2228008.ant.amazon.com (10.43.162.35) by
+ EX13d01UWB002.ant.amazon.com (10.43.161.136) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 30 Sep 2020 23:49:33 +0000
+Subject: Re: [PATCH -next for tip:x86/pti] x86/tlb: drop unneeded local vars
+ in enable_l1d_flush_for_task()
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>
+CC:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "clang-built-linux@googlegroups.com" 
+        <clang-built-linux@googlegroups.com>,
+        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
+        "linux-safety@lists.elisa.tech" <linux-safety@lists.elisa.tech>
+References: <20200928124457.27289-1-lukas.bulwahn@gmail.com>
+ <20200929071211.GJ2628@hirez.programming.kicks-ass.net>
+ <20200929083709.GC2651@hirez.programming.kicks-ass.net>
+ <87eemji887.fsf@nanos.tec.linutronix.de>
+ <20200930170316.GB2628@hirez.programming.kicks-ass.net>
+ <87blhni1pg.fsf@nanos.tec.linutronix.de>
+ <20200930183552.GG2628@hirez.programming.kicks-ass.net>
+ <87k0wbgd2s.fsf@nanos.tec.linutronix.de>
+From:   "Singh, Balbir" <sblbir@amazon.com>
+Message-ID: <19f57cbe-ba33-17d5-440c-2765e670782f@amazon.com>
+Date:   Thu, 1 Oct 2020 09:49:30 +1000
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.1.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200930225154.GA2631019@bjorn-Precision-5520>
+In-Reply-To: <87k0wbgd2s.fsf@nanos.tec.linutronix.de>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.43.162.35]
+X-ClientProxiedBy: EX13D37UWA004.ant.amazon.com (10.43.160.23) To
+ EX13d01UWB002.ant.amazon.com (10.43.161.136)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bjorn,
-
-On 2020-09-30 17:51:54 -0500, Bjorn Helgaas wrote:
-> On Wed, Sep 30, 2020 at 03:34:10PM -0500, Rob Herring wrote:
-> > On Wed, Sep 30, 2020 at 12:37 PM Niklas Söderlund
-> > <niklas.soderlund@ragnatech.se> wrote:
-> > >
-> > > Hi Marc,
-> > >
-> > > On 2020-09-30 18:23:21 +0100, Marc Zyngier wrote:
-> > > > Hi Niklas,
-> > > >
-> > > > [+ Samuel]
-> > > >
-> > > > On 2020-09-30 17:27, Niklas Söderlund wrote:
-> > > > > Hi Marc,
-> > > > >
-> > > > > I'm afraid this commit breaks booting my rk3399 device.
-> > > > >
-> > > > > I bisected the problem to this patch merged as [1]. I'm testing on a
-> > > > > Scarlet device and I'm using the unmodified upstream
-> > > > > rk3399-gru-scarlet-inx.dtb for my tests.
-> > > > >
-> > > > > The problem I'm experience is a black screen after the bootloader and
-> > > > > the device is none responsive over the network. I have no serial console
-> > > > > to this device so I'm afraid I can't tell you if there is anything
-> > > > > useful on to aid debugging there.
-> > > > >
-> > > > > If I try to test one commit earlier [2] the system boots as expected and
-> > > > > everything works as it did for me in v5.8 and earlier. I have worked
-> > > > > little with this device and have no clue about what is really on the PCI
-> > > > > buss. But running from [2] I have this info about PCI if it's helpful,
-> > > > > please ask if somethings missing.
-> > > >
-> > > > Please see the thread at [1]. The problem was reported a few weeks back
-> > > > by Samuel, and I was expecting Rob and Lorenzo to push a fix for this.
-> > >
-> > > Thanks for providing a solution.
-> > >
-> > > >
-> > > > Rob, Lorenzo, any update on this?
-> > 
-> > The fix is in Bjorn's tree[1].
-> > 
-> > Bjorn, going to send this to Linus before v5.9 is out?
-> 
-> Definitely, thanks for the reminder.  I'm assuming the fix in question
-> is https://git.kernel.org/pub/scm/linux/kernel/git/helgaas/pci.git/commit/?h=for-linus&id=e338eecf3fe79054e8a31b8c39a1234b5acfdabe
-
-That patch solves my boot problem.
-
-Cherry-picked and tested directly on-top of v5.9-rc7 (which fails to 
-boot without the patch in question).
+On 1/10/20 7:38 am, Thomas Gleixner wrote:
 
 > 
-> > [1] https://git.kernel.org/pub/scm/linux/kernel/git/helgaas/pci.git/log/?h=for-linus
+> 
+> 
+> On Wed, Sep 30 2020 at 20:35, Peter Zijlstra wrote:
+>> On Wed, Sep 30, 2020 at 08:00:59PM +0200, Thomas Gleixner wrote:
+>>> On Wed, Sep 30 2020 at 19:03, Peter Zijlstra wrote:
+>>>> On Wed, Sep 30, 2020 at 05:40:08PM +0200, Thomas Gleixner wrote:
+>>>> Also, that preempt_disable() in there doesn't actually do anything.
+>>>> Worse, preempt_disable(); for_each_cpu(); is an anti-pattern. It mixes
+>>>> static_cpu_has() and boot_cpu_has() in the same bloody condition and has
+>>>> a pointless ret variable.
+>>
+>> Also, I forgot to add, it accesses ->cpus_mask without the proper
+>> locking, so it could be reading intermediate state from whatever cpumask
+>> operation that's in progress.
+> 
+> Yes. I saw that after hitting send. :(
+> 
+>>> I absolutely agree and I really missed it when looking at it before
+>>> merging. cpus_read_lock()/unlock() is the right thing to do if at all.
+>>>
+>>>> It's shoddy code, that only works if you align the planets right. We
+>>>> really shouldn't provide interfaces that are this bad.
+>>>>
+>>>> It's correct operation is only by accident.
+>>>
+>>> True :(
+>>>
+>>> I understand Balbirs problem and it makes some sense to provide a
+>>> solution. We can:
+>>>
+>>>     1) reject set_affinity() if the task has that flush muck enabled
+>>>        and user space tries to move it to a SMT enabled core
+>>>
+>>>     2) disable the muck if if detects that it is runs on a SMT enabled
+>>>        core suddenly (hotplug says hello)
+>>>
+>>>        This one is nasty because there is no feedback to user space
+>>>        about the wreckage.
+>>
+>> That's and, right, not or. because 1) deals with sched_setffinity()
+>> and 2) deals wit hotplug.
+> 
+> It was meant as AND of course.
+> 
+>> Now 1) requires an arch hook in sched_setaffinity(), something I'm not
+>> keen on providing, once we provide it, who knows what strange and
+>> wonderful things archs will dream up.
+> 
+> I don't think so. We can have that magic in core:
+> 
+> #ifdef CONFIG_HAS_PARANOID_L1D_FLUSH
+> static bool paranoid_l1d_valid(struct task_struct *tsk,
+>                                const struct cpumask *msk)
+> {
+>         if (!test_tsk_thread_flag(tsk, TIF_SPEC_L1D_FLUSH))
+>                 return true;
+>         /* Do magic stuff */
+>         return res;
+> }
+> #else
+> static bool paranoid_l1d_valid(struct task_struct *tsk,
+>                                const struct cpumask *msk)
+> {
+>         return true;
+> }
+> #endif
+> 
+> It's a pretty well defined problem and having the magic in core code
+> prevents an arch hook which allows abuse of all sorts.
+> 
+> And the same applies to enable_l1d_flush_for_task(). The only
+> architecture specific nonsense are the checks whether the CPU bug is
+> there and whether the hardware supports L1D flushing.
+> 
+> So we can have:
+> 
+> #ifdef CONFIG_HAS_PARANOID_L1D_FLUSH
+> int paranoid_l1d_enable(struct task_struct *tsk)
+> {
+>         /* Do the SMT validation under the proper locks */
+>         if (!res)
+>                 set_task_thread_flag(tsk, TIF_SPEC_L1D_FLUSH);
+>         return res;
+> }
+> #endif
+> 
+>> And 2) also happens on hot-un-plug, when the task's affinity gets
+>> forced because it became empty. No user feedback there either, and
+>> information is lost.
+> 
+> Of course. It's both that suddenly SMT gets enabled on a core which was
+> isolated and when the last isolated core in the tasks CPU mask goes
+> offline.
+> 
+>> I suppose we can do 2) but send a signal. That would cover all cases and
+>> keep it in arch code. But yes, that's pretty terrible too.
+> 
+> Bah. I just looked at the condition to flush:
+> 
+>         if (sched_smt_active() && !this_cpu_read(cpu_info.smt_active) &&
+>                 (prev_mm & LAST_USER_MM_L1D_FLUSH))
+>                 l1d_flush_hw();
+> 
+> That fails to flush when SMT is disabled globally. Balbir?
+> 
+> Of course this should be:
+> 
+>         if (!this_cpu_read(cpu_info.smt_active) && (prev_mm & LAST_USER_MM_L1D_FLUSH))
+>                 l1d_flush_hw();
+> 
+> Now we can make this:
+> 
+>         if (unlikely(prev_mm & LAST_USER_MM_L1D_FLUSH)) {
+>                 if (!this_cpu_read(cpu_info.smt_active))
+>                         l1d_flush_hw();
+>                 else
+>                         task_work_add(...);
+> 
+> And that task work clears the flag and sends a signal. We're not going
+> to send a signal from switch_mm() ....
+> 
+> Thanks,
+> 
 
--- 
-Regards,
-Niklas Söderlund
+
+So this is the change I am playing with, I don't like the idea of killing the task, but it's better than silently not flushing, I guess system administrators will learn with time not to correctly the affinity of tasks flushing
+L1D. For the affinity bits, not being able to change the affinity is better, but not being able to provide feedback on as to why is a bit weird as well, but I wonder if there are other cases where we might want to lock the affinity of a task for it's lifetime.
+
+diff --git a/arch/x86/mm/tlb.c b/arch/x86/mm/tlb.c
+index 6b0f4c88b07c..6b0d0a9cd447 100644
+--- a/arch/x86/mm/tlb.c
++++ b/arch/x86/mm/tlb.c
+@@ -320,26 +320,15 @@ int enable_l1d_flush_for_task(struct task_struct *tsk)
+ 
+ 	/*
+ 	 * Do not enable L1D_FLUSH_OUT if
+-	 * b. The CPU is not affected by the L1TF bug
+-	 * c. The CPU does not have L1D FLUSH feature support
+-	 * c. The task's affinity is on cores with SMT on.
++	 * a. The CPU is not affected by the L1TF bug
++	 * b. The CPU does not have L1D FLUSH feature support
+ 	 */
+ 
+ 	if (!boot_cpu_has_bug(X86_BUG_L1TF) ||
+-			!static_cpu_has(X86_FEATURE_FLUSH_L1D))
++		!boot_cpu_has(X86_FEATURE_FLUSH_L1D))
+ 		return -EINVAL;
+ 
+-	cpu = get_cpu();
+-
+-	for_each_cpu(i, &tsk->cpus_mask) {
+-		if (cpu_data(i).smt_active == true) {
+-			put_cpu();
+-			return -EINVAL;
+-		}
+-	}
+-
+ 	set_ti_thread_flag(&tsk->thread_info, TIF_SPEC_L1D_FLUSH);
+-	put_cpu();
+ 	return ret;
+ }
+ 
+@@ -349,6 +338,12 @@ int disable_l1d_flush_for_task(struct task_struct *tsk)
+ 	return 0;
+ }
+ 
++static void l1d_flush_kill(struct callback_head *ch)
++{
++	clear_ti_thread_flag(&current->thread_info, TIF_SPEC_L1D_FLUSH);
++	force_signal(SIGBUS);
++}
++
+ void switch_mm(struct mm_struct *prev, struct mm_struct *next,
+ 	       struct task_struct *tsk)
+ {
+@@ -443,12 +438,14 @@ static void cond_mitigation(struct task_struct *next)
+ 	}
+ 
+ 	/*
+-	 * Flush only if SMT is disabled as per the contract, which is checked
+-	 * when the feature is enabled.
++	 * Flush only if SMT is disabled, if flushing is enabled
++	 * and we are on an SMT enabled core, kill the task
+ 	 */
+-	if (sched_smt_active() && !this_cpu_read(cpu_info.smt_active) &&
+-		(prev_mm & LAST_USER_MM_L1D_FLUSH))
+-		l1d_flush_hw();
++	if (unlikely(prev_mm & LAST_USER_MM_L1D_FLUSH)) {
++		if (!this_cpu_read(cpu_info.smt_active))
++			l1d_flush_hw();
++		else
++			task_work_add(prev, l1d_flush_kill, true);
+ 
+ 	this_cpu_write(cpu_tlbstate.last_user_mm_spec, next_mm);
+ }
