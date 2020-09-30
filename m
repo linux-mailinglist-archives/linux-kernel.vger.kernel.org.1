@@ -2,92 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2489127DF37
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 06:16:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2191F27DF39
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 06:17:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725765AbgI3EQY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 00:16:24 -0400
-Received: from mail-out.m-online.net ([212.18.0.9]:52699 "EHLO
-        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725306AbgI3EQY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 00:16:24 -0400
-Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
-        by mail-out.m-online.net (Postfix) with ESMTP id 4C1NH905Lnz1qs3c;
-        Wed, 30 Sep 2020 06:16:21 +0200 (CEST)
-Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
-        by mail.m-online.net (Postfix) with ESMTP id 4C1NH85hlxz1r0lV;
-        Wed, 30 Sep 2020 06:16:20 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at mnet-online.de
-Received: from mail.mnet-online.de ([192.168.8.182])
-        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
-        with ESMTP id uocxygdTIoRI; Wed, 30 Sep 2020 06:16:18 +0200 (CEST)
-X-Auth-Info: IvmyAxbJEAd69WOlatFN9LfnQYIdwtjZzEUk+GsQJZc=
-Received: from [192.168.1.106] (82-131-157-111.pool.digikabel.hu [82.131.157.111])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.mnet-online.de (Postfix) with ESMTPSA;
-        Wed, 30 Sep 2020 06:16:18 +0200 (CEST)
-Subject: Re: [RFC 12/14] dt-bindings: vendor-prefixes: add Aristainetos
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Stefan Riedmueller <s.riedmueller@phytec.de>,
-        Robert Jones <rjones@gateworks.com>,
-        Li Yang <leoyang.li@nxp.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-References: <20200926162811.5335-1-krzk@kernel.org>
- <20200926162811.5335-12-krzk@kernel.org>
- <2a329c9b-8bfc-fbd8-62a3-759f608347d6@denx.de>
-Reply-To: hs@denx.de
-From:   Heiko Schocher <hs@denx.de>
-Message-ID: <686af5e6-d16a-7750-e47f-1ced9cb6c34a@denx.de>
-Date:   Wed, 30 Sep 2020 06:16:17 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.5.2
+        id S1725812AbgI3ERD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 00:17:03 -0400
+Received: from mga18.intel.com ([134.134.136.126]:60793 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725306AbgI3ERD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 00:17:03 -0400
+IronPort-SDR: yP2s851zwsADPoqTbfxmReqQ3cF3nFVRqxVDbSJ/VzGwIRDIDzsUI9IQ/7SX+rowT2AGgm1ove
+ EZ7BPTq45oKg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9759"; a="150137442"
+X-IronPort-AV: E=Sophos;i="5.77,321,1596524400"; 
+   d="scan'208";a="150137442"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2020 21:17:02 -0700
+IronPort-SDR: lP4CQa/l4bbc0mzz+ZwM7GnfsFmbuqynTTtO0n5TUvHt0elDV/NUxmWFCNaJzCrM49UE0mXyfN
+ 13vH5TGP9uPQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,321,1596524400"; 
+   d="scan'208";a="415607859"
+Received: from sjchrist-coffee.jf.intel.com ([10.54.74.160])
+  by fmsmga001.fm.intel.com with ESMTP; 29 Sep 2020 21:17:01 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Lai Jiangshan <laijs@linux.alibaba.com>
+Subject: [PATCH 0/5] KVM: x86: Handle reserved CR4 bit interception in VMX
+Date:   Tue, 29 Sep 2020 21:16:54 -0700
+Message-Id: <20200930041659.28181-1-sean.j.christopherson@intel.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <2a329c9b-8bfc-fbd8-62a3-759f608347d6@denx.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Krzysztof,
+This series stems from Lai's RFC patches to intercept LA57 and let the
+guest own FSGSBASE[*].  Discussion and inspection revealed that KVM does
+not handle the case where LA57 is supported in hardware but not exposed to
+the guest.  This is actually true for all CR4 bits, but LA57 is currently
+the only bit that can be reserved and also owned by the guest.  I have
+a unit test for this that I'll post separately.
 
-Am 28.09.2020 um 06:04 schrieb Heiko Schocher:
-> Hello Krzysztof,
-> 
-> Am 26.09.2020 um 18:28 schrieb Krzysztof Kozlowski:
->> Document binding for an unknown entity Aristainetos with few boards
->> mainlined.
->>
->> Cc: Heiko Schocher <hs@denx.de>
->> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
->>
->> ---
->>
->> I tried to Google but except the patches from Heiko Schocher, I could
->> not find any meaningful data.
->>
->> Heiko, you posted this. Do you know what is it?
-> 
-> aristainetos is the name of the board, so it is not the vendor name.
-> 
-> I just asked the customer if we can add a valid vendor name...
+Intercepting LA57 was by far the easiest fix for the immedidate bug, and
+is likely the right change in the long term as there's no justification
+for letting the guest own LA57.
 
-Ok, it is not easy to get an okay from the customer to publish
-his name.
+The middle three patches adjust VMX's CR4 guest/host mask to intercept
+reserved bits.  This required reworking CPUID updates to also refresh said
+mask at the correct time.
 
-Is there a dummy or unknown entry for vendor?
+The last past is Lai's, which let's the guest own FSGSBASE.  This depends
+on the reserved bit handling being in place.
 
-bye,
-Heiko
+Ran everything through unit tests, and ran the kernel's FSGSBASE selftests
+in a VM.
+
+[*] https://lkml.kernel.org/r/20200928083047.3349-1-jiangshanlai@gmail.com
+
+Lai Jiangshan (2):
+  KVM: x86: Intercept LA57 to inject #GP fault when it's reserved
+  KVM: x86: Let the guest own CR4.FSGSBASE
+
+Sean Christopherson (3):
+  KVM: x86: Invoke vendor's vcpu_after_set_cpuid() after all common
+    updates
+  KVM: x86: Move call to update_exception_bitmap() into VMX code
+  KVM: VMX: Intercept guest reserved CR4 bits to inject #GP fault
+
+ arch/x86/kvm/cpuid.c          |  6 +++---
+ arch/x86/kvm/kvm_cache_regs.h |  2 +-
+ arch/x86/kvm/vmx/vmx.c        | 18 +++++++++++++-----
+ 3 files changed, 17 insertions(+), 9 deletions(-)
+
 -- 
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: +49-8142-66989-52   Fax: +49-8142-66989-80   Email: hs@denx.de
+2.28.0
+
