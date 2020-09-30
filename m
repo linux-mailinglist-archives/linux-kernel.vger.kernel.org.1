@@ -2,93 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AED527EDB1
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 17:45:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B18DB27EDB5
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 17:45:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728063AbgI3PpG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 11:45:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44720 "EHLO
+        id S1728635AbgI3Ppe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 11:45:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725372AbgI3PpG (ORCPT
+        with ESMTP id S1725372AbgI3Ppc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 11:45:06 -0400
-Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5079AC061755
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 08:45:06 -0700 (PDT)
-Received: by mail-vs1-xe42.google.com with SMTP id a16so1170427vsp.12
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 08:45:06 -0700 (PDT)
+        Wed, 30 Sep 2020 11:45:32 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0FF0C061755
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 08:45:30 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id y4so2001745ljk.8
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 08:45:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ApvBKc8Khxg0IoEksSg3GInYcR+U6xm2yDW9gWHbZWY=;
-        b=peW6K2GBAkpVrhNuGiGONtsbqNn3KO8HZw8ixAOOhnbRJIZabs2ua7ORJscfylzLKD
-         0dA911UyQL46gahT488TSi9oZZNJYgvIeCpKeJpQcQLr2Q0oqN0MH+CAlfYyn98t55Z8
-         IyhwzOppuPYsddcdr4di4nVskmt73wt6fK3+I=
+        bh=WjGyYmsLAMjsI4Vd+JJ6aVnyc9ajioRKaKMFxKhxaik=;
+        b=NjAmdQm8MXZaLnWlGnp/SJHX6VYj0DS/7Gez+83AyXBMoNvk+/jPA1SbFRqQcqtBwO
+         Ok/o36HzVVkUY3ru2aZxBs+wGU4DRrhw+hiDOzyytPNaO5JSw/Wf6d8Rri3vItQ4G2EM
+         /Ek+Q+OZpsDOEL19Frebd8dK6g78mhoubgOLsJkyY+EC+TnjsmNR7Gao6ZLzC/8UMC5l
+         f5wnBiQ4/mjBsrjkH0LrsRRzwlK0f18AfRnxg+Pdie3iMZ6Orfb+K5jq2KEmj7u+r/fE
+         dfZQL7UGluptFcNBHGODab7Xi3NvTFTVox6i6gTovbv4j5iaq+2W5lMbaA2aphOu5YS0
+         3uKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ApvBKc8Khxg0IoEksSg3GInYcR+U6xm2yDW9gWHbZWY=;
-        b=ROCesQ4H5Z8cx0B9DhIT7XnYBI9BMakimqMUPp0WL33q1p+kXnaGGvuaZ3fe6QbAS4
-         4B5PWkCpOg4eO/8j7r4NbDAM+1peZ1KcdsazSSgZdB5qcnWgSuyf6FMWBblQnkXQMl/C
-         0BhGo2sumibGXX0ToQC3pgQJPnacrmmBGmFkdgKImbesEaT0B0oPutCzKGYDZh1YzsUL
-         QNIRIGUVb5GRw8m9nFBc5cgLJay0F9HfPc+izjkkLV3igJTbaYdDw2A3ZiJIkoq0YxAO
-         7wHJUVukzjO/DSxvh08IRrqfHNoLP4JdAPUuF54o7fx9kif+arztQrdY5F15LAVnu22Q
-         jN6g==
-X-Gm-Message-State: AOAM532KLJPnX2A+/UWCqgbxUtKIq+VvCOpJdTW5gbXDJATlgu+NYS0Z
-        lV/gAoTa3QpgOwDa6nQ87L/c7w+E+EkxLiWZiGYmIQ==
-X-Google-Smtp-Source: ABdhPJxumN4h6iGLvR5ObOrFqwk8EkF5bJbF39rhN5043r3Ml389oAO96ocWz71kNFzko+iDwCClq7JcI8Kx7XOz5qg=
-X-Received: by 2002:a67:6855:: with SMTP id d82mr1876811vsc.46.1601480705468;
- Wed, 30 Sep 2020 08:45:05 -0700 (PDT)
+        bh=WjGyYmsLAMjsI4Vd+JJ6aVnyc9ajioRKaKMFxKhxaik=;
+        b=JcMJQadwQrO5O7/wmh5QyiSrkzcIrJ9D0sABz4gOZLLLXWF7gWFdy9Vx0YsfOCRKZb
+         6Mcd3mufFzo9+sPkYV2Uf3Q1HFtqQXncYNQdwOH/a6+WrL13DMuBrOkek92fzsb6qIzc
+         U9aYQJ9bzN8d3AEybZBnWhqRWFT5AYfrugrIfg6IMDjqXvamXZVRAYpYRILI++RfR+ZA
+         QxSeyGUcHJQUkzisRdh0Z5iQHvJVMnskR9raVHkuyHAKOi2d/Z3jabS+q24gjv9YBc2U
+         ZTyeu8gaXlEnBpKvZ/Xornhsejwyk3hy/ffP8vPsfz+7XYqC8CbC2AXsEOiGaL0UeIJz
+         033Q==
+X-Gm-Message-State: AOAM533yDOKi1jaDvay/jM2Nc6Ow1yEkGL83hpSv7MOFpgz0dXn34QiX
+        9MdijvkKekIb/cBbJRVnsfjg/uBo1Xs2A4xTpw84ag==
+X-Google-Smtp-Source: ABdhPJy7Kpt7Q45UX41ep+M5rkizj38eD5g+4Z6l7TCfVZ1MzlbY3Yz8+VarznH/8FMlSNQWRSVWMedxWqjPqxxv7Dk=
+X-Received: by 2002:a2e:98cf:: with SMTP id s15mr1169162ljj.446.1601480729013;
+ Wed, 30 Sep 2020 08:45:29 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200924131318.2654747-1-balsini@android.com> <20200924131318.2654747-2-balsini@android.com>
-In-Reply-To: <20200924131318.2654747-2-balsini@android.com>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Wed, 30 Sep 2020 17:44:54 +0200
-Message-ID: <CAJfpegvB7XJH7sPni7Vj7R4ZwSrDfevfeRRBgvESSgGg=C5tdQ@mail.gmail.com>
-Subject: Re: [PATCH V9 1/4] fuse: Definitions and ioctl() for passthrough
-To:     Alessio Balsini <balsini@android.com>
-Cc:     Akilesh Kailash <akailash@google.com>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Antonio SJ Musumeci <trapexit@spawn.link>,
-        David Anderson <dvander@google.com>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
-        Martijn Coenen <maco@android.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Lawrence <paullawrence@google.com>,
-        Stefano Duo <stefanoduo@google.com>,
-        Zimuzo Ezeozue <zezeozue@google.com>,
-        fuse-devel <fuse-devel@lists.sourceforge.net>,
-        kernel-team <kernel-team@android.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200909215752.1725525-1-shakeelb@google.com> <20200928210216.GA378894@cmpxchg.org>
+ <20200929150444.GG2277@dhcp22.suse.cz> <20200929215341.GA408059@cmpxchg.org>
+In-Reply-To: <20200929215341.GA408059@cmpxchg.org>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Wed, 30 Sep 2020 08:45:17 -0700
+Message-ID: <CALvZod5eN0PDtKo8SEp1n-xGvgCX9k6-OBGYLT3RmzhA+Q-2hw@mail.gmail.com>
+Subject: Re: [PATCH] memcg: introduce per-memcg reclaim interface
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Michal Hocko <mhocko@suse.com>, Roman Gushchin <guro@fb.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Greg Thelen <gthelen@google.com>,
+        David Rientjes <rientjes@google.com>,
+        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Cgroups <cgroups@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 3:13 PM Alessio Balsini <balsini@android.com> wrote:
+On Tue, Sep 29, 2020 at 2:55 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
 >
-> Introduce the new FUSE passthrough ioctl(), which allows userspace to
-> specify a direct connection between a FUSE file and a lower file system
-> file.
-> Such ioctl() requires userspace to specify:
-> - the file descriptor of one of its opened files,
-> - the unique identifier of the FUSE request associated with a pending
->   open/create operation,
-> both encapsulated into a fuse_passthrough_out data structure.
-> The ioctl() will search for the pending FUSE request matching the unique
-> identifier, and update the passthrough file pointer of the request with the
-> file pointer referenced by the passed file descriptor.
-> When that pending FUSE request is handled, the passthrough file pointer
-> is copied to the fuse_file data structure, so that the link between FUSE
-> and lower file system is consolidated.
+> On Tue, Sep 29, 2020 at 05:04:44PM +0200, Michal Hocko wrote:
+> > On Mon 28-09-20 17:02:16, Johannes Weiner wrote:
+> > [...]
+> > > My take is that a proactive reclaim feature, whose goal is never to
+> > > thrash or punish but to keep the LRUs warm and the workingset trimmed,
+> > > would ideally have:
+> > >
+> > > - a pressure or size target specified by userspace but with
+> > >   enforcement driven inside the kernel from the allocation path
+> > >
+> > > - the enforcement work NOT be done synchronously by the workload
+> > >   (something I'd argue we want for *all* memory limits)
+> > >
+> > > - the enforcement work ACCOUNTED to the cgroup, though, since it's the
+> > >   cgroup's memory allocations causing the work (again something I'd
+> > >   argue we want in general)
+> > >
+> > > - a delegatable knob that is independent of setting the maximum size
+> > >   of a container, as that expresses a different type of policy
+> > >
+> > > - if size target, self-limiting (ha) enforcement on a pressure
+> > >   threshold or stop enforcement when the userspace component dies
+> > >
+> > > Thoughts?
+> >
+> > Agreed with above points. What do you think about
+> > http://lkml.kernel.org/r/20200922190859.GH12990@dhcp22.suse.cz.
+>
+> I definitely agree with what you wrote in this email for background
+> reclaim. Indeed, your description sounds like what I proposed in
+> https://lore.kernel.org/linux-mm/20200219181219.54356-1-hannes@cmpxchg.org/
+> - what's missing from that patch is proper work attribution.
+>
+> > I assume that you do not want to override memory.high to implement
+> > this because that tends to be tricky from the configuration POV as
+> > you mentioned above. But a new limit (memory.middle for a lack of a
+> > better name) to define the background reclaim sounds like a good fit
+> > with above points.
+>
+> I can see that with a new memory.middle you could kind of sort of do
+> both - background reclaim and proactive reclaim.
+>
+> That said, I do see advantages in keeping them separate:
+>
+> 1. Background reclaim is essentially an allocation optimization that
+>    we may want to provide per default, just like kswapd.
+>
+>    Kswapd is tweakable of course, but I think actually few users do,
+>    and it works pretty well out of the box. It would be nice to
+>    provide the same thing on a per-cgroup basis per default and not
+>    ask users to make decisions that we are generally better at making.
+>
+> 2. Proactive reclaim may actually be better configured through a
+>    pressure threshold rather than a size target.
+>
+>    As per above, the goal is not to be punitive or containing. The
+>    goal is to keep the LRUs warm and move the colder pages to disk.
+>
+>    But how aggressively do you run reclaim for this purpose? What
+>    target value should a user write to such a memory.middle file?
+>
+>    For one, it depends on the job. A batch job, or a less important
+>    background job, may tolerate higher paging overhead than an
+>    interactive job. That means more of its pages could be trimmed from
+>    RAM and reloaded on-demand from disk.
+>
+>    But also, it depends on the storage device. If you move a workload
+>    from a machine with a slow disk to a machine with a fast disk, you
+>    can page more data in the same amount of time. That means while
+>    your workload tolerances stays the same, the faster the disk, the
+>    more aggressively you can do reclaim and offload memory.
+>
+>    So again, what should a user write to such a control file?
+>
+>    Of course, you can approximate an optimal target size for the
+>    workload. You can run a manual workingset analysis with page_idle,
+>    damon, or similar, determine a hot/cold cutoff based on what you
+>    know about the storage characteristics, then echo a number of pages
+>    or a size target into a cgroup file and let kernel do the reclaim
+>    accordingly. The drawbacks are that the kernel LRU may do a
+>    different hot/cold classification than you did and evict the wrong
+>    pages, the storage device latencies may vary based on overall IO
+>    pattern, and two equally warm pages may have very different paging
+>    overhead depending on whether readahead can avert a major fault or
+>    not. So it's easy to overshoot the tolerance target and disrupt the
+>    workload, or undershoot and have stale LRU data, waste memory etc.
+>
+>    You can also do a feedback loop, where you guess an optimal size,
+>    then adjust based on how much paging overhead the workload is
+>    experiencing, i.e. memory pressure. The drawbacks are that you have
+>    to monitor pressure closely and react quickly when the workload is
+>    expanding, as it can be potentially sensitive to latencies in the
+>    usec range. This can be tricky to do from userspace.
+>
 
-How about returning an ID from the ioctl (like the fuse2 porototype)
-and returning that in fuse_open_out.passthrough_fh?
+This is actually what we do in our production i.e. feedback loop to
+adjust the next iteration of proactive reclaim.
 
-Seems a more straightforward interface to me.
+We eliminated the IO or slow disk issues you mentioned by only
+focusing on anon memory and doing zswap.
 
-Thanks,
-Miklos
+>    So instead of asking users for a target size whose suitability
+>    heavily depends on the kernel's LRU implementation, the readahead
+>    code, the IO device's capability and general load, why not directly
+>    ask the user for a pressure level that the workload is comfortable
+>    with and which captures all of the above factors implicitly? Then
+>    let the kernel do this feedback loop from a per-cgroup worker.
+
+I am assuming here by pressure level you are referring to the PSI like
+interface e.g. allowing the users to tell about their jobs that X
+amount of stalls in a fixed time window is tolerable.
+
+Seems promising though I would like flexibility for giving the
+resource to the per-cgroup worker.
+
+Are you planning to work on this or should I give it a try?
