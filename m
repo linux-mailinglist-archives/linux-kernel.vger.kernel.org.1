@@ -2,218 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 013C627E1F0
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 09:03:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A85FD27E1F9
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 09:07:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725849AbgI3HDx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 03:03:53 -0400
-Received: from mga11.intel.com ([192.55.52.93]:57638 "EHLO mga11.intel.com"
+        id S1728228AbgI3HHc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 03:07:32 -0400
+Received: from mga07.intel.com ([134.134.136.100]:34468 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725535AbgI3HDx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 03:03:53 -0400
-IronPort-SDR: 2Jc76T9mMbLYd1mM/HHYYOCNqWzw/3Pcrxh3HUxYB9YaFmSO++C13T1LFn1GAfGiMABN+GiNHh
- eBbajRqV78WQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9759"; a="159716103"
+        id S1725535AbgI3HH3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 03:07:29 -0400
+IronPort-SDR: DXbEjkgqGgvUwkOsh1amVnGvMILGPYcVdZ19OpT0O5r3goSER34THJIzfgKy+lV6rtEUWDkOQt
+ Too7EWyy7oHg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9759"; a="226533012"
 X-IronPort-AV: E=Sophos;i="5.77,321,1596524400"; 
-   d="scan'208";a="159716103"
+   d="scan'208";a="226533012"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2020 00:03:52 -0700
-IronPort-SDR: hFa+CCle1o2YtDp6k8YhnmRjAtjVzeyCzmNEPglJjYq6RfZAMBI7rUUp6NuagthWPANtz0QPPQ
- whbLoIeRwFNQ==
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2020 00:07:26 -0700
+IronPort-SDR: TFQeep3QT+fbAISxcAj64F7pyegxewJ9qRkC8X5x4sLtsoMAZYdxL0YBvjZF4WJQa3qoS1O+/+
+ STpPvPc7o1fw==
+X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.77,321,1596524400"; 
-   d="scan'208";a="294520650"
-Received: from gliakhov-mobl2.ger.corp.intel.com (HELO ubuntu) ([10.252.32.32])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2020 00:03:50 -0700
-Date:   Wed, 30 Sep 2020 09:03:45 +0200
-From:   Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc:     ohad@wizery.com, bjorn.andersson@linaro.org, loic.pallardy@st.com,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 05/10] rpmsg: virtio: Move virtio RPMSG structures to
- private header
-Message-ID: <20200930070345.GD20683@ubuntu>
-References: <20200922001000.899956-1-mathieu.poirier@linaro.org>
- <20200922001000.899956-6-mathieu.poirier@linaro.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200922001000.899956-6-mathieu.poirier@linaro.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+   d="scan'208";a="496013036"
+Received: from shskylake.sh.intel.com ([10.239.48.137])
+  by orsmga005.jf.intel.com with ESMTP; 30 Sep 2020 00:07:23 -0700
+From:   Ethan Zhao <haifeng.zhao@intel.com>
+To:     bhelgaas@google.com, oohall@gmail.com, ruscur@russell.cc,
+        lukas@wunner.de, andriy.shevchenko@linux.intel.com,
+        stuart.w.hayes@gmail.com, mr.nuke.me@gmail.com,
+        mika.westerberg@linux.intel.com
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ashok.raj@linux.intel.com, sathyanarayanan.kuppuswamy@intel.com,
+        xerces.zhao@gmail.com, Ethan Zhao <haifeng.zhao@intel.com>
+Subject: [PATCH v6 0/5] Fix DPC hotplug race and enhance error handling
+Date:   Wed, 30 Sep 2020 03:05:32 -0400
+Message-Id: <20200930070537.30982-1-haifeng.zhao@intel.com>
+X-Mailer: git-send-email 2.18.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 06:09:55PM -0600, Mathieu Poirier wrote:
-> Move structure virtiproc_info and virtio_rpmsg_channel to rpmsg_internal.h
-> so that they can be used by rpmsg_ns.c
-> 
-> Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-> ---
->  drivers/rpmsg/rpmsg_internal.h   | 62 ++++++++++++++++++++++++++++++++
->  drivers/rpmsg/virtio_rpmsg_bus.c | 57 -----------------------------
->  2 files changed, 62 insertions(+), 57 deletions(-)
-> 
-> diff --git a/drivers/rpmsg/rpmsg_internal.h b/drivers/rpmsg/rpmsg_internal.h
-> index 587f723757d4..3ea9cec26fc0 100644
-> --- a/drivers/rpmsg/rpmsg_internal.h
-> +++ b/drivers/rpmsg/rpmsg_internal.h
-> @@ -12,12 +12,74 @@
->  #ifndef __RPMSG_INTERNAL_H__
->  #define __RPMSG_INTERNAL_H__
->  
-> +#include <linux/idr.h>
-> +#include <linux/mutex.h>
->  #include <linux/rpmsg.h>
-> +#include <linux/types.h>
-> +#include <linux/virtio.h>
+Hi,folks,
 
-I think it would be better to not add any VirtIO dependencies here even 
-temporarily.
+This simple patch set fixed some serious security issues found when DPC
+error injection and NVMe SSD hotplug brute force test were doing -- race
+condition between DPC handler and pciehp, AER interrupt handlers, caused
+system hang and system with DPC feature couldn't recover to normal
+working state as expected (NVMe instance lost, mount operation hang,
+race PCIe access caused uncorrectable errors reported alternatively etc).
 
-> +#include <linux/wait.h>
->  #include <linux/poll.h>
->  
->  #define to_rpmsg_device(d) container_of(d, struct rpmsg_device, dev)
->  #define to_rpmsg_driver(d) container_of(d, struct rpmsg_driver, drv)
->  
-> +/**
-> + * struct virtproc_info - virtual remote processor state
+With this patch set applied, stable 5.9-rc6 on ICS (Ice Lake SP platform,
+see
+https://en.wikichip.org/wiki/intel/microarchitectures/ice_lake_(server))
 
-This struct shouldn't be here, let's first prepare the NS callback by 
-removing any VirtIO dependencies and only then move it to the generic 
-driver.
+could pass the PCIe Gen4 NVMe SSD brute force hotplug test with any time
+interval between hot-remove and plug-in operation tens of times without
+any errors occur and system works normal.
 
-Thanks
-Guennadi
+With this patch set applied, system with DPC feature could recover from
+NON-FATAL and FATAL errors injection test and works as expected.
 
-> + * @vdev:	the virtio device
-> + * @rvq:	rx virtqueue
-> + * @svq:	tx virtqueue
-> + * @rbufs:	kernel address of rx buffers
-> + * @sbufs:	kernel address of tx buffers
-> + * @num_bufs:	total number of buffers for rx and tx
-> + * @buf_size:   size of one rx or tx buffer
-> + * @last_sbuf:	index of last tx buffer used
-> + * @bufs_dma:	dma base addr of the buffers
-> + * @tx_lock:	protects svq, sbufs and sleepers, to allow concurrent senders.
-> + *		sending a message might require waking up a dozing remote
-> + *		processor, which involves sleeping, hence the mutex.
-> + * @endpoints:	idr of local endpoints, allows fast retrieval
-> + * @endpoints_lock: lock of the endpoints set
-> + * @sendq:	wait queue of sending contexts waiting for a tx buffers
-> + * @sleepers:	number of senders that are waiting for a tx buffer
-> + * @ns_ept:	the bus's name service endpoint
-> + *
-> + * This structure stores the rpmsg state of a given virtio remote processor
-> + * device (there might be several virtio proc devices for each physical
-> + * remote processor).
-> + */
-> +struct virtproc_info {
-> +	struct virtio_device *vdev;
-> +	struct virtqueue *rvq, *svq;
-> +	void *rbufs, *sbufs;
-> +	unsigned int num_bufs;
-> +	unsigned int buf_size;
-> +	int last_sbuf;
-> +	dma_addr_t bufs_dma;
-> +	struct mutex tx_lock;
-> +	struct idr endpoints;
-> +	struct mutex endpoints_lock;
-> +	wait_queue_head_t sendq;
-> +	atomic_t sleepers;
-> +	struct rpmsg_endpoint *ns_ept;
-> +};
-> +
-> +/**
-> + * struct virtio_rpmsg_channel - rpmsg channel descriptor
-> + * @rpdev: the rpmsg channel device
-> + * @vrp: the virtio remote processor device this channel belongs to
-> + *
-> + * This structure stores the channel that links the rpmsg device to the virtio
-> + * remote processor device.
-> + */
-> +struct virtio_rpmsg_channel {
-> +	struct rpmsg_device rpdev;
-> +
-> +	struct virtproc_info *vrp;
-> +};
-> +
-> +#define to_virtio_rpmsg_channel(_rpdev) \
-> +	container_of(_rpdev, struct virtio_rpmsg_channel, rpdev)
-> +
->  /**
->   * struct rpmsg_device_ops - indirection table for the rpmsg_device operations
->   * @create_channel:	create backend-specific channel, optional
-> diff --git a/drivers/rpmsg/virtio_rpmsg_bus.c b/drivers/rpmsg/virtio_rpmsg_bus.c
-> index eaf3b2c012c8..0635d86d490f 100644
-> --- a/drivers/rpmsg/virtio_rpmsg_bus.c
-> +++ b/drivers/rpmsg/virtio_rpmsg_bus.c
-> @@ -32,63 +32,6 @@
->  
->  #include "rpmsg_internal.h"
->  
-> -/**
-> - * struct virtproc_info - virtual remote processor state
-> - * @vdev:	the virtio device
-> - * @rvq:	rx virtqueue
-> - * @svq:	tx virtqueue
-> - * @rbufs:	kernel address of rx buffers
-> - * @sbufs:	kernel address of tx buffers
-> - * @num_bufs:	total number of buffers for rx and tx
-> - * @buf_size:   size of one rx or tx buffer
-> - * @last_sbuf:	index of last tx buffer used
-> - * @bufs_dma:	dma base addr of the buffers
-> - * @tx_lock:	protects svq, sbufs and sleepers, to allow concurrent senders.
-> - *		sending a message might require waking up a dozing remote
-> - *		processor, which involves sleeping, hence the mutex.
-> - * @endpoints:	idr of local endpoints, allows fast retrieval
-> - * @endpoints_lock: lock of the endpoints set
-> - * @sendq:	wait queue of sending contexts waiting for a tx buffers
-> - * @sleepers:	number of senders that are waiting for a tx buffer
-> - * @ns_ept:	the bus's name service endpoint
-> - *
-> - * This structure stores the rpmsg state of a given virtio remote processor
-> - * device (there might be several virtio proc devices for each physical
-> - * remote processor).
-> - */
-> -struct virtproc_info {
-> -	struct virtio_device *vdev;
-> -	struct virtqueue *rvq, *svq;
-> -	void *rbufs, *sbufs;
-> -	unsigned int num_bufs;
-> -	unsigned int buf_size;
-> -	int last_sbuf;
-> -	dma_addr_t bufs_dma;
-> -	struct mutex tx_lock;
-> -	struct idr endpoints;
-> -	struct mutex endpoints_lock;
-> -	wait_queue_head_t sendq;
-> -	atomic_t sleepers;
-> -	struct rpmsg_endpoint *ns_ept;
-> -};
-> -
-> -/**
-> - * struct virtio_rpmsg_channel - rpmsg channel descriptor
-> - * @rpdev: the rpmsg channel device
-> - * @vrp: the virtio remote processor device this channel belongs to
-> - *
-> - * This structure stores the channel that links the rpmsg device to the virtio
-> - * remote processor device.
-> - */
-> -struct virtio_rpmsg_channel {
-> -	struct rpmsg_device rpdev;
-> -
-> -	struct virtproc_info *vrp;
-> -};
-> -
-> -#define to_virtio_rpmsg_channel(_rpdev) \
-> -	container_of(_rpdev, struct virtio_rpmsg_channel, rpdev)
-> -
->  /*
->   * Local addresses are dynamically allocated on-demand.
->   * We do not dynamically assign addresses from the low 1024 range,
-> -- 
-> 2.25.1
-> 
+System works smoothly when errors happen while hotplug is doing, no
+uncorrectable errors found.
+
+Brute DPC error injection script:
+
+for i in {0..100}
+do
+        setpci -s 64:02.0 0x196.w=000a
+        setpci -s 65:00.0 0x04.w=0544
+        mount /dev/nvme0n1p1 /root/nvme
+        sleep 1
+done
+
+Other details see every commits description part.
+
+This patch set could be applied to stable 5.9-rc6/rc7 directly.
+
+Help to review and test.
+
+v2: changed according to review by Andy Shevchenko.
+v3: changed patch 4/5 to simpler coding.
+v4: move function pci_wait_port_outdpc() to DPC driver and its
+   declaration to pci.h. (tip from Christoph Hellwig <hch@infradead.org>).
+v5: fix building issue reported by lkp@intel.com with some config.
+v6: move patch[3/5] as the first patch according to Lukas's suggestion.
+    and rewrite the comment part of patch[3/5].
+    
+Ethan Zhao (5):
+  PCI/ERR: get device before call device driver to avoid NULL pointer
+    dereference
+  PCI/DPC: define a function to check and wait till port finish DPC
+    handling
+  PCI: pciehp: check and wait port status out of DPC before handling
+    DLLSC and PDC
+  PCI: only return true when dev io state is really changed
+  PCI/ERR: don't mix io state not changed and no driver together
+
+ drivers/pci/hotplug/pciehp_hpc.c |  4 +++-
+ drivers/pci/pci.h                | 39 ++++++--------------------------
+ drivers/pci/pcie/dpc.c           | 27 ++++++++++++++++++++++
+ drivers/pci/pcie/err.c           | 18 +++++++++++++--
+ 4 files changed, 53 insertions(+), 35 deletions(-)
+
+
+base-commit: a1b8638ba1320e6684aa98233c15255eb803fac7
+-- 
+2.18.4
+
