@@ -2,133 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C49F327F575
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 00:49:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBA1F27F577
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 00:49:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731849AbgI3WtF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 18:49:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54038 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731839AbgI3WtD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 18:49:03 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61700C0613D0
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 15:49:03 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id 34so2194722pgo.13
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 15:49:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=VT2vDd9OB7uEL9vUlvmQWoFRKp72QNgXm7S/Mv4km2A=;
-        b=b9W9/WFAa7j9YD1PJAI4yFg7dus7W0r/MW7Dboua7FmO8kMbs1gKAajU9Q2CldMKVq
-         ScKuRCkr1vwZZCRbn/yF/6r9z2d5ANWOaT0AFusLzF4y5idwBkxeYt+G5BTv7KZAolR8
-         6SxxMXSjfujZ2U/hIWKv0FguBBnmAB5AcFqfE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=VT2vDd9OB7uEL9vUlvmQWoFRKp72QNgXm7S/Mv4km2A=;
-        b=RtjaEb4uRsjKWMZVi1lHgUknFZcrh6/NIvMI+opiV/r1tjy3y/2BMJApMP0X9nSev4
-         T3wDKAs3yMIGKegf0YdoLV6+p/POQavx5oyfivaTs4QCGmaLomhsfmmCXOVxqY9AJ4CY
-         TdE/O4k+ZL7hnW79YaafmDx2irc4+iMETs2LzpOd9zFyD+qzDVFIrw4SZkyAMTrdoc8d
-         qNFnJ6/E3huV36XmvRKRpzBCqnUhKJ8L72T0Awr8LeOSyqzzr0oDgVw4EaND/Voovuku
-         z+EtTilxSrTkSNJMeU0Z3rujf3i8VZVLrG79XnNVKuYS2RycoSr006LFwc/+w0zI9H0T
-         ReuQ==
-X-Gm-Message-State: AOAM533Qv/Ler+4oerL3OeVqMB4CaAWnCcm4XBn6m6S0ynlU/C4wBfww
-        ggDG/kv88TM48/+88AoUrxumTQ==
-X-Google-Smtp-Source: ABdhPJwfSK5iNpfj80w0dYS73zpvMdKZB8MpSp2GpAdsedr4h3Z0FZm0dB+5To7uEo0x/wrmF8Kkpw==
-X-Received: by 2002:a62:19c4:0:b029:13e:d13d:a0fd with SMTP id 187-20020a6219c40000b029013ed13da0fdmr4271918pfz.25.1601506142852;
-        Wed, 30 Sep 2020 15:49:02 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id u10sm3674241pfn.122.2020.09.30.15.49.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Sep 2020 15:49:02 -0700 (PDT)
-Date:   Wed, 30 Sep 2020 15:49:01 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Jann Horn <jannh@google.com>
-Cc:     YiFei Zhu <zhuyifei1999@gmail.com>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        David Laight <David.Laight@aculab.com>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Jack Chen <jianyan2@illinois.edu>,
-        Josep Torrellas <torrella@illinois.edu>,
-        Tianyin Xu <tyxu@illinois.edu>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Valentin Rothberg <vrothber@redhat.com>,
-        Will Drewry <wad@chromium.org>
-Subject: Re: [PATCH v3 seccomp 2/5] seccomp/cache: Add "emulator" to check if
- filter is constant allow
-Message-ID: <202009301546.6B7D648F57@keescook>
-References: <cover.1601478774.git.yifeifz2@illinois.edu>
- <b16456e8dbc378c41b73c00c56854a3c30580833.1601478774.git.yifeifz2@illinois.edu>
- <CAG48ez0Njm0oS+9k-cgUqzyUWXV=cHPope2Xe9vVNPUVZ1PB4w@mail.gmail.com>
+        id S1731865AbgI3Wto (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 18:49:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55328 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731839AbgI3Wtj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 18:49:39 -0400
+Received: from localhost (170.sub-72-107-125.myvzw.com [72.107.125.170])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DF91D20719;
+        Wed, 30 Sep 2020 22:49:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601506178;
+        bh=H6Dy8TpKH/vnGTB4vKkYvl/vv021ef3o0tpzflyW6zA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=cmd9lpw8pmF+kiIhau1NvyO6sjsTbiAyJfqiPFjAfHH2Pp+Emjbj6lh0hR+JT8qGw
+         yaJPdtnEeufQsFaRoWVgqglqxs6ROIPYSSKvUUEcm+XwxAdFBigAWQG3hkTfVv+9iv
+         pj/85oFlA6IaAXcUCmm5kyVCqmtvZgubOo/Fb714=
+Date:   Wed, 30 Sep 2020 17:49:36 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MAINTAINERS: Add me as a reviewer for PCI aardvark
+Message-ID: <20200930224936.GA2644335@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <CAG48ez0Njm0oS+9k-cgUqzyUWXV=cHPope2Xe9vVNPUVZ1PB4w@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200925154047.GA2438563@bjorn-Precision-5520>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 01, 2020 at 12:24:32AM +0200, Jann Horn wrote:
-> On Wed, Sep 30, 2020 at 5:20 PM YiFei Zhu <zhuyifei1999@gmail.com> wrote:
-> > SECCOMP_CACHE_NR_ONLY will only operate on syscalls that do not
-> > access any syscall arguments or instruction pointer. To facilitate
-> > this we need a static analyser to know whether a filter will
-> > return allow regardless of syscall arguments for a given
-> > architecture number / syscall number pair. This is implemented
-> > here with a pseudo-emulator, and stored in a per-filter bitmap.
-> >
-> > Each common BPF instruction are emulated. Any weirdness or loading
-> > from a syscall argument will cause the emulator to bail.
-> >
-> > The emulation is also halted if it reaches a return. In that case,
-> > if it returns an SECCOMP_RET_ALLOW, the syscall is marked as good.
-> >
-> > Emulator structure and comments are from Kees [1] and Jann [2].
-> >
-> > Emulation is done at attach time. If a filter depends on more
-> > filters, and if the dependee does not guarantee to allow the
-> > syscall, then we skip the emulation of this syscall.
-> >
-> > [1] https://lore.kernel.org/lkml/20200923232923.3142503-5-keescook@chromium.org/
-> > [2] https://lore.kernel.org/lkml/CAG48ez1p=dR_2ikKq=xVxkoGg0fYpTBpkhJSv1w-6BG=76PAvw@mail.gmail.com/
-> [...]
-> > +static void seccomp_cache_prepare_bitmap(struct seccomp_filter *sfilter,
-> > +                                        void *bitmap, const void *bitmap_prev,
-> > +                                        size_t bitmap_size, int arch)
-> > +{
-> > +       struct sock_fprog_kern *fprog = sfilter->prog->orig_prog;
-> > +       struct seccomp_data sd;
-> > +       int nr;
-> > +
-> > +       for (nr = 0; nr < bitmap_size; nr++) {
-> > +               if (bitmap_prev && !test_bit(nr, bitmap_prev))
-> > +                       continue;
-> > +
-> > +               sd.nr = nr;
-> > +               sd.arch = arch;
-> > +
-> > +               if (seccomp_emu_is_const_allow(fprog, &sd))
-> > +                       set_bit(nr, bitmap);
+On Fri, Sep 25, 2020 at 10:40:47AM -0500, Bjorn Helgaas wrote:
+> On Fri, Sep 25, 2020 at 11:21:15AM +0200, Pali Rohár wrote:
+> > Signed-off-by: Pali Rohár <pali@kernel.org>
+> > ---
+> > I have provided more fixes to this driver, I have needed functional
+> > specification for this PCI controller and also hardware for testing
+> > and developing (Espressobin V5 and Turris MOX B and G modules).
+> > 
+> > Thomas already wrote [1] that is less involved in this driver, so I
+> > can help with reviewing/maintaining it.
+> > 
+> > [1] - https://lore.kernel.org/linux-pci/20200513135643.478ffbda@windsurf.home/
+> > ---
+> >  MAINTAINERS | 1 +
+> >  1 file changed, 1 insertion(+)
+> > 
+> > diff --git a/MAINTAINERS b/MAINTAINERS
+> > index d746519253c3..e245dbe280ac 100644
+> > --- a/MAINTAINERS
+> > +++ b/MAINTAINERS
+> > @@ -13185,6 +13185,7 @@ F:	drivers/firmware/pcdp.*
+> >  
+> >  PCI DRIVER FOR AARDVARK (Marvell Armada 3700)
+> >  M:	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+> > +R:	Pali Rohár <pali@kernel.org>
+> >  L:	linux-pci@vger.kernel.org
+> >  L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+> >  S:	Maintained
 > 
-> set_bit() is atomic, but since we only do this at filter setup, before
-> the filter becomes globally visible, we don't need atomicity here. So
-> this should probably use __set_bit() instead.
+> Applied to pci/misc for v5.10 with Thomas' ack and signing you up as
+> maintainer, thanks!
 
-Oh yes, excellent point! That will speed this up a bit. When you do
-this, please include a comment here describing why its safe to do it
-non-atomic. :)
+Actually, I moved this to for-linus so we can get it in v5.9.  It's
+zero risk, and if we wait for v5.10, you'd miss any reports related to
+v5.9.
 
--- 
-Kees Cook
+> commit ccaa71689032 ("MAINTAINERS: Add Pali Rohár as aardvark PCI maintainer")
+> Author: Pali Rohár <pali@kernel.org>
+> Date:   Fri Sep 25 11:21:15 2020 +0200
+> 
+>     MAINTAINERS: Add Pali Rohár as aardvark PCI maintainer
+>     
+>     Link: https://lore.kernel.org/r/20200925092115.16546-1-pali@kernel.org
+>     Signed-off-by: Pali Rohár <pali@kernel.org>
+>     Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+>     Acked-by: Thomas Petazzzoni <thomas.petazzoni@bootlin.com>
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index deaafb617361..5959a24a4acb 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -13160,6 +13160,7 @@ F:	drivers/firmware/pcdp.*
+>  
+>  PCI DRIVER FOR AARDVARK (Marvell Armada 3700)
+>  M:	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+> +M:	Pali Rohár <pali@kernel.org>
+>  L:	linux-pci@vger.kernel.org
+>  L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+>  S:	Maintained
