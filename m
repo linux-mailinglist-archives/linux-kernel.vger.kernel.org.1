@@ -2,158 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5EB227EF19
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 18:26:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA9B227EF1B
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 18:26:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731092AbgI3Q0D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 12:26:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51160 "EHLO
+        id S1731130AbgI3Q0K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 12:26:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725355AbgI3Q0D (ORCPT
+        with ESMTP id S1725355AbgI3Q0J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 12:26:03 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CB2EC061755;
-        Wed, 30 Sep 2020 09:26:03 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id b22so2862475lfs.13;
-        Wed, 30 Sep 2020 09:26:02 -0700 (PDT)
+        Wed, 30 Sep 2020 12:26:09 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75126C061755;
+        Wed, 30 Sep 2020 09:26:09 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id b22so2862952lfs.13;
+        Wed, 30 Sep 2020 09:26:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=SuXQIv4rAYyKxF7mNw/hB2x+1vIgmAIMqQQxl7zvhHc=;
-        b=ho4YvFnap5VEc/95+eLZBD59p6xrw0ujaSjV8tg/BgqlbbXNyIJNKQgpij17cPF/sL
-         d2tFi6aHNWl7oAq6ZvsN5jNKcgpCab8rAR9V9iiZxH0BcyNDM9y9oxfHK24QGA6/6UsU
-         onB0cS4BGdTODgOTZ43eGRPTjenzqnrLk9BiIYZHxYW0C9h9rlrtbzY/bFbEW516D+bL
-         fWS1qrLTvobEysmaGcWiW/157FX+f9ov9tCZJavPhj4ULZOAebzLI9kGQWQtPKlK/GMs
-         Da7O9szadEypjAKX/9FgWiS/edUjMv0ndCyNmkMOa9zZVa8uJbpiObrqREXesrKz4gK8
-         rVQQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+q/kQLk04g4z0jNET503j6CVfOt/CRui3yz414slVAE=;
+        b=mX4N6iZXPX8AbyenbUvaGYVAao5sDFsKIMg5E2e5Tu+/GqLb/QpQs9JqRaBaHNtfJA
+         THSffxd1QtDzvEt+6giQTh2C/jyGvPqHvj3mkACtjUXJAWUzLFLBp11eO02+OhgxYXUr
+         5b3GNszbWo+gPayDxQ8CDG3FKb4UDYojBh2877aCNBmUxOMM6TTi2u/yG0QBxlBxhLwm
+         5bcsJiqNYMyZQ4XL62iYrgpYXg2vEkVJxyMj4YKAJ9kE6h8u5/bNERSxqEEk6aqAjWlL
+         1h7EgFuaa3uY+dYUyhQ54L9QrzefsWrozQct7W2XxIsvsVd7jocvBtwCLe7sLzq/RNxK
+         Kr5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=SuXQIv4rAYyKxF7mNw/hB2x+1vIgmAIMqQQxl7zvhHc=;
-        b=Y3HJy3v4XEHhDPhfU8x/vCvVR/OeBeowA+9lnTj2TEhalOWDT192EirvNipf/Dt6qa
-         oFVuW721UsrFWh4eUjsMtHeoVFvakk31vWy8wbEZLr+jdjuthwEBpTsRSXq171d45r/I
-         r2EDWkHsAOthB3XNi5Aww+7Z/tl4OonIh9z93LZtlO+H/2xQ3Rue8l0d8qoJh+msXVgz
-         Y5mjdZy2O0nIA536Op6MiWvEmqa0zIlKKmDFVUcQ8ax9VYZYxFlHORNMZbvqLUAaT7Q0
-         21Hs+AO0zxqWE8qiYzEEv24x8MEuvuTvqDD+7e8QG66zrM9BX7Q42UDekZmJeTj+sPdC
-         rBbQ==
-X-Gm-Message-State: AOAM533Uqm82CQXuq5o5glQ9Gwd/2/oB72h7t+3SgeWNVR3v/zAqFtvS
-        2oEh0M8b59I3kTuuGshdebCyQLwBlnM=
-X-Google-Smtp-Source: ABdhPJzlO0UvoTuAN0AyWrnYLP8ntndzxgjv2bnb5g4LJVicV2FFyv8u9bqwl1yhPYET31YGkSDDBA==
-X-Received: by 2002:a19:8703:: with SMTP id j3mr1054717lfd.560.1601483161229;
-        Wed, 30 Sep 2020 09:26:01 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
-        by smtp.googlemail.com with ESMTPSA id m13sm244795lfb.172.2020.09.30.09.26.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 30 Sep 2020 09:26:00 -0700 (PDT)
-Subject: Re: [PATCH v3 1/3] memory: tegra: Add
- devm_tegra_get_memory_controller()
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     Nicolin Chen <nicoleotsuka@gmail.com>, joro@8bytes.org,
-        krzk@kernel.org, vdumpa@nvidia.com, jonathanh@nvidia.com,
-        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-References: <20200930084258.25493-1-nicoleotsuka@gmail.com>
- <20200930084258.25493-2-nicoleotsuka@gmail.com>
- <20200930152320.GA3833404@ulmo>
- <ed7b4375-d06e-2750-e6fa-603ef2b60d36@gmail.com>
- <20200930160355.GC3833404@ulmo>
- <839df5d6-513f-3d77-ba5f-a1afe5d0883a@gmail.com>
- <20200930161503.GF3833404@ulmo>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <29a989b3-a8cc-5c1f-ba12-47ed0d667e8e@gmail.com>
-Date:   Wed, 30 Sep 2020 19:26:00 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        bh=+q/kQLk04g4z0jNET503j6CVfOt/CRui3yz414slVAE=;
+        b=GSgjpZTOOGkOJiexb3VFsNQSpxMWsmAxLNlxxPdymdb/w5y4QU88d34z1Hmmy4+J4q
+         fluStXEIsHZvGN5spOaNhuWbZyw3GZmUoB7ld8vBsHy4CmuhBeptpMDTWWIgIo9zUgvj
+         k7+PM/mIO4XMDKxhVwN7C5CFI45Ua1UQnTvtwXxCPazgWgg73TL/cRS0h0OQbKwSJDuy
+         Hxs2h6BPtfIZPiXmmSDxBnefAANsTmmkbWpvAVUNIoa8oHsAf6QcmZDr8HGylgljUQQq
+         JHxm1Xu7IL2YuQT1SP4DlKDzjonEiDHlz/erUxBTo/tV/W0fT8znTNpd22L7pKOfHvrI
+         c21g==
+X-Gm-Message-State: AOAM531QpJf278MjLL591Wm7ccwysDr3cnCUd8eP6a5e3ukrOMiy+lgZ
+        zfVk9YvBg6E35Key3P8emCM=
+X-Google-Smtp-Source: ABdhPJySYW/Hym8KxaWwR6Yi146b/CMbLii9oz8QWT6zcspXqGn0TwypZI3RcU2Z+QhG4kWxWvD/hQ==
+X-Received: by 2002:a19:418e:: with SMTP id o136mr1063932lfa.145.1601483167937;
+        Wed, 30 Sep 2020 09:26:07 -0700 (PDT)
+Received: from localhost.localdomain (h-98-128-229-94.NA.cust.bahnhof.se. [98.128.229.94])
+        by smtp.gmail.com with ESMTPSA id i187sm245512lfd.65.2020.09.30.09.26.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Sep 2020 09:26:07 -0700 (PDT)
+From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Nisha Kumari <nishakumari@codeaurora.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Subject: [PATCH] regulator: qcom: labibb: Constify static structs
+Date:   Wed, 30 Sep 2020 18:26:02 +0200
+Message-Id: <20200930162602.18583-1-rikard.falkeborn@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <20200930161503.GF3833404@ulmo>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-30.09.2020 19:15, Thierry Reding пишет:
-> On Wed, Sep 30, 2020 at 07:06:27PM +0300, Dmitry Osipenko wrote:
->> 30.09.2020 19:03, Thierry Reding пишет:
->>> On Wed, Sep 30, 2020 at 06:53:06PM +0300, Dmitry Osipenko wrote:
->>>> 30.09.2020 18:23, Thierry Reding пишет:
->>>>> On Wed, Sep 30, 2020 at 01:42:56AM -0700, Nicolin Chen wrote:
->>>>>> From: Dmitry Osipenko <digetx@gmail.com>
->>>>>>
->>>>>> Multiple Tegra drivers need to retrieve Memory Controller and hence there
->>>>>> is quite some duplication of the retrieval code among the drivers. Let's
->>>>>> add a new common helper for the retrieval of the MC.
->>>>>>
->>>>>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
->>>>>> Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
->>>>>> ---
->>>>>>
->>>>>> Changelog
->>>>>> v2->v3:
->>>>>>  * Replaced with Dimtry's devm_tegra_get_memory_controller()
->>>>>> v1->v2:
->>>>>>  * N/A
->>>>>>
->>>>>>  drivers/memory/tegra/mc.c | 39 +++++++++++++++++++++++++++++++++++++++
->>>>>>  include/soc/tegra/mc.h    | 17 +++++++++++++++++
->>>>>>  2 files changed, 56 insertions(+)
->>>>>
->>>>> Let's not add this helper, please. If a device needs a reference to the
->>>>> memory controller, it should have a phandle to the memory controller in
->>>>> device tree so that it can be looked up explicitly.
->>>>>
->>>>> Adding this helper is officially sanctioning that it's okay not to have
->>>>> that reference and that's a bad idea.
->>>>
->>>> And please explain why it's a bad idea, I don't see anything bad here at
->>>> all.
->>>
->>> Well, you said yourself in a recent comment that we should avoid global
->>> variables. devm_tegra_get_memory_controller() is nothing but a glorified
->>> global variable.
->>
->> This is not a variable, but a common helper function which will remove
->> the duplicated code and will help to avoid common mistakes like a missed
->> put_device().
-> 
-> Yeah, you're right: this is actually much worse than a global variable.
-> It's a helper function that needs 50+ lines in order to effectively
-> access a global variable.
-> 
-> You could write this much simpler by doing something like this:
-> 
-> 	static struct tegra_mc *global_mc;
-> 
-> 	int tegra_mc_probe(...)
-> 	{
-> 		...
-> 
-> 		global_mc = mc;
-> 
-> 		...
-> 	}
-> 
-> 	struct tegra_mc *tegra_get_memory_controller(void)
-> 	{
-> 		return global_mc;
-> 	}
-> 
-> The result is *exactly* the same, except that this is actually more
-> honest. Nicolin's patch *pretends* that it isn't using a global variable
-> by wrapping a lot of complicated code around it.
-> 
-> But that doesn't change the fact that this accesses a singleton object
-> without actually being able to tie it to the device in the first place.
+The only usage of qcom_labibb_ops is to assign it to the ops field in
+the regulator_desc struct, which is a const pointer. The only usage of
+pmi8998_lab_desc and pmi8998_ibb_desc is to assign their address to the
+desc field in the labibb_regulator_data struct which can be made const,
+since it is only copied into the desc field in the
+labbibb_regulator_data struct. This struct is modified, but that's a
+copy of the static one. Make them const to allow the compiler to put
+them in read-only memory.
 
-I don't think that the MC driver will stay built-in forever, although
-its modularization is complicated right now. Hence something shall keep
-the reference to the MC device resources while they are in use and this
-patch takes care of doing that.
+Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
+---
+ drivers/regulator/qcom-labibb-regulator.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-Secondly, the Nicolin's patch doesn't pretend on anything, but rather
-brings the already existing duplicated code to a single common place.
+diff --git a/drivers/regulator/qcom-labibb-regulator.c b/drivers/regulator/qcom-labibb-regulator.c
+index 8c7dd1928380..8ccf572394a2 100644
+--- a/drivers/regulator/qcom-labibb-regulator.c
++++ b/drivers/regulator/qcom-labibb-regulator.c
+@@ -44,16 +44,16 @@ struct labibb_regulator_data {
+ 	const char			*name;
+ 	u8				type;
+ 	u16				base;
+-	struct regulator_desc		*desc;
++	const struct regulator_desc	*desc;
+ };
+ 
+-static struct regulator_ops qcom_labibb_ops = {
++static const struct regulator_ops qcom_labibb_ops = {
+ 	.enable			= regulator_enable_regmap,
+ 	.disable		= regulator_disable_regmap,
+ 	.is_enabled		= regulator_is_enabled_regmap,
+ };
+ 
+-static struct regulator_desc pmi8998_lab_desc = {
++static const struct regulator_desc pmi8998_lab_desc = {
+ 	.enable_mask		= LAB_ENABLE_CTL_MASK,
+ 	.enable_reg		= (PMI8998_LAB_REG_BASE + REG_LABIBB_ENABLE_CTL),
+ 	.enable_val		= LABIBB_CONTROL_ENABLE,
+@@ -65,7 +65,7 @@ static struct regulator_desc pmi8998_lab_desc = {
+ 	.ops			= &qcom_labibb_ops,
+ };
+ 
+-static struct regulator_desc pmi8998_ibb_desc = {
++static const struct regulator_desc pmi8998_ibb_desc = {
+ 	.enable_mask		= IBB_ENABLE_CTL_MASK,
+ 	.enable_reg		= (PMI8998_IBB_REG_BASE + REG_LABIBB_ENABLE_CTL),
+ 	.enable_val		= LABIBB_CONTROL_ENABLE,
+-- 
+2.28.0
+
