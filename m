@@ -2,96 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D538A27EAFC
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 16:33:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAB9827EB31
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 16:44:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730554AbgI3OdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 10:33:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33544 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730503AbgI3OdR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 10:33:17 -0400
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E01C2C0613D0
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 07:33:15 -0700 (PDT)
-Received: by mail-oi1-x243.google.com with SMTP id m7so1921999oie.0
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 07:33:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=J+NgeaQTip+26WMZqySi5DsgTyTy59esSMvYinJ9dG0=;
-        b=en74YN7f/+4j3DUi8d9OMw/JkSrb/Qm8bZPDssxnVXD3zg5PxQFKWbo8SnCiBFUCB+
-         utvnUunUJycAkuffxvTDS47QrYo8ha24NPEdAkJPat7YYmEPhD7UD6kw92vl1ad0RU+e
-         S2oZ2XA8lPgXkoIV4fmpcSLFQUAgL3ezybFIw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=J+NgeaQTip+26WMZqySi5DsgTyTy59esSMvYinJ9dG0=;
-        b=DYruqilKtVJPuR3RO8D12nk2UYTI/mqba/7VkB83N7kRMM3CaunHVOzcLQ7R5Rg44f
-         HDgGBwowH7kP4BgJQG++fL/BgzGCV9H0QuqsdIu5yp4pyXO5a1JrYVeelr5oztSeQR6m
-         XJCrSWdJwlZe4g6fdIxpjYXIl0nVRLV2wR1oKGZLvJscx5Yh8acWicC92PrpiclGTKqP
-         p2INfqwpfe2Sj118xsFzwHtYQ3UuEFUkSsvCYz7/RyZ9mMPd5lq2//rPdYtRSq//BuNd
-         wxX/OsSc5ueHVePrVir3YxnMTLSoPkmL8PGQSoiW48FbGjxBlQRblpaw9QbmEHJtyZOU
-         qb/w==
-X-Gm-Message-State: AOAM532aPshM2yn51wKhP46qPw3dyZZ359R4smwFuC1J+/91aN4mA0dt
-        ZszSZXlnmUag6brvhcDYqIiUYQ==
-X-Google-Smtp-Source: ABdhPJy27eTmr61mJtWFOz4jPcdyEe+rvJNZShjTEpm6pNWTAwFaJ+fHQJNYnOulyyUtdBynMVva9w==
-X-Received: by 2002:a54:440f:: with SMTP id k15mr1579316oiw.131.1601476395202;
-        Wed, 30 Sep 2020 07:33:15 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id w64sm345936oig.31.2020.09.30.07.33.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 30 Sep 2020 07:33:14 -0700 (PDT)
-Subject: Re: [PATCH 4.19 000/244] 4.19.149-rc2 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
-        pavel@denx.de, stable@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20200929142826.951084251@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <594a794d-cfda-4c3e-eb79-196f4a80c71c@linuxfoundation.org>
-Date:   Wed, 30 Sep 2020 08:33:13 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1730539AbgI3Oo2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 10:44:28 -0400
+Received: from [157.25.102.26] ([157.25.102.26]:41064 "EHLO orcam.me.uk"
+        rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726680AbgI3Oo1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 10:44:27 -0400
+X-Greylist: delayed 596 seconds by postgrey-1.27 at vger.kernel.org; Wed, 30 Sep 2020 10:44:26 EDT
+Received: from bugs.linux-mips.org (eddie.linux-mips.org [IPv6:2a01:4f8:201:92aa::3])
+        by orcam.me.uk (Postfix) with ESMTPS id 2F6B02BE086;
+        Wed, 30 Sep 2020 15:34:28 +0100 (BST)
+Date:   Wed, 30 Sep 2020 15:34:25 +0100 (BST)
+From:   "Maciej W. Rozycki" <macro@linux-mips.org>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+cc:     Necip Fazil Yildiran <fazilyildiran@gmail.com>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        paul@pgazz.com, jeho@cs.utexas.edu
+Subject: Re: [PATCH] MIPS: remove the obsolete RM7000 extended interrupts
+ handler
+In-Reply-To: <20200918135053.GB19202@alpha.franken.de>
+Message-ID: <alpine.LFD.2.21.2009301529080.333514@eddie.linux-mips.org>
+References: <20200912142306.3604968-1-fazilyildiran@gmail.com> <20200918135053.GB19202@alpha.franken.de>
 MIME-Version: 1.0
-In-Reply-To: <20200929142826.951084251@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/29/20 8:29 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.19.149 release.
-> There are 244 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Thu, 01 Oct 2020 14:27:43 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.149-rc2.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+On Fri, 18 Sep 2020, Thomas Bogendoerfer wrote:
 
-Compiled and booted on my test system. No dmesg regressions.
+> > IRQ_CPU_RM7K has been a non-visible config selected nowhere since
+> > PMC-Sierra Yosemite support has been removed with commit bdf20507da11
+> > ("MIPS: PMC-Sierra Yosemite: Remove support."). By the same token, the
+> > handler for RM7000 extended interrupts has been obsolete.
+> > 
+> > Remove the obsolete code.
+> 
+> not yet;-) I have an RM7000 based system in my basement... I'm also
+> not sure, if R7k O2s need that.
 
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+ One of the more exotic Malta daughtercards used that too I believe.  I'd 
+have to check the docs.  Of course getting hands on such a daughtercard is 
+another matter, but we continue having RM7000 enabled for the Malta.
 
-thanks,
--- Shuah
+  Maciej
