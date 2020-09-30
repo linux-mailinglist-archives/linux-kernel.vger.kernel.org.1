@@ -2,185 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E52B27E7C7
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 13:43:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCEF227E7C4
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 13:43:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729451AbgI3LnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 07:43:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35668 "EHLO
+        id S1729334AbgI3Lm7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 07:42:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728430AbgI3LnJ (ORCPT
+        with ESMTP id S1727997AbgI3Lm6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 07:43:09 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56FF4C061755;
-        Wed, 30 Sep 2020 04:43:09 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id CABF3A61;
-        Wed, 30 Sep 2020 13:43:07 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1601466188;
-        bh=qCXhZOr13G8G9oYQF2tgn0I9aUvQ6/ueiYSB0qru238=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pklqDojWkjtFEn6ea4X8bj/Y+rDFxgsCHLGTDfZ69iwABRLZZqc+TsbkqDNxQQaFO
-         nF3jErBnzCMj1kzu+KYhRwCvdkR3sjbY/1AunMaJvz3kBM1Qr5XtzJV1EtkZnZhkLP
-         buUNszKmhEhy9KN6Q+uZRS3aRBzDu/PtfOQbfnYM=
-Date:   Wed, 30 Sep 2020 14:42:31 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Stefan Riedmueller <s.riedmueller@phytec.de>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Christian Hemp <c.hemp@phytec.de>,
-        Jan Luebbe <jlu@pengutronix.de>
-Subject: Re: [PATCH v2 1/5] media: mt9p031: Add support for 8 bit and 10 bit
- formats
-Message-ID: <20200930114231.GH5689@pendragon.ideasonboard.com>
-References: <20200930105133.139981-1-s.riedmueller@phytec.de>
+        Wed, 30 Sep 2020 07:42:58 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A76DC061755
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 04:42:58 -0700 (PDT)
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1601466176;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0+zNSI+mqx5CfiOQNU/5MvTkNgID9wWHb6xZFpnPBg8=;
+        b=JVuhSsX3abSwQuTzm8uJA10+YocXED/oycGiqZYIgEkbN3W11pIgFmWW2CcEwu60jcq1R/
+        j/ShUWVNYje5PxAEIZcY6xNOPxB+F2v/gPMC0wf1Cp/MQ33oAOtIt+anRixdk6PZCPwixb
+        A2fptVc2DXANmXsKnWgqZkQIRI9C9GoiDBpLjo8RcUzEhj6P6sbjk6FRfH2+krHeewFo0R
+        A+pK7ze3GuQki2MWUuke4i1OWPk74UORfNEjPkEM/fMf/Z9iFd5UCAeAuOHythk70a1VO8
+        yEqk13X7fXMMaJvb5FOkpFcRvNxFh0HM15DtQFQ0cIZKusX7rdQsyk1z4E4JsA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1601466176;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0+zNSI+mqx5CfiOQNU/5MvTkNgID9wWHb6xZFpnPBg8=;
+        b=/AFGh+TIceYNDP5OAzZR05lbvlv5oUTl6tdChUtLopRisGV+2F/Bw8d0K8TkNo6+1hxd5w
+        qVEQ1FtmGEieapBg==
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH next v2 1/2] printk: avoid and/or handle record truncation
+In-Reply-To: <20200930112836.GC29288@alley>
+References: <20200930090134.8723-1-john.ogness@linutronix.de> <20200930090134.8723-2-john.ogness@linutronix.de> <20200930094316.GB987@jagdpanzerIV.localdomain> <87imbv1s0d.fsf@jogness.linutronix.de> <20200930112836.GC29288@alley>
+Date:   Wed, 30 Sep 2020 13:48:56 +0206
+Message-ID: <87ft6z1oe7.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200930105133.139981-1-s.riedmueller@phytec.de>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stefan,
+On 2020-09-30, Petr Mladek <pmladek@suse.com> wrote:
+> Anyway, I see hardcoded limit more like a hack. It limits something
+> somewhere so that some other code somewhere else is safe to use.
+>
+> And printk.c is really bad from this point. It sometimes does not
+> check for overflow because it "knows" that the buffers are big
+> enough. But it is error prone code, especially when there are more
+> limits defined (pure text, prefix, extended prefix). And it
+> will be worse if we allow to add more optional information
+> into the prefix.
 
-Thank you for the patch.
+So should I post a v3 where the checks are added? Or should I add
+comments where checks would be, explaining why the checks are not
+needed?
 
-On Wed, Sep 30, 2020 at 12:51:29PM +0200, Stefan Riedmueller wrote:
-> From: Christian Hemp <c.hemp@phytec.de>
-> 
-> Aside from 12 bit monochrome or color format the sensor implicitly
-> supports 10 and 8 bit formats as well by simply dropping the
-> corresponding LSBs.
-
-That's not how it should work though. If you set the format on
-MEDIA_BUS_FMT_SGRBG8_1X8 through the pipeline for instance, you will end
-up capturing the 8 LSB, not the 8 MSB.
-
-What's your use case for this ?
-
-> Signed-off-by: Christian Hemp <c.hemp@phytec.de>
-> [jlu@pengutronix.de: simplified by dropping v4l2_colorspace handling]
-> Signed-off-by: Jan Luebbe <jlu@pengutronix.de>
-> Signed-off-by: Stefan Riedmueller <s.riedmueller@phytec.de>
-> ---
-> Changes in v2:
->  - Use unsigned int for num_fmts and loop variable in find_datafmt
->  - Remove superfluous const qualifier from find_datafmt
-> ---
->  drivers/media/i2c/mt9p031.c | 50 +++++++++++++++++++++++++++++--------
->  1 file changed, 40 insertions(+), 10 deletions(-)
-> 
-> diff --git a/drivers/media/i2c/mt9p031.c b/drivers/media/i2c/mt9p031.c
-> index dc23b9ed510a..2e6671ef877c 100644
-> --- a/drivers/media/i2c/mt9p031.c
-> +++ b/drivers/media/i2c/mt9p031.c
-> @@ -116,6 +116,18 @@ enum mt9p031_model {
->  	MT9P031_MODEL_MONOCHROME,
->  };
->  
-> +static const u32 mt9p031_color_fmts[] = {
-> +	MEDIA_BUS_FMT_SGRBG8_1X8,
-> +	MEDIA_BUS_FMT_SGRBG10_1X10,
-> +	MEDIA_BUS_FMT_SGRBG12_1X12,
-> +};
-> +
-> +static const u32 mt9p031_monochrome_fmts[] = {
-> +	MEDIA_BUS_FMT_Y8_1X8,
-> +	MEDIA_BUS_FMT_Y10_1X10,
-> +	MEDIA_BUS_FMT_Y12_1X12,
-> +};
-> +
->  struct mt9p031 {
->  	struct v4l2_subdev subdev;
->  	struct media_pad pad;
-> @@ -138,6 +150,9 @@ struct mt9p031 {
->  	struct v4l2_ctrl *blc_auto;
->  	struct v4l2_ctrl *blc_offset;
->  
-> +	const u32 *fmts;
-> +	unsigned int num_fmts;
-> +
->  	/* Registers cache */
->  	u16 output_control;
->  	u16 mode2;
-> @@ -148,6 +163,17 @@ static struct mt9p031 *to_mt9p031(struct v4l2_subdev *sd)
->  	return container_of(sd, struct mt9p031, subdev);
->  }
->  
-> +static u32 mt9p031_find_datafmt(struct mt9p031 *mt9p031, u32 code)
-> +{
-> +	unsigned int i;
-> +
-> +	for (i = 0; i < mt9p031->num_fmts; i++)
-> +		if (mt9p031->fmts[i] == code)
-> +			return mt9p031->fmts[i];
-> +
-> +	return mt9p031->fmts[mt9p031->num_fmts-1];
-> +}
-> +
->  static int mt9p031_read(struct i2c_client *client, u8 reg)
->  {
->  	return i2c_smbus_read_word_swapped(client, reg);
-> @@ -476,10 +502,11 @@ static int mt9p031_enum_mbus_code(struct v4l2_subdev *subdev,
->  {
->  	struct mt9p031 *mt9p031 = to_mt9p031(subdev);
->  
-> -	if (code->pad || code->index)
-> +	if (code->pad || code->index >= mt9p031->num_fmts)
->  		return -EINVAL;
->  
-> -	code->code = mt9p031->format.code;
-> +	code->code = mt9p031->fmts[code->index];
-> +
->  	return 0;
->  }
->  
-> @@ -573,6 +600,8 @@ static int mt9p031_set_format(struct v4l2_subdev *subdev,
->  	__format->width = __crop->width / hratio;
->  	__format->height = __crop->height / vratio;
->  
-> +	__format->code = mt9p031_find_datafmt(mt9p031, format->format.code);
-> +
->  	format->format = *__format;
->  
->  	return 0;
-> @@ -951,10 +980,7 @@ static int mt9p031_open(struct v4l2_subdev *subdev, struct v4l2_subdev_fh *fh)
->  
->  	format = v4l2_subdev_get_try_format(subdev, fh->pad, 0);
->  
-> -	if (mt9p031->model == MT9P031_MODEL_MONOCHROME)
-> -		format->code = MEDIA_BUS_FMT_Y12_1X12;
-> -	else
-> -		format->code = MEDIA_BUS_FMT_SGRBG12_1X12;
-> +	format->code = mt9p031_find_datafmt(mt9p031, 0);
->  
->  	format->width = MT9P031_WINDOW_WIDTH_DEF;
->  	format->height = MT9P031_WINDOW_HEIGHT_DEF;
-> @@ -1121,10 +1147,14 @@ static int mt9p031_probe(struct i2c_client *client,
->  	mt9p031->crop.left = MT9P031_COLUMN_START_DEF;
->  	mt9p031->crop.top = MT9P031_ROW_START_DEF;
->  
-> -	if (mt9p031->model == MT9P031_MODEL_MONOCHROME)
-> -		mt9p031->format.code = MEDIA_BUS_FMT_Y12_1X12;
-> -	else
-> -		mt9p031->format.code = MEDIA_BUS_FMT_SGRBG12_1X12;
-> +	if (mt9p031->model == MT9P031_MODEL_MONOCHROME) {
-> +		mt9p031->fmts = mt9p031_monochrome_fmts;
-> +		mt9p031->num_fmts = ARRAY_SIZE(mt9p031_monochrome_fmts);
-> +	} else {
-> +		mt9p031->fmts = mt9p031_color_fmts;
-> +		mt9p031->num_fmts = ARRAY_SIZE(mt9p031_color_fmts);
-> +	}
-> +	mt9p031->format.code = mt9p031_find_datafmt(mt9p031, 0);
->  
->  	mt9p031->format.width = MT9P031_WINDOW_WIDTH_DEF;
->  	mt9p031->format.height = MT9P031_WINDOW_HEIGHT_DEF;
-
--- 
-Regards,
-
-Laurent Pinchart
+John Ogness
