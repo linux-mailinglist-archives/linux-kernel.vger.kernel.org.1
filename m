@@ -2,202 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1E0727F1A7
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 20:54:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9984427F1A9
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 20:54:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729561AbgI3SyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 14:54:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45824 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728368AbgI3SyP (ORCPT
+        id S1729878AbgI3Syd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 14:54:33 -0400
+Received: from ale.deltatee.com ([204.191.154.188]:37516 "EHLO
+        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728368AbgI3Syb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 14:54:15 -0400
-Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73327C0613D0
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 11:54:15 -0700 (PDT)
-Received: by mail-vs1-xe43.google.com with SMTP id e23so1466363vsk.2
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 11:54:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=N2Atg0nwqil3CgBKoVorL+M9yJnmhZns2R4gE+7lVFU=;
-        b=JApnnR/2Y5mntj/oYjVcB3SzT3WVFZfmvREkja+Y8cZtnI/8HEkwWIbz1nC9aLrFq+
-         1nk63fQYtJKR/5+OGMqXIAcO/4sBF7Z1NLqmQtekSVptYsR2N7HOU4uZ09oQZbFjJwZO
-         pzaTSKC1HsnFMn8d5no5ve2hSFD/IkgnJJOns=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=N2Atg0nwqil3CgBKoVorL+M9yJnmhZns2R4gE+7lVFU=;
-        b=nhT88Uts4IrglDH2MQBxu4eatlbddGR5ADcf8yeRjJ7vUARBpCpZ8PwfqsSPwONEL0
-         W6eLrl5pvEFnIVynL7qSxyr+0Bd8eVTPkZ00J1lEW/PIAhRu6KrMx6PC50c297NNvIcM
-         36pXhlLOn222QeLQ/3+CKfu/1m9JnLIdsIyaT05Kja3RbRvLB/m1wkEce2r3B6c3bGC+
-         Tr8tpIrQIaeijbDTaXEoQt3I3KWD+Tav6aEu13zIeor598ttxJw8yp+28JwrzpkIet43
-         h/KeQeNEilLmceGDedBtQpdGmfGAN07S0XGgO4jecxP8kc654CfnmmI1gEKZBIR6ANgA
-         mg2A==
-X-Gm-Message-State: AOAM530ZNedOXmmBtiIyA8JzI+xiDxk/hCR/6Se6joiOvk9ICyrM7FFV
-        IS8QHI8M7QEl6L0q/yi5JH8D3AEmSHtoKLKorjhFUQ==
-X-Google-Smtp-Source: ABdhPJyC0KIkF3hvSvituW4D+X0R46cy8sNgocr2+N+sPBwVzxNfCJ8C3PJwdP2Gd9HIO+AkiAJdFn+kHpPSXcSxco4=
-X-Received: by 2002:a67:6952:: with SMTP id e79mr2901081vsc.4.1601492054633;
- Wed, 30 Sep 2020 11:54:14 -0700 (PDT)
+        Wed, 30 Sep 2020 14:54:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=deltatee.com; s=20200525; h=Subject:Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=3RAJBVksSo0cuTjFg31u+aw+fKrhWOPH0N0BwI0sRyU=; b=HTnJIJfmag/RrlMjX22EujwH30
+        sz/um49gdqYcaH5QdPnqKKA5mpfXf8JXZp3cNgz5LAjE27eRse3bMkiyD9c2w8IJCUBQNJ6B599OU
+        JyQIsoOPOGAe9WHuFuSmNcXon+K1Ji3EMdrIdPGeFOo2yotBQVbc/mneAd5aIcfHbiyX8o6Uid8sR
+        S6xSAKxtpAnrKR2H+3dXgqUV8NLN+F5r3vzisV/Dh86hNdCmt6QSIVJlFNsDXnN8TCfFa+CqaT+nB
+        3s1aIhMOcZDQBohU/w5fbIDPoeqKARD2ZWrXbccAUAusWz5Hwh37yMt3FHgbgyI2bHOKIpMb5wzWf
+        4VgD2vkw==;
+Received: from cgy1-donard.priv.deltatee.com ([172.16.1.31])
+        by ale.deltatee.com with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <gunthorp@deltatee.com>)
+        id 1kNhFE-0000uw-4y; Wed, 30 Sep 2020 12:54:30 -0600
+Received: from gunthorp by cgy1-donard.priv.deltatee.com with local (Exim 4.92)
+        (envelope-from <gunthorp@deltatee.com>)
+        id 1kNhFD-00030J-2R; Wed, 30 Sep 2020 12:54:27 -0600
+From:   Logan Gunthorpe <logang@deltatee.com>
+To:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-block@vger.kernel.org, Omar Sandoval <osandov@osandov.com>
+Cc:     Sagi Grimberg <sagi@grimberg.me>,
+        Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>,
+        Stephen Bates <sbates@raithlin.com>,
+        Logan Gunthorpe <logang@deltatee.com>
+Date:   Wed, 30 Sep 2020 12:54:11 -0600
+Message-Id: <20200930185422.11494-1-logang@deltatee.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <20200924131318.2654747-1-balsini@android.com> <20200924131318.2654747-5-balsini@android.com>
-In-Reply-To: <20200924131318.2654747-5-balsini@android.com>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Wed, 30 Sep 2020 20:54:03 +0200
-Message-ID: <CAJfpegueAXqrfdu5WD+WKKmH9cg0BCQd6Q2bHJNS5XUKuxsmtg@mail.gmail.com>
-Subject: Re: [PATCH V9 4/4] fuse: Handle asynchronous read and write in passthrough
-To:     Alessio Balsini <balsini@android.com>
-Cc:     Akilesh Kailash <akailash@google.com>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Antonio SJ Musumeci <trapexit@spawn.link>,
-        David Anderson <dvander@google.com>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
-        Martijn Coenen <maco@android.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Lawrence <paullawrence@google.com>,
-        Stefano Duo <stefanoduo@google.com>,
-        Zimuzo Ezeozue <zezeozue@google.com>,
-        fuse-devel <fuse-devel@lists.sourceforge.net>,
-        kernel-team <kernel-team@android.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 172.16.1.31
+X-SA-Exim-Rcpt-To: linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org, linux-block@vger.kernel.org, osandov@osandov.com, sagi@grimberg.me, Chaitanya.Kulkarni@wdc.com, sbates@raithlin.com, logang@deltatee.com
+X-SA-Exim-Mail-From: gunthorp@deltatee.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-6.7 required=5.0 tests=ALL_TRUSTED,BAYES_00,
+        MYRULES_NO_TEXT autolearn=no autolearn_force=no version=3.4.2
+Subject: [PATCH blktests v2 00/11] NVMe Target Passthru Block Tests
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 3:13 PM Alessio Balsini <balsini@android.com> wrote:
->
-> Extend the passthrough feature by handling asynchronous IO both for read
-> and write operations.
->
-> When an AIO request is received, if the request targets a FUSE file with
-> the passthrough functionality enabled, a new identical AIO request is
-> created. The new request targets the lower file system file, and gets
-> assigned a special FUSE passthrough AIO completion callback.
-> When the lower file system AIO request is completed, the FUSE passthrough
-> AIO completion callback is executed and propagates the completion signal to
-> the FUSE AIO request by triggering its completion callback as well.
+Hi,
 
-This ends up with almost identical code in fuse and overlayfs, right?
-Maybe it's worth looking into moving these into common helpers.
+This series adds blktests for the nvmet passthru feature that was merged
+for 5.9. It's been reconciled with Sagi's blktest series that Omar
+recently merged.
+
+This series is based off of the current blktests master and a git repo is
+available for this here:
+
+https://github.com/Eideticom/blktests nvmet_passthru_v2
 
 Thanks,
-Miklos
+
+Logan
+
+--
+
+Changes in v2:
+
+- Rebased on latest blktests master and changed to use the common
+  helpers Sagi introduced in his series
+- Collected Chaitanya's reviewed-by tag
+
+--
+
+Logan Gunthorpe (11):
+  common/fio: Remove state file in common helper
+  common/xfs: Create common helper to check for XFS support
+  common/xfs: Create common helper to verify block device with xfs
+  nvme: Search for specific subsysnqn in _find_nvme_loop_dev
+  nvme: Add common helpers for passthru tests
+  nvme/033: Simple test to create and connect to a passthru target
+  nvme/034: Add test for passthru data verification
+  nvme/035: Add test to verify passthru controller with a filesystem
+  nvme/036: Add test for testing reset command on nvme-passthru
+  nvme/037: Add test which loops passthru connect and disconnect
+  nvme/038: Test removal of un-enabled subsystem and ports
+
+ common/fio         |  1 +
+ common/rc          |  8 +++++
+ common/xfs         | 33 ++++++++++++++++++
+ tests/nvme/004     |  2 +-
+ tests/nvme/005     |  2 +-
+ tests/nvme/008     |  2 +-
+ tests/nvme/009     |  2 +-
+ tests/nvme/010     |  3 +-
+ tests/nvme/011     |  3 +-
+ tests/nvme/012     | 23 ++++---------
+ tests/nvme/013     | 21 +++---------
+ tests/nvme/014     |  2 +-
+ tests/nvme/015     |  2 +-
+ tests/nvme/018     |  2 +-
+ tests/nvme/019     |  2 +-
+ tests/nvme/020     |  2 +-
+ tests/nvme/021     |  2 +-
+ tests/nvme/022     |  2 +-
+ tests/nvme/023     |  2 +-
+ tests/nvme/024     |  2 +-
+ tests/nvme/025     |  2 +-
+ tests/nvme/026     |  2 +-
+ tests/nvme/027     |  2 +-
+ tests/nvme/028     |  2 +-
+ tests/nvme/029     |  2 +-
+ tests/nvme/033     | 67 +++++++++++++++++++++++++++++++++++++
+ tests/nvme/033.out |  7 ++++
+ tests/nvme/034     | 35 +++++++++++++++++++
+ tests/nvme/034.out |  3 ++
+ tests/nvme/035     | 37 +++++++++++++++++++++
+ tests/nvme/035.out |  3 ++
+ tests/nvme/036     | 37 +++++++++++++++++++++
+ tests/nvme/036.out |  3 ++
+ tests/nvme/037     | 35 +++++++++++++++++++
+ tests/nvme/037.out |  2 ++
+ tests/nvme/038     | 36 ++++++++++++++++++++
+ tests/nvme/038.out |  2 ++
+ tests/nvme/rc      | 83 ++++++++++++++++++++++++++++++++++++++++++++--
+ 38 files changed, 420 insertions(+), 58 deletions(-)
+ create mode 100644 common/xfs
+ create mode 100755 tests/nvme/033
+ create mode 100644 tests/nvme/033.out
+ create mode 100755 tests/nvme/034
+ create mode 100644 tests/nvme/034.out
+ create mode 100755 tests/nvme/035
+ create mode 100644 tests/nvme/035.out
+ create mode 100755 tests/nvme/036
+ create mode 100644 tests/nvme/036.out
+ create mode 100755 tests/nvme/037
+ create mode 100644 tests/nvme/037.out
+ create mode 100755 tests/nvme/038
+ create mode 100644 tests/nvme/038.out
 
 
->
-> Signed-off-by: Alessio Balsini <balsini@android.com>
-> ---
->  fs/fuse/passthrough.c | 64 +++++++++++++++++++++++++++++++++++++++++--
->  1 file changed, 62 insertions(+), 2 deletions(-)
->
-> diff --git a/fs/fuse/passthrough.c b/fs/fuse/passthrough.c
-> index f70c0ef6945b..b7d1a5517ffd 100644
-> --- a/fs/fuse/passthrough.c
-> +++ b/fs/fuse/passthrough.c
-> @@ -4,6 +4,11 @@
->
->  #include <linux/uio.h>
->
-> +struct fuse_aio_req {
-> +       struct kiocb iocb;
-> +       struct kiocb *iocb_fuse;
-> +};
-> +
->  static void fuse_copyattr(struct file *dst_file, struct file *src_file)
->  {
->         struct inode *dst = file_inode(dst_file);
-> @@ -39,6 +44,32 @@ fuse_passthrough_override_creds(const struct file *fuse_filp)
->         return override_creds(fc->creator_cred);
->  }
->
-> +static void fuse_aio_cleanup_handler(struct fuse_aio_req *aio_req)
-> +{
-> +       struct kiocb *iocb = &aio_req->iocb;
-> +       struct kiocb *iocb_fuse = aio_req->iocb_fuse;
-> +
-> +       if (iocb->ki_flags & IOCB_WRITE) {
-> +               __sb_writers_acquired(file_inode(iocb->ki_filp)->i_sb,
-> +                                     SB_FREEZE_WRITE);
-> +               file_end_write(iocb->ki_filp);
-> +               fuse_copyattr(iocb_fuse->ki_filp, iocb->ki_filp);
-> +       }
-> +
-> +       iocb_fuse->ki_pos = iocb->ki_pos;
-> +       kfree(aio_req);
-> +}
-> +
-> +static void fuse_aio_rw_complete(struct kiocb *iocb, long res, long res2)
-> +{
-> +       struct fuse_aio_req *aio_req =
-> +               container_of(iocb, struct fuse_aio_req, iocb);
-> +       struct kiocb *iocb_fuse = aio_req->iocb_fuse;
-> +
-> +       fuse_aio_cleanup_handler(aio_req);
-> +       iocb_fuse->ki_complete(iocb_fuse, res, res2);
-> +}
-> +
->  ssize_t fuse_passthrough_read_iter(struct kiocb *iocb_fuse,
->                                    struct iov_iter *iter)
->  {
-> @@ -56,7 +87,18 @@ ssize_t fuse_passthrough_read_iter(struct kiocb *iocb_fuse,
->                 ret = vfs_iter_read(passthrough_filp, iter, &iocb_fuse->ki_pos,
->                                     iocbflags_to_rwf(iocb_fuse->ki_flags));
->         } else {
-> -               ret = -EIO;
-> +               struct fuse_aio_req *aio_req;
-> +
-> +               aio_req = kmalloc(sizeof(struct fuse_aio_req), GFP_KERNEL);
-> +               if (!aio_req)
-> +                       return -ENOMEM;
-> +
-> +               aio_req->iocb_fuse = iocb_fuse;
-> +               kiocb_clone(&aio_req->iocb, iocb_fuse, passthrough_filp);
-> +               aio_req->iocb.ki_complete = fuse_aio_rw_complete;
-> +               ret = call_read_iter(passthrough_filp, &aio_req->iocb, iter);
-> +               if (ret != -EIOCBQUEUED)
-> +                       fuse_aio_cleanup_handler(aio_req);
->         }
->         revert_creds(old_cred);
->
-> @@ -72,6 +114,7 @@ ssize_t fuse_passthrough_write_iter(struct kiocb *iocb_fuse,
->         struct fuse_file *ff = fuse_filp->private_data;
->         struct inode *fuse_inode = file_inode(fuse_filp);
->         struct file *passthrough_filp = ff->passthrough_filp;
-> +       struct inode *passthrough_inode = file_inode(passthrough_filp);
->
->         if (!iov_iter_count(iter))
->                 return 0;
-> @@ -87,8 +130,25 @@ ssize_t fuse_passthrough_write_iter(struct kiocb *iocb_fuse,
->                 if (ret > 0)
->                         fuse_copyattr(fuse_filp, passthrough_filp);
->         } else {
-> -               ret = -EIO;
-> +               struct fuse_aio_req *aio_req;
-> +
-> +               aio_req = kmalloc(sizeof(struct fuse_aio_req), GFP_KERNEL);
-> +               if (!aio_req) {
-> +                       ret = -ENOMEM;
-> +                       goto out;
-> +               }
-> +
-> +               file_start_write(passthrough_filp);
-> +               __sb_writers_release(passthrough_inode->i_sb, SB_FREEZE_WRITE);
-> +
-> +               aio_req->iocb_fuse = iocb_fuse;
-> +               kiocb_clone(&aio_req->iocb, iocb_fuse, passthrough_filp);
-> +               aio_req->iocb.ki_complete = fuse_aio_rw_complete;
-> +               ret = call_write_iter(passthrough_filp, &aio_req->iocb, iter);
-> +               if (ret != -EIOCBQUEUED)
-> +                       fuse_aio_cleanup_handler(aio_req);
->         }
-> +out:
->         revert_creds(old_cred);
->         inode_unlock(fuse_inode);
->
-> --
-> 2.28.0.681.g6f77f65b4e-goog
->
+base-commit: 20445c5eb6456addca9131ec6917d2a2d7414e04
+--
+2.20.1
