@@ -2,110 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CC9627E2A0
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 09:31:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2890927E2A5
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 09:31:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728375AbgI3HbR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 03:31:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53244 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725535AbgI3HbQ (ORCPT
+        id S1728437AbgI3Hbi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 03:31:38 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:40466 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725535AbgI3Hbh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 03:31:16 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64CA5C061755;
-        Wed, 30 Sep 2020 00:31:15 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id j7so487664plk.11;
-        Wed, 30 Sep 2020 00:31:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=bwOTOwH4axl9LqPJmEo0RmLkZED4KKjttxbY58nlHVU=;
-        b=ekxIJCZIESz5WSSsGf4/UfvtntXZpRaljNG8C88ia6EAPRAFmIhV+DTBBhuzHywGcI
-         lbwQCkdhE6oB6NBNUaVy3F3Fnx/iYQUvqnQYXRFhlJS3fqeJgTaa/GtmBG7rO4c7qszV
-         ZXpwT9F7D059JXWsKS3rDyxvB2rqeCltH1/ULMohSMyocoZHBajSxiR4ekNysVM6UPwh
-         TA/U6o7KL3qJYlmtBK1ZkhoBJG1r4nnMmmR9R4Jg+myiIZWWn94ydCcZiPGTSzyFPtLG
-         UwAuh4bPvS4FBkpwpACWcOWzD+NcR6Zfv3QwY8D/9XXbOD0nqYfhspMf6Z1sLQXqvh/x
-         k7CQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=bwOTOwH4axl9LqPJmEo0RmLkZED4KKjttxbY58nlHVU=;
-        b=ljfQKp2D5iKqXHM93H01V81VkhRlalspGClJwSKPSAp+hKzG/pfZFRLv7Xw2e8+GMR
-         QeIHogek2h0fNS/kbrmykDGbAdqCLIOT/wG78Lv21lWr/M+JAAxA+oDzu48agWdQ8TXZ
-         zPDE0mQ6YVprX0tN6wN4X45n4DM/S8OWa42nkayaI7Hzsf1Y2+P8uer37oc+luFNgrC6
-         oHOyW7sRUMaE7IoGXGJszwgJoDmrIWJTDmy7G2E48FnLuK7teI1BGh80yYTB6+wzVKJv
-         X1B0gKop2pVlHT/n8Fe9t52Y06+QfdiAgy4ifkYsKC1RuLZQld7zMMCnhPZv5/4hX+Qj
-         qcCg==
-X-Gm-Message-State: AOAM5302ZTF8M25iv5e8/x2XGxPXK50Vo7MjKu3V3J8QPmOnFF9R5H93
-        ItG7H1XW+VdMxRzVKuLS9TA=
-X-Google-Smtp-Source: ABdhPJwXuia3lh7dWuGxNLtu/8GKrMOmIAmVZsKyyiPZgKjMbUATljSUXVN3+rgD+15l0PNAx7d6mw==
-X-Received: by 2002:a17:90b:93:: with SMTP id bb19mr1410705pjb.162.1601451074777;
-        Wed, 30 Sep 2020 00:31:14 -0700 (PDT)
-Received: from Asurada-Nvidia (thunderhill.nvidia.com. [216.228.112.22])
-        by smtp.gmail.com with ESMTPSA id y16sm1370254pfb.154.2020.09.30.00.31.13
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 30 Sep 2020 00:31:14 -0700 (PDT)
-Date:   Wed, 30 Sep 2020 00:25:43 -0700
-From:   Nicolin Chen <nicoleotsuka@gmail.com>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     thierry.reding@gmail.com, joro@8bytes.org, digetx@gmail.com,
-        vdumpa@nvidia.com, jonathanh@nvidia.com,
-        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 1/3] memory: tegra: Add helper function
- tegra_get_memory_controller
-Message-ID: <20200930072542.GC13876@Asurada-Nvidia>
-References: <20200930003013.31289-1-nicoleotsuka@gmail.com>
- <20200930003013.31289-2-nicoleotsuka@gmail.com>
- <CAJKOXPeye7b0j1oB21JmBwc277_1RYWQ0SC0Otf+F62HK=sjjA@mail.gmail.com>
+        Wed, 30 Sep 2020 03:31:37 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08U7VFMH125005;
+        Wed, 30 Sep 2020 02:31:15 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1601451075;
+        bh=itvI/CIHIsWpw2HWqaBatszoRYACu5nS402WozX/250=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=C6Jfh4eOAUFVJ5Pm/4rPpLqX87niwWsMTC7yvV7rvVChlNKx7/HepPZNdmZyRAzHJ
+         5Qpr3PtL7OnF2vaZ7qC0WrIzo/ORqmFaFBo3ms/gLdbzM4LnhHBaThdI3HkdpnZC5D
+         Nt+rvIKgpAWDEwtvkNbC/eLn3PaErLaAXf5a1Dy0=
+Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08U7VF01072435
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 30 Sep 2020 02:31:15 -0500
+Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 30
+ Sep 2020 02:31:14 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 30 Sep 2020 02:31:14 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08U7VDKw107865;
+        Wed, 30 Sep 2020 02:31:14 -0500
+Date:   Wed, 30 Sep 2020 13:01:13 +0530
+From:   Pratyush Yadav <p.yadav@ti.com>
+To:     <Tudor.Ambarus@microchip.com>
+CC:     <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <nsekhar@ti.com>, <boris.brezillon@collabora.com>
+Subject: Re: [PATCH v13 10/15] mtd: spi-nor: sfdp: detect Soft Reset sequence
+ support from BFPT
+Message-ID: <20200930073111.sk67oqn6hkihmrfd@ti.com>
+References: <20200916124418.833-1-p.yadav@ti.com>
+ <20200916124418.833-11-p.yadav@ti.com>
+ <8346524d-487b-a147-6183-e8055a7ff54a@microchip.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <CAJKOXPeye7b0j1oB21JmBwc277_1RYWQ0SC0Otf+F62HK=sjjA@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <8346524d-487b-a147-6183-e8055a7ff54a@microchip.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krzysztof,
-
-On Wed, Sep 30, 2020 at 09:21:39AM +0200, Krzysztof Kozlowski wrote:
-> On Wed, 30 Sep 2020 at 02:35, Nicolin Chen <nicoleotsuka@gmail.com> wrote:
-> >
-> > This can be used by both tegra-smmu and tegra20-devfreq drivers.
-> >
-> > Suggested-by: Dmitry Osipenko <digetx@gmail.com>
-> > Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
+On 30/09/20 07:23AM, Tudor.Ambarus@microchip.com wrote:
+> On 9/16/20 3:44 PM, Pratyush Yadav wrote:
+> > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+> > 
+> > A Soft Reset sequence will return the flash to Power-on-Reset (POR)
+> > state. It consists of two commands: Soft Reset Enable and Soft Reset.
+> > Find out if the sequence is supported from BFPT DWORD 16.
+> > 
+> > Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
 > > ---
-> >
-> > Changelog
-> > v1->v2
-> >  * N/A
-> >
-> >  drivers/memory/tegra/mc.c | 23 +++++++++++++++++++++++
-> >  include/soc/tegra/mc.h    |  1 +
-> >  2 files changed, 24 insertions(+)
-> >
-> > diff --git a/drivers/memory/tegra/mc.c b/drivers/memory/tegra/mc.c
-> > index ec8403557ed4..09352ad66dcc 100644
-> > --- a/drivers/memory/tegra/mc.c
-> > +++ b/drivers/memory/tegra/mc.c
-> > @@ -42,6 +42,29 @@ static const struct of_device_id tegra_mc_of_match[] = {
-> >  };
-> >  MODULE_DEVICE_TABLE(of, tegra_mc_of_match);
+> >  drivers/mtd/spi-nor/core.h | 1 +
+> >  drivers/mtd/spi-nor/sfdp.c | 4 ++++
+> >  drivers/mtd/spi-nor/sfdp.h | 2 ++
+> >  3 files changed, 7 insertions(+)
+> > 
+> > diff --git a/drivers/mtd/spi-nor/sfdp.h b/drivers/mtd/spi-nor/sfdp.h
+> > index 6d7243067252..8ae55e98084e 100644
+> > --- a/drivers/mtd/spi-nor/sfdp.h
+> > +++ b/drivers/mtd/spi-nor/sfdp.h
+> > @@ -90,6 +90,8 @@ struct sfdp_bfpt {
+> >  #define BFPT_DWORD15_QER_SR2_BIT1_NO_RD                (0x4UL << 20)
+> >  #define BFPT_DWORD15_QER_SR2_BIT1              (0x5UL << 20) /* Spansion */
+> > 
+> > +#define BFPT_DWORD16_SOFT_RST                  BIT(12)
 > 
-> > +struct tegra_mc *tegra_get_memory_controller(void)
-> > +{
+> the name is too generic. How about
 > 
-> Add kerneldoc and mention dropping of reference to the device after use.
+> #define BFPT_DWORD16_SWRST_EN_RST		BIT(12)
 
-I am abort to use Dmitry's devm_ one in my next version:
-https://github.com/grate-driver/linux/commit/2105e7664063772d72fefe9696bdab0b688b9de2
+Ok.
 
-Could I just skip the kerneldoc part? Otherwise, would you please
-tell me which kerneldoc file I should update?
+> 
+> > +
+> >  #define BFPT_DWORD18_CMD_EXT_MASK              GENMASK(30, 29)
+> >  #define BFPT_DWORD18_CMD_EXT_REP               (0x0UL << 29) /* Repeat */
+> >  #define BFPT_DWORD18_CMD_EXT_INV               (0x1UL << 29) /* Invert */
 
-Thanks
+-- 
+Regards,
+Pratyush Yadav
+Texas Instruments India
