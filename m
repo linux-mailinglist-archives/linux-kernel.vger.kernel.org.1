@@ -2,92 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CFC327E917
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 15:01:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2561127E91D
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 15:01:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729693AbgI3NBX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 09:01:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47670 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725771AbgI3NBW (ORCPT
+        id S1730051AbgI3NBf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 09:01:35 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:39346 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725771AbgI3NBc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 09:01:22 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 633B5C061755;
-        Wed, 30 Sep 2020 06:01:22 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C1bww1lB0z9sSC;
-        Wed, 30 Sep 2020 23:01:20 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1601470880;
-        bh=X6xiN2I+x6wk33yKc9ZJAYAQCXgB64u04V5muRpUoDg=;
-        h=Date:From:To:Cc:Subject:From;
-        b=qwGdwRznymrwuPS6IRWjx4VDBTL53v4BNJ+IKZeXNXFaEZ3+BUfI6AE657eO8vX8M
-         MVZkz/1XYEWEyQybM/QyvJzWY3jPf2b5ab9QfPUdkMnYUUMMf/vIaSwgz1qS1T0E13
-         gGnyUxIyQjfKZBleJCe5ZbNmSXVpJ7qCxKgRsxKhBFaF7SuV/EPpRd3HFPjGKSbNrA
-         T9AWd0z9K2vPIs7Mq29SSmm1ZsFWVRqM+KlQmbGLbK/5qCtn6AIyPMVHN7zmHZ2BQb
-         QtINCsuidDzI+xHoB4UI4htHx7S+fFWq/8V1hl13qQUfgGRdpV6p+U4G6GjL8Dkvxl
-         ik+8gcf+5YjCQ==
-Date:   Wed, 30 Sep 2020 23:01:19 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Subject: linux-next: Fixes tag needs some work in the pinctrl tree
-Message-ID: <20200930230119.4ca24210@canb.auug.org.au>
+        Wed, 30 Sep 2020 09:01:32 -0400
+Received: from cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net ([80.193.200.194] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1kNbjY-0008WT-BG; Wed, 30 Sep 2020 13:01:24 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
+        Waiman Long <longman@redhat.com>
+Cc:     kernel-janitors@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH][next][resend] lib/mpi: fix off-by-one check on index "no"
+Date:   Wed, 30 Sep 2020 14:01:23 +0100
+Message-Id: <20200930130123.8064-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/VTB.ucLalxn6JrQwhO6XpBU";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/VTB.ucLalxn6JrQwhO6XpBU
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+From: Colin Ian King <colin.king@canonical.com>
 
-Hi all,
+There is an off-by-one range check on the upper limit of
+index "no".  Fix this by changing the > comparison to >=
 
-In commit
+Addresses-Coverity: ("Out-of-bounds read")
+Fixes: a8ea8bdd9df9 ("lib/mpi: Extend the MPI library")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
 
-  8947391f77c8 ("pinctrl: qcom: sm8250: correct sdc2_clk")
+resend to Cc linux-crypto
 
-Fixes tag
+---
+ lib/mpi/mpiutil.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-  Fixes: 4e3ec9e407ad5058003309072b37111f7b8c900a
+diff --git a/lib/mpi/mpiutil.c b/lib/mpi/mpiutil.c
+index 3c63710c20c6..632d0a4bf93f 100644
+--- a/lib/mpi/mpiutil.c
++++ b/lib/mpi/mpiutil.c
+@@ -69,7 +69,7 @@ postcore_initcall(mpi_init);
+  */
+ MPI mpi_const(enum gcry_mpi_constants no)
+ {
+-	if ((int)no < 0 || no > MPI_NUMBER_OF_CONSTANTS)
++	if ((int)no < 0 || no >= MPI_NUMBER_OF_CONSTANTS)
+ 		pr_err("MPI: invalid mpi_const selector %d\n", no);
+ 	if (!constants[no])
+ 		pr_err("MPI: MPI subsystem not initialized\n");
+-- 
+2.27.0
 
-has these problem(s):
-
-  - missing subject
-
-Just use
-
-	git log -1 --format=3D'Fixes: %h ("%s") <commit>'
-
-Fixes: 4e3ec9e407ad ("pinctrl: qcom: Add sm8250 pinctrl driver.")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/VTB.ucLalxn6JrQwhO6XpBU
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl90gZ8ACgkQAVBC80lX
-0Gxfngf9GBGBzxfE9TRaaqboItuOrSnPdq12dedvIE24bcOcU+tv24/QO/LvVj/j
-JHovNKqo6XO5H+Ckt3eiI2NML1xfi/hKbcB+qVgV7vka67EMymL8MWRcngs+j6fN
-GGwhh+5L5zALCWToQmHXGTs3eCQAVPDvLQVpw+aSfUD5IRwQNGAEO0dDAMeQRe3M
-ROBydeACGXBn59xpyV9zBNTNxs33GczF3YfAYTMTGnBgRKl6Jg88ag5zvw/XUTr8
-TxB853+1oxPAJSVS7mq4iiVRp4Y9dePMc2XxReHfQZuqOdy8+hZZdf4+a3JAMrsZ
-pNYGPLKxw9WooSq4S7QzJF9ibdLIMA==
-=qIpS
------END PGP SIGNATURE-----
-
---Sig_/VTB.ucLalxn6JrQwhO6XpBU--
