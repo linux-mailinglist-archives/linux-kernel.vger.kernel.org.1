@@ -2,91 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8ACB27E443
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 10:55:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA04827E43F
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 10:54:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728944AbgI3Izz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 04:55:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38074 "EHLO
+        id S1728899AbgI3Iyv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 04:54:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728723AbgI3Izy (ORCPT
+        with ESMTP id S1725776AbgI3Iyu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 04:55:54 -0400
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18AC4C061755
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 01:55:54 -0700 (PDT)
-Received: by mail-ot1-x334.google.com with SMTP id g96so1055960otb.12
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 01:55:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=endlessos-org.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=SU/KZorwRWRL3VQ/bnlD6zatox7adu+Yzz6+KkwnCJ4=;
-        b=mIcjvw4QfPXdUpHHnDQd2EAF6em28m/w0TxKUY/pOQ531f69qetZxMfu85C+jGWUx+
-         RsGzSYepT7f8uhBpkZZ1SCTrxtFwTbWIfA9rHPEXull4DiUBLfmy+hWoXW26PKZ9F6PA
-         swu2asF31NZ0HYAUD117T6orWgKSEb3f0NPq4PK/zFCfb4sndcQ4sEsDuEa5Yurqo3ri
-         9z4DCbmtoE4xwFXV+suegEt2nsLs9sSKS3gzKOZElpOPtpuMPseWeATEtL6kaHWdRBy+
-         PVa+1PXyoImzTYl9jYGoUb5qciN9iYEVmYWL3TwBNIb5H8c8vhm6bLBl/Hrm/N3PLdNe
-         L7eg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=SU/KZorwRWRL3VQ/bnlD6zatox7adu+Yzz6+KkwnCJ4=;
-        b=Yx5hJD80ywcgXnbHX0llFgJy4Ma6K7zOYzoD8tnNaAizAqv9USny6O4nxbVL8w1dJT
-         gY0ODZbp/9xJpFsQNVQpSaB21ypcJMyTeGYDAXZuZv7LqEymQjg2nNF4+svvK2MJhI+u
-         HKq+tGqaVkyrfTRJN7ADUQpUXLV6L+cavou0iYDIR1oR/cllL+KauzKc7D/RSzIz6dcs
-         qxwKl41HyxVhJN+1Voz8og05LGPaIu9AQQblkdeh4fW+yQoa4cByIQf+GqI+/Cl8gvkh
-         3EpaTzob9QT9sPDILMBWv5JISzXz3O9WnhQC/kFZMconrBCxTgvG5W1p5n+3kaec734u
-         oLBg==
-X-Gm-Message-State: AOAM530WABXNAHaJCtNvr6Q6ixi4dlAZRCdvD8jC/MkSqry0tdJdw2Lp
-        P6bsyFyzwfIs0O0VDALFj8Sz/GpNcq0tHw68+QthlA==
-X-Google-Smtp-Source: ABdhPJyDoZDpk7jo3S5AcUdSP5wfMgSpjwWhzEylMHlaBm+m7Q5JKHnzC4yoydYe5dk8pehl1CiDx7Ygo2Kgzjpi6VM=
-X-Received: by 2002:a9d:1:: with SMTP id 1mr898289ota.81.1601456153412; Wed,
- 30 Sep 2020 01:55:53 -0700 (PDT)
+        Wed, 30 Sep 2020 04:54:50 -0400
+Received: from mail.andi.de1.cc (mail.andi.de1.cc [IPv6:2a01:238:4321:8900:456f:ecd6:43e:202c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78BCEC061755
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 01:54:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=kemnade.info; s=20180802; h=Content-Transfer-Encoding:Content-Type:
+        MIME-Version:Message-ID:Subject:To:From:Date:Sender:Reply-To:Cc:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=09/eolyAro4rdE4w1vE9Z4d+w7d4QeJChX/e6QTQN2Q=; b=SE54HyHRrki3D14lwgVXAreWdq
+        00MOP0L6sN3SwciG0hsRFK4LQaofndq1CvwhTQg+OCQiuMP7soljPHjmued98c237nRTu1LxLqaPj
+        WvX/+Zx2XWhekQ1g8NWC7rSscZJmrI0gDzXyhnEkG5gKEJh4UIulTBBWHSsm+CqYJglw=;
+Received: from p200300ccff0790001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:cc:ff07:9000:1a3d:a2ff:febf:d33a] helo=aktux)
+        by mail.andi.de1.cc with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.89)
+        (envelope-from <andreas@kemnade.info>)
+        id 1kNXsp-0005gH-GT; Wed, 30 Sep 2020 10:54:43 +0200
+Date:   Wed, 30 Sep 2020 10:54:42 +0200
+From:   Andreas Kemnade <andreas@kemnade.info>
+To:     rydberg@bitmath.org, jdelvare@suse.com, linux@roeck-us.net,
+        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [REGRESSION] hwmon: (applesmc) avoid overlong udelay()
+Message-ID: <20200930105442.3f642f6c@aktux>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <CAPpJ_ecS3LOYUMdrodMoxMRQ_4q4M06uyGzBBf+W8MrjP08-EA@mail.gmail.com>
-In-Reply-To: <CAPpJ_ecS3LOYUMdrodMoxMRQ_4q4M06uyGzBBf+W8MrjP08-EA@mail.gmail.com>
-From:   Jian-Hong Pan <jhp@endlessos.org>
-Date:   Wed, 30 Sep 2020 16:54:16 +0800
-Message-ID: <CAPpJ_ec_Xwf8qwdb1XVDkhwFOQr=oNGOoCevAic5yJVZLKEGjQ@mail.gmail.com>
-Subject: Re: [QUESTION] Enable the wireless module on Pinebook Pro
-To:     Arend van Spriel <arend.vanspriel@broadcom.com>,
-        Franky Lin <franky.lin@broadcom.com>,
-        Hante Meuleman <hante.meuleman@broadcom.com>,
-        Chi-Hsien Lin <chi-hsien.lin@cypress.com>,
-        Wright Feng <wright.feng@cypress.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Dan Johansen <strit@manjaro.org>
-Cc:     linux-wireless <linux-wireless@vger.kernel.org>,
-        brcm80211-dev-list.pdl@broadcom.com,
-        brcm80211-dev-list@cypress.com,
-        Linux Netdev List <netdev@vger.kernel.org>,
-        Linux Kernel <linux-kernel@vger.kernel.org>,
-        Linux Upstreaming Team <linux@endlessm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
+X-Spam-Score: -1.0 (-)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I forgot to mail to Dan Johansen as well.
+Hi,
 
-Jian-Hong Pan <jhp@endlessos.org> =E6=96=BC 2020=E5=B9=B49=E6=9C=8830=E6=97=
-=A5 =E9=80=B1=E4=B8=89 =E4=B8=8B=E5=8D=884:15=E5=AF=AB=E9=81=93=EF=BC=9A
->
-> Hi,
->
-> According to the preloaded system Manjaro ARM on Pinebook Pro [1], I
-> found the firmware files in ap6256-firmware package [2] enable the
-> wireless module, including WiFi and Bluetooth.
-> If we want to redistribute the firmware files to linux-firmware
-> repository or other distros, which kind of license should follow?
->
-> [1] https://www.pine64.org/pinebook-pro/
-> [2] https://gitlab.manjaro.org/manjaro-arm/packages/community/ap6256-firm=
-ware
->
-> Jian-Hong Pan
+after the $subject patch I get lots of errors like this:
+[  120.378614] applesmc: send_byte(0x00, 0x0300) fail: 0x40
+[  120.378621] applesmc: LKSB: write data fail
+[  120.512782] applesmc: send_byte(0x00, 0x0300) fail: 0x40
+[  120.512787] applesmc: LKSB: write data fail
+
+CPU sticks at low speed and no fan is turning on.
+Reverting this patch on top of 5.9-rc6 solves this problem.
+
+Some information from dmidecode:
+
+Base Board Information
+        Manufacturer: Apple Inc.
+        Product Name: Mac-7DF21CB3ED6977E5
+        Version: MacBookAir6,2
+=20
+Handle 0x0020, DMI type 11, 5 bytes OEM Strings         String 1: Apple ROM=
+ Version.  Model:       =E2=80=A6,=20
+Handle 0x0020, DMI type 11, 5 bytes
+OEM Strings
+        String 1: Apple ROM Version.  Model:        MBA61.  EFI Version:  1=
+22.0.0
+        String 2: .0.0.  Built by:     root@saumon.  Date:         Wed Jun =
+10 18:
+        String 3: 10:36 PDT 2020.  Revision:     122 (B&I).  ROM Version:  =
+F000_B
+        String 4: 00.  Build Type:   Official Build, Release.  Compiler:   =
+  Appl
+        String 5: e clang version 3.0 (tags/Apple/clang-211.10.1) (based on=
+ LLVM
+        String 6: 3.0svn).
+=20
+Writing to things in /sys/devices/platform/applesmc.768 gives also the
+said errors.
+But writing 1 to fan1_maunal and 5000 to fan1_output turns the fan on
+despite error messages.
+
+Config used is: https://misc.andi.de1.cc/mac-config.gz
+
+Regards,
+Andreas
