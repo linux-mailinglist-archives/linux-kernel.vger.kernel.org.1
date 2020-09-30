@@ -2,115 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D150127EE4E
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 18:06:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4187227EE5B
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 18:06:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731168AbgI3QGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 12:06:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47984 "EHLO
+        id S1731237AbgI3QGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 12:06:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731099AbgI3QFv (ORCPT
+        with ESMTP id S1725355AbgI3QGa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 12:05:51 -0400
+        Wed, 30 Sep 2020 12:06:30 -0400
 Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25E85C0613D2
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 09:05:51 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id a3so2826647ejy.11
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 09:05:51 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA4D9C061755;
+        Wed, 30 Sep 2020 09:06:29 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id nw23so3637756ejb.4;
+        Wed, 30 Sep 2020 09:06:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4nf8e6hIaPbRqntvQjCiPI17gKDQL3g6MdR3siKHn30=;
-        b=FdREMa9YQ4gNRdQHURf/x/R8SmYVJ5gIkH9KpmlqeEAlOLeXAhaYjSC7VB4Y8/uoLl
-         NpSU9flOBZMB2LnlrWowvIpCnct6WksL48hJ6hEvbeije9viNCjBJLNglsVPmK17McTE
-         bQR932o1ftCv5I/jccydLYq37ELOk8HLaS5waUMw2Sl4+mDrlXBlbynVNtazEd8rcTZn
-         oCfVkT2gQBFoWgRMv35xCS9XqXQ6DAZwYypy9P5mdyuszGukdvxnnn/AnzhUUV4OJTG3
-         jalYoYIzQjQOW6W2UeOKJ1wH4ANi3gdiXC8IiXeG+7KUsH9D9cVc5b9Ynx38GiIxo6v5
-         fQpQ==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=NDiay5Y7h+SHyza+gL5HDWZkjBPPCDcnbUKJ/AtUF+4=;
+        b=pq1CulC8RWyAVCTp6GZippCf/6lEsda7nW2SZs4EhNYKXZYXmiGsLFQiTnFehZiBXa
+         m7ZHC6pJrb7Q+EgDSythiLTfolFwqZKpsvLJdJYpWdojQVLE3sfj/pz8mJfC5VAIzX/K
+         PYyBjR3r7kzN4MbCD9ADytGl16ElKsbTSWR1yMx1fG/nnhN5ds77vCQESOffIYVjEGlS
+         smSGuvCxrJDWl1nf3lOOQRHJWFMXA46xe7y6Zi8JYiQK9Z42rE+e1OFUpRqYPYGYQ8bS
+         GOPO76shdPu2S7WRTMjwOhvdBUbmY0bNanqOtfbn2plGYrhY0jit2jTtHuDx+t0y1YkO
+         rxYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4nf8e6hIaPbRqntvQjCiPI17gKDQL3g6MdR3siKHn30=;
-        b=BT9Dlaj8XHDExcTH9ezldtAP7Rp81atSNxViVM4Dv7H64jT3Zc6BTXmwbLy8NtOTJE
-         4SDgoLuq77avNzwOPrc+ulF+rPsXizQ4l5FkVIEBnc0i9Gawzg2hMh2fHDJ9Us9RuPTC
-         AtuKsWflsktlltqTI38nXz2/sthDTVXYb/m+hFzDvuFAXS1rdVGdbdsYrWoKmKV/g5+W
-         sjj9Jkbj/a5GY3Q5EwpJQADP7at6bI5+mF1l3YvlHNpiDbE6XC/TPzeMYdN3WzvWOlH2
-         mTQlsZhN8VE3hzKqEikB61XZJiicKW6nGpcUEmQdLpuYFQpW0M0qrP5e8qFrtHBG+ec+
-         8OFA==
-X-Gm-Message-State: AOAM530XCHfHyeb8Dv0IGRhjtTQqZjzn6hz2vwdCHs13KHs1rXrrTCem
-        PFEm9m1Qhcd6exM4X5hiWsyO7HApDfFET6Jkk4dHpg==
-X-Google-Smtp-Source: ABdhPJzYVdbm3fjbvWcAsssxdkKlp1Qf8hBl3VmZLS0706h18aYEVSeaUqFy3XkT6TY1fv56XT82VdDVYI9SZJ5H+mA=
-X-Received: by 2002:a17:906:a256:: with SMTP id bi22mr3464394ejb.375.1601481949457;
- Wed, 30 Sep 2020 09:05:49 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=NDiay5Y7h+SHyza+gL5HDWZkjBPPCDcnbUKJ/AtUF+4=;
+        b=U3n3xvO7CbBwLcMZ6Nsk33SUs8woCz1phFU/HRXGQwewqUOGdRPKAE7LhZlxAugyxj
+         rtmTdSNLRj500zhjIvDxpjblkIZrfi+73D001rvxFLGwMBif/cMHCDOVRvgnP+O/s11F
+         MIC4nc75n1UKw0Uu9k+qkFK7CqSvUqqsTt+otobTQS/RfS6hP4H7xAFUIELHela24Gvb
+         nmaRzuyYVSqVBeUdtVmwvIGovw4XA/3Z+JMDXnctfSiTdVCRf33V7hbBipY3QquYJSm/
+         pdKeSkaNUOz1Jx6AiyFVxir1bRU88dacoRJTGJmn0a2bcpLt7ZlBYbe/EO18AbBAixiR
+         vhMw==
+X-Gm-Message-State: AOAM533HNQjYyvJTHP9YldkGbSehMETTB9V492WwWk/fHSAUUYYvr1pI
+        Xkl2ChXy88g7HyPvrpN86TY=
+X-Google-Smtp-Source: ABdhPJyrvVrcQq2hFotX3BTY6j708efNUE4w28URGOKT7Lye6zyw4DN2Tcxgpskpi3WILDqBO2f5Ww==
+X-Received: by 2002:a17:906:1fd5:: with SMTP id e21mr3698133ejt.349.1601481988391;
+        Wed, 30 Sep 2020 09:06:28 -0700 (PDT)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id k6sm1910354ejr.104.2020.09.30.09.06.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Sep 2020 09:06:27 -0700 (PDT)
+Date:   Wed, 30 Sep 2020 18:06:26 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Nicolin Chen <nicoleotsuka@gmail.com>, joro@8bytes.org,
+        krzk@kernel.org, vdumpa@nvidia.com, jonathanh@nvidia.com,
+        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/3] iommu/tegra-smmu: Rework .probe_device and
+ .attach_dev
+Message-ID: <20200930160626.GD3833404@ulmo>
+References: <20200930084258.25493-1-nicoleotsuka@gmail.com>
+ <20200930084258.25493-3-nicoleotsuka@gmail.com>
+ <20200930153131.GB3833404@ulmo>
+ <ece615ad-8d6b-96ae-d8b4-9667aef17281@gmail.com>
 MIME-Version: 1.0
-References: <20200929214631.3516445-1-samitolvanen@google.com>
- <20200929214631.3516445-7-samitolvanen@google.com> <20200929201257.1570aadd@oasis.local.home>
-In-Reply-To: <20200929201257.1570aadd@oasis.local.home>
-From:   Sami Tolvanen <samitolvanen@google.com>
-Date:   Wed, 30 Sep 2020 09:05:38 -0700
-Message-ID: <CABCJKud3S7pn8Ap3AkNRUUC4v8nMwOzM2_EwEB6+NFzDp5gppA@mail.gmail.com>
-Subject: Re: [PATCH v4 06/29] tracing: move function tracer options to Kconfig
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kbuild <linux-kbuild@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, linux-pci@vger.kernel.org,
-        X86 ML <x86@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="sgneBHv3152wZ8jf"
+Content-Disposition: inline
+In-Reply-To: <ece615ad-8d6b-96ae-d8b4-9667aef17281@gmail.com>
+User-Agent: Mutt/1.14.7 (2020-08-29)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 5:13 PM Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> On Tue, 29 Sep 2020 14:46:08 -0700
-> Sami Tolvanen <samitolvanen@google.com> wrote:
->
-> > +++ b/kernel/trace/Kconfig
-> > @@ -595,6 +595,22 @@ config FTRACE_MCOUNT_RECORD
-> >       depends on DYNAMIC_FTRACE
-> >       depends on HAVE_FTRACE_MCOUNT_RECORD
-> >
-> > +config FTRACE_MCOUNT_USE_PATCHABLE_FUNCTION_ENTRY
-> > +     bool
-> > +     depends on FTRACE_MCOUNT_RECORD
-> > +
-> > +config FTRACE_MCOUNT_USE_CC
-> > +     def_bool y
-> > +     depends on $(cc-option,-mrecord-mcount)
->
-> Does the above get executed at every build? Or does a make *config need
-> to be done? If someone were to pass a .config to someone else that had
-> a compiler that didn't support this, would it be changed if the person
-> just did a make?
 
-Yes, it's updated if you copy a .config and just run make. For
-example, here's what happens when I create a config with gcc and then
-build it with Clang:
+--sgneBHv3152wZ8jf
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-$ make defconfig
-...
-$ ./scripts/config -e FUNCTION_TRACER -e DYNAMIC_FTRACE
-$ make olddefconfig
-...
-$ grep MCOUNT_USE .config
-CONFIG_FTRACE_MCOUNT_USE_CC=y
-$ make CC=clang
-scripts/kconfig/conf  --syncconfig Kconfig
-...
-^C
-$ grep MCOUNT_USE .config
-CONFIG_FTRACE_MCOUNT_USE_OBJTOOL=y
+On Wed, Sep 30, 2020 at 06:36:52PM +0300, Dmitry Osipenko wrote:
+>  I'...
+> >> +	struct tegra_mc *mc =3D devm_tegra_get_memory_controller(dev);
+> >> +	struct iommu_fwspec *fwspec =3D dev_iommu_fwspec_get(dev);
+> >=20
+> > It looks to me like the only reason why you need this new global API is
+> > because PCI devices may not have a device tree node with a phandle to
+> > the IOMMU. However, SMMU support for PCI will only be enabled if the
+> > root complex has an iommus property, right? In that case, can't we
+> > simply do something like this:
+> >=20
+> > 	if (dev_is_pci(dev))
+> > 		np =3D find_host_bridge(dev)->of_node;
+> > 	else
+> > 		np =3D dev->of_node;
+> >=20
+> > ? I'm not sure exactly what find_host_bridge() is called, but I'm pretty
+> > sure that exists.
+> >=20
+> > Once we have that we can still iterate over the iommus property and do
+> > not need to rely on this global variable.
+>=20
+> This sounds more complicated than the current variant.
+>=20
+> Secondly, I'm already about to use the new tegra_get_memory_controller()
+> API for all the T20/30/124/210 EMC and devfreq drivers.
 
-Sami
+Why do we need it there? They seem to work fine without it right now. If
+it is required for new functionality, we can always make the dependent
+on a DT reference via phandle without breaking any existing code.
+
+Thierry
+
+--sgneBHv3152wZ8jf
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl90rQEACgkQ3SOs138+
+s6FhgQ//a+/NTVtKzfGbpKqEQ0N9/dM3xFZWr3Yuv1vue8BU4+eVrXxhSASrsa9x
+c4740hqylshqqqPxmxYYhwBg1j5RK4UhGWPjZ8E0R59sKb+TJHhk4ij/jfu9PM9d
+XD3LV5CBqkZsDQ6mQFbOWc8DK0CX9+XyH/tWevtlZtee0JUSSLcGj3Qc7BoZK2F0
+pyL3bA+F6CyJ1tocb+EfaTxDvL9XlL5rg8ubZRKumlOdqEG8P5w4w8g1uxUzGBqF
+g8uz7qmHlE5XRvIMHsulkB3SG6gXn7TbexAcWD0CG/yRk6UnKA4rRdhYWoFJeVkT
+hUVV28gJk3nPvLKoqX5zkzIAhofy2s5YkhanPe8j5batn1ok0ixIfQbHyXBbrmLV
+ZCWbHXRiPb0FZmpbiX/EBjmT697mI45gOvrmhcMpEMhFMZV8KaBll6tGQtOOGM6/
+17DyfIe5vrYMvdv1TgUA3csAkd7DYPM4SpOOOiXYe8Uz7a+fxJXcfAga3gG/H+t2
+4ZSnfxzHYNNJIq7QHyhoDHgO0EjlnF6PJ6oPRy5tN9NKG+igAux0eTgS5gMDrZgC
+/DjFOh6B67RbhlVt3JQeqHqUFM0j8MD/BzTqW5A0vBXs0X+5eHK+G4BEBXE0M2hs
+Gwq1NExwiMlZwueBUmGH6hHeiH+MySwoWu60U//ez1dUZkkdPeo=
+=SlyZ
+-----END PGP SIGNATURE-----
+
+--sgneBHv3152wZ8jf--
