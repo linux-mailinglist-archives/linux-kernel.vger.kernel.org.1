@@ -2,124 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 296E027E7D2
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 13:45:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AEF927E7D4
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 13:45:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729104AbgI3Lpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 07:45:38 -0400
-Received: from nat-hk.nvidia.com ([203.18.50.4]:30782 "EHLO nat-hk.nvidia.com"
+        id S1729470AbgI3Lpo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 07:45:44 -0400
+Received: from mga07.intel.com ([134.134.136.100]:57312 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725776AbgI3Lpi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 07:45:38 -0400
-Received: from HKMAIL104.nvidia.com (Not Verified[10.18.92.77]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f746fdf0000>; Wed, 30 Sep 2020 19:45:35 +0800
-Received: from HKMAIL101.nvidia.com (10.18.16.10) by HKMAIL104.nvidia.com
- (10.18.16.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 30 Sep
- 2020 11:45:32 +0000
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.176)
- by HKMAIL101.nvidia.com (10.18.16.10) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Wed, 30 Sep 2020 11:45:32 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=g5JS6ycCLA+ey6H6PEDfYh0txtdHz1oW146Y0mf0jzryp4nGgcAAzq6i+vm6IOOu9G2TiRIawxsTcsZkXQphwz1PgNABiNPK7FkgIRATEahh48D06/anI4mupMYpbXOB0RG5EkcMLsWuzGuO0QZlU3Sp7DfOxDx5ArO7Z7Q0wuVgdOC7BIyyRZ73BLu8pWR2ddQklAC+NTXHIuAmoHBZ3Kjd342DpPybvl8VSdCxZRqnFZUo/ZJNy71fUZUOoP30ClTYACic6jbffswZumEWl4Hw7Em6EX82bbREtzYec4k54ADalU29dnB51mu2Zk9vACrt9yR7CMRKvhwpCi/rcg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=oAsU320K5FEsVsUsGTXFF4o1tMt7feAUQkBKN7F74EI=;
- b=Tf2u7n+4WPnZfJ4WHFScskEDaGF8K2Y5X685UCE/zLGMPYqAjil3nfl+fPXzGLb1u4EioztX5cVOjUo/VZU7/agUbS5ctxYwDUwPR4RBR+D0/cC6jfdxBjPj7z0iWLB65ieFG68hWEZVTA5nZrBa0X55J37MjLZ2WnqgSQCNVpPSv1ELtwPLM/ZLIKE3QmpRnQotx2WzLZ7UWEHlnqTlD8Al8Q07XInHWpNSMFdY6P9xbaoCjouzrhGu/3oZ/mS5iwntNPfU16osOfAnhVXVaEDaSolaeelrcpnZzRvUfZ/mLZfIkhXlBqYfVcKRqIZ5PPI2GsTurLEgkJAduN7Lbg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB3402.namprd12.prod.outlook.com (2603:10b6:5:3b::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.20; Wed, 30 Sep
- 2020 11:45:29 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3433.032; Wed, 30 Sep 2020
- 11:45:29 +0000
-Date:   Wed, 30 Sep 2020 08:45:27 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Leon Romanovsky <leon@kernel.org>
-CC:     Doug Ledford <dledford@redhat.com>,
-        Maor Gottlieb <maorg@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        <dri-devel@lists.freedesktop.org>,
-        <intel-gfx@lists.freedesktop.org>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Roland Scheidegger <sroland@vmware.com>,
-        "Tvrtko Ursulin" <tvrtko.ursulin@intel.com>,
-        VMware Graphics <linux-graphics-maintainer@vmware.com>
-Subject: Re: [PATCH rdma-next v4 4/4] RDMA/umem: Move to allocate SG table
- from pages
-Message-ID: <20200930114527.GE816047@nvidia.com>
-References: <20200927064647.3106737-1-leon@kernel.org>
- <20200927064647.3106737-5-leon@kernel.org>
- <20200929195929.GA803555@nvidia.com> <20200930095321.GL3094@unreal>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20200930095321.GL3094@unreal>
-X-ClientProxiedBy: MN2PR17CA0014.namprd17.prod.outlook.com
- (2603:10b6:208:15e::27) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S1725776AbgI3Lpk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 07:45:40 -0400
+IronPort-SDR: jSf/wI54As06nlC8Y7nN1NQgQ0CFcfvX00a7DUwMEw8psTxJPhMi2hV/x8/dlmmKxlJLz4bdGn
+ KVSLuA9wVhDg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9759"; a="226572529"
+X-IronPort-AV: E=Sophos;i="5.77,322,1596524400"; 
+   d="scan'208";a="226572529"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2020 04:45:34 -0700
+IronPort-SDR: uxqs9CHThJukvG6Ul9PCkD+sHZL+L4tNH90Neuemx0IqnR9TY2Ult9AxGr9cEeRtH9k4hbwVO9
+ IOo2JlEjfDhg==
+X-IronPort-AV: E=Sophos;i="5.77,322,1596524400"; 
+   d="scan'208";a="415692174"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2020 04:45:31 -0700
+Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
+        id 78C8120330; Wed, 30 Sep 2020 14:45:29 +0300 (EEST)
+Date:   Wed, 30 Sep 2020 14:45:29 +0300
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Jacopo Mondi <jacopo@jmondi.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Subject: Re: [PATCH v6 1/3] media: i2c: ov772x: Parse endpoint properties
+Message-ID: <20200930114529.GM26842@paasikivi.fi.intel.com>
+References: <20200917174224.11430-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20200917174224.11430-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR17CA0014.namprd17.prod.outlook.com (2603:10b6:208:15e::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.32 via Frontend Transport; Wed, 30 Sep 2020 11:45:28 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kNaY3-003vHg-7m; Wed, 30 Sep 2020 08:45:27 -0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1601466335; bh=oAsU320K5FEsVsUsGTXFF4o1tMt7feAUQkBKN7F74EI=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=C5kPdi9eRgMFb4rKx1OLDZtww0KV3jP/th3Ur0di8JyINjwi6q9IQ9iNfp4OFzsgy
-         TEXE36ZTXxnZVASfO3dw1c6V7wCGp4W9CBQKjn6uDBLTz1egDFRfrDCZVcgaxumwgD
-         8+1W5RW0jj6YZ4ysoCcgfjAb50yuKFbwZGGZvH0x9hCodxZJWHjlqwLLj7Io4BFNoE
-         lpwPTwfkPZY7VatebKiU9bWBZeulYcXADWHx6OR5ABSvuD3eYoKvPVIza6lMRVX/AE
-         MsboprGFPIkmoYB7FqeBjsZbS+mK2FkTJTZfAXcqN6DG7E/8k09O8Xdj76LCToJCwp
-         Ud51rEIkwm7aw==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200917174224.11430-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 12:53:21PM +0300, Leon Romanovsky wrote:
-> On Tue, Sep 29, 2020 at 04:59:29PM -0300, Jason Gunthorpe wrote:
-> > On Sun, Sep 27, 2020 at 09:46:47AM +0300, Leon Romanovsky wrote:
-> > > @@ -296,11 +223,17 @@ static struct ib_umem *__ib_umem_get(struct ib_device *device,
-> > >  			goto umem_release;
-> > >
-> > >  		cur_base += ret * PAGE_SIZE;
-> > > -		npages   -= ret;
-> > > -
-> > > -		sg = ib_umem_add_sg_table(sg, page_list, ret,
-> > > -			dma_get_max_seg_size(device->dma_device),
-> > > -			&umem->sg_nents);
-> > > +		npages -= ret;
-> > > +		sg = __sg_alloc_table_from_pages(
-> > > +			&umem->sg_head, page_list, ret, 0, ret << PAGE_SHIFT,
-> > > +			dma_get_max_seg_size(device->dma_device), sg, npages,
-> > > +			GFP_KERNEL);
-> > > +		umem->sg_nents = umem->sg_head.nents;
-> > > +		if (IS_ERR(sg)) {
-> > > +			unpin_user_pages_dirty_lock(page_list, ret, 0);
-> > > +			ret = PTR_ERR(sg);
-> > > +			goto umem_release;
-> > > +		}
-> > >  	}
-> > >
-> > >  	sg_mark_end(sg);
-> >
-> > Does it still need the sg_mark_end?
+Hi Prabhakar,
+
+On Thu, Sep 17, 2020 at 06:42:22PM +0100, Lad Prabhakar wrote:
+> Parse endpoint properties using v4l2_fwnode_endpoint_alloc_parse()
+> to determine the bus type and store it in the driver structure.
 > 
-> It is preserved here for correctness, the release logic doesn't rely on
-> this marker, but it is better to leave it.
+> Set bus_type to V4L2_MBUS_PARALLEL as it's the only supported one
+> 
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> ---
+>  drivers/media/i2c/ov772x.c | 34 ++++++++++++++++++++++++++++++++++
+>  1 file changed, 34 insertions(+)
+> 
+> diff --git a/drivers/media/i2c/ov772x.c b/drivers/media/i2c/ov772x.c
+> index 2cc6a678069a..f61a3f09ad64 100644
+> --- a/drivers/media/i2c/ov772x.c
+> +++ b/drivers/media/i2c/ov772x.c
+> @@ -31,6 +31,7 @@
+>  #include <media/v4l2-ctrls.h>
+>  #include <media/v4l2-device.h>
+>  #include <media/v4l2-event.h>
+> +#include <media/v4l2-fwnode.h>
+>  #include <media/v4l2-image-sizes.h>
+>  #include <media/v4l2-subdev.h>
+>  
+> @@ -434,6 +435,7 @@ struct ov772x_priv {
+>  #ifdef CONFIG_MEDIA_CONTROLLER
+>  	struct media_pad pad;
+>  #endif
+> +	enum v4l2_mbus_type		  bus_type;
+>  };
+>  
+>  /*
+> @@ -1348,6 +1350,34 @@ static const struct v4l2_subdev_ops ov772x_subdev_ops = {
+>  	.pad	= &ov772x_subdev_pad_ops,
+>  };
+>  
+> +static int ov772x_parse_dt(struct i2c_client *client,
+> +			   struct ov772x_priv *priv)
+> +{
+> +	struct v4l2_fwnode_endpoint bus_cfg;
+> +	struct fwnode_handle *ep;
+> +	int ret;
+> +
+> +	ep = fwnode_graph_get_next_endpoint(dev_fwnode(&client->dev),
+> +					    NULL);
+> +	if (!ep) {
+> +		dev_err(&client->dev, "Endpoint node not found\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	bus_cfg.bus_type = V4L2_MBUS_PARALLEL;
 
-I mean, my read of __sg_alloc_table_from_pages() is that it already
-placed it, the final __alloc_table() does it?
+Please zero the entire struct, i.e. do this assignment in the declaration.
 
-Jason
+You can also use v4l2_fwnode_endpoint_parse() if you're not using the link
+frequencies --- sensor drivers generally should but you could only add them
+as optional at this point (out of scope of this patch).
+
+> +	ret = v4l2_fwnode_endpoint_alloc_parse(ep, &bus_cfg);
+> +	if (ret)
+> +		goto error_fwnode_put;
+> +
+> +	priv->bus_type = bus_cfg.bus_type;
+> +	v4l2_fwnode_endpoint_free(&bus_cfg);
+> +
+> +error_fwnode_put:
+> +	fwnode_handle_put(ep);
+> +
+> +	return ret;
+> +}
+> +
+>  /*
+>   * i2c_driver function
+>   */
+> @@ -1415,6 +1445,10 @@ static int ov772x_probe(struct i2c_client *client)
+>  		goto error_clk_put;
+>  	}
+>  
+> +	ret = ov772x_parse_dt(client, priv);
+> +	if (ret)
+> +		goto error_clk_put;
+> +
+>  	ret = ov772x_video_probe(priv);
+>  	if (ret < 0)
+>  		goto error_gpio_put;
+> -- 
+> 2.17.1
+> 
+
+-- 
+Sakari Ailus
