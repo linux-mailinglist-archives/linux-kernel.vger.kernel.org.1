@@ -2,274 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4ADF27E31F
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 09:57:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C92D27E325
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 09:58:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728416AbgI3H5p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 03:57:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57278 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728411AbgI3H5o (ORCPT
+        id S1728544AbgI3H6G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 03:58:06 -0400
+Received: from mickerik.phytec.de ([195.145.39.210]:53832 "EHLO
+        mickerik.phytec.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725776AbgI3H6E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 03:57:44 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB0F1C0613DA
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 00:57:36 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id gm14so61253pjb.2
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 00:57:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=aT8prnv5d5Tz6tkq47WAtD2njLvNDdu7SxPY6pWts4A=;
-        b=mL3JweQhGGoca5BQBegEv/hTE/61wlUb+4eXMjERTDye/9Yd4VCIl/nZBJnQMKO+dy
-         9dc0Tg1Arf/1yBJ4gErzRQEm7AsxaxIGJXvQJpwZgQNbzyRJb0VTnLwod0u8uYpUDXVM
-         fVOMLA4c4gXRmnWDnaRQRExzeiCkYcriOpqz8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=aT8prnv5d5Tz6tkq47WAtD2njLvNDdu7SxPY6pWts4A=;
-        b=hq89xaxkSbF90dTnZFALPs7OM78gKef8M67kE+MCZY54KNLSmhQ+p/hhoCPhgKfVYX
-         9QevpG6Qoo7ZlossEK3UNsjKA4MHDrI6bLRemC29VV3j5+hvnhzznmGJYHOcpIaKMhMo
-         Ft8uTbSkyd/SbDJ1lNtN/p5OdM7ya1NPUnwiwE1mL+Doh8yAXHMNAm1G+64GbVVVnFOu
-         a+nDZJ+TG70gKhJ6TZBjz0aLeWlzf2o7VBeweUSNzHFYH87dcgkd1UJngFkVAO5ox3AN
-         vndMYx5nsnFYJkN3kRt+wTciEHl2tYHapZwJQYqO7n1ooTBqMtZAvwMl9fABNcnkHWMW
-         6BIQ==
-X-Gm-Message-State: AOAM533aSmyaIgMay8MHmvMmsr+F4wUugdfKUoZd+fUn6u/hh/e6NiR+
-        f39ZktGEiRu3gzmjwji+KqkPsg==
-X-Google-Smtp-Source: ABdhPJz9DnGqc5lHroc1ERxfOKlJNZ06rBkBKiWUfVpl9bTaG+MMf4V2wiyhS3Qa9589NqbVO2apEA==
-X-Received: by 2002:a17:90a:f686:: with SMTP id cl6mr1406719pjb.43.1601452656319;
-        Wed, 30 Sep 2020 00:57:36 -0700 (PDT)
-Received: from smtp.gmail.com ([2620:15c:202:1:3e52:82ff:fe6c:83ab])
-        by smtp.gmail.com with ESMTPSA id l21sm1272131pjq.54.2020.09.30.00.57.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Sep 2020 00:57:35 -0700 (PDT)
-From:   Stephen Boyd <swboyd@chromium.org>
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        Daniel Campello <campello@chromium.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        Douglas Anderson <dianders@chromium.org>,
-        Gwendal Grignou <gwendal@chromium.org>,
-        Evan Green <evgreen@chromium.org>
-Subject: [PATCH v2 6/6] iio: sx9310: Set various settings from DT
-Date:   Wed, 30 Sep 2020 00:57:28 -0700
-Message-Id: <20200930075728.2410327-7-swboyd@chromium.org>
-X-Mailer: git-send-email 2.28.0.709.gb0816b6eb0-goog
-In-Reply-To: <20200930075728.2410327-1-swboyd@chromium.org>
-References: <20200930075728.2410327-1-swboyd@chromium.org>
+        Wed, 30 Sep 2020 03:58:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; d=phytec.de; s=a1; c=relaxed/simple;
+        q=dns/txt; i=@phytec.de; t=1601452680; x=1604044680;
+        h=From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=kvl8BYqZgXTE9BD8VYIRmNhOFj5oxL/eJlT+ZItkZFY=;
+        b=qM/m6ssZtS4JgSNNX0sJzyjIojqnU6R5IR0iHLtUpi3BvqI/BuW1giA1f/LHM/8r
+        5xdLbizzGHCY5qkKXrRpk0gQ3OjzfRSpo4BrYSZxz8VHw1hEyqPbZuZ2uliYE3wp
+        1VLdxaE3fFsArJENJuKPe3zVCnUyn3LQWNBjf9n6PA0=;
+X-AuditID: c39127d2-253ff70000001c25-a4-5f743a884fb7
+Received: from idefix.phytec.de (Unknown_Domain [172.16.0.10])
+        by mickerik.phytec.de (PHYTEC Mail Gateway) with SMTP id 8A.18.07205.88A347F5; Wed, 30 Sep 2020 09:58:00 +0200 (CEST)
+Received: from [172.16.23.108] ([172.16.23.108])
+          by idefix.phytec.de (IBM Domino Release 9.0.1FP7)
+          with ESMTP id 2020093009580042-523886 ;
+          Wed, 30 Sep 2020 09:58:00 +0200 
+Subject: Re: [PATCH 4/5] media: mt9p031: Make pixel clock polarity
+ configurable by DT
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Christian Hemp <c.hemp@phytec.de>
+References: <20200925075029.32181-1-s.riedmueller@phytec.de>
+ <20200925075029.32181-4-s.riedmueller@phytec.de>
+ <20200925200741.GW26842@paasikivi.fi.intel.com>
+From:   =?UTF-8?Q?Stefan_Riedm=c3=bcller?= <s.riedmueller@phytec.de>
+Message-ID: <9e4c70ec-a359-bbcd-5650-b68ea5f0b312@phytec.de>
+Date:   Wed, 30 Sep 2020 09:58:00 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200925200741.GW26842@paasikivi.fi.intel.com>
+X-MIMETrack: Itemize by SMTP Server on Idefix/Phytec(Release 9.0.1FP7|August  17, 2016) at
+ 30.09.2020 09:58:00,
+        Serialize by Router on Idefix/Phytec(Release 9.0.1FP7|August  17, 2016) at
+ 30.09.2020 09:58:00,
+        Serialize complete at 30.09.2020 09:58:00
+X-TNEFEvaluated: 1
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrPLMWRmVeSWpSXmKPExsWyRoCBS7fDqiTeoHWpikXnxCXsFpd3zWGz
+        6NmwldVi2aY/TBaftnxjcmD1mN0xk9Vj06pONo95JwM9Pm+SC2CJ4rJJSc3JLEst0rdL4MpY
+        27iTrWCHXEXjnB72BsbzEl2MnBwSAiYSTa/WMHUxcnEICWxjlPh3v5cVwjnDKDGx+QojSJWw
+        QLjEipfT2LsYOThEBPQlJj0wA6lhFjjEKNHQOZsdomEho8TdfevZQRrYBJwkFp/vYANp4BWw
+        kdiwpBYkzCKgKrFx9jRWkLCoQKTEzh2WIGFeAUGJkzOfsIDYnEDVv4+tYwMZKSHQyCRxo2k7
+        I8SlQhKnF59lBrGZBeQltr+dA2WbSczb/BDKFpe49WQ+0wRGoVlI5s5C0jILScssJC0LGFlW
+        MQrlZiZnpxZlZusVZFSWpCbrpaRuYgRGwuGJ6pd2MPbN8TjEyMTBCPQ0B7OSCK9vTkG8EG9K
+        YmVValF+fFFpTmrxIUZpDhYlcd4NvCVhQgLpiSWp2ampBalFMFkmDk6pBkbePf6CtQJT+2fb
+        91oI/+NL5JU61u8kbhbHEhzFxq9rWisXp1bx/0nU1hknH1lnTnJVvNX99eApSe2zjjZf55Ye
+        rp4t8WgGx/SQldqFR1/ZGj4o62079X+bTHNLSb+P3IytNyyE00+mGFV7SM5Zy8kndPtocZ9G
+        0HYBlmNGjEYVdkkaN4wZlFiKMxINtZiLihMBo+XwTHICAAA=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These properties need to be set during driver probe. Parse any DT
-properties and replace the default register settings with the ones
-parsed from DT.
+Hi Sakari,
 
-Cc: Daniel Campello <campello@chromium.org>
-Cc: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Peter Meerwald-Stadler <pmeerw@pmeerw.net>
-Cc: Rob Herring <robh+dt@kernel.org>
-Cc: <devicetree@vger.kernel.org>
-Cc: Douglas Anderson <dianders@chromium.org>
-Cc: Gwendal Grignou <gwendal@chromium.org>
-Cc: Evan Green <evgreen@chromium.org>
-Signed-off-by: Stephen Boyd <swboyd@chromium.org>
----
- drivers/iio/proximity/sx9310.c | 141 ++++++++++++++++++++++++++++++++-
- 1 file changed, 140 insertions(+), 1 deletion(-)
+thanks for your review.
 
-diff --git a/drivers/iio/proximity/sx9310.c b/drivers/iio/proximity/sx9310.c
-index 3f909177eca9..1e9a4a8bc717 100644
---- a/drivers/iio/proximity/sx9310.c
-+++ b/drivers/iio/proximity/sx9310.c
-@@ -49,23 +49,42 @@
- #define   SX9310_REG_PROX_CTRL0_SCANPERIOD_15MS		0x01
- #define SX9310_REG_PROX_CTRL1				0x11
- #define SX9310_REG_PROX_CTRL2				0x12
-+#define   SX9310_REG_PROX_CTRL2_COMBMODE_MASK		GENMASK(7, 6)
-+#define   SX9310_REG_PROX_CTRL2_COMBMODE_CS0_CS1_CS2_CS3 (0x03 << 6)
- #define   SX9310_REG_PROX_CTRL2_COMBMODE_CS1_CS2	(0x02 << 6)
-+#define   SX9310_REG_PROX_CTRL2_COMBMODE_CS0_CS1	(0x01 << 6)
-+#define   SX9310_REG_PROX_CTRL2_COMBMODE_CS3		(0x00 << 6)
-+#define   SX9310_REG_PROX_CTRL2_SHIELDEN_MASK		GENMASK(3, 2)
- #define   SX9310_REG_PROX_CTRL2_SHIELDEN_DYNAMIC	(0x01 << 2)
-+#define   SX9310_REG_PROX_CTRL2_SHIELDEN_GROUND		(0x02 << 2)
- #define SX9310_REG_PROX_CTRL3				0x13
- #define   SX9310_REG_PROX_CTRL3_GAIN0_MASK		GENMASK(3, 2)
- #define   SX9310_REG_PROX_CTRL3_GAIN0_X8		(0x03 << 2)
- #define   SX9310_REG_PROX_CTRL3_GAIN12_MASK		GENMASK(1, 0)
- #define   SX9310_REG_PROX_CTRL3_GAIN12_X4		0x02
- #define SX9310_REG_PROX_CTRL4				0x14
-+#define   SX9310_REG_PROX_CTRL4_RESOLUTION_MASK		GENMASK(2, 0)
- #define   SX9310_REG_PROX_CTRL4_RESOLUTION_FINEST	0x07
-+#define   SX9310_REG_PROX_CTRL4_RESOLUTION_VERY_FINE	0x06
-+#define   SX9310_REG_PROX_CTRL4_RESOLUTION_FINE		0x05
-+#define   SX9310_REG_PROX_CTRL4_RESOLUTION_MEDIUM	0x04
-+#define   SX9310_REG_PROX_CTRL4_RESOLUTION_MEDIUM_COARSE 0x03
-+#define   SX9310_REG_PROX_CTRL4_RESOLUTION_COARSE	0x02
-+#define   SX9310_REG_PROX_CTRL4_RESOLUTION_VERY_COARSE	0x01
-+#define   SX9310_REG_PROX_CTRL4_RESOLUTION_COARSEST	0x00
- #define SX9310_REG_PROX_CTRL5				0x15
- #define   SX9310_REG_PROX_CTRL5_RANGE_SMALL		(0x03 << 6)
-+#define   SX9310_REG_PROX_CTRL5_STARTUPSENS_MASK	GENMASK(3, 2)
- #define   SX9310_REG_PROX_CTRL5_STARTUPSENS_CS1		(0x01 << 2)
-+#define   SX9310_REG_PROX_CTRL5_RAWFILT_MASK		GENMASK(1, 0)
-+#define   SX9310_REG_PROX_CTRL5_RAWFILT_SHIFT		0
- #define   SX9310_REG_PROX_CTRL5_RAWFILT_1P25		0x02
- #define SX9310_REG_PROX_CTRL6				0x16
- #define   SX9310_REG_PROX_CTRL6_AVGTHRESH_DEFAULT	0x20
- #define SX9310_REG_PROX_CTRL7				0x17
- #define   SX9310_REG_PROX_CTRL7_AVGNEGFILT_2		(0x01 << 3)
-+#define   SX9310_REG_PROX_CTRL7_AVGPOSFILT_MASK		GENMASK(2, 0)
-+#define   SX9310_REG_PROX_CTRL7_AVGPOSFILT_SHIFT	0
- #define   SX9310_REG_PROX_CTRL7_AVGPOSFILT_512		0x05
- #define SX9310_REG_PROX_CTRL8				0x18
- #define   SX9310_REG_PROX_CTRL8_9_PTHRESH_MASK		GENMASK(7, 3)
-@@ -1193,9 +1212,129 @@ static int sx9310_init_compensation(struct iio_dev *indio_dev)
- 	return ret;
- }
- 
-+static const struct sx9310_reg_default *
-+sx9310_get_default_reg(struct sx9310_data *data, int i,
-+		       struct sx9310_reg_default *reg_def)
-+{
-+	int ret;
-+	const struct device_node *np = data->client->dev.of_node;
-+	u32 combined[SX9310_NUM_CHANNELS] = { 4, 4, 4, 4 };
-+	unsigned long comb_mask = 0;
-+	const char *res;
-+	u32 start = 0, raw = 0, pos = 0;
-+
-+	memcpy(reg_def, &sx9310_default_regs[i], sizeof(*reg_def));
-+	if (!np)
-+		return reg_def;
-+
-+	switch (reg_def->reg) {
-+	case SX9310_REG_PROX_CTRL2:
-+		if (of_property_read_bool(np, "semtech,cs0-ground")) {
-+			reg_def->def &= ~SX9310_REG_PROX_CTRL2_SHIELDEN_MASK;
-+			reg_def->def |= SX9310_REG_PROX_CTRL2_SHIELDEN_GROUND;
-+		}
-+
-+		reg_def->def &= ~SX9310_REG_PROX_CTRL2_COMBMODE_MASK;
-+		of_property_read_u32_array(np, "semtech,combined-sensors",
-+					   combined, ARRAY_SIZE(combined));
-+		for (i = 0; i < ARRAY_SIZE(combined); i++) {
-+			if (combined[i] <= SX9310_NUM_CHANNELS)
-+				comb_mask |= BIT(combined[i]);
-+		}
-+
-+		comb_mask &= 0xf;
-+		if (comb_mask == (BIT(3) | BIT(2) | BIT(1) | BIT(0)))
-+			reg_def->def |= SX9310_REG_PROX_CTRL2_COMBMODE_CS0_CS1_CS2_CS3;
-+		else if (comb_mask == (BIT(1) | BIT(2)))
-+			reg_def->def |= SX9310_REG_PROX_CTRL2_COMBMODE_CS1_CS2;
-+		else if (comb_mask == (BIT(0) | BIT(1)))
-+			reg_def->def |= SX9310_REG_PROX_CTRL2_COMBMODE_CS0_CS1;
-+		else if (comb_mask == BIT(3))
-+			reg_def->def |= SX9310_REG_PROX_CTRL2_COMBMODE_CS3;
-+
-+		break;
-+	case SX9310_REG_PROX_CTRL4:
-+		ret = of_property_read_string(np, "semtech,resolution", &res);
-+		if (ret)
-+			break;
-+
-+		reg_def->def &= ~SX9310_REG_PROX_CTRL4_RESOLUTION_MASK;
-+		if (!strcmp(res, "coarsest"))
-+			reg_def->def |= SX9310_REG_PROX_CTRL4_RESOLUTION_COARSEST;
-+		else if (!strcmp(res, "very-coarse"))
-+			reg_def->def |= SX9310_REG_PROX_CTRL4_RESOLUTION_VERY_COARSE;
-+		else if (!strcmp(res, "coarse"))
-+			reg_def->def |= SX9310_REG_PROX_CTRL4_RESOLUTION_COARSE;
-+		else if (!strcmp(res, "medium-coarse"))
-+			reg_def->def |= SX9310_REG_PROX_CTRL4_RESOLUTION_MEDIUM_COARSE;
-+		else if (!strcmp(res, "medium"))
-+			reg_def->def |= SX9310_REG_PROX_CTRL4_RESOLUTION_MEDIUM;
-+		else if (!strcmp(res, "fine"))
-+			reg_def->def |= SX9310_REG_PROX_CTRL4_RESOLUTION_FINE;
-+		else if (!strcmp(res, "very-fine"))
-+			reg_def->def |= SX9310_REG_PROX_CTRL4_RESOLUTION_VERY_FINE;
-+		else if (!strcmp(res, "finest"))
-+			reg_def->def |= SX9310_REG_PROX_CTRL4_RESOLUTION_FINEST;
-+
-+		break;
-+	case SX9310_REG_PROX_CTRL5:
-+		ret = of_property_read_u32(np, "semtech,startup-sensor", &start);
-+		if (ret) {
-+			start = FIELD_GET(SX9310_REG_PROX_CTRL5_STARTUPSENS_MASK,
-+					  reg_def->def);
-+		}
-+
-+		reg_def->def &= ~SX9310_REG_PROX_CTRL5_STARTUPSENS_MASK;
-+		reg_def->def |= FIELD_PREP(SX9310_REG_PROX_CTRL5_STARTUPSENS_MASK,
-+					   start);
-+
-+		ret = of_property_read_u32(np, "semtech,proxraw-strength", &raw);
-+		if (ret) {
-+			raw = FIELD_GET(SX9310_REG_PROX_CTRL5_RAWFILT_MASK,
-+					reg_def->def);
-+		} else {
-+			raw = ilog2(raw);
-+		}
-+
-+		reg_def->def &= ~SX9310_REG_PROX_CTRL5_RAWFILT_MASK;
-+		reg_def->def |= FIELD_PREP(SX9310_REG_PROX_CTRL5_RAWFILT_MASK,
-+					   raw);
-+		break;
-+	case SX9310_REG_PROX_CTRL7:
-+		ret = of_property_read_u32(np, "semtech,avg-pos-strength", &pos);
-+		if (ret)
-+			break;
-+
-+		if (pos > 1024)
-+			pos = 0x7;
-+		else if (pos == 1024)
-+			pos = 0x6;
-+		else if (pos == 512)
-+			pos = 0x5;
-+		else if (pos == 256)
-+			pos = 0x4;
-+		else if (pos == 128)
-+			pos = 0x3;
-+		else if (pos == 64)
-+			pos = 0x2;
-+		else if (pos == 16)
-+			pos = 0x1;
-+		else
-+			pos = 0x0;
-+
-+		reg_def->def &= ~SX9310_REG_PROX_CTRL7_AVGPOSFILT_MASK;
-+		reg_def->def |= FIELD_PREP(SX9310_REG_PROX_CTRL7_AVGPOSFILT_MASK,
-+					   pos);
-+		break;
-+	}
-+
-+	return reg_def;
-+}
-+
- static int sx9310_init_device(struct iio_dev *indio_dev)
- {
- 	struct sx9310_data *data = iio_priv(indio_dev);
-+	struct sx9310_reg_default tmp;
- 	const struct sx9310_reg_default *initval;
- 	int ret;
- 	unsigned int i, val;
-@@ -1213,7 +1352,7 @@ static int sx9310_init_device(struct iio_dev *indio_dev)
- 
- 	/* Program some sane defaults. */
- 	for (i = 0; i < ARRAY_SIZE(sx9310_default_regs); i++) {
--		initval = &sx9310_default_regs[i];
-+		initval = sx9310_get_default_reg(data, i, &tmp);
- 		ret = regmap_write(data->regmap, initval->reg, initval->def);
- 		if (ret)
- 			return ret;
--- 
-Sent by a computer, using git, on the internet
+On 25.09.20 22:07, Sakari Ailus wrote:
+> Hi Stefan,
+> 
+> Thanks for the patchset.
+> 
+> On Fri, Sep 25, 2020 at 09:50:28AM +0200, Stefan Riedmueller wrote:
+>> From: Christian Hemp <c.hemp@phytec.de>
+>>
+>> Evaluate the desired pixel clock polarity from the device tree.
+>>
+>> Signed-off-by: Christian Hemp <c.hemp@phytec.de>
+>> Signed-off-by: Stefan Riedmueller <s.riedmueller@phytec.de>
+>> ---
+>>   drivers/media/i2c/Kconfig   |  1 +
+>>   drivers/media/i2c/mt9p031.c | 19 ++++++++++++++++++-
+>>   include/media/i2c/mt9p031.h |  1 +
+>>   3 files changed, 20 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/media/i2c/Kconfig b/drivers/media/i2c/Kconfig
+>> index c7ba76fee599..7c026daeacf0 100644
+>> --- a/drivers/media/i2c/Kconfig
+>> +++ b/drivers/media/i2c/Kconfig
+>> @@ -1103,6 +1103,7 @@ config VIDEO_MT9P031
+>>   	select MEDIA_CONTROLLER
+>>   	select VIDEO_V4L2_SUBDEV_API
+>>   	select VIDEO_APTINA_PLL
+>> +	select V4L2_FWNODE
+>>   	help
+>>   	  This is a Video4Linux2 sensor driver for the Aptina
+>>   	  (Micron) mt9p031 5 Mpixel camera.
+>> diff --git a/drivers/media/i2c/mt9p031.c b/drivers/media/i2c/mt9p031.c
+>> index f5d6a7890c47..8f8ee37a2dd2 100644
+>> --- a/drivers/media/i2c/mt9p031.c
+>> +++ b/drivers/media/i2c/mt9p031.c
+>> @@ -27,6 +27,7 @@
+>>   #include <media/v4l2-async.h>
+>>   #include <media/v4l2-ctrls.h>
+>>   #include <media/v4l2-device.h>
+>> +#include <media/v4l2-fwnode.h>
+>>   #include <media/v4l2-subdev.h>
+>>   
+>>   #include "aptina-pll.h"
+>> @@ -399,6 +400,14 @@ static int __mt9p031_set_power(struct mt9p031 *mt9p031, bool on)
+>>   		return ret;
+>>   	}
+>>   
+>> +	/* Configure the pixel clock polarity */
+>> +	if (mt9p031->pdata && mt9p031->pdata->pixclk_pol) {
+>> +		ret = mt9p031_write(client, MT9P031_PIXEL_CLOCK_CONTROL,
+>> +				MT9P031_PIXEL_CLOCK_INVERT);
+>> +		if (ret < 0)
+>> +			return ret;
+>> +	}
+>> +
+>>   	return v4l2_ctrl_handler_setup(&mt9p031->ctrls);
+>>   }
+>>   
+>> @@ -1062,7 +1071,8 @@ static const struct v4l2_subdev_internal_ops mt9p031_subdev_internal_ops = {
+>>   static struct mt9p031_platform_data *
+>>   mt9p031_get_pdata(struct i2c_client *client)
+>>   {
+>> -	struct mt9p031_platform_data *pdata;
+>> +	struct mt9p031_platform_data *pdata = NULL;
+>> +	struct v4l2_fwnode_endpoint endpoint;
+> 
+> Could you initialise the bus_type field to a valid value? I suppose this
+> sensor only supports one of them? That way you'll also initialise the rest
+> of the struct fields to zero.
 
+Yes, I'll do that and send a v2.
+
+Thanks,
+Stefan
+
+> 
+>>   	struct device_node *np;
+>>   
+>>   	if (!IS_ENABLED(CONFIG_OF) || !client->dev.of_node)
+>> @@ -1072,6 +1082,10 @@ mt9p031_get_pdata(struct i2c_client *client)
+>>   	if (!np)
+>>   		return NULL;
+>>   
+>> +	endpoint.bus_type = V4L2_MBUS_UNKNOWN;
+>> +	if (v4l2_fwnode_endpoint_parse(of_fwnode_handle(np), &endpoint) < 0)
+>> +		goto done;
+>> +
+>>   	pdata = devm_kzalloc(&client->dev, sizeof(*pdata), GFP_KERNEL);
+>>   	if (!pdata)
+>>   		goto done;
+>> @@ -1079,6 +1093,9 @@ mt9p031_get_pdata(struct i2c_client *client)
+>>   	of_property_read_u32(np, "input-clock-frequency", &pdata->ext_freq);
+>>   	of_property_read_u32(np, "pixel-clock-frequency", &pdata->target_freq);
+>>   
+>> +	pdata->pixclk_pol = !!(endpoint.bus.parallel.flags &
+>> +			       V4L2_MBUS_PCLK_SAMPLE_RISING);
+>> +
+>>   done:
+>>   	of_node_put(np);
+>>   	return pdata;
+>> diff --git a/include/media/i2c/mt9p031.h b/include/media/i2c/mt9p031.h
+>> index 7c29c53aa988..f933cd0be8e5 100644
+>> --- a/include/media/i2c/mt9p031.h
+>> +++ b/include/media/i2c/mt9p031.h
+>> @@ -10,6 +10,7 @@ struct v4l2_subdev;
+>>    * @target_freq: Pixel clock frequency
+>>    */
+>>   struct mt9p031_platform_data {
+>> +	unsigned int pixclk_pol:1;
+>>   	int ext_freq;
+>>   	int target_freq;
+>>   };
+> 
