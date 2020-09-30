@@ -2,71 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEAEC27EFF3
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 19:10:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C800427EFF6
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 19:11:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728805AbgI3RKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 13:10:20 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:57026 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725355AbgI3RKU (ORCPT
+        id S1731128AbgI3RLB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 13:11:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58134 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725385AbgI3RLB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 13:10:20 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 494461C0B81; Wed, 30 Sep 2020 19:10:18 +0200 (CEST)
-Date:   Wed, 30 Sep 2020 19:10:17 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Tobias Jordan <kernel@cdqe.de>
-Cc:     linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Dan Murphy <dmurphy@ti.com>,
-        Nikita Travkin <nikitos.tr@gmail.com>
-Subject: Re: [PATCH] leds: aw2013: fix leak of device node iterator
-Message-ID: <20200930171017.GF27760@duo.ucw.cz>
-References: <20200925232644.GA17005@agrajag.zerfleddert.de>
+        Wed, 30 Sep 2020 13:11:01 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBF6EC0613D0
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 10:11:00 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id p9so3911232ejf.6
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 10:11:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BqedzlGX8MsdvOmncyCbTeaSpoiIv6tQfCYOfAGCm1I=;
+        b=sE8WZ6lfb33YbXSwicY08Buxu2+BclRjKlsf3vmfKYC0cOkGjIdkfWlcD3vKlvxBtD
+         oJvOI0Me7W22ashUodxRg8si+zJpy2Cbj36q0/8yWyYhzL0LsEuNIm7mCi4bt0ydDxiP
+         q2wgS9BmhahiQ+5AI274iqgwQFVzecBus9MZf563ErBkJT7H8HSacjGdi407Qm2FFScB
+         UKBxyo4CmvhG4OhR92jBXUX4a8bOh0QyXvaZZAv6dW3JDWi42Xlo+4DGLRhZ05mHElhm
+         akH0k3vLqe2e1OlNqWiJM/8E0bIvbsaLFvn/nLJrGgZiuIkxYeAIludqN2wsfPhdmkyE
+         UahA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BqedzlGX8MsdvOmncyCbTeaSpoiIv6tQfCYOfAGCm1I=;
+        b=tnc4eN38o0PWUGbziD3/lu+YwwVyzc/tBEOEsc+voT1EXgE2wPwijktK70t+s33d1O
+         YUdVJ9suXUEoJ/26x4mbEy7N5i0rubS6trfHfNs4aFSxPteQILO1F0zPPd1d/o+95Mxu
+         bi3uebC7QErKf+urNKvKplzsR4GeZAZajmM5JQi8w13n8JizF9VNCkWakbKoLyxI+k/w
+         SV80sAjTuE2wFaMNaeGU8bYAasdzAmYZN/4e8TuzP5DHR9dvItu+/nZuWbq2GhAgXf+u
+         jG5A75NFoKq4KvOZoV0gA3NVA6npbA7vSdYJfKKYoB4vTXYwPUAA/798NOMvmNCY3V4y
+         ErAQ==
+X-Gm-Message-State: AOAM532WI4NouzMPptvBS1HaH7NtaejiUwfGcilFDMNud5osYjGsuUe6
+        hcbtK9vczKppYTPToebIp+d6MI7izPv0HVElWSZrdA==
+X-Google-Smtp-Source: ABdhPJxx5zeY+5dc3dMhmlhIH9uf8zM/HMP0iLgIAwPYaEmmMHjXLZ0lmUCgiQV067mtUVMz2xbTNNo7KUcZkaJ7L2A=
+X-Received: by 2002:a17:906:a256:: with SMTP id bi22mr3767975ejb.375.1601485859067;
+ Wed, 30 Sep 2020 10:10:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="9ADF8FXzFeE7X4jE"
-Content-Disposition: inline
-In-Reply-To: <20200925232644.GA17005@agrajag.zerfleddert.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200929214631.3516445-1-samitolvanen@google.com>
+ <20200929214631.3516445-10-samitolvanen@google.com> <20200930095850.GA68612@C02TD0UTHF1T.local>
+In-Reply-To: <20200930095850.GA68612@C02TD0UTHF1T.local>
+From:   Sami Tolvanen <samitolvanen@google.com>
+Date:   Wed, 30 Sep 2020 10:10:47 -0700
+Message-ID: <CABCJKuegb4MzniWOk2+R3FngZpdWuSEAZuj=arRm0mE6HQ9anw@mail.gmail.com>
+Subject: Re: [PATCH v4 09/29] arm64: disable recordmcount with DYNAMIC_FTRACE_WITH_REGS
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kbuild <linux-kbuild@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, linux-pci@vger.kernel.org,
+        X86 ML <x86@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Mark,
 
---9ADF8FXzFeE7X4jE
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Wed, Sep 30, 2020 at 2:59 AM Mark Rutland <mark.rutland@arm.com> wrote:
+>
+> Hi Sami,
+>
+> On Tue, Sep 29, 2020 at 02:46:11PM -0700, Sami Tolvanen wrote:
+> > Select FTRACE_MCOUNT_USE_PATCHABLE_FUNCTION_ENTRY to disable
+> > recordmcount when DYNAMIC_FTRACE_WITH_REGS is selected.
+>
+> Could you please add an explanation as to /why/ this is necessary in the
+> commit message? I couldn't figure this out form the commit message
+> alone, and reading the cover letter also didn't help.
 
-Hi!
+Sorry about that, I'll add a better explanation in the next version.
 
-> In the error path of the for_each_available_child_of_node loop in
-> aw2013_probe_dt, add missing call to of_node_put to avoid leaking the
-> iterator.
->=20
-> Fixes: 59ea3c9faf32 ("leds: add aw2013 driver")
-> Signed-off-by: Tobias Jordan <kernel@cdqe.de>
+Note that without LTO, this change is not strictly necessary as
+there's no harm in running recordmcount even if it's not needed. It
+might slow down the build slightly, but I suspect a few thousand
+invocations of the program won't take that long. However, with LTO we
+need to disable recordmcount because it doesn't understand LLVM
+bitcode.
 
-This failed to apply to my -for-next tree.
+> If the minimum required GCC version supports patchable-function-entry
+> I'd be happy to make that a requirement for dynamic ftrace on arm64, as
+> then we'd only need to support one mechanism, and can get rid of some
+> redundant code. We already default to it when present anyhow.
 
-Best regards,
-								Pavel
+That would be great, but Documentation/process/changes.rst suggests
+the minimum gcc version is 4.9, and according to Godbolt we would need
+gcc >= 8 for -fpatchable-function-entry:
 
+  https://godbolt.org/z/jdzcMW
 
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
+> > diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+> > index 6d232837cbee..ad522b021f35 100644
+> > --- a/arch/arm64/Kconfig
+> > +++ b/arch/arm64/Kconfig
+> > @@ -155,6 +155,8 @@ config ARM64
+> >       select HAVE_DYNAMIC_FTRACE
+> >       select HAVE_DYNAMIC_FTRACE_WITH_REGS \
+> >               if $(cc-option,-fpatchable-function-entry=2)
+> > +     select FTRACE_MCOUNT_USE_PATCHABLE_FUNCTION_ENTRY \
+> > +             if DYNAMIC_FTRACE_WITH_REGS
+>
+> This doesn't look quite right to me. Presumably we shouldn't allow
+> DYNAMIC_FTRACE_WITH_REGS to be selected if HAVE_DYNAMIC_FTRACE_WITH_REGS
+> isn't.
 
---9ADF8FXzFeE7X4jE
-Content-Type: application/pgp-signature; name="signature.asc"
+This won't allow DYNAMIC_FTRACE_WITH_REGS to be selected without
+HAVE_DYNAMIC_FTRACE_WITH_REGS. Testing with a compiler that does
+support -fpatchable-function-entry, I get the following, as expected:
 
------BEGIN PGP SIGNATURE-----
+$ grep -E '(DYNAMIC_FTRACE|MCOUNT_USE)' .config
+CONFIG_HAVE_DYNAMIC_FTRACE=y
+CONFIG_HAVE_DYNAMIC_FTRACE_WITH_REGS=y
+CONFIG_DYNAMIC_FTRACE=y
+CONFIG_DYNAMIC_FTRACE_WITH_REGS=y
+CONFIG_FTRACE_MCOUNT_USE_PATCHABLE_FUNCTION_ENTRY=y
 
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX3S7+QAKCRAw5/Bqldv6
-8nNYAJ9s3GCgKstToi/W2qVv+ZwHTw+cOQCgg/tLkKwo2Ialc4q3sXDaYfWahGY=
-=658p
------END PGP SIGNATURE-----
+And if the compiler doesn't support -fpatchable-function-entry, we
+would end up with the following:
 
---9ADF8FXzFeE7X4jE--
+$ grep -E '(DYNAMIC_FTRACE|MCOUNT_USE)' .config
+CONFIG_HAVE_DYNAMIC_FTRACE=y
+CONFIG_DYNAMIC_FTRACE=y
+CONFIG_FTRACE_MCOUNT_USE_RECORDMCOUNT=y
+
+Sami
