@@ -2,152 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC4E227F402
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 23:15:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 528AE27F407
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 23:16:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730631AbgI3VPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 17:15:44 -0400
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:1842 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725355AbgI3VPo (ORCPT
+        id S1730661AbgI3VQO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 17:16:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39522 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725355AbgI3VQN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 17:15:44 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f74f54c0001>; Wed, 30 Sep 2020 14:14:52 -0700
-Received: from [10.2.53.117] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 30 Sep
- 2020 21:15:40 +0000
-Subject: Re: [PATCH 1/4] mm/gup_benchmark: Take the mmap lock around GUP
-To:     Jann Horn <jannh@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>, <linux-mm@kvack.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Michel Lespinasse <walken@google.com>,
-        "Mauro Carvalho Chehab" <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>
-References: <CAG48ez3SG6ngZLtasxJ6LABpOnqCz5-QHqb0B4k44TQ8F9n6+w@mail.gmail.com>
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <01417038-5456-2b93-2b63-d9ab5b93c95e@nvidia.com>
-Date:   Wed, 30 Sep 2020 14:15:40 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Wed, 30 Sep 2020 17:16:13 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 826FBC061755;
+        Wed, 30 Sep 2020 14:16:11 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id o20so2150678pfp.11;
+        Wed, 30 Sep 2020 14:16:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2o3lDSN5uV/shoTTYh+75euIHZMsefv5Gthxgu7JPwE=;
+        b=caTBU4niMhHm5SdxvlDQTOhj2VarLxDNHJbZbv9fmrYarhZo2WvtxnzIx5keqEl32Z
+         SqWbQr8oxaMtLeYMba82SB4Jfq6IgiloKNaGO74jvnkQB5vaIbv738+LykAkMkVtffjb
+         7owNN+xga5QeG00+QGWK4LnmRsQaGhi1L1PabdADPs/swyOhKu1JajRlTvZo+rI8K3cC
+         hFpAqzptQU2W75U0DKKct3v/72wj/Q6Ma6eiohXLw15zEdMo5bXcVORp8S4H8Zte8NPi
+         LiZ5wmdHaMDCKiHOIBnUps4BrHGSkGk6qXEY8aOPtpeVIeWu+WqNVFLtn8FE1Wwt34zG
+         SO/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2o3lDSN5uV/shoTTYh+75euIHZMsefv5Gthxgu7JPwE=;
+        b=rGeKvBcUdPO8IPHgk1nZ1FT0njdFbCpmIXNU0JmMU0UcIITkrPpp7ShQ3IM3Ekpk+m
+         qm7fjy5IWRYRUL4AQY/ekBXwUrwqot0p5KUCSOM30aziGrSlsDAPnTNtTpx0bwf900jH
+         OQjKTHRvq/vpzerHqjqg8kqeVoDQyTsY3S7rwESTndgbhZ+kHlNepwajtML4+2NepL8N
+         7iY8inAkjqAS8pSU0pMnkR6i2rp34p1KjzuC6ScU5yP/zAH9ygeLZAloQhcxrvEW9iQi
+         4dlUB8JPVdJKXyKEZIXgg95SwvfWThx0c5dN/OPyWQ8+gM//2rM93SUacSUFRVQPOc52
+         2lug==
+X-Gm-Message-State: AOAM530fk8U+Z1jn3guymWslSAftxaGDupgpsK0+LgSl2GxIAu1AZXle
+        RDyZnTA+aQfJnXP7KQRZ3OU=
+X-Google-Smtp-Source: ABdhPJxzC4J7DZzesa6EYV5iuWtAvg7BXOstE7gtkBTPyQKLex1MQPuPSNEa+NwAyPkW4yM13IV6rg==
+X-Received: by 2002:a17:902:6803:b029:d2:42a6:312 with SMTP id h3-20020a1709026803b02900d242a60312mr4046233plk.24.1601500570997;
+        Wed, 30 Sep 2020 14:16:10 -0700 (PDT)
+Received: from localhost ([2601:1c0:5200:a6:307:a401:7b76:c6e5])
+        by smtp.gmail.com with ESMTPSA id ih11sm3073170pjb.51.2020.09.30.14.16.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Sep 2020 14:16:09 -0700 (PDT)
+From:   Rob Clark <robdclark@gmail.com>
+To:     dri-devel@lists.freedesktop.org
+Cc:     linux-arm-msm@vger.kernel.org, Tejun Heo <tj@kernel.org>,
+        timmurray@google.com, Daniel Vetter <daniel@ffwll.ch>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Rob Clark <robdclark@chromium.org>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v2 0/3] drm: commit_work scheduling
+Date:   Wed, 30 Sep 2020 14:17:19 -0700
+Message-Id: <20200930211723.3028059-1-robdclark@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <CAG48ez3SG6ngZLtasxJ6LABpOnqCz5-QHqb0B4k44TQ8F9n6+w@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1601500492; bh=scoFmBRIh1vSjEY1A1wOQHt4NWbI6VNuVnBra8F4UHk=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=CpgUG3WTW+cMM5KeanyfbpzjvkXw6NsgUjMmJsiuerxfFV00F6ldgesWm9qFE+X5j
-         HX8hiEJmcHKZcnR3Jhy3YVVvYUUwQQ5s1FN+yr5Nh3hi30Ul0kBSyURlwn/mjCgWuC
-         tIy1cDaplKaWv6dEQNoEtFDIK/1ujs5Ya7s8dt0RIy1GUDs9eozviRbiFK1uPUmHP3
-         AumGgkSbDueR1etNXlVhydl63Rx9ltDUeWXrERAzZgYerJCrpGFEu1JQP186S/RtAB
-         fJVHLEbOWyNfIM1aS2FWdccM9SGF3F9owvnLxYPBN2ne2GF57U/TauAwTEn/qnuGDY
-         E63n0QBlO8JWQ==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/29/20 6:19 PM, Jann Horn wrote:
-> To be safe against concurrent changes to the VMA tree, we must take the
-> mmap lock around GUP operations (excluding the GUP-fast family of
-> operations, which will take the mmap lock by themselves if necessary).
-> 
-> This code is only for testing, and it's only reachable by root through
-> debugfs, so this doesn't really have any impact; however, if we want to add
-> lockdep asserts into the GUP path, we need to have clean locking here.
-> 
-> Signed-off-by: Jann Horn <jannh@google.com>
-> ---
-> This series should go on top of the coredump locking series (in
-> particular "mm/gup: Take mmap_lock in get_dump_page()"), which is
-> already in the mm tree.
+From: Rob Clark <robdclark@chromium.org>
+
+The android userspace treats the display pipeline as a realtime problem.
+And arguably, if your goal is to not miss frame deadlines (ie. vblank),
+it is.  (See https://lwn.net/Articles/809545/ for the best explaination
+that I found.)
+
+But this presents a problem with using workqueues for non-blocking
+atomic commit_work(), because the SCHED_FIFO userspace thread(s) can
+preempt the worker.  Which is not really the outcome you want.. once
+the required fences are scheduled, you want to push the atomic commit
+down to hw ASAP.
+
+But the decision of whether commit_work should be RT or not really
+depends on what userspace is doing.  For a pure CFS userspace display
+pipeline, commit_work() should remain SCHED_NORMAL.
+
+To handle this, convert non-blocking commit_work() to use per-CRTC
+kthread workers, instead of system_unbound_wq.  Per-CRTC workers are
+used to avoid serializing commits when userspace is using a per-CRTC
+update loop.  And the last patch exposes the task id to userspace as
+a CRTC property, so that userspace can adjust the priority and sched
+policy to fit it's needs.
 
 
-Looks good. This also merges properly and still has the right semantics,
-even after my gup_benchmark overhaul [1]. (Just have to change
-mm/gup_benchmark.c to mm/gup_test.c).
+v2: Drop client cap and in-kernel setting of priority/policy in
+    favor of exposing the kworker tid to userspace so that user-
+    space can set priority/policy.
 
-The new needs_mmap_lock rule here still does the right thing, in other
-words, after adding the new DUMP_USER_PAGES_TEST (a non-fast variant).
+Rob Clark (3):
+  drm/crtc: Introduce per-crtc kworker
+  drm/atomic: Use kthread worker for nonblocking commits
+  drm: Expose CRTC's kworker task id
 
-Reviewed-by: John Hubbard <jhubbard@nvidia.com>
+ drivers/gpu/drm/drm_atomic_helper.c | 13 ++++++++----
+ drivers/gpu/drm/drm_crtc.c          | 14 +++++++++++++
+ drivers/gpu/drm/drm_mode_config.c   | 14 +++++++++++++
+ drivers/gpu/drm/drm_mode_object.c   |  4 ++++
+ include/drm/drm_atomic.h            | 31 +++++++++++++++++++++++++++++
+ include/drm/drm_crtc.h              |  8 ++++++++
+ include/drm/drm_mode_config.h       |  9 +++++++++
+ include/drm/drm_property.h          |  9 +++++++++
+ 8 files changed, 98 insertions(+), 4 deletions(-)
 
-[1] https://lore.kernel.org/r/20200929212747.251804-1-jhubbard@nvidia.com
-
-thanks,
 -- 
-John Hubbard
-NVIDIA
-
-
-> 
->   mm/gup_benchmark.c | 15 ++++++++++++---
->   1 file changed, 12 insertions(+), 3 deletions(-)
-> 
-> diff --git a/mm/gup_benchmark.c b/mm/gup_benchmark.c
-> index be690fa66a46..558595610650 100644
-> --- a/mm/gup_benchmark.c
-> +++ b/mm/gup_benchmark.c
-> @@ -71,6 +71,8 @@ static int __gup_benchmark_ioctl(unsigned int cmd,
->   	int nr;
->   	struct page **pages;
->   	int ret = 0;
-> +	bool needs_mmap_lock =
-> +		cmd != GUP_FAST_BENCHMARK && cmd != PIN_FAST_BENCHMARK;
-> 
->   	if (gup->size > ULONG_MAX)
->   		return -EINVAL;
-> @@ -80,6 +82,11 @@ static int __gup_benchmark_ioctl(unsigned int cmd,
->   	if (!pages)
->   		return -ENOMEM;
-> 
-> +	if (needs_mmap_lock && mmap_read_lock_killable(current->mm)) {
-> +		ret = -EINTR;
-> +		goto free_pages;
-> +	}
-> +
->   	i = 0;
->   	nr = gup->nr_pages_per_call;
->   	start_time = ktime_get();
-> @@ -119,9 +126,8 @@ static int __gup_benchmark_ioctl(unsigned int cmd,
->   					    NULL);
->   			break;
->   		default:
-> -			kvfree(pages);
->   			ret = -EINVAL;
-> -			goto out;
-> +			goto unlock;
->   		}
-> 
->   		if (nr <= 0)
-> @@ -149,8 +155,11 @@ static int __gup_benchmark_ioctl(unsigned int cmd,
->   	end_time = ktime_get();
->   	gup->put_delta_usec = ktime_us_delta(end_time, start_time);
-> 
-> +unlock:
-> +	if (needs_mmap_lock)
-> +		mmap_read_unlock(current->mm);
-> +free_pages:
->   	kvfree(pages);
-> -out:
->   	return ret;
->   }
-> 
-> 
-> base-commit: fb0155a09b0224a7147cb07a4ce6034c8d29667f
-> prerequisite-patch-id: 08f97130a51898a5f6efddeeb5b42638577398c7
-> prerequisite-patch-id: 577664d761cd23fe9031ffdb1d3c9ac313572c67
-> prerequisite-patch-id: dc29a39716aa8689f80ba2767803d9df3709beaa
-> prerequisite-patch-id: 42b1b546d33391ead2753621f541bcc408af1769
-> prerequisite-patch-id: 2cbb839f57006f32e21f4229e099ae1bd782be24
-> prerequisite-patch-id: 1b4daf01cf61654a5ec54b5c3f7c7508be7244ee
-> prerequisite-patch-id: f46cc8c99f1909fe2a65fbc3cf1f6bc57489a086
-> 
+2.26.2
 
