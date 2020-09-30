@@ -2,128 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44C4527E4E6
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 11:16:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FE8027E4EE
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 11:18:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728912AbgI3JQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 05:16:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41308 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725776AbgI3JQm (ORCPT
+        id S1728758AbgI3JSV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 05:18:21 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:36494 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728149AbgI3JSU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 05:16:42 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09F3CC061755
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 02:16:42 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id g4so932578wrs.5
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 02:16:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=jMqBRdPp4G62I9pvbONrmi34MiX39nzV5cmOiM0xTwk=;
-        b=aWlw+nvSQJkAD3CQ/6WFjBQeVM7/ZpeD5JXgPVz6Z9zy1hvHoXYgd5ypktkG1FFeET
-         o6vjz5DxTiY5bwmPi+UTR2Alak2Q2zjzgGLw2lczQrznWy98bvyVM75T/f2VUeZ09sCF
-         hRRSIBB7AF341467Q/2E/aWyYeM1knsRgw8NLEW5VEo4E8L9uhupFhjlQAq+nd1bcKri
-         /cjSX1BQgizdHiS9FXGEpPbBCQtp++C3g6KIzuYrlacYjbxWtwc5wC+Ot6TXBSAygSx3
-         f/cMJH4o24WHZAFXMlRBEanrYXAdJNdfVdujy8dacVuw1o8UBjTdEYOP0Stx1Wg92mY+
-         bbHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=jMqBRdPp4G62I9pvbONrmi34MiX39nzV5cmOiM0xTwk=;
-        b=O9FFcqgxbfHJ+lba+whgsEgsWlKdgmt4Xf0FHEEgdjZ6uubZg8TckWGBVKnOH1vO8Q
-         +qVNp2kWtV0sayKVfRRoVTs9m4o9SXCpRWDnmurxEoLnH614MW0NaF+iApR7qozqY0yF
-         rv1GjXspbAVRgSjC1IWFx8cnQw+vJJ5dfwlsT/pW/dEuADbDz/HMHcXz1+ibfIFc4EMV
-         RQD00NZRvMoshfiwBUg097v9ddXK+4nlO5yzuZvX0mFEbrkCl0r51tA+29sat0gEmUcr
-         ueyN9tkcExERxsMl8zeVC1xAIS2InQJpQl06MhtAYBQoiIM9te4WikrqLY20WkCKzMXD
-         3QZg==
-X-Gm-Message-State: AOAM532TICebfNo+Kc62ldtG2z9JoAvB2R0dsyA1zo7LN5L0/rXeCswR
-        ipB+j36t1JHq/5ULA1GzFlkVYhA2+Y+xhJNkyMY=
-X-Google-Smtp-Source: ABdhPJyP4RA44TEcqflhm1AEaf2+TeU/PnbEZPlKkLCae8saXAmWgR6M+njmkR79Ehx4O67Lr0Ijdqe8eVMdp+YzUEA=
-X-Received: by 2002:a5d:568d:: with SMTP id f13mr1982012wrv.303.1601457400766;
- Wed, 30 Sep 2020 02:16:40 -0700 (PDT)
+        Wed, 30 Sep 2020 05:18:20 -0400
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08U92npw057276;
+        Wed, 30 Sep 2020 05:18:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=jou9a6b3mVxlmiaWvzipgh0QBKlAf+7R092Q78+GeyM=;
+ b=Y4IbQSLIbg5BeJnC1MZkxPS03vdWDBrkYhpsJ61ZnrfcXTRbRlfw6VQaLTUD5fulbRZ1
+ YtwUIS7eJOWz10eSr20Sxi4eKVr5rcxm1prRJX+qNHaM+5wNj0qOdg4zn36suFAqUgb3
+ QiT7zB4XDdiotLHxy64c23KWT4H3St1FviFM/t1EZ5m6CX1Vh8LsF83P2GnJQQMBWcn/
+ kAnGG0m77HJ1j2Psd2krQ7qqvqtLepMHgEGmM0Xun8AzfyBMrtfmFDtjNIz3OelWuI4V
+ j7isICpJm3CInFsTvAYwvaBbdC8zx3Ifuf/JQjXS9C9BueoE1+uHFZYDExBoSvlSRUJL Gw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33vp1vjn6m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 30 Sep 2020 05:18:05 -0400
+Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08U92peY057459;
+        Wed, 30 Sep 2020 05:18:04 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33vp1vjn5j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 30 Sep 2020 05:18:04 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08U9DY4t023494;
+        Wed, 30 Sep 2020 09:18:02 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma03ams.nl.ibm.com with ESMTP id 33sw9847wc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 30 Sep 2020 09:18:02 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08U9I0Am33358292
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 30 Sep 2020 09:18:00 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 00B574C04A;
+        Wed, 30 Sep 2020 09:18:00 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B45E14C046;
+        Wed, 30 Sep 2020 09:17:57 +0000 (GMT)
+Received: from linux.ibm.com (unknown [9.145.79.47])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Wed, 30 Sep 2020 09:17:57 +0000 (GMT)
+Date:   Wed, 30 Sep 2020 12:17:55 +0300
+From:   Mike Rapoport <rppt@linux.ibm.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Nick Piggin <npiggin@gmail.com>,
+        Hugh Dickins <hughd@google.com>,
+        Peter Zijlstra <peterz@infradead.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, hch@lst.de, rdunlap@infradead.org
+Subject: Re: [PATCH v2] page_alloc: Fix freeing non-compound pages
+Message-ID: <20200930091755.GB3226834@linux.ibm.com>
+References: <20200926213919.26642-1-willy@infradead.org>
+ <20200928180307.7573f3b6128b5e3007dfc9f0@linux-foundation.org>
+ <20200929034026.GA20115@casper.infradead.org>
+ <20200929072622.GN2645148@linux.ibm.com>
+ <20200929140622.GE20115@casper.infradead.org>
 MIME-Version: 1.0
-References: <20200930024712.88258-1-qianjun.kernel@gmail.com> <20200930081953.GU2628@hirez.programming.kicks-ass.net>
-In-Reply-To: <20200930081953.GU2628@hirez.programming.kicks-ass.net>
-From:   jun qian <qianjun.kernel@gmail.com>
-Date:   Wed, 30 Sep 2020 17:16:29 +0800
-Message-ID: <CAKc596Jc6H5qFxrzSp_fGhqTZt-5ORLoP=E4bwG-QzkpRiL2bA@mail.gmail.com>
-Subject: Re: [PATCH 1/1] sched/fair: Fix the wrong sched_stat_wait time
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     mingo@redhat.com, Vincent Guittot <vincent.guittot@linaro.org>,
-        juri.lelli@redhat.com, linux-kernel@vger.kernel.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, Yafang Shao <laoar.shao@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200929140622.GE20115@casper.infradead.org>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-30_05:2020-09-29,2020-09-30 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=801
+ lowpriorityscore=0 bulkscore=0 phishscore=0 priorityscore=1501
+ suspectscore=5 impostorscore=0 spamscore=0 mlxscore=0 clxscore=1015
+ adultscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2006250000 definitions=main-2009300073
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Peter Zijlstra <peterz@infradead.org> =E4=BA=8E2020=E5=B9=B49=E6=9C=8830=E6=
-=97=A5=E5=91=A8=E4=B8=89 =E4=B8=8B=E5=8D=884:20=E5=86=99=E9=81=93=EF=BC=9A
->
-> On Wed, Sep 30, 2020 at 10:47:12AM +0800, qianjun.kernel@gmail.com wrote:
-> > From: jun qian <qianjun.kernel@gmail.com>
-> >
-> > When the sched_schedstat changes from 0 to 1, some sched se maybe
-> > already in the runqueue, the se->statistics.wait_start will be 0.
-> > So it will let the (rq_of(cfs_rq)) - se->statistics.wait_start)
-> > wrong. We need to avoid this scenario.
->
-> Is this really the only problem there? Did you do a full audit of that
-> schedstat nonsense?
->
+On Tue, Sep 29, 2020 at 03:06:22PM +0100, Matthew Wilcox wrote:
+> On Tue, Sep 29, 2020 at 10:26:22AM +0300, Mike Rapoport wrote:
+> > This sentence presumes existing description/prior knowledge about
+> > put_page().
+> > 
+> > Maybe
+> > 
+> >   This function can free multi-page allocations that were not allocated
+> >   with %__GFP_COMP, unlike put_page() that would free only the first page
+> >   in such case. __free_pages() does not ...
+> 
+> Thanks.  After waking up this morning I did a more extensive rewrite:
 
-Did you mean that the sched_stat_xxx's xxx_start(sched_stat_sleep
-sched_stat_iowait sched_stat_blocked
-sched_stat_runtime) may be also depend the schedstat_enabled?
-I have searched the codes, and found that these sched_stat_xxx's
-xxx_start don't depend the schedstat_enabled
-except the wait_start.
+I like this one
 
-This patch is going to slove the problem that when the
-schedstat_enabled is enabled, the sched_stat_wait of
-the probed process will become unbelievable big probability in the fist tim=
-e.
+Acked-by: Mike Rapoport <rppt@linux.ibm.com>
 
-> > Signed-off-by: jun qian <qianjun.kernel@gmail.com>
-> > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> > ---
-> >  kernel/sched/fair.c | 8 ++++++++
-> >  1 file changed, 8 insertions(+)
-> >
-> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> > index 658aa7a..dd7c3bb 100644
-> > --- a/kernel/sched/fair.c
-> > +++ b/kernel/sched/fair.c
-> > @@ -908,6 +908,14 @@ static void update_curr_fair(struct rq *rq)
->
-> your git-diff is 'funny', it got the function ^ wrong.
->
+> /**
+>  * __free_pages - Free pages allocated with alloc_pages().
+>  * @page: The page pointer returned from alloc_pages().
+>  * @order: The order of the allocation.
+>  *
+>  * This function can free multi-page allocations that are not compound
+>  * pages.  It does not check that the @order passed in matches that of
+>  * the allocation, so it is easy to leak memory.  Freeing more memory
+>  * than was allocated will probably emit a warning.
+>  *
+>  * If the last reference to this page is speculative, it will be released
+>  * by put_page() which only frees the first page of a non-compound
+>  * allocation.  To prevent the remaining pages from being leaked, we free
+>  * the subsequent pages here.  If you want to use the page's reference
+>  * count to decide when to free the allocation, you should allocate a
+>  * compound page, and use put_page() instead of __free_pages().
+>  *
+>  * Context: May be called in interrupt context or holding a normal
+>  * spinlock, but not in NMI context or while holding a raw spinlock.
+>  */
+> 
 
-sorry  :)
-
-> >       if (!schedstat_enabled())
-> >               return;
-> >
-> > +     /*
-> > +      * When the sched_schedstat changes from 0 to 1, some sched se ma=
-ybe
-> > +      * already in the runqueue, the se->statistics.wait_start will be=
- 0.
-> > +      * So it will let the delta wrong. We need to avoid this scenario=
-.
-> > +      */
-> > +     if (unlikely(!schedstat_val(se->statistics.wait_start)))
-> > +             return;
-> > +
-> >       delta =3D rq_clock(rq_of(cfs_rq)) - schedstat_val(se->statistics.=
-wait_start);
-> >
-> >       if (entity_is_task(se)) {
-> > --
-> > 1.8.3.1
-> >
+-- 
+Sincerely yours,
+Mike.
