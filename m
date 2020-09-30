@@ -2,137 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1805027F2C8
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 21:59:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A3E627F2CE
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 22:00:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729890AbgI3T7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 15:59:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55876 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725799AbgI3T7T (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 15:59:19 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4046DC061755
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 12:59:19 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id b2so2302981qtp.8
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 12:59:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=mks6MDDi7yd2BTIhsdl1J0SEYReN39X9Xain+N3ujOI=;
-        b=qXSW8xAyWH6AITCQBMSHRXNtKxIr0eMBihnFPkxj99/WpekGD/dJEojQbo0Spax5ZG
-         pS2lNrulQBXK7G6GV6i0IaXQAK3t1t/REBwPaKma2cD99x2toetx7t3GaakFsU3LCx3d
-         o1QKtk3Ow7Hry5ywCOc3tQhLD1hI/bWwlhSx1dHOBFaPuVgnk0PVidzyXIA6pXyIlpCI
-         HYMi7pT3jHL9GuPZ1AqAC66TQosRFL5Nb2zLij0XU4M/Ci+Vegf5Sd3iESimzSi+zpMd
-         xDS13GBLKLASmaCEusY8G72x7o7jP6fMBuuAld5NtgOUADk9jqoOxJxB2CsvO5XqZKnT
-         6lFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=mks6MDDi7yd2BTIhsdl1J0SEYReN39X9Xain+N3ujOI=;
-        b=hnmliS40fZ0RYAotrs5V9KK1afyAV19c250Z8IA3VZDm3gI13qd4S2wpq9YjYA8C/f
-         sljWkYpSsI1SK4edQYBreBbyD+z/MAXM4g5Z98TQHJjsXcqvLn67oLPl6NrfpMaJUvwd
-         oxBpi76bMXOyjFpS+0g7BtJ+9eLpAhGOsvtvnU9dqENbG7tpbLHaIwYwO4Wy83Y7RAWz
-         oiBwB4aykHbj3rruqeIIDbAeRbedvGbzuoMvFQ3zlKzRRPraYtgnIpk9Ug6Sg9X31NHD
-         dBEg1giXeyjP8JeHdqX2DEewfsL8ngVNz2r6QeX/yLyk89pHUPCtaGk98CUT8wWLIY+f
-         rnsg==
-X-Gm-Message-State: AOAM531iQk1iERdOe0ykDHwLDUi2t2q+O8SziviPC5gKqMfKuUmF+ed8
-        BrxZIfDCkZN5x1uS/RQE738=
-X-Google-Smtp-Source: ABdhPJyX3E8io/dokgHaIDQyplmBOmhxwUd5BLgYw9sU+NGA7bfcvsAfUHEitJ/8hJ82k0tgx/nHMg==
-X-Received: by 2002:ac8:4442:: with SMTP id m2mr4011127qtn.73.1601495958370;
-        Wed, 30 Sep 2020 12:59:18 -0700 (PDT)
-Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id z29sm3699419qtj.79.2020.09.30.12.59.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Sep 2020 12:59:17 -0700 (PDT)
-Sender: Arvind Sankar <niveditas98@gmail.com>
-From:   Arvind Sankar <nivedita@alum.mit.edu>
-X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
-Date:   Wed, 30 Sep 2020 15:59:15 -0400
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Segher Boessenkool <segher@kernel.crashing.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        shuo.a.liu@intel.com, LKML <linux-kernel@vger.kernel.org>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Yu Wang <yu1.wang@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Yakui Zhao <yakui.zhao@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Fengwei Yin <fengwei.yin@intel.com>,
-        Zhi Wang <zhi.a.wang@intel.com>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>
-Subject: Re: [PATCH v4 04/17] x86/acrn: Introduce hypercall interfaces
-Message-ID: <20200930195915.GA3180913@rani.riverdale.lan>
-References: <20200922114311.38804-1-shuo.a.liu@intel.com>
- <20200922114311.38804-5-shuo.a.liu@intel.com>
- <20200927105152.GG88650@kroah.com>
- <6f9a2b83-6904-2290-6c4f-526672390beb@intel.com>
- <20200930111612.GZ2628@hirez.programming.kicks-ass.net>
- <20200930161036.GY28786@gate.crashing.org>
- <20200930171346.GC2628@hirez.programming.kicks-ass.net>
- <CAKwvOdnpU=w4uStcP+UUr9wfoE5U-hW0cMt1bizcX4zQ4=-gOg@mail.gmail.com>
+        id S1730013AbgI3UAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 16:00:09 -0400
+Received: from mail-co1nam11on2062.outbound.protection.outlook.com ([40.107.220.62]:15585
+        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725799AbgI3UAJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 16:00:09 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kt9WEdTH+mKHKx99cQ9/jOcU8JjSyb4wJ5VdPr1hSq1IaGFUyB2+G8gW1gWsABWnP4AKjh4+3RIP8BfBWt01CvPopa+5G+W5qMjL6BYSBHOtAB9Wc+nN18gm9+kyhoeOCrlBzM6vt89CoAzgiSq4F6ynJyYBGJAwQAgPc618ypeq2BwAvaZLDtlXQzum7XaOrAPDbh7Y/nIuaozgpKFHLUVkrXubGhLSpVq60vpNmCyJhXJ7t76S7EfEOvOIw65tg8u1IcY1rA1YrQLIUcJuh4N52ntRFIjf3ooZHPZtD5e3jpSrsETzceCaAm6N4rd6r+bqajYpF9QxBOxQy5pVgA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=XS0EqSIbRvhHf02ES3DP1MYUjHDpTDJIztV5UUySz7A=;
+ b=ocwqKyg4rz8QoUk0JF9MIRduZFKwg4NbNsllXLTx2JA7CWM7utZIaZr53Cc2rE/0Lv+CqaaTCabZkc6hNLdwJB6Vpnf2Xn5PnH3KnjCYDuPyRdPWCSmZKKI7uE22IeURb7ix6gNikjB8OTImq/45v26J8vw78yATI387XegfULJg8kZoQ5PEB9vJ0ZHtNHwKJ+WqaPUfcy8VA2wvxxCp2IDFrUGlZhPZFkoWje1PuaJ1Bsj9k54xtj3zLCMEVatdw6b6sv1QvpyWaRQO/Dbs7F19JH392zlylD9zuwplVaTF2t8gMDAjJODYNJoZvHeRUY4neEMQCKf+rqsAlI+YVA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=micron.com; dmarc=pass action=none header.from=micron.com;
+ dkim=pass header.d=micron.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=micron.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=XS0EqSIbRvhHf02ES3DP1MYUjHDpTDJIztV5UUySz7A=;
+ b=Sy0HR9ahGIlpZ3EMgD3oOzTp7Hx+KpketaJUMNd/VbxEXpu/c9/4X3LXJPnz+AmAmJj8My+8YfmjG76ObvCiIjJHk7KZZoz9JsAstvTaGoip0QVSdVnmEfjIa4B4YPwJH7A6eR9dKyD6qH0TrCrDjdcvKly4TlcfOzegHQIilC8=
+Received: from SN6PR08MB4208.namprd08.prod.outlook.com (2603:10b6:805:3b::21)
+ by SN6PR08MB4623.namprd08.prod.outlook.com (2603:10b6:805:9c::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.21; Wed, 30 Sep
+ 2020 20:00:06 +0000
+Received: from SN6PR08MB4208.namprd08.prod.outlook.com
+ ([fe80::f459:dd7f:5b2:effa]) by SN6PR08MB4208.namprd08.prod.outlook.com
+ ([fe80::f459:dd7f:5b2:effa%7]) with mapi id 15.20.3433.035; Wed, 30 Sep 2020
+ 20:00:06 +0000
+From:   "Nabeel Meeramohideen Mohamed (nmeeramohide)" 
+        <nmeeramohide@micron.com>
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-nvdimm@lists.01.org" <linux-nvdimm@lists.01.org>
+CC:     "Steve Moyer (smoyer)" <smoyer@micron.com>,
+        "Greg Becker (gbecker)" <gbecker@micron.com>,
+        "Pierre Labat (plabat)" <plabat@micron.com>,
+        "John Groves (jgroves)" <jgroves@micron.com>
+Subject: RE: [EXT] Re: [PATCH 17/22] mpool: add mpool lifecycle management
+ ioctls
+Thread-Topic: [EXT] Re: [PATCH 17/22] mpool: add mpool lifecycle management
+ ioctls
+Thread-Index: AQHWlbcLPnsRCBRfHEK8v2KQZl9QlqmAUZwAgAFG53A=
+Date:   Wed, 30 Sep 2020 20:00:06 +0000
+Message-ID: <SN6PR08MB420825E40A88DBDFE66C5E13B3330@SN6PR08MB4208.namprd08.prod.outlook.com>
+References: <20200928164534.48203-1-nmeeramohide@micron.com>
+ <20200928164534.48203-18-nmeeramohide@micron.com>
+ <43f24e68-2625-36ce-1727-fcf981955b17@infradead.org>
+In-Reply-To: <43f24e68-2625-36ce-1727-fcf981955b17@infradead.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: infradead.org; dkim=none (message not signed)
+ header.d=none;infradead.org; dmarc=none action=none header.from=micron.com;
+x-originating-ip: [104.129.198.89]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: dd8972c7-5afe-4341-8fd4-08d8657b6d54
+x-ms-traffictypediagnostic: SN6PR08MB4623:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <SN6PR08MB4623FB781AC4642D5249E1B0B3330@SN6PR08MB4623.namprd08.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:3513;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 4zrnwoW9XzFV1vnyzqopa3Tja1Ofr+HikE47t5qySZlBjDynzHZc+WvovD/7eTf/7qwZmkKQlEfjQODHeerByxQKia0gmAPTaXLrfWU7gXpOiKfMNJh+Rv9fX9JBEefoZ+rR1VFUhobJTIA/3AMFdvPStHau1D0Rhir9JCx6E3Aggi1wZjZw3sGvfx8UEIJGdCgMyps2nbyhE0LyRUd+E8aRQKvyJ2P3VkpFXrr58jnL5WAxrVBWUr8oYFXOj8VTpsq4WxTRCMN0p7fZfs3P1LCKBvUYUUQXmAHjXCzMXJl7xoAwRqVkAyft63j+dPnRax2an1lwwUYL9y1EVMgwwh7XgeLsDPX0NfJL4nxqwWj0MOe6hzbzEjf2TYkI5gV+
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR08MB4208.namprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(136003)(346002)(376002)(39860400002)(366004)(9686003)(52536014)(55236004)(76116006)(66476007)(64756008)(66556008)(66446008)(86362001)(316002)(53546011)(5660300002)(6506007)(186003)(54906003)(55016002)(2906002)(8676002)(8936002)(66946007)(7696005)(4326008)(4744005)(33656002)(478600001)(110136005)(26005)(71200400001)(107886003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: B5J51C/gFl99K26sQ+RFIZ9HUliHC/50xSIYkve2BeI7hjOF35y6KnzxcP6wRacR+22uKJgZUvE6h+YJA1ttmNZJKEJOtLK2z2RQYrWVMZ8YFOWmWntlvQsAMUtRNGxs1acJuwvxJIm8gjRJtNxaYnlj1V5k6z5cxGxRnOl7ARMsHn6HAJD0BHKK4hGmuAFhHPiTEt6pg6Uqh3ATXUVUxYKkIpGPSZEG2S9/MK1ifSYfXteSaom7EYZ8i30UZCEMmGQRDeH0M0GUn6rYYN+eVyVm9SZyItbaya71x7D2udnww8N91fXPY/R3MhBCYxQe8QIkTK5e7zVK7hiifqdw8t/1CeuG0JN9fux7oo8mzd+PYToJciZmvjffprZqj+GuIo38mtjMAnO7Z2KWrEXMNJAB1B4b4fQXcMxM30LPjm0u4c/A66lKwJlnnLnbCt30tjtcKEj5B6lFhztV4fdpLbEgB+ix+amlhO6T3Qp7lO/fMpT7x3X+JNfbX7vsjp2d2YW0rM69vTQSp04wSBWDfZ4CtURng4Hul6V8fWSekSH+TjHNCbVQi3Yuz+gh2T+CMZTknR++YrUUqbAckXUlquq2hwGkePlTp2eBlTRTHOuytJJyfS896Up7E6mx9hvDkD/gMG+ZOsWB7CyxwG2pIw==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAKwvOdnpU=w4uStcP+UUr9wfoE5U-hW0cMt1bizcX4zQ4=-gOg@mail.gmail.com>
+X-OriginatorOrg: micron.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR08MB4208.namprd08.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: dd8972c7-5afe-4341-8fd4-08d8657b6d54
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Sep 2020 20:00:06.0917
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: f38a5ecd-2813-4862-b11b-ac1d563c806f
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: QKKRe6Af0gaKqt4adsv/b14kpxVyq6mUF0mfiVrOV4an5Kxj8qoKYciCvYS2/BzFLRDR4CXzVL05qMd12loU5A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR08MB4623
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 12:14:03PM -0700, Nick Desaulniers wrote:
-> On Wed, Sep 30, 2020 at 10:13 AM Peter Zijlstra <peterz@infradead.org> wrote:
-> >
-> > On Wed, Sep 30, 2020 at 11:10:36AM -0500, Segher Boessenkool wrote:
-> >
-> > > Since this variable is a local register asm, on entry to the asm the
-> > > compiler guarantees that the value lives in the assigned register (the
-> > > "r8" hardware register in this case).  This all works completely fine.
-> > > This is the only guaranteed behaviour for local register asm (well,
-> > > together with analogous behaviour for outputs).
-
-How strict is the guarantee? This is an inline function -- could the
-compiler decide to reorder some other code in between the r8 assignment
-and the asm statement when it gets inlined?
-
-> >
-> > Right, that's what they're trying to achieve. The hypervisor calling
-> > convention needs that variable in %r8 (which is somewhat unfortunate).
-> >
-> > AFAIK this is the first such use in the kernel, but at least the gcc-4.9
-> > (our oldest supported version) claims to support this.
-> >
-> > So now we need to know if clang will actually do this too..
-> 
-> Does clang support register local storage? Let's use godbolt.org to find out:
-> https://godbolt.org/z/YM45W5
-> Looks like yes. You can even check different GCC versions via the
-> dropdown in the top right.
-> 
-> The -ffixed-* flags are less well supported in Clang; they need to be
-> reimplemented on a per-backend basis. aarch64 is relatively well
-> supported, but other arches not so much IME.
-> 
-> Do we need register local storage here?
-> 
-> static inline long bar(unsigned long hcall_id)
-> {
->   long result;
->   asm volatile("movl %1, %%r8d\n\t"
->   "vmcall\n\t"
->     : "=a" (result)
->     : "ir" (hcall_id)
->     : );
->   return result;
-> }
-
-This seems more robust, though you probably need an r8 clobber in there?
-Is hcall_id actually just 32 bits or can it be >=2^32?
+SGkgUmFuZHksDQoNCk9uIFR1ZXNkYXksIFNlcHRlbWJlciAyOSwgMjAyMCA2OjEzIFBNLCBSYW5k
+eSBEdW5sYXAgPHJkdW5sYXBAaW5mcmFkZWFkLm9yZz4gd3JvdGU6DQo+IE9uIDkvMjgvMjAgOTo0
+NSBBTSwgbm1lZXJhbW9oaWRlQG1pY3Jvbi5jb20gd3JvdGU6DQo+ID4gKwlpZiAoX0lPQ19UWVBF
+KGNtZCkgIT0gTVBJT0NfTUFHSUMpDQo+IEhpLA0KPiANCj4gTVBJT0NfTUFHSUMgaXMgZGVmaW5l
+ZCBpbiBwYXRjaCAwMS8yMi4NCj4gSXQgc2hvdWxkIGFsc28gYmUgYWRkZWQgdG8gRG9jdW1lbnRh
+dGlvbi91c2Vyc3BhY2UtYXBpL2lvY3RsL2lvY3RsLW51bWJlci5yc3QuDQo+IA0KDQpTdXJlLCB0
+aGFua3MhIEkndmUgbWFkZSBhIG5vdGUgb2YgdGhpcyBhbmQgd2lsbCBhZGRyZXNzIGl0IGluIHYy
+Lg0KDQpUaGFua3MsDQpOYWJlZWwNCg==
