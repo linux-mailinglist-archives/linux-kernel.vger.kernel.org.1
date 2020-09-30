@@ -2,124 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C5D727DD85
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 02:52:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC64427DD8F
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 02:59:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729398AbgI3Awk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 20:52:40 -0400
-Received: from mga02.intel.com ([134.134.136.20]:14410 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726806AbgI3Awk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 20:52:40 -0400
-IronPort-SDR: EKY9tnDgn/PMubvDQ51jDQDaTDFFmVuYb2hZE7HPcWt2AtcyMFl6FKP9z+Dz8OMkoLksdikhB9
- eVdxuEsvxGtA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9759"; a="149981573"
-X-IronPort-AV: E=Sophos;i="5.77,320,1596524400"; 
-   d="scan'208";a="149981573"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2020 17:52:37 -0700
-IronPort-SDR: 83nC3qUOOCbzXNdKf/VNhYOGNbGS8splzSnGk4Dt5eUOQ8TXdh6dn1jm4YNkhSPESIK1ycqxhK
- nxQmcsuP2fGA==
-X-IronPort-AV: E=Sophos;i="5.77,320,1596524400"; 
-   d="scan'208";a="494489650"
-Received: from jwilliam-mobl.ger.corp.intel.com (HELO localhost) ([10.252.47.189])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2020 17:52:30 -0700
-Date:   Wed, 30 Sep 2020 03:52:28 +0300
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     Andrew Cooper <andrew.cooper3@citrix.com>, haitao.huang@intel.com
-Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Cedric Xing <cedric.xing@intel.com>, akpm@linux-foundation.org,
-        andriy.shevchenko@linux.intel.com, asapek@google.com, bp@alien8.de,
-        chenalexchen@google.com, conradparker@google.com,
-        cyhanish@google.com, dave.hansen@intel.com, haitao.huang@intel.com,
-        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
-        kmoy@google.com, ludloff@google.com, luto@kernel.org,
-        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
-        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com,
-        "H.J. Lu" <hjl.tools@gmail.com>,
-        Yu-cheng Yu <yu-cheng.yu@intel.com>
-Subject: Re: [PATCH v38 21/24] x86/vdso: Implement a vDSO for Intel SGX
- enclave call
-Message-ID: <20200930005228.GC805586@linux.intel.com>
-References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
- <20200915112842.897265-22-jarkko.sakkinen@linux.intel.com>
- <721ca14e-21df-3df1-7bef-0b00d0ff90c3@citrix.com>
- <20200928005842.GC6704@linux.intel.com>
- <85bc15d5-93cd-e332-ae9a-1e1e66e1181d@citrix.com>
- <20200928204258.GA2705@linux.intel.com>
- <7a3e45a5-513a-1d77-fa64-8f4a9f67e3ab@citrix.com>
+        id S1729471AbgI3A7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 20:59:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49650 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729179AbgI3A7F (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 20:59:05 -0400
+X-Greylist: delayed 351 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 29 Sep 2020 17:59:05 PDT
+Received: from achernar.gro-tsen.net (achernar6.gro-tsen.net [IPv6:2001:bc8:30e8::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6200BC061755
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 17:59:05 -0700 (PDT)
+Received: by achernar.gro-tsen.net (Postfix, from userid 500)
+        id 4F9682140517; Wed, 30 Sep 2020 02:53:09 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=madore.org;
+        s=achernar; t=1601427189;
+        bh=JARLd7ygBm66sDOXMr+Zt8YZRTUWjQER5orpvTYTFts=;
+        h=Date:From:To:Subject:From;
+        b=XHohDYDVnrdH4qJ/gIHsnDfLKRE1Jwr/hYzJ1Nb0Qgf9EJyaTDIfPZYHf9fIbtJkT
+         Ggt0wyMnF+9zG7cqStX+TsCh2Z3n2tmxDlreD53FlW1Lh3tA6keN9QwMUPvCPdvCaJ
+         rCEdyViztQilVGLMZ16BchWJeyostc7IQ/SV5cMI=
+Date:   Wed, 30 Sep 2020 02:53:09 +0200
+From:   David Madore <david+ml@madore.org>
+To:     Linux Kernel mailing-list <linux-kernel@vger.kernel.org>
+Subject: RAID5->RAID6 reshape remains stuck at 0% (does nothing, not even
+ start)
+Message-ID: <20200930005309.cl5ankdzfe6pxkgq@achernar.gro-tsen.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <7a3e45a5-513a-1d77-fa64-8f4a9f67e3ab@citrix.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+User-Agent: NeoMutt/20170113 (1.7.2)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 12:52:35AM +0100, Andrew Cooper wrote:
-> On 28/09/2020 21:42, Jarkko Sakkinen wrote:
-> > On Mon, Sep 28, 2020 at 05:44:35PM +0100, Andrew Cooper wrote:
-> >> On 28/09/2020 01:58, Jarkko Sakkinen wrote:
-> >>> On Fri, Sep 25, 2020 at 07:23:59PM +0100, Andrew Cooper wrote:
-> >>>> On 15/09/2020 12:28, Jarkko Sakkinen wrote:
-> >>>>> diff --git a/arch/x86/entry/vdso/vsgx_enter_enclave.S b/arch/x86/entry/vdso/vsgx_enter_enclave.S
-> >>>>> new file mode 100644
-> >>>>> index 000000000000..adbd59d41517
-> >>>>> --- /dev/null
-> >>>>> +++ b/arch/x86/entry/vdso/vsgx_enter_enclave.S
-> >>>>> @@ -0,0 +1,157 @@
-> >>>>> +SYM_FUNC_START(__vdso_sgx_enter_enclave)
-> >>>>> <snip>
-> >>>>> +.Lretpoline:
-> >>>>> +	call	2f
-> >>>>> +1:	pause
-> >>>>> +	lfence
-> >>>>> +	jmp	1b
-> >>>>> +2:	mov	%rax, (%rsp)
-> >>>>> +	ret
-> >>>> I hate to throw further spanners in the work, but this is not compatible
-> >>>> with CET, and the user shadow stack work in progress.
-> >>> CET goes beyond my expertise. Can you describe, at least rudimentary,
-> >>> how this code is not compatible?
-> >> CET Shadow Stacks detect attacks which modify the return address on the
-> >> stack.
-> >>
-> >> Retpoline *is* a ROP gadget.  It really does modify the return address
-> >> on the stack, even if its purpose is defensive (vs Spectre v2) rather
-> >> than malicious.
-> > Aah. I get that, yes.
-> >
-> > Kernel is full of retpoline but I presume that ring-0 does not use CET.
-> 
-> No-one has implemented support CET-SS support for Linux itself yet, but
-> other kernels do have it working.
-> 
-> ~Andrew
+Dear list,
 
-Haitao, can you point out the user handler callback in the Intel
-SGX runtime?
+I'm trying to reshape a 3-disk RAID5 array to a 4-disk RAID6 array (of
+the same total size and per-device size) using linux kernel 4.9.237 on
+x86_64.  I understand that this reshaping operation is supposed to be
+supported.  But it appears perpetually stuck at 0% with no operation
+taking place whatsoever (the slices are unchanged apart from their
+metadata, the backup file contains only zeroes, and nothing happens).
+I wonder if this is a know kernel bug, or what else could explain it,
+and I have no idea how to debug this sort of thing.
 
-There is only one single global callback in a practical deployment
-provided by the runtime. AFAIK, it just copies values, does not do any
-rountrips and is generally very trivial peace of code but it is better
-to check it before final say.
+Here are some details on exactly what I've been doing.  I'll be using
+loopbacks to illustrate, but I've done this on real partitions and
+there was no difference.
 
-I've now experimented with ALTERNATIVE() and it can be definitely made
-work. I'm just thinking that would it be best not use retpoline at all?
+## Create some empty loop devices:
+for i in 0 1 2 3 ; do dd if=/dev/zero of=test-${i} bs=1024k count=16 ; done
+for i in 0 1 2 3 ; do losetup /dev/loop${i} test-${i} ; done
+## Make a RAID array out of the first three:
+mdadm --create /dev/md/test --level=raid5 --chunk=256 --name=test \
+  --metadata=1.0 --raid-devices=3 /dev/loop{0,1,2}
+## Populate it with some content, just to see what's going on:
+for i in $(seq 0 63) ; do printf "This is chunk %d (0x%x).\n" $i $i \
+  | dd of=/dev/md/test bs=256k seek=$i ; done
+## Now try to reshape the array from 3-way RAID5 to 4-way RAID6:
+mdadm --manage /dev/md/test --add-spare /dev/loop3
+mdadm --grow /dev/md/test --level=6 --raid-devices=4 \
+  --backup-file=test-reshape.backup
 
-My guess is that the callback would not have much applicability in
-Spectre'ish attacks but do not have enough expertise on that to even
-semiformally conclude it.
+...and then nothing happens.  /proc/mdstat reports no progress
+whatsoever:
 
-My intention is to find reasonable conclusions to drop it instead of
-adding more complexity to the vDSO.
+md112 : active raid6 loop3[4] loop2[3] loop1[1] loop0[0]
+      32256 blocks super 1.0 level 6, 256k chunk, algorithm 18 [4/3] [UUU_]
+      [>....................]  reshape =  0.0% (1/16128) finish=1.0min speed=244K/sec
 
-/Jarkko
+The loop file contents are unchanged except for the metadata
+superblock, the backup file is entirely empty, and no activity
+whatsoever is happening.
+
+Actually, further investigation shows that the array is in fact
+operational as a RAID6 array, but one where the Q-syndrome is stuck in
+the last device: writing data to the md device (e.g., by repopulating
+it with the same command as above) does cause loop3 to be updated as
+expected for such a layout.  It's just the reshaping which doesn't
+take place (or indeed begin).
+
+For completeness, here's what mdadm --detail /dev/md/test looks like
+before the reshape, in my example:
+
+/dev/md/test:
+        Version : 1.0
+  Creation Time : Wed Sep 30 02:42:30 2020
+     Raid Level : raid5
+     Array Size : 32256 (31.50 MiB 33.03 MB)
+  Used Dev Size : 16128 (15.75 MiB 16.52 MB)
+   Raid Devices : 3
+  Total Devices : 4
+    Persistence : Superblock is persistent
+
+    Update Time : Wed Sep 30 02:44:21 2020
+          State : clean 
+ Active Devices : 3
+Working Devices : 4
+ Failed Devices : 0
+  Spare Devices : 1
+
+         Layout : left-symmetric
+     Chunk Size : 256K
+
+           Name : vega.stars:test  (local to host vega.stars)
+           UUID : 30f40e34:b9a52ff0:75c8b063:77234832
+         Events : 20
+
+    Number   Major   Minor   RaidDevice State
+       0       7        0        0      active sync   /dev/loop0
+       1       7        1        1      active sync   /dev/loop1
+       3       7        2        2      active sync   /dev/loop2
+
+       4       7        3        -      spare   /dev/loop3
+
+- and here's what it looks like after the attempted reshape has
+started (or rather, refused to start):
+
+/dev/md/test:
+        Version : 1.0
+  Creation Time : Wed Sep 30 02:42:30 2020
+     Raid Level : raid6
+     Array Size : 32256 (31.50 MiB 33.03 MB)
+  Used Dev Size : 16128 (15.75 MiB 16.52 MB)
+   Raid Devices : 4
+  Total Devices : 4
+    Persistence : Superblock is persistent
+
+    Update Time : Wed Sep 30 02:44:54 2020
+          State : clean, degraded, reshaping 
+ Active Devices : 3
+Working Devices : 4
+ Failed Devices : 0
+  Spare Devices : 1
+
+         Layout : left-symmetric-6
+     Chunk Size : 256K
+
+ Reshape Status : 0% complete
+     New Layout : left-symmetric
+
+           Name : vega.stars:test  (local to host vega.stars)
+           UUID : 30f40e34:b9a52ff0:75c8b063:77234832
+         Events : 22
+
+    Number   Major   Minor   RaidDevice State
+       0       7        0        0      active sync   /dev/loop0
+       1       7        1        1      active sync   /dev/loop1
+       3       7        2        2      active sync   /dev/loop2
+       4       7        3        3      spare rebuilding   /dev/loop3
+
+I also tried writing "frozen" and then "resync" to the
+/sys/block/md112/md/sync_action file with no further results.
+
+I welcome any suggestions on how to investigate, work around, or fix
+this problem.
+
+Happy hacking,
+
+-- 
+     David A. Madore
+   ( http://www.madore.org/~david/ )
