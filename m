@@ -2,89 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E22D027DF0D
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 05:37:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEA7027DF11
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 05:41:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728046AbgI3Dh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 23:37:26 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:42652 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725320AbgI3Dh0 (ORCPT
+        id S1727206AbgI3Dlx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 23:41:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46312 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725306AbgI3Dlx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 23:37:26 -0400
-X-UUID: fcb3a0e8fcff4d4ea64a39c99de5a5b7-20200930
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=nFjY+65HkqTIZS8cgP/4xc/0uFaZraXhLQV67OqTdbo=;
-        b=jLzGBIU/L7LxLBmXWaLGR2ayRZugR9e0ab3xyA5D9N2DlC+m38PdbbP2GCwMlN/Fb4ubVyrgmX3c8dAybi3aHg2Tp670nrUo+Pmx2uu90Bq3pWxRJ7XnUde3TLrDgb5w/smviMP3LgAyjaKvmZf3VFZB29AO8LJAfbE6UIwHpOQ=;
-X-UUID: fcb3a0e8fcff4d4ea64a39c99de5a5b7-20200930
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
-        (envelope-from <weiyi.lu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1300487384; Wed, 30 Sep 2020 11:37:20 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 30 Sep 2020 11:37:15 +0800
-Received: from [172.21.77.4] (172.21.77.4) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 30 Sep 2020 11:37:19 +0800
-Message-ID: <1601437039.28469.3.camel@mtksdaap41>
-Subject: Re: [PATCH v17 06/12] soc: mediatek: Add support for hierarchical
- scpsys device node
-From:   Weiyi Lu <weiyi.lu@mediatek.com>
-To:     Nicolas Boichat <drinkcat@chromium.org>
-CC:     Enric Balletbo Serra <eballetbo@gmail.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Herring <robh@kernel.org>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        James Liao <jamesjj.liao@mediatek.com>,
-        Fan Chen <fan.chen@mediatek.com>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Devicetree List <devicetree@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        srv_heupstream <srv_heupstream@mediatek.com>
-Date:   Wed, 30 Sep 2020 11:37:19 +0800
-In-Reply-To: <CANMq1KByYjeD0D81sPzDxx5SzrPvpGxPgm+xvLWcFsmfUJDWBQ@mail.gmail.com>
-References: <1596705715-15320-1-git-send-email-weiyi.lu@mediatek.com>
-         <1596705715-15320-7-git-send-email-weiyi.lu@mediatek.com>
-         <CANMq1KByYjeD0D81sPzDxx5SzrPvpGxPgm+xvLWcFsmfUJDWBQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        Tue, 29 Sep 2020 23:41:53 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33E1DC061755
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 20:41:53 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id w12so159444qki.6
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 20:41:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=904wo1HstmKPfAlqw09yQOCjg2/bb4jTacjAS/C5REA=;
+        b=FxqvT8XjUW9EsnLWiMGev/S/pqV96UKY8Lln3yn7e0jP/0IFICsD+WyV1xSyK30+3W
+         nYu6ZM2ciAeakWkSEr0S1VX6wK37oNkEIjQGQywTiBmcdrI8OHsCOXPkxjmG2IVFIK9s
+         WBz9Xo+zUsYN0QPTFKKFRMLpDaSHl5kcDVmgzp7KywSRAcdCfV+publL4eMHs932s71B
+         oA7mEvY2uelrMoAL4LLmbuk2GqFu/RKNP5J579TjOMxHzKe7VQUpsr9IysNQBESmpLGL
+         OSAsRUk/sQdyYV4uHkVzy9ngzK86w9K1M9Rvs8MPJyKSQUS/2L/8dAhbdyzwAJoA+AA5
+         2j9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=904wo1HstmKPfAlqw09yQOCjg2/bb4jTacjAS/C5REA=;
+        b=aqATS6+tVX822M7MAuoLNTGXjXee98UBEvcfayKJJnQHlO+DiFd2svOSA3mv6ZDNwv
+         wPCJtsjvStW7GUJYmxmEPSS4TnTjDeuk+O6W18/CpA5zAh272VdRNc5ouHx+wRa3G+0l
+         MKHtOMv1MSd3Xz94I4D7+6rbOSPp5XTJYF3/ohXCbBhg2KAgUSxSEW+l8SmBeIgY+CKm
+         rdTM+SKLKOkLW/+HlIMOU8U3EXDdMv7Uf++F1qFqJ7qc62QbjQeGb4EnSMumL/QXIRqY
+         Ab2tKn4u0h0O0nMF4pFnBVZo9TeySKoWoHn5yjSPnE6g06q+c6NoHuF1fSbbEfDssNeH
+         XslQ==
+X-Gm-Message-State: AOAM532rRKQmoEfozHx+TKc5aIRgzicCwNG0yOwyOQfOSmN7C1n1XohL
+        O0z2qeWdaVyypkqp2+KG3EweelwTuk6Qtmztl5k=
+X-Google-Smtp-Source: ABdhPJyBorD11hOERa2IM2DMaTmg2iWVV10SSsGQhH3lgvbKAy+MfEo0+NmxczMsYsKswQZuskKdzUOTY+UJ7wk74D0=
+X-Received: by 2002:ae9:ed86:: with SMTP id c128mr708391qkg.277.1601437312482;
+ Tue, 29 Sep 2020 20:41:52 -0700 (PDT)
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+From:   Matthew Hanzelik <mrhanzelik@gmail.com>
+Date:   Tue, 29 Sep 2020 23:39:53 -0400
+Message-ID: <CAF4OWHKYrcZzZp_YVf+mnGgjHUi7AKPA22s5q7vVfu371_8HTg@mail.gmail.com>
+Subject: [PATCH v2] Staging: nvec: Remove duplicate word in comment.
+To:     marvin24@gmx.de, Greg KH <gregkh@linuxfoundation.org>
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gTW9uLCAyMDIwLTA5LTI4IGF0IDE1OjE0ICswODAwLCBOaWNvbGFzIEJvaWNoYXQgd3JvdGU6
-DQo+IE9uIFRodSwgQXVnIDYsIDIwMjAgYXQgNToyMiBQTSBXZWl5aSBMdSA8d2VpeWkubHVAbWVk
-aWF0ZWsuY29tPiB3cm90ZToNCj4gPg0KPiA+IFRyeSB0byBsaXN0IGFsbCB0aGUgcG93ZXIgZG9t
-YWlucyBvZiB1bmRlciBwb3dlciBjb250cm9sbGVyDQo+ID4gbm9kZSB0byBzaG93IHRoZSBkZXBl
-bmRlbmN5IGJldHdlZW4gZWFjaCBwb3dlciBkb21haW4gZGlyZWN0bHkNCj4gPiBpbnN0ZWFkIG9m
-IGZpbGxpbmcgdGhlIGRlcGVuZGVuY3kgaW4gc2NwX3NvY19kYXRhLg0KPiA+IEFuZCBjb3VsZCBi
-ZSBtb3JlIGNsZWFybHkgdG8gZ3JvdXAgc3Vic3lzIGNsb2NrcyBpbnRvIHBvd2VyIGRvbWFpbg0K
-PiA+IHN1YiBub2RlIHRvIGludHJvZHVjZSBzdWJzeXMgY2xvY2tzIG9mIGJ1cyBwcm90ZWN0aW9u
-IGluIG5leHQgcGF0Y2guDQo+ID4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBXZWl5aSBMdSA8d2VpeWku
-bHVAbWVkaWF0ZWsuY29tPg0KPiA+IC0tLQ0KPiBbc25pcF0NCj4gPiArc3RhdGljIGludCB0cmF2
-ZXJzZV9zY3Aoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldiwgc3RydWN0IHNjcCAqc2NwLA0K
-PiA+ICsgICAgICAgICAgICAgICAgICAgICAgIGNvbnN0IHN0cnVjdCBzY3BfZG9tYWluX2RhdGEg
-KnNjcF9kb21haW5fZGF0YSkNCj4gPiArew0KPiA+ICsgICAgICAgc3RydWN0IGRldmljZSAqZGV2
-ID0gJnBkZXYtPmRldjsNCj4gPiArICAgICAgIHN0cnVjdCBkZXZpY2Vfbm9kZSAqbnAgPSBkZXYt
-Pm9mX25vZGU7DQo+ID4gKyAgICAgICBzdHJ1Y3QgZGV2aWNlX25vZGUgKnN1YjsNCj4gPiArICAg
-ICAgIGludCByZXQ7DQo+ID4gKw0KPiA+ICsgICAgICAgSU5JVF9MSVNUX0hFQUQoJnNjcC0+ZGVw
-X2xpbmtzKTsNCj4gPiArDQo+ID4gKyAgICAgICBmb3JfZWFjaF9hdmFpbGFibGVfY2hpbGRfb2Zf
-bm9kZShucCwgc3ViKSB7DQo+ID4gKyAgICAgICAgICAgICAgIHJldCA9IHNjcHN5c19nZXRfZG9t
-YWluKHBkZXYsIHNjcCwgc3ViLCBzY3BfZG9tYWluX2RhdGEpOw0KPiA+ICsgICAgICAgICAgICAg
-ICBpZiAocmV0KSB7DQo+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgZGV2X2VycigmcGRldi0+
-ZGV2LCAiZmFpbGVkIHRvIGhhbmRsZSBub2RlICVwT0ZuOiAlZFxuIiwgc3ViLCByZXQpOw0KPiAN
-Cj4gbWlub3IgY29tbWVudDogdGhpcyBlcnJvciBzaG91bGQgbm90IGJlIHByaW50ZWQgaWYgcmV0
-ID09DQo+IC1FUFJPQkVfREVGRVIgKHVzZSB0aGUgbmV3IGRldl9lcnJfcHJvYmU/KQ0KPiANCg0K
-WW91J3JlIHJpZ2h0ISBJJ2xsIHVzZSBkZXZfZXJyX3Byb2JlKCkgaW5zdGVhZCBpZiBhbnlvbmUg
-aXMgaW50ZXJlc3RlZA0KaW4gdGhpcyBzZXJpZXMuIFRoYW5rIHlvdSENCg0KPiA+ICsgICAgICAg
-ICAgICAgICAgICAgICAgIGdvdG8gZXJyOw0KPiA+ICsgICAgICAgICAgICAgICB9DQo+ID4gKyAg
-ICAgICB9DQo+ID4gKw0KPiA+ICsgICAgICAgcmV0dXJuIDA7DQo+ID4gKw0KPiA+ICtlcnI6DQo+
-ID4gKyAgICAgICBvZl9ub2RlX3B1dChzdWIpOw0KPiA+ICsgICAgICAgcmV0dXJuIHJldDsNCj4g
-PiArfQ0KPiBbc25pcF0NCg0K
+Remove a duplicate word in a comment within nvec.c.
 
+Signed-off-by: Matthew Hanzelik <mrhanzelik@gmail.com>
+---
+Changes in v2:
+ - Fix spelling mistake in commit.
+---
+ drivers/staging/nvec/nvec.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/staging/nvec/nvec.c b/drivers/staging/nvec/nvec.c
+index 360ec0407740..a80996b2f5ce 100644
+--- a/drivers/staging/nvec/nvec.c
++++ b/drivers/staging/nvec/nvec.c
+@@ -289,7 +289,7 @@ EXPORT_SYMBOL(nvec_write_async);
+  * interrupt handlers.
+  *
+  * Returns: 0 on success, a negative error code on failure.
+- * The response message is returned in @msg. Shall be freed with
++ * The response message is returned in @msg. Shall be freed
+  * with nvec_msg_free() once no longer used.
+  *
+  */
+--
+2.26.2
