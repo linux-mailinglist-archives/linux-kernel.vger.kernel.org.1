@@ -2,107 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E08F027F522
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 00:29:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 876E027F524
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 00:29:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731613AbgI3W30 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 18:29:26 -0400
-Received: from mail-il1-f205.google.com ([209.85.166.205]:49320 "EHLO
-        mail-il1-f205.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731598AbgI3W3X (ORCPT
+        id S1731629AbgI3W3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 18:29:40 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:22224 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730398AbgI3W3k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 18:29:23 -0400
-Received: by mail-il1-f205.google.com with SMTP id o18so2798226ilm.16
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 15:29:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=+0VlvcNRUBLPwYY+/l3iWps8TddUUFMalUbSMxo1nMc=;
-        b=JoGslo6sQxvI60ezTW7/3KtHZggrNo3x9SGHts2w4ctLzw2zEgEv3QA3ccRLG64qv2
-         JVSkg7s0Nl3K8KjZRO87W/HqL+Fu4XAN2THzK+QaChGuwBddNRrvInJbFLT/y4QZw5vB
-         zeCFiO6AJsTSrjMjPcWhO7Ymdf3rZmCYfkopwozCIACH9L4lMx1nPh+Bq9Rkkx716dQl
-         r87cT/iGYhd+I2ayEWdT67R6G/OqZR9jhvpRo+j5DfOJP0In4mi6iJ7i/xQq0iCGMAnI
-         VURfVR5rkk7goH48O/DYEffAi4uCqy/1iEFAJYxT8SynuwaXInKCtjLXnQ+UJo+C3FzY
-         ViGg==
-X-Gm-Message-State: AOAM531rWJxMf1Nt0cj8C1pugHmkl5RfJpsb1obwK9XriHvr8yMQUZjx
-        4vzcikL8kSrj6l4oa0FEFF5tsTF5OnY4J2D6pgCyZBPVbN3S
-X-Google-Smtp-Source: ABdhPJxQ53hwefKNF6WE9W0GG8xHlmhPERFSu7t/v13Oo8rcSYfID9pDQh/morvR5iOb+/sczzfKsSw84sYfzhDoi8jBLmnKOSv5
+        Wed, 30 Sep 2020 18:29:40 -0400
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08UM2Dse065892;
+        Wed, 30 Sep 2020 18:29:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=bqnKSnYGkMCTbMLLZkuOCFSYLg7Fmfo08VtiyWQBCJY=;
+ b=tus6AHdOze2k/FZcRkIhwA8epIJYOL//4BpfUwO49ALKs672nn5a2t6SitBCUye85DXF
+ XNqu4Oi+8lLZdTAoXMDlzC37cS9M8TwpM8fL5KmlAU/tv9ZxwTtBsU7uAtH79Rgfo4Nq
+ yTg0iwUOC4Ib0lTehGtyDh7Quc2AKvSK7ekFPyWl889T4wyNlughAKRaKaEeVy71aopo
+ ZIHWTnW9s1GFXfJ+T5alL37BW+9rZJp0gO/K5q8YGuUSJJR2MtCE5jjtyArRE7pbZvUn
+ BLiwg8htBmPdn4PBMlfXG0U0I7q3wt2qY+PYKZV8UeCXPKWadP93Y8Ecp8OFIRwjza4N IQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33w2618ycp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 30 Sep 2020 18:29:39 -0400
+Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08UMMslD009593;
+        Wed, 30 Sep 2020 18:29:39 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33w2618ybs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 30 Sep 2020 18:29:39 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08UMROl7013228;
+        Wed, 30 Sep 2020 22:29:36 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma03ams.nl.ibm.com with ESMTP id 33sw984utx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 30 Sep 2020 22:29:36 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08UMTXhU14549402
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 30 Sep 2020 22:29:33 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B9ABFAE045;
+        Wed, 30 Sep 2020 22:29:33 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id F4118AE04D;
+        Wed, 30 Sep 2020 22:29:32 +0000 (GMT)
+Received: from oc2783563651 (unknown [9.145.63.21])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 30 Sep 2020 22:29:32 +0000 (GMT)
+Date:   Thu, 1 Oct 2020 00:29:30 +0200
+From:   Halil Pasic <pasic@linux.ibm.com>
+To:     Tony Krowiak <akrowiak@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, freude@linux.ibm.com, borntraeger@de.ibm.com,
+        cohuck@redhat.com, mjrosato@linux.ibm.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com,
+        fiuczy@linux.ibm.com, frankja@linux.ibm.com, david@redhat.com,
+        imbrenda@linux.ibm.com, hca@linux.ibm.com, gor@linux.ibm.com
+Subject: Re: [PATCH v10 09/16] s390/vfio-ap: allow assignment of unavailable
+ AP queues to mdev device
+Message-ID: <20201001002930.26185810.pasic@linux.ibm.com>
+In-Reply-To: <76600ed5-60cc-c530-56db-43f7026d8c8e@linux.ibm.com>
+References: <20200821195616.13554-1-akrowiak@linux.ibm.com>
+        <20200821195616.13554-10-akrowiak@linux.ibm.com>
+        <20200927014902.1a1a0d8c.pasic@linux.ibm.com>
+        <76600ed5-60cc-c530-56db-43f7026d8c8e@linux.ibm.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.11.1 (GTK+ 2.24.31; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-X-Received: by 2002:a92:de4b:: with SMTP id e11mr89152ilr.101.1601504961330;
- Wed, 30 Sep 2020 15:29:21 -0700 (PDT)
-Date:   Wed, 30 Sep 2020 15:29:21 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000053864e05b08f6e58@google.com>
-Subject: WARNING in kthread_park
-From:   syzbot <syzbot+e7eea402700c6db193be@syzkaller.appspotmail.com>
-To:     axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-30_13:2020-09-30,2020-09-30 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 clxscore=1015
+ adultscore=0 lowpriorityscore=0 phishscore=0 priorityscore=1501
+ spamscore=0 suspectscore=0 mlxlogscore=999 bulkscore=0 mlxscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009300174
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Wed, 30 Sep 2020 08:59:36 -0400
+Tony Krowiak <akrowiak@linux.ibm.com> wrote:
 
-syzbot found the following issue on:
+> >> @@ -572,6 +455,11 @@ static int vfio_ap_mdev_verify_no_sharing(struct ap_matrix_mdev *matrix_mdev,
+> >>   	DECLARE_BITMAP(aqm, AP_DOMAINS);
+> >>   
+> >>   	list_for_each_entry(lstdev, &matrix_dev->mdev_list, node) {
+> >> +		/*
+> >> +		 * If either of the input masks belongs to the mdev to which an
+> >> +		 * AP resource is being assigned, then we don't need to verify
+> >> +		 * that mdev's masks.
+> >> +		 */
+> >>   		if (matrix_mdev == lstdev)
+> >>   			continue;
+> >>     
+> > Seems unrelated.  
+> 
+> What seems unrelated? The matrix_mdev passed in is the mdev to which 
+> assignment is
+> being made. This function is verifying that no APQN assigned to the 
+> matrix_mdev is
+> assigned to any other mdev. Since we are looping through all mdevs here, 
+> we are
+> skipping the verification if the current mdev being examined is the same 
+> as the matrix_mdev
+> to which the assignment is being made. Maybe I'm not understanding your 
+> point here.
 
-HEAD commit:    d1d2220c Add linux-next specific files for 20200924
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=15b1918d900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=254e028a642027c
-dashboard link: https://syzkaller.appspot.com/bug?extid=e7eea402700c6db193be
-compiler:       gcc (GCC) 10.1.0-syz 20200507
+Sorry I did not explain myself clear enough. By seems unrelated, I mean
+that while valid possibly it does not contribute towards achieving the
+objective of the patch (as stated by the commit message and the short
+description).
 
-Unfortunately, I don't have any reproducer for this issue yet.
+AFAICT this is about documenting some pre-existing logic that is not
+changed, nor it needs to be changed to achieve the objective.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+e7eea402700c6db193be@syzkaller.appspotmail.com
+This patch does not change the function at all (except for the
+comment). If the comment is about the new arguments, then is
+belongs to "implement in-use callback for vfio_ap driver" where those
+were added.
 
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 28162 at kernel/kthread.c:547 kthread_park+0x17c/0x1b0 kernel/kthread.c:547
-Modules linked in:
-CPU: 1 PID: 28162 Comm: syz-executor.3 Not tainted 5.9.0-rc6-next-20200924-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:kthread_park+0x17c/0x1b0 kernel/kthread.c:547
-Code: 2a 04 27 00 0f 0b e9 fb fe ff ff e8 1e 04 27 00 0f 0b e8 17 04 27 00 41 bc da ff ff ff 5b 44 89 e0 5d 41 5c c3 e8 04 04 27 00 <0f> 0b 41 bc f0 ff ff ff eb be e8 f5 03 27 00 0f 0b eb b2 e8 bc 74
-RSP: 0018:ffffc90017ebfd50 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: ffff888092c0ca00 RCX: ffffffff814e2ccf
-RDX: ffff88804f30a040 RSI: ffffffff814e2d6c RDI: 0000000000000007
-RBP: ffff88804f46c440 R08: 0000000000000000 R09: ffff888092c0ca07
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000001
-R13: 0000000000000000 R14: ffff888096f7d000 R15: 0000000000000000
-FS:  0000000002a7e940(0000) GS:ffff8880ae500000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000001590004 CR3: 000000020a32f000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- io_sq_thread_park fs/io_uring.c:7145 [inline]
- io_sq_thread_park fs/io_uring.c:7139 [inline]
- io_uring_flush+0x10a6/0x1640 fs/io_uring.c:8596
- filp_close+0xb4/0x170 fs/open.c:1276
- __close_fd+0x2f/0x50 fs/file.c:671
- __do_sys_close fs/open.c:1295 [inline]
- __se_sys_close fs/open.c:1293 [inline]
- __x64_sys_close+0x69/0x100 fs/open.c:1293
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x417901
-Code: 75 14 b8 03 00 00 00 0f 05 48 3d 01 f0 ff ff 0f 83 a4 1a 00 00 c3 48 83 ec 08 e8 0a fc ff ff 48 89 04 24 b8 03 00 00 00 0f 05 <48> 8b 3c 24 48 89 c2 e8 53 fc ff ff 48 89 d0 48 83 c4 08 48 3d 01
-RSP: 002b:00007fffe4c281e0 EFLAGS: 00000293 ORIG_RAX: 0000000000000003
-RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 0000000000417901
-RDX: 0000000000000000 RSI: ffffffff8840e309 RDI: 0000000000000003
-RBP: 0000000000000001 R08: ffffffff8134e496 R09: 0000000092f8bb6d
-R10: 00007fffe4c282d0 R11: 0000000000000293 R12: 000000000118d9c0
-R13: 000000000118d9c0 R14: ffffffffffffffff R15: 000000000118cf4c
+BTW I find the comment hard to understand because I don't see "If either
+of the input masks belongs to the mdev to which an  AP resource is being
+assigned expressed in the code.
 
+I would rather have the docstring of the function updated so the
+relationship of the three arguments is clear.
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Regards,
+Halil
