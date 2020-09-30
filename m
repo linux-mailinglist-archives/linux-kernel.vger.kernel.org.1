@@ -2,45 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13BC027E032
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 07:23:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D0F127E02C
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 07:23:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727980AbgI3FWi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 01:22:38 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:53728 "EHLO
+        id S1727863AbgI3FWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 01:22:34 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:53746 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725320AbgI3FWZ (ORCPT
+        with ESMTP id S1725535AbgI3FW0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 01:22:25 -0400
-Date:   Wed, 30 Sep 2020 05:22:21 -0000
+        Wed, 30 Sep 2020 01:22:26 -0400
+Date:   Wed, 30 Sep 2020 05:22:22 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1601443342;
+        s=2020; t=1601443343;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=dPCQsuMsHBeuYgIQ/41ybBEWQ9ifLXlUlxN6trHNCTQ=;
-        b=jJ5XPJ0slfeKHnZAuS0KH/hsJk8n8aAFvNV4e2jKUH7kyTETYN2Gy7sr4qMsuNXkPHPLIK
-        CN3KwRFW0WoPpsYk7S6YejvuFbd0etAVtqLLqUa/9F8OziPzsZWIr9ihJ+CWLKe25RjBjI
-        qqtEitmJMvuWV1F6dFvQQ10uduzkuC7gn2QQ23ieYIh+XoNOzrR3PIsVJwvBABvfMdpeMV
-        34jGcGFBOwLCcxUQIm0A3pWbVkKpac+zEUu8hxHmInBklJB/QJsL0hH0UAJzD9gzXQl6aI
-        mGU9WshHDXXDmdqCxnlGSxuU06ndGoebaDkhwirEJFWqv4vI0k8M6vQuzHcNnQ==
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=dKtorfU7/shsRR8/6e2ePbknRAhPq6kbzYwu2dH96uY=;
+        b=LOyi4LqwvOO3jMbFD4ssM/xtHZojuo8C6b5RlUvTXja0UQv71PfkhXMwZc4vJbtqXzV11M
+        uhcGA+/rkmeUbBNn/0/R7KeUWIJmRfOoXQZIixKFJKGrJ+TYM8YH+uhXNZHewEOEt8RxfA
+        cKUB2OtAvWPFRhVEf+H4MsKNFDGzWayyI119aicsF/aFo85MoPOmhbnLqFAJ5MPcCtTxCU
+        YVTG0uWrH9CMHXYvGMJZYQ93dFO3G6RXFJefyke0BYjNhQUpGciousT5vuzh9XeCWKINBV
+        XoZEZ3MQ2RUwFY9HAOp9swEkd/qRD+vNQROA3m0+LJKZY47gTOrnF7DGF5ffng==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1601443342;
+        s=2020e; t=1601443343;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=dPCQsuMsHBeuYgIQ/41ybBEWQ9ifLXlUlxN6trHNCTQ=;
-        b=QvpmDdgwkY8Q1LBqvyCLmoQBaFetHwySXiqTtyomdDWBBrSPiuSoCQIfxyaZy7CZwSY4iQ
-        OfCvGhGHDTJR8gBA==
-From:   "tip-bot2 for Ard Biesheuvel" <tip-bot2@linutronix.de>
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=dKtorfU7/shsRR8/6e2ePbknRAhPq6kbzYwu2dH96uY=;
+        b=p3aRirSWt0vcyZ2fU6x11Bu6B8eQfLff6YT9H6uUqESoWtuJCgKIYhqJWwWziAv4jWDtgi
+        QOMxRiQjORaffYDQ==
+From:   "tip-bot2 for Alex Kluver" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: efi/core] efi: pstore: disentangle from deprecated efivars module
-Cc:     Ard Biesheuvel <ardb@kernel.org>, x86 <x86@kernel.org>,
+Subject: [tip: efi/core] cper,edac,efi: Memory Error Record: bank
+ group/address and chip id
+Cc:     Alex Kluver <alex.kluver@hpe.com>,
+        Russ Anderson <russ.anderson@hpe.com>,
+        Kyle Meyer <kyle.meyer@hpe.com>,
+        Steve Wahl <steve.wahl@hpe.com>, Borislav Petkov <bp@suse.de>,
+        Ard Biesheuvel <ardb@kernel.org>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200819143544.155096-3-alex.kluver@hpe.com>
+References: <20200819143544.155096-3-alex.kluver@hpe.com>
 MIME-Version: 1.0
-Message-ID: <160144334169.7002.18043090415739220297.tip-bot2@tip-bot2>
+Message-ID: <160144334264.7002.3839568523655548553.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -51,275 +62,111 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the efi/core branch of tip:
 
-Commit-ID:     232f4eb6393f42f7f9418560ae9228e747fc6faf
-Gitweb:        https://git.kernel.org/tip/232f4eb6393f42f7f9418560ae9228e747fc6faf
-Author:        Ard Biesheuvel <ardb@kernel.org>
-AuthorDate:    Wed, 23 Sep 2020 09:56:14 +02:00
+Commit-ID:     612b5d506d066cdf0a739963e7cd28642d500ec1
+Gitweb:        https://git.kernel.org/tip/612b5d506d066cdf0a739963e7cd28642d500ec1
+Author:        Alex Kluver <alex.kluver@hpe.com>
+AuthorDate:    Wed, 19 Aug 2020 09:35:44 -05:00
 Committer:     Ard Biesheuvel <ardb@kernel.org>
-CommitterDate: Tue, 29 Sep 2020 19:40:57 +02:00
+CommitterDate: Thu, 17 Sep 2020 10:19:52 +03:00
 
-efi: pstore: disentangle from deprecated efivars module
+cper,edac,efi: Memory Error Record: bank group/address and chip id
 
-The EFI pstore implementation relies on the 'efivars' abstraction,
-which encapsulates the EFI variable store in a way that can be
-overridden by other backing stores, like the Google SMI one.
+Updates to the UEFI 2.8 Memory Error Record allow splitting the bank field
+into bank address and bank group, and using the last 3 bits of the extended
+field as a chip identifier.
 
-On top of that, the EFI pstore implementation also relies on the
-efivars.ko module, which is a separate layer built on top of the
-'efivars' abstraction that exposes the [deprecated] sysfs entries
-for each variable that exists in the backing store.
+When needed, print correct version of bank field, bank group, and chip
+identification.
 
-Since the efivars.ko module is deprecated, and all users appear to
-have moved to the efivarfs file system instead, let's prepare for
-its removal, by removing EFI pstore's dependency on it.
+Based on UEFI 2.8 Table 299. Memory Error Record.
 
+Signed-off-by: Alex Kluver <alex.kluver@hpe.com>
+Reviewed-by: Russ Anderson <russ.anderson@hpe.com>
+Reviewed-by: Kyle Meyer <kyle.meyer@hpe.com>
+Reviewed-by: Steve Wahl <steve.wahl@hpe.com>
+Acked-by: Borislav Petkov <bp@suse.de>
+Link: https://lore.kernel.org/r/20200819143544.155096-3-alex.kluver@hpe.com
 Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 ---
- drivers/firmware/efi/Kconfig      |  2 +-
- drivers/firmware/efi/efi-pstore.c | 76 ++++++++++++++++++++++++++++--
- drivers/firmware/efi/efivars.c    | 41 +----------------
- include/linux/efi.h               |  4 +--
- 4 files changed, 74 insertions(+), 49 deletions(-)
+ drivers/edac/ghes_edac.c    |  9 +++++++++
+ drivers/firmware/efi/cper.c |  9 +++++++++
+ include/linux/cper.h        |  8 ++++++++
+ 3 files changed, 26 insertions(+)
 
-diff --git a/drivers/firmware/efi/Kconfig b/drivers/firmware/efi/Kconfig
-index 3939699..dd8d108 100644
---- a/drivers/firmware/efi/Kconfig
-+++ b/drivers/firmware/efi/Kconfig
-@@ -26,7 +26,7 @@ config EFI_ESRT
+diff --git a/drivers/edac/ghes_edac.c b/drivers/edac/ghes_edac.c
+index 741e760..8a44f32 100644
+--- a/drivers/edac/ghes_edac.c
++++ b/drivers/edac/ghes_edac.c
+@@ -372,6 +372,12 @@ void ghes_edac_report_mem_error(int sev, struct cper_sec_mem_err *mem_err)
+ 		p += sprintf(p, "rank:%d ", mem_err->rank);
+ 	if (mem_err->validation_bits & CPER_MEM_VALID_BANK)
+ 		p += sprintf(p, "bank:%d ", mem_err->bank);
++	if (mem_err->validation_bits & CPER_MEM_VALID_BANK_GROUP)
++		p += sprintf(p, "bank_group:%d ",
++			     mem_err->bank >> CPER_MEM_BANK_GROUP_SHIFT);
++	if (mem_err->validation_bits & CPER_MEM_VALID_BANK_ADDRESS)
++		p += sprintf(p, "bank_address:%d ",
++			     mem_err->bank & CPER_MEM_BANK_ADDRESS_MASK);
+ 	if (mem_err->validation_bits & (CPER_MEM_VALID_ROW | CPER_MEM_VALID_ROW_EXT)) {
+ 		u32 row = mem_err->row;
  
- config EFI_VARS_PSTORE
- 	tristate "Register efivars backend for pstore"
--	depends on EFI_VARS && PSTORE
-+	depends on PSTORE
- 	default y
- 	help
- 	  Say Y here to enable use efivars as a backend to pstore. This
-diff --git a/drivers/firmware/efi/efi-pstore.c b/drivers/firmware/efi/efi-pstore.c
-index feb7fe6..785f5e6 100644
---- a/drivers/firmware/efi/efi-pstore.c
-+++ b/drivers/firmware/efi/efi-pstore.c
-@@ -8,6 +8,8 @@
- 
- #define DUMP_NAME_LEN 66
- 
-+#define EFIVARS_DATA_SIZE_MAX 1024
-+
- static bool efivars_pstore_disable =
- 	IS_ENABLED(CONFIG_EFI_VARS_PSTORE_DEFAULT_DISABLE);
- 
-@@ -18,6 +20,8 @@ module_param_named(pstore_disable, efivars_pstore_disable, bool, 0644);
- 	 EFI_VARIABLE_BOOTSERVICE_ACCESS | \
- 	 EFI_VARIABLE_RUNTIME_ACCESS)
- 
-+static LIST_HEAD(efi_pstore_list);
-+
- static int efi_pstore_open(struct pstore_info *psi)
- {
- 	psi->data = NULL;
-@@ -126,7 +130,7 @@ static inline int __efi_pstore_scan_sysfs_exit(struct efivar_entry *entry,
- 	if (entry->deleting) {
- 		list_del(&entry->list);
- 		efivar_entry_iter_end();
--		efivar_unregister(entry);
-+		kfree(entry);
- 		if (efivar_entry_iter_begin())
- 			return -EINTR;
- 	} else if (turn_off_scanning)
-@@ -169,7 +173,7 @@ static int efi_pstore_sysfs_entry_iter(struct pstore_record *record)
- {
- 	struct efivar_entry **pos = (struct efivar_entry **)&record->psi->data;
- 	struct efivar_entry *entry, *n;
--	struct list_head *head = &efivar_sysfs_list;
-+	struct list_head *head = &efi_pstore_list;
- 	int size = 0;
- 	int ret;
- 
-@@ -314,12 +318,12 @@ static int efi_pstore_erase_name(const char *name)
- 	if (efivar_entry_iter_begin())
- 		return -EINTR;
- 
--	found = __efivar_entry_iter(efi_pstore_erase_func, &efivar_sysfs_list,
-+	found = __efivar_entry_iter(efi_pstore_erase_func, &efi_pstore_list,
- 				    efi_name, &entry);
- 	efivar_entry_iter_end();
- 
- 	if (found && !entry->scanning)
--		efivar_unregister(entry);
-+		kfree(entry);
- 
- 	return found ? 0 : -ENOENT;
- }
-@@ -354,14 +358,76 @@ static struct pstore_info efi_pstore_info = {
- 	.erase		= efi_pstore_erase,
- };
- 
-+static int efi_pstore_callback(efi_char16_t *name, efi_guid_t vendor,
-+			       unsigned long name_size, void *data)
-+{
-+	struct efivar_entry *entry;
-+	int ret;
-+
-+	entry = kzalloc(sizeof(*entry), GFP_KERNEL);
-+	if (!entry)
-+		return -ENOMEM;
-+
-+	memcpy(entry->var.VariableName, name, name_size);
-+	entry->var.VendorGuid = vendor;
-+
-+	ret = efivar_entry_add(entry, &efi_pstore_list);
-+	if (ret)
-+		kfree(entry);
-+
-+	return ret;
-+}
-+
-+static int efi_pstore_update_entry(efi_char16_t *name, efi_guid_t vendor,
-+				   unsigned long name_size, void *data)
-+{
-+	struct efivar_entry *entry = data;
-+
-+	if (efivar_entry_find(name, vendor, &efi_pstore_list, false))
-+		return 0;
-+
-+	memcpy(entry->var.VariableName, name, name_size);
-+	memcpy(&(entry->var.VendorGuid), &vendor, sizeof(efi_guid_t));
-+
-+	return 1;
-+}
-+
-+static void efi_pstore_update_entries(struct work_struct *work)
-+{
-+	struct efivar_entry *entry;
-+	int err;
-+
-+	/* Add new sysfs entries */
-+	while (1) {
-+		entry = kzalloc(sizeof(*entry), GFP_KERNEL);
-+		if (!entry)
-+			return;
-+
-+		err = efivar_init(efi_pstore_update_entry, entry,
-+				  false, &efi_pstore_list);
-+		if (!err)
-+			break;
-+
-+		efivar_entry_add(entry, &efi_pstore_list);
-+	}
-+
-+	kfree(entry);
-+}
-+
- static __init int efivars_pstore_init(void)
- {
-+	int ret;
-+
- 	if (!efivars_kobject() || !efivar_supports_writes())
- 		return 0;
- 
- 	if (efivars_pstore_disable)
- 		return 0;
- 
-+	ret = efivar_init(efi_pstore_callback, NULL, true, &efi_pstore_list);
-+	if (ret)
-+		return ret;
-+
- 	efi_pstore_info.buf = kmalloc(4096, GFP_KERNEL);
- 	if (!efi_pstore_info.buf)
- 		return -ENOMEM;
-@@ -374,6 +440,8 @@ static __init int efivars_pstore_init(void)
- 		efi_pstore_info.bufsize = 0;
+@@ -399,6 +405,9 @@ void ghes_edac_report_mem_error(int sev, struct cper_sec_mem_err *mem_err)
+ 			strcpy(e->label, dimm->label);
+ 		}
  	}
++	if (mem_err->validation_bits & CPER_MEM_VALID_CHIP_ID)
++		p += sprintf(p, "chipID: %d ",
++			     mem_err->extended >> CPER_MEM_CHIP_ID_SHIFT);
+ 	if (p > e->location)
+ 		*(p - 1) = '\0';
  
-+	INIT_WORK(&efivar_work, efi_pstore_update_entries);
+diff --git a/drivers/firmware/efi/cper.c b/drivers/firmware/efi/cper.c
+index a60acd1..e15d484 100644
+--- a/drivers/firmware/efi/cper.c
++++ b/drivers/firmware/efi/cper.c
+@@ -232,6 +232,12 @@ static int cper_mem_err_location(struct cper_mem_err_compact *mem, char *msg)
+ 		n += scnprintf(msg + n, len - n, "rank: %d ", mem->rank);
+ 	if (mem->validation_bits & CPER_MEM_VALID_BANK)
+ 		n += scnprintf(msg + n, len - n, "bank: %d ", mem->bank);
++	if (mem->validation_bits & CPER_MEM_VALID_BANK_GROUP)
++		n += scnprintf(msg + n, len - n, "bank_group: %d ",
++			       mem->bank >> CPER_MEM_BANK_GROUP_SHIFT);
++	if (mem->validation_bits & CPER_MEM_VALID_BANK_ADDRESS)
++		n += scnprintf(msg + n, len - n, "bank_address: %d ",
++			       mem->bank & CPER_MEM_BANK_ADDRESS_MASK);
+ 	if (mem->validation_bits & CPER_MEM_VALID_DEVICE)
+ 		n += scnprintf(msg + n, len - n, "device: %d ", mem->device);
+ 	if (mem->validation_bits & (CPER_MEM_VALID_ROW | CPER_MEM_VALID_ROW_EXT)) {
+@@ -254,6 +260,9 @@ static int cper_mem_err_location(struct cper_mem_err_compact *mem, char *msg)
+ 	if (mem->validation_bits & CPER_MEM_VALID_TARGET_ID)
+ 		scnprintf(msg + n, len - n, "target_id: 0x%016llx ",
+ 			  mem->target_id);
++	if (mem->validation_bits & CPER_MEM_VALID_CHIP_ID)
++		scnprintf(msg + n, len - n, "chip_id: %d ",
++			  mem->extended >> CPER_MEM_CHIP_ID_SHIFT);
+ 
+ 	msg[n] = '\0';
+ 	return n;
+diff --git a/include/linux/cper.h b/include/linux/cper.h
+index bd2d8a7..6a511a1 100644
+--- a/include/linux/cper.h
++++ b/include/linux/cper.h
+@@ -231,10 +231,18 @@ enum {
+ #define CPER_MEM_VALID_CARD_HANDLE		0x10000
+ #define CPER_MEM_VALID_MODULE_HANDLE		0x20000
+ #define CPER_MEM_VALID_ROW_EXT			0x40000
++#define CPER_MEM_VALID_BANK_GROUP		0x80000
++#define CPER_MEM_VALID_BANK_ADDRESS		0x100000
++#define CPER_MEM_VALID_CHIP_ID			0x200000
+ 
+ #define CPER_MEM_EXT_ROW_MASK			0x3
+ #define CPER_MEM_EXT_ROW_SHIFT			16
+ 
++#define CPER_MEM_BANK_ADDRESS_MASK		0xff
++#define CPER_MEM_BANK_GROUP_SHIFT		8
 +
- 	return 0;
- }
- 
-diff --git a/drivers/firmware/efi/efivars.c b/drivers/firmware/efi/efivars.c
-index dcea137..f39321d 100644
---- a/drivers/firmware/efi/efivars.c
-+++ b/drivers/firmware/efi/efivars.c
-@@ -24,8 +24,7 @@ MODULE_LICENSE("GPL");
- MODULE_VERSION(EFIVARS_VERSION);
- MODULE_ALIAS("platform:efivars");
- 
--LIST_HEAD(efivar_sysfs_list);
--EXPORT_SYMBOL_GPL(efivar_sysfs_list);
-+static LIST_HEAD(efivar_sysfs_list);
- 
- static struct kset *efivars_kset;
- 
-@@ -591,42 +590,6 @@ out_free:
- 	return error;
- }
- 
--static int efivar_update_sysfs_entry(efi_char16_t *name, efi_guid_t vendor,
--				     unsigned long name_size, void *data)
--{
--	struct efivar_entry *entry = data;
--
--	if (efivar_entry_find(name, vendor, &efivar_sysfs_list, false))
--		return 0;
--
--	memcpy(entry->var.VariableName, name, name_size);
--	memcpy(&(entry->var.VendorGuid), &vendor, sizeof(efi_guid_t));
--
--	return 1;
--}
--
--static void efivar_update_sysfs_entries(struct work_struct *work)
--{
--	struct efivar_entry *entry;
--	int err;
--
--	/* Add new sysfs entries */
--	while (1) {
--		entry = kzalloc(sizeof(*entry), GFP_KERNEL);
--		if (!entry)
--			return;
--
--		err = efivar_init(efivar_update_sysfs_entry, entry,
--				  false, &efivar_sysfs_list);
--		if (!err)
--			break;
--
--		efivar_create_sysfs_entry(entry);
--	}
--
--	kfree(entry);
--}
--
- static int efivars_sysfs_callback(efi_char16_t *name, efi_guid_t vendor,
- 				  unsigned long name_size, void *data)
- {
-@@ -701,8 +664,6 @@ int efivars_sysfs_init(void)
- 		return error;
- 	}
- 
--	INIT_WORK(&efivar_work, efivar_update_sysfs_entries);
--
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(efivars_sysfs_init);
-diff --git a/include/linux/efi.h b/include/linux/efi.h
-index 4a2332f..7066c11 100644
---- a/include/linux/efi.h
-+++ b/include/linux/efi.h
-@@ -986,8 +986,6 @@ struct efivar_entry {
- 	bool deleting;
- };
- 
--extern struct list_head efivar_sysfs_list;
--
- static inline void
- efivar_unregister(struct efivar_entry *var)
- {
-@@ -1045,8 +1043,6 @@ void efivar_run_worker(void);
- #if defined(CONFIG_EFI_VARS) || defined(CONFIG_EFI_VARS_MODULE)
- int efivars_sysfs_init(void);
- 
--#define EFIVARS_DATA_SIZE_MAX 1024
--
- #endif /* CONFIG_EFI_VARS */
- extern bool efi_capsule_pending(int *reset_type);
- 
++#define CPER_MEM_CHIP_ID_SHIFT			5
++
+ #define CPER_PCIE_VALID_PORT_TYPE		0x0001
+ #define CPER_PCIE_VALID_VERSION			0x0002
+ #define CPER_PCIE_VALID_COMMAND_STATUS		0x0004
