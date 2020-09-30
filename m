@@ -2,88 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92C2A27EA67
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 15:57:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 130B827EA6D
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 15:58:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730392AbgI3N5V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 09:57:21 -0400
-Received: from mx2.suse.de ([195.135.220.15]:60312 "EHLO mx2.suse.de"
+        id S1730423AbgI3N6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 09:58:09 -0400
+Received: from foss.arm.com ([217.140.110.172]:36834 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730304AbgI3N5V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 09:57:21 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1601474239;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=60/DuYzuTuu/RoGHpnTicjya4jLSFnDAPXQjHEwUDFQ=;
-        b=YtfW45QdidqHBbd17iP9wT7uGPvIRxr/c0yC65aXrvoGRW7/BD7fVlpWy2HKlodtox1A7F
-        z5LGkoyKJm8mWG7Ah5ML4FZ7XnA9SUAvddM1zO1a4uVEgqZiPYCowhrZkf0Fwo6QCOehcB
-        gN+JEBVRMTsK/G6Mz0hlb8/qlrkW6vc=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 82DDDAC8B;
-        Wed, 30 Sep 2020 13:57:19 +0000 (UTC)
-Date:   Wed, 30 Sep 2020 15:57:18 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Prasad Sodagudi <psodagud@codeaurora.org>
-Cc:     rostedt@goodmis.org, sergey.senozhatsky@gmail.com,
-        gregkh@linuxfoundation.org, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org, tkjos@google.com,
-        Mohammed Khajapasha <mkhaja@codeaurora.org>
-Subject: Re: [PATCH 2/2] printk: Make the console flush configurable in
- hotplug path
-Message-ID: <20200930135718.GI29288@alley>
-References: <1600906112-126722-1-git-send-email-psodagud@codeaurora.org>
- <1600906112-126722-2-git-send-email-psodagud@codeaurora.org>
+        id S1729903AbgI3N6I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 09:58:08 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DD1FB30E;
+        Wed, 30 Sep 2020 06:58:07 -0700 (PDT)
+Received: from bogus (unknown [10.57.47.250])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2E0A73F6CF;
+        Wed, 30 Sep 2020 06:58:04 -0700 (PDT)
+Date:   Wed, 30 Sep 2020 14:57:33 +0100
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     ansuelsmth@gmail.com
+Cc:     'Rob Herring' <robh+dt@kernel.org>,
+        'Andy Gross' <agross@kernel.org>,
+        'Bjorn Andersson' <bjorn.andersson@linaro.org>,
+        'MyungJoo Ham' <myungjoo.ham@samsung.com>,
+        'Kyungmin Park' <kyungmin.park@samsung.com>,
+        'Chanwoo Choi' <cw00.choi@samsung.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] devfreq: qcom: Add L2 Krait Cache devfreq scaling
+ driver
+Message-ID: <20200930135733.GA7609@bogus>
+References: <20200929162926.139-1-ansuelsmth@gmail.com>
+ <20200930092954.GA7125@bogus>
+ <006c01d69720$abd3f230$037bd690$@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1600906112-126722-2-git-send-email-psodagud@codeaurora.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <006c01d69720$abd3f230$037bd690$@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 2020-09-23 17:08:32, Prasad Sodagudi wrote:
-> From: Mohammed Khajapasha <mkhaja@codeaurora.org>
-> 
-> The thread which initiates the hot plug can get scheduled
-> out, while trying to acquire the console lock,
-> thus increasing the hot plug latency. This option
-> allows to selectively disable the console flush and
-> in turn reduce the hot plug latency.
-> 
-> diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-> index 9b75f6b..f02d3ef 100644
-> --- a/kernel/printk/printk.c
-> +++ b/kernel/printk/printk.c
-> @@ -2996,13 +3000,15 @@ static int __init printk_late_init(void)
->  			unregister_console(con);
->  		}
->  	}
-> +#ifdef CONFIG_CONSOLE_FLUSH_ON_HOTPLUG
->  	ret = cpuhp_setup_state_nocalls(CPUHP_PRINTK_DEAD, "printk:dead", NULL,
->  					console_cpu_notify);
->  	WARN_ON(ret < 0);
->  	ret = cpuhp_setup_state_nocalls(CPUHP_AP_ONLINE_DYN, "printk:online",
->  					console_cpu_notify, NULL);
->  	WARN_ON(ret < 0);
-> -	return 0;
-> +#endif
-> +	return ret;
+On Wed, Sep 30, 2020 at 01:56:01PM +0200, ansuelsmth@gmail.com wrote:
+> > Subject: Re: [PATCH v2 1/2] devfreq: qcom: Add L2 Krait Cache devfreq
+> > scaling driver
+> >
+> > On Tue, Sep 29, 2020 at 06:29:24PM +0200, Ansuel Smith wrote:
+> > > Qcom L2 Krait CPUs use the generic cpufreq-dt driver and doesn't
+> actually
+> > > scale the Cache frequency when the CPU frequency is changed. This
+> > > devfreq driver register with the cpu notifier and scale the Cache
+> > > based on the max Freq across all core as the CPU cache is shared across
+> > > all of them. If provided this also scale the voltage of the regulator
+> > > attached to the CPU cache. The scaling logic is based on the CPU freq
+> > > and the 3 scaling interval are set by the device dts.
+> > >
+> >
+> > I have raised this concern before. I am worried this kind of independent
+> > CPU and cache frequency controls make way for clkscrew kind of attacks.
+> > Why can't the clocks be made parent/child or secondary and automatically
+> > updated when CPU clocks are changed.
+> >
+>
+> I don't think I understand this fully. Anyway about the clkscrew attack, the
+> range are set on the dts so unless someone actually wants to have a
+> vulnerable system, the range can't be changes at runtime. The devfreq
+> governor is set to immutable and can't be changes AFAIK.
+>
 
-Just a comment from the printk-side view. This change is wrong, definitely.
+I don't think that matters, we are talking about Secure/Non-secure boundary
+here. DT can be modified or simple a rogue devfreq module can do all the
+bad things.
 
-The above calls are needed with the current printk() design. They make
-sure that someone would actually push the messages to the console.
-Otherwise they might stay hidden seconds/minutes/hour/days until
-another random printk() does the job.
+> About 'automatically updated when CPU changes', the cache is shared across 2
+> core and they scale independently. We can be in situation where one cpu is
+> at max and one at idle freq and the cache is set to idle. To fix this at
+> every change the clk should find the max value and I think this would make
+> all the clk scaling very slow.
 
-They will not be needed with the ongoing printk rework[1] where
-the consoles will get handled by a dedicated kthread.
+This sounds like we are going back to coupled idle states kind of setup.
+Sorry we don't want those anymore.
 
-[1] https://lore.kernel.org/lkml/87k1acz5rx.fsf@linutronix.de/
+> If you have any suggestion on how I can implement this better, I'm
+> more than happy to address them. For now, the lack of this kind of cache
+> scale, make the system really slow since by default the init of the cpu and
+> cache clks put them at the lowest frequency and nobody changes that.
+> (we have cpufreq scaling support but the cache is never actually scaled)
 
-Best Regards,
-Petr
+As I mentioned, if this needs to be done in OSPM, then hide it in the clock
+building right dependencies. Clk will even have refcount so that one idle
+CPU won't bring the cache down to idle frequency.
+
+--
+Regards,
+Sudeep
