@@ -2,195 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A81F27E826
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 14:02:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5816627E82B
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 14:04:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729786AbgI3MCb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 08:02:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55860 "EHLO mail.kernel.org"
+        id S1729548AbgI3MEj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 08:04:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59174 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729663AbgI3MCa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 08:02:30 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1728270AbgI3MEj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 08:04:39 -0400
+Received: from localhost.localdomain (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1C5DD2076B;
-        Wed, 30 Sep 2020 12:02:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4218C2076B;
+        Wed, 30 Sep 2020 12:04:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601467349;
-        bh=LXc8rSzLCZ2piLrvbN25CFl0fgDHgAWL3l/NbQfAKsc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UP8dvsg4qBD44E14JXr2HtzQtIHKJVxpSqhqvI8/NNBrs/8SQQyCFL0/iQ4yd8iPK
-         4gIyTy18NSJEv/FeAKozUgyjemqqW7MJiF+LvEFYt7smkE9DHpOvxlCyujNIu7yNUB
-         y0yBhfiQ2IHp4S6QlRQQcuq6C7p9SNUyb9CfSz/I=
-Date:   Wed, 30 Sep 2020 14:02:33 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
-Cc:     Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Pavel Machek <pavel@ucw.cz>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        Sebastian Reichel <sre@kernel.org>,
-        David Heidelberg <david@ixit.cz>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: Removal of HCI commands, userspace bluetooth regression?
-Message-ID: <20200930120233.GA1613482@kroah.com>
-References: <20200808132747.4byefjg5ysddgkel@pali>
- <20200929213254.difivzrhapk766xp@pali>
- <20200930080205.GA1571308@kroah.com>
- <20200930082534.rrck6qb3fntm25wz@pali>
- <20200930092043.GB1580803@kroah.com>
- <20200930094616.qmpophucxwpgu7tz@pali>
- <20200930105434.GB1592367@kroah.com>
- <20200930110013.rjejmjcsgfhdqa6l@pali>
- <20200930112006.GA1598131@kroah.com>
- <20200930115132.fscfugzvf6nqtglc@pali>
+        s=default; t=1601467478;
+        bh=GykIBSaiDmEJ3XNEf9HGHAkoXZDo5xF4J1k3EoMvwoQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=f99KUqvqfomYjYMNPm/3zHNXcASLOTXscOvNPPIepLguIQ9EHBo0TzXHorvKVdW8b
+         QnkTrmvJoFqz2kBpm/RZr9+GXmKYNQ6aytmUsTT88cUsNDZlkW6Et5y9Q/+6ghXzHM
+         YrAcx89aIlNjuUc4MshU5oVeSU+CL2El+eM9NEk8=
+From:   Will Deacon <will@kernel.org>
+To:     linux-serial@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Peter Zijlstra <peterz@infradead.org>, stable@vger.kernel.org,
+        Russell King <linux@armlinux.org.uk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Will Deacon <will@kernel.org>
+Subject: [PATCH] serial: pl011: Fix lockdep splat when handling magic-sysrq interrupt
+Date:   Wed, 30 Sep 2020 13:04:32 +0100
+Message-Id: <20200930120432.16551-1-will@kernel.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200930115132.fscfugzvf6nqtglc@pali>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 01:51:32PM +0200, Pali Rohár wrote:
-> On Wednesday 30 September 2020 13:20:06 Greg Kroah-Hartman wrote:
-> > On Wed, Sep 30, 2020 at 01:00:13PM +0200, Pali Rohár wrote:
-> > > On Wednesday 30 September 2020 12:54:34 Greg Kroah-Hartman wrote:
-> > > > On Wed, Sep 30, 2020 at 11:46:16AM +0200, Pali Rohár wrote:
-> > > > > On Wednesday 30 September 2020 11:20:43 Greg Kroah-Hartman wrote:
-> > > > > > On Wed, Sep 30, 2020 at 10:25:34AM +0200, Pali Rohár wrote:
-> > > > > > > On Wednesday 30 September 2020 10:02:05 Greg Kroah-Hartman wrote:
-> > > > > > > > On Tue, Sep 29, 2020 at 11:32:54PM +0200, Pali Rohár wrote:
-> > > > > > > > > CCing other lists and maintainers, hopefully, somebody would have a time to look at it...
-> > > > > > > > > 
-> > > > > > > > > On Saturday 08 August 2020 15:27:47 Pali Rohár wrote:
-> > > > > > > > > > On Wednesday 15 April 2020 00:56:18 Pali Rohár wrote:
-> > > > > > > > > > > On Sunday 09 February 2020 14:21:37 Pali Rohár wrote:
-> > > > > > > > > > > > On Saturday 04 January 2020 11:24:36 Pali Rohár wrote:
-> > > > > > > > > > > > > On Saturday 04 January 2020 10:44:52 Marcel Holtmann wrote:
-> > > > > > > > > > > > > > Hi Pali,
-> > > > > > > > > > > > > > 
-> > > > > > > > > > > > > > > I wrote a simple script "sco_features.pl" which show all supported
-> > > > > > > > > > > > > > > codecs by local HCI bluetooth adapter. Script is available at:
-> > > > > > > > > > > > > > > 
-> > > > > > > > > > > > > > > https://github.com/pali/hsphfpd-prototype/blob/prototype/sco_features.pl
-> > > > > > > > > > > > > > > 
-> > > > > > > > > > > > > > > And I found out that OCF_READ_LOCAL_CODECS HCI command cannot be send by
-> > > > > > > > > > > > > > > non-root user. Kernel returns "Operation not permitted" error.
-> > > > > > > > > > > > > > > 
-> > > > > > > > > > > > > > > What is reason that kernel blocks OCF_READ_LOCAL_CODECS command for
-> > > > > > > > > > > > > > > non-root users? Without it (audio) application does not know which
-> > > > > > > > > > > > > > > codecs local bluetooth adapter supports.
-> > > > > > > > > > > > > > > 
-> > > > > > > > > > > > > > > E.g. OCF_READ_LOCAL_EXT_FEATURES or OCF_READ_VOICE_SETTING commands can
-> > > > > > > > > > > > > > > be send also by non-root user and kernel does not block them.
-> > > > > > > > > > > > > > 
-> > > > > > > > > > > > > > actually the direct access to HCI commands is being removed. So we have no plans to add new commands into the list since that it what the kernel is suppose to handle. If we wanted to expose this, then it has to be via mgmt.
-> > > > > > > > > > > > > 
-> > > > > > > > > > > > > Hi Marcel! Thank you for information. I have not know that this API is
-> > > > > > > > > > > > > "deprecated" and is going to be removed. But userspace audio
-> > > > > > > > > > > > > applications need to know what bluetooth adapter supports, so can you
-> > > > > > > > > > > > > export result of these commands to userspace? My script linked above
-> > > > > > > > > > > > > calls: OCF_READ_VOICE_SETTING, OCF_READ_LOCAL_COMMANDS,
-> > > > > > > > > > > > > OCF_READ_LOCAL_EXT_FEATURES, OCF_READ_LOCAL_CODECS
-> > > > > > > > > > > > 
-> > > > > > > > > > > > Hello! Just a gently reminder for this question. How to retrieve
-> > > > > > > > > > > > information about supported codecs from userspace by non-root user?
-> > > > > > > > > > > > Because running all bluetooth audio applications by root is not really a
-> > > > > > > > > > > > solution. Plus if above API for root user is going to be removed, what
-> > > > > > > > > > > > is a replacement?
-> > > > > > > > > > > 
-> > > > > > > > > > > Hello!
-> > > > > > > > > > > 
-> > > > > > > > > > > I have not got any answer to my email from Marcel for months, so I'm
-> > > > > > > > > > > adding other developers to loop. Could somebody tell me that is the
-> > > > > > > > > > > replacement API if above one is going to be removed?
-> > > > > > > > > > > 
-> > > > > > > > > > > I was not able to find any documentation where could be described this
-> > > > > > > > > > > API nor information about deprecation / removal.
-> > > > > > > > > > > 
-> > > > > > > > > > > And are you aware of the fact that removing of API could potentially
-> > > > > > > > > > > break existing applications?
-> > > > > > > > > > > 
-> > > > > > > > > > > I really need to know which API should I use, because when I use API
-> > > > > > > > > > > which is going to be removed, then my application stops working. And I
-> > > > > > > > > > > really want to avoid it.
-> > > > > > > > > > > 
-> > > > > > > > > > > Also I have not got any response yet, how can I read list of supported
-> > > > > > > > > > > codecs by bluetooth adapter by ordinary non-root user? Audio application
-> > > > > > > > > > > needs to know list of supported codecs and it is really insane to run it
-> > > > > > > > > > > as root.
-> > > > > > > > > > 
-> > > > > > > > > > Hello! This is just another reminder that I have not got any reply to
-> > > > > > > > > > this email.
-> > > > > > > > > > 
-> > > > > > > > > > Does silence mean that audio applications are expected to work only
-> > > > > > > > > > under root account and ordinary users are not able to use audio and list
-> > > > > > > > > > supported codecs?
-> > > > > > > > > 
-> > > > > > > > > Hello! I have not got any reply for this issue for 10 months and if you
-> > > > > > > > > are going to remove (or after these 10 months you already did it?)
-> > > > > > > > > existing HCI API from kernel it would break existing and working
-> > > > > > > > > userspace application. How do you want to handle such regressions?
-> > > > > > > > 
-> > > > > > > > What git commit caused this regression?
-> > > > > > > 
-> > > > > > > Hello! Marcel in January wrote that access for HCI commands is being
-> > > > > > > removed from kernel. I do not know if he managed to do it in since
-> > > > > > > January, but I'm going to check it...
-> > > > > > 
-> > > > > > So you don't see a regression/problem, but are saying there is one?
-> > > > > 
-> > > > > Hello!
-> > > > > 
-> > > > > Planed removal of used API would be a regression. Marcel wrote that it
-> > > > > is "being removed". Nobody reacted to that fact for 10 months so I did
-> > > > > not know if this comment was lost and removal is already in progress.
-> > > > > Or if something was changed and removal is not planned anymore.
-> > > > > 
-> > > > > So are you aware that it will break applications?
-> > > > 
-> > > > Does it?
-> > > 
-> > > Of course.
-> > > 
-> > > > > > odd...
-> > > > > 
-> > > > > I think it is not a good idea to do something and then check what happen
-> > > > > if there are people who know that such thing is in use and for sure it
-> > > > > will break something.
-> > > > > 
-> > > > > And also I still did not get any response what is the replacement of
-> > > > > that API.
-> > > > 
-> > > > It sounds like only new commands are restricted
-> > > 
-> > > So existing are not being removed? It was finally changed and can you confirm it?
-> > 
-> > I think you need to point us at some kernel git commits that you are
-> > saying is causing problems here, as it's too confusing to determine what
-> > is really happening here.
-> 
-> Ok, to recap:
-> 
-> Problem is causing [1] the fact that "direct access to HCI commands is
-> being removed" as was written in first reply of this email thread.
+From: Peter Zijlstra <peterz@infradead.org>
 
-But I don't see those commits anywhere in the tree, so nothing has
-actually been removed yet?
+Issuing a magic-sysrq via the PL011 causes the following lockdep splat,
+which is easily reproducible under QEMU:
 
-That's what I'm asking, what has regressed?  If nothing, then there's no
-problem :)
+  | sysrq: Changing Loglevel
+  | sysrq: Loglevel set to 9
+  |
+  | ======================================================
+  | WARNING: possible circular locking dependency detected
+  | 5.9.0-rc7 #1 Not tainted
+  | ------------------------------------------------------
+  | systemd-journal/138 is trying to acquire lock:
+  | ffffab133ad950c0 (console_owner){-.-.}-{0:0}, at: console_lock_spinning_enable+0x34/0x70
+  |
+  | but task is already holding lock:
+  | ffff0001fd47b098 (&port_lock_key){-.-.}-{2:2}, at: pl011_int+0x40/0x488
+  |
+  | which lock already depends on the new lock.
 
-If people are considering changing things, well, work on that, and
-object to any patches that break existing tools.  But I don't see that
-at the moment, so what can I do?
+  [...]
 
-thanks,
+  |  Possible unsafe locking scenario:
+  |
+  |        CPU0                    CPU1
+  |        ----                    ----
+  |   lock(&port_lock_key);
+  |                                lock(console_owner);
+  |                                lock(&port_lock_key);
+  |   lock(console_owner);
+  |
+  |  *** DEADLOCK ***
 
-greg k-h
+The issue being that CPU0 takes 'port_lock' on the irq path in pl011_int()
+before taking 'console_owner' on the printk() path, whereas CPU1 takes
+the two locks in the opposite order on the printk() path due to setting
+the "console_owner" prior to calling into into the actual console driver.
+
+Fix this in the same way as the msm-serial driver by dropping 'port_lock'
+before handling the sysrq.
+
+Cc: <stable@vger.kernel.org> # 4.19+
+Cc: Russell King <linux@armlinux.org.uk>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Jiri Slaby <jirislaby@kernel.org>
+Link: https://lore.kernel.org/r/20200811101313.GA6970@willie-the-truck
+Signed-off-by: Peter Zijlstra <peterz@infradead.org>
+Tested-by: Will Deacon <will@kernel.org>
+Signed-off-by: Will Deacon <will@kernel.org>
+---
+ drivers/tty/serial/amba-pl011.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/tty/serial/amba-pl011.c b/drivers/tty/serial/amba-pl011.c
+index 67498594d7d7..87dc3fc15694 100644
+--- a/drivers/tty/serial/amba-pl011.c
++++ b/drivers/tty/serial/amba-pl011.c
+@@ -308,8 +308,9 @@ static void pl011_write(unsigned int val, const struct uart_amba_port *uap,
+  */
+ static int pl011_fifo_to_tty(struct uart_amba_port *uap)
+ {
+-	u16 status;
+ 	unsigned int ch, flag, fifotaken;
++	int sysrq;
++	u16 status;
+ 
+ 	for (fifotaken = 0; fifotaken != 256; fifotaken++) {
+ 		status = pl011_read(uap, REG_FR);
+@@ -344,10 +345,12 @@ static int pl011_fifo_to_tty(struct uart_amba_port *uap)
+ 				flag = TTY_FRAME;
+ 		}
+ 
+-		if (uart_handle_sysrq_char(&uap->port, ch & 255))
+-			continue;
++		spin_unlock(&uap->port.lock);
++		sysrq = uart_handle_sysrq_char(&uap->port, ch & 255);
++		spin_lock(&uap->port.lock);
+ 
+-		uart_insert_char(&uap->port, ch, UART011_DR_OE, ch, flag);
++		if (!sysrq)
++			uart_insert_char(&uap->port, ch, UART011_DR_OE, ch, flag);
+ 	}
+ 
+ 	return fifotaken;
+-- 
+2.28.0.709.gb0816b6eb0-goog
+
