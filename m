@@ -2,136 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A033827DF1E
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 06:01:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C264827DF21
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 06:02:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725769AbgI3EBw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 00:01:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49356 "EHLO
+        id S1725802AbgI3ECX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 00:02:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725306AbgI3EBw (ORCPT
+        with ESMTP id S1725306AbgI3ECV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 00:01:52 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DE76C061755;
-        Tue, 29 Sep 2020 21:01:51 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id l18so131011pjz.1;
-        Tue, 29 Sep 2020 21:01:51 -0700 (PDT)
+        Wed, 30 Sep 2020 00:02:21 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D82FFC061755;
+        Tue, 29 Sep 2020 21:02:21 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id x16so277301pgj.3;
+        Tue, 29 Sep 2020 21:02:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=42YC7idKSuE9VIQ2Cmvfnm09gGVcZvWgkg4U0sEtmTE=;
-        b=Df4eVSpE7tdqSg8YZJZ+IGpFp+EbsMEPKSPtMKcaOMwe7ZdmnfzgoS+Rs99Gb2MUo4
-         UcVe1/NIGmfYfVtXG4j9gz0E3LA3owjiP5hwS6FBc9rIntHsWlPiAjoM3uHq6Mq8qf3+
-         cUFLEeUsV56tUfK/kO0FGj0umA5J8uvNxrbvzXlBxilSFDvZ8EzC/2PPCJbIIY0lgwSz
-         qkrlalVVRDT7U62H0/uBQaGXfO/IZ9R6PO9oqSLuLjkKr770ZEs+2qgaslW+w3rXfP+C
-         rhT6HM72fpdCyXC9n291tbs8c/p4ftTqtRQ5BX253wnoagG4ySfWs9z4g3bIiFCZ6wCm
-         gO/Q==
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-transfer-encoding:content-language;
+        bh=A6Iu8CK+fvMEAi5WAmBNnIyxewSXT0brLKenSVEGXL4=;
+        b=FOUG2k8+MaztgIzts4HwDlrGsCudjd56IKZWBLbgBRGW/+cSpuwEsCSWMlu5X5nBBu
+         8v6RNE3ofy5cTam6TcIjkuItXIvPyc7BnaDjbojyP6bpWtePhAM6lThFjdqzXAhLVzGv
+         rJbQKjncIrbIlyRWHDJ29BFUMMRVe0Y5VsBPbLsl3Bst+P8Ktaa043qBw5dyOe+/kXhe
+         UYwVUTDrG5ZOP70fROR05CZtKDJ9zhOZyHz1hblG2GGXhyuRq1b96FSREuL9ukVIUWXe
+         18YjjTXSkaJR3uRKRYnMtw/wPv5ezudgB2hkwL7x8DllO4HhtpI+cExOxnfKNgTAw4d1
+         a28Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=42YC7idKSuE9VIQ2Cmvfnm09gGVcZvWgkg4U0sEtmTE=;
-        b=kSguYofCOhEtjqwV5MMH1RkILEtwoSX8WIKdUAxizBauVDroGHrUznFWpqaFeJivgx
-         bShPFwEzOORp+XXxSWkAgGT9kmLJY+jRywCmtoB7RboF0JdFNFW+pXy/0XpXaEojR2D+
-         EVSDLEuH4RA9KkkTwlLryDMITOHCLe6a2BYh908hAwIJQXrs1pRwP2+rq4pYfKr8rZqv
-         +w8O9uNtHBq4U5e+vmkGSOgtylFRZXOQ2kA4vXt3TMzJebgtSwFSeU+NH9c6gdaMkCQ3
-         xMUfKigj9cqigyJmYPi+HBG5Eo4m1H5TO+2eBAajpThFWl1iglMrFW+9eoIvAm+n5a1/
-         yjbQ==
-X-Gm-Message-State: AOAM53283Y5/7Gk4iNB+GG31/WYFlLod/JceJNHhuaVqEDwE935wF4sF
-        sXjmuwax4lHhQsRXcezzVFPKoPVVcRBnUQ==
-X-Google-Smtp-Source: ABdhPJwg8aWBdrP7cx7RX+VeJTbDwVezVtLo3XsPznf67tS9tPbXjUP57tnHkUB/E0y1v0v9FfsOrQ==
-X-Received: by 2002:a17:90b:898:: with SMTP id bj24mr718909pjb.145.1601438510521;
-        Tue, 29 Sep 2020 21:01:50 -0700 (PDT)
-Received: from [192.168.1.200] (flh2-125-196-131-224.osk.mesh.ad.jp. [125.196.131.224])
-        by smtp.gmail.com with ESMTPSA id gb17sm421526pjb.15.2020.09.29.21.01.48
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=A6Iu8CK+fvMEAi5WAmBNnIyxewSXT0brLKenSVEGXL4=;
+        b=VcRc6mu+7brWc75q6ILlvYGzEL6KabQ23PT5qCQEAUJ26350zKIcCrIa9ueDPpQl7g
+         tmauz128WqxRYuV0/aJSrrs03p+GWwlUrLn34I3Q4/mKCh7dMapxTNeGAaD5LHKbO9R8
+         BdGwSp8Mq+z4wrccAaXtIvIZnHX8YBYi7y3qqrAKN3NeoZc3QkALRfZESJFG3Wj3kaql
+         gSiKk7QOXWogOwuXeBkvq5oBvKVwClUsYV6V0YoQEohOGkLD2uNd9SdTcq1A8RMjShMG
+         5suLpl9qAgM+7SRmLg10aAlvHqU+0UX1wYr5OoAV0PEEURvumOeeTrR9AGeOMfRrabc2
+         y94A==
+X-Gm-Message-State: AOAM5331xaOuVIzMSKRR4G7p4gGVGfROG5u3spkiwnjHBM2RJ0eB6eLQ
+        Nt71zBF5XpISpvpn6TzuX0wxGR7licyYlqdzwoQ=
+X-Google-Smtp-Source: ABdhPJyA5nA4I3XO3XKaf/fb/M89xL8cx8S1ztqnn2lD6/kSbg6onBEyGX/DZDqqLsywchH+AQJnXQ==
+X-Received: by 2002:a63:a51a:: with SMTP id n26mr624314pgf.1.1601438540777;
+        Tue, 29 Sep 2020 21:02:20 -0700 (PDT)
+Received: from [192.168.0.104] ([49.207.218.220])
+        by smtp.gmail.com with ESMTPSA id f19sm354554pfd.45.2020.09.29.21.02.16
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 29 Sep 2020 21:01:50 -0700 (PDT)
-Subject: Re: [PATCH 2/3] exfat: remove useless check in exfat_move_file()
-To:     Sungjong Seo <sj1557.seo@samsung.com>
-Cc:     kohada.tetsuhiro@dc.mitsubishielectric.co.jp,
-        mori.takahiro@ab.mitsubishielectric.co.jp,
-        motai.hirotaka@aj.mitsubishielectric.co.jp,
-        'Namjae Jeon' <namjae.jeon@samsung.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <CGME20200911044511epcas1p4d62863352e65c534cd6080dd38d54b26@epcas1p4.samsung.com>
- <20200911044506.13912-1-kohada.t2@gmail.com>
- <015f01d68bd1$95ace4d0$c106ae70$@samsung.com>
- <8a430d18-39ac-135f-d522-90d44276faf8@gmail.com>
- <8c9701d6956a$13898560$3a9c9020$@samsung.com>
-From:   Tetsuhiro Kohada <kohada.t2@gmail.com>
-Message-ID: <afb45c4c-5ebd-5250-1265-4f485c3dcaad@gmail.com>
-Date:   Wed, 30 Sep 2020 13:01:47 +0900
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Tue, 29 Sep 2020 21:02:19 -0700 (PDT)
+Subject: Re: [Linux-kernel-mentees][PATCH] net: usb: rtl8150: prevent
+ set_ethernet_addr from setting uninit address
+To:     linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+abbc768b560c84d92fd3@syzkaller.appspotmail.com,
+        Petko Manolov <petkan@nucleusys.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-usb@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200929082028.50540-1-anant.thazhemadam@gmail.com>
+ <20200929084752.GA8101@carbon>
+From:   Anant Thazhemadam <anant.thazhemadam@gmail.com>
+Message-ID: <b5542434-7d12-0bba-8e54-8c5edfcb33b3@gmail.com>
+Date:   Wed, 30 Sep 2020 09:32:15 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <8c9701d6956a$13898560$3a9c9020$@samsung.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+In-Reply-To: <20200929084752.GA8101@carbon>
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->>> It might check if the cluster numbers are same between source entry
->>> and target directory.
+
+On 29/09/20 2:17 pm, Petko Manolov wrote:
+> On 20-09-29 13:50:28, Anant Thazhemadam wrote:
+>> When get_registers() fails (which happens when usb_control_msg() fails)
+>> in set_ethernet_addr(), the uninitialized value of node_id gets copied
+>> as the address.
 >>
->> This checks if newdir is the move target itself.
->> Example:
->>     mv /mnt/dir0 /mnt/dir0/foo
+>> Checking for the return values appropriately, and handling the case
+>> wherein set_ethernet_addr() fails like this, helps in avoiding the
+>> mac address being incorrectly set in this manner.
 >>
->> However, this check is not enough.
->> We need to check newdir and all ancestors.
->> Example:
->>     mv /mnt/dir0 /mnt/dir0/dir1/foo
->>     mv /mnt/dir0 /mnt/dir0/dir1/dir2/foo
->>     ...
+>> Reported-by: syzbot+abbc768b560c84d92fd3@syzkaller.appspotmail.com
+>> Tested-by: syzbot+abbc768b560c84d92fd3@syzkaller.appspotmail.com
+>> Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
+>> ---
+>>  drivers/net/usb/rtl8150.c | 24 ++++++++++++++++--------
+>>  1 file changed, 16 insertions(+), 8 deletions(-)
 >>
->> This is probably a taboo for all layered filesystems.
->>
->>
->>> Could you let me know what code you mentioned?
->>> Or do you mean the codes on vfs?
->>
->> You can find in do_renameat2(). --- around 'fs/namei.c:4440'
->> If the destination ancestors are itself, our driver will not be called.
-> 
-> I think, of course, vfs has been doing that.
-> So that code is unnecessary in normal situations.
-> 
-> That code comes from the old exfat implementation.
+>> diff --git a/drivers/net/usb/rtl8150.c b/drivers/net/usb/rtl8150.c
+>> index 733f120c852b..e542a9ab2ff8 100644
+>> --- a/drivers/net/usb/rtl8150.c
+>> +++ b/drivers/net/usb/rtl8150.c
+>> @@ -150,7 +150,7 @@ static const char driver_name [] = "rtl8150";
+>>  **	device related part of the code
+>>  **
+>>  */
+>> -static int get_registers(rtl8150_t * dev, u16 indx, u16 size, void *data)
+>> +static int get_registers(rtl8150_t *dev, u16 indx, u16 size, void *data)
+>>  {
+>>  	void *buf;
+>>  	int ret;
+>> @@ -274,12 +274,17 @@ static int write_mii_word(rtl8150_t * dev, u8 phy, __u8 indx, u16 reg)
+>>  		return 1;
+>>  }
+>>  
+>> -static inline void set_ethernet_addr(rtl8150_t * dev)
+>> +static bool set_ethernet_addr(rtl8150_t *dev)
+>>  {
+>>  	u8 node_id[6];
+>> +	int ret;
+>>  
+>> -	get_registers(dev, IDR, sizeof(node_id), node_id);
+>> -	memcpy(dev->netdev->dev_addr, node_id, sizeof(node_id));
+>> +	ret = get_registers(dev, IDR, sizeof(node_id), node_id);
+>> +	if (ret > 0 && ret <= sizeof(node_id)) {
+> get_registers() was recently modified to use usb_control_msg_recv() which does
+> not return partial reads.  IOW you'll either get negative value or
+> sizeof(node_id).  Since it is good to be paranoid i'd convert the above check
+> to:
+>
+> 	if (ret == sizeof(node_id)) {
+>
+> and fail in any other case.  Apart from this minor detail the rest of the patch 
+> looks good to me.
+>
+> Acked-by: Petko Manolov
+Got it. I'll be sure to include this in a v2, and send that in soon enough.
+Thanks for pointing that out. :)
 
-It could be a remnant of another system.
-Once upon a time, I moved the dir to a descendant dir without implementing this check
-and it disappeared forever.
-linux-VFS fixed this issue immediately, but some systems still need to be checked by
-the driver itself. (ex.Windows-IFS)
+Thanks,
+Anant
 
 
-> And as far as I understand, it seems to check once more "the cluster number"
-> even though it comes through vfs so that it tries detecting abnormal of on-disk.
-> 
-> Anyway, I agonized if it is really needed.
-> In conclusion, old code could be eliminated and your patch looks reasonable.
 
-It's easy to add, but it's really hard to remove the ancient code.
-
-
-BTW
-I have a question for you.
-Now, I'm trying to optimize exfat_get_dentry().
-However, exfat_get_dentry() is used a lot, so the patch is also large.
-In such a case
--Replace old implementation with new ones with a single patch.
--Devide multiple patches in which old functions and new functions (ex. exfat_get_dentry2) coexist temporarily. And finally clean up.
-
-I understand that a small patch is desirable, but the latter has "two similar functions".
-Which is better for you to review the patch?
-
-
-BR
----
-Tetsuhiro Kohada <kohada.t2@gmail.com>
-  
