@@ -2,235 +2,320 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C9E427DE77
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 04:23:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C75327DE7A
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 04:24:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729829AbgI3CXi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 22:23:38 -0400
-Received: from mga18.intel.com ([134.134.136.126]:52246 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729446AbgI3CXh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 22:23:37 -0400
-IronPort-SDR: wliRq4EUiQmkdGArNZ0V7J3xXGdDsyIQ103uWzUT+BNCpniFHoNfZr90X6S5gHnCNjilhGM+0z
- FFYmViCm6yLA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9759"; a="150116427"
-X-IronPort-AV: E=Sophos;i="5.77,320,1596524400"; 
-   d="scan'208";a="150116427"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2020 19:23:33 -0700
-IronPort-SDR: 4xg9pUvUhrvM0ip3FQRtjWiTQuPFkVkYFfSD8UFA6WGS14kaifJUrYNi3XLeqnN45RVVJsPRcd
- clFOhPPsD+rw==
-X-IronPort-AV: E=Sophos;i="5.77,320,1596524400"; 
-   d="scan'208";a="494860374"
-Received: from likexu-mobl1.ccr.corp.intel.com (HELO [10.238.4.187]) ([10.238.4.187])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2020 19:23:29 -0700
-Reply-To: like.xu@intel.com
-Subject: Re: [PATCH v13 00/10] Guest Last Branch Recording Enabling (KVM part)
-To:     Like Xu <like.xu@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Jim Mattson <jmattson@google.com>, kvm@vger.kernel.org,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Joerg Roedel <joro@8bytes.org>, linux-kernel@vger.kernel.org
-References: <20200726153229.27149-1-like.xu@linux.intel.com>
- <6d4d7b00-cbca-9875-24bd-e6c4efaf0586@intel.com>
-From:   "Xu, Like" <like.xu@intel.com>
-Organization: Intel OTC
-Message-ID: <c9904bf5-89e0-a5c1-2d1c-98c50c50d7d9@intel.com>
-Date:   Wed, 30 Sep 2020 10:23:27 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1729924AbgI3CYF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 22:24:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34454 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729902AbgI3CYE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 22:24:04 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C497C061755;
+        Tue, 29 Sep 2020 19:24:04 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id y17so233628lfa.8;
+        Tue, 29 Sep 2020 19:24:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=2Xbtte5JrWARC2yq6ReJge5l4j940LmWCxXyXW08EPA=;
+        b=cEeqYkAHagaQYn/9dBwvfudjh851VfLCGYAjRqgo7SYFPMWHHwrH6qzPxwlUSHb4NS
+         VUtxQeXO4ZXElQ3tMeITECtsb4fauJ5BEnhhpPVnCPnbVgSYfI3/iXiH4IRSNChbxQSU
+         OaheOsqhI/ZxJvJVFKs4PqI47B6edO2wNmAoTdhXmrM0Gp670WubshadIp1E5IquzRm8
+         f4115Qrn6RZu9ytMP6UR5lgJeA2J776E5CWqN5rNJye+enjaaQPIAnfJqv8GEhvAoe6K
+         e/DKtre2/7OxLw3PGV4VrcNnoy5sKMR7YyxwDRrg+bKK7M2aXzj+b5uCtAcIyiwPyZGH
+         fSvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=2Xbtte5JrWARC2yq6ReJge5l4j940LmWCxXyXW08EPA=;
+        b=oP5XyLkoHwl4w1Oko5ldM/AnXnLdThHcUTqOnHL3hIKUN0atOURD+KJxXA2+nkDhG9
+         bT9PZgOfE7gSWtV0kQmuB3zxAvIlJDkGnImyZIGJ24XmH9bDwQM9f4sUO+xiGmKJ9Vkk
+         LTpJnRoh3G6d4zna8xicDN7n9Kc9rbnCUBy+XtatIfSB306hIz4Bpv0z8ci9ORSQfyHH
+         LJCR75iB7wwh30+Pk4klXiFNFO/zo/DEWq07Ip3AZK58xzeZZG3hogGcLP1YwTuw1Oyq
+         4uos59RGVfvcukCx8zQ/eO351RLmVEX3Zo7otD4PByeu7PnEt0FjayRkvfLJZKfZSN51
+         5fHA==
+X-Gm-Message-State: AOAM531t0ZW/suQbQFXZ0+Z8ju/aJ4WzFL6cmUb46g8yqMwNWLPSrBzp
+        Kpx5gsQQfT3bqCOFH+kuf+XS7j7IKG3VkKaoEes=
+X-Google-Smtp-Source: ABdhPJyd6f3/5aGfUyPEl4IwMRv0+hVyA7GFlBPxqkek66cTGpwvhu143OJshScnqvlK19sFVDKIitZIYVctBSeBdnY=
+X-Received: by 2002:ac2:57c7:: with SMTP id k7mr72885lfo.20.1601432641600;
+ Tue, 29 Sep 2020 19:24:01 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <6d4d7b00-cbca-9875-24bd-e6c4efaf0586@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <1601277584-5526-1-git-send-email-u0084500@gmail.com>
+ <1601277584-5526-2-git-send-email-u0084500@gmail.com> <20200929150624.GA583524@bogus>
+In-Reply-To: <20200929150624.GA583524@bogus>
+From:   ChiYuan Huang <u0084500@gmail.com>
+Date:   Wed, 30 Sep 2020 10:23:49 +0800
+Message-ID: <CADiBU3_7wj7W2evOAG1GM991OigPYy4FXraeOLCVreaMO86HXw@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] regulator: rtmv20: Add DT-binding document for
+ Richtek RTMV20
+To:     Rob Herring <robh@kernel.org>
+Cc:     lgirdwood@gmail.com, Mark Brown <broonie@kernel.org>,
+        linux-kernel@vger.kernel.org, cy_huang <cy_huang@richtek.com>,
+        devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Are there volunteers or maintainer to help review this patch-set ？
+Hi, Rob
+  Ack is in below comments.
 
-Just a kindly ping.
+Hi, Mark:
+   Due to that already merged into your regulator for-next git, may I
+send the patch to fix Rob's comment?
+And I also found one line need to be added into rtmv20 probe phase.
+Please check below.
+        /*
+         * keep in shutdown mode to minimize the current consumption
+         * and also mark regcache as dirty
+         */
++      regcache_cache_only(priv->regmap, true);
+        regcache_mark_dirty(priv->regmap);
+        gpiod_set_value(priv->enable_gpio, 0);
 
-Please let me know if you need a re-based version.
+Can I directly merge into one that includes Rob's comment and the
+above line to be added?
 
-Thanks,
-Like Xu
-
-On 2020/8/14 16:48, Xu, Like wrote:
-> Are there no interested reviewers or users?
+Rob Herring <robh@kernel.org> =E6=96=BC 2020=E5=B9=B49=E6=9C=8829=E6=97=A5 =
+=E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=8811:06=E5=AF=AB=E9=81=93=EF=BC=9A
 >
-> Just a kindly ping.
+> On Mon, Sep 28, 2020 at 03:19:44PM +0800, cy_huang wrote:
+> > From: ChiYuan Huang <cy_huang@richtek.com>
+> >
+> > Add DT-binding document for Richtek RTMV20
+> >
+> > Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
+> > ---
+> >  .../regulator/richtek,rtmv20-regulator.yaml        | 168 +++++++++++++=
+++++++++
+> >  1 file changed, 168 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/regulator/richtek=
+,rtmv20-regulator.yaml
+> >
+> > diff --git a/Documentation/devicetree/bindings/regulator/richtek,rtmv20=
+-regulator.yaml b/Documentation/devicetree/bindings/regulator/richtek,rtmv2=
+0-regulator.yaml
+> > new file mode 100644
+> > index 00000000..4cb4b68
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/regulator/richtek,rtmv20-regula=
+tor.yaml
+> > @@ -0,0 +1,168 @@
+> > +# SPDX-License-Identifier: GPL-2.0
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/regulator/richtek,rtmv20-regulator.=
+yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Richtek RTMV20 laser diode regulator
+> > +
+> > +maintainers:
+> > +  - ChiYuan Huang <cy_huang@richtek.com>
+> > +
+> > +description: |
+> > +  Richtek RTMV20 is a load switch current regulator that can supply up=
+ to 6A.
+> > +  It is used to drive laser diode. There're two signals for chip contr=
+ols
+> > +  (Enable/Fail), Enable pin to turn chip on, and Fail pin as fault ind=
+ication.
+> > +  There're still four pins for camera control, two inputs (strobe and =
+vsync),
+> > +  the others for outputs (fsin1 and fsin2). Strobe input to start the =
+current
+> > +  supply, vsync input from IR camera, and fsin1/fsin2 output for the o=
+ptional.
+> > +
+> > +properties:
+> > +  compatible:
+> > +    const: richtek,rtmv20
+> > +
+> > +  reg:
+> > +    maxItems: 1
+> > +
+> > +  wakeup-source: true
+> > +
+> > +  interrupts-extend:
 >
-> On 2020/7/26 23:32, Like Xu wrote:
->> Hi Paolo,
->>
->> Please review this new version for the Kernel 5.9 release, and
->> Sean may not review them as he said in the previous email
->> https://lore.kernel.org/kvm/20200710162819.GF1749@linux.intel.com/
->>
->> You may cherry-pick the perf patches "3cb9d5464c1c..e1ad1ac2deb8"
->> from the branch "tip/perf/core" of scm/linux/kernel/git/tip/tip.git
->> as PeterZ said in the previous email
->> https://lore.kernel.org/kvm/20200703075646.GJ117543@hirez.programming.kicks-ass.net/ 
->>
->>
->> We may also apply the qemu-devel patch to the upstream qemu and try
->> the QEMU command lines with '-cpu host' or '-cpu host,pmu=true,lbr=true'.
->>
->> The following error will be gone forever with the patchset:
->>
->>    $ perf record -b lbr ${WORKLOAD}
->>    or $ perf record --call-graph lbr ${WORKLOAD}
->>    Error:
->>    cycles: PMU Hardware doesn't support sampling/overflow-interrupts. 
->> Try 'perf stat'
->>
->> Please check more details in each commit and feel free to test.
->>
->> v12->v13 Changelog:
->> - remove perf patches since they're queued in the tip/perf/core;
->> - add a minor patch to refactor MSR_IA32_DEBUGCTLMSR set/get handler;
->> - add a minor patch to expose vmx_set_intercept_for_msr();
->> - add a minor patch to initialize perf_capabilities in the 
->> intel_pmu_init();
->> - spilt the big patch to three pieces (0004-0006) for better 
->> understanding and review
->> - make the LBR_FMT exposure patch as the last step to enable guest LBR;
->>
->> Previous:
->> https://lore.kernel.org/kvm/20200613080958.132489-1-like.xu@linux.intel.com/ 
->>
->>
->> ---
->>
->> The last branch recording (LBR) is a performance monitor unit (PMU)
->> feature on Intel processors that records a running trace of the most
->> recent branches taken by the processor in the LBR stack. This patch
->> series is going to enable this feature for plenty of KVM guests.
->>
->> The user space could configure whether it's enabled or not for each
->> guest via MSR_IA32_PERF_CAPABILITIES msr. As a first step, a guest
->> could only enable LBR feature if its cpu model is the same as the
->> host since the LBR feature is still one of model specific features.
->>
->> If it's enabled on the guest, the guest LBR driver would accesses the
->> LBR MSR (including IA32_DEBUGCTLMSR and records MSRs) as host does.
->> The first guest access on the LBR related MSRs is always interceptible.
->> The KVM trap would create a special LBR event (called guest LBR event)
->> which enables the callstack mode and none of hardware counter is assigned.
->> The host perf would enable and schedule this event as usual.
->>
->> Guest's first access to a LBR registers gets trapped to KVM, which
->> creates a guest LBR perf event. It's a regular LBR perf event which gets
->> the LBR facility assigned from the perf subsystem. Once that succeeds,
->> the LBR stack msrs are passed through to the guest for efficient accesses.
->> However, if another host LBR event comes in and takes over the LBR
->> facility, the LBR msrs will be made interceptible, and guest following
->> accesses to the LBR msrs will be trapped and meaningless.
->>
->> Because saving/restoring tens of LBR MSRs (e.g. 32 LBR stack entries) in
->> VMX transition brings too excessive overhead to frequent vmx transition
->> itself, the guest LBR event would help save/restore the LBR stack msrs
->> during the context switching with the help of native LBR event callstack
->> mechanism, including LBR_SELECT msr.
->>
->> If the guest no longer accesses the LBR-related MSRs within a scheduling
->> time slice and the LBR enable bit is unset, vPMU would release its guest
->> LBR event as a normal event of a unused vPMC and the pass-through
->> state of the LBR stack msrs would be canceled.
->>
->> ---
->>
->> LBR testcase:
->> echo 1 > /proc/sys/kernel/watchdog
->> echo 25 > /proc/sys/kernel/perf_cpu_time_max_percent
->> echo 5000 > /proc/sys/kernel/perf_event_max_sample_rate
->> echo 0 > /proc/sys/kernel/perf_cpu_time_max_percent
->> ./perf record -b ./br_instr a
->>
->> - Perf report on the host:
->> Samples: 72K of event 'cycles', Event count (approx.): 72512
->> Overhead  Command   Source Shared Object           Source 
->> Symbol                           Target Symbol                           
->> Basic Block Cycles
->>    12.12%  br_instr  br_instr                       [.] 
->> cmp_end                             [.] 
->> lfsr_cond                           1
->>    11.05%  br_instr  br_instr                       [.] 
->> lfsr_cond                           [.] 
->> cmp_end                             5
->>     8.81%  br_instr  br_instr                       [.] 
->> lfsr_cond                           [.] 
->> cmp_end                             4
->>     5.04%  br_instr  br_instr                       [.] 
->> cmp_end                             [.] 
->> lfsr_cond                           20
->>     4.92%  br_instr  br_instr                       [.] 
->> lfsr_cond                           [.] 
->> cmp_end                             6
->>     4.88%  br_instr  br_instr                       [.] 
->> cmp_end                             [.] 
->> lfsr_cond                           6
->>     4.58%  br_instr  br_instr                       [.] 
->> cmp_end                             [.] 
->> lfsr_cond                           5
->>
->> - Perf report on the guest:
->> Samples: 92K of event 'cycles', Event count (approx.): 92544
->> Overhead  Command   Source Shared Object  Source 
->> Symbol                                   Target 
->> Symbol                                   Basic Block Cycles
->>    12.03%  br_instr  br_instr              [.] 
->> cmp_end                                     [.] 
->> lfsr_cond                                   1
->>    11.09%  br_instr  br_instr              [.] 
->> lfsr_cond                                   [.] 
->> cmp_end                                     5
->>     8.57%  br_instr  br_instr              [.] 
->> lfsr_cond                                   [.] 
->> cmp_end                                     4
->>     5.08%  br_instr  br_instr              [.] 
->> lfsr_cond                                   [.] 
->> cmp_end                                     6
->>     5.06%  br_instr  br_instr              [.] 
->> cmp_end                                     [.] 
->> lfsr_cond                                   20
->>     4.87%  br_instr  br_instr              [.] 
->> cmp_end                                     [.] 
->> lfsr_cond                                   6
->>     4.70%  br_instr  br_instr              [.] 
->> cmp_end                                     [.] 
->> lfsr_cond                                   5
->>
->> Conclusion: the profiling results on the guest are similar to that on 
->> the host.
->>
->> Like Xu (10):
->>    KVM: x86: Move common set/get handler of MSR_IA32_DEBUGCTLMSR to VMX
->>    KVM: x86/vmx: Make vmx_set_intercept_for_msr() non-static and expose it
->>    KVM: vmx/pmu: Initialize vcpu perf_capabilities once in intel_pmu_init()
->>    KVM: vmx/pmu: Clear PMU_CAP_LBR_FMT when guest LBR is disabled
->>    KVM: vmx/pmu: Create a guest LBR event when vcpu sets DEBUGCTLMSR_LBR
->>    KVM: vmx/pmu: Pass-through LBR msrs to when the guest LBR event is 
->> ACTIVE
->>    KVM: vmx/pmu: Reduce the overhead of LBR pass-through or cancellation
->>    KVM: vmx/pmu: Emulate legacy freezing LBRs on virtual PMI
->>    KVM: vmx/pmu: Expose LBR_FMT in the MSR_IA32_PERF_CAPABILITIES
->>    KVM: vmx/pmu: Release guest LBR event via lazy release mechanism
->>
->>   arch/x86/kvm/pmu.c              |  12 +-
->>   arch/x86/kvm/pmu.h              |   5 +
->>   arch/x86/kvm/vmx/capabilities.h |  22 ++-
->>   arch/x86/kvm/vmx/pmu_intel.c    | 296 +++++++++++++++++++++++++++++++-
->>   arch/x86/kvm/vmx/vmx.c          |  44 ++++-
->>   arch/x86/kvm/vmx/vmx.h          |  28 +++
->>   arch/x86/kvm/x86.c              |  15 +-
->>   7 files changed, 395 insertions(+), 27 deletions(-)
->>
+> You mean interrupts-extended?
 >
+> In any case, use 'interrupts' here and the tooling allows for either.
 
+Yes, you're righ.
+Sorry, I key in the yaml file, line by line.
+It's really a typo.
+>
+> > +    maxItems: 1
+> > +
+> > +  enable-gpios:
+> > +    description: A connection of the 'enable' gpio line.
+> > +    maxItems: 1
+> > +
+> > +  ld-pulse-delay-us:
+> > +    description: |
+> > +      load current pulse delay in microsecond after strobe pin pulse h=
+igh.
+> > +    $ref: "/schemas/types.yaml#/definitions/uint32"
+>
+> Don't need a type ref when you have a standard property unit suffix, so
+> drop.
+Ack, remove type ref for all properties that included unit suffix.
+>
+> This and all the following need a vendor prefix too.
+Is it okay to Add "richtek," prefix for all the properties except lsw
+regulator node?
+>
+> > +    minimum: 0
+> > +    maximum: 100000
+> > +    default: 0
+> > +
+> > +  ld-pulse-width-us:
+> > +    description: |
+> > +      Load current pulse width in microsecond after strobe pin pulse h=
+igh.
+> > +    $ref: "/schemas/types.yaml#/definitions/uint32"
+> > +    minimum: 0
+> > +    maximum: 10000
+> > +    default: 1200
+> > +
+> > +  fsin1-delay-us:
+> > +    description: |
+> > +      Fsin1 pulse high delay in microsecond after vsync signal pulse h=
+igh.
+> > +    $ref: "/schemas/types.yaml#/definitions/uint32"
+> > +    minimum: 0
+> > +    maximum: 100000
+> > +    default: 23000
+> > +
+> > +  fsin1-width-us:
+> > +    description: |
+> > +      Fsin1 pulse high width in microsecond after vsync signal pulse h=
+igh.
+> > +    $ref: "/schemas/types.yaml#/definitions/uint32"
+> > +    minimum: 40
+> > +    maximum: 10000
+> > +    default: 160
+> > +
+> > +  fsin2-delay-us:
+> > +    description: |
+> > +      Fsin2 pulse high delay in microsecond after vsync signal pulse h=
+igh.
+> > +    $ref: "/schemas/types.yaml#/definitions/uint32"
+> > +    minimum: 0
+> > +    maximum: 100000
+> > +    default: 23000
+> > +
+> > +  fsin2-width-us:
+> > +    description: |
+> > +      Fsin2 pulse high width in microsecond after vsync signal pulse h=
+igh.
+> > +    $ref: "/schemas/types.yaml#/definitions/uint32"
+> > +    minimum: 40
+> > +    maximum: 10000
+> > +    default: 160
+> > +
+> > +  es-pulse-width-us:
+> > +    description: Eye safety function pulse width limit in microsecond.
+> > +    $ref: "/schemas/types.yaml#/definitions/uint32"
+> > +    minimum: 0
+> > +    maximum: 10000
+> > +    default: 1200
+> > +
+> > +  es-ld-current-microamp:
+> > +    description: Eye safety function load current limit in microamp.
+> > +    $ref: "/schemas/types.yaml#/definitions/uint32"
+> > +    minimum: 0
+> > +    maximum: 6000000
+> > +    default: 3000000
+> > +
+> > +  lbp-level-microvolt:
+> > +    description: Low battery protection level in microvolt.
+> > +    $ref: "/schemas/types.yaml#/definitions/uint32"
+> > +    minimum: 2400000
+> > +    maximum: 3700000
+> > +    default: 2700000
+> > +
+> > +  lbp-enable:
+> > +    description: Low battery protection function enable control.
+> > +    type: boolean
+> > +
+> > +  strobe-polarity-high:
+> > +    description: Strobe pin active polarity control.
+> > +    type: boolean
+> > +
+> > +  vsync-polarity-high:
+> > +    description: Vsync pin active polarity control.
+> > +    type: boolean
+> > +
+> > +  fsin-enable:
+> > +    description: Fsin function enable control.
+> > +    type: boolean
+> > +
+> > +  fsin-output:
+> > +    description: Fsin function output control.
+> > +    type: boolean
+> > +
+> > +  es-enable:
+> > +    description: Eye safety function enable control.
+> > +    type: boolean
+> > +
+> > +patternProperties:
+> > +  "lsw":
+>
+> This matches ".*lsw.*". What you wanted? If just 'lsw', then it's not a
+> pattern.
+>
+OK
+> > +    type: object
+> > +    $ref: "regulator.yaml#"
+> > +
+> > +required:
+> > +  - compatible
+> > +  - reg
+> > +  - wakeup-source
+> > +  - interrupts-extend
+> > +  - enable-gpios
+> > +  - lsw
+> > +
+> > +additionalProperties: false
+> > +
+> > +examples:
+> > +  - |
+> > +    #include <dt-bindings/interrupt-controller/irq.h>
+> > +    i2c {
+> > +      #address-cells =3D <1>;
+> > +      #size-cells =3D <0>;
+> > +
+> > +      rtmv20@34 {
+> > +        compatible =3D "richtek,rtmv20";
+> > +        reg =3D <0x34>;
+> > +        wakeup-source;
+> > +        interrupts-extend =3D <&gpio26 2 IRQ_TYPE_LEVEL_LOW>;
+>
+> 2 wrongs make a right... But your driver interrupt probably doesn't work
+> too well.
+Yes, fix it right now.
+>
+> > +        enable-gpios =3D <&gpio26 3 0>;
+> > +
+> > +        strobe-polarity-high;
+> > +        vsync-polarity-high;
+> > +
+> > +        lsw {
+> > +                regulator-name =3D "rtmv20,lsw";
+> > +                regulator-min-microamp =3D <0>;
+> > +                regulator-max-microamp =3D <6000000>;
+> > +        };
+> > +      };
+> > +    };
+> > +...
+> > --
+> > 2.7.4
+> >
