@@ -2,163 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AD8527DED5
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 05:19:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 115E127DEE9
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 05:21:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730078AbgI3DTI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 23:19:08 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:14740 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729973AbgI3DSt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 23:18:49 -0400
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id B36B3205B953FF83444C;
-        Wed, 30 Sep 2020 11:18:47 +0800 (CST)
-Received: from thunder-town.china.huawei.com (10.174.177.253) by
- DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
- 14.3.487.0; Wed, 30 Sep 2020 11:18:38 +0800
-From:   Zhen Lei <thunder.leizhen@huawei.com>
-To:     Wei Xu <xuwei5@hisilicon.com>, Rob Herring <robh+dt@kernel.org>,
-        "Jonathan Cameron" <Jonathan.Cameron@Huawei.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Zhen Lei <thunder.leizhen@huawei.com>,
-        Libin <huawei.libin@huawei.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>
-Subject: [PATCH v6 17/17] dt-bindings: arm: hisilicon: convert LPC controller bindings to json-schema
-Date:   Wed, 30 Sep 2020 11:17:12 +0800
-Message-ID: <20200930031712.2365-18-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
-In-Reply-To: <20200930031712.2365-1-thunder.leizhen@huawei.com>
-References: <20200930031712.2365-1-thunder.leizhen@huawei.com>
+        id S1730215AbgI3DUB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 23:20:01 -0400
+Received: from mga02.intel.com ([134.134.136.20]:26996 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726924AbgI3DUB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 23:20:01 -0400
+IronPort-SDR: DFiK/akRMQSrXTdBCOSrE9PJmAdFVz3bcpT62m3XUYEGhN2fuqnOmvtR0Uieg90YDSdbqAYEOB
+ fpNeamSvfcSg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9759"; a="150006803"
+X-IronPort-AV: E=Sophos;i="5.77,320,1596524400"; 
+   d="scan'208";a="150006803"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2020 20:19:57 -0700
+IronPort-SDR: R5ndLVjh4n4owuZfDaSMx+qaaVsnhnBSI3csNnLVfCfApQ4tyT5Pd9m6FwwR+Imjnq9muqhYUA
+ DKZzkFmnIHmQ==
+X-IronPort-AV: E=Sophos;i="5.77,320,1596524400"; 
+   d="scan'208";a="457502301"
+Received: from xinpan-mobl.ger.corp.intel.com (HELO localhost) ([10.249.35.239])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2020 20:19:54 -0700
+Date:   Wed, 30 Sep 2020 06:19:52 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     "Daniel P. Smith" <dpsmith@apertussolutions.com>
+Cc:     Ross Philipson <ross.philipson@oracle.com>,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        iommu@lists.linux-foundation.org, linux-integrity@vger.kernel.org,
+        linux-doc@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, hpa@zytor.com, luto@amacapital.net,
+        trenchboot-devel@googlegroups.com
+Subject: Re: [PATCH 05/13] x86: Add early TPM1.2/TPM2.0 interface support for
+ Secure Launch
+Message-ID: <20200930031952.GA880396@linux.intel.com>
+References: <1600959521-24158-1-git-send-email-ross.philipson@oracle.com>
+ <1600959521-24158-6-git-send-email-ross.philipson@oracle.com>
+ <20200925054313.GB165011@linux.intel.com>
+ <bf1d8df9-ec79-2cc6-534f-ce1f0a58f123@apertussolutions.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.177.253]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bf1d8df9-ec79-2cc6-534f-ce1f0a58f123@apertussolutions.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the Hisilicon Hip06 SoCs implement a Low Pin Count (LPC)
-controller binding to DT schema format using json-schema.
+On Tue, Sep 29, 2020 at 07:47:52PM -0400, Daniel P. Smith wrote:
+> TrenchBoot's AMD Secure Loader (LZ). The former is not well supported
+> and the latter will be getting maintenance under TB. While this is not
+> preferred, we had to weigh this versus trying to convince you and the
+> other TPM driver maintainers on a significant refactoring of the TPM
+> driver. It was elected for the reuse of a clean implementation that can
+> be replaced later if/when the TPM driver was refactored. When we
+> explained this during the RFC and it was not rejected, therefore we
+> carried it forward into this submission.
 
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
----
- .../arm/hisilicon/hisilicon-low-pin-count.txt      | 33 ------------
- .../bindings/arm/hisilicon/low-pin-count.yaml      | 61 ++++++++++++++++++++++
- 2 files changed, 61 insertions(+), 33 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/arm/hisilicon/hisilicon-low-pin-count.txt
- create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/low-pin-count.yaml
+What does it anyway mean when you say "RFC was not rejected"? I don't
+get the semantics of that sentence. It probably neither was ack'd,
+right? I do not really care what happened with the RFC. All I can say
+is that in the current state this totally PoC from top to bottom.
 
-diff --git a/Documentation/devicetree/bindings/arm/hisilicon/hisilicon-low-pin-count.txt b/Documentation/devicetree/bindings/arm/hisilicon/hisilicon-low-pin-count.txt
-deleted file mode 100644
-index 10bd35f9207f2ee..000000000000000
---- a/Documentation/devicetree/bindings/arm/hisilicon/hisilicon-low-pin-count.txt
-+++ /dev/null
-@@ -1,33 +0,0 @@
--Hisilicon Hip06 Low Pin Count device
--  Hisilicon Hip06 SoCs implement a Low Pin Count (LPC) controller, which
--  provides I/O access to some legacy ISA devices.
--  Hip06 is based on arm64 architecture where there is no I/O space. So, the
--  I/O ports here are not CPU addresses, and there is no 'ranges' property in
--  LPC device node.
--
--Required properties:
--- compatible:  value should be as follows:
--	(a) "hisilicon,hip06-lpc"
--	(b) "hisilicon,hip07-lpc"
--- #address-cells: must be 2 which stick to the ISA/EISA binding doc.
--- #size-cells: must be 1 which stick to the ISA/EISA binding doc.
--- reg: base memory range where the LPC register set is mapped.
--
--Note:
--  The node name before '@' must be "isa" to represent the binding stick to the
--  ISA/EISA binding specification.
--
--Example:
--
--isa@a01b0000 {
--	compatible = "hisilicon,hip06-lpc";
--	#address-cells = <2>;
--	#size-cells = <1>;
--	reg = <0x0 0xa01b0000 0x0 0x1000>;
--
--	ipmi0: bt@e4 {
--		compatible = "ipmi-bt";
--		device_type = "ipmi";
--		reg = <0x01 0xe4 0x04>;
--	};
--};
-diff --git a/Documentation/devicetree/bindings/arm/hisilicon/low-pin-count.yaml b/Documentation/devicetree/bindings/arm/hisilicon/low-pin-count.yaml
-new file mode 100644
-index 000000000000000..3b36e683bb1511d
---- /dev/null
-+++ b/Documentation/devicetree/bindings/arm/hisilicon/low-pin-count.yaml
-@@ -0,0 +1,61 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/arm/hisilicon/low-pin-count.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Hisilicon HiP06 Low Pin Count device
-+
-+maintainers:
-+  - Wei Xu <xuwei5@hisilicon.com>
-+
-+description: |
-+  Hisilicon HiP06 SoCs implement a Low Pin Count (LPC) controller, which
-+  provides I/O access to some legacy ISA devices.
-+  HiP06 is based on arm64 architecture where there is no I/O space. So, the
-+  I/O ports here are not CPU addresses, and there is no 'ranges' property in
-+  LPC device node.
-+
-+properties:
-+  $nodename:
-+    pattern: '^isa@[0-9a-f]+$'
-+    description: |
-+      The node name before '@' must be "isa" to represent the binding stick
-+      to the ISA/EISA binding specification.
-+
-+  compatible:
-+    enum:
-+      - hisilicon,hip06-lpc
-+      - hisilicon,hip07-lpc
-+
-+  reg:
-+    maxItems: 1
-+
-+  '#address-cells':
-+    const: 2
-+
-+  '#size-cells':
-+    const: 1
-+
-+required:
-+  - compatible
-+  - reg
-+
-+additionalProperties:
-+  type: object
-+
-+examples:
-+  - |
-+    isa@a01b0000 {
-+        compatible = "hisilicon,hip06-lpc";
-+        #address-cells = <2>;
-+        #size-cells = <1>;
-+        reg = <0xa01b0000 0x1000>;
-+
-+        ipmi0: bt@e4 {
-+            compatible = "ipmi-bt";
-+            device_type = "ipmi";
-+            reg = <0x01 0xe4 0x04>;
-+        };
-+    };
-+...
--- 
-1.8.3
+> > How it is now is never going to fly.
+> 
+> We would gladly work with you and the other TPM maintainers on a
+> refactoring of the TPM driver to separate core logic into standalone
+> files that both the driver and the compressed kernel can share.
 
+Yes, exactly. You have to refactor out the common parts. This is way too
+big patch to spend time on giving any more specific advice. Should be in
+way smaller chunks. For (almost) any possible, this is of unacceptable
+size.
 
+I think that it'd be best first to keep the common files in
+drivers/char/tpm and include them your code with relative paths in the
+Makefile. At least up until we have clear view what are the common
+parts.
+
+You might also want to refactor drivers/char/tpm/tpm.h and include/linux
+TPM headers to move more stuff into include/linux.
+
+If you are expecting a quick upstreaming process, please do not. This
+will take considerable amount of time to get right.
+
+/Jarkko
