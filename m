@@ -2,209 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB9AE27DD91
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 03:00:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89BF627DDA1
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 03:16:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729405AbgI3BA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 21:00:27 -0400
-Received: from out5-smtp.messagingengine.com ([66.111.4.29]:36543 "EHLO
-        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728943AbgI3BA1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 21:00:27 -0400
-Received: from compute7.internal (compute7.nyi.internal [10.202.2.47])
-        by mailout.nyi.internal (Postfix) with ESMTP id C4E2C5C01B0;
-        Tue, 29 Sep 2020 21:00:25 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute7.internal (MEProxy); Tue, 29 Sep 2020 21:00:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
-        subject:to:cc:references:from:message-id:date:mime-version
-        :in-reply-to:content-type:content-transfer-encoding; s=fm3; bh=u
-        XZBl2SuPm2uEbCG/CnRR8c/y/1bFaqSLMqAnU5sW3o=; b=gnqmQET76LNyu8TCZ
-        HhoTlpwM6XR7NcIAQ9nKxXhZV+keDQ+w9pIxDlfLiBoJy++86lITvmVWpYyds1RI
-        O+71C2r7vK5uoSPzrsHuoVHR3G35VcoXoJE3vlC5DA9ZRQPQCrUWrKeH/mSctdeD
-        muoxDbzz62sNk5Y6rlKCdt8irfKhnH9h34aRtTIFVdqtt9qhA8SlNhnSYn+jYSqm
-        /VcOTuLItwQRCwpOmj2FxGGwAP0MY4tYiN0fBDlQY1FxzLgC4OTDZKX2gc03IJvg
-        +rkPheJa7CYqBepY7vYpEVGUcwF9181hHcgWu8G21Xe8Mtx0hnMmtnt8rXeES9qn
-        WWoIw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; bh=uXZBl2SuPm2uEbCG/CnRR8c/y/1bFaqSLMqAnU5sW
-        3o=; b=duoLuofudl5wvpgnosV4kIxHtTIVN3HqeAHAWPIbF1Sv1ZXLdrT2a+KkI
-        g0MAikaF7kkB9lH1fgLz7x5fhW4Y/8D8+vt/lJbRpS5wxnxKz2D11BZamKpfo5p2
-        tT4Yx3pPuwZMa3aBh3yRvj5F+dQDi2woDKob2VtdYKikGA/nD/xMb7d5p18CIXkN
-        d+hKdafC/711m54Jj2+91l0qFvxk5PyYVM4rUAQLwpZ57Ir85oRcFgFs8BlUFhD8
-        vEaWiXjkpGi0hwHGw7NJpQwOa8jNeUDJ34TA2972WBYkN/iDdmexWWLkB05LjJVz
-        2aT9mcCucPyUF1AJiqmjp+3sNehmw==
-X-ME-Sender: <xms:qNhzXzkjBnX4wrXYhrvY1P3EqFw3PLcFzL0xv0ut0n6nlHUyrtX-7g>
-    <xme:qNhzX21RxIXc6dLcwzNk59bICN0CXK4wnyBmly00uYJ-kd81rRnkSmfu5cWDKNGWJ
-    bKNIJ7dwn4g7GqxuQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrfedtgdefkecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefuvfhfhffkffgfgggjtgfgsehtjeertddtfeejnecuhfhrohhmpefurghmuhgv
-    lhcujfholhhlrghnugcuoehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhgqeenucggtf
-    frrghtthgvrhhnpefflefhtdeukedvffeigfeludeltdfhjeehkeekhfeuvdehfeehheeh
-    keehhfdtvdenucffohhmrghinhepghhithhhuhgsrdgtohhmpdhinhhfrhgruggvrggurd
-    horhhgnecukfhppeejtddrudefhedrudegkedrudehudenucevlhhushhtvghrufhiiigv
-    pedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehsrghmuhgvlhesshhhohhllhgrnhgurd
-    horhhg
-X-ME-Proxy: <xmx:qNhzX5rxmuPGpxD5LOaZWwrcza9aw11H32HFaRNqX1ec4ZSJaVcpLg>
-    <xmx:qNhzX7mm5KiNWEzArDOTvSJ_iVY1si0F_sWxvbr4tRvtdTRPskrFgA>
-    <xmx:qNhzXx339LP5MxYsLEOUCfBW7wxztznVD6XotrpZ8S4pXtXKK3ohbQ>
-    <xmx:qdhzX8TNp9YyDCKpWfc31WJlmuftssQOsQam4j2dWW4xG8DTz7pgYw>
-Received: from [192.168.50.169] (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 102F7328005D;
-        Tue, 29 Sep 2020 21:00:24 -0400 (EDT)
-Subject: Re: [PATCH] RFC: arm64: arch_timer: Fix timer inconsistency test for
- A64
-To:     Mark Rutland <mark.rutland@arm.com>,
-        Roman Stratiienko <r.stratiienko@gmail.com>
-Cc:     linux-sunxi@googlegroups.com, megous@megous.com,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        maz@kernel.org
-References: <20200929111347.1967438-1-r.stratiienko@gmail.com>
- <20200929154012.GF53442@C02TD0UTHF1T.local>
-From:   Samuel Holland <samuel@sholland.org>
-Message-ID: <90f2e396-b679-fa25-c227-37489bc167e6@sholland.org>
-Date:   Tue, 29 Sep 2020 20:00:21 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
-MIME-Version: 1.0
-In-Reply-To: <20200929154012.GF53442@C02TD0UTHF1T.local>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+        id S1729531AbgI3BQo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 21:16:44 -0400
+Received: from mail-dm6nam12on2060.outbound.protection.outlook.com ([40.107.243.60]:41185
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728931AbgI3BQo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 21:16:44 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bSei3e70z/SC7UdcBPu5bTBQ9j092kXgM6BNibrNqIM40GFwzhT/ffISGvOLvriueBRV8rS30p+UlvpSBclPr/sQ/LalnRKEwS+hDEUDAlAho02wiYGTVP8dGmKmk7awB7CLvy+YPiOaoAVebUzc2qOUThl7lzaUcYhjuIkluAD4r4fINpsJkohteaR+/09v8UvzCNuPouXTwXE/kZGyZlIkRHKkSAyKsrW+d+KeLEgEsviGwfqy+W6pD65SBWvG0uiECeiEVg9JvWOwAS/O223yVoEsHT3/F3ndWCNgtUeS1uIKXiGN0qHjaRwN6TBcU0ebgWCSlK0FzP1n4LOMiA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=cZ1mg79nd2coqgMKTnUBB7fmiA8/KnEIFzlWy2mhIWQ=;
+ b=Re0Z5WTi2fZAlXiWRdLuR+pFuo5yWH3jdL+nGYuU+uKeu6JqI0vZHm42I2iXWedCRizRMQydCeKIMKUaRf5QeX1/54tDZ4PtE3V4Rh39bsj3q25NYYcLqjbauaTxR6PEHGK/B/uWBcWrb/qUpEbmcgS0oWHaUqrf3T1hAGkFGMlQVzosAzGKPHEo7qILGZV4EXvdwApKXVu/fVpKjSBAl4f8vgZt4lPELVzRwZDrf2lEt6aiDjmck46B5AV80s42qkQRwFxvvRQ7WKCnouLEjR9yRLZQmrm8Hw+mfpU95antOJWrobrpiaXIytyFiZEa2iYMAAvWEFhTBNRrO6tr4A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=synaptics.com; dmarc=pass action=none
+ header.from=synaptics.com; dkim=pass header.d=synaptics.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=cZ1mg79nd2coqgMKTnUBB7fmiA8/KnEIFzlWy2mhIWQ=;
+ b=PT27d+LEUM1T9qqjnp2Y66q0/xt54YL9sG8TNc1hDRAiGioK7VfqRansLecWV+X2zpU3uIv28fgwupA2X18RoaJAThMViioYaz3qmWQ0xhGCKqWVl4k6+6BptBBV2+bI5A+TtX+yKtz0h45Gnvmnt6OAsZ/VflucDTnIet1Cis8=
+Authentication-Results: ti.com; dkim=none (message not signed)
+ header.d=none;ti.com; dmarc=none action=none header.from=synaptics.com;
+Received: from DM6PR03MB4555.namprd03.prod.outlook.com (2603:10b6:5:102::17)
+ by DM6PR03MB5145.namprd03.prod.outlook.com (2603:10b6:5:1e9::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.35; Wed, 30 Sep
+ 2020 01:16:40 +0000
+Received: from DM6PR03MB4555.namprd03.prod.outlook.com
+ ([fe80::e494:740f:155:4a38]) by DM6PR03MB4555.namprd03.prod.outlook.com
+ ([fe80::e494:740f:155:4a38%7]) with mapi id 15.20.3433.032; Wed, 30 Sep 2020
+ 01:16:40 +0000
+Date:   Wed, 30 Sep 2020 09:12:05 +0800
+From:   Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+To:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>
+Cc:     linux-omap@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v5 0/2] PCI: dwc: fix two MSI issues
+Message-ID: <20200930091205.792d6c7c@xhacker.debian>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [124.74.246.114]
+X-ClientProxiedBy: HK2PR0302CA0004.apcprd03.prod.outlook.com
+ (2603:1096:202::14) To DM6PR03MB4555.namprd03.prod.outlook.com
+ (2603:10b6:5:102::17)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from xhacker.debian (124.74.246.114) by HK2PR0302CA0004.apcprd03.prod.outlook.com (2603:1096:202::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.18 via Frontend Transport; Wed, 30 Sep 2020 01:16:37 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 892c29ee-563a-4ff2-3f40-08d864de7c53
+X-MS-TrafficTypeDiagnostic: DM6PR03MB5145:
+X-Microsoft-Antispam-PRVS: <DM6PR03MB514550FA133BFC3F6C4EC766ED330@DM6PR03MB5145.namprd03.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3044;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: IS9N0I/16SHJUF3RN+AS0OIJoJAnyis8mdBVB+kvzbZM+PybQmFn7bT7k3kPLbdbHFD/0OkwyQdSm+zemjk6gklziUgBWcwc5U04zRK6N8d5VUFx2vOFoP8sZwNKlE2LmUmDyyCEqbMm4M0K0hTvtuOE615oNgMP5/k8JNIFbXZUgX3IS0gbG+xkXGDIKcWE23PwR4YylPOZPs1zIUcQA9OfD8l+dtJ9qdhYE7ORe8ye7tTHcswkCMJ5cSW9GfAHW+Z3zAVs/wh7iKBp33wOiOeyY2FgqrjgOJbm8dimx8Efq2m/P8Wb9Z6HG1dJGlbsiYC5ZmZBHNZzfuE/L5jlqA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR03MB4555.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(6506007)(956004)(55016002)(5660300002)(6666004)(8676002)(498600001)(4326008)(8936002)(83380400001)(110136005)(66946007)(66556008)(66476007)(86362001)(1076003)(7416002)(186003)(7696005)(9686003)(2906002)(16526019)(26005)(52116002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: d8HFMUcbO6XojAUV5tw3iAQEK9J4oTerlldNMyXS4cMObuAVYqrt2t2DpQRlW412p0TX/KUm1Nc6BkaytoGjzRLzAxicQQpE8q6zK6aORpsock5Pjf4yg6evTFUqKgOU7UsFQ2ihBWHNMaQL1OQuhC7JYD7ZA2NWwl2hh57YE9uFDMIqRQ+iAFh4ocn+NrixwsfB8sHZHCqVG57PknPt1HlSgo/B1tHJYIU1Q49zEgmD2JxMQ5LhUv2aAtB0ij8ZtPZKrekYMn64f+N9mfJtjwwku6XvFNSe8JTjtF7kgNv2F34lZk9EavGACexCRU07CWvaezZGCXwsjl0zfOZdGw3/apnb6S3AlK0VJ4kA7nI3Vn216EV9M+zGAgwqqfMiSZRDtCvUKGyWvg0rSKA2KKpBazqj3/N/ck1prIWmmqmh3OZfeDlI8ta5VZKVTxZXvvm1n31x7VKvFyRp7Uzo4J3YIiPUERCizD9gaux6xj8O/t5fLdEya90M9DhAJnVRHNKAwHn7rSKDfzfo69GH4IdusXM/mG/6B+8dSpy9yFgQ0RMcFUiRr1XINMxI8yeqq8gm23oRXa2TUbIFCpEKM1xTfaweCbkOtAE2ThYO7WWwRmlxZMH1Vo1sW3qZ8Gwwr5GURMGw2YHf7+Td1leNYQ==
+X-OriginatorOrg: synaptics.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 892c29ee-563a-4ff2-3f40-08d864de7c53
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR03MB4555.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Sep 2020 01:16:40.8110
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: kAjP/Px5EBvV4AdRVuaRSk5UG89Lt8cwJud+6zYg043J9XGPDVsbLDBiN5cEGcD4MYmI7B/aXGWzG+lxU5RvoQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR03MB5145
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/29/20 10:40 AM, Mark Rutland wrote:
-> Hi,
-> 
-> Please Cc maintainers for drivers -- Marc and I maintain the arch timer
-> driver.
-> 
-> On Tue, Sep 29, 2020 at 02:13:47PM +0300, Roman Stratiienko wrote:
->> Fixes linux_kselftest:timers_inconsistency-check_arm_64
->>
->> Test logs without the fix:
->> '''
->> binary returned non-zero. Exit code: 1, stderr: , stdout:
->> Consistent CLOCK_REALTIME
->> 1601335525:467086804
->> 1601335525:467087554
->> 1601335525:467088345
->> 1601335525:467089095
->> 1601335525:467089887
->> 1601335525:467090637
->> 1601335525:467091429
->> 1601335525:467092179
->> 1601335525:467092929
->> 1601335525:467093720
->> 1601335525:467094470
->> 1601335525:467095262
->> 1601335525:467096012
->> 1601335525:467096804
->> --------------------
->> 1601335525:467097554
->> 1601335525:467077012
-> 
-> That's 0x1BD757D2 followed by 0x1BD70794. The rollback is somewhere in
-> bits 15:12 to go from 0x1BD75xxx to 0x1BD70xxx, which suggests the
-> analysis in the existing comment is incomplete.
+Fix two MSI issues. One to skip PCIE_MSI_INTR0* programming if MSI is
+disabled, another to use an address in the driver data for MSI address,
+to fix the MSI page leakage during suspend/resume.
 
-My analysis only looked at consecutive timer reads on a single core. Apparently,
-from the vendor comment that they needed CLOCKSOURCE_VALIDATE_LAST_CYCLE (linked
-below), there is another inconsistency with reads across cores.
+Since v4:
+  - fix pci-dra7xx.c
 
->> --------------------
->> 1601335525:467099095
->> 1601335525:467099845
->> 1601335525:467100637
->> 1601335525:467101387
->> 1601335525:467102179
->> 1601335525:467102929
->> '''
-> 
-> It would be very helpful if the commit message could explain the rough
-> idea behind the change, because the rationale is not clear to me.
-> 
->> Signed-off-by: Roman Stratiienko <r.stratiienko@gmail.com>
->> CC: linux-arm-kernel@lists.infradead.org
->> CC: linux-kernel@vger.kernel.org
->> CC: linux-sunxi@googlegroups.com
->> CC: megous@megous.com
->> ---
->>  drivers/clocksource/arm_arch_timer.c | 9 +++++----
->>  1 file changed, 5 insertions(+), 4 deletions(-)
->>
->> diff --git a/drivers/clocksource/arm_arch_timer.c b/drivers/clocksource/arm_arch_timer.c
->> index 6c3e841801461..d50aa43cb654b 100644
->> --- a/drivers/clocksource/arm_arch_timer.c
->> +++ b/drivers/clocksource/arm_arch_timer.c
->> @@ -346,16 +346,17 @@ static u64 notrace arm64_858921_read_cntvct_el0(void)
->>   * number of CPU cycles in 3 consecutive 24 MHz counter periods.
->>   */
->>  #define __sun50i_a64_read_reg(reg) ({					\
->> -	u64 _val;							\
->> +	u64 _val1, _val2;						\
->>  	int _retries = 150;						\
->>  									\
->>  	do {								\
->> -		_val = read_sysreg(reg);				\
->> +		_val1 = read_sysreg(reg);				\
->> +		_val2 = read_sysreg(reg);				\
->>  		_retries--;						\
->> -	} while (((_val + 1) & GENMASK(9, 0)) <= 1 && _retries);	\
->> +	} while (((_val2 - _val1) > 0x10) && _retries);			\
-> 
-> This is going to fail quite often at low CPU frequencies, and it's not
-> clear to me that this solves the problem any more generally. DO we know
-> what the underlying erratum is here?
+Since v3:
+  - add Acked-by tag
+  - change patch2 commit msg to make it clear
+  - map the MSI msg with dma_map_single_attrs() for some platforms
+    which either has seperate addrs for dma and phy or has mem access
+    limitation for the PCIe.
 
-This is what we have from the vendor:
+Since v2:
+  - add Acked-by tag
+  - use an address in the driver data for MSI address. Thank Ard and Rob
+    for pointing out this correct direction.
+  - Since the MSI page has gone, the leak issue doesn't exist anymore,
+    remove unnecessary patches.
+  - Remove dw_pcie_free_msi rename and the last patch. They could be
+    targeted to next. So will send out patches in a separate series.
 
-https://github.com/Allwinner-Homlet/H6-BSP4.9-linux/blob/master/arch/arm64/include/asm/arch_timer.h#L155
-https://github.com/Allwinner-Homlet/H6-BSP4.9-linux/blob/master/drivers/clocksource/arm_arch_timer.c#L272
+Since v1:
+  - add proper error handling patches.
+  - solve the msi page leakage by moving dw_pcie_msi_init() from each
+    users to designware host
 
-and they select CLOCKSOURCE_VALIDATE_LAST_CYCLE.
 
-Everything else we know (e.g. the tables and explanation in my original commit
-log) is from testing by users.
+Jisheng Zhang (2):
+  PCI: dwc: Skip PCIE_MSI_INTR0* programming if MSI is disabled
+  PCI: dwc: Fix MSI page leakage in suspend/resume
 
-I had not seen the vendor changes to arch_timer.h when I wrote the existing
-workaround. Their retry loop is similar to this patch, but as you mention, it
-won't work if the CPU frequency is too low. That may not be a problem for the
-vendor kernel, but it breaks badly on mainline.
+ drivers/pci/controller/dwc/pci-dra7xx.c       | 18 +++++++++-
+ .../pci/controller/dwc/pcie-designware-host.c | 34 +++++++++----------
+ drivers/pci/controller/dwc/pcie-designware.h  |  2 +-
+ 3 files changed, 35 insertions(+), 19 deletions(-)
 
-As Ondrej referenced, the mainline DVFS implementation bypasses the PLL during
-frequency changes. At that point, both the CPU and the timer are running at 24
-MHz, so the chance of hitting the retry limit is high... and there's a udelay()
-call in the PLL bypass code (ccu_mux_notifier_cb()) that will need to read the
-timer.
-
-> Thanks,
-> Mark.
-
-Cheers,
-Samuel
-
->>  									\
->>  	WARN_ON_ONCE(!_retries);					\
->> -	_val;								\
->> +	_val2;								\
->>  })
->>  
->>  static u64 notrace sun50i_a64_read_cntpct_el0(void)
->> -- 
->> 2.25.1
->>
->>
->> _______________________________________________
->> linux-arm-kernel mailing list
->> linux-arm-kernel@lists.infradead.org
->> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+-- 
+2.28.0
 
